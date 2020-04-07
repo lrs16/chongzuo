@@ -111,7 +111,7 @@ export default {
               component: './Admin',
               authority: ['admin'],
             }, //自动化运维
-            
+
             {
               path: '/automation',
               name: 'automation',
@@ -122,7 +122,8 @@ export default {
                   path: '/automation',
                   // redirect: '/automation/monitor',
                   redirect: '/automation/opsscene',
-                }, // {
+                },
+                // {
                 //   path: '/automation/monitor',
                 //   name: 'monitor',
                 //   icon: 'dashboard',
@@ -130,7 +131,7 @@ export default {
                 // },
                 {
                   path: '/automation/opsscene',
-                  name: 'opsscene',
+                  name: '',
                   icon: 'control',
                   component: './Automation/OpsScene',
                 },
@@ -171,7 +172,6 @@ export default {
                   icon: 'cloud-server',
                   component: './Automation/ResourceManage',
                 },
-                
               ],
             }, // {
             //   path: '/monitor',
