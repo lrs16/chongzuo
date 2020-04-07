@@ -14,6 +14,7 @@ import RightContent from '@/components/GlobalHeader/RightContent';
 import { isAntDesignPro, getAuthorityFromRouter } from '@/utils/utils';
 import logo from '../assets/logo.svg';
 import Layout from './BlankLayout';
+
 const noMatch = (
   <Result
     status="403"
@@ -128,9 +129,9 @@ const BasicLayout = props => {
   };
 
   // 根据当前url变化获取左侧菜单数据
-  let pathArr = location.pathname.split('/');
-  let path = '/' + pathArr[1];
-  let routeData = props.route.routes;
+  const pathArr = location.pathname.split('/');
+  const path = `/${  pathArr[1]}`;
+  const routeData = props.route.routes;
   let leftRoute = {};
   routeData.map(item => {
     if(item.path == path) {
@@ -180,13 +181,14 @@ const BasicLayout = props => {
       {...props}
       {...settings}
       disableContentMargin
-      disableMobile　//禁用手机端菜单，不然手机端下会表现异常
+      disableMobile　// 禁用手机端菜单，不然手机端下会表现异常
     >
 
       <ProLayout
         // layout={'sidemenu'}
         menuHeaderRender={false}
-        siderWidth={189}
+        siderWidth={250}
+        navTheme = 'light'
         // onCollapse={handleMenuCollapse}
         menuItemRender={(menuItemProps, defaultDom) => {
           if (menuItemProps.isUrl || menuItemProps.children) {

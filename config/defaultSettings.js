@@ -11,7 +11,7 @@ export default {
   menu: {
     locale: true,
   },
-  title: '运维监控平台',
+  title: 'DEOP',
   pwa: false,
   iconfontUrl: '',
 };

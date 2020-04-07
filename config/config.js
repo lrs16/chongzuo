@@ -95,95 +95,158 @@ export default {
           routes: [
             {
               path: '/',
-              redirect: '/monitor/hostlist',
-            }, 
-            // {
-            //   path: '/welcome',
-            //   name: 'welcome',
+              // redirect: '/automation/monitor',
+              redirect: '/welcome',
+            },
+            {
+              path: '/welcome',
+              name: 'welcome',
+              icon: 'smile',
+              component: './Welcome',
+            },
+            {
+              path: '/admin',
+              name: 'admin',
+              icon: 'crown',
+              component: './Admin',
+              authority: ['admin'],
+            }, //自动化运维
+            
+            {
+              path: '/automation',
+              name: 'automation',
+              dynamic: true,
+              icon: 'deployment-unit',
+              routes: [
+                {
+                  path: '/automation',
+                  // redirect: '/automation/monitor',
+                  redirect: '/automation/opsscene',
+                }, // {
+                //   path: '/automation/monitor',
+                //   name: 'monitor',
+                //   icon: 'dashboard',
+                //   component: './Automation/Monitor',
+                // },
+                {
+                  path: '/automation/opsscene',
+                  name: 'opsscene',
+                  icon: 'control',
+                  component: './Automation/OpsScene',
+                },
+                {
+                  path: '/automation/workflow',
+                  name: 'workflow',
+                  icon: 'control',
+                  component: './Automation/WorkFlow',
+                },
+                {
+                  path: '/automation/jobexecut',
+                  name: 'joblist',
+                  icon: 'profile',
+                  component: './Automation/JobExecut',
+                },
+                {
+                  path: '/automation/viewjob/:id',
+                  name: 'viewjob',
+                  hideInMenu: true,
+                  component: './Automation/ViewJob',
+                },
+                {
+                  path: '/automation/timedjob',
+                  name: 'timedjob',
+                  icon: 'history',
+                  dynamic: true,
+                  component: './Automation/TimedJob',
+                },
+                {
+                  path: '/automation/scriptmanage',
+                  name: 'scriptmanage',
+                  icon: 'database',
+                  component: './Automation/ScriptManage',
+                },
+                {
+                  path: '/automation/resourcemanage',
+                  name: 'resourcemanage',
+                  icon: 'cloud-server',
+                  component: './Automation/ResourceManage',
+                },
+                
+              ],
+            }, // {
+            //   path: '/monitor',
+            //   name: '监测管理',
             //   icon: 'smile',
-            //   component: './Welcome',
+            //   // authority: ['admin', 'user'],
+            //   routes: [
+            //     {
+            //       path: '/monitor',
+            //       redirect: '/monitor/hostlist',
+            //     },
+            //     {
+            //       name: '监测总览',
+            //       icon: 'smile',
+            //       path: '/monitor/hostlist',
+            //       // authority: ['Eadmin'],
+            //       component: './monitor/ListTableList',
+            //     },
+            //     {
+            //       name: '监控指标',
+            //       icon: 'smile',
+            //       // hideInMenu: true,
+            //       path: '/monitor/itemlist',
+            //       component: './monitor/TableList',
+            //     },
+            //     {
+            //       name: '监控数据',
+            //       icon: 'smile',
+            //       // hideInMenu: true,
+            //       path: '/monitor/historylist',
+            //       component: './monitor/History',
+            //     }
+            //   ],
             // },
             // {
-            //   path: '/admin',
-            //   name: 'admin',
-            //   icon: 'crown',
-            //   component: './Admin',
-            //   authority: ['admin'],
+            //   path: '/event',
+            //   name: '告警管理',
+            //   icon: 'smile',
+            //   routes: [
+            //     {
+            //       path: '/event',
+            //       redirect: '/event/list',
+            //     },
+            //     {
+            //       path: '/event/list',
+            //       name: '监控事件',
+            //       icon: 'smile',
+            //       component: './event',
+            //     },
+            //   ],
             // },
-            {
-              path: '/monitor',
-              name: '监测管理',
-              icon: 'smile',
-              // authority: ['admin', 'user'],
-              routes: [
-                {
-                  path: '/monitor',
-                  redirect: '/monitor/hostlist',
-                },
-                {
-                  name: '监测总览',
-                  icon: 'smile',
-                  path: '/monitor/hostlist',
-                  // authority: ['Eadmin'],
-                  component: './monitor/ListTableList',
-                },
-                {
-                  name: '监控指标',
-                  icon: 'smile',
-                  // hideInMenu: true,
-                  path: '/monitor/itemlist',
-                  component: './monitor/TableList',
-                },
-                {
-                  name: '监控数据',
-                  icon: 'smile',
-                  // hideInMenu: true,
-                  path: '/monitor/historylist',
-                  component: './monitor/History',
-                }
-              ],
-            },
-            {
-              path: '/event',
-              name: '告警管理',
-              icon: 'smile',
-              routes: [
-                {
-                  path: '/event',
-                  redirect: '/event/list',
-                },
-                {
-                  path: '/event/list',
-                  name: '监控事件',
-                  icon: 'smile',
-                  component: './event',
-                },
-              ],
-            },
-            {
-              path: '/agent',
-              name: '采控管理',
-              icon: 'smile',
-              routes: [
-                {
-                  path: '/agent',
-                  redirect: '/agent/cmdb',
-                },
-                {
-                  path: '/agent/cmdb',
-                  name: '监控配置',
-                  icon: 'smile',
-                  component: './agent/cmdb',
-                },
-                {
-                  path: '/agent/listtablelist',
-                  name: '查询表格',
-                  icon: 'smile',
-                  // hideInMenu: true,
-                  component: './agent/cmdb/ListTableList',
-                },
-              ],
-            },
+            // {
+            //   path: '/agent',
+            //   name: '采控管理',
+            //   icon: 'smile',
+            //   routes: [
+            //     {
+            //       path: '/agent',
+            //       redirect: '/agent/cmdb',
+            //     },
+            //     {
+            //       path: '/agent/cmdb',
+            //       name: '监控配置',
+            //       icon: 'smile',
+            //       component: './agent/cmdb',
+            //     },
+            //     {
+            //       path: '/agent/listtablelist',
+            //       name: '查询表格',
+            //       icon: 'smile',
+            //       // hideInMenu: true,
+            //       component: './agent/cmdb/ListTableList',
+            //     },
+            //   ],
+            // },
             {
               component: './404',
             },
@@ -249,9 +312,8 @@ export default {
   // },
   proxy: {
     '/api': {
-      target: 'http://localhost:8889/',
-      changeOrigin: true,
-      // pathRewrite: {
+      target: 'http://localhost:8001/',
+      changeOrigin: true, // pathRewrite: {
       //   '^/server': '',
       // },
     },
