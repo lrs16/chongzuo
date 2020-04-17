@@ -193,4 +193,82 @@ const getFakeChartData = {
 
 export default {
   'GET /api/fake_chart_data': getFakeChartData,
+
+  'GET /api/queryTreecompact_data': {
+    name: 'flare',
+    children: [
+      {
+        name: 'analytics',
+        children: [
+          {
+            name: 'cluster',
+            children: [],
+          },
+          {
+            name: 'graph',
+            children: [
+              {
+                name: 'BetweennessCentrality',
+                value: 3534,
+              },
+              {
+                name: 'LinkDistance',
+                value: 5731,
+              },
+              {
+                name: 'MaxFlowMinCut',
+                value: 7840,
+              },
+              {
+                name: 'ShortestPaths',
+                value: 5914,
+              },
+              {
+                name: 'SpanningTree',
+                value: 3416,
+              },
+            ],
+          },
+          {
+            name: 'optimization',
+            children: [
+              {
+                name: 'AspectRatioBanker',
+                value: 7074,
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  'GET /api/queryfaca_data': {
+    name: '计量中心',
+    children: [
+      {
+        name: '南宁',
+        value: '成功',
+      },
+      {
+        name: '柳州',
+        value: '成功',
+      },
+      {
+        name: '桂林',
+        value: '成功',
+      },
+      {
+        name: '贵巷',
+        value: '成功',
+      },
+      {
+        name: '玉林',
+        value: '成功',
+      },
+      {
+        name: '梧州',
+        value: '失败',
+      },
+    ],
+  },
 };

@@ -131,7 +131,7 @@ export default {
                 },
                 {
                   path: '/automation/opsscene',
-                  name: '',
+                  name: 'opsscene',
                   icon: 'control',
                   component: './Automation/OpsScene',
                 },
@@ -173,7 +173,50 @@ export default {
                   component: './Automation/ResourceManage',
                 },
               ],
-            }, // {
+            },
+            //业务监控
+            {
+              path: '/measurmonitor',
+              name: 'measurmonitor',
+              icon: 'interaction',
+              routes: [
+                {
+                  path: '/measurmonitor',
+                  redirect: '/measurmonitor/home',
+                },
+                {
+                  path: '/measurmonitor/home',
+                  name: 'measurhome',
+                  component: './MeasurMonitor',
+                },
+                {
+                  path: '/measurmonitor/collection',
+                  name: 'collection',
+                  component: './MeasurMonitor/Collection',
+                },
+                {
+                  path: '/measurmonitor/measurface',
+                  name: 'measurface',
+                  component: './MeasurMonitor/MeasurFace',
+                },
+                {
+                  path: '/measurmonitor/fafka',
+                  name: 'fafka',
+                  component: './MeasurMonitor/Fafak',
+                },
+                {
+                  path: '/measurmonitor/sysrunning',
+                  name: 'sysrunning',
+                  component: './MeasurMonitor/SysRunning',
+                },
+                {
+                  path: '/measurmonitor/databaseterminal',
+                  name: 'databaseterminal',
+                  component: './MeasurMonitor/DatabaseTerminal',
+                },
+              ],
+            },
+            // {
             //   path: '/monitor',
             //   name: '监测管理',
             //   icon: 'smile',
