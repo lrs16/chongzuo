@@ -123,12 +123,12 @@ export default {
                   // redirect: '/automation/monitor',
                   redirect: '/automation/opsscene',
                 },
-                // {
-                //   path: '/automation/monitor',
-                //   name: 'monitor',
-                //   icon: 'dashboard',
-                //   component: './Automation/Monitor',
-                // },
+                {
+                  path: '/automation/monitor',
+                  name: 'monitor',
+                  icon: 'dashboard',
+                  component: './Automation/Monitor',
+                },
                 {
                   path: '/automation/opsscene',
                   name: '',

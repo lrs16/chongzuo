@@ -196,6 +196,7 @@ class Pie extends Component {
               padding={padding}
               animate={animate}
               onGetG2Instance={this.getG2Instance}
+              forceFit
             >
               {!!tooltip && <Tooltip showTitle={false} />}
               <Coord type="theta" innerRadius={inner} />

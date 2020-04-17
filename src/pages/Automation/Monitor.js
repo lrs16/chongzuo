@@ -1,17 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { formatMessage, FormattedMessage } from 'umi-plugin-react/locale';
 import { Row, Col, Card, Tooltip } from 'antd';
 import numeral from 'numeral';
 import { Pie, WaterWave, Gauge, TagCloud } from '@/components/Charts';
 import NumberInfo from '@/components/NumberInfo';
 import CountDown from '@/components/CountDown';
 import ActiveChart from '@/components/ActiveChart';
-import GridContent from '@/components/PageHeaderWrapper/GridContent';
-import Authorized from '@/utils/Authorized';
+// import GridContent from '@/components/PageHeaderWrapper/GridContent';
 import styles from './Monitor.less';
-
-const { Secured } = Authorized;
 
 const targetTime = new Date().getTime() + 3900000;
 
@@ -21,7 +17,6 @@ const havePermissionAsync = new Promise(resolve => {
   setTimeout(() => resolve(), 300);
 });
 
-@Secured(havePermissionAsync)
 @connect(({ jobmonitor, loading }) => ({
   jobmonitor,
   loading: loading.models.jobmonitor,
@@ -39,75 +34,34 @@ class Monitor extends Component {
     const { tags } = jobmonitor;
 
     return (
-      <GridContent>
+      <div>
         <Row gutter={24}>
           <Col xl={18} lg={24} md={24} sm={24} xs={24} style={{ marginBottom: 24 }}>
-            <Card
-              title={
-                <FormattedMessage
-                  id="app.monitor.job-activity"
-                  defaultMessage="Real-Time Trading Activity"
-                />
-              }
-              bordered={false}
-            >
+            <Card title="作业实时执行情况" bordered={false}>
               <Row>
                 <Col md={6} sm={12} xs={24}>
                   <NumberInfo
-                    subTitle={
-                      <FormattedMessage
-                        id="app.monitor.total-job"
-                        defaultMessage="Total transactions today"
-                      />
-                    }
+                    subTitle="在执行作业总数"
                     suffix="个"
                     total={numeral(755).format('0,0')}
                   />
                 </Col>
                 <Col md={6} sm={12} xs={24}>
-                  <NumberInfo
-                    subTitle={
-                      <FormattedMessage
-                        id="app.monitor.job-target"
-                        defaultMessage="Sales target completion rate"
-                      />
-                    }
-                    total="92%"
-                  />
+                  <NumberInfo subTitle="执行成功率" total="92%" />
+                </Col>
+                <Col md={6} sm={12} xs={24}>
+                  <NumberInfo subTitle="最长执行时间" total={<CountDown target={targetTime} />} />
                 </Col>
                 <Col md={6} sm={12} xs={24}>
                   <NumberInfo
-                    subTitle={
-                      <FormattedMessage
-                        id="app.monitor.job-time"
-                        defaultMessage="Remaining time of activity"
-                      />
-                    }
-                    total={<CountDown target={targetTime} />}
-                  />
-                </Col>
-                <Col md={6} sm={12} xs={24}>
-                  <NumberInfo
-                    subTitle={
-                      <FormattedMessage
-                        id="app.monitor.total-job-per"
-                        defaultMessage="Total transactions per second"
-                      />
-                    }
+                    subTitle="定时作业总数"
                     suffix="个"
                     total={numeral(234).format('0,0')}
                   />
                 </Col>
               </Row>
               <div className={styles.mapChart}>
-                <Tooltip
-                  title={
-                    <FormattedMessage
-                      id="app.monitor.waiting-for-implementation"
-                      defaultMessage="Waiting for implementation"
-                    />
-                  }
-                >
+                <Tooltip title="Waiting for implementation">
                   <img
                     src="https://gw.alipayobjects.com/zos/antfincdn/h%24wFbzuuzz/HBWnDEUXCnGnGrRfrpKa.png"
                     alt="map"
@@ -117,52 +71,28 @@ class Monitor extends Component {
             </Card>
           </Col>
           <Col xl={6} lg={24} md={24} sm={24} xs={24}>
-            <Card
-              title={
-                <FormattedMessage
-                  id="app.monitor.activity-forecast"
-                  defaultMessage="Activity forecast"
-                />
-              }
-              style={{ marginBottom: 24 }}
-              bordered={false}
-            >
+            <Card title="活动情况预测" style={{ marginBottom: 24 }} bordered={false}>
               <ActiveChart />
             </Card>
             <Card
-              title={<FormattedMessage id="app.monitor.job-efficiency" defaultMessage="执行效率" />}
+              title="执行效率"
               style={{ marginBottom: 24 }}
               bodyStyle={{ textAlign: 'center' }}
               bordered={false}
             >
-              <Gauge
-                title={formatMessage({ id: 'app.monitor.ratio', defaultMessage: 'Ratio' })}
-                height={180}
-                percent={87}
-              />
+              <Gauge title="跳出率" height={180} percent={87} />
             </Card>
           </Col>
         </Row>
         <Row gutter={24}>
           <Col xl={12} lg={24} sm={24} xs={24} style={{ marginBottom: 24 }}>
-            <Card
-              title={
-                <FormattedMessage
-                  id="app.monitor.proportion-per-category"
-                  defaultMessage="Proportion Per Category"
-                />
-              }
-              bordered={false}
-              className={styles.pieCard}
-            >
+            <Card title="各场景占比" bordered={false} className={styles.pieCard}>
               <Row style={{ padding: '16px 0' }}>
                 <Col span={8}>
                   <Pie
                     animate={false}
                     percent={28}
-                    subTitle={
-                      <FormattedMessage id="app.monitor.fast-food" defaultMessage="Fast food" />
-                    }
+                    subTitle="标准场景"
                     total="28%"
                     height={128}
                     lineWidth={2}
@@ -173,12 +103,7 @@ class Monitor extends Component {
                     animate={false}
                     color="#5DDECF"
                     percent={22}
-                    subTitle={
-                      <FormattedMessage
-                        id="app.monitor.western-food"
-                        defaultMessage="Western food"
-                      />
-                    }
+                    subTitle="应用场景"
                     total="22%"
                     height={128}
                     lineWidth={2}
@@ -189,9 +114,7 @@ class Monitor extends Component {
                     animate={false}
                     color="#2FC25B"
                     percent={32}
-                    subTitle={
-                      <FormattedMessage id="app.monitor.hot-pot" defaultMessage="Hot pot" />
-                    }
+                    subTitle="自定义场景"
                     total="32%"
                     height={128}
                     lineWidth={2}
@@ -202,12 +125,7 @@ class Monitor extends Component {
           </Col>
           <Col xl={6} lg={12} sm={24} xs={24} style={{ marginBottom: 24 }}>
             <Card
-              title={
-                <FormattedMessage
-                  id="app.monitor.popular-searches"
-                  defaultMessage="Popular Searches"
-                />
-              }
+              title="热门搜索"
               loading={loading}
               bordered={false}
               bodyStyle={{ overflow: 'hidden' }}
@@ -217,26 +135,15 @@ class Monitor extends Component {
           </Col>
           <Col xl={6} lg={12} sm={24} xs={24} style={{ marginBottom: 24 }}>
             <Card
-              title={
-                <FormattedMessage
-                  id="app.monitor.resource-surplus"
-                  defaultMessage="Resource Surplus"
-                />
-              }
+              title="资源使用率"
               bodyStyle={{ textAlign: 'center', fontSize: 0 }}
               bordered={false}
             >
-              <WaterWave
-                height={161}
-                title={
-                  <FormattedMessage id="app.monitor.fund-surplus" defaultMessage="Fund Surplus" />
-                }
-                percent={34}
-              />
+              <WaterWave height={161} title="资源剩余" percent={34} />
             </Card>
           </Col>
         </Row>
-      </GridContent>
+      </div>
     );
   }
 }
