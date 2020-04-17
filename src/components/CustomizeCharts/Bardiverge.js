@@ -1,0 +1,160 @@
+import React, { Component } from 'react';
+import { Chart, Geom, Axis, Tooltip, Coord, Legend } from 'bizcharts';
+import DataSet from '@antv/data-set';
+
+class Bardiverge extends React.Component {
+  render() {
+    const { height } = this.props;
+    const { DataView } = DataSet;
+    const data = [
+      {
+        group: 'Employment sector',
+        type: 'Business and industry',
+        total: 176,
+        'Strongly Agree': 40.6,
+        Agree: 50.0,
+        'No Opinion': 2.8,
+        Disagree: 6.3,
+        'Strongly Disagree': 0.0,
+      },
+      {
+        group: 'Employment sector',
+        type: 'Federal, state, and local government',
+        total: 71,
+        'Strongly Agree': 38.0,
+        Agree: 47.9,
+        'No Opinion': 7.0,
+        Disagree: 4.2,
+        'Strongly Disagree': 2.8,
+      },
+      {
+        group: 'Employment sector',
+        type: 'Private consultant/self-employed',
+        total: 28,
+        'Strongly Agree': 39.3,
+        Agree: 53.6,
+        'No Opinion': 7.1,
+        Disagree: 0.0,
+        'Strongly Disagree': 0.0,
+      },
+      {
+        group: 'Employment sector',
+        type: 'Other',
+        total: 34,
+        'Strongly Agree': 29.4,
+        Agree: 44.1,
+        'No Opinion': 14.7,
+        Disagree: 5.9,
+        'Strongly Disagree': 5.9,
+      },
+      {
+        group: 'Race',
+        type: 'White',
+        total: 400,
+        'Strongly Agree': 50.0,
+        Agree: 41.8,
+        'No Opinion': 4.5,
+        Disagree: 2.8,
+        'Strongly Disagree': 1.0,
+      },
+      {
+        group: 'Race',
+        type: 'Asian',
+        total: 122,
+        'Strongly Agree': 53.3,
+        Agree: 40.2,
+        'No Opinion': 3.3,
+        Disagree: 3.3,
+        'Strongly Disagree': 0.0,
+      },
+      {
+        group: 'Race',
+        type: 'Black or African American',
+        total: 10,
+        'Strongly Agree': 40.0,
+        Agree: 30.0,
+        'No Opinion': 20.0,
+        Disagree: 10.0,
+        'Strongly Disagree': 0.0,
+      },
+      {
+        group: 'Race',
+        type: 'Other',
+        total: 17,
+        'Strongly Agree': 47.1,
+        Agree: 35.3,
+        'No Opinion': 5.9,
+        Disagree: 11.8,
+        'Strongly Disagree': 0.7,
+      },
+      {
+        group: 'Education',
+        type: "Associate's and Bachelor's",
+        total: 175,
+        'Strongly Agree': 37.1,
+        Agree: 49.1,
+        'No Opinion': 5.7,
+        Disagree: 6.9,
+        'Strongly Disagree': 1.1,
+      },
+    ];
+    const dv = new DataView();
+    dv.source(data)
+      .transform({
+        type: 'map',
+
+        callback(row) {
+          row['Strongly Disagree'] *= -1;
+          row.Disagree *= -1;
+          return row;
+        },
+      })
+      .transform({
+        type: 'fold',
+        fields: ['Disagree', 'Strongly Disagree', 'No Opinion', 'Agree', 'Strongly Agree'],
+        key: 'opinion',
+        value: 'value',
+        retains: ['group', 'type'],
+      });
+    const colorMap = {
+      'Strongly Agree': '#3561A7',
+      Agree: '#80B2D3',
+      'No Opinion': '#D9F0F6',
+      Disagree: '#EC7743',
+      'Strongly Disagree': '#CB2920',
+    };
+    return (
+      <div>
+        <Chart padding="auto" data={dv} forceFit height={height}>
+          <Axis name="type" title={null} labelOffset={10} />
+          <Axis
+            name="value"
+            title={null}
+            tickLine={null}
+            position="right"
+            formatter={function(val) {
+              return `${val}%`;
+            }}
+          />
+          <Coord transpose />
+          <Tooltip />
+          <Legend />
+          <Geom
+            type="intervalStack"
+            position="type*value"
+            color={[
+              'opinion',
+              function(opinion) {
+                return colorMap[opinion];
+              },
+            ]}
+            shape="smooth"
+            opacity={0.8}
+          />
+        </Chart>
+      </div>
+    );
+  }
+}
+
+export default Bardiverge;
