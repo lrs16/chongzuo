@@ -111,7 +111,6 @@ export default {
               component: './Admin',
               authority: ['admin'],
             }, //自动化运维
-
             {
               path: '/automation',
               name: 'automation',
@@ -120,8 +119,7 @@ export default {
               routes: [
                 {
                   path: '/automation',
-                  // redirect: '/automation/monitor',
-                  redirect: '/automation/opsscene',
+                  redirect: '/automation/monitor',
                 },
                 {
                   path: '/automation/monitor',
@@ -173,8 +171,7 @@ export default {
                   component: './Automation/ResourceManage',
                 },
               ],
-            },
-            //业务监控
+            }, //业务监控
             {
               path: '/measurmonitor',
               name: 'measurmonitor',
@@ -219,8 +216,81 @@ export default {
             {
               path: '/alarmmanage',
               name: 'alarmmanage',
-              icon: 'smile',
-              component: './Alarmmanage',
+              icon: 'interaction',
+              routes: [
+                {
+                  path: '/alarmmanage',
+                  redirect: '/alarmmanage/monitor',
+                },
+                {
+                  path: '/alarmmanage/monitor',
+                  name: 'monitor',
+                  component: './Alarmmanage',
+                },
+                {
+                  path: '/alarmmanage/details',
+                  name: 'details',
+                  component: './Alarmmanage/Details',
+                },
+                {
+                  path: '/alarmmanage/details/detailview/:detailsid',
+                  name: 'detailview',
+                  hideInMenu: true,
+                  component: './Alarmmanage/DetailView',
+                },
+                {
+                  path: '/alarmmanage/syssetting',
+                  name: 'syssetting',
+                  component: './Alarmmanage/SysSetting',
+                  routes: [
+                    {
+                      path: '/alarmmanage/syssetting',
+                      redirect: '/alarmmanage/syssetting/quotas',
+                    },
+                    {
+                      path: '/alarmmanage/syssetting/quotas',
+                      name: 'quotas',
+                      component: './Alarmmanage/Quotas',
+                    },
+                    {
+                      path: '/alarmmanage/syssetting/connector',
+                      name: 'connector',
+                      component: './Alarmmanage/Connector',
+                    },
+                    {
+                      path: '/alarmmanage/syssetting/KAFKA',
+                      name: 'KAFKA',
+                      component: './Alarmmanage/KAFKA',
+                    },
+                    {
+                      path: '/alarmmanage/syssetting/sysrun',
+                      name: 'sysrun',
+                      component: './Alarmmanage/SysRun',
+                    },
+                  ],
+                },
+                {
+                  path: '/alarmmanage/noticesetting',
+                  name: 'noticesetting',
+                  component: './Alarmmanage/NoticeSetting',
+                  routes: [
+                    {
+                      path: '/alarmmanage/noticesetting',
+                      redirect: '/alarmmanage/noticesetting/notifygroup',
+                    },
+                    {
+                      path: '/alarmmanage/noticesetting/notifygroup',
+                      name: 'notifygroup',
+                      component: './Alarmmanage/NotifyGroup',
+                    },
+                    {
+                      path: '/alarmmanage/noticesetting/notifyperson',
+                      name: 'notifyperson',
+                      component: './Alarmmanage/NotifyPerson',
+                    },
+                  ],
+                },
+              ],
             },
             // {
             //   path: '/monitor',
