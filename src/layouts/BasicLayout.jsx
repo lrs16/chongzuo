@@ -40,7 +40,7 @@ const menuDataRender = menuList =>
 
 const defaultFooterDom = (
   <DefaultFooter
-    copyright="2019 蚂蚁金服体验技术部出品"
+    copyright="2020 运维平台"
     links={[
       {
         key: 'Ant Design Pro',
@@ -64,31 +64,31 @@ const defaultFooterDom = (
   />
 );
 
-const footerRender = () => {
-  if (!isAntDesignPro()) {
-    return defaultFooterDom;
-  }
+// const footerRender = () => {
+//   if (!isAntDesignPro()) {
+//     return defaultFooterDom;
+//   }
 
-  return (
-    <>
-      {defaultFooterDom}
-      <div
-        style={{
-          padding: '0px 24px 24px',
-          textAlign: 'center',
-        }}
-      >
-        <a href="https://www.netlify.com" target="_blank" rel="noopener noreferrer">
-          <img
-            src="https://www.netlify.com/img/global/badges/netlify-color-bg.svg"
-            width="82px"
-            alt="netlify logo"
-          />
-        </a>
-      </div>
-    </>
-  );
-};
+//   return (
+//     <>
+//       {defaultFooterDom}
+//       <div
+//         style={{
+//           padding: '0px 24px 24px',
+//           textAlign: 'center',
+//         }}
+//       >
+//         <a href="https://www.netlify.com" target="_blank" rel="noopener noreferrer">
+//           <img
+//             src="https://www.netlify.com/img/global/badges/netlify-color-bg.svg"
+//             width="82px"
+//             alt="netlify logo"
+//           />
+//         </a>
+//       </div>
+//     </>
+//   );
+// };
 
 const BasicLayout = props => {
   const {
@@ -130,17 +130,19 @@ const BasicLayout = props => {
 
   // 根据当前url变化获取左侧菜单数据
   const pathArr = location.pathname.split('/');
-  const path = `/${  pathArr[1]}`;
+  const path = `/${pathArr[1]}`;
   const routeData = props.route.routes;
   let leftRoute = {};
   routeData.map(item => {
-    if(item.path == path) {
+    if (item.path == path) {
       leftRoute = item;
     }
   });
 
   return (
     <ProLayout
+      layout="topmenu"
+      fixedHeader
       logo={logo}
       menuHeaderRender={(logoDom, titleDom) => (
         <Link to="/">
@@ -181,20 +183,21 @@ const BasicLayout = props => {
       {...props}
       {...settings}
       disableContentMargin
-      disableMobile　// 禁用手机端菜单，不然手机端下会表现异常
+      disableMobile // 禁用手机端菜单，不然手机端下会表现异常
     >
-
       <ProLayout
         // layout={'sidemenu'}
+        fixSiderbar
+        headerRender={false}
         menuHeaderRender={false}
         siderWidth={250}
-        navTheme = 'light'
+        navTheme="light"
         // onCollapse={handleMenuCollapse}
         menuItemRender={(menuItemProps, defaultDom) => {
           if (menuItemProps.isUrl || menuItemProps.children) {
             return defaultDom;
           }
-  
+
           return <Link to={menuItemProps.path}>{defaultDom}</Link>;
         }}
         breadcrumbRender={(routers = []) => [
@@ -212,12 +215,12 @@ const BasicLayout = props => {
           return first ? (
             <Link to={paths.join('/')}>{route.breadcrumbName}</Link>
           ) : (
-              <span>{route.breadcrumbName}</span>
-            );
+            <span>{route.breadcrumbName}</span>
+          );
         }}
         menuDataRender={menuDataRender}
         route={leftRoute}
-        footerRender={footerRender}
+        // footerRender={footerRender}
       >
         <Authorized authority={authorized.authority} noMatch={noMatch}>
           {children}
@@ -228,6 +231,6 @@ const BasicLayout = props => {
 };
 
 export default connect(({ global, settings }) => ({
-  collapsed: global.collapsed,
+  // collapsed: global.collapsed,
   settings,
 }))(BasicLayout);

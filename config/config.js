@@ -216,6 +216,12 @@ export default {
                 },
               ],
             },
+            {
+              path: '/alarmmanage',
+              name: 'alarmmanage',
+              icon: 'smile',
+              component: './Alarmmanage',
+            },
             // {
             //   path: '/monitor',
             //   name: '监测管理',
