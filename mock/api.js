@@ -21,16 +21,7 @@ const avatars = [
   'https://gw.alipayobjects.com/zos/rmsportal/nxkuOJlFJuAUhzlMTCEe.png', // Webpack
 ];
 
-const icons = [
-  'dropbox', 
-  'apple', 
-  'windows', 
-  'ie', 
-  'chrome', 
-  'github', 
-  'aliwangwang', 
-  'twitter', 
-];
+const icons = ['dropbox', 'apple', 'windows', 'ie', 'chrome', 'github', 'aliwangwang', 'twitter'];
 
 const avatars2 = [
   'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png',
@@ -86,21 +77,21 @@ const scenedes = [
   '在管理节点上执行shell脚本，脚本在被管理节点上。',
   '脚本在主控端（管理节点），但需要在客户机上执行，可以用script模块。',
   '在我的管理节点中的root目录里存在一个zabbix_3.0.4.orig.tar.gz文件，这个文件需要批量下发给被管理节点。',
-]
+];
 
 function fakeList(count) {
   const list = [];
   for (let i = 0; i < count; i += 1) {
     list.push({
       id: `Script-${i}`,
-      scriptID:`Script-${i}`,
+      scriptID: `Script-${i}`,
       owner: user[i % 10],
       title: titles[i % 8],
       scenede: scenedes[i % 5],
       name: titles[i % 8],
       scenedetitle: jobtitles[i % 7],
-      source:['手动录入', '本地上传'][i % 2],
-      application:['业务应用系统', '业务系统', '测试导入'][i % 3],
+      source: ['手动录入', '本地上传'][i % 2],
+      application: ['业务应用系统', '业务系统', '测试导入'][i % 3],
       avatar: avatars[i % 8],
       sceneicon: icons[i % 8],
       cover: parseInt(i / 4, 10) % 2 === 0 ? covers[i % 4] : covers[3 - (i % 4)],
@@ -140,7 +131,7 @@ function fakeList(count) {
     });
   }
 
-  return (list);
+  return list;
 }
 
 let sourceData;
@@ -188,10 +179,9 @@ function postFakeList(req, res) {
 }
 
 function postScriptList(req, res) {
-  
   const { /* url = '', */ body } = req;
   // const params = getUrlParams(url);
-  const { method, id, } = body;
+  const { method, id } = body;
   // const count = (params.count * 1) || 20;
   let result = sourceData;
 
@@ -207,7 +197,6 @@ function postScriptList(req, res) {
       });
       break;
     case 'post':
-      
       result.unshift({
         body,
         id: `Script-${result.length}`,
@@ -386,135 +375,175 @@ const getActivities = [
 ];
 const scriptList = [
   {
-    id:'1',
-    code:'TXDD001',
-    name:'甲骨文删除',
-    type:'业务系统',
-    founder:'曲小蝶',
-    modifier:'张小枫',
-    creationtime:'2019.11.28',
-    source:'手动输入',
-    Releasestate:'发布中',
+    id: '1',
+    code: 'TXDD001',
+    name: '甲骨文删除',
+    type: '业务系统',
+    founder: '曲小蝶',
+    modifier: '张小枫',
+    creationtime: '2019.11.28',
+    source: '手动输入',
+    Releasestate: '发布中',
   },
   {
-    id:'2',
-    code:'TXDD002',
-    name:'甲骨文删除1',
-    type:'业务系统',
-    founder:'曲小蝶',
-    modifier:'张小枫',
-    creationtime:'2019.11.28',
-    source:'手动输入',
-    Releasestate:'发布中',
+    id: '2',
+    code: 'TXDD002',
+    name: '甲骨文删除1',
+    type: '业务系统',
+    founder: '曲小蝶',
+    modifier: '张小枫',
+    creationtime: '2019.11.28',
+    source: '手动输入',
+    Releasestate: '发布中',
   },
   {
-    id:'3',
-    code:'TXDD003',
-    name:'甲骨文删除2',
-    type:'业务系统',
-    founder:'曲小蝶',
-    modifier:'张小枫',
-    creationtime:'2019.11.28',
-    source:'手动输入',
-    Releasestate:'发布中',
+    id: '3',
+    code: 'TXDD003',
+    name: '甲骨文删除2',
+    type: '业务系统',
+    founder: '曲小蝶',
+    modifier: '张小枫',
+    creationtime: '2019.11.28',
+    source: '手动输入',
+    Releasestate: '发布中',
   },
   {
-    id:'4',
-    code:'TXDD003',
-    name:'甲骨文删除2',
-    type:'业务系统',
-    founder:'曲小蝶',
-    modifier:'张小枫',
-    creationtime:'2019.11.28',
-    source:'手动输入',
-    Releasestate:'发布中',
+    id: '4',
+    code: 'TXDD003',
+    name: '甲骨文删除2',
+    type: '业务系统',
+    founder: '曲小蝶',
+    modifier: '张小枫',
+    creationtime: '2019.11.28',
+    source: '手动输入',
+    Releasestate: '发布中',
   },
   {
-    id:'5',
-    code:'TXDD003',
-    name:'甲骨文删除2',
-    type:'业务系统',
-    founder:'曲小蝶',
-    modifier:'张小枫',
-    creationtime:'2019.11.28',
-    source:'手动输入',
-    Releasestate:'发布中',
+    id: '5',
+    code: 'TXDD003',
+    name: '甲骨文删除2',
+    type: '业务系统',
+    founder: '曲小蝶',
+    modifier: '张小枫',
+    creationtime: '2019.11.28',
+    source: '手动输入',
+    Releasestate: '发布中',
   },
   {
-    id:'6',
-    code:'TXDD003',
-    name:'甲骨文删除2',
-    type:'业务系统',
-    founder:'曲小蝶',
-    modifier:'张小枫',
-    creationtime:'2019.11.28',
-    source:'手动输入',
-    Releasestate:'发布中',
+    id: '6',
+    code: 'TXDD003',
+    name: '甲骨文删除2',
+    type: '业务系统',
+    founder: '曲小蝶',
+    modifier: '张小枫',
+    creationtime: '2019.11.28',
+    source: '手动输入',
+    Releasestate: '发布中',
   },
-  ]
-  const ResourcesList = [
-    {
-      resoureid: "resoure-01",
-      resourename: "172.16.4.76-oracle",
-      resoureip: "172.16.4.76",
-      tag: ["智能运维平台"],
-      Updatetime: "2019-08-26 11:08:53",
-      status: "在线",
-      agent: true
-    },
-    {
-      resoureid: "resoure-02",
-      resourename: "172.16.4.76-360",
-      resoureip: "172.16.4.76",
-      tag: ["智能运维平台","运维可视化"],
-      Updatetime: "2019-08-26 11:08:53",
-      status: "在线",
-      agent: false
-    },
-    {
-      resoureid: "resoure-03",
-      resourename: "172.16.4.76-shall",
-      resoureip: "172.16.4.76",
-      tag: ["智能运维平台","运维可视化","网络监控"],
-      Updatetime: "2019-08-26 11:08:53",
-      status: "在线",
-      agent: true
-    },
-    ]
-  const sysuser = [
-    {
-      userId:'1',
-      name:'曲小蝶',
-      email:'123456@qq.com',
-      phone:'13768842220',
-      status: '有效',
-    },
-    {
-      userId:'2',
-      name:'张小枫',
-      email:'987654@qq.com',
-      phone:'17736612220',
-      status: '无效',
-    },
-    {
-      userId:'3',
-      name:'何光',
-      email:'654321@qq.com',
-      phone:'15564584555',
-      status: '有效',
-    },
-    ]
-    export const getFactoryTypes =  [{
-      key: '0',
-      name: '工厂',
-    }, {
-      key: '1',
-      name: '车间',
-    },
-    {
-      key: '2',
-      name: '工段',
-    }];
+];
+const ResourcesList = [
+  {
+    resoureid: 'resoure-01',
+    resourename: '172.16.4.76-oracle',
+    resoureip: '172.16.4.76',
+    tag: ['智能运维平台'],
+    Updatetime: '2019-08-26 11:08:53',
+    status: '在线',
+    agent: true,
+  },
+  {
+    resoureid: 'resoure-02',
+    resourename: '172.16.4.76-360',
+    resoureip: '172.16.4.76',
+    tag: ['智能运维平台', '运维可视化'],
+    Updatetime: '2019-08-26 11:08:53',
+    status: '在线',
+    agent: false,
+  },
+  {
+    resoureid: 'resoure-03',
+    resourename: '172.16.4.76-shall',
+    resoureip: '172.16.4.76',
+    tag: ['智能运维平台', '运维可视化', '网络监控'],
+    Updatetime: '2019-08-26 11:08:53',
+    status: '在线',
+    agent: true,
+  },
+];
+
+const DetailsList = [
+  {
+    detailsid: 'details-01',
+    grade: 0,
+    ackstatus: 1,
+    eliminate: 0,
+    category: '接口程序',
+    detailname: '进程异常行为',
+    notification: 1,
+    latesttime: '2019-08-26 11:08:53',
+    resoure: '172.16.4.76-shall',
+  },
+  {
+    detailsid: 'details-02',
+    grade: 1,
+    ackstatus: 0,
+    eliminate: 1,
+    category: '采集指标',
+    detailname: '敏感文件篡改',
+    notification: 0,
+    latesttime: '2019-08-26 11:08:53',
+    resoure: '172.16.4.76-shall',
+  },
+  {
+    detailsid: 'details-03',
+    grade: 2,
+    ackstatus: 0,
+    eliminate: 2,
+    category: 'KAFKA中间件',
+    detailname: '异常事件',
+    notification: 0,
+    latesttime: '2019-08-26 11:08:53',
+    resoure: '172.16.4.76-shall',
+  },
+];
+
+const sysuser = [
+  {
+    userId: '1',
+    name: '曲小蝶',
+    email: '123456@qq.com',
+    phone: '13768842220',
+    status: '有效',
+  },
+  {
+    userId: '2',
+    name: '张小枫',
+    email: '987654@qq.com',
+    phone: '17736612220',
+    status: '无效',
+  },
+  {
+    userId: '3',
+    name: '何光',
+    email: '654321@qq.com',
+    phone: '15564584555',
+    status: '有效',
+  },
+];
+export const getFactoryTypes = [
+  {
+    key: '0',
+    name: '工厂',
+  },
+  {
+    key: '1',
+    name: '车间',
+  },
+  {
+    key: '2',
+    name: '工段',
+  },
+];
 function getFakeCaptcha(req, res) {
   return res.json('captcha-xxx');
 }
@@ -541,88 +570,90 @@ export default {
 
   'GET /api/resouresList': ResourcesList,
 
+  'GET /api/detailsList': DetailsList,
+
   // MOCK菜单与权限
   'GET /api/sysmenus': [
     {
-      "path": "/user/login",
-      "name": "login",
-      "locale": "menu.login",
-      "exact": "true",
-      "hideInMenu": "true",
-      "authority":"" ,
-    }, 
+      path: '/user/login',
+      name: 'login',
+      locale: 'menu.login',
+      exact: 'true',
+      hideInMenu: 'true',
+      authority: '',
+    },
     {
-      "path": "/user/register",
-      "name": "register",
-      "exact": "true",
-      "locale": "menu.register",
-      "hideInMenu": "true",
-      "authority":"" ,
-    }, 
+      path: '/user/register',
+      name: 'register',
+      exact: 'true',
+      locale: 'menu.register',
+      hideInMenu: 'true',
+      authority: '',
+    },
     {
-      "path": "/user/register-result",
-      "name": "register-result",
-      "exact": "true",
-      "locale": "menu.register",
-      "hideInMenu": "true",
-      "authority":"" ,
-    },           
-     {
-      "path": "/automation",
-      "name": "automation",
-      "dynamic": "true",
-      "icon": "form",
-      "locale": "menu.automation",
-      "authority":"admin" ,
-      "children":[
+      path: '/user/register-result',
+      name: 'register-result',
+      exact: 'true',
+      locale: 'menu.register',
+      hideInMenu: 'true',
+      authority: '',
+    },
+    {
+      path: '/automation',
+      name: 'automation',
+      dynamic: 'true',
+      icon: 'form',
+      locale: 'menu.automation',
+      authority: 'admin',
+      children: [
         {
-          "path": "/automation/monitor", 
-          "name": "monitor", 
-          "icon": "dashboard",
-          "exact": "true",
-          "locale": "menu.automation.monitor",
-          "authority":"admin" 
+          path: '/automation/monitor',
+          name: 'monitor',
+          icon: 'dashboard',
+          exact: 'true',
+          locale: 'menu.automation.monitor',
+          authority: 'admin',
         },
         {
-          "path": "/automation/opsscene",
-          "name": "opsscene",
-          "icon": "control",
-          "exact": "true",
-          "locale": "menu.automation.opsscene",
-          "authority":"admin" 
+          path: '/automation/opsscene',
+          name: 'opsscene',
+          icon: 'control',
+          exact: 'true',
+          locale: 'menu.automation.opsscene',
+          authority: 'admin',
         },
         {
-          "path": "/automation/scriptmanage",
-          "name": "scriptmanage",
-          "icon": "database",
-          "exact": "true",
-          "locale": "menu.automation.scriptmanage",
-          "authority":"admin" 
+          path: '/automation/scriptmanage',
+          name: 'scriptmanage',
+          icon: 'database',
+          exact: 'true',
+          locale: 'menu.automation.scriptmanage',
+          authority: 'admin',
         },
         {
-          "path": "/automation/jobexecut",
-          "name": "jobexecut",
-          "icon": "profile",
-          "exact": "true",
-          "locale": "menu.automation.joblist",
-          "authority":"admin" 
+          path: '/automation/jobexecut',
+          name: 'jobexecut',
+          icon: 'profile',
+          exact: 'true',
+          locale: 'menu.automation.joblist',
+          authority: 'admin',
         },
         {
-          "path": "/automation/timedjob",
-          "name": "timedjob",
-          "icon": "history",
-          "exact": "true",
-          "locale": "menu.automation.timedjob",
-          "authority":"user" 
+          path: '/automation/timedjob',
+          name: 'timedjob',
+          icon: 'history',
+          exact: 'true',
+          locale: 'menu.automation.timedjob',
+          authority: 'user',
         },
         {
-          "path": "/automation/resourcemanage",
-          "name": "resourcemanage",
-          "icon": "cloud-server",
-          "exact": "true",
-          "locale": "menu.automation.resourcemanage"
-        }
-      ]
-     }
-],
+          path: '/automation/resourcemanage',
+          name: 'resourcemanage',
+          icon: 'cloud-server',
+          exact: 'true',
+          locale: 'menu.automation.resourcemanage',
+        },
+      ],
+    },
+  ],
 };

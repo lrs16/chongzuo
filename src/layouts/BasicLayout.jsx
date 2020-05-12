@@ -104,13 +104,13 @@ const BasicLayout = props => {
    * constructor
    */
 
-  // useEffect(() => {
-  //   if (dispatch) {
-  //     dispatch({
-  //       type: 'user/fetchCurrent',
-  //     });
-  //   }
-  // }, []);
+  useEffect(() => {
+    if (dispatch) {
+      dispatch({
+        type: 'user/fetchCurrent',
+      });
+    }
+  }, []);
   /**
    * init variables
    */
@@ -179,7 +179,7 @@ const BasicLayout = props => {
       // footerRender={footerRender}
       menuDataRender={menuDataRender}
       formatMessage={formatMessage}
-      // rightContentRender={rightProps => <RightContent {...rightProps} />}
+      rightContentRender={rightProps => <RightContent {...rightProps} />}
       {...props}
       {...settings}
       disableContentMargin

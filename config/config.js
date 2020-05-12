@@ -75,13 +75,18 @@ export default {
   routes: [
     {
       path: '/user',
-      component: '../layouts/UserLayout',
+      component: '../layouts/LoginLayout',
       routes: [
         {
           name: 'login',
           path: '/user/login',
           component: './user/login',
         },
+        // {
+        //   name: 'login',
+        //   path: '/user/login',
+        //   component: './user/login/Mylogin',
+        // },
       ],
     },
     {
@@ -110,7 +115,8 @@ export default {
               icon: 'crown',
               component: './Admin',
               authority: ['admin'],
-            }, //自动化运维
+            },
+            //自动化运维
             {
               path: '/automation',
               name: 'automation',
@@ -124,25 +130,25 @@ export default {
                 {
                   path: '/automation/monitor',
                   name: 'monitor',
-                  icon: 'dashboard',
+                  // icon: 'dashboard',
                   component: './Automation/Monitor',
                 },
                 {
                   path: '/automation/opsscene',
                   name: 'opsscene',
-                  icon: 'control',
+                  // icon: 'control',
                   component: './Automation/OpsScene',
                 },
                 {
                   path: '/automation/workflow',
                   name: 'workflow',
-                  icon: 'control',
+                  // icon: 'control',
                   component: './Automation/WorkFlow',
                 },
                 {
                   path: '/automation/jobexecut',
                   name: 'joblist',
-                  icon: 'profile',
+                  // icon: 'profile',
                   component: './Automation/JobExecut',
                 },
                 {
@@ -154,65 +160,82 @@ export default {
                 {
                   path: '/automation/timedjob',
                   name: 'timedjob',
-                  icon: 'history',
+                  // icon: 'history',
                   dynamic: true,
                   component: './Automation/TimedJob',
                 },
                 {
                   path: '/automation/scriptmanage',
                   name: 'scriptmanage',
-                  icon: 'database',
+                  // icon: 'database',
                   component: './Automation/ScriptManage',
                 },
                 {
                   path: '/automation/resourcemanage',
                   name: 'resourcemanage',
-                  icon: 'cloud-server',
+                  // icon: 'cloud-server',
                   component: './Automation/ResourceManage',
                 },
               ],
-            }, //业务监控
+            },
+            //监测管理
             {
-              path: '/measurmonitor',
-              name: 'measurmonitor',
+              path: '/monitormanage',
+              name: 'monitormanage',
               icon: 'interaction',
               routes: [
                 {
-                  path: '/measurmonitor',
-                  redirect: '/measurmonitor/home',
+                  path: '/monitormanage',
+                  redirect: '/monitormanage/home',
                 },
                 {
-                  path: '/measurmonitor/home',
+                  path: '/monitormanage/home',
                   name: 'measurhome',
-                  component: './MeasurMonitor',
+                  component: './Monitormanage',
                 },
                 {
-                  path: '/measurmonitor/collection',
-                  name: 'collection',
-                  component: './MeasurMonitor/Collection',
-                },
-                {
-                  path: '/measurmonitor/measurface',
-                  name: 'measurface',
-                  component: './MeasurMonitor/MeasurFace',
-                },
-                {
-                  path: '/measurmonitor/fafka',
-                  name: 'fafka',
-                  component: './MeasurMonitor/Fafak',
-                },
-                {
-                  path: '/measurmonitor/sysrunning',
-                  name: 'sysrunning',
-                  component: './MeasurMonitor/SysRunning',
-                },
-                {
-                  path: '/measurmonitor/databaseterminal',
-                  name: 'databaseterminal',
-                  component: './MeasurMonitor/DatabaseTerminal',
+                  path: '/monitormanage/measurmonitor',
+                  name: 'measurmonitor',
+                  routes: [
+                    {
+                      path: '/monitormanage/measurmonitor',
+                      redirect: '/monitormanage/measurmonitor/home',
+                    },
+                    {
+                      path: '/monitormanage/measurmonitor/home',
+                      name: 'measurhome',
+                      component: './Monitormanage/MeasurMonitor',
+                    },
+                    {
+                      path: '/monitormanage/measurmonitor/collection',
+                      name: 'collection',
+                      component: './Monitormanage/MeasurMonitor/Collection',
+                    },
+                    {
+                      path: '/monitormanage/measurmonitor/measurface',
+                      name: 'measurface',
+                      component: './Monitormanage/MeasurMonitor/MeasurFace',
+                    },
+                    {
+                      path: '/monitormanage/measurmonitor/fafka',
+                      name: 'fafka',
+                      component: './Monitormanage/MeasurMonitor/Fafak',
+                    },
+                    {
+                      path: '/monitormanage/measurmonitor/sysrunning',
+                      name: 'sysrunning',
+                      component: './Monitormanage/MeasurMonitor/SysRunning',
+                    },
+                    {
+                      path: '/monitormanage/measurmonitor/databaseterminal',
+                      name: 'databaseterminal',
+                      component: './Monitormanage/MeasurMonitor/DatabaseTerminal',
+                    },
+                  ],
                 },
               ],
             },
+
             {
               path: '/alarmmanage',
               name: 'alarmmanage',
@@ -435,6 +458,26 @@ export default {
       changeOrigin: true, // pathRewrite: {
       //   '^/server': '',
       // },
+      '/api-auth/': {
+        target: 'http://172.16.4.211:8800/', //登录
+        changeOrigin: true,
+        // pathRewrite: { '^/apiauth': '' }
+      },
+      '/api-upms/': {
+        target: 'http://172.16.4.211:8800/', //用户管理中心
+        changeOrigin: true,
+        // pathRewrite: { '^/apiauth': '' }
+      },
+      '/dveopsapi/': {
+        target: 'http://172.16.4.105:8081/', //脚本管理服务器地址
+        changeOrigin: true,
+        // pathRewrite: { '^/server': '' },
+      },
+      '/basicMonitor/': {
+        target: 'http://172.16.4.115:8889/', //监测管理
+        changeOrigin: true,
+        // pathRewrite: { '^/apiauth': '' }
+      },
     },
   },
 };

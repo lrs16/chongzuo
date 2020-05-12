@@ -107,12 +107,12 @@ export async function updateFakeList(params) {
 }
 
 // 向后台发送登录请求
-export async function fakeAccountLogin(params) {
-  return request('/api/login/account', {
-    method: 'POST',
-    data: params,
-  });
-}
+// export async function fakeAccountLogin(params) {
+//   return request('/api/login/account', {
+//     method: 'POST',
+//     data: params,
+//   });
+// }
 
 export async function fakeRegister(params) {
   return request('/api/register', {
@@ -125,9 +125,9 @@ export async function queryNotices(params = {}) {
   return request(`/api/notices?${stringify(params)}`);
 }
 
-export async function getFakeCaptcha(mobile) {
-  return request(`/api/captcha?mobile=${mobile}`);
-}
+// export async function getFakeCaptcha(mobile) {
+//   return request(`/api/captcha?mobile=${mobile}`);
+// }
 // 脚本管理列表数据请求
 export async function queryScriptListTable() {
   return request('/api/scriptlist');
@@ -136,4 +136,3 @@ export async function queryScriptListTable() {
 export async function queryFactoryTypes() {
   return request('/api/factoryTypes');
 }
-
