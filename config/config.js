@@ -453,31 +453,30 @@ export default {
   //   },
   // },
   proxy: {
-    '/api': {
-      target: 'http://localhost:8001/',
-      changeOrigin: true, // pathRewrite: {
-      //   '^/server': '',
-      // },
-      '/api-auth/': {
-        target: 'http://172.16.4.211:8800/', //登录
-        changeOrigin: true,
-        // pathRewrite: { '^/apiauth': '' }
-      },
-      '/api-upms/': {
-        target: 'http://172.16.4.211:8800/', //用户管理中心
-        changeOrigin: true,
-        // pathRewrite: { '^/apiauth': '' }
-      },
-      '/dveopsapi/': {
-        target: 'http://172.16.4.105:8081/', //脚本管理服务器地址
-        changeOrigin: true,
-        // pathRewrite: { '^/server': '' },
-      },
-      '/basicMonitor/': {
-        target: 'http://172.16.4.115:8889/', //监测管理
-        changeOrigin: true,
-        // pathRewrite: { '^/apiauth': '' }
-      },
+    // '/api': {
+    //   target: 'http://localhost:8001/',
+    //   changeOrigin: true, // pathRewrite: {
+    //   //   '^/server': '',
+    //    },
+    '/api-auth/': {
+      target: 'http://172.16.4.211:8800/', //登录
+      changeOrigin: true,
+      // pathRewrite: { '^/apiauth': '' }
+    },
+    '/api-upms/': {
+      target: 'http://172.16.4.211:8800/', //用户管理中心
+      changeOrigin: true,
+      // pathRewrite: { '^/apiauth': '' }
+    },
+    '/dveopsapi/': {
+      target: 'http://172.16.4.105:8081/', //脚本管理服务器地址
+      changeOrigin: true,
+      // pathRewrite: { '^/server': '' },
+    },
+    '/basicMonitor/': {
+      target: 'http://172.16.4.115:8889/', //监测管理
+      changeOrigin: true,
+      // pathRewrite: { '^/apiauth': '' }
     },
   },
 };
