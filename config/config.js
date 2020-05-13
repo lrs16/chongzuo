@@ -100,7 +100,6 @@ export default {
           routes: [
             {
               path: '/',
-              // redirect: '/automation/monitor',
               redirect: '/welcome',
             },
             {
@@ -312,83 +311,26 @@ export default {
                       component: './Alarmmanage/NotifyPerson',
                     },
                   ],
+                }
+              ]
+            },
+            {
+              path: '/collection',
+              name: '采控管理',
+              // icon: 'smile',
+              routes: [
+                {
+                  path: '/collection',
+                  redirect: '/collection/monitorConfig',
+                },
+                {
+                  path: '/collection/monitorConfig',
+                  name: '监控配置',
+                  icon: 'smile',
+                  component: './collection/monitorConfig',
                 },
               ],
             },
-            // {
-            //   path: '/monitor',
-            //   name: '监测管理',
-            //   icon: 'smile',
-            //   // authority: ['admin', 'user'],
-            //   routes: [
-            //     {
-            //       path: '/monitor',
-            //       redirect: '/monitor/hostlist',
-            //     },
-            //     {
-            //       name: '监测总览',
-            //       icon: 'smile',
-            //       path: '/monitor/hostlist',
-            //       // authority: ['Eadmin'],
-            //       component: './monitor/ListTableList',
-            //     },
-            //     {
-            //       name: '监控指标',
-            //       icon: 'smile',
-            //       // hideInMenu: true,
-            //       path: '/monitor/itemlist',
-            //       component: './monitor/TableList',
-            //     },
-            //     {
-            //       name: '监控数据',
-            //       icon: 'smile',
-            //       // hideInMenu: true,
-            //       path: '/monitor/historylist',
-            //       component: './monitor/History',
-            //     }
-            //   ],
-            // },
-            // {
-            //   path: '/event',
-            //   name: '告警管理',
-            //   icon: 'smile',
-            //   routes: [
-            //     {
-            //       path: '/event',
-            //       redirect: '/event/list',
-            //     },
-            //     {
-            //       path: '/event/list',
-            //       name: '监控事件',
-            //       icon: 'smile',
-            //       component: './event',
-            //     },
-            //   ],
-            // },
-            // {
-            //   path: '/agent',
-            //   name: '采控管理',
-            //   icon: 'smile',
-            //   routes: [
-            //     {
-            //       path: '/agent',
-            //       redirect: '/agent/cmdb',
-            //     },
-            //     {
-            //       path: '/agent/cmdb',
-            //       name: '监控配置',
-            //       icon: 'smile',
-            //       component: './agent/cmdb',
-            //     },
-            //     {
-            //       path: '/agent/listtablelist',
-            //       name: '查询表格',
-            //       icon: 'smile',
-            //       // hideInMenu: true,
-            //       component: './agent/cmdb/ListTableList',
-            //     },
-            //   ],
-            // },
             {
               component: './404',
             },
