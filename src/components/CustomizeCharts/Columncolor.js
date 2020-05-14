@@ -1,85 +1,68 @@
 /* eslint-disable react/prefer-stateless-function */
 import React, { Component } from 'react';
-import { Chart, Geom, Axis, Tooltip } from 'bizcharts';
+import { Chart, Geom, Axis, Tooltip, Guide, View } from 'bizcharts';
 
+const { Html } = Guide;
 class Columncolor extends Component {
   render() {
-    const { height, padding } = this.props;
-    const data = [
-      {
-        name: '南宁',
-        vote: 100,
-      },
-      {
-        name: '柳州',
-        vote: 80,
-      },
-      {
-        name: '桂林',
-        vote: 90,
-      },
-      {
-        name: '贵港',
-        vote: 60,
-      },
-      {
-        name: '玉林',
-        vote: 100,
-      },
-      {
-        name: '梧州',
-        vote: 100,
-      },
-      {
-        name: '钦州',
-        vote: 90,
-      },
-      {
-        name: '北海',
-        vote: 60,
-        pet: '0~60',
-      },
-      {
-        name: '防城港',
-        vote: 100,
-        pet: '100',
-      },
-      {
-        name: '河池',
-        vote: 100,
-        pet: '100',
-      },
-      {
-        name: '百色',
-        vote: 90,
-      },
-      {
-        name: '崇左',
-        vote: 60,
-      },
-    ];
+    const { height, padding, data } = this.props;
+
     const scale = {
       vote: {
         min: 0,
       },
     };
-    const colorSet = {
-      60: '#f04864',
-      100: '#4FAAEB',
-      80: '#4ecb73',
-      90: '#36cbcb',
-    };
     return (
       <div>
         <Chart data={data} padding={padding} scale={scale} forceFit height={height}>
-          <Axis name="vote" labels={null} title={null} line={null} tickLine={null} />
+          <Axis
+            name="完成率"
+            title={null}
+            line={null}
+            tickLine={null}
+            label={{
+              formatter: val => `${val}%`,
+            }}
+          />
+          <Axis
+            name="警戒值"
+            label={{
+              formatter: val => `${val}%`,
+            }}
+          />
+          <View data={data}>
+            <Geom type="line" position="name*警戒值" color="#ff0000" size={3} />
+          </View>
           <Geom
             type="interval"
-            position="name*vote"
+            position="name*完成率"
             // color={["name", ["#7f8da9", "#fec514", "#db4c3c", "#daf0fd"]]}
-            color={['vote', value => colorSet[value]]}
+            color={[
+              '完成率',
+              value => {
+                if (value <= 90.0) {
+                  return '#FF3703';
+                }
+                if (value > 90.0 && value < 100.0) {
+                  return '#faa51a';
+                }
+                if (value === 100) {
+                  return '#3ba1ff';
+                }
+              },
+            ]}
           />
           <Tooltip />
+          <Geom type="line" position="label*警戒值" color="#ff0000" size={3} />
+
+          <Guide>
+            <Html
+              position={['100%', '9%']}
+              html={`<div style="text-align: center;"><span style="color:red;font-size:0.8em;">警戒值</span></div>`}
+              alignX="middle"
+              alignY="middle"
+            />
+          </Guide>
         </Chart>
       </div>
     );

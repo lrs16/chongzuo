@@ -1,0 +1,172 @@
+/* eslint-disable react/prefer-stateless-function */
+import React, { Component } from 'react';
+import { connect } from 'dva';
+import { Card, Table, Popconfirm, Button, Message, Divider, Badge } from 'antd';
+import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import RoleModal from './components/ReloModal';
+import RoleMenu from './components/RoleMenu';
+
+const statusMap = ['default', 'success'];
+const status = ['停用', '启用'];
+@connect(({ upmsrole, loading }) => ({
+  upmsrole,
+  loading: loading.models.upmsrole,
+}))
+class RoleManage extends Component {
+  componentDidMount() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'upmsrole/fetchdatas',
+    });
+  }
+
+  render() {
+    const reload = () => {
+      const { dispatch } = this.props;
+      dispatch({
+        type: 'upmsrole/fetchdatas',
+      });
+    };
+
+    const handleUpdate = values => {
+      const { dispatch } = this.props;
+      return dispatch({
+        type: 'upmsrole/update',
+        payload: values,
+      }).then(res => {
+        if (res.code === 200) {
+          Message.success(res.msg);
+          reload();
+        } else {
+          Message.error('添加角色失败');
+        }
+      });
+    };
+    const handleEdite = values => {
+      const { dispatch } = this.props;
+      return dispatch({
+        type: 'upmsrole/edite',
+        payload: values,
+      }).then(res => {
+        if (res.code === 200) {
+          Message.success(res.msg);
+          reload();
+        } else {
+          Message.error('更新菜单失败');
+        }
+      });
+    };
+    const handleDelete = id => {
+      const { dispatch } = this.props;
+      return dispatch({
+        type: 'upmsrole/remove',
+        payload: { id },
+      }).then(res => {
+        if (res.code === 200) {
+          Message.success(res.msg);
+          reload();
+        } else {
+          Message.error('删除菜单失败');
+        }
+      });
+    };
+    const handleSearch = (values, pageinit) => {
+      const { dispatch } = this.props;
+      const { page, pagesize } = pageinit;
+      return dispatch({
+        type: 'upmsrole/search',
+        payload: values,
+      }).then(res => {
+        if (res.code === 200) {
+          Message.success(res.msg || '查询成功！');
+          reload();
+        } else {
+          Message.error('什么也没有查到！');
+        }
+      });
+    };
+
+    const loadroleMenu = id => {
+      const { dispatch } = this.props;
+      return dispatch({
+        type: 'upmsrole/updatemune',
+        payload: { id },
+      });
+    };
+
+    const columns = [
+      {
+        title: '角色代码',
+        dataIndex: 'roleCode',
+        key: 'roleCode',
+      },
+      {
+        title: '角色名',
+        dataIndex: 'roleName',
+        key: 'roleName',
+      },
+      {
+        title: '角色描述',
+        dataIndex: 'roleRemark',
+        key: 'roleRemark',
+      },
+      {
+        title: '启用状态',
+        dataIndex: 'roleStatus',
+        key: 'roleStatus',
+        render: (text, record) => (
+          <span>
+            <Badge status={statusMap[record.roleStatus]} text={status[record.roleStatus]} />
+          </span>
+        ),
+      },
+      {
+        title: '操作',
+        dataIndex: 'action',
+        key: 'action',
+        render: (text, record) => (
+          <div>
+            <RoleMenu
+              title="角色分配菜单权限"
+              record={record}
+              roleid={record.id}
+              loadMenu={() => loadroleMenu(record.id)}
+            >
+              <a type="link">菜单权限</a>
+            </RoleMenu>
+            <Divider type="vertical" />
+            <RoleModal onSumit={values => handleEdite(values)} title="编辑脚本" record={record}>
+              <a type="link">编辑</a>
+            </RoleModal>
+            <Divider type="vertical" />
+            <Popconfirm title="确定删除此菜单吗？" onConfirm={() => handleDelete(record.id)}>
+              <a type="link">删除</a>
+            </Popconfirm>
+          </div>
+        ),
+      },
+    ];
+    const {
+      upmsrole: { data },
+    } = this.props;
+    const dataSource = [...data];
+    return (
+      <PageHeaderWrapper title="角色管理">
+        <Card>
+          <RoleModal onSumit={handleUpdate}>
+            <Button
+              style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
+              type="dashed"
+              icon="plus"
+            >
+              新增角色
+            </Button>
+          </RoleModal>
+          <Table dataSource={dataSource} columns={columns} rowKey={record => record.id} />
+        </Card>
+      </PageHeaderWrapper>
+    );
+  }
+}
+
+export default RoleManage;

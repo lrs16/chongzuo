@@ -105,7 +105,6 @@ const BasicLayout = props => {
    */
 
   useEffect(() => {
-    console.log('加载了吗');
     if (dispatch) {
       dispatch({
         type: 'user/fetchCurrent',
@@ -135,7 +134,7 @@ const BasicLayout = props => {
   const routeData = props.route.routes;
   let leftRoute = {};
   routeData.map(item => {
-    if (item.path == path) {
+    if (item.path === path) {
       leftRoute = item;
     }
   });
@@ -191,7 +190,7 @@ const BasicLayout = props => {
         fixSiderbar
         headerRender={false}
         menuHeaderRender={false}
-        siderWidth={250}
+        siderWidth={240}
         navTheme="light"
         // onCollapse={handleMenuCollapse}
         menuItemRender={(menuItemProps, defaultDom) => {

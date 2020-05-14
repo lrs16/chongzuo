@@ -41,6 +41,8 @@ const GlobalHeaderRight = props => {
           console.log('enter', value);
         }}
       />
+      {/* 帮助
+      
       <Tooltip
         title={formatMessage({
           id: 'component.globalHeader.help',
@@ -54,7 +56,7 @@ const GlobalHeaderRight = props => {
         >
           <Icon type="question-circle-o" />
         </a>
-      </Tooltip>
+      </Tooltip> */}
       <Avatar />
       <SelectLang className={styles.action} />
     </div>

@@ -136,3 +136,8 @@ export async function queryScriptListTable() {
 export async function queryFactoryTypes() {
   return request('/api/factoryTypes');
 }
+
+// 请求组织，生成组织结构树
+export async function queryDeptTree() {
+  return request(`/api-upms/upms_dept/list`);
+}

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Drawer, Button } from 'antd';
+import MenuTransfer from './MenuTransfer';
 
 // 克隆子元素按钮，并添加事件
 const withClick = (element, showDrawer = () => {}) => {
@@ -50,7 +51,7 @@ class RoleMenu extends Component {
           visible={visible}
           bodyStyle={{ paddingBottom: 60 }}
         >
-          1231233123123
+          <MenuTransfer />
           <div
             style={{
               position: 'absolute',

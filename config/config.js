@@ -100,25 +100,25 @@ export default {
           routes: [
             {
               path: '/',
-              redirect: '/welcome',
+              redirect: '/monitormanage/home',
             },
-            {
-              path: '/welcome',
-              name: 'welcome',
-              icon: 'smile',
-              component: './Welcome',
-            },
-            {
-              path: '/admin',
-              name: 'admin',
-              icon: 'crown',
-              component: './Admin',
-              authority: ['admin'],
-            },
+            // {
+            //   path: '/welcome',
+            //   name: 'welcome',
+            //   icon: 'smile',
+            //   component: './Welcome',
+            // },
+            // {
+            //   path: '/admin',
+            //   name: 'admin',
+            //   icon: 'crown',
+            //   component: './Admin',
+            //   authority: ['admin'],
+            // },
             //自动化运维
             {
               path: '/automation',
-              name: 'automation',
+              name: '自动化运维',
               dynamic: true,
               icon: 'deployment-unit',
               routes: [
@@ -128,51 +128,51 @@ export default {
                 },
                 {
                   path: '/automation/monitor',
-                  name: 'monitor',
-                  // icon: 'dashboard',
+                  name: '脚本监控',
+                  icon: 'dashboard',
                   component: './Automation/Monitor',
                 },
                 {
                   path: '/automation/opsscene',
-                  name: 'opsscene',
-                  // icon: 'control',
+                  name: '运维场景',
+                  icon: 'control',
                   component: './Automation/OpsScene',
                 },
                 {
                   path: '/automation/workflow',
-                  name: 'workflow',
-                  // icon: 'control',
+                  name: '脚本编排',
+                  icon: 'control',
                   component: './Automation/WorkFlow',
                 },
                 {
                   path: '/automation/jobexecut',
-                  name: 'joblist',
-                  // icon: 'profile',
+                  name: '作业历史',
+                  icon: 'profile',
                   component: './Automation/JobExecut',
                 },
                 {
                   path: '/automation/viewjob/:id',
-                  name: 'viewjob',
+                  name: '作业详情',
                   hideInMenu: true,
                   component: './Automation/ViewJob',
                 },
                 {
                   path: '/automation/timedjob',
-                  name: 'timedjob',
-                  // icon: 'history',
+                  name: '定时作业',
+                  icon: 'history',
                   dynamic: true,
                   component: './Automation/TimedJob',
                 },
                 {
                   path: '/automation/scriptmanage',
-                  name: 'scriptmanage',
-                  // icon: 'database',
+                  name: '脚本管理',
+                  icon: 'database',
                   component: './Automation/ScriptManage',
                 },
                 {
                   path: '/automation/resourcemanage',
-                  name: 'resourcemanage',
-                  // icon: 'cloud-server',
+                  name: '资源管理',
+                  icon: 'cloud-server',
                   component: './Automation/ResourceManage',
                 },
               ],
@@ -180,7 +180,7 @@ export default {
             //监测管理
             {
               path: '/monitormanage',
-              name: 'monitormanage',
+              name: '监测管理',
               icon: 'interaction',
               routes: [
                 {
@@ -189,45 +189,47 @@ export default {
                 },
                 {
                   path: '/monitormanage/home',
-                  name: 'measurhome',
+                  name: '监控台',
+                  icon: 'cloud-server',
                   component: './Monitormanage',
                 },
                 {
                   path: '/monitormanage/measurmonitor',
-                  name: 'measurmonitor',
+                  name: '计量业务监控',
+                  icon: 'cloud-server',
                   routes: [
                     {
                       path: '/monitormanage/measurmonitor',
-                      redirect: '/monitormanage/measurmonitor/home',
+                      redirect: '/monitormanage/measurmonitor/collection',
                     },
-                    {
-                      path: '/monitormanage/measurmonitor/home',
-                      name: 'measurhome',
-                      component: './Monitormanage/MeasurMonitor',
-                    },
+                    // {
+                    //   path: '/monitormanage/measurmonitor/home',
+                    //   name: 'measurhome',
+                    //   component: './Monitormanage/MeasurMonitor',
+                    // },
                     {
                       path: '/monitormanage/measurmonitor/collection',
-                      name: 'collection',
+                      name: '采集指标情况',
                       component: './Monitormanage/MeasurMonitor/Collection',
                     },
                     {
                       path: '/monitormanage/measurmonitor/measurface',
-                      name: 'measurface',
+                      name: '接口数据核查情况',
                       component: './Monitormanage/MeasurMonitor/MeasurFace',
                     },
                     {
                       path: '/monitormanage/measurmonitor/fafka',
-                      name: 'fafka',
+                      name: 'KAFKA消费',
                       component: './Monitormanage/MeasurMonitor/Fafak',
                     },
                     {
                       path: '/monitormanage/measurmonitor/sysrunning',
-                      name: 'sysrunning',
+                      name: '主站系统运行',
                       component: './Monitormanage/MeasurMonitor/SysRunning',
                     },
                     {
                       path: '/monitormanage/measurmonitor/databaseterminal',
-                      name: 'databaseterminal',
+                      name: '终端工况和数据入库',
                       component: './Monitormanage/MeasurMonitor/DatabaseTerminal',
                     },
                   ],
@@ -237,7 +239,7 @@ export default {
 
             {
               path: '/alarmmanage',
-              name: 'alarmmanage',
+              name: '告警管理',
               icon: 'interaction',
               routes: [
                 {
@@ -246,23 +248,27 @@ export default {
                 },
                 {
                   path: '/alarmmanage/monitor',
-                  name: 'monitor',
+                  name: '告警监控台',
+                  icon: 'cloud-server',
                   component: './Alarmmanage',
                 },
                 {
                   path: '/alarmmanage/details',
-                  name: 'details',
+                  name: '告警明细信息',
+                  icon: 'cloud-server',
                   component: './Alarmmanage/Details',
                 },
                 {
                   path: '/alarmmanage/details/detailview/:detailsid',
                   name: 'detailview',
+                  icon: 'cloud-server',
                   hideInMenu: true,
                   component: './Alarmmanage/DetailView',
                 },
                 {
                   path: '/alarmmanage/syssetting',
-                  name: 'syssetting',
+                  icon: 'cloud-server',
+                  name: '系统警告设定',
                   component: './Alarmmanage/SysSetting',
                   routes: [
                     {
@@ -271,29 +277,30 @@ export default {
                     },
                     {
                       path: '/alarmmanage/syssetting/quotas',
-                      name: 'quotas',
+                      name: '业务指标警告设置',
                       component: './Alarmmanage/Quotas',
                     },
                     {
                       path: '/alarmmanage/syssetting/connector',
-                      name: 'connector',
+                      name: '接口告警设置',
                       component: './Alarmmanage/Connector',
                     },
                     {
                       path: '/alarmmanage/syssetting/KAFKA',
-                      name: 'KAFKA',
+                      name: 'KAFKA中间件告警设置',
                       component: './Alarmmanage/KAFKA',
                     },
                     {
                       path: '/alarmmanage/syssetting/sysrun',
-                      name: 'sysrun',
+                      name: '主站系统运行',
                       component: './Alarmmanage/SysRun',
                     },
                   ],
                 },
                 {
                   path: '/alarmmanage/noticesetting',
-                  name: 'noticesetting',
+                  icon: 'cloud-server',
+                  name: '告警通知设置',
                   component: './Alarmmanage/NoticeSetting',
                   routes: [
                     {
@@ -302,17 +309,57 @@ export default {
                     },
                     {
                       path: '/alarmmanage/noticesetting/notifygroup',
-                      name: 'notifygroup',
+                      name: '告警通知组设置',
                       component: './Alarmmanage/NotifyGroup',
                     },
                     {
                       path: '/alarmmanage/noticesetting/notifyperson',
-                      name: 'notifyperson',
+                      name: '告警联系人设置',
                       component: './Alarmmanage/NotifyPerson',
                     },
                   ],
-                }
-              ]
+                },
+              ],
+            },
+            {
+              path: '/sysmanage',
+              name: '系统管理',
+              icon: 'team',
+              routes: [
+                {
+                  path: '/sysmanage',
+                  redirect: '/sysmanage/menumanage',
+                },
+                {
+                  path: '/sysmanage/menumanage',
+                  icon: 'cloud-server',
+                  name: '菜单管理',
+                  component: './SysManage/MenuManage',
+                },
+                // {
+                //   path: '/sysmanage/usersmanage',
+                //   name: 'usersmanage',
+                //   component: './SysManage',
+                // },
+                {
+                  path: '/sysmanage/rolemanage',
+                  icon: 'cloud-server',
+                  name: '权限管理',
+                  component: './SysManage/RoleManage',
+                },
+                {
+                  path: '/sysmanage/authoritymanage',
+                  icon: 'cloud-server',
+                  name: '角色管理',
+                  component: './SysManage/authoritymanage',
+                },
+                {
+                  path: '/sysmanage/deptmanage',
+                  icon: 'cloud-server',
+                  name: '组织管理',
+                  component: './SysManage/DeptManage',
+                },
+              ],
             },
             {
               path: '/collection',
