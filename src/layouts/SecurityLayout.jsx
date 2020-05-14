@@ -13,23 +13,35 @@ class SecurityLayout extends React.Component {
     this.setState({
       isReady: true,
     });
-    const { dispatch } = this.props;
+    // const { dispatch } = this.props;
 
-    if (dispatch) {
-      dispatch({
-        type: 'user/fetchCurrent',
-      });
-    }
+    // if (dispatch) {
+    //   dispatch({
+    //     type: 'user/fetchCurrent',
+    //   });
+    // }
+    // this.getCurrent();
   }
+
+  // getCurrent=()=>{
+  //   const istoken = sessionStorage.getItem("access_token");
+  //   if (istoken) {
+  //     const {dispatch} = this.props;
+  //       dispatch({
+  //       type: 'user/fetchCurrent',
+  //     });
+  //     };
+  //   }
 
   render() {
     const { isReady } = this.state;
-    const { children, loading, currentUser } = this.props; // You can replace it to your authentication rule (such as check token exists)
+    const { children, loading } = this.props;
+    // const { children, loading, currentUser } = this.props; // You can replace it to your authentication rule (such as check token exists)
     // 你可以把它替换成你自己的登录认证规则（比如判断 token 是否存在）
 
-    const isLogin = currentUser && currentUser.userid;
-    // const isLogin = localStorage.getItem('accessToken') && true;
-    // const isLogin = localStorage.getItem('antd-pro-authority') !== null;
+    // const isLogin = currentUser && currentUser.userid;
+    // const isLogin = sessionStorage.getItem('access_token') && true;
+    const isLogin = sessionStorage.getItem('antd-pro-authority') !== null;
     // const isLogin = true;
     const queryString = stringify({
       redirect: window.location.href,

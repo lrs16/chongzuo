@@ -1,6 +1,7 @@
 import { routerRedux } from 'dva/router';
 import { stringify } from 'querystring';
 import { fakeAccountLogin, getFakeCaptcha } from '@/services/login';
+import { queryCurrent } from '@/services/user';
 import { setAuthority } from '@/utils/authority';
 import { getPageQuery } from '@/utils/utils';
 
@@ -8,18 +9,30 @@ const Model = {
   namespace: 'login',
   state: {
     status: undefined,
+    code: '',
+    currentAuthority: '',
   },
   effects: {
     *login({ payload }, { call, put }) {
       const response = yield call(fakeAccountLogin, payload);
-      yield put({
-        type: 'changeLoginStatus',
-        payload: response,
-      }); // Login successfully
+      sessionStorage.setItem('access_token', response.data.access_token);
+      sessionStorage.setItem('refresh_token', response.data.refresh_token);
+      sessionStorage.setItem('expires_in', response.data.expires_in);
+      // yield put({
+      //   type: 'changeLoginStatus',
+      //   payload: response,
+      // }); // Login successfully
 
-      if (response.access_token) {
-        localStorage.setItem('accessToken', response.access_token);
-        const urlParams = new URL(window.location.href);
+      if (response.code === 200) {
+        const userinfo = yield call(queryCurrent);
+        yield put({
+          type: 'changeLoginStatus',
+          payload: {
+            currentAuthority: userinfo.data.loginCode,
+            response,
+          },
+        });
+        const urlParams = new URL(window.location.href); // 本地记录路由
         const params = getPageQuery();
         let { redirect } = params;
 
@@ -47,6 +60,7 @@ const Model = {
     },
 
     *logout(_, { put }) {
+      sessionStorage.clear(); // sessionStorage
       const { redirect } = getPageQuery(); // redirect
 
       if (window.location.pathname !== '/user/login' && !redirect) {

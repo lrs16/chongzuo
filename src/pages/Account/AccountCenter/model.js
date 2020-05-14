@@ -1,4 +1,4 @@
-import { queryCurrent, queryFakeList } from './service';
+import { queryCurrent, queryFakeList } from '@/services/user';
 
 const Model = {
   namespace: 'accountAndAccountCenter',

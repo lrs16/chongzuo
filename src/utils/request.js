@@ -5,6 +5,7 @@
 import { extend } from 'umi-request';
 import { notification } from 'antd';
 import { async } from 'q';
+
 const codeMessage = {
   200: '服务器成功返回请求的数据。',
   201: '新建或修改数据成功。',
@@ -46,7 +47,6 @@ const errorHandler = error => {
     //     type: 'login/logout',
     //   });
     // }
-
   } else if (!response) {
     notification.error({
       description: '您的网络发生异常，无法连接服务器',
@@ -93,6 +93,32 @@ const request = extend({
 //   )
 
 // });
+// request拦截器, 改变url 或 options.
+request.interceptors.request.use(async (url, options) => {
+  const ctoken = sessionStorage.getItem('access_token');
+  if (ctoken) {
+    const headers = {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+      Authorization: `Bearer ${ctoken}`,
+      // 'access_token': ctoken
+    };
+    return {
+      url,
+      options: { ...options, headers },
+    };
+  }
+  const headers = {
+    'Content-Type': 'application/json',
+    Accept: 'application/json',
+    Authorization: `Bearer ${ctoken}`,
+    // 'access_token': ctoken
+  };
+  return {
+    url,
+    options: { ...options },
+  };
+});
 
 /**
  * 刷新token
@@ -105,17 +131,17 @@ async function refreshToken() {
   const result = await rq('/server/oauth/token', {
     method: 'POST',
     headers: {
-      'Authorization' : 'Basic YWNtZToxMjM0NTY=',
-      'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'
+      Authorization: 'Basic YWNtZToxMjM0NTY=',
+      'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
     },
-    data: 'grant_type:=refresh_token&refresh_token=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiJhZG1pbiIsInNjb3BlIjpbInNlcnZlciJdLCJhdGkiOiIzN2YyNzBhZC1iYTQzLTQ0ZjUtOTJkOC0wZTFhMTA5N2UxZTgiLCJleHAiOjE1Nzk2NTcyNDEsImF1dGhvcml0aWVzIjpbIkFETUlOIl0sImp0aSI6IjI2ZWFlYmIyLTE3MWQtNDU2Ni05MDYyLTQ2Y2FlMDIwN2VkNSIsImNsaWVudF9pZCI6ImFjbWUifQ.CfQoS37cGTZucBXQPmEyMlMpmNRsUVSGOfTjG7jjrF3V-mAPjUl9KUSVU48hWPnMc7qMpsLaqRsalI4s8jK5iEP6R97pCNL69da0pSTXy73Kj5pGzCQ5oHXwdgB18sG14QF75Wlwzt_kDoGfsobGyoacdKc4VyRtbvyKz3kQmvsyAKUT788oEdBtiEL8ty8gwkudpLBwSEquBmvTVSbsJb_WEm0DjE9P6eK3FUZOB5KoTFRlYvJ_4YTCW5A5imal6sGOFuPXAS2atknlXcblrcTfGVrSuC0SXwmMBFmyhvyjeGEyp-AY_cAb_N4axapUMiCBgDuz28VJO6NVVrUkaA',
+    data:
+      'grant_type:=refresh_token&refresh_token=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiJhZG1pbiIsInNjb3BlIjpbInNlcnZlciJdLCJhdGkiOiIzN2YyNzBhZC1iYTQzLTQ0ZjUtOTJkOC0wZTFhMTA5N2UxZTgiLCJleHAiOjE1Nzk2NTcyNDEsImF1dGhvcml0aWVzIjpbIkFETUlOIl0sImp0aSI6IjI2ZWFlYmIyLTE3MWQtNDU2Ni05MDYyLTQ2Y2FlMDIwN2VkNSIsImNsaWVudF9pZCI6ImFjbWUifQ.CfQoS37cGTZucBXQPmEyMlMpmNRsUVSGOfTjG7jjrF3V-mAPjUl9KUSVU48hWPnMc7qMpsLaqRsalI4s8jK5iEP6R97pCNL69da0pSTXy73Kj5pGzCQ5oHXwdgB18sG14QF75Wlwzt_kDoGfsobGyoacdKc4VyRtbvyKz3kQmvsyAKUT788oEdBtiEL8ty8gwkudpLBwSEquBmvTVSbsJb_WEm0DjE9P6eK3FUZOB5KoTFRlYvJ_4YTCW5A5imal6sGOFuPXAS2atknlXcblrcTfGVrSuC0SXwmMBFmyhvyjeGEyp-AY_cAb_N4axapUMiCBgDuz28VJO6NVVrUkaA',
   });
-  
-  if(result) {
-    localStorage.setItem('accessToken', result.access_token);
-    localStorage.setItem("refreshToken", refreshToken.refresh_token);
-  }
 
-};
+  if (result) {
+    sessionStorage.setItem('access_token', result.access_token);
+    sessionStorage.setItem('refresh_token', result.refresh_token);
+  }
+}
 
 export default request;

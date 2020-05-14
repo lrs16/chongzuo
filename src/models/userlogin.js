@@ -7,34 +7,33 @@ import { getPageQuery } from '@/utils/utils';
 import { reloadAuthorized } from '@/utils/Authorized';
 
 export default {
-  namespace: 'mylogin',
+  namespace: 'userlogin',
 
   state: {
     status: undefined,
+    currentAuthority: '',
+    code: '',
   },
 
   effects: {
-    *login({ payload }, { call, put }) {
-      console.log(payload);
+    *login({ payload }, { call, put, select }) {
       // 使用call（function，param）获取后台数据，后台返回结果存储在 response 里
       const response = yield call(fakeAccountLogin, payload); // yield call(调用后台接口的方法，传过去的参数)
+      sessionStorage.setItem('access_token', response.data.access_token);
+      sessionStorage.setItem('refresh_token', response.data.refresh_token);
+      sessionStorage.setItem('expires_in', response.data.expires_in);
+      const loginCode = yield select(state => state.user.currentUser.loginCode);
+
       // 获取服务端返回，存储数据
       yield put({
         type: 'changeLoginStatus',
-        payload: response,
+        payload: {
+          currentAuthority: loginCode,
+          response,
+        },
       });
       // 登入成功
-      if (response.code === '200') {
-        // localStorage.setItem("access_token", response.access_token);    // 将返回的token存储到localStorage
-        localStorage.setItem('access_token', response.data.access_token);
-        localStorage.setItem('refresh_token', response.data.refresh_token);
-        localStorage.setItem('expires_in', response.data.expires_in);
-        // const tokens ={
-        //   access_token: response.data.access_token,
-        //   refresh_token: response.data.refresh_token,
-        //   expires_in: response.data.expires_in
-        // };
-        // localStorage.setItem('tokens', JSON.stringify(tokens));
+      if (response.code === 200) {
         reloadAuthorized(); // 加载权限
         const urlParams = new URL(window.location.href); // 本地记录路由
         const params = getPageQuery(); // 获取参数
@@ -66,8 +65,8 @@ export default {
     },
     // 退出登录
     *logout(_, { put }) {
-      // localStorage.clear();  //清除全部localStorage
-      localStorage.removeItem('access_token');
+      sessionStorage.clear(); // sessionStorage
+      // sessionStorage .removeItem('access_token')
       yield put({
         type: 'changeLoginStatus',
         payload: {
@@ -101,7 +100,6 @@ export default {
         ...state,
         status: payload.status,
         type: payload.type,
-        access_token: payload.access_token,
       };
     },
   },

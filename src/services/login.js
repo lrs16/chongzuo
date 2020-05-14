@@ -20,15 +20,14 @@ export async function getFakeCaptcha(mobile) {
 
 // 向后台发送登录请求
 export async function fakeAccountLogin(params) {
-  return request('/api/login/account', {
-    // return request('/api-auth/oauth/user/token', {
+  // return request('/api/login/account', {
+  return request('/api-auth/oauth/user/token', {
     method: 'POST',
     data: params,
     headers: {
-      // 'Content-Type': 'application/x-www-form-urlencoded',
-      // 'Accept': 'application/json',
+      'Content-Type': 'application/x-www-form-urlencoded',
       Authorization: 'Basic d2ViQXBwOndlYkFwcA==',
     },
-    // requestType: 'form', // post request data type
+    requestType: 'form', // post request data type
   });
 }

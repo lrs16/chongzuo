@@ -105,6 +105,7 @@ const BasicLayout = props => {
    */
 
   useEffect(() => {
+    console.log('加载了吗');
     if (dispatch) {
       dispatch({
         type: 'user/fetchCurrent',
