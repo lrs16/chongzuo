@@ -17,7 +17,7 @@ class CardList extends PureComponent {
     dispatch({
       type: 'secenelist/fetch',
       payload: {
-        count: 11,
+        count: 2,
       },
     });
   }
@@ -28,11 +28,10 @@ class CardList extends PureComponent {
       loading,
     } = this.props;
 
-
     return (
       <PageHeaderWrapper title="运维场景">
         <div className={styles.cardList}>
-          <List
+          {/* <List
             rowKey="id"
             loading={loading}
             grid={{ gutter: 24, lg: 3, md: 2, sm: 1, xs: 1 }}
@@ -40,7 +39,7 @@ class CardList extends PureComponent {
             renderItem={item =>
               item ? (
                 <List.Item key={item.id}>
-                  <Card hoverable className={styles.card} actions={[<a>在执行数：50</a>, <a>已停止数：2</a>]}>
+                  <Card hoverable className={styles.card} actions={[<a href="/automation/workflow">作业编排：50</a>, <a>立即执行</a>, <a>查看报告</a>]}>
                     <Card.Meta
                       // avatar={<img alt="" className={styles.cardAvatar} src={item.avatar} />}
                       avatar={<Icon type={item.sceneicon} className={styles.cardAvatar} />}
@@ -63,6 +62,36 @@ class CardList extends PureComponent {
                 </List.Item>
               )
             }
+          /> */}
+          <List
+            rowKey="id"
+            loading={loading}
+            grid={{ gutter: 24, lg: 3, md: 2, sm: 1, xs: 1 }}
+            dataSource={[...list]}
+            renderItem={item => (
+              <List.Item key={item.id}>
+                <Card
+                  hoverable
+                  className={styles.card}
+                  actions={[
+                    <a href="/automation/workflow">作业编排：50</a>,
+                    <a>立即执行</a>,
+                    <a>查看报告</a>,
+                  ]}
+                >
+                  <Card.Meta
+                    // avatar={<img alt="" className={styles.cardAvatar} src={item.avatar} />}
+                    avatar={<Icon type={item.sceneicon} className={styles.cardAvatar} />}
+                    title={<a>{item.scenedetitle}</a>}
+                    description={
+                      <Ellipsis className={styles.item} lines={3}>
+                        {item.scenede}
+                      </Ellipsis>
+                    }
+                  />
+                </Card>
+              </List.Item>
+            )}
           />
         </div>
       </PageHeaderWrapper>

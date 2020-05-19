@@ -128,7 +128,7 @@ export default {
                 },
                 {
                   path: '/automation/monitor',
-                  name: '脚本监控',
+                  name: '作业总览',
                   icon: 'dashboard',
                   component: './Automation/Monitor',
                 },
@@ -137,6 +137,13 @@ export default {
                   name: '运维场景',
                   icon: 'control',
                   component: './Automation/OpsScene',
+                },
+                {
+                  path: '/automation/opsscene/workflow',
+                  name: '脚本编排',
+                  icon: 'control',
+                  hideInMenu: true,
+                  component: './Automation/WorkFlow',
                 },
                 {
                   path: '/automation/workflow',
@@ -151,30 +158,30 @@ export default {
                   component: './Automation/JobExecut',
                 },
                 {
-                  path: '/automation/viewjob/:id',
+                  path: '/automation/jobexecut/viewjob/:id',
                   name: '作业详情',
                   hideInMenu: true,
                   component: './Automation/ViewJob',
                 },
-                {
-                  path: '/automation/timedjob',
-                  name: '定时作业',
-                  icon: 'history',
-                  dynamic: true,
-                  component: './Automation/TimedJob',
-                },
+                // {
+                //   path: '/automation/timedjob',
+                //   name: '定时作业',
+                //   icon: 'history',
+                //   dynamic: true,
+                //   component: './Automation/TimedJob',
+                // },
                 {
                   path: '/automation/scriptmanage',
                   name: '脚本管理',
                   icon: 'database',
                   component: './Automation/ScriptManage',
                 },
-                {
-                  path: '/automation/resourcemanage',
-                  name: '资源管理',
-                  icon: 'cloud-server',
-                  component: './Automation/ResourceManage',
-                },
+                // {
+                //   path: '/automation/resourcemanage',
+                //   name: '资源管理',
+                //   icon: 'cloud-server',
+                //   component: './Automation/ResourceManage',
+                // },
               ],
             },
             //监测管理
@@ -194,46 +201,52 @@ export default {
                   component: './Monitormanage',
                 },
                 {
-                  path: '/monitormanage/measurmonitor',
-                  name: '计量业务监控',
+                  path: '/monitormanage/measurmonitor/collection',
+                  name: '采集指标情况',
                   icon: 'cloud-server',
-                  routes: [
-                    {
-                      path: '/monitormanage/measurmonitor',
-                      redirect: '/monitormanage/measurmonitor/collection',
-                    },
-                    // {
-                    //   path: '/monitormanage/measurmonitor/home',
-                    //   name: 'measurhome',
-                    //   component: './Monitormanage/MeasurMonitor',
-                    // },
-                    {
-                      path: '/monitormanage/measurmonitor/collection',
-                      name: '采集指标情况',
-                      component: './Monitormanage/MeasurMonitor/Collection',
-                    },
-                    {
-                      path: '/monitormanage/measurmonitor/measurface',
-                      name: '接口数据核查情况',
-                      component: './Monitormanage/MeasurMonitor/MeasurFace',
-                    },
-                    {
-                      path: '/monitormanage/measurmonitor/fafka',
-                      name: 'KAFKA消费',
-                      component: './Monitormanage/MeasurMonitor/Fafak',
-                    },
-                    {
-                      path: '/monitormanage/measurmonitor/sysrunning',
-                      name: '主站系统运行',
-                      component: './Monitormanage/MeasurMonitor/SysRunning',
-                    },
-                    {
-                      path: '/monitormanage/measurmonitor/databaseterminal',
-                      name: '终端工况和数据入库',
-                      component: './Monitormanage/MeasurMonitor/DatabaseTerminal',
-                    },
-                  ],
+                  component: './Monitormanage/MeasurMonitor/Collection',
                 },
+                {
+                  path: '/monitormanage/measurmonitor/measurface',
+                  name: '接口数据核查情况',
+                  icon: 'cloud-server',
+                  component: './Monitormanage/MeasurMonitor/MeasurFace',
+                },
+                {
+                  path: '/monitormanage/measurmonitor/fafka',
+                  name: 'KAFKA消费',
+                  icon: 'cloud-server',
+                  component: './Monitormanage/MeasurMonitor/Fafak',
+                },
+                {
+                  path: '/monitormanage/measurmonitor/sysrunning',
+                  name: '主站系统运行',
+                  icon: 'cloud-server',
+                  component: './Monitormanage/MeasurMonitor/SysRunning',
+                },
+                {
+                  path: '/monitormanage/measurmonitor/databaseterminal',
+                  name: '终端工况和数据入库',
+                  icon: 'cloud-server',
+                  component: './Monitormanage/MeasurMonitor/DatabaseTerminal',
+                },
+                // {
+                //   path: '/monitormanage/measurmonitor',
+                //   name: '计量业务监控',
+                //   icon: 'cloud-server',
+                //   routes: [
+                //     {
+                //       path: '/monitormanage/measurmonitor',
+                //       redirect: '/monitormanage/measurmonitor/collection',
+                //     },
+                //     // {
+                //     //   path: '/monitormanage/measurmonitor/home',
+                //     //   name: 'measurhome',
+                //     //   component: './Monitormanage/MeasurMonitor',
+                //     // },
+
+                //   ],
+                // },
               ],
             },
 

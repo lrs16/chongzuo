@@ -9,9 +9,9 @@ import ListDatabase from './components/ListDatabase';
 import style from './index.css';
 
 const { Search } = Input;
-@connect(({ hostmonitorlist, loading }) => ({
-  hostmonitorlist,
-  loading: loading.models.hostmonitorlist,
+@connect(({ monitorlist, loading }) => ({
+  monitorlist,
+  loading: loading.models.monitorlist,
 }))
 class index extends Component {
   constructor(props) {
@@ -22,11 +22,13 @@ class index extends Component {
   }
 
   componentDidMount() {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'hostmonitorlist/fetch',
-      payload: { current: 1, pageSize: 10 },
-    });
+    // const { dispatch } = this.props;
+    // dispatch({
+    //   type: 'monitorlist/fetchhost',
+    //   payload: { current: 1, pageSize: 10 },
+    // });
+    this.getDatabase();
+    this.getHost();
   }
 
   tabChoiced = id => {
@@ -36,14 +38,30 @@ class index extends Component {
     });
   };
 
+  getDatabase = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'monitorlist/fetchdatabase',
+      payload: { current: 1, pageSize: 10 },
+    });
+  };
+
+  getHost = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'monitorlist/fetchhost',
+      payload: { current: 1, pageSize: 10 },
+    });
+  };
+
   render() {
     // const isBox1Show = this.state.currentIndex == 1 ? 'block' : 'none';
     // const isbox2Show = this.state.currentIndex == 2 ? 'block' : 'none';
     const { currentIndex } = this.state;
 
-    const { hostmonitorlist = {} } = this.props;
-    const dataHost = hostmonitorlist.data;
-    console.log(dataHost);
+    const { monitorlist = {} } = this.props;
+    console.log(monitorlist.databaselist);
+    const dataHost = monitorlist.data;
     return (
       <div>
         <Row gutter={24} type="flex">
