@@ -90,21 +90,55 @@ const LineChartData = [
     警戒值: 27000,
   },
 ];
-const visitData = [];
-const beginDay = new Date().getTime();
-for (let i = 0; i < 20; i += 1) {
-  visitData.push({
-    x: moment(new Date(beginDay + 1000 * 60 * 60 * 24 * i)).format('YYYY-MM-DD'),
-    y: Math.floor(Math.random() * 100) + 10,
-  });
-}
-const salesData = [];
-for (let i = 0; i < 12; i += 1) {
-  salesData.push({
-    x: `${i + 1}月`,
-    y: Math.floor(Math.random() * 1000) + 200,
-  });
-}
+
+const Wholehour = [
+  {
+    day: '6',
+    value: 10000,
+    警戒值: 0,
+  },
+  {
+    day: '7',
+    value: 9800,
+    警戒值: 0,
+  },
+  {
+    day: '8',
+    value: 32000,
+    警戒值: 0,
+  },
+  {
+    day: '9',
+    value: 8600,
+    警戒值: 0,
+  },
+  {
+    day: '10',
+    value: 10556,
+    警戒值: 0,
+  },
+  {
+    day: '11',
+    value: 17560,
+    警戒值: 0,
+  },
+  {
+    day: '12',
+    value: 10660,
+    警戒值: 0,
+  },
+  {
+    day: '13',
+    value: 9650,
+    警戒值: 0,
+  },
+  {
+    day: '14',
+    value: 25000,
+    警戒值: 0,
+  },
+];
+
 class Collection extends Component {
   render() {
     return (
@@ -157,8 +191,6 @@ class Collection extends Component {
                 <Columncolor line height={275} data={ColumncolorData} padding={[30, 30, 30, 50]} />
               </ChartCard>
             </Col>
-          </Row>
-          <Row gutter={24} type="flex">
             <Col xl={12} lg={24} md={24} sm={24} xs={24} style={{ marginBottom: 24 }}>
               <ChartCard
                 title="自动抄表率"
@@ -183,6 +215,19 @@ class Collection extends Component {
                 contentHeight={275}
               >
                 <LineChart line height={275} data={LineChartData} padding={[30, 30, 30, 50]} />
+              </ChartCard>
+            </Col>
+            <Col xl={12} lg={24} md={24} sm={24} xs={24} style={{ marginBottom: 24 }}>
+              <ChartCard
+                title="关口整点采集"
+                action={
+                  <Tooltip title="指标说明">
+                    <Icon type="info-circle-o" />
+                  </Tooltip>
+                }
+                contentHeight={275}
+              >
+                <LineChart line height={275} data={Wholehour} padding={[30, 30, 30, 50]} />
               </ChartCard>
             </Col>
           </Row>

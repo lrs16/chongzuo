@@ -15,7 +15,7 @@ import {
   Util,
 } from 'bizcharts';
 
-const { Html } = Guide;
+// const { Html } = Guide;
 class LineChart extends Component {
   render() {
     const { height, padding, data } = this.props;
@@ -89,16 +89,19 @@ class LineChart extends Component {
             ]}
           />
           <View data={data}>
-            <Geom type="line" position="day*警戒值" color="#ff0000" size={3} />
+            <Geom type="line" position="day*警戒值" color="#ff0000" size={2} />
           </View>
-          <Guide>
+          <View data={data}>
+            <Geom type="line" position="day*Alerttop" color="#ff0000" size={2} />
+          </View>
+          {/* <Guide>
             <Html
               position={['100%', '9%']}
               html={`<div style="text-align: center;"><span style="color:red;font-size:0.8em;">警戒值</span></div>`}
               alignX="middle"
               alignY="middle"
             />
-          </Guide>
+          </Guide> */}
           {/* <Guide>
             <Line
               top // {boolean} 指定 guide 是否绘制在 canvas 最上层，默认为 false, 即绘制在最下层

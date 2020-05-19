@@ -112,7 +112,7 @@ class Login extends Component {
               name="username"
               placeholder={`${formatMessage({
                 id: 'user-login.login.userName',
-              })}: admin or user`}
+              })}: admin`}
               rules={[
                 {
                   required: true,
@@ -126,7 +126,7 @@ class Login extends Component {
               name="password"
               placeholder={`${formatMessage({
                 id: 'user-login.login.password',
-              })}: ant.design`}
+              })}: 1234.Com`}
               rules={[
                 {
                   required: true,

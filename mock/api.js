@@ -62,15 +62,7 @@ const user = [
   '谭小仪',
   '仲尼',
 ];
-const jobtitles = [
-  '软件安装',
-  '应用部署',
-  '云化管理',
-  '故障处理',
-  '巡检管理',
-  '备份管理',
-  '日常维护',
-];
+const jobtitles = ['计量业务巡检', '主机健康巡检'];
 const scenedes = [
   '在ansible管理节点上生成一对ssh密钥,并把管理节点的公钥拷贝给被管理节点。',
   '将截取IP地址的命令赋值给shell_cmd变量，然后通过ansible执行`echo $shell_cmd`命令打印出截取到的IP地址。',
@@ -89,7 +81,7 @@ function fakeList(count) {
       title: titles[i % 8],
       scenede: scenedes[i % 5],
       name: titles[i % 8],
-      scenedetitle: jobtitles[i % 7],
+      scenedetitle: jobtitles[i % 2],
       source: ['手动录入', '本地上传'][i % 2],
       application: ['业务应用系统', '业务系统', '测试导入'][i % 3],
       avatar: avatars[i % 8],

@@ -5,7 +5,6 @@ import numeral from 'numeral';
 import moment from 'moment';
 import { ChartCard, Field, MiniArea, MiniBar, MiniProgress } from '@/components/Charts';
 import Testcase from '@/components/CustomizeCharts/Testcase';
-import NumberInfo from '@/components/NumberInfo';
 import Trend from '@/components/Trend';
 // import GridContent from '@/components/PageHeaderWrapper/GridContent';
 
