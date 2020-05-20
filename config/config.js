@@ -374,18 +374,18 @@ export default {
                 },
               ],
             },
-            {
-              path: '/collection',
-              name: '采控管理',
-              // icon: 'smile',
+            {//采控管理
+              path: '/agent',
+              name: 'agent-manage',
+              icon: 'smile',
               routes: [
                 {
-                  path: '/collection',
-                  redirect: '/collection/monitorConfig',
+                  path: '/agent',
+                  redirect: '/agent/monitorConfig',
                 },
                 {
-                  path: '/collection/monitorConfig',
-                  name: '监控配置',
+                  path: '/agent/monitorConfig',
+                  name: 'monitor-config',
                   icon: 'smile',
                   component: './collection/monitorConfig',
                 },

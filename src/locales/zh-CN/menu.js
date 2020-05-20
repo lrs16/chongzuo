@@ -84,4 +84,6 @@ export default {
   'menu.alarmmanage.noticesetting': '告警通知设置',
   'menu.alarmmanage.noticesetting.notifygroup': '告警通知组设置',
   'menu.alarmmanage.noticesetting.notifyperson': '告警联系人设置',
+  'menu.agent-manage':'采控管理',
+  'menu.agent-manage.monitor-config':'监控配置',
 };
