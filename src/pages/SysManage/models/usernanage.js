@@ -4,24 +4,24 @@ export default {
   namespace: 'usermanage',
 
   state: {
-    list: [],
+    data: [],
   },
 
   effects: {
     *fetch({ payload }, { call, put }) {
       const response = yield call(queryUsers, payload);
       yield put({
-        type: 'save',
+        type: 'show',
         payload: response,
       });
     },
   },
 
   reducers: {
-    save(state, action) {
+    show(state, { payload }) {
       return {
         ...state,
-        list: action.payload,
+        ...payload,
       };
     },
   },

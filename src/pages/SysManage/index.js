@@ -29,9 +29,10 @@ class index extends Component {
   }
 
   render() {
-    const { usermanage = {} } = this.props;
-    const { list = [] } = usermanage;
-    const dataSource = [...list];
+    const {
+      usermanage: { data },
+    } = this.props;
+    const dataSource = [...data];
     const { getFieldDecorator } = this.props.form;
     return (
       <PageHeaderWrapper title="用户管理">

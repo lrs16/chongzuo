@@ -2,9 +2,9 @@
 import { stringify } from 'qs';
 import request from '@/utils/request';
 
-// 请求脚本列表
+// 请求用户列表
 export async function queryUsers() {
-  return request(`/api/usermanage`);
+  return request(`/api-upms//upms_user/list`);
 }
 
 export async function queryDatas() {

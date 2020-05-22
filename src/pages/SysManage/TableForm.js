@@ -101,7 +101,7 @@ class TableForm extends PureComponent {
         return;
       }
       const target = this.getRowByKey(key) || {};
-      if (!target.username || !target.name || !target.createdAt || !target.department) {
+      if (!target.userName || !target.createdAt || !target.department) {
         message.error('请填写完整成员信息。');
         e.target.focus();
         this.setState({
@@ -138,37 +138,23 @@ class TableForm extends PureComponent {
   render() {
     const columns = [
       {
-        title: '用户名',
-        dataIndex: 'username',
-        key: 'username',
-        render: (text, record) => {
-          if (record.editable) {
-            return (
-              <Input
-                value={text}
-                autoFocus
-                onChange={e => this.handleFieldChange(e, 'username', record.key)}
-                onKeyPress={e => this.handleKeyPress(e, record.key)}
-                placeholder="用户名"
-              />
-            );
-          }
-          return text;
-        },
+        title: '用户ID',
+        dataIndex: 'id',
+        key: 'id',
       },
       {
-        title: '姓名',
-        dataIndex: 'name',
-        key: 'name',
+        title: '用户名',
+        dataIndex: 'userName',
+        key: 'userName',
         render: (text, record) => {
           if (record.editable) {
             return (
               <Input
                 value={text}
                 autoFocus
-                onChange={e => this.handleFieldChange(e, 'name', record.key)}
+                onChange={e => this.handleFieldChange(e, 'userName', record.key)}
                 onKeyPress={e => this.handleKeyPress(e, record.key)}
-                placeholder="姓名"
+                placeholder="用户名"
               />
             );
           }
