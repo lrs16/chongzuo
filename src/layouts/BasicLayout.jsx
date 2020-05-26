@@ -3,17 +3,24 @@
  * You can view component api by:
  * https://github.com/ant-design/ant-design-pro-layout
  */
-import ProLayout, { DefaultFooter } from '@ant-design/pro-layout';
+import ProLayout from '@ant-design/pro-layout'; // , { DefaultFooter }
 import React, { useEffect } from 'react';
 import Link from 'umi/link';
 import { connect } from 'dva';
-import { Icon, Result, Button } from 'antd';
+import {
+  // Icon,
+  Result,
+  Button,
+} from 'antd';
 import { formatMessage } from 'umi-plugin-react/locale';
 import Authorized from '@/utils/Authorized';
 import RightContent from '@/components/GlobalHeader/RightContent';
-import { isAntDesignPro, getAuthorityFromRouter } from '@/utils/utils';
+import {
+  // isAntDesignPro,
+  getAuthorityFromRouter,
+} from '@/utils/utils';
 import logo from '../assets/logo.svg';
-import Layout from './BlankLayout';
+// import Layout from './BlankLayout';
 
 const noMatch = (
   <Result
@@ -33,36 +40,42 @@ const noMatch = (
  */
 const menuDataRender = menuList =>
   menuList.map(item => {
-    // const localItem = { ...item, children: item.children ? menuDataRender(item.children) : [] };
+    const localItem = { ...item, children: item.children ? menuDataRender(item.children) : [] };
+    // const localItem = { ...item, children: [] };
+    return Authorized.check(item.authority, localItem, null);
+  });
+
+const topMenuDataRender = menuList =>
+  menuList.map(item => {
     const localItem = { ...item, children: [] };
     return Authorized.check(item.authority, localItem, null);
   });
 
-const defaultFooterDom = (
-  <DefaultFooter
-    copyright="2020 运维平台"
-    links={[
-      {
-        key: 'Ant Design Pro',
-        title: 'Ant Design Pro',
-        href: 'https://pro.ant.design',
-        blankTarget: true,
-      },
-      {
-        key: 'github',
-        title: <Icon type="github" />,
-        href: 'https://github.com/ant-design/ant-design-pro',
-        blankTarget: true,
-      },
-      {
-        key: 'Ant Design',
-        title: 'Ant Design',
-        href: 'https://ant.design',
-        blankTarget: true,
-      },
-    ]}
-  />
-);
+// const defaultFooterDom = (
+//   <DefaultFooter
+//     copyright="2020 运维平台"
+//     links={[
+//       {
+//         key: 'Ant Design Pro',
+//         title: 'Ant Design Pro',
+//         href: 'https://pro.ant.design',
+//         blankTarget: true,
+//       },
+//       {
+//         key: 'github',
+//         title: <Icon type="github" />,
+//         href: 'https://github.com/ant-design/ant-design-pro',
+//         blankTarget: true,
+//       },
+//       {
+//         key: 'Ant Design',
+//         title: 'Ant Design',
+//         href: 'https://ant.design',
+//         blankTarget: true,
+//       },
+//     ]}
+//   />
+// );
 
 // const footerRender = () => {
 //   if (!isAntDesignPro()) {
@@ -98,7 +111,7 @@ const BasicLayout = props => {
     location = {
       pathname: '/',
     },
-    menuData,
+    // menuData,
   } = props;
   /**
    * constructor
@@ -115,14 +128,14 @@ const BasicLayout = props => {
    * init variables
    */
 
-  const handleMenuCollapse = payload => {
-    if (dispatch) {
-      dispatch({
-        type: 'global/changeLayoutCollapsed',
-        payload,
-      });
-    }
-  }; // get children authority
+  // const handleMenuCollapse = payload => {
+  //   if (dispatch) {
+  //     dispatch({
+  //       type: 'global/changeLayoutCollapsed',
+  //       payload,
+  //     });
+  //   }
+  // }; // get children authority
 
   const authorized = getAuthorityFromRouter(props.route.routes, location.pathname || '/') || {
     authority: undefined,
@@ -136,7 +149,9 @@ const BasicLayout = props => {
   routeData.map(item => {
     if (item.path === path) {
       leftRoute = item;
+      return true;
     }
+    return false;
   });
 
   return (
@@ -177,7 +192,7 @@ const BasicLayout = props => {
       //     );
       // }}
       // footerRender={footerRender}
-      menuDataRender={menuDataRender}
+      menuDataRender={topMenuDataRender}
       formatMessage={formatMessage}
       rightContentRender={rightProps => <RightContent {...rightProps} />}
       {...props}
@@ -231,6 +246,6 @@ const BasicLayout = props => {
 };
 
 export default connect(({ global, settings }) => ({
-  // collapsed: global.collapsed,
+  collapsed: global.collapsed,
   settings,
 }))(BasicLayout);

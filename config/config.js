@@ -360,34 +360,31 @@ export default {
                   name: '权限管理',
                   component: './SysManage/RoleManage',
                 },
-                {
-                  path: '/sysmanage/authoritymanage',
-                  icon: 'cloud-server',
-                  name: '角色管理',
-                  component: './SysManage/authoritymanage',
-                },
+                // {
+                //   path: '/sysmanage/authoritymanage',
+                //   icon: 'cloud-server',
+                //   name: '角色管理',
+                //   component: './SysManage/authoritymanage',
+                // },
                 {
                   path: '/sysmanage/deptmanage',
                   icon: 'cloud-server',
                   name: '组织管理',
                   component: './SysManage/DeptManage',
                 },
-              ],
-            },
-            {//采控管理
-              path: '/agent',
-              name: 'agent-manage',
-              icon: 'smile',
-              routes: [
                 {
-                  path: '/agent',
-                  redirect: '/agent/monitorConfig',
-                },
-                {
-                  path: '/agent/monitorConfig',
-                  name: 'monitor-config',
+                  //采控管理
+                  path: '/sysmanage/agent',
+                  name: '采控管理',
                   icon: 'smile',
-                  component: './collection/monitorConfig',
+                  routes: [
+                    {
+                      path: '/sysmanage/agent/monitorConfig',
+                      name: '监控配置',
+                      icon: 'smile',
+                      component: './collection/monitorConfig',
+                    },
+                  ],
                 },
               ],
             },
