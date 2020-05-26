@@ -2,9 +2,9 @@
 import React, { Component } from 'react';
 import { Table, Badge } from 'antd';
 import Link from 'umi/link';
-import DrawerList from './DrawerList';
 import { MiniProgress } from '@/components/Charts';
 import numeral from 'numeral';
+import DrawerList from './DrawerList';
 
 const statusMap = ['default', 'processing'];
 const status = ['离线', '在线'];
@@ -26,6 +26,11 @@ class HostList extends Component {
         title: 'IP',
         dataIndex: 'ip',
         key: 'ip',
+      },
+      {
+        title: '数据库类型',
+        dataIndex: 'type',
+        key: 'type',
       },
       {
         title: '状态',

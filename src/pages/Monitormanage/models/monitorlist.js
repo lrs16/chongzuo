@@ -1,4 +1,4 @@
-import { querylisthost, querylistdatabase } from '../services/api';
+import { querylisthost, querylistdatabase, queryMonitorGroup } from '../services/api';
 
 export default {
   namespace: 'monitorlist',
@@ -9,12 +9,12 @@ export default {
     // pageSize:'',
     // total:'',
     databaselist: [],
+    monitorGroups: [],
   },
 
   effects: {
     *fetchhost({ payload: { current, pageSize } }, { call, put }) {
       const response = yield call(querylisthost, current, pageSize);
-      // console.log(response.data);
       yield put({
         type: 'save',
         payload: response.data,
@@ -23,9 +23,16 @@ export default {
 
     *fetchdatabase({ payload: { current, pageSize } }, { call, put }) {
       const response = yield call(querylistdatabase, current, pageSize);
-      // console.log(response.data);
       yield put({
         type: 'savedatabase',
+        payload: response.data,
+      });
+    },
+
+    *fetchMonitorGroup(_, { call, put }) {
+      const response = yield call(queryMonitorGroup);
+      yield put({
+        type: 'addMonitorGroup',
         payload: response.data,
       });
     },
@@ -46,6 +53,12 @@ export default {
         databaselist: data,
         total,
         current,
+      };
+    },
+    addMonitorGroup(state, { payload: data }) {
+      return {
+        ...state,
+        monitorGroups: data,
       };
     },
   },
