@@ -60,8 +60,8 @@ class index extends Component {
     const { currentIndex } = this.state;
 
     const { monitorlist = {} } = this.props;
-    console.log(monitorlist.databaselist);
     const dataHost = monitorlist.data;
+    const dataBase = monitorlist.databaselist;
     return (
       <div>
         <Row gutter={24} type="flex">
@@ -263,7 +263,7 @@ class index extends Component {
         )}
         {currentIndex === 2 && (
           <Card title="数据库监测列表" extra={<Search placeholder="请输入" />}>
-            <ListDatabase />
+            <ListDatabase datas={dataBase} />
           </Card>
         )}
       </div>

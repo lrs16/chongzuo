@@ -3,40 +3,11 @@ import React, { Component } from 'react';
 import { Table, Badge } from 'antd';
 import Link from 'umi/link';
 import DrawerList from './DrawerList';
+import { MiniProgress } from '@/components/Charts';
+import numeral from 'numeral';
 
-const dataSource = [
-  {
-    key: '1',
-    id: '101',
-    name: '冲值业务服务器',
-    ip: '172.16.0.0',
-    status: 1,
-    cpu: '80%',
-    RAM: '90%',
-    load: '0.7',
-    IOread: '0.05',
-    IOwrite: '0.05',
-    space: '18',
-    lock: '10',
-  },
-  {
-    key: '1',
-    id: '102',
-    name: '客服系统',
-    ip: '172.16.0.108',
-    status: 0,
-    cpu: '10%',
-    RAM: '15%',
-    load: '0.2',
-    IOread: '0.05',
-    IOwrite: '0.25',
-    space: '28',
-    lock: '6',
-  },
-];
-
-const statusMap = ['processing', 'default'];
-const status = ['在线', '离线'];
+const statusMap = ['default', 'processing'];
+const status = ['离线', '在线'];
 
 class HostList extends Component {
   render() {
@@ -68,33 +39,40 @@ class HostList extends Component {
       },
       {
         title: 'CPU使用率',
-        dataIndex: 'cpu',
-        key: 'cpu',
+        dataIndex: 'cpuUsage',
+        key: 'cpuUsage',
+        render: text => (
+          <span>
+            {numeral(text).format('0,0.00')}%
+            <MiniProgress percent={text} strokeWidth={8} target={80} />
+          </span>
+        ),
       },
       {
         title: '内存使用率',
-        dataIndex: 'RAM',
-        key: 'RAM',
-      },
-      {
-        title: '负载(15m)',
-        dataIndex: 'load',
-        key: 'load',
+        dataIndex: 'memoryUsage',
+        key: 'memoryUsage',
+        render: text => (
+          <span>
+            {numeral(text).format('0,0.00')}%
+            <MiniProgress percent={text} strokeWidth={8} target={80} />
+          </span>
+        ),
       },
       {
         title: 'IO读速率',
-        dataIndex: 'IOread',
-        key: 'IOread',
+        dataIndex: 'ioReadRate',
+        key: 'ioReadRate',
       },
       {
         title: 'IO写速率',
-        dataIndex: 'IOwrite',
-        key: 'IOwrite',
+        dataIndex: 'ioWriteRate',
+        key: 'ioWriteRate',
       },
       {
         title: '表空间数量',
-        dataIndex: 'space',
-        key: 'space',
+        dataIndex: 'tableSpace',
+        key: 'tableSpace',
         render: (text, record) => (
           <div>
             <DrawerList title="表空间详情" record={record} roleid={record.id}>
@@ -105,8 +83,8 @@ class HostList extends Component {
       },
       {
         title: '锁表数量',
-        dataIndex: 'lock',
-        key: 'lock',
+        dataIndex: 'lockTable',
+        key: 'lockTable',
         render: (text, record) => (
           <div>
             <DrawerList title="表空间详情" record={record} roleid={record.id}>
@@ -116,9 +94,10 @@ class HostList extends Component {
         ),
       },
     ];
+    const { datas } = this.props;
     return (
       <div>
-        <Table dataSource={dataSource} rowKey={record => record.id} columns={columns} />
+        <Table dataSource={datas} rowKey={record => record.id} columns={columns} />
       </div>
     );
   }

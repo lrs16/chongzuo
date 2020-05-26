@@ -22,21 +22,28 @@ export default {
     },
 
     *fetchdatabase({ payload: { current, pageSize } }, { call, put }) {
-      const response = yield call(querylisthost, current, pageSize);
+      const response = yield call(querylistdatabase, current, pageSize);
       // console.log(response.data);
       yield put({
-        type: 'save',
-        payload: { databaselist: response.data },
+        type: 'savedatabase',
+        payload: response.data,
       });
     },
   },
 
   reducers: {
-    save(state, { payload: { data, databaselist, total, current } }) {
+    save(state, { payload: { data, total, current } }) {
       return {
         ...state,
         data,
-        databaselist,
+        total,
+        current,
+      };
+    },
+    savedatabase(state, { payload: { data, total, current } }) {
+      return {
+        ...state,
+        databaselist: data,
         total,
         current,
       };
