@@ -109,10 +109,14 @@ export async function removeRole(id) {
   });
 }
 
+// 获取权限菜单
+export async function queryRolemenu(roleId) {
+  return request(`/api-upms/upms_role/${roleId}/MenuIds`);
+}
+
 // 分配权限菜单
-export async function queryRolemenu(id) {
-  const roleid = stringify(id);
-  return request(`/api-upms/upms_role/${roleid.replace(/id=/, '')}/MenuIds`, {
+export async function disposeRolemenu(roleId) {
+  return request(`/api-upms/upms_role/${roleId}/MenuIds`, {
     method: 'POST',
   });
 }

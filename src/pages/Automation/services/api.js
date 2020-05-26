@@ -19,14 +19,14 @@ export async function queryResources(params) {
 // 请求脚本例表
 
 export async function queryScriptlist(limit, pages) {
-  return request(`/oma/jobInfo/list?limit=${limit}&pages=${pages}`, {
+  return request(`/api-eai-job/oma/jobInfo/list?limit=${limit}&pages=${pages}`, {
     method: 'POST',
   });
 }
 
 // 请求脚本详情
 export async function queryScriptinfo(id) {
-  return request(`/oma/jobInfo/${id}`, {
+  return request(`/api-eai-job/oma/jobInfo/${id}`, {
     method: 'GET',
   });
 }

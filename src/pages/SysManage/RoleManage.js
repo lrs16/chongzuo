@@ -86,11 +86,12 @@ class RoleManage extends Component {
       });
     };
 
-    const loadroleMenu = id => {
+    const loadroleMenu = roleId => {
+      // const roleId =
       const { dispatch } = this.props;
       return dispatch({
-        type: 'upmsrole/updatemune',
-        payload: { id },
+        type: 'upmsrole/ruerymune',
+        payload: { roleId },
       });
     };
 
@@ -130,7 +131,7 @@ class RoleManage extends Component {
               title="角色分配菜单权限"
               record={record}
               roleid={record.id}
-              loadMenu={() => loadroleMenu(record.id)}
+              loadMenu={() => loadroleMenu(roleId)}
             >
               <a type="link">菜单权限</a>
             </RoleMenu>

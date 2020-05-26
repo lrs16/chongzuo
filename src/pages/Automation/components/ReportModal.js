@@ -40,12 +40,12 @@ class ReportModal extends Component {
   render() {
     const download = (jobid, scriptName) => {
       const { dispatch } = this.props;
-      const fileName = `${scriptName}`;
+      const fileName = `${scriptName}.docx`;
       dispatch({
         type: 'download/newdownload',
         payload: { jobid },
       }).then(res => {
-        const blob = new Blob([res], { type: 'application/docx' });
+        const blob = new Blob([res]);
         const url = window.URL.createObjectURL(blob);
         // console.log(url);
         const a = document.createElement('a');

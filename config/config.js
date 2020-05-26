@@ -179,153 +179,153 @@ export default {
                 // },
               ],
             },
-            {
-              path: '/monitormanage',
-              name: '监测管理',
-              icon: 'interaction',
-              routes: [
-                {
-                  path: '/monitormanage',
-                  redirect: '/monitormanage/home',
-                },
-                {
-                  path: '/monitormanage/home',
-                  name: '监控台',
-                  icon: 'cloud-server',
-                  component: './Monitormanage',
-                },
-                {
-                  path: '/monitormanage/measurmonitor/collection',
-                  name: '采集指标情况',
-                  icon: 'cloud-server',
-                  component: './Monitormanage/MeasurMonitor/Collection',
-                },
-                {
-                  path: '/monitormanage/measurmonitor/measurface',
-                  name: '接口数据核查情况',
-                  icon: 'cloud-server',
-                  component: './Monitormanage/MeasurMonitor/MeasurFace',
-                },
-                {
-                  path: '/monitormanage/measurmonitor/fafka',
-                  name: 'KAFKA消费',
-                  icon: 'cloud-server',
-                  component: './Monitormanage/MeasurMonitor/Fafak',
-                },
-                {
-                  path: '/monitormanage/measurmonitor/sysrunning',
-                  name: '主站系统运行',
-                  icon: 'cloud-server',
-                  component: './Monitormanage/MeasurMonitor/SysRunning',
-                },
-                {
-                  path: '/monitormanage/measurmonitor/databaseterminal',
-                  name: '终端工况和数据入库',
-                  icon: 'cloud-server',
-                  component: './Monitormanage/MeasurMonitor/DatabaseTerminal',
-                },
-                {
-                  path: '/monitormanage/measurmonitor',
-                  name: '计量业务监控',
-                  icon: 'cloud-server',
-                  routes: [
-                    {
-                      path: '/monitormanage/measurmonitor',
-                      redirect: '/monitormanage/measurmonitor/collection',
-                    },
-                    // {
-                    //   path: '/monitormanage/measurmonitor/home',
-                    //   name: 'measurhome',
-                    //   component: './Monitormanage/MeasurMonitor',
-                    // },
-                  ],
-                },
-              ],
-            },
-            {
-              path: '/alarmmanage',
-              name: '告警管理',
-              icon: 'interaction',
-              routes: [
-                {
-                  path: '/alarmmanage',
-                  redirect: '/alarmmanage/monitor',
-                },
-                {
-                  path: '/alarmmanage/monitor',
-                  name: '告警监控台',
-                  icon: 'cloud-server',
-                  component: './Alarmmanage',
-                },
-                {
-                  path: '/alarmmanage/details',
-                  name: '告警明细信息',
-                  icon: 'cloud-server',
-                  component: './Alarmmanage/Details',
-                },
-                {
-                  path: '/alarmmanage/details/detailview/:detailsid',
-                  name: 'detailview',
-                  icon: 'cloud-server',
-                  hideInMenu: true,
-                  component: './Alarmmanage/DetailView',
-                },
-                {
-                  path: '/alarmmanage/syssetting',
-                  icon: 'cloud-server',
-                  name: '系统警告设定',
-                  component: './Alarmmanage/SysSetting',
-                  routes: [
-                    {
-                      path: '/alarmmanage/syssetting',
-                      redirect: '/alarmmanage/syssetting/quotas',
-                    },
-                    {
-                      path: '/alarmmanage/syssetting/quotas',
-                      name: '业务指标警告设置',
-                      component: './Alarmmanage/Quotas',
-                    },
-                    {
-                      path: '/alarmmanage/syssetting/connector',
-                      name: '接口告警设置',
-                      component: './Alarmmanage/Connector',
-                    },
-                    {
-                      path: '/alarmmanage/syssetting/KAFKA',
-                      name: 'KAFKA中间件告警设置',
-                      component: './Alarmmanage/KAFKA',
-                    },
-                    {
-                      path: '/alarmmanage/syssetting/sysrun',
-                      name: '主站系统运行',
-                      component: './Alarmmanage/SysRun',
-                    },
-                  ],
-                },
-                {
-                  path: '/alarmmanage/noticesetting',
-                  icon: 'cloud-server',
-                  name: '告警通知设置',
-                  component: './Alarmmanage/NoticeSetting',
-                  routes: [
-                    {
-                      path: '/alarmmanage/noticesetting',
-                      redirect: '/alarmmanage/noticesetting/notifygroup',
-                    },
-                    {
-                      path: '/alarmmanage/noticesetting/notifygroup',
-                      name: '告警通知组设置',
-                      component: './Alarmmanage/NotifyGroup',
-                    },
-                    {
-                      path: '/alarmmanage/noticesetting/notifyperson',
-                      name: '告警联系人设置',
-                      component: './Alarmmanage/NotifyPerson',
-                    },
-                  ],
-                },
-              ],
-            },
+            // {
+            //   path: '/monitormanage',
+            //   name: '监测管理',
+            //   icon: 'interaction',
+            //   routes: [
+            //     {
+            //       path: '/monitormanage',
+            //       redirect: '/monitormanage/home',
+            //     },
+            //     {
+            //       path: '/monitormanage/home',
+            //       name: '监控台',
+            //       icon: 'cloud-server',
+            //       component: './Monitormanage',
+            //     },
+            //     {
+            //       path: '/monitormanage/measurmonitor/collection',
+            //       name: '采集指标情况',
+            //       icon: 'cloud-server',
+            //       component: './Monitormanage/MeasurMonitor/Collection',
+            //     },
+            //     {
+            //       path: '/monitormanage/measurmonitor/measurface',
+            //       name: '接口数据核查情况',
+            //       icon: 'cloud-server',
+            //       component: './Monitormanage/MeasurMonitor/MeasurFace',
+            //     },
+            //     {
+            //       path: '/monitormanage/measurmonitor/fafka',
+            //       name: 'KAFKA消费',
+            //       icon: 'cloud-server',
+            //       component: './Monitormanage/MeasurMonitor/Fafak',
+            //     },
+            //     {
+            //       path: '/monitormanage/measurmonitor/sysrunning',
+            //       name: '主站系统运行',
+            //       icon: 'cloud-server',
+            //       component: './Monitormanage/MeasurMonitor/SysRunning',
+            //     },
+            //     {
+            //       path: '/monitormanage/measurmonitor/databaseterminal',
+            //       name: '终端工况和数据入库',
+            //       icon: 'cloud-server',
+            //       component: './Monitormanage/MeasurMonitor/DatabaseTerminal',
+            //     },
+            //     {
+            //       path: '/monitormanage/measurmonitor',
+            //       name: '计量业务监控',
+            //       icon: 'cloud-server',
+            //       routes: [
+            //         {
+            //           path: '/monitormanage/measurmonitor',
+            //           redirect: '/monitormanage/measurmonitor/collection',
+            //         },
+            //         // {
+            //         //   path: '/monitormanage/measurmonitor/home',
+            //         //   name: 'measurhome',
+            //         //   component: './Monitormanage/MeasurMonitor',
+            //         // },
+            //       ],
+            //     },
+            //   ],
+            // },
+            // {
+            //   path: '/alarmmanage',
+            //   name: '告警管理',
+            //   icon: 'interaction',
+            //   routes: [
+            //     {
+            //       path: '/alarmmanage',
+            //       redirect: '/alarmmanage/monitor',
+            //     },
+            //     {
+            //       path: '/alarmmanage/monitor',
+            //       name: '告警监控台',
+            //       icon: 'cloud-server',
+            //       component: './Alarmmanage',
+            //     },
+            //     {
+            //       path: '/alarmmanage/details',
+            //       name: '告警明细信息',
+            //       icon: 'cloud-server',
+            //       component: './Alarmmanage/Details',
+            //     },
+            //     {
+            //       path: '/alarmmanage/details/detailview/:detailsid',
+            //       name: 'detailview',
+            //       icon: 'cloud-server',
+            //       hideInMenu: true,
+            //       component: './Alarmmanage/DetailView',
+            //     },
+            //     {
+            //       path: '/alarmmanage/syssetting',
+            //       icon: 'cloud-server',
+            //       name: '系统警告设定',
+            //       component: './Alarmmanage/SysSetting',
+            //       routes: [
+            //         {
+            //           path: '/alarmmanage/syssetting',
+            //           redirect: '/alarmmanage/syssetting/quotas',
+            //         },
+            //         {
+            //           path: '/alarmmanage/syssetting/quotas',
+            //           name: '业务指标警告设置',
+            //           component: './Alarmmanage/Quotas',
+            //         },
+            //         {
+            //           path: '/alarmmanage/syssetting/connector',
+            //           name: '接口告警设置',
+            //           component: './Alarmmanage/Connector',
+            //         },
+            //         {
+            //           path: '/alarmmanage/syssetting/KAFKA',
+            //           name: 'KAFKA中间件告警设置',
+            //           component: './Alarmmanage/KAFKA',
+            //         },
+            //         {
+            //           path: '/alarmmanage/syssetting/sysrun',
+            //           name: '主站系统运行',
+            //           component: './Alarmmanage/SysRun',
+            //         },
+            //       ],
+            //     },
+            //     {
+            //       path: '/alarmmanage/noticesetting',
+            //       icon: 'cloud-server',
+            //       name: '告警通知设置',
+            //       component: './Alarmmanage/NoticeSetting',
+            //       routes: [
+            //         {
+            //           path: '/alarmmanage/noticesetting',
+            //           redirect: '/alarmmanage/noticesetting/notifygroup',
+            //         },
+            //         {
+            //           path: '/alarmmanage/noticesetting/notifygroup',
+            //           name: '告警通知组设置',
+            //           component: './Alarmmanage/NotifyGroup',
+            //         },
+            //         {
+            //           path: '/alarmmanage/noticesetting/notifyperson',
+            //           name: '告警联系人设置',
+            //           component: './Alarmmanage/NotifyPerson',
+            //         },
+            //       ],
+            //     },
+            //   ],
+            // },
             {
               path: '/sysmanage',
               name: '系统管理',
@@ -365,20 +365,20 @@ export default {
                   name: '组织管理',
                   component: './SysManage/DeptManage',
                 },
-                {
-                  //采控管理
-                  path: '/sysmanage/agent',
-                  name: '采控管理',
-                  icon: 'smile',
-                  routes: [
-                    {
-                      path: '/sysmanage/agent/monitorConfig',
-                      name: '监控配置',
-                      icon: 'smile',
-                      component: './collection/monitorConfig',
-                    },
-                  ],
-                },
+                // {
+                //   //采控管理
+                //   path: '/sysmanage/agent',
+                //   name: '采控管理',
+                //   icon: 'smile',
+                //   routes: [
+                //     {
+                //       path: '/sysmanage/agent/monitorConfig',
+                //       name: '监控配置',
+                //       icon: 'smile',
+                //       component: './collection/monitorConfig',
+                //     },
+                //   ],
+                // },
               ],
             },
             {
@@ -460,8 +460,8 @@ export default {
       changeOrigin: true,
       // pathRewrite: { '^/apiauth': '' }
     },
-    '/oma/': {
-      target: 'http://172.16.4.211:8800/api-eai-job/', //脚本管理服务器地址,211正式，250测试
+    '/api-eai-job/oma/': {
+      target: 'http://172.16.4.211:8800/', //脚本管理服务器地址,211正式，250测试
       changeOrigin: true,
       // pathRewrite: { '^/server': '' },
     },

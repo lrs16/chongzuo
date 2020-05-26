@@ -27,13 +27,13 @@ class Home extends Component {
   render() {
     const download = (jobid, jobname) => {
       const { dispatch } = this.props;
-      const filename = `${jobname}`;
+      const filename = `${jobname}.docx`;
       dispatch({
         type: 'download/download',
         payload: { jobid },
       }).then(res => {
         // console.log(res);
-        const blob = new Blob([res], { type: 'application/docx' });
+        const blob = new Blob([res]);
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;

@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import Link from 'umi/link';
+// import Link from 'umi/link';
 import { Table, Card, Divider, Button, Message, Popconfirm } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ScriptDrawer from './components/ScriptDrawer';
-import DoJob from './components/DoJob';
+// import DoJob from './components/DoJob';
 
 @connect(({ scriptmanage, loading }) => ({
   scriptmanage,
@@ -42,67 +42,67 @@ class Script extends Component {
       });
     };
 
-    const handleAdd = values => {
-      const { dispatch } = this.props;
-      // console.log(values);
-      return dispatch({
-        type: 'scriptmanage/add',
-        payload: values,
-      }).then(res => {
-        if (res && res.status === '200') {
-          Message.success(res.msg);
-          reload();
-          return res;
-        }
-        Message.error('添加脚本失败');
-      });
-    };
-    const handlEdit = (id, value) => {
-      // console.log(value,id);
-      const { dispatch } = this.props;
-      return dispatch({
-        type: 'scriptmanage/edit',
-        payload: { id, value },
-      }).then(res => {
-        if (res && res.status === '200') {
-          Message.success(res.msg || '编辑脚本成功');
-          reload();
-        } else {
-          Message.error('编辑脚本失败');
-        }
-      });
-    };
-    const handleDelete = id => {
-      // console.log(value,id);
-      const { dispatch } = this.props;
-      return dispatch({
-        type: 'scriptmanage/remove',
-        payload: { id },
-      }).then(res => {
-        if (res && res.status === '200') {
-          Message.success(res.msg || '删除脚本成功');
-          reload();
-        } else {
-          Message.error('删除脚本失败');
-        }
-      });
-    };
-    const addJob = (id, value) => {
-      // console.log(value,id);
-      const { dispatch } = this.props;
-      return dispatch({
-        type: 'jobsmanage/dojob',
-        payload: { id, value },
-      }).then(res => {
-        // console.log(res)
-        if (res && res.status === '200') {
-          Message.success(res.msg || '快速执行作业成功');
-          reload();
-        } else {
-          Message.error('执行作业失败');
-        }
-      });
-    };
+    // const handleAdd = values => {
+    //   const { dispatch } = this.props;
+    //   // console.log(values);
+    //   return dispatch({
+    //     type: 'scriptmanage/add',
+    //     payload: values,
+    //   }).then(res => {
+    //     if (res && res.status === '200') {
+    //       Message.success(res.msg);
+    //       reload();
+    //       return res;
+    //     }
+    //     Message.error('添加脚本失败');
+    //   });
+    // };
+    // const handlEdit = (id, value) => {
+    //   // console.log(value,id);
+    //   const { dispatch } = this.props;
+    //   return dispatch({
+    //     type: 'scriptmanage/edit',
+    //     payload: { id, value },
+    //   }).then(res => {
+    //     if (res && res.status === '200') {
+    //       Message.success(res.msg || '编辑脚本成功');
+    //       reload();
+    //     } else {
+    //       Message.error('编辑脚本失败');
+    //     }
+    //   });
+    // };
+    // const handleDelete = id => {
+    //   // console.log(value,id);
+    //   const { dispatch } = this.props;
+    //   return dispatch({
+    //     type: 'scriptmanage/remove',
+    //     payload: { id },
+    //   }).then(res => {
+    //     if (res && res.status === '200') {
+    //       Message.success(res.msg || '删除脚本成功');
+    //       reload();
+    //     } else {
+    //       Message.error('删除脚本失败');
+    //     }
+    //   });
+    // };
+    // const addJob = (id, value) => {
+    //   // console.log(value,id);
+    //   const { dispatch } = this.props;
+    //   return dispatch({
+    //     type: 'jobsmanage/dojob',
+    //     payload: { id, value },
+    //   }).then(res => {
+    //     // console.log(res)
+    //     if (res && res.status === '200') {
+    //       Message.success(res.msg || '快速执行作业成功');
+    //       reload();
+    //     } else {
+    //       Message.error('执行作业失败');
+    //     }
+    //   });
+    // };
 
     const columns = [
       {

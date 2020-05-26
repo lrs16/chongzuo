@@ -68,9 +68,9 @@ class MenuManage extends Component {
         }
       });
     };
-    const handleSearch = (values, pageinit) => {
+    const handleSearch = values => {
       const { dispatch } = this.props;
-      const { page, pagesize } = pageinit;
+      // const { page, pagesize } = pageinit;
       return dispatch({
         type: 'upmsmenu/search',
         payload: values,

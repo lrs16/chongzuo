@@ -6,7 +6,7 @@ import request from '@/utils/request';
 //   return request(`/api/fake_list?${stringify(params)}`);
 // }
 export async function querySeceneList(limit, pages) {
-  return request(`/oma/scenario/list?limit=${limit}&pages=${pages}`, {
+  return request(`/api-eai-job/oma/scenario/list?limit=${limit}&pages=${pages}`, {
     method: 'POST',
   });
 }
@@ -47,22 +47,22 @@ export async function updateSeceneList(params) {
 }
 // 请求报告 ,第一步请求场景中的脚本，第二步根据脚本获取报告
 export async function querySeceneScript(id) {
-  return request(`/oma/scenario/layout/${id}`, {
+  return request(`/api-eai-job/oma/scenario/layout/${id}`, {
     method: 'POST',
   });
 }
 
 export async function queryReport(jobId) {
-  return request(`/oma/download/${jobId}/new`);
+  return request(`/api-eai-jobdownload/${jobId}/new`);
 }
 
 // 运维场景脚本执行历史
 export async function querySecenejoblist(jobId) {
-  return request(`/oma/job/history/${jobId}`);
+  return request(`/api-eai-job/oma/job/history/${jobId}`);
 }
 // 运维场景执行
 export async function execuSecene(scenarioId) {
-  return request(`/oma/scenario/execute/${scenarioId}`);
+  return request(`/api-eai-job/oma/scenario/execute/${scenarioId}`);
 }
 
 // 下载文档

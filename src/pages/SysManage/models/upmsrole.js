@@ -1,10 +1,18 @@
-import { queryRoleList, UpdateRole, removeRole, searchRole, queryRolemenu } from '../services/api';
+import {
+  queryRoleList,
+  UpdateRole,
+  disposeRolemenu,
+  removeRole,
+  searchRole,
+  queryRolemenu,
+} from '../services/api';
 
 export default {
   namespace: 'upmsrole',
 
   state: {
     data: [],
+    rolemenus: [],
   },
 
   effects: {
@@ -32,10 +40,19 @@ export default {
     *search({ payload }, { call }) {
       return yield call(searchRole, payload);
     },
-
     // 设置菜单权限
-    *updatemune({ payload }, { call }) {
-      return yield call(queryRolemenu, payload);
+    *disposemune({ payload: { roleId } }, { call }) {
+      return yield call(disposeRolemenu, roleId);
+    },
+
+    // 获取菜单权限
+    *ruerymune({ payload: { roleId } }, { call, put }) {
+      console.log(roleId);
+      const response = yield call(queryRoleList, roleId);
+      yield put({
+        type: 'menudatas',
+        payload: response,
+      });
     },
   },
 
@@ -44,6 +61,12 @@ export default {
       return {
         ...state,
         ...payload,
+      };
+    },
+    menudatas(state, action) {
+      return {
+        ...state,
+        rolemenus: action.payload,
       };
     },
   },
