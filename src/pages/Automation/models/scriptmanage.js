@@ -1,31 +1,42 @@
-import { queryScripts, AddScript, editScript, removeScript } from '../services/api';
+import {
+  queryScriptlist,
+  queryScriptinfo,
+  AddScript,
+  editScript,
+  removeScript,
+} from '../services/api';
 
 export default {
   namespace: 'scriptmanage',
 
   state: {
     data: [],
-    pageNumberInit: '',
-    pageSizeInit: '',
+    info: [],
   },
 
   effects: {
-    *fetch({ payload }, { call, put }) {
-      const response = yield call(queryScripts, payload);
-      yield put({
-        type: 'save',
-        payload: response,
-      });
-    },
-    // *fetch({payload: {pageNumberInit,pageSizeInit} }, { call, put}) {
-    //   // console.log(pageNumberInit, pageSizeInit);
-    //   const response = yield call(queryScriptlist,pageNumberInit, pageSizeInit);
-    //   // console.log(response);
+    // mock脚本列表接口
+    // *fetch({ payload }, { call, put }) {
+    //   const response = yield call(queryScripts, payload);
     //   yield put({
-    //     type: 'getData',
+    //     type: 'save',
     //     payload: response,
     //   });
     // },
+    *fetch({ payload: { limit, pages } }, { call, put }) {
+      const response = yield call(queryScriptlist, limit, pages);
+      yield put({
+        type: 'getData',
+        payload: response,
+      });
+    },
+    *fetchinfo({ payload: { id } }, { call, put }) {
+      const response = yield call(queryScriptinfo, id);
+      yield put({
+        type: 'getinfo',
+        payload: response,
+      });
+    },
     // 添加
     *add({ payload }, { call }) {
       return yield call(AddScript, payload);
@@ -56,6 +67,13 @@ export default {
       return {
         ...state,
         ...payload,
+      };
+    },
+
+    getinfo(state, action) {
+      return {
+        ...state,
+        info: action.payload.data,
       };
     },
   },

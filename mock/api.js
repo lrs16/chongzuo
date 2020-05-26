@@ -75,7 +75,7 @@ function fakeList(count) {
   const list = [];
   for (let i = 0; i < count; i += 1) {
     list.push({
-      id: `Script-${i}`,
+      id: `${i}`,
       scriptID: `Script-${i}`,
       owner: user[i % 10],
       title: titles[i % 8],
@@ -169,6 +169,29 @@ function postFakeList(req, res) {
 
   return res.json(result);
 }
+
+const reportdatas = [
+  {
+    id: 'report1',
+    title: '报告一',
+    href: 'https://gw.alipayobjects.com/zos/rmsportal/WdGqmHpayyMjiEhcKoVE.png',
+  },
+  {
+    id: 'report2',
+    title: '报告二',
+    href: 'https://gw.alipayobjects.com/zos/rmsportal/WdGqmHpayyMjiEhcKoVE.png',
+  },
+  {
+    id: 'report3',
+    title: '报告三',
+    href: 'https://gw.alipayobjects.com/zos/rmsportal/WdGqmHpayyMjiEhcKoVE.png',
+  },
+  {
+    id: 'report4',
+    title: '报告四',
+    href: 'https://gw.alipayobjects.com/zos/rmsportal/WdGqmHpayyMjiEhcKoVE.png',
+  },
+];
 
 function postScriptList(req, res) {
   const { /* url = '', */ body } = req;
@@ -559,6 +582,7 @@ export default {
 
   'GET /api/script': getFakeList,
   'POST /api/script': postScriptList,
+  'GET /api/report_list': reportdatas,
 
   'GET /api/resouresList': ResourcesList,
 

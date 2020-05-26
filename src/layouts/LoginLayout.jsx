@@ -25,11 +25,11 @@ const LoginLayout = props => {
     <div className={styles.container}>
       <div className={styles.content}>
         <div className={styles.login}>
-          <div className={styles.logintitle}>广西博联信息通讯技术有限公司</div>
           <div className={styles.loginlogo}>
             <img src={require('../../public/logo.png')} alt="" />
           </div>
           {children}
+          <div className={styles.logintitle}>广西博联信息通讯技术有限公司</div>
         </div>
       </div>
     </div>

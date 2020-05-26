@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { Form, Input, Drawer, Radio, Select, Upload, Button } from 'antd';
 import { element } from 'prop-types';
-import Cron from 'antd-cron';
+// import Cron from 'antd-cron';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -47,6 +47,8 @@ class ScriptModal extends Component {
     this.setState({
       visible: true,
     });
+    const id = this.props.scriptid;
+    this.props.fetchInof(id);
   };
 
   hanldleCancel = () => {
@@ -61,7 +63,7 @@ class ScriptModal extends Component {
         // 关闭弹窗
         this.hanldleCancel();
         // 传数据
-        this.props.onSumit(values);
+        // this.props.onSumit(values);
         // console.log(values);
       }
     });
@@ -79,9 +81,9 @@ class ScriptModal extends Component {
     }
   };
 
-  handleCron = value => {
-    console.log(value);
-  };
+  // handleCron = value => {
+  //   console.log(value);
+  // };
 
   // 本地上传内容写入文本框中
   getTextInfo = file => {
@@ -100,7 +102,14 @@ class ScriptModal extends Component {
     const { getFieldDecorator } = this.props.form;
     const required = true;
     // console.log(this.props.record);
-    const { id, name, application, source, status, subDescription, cron } = this.props.record;
+    const {
+      scriptId,
+      scriptName,
+      scriptType,
+      scriptSource,
+      scriptLanguage,
+      scriptContent,
+    } = this.props.record;
     return (
       <>
         {withClick(children, this.handleopenClick)}
@@ -113,50 +122,44 @@ class ScriptModal extends Component {
         >
           <Form {...formItemLayout}>
             <Form.Item label="脚本编码:">
-              {getFieldDecorator('id', {
-                initialValue: id,
+              {getFieldDecorator('scriptId', {
+                initialValue: scriptId,
               })(<Input placeholder="系统生成" disabled />)}
             </Form.Item>
             <Form.Item label="脚本名称:">
-              {getFieldDecorator('name', {
+              {getFieldDecorator('scriptName', {
                 rules: [
                   {
                     required,
                     message: '请输入脚本名称',
                   },
                 ],
-                initialValue: name,
+                initialValue: scriptName,
               })(<Input placeholder="请输入" />)}
             </Form.Item>
 
             <Form.Item label="脚本应用:">
-              {getFieldDecorator('application', {
+              {getFieldDecorator('scriptType', {
                 rules: [
                   {
                     required,
                     message: '请选择应用类型',
                   },
                 ],
-                initialValue: application,
-              })(
-                <Select>
-                  <Option value="业务应用系统">业务应用系统</Option>
-                  <Option value="业务系统">业务系统</Option>
-                  <Option value="测试导入">测试导入</Option>
-                </Select>,
-              )}
+                initialValue: scriptType,
+              })(<Input placeholder="请输入" />)}
             </Form.Item>
             <Form.Item label="脚本来源:" span={12}>
-              {getFieldDecorator('source', {
+              {getFieldDecorator('scriptSource', {
                 rules: [
                   {
                     required,
                     message: '请选择应用类型',
                   },
                 ],
-                initialValue: source,
+                initialValue: scriptSource,
               })(
-                <RadioGroup onChange={this.onChange}>
+                <RadioGroup>
                   <Radio value="手动录入">手动录入</Radio>
                   <Radio value="本地上传">本地上传</Radio>
                 </RadioGroup>,
@@ -175,29 +178,29 @@ class ScriptModal extends Component {
               )}
             </Form.Item>
             <Form.Item label="脚本类型：">
-              {getFieldDecorator('status', {
+              {getFieldDecorator('scriptLanguage', {
                 rules: [
                   {
                     required,
                     message: '请选脚本类型',
                   },
                 ],
-                initialValue: status,
+                initialValue: scriptLanguage,
               })(<Radio.Group options={statusoptions} />)}
             </Form.Item>
 
             <Form.Item label="脚本内容：">
-              {getFieldDecorator('subDescription', {
+              {getFieldDecorator('scriptContent', {
                 rules: [
                   {
                     required,
                     message: '请输入脚本',
                   },
                 ],
-                initialValue: subDescription,
+                initialValue: scriptContent,
               })(<TextArea rows="13" allowClear placeholder="脚本内容" />)}
             </Form.Item>
-            <Form.Item label="Cron:">
+            {/* <Form.Item label="Cron:">
               {getFieldDecorator('cron', {
                 rules: [
                   {
@@ -211,7 +214,7 @@ class ScriptModal extends Component {
                 // onChange={this.handleCron}
                 />,
               )}
-            </Form.Item>
+            </Form.Item> */}
           </Form>
           <div
             style={{
@@ -226,11 +229,11 @@ class ScriptModal extends Component {
             }}
           >
             <Button onClick={this.hanldleCancel} style={{ marginRight: 8 }}>
-              取消
+              关闭
             </Button>
-            <Button onClick={this.handleOk} type="primary">
+            {/* <Button onClick={this.handleOk} type="primary">
               提交
-            </Button>
+            </Button> */}
           </div>
         </Drawer>
       </>
@@ -239,6 +242,6 @@ class ScriptModal extends Component {
 }
 ScriptModal.defaultProps = {
   title: '新建脚本',
-  record: { name: '', application: '', source: '', status: '', subDescription: '', cron: '' },
+  record: { name: '', application: '', source: '', status: '', subDescription: '' },
 };
 export default Form.create()(ScriptModal);

@@ -1,21 +1,48 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Table, Card, Divider, Button, Message, Popconfirm } from 'antd';
+import Link from 'umi/link';
+import moment from 'moment';
+import { Table, Card, Badge, Button, Message, Popconfirm } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
-@connect(({ jobsmanage, loading }) => ({
-  jobsmanage,
-  loading: loading.models.jobsmanage,
+@connect(({ opsscenes, loading }) => ({
+  opsscenes,
+  loading: loading.models.opsscenes,
 }))
 class Home extends Component {
   componentDidMount() {
+    // console.log(this.props.location.state);
+    const { Jobid } = this.props.location.state;
     const { dispatch } = this.props;
     dispatch({
-      type: 'jobsmanage/fetch',
+      type: 'opsscenes/fetchjoblist',
+      payload: {
+        jobId: Jobid,
+        limit: 100,
+        pages: 0,
+      },
     });
   }
 
   render() {
+    const download = (jobid, jobname) => {
+      const { dispatch } = this.props;
+      const filename = `${jobname}`;
+      dispatch({
+        type: 'download/download',
+        payload: { jobid },
+      }).then(res => {
+        // console.log(res);
+        const blob = new Blob([res], { type: 'application/docx' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.click();
+        window.URL.revokeObjectURL(url);
+      });
+    };
+
     const columns = [
       {
         title: '编码',
@@ -23,55 +50,81 @@ class Home extends Component {
         key: 'id',
       },
       {
-        title: '作业名称',
+        title: '编排名称',
         dataIndex: 'name',
         key: 'name',
+        render: () => <span>{this.props.location.state.scriptName}</span>,
       },
       {
-        title: '执行状态',
-        dataIndex: 'state',
-        key: 'state',
+        title: '执行结果',
+        dataIndex: 'handleCode',
+        key: 'handleCode', // 200成功500失败
+        // render: (text, record) => (
+        //   <span>
+        //     <Badge status={statusMap[record.triggerCode]} text={status[record.triggerCode]} />
+        //   </span>
+        // ),
+        render: (text, record) => {
+          const statustext = record.handleCode === 200 ? '成功' : '失败';
+          const statusMap = record.handleCode === 200 ? 'success' : 'error';
+          return (
+            <span>
+              <Badge status={statusMap} text={statustext} />
+            </span>
+          );
+        },
       },
       {
         title: '开始时间',
-        dataIndex: 'starttime',
-        key: 'starttime',
+        dataIndex: 'triggerTime',
+        key: 'triggerTime',
+        render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
       },
       {
         title: '结束时间',
-        dataIndex: 'endtime',
-        key: 'endtime',
+        dataIndex: 'handleTime',
+        key: 'handleTime',
+        render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
       },
       {
         title: '启动方式',
         dataIndex: 'startingmode',
         key: 'startingmode',
+        render: () => <span>手动</span>,
       },
+      //  {
+      //   title: '总耗时(s)',
+      //   dataIndex: 'taking',
+      //   key: 'taking',
+      // },
       {
-        title: '总耗时(s)',
-        dataIndex: 'taking',
-        key: 'taking',
+        title: '操作',
+        dataIndex: 'action',
+        key: 'action',
+        render: (text, record) => {
+          const { scriptName } = this.props.location.state;
+          const downloadtext = record.handleCode === 200 ? '下载报告' : '';
+          // const myUrl = `http://172.16.4.211:8800/api-eai-job/oma/download/${record.id}/specify`;
+          return (
+            // <a
+            //   href={myUrl}
+            //   target="_blank"
+            //   rel="noopener noreferrer"
+            // >
+            // 下载报告</a>
+            <a onClick={() => download(record.id, scriptName)}>{downloadtext}</a>
+          );
+        },
       },
-      // {
-      //   title: '操作',
-      //   dataIndex: 'action',
-      //   key: 'action',
-      //   render: (text, record) => (
-      //     <div>
-      //       <Button type="link" href={`/automation/jobexecut/viewjob/${record.id}`}>查看详情</Button>
-      //       <Button type="link">删除</Button>
-      //     </div>
-      //   ),
-      // }
     ];
 
     const {
-      jobsmanage: { list },
+      opsscenes: { joblist },
     } = this.props;
-    const dataSource = [...list];
-
+    const dataSource = [...joblist];
+    const title = `${this.props.location.state.scenarioName}：脚本执行历史`;
     return (
-      <PageHeaderWrapper title="作业历史">
+      <PageHeaderWrapper title={title}>
         <Card>
           <Table dataSource={dataSource} rowKey={record => record.id} columns={columns} />
         </Card>

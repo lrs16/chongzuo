@@ -1,33 +1,63 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
-import { Card, Button, Icon, List, Avatar } from 'antd';
+import Link from 'umi/link';
+import { Card, Divider, Icon, List, Message, Button } from 'antd';
 import Ellipsis from '@/components/Ellipsis';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import ScenesDrawer from './components/ScenesDrawer';
+// import ScenesDrawer from './components/ScenesDrawer';   //打开新建场景抽屉
+import ReportModal from './components/ReportModal';
 
 import styles from './OpsScene.less';
 
-@connect(({ secenelist, loading }) => ({
-  secenelist,
-  loading: loading.models.secenelist,
+@connect(({ opsscenes, loading }) => ({
+  opsscenes,
+  loading: loading.models.opsscenes,
 }))
 class CardList extends PureComponent {
+  state = {
+    reportdata: [],
+  };
+
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
-      type: 'secenelist/fetch',
-      payload: {
-        count: 2,
-      },
+      type: 'opsscenes/fetch',
+      payload: { limit: 100, pages: 0 },
     });
   }
 
   render() {
+    const fetchreportlist = id => {
+      const { dispatch } = this.props;
+      dispatch({
+        type: 'opsscenes/fetchscript',
+        payload: { id },
+      }).then(() => {
+        this.setState({
+          reportdata: this.props.opsscenes.scriptlist,
+        });
+      });
+    };
+    const execuSecene = scenarioId => {
+      const { dispatch } = this.props;
+      dispatch({
+        type: 'opsscenes/execution',
+        payload: { scenarioId },
+      }).then(res => {
+        if (res.code === 200) {
+          Message.success(res.msg);
+        } else {
+          Message.error('执行失败！');
+        }
+      });
+    };
+
     const {
-      secenelist: { list },
+      opsscenes: { list },
       loading,
     } = this.props;
-
+    const dataSource = [...list];
+    const reportlist = this.state.reportdata;
     return (
       <PageHeaderWrapper title="运维场景">
         <div className={styles.cardList}>
@@ -64,28 +94,47 @@ class CardList extends PureComponent {
             }
           /> */}
           <List
-            rowKey="id"
+            // rowKey="scenarioId"
             loading={loading}
             grid={{ gutter: 24, lg: 3, md: 2, sm: 1, xs: 1 }}
-            dataSource={[...list]}
+            dataSource={dataSource}
             renderItem={item => (
-              <List.Item key={item.id}>
+              <List.Item key={item.scenarioId}>
                 <Card
                   hoverable
                   className={styles.card}
                   actions={[
-                    <a href="/automation/workflow">作业编排：50</a>,
-                    <a>立即执行</a>,
-                    <a>查看报告</a>,
+                    <Link
+                      to={{
+                        pathname: '/automation/opsscene/workflow',
+                        state: {
+                          scenarioId: item.scenarioId,
+                          scenarioName: item.scenarioName,
+                        },
+                      }}
+                    >
+                      脚本编排：{item.size}
+                    </Link>,
+                    <a onClick={() => execuSecene(item.scenarioId)}>立即执行</a>,
+                    <ReportModal
+                      sceneid={item.scenarioId}
+                      scenemane={item.scenarioName}
+                      datas={reportlist}
+                      fetchReport={() => {
+                        fetchreportlist(item.scenarioId);
+                      }}
+                    >
+                      <a type="link">查看报告</a>
+                    </ReportModal>,
                   ]}
                 >
                   <Card.Meta
                     // avatar={<img alt="" className={styles.cardAvatar} src={item.avatar} />}
                     avatar={<Icon type={item.sceneicon} className={styles.cardAvatar} />}
-                    title={<a>{item.scenedetitle}</a>}
+                    title={<a>{item.scenarioName}</a>}
                     description={
                       <Ellipsis className={styles.item} lines={3}>
-                        {item.scenede}
+                        {item.scenarioDesc}
                       </Ellipsis>
                     }
                   />

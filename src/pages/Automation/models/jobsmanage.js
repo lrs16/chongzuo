@@ -1,26 +1,34 @@
-import { queryJobs, DoJobs, queryBasicJobs} from '../services/api';
+import { queryJobs, queryWorks, DoJobs, queryBasicJobs } from '../services/api';
 
 export default {
   namespace: 'jobsmanage',
 
   state: {
     list: [],
+    worklist: [],
   },
 
   effects: {
-    *fetch({ payload }, { call, put }) {
-      const response = yield call(queryJobs, payload);
+    *fetchworks({ payload }, { call, put }) {
+      const response = yield call(queryWorks, payload);
       console.log(response);
       yield put({
-        type: 'save',
+        type: 'getworkdata',
         payload: response,
       });
     },
-    *dojob({ payload, }, { call}) {
-      return yield call(DoJobs,payload);
-       // console.log(payload);
-     },
-     *fetchBasic({ payload }, { call, put }) {
+    *fetchjobs({ payload }, { call, put }) {
+      const response = yield call(queryJobs, payload);
+      yield put({
+        type: 'getjobdata',
+        payload: response,
+      });
+    },
+    *dojob({ payload }, { call }) {
+      return yield call(DoJobs, payload);
+      // console.log(payload);
+    },
+    *fetchBasic({ payload }, { call, put }) {
       const response = yield call(queryBasicJobs, payload);
       yield put({
         type: 'show',
@@ -30,10 +38,16 @@ export default {
   },
 
   reducers: {
-    save(state, action) {
+    getworkdata(state, action) {
       return {
         ...state,
-        list: action.payload,
+        worklist: action.payload,
+      };
+    },
+    getjobdata(state, action) {
+      return {
+        ...state,
+        joblist: action.payload,
       };
     },
     show(state, { payload }) {
@@ -43,6 +57,4 @@ export default {
       };
     },
   },
-
-
 };

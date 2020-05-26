@@ -3,7 +3,7 @@
  * You can view component api by:
  * https://github.com/ant-design/ant-design-pro-layout
  */
-import ProLayout from '@ant-design/pro-layout'; // , { DefaultFooter }
+import ProLayout from '@ant-design/pro-layout'; // , { DefaultFooter }s
 import React, { useEffect } from 'react';
 import Link from 'umi/link';
 import { connect } from 'dva';
@@ -15,11 +15,10 @@ import {
 import { formatMessage } from 'umi-plugin-react/locale';
 import Authorized from '@/utils/Authorized';
 import RightContent from '@/components/GlobalHeader/RightContent';
-import {
+import { 
   // isAntDesignPro,
-  getAuthorityFromRouter,
-} from '@/utils/utils';
-import logo from '../assets/logo.svg';
+   getAuthorityFromRouter } from '@/utils/utils';
+import logo from '../../public/menulogo.png';
 // import Layout from './BlankLayout';
 
 const noMatch = (

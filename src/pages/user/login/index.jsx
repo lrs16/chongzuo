@@ -112,7 +112,7 @@ class Login extends Component {
               name="username"
               placeholder={`${formatMessage({
                 id: 'user-login.login.userName',
-              })}: admin`}
+              })}`}
               rules={[
                 {
                   required: true,
@@ -126,7 +126,7 @@ class Login extends Component {
               name="password"
               placeholder={`${formatMessage({
                 id: 'user-login.login.password',
-              })}: 1234.Com`}
+              })}`}
               rules={[
                 {
                   required: true,
@@ -202,9 +202,9 @@ class Login extends Component {
             />
           </Tab>
           <div>
-            <Checkbox checked={autoLogin} onChange={this.changeAutoLogin}>
+            {/* <Checkbox checked={autoLogin} onChange={this.changeAutoLogin}>
               <FormattedMessage id="user-login.login.remember-me" />
-            </Checkbox>
+            </Checkbox> */}
             <a
               style={{
                 float: 'right',

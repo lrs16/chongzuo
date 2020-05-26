@@ -1,17 +1,24 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
+import Link from 'umi/link';
 import { Card, Table, Button } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
-@connect(({ jobsmanage, loading }) => ({
-  jobsmanage,
-  loading: loading.models.jobsmanage,
+@connect(({ opsscenes, loading }) => ({
+  opsscenes,
+  loading: loading.models.opsscenes,
 }))
 class WorkFlow extends Component {
   componentDidMount() {
+    const { scenarioId } = this.props.location.state;
     const { dispatch } = this.props;
     dispatch({
-      type: 'jobsmanage/fetch',
+      type: 'opsscenes/fetchscript',
+      payload: {
+        id: scenarioId,
+        limit: 100,
+        pages: 0,
+      },
     });
   }
 
@@ -19,66 +26,60 @@ class WorkFlow extends Component {
     const columns = [
       {
         title: '编码',
-        dataIndex: 'id',
-        key: 'id',
+        dataIndex: 'detail.scriptId',
+        key: 'detail.scriptId',
       },
       {
-        title: '作业名称',
-        dataIndex: 'name',
-        key: 'name',
+        title: '编排名称',
+        dataIndex: 'detail.scriptName',
+        key: 'detail.scriptName',
       },
       {
-        title: '执行人',
-        dataIndex: 'runname',
-        key: 'runname',
+        title: '类型',
+        dataIndex: 'detail.scriptType',
+        key: 'detail.scriptType',
       },
       {
-        title: '执行状态',
-        dataIndex: 'state',
-        key: 'state',
+        title: '创建人',
+        dataIndex: 'detail.scriptAuthor',
+        key: 'detail.scriptAuthor',
       },
       {
-        title: '开始时间',
-        dataIndex: 'starttime',
-        key: 'starttime',
-      },
-      {
-        title: '结束时间',
-        dataIndex: 'endtime',
-        key: 'endtime',
-      },
-      {
-        title: '启动方式',
-        dataIndex: 'startingmode',
-        key: 'startingmode',
-      },
-      {
-        title: '总耗时(s)',
-        dataIndex: 'taking',
-        key: 'taking',
+        title: '最后修改人',
+        dataIndex: 'detail.scriptLastModifiedBy',
+        key: 'detail.scriptLastModifiedBy',
       },
       {
         title: '操作',
         dataIndex: 'action',
         key: 'action',
         render: (text, record) => (
-          <div>
-            <Button type="link" href="/automation/jobexecut">
-              作业历史
-            </Button>
-          </div>
+          // console.log(record.detail.xxlJobId)
+          <Link
+            to={{
+              pathname: '/automation/opsscene/jobexecut',
+              state: {
+                Jobid: record.detail.xxlJobId,
+                scenarioName: this.props.location.state.scenarioName,
+                scriptName: record.detail.scriptName,
+              },
+            }}
+          >
+            执行历史
+          </Link>
         ),
       },
     ];
 
     const {
-      jobsmanage: { list },
+      opsscenes: { scriptlist },
     } = this.props;
-    const dataSource = [...list];
+    const dataSource = [...scriptlist];
+    const title = `${this.props.location.state.scenarioName}：脚本编排`;
     return (
-      <PageHeaderWrapper title="脚本编排">
+      <PageHeaderWrapper title={title}>
         <Card>
-          <Table dataSource={dataSource} rowKey={record => record.id} columns={columns} />
+          <Table dataSource={dataSource} rowKey={record => record.uid} columns={columns} />
         </Card>
       </PageHeaderWrapper>
     );
