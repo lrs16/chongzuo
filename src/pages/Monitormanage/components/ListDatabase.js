@@ -1,7 +1,6 @@
 /* eslint-disable react/prefer-stateless-function */
 import React, { Component } from 'react';
-import { Table, Badge } from 'antd';
-import Link from 'umi/link';
+import { Table, Badge, Button } from 'antd';
 import { MiniProgress } from '@/components/Charts';
 import numeral from 'numeral';
 import DrawerList from './DrawerList';
@@ -11,6 +10,8 @@ const status = ['离线', '在线'];
 
 class HostList extends Component {
   render() {
+    const { onClick } = this.props;
+
     const columns = [
       {
         title: '名称',
@@ -18,7 +19,9 @@ class HostList extends Component {
         key: 'name',
         render: (text, record) => (
           <span>
-            <Link to={`/monitormanage/home/databaseprofile/${record.id}`}>{text}</Link>
+            <Button type="link" onClick={() => onClick(record.id)}>
+              {text}
+            </Button>
           </span>
         ),
       },

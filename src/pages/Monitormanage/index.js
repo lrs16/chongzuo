@@ -6,6 +6,7 @@ import { connect } from 'dva';
 import ListHost from './components/ListHost';
 import ListDatabase from './components/ListDatabase';
 import style from './index.css';
+import MonitorDetail from './monitorStation/components/monitorDetail';
 
 const { Search } = Input;
 @connect(({ monitorlist, loading }) => ({
@@ -17,6 +18,8 @@ class index extends Component {
     super(props);
     this.state = {
       currentIndex: '主机',
+      detailVisible: false,
+      hostID: '',
     };
   }
 
@@ -56,8 +59,15 @@ class index extends Component {
     });
   };
 
+  handDetail = (visible, id) => {
+    this.setState({
+      detailVisible: visible,
+      hostID: id,
+    });
+  };
+
   render() {
-    const { currentIndex } = this.state;
+    const { currentIndex, detailVisible, hostID } = this.state;
 
     const { monitorlist = {} } = this.props;
     const { data: dataHost, databaselist: dataBase, monitorGroups } = monitorlist;
@@ -118,14 +128,19 @@ class index extends Component {
         </Row>
         {currentIndex !== '数据库' && (
           <Card title="主机监测列表" extra={<Search placeholder="请输入" />}>
-            <ListHost datas={dataHost} />
+            <ListHost datas={dataHost} onClick={e => this.handDetail(true, e)} />
           </Card>
         )}
         {currentIndex === '数据库' && (
           <Card title="数据库监测列表" extra={<Search placeholder="请输入" />}>
-            <ListDatabase datas={dataBase} />
+            <ListDatabase datas={dataBase} onClick={e => this.handDetail(true, e)} />
           </Card>
         )}
+        <MonitorDetail
+          hostID={hostID}
+          visible={detailVisible}
+          onClose={() => this.setState({ detailVisible: false })}
+        />
       </div>
     );
   }
