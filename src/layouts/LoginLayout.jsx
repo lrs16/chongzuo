@@ -1,11 +1,12 @@
-import { DefaultFooter, getMenuData, getPageTitle } from '@ant-design/pro-layout';
-import { Helmet } from 'react-helmet';
-import Link from 'umi/link';
+import { getMenuData } from '@ant-design/pro-layout';
+// import { Helmet } from 'react-helmet';
+// import Link from 'umi/link';
 import React from 'react';
 import { connect } from 'dva';
-import { formatMessage } from 'umi-plugin-react/locale';
+// import { formatMessage } from 'umi-plugin-react/locale';
 // import logo from '../assets/logo.svg';
 import styles from './LoginLayout.less';
+import logo from '../../public/logo.png';
 
 const LoginLayout = props => {
   const {
@@ -26,10 +27,10 @@ const LoginLayout = props => {
       <div className={styles.content}>
         <div className={styles.login}>
           <div className={styles.loginlogo}>
-            <img src={require('../../public/logo.png')} alt="" />
+            <img src={logo} alt="" />
           </div>
           {children}
-          <div className={styles.logintitle}>广西博联信息通讯技术有限公司</div>
+          <div className={styles.logintitle}>广西博联信息通信技术有限责任公司</div>
         </div>
       </div>
     </div>
