@@ -111,7 +111,7 @@ export async function removeRole(id) {
 
 // 获取权限菜单
 export async function queryRolemenu(roleId) {
-  return request(`/api-upms/upms_role/${roleId}/MenuIds`);
+  return request(`/api-upms//upms_role/getMenusByRoleId/${roleId}`);
 }
 
 // 分配权限菜单

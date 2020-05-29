@@ -86,14 +86,7 @@ class RoleManage extends Component {
       });
     };
 
-    const loadroleMenu = roleId => {
-      // const roleId =
-      const { dispatch } = this.props;
-      return dispatch({
-        type: 'upmsrole/ruerymune',
-        payload: { roleId },
-      });
-    };
+
 
     const columns = [
       {
@@ -125,13 +118,13 @@ class RoleManage extends Component {
         title: '操作',
         dataIndex: 'action',
         key: 'action',
-        render: (text, record) => (
-          <div>
+        render: (text, record) => {
+          const title = `【${record.roleName}】分配菜单`;
+          return (
+            <div>
             <RoleMenu
-              title="角色分配菜单权限"
-              record={record}
-              roleid={record.id}
-              loadMenu={() => loadroleMenu(roleId)}
+              title={title}
+              roleId={record.id}
             >
               <a type="link">菜单权限</a>
             </RoleMenu>
@@ -144,7 +137,8 @@ class RoleManage extends Component {
               <a type="link">删除</a>
             </Popconfirm>
           </div>
-        ),
+          );
+        },
       },
     ];
     const {

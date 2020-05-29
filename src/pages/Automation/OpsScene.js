@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import Link from 'umi/link';
-import { Card, Divider, Icon, List, Message, Button } from 'antd';
+import { Card, Icon, List, Message } from 'antd';
 import Ellipsis from '@/components/Ellipsis';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 // import ScenesDrawer from './components/ScenesDrawer';   //打开新建场景抽屉
@@ -117,6 +117,7 @@ class CardList extends PureComponent {
                     </Link>,
                     <a onClick={() => execuSecene(item.scenarioId)}>立即执行</a>,
                     <ReportModal
+                      loading={loading}
                       sceneid={item.scenarioId}
                       scenemane={item.scenarioName}
                       datas={reportlist}

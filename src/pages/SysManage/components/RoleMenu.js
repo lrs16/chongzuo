@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'dva';
 import { Drawer, Button } from 'antd';
 import MenuTransfer from './MenuTransfer';
 
@@ -6,11 +7,11 @@ import MenuTransfer from './MenuTransfer';
 const withClick = (element, showDrawer = () => {}) => {
   return <element.type {...element.props} onClick={showDrawer} />;
 };
+@connect(({ rolemenu, loading }) => ({
+  rolemenu,
+  loading: loading.models.rolemenu,
+}))
 class RoleMenu extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
 
   state = {
     visible: false,
@@ -20,9 +21,8 @@ class RoleMenu extends Component {
     this.setState({
       visible: true,
     });
-    const id = this.props.roleid;
-    console.log(id);
-    // this.props.loadMenu(id);
+    this.loadsysMenu();
+    this.loadroleMenu();
   };
 
   onClose = () => {
@@ -37,10 +37,30 @@ class RoleMenu extends Component {
     // this.props.onDoSumit(values);
   };
 
+  loadsysMenu = () =>{
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'rolemenu/fetchdatas',
+    });
+  };
+
+  loadroleMenu = () => {
+    const {roleId} = this.props;
+    const { dispatch } = this.props;
+    return dispatch({
+      type: 'rolemenu/querymune',
+      payload: { roleId },
+    });
+  };
+
   render() {
     const { visible } = this.state;
-    const { children, title } = this.props;
-    // const id =this.props.roleid;
+    const { 
+      children, 
+      title ,
+      rolemenu: { sysmenu,rolemenus },
+      loading,
+    } = this.props;
     return (
       <>
         {withClick(children, this.showDrawer)}
@@ -51,7 +71,11 @@ class RoleMenu extends Component {
           visible={visible}
           bodyStyle={{ paddingBottom: 60 }}
         >
-          <MenuTransfer />
+          <MenuTransfer 
+          loading={loading} 
+          sysmenu={sysmenu.data}
+          rolemenus={rolemenus.data}
+          />
           <div
             style={{
               position: 'absolute',

@@ -65,9 +65,17 @@ export async function execuSecene(scenarioId) {
   return request(`/api-eai-job/oma/scenario/execute/${scenarioId}`);
 }
 
+// 预览文档
+export async function View(jobid) {
+  return request(`/api-eai-job/oma/view/${jobid}/specify`, {
+    method: 'GET', // GET / POST 均可以
+    // data: jobid,
+    responseType: 'blob', // 必须注明返回二进制流
+  });
+}
+
 // 下载文档
 export async function Download(jobid) {
-  // console.log(jobid);
   return request(`/api-eai-job/oma/download/${jobid}/specify`, {
     method: 'GET', // GET / POST 均可以
     // data: jobid,

@@ -1,45 +1,27 @@
 import {
-  queryRoleList,
-  UpdateRole,
+  queryMenuList,
   disposeRolemenu,
-  removeRole,
-  searchRole,
   queryRolemenu,
 } from '../services/api';
 
 export default {
-  namespace: 'upmsrole',
+  namespace: 'rolemenu',
 
   state: {
-    data: [],
+    sysmenu: [],
     rolemenus: [],
   },
 
   effects: {
+    // 获取系统菜单
     *fetchdatas({ payload }, { call, put }) {
-      const response = yield call(queryRoleList, payload);
+      const response = yield call(queryMenuList, payload);
       yield put({
         type: 'show',
         payload: response,
       });
     },
-    // 添加或编辑
-    *update({ payload }, { call }) {
-      return yield call(UpdateRole, payload);
-    },
 
-    *edite({ payload }, { call }) {
-      return yield call(UpdateRole, payload);
-    },
-
-    *remove({ payload }, { call }) {
-      return yield call(removeRole, payload);
-    },
-
-    // 查询数据
-    *search({ payload }, { call }) {
-      return yield call(searchRole, payload);
-    },
     // 设置菜单权限
     *disposemune({ payload: { roleId } }, { call }) {
       return yield call(disposeRolemenu, roleId);
@@ -48,7 +30,6 @@ export default {
     // 获取菜单权限
     *querymune({ payload: { roleId } }, { call, put }) {
       const response = yield call(queryRolemenu, roleId);
-      console.log(response);
       yield put({
         type: 'menudatas',
         payload: response,
@@ -57,10 +38,10 @@ export default {
   },
 
   reducers: {
-    show(state, { payload }) {
+    show(state, action) {
       return {
         ...state,
-        ...payload,
+        sysmenu: action.payload,
       };
     },
     menudatas(state, action) {

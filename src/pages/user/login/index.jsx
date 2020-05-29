@@ -17,26 +17,26 @@ class Login extends Component {
 
   state = {
     type: 'account',
-    autoLogin: true,
+    // autoLogin: true,
   };
 
-  changeAutoLogin = e => {
-    this.setState({
-      autoLogin: e.target.checked,
-    });
-  };
+  // changeAutoLogin = e => {
+  //   this.setState({
+  //     autoLogin: e.target.checked,
+  //   });
+  // };
 
   handleSubmit = (err, values) => {
     const { type } = this.state;
-
     if (!err) {
       const { dispatch } = this.props;
       dispatch({
         type: 'login/login',
         payload: { ...values, type },
       });
-    }
+    };
   };
+
 
   onTabChange = type => {
     this.setState({
@@ -82,8 +82,11 @@ class Login extends Component {
 
   render() {
     const { userLogin, submitting } = this.props;
-    const { status, type: loginType } = userLogin;
-    const { type, autoLogin } = this.state;
+    const {
+      // status,  
+      type: loginType 
+    } = userLogin;
+    const { type } = this.state;
     return (
       <div className={styles.main}>
         <LoginComponents
@@ -100,9 +103,9 @@ class Login extends Component {
               id: 'user-login.login.tab-login-credentials',
             })}
           >
-            {status === 'error' &&
-              loginType === 'account' &&
-              !submitting &&
+            { // status === 401 &&
+             loginType === 'account' &&
+              ! submitting &&
               this.renderMessage(
                 formatMessage({
                   id: 'user-login.login.message-invalid-credentials',
@@ -150,9 +153,9 @@ class Login extends Component {
               id: 'user-login.login.tab-login-mobile',
             })}
           >
-            {status === 'error' &&
-              loginType === 'mobile' &&
-              !submitting &&
+            {// status === 401 &&
+               loginType === 'mobile' &&
+              ! submitting &&
               this.renderMessage(
                 formatMessage({
                   id: 'user-login.login.message-invalid-verification-code',
@@ -214,7 +217,9 @@ class Login extends Component {
               <FormattedMessage id="user-login.login.forgot-password" />
             </a>
           </div>
-          <Submit loading={submitting}>
+          <Submit 
+          loading={submitting}
+          >
             <FormattedMessage id="user-login.login.login" />
           </Submit>
           {/* <div className={styles.other}>
