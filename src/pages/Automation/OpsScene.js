@@ -117,7 +117,7 @@ class CardList extends PureComponent {
                     </Link>,
                     <a onClick={() => execuSecene(item.scenarioId)}>立即执行</a>,
                     <ReportModal
-                      loading={loading}
+                      openloading={loading}
                       sceneid={item.scenarioId}
                       scenemane={item.scenarioName}
                       datas={reportlist}

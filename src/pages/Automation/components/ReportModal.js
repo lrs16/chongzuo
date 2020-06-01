@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Modal, Divider } from 'antd';
+import { Modal, Spin } from 'antd';
 import { connect } from 'dva';
 // import { element } from 'prop-types';
 
@@ -71,7 +71,7 @@ class ReportModal extends Component {
           onCancel={this.hanldleCancel}
           onOk={this.handleOk}
         >
-          <div>
+          <Spin spinning={this.props.openloading}>
             {reportlist.map(item => {
               // const myUrl = `http://172.16.4.100:8807/oma/download/${item.detail.xxlJobId}/new`;
               return (
@@ -89,7 +89,7 @@ class ReportModal extends Component {
                 </p>
               );
             })}
-          </div>
+          </Spin>
         </Modal>
       </>
     );
