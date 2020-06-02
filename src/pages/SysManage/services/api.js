@@ -115,9 +115,11 @@ export async function queryRolemenu(roleId) {
 }
 
 // 分配权限菜单
-export async function disposeRolemenu(roleId) {
+export async function updateRolemenu(roleId,menuvalue) {
+  console.log(menuvalue);
   return request(`/api-upms/upms_role/${roleId}/MenuIds`, {
     method: 'POST',
+    body: JSON.stringify(menuvalue),
   });
 }
 

@@ -1,6 +1,6 @@
 import {
   queryMenuList,
-  disposeRolemenu,
+  updateRolemenu,
   queryRolemenu,
 } from '../services/api';
 
@@ -23,8 +23,8 @@ export default {
     },
 
     // 设置菜单权限
-    *disposemune({ payload: { roleId } }, { call }) {
-      return yield call(disposeRolemenu, roleId);
+    *unpdatemune({ payload: { roleId,menuvalue } }, { call }) {
+      return yield call(updateRolemenu, roleId,menuvalue);
     },
 
     // 获取菜单权限

@@ -129,7 +129,7 @@ class RoleManage extends Component {
               <a type="link">菜单权限</a>
             </RoleMenu>
             <Divider type="vertical" />
-            <RoleModal onSumit={values => handleEdite(values)} title="编辑脚本" record={record}>
+            <RoleModal onSumit={values => handleEdite(values)} title="编辑菜单" record={record}>
               <a type="link">编辑</a>
             </RoleModal>
             <Divider type="vertical" />

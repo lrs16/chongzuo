@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Drawer, Button } from 'antd';
+import { Drawer, Button ,Message} from 'antd';
 import MenuTransfer from './MenuTransfer';
 
 // 克隆子元素按钮，并添加事件
@@ -15,6 +15,7 @@ class RoleMenu extends Component {
 
   state = {
     visible: false,
+    menulist:[],
   };
 
   showDrawer = () => {
@@ -31,11 +32,32 @@ class RoleMenu extends Component {
     });
   };
 
-  handleOk = () => {
-    this.onClose();
-    // 传数据
-    // this.props.onDoSumit(values);
+  handleChange = menulist =>{
+    this.setState(
+      
+      { menulist });
   };
+
+
+  handleOk = () => {
+    const { dispatch } = this.props;
+    const {roleId} = this.props;
+    const menuvalue =  this.state.menulist;
+   // console.log(menuvalue);
+    return dispatch({
+      type: 'rolemenu/unpdatemune',
+      payload: { roleId ,menuvalue},
+    }).then(res=>{
+      if (res.code === 200) {
+        Message.success(res.msg);
+        this.onClose();
+      } else {
+        Message.error('配置菜单失败！');
+      }
+
+    });
+  };
+
 
   loadsysMenu = () =>{
     const { dispatch } = this.props;
@@ -53,13 +75,15 @@ class RoleMenu extends Component {
     });
   };
 
+
   render() {
     const { visible } = this.state;
     const { 
+      loading,
       children, 
       title ,
+      roleId,
       rolemenu: { sysmenu,rolemenus },
-      loading,
     } = this.props;
     return (
       <>
@@ -70,11 +94,15 @@ class RoleMenu extends Component {
           onClose={this.onClose}
           visible={visible}
           bodyStyle={{ paddingBottom: 60 }}
+          // destroyOnClose
+          key={roleId}
         >
           <MenuTransfer 
-          loading={loading} 
           sysmenu={sysmenu.data}
           rolemenus={rolemenus.data}
+          openloading={loading} 
+          UpdateMenu={this.handleChange}
+         
           />
           <div
             style={{
@@ -91,7 +119,7 @@ class RoleMenu extends Component {
             <Button onClick={this.onClose} style={{ marginRight: 8 }}>
               取消
             </Button>
-            <Button onClick={this.onClose} type="primary">
+            <Button onClick={this.handleOk} type="primary">
               提交
             </Button>
           </div>

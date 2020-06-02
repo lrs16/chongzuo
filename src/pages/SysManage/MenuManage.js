@@ -135,7 +135,7 @@ class MenuManage extends Component {
         key: 'action',
         render: (text, record) => (
           <div>
-            <MenuModal onSumit={values => handleEdite(values)} title="编辑脚本" record={record}>
+            <MenuModal onSumit={values => handleEdite(values)} title="编辑菜单" record={record}>
               <a type="link">编辑</a>
             </MenuModal>
             <Divider type="vertical" />

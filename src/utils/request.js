@@ -40,16 +40,20 @@ const errorHandler = error => {
       description: errorText,
     });
 
-    if (status === 500) {
+    if (status === 500 && url==='http://localhost:8000/api-upms/upms_user/getCurrUserInfo') {
       notification.error({
         message: '未登录或登录过期，请重新登录',
+        onClose: close,
       });
-      localStorage.removeItem('token');
-      window.location.pathname = '/user/login';
+      // localStorage.removeItem('token');
+
+      sessionStorage.clear();// 清除token
+      // window.location.pathname = '/user/login';
+      
       // window.g_app._store.dispatch({
       //   type: 'login/logout',
       // });
-    } else if (status === 401) {
+    } else if (status === 401 && url==='http://localhost:8000/api-auth/oauth/user/token') {
       notification.error({
         message: '用户名或密码错误，请核对后重新登录',
         onClose: close,
