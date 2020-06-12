@@ -18,7 +18,6 @@ export default {
     },
     *fetchFacatdata({ payload }, { call, put }) {
       const response = yield call(queryFacadata, payload);
-      console.log(response);
       yield put({
         type: 'getfacadata',
         payload: response,

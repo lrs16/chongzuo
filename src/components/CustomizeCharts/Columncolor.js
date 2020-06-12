@@ -2,14 +2,22 @@
 import React, { Component } from 'react';
 import { Chart, Geom, Axis, Tooltip, Guide, View } from 'bizcharts';
 
-const { Html } = Guide;
+const { Text } = Guide;
 class Columncolor extends Component {
   render() {
     const { height, padding, data } = this.props;
-
+    const end = data[data.length - 1];
     const scale = {
-      vote: {
+      完成率: {
         min: 0,
+        max: 100,
+        range: [0, 1],
+        alias: '完成率',
+      },
+      警戒值: {
+        min: 0,
+        max: 100,
+        alias: '警戒值',
       },
     };
     return (
@@ -17,19 +25,11 @@ class Columncolor extends Component {
         <Chart data={data} padding={padding} scale={scale} forceFit height={height}>
           <Axis
             name="完成率"
-            title={null}
-            line={null}
-            tickLine={null}
             label={{
               formatter: val => `${val}%`,
             }}
           />
-          <Axis
-            name="警戒值"
-            label={{
-              formatter: val => `${val}%`,
-            }}
-          />
+          <Axis name="警戒值" visible={false} />
           <View data={data}>
             <Geom type="line" position="name*警戒值" color="#ff0000" size={3} />
           </View>
@@ -56,11 +56,18 @@ class Columncolor extends Component {
           <Geom type="line" position="label*警戒值" color="#ff0000" size={3} />
 
           <Guide>
-            <Html
-              position={['100%', '9%']}
-              html={`<div style="text-align: center;"><span style="color:red;font-size:0.8em;">警戒值</span></div>`}
-              alignX="middle"
-              alignY="middle"
+            <Text
+              top // 指定 guide 是否绘制在 canvas 最上层，默认为 false, 即绘制在最下层
+              // position={{ name: '变电站', 警戒值: 90 }} // 文本的起始位置，值为原始数据值，支持 callback
+              position={{ name: end.name, 警戒值: end.警戒值 }}
+              content="警戒值" // 显示的文本内容
+              style={{
+                fill: '#f00', // 文本颜色
+                fontSize: '12', // 文本大小
+                // fontWeight: 'bold' // 文本粗细
+              }} // 文本的图形样式属性
+              offsetX={25} // x 方向的偏移量
+              offsetY={0} // y 方向偏移量
             />
           </Guide>
         </Chart>

@@ -247,27 +247,27 @@ export default {
     children: [
       {
         name: '南宁',
-        value: '成功',
+        value: 0,
       },
       {
         name: '柳州',
-        value: '成功',
+        value: 0,
       },
       {
         name: '桂林',
-        value: '成功',
+        value: 0,
       },
       {
-        name: '贵巷',
-        value: '成功',
+        name: '贵港',
+        value: 1,
       },
       {
         name: '玉林',
-        value: '成功',
+        value: 0,
       },
       {
         name: '梧州',
-        value: '失败',
+        value: 1,
       },
     ],
   },

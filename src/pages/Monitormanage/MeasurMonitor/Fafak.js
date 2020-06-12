@@ -2,7 +2,6 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
 import numeral from 'numeral';
-import moment from 'moment';
 import { Row, Col, Icon, Tooltip, Tabs } from 'antd';
 import Range from '@/components/CustomizeCharts/Range';
 import Treecompactbox from '@/components/CustomizeCharts/Treecompactbox';
