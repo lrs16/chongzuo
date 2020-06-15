@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { connect } from 'dva';
 import { Tree } from 'antd';
 
+// 展示组织结构树
 const { TreeNode } = Tree;
 @connect(({ deptree, loading }) => ({
   deptree,

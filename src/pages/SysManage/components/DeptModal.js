@@ -2,7 +2,8 @@
 /* eslint-disable react/destructuring-assignment */
 import React, { Component } from 'react';
 import { Form, Input, Modal, Radio } from 'antd';
-import { element } from 'prop-types';
+// import SelectPid from '@/components/DeptTree/SelectPid';
+// import { element } from 'prop-types';
 
 const formItemLayout = {
   labelCol: {
@@ -53,6 +54,8 @@ class MenuModal extends Component {
       }
     });
   };
+
+  getPid = () => {};
 
   render() {
     const { visible } = this.state;
@@ -108,7 +111,7 @@ class MenuModal extends Component {
                 initialValue: deptSort,
               })(<Input placeholder="请输入" />)}
             </Form.Item>
-            <Form.Item label="上级编号">
+            <Form.Item label="上级组织">
               {getFieldDecorator('pid', {
                 rules: [
                   {
@@ -118,7 +121,10 @@ class MenuModal extends Component {
                   },
                 ],
                 initialValue: pid,
-              })(<Input placeholder="根目录编号为0" />)}
+              })(
+                <Input placeholder="根目录编号为0" />,
+                // <SelectPid onchange={()=>this.getPid} />,
+              )}
             </Form.Item>
             <Form.Item label="启用状态">
               {getFieldDecorator('deptStatus', {

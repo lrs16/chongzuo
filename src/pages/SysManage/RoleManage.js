@@ -70,23 +70,21 @@ class RoleManage extends Component {
         }
       });
     };
-    const handleSearch = (values, pageinit) => {
-      const { dispatch } = this.props;
-      const { page, pagesize } = pageinit;
-      return dispatch({
-        type: 'upmsrole/search',
-        payload: values,
-      }).then(res => {
-        if (res.code === 200) {
-          Message.success(res.msg || '查询成功！');
-          reload();
-        } else {
-          Message.error('什么也没有查到！');
-        }
-      });
-    };
-
-
+    // const handleSearch = (values, pageinit) => {
+    //   const { dispatch } = this.props;
+    //   const { page, pagesize } = pageinit;
+    //   return dispatch({
+    //     type: 'upmsrole/search',
+    //     payload: values,
+    //   }).then(res => {
+    //     if (res.code === 200) {
+    //       Message.success(res.msg || '查询成功！');
+    //       reload();
+    //     } else {
+    //       Message.error('什么也没有查到！');
+    //     }
+    //   });
+    // };
 
     const columns = [
       {
@@ -122,21 +120,18 @@ class RoleManage extends Component {
           const title = `【${record.roleName}】分配菜单`;
           return (
             <div>
-            <RoleMenu
-              title={title}
-              roleId={record.id}
-            >
-              <a type="link">菜单权限</a>
-            </RoleMenu>
-            <Divider type="vertical" />
-            <RoleModal onSumit={values => handleEdite(values)} title="编辑菜单" record={record}>
-              <a type="link">编辑</a>
-            </RoleModal>
-            <Divider type="vertical" />
-            <Popconfirm title="确定删除此菜单吗？" onConfirm={() => handleDelete(record.id)}>
-              <a type="link">删除</a>
-            </Popconfirm>
-          </div>
+              <RoleMenu title={title} roleId={record.id}>
+                <a type="link">菜单权限</a>
+              </RoleMenu>
+              <Divider type="vertical" />
+              <RoleModal onSumit={values => handleEdite(values)} title="编辑菜单" record={record}>
+                <a type="link">编辑</a>
+              </RoleModal>
+              <Divider type="vertical" />
+              <Popconfirm title="确定删除此菜单吗？" onConfirm={() => handleDelete(record.id)}>
+                <a type="link">删除</a>
+              </Popconfirm>
+            </div>
           );
         },
       },

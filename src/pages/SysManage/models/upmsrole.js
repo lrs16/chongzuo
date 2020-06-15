@@ -1,7 +1,7 @@
 import {
   queryRoleList,
   UpdateRole,
-  disposeRolemenu,
+  updateRolemenu,
   removeRole,
   searchRole,
   queryRolemenu,
@@ -42,13 +42,13 @@ export default {
     },
     // 设置菜单权限
     *disposemune({ payload: { roleId } }, { call }) {
-      return yield call(disposeRolemenu, roleId);
+      return yield call(updateRolemenu, roleId);
     },
 
     // 获取菜单权限
     *querymune({ payload: { roleId } }, { call, put }) {
       const response = yield call(queryRolemenu, roleId);
-      console.log(response);
+      //     console.log(response);
       yield put({
         type: 'menudatas',
         payload: response,

@@ -4,9 +4,28 @@ import request from '@/utils/request';
 
 // 请求用户列表
 export async function queryUsers() {
-  return request(`/api-upms//upms_user/list`);
+  return request(`/api-upms/upms_user/list`);
 }
 
+// 添加&编辑用户
+export async function UpdateUsers(params) {
+  console.log(params);
+  return request('/api-upms/upms_user/saveOrUpdate', {
+    method: 'POST',
+    body: JSON.stringify(params),
+  });
+}
+// 删除用户
+export async function removeUsers(userId) {
+  return request(`/api-upms/upms_user/${userId}`, {
+    method: 'DELETE',
+    // data: id,
+    // headers: {
+    //   'Content-Type': 'application/x-www-form-urlencoded',
+    // },
+    // requestType: 'form',
+  });
+}
 export async function queryDatas() {
   return request(`/api/getsysdatas`);
 }
@@ -115,7 +134,7 @@ export async function queryRolemenu(roleId) {
 }
 
 // 分配权限菜单
-export async function updateRolemenu(roleId,menuvalue) {
+export async function updateRolemenu(roleId, menuvalue) {
   console.log(menuvalue);
   return request(`/api-upms/upms_role/${roleId}/MenuIds`, {
     method: 'POST',

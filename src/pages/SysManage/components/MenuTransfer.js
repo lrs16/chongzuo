@@ -1,5 +1,5 @@
 import React from 'react';
-import { Transfer, Tree, Spin ,Card} from 'antd';
+import { Transfer, Tree, Spin, Card } from 'antd';
 // import difference from 'lodash/difference';
 
 const { TreeNode } = Tree;
@@ -11,14 +11,19 @@ const isChecked = (selectedKeys, eventKey) => {
 
 const generateTree = (treeNodes = [], checkedKeys = []) => {
   return treeNodes.map(({ children, ...props }) => (
-    <TreeNode {...props} disabled={checkedKeys.includes(props.key)} key={props.key} title={props.title}>
+    <TreeNode
+      {...props}
+      disabled={checkedKeys.includes(props.key)}
+      key={props.key}
+      title={props.title}
+    >
       {generateTree(children, checkedKeys)}
     </TreeNode>
   ));
 };
 
 const TreeTransfer = ({ dataSource, targetKeys, ...restProps }) => {
-// 此处的targetKeys，为左边菜单已先中的值
+  // 此处的targetKeys，为左边菜单已先中的值
   const transferDataSource = [];
   function flatten(list = []) {
     list.forEach(item => {
@@ -77,42 +82,32 @@ const TreeTransfer = ({ dataSource, targetKeys, ...restProps }) => {
   );
 };
 
-
 class MenuTransfer extends React.Component {
-
-  // constructor(props) {
-  //   console.log(props);
-  //   super(props);
-  //   // 不要在这里调用 this.setState()
-  //   this.state = { targetKeys: [] };
-  // };
-
   state = {
     targetKeys: [],
   };
 
-
-  componentWillReceiveProps () {
+  componentWillReceiveProps() {
     this.gettargetData();
-  };
+  }
 
-gettargetData = () =>{
-  const targetData = this.sort(this.props.rolemenus);
-  this.setState({
-    targetKeys: targetData,
-  })
-};
+  gettargetData = () => {
+    const targetData = this.sort(this.props.rolemenus);
+    this.setState({
+      targetKeys: targetData,
+    });
+  };
 
   onChange = targetdata => {
     this.props.UpdateMenu(targetdata);
-    // this.setState({ targetKeys: targetdata});  
+    // this.setState({ targetKeys: targetdata});
     setTimeout(() => {
-      this.setState({ targetKeys: targetdata})
+      this.setState({ targetKeys: targetdata });
     }, 0);
   };
 
   toTree = () => {
-    const data =this.addArr(this.props.sysmenu);
+    const data = this.addArr(this.props.sysmenu);
     // onsole.log(data);
     const result = [];
     if (!Array.isArray(data)) {
@@ -136,47 +131,43 @@ gettargetData = () =>{
     return result;
   };
 
-  addArr=(datas)=> {    
-    const newArr =[];
+  addArr = datas => {
+    const newArr = [];
     if (!Array.isArray(datas)) {
       return newArr;
-    }for (let i = 0; i <datas.length; i += 1) {
+    }
+    for (let i = 0; i < datas.length; i += 1) {
       const vote = {};
-          vote.id = datas[i].id;
-          vote.key = datas[i].id;
-          vote.title = datas[i].menuDesc;
-          vote.menuSort =datas[i].menuSort;
-          vote.pid = datas[i].pid;
-          newArr.push(vote);
-    };
-		
-    return newArr;
-	};
+      vote.id = datas[i].id;
+      vote.key = datas[i].id;
+      vote.title = datas[i].menuDesc;
+      vote.menuSort = datas[i].menuSort;
+      vote.pid = datas[i].pid;
+      newArr.push(vote);
+    }
 
-  sort= (data) => {
+    return newArr;
+  };
+
+  sort = data => {
     const result = [];
     if (!Array.isArray(data)) {
       return result;
     }
     data.forEach(item => {
       result.push(item.id);
-    });    
+    });
     return result;
   };
 
- 
   render() {
-  const mytreeData = this.toTree();
-  // const targetData = this.sort(this.props.rolemenus);
-  const {targetKeys} =this.state;
+    const mytreeData = this.toTree();
+    // const targetData = this.sort(this.props.rolemenus);
+    const { targetKeys } = this.state;
 
     return (
       <Spin spinning={this.props.openloading}>
-        <TreeTransfer 
-        dataSource={mytreeData} 
-        targetKeys={targetKeys} 
-        onChange={this.onChange} 
-        />
+        <TreeTransfer dataSource={mytreeData} targetKeys={targetKeys} onChange={this.onChange} />
       </Spin>
     );
   }
