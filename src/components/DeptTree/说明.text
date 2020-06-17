@@ -2,5 +2,6 @@
  
 文件名           效果             说明
 index.js        树型结构          展示树结构不具备其它功能
-SelectID.js     可多选树结构      返回树结点ID,适用配置所属组织
+SelectID.js     单选树结构        返回树结点ID,适用配置所属组织，单选 
+SelectIDs.js    可多选树结构      返回树结点ID,适用配置所属组织，多选 
 SelectPid.js    可多选树结构      返回树结点ID,适用选择父组组织          

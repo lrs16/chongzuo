@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
+import moment from 'moment';
 import { Card, Table, Popconfirm, Button, Message, Divider, Badge } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import UpdateUser from './components/UpdateUser';
+import NewUser from './components/NewUser';
+import UserRole from './components/UserRole';
 
-const statusMap = ['default', 'success'];
-const status = ['停用', '启用'];
+const statusMap = ['default', 'success', 'processing'];
+const status = ['停用', '启用', '临时'];
 
 @connect(({ usermanage, loading }) => ({
   usermanage,
@@ -68,8 +71,7 @@ class SysuserMangage extends Component {
       }).then(res => {
         if (res.code === 200) {
           Message.success(res.msg);
-          this.reloadlist();
-          this.reloadtree();
+          this.getuserslist();
         } else {
           Message.error('删除用户失败');
         }
@@ -82,19 +84,27 @@ class SysuserMangage extends Component {
         key: 'id',
       },
       {
+        title: '昵称',
+        dataIndex: 'loginCode',
+        key: 'loginCode',
+      },
+      {
         title: '用户名',
         dataIndex: 'userName',
         key: 'userName',
       },
       {
-        title: '所属组织',
-        dataIndex: 'upmsDept',
-        key: 'upmsDept',
+        title: '创建人',
+        dataIndex: 'createUser',
+        key: 'createUser',
       },
       {
-        title: '角色代码',
-        dataIndex: 'loginCode',
-        key: 'loginCode',
+        title: '创建时间',
+        dataIndex: 'createTime',
+        key: 'createTime',
+        // defaultSortOrder: 'descend',  //排序
+        // sorter: (a, b) => a.createTime - b.createTime, //排序
+        render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
       },
       {
         title: '启用状态',
@@ -112,17 +122,24 @@ class SysuserMangage extends Component {
         key: 'action',
         render: (text, record) => (
           <div>
-            {/* <span
-              title="用户分配角色"
-              record={record}
-            >
-              <a type="link">菜单权限</a>
+            <UserRole userId={record.id} userName={record.userName}>
+              <a type="link">分配角色</a>
+            </UserRole>
+            <Divider type="vertical" />
+            <span record={record}>
+              <a type="link">密码重置</a>
             </span>
-            <Divider type="vertical" /> */}
-            <UpdateUser onSumit={values => handleEdite(values)} title="编辑用户" record={record}>
+            <Divider type="vertical" />
+            <UpdateUser
+              onSumit={values => handleEdite(values)}
+              title="编辑用户"
+              record={record}
+              loading={this.props.loading}
+            >
               <a type="link">编辑</a>
             </UpdateUser>
             <Divider type="vertical" />
+
             <Popconfirm title="确定删除此用户吗？" onConfirm={() => handleDelete(record.id)}>
               <a type="link">删除</a>
             </Popconfirm>
@@ -138,7 +155,7 @@ class SysuserMangage extends Component {
     return (
       <PageHeaderWrapper>
         <Card>
-          <UpdateUser onSumit={handleUpdate} depdatas={depdata} loading={loading}>
+          <NewUser onSumit={handleUpdate} title="新建用户" depdatas={depdata} loading={loading}>
             <Button
               style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
               type="dashed"
@@ -146,7 +163,7 @@ class SysuserMangage extends Component {
             >
               新建用户
             </Button>
-          </UpdateUser>
+          </NewUser>
           <Table dataSource={dataSource} columns={columns} rowKey={record => record.id} />
         </Card>
       </PageHeaderWrapper>

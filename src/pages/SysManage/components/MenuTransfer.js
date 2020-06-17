@@ -1,5 +1,5 @@
 import React from 'react';
-import { Transfer, Tree, Spin, Card } from 'antd';
+import { Transfer, Tree, Spin } from 'antd';
 // import difference from 'lodash/difference';
 
 const { TreeNode } = Tree;

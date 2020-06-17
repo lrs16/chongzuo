@@ -130,16 +130,28 @@ export async function removeRole(id) {
 
 // 获取权限菜单
 export async function queryRolemenu(roleId) {
-  return request(`/api-upms//upms_role/getMenusByRoleId/${roleId}`);
+  return request(`/api-upms/upms_role/getMenusByRoleId/${roleId}`);
 }
 
 // 分配权限菜单
 export async function updateRolemenu(roleId, menuvalue) {
-  console.log(menuvalue);
   return request(`/api-upms/upms_role/${roleId}/MenuIds`, {
     method: 'POST',
     body: JSON.stringify(menuvalue),
   });
+}
+
+// 设置用户权限
+export async function updateUserRole(userId, rolevalue) {
+  return request(`/api-upms/upms_user/${userId}/roleIds`, {
+    method: 'POST',
+    body: JSON.stringify(rolevalue),
+  });
+}
+
+// 获取用户权限
+export async function queryUserRole(userId) {
+  return request(`/api-upms/upms_user/getRolesByUserId/${userId}`);
 }
 
 // 查询

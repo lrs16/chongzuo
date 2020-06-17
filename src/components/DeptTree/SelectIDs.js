@@ -1,30 +1,15 @@
 /* eslint-disable no-restricted-syntax */
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { TreeSelect, Form } from 'antd';
+import { TreeSelect } from 'antd';
 
-// const { SHOW_PARENT } = TreeSelect;
+const { SHOW_PARENT } = TreeSelect;
 // 选择所在组织机构的组件
 @connect(({ deptree, loading }) => ({
   deptree,
   loading: loading.models.deptree,
 }))
 class SelectID extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
-
-  static getDerivedStateFromProps(nextProps, prevState) {
-    // 经过getFieldDecorator封装以后，props会有value属性，代表外部传递过来的值
-    if (nextProps.value !== prevState.value) {
-      return {
-        value: nextProps.value,
-      };
-    }
-    return null;
-  }
-
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
@@ -75,7 +60,9 @@ class SelectID extends Component {
   };
 
   handleChange = value => {
+    // console.log(value);
     this.props.onChange(value);
+    //  this.setState({ value });
   };
 
   render() {
@@ -85,23 +72,24 @@ class SelectID extends Component {
       loading,
     } = this.props;
     const treeData = this.toTree(data);
+    //    console.log(treeData);
     return (
-      <>
-        <TreeSelect
-          style={{ width: '100%' }}
-          value={this.props.value}
-          dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-          getPopupContainer={triggerNode => triggerNode.parentNode} // 解决下拉不显示在上层的问题
-          treeData={treeData}
-          placeholder="请选择"
-          treeDefaultExpandAll
-          onChange={this.handleChange}
-          loading={loading}
-        />
-      </>
+      <TreeSelect
+        style={{ width: '100%' }}
+        // value={this.state.value}
+        dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+        getPopupContainer={triggerNode => triggerNode.parentNode} // 解决下拉不显示在上层的问题
+        treeData={treeData}
+        treeCheckable
+        showCheckedStrategy={SHOW_PARENT}
+        placeholder="请选择"
+        treeDefaultExpandAll
+        onChange={this.handleChange}
+        loading={loading}
+      />
+      // <Input width='100%'/>
     );
   }
 }
 
 export default SelectID;
-// export default Form.create()(SelectID);

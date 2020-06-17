@@ -22,8 +22,8 @@ export default {
       return yield call(UpdateUsers, payload);
     },
 
-    *remove({ payload }, { call }) {
-      return yield call(removeUsers, payload);
+    *remove({ payload: { id } }, { call }) {
+      return yield call(removeUsers, id);
     },
 
     // 请求组织结构
