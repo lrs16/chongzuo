@@ -34,9 +34,8 @@ class Login extends Component {
         type: 'login/login',
         payload: { ...values, type },
       });
-    };
+    }
   };
-
 
   onTabChange = type => {
     this.setState({
@@ -83,8 +82,8 @@ class Login extends Component {
   render() {
     const { userLogin, submitting } = this.props;
     const {
-      // status,  
-      type: loginType 
+      // status,
+      type: loginType,
     } = userLogin;
     const { type } = this.state;
     return (
@@ -103,16 +102,16 @@ class Login extends Component {
               id: 'user-login.login.tab-login-credentials',
             })}
           >
-            { // status === 401 &&
-             loginType === 'account' &&
-              ! submitting &&
+            {// status === 401 &&
+            loginType === 'account' &&
+              !submitting &&
               this.renderMessage(
                 formatMessage({
                   id: 'user-login.login.message-invalid-credentials',
                 }),
               )}
             <UserName
-              name="username"
+              name="logincode"
               placeholder={`${formatMessage({
                 id: 'user-login.login.userName',
               })}`}
@@ -154,8 +153,8 @@ class Login extends Component {
             })}
           >
             {// status === 401 &&
-               loginType === 'mobile' &&
-              ! submitting &&
+            loginType === 'mobile' &&
+              !submitting &&
               this.renderMessage(
                 formatMessage({
                   id: 'user-login.login.message-invalid-verification-code',
@@ -217,9 +216,7 @@ class Login extends Component {
               <FormattedMessage id="user-login.login.forgot-password" />
             </a>
           </div>
-          <Submit 
-          loading={submitting}
-          >
+          <Submit loading={submitting}>
             <FormattedMessage id="user-login.login.login" />
           </Submit>
           {/* <div className={styles.other}>

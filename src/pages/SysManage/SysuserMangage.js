@@ -1,11 +1,19 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
-import { Card, Table, Popconfirm, Button, Message, Divider, Badge } from 'antd';
+import { Card, Table, Popconfirm, Button, Message, Divider, Badge, Tooltip } from 'antd';
+import {
+  ToolOutlined,
+  UnlockOutlined,
+  SolutionOutlined,
+  DeleteOutlined,
+  IdcardOutlined,
+} from '@ant-design/icons';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import UpdateUser from './components/UpdateUser';
-import NewUser from './components/NewUser';
+import UpdateUser from './components/UserUpdate';
+import NewUser from './components/UserNew';
 import UserRole from './components/UserRole';
+import ViewUser from './components/UserView';
 
 const statusMap = ['default', 'success', 'processing'];
 const status = ['停用', '启用', '临时'];
@@ -43,7 +51,7 @@ class SysuserMangage extends Component {
           Message.success(res.msg);
           this.getuserslist();
         } else {
-          Message.error('添加用户失败');
+          Message.error(res.msg);
         }
       });
     };
@@ -58,7 +66,7 @@ class SysuserMangage extends Component {
           Message.success(res.msg);
           this.getuserslist();
         } else {
-          Message.error('更新用户信息失败');
+          Message.error('更新用户信息失败！');
         }
       });
     };
@@ -73,7 +81,21 @@ class SysuserMangage extends Component {
           Message.success(res.msg);
           this.getuserslist();
         } else {
-          Message.error('删除用户失败');
+          Message.error('删除用户失败！');
+        }
+      });
+    };
+    const handleReset = id => {
+      const { dispatch } = this.props;
+      return dispatch({
+        type: 'usermanage/reset',
+        payload: { id },
+      }).then(res => {
+        if (res.code === 200) {
+          Message.success(res.msg);
+          this.getuserslist();
+        } else {
+          Message.error('重置密码失败！');
         }
       });
     };
@@ -84,7 +106,7 @@ class SysuserMangage extends Component {
         key: 'id',
       },
       {
-        title: '昵称',
+        title: '登录账号',
         dataIndex: 'loginCode',
         key: 'loginCode',
       },
@@ -94,9 +116,14 @@ class SysuserMangage extends Component {
         key: 'userName',
       },
       {
+        title: '所属部门',
+        dataIndex: 'deptNameExt',
+        key: 'deptNameExt',
+      },
+      {
         title: '创建人',
-        dataIndex: 'createUser',
-        key: 'createUser',
+        dataIndex: 'createUserNameExt',
+        key: 'createUserNameExt',
       },
       {
         title: '创建时间',
@@ -123,12 +150,20 @@ class SysuserMangage extends Component {
         render: (text, record) => (
           <div>
             <UserRole userId={record.id} userName={record.userName}>
-              <a type="link">分配角色</a>
+              <Tooltip title="配置权限">
+                <a type="link">
+                  <ToolOutlined />
+                </a>
+              </Tooltip>
             </UserRole>
             <Divider type="vertical" />
-            <span record={record}>
-              <a type="link">密码重置</a>
-            </span>
+            <Popconfirm title="确定重置该用户登录密码吗？" onConfirm={() => handleReset(record.id)}>
+              <Tooltip title="重置密码">
+                <a type="link">
+                  <UnlockOutlined />
+                </a>
+              </Tooltip>
+            </Popconfirm>
             <Divider type="vertical" />
             <UpdateUser
               onSumit={values => handleEdite(values)}
@@ -136,12 +171,27 @@ class SysuserMangage extends Component {
               record={record}
               loading={this.props.loading}
             >
-              <a type="link">编辑</a>
+              <Tooltip title="编辑用户信息">
+                <a type="link">
+                  <SolutionOutlined />
+                </a>
+              </Tooltip>
             </UpdateUser>
             <Divider type="vertical" />
-
+            <ViewUser record={record} userId={record.id}>
+              <Tooltip title="查看用户信息">
+                <a type="link">
+                  <IdcardOutlined />
+                </a>
+              </Tooltip>
+            </ViewUser>
+            <Divider type="vertical" />
             <Popconfirm title="确定删除此用户吗？" onConfirm={() => handleDelete(record.id)}>
-              <a type="link">删除</a>
+              <Tooltip title="删除用户">
+                <a type="link">
+                  <DeleteOutlined />
+                </a>
+              </Tooltip>
             </Popconfirm>
           </div>
         ),

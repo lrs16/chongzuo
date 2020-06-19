@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
-import { Card, Table, Divider, Button, Message, Popconfirm, Input, Form } from 'antd';
+import { Card, Table, Divider, Button, Message, Popconfirm, Input, Form, Icon, Tag } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import MenuModal from './components/MenuModal';
 
@@ -17,6 +17,16 @@ class MenuManage extends Component {
       type: 'upmsmenu/fetchdatas',
     });
   }
+
+  dataDeal = data => {
+    const listArr = [];
+    data.forEach(item => {
+      if (item.pid === '0') {
+        listArr.push(item);
+      }
+    });
+    return listArr;
+  };
 
   render() {
     const reload = () => {
@@ -100,6 +110,11 @@ class MenuManage extends Component {
         title: '图标',
         dataIndex: 'menuIcon',
         key: 'menuIcon',
+        render: (text, record) => (
+          <span>
+            <Icon type={record.menuIcon} style={{ fontSize: 22 }} />
+          </span>
+        ),
       },
       {
         title: '英文名称',
@@ -118,17 +133,17 @@ class MenuManage extends Component {
         sorter: (a, b) => a.name.length - b.name.length,
         render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
       },
-      {
-        title: '创建人',
-        dataIndex: 'createUser',
-        key: 'createUser',
-        sorter: true,
-      },
-      {
-        title: '权限',
-        dataIndex: 'menuAuth',
-        key: 'menuAuth',
-      },
+      // {
+      //   title: '创建人',
+      //   dataIndex: 'createUser',
+      //   key: 'createUser',
+      //   sorter: true,
+      // },
+      // {
+      //   title: '权限',
+      //   dataIndex: 'menuAuth',
+      //   key: 'menuAuth',
+      // },
       {
         title: '操作',
         dataIndex: 'action',
@@ -150,19 +165,25 @@ class MenuManage extends Component {
       upmsmenu: { data },
     } = this.props;
     const dataSource = [...data];
+    console.log(dataSource);
     const { getFieldDecorator } = this.props.form;
-
+    const mainnav = this.dataDeal(dataSource);
     return (
       <PageHeaderWrapper title="菜单管理">
         <Card>
           <div>
-            <Form>
+            {/* <div style={{ float: 'left', width: '60%' }}>
+            {mainnav.map((item) => {
+                return (
+                  <Button  key={item.id} style={{marginRight:10}}>
+                    {item.menuDesc}
+                  </Button>
+                );
+              })}
+            </div> */}
+            <Form style={{ float: 'right', width: '30%' }}>
               {getFieldDecorator('queKey')(
-                <Search
-                  placeholder="请输入"
-                  style={{ float: 'right', width: '30%' }}
-                  onSearch={values => handleSearch(values)}
-                />,
+                <Search placeholder="请输入" onSearch={values => handleSearch(values)} />,
               )}
             </Form>
             <MenuModal onSumit={handleUpdate}>

@@ -25,7 +25,6 @@ const Model = {
 
       if (response.code === 200) {
         const userinfo = yield call(queryCurrent);
-        console.log(userinfo);
         yield put({
           type: 'changeLoginStatus',
           payload: {

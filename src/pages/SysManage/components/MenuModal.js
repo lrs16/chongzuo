@@ -2,7 +2,6 @@
 /* eslint-disable react/destructuring-assignment */
 import React, { Component } from 'react';
 import { Form, Input, Modal } from 'antd';
-import { element } from 'prop-types';
 
 const formItemLayout = {
   labelCol: {
@@ -61,7 +60,7 @@ class MenuModal extends Component {
     const { getFieldDecorator } = this.props.form;
     const required = true;
     // console.log(this.props.record);
-    const { id, pid, menuUrl, menuName, menuDesc } = this.props.record;
+    const { id, pid, menuSort, menuIcon, menuUrl, menuName, menuDesc } = this.props.record;
     return (
       <>
         {withClick(children, this.handleopenClick)}
@@ -88,6 +87,28 @@ class MenuModal extends Component {
                   },
                 ],
                 initialValue: pid,
+              })(<Input placeholder="请输入" />)}
+            </Form.Item>
+            <Form.Item label="menuSort">
+              {getFieldDecorator('menuSort', {
+                rules: [
+                  {
+                    required,
+                    message: '请输入',
+                  },
+                ],
+                initialValue: menuSort,
+              })(<Input placeholder="请输入" />)}
+            </Form.Item>
+            <Form.Item label="图标Cord">
+              {getFieldDecorator('menuIcon', {
+                rules: [
+                  {
+                    required,
+                    message: '请输入',
+                  },
+                ],
+                initialValue: menuIcon,
               })(<Input placeholder="请输入" />)}
             </Form.Item>
             <Form.Item label="路由">
@@ -131,6 +152,15 @@ class MenuModal extends Component {
 }
 MenuModal.defaultProps = {
   title: '新建菜单',
-  record: { id: '', pid: '', menuUrl: '', menuName: '', menuDesc: '', subDescription: '' },
+  record: {
+    id: '',
+    pid: '',
+    menuSort: '',
+    menuIcon: '',
+    menuUrl: '',
+    menuName: '',
+    menuDesc: '',
+    subDescription: '',
+  },
 };
 export default Form.create()(MenuModal);

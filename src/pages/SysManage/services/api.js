@@ -26,6 +26,12 @@ export async function removeUsers(userId) {
     // requestType: 'form',
   });
 }
+// 重置密码
+export async function resetUsers(userId) {
+  return request(`/api-upms/upms_user/${userId}/password`, {
+    method: 'PUT',
+  });
+}
 export async function queryDatas() {
   return request(`/api/getsysdatas`);
 }
@@ -152,6 +158,11 @@ export async function updateUserRole(userId, rolevalue) {
 // 获取用户权限
 export async function queryUserRole(userId) {
   return request(`/api-upms/upms_user/getRolesByUserId/${userId}`);
+}
+
+// 获取用户菜单
+export async function queryUserMenu(userId) {
+  return request(`/api-upms/upms_user/getMenusByUserId/${userId}`);
 }
 
 // 查询

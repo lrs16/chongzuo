@@ -41,6 +41,7 @@ export default {
   'menu.exception.trigger': '触发错误',
   'menu.account': '个人页',
   'menu.account.center': '个人中心',
+  'menu.account.changpw': '修改密码',
   'menu.account.settings': '个人设置',
   'menu.account.trigger': '触发报错',
   'menu.account.logout': '退出登录',
@@ -84,6 +85,6 @@ export default {
   'menu.alarmmanage.noticesetting': '告警通知设置',
   'menu.alarmmanage.noticesetting.notifygroup': '告警通知组设置',
   'menu.alarmmanage.noticesetting.notifyperson': '告警联系人设置',
-  'menu.agent-manage':'采控管理',
-  'menu.agent-manage.monitor-config':'监控配置',
+  'menu.agent-manage': '采控管理',
+  'menu.agent-manage.monitor-config': '监控配置',
 };

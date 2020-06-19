@@ -45,7 +45,7 @@ class UpdateUser extends Component {
       <>
         {withClick(children, this.showDrawer)}
         <Drawer
-          title="用户信息"
+          title="个人中心"
           width={400}
           onClose={this.onClose}
           visible={visible}
@@ -56,8 +56,8 @@ class UpdateUser extends Component {
             <Avatar size={150} className={styles.avatar} src={currentUser.userHead} alt="avatar" />
           </div>
           <Form {...formItemLayout}>
-            <Form.Item label="账号" className={styles.antformitem}>
-              <span>{currentUser.userName}</span>
+            <Form.Item label="登录账号" className={styles.antformitem}>
+              <span>{currentUser.loginCode}</span>
             </Form.Item>
             <Form.Item label="用户名" className={styles.antformitem}>
               <span>{currentUser.userName}</span>
@@ -66,7 +66,7 @@ class UpdateUser extends Component {
               <span>{currentUser.userEmail}</span>
             </Form.Item>
             <Form.Item label="手机号码" className={styles.antformitem}>
-              <span>{currentUser.userPhone}</span>
+              <span>{currentUser.userMobile}</span>
             </Form.Item>
           </Form>
           <div

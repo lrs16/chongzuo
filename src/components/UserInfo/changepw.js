@@ -34,6 +34,24 @@ class ChangePW extends Component {
     });
   };
 
+  checkPsd(rule, value, callback) {
+    const newPasswordExt2 = this.props.form.getFieldValue('newPasswordExt2');
+    if (newPasswordExt2 && newPasswordExt2 !== value) {
+      callback(new Error('两次密码输入不一致'));
+    } else {
+      callback();
+    }
+  }
+
+  checkPsd2(rule, value, callback) {
+    const newPasswordExt = this.props.form.getFieldValue('newPasswordExt');
+    if (newPasswordExt && newPasswordExt !== value) {
+      callback(new Error('两次密码输入不一致'));
+    } else {
+      callback();
+    }
+  }
+
   render() {
     const { visible } = this.state;
     const { children } = this.props;
@@ -44,7 +62,7 @@ class ChangePW extends Component {
       <>
         {withClick(children, this.showDrawer)}
         <Drawer
-          title="用户信息"
+          title="修改密码"
           width={400}
           onClose={this.onClose}
           visible={visible}
@@ -53,19 +71,35 @@ class ChangePW extends Component {
         >
           <Form {...formItemLayout}>
             <Form.Item label="旧密码">
-              {getFieldDecorator('oldPassword', {
-                // initialValue: userEmail,
-              })(<Input />)}
+              {getFieldDecorator('oldPasswordExt', {
+                rules: [{ required, message: '请输入密码' }],
+              })(<Input.Password />)}
             </Form.Item>
             <Form.Item label="新密码">
-              {getFieldDecorator('newPassword', {
-                // initialValue: userEmail,
-              })(<Input />)}
+              {getFieldDecorator('newPasswordExt', {
+                rules: [
+                  { required, message: '请输入密码' },
+                  {
+                    validator: (rule, value, callback) => {
+                      this.checkPsd(rule, value, callback);
+                    },
+                  },
+                ],
+                validateTrigger: 'onBlur',
+              })(<Input.Password />)}
             </Form.Item>
             <Form.Item label="确认新密码" className={styles.antformitem}>
-              {getFieldDecorator('newPassword', {
-                // initialValue: userEmail,
-              })(<Input />)}
+              {getFieldDecorator('newPasswordExt2', {
+                rules: [
+                  { required, message: '请输入密码' },
+                  {
+                    validator: (rule, value, callback) => {
+                      this.checkPsd2(rule, value, callback);
+                    },
+                  },
+                ],
+                validateTrigger: 'onBlur',
+              })(<Input.Password />)}
             </Form.Item>
           </Form>
           <div

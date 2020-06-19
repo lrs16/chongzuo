@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Drawer, Button, Form, Input, Radio, Spin, Upload, message, Avatar } from 'antd';
 import SelecttreeID from '@/components/DeptTree/SelectID';
-// import SelectRole from '@/components/SysRole/SelectRole'
 import { UserOutlined, UploadOutlined } from '@ant-design/icons';
 
 const formItemLayout = {
@@ -21,7 +20,7 @@ const RadioGroup = Radio.Group;
 const withClick = (element, showDrawer = () => {}) => {
   return <element.type {...element.props} onClick={showDrawer} />;
 };
-class NewUser extends Component {
+class UpdateUser extends Component {
   state = {
     visible: false,
   };
@@ -44,7 +43,6 @@ class NewUser extends Component {
         // 关闭弹窗
         this.onClose();
         // 传数据
-        console.log(values);
         this.props.onSumit(values);
         this.props.form.resetFields();
       }
@@ -54,9 +52,20 @@ class NewUser extends Component {
   render() {
     const { visible } = this.state;
     const { children, title, loading } = this.props;
+    // Form双向绑定
     const { getFieldDecorator } = this.props.form;
     const required = true;
-    // console.log(this.props.record);
+
+    const {
+      id,
+      deptId,
+      loginCode,
+      userEmail,
+      userMobile,
+      userName,
+      userSex,
+      userStatus,
+    } = this.props.record;
     return (
       <>
         {withClick(children, this.showDrawer)}
@@ -80,52 +89,42 @@ class NewUser extends Component {
             <br />
             <Upload>
               <Button>
-                <UploadOutlined /> 上传用户头像
+                <UploadOutlined /> 更新用户头像
               </Button>
             </Upload>
           </div>
 
           <Spin spinning={loading}>
             <Form {...formItemLayout}>
-              {/* <Form.Item label="用户ID">
+              <Form.Item label="用户ID">
                 {getFieldDecorator('id', {
-                })(<Input />)}
-              </Form.Item> */}
+                  initialValue: id,
+                })(<Input disabled />)}
+              </Form.Item>
+              <Form.Item label="登录账号">
+                {getFieldDecorator('loginCode', {
+                  initialValue: loginCode,
+                })(<Input disabled />)}
+              </Form.Item>
               <Form.Item label="用户名">
                 {getFieldDecorator('userName', {
+                  initialValue: userName,
                   rules: [
                     {
                       required,
-                      message: '请输入用户名',
+                      message: '请输入用户名!',
                     },
                   ],
                 })(<Input />)}
-              </Form.Item>
-              <Form.Item label="昵称">
-                {getFieldDecorator('loginCode', {
-                  rules: [
-                    {
-                      required,
-                      message: '请输入昵称',
-                    },
-                  ],
-                })(<Input />)}
-              </Form.Item>
-              <Form.Item label="初始密码">
-                {getFieldDecorator('passWord', {
-                  rules: [
-                    {
-                      required,
-                      message: '请为用户设置初始登录密码',
-                    },
-                  ],
-                })(<Input.Password />)}
               </Form.Item>
               <Form.Item label="所属组织">
-                {getFieldDecorator('deptId', {})(<SelecttreeID />)}
+                {getFieldDecorator('deptId', {
+                  initialValue: deptId,
+                })(<SelecttreeID />)}
               </Form.Item>
               <Form.Item label="邮箱">
                 {getFieldDecorator('userEmail', {
+                  initialValue: userEmail,
                   rules: [
                     {
                       type: 'email',
@@ -134,9 +133,14 @@ class NewUser extends Component {
                   ],
                 })(<Input />)}
               </Form.Item>
-
+              {/* <Form.Item label="头像">
+              {getFieldDecorator('userHead', {
+                initialValue: userHead,
+              })(<Input />)}
+            </Form.Item> */}
               <Form.Item label="联系电话">
                 {getFieldDecorator('userMobile', {
+                  initialValue: userMobile,
                   rules: [
                     {
                       pattern: /^1[3|4|5|7|8|9][0-9]\d{8}$/,
@@ -147,10 +151,9 @@ class NewUser extends Component {
               </Form.Item>
 
               <Form.Item label="性别">
-                {getFieldDecorator(
-                  'userSex',
-                  {},
-                )(
+                {getFieldDecorator('userSex', {
+                  initialValue: userSex,
+                })(
                   <RadioGroup>
                     <Radio value="0">男</Radio>
                     <Radio value="1">女</Radio>
@@ -165,6 +168,7 @@ class NewUser extends Component {
                       message: '请选择是否启用',
                     },
                   ],
+                  initialValue: userStatus,
                 })(
                   <RadioGroup>
                     <Radio value="0">停用</Radio>
@@ -199,7 +203,5 @@ class NewUser extends Component {
     );
   }
 }
-NewUser.defaultProps = {
-  record: { id: '' },
-};
-export default Form.create()(NewUser);
+
+export default Form.create()(UpdateUser);
