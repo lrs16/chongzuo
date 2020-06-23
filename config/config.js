@@ -96,7 +96,6 @@ export default {
         {
           path: '/',
           component: '../layouts/BasicLayout',
-          authority: ['admin', 'user'],
           routes: [
             {
               path: '/',
@@ -194,7 +193,6 @@ export default {
                   icon: 'cloud-server',
                   component: './Monitormanage',
                 },
-
                 {
                   path: '/monitormanage/measurmonitor',
                   name: '计量业务监控',
@@ -210,7 +208,7 @@ export default {
                     //   component: './Monitormanage/MeasurMonitor',
                     // },
                     {
-                      path: '/monitormanage/measurmonitor/collection',
+                      path: '/monmonitormanage/measurmonitor/collection',
                       name: '采集指标情况',
                       icon: 'cloud-server',
                       component: './Monitormanage/MeasurMonitor/Collection',

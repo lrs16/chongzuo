@@ -11,15 +11,23 @@ import {
   // Icon,
   Result,
   Button,
+  //  Spin,
 } from 'antd';
 import { formatMessage } from 'umi-plugin-react/locale';
 import Authorized from '@/utils/Authorized';
 import RightContent from '@/components/GlobalHeader/RightContent';
-import { 
+import {
   // isAntDesignPro,
-   getAuthorityFromRouter } from '@/utils/utils';
+  getAuthorityFromRouter,
+} from '@/utils/utils';
 import logo from '../../public/menulogo.png';
 // import Layout from './BlankLayout';
+const myroute = {
+  routes: [
+    { path: '/', name: 'welcome', icon: 'smile' },
+    { path: '/home', name: '主页', icon: 'home' },
+  ],
+};
 
 const noMatch = (
   <Result
@@ -37,6 +45,7 @@ const noMatch = (
 /**
  * use Authorized check all menu item
  */
+
 const menuDataRender = menuList =>
   menuList.map(item => {
     const localItem = { ...item, children: item.children ? menuDataRender(item.children) : [] };
@@ -46,71 +55,20 @@ const menuDataRender = menuList =>
 
 const topMenuDataRender = menuList =>
   menuList.map(item => {
-    const localItem = { ...item, children: [] };
+    const localItem = { ...item, children: [], routes: [] };
     return Authorized.check(item.authority, localItem, null);
   });
 
-// const defaultFooterDom = (
-//   <DefaultFooter
-//     copyright="2020 运维平台"
-//     links={[
-//       {
-//         key: 'Ant Design Pro',
-//         title: 'Ant Design Pro',
-//         href: 'https://pro.ant.design',
-//         blankTarget: true,
-//       },
-//       {
-//         key: 'github',
-//         title: <Icon type="github" />,
-//         href: 'https://github.com/ant-design/ant-design-pro',
-//         blankTarget: true,
-//       },
-//       {
-//         key: 'Ant Design',
-//         title: 'Ant Design',
-//         href: 'https://ant.design',
-//         blankTarget: true,
-//       },
-//     ]}
-//   />
-// );
-
-// const footerRender = () => {
-//   if (!isAntDesignPro()) {
-//     return defaultFooterDom;
-//   }
-
-//   return (
-//     <>
-//       {defaultFooterDom}
-//       <div
-//         style={{
-//           padding: '0px 24px 24px',
-//           textAlign: 'center',
-//         }}
-//       >
-//         <a href="https://www.netlify.com" target="_blank" rel="noopener noreferrer">
-//           <img
-//             src="https://www.netlify.com/img/global/badges/netlify-color-bg.svg"
-//             width="82px"
-//             alt="netlify logo"
-//           />
-//         </a>
-//       </div>
-//     </>
-//   );
-// };
-
 const BasicLayout = props => {
   const {
+    loading,
     dispatch,
     children,
     settings,
     location = {
       pathname: '/',
     },
-    // menuData,
+    menuData,
   } = props;
   /**
    * constructor
@@ -122,19 +80,12 @@ const BasicLayout = props => {
         type: 'user/fetchCurrent',
       });
     }
+    if (dispatch) {
+      dispatch({
+        type: 'user/fetchMenu',
+      });
+    }
   }, []);
-  /**
-   * init variables
-   */
-
-  // const handleMenuCollapse = payload => {
-  //   if (dispatch) {
-  //     dispatch({
-  //       type: 'global/changeLayoutCollapsed',
-  //       payload,
-  //     });
-  //   }
-  // }; // get children authority
 
   const authorized = getAuthorityFromRouter(props.route.routes, location.pathname || '/') || {
     authority: undefined,
@@ -143,7 +94,8 @@ const BasicLayout = props => {
   // 根据当前url变化获取左侧菜单数据
   const pathArr = location.pathname.split('/');
   const path = `/${pathArr[1]}`;
-  const routeData = props.route.routes;
+  // const routeData = props.route.routes;
+  const routeData = menuData;
   let leftRoute = {};
   routeData.map(item => {
     if (item.path === path) {
@@ -155,6 +107,7 @@ const BasicLayout = props => {
 
   return (
     <ProLayout
+      loading={loading}
       layout="topmenu"
       fixedHeader
       logo={logo}
@@ -164,7 +117,6 @@ const BasicLayout = props => {
           {titleDom}
         </Link>
       )}
-      // onCollapse={handleMenuCollapse}
       menuItemRender={(menuItemProps, defaultDom) => {
         if (menuItemProps.isUrl || menuItemProps.children) {
           return defaultDom;
@@ -172,30 +124,13 @@ const BasicLayout = props => {
 
         return <Link to={menuItemProps.path}>{defaultDom}</Link>;
       }}
-      // breadcrumbRender={(routers = []) => [
-      //   {
-      //     path: '/',
-      //     breadcrumbName: formatMessage({
-      //       id: 'menu.home',
-      //       defaultMessage: 'Home',
-      //     }),
-      //   },
-      //   ...routers,
-      // ]}
-      // itemRender={(route, params, routes, paths) => {
-      //   const first = routes.indexOf(route) === 0;
-      //   return first ? (
-      //     <Link to={paths.join('/')}>{route.breadcrumbName}</Link>
-      //   ) : (
-      //       <span>{route.breadcrumbName}</span>
-      //     );
-      // }}
-      // footerRender={footerRender}
-      menuDataRender={topMenuDataRender}
+      menuDataRender={() => topMenuDataRender(menuData)}
+      // menuDataRender={topMenuDataRender}
       formatMessage={formatMessage}
       rightContentRender={rightProps => <RightContent {...rightProps} />}
-      {...props}
+      // {...props}
       {...settings}
+      route={menuData}
       disableContentMargin
       disableMobile // 禁用手机端菜单，不然手机端下会表现异常
     >
@@ -244,7 +179,9 @@ const BasicLayout = props => {
   );
 };
 
-export default connect(({ global, settings }) => ({
+export default connect(({ global, settings, user, loading }) => ({
   collapsed: global.collapsed,
   settings,
+  menuData: user.menuData,
+  loading: loading.effects['user/fetchMenu'],
 }))(BasicLayout);

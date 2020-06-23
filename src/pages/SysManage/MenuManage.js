@@ -165,22 +165,21 @@ class MenuManage extends Component {
       upmsmenu: { data },
     } = this.props;
     const dataSource = [...data];
-    console.log(dataSource);
     const { getFieldDecorator } = this.props.form;
     const mainnav = this.dataDeal(dataSource);
     return (
       <PageHeaderWrapper title="菜单管理">
         <Card>
           <div>
-            {/* <div style={{ float: 'left', width: '60%' }}>
-            {mainnav.map((item) => {
+            <div style={{ float: 'left', width: '60%' }}>
+              {mainnav.map(item => {
                 return (
-                  <Button  key={item.id} style={{marginRight:10}}>
+                  <Button key={item.id} style={{ marginRight: 10 }}>
                     {item.menuDesc}
                   </Button>
                 );
               })}
-            </div> */}
+            </div>
             <Form style={{ float: 'right', width: '30%' }}>
               {getFieldDecorator('queKey')(
                 <Search placeholder="请输入" onSearch={values => handleSearch(values)} />,
