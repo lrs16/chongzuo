@@ -16,18 +16,9 @@ import {
 import { formatMessage } from 'umi-plugin-react/locale';
 import Authorized from '@/utils/Authorized';
 import RightContent from '@/components/GlobalHeader/RightContent';
-import {
-  // isAntDesignPro,
-  getAuthorityFromRouter,
-} from '@/utils/utils';
+// import {isAntDesignPro,getAuthorityFromRouter} from '@/utils/utils';
 import logo from '../../public/menulogo.png';
 // import Layout from './BlankLayout';
-const myroute = {
-  routes: [
-    { path: '/', name: 'welcome', icon: 'smile' },
-    { path: '/home', name: '主页', icon: 'home' },
-  ],
-};
 
 const noMatch = (
   <Result
@@ -68,6 +59,7 @@ const BasicLayout = props => {
     location = {
       pathname: '/',
     },
+    Userauth,
     menuData,
   } = props;
   /**
@@ -87,9 +79,10 @@ const BasicLayout = props => {
     }
   }, []);
 
-  const authorized = getAuthorityFromRouter(props.route.routes, location.pathname || '/') || {
-    authority: undefined,
-  };
+  // 路由中获取用户权限
+  // const authorized = getAuthorityFromRouter(props.route.routes, location.pathname || '/') || {
+  //   authority: undefined,
+  // };
 
   // 根据当前url变化获取左侧菜单数据
   const pathArr = location.pathname.split('/');
@@ -171,7 +164,7 @@ const BasicLayout = props => {
         route={leftRoute}
         // footerRender={footerRender}
       >
-        <Authorized authority={authorized.authority} noMatch={noMatch}>
+        <Authorized authority={Userauth} noMatch={noMatch}>
           {children}
         </Authorized>
       </ProLayout>
@@ -182,6 +175,7 @@ const BasicLayout = props => {
 export default connect(({ global, settings, user, loading }) => ({
   collapsed: global.collapsed,
   settings,
+  Userauth: user.Userauth,
   menuData: user.menuData,
-  loading: loading.effects['user/fetchMenu'],
+  loading: loading.models.user,
 }))(BasicLayout);

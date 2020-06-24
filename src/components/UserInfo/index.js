@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Drawer, Button, Form, Avatar, Radio, Input, TreeSelect, Select } from 'antd';
+import { Drawer, Button, Form, Avatar } from 'antd';
 import styles from './index.less';
 
 const formItemLayout = {

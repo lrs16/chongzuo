@@ -69,7 +69,7 @@ class AvatarDropdown extends React.Component {
           </UserInfo>
         </Menu.Item>
         <Menu.Item key="respassword">
-          <ChangePW>
+          <ChangePW userid={this.props.currentUser.id}>
             <div>
               <Icon type="lock" />
               <FormattedMessage id="menu.account.changpw" defaultMessage="account resetpassword" />

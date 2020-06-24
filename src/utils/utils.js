@@ -28,6 +28,7 @@ export const getPageQuery = () => parse(window.location.href.split('?')[1]);
  * @param pathname string
  */
 
+// 获取路由权限
 export const getAuthorityFromRouter = (router = [], pathname) => {
   const authority = router.find(({ path }) => path && pathRegexp(path).exec(pathname));
   if (authority) return authority;

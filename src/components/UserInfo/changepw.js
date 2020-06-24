@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Drawer, Button, Form, Avatar, Radio, Input, TreeSelect, Select } from 'antd';
+import { connect } from 'dva';
+import { Drawer, Button, Form, Input, Message } from 'antd';
 import styles from './index.less';
 
 const formItemLayout = {
@@ -17,6 +18,10 @@ const formItemLayout = {
 const withClick = (element, showDrawer = () => {}) => {
   return <element.type {...element.props} onClick={showDrawer} />;
 };
+@connect(({ userchangpw, loading }) => ({
+  userchangpw,
+  loading: loading.models.userchangpw,
+}))
 class ChangePW extends Component {
   state = {
     visible: false,
@@ -34,23 +39,39 @@ class ChangePW extends Component {
     });
   };
 
-  checkPsd(rule, value, callback) {
-    const newPasswordExt2 = this.props.form.getFieldValue('newPasswordExt2');
-    if (newPasswordExt2 && newPasswordExt2 !== value) {
-      callback(new Error('两次密码输入不一致'));
-    } else {
-      callback();
-    }
-  }
+  handleOk = () => {
+    const { dispatch } = this.props;
+    const id = this.props.userid;
+    this.props.form.validateFields((err, values) => {
+      if (!err) {
+        const { oldPasswordExt, newPasswordExt } = values;
+        dispatch({
+          type: 'userchangpw/fetch',
+          payload: { id, oldPasswordExt, newPasswordExt },
+        }).then(res => {
+          if (res.code === 200) {
+            Message.success(res.msg);
+            this.onClose();
+            // 关闭弹窗
+            this.onClose();
+            // 清除数据
+            this.props.form.resetFields();
+          } else {
+            Message.error('修改密码失败！');
+          }
+        });
+      }
+    });
+  };
 
-  checkPsd2(rule, value, callback) {
-    const newPasswordExt = this.props.form.getFieldValue('newPasswordExt');
-    if (newPasswordExt && newPasswordExt !== value) {
-      callback(new Error('两次密码输入不一致'));
-    } else {
-      callback();
+  // 自定义校验两次密码是否一致
+  validatorPwd = (rule, value, callback) => {
+    if (value !== this.props.form.getFieldValue('newPasswordExt')) {
+      callback(rule.message);
+      return;
     }
-  }
+    callback();
+  };
 
   render() {
     const { visible } = this.state;
@@ -77,14 +98,7 @@ class ChangePW extends Component {
             </Form.Item>
             <Form.Item label="新密码">
               {getFieldDecorator('newPasswordExt', {
-                rules: [
-                  { required, message: '请输入密码' },
-                  {
-                    validator: (rule, value, callback) => {
-                      this.checkPsd(rule, value, callback);
-                    },
-                  },
-                ],
+                rules: [{ required, message: '请输入密码' }],
                 validateTrigger: 'onBlur',
               })(<Input.Password />)}
             </Form.Item>
@@ -93,9 +107,8 @@ class ChangePW extends Component {
                 rules: [
                   { required, message: '请输入密码' },
                   {
-                    validator: (rule, value, callback) => {
-                      this.checkPsd2(rule, value, callback);
-                    },
+                    validator: this.validatorPwd,
+                    message: '两次输入的密码不一致！',
                   },
                 ],
                 validateTrigger: 'onBlur',
@@ -110,7 +123,7 @@ class ChangePW extends Component {
               textAlign: 'right',
             }}
           >
-            <Button onClick={this.onClose} type="primary" style={{ marginRight: 8 }}>
+            <Button onClick={this.handleOk} type="primary" style={{ marginRight: 8 }}>
               确认
             </Button>
             <Button onClick={this.onClose}>取消</Button>

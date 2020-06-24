@@ -4,6 +4,7 @@
  */
 import { extend } from 'umi-request';
 import { notification } from 'antd';
+import router from 'umi/router';
 // import { async } from 'q';
 
 const codeMessage = {
@@ -32,33 +33,37 @@ const errorHandler = error => {
   const close = () => {
     window.location.pathname = '/user/login';
   };
+
   if (response && response.status) {
     const errorText = codeMessage[response.status] || response.statusText;
     const { status, url } = response;
-    notification.error({
-      message: `请求错误 ${status}: ${url}`,
-      description: errorText,
-    });
 
-    if (status === 500 && url==='http://localhost:8000/api-upms/upms_user/getCurrUserInfo') {
+    if (status !== 401) {
+      notification.error({
+        message: `请求错误 ${status}: ${url}`,
+        description: errorText,
+      });
+    }
+
+    if (status === 500 && url === 'http://localhost:8000/api-upms/upms_user/getCurrUserInfo') {
       notification.error({
         message: '未登录或登录过期，请重新登录',
         onClose: close,
       });
-      // localStorage.removeItem('token');
+      sessionStorage.clear(); // 清除token
+    }
 
-      sessionStorage.clear();// 清除token
-      // window.location.pathname = '/user/login';
-      
-      // window.g_app._store.dispatch({
-      //   type: 'login/logout',
-      // });
-    } else if (status === 401 && url==='http://localhost:8000/api-auth/oauth/user/token') {
+    if (status === 401) {
       notification.error({
-        message: '用户名或密码错误，请核对后重新登录',
+        message: `请求错误 ${status}`,
+        description: errorText,
         onClose: close,
+        duration: 1.5,
       });
-      // window.location.pathname = '/user/login';
+    }
+
+    if (status >= 404 && status < 422) {
+      router.push('/404');
     }
   } else if (!response) {
     notification.error({

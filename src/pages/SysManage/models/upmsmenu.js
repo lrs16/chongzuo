@@ -30,7 +30,6 @@ export default {
 
     // 查询数据
     *search({ payload }, { call }) {
-      console.log(payload);
       return yield call(searchMenu, payload);
     },
   },

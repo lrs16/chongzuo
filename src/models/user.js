@@ -1,10 +1,16 @@
 // import { queryCurrent, query as queryUsers } from '@/services/user';
 import { queryCurrent, queryMenus } from '@/services/user';
 
-const menuArr = (datas, authority) => {
-  //   datas.sort((a,b)=> {
-  //     return Date.parse(b.date.replace(/-/g,"/"))-Date.parse(a.date.replace(/-/g,"/"));
-  // });
+const compare = p => {
+  return (m, n) => {
+    const a = m[p];
+    const b = n[p];
+    return a - b;
+  };
+};
+
+const menuArr = (data, authority) => {
+  const datas = data.sort(compare('menuSort'));
   const newArr = [];
   const menu = 'menu.';
   if (!Array.isArray(datas)) {
@@ -83,7 +89,6 @@ const UserModel = {
         const userinfo = yield call(queryCurrent);
         const menus = menuArr(response.data, userinfo.data.loginCode);
         const menuData = toTree(menus);
-        console.log(menuData);
         yield put({
           type: 'saveUserMenu',
           payload: menuData,
@@ -93,12 +98,16 @@ const UserModel = {
   },
   reducers: {
     saveCurrentUser(state, action) {
-      return { ...state, currentUser: action.payload || {} };
+      return {
+        ...state,
+        currentUser: action.payload || {},
+        Userauth: action.payload.loginCode,
+      };
     },
     saveUserMenu(state, action) {
       return {
         ...state,
-        menuData: action.payload,
+        menuData: action.payload || [],
       };
     },
 

@@ -166,12 +166,12 @@ class MenuManage extends Component {
     } = this.props;
     const dataSource = [...data];
     const { getFieldDecorator } = this.props.form;
-    const mainnav = this.dataDeal(dataSource);
+    // const mainnav = this.dataDeal(dataSource);
     return (
       <PageHeaderWrapper title="菜单管理">
         <Card>
           <div>
-            <div style={{ float: 'left', width: '60%' }}>
+            {/* <div style={{ float: 'left', width: '60%' }}>
               {mainnav.map(item => {
                 return (
                   <Button key={item.id} style={{ marginRight: 10 }}>
@@ -179,7 +179,7 @@ class MenuManage extends Component {
                   </Button>
                 );
               })}
-            </div>
+            </div> */}
             <Form style={{ float: 'right', width: '30%' }}>
               {getFieldDecorator('queKey')(
                 <Search placeholder="请输入" onSearch={values => handleSearch(values)} />,

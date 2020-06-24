@@ -96,6 +96,7 @@ export default {
         {
           path: '/',
           component: '../layouts/BasicLayout',
+          authority: ['test'],
           routes: [
             {
               path: '/',
@@ -120,6 +121,7 @@ export default {
               name: '自动化运维',
               dynamic: true,
               icon: 'deployment-unit',
+              authority: ['test'],
               routes: [
                 {
                   path: '/automation',
@@ -202,13 +204,13 @@ export default {
                       path: '/monitormanage/measurmonitor',
                       redirect: '/monitormanage/measurmonitor/collection',
                     },
-                    // {
-                    //   path: '/monitormanage/measurmonitor/home',
-                    //   name: 'measurhome',
-                    //   component: './Monitormanage/MeasurMonitor',
-                    // },
                     {
-                      path: '/monmonitormanage/measurmonitor/collection',
+                      path: '/monitormanage/measurmonitor/home',
+                      name: 'measurhome',
+                      component: './Monitormanage/MeasurMonitor',
+                    },
+                    {
+                      path: '/monitormanage/measurmonitor/collection',
                       name: '采集指标情况',
                       icon: 'cloud-server',
                       component: './Monitormanage/MeasurMonitor/Collection',
@@ -219,23 +221,26 @@ export default {
                       icon: 'cloud-server',
                       component: './Monitormanage/MeasurMonitor/MeasurFace',
                     },
+                    // {
+                    //   path: '/monitormanage/measurmonitor/fafka',
+                    //   name: 'KAFKA消费',
+                    //   icon: 'cloud-server',
+                    //   component: './Monitormanage/MeasurMonitor/Fafak',
+                    // },
+                    // {
+                    //   path: '/monitormanage/measurmonitor/sysrunning',
+                    //   name: '主站系统运行',
+                    //   icon: 'cloud-server',
+                    //   component: './Monitormanage/MeasurMonitor/SysRunning',
+                    // },
+                    // {
+                    //   path: '/monitormanage/measurmonitor/databaseterminal',
+                    //   name: '终端工况和数据入库',
+                    //   icon: 'cloud-server',
+                    //   component: './Monitormanage/MeasurMonitor/DatabaseTerminal',
+                    // },
                     {
-                      path: '/monitormanage/measurmonitor/fafka',
-                      name: 'KAFKA消费',
-                      icon: 'cloud-server',
-                      component: './Monitormanage/MeasurMonitor/Fafak',
-                    },
-                    {
-                      path: '/monitormanage/measurmonitor/sysrunning',
-                      name: '主站系统运行',
-                      icon: 'cloud-server',
-                      component: './Monitormanage/MeasurMonitor/SysRunning',
-                    },
-                    {
-                      path: '/monitormanage/measurmonitor/databaseterminal',
-                      name: '终端工况和数据入库',
-                      icon: 'cloud-server',
-                      component: './Monitormanage/MeasurMonitor/DatabaseTerminal',
+                      component: './404',
                     },
                   ],
                 },

@@ -9,7 +9,6 @@ export async function queryUsers() {
 
 // 添加&编辑用户
 export async function UpdateUsers(params) {
-  console.log(params);
   return request('/api-upms/upms_user/saveOrUpdate', {
     method: 'POST',
     body: JSON.stringify(params),
