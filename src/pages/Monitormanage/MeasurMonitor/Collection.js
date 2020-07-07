@@ -1,238 +1,112 @@
 /* eslint-disable react/prefer-stateless-function */
 import React, { Component } from 'react';
-import { Row, Col, Icon, Tooltip, Select } from 'antd';
+import { connect } from 'dva';
+import moment from 'moment';
+import { Row, Col, Icon, Tooltip, Select, Spin, Empty } from 'antd';
 // import numeral from 'numeral';
 // import moment from 'moment';
 import { ChartCard } from '@/components/Charts';
 // import Donut from '@/components/CustomizeCharts/Donut';
 import Columncolor from '@/components/CustomizeCharts/Columncolor';
 import LineChart from '@/components/CustomizeCharts/LineChart';
-// import Line2WChart from '@/components/CustomizeCharts/Line2WChart';
+import Labelline from '@/components/CustomizeCharts/Labelline';
 // import GridContent from '@/components/PageHeaderWrapper/GridContent';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
+const selectoption = [
+  '广西电网公司',
+  '南宁供电局',
+  '柳州供电局',
+  '桂林供电局',
+  '贵港供电局',
+  '玉林供电局',
+  '来宾供电局',
+  '河池供电局',
+  '梧州供电局',
+  '北海供电局',
+  '钦州供电局',
+  '防城港供电局',
+  '崇左供电局',
+  '贺州供电局',
+];
 const { Option } = Select;
-const ColumncolorData = [
-  {
-    name: '低压',
-    完成率: 100,
-    警戒值: 90,
-  },
-  {
-    name: '公变',
-    完成率: 100,
-    警戒值: 90,
-  },
-  {
-    name: '专变',
-    完成率: 90,
-    警戒值: 90,
-  },
-  {
-    name: '统调电厂',
-    完成率: 95,
-    警戒值: 90,
-  },
-  {
-    name: '地方电厂',
-    完成率: 100,
-    警戒值: 90,
-  },
-  {
-    name: '变电站',
-    完成率: 88,
-    警戒值: 90,
-  },
-];
-const ColumncolorData2 = [
-  {
-    name: '低压',
-    完成率: 90,
-    警戒值: 90,
-  },
-  {
-    name: '公变',
-    完成率: 60,
-    警戒值: 90,
-  },
-  {
-    name: '专变',
-    完成率: 100,
-    警戒值: 90,
-  },
-  {
-    name: '统调电厂',
-    完成率: 100,
-    警戒值: 90,
-  },
-  {
-    name: '地方电厂',
-    完成率: 98,
-    警戒值: 90,
-  },
-  {
-    name: '变电站',
-    完成率: 100,
-    警戒值: 90,
-  },
-];
-const LineChartData = [
-  {
-    clock: '6',
-    value: 10000,
-    警戒值: 27000,
-    alert: false,
-  },
-  {
-    clock: '7',
-    value: 9800,
-    警戒值: 27000,
-    alert: false,
-  },
-  {
-    clock: '8',
-    value: 32000,
-    警戒值: 27000,
-    alert: true,
-  },
-  {
-    clock: '9',
-    value: 8600,
-    警戒值: 27000,
-    alert: false,
-  },
-  {
-    clock: '10',
-    value: 10556,
-    警戒值: 27000,
-    alert: false,
-  },
-  {
-    clock: '11',
-    value: 17560,
-    警戒值: 27000,
-    alert: false,
-  },
-  {
-    clock: '12',
-    value: 10660,
-    警戒值: 27000,
-    alert: false,
-  },
-  {
-    clock: '13',
-    value: 9650,
-    警戒值: 27000,
-    alert: false,
-  },
-  {
-    clock: '14',
-    value: 28000,
-    警戒值: 27000,
-    alert: true,
-  },
-  {
-    clock: '15',
-    value: 29000,
-    警戒值: 27000,
-    alert: true,
-  },
-];
+const dataArr = datas => {
+  const newArr = [];
+  if (!Array.isArray(datas)) {
+    return newArr;
+  }
+  for (let i = 0; i < datas.length; i += 1) {
+    const vote = {};
+    vote.rate = datas[i].rate;
+    vote.type = datas[i].type;
+    vote.alertvalue = 90;
+    newArr.push(vote);
+  }
 
-const Wholehour = [
-  { clock: '1', value: 9800, Min警戒值: 0, alert: false },
-  { clock: '2', value: 32000, Min警戒值: 0, alert: false },
-  { clock: '3', value: 8600, Min警戒值: 0, alert: false },
-  { clock: '4', value: 10556, Min警戒值: 0, alert: false },
-  { clock: '5', value: 17560, Min警戒值: 0, alert: false },
-  { clock: '6', value: 10660, Min警戒值: 0, alert: false },
-  { clock: '7', value: 9650, Min警戒值: 0, alert: false },
-  { clock: '8', value: 25000, Min警戒值: 0, alert: false },
-  { clock: '9', value: 23000, Min警戒值: 0, alert: false },
-  { clock: '10', value: 10000, Min警戒值: 0, alert: false },
-  { clock: '11', value: 9800, Min警戒值: 0, alert: false },
-  { clock: '12', value: 32000, Min警戒值: 0, alert: false },
-  { clock: '13', value: 8600, Min警戒值: 0, alert: false },
-  { clock: '14', value: 10556, Min警戒值: 0, alert: false },
-  { clock: '15', value: 17560, Min警戒值: 0, alert: false },
-  { clock: '16', value: 10660, Min警戒值: 0, alert: false },
-  { clock: '17', value: 9650, Min警戒值: 0, alert: false },
-  { clock: '18', value: 25000, Min警戒值: 0, alert: false },
-  { clock: '19', value: 23000, Min警戒值: 0, alert: false },
-  { clock: '20', value: 10556, Min警戒值: 0, alert: false },
-  { clock: '21', value: 17560, Min警戒值: 0, alert: false },
-  { clock: '22', value: 10660, Min警戒值: 0, alert: false },
-  { clock: '23', value: 9650, Min警戒值: 0, alert: false },
-  { clock: '24', value: 25000, Min警戒值: 0, alert: false },
-];
+  return newArr;
+};
 
-const Powerdata = [
-  {
-    clock: '0',
-    value: -8,
-    Max警戒值: 10,
-    Min警戒值: -10,
-    alert: false,
-  },
-  {
-    clock: '4',
-    value: 8,
-    Max警戒值: 10,
-    Min警戒值: -10,
-    alert: false,
-  },
-  {
-    clock: '8',
-    value: 20,
-    Max警戒值: 10,
-    Min警戒值: -10,
-    alert: true,
-  },
-  {
-    clock: '12',
-    value: 9,
-    Max警戒值: 10,
-    Min警戒值: -10,
-    alert: false,
-  },
-  {
-    clock: '16',
-    value: 0,
-    Max警戒值: 10,
-    Min警戒值: -10,
-    alert: false,
-  },
-  {
-    clock: '18',
-    value: -15,
-    Max警戒值: 10,
-    Min警戒值: -10,
-    alert: true,
-  },
-  {
-    clock: '24',
-    value: -10,
-    Max警戒值: 10,
-    Min警戒值: -10,
-    alert: true,
-  },
-];
+const celldata = datas => {
+  const data = datas[0];
+  const newArr = [];
+  if (!Array.isArray(datas)) {
+    return newArr;
+  }
+  Object.keys(data).map(key => {
+    //  console.log(data[key]);// key=>属性名    data[key]=>属性值
+    newArr.push({
+      type: key,
+      rate: data[key],
+      alertvalue: 90,
+    });
+    return newArr;
+  });
+  return newArr.slice(2);
+};
+
+const changedate = datas => {
+  const newArr = [];
+  if (!Array.isArray(datas)) {
+    return newArr;
+  }
+  for (let i = 0; i < datas.length; i += 1) {
+    const vote = {};
+    vote.value = datas[i].data;
+    vote.date = moment(datas[i].date).format('MM/DD');
+    newArr.push(vote);
+  }
+  return newArr;
+};
+
+const changehour = datas => {
+  const newArr = [];
+  if (!Array.isArray(datas)) {
+    return newArr;
+  }
+  for (let i = 0; i < datas.length; i += 1) {
+    const vote = {};
+    vote.value = datas[i].data;
+    vote.date = datas[i].hour;
+    vote.alertvalue = 0;
+    newArr.push(vote);
+  }
+  return newArr;
+};
+
 const clock = '2020-2-15 15:58';
 // 有用
-const lincols = {
+const Labecols = {
   value: {
     min: 0,
-    max: 35000,
-    range: [0, 1],
+    max: 30000,
+    alias: '值',
   },
-  clock: {
-    range: [0, 0.9],
+  date: {
     alias: '日期',
-    tickInterval: 1,
   },
-  警戒值: {
+  alertvalue: {
     min: 0,
-    max: 35000,
+    max: 30000,
     alias: '警戒值',
   },
 };
@@ -241,15 +115,15 @@ const timecols = {
     min: 0,
     max: 35000,
     range: [0, 1],
-    alias: '\n',
+    // alias: '值',
   },
-  clock: {
-    max: 24,
+  date: {
+    // max: 24,
     range: [0.02, 0.95],
     alias: '时间',
     tickInterval: 2,
   },
-  Min警戒值: {
+  alertvalue: {
     min: 0,
     max: 35000,
     alias: '警戒值',
@@ -277,8 +151,106 @@ const lin2wcols = {
     alias: '警戒值',
   },
 };
+
+@connect(({ collection, loading }) => ({
+  collection,
+  loading: loading.models.collection,
+}))
 class Collection extends Component {
+  componentDidMount() {
+    const area = '南宁供电局';
+    this.getcomplete(area);
+    this.getcoverage(area);
+    this.getmeter(area);
+    this.getzeroread();
+    this.gethourread();
+    this.getsales(area);
+    this.getsupply(area);
+    this.interval = setInterval(() => this.reloaddate(area), 600000);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.interval);
+  }
+
+  getcomplete(area) {
+    this.props.dispatch({
+      type: 'collection/fetchcomplete',
+      payload: { area },
+    });
+  }
+
+  getcoverage(area) {
+    this.props.dispatch({
+      type: 'collection/fetchcoverage',
+      payload: { area },
+    });
+  }
+
+  getmeter(area) {
+    this.props.dispatch({
+      type: 'collection/fetchmeterread',
+      payload: { area },
+    });
+  }
+
+  getzeroread() {
+    this.props.dispatch({
+      type: 'collection/fetchzeroread',
+    });
+  }
+
+  gethourread() {
+    this.props.dispatch({
+      type: 'collection/fetchhourread',
+    });
+  }
+
+  getsales(area) {
+    this.props.dispatch({
+      type: 'collection/fetchsales',
+      payload: { area },
+    });
+  }
+
+  getsupply(area) {
+    this.props.dispatch({
+      type: 'collection/fetchsupply',
+      payload: { area },
+    });
+  }
+
+  reloaddate = area => {
+    this.getcomplete(area);
+    this.getcoverage(area);
+    this.getmeter(area);
+    this.getzeroread();
+    this.gethourread();
+    this.getsales(area);
+    this.getsupply(area);
+  };
+
+  handleChange = value => {
+    this.getcomplete(value);
+    this.getcoverage(value);
+    this.getmeter(value);
+    this.getzeroread();
+    this.gethourread();
+    this.getsales(value);
+    this.getsupply(value);
+  };
+
   render() {
+    const {
+      loading,
+      collection: { complete, coverage, meterread, zeroread, hourread, salesdata, supplydata },
+    } = this.props;
+    const completedata = dataArr(complete);
+    const coverages = celldata(coverage);
+    const meterreads = celldata(meterread);
+    const zeroreads = changedate(zeroread);
+    const hourreads = changehour(hourread);
+    // console.log(salesdata.length);
     return (
       <PageHeaderWrapper title="采集指标情况">
         <div
@@ -302,7 +274,7 @@ class Collection extends Component {
             style={{ width: 300 }}
             placeholder="请选择"
             optionFilterProp="children"
-            // onChange={onChange}
+            onChange={this.handleChange}
             // onFocus={onFocus}
             // onBlur={onBlur}
             // onSearch={onSearch}
@@ -310,23 +282,30 @@ class Collection extends Component {
               option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
             }
           >
-            <Option value="广西电网公司">广西电网公司</Option>
-            <Option value="南宁供电局">南宁供电局</Option>
-            <Option value="柳州供电局">柳州供电局</Option>
+            {selectoption.map((item, index) => {
+              return (
+                <Option key={index.toString()} value={item}>
+                  {item}
+                </Option>
+              );
+            })}
           </Select>
         </div>
         <div>
           <Row gutter={24} type="flex">
             <Col xl={12} lg={24} style={{ marginBottom: 24 }}>
               <ChartCard
-                title="采集完成率"
+                title="采集完整率"
                 action={
                   <Tooltip title="指标说明">
                     <Icon type="info-circle-o" />
                   </Tooltip>
                 }
+                contentHeight={350}
               >
-                <Columncolor height={350} data={ColumncolorData} padding={[30, 30, 30, 50]} />
+                <Spin spinning={loading} style={{ background: '#ffffff' }}>
+                  <Columncolor height={350} data={completedata} padding={[30, 30, 30, 50]} />
+                </Spin>
               </ChartCard>
             </Col>
             <Col xl={12} lg={24} style={{ marginBottom: 24 }}>
@@ -337,8 +316,14 @@ class Collection extends Component {
                     <Icon type="info-circle-o" />
                   </Tooltip>
                 }
+                contentHeight={350}
               >
-                <Columncolor height={350} data={ColumncolorData2} padding={[30, 30, 30, 50]} />
+                {coverages.length === 0 && <Empty style={{ height: '250px' }} />}
+                <Spin spinning={loading} style={{ background: '#ffffff' }}>
+                  {coverages.length > 0 && (
+                    <Columncolor height={350} data={coverages} padding={[30, 50, 30, 50]} />
+                  )}
+                </Spin>
               </ChartCard>
             </Col>
             <Col xl={12} lg={24} style={{ marginBottom: 24 }}>
@@ -349,8 +334,14 @@ class Collection extends Component {
                     <Icon type="info-circle-o" />
                   </Tooltip>
                 }
+                contentHeight={350}
               >
-                <Columncolor height={350} data={ColumncolorData} padding={[30, 30, 30, 50]} />
+                {meterreads.length === 0 && <Empty style={{ height: '250px' }} />}
+                <Spin spinning={loading} style={{ background: '#ffffff' }}>
+                  {meterreads.length > 0 && (
+                    <Columncolor height={350} data={meterreads} padding={[30, 30, 30, 50]} />
+                  )}
+                </Spin>
               </ChartCard>
             </Col>
             <Col xl={12} lg={24} style={{ marginBottom: 24 }}>
@@ -361,13 +352,19 @@ class Collection extends Component {
                     <Icon type="info-circle-o" />
                   </Tooltip>
                 }
+                contentHeight={350}
               >
-                <LineChart
-                  height={350}
-                  data={LineChartData}
-                  cols={lincols}
-                  padding={[30, 30, 30, 50]}
-                />
+                {Labecols.length === 0 && <Empty />}
+                <Spin spinning={loading} style={{ background: '#ffffff' }}>
+                  {zeroreads.length > 0 && (
+                    <Labelline
+                      height={350}
+                      data={zeroreads}
+                      cols={Labecols}
+                      padding={[30, 30, 30, 50]}
+                    />
+                  )}
+                </Spin>
               </ChartCard>
             </Col>
             <Col xl={12} lg={24} style={{ marginBottom: 24 }}>
@@ -378,15 +375,20 @@ class Collection extends Component {
                     <Icon type="info-circle-o" />
                   </Tooltip>
                 }
+                contentHeight={350}
               >
-                <LineChart
-                  height={350}
-                  data={Wholehour}
-                  cols={timecols}
-                  padding={[30, 40, 30, 75]}
-                />
+                {hourreads.length === 0 && <Empty />}
+                {hourreads.length > 0 && (
+                  <LineChart
+                    height={350}
+                    data={hourreads}
+                    cols={timecols}
+                    padding={[30, 40, 30, 50]}
+                  />
+                )}
               </ChartCard>
             </Col>
+
             <Col xl={12} lg={24} style={{ marginBottom: 24 }}>
               <ChartCard
                 title="供电量分析（与前一日供电量比值）"
@@ -395,30 +397,43 @@ class Collection extends Component {
                     <Icon type="info-circle-o" />
                   </Tooltip>
                 }
+                contentHeight={350}
               >
-                <LineChart
-                  height={350}
-                  data={Powerdata}
-                  cols={lin2wcols}
-                  padding={[30, 30, 30, 75]}
-                />
+                {salesdata.length === 0 && <Empty style={{ height: '250px' }} />}
+                <Spin spinning={loading} style={{ background: '#ffffff' }}>
+                  {salesdata.length > 0 && (
+                    <LineChart
+                      height={350}
+                      data={salesdata}
+                      cols={lin2wcols}
+                      padding={[30, 30, 30, 75]}
+                    />
+                  )}
+                </Spin>
               </ChartCard>
             </Col>
+
             <Col xl={12} lg={24} style={{ marginBottom: 24 }}>
               <ChartCard
-                title="售电量分析（与前一日供电量比值）"
+                title="售电量分析（与前一日售电量比值）"
                 action={
                   <Tooltip title="指标说明">
                     <Icon type="info-circle-o" />
                   </Tooltip>
                 }
+                contentHeight={350}
               >
-                <LineChart
-                  height={350}
-                  data={Powerdata}
-                  cols={lin2wcols}
-                  padding={[30, 30, 30, 75]}
-                />
+                {supplydata.length === 0 && <Empty style={{ height: '250px' }} />}
+                <Spin spinning={loading} style={{ background: '#ffffff' }}>
+                  {supplydata.length > 0 && (
+                    <LineChart
+                      height={350}
+                      data={supplydata}
+                      cols={lin2wcols}
+                      padding={[30, 30, 30, 75]}
+                    />
+                  )}
+                </Spin>
               </ChartCard>
             </Col>
           </Row>

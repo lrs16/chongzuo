@@ -13,11 +13,17 @@ const menuArr = (data, authority) => {
   const datas = data.sort(compare('menuSort'));
   const newArr = [];
   const menu = 'menu.';
+
   if (!Array.isArray(datas)) {
     return newArr;
   }
   for (let i = 0; i < datas.length; i += 1) {
     const vote = {};
+    if (datas[i].menuHide === '1') {
+      vote.hideInMenu = true;
+    } else if (datas[i].menuHide === '0') {
+      vote.hideInMenu = false;
+    }
     vote.id = datas[i].id;
     vote.pid = datas[i].pid;
     vote.menuSort = datas[i].menuSort;

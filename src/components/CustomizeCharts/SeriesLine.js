@@ -1,20 +1,6 @@
 /* eslint-disable react/prefer-stateless-function */
 import React from 'react';
-import {
-  G2,
-  Chart,
-  Geom,
-  Axis,
-  Tooltip,
-  Coord,
-  Label,
-  Legend,
-  View,
-  Guide,
-  Shape,
-  Facet,
-  Util,
-} from 'bizcharts';
+import { Chart, Geom, Axis, Tooltip, Legend, Guide, Interaction } from 'bizcharts';
 
 const { Text } = Guide;
 
@@ -60,11 +46,8 @@ class SeriesLine extends React.Component {
               formatter: val => `${val}`,
             }}
           />
-          <Tooltip
-            crosshairs={{
-              type: 'y',
-            }}
-          />
+          <Tooltip shared />
+          <Interaction type="active-region" />
           <Geom type="line" position="clock*value" size={2} color={['name', Color]} />
           <Geom
             type="point"

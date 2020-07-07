@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'dva';
 // import Link from 'umi/link';
 import moment from 'moment';
-import { Table, Card, Badge, Divider} from 'antd';
+import { Table, Card, Badge, Divider } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
 @connect(({ opsscenes, loading }) => ({
@@ -25,17 +25,17 @@ class Home extends Component {
   }
 
   render() {
-    const view = (jobid) => {
+    const view = jobid => {
       const { dispatch } = this.props;
       dispatch({
         type: 'download/view',
         payload: { jobid },
       }).then(res => {
         const blob = new Blob([res], {
-          type: 'application/pdf;chartset=UTF-8'
+          type: 'application/pdf;chartset=UTF-8',
         });
         const url = window.URL.createObjectURL(blob);
-        window.open(url)
+        window.open(url);
       });
     };
     const download = (jobid, jobname) => {
@@ -117,7 +117,7 @@ class Home extends Component {
         render: (text, record) => {
           const { scriptName } = this.props.location.state;
           const downloadtext = record.handleCode === 200 ? '下载报告' : '';
-          const viewtext = record.handleCode === 200 ? '查看报告' : '';
+          // const viewtext = record.handleCode === 200 ? '查看报告' : '';
           // const myUrl = `http://172.16.4.211:8800/api-eai-job/oma/download/${record.id}/specify`;
           return (
             // <a
@@ -127,9 +127,9 @@ class Home extends Component {
             // >
             // 下载报告</a>
             <div>
-              <a onClick={() => view(record.id)}>{viewtext}</a>
-              <Divider type='vertical' />
-            <a onClick={() => download(record.id, scriptName)} >{downloadtext}</a>
+              {/* <a onClick={() => view(record.id)}>{viewtext}</a>
+              <Divider type='vertical' /> */}
+              <a onClick={() => download(record.id, scriptName)}>{downloadtext}</a>
             </div>
           );
         },

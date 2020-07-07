@@ -65,7 +65,6 @@ const BasicLayout = props => {
   /**
    * constructor
    */
-
   useEffect(() => {
     if (dispatch) {
       dispatch({

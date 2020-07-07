@@ -1,6 +1,6 @@
 import { routerRedux } from 'dva/router';
 import { stringify } from 'querystring';
-import { fakeAccountLogin, getFakeCaptcha } from '@/services/login';
+import { fakeAccountLogin, getFakeCaptcha, fakeLogout } from '@/services/login';
 import { queryCurrent } from '@/services/user';
 import { setAuthority } from '@/utils/authority';
 import { getPageQuery } from '@/utils/utils';
@@ -59,8 +59,9 @@ const Model = {
       yield call(getFakeCaptcha, payload);
     },
 
-    *logout(_, { put }) {
-      sessionStorage.clear(); // sessionStorage
+    *logout({ payload: { access_token } }, { call, put }) {
+      // console.log(payload);
+      sessionStorage.clear();
       const { redirect } = getPageQuery(); // redirect
 
       if (window.location.pathname !== '/user/login' && !redirect) {
@@ -73,6 +74,7 @@ const Model = {
           }),
         );
       }
+      return yield call(fakeLogout, access_token);
     },
   },
   reducers: {

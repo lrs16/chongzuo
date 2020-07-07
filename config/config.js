@@ -96,7 +96,7 @@ export default {
         {
           path: '/',
           component: '../layouts/BasicLayout',
-          authority: ['test'],
+          //authority: ['test','admin'],
           routes: [
             {
               path: '/',
@@ -121,7 +121,6 @@ export default {
               name: '自动化运维',
               dynamic: true,
               icon: 'deployment-unit',
-              authority: ['test'],
               routes: [
                 {
                   path: '/automation',
@@ -137,6 +136,7 @@ export default {
                   path: '/automation/opsscene',
                   name: '运维场景',
                   icon: 'control',
+                  //authority: ['test'],
                   component: './Automation/OpsScene',
                 },
                 {
@@ -253,14 +253,14 @@ export default {
               routes: [
                 {
                   path: '/alarmmanage',
-                  redirect: '/alarmmanage/monitor',
+                  redirect: '/alarmmanage/details',
                 },
-                {
-                  path: '/alarmmanage/monitor',
-                  name: '告警监控台',
-                  icon: 'cloud-server',
-                  component: './Alarmmanage',
-                },
+                // {
+                //   path: '/alarmmanage/monitor',
+                //   name: '告警监控台',
+                //   icon: 'cloud-server',
+                //   component: './Alarmmanage',
+                // },
                 {
                   path: '/alarmmanage/details',
                   name: '告警明细信息',
@@ -476,6 +476,16 @@ export default {
     // },
     '/basicMonitor/': {
       target: 'http://172.16.4.115:8889/', //监测管理
+      changeOrigin: true,
+      // pathRewrite: { '^/apiauth': '' }
+    },
+    '/cjzb/': {
+      target: 'http://172.16.4.211:8808/', //计量检测
+      changeOrigin: true,
+      // pathRewrite: { '^/apiauth': '' }
+    },
+    '/jkshhc/': {
+      target: 'http://172.16.4.211:8808/', //接口数据核查情况
       changeOrigin: true,
       // pathRewrite: { '^/apiauth': '' }
     },

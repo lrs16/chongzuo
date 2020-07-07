@@ -5,7 +5,7 @@ import {
   Chart,
   Geom,
   //  Axis,
-  Tooltip,
+  // Tooltip,
   Coord,
   Label,
   //  Legend,
@@ -92,9 +92,9 @@ class EdgeLine extends Component {
                 htmlTemplate={(text, item) => {
                   if (!item.point.hasChildren) {
                     if (item.point.value === 1) {
-                      return `<span style="color:#ff0000; white-space:nowrap;">${item.point.name}（招测失败）</span>`;
+                      return `<span style="color:#ff0000; white-space:nowrap;">${item.point.name}（召测失败）</span>`;
                     }
-                    return `<span style="color:#404040;white-space:nowrap;">${item.point.name}（招测失成功）</span>`;
+                    return `<span style="color:#404040;white-space:nowrap;">${item.point.name}（召测成功）</span>`;
                   }
                   return `<span style="color:#404040;white-space:nowrap;">${item.point.name}</span>`;
                 }}

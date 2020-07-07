@@ -25,8 +25,10 @@ class AvatarDropdown extends React.Component {
 
   onClicklogout = () => {
     const { dispatch } = this.props;
+    const access_token = sessionStorage.getItem('access_token');
     dispatch({
       type: 'login/logout',
+      payload: { access_token },
     });
   };
 

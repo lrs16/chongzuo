@@ -8,4 +8,5 @@ Curved              普通折线图（曲线）        曲线                   
 ColumnarY           参考下发                 Y方向柱状图       
 Wafflegrouped       多柱形图（官网）          Y方向多柱状图   
 Treecompactbox      紧凑树布局(官网)          树形关系图                     https://bizcharts.net/product/bizcharts/demo/53
-EdgeLine            档案召测测试              直线关系图                
+EdgeLine            档案召测测试              直线关系图        
+Labelline           關口0點采集               玫瑰图        

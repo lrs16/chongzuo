@@ -55,8 +55,7 @@ export async function UpdateMenu(params) {
 
 // 删除
 export async function removeMenu(id) {
-  const menuid = stringify(id);
-  return request(`/api-upms/upms_menu/${menuid.replace(/id=/, '')}`, {
+  return request(`/api-upms/upms_menu/${id}`, {
     method: 'DELETE',
     data: id,
     headers: {

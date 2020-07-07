@@ -55,10 +55,10 @@ const errorHandler = error => {
 
     if (status === 401) {
       notification.error({
-        message: `请求错误 ${status}`,
+        message: `登录失败`,
         description: errorText,
         onClose: close,
-        duration: 1.5,
+        duration: 0.5,
       });
     }
 

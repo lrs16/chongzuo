@@ -3,7 +3,7 @@ import { connect } from 'dva';
 import { Row, Col, Card, Tooltip } from 'antd';
 import numeral from 'numeral';
 // import { Pie, WaterWave, Gauge, TagCloud } from '@/components/Charts';
-import { Pie, WaterWave, Gauge, TagCloud } from 'ant-design-pro/lib/Charts';
+import { Pie, WaterWave, TagCloud } from 'ant-design-pro/lib/Charts';
 import NumberInfo from '@/components/NumberInfo';
 import CountDown from '@/components/CountDown';
 import ActiveChart from '@/components/ActiveChart';
@@ -81,7 +81,7 @@ class Monitor extends Component {
               bodyStyle={{ textAlign: 'center' }}
               bordered={false}
             >
-              <Gauge title="跳出率" height={180} percent={87} />
+              {/* <Gauge title="跳出率" height={180} percent={87} /> */}
             </Card>
           </Col>
         </Row>

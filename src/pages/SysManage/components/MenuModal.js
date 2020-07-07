@@ -1,7 +1,7 @@
 /* eslint-disable no-useless-constructor */
 /* eslint-disable react/destructuring-assignment */
 import React, { Component } from 'react';
-import { Form, Input, Modal } from 'antd';
+import { Form, Input, Modal, Radio } from 'antd';
 
 const formItemLayout = {
   labelCol: {
@@ -60,7 +60,16 @@ class MenuModal extends Component {
     const { getFieldDecorator } = this.props.form;
     const required = true;
     // console.log(this.props.record);
-    const { id, pid, menuSort, menuIcon, menuUrl, menuName, menuDesc } = this.props.record;
+    const {
+      id,
+      pid,
+      menuSort,
+      menuIcon,
+      menuUrl,
+      menuName,
+      menuDesc,
+      menuHide,
+    } = this.props.record;
     return (
       <>
         {withClick(children, this.handleopenClick)}
@@ -144,6 +153,16 @@ class MenuModal extends Component {
                 initialValue: menuDesc,
               })(<Input placeholder="请输入" />)}
             </Form.Item>
+            <Form.Item label="隐藏菜单">
+              {getFieldDecorator('menuHide', {
+                initialValue: menuHide,
+              })(
+                <Radio.Group>
+                  <Radio value="0">不隐藏</Radio>
+                  <Radio value="1">隐藏</Radio>
+                </Radio.Group>,
+              )}
+            </Form.Item>
           </Form>
         </Modal>
       </>
@@ -161,6 +180,7 @@ MenuModal.defaultProps = {
     menuName: '',
     menuDesc: '',
     subDescription: '',
+    menuHide: '0',
   },
 };
 export default Form.create()(MenuModal);

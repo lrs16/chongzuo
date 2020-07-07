@@ -1,20 +1,33 @@
-/* eslint-disable react/prefer-stateless-function */
 import React, { Component } from 'react';
-import { Chart, Geom, Axis, Tooltip, Guide, View } from 'bizcharts';
+import {
+  Chart,
+  Interval,
+  Axis,
+  Tooltip,
+  Annotation,
+  Line,
+  Legend,
+  Point,
+  Interaction,
+} from 'bizcharts';
+import DataSet from '@antv/data-set';
 
-const { Text } = Guide;
 class Columncolor extends Component {
+  dv = new DataSet().createView();
+
   render() {
     const { height, padding, data } = this.props;
-    const end = data[data.length - 1];
+    this.dv.source(data);
+    //  const end =data[data.length - 1];
+
     const scale = {
-      完成率: {
+      rate: {
         min: 0,
         max: 100,
         range: [0, 1],
-        alias: '完成率',
+        alias: '完整率',
       },
-      警戒值: {
+      alertvalue: {
         min: 0,
         max: 100,
         alias: '警戒值',
@@ -22,54 +35,113 @@ class Columncolor extends Component {
     };
     return (
       <div>
-        <Chart data={data} padding={padding} scale={scale} forceFit height={height}>
+        <Chart data={this.dv} padding={padding} scale={scale} height={height} forceFit animate>
           <Axis
-            name="完成率"
+            name="rate"
             label={{
               formatter: val => `${val}%`,
             }}
+            position="left"
           />
-          <Axis name="警戒值" visible={false} />
-          <View data={data}>
-            <Geom type="line" position="name*警戒值" color="#ff0000" size={3} />
-          </View>
-          <Geom
-            type="interval"
-            position="name*完成率"
-            // color={["name", ["#7f8da9", "#fec514", "#db4c3c", "#daf0fd"]]}
+          <Axis name="alertvalue" visible={false} />
+          <Axis name="type" />
+          <Legend visible={false} />
+          <Tooltip shared follow />
+          <Interaction type="active-region" />
+          {/* 柱形 */}
+          <Interval
+            position="type*rate"
             color={[
-              '完成率',
-              value => {
-                if (value <= 90.0) {
+              'rate*alertvalue',
+              (rate, alertvalue) => {
+                if (rate <= alertvalue) {
                   return '#FF3703';
                 }
-                if (value > 90.0 && value < 100.0) {
-                  return '#faa51a';
+                if (rate === 100.0) {
+                  return '#4ecb73';
                 }
-                if (value === 100) {
-                  return '#3ba1ff';
-                }
+                return '#3ba1ff';
               },
             ]}
+            label={[
+              'rate',
+              {
+                animate: true,
+              },
+            ]}
+            animate={{
+              appear: {
+                duration: 1000,
+                delay: 1000,
+              },
+              enter: {
+                duration: 1000, // enter 动画执行时间
+                delay: 600,
+              },
+              update: {
+                duration: 1000, // enter 动画执行时间
+                delay: 600,
+              },
+              leave: false, // 关闭 leave 销毁动画
+            }}
           />
-          <Tooltip />
-          <Geom type="line" position="label*警戒值" color="#ff0000" size={3} />
-
-          <Guide>
-            <Text
-              top // 指定 guide 是否绘制在 canvas 最上层，默认为 false, 即绘制在最下层
-              // position={{ name: '变电站', 警戒值: 90 }} // 文本的起始位置，值为原始数据值，支持 callback
-              position={{ name: end.name, 警戒值: end.警戒值 }}
-              content="警戒值" // 显示的文本内容
-              style={{
-                fill: '#f00', // 文本颜色
-                fontSize: '12', // 文本大小
-                // fontWeight: 'bold' // 文本粗细
-              }} // 文本的图形样式属性
-              offsetX={25} // x 方向的偏移量
-              offsetY={0} // y 方向偏移量
-            />
-          </Guide>
+          {/* 线形 */}
+          <Line
+            position="type*alertvalue"
+            color="#ff0000"
+            size={2}
+            shape="line"
+            animate={{
+              appear: {
+                duration: 1000,
+                delay: 600,
+              },
+              enter: {
+                duration: 1000, // enter 动画执行时间
+                delay: 600,
+              },
+              update: {
+                duration: 1000, // enter 动画执行时间
+                delay: 600,
+              },
+              leave: false, // 关闭 leave 销毁动画
+            }}
+          />
+          <Point
+            position="type*alertvalue"
+            color="#ff0000"
+            size={2}
+            shape="circle"
+            animate={{
+              appear: {
+                duration: 1000,
+                delay: 2000,
+              },
+              enter: {
+                duration: 1000, // enter 动画执行时间
+                delay: 2000,
+              },
+              update: {
+                duration: 1000, // enter 动画执行时间
+                delay: 2000,
+              },
+              leave: true, // 关闭 leave 销毁动画
+            }}
+          />
+          {/* 没有 <Annotation.Line />Text不显示原因待查 */}
+          <Annotation.Line />
+          <Annotation.Text
+            position={['max', 'max']}
+            content="警戒值"
+            style={{
+              fill: '#ff0000',
+              fontSize: 14,
+              textAlign: 'end',
+              textBaseline: 'center',
+            }}
+            offsetX={70} // x 方向的偏移量
+            offsetY={35} // y 方向偏移量
+          />
         </Chart>
       </div>
     );

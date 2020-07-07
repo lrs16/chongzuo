@@ -1,32 +1,17 @@
 import React, { Component } from 'react';
-import {
-  // G2,
-  Chart,
-  Geom,
-  Axis,
-  Tooltip,
-  // Coord,
-  // Label,
-  // Legend,
-  View,
-  Guide,
-  // Shape,
-  // Facet,
-  // Util,
-} from 'bizcharts';
+import { Chart, Legend, Axis, Tooltip, Line, Point, Annotation } from 'bizcharts';
 
-const { Text } = Guide;
-// 单曲线，单警戒线，图例：关口0点采集
+// 单曲线，多警戒线，图例：关口0点采集
 class LineChart extends Component {
   render() {
     const { height, padding, data, cols } = this.props;
     const end = data[data.length - 1];
     return (
       <div>
-        <Chart data={data} padding={padding} scale={cols} forceFit height={height}>
+        <Chart data={data} padding={padding} scale={cols} forceFit height={height} animate>
           {/* 时间刻度 */}
           <Axis
-            name="clock"
+            name="date"
             title={{
               position: 'end',
               offset: 15,
@@ -56,31 +41,33 @@ class LineChart extends Component {
               },
             }}
           />
-          <Tooltip
-            crosshairs={{
-              type: 'y',
+          <Axis name="alertvalue" visible={false} />
+          <Legend visible={false} />
+          <Tooltip shared follow />
+          {/* 折线图里的线 */}
+          <Line
+            shape="line"
+            position="date*value"
+            size={2}
+            animate={{
+              appear: {
+                duration: 1000,
+                delay: 1000,
+              },
+              enter: {
+                duration: 1000, // enter 动画执行时间
+                delay: 1000,
+              },
+              update: {
+                duration: 1000, // enter 动画执行时间
+                delay: 1000,
+              },
+              leave: false, // 关闭 leave 销毁动画
             }}
           />
-          {/* 折线图里的线 */}
-          <Geom
-            type="line"
-            position="clock*value"
-            size={2}
-            tooltip={[
-              'clock*value',
-              (clock, value) => {
-                return {
-                  name: '数值', // 要显示的名字
-                  value,
-                  title: clock,
-                };
-              },
-            ]}
-          />
           {/* 折线图里的圆点 */}
-          <Geom
-            type="point"
-            position="clock*value"
+          <Point
+            position="date*value"
             size={[
               'alert',
               alert => {
@@ -104,71 +91,119 @@ class LineChart extends Component {
                 return '#1890ff';
               },
             ]}
-            tooltip={[
-              'clock*value',
-              (clock, value) => {
-                return {
-                  name: '数值', // 要显示的名字
-                  value,
-                  title: clock,
-                };
-              },
-            ]}
           />
-          {/* 高警戒值 */}
-          <View data={data}>
-            <Geom type="line" position="clock*Max警戒值" color="#ff0000" size={2} />
-            <Guide>
-              <Text
-                top
-                position={{ clock: end.clock, Max警戒值: end.Max警戒值 }}
-                // position={[50%,50%]}
-                content="警戒值"
-                style={{
-                  fill: '#f00',
-                  fontSize: '12',
-                }}
-                offsetX={20}
-                offsetY={0}
-              />
-            </Guide>
-          </View>
-          {/* 低警戒值 */}
-          <View data={data}>
-            <Geom type="line" position="clock*Min警戒值" color="#ff0000" size={2} />
-            <Guide>
-              <Text
-                top
-                position={{ clock: end.clock, Min警戒值: end.Min警戒值 }}
-                // position={[50%,50%]}
-                content="警戒值"
-                style={{
-                  fill: '#f00',
-                  fontSize: '12',
-                }}
-                offsetX={20}
-                offsetY={0}
-              />
-            </Guide>
-          </View>
-          {/* 警戒值 */}
-          <View data={data}>
-            <Geom type="line" position="clock*警戒值" color="#ff0000" size={2} />
-            <Guide>
-              <Text
-                top
-                position={{ clock: end.clock, 警戒值: end.警戒值 }}
-                // position={[50%,50%]}
-                content="警戒值"
-                style={{
-                  fill: '#f00',
-                  fontSize: '12',
-                }}
-                offsetX={20}
-                offsetY={0}
-              />
-            </Guide>
-          </View>
+          {end.Max警戒值 !== undefined && (
+            <Line
+              shape="line"
+              position="date*Max警戒值"
+              size={2}
+              color="#ff0000"
+              animate={{
+                appear: {
+                  duration: 1000,
+                  delay: 1000,
+                },
+                enter: {
+                  duration: 1000, // enter 动画执行时间
+                  delay: 1000,
+                },
+                update: {
+                  duration: 1000, // enter 动画执行时间
+                  delay: 1000,
+                },
+                leave: false, // 关闭 leave 销毁动画
+              }}
+            />
+          )}
+          {end.Min警戒值 !== undefined && (
+            <Line
+              shape="line"
+              position="date*Min警戒值"
+              size={2}
+              color="#ff0000"
+              animate={{
+                appear: {
+                  duration: 1000,
+                  delay: 1000,
+                },
+                enter: {
+                  duration: 1000, // enter 动画执行时间
+                  delay: 1000,
+                },
+                update: {
+                  duration: 1000, // enter 动画执行时间
+                  delay: 1000,
+                },
+                leave: false, // 关闭 leave 销毁动画
+              }}
+            />
+          )}
+          {end.alertvalue !== undefined && (
+            <Line
+              shape="line"
+              position="date*alertvalue"
+              size={2}
+              color="#ff0000"
+              animate={{
+                appear: {
+                  duration: 1000,
+                  delay: 1000,
+                },
+                enter: {
+                  duration: 1000, // enter 动画执行时间
+                  delay: 1000,
+                },
+                update: {
+                  duration: 1000, // enter 动画执行时间
+                  delay: 1000,
+                },
+                leave: false, // 关闭 leave 销毁动画
+              }}
+            />
+          )}
+          <Annotation.Line />
+          {end.Max警戒值 !== undefined && (
+            <Annotation.Text
+              position={{ date: end.date, Max警戒值: end.Max警戒值 }}
+              content="高警戒值"
+              style={{
+                fill: '#ff0000',
+                fontSize: 14,
+                textAlign: 'end',
+                textBaseline: 'center',
+              }}
+              offsetX={50} // x 方向的偏移量
+              offsetY={0} // y 方向偏移量
+            />
+          )}
+          {end.Max警戒值 !== undefined && (
+            <Annotation.Text
+              position={{ date: end.date, Min警戒值: end.Min警戒值 }}
+              content="低警戒值"
+              style={{
+                fill: '#ff0000',
+                fontSize: 14,
+                textAlign: 'end',
+                textBaseline: 'center',
+              }}
+              offsetX={50} // x 方向的偏移量
+              offsetY={0} // y 方向偏移量
+            />
+          )}
+          {end.alertvalue !== undefined && (
+            <Annotation.Text
+              position={{ date: end.date, alertvalue: end.alertvalue }}
+              content="警戒值"
+              style={{
+                fill: '#ff0000',
+                fontSize: 14,
+                textAlign: 'end',
+                textBaseline: 'center',
+              }}
+              offsetX={50} // x 方向的偏移量
+              offsetY={0} // y 方向偏移量
+            />
+          )}
         </Chart>
       </div>
     );

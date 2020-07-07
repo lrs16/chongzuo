@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
+import moment from 'moment';
 import { Row, Col, Icon, Tooltip, Switch, Select, Button } from 'antd';
 import { ChartCard } from '@/components/Charts';
 import Donut from '@/components/CustomizeCharts/Donut';
@@ -7,73 +8,46 @@ import SeriesLine from '@/components/CustomizeCharts/SeriesLine';
 import EdgeLine from '@/components/CustomizeCharts/EdgeLine';
 import ColumnarY from '@/components/CustomizeCharts/ColumnarY';
 import LineChart from '@/components/CustomizeCharts/LineChart';
+import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
-const Donuttotal = 10000;
+const changearchdata = datas => {
+  const arr = Object.values(datas);
+  const newArrs = []; // 新的数组格式
+  if (!Array.isArray(arr)) {
+    return newArrs;
+  }
+  for (let i = 0; i < arr.length; i += 1) {
+    const arrss = arr[i];
+    for (let t = 0; t < arrss.length; t += 1) {
+      const vote = {};
+      vote.clock = moment(arrss[t].date).format('HH');
+      vote.alert = arrss[t].flag;
+      vote.value = arrss[t].total;
+      vote.name = arrss[t].type;
+      newArrs.push(vote);
+      // newArrs.push(arrss[t]);
+    }
+  }
+
+  return newArrs;
+
+  // console.log(newArrs);
+};
 const Filecontent = '阈值：电能表<2000   终端<1000   采集关系<10000';
 const Tablecontent = '理论值曲线';
 const Donutdata = [
   {
-    item: '配网入库',
+    type: '已处理',
     count: 600,
   },
   {
-    item: '采集指标',
+    type: '未处理',
     count: 200,
   },
   {
-    item: '接口程序',
+    type: '处理中',
     count: 100,
   },
-];
-const Filedatas = [
-  { name: '电能表', clock: 1, value: 1100, alert: false },
-  { name: '电能表', clock: 2, value: 1500, alert: false },
-  { name: '电能表', clock: 3, value: 2500, alert: true },
-  { name: '电能表', clock: 4, value: 3500, alert: true },
-  { name: '电能表', clock: 5, value: 4522, alert: true },
-  { name: '电能表', clock: 6, value: 4562, alert: true },
-  { name: '电能表', clock: 7, value: 1990, alert: false },
-  { name: '电能表', clock: 8, value: 4568, alert: true },
-  { name: '电能表', clock: 9, value: 1800, alert: false },
-  { name: '电能表', clock: 10, value: 3599, alert: true },
-  { name: '电能表', clock: 11, value: 1999, alert: false },
-  { name: '电能表', clock: 12, value: 2001, alert: true },
-  { name: '电能表', clock: 13, value: 1100, alert: false },
-  { name: '电能表', clock: 14, value: 1500, alert: false },
-  { name: '电能表', clock: 15, value: 2500, alert: true },
-  { name: '电能表', clock: 16, value: 3500, alert: true },
-  { name: '电能表', clock: 17, value: 6520, alert: true },
-  { name: '电能表', clock: 18, value: 2565, alert: true },
-  { name: '电能表', clock: 19, value: 1990, alert: false },
-  { name: '电能表', clock: 20, value: 4568, alert: true },
-  { name: '电能表', clock: 21, value: 1800, alert: false },
-  { name: '电能表', clock: 22, value: 3599, alert: true },
-  { name: '电能表', clock: 23, value: 1999, alert: false },
-  { name: '电能表', clock: 24, value: 2001, alert: true },
-  { name: '终端', clock: 1, value: 990, alert: false },
-  { name: '终端', clock: 2, value: 1150, alert: true },
-  { name: '终端', clock: 3, value: 1500, alert: true },
-  { name: '终端', clock: 4, value: 880, alert: false },
-  { name: '终端', clock: 5, value: 750, alert: false },
-  { name: '终端', clock: 6, value: 1150, alert: true },
-  { name: '终端', clock: 7, value: 1500, alert: true },
-  { name: '终端', clock: 8, value: 1620, alert: true },
-  { name: '终端', clock: 9, value: 1300, alert: true },
-  { name: '终端', clock: 10, value: 1850, alert: true },
-  { name: '终端', clock: 11, value: 2500, alert: true },
-  { name: '终端', clock: 12, value: 2750, alert: true },
-  { name: '关系采集', clock: 1, value: 8800, alert: false },
-  { name: '关系采集', clock: 2, value: 7500, alert: false },
-  { name: '关系采集', clock: 3, value: 6400, alert: false },
-  { name: '关系采集', clock: 4, value: 10000, alert: true },
-  { name: '关系采集', clock: 5, value: 8500, alert: false },
-  { name: '关系采集', clock: 6, value: 9900, alert: false },
-  { name: '关系采集', clock: 7, value: 13000, alert: true },
-  { name: '关系采集', clock: 8, value: 11000, alert: true },
-  { name: '关系采集', clock: 9, value: 9500, alert: false },
-  { name: '关系采集', clock: 10, value: 7500, alert: true },
-  { name: '关系采集', clock: 11, value: 8000, alert: false },
-  { name: '关系采集', clock: 12, value: 15000, alert: true },
 ];
 const Issueddata = [
   { category: '正常', sold: 16000, alert: false },
@@ -159,8 +133,6 @@ const LineChartData = [
 // 有用
 const Filecols = {
   clock: {
-    min: 1,
-    max: 24,
     range: [0.05, 0.95],
     alias: '时刻',
     tickInterval: 1,
@@ -217,9 +189,9 @@ const timecols = {
 };
 const Filecolor = ['#1890ff', '#2fc25b', '#f00'];
 const Tablecolor = ['#4061d7', '#bbb', '#f00'];
-@connect(({ measur, loading }) => ({
-  measur,
-  loading: loading.models.measur,
+@connect(({ measurface, loading }) => ({
+  measurface,
+  loading: loading.models.measurface,
 }))
 class MeasurFace extends Component {
   state = {
@@ -227,13 +199,53 @@ class MeasurFace extends Component {
   };
 
   componentDidMount() {
-    this.getSummondatas();
+    this.getsettl();
+    this.getarch();
+    this.getissue();
+    this.getfile();
+    this.gettable();
+    this.getorder();
   }
 
-  getSummondatas() {
+  getsettl() {
     const { dispatch } = this.props;
     dispatch({
-      type: 'measur/fetchFacatdata',
+      type: 'measurface/fetchsettl',
+    });
+  }
+
+  getarch() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'measurface/fetcharch',
+    });
+  }
+
+  getissue() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'measurface/fetchissue',
+    });
+  }
+
+  getfile() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'measurface/fetchfile',
+    });
+  }
+
+  gettable() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'measurface/fetchtable',
+    });
+  }
+
+  getorder() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'measurface/fetchorder',
     });
   }
 
@@ -242,56 +254,60 @@ class MeasurFace extends Component {
   };
 
   render() {
-    const { measur = {} } = this.props;
-    const { facadatas = {} } = measur;
-    const treedata = facadatas;
+    const {
+      loading,
+      measurface: { settldata, archdata, issuedata, filetdata, tabledata, orderdata },
+    } = this.props;
+
+    const archdatas = changearchdata(archdata);
     const { selectedItems } = this.state;
     const filteredOptions = selectdtats.filter(o => !selectedItems.includes(o));
     return (
-      <div>
-        <Row gutter={24} type="flex">
-          <Col xl={12} xs={24} style={{ marginBottom: 24 }}>
-            <ChartCard title="登录检测">
-              <div
-                style={{
-                  position: 'absolute',
-                  right: 0,
-                  top: -18,
-                  textAlign: 'right',
-                }}
+      <PageHeaderWrapper title="接口数据核查情况">
+        <div>
+          <Row gutter={24} type="flex">
+            <Col xl={12} xs={24} style={{ marginBottom: 24 }}>
+              <ChartCard title="抄表结算接口">
+                <div
+                  style={{
+                    position: 'absolute',
+                    right: 0,
+                    top: -18,
+                    textAlign: 'right',
+                  }}
+                >
+                  <span>开始/结束进程</span>
+                  <Switch
+                    style={{ margin: '-5px 10px 0 10px' }}
+                    checkedChildren="开"
+                    unCheckedChildren="结"
+                    defaultChecked
+                  />
+                  <span>5s/刷新</span>
+                </div>
+                <Donut data={Donutdata} height={350} padding={[0, 0, 0, 0]} />
+              </ChartCard>
+            </Col>
+            <Col xl={12} xs={24} style={{ marginBottom: 24 }}>
+              <ChartCard
+                title="档案同步接口（同步中间库）"
+                action={
+                  <Tooltip title="指标说明:红点为超阈值数量">
+                    <Icon type="info-circle-o" />
+                  </Tooltip>
+                }
               >
-                <span>开始/结束进程</span>
-                <Switch
-                  style={{ margin: '-5px 10px 0 10px' }}
-                  checkedChildren="开"
-                  unCheckedChildren="结"
-                  defaultChecked
+                <SeriesLine
+                  cols={Filecols}
+                  data={archdatas}
+                  content={Filecontent}
+                  Color={Filecolor}
+                  height={350}
+                  padding={[30, 20, 70, 80]}
                 />
-                <span>5s/刷新</span>
-              </div>
-              <Donut data={Donutdata} content={Donuttotal} height={350} padding={[0, 0, 0, 0]} />
-            </ChartCard>
-          </Col>
-          <Col xl={12} xs={24} style={{ marginBottom: 24 }}>
-            <ChartCard
-              title="档案同步接口（同步中间库）"
-              action={
-                <Tooltip title="指标说明:红点为超阈值数量">
-                  <Icon type="info-circle-o" />
-                </Tooltip>
-              }
-            >
-              <SeriesLine
-                cols={Filecols}
-                data={Filedatas}
-                content={Filecontent}
-                Color={Filecolor}
-                height={350}
-                padding={[30, 20, 70, 80]}
-              />
-            </ChartCard>
-          </Col>
-          <Col xl={12} xs={24} style={{ marginBottom: 24 }}>
+              </ChartCard>
+            </Col>
+            {/* <Col xl={12} xs={24} style={{ marginBottom: 24 }}>
             <ChartCard title="参考下发（1h/刷新）">
               <ColumnarY
                 cols={Issuedscale}
@@ -321,7 +337,7 @@ class MeasurFace extends Component {
                     </Select.Option>
                   ))}
                 </Select>
-                <Button type="primary">手工招测</Button>
+                <Button type="primary">手工召测</Button>
               </div>
             </ChartCard>
           </Col>
@@ -346,9 +362,10 @@ class MeasurFace extends Component {
                 padding={[30, 30, 30, 75]}
               />
             </ChartCard>
-          </Col>
-        </Row>
-      </div>
+          </Col> */}
+          </Row>
+        </div>
+      </PageHeaderWrapper>
     );
   }
 }

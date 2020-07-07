@@ -68,7 +68,7 @@ class MenuManage extends Component {
       const { dispatch } = this.props;
       return dispatch({
         type: 'upmsmenu/remove',
-        payload: { id },
+        payload: id,
       }).then(res => {
         if (res.code === 200) {
           Message.success(res.msg);
@@ -133,17 +133,6 @@ class MenuManage extends Component {
         sorter: (a, b) => a.name.length - b.name.length,
         render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
       },
-      // {
-      //   title: '创建人',
-      //   dataIndex: 'createUser',
-      //   key: 'createUser',
-      //   sorter: true,
-      // },
-      // {
-      //   title: '权限',
-      //   dataIndex: 'menuAuth',
-      //   key: 'menuAuth',
-      // },
       {
         title: '操作',
         dataIndex: 'action',
