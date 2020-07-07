@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
-import { Row, Col, Icon, Tooltip, Switch, Select, Button } from 'antd';
+import { Row, Col, Icon, Tooltip, Switch, Select, Button, Spin, Empty } from 'antd';
 import { ChartCard } from '@/components/Charts';
 import Donut from '@/components/CustomizeCharts/Donut';
 import SeriesLine from '@/components/CustomizeCharts/SeriesLine';
@@ -28,10 +28,22 @@ const changearchdata = datas => {
       // newArrs.push(arrss[t]);
     }
   }
-
   return newArrs;
-
-  // console.log(newArrs);
+};
+const changehour = datas => {
+  const newArr = [];
+  if (!Array.isArray(datas)) {
+    return newArr;
+  }
+  for (let i = 0; i < datas.length; i += 1) {
+    const vote = {};
+    vote.value = datas[i].total;
+    vote.date = moment(datas[i].date).format('HH');
+    vote.alert = false;
+    vote.alertvalue = 10;
+    newArr.push(vote);
+  }
+  return newArr;
 };
 const Filecontent = '阈值：电能表<2000   终端<1000   采集关系<10000';
 const Tablecontent = '理论值曲线';
@@ -49,15 +61,7 @@ const Donutdata = [
     count: 100,
   },
 ];
-const Issueddata = [
-  { category: '正常', sold: 16000, alert: false },
-  { category: '否认', sold: 15001, alert: true },
-  { category: '无上下文报文', sold: 12200, alert: true },
-  { category: '前置未返回', sold: 10900, alert: true },
-  { category: '报文出错', sold: 7890, alert: true },
-  { category: '空值', sold: 4200, alert: true },
-  { category: '超时', sold: 2690, alert: true },
-];
+
 const Tabledatas = [
   { name: '未同步', clock: 1, value: 1100, alert: false },
   { name: '未同步', clock: 2, value: 1300, alert: false },
@@ -109,26 +113,20 @@ const Tabledatas = [
   { name: '基准值', clock: 24, value: 1000, alert: false },
 ];
 const selectdtats = [
+  '广西电网公司',
   '南宁供电局',
   '柳州供电局',
   '桂林供电局',
   '贵港供电局',
-  '梧州供电局',
+  '玉林供电局',
+  '来宾供电局',
   '河池供电局',
-];
-const LineChartData = [
-  { clock: '1', value: 5, 警戒值: 10, alert: false },
-  { clock: '2', value: 8, 警戒值: 10, alert: false },
-  { clock: '3', value: 11, 警戒值: 10, alert: true },
-  { clock: '4', value: 9, 警戒值: 10, alert: false },
-  { clock: '5', value: 9, 警戒值: 10, alert: false },
-  { clock: '6', value: 5, 警戒值: 10, alert: false },
-  { clock: '7', value: 6, 警戒值: 10, alert: false },
-  { clock: '8', value: 7, 警戒值: 10, alert: false },
-  { clock: '9', value: 12, 警戒值: 10, alert: true },
-  { clock: '10', value: 13, 警戒值: 10, alert: true },
-  { clock: '11', value: 14, 警戒值: 10, alert: true },
-  { clock: '12', value: 15, 警戒值: 10, alert: true },
+  '梧州供电局',
+  '北海供电局',
+  '钦州供电局',
+  '防城港供电局',
+  '崇左供电局',
+  '贺州供电局',
 ];
 // 有用
 const Filecols = {
@@ -141,16 +139,15 @@ const Filecols = {
     // max:17500,
     range: [0, 0.9],
     alias: '待同步档案数量',
-    tickInterval: 2500,
+    // tickInterval: 2500,
   },
 };
 const Issuedscale = {
-  sold: {
+  total: {
     type: 'linear',
     alias: '返回结果数量',
     min: 0,
-    max: 17000,
-    tickInterval: 1000,
+    tickInterval: 5000,
   },
 };
 const Tablecols = {
@@ -170,19 +167,18 @@ const Tablecols = {
 };
 const timecols = {
   value: {
-    min: 0,
+    min: -10,
     max: 50,
     range: [0, 1],
     alias: '超时记录数',
   },
-  clock: {
-    max: 24,
+  date: {
     range: [0.02, 0.9],
     alias: '时刻',
-    tickInterval: 2,
+    tickInterval: 1,
   },
-  警戒值: {
-    min: 0,
+  alertvalue: {
+    min: -10,
     max: 50,
     alias: '警戒值',
   },
@@ -205,6 +201,11 @@ class MeasurFace extends Component {
     this.getfile();
     this.gettable();
     this.getorder();
+    this.interval = setInterval(() => this.reloaddate(), 600000);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.interval);
   }
 
   getsettl() {
@@ -249,8 +250,23 @@ class MeasurFace extends Component {
     });
   }
 
+  reloaddate = () => {
+    this.getsettl();
+    this.getarch();
+    this.getissue();
+    this.getfile();
+    this.gettable();
+    this.getorder();
+  };
+
   handleChange = selectedItems => {
     this.setState({ selectedItems });
+  };
+
+  onChange = checked => {
+    if (checked === true) {
+      setInterval(() => this.getsettl(), 20000);
+    } else setTimeout(() => this.getsettl(), 20000);
   };
 
   render() {
@@ -260,6 +276,7 @@ class MeasurFace extends Component {
     } = this.props;
 
     const archdatas = changearchdata(archdata);
+    const orderdatas = changehour(orderdata);
     const { selectedItems } = this.state;
     const filteredOptions = selectdtats.filter(o => !selectedItems.includes(o));
     return (
@@ -282,87 +299,122 @@ class MeasurFace extends Component {
                     checkedChildren="开"
                     unCheckedChildren="结"
                     defaultChecked
+                    onChange={this.onChange}
                   />
                   <span>5s/刷新</span>
                 </div>
-                <Donut data={Donutdata} height={350} padding={[0, 0, 0, 0]} />
+
+                <Spin spinning={loading} style={{ background: '#ffffff' }}>
+                  {Donutdata === undefined && <Empty style={{ height: '250px' }} />}
+                  {Donutdata !== undefined && (
+                    <Donut data={Donutdata} height={350} padding={[0, 0, 0, 0]} />
+                  )}
+                </Spin>
               </ChartCard>
             </Col>
             <Col xl={12} xs={24} style={{ marginBottom: 24 }}>
               <ChartCard
                 title="档案同步接口（同步中间库）"
                 action={
-                  <Tooltip title="指标说明:红点为超阈值数量">
-                    <Icon type="info-circle-o" />
+                  <Tooltip title="指标说明： 红点为超阈值数量">
+                    <Icon type="info-circle-o" style={{ color: '#f60' }} />
                   </Tooltip>
                 }
+                contentHeight={350}
               >
-                <SeriesLine
-                  cols={Filecols}
-                  data={archdatas}
-                  content={Filecontent}
-                  Color={Filecolor}
-                  height={350}
-                  padding={[30, 20, 70, 80]}
-                />
+                {archdatas.length === 0 && <Empty style={{ height: '250px' }} />}
+                <Spin spinning={loading} style={{ background: '#ffffff' }}>
+                  {archdatas.length > 0 && (
+                    <SeriesLine
+                      cols={Filecols}
+                      data={archdatas}
+                      content={Filecontent}
+                      Color={Filecolor}
+                      height={350}
+                      padding={[30, 20, 70, 80]}
+                    />
+                  )}
+                </Spin>
               </ChartCard>
             </Col>
-            {/* <Col xl={12} xs={24} style={{ marginBottom: 24 }}>
-            <ChartCard title="参考下发（1h/刷新）">
-              <ColumnarY
-                cols={Issuedscale}
-                data={Issueddata}
-                height={350}
-                padding={[30, 30, 50, 90]}
-              />
-            </ChartCard>
-          </Col>
-          <Col xl={12} xs={24} style={{ marginBottom: 24 }}>
-            <ChartCard title="1h/自动召测测试">
-              <div style={{ margin: '50px 0 0 0' }}>
-                <EdgeLine datas={treedata} height={300} padding={[0, 120, 0, 50]} />
-              </div>
-              <div style={{ margin: '10px', position: 'absolute', top: '-50px', zIndex: '100px' }}>
-                <span>档案召测测试</span>
-                <Select
-                  mode="multiple"
-                  placeholder="请选择"
-                  value={selectedItems}
-                  onChange={this.handleChange}
-                  style={{ width: '300px', margin: '0 10px' }}
+            <Col xl={12} xs={24} style={{ marginBottom: 24 }}>
+              <ChartCard title="参考下发（1h/刷新）" contentHeight={350}>
+                {issuedata.length === 0 && <Empty style={{ height: '250px' }} />}
+                <Spin spinning={loading} style={{ background: '#ffffff' }}>
+                  {issuedata.length > 0 && (
+                    <ColumnarY
+                      cols={Issuedscale}
+                      data={issuedata}
+                      height={350}
+                      padding={[30, 60, 50, 220]}
+                    />
+                  )}
+                </Spin>
+              </ChartCard>
+            </Col>
+            <Col xl={12} xs={24} style={{ marginBottom: 24 }}>
+              <ChartCard title="1h/自动召测测试" contentHeight={350}>
+                <div style={{ margin: '50px 0 0 0' }}>
+                  {filetdata === undefined && <Empty style={{ height: '250px' }} />}
+                  <Spin spinning={loading} style={{ background: '#ffffff' }}>
+                    {filetdata !== undefined && (
+                      <EdgeLine datas={filetdata} height={300} padding={[0, 120, 0, 50]} />
+                    )}
+                  </Spin>
+                </div>
+                <div
+                  style={{ margin: '10px', position: 'absolute', top: '-50px', zIndex: '100px' }}
                 >
-                  {filteredOptions.map(item => (
-                    <Select.Option key={item} value={item}>
-                      {item}
-                    </Select.Option>
-                  ))}
-                </Select>
-                <Button type="primary">手工召测</Button>
-              </div>
-            </ChartCard>
-          </Col>
-          <Col xl={12} xs={24} style={{ marginBottom: 24 }}>
-            <ChartCard title="测量点主表生成">
-              <SeriesLine
-                cols={Tablecols}
-                data={Tabledatas}
-                content={Tablecontent}
-                Color={Tablecolor}
-                height={350}
-                padding={[30, 20, 70, 80]}
-              />
-            </ChartCard>
-          </Col>
-          <Col xl={12} xs={24} style={{ marginBottom: 24 }}>
-            <ChartCard title="费控指令-KAFKA指令超时">
-              <LineChart
-                height={350}
-                data={LineChartData}
-                cols={timecols}
-                padding={[30, 30, 30, 75]}
-              />
-            </ChartCard>
-          </Col> */}
+                  <span>档案召测测试</span>
+                  <Select
+                    mode="multiple"
+                    placeholder="请选择"
+                    value={selectedItems}
+                    onChange={this.handleChange}
+                    style={{ width: '300px', margin: '0 10px' }}
+                  >
+                    {filteredOptions.map(item => (
+                      <Select.Option key={item} value={item}>
+                        {item}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                  <Button type="primary">手工召测</Button>
+                </div>
+              </ChartCard>
+            </Col>
+            <Col xl={12} xs={24} style={{ marginBottom: 24 }}>
+              <ChartCard title="测量点主表生成" contentHeight={350}>
+                {Tabledatas.length === 0 && <Empty style={{ height: '250px' }} />}
+                <Spin spinning={loading} style={{ background: '#ffffff' }}>
+                  {Tabledatas.length > 0 && (
+                    <SeriesLine
+                      cols={Tablecols}
+                      data={Tabledatas}
+                      content={Tablecontent}
+                      Color={Tablecolor}
+                      height={350}
+                      padding={[30, 20, 70, 80]}
+                    />
+                  )}
+                </Spin>
+              </ChartCard>
+            </Col>
+            <Col xl={12} xs={24} style={{ marginBottom: 24 }}>
+              <ChartCard title="费控指令-KAFKA指令超时" contentHeight={350}>
+                {orderdatas.length === 0 && <Empty style={{ height: '250px' }} />}
+                <Spin spinning={loading} style={{ background: '#ffffff' }}>
+                  {orderdatas.length > 0 && (
+                    <LineChart
+                      height={350}
+                      data={orderdatas}
+                      cols={timecols}
+                      padding={[30, 30, 30, 75]}
+                    />
+                  )}
+                </Spin>
+              </ChartCard>
+            </Col>
           </Row>
         </div>
       </PageHeaderWrapper>

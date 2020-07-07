@@ -1,8 +1,6 @@
 /* eslint-disable react/prefer-stateless-function */
 import React from 'react';
-import { Chart, Geom, Axis, Tooltip, Legend, Guide, Interaction } from 'bizcharts';
-
-const { Text } = Guide;
+import { Chart, Axis, Tooltip, Legend, Line, Point, Annotation } from 'bizcharts';
 
 class SeriesLine extends React.Component {
   render() {
@@ -46,11 +44,18 @@ class SeriesLine extends React.Component {
               formatter: val => `${val}`,
             }}
           />
-          <Tooltip shared />
-          <Interaction type="active-region" />
-          <Geom type="line" position="clock*value" size={2} color={['name', Color]} />
-          <Geom
-            type="point"
+          <Tooltip
+            shared
+            follow
+            showCrosshairs
+            crosshairs={{
+              type: 'x',
+            }}
+          />
+          <Annotation.Line />
+          <Annotation.Text position={['median', 'max']} content={content} offsetY="-30" />
+          <Line position="clock*value" size={2} color={['name', Color]} />
+          <Point
             position="clock*value"
             // size={4}
             size={[
@@ -77,17 +82,6 @@ class SeriesLine extends React.Component {
               lineWidth: 1,
             }}
           />
-          <Guide>
-            <Text
-              top
-              position={['20%', '0%']}
-              content={content}
-              style={{
-                fill: '#666',
-                fontSize: '12',
-              }}
-            />
-          </Guide>
         </Chart>
       </div>
     );

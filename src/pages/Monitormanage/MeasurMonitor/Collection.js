@@ -250,7 +250,6 @@ class Collection extends Component {
     const meterreads = celldata(meterread);
     const zeroreads = changedate(zeroread);
     const hourreads = changehour(hourread);
-    // console.log(salesdata.length);
     return (
       <PageHeaderWrapper title="采集指标情况">
         <div
@@ -303,8 +302,11 @@ class Collection extends Component {
                 }
                 contentHeight={350}
               >
+                {coverages.length === 0 && <Empty style={{ height: '250px' }} />}
                 <Spin spinning={loading} style={{ background: '#ffffff' }}>
-                  <Columncolor height={350} data={completedata} padding={[30, 30, 30, 50]} />
+                  {coverages.length > 0 && (
+                    <Columncolor height={350} data={completedata} padding={[30, 30, 30, 50]} />
+                  )}
                 </Spin>
               </ChartCard>
             </Col>

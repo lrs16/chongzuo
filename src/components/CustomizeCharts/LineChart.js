@@ -43,7 +43,14 @@ class LineChart extends Component {
           />
           <Axis name="alertvalue" visible={false} />
           <Legend visible={false} />
-          <Tooltip shared follow />
+          <Tooltip
+            shared
+            follow
+            showCrosshairs
+            crosshairs={{
+              type: 'x',
+            }}
+          />
           {/* 折线图里的线 */}
           <Line
             shape="line"

@@ -1,6 +1,6 @@
 /* eslint-disable react/prefer-stateless-function */
 import React from 'react';
-import { Chart, Geom, Axis, Coord, Label, Tooltip } from 'bizcharts';
+import { Chart, Geom, Axis, Coord, Label, Tooltip, Legend } from 'bizcharts';
 
 class ColumnarY extends React.Component {
   render() {
@@ -17,22 +17,23 @@ class ColumnarY extends React.Component {
         >
           <Coord transpose />
           <Axis
-            name="sold"
+            name="total"
             label={{
-              formatter: val => `${(val / 1000).toFixed(0)}k`,
+              formatter: val => `${(val / 10000).toFixed(1)}w`,
             }}
           />
-          <Axis name="category" />
-          <Tooltip />
-          <Geom type="interval" position="category*sold" color="category">
+          <Axis name="type" />
+          <Tooltip showTitle={false} />
+          <Legend visible={false} />
+          <Geom type="interval" position="type*total" color="type">
             <Label
-              content="sold"
+              content="total"
               offset={10} // 设置坐标轴文本 label 距离坐标轴线的距离
               htmlTemplate={(text, item) => {
-                if (item.point.alert === true) {
-                  return `<span style="color:#ff0000;">${item.point.sold}</span>`;
+                if (item.point.flag === true) {
+                  return `<span style="color:#ff0000;">${item.point.total}</span>`;
                 }
-                return `<span style="color:#404040;">${item.point.sold}</span>`;
+                return `<span style="color:#404040;">${item.point.total}</span>`;
               }}
             />
           </Geom>

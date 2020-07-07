@@ -22,7 +22,6 @@ export default {
   effects: {
     *fetchsettl(_, { call, put }) {
       const response = yield call(querySettlement);
-      //  console.log(response);
       yield put({
         type: 'getsettl',
         payload: response.data,
