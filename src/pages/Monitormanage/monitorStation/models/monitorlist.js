@@ -1,4 +1,4 @@
-import { querylisthost, querylistdatabase, queryMonitorGroup } from '../services/api';
+import { querylisthost, querylistdatabase, queryMonitorGroup } from '../services/monitorList';
 
 export default {
   namespace: 'monitorlist',

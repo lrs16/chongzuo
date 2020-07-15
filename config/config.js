@@ -246,7 +246,7 @@ export default {
                   path: '/monitormanage/home',
                   name: '监控台',
                   icon: 'cloud-server',
-                  component: './Monitormanage',
+                  component: './Monitormanage/MonitorStation',
                 },
                 {
                   path: '/monitormanage/measurmonitor',
@@ -589,7 +589,7 @@ export default {
     //   // pathRewrite: { '^/server': '' },
     // },
     '/basicMonitor/': {
-      target: 'http://172.16.4.115:8889/', //监测管理
+      target: 'http://localhost:8889/', //监测管理
       changeOrigin: true,
       // pathRewrite: { '^/apiauth': '' }
     },

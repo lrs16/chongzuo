@@ -24,7 +24,7 @@ class HostList extends Component {
         width: 120,
         render: (text, record) => (
           <span>
-            <Button type="link" onClick={() => onClick(record.id)}>
+            <Button type="link" onClick={() => onClick(record)}>
               {text}
             </Button>
           </span>
