@@ -73,3 +73,66 @@ export async function queryMaintable() {
 export async function queryOrder() {
   return request(`/jkshhc/fkzl/kafkazlcs`);
 }
+
+// 3区KAFKA节点
+export async function getKafka3Zone() {
+  return request(`/kafka/3Zone`);
+}
+
+// 安全接入区KAFKA节点
+export async function getKafkaSafeZone() {
+  return request(`/kafka/SafeZone`);
+}
+
+// 2区KAFKA节点
+export async function getKafka2Zone() {
+  return request(`/kafka/2Zone`);
+}
+
+// 下行主题 低压相关
+export async function getdownDY() {
+  return request(`/kafka/topicDown/DY`);
+}
+
+// 其他回复接口（低压相关）
+export async function getdownOther() {
+  return request(`/kafka/topicDown/DYQTHFJK`);
+}
+
+// 广西102关口方面二区和安全接入区
+
+export async function get102Zone2() {
+  return request(`/kafka/topicDown/DYQTHFJK`);
+}
+
+// 其他回复接口（低压相关）
+export async function get102SafeZone() {
+  return request(`/kafka/topicDown/102GK2ZoneAndSafeZone`);
+}
+
+// 上行主题 低压相关
+export async function getupDY() {
+  return request(`/kafka/topicUp/DY`);
+}
+
+// 其他回复接口（低压相关）
+export async function getupOther() {
+  return request(`/kafka/topicDown/DYQTHFJK`);
+}
+
+// 广西102关口方面二区和安全接入区1
+export async function get102up2Zone() {
+  return request(`/kafka/topicUp/102GK2ZoneAndSafeZone1`);
+}
+
+// 广西102关口方面二区和安全接入区2
+export async function get102upSafe2Zone() {
+  return request(`/kafka/topicUp/102GK2ZoneAndSafeZone2`);
+}
+
+// 广西102关口方面二区和安全接入区2
+export async function get102upSafeZone() {
+  return request(`/kafka/topicUp/102GK2ZoneAndSafeZoneQTHFJK`);
+}
+
+//

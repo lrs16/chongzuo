@@ -187,7 +187,7 @@ export default {
               routes: [
                 {
                   path: '/monitormanage',
-                  redirect: '/monitormanage/home',
+                  redirect: '/monitormanage/measurmonitor',
                 },
                 {
                   path: '/monitormanage/home',
@@ -221,24 +221,30 @@ export default {
                       icon: 'cloud-server',
                       component: './Monitormanage/MeasurMonitor/MeasurFace',
                     },
-                    // {
-                    //   path: '/monitormanage/measurmonitor/fafka',
-                    //   name: 'KAFKA消费',
-                    //   icon: 'cloud-server',
-                    //   component: './Monitormanage/MeasurMonitor/Fafak',
-                    // },
-                    // {
-                    //   path: '/monitormanage/measurmonitor/sysrunning',
-                    //   name: '主站系统运行',
-                    //   icon: 'cloud-server',
-                    //   component: './Monitormanage/MeasurMonitor/SysRunning',
-                    // },
-                    // {
-                    //   path: '/monitormanage/measurmonitor/databaseterminal',
-                    //   name: '终端工况和数据入库',
-                    //   icon: 'cloud-server',
-                    //   component: './Monitormanage/MeasurMonitor/DatabaseTerminal',
-                    // },
+                    {
+                      path: '/monitormanage/measurmonitor/fafka',
+                      name: 'KAFKA消费',
+                      icon: 'cloud-server',
+                      component: './Monitormanage/MeasurMonitor/Fafak',
+                    },
+                    {
+                      path: '/monitormanage/measurmonitor/fafkamatinal',
+                      name: 'KAFKA消费（凌晨）',
+                      icon: 'cloud-server',
+                      component: './Monitormanage/MeasurMonitor/FafakMatinal',
+                    },
+                    {
+                      path: '/monitormanage/measurmonitor/sysrunning',
+                      name: '主站系统运行',
+                      icon: 'cloud-server',
+                      component: './Monitormanage/MeasurMonitor/SysRunning',
+                    },
+                    {
+                      path: '/monitormanage/measurmonitor/databaseterminal',
+                      name: '终端工况和数据入库',
+                      icon: 'cloud-server',
+                      component: './Monitormanage/MeasurMonitor/DatabaseTerminal',
+                    },
                     {
                       component: './404',
                     },
@@ -269,7 +275,7 @@ export default {
                 },
                 {
                   path: '/alarmmanage/details/detailview/:detailsid',
-                  name: 'detailview',
+                  name: '告警详细信息',
                   icon: 'cloud-server',
                   hideInMenu: true,
                   component: './Alarmmanage/DetailView',

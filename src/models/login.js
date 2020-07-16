@@ -15,6 +15,7 @@ const Model = {
   effects: {
     *login({ payload }, { call, put }) {
       const response = yield call(fakeAccountLogin, payload);
+      console.log(response);
       sessionStorage.setItem('access_token', response.data.access_token);
       sessionStorage.setItem('refresh_token', response.data.refresh_token);
       sessionStorage.setItem('expires_in', response.data.expires_in);

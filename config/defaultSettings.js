@@ -11,7 +11,7 @@ export default {
   menu: {
     locale: false,
   },
-  title: 'DEOP',
+  title: 'DOEP',
   pwa: false,
   iconfontUrl: '',
 };

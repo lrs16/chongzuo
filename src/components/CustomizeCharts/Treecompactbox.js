@@ -1,20 +1,6 @@
 import React, { Component } from 'react';
 
-import {
-  G2,
-  Chart,
-  Geom,
-  Axis,
-  Tooltip,
-  Coord,
-  Label,
-  Legend,
-  View,
-  Guide,
-  Shape,
-  Facet,
-  Util,
-} from 'bizcharts';
+import { Chart, Geom, Axis, Coord, Legend, View, Point } from 'bizcharts';
 import DataSet from '@antv/data-set';
 
 class Treecompactbox extends Component {
@@ -45,11 +31,12 @@ class Treecompactbox extends Component {
         return 18;
       },
     });
+    // console.log(dv);
     return (
       <div>
-        <Chart forceFit padding={padding} height={height}>
+        <Chart padding={padding} height={height} forceFit>
+          <Axis visible={false} />
           <Coord transpose />
-          <Tooltip />
           <View
             data={dv.getAllLinks().map(link => ({
               x: [link.source.x, link.target.x],
@@ -62,37 +49,56 @@ class Treecompactbox extends Component {
               type="edge"
               position="x*y"
               shape="smooth"
-              color="grey"
+              color="#3399ff"
               opacity={0.8}
-              tooltip="source*target"
+              tooltip="ip*state"
             />
           </View>
           <View
             data={dv.getAllNodes().map(node => ({
               hasChildren: !!(node.children && node.children.length),
+              statetrue: !!(node.data.state === 1),
               name: node.data.name,
-              value: node.value,
-              depth: node.depth,
+              ip: node.data.ip,
+              state: node.data.state,
               x: node.x,
               y: node.y,
             }))}
           >
-            <Geom type="point" position="x*y" color="hasChildren">
-              <Label
-                content="name"
-                textStyle={(text, item) => {
-                  const textAlign = item.point.hasChildren ? 'right' : 'left';
+            <Point
+              position="x*y"
+              color="statetrue"
+              label={[
+                'name*ip*state*hasChildren',
+                (name, ip, state, hasChildren) => {
+                  if (hasChildren === false) {
+                    if (state === 0) {
+                      return {
+                        content: `${ip}(在线)`,
+                        style: {
+                          fill: '#444',
+                        },
+                      };
+                    }
+                    return {
+                      content: `${ip}(离线)`,
+                      style: {
+                        fill: 'red',
+                      },
+                    };
+                  }
                   return {
-                    fill: 'grey',
-                    fontSize: 14,
-                    textBaseline: 'middle',
-                    textAlign,
+                    content: `${name}`,
+                    style: {
+                      fill: '#444',
+                    },
+                    offset: '-10',
                   };
-                }}
-                offset={0}
-              />
-            </Geom>
+                },
+              ]}
+            />
           </View>
+          <Legend visible={false} />
         </Chart>
       </div>
     );

@@ -132,7 +132,7 @@ class Bardiverge extends React.Component {
             title={null}
             tickLine={null}
             position="right"
-            formatter={function(val) {
+            formatter={val => {
               return `${val}%`;
             }}
           />
@@ -144,7 +144,7 @@ class Bardiverge extends React.Component {
             position="type*value"
             color={[
               'opinion',
-              function(opinion) {
+              opinion => {
                 return colorMap[opinion];
               },
             ]}

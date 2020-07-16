@@ -8,6 +8,7 @@ import SeriesLine from '@/components/CustomizeCharts/SeriesLine';
 import EdgeLine from '@/components/CustomizeCharts/EdgeLine';
 import ColumnarY from '@/components/CustomizeCharts/ColumnarY';
 import LineChart from '@/components/CustomizeCharts/LineChart';
+import SelectArea from '@/components/Selects/SelectArea';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
 const changearchdata = datas => {
@@ -62,6 +63,36 @@ const Donutdata = [
   },
 ];
 
+const facetree = {
+  name: '计量中心',
+  children: [
+    {
+      name: '南宁',
+      state: 0,
+    },
+    {
+      name: '柳州',
+      state: 0,
+    },
+    {
+      name: '桂林',
+      state: 0,
+    },
+    {
+      name: '贵港',
+      state: 1,
+    },
+    {
+      name: '玉林',
+      state: 0,
+    },
+    {
+      name: '梧州',
+      state: 1,
+    },
+  ],
+};
+
 const Tabledatas = [
   { name: '未同步', clock: 1, value: 1100, alert: false },
   { name: '未同步', clock: 2, value: 1300, alert: false },
@@ -111,22 +142,6 @@ const Tabledatas = [
   { name: '基准值', clock: 22, value: 1250, alert: false },
   { name: '基准值', clock: 23, value: 1000, alert: false },
   { name: '基准值', clock: 24, value: 1000, alert: false },
-];
-const selectdtats = [
-  '广西电网公司',
-  '南宁供电局',
-  '柳州供电局',
-  '桂林供电局',
-  '贵港供电局',
-  '玉林供电局',
-  '来宾供电局',
-  '河池供电局',
-  '梧州供电局',
-  '北海供电局',
-  '钦州供电局',
-  '防城港供电局',
-  '崇左供电局',
-  '贺州供电局',
 ];
 // 有用
 const Filecols = {
@@ -190,22 +205,35 @@ const Tablecolor = ['#4061d7', '#bbb', '#f00'];
   loading: loading.models.measurface,
 }))
 class MeasurFace extends Component {
-  state = {
-    selectedItems: [],
-  };
-
   componentDidMount() {
-    this.getsettl();
-    this.getarch();
-    this.getissue();
-    this.getfile();
-    this.gettable();
-    this.getorder();
-    this.interval = setInterval(() => this.reloaddate(), 600000);
+    this.getdatas();
+    this.interval = setInterval(() => this.getdatas(), 600000);
   }
 
   componentWillUnmount() {
     clearInterval(this.interval);
+  }
+
+  getdatas() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'measurface/fetchsettl',
+    });
+    dispatch({
+      type: 'measurface/fetcharch',
+    });
+    dispatch({
+      type: 'measurface/fetchissue',
+    });
+    dispatch({
+      type: 'measurface/fetchfile',
+    });
+    dispatch({
+      type: 'measurface/fetchtable',
+    });
+    dispatch({
+      type: 'measurface/fetchorder',
+    });
   }
 
   getsettl() {
@@ -214,54 +242,6 @@ class MeasurFace extends Component {
       type: 'measurface/fetchsettl',
     });
   }
-
-  getarch() {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'measurface/fetcharch',
-    });
-  }
-
-  getissue() {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'measurface/fetchissue',
-    });
-  }
-
-  getfile() {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'measurface/fetchfile',
-    });
-  }
-
-  gettable() {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'measurface/fetchtable',
-    });
-  }
-
-  getorder() {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'measurface/fetchorder',
-    });
-  }
-
-  reloaddate = () => {
-    this.getsettl();
-    this.getarch();
-    this.getissue();
-    this.getfile();
-    this.gettable();
-    this.getorder();
-  };
-
-  handleChange = selectedItems => {
-    this.setState({ selectedItems });
-  };
 
   onChange = checked => {
     if (checked === true) {
@@ -277,8 +257,6 @@ class MeasurFace extends Component {
 
     const archdatas = changearchdata(archdata);
     const orderdatas = changehour(orderdata);
-    const { selectedItems } = this.state;
-    const filteredOptions = selectdtats.filter(o => !selectedItems.includes(o));
     return (
       <PageHeaderWrapper title="接口数据核查情况">
         <div>
@@ -355,30 +333,16 @@ class MeasurFace extends Component {
             <Col xl={12} xs={24} style={{ marginBottom: 24 }}>
               <ChartCard title="1h/自动召测测试" contentHeight={350}>
                 <div style={{ margin: '50px 0 0 0' }}>
-                  {filetdata === undefined && <Empty style={{ height: '250px' }} />}
+                  {facetree === undefined && <Empty style={{ height: '250px' }} />}
                   <Spin spinning={loading} style={{ background: '#ffffff' }}>
-                    {filetdata !== undefined && (
-                      <EdgeLine datas={filetdata} height={300} padding={[0, 120, 0, 50]} />
+                    {facetree !== undefined && (
+                      <EdgeLine datas={facetree} height={300} padding={[20, 60, 10, 50]} />
                     )}
                   </Spin>
                 </div>
-                <div
-                  style={{ margin: '10px', position: 'absolute', top: '-50px', zIndex: '100px' }}
-                >
+                <div style={{ margin: '10px', position: 'absolute', top: '10px', zIndex: '100px' }}>
                   <span>档案召测测试</span>
-                  <Select
-                    mode="multiple"
-                    placeholder="请选择"
-                    value={selectedItems}
-                    onChange={this.handleChange}
-                    style={{ width: '300px', margin: '0 10px' }}
-                  >
-                    {filteredOptions.map(item => (
-                      <Select.Option key={item} value={item}>
-                        {item}
-                      </Select.Option>
-                    ))}
-                  </Select>
+                  <SelectArea />
                   <Button type="primary">手工召测</Button>
                 </div>
               </ChartCard>

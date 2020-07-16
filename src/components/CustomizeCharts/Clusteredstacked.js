@@ -132,7 +132,7 @@ class Clusteredstacked extends Component {
             position="State*population"
             color={[
               'pet',
-              function(pet) {
+              pet => {
                 return colorMap[pet];
               },
             ]}

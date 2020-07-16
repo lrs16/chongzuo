@@ -4,23 +4,22 @@ import {
   //  G2,
   Chart,
   Geom,
-  //  Axis,
+  Axis,
   // Tooltip,
   Coord,
-  Label,
-  //  Legend,
+  Legend,
   View,
   //  Guide,
   //  Shape,
   //  Facet,
   //  Util,
+  Point,
 } from 'bizcharts';
 import DataSet from '@antv/data-set';
 
 class EdgeLine extends Component {
   render() {
     const { datas, height, padding } = this.props;
-    // 创建 DataView G2语法
     const dv = new DataSet.View().source(datas, {
       type: 'hierarchy',
       pureData: true,
@@ -46,9 +45,11 @@ class EdgeLine extends Component {
         return 18;
       },
     });
+    // console.log(dv);
     return (
       <div>
-        <Chart forceFit padding={padding} height={height}>
+        <Chart padding={padding} height={height} forceFit>
+          <Axis visible={false} />
           <Coord transpose />
           <View
             data={dv.getAllLinks().map(link => ({
@@ -56,51 +57,63 @@ class EdgeLine extends Component {
               y: [link.source.y, link.target.y],
               source: link.source.id,
               target: link.target.id,
-              // colordata :link.source.children,
             }))}
           >
             <Geom
               type="edge"
               position="x*y"
               shape="line"
-              color="source"
-              // color={['colordata', (colordata) => {
-              //   console.log(colordata);
-              // //   if (alert) {
-              // //     return 'red';
-              // //   }
-              // //  return '#fff';
-              // }]}
-              size={2}
+              color="#3399ff"
+              opacity={0.8}
+              tooltip="name*state"
             />
           </View>
           <View
             data={dv.getAllNodes().map(node => ({
               hasChildren: !!(node.children && node.children.length),
-              valuetrue: !!(node.data.value === 1),
+              statetrue: !!(node.data.state === 0),
               name: node.data.name,
-              value: node.data.value,
-              depth: node.depth,
+              ip: node.data.ip,
+              state: node.data.state,
               x: node.x,
               y: node.y,
             }))}
           >
-            <Geom type="point" position="x*y" color="valuetrue">
-              <Label
-                content="name"
-                offset={10}
-                htmlTemplate={(text, item) => {
-                  if (!item.point.hasChildren) {
-                    if (item.point.value === 1) {
-                      return `<span style="color:#ff0000; white-space:nowrap;">${item.point.name}（召测失败）</span>`;
+            <Point
+              position="x*y"
+              color="statetrue"
+              label={[
+                'name*state*hasChildren',
+                (name, state, hasChildren) => {
+                  if (hasChildren === false) {
+                    if (state === 0) {
+                      return {
+                        content: `${name}(招测失败)`,
+                        style: {
+                          fill: 'red',
+                        },
+                      };
                     }
-                    return `<span style="color:#404040;white-space:nowrap;">${item.point.name}（召测成功）</span>`;
+                    return {
+                      content: `${name}(招测成功)`,
+                      style: {
+                        fill: '#444',
+                      },
+                    };
                   }
-                  return `<span style="color:#404040;white-space:nowrap;">${item.point.name}</span>`;
-                }}
-              />
-            </Geom>
+                  return {
+                    content: `${name}`,
+                    style: {
+                      fill: '#444',
+                    },
+                    offset: '-10',
+                  };
+                },
+              ]}
+              tooltip={false}
+            />
           </View>
+          <Legend visible={false} />
         </Chart>
       </div>
     );

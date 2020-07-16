@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import { connect } from 'dva';
 // import numeral from 'numeral';
 import { Row, Col, Icon, Tooltip, Alert, Empty, Spin } from 'antd';
-import Treecompactbox from '@/components/CustomizeCharts/Treecompactbox';
 import SeriesLine from '@/components/CustomizeCharts/SeriesLine';
 import StackingArea from '@/components/CustomizeCharts/StackingArea';
 import { ChartCard } from '@/components/Charts';
@@ -31,20 +30,23 @@ const othercols = {
     tickInterval: 1,
   },
   value: {
+    // min:0,
+    // max:10000,
     nice: true,
     range: [0, 0.9],
     alias: '整点KAFKA主题LAG数',
+    // tickInterval: 2000,
   },
 };
 
-@connect(({ fafak, loading }) => ({
-  fafak,
-  loading: loading.models.fafak,
+@connect(({ fafakmatinal, loading }) => ({
+  fafakmatinal,
+  loading: loading.models.fafakmatinal,
 }))
 class Fafak extends Component {
   componentDidMount() {
     this.getdatas();
-    this.interval = setInterval(() => this.getdatas(), 600000);
+    this.interval = setInterval(() => this.getdatas(), 300000);
   }
 
   componentWillUnmount() {
@@ -54,47 +56,35 @@ class Fafak extends Component {
   getdatas() {
     const { dispatch } = this.props;
     dispatch({
-      type: 'fafak/fetch3zone',
+      type: 'fafakmatinal/fetchdoendy',
     });
     dispatch({
-      type: 'fafak/fetchsafezone',
+      type: 'fafakmatinal/fetchdownother',
     });
     dispatch({
-      type: 'fafak/fetch2zone',
+      type: 'fafakmatinal/fetch102zone2',
     });
     dispatch({
-      type: 'fafak/fetchdoendy',
+      type: 'fafakmatinal/fetch102safezone',
     });
     dispatch({
-      type: 'fafak/fetchdownother',
+      type: 'fafakmatinal/fetchupdy',
     });
     dispatch({
-      type: 'fafak/fetch102zone2',
+      type: 'fafakmatinal/fetch102up2zone',
     });
     dispatch({
-      type: 'fafak/fetch102safezone',
+      type: 'fafakmatinal/fetch102safe2zone',
     });
     dispatch({
-      type: 'fafak/fetchupdy',
-    });
-    dispatch({
-      type: 'fafak/fetch102up2zone',
-    });
-    dispatch({
-      type: 'fafak/fetch102safe2zone',
-    });
-    dispatch({
-      type: 'fafak/fetch102upsafezone',
+      type: 'fafakmatinal/fetch102upsafezone',
     });
   }
 
   render() {
     const {
       loading,
-      fafak: {
-        zone3data,
-        safezonedata,
-        zone2data,
+      fafakmatinal: {
         downdydata,
         otherdata,
         zone102_2data,
@@ -105,7 +95,7 @@ class Fafak extends Component {
         up102safezone,
       },
     } = this.props;
-    //    console.log(otherdata);
+    // console.log(downdydata);
     return (
       <PageHeaderWrapper title="KAFKA消费">
         <Alert
@@ -114,25 +104,7 @@ class Fafak extends Component {
           showIcon
           style={{ marginBottom: 12 }}
         />
-        <h3>KAFKA节点监控（整点刷新）</h3>
-        <Row gutter={24} type="flex">
-          <Col xl={8} xs={24} style={{ marginBottom: 24 }}>
-            <ChartCard title="3区KAFKA节点" contentHeight={200}>
-              <Treecompactbox datas={zone3data} height={200} padding={[15, 60, 10, 25]} />
-            </ChartCard>
-          </Col>
-          <Col xl={8} xs={24} style={{ marginBottom: 24 }}>
-            <ChartCard title="安全接入区KAFKA节点" contentHeight={200}>
-              <Treecompactbox datas={safezonedata} height={200} padding={[15, 60, 10, 25]} />
-            </ChartCard>
-          </Col>
-          <Col xl={8} xs={24} style={{ marginBottom: 24 }}>
-            <ChartCard title="2区KAFKA节点" contentHeight={200}>
-              <Treecompactbox datas={zone2data} height={200} padding={[15, 60, 10, 25]} />
-            </ChartCard>
-          </Col>
-        </Row>
-        <h3>KAFKA主题消费监控（整点刷新）</h3>
+        <h3>KAFKA主题消费监控（2-4点)/5min刷新</h3>
         <h3>下行主题</h3>
         <Row gutter={24} type="flex">
           <Col xl={12} xs={24} style={{ marginBottom: 24 }}>

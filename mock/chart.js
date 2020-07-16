@@ -206,28 +206,28 @@ export default {
           },
           {
             name: 'graph',
-            children: [
-              {
-                name: 'BetweennessCentrality',
-                value: 3534,
-              },
-              {
-                name: 'LinkDistance',
-                value: 5731,
-              },
-              {
-                name: 'MaxFlowMinCut',
-                value: 7840,
-              },
-              {
-                name: 'ShortestPaths',
-                value: 5914,
-              },
-              {
-                name: 'SpanningTree',
-                value: 3416,
-              },
-            ],
+            // children: [
+            //   {
+            //     name: 'BetweennessCentrality',
+            //     value: 3534,
+            //   },
+            //   {
+            //     name: 'LinkDistance',
+            //     value: 5731,
+            //   },
+            //   {
+            //     name: 'MaxFlowMinCut',
+            //     value: 7840,
+            //   },
+            //   {
+            //     name: 'ShortestPaths',
+            //     value: 5914,
+            //   },
+            //   {
+            //     name: 'SpanningTree',
+            //     value: 3416,
+            //   },
+            // ],
           },
           {
             name: 'optimization',
@@ -268,6 +268,26 @@ export default {
       {
         name: '梧州',
         value: 1,
+      },
+    ],
+  },
+  'GET /api/3Zone': {
+    name: 'cluster',
+    children: [
+      {
+        name: '南宁',
+        value: '10.172.208.28',
+        state: '在线',
+      },
+      {
+        name: '柳州',
+        value: '10.172.208.36（离线）',
+        state: '离线',
+      },
+      {
+        name: '桂林',
+        value: '10.172.208.37（在线）',
+        state: '在线',
       },
     ],
   },

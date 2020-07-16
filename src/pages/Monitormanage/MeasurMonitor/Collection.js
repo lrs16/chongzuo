@@ -48,8 +48,12 @@ const dataArr = datas => {
 
 const celldata = datas => {
   const data = datas[0];
+  // console.log(data);
   const newArr = [];
-  if (!Array.isArray(datas)) {
+  // if (!Array.isArray(datas)) {
+  //   return newArr;
+  // }
+  if (data === undefined) {
     return newArr;
   }
   Object.keys(data).map(key => {
@@ -159,85 +163,46 @@ const lin2wcols = {
 class Collection extends Component {
   componentDidMount() {
     const area = '南宁供电局';
-    this.getcomplete(area);
-    this.getcoverage(area);
-    this.getmeter(area);
-    this.getzeroread();
-    this.gethourread();
-    this.getsales(area);
-    this.getsupply(area);
-    this.interval = setInterval(() => this.reloaddate(area), 600000);
+    this.getdatas(area);
+    this.interval = setInterval(() => this.getdatas(area), 600000);
   }
 
   componentWillUnmount() {
     clearInterval(this.interval);
   }
 
-  getcomplete(area) {
-    this.props.dispatch({
+  getdatas(area) {
+    const { dispatch } = this.props;
+    dispatch({
       type: 'collection/fetchcomplete',
       payload: { area },
     });
-  }
-
-  getcoverage(area) {
-    this.props.dispatch({
+    dispatch({
       type: 'collection/fetchcoverage',
       payload: { area },
     });
-  }
-
-  getmeter(area) {
-    this.props.dispatch({
+    dispatch({
       type: 'collection/fetchmeterread',
       payload: { area },
     });
-  }
-
-  getzeroread() {
-    this.props.dispatch({
+    dispatch({
       type: 'collection/fetchzeroread',
     });
-  }
-
-  gethourread() {
-    this.props.dispatch({
+    dispatch({
       type: 'collection/fetchhourread',
     });
-  }
-
-  getsales(area) {
-    this.props.dispatch({
+    dispatch({
       type: 'collection/fetchsales',
       payload: { area },
     });
-  }
-
-  getsupply(area) {
-    this.props.dispatch({
+    dispatch({
       type: 'collection/fetchsupply',
       payload: { area },
     });
   }
 
-  reloaddate = area => {
-    this.getcomplete(area);
-    this.getcoverage(area);
-    this.getmeter(area);
-    this.getzeroread();
-    this.gethourread();
-    this.getsales(area);
-    this.getsupply(area);
-  };
-
   handleChange = value => {
-    this.getcomplete(value);
-    this.getcoverage(value);
-    this.getmeter(value);
-    this.getzeroread();
-    this.gethourread();
-    this.getsales(value);
-    this.getsupply(value);
+    this.getdatas(value);
   };
 
   render() {
@@ -274,9 +239,6 @@ class Collection extends Component {
             placeholder="请选择"
             optionFilterProp="children"
             onChange={this.handleChange}
-            // onFocus={onFocus}
-            // onBlur={onBlur}
-            // onSearch={onSearch}
             filterOption={(input, option) =>
               option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
             }

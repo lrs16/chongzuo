@@ -185,14 +185,18 @@ class SysuserMangage extends Component {
                 </a>
               </Tooltip>
             </ViewUser>
-            <Divider type="vertical" />
-            <Popconfirm title="确定删除此用户吗？" onConfirm={() => handleDelete(record.id)}>
-              <Tooltip title="删除用户">
-                <a type="link">
-                  <DeleteOutlined />
-                </a>
-              </Tooltip>
-            </Popconfirm>
+            {record.loginCode !== 'admin' && (
+              <>
+                <Divider type="vertical" />
+                <Popconfirm title="确定删除此用户吗？" onConfirm={() => handleDelete(record.id)}>
+                  <Tooltip title="删除用户">
+                    <a type="link">
+                      <DeleteOutlined />
+                    </a>
+                  </Tooltip>
+                </Popconfirm>
+              </>
+            )}
           </div>
         ),
       },
