@@ -102,7 +102,7 @@ const clock = '2020-2-15 15:58';
 const Labecols = {
   value: {
     min: 0,
-    max: 30000,
+    max: 40000,
     alias: '值',
   },
   date: {
@@ -110,7 +110,7 @@ const Labecols = {
   },
   alertvalue: {
     min: 0,
-    max: 30000,
+    max: 40000,
     alias: '警戒值',
   },
 };
@@ -173,6 +173,7 @@ class Collection extends Component {
 
   getdatas(area) {
     const { dispatch } = this.props;
+    const sortarea = area.substring(0, 2);
     dispatch({
       type: 'collection/fetchcomplete',
       payload: { area },
@@ -193,11 +194,11 @@ class Collection extends Component {
     });
     dispatch({
       type: 'collection/fetchsales',
-      payload: { area },
+      payload: { sortarea },
     });
     dispatch({
       type: 'collection/fetchsupply',
-      payload: { area },
+      payload: { sortarea },
     });
   }
 
@@ -215,6 +216,7 @@ class Collection extends Component {
     const meterreads = celldata(meterread);
     const zeroreads = changedate(zeroread);
     const hourreads = changehour(hourread);
+    console.log(zeroreads);
     return (
       <PageHeaderWrapper title="采集指标情况">
         <div

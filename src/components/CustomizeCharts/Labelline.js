@@ -13,18 +13,18 @@ import {
 import styles from './index.less';
 
 const alertvalues = [
-  { alertvalue: 27000, date: '06/28', alert: false },
-  { alertvalue: 30000, date: '06/24', alert: true },
-  { alertvalue: 27000, date: '06/17', alert: false },
-  { alertvalue: 27000, date: '06/16', alert: false },
-  { alertvalue: 27000, date: '06/15', alert: false },
-  { alertvalue: 28000, date: '06/14', alert: false },
-  { alertvalue: 27000, date: '06/13', alert: false },
-  { alertvalue: 29000, date: '06/12', alert: true },
-  { alertvalue: 29000, date: '06/11', alert: true },
-  { alertvalue: 27000, date: '06/10', alert: false },
-  { alertvalue: 27000, date: '06/09', alert: false },
-  { alertvalue: 27000, date: '06/08', alert: false },
+  { alertvalue: 27000, date: '07/17', alert: false },
+  { alertvalue: 30000, date: '07/16', alert: true },
+  { alertvalue: 27000, date: '07/15', alert: false },
+  { alertvalue: 27000, date: '07/14', alert: false },
+  { alertvalue: 27000, date: '07/13', alert: false },
+  { alertvalue: 28000, date: '07/12', alert: false },
+  { alertvalue: 27000, date: '07/11', alert: false },
+  { alertvalue: 29000, date: '07/10', alert: true },
+  { alertvalue: 29000, date: '07/09', alert: true },
+  { alertvalue: 27000, date: '07/08', alert: false },
+  { alertvalue: 27000, date: '07/07', alert: false },
+  { alertvalue: 27000, date: '07/04', alert: false },
 ];
 class Labelline extends Component {
   render() {

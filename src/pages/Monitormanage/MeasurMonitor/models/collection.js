@@ -57,15 +57,16 @@ export default {
         payload: response.data,
       });
     },
-    *fetchsales({ payload: { area } }, { call, put }) {
-      const response = yield call(querySales, area);
+    *fetchsales({ payload: { sortarea } }, { call, put }) {
+      const response = yield call(querySales, sortarea);
+      console.log(response);
       yield put({
         type: 'getsales',
         payload: response.data,
       });
     },
-    *fetchsupply({ payload: { area } }, { call, put }) {
-      const response = yield call(querySupply, area);
+    *fetchsupply({ payload: { sortarea } }, { call, put }) {
+      const response = yield call(querySupply, sortarea);
       yield put({
         type: 'getsupply',
         payload: response.data,

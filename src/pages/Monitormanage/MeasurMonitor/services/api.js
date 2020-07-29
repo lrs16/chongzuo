@@ -35,13 +35,13 @@ export async function queryHourread() {
 }
 
 // 关口售电量
-export async function querySales(area) {
-  return request(`/cjzb/sdl/${area}`);
+export async function querySales(sortarea) {
+  return request(`/cjzb/sdl/${sortarea}`);
 }
 
 // 关口供电量
-export async function querySupply(area) {
-  return request(`/cjzb/gdl/${area}`);
+export async function querySupply(sortarea) {
+  return request(`/cjzb/gdl/${sortarea}`);
 }
 
 // 抄表结算
