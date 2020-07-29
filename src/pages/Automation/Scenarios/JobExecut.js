@@ -78,11 +78,25 @@ class Home extends Component {
         //   </span>
         // ),
         render: (text, record) => {
-          const statustext = record.handleCode === 200 ? '成功' : '失败';
-          const statusMap = record.handleCode === 200 ? 'success' : 'error';
+          const textmaps = new Map([
+            [200, '成功'],
+            [500, '失败'],
+            [0, '报告生成中'],
+          ]);
+          const statusMap = new Map([
+            [200, 'success'],
+            [500, 'error'],
+            [0, 'processing'],
+          ]);
+          //const statustext = record.handleCode === 200 ? '成功' : 500 ? '失败':'报告生成中';
+          //const statusMap = record.handleCode === 200 ? 'success' : 'error';
           return (
             <span>
-              <Badge status={statusMap} text={statustext} />
+              {/* <Badge status={statusMap} text={record.handleCode} /> */}
+              <Badge
+                status={statusMap.get(record.handleCode)}
+                text={textmaps.get(record.handleCode)}
+              />
             </span>
           );
         },
@@ -97,7 +111,15 @@ class Home extends Component {
         title: '结束时间',
         dataIndex: 'handleTime',
         key: 'handleTime',
-        render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
+        render: (text, record) => {
+          console.log(record);
+          if (record.handleTime === null) {
+            return <span>--</span>;
+          } else {
+            return <span>{moment(record.handleTime).format('YYYY-MM-DD HH:mm:ss')}</span>;
+          }
+        },
+        //render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
       },
       {
         title: '启动方式',
@@ -140,6 +162,8 @@ class Home extends Component {
       opsscenes: { joblist },
     } = this.props;
     const dataSource = [...joblist];
+
+    //console.log(changedatas(joblist));
     const title = `${this.props.location.state.scenarioName}：脚本执行历史`;
     return (
       <PageHeaderWrapper title={title}>

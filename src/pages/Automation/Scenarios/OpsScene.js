@@ -45,9 +45,9 @@ class CardList extends PureComponent {
         payload: { scenarioId },
       }).then(res => {
         if (res.code === 200) {
-          Message.success(res.msg);
+          Message.success('执行成功！报告生成中，15分钟后可查看报告...');
         } else {
-          Message.error('执行失败！');
+          Message.error('正在执行！报告生成中...');
         }
       });
     };
