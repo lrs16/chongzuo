@@ -15,7 +15,6 @@ export default {
         payload: response,
       });
     },
-    
   },
 
   reducers: {
