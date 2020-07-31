@@ -17,6 +17,7 @@ class Login extends Component {
 
   state = {
     type: 'account',
+    grant_type: 'sm3_user_pass',
     // autoLogin: true,
   };
 
@@ -27,12 +28,16 @@ class Login extends Component {
   // };
 
   handleSubmit = (err, values) => {
-    const { type } = this.state;
+    const { type, grant_type } = this.state;
     if (!err) {
       const { dispatch } = this.props;
       dispatch({
         type: 'login/login',
-        payload: { ...values, type },
+        payload: {
+          ...values,
+          type,
+          grant_type,
+        },
       });
     }
   };
@@ -81,10 +86,7 @@ class Login extends Component {
 
   render() {
     const { userLogin, submitting } = this.props;
-    const {
-      // status,
-      type: loginType,
-    } = userLogin;
+    const { status, type: loginType } = userLogin;
     const { type } = this.state;
     return (
       <div className={styles.main}>
@@ -102,8 +104,8 @@ class Login extends Component {
               id: 'user-login.login.tab-login-credentials',
             })}
           >
-            {// status === 401 &&
-            loginType === 'account' &&
+            {status !== undefined &&
+              loginType === 'account' &&
               !submitting &&
               this.renderMessage(
                 formatMessage({
@@ -152,8 +154,8 @@ class Login extends Component {
               id: 'user-login.login.tab-login-mobile',
             })}
           >
-            {// status === 401 &&
-            loginType === 'mobile' &&
+            {status !== undefined &&
+              loginType === 'mobile' &&
               !submitting &&
               this.renderMessage(
                 formatMessage({

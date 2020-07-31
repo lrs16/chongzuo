@@ -491,15 +491,26 @@ export default {
       changeOrigin: true,
       // pathRewrite: { '^/apiauth': '' }
     },
-    '/cjzb/': {
-      target: 'http://172.16.4.211:8808/', //计量检测
+    '/api-monitoring-business/': {
+      //计量现场接口
+      target: 'http://172.16.4.211:8800/',
       changeOrigin: true,
       // pathRewrite: { '^/apiauth': '' }
     },
-    '/jkshhc/': {
-      target: 'http://172.16.4.211:8808/', //接口数据核查情况
-      changeOrigin: true,
-      // pathRewrite: { '^/apiauth': '' }
-    },
+    // '/cjzb/': {
+    //   target: 'http://172.16.4.211:8808/', //计量骏豪
+    //   changeOrigin: true,
+    //   // pathRewrite: { '^/apiauth': '' }
+    // },
+    // '/cjzb/': {
+    //   target: 'http://172.16.4.211:8808/', //计量骏豪
+    //   changeOrigin: true,
+    //   // pathRewrite: { '^/apiauth': '' }
+    // },
+    // '/gkrk/': {
+    //   target: 'http://172.16.4.211:8808/', //计量骏豪
+    //   changeOrigin: true,
+    //   // pathRewrite: { '^/apiauth': '' }
+    // },
   },
 };

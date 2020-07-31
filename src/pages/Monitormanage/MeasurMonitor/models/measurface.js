@@ -14,7 +14,7 @@ export default {
     settldata: {},
     archdata: {},
     issuedata: {},
-    filetdata: {}, // 后端未实现
+    filetdata: {},
     tabledata: {},
     orderdata: {},
   },

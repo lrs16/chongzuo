@@ -47,15 +47,14 @@ const dataArr = datas => {
 };
 
 const celldata = datas => {
-  const data = datas[0];
-  // console.log(data);
   const newArr = [];
-  // if (!Array.isArray(datas)) {
-  //   return newArr;
-  // }
-  if (data === undefined) {
+  if (!Array.isArray(datas) || datas !== []) {
     return newArr;
   }
+  // if (datas === undefined) {
+  //   return newArr;
+  // }
+  const data = datas[0];
   Object.keys(data).map(key => {
     //  console.log(data[key]);// key=>属性名    data[key]=>属性值
     newArr.push({
@@ -77,6 +76,7 @@ const changedate = datas => {
     const vote = {};
     vote.value = datas[i].data;
     vote.date = moment(datas[i].date).format('MM/DD');
+    vote.alertvalue = 28100;
     newArr.push(vote);
   }
   return newArr;
@@ -92,17 +92,33 @@ const changehour = datas => {
     vote.value = datas[i].data;
     vote.date = datas[i].hour;
     vote.alertvalue = 0;
+    vote.alert = false;
     newArr.push(vote);
   }
   return newArr;
 };
 
+const changesales = datas => {
+  const newArr = [];
+  if (!Array.isArray(datas)) {
+    return newArr;
+  }
+  for (let i = 0; i < datas.length; i += 1) {
+    const vote = {};
+    vote.value = datas[i].rate;
+    vote.date = moment(datas[i].date).format('HH');
+    vote.Max警戒值 = 10;
+    vote.Min警戒值 = -10;
+    newArr.push(vote);
+  }
+  return newArr;
+};
 const clock = '2020-2-15 15:58';
 // 有用
 const Labecols = {
   value: {
     min: 0,
-    max: 40000,
+    max: 29000,
     alias: '值',
   },
   date: {
@@ -110,7 +126,7 @@ const Labecols = {
   },
   alertvalue: {
     min: 0,
-    max: 40000,
+    max: 29000,
     alias: '警戒值',
   },
 };
@@ -140,7 +156,7 @@ const lin2wcols = {
     range: [0, 1],
     alias: '波动百分比',
   },
-  clock: {
+  date: {
     alias: '时间',
     tickInterval: 1,
   },
@@ -211,12 +227,14 @@ class Collection extends Component {
       loading,
       collection: { complete, coverage, meterread, zeroread, hourread, salesdata, supplydata },
     } = this.props;
-    const completedata = dataArr(complete);
+    console.log(coverage);
+    // const completedata = dataArr(complete);
     const coverages = celldata(coverage);
     const meterreads = celldata(meterread);
     const zeroreads = changedate(zeroread);
     const hourreads = changehour(hourread);
-    console.log(zeroreads);
+    const salesdatas = changesales(salesdata);
+    const supplydatas = changesales(supplydata);
     return (
       <PageHeaderWrapper title="采集指标情况">
         <div
@@ -238,7 +256,7 @@ class Collection extends Component {
           <Select
             showSearch
             style={{ width: 300 }}
-            placeholder="请选择"
+            placeholder="南宁供电局"
             optionFilterProp="children"
             onChange={this.handleChange}
             filterOption={(input, option) =>
@@ -266,10 +284,10 @@ class Collection extends Component {
                 }
                 contentHeight={350}
               >
-                {coverages.length === 0 && <Empty style={{ height: '250px' }} />}
                 <Spin spinning={loading} style={{ background: '#ffffff' }}>
-                  {coverages.length > 0 && (
-                    <Columncolor height={350} data={completedata} padding={[30, 30, 30, 50]} />
+                  {complete.length === 0 && <Empty style={{ height: '250px' }} />}
+                  {complete.length > 0 && (
+                    <Columncolor height={350} data={complete} padding={[30, 30, 30, 50]} />
                   )}
                 </Spin>
               </ChartCard>
@@ -284,8 +302,8 @@ class Collection extends Component {
                 }
                 contentHeight={350}
               >
-                {coverages.length === 0 && <Empty style={{ height: '250px' }} />}
                 <Spin spinning={loading} style={{ background: '#ffffff' }}>
+                  {coverages.length === 0 && <Empty style={{ height: '250px' }} />}
                   {coverages.length > 0 && (
                     <Columncolor height={350} data={coverages} padding={[30, 50, 30, 50]} />
                   )}
@@ -302,8 +320,8 @@ class Collection extends Component {
                 }
                 contentHeight={350}
               >
-                {meterreads.length === 0 && <Empty style={{ height: '250px' }} />}
                 <Spin spinning={loading} style={{ background: '#ffffff' }}>
+                  {meterreads.length === 0 && <Empty style={{ height: '250px' }} />}
                   {meterreads.length > 0 && (
                     <Columncolor height={350} data={meterreads} padding={[30, 30, 30, 50]} />
                   )}
@@ -320,8 +338,8 @@ class Collection extends Component {
                 }
                 contentHeight={350}
               >
-                {Labecols.length === 0 && <Empty />}
                 <Spin spinning={loading} style={{ background: '#ffffff' }}>
+                  {Labecols.length === 0 && <Empty style={{ height: '250px' }} />}
                   {zeroreads.length > 0 && (
                     <Labelline
                       height={350}
@@ -343,15 +361,17 @@ class Collection extends Component {
                 }
                 contentHeight={350}
               >
-                {hourreads.length === 0 && <Empty />}
-                {hourreads.length > 0 && (
-                  <LineChart
-                    height={350}
-                    data={hourreads}
-                    cols={timecols}
-                    padding={[30, 40, 30, 50]}
-                  />
-                )}
+                <Spin spinning={loading} style={{ background: '#ffffff' }}>
+                  {hourreads.length === 0 && <Empty style={{ height: '250px' }} />}
+                  {hourreads.length > 0 && (
+                    <LineChart
+                      height={350}
+                      data={hourreads}
+                      cols={timecols}
+                      padding={[30, 40, 30, 60]}
+                    />
+                  )}
+                </Spin>
               </ChartCard>
             </Col>
 
@@ -365,14 +385,14 @@ class Collection extends Component {
                 }
                 contentHeight={350}
               >
-                {salesdata.length === 0 && <Empty style={{ height: '250px' }} />}
                 <Spin spinning={loading} style={{ background: '#ffffff' }}>
-                  {salesdata.length > 0 && (
+                  {salesdatas.length === 0 && <Empty style={{ height: '250px' }} />}
+                  {salesdatas.length > 0 && (
                     <LineChart
                       height={350}
-                      data={salesdata}
+                      data={salesdatas}
                       cols={lin2wcols}
-                      padding={[30, 30, 30, 75]}
+                      padding={[30, 30, 30, 60]}
                     />
                   )}
                 </Spin>
@@ -389,14 +409,14 @@ class Collection extends Component {
                 }
                 contentHeight={350}
               >
-                {supplydata.length === 0 && <Empty style={{ height: '250px' }} />}
                 <Spin spinning={loading} style={{ background: '#ffffff' }}>
-                  {supplydata.length > 0 && (
+                  {supplydatas.length === 0 && <Empty style={{ height: '250px' }} />}
+                  {supplydatas.length > 0 && (
                     <LineChart
                       height={350}
-                      data={supplydata}
+                      data={supplydatas}
                       cols={lin2wcols}
-                      padding={[30, 30, 30, 75]}
+                      padding={[30, 30, 30, 50]}
                     />
                   )}
                 </Spin>

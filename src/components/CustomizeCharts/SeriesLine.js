@@ -32,23 +32,25 @@ class SeriesLine extends React.Component {
                 textAlign: 'center',
                 fill: '#999',
                 fontWeight: 'bold',
-                rotate: 0,
-                autoRotate: true,
               },
+              rotate: 0,
+              autoRotate: true,
             }}
           />
           <Axis
             name="value"
+            //position="top"
             title={{
-              position: 'center',
-              offset: 50,
+              position: 'end',
+              offset: -25,
+              rotate: 0,
+              autoRotate: true,
+              formatter: false,
               textStyle: {
                 fontSize: '12',
-                textAlign: 'center',
+                textAlign: 'left',
                 fill: '#fff',
                 // fontWeight: 'bold',
-                rotate: 90,
-                autoRotate: true,
               },
             }}
             label={{

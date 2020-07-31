@@ -59,7 +59,6 @@ export default {
     },
     *fetchsales({ payload: { sortarea } }, { call, put }) {
       const response = yield call(querySales, sortarea);
-      console.log(response);
       yield put({
         type: 'getsales',
         payload: response.data,

@@ -1,14 +1,29 @@
 /* eslint-disable react/prefer-stateless-function */
 import React, { Component } from 'react';
 import { connect } from 'dva';
+import moment from 'moment';
 // import numeral from 'numeral';
 import { Row, Col, Icon, Tooltip, Alert, Empty, Spin } from 'antd';
+import Treecompactbox from '@/components/CustomizeCharts/Treecompactbox';
 import SeriesLine from '@/components/CustomizeCharts/SeriesLine';
-import StackingArea from '@/components/CustomizeCharts/StackingArea';
 import { ChartCard } from '@/components/Charts';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
-const zone3 = '*AutoDataAsk';
+const changedata = datas => {
+  const newArr = [];
+  if (!Array.isArray(datas)) {
+    return newArr;
+  }
+  for (let i = 0; i < datas.length; i += 1) {
+    const vote = {};
+    vote.name = datas[i].topic;
+    vote.value = datas[i].lag;
+    vote.clock = moment(datas[i].date).format('HH:SS');
+    newArr.push(vote);
+  }
+  return newArr;
+};
+// const zone3 = '*AutoDataAsk';
 const downdycols = {
   clock: {
     range: [0.05, 0.95],
@@ -17,10 +32,10 @@ const downdycols = {
   },
   value: {
     min: 0,
-    max: 10000,
-    range: [0, 0.9],
+    // max: 30000,
+    range: [0.05, 0.95],
     alias: '整点KAFKA主题LAG数',
-    tickInterval: 2000,
+    // tickInterval: 10000,
   },
 };
 const othercols = {
@@ -30,18 +45,15 @@ const othercols = {
     tickInterval: 1,
   },
   value: {
-    // min:0,
-    // max:10000,
     nice: true,
     range: [0, 0.9],
     alias: '整点KAFKA主题LAG数',
-    // tickInterval: 2000,
   },
 };
 
-@connect(({ fafakmatinal, loading }) => ({
-  fafakmatinal,
-  loading: loading.models.fafakmatinal,
+@connect(({ fafak, loading }) => ({
+  fafak,
+  loading: loading.models.fafak,
 }))
 class Fafak extends Component {
   componentDidMount() {
@@ -56,48 +68,73 @@ class Fafak extends Component {
   getdatas() {
     const { dispatch } = this.props;
     dispatch({
-      type: 'fafakmatinal/fetchdoendy',
+      type: 'fafak/fetch3zone',
     });
     dispatch({
-      type: 'fafakmatinal/fetchdownother',
+      type: 'fafak/fetchsafezone',
     });
     dispatch({
-      type: 'fafakmatinal/fetch102zone2',
+      type: 'fafak/fetch2zone',
     });
     dispatch({
-      type: 'fafakmatinal/fetch102safezone',
+      type: 'fafak/fetchdoendy',
     });
     dispatch({
-      type: 'fafakmatinal/fetchupdy',
+      type: 'fafak/fetchdownother',
     });
     dispatch({
-      type: 'fafakmatinal/fetch102up2zone',
+      type: 'fafak/fetch102safezone',
     });
     dispatch({
-      type: 'fafakmatinal/fetch102safe2zone',
+      type: 'fafak/fetch102down',
     });
     dispatch({
-      type: 'fafakmatinal/fetch102upsafezone',
+      type: 'fafak/fetchupdy',
+    });
+    dispatch({
+      type: 'fafak/fetchupother',
+    });
+    dispatch({
+      type: 'fafak/fetch102up2zone',
+    });
+    dispatch({
+      type: 'fafak/fetch102safe2zone',
+    });
+    dispatch({
+      type: 'fafak/fetch102upsafezone',
     });
   }
 
   render() {
     const {
       loading,
-      fafakmatinal: {
+      fafak: {
+        zone3data,
+        safezonedata,
+        zone2data,
         downdydata,
         otherdata,
         zone102_2data,
-        zone102_safedata,
+        down102,
         updydata,
+        upotherdata,
         up102_2zonedata,
         safe102_2zonedata,
         up102safezone,
       },
     } = this.props;
-    // console.log(downdydata);
+    // console.log(otherdata);
+    const downdydatas = changedata(downdydata);
+    const otherdatas = changedata(otherdata);
+    const zone102_2datas = changedata(zone102_2data);
+    const down102s = changedata(down102);
+    const updydatas = changedata(updydata);
+    const upotherdatas = changedata(upotherdata);
+    const up102_2zonedatas = changedata(up102_2zonedata);
+    const safe102_2zonedatas = changedata(safe102_2zonedata);
+    const up102safezones = changedata(up102safezone);
     return (
-      <PageHeaderWrapper title="KAFKA消费">
+      <PageHeaderWrapper title="KAFKA消费（凌晨）">
         <Alert
           message="注意观察LAG数量趋势，只增不减的主题存在差异"
           type="warning"
@@ -105,19 +142,36 @@ class Fafak extends Component {
           style={{ marginBottom: 12 }}
         />
         <h3>KAFKA主题消费监控（2-4点)/5min刷新</h3>
+        <Row gutter={24} type="flex">
+          <Col xl={8} xs={24} style={{ marginBottom: 24 }}>
+            <ChartCard title="3区KAFKA节点" contentHeight={200}>
+              <Treecompactbox datas={zone3data} height={200} padding={[15, 60, 10, 25]} />
+            </ChartCard>
+          </Col>
+          <Col xl={8} xs={24} style={{ marginBottom: 24 }}>
+            <ChartCard title="安全接入区KAFKA节点" contentHeight={200}>
+              <Treecompactbox datas={safezonedata} height={200} padding={[15, 60, 10, 25]} />
+            </ChartCard>
+          </Col>
+          <Col xl={8} xs={24} style={{ marginBottom: 24 }}>
+            <ChartCard title="2区KAFKA节点" contentHeight={200}>
+              <Treecompactbox datas={zone2data} height={200} padding={[15, 60, 10, 25]} />
+            </ChartCard>
+          </Col>
+        </Row>
+        <h3>KAFKA主题消费监控（整点刷新）</h3>
         <h3>下行主题</h3>
         <Row gutter={24} type="flex">
           <Col xl={12} xs={24} style={{ marginBottom: 24 }}>
             <ChartCard title="低压相关" contentHeight={350}>
-              {downdydata.length === 0 && <Empty style={{ height: '250px' }} />}
               <Spin spinning={loading} style={{ background: '#ffffff' }}>
-                {downdydata.length > 0 && (
+                {downdydatas.length === 0 && <Empty style={{ height: '250px' }} />}
+                {downdydatas.length > 0 && (
                   <SeriesLine
                     cols={downdycols}
-                    data={downdydata}
-                    alerttitle={zone3}
+                    data={downdydatas}
                     height={350}
-                    padding={[30, 20, 50, 60]}
+                    padding={[30, 20, 50, 80]}
                   />
                 )}
               </Spin>
@@ -125,12 +179,12 @@ class Fafak extends Component {
           </Col>
           <Col xl={12} xs={24} style={{ marginBottom: 24 }}>
             <ChartCard title="其他回复接口（低压相关）" contentHeight={350}>
-              {otherdata.length === 0 && <Empty style={{ height: '250px' }} />}
               <Spin spinning={loading} style={{ background: '#ffffff' }}>
-                {otherdata.length > 0 && (
-                  <StackingArea
+                {otherdatas.length === 0 && <Empty style={{ height: '250px' }} />}
+                {otherdatas.length > 0 && (
+                  <SeriesLine
                     cols={othercols}
-                    data={otherdata}
+                    data={otherdatas}
                     height={350}
                     padding={[30, 20, 50, 60]}
                   />
@@ -139,13 +193,13 @@ class Fafak extends Component {
             </ChartCard>
           </Col>
           <Col xl={12} xs={24} style={{ marginBottom: 24 }}>
-            <ChartCard title="其他回复接口（低压相关）" contentHeight={350}>
-              {zone102_2data.length === 0 && <Empty style={{ height: '250px' }} />}
+            <ChartCard title="广西102关口方面二区和安全接入区" contentHeight={350}>
               <Spin spinning={loading} style={{ background: '#ffffff' }}>
-                {zone102_2data.length > 0 && (
+                {zone102_2datas.length === 0 && <Empty style={{ height: '250px' }} />}
+                {zone102_2datas.length > 0 && (
                   <SeriesLine
                     cols={downdycols}
-                    data={zone102_2data}
+                    data={zone102_2datas}
                     height={350}
                     padding={[30, 20, 50, 60]}
                   />
@@ -154,13 +208,13 @@ class Fafak extends Component {
             </ChartCard>
           </Col>
           <Col xl={12} xs={24} style={{ marginBottom: 24 }}>
-            <ChartCard title="其他回复接口（低压相关）" contentHeight={350}>
-              {zone102_safedata.length === 0 && <Empty style={{ height: '250px' }} />}
+            <ChartCard title="广西102档案下发(关口相关)" contentHeight={350}>
               <Spin spinning={loading} style={{ background: '#ffffff' }}>
-                {zone102_safedata.length > 0 && (
+                {down102s.length === 0 && <Empty style={{ height: '250px' }} />}
+                {down102s.length > 0 && (
                   <SeriesLine
                     cols={downdycols}
-                    data={zone102_safedata}
+                    data={down102s}
                     height={350}
                     padding={[30, 20, 50, 75]}
                   />
@@ -181,12 +235,12 @@ class Fafak extends Component {
               }
               contentHeight={350}
             >
-              {updydata.length === 0 && <Empty style={{ height: '250px' }} />}
               <Spin spinning={loading} style={{ background: '#ffffff' }}>
-                {updydata.length > 0 && (
+                {updydatas.length === 0 && <Empty style={{ height: '250px' }} />}
+                {updydatas.length > 0 && (
                   <SeriesLine
                     cols={downdycols}
-                    data={updydata}
+                    data={updydatas}
                     height={350}
                     padding={[30, 20, 50, 60]}
                   />
@@ -204,12 +258,12 @@ class Fafak extends Component {
               }
               contentHeight={350}
             >
-              {downdydata.length === 0 && <Empty style={{ height: '250px' }} />}
               <Spin spinning={loading} style={{ background: '#ffffff' }}>
-                {downdydata.length > 0 && (
+                {upotherdatas.length === 0 && <Empty style={{ height: '250px' }} />}
+                {upotherdatas.length > 0 && (
                   <SeriesLine
                     cols={downdycols}
-                    data={downdydata}
+                    data={upotherdatas}
                     height={350}
                     padding={[30, 20, 50, 60]}
                   />
@@ -227,12 +281,12 @@ class Fafak extends Component {
               }
               contentHeight={350}
             >
-              {up102_2zonedata.length === 0 && <Empty style={{ height: '250px' }} />}
               <Spin spinning={loading} style={{ background: '#ffffff' }}>
-                {up102_2zonedata.length > 0 && (
+                {up102_2zonedatas.length === 0 && <Empty style={{ height: '250px' }} />}
+                {up102_2zonedatas.length > 0 && (
                   <SeriesLine
                     cols={downdycols}
-                    data={up102_2zonedata}
+                    data={up102_2zonedatas}
                     height={350}
                     padding={[30, 20, 50, 60]}
                   />
@@ -250,12 +304,12 @@ class Fafak extends Component {
               }
               contentHeight={350}
             >
-              {safe102_2zonedata.length === 0 && <Empty style={{ height: '250px' }} />}
               <Spin spinning={loading} style={{ background: '#ffffff' }}>
-                {safe102_2zonedata.length > 0 && (
+                {safe102_2zonedatas.length === 0 && <Empty style={{ height: '250px' }} />}
+                {safe102_2zonedatas.length > 0 && (
                   <SeriesLine
                     cols={downdycols}
-                    data={safe102_2zonedata}
+                    data={safe102_2zonedatas}
                     height={350}
                     padding={[30, 20, 50, 60]}
                   />
@@ -265,7 +319,7 @@ class Fafak extends Component {
           </Col>
           <Col xl={12} xs={24} style={{ marginBottom: 24 }}>
             <ChartCard
-              title="低压相关"
+              title="其他回复接口(广西102关口方面-二区和安全接区)"
               action={
                 <Tooltip title="指标说明">
                   <Icon type="info-circle-o" />
@@ -273,12 +327,12 @@ class Fafak extends Component {
               }
               contentHeight={350}
             >
-              {up102safezone.length === 0 && <Empty style={{ height: '250px' }} />}
               <Spin spinning={loading} style={{ background: '#ffffff' }}>
-                {up102safezone.length > 0 && (
+                {up102safezones.length === 0 && <Empty style={{ height: '250px' }} />}
+                {up102safezones.length > 0 && (
                   <SeriesLine
                     cols={downdycols}
-                    data={up102safezone}
+                    data={up102safezones}
                     height={350}
                     padding={[30, 20, 50, 60]}
                   />

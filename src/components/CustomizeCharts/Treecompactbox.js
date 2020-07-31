@@ -57,7 +57,7 @@ class Treecompactbox extends Component {
           <View
             data={dv.getAllNodes().map(node => ({
               hasChildren: !!(node.children && node.children.length),
-              statetrue: !!(node.data.state === 1),
+              statetrue: !!(node.data.state === '失败'),
               name: node.data.name,
               ip: node.data.ip,
               state: node.data.state,
@@ -72,16 +72,16 @@ class Treecompactbox extends Component {
                 'name*ip*state*hasChildren',
                 (name, ip, state, hasChildren) => {
                   if (hasChildren === false) {
-                    if (state === 0) {
+                    if (state === '成功') {
                       return {
-                        content: `${ip}(在线)`,
+                        content: `${ip}(${state})`,
                         style: {
                           fill: '#444',
                         },
                       };
                     }
                     return {
-                      content: `${ip}(离线)`,
+                      content: `${ip}(${state})`,
                       style: {
                         fill: 'red',
                       },

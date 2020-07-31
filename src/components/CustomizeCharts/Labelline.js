@@ -12,20 +12,6 @@ import {
 } from 'bizcharts';
 import styles from './index.less';
 
-const alertvalues = [
-  { alertvalue: 27000, date: '07/17', alert: false },
-  { alertvalue: 30000, date: '07/16', alert: true },
-  { alertvalue: 27000, date: '07/15', alert: false },
-  { alertvalue: 27000, date: '07/14', alert: false },
-  { alertvalue: 27000, date: '07/13', alert: false },
-  { alertvalue: 28000, date: '07/12', alert: false },
-  { alertvalue: 27000, date: '07/11', alert: false },
-  { alertvalue: 29000, date: '07/10', alert: true },
-  { alertvalue: 29000, date: '07/09', alert: true },
-  { alertvalue: 27000, date: '07/08', alert: false },
-  { alertvalue: 27000, date: '07/07', alert: false },
-  { alertvalue: 27000, date: '07/04', alert: false },
-];
 class Labelline extends Component {
   render() {
     const { height, padding, data, cols } = this.props;
@@ -52,7 +38,6 @@ class Labelline extends Component {
               // 获取items的颜色
               // const {color} = items[0];
               const alertvalue = items[0].value;
-              const { alert } = items[0].data;
               const { value } = items[1];
               const differ = alertvalue - value;
               return (
@@ -75,7 +60,7 @@ class Labelline extends Component {
                       <span>value:</span>
                       <span className={styles.tooltipvalue}>{value}</span>
                     </li>
-                    {alert === true && (
+                    {differ > 0 && (
                       <li>
                         <span style={{ background: '#f7c42e' }} className={styles.tooltipico} />
                         <span>差值:</span>
@@ -88,7 +73,7 @@ class Labelline extends Component {
             }}
           </Tooltip>
           {/* <Interaction type="element-single-selected"/>  */}
-          <View data={alertvalues} padding={0} animate>
+          <View data={data} padding={0} animate>
             <Coordinate
               type="polar"
               startAngle={Math.PI} // 起始角度

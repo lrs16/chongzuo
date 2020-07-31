@@ -20,8 +20,8 @@ export async function getFakeCaptcha(mobile) {
 
 // 登录请求
 export async function fakeAccountLogin(params) {
-  // return request('/api/login/account', {
-  return request('/api-auth/oauth/user/token', {
+  //return request('/api/login/account', {
+  return request('/api-auth/oauth/token', {
     method: 'POST',
     data: params,
     headers: {
@@ -33,5 +33,5 @@ export async function fakeAccountLogin(params) {
 }
 // 退出登录请求
 export async function fakeLogout(access_token) {
-  return request(`/api-auth/oauth/remove/token?access_token=${access_token}&redirect_uri=/`);
+  return request(`/api-auth/oauth/remove/token?access_token=${access_token}`);
 }

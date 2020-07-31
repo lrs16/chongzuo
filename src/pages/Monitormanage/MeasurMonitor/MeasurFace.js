@@ -46,6 +46,33 @@ const changehour = datas => {
   }
   return newArr;
 };
+const changetable = datas => {
+  const newArr = [];
+  if (!Array.isArray(datas)) {
+    return newArr;
+  }
+  for (let i = 0; i < datas.length; i += 1) {
+    const vote = {};
+    vote.name = '未同步';
+    vote.value = datas[i].total;
+    vote.clock = moment(datas[i].date).format('HH');
+    newArr.push(vote);
+  }
+  return newArr;
+};
+
+const changefacetree = datas => {
+  const newArr = [];
+  if (!Array.isArray(datas)) {
+    return newArr;
+  }
+  const vote = {};
+  vote.area = '计量中心';
+  vote.children = datas;
+  newArr.push(vote);
+
+  return newArr;
+};
 const Filecontent = '阈值：电能表<2000   终端<1000   采集关系<10000';
 const Tablecontent = '理论值曲线';
 const Donutdata = [
@@ -63,86 +90,36 @@ const Donutdata = [
   },
 ];
 
-const facetree = {
-  name: '计量中心',
-  children: [
-    {
-      name: '南宁',
-      state: 0,
-    },
-    {
-      name: '柳州',
-      state: 0,
-    },
-    {
-      name: '桂林',
-      state: 0,
-    },
-    {
-      name: '贵港',
-      state: 1,
-    },
-    {
-      name: '玉林',
-      state: 0,
-    },
-    {
-      name: '梧州',
-      state: 1,
-    },
-  ],
-};
+// const facetree = {
+//   area: '计量中心',
+//   children: [
+//     {
+//       area: '南宁',
+//       status: 0,
+//     },
+//     {
+//       area: '柳州',
+//       status: 0,
+//     },
+//     {
+//       area: '桂林',
+//       status: 0,
+//     },
+//     {
+//       area: '贵港',
+//       status: 1,
+//     },
+//     {
+//       area: '玉林',
+//       status: 0,
+//     },
+//     {
+//       area: '梧州',
+//       status: 1,
+//     },
+//   ],
+// };
 
-const Tabledatas = [
-  { name: '未同步', clock: 1, value: 1100, alert: false },
-  { name: '未同步', clock: 2, value: 1300, alert: false },
-  { name: '未同步', clock: 3, value: 1000, alert: false },
-  { name: '未同步', clock: 4, value: 1000, alert: false },
-  { name: '未同步', clock: 5, value: 1000, alert: false },
-  { name: '未同步', clock: 6, value: 1100, alert: false },
-  { name: '未同步', clock: 7, value: 1250, alert: false },
-  { name: '未同步', clock: 8, value: 990, alert: false },
-  { name: '未同步', clock: 9, value: 1350, alert: false },
-  { name: '未同步', clock: 10, value: 1550, alert: false },
-  { name: '未同步', clock: 11, value: 1450, alert: false },
-  { name: '未同步', clock: 12, value: 1350, alert: false },
-  { name: '未同步', clock: 13, value: 1100, alert: false },
-  { name: '未同步', clock: 14, value: 1500, alert: false },
-  { name: '未同步', clock: 15, value: 1100, alert: false },
-  { name: '未同步', clock: 16, value: 1100, alert: false },
-  { name: '未同步', clock: 17, value: 990, alert: false },
-  { name: '未同步', clock: 18, value: 1100, alert: false },
-  { name: '未同步', clock: 19, value: 1350, alert: false },
-  { name: '未同步', clock: 20, value: 1500, alert: false },
-  { name: '未同步', clock: 21, value: 1450, alert: false },
-  { name: '未同步', clock: 22, value: 1400, alert: false },
-  { name: '未同步', clock: 23, value: 1350, alert: false },
-  { name: '未同步', clock: 24, value: 1300, alert: false },
-  { name: '基准值', clock: 1, value: 1400, alert: false },
-  { name: '基准值', clock: 2, value: 1350, alert: false },
-  { name: '基准值', clock: 3, value: 1300, alert: false },
-  { name: '基准值', clock: 4, value: 1250, alert: false },
-  { name: '基准值', clock: 5, value: 1200, alert: false },
-  { name: '基准值', clock: 6, value: 1150, alert: false },
-  { name: '基准值', clock: 7, value: 1100, alert: false },
-  { name: '基准值', clock: 8, value: 1050, alert: false },
-  { name: '基准值', clock: 9, value: 1000, alert: false },
-  { name: '基准值', clock: 10, value: 1100, alert: false },
-  { name: '基准值', clock: 11, value: 1150, alert: false },
-  { name: '基准值', clock: 12, value: 1200, alert: false },
-  { name: '基准值', clock: 13, value: 1250, alert: false },
-  { name: '基准值', clock: 14, value: 1300, alert: false },
-  { name: '基准值', clock: 15, value: 1350, alert: false },
-  { name: '基准值', clock: 16, value: 1250, alert: false },
-  { name: '基准值', clock: 17, value: 1200, alert: false },
-  { name: '基准值', clock: 18, value: 1150, alert: false },
-  { name: '基准值', clock: 19, value: 1300, alert: false },
-  { name: '基准值', clock: 20, value: 1150, alert: false },
-  { name: '基准值', clock: 21, value: 1300, alert: false },
-  { name: '基准值', clock: 22, value: 1250, alert: false },
-  { name: '基准值', clock: 23, value: 1000, alert: false },
-  { name: '基准值', clock: 24, value: 1000, alert: false },
-];
 // 有用
 const Filecols = {
   clock: {
@@ -167,8 +144,8 @@ const Issuedscale = {
 };
 const Tablecols = {
   clock: {
-    min: 1,
-    max: 24,
+    // min: 1,
+    // max: 24,
     range: [0, 0.95],
     alias: '时刻',
     tickInterval: 1,
@@ -216,15 +193,15 @@ class MeasurFace extends Component {
 
   getdatas() {
     const { dispatch } = this.props;
-    dispatch({
-      type: 'measurface/fetchsettl',
-    });
+    // dispatch({
+    //   type: 'measurface/fetchsettl',
+    // });
     dispatch({
       type: 'measurface/fetcharch',
     });
-    dispatch({
-      type: 'measurface/fetchissue',
-    });
+    // dispatch({
+    //   type: 'measurface/fetchissue',
+    // });
     dispatch({
       type: 'measurface/fetchfile',
     });
@@ -252,17 +229,26 @@ class MeasurFace extends Component {
   render() {
     const {
       loading,
-      measurface: { settldata, archdata, issuedata, filetdata, tabledata, orderdata },
+      measurface: {
+        // settldata,
+        archdata,
+        // issuedata,
+        filetdata,
+        tabledata,
+        orderdata,
+      },
     } = this.props;
-
     const archdatas = changearchdata(archdata);
     const orderdatas = changehour(orderdata);
+    const tabledatas = changetable(tabledata);
+    const facetree = changefacetree(filetdata);
+    console.log(facetree);
     return (
       <PageHeaderWrapper title="接口数据核查情况">
         <div>
           <Row gutter={24} type="flex">
             <Col xl={12} xs={24} style={{ marginBottom: 24 }}>
-              <ChartCard title="抄表结算接口">
+              <ChartCard title="抄表结算接口（仅每月1日有数据）">
                 <div
                   style={{
                     position: 'absolute',
@@ -300,8 +286,8 @@ class MeasurFace extends Component {
                 }
                 contentHeight={350}
               >
-                {archdatas.length === 0 && <Empty style={{ height: '250px' }} />}
                 <Spin spinning={loading} style={{ background: '#ffffff' }}>
+                  {archdatas.length === 0 && <Empty style={{ height: '250px' }} />}
                   {archdatas.length > 0 && (
                     <SeriesLine
                       cols={Filecols}
@@ -317,8 +303,10 @@ class MeasurFace extends Component {
             </Col>
             <Col xl={12} xs={24} style={{ marginBottom: 24 }}>
               <ChartCard title="参考下发（1h/刷新）" contentHeight={350}>
-                {issuedata.length === 0 && <Empty style={{ height: '250px' }} />}
-                <Spin spinning={loading} style={{ background: '#ffffff' }}>
+                {/* 后端接口报500 */}
+                <Empty style={{ height: '250px' }} />
+                {/* <Spin spinning={loading} style={{ background: '#ffffff' }}>
+                  {issuedata.length === 0 && <Empty style={{ height: '250px' }} />}
                   {issuedata.length > 0 && (
                     <ColumnarY
                       cols={Issuedscale}
@@ -327,34 +315,34 @@ class MeasurFace extends Component {
                       padding={[30, 60, 50, 220]}
                     />
                   )}
-                </Spin>
+                </Spin> */}
               </ChartCard>
             </Col>
             <Col xl={12} xs={24} style={{ marginBottom: 24 }}>
               <ChartCard title="1h/自动召测测试" contentHeight={350}>
-                <div style={{ margin: '50px 0 0 0' }}>
-                  {facetree === undefined && <Empty style={{ height: '250px' }} />}
+                <div style={{ margin: '0px 0 0 0' }}>
                   <Spin spinning={loading} style={{ background: '#ffffff' }}>
-                    {facetree !== undefined && (
-                      <EdgeLine datas={facetree} height={300} padding={[20, 60, 10, 50]} />
+                    {facetree.length === 0 && <Empty style={{ height: '250px' }} />}
+                    {facetree.length !== 0 && (
+                      <EdgeLine datas={facetree[0]} height={350} padding={[20, 60, 10, 50]} />
                     )}
                   </Spin>
                 </div>
-                <div style={{ margin: '10px', position: 'absolute', top: '10px', zIndex: '100px' }}>
+                {/* <div style={{ margin: '10px', position: 'absolute', top: '10px', zIndex: '100px' }}>
                   <span>档案召测测试</span>
                   <SelectArea />
                   <Button type="primary">手工召测</Button>
-                </div>
+                </div> */}
               </ChartCard>
             </Col>
             <Col xl={12} xs={24} style={{ marginBottom: 24 }}>
               <ChartCard title="测量点主表生成" contentHeight={350}>
-                {Tabledatas.length === 0 && <Empty style={{ height: '250px' }} />}
                 <Spin spinning={loading} style={{ background: '#ffffff' }}>
-                  {Tabledatas.length > 0 && (
+                  {tabledatas.length === 0 && <Empty style={{ height: '250px' }} />}
+                  {tabledata.length > 0 && (
                     <SeriesLine
                       cols={Tablecols}
-                      data={Tabledatas}
+                      data={tabledatas}
                       content={Tablecontent}
                       Color={Tablecolor}
                       height={350}
@@ -366,8 +354,8 @@ class MeasurFace extends Component {
             </Col>
             <Col xl={12} xs={24} style={{ marginBottom: 24 }}>
               <ChartCard title="费控指令-KAFKA指令超时" contentHeight={350}>
-                {orderdatas.length === 0 && <Empty style={{ height: '250px' }} />}
                 <Spin spinning={loading} style={{ background: '#ffffff' }}>
+                  {orderdatas.length === 0 && <Empty style={{ height: '250px' }} />}
                   {orderdatas.length > 0 && (
                     <LineChart
                       height={350}

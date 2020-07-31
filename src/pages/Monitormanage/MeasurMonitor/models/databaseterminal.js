@@ -1,5 +1,5 @@
 import Mock from 'mockjs'; // 引入mockjs
-import {} from '../services/api';
+import { getOnlinerate, gethourly, getspecially, gethistory } from '../services/api';
 
 const { Random } = Mock;
 function Mockoperatingmode() {
@@ -89,37 +89,37 @@ export default {
 
   effects: {
     *fetchoperat(_, { call, put }) {
-      // const response = yield call(getKafka3Zone);
-      const response = Mockoperatingmode();
+      const response = yield call(getOnlinerate);
+      // const response = Mockoperatingmode();
       yield put({
         type: 'getoperat',
-        // payload: response.data,
-        payload: response,
+        payload: response.data,
+        // payload: response,
       });
     },
     *fetchstorge(_, { call, put }) {
-      // const response = yield call(getKafkaSafeZone);
-      const response = Mockstoragecheck();
+      const response = yield call(gethourly);
+      // const response = Mockstoragecheck();
       yield put({
         type: 'getstoragecheck',
-        // payload: response.data,
-        payload: response,
+        payload: response.data,
+        // payload: response,
       });
     },
     *fetchthehour(_, { call, put }) {
-      // const response = yield call(getKafkaSafeZone);
-      const response = Mockthehour();
+      const response = yield call(getspecially);
+      // const response = Mockthehour();
       yield put({
         type: 'getthehour',
-        // payload: response.data,
-        payload: response,
+        payload: response.data,
+        // payload: response,
       });
     },
-    *fetchlist(_, { call, put }) {
-      // const response = yield call(getKafka2Zone);
+    *fetchlist(payload, { call, put }) {
+      const response = yield call(gethistory, payload);
       yield put({
         type: 'getlistdata',
-        // payload: response.data,
+        payload: response.data,
       });
     },
   },

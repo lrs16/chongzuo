@@ -42,6 +42,8 @@ class LineChart extends Component {
             }}
           />
           <Axis name="alertvalue" visible={false} />
+          <Axis name="Max警戒值" visible={false} />
+          <Axis name="Min警戒值" visible={false} />
           <Legend visible={false} />
           <Tooltip
             shared
