@@ -31,7 +31,9 @@ const codeMessage = {
 const errorHandler = error => {
   const { response } = error;
   const close = () => {
-    window.location.pathname = '/user/login';
+    const token = sessionStorage.getItem('access_token');
+    // window.location.pathname = '/user/login';
+    router.push(`/api-auth/oauth/remove/token?access_token=${token}&redirect_uri=/user/login`);
   };
 
   if (response && response.status) {
@@ -42,6 +44,7 @@ const errorHandler = error => {
       notification.error({
         message: `请求错误 ${status}: ${url}`,
         description: errorText,
+        onClose: close,
       });
     }
 

@@ -88,8 +88,8 @@ class Home extends Component {
             [500, 'error'],
             [0, 'processing'],
           ]);
-          //const statustext = record.handleCode === 200 ? '成功' : 500 ? '失败':'报告生成中';
-          //const statusMap = record.handleCode === 200 ? 'success' : 'error';
+          // const statustext = record.handleCode === 200 ? '成功' : 500 ? '失败':'报告生成中';
+          // const statusMap = record.handleCode === 200 ? 'success' : 'error';
           return (
             <span>
               {/* <Badge status={statusMap} text={record.handleCode} /> */}
@@ -112,14 +112,13 @@ class Home extends Component {
         dataIndex: 'handleTime',
         key: 'handleTime',
         render: (text, record) => {
-          console.log(record);
+          // console.log(record);
           if (record.handleTime === null) {
             return <span>--</span>;
-          } else {
-            return <span>{moment(record.handleTime).format('YYYY-MM-DD HH:mm:ss')}</span>;
           }
+          return <span>{moment(record.handleTime).format('YYYY-MM-DD HH:mm:ss')}</span>;
         },
-        //render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
+        // render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
       },
       {
         title: '启动方式',
@@ -163,7 +162,7 @@ class Home extends Component {
     } = this.props;
     const dataSource = [...joblist];
 
-    //console.log(changedatas(joblist));
+    // console.log(changedatas(joblist));
     const title = `${this.props.location.state.scenarioName}：脚本执行历史`;
     return (
       <PageHeaderWrapper title={title}>

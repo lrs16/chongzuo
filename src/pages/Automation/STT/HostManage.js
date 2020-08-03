@@ -3,7 +3,7 @@ import { connect } from 'dva';
 import { Card, Table, Form, Input, Button, Message, Divider, Badge, Popconfirm } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import HostEdit from './components/HostEdit';
-// import HostSoft from './components/Host_Soft';
+import HostSoft from './components/Host_Soft';
 
 const statusMap = ['default', 'success'];
 const status = ['离线', '在线'];
@@ -112,12 +112,12 @@ class HostManage extends Component {
         key: 'action',
         render: (text, record) => (
           <div>
-            <span
-            // title='配置软件'
-            // roleId={record.id
+            <HostSoft
+              title="配置软件"
+              // roleId={record.id
             >
               <a type="link">配置软件</a>
-            </span>
+            </HostSoft>
             <Divider type="vertical" />
             <HostEdit onSumit={values => handleEdite(values)} title="编辑主机" record={record}>
               <a type="link">编辑</a>

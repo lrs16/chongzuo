@@ -14,15 +14,13 @@ const withClick = (element, showDrawer = () => {}) => {
 class HostSoft extends Component {
   state = {
     visible: false,
-    menulist: [],
+    // menulist: [],
   };
 
   showDrawer = () => {
     this.setState({
       visible: true,
     });
-    this.loadsysMenu();
-    this.loadroleMenu();
   };
 
   onClose = () => {
@@ -31,53 +29,34 @@ class HostSoft extends Component {
     });
   };
 
-  handleChange = menulist => {
-    this.setState({ menulist });
-  };
+  // handleChange = menulist => {
+  //   this.setState({ menulist });
+  // };
 
-  handleOk = () => {
-    const { dispatch } = this.props;
-    const { roleId } = this.props;
-    const menuvalue = this.state.menulist;
-    // console.log(menuvalue);
-    // return dispatch({
-    //   type: 'rolemenu/unpdatemune',
-    //   payload: { roleId ,menuvalue},
-    // }).then(res=>{
-    //   if (res.code === 200) {
-    //     Message.success(res.msg);
-    //     this.onClose();
-    //   } else {
-    //     Message.error('配置菜单失败！');
-    //   }
+  handleOk = () => {};
 
-    // });
-  };
+  // loadsyssoft = () => {
+  //   const { dispatch } = this.props;
+  //   dispatch({
+  //     type: 'rolemenu/fetchdatas',
+  //   });
+  // };
 
-  loadsyssoft = () => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'rolemenu/fetchdatas',
-    });
-  };
-
-  loadsofts = () => {
-    const { roleId } = this.props;
-    const { dispatch } = this.props;
-    return dispatch({
-      type: 'rolemenu/querymune',
-      payload: { roleId },
-    });
-  };
+  // loadsofts = () => {
+  //   const { roleId } = this.props;
+  //   const { dispatch } = this.props;
+  //   return dispatch({
+  //     type: 'rolemenu/querymune',
+  //     payload: { roleId },
+  //   });
+  // };
 
   render() {
     const { visible } = this.state;
     const {
-      loading,
+      // loading,
       children,
       title,
-      roleId,
-      rolemenu: { sysmenu, rolemenus },
     } = this.props;
     return (
       <>
@@ -89,13 +68,13 @@ class HostSoft extends Component {
           visible={visible}
           bodyStyle={{ paddingBottom: 60 }}
           // destroyOnClose
-          key={roleId}
+          //  key={roleId}
         >
-          <MenuTransfer
-            sysmenu={sysmenu.data}
-            rolemenus={rolemenus.data}
-            openloading={loading}
-            UpdateMenu={this.handleChange}
+          <SoftTransfer
+          // sysmenu={sysmenu.data}
+          // rolemenus={rolemenus.data}
+          // openloading={loading}
+          // UpdateMenu={this.handleChange}
           />
           <div
             style={{
