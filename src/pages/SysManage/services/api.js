@@ -3,9 +3,9 @@ import { stringify } from 'qs';
 import request from '@/utils/request';
 
 // 请求用户列表
-export async function queryUsers() {
-  return request(`/api-upms/upms_user/list`);
-}
+// export async function queryUsers() {
+//   return request(`/api-upms/upms_user/list`);
+// }
 
 // 添加&编辑用户
 export async function UpdateUsers(params) {
@@ -18,11 +18,16 @@ export async function UpdateUsers(params) {
 export async function removeUsers(userId) {
   return request(`/api-upms/upms_user/${userId}`, {
     method: 'DELETE',
-    // data: id,
-    // headers: {
-    //   'Content-Type': 'application/x-www-form-urlencoded',
-    // },
-    // requestType: 'form',
+    requestType: 'form',
+  });
+}
+
+// 查询用户
+export async function SearchUsers(params) {
+  return request(`/api-upms/upms_user/listPage`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
   });
 }
 // 重置密码
@@ -58,9 +63,6 @@ export async function removeMenu(id) {
   return request(`/api-upms/upms_menu/${id}`, {
     method: 'DELETE',
     data: id,
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
     requestType: 'form',
   });
 }
@@ -88,14 +90,9 @@ export async function UpdateDept(params) {
 
 // 删除组织
 export async function removeDept(id) {
-  const menuid = stringify(id);
-  return request(`/api-upms/upms_dept/${menuid.replace(/id=/, '')}`, {
+  return request(`/api-upms/upms_dept/${id}`, {
     method: 'DELETE',
     data: id,
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    requestType: 'form',
   });
 }
 // 查询组织
@@ -121,13 +118,9 @@ export async function UpdateRole(params) {
 
 // 删除权限
 export async function removeRole(id) {
-  const roleid = stringify(id);
-  return request(`/api-upms/upms_role/${roleid.replace(/id=/, '')}`, {
+  return request(`/api-upms/upms_role/${id}`, {
     method: 'DELETE',
     data: id,
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
     requestType: 'form',
   });
 }

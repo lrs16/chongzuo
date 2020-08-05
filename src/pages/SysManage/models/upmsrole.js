@@ -32,8 +32,8 @@ export default {
       return yield call(UpdateRole, payload);
     },
 
-    *remove({ payload }, { call }) {
-      return yield call(removeRole, payload);
+    *remove({ payload: { id } }, { call }) {
+      return yield call(removeRole, id);
     },
 
     // 查询数据

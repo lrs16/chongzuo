@@ -1,7 +1,19 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
-import { Card, Table, Popconfirm, Button, Message, Divider, Badge, Tooltip } from 'antd';
+import {
+  Card,
+  Table,
+  Input,
+  Popconfirm,
+  Button,
+  Message,
+  Divider,
+  Badge,
+  Tooltip,
+  Form,
+  Pagination,
+} from 'antd';
 import {
   ToolOutlined,
   UnlockOutlined,
@@ -15,6 +27,8 @@ import NewUser from './components/UserNew';
 import UserRole from './components/UserRole';
 import ViewUser from './components/UserView';
 
+const { Search } = Input;
+
 const statusMap = ['default', 'success', 'processing'];
 const status = ['停用', '启用', '临时'];
 
@@ -23,21 +37,72 @@ const status = ['停用', '启用', '临时'];
   loading: loading.models.usermanage,
 }))
 class SysuserMangage extends Component {
+  state = {
+    current: 1,
+    pageSize: 10,
+    queKey: '',
+  };
+
   componentDidMount() {
     this.getuserslist();
-    this.loaddeptree();
   }
 
-  getuserslist() {
+  getuserslist = () => {
+    const page = this.state.current;
+    const limit = this.state.pageSize;
+    const { queKey } = this.state;
     this.props.dispatch({
       type: 'usermanage/fetch',
+      payload: {
+        page,
+        limit,
+        queKey,
+      },
     });
-  }
+  };
 
-  loaddeptree = () => {
-    this.props.dispatch({
-      type: 'usermanage/fetchdept',
+  handleSearch = values => {
+    const page = this.state.current;
+    const limit = this.state.pageSize;
+    this.setState({
+      queKey: values,
     });
+    this.props.dispatch({
+      type: 'usermanage/search',
+      payload: {
+        queKey: values,
+        page,
+        limit,
+      },
+    });
+  };
+
+  changePage = page => {
+    this.props.dispatch({
+      type: 'usermanage/search',
+      payload: {
+        queKey: this.state.queKey,
+        page,
+        limit: this.state.pageSize,
+      },
+    });
+    setTimeout(() => {
+      this.setState({ current: page });
+    }, 0);
+  };
+
+  onShowSizeChange = (current, pageSize) => {
+    this.props.dispatch({
+      type: 'usermanage/search',
+      payload: {
+        queKey: this.state.queKey,
+        page: current,
+        limit: pageSize,
+      },
+    });
+    setTimeout(() => {
+      this.setState({ pageSize });
+    }, 0);
   };
 
   render() {
@@ -99,6 +164,7 @@ class SysuserMangage extends Component {
         }
       });
     };
+
     const columns = [
       {
         title: '用户ID',
@@ -201,14 +267,27 @@ class SysuserMangage extends Component {
         ),
       },
     ];
+
     const {
       usermanage: { data, depdata },
       loading,
     } = this.props;
-    const dataSource = [...data];
+    const pagination = {
+      // 分页
+      showSizeChanger: true,
+      onShowSizeChange: (current, pageSize) => this.onShowSizeChange(current, pageSize),
+      current: this.state.current,
+      pageSize: this.state.pageSize,
+      total: data.total,
+      onChange: page => this.changePage(page),
+    };
+    const dataSource = data.rows;
     return (
       <PageHeaderWrapper>
         <Card>
+          <Form style={{ float: 'right', width: '30%' }}>
+            <Search placeholder="请输入关键字" onSearch={values => this.handleSearch(values)} />
+          </Form>
           <NewUser onSumit={handleUpdate} title="新建用户" depdatas={depdata} loading={loading}>
             <Button
               style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
@@ -218,7 +297,13 @@ class SysuserMangage extends Component {
               新建用户
             </Button>
           </NewUser>
-          <Table dataSource={dataSource} columns={columns} rowKey={record => record.id} />
+          <Table
+            loading={loading}
+            dataSource={dataSource}
+            columns={columns}
+            rowKey={record => record.id}
+            pagination={pagination}
+          />
         </Card>
       </PageHeaderWrapper>
     );

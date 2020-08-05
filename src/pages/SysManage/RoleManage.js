@@ -52,7 +52,7 @@ class RoleManage extends Component {
           Message.success(res.msg);
           reload();
         } else {
-          Message.error('更新菜单失败');
+          Message.error('更新角色信息失败');
         }
       });
     };
@@ -66,7 +66,7 @@ class RoleManage extends Component {
           Message.success(res.msg);
           reload();
         } else {
-          Message.error('删除菜单失败');
+          Message.error('删除角色失败');
         }
       });
     };

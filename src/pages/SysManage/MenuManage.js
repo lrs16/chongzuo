@@ -68,7 +68,7 @@ class MenuManage extends Component {
       const { dispatch } = this.props;
       return dispatch({
         type: 'upmsmenu/remove',
-        payload: id,
+        payload: { id },
       }).then(res => {
         if (res.code === 200) {
           Message.success(res.msg);

@@ -31,9 +31,12 @@ const codeMessage = {
 const errorHandler = error => {
   const { response } = error;
   const close = () => {
-    const token = sessionStorage.getItem('access_token');
-    // window.location.pathname = '/user/login';
-    router.push(`/api-auth/oauth/remove/token?access_token=${token}&redirect_uri=/user/login`);
+    window.location.pathname = '/user/login';
+  };
+  const cleartoken = () => {
+    // const token = sessionStorage.getItem('access_token');
+    router.push('/500');
+    sessionStorage.clear();
   };
 
   if (response && response.status) {
@@ -44,7 +47,7 @@ const errorHandler = error => {
       notification.error({
         message: `请求错误 ${status}: ${url}`,
         description: errorText,
-        onClose: close,
+        // onClose: close,
       });
     }
 
@@ -53,7 +56,14 @@ const errorHandler = error => {
         message: '未登录或登录过期，请重新登录',
         onClose: close,
       });
-      sessionStorage.clear(); // 清除token
+      sessionStorage.clear();
+    }
+
+    if (status === 500) {
+      notification.error({
+        message: '登录过期，请重新登录',
+        onClose: cleartoken,
+      });
     }
 
     if (status === 401) {
@@ -118,9 +128,21 @@ const request = extend({
 request.interceptors.request.use(async (url, options) => {
   const ctoken = sessionStorage.getItem('access_token');
   if (ctoken) {
+    if (options.requestType === 'form') {
+      const headers = {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        // Accept: 'application/json',
+        Authorization: `Bearer ${ctoken}`,
+        // 'access_token': ctoken
+      };
+      return {
+        url,
+        options: { ...options, headers },
+      };
+    }
     const headers = {
       'Content-Type': 'application/json',
-      Accept: 'application/json',
+      // Accept: 'application/json',
       Authorization: `Bearer ${ctoken}`,
       // 'access_token': ctoken
     };
@@ -129,12 +151,6 @@ request.interceptors.request.use(async (url, options) => {
       options: { ...options, headers },
     };
   }
-  // const headers = {
-  //   'Content-Type': 'application/json',
-  //   Accept: 'application/json',
-  //   Authorization: `Bearer ${ctoken}`,
-  //   // 'access_token': ctoken
-  // };
   return {
     url,
     options: { ...options },

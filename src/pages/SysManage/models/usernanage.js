@@ -1,8 +1,9 @@
 import { queryDeptTree } from '@/services/api';
 import {
-  queryUsers,
+  // queryUsers,
   UpdateUsers,
   removeUsers,
+  SearchUsers,
   resetUsers,
   queryUserRole,
   queryUserMenu,
@@ -20,7 +21,7 @@ export default {
 
   effects: {
     *fetch({ payload }, { call, put }) {
-      const response = yield call(queryUsers, payload);
+      const response = yield call(SearchUsers, payload);
       yield put({
         type: 'show',
         payload: response,
@@ -37,6 +38,14 @@ export default {
     // 重置
     *reset({ payload: { id } }, { call }) {
       return yield call(resetUsers, id);
+    },
+    // 查询
+    *search({ payload }, { call, put }) {
+      const response = yield call(SearchUsers, payload);
+      yield put({
+        type: 'show',
+        payload: response,
+      });
     },
     // 请求组织结构
     *fetchdept({ payload }, { call, put }) {
@@ -68,7 +77,6 @@ export default {
 
     // 根据ID请求用户菜单
     *fetchusermenu({ payload: { userId } }, { call, put }) {
-      console.log(userId);
       const response = yield call(queryUserMenu, userId);
 
       yield put({

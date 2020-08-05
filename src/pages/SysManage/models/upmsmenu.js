@@ -24,8 +24,8 @@ export default {
       return yield call(UpdateMenu, payload);
     },
 
-    *remove({ payload }, { call }) {
-      return yield call(removeMenu, payload);
+    *remove({ payload: { id } }, { call }) {
+      return yield call(removeMenu, id);
     },
 
     // 查询数据
