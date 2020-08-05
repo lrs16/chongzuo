@@ -72,10 +72,23 @@ class DeptList extends Component {
         ),
       },
     ];
+    const pagination = {
+      showSizeChanger: true,
+      onShowSizeChange: (current, pageSize) => this.onShowSizeChange(current, pageSize),
+      current: this.state.current,
+      pageSize: this.state.pageSize,
+      total: this.props.total,
+      onChange: page => this.changePage(page),
+    };
     const dataSource = this.props.datas;
     return (
       <div>
-        <Table dataSource={dataSource} columns={columns} rowKey={record => record.id} />
+        <Table 
+        dataSource = {dataSource} 
+        columns = {columns} 
+        rowKey = {record => record.id} 
+        pagination = {pagination}
+        />
       </div>
     );
   }

@@ -11,12 +11,73 @@ const { Search } = Input;
   loading: loading.models.upmsmenu,
 }))
 class MenuManage extends Component {
+  state = {
+    current: 1,
+    pageSize: 10,
+    queKey: '',
+  };
+
   componentDidMount() {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'upmsmenu/fetchdatas',
-    });
+    this.getlist();
   }
+
+  getlist = () => {
+    const page = this.state.current;
+    const limit = this.state.pageSize;
+    const { queKey } = this.state;
+    this.props.dispatch({
+      type: 'upmsmenu/search',
+      payload: {
+        page,
+        limit,
+        queKey,
+      },
+    });
+  };
+
+  handleSearch = values => {
+    const page = this.state.current;
+    const limit = this.state.pageSize;
+    this.setState({
+      queKey: values,
+    });
+    this.props.dispatch({
+      type: 'upmsmenu/search',
+      payload: {
+        queKey: values,
+        page,
+        limit,
+      },
+    });
+  };
+
+  changePage = page => {
+    this.props.dispatch({
+      type: 'upmsmenu/search',
+      payload: {
+        queKey: this.state.queKey,
+        page,
+        limit: this.state.pageSize,
+      },
+    });
+    setTimeout(() => {
+      this.setState({ current: page });
+    }, 0);
+  };
+
+  onShowSizeChange = (current, pageSize) => {
+    this.props.dispatch({
+      type: 'upmsmenu/search',
+      payload: {
+        queKey: this.state.queKey,
+        page: current,
+        limit: pageSize,
+      },
+    });
+    setTimeout(() => {
+      this.setState({ pageSize });
+    }, 0);
+  };
 
   dataDeal = data => {
     const listArr = [];
@@ -29,13 +90,6 @@ class MenuManage extends Component {
   };
 
   render() {
-    const reload = () => {
-      const { dispatch } = this.props;
-      dispatch({
-        type: 'upmsmenu/fetchdatas',
-      });
-    };
-
     const handleUpdate = values => {
       const { dispatch } = this.props;
       return dispatch({
@@ -44,7 +98,7 @@ class MenuManage extends Component {
       }).then(res => {
         if (res.code === 200) {
           Message.success(res.msg);
-          reload();
+          this.getlist();
         } else {
           Message.error('添加菜单失败');
         }
@@ -58,7 +112,7 @@ class MenuManage extends Component {
       }).then(res => {
         if (res.code === 200) {
           Message.success(res.msg);
-          reload();
+          this.getlist();
         } else {
           Message.error('更新菜单失败');
         }
@@ -72,24 +126,9 @@ class MenuManage extends Component {
       }).then(res => {
         if (res.code === 200) {
           Message.success(res.msg);
-          reload();
+          this.getlist();
         } else {
           Message.error('删除菜单失败');
-        }
-      });
-    };
-    const handleSearch = values => {
-      const { dispatch } = this.props;
-      // const { page, pagesize } = pageinit;
-      return dispatch({
-        type: 'upmsmenu/search',
-        payload: values,
-      }).then(res => {
-        if (res.code === 200) {
-          Message.success(res.msg || '查询成功！');
-          reload();
-        } else {
-          Message.error('什么也没有查到！');
         }
       });
     };
@@ -153,8 +192,15 @@ class MenuManage extends Component {
     const {
       upmsmenu: { data },
     } = this.props;
-    const dataSource = [...data];
-    const { getFieldDecorator } = this.props.form;
+    const dataSource = data.rows;
+    const pagination = {
+      showSizeChanger: true,
+      onShowSizeChange: (current, pageSize) => this.onShowSizeChange(current, pageSize),
+      current: this.state.current,
+      pageSize: this.state.pageSize,
+      total: data.total,
+      onChange: page => this.changePage(page),
+    };
     // const mainnav = this.dataDeal(dataSource);
     return (
       <PageHeaderWrapper title="菜单管理">
@@ -170,9 +216,7 @@ class MenuManage extends Component {
               })}
             </div> */}
             <Form style={{ float: 'right', width: '30%' }}>
-              {getFieldDecorator('queKey')(
-                <Search placeholder="请输入" onSearch={values => handleSearch(values)} />,
-              )}
+                <Search placeholder="请输入关键字" onSearch={values => this.handleSearch(values)} />
             </Form>
             <MenuModal onSumit={handleUpdate}>
               <Button
@@ -183,7 +227,12 @@ class MenuManage extends Component {
                 新建菜单
               </Button>
             </MenuModal>
-            <Table dataSource={dataSource} columns={columns} rowKey={record => record.id} />
+            <Table 
+            dataSource={dataSource} 
+            columns={columns} 
+            rowKey={record => record.id} 
+            pagination={pagination}
+            />
           </div>
         </Card>
       </PageHeaderWrapper>
@@ -191,4 +240,4 @@ class MenuManage extends Component {
   }
 }
 
-export default Form.create()(MenuManage);
+export default MenuManage;

@@ -59,12 +59,12 @@ const errorHandler = error => {
       sessionStorage.clear();
     }
 
-    if (status === 500) {
-      notification.error({
-        message: '登录过期，请重新登录',
-        onClose: cleartoken,
-      });
-    }
+    // if (status === 500) {
+    //   notification.error({
+    //     message: '登录过期，请重新登录',
+    //     onClose: cleartoken,
+    //   });
+    // }
 
     if (status === 401) {
       notification.error({

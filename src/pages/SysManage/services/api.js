@@ -58,7 +58,7 @@ export async function UpdateMenu(params) {
   });
 }
 
-// 删除
+// 删除菜单
 export async function removeMenu(id) {
   return request(`/api-upms/upms_menu/${id}`, {
     method: 'DELETE',
@@ -67,11 +67,12 @@ export async function removeMenu(id) {
   });
 }
 
-// 查询
+// 查询菜单
 export async function searchMenu(params) {
   return request('/api-upms/upms_menu/listPage', {
     method: 'POST',
-    body: JSON.stringify(params),
+    data: params,
+    requestType: 'form',
   });
 }
 
@@ -93,13 +94,16 @@ export async function removeDept(id) {
   return request(`/api-upms/upms_dept/${id}`, {
     method: 'DELETE',
     data: id,
+    requestType: 'form',
   });
 }
 // 查询组织
 export async function searchDept(params) {
+  console.log(params);
   return request('/api-upms/upms_dept/listPage', {
     method: 'POST',
-    body: JSON.stringify(params),
+    data: params,
+    requestType: 'form',
   });
 }
 
@@ -156,10 +160,11 @@ export async function queryUserMenu(userId) {
   return request(`/api-upms/upms_user/getMenusByUserId/${userId}`);
 }
 
-// 查询
+// 查询 ,
 export async function searchRole(params) {
   return request('/api-upms/upms_role/listPage', {
     method: 'POST',
-    body: JSON.stringify(params),
+    data: params,
+    requestType: 'form',
   });
 }

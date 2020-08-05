@@ -37,8 +37,12 @@ export default {
     },
 
     // 查询数据
-    *search({ payload }, { call }) {
-      return yield call(searchRole, payload);
+    *search({ payload }, { call , put}) {
+      const response = yield call(searchRole, payload);
+      yield put({
+        type: 'show',
+        payload: response,
+      });
     },
     // 设置菜单权限
     *disposemune({ payload: { roleId } }, { call }) {

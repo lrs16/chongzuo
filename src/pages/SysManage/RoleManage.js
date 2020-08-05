@@ -1,11 +1,12 @@
 /* eslint-disable react/prefer-stateless-function */
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Card, Table, Popconfirm, Button, Message, Divider, Badge } from 'antd';
+import { Card, Table, Popconfirm, Button, Message, Divider, Badge ,Form, Input } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import RoleModal from './components/ReloModal';
 import RoleMenu from './components/RoleMenu';
 
+// const { Search } = Input;
 const statusMap = ['default', 'success'];
 const status = ['停用', '启用'];
 @connect(({ upmsrole, loading }) => ({
@@ -13,20 +14,81 @@ const status = ['停用', '启用'];
   loading: loading.models.upmsrole,
 }))
 class RoleManage extends Component {
+  // state = {
+  //   current: 1,
+  //   pageSize: 10,
+  //   queKey: '',
+  // };
+
   componentDidMount() {
-    const { dispatch } = this.props;
-    dispatch({
+    this.getlist();
+  }
+// 查询接口报500
+  // getlist = () => {
+  //   const page = this.state.current;
+  //   const limit = this.state.pageSize;
+  //   const { queKey } = this.state;
+  //   this.props.dispatch({
+  //     type: 'upmsrole/search',
+  //     payload: {
+  //       page,
+  //       limit,
+  //       queKey,
+  //     },
+  //   });
+  // };
+
+  getlist = () => {
+    this.props.dispatch({
       type: 'upmsrole/fetchdatas',
     });
-  }
+  };
+
+  // handleSearch = values => {
+  //   const page = this.state.current;
+  //   const limit = this.state.pageSize;
+  //   this.setState({
+  //     queKey: values,
+  //   });
+  //   this.props.dispatch({
+  //     type: 'upmsrole/search',
+  //     payload: {
+  //       queKey: values,
+  //       page,
+  //       limit,
+  //     },
+  //   });
+  // };
+
+  // changePage = page => {
+  //   this.props.dispatch({
+  //     type: 'upmsrole/search',
+  //     payload: {
+  //       queKey: this.state.queKey,
+  //       page,
+  //       limit: this.state.pageSize,
+  //     },
+  //   });
+  //   setTimeout(() => {
+  //     this.setState({ current: page });
+  //   }, 0);
+  // };
+
+  // onShowSizeChange = (current, pageSize) => {
+  //   this.props.dispatch({
+  //     type: 'upmsrole/search',
+  //     payload: {
+  //       queKey: this.state.queKey,
+  //       page: current,
+  //       limit: pageSize,
+  //     },
+  //   });
+  //   setTimeout(() => {
+  //     this.setState({ pageSize });
+  //   }, 0);
+  // };
 
   render() {
-    const reload = () => {
-      const { dispatch } = this.props;
-      dispatch({
-        type: 'upmsrole/fetchdatas',
-      });
-    };
 
     const handleUpdate = values => {
       const { dispatch } = this.props;
@@ -36,7 +98,7 @@ class RoleManage extends Component {
       }).then(res => {
         if (res.code === 200) {
           Message.success(res.msg);
-          reload();
+          this.getlist();
         } else {
           Message.error('添加角色失败');
         }
@@ -50,7 +112,7 @@ class RoleManage extends Component {
       }).then(res => {
         if (res.code === 200) {
           Message.success(res.msg);
-          reload();
+          this.getlist();
         } else {
           Message.error('更新角色信息失败');
         }
@@ -64,27 +126,13 @@ class RoleManage extends Component {
       }).then(res => {
         if (res.code === 200) {
           Message.success(res.msg);
-          reload();
+          this.getlist();
         } else {
           Message.error('删除角色失败');
         }
       });
     };
-    // const handleSearch = (values, pageinit) => {
-    //   const { dispatch } = this.props;
-    //   const { page, pagesize } = pageinit;
-    //   return dispatch({
-    //     type: 'upmsrole/search',
-    //     payload: values,
-    //   }).then(res => {
-    //     if (res.code === 200) {
-    //       Message.success(res.msg || '查询成功！');
-    //       reload();
-    //     } else {
-    //       Message.error('什么也没有查到！');
-    //     }
-    //   });
-    // };
+
 
     const columns = [
       {
@@ -139,10 +187,21 @@ class RoleManage extends Component {
     const {
       upmsrole: { data },
     } = this.props;
+    // const pagination = {
+    //   showSizeChanger: true,
+    //   onShowSizeChange: (current, pageSize) => this.onShowSizeChange(current, pageSize),
+    //   current: this.state.current,
+    //   pageSize: this.state.pageSize,
+    //   total: data.total,
+    //   onChange: page => this.changePage(page),
+    // };
     const dataSource = [...data];
     return (
       <PageHeaderWrapper title="角色管理">
         <Card>
+          {/* <Form style={{ float: 'right', width: '30%' }}>
+            <Search placeholder="请输入关键字" onSearch={values => this.handleSearch(values)} />
+          </Form> */}
           <RoleModal onSumit={handleUpdate}>
             <Button
               style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
@@ -152,7 +211,12 @@ class RoleManage extends Component {
               新增角色
             </Button>
           </RoleModal>
-          <Table dataSource={dataSource} columns={columns} rowKey={record => record.id} />
+          <Table 
+          dataSource={dataSource} 
+          columns={columns} 
+          rowKey={record => record.id} 
+          // pagination={pagination}
+          />
         </Card>
       </PageHeaderWrapper>
     );

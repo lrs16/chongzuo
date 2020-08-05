@@ -29,8 +29,13 @@ export default {
     },
 
     // 查询数据
-    *search({ payload }, { call }) {
-      return yield call(searchDept, payload);
+    *search({ payload }, { call, put }) {
+      console.log(payload);
+      const response = yield call(searchDept, payload);
+      yield put({
+        type: 'show',
+        payload: response,
+      });
     },
   },
 

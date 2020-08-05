@@ -29,8 +29,12 @@ export default {
     },
 
     // 查询数据
-    *search({ payload }, { call }) {
-      return yield call(searchMenu, payload);
+    *search({ payload }, { call , put }) {
+      const response =  yield call(searchMenu, payload);
+      yield put({
+        type: 'show',
+        payload: response,
+      });
     },
   },
 

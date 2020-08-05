@@ -44,15 +44,15 @@ class SysuserMangage extends Component {
   };
 
   componentDidMount() {
-    this.getuserslist();
+    this.getlist();
   }
 
-  getuserslist = () => {
+  getlist = () => {
     const page = this.state.current;
     const limit = this.state.pageSize;
     const { queKey } = this.state;
     this.props.dispatch({
-      type: 'usermanage/fetch',
+      type: 'usermanage/search',
       payload: {
         page,
         limit,
@@ -114,7 +114,7 @@ class SysuserMangage extends Component {
       }).then(res => {
         if (res.code === 200) {
           Message.success(res.msg);
-          this.getuserslist();
+          this.getlist();
         } else {
           Message.error(res.msg);
         }
@@ -129,7 +129,7 @@ class SysuserMangage extends Component {
       }).then(res => {
         if (res.code === 200) {
           Message.success(res.msg);
-          this.getuserslist();
+          this.getlist();
         } else {
           Message.error('更新用户信息失败！');
         }
@@ -144,7 +144,7 @@ class SysuserMangage extends Component {
       }).then(res => {
         if (res.code === 200) {
           Message.success(res.msg);
-          this.getuserslist();
+          this.getlist();
         } else {
           Message.error('删除用户失败！');
         }
@@ -158,7 +158,7 @@ class SysuserMangage extends Component {
       }).then(res => {
         if (res.code === 200) {
           Message.success(res.msg);
-          this.getuserslist();
+          this.getlist();
         } else {
           Message.error('重置密码失败！');
         }
@@ -272,8 +272,8 @@ class SysuserMangage extends Component {
       usermanage: { data, depdata },
       loading,
     } = this.props;
+    // 分页
     const pagination = {
-      // 分页
       showSizeChanger: true,
       onShowSizeChange: (current, pageSize) => this.onShowSizeChange(current, pageSize),
       current: this.state.current,
