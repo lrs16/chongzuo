@@ -30,6 +30,7 @@ class HostManage extends Component {
     pageSize: 10,
     queKey: '',
   };
+  // color = "red";
 
   componentDidMount() {
     this.getlist();
