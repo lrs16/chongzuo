@@ -1,34 +1,99 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Card, Table, Form, Input, Button, Message, Divider, Badge, Popconfirm } from 'antd';
+import moment from 'moment';
+import {
+  Card,
+  Table,
+  Form,
+  Input,
+  Button,
+  Message,
+  Divider,
+  Badge,
+  Popconfirm,
+  Pagination,
+} from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import HostEdit from './components/HostEdit';
 import HostSoft from './components/Host_Soft';
 
 const statusMap = ['default', 'success'];
-const status = ['离线', '在线'];
+const status = ['停用', '在用'];
 const { Search } = Input;
 @connect(({ automaticmodel, loading }) => ({
   automaticmodel,
   loading: loading.models.automaticmodel,
 }))
 class HostManage extends Component {
+  state = {
+    current: 1,
+    pageSize: 10,
+    queKey: '',
+  };
+
   componentDidMount() {
     this.getlist();
   }
 
-  getlist() {
+  getlist = () => {
+    const page = this.state.current;
+    const limit = this.state.pageSize;
+    const { queKey } = this.state;
     this.props.dispatch({
       type: 'automaticmodel/fetch',
+      paload: {
+        page,
+        limit,
+        queKey,
+      },
     });
-  }
+  };
+
+  handleSearch = values => {
+    const page = this.state.current;
+    const limit = this.state.pageSize;
+    this.setState({
+      queKey: values,
+    });
+    this.props.dispatch({
+      type: 'automaticmodel/search',
+      payload: {
+        queKey: values,
+        page,
+        limit,
+      },
+    });
+  };
+
+  changePage = page => {
+    this.props.dispatch({
+      type: 'automaticmodel/search',
+      payload: {
+        queKey: this.state.queKey,
+        page,
+        limit: this.state.pageSize,
+      },
+    });
+    setTimeout(() => {
+      this.setState({ current: page });
+    }, 0);
+  };
+
+  onShowSizeChange = (current, pageSize) => {
+    this.props.dispatch({
+      type: 'automaticmodel/search',
+      payload: {
+        queKey: this.state.queKey,
+        page: current,
+        limit: pageSize,
+      },
+    });
+    setTimeout(() => {
+      this.setState({ pageSize });
+    }, 0);
+  };
 
   render() {
-    const { getFieldDecorator } = this.props.form;
-    const {
-      automaticmodel: { list },
-    } = this.props;
-    const dataSource = list;
     const handleUpdate = values => {
       const { dispatch } = this.props;
       return dispatch({
@@ -54,7 +119,7 @@ class HostManage extends Component {
           Message.success(res.msg);
           this.getlist();
         } else {
-          Message.error('更新主机失败！');
+          Message.error(res.msg);
         }
       });
     };
@@ -63,7 +128,7 @@ class HostManage extends Component {
       const { dispatch } = this.props;
       return dispatch({
         type: 'automaticmodel/remove',
-        payload: id,
+        payload: { id },
       }).then(res => {
         if (res.code === 200) {
           Message.success(res.msg);
@@ -76,36 +141,61 @@ class HostManage extends Component {
 
     const columns = [
       {
-        title: '编码',
-        dataIndex: 'code',
-        key: 'code',
+        title: 'id',
+        dataIndex: 'id',
+        key: 'id',
       },
       {
-        title: '分组',
-        dataIndex: 'group',
-        key: 'group',
+        title: '主机名称',
+        dataIndex: 'hostsName',
+        key: 'hostsName',
       },
       {
-        title: '设备名称',
-        dataIndex: 'equipmentName',
-        key: 'equipmentName',
+        title: '更新时间',
+        dataIndex: 'createTime',
+        key: 'createTime',
+        render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
       },
       {
         title: '状态',
-        dataIndex: 'statue',
-        key: 'statue',
+        dataIndex: 'hostsStatus',
+        key: 'hostsStatus',
         render: (text, record) => (
           <span>
-            <Badge status={statusMap[record.statue]} text={status[record.statue]} />
+            <Badge status={statusMap[record.hostsStatus]} text={status[record.hostsStatus]} />
           </span>
         ),
       },
       {
-        title: 'IP',
-        dataIndex: 'ip',
-        key: 'ip',
+        title: 'IP地址',
+        dataIndex: 'hostsIp',
+        key: 'hostsIp',
       },
-
+      {
+        title: '主机排序',
+        dataIndex: 'hostsSort',
+        key: 'hostsSort',
+      },
+      {
+        title: '主机分区',
+        dataIndex: 'hostsZoneId',
+        key: 'hostsZoneId',
+      },
+      {
+        title: '主机操作系统',
+        dataIndex: 'hostsOsId',
+        key: 'hostsOsId',
+      },
+      {
+        title: '机柜',
+        dataIndex: 'hostsCabinetId',
+        key: 'hostsCabinetId',
+      },
+      {
+        title: '主机备注',
+        dataIndex: 'hostsRemark',
+        key: 'hostsRemark',
+      },
       {
         title: '操作',
         dataIndex: 'action',
@@ -119,7 +209,12 @@ class HostManage extends Component {
               <a type="link">配置软件</a>
             </HostSoft>
             <Divider type="vertical" />
-            <HostEdit onSumit={values => handleEdite(values)} title="编辑主机" record={record}>
+            <HostEdit
+              onSumit={values => handleEdite(values)}
+              title="编辑主机"
+              record={record}
+              refresh={this.getlist}
+            >
               <a type="link">编辑</a>
             </HostEdit>
             <Divider type="vertical" />
@@ -130,17 +225,24 @@ class HostManage extends Component {
         ),
       },
     ];
+    const {
+      automaticmodel: { data },
+    } = this.props;
+    const dataSource = data.rows;
+    const pagination = {
+      showSizeChanger: true,
+      onShowSizeChange: (current, pageSize) => this.onShowSizeChange(current, pageSize),
+      current: this.state.current,
+      pageSize: this.state.pageSize,
+      total: data.total,
+      onChange: page => this.changePage(page),
+    };
 
     return (
       <PageHeaderWrapper title="主机管理">
         <Card>
           <Form style={{ float: 'right', width: '30%' }}>
-            {getFieldDecorator('queKey')(
-              <Search
-                placeholder="请输入"
-                // onSearch={values => handleSearch(values)}
-              />,
-            )}
+            <Search placeholder="请输入关键字" onSearch={values => this.handleSearch(values)} />
           </Form>
           <HostEdit onSumit={handleUpdate}>
             <Button
@@ -151,7 +253,12 @@ class HostManage extends Component {
               添加主机
             </Button>
           </HostEdit>
-          <Table columns={columns} dataSource={dataSource} rowKey={record => record.code} />
+          <Table
+            columns={columns}
+            dataSource={dataSource}
+            rowKey={record => record.id}
+            pagination={pagination}
+          />
         </Card>
       </PageHeaderWrapper>
     );

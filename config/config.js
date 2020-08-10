@@ -205,12 +205,7 @@ export default {
                     //   icon: 'cloud-server',
                     //   component: './Automation/STT/Host_Soft',
                     // },
-                    {
-                      path: '/automation/STT/process',
-                      name: '进程',
-                      icon: 'cloud-server',
-                      component: './Automation/STT/ProcessManage',
-                    },
+
                     // {
                     //   path: '/automation/STT/soft_process',
                     //   name: '软件与进程关系',
@@ -559,5 +554,11 @@ export default {
     //   changeOrigin: true,
     //   // pathRewrite: { '^/apiauth': '' }
     // },
+    '/api-meter-auto/': {
+      //计量现场接口
+      target: 'http://172.16.4.211:8800/',
+      changeOrigin: true,
+      // pathRewrite: { '^/apiauth': '' }
+    },
   },
 };

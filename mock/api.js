@@ -931,50 +931,6 @@ const softList = [
   },
 ];
 
-//进程的列表展示
-const processList = [
-  {
-    id: 1,
-    application: '爱奇艺',
-    processName: '爱奇艺',
-    cpu: '80%',
-    disk: '2%',
-    memory: '4%',
-    network: '良好',
-    operation: '未定义',
-  },
-  {
-    id: 2,
-    application: '爱奇艺',
-    processName: '爱奇艺',
-    cpu: '80%',
-    disk: '2%',
-    memory: '4%',
-    network: '良好',
-    operation: '未定义',
-  },
-  {
-    id: 3,
-    application: '爱奇艺',
-    processName: '爱奇艺',
-    cpu: '80%',
-    disk: '2%',
-    memory: '4%',
-    network: '良好',
-    operation: '未定义',
-  },
-  {
-    id: 5,
-    application: '爱奇艺',
-    processName: '爱奇艺',
-    cpu: '80%',
-    disk: '2%',
-    memory: '4%',
-    network: '良好',
-    operation: '未定义',
-  },
-];
-
 export const getFactoryTypes = [
   {
     key: '0',
@@ -1121,9 +1077,4 @@ export default {
   'GET /api/softSave': softList,
   'GET /api/softEdit': softList,
   'GET /api/softRemove': softList,
-  //进程的数据
-  'GET /api/processList': processList,
-  'GET /api/processEdit': processList,
-  'GET /api/processRemove': processList,
-  'GET /api/processSave': processList,
 };

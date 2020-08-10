@@ -7,24 +7,21 @@ import {
   querySaveSoft,
   queryEditSoft,
   queryRemoveSoft,
-  queryProcessList,
-  queryProcessEdit,
-  processRemove,
-  queryProcessSave,
+  searchHosts,
+  searchSofts,
 } from '../services/api';
 
 export default {
   namespace: 'automaticmodel',
 
   state: {
-    list: [],
+    data: [],
     softdata: [],
-    processdata: [],
   },
 
   effects: {
     *fetch({ payload }, { call, put }) {
-      const response = yield call(queryHostList, payload);
+      const response = yield call(searchHosts, payload);
       yield put({
         type: 'show',
         payload: response,
@@ -39,13 +36,21 @@ export default {
       return yield call(editHostInfo, payload);
     },
 
-    *remove({ payload }, { call }) {
-      return yield call(removeHostInfo, payload);
+    *remove({ payload: { id } }, { call }) {
+      return yield call(removeHostInfo, id);
+    },
+
+    *search({ payload }, { call, put }) {
+      const response = yield call(searchHosts, payload);
+      yield put({
+        type: 'show',
+        payload: response,
+      });
     },
 
     //软件的接口请求
     *fetchsoftlist({ payload }, { call, put }) {
-      const response = yield call(querySoftList, payload);
+      const response = yield call(searchSofts, payload);
       yield put({
         type: 'softlist',
         payload: response,
@@ -64,25 +69,12 @@ export default {
       return yield call(queryRemoveSoft, payload);
     },
 
-    //进程的接口
-    *fetchprocessList({ payload }, { call, put }) {
-      const response = yield call(queryProcessList, payload);
+    *softSearch({ payload }, { call, put }) {
+      const response = yield call(searchSofts, payload);
       yield put({
-        type: 'processlist',
+        type: 'softlist',
         payload: response,
       });
-    },
-
-    *processEdit({ payload }, { call }) {
-      return yield call(queryProcessEdit, payload);
-    },
-
-    *processRemove({ payload }, { call }) {
-      return yield call(processRemove, payload);
-    },
-
-    *processSave({ payload }, { call }) {
-      return yield call(this.processSave, payload);
     },
   },
 
@@ -90,21 +82,14 @@ export default {
     show(state, action) {
       return {
         ...state,
-        list: action.payload,
+        data: action.payload.data,
       };
     },
 
     softlist(state, action) {
       return {
         ...state,
-        softdata: action.payload,
-      };
-    },
-
-    processlist(state, action) {
-      return {
-        ...state,
-        processdata: action.payload,
+        softdata: action.payload.data,
       };
     },
   },
