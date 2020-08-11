@@ -205,7 +205,12 @@ export default {
                     //   icon: 'cloud-server',
                     //   component: './Automation/STT/Host_Soft',
                     // },
-
+                    {
+                      path: '/automation/STT/process',
+                      name: '进程',
+                      icon: 'cloud-server',
+                      component: './Automation/STT/ProcessManage',
+                    },
                     // {
                     //   path: '/automation/STT/soft_process',
                     //   name: '软件与进程关系',

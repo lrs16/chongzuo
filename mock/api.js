@@ -486,6 +486,76 @@ const ResourcesList = [
   },
 ];
 
+// 程序执行列表
+const SoftExetuteList = [
+  {
+    servicename: 'service-01',
+    ip: '172.0.0.1',
+    datetime: '2020-07-27 8.00',
+    port: '8080',
+  },
+  {
+    servicename: 'service-02',
+    ip: '172.0.0.2',
+    datetime: '2020-07-27 9.00',
+    port: '8080',
+  },
+  {
+    servicename: 'service-03',
+    ip: '172.0.0.3',
+    datetime: '2020-07-27 12.00',
+    port: '8080',
+  },
+];
+
+//进程列表
+const processList = [
+  {
+    id: '1',
+    code: '1',
+    application: '爱奇艺',
+    processName: '爱奇艺',
+    cpu: '80%',
+    disk: '2%',
+    memory: '4%',
+    network: '良好',
+    operation: '未定义',
+  },
+  {
+    id: '2',
+    code: '2',
+    application: '爱奇艺',
+    processName: '爱奇艺',
+    cpu: '80%',
+    disk: '2%',
+    memory: '4%',
+    network: '良好',
+    operation: '未定义',
+  },
+  {
+    id: '3',
+    code: '3',
+    application: '爱奇艺',
+    processName: '爱奇艺',
+    cpu: '80%',
+    disk: '2%',
+    memory: '4%',
+    network: '良好',
+    operation: '未定义',
+  },
+  {
+    id: '4',
+    code: '4',
+    application: '爱奇艺',
+    processName: '爱奇艺',
+    cpu: '80%',
+    disk: '2%',
+    memory: '4%',
+    network: '良好',
+    operation: '未定义',
+  },
+];
+
 const DetailsList = [
   {
     detailsid: 'details-01',
@@ -971,6 +1041,12 @@ export default {
   'GET /api/report_list': reportdatas,
 
   'GET /api/resouresList': ResourcesList,
+
+  // 程序执行列表
+  'GET /api/softexetuteList': SoftExetuteList,
+
+  //进程列表
+  'GET /api/processList': processList,
 
   'GET /api/detailsList': DetailsList,
 
