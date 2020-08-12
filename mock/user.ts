@@ -81,10 +81,16 @@ export default {
     const { password, userName, type } = req.body;
     if (password === '123456' && userName === 'admin') {
       res.send({
-        status: 'ok',
+        //status: 'ok',
         type,
         currentAuthority: 'admin',
-        access_token: '2a60e727-66ff-4c1d-826c-ac0f80b8ebdd',
+        data: {
+          access_token: '0b3f5441-5165-43dc-af69-7651b58d8d93',
+          token_type: 'bearer',
+          refresh_token: 'c8cbb1bb-9908-4cf9-b0f5-eaeeb327ccdf',
+          expires_in: '3599',
+          scope: 'app',
+        },
       });
       return;
     }

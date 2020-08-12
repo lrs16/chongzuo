@@ -117,7 +117,7 @@ class DatabaseTerminal extends Component {
     const operatingmodes = dataArr(operatingmode);
     const storagechecks = dataLine(storagecheck);
     const thehours = dataLine(thehour);
-    console.log(thehour);
+    console.log(operatingmode);
     return (
       <PageHeaderWrapper title="终端工况和数据入库">
         <h3>终端工况</h3>
