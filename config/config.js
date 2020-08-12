@@ -303,6 +303,61 @@ export default {
                     },
                   ],
                 },
+                // {
+                //   path: '/monitormanage/basicplamonitor',
+                //   name: '基础平台监测',
+                //   icon: 'interaction',
+                //   routes: [
+                //     {
+                //       path: '/monitormanage/basicplamonitor',
+                //       redirect: '/monitormanage/basicplamonitor/collection',
+                //     },
+                //     {
+                //       path: '/monitormanage/basicplamonitor/home',
+                //       name: 'basicplahome',
+                //       component: './Monitormanage/MeasurMonitor',
+                //     },
+                //     {
+                //       path: '/monitormanage/measurmonitor/collection',
+                //       name: '采集指标情况',
+                //       icon: 'cloud-server',
+                //       component: './Monitormanage/MeasurMonitor/Collection',
+                //     },
+                //     {
+                //       path: '/monitormanage/measurmonitor/measurface',
+                //       name: '接口数据核查情况',
+                //       icon: 'cloud-server',
+                //       component: './Monitormanage/MeasurMonitor/MeasurFace',
+                //     },
+                //     {
+                //       path: '/monitormanage/measurmonitor/fafka',
+                //       name: 'KAFKA消费',
+                //       icon: 'cloud-server',
+                //       component: './Monitormanage/MeasurMonitor/Fafak',
+                //     },
+                //     {
+                //       path: '/monitormanage/measurmonitor/fafkamatinal',
+                //       name: 'KAFKA消费（凌晨）',
+                //       icon: 'cloud-server',
+                //       component: './Monitormanage/MeasurMonitor/FafakMatinal',
+                //     },
+                //     {
+                //       path: '/monitormanage/measurmonitor/sysrunning',
+                //       name: '主站系统运行',
+                //       icon: 'cloud-server',
+                //       component: './Monitormanage/MeasurMonitor/SysRunning',
+                //     },
+                //     {
+                //       path: '/monitormanage/measurmonitor/databaseterminal',
+                //       name: '终端工况和数据入库',
+                //       icon: 'cloud-server',
+                //       component: './Monitormanage/MeasurMonitor/DatabaseTerminal',
+                //     },
+                //     {
+                //       component: './404',
+                //     },
+                //   ],
+                // },
               ],
             },
             {

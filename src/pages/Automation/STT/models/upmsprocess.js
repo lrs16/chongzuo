@@ -1,5 +1,5 @@
 import {
-  queryProcessList,
+  // queryProcessList,
   searchProcess,
   addProcess,
   removeProcess,
@@ -14,17 +14,22 @@ export default {
   },
 
   effects: {
-    *fetch({ payload }, { call, put }) {
+    *fetch(_, { call, put }) {
       //进程列表数据
-      const response = yield call(queryProcessList, payload);
+      const response = yield call(searchProcess);
+      console.log(response);
       yield put({
-        type: 'save',
+        type: 'show',
         payload: response,
       });
     },
     // 查询数据
-    *search({ payload }, { call }) {
-      return yield call(searchProcess, payload);
+    *search({ payload }, { call, put }) {
+      const response = yield call(searchProcess, payload);
+      yield put({
+        type: 'show',
+        payload: response,
+      });
     },
     // 编辑表格数据
     *edite({ payload }, { call }) {
@@ -35,16 +40,16 @@ export default {
       return yield call(addProcess, payload);
     },
     // 删除表格数据
-    *remove({ payload }, { call }) {
-      return yield call(removeProcess, payload);
+    *remove({ payload: { id } }, { call }) {
+      return yield call(removeProcess, id);
     },
   },
 
   reducers: {
-    save(state, action) {
+    show(state, action) {
       return {
         ...state,
-        list: action.payload,
+        list: action.payload.data,
       };
     },
   },

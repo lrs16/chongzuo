@@ -54,7 +54,14 @@ class ProcessEdit extends Component {
     const { children, title } = this.props;
     const { getFieldDecorator } = this.props.form;
     const required = true;
-    const { application, processName, cpu, memory, disk, network } = this.props.record;
+    const { 
+      id,
+      createUser,
+      updateTime,
+      courseCode,
+      courseName,
+      courseRemark,
+    } = this.props.record;
 
     return (
       <>
@@ -68,76 +75,58 @@ class ProcessEdit extends Component {
           onOk={this.handleOk}
         >
           <Form {...formItemLayout}>
-            <Form.Item label="应用">
-              {getFieldDecorator('application', {
+            <Form.Item label="数据编号">
+              {getFieldDecorator('id', {
+                initialValue: id,
+              })(<Input disabled />)}
+            </Form.Item>
+
+            <Form.Item label="创建人">
+              {getFieldDecorator('createUser', {
+                // rules: [
+                //   {
+                //     required,
+                //     message: '请输入',
+                //   },
+                // ],
+                initialValue: createUser,
+              })(<Input placeholder="请输入..." />)}
+            </Form.Item>
+
+            <Form.Item label="进程代码">
+              {getFieldDecorator('courseCode', {
                 rules: [
                   {
                     required,
                     message: '请输入',
                   },
                 ],
-                initialValue: application,
-              })(<Input placeholder="请输入应用名称" />)}
+                initialValue: courseCode,
+              })(<Input placeholder="请输入..." />)}
             </Form.Item>
 
             <Form.Item label="进程名称">
-              {getFieldDecorator('processName', {
+              {getFieldDecorator('courseName', {
                 rules: [
                   {
                     required,
-                    message: '请输入进程名称',
+                    message: '请输入',
                   },
                 ],
-                initialValue: processName,
-              })(<Input placeholder="请输入进程名称" />)}
+                initialValue: courseName,
+              })(<Input placeholder="请输入..." />)}
             </Form.Item>
 
-            <Form.Item label="CPU">
-              {getFieldDecorator('cpu', {
+            <Form.Item label="进程备注">
+              {getFieldDecorator('courseRemark', {
                 rules: [
                   {
                     required,
-                    message: '请输入CPU',
+                    message: '请输入',
                   },
                 ],
-                initialValue: cpu,
-              })(<Input placeholder="请输入CPU" />)}
-            </Form.Item>
-
-            <Form.Item label="内存">
-              {getFieldDecorator('memory', {
-                rules: [
-                  {
-                    required,
-                    message: '请输入内存',
-                  },
-                ],
-                initialValue: memory,
-              })(<Input placeholder="请输入内存" />)}
-            </Form.Item>
-
-            <Form.Item label="磁盘">
-              {getFieldDecorator('disk', {
-                rules: [
-                  {
-                    required,
-                    message: '请输入磁盘',
-                  },
-                ],
-                initialValue: disk,
-              })(<Input placeholder="请输入磁盘" />)}
-            </Form.Item>
-
-            <Form.Item label="网络">
-              {getFieldDecorator('network', {
-                rules: [
-                  {
-                    required,
-                    message: '请输入网络',
-                  },
-                ],
-                initialValue: network,
-              })(<Input placeholder="请输入网络" />)}
+                initialValue: courseRemark,
+              })(<Input placeholder="请输入..." />)}
             </Form.Item>
           </Form>
         </Modal>
@@ -146,14 +135,14 @@ class ProcessEdit extends Component {
   }
 }
 ProcessEdit.defaultProps = {
-  title: '新建进程',
+  title: '添加进程',
   record: {
-    application: '',
-    processName: '',
-    cpu: '',
-    memory: '',
-    disk: '',
-    network: '',
+    id: '',
+    createUser: '',
+    updateTime: '',
+    courseCode: '',
+    courseName: '',
+    courseRemark: '',
   },
 };
 export default Form.create()(ProcessEdit);

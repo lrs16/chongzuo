@@ -66,30 +66,36 @@ export async function querySoftExetute() {
 }
 
 //请求进程列表
-export async function queryProcessList() {
-  return request(`/api/processList`);
-  // return request(`/api-meter-auto/auto_courses/listPage`, {
-  //   method: 'post',
-  //   data: params,
-  //   requestType: 'form'
-  // });
-}
+// export async function queryProcessList() {
+//   return request(`/api/processList`);
+//   return request(`/api-meter-auto/auto_courses/listPage`, {
+//     method: 'post',
+//     data: params,
+//     requestType: 'form'
+//   });
+// }
 
 // 进程查询
-export async function searchProcess(params) {
-  return request(`/api-meter-auto/auto_courses/listPage`, {
-    method: 'post',
-    data: params,
-    requestType: 'form',
+export async function searchProcess() {
+  return request(`/api-meter-auto/auto_courses`, {
+    method: 'GET',
+ //   body: JSON.stringify(params),
   });
 }
+
+// export async function searchProcess(params) {
+//   return request(`/api-meter-auto/auto_courses/listPage`, {
+//     method: 'POST',
+//     data: params,
+//     requestType: 'form',
+//   });
+// }
 
 // 进程添加
 export async function addProcess(params) {
   return request('/api-meter-auto/auto_courses', {
     method: 'POST',
-    data: params,
-    requestType: 'form',
+    body: JSON.stringify(params),
   });
 }
 
@@ -97,13 +103,13 @@ export async function addProcess(params) {
 export async function removeProcess(id) {
   return request(`/api-meter-auto/auto_courses/${id}`, {
     method: 'DELETE',
-    requestType: 'form',
   });
 }
 
-// 进程编辑
-export async function editeProcess() {
+// 进程编辑、更新
+export async function editeProcess(params) {
   return request(`/api-meter-auto/auto_courses`, {
     method: 'PUT',
+    body: JSON.stringify(params),
   });
 }

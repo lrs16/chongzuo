@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
+import moment from 'moment';
 import {
   Card,
   Table,
@@ -8,9 +9,7 @@ import {
   Button,
   Message,
   Divider,
-  Badge,
   Popconfirm,
-  Pagination,
 } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProcessEdit from './components/ProcessEdit';
@@ -28,11 +27,7 @@ class ProcessManage extends Component {
     quwKey: '',
   };
   componentDidMount() {
-    // this.getlist();
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'upmsprocess/fetch',
-    });
+    this.getlist();
   }
 
   // getlist = () => {
@@ -49,20 +44,33 @@ class ProcessManage extends Component {
   //   });
   // };
 
-  // 点击查询
-  handleSearch = values => {
-    const page = this.state.current;
-    const limit = this.state.pageSize;
-    this.setState({
-      queKey: values,
+  getlist = () => {
+    this.props.dispatch({
+      type: 'upmsprocess/fetch',
     });
+  };
+
+  // 点击查询
+  // handleSearch = values => {
+  //   const page = this.state.current;
+  //   const limit = this.state.pageSize;
+  //   this.setState({
+  //     queKey: values,
+  //   });
+  //   this.props.dispatch({
+  //     type: 'upmsprocess/search',
+  //     payload: {
+  //       queKey: values,
+  //       page,
+  //       limit,
+  //     },
+  //   });
+  // };
+ 
+  handleSearch = values => {
     this.props.dispatch({
       type: 'upmsprocess/search',
-      payload: {
-        queKey: values,
-        page,
-        limit,
-      },
+      payload: values,
     });
   };
 
@@ -95,14 +103,8 @@ class ProcessManage extends Component {
   };
 
   render() {
-    const reload = () => {
-      const { dispatch } = this.props;
-      dispatch({
-        type: 'upmsprocess/fetch',
-      });
-    };
 
-    const handleEdite = values => {
+    const handleEdite = values => {//编辑
       const { dispatch } = this.props;
       return dispatch({
         type: 'upmsprocess/edite',
@@ -110,29 +112,29 @@ class ProcessManage extends Component {
       }).then(res => {
         if (res.code === 200) {
           Message.success(res.msg);
-          reload();
+          this.getlist();
         } else {
           Message.error('编辑失败');
         }
       });
     };
 
-    const handleDelete = id => {
+    const handleDelete = id => {//删除
       const { dispatch } = this.props;
       return dispatch({
         type: 'upmsprocess/remove',
-        payload: id,
+        payload: { id },
       }).then(res => {
         if (res.code === 200) {
           Message.success(res.msg);
-          reload();
+          this.getlist();
         } else {
-          Message.error('删除失败');
+          Message.error('删除进程失败');
         }
       });
     };
 
-    const handleAdd = values => {
+    const handleAdd = values => {//添加
       const { dispatch } = this.props;
       return dispatch({
         type: 'upmsprocess/add',
@@ -140,7 +142,7 @@ class ProcessManage extends Component {
       }).then(res => {
         if (res.code === 200) {
           Message.success(res.msg);
-          reload();
+          this.getlist();
         } else {
           Message.error('添加失败');
         }
@@ -149,39 +151,35 @@ class ProcessManage extends Component {
 
     const columns = [
       {
-        title: '编码',
-        dataIndex: 'code',
-        key: 'index',
+        title: '数据编号',
+        dataIndex: 'id',
+        key: 'id',
       },
       {
-        title: '应用',
-        dataIndex: 'application',
-        key: 'application',
+        title: '创建人',
+        dataIndex: 'createUser',
+        key: 'createUser',
+      },
+      {
+        title: '更新时间',
+        dataIndex: 'updateTime',
+        key: 'updateTime',
+        render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
+      },
+      {
+        title: '进程代码',
+        dataIndex: 'courseCode',
+        key: 'courseCode',
       },
       {
         title: '进程名称',
-        dataIndex: 'processName',
-        key: 'processName',
+        dataIndex: 'courseName',
+        key: 'courseName',
       },
       {
-        title: 'CPU',
-        dataIndex: 'cpu',
-        key: 'cpu',
-      },
-      {
-        title: '内存',
-        dataIndex: 'memory',
-        key: 'memory',
-      },
-      {
-        title: '磁盘',
-        dataIndex: 'disk',
-        key: 'disk',
-      },
-      {
-        title: '网络',
-        dataIndex: 'network',
-        key: 'network',
+        title: '进程备注',
+        dataIndex: 'courseRemark',
+        key: 'courseRemark',
       },
       {
         title: '操作',
@@ -189,7 +187,10 @@ class ProcessManage extends Component {
         key: 'operation',
         render: (text, record) => (
           <div>
-            <ProcessEdit onSumit={values => handleEdite(values)} title="编辑进程" record={record}>
+            <ProcessEdit 
+              onSumit={values => handleEdite(values)} 
+              title="编辑进程" 
+              record={record}>
               <a type="link">编辑</a>
             </ProcessEdit>
             <Divider type="vertical" />
@@ -204,7 +205,10 @@ class ProcessManage extends Component {
     const {
       upmsprocess: { list },
     } = this.props;
+    
+    // const dataSource = list.rows;  
     const dataSource = [...list];
+    console.log(dataSource,"dataSource")
 
     //分页操作
     const pagination = {
@@ -212,23 +216,19 @@ class ProcessManage extends Component {
       onShowSizeChange: (current, pageSize) => this.onShowSizeChange(current, pageSize),
       current: this.state.current,
       pageSize: this.state.pageSize,
-      total: list.total,
+      // total: list.total,
       onChange: page => this.changePage(page),
     };
 
-    const { getFieldDecorator } = this.props.form;
-
     return (
-      <PageHeaderWrapper>
+      <PageHeaderWrapper title="进程管理">
         <Card>
           <Form style={{ float: 'right', width: '30%' }}>
-            {getFieldDecorator('queKey')(
               <Search
                 placeholder="请输入关键字"
                 allowClear
                 onSearch={values => this.handleSearch(values)}
               />,
-            )}
           </Form>
           <ProcessEdit onSumit={values => handleAdd(values)}>
             <Button
@@ -243,7 +243,7 @@ class ProcessManage extends Component {
             columns={columns}
             dataSource={dataSource}
             rowKey={record => record.id}
-            pagination={pagination}
+            //pagination={pagination}
           />
         </Card>
       </PageHeaderWrapper>
