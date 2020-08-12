@@ -227,6 +227,7 @@ class SoftManage extends Component {
             dataSource={dataSource}
             rowKey={record => record.id}
             pagination={pagination}
+            scroll={{ x: 'calc(700px + 50%)', y: 240 }}
           />
         </Card>
       </PageHeaderWrapper>

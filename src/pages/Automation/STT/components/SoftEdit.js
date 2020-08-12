@@ -12,7 +12,7 @@ const formItemLayout = {
   },
   colon: false,
 };
-
+const { TextArea } = Input;
 const { TabPane } = Tabs;
 const withClick = (element, handleClick = () => {}) => {
   return <element.type {...element.props} onClick={handleClick} />;
@@ -186,41 +186,41 @@ class SoftEdit extends Component {
             </TabPane>
 
             <TabPane tab="启动命令" key="2">
-              <Form {...formItemLayout}>
+              <Form>
                 <Form.Item>
                   {getFieldDecorator('softwareStartCommand', {
                     initialValue: softwareStartCommand,
-                  })(<Input.TextArea style={{ height: 300 }}></Input.TextArea>)}
+                  })(<Input.TextArea rows={34} style={{ width: 720 }}></Input.TextArea>)}
                 </Form.Item>
               </Form>
             </TabPane>
 
             <TabPane tab="启动执行命令" key="3">
-              <Form {...formItemLayout}>
+              <Form>
                 <Form.Item>
                   {getFieldDecorator('softwareStartCommandFinal', {
                     initialValue: softwareStartCommandFinal,
-                  })(<Input.TextArea style={{ height: 300 }}></Input.TextArea>)}
+                  })(<Input.TextArea rows={34} style={{ width: 720 }}></Input.TextArea>)}
                 </Form.Item>
               </Form>
             </TabPane>
 
             <TabPane tab="停止命令" key="4">
-              <Form {...formItemLayout}>
+              <Form>
                 <Form.Item>
                   {getFieldDecorator('softwareStopCommand', {
                     initialValue: softwareStopCommand,
-                  })(<Input.TextArea style={{ height: 300 }} />)}
+                  })(<Input.TextArea rows={34} style={{ width: 720 }} />)}
                 </Form.Item>
               </Form>
             </TabPane>
 
             <TabPane tab="停止执行命令" key="5">
-              <Form {...formItemLayout}>
+              <Form>
                 <Form.Item>
                   {getFieldDecorator('softwareStopCommandFinal', {
                     initialValue: softwareStopCommandFinal,
-                  })(<Input.TextArea style={{ height: 300 }} />)}
+                  })(<Input.TextArea rows={34} style={{ width: 720 }} />)}
                 </Form.Item>
               </Form>
             </TabPane>
