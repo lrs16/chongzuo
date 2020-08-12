@@ -138,6 +138,7 @@ class SoftManage extends Component {
         title: 'id',
         dataIndex: 'id',
         key: 'id',
+        width: 200,
       },
       {
         title: '软件名称',
@@ -153,6 +154,7 @@ class SoftManage extends Component {
         title: '更新时间',
         dataIndex: 'updateTime',
         key: 'updateTime',
+        width: 200,
         render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
       },
       {
@@ -174,6 +176,8 @@ class SoftManage extends Component {
         title: '操作',
         dataIndex: 'action',
         key: 'action',
+        width: 200,
+        fixed: 'right',
         render: (text, record) => (
           <div>
             <span
@@ -227,7 +231,7 @@ class SoftManage extends Component {
             dataSource={dataSource}
             rowKey={record => record.id}
             pagination={pagination}
-            scroll={{ x: 'calc(700px + 50%)', y: 240 }}
+            scroll={{ x: 1500 }}
           />
         </Card>
       </PageHeaderWrapper>

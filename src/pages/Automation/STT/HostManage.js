@@ -145,6 +145,7 @@ class HostManage extends Component {
         title: 'id',
         dataIndex: 'id',
         key: 'id',
+        width: 200,
       },
       {
         title: '主机名称',
@@ -152,10 +153,9 @@ class HostManage extends Component {
         key: 'hostsName',
       },
       {
-        title: '更新时间',
-        dataIndex: 'createTime',
-        key: 'createTime',
-        render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
+        title: 'IP地址',
+        dataIndex: 'hostsIp',
+        key: 'hostsIp',
       },
       {
         title: '状态',
@@ -166,16 +166,6 @@ class HostManage extends Component {
             <Badge status={statusMap[record.hostsStatus]} text={status[record.hostsStatus]} />
           </span>
         ),
-      },
-      {
-        title: 'IP地址',
-        dataIndex: 'hostsIp',
-        key: 'hostsIp',
-      },
-      {
-        title: '主机排序',
-        dataIndex: 'hostsSort',
-        key: 'hostsSort',
       },
       {
         title: '主机分区',
@@ -198,9 +188,18 @@ class HostManage extends Component {
         key: 'hostsRemark',
       },
       {
+        title: '更新时间',
+        dataIndex: 'createTime',
+        key: 'createTime',
+        width: 200,
+        render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
+      },
+      {
         title: '操作',
         dataIndex: 'action',
         key: 'action',
+        width: 200,
+        fixed: 'right',
         render: (text, record) => (
           <div>
             <HostSoft
@@ -259,7 +258,7 @@ class HostManage extends Component {
             dataSource={dataSource}
             rowKey={record => record.id}
             pagination={pagination}
-            scroll={{ x: 'calc(700px + 50%)', y: 240 }}
+            scroll={{ x: 1500 }}
           />
         </Card>
       </PageHeaderWrapper>
