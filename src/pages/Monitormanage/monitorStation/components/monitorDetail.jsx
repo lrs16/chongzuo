@@ -8,7 +8,7 @@ export default props => {
   const [show, setShow] = useState('system');
 
   return (
-    <Drawer title="监测详情" width={1600} destroyOnClose="true" visible={visible} onClose={onClose}>
+    <Drawer title="监测详情" width={1200} destroyOnClose="true" visible={visible} onClose={onClose}>
       <Card>
         <Radio.Group
           defaultValue="system"

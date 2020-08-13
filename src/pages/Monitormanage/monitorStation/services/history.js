@@ -10,3 +10,9 @@ export async function queryHistory(params) {
     },
   );
 }
+
+export async function quesrySystemInfo(hostId) {
+  return request(`/basicMonitor/monitor/systemInfo?hostId=${hostId}`, {
+    method: 'GET',
+  });
+}

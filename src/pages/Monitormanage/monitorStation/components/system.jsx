@@ -1,12 +1,34 @@
 import React from 'react';
 import { connect } from 'dva';
-import { Descriptions, Tabs, Row, Col, Card, Collapse, Skeleton } from 'antd';
-import { Bar, StackedArea, Donut, Line } from '@ant-design/charts';
-import ProTable from '@ant-design/pro-table';
+import {
+  Descriptions,
+  Tabs,
+  Row,
+  Col,
+  Card,
+  Collapse,
+  Skeleton,
+  Tag,
+  // Dropdown,
+  // Button,
+  // Icon,
+  // Menu,
+  // Select,
+  Table,
+  // Badge,
+  Avatar,
+} from 'antd';
+// import { Bar, StackedArea, Donut } from '@ant-design/charts';
+// import ProTable from '@ant-design/pro-table';
+import { LineChart, StackedAreaChart } from 'bizcharts';
+// import StackedAreas from './StackedArea';
+import moment from 'moment';
 
 const { Item } = Descriptions;
 const { TabPane } = Tabs;
 const { Panel } = Collapse;
+
+const alertStatus = ['告警', '严重'];
 
 @connect(({ hostHistory, loading }) => ({
   hostHistory,
@@ -16,7 +38,7 @@ class System extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      actionRef: {},
+      // actionRef: {},
       processColumns: [
         {
           title: '进程名',
@@ -36,22 +58,22 @@ class System extends React.Component {
         {
           title: '线程数',
           hideInSearch: true,
-          dataIndex: 'parentProcessID',
+          dataIndex: 'processNumber',
         },
         {
           title: 'CPU使用率',
           hideInSearch: true,
-          dataIndex: 'parentProcessID',
+          dataIndex: 'cpuUsage',
         },
         {
           title: '内存使用率',
           hideInSearch: true,
-          dataIndex: 'parentProcessID',
+          dataIndex: 'memoryUsage',
         },
         {
           title: '文件数',
           hideInSearch: true,
-          dataIndex: 'parentProcessID',
+          dataIndex: 'filesNumber',
         },
       ],
 
@@ -59,17 +81,22 @@ class System extends React.Component {
         {
           title: '告警内容',
           hideInSearch: true,
-          dataIndex: 'parentProcessID',
+          dataIndex: 'alertContent',
         },
         {
           title: '发生时间',
           hideInSearch: true,
-          dataIndex: 'parentProcessID',
+          dataIndex: 'alertTime',
         },
         {
           title: '告警等级',
           hideInSearch: true,
-          dataIndex: 'parentProcessID',
+          dataIndex: 'alertLevel',
+          render: val => (
+            <span>
+              <font color={val === 0 ? 'yellow' : 'red'}>{alertStatus[val]} </font>
+            </span>
+          ),
         },
       ],
 
@@ -78,104 +105,134 @@ class System extends React.Component {
           visible: true,
           text: 'CPU使用率',
         },
-        xField: 'date',
-        yField: 'value',
-        stackField: 'action',
-        xAxis: {
-          label: {
-            formatter: v => {
-              const date = new Date();
-              date.setTime(v * 1000);
-              return date.toLocaleTimeString();
-            },
+        meta: {
+          x: {
+            // type: 'linear',
+            // tickCount: 5,
+            formatter: v => moment(v).format('HH:mm:ss'),
+            // const date = new Date(v + 8 * 3600 * 1000);
+            // return date.toJSON().substr(0, 19).replace('T', ' ').replace(/-/g, '.');
           },
-          tickCount: 6,
-        },
-        yAxis: {
-          label: {
+          y: {
             formatter: v => `${v}%`,
           },
-        },
-        tooltip: {
-          titleField: {
-            formatter: v => {
-              console.log(v);
-              const date = new Date();
-              date.setTime(v * 1000);
-              return date.toLocaleTimeString();
-            },
+          z: {
+            nice: true,
+            type: 'cat',
+            // range: [0,1],
+            formatter: val => (val === 0 ? '未使用' : '已使用'),
           },
         },
+        xField: 'x',
+        yField: 'y',
+        stackField: 'z',
         legend: {
           visible: false,
         },
       },
 
-      diskAvailableConfig: {
-        title: {
-          visible: true,
-          text: '磁盘使用量',
-        },
-        forceFit: true,
-        xField: 'available',
-        yField: 'path',
-        colorField: 'path',
-        xAxis: {
-          visible: false,
-          formatter: v => `${v}GB`,
-        },
-      },
+      // diskAvailableConfig: {
+      //   title: {
+      //     visible: true,
+      //     text: '磁盘使用量',
+      //   },
+      //   forceFit: true,
+      //   xField: 'available',
+      //   yField: 'path',
+      //   colorField: 'path',
+      //   xAxis: {
+      //     visible: false,
+      //     formatter: v => `${v}GB`,
+      //   },
+      // },
 
-      diskUseConfig: {
-        title: {
-          visible: true,
-          text: '磁盘使用率',
-        },
-        radius: 0.5,
-        angleField: 'value',
-        colorField: 'path',
-        label: {
-          visible: false,
-        },
-        legend: {
-          visible: true,
-          position: 'left',
-        },
-        statistic: {
-          visible: false,
-        },
-      },
+      // diskUseConfig: {
+      //   title: {
+      //     visible: true,
+      //     text: '磁盘使用率',
+      //   },
+      //   radius: 0.5,
+      //   angleField: 'value',
+      //   colorField: 'path',
+      //   label: {
+      //     visible: false,
+      //   },
+      //   legend: {
+      //     visible: true,
+      //     position: 'left',
+      //   },
+      //   statistic: {
+      //     visible: false,
+      //   },
+      // },
 
       ramUseConfig: {
         title: {
           visible: true,
           text: '内存使用情况',
         },
-        xField: 'date',
-        yField: 'value',
-        stackField: 'action',
+        meta: {
+          x: {
+            formatter: v => moment(v).format('HH:mm:ss'),
+          },
+          y: {
+            formatter: val => `${parseFloat(val / 1024 / 1024 / 1014).toFixed(2)}GB`,
+          },
+          z: {
+            type: 'cat',
+            formatter: val => {
+              let zval;
+              switch (val) {
+                case 0:
+                  zval = '未使用';
+                  break;
+                case 1:
+                  zval = '已使用';
+                  break;
+                case 2:
+                  zval = '未分配';
+                  break;
+                default:
+                  break;
+              }
+              return zval;
+            },
+          },
+        },
+        xField: 'x',
+        yField: 'y',
+        stackField: 'z',
+        // xAxis: {
+        //   tickCount: 5,
+        // },
         legend: {
           visible: false,
-        },
-        yAxis: {
-          label: {
-            formatter: v => `${v}GB`,
-          },
         },
       },
 
       ramConfig: {
+        forceFit: false,
         title: {
           visible: true,
           text: '内存使用率',
         },
-        xField: 'date',
-        yField: 'value',
-        yAxis: {
-          label: {
+        meta: {
+          x: {
+            type: 'timeCat',
+            // tickCount: 2,
+            tickInterval: 30,
+            // tickLine: 30,
+            formatter: v => {
+              return moment(v).format('HH:mm:ss');
+            },
+          },
+          y: {
+            alias: '使用率',
             formatter: v => `${v}%`,
           },
         },
+        xField: 'x',
+        yField: 'y',
       },
 
       networkConfig: {
@@ -183,16 +240,25 @@ class System extends React.Component {
           visible: true,
           text: '网络流量',
         },
-        xField: 'date',
-        yField: 'value',
-        seriesField: 'action',
-        legend: {
-          visible: false,
-        },
-        yAxis: {
-          label: {
+        meta: {
+          x: {
+            formatter: v => {
+              return moment(v).format('HH:mm:ss');
+            },
+          },
+          y: {
             formatter: v => `${v}ks/s`,
           },
+          z: {
+            type: 'cat',
+            formatter: val => (val === 0 ? '接收' : '发送'),
+          },
+        },
+        xField: 'x',
+        yField: 'y',
+        seriesField: 'z',
+        legend: {
+          visible: false,
         },
       },
 
@@ -201,16 +267,25 @@ class System extends React.Component {
           visible: true,
           text: 'IO读写次数',
         },
-        xField: 'date',
-        yField: 'value',
-        seriesField: 'action',
-        legend: {
-          visible: false,
-        },
-        yAxis: {
-          label: {
+        meta: {
+          x: {
+            formatter: v => {
+              return moment(v).format('HH:mm:ss');
+            },
+          },
+          y: {
             formatter: v => `${v}req/s`,
           },
+          z: {
+            type: 'cat',
+            formatter: val => (val === 1 ? '写' : '读'),
+          },
+        },
+        xField: 'x',
+        yField: 'y',
+        seriesField: 'z',
+        legend: {
+          visible: false,
         },
       },
 
@@ -219,16 +294,25 @@ class System extends React.Component {
           visible: true,
           text: 'IO读写速率',
         },
-        xField: 'date',
-        yField: 'value',
-        seriesField: 'action',
-        legend: {
-          visible: false,
-        },
-        yAxis: {
-          label: {
+        meta: {
+          x: {
+            formatter: v => {
+              return moment(v).format('HH:mm:ss');
+            },
+          },
+          y: {
             formatter: v => `${v}ks/s`,
           },
+          z: {
+            type: 'cat',
+            formatter: val => (val === 0 ? '读' : '写'),
+          },
+        },
+        xField: 'x',
+        yField: 'y',
+        seriesField: 'z',
+        legend: {
+          visible: false,
         },
       },
 
@@ -237,14 +321,22 @@ class System extends React.Component {
           visible: true,
           text: '交换区',
         },
-        xField: 'date',
-        yField: 'value',
-        stackField: 'use',
-        yAxis: {
-          label: {
-            formatter: v => `${v}GB`,
+        meta: {
+          x: {
+            tickCount: 5,
+            formatter: v => moment(v).format('HH:mm:ss'),
+          },
+          y: {
+            formatter: val => `${parseFloat(val / 1024 / 1024 / 1014).toFixed(2)}GB`,
+          },
+          z: {
+            type: 'cat',
+            formatter: val => (val === 0 ? '空闲' : '已使用'),
           },
         },
+        xField: 'x',
+        yField: 'y',
+        stackField: 'z',
         legend: {
           visible: false,
         },
@@ -255,49 +347,94 @@ class System extends React.Component {
           visible: true,
           text: '当前CPU处在等待IO操作的百分比',
         },
-        xField: 'date',
-        yField: 'value',
-        yAxis: {
-          label: {
+        meta: {
+          x: {
+            formatter: v => moment(v).format('HH:mm:ss'),
+          },
+          y: {
+            alias: 'IO',
             formatter: v => `${v}%`,
           },
         },
+        xField: 'x',
+        yField: 'y',
       },
 
-      systemLoadConfig: {
-        title: {
-          visible: true,
-          text: '系统负载',
-        },
-        xField: 'date',
-        yField: 'value',
-        seriesField: 'load',
-        legend: {
-          visible: false,
-        },
-      },
+      // systemLoadConfig: {
+      //   title: {
+      //     visible: true,
+      //     text: '系统负载',
+      //   },
+      //   meta: {
+      //     x: {
+      //       formatter: val => moment(val).format('HH:mm:ss'),
+      //     },
+      //     y: {
+      //       formatter: val => `${parseFloat(val).toFixed(2)}`,
+      //     },
+      //     z: {
+      //       type: 'cat',
+      //       formatter: val => {
+      //         let zval;
+      //         switch (val) {
+      //           case 1:
+      //             zval = '1min';
+      //             break;
+      //           case 2:
+      //             zval = '5min';
+      //             break;
+      //           case 3:
+      //             zval = '15min';
+      //             break;
+      //           default:
+      //             break;
+      //         }
+      //         return zval;
+      //       },
+      //     },
+      //   },
+      //   xField: 'x',
+      //   yField: 'y ',
+      //   seriesField: 'z',
+      //   legend: {
+      //     visible: false,
+      //   },
+      // },
 
-      inodesConfig: {
-        title: {
-          visible: true,
-          text: 'inodes使用率',
-        },
-        xField: 'date',
-        yField: 'value',
-        yAxis: {
-          label: {
-            formatter: v => `${v}%`,
-          },
-        },
-      },
+      // inodesConfig: {
+      //   title: {
+      //     visible: true,
+      //     text: 'inodes使用率',
+      //   },
+      //   xField: 'date',
+      //   yField: 'value',
+      //   yAxis: {
+      //     label: {
+      //       formatter: v => `${v}%`,
+      //     },
+      //   },
+      // },
 
       packetsConfig: {
         title: {
           visible: true,
           text: 'Packets',
         },
-        xField: 'date',
-        yField: 'value',
+        meta: {
+          x: {
+            formatter: val => moment(val).format('HH:mm:ss'),
+          },
+          z: {
+            type: 'cat',
+            formatter: val => (val === 0 ? '接收' : '发送'),
+          },
+        },
+        xField: 'x',
+        yField: 'y',
+        seriesField: 'z',
+        legend: {
+          visible: false,
+        },
       },
 
       tcpConfig: {
@@ -305,9 +442,18 @@ class System extends React.Component {
           visible: true,
           text: '网络-TCP',
         },
-        xField: 'date',
-        yField: 'value',
-        seriesField: 'action',
+        meta: {
+          x: {
+            formatter: val => moment(val).format('HH:mm:ss'),
+          },
+          z: {
+            type: 'cat',
+            formatter: val => (val === 0 ? '接收' : '发送'),
+          },
+        },
+        xField: 'x',
+        yField: 'y',
+        seriesField: 'z',
         legend: {
           visible: false,
         },
@@ -319,15 +465,19 @@ class System extends React.Component {
     const { dispatch } = this.props;
     dispatch({
       type: 'hostHistory/listHistory',
-      payload: { hostId: '10314', fromDate: '1594606689', toDate: '1594635827' },
+      payload: { hostId: '10314', fromDate: '1595989911', toDate: '1596076311' },
+    });
+    dispatch({
+      type: 'hostHistory/fetchSystemInfo',
+      payload: { hostId: '10314' },
     });
   }
 
   render() {
     const {
       cpuConfig,
-      diskAvailableConfig,
-      diskUseConfig,
+      // diskAvailableConfig,
+      // diskUseConfig,
       ramUseConfig,
       ramConfig,
       networkConfig,
@@ -335,30 +485,157 @@ class System extends React.Component {
       ioRateConfig,
       swapConfig,
       cpuWaitIOConfig,
-      systemLoadConfig,
-      inodesConfig,
+      // systemLoadConfig,
+      // inodesConfig,
       packetsConfig,
       tcpConfig,
-      actionRef,
+      // actionRef,
       processColumns,
       alarmColumns,
     } = this.state;
+
     const { hostHistory, value } = this.props;
     const {
       cpu,
-      diskAvailable,
-      diskUse,
+      // diskAvailable,
+      // diskUse,
       ram,
       ramUse,
       network,
-      io,
+      ioNumber,
+      ioRate,
       swap,
       cpuWaitIO,
-      systemLoad,
-      inodes,
+      // systemLoad,
+      // inodes,
       packets,
       tcp,
     } = hostHistory.host;
+
+    const systemInfo = hostHistory;
+
+    const listData = [
+      {
+        key: '1',
+        alertLevel: 1,
+        label: 'system',
+        alerContent: 'xxx使用率已达到53.0%（最近15分钟 最近值），大于阈值20.0%',
+        time: '12-10 09:02:39',
+      },
+      {
+        key: '2',
+        alertLevel: 0,
+        label: 'system',
+        alerContent: 'xxx使用率已达到53.0%（最近15分钟 最近值），大于阈值20.0%',
+        time: '12-10 09:02:39',
+      },
+    ];
+    const columns = [
+      {
+        dataIndex: 'alertLevel',
+        render: val => (
+          <span>
+            <font color={val === 0 ? 'yellow' : 'red'}>{alertStatus[val]} </font>
+            <Avatar style={{ backgroundColor: val === 0 ? 'yellow' : 'red' }} size="small" />
+          </span>
+        ),
+      },
+      {
+        dataIndex: 'label',
+        render: val => (
+          <span>
+            <Tag style={{ marginBottom: 2, marginTop: 2 }}>{val}</Tag>
+          </span>
+        ),
+      },
+      { dataIndex: 'alerContent' },
+      { dataIndex: 'time' },
+    ];
+
+    const processList = [
+      {
+        processName: 'init',
+        processID: '55',
+        parentProcessID: '0',
+        processNumber: '3',
+        cpuUsage: '5%',
+        memoryUsage: '10%',
+        filesNumber: 1,
+      },
+      {
+        processName: 'bash',
+        processID: '55',
+        parentProcessID: '0',
+        processNumber: '5',
+        cpuUsage: '10%',
+        memoryUsage: '15%',
+        filesNumber: 1,
+      },
+      {
+        processName: 'top',
+        processID: '55',
+        parentProcessID: '0',
+        processNumber: '3',
+        cpuUsage: '5%',
+        memoryUsage: '10%',
+        filesNumber: 1,
+      },
+      {
+        processName: 'wininit.exe',
+        processID: '55',
+        parentProcessID: '0',
+        processNumber: '3',
+        cpuUsage: '5%',
+        memoryUsage: '10%',
+        filesNumber: 1,
+      },
+      {
+        processName: 'wininit.exe',
+        processID: '55',
+        parentProcessID: '0',
+        processNumber: '3',
+        cpuUsage: '5%',
+        memoryUsage: '10%',
+        filesNumber: 1,
+      },
+      {
+        processName: 'wininit.exe',
+        processID: '55',
+        parentProcessID: '0',
+        processNumber: '3',
+        cpuUsage: '5%',
+        memoryUsage: '10%',
+        filesNumber: 1,
+      },
+    ];
+
+    const alertList = [
+      {
+        alertContent: 'XXX磁盘使用率已达到53.0%（最近15分钟 最近值），大于阈值20.0%',
+        alertTime: '2020-07-18',
+        alertLevel: 1,
+      },
+      {
+        alertContent: 'XXX磁盘使用率已达到53.0%（最近15分钟 最近值），大于阈值20.0%',
+        alertTime: '2020-07-18',
+        alertLevel: 1,
+      },
+      {
+        alertContent: 'XXX磁盘使用率已达到53.0%（最近15分钟 最近值），大于阈值90.0%',
+        alertTime: '2020-07-18',
+        alertLevel: 0,
+      },
+      {
+        alertContent: 'XXX磁盘使用率已达到53.0%（最近15分钟 最近值），大于阈值80.0%',
+        alertTime: '2020-07-18',
+        alertLevel: 1,
+      },
+      {
+        alertContent: 'XXX磁盘使用率已达到53.0%（最近15分钟 最近值），大于阈值98.0%',
+        alertTime: '2020-07-18',
+        alertLevel: 0,
+      },
+    ];
 
     return (
       <div>
@@ -367,110 +644,140 @@ class System extends React.Component {
             <Item label="名称">{value.name}</Item>
             <Item label="IP">{value.ip}</Item>
             <Item label="设备类型">主机</Item>
-            <Item label="状态">{value.status === 1 ? '在线' : '离线'}</Item>
+            <Item label="状态">
+              {value.status === 1 ? <font color="green">在线</font> : '离线'}
+            </Item>
           </Descriptions>
         </Card>
-        <Collapse defaultActiveKey={['1']} expandIconPosition="right" style={{ marginBottom: 24 }}>
-          <Panel header="当前告警" key="1" />
+        <Collapse bordered={false} expandIconPosition="right">
+          <Panel key="1" header="告警信息">
+            <Table showHeader={false} pagination={false} columns={columns} dataSource={listData} />
+          </Panel>
         </Collapse>
-        <Card>
+        <Card style={{ marginTop: 24 }}>
           <Tabs defaultActiveKey="1">
             <TabPane tab="监控指标" key="1">
               <Skeleton loading={false}>
+                {/* <Dropdown overlay={dmenu} trigger={['click']} getPopupContainer={triggerNode => triggerNode.parentElement}>
+                  <Button>
+                    Action <Icon type="down"/>
+                  </Button>
+                </Dropdown>
+                <Select 
+                  dropdownRender={men => (
+                    <div>
+                      {men}
+                    </div>
+                  )}
+                ></Select> */}
                 <Row>
-                  <Col span={6}>
-                    <StackedArea {...cpuConfig} data={cpu} />
+                  <Col span={8}>
+                    <StackedAreaChart {...cpuConfig} data={cpu} />
                   </Col>
-                  <Col span={6}>
-                    <Bar {...diskAvailableConfig} data={diskAvailable} />
+                  <Col span={8}>
+                    <LineChart {...ramConfig} data={ramUse} />
                   </Col>
-                  <Col span={6}>
-                    <Donut {...diskUseConfig} data={diskUse} />
-                  </Col>
-                  <Col span={6}>
-                    <StackedArea {...ramUseConfig} data={ram} />
+                  <Col span={8}>
+                    <StackedAreaChart {...ramUseConfig} data={ram} />
                   </Col>
                 </Row>
                 <Row>
-                  <Col span={6}>
-                    <Line {...ramConfig} data={ramUse} />
+                  <Col span={8}>
+                    <LineChart {...networkConfig} data={network} />
                   </Col>
-                  <Col span={6}>
-                    <Line {...networkConfig} data={network} />
+                  <Col span={8}>
+                    <LineChart {...ioConfig} data={ioNumber} />
                   </Col>
-                  <Col span={6}>
-                    <Line {...ioConfig} data={io} />
-                  </Col>
-                  <Col span={6}>
-                    <Line {...ioRateConfig} data={io} />
+                  <Col span={8}>
+                    <LineChart {...ioRateConfig} data={ioRate} />
                   </Col>
                 </Row>
                 <Row>
-                  <Col span={6}>
-                    <StackedArea {...swapConfig} data={swap} />
+                  <Col span={8}>
+                    <StackedAreaChart {...swapConfig} data={swap} />
                   </Col>
-                  <Col span={6}>
-                    <Line {...cpuWaitIOConfig} data={cpuWaitIO} />
+                  <Col span={8}>
+                    <LineChart {...cpuWaitIOConfig} data={cpuWaitIO} />
                   </Col>
-                  <Col span={6}>
-                    <Line {...systemLoadConfig} data={systemLoad} />
-                  </Col>
-                  <Col span={6}>
-                    <Line {...inodesConfig} data={inodes} />
+                  <Col span={8}>
+                    <LineChart {...packetsConfig} data={packets} />
                   </Col>
                 </Row>
                 <Row>
-                  <Col span={6}>
-                    <Line {...packetsConfig} data={packets} />
+                  <Col span={8}>
+                    <LineChart {...tcpConfig} data={tcp} />
                   </Col>
-                  <Col span={6}>
-                    <Line {...tcpConfig} data={tcp} />
+                </Row>
+                <Row>
+                  <Col span={8}>
+                    {/* <StackedArea {...cpuConfig} data={cpu} /> */}
+                    {/* <StackedAreas 
+                      title='CPU使用率' 
+                      height={250} 
+                      x={val => `${parseInt(val,0)}%`}
+                      y={val => val === 0 ? '未使用' : '已使用'} 
+                      data={cpu} 
+                    /> */}
                   </Col>
+                  <Col span={8}>{/* <Bar {...diskAvailableConfig} data={diskAvailable} /> */}</Col>
+                  <Col span={8}>{/* <Donut {...diskUseConfig} data={diskUse} /> */}</Col>
+                </Row>
+                <Row>
+                  <Col span={8}>{/* <StackedArea {...ramUseConfig} data={ram} /> */}</Col>
+                  <Col span={6}>{/* <Line {...ramConfig} data={ramUse} /> */}</Col>
+                  <Col span={6}>{/* <Line {...networkConfig} data={network} /> */}</Col>
+                  <Col span={6}>{/* <Line {...ioConfig} data={io} /> */}</Col>
+                  <Col span={6}>{/* <Line {...ioRateConfig} data={io} /> */}</Col>
+                </Row>
+                <Row>
+                  <Col span={6}>{/* <StackedArea {...swapConfig} data={swap} /> */}</Col>
+                  <Col span={6}>{/* <Line {...cpuWaitIOConfig} data={cpuWaitIO} /> */}</Col>
+                  <Col span={6}>{/* <Line {...systemLoadConfig} data={systemLoad} /> */}</Col>
+                  <Col span={6}>{/* <Line {...inodesConfig} data={inodes} /> */}</Col>
+                </Row>
+                <Row>
+                  <Col span={6}>{/* <Line {...packetsConfig} data={packets} /> */}</Col>
+                  <Col span={6}>{/* <Line {...tcpConfig} data={tcp} /> */}</Col>
                 </Row>
               </Skeleton>
             </TabPane>
             <TabPane tab="进程信息" key="2">
-              <ProTable actionRef={actionRef} search={false} rowKey="ip" columns={processColumns} />
+              <Table Key="id" columns={processColumns} dataSource={processList} />
             </TabPane>
             <TabPane tab="系统信息" key="3">
               <Descriptions title="操作系统" column={1}>
-                <Item label="内核">{value.name}</Item>
-                <Item label="设备类型">{value.ip}</Item>
-                <Item label="内核版本">主机</Item>
-                <Item label="构建版本">dd</Item>
-                <Item label="主机名称">zj</Item>
-                <Item label="硬件平台">zj</Item>
-                <Item label="操作系统">zj</Item>
+                <Item label="内核">{systemInfo.kernel}</Item>
+                <Item label="设备类型">{systemInfo.deviceType}</Item>
+                <Item label="内核版本">{systemInfo.kernelVersion}</Item>
+                <Item label="构建版本">{systemInfo.buildVersion}</Item>
+                <Item label="主机名称">{systemInfo.hostName}</Item>
+                <Item label="硬件平台">{systemInfo.hardwarePlatform}</Item>
+                <Item label="操作系统">{systemInfo.operatingSystem}</Item>
               </Descriptions>
               <Descriptions title="文件系统">
-                <Item>
-                  rootfs mounted on / 40.0GB /dev/vda1 mounted on / 40.0GB /dev/vdc1 mounted on
-                  /data 147.5GB devtmpfs mounted on /dev 15.6GB tmpfs mounted on /dev/shm 15.6GB
-                  tmpfs mounted on /run 15.6GB tmpfs mounted on /run/user/0 3.1GB tmpfs mounted on
-                  /run/user/1001 3.1GB tmpfs mounted on /sys/fs/cgroup 15.6GB
-                </Item>
+                <Item>{systemInfo.fileSystem}</Item>
               </Descriptions>
               <Descriptions title="处理器" column={1}>
-                <Item label="逻辑核数">{value.name}</Item>
-                <Item label="主频(mhz)">{value.ip}</Item>
-                <Item label="缓存大小">主机</Item>
-                <Item label="厂商">dd</Item>
-                <Item label="型号">zj</Item>
-                <Item label="物理核数">zj</Item>
+                <Item label="逻辑核数">{systemInfo.logicalCore}</Item>
+                <Item label="主频(mhz)">{systemInfo.mhz}</Item>
+                <Item label="缓存大小">{systemInfo.cacheSize}</Item>
+                <Item label="厂商">{systemInfo.cpuVendor}</Item>
+                <Item label="型号">{systemInfo.cpuModel}</Item>
+                <Item label="物理核数">{systemInfo.physicalCore}</Item>
               </Descriptions>
               <Descriptions title="内存" column={1}>
-                <Item label="交换分区">{value.name}</Item>
-                <Item label="物理内存">{value.ip}</Item>
+                <Item label="交换分区">{systemInfo.swap}</Item>
+                <Item label="物理内存">{systemInfo.ram}</Item>
               </Descriptions>
               <Descriptions title="网络" column={1}>
-                <Item label="Name">{value.name}</Item>
-                <Item label="MAC">{value.ip}</Item>
-                <Item label="IP">主机</Item>
-                <Item label="IPv6">dd</Item>
+                <Item label="Name">{systemInfo.networkName}</Item>
+                <Item label="MAC">{systemInfo.mac}</Item>
+                <Item label="IP">{systemInfo.ip}</Item>
+                <Item label="IPv6">{systemInfo.ipv6}</Item>
               </Descriptions>
             </TabPane>
             <TabPane tab="历史告警" key="4">
-              <ProTable rowKey="id" columns={alarmColumns} search={false} rowSelection={{}} />
+              <Table Key="id" columns={alarmColumns} dataSource={alertList} />
             </TabPane>
           </Tabs>
         </Card>
