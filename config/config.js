@@ -358,6 +358,18 @@ export default {
                 //     },
                 //   ],
                 // },
+                {
+                  path: '/monitormanage/basicMonitor',
+                  name: '基础平台监测',
+                  icon: 'cloud-server',
+                  routes: [
+                    {
+                      path: '/monitormanage/basicMonitor/host',
+                      name: '主机监测',
+                      component: './Monitormanage/BasicMonitor/Host',
+                    },
+                  ],
+                },
               ],
             },
             {
