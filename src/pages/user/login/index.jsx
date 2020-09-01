@@ -17,7 +17,8 @@ class Login extends Component {
 
   state = {
     type: 'account',
-    grant_type: 'sm3_user_pass',
+    Authorization: 'Basic d2ViQXBwX3JlYWN0',
+    // grant_type: 'sm3_user_pass',
     // autoLogin: true,
   };
 
@@ -28,15 +29,16 @@ class Login extends Component {
   // };
 
   handleSubmit = (err, values) => {
-    const { type, grant_type } = this.state;
+    const { Authorization } = this.state;
     if (!err) {
       const { dispatch } = this.props;
       dispatch({
         type: 'login/login',
         payload: {
           ...values,
-          type,
-          grant_type,
+          Authorization,
+          // type,
+          // grant_type,
         },
       });
     }

@@ -51,13 +51,13 @@ const errorHandler = error => {
       });
     }
 
-    if (status === 500 && url === 'http://localhost:8000/api-upms/upms_user/getCurrUserInfo') {
-      notification.error({
-        message: '未登录或登录过期，请重新登录',
-        onClose: close,
-      });
-      sessionStorage.clear();
-    }
+    // if (status === 500 && url === 'http://localhost:8000/api-upms/upms_user/getCurrUserInfo') {
+    //   notification.error({
+    //     message: '未登录或登录过期，请重新登录',
+    //     onClose: close,
+    //   });
+    //   sessionStorage.clear();
+    // }
 
     // if (status === 500) {
     //   notification.error({

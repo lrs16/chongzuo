@@ -100,7 +100,7 @@ export default {
           routes: [
             {
               path: '/',
-              redirect: '/automation/opsscene',
+              redirect: '/monitormanage/home',
             },
             // {
             //   path: '/welcome',
@@ -240,7 +240,7 @@ export default {
               routes: [
                 {
                   path: '/monitormanage',
-                  redirect: '/monitormanage/measurmonitor',
+                  redirect: '/monitormanage/home',
                 },
                 {
                   path: '/monitormanage/home',
@@ -256,11 +256,6 @@ export default {
                     {
                       path: '/monitormanage/measurmonitor',
                       redirect: '/monitormanage/measurmonitor/collection',
-                    },
-                    {
-                      path: '/monitormanage/measurmonitor/home',
-                      name: 'measurhome',
-                      component: './Monitormanage/MeasurMonitor',
                     },
                     {
                       path: '/monitormanage/measurmonitor/collection',
@@ -304,14 +299,20 @@ export default {
                   ],
                 },
                 {
-                  path: '/monitormanage/basicMonitor',
+                  path: '/monitormanage/basicmonitor',
                   name: '基础平台监测',
                   icon: 'cloud-server',
                   routes: [
                     {
-                      path: '/monitormanage/basicMonitor/host',
+                      path: '/monitormanage/basicmonitor/host',
                       name: '主机监测',
-                      component: './Monitormanage/BasicMonitor/Host',
+                      component: './Monitormanage/BasicMonitor/Host/Host',
+                    },
+                    {
+                      path: '/monitormanage/basicmonitor/host/detail',
+                      name: '监测详情',
+                      hideInMenu: true,
+                      component: './Monitormanage/BasicMonitor/Host/Detail',
                     },
                   ],
                 },
@@ -511,29 +512,18 @@ export default {
   manifest: {
     basePath: '/',
   },
-  // chainWebpack: webpackPlugin,
-  // proxy: {
-  //   '/server/api/': {
-  //     target: 'https://preview.pro.ant.design/',
-  //     changeOrigin: true,
-  //     pathRewrite: { '^/server': '' },
-  //   },
-  // },
   proxy: {
-    // '/api': {
-    //   target: 'http://localhost:8001/',
-    //   changeOrigin: true, // pathRewrite: {
-    //   //   '^/server': '',
-    //    },
-    '/api-auth/': {
-      target: 'http://172.16.4.211:8800/', //登录
+    '/sysuser_manage/': {
+      // target: 'http://172.16.4.211:8800/',
+      target: 'http://172.16.4.211:9901/', //登录和用户管理中心
+      //target: 'http://localhost:8800/',
       changeOrigin: true,
-      // pathRewrite: { '^/apiauth': '' }
+      pathRewrite: { '^/sysuser_manage': '' },
     },
-    '/api-upms/': {
-      target: 'http://172.16.4.211:8800/', //用户管理中心
+    '/api-meter-auto/': {
+      target: 'http://172.16.4.211:9901/', //软件启停
       changeOrigin: true,
-      // pathRewrite: { '^/apiauth': '' }
+      pathRewrite: { '^/api-meter-auto': '' },
     },
     '/api-eai-job/oma/': {
       target: 'http://172.16.4.211:8800/', //脚本管理服务器地址,211正式，250测试
@@ -546,7 +536,8 @@ export default {
     //   // pathRewrite: { '^/server': '' },
     // },
     '/basicMonitor/': {
-      target: 'http://localhost:8889/', //监测管理
+      //检测管理，基础平台
+      target: 'http://172.16.4.57:8889/',
       changeOrigin: true,
       // pathRewrite: { '^/apiauth': '' }
     },
@@ -556,21 +547,6 @@ export default {
       changeOrigin: true,
       // pathRewrite: { '^/apiauth': '' }
     },
-    // '/cjzb/': {
-    //   target: 'http://172.16.4.211:8808/', //计量骏豪
-    //   changeOrigin: true,
-    //   // pathRewrite: { '^/apiauth': '' }
-    // },
-    // '/cjzb/': {
-    //   target: 'http://172.16.4.211:8808/', //计量骏豪
-    //   changeOrigin: true,
-    //   // pathRewrite: { '^/apiauth': '' }
-    // },
-    // '/gkrk/': {
-    //   target: 'http://172.16.4.211:8808/', //计量骏豪
-    //   changeOrigin: true,
-    //   // pathRewrite: { '^/apiauth': '' }
-    // },
     '/api-meter-auto/': {
       //计量现场接口
       target: 'http://172.16.4.211:8800/',

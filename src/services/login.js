@@ -20,14 +20,12 @@ export async function getFakeCaptcha(mobile) {
 
 // 登录请求
 export async function fakeAccountLogin(params) {
-  return request('/api/login/account', {
-    // return request('/api-auth/oauth/token', {
+  return request('/sysuser_manage/oauth/jwt/token', {
     method: 'POST',
     data: params,
     // body: JSON.stringify(params),
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
-      Authorization: 'Basic d2ViQXBwOndlYkFwcA==',
       requestType: 'form',
     },
     requestType: 'form', // post request data type
@@ -35,5 +33,9 @@ export async function fakeAccountLogin(params) {
 }
 // 退出登录请求
 export async function fakeLogout(access_token) {
-  return request(`/api-auth/oauth/remove/token?access_token=${access_token}`);
+  return request('/sysuser_manage/logout', {
+    headers: {
+      Authorization: `Bearer ${access_token}`,
+    },
+  });
 }
