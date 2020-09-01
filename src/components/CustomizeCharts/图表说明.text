@@ -13,3 +13,4 @@ Labelline           關口0點采集               玫瑰图
 SeriesLine                                   多曲线，线条颜色自定义
 StackingArea                                  堆叠面积图
 Cylinder            监测管理监控台            柱形，圆柱形
+BasicBarchart       磁盘使用率               条形图

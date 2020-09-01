@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Button, Badge, Tag, Table } from 'antd';
+import { Button, Badge, Tag, Table, Card, Row, Col, Form, Input } from 'antd';
 import { MiniProgress } from '@/components/Charts';
 import { connect } from 'dva';
 import numeral from 'numeral';
+import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import Detail from './components/Detail';
 
 const statusMap = ['default', 'processing'];
@@ -125,11 +126,30 @@ const Index = ({ dispatch, monitorlist }) => {
     },
   ];
 
+  const {
+    loading,
+    upmsdept: { data },
+  } = this.props;
+
+  const { getFieldDecorator } = this.props.form;
+
   return (
-    <div>
+    <PageHeaderWrapper title="主机监测">
+      <Row gutter={24}>
+        <Col span={8}>
+          <Form.Item label="搜索关键字">
+            {getFieldDecorator('seacherkey', {})(<Input placeholder="输入名称/IP" />)}
+          </Form.Item>
+        </Col>
+        <Col span={8}>
+          <Form.Item label="监控分类">
+            {getFieldDecorator('sort', {})(<Input placeholder="输入名称/IP" />)}
+          </Form.Item>
+        </Col>
+      </Row>
       <Table dataSource={monitorlist.data} rowKey={record => record.id} columns={columns} />
       <Detail data={selectDetail} visible={detailVisible} onClose={() => setDetailVisible(false)} />
-    </div>
+    </PageHeaderWrapper>
   );
 };
 

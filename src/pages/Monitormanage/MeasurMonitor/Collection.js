@@ -227,7 +227,7 @@ class Collection extends Component {
       loading,
       collection: { complete, coverage, meterread, zeroread, hourread, salesdata, supplydata },
     } = this.props;
-    console.log(coverage);
+
     // const completedata = dataArr(complete);
     const coverages = celldata(coverage);
     const meterreads = celldata(meterread);

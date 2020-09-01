@@ -14,7 +14,6 @@ const index = () => {
   return <MonitorStation />;
 };
 
-
 // const { Search } = Input;
 const cpucolors = 'l (270) 0:#05bafe .5:#05bafe 1:#13e6fe';
 const Memoryolors = 'l (270) 0:#0cd995 .5:#0cd995 1:#64f798';
@@ -102,7 +101,7 @@ class index extends Component {
     const WEBdata = hosts.filter(obj => {
       return obj.type === 'WEB响应时间';
     });
-    console.log(monitorlist);
+    //    console.log(monitorlist);
     return (
       <div>
         <Row gutter={24} type="flex">

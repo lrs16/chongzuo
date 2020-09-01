@@ -1,7 +1,7 @@
 import { stringify } from 'qs';
 import request from '@/utils/request';
 
-//主机的基本信息
+// 主机信息
 export async function savaHostInfo(params) {
   return request(`/api-meter-auto/auto_hosts`, {
     method: 'POST',
@@ -26,12 +26,11 @@ export async function removeHostInfo(id) {
 export async function searchHosts(params) {
   return request(`/api-meter-auto/auto_hosts/listPage`, {
     method: 'POST',
-    data: params,
-    requestType: 'form',
+    body: JSON.stringify(params),
   });
 }
 
-//软件的接口
+// 软件的接口
 export async function searchSofts(params) {
   return request(`/api-meter-auto/auto_softwares/listPage`, {
     method: 'POST',
@@ -65,7 +64,7 @@ export async function querySoftExetute() {
   return request(`/api/softexetuteList`);
 }
 
-//请求进程列表
+// 请求进程列表
 // export async function queryProcessList() {
 //   return request(`/api/processList`);
 //   return request(`/api-meter-auto/auto_courses/listPage`, {
@@ -79,7 +78,7 @@ export async function querySoftExetute() {
 export async function searchProcess() {
   return request(`/api-meter-auto/auto_courses`, {
     method: 'GET',
- //   body: JSON.stringify(params),
+    //   body: JSON.stringify(params),
   });
 }
 

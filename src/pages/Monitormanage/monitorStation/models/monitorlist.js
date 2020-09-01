@@ -1,7 +1,7 @@
-// import { querylisthost, querylistdatabase, queryMonitorGroup } from '../services/monitorList';
-
 import Mock from 'mockjs'; // 引入mockjs
-import { querylisthost, querylistdatabase, queryMonitorGroup } from '../services/api';
+import { querylisthost, querylistdatabase, queryMonitorGroup } from '../services/monitorList';
+
+// import { querylisthost, querylistdatabase, queryMonitorGroup } from '../services/api';
 
 const { Random } = Mock;
 
@@ -46,15 +46,25 @@ export default {
     data: [],
     // pageSize:'',
     // total:'',
+    hostlist: [],
     databaselist: [],
     monitorGroups: [],
     hosts: [],
   },
 
   effects: {
-    *fetchhost(_, { call, put }) {
+    *fetchchartdata(_, { call, put }) {
       const response = Mockhostlist();
       // const response = yield call(querylisthost, current, pageSize);
+      yield put({
+        type: 'getchartdata',
+        // payload: response.data,
+        payload: response,
+      });
+    },
+    *fetchhost({ payload: { current, pageSize } }, { call, put }) {
+      const response = yield call(querylisthost, current, pageSize);
+      console.log(response);
       yield put({
         type: 'save',
         // payload: response.data,
@@ -81,10 +91,16 @@ export default {
   },
 
   reducers: {
-    save(state, action) {
+    getchartdata(state, action) {
       return {
         ...state,
         hosts: action.payload,
+      };
+    },
+    save(state, action) {
+      return {
+        ...state,
+        hostlist: action.payload,
       };
     },
     savedatabase(state, { payload: { data, total, current } }) {
