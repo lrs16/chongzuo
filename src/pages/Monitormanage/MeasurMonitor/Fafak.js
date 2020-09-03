@@ -124,15 +124,15 @@ class Fafak extends Component {
       },
     } = this.props;
     // console.log(otherdata);
-    const downdydatas = changedata(downdydata);
-    const otherdatas = changedata(otherdata);
-    const zone102_2datas = changedata(zone102_2data);
-    const down102s = changedata(down102);
-    const updydatas = changedata(updydata);
-    const upotherdatas = changedata(upotherdata);
-    const up102_2zonedatas = changedata(up102_2zonedata);
-    const safe102_2zonedatas = changedata(safe102_2zonedata);
-    const up102safezones = changedata(up102safezone);
+    // const downdydatas = changedata(downdydata);
+    // const otherdatas = changedata(otherdata);
+    // const zone102_2datas = changedata(zone102_2data);
+    // const down102s = changedata(down102);
+    // const updydatas = changedata(updydata);
+    // const upotherdatas = changedata(upotherdata);
+    // const up102_2zonedatas = changedata(up102_2zonedata);
+    // const safe102_2zonedatas = changedata(safe102_2zonedata);
+    // const up102safezones = changedata(up102safezone);
     return (
       <PageHeaderWrapper title="KAFKA消费">
         <Alert
@@ -165,11 +165,11 @@ class Fafak extends Component {
           <Col xl={12} xs={24} style={{ marginBottom: 24 }}>
             <ChartCard title="低压相关" contentHeight={350}>
               <Spin spinning={loading} style={{ background: '#ffffff' }}>
-                {downdydatas.length === 0 && <Empty style={{ height: '250px' }} />}
-                {downdydatas.length > 0 && (
+                {downdydata.length === 0 && <Empty style={{ height: '250px' }} />}
+                {downdydata.length > 0 && (
                   <SeriesLine
                     cols={downdycols}
-                    data={downdydatas}
+                    data={downdydata}
                     height={350}
                     padding={[30, 20, 50, 80]}
                   />
@@ -180,11 +180,11 @@ class Fafak extends Component {
           <Col xl={12} xs={24} style={{ marginBottom: 24 }}>
             <ChartCard title="其他回复接口（低压相关）" contentHeight={350}>
               <Spin spinning={loading} style={{ background: '#ffffff' }}>
-                {otherdatas.length === 0 && <Empty style={{ height: '250px' }} />}
-                {otherdatas.length > 0 && (
+                {otherdata.length === 0 && <Empty style={{ height: '250px' }} />}
+                {otherdata.length > 0 && (
                   <SeriesLine
                     cols={othercols}
-                    data={otherdatas}
+                    data={otherdata}
                     height={350}
                     padding={[30, 20, 50, 60]}
                   />
@@ -192,36 +192,36 @@ class Fafak extends Component {
               </Spin>
             </ChartCard>
           </Col>
-          <Col xl={12} xs={24} style={{ marginBottom: 24 }}>
+          {/* <Col xl={12} xs={24} style={{ marginBottom: 24 }}>
             <ChartCard title="广西102关口方面二区和安全接入区" contentHeight={350}>
               <Spin spinning={loading} style={{ background: '#ffffff' }}>
-                {zone102_2datas.length === 0 && <Empty style={{ height: '250px' }} />}
-                {zone102_2datas.length > 0 && (
+                {zone102_2data.length === 0 && <Empty style={{ height: '250px' }} />}
+                {zone102_2data.length > 0 && (
                   <SeriesLine
                     cols={downdycols}
-                    data={zone102_2datas}
+                    data={zone102_2data}
                     height={350}
                     padding={[30, 20, 50, 60]}
                   />
                 )}
               </Spin>
             </ChartCard>
-          </Col>
-          <Col xl={12} xs={24} style={{ marginBottom: 24 }}>
+          </Col> */}
+          {/* <Col xl={12} xs={24} style={{ marginBottom: 24 }}>
             <ChartCard title="广西102档案下发(关口相关)" contentHeight={350}>
               <Spin spinning={loading} style={{ background: '#ffffff' }}>
-                {down102s.length === 0 && <Empty style={{ height: '250px' }} />}
-                {down102s.length > 0 && (
+                {down102.length === 0 && <Empty style={{ height: '250px' }} />}
+                {down102.length > 0 && (
                   <SeriesLine
                     cols={downdycols}
-                    data={down102s}
+                    data={down102}
                     height={350}
                     padding={[30, 20, 50, 75]}
                   />
                 )}
               </Spin>
             </ChartCard>
-          </Col>
+          </Col> */}
         </Row>
         <h3>上行主题</h3>
         <Row gutter={24} type="flex">
@@ -236,11 +236,11 @@ class Fafak extends Component {
               contentHeight={350}
             >
               <Spin spinning={loading} style={{ background: '#ffffff' }}>
-                {updydatas.length === 0 && <Empty style={{ height: '250px' }} />}
-                {updydatas.length > 0 && (
+                {updydata.length === 0 && <Empty style={{ height: '250px' }} />}
+                {updydata.length > 0 && (
                   <SeriesLine
                     cols={downdycols}
-                    data={updydatas}
+                    data={updydata}
                     height={350}
                     padding={[30, 20, 50, 60]}
                   />
@@ -259,11 +259,11 @@ class Fafak extends Component {
               contentHeight={350}
             >
               <Spin spinning={loading} style={{ background: '#ffffff' }}>
-                {upotherdatas.length === 0 && <Empty style={{ height: '250px' }} />}
-                {upotherdatas.length > 0 && (
+                {upotherdata.length === 0 && <Empty style={{ height: '250px' }} />}
+                {upotherdata.length > 0 && (
                   <SeriesLine
                     cols={downdycols}
-                    data={upotherdatas}
+                    data={upotherdata}
                     height={350}
                     padding={[30, 20, 50, 60]}
                   />
@@ -282,11 +282,11 @@ class Fafak extends Component {
               contentHeight={350}
             >
               <Spin spinning={loading} style={{ background: '#ffffff' }}>
-                {up102_2zonedatas.length === 0 && <Empty style={{ height: '250px' }} />}
-                {up102_2zonedatas.length > 0 && (
+                {up102_2zonedata.length === 0 && <Empty style={{ height: '250px' }} />}
+                {up102_2zonedata.length > 0 && (
                   <SeriesLine
                     cols={downdycols}
-                    data={up102_2zonedatas}
+                    data={up102_2zonedata}
                     height={350}
                     padding={[30, 20, 50, 60]}
                   />
@@ -305,11 +305,11 @@ class Fafak extends Component {
               contentHeight={350}
             >
               <Spin spinning={loading} style={{ background: '#ffffff' }}>
-                {safe102_2zonedatas.length === 0 && <Empty style={{ height: '250px' }} />}
-                {safe102_2zonedatas.length > 0 && (
+                {safe102_2zonedata.length === 0 && <Empty style={{ height: '250px' }} />}
+                {safe102_2zonedata.length > 0 && (
                   <SeriesLine
                     cols={downdycols}
-                    data={safe102_2zonedatas}
+                    data={safe102_2zonedata}
                     height={350}
                     padding={[30, 20, 50, 60]}
                   />
@@ -328,11 +328,11 @@ class Fafak extends Component {
               contentHeight={350}
             >
               <Spin spinning={loading} style={{ background: '#ffffff' }}>
-                {up102safezones.length === 0 && <Empty style={{ height: '250px' }} />}
-                {up102safezones.length > 0 && (
+                {up102safezone.length === 0 && <Empty style={{ height: '250px' }} />}
+                {up102safezone.length > 0 && (
                   <SeriesLine
                     cols={downdycols}
-                    data={up102safezones}
+                    data={up102safezone}
                     height={350}
                     padding={[30, 20, 50, 60]}
                   />

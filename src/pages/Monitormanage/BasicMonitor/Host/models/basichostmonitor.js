@@ -82,7 +82,6 @@ export default {
   effects: {
     *fetchhost({ payload: { current, pageSize } }, { call, put }) {
       const response = yield call(querylisthost, current, pageSize);
-      console.log(response);
       yield put({
         type: 'save',
         payload: response.data,
@@ -93,7 +92,6 @@ export default {
       // return yield call(queryapplication, id);
       // const response = radiogroups;
       const response = yield call(queryapplication, id);
-      console.log(response);
       yield put({
         type: 'saveradiogroups',
         payload: response.data,

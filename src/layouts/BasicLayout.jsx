@@ -16,7 +16,7 @@ import {
 import { formatMessage } from 'umi-plugin-react/locale';
 import Authorized from '@/utils/Authorized';
 import RightContent from '@/components/GlobalHeader/RightContent';
-// import {isAntDesignPro,getAuthorityFromRouter} from '@/utils/utils';
+import { getAuthorityFromRouter } from '@/utils/utils';
 import logo from '../../public/menulogo.png';
 // import Layout from './BlankLayout';
 
@@ -79,7 +79,7 @@ const BasicLayout = props => {
   }, []);
 
   // 路由中获取用户权限
-  // const authorized = getAuthorityFromRouter(props.route.routes, location.pathname || '/') || {
+  // const authorized = getAuthorityFromRouter(menuData, location.pathname || '/') || {
   //   authority: undefined,
   // };
 

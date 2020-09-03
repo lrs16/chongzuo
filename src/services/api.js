@@ -139,5 +139,5 @@ export async function queryFactoryTypes() {
 
 // 请求组织，生成组织结构树
 export async function queryDeptTree() {
-  return request(`/sysuser_manage/upms_dept/list`);
+  return request(`/upms/dept/list`);
 }

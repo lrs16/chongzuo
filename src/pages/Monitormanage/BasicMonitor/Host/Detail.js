@@ -20,12 +20,14 @@ const alertStatus = ['严重', '一般', '警告', '恢复', '正常', '未知']
 @connect(({ basichostmonitor, loading }) => ({
   basichostmonitor,
   loading: loading.models.basichostmonitor,
+  loadingindicator: loading.effects['basichostmonitor/fetchcurrenthistory'],
 }))
 class Detail extends Component {
   state = {
     count: 2,
     dateString: '最近一次',
     applicationId: '',
+    key: '',
   };
 
   componentDidMount() {
@@ -47,8 +49,8 @@ class Detail extends Component {
           return obj.name === radiaokey;
         });
         this.getdatas(count);
-        this.getcurrentHistory(application[0].key);
-        this.setState({ applicationId: application[0].key });
+        this.getcurrentHistory(application[0]?.key);
+        this.setState({ applicationId: application[0]?.key });
       });
   }
 
@@ -338,6 +340,7 @@ class Detail extends Component {
     const { id, data, radiaokey } = this.props.location.state;
     const {
       loading,
+      loadingindicator,
       basichostmonitor: {
         sysalarms,
         radiogroups,
@@ -377,9 +380,9 @@ class Detail extends Component {
             <Description term="状态">
               <Badge status={statusMap[data.status]} text={status[data.status]} />
             </Description>
-            <Description term="系统版本">系统版本(后端无返回)</Description>
-            <Description term="系统类型">系统类型(后端无返回)</Description>
-            <Description term="机器名">DESKTOP-K89NQBR(后端无返回)</Description>
+            <Description term="系统版本">{data.systemVersion}</Description>
+            <Description term="系统类型">{data.systemType}</Description>
+            <Description term="机器名">{data.machineName}</Description>
           </DescriptionList>
         </Card>
         <Card style={{ marginBottom: 24 }}>
@@ -441,7 +444,7 @@ class Detail extends Component {
                   </Button>
                 </TimeModal>
               </div>
-              <Spin spinning={loading}>
+              <Spin spinning={loadingindicator}>
                 {currentHistory !== '' && (
                   <>
                     {this.state.dateString === '最近一次' && (

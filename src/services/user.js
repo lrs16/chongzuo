@@ -9,16 +9,16 @@ export async function query() {
 // }
 // 根据token获取用户信息
 export async function queryCurrent() {
-  return request('/sysuser_manage/upms_user/getCurrUserInfo');
+  return request('/upms/user/getCurrUserInfo');
 }
 // 根据token获取用户权限菜单
 export async function queryMenus() {
-  return request('/sysuser_manage/upms_user/getCurrUserMenus');
+  return request('/upms/user/getCurrUserMenus');
 }
 
 // 用户自己修改密码
 export async function UserChangPW(params) {
-  return request('/sysuser_manage/upms_user/password', {
+  return request('/upms/user/password', {
     method: 'PUT',
     body: JSON.stringify(params),
   });

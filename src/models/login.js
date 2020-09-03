@@ -16,9 +16,10 @@ const Model = {
   effects: {
     *login({ payload }, { call, put }) {
       const response = yield call(fakeAccountLogin, payload);
+      console.log(response);
       sessionStorage.setItem('access_token', response.data.access_token);
-      sessionStorage.setItem('refresh_token', response.data.refresh_token);
-      sessionStorage.setItem('expires_in', response.data.expires_in);
+      // sessionStorage.setItem('refresh_token', response.data.refresh_token);
+      // sessionStorage.setItem('expires_in', response.data.expires_in);
       // yield put({
       //   type: 'changeLoginStatus',
       //   payload: response,
@@ -26,6 +27,7 @@ const Model = {
 
       if (response.code === 200) {
         const userinfo = yield call(queryCurrent); // 正式环境
+        console.log(userinfo);
         yield put({
           type: 'changeLoginStatus',
           payload: {

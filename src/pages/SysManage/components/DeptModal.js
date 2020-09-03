@@ -104,7 +104,7 @@ class MenuModal extends Component {
                 rules: [
                   {
                     required,
-                    pattern: new RegExp(/^[1-9]\d*$/, 'g'),
+                    pattern: new RegExp(/^[0-9]\d*$/, 'g'),
                     message: '组织序号只能为数字',
                   },
                 ],
@@ -116,7 +116,7 @@ class MenuModal extends Component {
                 rules: [
                   {
                     required,
-                    pattern: new RegExp(/^[1-9]\d*$/, 'g'),
+                    pattern: new RegExp(/^[0-9]\d*$/, 'g'),
                     message: '上级编号只能为数字',
                   },
                 ],

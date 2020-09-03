@@ -199,24 +199,12 @@ export default {
                       icon: 'cloud-server',
                       component: './Automation/STT/SoftManage',
                     },
-                    // {
-                    //   path: '/automation/STT/host_soft',
-                    //   name: '主机与软件关系',
-                    //   icon: 'cloud-server',
-                    //   component: './Automation/STT/Host_Soft',
-                    // },
                     {
                       path: '/automation/STT/process',
                       name: '进程',
                       icon: 'cloud-server',
                       component: './Automation/STT/ProcessManage',
                     },
-                    // {
-                    //   path: '/automation/STT/soft_process',
-                    //   name: '软件与进程关系',
-                    //   icon: 'cloud-server',
-                    //   component: './Automation/STT/Soft_Process',
-                    // },
                     {
                       path: '/automation/STT/softconfigure',
                       name: '启停配置',
@@ -513,12 +501,17 @@ export default {
     basePath: '/',
   },
   proxy: {
-    '/sysuser_manage/': {
-      // target: 'http://172.16.4.211:8800/',
-      target: 'http://172.16.4.211:9901/', //登录和用户管理中心
-      //target: 'http://localhost:8800/',
+    '/oauth/': {
+      target: 'http://172.16.4.211:9901/', //登录
       changeOrigin: true,
-      pathRewrite: { '^/sysuser_manage': '' },
+    },
+    '/logout': {
+      target: 'http://172.16.4.211:9901/', //登出
+      changeOrigin: true,
+    },
+    '/upms/': {
+      target: 'http://172.16.4.211:9901/', //用户管理
+      changeOrigin: true,
     },
     '/api-meter-auto/': {
       target: 'http://172.16.4.211:9901/', //软件启停

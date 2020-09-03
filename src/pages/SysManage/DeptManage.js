@@ -2,12 +2,22 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
-import { Layout, Card, Form, Button, Input, Message ,Table, Divider, Badge, Popconfirm,} from 'antd';
+import {
+  Layout,
+  Card,
+  Form,
+  Button,
+  Input,
+  Message,
+  Table,
+  Divider,
+  Badge,
+  Popconfirm,
+} from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import DeptTree from '@/components/DeptTree';
 // import DeptList from './components/DeptList';
 import DeptModal from './components/DeptModal';
-
 
 const { Search } = Input;
 const { Sider, Content } = Layout;
@@ -102,7 +112,7 @@ class DeptManage extends Component {
     }).then(res => {
       if (res.code === 200) {
         Message.success(res.msg);
-        this.reloadlist();
+        this.getlist();
         this.reloadtree();
       } else {
         Message.error('添加组织失败');
@@ -188,7 +198,11 @@ class DeptManage extends Component {
         key: 'action',
         render: (text, record) => (
           <div>
-            <DeptModal onSumit={values => this.handleEdite(values)} title="编辑脚本" record={record}>
+            <DeptModal
+              onSumit={values => this.handleEdite(values)}
+              title="编辑脚本"
+              record={record}
+            >
               <a type="link">编辑</a>
             </DeptModal>
             <Divider type="vertical" />
@@ -220,10 +234,13 @@ class DeptManage extends Component {
             <Sider theme="light">
               <DeptTree />
             </Sider>
-            <Content  style={{background:'#fff'}}>
+            <Content style={{ background: '#fff' }}>
               <div style={{ background: '#fff' }}>
                 <Form style={{ float: 'right', width: '30%' }}>
-                    <Search placeholder="请输入关键字" onSearch={values => this.handleSearch(values)} />
+                  <Search
+                    placeholder="请输入关键字"
+                    onSearch={values => this.handleSearch(values)}
+                  />
                 </Form>
                 <DeptModal onSumit={this.handleUpdate}>
                   <Button
@@ -243,12 +260,12 @@ class DeptManage extends Component {
                   dochangpage = {this.changePage}
                   doSizeChange = {this.onShowSizeChange}
                 /> */}
-                <Table 
-                  loading = {loading}
-                  dataSource = {dataSource} 
-                  columns = {columns} 
-                  rowKey = {record => record.id} 
-                  pagination = {pagination}
+                <Table
+                  loading={loading}
+                  dataSource={dataSource}
+                  columns={columns}
+                  rowKey={record => record.id}
+                  pagination={pagination}
                 />
               </div>
             </Content>

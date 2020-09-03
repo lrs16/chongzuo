@@ -385,85 +385,84 @@ export default {
       });
     },
     *fetchdoendy(_, { call, put }) {
-      const response = yield call(getdownDY);
-      //const response = Mockdowndy();
+      // const response = yield call(getdownDY);
+      const response = Mockdowndy();
       yield put({
         type: 'getdowndy',
-        payload: response.data,
-        //payload: response,
+        // payload: response.data,
+        payload: response,
       });
     },
     *fetchdownother(_, { call, put }) {
-      const response = yield call(getdownOther);
-      //const response = Mockother();
+      // const response = yield call(getdownOther);
+      const response = Mockother();
       yield put({
         type: 'getdownother',
-        payload: response.data,
-        //payload: response,
+        // payload: response.data,
+        payload: response,
       });
     },
     *fetch102safezone(_, { call, put }) {
-      const response = yield call(get102safeZone);
-      // const response = Mockzone102_2();
+      // const response = yield call(get102safeZone);
+      const response = Mockzone102_2();
       yield put({
         type: 'get102safezone',
         payload: response.data,
-        //payload: response,
+        // payload: response,
       });
     },
     *fetch102down(_, { call, put }) {
       const response = yield call(get102Down);
-      //const response = Mockzone102_safe();
+      // const response = Mockzone102_safe();
       yield put({
         type: 'get102down',
-        payload: response.data,
-        // payload: response,
+        // payload: response.data,
+        payload: response,
       });
     },
     *fetchupdy(_, { call, put }) {
-      const response = yield call(getupDY);
-      //const response = Mockupdy();
+      // const response = yield call(getupDY);
+      const response = Mockupdy();
       yield put({
         type: 'getupdy',
-        payload: response.data,
-        //payload: response,
+        // payload: response.data,
+        payload: response,
       });
     },
     *fetchupother(_, { call, put }) {
-      const response = yield call(getupOther);
-      console.log(response.data);
-      // const response = Mockupother();
+      // const response = yield call(getupOther);
+      const response = Mockupother();
       yield put({
         type: 'getupother',
-        payload: response.data,
-        // payload: response,
+        // payload: response.data,
+        payload: response,
       });
     },
     *fetch102up2zone(_, { call, put }) {
-      const response = yield call(get102up2Zone);
-      // const response = Mockup102_2zone();
+      // const response = yield call(get102up2Zone);
+      const response = Mockup102_2zone();
       yield put({
         type: 'getup102_2zone',
-        payload: response.data,
-        // payload: response,
+        // payload: response.data,
+        payload: response,
       });
     },
     *fetch102safe2zone(_, { call, put }) {
-      const response = yield call(get102upSafe2Zone);
-      // const response = Mocksafe102_2zone();
+      // const response = yield call(get102upSafe2Zone);
+      const response = Mocksafe102_2zone();
       yield put({
         type: 'getsafe102_2zone',
-        payload: response.data,
-        //payload: response,
+        // payload: response.data,
+        payload: response,
       });
     },
     *fetch102upsafezone(_, { call, put }) {
-      const response = yield call(get102upSafeZone);
-      // const response = Mockup102safe();
+      // const response = yield call(get102upSafeZone);
+      const response = Mockup102safe();
       yield put({
         type: 'getsafe102zone',
-        payload: response.data,
-        // payload: response,
+        // payload: response.data,
+        payload: response,
       });
     },
   },
