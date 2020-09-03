@@ -617,84 +617,60 @@ const sysuser = [
 ];
 
 //历史警告
-const historyAlarm = [
+const historyList = [
   {
-    alatitle: 'CPU使用率告警',
-    aladetails: 'CPU使用率平均值大于90%',
-    equname: '采集服务器1',
+    id: '1',
+    alarmTitle: 'CPU使用率告警',
+    alarmDetail: 'CPU使用率平均值大于90%',
+    equipmentName: '采集服务器1',
     ip: '127.0.0.1',
-    aladate: '2019-10-18 17:41:59',
-    recovtime: '2019-10-18 17:41:59',
-    level: '1',
+    alarmTime: '2019-10-18 17:41:59',
+    recoveryTime: 'yyyyyy',
+    level: '水平',
     threshold: '90%',
-    currvalue: '95%',
-    datetime: '1m 11d 2h',
-    titleId: '1',
+    currentValue: '95%',
+    duration: '1m 11d 2h',
+    alarmStatus: '未解决',
+    alarmTimes: 'lllll',
+    line: '1',
+    alarmNotification: '告警通知',
+    alarmId: 'GJBH202005150006',
   },
   {
-    alatitle: 'CPU使用率告警',
-    aladetails: 'CPU使用率平均值大于90%',
-    equname: '采集服务器1',
+    id: '1',
+    alarmTitle: 'CPU使用率告警',
+    alarmDetail: 'CPU使用率平均值大于90%',
+    equipmentName: '采集服务器1',
     ip: '127.0.0.1',
-    aladate: '2019-10-18 17:41:59',
-    recovtime: '2019-10-18 17:41:59',
-    level: '1',
+    alarmTime: '2019-10-18 17:41:59',
+    recoveryTime: 'yyyyyy',
+    level: '水平',
     threshold: '90%',
-    currvalue: '95%',
-    datetime: '1m 11d 2h',
-    titleId: '2',
+    currentValue: '95%',
+    duration: '1m 11d 2h',
+    alarmStatus: '未解决',
+    alarmTimes: 'lllll',
+    alarmNotification: '告警通知2',
+    line: '2',
+    alarmId: 'GJBH202005150006',
   },
   {
-    alatitle: 'CPU使用率告警',
-    aladetails: 'CPU使用率平均值大于90%',
-    equname: '采集服务器1',
+    id: '1',
+    alarmTitle: 'CPU使用率告警',
+    alarmDetail: 'CPU使用率平均值大于90%',
+    equipmentName: '采集服务器1',
     ip: '127.0.0.1',
-    aladate: '2019-10-18 17:41:59',
-    recovtime: '2019-10-18 17:41:59',
-    level: '1',
+    alarmTime: '2019-10-18 17:41:59',
+    recoveryTime: 'yyyyyy',
+    level: '水平',
     threshold: '90%',
-    currvalue: '95%',
-    datetime: '1m 11d 2h',
-    titleId: '3',
-  },
-  {
-    alatitle: 'CPU使用率告警',
-    aladetails: 'CPU使用率平均值大于90%',
-    equname: '采集服务器1',
-    ip: '127.0.0.1',
-    aladate: '2019-10-18 17:41:59',
-    recovtime: '2019-10-18 17:41:59',
-    level: '1',
-    threshold: '90%',
-    currvalue: '95%',
-    datetime: '1m 11d 2h',
-    titleId: '4',
-  },
-  {
-    alatitle: 'CPU使用率告警',
-    aladetails: 'CPU使用率平均值大于90%',
-    equname: '采集服务器1',
-    ip: '127.0.0.1',
-    aladate: '2019-10-18 17:41:59',
-    recovtime: '2019-10-18 17:41:59',
-    level: '1',
-    threshold: '90%',
-    currvalue: '95%',
-    datetime: '1m 11d 2h',
-    titleId: '5',
-  },
-  {
-    alatitle: 'CPU使用率告警',
-    aladetails: 'CPU使用率平均值大于90%',
-    equname: '采集服务器1',
-    ip: '127.0.0.1',
-    aladate: '2019-10-18 17:41:59',
-    recovtime: '2019-10-18 17:41:59',
-    level: '1',
-    threshold: '90%',
-    currvalue: '95%',
-    datetime: '1m 11d 2h',
-    titleId: '6',
+    currentValue: '95%',
+    duration: '1m 11d 2h',
+    alarmStatus: '未解决',
+    alarmTimes: 'lllll',
+    alarmNotification: '告警通知3',
+    line: '3',
+    alarmId: 'GJBH202005150006',
   },
 ];
 //基本信息
@@ -704,7 +680,7 @@ const alarmBasic = {
   ip: '127.0.0.1',
   alarmtime: '2019-10-18 17:41:59',
   recovdatetime: '2019-10-18 17:41:59',
-  lever: '严重',
+  lever: '0',
   continuedtime: '2019-10-18 17:41:59',
   strategy: 'Service State - SQL Server',
   detail: 'CPU使用率平均值大于90%。',
@@ -719,21 +695,21 @@ const operaRecord = [
     datetime: '2019-12-0409:19:30',
     operator: '张三',
     operationrecord: '告警降级',
-    statue: 'EE',
+    statue: 1,
   },
   {
     serialnumber: '1',
     datetime: '2019-12-0409:19:30',
     operator: '张三',
     operationrecord: '告警降级',
-    statue: 'EE',
+    statue: 0,
   },
   {
     serialnumber: '1',
     datetime: '2019-12-0409:19:30',
     operator: '张三',
     operationrecord: '告警降级',
-    statue: 'EE',
+    statue: 1,
   },
 ];
 //详情页的告警历史
@@ -741,7 +717,7 @@ const detailAlarm = [
   {
     alarmtime: '2019-11-26 17:07:03',
     recovertime: '2019-12-04  09:19:30',
-    status: '未解决',
+    status: '0',
     duration: '14h 50m 22s',
     firsttime: '2019-12-04  09:10:30',
     confirm: '未确认',
@@ -750,7 +726,7 @@ const detailAlarm = [
   {
     alarmtime: '2019-11-26 17:07:03',
     recovertime: '2019-12-04  09:19:30',
-    status: '未解决',
+    status: '1',
     duration: '14h 50m 22s',
     firsttime: '2019-12-04  09:10:30',
     confirm: '未确认',
@@ -759,7 +735,7 @@ const detailAlarm = [
   {
     alarmtime: '2019-11-26 17:07:03',
     recovertime: '2019-12-04  09:19:30',
-    status: '未解决',
+    status: '0',
     duration: '14h 50m 22s',
     firsttime: '2019-12-04  09:10:30',
     confirm: '未确认',
@@ -774,7 +750,7 @@ const alarmNotice = [
     sendtime: '2019-12-04  09:19:30',
     sendway: '邮件',
     receiver: '詹工',
-    statue: '发送成功',
+    statue: 1,
   },
   {
     alarmcontent:
@@ -782,7 +758,7 @@ const alarmNotice = [
     sendtime: '2019-12-04  09:19:30',
     sendway: '邮件',
     receiver: '詹工',
-    statue: '发送成功',
+    statue: 0,
   },
   {
     alarmcontent:
@@ -790,7 +766,7 @@ const alarmNotice = [
     sendtime: '2019-12-04  09:19:30',
     sendway: '邮件',
     receiver: '詹工',
-    statue: '发送成功',
+    statue: 1,
   },
   {
     alarmcontent:
@@ -798,63 +774,142 @@ const alarmNotice = [
     sendtime: '2019-12-04  09:19:30',
     sendway: '邮件',
     receiver: '詹工',
-    statue: '发送成功',
+    statue: 0,
   },
 ];
-
+//告警策略的列表展示
+const strategyList = [
+  {
+    detailsid: 1,
+    level: 1,
+    alarmTitle: '内存使用率告警',
+    indicatorName: 'CPU使用率平均值大于90%',
+    triggerConditions: '在过去的n分钟/小时内+指标名称+平均值+大于等于+阈值+单位',
+    founder: '刘柳',
+    creationTime: '2020-04-22 09:18:49',
+    state: '0',
+  },
+  {
+    detailsid: 2,
+    level: 2,
+    alarmTitle: '内存使用率告警',
+    indicatorName: 'CPU使用率平均值大于90%',
+    triggerConditions: '在过去的n分钟/小时内+指标名称+平均值+大于等于+阈值+单位',
+    founder: '刘柳',
+    creationTime: '2020-04-22 09:18:49',
+    state: '1',
+  },
+  {
+    detailsid: 3,
+    level: 3,
+    alarmTitle: '内存使用率告警',
+    indicatorName: 'CPU使用率平均值大于90%',
+    triggerConditions: '在过去的n分钟/小时内+指标名称+平均值+大于等于+阈值+单位',
+    founder: '刘柳',
+    creationTime: '2020-04-22 09:18:49',
+    state: '0',
+  },
+];
 //告警策略的详细数据
 const strateDetails = {
   id: 'GJCL20200514001',
+  notiMethod: 'shortMessage',
   alacontent: 'xxx数据库n.n',
   alatitle: 'XXXPC服务器告警',
   describe: 'XXXPC服务器告警描述描述描述.',
   past: '最近一分钟',
   alafrequency: '6小时',
-  forcetime: '08:00-18:00',
+  forcetime: '08:00',
   delaystrate: '立刻',
-  remark:
-    '级别：严重告警对象：采集服务器1 告警标题：CPU使用率告警告警时间：2020-05-15 09:24 告警详情：在过去的5分钟内，CPU使用率平均值大于90%    注意:该告警已累计告警$告警次数$次，未恢复之前，$延迟策略$后再次通知您，请尽快处理防止告警风暴无',
+  remark: {
+    level: '严重告警',
+    obj: '采集服务器1',
+    alarmTitle: 'CPU使用率告警',
+    alarmTime: '2020-05-15 09:24',
+    alarmDetail: '在过去的5分钟内，CPU使用率平均值大于90%',
+    careful:
+      '该告警已累计告警$告警次数$次，未恢复之前，$延迟策略$后再次通知您，请尽快处理防止告警风暴无',
+  },
 };
 //告警策略的第一个表的数据
 const tableOne = [
   {
-    warnindex: '指标1；指标2；指标3；指标4',
-    aggrealgorithm: '平均值',
-    indexvalue: '大于等于',
+    warnIndex: '指标1；指标2；指标3；指标4',
+    aggreGorithm: '平均值',
+    indexValue: '大于等于',
     threshold: '90',
-    company: '%',
-    alarmlevel: '严重',
+    unit: '%',
+    alarmLevel: '严重',
   },
   {
-    warnindex: '指标1；指标2；指标3；指标4',
-    aggrealgorithm: '平均值',
-    indexvalue: '大于等于',
+    warnIndex: '指标1；指标2；指标3；指标4',
+    aggreGorithm: '平均值',
+    indexValue: '大于等于',
     threshold: '90',
-    company: '%',
-    alarmlevel: '严重',
+    unit: '%',
+    alarmLevel: '严重',
   },
   {
-    warnindex: '指标1；指标2；指标3；指标4',
-    aggrealgorithm: '平均值',
-    indexvalue: '大于等于',
+    warnIndex: '指标1；指标2；指标3；指标4',
+    aggreGorithm: '平均值',
+    indexValue: '大于等于',
     threshold: '90',
-    company: '%',
-    alarmlevel: '严重',
+    unit: '%',
+    alarmLevel: '严重',
   },
 ];
 //告警策略的第二个表
 const tableTwo = [
   {
-    dataIndex: '172.35.25.210',
-    monitoring: 'monitoring',
+    ip: '172.35.25.210',
+    monitorObj: 'monitoring',
   },
   {
-    dataIndex: '172.35.25.210',
-    monitoring: 'monitoring',
+    ip: '172.35.25.210',
+    monitorObj: 'monitoring',
   },
   {
-    dataIndex: '172.35.25.210',
-    monitoring: 'monitoring',
+    ip: '172.35.25.210',
+    monitorObj: 'monitoring',
+  },
+];
+
+//维护计划的列表
+const mainplayList = [
+  {
+    id: '1',
+    programName: 'xxx服务器维护计划1',
+    maintenanceEquipment: '采集服务器1,采集服务2,采集服务3',
+    startTime: '2020-05-15',
+    endTime: '2020-05-16',
+    founder: '张三',
+    createTime: '2020-05-14',
+  },
+  {
+    id: '2',
+    programName: 'xxx服务器维护计划1',
+    maintenanceEquipment: '采集服务器1,采集服务2,采集服务3',
+    startTime: '2020-05-15  08:00',
+    endTime: '2020-05-16  08:00',
+    founder: '张三',
+    createTime: '2020-05-14  08:00',
+  },
+  {
+    id: '3',
+    programName: 'xxx服务器维护计划1',
+    maintenanceEquipment: '采集服务器1,采集服务2,采集服务3',
+    startTime: '2020-05-15  08:00',
+    endTime: '2020-05-16  08:00',
+    founder: '张三',
+    createTime: '2020-05-14  08:00',
+  },
+];
+
+//当前告警列表
+const currentList = [
+  {
+    alarmTitle: '',
+    alarmDetail: '',
   },
 ];
 
@@ -1134,15 +1189,7 @@ export default {
       ],
     },
   ],
-  'GET /api/historyAlarm': historyAlarm,
-  //详情里的数据
-  'GET /api/historyAlarmBasic': alarmBasic,
-  'GET /api/AlarmStrategy': strateDetails,
-  'GET /api/historyAlarmOpera': operaRecord,
-  'GET /api/alarmHistory': detailAlarm,
-  'GET /api/alarmNotification': alarmNotice,
-  'GET /api/tableOne': tableOne,
-  'GET /api/tableTwo': tableTwo,
+
   //主机的数据
   'GET /api/hostList': hostList,
   'POST /api/savaDate': saveData,
@@ -1153,4 +1200,36 @@ export default {
   'GET /api/softSave': softList,
   'GET /api/softEdit': softList,
   'GET /api/softRemove': softList,
+
+  //历史告警的列表数据
+  'GET /api/historyList': historyList,
+
+  //基本信息
+  'GET /api/historyAlarmBasic': alarmBasic,
+  'GET /api/AlarmStrategy': strateDetails,
+  //操作记录
+  'GET /api/historyAlarmOpera': operaRecord,
+  //告警历史
+  'GET /api/alarmHistory': detailAlarm,
+  //告警通知
+  'GET /api/alarmNotification': alarmNotice,
+  'GET /api/tableOne': tableOne,
+  'GET /api/tableTwo': tableTwo,
+  //维护计划的列表
+  'GET /api/mainplayList': mainplayList,
+  //主机的数据
+  'GET /api/hostList': hostList,
+  'POST /api/savaDate': saveData,
+  'POST /api/saveEdit': saveEdit,
+  'POST /api/removeHost': removeHost,
+  //软件的数据
+  'GET /api/softList': softList,
+  'GET /api/softSave': softList,
+  'GET /api/softEdit': softList,
+  'GET /api/softRemove': softList,
+  //告警策略的列表展示
+  'GET /api/strategyList': strategyList,
+  'GET /api/strategyAdd': strategyList,
+  'GET /api/strategyEnable': strategyList,
+  'GET /api/strategyOut': strategyList,
 };

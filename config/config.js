@@ -199,12 +199,24 @@ export default {
                       icon: 'cloud-server',
                       component: './Automation/STT/SoftManage',
                     },
+                    // {
+                    //   path: '/automation/STT/host_soft',
+                    //   name: '主机与软件关系',
+                    //   icon: 'cloud-server',
+                    //   component: './Automation/STT/Host_Soft',
+                    // },
                     {
                       path: '/automation/STT/process',
                       name: '进程',
                       icon: 'cloud-server',
                       component: './Automation/STT/ProcessManage',
                     },
+                    // {
+                    //   path: '/automation/STT/soft_process',
+                    //   name: '软件与进程关系',
+                    //   icon: 'cloud-server',
+                    //   component: './Automation/STT/Soft_Process',
+                    // },
                     {
                       path: '/automation/STT/softconfigure',
                       name: '启停配置',
@@ -388,6 +400,58 @@ export default {
                     },
                   ],
                 },
+
+                {
+                  path: '/alarmmanage',
+                  icon: 'cloud-server',
+                  name: '基础平台告警',
+                  routes: [
+                    {
+                      path: '/alarmmanage',
+                      redirect: '/alarmmanage/currentalarm',
+                    },
+                    {
+                      path: '/alarmmanage/currentalarm',
+                      name: '当前告警',
+                      component: './Alarmmanage/CurrentAlarm',
+                    },
+                    {
+                      path: '/alarmmanage/historicalalarm',
+                      name: '历史告警',
+                      component: './Alarmmanage/HistoricalAlarm',
+                    },
+                    {
+                      path: '/alarmmanage/alarmstrategy',
+                      name: '告警策略',
+                      component: './Alarmmanage/AlarmStrategy',
+                    },
+                    {
+                      path: '/alarmmanage/maintenanceplan',
+                      name: '维护计划',
+                      component: './Alarmmanage/MaintenancePlan',
+                    },
+                    {
+                      path: '/alarmmanage/alarmstrategy/strategydetail/:detailsid',
+                      name: '告警策略详细信息',
+                      icon: 'cloud-server',
+                      hideInMenu: true,
+                      component: './Alarmmanage/StrategyDetail',
+                    },
+                    {
+                      path: '/alarmmanage/alarmstrategy/strategyaddedit',
+                      name: '新增策略',
+                      hideInMenu: true,
+                      component: './Alarmmanage/StrategyAddEdit',
+                    },
+                    {
+                      path: '/alarmmanage/alarmstrategy/StrategyAddEdit/:detailsid',
+                      name: '编辑策略',
+                      icon: 'cloud-server',
+                      hideInMenu: true,
+                      component: './Alarmmanage/StrategyAddEdit',
+                    },
+                  ],
+                },
               ],
             },
             {
@@ -501,17 +565,12 @@ export default {
     basePath: '/',
   },
   proxy: {
-    '/oauth/': {
-      target: 'http://172.16.4.211:9901/', //登录
+    '/sysuser_manage/': {
+      // target: 'http://172.16.4.211:8800/',
+      target: 'http://172.16.4.211:9901/', //登录和用户管理中心
+      //target: 'http://localhost:8800/',
       changeOrigin: true,
-    },
-    '/logout': {
-      target: 'http://172.16.4.211:9901/', //登出
-      changeOrigin: true,
-    },
-    '/upms/': {
-      target: 'http://172.16.4.211:9901/', //用户管理
-      changeOrigin: true,
+      pathRewrite: { '^/sysuser_manage': '' },
     },
     '/api-meter-auto/': {
       target: 'http://172.16.4.211:9901/', //软件启停
