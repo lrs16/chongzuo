@@ -4,7 +4,7 @@ import {
   addProcess,
   removeProcess,
   editeProcess,
-} from '../services/api';
+} from '../services/host';
 
 export default {
   namespace: 'upmsprocess',
@@ -14,10 +14,8 @@ export default {
   },
 
   effects: {
-    *fetch(_, { call, put }) {
-      //进程列表数据
-      const response = yield call(searchProcess);
-      console.log(response);
+    *fetch({ payload }, { call, put }) {
+      const response = yield call(searchProcess, { payload });
       yield put({
         type: 'show',
         payload: response,
@@ -35,7 +33,7 @@ export default {
     *edite({ payload }, { call }) {
       return yield call(editeProcess, payload);
     },
-    //添加表格数据
+    // // 添加表格数据
     *add({ payload }, { call }) {
       return yield call(addProcess, payload);
     },

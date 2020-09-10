@@ -24,17 +24,6 @@ class RoleTransfer extends Component {
     }, 0);
   };
 
-  sort = data => {
-    const result = [];
-    if (!Array.isArray(data)) {
-      return result;
-    }
-    data.forEach(item => {
-      result.push(item.id);
-    });
-    return result;
-  };
-
   // id转换成key
   addArr = datas => {
     const newArr = [];
@@ -49,7 +38,6 @@ class RoleTransfer extends Component {
       vote.rolecode = datas[i].roleCode;
       newArr.push(vote);
     }
-
     return newArr;
   };
 

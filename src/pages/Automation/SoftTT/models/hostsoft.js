@@ -1,29 +1,35 @@
 import {
-  queryHostList,
+  myHosts,
   savaHostInfo,
   editHostInfo,
   removeHostInfo,
-  querySoftList,
+  searchSofts,
   querySaveSoft,
   queryEditSoft,
   queryRemoveSoft,
-  searchHosts,
-  searchSofts,
-} from '../services/api';
+} from '../services/host';
 
 export default {
-  namespace: 'automaticmodel',
+  namespace: 'hostsoft',
 
   state: {
-    data: [],
+    hostdata: [],
     softdata: [],
   },
 
   effects: {
-    *fetch({ payload }, { call, put }) {
-      const response = yield call(searchHosts, payload);
+    *fetchhost({ payload }, { call, put }) {
+      const response = yield call(myHosts, payload);
       yield put({
-        type: 'show',
+        type: 'gethost',
+        payload: response,
+      });
+    },
+
+    *search({ payload }, { call, put }) {
+      const response = yield call(myHosts, payload);
+      yield put({
+        type: 'gethost',
         payload: response,
       });
     },
@@ -39,17 +45,16 @@ export default {
     *remove({ payload: { id } }, { call }) {
       return yield call(removeHostInfo, id);
     },
-
-    *search({ payload }, { call, put }) {
-      const response = yield call(searchHosts, payload);
+    // 软件的接口
+    *fetchsoft({ payload }, { call, put }) {
+      const response = yield call(searchSofts, payload);
       yield put({
-        type: 'show',
+        type: 'softlist',
         payload: response,
       });
     },
 
-    //软件的接口请求
-    *fetchsoftlist({ payload }, { call, put }) {
+    *searchSofts({ payload }, { call, put }) {
       const response = yield call(searchSofts, payload);
       yield put({
         type: 'softlist',
@@ -68,21 +73,13 @@ export default {
     *softRemove({ payload }, { call }) {
       return yield call(queryRemoveSoft, payload);
     },
-
-    *softSearch({ payload }, { call, put }) {
-      const response = yield call(searchSofts, payload);
-      yield put({
-        type: 'softlist',
-        payload: response,
-      });
-    },
   },
 
   reducers: {
-    show(state, action) {
+    gethost(state, action) {
       return {
         ...state,
-        data: action.payload.data,
+        hostdata: action.payload.data,
       };
     },
 

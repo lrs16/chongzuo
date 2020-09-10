@@ -1,16 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
-import {
-  Card,
-  Table,
-  Form,
-  Input,
-  Button,
-  Message,
-  Divider,
-  Popconfirm,
-} from 'antd';
+import { Card, Table, Form, Input, Button, Message, Divider, Popconfirm } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProcessEdit from './components/ProcessEdit';
 
@@ -23,54 +14,41 @@ const { Search } = Input;
 class ProcessManage extends Component {
   state = {
     current: 1,
-    pagesize: 10,
-    quwKey: '',
+    pageSize: 10,
+    queKey: '',
   };
+
   componentDidMount() {
     this.getlist();
   }
 
-  // getlist = () => {
-  //   const page = this.state.current;
-  //   const limit = this.state.pageSize;
-  //   const { queKey } = this.state;
-  //   this.props.dispatch({
-  //     type: 'upmsprocess/fetch',
-  //     payload: {
-  //       page,
-  //       limit,
-  //       queKey,
-  //     },
-  //   });
-  // };
-
   getlist = () => {
+    const page = this.state.current;
+    const limit = this.state.pageSize;
+    const { queKey } = this.state;
     this.props.dispatch({
       type: 'upmsprocess/fetch',
+      payload: {
+        page,
+        limit,
+        queKey,
+      },
     });
   };
 
-  // 点击查询
-  // handleSearch = values => {
-  //   const page = this.state.current;
-  //   const limit = this.state.pageSize;
-  //   this.setState({
-  //     queKey: values,
-  //   });
-  //   this.props.dispatch({
-  //     type: 'upmsprocess/search',
-  //     payload: {
-  //       queKey: values,
-  //       page,
-  //       limit,
-  //     },
-  //   });
-  // };
- 
   handleSearch = values => {
+    const page = this.state.current;
+    const limit = this.state.pageSize;
+    this.setState({
+      queKey: values,
+    });
     this.props.dispatch({
       type: 'upmsprocess/search',
-      payload: values,
+      payload: {
+        queKey: values,
+        page,
+        limit,
+      },
     });
   };
 
@@ -102,53 +80,52 @@ class ProcessManage extends Component {
     }, 0);
   };
 
+  handleEdite = values => {
+    const { dispatch } = this.props;
+    return dispatch({
+      type: 'upmsprocess/edite',
+      payload: values,
+    }).then(res => {
+      if (res.code === 200) {
+        Message.success(res.msg);
+        this.getlist();
+      } else {
+        Message.error('编辑失败');
+      }
+    });
+  };
+
+  handleDelete = id => {
+    const { dispatch } = this.props;
+    return dispatch({
+      type: 'upmsprocess/remove',
+      payload: { id },
+    }).then(res => {
+      if (res.code === 200) {
+        Message.success(res.msg);
+        this.getlist();
+      } else {
+        Message.error('删除进程失败');
+      }
+    });
+  };
+
+  handleAdd = values => {
+    const { dispatch } = this.props;
+    return dispatch({
+      type: 'upmsprocess/add',
+      payload: values,
+    }).then(res => {
+      if (res.code === 200) {
+        Message.success(res.msg);
+        this.getlist();
+      } else {
+        Message.error('添加失败');
+      }
+    });
+  };
+
   render() {
-
-    const handleEdite = values => {//编辑
-      const { dispatch } = this.props;
-      return dispatch({
-        type: 'upmsprocess/edite',
-        payload: values,
-      }).then(res => {
-        if (res.code === 200) {
-          Message.success(res.msg);
-          this.getlist();
-        } else {
-          Message.error('编辑失败');
-        }
-      });
-    };
-
-    const handleDelete = id => {//删除
-      const { dispatch } = this.props;
-      return dispatch({
-        type: 'upmsprocess/remove',
-        payload: { id },
-      }).then(res => {
-        if (res.code === 200) {
-          Message.success(res.msg);
-          this.getlist();
-        } else {
-          Message.error('删除进程失败');
-        }
-      });
-    };
-
-    const handleAdd = values => {//添加
-      const { dispatch } = this.props;
-      return dispatch({
-        type: 'upmsprocess/add',
-        payload: values,
-      }).then(res => {
-        if (res.code === 200) {
-          Message.success(res.msg);
-          this.getlist();
-        } else {
-          Message.error('添加失败');
-        }
-      });
-    };
-
     const columns = [
       {
         title: '数据编号',
@@ -187,14 +164,15 @@ class ProcessManage extends Component {
         key: 'operation',
         render: (text, record) => (
           <div>
-            <ProcessEdit 
-              onSumit={values => handleEdite(values)} 
-              title="编辑进程" 
-              record={record}>
+            <ProcessEdit
+              onSumit={values => this.handleEdite(values)}
+              title="编辑进程"
+              record={record}
+            >
               <a type="link">编辑</a>
             </ProcessEdit>
             <Divider type="vertical" />
-            <Popconfirm title="确定删除此进程？" onConfirm={() => handleDelete(record.id)}>
+            <Popconfirm title="确定删除此进程？" onConfirm={() => this.handleDelete(record.id)}>
               <a type="link">删除</a>
             </Popconfirm>
           </div>
@@ -205,12 +183,8 @@ class ProcessManage extends Component {
     const {
       upmsprocess: { list },
     } = this.props;
-    
-    // const dataSource = list.rows;  
-    const dataSource = [...list];
-    console.log(dataSource,"dataSource")
+    const dataSource = list.rows;
 
-    //分页操作
     const pagination = {
       showSizeChanger: true,
       onShowSizeChange: (current, pageSize) => this.onShowSizeChange(current, pageSize),
@@ -224,13 +198,14 @@ class ProcessManage extends Component {
       <PageHeaderWrapper title="进程管理">
         <Card>
           <Form style={{ float: 'right', width: '30%' }}>
-              <Search
-                placeholder="请输入关键字"
-                allowClear
-                onSearch={values => this.handleSearch(values)}
-              />,
+            <Search
+              placeholder="请输入关键字"
+              allowClear
+              onSearch={values => this.handleSearch(values)}
+            />
+            ,
           </Form>
-          <ProcessEdit onSumit={values => handleAdd(values)}>
+          <ProcessEdit onSumit={values => this.handleAdd(values)}>
             <Button
               style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
               type="dashed"
@@ -243,11 +218,12 @@ class ProcessManage extends Component {
             columns={columns}
             dataSource={dataSource}
             rowKey={record => record.id}
-            //pagination={pagination}
+            pagination={pagination}
           />
         </Card>
       </PageHeaderWrapper>
     );
   }
 }
-export default Form.create()(ProcessManage);
+
+export default ProcessManage;

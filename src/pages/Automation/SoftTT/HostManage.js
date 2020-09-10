@@ -1,18 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
-import {
-  Card,
-  Table,
-  Form,
-  Input,
-  Button,
-  Message,
-  Divider,
-  Badge,
-  Popconfirm,
-  Pagination,
-} from 'antd';
+import { Card, Table, Form, Input, Button, Message, Divider, Badge, Popconfirm } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import HostEdit from './components/HostEdit';
 import HostSoft from './components/Host_Soft';
@@ -20,9 +9,10 @@ import HostSoft from './components/Host_Soft';
 const statusMap = ['default', 'success'];
 const status = ['停用', '在用'];
 const { Search } = Input;
-@connect(({ automaticmodel, loading }) => ({
-  automaticmodel,
-  loading: loading.models.automaticmodel,
+
+@connect(({ hostsoft, loading }) => ({
+  hostsoft,
+  loading: loading.models.hostsoft,
 }))
 class HostManage extends Component {
   state = {
@@ -30,7 +20,6 @@ class HostManage extends Component {
     pageSize: 10,
     queKey: '',
   };
-  // color = "red";
 
   componentDidMount() {
     this.getlist();
@@ -41,8 +30,8 @@ class HostManage extends Component {
     const limit = this.state.pageSize;
     const { queKey } = this.state;
     this.props.dispatch({
-      type: 'automaticmodel/fetch',
-      paload: {
+      type: 'hostsoft/fetchhost',
+      payload: {
         page,
         limit,
         queKey,
@@ -57,7 +46,7 @@ class HostManage extends Component {
       queKey: values,
     });
     this.props.dispatch({
-      type: 'automaticmodel/search',
+      type: 'hostsoft/search',
       payload: {
         queKey: values,
         page,
@@ -66,23 +55,9 @@ class HostManage extends Component {
     });
   };
 
-  changePage = page => {
-    this.props.dispatch({
-      type: 'automaticmodel/search',
-      payload: {
-        queKey: this.state.queKey,
-        page,
-        limit: this.state.pageSize,
-      },
-    });
-    setTimeout(() => {
-      this.setState({ current: page });
-    }, 0);
-  };
-
   onShowSizeChange = (current, pageSize) => {
     this.props.dispatch({
-      type: 'automaticmodel/search',
+      type: 'hostsoft/search',
       payload: {
         queKey: this.state.queKey,
         page: current,
@@ -94,50 +69,94 @@ class HostManage extends Component {
     }, 0);
   };
 
+  changePage = page => {
+    this.props.dispatch({
+      type: 'hostsoft/search',
+      payload: {
+        queKey: this.state.queKey,
+        page,
+        limit: this.state.pageSize,
+      },
+    });
+    setTimeout(() => {
+      this.setState({ current: page });
+    }, 0);
+  };
+
+  handleEdite = values => {
+    const { dispatch } = this.props;
+    return dispatch({
+      type: 'hostsoft/edit',
+      payload: values,
+    }).then(res => {
+      console.log(res);
+      if (res.code === 200) {
+        Message.success(res.msg);
+        this.getlist();
+      } else {
+        Message.error(res.msg);
+      }
+    });
+  };
+
+  handleDelete = id => {
+    const { dispatch } = this.props;
+    return dispatch({
+      type: 'hostsoft/remove',
+      payload: { id },
+    }).then(res => {
+      if (res.code === 200) {
+        Message.success(res.msg);
+        this.getlist();
+      } else {
+        Message.error('删除主机失败！');
+      }
+    });
+  };
+
+  handleDelete = id => {
+    const { dispatch } = this.props;
+    return dispatch({
+      type: 'hostsoft/remove',
+      payload: { id },
+    }).then(res => {
+      if (res.code === 200) {
+        Message.success(res.msg);
+        this.getlist();
+      } else {
+        Message.error('删除用户失败！');
+      }
+    });
+  };
+
+  handleUpdate = values => {
+    const { dispatch } = this.props;
+    return dispatch({
+      type: 'hostsoft/update',
+      payload: values,
+    }).then(res => {
+      if (res.code === 200) {
+        Message.success(res.msg);
+        this.getlist();
+      } else {
+        Message.error('添加主机失败');
+      }
+    });
+  };
+
   render() {
-    const handleUpdate = values => {
-      const { dispatch } = this.props;
-      return dispatch({
-        type: 'automaticmodel/update',
-        payload: values,
-      }).then(res => {
-        if (res.code === 200) {
-          Message.success(res.msg);
-          this.getlist();
-        } else {
-          Message.error('添加主机失败');
-        }
-      });
-    };
-
-    const handleEdite = values => {
-      const { dispatch } = this.props;
-      return dispatch({
-        type: 'automaticmodel/edit',
-        payload: values,
-      }).then(res => {
-        if (res.code === 200) {
-          Message.success(res.msg);
-          this.getlist();
-        } else {
-          Message.error(res.msg);
-        }
-      });
-    };
-
-    const handleDelete = id => {
-      const { dispatch } = this.props;
-      return dispatch({
-        type: 'automaticmodel/remove',
-        payload: { id },
-      }).then(res => {
-        if (res.code === 200) {
-          Message.success(res.msg);
-          this.getlist();
-        } else {
-          Message.error('删除主机失败！');
-        }
-      });
+    const {
+      // loading,
+      hostsoft: { hostdata },
+    } = this.props;
+    const dataSource = hostdata.rows;
+    const pagination = {
+      showSizeChanger: true,
+      onShowSizeChange: (current, pageSize) => this.onShowSizeChange(current, pageSize),
+      current: this.state.current,
+      pageSize: this.state.pageSize,
+      // total: data.total,
+      onChange: page => this.changePage(page),
     };
 
     const columns = [
@@ -203,14 +222,16 @@ class HostManage extends Component {
         render: (text, record) => (
           <div>
             <HostSoft
-              title="配置软件"
-              // roleId={record.id
+              title="配置主机 "
+              hostId={record.id}
+              hostName={record.hostsName}
+              loading={this.props.loading}
             >
-              <a type="link">配置软件</a>
+              <a type="link">配置主机</a>
             </HostSoft>
             <Divider type="vertical" />
             <HostEdit
-              onSumit={values => handleEdite(values)}
+              onSumit={values => this.handleEdite(values)}
               title="编辑主机"
               record={record}
               refresh={this.getlist}
@@ -218,25 +239,13 @@ class HostManage extends Component {
               <a type="link">编辑</a>
             </HostEdit>
             <Divider type="vertical" />
-            <Popconfirm title="确定删除此菜单吗？" onConfirm={() => handleDelete(record.id)}>
+            <Popconfirm title="确定删除此菜单吗？" onConfirm={() => this.handleDelete(record.id)}>
               <a type="link">删除</a>
             </Popconfirm>
           </div>
         ),
       },
     ];
-    const {
-      automaticmodel: { data },
-    } = this.props;
-    const dataSource = data.rows;
-    const pagination = {
-      showSizeChanger: true,
-      onShowSizeChange: (current, pageSize) => this.onShowSizeChange(current, pageSize),
-      current: this.state.current,
-      pageSize: this.state.pageSize,
-      total: data.total,
-      onChange: page => this.changePage(page),
-    };
 
     return (
       <PageHeaderWrapper title="主机管理">
@@ -244,7 +253,7 @@ class HostManage extends Component {
           <Form style={{ float: 'right', width: '30%' }}>
             <Search placeholder="请输入关键字" onSearch={values => this.handleSearch(values)} />
           </Form>
-          <HostEdit onSumit={handleUpdate}>
+          <HostEdit onSumit={this.handleUpdate}>
             <Button
               style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
               type="dashed"
@@ -265,4 +274,5 @@ class HostManage extends Component {
     );
   }
 }
-export default Form.create()(HostManage);
+
+export default HostManage;

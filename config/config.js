@@ -179,55 +179,43 @@ export default {
                 //   component: './Automation/ResourceManage',
                 // },
                 {
-                  path: '/automation/STT',
+                  path: '/automation/softtt',
                   name: '软件启停',
                   icon: 'cloud-server',
                   routes: [
                     {
-                      path: '/automation/STT',
-                      redirect: '/automation/STT/host',
+                      path: '/automation/softtt',
+                      redirect: '/automation/softtt/hostlist',
                     },
                     {
-                      path: '/automation/STT/host',
+                      path: '/automation/softtt/hostlist',
                       name: '主机',
                       icon: 'cloud-server',
-                      component: './Automation/STT/HostManage',
+                      component: './Automation/SoftTT/HostManage',
                     },
                     {
-                      path: '/automation/STT/soft',
+                      path: '/automation/softtt/soft',
                       name: '软件',
                       icon: 'cloud-server',
-                      component: './Automation/STT/SoftManage',
+                      component: './Automation/SoftTT/SoftManage',
                     },
-                    // {
-                    //   path: '/automation/STT/host_soft',
-                    //   name: '主机与软件关系',
-                    //   icon: 'cloud-server',
-                    //   component: './Automation/STT/Host_Soft',
-                    // },
                     {
-                      path: '/automation/STT/process',
+                      path: '/automation/softtt/process',
                       name: '进程',
                       icon: 'cloud-server',
-                      component: './Automation/STT/ProcessManage',
+                      component: './Automation/SoftTT/ProcessManage',
                     },
-                    // {
-                    //   path: '/automation/STT/soft_process',
-                    //   name: '软件与进程关系',
-                    //   icon: 'cloud-server',
-                    //   component: './Automation/STT/Soft_Process',
-                    // },
                     {
-                      path: '/automation/STT/softconfigure',
+                      path: '/automation/test/softconfigure',
                       name: '启停配置',
                       icon: 'cloud-server',
-                      component: './Automation/STT/SoftConfigures',
+                      component: './Automation/SoftTT/SoftConfigures',
                     },
                     {
-                      path: '/automation/STT/softexetute',
+                      path: '/automation/test/softexetute',
                       name: '程序执行',
                       icon: 'cloud-server',
-                      component: './Automation/STT/SoftExetute',
+                      component: './Automation/SoftTT/SoftExetute',
                     },
                   ],
                 },
@@ -400,7 +388,6 @@ export default {
                     },
                   ],
                 },
-
                 {
                   path: '/alarmmanage',
                   icon: 'cloud-server',
@@ -565,17 +552,21 @@ export default {
     basePath: '/',
   },
   proxy: {
-    '/sysuser_manage/': {
-      // target: 'http://172.16.4.211:8800/',
-      target: 'http://172.16.4.211:9901/', //登录和用户管理中心
-      //target: 'http://localhost:8800/',
+    '/oauth/': {
+      target: 'http://172.16.4.211:9901/', //登录
       changeOrigin: true,
-      pathRewrite: { '^/sysuser_manage': '' },
     },
-    '/api-meter-auto/': {
+    '/logout': {
+      target: 'http://172.16.4.211:9901/', //登出
+      changeOrigin: true,
+    },
+    '/upms/': {
+      target: 'http://172.16.4.211:9901/', //用户管理
+      changeOrigin: true,
+    },
+    '/auto/': {
       target: 'http://172.16.4.211:9901/', //软件启停
       changeOrigin: true,
-      pathRewrite: { '^/api-meter-auto': '' },
     },
     '/api-eai-job/oma/': {
       target: 'http://172.16.4.211:8800/', //脚本管理服务器地址,211正式，250测试

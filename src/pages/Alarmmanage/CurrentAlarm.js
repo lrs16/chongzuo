@@ -639,8 +639,7 @@ class CurrentAlarm extends Component {
               <Button style={{ borderColor: 'yellow', marginRight: 8 }} onClick={this.handleClose}>
                 关闭
               </Button>
-              {/* <Button onClick={this.exportExcel}>导出</Button> */}
-              <Button>导出</Button>
+              <Button onClick={this.exportExcel}>导出</Button>
             </div>
 
             <div>

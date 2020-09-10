@@ -75,6 +75,11 @@ function fakeList(count) {
   const list = [];
   for (let i = 0; i < count; i += 1) {
     list.push({
+      // id: "1255778439700221953",
+      // roleCode: scenedes[i % 5],
+      // roleName: user[i % 10],
+      // roleRemark: titles[i % 8],
+
       id: `${i}`,
       scriptID: `Script-${i}`,
       owner: user[i % 10],
@@ -1056,6 +1061,65 @@ const softList = [
   },
 ];
 
+//穿梭框的主机数据
+const hostShuttlebox = [
+  {
+    createTime: '2020-04-30T08:38:05.000+0000',
+    createUser: '1',
+    createUserNameExt: null,
+    deptId: '0',
+    id: '1255778439700221953',
+    roleCode: 'admin',
+    roleName: '超级管理员',
+    roleRemark: '系统最高权限',
+    roleStatus: '1',
+    tenantId: '',
+    updateTime: '2020-07-21T11:50:08.000+0000',
+  },
+  {
+    createTime: '2020-04-30T08:39:03.000+0000',
+    createUser: '1',
+    createUserNameExt: null,
+    deptId: '0',
+    id: '1255778680096755713',
+    roleCode: 'user',
+    roleName: '普通用户',
+    roleRemark: '普通系统用户',
+    roleStatus: '1',
+    tenantId: '',
+    updateTime: '2020-07-21T11:50:09.000+0000',
+  },
+  {
+    createTime: '2020-09-04T09:05:40.000+0000',
+    createUser: '1',
+    createUserNameExt: null,
+    deptId: '0',
+    id: '1301808634715443201',
+    roleCode: 'role',
+    roleName: '系统配置',
+    roleRemark: '系统菜单、权限、密码配置',
+    roleStatus: '1',
+    tenantId: '',
+    updateTime: '2020-09-04T09:05:40.000+0000',
+  },
+];
+//软件的穿梭框
+const softShuttlebox = [
+  {
+    createTime: '2020-04-30T08:38:05.000+0000',
+    createUser: '1',
+    createUserNameExt: null,
+    deptId: '0',
+    id: '1255778439700221953',
+    roleCode: 'admin',
+    roleName: '超级管理员',
+    roleRemark: '系统最高权限',
+    roleStatus: '1',
+    tenantId: '',
+    updateTime: '2020-07-21T11:50:08.000+0000',
+  },
+];
+
 export const getFactoryTypes = [
   {
     key: '0',
@@ -1222,11 +1286,18 @@ export default {
   'POST /api/savaDate': saveData,
   'POST /api/saveEdit': saveEdit,
   'POST /api/removeHost': removeHost,
+  //主机配置权限
+  'GET /api/hostShuttlebox': hostShuttlebox,
+  'GET /api/softShuttlebox': softShuttlebox,
+
   //软件的数据
   'GET /api/softList': softList,
   'GET /api/softSave': softList,
   'GET /api/softEdit': softList,
   'GET /api/softRemove': softList,
+  //软件配置
+  'GET /api/softShuttle': hostShuttlebox,
+  'GET /api/processShuttlebox': softShuttlebox,
   //告警策略的列表展示
   'GET /api/strategyList': strategyList,
   'GET /api/strategyAdd': strategyList,

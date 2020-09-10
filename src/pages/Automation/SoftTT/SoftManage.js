@@ -4,14 +4,14 @@ import moment from 'moment';
 import { Card, Table, Form, Input, Button, Message, Divider, Badge, Popconfirm } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import SoftEdit from './components/SoftEdit';
+// import SoftProcess from './components/Soft_Process';
+import HostSoft from './components/Host_Soft';
 
-const statusMap = ['default', 'success'];
-const status = ['关闭', '启动'];
 const { Search } = Input;
 
-@connect(({ automaticmodel, loading }) => ({
-  automaticmodel,
-  loading: loading.models.automaticmodel,
+@connect(({ hostsoft, loading }) => ({
+  hostsoft,
+  loading: loading.models.hostsoft,
 }))
 class SoftManage extends Component {
   state = {
@@ -19,27 +19,67 @@ class SoftManage extends Component {
     pageSize: 10,
     queKey: '',
   };
+
   componentDidMount() {
     this.getsoftlist();
   }
-
-  // getsoftlist() {
-  //   this.props.dispatch({
-  //     type: 'automaticmodel/fetchsoftlist',
-  //   });
-  // }
 
   getsoftlist = () => {
     const page = this.state.current;
     const limit = this.state.pageSize;
     const { queKey } = this.state;
     this.props.dispatch({
-      type: 'automaticmodel/fetchsoftlist',
-      paload: {
+      type: 'hostsoft/fetchsoft',
+      payload: {
         page,
         limit,
         queKey,
       },
+    });
+  };
+
+  handleUpdate = values => {
+    const { dispatch } = this.props;
+    return dispatch({
+      type: 'hostsoft/softSave',
+      payload: values,
+    }).then(res => {
+      if (res.code === 200) {
+        Message.success(res.msg);
+        this.getsoftlist();
+      } else {
+        Message.error('添加软件失败');
+      }
+    });
+  };
+
+  handleEdite = values => {
+    const { dispatch } = this.props;
+    return dispatch({
+      type: 'hostsoft/softEdit',
+      payload: values,
+    }).then(res => {
+      if (res.code === 200) {
+        Message.success(res.msg);
+        this.getsoftlist();
+      } else {
+        Message.error(res.msg);
+      }
+    });
+  };
+
+  handleDelete = id => {
+    const { dispatch } = this.props;
+    return dispatch({
+      type: 'hostsoft/softRemove',
+      payload: id,
+    }).then(res => {
+      if (res.code === 200) {
+        Message.success(res.msg);
+        this.getsoftlist();
+      } else {
+        Message.error('删除软件失败！');
+      }
     });
   };
 
@@ -50,7 +90,7 @@ class SoftManage extends Component {
       queKey: values,
     });
     this.props.dispatch({
-      type: 'automaticmodel/softSearch',
+      type: 'hostsoft/searchSofts',
       payload: {
         queKey: values,
         page,
@@ -61,7 +101,7 @@ class SoftManage extends Component {
 
   changePage = page => {
     this.props.dispatch({
-      type: 'automaticmodel/search',
+      type: 'hostsoft/search',
       payload: {
         queKey: this.state.queKey,
         page,
@@ -75,7 +115,7 @@ class SoftManage extends Component {
 
   onShowSizeChange = (current, pageSize) => {
     this.props.dispatch({
-      type: 'automaticmodel/search',
+      type: 'hostsoft/search',
       payload: {
         queKey: this.state.queKey,
         page: current,
@@ -88,51 +128,6 @@ class SoftManage extends Component {
   };
 
   render() {
-    const handleUpdate = values => {
-      const { dispatch } = this.props;
-      return dispatch({
-        type: 'automaticmodel/softSave',
-        payload: values,
-      }).then(res => {
-        if (res.code === 200) {
-          Message.success(res.msg);
-          this.getsoftlist();
-        } else {
-          Message.error('添加软件失败');
-        }
-      });
-    };
-
-    const handleEdite = values => {
-      const { dispatch } = this.props;
-      return dispatch({
-        type: 'automaticmodel/softEdit',
-        payload: values,
-      }).then(res => {
-        if (res.code === 200) {
-          Message.success(res.msg);
-          this.getsoftlist();
-        } else {
-          Message.error(res.msg);
-        }
-      });
-    };
-
-    const handleDelete = id => {
-      const { dispatch } = this.props;
-      return dispatch({
-        type: 'automaticmodel/softRemove',
-        payload: id,
-      }).then(res => {
-        if (res.code === 200) {
-          Message.success(res.msg);
-          this.getsoftlist();
-        } else {
-          Message.error('删除软件失败！');
-        }
-      });
-    };
-
     const columns = [
       {
         title: 'id',
@@ -180,18 +175,20 @@ class SoftManage extends Component {
         fixed: 'right',
         render: (text, record) => (
           <div>
-            <span
+            <HostSoft
               title="配置软件"
-              // roleId={record.id}
+              softwareId={record.id}
+              softName={record.hostName}
+              loading={this.props.loading}
             >
-              <a type="link">配置进程</a>
-            </span>
+              <a type="link">配置软件</a>
+            </HostSoft>
             <Divider type="vertical" />
-            <SoftEdit onSumit={values => handleEdite(values)} title="编辑软件" record={record}>
+            <SoftEdit onSumit={values => this.handleEdite(values)} title="编辑软件" record={record}>
               <a type="link">编辑</a>
             </SoftEdit>
             <Divider type="vertical" />
-            <Popconfirm title="确定删除此软件？" onConfirm={() => handleDelete(record.id)}>
+            <Popconfirm title="确定删除此软件？" onConfirm={() => this.handleDelete(record.id)}>
               <a type="link">删除</a>
             </Popconfirm>
           </div>
@@ -199,7 +196,7 @@ class SoftManage extends Component {
       },
     ];
     const {
-      automaticmodel: { softdata },
+      hostsoft: { softdata },
     } = this.props;
     const dataSource = softdata.rows;
     const pagination = {
@@ -217,7 +214,7 @@ class SoftManage extends Component {
           <Form style={{ float: 'right', width: '30%' }}>
             <Search placeholder="请输入关键字" onSearch={values => this.handleSearch(values)} />
           </Form>
-          <SoftEdit onSumit={value => handleUpdate(value)}>
+          <SoftEdit onSumit={value => this.handleUpdate(value)}>
             <Button
               style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
               type="dashed"
@@ -238,4 +235,5 @@ class SoftManage extends Component {
     );
   }
 }
-export default Form.create()(SoftManage);
+
+export default SoftManage;

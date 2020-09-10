@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Form, Input, Modal, Radio, Tabs, Select } from 'antd';
+import { Form, Input, Modal, Radio, Select } from 'antd';
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
@@ -11,12 +11,25 @@ const formItemLayout = {
   },
   colon: false,
 };
+const { Option } = Select;
+const operatorSystem = [
+  { key: 0, value: 'window' },
+  { key: 1, value: 'linux' },
+];
+const systemData = [];
 
-// const provinceData = ['Zhejiang', 'Jiangsu'];
-// const cityData = {
-//   Zhejiang: ['Hangzhou', 'Ningbo', 'Wenzhou'],
-//   Jiangsu: ['Nanjing', 'Suzhou', 'Zhenjiang'],
-// };
+operatorSystem.forEach(function(item) {
+  systemData.push(<Option key={item.key}>{item.value}</Option>);
+});
+
+const cabinetData = [
+  { key: '0', value: 'A座机柜' },
+  { key: '1', value: 'B座机柜' },
+];
+const cabinet = [];
+cabinetData.forEach(function(item) {
+  cabinet.push(<Option key={item.key}>{item.value}</Option>);
+});
 
 // 克隆子元素按钮，并添加事件
 const withClick = (element, handleClick = () => {}) => {
@@ -30,22 +43,7 @@ class HostEdit extends Component {
 
   state = {
     visible: false,
-    // cities: cityData[provinceData[0]],
-    // secondCity: cityData[provinceData[0]][0],
   };
-
-  // handleProvinceChange = value => {
-  //   this.setState({
-  //     cities: cityData[value],
-  //     secondCity: cityData[value][0],
-  //   });
-  // };
-
-  // onSecondCityChange = value => {
-  //   this.setState({
-  //     secondCity: value,
-  //   });
-  // };
 
   handleopenClick = () => {
     this.setState({
@@ -116,7 +114,7 @@ class HostEdit extends Component {
           onOk={this.handleOk}
         >
           <Form {...formItemLayout}>
-            <Form.Item label="id">
+            <Form.Item label="数据主键">
               {getFieldDecorator('id', {
                 initialValue: id,
               })(<Input placeholder="请输入" disabled />)}
@@ -134,7 +132,20 @@ class HostEdit extends Component {
               })(<Input placeholder="请输入" />)}
             </Form.Item>
 
-            <Form.Item label="主机IP">
+            <Form.Item label="机柜">
+              {getFieldDecorator('hostsCabinetId', {
+                rules: [
+                  {
+                    required,
+                    message: '请输入',
+                  },
+                ],
+                // initialValue: hostsCabinetId ? hostsCabinetId : '请选择',
+                initialValue: hostsCabinetId,
+              })(<Select>{cabinet}</Select>)}
+            </Form.Item>
+
+            <Form.Item label="ip地址">
               {getFieldDecorator('hostsIp', {
                 rules: [
                   {
@@ -155,7 +166,13 @@ class HostEdit extends Component {
                   },
                 ],
                 initialValue: hostsZoneId,
-              })(<Input placeholder="请输入" />)}
+              })(
+                <Radio.Group>
+                  <Radio value="1">安全接入区</Radio>
+                  <Radio value="2">二区</Radio>
+                  <Radio value="3">三区</Radio>
+                </Radio.Group>,
+              )}
             </Form.Item>
 
             <Form.Item label="主机排序">
@@ -180,42 +197,7 @@ class HostEdit extends Component {
                 ],
                 // initialValue: hostsOsId ? hostsOsId : '请选择',
                 initialValue: hostsOsId,
-              })(
-                // <Select
-                //   defaultValue={provinceData[0]}
-                //   style={{ width: 400 }}
-                //   onChange={this.handleProvinceChange}
-                // >
-                //   {provinceData.map(province => (
-                //     <Option key={province}>{province}</Option>
-                //   ))}
-                // </Select>,
-                <Input placeholder="请输入"></Input>,
-              )}
-            </Form.Item>
-
-            <Form.Item label="机柜">
-              {getFieldDecorator('hostsCabinetId', {
-                rules: [
-                  {
-                    required,
-                    message: '请输入',
-                  },
-                ],
-                // initialValue: hostsCabinetId ? hostsCabinetId : '请选择',
-                initialValue: hostsCabinetId,
-              })(
-                // <Select
-                //   style={{ width: 400 }}
-                //   value={this.state.secondCity}
-                //   onChange={this.onSecondCityChange}
-                // >
-                //   {cities.map(city => (
-                //     <Option key={city}>{city}</Option>
-                //   ))}
-                // </Select>,
-                <Input placeholder="请输入"></Input>,
-              )}
+              })(<Select>{systemData}</Select>)}
             </Form.Item>
 
             <Form.Item label="主机备注">
@@ -230,7 +212,7 @@ class HostEdit extends Component {
               })(<Input placeholder="请输入" />)}
             </Form.Item>
 
-            <Form.Item label="状态">
+            <Form.Item label="主机状态">
               {getFieldDecorator('hostsStatus', {
                 rules: [
                   {

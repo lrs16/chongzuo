@@ -54,14 +54,7 @@ class ProcessEdit extends Component {
     const { children, title } = this.props;
     const { getFieldDecorator } = this.props.form;
     const required = true;
-    const { 
-      id,
-      createUser,
-      updateTime,
-      courseCode,
-      courseName,
-      courseRemark,
-    } = this.props.record;
+    const { id, createUser, updateTime, courseCode, courseName, courseRemark } = this.props.record;
 
     return (
       <>

@@ -75,7 +75,10 @@ const errorHandler = error => {
       });
     }
 
-    if (status >= 403 && status < 422) {
+    if (status === 403) {
+      window.location.pathname = '/user/login';
+    }
+    if (status >= 404 && status < 422) {
       router.push('/404');
     }
   } else if (!response) {

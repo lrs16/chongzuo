@@ -22,6 +22,13 @@ export async function removeUsers(userId) {
   });
 }
 
+export async function removeHostInfo(id) {
+  // const hostid = stringify(id);
+  return request(`/auto/hosts/${id}`, {
+    method: 'DELETE',
+  });
+}
+
 // 查询用户
 export async function SearchUsers(params) {
   return request(`/upms/user/listPage`, {

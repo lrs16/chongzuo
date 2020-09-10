@@ -33,13 +33,14 @@ class UserRole extends Component {
 
   handleChange = rolelist => {
     this.setState({ rolelist });
+    // console.log(this.state.rolelist + 'pp');
   };
 
   handleOk = () => {
     const { dispatch } = this.props;
     const { userId } = this.props;
     const rolevalue = this.state.rolelist;
-    // console.log(menuvalue);
+    console.log(rolevalue);
     return dispatch({
       type: 'userrole/unpdaterole',
       payload: { userId, rolevalue },
@@ -78,6 +79,7 @@ class UserRole extends Component {
       userName,
       userrole: { sysrole, userrole },
     } = this.props;
+
     //  console.log(sysrole,userrole);
     return (
       <>
@@ -96,7 +98,6 @@ class UserRole extends Component {
             openloading={loading}
             UpdateRole={this.handleChange}
           />
-
           <div
             style={{
               position: 'absolute',
