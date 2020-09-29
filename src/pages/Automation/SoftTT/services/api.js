@@ -42,21 +42,53 @@
 //     body: JSON.stringify(params),
 //   });
 // }
+// 软件
+export async function searchSofts(params) {
+  return request(`/auto/softwares/listPage`, {
+    method: 'POST',
+    body: JSON.stringify(params),
+  });
+}
 
-// export async function hostShuttlebox(hostId) {
-//   return request(`/auto/hosts/getSoftwaresByHostId/${hostId}`);
-// }
+export async function rightShuttlebox(hostId) {
+  return request(`/auto/hosts/getSoftwaresByHostId/${hostId}`);
+}
 
-// export async function softShuttlebox(hostId) {
-//   return request(`/auto/hosts/getSoftwaresByHostIdNotExist/${hostId}`);
-// }
+export async function updatehostrole(hostId,sofvalue) {
+  return request(`/auto/hosts/${hostId}/softwareIds`,{
+    method:'POST',
+    body: JSON.stringify(sofvalue),
+  });
+}
+// 软件
+export async function softleftShuttle(params) {
+  return request(`/auto/courses/listPage`, {
+    method: 'POST',
+    body: JSON.stringify(params),
+  });
+}
 
-// export async function updatehostrole(hostId,sofvalue) {
-//   return request(`/auto/hosts/${hostId}/softwareIds`,{
-//     method:'POST',
-//     body: JSON.stringify(sofvalue),
-//   });
-// }
+export async function softrightShuttle(softId) {
+  return request(`/auto/softwares/getCoursesBySoftId/${softId}`);
+}
+
+export async function updatesoftrole(softwareId,coursevalue) {
+  return request(`/auto/softwares/${softwareId}/courseIds`,{
+    method:'POST',
+    body: JSON.stringify(coursevalue)
+  })
+}
+
+// 进程的接口
+// 列表
+export async function searchProcess(params) {
+  return request(`/auto/courses/listPage`, {
+    method: 'POST',
+    body: JSON.stringify(params),
+  });
+}
+
+
 
 // // 软件的接口
 // //列表
@@ -95,20 +127,11 @@
 //   });
 // }
 
-// export async function softShuttle() {
-//   return request(`/api/softShuttle`);
-// }
 
 // export async function processShuttlebox() {
 //   return request(`/api/processShuttlebox`);
 // }
 
-// export async function updatesoftrole(softwareId,coursevalue) {
-//   return request(`/auto/softwares/${softwareId}/courseIds`,{
-//     method:'POST',
-//     body: JSON.stringify(coursevalue)
-//   })
-// }
 
 // // export async function updatehostrole(hostId,sofvalue) {
 // //   return request(`/auto/hosts/${hostId}/softwareIds`,{

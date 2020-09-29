@@ -4,6 +4,7 @@ import {
   addProcess,
   removeProcess,
   editeProcess,
+  batchAddprocess
 } from '../services/host';
 
 export default {
@@ -21,6 +22,7 @@ export default {
         payload: response,
       });
     },
+
     // 查询数据
     *search({ payload }, { call, put }) {
       const response = yield call(searchProcess, payload);
@@ -29,6 +31,13 @@ export default {
         payload: response,
       });
     },
+
+    //批量添加数据
+    *batchAddprocess({ payload }, { call, put }) {
+      console.log(payload,'flolo');
+      return yield call(batchAddprocess, payload);
+    },
+
     // 编辑表格数据
     *edite({ payload }, { call }) {
       return yield call(editeProcess, payload);

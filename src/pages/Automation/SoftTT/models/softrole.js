@@ -1,93 +1,102 @@
 import {
-  hostShuttlebox,
-  softShuttlebox,
+  rightShuttlebox,
   updatehostrole,
-  softShuttle,
-  processShuttlebox,
+  softleftShuttle,
+  softrightShuttle,
   updatesoftrole,
+  searchSofts,
+  searchProcess
 } from '../services/api';
-// import Mock from "mockjs";
-// const Random = Mock.Random;
-// function fakeList(count) {
-//   const list = [];
-//   for (let i = 0; i < count; i += 1) {
-//     list.push({
-//       id: Random.integer(1, 100),
-//       roleCode: Random.character(),
-//       roleName: Random.csentence( 1, 3 ),
-//     });
-//   }
-//   return list;
-// }
 
 export default {
   namespace: 'softrole',
 
   state: {
-    hostrole: [],
-    softrole: [],
+    leftbox: [],
+    rightdata: [],
     jurisdiction: [],
-    softdata: [],
+    softleftdata: [],
     processList: [],
   },
 
   effects: {
-    //获取主机权限的列表
-    *hostShuttlebox({ payload: { hostId } }, { call, put }) {
-      const response = yield call(hostShuttlebox, hostId);
-      yield put({
-        type: 'show',
-        payload: response,
-      });
-    },
 
-    //获取软件权限的列表
-    *softShuttlebox({ payload: { hostId } }, { call, put }) {
-      const response = yield call(softShuttlebox, hostId);
+    // 右边穿梭框的数据
+    *rightShuttlebox({ payload: { hostId } }, { call, put }) {
+      const response = yield call(rightShuttlebox, hostId);
       yield put({
         type: 'hostdatas',
         payload: response,
       });
     },
 
-    //更新权限
-    *updatehostrole({ payload: { hostId, softvalue } }, { call, put }) {
-      return yield call(updatehostrole, hostId, softvalue);
+// 左边
+    *fetchsoft({ payload }, { call, put }) {
+      const response = yield call(searchSofts, payload);
+      yield put({
+        type: 'softlist',
+        payload: response,
+      });
     },
 
-    *softShuttle({ payload }, { call, put }) {
-      const response = yield call(softShuttle, payload);
+    //更新权限
+    *updatehostrole({ payload: { hostId, softvalue } }, { call, put }) {
+      console.log(hostId,softvalue,'ghgh');
+      return yield call(updatehostrole, hostId, softvalue);
+    },
+// 软件左边穿梭框
+    *softleftShuttle({ payload }, { call, put }) {
+      const response = yield call(softleftShuttle, payload);
       yield put({
         type: 'softdata',
         payload: response,
       });
     },
-
-    *processShuttlebox({ payload }, { call, put }) {
-      const response = yield call(processShuttlebox, payload);
+// 软件右边穿梭框
+    *softrightShuttle({ payload : {softId} }, { call, put }) {
+      const response = yield call(softrightShuttle, softId);
       yield put({
         type: 'processList',
         payload: response,
       });
     },
+    // 软件穿梭框里的分页
+    *search({ payload }, { call, put }) {
+      const response = yield call(searchProcess, payload);
+      yield put({
+        type: 'show',
+        payload: response,
+      });
+    },
+
     //更新软件权限
     *updatesoftrole({ payload: { softwareId, coursevalue } }, { call }) {
+      console.log(softwareId, coursevalue,'jjjj');
       return yield call(updatesoftrole, softwareId, coursevalue);
     },
   },
 
   reducers: {
-    show(state, action) {
+    // softlist(state, action) {
+    //   return {
+    //     ...state,
+    //     leftbox: action.payload.data,
+    //   };
+    // },
+    // 主机
+    // 左边的数据
+    softlist(state, action) {
       return {
         ...state,
-        hostrole: action.payload,
+        leftbox: action.payload.data,
       };
     },
 
+    // 右边的数据
     hostdatas(state, action) {
       return {
         ...state,
-        softrole: action.payload,
+        rightdata: action.payload.data,
       };
     },
 
@@ -95,14 +104,14 @@ export default {
     softdata(state, action) {
       return {
         ...state,
-        softdata: action.payload,
+        softleftdata: action.payload.data,
       };
     },
 
     processList(state, action) {
       return {
         ...state,
-        processList: action.payload,
+        processList: action.payload.data,
       };
     },
   },

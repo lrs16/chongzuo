@@ -6,6 +6,7 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import SoftEdit from './components/SoftEdit';
 // import SoftProcess from './components/Soft_Process';
 import HostSoft from './components/Host_Soft';
+import BatchAdd from './components/BatchAdd';
 
 const { Search } = Input;
 
@@ -101,7 +102,7 @@ class SoftManage extends Component {
 
   changePage = page => {
     this.props.dispatch({
-      type: 'hostsoft/search',
+      type: 'hostsoft/searchSofts',
       payload: {
         queKey: this.state.queKey,
         page,
@@ -115,7 +116,7 @@ class SoftManage extends Component {
 
   onShowSizeChange = (current, pageSize) => {
     this.props.dispatch({
-      type: 'hostsoft/search',
+      type: 'hostsoft/searchSofts',
       payload: {
         queKey: this.state.queKey,
         page: current,
@@ -126,6 +127,13 @@ class SoftManage extends Component {
       this.setState({ pageSize });
     }, 0);
   };
+
+  // handleBatchadd = str => {
+  //   const { dispatch } = this.props;
+  //   return dispatch({
+  //     type:'hostsoft'
+  //   })
+  // }
 
   render() {
     const columns = [
@@ -178,10 +186,11 @@ class SoftManage extends Component {
             <HostSoft
               title="配置软件"
               softwareId={record.id}
+              softId={record.id}
               softName={record.hostName}
               loading={this.props.loading}
             >
-              <a type="link">配置软件</a>
+              <a type="link">配置进程</a>
             </HostSoft>
             <Divider type="vertical" />
             <SoftEdit onSumit={values => this.handleEdite(values)} title="编辑软件" record={record}>
@@ -223,6 +232,7 @@ class SoftManage extends Component {
               添加软件
             </Button>
           </SoftEdit>
+
           <Table
             columns={columns}
             dataSource={dataSource}

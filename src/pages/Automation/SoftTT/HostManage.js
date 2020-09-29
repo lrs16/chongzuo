@@ -1,14 +1,16 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
-import { Card, Table, Form, Input, Button, Message, Divider, Badge, Popconfirm } from 'antd';
+import { Card, Table, Form, Input, Button, Message, Divider, Badge, Popconfirm, Row, Col,Select  } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import HostEdit from './components/HostEdit';
 import HostSoft from './components/Host_Soft';
+import BatchAdd from './components/BatchAdd';
 
 const statusMap = ['default', 'success'];
 const status = ['停用', '在用'];
 const { Search } = Input;
+const { Option } = Select;
 
 @connect(({ hostsoft, loading }) => ({
   hostsoft,
@@ -54,7 +56,7 @@ class HostManage extends Component {
       },
     });
   };
-
+ 
   onShowSizeChange = (current, pageSize) => {
     this.props.dispatch({
       type: 'hostsoft/search',
@@ -144,6 +146,21 @@ class HostManage extends Component {
     });
   };
 
+  handleBatchadd = str => {
+    const { dispatch } = this.props;
+    return dispatch({
+      type:'hostsoft/batchAddhost',
+      payload: str,
+    }).then(res => {
+      if (res.code === 200) {
+        Message.success(res.msg);
+        this.getlist();
+      } else {
+        Message.error('批量添加主机失败');
+      }
+    });
+  }
+
   render() {
     const {
       // loading,
@@ -155,7 +172,7 @@ class HostManage extends Component {
       onShowSizeChange: (current, pageSize) => this.onShowSizeChange(current, pageSize),
       current: this.state.current,
       pageSize: this.state.pageSize,
-      // total: data.total,
+      total: hostdata.total,
       onChange: page => this.changePage(page),
     };
 
@@ -222,12 +239,12 @@ class HostManage extends Component {
         render: (text, record) => (
           <div>
             <HostSoft
-              title="配置主机 "
+              title="配置软件"
               hostId={record.id}
               hostName={record.hostsName}
               loading={this.props.loading}
             >
-              <a type="link">配置主机</a>
+              <a type="link">配置软件</a>
             </HostSoft>
             <Divider type="vertical" />
             <HostEdit
@@ -250,18 +267,46 @@ class HostManage extends Component {
     return (
       <PageHeaderWrapper title="主机管理">
         <Card>
+          <Row>
           <Form style={{ float: 'right', width: '30%' }}>
             <Search placeholder="请输入关键字" onSearch={values => this.handleSearch(values)} />
           </Form>
-          <HostEdit onSumit={this.handleUpdate}>
-            <Button
-              style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
-              type="dashed"
-              icon="plus"
-            >
-              添加主机
-            </Button>
-          </HostEdit>
+          </Row>
+          <Row gutter={16}>
+            <Col  className="gutter-row" span={12}>
+              <div>
+                <HostEdit  onSumit={this.handleUpdate}>
+                  <Button
+                    style={{ width:'100%',margin:'16px 0 8px 0'}}
+                    type="dashed"
+                    icon="plus"
+                  >
+                    添加主机
+                  </Button>
+                </HostEdit>
+              </div>
+            </Col>
+
+            <Col className="gutter-row" span={12}> 
+              <div>
+                <BatchAdd
+                  hostId='hostId'
+                  onsumitBatch={str => this.handleBatchadd(str)}
+                >
+                  <Button
+                    style={{ width:'100%',margin:'16px 0 8px 0'}}
+                    type="dashed"
+                    icon="plus"
+                  >
+                    批量添加
+                  </Button>
+                </BatchAdd>
+              </div>
+            </Col>
+          </Row>
+          
+          
+        
           <Table
             columns={columns}
             dataSource={dataSource}
@@ -269,7 +314,10 @@ class HostManage extends Component {
             pagination={pagination}
             scroll={{ x: 1500 }}
           />
+           
+          
         </Card>
+        
       </PageHeaderWrapper>
     );
   }

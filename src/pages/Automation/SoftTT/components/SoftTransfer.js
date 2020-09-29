@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'dva';
 import { Transfer, Spin, Table } from 'antd';
 import difference from 'lodash/difference';
 
@@ -7,10 +8,10 @@ const leftTableColumns = [
     dataIndex: 'title',
     title: '名称',
   },
-  {
-    dataIndex: 'hostcode',
-    title: '编码',
-  },
+  // {
+  //   dataIndex: 'hostcode',
+  //   title: '编码',
+  // },
 ];
 
 const rightTableColumns = [
@@ -18,12 +19,15 @@ const rightTableColumns = [
     dataIndex: 'title',
     title: '名称',
   },
-  {
-    dataIndex: 'hostcode',
-    title: '编码',
-  },
+  // {
+  //   dataIndex: 'hostcode',
+  //   title: '编码',
+  // },
 ];
-
+@connect(({ softrole, loading }) => ({
+  softrole,
+  loading: loading.models.softrole,
+}))
 class SoftTransfer extends Component {
   state = {
     targetKeys: [],
@@ -31,20 +35,13 @@ class SoftTransfer extends Component {
     pageSize: 10,
   };
 
-  // componentWillReceiveProps() {
-  //   this.gettargetData();
-  // }
-  componentDidMount() {
+  componentWillReceiveProps() {
     this.gettargetData();
   }
 
   gettargetData = () => {
-    const targetData = this.sort(
-      this.props.hostId ? this.props.softrole : this.props.softwareId ? this.props.processList : '',
-    );
-    this.setState({
-      targetKeys: targetData,
-    });
+    const targetData = this.sort(this.props.hostId?this.props.rightrole:this.props.softId?this.props.processList:'');
+    this.setState({targetKeys: targetData});
   };
 
   handleChange = targetdata => {
@@ -64,7 +61,7 @@ class SoftTransfer extends Component {
       const vote = {};
       vote.id = datas[i].id;
       vote.key = datas[i].id;
-      vote.title = datas[i].roleName;
+      vote.title = datas[i].softwareName?datas[i].softwareName:datas[i].courseName;
       vote.hostcode = datas[i].roleCode;
       newArr.push(vote);
     }
@@ -86,7 +83,7 @@ class SoftTransfer extends Component {
   renderItem = item => {
     const hostLable = (
       <span>
-        {item.title} - {item.hostcode}
+        {item.title}
       </span>
     );
     return {
@@ -95,37 +92,21 @@ class SoftTransfer extends Component {
     };
   };
 
-  onShowSizeChange = (current, pageSize) => {
-    // this.props.dispatch({
-
-    // });
-    setTimeout(() => {
-      this.setState({ pageSize });
-    }, 0);
-  };
-
-  changePage = page => {
-    // this.props.dispatch({
-
-    // });
-    setTimeout(() => {
-      this.setState({ current: page });
-    }, 0);
-  };
-
   render() {
     const dataSource = this.addArr(
-      this.props.hostId ? this.props.hostrole : this.props.softwareId ? this.props.softdata : '',
+      this.props.hostId?this.props.leftrole:this.props.softId?this.props.softdata:''
     );
     const { targetKeys } = this.state;
+
     const pagination = {
       showSizeChanger: true,
       onShowSizeChange: (current, pageSize) => this.onShowSizeChange(current, pageSize),
       current: this.state.current,
       pageSize: this.state.pageSize,
+      // total:leftbox.total,
       onChange: page => this.changePage(page),
     };
-    const TableTransfer = ({ leftColumns, rightColumns, ...restProps }) => (
+    const TableTransfer = ({ leftColumns, rightColumns,...restProps}) => (
       <Transfer {...restProps} showSelectAll={false}>
         {({
           direction,
@@ -137,7 +118,7 @@ class SoftTransfer extends Component {
         }) => {
           const columns = direction === 'left' ? leftColumns : rightColumns;
           const rowSelection = {
-            getCheckboxProps: item => ({ disabled: listDisabled || item.disabled }),
+            // getCheckboxProps: item => ({ disabled: listDisabled || item.disabled }),
             onSelectAll(selected, selectedRows) {
               const treeSelectedKeys = selectedRows
                 .filter(item => !item.disabled)
@@ -166,7 +147,7 @@ class SoftTransfer extends Component {
                   onItemSelect(key, !listSelectedKeys.includes(key));
                 },
               })}
-              pagination={pagination}
+              // pagination={pagination}
             />
           );
         }}
@@ -175,6 +156,7 @@ class SoftTransfer extends Component {
     return (
       <Spin spinning={this.props.openloading}>
         <TableTransfer
+           titles={['未分配', '已分配']}
           dataSource={dataSource}
           targetKeys={targetKeys}
           // showSearch={showSearch}
@@ -183,11 +165,12 @@ class SoftTransfer extends Component {
           rightColumns={rightTableColumns}
           listStyle={{
             width: 300,
-            height: 500,
+            height: 700,
           }}
         ></TableTransfer>
       </Spin>
     );
+   
   }
 }
 

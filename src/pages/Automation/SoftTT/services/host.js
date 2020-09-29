@@ -30,6 +30,15 @@ export async function removeHostInfo(id) {
   });
 }
 
+//批量添加主机
+export async function batchAddhost(params) {
+  return request(`/auto/hosts/batchSave`,{
+    method:'POST',
+    data: params,
+    requestType: 'form',
+  });
+}
+
 // // 软件的接口
 // 列表和搜索
 export async function searchSofts(params) {
@@ -88,5 +97,13 @@ export async function editeProcess(params) {
   return request(`/auto/courses`, {
     method: 'PUT',
     body: JSON.stringify(params),
+  });
+}
+
+export async function batchAddprocess(params){
+  return request(`/auto/courses/batchSave`,{
+    method: 'POST',
+    data:params,
+    requestType: 'form',
   });
 }

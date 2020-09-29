@@ -16,18 +16,23 @@ class HostSoft extends Component {
     visible: false,
     softlist: [],
     courselist: [],
+    current: 1,
+    pageSize: 20,
+    queKey: '',
   };
 
   showDrawer = () => {
     this.setState({
       visible: true,
     });
-    if (this.props.hostId) {
-      this.loadsoftData();
-      this.loadhostData();
-    } else if (this.props.softwareId) {
-      this.loadsoftList();
-      this.loadprocessList();
+    const { hostId } = this.props;
+    const { softId } = this.props;
+    if(hostId) {
+      this.loadleftData();
+      this.loadrightData();
+    } else if(softId) {
+      this.loadsoftleftList(); 
+      this.loadsoftrightList();
     }
   };
 
@@ -41,13 +46,20 @@ class HostSoft extends Component {
     this.setState({ softlist });
   };
 
+  // handleChange = rolelist => {
+  //   console.log('oo');
+  //   this.setState({ rolelist });
+  //   // console.log(this.state.rolelist + 'pp');
+  // };
+
   handleOk = () => {
     const { dispatch } = this.props;
     const { hostId } = this.props;
+    const { softId } = this.props;
     const { softwareId } = this.props;
     const softvalue = this.state.softlist;
     const coursevalue = this.state.softlist;
-    if (this.props.hostId) {
+    if (hostId) {
       return dispatch({
         type: 'softrole/updatehostrole',
         payload: { hostId, softvalue },
@@ -59,7 +71,7 @@ class HostSoft extends Component {
           Message.error('配置权限失败');
         }
       });
-    } else if (this.props.softwareId) {
+    }  else if (softwareId) {
       return dispatch({
         type: 'softrole/updatesoftrole',
         payload: { softwareId, coursevalue },
@@ -74,49 +86,116 @@ class HostSoft extends Component {
     }
   };
 
-  loadhostData = () => {
+  loadleftData = () => {
+    const page = this.state.current;
+    const limit = this.state.pageSize;
+    const { queKey } = this.state;
     const { dispatch } = this.props;
     const { hostId } = this.props;
     dispatch({
-      type: 'softrole/hostShuttlebox',
+      type: 'softrole/fetchsoft',
+      payload: {
+        page,
+        limit,
+        queKey,
+      },
+    });
+  };
+
+  loadrightData = () => {
+    const { hostId } = this.props;
+    const { dispatch } = this.props;
+    return dispatch({
+      type: 'softrole/rightShuttlebox',
       payload: { hostId },
     });
   };
 
-  loadsoftData = () => {
-    const { hostId } = this.props;
-    const { dispatch } = this.props;
-    return dispatch({
-      type: 'softrole/softShuttlebox',
-      payload: { hostId },
-    });
-  };
-
-  //软件进程的主机列表
-  loadsoftList = () => {
+  //软件进程的进程列表
+  loadsoftleftList = () => {
+    const page = this.state.current;
+    const limit = this.state.pageSize;
+    const { queKey } = this.state;
     const { dispatch } = this.props;
     dispatch({
-      type: 'softrole/softShuttle',
+      type: 'softrole/softleftShuttle',
+      payload:{
+        page,
+        limit,
+        queKey
+      }
     });
   };
 
-  loadprocessList = () => {
+  loadsoftrightList = () => {
     const { dispatch } = this.props;
-    const { softwareId } = this.props;
+    const { softId } = this.props;
     return dispatch({
-      type: 'softrole/processShuttlebox',
-      payload: { softwareId },
+      type: 'softrole/softrightShuttle',
+      payload: { softId },
     });
   };
 
-  // loadsofts = () => {
-  //   const { roleId } = this.props;
-  //   const { dispatch } = this.props;
-  //   return dispatch({
-  //     type: 'rolemenu/querymune',
-  //     payload: { roleId },
-  //   });
+  onShowSizeChange = (current, pageSize) => {
+    if(this.props.hostId){
+      this.props.dispatch({
+        type: 'softrole/fetchsoft',
+        payload: {
+          queKey: this.state.queKey,
+          page: current,
+          limit: pageSize,
+        },
+        },
+      );
+      setImmediate(() => {
+        this.setState({ pageSize });
+      },0)
+      
+    } 
+  };
+    // else if(this.props.softId) {
+    //   this.props.dispatch({
+    //     type: 'softrole/softleftShuttle',
+    //     payload: {
+    //       queKey: this.state.queKey,
+    //       page: current,
+    //       limit: pageSize,
+    //     },
+    //     },
+    //   );
+    // }
+  //   setTimeout(() => {
+  //     this.setState({ pageSize });
+  //   }, 0);
   // };
+
+  changePage = (page) => {
+    if (this.props.hostId) {
+      this.props.dispatch({
+        type: 'softrole/fetchsoft',
+        payload: {
+          queKey: this.state.queKey,
+          page,
+          limit: this.state.pageSize,
+        },
+      });
+      setTimeout(() => {
+        this.setState({ current: page });
+      }, 0);
+    } else if (this.props.softId){
+      this.props.dispatch({
+        type: 'softrole/search',
+        payload: {
+          queKey: this.state.queKey,
+          page,
+          limit: this.state.pageSize,
+        },
+      });
+      setTimeout(() => {
+        this.setState({ current: page });
+      }, 0);
+    }
+  };
 
   render() {
     const { visible } = this.state;
@@ -125,11 +204,13 @@ class HostSoft extends Component {
       children,
       title,
       hostId,
-      hostName,
+      softId,
       softwareId,
-      softrole: { hostrole, softrole, softdata, processList },
+      softrole: { leftbox, rightdata, softleftdata, processList },
     } = this.props;
-
+    const leftdata = leftbox.rows;
+    const softdata = softleftdata.rows;
+    const total = leftdata;
     return (
       <>
         {withClick(children, this.showDrawer)}
@@ -143,14 +224,18 @@ class HostSoft extends Component {
           //  key={roleId}
         >
           <SoftTransfer
-            hostrole={hostrole}
-            softrole={softrole}
+            total={total}
+            leftrole={leftdata}
+            rightrole={rightdata}
             softdata={softdata}
             processList={processList}
             openloading={loading}
             hostId={hostId}
-            softwareId={softwareId}
+            softId={softId}
             UpdateRole={this.handleChange}
+            onShowSizeChange={this.onShowSizeChange}
+            changePage={this.changePage}
+
           />
           <div
             style={{

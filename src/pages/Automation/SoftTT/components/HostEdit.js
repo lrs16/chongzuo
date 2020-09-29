@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Form, Input, Modal, Radio, Select } from 'antd';
+import { Form, Input, Button, Radio, Select,Drawer,message } from 'antd';
+import { ip_reg } from '../../../../utils/Regexp';
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
@@ -61,6 +62,31 @@ class HostEdit extends Component {
   handleOk = () => {
     this.props.form.validateFields((err, values) => {
       if (!err) {
+        // if((values.hostsIp).trim() == "")
+        // {
+        //   message.info('不能输入空的IP地址');
+        //   return false;
+        // }
+     
+        // var ss = (values.hostsIp).split(".");
+        // var result = ss.map(Number);
+     
+        // if(ss.length != 4)
+        // {
+        //   message.info('请输入有效的IP地址');
+        //    return false;
+        // }
+     
+        // var i=0;
+        // for(i=0;i<result.length;i++) {
+        //   console.log(typeof(result[i]));
+        //   console.log(isNaN(result[i]),'isnan');
+        //   if ( isNaN(result[i]) || parseInt(result[i]) < 0 || parseInt(result[i])>255) {
+        //      message.info('请输入有效的IP地址');
+        //      return false;
+        //    }
+        // }
+       
         // 关闭弹窗
         this.hanldleCancel();
         // 传数据
@@ -70,6 +96,17 @@ class HostEdit extends Component {
       }
     });
   };
+
+  validatorPwd = (rule,value,callback) => {
+    if(value && rule.pattern && !value.match(rule.pattern)){
+      callback(rule.message);
+    }else {
+      callback();
+    }
+   
+    
+
+  }
 
   //   formateDate = (datetime) => {
   //     function addDateZero(num) {
@@ -105,13 +142,13 @@ class HostEdit extends Component {
     return (
       <>
         {withClick(children, this.handleopenClick)}
-        <Modal
+        <Drawer
           title={title}
           visible={visible}
+          width={720}
           centered
-          maskClosable={false}
-          onCancel={this.hanldleCancel}
-          onOk={this.handleOk}
+          maskClosable={true}
+          onClose={this.hanldleCancel}
         >
           <Form {...formItemLayout}>
             <Form.Item label="数据主键">
@@ -136,13 +173,15 @@ class HostEdit extends Component {
               {getFieldDecorator('hostsCabinetId', {
                 rules: [
                   {
-                    required,
+                    // required,
                     message: '请输入',
                   },
                 ],
                 // initialValue: hostsCabinetId ? hostsCabinetId : '请选择',
                 initialValue: hostsCabinetId,
-              })(<Select>{cabinet}</Select>)}
+              })(<Select
+                   getPopupContainer={triggerNode => triggerNode.parentNode}
+                 >{cabinet}</Select>)}
             </Form.Item>
 
             <Form.Item label="ip地址">
@@ -150,7 +189,12 @@ class HostEdit extends Component {
                 rules: [
                   {
                     required,
-                    message: '请输入',
+                    message: 'IP地址不能为空',
+                  },
+                  {
+                    pattern:ip_reg,
+                    validator:this.validatorPwd,
+                    message:'请输入正确的IP地址'
                   },
                 ],
                 initialValue: hostsIp,
@@ -184,20 +228,22 @@ class HostEdit extends Component {
                   },
                 ],
                 initialValue: hostsSort,
-              })(<Input placeholder="请输入" />)}
+              })(<Input  type='number' placeholder="请输入" />)}
             </Form.Item>
 
             <Form.Item label="主机操作系统">
               {getFieldDecorator('hostsOsId', {
                 rules: [
                   {
-                    required,
+                    // required,
                     message: '请输入',
                   },
                 ],
                 // initialValue: hostsOsId ? hostsOsId : '请选择',
                 initialValue: hostsOsId,
-              })(<Select>{systemData}</Select>)}
+              })(<Select
+                   getPopupContainer={triggerNode => triggerNode.parentNode}
+                   >{systemData}</Select>)}
             </Form.Item>
 
             <Form.Item label="主机备注">
@@ -229,13 +275,34 @@ class HostEdit extends Component {
               )}
             </Form.Item>
           </Form>
-        </Modal>
+          <div
+            style={{
+              position: 'absolute',
+              right: 0,
+              bottom: 0,
+              width: '100%',
+              borderTop: '1px solid #e9e9e9',
+              padding: '10px 16px',
+              background: '#fff',
+              textAlign: 'right',
+            }}
+          >
+            <Button onClick={this.hanldleCancel} style={{ marginRight: 8 }}>
+              取消
+            </Button>
+            <Button onClick={this.handleOk} type="primary">
+              确定
+            </Button>
+
+            
+          </div>
+        </Drawer>
       </>
     );
   }
 }
 HostEdit.defaultProps = {
-  title: '添加硬件',
+  title: '添加主机',
   record: {
     id: '',
     hostsName: '',

@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
-import { Card, Table, Form, Input, Button, Message, Divider, Popconfirm } from 'antd';
+import { Card, Table, Form, Input, Button, Message, Divider, Popconfirm,Row,Col } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProcessEdit from './components/ProcessEdit';
+import BatchAdd from './components/BatchAdd';
 
 const { Search } = Input;
 
@@ -125,6 +126,21 @@ class ProcessManage extends Component {
     });
   };
 
+  handleBatchadd = str => {
+    const { dispatch } = this.props;
+    return dispatch({
+      type:'upmsprocess/batchAddprocess',
+      payload: str,
+    }).then(res => {
+      if(res.code === 200) {
+        Message.success(res.msg);
+        this.getlist();
+      }else {
+        Message.error('批量添加进程失败')
+      }
+    });
+  }
+
   render() {
     const columns = [
       {
@@ -197,23 +213,46 @@ class ProcessManage extends Component {
     return (
       <PageHeaderWrapper title="进程管理">
         <Card>
-          <Form style={{ float: 'right', width: '30%' }}>
-            <Search
-              placeholder="请输入关键字"
-              allowClear
-              onSearch={values => this.handleSearch(values)}
-            />
-            ,
-          </Form>
-          <ProcessEdit onSumit={values => this.handleAdd(values)}>
-            <Button
-              style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
-              type="dashed"
-              icon="plus"
-            >
-              添加进程
-            </Button>
-          </ProcessEdit>
+          <Row>
+            <Form style={{ float: 'right', width: '30%' }}>
+              <Search
+                placeholder="请输入关键字"
+                allowClear
+                onSearch={values => this.handleSearch(values)}
+              />
+              ,
+            </Form>
+          </Row>
+          <Row gutter={16}>
+            <Col className="gutter-row" span={12}>
+              <div>
+                <ProcessEdit onSumit={values => this.handleAdd(values)}>
+                  <Button
+                    style={{ width:'100%',margin:'16px 0 8px 0'}}
+                    type="dashed"
+                    icon="plus"
+                  >
+                    添加进程
+                  </Button>
+                </ProcessEdit>
+              </div>
+            </Col>
+            <Col className="gutter-row" span={12}>
+              <div>
+                <BatchAdd
+                processId='processId'
+                onsumitBatchprocess={str => this.handleBatchadd(str)}
+                >
+                  <Button
+                    style={{width:'100%',margin:'16px 0 8px 0'}}
+                    type='dashed'
+                    icon='plus'>
+                    批量添加
+                  </Button>
+                </BatchAdd>
+              </div>
+            </Col>
+          </Row>
           <Table
             columns={columns}
             dataSource={dataSource}

@@ -38,11 +38,13 @@ class RoleTransfer extends Component {
       vote.rolecode = datas[i].roleCode;
       newArr.push(vote);
     }
+    console.log(newArr,'oo');
     return newArr;
   };
 
   // 转换targetData数组
   sort = data => {
+    // console.log(data);
     const result = [];
     if (!Array.isArray(data)) {
       return result;
@@ -67,7 +69,9 @@ class RoleTransfer extends Component {
 
   render() {
     const dataSource = this.addArr(this.props.sysrole);
+    // console.log(dataSource);
     const { targetKeys } = this.state;
+    // console.log(targetKeys);
     return (
       <Spin spinning={this.props.openloading}>
         <Transfer

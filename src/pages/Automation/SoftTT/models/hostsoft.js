@@ -7,6 +7,8 @@ import {
   querySaveSoft,
   queryEditSoft,
   queryRemoveSoft,
+  batchAddhost,
+  batchAddprocess
 } from '../services/host';
 
 export default {
@@ -18,6 +20,7 @@ export default {
   },
 
   effects: {
+    // 主机
     *fetchhost({ payload }, { call, put }) {
       const response = yield call(myHosts, payload);
       yield put({
@@ -44,6 +47,10 @@ export default {
 
     *remove({ payload: { id } }, { call }) {
       return yield call(removeHostInfo, id);
+    },
+    *batchAddhost({payload}, { call }) {
+      console.log(payload,'ll');
+      return yield call(batchAddhost, payload);
     },
     // 软件的接口
     *fetchsoft({ payload }, { call, put }) {
