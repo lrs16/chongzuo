@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Form, Input, Modal, Button,Icon } from 'antd';
+import { Form, Input, Modal, Button,Icon, message } from 'antd';
+import { ip_reg } from '@/utils/Regexp';
 
 // 克隆子元素按钮，并添加事件
 const withClick = (element, handleClick = () => {}) => {
@@ -62,9 +63,16 @@ class BatchAdd extends Component {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
+        // for(let i=0;i<(values.demo).length;i++){
+        //   if(((values.demo)[i]).match(ip_reg) instanceof Array){
+          
+        //   }else {
+        //     message.info('请输入正确的IP地址');
+        //     return ;
+        //   }
+        // }
+       
         const { keys, names,demo } = values;
-        console.log(names,'names');
-        console.log(demo,'demo');
         var i=0;
         var index = [];
         for(;i<names.length;i++){
@@ -109,6 +117,18 @@ class BatchAdd extends Component {
       }
     });
   };
+
+  validatorPwd = (rule,value,callback) => {
+    if(this.props.hostId){
+      if(value && rule.pattern && !value.match(rule.pattern)){
+        callback(rule.message);
+      }else {
+        callback();
+      } 
+    }else {
+      callback();
+    }
+  }
 
   render() {
     const { visible } = this.state;
@@ -176,6 +196,11 @@ class BatchAdd extends Component {
                   whitespace: true,
                   message: "请输入",
                 },
+                {
+                  pattern:ip_reg,
+                  validator: this.validatorPwd,
+                  message:'请输入正确的IP地址'
+                }
               ],
             })(<Input style={{ width: '90%'}} />)}
               {keys.length >= 1 ? (

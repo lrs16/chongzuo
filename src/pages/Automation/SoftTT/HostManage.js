@@ -9,6 +9,9 @@ import BatchAdd from './components/BatchAdd';
 
 const statusMap = ['default', 'success'];
 const status = ['停用', '在用'];
+const cabinet = ['A座机柜','B座机柜'];
+const operatSystem = ['window','linux'];
+const hostPart = ['安全接入区','二区','三区'];
 const { Search } = Input;
 const { Option } = Select;
 
@@ -207,16 +210,32 @@ class HostManage extends Component {
         title: '主机分区',
         dataIndex: 'hostsZoneId',
         key: 'hostsZoneId',
+        render: (text,record) => (
+          <span>
+            {hostPart[record.hostsZoneId]}
+          </span>
+        )
       },
       {
         title: '主机操作系统',
         dataIndex: 'hostsOsId',
         key: 'hostsOsId',
+        render:(text,record) => (
+          <span>
+            {operatSystem[record.hostsOsId]}
+          </span>
+        )
       },
       {
         title: '机柜',
         dataIndex: 'hostsCabinetId',
         key: 'hostsCabinetId',
+        render:(text,record) => (
+          <span>
+            {cabinet[record.hostsCabinetId]}
+          </span>
+        )
+        
       },
       {
         title: '主机备注',
