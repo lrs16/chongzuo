@@ -1,16 +1,20 @@
-import { queryHostShh2, queryHostShh2Search, queryHostShh2List, queryExecLog, queryExecLogDetail, queryHostShh2ExecCommand, queryHostEncryptStr } from '../services/api';
+import {
+  queryHostShh2,
+  queryHostShh2Search,
+  queryHostShh2List,
+  queryExecLog,
+  queryExecLogDetail,
+  queryHostShh2ExecCommand,
+  queryHostEncryptStr,
+} from '../services/api';
 // import mockjs from 'mockjs';
 
-const jxreq = {
-  des: '456456456456456123123123',
-};
 export default {
   namespace: 'softexetute',
 
   state: {
     list: [],
-    des: '',
-    execloglist: []
+    execloglist: [],
   },
 
   effects: {
@@ -18,15 +22,6 @@ export default {
       const response = yield call(queryHostShh2List, payload);
       yield put({
         type: 'save',
-        payload: response,
-      });
-    },
-    
-    *submitData({put }) {
-      // const response = yield call(querySoftExetute, payload);
-      const response = jxreq;
-      yield put({
-        type: 'savesubmit',
         payload: response,
       });
     },
@@ -49,10 +44,10 @@ export default {
         payload: response,
       });
     },
-    *getExeclogListDEtail({ payload: { id } }, { call}) {
+    *getExeclogListDEtail({ payload: { id } }, { call }) {
       return yield call(queryExecLogDetail, id);
     },
-    *getHostEncryptStr({ payload: { encryptStr } }, { call}) {
+    *getHostEncryptStr({ payload: { encryptStr } }, { call }) {
       return yield call(queryHostEncryptStr, encryptStr);
     },
   },
@@ -61,14 +56,7 @@ export default {
     save(state, action) {
       return {
         ...state,
-        list: action.payload,
-      };
-    },
-
-    savesubmit(state, action) {
-      return {
-        ...state,
-        des: action.payload,
+        list: action.payload.data,
       };
     },
 
