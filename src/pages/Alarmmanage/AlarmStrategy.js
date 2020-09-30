@@ -194,7 +194,7 @@ class AlarmStrategy extends Component {
         key: 'alarmTitle',
         render: (text, record) => (
           <span>
-            <Link to={`/alarmmanagy/alarmstrategy/strategyaddedit/${record.detailsid}`}>
+            <Link to={`/alarmmanage/alarmstrategy/strategyaddedit/${record.detailsid}`}>
               {text}
             </Link>
           </span>

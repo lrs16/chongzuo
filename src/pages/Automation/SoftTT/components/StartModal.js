@@ -1,9 +1,12 @@
+/* eslint-disable react/no-unused-state */
 /* eslint-disable no-useless-constructor */
 /* eslint-disable react/destructuring-assignment */
 import React, { Component } from 'react';
-import { Form, Input, Modal } from 'antd';
-
-var forge = require('node-forge');
+import { Form, Input, Modal, Checkbox, AutoComplete } from 'antd';
+// import { JSEncrypt } from 'jsencrypt/bin/jsencrypt';
+import { connect } from 'dva';
+import cookie from 'react-cookies';
+// const { Option } = Select;
 
 const formItemLayout = {
   labelCol: {
@@ -17,17 +20,35 @@ const formItemLayout = {
   colon: false,
 };
 
+const tailFormItemLayout = {
+  wrapperCol: {
+    xs: {
+      span: 24,
+      offset: 0,
+    },
+    sm: {
+      span: 20,
+      offset: 20,
+    },
+  },
+};
+
 // 克隆子元素按钮，并添加事件
 const withClick = (element, handleClick = () => {}) => {
   return <element.type {...element.props} onClick={handleClick} />;
 };
+
+@connect(({ softexetute, loading }) => ({
+  softexetute,
+  loading: loading.models.softexetute,
+}))
+
 class StartModal extends Component {
-  constructor(props) {
-    super(props);
-  }
 
   state = {
     visible: false,
+    // inputvalueList: ['10','20','30','40','50','60','70','80','90','100']
+    inputvalueList:[],
   };
 
   handleopenClick = () => {
@@ -37,52 +58,120 @@ class StartModal extends Component {
   };
 
   hanldleCancel = () => {
-    //取消按钮
+    // 取消按钮
     this.setState({
       visible: false,
     });
   };
 
-  handleOk = () => {
-    //确认按钮
+  handleSearch = () => {  // 用户名查询
+    // eslint-disable-next-line consistent-return
     this.props.form.validateFields((err, values) => {
+     
+      // if (!err) {
+        const {hostsIp,hostsSshUsername}= values;
+        if(hostsIp !== '' && hostsSshUsername !== '') {
+            const { dispatch } = this.props;
+            return dispatch({
+              type: 'softexetute/getByUserNameAndIp',
+              payload: {hostsIp, hostsSshUsername},
+            }).then(res => {
+              // console.log(res,"res");
+              if (res.code === 200 && res.data.MeterHostsSshEntity!=='' && res.data.MeterHostsSshEntity !==undefined) {
+                // setTimeout(()=>{
+                //   setFieldsValue({"username": "Tom"})
+                // },5000)
+                setTimeout(()=>{
+                  this.props.form.setFieldsValue({
+                    hostsSshPassword: res.data.MeterHostsSshEntity.hostsSshPasssalt, 
+                    command: res.data.historyExecStrList[0], 
+                  });// remember: true
+                },100)
+                
+                this.setState({
+                  // inputValue: res.data.meterHostsSshEntity,
+                  inputvalueList: res.data.historyExecStrList,
+                })
+              } else {
+                this.props.form.setFieldsValue({hostsSshPassword: '', command: '', });// remember: true
+              }
+          })
+        }
+      // }
+    
+    });
+  };
+
+  handleOk = () => {
+    // 确认按钮
+    this.props.form.validateFields((err, values) => {
+      
+      // console.log(values, "values")
       if (!err) {
         // 关闭弹窗
         this.hanldleCancel();
-
-        const md = forge.md.md5.create();
-        md.update(values.psw);
-        const password = md.digest().toHex();
-        // console.log(password, "password")
-
-        // 存储数据  sessionStorage
-        sessionStorage.setItem('ip', values.ip);
-        sessionStorage.setItem('port', values.port);
-        sessionStorage.setItem('username', values.username);
-        sessionStorage.setItem('psw', password);
-
-        // 传数据
-        this.props.onSumit(values); //提交表单
+        // 公钥
+        // const publicKey = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCfp4T5UK76SfSvn1wr4+PyStkHWONLVITZp5JLkFkHpiERchwShET+WVlLsbbgyt7Yt/boMoxr+XTD2NXd1gPvq11OU3dNYLE5hL2j8BCBw8EswkCbP+GgYdGF3FRw4eGURA4fcSO44IKuWtmtSyw7y1OMqzMUb6PROXrMFbrntQIDAQAB";
+        // // 加密
+        // const encrypt = new JSEncrypt();
+        // encrypt.setPublicKey(publicKey);
+        // const passWord = encrypt.encrypt(values.hostsSshPassword);
+        
+        const { dispatch } = this.props;
+        const encryptStr = values.hostsSshPassword;
+        // 密码加密请求
+        dispatch({
+          type: 'softexetute/getHostEncryptStr',
+          payload: { encryptStr },
+        }).then(res => {
+          if(res.code === 200) {
+            cookie.save('passWord', res.data);// 存入cookie
+          }
+        });
+        
+        const passWord = cookie.load('passWord');// 从cookie取出
+        const {hostsIp, hostsSshPort, hostsSshUsername, command, hostsSshPassword} = values;
+        const port = hostsSshPort;
+        const userName = hostsSshUsername;
+        const hostIp = hostsIp;
+         dispatch({
+            type: 'softexetute/getExecCommand',
+            payload: { passWord, hostIp, port, userName,command }
+          }).then(res => {
+            const commitlist = res;
+             if(res.code === 200)
+             this.props.onSumit(values,commitlist); // 提交表单
+          });
+        
+        if(values.remember === true) {
+          const hostsSshPasssalt = passWord;
+          dispatch({
+            type: 'softexetute/newuserInfo',
+            payload: {hostsSshPassword, hostsIp, hostsSshPort, hostsSshUsername,hostsSshPasssalt}
+          });
+        }
         this.props.form.resetFields();
       }
     });
   };
 
-  render() {
-    const { visible } = this.state;
-    const { children, title } = this.props;
+  onSearch = searchText => {
+    this.setState({
+      inputvalueList: !searchText ? [] : [searchText, searchText.repeat(2), searchText.repeat(3)],
+    });
+  };
 
+  // onSelect = (value) => {
+  //   console.log('onSelect', value);
+  // }
+
+  render() {
+    const { visible, inputvalueList, } = this.state;
+    const { children, title, } = this.props;
     // Form双向绑定
     const { getFieldDecorator } = this.props.form;
-    const required = true;
-    // console.log(this.props.record);
-    const {
-      ip,
-      port,
-      username, //获取输入的用户名
-      psw, //获取输入的密码
-    } = this.props.record;
-
+    // const required = true;
+    const { hostsIp } = this.props.record;
     return (
       <>
         {withClick(children, this.handleopenClick)}
@@ -90,73 +179,87 @@ class StartModal extends Component {
           title={title}
           visible={visible}
           centered
+          destroyOnClose
           maskClosable={false}
           onCancel={this.hanldleCancel}
           onOk={this.handleOk}
         >
           <Form {...formItemLayout}>
             <Form.Item label="IP">
-              {getFieldDecorator('ip', {
-                initialValue: ip,
-              })(<Input disabled />)}
-            </Form.Item>
-            <Form.Item label="端口">
-              {getFieldDecorator('port', {
-                initialValue: port,
-              })(<Input disabled />)}
-            </Form.Item>
-            <Form.Item label="用户名">
-              {getFieldDecorator('username', {
+              {getFieldDecorator('hostsIp', {
                 rules: [
                   {
                     required: true,
-                    message: '昵称不能为空',
+                    message: 'IP不能为空',
                   },
                 ],
-                // rules: [{
-                //     required: true,
-                //     message: '昵称不能为空',
-                // }, {
-                //     len: 4,
-                //     message: '长度需4个字符',
-                // }],
-              })(<Input type="text" placeholder="请输入" />)}
+                initialValue: hostsIp,
+              })(<Input type="text" />)}
+            </Form.Item>
+            <Form.Item label="端口">
+              {getFieldDecorator('hostsSshPort', {
+                rules: [
+                  {
+                    required: true,
+                    message: '端口不能为空',
+                  },
+                ],
+              })(<Input />)}
+            </Form.Item>
+            <Form.Item label="用户名">
+              {getFieldDecorator('hostsSshUsername', {
+                rules: [
+                  {
+                    required: true,
+                    message: '用户名不能为空',
+                  },
+                ],
+              })(<Input placeholder="请输入用户名" onBlur={() => this.handleSearch()}/>)}
             </Form.Item>
             <Form.Item label="密码">
-              {getFieldDecorator('psw', {
+              {getFieldDecorator('hostsSshPassword', {
                 rules: [
                   {
                     required: true,
                     message: '密码不能为空',
                   },
                 ],
-                // rules: [{
-                //     required: true,
-                //     message: '密码不能为空',
-                // }, {
-                //     min: 4,
-                //     message: '密码不能少于4个字符',
-                // }, {
-                //     max: 6,
-                //     message: '密码不能大于6个字符',
-                // }],
-              })(<Input placeholder="请输入" type="password" />)}
+              })(<Input type="password" />)}
             </Form.Item>
+            <Form.Item label="SSH命令">
+              {getFieldDecorator('command', {
+                rules: [
+                  {
+                    required: true,
+                    message: 'SSH命令不能为空',
+                  },
+                ],
+              })(<AutoComplete
+                // value={inputValue}
+                dataSource={inputvalueList}
+                // children={<Input />}
+                // onSelect={this.onSelect}
+                onSearch={this.onSearch}
+                // onChange={this.onChange}
+                placeholder="输入命令.."
+              />)}
+            </Form.Item>
+            <Form.Item {...tailFormItemLayout} style={{marginBottom: 0}}>
+              {getFieldDecorator('remember', {
+                valuePropName: 'checked',
+                initialValue: false,
+              })(<Checkbox>记住密码</Checkbox>)}
+            </Form.Item>
+            
           </Form>
         </Modal>
       </>
     );
   }
 }
-
-// 初始化数据表单
 StartModal.defaultProps = {
-  title: '启停',
   record: {
-    ip: '',
-    port: '',
-    username: '',
-    psw: '',
+    hostsIp: '',
   },
 };
 export default Form.create()(StartModal);

@@ -169,6 +169,7 @@ class HostManage extends Component {
       // loading,
       hostsoft: { hostdata },
     } = this.props;
+    console.log(hostdata,'hostdata');
     const dataSource = hostdata.rows;
     const pagination = {
       showSizeChanger: true,
