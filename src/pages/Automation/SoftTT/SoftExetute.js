@@ -4,19 +4,15 @@ import { connect } from 'dva';
 import Link from 'umi/link';
 import moment from 'moment';
 import cookie from 'react-cookies';
-import {
-  Layout,
-  Table,
-  Divider,
-  Tabs,
-  Button,
-  Form,
-  Input,
-  Row,
-  Col,
-} from 'antd';
+import { Layout, Table, Divider, Tabs, Button, Form, Input, Row, Col, Badge } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import StartModal from './components/StartModal';
+
+const statusMap = ['default', 'success'];
+const status = ['停用', '在用'];
+const cabinet = ['A座机柜', 'B座机柜'];
+const operatSystem = ['window', 'linux'];
+const hostPart = ['安全接入区', '二区', '三区'];
 
 // const { Content } = Layout;
 const { TabPane } = Tabs;
@@ -26,13 +22,30 @@ const { TabPane } = Tabs;
   loading: loading.models.softexetute,
 }))
 class SoftExetute extends Component {
+  state = {
+    current: 1,
+    pageSize: 10,
+    queKey: '',
+  };
+
   // eslint-disable-next-line react/sort-comp
   componentDidMount() {
-    const { dispatch } = this.props;
-    dispatch({ 
-      type: 'softexetute/fetch',
-    });
+    this.getList();
   }
+
+  getList = () => {
+    const page = this.state.current;
+    const limit = this.state.pageSize;
+    const { queKey } = this.state;
+    this.props.dispatch({
+      type: 'softexetute/fetch',
+      payload: {
+        page,
+        limit,
+        queKey,
+      },
+    });
+  };
 
   constructor(props) {
     super(props);
@@ -43,7 +56,7 @@ class SoftExetute extends Component {
       activeKey: '1',
       panes,
       inputValue: '',
-      inputContent: '',
+      // inputContent: '',
       sumitvalue: [],
       current: 1,
       pageSize: 10,
@@ -62,20 +75,28 @@ class SoftExetute extends Component {
     });
     // console.log(this.state.sumitvalue);
     // 点击确认向后台发送数据  1.输入的值 2.存储的值（ip，端口，用户名，密码）
-    const passWord = cookie.load('passWord');// 从cookie取出
-    const { hostsIp, hostsSshPort, hostsSshUsername, command } = this.state.sumitvalue
+    const passWord = cookie.load('passWord'); // 从cookie取出
+    const { hostsIp, hostsSshPort, hostsSshUsername } = this.state.sumitvalue;
     const hostIp = hostsIp;
     const port = hostsSshPort;
     const userName = hostsSshUsername;
-    const InputValueData = this.state.inputValue;
+    const command = this.state.inputValue;
     const { dispatch } = this.props;
     return dispatch({
       type: 'softexetute/getExecCommand',
-      payload: {  passWord, hostIp, port, userName,command, InputValueData },
+      payload: { passWord, hostIp, port, userName, command },
     }).then(res => {
-        this.setState({
-          inputContent: res.data.execLog,
-        })
+      const { panes } = this.state;
+      const activeKey = `newTab${this.newTabIndex++}`;
+      panes.push({
+        title: hostsIp + `-` + userName,
+        content: res.data.execLog || '暂无数据',
+        key: activeKey,
+      });
+      this.setState({ panes, activeKey });
+      // this.setState({
+      //   inputContent: res.data.execLog,
+      // })
     });
   };
 
@@ -97,14 +118,18 @@ class SoftExetute extends Component {
     this[action](targetKey);
   };
 
-  add = (record, values,commitlist) => {
-    // console.log(commitlist);
+  add = (record, values, commitlist) => {
     // 点击启动时添加tab
     const { panes } = this.state;
+    // console.log(inputContent,"inputContent")
     const activeKey = `newTab${this.newTabIndex++}`;
-    panes.push({ title: values.hostsIp, content: commitlist.data.execLog || this.state.inputContent || '暂无数据', key: activeKey });
-    
-    this.setState({ panes, activeKey, sumitvalue: values});
+    console.log(activeKey, 'activeKey');
+    panes.push({
+      title: values.hostsIp + `-` + values.hostsSshUsername,
+      content: commitlist.data.execLog || '暂无数据',
+      key: activeKey,
+    });
+    this.setState({ panes, activeKey, sumitvalue: values });
   };
 
   remove = targetKey => {
@@ -134,6 +159,34 @@ class SoftExetute extends Component {
   //   // console.log(usernameValue, pswValue);
   // };
 
+  onShowSizeChange = (current, pageSize) => {
+    this.props.dispatch({
+      type: 'softexetute/fetch',
+      payload: {
+        queKey: this.state.queKey,
+        page: current,
+        limit: pageSize,
+      },
+    });
+    setTimeout(() => {
+      this.setState({ pageSize });
+    }, 0);
+  };
+
+  changePage = page => {
+    this.props.dispatch({
+      type: 'softexetute/fetch',
+      payload: {
+        queKey: this.state.queKey,
+        page,
+        limit: this.state.pageSize,
+      },
+    });
+    setTimeout(() => {
+      this.setState({ current: page });
+    }, 0);
+  };
+
   render() {
     const columns = [
       {
@@ -152,26 +205,34 @@ class SoftExetute extends Component {
         dataIndex: 'hostsIp',
         key: 'hostsIp',
       },
-      // {
-      //   title: '状态',
-      //   dataIndex: 'hostsStatus',
-      //   key: 'hostsStatus',
-      // },
-      // {
-      //   title: '主机分区',
-      //   dataIndex: 'hostsZoneId',
-      //   key: 'hostsZoneId',
-      // },
-      // {
-      //   title: '主机操作系统',
-      //   dataIndex: 'hostsOsId',
-      //   key: 'hostsOsId',
-      // },
-      // {
-      //   title: '机柜',
-      //   dataIndex: 'hostsCabinetId',
-      //   key: 'hostsCabinetId',
-      // },
+      {
+        title: '状态',
+        dataIndex: 'hostsStatus',
+        key: 'hostsStatus',
+        render: (text, record) => (
+          <span>
+            <Badge status={statusMap[record.hostsStatus]} text={status[record.hostsStatus]} />
+          </span>
+        ),
+      },
+      {
+        title: '主机分区',
+        dataIndex: 'hostsZoneId',
+        key: 'hostsZoneId',
+        render: (text, record) => <span>{hostPart[record.hostsZoneId]}</span>,
+      },
+      {
+        title: '主机操作系统',
+        dataIndex: 'hostsOsId',
+        key: 'hostsOsId',
+        render: (text, record) => <span>{operatSystem[record.hostsOsId]}</span>,
+      },
+      {
+        title: '机柜',
+        dataIndex: 'hostsCabinetId',
+        key: 'hostsCabinetId',
+        render: (text, record) => <span>{cabinet[record.hostsCabinetId]}</span>,
+      },
       {
         title: '主机备注',
         dataIndex: 'hostsRemark',
@@ -189,13 +250,13 @@ class SoftExetute extends Component {
         dataIndex: 'action',
         key: 'action',
         render: (text, record) => (
-          
           <div>
             {/* <a type="link">编辑IP</a> */}
             {/* <Divider type="vertical" /> */}
-            <StartModal title="启停" 
-                record={record} 
-                onSumit={(values,commitlist) => this.add(record,values,commitlist)}
+            <StartModal
+              title="启停"
+              record={record}
+              onSumit={(values, commitlist) => this.add(record, values, commitlist)}
             >
               <a type="link">启动</a>
             </StartModal>
@@ -206,13 +267,13 @@ class SoftExetute extends Component {
             <Divider type="vertical" /> */}
             <span>
               <Link
-                  to={{
-                    pathname: `/automation/SoftTT/execlog`,
-                    state: {
-                        id: record.id,
-                    },
-                  }}
-                >
+                to={{
+                  pathname: `/automation/SoftTT/execlog`,
+                  state: {
+                    id: record.id,
+                  },
+                }}
+              >
                 执行日志
               </Link>
             </span>
@@ -224,26 +285,26 @@ class SoftExetute extends Component {
     const {
       softexetute: { list },
     } = this.props;
-    // console.log(list.data, "list")
-    const dataSource = list.data;
+    // console.log(list, "list")
+    const dataSource = list.rows;
     const pagination = {
       showSizeChanger: true,
-      // onShowSizeChange: (current, pageSize) => this.onShowSizeChange(current, pageSize),
+      onShowSizeChange: (current, pageSize) => this.onShowSizeChange(current, pageSize),
       current: this.state.current,
       pageSize: this.state.pageSize,
       total: list.total,
-      // onChange: page => this.changePage(page),
+      onChange: page => this.changePage(page),
     };
     return (
       <PageHeaderWrapper title="程序执行">
         <Layout style={{ minHeight: '600px', background: '#fff' }}>
           {/* <Content style={{ minHeight: '300px' }}> */}
-            <Table 
-                dataSource={dataSource} 
-                rowKey={record => record.id} 
-                columns={columns} 
-                pagination={pagination}
-            />
+          <Table
+            dataSource={dataSource}
+            rowKey={record => record.id}
+            columns={columns}
+            pagination={pagination}
+          />
           {/* </Content> */}
 
           {/* <Footer style={{ minHeight: '300px', background: '#fff',borderWidth: 1,borderColor: '#C0C0C0',borderStyle: 'solid',}}> */}

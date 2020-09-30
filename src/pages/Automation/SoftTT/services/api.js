@@ -11,9 +11,9 @@ export async function rightShuttlebox(hostId) {
   return request(`/auto/hosts/getSoftwaresByHostId/${hostId}`);
 }
 
-export async function updatehostrole(hostId,sofvalue) {
-  return request(`/auto/hosts/${hostId}/softwareIds`,{
-    method:'POST',
+export async function updatehostrole(hostId, sofvalue) {
+  return request(`/auto/hosts/${hostId}/softwareIds`, {
+    method: 'POST',
     body: JSON.stringify(sofvalue),
   });
 }
@@ -29,11 +29,11 @@ export async function softrightShuttle(softId) {
   return request(`/auto/softwares/getCoursesBySoftId/${softId}`);
 }
 
-export async function updatesoftrole(softwareId,coursevalue) {
-  return request(`/auto/softwares/${softwareId}/courseIds`,{
-    method:'POST',
-    body: JSON.stringify(coursevalue)
-  })
+export async function updatesoftrole(softwareId, coursevalue) {
+  return request(`/auto/softwares/${softwareId}/courseIds`, {
+    method: 'POST',
+    body: JSON.stringify(coursevalue),
+  });
 }
 
 // 进程的接口
@@ -59,8 +59,6 @@ export async function myHosts(params) {
 export async function querySoftExetute() {
   return request(`/api/softexetuteList`);
 }
-
-
 
 // /auto/hosts_shh2/encrypt/{encryptStr} 加密数据
 export async function queryHostEncryptStr(encryptStr) {
@@ -95,9 +93,10 @@ export async function queryHostShh2ExecCommand(params) {
 }
 
 // 软件启停-主机_SSH2管理 主机列表数据
-export async function queryHostShh2List() {
-  return request(`/auto/hosts`, {
-    method: 'GET',
+export async function queryHostShh2List(params) {
+  return request(`/auto/hosts/listPage`, {
+    method: 'POST',
+    body: JSON.stringify(params),
   });
 }
 // 软件启停-主机_SSH2 执行日志--表格
