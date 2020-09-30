@@ -117,15 +117,15 @@ class Details extends Component {
         ),
       },
     ];
-    const {
-      alarmdetails: { list },
-    } = this.props;
-    const dataSource = [...list];
+    // const {
+    //   alarmdetails: { list },
+    // } = this.props;
+    // const dataSource = [...list]?[...list]:'';
     return (
       <PageHeaderWrapper title="告警明细信息">
         <Card>
           <Table
-            dataSource={dataSource}
+            // dataSource={dataSource}
             rowKey={record => record.detailsid}
             columns={columns}
             scroll={{ x: 1500 }}

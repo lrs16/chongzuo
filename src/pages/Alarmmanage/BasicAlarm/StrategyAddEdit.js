@@ -105,7 +105,7 @@ class StrategyAddEdit extends Component {
   constructor(props) {
     super(props);
     this.detailsid = props.match.params.detailsid;
-    console.log(this.detailsid,'ll');
+    console.log(props);
   }
 
   componentDidMount() {
@@ -304,16 +304,12 @@ class StrategyAddEdit extends Component {
             })(<Input placeholder='请输入' style={{width:550}}/>)}
           </Form.Item>
 
-          <Form.Item style={{ display: this.detailsid?'block':'none'}}>
-             <Button style={{ position: 'relative', bottom: 60 }}>取消</Button>
-            <Button
-              type="primary"
-              htmlType="submit"
-              style={{ position: 'relative', bottom: 60, left: 10 }}
-            >
+          <Form.Item style={{display:this.detailsid?'inline-block':'none'}}>
+            <Button style={{position:'relative' ,bottom:60}}>取消</Button>
+            <Button type='primary' htmlType='submit' style={{position:'relative' ,bottom:60, left:10}}>
               提交
             </Button>
-        </Form.Item>
+          </Form.Item>
 
           <Descriptions title='触发条件'></Descriptions>
           {/* <Descriptions.Item label='在过去的:'></Descriptions.Item> */}

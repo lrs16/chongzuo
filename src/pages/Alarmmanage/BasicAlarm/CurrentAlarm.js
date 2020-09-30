@@ -6,7 +6,7 @@ import CurrentalarmDetail from './components/CurrentalarmDetail';
 import { ChartCard } from '@/components/Charts';
 import ExportJsonExcel from 'js-export-excel';
 import { Chart, Interval, Interaction, registerInteraction, Tooltip } from 'bizcharts';
-import resources from '../Automation/Scenarios/models/resources';
+//import resources from '../Automation/Scenarios/models/resources';
 
 const { TabPane } = Tabs;
 const { Search } = Input;
@@ -326,7 +326,6 @@ class CurrentAlarm extends Component {
       },
     ];
     const { currentalarm } = this.props;
-
     const {
       basicInfo = [],
       list = [],
@@ -334,6 +333,7 @@ class CurrentAlarm extends Component {
       currentInfo = [],
       notificationInfo = [],
     } = currentalarm;
+    console.log(basicInfo,'basicInfo');
     const dataSource = [...list];
 
     const pagination = {
@@ -639,7 +639,8 @@ class CurrentAlarm extends Component {
               <Button style={{ borderColor: 'yellow', marginRight: 8 }} onClick={this.handleClose}>
                 关闭
               </Button>
-              <Button onClick={this.exportExcel}>导出</Button>
+              {/* <Button onClick={this.exportExcel}>导出</Button> */}
+              <Button>导出</Button>
             </div>
 
             <div>
