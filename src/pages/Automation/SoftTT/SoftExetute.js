@@ -207,7 +207,7 @@ class SoftExetute extends Component {
             <span>
               <Link
                   to={{
-                    pathname: `/automation/SoftTT/execlog`,
+                    pathname: `/automation/STT/execlog`,
                     state: {
                         id: record.id,
                     },

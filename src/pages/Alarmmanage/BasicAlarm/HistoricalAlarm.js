@@ -85,7 +85,6 @@ class HistoricalAlarm extends Component {
   handleSearch = e => {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
-      console.log(values);
     });
   };
 
@@ -175,7 +174,6 @@ class HistoricalAlarm extends Component {
   };
 
   changeTabpane = activeKey => {
-    console.log(activeKey);
     this.props.dispatch({
       type: 'maintenanceplan/mainplayList',
       payload: {

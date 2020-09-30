@@ -3,7 +3,7 @@
  * You can view component api by:
  * https://github.com/ant-design/ant-design-pro-layout
  */
-import ProLayout from '@ant-design/pro-layout'; // , { DefaultFooter }
+import ProLayout from '@ant-design/pro-layout'; // , { DefaultFooter }s
 import React, { useEffect } from 'react';
 import Link from 'umi/link';
 import { connect } from 'dva';
@@ -11,15 +11,13 @@ import {
   // Icon,
   Result,
   Button,
+  //  Spin,
 } from 'antd';
 import { formatMessage } from 'umi-plugin-react/locale';
 import Authorized from '@/utils/Authorized';
 import RightContent from '@/components/GlobalHeader/RightContent';
-import {
-  // isAntDesignPro,
-  getAuthorityFromRouter,
-} from '@/utils/utils';
-import logo from '../assets/logo.svg';
+// import { getAuthorityFromRouter } from '@/utils/utils';
+import logo from '../../public/menulogo.png';
 // import Layout from './BlankLayout';
 
 const noMatch = (
@@ -38,48 +36,58 @@ const noMatch = (
 /**
  * use Authorized check all menu item
  */
+
 const menuDataRender = menuList =>
   menuList.map(item => {
     const localItem = { ...item, children: item.children ? menuDataRender(item.children) : [] };
+    // const localItem = { ...item, children: [] };
     return Authorized.check(item.authority, localItem, null);
   });
 
 const topMenuDataRender = menuList =>
   menuList.map(item => {
-    const localItem = { ...item, children: [] };
+    const localItem = { ...item, children: [], routes: [] };
     return Authorized.check(item.authority, localItem, null);
   });
 
 const BasicLayout = props => {
   const {
+    loading,
     dispatch,
     children,
     settings,
     location = {
       pathname: '/',
     },
-    // menuData,
+    Userauth,
+    menuData,
   } = props;
   /**
    * constructor
    */
-
   useEffect(() => {
     if (dispatch) {
       dispatch({
         type: 'user/fetchCurrent',
       });
     }
+    if (dispatch) {
+      dispatch({
+        type: 'user/fetchMenu',
+      });
+    }
   }, []);
 
-  const authorized = getAuthorityFromRouter(props.route.routes, location.pathname || '/') || {
-    authority: undefined,
-  };
+  // 路由中获取用户权限
+  // const authorized = getAuthorityFromRouter(menuData, location.pathname || '/') || {
+  //   authority: undefined,
+  // };
 
-  //
+  // 根据当前url变化获取左侧菜单数据
   const pathArr = location.pathname.split('/');
   const path = `/${pathArr[1]}`;
-  const routeData = props.route.routes;
+  // const routeData = props.route.routes;
+  const routeData = menuData;
   let leftRoute = {};
   routeData.map(item => {
     if (item.path === path) {
@@ -91,6 +99,7 @@ const BasicLayout = props => {
 
   return (
     <ProLayout
+      loading={loading}
       layout="topmenu"
       fixedHeader
       logo={logo}
@@ -107,13 +116,15 @@ const BasicLayout = props => {
 
         return <Link to={menuItemProps.path}>{defaultDom}</Link>;
       }}
-      menuDataRender={topMenuDataRender}
+      menuDataRender={() => topMenuDataRender(menuData)}
+      // menuDataRender={topMenuDataRender}
       formatMessage={formatMessage}
       rightContentRender={rightProps => <RightContent {...rightProps} />}
-      {...props}
+      // {...props}
       {...settings}
+      route={menuData}
       disableContentMargin
-      disableMobile //
+      disableMobile // 禁用手机端菜单，不然手机端下会表现异常
     >
       <ProLayout
         // layout={'sidemenu'}
@@ -152,7 +163,7 @@ const BasicLayout = props => {
         route={leftRoute}
         // footerRender={footerRender}
       >
-        <Authorized authority={authorized.authority} noMatch={noMatch}>
+        <Authorized authority={Userauth} noMatch={noMatch}>
           {children}
         </Authorized>
       </ProLayout>
@@ -160,7 +171,10 @@ const BasicLayout = props => {
   );
 };
 
-export default connect(({ global, settings }) => ({
+export default connect(({ global, settings, user, loading }) => ({
   collapsed: global.collapsed,
   settings,
+  Userauth: user.Userauth,
+  menuData: user.menuData,
+  loading: loading.models.user,
 }))(BasicLayout);

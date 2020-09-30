@@ -7,7 +7,6 @@ export async function getFakeCaptcha(mobile) {
 
 // 登录请求
 export async function fakeAccountLogin(params) {
-  console.log(params,'ff');
   return request('/oauth/jwt/token', {
     method: 'POST',
     data: params,

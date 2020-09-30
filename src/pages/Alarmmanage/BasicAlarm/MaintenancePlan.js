@@ -37,7 +37,6 @@ class MaintenancePlan extends Component {
   handleSearch = e => {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
-      console.log(values);
     });
   };
 
@@ -85,7 +84,6 @@ class MaintenancePlan extends Component {
         const id = item.id;
         idList.push(id);
       });
-      console.log(idList);
       const { dispatch } = this.props;
       dispatch({
         type: 'maintenanceplan/mainplayList',

@@ -87,7 +87,6 @@ class $detailsid$ extends Component {
   handleSubmit = e => {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
-      console.log(values);
       // if(!err) {
       //   const { dispatch } = this.props;
       //   return dispatch({

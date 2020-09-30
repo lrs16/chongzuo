@@ -67,7 +67,6 @@ class MaintenancePlanEdit extends Component {
 
   handleOk = () => {
     this.props.form.validateFields((err, values) => {
-      console.log(values);
       if (!err) {
         this.hanldeCancel();
         this.props.onSumit(values);

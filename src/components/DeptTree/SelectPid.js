@@ -60,7 +60,6 @@ class SelectPid extends Component {
   };
 
   handleChange = value => {
-    console.log(value);
     this.props.onChange(value);
     //  this.setState({ value });
   };
@@ -72,7 +71,6 @@ class SelectPid extends Component {
       loading,
     } = this.props;
     const treeData = this.toTree(data);
-    console.log(treeData);
     return (
       <TreeSelect
         style={{ width: '100%' }}

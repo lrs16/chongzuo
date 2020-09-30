@@ -220,7 +220,6 @@ class CurrentAlarm extends Component {
         columnWidths: selectedRows.map(item => 10),
       },
     ];
-    console.log(option.datas);
     const toExcel = new ExportJsonExcel(option);
     toExcel.saveExcel();
   };
@@ -333,7 +332,6 @@ class CurrentAlarm extends Component {
       currentInfo = [],
       notificationInfo = [],
     } = currentalarm;
-    console.log(basicInfo,'basicInfo');
     const dataSource = [...list];
 
     const pagination = {

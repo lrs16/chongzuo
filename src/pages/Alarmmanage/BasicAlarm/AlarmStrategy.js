@@ -34,7 +34,6 @@ class AlarmStrategy extends Component {
   handleSubmit = e => {
     e.preventDefault();
     this.props.form.validateFields((err, value) => {
-      console.log(value);
     });
   };
 

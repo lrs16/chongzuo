@@ -14,7 +14,6 @@ class $detailsid$ extends Component {
   constructor(props) {
     super(props);
     this.detailsid = props.match.params.detailsid;
-    console.log(this.detailsid);
   }
 
   componentDidMount() {
@@ -50,7 +49,6 @@ class $detailsid$ extends Component {
     const { getFieldDecorator } = this.props.form;
     const dataSource = [...tableone];
     const notiMethod = list.notiMethod;
-    console.log(tabletwo);
 
     const columns = [
       {
