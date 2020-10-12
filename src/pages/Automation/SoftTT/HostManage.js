@@ -94,7 +94,6 @@ class HostManage extends Component {
       type: 'hostsoft/edit',
       payload: values,
     }).then(res => {
-      console.log(res);
       if (res.code === 200) {
         Message.success(res.msg);
         this.getlist();
@@ -166,10 +165,8 @@ class HostManage extends Component {
 
   render() {
     const {
-      // loading,
       hostsoft: { hostdata },
     } = this.props;
-    console.log(hostdata,'hostdata');
     const dataSource = hostdata.rows;
     const pagination = {
       showSizeChanger: true,

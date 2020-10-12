@@ -599,12 +599,12 @@ export default {
     //   changeOrigin: true,
     //   // pathRewrite: { '^/server': '' },
     // },
-    // '/basicMonitor/': {
-    //   //检测管理，基础平台
-    //   target: 'http://172.16.4.57:8889/',
-    //   changeOrigin: true,
-    //   // pathRewrite: { '^/apiauth': '' }
-    // },
+    '/basicMonitor/': {
+      //检测管理，基础平台
+      target: 'http://172.16.4.57:8889/',
+      changeOrigin: true,
+      // pathRewrite: { '^/apiauth': '' }
+    },
     // '/api-monitoring-business/': {
     //   //计量现场接口
     //   target: 'http://172.16.4.211:8800/',

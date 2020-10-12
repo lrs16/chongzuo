@@ -74,18 +74,6 @@ class ProcessEdit extends Component {
               })(<Input disabled />)}
             </Form.Item>
 
-            <Form.Item label="创建人">
-              {getFieldDecorator('createUser', {
-                // rules: [
-                //   {
-                //     required,
-                //     message: '请输入',
-                //   },
-                // ],
-                initialValue: createUser,
-              })(<Input placeholder="请输入..." />)}
-            </Form.Item>
-
             <Form.Item label="进程代码">
               {getFieldDecorator('courseCode', {
                 rules: [

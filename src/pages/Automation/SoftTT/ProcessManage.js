@@ -149,15 +149,9 @@ class ProcessManage extends Component {
         key: 'id',
       },
       {
-        title: '创建人',
-        dataIndex: 'createUser',
-        key: 'createUser',
-      },
-      {
-        title: '更新时间',
-        dataIndex: 'updateTime',
-        key: 'updateTime',
-        render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
+        title: '进程名称',
+        dataIndex: 'courseName',
+        key: 'courseName',
       },
       {
         title: '进程代码',
@@ -165,14 +159,26 @@ class ProcessManage extends Component {
         key: 'courseCode',
       },
       {
-        title: '进程名称',
-        dataIndex: 'courseName',
-        key: 'courseName',
-      },
-      {
         title: '进程备注',
         dataIndex: 'courseRemark',
         key: 'courseRemark',
+      },
+      {
+        title: '创建人',
+        dataIndex: 'createUserNameExt',
+        key: 'createUserNameExt',
+      },
+      {
+        title:'创建时间',
+        dataIndex:'createTime',
+        key:'createTime',
+      render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>
+      },
+      {
+        title: '更新时间',
+        dataIndex: 'updateTime',
+        key: 'updateTime',
+        render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
       },
       {
         title: '操作',
@@ -206,7 +212,7 @@ class ProcessManage extends Component {
       onShowSizeChange: (current, pageSize) => this.onShowSizeChange(current, pageSize),
       current: this.state.current,
       pageSize: this.state.pageSize,
-      // total: list.total,
+      total: list.total,
       onChange: page => this.changePage(page),
     };
 

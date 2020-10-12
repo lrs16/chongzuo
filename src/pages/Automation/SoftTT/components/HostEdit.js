@@ -146,7 +146,7 @@ class HostEdit extends Component {
           title={title}
           visible={visible}
           width={720}
-          centered
+          centered='true'
           maskClosable={true}
           onClose={this.hanldleCancel}
         >
@@ -198,14 +198,13 @@ class HostEdit extends Component {
                   },
                 ],
                 initialValue: hostsIp,
-              })(<Input placeholder="请输入" />)}
+              })(<Input placeholder="请输入" disabled/>)}
             </Form.Item>
 
             <Form.Item label="主机分区">
               {getFieldDecorator('hostsZoneId', {
                 rules: [
                   {
-                    required,
                     message: '请输入',
                   },
                 ],
@@ -221,21 +220,15 @@ class HostEdit extends Component {
 
             <Form.Item label="主机排序">
               {getFieldDecorator('hostsSort', {
-                rules: [
-                  {
-                    required,
-                    message: '请输入',
-                  },
-                ],
-                initialValue: hostsSort,
-              })(<Input  type='number' placeholder="请输入" />)}
+                initialValue: hostsSort?hostsSort:'1',
+              })(<Input  type='number'/>)}
             </Form.Item>
 
             <Form.Item label="主机操作系统">
               {getFieldDecorator('hostsOsId', {
                 rules: [
                   {
-                    // required,
+                    required,
                     message: '请输入',
                   },
                 ],
@@ -250,7 +243,6 @@ class HostEdit extends Component {
               {getFieldDecorator('hostsRemark', {
                 rules: [
                   {
-                    required,
                     message: '请输入',
                   },
                 ],
@@ -266,7 +258,7 @@ class HostEdit extends Component {
                     message: '请输入',
                   },
                 ],
-                initialValue: hostsStatus,
+                initialValue: hostsStatus?hostsStatus:'1',
               })(
                 <Radio.Group>
                   <Radio value="0">停用</Radio>

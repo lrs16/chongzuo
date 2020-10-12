@@ -113,72 +113,36 @@ class SoftEdit extends Component {
 
                 <Form.Item label="软件绝对目录">
                   {getFieldDecorator('softwareAbsDir', {
-                    rules: [
-                      {
-                        required,
-                        message: '请输入',
-                      },
-                    ],
                     initialValue: softwareAbsDir,
                   })(<Input placeholder="请输入" />)}
                 </Form.Item>
 
                 <Form.Item label="日志目录路径">
                   {getFieldDecorator('softwareLogDir', {
-                    rules: [
-                      {
-                        required,
-                        message: '请输入',
-                      },
-                    ],
                     initialValue: softwareLogDir,
                   })(<Input placeholder="请输入" />)}
                 </Form.Item>
 
                 <Form.Item label="软件使用端口">
                   {getFieldDecorator('softwarePort', {
-                    rules: [
-                      {
-                        required,
-                        message: '请输入',
-                      },
-                    ],
                     initialValue: softwarePort,
                   })(<Input placeholder="请输入" />)}
                 </Form.Item>
 
                 <Form.Item label="软件版本">
                   {getFieldDecorator('softwareVersion', {
-                    rules: [
-                      {
-                        required,
-                        message: '请输入',
-                      },
-                    ],
                     initialValue: softwareVersion,
                   })(<Input placeholder="请输入" />)}
                 </Form.Item>
 
                 <Form.Item label="软件排序">
                   {getFieldDecorator('softwareSort', {
-                    rules: [
-                      {
-                        required,
-                        message: '请输入',
-                      },
-                    ],
                     initialValue: softwareSort,
                   })(<Input placeholder="请输入" />)}
                 </Form.Item>
 
                 <Form.Item label="软件备注">
                   {getFieldDecorator('softwareRemark', {
-                    rules: [
-                      {
-                        required,
-                        message: '请输入',
-                      },
-                    ],
                     initialValue: softwareRemark,
                   })(<Input placeholder="请输入" />)}
                 </Form.Item>
