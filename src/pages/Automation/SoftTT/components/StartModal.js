@@ -161,9 +161,6 @@ class StartModal extends Component {
     });
   };
 
-  // onSelect = (value) => {
-  //   console.log('onSelect', value);
-  // }
 
   render() {
     const { visible, inputvalueList, } = this.state;

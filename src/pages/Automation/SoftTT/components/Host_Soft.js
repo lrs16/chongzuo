@@ -148,21 +148,6 @@ class HostSoft extends Component {
       
     } 
   };
-    // else if(this.props.softId) {
-    //   this.props.dispatch({
-    //     type: 'softrole/softleftShuttle',
-    //     payload: {
-    //       queKey: this.state.queKey,
-    //       page: current,
-    //       limit: pageSize,
-    //     },
-    //     },
-    //   );
-    // }
-  //   setTimeout(() => {
-  //     this.setState({ pageSize });
-  //   }, 0);
-  // };
 
   changePage = (page) => {
     if (this.props.hostId) {
