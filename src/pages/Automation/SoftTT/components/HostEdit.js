@@ -62,35 +62,9 @@ class HostEdit extends Component {
   handleOk = () => {
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        // if((values.hostsIp).trim() == "")
-        // {
-        //   message.info('不能输入空的IP地址');
-        //   return false;
-        // }
-     
-        // var ss = (values.hostsIp).split(".");
-        // var result = ss.map(Number);
-     
-        // if(ss.length != 4)
-        // {
-        //   message.info('请输入有效的IP地址');
-        //    return false;
-        // }
-     
-        // var i=0;
-        // for(i=0;i<result.length;i++) {
-        //   console.log(typeof(result[i]));
-        //   console.log(isNaN(result[i]),'isnan');
-        //   if ( isNaN(result[i]) || parseInt(result[i]) < 0 || parseInt(result[i])>255) {
-        //      message.info('请输入有效的IP地址');
-        //      return false;
-        //    }
-        // }
-       
         // 关闭弹窗
         this.hanldleCancel();
         // 传数据
-        // values.createTime = this.formateDate(values.createTime)
         this.props.onSumit(values);
         this.props.form.resetFields();
       }

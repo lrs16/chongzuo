@@ -46,11 +46,6 @@ class HostSoft extends Component {
     this.setState({ softlist });
   };
 
-  // handleChange = rolelist => {
-  //   console.log('oo');
-  //   this.setState({ rolelist });
-  //   // console.log(this.state.rolelist + 'pp');
-  // };
 
   handleOk = () => {
     const { dispatch } = this.props;

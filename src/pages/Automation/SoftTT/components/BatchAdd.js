@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Form, Input, Modal, Button,Tag , Alert  } from 'antd';
+import { Form, Input, Modal, Button,message , Alert  } from 'antd';
 import { ip_reg } from '@/utils/Regexp';
 
 // 克隆子元素按钮，并添加事件
@@ -54,7 +54,7 @@ class BatchAdd extends Component {
     this.props.form.validateFields((err, values) => {
       const batchInfo = {batchData:''};
       batchInfo.batchData = (values.info).replace(/；/ig,';');
-      const { hostId,softId,processId } = this.props;
+      const { hostId,softId } = this.props;
       if(hostId){
         this.hanldleCancel();
         this.props.onsumitBatch(batchInfo);
@@ -66,67 +66,48 @@ class BatchAdd extends Component {
     });
   };
 
-  validatorPwd = (rule,value,callback) => {
-    if(this.props.hostId){
-      if(value && rule.pattern && !value.match(rule.pattern)){
-        callback(rule.message);
-      }else {
-        callback();
-      } 
-    }else {
-      callback();
-    }
-  }
-
   validatorIp = (rule,value,callback) =>{
-    console.log('index');
     const { hostId,softId,processId } = this.props;
-    const arrayData = value.split(/;|；|\s+/);
-    console.log(arrayData);
-    const hostArr = [];
-    for(let i=0;i<arrayData.length;i++){
-      hostArr.push(arrayData[i]);
-    }
-    for(let j=0;j<hostArr.length;j++){
-      const ip = hostArr[j];
-      console.log(ip);
-      const c = ',';
-      const regex = new RegExp(c, 'g');
-      const result = hostArr[j].match(regex);
-      const count = !result ? 0 : result.length;
-      const strIp = (hostArr[j]).replace(/，/ig,',');
-      // const data = effectInfo.substring(effectInfo.length-1,effectInfo.length);
-      //console.log(strIp,'strIp');
-      const IpIndex = strIp.indexOf(',');
-      //console.log(IpIndex,'IpIndex');
-      const ipData = strIp.substring(IpIndex+1,strIp.length);
-      console.log(ipData);
-    //  console.log(ipData,'ipData');
-      // num = arrayData[i].split(';').length - 1;
-      // num.push(num);
-      // if(num>1){
-      //   callback(rule.message);
-      // }
-      // if(!(data == ';')){
-      //   callback(rule.message); 
-      // }
-      // if(count > 1) {
-      //   callback(rule.message);
-      //   }
+    if(hostId){
+      const end = value.substr(value.length-1,1);
+      const arrayData = value.split(/;|；|\s+/);
+      for(let j=0;j<arrayData.length;j++){
+        const ip = arrayData[j];
+        // 查找逗号的个数
+        const c = ',';
+        const regex = new RegExp(c, 'g');
+        const result = arrayData[j].match(regex);
+        const count = !result ? 0 : result.length;
+        // 查找分号的个数
+        
+        const strIp = (arrayData[j]).replace(/，/ig,',');
+        const data = strIp.substring(strIp.length-1,strIp.length);
+        const IpIndex = strIp.indexOf(',');
+        const ipData = strIp.substring(IpIndex+1,strIp.length);
   
-      if( !(ipData).match(rule.pattern)) {
+        if(!(end == (';'))){
+          callback(rule.message);
+        }
+        if(!(count == 1) && !(ipData == '')){
+          callback(rule.message);
+        }
+  
+        if(!ipData.match(rule.pattern) && !ipData == '') {
+          callback(rule.message);
+        } else if((data === '' )){ //有分号且ipdata（分号后自动分隔）为空的时候取消告警
+          callback();
+        } else {
+        // callback();
+      }
+    }
+    }else {
+      const end = value.substr(value.length-1,1);
+      if(!(end == ';')){
         callback(rule.message);
-        console.log("-------------------------");
-      }else {
-        console.log('uu');
+      } else {
         callback();
       }
-      // if(count == 0) {
-      //   callback(rule.message);
-      // }
     }
-  
-    
   }
 
   render() {
@@ -147,6 +128,7 @@ class BatchAdd extends Component {
           visible={visible}
           centered
           width={720}
+          height={600}
           maskClosable={false}
           onCancel={this.hanldleCancel}
           onOk={this.handleSubmit}
@@ -157,8 +139,8 @@ class BatchAdd extends Component {
       <Form 
         layout="inline"
         id='myForm' 
-        style={{ display: 'none' }}>
-        <Form.Item label='' >
+        style={{ display: 'none'}}>
+        <Form.Item label=''>
           {
             getFieldDecorator('info',{
               rules:[
@@ -168,13 +150,15 @@ class BatchAdd extends Component {
                   message:'请输入正确的正确的信息格式',
                 }
               ]
-            })(<TextArea style={{height:'500px',width:'600px'}}/>)
+            })(<TextArea style={{width:'680px',height:'500px'}}/>)
           }
         </Form.Item>
         <Alert 
-          message='test' banner />
+          message={hostId?'主机提交格式：xxx(主机名称) , xxx(主机IP); xxx(主机名称) , xxx(主机IP);注:分号需在英文模式下':'进程提交格式:xxx(进程代码) , xxx(进程名称); xxx(进程代码) , xxx(进程名称);分号需在英文模式下'} 
+          banner 
+          style={{width:'680px'}}
+          />
       </Form>
-        
         </Modal>
       </>
     );
