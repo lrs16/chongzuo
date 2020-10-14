@@ -148,8 +148,8 @@ class BatchAdd extends Component {
                           }
                         ]
                       })(
-                          <Header style={{padding:'0px',height:'400px'}}>
-                            <TextArea style={{height:'400px'}}/>
+                          <Header style={{padding:'0px',height:'300px'}}>
+                            <TextArea style={{height:'300px'}}/>
                           </Header>
                         )
                     }

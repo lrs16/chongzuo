@@ -104,7 +104,6 @@ class HostManage extends Component {
   };
 
   handleDelete = id => {
-    console.log('ff');
     const { dispatch } = this.props;
     return dispatch({
       type: 'hostsoft/remove',
