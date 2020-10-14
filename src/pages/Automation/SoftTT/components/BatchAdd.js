@@ -46,10 +46,6 @@ class BatchAdd extends Component {
     });
   };
 
-  add = () => {
-    document.getElementById('myForm').style.display = 'block';
-  };
-
   handleSubmit = e => {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
@@ -89,22 +85,17 @@ class BatchAdd extends Component {
         const ipData = strIp.substring(IpIndex+1,strIp.length);
   
         if(!(end == (';'))){
-          console.log('end');
           callback(rule.message);
         }
         if(!(count == 1) && !(ipData == '')){
-          console.log('count');
           callback(rule.message);
         }
   
         if(!ipData.match(rule.pattern) && !ipData == '') {
-          console.log('ip');
           callback(rule.message);
         } else if((data === '' )){ //有分号且ipdata（分号后自动分隔）为空的时候取消告警
-          console.log(';');
           callback();
         } else {
-          console.log('err');
         // callback();
       }
     }
@@ -141,16 +132,12 @@ class BatchAdd extends Component {
           onCancel={this.hanldleCancel}
           onOk={this.handleSubmit}
         >
-          <Button type="primary" onClick={this.add} style={{marginBottom:'10px'}}>
-            {this.props.hostId?'批量添加主机信息':'批量添加进程信息'}
-          </Button>
-   
           <Form 
             // layout="inline"
             id='myForm' 
-            style={{ display: 'none'}}>
+           >
               {/* <Layout> */}
-              <Form.Item label=''>
+              <Form.Item label='' style={{marginTop:'20px'}}>
                     {
                       getFieldDecorator('info',{
                         rules:[
