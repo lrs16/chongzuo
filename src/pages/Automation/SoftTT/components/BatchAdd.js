@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Form, Input, Modal, Button,message , Alert  } from 'antd';
+import { Form, Input, Modal, Button,Layout   , Alert  } from 'antd';
 import { ip_reg } from '@/utils/Regexp';
 
 // 克隆子元素按钮，并添加事件
@@ -8,6 +8,7 @@ const withClick = (element, handleClick = () => {}) => {
 };
 let id = 0;
 const { TextArea } = Input;
+const { Header, Footer, Sider, Content } = Layout;
 class BatchAdd extends Component {
   constructor(props) {
     super(props);
@@ -52,22 +53,24 @@ class BatchAdd extends Component {
   handleSubmit = e => {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
-      const batchInfo = {batchData:''};
-      batchInfo.batchData = (values.info).replace(/；/ig,';');
-      const { hostId,softId } = this.props;
-      if(hostId){
-        this.hanldleCancel();
-        this.props.onsumitBatch(batchInfo);
-      }else if(softId){
-      } else {
-        this.hanldleCancel();
-        this.props.onsumitBatchprocess(batchInfo);
+      if(!err){
+        const batchInfo = {batchData:''};
+        batchInfo.batchData = (values.info).replace(/；/ig,';');
+        const { hostId,softId } = this.props;
+        if(hostId){
+          this.hanldleCancel();
+          this.props.onsumitBatch(batchInfo);
+        }else if(softId){
+        } else {
+          this.hanldleCancel();
+          this.props.onsumitBatchprocess(batchInfo);
+        }
       }
     });
   };
 
   validatorIp = (rule,value,callback) =>{
-    const { hostId,softId,processId } = this.props;
+    const { hostId } = this.props;
     if(hostId){
       const end = value.substr(value.length-1,1);
       const arrayData = value.split(/;|；|\s+/);
@@ -86,17 +89,22 @@ class BatchAdd extends Component {
         const ipData = strIp.substring(IpIndex+1,strIp.length);
   
         if(!(end == (';'))){
+          console.log('end');
           callback(rule.message);
         }
         if(!(count == 1) && !(ipData == '')){
+          console.log('count');
           callback(rule.message);
         }
   
         if(!ipData.match(rule.pattern) && !ipData == '') {
+          console.log('ip');
           callback(rule.message);
         } else if((data === '' )){ //有分号且ipdata（分号后自动分隔）为空的时候取消告警
+          console.log(';');
           callback();
         } else {
+          console.log('err');
         // callback();
       }
     }
@@ -136,29 +144,35 @@ class BatchAdd extends Component {
           <Button type="primary" onClick={this.add} style={{marginBottom:'10px'}}>
             {this.props.hostId?'批量添加主机信息':'批量添加进程信息'}
           </Button>
-      <Form 
-        layout="inline"
-        id='myForm' 
-        style={{ display: 'none'}}>
-        <Form.Item label=''>
-          {
-            getFieldDecorator('info',{
-              rules:[
-                {
-                  pattern: ip_reg,
-                  validator:this.validatorIp,
-                  message:'请输入正确的正确的信息格式',
-                }
-              ]
-            })(<TextArea style={{width:'680px',height:'500px'}}/>)
-          }
-        </Form.Item>
-        <Alert 
-          message={hostId?'主机提交格式：xxx(主机名称) , xxx(主机IP); xxx(主机名称) , xxx(主机IP);注:分号需在英文模式下':'进程提交格式:xxx(进程代码) , xxx(进程名称); xxx(进程代码) , xxx(进程名称);分号需在英文模式下'} 
-          banner 
-          style={{width:'680px'}}
-          />
-      </Form>
+   
+          <Form 
+            // layout="inline"
+            id='myForm' 
+            style={{ display: 'none'}}>
+              {/* <Layout> */}
+              <Form.Item label=''>
+                    {
+                      getFieldDecorator('info',{
+                        rules:[
+                          {
+                            pattern: ip_reg,
+                            validator:this.validatorIp,
+                            message:'请输入正确的正确的信息格式',
+                          }
+                        ]
+                      })(
+                          <Header style={{backgroundColor:'blue',padding:'0px',height:'500px'}}>
+                            <TextArea style={{height:'500px'}}/>
+                          </Header>
+                        )
+                    }
+              </Form.Item>
+              <Alert 
+                message={hostId?'主机提交格式：xxx(主机名称) , xxx(主机IP); xxx(主机名称) , xxx(主机IP);注:分号需在英文模式下':'进程提交格式:xxx(进程代码) , xxx(进程名称); xxx(进程代码) , xxx(进程名称);分号需在英文模式下'} 
+                banner 
+                style={{width:'100%'}}
+                />    
+          </Form>
         </Modal>
       </>
     );

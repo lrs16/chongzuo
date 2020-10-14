@@ -128,13 +128,6 @@ class SoftManage extends Component {
     }, 0);
   };
 
-  // handleBatchadd = str => {
-  //   const { dispatch } = this.props;
-  //   return dispatch({
-  //     type:'hostsoft'
-  //   })
-  // }
-
   render() {
     const columns = [
       {
@@ -165,11 +158,6 @@ class SoftManage extends Component {
         dataIndex: 'softwareVersion',
         key: 'softwareVersion',
       },
-      // {
-      //   title: '软件排序',
-      //   dataIndex: 'softwareSort',
-      //   key: 'softwareSort',
-      // },
       {
         title: '软件备注',
         dataIndex: 'softwareRemark',

@@ -172,7 +172,7 @@ class HostEdit extends Component {
                   },
                 ],
                 initialValue: hostsIp,
-              })(<Input placeholder="请输入" disabled/>)}
+              })(<Input placeholder="请输入" disabled={hostsIp?true:false}/>)}
             </Form.Item>
 
             <Form.Item label="主机分区">
