@@ -307,7 +307,99 @@ function mock2linedata() {
   return list;
 }
 
+//基础平台检测：当前告警，历史告警
+function mocksystemhistorylist(count) {
+  const list = [];
+  for (let i = 0; i < count; i += 1) {
+    list.push({
+      id: `${i}`,
+      alarmstatus: [0, 1, 2, 3][i % 4],
+      alerContent: Random.cword(
+        '磁盘使用率已达到53.0%（最近15分钟 最近值），大于阈值20.0%',
+        20,
+        50,
+      ),
+      time: Random.datetime(),
+    });
+  }
+  return list;
+}
+
+function mockchain(count, ringtype) {
+  const list = [];
+  for (let i = 0; i < count; i += 1) {
+    list.push({
+      id: Random.string('123456789', 5),
+      company: Random.integer(1, 9),
+      ringtype: ringtype,
+      type: ['低压', '公变', '变电站', '地方电厂', '统调电厂'][i % 5],
+      supplycompany: Random.string('4567', 1),
+      percentage: Random.integer(90, 100),
+      todaydifference: Random.integer(1, 12),
+      yesterdaydifference: Random.integer(1, 12),
+    });
+  }
+  return list;
+}
+
 export default {
   'GET /api-upms/upms_user/getCurrUserInfo': CurrUserInfo, // 根据token获取用户信息
   'GET /api-upms/upms_user/getCurrUserMenus': CurrUserMenus, // 根据token获取用户菜单
+  //基础平台检测，当前告警
+  'GET /databeseMonitor/databeseMonitor/databaseEm': (req, res) => {
+    const { count } = req.query;
+    const data = mocksystemhistorylist(count);
+    res.json({
+      data: {
+        data,
+        total: count,
+      },
+    });
+  },
+  //基础平台检测，历史告警
+  'GET /databeseMonitor/databeseMonitor/databaseEmHistroy': (req, res) => {
+    // const {current,pageSize}= req.query;
+    const count = 10;
+    const data = mocksystemhistorylist(count);
+    res.json({
+      data: {
+        data,
+        total: count,
+      },
+    });
+  },
+
+  // 指标环比数据查询条件“覆盖率”
+  'POST /monitor/kpiData/fgl': (req, res) => {
+    const count = 20;
+    const data = mockchain(count, '覆盖率');
+    res.json({
+      data: {
+        data,
+        total: count,
+      },
+    });
+  },
+  // 指标环比数据查询条件“抄表率”
+  'POST /monitor/kpiData/cbl': (req, res) => {
+    const count = 40;
+    const data = mockchain(count, '抄表率');
+    res.json({
+      data: {
+        data,
+        total: count,
+      },
+    });
+  },
+  // 指标环比数据查询条件“完整率”
+  'POST /monitor/kpiData/wzl': (req, res) => {
+    const count = 30;
+    const data = mockchain(count, '完整率');
+    res.json({
+      data: {
+        data,
+        total: count,
+      },
+    });
+  },
 };

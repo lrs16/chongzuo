@@ -11,27 +11,27 @@ export async function queryFacadata(params) {
 
 // 请求完整率
 export async function queryCompleterate(area) {
-  return request(`/api-monitoring-business/cjzb/wzl/${area}`);
+  return request(`/monitor/gatherKpi/wzl`);
 }
 
 // 终端覆盖率
 export async function queryCoverage(area) {
-  return request(`/api-monitoring-business/cjzb/fgl/${area}`);
+  return request(`/monitor/gatherKpi/fgl`);
 }
 
 // 抄表率
 export async function queryMeterread(area) {
-  return request(`/api-monitoring-business/cjzb/cbl/${area}`);
+  return request(`/monitor/gatherKpi/cbl`);
 }
 
 // 关口零点采集
 export async function queryZeroread() {
-  return request(`/api-monitoring-business/cjzb/gk0d`);
+  return request(`/monitor/gatherKpi/gk0d`);
 }
 
 // 关口整点采集
 export async function queryHourread() {
-  return request(`/api-monitoring-business/cjzb/gkzd`);
+  return request(`/monitor/gatherKpi/gkzd`);
 }
 
 // 关口售电量
@@ -46,7 +46,7 @@ export async function querySupply(sortarea) {
 
 // 抄表结算
 export async function querySettlement() {
-  return request(`/api-monitoring-business/jkshhc/cbjsjk`);
+  return request(`/monitor/interfaceCheck/cbjsjk`);
 }
 
 // 档案同步

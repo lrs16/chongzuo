@@ -122,13 +122,9 @@ export default {
               dynamic: true,
               icon: 'deployment-unit',
               routes: [
-                // {
-                //   path: '/automation',
-                //   redirect: '/automation/opsscene',
-                // },
                 {
                   path: '/automation',
-                  redirect:'/automation/STT'
+                  redirect: '/automation/STT/hostlist',
                 },
                 // {
                 //   path: '/automation/monitor',
@@ -193,39 +189,27 @@ export default {
                     },
                     {
                       path: '/automation/STT/hostlist',
-                      name: '主机',
+                      name: '主机管理',
                       icon: 'cloud-server',
                       component: './Automation/SoftTT/HostManage',
                     },
                     {
                       path: '/automation/STT/soft',
-                      name: '软件',
+                      name: '软件管理',
                       icon: 'cloud-server',
                       component: './Automation/SoftTT/SoftManage',
                     },
                     {
                       path: '/automation/STT/process',
-                      name: '进程',
+                      name: '进程管理',
                       icon: 'cloud-server',
                       component: './Automation/SoftTT/ProcessManage',
                     },
-                    // {
-                    //   path: '/automation/test/softconfigure',
-                    //   name: '启停配置',
-                    //   icon: 'cloud-server',
-                    //   component: './Automation/SoftTT/SoftConfigures',
-                    // },
                     {
                       path: '/automation/STT/softexetute',
-                      name: '程序执行',
+                      name: '主机_SSH2管理',
                       icon: 'cloud-server',
                       component: './Automation/SoftTT/SoftExetute',
-                    },
-                    {
-                      path: '/automation/STT/execlog',
-                      name: '查看日志',
-                      hideInMenu: true,
-                      component: './Automation/SoftTT/ExeclogView',
                     },
                   ],
                 },
@@ -304,15 +288,26 @@ export default {
                     {
                       path: '/monitormanage/basicmonitor/host',
                       name: '主机监测',
-                      component: './Monitormanage/BasicMonitor/Host/Host',
+                      component: './Monitormanage/BasicMonitor/Host',
                     },
                     {
-                      path: '/monitormanage/basicmonitor/host/detail',
+                      path: '/monitormanage/basicmonitor/detail',
                       name: '监测详情',
                       hideInMenu: true,
-                      component: './Monitormanage/BasicMonitor/Host/Detail',
+                      component: './Monitormanage/BasicMonitor/Detail',
+                    },
+                    {
+                      path: '/monitormanage/basicmonitor/database',
+                      name: '数据库监测',
+                      component: './Monitormanage/BasicMonitor/Database',
                     },
                   ],
+                },
+                {
+                  path: '/monitormanage/indicatorchain',
+                  name: '指标环比数据',
+                  icon: 'cloud-server',
+                  component: './Monitormanage/IndicatorChain',
                 },
               ],
             },
@@ -589,11 +584,20 @@ export default {
       target: 'http://172.16.4.211:9901/', //软件启停
       changeOrigin: true,
     },
-    // '/api-eai-job/oma/': {
-    //   target: 'http://172.16.4.211:8800/', //脚本管理服务器地址,211正式，250测试
-    //   changeOrigin: true,
-    //   // pathRewrite: { '^/server': '' },
-    // },
+    '/monitor/': {
+      target: 'http://172.16.4.211:9901/', //计量业务监控
+      changeOrigin: true,
+    },
+    '/monitor/kpiData/': {
+      target: 'http://localhost:8000/', //mock接口数据，真实接口将整段删除
+      changeOrigin: true,
+    },
+    '/api-eai-job/oma/': {
+      target: 'http://172.16.4.211:8800/', //脚本管理服务器地址,211正式，250测试
+      changeOrigin: true,
+      // pathRewrite: { '^/server': '' },
+    },
+
     // '/oma/': {
     //   target: 'http://172.16.4.100:8807/', //脚本管理服务器地址,211正式，250测试
     //   changeOrigin: true,
@@ -605,17 +609,21 @@ export default {
       changeOrigin: true,
       // pathRewrite: { '^/apiauth': '' }
     },
-    // '/api-monitoring-business/': {
-    //   //计量现场接口
-    //   target: 'http://172.16.4.211:8800/',
-    //   changeOrigin: true,
-    //   // pathRewrite: { '^/apiauth': '' }
-    // },
-    // '/api-meter-auto/': {
-    //   //计量现场接口
-    //   target: 'http://172.16.4.211:8800/',
-    //   changeOrigin: true,
-    //   // pathRewrite: { '^/apiauth': '' }
-    // },
+    '/api-monitoring-business/': {
+      //计量现场接口
+      target: 'http://172.16.4.211:8800/',
+      changeOrigin: true,
+      // pathRewrite: { '^/apiauth': '' }
+    },
+    '/api-meter-auto/': {
+      //计量现场接口
+      target: 'http://172.16.4.211:8800/',
+      changeOrigin: true,
+      // pathRewrite: { '^/apiauth': '' }
+    },
+    '/api/': {
+      target: 'http://localhost:8000/', //mock接口数据
+      changeOrigin: true,
+    },
   },
 };
