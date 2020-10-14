@@ -49,7 +49,7 @@ class SoftManage extends Component {
         Message.success(res.msg);
         this.getsoftlist();
       } else {
-        Message.error('添加软件失败');
+        Message.error(res.msg);
       }
     });
   };
@@ -79,7 +79,7 @@ class SoftManage extends Component {
         Message.success(res.msg);
         this.getsoftlist();
       } else {
-        Message.error('删除软件失败！');
+        Message.error(res.msg);
       }
     });
   };

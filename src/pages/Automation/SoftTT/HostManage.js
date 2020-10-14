@@ -113,22 +113,7 @@ class HostManage extends Component {
         Message.success(res.msg);
         this.getlist();
       } else {
-        Message.error('删除主机失败！');
-      }
-    });
-  };
-
-  handleDelete = id => {
-    const { dispatch } = this.props;
-    return dispatch({
-      type: 'hostsoft/remove',
-      payload: { id },
-    }).then(res => {
-      if (res.code === 200) {
-        Message.success(res.msg);
-        this.getlist();
-      } else {
-        Message.error('删除用户失败！');
+        Message.error(res.msg);
       }
     });
   };
@@ -143,7 +128,7 @@ class HostManage extends Component {
         Message.success(res.msg);
         this.getlist();
       } else {
-        Message.error('添加主机失败');
+        Message.error(res.msg);
       }
     });
   };
@@ -158,7 +143,7 @@ class HostManage extends Component {
         Message.success(res.msg);
         this.getlist();
       } else {
-        Message.error('批量添加主机失败');
+        Message.error(res.msg);
       }
     });
   }

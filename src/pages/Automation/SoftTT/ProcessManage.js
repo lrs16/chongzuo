@@ -91,7 +91,7 @@ class ProcessManage extends Component {
         Message.success(res.msg);
         this.getlist();
       } else {
-        Message.error('编辑失败');
+        Message.error(res.msg);
       }
     });
   };
@@ -106,7 +106,7 @@ class ProcessManage extends Component {
         Message.success(res.msg);
         this.getlist();
       } else {
-        Message.error('删除进程失败');
+        Message.error(res.msg);
       }
     });
   };
@@ -121,7 +121,7 @@ class ProcessManage extends Component {
         Message.success(res.msg);
         this.getlist();
       } else {
-        Message.error('添加失败');
+        Message.error(res.msg);
       }
     });
   };
@@ -136,7 +136,7 @@ class ProcessManage extends Component {
         Message.success(res.msg);
         this.getlist();
       }else {
-        Message.error('批量添加进程失败')
+        Message.error(res.msg)
       }
     });
   }
