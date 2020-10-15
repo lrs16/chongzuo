@@ -70,7 +70,7 @@ class SoftEdit extends Component {
       softwareLogDir,
       softwareStartCommand,
       softwareStartCommandFinal,
-      softwareStopCommand,
+      softwareCheckCommand,
       softwareStopCommandFinal,
       softwarePort,
       softwareVersion,
@@ -149,17 +149,7 @@ class SoftEdit extends Component {
               </Form>
             </TabPane>
 
-            <TabPane tab="启动命令" key="2">
-              <Form>
-                <Form.Item>
-                  {getFieldDecorator('softwareStartCommand', {
-                    initialValue: softwareStartCommand,
-                  })(<Input.TextArea rows={34} style={{ width: 720 }}></Input.TextArea>)}
-                </Form.Item>
-              </Form>
-            </TabPane>
-
-            <TabPane tab="启动执行命令" key="3">
+            <TabPane tab="启动执行命令" key="2">
               <Form>
                 <Form.Item>
                   {getFieldDecorator('softwareStartCommandFinal', {
@@ -169,22 +159,22 @@ class SoftEdit extends Component {
               </Form>
             </TabPane>
 
-            <TabPane tab="停止命令" key="4">
-              <Form>
-                <Form.Item>
-                  {getFieldDecorator('softwareStopCommand', {
-                    initialValue: softwareStopCommand,
-                  })(<Input.TextArea rows={34} style={{ width: 720 }} />)}
-                </Form.Item>
-              </Form>
-            </TabPane>
-
-            <TabPane tab="停止执行命令" key="5">
+            <TabPane tab="停止执行命令" key="3">
               <Form>
                 <Form.Item>
                   {getFieldDecorator('softwareStopCommandFinal', {
                     initialValue: softwareStopCommandFinal,
                   })(<Input.TextArea rows={34} style={{ width: 720 }} />)}
+                </Form.Item>
+              </Form>
+            </TabPane>
+
+            <TabPane tab="检测命令" key="4">
+              <Form>
+                <Form.Item>
+                  {getFieldDecorator('softwareCheckCommand', {
+                    initialValue: softwareCheckCommand,
+                  })(<Input.TextArea rows={34} style={{ width: 720 }}></Input.TextArea>)}
                 </Form.Item>
               </Form>
             </TabPane>
@@ -229,6 +219,7 @@ SoftEdit.defaultProps = {
     softwareVersion: '',
     softwareSort: '',
     softwareRemark: '',
+    softwareCheckCommand:''
   },
 };
 export default Form.create()(SoftEdit);

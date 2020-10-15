@@ -276,6 +276,13 @@ export default {
                       component: './Monitormanage/MeasurMonitor/DatabaseTerminal',
                     },
                     {
+                      path: '/monitormanage/measurmonitor/monitorconfiguration',
+                      name: '计量业务监测配置',
+                      icon: 'cloud-server',
+                      component: './Monitormanage/MeasurMonitor/MonitorConfiguration',
+                    },
+              
+                    {
                       component: './404',
                     },
                   ],
