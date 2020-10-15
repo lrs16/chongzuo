@@ -141,3 +141,11 @@ export async function queryFactoryTypes() {
 export async function queryDeptTree() {
   return request(`/upms/dept/list`);
 }
+
+// 请求主机， 生成结构树 /auto/hosts_shh2/tree/hosts/  mxj
+export async function queryHostTree(params) {
+  return request(`/auto/hosts_shh2/tree/hosts/`, {
+    method: 'GET',
+    body: JSON.stringify(params),
+  });
+}

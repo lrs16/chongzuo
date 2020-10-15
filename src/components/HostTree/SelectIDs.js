@@ -1,0 +1,93 @@
+/* eslint-disable no-restricted-syntax */
+import React, { Component } from 'react';
+import { connect } from 'dva';
+import { TreeSelect } from 'antd';
+
+const { SHOW_PARENT } = TreeSelect;
+// 选择所在组织机构的组件
+@connect(({ deptree, loading }) => ({
+  deptree,
+  loading: loading.models.deptree,
+}))
+class SelectID extends Component {
+  componentDidMount() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'deptree/fetch',
+    });
+  }
+
+  toTree = datas => {
+    const data = this.addArr(datas);
+    const result = [];
+    if (!Array.isArray(data)) {
+      return result;
+    }
+    data.forEach(item => {
+      delete item.children;
+    });
+    const map = {};
+    data.forEach(item => {
+      map[item.weight] = item;
+    });
+    data.forEach(item => {
+      const parent = map[item.pid];
+      if (parent) {
+        (parent.children || (parent.children = [])).push(item);
+      } else {
+        result.push(item);
+      }
+    });
+    return result;
+  };
+
+  addArr = datas => {
+    const newArr = [];
+    if (!Array.isArray(datas)) {
+      return newArr;
+    }
+    for (let i = 0; i < datas.length; i += 1) {
+      const vote = {};
+      vote.id = datas[i].id;
+      vote.value = datas[i].id;
+      vote.title = datas[i].name;
+      vote.weight = datas[i].weight;
+      vote.pid = datas[i].pid;
+      newArr.push(vote);
+    }
+
+    return newArr;
+  };
+
+  handleChange = value => {
+    this.props.onChange(value);
+    //  this.setState({ value });
+  };
+
+  render() {
+    // 转换树结构
+    const {
+      deptree: { data },
+      loading,
+    } = this.props;
+    const treeData = this.toTree(data);
+    return (
+      <TreeSelect
+        style={{ width: '100%' }}
+        // value={this.state.value}
+        dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+        getPopupContainer={triggerNode => triggerNode.parentNode} // 解决下拉不显示在上层的问题
+        treeData={treeData}
+        treeCheckable
+        showCheckedStrategy={SHOW_PARENT}
+        placeholder="请选择"
+        treeDefaultExpandAll
+        onChange={this.handleChange}
+        loading={loading}
+      />
+      // <Input width='100%'/>
+    );
+  }
+}
+
+export default SelectID;

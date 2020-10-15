@@ -2,66 +2,45 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
 import Link from 'umi/link';
-import moment from 'moment';
-import cookie from 'react-cookies';
-import { Layout, Table, Divider, Tabs, Button, Form, Input, Row, Col, Badge } from 'antd';
+// import moment from 'moment';
+import { Card, Table, Divider, Tabs, Button, Form, Input, Row, Col } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import StartModal from './components/StartModal';
+import HostTree from '@/components/HostTree';
 
-const statusMap = ['default', 'success'];
-const status = ['停用', '在用'];
-const cabinet = ['A座机柜', 'B座机柜'];
-const operatSystem = ['window', 'linux'];
-const hostPart = ['安全接入区', '二区', '三区'];
-
-// const { Content } = Layout;
 const { TabPane } = Tabs;
-
 @connect(({ softexetute, loading }) => ({
   softexetute,
   loading: loading.models.softexetute,
 }))
 class SoftExetute extends Component {
-  state = {
-    current: 1,
-    pageSize: 10,
-    queKey: '',
-  };
-
-  // eslint-disable-next-line react/sort-comp
-  componentDidMount() {
-    this.getList();
-  }
-
-  getList = () => {
-    const page = this.state.current;
-    const limit = this.state.pageSize;
-    const { queKey } = this.state;
-    this.props.dispatch({
-      type: 'softexetute/fetch',
-      payload: {
-        page,
-        limit,
-        queKey,
-      },
-    });
-  };
-
   constructor(props) {
     super(props);
     this.myRef = React.createRef();
     this.newTabIndex = 0;
     const panes = [];
     this.state = {
-      activeKey: '1',
+      activeKey: '',
       panes,
       inputValue: '',
-      // inputContent: '',
       sumitvalue: [],
       current: 1,
       pageSize: 10,
+      queKey: '',
+      eryPassword: '',
     };
   }
+  // eslint-disable-next-line react/sort-comp
+  componentDidMount() {
+    // this.getList();
+  }
+
+  // getList = () => {
+  //   this.props.dispatch({
+  //     type: 'softexetute/getSoftwaresList',
+  //     //payload: { hostId: '1310852028620083201' },
+  //   });
+  // };
 
   // 输入框输入的value值
   handleInputValue = e => {
@@ -73,10 +52,10 @@ class SoftExetute extends Component {
     this.setState({
       inputValue: '',
     });
-    // console.log(this.state.sumitvalue);
     // 点击确认向后台发送数据  1.输入的值 2.存储的值（ip，端口，用户名，密码）
-    const passWord = cookie.load('passWord'); // 从cookie取出
     const { hostsIp, hostsSshPort, hostsSshUsername } = this.state.sumitvalue;
+    const { eryPassword } = this.state;
+    const passWord = eryPassword;
     const hostIp = hostsIp;
     const port = hostsSshPort;
     const userName = hostsSshUsername;
@@ -86,24 +65,36 @@ class SoftExetute extends Component {
       type: 'softexetute/getExecCommand',
       payload: { passWord, hostIp, port, userName, command },
     }).then(res => {
-      const { panes } = this.state;
-      const activeKey = `newTab${this.newTabIndex++}`;
-      panes.push({
-        title: hostsIp + `-` + userName,
-        content: res.data.execLog || '暂无数据',
-        key: activeKey,
+      const wordStr = ([] = res.msg.split('\n'));
+      const strContent = wordStr.map((item, index) => {
+        return (
+          <p key={index} style={{ marginBottom: 0 }}>
+            {item}
+          </p>
+        );
       });
-      this.setState({ panes, activeKey });
-      // this.setState({
-      //   inputContent: res.data.execLog,
-      // })
+      // 点击启动时添加tab
+      const { panes } = this.state;
+      const title = hostsIp + `-` + userName;
+
+      const sametype = panes.filter(obj => {
+        return obj.key === title;
+      });
+
+      if (sametype.length >= 1) {
+        sametype[0].content = strContent;
+        this.setState({ activeKey: title });
+      }
+      if (sametype.length < 1) {
+        panes.push({ title: title, content: strContent, key: title });
+        this.setState({ panes, activeKey: title });
+      }
     });
   };
 
   // 确认按钮与enter绑定
   // eslint-disable-next-line react/sort-comp
   handleEnterKey(e) {
-    // console.log(e.nativeEvent.keyCode,"e事件")
     if (e.nativeEvent.keyCode === 13) {
       this.handleSureSendData();
     }
@@ -112,24 +103,39 @@ class SoftExetute extends Component {
   // tabs标签的一系列操作 onChange  onEdit add remove
   onChange = activeKey => {
     this.setState({ activeKey });
+    // this.myRef.current.refresh();
   };
 
   onEdit = (targetKey, action) => {
     this[action](targetKey);
   };
 
-  add = (record, values, commitlist) => {
+  add = (record, values, commitlist, passWord) => {
+    const wordStr = ([] = commitlist.msg.split('\n'));
+    const strContent = wordStr.map((item, index) => {
+      return (
+        <p key={index} style={{ marginBottom: 0 }}>
+          {item}
+        </p>
+      );
+    });
+
     // 点击启动时添加tab
     const { panes } = this.state;
-    // console.log(inputContent,"inputContent")
-    const activeKey = `newTab${this.newTabIndex++}`;
-    console.log(activeKey, 'activeKey');
-    panes.push({
-      title: values.hostsIp + `-` + values.hostsSshUsername,
-      content: commitlist.data.execLog || '暂无数据',
-      key: activeKey,
+    const title = values.hostsIp + `-` + values.hostsSshUsername;
+
+    const sametype = panes.filter(obj => {
+      return obj.key === title;
     });
-    this.setState({ panes, activeKey, sumitvalue: values });
+
+    if (sametype.length >= 1) {
+      sametype[0].content = strContent;
+      this.setState({ activeKey: title });
+    }
+    if (sametype.length < 1) {
+      panes.push({ title: title, content: strContent, key: title });
+      this.setState({ panes, activeKey: title, sumitvalue: values, eryPassword: passWord });
+    }
   };
 
   remove = targetKey => {
@@ -152,16 +158,9 @@ class SoftExetute extends Component {
     this.setState({ panes, activeKey });
   };
 
-  // stop = () => {
-  //   // 点击停止，发送字段 type:stop， 存储账号，密码 后端
-  //   // const usernameValue = sessionStorage.getItem('username');
-  //   // const pswValue = sessionStorage.getItem('psw');
-  //   // console.log(usernameValue, pswValue);
-  // };
-
   onShowSizeChange = (current, pageSize) => {
     this.props.dispatch({
-      type: 'softexetute/fetch',
+      type: 'softexetute/fetchsoft',
       payload: {
         queKey: this.state.queKey,
         page: current,
@@ -175,7 +174,7 @@ class SoftExetute extends Component {
 
   changePage = page => {
     this.props.dispatch({
-      type: 'softexetute/fetch',
+      type: 'softexetute/fetchsoft',
       payload: {
         queKey: this.state.queKey,
         page,
@@ -187,6 +186,21 @@ class SoftExetute extends Component {
     }, 0);
   };
 
+  // 获取树杈传值
+  getChildValue = val => {
+    const hostId = val[0];
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'softexetute/getSoftwaresList',
+      payload: { hostId },
+    });
+
+    dispatch({
+      type: 'softexetute/getToHostList',
+      payload: { hostId },
+    });
+  };
+
   render() {
     const columns = [
       {
@@ -196,84 +210,59 @@ class SoftExetute extends Component {
         width: 200,
       },
       {
-        title: '主机名称',
-        dataIndex: 'hostsName',
-        key: 'hostsName',
-      },
-      {
-        title: 'IP地址',
-        dataIndex: 'hostsIp',
-        key: 'hostsIp',
-      },
-      {
-        title: '状态',
-        dataIndex: 'hostsStatus',
-        key: 'hostsStatus',
-        render: (text, record) => (
-          <span>
-            <Badge status={statusMap[record.hostsStatus]} text={status[record.hostsStatus]} />
-          </span>
-        ),
-      },
-      {
-        title: '主机分区',
-        dataIndex: 'hostsZoneId',
-        key: 'hostsZoneId',
-        render: (text, record) => <span>{hostPart[record.hostsZoneId]}</span>,
-      },
-      {
-        title: '主机操作系统',
-        dataIndex: 'hostsOsId',
-        key: 'hostsOsId',
-        render: (text, record) => <span>{operatSystem[record.hostsOsId]}</span>,
-      },
-      {
-        title: '机柜',
-        dataIndex: 'hostsCabinetId',
-        key: 'hostsCabinetId',
-        render: (text, record) => <span>{cabinet[record.hostsCabinetId]}</span>,
-      },
-      {
-        title: '主机备注',
-        dataIndex: 'hostsRemark',
-        key: 'hostsRemark',
-      },
-      {
-        title: '更新时间',
-        dataIndex: 'createTime',
-        key: 'createTime',
+        title: '软件名称',
+        dataIndex: 'softwareName',
+        key: 'softwareName',
         width: 200,
-        render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
       },
+      {
+        title: '软件使用端口',
+        dataIndex: 'softwarePort',
+        key: 'softwarePort',
+        width: 200,
+      },
+      // {
+      //   title: '更新时间',
+      //   dataIndex: 'updateTime',
+      //   key: 'updateTime',
+      //   width: 200,
+      //   // render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
+      // },
+      {
+        title: '软件版本',
+        dataIndex: 'softwareVersion',
+        key: 'softwareVersion',
+        width: 100,
+      },
+      // {
+      //   title: '软件备注',
+      //   dataIndex: 'softwareRemark',
+      //   key: 'softwareRemark',
+      // },
       {
         title: '操作',
         dataIndex: 'action',
         key: 'action',
+        width: 200,
+        fixed: 'right',
         render: (text, record) => (
           <div>
-            {/* <a type="link">编辑IP</a> */}
-            {/* <Divider type="vertical" /> */}
             <StartModal
-              title="启停"
+              title="执行命令"
               record={record}
-              onSumit={(values, commitlist) => this.add(record, values, commitlist)}
+              onSumit={(values, commitlist, passWord) => {
+                this.add(record, values, commitlist, passWord);
+              }}
             >
-              <a type="link">启动</a>
+              <a type="link">执行命令</a>
             </StartModal>
             <Divider type="vertical" />
-            {/* <Popconfirm title="确认停止操作？" onClick={() => this.stop()} okText="Yes" cancelText="No">
-              <a type="link">停止</a>
-            </Popconfirm>
-            <Divider type="vertical" /> */}
             <span>
               <Link
-                  to={{
-                    pathname: `/automation/STT/execlog`,
-                    state: {
-                        id: record.id,
-                    },
-                  }}
-                >
+                to={{
+                  pathname: `/automation/STT/execlog`,
+                }}
+              >
                 执行日志
               </Link>
             </span>
@@ -283,72 +272,82 @@ class SoftExetute extends Component {
     ];
 
     const {
-      softexetute: { list },
+      softexetute: { softdata, treesoftdata },
+      loading,
     } = this.props;
-    // console.log(list, "list")
-    const dataSource = list.rows;
+    // const dataSource = softdata.rows;
+    const dataSource = treesoftdata;
+
     const pagination = {
       showSizeChanger: true,
       onShowSizeChange: (current, pageSize) => this.onShowSizeChange(current, pageSize),
       current: this.state.current,
       pageSize: this.state.pageSize,
-      total: list.total,
+      total: softdata.total,
       onChange: page => this.changePage(page),
     };
-    return (
-      <PageHeaderWrapper title="程序执行">
-        <Layout style={{ minHeight: '600px', background: '#fff' }}>
-          {/* <Content style={{ minHeight: '300px' }}> */}
-          <Table
-            dataSource={dataSource}
-            rowKey={record => record.id}
-            columns={columns}
-            pagination={pagination}
-          />
-          {/* </Content> */}
 
-          {/* <Footer style={{ minHeight: '300px', background: '#fff',borderWidth: 1,borderColor: '#C0C0C0',borderStyle: 'solid',}}> */}
-          <Tabs
-            hideAdd
-            onChange={this.onChange}
-            activeKey={this.state.activeKey}
-            type="editable-card"
-            onEdit={this.onEdit}
-            // style={{ minHeight: '200px', background: '#fff' }}
-          >
-            {this.state.panes.map(pane => (
-              <TabPane tab={pane.title} key={pane.key}>
-                <Row style={{ marginBottom: 10, minHeight: '100px', marginLeft: 20 }}>
-                  {pane.content}
-                </Row>
-                <Row style={{ marginBottom: 20, marginLeft: 20 }}>
-                  <Col span={22}>
-                    <Input
-                      type="text"
-                      ref={this.myRef}
-                      value={this.state.inputValue}
-                      onChange={this.handleInputValue}
-                      onKeyDown={e => this.handleEnterKey(e)}
-                      placeholder="请输入..."
-                      size="large"
-                    />
-                  </Col>
-                  <Col span={2}>
-                    <Button
-                      type="primary"
-                      size="large"
-                      onClick={this.handleSureSendData}
-                      style={{ marginLeft: 10 }}
-                    >
-                      确定
-                    </Button>
-                  </Col>
-                </Row>
-              </TabPane>
-            ))}
-          </Tabs>
-          {/* </Footer> */}
-        </Layout>
+    return (
+      <PageHeaderWrapper title="主机_SSH2管理">
+        <Row style={{ display: 'flex' }} style={{ background: '#f1f1f1' }}>
+          <Col span={5}>
+            <Card title="主机信息" bordered={false}>
+              <HostTree toFatherValue={this.getChildValue.bind(this)} />
+            </Card>
+          </Col>
+          <Col span={19}>
+            <Card style={{ marginLeft: 8 }} bordered={false}>
+              <div>
+                <Table
+                  dataSource={dataSource}
+                  rowKey={record => record.id}
+                  columns={columns}
+                  pagination={pagination}
+                  scroll={{ x: '100%' }}
+                  loading={loading}
+                />
+                <Tabs
+                  hideAdd
+                  onChange={this.onChange}
+                  activeKey={this.state.activeKey}
+                  type="editable-card"
+                  onEdit={this.onEdit}
+                >
+                  {this.state.panes.map(pane => (
+                    <TabPane tab={pane.title} key={pane.key}>
+                      <Row style={{ marginBottom: 10, marginLeft: 20, height: 100 }}>
+                        {pane.content}
+                      </Row>
+                      <Row style={{ marginBottom: 20, marginLeft: 20 }}>
+                        <Col span={22}>
+                          <Input
+                            type="text"
+                            ref={this.myRef}
+                            value={this.state.inputValue}
+                            onChange={this.handleInputValue}
+                            onKeyDown={e => this.handleEnterKey(e)}
+                            placeholder="请输入..."
+                            size="large"
+                          />
+                        </Col>
+                        <Col span={2}>
+                          <Button
+                            type="primary"
+                            size="large"
+                            onClick={this.handleSureSendData}
+                            style={{ marginLeft: 10 }}
+                          >
+                            确定
+                          </Button>
+                        </Col>
+                      </Row>
+                    </TabPane>
+                  ))}
+                </Tabs>
+              </div>
+            </Card>
+          </Col>
+        </Row>
       </PageHeaderWrapper>
     );
   }

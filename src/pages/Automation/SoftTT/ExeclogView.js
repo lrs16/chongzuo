@@ -1,7 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Drawer, Table, Col, Row } from 'antd';
+import moment from 'moment';
+import { Drawer, Table, Col, Row, Button } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import creatHistory from 'history/createHashHistory'; // 返回上一页
+const history = creatHistory(); // 返回上一页
+
+const ComtriMode = ['', '自动', '手动'];
+const SysAccount = ['', 'webApp'];
 
 const DescriptionItem = ({ title, content }) => (
   <div
@@ -39,17 +45,12 @@ class ExecLogView extends Component {
   };
 
   componentDidMount() {
-    const { id } = this.props.location.state;
-    this.props.dispatch({
-      type: 'softexetute/fetch',
-      payload: {
-        id,
-      },
-    });
     this.getExeclogListData();
   }
 
   getExeclogListData = () => {
+    const { hostsIp } = this.props.softexetute.treehostdata;
+    const ip = hostsIp;
     const page = this.state.current;
     const limit = this.state.pageSize;
     const { queKey } = this.state;
@@ -59,16 +60,21 @@ class ExecLogView extends Component {
         page,
         limit,
         queKey,
+        ip,
       },
     });
   };
 
   changePage = page => {
+    const { hostsIp } = this.props.softexetute.treehostdata;
+    const ip = hostsIp;
     this.props.dispatch({
       type: 'softexetute/getExeclogList',
       payload: {
         page,
         limit: this.state.pageSize,
+        queKey: this.state.queKey,
+        ip,
       },
     });
     setTimeout(() => {
@@ -77,12 +83,15 @@ class ExecLogView extends Component {
   };
 
   onShowSizeChange = (current, pageSize) => {
+    const { hostsIp } = this.props.softexetute.treehostdata;
+    const ip = hostsIp;
     this.props.dispatch({
       type: 'softexetute/getExeclogList',
       payload: {
         queKey: this.state.queKey,
         page: current,
         limit: pageSize,
+        ip,
       },
     });
     setTimeout(() => {
@@ -111,17 +120,8 @@ class ExecLogView extends Component {
     });
   };
 
-  changePage = page => {
-    this.props.dispatch({
-      type: 'softexetute/getExeclogList',
-      payload: {
-        page,
-        limit: this.state.pageSize,
-      },
-    });
-    setTimeout(() => {
-      this.setState({ current: page });
-    }, 0);
+  goBackPage = () => {
+    history.goBack(); // 返回上一页
   };
 
   render() {
@@ -173,14 +173,16 @@ class ExecLogView extends Component {
         title: '命令执行时间',
         dataIndex: 'execTime',
         key: 'execTime',
+        render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
         width: 200,
         ellipsis: true,
       },
       {
-        title: '命令触发方式(1自动2手动-默认2)',
+        title: '命令触发方式',
         dataIndex: 'execTrigger',
         key: 'execTrigger',
-        width: 250,
+        width: 200,
+        render: (text, record) => <span>{ComtriMode[record.execTrigger]}</span>,
       },
       {
         title: '用户名称(Linux账号)',
@@ -189,10 +191,11 @@ class ExecLogView extends Component {
         width: 200,
       },
       {
-        title: '命令执行人(系统的账号)',
+        title: '系统账号',
         dataIndex: 'execUserid',
         key: 'execUserid',
         width: 200,
+        render: (text, record) => <span>{SysAccount[record.execUserid]}</span>,
       },
       {
         title: '数据编号',
@@ -205,6 +208,7 @@ class ExecLogView extends Component {
         dataIndex: 'action',
         key: 'action',
         width: 100,
+        fixed: 'right',
         render: (text, record) => (
           <a type="link" onClick={() => this.showDrawer(record.id)}>
             详细
@@ -214,6 +218,7 @@ class ExecLogView extends Component {
     ];
     const {
       softexetute: { execloglist },
+      loading,
     } = this.props;
     const dataSource = execloglist && execloglist.rows;
     const { DescriptionItemList } = this.state;
@@ -227,6 +232,9 @@ class ExecLogView extends Component {
     };
     return (
       <PageHeaderWrapper title="日志详情" style={{ backgroundColor: '#fff' }}>
+        <Row style={{ marginBottom: 10, textAlign: 'right' }}>
+          <Button onClick={this.goBackPage}>《 返回列表</Button>
+        </Row>
         <Table
           dataSource={dataSource}
           columns={columns}
@@ -234,6 +242,7 @@ class ExecLogView extends Component {
           scroll={{ x: 2100 }}
           table-layout="fixed"
           pagination={pagination}
+          loading={loading}
         />
         <Drawer
           onClose={this.onClose}
@@ -245,7 +254,6 @@ class ExecLogView extends Component {
         >
           <Row>
             {Object.keys(DescriptionItemList).map((key, index) => [
-              // console.log(key,index,"key"),
               <Col span={12} key={index}>
                 <DescriptionItem title={key} content={DescriptionItemList[key]} />
               </Col>,

@@ -77,7 +77,6 @@ export async function queryHostShh2(params) {
 
 // 软件启停-主机_SSH2管理 /auto/hosts_shh2查询消息
 export async function queryHostShh2Search(params) {
-  // console.log( JSON.stringify(params));
   return request(`/auto/hosts_shh2/getByUserNameAndIp`, {
     method: 'POST',
     body: JSON.stringify(params),
@@ -99,9 +98,16 @@ export async function queryHostShh2List(params) {
     body: JSON.stringify(params),
   });
 }
+// 软件列表数据
+export async function querySearchSofts(params) {
+  return request(`/auto/softwares/listPage`, {
+    method: 'POST',
+    body: JSON.stringify(params),
+  });
+}
 // 软件启停-主机_SSH2 执行日志--表格
 export async function queryExecLog(params) {
-  return request(`/auto/exec_log/listPage`, {
+  return request(`/auto/exec_log/listPage/${params.ip}`, {
     method: 'POST',
     data: params,
   });
@@ -109,6 +115,20 @@ export async function queryExecLog(params) {
 // 软件启停-主机_SSH2 执行日志详情
 export async function queryExecLogDetail(id) {
   return request(`/auto/exec_log/${id}`, {
+    method: 'GET',
+  });
+}
+
+// 请求主机的软件信息， 生成表格 /auto/hosts_shh2/tree/{hostsId}/softwares/  mxj
+export async function querySoftwaresList(hostId) {
+  return request(`/auto/hosts_shh2/tree/${hostId}/softwares`, {
+    method: 'GET',
+  });
+}
+
+// 根据树杈点击的主机编号, 获取主机ip和端口 /auto/hosts/{id}根据编号查询信息  mxj
+export async function queryToHostList(id) {
+  return request(`/auto/hosts/${id}`, {
     method: 'GET',
   });
 }
