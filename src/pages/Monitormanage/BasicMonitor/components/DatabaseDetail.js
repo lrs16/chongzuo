@@ -32,80 +32,119 @@ class DatabaseDetail extends Component {
   state = {
     count: 2,
     dateString: '最近一次',
+    current: 1,
+    pageSize: 2,
+    usercurrent: 1,
+    userpageSize: 50,
   };
 
   componentDidMount() {
-    const { count } = this.state;
-    const { applicationId } = this.props;
-    this.getdatas(count);
-    this.getcurrentHistory(applicationId);
-    this.getbaseinfo();
+    const { current, pageSize, usercurrent, userpageSize } = this.state;
+    const { databaseId } = this.props;
+    this.getbaseinfo(databaseId);
+    this.getcache(databaseId);
+    this.getinstance(databaseId, current, pageSize);
+    this.getuser(databaseId, usercurrent, userpageSize);
+    this.gettablespace(databaseId);
+    this.getconnet(databaseId);
   }
 
   //基本信息
-  getbaseinfo = () => {
-    const { databaseId } = this.props;
+  getbaseinfo = databaseId => {
     this.props.dispatch({
       type: 'databasedetail/fetchdetail',
       payload: { databaseId },
     });
   };
-  // 当前告警
-  getdatas = count => {
+
+  //表空间使用情况
+  gettablespace = databaseId => {
     this.props.dispatch({
-      type: 'databasedetail/fetchCurrentalarm',
-      payload: { count },
+      type: 'databasedetail/fetchtablespace',
+      payload: { databaseId },
     });
   };
 
-  // 历史告警
-  gethistorydatas = () => {
+  //连接数
+  getconnet = databaseId => {
     this.props.dispatch({
-      type: 'hostdetail/fetchhistory',
+      type: 'databasedetail/fetchconnet',
+      payload: { databaseId },
     });
   };
 
-  // 进程情况
-  getprocessdatas = () => {
+  //表空间增长趋势
+  getspaceusage = (databaseId, formTime, toTime) => {
     this.props.dispatch({
-      type: 'hostdetail/fetchprocess',
+      type: 'databasedetail/fetchspaceusage',
+      payload: { databaseId, formTime, toTime },
     });
   };
 
-  // 最近一次指标监控
-  getcurrentHistory = () => {
-    const { dispatch, applicationId } = this.props;
-    dispatch({
-      type: 'hostdetail/fetchcurrenthistory',
-      payload: {
-        applicationId,
-      },
+  //Cache
+  getcache = databaseId => {
+    this.props.dispatch({
+      type: 'databasedetail/fetchcache',
+      payload: { databaseId },
     });
+  };
+
+  //数据库实例状态
+  getinstance = (databaseId, current, pageSize) => {
+    this.props.dispatch({
+      type: 'databasedetail/fetchinstance',
+      payload: { databaseId, current, pageSize },
+    });
+  };
+
+  //用户状态
+  getuser = (databaseId, current, pageSize) => {
+    this.props.dispatch({
+      type: 'databasedetail/fetchuser',
+      payload: { databaseId, current, pageSize },
+    });
+  };
+
+  //最近一次
+  getlast = (databaseId, current, pageSize, usercurrent, userpageSize) => {
+    this.gettablespace(databaseId);
+    this.getconnet(databaseId);
+    this.getcache(databaseId);
+    this.getinstance(databaseId, current, pageSize);
+    this.getuser(databaseId, usercurrent, userpageSize);
+  };
+
+  //时间段内
+  getperiod = (databaseId, current, pageSize, usercurrent, userpageSize) => {
+    this.getcache(databaseId);
+    this.getinstance(databaseId, current, pageSize);
+    this.getuser(databaseId, usercurrent, userpageSize);
   };
 
   gettimedatas(datas, startdata, enddata) {
-    const { dispatch, applicationId } = this.props;
+    const { current, pageSize, usercurrent, userpageSize } = this.state;
+    const { dispatch, databaseId } = this.props;
     const toTime = moment().format('X');
+
     switch (datas) {
       case '最近一次':
-        dispatch({
-          type: 'hostdetail/fetchcurrenthistory',
-          payload: {
-            applicationId,
-          },
-        });
+        this.gettablespace(databaseId);
+        this.getconnet(databaseId);
         break;
       case '30分钟':
-        dispatch({
-          type: 'hostdetail/fetchotherhistory',
-          payload: {
-            applicationId,
-            formTime: moment()
-              .subtract(30, 'minute')
-              .format('X'),
-            toTime,
-          },
-        });
+        const formTime = moment()
+          .subtract(30, 'minute')
+          .format('X');
+        console.log(databaseId, formTime, toTime);
+        this.getspaceusage(databaseId, formTime, toTime);
+        // dispatch({
+        //   type: 'hostdetail/fetchotherhistory',
+        //   payload: {
+        //     applicationId,
+        //     formTime: moment().subtract(30, 'minute').format('X'),
+        //     toTime,
+        //   },
+        // });
         break;
       case '1小时':
         dispatch({
@@ -203,7 +242,27 @@ class DatabaseDetail extends Component {
         break;
     }
   }
+  // 当前告警
+  getdatas = count => {
+    this.props.dispatch({
+      type: 'databasedetail/fetchCurrentalarm',
+      payload: { count },
+    });
+  };
 
+  // 历史告警
+  gethistorydatas = () => {
+    this.props.dispatch({
+      type: 'hostdetail/fetchhistory',
+    });
+  };
+
+  // 进程情况
+  getprocessdatas = () => {
+    this.props.dispatch({
+      type: 'hostdetail/fetchprocess',
+    });
+  };
   toggle = count => {
     this.setState({ count });
     this.getdatas(count);
@@ -334,7 +393,6 @@ class DatabaseDetail extends Component {
     //     render: text => <span>{numeral(text).format('0,0')}Mbps</span>,
     //   },
     // ];
-
     const { dateString } = this.state;
     //  const { id, data, radiaokey } = this.props.location.state;
     const {
@@ -343,11 +401,20 @@ class DatabaseDetail extends Component {
       loadingorther,
       data,
       alarmtype,
-      hostdetail: { historyalarms, processlist, history, currentHistory },
-      databasedetail: { baseinfo, currealarms },
+      hostdetail: { history, currentHistory },
+      databasedetail: {
+        baseinfo,
+        tablespace,
+        connetnumber,
+        spaceusage,
+        cachedata,
+        instancedata,
+        userdata,
+      },
     } = this.props;
-    console.log(this.props.databasedetail);
-    const dataSource = currealarms.data;
+    console.log(spaceusage);
+    const instancedatas = instancedata.data;
+    const userdatas = userdata.data;
     return (
       <>
         <Card style={{ marginBottom: 24, marginTop: '-1px' }}>
@@ -435,12 +502,21 @@ class DatabaseDetail extends Component {
                 </TimeModal>
               </div>
               {this.state.dateString === '最近一次' && (
-                <DatabaseLastcheck currentHistory={currentHistory} loading={loading} />
+                <DatabaseLastcheck
+                  currentHistory={currentHistory}
+                  tablespace={tablespace}
+                  loading={loading}
+                  connetnumber={connetnumber}
+                />
               )}
               {this.state.dateString !== '最近一次' && (
                 <DatabaseOthercheck datas={history} loading={loadingorther} />
               )}
-              <DatabaseChart />
+              <DatabaseChart
+                cachedata={cachedata}
+                instancedatas={instancedatas}
+                userdatas={userdatas}
+              />
             </TabPane>
             {/* 功能未实现 */}
             {/* <TabPane tab="性能分析" key="4">

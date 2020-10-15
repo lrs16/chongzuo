@@ -47,14 +47,62 @@ export async function databaseInfo(databaseId) {
   });
 }
 
-//请求数据库当前告警
+//请求Cache命中率
+export async function databaseCache(databaseId) {
+  return request(`/basicMonitor/databeseMonitor/cache/${databaseId}`, {
+    method: 'GET',
+  });
+}
+
+//表空间使用情况
+export async function tablespaceUsage(databaseId) {
+  return request(`/basicMonitor/databeseMonitor/tablespaceUsage/${databaseId}`, {
+    method: 'GET',
+  });
+}
+
+//当前连接数量
+export async function databaseConnect(databaseId) {
+  return request(`/basicMonitor/databeseMonitor/connect/${databaseId}`, {
+    method: 'GET',
+  });
+}
+
+//表空间增长趋势
+export async function timetablespaceUsage() {
+  return request(`/basicMonitor/databeseMonitor/tablespaceUsage`, {
+    method: 'GET',
+  });
+}
+
+//数据库实例状态
+export async function instanceStatus(databaseId, current, pageSize) {
+  return request(
+    `/basicMonitor/databeseMonitor/instanceStatus?current=${current}&hostId=${databaseId}&pageSize=${pageSize}`,
+    {
+      method: 'GET',
+    },
+  );
+}
+
+//用户状态
+export async function userStatus(databaseId, current, pageSize) {
+  return request(
+    `/basicMonitor/databeseMonitor/userStatus?current=${current}&hostId=${databaseId}&pageSize=${pageSize}`,
+    {
+      method: 'GET',
+    },
+  );
+}
+
+//请求数据库当前告警,mock接口
 export async function databaseEm(count) {
   return request(`/databeseMonitor/databeseMonitor/databaseEm?count=${count}`, {
     method: 'GET',
   });
 }
 
-//请求数据库当前告警
+//请求数据库当前告警,mock接口
 export async function databaseEmHistroy(current, pageSize) {
   return request(
     `/databeseMonitor/databeseMonitor/databaseEmHistroy?current=${current}&pageSize=${pageSize}`,

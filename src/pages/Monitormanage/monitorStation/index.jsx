@@ -78,7 +78,6 @@ class index extends Component {
 
     const { loading, monitorlist = {} } = this.props;
     const { monitorGroups, hosts } = monitorlist;
-    console.log(hosts);
     const CPUdatas = hosts.filter(obj => {
       return obj.type === 'CPU';
     });

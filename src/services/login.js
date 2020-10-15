@@ -20,7 +20,7 @@ export async function fakeAccountLogin(params) {
 }
 // 退出登录请求
 export async function fakeLogout(access_token) {
-  return request('/logout', {
+  return request('/upms/user/logout', {
     headers: {
       Authorization: `Bearer ${access_token}`,
     },

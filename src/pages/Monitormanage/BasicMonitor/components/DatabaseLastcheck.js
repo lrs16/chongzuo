@@ -5,7 +5,7 @@ import {
   Col,
   Card,
   Table,
-  // Pagination ,
+  Pagination,
   // Empty ,
   Icon,
   Spin,
@@ -15,31 +15,11 @@ import numeral from 'numeral';
 import Gauge from '@/components/CustomizeCharts/Gauge';
 import BasicBarchart from '@/components/CustomizeCharts/BasicBarchart';
 import iconfontUrl from '@/utils/iconfont';
+import { result } from 'lodash';
 
 const IconFont = Icon.createFromIconfontCN({
   scriptUrl: iconfontUrl,
 });
-
-const userindex = [
-  { name: 'SYSAUX', totalCapacity: 0.46504402, used: 0.20600414, usage: 47.1704, inodes: 0.2445 },
-  { name: 'SYSTEM', totalCapacity: 0.46504402, used: 0.20600414, usage: 47.1704, inodes: 0.2445 },
-  { name: 'ITSM', totalCapacity: 0.46504402, used: 0.20600414, usage: 47.1704, inodes: 0.2445 },
-  { name: 'USERS', totalCapacity: 191.43872, used: 13.470619, usage: 7.4158, inodes: 1.9484 },
-  { name: 'DS_SJJG', totalCapacity: 191.43872, used: 130.470619, usage: 20.4158, inodes: 1.9484 },
-];
-
-const dataSource = [
-  {
-    key: '1',
-    name: '胡彦斌',
-    status: 'MOMOUNT',
-  },
-  {
-    key: '2',
-    name: '胡彦祖',
-    status: 'MOMOUNT',
-  },
-];
 
 const changedate = datas => {
   const newArr = [];
@@ -49,19 +29,49 @@ const changedate = datas => {
   for (let i = 0; i < datas.length; i += 1) {
     const vote = {};
     vote.name = datas[i].name;
-    vote.usage = datas[i].usage;
+    vote.usage = datas[i].used;
     vote.total = 100;
     vote.destotal = 0;
     vote.des = `${datas[i].name}:总容量${numeral(datas[i].totalCapacity).format(
-      '0,0.0',
-    )}GB；已使用${numeral(datas[i].used).format('0,0.0')}GB；磁盘使用率${numeral(
-      datas[i].usage,
-    ).format('0,0.0')}%,inodes使用率${numeral(datas[i].inodes).format('0,0.0')}%`;
+      '0,0.00',
+    )}GB；已使用${numeral(datas[i].used).format('0,0.0000')}GB；表空间使用率${numeral(
+      datas[i].usageRate,
+    ).format('0,0.00')}%`;
     newArr.push(vote);
   }
   return newArr;
 };
 class Databaselastcheck extends Component {
+  constructor(props) {
+    super(props);
+    const { tablespace } = props;
+    const totaldatas = this.changeArr(tablespace);
+    this.state = {
+      current: 1,
+      pageSize: 5,
+      tabledatas: totaldatas[0],
+      total: tablespace.length,
+    };
+  }
+
+  changePage = page => {
+    const { tablespace } = this.props;
+    const datas = this.changeArr(tablespace);
+    const number = page - 1;
+    this.setState({
+      current: page,
+      tabledatas: datas[number],
+    });
+  };
+
+  changeArr = data => {
+    const newArr = [];
+    for (let i = 0; i < data.length; i += 5) {
+      newArr.push(data.slice(i, i + 5));
+    }
+    return newArr;
+  };
+
   render() {
     const columns = [
       {
@@ -76,14 +86,25 @@ class Databaselastcheck extends Component {
       },
     ];
 
-    const { loading } = this.props;
-    //    const deviceheight = changedate(userindex).length * 60;
+    const { tabledatas, total, current, pageSize } = this.state;
     return (
       <Row gutter={24} type="flex">
         <Col xl={12} xs={24} style={{ marginBottom: 24 }}>
           <Card>
             <div style={{ position: 'absolute', top: '15px' }}>表空间使用情况</div>
-            <BasicBarchart height={230} data={changedate(userindex)} padding={[30, 0, 0, 0]} />
+            {tabledatas !== undefined && (
+              <>
+                <BasicBarchart height={202} data={changedate(tabledatas)} padding={[30, 0, 0, 0]} />
+                <Pagination
+                  simple
+                  current={current}
+                  pageSize={pageSize}
+                  onChange={this.changePage}
+                  total={total}
+                  style={{ float: 'right', marginTop: 5 }}
+                />
+              </>
+            )}
           </Card>
         </Col>
         <Col xl={12} xs={24} style={{ marginBottom: 24 }}>
@@ -95,7 +116,8 @@ class Databaselastcheck extends Component {
                 style={{ float: 'left', fontSize: '12em', padding: '40px 50px 0 50px ' }}
               />
               <div style={{ fontSize: '4em', width: 200, textAlign: 'center', paddingTop: 70 }}>
-                50<span style={{ fontSize: '0.9em' }}>个</span>
+                {this.props.connetnumber}
+                <span style={{ fontSize: '0.9em' }}>个</span>
                 <span
                   style={{ fontSize: '14px', display: 'block', height: '20px', marginTop: '-30px' }}
                 >

@@ -35,31 +35,8 @@ class BasicBarchart extends Component {
             },
           ]}
         />
-        <Interval
-          color="#eee"
-          position="name*total"
-          size={25}
-          // label={[
-          //   'des',
-          // (desvalue)=> {
-          //   return{
-          //     content:desvalue,
-          //     position: 'des',
-          //     offsetX: -50,
-          //     style: {
-          //       fill: '#444',
-          //       textAlign: 'end',
-          //     },
-          //     layout: { type: 'fixed-overlap' }
-          //   }}
-          //   ]}
-        />
-        <Interval
-          color="#6395fa"
-          position="name*usage"
-          size={25}
-          // shape='name'
-        />
+        <Interval color="#eee" position="name*total" size={25} />
+        <Interval color="#6395fa" position="name*usage" size={25} />
       </Chart>
     );
   }

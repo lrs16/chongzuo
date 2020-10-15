@@ -47,7 +47,7 @@ class Gauge extends Component {
         return group;
       },
     });
-    const { height, data, title } = this.props;
+    const { height, data, title, value } = this.props;
 
     return (
       <div>
@@ -125,7 +125,7 @@ class Gauge extends Component {
           />
           <Annotation.Text
             position={['50%', '90%']}
-            content={`${data} %`}
+            content={`${value}%`}
             style={{
               fontSize: 24,
               fill: '#e16757',
