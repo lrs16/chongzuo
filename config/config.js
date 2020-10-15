@@ -211,6 +211,12 @@ export default {
                       icon: 'cloud-server',
                       component: './Automation/SoftTT/SoftExetute',
                     },
+                    {
+                      path: '/automation/STT/execlog',
+                      name: '执行日志',
+                      icon: 'cloud-server',
+                      component: './Automation/SoftTT/ExeclogView',
+                    },
                   ],
                 },
               ],
@@ -281,7 +287,7 @@ export default {
                       icon: 'cloud-server',
                       component: './Monitormanage/MeasurMonitor/MonitorConfiguration',
                     },
-              
+
                     {
                       component: './404',
                     },
