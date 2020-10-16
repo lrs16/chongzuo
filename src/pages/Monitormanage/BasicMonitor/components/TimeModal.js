@@ -44,7 +44,7 @@ class TimeModal extends Component {
 
   onOk = value => {
     const startdata = moment(value[0]).format('YYYY-MM-DD HH:mm ');
-    const enddata = moment(value[0]).format('YYYY-MM-DD HH:mm ');
+    const enddata = moment(value[1]).format('YYYY-MM-DD HH:mm ');
     const datas = `${startdata} ~~ ${enddata}`;
     this.props.onButClick(datas, startdata, enddata);
     this.hanldleCancel();

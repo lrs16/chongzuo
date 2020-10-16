@@ -6,6 +6,7 @@ import {
   userStatus,
   tablespaceUsage,
   databaseConnect,
+  timeConnet,
   timetablespaceUsage,
   databaseEm,
   databaseEmHistroy,
@@ -59,6 +60,7 @@ export default {
     userdata: [],
     tablespace: [],
     spaceusage: '',
+    spaceuconnet: '',
     connetnumber: [],
     currealarms: [],
   },
@@ -105,6 +107,15 @@ export default {
       const response = yield call(timetablespaceUsage, databaseId, formTime, toTime);
       yield put({
         type: 'getspaceusage',
+        payload: response.data,
+      });
+    },
+
+    // 连接数量趋势
+    *fetchspaceuconnet({ payload: { databaseId, formTime, toTime } }, { call, put }) {
+      const response = yield call(timeConnet, databaseId, formTime, toTime);
+      yield put({
+        type: 'getspaceuconnet',
         payload: response.data,
       });
     },
@@ -178,6 +189,12 @@ export default {
       return {
         ...state,
         instancedata: action.payload,
+      };
+    },
+    getspaceuconnet(state, action) {
+      return {
+        ...state,
+        spaceuconnet: action.payload,
       };
     },
     getuser(state, action) {

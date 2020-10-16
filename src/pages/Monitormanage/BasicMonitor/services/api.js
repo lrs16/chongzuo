@@ -69,10 +69,24 @@ export async function databaseConnect(databaseId) {
 }
 
 //表空间增长趋势
-export async function timetablespaceUsage() {
-  return request(`/basicMonitor/databeseMonitor/tablespaceUsage`, {
-    method: 'GET',
-  });
+export async function timetablespaceUsage(databaseId, formTime, toTime) {
+  return request(
+    `/basicMonitor/databeseMonitor/tablespaceUsage?formTime=${formTime}&hostId=${databaseId}&toTime=${toTime}`,
+    {
+      method: 'GET',
+    },
+  );
+}
+
+//当前连接数量趋势
+export async function timeConnet(databaseId, formTime, toTime) {
+  console.log(databaseId, formTime, toTime);
+  return request(
+    `/basicMonitor/databeseMonitor/connect?formTime=${formTime}&hostId=${databaseId}&toTime=${toTime}`,
+    {
+      method: 'GET',
+    },
+  );
 }
 
 //数据库实例状态

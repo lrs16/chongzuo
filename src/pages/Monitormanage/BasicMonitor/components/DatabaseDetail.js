@@ -20,13 +20,7 @@ const alertStatus = ['严重', '一般', '警告', '恢复', '正常', '未知']
 @connect(({ databasedetail, loading }) => ({
   databasedetail,
   loadinginfo: loading.effects['databasedetail/fetchdetail'],
-  loadingcurreem: loading.effects['databasedetail/fetchCurrentalarm'],
-}))
-@connect(({ hostdetail, loading }) => ({
-  hostdetail,
-  loading: loading.models.hostdetail,
-  loadingindicator: loading.effects['hostdetail/fetchcurrenthistory'],
-  loadingorther: loading.effects['hostdetail/fetchotherhistory'],
+  loadtablespace: loading.effects['databasedetail/fetchtablespace'],
 }))
 class DatabaseDetail extends Component {
   state = {
@@ -81,6 +75,14 @@ class DatabaseDetail extends Component {
     });
   };
 
+  //连接增长趋势
+  getspaceuconnet = (databaseId, formTime, toTime) => {
+    this.props.dispatch({
+      type: 'databasedetail/fetchspaceuconnet',
+      payload: { databaseId, formTime, toTime },
+    });
+  };
+
   //Cache
   getcache = databaseId => {
     this.props.dispatch({
@@ -115,7 +117,9 @@ class DatabaseDetail extends Component {
   };
 
   //时间段内
-  getperiod = (databaseId, current, pageSize, usercurrent, userpageSize) => {
+  getperiod = (databaseId, current, pageSize, usercurrent, userpageSize, formTime, toTime) => {
+    this.getspaceusage(databaseId, formTime, toTime);
+    this.getspaceuconnet(databaseId, formTime, toTime);
     this.getcache(databaseId);
     this.getinstance(databaseId, current, pageSize);
     this.getuser(databaseId, usercurrent, userpageSize);
@@ -125,7 +129,6 @@ class DatabaseDetail extends Component {
     const { current, pageSize, usercurrent, userpageSize } = this.state;
     const { dispatch, databaseId } = this.props;
     const toTime = moment().format('X');
-
     switch (datas) {
       case '最近一次':
         this.gettablespace(databaseId);
@@ -135,110 +138,118 @@ class DatabaseDetail extends Component {
         const formTime = moment()
           .subtract(30, 'minute')
           .format('X');
-        console.log(databaseId, formTime, toTime);
-        this.getspaceusage(databaseId, formTime, toTime);
-        // dispatch({
-        //   type: 'hostdetail/fetchotherhistory',
-        //   payload: {
-        //     applicationId,
-        //     formTime: moment().subtract(30, 'minute').format('X'),
-        //     toTime,
-        //   },
-        // });
+        this.getperiod(databaseId, current, pageSize, usercurrent, userpageSize, formTime, toTime);
         break;
       case '1小时':
-        dispatch({
-          type: 'hostdetail/fetchotherhistory',
-          payload: {
-            applicationId,
-            formTime: moment()
-              .subtract(1, 'hour')
-              .format('X'),
-            toTime,
-          },
-        });
+        const formTime1h = moment()
+          .subtract(1, 'hour')
+          .format('X');
+        this.getperiod(
+          databaseId,
+          current,
+          pageSize,
+          usercurrent,
+          userpageSize,
+          formTime,
+          formTime1h,
+        );
         break;
       case '3小时':
-        dispatch({
-          type: 'hostdetail/fetchotherhistory',
-          payload: {
-            applicationId,
-            formTime: moment()
-              .subtract(3, 'hour')
-              .format('X'),
-            toTime,
-          },
-        });
+        const formTime3h = moment()
+          .subtract(3, 'hour')
+          .format('X');
+        this.getperiod(
+          databaseId,
+          current,
+          pageSize,
+          usercurrent,
+          userpageSize,
+          formTime,
+          formTime3h,
+        );
         break;
       case '12小时':
-        dispatch({
-          type: 'hostdetail/fetchotherhistory',
-          payload: {
-            applicationId,
-            formTime: moment()
-              .subtract(12, 'hour')
-              .format('X'),
-            toTime,
-          },
-        });
+        const formTime12h = moment()
+          .subtract(12, 'hour')
+          .format('X');
+        this.getperiod(
+          databaseId,
+          current,
+          pageSize,
+          usercurrent,
+          userpageSize,
+          formTime,
+          formTime12h,
+        );
         break;
       case '1天':
-        dispatch({
-          type: 'hostdetail/fetchotherhistory',
-          payload: {
-            applicationId,
-            formTime: moment()
-              .subtract(1, 'days')
-              .format('X'),
-            toTime,
-          },
-        });
+        const formTime1d = moment()
+          .subtract(1, 'days')
+          .format('X');
+        this.getperiod(
+          databaseId,
+          current,
+          pageSize,
+          usercurrent,
+          userpageSize,
+          formTime,
+          formTime1d,
+        );
         break;
       case '3天':
-        dispatch({
-          type: 'hostdetail/fetchotherhistory',
-          payload: {
-            applicationId,
-            formTime: moment()
-              .subtract(3, 'days')
-              .format('X'),
-            toTime,
-          },
-        });
+        const formTime3d = moment()
+          .subtract(3, 'days')
+          .format('X');
+        this.getperiod(
+          databaseId,
+          current,
+          pageSize,
+          usercurrent,
+          userpageSize,
+          formTime,
+          formTime3d,
+        );
         break;
       case '7天':
-        dispatch({
-          type: 'hostdetail/fetchotherhistory',
-          payload: {
-            applicationId,
-            formTime: moment()
-              .subtract(7, 'days')
-              .format('X'),
-            toTime,
-          },
-        });
+        const formTime7d = moment()
+          .subtract(3, 'days')
+          .format('X');
+        this.getperiod(
+          databaseId,
+          current,
+          pageSize,
+          usercurrent,
+          userpageSize,
+          formTime,
+          formTime7d,
+        );
         break;
       case '1月':
-        dispatch({
-          type: 'hostdetail/fetchotherhistory',
-          payload: {
-            applicationId,
-            formTime: moment()
-              .subtract(1, 'months')
-              .format('X'),
-            toTime,
-          },
-        });
+        const formTime1m = moment()
+          .subtract(1, 'months')
+          .format('X');
+        this.getperiod(
+          databaseId,
+          current,
+          pageSize,
+          usercurrent,
+          userpageSize,
+          formTime,
+          formTime1m,
+        );
         break;
       default:
-        dispatch({
-          type: 'hostdetail/fetchotherhistory',
-          payload: {
-            applicationId,
-            formTime: moment(startdata).format('X'),
-            toTime: moment(enddata).format('X'),
-          },
-        });
+        const starttime = moment(startdata).format('X');
+        const endtime = moment(enddata).format('X');
+        this.getperiod(
+          databaseId,
+          current,
+          pageSize,
+          usercurrent,
+          userpageSize,
+          starttime,
+          endtime,
+        );
         break;
     }
   }
@@ -286,6 +297,7 @@ class DatabaseDetail extends Component {
   };
 
   onChangeBut = (datas, startdata, enddata) => {
+    console.log(startdata, enddata);
     this.setState({
       dateString: datas,
     });
@@ -323,27 +335,27 @@ class DatabaseDetail extends Component {
       { dataIndex: 'time' },
     ];
 
-    const columnshistory = [
-      {
-        title: '告警内容',
-        dataIndex: 'alerContent',
-        key: 'alerContent',
-      },
-      {
-        title: '发生时间',
-        dataIndex: 'time',
-        key: 'time',
-      },
-      {
-        title: '告警等级',
-        dataIndex: 'alarmstatus',
-        key: 'alarmstatus',
-        render: (text, record) => {
-          const colors = alarmstatusMap[record.alarmstatus];
-          return <span style={{ color: `${colors}` }}>{alertStatus[text]}</span>;
-        },
-      },
-    ];
+    // const columnshistory = [
+    //   {
+    //     title: '告警内容',
+    //     dataIndex: 'alerContent',
+    //     key: 'alerContent',
+    //   },
+    //   {
+    //     title: '发生时间',
+    //     dataIndex: 'time',
+    //     key: 'time',
+    //   },
+    //   {
+    //     title: '告警等级',
+    //     dataIndex: 'alarmstatus',
+    //     key: 'alarmstatus',
+    //     render: (text, record) => {
+    //       const colors = alarmstatusMap[record.alarmstatus];
+    //       return <span style={{ color: `${colors}` }}>{alertStatus[text]}</span>;
+    //     },
+    //   },
+    // ];
 
     // 功能未实现
     // const columnsprocess = [
@@ -396,25 +408,22 @@ class DatabaseDetail extends Component {
     const { dateString } = this.state;
     //  const { id, data, radiaokey } = this.props.location.state;
     const {
-      loading,
       //   loadingindicator,
-      loadingorther,
-      data,
-      alarmtype,
-      hostdetail: { history, currentHistory },
+      loadtablespace,
       databasedetail: {
         baseinfo,
         tablespace,
         connetnumber,
         spaceusage,
+        spaceuconnet,
         cachedata,
         instancedata,
         userdata,
       },
     } = this.props;
-    console.log(spaceusage);
     const instancedatas = instancedata.data;
     const userdatas = userdata.data;
+    console.log(loadtablespace);
     return (
       <>
         <Card style={{ marginBottom: 24, marginTop: '-1px' }}>
@@ -501,16 +510,15 @@ class DatabaseDetail extends Component {
                   </Button>
                 </TimeModal>
               </div>
-              {this.state.dateString === '最近一次' && (
-                <DatabaseLastcheck
-                  currentHistory={currentHistory}
-                  tablespace={tablespace}
-                  loading={loading}
-                  connetnumber={connetnumber}
-                />
+              {this.state.dateString === '最近一次' && loadtablespace === false && (
+                <DatabaseLastcheck tablespace={tablespace} connetnumber={connetnumber} />
               )}
-              {this.state.dateString !== '最近一次' && (
-                <DatabaseOthercheck datas={history} loading={loadingorther} />
+              {this.state.dateString !== '最近一次' && loadtablespace === false && (
+                <DatabaseOthercheck
+                  spaceusage={spaceusage}
+                  spaceuconnet={spaceuconnet}
+                  loading={loading}
+                />
               )}
               <DatabaseChart
                 cachedata={cachedata}
