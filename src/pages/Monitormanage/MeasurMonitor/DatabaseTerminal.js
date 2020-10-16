@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { connect } from 'dva';
 import numeral from 'numeral';
 import moment from 'moment';
-import { Row, Col, Empty, Spin, Card, Form, Button, DatePicker } from 'antd';
+import { Row, Col, Empty, Spin, Card, Form, Input, Button, DatePicker, Table } from 'antd';
 import Columnar from '@/components/CustomizeCharts/Columnar';
 import SeriesLine from '@/components/CustomizeCharts/SeriesLine';
 import { ChartCard } from '@/components/Charts';
@@ -141,6 +141,23 @@ class DatabaseTerminal extends Component {
         sm: { span: 16 },
       },
     };
+    const columns = [
+      {
+        title: '日期',
+        dataIndex: 'date',
+        key: 'date',
+      },
+      {
+        title: '类型',
+        dataIndex: 'type',
+        key: 'type',
+      },
+      {
+        title: '入库数量',
+        dataIndex: 'value',
+        key: 'value',
+      },
+    ];
     const { getFieldDecorator } = this.props.form;
     const {
       loading,
@@ -208,7 +225,7 @@ class DatabaseTerminal extends Component {
         <Card>
           <Row>
             <Form {...formItemLayout}>
-              <Col span={16}>
+              <Col span={10}>
               <Form.Item label="起止时间">
                 {getFieldDecorator('timepicker')(
                   <RangePicker showTime format="YYYY-MM-DD HH:mm:ss" />,
@@ -217,12 +234,16 @@ class DatabaseTerminal extends Component {
               </Col>
               <Col span={8}>
               <Form.Item label="入库范围">
-                {getFieldDecorator('val')(
-                  <RangePicker showTime format="YYYY-MM-DD HH:mm:ss" />,
+                {getFieldDecorator('minVal')(
+                  <Input style={{width:60}}/>
+                )}
+                <span> -- </span>
+                {getFieldDecorator('maxVal')(
+                  <Input style={{width:60}}/>
                 )}
               </Form.Item>
               </Col>
-              <Col span={8} style={{ textAlign: 'right' }}>
+              <Col span={4} style={{ textAlign: 'right' }}>
                   <Button type="primary" onClick={this.handleSearch}>
                     查 询
                 </Button>
