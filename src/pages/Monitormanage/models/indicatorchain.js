@@ -1,4 +1,4 @@
-import { queryKpicblList, queryKpifglList, queryKpiwzlList } from '../services/api';
+import { queryKpizbhbList, queryextractData } from '../services/api';
 
 export default {
   namespace: 'indicatorchain',
@@ -8,26 +8,15 @@ export default {
   },
 
   effects: {
-    *fetchcbllist({ payload }, { call, put }) {
-      const response = yield call(queryKpicblList, payload);
+    *fetchzbhblist({ payload }, { call, put }) {
+      const response = yield call(queryKpizbhbList, payload);
       yield put({
         type: 'getdatas',
         payload: response.data,
       });
     },
-    *fetchfgllist({ payload }, { call, put }) {
-      const response = yield call(queryKpifglList, payload);
-      yield put({
-        type: 'getdatas',
-        payload: response.data,
-      });
-    },
-    *fetchwzllist({ payload }, { call, put }) {
-      const response = yield call(queryKpiwzlList, payload);
-      yield put({
-        type: 'getdatas',
-        payload: response.data,
-      });
+    *fetchextractData({ payload }, { call }) {
+      return yield call(queryextractData, payload);
     },
   },
 

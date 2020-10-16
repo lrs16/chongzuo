@@ -14,9 +14,9 @@ export default {
     settldata: {},
     archdata: {},
     issuedata: {},
-    filetdata: {},
-    tabledata: {},
-    orderdata: {},
+    filetdata: {}, //1h 自动召测
+    tabledata: {}, //测量点主表生成
+    orderdata: {}, //费控指令
   },
 
   effects: {
@@ -41,6 +41,7 @@ export default {
         payload: response.data,
       });
     },
+    //1h自动召测测试
     *fetchfile(_, { call, put }) {
       const response = yield call(queryFiletest);
       yield put({
@@ -48,6 +49,7 @@ export default {
         payload: response.data,
       });
     },
+    //测量点主表生成
     *fetchtable(_, { call, put }) {
       const response = yield call(queryMaintable);
       yield put({
@@ -55,6 +57,7 @@ export default {
         payload: response.data,
       });
     },
+    // 费控指令
     *fetchorder(_, { call, put }) {
       const response = yield call(queryOrder);
       yield put({
@@ -83,18 +86,21 @@ export default {
         issuedata: action.payload,
       };
     },
+    //1h自动召测
     getfile(state, action) {
       return {
         ...state,
         filetdata: action.payload,
       };
     },
+    // 测量点主表生成
     gettable(state, action) {
       return {
         ...state,
         tabledata: action.payload,
       };
     },
+    //费控指令
     getorder(state, action) {
       return {
         ...state,

@@ -6,6 +6,7 @@ export default {
   state: {
     onlinestate: '',
     ZCdist: '',
+    ZCcontrol: '',
     ZCdown: '',
   },
 
@@ -19,11 +20,20 @@ export default {
     },
     *fetchZCdist({ payload: { type } }, { call, put }) {
       const response = yield call(getZC, type);
+      console.log(response.data);
       yield put({
         type: 'getZCdist',
         payload: response.data,
       });
     },
+    *fetchZCcontrol({ payload: { type } }, { call, put }) {
+      const response = yield call(getZC, type);
+      yield put({
+        type: 'getZCcontrol',
+        payload: response.data,
+      });
+    },
+    //后端反馈取不到
     *fetchZCdown({ payload: { type } }, { call, put }) {
       const response = yield call(getZC, type);
       yield put({
@@ -44,6 +54,12 @@ export default {
       return {
         ...state,
         ZCdist: action.payload,
+      };
+    },
+    getZCcontrol(state, action) {
+      return {
+        ...state,
+        ZCcontrol: action.payload,
       };
     },
     getZCdown(state, action) {

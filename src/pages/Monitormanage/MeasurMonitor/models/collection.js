@@ -57,6 +57,8 @@ export default {
         payload: response.data,
       });
     },
+
+    // 售电量
     *fetchsales({ payload: { sortarea } }, { call, put }) {
       const response = yield call(querySales, sortarea);
       yield put({
@@ -64,6 +66,8 @@ export default {
         payload: response.data,
       });
     },
+
+    // 供电量
     *fetchsupply({ payload: { sortarea } }, { call, put }) {
       const response = yield call(querySupply, sortarea);
       yield put({
@@ -110,6 +114,7 @@ export default {
         salesdata: action.payload,
       };
     },
+    // 供电量
     getsupply(state, action) {
       return {
         ...state,

@@ -93,28 +93,28 @@ class Host extends Component {
 
   render() {
     const columns = [
-      {
-        title: '告警状态',
-        dataIndex: 'alarmstatus',
-        key: 'alarmstatus',
-        width: 100,
-        align: 'center',
-        render: (text, record) => {
-          const colors = alarmstatusMap[record.alarmstatus];
-          const alarms = alarmmap[record.alarmstatus];
-          return (
-            <span>
-              {/* <div style={{width:15, height:15, borderRadius:'50%', background:`${colors}`}}/> */}
-              <Icon
-                type="exclamation-circle"
-                theme="filled"
-                style={{ color: `${colors}`, fontSize: '1.5em', marginRight: 8 }}
-              />
-              <span>{alarms}</span>
-            </span>
-          );
-        },
-      },
+      // {
+      //   title: '告警状态',
+      //   dataIndex: 'alarmstatus',
+      //   key: 'alarmstatus',
+      //   width: 100,
+      //   align: 'center',
+      //   render: (text, record) => {
+      //     const colors = alarmstatusMap[record.alarmstatus];
+      //     const alarms = alarmmap[record.alarmstatus];
+      //     return (
+      //       <span>
+      //         {/* <div style={{width:15, height:15, borderRadius:'50%', background:`${colors}`}}/> */}
+      //         <Icon
+      //           type="exclamation-circle"
+      //           theme="filled"
+      //           style={{ color: `${colors}`, fontSize: '1.5em', marginRight: 8 }}
+      //         />
+      //         <span>{alarms}</span>
+      //       </span>
+      //     );
+      //   },
+      // },
       {
         title: '名称',
         dataIndex: 'name',

@@ -28,7 +28,7 @@ const downdycols = {
   clock: {
     range: [0.05, 0.95],
     alias: '时刻',
-    tickInterval: 1,
+    tickInterval: 3,
   },
   value: {
     min: 0,
@@ -42,7 +42,7 @@ const othercols = {
   clock: {
     range: [0, 0.95],
     alias: '时刻',
-    tickInterval: 1,
+    tickInterval: 3,
   },
   value: {
     nice: true,

@@ -114,6 +114,7 @@ const changesales = datas => {
   return newArr;
 };
 const clock = '2020-2-15 15:58';
+
 // 有用
 const Labecols = {
   value: {
@@ -249,7 +250,7 @@ class Collection extends Component {
             color: 'rgba(0, 0, 0, 0.85)',
           }}
         >
-          取数时间：{clock}
+          {/* 取数时间：{clock} */}
         </div>
         <div style={{ marginBottom: 12 }}>
           <span>统计口径：</span>

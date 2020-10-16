@@ -29,15 +29,15 @@ const changefacetree = datas => {
   if (!Array.isArray(datas)) {
     return newArr;
   }
-  for (let i = 0; i < datas.length; i += 1) {
-    const childrendata = {};
-    childrendata.area = datas[i].area;
-    childrendata.status = datas[i].state;
-    data.push(childrendata);
-  }
+  // for (let i = 0; i < datas.length; i += 1) {
+  //   const childrendata = {};
+  //   childrendata.area = datas[i].area;
+  //   childrendata.status = datas[i].state;
+  //   data.push(childrendata);
+  // }
   const vote = {};
   vote.area = '计量中心';
-  vote.children = data;
+  vote.children = datas;
   newArr.push(vote);
 
   return newArr;
@@ -61,20 +61,19 @@ class SysRunning extends Component {
       payload: { type: '配变' },
     });
     dispatch({
-      type: 'sysrunning/fetchZCdown',
-      payload: { type: '低压' },
+      type: 'sysrunning/fetchZCcontrol',
+      payload: { type: '费控' },
     });
   }
 
   render() {
     const {
       loading,
-      sysrunning: { onlinestate, ZCdist, ZCdown },
+      sysrunning: { onlinestate, ZCdist, ZCcontrol },
     } = this.props;
     const onlinestates = changeTree(onlinestate);
     const ZCdists = changefacetree(ZCdist);
-    const ZCdowns = changefacetree(ZCdown);
-    console.log(ZCdowns[0]);
+    const ZCcontrols = changefacetree(ZCcontrol);
     return (
       <div>
         <Row gutter={24} type="flex">
@@ -93,7 +92,7 @@ class SysRunning extends Component {
             </ChartCard>
           </Col>
           <Col xl={12} xs={24} style={{ marginBottom: 24 }}>
-            <ChartCard title="数据召测-低压" contentHeight={350}>
+            <ChartCard title="数据召测-费控" contentHeight={350}>
               {/* <div
                 style={{
                   margin: '10px',
@@ -107,9 +106,9 @@ class SysRunning extends Component {
                 <Button type="primary">手工召测</Button>
               </div> */}
               <Spin spinning={loading} style={{ background: '#ffffff' }}>
-                {ZCdown.length === 0 && <Empty style={{ height: '250px' }} />}
-                {ZCdown.length > 0 && (
-                  <EdgeLine datas={ZCdowns[0]} height={350} padding={[15, 60, 15, 50]} />
+                {ZCcontrols.length === 0 && <Empty style={{ height: '250px' }} />}
+                {ZCcontrols.length > 0 && (
+                  <EdgeLine datas={ZCcontrols[0]} height={350} padding={[15, 60, 15, 50]} />
                 )}
               </Spin>
             </ChartCard>
@@ -129,8 +128,8 @@ class SysRunning extends Component {
                 <Button type="primary">手工召测</Button>
               </div> */}
               <Spin spinning={loading} style={{ background: '#ffffff' }}>
-                {ZCdist.length === 0 && <Empty style={{ height: '250px' }} />}
-                {ZCdist.length > 0 && (
+                {ZCdists.length === 0 && <Empty style={{ height: '250px' }} />}
+                {ZCdists.length > 0 && (
                   <EdgeLine datas={ZCdists[0]} height={350} padding={[15, 60, 15, 50]} />
                 )}
               </Spin>

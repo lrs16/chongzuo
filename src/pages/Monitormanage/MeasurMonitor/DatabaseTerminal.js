@@ -3,11 +3,13 @@ import React, { Component } from 'react';
 import { connect } from 'dva';
 import numeral from 'numeral';
 import moment from 'moment';
-import { Row, Col, Empty, Spin, Card } from 'antd';
+import { Row, Col, Empty, Spin, Card, Form, Button, DatePicker } from 'antd';
 import Columnar from '@/components/CustomizeCharts/Columnar';
 import SeriesLine from '@/components/CustomizeCharts/SeriesLine';
 import { ChartCard } from '@/components/Charts';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
+
+const { RangePicker } = DatePicker;
 
 const dataArr = datas => {
   const newArr = [];
@@ -16,12 +18,12 @@ const dataArr = datas => {
   }
   for (let i = 0; i < datas.length; i += 1) {
     const vote = {};
-    vote.rate = datas[i].rate * 100;
+    vote.rate = Math.floor(datas[i].rate * 100);
     vote.type = datas[i].area.substring(0, 2);
     newArr.push(vote);
   }
 
-  return newArr.slice(0, -1);
+  return newArr;
 };
 const dataLine = datas => {
   const newArr = [];
@@ -39,21 +41,6 @@ const dataLine = datas => {
   return newArr;
 };
 
-const datathehoure = datas => {
-  const newArr = [];
-  if (!Array.isArray(datas)) {
-    return newArr;
-  }
-  for (let i = 0; i < datas.length; i += 1) {
-    const vote = {};
-    vote.value = parseInt(datas[i].value);
-    vote.name = datas[i].type;
-    vote.clock = moment(datas[i].date);
-    newArr.push(vote);
-  }
-
-  return newArr.slice(98, -1);
-};
 const scale = {
   rate: {
     min: 0,
@@ -81,6 +68,11 @@ const Tablecolor = ['#4061d7', '#f00'];
   loading: loading.models.databaseterminal,
 }))
 class DatabaseTerminal extends Component {
+  state = {
+    current: 1,
+    pageSize: 10,
+  };
+
   componentDidMount() {
     this.getdatas();
     this.interval = setInterval(() => this.getdatas(), 60000);
@@ -103,7 +95,53 @@ class DatabaseTerminal extends Component {
     });
   }
 
+  handleSearch = () => {
+    const page = this.state.current;
+    const limit = this.state.pageSize;
+    this.props.form.validateFields((err, values) => {
+      if (!err) {
+        this.getdata(values, page, limit);
+      }
+    });
+  };
+
+  changePage = page => {
+    const limit = this.state.pageSize;
+    this.props.form.validateFields((err, values) => {
+      if (!err) {
+        this.getdata(values, page, limit);
+      }
+    });
+    setTimeout(() => {
+      this.setState({ current: page });
+    }, 0);
+  };
+
+  onShowSizeChange = (current, pageSize) => {
+    const page = current;
+    const limit = pageSize;
+    this.props.form.validateFields((err, values) => {
+      if (!err) {
+        this.getdata(values, page, limit);
+      }
+    });
+    setTimeout(() => {
+      this.setState({ pageSize });
+    }, 0);
+  };
+
   render() {
+    const formItemLayout = {
+      labelCol: {
+        xs: { span: 24 },
+        sm: { span: 8 },
+      },
+      wrapperCol: {
+        xs: { span: 24 },
+        sm: { span: 16 },
+      },
+    };
+    const { getFieldDecorator } = this.props.form;
     const {
       loading,
       databaseterminal: {
@@ -117,7 +155,7 @@ class DatabaseTerminal extends Component {
     const operatingmodes = dataArr(operatingmode);
     const storagechecks = dataLine(storagecheck);
     const thehours = dataLine(thehour);
-    console.log(operatingmode);
+    // console.log(operatingmode);
     return (
       <PageHeaderWrapper title="终端工况和数据入库">
         <h3>终端工况</h3>
@@ -166,11 +204,36 @@ class DatabaseTerminal extends Component {
             )}
           </Spin>
         </ChartCard>
-        <h3>入库量历史查询（5分钟入库量）</h3>
-        <Card>123123</Card>
+        {/* <h3>入库量历史查询（5分钟入库量）</h3>
+        <Card>
+          <Row>
+            <Form {...formItemLayout}>
+              <Col span={16}>
+              <Form.Item label="起止时间">
+                {getFieldDecorator('timepicker')(
+                  <RangePicker showTime format="YYYY-MM-DD HH:mm:ss" />,
+                )}
+              </Form.Item>
+              </Col>
+              <Col span={8}>
+              <Form.Item label="入库范围">
+                {getFieldDecorator('val')(
+                  <RangePicker showTime format="YYYY-MM-DD HH:mm:ss" />,
+                )}
+              </Form.Item>
+              </Col>
+              <Col span={8} style={{ textAlign: 'right' }}>
+                  <Button type="primary" onClick={this.handleSearch}>
+                    查 询
+                </Button>
+                  <Button style={{ marginLeft: 8 }}>重 置</Button>
+                </Col>
+            </Form>
+          </Row>
+        </Card> */}
       </PageHeaderWrapper>
     );
   }
 }
 
-export default DatabaseTerminal;
+export default Form.create()(DatabaseTerminal);

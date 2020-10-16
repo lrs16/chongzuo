@@ -2,33 +2,19 @@ import { stringify } from 'qs';
 import request from '@/utils/request';
 
 // 指标环比数据：抄表率
-export async function queryKpicblList(params) {
-  console.log(params);
-  return request(`/monitor/kpiData/cbl`, {
-    method: 'POST',
-    body: {
-      ...params,
+export async function queryKpizbhbList(params) {
+  const { currentPage, gddwmc, gldwlxbm, lb, mc, pageSize } = params;
+  return request(
+    `/monitor/kpiData/zbhb?currentPage=${currentPage}&gddwmc=${gddwmc}&gldwlxbm=${gldwlxbm}&lb=${lb}&mc=${mc}&pageSize=${pageSize}`,
+    {
+      method: 'GET',
     },
-  });
+  );
 }
 
-//指标环比数据：覆盖率
-export async function queryKpifglList(params) {
-  return request(`/monitor/kpiData/fgl`, {
-    method: 'POST',
-    body: {
-      ...params,
-    },
-  });
-}
-
-//指标环比数据：完整率
-export async function queryKpiwzlList(params) {
-  console.log(params);
-  return request(`/monitor/kpiData/wzl`, {
-    method: 'POST',
-    body: {
-      ...params,
-    },
+//抽数
+export async function queryextractData() {
+  return request(`monitor/extractData/zbhb`, {
+    method: 'GET',
   });
 }

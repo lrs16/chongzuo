@@ -20,9 +20,16 @@ class ColumnarY extends React.Component {
             name="total"
             label={{
               formatter: val => `${(val / 10000).toFixed(1)}w`,
+              autoRotate: false,
             }}
           />
-          <Axis name="type" />
+          <Axis
+            name="type"
+            label={{
+              autoRotate: false,
+              autoEllipsis: true,
+            }}
+          />
           <Tooltip showTitle={false} />
           <Legend visible={false} />
           <Geom type="interval" position="type*total" color="type">
@@ -31,9 +38,9 @@ class ColumnarY extends React.Component {
               offset={10} // 设置坐标轴文本 label 距离坐标轴线的距离
               htmlTemplate={(text, item) => {
                 if (item.point.flag === true) {
-                  return `<span style="color:#ff0000;">${item.point.total}</span>`;
+                  return `<div style="color:#ff0000; ">${item.point.total}</div>`;
                 }
-                return `<span style="color:#404040;">${item.point.total}</span>`;
+                return `<div style="color:#404040;">${item.point.total}</div>`;
               }}
             />
           </Geom>

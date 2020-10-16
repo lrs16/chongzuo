@@ -1,14 +1,21 @@
 import React, { Component } from 'react';
 import { Chart, Legend, Axis, Tooltip, Line, Point, Annotation } from 'bizcharts';
+import DataSet from '@antv/data-set';
 
 // 单曲线，多警戒线，图例：关口0点采集
 class LineChart extends Component {
   render() {
     const { height, padding, data, cols } = this.props;
     const end = data[data.length - 1];
+    const dv = new DataSet.View().source(data);
+    dv.transform({
+      type: 'sort-by',
+      fields: ['date'], // 根据指定的字段集进行排序，与lodash的sortBy行为一致
+      order: 'ASC', // 默认为 ASC，DESC 则为逆序
+    });
     return (
       <div>
-        <Chart data={data} padding={padding} scale={cols} forceFit height={height} animate>
+        <Chart data={dv.rows} padding={padding} scale={cols} forceFit height={height} animate>
           {/* 时间刻度 */}
           <Axis
             name="date"
@@ -181,7 +188,7 @@ class LineChart extends Component {
                 textAlign: 'end',
                 textBaseline: 'center',
               }}
-              offsetX={50} // x 方向的偏移量
+              offsetX={30} // x 方向的偏移量
               offsetY={0} // y 方向偏移量
             />
           )}
@@ -195,7 +202,7 @@ class LineChart extends Component {
                 textAlign: 'end',
                 textBaseline: 'center',
               }}
-              offsetX={50} // x 方向的偏移量
+              offsetX={30} // x 方向的偏移量
               offsetY={0} // y 方向偏移量
             />
           )}
@@ -209,7 +216,7 @@ class LineChart extends Component {
                 textAlign: 'end',
                 textBaseline: 'center',
               }}
-              offsetX={50} // x 方向的偏移量
+              offsetX={0} // x 方向的偏移量
               offsetY={0} // y 方向偏移量
             />
           )}

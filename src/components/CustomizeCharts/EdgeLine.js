@@ -65,37 +65,37 @@ class EdgeLine extends Component {
               shape="line"
               color="#3399ff"
               opacity={0.8}
-              tooltip="area*status"
+              tooltip="area*state"
             />
           </View>
           <View
             data={dv.getAllNodes().map(node => ({
               hasChildren: !!(node.children && node.children.length),
-              statustrue: !!(node.data.status === '失败'),
+              statetrue: !!(node.data.state === '失败'),
               area: node.data.area,
               ip: node.data.ip,
-              status: node.data.status,
+              state: node.data.state,
               x: node.x,
               y: node.y,
             }))}
           >
             <Point
               position="x*y"
-              color="statustrue"
+              color="statetrue"
               label={[
-                'area*status*hasChildren',
-                (area, status, hasChildren) => {
+                'area*state*hasChildren',
+                (area, state, hasChildren) => {
                   if (hasChildren === false) {
-                    if (status === '失败') {
+                    if (state === '失败') {
                       return {
-                        content: `${area}(招测${status})`,
+                        content: `${area}(招测${state})`,
                         style: {
                           fill: 'red',
                         },
                       };
                     }
                     return {
-                      content: `${area}(招测${status})`,
+                      content: `${area}(招测${state})`,
                       style: {
                         fill: '#444',
                       },

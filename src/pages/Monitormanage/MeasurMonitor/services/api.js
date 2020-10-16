@@ -10,18 +10,18 @@ export async function queryFacadata(params) {
 }
 
 // 请求完整率，检查完毕
-export async function queryCompleterate(params) {
-  return request(`/monitor/gatherKpi/wzl?${stringify(params)}`);
+export async function queryCompleterate(sortarea) {
+  return request(`/monitor/gatherKpi/wzl??area=${sortarea}`);
 }
 
 // 终端覆盖率，检查完毕
-export async function queryCoverage(area) {
-  return request(`/monitor/gatherKpi/fgl?${stringify(area)}`);
+export async function queryCoverage(sortarea) {
+  return request(`/monitor/gatherKpi/fgl?area=${sortarea}`);
 }
 
 // 抄表率,检查完毕
-export async function queryMeterread(area) {
-  return request(`/monitor/gatherKpi/cbl${stringify(area)}`);
+export async function queryMeterread(sortarea) {
+  return request(`/monitor/gatherKpi/cbl?area=${sortarea}`);
 }
 
 // 关口零点采集，检查完毕
@@ -35,16 +35,16 @@ export async function queryHourread() {
 }
 
 // 关口售电量，检查完毕
-export async function querySales(params) {
-  return request(`/monitor/gatherKpi/sdl${stringify(params)}`);
+export async function querySales(sortarea) {
+  return request(`/monitor/gatherKpi/sdl?area=${sortarea}`);
 }
 
 // 关口供电量，检查完毕
-export async function querySupply(params) {
-  return request(`/monitor/gatherKpi/gdl${stringify(params)}`);
+export async function querySupply(sortarea) {
+  return request(`/monitor/gatherKpi/gdl?area=${sortarea}`);
 }
 
-// 抄表结算，检查完毕
+// 抄表结算，检查完毕(后端未完成)
 export async function querySettlement() {
   return request(`/monitor/interfaceCheck/cbjsjk`);
 }
@@ -134,14 +134,15 @@ export async function get102upSafeZone() {
   return request(`/monitor/kafka/topicUp/102GK2ZoneAndSafeZoneQTHFJK`);
 }
 
-// 登录检测
+// 登录检测,主站可用情况
 export async function getOnlineState() {
-  return request(`/api-monitoring-business/zzxt/onlinestate`);
+  return request(`/monitor/master/onlinestate`);
 }
 
 // 召测状态，已完成”配变“”低压“，检查完毕
 export async function getZC(type) {
-  return request(`/monitor/master/zc?${stringify(type)}`);
+  console.log(type);
+  return request(`/monitor/master/zc?type=${type}`);
 }
 
 // gkrk/zxl终端工况-在线率，检查完毕

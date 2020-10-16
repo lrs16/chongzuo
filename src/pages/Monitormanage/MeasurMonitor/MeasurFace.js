@@ -148,7 +148,7 @@ const Tablecols = {
     // max: 24,
     range: [0, 0.95],
     alias: '时刻',
-    tickInterval: 1,
+    tickInterval: 2,
   },
   value: {
     max: 5000,
@@ -167,7 +167,7 @@ const timecols = {
   date: {
     range: [0.02, 0.9],
     alias: '时刻',
-    tickInterval: 1,
+    tickInterval: 2,
   },
   alertvalue: {
     min: -10,
@@ -199,9 +199,9 @@ class MeasurFace extends Component {
     dispatch({
       type: 'measurface/fetcharch',
     });
-    // dispatch({
-    //   type: 'measurface/fetchissue',
-    // });
+    dispatch({
+      type: 'measurface/fetchissue',
+    });
     dispatch({
       type: 'measurface/fetchfile',
     });
@@ -231,10 +231,10 @@ class MeasurFace extends Component {
       loading,
       measurface: {
         // settldata,
-        archdata,
-        // issuedata,
+        archdata, // 档案同步
+        issuedata, // 参考下发
         filetdata,
-        tabledata,
+        tabledata, // 测量点主表生成
         orderdata,
       },
     } = this.props;
@@ -242,7 +242,6 @@ class MeasurFace extends Component {
     const orderdatas = changehour(orderdata);
     const tabledatas = changetable(tabledata);
     const facetree = changefacetree(filetdata);
-    console.log(facetree);
     return (
       <PageHeaderWrapper title="接口数据核查情况">
         <div>
@@ -304,8 +303,7 @@ class MeasurFace extends Component {
             <Col xl={12} xs={24} style={{ marginBottom: 24 }}>
               <ChartCard title="参考下发（1h/刷新）" contentHeight={350}>
                 {/* 后端接口报500 */}
-                <Empty style={{ height: '250px' }} />
-                {/* <Spin spinning={loading} style={{ background: '#ffffff' }}>
+                <Spin spinning={loading} style={{ background: '#ffffff' }}>
                   {issuedata.length === 0 && <Empty style={{ height: '250px' }} />}
                   {issuedata.length > 0 && (
                     <ColumnarY
@@ -315,7 +313,7 @@ class MeasurFace extends Component {
                       padding={[30, 60, 50, 220]}
                     />
                   )}
-                </Spin> */}
+                </Spin>
               </ChartCard>
             </Col>
             <Col xl={12} xs={24} style={{ marginBottom: 24 }}>
