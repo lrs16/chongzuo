@@ -69,9 +69,8 @@ class SoftEdit extends Component {
       softwareAbsDir,
       softwareLogDir,
       softwareStartCommand,
-      softwareStartCommandFinal,
+      softwareStopCommand,
       softwareCheckCommand,
-      softwareStopCommandFinal,
       softwarePort,
       softwareVersion,
       softwareSort,
@@ -149,21 +148,22 @@ class SoftEdit extends Component {
               </Form>
             </TabPane>
 
-            <TabPane tab="启动执行命令" key="2">
+            <TabPane tab="启动" key="2">
               <Form>
                 <Form.Item>
-                  {getFieldDecorator('softwareStartCommandFinal', {
-                    initialValue: softwareStartCommandFinal,
+                  {getFieldDecorator('softwareStartCommand', {
+                    initialValue:softwareStartCommand ,
+
                   })(<Input.TextArea rows={34} style={{ width: 720 }}></Input.TextArea>)}
                 </Form.Item>
               </Form>
             </TabPane>
 
-            <TabPane tab="停止执行命令" key="3">
+            <TabPane tab="停止" key="3">
               <Form>
                 <Form.Item>
-                  {getFieldDecorator('softwareStopCommandFinal', {
-                    initialValue: softwareStopCommandFinal,
+                  {getFieldDecorator('softwareStopCommand', {
+                    initialValue: softwareStopCommand,
                   })(<Input.TextArea rows={34} style={{ width: 720 }} />)}
                 </Form.Item>
               </Form>
@@ -212,9 +212,7 @@ SoftEdit.defaultProps = {
     updateTime: '',
     softwareLogDir: '',
     softwareStartCommand: '',
-    softwareStartCommandFinal: '',
     softwareStopCommand: '',
-    softwareStopCommandFinal: '',
     softwarePort: '',
     softwareVersion: '',
     softwareSort: '',
