@@ -1,7 +1,7 @@
 /* eslint-disable react/prefer-stateless-function */
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import numeral from 'numeral';
+// import numeral from 'numeral';
 import moment from 'moment';
 import { Row, Col, Empty, Spin, Card, Form, Input, Button, DatePicker, Table } from 'antd';
 import Columnar from '@/components/CustomizeCharts/Columnar';
