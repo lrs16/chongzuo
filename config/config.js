@@ -287,6 +287,12 @@ export default {
                       icon: 'cloud-server',
                       component: './Monitormanage/MeasurMonitor/MonitorConfiguration',
                     },
+                    {
+                      path: '/monitormanage/measurmonitor/monitoraddedit',
+                      name: '增加计量业务监测配置',
+                      icon: 'cloud-server',
+                      component: './Monitormanage/MeasurMonitor/MonitorAddedit',
+                    },
 
                     {
                       component: './404',
@@ -597,21 +603,34 @@ export default {
       target: 'http://172.16.4.211:9901/', //计量业务监控
       changeOrigin: true,
     },
-    // '/monitor/kpiData/': {
-    //   target: 'http://localhost:8000/', //mock接口数据，真实接口将整段删除
-    //   changeOrigin: true,
-    // },
-    // '/api-eai-job/oma/': {
-    //   target: 'http://172.16.4.211:8800/', //脚本管理服务器地址,211正式，250测试
+    '/monitor/kpiData/': {
+      target: 'http://localhost:8000/', //mock接口数据，真实接口将整段删除
+      changeOrigin: true,
+    },
+    '/api-eai-job/oma/': {
+      target: 'http://172.16.4.211:8800/', //脚本管理服务器地址,211正式，250测试
+      changeOrigin: true,
+      // pathRewrite: { '^/server': '' },
+    },
+
+    // '/oma/': {
+    //   target: 'http://172.16.4.100:8807/', //脚本管理服务器地址,211正式，250测试
     //   changeOrigin: true,
     //   // pathRewrite: { '^/server': '' },
     // },
     '/basicMonitor/': {
-      //监测管理，基础平台
+      //检测管理，基础平台
       target: 'http://172.16.4.57:8889/',
       changeOrigin: true,
+      // pathRewrite: { '^/apiauth': '' }
     },
     '/api-monitoring-business/': {
+      //计量现场接口
+      target: 'http://172.16.4.211:8800/',
+      changeOrigin: true,
+      // pathRewrite: { '^/apiauth': '' }
+    },
+    '/api-meter-auto/': {
       //计量现场接口
       target: 'http://172.16.4.211:8800/',
       changeOrigin: true,
