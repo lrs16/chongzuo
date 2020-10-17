@@ -9,6 +9,8 @@ import {
   querySearchSofts,
   querySoftwaresList,
   queryToHostList, // 树杈数据
+  queryHostTree,
+  querySofttoHostHandleType
 } from '../services/api';
 
 export default {
@@ -20,6 +22,7 @@ export default {
     execloglist: [],
     treesoftdata: [],
     treehostdata: [],
+    data: [],
   },
 
   effects: {
@@ -86,6 +89,18 @@ export default {
         payload: response.data,
       });
     },
+
+    *fetchHostTree({ payload }, { call, put }) {
+      const response = yield call(queryHostTree, payload);
+      yield put({
+        type: 'show',
+        payload: response,
+      });
+    },
+
+    *getSofttoHostHandleType({ payload: { hostsId, softId, handleType } }, { call}) {
+      return yield call(querySofttoHostHandleType, {hostsId, softId, handleType});
+    },
   },
 
   reducers: {
@@ -121,6 +136,13 @@ export default {
       return {
         ...state,
         treehostdata: action.payload,
+      };
+    },
+
+    show(state, { payload }) {
+      return {
+        ...state,
+        ...payload,
       };
     },
   },

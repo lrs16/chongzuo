@@ -175,7 +175,7 @@ class StartModal extends Component {
                     message: 'IP不能为空',
                   },
                 ],
-                initialValue: hostsIp,
+                initialValue: hostsIp || '',
               })(<Input type="text" />)}
             </Form.Item>
             <Form.Item label="端口">

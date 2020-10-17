@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { connect } from 'dva';
 import Link from 'umi/link';
 // import moment from 'moment';
-import { Card, Table, Divider, Tabs, Button, Form, Input, Row, Col } from 'antd';
+import { Card, Table, Divider, Tabs, Button, Form, Input, Row, Col, message  } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import StartModal from './components/StartModal';
 import HostTree from '@/components/HostTree';
@@ -28,19 +28,39 @@ class SoftExetute extends Component {
       pageSize: 10,
       queKey: '',
       eryPassword: '',
+      hostId: ''
     };
   }
   // eslint-disable-next-line react/sort-comp
   componentDidMount() {
-    // this.getList();
+    this.getList();
   }
 
-  // getList = () => {
-  //   this.props.dispatch({
-  //     type: 'softexetute/getSoftwaresList',
-  //     //payload: { hostId: '1310852028620083201' },
-  //   });
-  // };
+  getList = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'softexetute/fetchHostTree',
+    })
+
+    const {
+      softexetute: { data },
+    } = this.props;
+    const arr = data.map(i=>{
+      return i.children;
+    })
+    const hostId = arr.map(item=>{
+      return item[0].id;
+    })
+
+    dispatch({
+      type: 'softexetute/getSoftwaresList',
+      payload: { hostId },
+    });
+    dispatch({
+      type: 'softexetute/getToHostList',
+      payload: { hostId },
+    });
+  };
 
   // 输入框输入的value值
   handleInputValue = e => {
@@ -52,13 +72,20 @@ class SoftExetute extends Component {
     this.setState({
       inputValue: '',
     });
+
     // 点击确认向后台发送数据  1.输入的值 2.存储的值（ip，端口，用户名，密码）
     const { hostsIp, hostsSshPort, hostsSshUsername } = this.state.sumitvalue;
-    const { eryPassword } = this.state;
+    const { activeKey, eryPassword } = this.state;// 从activeKey获取当前标签的ip，用户名
+    const activeKeyTitle = activeKey.split('-');
+
+    // const hostIp = hostsIp;
+    // const userName = hostsSshUsername;
     const passWord = eryPassword;
-    const hostIp = hostsIp;
     const port = hostsSshPort;
-    const userName = hostsSshUsername;
+    const hostIp = activeKeyTitle[0];
+    const userName = activeKeyTitle[1];
+    // const passWord = activeKeyTitle[2];
+    // const port = activeKeyTitle[3];
     const command = this.state.inputValue;
     const { dispatch } = this.props;
     return dispatch({
@@ -73,22 +100,21 @@ class SoftExetute extends Component {
           </p>
         );
       });
-      // 点击启动时添加tab
       const { panes } = this.state;
-      const title = hostsIp + `-` + userName;
-
+      const title = hostIp + `-` + userName;
       const sametype = panes.filter(obj => {
         return obj.key === title;
       });
-
+    
       if (sametype.length >= 1) {
         sametype[0].content = strContent;
         this.setState({ activeKey: title });
       }
-      if (sametype.length < 1) {
-        panes.push({ title: title, content: strContent, key: title });
-        this.setState({ panes, activeKey: title });
-      }
+      // if (sametype.length < 1) {
+      //   panes.push({ title: title, content: strContent, key: title });
+      //   this.setState({ panes, activeKey: title, });
+      // }
+      
     });
   };
 
@@ -103,7 +129,6 @@ class SoftExetute extends Component {
   // tabs标签的一系列操作 onChange  onEdit add remove
   onChange = activeKey => {
     this.setState({ activeKey });
-    // this.myRef.current.refresh();
   };
 
   onEdit = (targetKey, action) => {
@@ -111,6 +136,7 @@ class SoftExetute extends Component {
   };
 
   add = (record, values, commitlist, passWord) => {
+    const { hostsIp,  hostsSshUsername, hostsSshPort} = values;
     const wordStr = ([] = commitlist.msg.split('\n'));
     const strContent = wordStr.map((item, index) => {
       return (
@@ -120,21 +146,22 @@ class SoftExetute extends Component {
       );
     });
 
-    // 点击启动时添加tab
     const { panes } = this.state;
-    const title = values.hostsIp + `-` + values.hostsSshUsername;
-
+    
+    // const activeKey = hostsIp + `-` + hostsSshUsername + `-` + passWord + `-` + hostsSshPort;
+    const title = hostsIp + `-` + hostsSshUsername;
+    
     const sametype = panes.filter(obj => {
       return obj.key === title;
-    });
-
+    })
+     
     if (sametype.length >= 1) {
       sametype[0].content = strContent;
-      this.setState({ activeKey: title });
+      this.setState({ title });
     }
     if (sametype.length < 1) {
       panes.push({ title: title, content: strContent, key: title });
-      this.setState({ panes, activeKey: title, sumitvalue: values, eryPassword: passWord });
+      this.setState({ panes, activeKey: title, sumitvalue: values, eryPassword: passWord});
     }
   };
 
@@ -189,6 +216,7 @@ class SoftExetute extends Component {
   // 获取树杈传值
   getChildValue = val => {
     const hostId = val[0];
+    this.setState({hostId})
     const { dispatch } = this.props;
     dispatch({
       type: 'softexetute/getSoftwaresList',
@@ -201,6 +229,67 @@ class SoftExetute extends Component {
     });
   };
 
+  start = (record) => {
+    const { hostId } = this.state;
+    const { id } = this.props.softexetute.treehostdata;
+
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'softexetute/getSofttoHostHandleType',
+      payload: { 
+        hostsId: id || hostId,  
+        softId: record.id, 
+        handleType: '1'
+       },
+    }).then(res=>{
+      if(res.state) {
+        message.success(res.msg);
+      } else {
+        message.error(res.msg);
+      }
+    })
+  };
+  
+  stop = (record) => {
+    const { hostId } = this.state;
+    const { id } = this.props.softexetute.treehostdata;
+
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'softexetute/getSofttoHostHandleType',
+      payload: { 
+        hostsId: id || hostId, 
+        softId: record.id, 
+        handleType: '2'
+       },
+    }).then(res=>{
+      if(res.state) {
+        message.success(res.msg);
+      } else {
+        message.error(res.msg);
+      }
+    })
+  };
+  check = (record) => {
+    const { hostId } = this.state;
+    const { id } = this.props.softexetute.treehostdata;
+
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'softexetute/getSofttoHostHandleType',
+      payload: { 
+        hostsId: id || hostId, 
+        softId: record.id, 
+        handleType: '3'
+       },
+    }).then(res=>{
+      if(res.state) {
+        message.success(res.msg);
+      } else {
+        message.error(res.msg);
+      }
+    })
+  };
   render() {
     const columns = [
       {
@@ -243,7 +332,7 @@ class SoftExetute extends Component {
         title: '操作',
         dataIndex: 'action',
         key: 'action',
-        width: 200,
+        width: 300,
         fixed: 'right',
         render: (text, record) => (
           <div>
@@ -256,6 +345,18 @@ class SoftExetute extends Component {
             >
               <a type="link">执行命令</a>
             </StartModal>
+            <Divider type="vertical" />
+            <span>
+               <a type="link" record={record} onClick={() => this.start(record)}>启动</a>
+            </span>
+            <Divider type="vertical" />
+            <span>
+               <a type="link" record={record} onClick={() => this.stop(record)}>停止</a>
+            </span>
+            <Divider type="vertical" />
+            <span>
+               <a type="link" record={record} onClick={() => this.check(record)}>检测</a>
+            </span>
             <Divider type="vertical" />
             <span>
               <Link
@@ -272,7 +373,7 @@ class SoftExetute extends Component {
     ];
 
     const {
-      softexetute: { softdata, treesoftdata },
+      softexetute: { softdata, treesoftdata, data},
       loading,
     } = this.props;
     // const dataSource = softdata.rows;

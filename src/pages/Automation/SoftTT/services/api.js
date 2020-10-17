@@ -132,3 +132,18 @@ export async function queryToHostList(id) {
     method: 'GET',
   });
 }
+
+// 请求主机， 生成结构树 /auto/hosts_shh2/tree/hosts/  mxj
+export async function queryHostTree(params) {
+  return request(`/auto/hosts_shh2/tree/hosts/`, {
+    method: 'GET',
+    body: JSON.stringify(params),
+  });
+}
+
+// /auto/hosts_shh2/handle/{hostsId}/{softId}/{handleType}操作主机的软件信息
+export async function querySofttoHostHandleType({hostsId, softId, handleType}) {
+  return request(`/auto/hosts_shh2/handle/${hostsId}/${softId}/${handleType}`, {
+    method: 'GET',
+  });
+}

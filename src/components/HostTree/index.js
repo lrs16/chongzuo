@@ -63,12 +63,18 @@ class DeptTree extends Component {
     } = this.props;
     const dataSource = [...data];
     const returnTree = this.toTree(dataSource);
+    const arr = data.map(i=>{
+      return i.children;
+    })
+    const hostId = arr.map(item=>{
+      return item[0].id;
+    })
     return (
       <>
         {returnTree.length > 0 && (
           <Tree
             defaultExpandAll
-            // defaultSelectedKeys={['1310852028620083201']}
+            defaultSelectedKeys={hostId}
             onSelect={this.onSelect}
           >
             {this.renderTreeNodes(returnTree)}
