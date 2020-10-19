@@ -225,7 +225,6 @@ class SoftExetute extends Component {
 
   // 获取树杈传值
   getChildValue = val => {
-    const hostId = val[0];
     this.setState({ hostId });
     const { dispatch } = this.props;
     dispatch({
