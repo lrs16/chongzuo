@@ -43,7 +43,7 @@ class SoftExetute extends Component {
     });
 
     const {
-      softexetute: { data },
+      softexetute: { data, treehostdata },
     } = this.props;
     const arr = data.map(i => {
       return i.children;
@@ -53,13 +53,21 @@ class SoftExetute extends Component {
     });
 
     dispatch({
-      type: 'softexetute/getSoftwaresList',
-      payload: { hostId },
-    });
-    dispatch({
       type: 'softexetute/getToHostList',
       payload: { hostId },
-    });
+    })
+
+    if(treehostdata == null || (treehostdata !== null && treehostdata.length == 0)) {
+      dispatch({
+        type: 'softexetute/getToHostList',
+        payload: { hostId: '0' },
+      })
+    } else {
+      dispatch({
+        type: 'softexetute/getSoftwaresList',
+        payload: { hostId },
+      });
+    }
   };
 
   // 输入框输入的value值
@@ -218,7 +226,6 @@ class SoftExetute extends Component {
   // 获取树杈传值
   getChildValue = val => {
     const hostId = val[0];
-    console.log(hostId);
     this.setState({ hostId });
     const { dispatch } = this.props;
     dispatch({
