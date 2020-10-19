@@ -35,7 +35,7 @@ const errorHandler = error => {
   };
   const cleartoken = () => {
     // const token = sessionStorage.getItem('access_token');
-    router.push('/500');
+    // router.push('/500');
     sessionStorage.clear();
   };
 
@@ -77,6 +77,7 @@ const errorHandler = error => {
 
     if (status === 403) {
       window.location.pathname = '/user/login';
+      sessionStorage.clear();
     }
     if (status >= 404 && status < 422) {
       router.push('/404');
