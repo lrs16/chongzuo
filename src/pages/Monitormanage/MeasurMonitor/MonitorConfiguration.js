@@ -3,7 +3,7 @@ import { connect } from 'dva';
 import { Layout, Card, Table, Form, Input, Button, Row, Col, Radio, message } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import Link from 'umi/link';
-// import MonitorEdit from '../MeasurMonitor/MonitorAddedit';
+import MonitorEdit from '../MeasurMonitor/MonitorAddedit';
 const { Header, Footer, Sider, Content } = Layout;
 const formItemLayout = {
   labelCol: {

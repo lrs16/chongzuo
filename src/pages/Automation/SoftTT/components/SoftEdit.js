@@ -148,22 +148,21 @@ class SoftEdit extends Component {
               </Form>
             </TabPane>
 
-            <TabPane tab="启动" key="2">
+            <TabPane tab="启动命令" key="2">
               <Form>
                 <Form.Item>
                   {getFieldDecorator('softwareStartCommand', {
-                    initialValue:softwareStartCommand ,
-
+                    initialValue: softwareStartCommand ? softwareStartCommand : 'null',
                   })(<Input.TextArea rows={34} style={{ width: 720 }}></Input.TextArea>)}
                 </Form.Item>
               </Form>
             </TabPane>
 
-            <TabPane tab="停止" key="3">
+            <TabPane tab="停止命令" key="3">
               <Form>
                 <Form.Item>
                   {getFieldDecorator('softwareStopCommand', {
-                    initialValue: softwareStopCommand,
+                    initialValue: softwareStopCommand ? softwareStopCommand : 'null',
                   })(<Input.TextArea rows={34} style={{ width: 720 }} />)}
                 </Form.Item>
               </Form>
@@ -217,7 +216,7 @@ SoftEdit.defaultProps = {
     softwareVersion: '',
     softwareSort: '',
     softwareRemark: '',
-    softwareCheckCommand:''
+    softwareCheckCommand: '',
   },
 };
 export default Form.create()(SoftEdit);

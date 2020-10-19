@@ -33,42 +33,15 @@ class SoftExetute extends Component {
   }
   // eslint-disable-next-line react/sort-comp
   componentDidMount() {
-    this.getList();
+    // this.getList();
   }
 
-  getList = () => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'softexetute/fetchHostTree',
-    });
-
-    // const {
-    //   softexetute: { data, treehostdata },
-    // } = this.props;
-    // const arr = data.map(i => {
-    //   return i.children;
-    // });
-    // const hostId = arr.map(item => {
-    //   return item[0].id;
-    // });
-
-    // dispatch({
-    //   type: 'softexetute/getToHostList',
-    //   payload: { hostId },
-    // })
-
-    // if(treehostdata == null || (treehostdata !== null && treehostdata.length == 0)) {
-    //   dispatch({
-    //     type: 'softexetute/getToHostList',
-    //     payload: { hostId: '0' },
-    //   })
-    // } else {
-    //   dispatch({
-    //     type: 'softexetute/getSoftwaresList',
-    //     payload: { hostId },
-    //   });
-    // }
-  };
+  // getList = () => {
+  //   this.props.dispatch({
+  //     type: 'softexetute/getSoftwaresList',
+  //     //payload: { hostId: '1310852028620083201' },
+  //   });
+  // };
 
   // 输入框输入的value值
   handleInputValue = e => {
@@ -226,6 +199,7 @@ class SoftExetute extends Component {
   // 获取树杈传值
   getChildValue = val => {
     const hostId = val[0];
+    console.log(hostId);
     this.setState({ hostId });
     const { dispatch } = this.props;
     dispatch({

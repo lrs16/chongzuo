@@ -58,7 +58,6 @@ class StartModal extends Component {
   handleSearch = () => {
     // 用户名查询
     // eslint-disable-next-line consistent-return
-    console.log(this.props.form);
     this.props.form.validateFields((err, values) => {
       // if (!err) {
       const { hostsIp, hostsSshUsername } = values;
@@ -198,7 +197,7 @@ class StartModal extends Component {
                     message: '用户名不能为空',
                   },
                 ],
-              })(<Input placeholder="请输入用户名" onPressEnter={() => this.handleSearch()} />)}
+              })(<Input placeholder="请输入用户名" onBlur={() => this.handleSearch()} />)}
             </Form.Item>
             <Form.Item label="密码">
               {getFieldDecorator('hostsSshPassword', {
