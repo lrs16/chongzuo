@@ -47,14 +47,11 @@ const dataArr = datas => {
 };
 
 const celldata = datas => {
+  const data = datas[0];
   const newArr = [];
-  if (!Array.isArray(datas) || datas !== []) {
+  if (!Array.isArray(datas)) {
     return newArr;
   }
-  // if (datas === undefined) {
-  //   return newArr;
-  // }
-  const data = datas[0];
   Object.keys(data).map(key => {
     //  console.log(data[key]);// key=>属性名    data[key]=>属性值
     newArr.push({
@@ -229,13 +226,14 @@ class Collection extends Component {
       collection: { complete, coverage, meterread, zeroread, hourread, salesdata, supplydata },
     } = this.props;
 
-    // const completedata = dataArr(complete);
+    const completedata = dataArr(complete);
     const coverages = celldata(coverage);
     const meterreads = celldata(meterread);
     const zeroreads = changedate(zeroread);
     const hourreads = changehour(hourread);
     const salesdatas = changesales(salesdata);
     const supplydatas = changesales(supplydata);
+
     return (
       <PageHeaderWrapper title="采集指标情况">
         <div
@@ -286,9 +284,9 @@ class Collection extends Component {
                 contentHeight={350}
               >
                 <Spin spinning={loading} style={{ background: '#ffffff' }}>
-                  {complete.length === 0 && <Empty style={{ height: '250px' }} />}
-                  {complete.length > 0 && (
-                    <Columncolor height={350} data={complete} padding={[30, 30, 30, 50]} />
+                  {completedata.length === 0 && <Empty style={{ height: '250px' }} />}
+                  {completedata.length > 0 && (
+                    <Columncolor height={350} data={completedata} padding={[30, 30, 30, 50]} />
                   )}
                 </Spin>
               </ChartCard>

@@ -26,7 +26,6 @@ const Model = {
 
       if (response.code === 200) {
         const userinfo = yield call(queryCurrent); // 正式环境
-        console.log(userinfo);
         yield put({
           type: 'changeLoginStatus',
           payload: {

@@ -76,8 +76,8 @@ const errorHandler = error => {
     }
 
     if (status === 403) {
-      window.location.pathname = '/user/login';
       sessionStorage.clear();
+      window.location.pathname = '/user/login';
     }
     if (status >= 404 && status < 422) {
       router.push('/404');

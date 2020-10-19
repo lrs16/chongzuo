@@ -58,6 +58,7 @@ class StartModal extends Component {
   handleSearch = () => {
     // 用户名查询
     // eslint-disable-next-line consistent-return
+    console.log(this.props.form);
     this.props.form.validateFields((err, values) => {
       // if (!err) {
       const { hostsIp, hostsSshUsername } = values;
