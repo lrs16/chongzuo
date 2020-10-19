@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Card, Row, Col, Form, Input, Button, Table, Select, DatePicker } from 'antd';
+import { Card, Row, Col, Form, Input, Button, Table, Select, DatePicker, Message } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
 const { RangePicker } = DatePicker;
@@ -140,7 +140,6 @@ class IndicatorChain extends Component {
         title: '指标名称',
         dataIndex: 'mc',
         key: 'mc',
-        width: 110,
       },
       {
         title: '统计类别',
@@ -156,16 +155,19 @@ class IndicatorChain extends Component {
         title: '分子',
         dataIndex: 'fz',
         key: 'fz',
+        width: 80,
       },
       {
         title: '分母',
         dataIndex: 'fm',
         key: 'fm',
+        width: 80,
       },
       {
         title: '百分比',
         dataIndex: 'bfb',
         key: 'bfb',
+        width: 80,
       },
       {
         title: '今日昨日差值',
@@ -276,7 +278,7 @@ class IndicatorChain extends Component {
                       查 询
                     </Button>
                     <Button style={{ marginLeft: 8 }}>重 置</Button>
-                    <Button style={{ marginLeft: 8 }} type="link">
+                    <Button style={{ marginLeft: 8 }} type="link" onClick={this.handleextractData}>
                       抽 数
                     </Button>
                   </Col>
@@ -288,7 +290,7 @@ class IndicatorChain extends Component {
                     查 询
                   </Button>
                   <Button style={{ marginLeft: 8 }}>重 置</Button>
-                  <Button style={{ marginLeft: 8 }} type="link">
+                  <Button style={{ marginLeft: 8 }} type="link" onClick={this.handleextractData}>
                     抽 数
                   </Button>
                 </Col>
@@ -297,6 +299,7 @@ class IndicatorChain extends Component {
           </Form>
         </Card>
         <Table
+          scroll={{ x: 1250 }}
           style={{ marginTop: 24, background: '#fff' }}
           loading={loading}
           dataSource={dataSource}

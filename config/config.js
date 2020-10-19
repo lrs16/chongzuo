@@ -603,10 +603,6 @@ export default {
       target: 'http://172.16.4.211:9901/', //计量业务监控
       changeOrigin: true,
     },
-    '/monitor/kpiData/': {
-      target: 'http://localhost:8000/', //mock接口数据，真实接口将整段删除
-      changeOrigin: true,
-    },
     '/api-eai-job/oma/': {
       target: 'http://172.16.4.211:8800/', //脚本管理服务器地址,211正式，250测试
       changeOrigin: true,

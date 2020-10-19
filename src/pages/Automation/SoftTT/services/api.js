@@ -47,7 +47,6 @@ export async function searchProcess(params) {
 
 // 请求主机列表
 export async function myHosts(params) {
-  console.log('ik');
   return request(`/auto/hosts/listPage`, {
     method: 'POST',
     body: JSON.stringify(params),
@@ -142,7 +141,7 @@ export async function queryHostTree(params) {
 }
 
 // /auto/hosts_shh2/handle/{hostsId}/{softId}/{handleType}操作主机的软件信息
-export async function querySofttoHostHandleType({hostsId, softId, handleType}) {
+export async function querySofttoHostHandleType({ hostsId, softId, handleType }) {
   return request(`/auto/hosts_shh2/handle/${hostsId}/${softId}/${handleType}`, {
     method: 'GET',
   });

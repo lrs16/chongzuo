@@ -85,6 +85,7 @@ class StartModal extends Component {
           } else {
             this.props.form.setFieldsValue({ hostsSshPassword: '', command: '', remember: false });
           }
+          console.log(err);
         });
       }
       // }
@@ -196,7 +197,7 @@ class StartModal extends Component {
                     message: '用户名不能为空',
                   },
                 ],
-              })(<Input placeholder="请输入用户名" onBlur={() => this.handleSearch()} />)}
+              })(<Input placeholder="请输入用户名" onPressEnter={() => this.handleSearch()} />)}
             </Form.Item>
             <Form.Item label="密码">
               {getFieldDecorator('hostsSshPassword', {

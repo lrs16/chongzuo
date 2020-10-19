@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { connect } from 'dva';
 import Link from 'umi/link';
 // import moment from 'moment';
-import { Card, Table, Divider, Tabs, Button, Form, Input, Row, Col, message  } from 'antd';
+import { Card, Table, Divider, Tabs, Button, Form, Input, Row, Col, message } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import StartModal from './components/StartModal';
 import HostTree from '@/components/HostTree';
@@ -28,7 +28,7 @@ class SoftExetute extends Component {
       pageSize: 10,
       queKey: '',
       eryPassword: '',
-      hostId: ''
+      hostId: '',
     };
   }
   // eslint-disable-next-line react/sort-comp
@@ -40,17 +40,17 @@ class SoftExetute extends Component {
     const { dispatch } = this.props;
     dispatch({
       type: 'softexetute/fetchHostTree',
-    })
+    });
 
     const {
       softexetute: { data },
     } = this.props;
-    const arr = data.map(i=>{
+    const arr = data.map(i => {
       return i.children;
-    })
-    const hostId = arr.map(item=>{
+    });
+    const hostId = arr.map(item => {
       return item[0].id;
-    })
+    });
 
     dispatch({
       type: 'softexetute/getSoftwaresList',
@@ -75,7 +75,7 @@ class SoftExetute extends Component {
 
     // 点击确认向后台发送数据  1.输入的值 2.存储的值（ip，端口，用户名，密码）
     const { hostsIp, hostsSshPort, hostsSshUsername } = this.state.sumitvalue;
-    const { activeKey, eryPassword } = this.state;// 从activeKey获取当前标签的ip，用户名
+    const { activeKey, eryPassword } = this.state; // 从activeKey获取当前标签的ip，用户名
     const activeKeyTitle = activeKey.split('-');
 
     // const hostIp = hostsIp;
@@ -105,7 +105,7 @@ class SoftExetute extends Component {
       const sametype = panes.filter(obj => {
         return obj.key === title;
       });
-    
+
       if (sametype.length >= 1) {
         sametype[0].content = strContent;
         this.setState({ activeKey: title });
@@ -114,7 +114,6 @@ class SoftExetute extends Component {
       //   panes.push({ title: title, content: strContent, key: title });
       //   this.setState({ panes, activeKey: title, });
       // }
-      
     });
   };
 
@@ -136,7 +135,7 @@ class SoftExetute extends Component {
   };
 
   add = (record, values, commitlist, passWord) => {
-    const { hostsIp,  hostsSshUsername, hostsSshPort} = values;
+    const { hostsIp, hostsSshUsername, hostsSshPort } = values;
     const wordStr = ([] = commitlist.msg.split('\n'));
     const strContent = wordStr.map((item, index) => {
       return (
@@ -147,21 +146,21 @@ class SoftExetute extends Component {
     });
 
     const { panes } = this.state;
-    
+
     // const activeKey = hostsIp + `-` + hostsSshUsername + `-` + passWord + `-` + hostsSshPort;
     const title = hostsIp + `-` + hostsSshUsername;
-    
+
     const sametype = panes.filter(obj => {
       return obj.key === title;
-    })
-     
+    });
+
     if (sametype.length >= 1) {
       sametype[0].content = strContent;
       this.setState({ title });
     }
     if (sametype.length < 1) {
       panes.push({ title: title, content: strContent, key: title });
-      this.setState({ panes, activeKey: title, sumitvalue: values, eryPassword: passWord});
+      this.setState({ panes, activeKey: title, sumitvalue: values, eryPassword: passWord });
     }
   };
 
@@ -182,7 +181,10 @@ class SoftExetute extends Component {
         activeKey = panes[0].key;
       }
     }
-    this.setState({ panes, activeKey });
+    // this.setState({ panes, activeKey });
+    setTimeout(() => {
+      this.setState({ panes, activeKey });
+    }, 0);
   };
 
   onShowSizeChange = (current, pageSize) => {
@@ -216,7 +218,8 @@ class SoftExetute extends Component {
   // 获取树杈传值
   getChildValue = val => {
     const hostId = val[0];
-    this.setState({hostId})
+    console.log(hostId);
+    this.setState({ hostId });
     const { dispatch } = this.props;
     dispatch({
       type: 'softexetute/getSoftwaresList',
@@ -229,66 +232,66 @@ class SoftExetute extends Component {
     });
   };
 
-  start = (record) => {
+  start = record => {
     const { hostId } = this.state;
     const { id } = this.props.softexetute.treehostdata;
 
     const { dispatch } = this.props;
     dispatch({
       type: 'softexetute/getSofttoHostHandleType',
-      payload: { 
-        hostsId: id || hostId,  
-        softId: record.id, 
-        handleType: '1'
-       },
-    }).then(res=>{
-      if(res.state) {
+      payload: {
+        hostsId: id || hostId,
+        softId: record.id,
+        handleType: '1',
+      },
+    }).then(res => {
+      if (res.state) {
         message.success(res.msg);
       } else {
         message.error(res.msg);
       }
-    })
+    });
   };
-  
-  stop = (record) => {
+
+  stop = record => {
     const { hostId } = this.state;
     const { id } = this.props.softexetute.treehostdata;
 
     const { dispatch } = this.props;
     dispatch({
       type: 'softexetute/getSofttoHostHandleType',
-      payload: { 
-        hostsId: id || hostId, 
-        softId: record.id, 
-        handleType: '2'
-       },
-    }).then(res=>{
-      if(res.state) {
+      payload: {
+        hostsId: id || hostId,
+        softId: record.id,
+        handleType: '2',
+      },
+    }).then(res => {
+      if (res.state) {
         message.success(res.msg);
       } else {
         message.error(res.msg);
       }
-    })
+    });
   };
-  check = (record) => {
+  check = record => {
     const { hostId } = this.state;
     const { id } = this.props.softexetute.treehostdata;
 
     const { dispatch } = this.props;
     dispatch({
       type: 'softexetute/getSofttoHostHandleType',
-      payload: { 
-        hostsId: id || hostId, 
-        softId: record.id, 
-        handleType: '3'
-       },
-    }).then(res=>{
-      if(res.state) {
+      payload: {
+        hostsId: id || hostId,
+        softId: record.id,
+        handleType: '3',
+      },
+    }).then(res => {
+      if (res.state) {
         message.success(res.msg);
       } else {
         message.error(res.msg);
       }
-    })
+    });
   };
   render() {
     const columns = [
@@ -347,15 +350,21 @@ class SoftExetute extends Component {
             </StartModal>
             <Divider type="vertical" />
             <span>
-               <a type="link" record={record} onClick={() => this.start(record)}>启动</a>
+              <a type="link" record={record} onClick={() => this.start(record)}>
+                启动
+              </a>
             </span>
             <Divider type="vertical" />
             <span>
-               <a type="link" record={record} onClick={() => this.stop(record)}>停止</a>
+              <a type="link" record={record} onClick={() => this.stop(record)}>
+                停止
+              </a>
             </span>
             <Divider type="vertical" />
             <span>
-               <a type="link" record={record} onClick={() => this.check(record)}>检测</a>
+              <a type="link" record={record} onClick={() => this.check(record)}>
+                检测
+              </a>
             </span>
             <Divider type="vertical" />
             <span>
@@ -373,7 +382,7 @@ class SoftExetute extends Component {
     ];
 
     const {
-      softexetute: { softdata, treesoftdata, data},
+      softexetute: { softdata, treesoftdata, data },
       loading,
     } = this.props;
     // const dataSource = softdata.rows;
