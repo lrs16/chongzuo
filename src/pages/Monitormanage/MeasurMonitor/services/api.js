@@ -11,7 +11,7 @@ export async function queryFacadata(params) {
 
 // 请求完整率，检查完毕
 export async function queryCompleterate(sortarea) {
-  return request(`/monitor/gatherKpi/wzl??area=${sortarea}`);
+  return request(`/monitor/gatherKpi/wzl?area=${sortarea}`);
 }
 
 // 终端覆盖率，检查完毕
