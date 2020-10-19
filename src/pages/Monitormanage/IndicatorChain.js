@@ -78,6 +78,10 @@ class IndicatorChain extends Component {
     });
   };
 
+  handleReset = () => {
+    this.props.form.resetFields();
+  };
+
   handleextractData = () => {
     const { dispatch } = this.props;
     return dispatch({
@@ -277,7 +281,9 @@ class IndicatorChain extends Component {
                     <Button type="primary" onClick={this.handleSearch}>
                       查 询
                     </Button>
-                    <Button style={{ marginLeft: 8 }}>重 置</Button>
+                    <Button style={{ marginLeft: 8 }} onClick={this.handleReset}>
+                      重 置
+                    </Button>
                     <Button style={{ marginLeft: 8 }} type="link" onClick={this.handleextractData}>
                       抽 数
                     </Button>
@@ -289,7 +295,9 @@ class IndicatorChain extends Component {
                   <Button type="primary" onClick={this.handleSearch}>
                     查 询
                   </Button>
-                  <Button style={{ marginLeft: 8 }}>重 置</Button>
+                  <Button style={{ marginLeft: 8 }} onClick={this.handleReset}>
+                    重 置
+                  </Button>
                   <Button style={{ marginLeft: 8 }} type="link" onClick={this.handleextractData}>
                     抽 数
                   </Button>
