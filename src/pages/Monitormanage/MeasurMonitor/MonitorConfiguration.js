@@ -21,7 +21,8 @@ const EditableRow = ({ form, index, ...props }) => (
     <tr {...props} />
   </EditableContext.Provider>
 );
-const a = 50;
+const EditableFormRow = Form.create()(EditableRow);
+const a = 1;
 @connect(({ monitorconfiguration, loading }) => ({
   monitorconfiguration,
   loading: loading.models.monitorconfiguration,
@@ -72,6 +73,44 @@ class MonitorConfiguration extends Component {
         });
       },
     };
+    const configurationList = [
+      {
+        id: 1,
+        serialNumber: 1,
+        IndicatorID: 'zb202005130001',
+        indicatorName: '采集完整率',
+        maximumValue: 60,
+        minimum: 10,
+        remark: '采集完整率的备注备注备注....',
+        setPerson: '朱三三',
+        setTime: '2020-05-11  09:46',
+        enableStatus: '已启用',
+      },
+      {
+        id: 1,
+        serialNumber: 1,
+        IndicatorID: 'zb202005130001',
+        indicatorName: '采集完整率',
+        maximumValue: 60,
+        minimum: 10,
+        remark: '采集完整率的备注备注备注....',
+        setPerson: '朱三三',
+        setTime: '2020-05-11  09:46',
+        enableStatus: '已启用',
+      },
+      {
+        id: 1,
+        serialNumber: 1,
+        IndicatorID: 'zb202005130001',
+        indicatorName: '采集完整率',
+        maximumValue: 60,
+        minimum: 10,
+        remark: '采集完整率的备注备注备注....',
+        setPerson: '朱三三',
+        setTime: '2020-05-11  09:46',
+        enableStatus: '已启用',
+      },
+    ];
 
     const { getFieldDecorator } = this.props.form;
 
@@ -169,9 +208,7 @@ class MonitorConfiguration extends Component {
                 </Form.Item>
               </Col>
               <Col xl={8} xs={12}>
-                <Form.Item label="设置人ymc ">
-                  {getFieldDecorator('setMan', {})(<Input />)}
-                </Form.Item>
+                <Form.Item label="设置人">{getFieldDecorator('setMan', {})(<Input />)}</Form.Item>
               </Col>
               <Col xl={8} xs={12}>
                 <Form.Item label="警戒值">
