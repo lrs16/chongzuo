@@ -50,7 +50,7 @@ class DeptTree extends Component {
           </TreeNode>
         );
       }
-      return <TreeNode key={item.id} title={item.name} {...item} selectable />;
+      return <TreeNode key={item.id} title={item.name} {...item}/>;
     });
 
   onSelect = (selectedKeys, info) => {

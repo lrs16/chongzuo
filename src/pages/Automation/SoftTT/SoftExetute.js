@@ -53,25 +53,17 @@ class SoftExetute extends Component {
     this.setState({
       inputValue: '',
     });
-
     // 点击确认向后台发送数据  1.输入的值 2.存储的值（ip，端口，用户名，密码）
-    const { hostsIp, hostsSshPort, hostsSshUsername } = this.state.sumitvalue;
-    const { activeKey, eryPassword } = this.state; // 从activeKey获取当前标签的ip，用户名
-    const activeKeyTitle = activeKey.split('-');
-
-    // const hostIp = hostsIp;
-    // const userName = hostsSshUsername;
-    const passWord = eryPassword;
-    const port = hostsSshPort;
-    const hostIp = activeKeyTitle[0];
-    const userName = activeKeyTitle[1];
-    // const passWord = activeKeyTitle[2];
-    // const port = activeKeyTitle[3];
+    const { panes , activeKey} = this.state;
+    const sametype = panes.filter(obj => {
+      return obj.key === activeKey;
+    });
+    const { hostsIp, hostsSshUsername, hostsSshPort, passWord } = sametype[0];
     const command = this.state.inputValue;
     const { dispatch } = this.props;
     return dispatch({
       type: 'softexetute/getExecCommand',
-      payload: { passWord, hostIp, port, userName, command },
+      payload: { passWord:passWord, hostIp:hostsIp, port:hostsSshPort, userName:hostsSshUsername, command },
     }).then(res => {
       const wordStr = ([] = res.msg.split('\n'));
       const strContent = wordStr.map((item, index) => {
@@ -81,21 +73,23 @@ class SoftExetute extends Component {
           </p>
         );
       });
-      const { panes } = this.state;
-      const title = hostIp + `-` + userName;
+      const title = hostsIp + `-` + hostsSshUsername;
+
       const sametype = panes.filter(obj => {
         return obj.key === title;
       });
 
       if (sametype.length >= 1) {
         sametype[0].content = strContent;
-        this.setState({ activeKey: title });
+        this.setState({ title });
       }
-      // if (sametype.length < 1) {
-      //   panes.push({ title: title, content: strContent, key: title });
-      //   this.setState({ panes, activeKey: title, });
+      // console.log(sametype[0].content);
+      // console.log(strContent);
+      // if(sametype[0].key==activeKey){
+      //   sametype[0].content=strContent;
       // }
     });
+    
   };
 
   // 确认按钮与enter绑定
@@ -108,7 +102,7 @@ class SoftExetute extends Component {
 
   // tabs标签的一系列操作 onChange  onEdit add remove
   onChange = activeKey => {
-    this.setState({ activeKey });
+    this.setState({ activeKey,});
   };
 
   onEdit = (targetKey, action) => {
@@ -140,8 +134,8 @@ class SoftExetute extends Component {
       this.setState({ title });
     }
     if (sametype.length < 1) {
-      panes.push({ title: title, content: strContent, key: title });
-      this.setState({ panes, activeKey: title, sumitvalue: values, eryPassword: passWord });
+      panes.push({ title: title, content: strContent, key: title,  hostsIp, hostsSshUsername, hostsSshPort, passWord});
+      this.setState({ panes, activeKey: title,});
     }
   };
 
@@ -395,7 +389,7 @@ class SoftExetute extends Component {
                   columns={columns}
                   pagination={pagination}
                   scroll={{ x: '100%' }}
-                  loading={loading}
+                  // loading={loading}
                 />
                 <Tabs
                   hideAdd

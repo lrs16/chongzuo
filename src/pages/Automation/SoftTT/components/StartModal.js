@@ -111,6 +111,7 @@ class StartModal extends Component {
             const userName = hostsSshUsername;
             const hostIp = hostsIp;
             const passWord = res.data;
+            console.log(passWord);
             dispatch({
               type: 'softexetute/getExecCommand',
               payload: { passWord, hostIp, port, userName, command },
