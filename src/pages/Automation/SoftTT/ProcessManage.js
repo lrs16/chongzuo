@@ -179,6 +179,7 @@ class ProcessManage extends Component {
         title: '操作',
         dataIndex: 'operation',
         key: 'operation',
+        width: 250,
         render: (text, record) => (
           <div>
             <ProcessEdit
@@ -186,11 +187,11 @@ class ProcessManage extends Component {
               title="编辑进程"
               record={record}
             >
-              <a type="link">编辑</a>
+              <a type="link">编辑进程</a>
             </ProcessEdit>
             <Divider type="vertical" />
             <Popconfirm title="确定删除此进程？" onConfirm={() => this.handleDelete(record.id)}>
-              <a type="link">删除</a>
+              <a type="link">删除进程</a>
             </Popconfirm>
           </div>
         ),

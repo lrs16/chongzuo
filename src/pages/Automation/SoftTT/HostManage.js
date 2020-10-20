@@ -235,7 +235,7 @@ class HostManage extends Component {
         title: '操作',
         dataIndex: 'action',
         key: 'action',
-        width: 200,
+        width: 250,
         fixed: 'right',
         render: (text, record) => (
           <div>
@@ -254,11 +254,11 @@ class HostManage extends Component {
               record={record}
               refresh={this.getlist}
             >
-              <a type="link">编辑</a>
+              <a type="link">编辑主机</a>
             </HostEdit>
             <Divider type="vertical" />
             <Popconfirm title="确定删除此菜单吗？" onConfirm={() => this.handleDelete(record.id)}>
-              <a type="link">删除</a>
+              <a type="link">删除主机</a>
             </Popconfirm>
           </div>
         ),

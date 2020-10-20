@@ -203,7 +203,7 @@ class SoftManage extends Component {
         title: '操作',
         dataIndex: 'action',
         key: 'action',
-        width: 200,
+        width: 300,
         fixed: 'right',
         render: (text, record) => (
           <div>
@@ -218,11 +218,11 @@ class SoftManage extends Component {
             </HostSoft>
             <Divider type="vertical" />
             <SoftEdit onSumit={values => this.handleEdite(values)} title="编辑软件" record={record}>
-              <a type="link">编辑</a>
+              <a type="link">编辑软件</a>
             </SoftEdit>
             <Divider type="vertical" />
             <Popconfirm title="确定删除此软件？" onConfirm={() => this.handleDelete(record.id)}>
-              <a type="link">删除</a>
+              <a type="link">删除软件</a>
             </Popconfirm>
           </div>
         ),
