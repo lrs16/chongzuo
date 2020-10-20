@@ -127,7 +127,7 @@ class ExecLogView extends Component {
   render() {
     const columns = [
       {
-        title: '主机IP地址',
+        title: '主机IP',
         dataIndex: 'execIp',
         key: 'execIp',
         width: 150,
@@ -135,7 +135,7 @@ class ExecLogView extends Component {
         sortDirections: ['descend', 'ascend'],
       },
       {
-        title: '用户密码(Linux密码)加密',
+        title: '用户密码',
         dataIndex: 'execPass',
         key: 'execPass',
         width: 210,
@@ -159,7 +159,7 @@ class ExecLogView extends Component {
         sortDirections: ['descend', 'ascend'],
       },
       {
-        title: '执行的命令返回结果',
+        title: '返回结果',
         dataIndex: 'execRet',
         key: 'execRet',
         width: 200,
@@ -167,14 +167,14 @@ class ExecLogView extends Component {
         sorter: (a, b) => a.execRet - b.execRet,
         sortDirections: ['descend', 'ascend'],
       },
+      // {
+      //   title: '密码盐',
+      //   dataIndex: 'execSalt',
+      //   key: 'execSalt',
+      //   width: 200,
+      // },
       {
-        title: '密码盐',
-        dataIndex: 'execSalt',
-        key: 'execSalt',
-        width: 200,
-      },
-      {
-        title: '执行的命令',
+        title: '执行命令',
         dataIndex: 'execStr',
         key: 'execStr',
         width: 200,
@@ -182,7 +182,7 @@ class ExecLogView extends Component {
         sortDirections: ['descend', 'ascend'],
       },
       {
-        title: '命令执行时间',
+        title: '执行时间',
         dataIndex: 'execTime',
         key: 'execTime',
         render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
@@ -192,7 +192,7 @@ class ExecLogView extends Component {
         sortDirections: ['descend', 'ascend'],
       },
       {
-        title: '命令触发方式',
+        title: '触发方式',
         dataIndex: 'execTrigger',
         key: 'execTrigger',
         width: 200,
@@ -201,7 +201,7 @@ class ExecLogView extends Component {
         sortDirections: ['descend', 'ascend'],
       },
       {
-        title: '用户名称(Linux账号)',
+        title: '用户账号',
         dataIndex: 'execUser',
         key: 'execUser',
         width: 200,
@@ -209,7 +209,7 @@ class ExecLogView extends Component {
         sortDirections: ['descend', 'ascend'],
       },
       {
-        title: '系统账号',
+        title: '执行用户',
         dataIndex: 'execUserid',
         key: 'execUserid',
         width: 200,
