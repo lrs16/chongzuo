@@ -302,7 +302,6 @@ class MeasurFace extends Component {
             </Col>
             <Col xl={12} xs={24} style={{ marginBottom: 24 }}>
               <ChartCard title="参考下发（1h/刷新）" contentHeight={350}>
-                {/* 后端接口报500 */}
                 <Spin spinning={loading} style={{ background: '#ffffff' }}>
                   {issuedata.length === 0 && <Empty style={{ height: '250px' }} />}
                   {issuedata.length > 0 && (
@@ -310,7 +309,7 @@ class MeasurFace extends Component {
                       cols={Issuedscale}
                       data={issuedata}
                       height={350}
-                      padding={[30, 60, 50, 220]}
+                      padding={[30, 60, 50, 100]}
                     />
                   )}
                 </Spin>

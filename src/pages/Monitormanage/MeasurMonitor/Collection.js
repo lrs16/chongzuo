@@ -322,7 +322,7 @@ class Collection extends Component {
                 <Spin spinning={loading} style={{ background: '#ffffff' }}>
                   {meterreads.length === 0 && <Empty style={{ height: '250px' }} />}
                   {meterreads.length > 0 && (
-                    <Columncolor height={350} data={meterreads} padding={[30, 30, 30, 50]} />
+                    <Columncolor height={350} data={meterreads} padding={[30, 50, 30, 50]} />
                   )}
                 </Spin>
               </ChartCard>

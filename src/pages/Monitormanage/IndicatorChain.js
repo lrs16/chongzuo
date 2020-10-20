@@ -31,6 +31,7 @@ class IndicatorChain extends Component {
   state = {
     current: 1,
     pageSize: 10,
+    ringname: '覆盖率',
   };
 
   componentDidMount() {
@@ -66,6 +67,12 @@ class IndicatorChain extends Component {
         currentPage,
       },
     });
+  };
+
+  handleringtypeChange = value => {
+    setTimeout(() => {
+      this.setState({ ringname: value });
+    }, 0);
   };
 
   handleSearch = () => {
@@ -262,7 +269,7 @@ class IndicatorChain extends Component {
                   )}
                 </Form.Item>
               </Col>
-              {this.state.mc !== '覆盖率' && (
+              {this.state.ringname !== '覆盖率' && (
                 <>
                   <Col span={8}>
                     <Form.Item label="管理单位类型编码">
@@ -277,20 +284,23 @@ class IndicatorChain extends Component {
                       )}
                     </Form.Item>
                   </Col>
-                  <Col span={8} style={{ textAlign: 'right' }}>
-                    <Button type="primary" onClick={this.handleSearch}>
-                      查 询
-                    </Button>
-                    <Button style={{ marginLeft: 8 }} onClick={this.handleReset}>
-                      重 置
-                    </Button>
-                    <Button style={{ marginLeft: 8 }} type="link" onClick={this.handleextractData}>
-                      抽 数
-                    </Button>
-                  </Col>
                 </>
               )}
-              {this.state.mc === '覆盖率' && (
+              {this.state.ringname !== '覆盖率' && (
+                <Col span={8} style={{ textAlign: 'right' }}>
+                  <Button type="primary" onClick={this.handleSearch}>
+                    查 询
+                  </Button>
+                  <Button style={{ marginLeft: 8 }} onClick={this.handleReset}>
+                    重 置
+                  </Button>
+                  <Button style={{ marginLeft: 8 }} type="link" onClick={this.handleextractData}>
+                    抽 数
+                  </Button>
+                </Col>
+              )}
+
+              {this.state.ringname === '覆盖率' && (
                 <Col span={24} style={{ textAlign: 'right' }}>
                   <Button type="primary" onClick={this.handleSearch}>
                     查 询

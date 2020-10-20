@@ -54,7 +54,7 @@ class SoftExetute extends Component {
       inputValue: '',
     });
     // 点击确认向后台发送数据  1.输入的值 2.存储的值（ip，端口，用户名，密码）
-    const { panes , activeKey} = this.state;
+    const { panes, activeKey } = this.state;
     const sametype = panes.filter(obj => {
       return obj.key === activeKey;
     });
@@ -63,7 +63,13 @@ class SoftExetute extends Component {
     const { dispatch } = this.props;
     return dispatch({
       type: 'softexetute/getExecCommand',
-      payload: { passWord:passWord, hostIp:hostsIp, port:hostsSshPort, userName:hostsSshUsername, command },
+      payload: {
+        passWord: passWord,
+        hostIp: hostsIp,
+        port: hostsSshPort,
+        userName: hostsSshUsername,
+        command,
+      },
     }).then(res => {
       const wordStr = ([] = res.msg.split('\n'));
       const strContent = wordStr.map((item, index) => {
@@ -89,7 +95,6 @@ class SoftExetute extends Component {
       //   sametype[0].content=strContent;
       // }
     });
-    
   };
 
   // 确认按钮与enter绑定
@@ -102,7 +107,7 @@ class SoftExetute extends Component {
 
   // tabs标签的一系列操作 onChange  onEdit add remove
   onChange = activeKey => {
-    this.setState({ activeKey,});
+    this.setState({ activeKey });
   };
 
   onEdit = (targetKey, action) => {
@@ -134,8 +139,16 @@ class SoftExetute extends Component {
       this.setState({ title });
     }
     if (sametype.length < 1) {
-      panes.push({ title: title, content: strContent, key: title,  hostsIp, hostsSshUsername, hostsSshPort, passWord});
-      this.setState({ panes, activeKey: title,});
+      panes.push({
+        title: title,
+        content: strContent,
+        key: title,
+        hostsIp,
+        hostsSshUsername,
+        hostsSshPort,
+        passWord,
+      });
+      this.setState({ panes, activeKey: title });
     }
   };
 
@@ -193,7 +206,6 @@ class SoftExetute extends Component {
   // 获取树杈传值
   getChildValue = val => {
     const hostId = val[0];
-    console.log(hostId);
     this.setState({ hostId });
     const { dispatch } = this.props;
     dispatch({
