@@ -31,7 +31,7 @@ class IndicatorChain extends Component {
   state = {
     current: 1,
     pageSize: 10,
-    ringname: '覆盖率',
+    ringname: 'fgl',
   };
 
   componentDidMount() {
@@ -138,14 +138,22 @@ class IndicatorChain extends Component {
     };
     const columns = [
       {
-        title: 'ID',
-        dataIndex: 'id',
-        key: 'id',
+        title: '供电单位编码',
+        dataIndex: 'gddwbm',
+        key: 'gddwbm',
+        width: 120,
       },
       {
-        title: '管理单位类型',
-        dataIndex: 'gldwlxbm',
-        key: 'gldwlxbm',
+        title: '供电单位名称',
+        dataIndex: 'gddwmc',
+        key: 'gddwmc',
+        width: 120,
+      },
+      {
+        title: '单位类型名称',
+        dataIndex: 'gldwlxmc',
+        key: 'gldwlxmc',
+        width: 120,
       },
       {
         title: '指标名称',
@@ -157,11 +165,7 @@ class IndicatorChain extends Component {
         dataIndex: 'lb',
         key: 'lb',
       },
-      {
-        title: '供电单位编码',
-        dataIndex: 'gddwbm',
-        key: 'gddwbm',
-      },
+
       {
         title: '分子',
         dataIndex: 'fz',
@@ -184,32 +188,25 @@ class IndicatorChain extends Component {
         title: '今日昨日差值',
         dataIndex: 'zrhb',
         key: 'zrhb',
+        width: 120,
       },
       {
         title: '今日前日差值',
         dataIndex: 'qrhb',
         key: 'qrhb',
+        width: 120,
       },
       {
         title: '昨日前日差值',
         dataIndex: 'qlrhb',
         key: 'qlrhb',
-      },
-      {
-        title: '管理单位类型名称',
-        dataIndex: 'gldwlxmc',
-        key: 'gldwlxmc',
-      },
-      {
-        title: '供电单位名称',
-        dataIndex: 'gddwmc',
-        key: 'gddwmc',
+        width: 120,
       },
       {
         title: '数据时间',
         dataIndex: 'sjsj',
         key: 'sjsj',
-        width: 120,
+        width: 180,
       },
     ];
 
@@ -269,10 +266,10 @@ class IndicatorChain extends Component {
                   )}
                 </Form.Item>
               </Col>
-              {this.state.ringname !== '覆盖率' && (
+              {this.state.ringname !== 'fgl' && (
                 <>
                   <Col span={8}>
-                    <Form.Item label="管理单位类型编码">
+                    <Form.Item label="单位类型编码">
                       {getFieldDecorator('gldwlxbm', { initialValue: '' })(
                         <Select placeholder="请选择">
                           {areatypemap.map(({ key, value }) => [
@@ -286,7 +283,7 @@ class IndicatorChain extends Component {
                   </Col>
                 </>
               )}
-              {this.state.ringname !== '覆盖率' && (
+              {this.state.ringname !== 'fgl' && (
                 <Col span={8} style={{ textAlign: 'right' }}>
                   <Button type="primary" onClick={this.handleSearch}>
                     查 询
@@ -300,7 +297,7 @@ class IndicatorChain extends Component {
                 </Col>
               )}
 
-              {this.state.ringname === '覆盖率' && (
+              {this.state.ringname === 'fgl' && (
                 <Col span={24} style={{ textAlign: 'right' }}>
                   <Button type="primary" onClick={this.handleSearch}>
                     查 询
@@ -317,7 +314,7 @@ class IndicatorChain extends Component {
           </Form>
         </Card>
         <Table
-          scroll={{ x: 1250 }}
+          scroll={{ x: 1400 }}
           style={{ marginTop: 24, background: '#fff' }}
           loading={loading}
           dataSource={dataSource}
