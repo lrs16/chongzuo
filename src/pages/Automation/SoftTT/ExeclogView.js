@@ -131,24 +131,32 @@ class ExecLogView extends Component {
         dataIndex: 'execIp',
         key: 'execIp',
         width: 150,
+        sorter: (a, b) => a.execIp - b.execIp,
+        sortDirections: ['descend', 'ascend'],
       },
       {
         title: '用户密码(Linux密码)加密',
         dataIndex: 'execPass',
         key: 'execPass',
-        width: 200,
+        width: 210,
+        sorter: (a, b) => a.execPass - b.execPass,
+        sortDirections: ['descend', 'ascend'],
       },
       {
         title: 'Linux端口',
         dataIndex: 'execPort',
         key: 'execPort',
-        width: 100,
+        width: 120,
+        sorter: (a, b) => a.execPort - b.execPort,
+        sortDirections: ['descend', 'ascend'],
       },
       {
         title: '命令备注',
         dataIndex: 'execRemark',
         key: 'execRemark',
-        width: 100,
+        width: 120,
+        sorter: (a, b) => a.execRemark - b.execRemark,
+        sortDirections: ['descend', 'ascend'],
       },
       {
         title: '执行的命令返回结果',
@@ -156,6 +164,8 @@ class ExecLogView extends Component {
         key: 'execRet',
         width: 200,
         ellipsis: true,
+        sorter: (a, b) => a.execRet - b.execRet,
+        sortDirections: ['descend', 'ascend'],
       },
       {
         title: '密码盐',
@@ -168,6 +178,8 @@ class ExecLogView extends Component {
         dataIndex: 'execStr',
         key: 'execStr',
         width: 200,
+        sorter: (a, b) => a.execStr - b.execStr,
+        sortDirections: ['descend', 'ascend'],
       },
       {
         title: '命令执行时间',
@@ -176,6 +188,8 @@ class ExecLogView extends Component {
         render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
         width: 200,
         ellipsis: true,
+        sorter: (a, b) => a.execTime - b.execTime,
+        sortDirections: ['descend', 'ascend'],
       },
       {
         title: '命令触发方式',
@@ -183,12 +197,16 @@ class ExecLogView extends Component {
         key: 'execTrigger',
         width: 200,
         render: (text, record) => <span>{ComtriMode[record.execTrigger]}</span>,
+        sorter: (a, b) => a.execTrigger - b.execTrigger,
+        sortDirections: ['descend', 'ascend'],
       },
       {
         title: '用户名称(Linux账号)',
         dataIndex: 'execUser',
         key: 'execUser',
         width: 200,
+        sorter: (a, b) => a.execUser - b.execUser,
+        sortDirections: ['descend', 'ascend'],
       },
       {
         title: '系统账号',
@@ -222,6 +240,24 @@ class ExecLogView extends Component {
     } = this.props;
     const dataSource = execloglist && execloglist.rows;
     const { DescriptionItemList } = this.state;
+   
+    const DescriptionItemList1 = JSON.parse(
+      JSON.stringify(DescriptionItemList)
+      .replace(/execUserid/g,"执行用户")
+      .replace(/execIp/g,"主机IP")
+      .replace(/execUser/g,"用户账号")
+      .replace(/execPass/g,"用户密码")
+      .replace(/execPort/g,"Linux端口")
+      .replace(/execTrigger/g,"触发方式")
+      .replace(/execStr/g,"执行命令")
+      .replace(/execRet/g,"返回结果")
+      .replace(/execTime/g,"执行时间")
+      .replace(/execRemark/g,"命令备注")
+    );
+    for(var key in DescriptionItemList1) {
+      delete DescriptionItemList1['id'];
+      delete DescriptionItemList1['execSalt'];
+    }
     const pagination = {
       showSizeChanger: true,
       onShowSizeChange: (current, pageSize) => this.onShowSizeChange(current, pageSize),
@@ -253,9 +289,9 @@ class ExecLogView extends Component {
           closable={false}
         >
           <Row>
-            {Object.keys(DescriptionItemList).map((key, index) => [
+            {Object.keys(DescriptionItemList1).map((key, index) => [
               <Col span={12} key={index}>
-                <DescriptionItem title={key} content={DescriptionItemList[key]} />
+                <DescriptionItem title={key} content={DescriptionItemList1[key]} />
               </Col>,
             ])}
           </Row>

@@ -81,19 +81,14 @@ class SoftExetute extends Component {
       });
       const title = hostsIp + `-` + hostsSshUsername;
 
-      const sametype = panes.filter(obj => {
+      const sametypes = panes.filter(obj => {
         return obj.key === title;
       });
 
-      if (sametype.length >= 1) {
-        sametype[0].content = strContent;
+      if (sametypes.length >= 1) {
+        sametypes[0].content = strContent;
         this.setState({ title });
       }
-      // console.log(sametype[0].content);
-      // console.log(strContent);
-      // if(sametype[0].key==activeKey){
-      //   sametype[0].content=strContent;
-      // }
     });
   };
 
@@ -126,8 +121,6 @@ class SoftExetute extends Component {
     });
 
     const { panes } = this.state;
-
-    // const activeKey = hostsIp + `-` + hostsSshUsername + `-` + passWord + `-` + hostsSshPort;
     const title = hostsIp + `-` + hostsSshUsername;
 
     const sametype = panes.filter(obj => {
@@ -232,11 +225,13 @@ class SoftExetute extends Component {
         handleType: '1',
       },
     }).then(res => {
-      if (res.state) {
-        message.success(res.msg);
-      } else {
-        message.error(res.msg);
-      }
+      setTimeout(() => {
+        if (res.state) {
+          message.success("命令已执行" + "\n" + res.msg);
+        } else {
+          message.error(res.msg);
+        }
+      }, 500);
     });
   };
 
@@ -253,11 +248,13 @@ class SoftExetute extends Component {
         handleType: '2',
       },
     }).then(res => {
-      if (res.state) {
-        message.success(res.msg);
-      } else {
-        message.error(res.msg);
-      }
+      setTimeout(() => {
+        if (res.state) {
+          message.success("命令已执行" + "\n" + res.msg);
+        } else {
+          message.error(res.msg);
+        }
+      }, 500);
     });
   };
   check = record => {
@@ -273,11 +270,13 @@ class SoftExetute extends Component {
         handleType: '3',
       },
     }).then(res => {
-      if (res.state) {
-        message.success(res.msg);
-      } else {
-        message.error(res.msg);
-      }
+      setTimeout(() => {
+        if (res.state) {
+          message.success("命令已执行" + "\n" + res.msg);
+        } else {
+          message.error(res.msg);
+        }
+      }, 500);
     });
   };
   render() {
@@ -412,7 +411,7 @@ class SoftExetute extends Component {
                 >
                   {this.state.panes.map(pane => (
                     <TabPane tab={pane.title} key={pane.key}>
-                      <Row style={{ marginBottom: 10, marginLeft: 20, height: 100 }}>
+                      <Row style={{ marginBottom: 10, marginLeft: 20, height: 150, overflow: 'auto' }}>
                         {pane.content}
                       </Row>
                       <Row style={{ marginBottom: 20, marginLeft: 20 }}>
