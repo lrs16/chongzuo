@@ -54,7 +54,9 @@ class DeptTree extends Component {
     });
 
   onSelect = (selectedKeys, info) => {
-    this.props.toFatherValue(selectedKeys);
+    if(selectedKeys !== undefined) {
+      this.props.toFatherValue(selectedKeys);
+    }
   };
 
   render() {

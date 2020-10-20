@@ -281,12 +281,12 @@ class SoftExetute extends Component {
   };
   render() {
     const columns = [
-      {
-        title: 'id',
-        dataIndex: 'id',
-        key: 'id',
-        width: 200,
-      },
+      // {
+      //   title: 'id',
+      //   dataIndex: 'id',
+      //   key: 'id',
+      //   width: 200,
+      // },
       {
         title: '软件名称',
         dataIndex: 'softwareName',
@@ -294,9 +294,51 @@ class SoftExetute extends Component {
         width: 200,
       },
       {
-        title: '软件使用端口',
+        title: '绝对目录',
+        dataIndex: 'softwareAbsDir',
+        key: 'softwareAbsDir',
+        width: 200,
+      },
+      {
+        title: '日志目录',
+        dataIndex: 'softwareLogDir',
+        key: 'softwareLogDir',
+        width: 200,
+      },
+      {
+        title: '启动命令',
+        dataIndex: 'softwareStartCommand',
+        key: 'softwareStartCommand',
+        width: 200,
+      },
+      {
+        title: '停止命令',
+        dataIndex: 'softwareStopCommand',
+        key: 'softwareStopCommand',
+        width: 200,
+      },
+      {
+        title: '检测命令',
+        dataIndex: 'softwareCheckCommand',
+        key: 'softwareCheckCommand',
+        width: 200,
+      },
+      {
+        title: '使用端口',
         dataIndex: 'softwarePort',
         key: 'softwarePort',
+        width: 200,
+      },
+      {
+        title: '软件版本',
+        dataIndex: 'softwareVersion',
+        key: 'softwareVersion',
+        width: 200,
+      },
+      {
+        title: '软件备注',
+        dataIndex: 'softwareRemark',
+        key: 'softwareRemark',
         width: 200,
       },
       // {
@@ -307,21 +349,10 @@ class SoftExetute extends Component {
       //   // render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
       // },
       {
-        title: '软件版本',
-        dataIndex: 'softwareVersion',
-        key: 'softwareVersion',
-        width: 100,
-      },
-      // {
-      //   title: '软件备注',
-      //   dataIndex: 'softwareRemark',
-      //   key: 'softwareRemark',
-      // },
-      {
         title: '操作',
         dataIndex: 'action',
         key: 'action',
-        width: 300,
+        width: 380,
         fixed: 'right',
         render: (text, record) => (
           <div>
@@ -337,19 +368,19 @@ class SoftExetute extends Component {
             <Divider type="vertical" />
             <span>
               <a type="link" record={record} onClick={() => this.start(record)}>
-                启动
+                启动命令
               </a>
             </span>
             <Divider type="vertical" />
             <span>
               <a type="link" record={record} onClick={() => this.stop(record)}>
-                停止
+                停止命令
               </a>
             </span>
             <Divider type="vertical" />
             <span>
               <a type="link" record={record} onClick={() => this.check(record)}>
-                检测
+                检测命令
               </a>
             </span>
             <Divider type="vertical" />
@@ -399,8 +430,9 @@ class SoftExetute extends Component {
                   rowKey={record => record.id}
                   columns={columns}
                   pagination={pagination}
+                  table-layout="fixed"
                   scroll={{ x: '100%' }}
-                  // loading={loading}
+                  loading={loading}
                 />
                 <Tabs
                   hideAdd
