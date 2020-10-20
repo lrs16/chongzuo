@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Form, Input, Button, Radio, Select,Drawer,message } from 'antd';
+import { Form, Input, Button, Radio, Select, Drawer, message } from 'antd';
 import { ip_reg } from '@/utils/Regexp';
 const formItemLayout = {
   labelCol: {
@@ -42,7 +42,6 @@ class HostEdit extends Component {
     super(props);
   }
 
-
   state = {
     visible: false,
   };
@@ -72,16 +71,13 @@ class HostEdit extends Component {
     });
   };
 
-  validatorPwd = (rule,value,callback) => {
-    if(value && rule.pattern && !value.match(rule.pattern)){
+  validatorPwd = (rule, value, callback) => {
+    if (value && rule.pattern && !value.match(rule.pattern)) {
       callback(rule.message);
-    }else {
+    } else {
       callback();
     }
-   
-    
-
-  }
+  };
 
   //   formateDate = (datetime) => {
   //     function addDateZero(num) {
@@ -121,7 +117,7 @@ class HostEdit extends Component {
           title={title}
           visible={visible}
           width={720}
-          centered='true'
+          centered="true"
           maskClosable={true}
           onClose={this.hanldleCancel}
         >
@@ -144,21 +140,6 @@ class HostEdit extends Component {
               })(<Input placeholder="请输入" />)}
             </Form.Item>
 
-            <Form.Item label="机柜">
-              {getFieldDecorator('hostsCabinetId', {
-                rules: [
-                  {
-                    // required,
-                    message: '请输入',
-                  },
-                ],
-                // initialValue: hostsCabinetId ? hostsCabinetId : '请选择',
-                initialValue: hostsCabinetId,
-              })(<Select
-                   getPopupContainer={triggerNode => triggerNode.parentNode}
-                 >{cabinet}</Select>)}
-            </Form.Item>
-
             <Form.Item label="ip地址">
               {getFieldDecorator('hostsIp', {
                 rules: [
@@ -167,13 +148,30 @@ class HostEdit extends Component {
                     message: 'IP地址不能为空',
                   },
                   {
-                    pattern:ip_reg,
-                    validator:this.validatorPwd,
-                    message:'请输入正确的IP地址'
+                    pattern: ip_reg,
+                    validator: this.validatorPwd,
+                    message: '请输入正确的IP地址',
                   },
                 ],
                 initialValue: hostsIp,
-              })(<Input placeholder="请输入" disabled={hostsIp?true:false}/>)}
+              })(<Input placeholder="请输入" disabled={hostsIp ? true : false} />)}
+            </Form.Item>
+
+            <Form.Item label="主机状态">
+              {getFieldDecorator('hostsStatus', {
+                rules: [
+                  {
+                    required,
+                    message: '请输入',
+                  },
+                ],
+                initialValue: hostsStatus ? hostsStatus : '1',
+              })(
+                <Radio.Group>
+                  <Radio value="0">停用</Radio>
+                  <Radio value="1">在用</Radio>
+                </Radio.Group>,
+              )}
             </Form.Item>
 
             <Form.Item label="主机分区">
@@ -195,8 +193,8 @@ class HostEdit extends Component {
 
             <Form.Item label="主机排序">
               {getFieldDecorator('hostsSort', {
-                initialValue: hostsSort?hostsSort:'1',
-              })(<Input  type='number'/>)}
+                initialValue: hostsSort ? hostsSort : '1',
+              })(<Input type="number" />)}
             </Form.Item>
 
             <Form.Item label="主机操作系统">
@@ -209,9 +207,28 @@ class HostEdit extends Component {
                 ],
                 // initialValue: hostsOsId ? hostsOsId : '请选择',
                 initialValue: hostsOsId,
-              })(<Select
-                   getPopupContainer={triggerNode => triggerNode.parentNode}
-                   >{systemData}</Select>)}
+              })(
+                <Select getPopupContainer={triggerNode => triggerNode.parentNode}>
+                  {systemData}
+                </Select>,
+              )}
+            </Form.Item>
+
+            <Form.Item label="机柜">
+              {getFieldDecorator('hostsCabinetId', {
+                rules: [
+                  {
+                    // required,
+                    message: '请输入',
+                  },
+                ],
+                // initialValue: hostsCabinetId ? hostsCabinetId : '请选择',
+                initialValue: hostsCabinetId,
+              })(
+                <Select getPopupContainer={triggerNode => triggerNode.parentNode}>
+                  {cabinet}
+                </Select>,
+              )}
             </Form.Item>
 
             <Form.Item label="主机备注">
@@ -223,23 +240,6 @@ class HostEdit extends Component {
                 ],
                 initialValue: hostsRemark,
               })(<Input placeholder="请输入" />)}
-            </Form.Item>
-
-            <Form.Item label="主机状态">
-              {getFieldDecorator('hostsStatus', {
-                rules: [
-                  {
-                    required,
-                    message: '请输入',
-                  },
-                ],
-                initialValue: hostsStatus?hostsStatus:'1',
-              })(
-                <Radio.Group>
-                  <Radio value="0">停用</Radio>
-                  <Radio value="1">在用</Radio>
-                </Radio.Group>,
-              )}
             </Form.Item>
           </Form>
           <div
@@ -260,8 +260,6 @@ class HostEdit extends Component {
             <Button onClick={this.handleOk} type="primary">
               确定
             </Button>
-
-            
           </div>
         </Drawer>
       </>

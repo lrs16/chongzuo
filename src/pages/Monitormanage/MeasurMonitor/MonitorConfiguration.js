@@ -39,50 +39,118 @@ const colSql = {
 let idstr = '';
 @connect(({ monitorconfiguration, loading }) => ({
   monitorconfiguration,
-  loading:loading.models.monitorconfiguration
+  loading: loading.models.monitorconfiguration,
 }))
 class MonitorConfiguration extends Component {
   state = {
+    current: 1,
+    pageSize: 10,
+    quekey: '',
     selectedRows: [],
     idlist: '',
   };
   componentDidMount() {
-    this.getList()
+    this.getList();
   }
 
   getList = () => {
+    const page = this.state.current;
+    const limit = this.state.pageSize;
+    const { quekey } = this.state;
     this.props.dispatch({
-      type:'monitorconfiguration/fetch'
-    })
-
-  }
-  show = () =>{
+      type: 'monitorconfiguration/fetch',
+      payload: {
+        page,
+        limit,
+        quekey,
+      },
+    });
+  };
+  show = () => {
     document.getElementById('generalQuery').style.display = 'none';
     document.getElementById('advancedQuery').style.display = 'block';
-  }
+  };
 
   hide = () => {
     document.getElementById('generalQuery').style.display = 'block';
     document.getElementById('advancedQuery').style.display = 'none';
-  }
+  };
 
   monitorAdd = e => {
-    console.log(this.state, 'state');
-    console.log(this.state.selectedRows, 'this.state.selectedRows');
     if (this.state.selectedRows.length) {
       message.info('新建不能选中数据');
       e.preventDefault();
     }
+  };
 
-  }
-  
-  render(){
-    // const components = {
-    //   body: {
-    //     row: EditableFormRow,
-    //     cell: MonitorConfiguration,
-    //   },
-    // };
+  monitorBatchadd = e => {
+    if (this.state.selectedRows.length == 0) {
+      message.info('批量编辑数据必须选择一条以上的数据');
+      e.preventDefault();
+    }
+  };
+
+  monitorDelete = e => {
+    const idlist = [];
+    if (this.state.selectedRows.length == 0) {
+      message.info('必须选中一条数据');
+      e.preventDefault();
+    } else {
+      this.state.selectedRows.forEach(function(items, index, arrData) {
+        idlist.push(items.id);
+      });
+    }
+    const { dispatch } = this.props;
+    return dispatch({
+      type: 'monitorconfiguration/fetch',
+      payload: { idlist },
+    }).then(res => {
+      if (res.code === 200) {
+        message.success(res.msg);
+        this.getList();
+      } else {
+        message.error(res.msg);
+      }
+    });
+  };
+
+  pagination = {
+    showSizeChanger: true,
+    onshowSizeChange: (current, pageSize) => this.onshowSizeChange(current, pageSize),
+    current: this.state.current,
+    pageSize: this.state.pageSize,
+    onChange: page => this.changePage(page),
+  };
+
+  onshowSizeChange = (current, pageSize) => {
+    this.props.dispatch({
+      type: 'monitorconfiguration/fetch',
+      payload: {
+        quekey: this.state.quekey,
+        page: current,
+        limit: pageSize,
+      },
+    });
+    setTimeout(() => {
+      this.setState({ pageSize });
+    }, 0);
+  };
+
+  changePage = page => {
+    this.props.dispatch({
+      type: 'monitorconfiguration/fetch',
+      payload: {
+        quekey: this.state.quekey,
+        page,
+        limit: this.state.pageSize,
+      },
+    });
+    setTimeout(() => {
+      this.setState({ current: page });
+    }, 0);
+  };
+
+  render() {
     const rowSelection = {
       onChange: (selectedRowKeys, selectedRows) => {
         console.log(selectedRows, 'selectedRows');
@@ -96,6 +164,7 @@ class MonitorConfiguration extends Component {
         });
       },
     };
+
     const configurationList = [
       {
         id: 1,
@@ -136,17 +205,17 @@ class MonitorConfiguration extends Component {
     ];
 
     const { getFieldDecorator } = this.props.form;
-   
+
     const columns = [
       {
-        title:'序号',
-        dataIndex:'serialNumber',
-        key:'serialNumber'
+        title: '序号',
+        dataIndex: 'serialNumber',
+        key: 'serialNumber',
       },
       {
-        title:'指标ID',
-        dataIndex:'IndicatorID',
-        key:'IndicatorID'
+        title: '指标ID',
+        dataIndex: 'IndicatorID',
+        key: 'IndicatorID',
       },
       {
         title: '指标名称',
@@ -155,14 +224,14 @@ class MonitorConfiguration extends Component {
         render: text => <span style={{ color: '#1E90FF' }}>{text}</span>,
       },
       {
-        title:'最高值',
-        dataIndex:'maximumValue',
-        key:'maximumValue'
+        title: '最高值',
+        dataIndex: 'maximumValue',
+        key: 'maximumValue',
       },
       {
-        title:'最低值',
-        dataIndex:'minimum',
-        key:'minimum'
+        title: '最低值',
+        dataIndex: 'minimum',
+        key: 'minimum',
       },
       {
         title: '备注',
@@ -185,14 +254,14 @@ class MonitorConfiguration extends Component {
         ),
       },
       {
-        title:'设置人',
-        dataIndex:'setPerson',
-        key:'setPerson'
+        title: '设置人',
+        dataIndex: 'setPerson',
+        key: 'setPerson',
       },
       {
-        title:'设置时间',
-        dataIndex:'setTime',
-        key:'setTime'
+        title: '设置时间',
+        dataIndex: 'setTime',
+        key: 'setTime',
       },
       {
         title: '启用状态',
@@ -208,7 +277,7 @@ class MonitorConfiguration extends Component {
     return (
       <PageHeaderWrapper title="计量业务监控配置">
         <Card>
-        <Row gutter={24} id='generalQuery'>
+          <Row gutter={24} id="generalQuery">
             <Form {...formItemLayout}>
               <Col xl={8} xs={12}>
                 <Form.Item label="指标名称">
@@ -221,21 +290,20 @@ class MonitorConfiguration extends Component {
                   {getFieldDecorator('setTime', {})(<DatePicker />)}
                 </Form.Item>
               </Col>
-            
+
               <Col xl={4} xs={12} style={{ textAlign: 'right' }}>
                 <Button style={{ marginRight: 12 }} type="primary">
                   查询
                 </Button>
                 <Button>重置</Button>
-           
               </Col>
-              
-              <Col xl={4} xs={12} >
+
+              <Col xl={4} xs={12}>
                 <p onClick={this.show}>展开</p>
               </Col>
             </Form>
           </Row>
-        <Row gutter={24} style={{display:'none'}} id='advancedQuery'>
+          <Row gutter={24} style={{ display: 'none' }} id="advancedQuery">
             <Form {...formItemLayout}>
               <Col xl={8} xs={12}>
                 <Form.Item label="指标名称">
@@ -253,23 +321,11 @@ class MonitorConfiguration extends Component {
                 </Form.Item>
               </Col>
               <Col xl={8} xs={12}>
-                <Form.Item label="设置人">
-                  {getFieldDecorator(
-                    'setMan',
-                    {},
-                  )(
-                    <Input />,
-                  )}
-                </Form.Item>
+                <Form.Item label="设置人">{getFieldDecorator('setMan', {})(<Input />)}</Form.Item>
               </Col>
               <Col xl={8} xs={12}>
                 <Form.Item label="警戒值">
-                  {getFieldDecorator(
-                    'warnValue',
-                    {},
-                  )(
-                     <Input />,
-                  )}
+                  {getFieldDecorator('warnValue', {})(<Input />)}
                 </Form.Item>
               </Col>
               <Col xl={4} xs={12}>
@@ -279,33 +335,17 @@ class MonitorConfiguration extends Component {
                 <Button>重置</Button>
               </Col>
 
-              <Col xl={2} xs={12} >
+              <Col xl={2} xs={12}>
                 <p onClick={this.hide}>收起</p>
               </Col>
             </Form>
           </Row>
-          <div style={{display:'flex',flexDirection:'row',justifyContent:'space-between'}}>
+          <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
             <div>
-                <Button type='primary' style={{marginRight:'10px'}}>
-                  <Link 
-                    to={`/monitormanage/measurmonitor/monitoraddedit`}
-                    onClick={this.monitorAdd}>新增
-                  </Link>
-                </Button>
-             
-              <Button type='primary' style={{marginRight:'10px'}}>编辑</Button>
-              <Button type='primary' style={{marginRight:'10px'}}>
-                <Link 
-                  to={{
-                      pathname:'/monitormanage/measurmonitor/monitoraddedit',
-                      state: {
-                        data:this.state.selectedRows
-                      },
-                    }}
-                  onclick={this.monitorAdd}>批量编辑
+              <Button type="primary" style={{ marginRight: '10px' }}>
+                <Link to={`/monitormanage/measurmonitor/monitoraddedit`} onClick={this.monitorAdd}>
+                  新增
                 </Link>
-                {/* <Link to={{pathname:`/breakpromise-manager/${record.id}/detail`,
-                      state:{typeId:record.orgType}}}>{text}</Link> */}
               </Button>
 
               <Button type="primary" style={{ marginRight: '10px' }}>
@@ -319,51 +359,44 @@ class MonitorConfiguration extends Component {
                       data: this.state.selectedRows,
                     },
                   }}
-                  onclick={this.monitorAdd}
+                  onClick={this.monitorBatchadd}
                 >
                   批量编辑
                 </Link>
-                {/* <Link to={{pathname:`/breakpromise-manager/${record.id}/detail`,
-                      state:{typeId:record.orgType}}}>{text}</Link> */}
               </Button>
-              <Button type="danger" ghost style={{ marginRight: '10px' }}>
+              <Button
+                type="danger"
+                ghost
+                style={{ marginRight: '10px' }}
+                onClick={this.monitorDelete}
+              >
                 删除
               </Button>
-              <Button type="primary" style={{ marginRight: '10px' }}>
+              <Button type="primary" style={{ marginRight: '10px' }} onClick={this.monitorDelete}>
                 启用
               </Button>
-              <Button>停用</Button>
+              <Button onClick={this.monitorDelete}>停用</Button>
             </div>
-          
-          <div>
-          <Radio.Group defaultValue="a" buttonStyle="solid">
-            <Radio.Button value="a">全部</Radio.Button>
-            <Radio.Button value="b">已启用</Radio.Button>
-            <Radio.Button value="c">停用</Radio.Button>
-          </Radio.Group>
 
+            <div>
+              <Radio.Group defaultValue="a" buttonStyle="solid">
+                <Radio.Button value="a">全部</Radio.Button>
+                <Radio.Button value="b">已启用</Radio.Button>
+                <Radio.Button value="c">停用</Radio.Button>
+              </Radio.Group>
+            </div>
           </div>
-
-          </div>
-
-            
-        
-       
-
           <Table
             // components={components}
             columns={columns}
             rowSelection={rowSelection}
             dataSource={configurationList}
+            pagination={this.pagination}
             // rowkey={record => record.id}
-          >
-            
-
-          </Table>
-
+          ></Table>
         </Card>
       </PageHeaderWrapper>
-    )
+    );
   }
 }
 

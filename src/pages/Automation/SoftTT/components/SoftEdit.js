@@ -172,7 +172,7 @@ class SoftEdit extends Component {
               <Form>
                 <Form.Item>
                   {getFieldDecorator('softwareCheckCommand', {
-                    initialValue: softwareCheckCommand,
+                    initialValue: softwareCheckCommand ? softwareCheckCommand : 'null',
                   })(<Input.TextArea rows={34} style={{ width: 720 }}></Input.TextArea>)}
                 </Form.Item>
               </Form>

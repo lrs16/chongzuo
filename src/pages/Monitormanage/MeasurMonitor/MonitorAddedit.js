@@ -24,16 +24,15 @@ let setpersonData = '';
 
 class MonitorAddedit extends Component {
   componentDidMount() {
-    const { data } = this.props.location.state;
-    console.log(data, 'data');
-    data.forEach(function(item, index, array) {
-      listData = listData + item.indicatorName;
-      remarkData = remarkData + item.remark;
-      setpersonData = setpersonData + item.setPerson;
-    });
-    console.log(listData, 'listData');
-    console.log(remarkData, 'remarkData');
-    console.log(setpersonData, 'setpersonData');
+    if (this.props.location.state) {
+      const { data } = this.props.location.state;
+      console.log(data, 'data');
+      data.forEach(function(item, index, array) {
+        listData = listData + item.indicatorName;
+        remarkData = remarkData + item.remark;
+        setpersonData = setpersonData + item.setPerson;
+      });
+    }
   }
   render() {
     const formItemLayout = {
@@ -60,7 +59,7 @@ class MonitorAddedit extends Component {
                     message: '请输入',
                   },
                 ],
-                initialValue: listData,
+                initialValue: listData ? listData : '',
               })(
                 <Select mode="multiple" style={{ width: '100%' }}>
                   {arr}
@@ -98,12 +97,12 @@ class MonitorAddedit extends Component {
 
             <Form.Item label="备注">
               {getFieldDecorator('remark', {
-                initialValue: remarkData,
+                initialValue: remarkData ? remarkData : '',
               })(<TextArea />)}
             </Form.Item>
             <Form.Item label="设置人">
               {getFieldDecorator('setPerson', {
-                initialValue: setpersonData,
+                initialValue: setpersonData ? setpersonData : '',
               })(<Input />)}
             </Form.Item>
 

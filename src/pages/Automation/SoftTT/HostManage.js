@@ -1,7 +1,20 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
-import { Card, Table, Form, Input, Button, Message, Divider, Badge, Popconfirm, Row, Col,Select  } from 'antd';
+import {
+  Card,
+  Table,
+  Form,
+  Input,
+  Button,
+  Message,
+  Divider,
+  Badge,
+  Popconfirm,
+  Row,
+  Col,
+  Select,
+} from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import HostEdit from './components/HostEdit';
 import HostSoft from './components/Host_Soft';
@@ -9,9 +22,9 @@ import BatchAdd from './components/BatchAdd';
 
 const statusMap = ['default', 'success'];
 const status = ['停用', '在用'];
-const cabinet = ['A座机柜','B座机柜'];
-const operatSystem = ['window','linux'];
-const hostPart = ['安全接入区','二区','三区'];
+const cabinet = ['A座机柜', 'B座机柜'];
+const operatSystem = ['window', 'linux'];
+const hostPart = ['安全接入区', '二区', '三区'];
 const { Search } = Input;
 const { Option } = Select;
 
@@ -59,7 +72,7 @@ class HostManage extends Component {
       },
     });
   };
- 
+
   onShowSizeChange = (current, pageSize) => {
     this.props.dispatch({
       type: 'hostsoft/search',
@@ -136,7 +149,7 @@ class HostManage extends Component {
   handleBatchadd = str => {
     const { dispatch } = this.props;
     return dispatch({
-      type:'hostsoft/batchAddhost',
+      type: 'hostsoft/batchAddhost',
       payload: str,
     }).then(res => {
       if (res.code === 200) {
@@ -146,7 +159,7 @@ class HostManage extends Component {
         Message.error(res.msg);
       }
     });
-  }
+  };
 
   render() {
     const {
@@ -163,12 +176,6 @@ class HostManage extends Component {
     };
 
     const columns = [
-      {
-        title: 'id',
-        dataIndex: 'id',
-        key: 'id',
-        width: 200,
-      },
       {
         title: '主机名称',
         dataIndex: 'hostsName',
@@ -193,32 +200,24 @@ class HostManage extends Component {
         title: '主机分区',
         dataIndex: 'hostsZoneId',
         key: 'hostsZoneId',
-        render: (text,record) => (
-          <span>
-            {hostPart[record.hostsZoneId]}
-          </span>
-        )
+        render: (text, record) => <span>{hostPart[record.hostsZoneId]}</span>,
       },
       {
         title: '主机操作系统',
         dataIndex: 'hostsOsId',
         key: 'hostsOsId',
-        render:(text,record) => (
-          <span>
-            {operatSystem[record.hostsOsId]}
-          </span>
-        )
+        render: (text, record) => <span>{operatSystem[record.hostsOsId]}</span>,
       },
       {
         title: '机柜',
         dataIndex: 'hostsCabinetId',
         key: 'hostsCabinetId',
-        render:(text,record) => (
-          <span>
-            {cabinet[record.hostsCabinetId]}
-          </span>
-        )
-        
+        render: (text, record) => <span>{cabinet[record.hostsCabinetId]}</span>,
+      },
+      {
+        title: '排序',
+        dataIndex: 'hostsSort',
+        key: 'hostsSort',
       },
       {
         title: '主机备注',
@@ -270,16 +269,16 @@ class HostManage extends Component {
       <PageHeaderWrapper title="主机管理">
         <Card>
           <Row>
-          <Form style={{ float: 'right', width: '30%' }}>
-            <Search placeholder="请输入关键字" onSearch={values => this.handleSearch(values)} />
-          </Form>
+            <Form style={{ float: 'right', width: '30%' }}>
+              <Search placeholder="请输入关键字" onSearch={values => this.handleSearch(values)} />
+            </Form>
           </Row>
           <Row gutter={16}>
-            <Col  className="gutter-row" span={12}>
+            <Col className="gutter-row" span={12}>
               <div>
-                <HostEdit  onSumit={this.handleUpdate}>
+                <HostEdit onSumit={this.handleUpdate}>
                   <Button
-                    style={{ width:'100%',margin:'16px 0 8px 0'}}
+                    style={{ width: '100%', margin: '16px 0 8px 0' }}
                     type="dashed"
                     icon="plus"
                   >
@@ -289,14 +288,11 @@ class HostManage extends Component {
               </div>
             </Col>
 
-            <Col className="gutter-row" span={12}> 
+            <Col className="gutter-row" span={12}>
               <div>
-                <BatchAdd
-                  hostId='hostId'
-                  onsumitBatch={str => this.handleBatchadd(str)}
-                >
+                <BatchAdd hostId="hostId" onsumitBatch={str => this.handleBatchadd(str)}>
                   <Button
-                    style={{ width:'100%',margin:'16px 0 8px 0'}}
+                    style={{ width: '100%', margin: '16px 0 8px 0' }}
                     type="dashed"
                     icon="plus"
                   >
@@ -306,9 +302,7 @@ class HostManage extends Component {
               </div>
             </Col>
           </Row>
-          
-          
-        
+
           <Table
             columns={columns}
             dataSource={dataSource}
@@ -316,10 +310,7 @@ class HostManage extends Component {
             pagination={pagination}
             scroll={{ x: 1500 }}
           />
-           
-          
         </Card>
-        
       </PageHeaderWrapper>
     );
   }

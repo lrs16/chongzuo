@@ -1,22 +1,21 @@
-import {
-  configurationList
-} from '../services/monitor';
+import { configurationList } from '../services/monitor';
 
 export default {
   namespace: 'monitorconfiguration',
 
   state: {
-    list:[]
+    list: [],
   },
 
   effects: {
-    *fetch(_,{ call, put }) {
-      const response = yield call(configurationList);
+    *fetch({ payload }, { call, put }) {
+      console.log(payload, 'payload');
+      const response = yield call(configurationList, payload);
       yield put({
-        type:'list',
-        payload:response.data,
-      })
-    }
+        type: 'list',
+        payload: response.data,
+      });
+    },
   },
 
   reducers: {
@@ -27,11 +26,11 @@ export default {
       };
     },
 
-    list(state,action) {
+    list(state, action) {
       return {
         ...state,
-        list: action.payload
-      }
-    }
+        list: action.payload,
+      };
+    },
   },
 };

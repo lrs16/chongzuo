@@ -293,6 +293,12 @@ export default {
                       icon: 'cloud-server',
                       component: './Monitormanage/MeasurMonitor/MonitorAddedit',
                     },
+                    {
+                      path: '/monitormanage/measurmonitor/monitoraddedit/:id',
+                      name: '增加计量业务监测配置',
+                      icon: 'cloud-server',
+                      component: './Monitormanage/MeasurMonitor/MonitorAddedit',
+                    },
 
                     {
                       component: './404',

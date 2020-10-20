@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
-import { Card, Table, Form, Input, Button, Message, Divider, Popconfirm,Row,Col } from 'antd';
+import { Card, Table, Form, Input, Button, Message, Divider, Popconfirm, Row, Col } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProcessEdit from './components/ProcessEdit';
 import BatchAdd from './components/BatchAdd';
@@ -129,25 +129,20 @@ class ProcessManage extends Component {
   handleBatchadd = str => {
     const { dispatch } = this.props;
     return dispatch({
-      type:'upmsprocess/batchAddprocess',
+      type: 'upmsprocess/batchAddprocess',
       payload: str,
     }).then(res => {
-      if(res.code === 200) {
+      if (res.code === 200) {
         Message.success(res.msg);
         this.getlist();
-      }else {
-        Message.error(res.msg)
+      } else {
+        Message.error(res.msg);
       }
     });
-  }
+  };
 
   render() {
     const columns = [
-      {
-        title: '数据编号',
-        dataIndex: 'id',
-        key: 'id',
-      },
       {
         title: '进程名称',
         dataIndex: 'courseName',
@@ -169,10 +164,10 @@ class ProcessManage extends Component {
         key: 'createUserNameExt',
       },
       {
-        title:'创建时间',
-        dataIndex:'createTime',
-        key:'createTime',
-      render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>
+        title: '创建时间',
+        dataIndex: 'createTime',
+        key: 'createTime',
+        render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
       },
       {
         title: '更新时间',
@@ -234,7 +229,7 @@ class ProcessManage extends Component {
               <div>
                 <ProcessEdit onSumit={values => this.handleAdd(values)}>
                   <Button
-                    style={{ width:'100%',margin:'16px 0 8px 0'}}
+                    style={{ width: '100%', margin: '16px 0 8px 0' }}
                     type="dashed"
                     icon="plus"
                   >
@@ -246,13 +241,14 @@ class ProcessManage extends Component {
             <Col className="gutter-row" span={12}>
               <div>
                 <BatchAdd
-                processId='processId'
-                onsumitBatchprocess={str => this.handleBatchadd(str)}
+                  processId="processId"
+                  onsumitBatchprocess={str => this.handleBatchadd(str)}
                 >
                   <Button
-                    style={{width:'100%',margin:'16px 0 8px 0'}}
-                    type='dashed'
-                    icon='plus'>
+                    style={{ width: '100%', margin: '16px 0 8px 0' }}
+                    type="dashed"
+                    icon="plus"
+                  >
                     批量添加
                   </Button>
                 </BatchAdd>

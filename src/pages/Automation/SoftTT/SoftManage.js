@@ -131,27 +131,39 @@ class SoftManage extends Component {
   render() {
     const columns = [
       {
-        title: 'id',
-        dataIndex: 'id',
-        key: 'id',
-        width: 200,
-      },
-      {
         title: '软件名称',
         dataIndex: 'softwareName',
         key: 'softwareName',
       },
       {
-        title: '软件使用端口',
-        dataIndex: 'softwarePort',
-        key: 'softwarePort',
+        title: '绝对目录',
+        dataIndex: 'softwareAbsDir',
+        key: 'softwareAbsDir',
       },
       {
-        title: '更新时间',
-        dataIndex: 'updateTime',
-        key: 'updateTime',
-        width: 200,
-        render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
+        title: '日志目录',
+        dataIndex: 'softwareLogDir',
+        key: 'softwareLogDir',
+      },
+      {
+        title: '启动命令',
+        dataIndex: 'softwareStartCommand',
+        key: 'softwareStartCommand',
+      },
+      {
+        title: '停止命令',
+        dataIndex: 'softwareStopCommand',
+        key: 'softwareStopCommand',
+      },
+      {
+        title: '检测命令',
+        dataIndex: 'softwareCheckCommand',
+        key: 'softwareCheckCommand',
+      },
+      {
+        title: '使用端口',
+        dataIndex: 'softwarePort',
+        key: 'softwarePort',
       },
       {
         title: '软件版本',
@@ -159,9 +171,33 @@ class SoftManage extends Component {
         key: 'softwareVersion',
       },
       {
+        title: '软件排序',
+        dataIndex: 'softwareSort',
+        key: 'softwareSort',
+      },
+      {
         title: '软件备注',
-        dataIndex: 'softwareRemark',
-        key: 'softwareRemark',
+        dataIndex: 'softwareRemark ',
+        key: 'softwareRemark ',
+      },
+      {
+        title: '创建人',
+        dataIndex: 'createUser',
+        key: 'createUser',
+      },
+      {
+        title: '创建时间',
+        dataIndex: 'createTime',
+        key: 'createTime',
+        width: 200,
+        render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
+      },
+      {
+        title: '更新时间',
+        dataIndex: 'updateTime',
+        key: 'updateTime',
+        width: 200,
+        render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
       },
       {
         title: '操作',
