@@ -297,13 +297,13 @@ class SoftExetute extends Component {
         title: '绝对目录',
         dataIndex: 'softwareAbsDir',
         key: 'softwareAbsDir',
-        width: 200,
+        width: 250,
       },
       {
         title: '日志目录',
         dataIndex: 'softwareLogDir',
         key: 'softwareLogDir',
-        width: 200,
+        width: 300,
       },
       {
         title: '启动命令',
@@ -321,7 +321,7 @@ class SoftExetute extends Component {
         title: '检测命令',
         dataIndex: 'softwareCheckCommand',
         key: 'softwareCheckCommand',
-        width: 200,
+        width: 480,
       },
       {
         title: '使用端口',
