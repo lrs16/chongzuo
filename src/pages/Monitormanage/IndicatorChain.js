@@ -141,13 +141,13 @@ class IndicatorChain extends Component {
         title: '供电单位编码',
         dataIndex: 'gddwbm',
         key: 'gddwbm',
-        width: 120,
+        width: 118,
       },
       {
         title: '供电单位名称',
         dataIndex: 'gddwmc',
         key: 'gddwmc',
-        width: 120,
+        width: 220,
       },
       {
         title: '单位类型名称',
@@ -159,11 +159,13 @@ class IndicatorChain extends Component {
         title: '指标名称',
         dataIndex: 'mc',
         key: 'mc',
+        width: 120,
       },
       {
         title: '统计类别',
         dataIndex: 'lb',
         key: 'lb',
+        width: 120,
       },
 
       {
@@ -232,7 +234,7 @@ class IndicatorChain extends Component {
           <Form {...formItemLayout}>
             <Row>
               <Col span={8}>
-                <Form.Item label="供电单位名称">
+                <Form.Item label="供电单位">
                   {getFieldDecorator('gddwmc', { initialValue: '' })(
                     <Input placeholder="请输入" />,
                   )}
@@ -266,50 +268,30 @@ class IndicatorChain extends Component {
                   )}
                 </Form.Item>
               </Col>
-              {this.state.ringname !== 'fgl' && (
-                <>
-                  <Col span={8}>
-                    <Form.Item label="单位类型编码">
-                      {getFieldDecorator('gldwlxbm', { initialValue: '' })(
-                        <Select placeholder="请选择">
-                          {areatypemap.map(({ key, value }) => [
-                            <Option key={key} value={key}>
-                              {value}
-                            </Option>,
-                          ])}
-                        </Select>,
-                      )}
-                    </Form.Item>
-                  </Col>
-                </>
-              )}
-              {this.state.ringname !== 'fgl' && (
-                <Col span={8} style={{ textAlign: 'right' }}>
-                  <Button type="primary" onClick={this.handleSearch}>
-                    查 询
-                  </Button>
-                  <Button style={{ marginLeft: 8 }} onClick={this.handleReset}>
-                    重 置
-                  </Button>
-                  <Button style={{ marginLeft: 8 }} type="link" onClick={this.handleextractData}>
-                    抽 数
-                  </Button>
-                </Col>
-              )}
-
-              {this.state.ringname === 'fgl' && (
-                <Col span={24} style={{ textAlign: 'right' }}>
-                  <Button type="primary" onClick={this.handleSearch}>
-                    查 询
-                  </Button>
-                  <Button style={{ marginLeft: 8 }} onClick={this.handleReset}>
-                    重 置
-                  </Button>
-                  <Button style={{ marginLeft: 8 }} type="link" onClick={this.handleextractData}>
-                    抽 数
-                  </Button>
-                </Col>
-              )}
+              <Col span={8}>
+                <Form.Item label="管理单位">
+                  {getFieldDecorator('gldwlxbm', { initialValue: '' })(
+                    <Select placeholder="请选择">
+                      {areatypemap.map(({ key, value }) => [
+                        <Option key={key} value={key}>
+                          {value}
+                        </Option>,
+                      ])}
+                    </Select>,
+                  )}
+                </Form.Item>
+              </Col>
+              <Col span={8} style={{ textAlign: 'right' }}>
+                <Button type="primary" onClick={this.handleSearch}>
+                  查 询
+                </Button>
+                <Button style={{ marginLeft: 8 }} onClick={this.handleReset}>
+                  重 置
+                </Button>
+                <Button style={{ marginLeft: 8 }} type="link" onClick={this.handleextractData}>
+                  抽 数
+                </Button>
+              </Col>
             </Row>
           </Form>
         </Card>
