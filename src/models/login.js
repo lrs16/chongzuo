@@ -8,23 +8,24 @@ import { getPageQuery } from '@/utils/utils';
 const Model = {
   namespace: 'login',
   state: {
-    status: undefined,
-    code: '',
+    status: '',
+    msg: '',
     currentAuthority: '',
   },
 
   effects: {
     *login({ payload }, { call, put }) {
       const response = yield call(fakeAccountLogin, payload);
-      sessionStorage.setItem('access_token', response.data.access_token);
-      // sessionStorage.setItem('refresh_token', response.data.refresh_token);
-      // sessionStorage.setItem('expires_in', response.data.expires_in);
-      // yield put({
-      //   type: 'changeLoginStatus',
-      //   payload: response,
-      // }); // Login successfully
+
+      if (response.code === -1) {
+        yield put({
+          type: 'changeLoginStatus',
+          payload: response,
+        });
+      }
 
       if (response.code === 200) {
+        sessionStorage.setItem('access_token', response.data.access_token);
         const userinfo = yield call(queryCurrent); // 正式环境
         yield put({
           type: 'changeLoginStatus',
@@ -83,8 +84,20 @@ const Model = {
     changeLoginStatus(state, { payload }) {
       setAuthority(payload.currentAuthority);
       // setAuthority('admin')
-      return { ...state, status: payload.status, type: payload.type };
+      return {
+        ...state,
+        status: payload.code,
+        // type: payload.type,
+        msg: payload.msg,
+      };
     },
+
+    // errstatus(state, action) {
+    //   return {
+    //     ...state,
+    //     errs: action.payload,
+    //   };
+    // },
   },
 };
 export default Model;

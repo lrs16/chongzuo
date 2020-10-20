@@ -1,16 +1,18 @@
 import react, { Component } from 'react';
 import { connect } from 'dva';
-import { Layout,
-         Card,
-         Table,
-         Form,
-         Input,
-        Button,
-        Row,
-        Col,
-        Radio,
-        message,
-        DatePicker   } from 'antd';
+import {
+  Layout,
+  Card,
+  Table,
+  Form,
+  Input,
+  Button,
+  Row,
+  Col,
+  Radio,
+  message,
+  DatePicker,
+} from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import Link from 'umi/link';
 const { Header, Footer, Sider, Content } = Layout;
@@ -26,24 +28,24 @@ const formItemLayout = {
 };
 
 const statusMap = ['#D3D3D3', '#1E90FF'];
-const status = ['已停用','已启用'];
+const status = ['已停用', '已启用'];
 const colSql = {
-    overflow: 'hidden',
-    textOverflow:'ellipsis',
-    whiteSpace:'nowrap',
-    display:'inline-block',
-    color:'red' 
-  }
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  whiteSpace: 'nowrap',
+  display: 'inline-block',
+  color: 'red',
+};
 let idstr = '';
-@connect(({monitorconfiguration, loading}) =>({
+@connect(({ monitorconfiguration, loading }) => ({
   monitorconfiguration,
   loading:loading.models.monitorconfiguration
 }))
 class MonitorConfiguration extends Component {
   state = {
-    selectedRows:[],
-    idlist:''
-  }
+    selectedRows: [],
+    idlist: '',
+  };
   componentDidMount() {
     this.getList()
   }
@@ -64,10 +66,10 @@ class MonitorConfiguration extends Component {
     document.getElementById('advancedQuery').style.display = 'none';
   }
 
-  monitorAdd = (e) => {
-    console.log(this.state,'state');
-    console.log(this.state.selectedRows,'this.state.selectedRows');
-    if(this.state.selectedRows.length) {
+  monitorAdd = e => {
+    console.log(this.state, 'state');
+    console.log(this.state.selectedRows, 'this.state.selectedRows');
+    if (this.state.selectedRows.length) {
       message.info('新建不能选中数据');
       e.preventDefault();
     }
@@ -83,53 +85,53 @@ class MonitorConfiguration extends Component {
     // };
     const rowSelection = {
       onChange: (selectedRowKeys, selectedRows) => {
-        console.log(selectedRows,'selectedRows');
+        console.log(selectedRows, 'selectedRows');
         // console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-        selectedRows.forEach(function(item){
+        selectedRows.forEach(function(item) {
           idstr = item.id;
         });
         this.setState({
           selectedRows: selectedRows,
-          idlist: idstr
+          idlist: idstr,
         });
       },
     };
     const configurationList = [
       {
-        id:1,
-        serialNumber:1,
-        IndicatorID:'zb202005130001',
-        indicatorName:'采集完整率1',
-        maximumValue:60,
-        minimum:10,
-        remark:'采集完整率的备注备注备注1',
-        setPerson:'朱三三',
-        setTime:'2020-05-11  09:46',
-        enableStatus:'0'
+        id: 1,
+        serialNumber: 1,
+        IndicatorID: 'zb202005130001',
+        indicatorName: '采集完整率1',
+        maximumValue: 60,
+        minimum: 10,
+        remark: '采集完整率的备注备注备注1',
+        setPerson: '朱三三',
+        setTime: '2020-05-11  09:46',
+        enableStatus: '0',
       },
       {
-        id:2,
-        serialNumber:2,
-        IndicatorID:'zb202005130001',
-        indicatorName:'采集完整率2',
-        maximumValue:60,
-        minimum:10,
-        remark:'采集完整率的备注备注备注2',
-        setPerson:'朱三三',
-        setTime:'2020-05-11  09:46',
-        enableStatus:'1'
+        id: 2,
+        serialNumber: 2,
+        IndicatorID: 'zb202005130001',
+        indicatorName: '采集完整率2',
+        maximumValue: 60,
+        minimum: 10,
+        remark: '采集完整率的备注备注备注2',
+        setPerson: '朱三三',
+        setTime: '2020-05-11  09:46',
+        enableStatus: '1',
       },
       {
-        id:3,
-        serialNumber:3,
-        IndicatorID:'zb202005130001',
-        indicatorName:'采集完整率3',
-        maximumValue:60,
-        minimum:10,
-        remark:'采集完整率的备注备注备注',
-        setPerson:'朱三三',
-        setTime:'2020-05-11  09:46',
-        enableStatus:'1'
+        id: 3,
+        serialNumber: 3,
+        IndicatorID: 'zb202005130001',
+        indicatorName: '采集完整率3',
+        maximumValue: 60,
+        minimum: 10,
+        remark: '采集完整率的备注备注备注',
+        setPerson: '朱三三',
+        setTime: '2020-05-11  09:46',
+        enableStatus: '1',
       },
     ];
 
@@ -147,14 +149,10 @@ class MonitorConfiguration extends Component {
         key:'IndicatorID'
       },
       {
-        title:'指标名称',
-        dataIndex:'indicatorName',
-        key:'indicatorName',
-        render:(text) =>(
-        <span style={{color:'#1E90FF'}}>
-          {text}
-          </span>
-        ),
+        title: '指标名称',
+        dataIndex: 'indicatorName',
+        key: 'indicatorName',
+        render: text => <span style={{ color: '#1E90FF' }}>{text}</span>,
       },
       {
         title:'最高值',
@@ -167,12 +165,21 @@ class MonitorConfiguration extends Component {
         key:'minimum'
       },
       {
-        title:'备注',
-        dataIndex:'remark',
-        key:'remark',
+        title: '备注',
+        dataIndex: 'remark',
+        key: 'remark',
         // width: 10,
-        render:(text)=>(
-          <span style={{overflow: 'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap',display:'inline-block',color:'red',width:'150px' }}>
+        render: text => (
+          <span
+            style={{
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+              display: 'inline-block',
+              color: 'red',
+              width: '150px',
+            }}
+          >
             {text}
           </span>
         ),
@@ -188,19 +195,18 @@ class MonitorConfiguration extends Component {
         key:'setTime'
       },
       {
-        title:'启用状态',
-        dataIndex:'enableStatus',
-        key:'enableStatus',
+        title: '启用状态',
+        dataIndex: 'enableStatus',
+        key: 'enableStatus',
         render: (text, record) => (
-          <span style={{ color: statusMap[record.enableStatus], textDecoration:'underline' }}>
-          {status[record.enableStatus]}
+          <span style={{ color: statusMap[record.enableStatus], textDecoration: 'underline' }}>
+            {status[record.enableStatus]}
           </span>
-         )
-        
-      }
-    ]
-    return(
-      <PageHeaderWrapper title='计量业务监控配置'>
+        ),
+      },
+    ];
+    return (
+      <PageHeaderWrapper title="计量业务监控配置">
         <Card>
         <Row gutter={24} id='generalQuery'>
             <Form {...formItemLayout}>
@@ -212,12 +218,7 @@ class MonitorConfiguration extends Component {
 
               <Col xl={8} xs={12}>
                 <Form.Item label="设置时间">
-                  {getFieldDecorator(
-                    'setTime',
-                    {},
-                  )(
-                    <DatePicker />
-                  )}
+                  {getFieldDecorator('setTime', {})(<DatePicker />)}
                 </Form.Item>
               </Col>
             
@@ -243,12 +244,7 @@ class MonitorConfiguration extends Component {
               </Col>
               <Col xl={8} xs={12}>
                 <Form.Item label="设置时间">
-                  {getFieldDecorator(
-                    'monitorType',
-                    {},
-                  )(
-                    <DatePicker />
-                  )}
+                  {getFieldDecorator('monitorType', {})(<DatePicker />)}
                 </Form.Item>
               </Col>
               <Col xl={8} xs={12}>
@@ -311,8 +307,31 @@ class MonitorConfiguration extends Component {
                 {/* <Link to={{pathname:`/breakpromise-manager/${record.id}/detail`,
                       state:{typeId:record.orgType}}}>{text}</Link> */}
               </Button>
-              <Button type="danger" ghost style={{marginRight:'10px'}}>删除</Button>
-              <Button type='primary' style={{marginRight:'10px'}}>启用</Button>
+
+              <Button type="primary" style={{ marginRight: '10px' }}>
+                编辑
+              </Button>
+              <Button type="primary" style={{ marginRight: '10px' }}>
+                <Link
+                  to={{
+                    pathname: '/monitormanage/measurmonitor/monitoraddedit',
+                    state: {
+                      data: this.state.selectedRows,
+                    },
+                  }}
+                  onclick={this.monitorAdd}
+                >
+                  批量编辑
+                </Link>
+                {/* <Link to={{pathname:`/breakpromise-manager/${record.id}/detail`,
+                      state:{typeId:record.orgType}}}>{text}</Link> */}
+              </Button>
+              <Button type="danger" ghost style={{ marginRight: '10px' }}>
+                删除
+              </Button>
+              <Button type="primary" style={{ marginRight: '10px' }}>
+                启用
+              </Button>
               <Button>停用</Button>
             </div>
           

@@ -18,15 +18,7 @@ class Login extends Component {
   state = {
     type: 'account',
     Authorization: 'Basic d2ViQXBwX3JlYWN0',
-    // grant_type: 'sm3_user_pass',
-    // autoLogin: true,
   };
-
-  // changeAutoLogin = e => {
-  //   this.setState({
-  //     autoLogin: e.target.checked,
-  //   });
-  // };
 
   handleSubmit = (err, values) => {
     const { Authorization } = this.state;
@@ -88,7 +80,7 @@ class Login extends Component {
 
   render() {
     const { userLogin, submitting } = this.props;
-    const { status, type: loginType } = userLogin;
+    const { status, msg, type: loginType } = userLogin;
     const { type } = this.state;
     return (
       <div className={styles.main}>
@@ -106,7 +98,7 @@ class Login extends Component {
               id: 'user-login.login.tab-login-credentials',
             })}
           >
-            {status !== undefined &&
+            {status !== -1 &&
               loginType === 'account' &&
               !submitting &&
               this.renderMessage(
@@ -156,7 +148,7 @@ class Login extends Component {
               id: 'user-login.login.tab-login-mobile',
             })}
           >
-            {status !== undefined &&
+            {status !== -1 &&
               loginType === 'mobile' &&
               !submitting &&
               this.renderMessage(
@@ -211,6 +203,7 @@ class Login extends Component {
             {/* <Checkbox checked={autoLogin} onChange={this.changeAutoLogin}>
               <FormattedMessage id="user-login.login.remember-me" />
             </Checkbox> */}
+            {status === -1 && <Alert message={msg} type="error" showIcon />}
             <a
               style={{
                 float: 'right',

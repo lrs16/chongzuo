@@ -13,7 +13,7 @@ const codeMessage = {
   202: '一个请求已经进入后台排队（异步任务）。',
   204: '删除数据成功。',
   400: '发出的请求有错误，服务器没有进行新建或修改数据的操作。',
-  401: '用户没有权限（令牌、用户名、密码错误）。',
+  401: '用户没有权限，请登录',
   403: '用户得到授权，但是访问是被禁止的。',
   404: '发出的请求针对的是不存在的记录，服务器没有进行操作。',
   406: '请求的格式不可得。',
@@ -31,44 +31,17 @@ const codeMessage = {
 const errorHandler = error => {
   const { response } = error;
   const close = () => {
-    window.location.pathname = '/user/login';
-  };
-  const cleartoken = () => {
-    // const token = sessionStorage.getItem('access_token');
-    // router.push('/500');
     sessionStorage.clear();
+    window.location.pathname = '/user/login';
   };
 
   if (response && response.status) {
     const errorText = codeMessage[response.status] || response.statusText;
     const { status, url } = response;
 
-    if (status !== 401) {
-      notification.error({
-        message: `请求错误 ${status}: ${url}`,
-        description: errorText,
-        // onClose: close,
-      });
-    }
-
-    // if (status === 500 && url === 'http://localhost:8000/api-upms/upms_user/getCurrUserInfo') {
-    //   notification.error({
-    //     message: '未登录或登录过期，请重新登录',
-    //     onClose: close,
-    //   });
-    //   sessionStorage.clear();
-    // }
-
-    // if (status === 500) {
-    //   notification.error({
-    //     message: '登录过期，请重新登录',
-    //     onClose: cleartoken,
-    //   });
-    // }
-
     if (status === 401) {
       notification.error({
-        message: `登录失败`,
+        message: `${status}`,
         description: errorText,
         onClose: close,
         duration: 0.5,
@@ -76,11 +49,23 @@ const errorHandler = error => {
     }
 
     if (status === 403) {
-      sessionStorage.clear();
-      window.location.pathname = '/user/login';
+      notification.error({
+        message: `${status}`,
+        description: errorText,
+        onClose: close,
+        duration: 0.5,
+      });
+      // sessionStorage.clear();
+      // window.location.pathname = '/user/login';
     }
     if (status >= 404 && status < 422) {
       router.push('/404');
+    }
+    if (status !== 401 && status !== 403) {
+      notification.error({
+        message: `${status}: ${url}`,
+        description: errorText,
+      });
     }
   } else if (!response) {
     notification.error({
