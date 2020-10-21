@@ -9,6 +9,11 @@ import StartModal from './components/StartModal';
 import HostTree from '@/components/HostTree';
 
 const { TabPane } = Tabs;
+const nameType = [
+  {key: 1, name: '启动命令', type: '1'}, 
+  {key: 2, name: '停止命令', type: '2'}, 
+  {key: 3, name: '检测命令', type: '3'},
+];
 @connect(({ softexetute, loading }) => ({
   softexetute,
   loading: loading.models.softexetute,
@@ -212,7 +217,8 @@ class SoftExetute extends Component {
     });
   };
 
-  start = record => {
+  // 启动/停止/检测命令
+  hanleCommit = (record, type) => {
     const { hostId } = this.state;
     const { id } = this.props.softexetute.treehostdata;
 
@@ -222,7 +228,7 @@ class SoftExetute extends Component {
       payload: {
         hostsId: id || hostId,
         softId: record.id,
-        handleType: '1',
+        handleType: type,
       },
     }).then(res => {
       setTimeout(() => {
@@ -235,50 +241,6 @@ class SoftExetute extends Component {
     });
   };
 
-  stop = record => {
-    const { hostId } = this.state;
-    const { id } = this.props.softexetute.treehostdata;
-
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'softexetute/getSofttoHostHandleType',
-      payload: {
-        hostsId: id || hostId,
-        softId: record.id,
-        handleType: '2',
-      },
-    }).then(res => {
-      setTimeout(() => {
-        if (res.state) {
-          message.success("命令已执行" + "\n" + res.msg);
-        } else {
-          message.error(res.msg);
-        }
-      }, 500);
-    });
-  };
-  check = record => {
-    const { hostId } = this.state;
-    const { id } = this.props.softexetute.treehostdata;
-
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'softexetute/getSofttoHostHandleType',
-      payload: {
-        hostsId: id || hostId,
-        softId: record.id,
-        handleType: '3',
-      },
-    }).then(res => {
-      setTimeout(() => {
-        if (res.state) {
-          message.success("命令已执行" + "\n" + res.msg);
-        } else {
-          message.error(res.msg);
-        }
-      }, 500);
-    });
-  };
   render() {
     const columns = [
       // {
@@ -327,13 +289,13 @@ class SoftExetute extends Component {
         title: '使用端口',
         dataIndex: 'softwarePort',
         key: 'softwarePort',
-        width: 150,
+        width: 120,
       },
       {
         title: '软件版本',
         dataIndex: 'softwareVersion',
         key: 'softwareVersion',
-        width: 150,
+        width: 120,
       },
       {
         title: '软件备注',
@@ -366,24 +328,16 @@ class SoftExetute extends Component {
               <a type="link">执行命令</a>
             </StartModal>
             <Divider type="vertical" />
+
             <span>
-              <a type="link" record={record} onClick={() => this.start(record)}>
-                启动命令
-              </a>
+              {nameType.map(({ key, name, type }) => [
+                <a key={key} record={record} onClick={() => this.hanleCommit(record, type)}>
+                  {name}
+                </a>,
+                <Divider type="vertical" />
+              ])}
             </span>
-            <Divider type="vertical" />
-            <span>
-              <a type="link" record={record} onClick={() => this.stop(record)}>
-                停止命令
-              </a>
-            </span>
-            <Divider type="vertical" />
-            <span>
-              <a type="link" record={record} onClick={() => this.check(record)}>
-                检测命令
-              </a>
-            </span>
-            <Divider type="vertical" />
+            
             <span>
               <Link
                 to={{
