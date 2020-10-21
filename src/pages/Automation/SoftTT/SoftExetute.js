@@ -291,7 +291,7 @@ class SoftExetute extends Component {
         title: '软件名称',
         dataIndex: 'softwareName',
         key: 'softwareName',
-        width: 200,
+        width: 150,
       },
       {
         title: '绝对目录',
@@ -327,13 +327,13 @@ class SoftExetute extends Component {
         title: '使用端口',
         dataIndex: 'softwarePort',
         key: 'softwarePort',
-        width: 200,
+        width: 150,
       },
       {
         title: '软件版本',
         dataIndex: 'softwareVersion',
         key: 'softwareVersion',
-        width: 200,
+        width: 150,
       },
       {
         title: '软件备注',

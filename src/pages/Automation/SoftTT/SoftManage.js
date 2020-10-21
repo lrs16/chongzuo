@@ -134,56 +134,74 @@ class SoftManage extends Component {
         title: '软件名称',
         dataIndex: 'softwareName',
         key: 'softwareName',
+        width: 200,
+        ellipsis: true,
       },
       {
         title: '绝对目录',
         dataIndex: 'softwareAbsDir',
         key: 'softwareAbsDir',
+        width: 250,
+        ellipsis: true,
       },
       {
         title: '日志目录',
         dataIndex: 'softwareLogDir',
         key: 'softwareLogDir',
+        width: 250,
+        ellipsis: true,
       },
       {
         title: '启动命令',
         dataIndex: 'softwareStartCommand',
         key: 'softwareStartCommand',
+        width: 250,
+        ellipsis: true,
+      
       },
       {
         title: '停止命令',
         dataIndex: 'softwareStopCommand',
         key: 'softwareStopCommand',
+        width: 250,
+        ellipsis: true,
       },
       {
         title: '检测命令',
         dataIndex: 'softwareCheckCommand',
         key: 'softwareCheckCommand',
+        width: 250,
+        ellipsis: true,
       },
       {
         title: '使用端口',
         dataIndex: 'softwarePort',
         key: 'softwarePort',
+        width: 100,
       },
       {
         title: '软件版本',
         dataIndex: 'softwareVersion',
         key: 'softwareVersion',
+        width: 100,
       },
       {
         title: '软件排序',
         dataIndex: 'softwareSort',
         key: 'softwareSort',
+        width: 100,
       },
       {
         title: '软件备注',
         dataIndex: 'softwareRemark ',
         key: 'softwareRemark ',
+        width: 100,
       },
       {
         title: '创建人',
         dataIndex: 'createUser',
         key: 'createUser',
+        width: 200,
       },
       {
         title: '创建时间',
@@ -203,7 +221,7 @@ class SoftManage extends Component {
         title: '操作',
         dataIndex: 'action',
         key: 'action',
-        width: 300,
+        width: 240,
         fixed: 'right',
         render: (text, record) => (
           <div>

@@ -180,6 +180,7 @@ class HostManage extends Component {
         title: '主机名称',
         dataIndex: 'hostsName',
         key: 'hostsName',
+        width:200
       },
       {
         title: 'IP地址',

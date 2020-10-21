@@ -37,11 +37,261 @@ const colSql = {
   color: 'red',
 };
 let idstr = '';
+
+
+
+const EditableContext = React.createContext();
+
+const EditableRow = ({ form, index, ...props }) => (
+  <EditableContext.Provider value={form}>
+    <tr {...props} />
+  </EditableContext.Provider>
+);
+
+const EditableFormRow = Form.create()(EditableRow);
+
+class EditableCell extends React.Component {
+  state = {
+    editing: false,
+  };
+
+  toggleEdit = () => {
+    const editing = !this.state.editing;
+    this.setState({ editing }, () => {
+      if (editing) {
+        this.input.focus();
+      }
+    });
+  };
+
+  save = e => {
+    const { record, handleSave } = this.props;
+    this.form.validateFields((error, values) => {
+      if (error && error[e.currentTarget.id]) {
+        return;
+      }
+      this.toggleEdit();
+      handleSave({ ...record, ...values });
+    });
+  };
+
+  renderCell = form => {
+    this.form = form;
+    const { children, dataIndex, record, title } = this.props;
+    const { editing } = this.state;
+    return editing ? (
+      <Form.Item style={{ margin: 0 }}>
+        {form.getFieldDecorator(dataIndex, {
+          rules: [
+            {
+              required: true,
+              message: `${title} is required.`,
+            },
+          ],
+          initialValue: record[dataIndex],
+        })(<Input ref={node => (this.input = node)} onPressEnter={this.save} onBlur={this.save} type='number'/>)}
+      </Form.Item>
+    ) : (
+      <div
+        className="editable-cell-value-wrap"
+        style={{ paddingRight: 24 }}
+        onClick={this.toggleEdit}
+      >
+        {children}
+      </div>
+    );
+  };
+
+  render() {
+    const {
+      editable,
+      dataIndex,
+      title,
+      record,
+      index,
+      handleSave,
+      children,
+      ...restProps
+    } = this.props;
+    return (
+      <td {...restProps}>
+        {editable ? (
+          <EditableContext.Consumer>{this.renderCell}</EditableContext.Consumer>
+        ) : (
+          children
+        )}
+      </td>
+    );
+  }
+}
+
 @connect(({ monitorconfiguration, loading }) => ({
   monitorconfiguration,
   loading: loading.models.monitorconfiguration,
 }))
-class MonitorConfiguration extends Component {
+class MonitorConfiguration extends React.Component {
+  constructor(props) {
+    super(props);
+    this.columns = [
+      {
+        title: '序号',
+        dataIndex: 'serialNumber',
+        key: 'serialNumber',
+   
+      },
+      {
+        title: '指标ID',
+        dataIndex: 'IndicatorID',
+        key: 'IndicatorID',
+      },
+      {
+        title: '指标名称',
+        dataIndex: 'indicatorName',
+        key: 'indicatorName',
+        render: text => <span style={{ color: '#1E90FF' }}>{text}</span>,
+      },
+      {
+        title: '最高值',
+        dataIndex: 'maximumValue',
+        key: 'maximumValue',
+        editable: true,
+      },
+      {
+        title: '最低值',
+        dataIndex: 'minimum',
+        key: 'minimum',
+        editable: true,
+      },
+      {
+        title: '备注',
+        dataIndex: 'remark',
+        key: 'remark',
+        // width: 10,
+        render: text => (
+          <span
+            style={{
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+              display: 'inline-block',
+              color: 'red',
+              width: '150px',
+            }}
+          >
+            {text}
+          </span>
+        ),
+      },
+      {
+        title: '设置人',
+        dataIndex: 'setPerson',
+        key: 'setPerson',
+      },
+      {
+        title: '设置时间',
+        dataIndex: 'setTime',
+        key: 'setTime',
+      },
+      {
+        title: '启用状态',
+        dataIndex: 'enableStatus',
+        key: 'enableStatus',
+        render: (text, record) => (
+          <span style={{ color: statusMap[record.enableStatus], textDecoration: 'underline' }}>
+            {status[record.enableStatus]}
+          </span>
+        ),
+      },
+    ];
+
+    this.state = {
+      dataSource: [
+        {
+          id: 1,
+          serialNumber: 1,
+          IndicatorID: 'zb202005130001',
+          indicatorName: '采集完整率1',
+          maximumValue: 60,
+          minimum: 10,
+          remark: '采集完整率的备注备注备注1',
+          setPerson: '朱三三',
+          setTime: '2020-05-11  09:46',
+          enableStatus: '0',
+        },
+        {
+          id: 2,
+          serialNumber: 2,
+          IndicatorID: 'zb202005130001',
+          indicatorName: '采集完整率2',
+          maximumValue: 60,
+          minimum: 10,
+          remark: '采集完整率的备注备注备注2',
+          setPerson: '朱三三',
+          setTime: '2020-05-11  09:46',
+          enableStatus: '1',
+        },
+        {
+          id: 3,
+          serialNumber: 3,
+          IndicatorID: 'zb202005130001',
+          indicatorName: '采集完整率3',
+          maximumValue: 60,
+          minimum: 10,
+          remark: '采集完整率的备注备注备注',
+          setPerson: '朱三三',
+          setTime: '2020-05-11  09:46',
+          enableStatus: '1',
+        },
+      ],
+      count: 2,
+    };
+  }
+
+  handleDelete = key => {
+    const dataSource = [...this.state.dataSource];
+    this.setState({ dataSource: dataSource.filter(item => item.key !== key) });
+  };
+
+  handleAdd = () => {
+    const { count, dataSource } = this.state;
+    const newData = {
+      key: count,
+      name: `Edward King ${count}`,
+      age: 32,
+      address: `London, Park Lane no. ${count}`,
+    };
+    this.setState({
+      dataSource: [...dataSource, newData],
+      count: count + 1,
+    });
+  };
+
+  handleSave = row => {
+    console.log(row,'row');
+    const newData = [...this.state.dataSource];
+    const index = newData.findIndex(item => row.key === item.key);
+    const item = newData[index];
+    newData.splice(index, 1, {
+      ...item,
+      ...row,
+    });
+    const { dispatch } = this.props;
+   dispatch({
+      type:'monitorconfiguration/fetch',
+      payload: {row}
+    })
+    this.setState({ dataSource: newData });
+    // then(res => {
+    //   if(res.code === 200){
+    //     message.success(res.msg);
+    //     this.setState({ dataSource: newData });
+    //   }else {
+    //     message.error(res.msg);
+    //   }
+    // });
+  
+  };
+
   state = {
     current: 1,
     pageSize: 10,
@@ -151,6 +401,29 @@ class MonitorConfiguration extends Component {
   };
 
   render() {
+    const { dataSource } = this.state;
+    const components = {
+      body: {
+        row: EditableFormRow,
+        cell: EditableCell,
+      },
+    };
+    const columns = this.columns.map(col => {
+      if (!col.editable) {
+        return col;
+      }
+      return {
+        ...col,
+        onCell: record => ({
+          record,
+          editable: col.editable,
+          dataIndex: col.dataIndex,
+          title: col.title,
+          handleSave: this.handleSave,
+        }),
+      };
+    });
+
     const rowSelection = {
       onChange: (selectedRowKeys, selectedRows) => {
         console.log(selectedRows, 'selectedRows');
@@ -165,115 +438,48 @@ class MonitorConfiguration extends Component {
       },
     };
 
-    const configurationList = [
-      {
-        id: 1,
-        serialNumber: 1,
-        IndicatorID: 'zb202005130001',
-        indicatorName: '采集完整率1',
-        maximumValue: 60,
-        minimum: 10,
-        remark: '采集完整率的备注备注备注1',
-        setPerson: '朱三三',
-        setTime: '2020-05-11  09:46',
-        enableStatus: '0',
-      },
-      {
-        id: 2,
-        serialNumber: 2,
-        IndicatorID: 'zb202005130001',
-        indicatorName: '采集完整率2',
-        maximumValue: 60,
-        minimum: 10,
-        remark: '采集完整率的备注备注备注2',
-        setPerson: '朱三三',
-        setTime: '2020-05-11  09:46',
-        enableStatus: '1',
-      },
-      {
-        id: 3,
-        serialNumber: 3,
-        IndicatorID: 'zb202005130001',
-        indicatorName: '采集完整率3',
-        maximumValue: 60,
-        minimum: 10,
-        remark: '采集完整率的备注备注备注',
-        setPerson: '朱三三',
-        setTime: '2020-05-11  09:46',
-        enableStatus: '1',
-      },
-    ];
+    // const configurationList = [
+    //   {
+    //     id: 1,
+    //     serialNumber: 1,
+    //     IndicatorID: 'zb202005130001',
+    //     indicatorName: '采集完整率1',
+    //     maximumValue: 60,
+    //     minimum: 10,
+    //     remark: '采集完整率的备注备注备注1',
+    //     setPerson: '朱三三',
+    //     setTime: '2020-05-11  09:46',
+    //     enableStatus: '0',
+    //   },
+    //   {
+    //     id: 2,
+    //     serialNumber: 2,
+    //     IndicatorID: 'zb202005130001',
+    //     indicatorName: '采集完整率2',
+    //     maximumValue: 60,
+    //     minimum: 10,
+    //     remark: '采集完整率的备注备注备注2',
+    //     setPerson: '朱三三',
+    //     setTime: '2020-05-11  09:46',
+    //     enableStatus: '1',
+    //   },
+    //   {
+    //     id: 3,
+    //     serialNumber: 3,
+    //     IndicatorID: 'zb202005130001',
+    //     indicatorName: '采集完整率3',
+    //     maximumValue: 60,
+    //     minimum: 10,
+    //     remark: '采集完整率的备注备注备注',
+    //     setPerson: '朱三三',
+    //     setTime: '2020-05-11  09:46',
+    //     enableStatus: '1',
+    //   },
+    // ];
 
     const { getFieldDecorator } = this.props.form;
 
-    const columns = [
-      {
-        title: '序号',
-        dataIndex: 'serialNumber',
-        key: 'serialNumber',
-      },
-      {
-        title: '指标ID',
-        dataIndex: 'IndicatorID',
-        key: 'IndicatorID',
-      },
-      {
-        title: '指标名称',
-        dataIndex: 'indicatorName',
-        key: 'indicatorName',
-        render: text => <span style={{ color: '#1E90FF' }}>{text}</span>,
-      },
-      {
-        title: '最高值',
-        dataIndex: 'maximumValue',
-        key: 'maximumValue',
-      },
-      {
-        title: '最低值',
-        dataIndex: 'minimum',
-        key: 'minimum',
-      },
-      {
-        title: '备注',
-        dataIndex: 'remark',
-        key: 'remark',
-        // width: 10,
-        render: text => (
-          <span
-            style={{
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
-              display: 'inline-block',
-              color: 'red',
-              width: '150px',
-            }}
-          >
-            {text}
-          </span>
-        ),
-      },
-      {
-        title: '设置人',
-        dataIndex: 'setPerson',
-        key: 'setPerson',
-      },
-      {
-        title: '设置时间',
-        dataIndex: 'setTime',
-        key: 'setTime',
-      },
-      {
-        title: '启用状态',
-        dataIndex: 'enableStatus',
-        key: 'enableStatus',
-        render: (text, record) => (
-          <span style={{ color: statusMap[record.enableStatus], textDecoration: 'underline' }}>
-            {status[record.enableStatus]}
-          </span>
-        ),
-      },
-    ];
+  
     return (
       <PageHeaderWrapper title="计量业务监控配置">
         <Card>
@@ -387,10 +593,11 @@ class MonitorConfiguration extends Component {
             </div>
           </div>
           <Table
-            // components={components}
+            components={components}
+            rowClassName={() => 'editable-row'}
             columns={columns}
             rowSelection={rowSelection}
-            dataSource={configurationList}
+            dataSource={dataSource}
             pagination={this.pagination}
             // rowkey={record => record.id}
           ></Table>
