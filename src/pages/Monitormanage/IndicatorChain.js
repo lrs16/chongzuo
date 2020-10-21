@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
+import moment from 'moment';
 import { Card, Row, Col, Form, Input, Button, Table, Select, DatePicker, Message } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
-const { RangePicker } = DatePicker;
 const { Option } = Select;
 const ringtypemap = [
   { key: 'fgl', value: '覆盖率' },
@@ -22,6 +22,8 @@ const statisticstypemap = [
   { key: 'tddc', value: '统调电厂' },
   { key: 'zb', value: '专变' },
 ];
+
+const toTime = moment().format('YYYY-MM-DD');
 
 @connect(({ indicatorchain, loading }) => ({
   indicatorchain,
@@ -48,6 +50,7 @@ class IndicatorChain extends Component {
         gldwlxbm: '',
         lb: '',
         mc: 'fgl',
+        sjsj: toTime,
         pageSize,
         currentPage,
       },
@@ -55,7 +58,7 @@ class IndicatorChain extends Component {
   };
 
   seacherdata = (values, currentPage, pageSize) => {
-    const { gddwmc, gldwlxbm, lb, mc } = values;
+    const { gddwmc, gldwlxbm, lb, mc, sjsj } = values;
     this.props.dispatch({
       type: 'indicatorchain/fetchzbhblist',
       payload: {
@@ -63,6 +66,7 @@ class IndicatorChain extends Component {
         gldwlxbm,
         lb,
         mc,
+        sjsj,
         pageSize,
         currentPage,
       },
@@ -78,10 +82,15 @@ class IndicatorChain extends Component {
   handleSearch = () => {
     const currentPage = this.state.current;
     const pageSize = this.state.pageSize;
-    this.props.form.validateFields((err, values) => {
-      if (!err) {
-        this.seacherdata(values, currentPage, pageSize);
+    this.props.form.validateFields((err, fieldsValue) => {
+      if (err) {
+        return;
       }
+      const values = {
+        ...fieldsValue,
+        sjsj: fieldsValue['sjsj'].format('YYYY-MM-DD'),
+      };
+      this.seacherdata(values, currentPage, pageSize);
     });
   };
 
@@ -279,6 +288,11 @@ class IndicatorChain extends Component {
                       ])}
                     </Select>,
                   )}
+                </Form.Item>
+              </Col>
+              <Col span={8}>
+                <Form.Item label="数据时间">
+                  {getFieldDecorator('sjsj', { initialValue: moment(toTime) })(<DatePicker />)}
                 </Form.Item>
               </Col>
               <Col span={8} style={{ textAlign: 'right' }}>

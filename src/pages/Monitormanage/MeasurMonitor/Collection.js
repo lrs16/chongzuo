@@ -48,17 +48,28 @@ const dataArr = datas => {
 
 const celldata = datas => {
   const data = datas[0];
+  const textmaps = new Map([
+    ['tddc', '统调电厂'],
+    ['dfdc', '地方电厂'],
+    ['bdz', '变电站'],
+    ['zb', '专变'],
+    ['gb', '公变'],
+    ['dy', '低压'],
+  ]);
   const newArr = [];
   if (!Array.isArray(datas)) {
     return newArr;
   }
   Object.keys(data).map(key => {
     //  console.log(data[key]);// key=>属性名    data[key]=>属性值
-    newArr.push({
-      type: key,
-      rate: data[key],
-      alertvalue: 90,
-    });
+    if (key !== 'dqbm') {
+      newArr.push({
+        type: textmaps.get(key),
+        rate: data[key],
+        alertvalue: 90,
+      });
+    }
+
     return newArr;
   });
   return newArr.slice(2);
@@ -73,7 +84,7 @@ const changedate = datas => {
     const vote = {};
     vote.value = datas[i].data;
     vote.date = moment(datas[i].date).format('MM/DD');
-    vote.alertvalue = 28100;
+    vote.alertvalue = 27000;
     newArr.push(vote);
   }
   return newArr;
@@ -228,6 +239,7 @@ class Collection extends Component {
 
     const completedata = dataArr(complete);
     const coverages = celldata(coverage);
+    console.log(coverages);
     const meterreads = celldata(meterread);
     const zeroreads = changedate(zeroread);
     const hourreads = changehour(hourread);

@@ -8,6 +8,7 @@ export default {
   },
 
   effects: {
+    // 获取列表
     *fetchzbhblist({ payload }, { call, put }) {
       const response = yield call(queryKpizbhbList, payload);
       yield put({
@@ -15,6 +16,8 @@ export default {
         payload: response.data,
       });
     },
+
+    // 抽数
     *fetchextractData({ payload }, { call }) {
       return yield call(queryextractData, payload);
     },

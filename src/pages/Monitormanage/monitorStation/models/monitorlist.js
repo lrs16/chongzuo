@@ -8,18 +8,22 @@ const { Random } = Mock;
 const mockmonitorGroups = {
   data: [
     {
+      id: 1,
       typeName: '主机',
       number: 560,
     },
     {
+      id: 2,
       typeName: '网络设备',
       number: 52,
     },
     {
+      id: 3,
       typeName: '中间件',
       number: 12,
     },
     {
+      id: 4,
       typeName: '数据库',
       number: 203,
     },

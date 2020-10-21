@@ -3,6 +3,7 @@ import { Row, Col, Icon, Tooltip, Card, Spin, Empty } from 'antd';
 import numeral from 'numeral';
 import { ChartCard } from '@/components/Charts';
 import { connect } from 'dva';
+import { container } from '@ant-design/icons';
 // import ListHost from './components/ListHost';
 // import ListDatabase from './components/ListDatabase';
 import Cylinder from '@/components/CustomizeCharts/Cylinder';
@@ -113,7 +114,8 @@ class index extends Component {
                 title={g.typeName}
                 action={
                   <Tooltip title={g.typeName}>
-                    <Icon type="container" style={{ fontSize: 30 }} />
+                    <container style={{ fontSize: 30 }} />
+                    {/* <Icon type="container" style={{ fontSize: 30 }} /> */}
                   </Tooltip>
                 }
                 total={numeral(g.number).format('0,0')}
