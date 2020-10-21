@@ -124,7 +124,6 @@ class EditableCell extends React.Component {
     );
   }
 }
-
 @connect(({ monitorconfiguration, loading }) => ({
   monitorconfiguration,
   loading: loading.models.monitorconfiguration,
@@ -243,9 +242,25 @@ class MonitorConfiguration extends React.Component {
           enableStatus: '1',
         },
       ],
+      // current: 1,
+      // pageSize: 10,
+      // quekey: '',
+      selectedRows: [],
+      idlist: '',
       count: 2,
     };
   }
+
+  state = {
+    current: 1,
+    pageSize: 10,
+    quekey: '',
+    selectedRows: [],
+    idlist: '',
+  };
+
+
+
 
   handleDelete = key => {
     const dataSource = [...this.state.dataSource];
@@ -267,7 +282,6 @@ class MonitorConfiguration extends React.Component {
   };
 
   handleSave = row => {
-    console.log(row,'row');
     const newData = [...this.state.dataSource];
     const index = newData.findIndex(item => row.key === item.key);
     const item = newData[index];
@@ -292,13 +306,6 @@ class MonitorConfiguration extends React.Component {
   
   };
 
-  state = {
-    current: 1,
-    pageSize: 10,
-    quekey: '',
-    selectedRows: [],
-    idlist: '',
-  };
   componentDidMount() {
     this.getList();
   }
@@ -369,6 +376,8 @@ class MonitorConfiguration extends React.Component {
     onshowSizeChange: (current, pageSize) => this.onshowSizeChange(current, pageSize),
     current: this.state.current,
     pageSize: this.state.pageSize,
+    total:85,
+    // showTotal: (total, current) => `共 ${total} 条记录 第 ${this.state.current} 页 `,
     onChange: page => this.changePage(page),
   };
 
@@ -398,6 +407,7 @@ class MonitorConfiguration extends React.Component {
     setTimeout(() => {
       this.setState({ current: page });
     }, 0);
+    console.log(this.state.current,'this.state.current');
   };
 
   render() {
@@ -437,45 +447,6 @@ class MonitorConfiguration extends React.Component {
         });
       },
     };
-
-    // const configurationList = [
-    //   {
-    //     id: 1,
-    //     serialNumber: 1,
-    //     IndicatorID: 'zb202005130001',
-    //     indicatorName: '采集完整率1',
-    //     maximumValue: 60,
-    //     minimum: 10,
-    //     remark: '采集完整率的备注备注备注1',
-    //     setPerson: '朱三三',
-    //     setTime: '2020-05-11  09:46',
-    //     enableStatus: '0',
-    //   },
-    //   {
-    //     id: 2,
-    //     serialNumber: 2,
-    //     IndicatorID: 'zb202005130001',
-    //     indicatorName: '采集完整率2',
-    //     maximumValue: 60,
-    //     minimum: 10,
-    //     remark: '采集完整率的备注备注备注2',
-    //     setPerson: '朱三三',
-    //     setTime: '2020-05-11  09:46',
-    //     enableStatus: '1',
-    //   },
-    //   {
-    //     id: 3,
-    //     serialNumber: 3,
-    //     IndicatorID: 'zb202005130001',
-    //     indicatorName: '采集完整率3',
-    //     maximumValue: 60,
-    //     minimum: 10,
-    //     remark: '采集完整率的备注备注备注',
-    //     setPerson: '朱三三',
-    //     setTime: '2020-05-11  09:46',
-    //     enableStatus: '1',
-    //   },
-    // ];
 
     const { getFieldDecorator } = this.props.form;
 
