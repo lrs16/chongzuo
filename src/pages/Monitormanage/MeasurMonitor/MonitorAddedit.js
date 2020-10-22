@@ -1,5 +1,6 @@
 import react, { Component } from 'react';
-import { Card, Form, Input, Descriptions, DatePicker, Select, Button } from 'antd';
+import { connect } from 'dva';
+import { Card, Form, Input, Descriptions, DatePicker, Select, Button, message } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { values } from 'lodash';
 
@@ -21,6 +22,12 @@ selectData.forEach(function(values, index, array) {
 let listData = '';
 let remarkData = '';
 let setpersonData = '';
+let dateFormat;
+
+@connect(({ monitorconfiguration, loading }) => ({
+  monitorconfiguration,
+  loading: loading.models.monitorconfiguration,
+}))
 
 class MonitorAddedit extends Component {
   componentDidMount() {
@@ -33,7 +40,39 @@ class MonitorAddedit extends Component {
         setpersonData = setpersonData + item.setPerson;
       });
     }
+ 
   }
+  handleSubmit = (e) =>{
+    e.preventDefault();
+    this.props.form.validateFields((err,value) => {
+      if(err) {
+        return;
+      }
+      value.setTime = this.dateFormat;
+      console.log(value,'ff');
+      // const { dispatch } = this.props;
+      this.props.dispatch({
+        type:'monitorconfiguration/fetch',
+        payload:{value}
+      })
+      this.props.history.goBack();
+      // .then(res => {
+      //   if(res.code === 200) {
+      //     message.info(msg);
+      //     this.props.history.goBack();
+      //   }else {
+      //     message.info(res.msg);
+      //   }
+      // })
+    })
+  }
+
+  onChange = (date, dateString) => {
+    this.dateFormat = dateString;
+    
+  }
+
+
   render() {
     const formItemLayout = {
       labelCol: {
@@ -45,12 +84,25 @@ class MonitorAddedit extends Component {
         sm: { span: 8 },
       },
     };
+    const tailFormItemLayout = {
+      wrapperCol: {
+        xs: {
+          span: 24,
+          offset: 0,
+        },
+        sm: {
+          span: 16,
+          offset: 8,
+        },
+      },
+    };
     const { getFieldDecorator } = this.props.form;
     const required = true;
+    console.log(this,'this');
     return (
       <PageHeaderWrapper title="编辑计量业务监控配置">
         <Card>
-          <Form {...formItemLayout}>
+          <Form {...formItemLayout} onSubmit={this.handleSubmit}>
             <Form.Item label="指标名称">
               {getFieldDecorator('indicatoName', {
                 rules: [
@@ -107,11 +159,12 @@ class MonitorAddedit extends Component {
             </Form.Item>
 
             <Form.Item label="设置时间">
-              {getFieldDecorator('setTime', {})(<DatePicker />)}
+              {getFieldDecorator('setTime', {})(<DatePicker onChange={this.onChange}/>)}
             </Form.Item>
 
-            <Form.Item label="">
-              <Button>保存</Button>
+            <Form.Item {...tailFormItemLayout}>
+              <Button type='primary' htmlType='submit'>保存</Button>
+              <Button style={{marginLeft:'10px'}}>取消</Button>
             </Form.Item>
           </Form>
         </Card>
