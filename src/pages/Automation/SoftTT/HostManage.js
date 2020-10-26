@@ -180,34 +180,35 @@ class HostManage extends Component {
         title: '主机名称',
         dataIndex: 'hostsName',
         key: 'hostsName',
-        width:200
+        width:200,
+        ellipsis: true
       },
       {
         title: '主机IP',
         dataIndex: 'hostsIp',
         key: 'hostsIp',
-        width: 200,
+        width: 150,
         ellipsis: true,
       },
       {
         title: '主机分区',
         dataIndex: 'hostsZoneId',
         key: 'hostsZoneId',
-        width:200,
+        width:150,
         render: (text, record) => <span>{hostPart[record.hostsZoneId]}</span>,
       },
       {
         title: '操作系统',
         dataIndex: 'hostsOsId',
         key: 'hostsOsId',
-        width:200,
+        width:150,
         render: (text, record) => <span>{operatSystem[record.hostsOsId]}</span>,
       },
       {
         title: '主机状态',
         dataIndex: 'hostsStatus',
         key: 'hostsStatus',
-        width:200,
+        width:150,
         render: (text, record) => (
           <span>
             <Badge status={statusMap[record.hostsStatus]} text={status[record.hostsStatus]} />
@@ -225,32 +226,34 @@ class HostManage extends Component {
         title: '主机排序',
         dataIndex: 'hostsSort',
         key: 'hostsSort',
-        width:200,
+        width:150,
       },
       {
         title: '主机备注',
         dataIndex: 'hostsRemark',
         key: 'hostsRemark',
-        width: 200,
-        ellipsis: true,
+        width:200,
+        ellipsis: true
       },
       {
         title:'创建人',
         dataIndex:'createUserNameExt',
         key:'createUserNameExt',
-        width:200,
+        width:150,
       },
       {
         title:'创建时间',
         dataIndex:'createTime',
         key:'createTime',
-        width: 200,
+        width:200,
+        ellipsis: true
       },
       {
         title: '更新时间',
         dataIndex: 'updateTime',
         key: 'updateTime',
-        width: 200,
+        width:200,
+        ellipsis: true,
         render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
       },
       {
