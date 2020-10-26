@@ -140,7 +140,7 @@ class HostEdit extends Component {
               })(<Input placeholder="请输入" />)}
             </Form.Item>
 
-            <Form.Item label="ip地址">
+            <Form.Item label="主机IP">
               {getFieldDecorator('hostsIp', {
                 rules: [
                   {
@@ -197,7 +197,7 @@ class HostEdit extends Component {
               })(<Input type="number" />)}
             </Form.Item>
 
-            <Form.Item label="主机操作系统">
+            <Form.Item label="操作系统">
               {getFieldDecorator('hostsOsId', {
                 rules: [
                   {
@@ -213,7 +213,7 @@ class HostEdit extends Component {
                 </Select>,
               )}
             </Form.Item>
-
+{/* 
             <Form.Item label="机柜">
               {getFieldDecorator('hostsCabinetId', {
                 rules: [
@@ -229,7 +229,7 @@ class HostEdit extends Component {
                   {cabinet}
                 </Select>,
               )}
-            </Form.Item>
+            </Form.Item> */}
 
             <Form.Item label="主机备注">
               {getFieldDecorator('hostsRemark', {

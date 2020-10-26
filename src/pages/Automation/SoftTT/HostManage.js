@@ -183,52 +183,73 @@ class HostManage extends Component {
         width:200
       },
       {
-        title: 'IP地址',
+        title: '主机IP',
         dataIndex: 'hostsIp',
         key: 'hostsIp',
+        width: 200,
+        ellipsis: true,
       },
       {
-        title: '状态',
+        title: '主机分区',
+        dataIndex: 'hostsZoneId',
+        key: 'hostsZoneId',
+        width:200,
+        render: (text, record) => <span>{hostPart[record.hostsZoneId]}</span>,
+      },
+      {
+        title: '操作系统',
+        dataIndex: 'hostsOsId',
+        key: 'hostsOsId',
+        width:200,
+        render: (text, record) => <span>{operatSystem[record.hostsOsId]}</span>,
+      },
+      {
+        title: '主机状态',
         dataIndex: 'hostsStatus',
         key: 'hostsStatus',
+        width:200,
         render: (text, record) => (
           <span>
             <Badge status={statusMap[record.hostsStatus]} text={status[record.hostsStatus]} />
           </span>
         ),
       },
+    
+      // {
+      //   title: '机柜',
+      //   dataIndex: 'hostsCabinetId',
+      //   key: 'hostsCabinetId',
+      //   render: (text, record) => <span>{cabinet[record.hostsCabinetId]}</span>,
+      // },
       {
-        title: '主机分区',
-        dataIndex: 'hostsZoneId',
-        key: 'hostsZoneId',
-        render: (text, record) => <span>{hostPart[record.hostsZoneId]}</span>,
-      },
-      {
-        title: '主机操作系统',
-        dataIndex: 'hostsOsId',
-        key: 'hostsOsId',
-        render: (text, record) => <span>{operatSystem[record.hostsOsId]}</span>,
-      },
-      {
-        title: '机柜',
-        dataIndex: 'hostsCabinetId',
-        key: 'hostsCabinetId',
-        render: (text, record) => <span>{cabinet[record.hostsCabinetId]}</span>,
-      },
-      {
-        title: '排序',
+        title: '主机排序',
         dataIndex: 'hostsSort',
         key: 'hostsSort',
+        width:200,
       },
       {
         title: '主机备注',
         dataIndex: 'hostsRemark',
         key: 'hostsRemark',
+        width: 200,
+        ellipsis: true,
+      },
+      {
+        title:'创建人',
+        dataIndex:'createUserNameExt',
+        key:'createUserNameExt',
+        width:200,
+      },
+      {
+        title:'创建时间',
+        dataIndex:'createTime',
+        key:'createTime',
+        width: 200,
       },
       {
         title: '更新时间',
-        dataIndex: 'createTime',
-        key: 'createTime',
+        dataIndex: 'updateTime',
+        key: 'updateTime',
         width: 200,
         render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
       },
