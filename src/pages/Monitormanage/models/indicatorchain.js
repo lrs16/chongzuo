@@ -1,4 +1,4 @@
-import { queryKpizbhbList, queryextractData } from '../services/api';
+import { queryKpizbhbList, queryextractData, Downloadfils } from '../services/api';
 
 export default {
   namespace: 'indicatorchain',
@@ -20,6 +20,11 @@ export default {
     // 抽数
     *fetchextractData({ payload }, { call }) {
       return yield call(queryextractData, payload);
+    },
+
+    // 下载
+    *downloads({ payload }, { call }) {
+      return yield call(Downloadfils, payload);
     },
   },
 

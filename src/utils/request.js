@@ -52,7 +52,7 @@ const errorHandler = error => {
       notification.error({
         message: `${status}`,
         description: errorText,
-        onClose: close,
+        // onClose: close,
         duration: 0.5,
       });
       // sessionStorage.clear();

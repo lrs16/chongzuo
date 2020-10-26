@@ -50,27 +50,36 @@ class IndicatorChain extends Component {
         gldwlxbm: '',
         lb: '',
         mc: 'fgl',
-        sjsj: toTime,
+        sjsj: '',
         pageSize,
         currentPage,
       },
     });
   };
 
-  seacherdata = (values, currentPage, pageSize) => {
-    const { gddwmc, gldwlxbm, lb, mc, sjsj } = values;
-    this.props.dispatch({
-      type: 'indicatorchain/fetchzbhblist',
-      payload: {
-        gddwmc,
-        gldwlxbm,
-        lb,
-        mc,
-        sjsj,
-        pageSize,
-        currentPage,
-      },
-    });
+  searchdata = (values, currentPage, pageSize) => {
+    const { sjsj } = values;
+    if (sjsj === undefined || sjsj === null) {
+      this.props.dispatch({
+        type: 'indicatorchain/fetchzbhblist',
+        payload: {
+          ...values,
+          sjsj: '',
+          pageSize,
+          currentPage,
+        },
+      });
+    } else {
+      this.props.dispatch({
+        type: 'indicatorchain/fetchzbhblist',
+        payload: {
+          ...values,
+          sjsj: sjsj.format('YYYY-MM-DD'),
+          pageSize,
+          currentPage,
+        },
+      });
+    }
   };
 
   handleringtypeChange = value => {
@@ -80,17 +89,14 @@ class IndicatorChain extends Component {
   };
 
   handleSearch = () => {
-    const currentPage = this.state.current;
+    const currentPage = 1;
     const pageSize = this.state.pageSize;
-    this.props.form.validateFields((err, fieldsValue) => {
+    this.props.form.validateFields((err, values) => {
       if (err) {
         return;
       }
-      const values = {
-        ...fieldsValue,
-        sjsj: fieldsValue['sjsj'].format('YYYY-MM-DD'),
-      };
-      this.seacherdata(values, currentPage, pageSize);
+      this.searchdata(values, currentPage, pageSize);
+      this.setState({ current: 1 });
     });
   };
 
@@ -104,9 +110,42 @@ class IndicatorChain extends Component {
       type: 'indicatorchain/fetchextractData',
     }).then(res => {
       if (res.code === 200) {
-        Message.success('抽数失败');
+        Message.success('抽数成功');
       } else {
         Message.error('抽数失败');
+      }
+    });
+  };
+
+  handleDownload = () => {
+    this.props.form.validateFields((err, values) => {
+      if (err) {
+        return;
+      }
+      const { gddwmc, gldwlxbm, lb, mc, sjsj } = values;
+      const { dispatch } = this.props;
+      if (sjsj === undefined || sjsj === null) {
+        return dispatch({
+          type: 'indicatorchain/downloads',
+          payload: {
+            ...values,
+            sjsj: '',
+          },
+        }).then(() => {
+          const url = `/monitor/kpiData/download?gddwmc=${gddwmc}&gldwlxbm=${gldwlxbm}&lb=${lb}&mc=${mc}&sjsj=`;
+          window.location.href = url;
+        });
+      } else {
+        return dispatch({
+          type: 'indicatorchain/downloads',
+          payload: {
+            ...values,
+            sjsj: sjsj.format('YYYY-MM-DD'),
+          },
+        }).then(() => {
+          const url = `/monitor/kpiData/download?gddwmc=${gddwmc}&gldwlxbm=${gldwlxbm}&lb=${lb}&mc=${mc}&sjsj=${sjsj}`;
+          window.location.href = url;
+        });
       }
     });
   };
@@ -115,7 +154,7 @@ class IndicatorChain extends Component {
     const pageSize = this.state.pageSize;
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        this.seacherdata(values, page, pageSize);
+        this.searchdata(values, page, pageSize);
       }
     });
     setTimeout(() => {
@@ -126,7 +165,7 @@ class IndicatorChain extends Component {
   onShowSizeChange = (current, pageSize) => {
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        this.seacherdata(values, current, pageSize);
+        this.searchdata(values, current, pageSize);
       }
     });
     setTimeout(() => {
@@ -292,7 +331,10 @@ class IndicatorChain extends Component {
               </Col>
               <Col span={8}>
                 <Form.Item label="数据时间">
-                  {getFieldDecorator('sjsj', { initialValue: moment(toTime) })(<DatePicker />)}
+                  {getFieldDecorator(
+                    'sjsj',
+                    //  { initialValue: moment(toTime) }
+                  )(<DatePicker />)}
                 </Form.Item>
               </Col>
               <Col span={8} style={{ textAlign: 'right' }}>
@@ -301,6 +343,9 @@ class IndicatorChain extends Component {
                 </Button>
                 <Button style={{ marginLeft: 8 }} onClick={this.handleReset}>
                   重 置
+                </Button>
+                <Button style={{ marginLeft: 8 }} onClick={this.handleDownload}>
+                  下 载
                 </Button>
                 <Button style={{ marginLeft: 8 }} type="link" onClick={this.handleextractData}>
                   抽 数
