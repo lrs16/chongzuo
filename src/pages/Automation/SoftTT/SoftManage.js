@@ -193,15 +193,16 @@ class SoftManage extends Component {
       },
       {
         title: '软件备注',
-        dataIndex: 'softwareRemark ',
-        key: 'softwareRemark ',
-        width: 100,
+        dataIndex: 'softwareRemark',
+        key: 'softwareRemark',
+        width:200,
+        ellipsis: true
       },
       {
         title: '创建人',
-        dataIndex: 'createUser',
-        key: 'createUser',
-        width: 200,
+        dataIndex: 'createUserNameExt',
+        key: 'createUserNameExt',
+        width: 100,
       },
       {
         title: '创建时间',
