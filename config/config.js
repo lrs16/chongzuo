@@ -68,6 +68,7 @@ if (isAntDesignProPreview) {
 export default {
   plugins,
   hash: true,
+  history: 'browser',
   targets: {
     ie: 11,
   },

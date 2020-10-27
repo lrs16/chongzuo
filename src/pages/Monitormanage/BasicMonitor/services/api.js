@@ -80,7 +80,6 @@ export async function timetablespaceUsage(databaseId, formTime, toTime) {
 
 //当前连接数量趋势
 export async function timeConnet(databaseId, formTime, toTime) {
-  console.log(databaseId, formTime, toTime);
   return request(
     `/basicMonitor/databeseMonitor/connect?formTime=${formTime}&hostId=${databaseId}&toTime=${toTime}`,
     {

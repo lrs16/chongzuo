@@ -19,6 +19,7 @@ const alertStatus = ['严重', '一般', '警告', '恢复', '正常', '未知']
 
 @connect(({ databasedetail, loading }) => ({
   databasedetail,
+  loading: loading.models.databasedetail,
   loadinginfo: loading.effects['databasedetail/fetchdetail'],
   loadtablespace: loading.effects['databasedetail/fetchtablespace'],
 }))
@@ -297,7 +298,6 @@ class DatabaseDetail extends Component {
   };
 
   onChangeBut = (datas, startdata, enddata) => {
-    console.log(startdata, enddata);
     this.setState({
       dateString: datas,
     });
@@ -408,7 +408,7 @@ class DatabaseDetail extends Component {
     const { dateString } = this.state;
     //  const { id, data, radiaokey } = this.props.location.state;
     const {
-      //   loadingindicator,
+      loading,
       loadtablespace,
       databasedetail: {
         baseinfo,
@@ -423,7 +423,6 @@ class DatabaseDetail extends Component {
     } = this.props;
     const instancedatas = instancedata.data;
     const userdatas = userdata.data;
-    console.log(loadtablespace);
     return (
       <>
         <Card style={{ marginBottom: 24, marginTop: '-1px' }}>

@@ -45,15 +45,15 @@ const changedate = datas => {
 const downdycols = {
   clock: {
     range: [0.05, 0.95],
-    alias: '时间',
-    tickInterval: 1,
+    alias: ' ',
+    tickCount: 5,
+    //tickInterval: 1,
   },
   value: {
     min: 0,
     // max: 30000,
     range: [0.05, 0.95],
     alias: ' ',
-    // tickInterval: 10000,
   },
 };
 
@@ -71,18 +71,18 @@ class Databaselastcheck extends Component {
               cols={downdycols}
               data={usagedatas}
               height={300}
-              padding={[30, 20, 50, 80]}
+              padding={[30, 20, 60, 20]}
             />
           </Card>
         </Col>
         <Col xl={12} xs={24} style={{ marginBottom: 24 }}>
-          <Card style={{ height: 280 }}>
+          <Card>
             <div style={{ position: 'absolute', top: '15px' }}>当前连接数量</div>
             <SeriesLine
               cols={downdycols}
               data={spaceuconnets}
               height={300}
-              padding={[30, 20, 50, 80]}
+              padding={[30, 20, 60, 20]}
             />
           </Card>
         </Col>

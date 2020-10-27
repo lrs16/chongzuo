@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Card, Radio, Badge } from 'antd';
+import { Card, Radio, Badge, Spin } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import HostDetail from './components/HostDetail';
 import DatabaseDetail from './components/DatabaseDetail';
@@ -35,29 +35,32 @@ class Detail extends Component {
 
   render() {
     const { radiaovalue } = this.state;
-    const { id, data, radiaokey } = this.props.location.state;
+    const { id, data } = this.props.location.state;
     const {
+      loading,
       basicmonitorlist: { radiogroups },
     } = this.props;
     const alarmtype = radiogroups.filter(obj => {
-      return obj.name === radiaokey;
+      return obj.name === radiaovalue;
     });
     const applicationId = alarmtype[0]?.key;
 
     return (
       <PageHeaderWrapper title="监测详情">
         <Card>
-          <Radio.Group value={radiaovalue} buttonStyle="solid" onChange={this.onChange}>
-            {radiogroups.map(({ key, alertNumber, name }) => [
-              <Radio.Button value={name} key={key}>
-                <Badge count={alertNumber} style={{ zIndex: '10' }}>
-                  <span style={{ lineHeight: '30px' }}>{name}</span>
-                </Badge>
-              </Radio.Button>,
-            ])}
-          </Radio.Group>
+          <Spin spinning={loading}>
+            <Radio.Group value={radiaovalue} buttonStyle="solid" onChange={this.onChange}>
+              {radiogroups.map(({ key, alertNumber, name }) => [
+                <Radio.Button value={name} key={key}>
+                  <Badge count={alertNumber} style={{ zIndex: '10' }}>
+                    <span style={{ lineHeight: '30px' }}>{name}</span>
+                  </Badge>
+                </Radio.Button>,
+              ])}
+            </Radio.Group>
+          </Spin>
         </Card>
-        {applicationId !== undefined && (
+        {loading === false && (
           <>
             {radiaovalue === '操作系统' && (
               <HostDetail data={data} alarmtype={alarmtype} applicationId={applicationId} />

@@ -60,19 +60,21 @@ const celldata = datas => {
   if (!Array.isArray(datas)) {
     return newArr;
   }
-  Object.keys(data).map(key => {
-    //  console.log(data[key]);// key=>属性名    data[key]=>属性值
-    if (key !== 'dqbm') {
-      newArr.push({
-        type: textmaps.get(key),
-        rate: data[key],
-        alertvalue: 90,
-      });
-    }
+  if (data !== undefined) {
+    Object.keys(data).map(key => {
+      //  console.log(data[key]);// key=>属性名    data[key]=>属性值
+      if (key !== 'dqbm') {
+        newArr.push({
+          type: textmaps.get(key),
+          rate: data[key],
+          alertvalue: 90,
+        });
+      }
 
-    return newArr;
-  });
-  return newArr.slice(2);
+      return newArr;
+    });
+    return newArr.slice(2);
+  }
 };
 
 const changedate = datas => {
@@ -239,7 +241,6 @@ class Collection extends Component {
 
     const completedata = dataArr(complete);
     const coverages = celldata(coverage);
-    console.log(coverages);
     const meterreads = celldata(meterread);
     const zeroreads = changedate(zeroread);
     const hourreads = changehour(hourread);
@@ -314,8 +315,8 @@ class Collection extends Component {
                 contentHeight={350}
               >
                 <Spin spinning={loading} style={{ background: '#ffffff' }}>
-                  {coverages.length === 0 && <Empty style={{ height: '250px' }} />}
-                  {coverages.length > 0 && (
+                  {coverages === undefined && <Empty style={{ height: '250px' }} />}
+                  {coverages !== undefined && coverages.length > 0 && (
                     <Columncolor height={350} data={coverages} padding={[30, 50, 30, 50]} />
                   )}
                 </Spin>
@@ -332,8 +333,8 @@ class Collection extends Component {
                 contentHeight={350}
               >
                 <Spin spinning={loading} style={{ background: '#ffffff' }}>
-                  {meterreads.length === 0 && <Empty style={{ height: '250px' }} />}
-                  {meterreads.length > 0 && (
+                  {meterreads === undefined && <Empty style={{ height: '250px' }} />}
+                  {meterreads !== undefined && meterreads.length > 0 && (
                     <Columncolor height={350} data={meterreads} padding={[30, 50, 30, 50]} />
                   )}
                 </Spin>
@@ -350,8 +351,8 @@ class Collection extends Component {
                 contentHeight={350}
               >
                 <Spin spinning={loading} style={{ background: '#ffffff' }}>
-                  {Labecols.length === 0 && <Empty style={{ height: '250px' }} />}
-                  {zeroreads.length > 0 && (
+                  {Labecols === undefined && <Empty style={{ height: '250px' }} />}
+                  {Labecols !== undefined && zeroreads.length > 0 && (
                     <Labelline
                       height={350}
                       data={zeroreads}

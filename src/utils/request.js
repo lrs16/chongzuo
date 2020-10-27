@@ -52,7 +52,7 @@ const errorHandler = error => {
       notification.error({
         message: `${status}`,
         description: errorText,
-        // onClose: close,
+        onClose: close,
         duration: 0.5,
       });
       // sessionStorage.clear();
@@ -86,33 +86,6 @@ const request = extend({
   credentials: 'include', // 默认请求是否带上cookie
 });
 
-/**
- * 拦截器,添加token
- */
-// request.interceptors.request.use((url, options) => {
-//   const accessToken = localStorage.getItem("accessToken");
-//   if(accessToken) {
-//     // if(true) {
-//     //   refreshToken();
-//     // }
-
-//     const headers = { Authorization: `Bearer ${accessToken}` };
-//     return (
-//       {
-//         url : url,
-//         options : { ...options, headers : headers }
-//       }
-//     )
-//   }
-
-//   return (
-//     {
-//       url : url,
-//       options : options
-//     }
-//   )
-
-// });
 // request拦截器, 改变url 或 options.
 request.interceptors.request.use(async (url, options) => {
   const ctoken = sessionStorage.getItem('access_token');
