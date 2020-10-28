@@ -44,8 +44,9 @@ class DeptTree extends Component {
   renderTreeNodes = data =>
     data.map(item => {
       if (item.children) {
+        // item.disabled = true; // 设置父级禁用模式  disabled={item.disabled}
         return (
-          <TreeNode title={item.name} key={item.id} dataRef={item} selectable>
+          <TreeNode title={item.name} key={item.id} dataRef={item}>
             {this.renderTreeNodes(item.children)}
           </TreeNode>
         );
@@ -54,7 +55,7 @@ class DeptTree extends Component {
     });
 
   onSelect = (selectedKeys, info) => {
-    if(selectedKeys !== undefined) {
+    if(selectedKeys !== undefined || selectedKeys !== '') {
       this.props.toFatherValue(selectedKeys);
     }
   };

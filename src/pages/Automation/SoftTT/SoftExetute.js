@@ -10,9 +10,9 @@ import HostTree from '@/components/HostTree';
 
 const { TabPane } = Tabs;
 const nameType = [
-  {key: 1, name: '启动命令', type: '1'}, 
-  {key: 2, name: '停止命令', type: '2'}, 
-  {key: 3, name: '检测命令', type: '3'},
+  {key: 0, name: '启动命令', type: '1'}, 
+  {key: 1, name: '停止命令', type: '2'}, 
+  {key: 2, name: '检测命令', type: '3'},
 ];
 @connect(({ softexetute, loading }) => ({
   softexetute,
@@ -221,7 +221,6 @@ class SoftExetute extends Component {
   hanleCommit = (record, type) => {
     const { hostId } = this.state;
     const { id } = this.props.softexetute.treehostdata;
-
     const { dispatch } = this.props;
     dispatch({
       type: 'softexetute/getSofttoHostHandleType',
@@ -330,7 +329,7 @@ class SoftExetute extends Component {
             <Divider type="vertical" />
 
             <span>
-              {nameType.map(({ key, name, type }) => [
+              {nameType.map(({key, name, type}) => [
                 <a key={key} record={record} onClick={() => this.hanleCommit(record, type)}>
                   {name}
                 </a>,
@@ -372,7 +371,7 @@ class SoftExetute extends Component {
       <PageHeaderWrapper title="主机_SSH2管理">
         <Row style={{ display: 'flex' }} style={{ background: '#f1f1f1' }}>
           <Col span={5}>
-            <Card title="主机信息" bordered={false}>
+            <Card>
               <HostTree toFatherValue={this.getChildValue.bind(this)} />
             </Card>
           </Col>
