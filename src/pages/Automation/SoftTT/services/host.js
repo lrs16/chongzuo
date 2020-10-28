@@ -49,7 +49,7 @@ export async function searchSofts(params) {
 }
 
 export async function querySaveSoft(params) {
-  return request(`/auto/softwares`, {
+  return request(`/auto/softwares/${params.hostId}`, {
     method: 'POST',
     body: JSON.stringify(params),
   });
@@ -107,3 +107,20 @@ export async function batchAddprocess(params){
     requestType: 'form',
   });
 }
+
+
+// 请求主机的软件信息， 生成表格 /auto/hosts_shh2/tree/{hostsId}/softwares/  mxj
+export async function querySoftwaresList(hostId) {
+  return request(`/auto/hosts_shh2/tree/${hostId}/softwares`, {
+    method: 'GET',
+  });
+}
+
+// 根据树杈点击的主机编号, 获取主机ip和端口 /auto/hosts/{id}根据编号查询信息  mxj
+export async function queryToHostList(id) {
+  return request(`/auto/hosts/${id}`, {
+    method: 'GET',
+  });
+}
+
+

@@ -8,7 +8,9 @@ import {
   queryEditSoft,
   queryRemoveSoft,
   batchAddhost,
-  batchAddprocess
+  batchAddprocess,
+  querySoftwaresList,
+  queryToHostList, // 树杈数据
 } from '../services/host';
 
 export default {
@@ -17,6 +19,8 @@ export default {
   state: {
     hostdata: [],
     softdata: [],
+    treesoftdata: [],
+    treehostdata: [],
   },
 
   effects: {
@@ -49,7 +53,6 @@ export default {
       return yield call(removeHostInfo, id);
     },
     *batchAddhost({payload}, { call }) {
-      console.log(payload,'ll');
       return yield call(batchAddhost, payload);
     },
     // 软件的接口
@@ -80,6 +83,22 @@ export default {
     *softRemove({ payload }, { call }) {
       return yield call(queryRemoveSoft, payload);
     },
+
+    *getSoftwaresList({ payload: { hostId } }, { call, put }) {
+      const response = yield call(querySoftwaresList, hostId);
+      yield put({
+        type: 'treesoftdata',
+        payload: response,
+      });
+    },
+
+    *getToHostList({ payload: { hostId } }, { call, put }) {
+      const response = yield call(queryToHostList, hostId);
+      yield put({
+        type: 'treehostdata',
+        payload: response.data,
+      });
+    },
   },
 
   reducers: {
@@ -94,6 +113,20 @@ export default {
       return {
         ...state,
         softdata: action.payload.data,
+      };
+    },
+
+    treesoftdata(state, action) {
+      return {
+        ...state,
+        treesoftdata: action.payload.data,
+      };
+    },
+
+    treehostdata(state, action) {
+      return {
+        ...state,
+        treehostdata: action.payload.data,
       };
     },
   },

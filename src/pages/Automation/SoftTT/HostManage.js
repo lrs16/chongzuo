@@ -14,11 +14,13 @@ import {
   Row,
   Col,
   Select,
+  Layout
 } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import HostEdit from './components/HostEdit';
 import HostSoft from './components/Host_Soft';
 import BatchAdd from './components/BatchAdd';
+// import HostManageTree from '@/components/HostManageTree';
 
 const statusMap = ['default', 'success'];
 const status = ['停用', '在用'];
@@ -27,6 +29,7 @@ const operatSystem = ['window', 'linux'];
 const hostPart = ['安全接入区', '二区', '三区'];
 const { Search } = Input;
 const { Option } = Select;
+const { Sider, Content } = Layout;
 
 @connect(({ hostsoft, loading }) => ({
   hostsoft,
@@ -260,18 +263,18 @@ class HostManage extends Component {
         title: '操作',
         dataIndex: 'action',
         key: 'action',
-        width: 250,
+        width: 200,
         fixed: 'right',
         render: (text, record) => (
           <div>
-            <HostSoft
+            {/* <HostSoft
               title="配置软件"
               hostId={record.id}
               hostName={record.hostsName}
               loading={this.props.loading}
             >
               <a type="link">配置软件</a>
-            </HostSoft>
+            </HostSoft> */}
             <Divider type="vertical" />
             <HostEdit
               onSumit={values => this.handleEdite(values)}
@@ -293,48 +296,57 @@ class HostManage extends Component {
     return (
       <PageHeaderWrapper title="主机管理">
         <Card>
-          <Row>
-            <Form style={{ float: 'right', width: '30%' }}>
-              <Search placeholder="请输入关键字" onSearch={values => this.handleSearch(values)} />
-            </Form>
-          </Row>
-          <Row gutter={16}>
-            <Col className="gutter-row" span={12}>
-              <div>
-                <HostEdit onSumit={this.handleUpdate}>
-                  <Button
-                    style={{ width: '100%', margin: '16px 0 8px 0' }}
-                    type="dashed"
-                    icon="plus"
-                  >
-                    添加主机
-                  </Button>
-                </HostEdit>
-              </div>
-            </Col>
+          {/* <Layout>
+            <Sider theme='light'>
+              {/* <HostManageTree /> */}
+            {/* </Sider>  */}
+      
+          {/* <Content style={{ background: '#fff' }}> */}
+            <Row>
+              <Form style={{ float: 'right', width: '30%' }}>
+                <Search placeholder="请输入关键字" onSearch={values => this.handleSearch(values)} />
+              </Form>
+            </Row>
+            <Row gutter={16}>
+              <Col className="gutter-row" span={12}>
+                <div>
+                  <HostEdit onSumit={this.handleUpdate}>
+                    <Button
+                      style={{ width: '100%', margin: '16px 0 8px 0' }}
+                      type="dashed"
+                      icon="plus"
+                    >
+                      添加主机
+                    </Button>
+                  </HostEdit>
+                </div>
+              </Col>
 
-            <Col className="gutter-row" span={12}>
-              <div>
-                <BatchAdd hostId="hostId" onsumitBatch={str => this.handleBatchadd(str)}>
-                  <Button
-                    style={{ width: '100%', margin: '16px 0 8px 0' }}
-                    type="dashed"
-                    icon="plus"
-                  >
-                    批量添加
-                  </Button>
-                </BatchAdd>
-              </div>
-            </Col>
-          </Row>
-
-          <Table
+              <Col className="gutter-row" span={12}>
+                <div>
+                  <BatchAdd hostId="hostId" onsumitBatch={str => this.handleBatchadd(str)}>
+                    <Button
+                      style={{ width: '100%', margin: '16px 0 8px 0' }}
+                      type="dashed"
+                      icon="plus"
+                    >
+                      批量添加
+                    </Button>
+                  </BatchAdd>
+                </div>
+              </Col>
+            </Row>
+            <Table
             columns={columns}
             dataSource={dataSource}
             rowKey={record => record.id}
             pagination={pagination}
             scroll={{ x: 1500 }}
           />
+          {/* </Content> */}
+         
+        
+          {/* </Layout> */}
         </Card>
       </PageHeaderWrapper>
     );

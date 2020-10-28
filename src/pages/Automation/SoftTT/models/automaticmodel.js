@@ -10,6 +10,7 @@ import {
   searchHosts,
   searchSofts,
   hostsList,
+  querySoftwaresList
 } from '../services/api';
 
 export default {
@@ -18,6 +19,7 @@ export default {
   state: {
     data: [],
     softdata: [],
+    treesoftdata:[]
   },
 
   effects: {
@@ -78,6 +80,15 @@ export default {
         payload: response,
       });
     },
+
+    // 通过主机获取软件的接口
+    *getSoftwaresList({ payload: {hostId }}, { call, put}) {
+      const response = yield call(querySoftwaresList,hostId);
+      yield put({
+        type:'treesoftdata',
+        payload: response,
+      });
+    }
   },
 
   reducers: {
@@ -92,6 +103,13 @@ export default {
       return {
         ...state,
         softdata: action.payload.data,
+      };
+    },
+
+    treesoftdata(state, action) {
+      return {
+        ...state,
+        treesoftdata: action.payload.data,
       };
     },
   },

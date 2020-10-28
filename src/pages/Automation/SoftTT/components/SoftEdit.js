@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Form, Input, Modal, Button, Tabs, Drawer } from 'antd';
+import { Form, Input, Message, Button, Tabs, Drawer } from 'antd';
 
 const formItemLayout = {
   labelCol: {
@@ -35,10 +35,18 @@ class SoftEdit extends Component {
   };
 
   handleopenClick = () => {
-    this.setState({
-      visible: true,
-    });
-    // this.props.form.resetFields();
+    const { hostId } = this.props;
+    if(hostId){
+      this.setState({
+        visible: true,
+      });
+    }
+    else {
+      Message.info('需选中一个主机');
+
+    }
+  
+    this.props.form.resetFields();
   };
 
   hanldeCancel = () => {
@@ -52,6 +60,8 @@ class SoftEdit extends Component {
     this.props.form.validateFields((err, value) => {
       if (!err) {
         this.hanldeCancel();
+        const { hostId } = this.props;
+        value.hostId = hostId;
         this.props.onSumit(value);
         this.props.form.resetFields();
       }
