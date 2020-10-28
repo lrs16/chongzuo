@@ -103,12 +103,12 @@ export default {
               path: '/',
               redirect: '/monitormanage/home',
             },
-            // {
-            //   path: '/welcome',
-            //   name: 'welcome',
-            //   icon: 'smile',
-            //   component: './Welcome',
-            // },
+            {
+              path: '/ITSM',
+              name: 'ITSM',
+              icon: 'smile',
+              component: './ITSM',
+            },
             // {
             //   path: '/admin',
             //   name: 'admin',

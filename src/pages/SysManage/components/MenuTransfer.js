@@ -41,6 +41,10 @@ const TreeTransfer = ({ dataSource, targetKeys, ...restProps }) => {
       className="tree-transfer"
       render={item => item.title}
       showSelectAll
+      listStyle={{
+        height: 'calc(100vh - 150px)',
+        overflow: 'auto',
+      }}
     >
       {({ direction, onItemSelect, selectedKeys }) => {
         if (direction === 'left') {
