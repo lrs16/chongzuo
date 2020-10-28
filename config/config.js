@@ -83,6 +83,11 @@ export default {
           path: '/user/login',
           component: './user/login',
         },
+        {
+          path: '/user/ITlogin',
+          name: 'ITSM',
+          component: './user/ITlogin',
+        },
         // {
         //   name: 'login',
         //   path: '/user/login',
@@ -103,12 +108,7 @@ export default {
               path: '/',
               redirect: '/monitormanage/home',
             },
-            {
-              path: '/ITSM',
-              name: 'ITSM',
-              icon: 'smile',
-              component: './ITSM',
-            },
+
             // {
             //   path: '/admin',
             //   name: 'admin',

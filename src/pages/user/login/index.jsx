@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 // import Link from 'umi/link';
 import { connect } from 'dva';
 import LoginComponents from './components/Login';
-import styles from './style.less';
+import styles from '../style.less';
 
 const { Tab, UserName, Password, Mobile, Captcha, Submit } = LoginComponents;
 
