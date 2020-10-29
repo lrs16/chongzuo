@@ -99,10 +99,10 @@ class MaintenancePlanEdit extends Component {
           width={720}
           title="创建维护计划"
           visible={visible}
-          closable="true"
+          closable={true}
           maskClosable={true}
           onClose={this.onClose}
-          centered="true"
+          centered={true}
           onCancel={this.hanldeCancel}
           onOk={this.handleOk}
         >
@@ -181,7 +181,7 @@ class MaintenancePlanEdit extends Component {
                 initialValue: remark,
               })(
                 <TextArea
-                  value={value}
+                  // value={value}
                   onChange={this.onChange}
                   style={{ height: 150 }}
                 ></TextArea>,

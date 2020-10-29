@@ -664,6 +664,7 @@ class CurrentAlarm extends Component {
                 pagination={pagination}
                 scroll={{ x: 2000 }}
                 rowSelection={rowSelection}
+                rowKey={record => record.id}
               ></Table>
             </TabPane>
           </Tabs>

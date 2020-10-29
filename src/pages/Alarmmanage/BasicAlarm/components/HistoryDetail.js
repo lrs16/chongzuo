@@ -168,16 +168,16 @@ class HistoryDetail extends Component {
             </TabPane>
 
             <TabPane tab="操作记录" key="2">
-              <Table columns={columns} dataSource={dataSource}></Table>
+              <Table columns={columns} dataSource={dataSource} rowKey={record => record.id}></Table>
             </TabPane>
 
-            <TabPane tab="告警历史" key="3">
-              <Table columns={historyInfoColumns} dataSource={data}></Table>
-            </TabPane>
+             <TabPane tab="告警历史" key="3">
+               <Table columns={historyInfoColumns} dataSource={data} rowKey={record => record.id}></Table>
+             </TabPane> 
 
             <TabPane tab="告警通知" key="4">
-              <Table columns={notificationInfoColumns} dataSource={notificationInfo}></Table>
-            </TabPane>
+              <Table columns={notificationInfoColumns} dataSource={notificationInfo} rowKey={record => record.id}></Table>
+            </TabPane> 
           </Tabs>
         </Drawer>
       </>

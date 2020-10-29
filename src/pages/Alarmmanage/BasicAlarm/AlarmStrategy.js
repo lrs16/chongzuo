@@ -341,6 +341,7 @@ class AlarmStrategy extends Component {
             dataSource={dataSource}
             rowSelection={rowSelection}
             pagination={pagination}
+            rowKey={record => record.id}
           ></Table>
         </Card>
       </PageHeaderWrapper>

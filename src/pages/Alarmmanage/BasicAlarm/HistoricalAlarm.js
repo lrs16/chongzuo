@@ -373,13 +373,13 @@ class HistoricalAlarm extends Component {
             <div style={{ marginLeft: 100 }}>
               <Form.Item label="告警时间">
                 {getFieldDecorator('alarmTime', {
-                  initialValue: '',
+                  // initialValue: '',
                 })(<DatePicker style={{ width: 300 }} />)}
               </Form.Item>
 
               <Form.Item label="恢复时间" style={{ marginLeft: 50 }}>
                 {getFieldDecorator('recoveryTime', {
-                  initialValue: '',
+                  // initialValue: '',
                 })(<DatePicker style={{ width: 300 }} />)}
               </Form.Item>
 
@@ -394,7 +394,7 @@ class HistoricalAlarm extends Component {
             <div style={{ marginLeft: 100 }}>
               <Form.Item label="持续时间">
                 {getFieldDecorator('duration', {
-                  initialValue: '',
+                  // initialValue: '',
                 })(<Input style={{ width: 300 }} />)}
               </Form.Item>
 
@@ -481,6 +481,7 @@ class HistoricalAlarm extends Component {
                 scroll={{ x: 2000 }}
                 pagination={pagination}
                 rowSelection={rowSelection}
+                rowKey={record => record.id}
               ></Table>
             </TabPane>
           </Tabs>

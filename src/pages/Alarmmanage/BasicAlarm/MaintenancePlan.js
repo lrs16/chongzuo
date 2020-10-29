@@ -304,6 +304,7 @@ class MaintenancePlan extends Component {
             scroll={{ x: 2000 }}
             pagination={pagination}
             rowSelection={rowSelection}
+            rowKey={record => record.id}
           />
         </Card>
       </PageHeaderWrapper>

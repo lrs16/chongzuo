@@ -491,75 +491,7 @@ const ResourcesList = [
   },
 ];
 
-// 程序执行列表
-const SoftExetuteList = [
-  {
-    servicename: 'service-01',
-    ip: '172.0.0.1',
-    datetime: '2020-07-27 8.00',
-    port: '8080',
-  },
-  {
-    servicename: 'service-02',
-    ip: '172.0.0.2',
-    datetime: '2020-07-27 9.00',
-    port: '8080',
-  },
-  {
-    servicename: 'service-03',
-    ip: '172.0.0.3',
-    datetime: '2020-07-27 12.00',
-    port: '8080',
-  },
-];
 
-//进程列表
-const processList = [
-  {
-    id: '1',
-    code: '1',
-    application: '爱奇艺',
-    processName: '爱奇艺',
-    cpu: '80%',
-    disk: '2%',
-    memory: '4%',
-    network: '良好',
-    operation: '未定义',
-  },
-  {
-    id: '2',
-    code: '2',
-    application: '爱奇艺',
-    processName: '爱奇艺',
-    cpu: '80%',
-    disk: '2%',
-    memory: '4%',
-    network: '良好',
-    operation: '未定义',
-  },
-  {
-    id: '3',
-    code: '3',
-    application: '爱奇艺',
-    processName: '爱奇艺',
-    cpu: '80%',
-    disk: '2%',
-    memory: '4%',
-    network: '良好',
-    operation: '未定义',
-  },
-  {
-    id: '4',
-    code: '4',
-    application: '爱奇艺',
-    processName: '爱奇艺',
-    cpu: '80%',
-    disk: '2%',
-    memory: '4%',
-    network: '良好',
-    operation: '未定义',
-  },
-];
 
 const DetailsList = [
   {
@@ -642,7 +574,7 @@ const historyList = [
     alarmId: 'GJBH202005150006',
   },
   {
-    id: '1',
+    id: '2',
     alarmTitle: 'CPU使用率告警',
     alarmDetail: 'CPU使用率平均值大于90%',
     equipmentName: '采集服务器1',
@@ -660,7 +592,7 @@ const historyList = [
     alarmId: 'GJBH202005150006',
   },
   {
-    id: '1',
+    id: '3',
     alarmTitle: 'CPU使用率告警',
     alarmDetail: 'CPU使用率平均值大于90%',
     equipmentName: '采集服务器1',
@@ -696,6 +628,7 @@ const alarmBasic = {
 // 操作记录
 const operaRecord = [
   {
+    id:1,
     serialnumber: '1',
     datetime: '2019-12-0409:19:30',
     operator: '张三',
@@ -703,6 +636,7 @@ const operaRecord = [
     statue: 1,
   },
   {
+    id:2,
     serialnumber: '1',
     datetime: '2019-12-0409:19:30',
     operator: '张三',
@@ -710,6 +644,7 @@ const operaRecord = [
     statue: 0,
   },
   {
+    id:3,
     serialnumber: '1',
     datetime: '2019-12-0409:19:30',
     operator: '张三',
@@ -720,6 +655,7 @@ const operaRecord = [
 //详情页的告警历史
 const detailAlarm = [
   {
+    id:1,
     alarmtime: '2019-11-26 17:07:03',
     recovertime: '2019-12-04  09:19:30',
     status: '0',
@@ -729,6 +665,7 @@ const detailAlarm = [
     action: '降级',
   },
   {
+    id:2,
     alarmtime: '2019-11-26 17:07:03',
     recovertime: '2019-12-04  09:19:30',
     status: '1',
@@ -738,6 +675,7 @@ const detailAlarm = [
     action: '降级',
   },
   {
+    id:3,
     alarmtime: '2019-11-26 17:07:03',
     recovertime: '2019-12-04  09:19:30',
     status: '0',
@@ -750,6 +688,7 @@ const detailAlarm = [
 //性情页的告警通知
 const alarmNotice = [
   {
+    id:1,
     alarmcontent:
       '该告警已累计告警$告警次数$次，未恢复之前，$延迟策略$后再次通知您，请尽快处理防止告警风暴。',
     sendtime: '2019-12-04  09:19:30',
@@ -758,6 +697,7 @@ const alarmNotice = [
     statue: 1,
   },
   {
+    id:2,
     alarmcontent:
       '该告警已累计告警$告警次数$次，未恢复之前，$延迟策略$后再次通知您，请尽快处理防止告警风暴。',
     sendtime: '2019-12-04  09:19:30',
@@ -766,6 +706,7 @@ const alarmNotice = [
     statue: 0,
   },
   {
+    id:3,
     alarmcontent:
       '该告警已累计告警$告警次数$次，未恢复之前，$延迟策略$后再次通知您，请尽快处理防止告警风暴。',
     sendtime: '2019-12-04  09:19:30',
@@ -774,6 +715,7 @@ const alarmNotice = [
     statue: 1,
   },
   {
+    id:4,
     alarmcontent:
       '该告警已累计告警$告警次数$次，未恢复之前，$延迟策略$后再次通知您，请尽快处理防止告警风暴。',
     sendtime: '2019-12-04  09:19:30',
@@ -785,6 +727,7 @@ const alarmNotice = [
 //告警策略的列表展示
 const strategyList = [
   {
+    id:1,
     detailsid: 1,
     level: 1,
     alarmTitle: '内存使用率告警',
@@ -795,6 +738,7 @@ const strategyList = [
     state: '0',
   },
   {
+    id:2,
     detailsid: 2,
     level: 2,
     alarmTitle: '内存使用率告警',
@@ -805,6 +749,7 @@ const strategyList = [
     state: '1',
   },
   {
+    id:3,
     detailsid: 3,
     level: 3,
     alarmTitle: '内存使用率告警',
@@ -1022,103 +967,7 @@ const removeHost = [
   },
 ];
 
-//软件的列表展示
-const softList = [
-  {
-    id: '1',
-    code: '1234567890',
-    softName: '腾讯',
-    version: '2.1.4',
-    updateTime: '2020-7-30',
-    statue: '0',
-    action: '张三',
-  },
-  {
-    id: '2',
-    code: '1234567890',
-    softName: '腾讯',
-    version: '2.1.4',
-    updateTime: '2020-7-30',
-    statue: '0',
-    action: '张三',
-  },
-  {
-    id: '3',
-    code: '1234567890',
-    softName: '腾讯',
-    version: '2.1.4',
-    updateTime: '2020-7-30',
-    statue: '1',
-    action: '张三',
-  },
-  {
-    code: '1234567890',
-    softName: '腾讯',
-    version: '2.1.4',
-    updateTime: '2020-7-30',
-    statue: '0',
-    action: '张三',
-  },
-];
 
-//穿梭框的主机数据
-const hostShuttlebox = [
-  {
-    createTime: '2020-04-30T08:38:05.000+0000',
-    createUser: '1',
-    createUserNameExt: null,
-    deptId: '0',
-    id: '1255778439700221953',
-    roleCode: 'admin',
-    roleName: '超级管理员',
-    roleRemark: '系统最高权限',
-    roleStatus: '1',
-    tenantId: '',
-    updateTime: '2020-07-21T11:50:08.000+0000',
-  },
-  {
-    createTime: '2020-04-30T08:39:03.000+0000',
-    createUser: '1',
-    createUserNameExt: null,
-    deptId: '0',
-    id: '1255778680096755713',
-    roleCode: 'user',
-    roleName: '普通用户',
-    roleRemark: '普通系统用户',
-    roleStatus: '1',
-    tenantId: '',
-    updateTime: '2020-07-21T11:50:09.000+0000',
-  },
-  {
-    createTime: '2020-09-04T09:05:40.000+0000',
-    createUser: '1',
-    createUserNameExt: null,
-    deptId: '0',
-    id: '1301808634715443201',
-    roleCode: 'role',
-    roleName: '系统配置',
-    roleRemark: '系统菜单、权限、密码配置',
-    roleStatus: '1',
-    tenantId: '',
-    updateTime: '2020-09-04T09:05:40.000+0000',
-  },
-];
-//软件的穿梭框
-const softShuttlebox = [
-  {
-    createTime: '2020-04-30T08:38:05.000+0000',
-    createUser: '1',
-    createUserNameExt: null,
-    deptId: '0',
-    id: '1255778439700221953',
-    roleCode: 'admin',
-    roleName: '超级管理员',
-    roleRemark: '系统最高权限',
-    roleStatus: '1',
-    tenantId: '',
-    updateTime: '2020-07-21T11:50:08.000+0000',
-  },
-];
 
 export const getFactoryTypes = [
   {
@@ -1160,12 +1009,6 @@ export default {
   'GET /api/report_list': reportdatas,
 
   'GET /api/resouresList': ResourcesList,
-
-  // 程序执行列表
-  'GET /api/softexetuteList': SoftExetuteList,
-
-  //进程列表
-  'GET /api/processList': processList,
 
   'GET /api/detailsList': DetailsList,
 
@@ -1254,17 +1097,6 @@ export default {
     },
   ],
 
-  //主机的数据
-  'GET /api/hostList': hostList,
-  'POST /api/savaDate': saveData,
-  'POST /api/saveEdit': saveEdit,
-  'POST /api/removeHost': removeHost,
-  //软件的数据
-  'GET /api/softList': softList,
-  'GET /api/softSave': softList,
-  'GET /api/softEdit': softList,
-  'GET /api/softRemove': softList,
-
   //历史告警的列表数据
   'GET /api/historyList': historyList,
 
@@ -1281,23 +1113,7 @@ export default {
   'GET /api/tableTwo': tableTwo,
   //维护计划的列表
   'GET /api/mainplayList': mainplayList,
-  //主机的数据
-  'GET /api/hostList': hostList,
-  'POST /api/savaDate': saveData,
-  'POST /api/saveEdit': saveEdit,
-  'POST /api/removeHost': removeHost,
-  //主机配置权限
-  'GET /api/hostShuttlebox': hostShuttlebox,
-  'GET /api/softShuttlebox': softShuttlebox,
 
-  //软件的数据
-  'GET /api/softList': softList,
-  'GET /api/softSave': softList,
-  'GET /api/softEdit': softList,
-  'GET /api/softRemove': softList,
-  //软件配置
-  'GET /api/softShuttle': hostShuttlebox,
-  'GET /api/processShuttlebox': softShuttlebox,
   //告警策略的列表展示
   'GET /api/strategyList': strategyList,
   'GET /api/strategyAdd': strategyList,

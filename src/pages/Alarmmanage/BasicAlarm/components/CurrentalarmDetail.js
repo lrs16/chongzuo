@@ -229,11 +229,15 @@ class CurrentalarmDetail extends Component {
               </Descriptions>
               <Form layout="inline" onSubmit={this.handleSubmit}>
                 <Form.Item label="确认告警:">
-                  {getFieldDecorator('confirmAlarm')(<Checkbox value="yes"></Checkbox>)}
+                  {getFieldDecorator('confirmAlarm',{
+                    initialValue: 'yes'
+                  })(<Checkbox></Checkbox>)}
                 </Form.Item>
 
                 <Form.Item label="关闭告警:" style={{ marginLeft: 235 }}>
-                  {getFieldDecorator('closeAlarm')(<Checkbox value="no"></Checkbox>)}
+                  {getFieldDecorator('closeAlarm',{
+                    initialValue:'no'
+                  })(<Checkbox></Checkbox>)}
                 </Form.Item>
 
                 <Form.Item label="备注" style={{ display: 'block' }}>
