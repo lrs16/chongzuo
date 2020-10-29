@@ -10,7 +10,9 @@ import { Card,
          Divider, 
          Badge, 
          Popconfirm,
-         Layout } from 'antd';
+         Layout,
+         Row,
+         Col } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import SoftEdit from './components/SoftEdit';
 // import SoftProcess from './components/Soft_Process';
@@ -312,37 +314,43 @@ class SoftManage extends Component {
 
     return (
       <PageHeaderWrapper>
-        <Card>
-          <Layout>
-            <Sider theme="light">
-                <SoftManageTree toFatherValue={this.getChildValue.bind(this)}/>
-            </Sider>
-            <Content style={{ background: '#fff' }}>
-              {/* <Form style={{ float: 'right', width: '30%' }}>
-                <Search placeholder="请输入关键字" onSearch={values => this.handleSearch(values)} />
-              </Form> */}
-          
-              <SoftEdit onSumit={value => this.handleUpdate(value)} hostId={this.state.hostId}>
-                <Button
-                  style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
-                  type="dashed"
-                  icon="plus"
-                  
-                >
-                  添加软件
-                </Button>
-              </SoftEdit>
+        {/* <Card> */}
+        <Row style={{ display: 'flex' }} style={{ background: '#f1f1f1' }}>
+          <Col span={5}>
+              <Card title="主机信息" bordered={false}>
+                  <SoftManageTree toFatherValue={this.getChildValue.bind(this)}/>
+              </Card>
+          </Col>
+          <Col span={19}>
+            <Card style={{ marginLeft: 8 }} bordered={false}>
+              {/* <Content style={{ background: '#fff' }}> */}
+                {/* <Form style={{ float: 'right', width: '30%' }}>
+                  <Search placeholder="请输入关键字" onSearch={values => this.handleSearch(values)} />
+                </Form> */}
+            
+                <SoftEdit onSumit={value => this.handleUpdate(value)} hostId={this.state.hostId}>
+                  <Button
+                    style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
+                    type="dashed"
+                    icon="plus"
+                    
+                  >
+                    添加软件
+                  </Button>
+                </SoftEdit>
 
-              <Table
-                columns={columns}
-                dataSource={dataSource}
-                rowKey={record => record.id}
-                pagination={pagination}
-                scroll={{ x: 1500 }}
-              />
-            </Content>
-          </Layout>
-        </Card>
+                <Table
+                  columns={columns}
+                  dataSource={dataSource}
+                  rowKey={record => record.id}
+                  pagination={pagination}
+                  scroll={{ x: 1500 }}
+                />
+          </Card>
+          </Col>
+          </Row>
+        {/* </Card> */}
+      
       </PageHeaderWrapper>
     );
   }
