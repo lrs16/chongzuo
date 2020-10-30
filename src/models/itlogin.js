@@ -25,7 +25,7 @@ const Model = {
           window.opener = null;
           window.open(' ', '_self');
           window.close();
-        }, 6000);
+        }, 2500);
       }
 
       if (response.code === 200) {
@@ -39,26 +39,10 @@ const Model = {
             response,
           },
         });
-        const urlParams = new URL(window.location.href); // 本地记录路由
-        const params = getPageQuery();
-        let { redirect } = params;
 
-        if (redirect) {
-          const redirectUrlParams = new URL(redirect);
-
-          if (redirectUrlParams.origin === urlParams.origin) {
-            redirect = redirect.substr(urlParams.origin.length);
-
-            if (redirect.match(/^\/.*#/)) {
-              redirect = redirect.substr(redirect.indexOf('#') + 1);
-            }
-          } else {
-            window.location.href = '/';
-            return;
-          }
-        }
-
-        yield put(routerRedux.replace(redirect || '/'));
+        setTimeout(() => {
+          window.location.href = '/';
+        }, 1000);
       }
     },
   },
@@ -67,8 +51,8 @@ const Model = {
       setAuthority(payload.currentAuthority);
       return {
         ...state,
-        status: payload.code,
-        msg: payload.msg,
+        status: payload.response.code,
+        msg: payload.response.msg,
       };
     },
   },

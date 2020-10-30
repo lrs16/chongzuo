@@ -18,22 +18,38 @@ class Login extends Component {
   state = {
     type: 'account',
     Authorization: 'Basic d2ViQXBwX3JlYWN0',
+    itsmuser: false,
   };
 
   handleSubmit = (err, values) => {
-    const { Authorization } = this.state;
+    const { Authorization, itsmuser } = this.state;
     if (!err) {
       const { dispatch } = this.props;
-      dispatch({
-        type: 'login/login',
-        payload: {
-          ...values,
-          Authorization,
-          // type,
-          // grant_type,
-        },
-      });
+      if (itsmuser === false) {
+        dispatch({
+          type: 'login/login',
+          payload: {
+            ...values,
+            Authorization,
+          },
+        });
+      }
+      if (itsmuser === true) {
+        const { logincode } = values;
+        dispatch({
+          type: 'login/login',
+          payload: {
+            ...values,
+            logincode: `${logincode}_itsm`,
+            Authorization,
+          },
+        });
+      }
     }
+  };
+
+  onChangeCheck = e => {
+    this.setState({ itsmuser: e.target.checked });
   };
 
   onTabChange = type => {
@@ -106,6 +122,9 @@ class Login extends Component {
                   id: 'user-login.login.message-invalid-credentials',
                 }),
               )}
+            <Checkbox onChange={this.onChangeCheck} style={{ marginBottom: 20, color: '#1890ff' }}>
+              ITSM用户
+            </Checkbox>
             <UserName
               name="logincode"
               placeholder={`${formatMessage({
