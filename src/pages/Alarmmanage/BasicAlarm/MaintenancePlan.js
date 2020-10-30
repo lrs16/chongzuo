@@ -1,6 +1,16 @@
 import React, { Component } from 'react';
 
-import { Card, Tabs, Table, Form, Input, Button, Tag, Popconfirm, message } from 'antd';
+import { Card, 
+         Tabs, 
+         Table,
+         Form, 
+         Input,
+         Button, 
+         Tag, 
+         Popconfirm,
+         message, 
+         Row,
+         Col} from 'antd';
 import { connect } from 'dva';
 import moment from 'moment';
 import MaintenancePlanEdit from './components/MaintenancePlanEdit';
@@ -107,6 +117,16 @@ class MaintenancePlan extends Component {
   };
 
   render() {
+    const formItemLayout = {
+      labelCol: {
+        xs: { span: 20 },
+        sm: { span: 7 },
+      },
+      wrapperCol: {
+        xs: { span: 24 },
+        sm: { span: 16 },
+      },
+    };
     const rowSelection = {
       onChange: (selectedRowKeys, selectedRows) => {
         // console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
@@ -188,87 +208,91 @@ class MaintenancePlan extends Component {
       <PageHeaderWrapper title="维护计划">
         <Card>
           <Form
-            layout="inline"
             onSubmit={this.handleSearch}
             style={{ display: 'block' }}
             id="simplequery"
+            {...formItemLayout}
           >
-            <Form.Item label="计划名称" style={{ marginLeft: 50 }}>
-              {getFieldDecorator('planName', {
-                rules: [{}],
-                initialValue: '',
-              })(<Input style={{ width: 300 }} />)}
-            </Form.Item>
+            <Row>
+              <Col span={8}>
+                  <Form.Item label="计划名称" >
+                  {getFieldDecorator('planName', {
+                    initialValue: '',
+                  })(<Input />)}
+                  </Form.Item>
+                
+                </Col>
+              <Col span={8}>
+                <Form.Item label="设备名称" >
+                {getFieldDecorator('equipmentName', {
+                  rules: [{}],
+                  initialValue: '',
+                })(<Input />)}
+                </Form.Item>
+              </Col>
+          
+              <Col pan={6} style={{ textAlign: 'right' }}>
+                <Button type="primary" htmlType="submit" >
+                  查询
+                </Button>
 
-            <Form.Item label="设备名称" style={{ marginLeft: 50 }}>
-              {getFieldDecorator('equipmentName', {
-                rules: [{}],
-                initialValue: '',
-              })(<Input style={{ width: 300 }} />)}
-            </Form.Item>
+                <Button onClick={this.handleReset} style={{ marginLeft: 8 }}>重置</Button>
 
-            <Form.Item>
-              <Button type="primary" htmlType="submit" style={{ marginLeft: 300 }}>
-                查询
-              </Button>
-            </Form.Item>
-
-            <Form.Item>
-              <Button onClick={this.handleReset}>重置</Button>
-            </Form.Item>
-
-            <Form.Item>
-              <p onClick={this.showAdvancedquery}>展开</p>
-            </Form.Item>
+                <span onClick={this.showAdvancedquery} style={{ marginLeft: 8 }}>展开</span>
+              </Col>
+            </Row>
           </Form>
 
           <Form
             style={{ display: 'none' }}
             id="advancedquery"
-            layout="inline"
             onSubmit={this.handleSearch}
+            {...formItemLayout}
           >
-            <Form.Item label="计划名称" style={{ marginLeft: 250 }}>
-              {getFieldDecorator('planName', {
-                initialValue: '',
-              })(<Input style={{ width: 300 }} />)}
-            </Form.Item>
+            <Row>
+              <Col span={8}>
+                <Form.Item label="计划名称">
+                  {getFieldDecorator('planName', {
+                    initialValue: '',
+                  })(<Input />)}
+                </Form.Item>
+              </Col>
 
-            <Form.Item label="设备名称" style={{ marginLeft: 150 }}>
-              {getFieldDecorator('equipmentName', {
-                initialValue: '',
-              })(<Input style={{ width: 300 }} />)}
-            </Form.Item>
-            <br></br>
+              <Col span={8}>
+                <Form.Item label="设备名称" >
+                  {getFieldDecorator('equipmentName', {
+                    initialValue: '',
+                  })(<Input />)}
+                </Form.Item>
+              </Col>
 
-            <Form.Item label="开始时间" style={{ marginLeft: 250 }}>
-              {getFieldDecorator('startTime', {
-                initialValue: '',
-              })(<Input style={{ width: 300 }} />)}
-            </Form.Item>
+              <Col span={8}>
+                <Form.Item label="开始时间">
+                  {getFieldDecorator('startTime', {
+                    initialValue: '',
+                  })(<Input />)}
+                </Form.Item>
+              </Col>
 
-            <Form.Item label="结束时间" style={{ marginLeft: 150 }}>
-              {getFieldDecorator('endTime', {
-                initialValue: '',
-              })(<Input style={{ width: 300 }} />)}
-            </Form.Item>
-            <br></br>
+              <Col span={8}>
+                <Form.Item label="结束时间" >
+                  {getFieldDecorator('endTime', {
+                    initialValue: '',
+                  })(<Input/>)}
+                </Form.Item>
+              </Col>
 
-            <div style={{ float: 'right' }}>
-              <Form.Item>
+              <Col span={8}>
                 <Button type="primary" htmlType="submit">
                   查询
                 </Button>
-              </Form.Item>
 
-              <Form.Item>
-                <Button>重置</Button>
-              </Form.Item>
+                <Button style={{ marginLeft: 8 }}>重置</Button>
 
-              <Form.Item onClick={this.hide}>收起</Form.Item>
-            </div>
+              <span style={{ marginLeft: 8 }} onClick={this.hide}>收起</span>
+            </Col>
+            </Row>
           </Form>
-          {/* <p></p> */}
 
           <Form layout="inline" style={{ marginBottom: 20, marginTop: 40 }}>
             <Form.Item>

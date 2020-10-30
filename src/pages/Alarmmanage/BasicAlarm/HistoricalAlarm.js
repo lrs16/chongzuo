@@ -1,5 +1,14 @@
 import React, { Component } from 'react';
-import { Card, Input, Table, Tabs, Form, Button, DatePicker, Select } from 'antd';
+import { Card, 
+         Input, 
+         Table, 
+         Tabs, 
+         Form, 
+         Button, 
+         DatePicker, 
+         Select,
+         Row,
+         Col } from 'antd';
 import { connect } from 'dva';
 import HistoryDetail from './components/HistoryDetail';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
@@ -186,6 +195,27 @@ class HistoricalAlarm extends Component {
   };
 
   render() {
+    const formItemLayout = {
+      labelCol: {
+        xs: { span: 20 },
+        sm: { span: 7 },
+      },
+      wrapperCol: {
+        xs: { span: 24 },
+        sm: { span: 16 },
+      },
+    };
+
+    // const formItemLayout = {
+    //   labelCol: {
+    //     xs: { span: 24 },
+    //     sm: { span: 8 },
+    //   },
+    //   wrapperCol: {
+    //     xs: { span: 24 },
+    //     sm: { span: 16 },
+    //   },
+    // };
     const rowSelection = {
       onChange: (selectedRowKeys, selectedRows) => {
         // console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
@@ -307,143 +337,172 @@ class HistoricalAlarm extends Component {
       <PageHeaderWrapper title="历史告警">
         <Card>
           <Form
-            layout="inline"
             style={{ display: 'block' }}
             id="simplequery"
             onSubmit={this.handleSearch}
+            {...formItemLayout}
           >
-            <Form.Item label="告警标题">
-              {getFieldDecorator('alarmTitle', {
-                initialValue: '',
-              })(<Input style={{ width: 300 }} />)}
-            </Form.Item>
+            <Row>
+              <Col span={8}>
+                <Form.Item label="告警标题">
+                {getFieldDecorator('alarmTitle', {
+                  initialValue: '',
+                })(<Input />)}
+                </Form.Item>
+              </Col>
 
-            <Form.Item label="设备名称" style={{ marginLeft: 50 }}>
-              {getFieldDecorator('equipmentName', {
-                initialValue: '',
-              })(<Input style={{ width: 300 }} />)}
-            </Form.Item>
+              <Col span={8}>
+                <Form.Item label="设备名称">
+                  {getFieldDecorator('equipmentName', {
+                    initialValue: '',
+                  })(<Input />)}
+                </Form.Item>
+              </Col>
 
-            <Form.Item>
-              <Button type="primary" htmlType="submit">
-                搜索
-              </Button>
-            </Form.Item>
+              <Col span={7} style={{ textAlign: 'right' }}>
+                <Button type="primary" htmlType="submit">
+                  搜索
+                </Button>
 
-            <Form.Item>
-              <Button>重置</Button>
-            </Form.Item>
+                <Button type="primary" htmlType="submit" style={{ marginLeft: 8 }}>
+                  搜索
+                </Button>
 
-            <Form.Item>
-              <p onClick={this.showAdvancedquery}>展开</p>
-            </Form.Item>
+                <Button style={{ marginLeft: 8 }}>重置</Button>
 
-            <Form.Item>
-              <Button onClick={this.exportExcel}>导出</Button>
-            </Form.Item>
+                <span onClick={this.showAdvancedquery} style={{ marginLeft: 8 }}>展开</span>
+
+                <Button onClick={this.exportExcel} style={{ marginLeft: 8 }}>导出</Button>
+
+              </Col>
+            </Row>
           </Form>
 
           <Form
-            layout="inline"
+            // layout="inline"
             id="advancedquery"
             style={{ display: 'none' }}
             onSubmit={this.handleSearch}
+            {...formItemLayout}
           >
-            <div style={{ marginLeft: 100 }}>
-              <Form.Item label="告警标题">
-                {getFieldDecorator('alarmTitle', {
-                  initialValue: '',
-                })(<Input style={{ width: 300 }} />)}
-              </Form.Item>
+            <Row>
+              <Col span={8}>
+                <Form.Item label="告警标题">
+                  {getFieldDecorator('alarmTitle', {
+                    initialValue: '',
+                  })(<Input />)}
+                </Form.Item>
+              </Col>
 
-              <Form.Item label="设备名称" style={{ marginLeft: 50 }}>
-                {getFieldDecorator('equipmentName', {
-                  initialValue: '',
-                })(<Input style={{ width: 300 }} />)}
-              </Form.Item>
+              <Col span={8}>
+                <Form.Item label="设备名称">
+                  {getFieldDecorator('equipmentName', {
+                    initialValue: '',
+                  })(<Input />)}
+                </Form.Item>
+              </Col>
 
-              <Form.Item label="ip" style={{ marginLeft: 80 }}>
-                {getFieldDecorator('ip', {
-                  initialValue: '',
-                })(<Input style={{ width: 300 }} />)}
-              </Form.Item>
-              <br></br>
-            </div>
+              <Col span={8}>
+                <Form.Item label="ip地址">
+                  {getFieldDecorator('ip', {
+                    initialValue: '',
+                  })(<Input />)}
+                </Form.Item>
+              </Col>
 
-            <div style={{ marginLeft: 100 }}>
-              <Form.Item label="告警时间">
-                {getFieldDecorator('alarmTime', {
-                  // initialValue: '',
-                })(<DatePicker style={{ width: 300 }} />)}
-              </Form.Item>
+              <Col  span={8}>
+                <Form.Item label="告警时间">
+                  {getFieldDecorator('alarmTime', {
+                    // initialValue: '',
+                  })(<DatePicker />)}
+                </Form.Item>
+                </Col>
 
-              <Form.Item label="恢复时间" style={{ marginLeft: 50 }}>
-                {getFieldDecorator('recoveryTime', {
-                  // initialValue: '',
-                })(<DatePicker style={{ width: 300 }} />)}
-              </Form.Item>
+              <Col span={8}>
+                <Form.Item label="恢复时间">
+                  {getFieldDecorator('recoveryTime', {
+                    // initialValue: '',
+                  })(<DatePicker />)}
+                </Form.Item>
+              </Col>
 
-              <Form.Item label="严重性" style={{ marginLeft: 50 }}>
-                {getFieldDecorator('seriousness', {
-                  initialValue: '',
-                })(<Select style={{ width: 300 }} />)}
-              </Form.Item>
-              <br></br>
-            </div>
+              
+              <Col span={8}>
+                <Form.Item label="严重性">
+                  {getFieldDecorator('seriousness', {
+                    initialValue: '',
+                  })(<Select />)}
+                </Form.Item>
+              </Col>
 
-            <div style={{ marginLeft: 100 }}>
-              <Form.Item label="持续时间">
-                {getFieldDecorator('duration', {
-                  // initialValue: '',
-                })(<Input style={{ width: 300 }} />)}
-              </Form.Item>
+              <Col span={8}>
+                <Form.Item label="持续时间">
+                  {getFieldDecorator('duration', {
+                    // initialValue: '',
+                  })(<DatePicker />)}
+                </Form.Item>
+              </Col>
 
-              <Form.Item label="告警状态" style={{ marginLeft: 50 }}>
-                {getFieldDecorator('alarmStatus', {
-                  initialValue: '',
-                })(<Select style={{ width: 300 }} />)}
-              </Form.Item>
+              <Col className="gutter-row" span={8}>
+                <Form.Item label="告警状态" >
+                  {getFieldDecorator('alarmStatus', {
+                    initialValue: '',
+                  })(<Select/>)}
+                </Form.Item>
+              </Col>
 
-              <Form.Item label="信息" style={{ marginLeft: 65 }}>
-                {getFieldDecorator('information', {
-                  initialValue: '',
-                })(<Input style={{ width: 300 }} />)}
-              </Form.Item>
-              <br></br>
-            </div>
+              <Col className="gutter-row" span={8}>
+                <Form.Item label="信息">
+                  {getFieldDecorator('information', {
+                    initialValue: '',
+                  })(<Input />)}
+                </Form.Item>
+              </Col>
 
-            <div style={{ marginLeft: 100 }}>
-              <Form.Item label="告警确认">
-                {getFieldDecorator('alarmAcknowledgement', {
-                  initialValue: '',
-                })(<Select style={{ width: 300 }} />)}
-              </Form.Item>
+              <Col span={8}>
+                <Form.Item label="告警确认">
+                  {getFieldDecorator('alarmAcknowledgement', {
+                    initialValue: '',
+                  })(<Select/>)}
+                </Form.Item>
+              </Col>
 
-              <Form.Item label="告警关闭" style={{ marginLeft: 50 }}>
-                {getFieldDecorator('alarmOff', {
-                  initialValue: '',
-                })(<Select style={{ width: 300 }} />)}
-              </Form.Item>
+              <Col span={8}>
+                <Form.Item label="告警关闭">
+                  {getFieldDecorator('alarmOff', {
+                    initialValue: '',
+                  })(<Select/>)}
+                </Form.Item>
+              </Col>
 
-              <Form.Item label="告警通知" style={{ marginLeft: 40 }}>
-                {getFieldDecorator('alarmNotification', {
-                  initialValue: '',
-                })(<Select style={{ width: 300 }} />)}
-              </Form.Item>
-            </div>
-            <div style={{ float: 'right' }}>
-              <Form.Item>
+              <Col span={8}>
+                <Form.Item label="告警通知">
+                  {getFieldDecorator('alarmNotification', {
+                    initialValue: '',
+                  })(<Select/>)}
+                </Form.Item>
+              </Col>
+
+              {/* <Col span={8} style={{ textAlign: 'right' }}>
+                  <Button type="primary" htmlType="submit">查询</Button>
+                  <Button onClick={this.handleReset}>重置</Button>
+                  <p onClick={this.hide}>收起</p>
+              </Col> */}
+              <Col span={23} style={{ textAlign: 'right' }}>
                 <Button type="primary" htmlType="submit">
-                  查询
+                  查 询
                 </Button>
-              </Form.Item>
-              <Form.Item>
-                <Button onClick={this.handleReset}>重置</Button>
-              </Form.Item>
-              <Form.Item>
-                <p onClick={this.hide}>收起</p>
-              </Form.Item>
-            </div>
+                <Button style={{ marginLeft: 8 }} onClick={this.handleReset}>
+                  重 置
+                </Button>
+                <span style={{ marginLeft: 8 }} onClick={this.hide}>
+                  收起
+                </span>
+              </Col>
+          
+            </Row>
+
+
           </Form>
 
           <Tabs onChange={this.changeTabpane}>

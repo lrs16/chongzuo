@@ -475,7 +475,7 @@ export default {
                       path: '/alarmmanage/basicalarm/alarmstrategy/strategyedit/:detailsid',
                       name: '编辑策略',
                       icon: 'cloud-server',
-                      hideInMenu: true,
+                      hideInMenu: false,
                       component: './Alarmmanage/BasicAlarm/StrategyAddEdit',
                     },
                   ],
