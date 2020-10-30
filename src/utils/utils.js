@@ -1,5 +1,6 @@
 import { parse } from 'querystring';
 import pathRegexp from 'path-to-regexp';
+import { RedditSquareFilled } from '@ant-design/icons';
 /* eslint no-useless-escape:0 import/prefer-default-export:0 */
 
 const reg = /(((^https?:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+(?::\d+)?|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)$/;
@@ -29,8 +30,18 @@ export const getPageQuery = () => parse(window.location.href.split('?')[1]);
  */
 
 // 获取路由权限
-export const getAuthorityFromRouter = (router = [], pathname) => {
-  const authority = router.find(({ path }) => path && pathRegexp(path).exec(pathname));
-  if (authority) return authority;
+export const getAuthorityFromRouter = (router, configrouter, pathname) => {
+  if (pathname === `/`) {
+    const redireturl = configrouter[0];
+    const authority = router.filter(obj => {
+      return obj.menuUrl == redireturl.redirect;
+    });
+    if (authority) return authority[0]?.menuauth;
+    return undnefined;
+  }
+  const authority = router.filter(obj => {
+    return obj.menuUrl == pathname;
+  });
+  if (authority) return authority[0]?.menuauth;
   return undefined;
 };

@@ -7,6 +7,12 @@ export async function query() {
 // export async function queryCurrent() {
 //   return request('/api/currentUser');
 // }
+
+//获取系统菜单
+export async function queryAllMenus() {
+  return request('/upms/menu/list');
+}
+
 // 根据token获取用户信息
 export async function queryCurrent() {
   return request('/upms/user/getCurrUserInfo');

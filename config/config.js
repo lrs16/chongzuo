@@ -102,7 +102,6 @@ export default {
         {
           path: '/',
           component: '../layouts/BasicLayout',
-          //authority: ['test','admin'],
           routes: [
             {
               path: '/',
@@ -137,7 +136,7 @@ export default {
                   path: '/automation/opsscene',
                   name: '运维场景',
                   icon: 'control',
-                  //authority: ['test'],
+
                   component: './Automation/Scenarios/OpsScene',
                 },
                 {

@@ -123,7 +123,7 @@ class Database extends Component {
         render: (text, record) => (
           <Link
             to={{
-              pathname: '/monitormanage/basicMonitor/detail',
+              pathname: '/monitormanage/basicmonitor/detail',
               state: {
                 id: record.id,
                 data: record,

@@ -43,6 +43,15 @@ class index extends Component {
             style={{ marginTop: 50 }}
           />
         )}
+        {status === 200 && (
+          <Alert
+            message="Success"
+            description={msg}
+            type="success"
+            showIcon
+            style={{ marginTop: 50 }}
+          />
+        )}
       </>
     );
   }

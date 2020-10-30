@@ -1,5 +1,5 @@
 // import { queryCurrent, query as queryUsers } from '@/services/user';
-import { queryCurrent, queryMenus } from '@/services/user';
+import { queryCurrent, queryMenus, queryAllMenus } from '@/services/user';
 
 const compare = p => {
   return (m, n) => {
@@ -9,7 +9,29 @@ const compare = p => {
   };
 };
 
-const menuArr = (data, authority) => {
+const addauth = (sysmenu, usermenu, authority) => {
+  const data = sysmenu.map((item, index) => {
+    item.menuauth = 'incontrol';
+    usermenu.map((item1, index1) => {
+      if (item.id == item1.id) {
+        item.menuauth = authority;
+      }
+    });
+    return item;
+  });
+  return data;
+};
+
+const menuArr = (sysmenu, usermenu, authority) => {
+  var data = sysmenu.map((item, index) => {
+    item.menuauth = 'incontrol';
+    usermenu.map((item1, index1) => {
+      if (item.id == item1.id) {
+        item.menuauth = authority;
+      }
+    });
+    return item;
+  });
   const datas = data.sort(compare('menuSort'));
   const newArr = [];
   const menu = 'menu.';
@@ -33,7 +55,7 @@ const menuArr = (data, authority) => {
     vote.path = datas[i].menuUrl;
     vote.locale = menu + datas[i].menuDesc;
     vote.name = datas[i].menuDesc;
-    vote.authority = authority.split(',');
+    vote.authority = datas[i].menuauth.split(',');
     newArr.push(vote);
   }
 
@@ -68,17 +90,9 @@ const UserModel = {
     currentUser: {},
     Userauth: '',
     menuData: [],
+    menulist: [],
   },
   effects: {
-    // 没有用到
-    // *fetch(_, { call, put }) {
-    //   const response = yield call(queryUsers);
-    //   yield put({
-    //     type: 'save',
-    //     payload: response,
-    //   });
-    // },
-
     *fetchCurrent(_, { call, put }) {
       const response = yield call(queryCurrent);
 
@@ -91,14 +105,19 @@ const UserModel = {
     },
     *fetchMenu(_, { call, put }) {
       const response = yield call(queryMenus);
-
-      if (response.code === 200) {
+      const menures = yield call(queryAllMenus);
+      if (response.code === 200 && menures.code === 200) {
         const userinfo = yield call(queryCurrent);
-        const menus = menuArr(response.data, userinfo.data.loginCode);
+        const menus = menuArr(menures.data, response.data, userinfo.data.loginCode);
         const menuData = toTree(menus);
+        const menulist = addauth(menures.data, response.data, userinfo.data.loginCode);
         yield put({
           type: 'saveUserMenu',
-          payload: menuData,
+          payload: {
+            menuData,
+            authority: ['incontrol', `${userinfo.data.loginCode}`],
+            menulist,
+          },
         });
       }
     },
@@ -114,25 +133,10 @@ const UserModel = {
     saveUserMenu(state, action) {
       return {
         ...state,
-        menuData: action.payload || [],
+        menuData: action.payload.menuData || [],
+        menulist: action.payload.menulist || [],
       };
     },
-
-    // changeNotifyCount(
-    //   state = {
-    //     currentUser: {},
-    //   },
-    //   action,
-    // ) {
-    //   return {
-    //     ...state,
-    //     currentUser: {
-    //       ...state.currentUser,
-    //       notifyCount: action.payload.totalCount,
-    //       unreadCount: action.payload.unreadCount,
-    //     },
-    //   };
-    // },
   },
 };
 export default UserModel;

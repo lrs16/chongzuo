@@ -13,25 +13,7 @@ class SecurityLayout extends React.Component {
     this.setState({
       isReady: true,
     });
-    // const { dispatch } = this.props;
-
-    // if (dispatch) {
-    //   dispatch({
-    //     type: 'user/fetchCurrent',
-    //   });
-    // }
-    // this.getCurrent();
   }
-
-  // getCurrent=()=>{
-  //   const istoken = sessionStorage.getItem("access_token");
-  //   if (istoken) {
-  //     const {dispatch} = this.props;
-  //       dispatch({
-  //       type: 'user/fetchCurrent',
-  //     });
-  //     };
-  //   }
 
   render() {
     const { isReady } = this.state;

@@ -38,7 +38,6 @@ const Model = {
         const urlParams = new URL(window.location.href); // 本地记录路由
         const params = getPageQuery();
         let { redirect } = params;
-
         if (redirect) {
           const redirectUrlParams = new URL(redirect);
 

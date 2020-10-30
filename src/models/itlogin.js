@@ -22,8 +22,10 @@ const Model = {
           payload: response,
         });
         setTimeout(() => {
-          window.history.back(-1);
-        }, 1500);
+          window.opener = null;
+          window.open(' ', '_self');
+          window.close();
+        }, 6000);
       }
 
       if (response.code === 200) {
