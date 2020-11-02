@@ -51,11 +51,11 @@ class DeptTree extends Component {
           </TreeNode>
         );
       }
-      return <TreeNode key={item.id} title={item.name} {...item}/>;
+      return <TreeNode key={item.id} title={item.name} {...item} />;
     });
 
   onSelect = (selectedKeys, info) => {
-    if(selectedKeys !== undefined || selectedKeys !== '') {
+    if (selectedKeys !== undefined || selectedKeys !== '') {
       this.props.toFatherValue(selectedKeys);
     }
   };

@@ -14,7 +14,7 @@ const formItemLayout = {
   colon: false,
 };
 
-const withClick = (element, handleClick = () => {}) => {
+const withClick = (element, handleClick = () => { }) => {
   return <element.type {...element.props} onClick={handleClick} />;
 };
 
@@ -40,8 +40,8 @@ class SshInfoEdit extends Component {
   handleInputValueBlur = () => {
     this.props.form.validateFields((err, values) => {
       const { hostsSshPassword } = values;
-      if(hostsSshPassword === this.state.values.hostsSshPassword || hostsSshPassword === '') {
-        this.props.form.setFieldsValue({ hostsSshPassword: this.state.values.hostsSshPassword});
+      if (hostsSshPassword === this.state.values.hostsSshPassword || hostsSshPassword === '') {
+        this.props.form.setFieldsValue({ hostsSshPassword: this.state.values.hostsSshPassword });
       } else {
         this.props.form.setFieldsValue({ hostsSshPassword });
       }
@@ -54,15 +54,15 @@ class SshInfoEdit extends Component {
     });
     const id = this.props.record.id;
     const { dispatch } = this.props;
-      return dispatch({
-        type: 'softexetute/searchSshInfotoEdit',
-        payload: { id },
-      }).then(res => {
-          if(res.code === 200) {
-            this.setState({values: res.data});
-          }
-      });
-    
+    return dispatch({
+      type: 'softexetute/searchSshInfotoEdit',
+      payload: { id },
+    }).then(res => {
+      if (res.code === 200) {
+        this.setState({ values: res.data });
+      }
+    });
+
   };
 
   handleOk = () => {
@@ -88,7 +88,7 @@ class SshInfoEdit extends Component {
     const { getFieldDecorator } = this.props.form;
     const required = true;
     // const { hostsIp, hostsSshUsername, hostsSshPassword, hostsSshPort} = this.props.record;
-    const { hostsIp, hostsSshUsername, hostsSshPassword, hostsSshPort} = this.state.values;
+    const { hostsIp, hostsSshUsername, hostsSshPassword, hostsSshPort } = this.state.values;
     return (
       <>
         {withClick(children, this.handleopenClick)}
@@ -127,7 +127,7 @@ class SshInfoEdit extends Component {
                   },
                 ],
                 initialValue: hostsSshPassword,
-              })(<Input type="password" onFocus={() => this.handleInputValueFous()} onBlur={() => this.handleInputValueBlur()}/>)}
+              })(<Input type="password" onFocus={() => this.handleInputValueFous()} onBlur={() => this.handleInputValueBlur()} />)}
             </Form.Item>
 
             <Form.Item label="使用端口">

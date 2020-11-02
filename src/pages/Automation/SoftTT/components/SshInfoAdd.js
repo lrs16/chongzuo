@@ -13,7 +13,7 @@ const formItemLayout = {
   colon: false,
 };
 
-const withClick = (element, handleClick = () => {}) => {
+const withClick = (element, handleClick = () => { }) => {
   return <element.type {...element.props} onClick={handleClick} />;
 };
 
@@ -54,7 +54,7 @@ class SshInfoAdd extends Component {
     const { children, title } = this.props;
     const { getFieldDecorator } = this.props.form;
     const required = true;
-    const { hostsIp} = this.props.hostIp;
+    const { hostsIp } = this.props.hostIp;
     return (
       <>
         {withClick(children, this.handleopenClick)}
@@ -91,7 +91,7 @@ class SshInfoAdd extends Component {
                     message: '请输入...',
                   },
                 ],
-              })(<Input type="password" placeholder="请输入..."/>)}
+              })(<Input type="password" placeholder="请输入..." />)}
             </Form.Item>
 
             <Form.Item label="使用端口">
@@ -102,7 +102,7 @@ class SshInfoAdd extends Component {
                     message: '请输入...',
                   },
                 ],
-              })(<Input type="number" placeholder="请输入..."/>)}
+              })(<Input type="number" placeholder="请输入..." />)}
             </Form.Item>
           </Form>
         </Modal>

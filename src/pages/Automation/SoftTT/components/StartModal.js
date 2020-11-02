@@ -28,7 +28,7 @@ const tailFormItemLayout = {
 };
 
 // 克隆子元素按钮，并添加事件
-const withClick = (element, handleClick = () => {}) => {
+const withClick = (element, handleClick = () => { }) => {
   return <element.type {...element.props} onClick={handleClick} />;
 };
 
@@ -153,7 +153,7 @@ class StartModal extends Component {
     const { getFieldDecorator } = this.props.form;
     // const required = true;
     // const { hostsIp } = this.props.record;
-    const { hostsIp } = softexetute.treehostdata;
+    const { hostsIp } = softexetute.treehostdata || this.props.record;
     return (
       <>
         {withClick(children, this.handleopenClick)}

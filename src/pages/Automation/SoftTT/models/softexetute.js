@@ -106,8 +106,8 @@ export default {
       });
     },
 
-    *getSofttoHostHandleType({ payload: { hostsId, softId, handleType } }, { call}) {
-      return yield call(querySofttoHostHandleType, {hostsId, softId, handleType});
+    *getSofttoHostHandleType({ payload: { hostsId, softId, handleType } }, { call }) {
+      return yield call(querySofttoHostHandleType, { hostsId, softId, handleType });
     },
 
     *getSshInfoList({ payload }, { call, put }) { // SSh信息表格数据
@@ -150,7 +150,7 @@ export default {
     *getSecretThief({ payload: { id } }, { call }) {
       return yield call(querySecretThief, id);
     },
-    
+
   },
 
   reducers: {

@@ -216,7 +216,7 @@ class SoftExetute extends Component {
       type: 'softexetute/getToHostList',
       payload: { hostId },
     });
-    
+
   };
 
   // 启动/停止/检测命令
@@ -232,13 +232,13 @@ class SoftExetute extends Component {
   //       handleType: type,
   //     },
   //   }).then(res => {
-      // setTimeout(() => {
-      //   if (res.state) {
-      //     message.success("命令已执行" + "\n" + res.msg);
-      //   } else {
-      //     message.error(res.msg);
-      //   }
-      // }, 500);
+  // setTimeout(() => {
+  //   if (res.state) {
+  //     message.success("命令已执行" + "\n" + res.msg);
+  //   } else {
+  //     message.error(res.msg);
+  //   }
+  // }, 500);
   //   });
   // };
 
@@ -249,12 +249,12 @@ class SoftExetute extends Component {
     const { dispatch } = this.props;
     dispatch({
       type: 'softexetute/getSofttoHostHandleType',
-      payload: { 
-        hostsId: id || hostId,  
-        softId: record.id, 
+      payload: {
+        hostsId: id || hostId,
+        softId: record.id,
         handleType: '1'
-       },
-    }).then(res=>{
+      },
+    }).then(res => {
       setTimeout(() => {
         if (res.state) {
           message.success("命令已执行" + "\n" + res.msg);
@@ -264,7 +264,7 @@ class SoftExetute extends Component {
       }, 500);
     })
   };
-  
+
   stop = (record) => {
     const { hostId } = this.state;
     const { id } = this.props.softexetute.treehostdata;
@@ -272,12 +272,12 @@ class SoftExetute extends Component {
     const { dispatch } = this.props;
     dispatch({
       type: 'softexetute/getSofttoHostHandleType',
-      payload: { 
-        hostsId: id || hostId, 
-        softId: record.id, 
+      payload: {
+        hostsId: id || hostId,
+        softId: record.id,
         handleType: '2'
-       },
-    }).then(res=>{
+      },
+    }).then(res => {
       setTimeout(() => {
         if (res.state) {
           message.success("命令已执行" + "\n" + res.msg);
@@ -294,12 +294,12 @@ class SoftExetute extends Component {
     const { dispatch } = this.props;
     dispatch({
       type: 'softexetute/getSofttoHostHandleType',
-      payload: { 
-        hostsId: id || hostId, 
-        softId: record.id, 
+      payload: {
+        hostsId: id || hostId,
+        softId: record.id,
         handleType: '3'
-       },
-    }).then(res=>{
+      },
+    }).then(res => {
       setTimeout(() => {
         if (res.state) {
           message.success("命令已执行" + "\n" + res.msg);
@@ -408,15 +408,15 @@ class SoftExetute extends Component {
             <Divider type="vertical" />
 
             <span>
-               <a type="link" record={record} onClick={() => this.start(record)}>启动</a>
+              <a type="link" record={record} onClick={() => this.start(record)}>启动</a>
             </span>
             <Divider type="vertical" />
             <span>
-               <a type="link" record={record} onClick={() => this.stop(record)}>停止</a>
+              <a type="link" record={record} onClick={() => this.stop(record)}>停止</a>
             </span>
             <Divider type="vertical" />
             <span>
-               <a type="link" record={record} onClick={() => this.check(record)}>检测</a>
+              <a type="link" record={record} onClick={() => this.check(record)}>检测</a>
             </span>
             <Divider type="vertical" />
 
@@ -428,7 +428,7 @@ class SoftExetute extends Component {
                 <Divider type="vertical" />
               ])}
             </span> */}
-            
+
             <span>
               <Link
                 to={{

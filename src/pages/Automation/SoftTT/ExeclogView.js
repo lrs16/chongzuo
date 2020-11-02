@@ -127,6 +127,14 @@ class ExecLogView extends Component {
   render() {
     const columns = [
       {
+        title: '系统用户',
+        dataIndex: 'execUserNameExt',
+        key: 'execUserNameExt',
+        width: 150,
+        sorter: (a, b) => a.execIp - b.execIp,
+        sortDirections: ['descend', 'ascend'],
+      },
+      {
         title: '主机IP',
         dataIndex: 'execIp',
         key: 'execIp',
@@ -135,7 +143,7 @@ class ExecLogView extends Component {
         sortDirections: ['descend', 'ascend'],
       },
       {
-        title: '用户账号',
+        title: '主机账号',
         dataIndex: 'execUser',
         key: 'execUser',
         width: 150,
@@ -143,7 +151,7 @@ class ExecLogView extends Component {
         sortDirections: ['descend', 'ascend'],
       },
       // {
-      //   title: '用户密码',
+      //   title: '主机密码',
       //   dataIndex: 'execPass',
       //   key: 'execPass',
       //   width: 210,
@@ -162,19 +170,13 @@ class ExecLogView extends Component {
         title: '执行命令',
         dataIndex: 'execStr',
         key: 'execStr',
-        width: 450,
+        width: 150,
+        ellipsis: true,
         sorter: (a, b) => a.execStr - b.execStr,
         sortDirections: ['descend', 'ascend'],
       },
       {
-        title: '执行用户',
-        dataIndex: 'execUserid',
-        key: 'execUserid',
-        width: 200,
-        render: (text, record) => <span>{SysAccount[record.execUserid]}</span>,
-      },
-      {
-        title: '返回结果',
+        title: '执行返回',
         dataIndex: 'execRet',
         key: 'execRet',
         width: 450,
@@ -182,13 +184,28 @@ class ExecLogView extends Component {
         sorter: (a, b) => a.execRet - b.execRet,
         sortDirections: ['descend', 'ascend'],
       },
+      // {
+      //   title: '系统用户数据编号',
+      //   dataIndex: 'execUserid',
+      //   key: 'execUserid',
+      //   width: 200,
+      //   render: (text, record) => <span>{SysAccount[record.execUserid]}</span>,
+      // },
       {
         title: '触发方式',
         dataIndex: 'execTrigger',
         key: 'execTrigger',
-        width: 200,
+        width: 120,
         render: (text, record) => <span>{ComtriMode[record.execTrigger]}</span>,
         sorter: (a, b) => a.execTrigger - b.execTrigger,
+        sortDirections: ['descend', 'ascend'],
+      },
+      {
+        title: '执行备注',
+        dataIndex: 'execRemark',
+        key: 'execRemark',
+        width: 120,
+        sorter: (a, b) => a.execRemark - b.execRemark,
         sortDirections: ['descend', 'ascend'],
       },
       {
@@ -199,14 +216,6 @@ class ExecLogView extends Component {
         width: 200,
         ellipsis: true,
         sorter: (a, b) => a.execTime - b.execTime,
-        sortDirections: ['descend', 'ascend'],
-      },
-      {
-        title: '命令备注',
-        dataIndex: 'execRemark',
-        key: 'execRemark',
-        width: 120,
-        sorter: (a, b) => a.execRemark - b.execRemark,
         sortDirections: ['descend', 'ascend'],
       },
       // {
@@ -221,11 +230,17 @@ class ExecLogView extends Component {
       //   key: 'id',
       //   width: 200,
       // },
+      // {
+      //   title: '系统用户数据编号',
+      //   dataIndex: 'execUserid',
+      //   key: 'execUserid',
+      //   width: 200,
+      // },
       {
         title: '操作',
         dataIndex: 'action',
         key: 'action',
-        width: 100,
+        width: 80,
         fixed: 'right',
         render: (text, record) => (
           <a type="link" onClick={() => this.showDrawer(record.id)}>
@@ -240,23 +255,24 @@ class ExecLogView extends Component {
     } = this.props;
     const dataSource = execloglist && execloglist.rows;
     const { DescriptionItemList } = this.state;
-   
+
     const DescriptionItemList1 = JSON.parse(
       JSON.stringify(DescriptionItemList)
-      .replace(/execUserid/g,"执行用户")
-      .replace(/execIp/g,"主机IP")
-      .replace(/execUser/g,"用户账号")
-      .replace(/execPass/g,"用户密码")
-      .replace(/execPort/g,"Linux端口")
-      .replace(/execTrigger/g,"触发方式")
-      .replace(/execStr/g,"执行命令")
-      .replace(/execRet/g,"返回结果")
-      .replace(/execTime/g,"执行时间")
-      .replace(/execRemark/g,"命令备注")
+        .replace(/execUserNameExt/g, "系统用户")
+        .replace(/execUser/g, "主机账号")
+        .replace(/execIp/g, "主机IP")
+        .replace(/execPort/g, "主机端口")
+        .replace(/execTrigger/g, "触发方式")
+        .replace(/execStr/g, "执行命令")
+        .replace(/execRet/g, "执行返回")
+        .replace(/execTime/g, "执行时间")
+        .replace(/execRemark/g, "执行备注")
     );
-    for(var key in DescriptionItemList1) {
-      delete DescriptionItemList1['id'];
+    for (var key in DescriptionItemList1) {
+      delete DescriptionItemList1['主机账号id'];
+      delete DescriptionItemList1['execPass'];
       delete DescriptionItemList1['execSalt'];
+      delete DescriptionItemList1['id'];
     }
     const pagination = {
       showSizeChanger: true,
@@ -275,7 +291,7 @@ class ExecLogView extends Component {
           dataSource={dataSource}
           columns={columns}
           rowKey={record => record.id}
-          scroll={{ x: 2100 }}
+          scroll={{ x: 1700 }}
           table-layout="fixed"
           pagination={pagination}
           loading={loading}
@@ -284,7 +300,7 @@ class ExecLogView extends Component {
           onClose={this.onClose}
           visible={this.state.visible}
           title="日志详情"
-          width={1200}
+          width={1000}
           placement="right"
           closable={false}
         >
