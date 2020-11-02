@@ -408,15 +408,15 @@ class SoftExetute extends Component {
             <Divider type="vertical" />
 
             <span>
-              <a type="link" record={record} onClick={() => this.start(record)}>启动</a>
+              <a type="link" record={record} onClick={() => this.start(record)}>启动命令</a>
             </span>
             <Divider type="vertical" />
             <span>
-              <a type="link" record={record} onClick={() => this.stop(record)}>停止</a>
+              <a type="link" record={record} onClick={() => this.stop(record)}>停止命令</a>
             </span>
             <Divider type="vertical" />
             <span>
-              <a type="link" record={record} onClick={() => this.check(record)}>检测</a>
+              <a type="link" record={record} onClick={() => this.check(record)}>检测命令</a>
             </span>
             <Divider type="vertical" />
 
