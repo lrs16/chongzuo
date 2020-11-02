@@ -317,7 +317,7 @@ class SoftManage extends Component {
         {/* <Card> */}
         <Row style={{ display: 'flex' }} style={{ background: '#f1f1f1' }}>
           <Col span={5}>
-              <Card title="主机信息" bordered={false}>
+              <Card  bordered={false}>
                   <SoftManageTree toFatherValue={this.getChildValue.bind(this)}/>
               </Card>
           </Col>
