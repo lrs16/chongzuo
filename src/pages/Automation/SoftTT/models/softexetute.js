@@ -10,7 +10,14 @@ import {
   querySoftwaresList,
   queryToHostList, // 树杈数据
   queryHostTree,
-  querySofttoHostHandleType
+  querySofttoHostHandleType,
+  querySshInfoList, // SSh信息表格
+  searchSshInfotoEdit, // SSh信息表格编辑数据填充
+  editeSshInfoList,// SSh信息表格编辑
+  addSshInfoList,// SSh信息表格添加
+  removeSshInfoList,
+  queryCheckSshLink, //检测链接
+  querySecretThief, //查看密码
 } from '../services/api';
 
 export default {
@@ -23,6 +30,7 @@ export default {
     treesoftdata: [],
     treehostdata: [],
     data: [],
+    sshinfodata: [], // SSh信息表格
   },
 
   effects: {
@@ -101,6 +109,48 @@ export default {
     *getSofttoHostHandleType({ payload: { hostsId, softId, handleType } }, { call}) {
       return yield call(querySofttoHostHandleType, {hostsId, softId, handleType});
     },
+
+    *getSshInfoList({ payload }, { call, put }) { // SSh信息表格数据
+      const response = yield call(querySshInfoList, payload);
+      yield put({
+        type: 'sshinfodata',
+        payload: response,
+      });
+    },
+
+    // SSh信息表格数据编辑填充
+    *searchSshInfotoEdit({ payload: { id } }, { call, put }) {
+      // const response = yield call(searchSshInfoList, id);
+      // yield put({
+      //   type: 'newSshInfoList',
+      //   payload: response,
+      // });
+      return yield call(searchSshInfotoEdit, id);
+    },
+
+    // 编辑SSh信息表格数据
+    *edite({ payload }, { call }) {
+      return yield call(editeSshInfoList, payload);
+    },
+
+    // // 添加SSh信息表格数据
+    *add({ payload }, { call }) {
+      return yield call(addSshInfoList, payload);
+    },
+
+    // 删除SSh信息表格数据
+    *remove({ payload: { id } }, { call }) {
+      return yield call(removeSshInfoList, id);
+    },
+
+    // ssh查看密码/检测链接
+    *getCheckSshLink({ payload: { id } }, { call }) {
+      return yield call(queryCheckSshLink, id);
+    },
+    *getSecretThief({ payload: { id } }, { call }) {
+      return yield call(querySecretThief, id);
+    },
+    
   },
 
   reducers: {
@@ -139,11 +189,25 @@ export default {
       };
     },
 
+    sshinfodata(state, action) {
+      return {
+        ...state,
+        sshinfodata: action.payload.data,
+      };
+    },
+
     show(state, { payload }) {
       return {
         ...state,
         ...payload,
       };
     },
+
+    // newSshInfoList(state, action) {
+    //   return {
+    //     ...state,
+    //     newSshInfoList: action.payload,
+    //   };
+    // },
   },
 };

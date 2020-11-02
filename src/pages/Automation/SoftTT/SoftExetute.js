@@ -6,14 +6,15 @@ import Link from 'umi/link';
 import { Card, Table, Divider, Tabs, Button, Form, Input, Row, Col, message } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import StartModal from './components/StartModal';
+import SshconfigModal from './components/SshconfigModal';
 import HostTree from '@/components/HostTree';
 
 const { TabPane } = Tabs;
-const nameType = [
-  {key: 0, name: '启动命令', type: '1'}, 
-  {key: 1, name: '停止命令', type: '2'}, 
-  {key: 2, name: '检测命令', type: '3'},
-];
+// const nameType = [
+//   {key: 0, name: '启动命令', type: '1'}, 
+//   {key: 1, name: '停止命令', type: '2'}, 
+//   {key: 2, name: '检测命令', type: '3'},
+// ];
 @connect(({ softexetute, loading }) => ({
   softexetute,
   loading: loading.models.softexetute,
@@ -215,21 +216,45 @@ class SoftExetute extends Component {
       type: 'softexetute/getToHostList',
       payload: { hostId },
     });
+    
   };
 
   // 启动/停止/检测命令
-  hanleCommit = (record, type) => {
+  // hanleCommit = (record, type) => {
+  //   const { hostId } = this.state;
+  //   const { id } = this.props.softexetute.treehostdata;
+  //   const { dispatch } = this.props;
+  //   dispatch({
+  //     type: 'softexetute/getSofttoHostHandleType',
+  //     payload: {
+  //       hostsId: id || hostId,
+  //       softId: record.id,
+  //       handleType: type,
+  //     },
+  //   }).then(res => {
+      // setTimeout(() => {
+      //   if (res.state) {
+      //     message.success("命令已执行" + "\n" + res.msg);
+      //   } else {
+      //     message.error(res.msg);
+      //   }
+      // }, 500);
+  //   });
+  // };
+
+  start = (record) => {
     const { hostId } = this.state;
     const { id } = this.props.softexetute.treehostdata;
+
     const { dispatch } = this.props;
     dispatch({
       type: 'softexetute/getSofttoHostHandleType',
-      payload: {
-        hostsId: id || hostId,
-        softId: record.id,
-        handleType: type,
-      },
-    }).then(res => {
+      payload: { 
+        hostsId: id || hostId,  
+        softId: record.id, 
+        handleType: '1'
+       },
+    }).then(res=>{
       setTimeout(() => {
         if (res.state) {
           message.success("命令已执行" + "\n" + res.msg);
@@ -237,7 +262,52 @@ class SoftExetute extends Component {
           message.error(res.msg);
         }
       }, 500);
-    });
+    })
+  };
+  
+  stop = (record) => {
+    const { hostId } = this.state;
+    const { id } = this.props.softexetute.treehostdata;
+
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'softexetute/getSofttoHostHandleType',
+      payload: { 
+        hostsId: id || hostId, 
+        softId: record.id, 
+        handleType: '2'
+       },
+    }).then(res=>{
+      setTimeout(() => {
+        if (res.state) {
+          message.success("命令已执行" + "\n" + res.msg);
+        } else {
+          message.error(res.msg);
+        }
+      }, 500);
+    })
+  };
+  check = (record) => {
+    const { hostId } = this.state;
+    const { id } = this.props.softexetute.treehostdata;
+
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'softexetute/getSofttoHostHandleType',
+      payload: { 
+        hostsId: id || hostId, 
+        softId: record.id, 
+        handleType: '3'
+       },
+    }).then(res=>{
+      setTimeout(() => {
+        if (res.state) {
+          message.success("命令已执行" + "\n" + res.msg);
+        } else {
+          message.error(res.msg);
+        }
+      }, 500);
+    })
   };
 
   render() {
@@ -313,10 +383,19 @@ class SoftExetute extends Component {
         title: '操作',
         dataIndex: 'action',
         key: 'action',
-        width: 380,
+        width: 450,
         fixed: 'right',
         render: (text, record) => (
           <div>
+            <SshconfigModal
+              title="SSH信息"
+              record={record}
+              hostId={this.state.hostId}
+            >
+              <a type="link">配置SSH</a>
+            </SshconfigModal>
+            <Divider type="vertical" />
+
             <StartModal
               title="执行命令"
               record={record}
@@ -329,13 +408,26 @@ class SoftExetute extends Component {
             <Divider type="vertical" />
 
             <span>
+               <a type="link" record={record} onClick={() => this.start(record)}>启动</a>
+            </span>
+            <Divider type="vertical" />
+            <span>
+               <a type="link" record={record} onClick={() => this.stop(record)}>停止</a>
+            </span>
+            <Divider type="vertical" />
+            <span>
+               <a type="link" record={record} onClick={() => this.check(record)}>检测</a>
+            </span>
+            <Divider type="vertical" />
+
+            {/* <span>
               {nameType.map(({key, name, type}) => [
                 <a key={key} record={record} onClick={() => this.hanleCommit(record, type)}>
                   {name}
                 </a>,
                 <Divider type="vertical" />
               ])}
-            </span>
+            </span> */}
             
             <span>
               <Link
@@ -368,7 +460,7 @@ class SoftExetute extends Component {
     };
 
     return (
-      <PageHeaderWrapper title="主机_SSH2管理">
+      <PageHeaderWrapper title="主机操作">
         <Row style={{ display: 'flex' }} style={{ background: '#f1f1f1' }}>
           <Col span={5}>
             <Card>

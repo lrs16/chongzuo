@@ -147,4 +147,54 @@ export async function querySofttoHostHandleType({ hostsId, softId, handleType })
   });
 }
 
+// /auto/hosts_shh2/listPage/{hostsIp} 获取SSH信息表格数据
+export async function querySshInfoList(params) {
+  return request(`/auto/hosts_shh2/listPage/${params.hostIp}`, {
+    method: 'POST',
+    data: params,
+  });
+}
+
+// /auto/hosts_shh2/{id} 根据编号查询信息 编辑功能
+export async function searchSshInfotoEdit(id) {
+  return request(`/auto/hosts_shh2/${id}`, {
+    method: 'GET',
+  });
+}
+
+// /auto/hosts_shh2 SSH信息表格数据编辑
+export async function editeSshInfoList(params) {
+  return request(`/auto/hosts_shh2`, {
+    method: 'PUT',
+    body: JSON.stringify(params),
+  });
+}
+
+// /auto/hosts_shh2 SSH信息表格数据添加
+export async function addSshInfoList(params) {
+  return request(`/auto/hosts_shh2`, {
+    method: 'POST',
+    body: JSON.stringify(params),
+  });
+}
+
+// /auto/hosts_shh2 SSH信息表格数据删除
+export async function removeSshInfoList(id) {
+  return request(`/auto/hosts_shh2/${id}`, {
+    method: 'DELETE',
+  });
+}
+
+// /auto/hosts_shh2/{id}/checkSshLink 检测SSH帐号连接情况
+export async function queryCheckSshLink(id) {
+  return request(`/auto/hosts_shh2/${id}/checkSshLink`, {
+    method: 'GET',
+  });
+}
+// /auto/hosts_shh2/{id}/secretThief 查看密码信息 - 暂时管理员可查看
+export async function querySecretThief(id) {
+  return request(`/auto/hosts_shh2/${id}/secretThief`, {
+    method: 'GET',
+  });
+}
 
