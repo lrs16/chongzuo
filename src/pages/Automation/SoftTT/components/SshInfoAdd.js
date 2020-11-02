@@ -54,7 +54,7 @@ class SshInfoAdd extends Component {
     const { children, title } = this.props;
     const { getFieldDecorator } = this.props.form;
     const required = true;
-    const { hostsIp} = this.props.record;
+    const { hostsIp} = this.props.hostIp;
     return (
       <>
         {withClick(children, this.handleopenClick)}

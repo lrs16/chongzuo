@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
-import { Modal, Divider, Popconfirm, Table, Message, message } from 'antd';
+import { Modal, Divider, Popconfirm, Table, Message, message, Row, Col, Button } from 'antd';
 import SshInfoAdd from './SshInfoAdd';
 import SshInfoEdit from './SshInfoEdit';
 
@@ -239,13 +239,13 @@ class SshconfigModal extends Component {
               fixed: 'right',
               render: (text, record) => (
                 <div>
-                    <SshInfoAdd
+                    {/* <SshInfoAdd
                       record={record}
                       onSumit={values => this.handleAdd(values)}
                     >
                         <a type="link">添加</a>
                     </SshInfoAdd>
-                    <Divider type="vertical" />
+                    <Divider type="vertical" /> */}
 
                     <SshInfoEdit 
                       record={record}
@@ -302,9 +302,9 @@ class SshconfigModal extends Component {
                     footer={null}
                     width={1300}
                 >
-                    {/* <Row>
+                    <Row>
                       <Col span={24}>
-                          <SshInfoAdd onSumit={handleAdd}>
+                          <SshInfoAdd onSumit={values => this.handleAdd(values)} hostIp={this.props.softexetute.treehostdata}>
                             <Button
                               style={{ width: '100%', margin: '16px 0 8px 0' }}
                               type="dashed"
@@ -314,7 +314,7 @@ class SshconfigModal extends Component {
                             </Button>
                           </SshInfoAdd>
                       </Col>
-                    </Row> */}
+                    </Row>
                     <Table
                         dataSource={dataSource}
                         columns={columns.filter(item => item.title !== '数据编号' || item.key !== 'id')}
