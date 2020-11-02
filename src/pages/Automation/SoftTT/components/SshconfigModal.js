@@ -235,7 +235,7 @@ class SshconfigModal extends Component {
               title: '操作',
               dataIndex: 'action',
               key: 'action',
-              width: 300,
+              width: 260,
               fixed: 'right',
               render: (text, record) => (
                 <div>
