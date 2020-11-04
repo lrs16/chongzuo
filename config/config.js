@@ -207,7 +207,7 @@ export default {
                     },
                     {
                       path: '/automation/STT/softexetute',
-                      name: '主机_SSH2管理',
+                      name: '主机操作',
                       icon: 'cloud-server',
                       component: './Automation/SoftTT/SoftExetute',
                     },

@@ -32,8 +32,8 @@ export async function removeHostInfo(id) {
 
 //批量添加主机
 export async function batchAddhost(params) {
-  return request(`/auto/hosts/batchSave`,{
-    method:'POST',
+  return request(`/auto/hosts/batchSave`, {
+    method: 'POST',
     data: params,
     requestType: 'form',
   });
@@ -100,18 +100,17 @@ export async function editeProcess(params) {
   });
 }
 
-export async function batchAddprocess(params){
-  return request(`/auto/courses/batchSave`,{
+export async function batchAddprocess(params) {
+  return request(`/auto/courses/batchSave`, {
     method: 'POST',
-    data:params,
+    data: params,
     requestType: 'form',
   });
 }
 
-
-// 请求主机的软件信息， 生成表格 /auto/hosts_shh2/tree/{hostsId}/softwares/  mxj
+// 请求主机的软件信息， 生成表格 /auto/hostsHandle/tree/{hostsId}/softwares/  mxj
 export async function querySoftwaresList(hostId) {
-  return request(`/auto/hosts_shh2/tree/${hostId}/softwares`, {
+  return request(`/auto/hostsHandle/tree/${hostId}/softwares`, {
     method: 'GET',
   });
 }
@@ -122,5 +121,3 @@ export async function queryToHostList(id) {
     method: 'GET',
   });
 }
-
-
