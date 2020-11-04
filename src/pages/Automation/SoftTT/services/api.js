@@ -59,32 +59,32 @@ export async function querySoftExetute() {
   return request(`/api/softexetuteList`);
 }
 
-// /auto/hosts_shh2/encrypt/{encryptStr} 加密数据
+// /auto/hostsHandle/encrypt/{encryptStr} 加密数据
 export async function queryHostEncryptStr(encryptStr) {
-  return request(`/auto/hosts_shh2/encrypt/${encryptStr}`, {
+  return request(`/auto/hostsHandle/encrypt/${encryptStr}`, {
     method: 'GET',
   });
 }
 
-// 软件启停-主机_SSH2管理 /auto/hosts_shh2新建消息
+// 软件启停-主机_SSH2管理 /auto/hostsHandle新建消息
 export async function queryHostShh2(params) {
-  return request(`/auto/hosts_shh2`, {
+  return request(`/auto/hostsHandle`, {
     method: 'POST',
     body: JSON.stringify(params),
   });
 }
 
-// 软件启停-主机_SSH2管理 /auto/hosts_shh2查询消息
+// 软件启停-主机_SSH2管理 /auto/hostsHandle查询消息
 export async function queryHostShh2Search(params) {
-  return request(`/auto/hosts_shh2/getByUserNameAndIp`, {
+  return request(`/auto/hostsHandle/getByUserNameAndIp`, {
     method: 'POST',
     body: JSON.stringify(params),
   });
 }
 
-// 软件启停-主机_SSH2管理 /auto/hosts_shh2/execCommand 执行ssh命令
+// 软件启停-主机_SSH2管理 /auto/hostsHandle/execCommand 执行ssh命令
 export async function queryHostShh2ExecCommand(params) {
-  return request(`/auto/hosts_shh2/execCommand`, {
+  return request(`/auto/hostsHandle/execCommand`, {
     method: 'POST',
     body: JSON.stringify(params),
   });
@@ -106,21 +106,21 @@ export async function querySearchSofts(params) {
 }
 // 软件启停-主机_SSH2 执行日志--表格
 export async function queryExecLog(params) {
-  return request(`/auto/exec_log/listPage/${params.ip}`, {
+  return request(`/auto/hostsHandleLog/listPage/${params.ip}`, {
     method: 'POST',
     data: params,
   });
 }
 // 软件启停-主机_SSH2 执行日志详情
 export async function queryExecLogDetail(id) {
-  return request(`/auto/exec_log/${id}`, {
+  return request(`/auto/hostsHandleLog/${id}`, {
     method: 'GET',
   });
 }
 
-// 请求主机的软件信息， 生成表格 /auto/hosts_shh2/tree/{hostsId}/softwares/  mxj
+// 请求主机的软件信息， 生成表格 /auto/hostsHandle/tree/{hostsId}/softwares/  mxj
 export async function querySoftwaresList(hostId) {
-  return request(`/auto/hosts_shh2/tree/${hostId}/softwares`, {
+  return request(`/auto/hostsHandle/tree/${hostId}/softwares`, {
     method: 'GET',
   });
 }
@@ -132,69 +132,68 @@ export async function queryToHostList(id) {
   });
 }
 
-// 请求主机， 生成结构树 /auto/hosts_shh2/tree/hosts/  mxj
+// 请求主机， 生成结构树 /auto/hostsHandle/tree/hosts/  mxj
 export async function queryHostTree(params) {
-  return request(`/auto/hosts_shh2/tree/hosts/`, {
+  return request(`/auto/hostsHandle/tree/hosts/`, {
     method: 'GET',
     body: JSON.stringify(params),
   });
 }
 
-// /auto/hosts_shh2/handle/{hostsId}/{softId}/{handleType}操作主机的软件信息
+// /auto/hostsHandle/handle/{hostsId}/{softId}/{handleType}操作主机的软件信息
 export async function querySofttoHostHandleType({ hostsId, softId, handleType }) {
-  return request(`/auto/hosts_shh2/handle/${hostsId}/${softId}/${handleType}`, {
+  return request(`/auto/hostsHandle/handle/${hostsId}/${softId}/${handleType}`, {
     method: 'GET',
   });
 }
 
-// /auto/hosts_shh2/listPage/{hostsIp} 获取SSH信息表格数据
+// /auto/hostsHandle/listPage/{hostsIp} 获取SSH信息表格数据
 export async function querySshInfoList(params) {
-  return request(`/auto/hosts_shh2/listPage/${params.hostIp}`, {
+  return request(`/auto/hostsHandle/listPage/${params.hostIp}`, {
     method: 'POST',
     data: params,
   });
 }
 
-// /auto/hosts_shh2/{id} 根据编号查询信息 编辑功能
+// /auto/hostsHandle/{id} 根据编号查询信息 编辑功能
 export async function searchSshInfotoEdit(id) {
-  return request(`/auto/hosts_shh2/${id}`, {
+  return request(`/auto/hostsHandle/${id}`, {
     method: 'GET',
   });
 }
 
-// /auto/hosts_shh2 SSH信息表格数据编辑
+// /auto/hostsHandle SSH信息表格数据编辑
 export async function editeSshInfoList(params) {
-  return request(`/auto/hosts_shh2`, {
+  return request(`/auto/hostsHandle`, {
     method: 'PUT',
     body: JSON.stringify(params),
   });
 }
 
-// /auto/hosts_shh2 SSH信息表格数据添加
+// /auto/hostsHandle SSH信息表格数据添加
 export async function addSshInfoList(params) {
-  return request(`/auto/hosts_shh2`, {
+  return request(`/auto/hostsHandle`, {
     method: 'POST',
     body: JSON.stringify(params),
   });
 }
 
-// /auto/hosts_shh2 SSH信息表格数据删除
+// /auto/hostsHandle SSH信息表格数据删除
 export async function removeSshInfoList(id) {
-  return request(`/auto/hosts_shh2/${id}`, {
+  return request(`/auto/hostsHandle/${id}`, {
     method: 'DELETE',
   });
 }
 
-// /auto/hosts_shh2/{id}/checkSshLink 检测SSH帐号连接情况
+// /auto/hostsHandle/{id}/checkSshLink 检测SSH帐号连接情况
 export async function queryCheckSshLink(id) {
-  return request(`/auto/hosts_shh2/${id}/checkSshLink`, {
+  return request(`/auto/hostsHandle/${id}/checkSshLink`, {
     method: 'GET',
   });
 }
-// /auto/hosts_shh2/{id}/secretThief 查看密码信息 - 暂时管理员可查看
+// /auto/hostsHandle/{id}/secretThief 查看密码信息 - 暂时管理员可查看
 export async function querySecretThief(id) {
-  return request(`/auto/hosts_shh2/${id}/secretThief`, {
+  return request(`/auto/hostsHandle/${id}/secretThief`, {
     method: 'GET',
   });
 }
-

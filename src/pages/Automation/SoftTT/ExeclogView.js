@@ -127,7 +127,7 @@ class ExecLogView extends Component {
   render() {
     const columns = [
       {
-        title: '系统用户',
+        title: '执行用户',
         dataIndex: 'execUserNameExt',
         key: 'execUserNameExt',
         width: 150,
@@ -258,7 +258,7 @@ class ExecLogView extends Component {
 
     const DescriptionItemList1 = JSON.parse(
       JSON.stringify(DescriptionItemList)
-        .replace(/execUserNameExt/g, "系统用户")
+        .replace(/execUserNameExt/g, "执行用户")
         .replace(/execUser/g, "主机账号")
         .replace(/execIp/g, "主机IP")
         .replace(/execPort/g, "主机端口")

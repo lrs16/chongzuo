@@ -124,7 +124,13 @@ class SshInfoEdit extends Component {
                   {
                     required,
                     message: '请输入...',
-                  },
+                  }, {
+                    min:4,
+                    message: '密码不能少于4个字符',
+                  }, {
+                    max:6,
+                    message: '密码不能大于6个字符',
+                  }
                 ],
                 initialValue: hostsSshPassword,
               })(<Input type="password" onFocus={() => this.handleInputValueFous()} onBlur={() => this.handleInputValueBlur()} />)}
