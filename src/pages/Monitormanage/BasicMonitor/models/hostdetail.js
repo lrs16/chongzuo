@@ -1,5 +1,10 @@
 import Mock from 'mockjs'; // 引入mockjs
-import { queryapplication, querycurrentHistory, queryotherhistory } from '../services/api';
+import {
+  queryapplication,
+  querycurrentHistory,
+  queryotherhistory,
+  hostInfo,
+} from '../services/api';
 
 const { Random } = Mock;
 
@@ -60,6 +65,7 @@ export default {
   namespace: 'hostdetail',
 
   state: {
+    hostinfo: '',
     sysalarms: [],
     historyalarms: [],
     processlist: [],
@@ -68,6 +74,15 @@ export default {
   },
 
   effects: {
+    //主机详情
+    *fetchdetail({ payload: { hostId } }, { call, put }) {
+      const response = yield call(hostInfo, hostId);
+      yield put({
+        type: 'getddetail',
+        payload: response.data,
+      });
+    },
+
     *fetchsysalarmlist({ payload: { count } }, { call, put }) {
       const response = mocksystemlist(count);
 
@@ -112,6 +127,12 @@ export default {
   },
 
   reducers: {
+    getddetail(state, action) {
+      return {
+        ...state,
+        hostinfo: action.payload,
+      };
+    },
     getsysalarm(state, action) {
       return {
         ...state,

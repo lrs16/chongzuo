@@ -63,7 +63,12 @@ class Detail extends Component {
         {loading === false && (
           <>
             {radiaovalue === '操作系统' && (
-              <HostDetail data={data} alarmtype={alarmtype} applicationId={applicationId} />
+              <HostDetail
+                data={data}
+                hostId={id}
+                alarmtype={alarmtype}
+                applicationId={applicationId}
+              />
             )}
             {radiaovalue === 'Oracle' && (
               <DatabaseDetail

@@ -29,10 +29,19 @@ class HostDetail extends Component {
 
   componentDidMount() {
     const { count } = this.state;
-    const { applicationId } = this.props;
+    const { applicationId, hostId } = this.props;
+    this.gethostinfo(hostId);
     this.getdatas(count);
     this.getcurrentHistory(applicationId);
   }
+
+  //基本信息
+  gethostinfo = hostId => {
+    this.props.dispatch({
+      type: 'hostdetail/fetchdetail',
+      payload: { hostId },
+    });
+  };
 
   // 当前告警
   getdatas = count => {
@@ -326,7 +335,7 @@ class HostDetail extends Component {
       loadingindicator,
       data,
       alarmtype,
-      hostdetail: { sysalarms, historyalarms, processlist, history, currentHistory },
+      hostdetail: { sysalarms, historyalarms, processlist, history, currentHistory, hostinfo },
     } = this.props;
     const dataSource = sysalarms;
 
@@ -334,15 +343,15 @@ class HostDetail extends Component {
       <>
         <Card style={{ marginBottom: 24, marginTop: '-1px' }}>
           <DescriptionList size="large" title="基本信息">
-            <Description term="名称">{data.name}</Description>
-            <Description term="IP">{data.ip}</Description>
-            <Description term="监控分类">{data.monitorType}</Description>
+            <Description term="名称">{hostinfo.name}</Description>
+            <Description term="IP">{hostinfo.ip}</Description>
+            <Description term="监控分类">{hostinfo.monitorType}</Description>
             <Description term="状态">
-              <Badge status={statusMap[data.status]} text={status[data.status]} />
+              <Badge status={statusMap[hostinfo.status]} text={status[hostinfo.status]} />
             </Description>
-            <Description term="系统版本">{data.systemVersion}</Description>
-            <Description term="系统类型">{data.systemType}</Description>
-            <Description term="机器名">{data.machineName}</Description>
+            <Description term="系统版本">{hostinfo.systemVersion}</Description>
+            <Description term="系统类型">{hostinfo.systemType}</Description>
+            <Description term="机器名">{hostinfo.machineName}</Description>
           </DescriptionList>
         </Card>
         {/* 功能未实现 */}

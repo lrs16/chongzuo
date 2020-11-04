@@ -15,6 +15,13 @@ export async function queryapplication(id) {
   });
 }
 
+//请求主机详情页，主机基本信息/hostMonitor/basic/{hostId}
+export async function hostInfo(hostId) {
+  return request(`/basicMonitor/hostMonitor/basic/${hostId}`, {
+    method: 'GET',
+  });
+}
+
 // 请求主机详情页，监控指标，最近一次 /hostMonitor/currentHistory/{applicationId}
 export async function querycurrentHistory(applicationId) {
   return request(`/basicMonitor/hostMonitor/currentHistory/${applicationId}`, {
