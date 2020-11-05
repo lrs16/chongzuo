@@ -217,6 +217,14 @@ export default {
                       icon: 'cloud-server',
                       component: './Automation/SoftTT/ExeclogView',
                     },
+                    {
+                      path:'/automation/STT/commandconfigurate',
+                      name:'命令配置',
+                      icon:'cloud-server',
+                      component:'./Automation/SoftTT/CommandConfigurate'
+                    },
+               
+                  
                   ],
                 },
               ],

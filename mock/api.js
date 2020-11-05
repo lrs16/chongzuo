@@ -967,6 +967,21 @@ const removeHost = [
   },
 ];
 
+//命令配置的列表
+const configList = [
+  {
+    dataNumber:'1',
+    commandtype:'0',
+    commandName:'ff',
+    commandStatus:'oo',
+    commandOrder:'11',
+    commandRemarks:'45',
+    founder:'opop',
+    creationTime:'4545',
+    updataTime:'7878'
+  }
+]
+
 
 
 export const getFactoryTypes = [
@@ -1119,4 +1134,6 @@ export default {
   'GET /api/strategyAdd': strategyList,
   'GET /api/strategyEnable': strategyList,
   'GET /api/strategyOut': strategyList,
+
+  'GET /api/configList':configList
 };

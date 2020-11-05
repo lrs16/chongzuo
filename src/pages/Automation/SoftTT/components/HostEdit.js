@@ -44,6 +44,7 @@ class HostEdit extends Component {
 
   state = {
     visible: false,
+    value:2
   };
 
   handleopenClick = () => {
@@ -178,16 +179,18 @@ class HostEdit extends Component {
               {getFieldDecorator('hostsZoneId', {
                 rules: [
                   {
+                    required,
                     message: '请输入',
                   },
                 ],
-                initialValue: hostsZoneId,
+                initialValue: hostsZoneId?hostsZoneId:'2',
               })(
                 <Radio.Group>
-                  <Radio value="0">安全接入区</Radio>
-                  <Radio value="1">二区</Radio>
-                  <Radio value="2">三区</Radio>
+                  <Radio value='0'>安全接入区</Radio>
+                  <Radio value='1'>二区</Radio>
+                  <Radio value='2'>三区</Radio>
                 </Radio.Group>,
+              
               )}
             </Form.Item>
 

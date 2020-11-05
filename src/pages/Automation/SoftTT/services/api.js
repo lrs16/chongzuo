@@ -197,3 +197,35 @@ export async function querySecretThief(id) {
     method: 'GET',
   });
 }
+
+//命令配置列表和搜索
+export async function configList(params){
+  return request(`/auto/commandConfig/listPage`,{
+    method: 'POST',
+    body: JSON.stringify(params),
+  });
+}
+//保存接口
+export async function saveCommandlist(params) {
+  return request(`/auto/commandConfig`,{
+    method:'POST',
+    body:JSON.stringify(params),
+  });
+}
+// 更新配置信息
+export async function updateCommand(values) {
+  return request(`/auto/commandConfig`,{
+    method:'PUT',
+    body:JSON.stringify(values),
+  });
+}
+//删除配置信息
+export async function deleteCommand(id){
+  return request(`/auto/commandConfig/${id}`,{
+    method:'DELETE'
+  });
+}
+//编辑通过id查找
+export async function editSearchinfo(id){
+  return request(`/auto/commandConfig/${id}`);
+}

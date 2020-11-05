@@ -193,7 +193,7 @@ class AlarmStrategy extends Component {
         key: 'alarmTitle',
         render: (text, record) => (
           <span>
-            <Link to={`/alarmmanagy/alarmstrategy/strategyaddedit/${record.detailsid}`}>
+            <Link to={`alarmstrategy/strategydetail/:detailsid`}>
               {text}
             </Link>
           </span>
@@ -283,13 +283,13 @@ class AlarmStrategy extends Component {
           >
             <div>
               <Button style={{ marginRight: 10 }}>
-                <Link to={`/alarmmanage/alarmstrategy/strategyaddedit`} onClick={this.strategyAdd}>
+                <Link to={`alarmstrategy/strategyadd`} onClick={this.strategyAdd}>
                   新增
                 </Link>
               </Button>
               <Button type="primary" style={{ marginRight: 10 }} onClick={this.strategyEdit}>
                 <Link
-                  to={`/alarmmanagy/alarmstrategy/strategyaddedit/${
+                  to={`alarmstrategy/strategyedit/${
                     this.state.selectedRows.length ? this.state.selectedRows[0].detailsid : ''
                   }`}
                   onClick={this.gotoPage}

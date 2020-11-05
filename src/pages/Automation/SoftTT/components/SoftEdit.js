@@ -120,19 +120,19 @@ class SoftEdit extends Component {
                   })(<Input placeholder="请输入"></Input>)}
                 </Form.Item>
 
-                <Form.Item label="软件绝对目录">
+                <Form.Item label="绝对目录">
                   {getFieldDecorator('softwareAbsDir', {
                     initialValue: softwareAbsDir,
                   })(<Input placeholder="请输入" />)}
                 </Form.Item>
 
-                <Form.Item label="日志目录路径">
+                <Form.Item label="日志目录">
                   {getFieldDecorator('softwareLogDir', {
                     initialValue: softwareLogDir,
                   })(<Input placeholder="请输入" />)}
                 </Form.Item>
 
-                <Form.Item label="软件使用端口">
+                <Form.Item label="使用端口">
                   {getFieldDecorator('softwarePort', {
                     initialValue: softwarePort,
                   })(<Input placeholder="请输入" />)}

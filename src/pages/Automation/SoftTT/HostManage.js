@@ -67,7 +67,7 @@ class HostManage extends Component {
       queKey: values,
     });
     this.props.dispatch({
-      type: 'hostsoft/search',
+      type: 'hostsoft/fetchhost',
       payload: {
         queKey: values,
         page,
@@ -307,8 +307,8 @@ class HostManage extends Component {
                 <Search placeholder="请输入关键字" onSearch={values => this.handleSearch(values)} />
               </Form>
             </Row>
-            <Row gutter={16}>
-              <Col className="gutter-row" span={12}>
+            {/* <Row gutter={16}>
+              <Col className="gutter-row" span={12}> */}
                 <div>
                   <HostEdit onSumit={this.handleUpdate}>
                     <Button
@@ -320,8 +320,8 @@ class HostManage extends Component {
                     </Button>
                   </HostEdit>
                 </div>
-              </Col>
-
+              {/* </Col> */}
+{/* 
               <Col className="gutter-row" span={12}>
                 <div>
                   <BatchAdd hostId="hostId" onsumitBatch={str => this.handleBatchadd(str)}>
@@ -334,8 +334,8 @@ class HostManage extends Component {
                     </Button>
                   </BatchAdd>
                 </div>
-              </Col>
-            </Row>
+              </Col> */}
+            {/* </Row> */}
             <Table
             columns={columns}
             dataSource={dataSource}
