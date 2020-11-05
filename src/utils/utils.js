@@ -33,15 +33,13 @@ export const getPageQuery = () => parse(window.location.href.split('?')[1]);
 export const getAuthorityFromRouter = (router, configrouter, pathname) => {
   if (pathname === `/`) {
     const redireturl = configrouter[0];
-    const authority = router.filter(obj => {
+    const authority = router.find(obj => {
       return obj.menuUrl == redireturl.redirect;
     });
-    if (authority) return authority[0]?.menuauth;
+    if (authority) return authority?.menuauth;
     return undnefined;
   }
-  const authority = router.filter(obj => {
-    return obj.menuUrl == pathname;
-  });
-  if (authority) return authority[0]?.menuauth;
+  const authority = router.find(({ menuUrl }) => menuUrl && pathRegexp(menuUrl).exec(pathname));
+  if (authority) return authority?.menuauth;
   return undefined;
 };

@@ -517,17 +517,17 @@ export default {
                   name: '菜单管理',
                   component: './SysManage/MenuManage',
                 },
-                // {
-                //   path: '/sysmanage/authoritymanage',
-                //   icon: 'cloud-server',
-                //   name: '角色管理',
-                //   component: './SysManage/Authoritymanage',
-                // },
                 {
                   path: '/sysmanage/deptmanage',
                   icon: 'cluster',
                   name: '组织管理',
                   component: './SysManage/DeptManage',
+                },
+                {
+                  path: '/sysmanage/dropdownvalueset',
+                  icon: 'cluster',
+                  name: '下拉值管理',
+                  component: './SysManage/DropdownValueset',
                 },
                 {
                   //采控管理

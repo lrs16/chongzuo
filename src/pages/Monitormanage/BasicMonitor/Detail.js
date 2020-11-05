@@ -11,7 +11,6 @@ import DatabaseDetail from './components/DatabaseDetail';
 }))
 class Detail extends Component {
   constructor(props) {
-    super(props);
     this.state = {
       radiaovalue: this.props.location.state.radiaokey,
     };
@@ -44,7 +43,7 @@ class Detail extends Component {
       return obj.name === radiaovalue;
     });
     const applicationId = alarmtype[0]?.key;
-
+    console.log(this.props.location.state);
     return (
       <PageHeaderWrapper title="监测详情">
         <Card>
