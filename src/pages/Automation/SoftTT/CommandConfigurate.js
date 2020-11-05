@@ -264,7 +264,7 @@ class CommandConfigurate extends Component {
               type='dashed'
               icon='plus'
             >
-              添加命令配置
+              添加命令
             </Button>
           </CommandAdd>
         

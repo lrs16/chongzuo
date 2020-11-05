@@ -280,7 +280,7 @@ class CommandAdd extends Component {
   }
 }
 CommandAdd.defaultProps = {
-  title:'添加配置命令',
+  title:'添加命令',
   record: {
     id:'',
     commandType:'',
