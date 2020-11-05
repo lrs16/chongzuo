@@ -120,20 +120,18 @@ class Host extends Component {
         dataIndex: 'name',
         key: 'name',
         width: 180,
-        render: (text, record) => (
-          <Link
-            to={{
-              pathname: '/monitormanage/basicmonitor/detail',
-              state: {
-                id: record.id,
-                data: record,
-                radiaokey: '操作系统',
-              },
-            }}
-          >
-            {text}
-          </Link>
-        ),
+        render: (text, record) => {
+          const radiaokey = 'host';
+          return (
+            <Link
+              to={{
+                pathname: `/monitormanage/basicmonitor/${radiaokey}/detail/${record.id}`,
+              }}
+            >
+              {text}
+            </Link>
+          );
+        },
       },
       {
         title: 'IP',

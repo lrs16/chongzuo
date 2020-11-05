@@ -37,7 +37,7 @@ export const getAuthorityFromRouter = (router, configrouter, pathname) => {
       return obj.menuUrl == redireturl.redirect;
     });
     if (authority) return authority?.menuauth;
-    return undnefined;
+    // return undnefined;
   }
   const authority = router.find(({ menuUrl }) => menuUrl && pathRegexp(menuUrl).exec(pathname));
   if (authority) return authority?.menuauth;

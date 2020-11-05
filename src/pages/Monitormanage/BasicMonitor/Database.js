@@ -120,20 +120,18 @@ class Database extends Component {
         dataIndex: 'name',
         key: 'name',
         width: 180,
-        render: (text, record) => (
-          <Link
-            to={{
-              pathname: '/monitormanage/basicmonitor/detail',
-              state: {
-                id: record.id,
-                data: record,
-                radiaokey: 'Oracle',
-              },
-            }}
-          >
-            {text}
-          </Link>
-        ),
+        render: (text, record) => {
+          const radiaokey = 'database';
+          return (
+            <Link
+              to={{
+                pathname: `/monitormanage/basicmonitor/${radiaokey}/detail/${record.id}`,
+              }}
+            >
+              {text}
+            </Link>
+          );
+        },
       },
       {
         title: 'IP',

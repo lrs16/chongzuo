@@ -218,13 +218,11 @@ export default {
                       component: './Automation/SoftTT/ExeclogView',
                     },
                     {
-                      path:'/automation/STT/commandconfigurate',
-                      name:'命令配置',
-                      icon:'cloud-server',
-                      component:'./Automation/SoftTT/CommandConfigurate'
+                      path: '/automation/STT/commandconfigurate',
+                      name: '命令配置',
+                      icon: 'cloud-server',
+                      component: './Automation/SoftTT/CommandConfigurate',
                     },
-               
-                  
                   ],
                 },
               ],
@@ -324,15 +322,15 @@ export default {
                       component: './Monitormanage/BasicMonitor/Host',
                     },
                     {
-                      path: '/monitormanage/basicmonitor/detail',
-                      name: '监测详情',
-                      hideInMenu: true,
-                      component: './Monitormanage/BasicMonitor/Detail',
-                    },
-                    {
                       path: '/monitormanage/basicmonitor/database',
                       name: '数据库监测',
                       component: './Monitormanage/BasicMonitor/Database',
+                    },
+                    {
+                      path: '/monitormanage/basicmonitor/:type/detail/:id',
+                      name: '监测详情',
+                      hideInMenu: true,
+                      component: './Monitormanage/BasicMonitor/Detail',
                     },
                   ],
                 },

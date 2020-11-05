@@ -1,9 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Card, Radio, Badge, Spin } from 'antd';
+import { Card, Row, Col, Radio, Badge, Spin, Icon, Button } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import HostDetail from './components/HostDetail';
 import DatabaseDetail from './components/DatabaseDetail';
+
+const radiotextmaps = new Map([
+  ['host', '操作系统'],
+  ['database', 'Oracle'],
+]);
 
 @connect(({ basicmonitorlist, loading }) => ({
   basicmonitorlist,
@@ -11,13 +16,16 @@ import DatabaseDetail from './components/DatabaseDetail';
 }))
 class Detail extends Component {
   constructor(props) {
+    super(props);
+    const { params } = this.props.computedMatch;
     this.state = {
-      radiaovalue: this.props.location.state.radiaokey,
+      radiaovalue: radiotextmaps.get(params.type),
+      id: params.id,
     };
   }
 
   componentDidMount() {
-    const { id } = this.props.location.state;
+    const { id } = this.state;
     this.props.dispatch({
       type: 'basicmonitorlist/fetchradiogroups',
       payload: {
@@ -32,9 +40,14 @@ class Detail extends Component {
     });
   };
 
+  GoHistory = () => {
+    //window.location.href = '/'
+    console.log(window.history);
+    window.history.back(-1);
+  };
+
   render() {
-    const { radiaovalue } = this.state;
-    const { id, data } = this.props.location.state;
+    const { radiaovalue, id } = this.state;
     const {
       loading,
       basicmonitorlist: { radiogroups },
@@ -43,39 +56,35 @@ class Detail extends Component {
       return obj.name === radiaovalue;
     });
     const applicationId = alarmtype[0]?.key;
-    console.log(this.props.location.state);
     return (
       <PageHeaderWrapper title="监测详情">
         <Card>
-          <Spin spinning={loading}>
-            <Radio.Group value={radiaovalue} buttonStyle="solid" onChange={this.onChange}>
-              {radiogroups.map(({ key, alertNumber, name }) => [
-                <Radio.Button value={name} key={key}>
-                  <Badge count={alertNumber} style={{ zIndex: '10' }}>
-                    <span style={{ lineHeight: '30px' }}>{name}</span>
-                  </Badge>
-                </Radio.Button>,
-              ])}
-            </Radio.Group>
-          </Spin>
+          <Row gutter={24}>
+            <Col span={20}>
+              <Spin spinning={loading}>
+                <Radio.Group value={radiaovalue} buttonStyle="solid" onChange={this.onChange}>
+                  {radiogroups.map(({ key, alertNumber, name }) => [
+                    <Radio.Button value={name} key={key}>
+                      <Badge count={alertNumber} style={{ zIndex: '10' }}>
+                        <span style={{ lineHeight: '30px' }}>{name}</span>
+                      </Badge>
+                    </Radio.Button>,
+                  ])}
+                </Radio.Group>
+              </Spin>
+            </Col>
+            <Col span={4} style={{ textAlign: 'right' }}>
+              <Button shape="circle" icon="close" onChange={this.GoHistory} />
+            </Col>
+          </Row>
         </Card>
         {loading === false && (
           <>
             {radiaovalue === '操作系统' && (
-              <HostDetail
-                data={data}
-                hostId={id}
-                alarmtype={alarmtype}
-                applicationId={applicationId}
-              />
+              <HostDetail hostId={id} alarmtype={alarmtype} applicationId={applicationId} />
             )}
             {radiaovalue === 'Oracle' && (
-              <DatabaseDetail
-                data={data}
-                databaseId={id}
-                alarmtype={alarmtype}
-                applicationId={applicationId}
-              />
+              <DatabaseDetail databaseId={id} alarmtype={alarmtype} applicationId={applicationId} />
             )}
           </>
         )}
