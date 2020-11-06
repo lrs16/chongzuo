@@ -30,7 +30,7 @@ class DatabaseDetail extends Component {
     current: 1,
     pageSize: 2,
     usercurrent: 1,
-    userpageSize: 50,
+    userpageSize: 5,
   };
 
   componentDidMount() {
@@ -99,6 +99,17 @@ class DatabaseDetail extends Component {
       payload: { databaseId, current, pageSize },
     });
   };
+  //数据库实例，翻页
+  changeinstancePage = (current, pageSize) => {
+    const { databaseId } = this.props;
+    this.getinstance(databaseId, current, pageSize);
+  };
+
+  //数据库实例，改变pagesSize
+  changeinstancepageSize = (current, pageSize) => {
+    const { databaseId } = this.props;
+    this.getinstance(databaseId, current, pageSize);
+  };
 
   //用户状态
   getuser = (databaseId, current, pageSize) => {
@@ -106,6 +117,17 @@ class DatabaseDetail extends Component {
       type: 'databasedetail/fetchuser',
       payload: { databaseId, current, pageSize },
     });
+  };
+  //用户状态，翻页
+  changeuserPage = (current, pageSize) => {
+    const { databaseId } = this.props;
+    this.getuser(databaseId, current, pageSize);
+  };
+
+  //用户状态，改变pagesSize
+  changeuserpageSize = (current, pageSize) => {
+    const { databaseId } = this.props;
+    this.getuser(databaseId, current, pageSize);
   };
 
   //最近一次
@@ -405,9 +427,10 @@ class DatabaseDetail extends Component {
     //     render: text => <span>{numeral(text).format('0,0')}Mbps</span>,
     //   },
     // ];
-    const { dateString } = this.state;
+    const { dateString, usercurrent, userpageSize } = this.state;
     //  const { id, data, radiaokey } = this.props.location.state;
     const {
+      databaseId,
       loading,
       loadtablespace,
       databasedetail: {
@@ -421,8 +444,7 @@ class DatabaseDetail extends Component {
         userdata,
       },
     } = this.props;
-    const instancedatas = instancedata.data;
-    const userdatas = userdata.data;
+
     return (
       <>
         <Card style={{ marginBottom: 24, marginTop: '-1px' }}>
@@ -521,8 +543,12 @@ class DatabaseDetail extends Component {
               )}
               <DatabaseChart
                 cachedata={cachedata}
-                instancedatas={instancedatas}
-                userdatas={userdatas}
+                instancedata={instancedata}
+                userdata={userdata}
+                oninsPageChange={this.changeinstancePage}
+                oninsSizeChange={this.changeinstancepageSize}
+                onuserPageChange={this.changeuserPage}
+                onuserSizeChange={this.changeuserpageSize}
               />
             </TabPane>
             {/* 功能未实现 */}

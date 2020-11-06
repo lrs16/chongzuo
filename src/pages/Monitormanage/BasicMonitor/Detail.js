@@ -40,11 +40,9 @@ class Detail extends Component {
     });
   };
 
-  GoHistory = () => {
-    //window.location.href = '/'
-    console.log(window.history);
+  GoHistory() {
     window.history.back(-1);
-  };
+  }
 
   render() {
     const { radiaovalue, id } = this.state;
@@ -74,7 +72,7 @@ class Detail extends Component {
               </Spin>
             </Col>
             <Col span={4} style={{ textAlign: 'right' }}>
-              <Button shape="circle" icon="close" onChange={this.GoHistory} />
+              <Button shape="circle" icon="close" onClick={this.GoHistory} />
             </Col>
           </Row>
         </Card>
