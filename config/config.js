@@ -360,12 +360,12 @@ export default {
                       path: '/alarmmanage/measuralarm',
                       redirect: '/alarmmanage/measuralarm/details',
                     },
-                    // {
-                    //   path: '/alarmmanage/monitor',
-                    //   name: '告警监控台',
-                    //   icon: 'cloud-server',
-                    //   component: './Alarmmanage',
-                    // },
+                    {
+                      path: '/alarmmanage/measuralarm/alarmoverview',
+                      name: '告警概览',
+                      icon: 'cloud-server',
+                      component: './Alarmmanage/MeasurAlarm/AlarmOverview',
+                    },
                     {
                       path: '/alarmmanage/measuralarm/details',
                       name: '告警明细信息',
