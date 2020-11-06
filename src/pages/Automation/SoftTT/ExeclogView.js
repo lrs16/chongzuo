@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
-import { Drawer, Table, Col, Row, Button } from 'antd';
+import { Drawer, Table, Col, Row, Button, Card } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import creatHistory from 'history/createHashHistory'; // 返回上一页
 const history = creatHistory(); // 返回上一页
@@ -283,35 +283,39 @@ class ExecLogView extends Component {
       onChange: page => this.changePage(page),
     };
     return (
-      <PageHeaderWrapper title="日志详情" style={{ backgroundColor: '#fff' }}>
-        <Row style={{ marginBottom: 10, textAlign: 'right' }}>
-          <Button onClick={this.goBackPage}>《 返回列表</Button>
-        </Row>
-        <Table
-          dataSource={dataSource}
-          columns={columns}
-          rowKey={record => record.id}
-          scroll={{ x: 1700 }}
-          table-layout="fixed"
-          pagination={pagination}
-          loading={loading}
-        />
-        <Drawer
-          onClose={this.onClose}
-          visible={this.state.visible}
-          title="日志详情"
-          width={1000}
-          placement="right"
-          closable={false}
-        >
-          <Row>
-            {Object.keys(DescriptionItemList1).map((key, index) => [
-              <Col span={12} key={index}>
-                <DescriptionItem title={key} content={DescriptionItemList1[key]} />
-              </Col>,
-            ])}
+      <PageHeaderWrapper title="日志详情">
+        <Card>
+          <Row style={{ marginBottom: 10, textAlign: 'right' }}>
+            <Button onClick={this.goBackPage}>《 返回列表</Button>
           </Row>
-        </Drawer>
+
+          <Table
+            dataSource={dataSource}
+            columns={columns}
+            rowKey={record => record.id}
+            scroll={{ x: 1700 }}
+            table-layout="fixed"
+            pagination={pagination}
+            loading={loading}
+          />
+
+          <Drawer
+            onClose={this.onClose}
+            visible={this.state.visible}
+            title="日志详情"
+            width={1000}
+            placement="right"
+            closable={false}
+          >
+            <Row>
+              {Object.keys(DescriptionItemList1).map((key, index) => [
+                <Col span={12} key={index}>
+                  <DescriptionItem title={key} content={DescriptionItemList1[key]} />
+                </Col>,
+              ])}
+            </Row>
+          </Drawer>
+        </Card>
       </PageHeaderWrapper>
     );
   }

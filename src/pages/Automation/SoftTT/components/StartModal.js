@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
-import { Form, Input, Modal, AutoComplete, Select } from 'antd';
+import { Form, Input, Modal, AutoComplete, Select, TreeSelect } from 'antd';
 import { connect } from 'dva';
-const { Option, OptGroup } = Select;
+// const { Option, OptGroup } = Select;
+const { Option } = AutoComplete;
+const { TreeNode } = TreeSelect;
 
 const formItemLayout = {
   labelCol: {
@@ -27,23 +29,114 @@ const withClick = (element, handleClick = () => { }) => {
 class StartModal extends Component {
   state = {
     visible: false,
-    ipDropdownVal: ['172.16.4.211', '10.172.210.13', '10.172.208.13'], // 主机IP下拉值
-    portDropdownVal: ['22', '3000', '8080', '8000'], // 主机端口下拉值
-    userNameDropdownVal: ['user', 'root', 'admin', 'Administrator', 'webApp'], // 主机账号下拉值
+    ipDropdownVal: [],
+    userNameDropdownVal: [],
+    portDropdownVal: [], // 主机端口下拉值
+    hostsSshPassword: '',
+    queKey: '',
+    value: undefined,
   };
+
+  toTree = data => {
+    const result = [];
+    if (!Array.isArray(data)) {
+      return result;
+    }
+    const map = {};
+    data.forEach(item => {
+      map[item.weight] = item;
+    });
+    data.forEach(item => {
+      const parent = map[item.pid];
+      if (parent) {
+        (parent.children || (parent.children = [])).push(item);
+      } else {
+        result.push(item);
+      }
+    });
+    return result;
+  };
+
+  renderTreeNodes = data =>
+    data.map(item => {
+      if (item.children) {
+        return (
+          <TreeNode value={item.name} title={item.name} key={item.id} dataRef={item} >
+            {this.renderTreeNodes(item.children)}
+          </TreeNode>
+        );
+      }
+      return <TreeNode key={item.id} value={item.name} title={item.name} {...item} />;
+    });
+
+  onChange = value => {
+    this.setState({ value });
+  };
+
+  // onSelect = selectedKeys => {
+  //   console.log(selectedKeys);
+  // }
 
   handleopenClick = () => {
     this.setState({
       visible: true,
     });
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'softexetute/fetchComConfigTree',
+    });
+    const { hostsIp } = this.props.softexetute.treehostdata;
+    if (hostsIp) {
+      return dispatch({
+        type: 'softexetute/getCascadeInfoLists',
+        payload: { hostIp: hostsIp },
+      }).then(res => {
+        const userNameDropdownVal = res.user.map(item => {
+          return item.val;
+        })
+        const userNameDropdownValnoTrim = userNameDropdownVal.filter(item => {
+          return item && item.trim();
+        })
+
+        const portDropdownVal = res.port.map(item => {
+          return item.val;
+        })
+
+        const portDropdownValtoString = portDropdownVal.map(String);
+
+        this.setState({
+          ipDropdownVal: res.hosts,
+          userNameDropdownVal: userNameDropdownValnoTrim,
+          hostsSshPassword: res.pass,
+          portDropdownVal: portDropdownValtoString,
+        });
+      })
+    }
   };
 
   handleOk = () => {
     this.props.form.validateFields((err, values) => {
-      // console.log(values);
+      const passWord = this.state.hostsSshPassword;
       if (!err) {
         this.handleCancel();
-        this.props.onSumit(values);
+        this.setState({ value: undefined });
+        const { dispatch } = this.props;
+        const hostsSshPort = parseInt(values.hostsSshPort);
+        const str = values.command.toString();
+        const command = str.replace(/,/g, ";");
+        const { hostsIp, hostsSshUsername } = values;
+        dispatch({ // 执行ssh命令接口
+          type: 'softexetute/getExecCommand',
+          payload: {
+            passWord,
+            hostIp: hostsIp,
+            port: hostsSshPort,
+            userName: hostsSshUsername,
+            command: command
+          },
+        }).then(res => {
+          this.props.onSumit({ values, passWord, commitlist: res.msg });
+        });
         this.props.form.resetFields();
       }
     });
@@ -75,13 +168,20 @@ class StartModal extends Component {
   };
 
   render() {
-    const { visible, ipDropdownVal, portDropdownVal, userNameDropdownVal, } = this.state;
-    const { children, title, softexetute } = this.props;
+    const { visible, ipDropdownVal, portDropdownVal, userNameDropdownVal } = this.state;
+    const {
+      softexetute,
+      children,
+      title,
+    } = this.props;
 
+    const ipDropdownValChildren = ipDropdownVal.map(item => <Option key={item.key}>{item.val}</Option>);
     // Form双向绑定
     const { getFieldDecorator } = this.props.form;
     const required = true;
     const { hostsIp } = softexetute.treehostdata || this.props.record;
+
+    const treeData = this.toTree(softexetute.comconfigtree);
 
     return (
       <>
@@ -105,12 +205,9 @@ class StartModal extends Component {
                 ],
 
               })(
-                <AutoComplete
-                  dataSource={ipDropdownVal}
-                  onSearch={this.onSearchIp}
-                  placeholder="请输入主机IP.."
-                  allowClear
-                />,
+                <AutoComplete onSearch={this.onSearchIp} placeholder="请输入主机IP.." allowClear>
+                  {ipDropdownValChildren}
+                </AutoComplete>
               )}
             </Form.Item>
             <Form.Item label="主机端口">
@@ -147,18 +244,9 @@ class StartModal extends Component {
                 />,
               )}
             </Form.Item>
-            <Form.Item label="主机密码">
-              {getFieldDecorator('hostsSshPassword', {
-                rules: [
-                  {
-                    required,
-                    message: '主机密码不能为空',
-                  },
-                ],
-              })(<Input type="password" />)}
-            </Form.Item>
             <Form.Item label="执行命令">
               {getFieldDecorator('command', {
+                initialValue: this.state.value,
                 rules: [
                   {
                     required,
@@ -166,19 +254,22 @@ class StartModal extends Component {
                   },
                 ],
               })(
-                <Select 
-                   mode="tags" 
-                   style={{ width: '100%' }} 
-                   placeholder="请输入执行命令.." 
-                >
-                  <OptGroup label="Manager">
-                    <Option value="jack">Jack</Option>
-                    <Option value="lucy">Lucy</Option>
-                  </OptGroup>
-                  <OptGroup label="Engineer">
-                    <Option value="Yiminghe">yiminghe</Option>
-                  </OptGroup>
-                </Select>
+                <>
+                  {/* {treeData.length > 0 && ( */}
+                  <TreeSelect
+                    defaultExpandAll
+                    value={this.state.value}
+                    style={{ width: '100%' }}
+                    dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+                    placeholder="请选择"
+                    onChange={this.onChange}
+                    // onSelect={this.onSelect}
+                    multiple
+                  >
+                    {treeData && this.renderTreeNodes(treeData)}
+                  </TreeSelect>
+                  {/* )} */}
+                </>
               )}
             </Form.Item>
           </Form>

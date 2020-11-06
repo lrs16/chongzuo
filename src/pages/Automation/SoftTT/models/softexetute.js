@@ -16,8 +16,10 @@ import {
   editeSshInfoList,// SSh信息表格编辑
   addSshInfoList,// SSh信息表格添加
   removeSshInfoList,
-  queryCheckSshLink, //检测链接
-  querySecretThief, //查看密码
+  queryCheckSshLink, // 检测链接
+  querySecretThief, // 查看密码
+  queryCascadeInfo, // 级联-主机Ip用户名端口命令等下拉列表
+  queryComConfigTree, // 命令树形信息
 } from '../services/api';
 
 export default {
@@ -31,6 +33,7 @@ export default {
     treehostdata: [],
     data: [],
     sshinfodata: [], // SSh信息表格
+    comconfigtree: [], // 命令树形信息
   },
 
   effects: {
@@ -98,10 +101,18 @@ export default {
       });
     },
 
-    *fetchHostTree({ payload }, { call, put }) {
+    *fetchHostTree({ payload }, { call, put }) { // 主机树杈
       const response = yield call(queryHostTree, payload);
       yield put({
         type: 'show',
+        payload: response,
+      });
+    },
+
+    *fetchComConfigTree({ payload }, { call, put }) { // 命令信息树杈
+      const response = yield call(queryComConfigTree, payload);
+      yield put({
+        type: 'comconfigtree',
         payload: response,
       });
     },
@@ -149,6 +160,10 @@ export default {
     },
     *getSecretThief({ payload: { id } }, { call }) {
       return yield call(querySecretThief, id);
+    },
+
+    *getCascadeInfoLists({ payload: { hostIp } }, { call }) {
+      return yield call(queryCascadeInfo, hostIp);
     },
 
   },
@@ -200,6 +215,13 @@ export default {
       return {
         ...state,
         ...payload,
+      };
+    },
+
+    comconfigtree(state, action) {
+      return {
+        ...state,
+        comconfigtree: action.payload.data,
       };
     },
 

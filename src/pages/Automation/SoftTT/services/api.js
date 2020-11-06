@@ -191,6 +191,7 @@ export async function queryCheckSshLink(id) {
     method: 'GET',
   });
 }
+
 // /auto/hostsHandle/{id}/secretThief 查看密码信息 - 暂时管理员可查看
 export async function querySecretThief(id) {
   return request(`/auto/hostsHandle/${id}/secretThief`, {
@@ -228,4 +229,18 @@ export async function deleteCommand(id){
 //编辑通过id查找
 export async function editSearchinfo(id){
   return request(`/auto/commandConfig/${id}`);
+}
+// /auto/hostsHandle/cascade/info/{hostIp} 级联-主机Ip用户名端口命令等下拉列表
+export async function queryCascadeInfo(hostIp) {
+  return request(`/auto/hostsHandle/cascade/info/${hostIp}`, {
+    method: 'GET',
+  });
+}
+
+// 请求命令树形信息 /auto/commandConfig/tree/command/  mxj
+export async function queryComConfigTree(params) {
+  return request(`/auto/commandConfig/tree/command/`, {
+    method: 'GET',
+    body: JSON.stringify(params),
+  });
 }

@@ -2,13 +2,14 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
 import Link from 'umi/link';
-// import moment from 'moment';
-import { Card, Table, Divider, Form, Row, Col, message, Tabs } from 'antd';
+import moment from 'moment';
+import { Card, Table, Divider, Form, Row, Col, message, Tabs, Input, Button } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import StartModal from './components/StartModal';
 import SshconfigModal from './components/SshconfigModal';
 import HostTree from '@/components/HostTree';
-
+const { TabPane } = Tabs;
+const { TextArea } = Input;
 @connect(({ softexetute, loading }) => ({
   softexetute,
   loading: loading.models.softexetute,
@@ -16,6 +17,7 @@ import HostTree from '@/components/HostTree';
 class SoftExetute extends Component {
   constructor(props) {
     super(props);
+    this.myRef = React.createRef();
     this.newTabIndex = 0;
     const panes = [];
     this.state = {
@@ -23,9 +25,70 @@ class SoftExetute extends Component {
       pageSize: 10,
       queKey: '',
       hostId: '',
+      // tab标签
       activeKey: '',
       panes,
+      inputValue: '',
+      // 文本框内容
+      // textAreaValue: "aa"+ '\n'+ "bb"+"cc",
+      textAreaValue: [],
+      textAreaVisible: false,
     };
+  }
+
+  // 输入框输入的value值
+  handleInputValue = e => {
+    this.setState({ inputValue: e.target.value });
+  };
+
+  // 点击确认按钮
+  handleSureSendData = () => {
+    this.setState({
+      inputValue: '',
+    });
+    // 点击确认向后台发送数据  1.输入的值 2.存储的值（ip，端口，用户名，密码）
+    const { panes, activeKey } = this.state;
+    const sametype = panes.filter(obj => {
+      return obj.key === activeKey;
+    });
+    const { hostsIp, hostsSshUsername, hostsSshPort, passWord } = sametype[0];
+    const command = this.state.inputValue;
+    const { dispatch } = this.props;
+    return dispatch({
+      type: 'softexetute/getExecCommand',
+      payload: {
+        passWord: passWord,
+        hostIp: hostsIp,
+        port: hostsSshPort,
+        userName: hostsSshUsername,
+        command,
+      },
+    }).then(res => {
+      const wordStr = ([] = res.msg.split('\n'));
+      const strContent = wordStr.map((item, index) => {
+        return (
+          <p key={index} style={{ marginBottom: 0 }}>
+            {item}
+          </p>
+        );
+      });
+      const title = hostsIp + `-` + hostsSshUsername;
+
+      const sametypes = panes.filter(obj => {
+        return obj.key === title;
+      });
+
+      if (sametypes.length >= 1) {
+        sametypes[0].content = strContent;
+        this.setState({ title });
+      }
+    });
+  };
+
+  handleEnterKey(e) {
+    if (e.nativeEvent.keyCode === 13) {
+      this.handleSureSendData();
+    }
   }
 
   // tabs标签的一系列操作 onChange  onEdit add remove
@@ -37,41 +100,42 @@ class SoftExetute extends Component {
     this[action](targetKey);
   };
 
-  add = (values) => {
-    console.log(values,'子组件的数据')
-    const { hostsIp, hostsSshUsername, hostsSshPort, hostsSshPassword } = values;
-    // const wordStr = ([] = commitlist.msg.split('\n'));
-    // const strContent = wordStr.map((item, index) => {
-    //   return (
-    //     <p key={index} style={{ marginBottom: 0 }}>
-    //       {item}
-    //     </p>
-    //   );
-    // });
+  add = (formValues) => {
+    const hostsSshPort = parseInt(formValues.values.hostsSshPort); // 端口
+    const { passWord, commitlist } = formValues; // 密码, 命令resMsg
+    const { hostsIp, hostsSshUsername } = formValues.values; // ip, 用户名
+    const wordStr = ([] = commitlist.split('\n'));
+    const strContent = wordStr.map((item, index) => {
+      return (
+        <p key={index} style={{ marginBottom: 0 }}>
+          {item}
+        </p>
+      );
+    });
 
-    // const { panes } = this.state;
-    // const title = hostsIp + `-` + hostsSshUsername;
+    const { panes } = this.state;
+    const title = hostsIp + `-` + hostsSshUsername;
 
-    // const sametype = panes.filter(obj => {
-    //   return obj.key === title;
-    // });
+    const sametype = panes.filter(obj => {
+      return obj.key === title;
+    });
 
-    // if (sametype.length >= 1) {
-    //   sametype[0].content = strContent;
-    //   this.setState({ title });
-    // }
-    // if (sametype.length < 1) {
-    //   panes.push({
-    //     title: title,
-    //     content: strContent,
-    //     key: title,
-    //     hostsIp,
-    //     hostsSshUsername,
-    //     hostsSshPort,
-    //     hostsSshPassword,
-    //   });
-    //   this.setState({ panes, activeKey: title });
-    // }
+    if (sametype.length >= 1) {
+      sametype[0].content = strContent;
+      this.setState({ activeKey: title });
+    }
+    if (sametype.length < 1) {
+      panes.push({
+        title: title,
+        content: strContent,
+        key: title,
+        hostsIp,
+        hostsSshUsername,
+        hostsSshPort,
+        passWord,
+      });
+      this.setState({ panes, activeKey: title });
+    }
   };
 
   remove = targetKey => {
@@ -158,7 +222,15 @@ class SoftExetute extends Component {
     }).then(res => {
       setTimeout(() => {
         if (res.state) {
-          message.success("命令已执行" + "\n" + res.msg);
+          const { textAreaValue } = this.state;
+          const resMsg = "命令已执行" + '\xa0' + res.msg;
+          const datatime = moment().format('YYYY-MM-DD HH:mm:ss') + '\xa0';
+          const infoList = datatime + resMsg;
+          textAreaValue.push(infoList);
+          const item = textAreaValue.map(item => {
+            return item;
+          })
+          this.setState({ textAreaVisible: true, textAreaValue });
         } else {
           message.error(res.msg);
         }
@@ -181,7 +253,12 @@ class SoftExetute extends Component {
     }).then(res => {
       setTimeout(() => {
         if (res.state) {
-          message.success("命令已执行" + "\n" + res.msg);
+          const { textAreaValue } = this.state;
+          const resMsg = "命令已执行" + '\xa0' + res.msg;
+          const datatime = moment().format('YYYY-MM-DD HH:mm:ss') + '\xa0';
+          const infoList = datatime + resMsg;
+          textAreaValue.push(infoList);
+          this.setState({ textAreaVisible: true, textAreaValue });
         } else {
           message.error(res.msg);
         }
@@ -203,7 +280,12 @@ class SoftExetute extends Component {
     }).then(res => {
       setTimeout(() => {
         if (res.state) {
-          message.success("命令已执行" + "\n" + res.msg);
+          const { textAreaValue } = this.state;
+          const resMsg = "命令已执行" + '\xa0' + res.msg;
+          const datatime = moment().format('YYYY-MM-DD HH:mm:ss') + '\xa0';
+          const infoList = datatime + resMsg;
+          textAreaValue.push(infoList);
+          this.setState({ textAreaVisible: true, textAreaValue });
         } else {
           message.error(res.msg);
         }
@@ -300,8 +382,8 @@ class SoftExetute extends Component {
               title="执行命令"
               record={record}
               hostId={this.state.hostId}
-              onSumit={(values) => {
-                this.add(values);
+              onSumit={formValues => {
+                this.add(formValues);
               }}
             >
               <a type="link">执行命令</a>
@@ -386,8 +468,10 @@ class SoftExetute extends Component {
                         <Col span={22}>
                           <Input
                             type="text"
+                            ref={this.myRef}
+                            value={this.state.inputValue}
                             onChange={this.handleInputValue}
-                            // onKeyDown={e => this.handleEnterKey(e)}
+                            onKeyDown={e => this.handleEnterKey(e)}
                             placeholder="请输入..."
                             size="large"
                           />
@@ -396,7 +480,7 @@ class SoftExetute extends Component {
                           <Button
                             type="primary"
                             size="large"
-                            // onClick={this.handleSureSendData}
+                            onClick={this.handleSureSendData}
                             style={{ marginLeft: 10 }}
                           >
                             确定
@@ -406,6 +490,10 @@ class SoftExetute extends Component {
                     </TabPane>
                   ))}
                 </Tabs>
+                {
+                  this.state.textAreaVisible === true ? <TextArea rows={4} value={this.state.textAreaValue.join('\n')} /> : ''
+                }
+                {/* <TextArea rows={4} value={this.state.textAreaValue}/> */}
               </div>
             </Card>
           </Col>
