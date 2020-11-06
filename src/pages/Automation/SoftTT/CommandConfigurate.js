@@ -161,13 +161,15 @@ class CommandConfigurate extends Component {
         title:'命令名称',
         dataIndex:'commandName',
         key:'commandName',
-        width:100
+        width:100,
+        ellipsis: true
       },
       {
         title:'命令源码',
         dataIndex:'commandSrc',
         key:'commandSrc',
-        width:100
+        width:100,
+        ellipsis: true
       },
       {
         title:'命令状态',
