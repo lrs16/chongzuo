@@ -23,6 +23,12 @@ const { TabPane } = Tabs;
   loading: loading.models.maintenanceplan,
 }))
 class MaintenancePlan extends Component {
+  constructor(props){
+    super(props);
+    this.state={
+      pagetitle : this.props.route.name,
+    };
+  }
   state = {
     current: 1,
     pageSize: 1,
@@ -117,6 +123,7 @@ class MaintenancePlan extends Component {
   };
 
   render() {
+    const {pagetitle} = this.state;
     const formItemLayout = {
       labelCol: {
         xs: { span: 20 },
@@ -205,7 +212,7 @@ class MaintenancePlan extends Component {
       },
     ];
     return (
-      <PageHeaderWrapper title="维护计划">
+      <PageHeaderWrapper title={pagetitle}>
         <Card>
           <Form
             onSubmit={this.handleSearch}
@@ -231,7 +238,7 @@ class MaintenancePlan extends Component {
                 </Form.Item>
               </Col>
           
-              <Col pan={6} style={{ textAlign: 'right' }}>
+              <Col span={8}>
                 <Button type="primary" htmlType="submit" >
                   查询
                 </Button>

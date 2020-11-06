@@ -1,5 +1,16 @@
 import React, { Component } from 'react';
-import { Card, Tabs, Form, Table, Message, Radio, Button, Input, message } from 'antd';
+import { Card,
+         Tabs,
+         Form, 
+         Table, 
+         Message, 
+         Radio, 
+         Button, 
+         Input, 
+         message,
+         Row,
+         Col
+  } from 'antd';
 import { connect } from 'dva';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import CurrentalarmDetail from './components/CurrentalarmDetail';
@@ -15,6 +26,13 @@ const { Search } = Input;
   loading: loading.models.currentalarm,
 }))
 class CurrentAlarm extends Component {
+  constructor(props) {
+    super(props);
+      this.state = {
+        pagetitle:this.props.route.name,
+      };
+    }
+  
   state = {
     current: 1,
     pageSize: 3,
@@ -469,7 +487,7 @@ class CurrentAlarm extends Component {
     };
 
     return (
-      <PageHeaderWrapper title="当前告警">
+      <PageHeaderWrapper title={this.state.pagetitle}>
         <Card>
           <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
             <span style={{ fontWeight: 500, fontSize: 20 }}>告警实时情况</span>
@@ -626,35 +644,37 @@ class CurrentAlarm extends Component {
         </Card>
 
         <Card>
-          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <div>
-              <Button type="primary" style={{ marginRight: 8 }} onClick={this.confirmWarning}>
+          <Row>
+
+            <Col span={12}>
+              <Button type="primary" style={{marginRight:'8px'}} onClick={this.confirmWarning}>
                 警告确认
               </Button>
-              <Button style={{ marginRight: 8 }} onClick={this.cancelConfirmation}>
+              <Button style={{marginRight:'8px'}} onClick={this.cancelConfirmation}>
                 取消确认
               </Button>
-              <Button style={{ borderColor: 'yellow', marginRight: 8 }} onClick={this.handleClose}>
+              <Button type="link" style={{ borderColor: 'yellow',marginRight:'8px'}} onClick={this.handleClose}>
                 关闭
               </Button>
               {/* <Button onClick={this.exportExcel}>导出</Button> */}
-              <Button>导出</Button>
-            </div>
+              <Button >导出</Button>
+            </Col>
 
-            <div>
+            <Col span={8}>
               <Radio.Group defaultValue="a">
                 <Radio.Button value="a">告警标题</Radio.Button>
                 <Radio.Button value="b">设备名称</Radio.Button>
                 <Radio.Button value="c">IP</Radio.Button>
               </Radio.Group>
-            </div>
+            </Col>
 
-            <div>
-              <Form style={{ float: 'right', width: '150%' }}>
+            <Col span={4}>
+              <Form>
                 <Search placeholder="请输入关键字" />
               </Form>
-            </div>
-          </div>
+            </Col>
+
+          </Row>
 
           <Tabs>
             <TabPane tab="tab1" key="1">
@@ -666,14 +686,16 @@ class CurrentAlarm extends Component {
                 rowSelection={rowSelection}
                 rowKey={record => record.id}
               ></Table>
+            
             </TabPane>
+         
+            {/* <TabPane tab="tab2" key="2">
+              <Table></Table>
+            </TabPane>
+            <TabPane tab="tab3" key="3">
+              <Table></Table>
+            </TabPane> */}
           </Tabs>
-          <TabPane tab="tab2" key="2">
-            <Table></Table>
-          </TabPane>
-          <TabPane tab="tab3" key="3">
-            <Table></Table>
-          </TabPane>
         </Card>
       </PageHeaderWrapper>
     );

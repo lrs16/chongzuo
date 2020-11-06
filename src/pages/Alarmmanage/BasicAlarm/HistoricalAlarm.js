@@ -499,6 +499,10 @@ class HistoricalAlarm extends Component {
                   收起
                 </span>
               </Col>
+
+              <Col span={5}>
+                <Button>导出</Button>
+              </Col>
           
             </Row>
 
