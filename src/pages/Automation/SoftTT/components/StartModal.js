@@ -4,6 +4,7 @@ import { connect } from 'dva';
 // const { Option, OptGroup } = Select;
 const { Option } = AutoComplete;
 const { TreeNode } = TreeSelect;
+// const { SHOW_PARENT } = TreeSelect;
 
 const formItemLayout = {
   labelCol: {
@@ -57,7 +58,7 @@ class StartModal extends Component {
     return result;
   };
 
-  renderTreeNodes = data =>
+  renderTreeNodes = data => 
     data.map(item => {
       if (item.children) {
         return (
@@ -68,14 +69,15 @@ class StartModal extends Component {
       }
       return <TreeNode key={item.id} value={item.name} title={item.name} {...item} />;
     });
+    
 
   onChange = value => {
     this.setState({ value });
   };
 
-  // onSelect = selectedKeys => {
-  //   console.log(selectedKeys);
-  // }
+  onSelect = selectedKeys => {
+    console.log(selectedKeys);
+  }
 
   handleopenClick = () => {
     this.setState({
@@ -108,7 +110,7 @@ class StartModal extends Component {
           ipDropdownVal: res.hosts,
           userNameDropdownVal: userNameDropdownValnoTrim,
           hostsSshPassword: res.pass,
-          portDropdownVal: portDropdownValtoString,
+          portDropdownVal: portDropdownValtoString[0],
         });
       })
     }
@@ -117,11 +119,11 @@ class StartModal extends Component {
   handleOk = () => {
     this.props.form.validateFields((err, values) => {
       const passWord = this.state.hostsSshPassword;
+      // const hostsSshPort = parseInt(this.state.portDropdownVal);
       if (!err) {
         this.handleCancel();
-        this.setState({ value: undefined });
+        // this.setState({ value: undefined });
         const { dispatch } = this.props;
-        const hostsSshPort = parseInt(values.hostsSshPort);
         const str = values.command.toString();
         const command = str.replace(/,/g, ";");
         const { hostsIp, hostsSshUsername } = values;
@@ -130,7 +132,7 @@ class StartModal extends Component {
           payload: {
             passWord,
             hostIp: hostsIp,
-            port: hostsSshPort,
+            port: 22,
             userName: hostsSshUsername,
             command: command
           },
@@ -155,11 +157,11 @@ class StartModal extends Component {
     });
   };
 
-  onSearchPort = searchText => {
-    this.setState({
-      portDropdownVal: !searchText ? [] : [searchText, searchText.repeat(2), searchText.repeat(3)],
-    });
-  };
+  // onSearchPort = searchText => {
+  //   this.setState({
+  //     portDropdownVal: !searchText ? [] : [searchText, searchText.repeat(2), searchText.repeat(3)],
+  //   });
+  // };
 
   onSearchUsername = searchText => {
     this.setState({
@@ -189,9 +191,11 @@ class StartModal extends Component {
         <Modal
           title={title}
           visible={visible}
-          centered
+          // centered
           onCancel={this.handleCancel}
           onOk={this.handleOk}
+          width={850}
+          height={1000}
         >
           <Form {...formItemLayout}>
             <Form.Item label="主机IP">
@@ -210,7 +214,7 @@ class StartModal extends Component {
                 </AutoComplete>
               )}
             </Form.Item>
-            <Form.Item label="主机端口">
+            {/* <Form.Item label="主机端口">
               {getFieldDecorator('hostsSshPort', {
                 rules: [
                   {
@@ -226,7 +230,7 @@ class StartModal extends Component {
                   allowClear
                 />,
               )}
-            </Form.Item>
+            </Form.Item> */}
             <Form.Item label="主机帐号">
               {getFieldDecorator('hostsSshUsername', {
                 rules: [
@@ -244,7 +248,7 @@ class StartModal extends Component {
                 />,
               )}
             </Form.Item>
-            <Form.Item label="执行命令">
+            <Form.Item label="选择命令">
               {getFieldDecorator('command', {
                 initialValue: this.state.value,
                 rules: [
@@ -255,20 +259,19 @@ class StartModal extends Component {
                 ],
               })(
                 <>
-                  {/* {treeData.length > 0 && ( */}
                   <TreeSelect
+                    showSearch
                     defaultExpandAll
                     value={this.state.value}
                     style={{ width: '100%' }}
                     dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
                     placeholder="请选择"
                     onChange={this.onChange}
-                    // onSelect={this.onSelect}
+                    onSelect={this.onSelect}
                     multiple
                   >
                     {treeData && this.renderTreeNodes(treeData)}
                   </TreeSelect>
-                  {/* )} */}
                 </>
               )}
             </Form.Item>

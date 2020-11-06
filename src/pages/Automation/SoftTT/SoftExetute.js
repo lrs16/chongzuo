@@ -30,7 +30,6 @@ class SoftExetute extends Component {
       panes,
       inputValue: '',
       // 文本框内容
-      // textAreaValue: "aa"+ '\n'+ "bb"+"cc",
       textAreaValue: [],
       textAreaVisible: false,
     };
@@ -51,7 +50,7 @@ class SoftExetute extends Component {
     const sametype = panes.filter(obj => {
       return obj.key === activeKey;
     });
-    const { hostsIp, hostsSshUsername, hostsSshPort, passWord } = sametype[0];
+    const { hostsIp, hostsSshUsername, passWord } = sametype[0];
     const command = this.state.inputValue;
     const { dispatch } = this.props;
     return dispatch({
@@ -59,7 +58,7 @@ class SoftExetute extends Component {
       payload: {
         passWord: passWord,
         hostIp: hostsIp,
-        port: hostsSshPort,
+        port: 22,
         userName: hostsSshUsername,
         command,
       },
@@ -101,7 +100,7 @@ class SoftExetute extends Component {
   };
 
   add = (formValues) => {
-    const hostsSshPort = parseInt(formValues.values.hostsSshPort); // 端口
+    // const hostsSshPort = parseInt(formValues.values.hostsSshPort); // 端口
     const { passWord, commitlist } = formValues; // 密码, 命令resMsg
     const { hostsIp, hostsSshUsername } = formValues.values; // ip, 用户名
     const wordStr = ([] = commitlist.split('\n'));
@@ -131,7 +130,7 @@ class SoftExetute extends Component {
         key: title,
         hostsIp,
         hostsSshUsername,
-        hostsSshPort,
+        hostsSshPort: 22,
         passWord,
       });
       this.setState({ panes, activeKey: title });
@@ -227,9 +226,6 @@ class SoftExetute extends Component {
           const datatime = moment().format('YYYY-MM-DD HH:mm:ss') + '\xa0';
           const infoList = datatime + resMsg;
           textAreaValue.push(infoList);
-          const item = textAreaValue.map(item => {
-            return item;
-          })
           this.setState({ textAreaVisible: true, textAreaValue });
         } else {
           message.error(res.msg);
@@ -493,7 +489,6 @@ class SoftExetute extends Component {
                 {
                   this.state.textAreaVisible === true ? <TextArea rows={4} value={this.state.textAreaValue.join('\n')} /> : ''
                 }
-                {/* <TextArea rows={4} value={this.state.textAreaValue}/> */}
               </div>
             </Card>
           </Col>
