@@ -968,20 +968,20 @@ const removeHost = [
 ];
 
 // //告警明细列表
-const alarmList = [
-  {
-    level:'级别',
-    category:'类别',
-    subclass:'子类',
-    confirmStatus:'确认状态',
-    eliminationState:'消除状态',
-    accumulated:'当月累计',
-    annualCumulative:'年度累计',
-    confirmwarntime:'确认警告时间',
-    warningTime:'本次警告时间',
-    lastWarntime:'上次警告时间',
-  }
-]
+// const alarmList = [
+//   {
+//     level:'级别',
+//     category:'类别',
+//     subclass:'子类',
+//     confirmStatus:'确认状态',
+//     eliminationState:'消除状态',
+//     accumulated:'当月累计',
+//     annualCumulative:'年度累计',
+//     confirmwarntime:'确认警告时间',
+//     warningTime:'本次警告时间',
+//     lastWarntime:'上次警告时间',
+//   }
+// ]
 
 
 
@@ -1138,5 +1138,5 @@ export default {
 
   'GET /api/configList':configList,
   //告警明细
-  'GET /api/alarmList':alarmList,
+  // 'GET /api/alarmList':alarmList,
 };
