@@ -1,4 +1,9 @@
-import { queryDetail, queryDetailBasic, queryOperats } from '../services/api';
+import { 
+         queryDetail,
+         queryDetailBasic, 
+         queryOperats,
+         alarmList 
+  } from '../services/api';
 
 export default {
   namespace: 'alarmdetails',
@@ -6,6 +11,7 @@ export default {
   state: {
     list: [],
     operatslist: [],
+    alarmList:[]
   },
 
   effects: {
@@ -30,6 +36,14 @@ export default {
         payload: response,
       });
     },
+    //告警信息明细的列表
+    *alarmList({ payload }, { call, put }) {
+      const response = yield call(alarmList,payload);
+      yield put({
+        type:'alarmList',
+        payload:response,
+      });
+    },
   },
 
   reducers: {
@@ -50,6 +64,13 @@ export default {
         ...state,
         operatslist: action.payload,
       };
+    },
+
+    alarmList(state, action) {
+      return {
+        ...state,
+        alarmList:action.payload,
+      }
     },
   },
 };

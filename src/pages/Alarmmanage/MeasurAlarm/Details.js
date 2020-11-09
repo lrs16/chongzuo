@@ -1,7 +1,18 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
 import Link from 'umi/link';
-import { Card, Table, Button, Badge, Tag } from 'antd';
+import { Card, 
+         Table, 
+         Button, 
+         Badge, 
+         Tag,
+         Form,
+         Select,
+         Row,
+         Col,
+         Input,
+         DatePicker
+ } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
 const gradeMap = ['red', 'orange', 'blue'];
@@ -20,18 +31,48 @@ const eliminate = ['未消除', '已消除', '已取消'];
 }))
 class Details extends Component {
   componentDidMount() {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'alarmdetails/fetch',
-    });
+    // const { dispatch } = this.props;
+    // dispatch({
+    //   type: 'alarmdetails/alarmList',
+    // });
+  }
+
+  show = () => {
+    document.getElementById('generalQuery').style.display='none';
+    document.getElementById('advancedQuery').style.display='block';
+  }
+
+  hide = () => {
+    document.getElementById('advancedQuery').style.display='none';
+    document.getElementById('generalQuery').style.display='block';
   }
 
   render() {
+    const formItemLayout = {
+      labelCol: {
+        xs:{span:16},
+        sm:{span:5},
+      },
+      wrapperCol:{
+        xs:{span:20},
+        sm:{span:12}
+      },
+    };
+    const advanceformItemLayout = {
+      labelCol: {
+        xs:{span:20},
+        sm:{span:8},
+      },
+      wrapperCol:{
+        xs:{span:20},
+        sm:{span:12}
+      },
+    }
     const columns = [
       {
-        title: '编码',
-        dataIndex: 'detailsid',
-        key: 'detailsid',
+        title:'级别',
+        dataIndex:'level',
+        key:'level',
         render: (text, record) => (
           <span>
             <Link to={`/alarmmanage/details/detailview/${record.detailsid}`}>{text}</Link>
@@ -40,9 +81,9 @@ class Details extends Component {
         // render: text => <Link to={`/profile/basic/${text.replace(/\s+/gi, '-')}`}>{text}</Link>,
       },
       {
-        title: '紧急程度',
-        dataIndex: 'grade',
-        key: 'grade',
+        title:'类别',
+        dataIndex:'category',
+        key:'category',
         render: (text, record) => (
           <span>
             <Tag color={gradeMap[record.grade]}>{grade[record.grade]}</Tag>
@@ -50,19 +91,19 @@ class Details extends Component {
         ),
       },
       {
-        title: '告警类别',
-        dataIndex: 'category',
-        key: 'scriptType',
+        title:'子类',
+        dataIndex:'subclass',
+        key:'subclass',
       },
       {
-        title: '告警内容',
-        dataIndex: 'detailname',
-        key: 'detailname',
+        title:'确认状态',
+        dataIndex:'confirmStatus',
+        key:'confirmStatus',
       },
       {
-        title: '确认状态',
-        dataIndex: 'ackstatus',
-        key: 'ackstatus',
+        title:'消除状态',
+        dataIndex:'eliminationState',
+        key:'eliminationState',
         render: (text, record) => (
           <span>
             <Badge status={ackstatusMap[record.ackstatus]} text={ackstatus[record.ackstatus]} />
@@ -70,9 +111,9 @@ class Details extends Component {
         ),
       },
       {
-        title: '消除状态',
-        dataIndex: 'eliminate',
-        key: 'eliminate',
+        title:'警告内容',
+        dataIndex:'warnContent',
+        key:'warnContent',
         render: (text, record) => (
           <span>
             <Badge status={eliminateMap[record.eliminate]} text={eliminate[record.eliminate]} />
@@ -80,9 +121,9 @@ class Details extends Component {
         ),
       },
       {
-        title: '通知',
-        dataIndex: 'notification',
-        key: 'notification',
+        title: '当月累计/年度累计',
+        dataIndex: 'accumulated',
+        key: 'accumulated',
         render: (text, record) => (
           <span>
             <Badge
@@ -93,14 +134,29 @@ class Details extends Component {
         ),
       },
       {
-        title: '最新发生时间',
-        dataIndex: 'latesttime',
-        key: 'latesttime',
+        title:'当月累计/年度累计',
+        dataIndex:'annualCumulative',
+        key:'annualCumulative',
       },
       {
-        title: '受影响资源',
-        dataIndex: 'resoure',
-        key: 'resoure',
+        title:'告警通知',
+        dataIndex:'alarmNotification',
+        key:'alarmNotification',
+      },
+      {
+        title:'确认警告时间',
+        dataIndex:'confirmwarntime',
+        key:'confirmwarntime',
+      },
+      {
+        title:'本次警告时间',
+        dataIndex:'warningTime',
+        key:'warningTime',
+      },
+      {
+        title:'上次警告时间',
+        dataIndex:'lastWarntime',
+        key:'lastWarntime',
       },
       {
         title: '操作',
@@ -117,16 +173,130 @@ class Details extends Component {
         ),
       },
     ];
-    // const {
-    //   alarmdetails: { list },
-    // } = this.props;
-    // const dataSource = [...list]?[...list]:'';
+    const { getFieldDecorator } = this.props.form;
+    const { alarmdetails:{ alarmList } } = this.props;
+    const dataSource = alarmList;
     return (
       <PageHeaderWrapper title="告警明细信息">
+        <Card style={{marginBottom:'30px'}}>
+          <Form
+            style={{display:'block'}}
+            id='generalQuery'
+            {...formItemLayout}
+          >
+            <Row>
+              <Col span={6}>
+                <Form.Item label='类别'>
+                { getFieldDecorator('category',{
+                  initialValue:''
+                })(<Select></Select>)}
+              </Form.Item>
+              </Col>
+
+              <Col span={6}>
+                <Form.Item label='子类'>
+                  { getFieldDecorator('subclass',{
+                    initialValue:''
+                  })(<Select></Select>)}
+                </Form.Item>
+              </Col>
+
+              <Col span={6}>
+                <Form.Item label='级别'>
+                  { getFieldDecorator('level',{
+
+                  })(<Input></Input>)}
+
+                </Form.Item>
+              </Col>
+
+              <Col span={6}>
+                <Button type='primary' style={{marginRight:'10px'}}>查询</Button>
+                <Button style={{marginRight:'10px'}}>重置</Button>
+                <span onClick={this.show}>展开</span>
+              </Col>
+            </Row>
+            <Button type='primary'>导出数据</Button>
+         
+          </Form>
+          <Form
+          style={{display:'none'}}
+          id='advancedQuery'
+          {...advanceformItemLayout}>
+            <Row>
+              <Col span={6}>
+                <Form.Item label='类别'>
+                { getFieldDecorator('category',{
+                  initialValue:''
+                })(<Select></Select>)}
+              </Form.Item>
+              </Col>
+
+              <Col span={6}>
+                <Form.Item label='子类'>
+                  { getFieldDecorator('subclass',{
+                    initialValue:''
+                  })(<Select></Select>)}
+                </Form.Item>
+              </Col>
+
+              <Col span={6}>
+                <Form.Item label='级别'>
+                  { getFieldDecorator('level',{
+
+                  })(<Input></Input>)}
+
+                </Form.Item>
+              </Col>
+
+              <Col span={6}>
+                  <Form.Item label='确认状态'>
+                    { getFieldDecorator('confirmStatus',{
+
+                    })(<Select></Select>)}
+                  </Form.Item>
+                </Col>
+              </Row>
+
+            <Row>
+                <Col span={6}>
+                  <Form.Item label='告警内容'>
+                    { getFieldDecorator('alarmContent')(<Input></Input>)}
+                  </Form.Item>
+                </Col>
+
+                <Col span={6}>
+                  <Form.Item label='确认告警时间'>
+                    {getFieldDecorator('confirmAlarmtime')(<DatePicker></DatePicker>)}
+                  </Form.Item>
+                </Col>
+
+                <Col span={6}>
+                  <Form.Item label='本次告警时间'>
+                    { getFieldDecorator('alarmtime')(<DatePicker></DatePicker>)}
+                  </Form.Item>
+                </Col>
+
+                <Col span={6}>
+                  <Form.Item label='上次告警时间'>
+                    { getFieldDecorator('lastAlarmtime')(<DatePicker></DatePicker>)}
+                  </Form.Item>
+                </Col>
+              </Row>
+
+            <Row>
+              <Col span={22} style={{textAlign:'right'}}>
+                <Button type='primary' style={{marginRight:'10px'}}>查询</Button>
+                <Button style={{marginRight:'10px'}}>重置</Button>
+                <span onClick={this.hide}>收起</span>
+              </Col>
+            </Row>
+          </Form>
+        </Card>
         <Card>
           <Table
-            // dataSource={dataSource}
-            rowKey={record => record.detailsid}
+            dataSource={dataSource}
+            // rowKey={record => record.detailsid}/
             columns={columns}
             scroll={{ x: 1500 }}
           />
@@ -136,4 +306,5 @@ class Details extends Component {
   }
 }
 
-export default Details;
+export default Form.create()(Details);
+ 

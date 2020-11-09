@@ -74,3 +74,7 @@ export async function cancelConfirmation() {
 export async function currentalarmClose() {
   return request(`/api/historyList`);
 }
+//告警明细接口
+export async function alarmList(){
+  return request(`/api/configList`);
+}
