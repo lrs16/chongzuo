@@ -6,12 +6,15 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 function index(props) {
   const { match, children, location } = props;
   let pagetitle = props.route.name;
-  const [tabkey, setButtonText] = useState(' ,   please');
-  function handleTabChange(key) {
-    switch (key) {
-      case 'index':
-        router.push(`${match.url}`);
+  const [tabkey, setTabkey] = useState('index');
+  const changeKey = key => {
+    return setTabkey(key);
+  };
 
+  const handleTabChange = key => {
+    switch (key) {
+      case 'overview':
+        router.push(`${match.url}/overview`);
         break;
       case 'quotas':
         router.push(`${match.url}/quotas`);
@@ -31,11 +34,11 @@ function index(props) {
       default:
         break;
     }
-  }
+  };
 
   const tabList = [
     {
-      key: 'index',
+      key: 'overview',
       tab: '告警概览',
     },
     {

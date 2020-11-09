@@ -368,27 +368,37 @@ export default {
                       routes: [
                         {
                           path: '/alarmmanage/measuralarm/alarmoverview',
-                          redirect: '/alarmmanage/measuralarm/alarmoverview/quotas',
+                          redirect: '/alarmmanage/measuralarm/alarmoverview/overview',
+                        },
+                        {
+                          path: '/alarmmanage/measuralarm/alarmoverview/overview',
+                          name: '告警概览',
+                          component: './Alarmmanage/MeasurAlarm/AlarmOverview/OverVies',
                         },
                         {
                           path: '/alarmmanage/measuralarm/alarmoverview/quotas',
                           name: '业务指标警告',
-                          component: './Alarmmanage/MeasurAlarm/AlarmOverview/Quotas',
+                          component: './Alarmmanage/MeasurAlarm/AlarmOverview/OverVies',
+                        },
+                        {
+                          path: '/alarmmanage/measuralarm/alarmoverview/databaseterminal',
+                          name: '终端在线和入库告警',
+                          component: './Alarmmanage/MeasurAlarm/AlarmOverview/OverVies',
                         },
                         {
                           path: '/alarmmanage/measuralarm/alarmoverview/connector',
                           name: '接口告警',
-                          component: './Alarmmanage/MeasurAlarm/AlarmOverview/Connector',
+                          component: './Alarmmanage/MeasurAlarm/AlarmOverview/OverVies',
                         },
                         {
                           path: '/alarmmanage/measuralarm/alarmoverview/KAFKA',
                           name: 'KAFKA中间件告警',
-                          component: './Alarmmanage/MeasurAlarm/AlarmOverview/KAFKA',
+                          component: './Alarmmanage/MeasurAlarm/AlarmOverview/OverVies',
                         },
                         {
                           path: '/alarmmanage/measuralarm/alarmoverview/sysrun',
                           name: '主站系统运行',
-                          component: './Alarmmanage/MeasurAlarm/AlarmOverview/SysRun',
+                          component: './Alarmmanage/MeasurAlarm/AlarmOverview/OverVies',
                         },
                       ],
                     },
