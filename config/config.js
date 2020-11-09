@@ -283,7 +283,7 @@ export default {
                     },
                     {
                       path: '/monitormanage/measurmonitor/databaseterminal',
-                      name: '终端工况和数据入库',
+                      name: '终端在线和入库',
                       icon: 'cloud-server',
                       component: './Monitormanage/MeasurMonitor/DatabaseTerminal',
                     },
@@ -358,13 +358,39 @@ export default {
                   routes: [
                     {
                       path: '/alarmmanage/measuralarm',
-                      redirect: '/alarmmanage/measuralarm/details',
+                      redirect: '/alarmmanage/measuralarm/alarmoverview',
                     },
                     {
                       path: '/alarmmanage/measuralarm/alarmoverview',
                       name: '告警概览',
                       icon: 'cloud-server',
                       component: './Alarmmanage/MeasurAlarm/AlarmOverview',
+                      routes: [
+                        {
+                          path: '/alarmmanage/measuralarm/alarmoverview',
+                          redirect: '/alarmmanage/measuralarm/alarmoverview/quotas',
+                        },
+                        {
+                          path: '/alarmmanage/measuralarm/alarmoverview/quotas',
+                          name: '业务指标警告',
+                          component: './Alarmmanage/MeasurAlarm/AlarmOverview/Quotas',
+                        },
+                        {
+                          path: '/alarmmanage/measuralarm/alarmoverview/connector',
+                          name: '接口告警',
+                          component: './Alarmmanage/MeasurAlarm/AlarmOverview/Connector',
+                        },
+                        {
+                          path: '/alarmmanage/measuralarm/alarmoverview/KAFKA',
+                          name: 'KAFKA中间件告警',
+                          component: './Alarmmanage/MeasurAlarm/AlarmOverview/KAFKA',
+                        },
+                        {
+                          path: '/alarmmanage/measuralarm/alarmoverview/sysrun',
+                          name: '主站系统运行',
+                          component: './Alarmmanage/MeasurAlarm/AlarmOverview/SysRun',
+                        },
+                      ],
                     },
                     {
                       path: '/alarmmanage/measuralarm/details',
@@ -384,32 +410,6 @@ export default {
                       icon: 'cloud-server',
                       name: '系统警告设定',
                       component: './Alarmmanage/MeasurAlarm/SysSetting',
-                      routes: [
-                        {
-                          path: '/alarmmanage/measuralarm/syssetting',
-                          redirect: '/alarmmanage/measuralarm/syssetting/quotas',
-                        },
-                        {
-                          path: '/alarmmanage/measuralarm/syssetting/quotas',
-                          name: '业务指标警告设置',
-                          component: './Alarmmanage/MeasurAlarm/Quotas',
-                        },
-                        {
-                          path: '/alarmmanage/measuralarm/syssetting/connector',
-                          name: '接口告警设置',
-                          component: './Alarmmanage/MeasurAlarm/Connector',
-                        },
-                        {
-                          path: '/alarmmanage/measuralarm/syssetting/KAFKA',
-                          name: 'KAFKA中间件告警设置',
-                          component: './Alarmmanage/MeasurAlarm/KAFKA',
-                        },
-                        {
-                          path: '/alarmmanage/measuralarm/syssetting/sysrun',
-                          name: '主站系统运行',
-                          component: './Alarmmanage/MeasurAlarm/SysRun',
-                        },
-                      ],
                     },
                     {
                       path: '/alarmmanage/measuralarm/noticesetting',

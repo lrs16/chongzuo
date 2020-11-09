@@ -174,8 +174,8 @@ class DatabaseTerminal extends Component {
     const thehours = dataLine(thehour);
     // console.log(operatingmode);
     return (
-      <PageHeaderWrapper title="终端工况和数据入库">
-        <h3>终端工况</h3>
+      <PageHeaderWrapper title="终端在线和入库">
+        <h3>终端在线</h3>
         <ChartCard contentHeight={350} style={{ marginBottom: 24 }}>
           <Spin spinning={loading} style={{ background: '#ffffff' }}>
             {(operatingmodes.length === 0 || operatingmode === undefined) && (
