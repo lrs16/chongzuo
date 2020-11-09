@@ -4,6 +4,7 @@ import { connect } from 'dva';
 // const { Option, OptGroup } = Select;
 const { Option } = AutoComplete;
 const { TreeNode } = TreeSelect;
+const { TextArea } = Input;
 // const { SHOW_PARENT } = TreeSelect;
 
 const formItemLayout = {
@@ -36,6 +37,7 @@ class StartModal extends Component {
     hostsSshPassword: '',
     queKey: '',
     value: undefined,
+    result:''
   };
 
   toTree = data => {
@@ -72,12 +74,29 @@ class StartModal extends Component {
     
 
   onChange = value => {
+    let emptyCommand;
+    const resultCommand = [];
+    value.forEach(function(item){
+      // console.log(item);
+      // if(item == '-'){
+      //   console.log(item);
+      // }
+      const i = item.indexOf('-');
+      if(i === -1){
+        emptyCommand = [];
+      }else {
+        const resultStr = item.substring(i+1,item.length);
+        resultCommand.push(resultStr);
+      }
+      
+    });
+    this.setState({ result:resultCommand })
     this.setState({ value });
   };
 
-  onSelect = selectedKeys => {
-    console.log(selectedKeys);
-  }
+  // onSelect = selectedKeys => {
+  //   console.log(selectedKeys);
+  // }
 
   handleopenClick = () => {
     this.setState({
@@ -125,7 +144,7 @@ class StartModal extends Component {
         // this.setState({ value: undefined });
         const { dispatch } = this.props;
         const str = values.command.toString();
-        const command = str.replace(/,/g, ";");
+        const commands = str.replace(/[\r\n]/g,'');
         const { hostsIp, hostsSshUsername } = values;
         dispatch({ // 执行ssh命令接口
           type: 'softexetute/getExecCommand',
@@ -134,7 +153,7 @@ class StartModal extends Component {
             hostIp: hostsIp,
             port: 22,
             userName: hostsSshUsername,
-            command: command
+            command:commands,
           },
         }).then(res => {
           this.props.onSumit({ values, passWord, commitlist: res.msg });
@@ -249,7 +268,7 @@ class StartModal extends Component {
               )}
             </Form.Item>
             <Form.Item label="选择命令">
-              {getFieldDecorator('command', {
+              {getFieldDecorator('commandse', {
                 initialValue: this.state.value,
                 rules: [
                   {
@@ -259,20 +278,31 @@ class StartModal extends Component {
                 ],
               })(
                 <>
-                  <TreeSelect
-                    showSearch
+                <TreeSelect
+                    // showSearch
                     defaultExpandAll
                     value={this.state.value}
                     style={{ width: '100%' }}
                     dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
                     placeholder="请选择"
                     onChange={this.onChange}
-                    onSelect={this.onSelect}
+                    // onSelect={this.onSelect}
+                    treeCheckable={true}
                     multiple
                   >
                     {treeData && this.renderTreeNodes(treeData)}
                   </TreeSelect>
+                
                 </>
+              )}
+            </Form.Item>
+            <Form.Item label="可编辑命令">
+              {getFieldDecorator('command', {
+                initialValue: this.state.result,
+              })(
+                <TextArea>
+                  {this.state.result}
+                </TextArea>
               )}
             </Form.Item>
           </Form>
