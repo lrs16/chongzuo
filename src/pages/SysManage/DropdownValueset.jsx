@@ -1,5 +1,18 @@
 import React from 'react';
-import { Card, Row, Col, Form, Input, Button, Table, Select, DatePicker, Message } from 'antd';
+import {
+  Card,
+  Row,
+  Col,
+  Form,
+  Input,
+  Button,
+  Table,
+  Select,
+  DatePicker,
+  Message,
+  Divider,
+  Popconfirm,
+} from 'antd';
 import moment from 'moment';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
@@ -10,7 +23,7 @@ const index = props => {
     console.log(values);
   };
 
-  let pagetitle = props.route.name;
+  const pagetitle = props.route.name;
   const columns = [
     {
       title: 'ID',

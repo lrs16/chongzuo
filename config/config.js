@@ -1,7 +1,8 @@
+import slash from 'slash2';
 import defaultSettings from './defaultSettings'; // https://umijs.org/config/
 
-import slash from 'slash2';
 import themePluginConfig from './themePluginConfig';
+
 const { pwa } = defaultSettings; // preview.pro.ant.design only do not use in your production ;
 // preview.pro.ant.design 专用环境变量，请不要在你的项目中使用它。
 
@@ -115,7 +116,7 @@ export default {
             //   component: './Admin',
             //   authority: ['admin'],
             // },
-            //自动化运维
+            // 自动化运维
             {
               path: '/automation',
               name: '自动化运维',
@@ -538,7 +539,7 @@ export default {
                   component: './SysManage/DropdownValueset',
                 },
                 {
-                  //采控管理
+                  // 采控管理
                   path: '/sysmanage/agent',
                   name: '采控管理',
                   icon: 'smile',
@@ -610,19 +611,19 @@ export default {
   },
   proxy: {
     '/oauth/': {
-      target: 'http://172.16.4.211:9901/', //登录
+      target: 'http://172.16.4.211:9901/', // 登录
       changeOrigin: true,
     },
     '/upms/': {
-      target: 'http://172.16.4.211:9901/', //用户管理
+      target: 'http://172.16.4.211:9901/', // 用户管理
       changeOrigin: true,
     },
     '/auto/': {
-      target: 'http://172.16.4.211:9901/', //软件启停
+      target: 'http://172.16.4.211:9901/', // 软件启停
       changeOrigin: true,
     },
     '/monitor/': {
-      target: 'http://172.16.4.211:9901/', //计量业务监控
+      target: 'http://172.16.4.211:9901/', // 计量业务监控
       changeOrigin: true,
     },
     // '/monitor/kpiData/': {
@@ -630,7 +631,7 @@ export default {
     //   changeOrigin: true,
     // },
     '/api-eai-job/oma/': {
-      target: 'http://172.16.4.211:8800/', //脚本管理服务器地址,211正式，250测试
+      target: 'http://172.16.4.211:8800/', // 脚本管理服务器地址,211正式，250测试
       changeOrigin: true,
       // pathRewrite: { '^/server': '' },
     },
@@ -641,25 +642,25 @@ export default {
     //   // pathRewrite: { '^/server': '' },
     // },
     '/basicMonitor/': {
-      //检测管理，基础平台
+      // 检测管理，基础平台
       target: 'http://172.16.4.211:8889/',
       changeOrigin: true,
       // pathRewrite: { '^/apiauth': '' }
     },
     '/api-monitoring-business/': {
-      //计量现场接口
+      // 计量现场接口
       target: 'http://172.16.4.211:8800/',
       changeOrigin: true,
       // pathRewrite: { '^/apiauth': '' }
     },
     '/api-meter-auto/': {
-      //计量现场接口
+      // 计量现场接口
       target: 'http://172.16.4.211:8800/',
       changeOrigin: true,
       // pathRewrite: { '^/apiauth': '' }
     },
     '/api/': {
-      target: 'http://localhost:8000/', //mock接口数据
+      target: 'http://localhost:8000/', // mock接口数据
       changeOrigin: true,
     },
   },
