@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
-import { Form, Input, Modal, AutoComplete, Select, TreeSelect } from 'antd';
+import { Form, Input, Modal, AutoComplete, TreeSelect } from 'antd';
 import { connect } from 'dva';
-// const { Option, OptGroup } = Select;
 const { Option } = AutoComplete;
 const { TreeNode } = TreeSelect;
 const { TextArea } = Input;
-// const { SHOW_PARENT } = TreeSelect;
 
 const formItemLayout = {
   labelCol: {
@@ -71,37 +69,14 @@ class StartModal extends Component {
       }
       return <TreeNode key={item.id} value={item.name} title={item.name} {...item} />;
     });
-    
-
-  onChange = value => {
-    let emptyCommand;
-    const resultCommand = [];
-    value.forEach(function(item){
-      // console.log(item);
-      // if(item == '-'){
-      //   console.log(item);
-      // }
-      const i = item.indexOf('-');
-      if(i === -1){
-        emptyCommand = [];
-      }else {
-        const resultStr = item.substring(i+1,item.length);
-        resultCommand.push(resultStr);
-      }
-      
-    });
-    this.setState({ result:resultCommand })
-    this.setState({ value });
-  };
-
-  // onSelect = selectedKeys => {
-  //   console.log(selectedKeys);
-  // }
 
   handleopenClick = () => {
     this.setState({
       visible: true,
+      result: '',
+      value: undefined
     });
+    // this.props.form.setFieldsValue({ commands: this.state.value });
     const { dispatch } = this.props;
     dispatch({
       type: 'softexetute/fetchComConfigTree',
@@ -133,6 +108,22 @@ class StartModal extends Component {
         });
       })
     }
+  };
+
+  onChange = value => {
+    let emptyCommand;
+    const resultCommand = [];
+    value.forEach(function(item){
+      const i = item.indexOf('-');
+      if(i === -1){
+        emptyCommand = [];
+      }else {
+        const resultStr = item.substring(i+1,item.length);
+        resultCommand.push(resultStr);
+      }
+      
+    });
+    this.setState({ result:resultCommand, value });
   };
 
   handleOk = () => {
@@ -268,25 +259,17 @@ class StartModal extends Component {
               )}
             </Form.Item>
             <Form.Item label="选择命令">
-              {getFieldDecorator('commandse', {
-                initialValue: this.state.value,
-                rules: [
-                  {
-                    required,
-                    message: '执行命令不能为空',
-                  },
-                ],
+              {getFieldDecorator('commands', {
+                // initialValue: this.state.value,
               })(
                 <>
                 <TreeSelect
-                    // showSearch
                     defaultExpandAll
                     value={this.state.value}
                     style={{ width: '100%' }}
                     dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-                    placeholder="请选择"
+                    placeholder="请选择命令"
                     onChange={this.onChange}
-                    // onSelect={this.onSelect}
                     treeCheckable={true}
                     multiple
                   >
@@ -296,11 +279,17 @@ class StartModal extends Component {
                 </>
               )}
             </Form.Item>
-            <Form.Item label="可编辑命令">
+            <Form.Item label="执行命令">
               {getFieldDecorator('command', {
                 initialValue: this.state.result,
+                rules: [
+                  {
+                    required,
+                    message: '执行命令不能为空',
+                  },
+                ],
               })(
-                <TextArea>
+                <TextArea rows={5} style={{borderWidth: 1, borderColor: 'red'}}>
                   {this.state.result}
                 </TextArea>
               )}

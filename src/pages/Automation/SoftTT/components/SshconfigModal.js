@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
-import { Modal, Divider, Popconfirm, Table, Message, message, Row, Col, Button } from 'antd';
+import { Modal, Divider, Popconfirm, Table, Message, message, Row, Col, Button, Input } from 'antd';
 import SshInfoAdd from './SshInfoAdd';
 import SshInfoEdit from './SshInfoEdit';
 
@@ -198,6 +198,7 @@ class SshconfigModal extends Component {
         key: 'hostsSshPassword',
         width: 250,
         ellipsis: true,
+        render: (value) => <Input value={value} type="password" disabled={false} style={{ border: 'none', backgroundColor: '#fff', outline: 'none',  background: 'transparent', textAlign: 'left'}} />
       },
       {
         title: '使用端口',
