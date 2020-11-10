@@ -33,8 +33,7 @@ class AlarmStrategy extends Component {
 
   handleSubmit = e => {
     e.preventDefault();
-    this.props.form.validateFields((err, value) => {
-    });
+    this.props.form.validateFields((err, value) => {});
   };
 
   handleReset = () => {
@@ -66,7 +65,7 @@ class AlarmStrategy extends Component {
       this.setState({ pageSize });
     }, 0);
   };
-  //批量删除
+  // 批量删除
   handleDeleteOk = () => {
     // confirm({
     // title:'确定要删除吗',
@@ -95,7 +94,7 @@ class AlarmStrategy extends Component {
     }
   };
 
-  //编辑
+  // 编辑
 
   // strategyEdit = (e) => {
   //   if(this.state.detailsid.length>1){
@@ -105,7 +104,7 @@ class AlarmStrategy extends Component {
   // }
 
   gotoPage = e => {
-    if (this.state.selectedRows.length == 0) {
+    if (this.state.selectedRows.length === 0) {
       message.info('每次至少选择一条数据编辑');
       e.preventDefault();
     }
@@ -117,7 +116,7 @@ class AlarmStrategy extends Component {
 
   strategyAdd = e => {
     if (this.state.selectedRows.length > 0) {
-      message.info('添加用户不能选中数据');
+      message.info('新增不能选中数据');
       e.preventDefault();
     }
   };
@@ -203,9 +202,7 @@ class AlarmStrategy extends Component {
         key: 'alarmTitle',
         render: (text, record) => (
           <span>
-            <Link to={`alarmstrategy/strategydetail/:detailsid`}>
-              {text}
-            </Link>
+            <Link to={`alarmstrategy/strategydetail/:detailsid`}>{text}</Link>
           </span>
         ),
       },

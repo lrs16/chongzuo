@@ -1,15 +1,11 @@
 import React, { useState } from 'react';
 import router from 'umi/router';
-import { Card, Row, Col, Form, Input, Button, Table, Select, DatePicker, Message } from 'antd';
+// import { Card, Row, Col, Form, Input, Button, Table, Select, DatePicker, Message } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
-function index(props) {
+function AlarmOverview(props) {
   const { match, children, location } = props;
-  let pagetitle = props.route.name;
-  const [tabkey, setTabkey] = useState('index');
-  const changeKey = key => {
-    return setTabkey(key);
-  };
+  const pagetitle = props.route.name;
 
   const handleTabChange = key => {
     switch (key) {
@@ -75,4 +71,4 @@ function index(props) {
   );
 }
 
-export default index;
+export default AlarmOverview;

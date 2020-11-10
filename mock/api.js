@@ -491,8 +491,6 @@ const ResourcesList = [
   },
 ];
 
-
-
 const DetailsList = [
   {
     detailsid: 'details-01',
@@ -628,7 +626,7 @@ const alarmBasic = {
 // 操作记录
 const operaRecord = [
   {
-    id:1,
+    id: 1,
     serialnumber: '1',
     datetime: '2019-12-0409:19:30',
     operator: '张三',
@@ -636,7 +634,7 @@ const operaRecord = [
     statue: 1,
   },
   {
-    id:2,
+    id: 2,
     serialnumber: '1',
     datetime: '2019-12-0409:19:30',
     operator: '张三',
@@ -644,7 +642,7 @@ const operaRecord = [
     statue: 0,
   },
   {
-    id:3,
+    id: 3,
     serialnumber: '1',
     datetime: '2019-12-0409:19:30',
     operator: '张三',
@@ -655,7 +653,7 @@ const operaRecord = [
 //详情页的告警历史
 const detailAlarm = [
   {
-    id:1,
+    id: 1,
     alarmtime: '2019-11-26 17:07:03',
     recovertime: '2019-12-04  09:19:30',
     status: '0',
@@ -665,7 +663,7 @@ const detailAlarm = [
     action: '降级',
   },
   {
-    id:2,
+    id: 2,
     alarmtime: '2019-11-26 17:07:03',
     recovertime: '2019-12-04  09:19:30',
     status: '1',
@@ -675,7 +673,7 @@ const detailAlarm = [
     action: '降级',
   },
   {
-    id:3,
+    id: 3,
     alarmtime: '2019-11-26 17:07:03',
     recovertime: '2019-12-04  09:19:30',
     status: '0',
@@ -688,7 +686,7 @@ const detailAlarm = [
 //性情页的告警通知
 const alarmNotice = [
   {
-    id:1,
+    id: 1,
     alarmcontent:
       '该告警已累计告警$告警次数$次，未恢复之前，$延迟策略$后再次通知您，请尽快处理防止告警风暴。',
     sendtime: '2019-12-04  09:19:30',
@@ -697,7 +695,7 @@ const alarmNotice = [
     statue: 1,
   },
   {
-    id:2,
+    id: 2,
     alarmcontent:
       '该告警已累计告警$告警次数$次，未恢复之前，$延迟策略$后再次通知您，请尽快处理防止告警风暴。',
     sendtime: '2019-12-04  09:19:30',
@@ -706,7 +704,7 @@ const alarmNotice = [
     statue: 0,
   },
   {
-    id:3,
+    id: 3,
     alarmcontent:
       '该告警已累计告警$告警次数$次，未恢复之前，$延迟策略$后再次通知您，请尽快处理防止告警风暴。',
     sendtime: '2019-12-04  09:19:30',
@@ -715,7 +713,7 @@ const alarmNotice = [
     statue: 1,
   },
   {
-    id:4,
+    id: 4,
     alarmcontent:
       '该告警已累计告警$告警次数$次，未恢复之前，$延迟策略$后再次通知您，请尽快处理防止告警风暴。',
     sendtime: '2019-12-04  09:19:30',
@@ -727,7 +725,7 @@ const alarmNotice = [
 //告警策略的列表展示
 const strategyList = [
   {
-    id:1,
+    id: 1,
     detailsid: 1,
     level: 1,
     alarmTitle: '内存使用率告警',
@@ -738,7 +736,7 @@ const strategyList = [
     state: '0',
   },
   {
-    id:2,
+    id: 2,
     detailsid: 2,
     level: 2,
     alarmTitle: '内存使用率告警',
@@ -749,7 +747,7 @@ const strategyList = [
     state: '1',
   },
   {
-    id:3,
+    id: 3,
     detailsid: 3,
     level: 3,
     alarmTitle: '内存使用率告警',
@@ -968,6 +966,7 @@ const removeHost = [
 ];
 
 // //告警明细列表
+<<<<<<< HEAD
 // const alarmList = [
 //   {
 //     level:'级别',
@@ -984,6 +983,22 @@ const removeHost = [
 // ]
 
 
+=======
+const alarmList = [
+  {
+    level: '级别',
+    category: '类别',
+    subclass: '子类',
+    confirmStatus: '确认状态',
+    eliminationState: '消除状态',
+    accumulated: '当月累计',
+    annualCumulative: '年度累计',
+    confirmwarntime: '确认警告时间',
+    warningTime: '本次警告时间',
+    lastWarntime: '上次警告时间',
+  },
+];
+>>>>>>> 计量业务告警：告警概览
 
 export const getFactoryTypes = [
   {
@@ -1135,7 +1150,14 @@ export default {
   'GET /api/strategyAdd': strategyList,
   'GET /api/strategyEnable': strategyList,
   'GET /api/strategyOut': strategyList,
+<<<<<<< HEAD
   // 'GET /api/configList':configList,
   // //告警明细
   // 'GET /api/alarmList':alarmList,
+=======
+
+  // 'GET /api/configList':configList,
+  //告警明细
+  'GET /api/alarmList': alarmList,
+>>>>>>> 计量业务告警：告警概览
 };

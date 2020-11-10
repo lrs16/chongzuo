@@ -14,3 +14,6 @@ SeriesLine                                   多曲线，线条颜色自定义
 StackingArea                                  堆叠面积图
 Cylinder            监测管理监控台            柱形，圆柱形
 BasicBarchart       磁盘使用率               条形图
+Donut               抄表结算接口              饼图（百分比，数值） 
+DonutPCT            告警概览                  饼图（百分比）     
+SmoothLine          月度告警数量              多曲线
