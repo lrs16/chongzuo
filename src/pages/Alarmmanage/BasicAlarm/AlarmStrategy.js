@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Card, Table, Button, Form, Input, Select, Tag, message, Popconfirm, Message } from 'antd';
+import { Card, Table, Button, Form, Input, Select, Tag, message, Popconfirm, Message,Row,Col } from 'antd';
 import { connect } from 'dva';
 import Link from 'umi/link';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
@@ -171,6 +171,16 @@ class AlarmStrategy extends Component {
   };
 
   render() {
+    const formItemLayout = {
+      labelCol: {
+        xs: { span: 24 },
+        sm: { span: 4 },
+      },
+      wrapperCol: {
+        xs: { span: 24 },
+        sm: { span: 20 },
+      },
+    };
     const rowSelection = {
       onChange: (selectedRowKeys, selectedRows) => {
         // console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
@@ -248,29 +258,31 @@ class AlarmStrategy extends Component {
     return (
       <PageHeaderWrapper title="告警策略">
         <Card>
-          <Form layout="inline" onSubmit={this.handleSubmit}>
+          <Form onSubmit={this.handleSubmit} {...formItemLayout}>
+            <Row>
+              <Col span={8}>
             <Form.Item label="监控分类:">
               {getFieldDecorator('monitorClassification', {
                 rules: [{}],
                 initialValue: '',
               })(<Select />)}
             </Form.Item>
+            </Col>
+            <Col span={8}>
             <Form.Item label="告警名称:">
               {getFieldDecorator('alarmName', {
                 rules: [{}],
                 initialValue: '',
               })(<Input />)}
             </Form.Item>
-
-            <Form.Item>
+            </Col>
+            <Col span={8} style={{textAlign:'right'}}>
               <Button htmlType="submit" type="primary">
                 查询
               </Button>
-            </Form.Item>
-
-            <Form.Item>
               <Button onClick={this.handleReset}>重置</Button>
-            </Form.Item>
+</Col>
+            </Row>
           </Form>
           <div
             style={{
