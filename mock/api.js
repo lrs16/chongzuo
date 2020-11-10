@@ -1135,8 +1135,7 @@ export default {
   'GET /api/strategyAdd': strategyList,
   'GET /api/strategyEnable': strategyList,
   'GET /api/strategyOut': strategyList,
-
-  'GET /api/configList':configList,
-  //告警明细
+  // 'GET /api/configList':configList,
+  // //告警明细
   // 'GET /api/alarmList':alarmList,
 };

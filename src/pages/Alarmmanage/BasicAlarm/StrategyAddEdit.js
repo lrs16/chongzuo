@@ -187,12 +187,12 @@ class StrategyAddEdit extends Component {
   render() {
     const formItemLayout = {
       labelCol: {
-        xs: { span: 20 },
-        sm: { span: 7 },
+        xs: { span: 24 },
+        sm: { span: 4 },
       },
       wrapperCol: {
         xs: { span: 24 },
-        sm: { span: 16 },
+        sm: { span: 20 },
       },
     };
     const { getFieldDecorator } = this.props.form;
@@ -291,14 +291,12 @@ class StrategyAddEdit extends Component {
         <Card>
         <Descriptions title='告警内容' ></Descriptions>
         <Form
-          layout='inline' 
-          labelAlign='right' 
-          style={{paddingTop:10}} 
           onSubmit={this.handleSubmit}
+          {...formItemLayout}
         >
          <Row>
            <Col span={12}>
-             <Form.Item label='告警标题' style={{marginLeft:50}}>
+             <Form.Item label='告警标题'>
               {getFieldDecorator('alatitle',{
                 rules:[
                   {
@@ -311,7 +309,7 @@ class StrategyAddEdit extends Component {
               </Form.Item>
            </Col>
            <Col span={12}>
-             <Form.Item label='描述' style={{marginLeft:150}}>
+             <Form.Item label='描述'>
                 {getFieldDecorator('describe',{
                   rules:[
                     {
@@ -324,12 +322,7 @@ class StrategyAddEdit extends Component {
            </Col>
          </Row>
 
-          <Form.Item style={{display:this.detailsid?'inline-block':'none'}}>
-            <Button style={{position:'relative' ,bottom:60}}>取消</Button>
-            <Button type='primary' htmlType='submit' style={{position:'relative' ,bottom:60, left:10}}>
-              提交
-            </Button>
-          </Form.Item>
+   
     
            <Descriptions title='触发条件'></Descriptions>
           {/* <Descriptions.Item label='在过去的:'></Descriptions.Item> */}
@@ -354,6 +347,24 @@ class StrategyAddEdit extends Component {
             // dataSource={dataSource}
           >
           </Table>
+          <Row>
+            <Col span={24} style={{ textAlign: 'right' }}>
+              <div style={{display:this.detailsid?'inline-block':'none',marginTop:'5px'}}>
+                <Button style={{display:'inline',marginRight:'5px'}}>取消</Button>
+                <Button type='primary' htmlType='submit'>提交</Button>
+              </div>
+            </Col>
+            {/* <Col span={2} style={{ textAlign: 'right' }}>
+              <Form.Item style={{display:this.detailsid?'inline-block':'none'}}>
+                {/* <Button>取消</Button> */}
+                {/* <Button type='primary' htmlType='submit'>
+                  提交
+                </Button>
+              </Form.Item>
+            </Col>   */}
+            
+          </Row>
+        
           {/* <Button type='dashed' onClick={this.add} style={{width:'100%'}}>
             <Icon type='plus'></Icon>添加
           </Button> */}
@@ -385,7 +396,7 @@ class StrategyAddEdit extends Component {
 
 
             </Form.Item> */}
-
+{/* 
             <Form.Item label='通知对象' style={{display:'block',marginLeft:50,marginTop:20}}>
               {getFieldDecorator('notiObj',{
                 rules:[
@@ -402,9 +413,9 @@ class StrategyAddEdit extends Component {
                    {children}
                  </Select>)
               }
-            </Form.Item>
+            </Form.Item> */}
 
-            <Form.Item label='告警频率' style={{display:'block',marginLeft:50,marginTop:20}}>
+            {/* <Form.Item label='告警频率' style={{display:'block',marginLeft:50,marginTop:20}}>
               {getFieldDecorator('alafrequency',{
                 rules:[
                   {
@@ -416,9 +427,9 @@ class StrategyAddEdit extends Component {
                    {frequencyChildren}
                  </Select>)
               }
-            </Form.Item>
+            </Form.Item> */}
 
-            <Form.Item label='生效时间' style={{display:'block',marginLeft:50, marginTop:10}}>
+            {/* <Form.Item label='生效时间' style={{display:'block',marginLeft:50, marginTop:10}}>
                 {getFieldDecorator('forcetime', {
                   rules:[
                     {
@@ -430,9 +441,9 @@ class StrategyAddEdit extends Component {
                 })(<TimePicker 
                       format={format}
                      />)}
-            </Form.Item>
+            </Form.Item> */}
 
-            <Form.Item label='延迟策略' style={{display:'block',marginLeft:50, marginTop:15}}>
+            {/* <Form.Item label='延迟策略' style={{display:'block',marginLeft:50, marginTop:15}}>
               {getFieldDecorator('delaystrate',{
                 rules:[
                   {
@@ -444,7 +455,7 @@ class StrategyAddEdit extends Component {
                    {frequencyChildren}
                  </Select>)
               }
-            </Form.Item>
+            </Form.Item> */}
 
             {/* <Form.Item label='通知内容' style={{display:'block',marginLeft:50, marginTop:10}}>
               {getFieldDecorator('remark',{
@@ -458,16 +469,16 @@ class StrategyAddEdit extends Component {
               <Input style={{width:1000}}/>)}
             </Form.Item> */}
 
-          <Descriptions title='适用对象'></Descriptions>
+          {/* <Descriptions title='适用对象'></Descriptions>
           <Form.Item>
             <Popconfirm title='确定删除吗？' onConfirm={this.handleDeleteOk}>
               <Button style={{float:'right'}}>删除</Button>
               {/* <Button>批量删除</Button> */}
-            </Popconfirm>
-          </Form.Item>
+            {/* </Popconfirm>
+          </Form.Item>  */}
           
          
-          <EditResources
+          {/* <EditResources
             onSumit={values => editResources(values)}>
             <Button style={{float:'right', marginRight:10,zIndex:999}}>编辑资源</Button>
           </EditResources>
@@ -476,7 +487,7 @@ class StrategyAddEdit extends Component {
             dataSource={tabletwoSource}
             rowSelection={rowSelection}
           >
-          </Table>
+          </Table> */}
 
         </Form>
         </Card>

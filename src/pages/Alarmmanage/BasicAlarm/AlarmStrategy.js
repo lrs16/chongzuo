@@ -253,13 +253,13 @@ class AlarmStrategy extends Component {
               {getFieldDecorator('monitorClassification', {
                 rules: [{}],
                 initialValue: '',
-              })(<Select style={{ width: 300 }} />)}
+              })(<Select />)}
             </Form.Item>
             <Form.Item label="告警名称:">
               {getFieldDecorator('alarmName', {
                 rules: [{}],
                 initialValue: '',
-              })(<Input style={{ width: 300 }} />)}
+              })(<Input />)}
             </Form.Item>
 
             <Form.Item>

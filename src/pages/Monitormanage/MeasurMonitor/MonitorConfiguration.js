@@ -269,10 +269,11 @@ class MonitorConfiguration extends React.Component {
 
   save(form, key) {
     form.validateFields((error, row) => {
-      if (error) {
-        return;
-      }
+      // if (error) {
+      //   return;
+      // }
       const newData = [...this.state.data];
+      console.log(newData,'newData');
       const index = newData.findIndex(item => key === item.key);
       if (index > -1) {
         const { dispatch } = this.props;
@@ -475,12 +476,12 @@ class MonitorConfiguration extends React.Component {
                 </Form.Item>
               </Col>
 
-              <Col xl={8} xs={12}>
+              {/* <Col xl={8} xs={12}>
                 <Form.Item label="设置时间">
                   {getFieldDecorator('setTime', {
                   })(<DatePicker  onChange={this.onChange}/>)}
                 </Form.Item>
-              </Col>
+              </Col> */}
 
               <Col xl={4} xs={12} style={{ textAlign: 'right' }}>
                 <Button style={{ marginRight: 12 }} type="primary" htmlType='submit'>
@@ -501,11 +502,11 @@ class MonitorConfiguration extends React.Component {
                   {getFieldDecorator('IndicatoName', {})(<Input placeholder="输入名称/IP" />)}
                 </Form.Item>
               </Col>
-              <Col xl={8} xs={12}>
+              {/* <Col xl={8} xs={12}>
                 <Form.Item label="设置时间">
                   {getFieldDecorator('monitorType', {})(<DatePicker onChange={this.onChange}/>)}
                 </Form.Item>
-              </Col>
+              </Col> */}
               <Col xl={8} xs={12}>
                 <Form.Item label="备注">
                   {getFieldDecorator('remark', {
