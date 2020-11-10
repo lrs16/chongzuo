@@ -12,7 +12,10 @@ import { Card,
          Button,   
          TimePicker,
          Popconfirm,
-        message } from 'antd';
+        message,
+        Row,
+        Col
+   } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import EditResources from './components/EditResources';
 
@@ -182,6 +185,16 @@ class StrategyAddEdit extends Component {
 
 
   render() {
+    const formItemLayout = {
+      labelCol: {
+        xs: { span: 20 },
+        sm: { span: 7 },
+      },
+      wrapperCol: {
+        xs: { span: 24 },
+        sm: { span: 16 },
+      },
+    };
     const { getFieldDecorator } = this.props.form;
     const required = true;
 
@@ -277,30 +290,39 @@ class StrategyAddEdit extends Component {
 
         <Card>
         <Descriptions title='告警内容' ></Descriptions>
-        <Form layout='inline' labelAlign='right' style={{paddingTop:10}} onSubmit={this.handleSubmit}>
-         
-          <Form.Item label='告警标题' style={{marginLeft:50}}>
-            {getFieldDecorator('alatitle',{
-              rules:[
-                {
-                  required,
-                  message:'请输入 '
-                },
-              ],
-              initialValue: list.alatitle?list.alatitle:''
-            })(<Input placeholder="请输入"  style={{width:550}}/>)}
-          </Form.Item>
-
-          <Form.Item label='描述' style={{marginLeft:150}}>
-            {getFieldDecorator('describe',{
-              rules:[
-                {
-                  message:'请输入'
-                },
-              ],
-              initialValue:list.describe?list.describe:''
-            })(<Input placeholder='请输入' style={{width:550}}/>)}
-          </Form.Item>
+        <Form
+          layout='inline' 
+          labelAlign='right' 
+          style={{paddingTop:10}} 
+          onSubmit={this.handleSubmit}
+        >
+         <Row>
+           <Col span={12}>
+             <Form.Item label='告警标题' style={{marginLeft:50}}>
+              {getFieldDecorator('alatitle',{
+                rules:[
+                  {
+                    required,
+                    message:'请输入 '
+                  },
+                ],
+                initialValue: list.alatitle?list.alatitle:''
+              })(<Input placeholder="请输入" />)}
+              </Form.Item>
+           </Col>
+           <Col span={12}>
+             <Form.Item label='描述' style={{marginLeft:150}}>
+                {getFieldDecorator('describe',{
+                  rules:[
+                    {
+                      message:'请输入'
+                    },
+                  ],
+                  initialValue:list.describe?list.describe:''
+                })(<Input placeholder='请输入'/>)}
+             </Form.Item>
+           </Col>
+         </Row>
 
           <Form.Item style={{display:this.detailsid?'inline-block':'none'}}>
             <Button style={{position:'relative' ,bottom:60}}>取消</Button>
@@ -308,10 +330,10 @@ class StrategyAddEdit extends Component {
               提交
             </Button>
           </Form.Item>
-
-          <Descriptions title='触发条件'></Descriptions>
+    
+           <Descriptions title='触发条件'></Descriptions>
           {/* <Descriptions.Item label='在过去的:'></Descriptions.Item> */}
-          <Form.Item label='在过去的'  style={{marginLeft:50}}>
+          {/* <Form.Item label='在过去的'  style={{marginLeft:50}}>
             {
               getFieldDecorator('past',{
                 rules:[
@@ -324,7 +346,7 @@ class StrategyAddEdit extends Component {
                    {frequencyChildren}
                  </Select>)
             }
-          </Form.Item>
+          </Form.Item> */}
 
           <Table
             style={{marginLeft:130,marginRight:30}}
@@ -337,14 +359,14 @@ class StrategyAddEdit extends Component {
           </Button> */}
       
 
-          <Descriptions title='执行动作'></Descriptions>
+          {/* <Descriptions title='执行动作'></Descriptions>
           {/* <Descriptions column={1}>
             <Descriptions.Item label='通知方式:' style={{marginLeft:50}}>
               <Checkbox value='shortMessage'>短信</Checkbox>
               <Checkbox value='mail'>邮件</Checkbox>
               <Checkbox value='enterpriseCredit'>企信</Checkbox>
             </Descriptions.Item> */}
-            <Form.Item label='通知方式' style={{marginLeft:50, marginTop:10}}>
+            {/* <Form.Item label='通知方式' style={{marginLeft:50, marginTop:10}}>
               {getFieldDecorator('notiMethod',{
                 rules:[
                   {
@@ -362,7 +384,7 @@ class StrategyAddEdit extends Component {
               )}
 
 
-            </Form.Item>
+            </Form.Item> */}
 
             <Form.Item label='通知对象' style={{display:'block',marginLeft:50,marginTop:20}}>
               {getFieldDecorator('notiObj',{
@@ -424,7 +446,7 @@ class StrategyAddEdit extends Component {
               }
             </Form.Item>
 
-            <Form.Item label='通知内容' style={{display:'block',marginLeft:50, marginTop:10}}>
+            {/* <Form.Item label='通知内容' style={{display:'block',marginLeft:50, marginTop:10}}>
               {getFieldDecorator('remark',{
                 rules:[
                   {
@@ -434,7 +456,7 @@ class StrategyAddEdit extends Component {
                 initialValue:list.remark?list.remark:''
               })(
               <Input style={{width:1000}}/>)}
-            </Form.Item>
+            </Form.Item> */}
 
           <Descriptions title='适用对象'></Descriptions>
           <Form.Item>

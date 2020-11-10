@@ -31,10 +31,10 @@ const eliminate = ['未消除', '已消除', '已取消'];
 }))
 class Details extends Component {
   componentDidMount() {
-    // const { dispatch } = this.props;
-    // dispatch({
-    //   type: 'alarmdetails/alarmList',
-    // });
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'alarmdetails/alarmList',
+    });
   }
 
   show = () => {
@@ -45,6 +45,10 @@ class Details extends Component {
   hide = () => {
     document.getElementById('advancedQuery').style.display='none';
     document.getElementById('generalQuery').style.display='block';
+  }
+
+  handleReset = () => {
+    this.props.form.resetFields();
   }
 
   render() {
@@ -73,6 +77,8 @@ class Details extends Component {
         title:'级别',
         dataIndex:'level',
         key:'level',
+        width:120,
+      
         render: (text, record) => (
           <span>
             <Link to={`/alarmmanage/details/detailview/${record.detailsid}`}>{text}</Link>
@@ -84,6 +90,7 @@ class Details extends Component {
         title:'类别',
         dataIndex:'category',
         key:'category',
+        width:120,
         render: (text, record) => (
           <span>
             <Tag color={gradeMap[record.grade]}>{grade[record.grade]}</Tag>
@@ -94,36 +101,43 @@ class Details extends Component {
         title:'子类',
         dataIndex:'subclass',
         key:'subclass',
+        width:120,
       },
       {
         title:'确认状态',
         dataIndex:'confirmStatus',
         key:'confirmStatus',
+        width:120
       },
       {
         title:'消除状态',
         dataIndex:'eliminationState',
         key:'eliminationState',
-        render: (text, record) => (
-          <span>
-            <Badge status={ackstatusMap[record.ackstatus]} text={ackstatus[record.ackstatus]} />
-          </span>
-        ),
+        width:120,
+        // render: (text, record) => (
+        //   <span>
+        //     <Badge status={ackstatusMap[record.ackstatus]} text={ackstatus[record.ackstatus]} />
+        //   </span>
+        // ),
       },
       {
         title:'警告内容',
         dataIndex:'warnContent',
         key:'warnContent',
-        render: (text, record) => (
-          <span>
-            <Badge status={eliminateMap[record.eliminate]} text={eliminate[record.eliminate]} />
-          </span>
-        ),
+        width:300,
+        ellipsis:true,
+        // colSpan:2,
+        // render: (text, record) => (
+        //   <span>
+        //     <Badge status={eliminateMap[record.eliminate]} text={eliminate[record.eliminate]} />
+        //   </span>
+        // ),
       },
       {
         title: '当月累计/年度累计',
         dataIndex: 'accumulated',
         key: 'accumulated',
+        width:150,
         render: (text, record) => (
           <span>
             <Badge
@@ -137,33 +151,40 @@ class Details extends Component {
         title:'当月累计/年度累计',
         dataIndex:'annualCumulative',
         key:'annualCumulative',
+        width:150,
+        // width:300,
+        // colSpan:2,
       },
       {
         title:'告警通知',
         dataIndex:'alarmNotification',
         key:'alarmNotification',
+        width:120,
       },
       {
         title:'确认警告时间',
         dataIndex:'confirmwarntime',
         key:'confirmwarntime',
+        width:120,
       },
       {
         title:'本次警告时间',
         dataIndex:'warningTime',
         key:'warningTime',
+        width:120,
       },
       {
         title:'上次警告时间',
         dataIndex:'lastWarntime',
         key:'lastWarntime',
+        width:120,
       },
       {
         title: '操作',
         dataIndex: 'action',
         key: 'action',
         fixed: 'right',
-        width: 300,
+        width: 280,
         render: (text, record) => (
           <span>
             <Button type="link">确认</Button>
@@ -173,9 +194,29 @@ class Details extends Component {
         ),
       },
     ];
+    const alarmList = [
+      {
+        level:'级别',
+        category:'类别',
+        subclass:'子类',
+        confirmStatus:'确认状态',
+        eliminationState:'消除状态',
+        warnContent:'告警内容11111111111111111111111111111111111111111111111',
+        accumulated:'当月累计',
+        annualCumulative:'年度累计',
+        confirmwarntime:'确认警告时间',
+        warningTime:'本次警告时间',
+        lastWarntime:'上次警告时间',
+      }
+    ];
+    const rowSelection = {
+      onChange: (selectedRows)=> {
+        console.log(selectedRows);
+      },
+    };
     const { getFieldDecorator } = this.props.form;
-    const { alarmdetails:{ alarmList } } = this.props;
-    const dataSource = alarmList;
+    // const { alarmdetails:{ alarmList } } = this.props;
+    const dataSource = [...alarmList];
     return (
       <PageHeaderWrapper title="告警明细信息">
         <Card style={{marginBottom:'30px'}}>
@@ -212,7 +253,7 @@ class Details extends Component {
 
               <Col span={6}>
                 <Button type='primary' style={{marginRight:'10px'}}>查询</Button>
-                <Button style={{marginRight:'10px'}}>重置</Button>
+                <Button style={{marginRight:'10px'}} onClick={this.handleReset}>重置</Button>
                 <span onClick={this.show}>展开</span>
               </Col>
             </Row>
@@ -287,7 +328,7 @@ class Details extends Component {
             <Row>
               <Col span={22} style={{textAlign:'right'}}>
                 <Button type='primary' style={{marginRight:'10px'}}>查询</Button>
-                <Button style={{marginRight:'10px'}}>重置</Button>
+                <Button style={{marginRight:'10px'}} onClick={this.handleReset}>重置</Button>
                 <span onClick={this.hide}>收起</span>
               </Col>
             </Row>
@@ -295,9 +336,11 @@ class Details extends Component {
         </Card>
         <Card>
           <Table
+          //  style={{'table-layout':'fixed',width:'100%','border-collapse':'collapse'}}
             dataSource={dataSource}
             // rowKey={record => record.detailsid}/
             columns={columns}
+            rowSelection={rowSelection}
             scroll={{ x: 1500 }}
           />
         </Card>

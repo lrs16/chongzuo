@@ -307,14 +307,14 @@ class AlarmStrategy extends Component {
                 <Button style={{ marginRight: 10 }}>删除</Button>
               </Popconfirm>
 
-              <Select style={{ width: 200 }} defaultValue="更多操作" style={{ color: '#0099FF' }}>
+              {/* <Select style={{ width: 200 }} defaultValue="更多操作" style={{ color: '#0099FF' }}>
                 {/* <Option value=''>更多操作</Option> */}
-                <Option value="copy">复制</Option>
+                {/* <Option value="copy">复制</Option>
                 <Option value="modify">批量修改</Option>
-              </Select>
+              </Select>  */}
             </div>
 
-            <div
+            {/* <div
               style={{
                 display: 'flex',
                 flexDirection: 'row',
@@ -334,7 +334,7 @@ class AlarmStrategy extends Component {
               <span>正常</span>
               <Tag color="#70a19f" style={{ padding: 10, marginLeft: 5 }}></Tag>
               <span>未知</span>
-            </div>
+            </div> */}
           </div>
           <Table
             columns={columns}

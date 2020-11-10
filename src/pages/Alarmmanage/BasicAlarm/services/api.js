@@ -76,5 +76,5 @@ export async function currentalarmClose() {
 }
 //告警明细接口
 export async function alarmList(){
-  return request(`/api/configList`);
+  return request(`/api/historyList`);
 }
