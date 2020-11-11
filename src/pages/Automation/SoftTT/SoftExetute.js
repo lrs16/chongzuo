@@ -5,9 +5,10 @@ import Link from 'umi/link';
 import moment from 'moment';
 import { Card, Table, Divider, Form, Row, Col, message, Tabs, Input, Button } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import HostTree from '@/components/HostTree';
 import StartModal from './components/StartModal';
 import SshconfigModal from './components/SshconfigModal';
-import HostTree from '@/components/HostTree';
+
 const { TabPane } = Tabs;
 const { TextArea } = Input;
 @connect(({ softexetute, loading }) => ({
@@ -56,14 +57,14 @@ class SoftExetute extends Component {
     return dispatch({
       type: 'softexetute/getExecCommand',
       payload: {
-        passWord: passWord,
+        passWord,
         hostIp: hostsIp,
         port: 22,
         userName: hostsSshUsername,
         command,
       },
     }).then(res => {
-      const wordStr = ([] = res.msg.split('\n'));
+      const wordStr = res.msg.split('\n');
       const strContent = wordStr.map((item, index) => {
         return (
           <p key={index} style={{ marginBottom: 0 }}>
@@ -71,7 +72,7 @@ class SoftExetute extends Component {
           </p>
         );
       });
-      const title = hostsIp + `-` + hostsSshUsername;
+      const title = `${hostsIp  }-${  hostsSshUsername}`;
 
       const sametypes = panes.filter(obj => {
         return obj.key === title;
@@ -79,12 +80,12 @@ class SoftExetute extends Component {
 
       if (sametypes.length >= 1) {
         sametypes[0].content = strContent;
-        this.setState({ title });
+        // this.setState({ title });
       }
     });
   };
 
-  handleEnterKey(e) {
+  handleEnterKey = (e) => {
     if (e.nativeEvent.keyCode === 13) {
       this.handleSureSendData();
     }
@@ -103,7 +104,7 @@ class SoftExetute extends Component {
     // const hostsSshPort = parseInt(formValues.values.hostsSshPort); // 端口
     const { passWord, commitlist } = formValues; // 密码, 命令resMsg
     const { hostsIp, hostsSshUsername } = formValues.values; // ip, 用户名
-    const wordStr = ([] = commitlist.split('\n'));
+    const wordStr = commitlist.split('\n');
     const strContent = wordStr.map((item, index) => {
       return (
         <p key={index} style={{ marginBottom: 0 }}>
@@ -113,7 +114,7 @@ class SoftExetute extends Component {
     });
 
     const { panes } = this.state;
-    const title = hostsIp + `-` + hostsSshUsername;
+    const title = `${hostsIp  }-${  hostsSshUsername}`;
 
     const sametype = panes.filter(obj => {
       return obj.key === title;
@@ -125,7 +126,7 @@ class SoftExetute extends Component {
     }
     if (sametype.length < 1) {
       panes.push({
-        title: title,
+        title,
         content: strContent,
         key: title,
         hostsIp,
@@ -222,8 +223,8 @@ class SoftExetute extends Component {
       setTimeout(() => {
         if (res.state) {
           const { textAreaValue } = this.state;
-          const resMsg = "命令已执行" + '\xa0' + res.msg;
-          const datatime = moment().format('YYYY-MM-DD HH:mm:ss') + '\xa0';
+          const resMsg = `${"命令已执行" }'+'{ '\xa0'}${  res.msg}`;
+          const datatime = `${moment().format('YYYY-MM-DD HH:mm:ss')  }\xa0`;
           const infoList = datatime + resMsg;
           textAreaValue.push(infoList);
           this.setState({ textAreaVisible: true, textAreaValue });
@@ -250,8 +251,8 @@ class SoftExetute extends Component {
       setTimeout(() => {
         if (res.state) {
           const { textAreaValue } = this.state;
-          const resMsg = "命令已执行" + '\xa0' + res.msg;
-          const datatime = moment().format('YYYY-MM-DD HH:mm:ss') + '\xa0';
+          const resMsg = `${"命令已执行"} '+'{'\xa0'} '+' ${  res.msg}`;
+          const datatime = `${moment().format('YYYY-MM-DD HH:mm:ss')  }\xa0`;
           const infoList = datatime + resMsg;
           textAreaValue.push(infoList);
           this.setState({ textAreaVisible: true, textAreaValue });
@@ -261,6 +262,7 @@ class SoftExetute extends Component {
       }, 500);
     })
   };
+
   check = (record) => {
     const { hostId } = this.state;
     const { id } = this.props.softexetute.treehostdata;
@@ -277,8 +279,8 @@ class SoftExetute extends Component {
       setTimeout(() => {
         if (res.state) {
           const { textAreaValue } = this.state;
-          const resMsg = "命令已执行" + '\xa0' + res.msg;
-          const datatime = moment().format('YYYY-MM-DD HH:mm:ss') + '\xa0';
+          const resMsg = `${"命令已执行"} '+'{'\xa0'} '+' ${  res.msg}`;
+          const datatime = `${moment().format('YYYY-MM-DD HH:mm:ss')  }\xa0`;
           const infoList = datatime + resMsg;
           textAreaValue.push(infoList);
           this.setState({ textAreaVisible: true, textAreaValue });
@@ -430,10 +432,10 @@ class SoftExetute extends Component {
 
     return (
       <PageHeaderWrapper title="主机操作">
-        <Row style={{ display: 'flex' }} style={{ background: '#f1f1f1' }}>
+        <Row style={{ display: 'flex', background: '#f1f1f1' }}>
           <Col span={5}>
             <Card>
-              <HostTree toFatherValue={this.getChildValue.bind(this)} />
+              <HostTree toFatherValue={this.getChildValue} />
             </Card>
           </Col>
           <Col span={19}>

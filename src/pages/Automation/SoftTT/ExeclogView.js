@@ -3,11 +3,12 @@ import { connect } from 'dva';
 import moment from 'moment';
 import { Drawer, Table, Col, Row, Button, Card } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
+// eslint-disable-next-line import/no-unresolved
 import creatHistory from 'history/createHashHistory'; // 返回上一页
-const history = creatHistory(); // 返回上一页
 
+const history = creatHistory(); // 返回上一页
 const ComtriMode = ['', '自动', '手动'];
-const SysAccount = ['', 'webApp'];
+// const SysAccount = ['', 'webApp'];
 
 const DescriptionItem = ({ title, content }) => (
   <div
@@ -268,12 +269,14 @@ class ExecLogView extends Component {
         .replace(/execTime/g, "执行时间")
         .replace(/execRemark/g, "执行备注")
     );
-    for (var key in DescriptionItemList1) {
+
+    for (const key in DescriptionItemList1) {
       delete DescriptionItemList1['主机账号id'];
-      delete DescriptionItemList1['execPass'];
-      delete DescriptionItemList1['execSalt'];
-      delete DescriptionItemList1['id'];
+      delete DescriptionItemList1.execPass;
+      delete DescriptionItemList1.execSalt;
+      delete DescriptionItemList1.id;
     }
+
     const pagination = {
       showSizeChanger: true,
       onShowSizeChange: (current, pageSize) => this.onShowSizeChange(current, pageSize),
@@ -308,8 +311,8 @@ class ExecLogView extends Component {
             closable={false}
           >
             <Row>
-              {Object.keys(DescriptionItemList1).map((key, index) => [
-                <Col span={12} key={index}>
+              {Object.keys(DescriptionItemList1).map((key) => [
+                <Col span={12} key={key}>
                   <DescriptionItem title={key} content={DescriptionItemList1[key]} />
                 </Col>,
               ])}

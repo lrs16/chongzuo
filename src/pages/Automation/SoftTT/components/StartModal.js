@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Form, Input, Modal, AutoComplete, TreeSelect } from 'antd';
 import { connect } from 'dva';
+
 const { Option } = AutoComplete;
 const { TreeNode } = TreeSelect;
 const { TextArea } = Input;
@@ -31,11 +32,10 @@ class StartModal extends Component {
     visible: false,
     ipDropdownVal: [],
     userNameDropdownVal: [],
-    portDropdownVal: [], // 主机端口下拉值
+    // portDropdownVal: [], // 主机端口下拉值
     hostsSshPassword: '',
-    queKey: '',
     value: undefined,
-    result:''
+    result: [],
   };
 
   toTree = data => {
@@ -58,7 +58,7 @@ class StartModal extends Component {
     return result;
   };
 
-  renderTreeNodes = data => 
+  renderTreeNodes = data =>
     data.map(item => {
       if (item.children) {
         return (
@@ -73,7 +73,7 @@ class StartModal extends Component {
   handleopenClick = () => {
     this.setState({
       visible: true,
-      result: '',
+      result: [],
       value: undefined
     });
     // this.props.form.setFieldsValue({ commands: this.state.value });
@@ -94,36 +94,38 @@ class StartModal extends Component {
           return item && item.trim();
         })
 
-        const portDropdownVal = res.port.map(item => {
-          return item.val;
-        })
+        // const portDropdownVal = res.port.map(item => {
+        //   return item.val;
+        // })
 
-        const portDropdownValtoString = portDropdownVal.map(String);
+        // const portDropdownValtoString = portDropdownVal.map(String);
 
         this.setState({
           ipDropdownVal: res.hosts,
           userNameDropdownVal: userNameDropdownValnoTrim,
           hostsSshPassword: res.pass,
-          portDropdownVal: portDropdownValtoString[0],
+          // portDropdownVal: portDropdownValtoString[0],
         });
       })
     }
+    return '';
   };
 
   onChange = value => {
     let emptyCommand;
     const resultCommand = [];
-    value.forEach(function(item){
+    value.forEach(item => {
       const i = item.indexOf('-');
-      if(i === -1){
+      if (i === -1) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         emptyCommand = [];
-      }else {
-        const resultStr = item.substring(i+1,item.length);
+      } else {
+        const resultStr = item.substring(i + 1, item.length);
         resultCommand.push(resultStr);
       }
-      
+
     });
-    this.setState({ result:resultCommand, value });
+    this.setState({ result: resultCommand, value });
   };
 
   handleOk = () => {
@@ -135,7 +137,7 @@ class StartModal extends Component {
         // this.setState({ value: undefined });
         const { dispatch } = this.props;
         const str = values.command.toString();
-        const commands = str.replace(/[\r\n]/g,'');
+        const commands = str.replace(/[\r\n]/g, '');
         const { hostsIp, hostsSshUsername } = values;
         dispatch({ // 执行ssh命令接口
           type: 'softexetute/getExecCommand',
@@ -144,7 +146,7 @@ class StartModal extends Component {
             hostIp: hostsIp,
             port: 22,
             userName: hostsSshUsername,
-            command:commands,
+            command: commands,
           },
         }).then(res => {
           this.props.onSumit({ values, passWord, commitlist: res.msg });
@@ -163,7 +165,7 @@ class StartModal extends Component {
 
   onSearchIp = searchText => {
     this.setState({
-      IpDropdownVal: !searchText ? [] : [searchText, searchText.repeat(2), searchText.repeat(3)],
+      ipDropdownVal: !searchText ? [] : [searchText, searchText.repeat(2), searchText.repeat(3)],
     });
   };
 
@@ -180,7 +182,7 @@ class StartModal extends Component {
   };
 
   render() {
-    const { visible, ipDropdownVal, portDropdownVal, userNameDropdownVal } = this.state;
+    const { visible, ipDropdownVal, userNameDropdownVal } = this.state;
     const {
       softexetute,
       children,
@@ -263,25 +265,25 @@ class StartModal extends Component {
                 // initialValue: this.state.value,
               })(
                 <>
-                <TreeSelect
+                  <TreeSelect
                     defaultExpandAll
                     value={this.state.value}
                     style={{ width: '100%' }}
                     dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
                     placeholder="请选择命令"
                     onChange={this.onChange}
-                    treeCheckable={true}
+                    treeCheckable
                     multiple
                   >
                     {treeData && this.renderTreeNodes(treeData)}
                   </TreeSelect>
-                
+
                 </>
               )}
             </Form.Item>
             <Form.Item label="执行命令">
               {getFieldDecorator('command', {
-                initialValue: this.state.result,
+                initialValue: this.state.result.join(';'),
                 rules: [
                   {
                     required,
@@ -289,8 +291,8 @@ class StartModal extends Component {
                   },
                 ],
               })(
-                <TextArea rows={5} style={{borderWidth: 1, borderColor: 'red'}}>
-                  {this.state.result}
+                <TextArea rows={5}>
+                  {this.state.result.join(';')}
                 </TextArea>
               )}
             </Form.Item>

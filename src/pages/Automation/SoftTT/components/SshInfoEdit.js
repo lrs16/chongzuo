@@ -24,10 +24,6 @@ const withClick = (element, handleClick = () => { }) => {
 }))
 
 class SshInfoEdit extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   state = {
     visible: false,
     values: {},
@@ -52,11 +48,11 @@ class SshInfoEdit extends Component {
     this.setState({
       visible: true,
     });
-    const id = this.props.record.id;
+    // const id = this.props.record.id;
     const { dispatch } = this.props;
     return dispatch({
       type: 'softexetute/searchSshInfotoEdit',
-      payload: { id },
+      payload: { id: this.props.record.id },
     }).then(res => {
       if (res.code === 200) {
         this.setState({ values: res.data });

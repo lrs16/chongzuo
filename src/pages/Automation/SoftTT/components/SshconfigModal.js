@@ -99,10 +99,10 @@ class SshconfigModal extends Component {
       payload: { hostsIp, hostsSshUsername, hostsSshPassword, hostsSshPort },
     }).then(res => {
       if (res.code === 200) {
-        Message.success('添加' + res.msg);
+        Message.success(`添加${res.msg}`);
         this.handleopenClick();
       } else {
-        Message.error('添加' + res.msg);
+        Message.error(`添加${res.msg}`);
       }
     });
   };
@@ -114,36 +114,34 @@ class SshconfigModal extends Component {
       payload: { id },
     }).then(res => {
       if (res.code === 200) {
-        Message.success('删除' + res.msg);
+        Message.success(`删除${res.msg}`);
         this.handleopenClick();
       }
     });
   };
 
   handleEdite = (values, record) => {
-    const id = record.id;
     const { hostsIp, hostsSshUsername, hostsSshPassword, hostsSshPort } = values;
     const { dispatch } = this.props;
     return dispatch({
       type: 'softexetute/edite',
-      payload: { hostsIp, hostsSshUsername, hostsSshPassword, hostsSshPort, id },
+      payload: { hostsIp, hostsSshUsername, hostsSshPassword, hostsSshPort, id: record.id },
     }).then(res => {
       if (res.code === 200) {
-        Message.success('编辑' + res.msg);
+        Message.success(`编辑${res.msg}`);
         this.handleopenClick();
       } else {
-        Message.error('编辑' + res.msg);
+        Message.error(`编辑${res.msg}`);
       }
     });
   };
 
   // 查看密码，检测链接按钮
   getSecretThief = (record) => {
-    const id = record.id;
     const { dispatch } = this.props;
     dispatch({
       type: 'softexetute/getSecretThief',
-      payload: { id },
+      payload: { id: record.id },
     }).then(res => {
       setTimeout(() => {
         if (res.state && res.code === 200) {
@@ -156,11 +154,10 @@ class SshconfigModal extends Component {
   };
 
   getCheckSshLink = (record) => {
-    const id = record.id;
     const { dispatch } = this.props;
     dispatch({
       type: 'softexetute/getCheckSshLink',
-      payload: { id },
+      payload: { id: record.id },
     }).then(res => {
       setTimeout(() => {
         if (res.state && res.code === 200) {
@@ -198,7 +195,7 @@ class SshconfigModal extends Component {
         key: 'hostsSshPassword',
         width: 250,
         ellipsis: true,
-        render: (value) => <Input value={value} type="password" disabled={false} style={{ border: 'none', backgroundColor: '#fff', outline: 'none',  background: 'transparent', textAlign: 'left'}} />
+        render: (value) => <Input value={value} type="password" disabled={false} style={{ border: 'none', backgroundColor: '#fff', outline: 'none', background: 'transparent', textAlign: 'left' }} />
       },
       {
         title: '使用端口',
@@ -323,6 +320,7 @@ class SshconfigModal extends Component {
             scroll={{ x: 1300 }}
             table-layout="fixed"
             pagination={pagination}
+            loading={loading}
           />
         </Modal>
       </>
