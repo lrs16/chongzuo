@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Badge, Tag, Table, Select, Row, Col, Form, Input, Radio, Icon } from 'antd';
+import { Button, Badge, Tag, Table, Select, Row, Col, Form, Card, Input, Radio, Icon } from 'antd';
 import Link from 'umi/link';
 import { connect } from 'dva';
 import numeral from 'numeral';
@@ -233,14 +233,7 @@ class Host extends Component {
     };
     return (
       <PageHeaderWrapper title="主机监测">
-        <div
-          style={{
-            background: '#fff',
-            padding: '24px 24px 0',
-            border: '1px #ccc',
-            marginBottom: '24px',
-          }}
-        >
+        <Card>
           <Row gutter={24}>
             <Form {...formItemLayout}>
               <Col xl={8} xs={12}>
@@ -298,8 +291,6 @@ class Host extends Component {
               </Col>
             </Form>
           </Row>
-        </div>
-        <div style={{ background: '#fff' }}>
           <Table
             loading={loading}
             dataSource={dataSource}
@@ -313,7 +304,7 @@ class Host extends Component {
                 // visible={detailVisible} 
                 // onClose={() => setDetailVisible(false)} 
               /> */}
-        </div>
+        </Card>
       </PageHeaderWrapper>
     );
   }

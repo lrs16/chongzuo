@@ -822,7 +822,7 @@ const tableTwo = [
   },
 ];
 
-//维护计划的列表
+// 维护计划的列表
 const mainplayList = [
   {
     id: '1',
@@ -853,7 +853,7 @@ const mainplayList = [
   },
 ];
 
-//当前告警列表
+// 当前告警列表
 const currentList = [
   {
     alarmTitle: '',
@@ -861,7 +861,7 @@ const currentList = [
   },
 ];
 
-//主机的列表展示
+// 主机的列表展示
 const hostList = [
   {
     id: '1',
@@ -892,7 +892,7 @@ const hostList = [
   },
 ];
 
-//保存新增数据
+// 保存新增数据
 const saveData = [
   {
     code: '1272798439866699778',
@@ -916,7 +916,7 @@ const saveData = [
     action: '李四',
   },
 ];
-//保存编辑接口
+// 保存编辑接口
 const saveEdit = [
   {
     code: '1272798439866699778',
@@ -940,7 +940,7 @@ const saveEdit = [
     action: '李四',
   },
 ];
-//删除数据
+// 删除数据
 const removeHost = [
   {
     code: '1272798439866699778',
@@ -966,7 +966,6 @@ const removeHost = [
 ];
 
 // //告警明细列表
-<<<<<<< HEAD
 // const alarmList = [
 //   {
 //     level:'级别',
@@ -981,24 +980,6 @@ const removeHost = [
 //     lastWarntime:'上次警告时间',
 //   }
 // ]
-
-
-=======
-const alarmList = [
-  {
-    level: '级别',
-    category: '类别',
-    subclass: '子类',
-    confirmStatus: '确认状态',
-    eliminationState: '消除状态',
-    accumulated: '当月累计',
-    annualCumulative: '年度累计',
-    confirmwarntime: '确认警告时间',
-    warningTime: '本次警告时间',
-    lastWarntime: '上次警告时间',
-  },
-];
->>>>>>> 计量业务告警：告警概览
 
 export const getFactoryTypes = [
   {
@@ -1128,36 +1109,29 @@ export default {
     },
   ],
 
-  //历史告警的列表数据
+  // 历史告警的列表数据
   'GET /api/historyList': historyList,
 
-  //基本信息
+  // 基本信息
   'GET /api/historyAlarmBasic': alarmBasic,
   'GET /api/AlarmStrategy': strateDetails,
-  //操作记录
+  // 操作记录
   'GET /api/historyAlarmOpera': operaRecord,
-  //告警历史
+  // 告警历史
   'GET /api/alarmHistory': detailAlarm,
-  //告警通知
+  // 告警通知
   'GET /api/alarmNotification': alarmNotice,
   'GET /api/tableOne': tableOne,
   'GET /api/tableTwo': tableTwo,
-  //维护计划的列表
+  // 维护计划的列表
   'GET /api/mainplayList': mainplayList,
 
-  //告警策略的列表展示
+  // 告警策略的列表展示
   'GET /api/strategyList': strategyList,
   'GET /api/strategyAdd': strategyList,
   'GET /api/strategyEnable': strategyList,
   'GET /api/strategyOut': strategyList,
-<<<<<<< HEAD
   // 'GET /api/configList':configList,
   // //告警明细
   // 'GET /api/alarmList':alarmList,
-=======
-
-  // 'GET /api/configList':configList,
-  //告警明细
-  'GET /api/alarmList': alarmList,
->>>>>>> 计量业务告警：告警概览
 };

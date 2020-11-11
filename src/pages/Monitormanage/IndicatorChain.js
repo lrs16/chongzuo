@@ -353,16 +353,15 @@ class IndicatorChain extends Component {
               </Col>
             </Row>
           </Form>
+          <Table
+            scroll={{ x: 1400 }}
+            loading={loading}
+            dataSource={dataSource}
+            columns={columns}
+            rowKey={record => record.id}
+            pagination={pagination}
+          />
         </Card>
-        <Table
-          scroll={{ x: 1400 }}
-          style={{ marginTop: 24, background: '#fff' }}
-          loading={loading}
-          dataSource={dataSource}
-          columns={columns}
-          rowKey={record => record.id}
-          pagination={pagination}
-        />
       </PageHeaderWrapper>
     );
   }

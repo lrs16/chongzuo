@@ -13,6 +13,7 @@ import {
   Menu,
   Table,
 } from 'antd';
+import moment from 'moment';
 import { ChartCard } from '@/components/Charts';
 import DonutPCT from '@/components/CustomizeCharts/DonutPCT';
 import SmoothLine from '@/components/CustomizeCharts/SmoothLine';
@@ -35,7 +36,10 @@ const confirmmap = [
   { key: 1, value: '已确认' },
   { key: 2, value: '未确认' },
 ];
-
+const eliminationmmap = [
+  { key: 1, value: '已消除' },
+  { key: 2, value: '未消除' },
+];
 const Donutdata = [
   {
     type: '业务指标告警',
@@ -263,6 +267,16 @@ const OverVies = props => {
         </Col>
         <Col span={12}>
           <ChartCard title="月度告警数量">
+            <div
+              style={{
+                position: 'absolute',
+                right: 0,
+                top: -18,
+                textAlign: 'right',
+              }}
+            >
+              时间：{moment().format('YYYY-MM')}
+            </div>
             <Spin spinning={false} style={{ background: '#ffffff' }}>
               {Donutdata === undefined && <Empty style={{ height: '250px' }} />}
               {Donutdata !== undefined && (
@@ -295,11 +309,8 @@ const OverVies = props => {
               </Col>
             )}
             <Col span={8}>
-              <Form.Item label="级别">
-                {getFieldDecorator(
-                  'level',
-                  {},
-                )(
+              <Form.Item label="告警级别">
+                {getFieldDecorator('level')(
                   <Select placeholder="请选择">
                     {levelmap.map(({ key, value }) => [
                       <Option key={key} value={key}>
@@ -312,7 +323,7 @@ const OverVies = props => {
             </Col>
             <Col span={8}>
               <Form.Item label="确认状态">
-                {getFieldDecorator('configstatus', { initialValue: '' })(
+                {getFieldDecorator('configstatus')(
                   <Select placeholder="请选择">
                     {confirmmap.map(({ key, value }) => [
                       <Option key={key} value={key}>
@@ -327,7 +338,15 @@ const OverVies = props => {
               <>
                 <Col span={8}>
                   <Form.Item label="消除状态">
-                    {getFieldDecorator('elimination ', { initialValue: '' })(<Input />)}
+                    {getFieldDecorator('elimination ')(
+                      <Select placeholder="请选择">
+                        {eliminationmmap.map(({ key, value }) => [
+                          <Option key={key} value={key}>
+                            {value}
+                          </Option>,
+                        ])}
+                      </Select>,
+                    )}
                   </Form.Item>
                 </Col>
                 <Col span={8}>

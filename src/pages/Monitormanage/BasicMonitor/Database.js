@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Badge, Table, Select, Row, Col, Form, Input, Radio, Icon } from 'antd';
+import { Button, Badge, Table, Select, Row, Col, Card, Form, Input, Radio, Icon } from 'antd';
 import Link from 'umi/link';
 import { connect } from 'dva';
 import numeral from 'numeral';
@@ -230,14 +230,7 @@ class Database extends Component {
     };
     return (
       <PageHeaderWrapper title="数据库监测">
-        <div
-          style={{
-            background: '#fff',
-            padding: '24px 24px 0',
-            border: '1px #ccc',
-            marginBottom: '24px',
-          }}
-        >
+        <Card>
           <Row gutter={24}>
             <Form {...formItemLayout}>
               <Col xl={8} xs={12}>
@@ -295,8 +288,6 @@ class Database extends Component {
               </Col>
             </Form>
           </Row>
-        </div>
-        <div style={{ background: '#fff' }}>
           <Table
             loading={loading}
             dataSource={dataSource}
@@ -305,7 +296,7 @@ class Database extends Component {
             scroll={{ x: 1200 }}
             pagination={pagination}
           />
-        </div>
+        </Card>
       </PageHeaderWrapper>
     );
   }
