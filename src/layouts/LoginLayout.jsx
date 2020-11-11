@@ -28,6 +28,7 @@ const LoginLayout = props => {
         <div className={styles.login}>
           <div className={styles.loginlogo}>
             <img src={logo} alt="" />
+            <h1 style={{ color: '#006de1', fontWeight: '700' }}>运维辅助平台</h1>
           </div>
           {children}
           <div className={styles.logintitle}>广西博联信息通信技术有限责任公司</div>
