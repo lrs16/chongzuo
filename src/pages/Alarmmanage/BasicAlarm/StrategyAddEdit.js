@@ -101,13 +101,25 @@ const formStyle = {
   loading: loading.models.loading,
 }))
 class StrategyAddEdit extends Component {
-  state = {
-    selectedRows:[],
-    startDate:''
-  }
+  // state = {
+  //   selectedRows:[],
+  //   startDate:''
+  // }
   constructor(props) {
     super(props);
     this.detailsid = props.match.params.detailsid;
+    this.state = {
+      selectedRows:[],
+      startDate:'',
+      dataSource:[{
+          key: 0,
+          warnIndex: '',
+          aggregationAlgorithm: '',
+          indexValue: '',
+          threshold:''
+      }],
+      count:1,
+  }
   }
 
   componentDidMount() {
@@ -148,7 +160,6 @@ class StrategyAddEdit extends Component {
     // confirm({
       // title:'确定要删除吗',
       // onOk() {
-        console.log(this.state.selectedRows.length);
         if (this.state.selectedRows.length){
           const idList = [];
           this.state.selectedRows.forEach(item => {
@@ -181,6 +192,40 @@ class StrategyAddEdit extends Component {
       // };
     })
 
+  }
+
+  handleRowAdd = () => {
+    const { count, dataSource } = this.state;
+    const newData = {
+        key: count,
+        warnIndex: '',
+        aggregationAlgorithm: '',
+        indexValue: '',
+        threshold:''
+    };
+    this.setState({
+        dataSource: [...dataSource, newData],
+        count: count + 1,
+    });
+  }
+
+  save = () => {
+    this.props.form.validateFields((err, values) => {
+        // console.log(values)
+        if(!err){
+          console.log(values,'lplp');
+            // values.tableDt就是个表格数据的数组，可对获取的值进行处理校验处理
+        }
+    })
+  }
+
+  handleDelete = (index) => {
+    const { dataSource } = this.state;
+    dataSource.splice(index,1);
+  this.setState({
+      dataSource: dataSource,
+      count: index + 1,
+  });
   }
 
 
@@ -340,18 +385,87 @@ class StrategyAddEdit extends Component {
                  </Select>)
             }
           </Form.Item> */}
+          <div>
+          <Button onClick={ this.handleRowAdd}>增加</Button>
+            <Form>
+              <Form.Item>
+                <Table 
+                    columns={[
+                        { title: '告警指标', dataIndex: 'warnIndex',render: (text, record, index) => 
+                            <Form.Item key={index}>
+                                {getFieldDecorator(`tableDt[${index}].warnIndex`)(
+                                     <Select style={{width:'100%'}}
+                                    //  onChange={(value) => { this.handleChange(value, 'name', index); }}
+                                     >
+                                       <Option key={1} value={1}>名字</Option>
+                                       <Option key={2} value={2}>年龄</Option>
+                                     </Select>
+                                )}
+                            </Form.Item>
+                        },
+                        { title: '聚合算法', dataIndex: 'aggregationAlgorithm',render: (text, record, index) => 
+                            <Form.Item key={index}>
+                                {getFieldDecorator(`tableDt[${index}].aggregationAlgorithm`)(
+                                     <Select style={{width:'100%'}}
+                                     //  onChange={(value) => { this.handleChange(value, 'name', index); }}
+                                      >
+                                        <Option key={1} value={1}>名字</Option>
+                                        <Option key={2} value={2}>年龄</Option>
+                                      </Select>
+                                )}
+                            </Form.Item>
+                        },
+                        { title: '指标值', dataIndex: 'indexValue',render: (text, record, index) => 
+                            <Form.Item key={index}>
+                                {getFieldDecorator(`tableDt[${index}].indexValue`)(
+                                     <Select style={{width:'100%'}}
+                                     //  onChange={(value) => { this.handleChange(value, 'name', index); }}
+                                      >
+                                        <Option key={1} value={1}>名字</Option>
+                                        <Option key={2} value={2}>年龄</Option>
+                                      </Select>
+                                )}
+                            </Form.Item>
+                        },
+                        { title: '阈值', dataIndex: 'threshold',render: (text, record, index) => 
+                            <Form.Item key={index}>
+                                {getFieldDecorator(`tableDt[${index}].threshold`)(
+                                      <Input type='number'></Input>
+                                )}
+                            </Form.Item>
+                        },
+                        {
+                          title:'操作',
+                          render:(record,index) => (
+                            <div>
+                              <Popconfirm title="确定删除此菜单吗？" onConfirm={() => this.handleDelete(index)}>
+                                <a type="link">删除主机</a>
+                              </Popconfirm>
+                            </div>
 
-          <Table
-            style={{marginLeft:130,marginRight:30}}
-            columns={columns}
-            // dataSource={dataSource}
-          >
-          </Table>
+                          )
+                        }
+                    ]}
+                    dataSource={this.state.dataSource}
+                    pagination={false}
+                />
+            </Form.Item>
+            </Form>
+              {/* <Row gutter={16}>
+                <Col span={24}>
+                  <Button onClick={ this.save } type="primary">提交</Button>
+                  <Button onClick={ this.toback }>返回</Button>
+                  <Button onClick={ this.handleRowAdd}>增加</Button>
+                  <span className="tips">{this.state.saveTipCont}</span>
+                </Col>
+            </Row> */}
+          </div>
+         
           <Row>
             <Col span={24} style={{ textAlign: 'right' }}>
               <div style={{display:this.detailsid?'inline-block':'none',marginTop:'5px'}}>
                 <Button style={{display:'inline',marginRight:'5px'}}>取消</Button>
-                <Button type='primary' htmlType='submit'>提交</Button>
+                <Button type='primary' htmlType='submit' onClick={this.save}>提交</Button>
               </div>
             </Col>
             {/* <Col span={2} style={{ textAlign: 'right' }}>

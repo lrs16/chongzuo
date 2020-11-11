@@ -172,12 +172,12 @@ class AlarmStrategy extends Component {
   render() {
     const formItemLayout = {
       labelCol: {
-        xs: { span: 24 },
-        sm: { span: 4 },
+        xs: { span: 20 },
+        sm: { span: 7 },
       },
       wrapperCol: {
-        xs: { span: 24 },
-        sm: { span: 20 },
+        xs: { span: 4 },
+        sm: { span: 17 },
       },
     };
     const rowSelection = {
@@ -273,12 +273,15 @@ class AlarmStrategy extends Component {
               })(<Input />)}
             </Form.Item>
             </Col>
-            <Col span={8} style={{textAlign:'right'}}>
-              <Button htmlType="submit" type="primary">
-                查询
-              </Button>
-              <Button onClick={this.handleReset}>重置</Button>
-</Col>
+            <Col span={8} >
+              <Form.Item label=''>
+                <Button htmlType="submit" type="primary" style={{marginLeft:'5px',marginRight:'5px'}}>
+                  查询
+                </Button>
+                <Button onClick={this.handleReset}>重置</Button>
+              </Form.Item>
+              
+            </Col>
             </Row>
           </Form>
           <div

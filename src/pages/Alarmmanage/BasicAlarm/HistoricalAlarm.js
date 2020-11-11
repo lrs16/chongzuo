@@ -201,8 +201,8 @@ class HistoricalAlarm extends Component {
         sm: { span: 7 },
       },
       wrapperCol: {
-        xs: { span: 24 },
-        sm: { span: 16 },
+        xs: { span: 4 },
+        sm: { span: 17 },
       },
     };
 
@@ -360,20 +360,12 @@ class HistoricalAlarm extends Component {
               </Col>
 
               <Col span={7} style={{ textAlign: 'right' }}>
-                <Button type="primary" htmlType="submit">
-                  搜索
-                </Button>
-
                 <Button type="primary" htmlType="submit" style={{ marginLeft: 8 }}>
                   搜索
                 </Button>
-
                 <Button style={{ marginLeft: 8 }}>重置</Button>
-
                 <span onClick={this.showAdvancedquery} style={{ marginLeft: 8 }}>展开</span>
-
                 <Button onClick={this.exportExcel} style={{ marginLeft: 8 }}>导出</Button>
-
               </Col>
             </Row>
           </Form>

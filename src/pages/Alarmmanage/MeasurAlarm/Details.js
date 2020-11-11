@@ -219,7 +219,7 @@ class Details extends Component {
     const dataSource = [...alarmList];
     return (
       <PageHeaderWrapper title="告警明细信息">
-        <Card style={{marginBottom:'30px'}}>
+        <Card>
           <Form
             style={{display:'block'}}
             id='generalQuery'
@@ -265,7 +265,7 @@ class Details extends Component {
           id='advancedQuery'
           {...advanceformItemLayout}>
             <Row>
-              <Col span={6}>
+              <Col span={8}>
                 <Form.Item label='类别'>
                 { getFieldDecorator('category',{
                   initialValue:''
@@ -273,7 +273,7 @@ class Details extends Component {
               </Form.Item>
               </Col>
 
-              <Col span={6}>
+              <Col span={8}>
                 <Form.Item label='子类'>
                   { getFieldDecorator('subclass',{
                     initialValue:''
@@ -281,7 +281,7 @@ class Details extends Component {
                 </Form.Item>
               </Col>
 
-              <Col span={6}>
+              <Col span={8}>
                 <Form.Item label='级别'>
                   { getFieldDecorator('level',{
 
@@ -289,40 +289,49 @@ class Details extends Component {
 
                 </Form.Item>
               </Col>
+            </Row>
 
-              <Col span={6}>
-                  <Form.Item label='确认状态'>
-                    { getFieldDecorator('confirmStatus',{
+            <Row>
+              <Col span={8}>
+                <Form.Item label='确认状态'>
+                  { getFieldDecorator('confirmStatus',{
 
-                    })(<Select></Select>)}
-                  </Form.Item>
-                </Col>
+                  })(<Select></Select>)}
+                </Form.Item>
+              </Col>
+             
+              <Col span={8}>
+                <Form.Item label='告警内容'>
+                  { getFieldDecorator('alarmContent')(<Input></Input>)}
+                </Form.Item>
+              </Col>
+
+              <Col span={8}>
+                <Form.Item label='确认告警时间'>
+                  {getFieldDecorator('confirmAlarmtime')(<DatePicker></DatePicker>)}
+                </Form.Item>
+              </Col>
               </Row>
 
             <Row>
-                <Col span={6}>
-                  <Form.Item label='告警内容'>
-                    { getFieldDecorator('alarmContent')(<Input></Input>)}
-                  </Form.Item>
-                </Col>
-
-                <Col span={6}>
-                  <Form.Item label='确认告警时间'>
-                    {getFieldDecorator('confirmAlarmtime')(<DatePicker></DatePicker>)}
-                  </Form.Item>
-                </Col>
-
-                <Col span={6}>
+                <Col span={8}>
                   <Form.Item label='本次告警时间'>
                     { getFieldDecorator('alarmtime')(<DatePicker></DatePicker>)}
                   </Form.Item>
                 </Col>
 
-                <Col span={6}>
+                <Col span={8}>
                   <Form.Item label='上次告警时间'>
                     { getFieldDecorator('lastAlarmtime')(<DatePicker></DatePicker>)}
                   </Form.Item>
                 </Col>
+
+                {/* <Col span={8} style={{textAlign:'right'}}>
+                <Button type='primary' style={{marginRight:'10px'}}>查询</Button>
+                <Button style={{marginRight:'10px'}} onClick={this.handleReset}>重置</Button>
+                <span onClick={this.hide}>收起</span>
+              </Col> */}
+                
               </Row>
 
             <Row>
@@ -332,9 +341,8 @@ class Details extends Component {
                 <span onClick={this.hide}>收起</span>
               </Col>
             </Row>
+            <Button type='primary'>导出数据</Button>
           </Form>
-        </Card>
-        <Card>
           <Table
           //  style={{'table-layout':'fixed',width:'100%','border-collapse':'collapse'}}
             dataSource={dataSource}
