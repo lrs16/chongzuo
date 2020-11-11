@@ -353,13 +353,6 @@ class SoftExetute extends Component {
         key: 'softwareRemark',
         width: 200,
       },
-      // {
-      //   title: '更新时间',
-      //   dataIndex: 'updateTime',
-      //   key: 'updateTime',
-      //   width: 200,
-      //   // render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
-      // },
       {
         title: '操作',
         dataIndex: 'action',
