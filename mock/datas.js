@@ -331,7 +331,7 @@ function mockchain(count, ringtype) {
     list.push({
       id: Random.string('123456789', 5),
       company: Random.integer(1, 9),
-      ringtype: ringtype,
+      ringtype,
       type: ['低压', '公变', '变电站', '地方电厂', '统调电厂'][i % 5],
       supplycompany: Random.string('4567', 1),
       percentage: Random.integer(90, 100),
@@ -347,11 +347,11 @@ function mockalarmover(count) {
   for (let i = 0; i < count; i += 1) {
     list.push({
       id: `alarmover${i}`,
-      leve: Random.integer('高中低', 1),
+      leve: Random.cword('高中低', 1),
       type: ['业务指标', '终端在线和入库', '接口数据', 'KAFKA中间件', '主站系统运行'][i % 5],
       configstatus: ['已确认', '未确认'][i % 2],
       elimination: ['已消除', '未消除'][i % 2],
-      content: Random.integer(
+      content: Random.cword(
         'KAFKA消费情况：KAFKA  主题AutodataAsk消费异常，消息量连续增长超阈值告警,供售电量分析：波动值超过波动阈值0.1',
         10,
         25,
@@ -426,7 +426,7 @@ export default {
   },
 
   // 计量业务告警： 告警概览
-  'GET api/alarmmanage/overview': (req, res) => {
+  'GET /api/alarmmanage/overview': (req, res) => {
     const count = 30;
     const data = mockalarmover(count);
     res.json({

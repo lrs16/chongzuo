@@ -12,14 +12,14 @@ export async function queryKpizbhbList(params) {
   );
 }
 
-//抽数
+// 抽数
 export async function queryextractData() {
-  return request(`monitor/extractData/zbhb`, {
+  return request(`/monitor/extractData/zbhb`, {
     method: 'GET',
   });
 }
 
-//下载
+// 下载
 export async function Downloadfils(params) {
   const { gddwmc, gldwlxbm, lb, mc, sjsj } = params;
   return request(

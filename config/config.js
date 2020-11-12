@@ -647,18 +647,18 @@ export default {
       changeOrigin: true,
       // pathRewrite: { '^/apiauth': '' }
     },
-    '/api-monitoring-business/': {
-      // 计量现场接口
-      target: 'http://172.16.4.211:8800/',
-      changeOrigin: true,
-      // pathRewrite: { '^/apiauth': '' }
-    },
-    '/api-meter-auto/': {
-      // 计量现场接口
-      target: 'http://172.16.4.211:8800/',
-      changeOrigin: true,
-      // pathRewrite: { '^/apiauth': '' }
-    },
+    // '/api-monitoring-business/': {
+    //   // 计量现场接口
+    //   target: 'http://172.16.4.211:8800/',
+    //   changeOrigin: true,
+    //   // pathRewrite: { '^/apiauth': '' }
+    // },
+    // '/api-meter-auto/': {
+    //   // 计量现场接口
+    //   target: 'http://172.16.4.211:8800/',
+    //   changeOrigin: true,
+    //   // pathRewrite: { '^/apiauth': '' }
+    // },
     '/api/': {
       target: 'http://localhost:8000/', // mock接口数据
       changeOrigin: true,

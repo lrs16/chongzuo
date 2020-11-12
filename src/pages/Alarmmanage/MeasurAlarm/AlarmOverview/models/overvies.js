@@ -12,7 +12,7 @@ export default {
       const response = yield call(queryAlarmList, payload);
       yield put({
         type: 'save',
-        payload: response,
+        payload: response.data,
       });
     },
   },

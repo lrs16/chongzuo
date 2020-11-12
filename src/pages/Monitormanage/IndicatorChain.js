@@ -279,7 +279,7 @@ class IndicatorChain extends Component {
     return (
       <PageHeaderWrapper title="指标环比数据">
         <Card>
-          <Form {...formItemLayout}>
+          <Form {...formItemLayout} onSubmit={this.handleSearch}>
             <Row>
               <Col span={8}>
                 <Form.Item label="供电单位">
