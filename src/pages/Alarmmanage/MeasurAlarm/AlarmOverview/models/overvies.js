@@ -1,4 +1,4 @@
-import { queryAlarmList } from '../services/api';
+import { queryAlarmList, configAlarmList } from '../services/api';
 
 export default {
   namespace: 'alarmovervies',
@@ -10,6 +10,13 @@ export default {
   effects: {
     *fetchlist({ payload }, { call, put }) {
       const response = yield call(queryAlarmList, payload);
+      yield put({
+        type: 'save',
+        payload: response.data,
+      });
+    },
+    *alarmsconfig({ payload: { selectedRowKeys } }, { call, put }) {
+      const response = yield call(configAlarmList, selectedRowKeys);
       yield put({
         type: 'save',
         payload: response.data,

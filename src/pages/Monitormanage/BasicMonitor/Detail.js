@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Card, Row, Col, Radio, Badge, Spin, Icon, Button } from 'antd';
+import { Card, Row, Col, Radio, Badge, Spin, Button } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import HostDetail from './components/HostDetail';
 import DatabaseDetail from './components/DatabaseDetail';
@@ -40,9 +40,9 @@ class Detail extends Component {
     });
   };
 
-  GoHistory() {
+  GoHistory = () => {
     window.history.back(-1);
-  }
+  };
 
   render() {
     const { radiaovalue, id } = this.state;

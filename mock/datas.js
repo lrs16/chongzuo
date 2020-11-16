@@ -347,10 +347,13 @@ function mockalarmover(count) {
   for (let i = 0; i < count; i += 1) {
     list.push({
       id: `alarmover${i}`,
-      leve: Random.cword('高中低', 1),
+      leve: ['紧急', '一般', '警告'][i % 3],
       type: ['业务指标', '终端在线和入库', '接口数据', 'KAFKA中间件', '主站系统运行'][i % 5],
-      configstatus: ['已确认', '未确认'][i % 2],
-      elimination: ['已消除', '未消除'][i % 2],
+      monitorco: ['采集完整率', '自动抄表率', '业务指标', '档案同步接口', '低压相关', '登录检测'][
+        i % 6
+      ],
+      configstatus: Random.string('01', 1),
+      elimination: Random.string('01', 1),
       content: Random.cword(
         'KAFKA消费情况：KAFKA  主题AutodataAsk消费异常，消息量连续增长超阈值告警,供售电量分析：波动值超过波动阈值0.1',
         10,
@@ -359,6 +362,29 @@ function mockalarmover(count) {
       contenttime: Random.datetime(),
       thistime: Random.datetime(),
       lasttime: Random.datetime(),
+    });
+  }
+  return list;
+}
+
+function mockalarmsetting(count) {
+  const list = [];
+  for (let i = 0; i < count; i += 1) {
+    list.push({
+      id: `alarmsetting${i}`,
+      title: Random.cword(
+        'KAFKA消费情况：KAFKA  主题AutodataAsk消费异常，消息量连续增长超阈值告警,供售电量分析：波动值超过波动阈值0.1',
+        10,
+        25,
+      ),
+      type: ['业务指标', '终端在线和入库', '接口数据', 'KAFKA中间件', '主站系统运行'][i % 5],
+      condition: Random.cword(
+        '监控项+状态+监控内容+聚合算法+指标值+阈值+单位+告警降噪（压缩）',
+        10,
+        25,
+      ),
+      founder: Random.cname(),
+      createTime: Random.datetime(),
     });
   }
   return list;
@@ -429,6 +455,34 @@ export default {
   'GET /api/alarmmanage/overview': (req, res) => {
     const count = 30;
     const data = mockalarmover(count);
+    res.json({
+      data: {
+        data,
+        total: count,
+      },
+    });
+  },
+  // 计量业务告警： 告警概览确认告警
+  'GET /api/alarmmanage/configalarm': (req, res) => {
+    const count = 10;
+    const datas = mockalarmover(count);
+    const data = datas.map(item => {
+      item.configstatus = 0;
+      return item;
+    });
+
+    res.json({
+      data: {
+        data,
+        total: count,
+      },
+    });
+  },
+
+  // 计量业务告警： 告警设定
+  'GET /api/alarmmanage/alarmsetting': (req, res) => {
+    const count = 50;
+    const data = mockalarmsetting(count);
     res.json({
       data: {
         data,

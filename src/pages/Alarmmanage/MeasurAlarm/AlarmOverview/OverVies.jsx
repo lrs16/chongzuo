@@ -1,26 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import {
-  Card,
-  Row,
-  Col,
-  Spin,
-  Empty,
-  Form,
-  Input,
-  Select,
-  Button,
-  Dropdown,
-  Menu,
-  Table,
-} from 'antd';
+import { Card, Row, Col, Spin, Empty, Button, Dropdown, Menu, Table, Message, Badge } from 'antd';
+import router from 'umi/router';
 import moment from 'moment';
 import { connect } from 'dva';
+import { DownOutlined } from '@ant-design/icons';
 import { ChartCard } from '@/components/Charts';
 import DonutPCT from '@/components/CustomizeCharts/DonutPCT';
 import SmoothLine from '@/components/CustomizeCharts/SmoothLine';
 import FromOverVies from './components/FromOverVies';
-import { DownOutlined, UpOutlined } from '@ant-design/icons';
 
+const eliminationsMap = ['default', 'error'];
+const eliminations = ['已消除', '未消除'];
+const statusMap = ['success', 'error'];
+const configstatus = ['已确认', '未确认'];
 const Donutdata = [
   {
     type: '业务指标告警',
@@ -167,69 +159,146 @@ const smoothdata = [
   },
 ];
 
+const columns = [
+  {
+    title: '级别',
+    dataIndex: 'leve',
+    key: 'leve',
+    width: 60,
+  },
+  {
+    title: '监控项',
+    dataIndex: 'type',
+    key: 'type',
+    width: 140,
+  },
+  {
+    title: '监控内容',
+    dataIndex: 'monitorco',
+    key: 'monitorco',
+    width: 200,
+  },
+  {
+    title: '确认状态',
+    dataIndex: 'configstatus',
+    key: 'configstatus',
+    width: 90,
+    render: (text, record) => (
+      <span>
+        <Badge status={statusMap[record.configstatus]} text={configstatus[record.configstatus]} />
+      </span>
+    ),
+  },
+  {
+    title: '消除状态',
+    dataIndex: 'elimination',
+    key: 'elimination',
+    width: 90,
+    render: (text, record) => (
+      <span>
+        <Badge
+          status={eliminationsMap[record.elimination]}
+          text={eliminations[record.elimination]}
+        />
+      </span>
+    ),
+  },
+  {
+    title: '告警内容',
+    dataIndex: 'content',
+    key: 'content',
+  },
+  {
+    title: '确认告警时间',
+    dataIndex: 'contenttime',
+    key: 'contenttime',
+    width: 180,
+  },
+  {
+    title: '本次告警时间',
+    dataIndex: 'thistime',
+    key: 'thistime',
+    width: 180,
+  },
+  {
+    title: '上次告警时间',
+    dataIndex: 'lasttime',
+    key: 'lasttime',
+    width: 180,
+  },
+];
+
+const DropdownMenu = props => {
+  const { selectedRowKeys, match, datas } = props;
+
+  const handleMenuClick = e => {
+    const alarmlist = datas.filter(obj => {
+      return obj.configstatus === '0' && obj.elimination === '1';
+    });
+    const { key } = e;
+    if (selectedRowKeys.length < 1) {
+      Message.error('至少选择一条告警记录');
+    } else {
+      router.push({
+        pathname: `${match.url}/workorder`,
+        query: {
+          id: selectedRowKeys,
+          datas: alarmlist,
+          key,
+        },
+      });
+    }
+  };
+
+  const menu = (
+    <Menu onClick={handleMenuClick}>
+      <Menu.Item key="0">事件工单</Menu.Item>
+      <Menu.Item key="1">问题工单</Menu.Item>
+      <Menu.Item key="2">变更工单</Menu.Item>
+      <Menu.Item key="3">发布工单</Menu.Item>
+    </Menu>
+  );
+
+  return (
+    <Dropdown overlay={menu}>
+      <Button type="primary" style={{ marginRight: 8 }}>
+        派发工单 <DownOutlined />
+      </Button>
+    </Dropdown>
+  );
+};
+
 function OverVies(props) {
-  const { loading, dispatch, list } = props;
-
+  const { loading, dispatch, list, match } = props;
   const dataSource = list.data;
-
+  const [selectedRowKeys, setSelectionRow] = useState('');
+  const [selectRowdata, setSelectdata] = useState('');
   useEffect(() => {
     dispatch({
       type: 'alarmovervies/fetchlist',
     });
   }, []);
-  const handleMenuClick = e => {
-    console.log('click', e);
+
+  const rowSelection = {
+    onChange: (selectRowKey, selectedRows) => {
+      setSelectionRow(selectRowKey);
+      setSelectdata(selectedRows);
+    },
   };
-  const menu = (
-    <Menu onClick={handleMenuClick}>
-      <Menu.Item key="1">事件工单</Menu.Item>
-      <Menu.Item key="2">问题工单</Menu.Item>
-      <Menu.Item key="3">变更工单</Menu.Item>
-      <Menu.Item key="4">发布工单</Menu.Item>
-    </Menu>
-  );
-  const columns = [
-    {
-      title: '级别',
-      dataIndex: 'leve',
-      key: 'leve',
-    },
-    {
-      title: '类别',
-      dataIndex: 'type',
-      key: 'type',
-    },
-    {
-      title: '确认状态',
-      dataIndex: 'configstatus',
-      key: 'configstatus',
-    },
-    {
-      title: '消除状态',
-      dataIndex: 'elimination',
-      key: 'elimination',
-    },
-    {
-      title: '警告内容',
-      dataIndex: 'content',
-      key: 'content',
-    },
-    {
-      title: '确认警告时间',
-      dataIndex: 'contenttime',
-      key: 'contenttime',
-    },
-    {
-      title: '本次警告时间',
-      dataIndex: 'thistime',
-      key: 'thistime',
-    },
-    {
-      title: '上次警告时间',
-      dataIndex: 'lasttime',
-      key: 'lasttime',
-    },
-  ];
+
+  const handleConfig = () => {
+    if (selectedRowKeys.length === 0) {
+      Message.error('至少选择一条告警记录');
+    } else {
+      dispatch({
+        type: 'alarmovervies/alarmsconfig',
+        payload: {
+          selectedRowKeys,
+        },
+      });
+    }
+  };
+
   return (
     <>
       <Row gutter={24}>
@@ -268,25 +337,23 @@ function OverVies(props) {
       <Card>
         <FromOverVies />
         <div style={{ margin: '10px 0 24px 0' }}>
-          <Button type="primary" style={{ marginRight: 8 }}>
+          <Button type="primary" style={{ marginRight: 8 }} onClick={handleConfig}>
             确认告警
           </Button>
           <Button style={{ marginRight: 8 }}>取消确认</Button>
-          <Dropdown overlay={menu}>
-            <Button type="primary" style={{ marginRight: 8 }}>
-              派发工单 <DownOutlined />
-            </Button>
-          </Dropdown>
+          <DropdownMenu selectedRowKeys={selectedRowKeys} match={match} datas={selectRowdata} />
           <Button type="danger" ghost style={{ marginRight: 8 }}>
             手工消除
           </Button>
           <Button style={{ marginRight: 8 }}>导 出</Button>
         </div>
         <Table
+          rowSelection={rowSelection}
           columns={columns}
           dataSource={dataSource}
           loading={loading}
           rowKey={record => record.id}
+          scroll={{ x: 1400 }}
         />
       </Card>
     </>

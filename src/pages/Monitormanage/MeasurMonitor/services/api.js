@@ -141,7 +141,6 @@ export async function getOnlineState() {
 
 // 召测状态，已完成”配变“”低压“，检查完毕
 export async function getZC(type) {
-  console.log(type);
   return request(`/monitor/master/zc?type=${type}`);
 }
 
@@ -165,11 +164,8 @@ export async function gethistory(params) {
   return request(`/monitor/terminalInfo/rk/history?${stringify(params)}`);
 }
 
-
-
 // 计量业务监测配置
 
 // export async function configurationList() {
 //   return request(`/api/configurationList`);
 // }
-

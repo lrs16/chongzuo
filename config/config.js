@@ -377,6 +377,11 @@ export default {
                           component: './Alarmmanage/MeasurAlarm/AlarmOverview/OverVies',
                         },
                         {
+                          path: '/alarmmanage/measuralarm/alarmoverview/overview/workorder',
+                          name: '派发工单',
+                          component: './Alarmmanage/MeasurAlarm/AlarmOverview/WorkOrder',
+                        },
+                        {
                           path: '/alarmmanage/measuralarm/alarmoverview/quotas',
                           name: '业务指标警告',
                           component: './Alarmmanage/MeasurAlarm/AlarmOverview/OverVies',
@@ -420,7 +425,7 @@ export default {
                       path: '/alarmmanage/measuralarm/syssetting',
                       icon: 'cloud-server',
                       name: '系统警告设定',
-                      component: './Alarmmanage/MeasurAlarm/SysSetting',
+                      component: './Alarmmanage/MeasurAlarm/SysSetting/index',
                     },
                     {
                       path: '/alarmmanage/measuralarm/noticesetting',

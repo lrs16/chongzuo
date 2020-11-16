@@ -38,7 +38,7 @@ class IndicatorChain extends Component {
 
   componentDidMount() {
     const currentPage = this.state.current;
-    const pageSize = this.state.pageSize;
+    const { pageSize } = this.state;
     this.getdata(currentPage, pageSize);
   }
 

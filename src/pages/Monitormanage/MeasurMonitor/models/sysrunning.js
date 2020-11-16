@@ -20,7 +20,6 @@ export default {
     },
     *fetchZCdist({ payload: { type } }, { call, put }) {
       const response = yield call(getZC, type);
-      console.log(response.data);
       yield put({
         type: 'getZCdist',
         payload: response.data,
