@@ -1,17 +1,14 @@
 import {
-  queryHostList,
   savaHostInfo,
   editHostInfo,
   removeHostInfo,
-  querySoftList,
   querySaveSoft,
   queryEditSoft,
   queryRemoveSoft,
   searchHosts,
   searchSofts,
-  hostsList,
   querySoftwaresList
-} from '../services/api';
+} from '../services/host';
 
 export default {
   namespace: 'automaticmodel',

@@ -14,10 +14,11 @@ import { Card,
          Popconfirm,
         message,
         Row,
-        Col
+        Col,
+        Radio 
    } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import EditResources from './components/EditResources';
+import EditStrategy from './components/EditStrategy';
 
 const { TextArea } = Input;
 const { CheckableTag } = Tag;
@@ -96,6 +97,9 @@ const formStyle = {
   marginLeft:50,
   display:'block'
 };
+const indexrelation = [];
+let num = 1;
+let show = false;
 @connect(({ strategyedit, loading }) => ({
   strategyedit,
   loading: loading.models.loading,
@@ -111,14 +115,6 @@ class StrategyAddEdit extends Component {
     this.state = {
       selectedRows:[],
       startDate:'',
-      dataSource:[{
-          key: 0,
-          warnIndex: '',
-          aggregationAlgorithm: '',
-          indexValue: '',
-          threshold:''
-      }],
-      count:1,
   }
   }
 
@@ -157,9 +153,6 @@ class StrategyAddEdit extends Component {
   }
 
   handleDeleteOk = () => {
-    // confirm({
-      // title:'确定要删除吗',
-      // onOk() {
         if (this.state.selectedRows.length){
           const idList = [];
           this.state.selectedRows.forEach(item => {
@@ -194,40 +187,23 @@ class StrategyAddEdit extends Component {
 
   }
 
-  handleRowAdd = () => {
-    const { count, dataSource } = this.state;
-    const newData = {
-        key: count,
-        warnIndex: '',
-        aggregationAlgorithm: '',
-        indexValue: '',
-        threshold:''
-    };
-    this.setState({
-        dataSource: [...dataSource, newData],
-        count: count + 1,
-    });
-  }
-
-  save = () => {
+  save = (tableValue) => {
     this.props.form.validateFields((err, values) => {
-        // console.log(values)
         if(!err){
+          const alarmResults =[];
+          const obj = {};
+          (tableValue.tableDt).forEach(function(item,index){
+            alarmResults.push({name:`指标名${index+1}`,x:item.nextIndicator});
+          });
+          values.tableDt = tableValue.tableDt;
+          alarmResults[alarmResults.length-1].x = '';
+          values.result = alarmResults;
+          console.log(alarmResults,'alarmResults');
           console.log(values,'lplp');
             // values.tableDt就是个表格数据的数组，可对获取的值进行处理校验处理
         }
     })
   }
-
-  handleDelete = (index) => {
-    const { dataSource } = this.state;
-    dataSource.splice(index,1);
-  this.setState({
-      dataSource: dataSource,
-      count: index + 1,
-  });
-  }
-
 
   render() {
     const formItemLayout = {
@@ -240,6 +216,7 @@ class StrategyAddEdit extends Component {
         sm: { span: 20 },
       },
     };
+
     const { getFieldDecorator } = this.props.form;
     const required = true;
 
@@ -257,53 +234,6 @@ class StrategyAddEdit extends Component {
       },
 
     }
-
-    const columns = [
-      {
-        title:'告警指标',
-        dataIndex:'warnIndex',
-        key:'warnIndex',
-        render:() => (
-          <Select>
-            {/* <OptGroup label="Manager">
-              <Option value="jack">Jack</Option>
-              <Option value="lucy">Lucy</Option>
-            </OptGroup>
-            <OptGroup label="Engineer">
-              <Option value="Yiminghe">yiminghe</Option>
-            </OptGroup> */}
-          </Select>
-
-        )
-      },
-      {
-        title:'聚合算法',
-        dataIndex:'aggreGorithm',
-        key:'aggreGorithm'
-      },
-      {
-        title:'指标值',
-        dataIndex:'indexValue',
-        key:'indexValue'
-      },
-      {
-        title:'阈值',
-        dataIndex:'threshold',
-        key:'threshold'
-      },
-      {
-        title:'单位',
-        dataIndex:'unit',
-        key:'unit'
-      },
-      {
-        title:'告警级别',
-        dataIndex:'alarmLevel',
-        key:'alarmLevel'
-      },
-
-
-    ]
 
     const editResources = values => {
       const { dispatch } = this.props;
@@ -367,9 +297,11 @@ class StrategyAddEdit extends Component {
            </Col>
          </Row>
 
-   
-    
            <Descriptions title='触发条件'></Descriptions>
+           <EditStrategy 
+            onSubmit={this.save}
+            detailsid={this.detailsid}
+           ></EditStrategy>
           {/* <Descriptions.Item label='在过去的:'></Descriptions.Item> */}
           {/* <Form.Item label='在过去的'  style={{marginLeft:50}}>
             {
@@ -385,82 +317,7 @@ class StrategyAddEdit extends Component {
                  </Select>)
             }
           </Form.Item> */}
-          <div>
-          <Button onClick={ this.handleRowAdd}>增加</Button>
-            <Form>
-              <Form.Item>
-                <Table 
-                    columns={[
-                        { title: '告警指标', dataIndex: 'warnIndex',render: (text, record, index) => 
-                            <Form.Item key={index}>
-                                {getFieldDecorator(`tableDt[${index}].warnIndex`)(
-                                     <Select style={{width:'100%'}}
-                                    //  onChange={(value) => { this.handleChange(value, 'name', index); }}
-                                     >
-                                       <Option key={1} value={1}>名字</Option>
-                                       <Option key={2} value={2}>年龄</Option>
-                                     </Select>
-                                )}
-                            </Form.Item>
-                        },
-                        { title: '聚合算法', dataIndex: 'aggregationAlgorithm',render: (text, record, index) => 
-                            <Form.Item key={index}>
-                                {getFieldDecorator(`tableDt[${index}].aggregationAlgorithm`)(
-                                     <Select style={{width:'100%'}}
-                                     //  onChange={(value) => { this.handleChange(value, 'name', index); }}
-                                      >
-                                        <Option key={1} value={1}>名字</Option>
-                                        <Option key={2} value={2}>年龄</Option>
-                                      </Select>
-                                )}
-                            </Form.Item>
-                        },
-                        { title: '指标值', dataIndex: 'indexValue',render: (text, record, index) => 
-                            <Form.Item key={index}>
-                                {getFieldDecorator(`tableDt[${index}].indexValue`)(
-                                     <Select style={{width:'100%'}}
-                                     //  onChange={(value) => { this.handleChange(value, 'name', index); }}
-                                      >
-                                        <Option key={1} value={1}>名字</Option>
-                                        <Option key={2} value={2}>年龄</Option>
-                                      </Select>
-                                )}
-                            </Form.Item>
-                        },
-                        { title: '阈值', dataIndex: 'threshold',render: (text, record, index) => 
-                            <Form.Item key={index}>
-                                {getFieldDecorator(`tableDt[${index}].threshold`)(
-                                      <Input type='number'></Input>
-                                )}
-                            </Form.Item>
-                        },
-                        {
-                          title:'操作',
-                          render:(record,index) => (
-                            <div>
-                              <Popconfirm title="确定删除此菜单吗？" onConfirm={() => this.handleDelete(index)}>
-                                <a type="link">删除主机</a>
-                              </Popconfirm>
-                            </div>
-
-                          )
-                        }
-                    ]}
-                    dataSource={this.state.dataSource}
-                    pagination={false}
-                />
-            </Form.Item>
-            </Form>
-              {/* <Row gutter={16}>
-                <Col span={24}>
-                  <Button onClick={ this.save } type="primary">提交</Button>
-                  <Button onClick={ this.toback }>返回</Button>
-                  <Button onClick={ this.handleRowAdd}>增加</Button>
-                  <span className="tips">{this.state.saveTipCont}</span>
-                </Col>
-            </Row> */}
-          </div>
-         
+{/*          
           <Row>
             <Col span={24} style={{ textAlign: 'right' }}>
               <div style={{display:this.detailsid?'inline-block':'none',marginTop:'5px'}}>
@@ -468,20 +325,8 @@ class StrategyAddEdit extends Component {
                 <Button type='primary' htmlType='submit' onClick={this.save}>提交</Button>
               </div>
             </Col>
-            {/* <Col span={2} style={{ textAlign: 'right' }}>
-              <Form.Item style={{display:this.detailsid?'inline-block':'none'}}>
-                {/* <Button>取消</Button> */}
-                {/* <Button type='primary' htmlType='submit'>
-                  提交
-                </Button>
-              </Form.Item>
-            </Col>   */}
             
-          </Row>
-        
-          {/* <Button type='dashed' onClick={this.add} style={{width:'100%'}}>
-            <Icon type='plus'></Icon>添加
-          </Button> */}
+          </Row> */}
       
 
           {/* <Descriptions title='执行动作'></Descriptions>
