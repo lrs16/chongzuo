@@ -1,29 +1,28 @@
 import React, { Component } from 'react';
-import moment from 'moment';
+// import moment from 'moment';
 import { connect } from 'dva';
 import { Card, 
-         Table,
          Descriptions, 
          Input, 
-         Checkbox, 
-         Tag,
+        //  Checkbox, 
+        //  Tag,
          Form,
          Select,
-         Button,   
-         TimePicker,
-         Popconfirm,
+        //  Button,   
+        //  TimePicker,
+        //  Popconfirm,
         message,
         Row,
         Col,
-        Radio 
+        // Radio 
    } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import EditStrategy from './components/EditStrategy';
 
-const { TextArea } = Input;
-const { CheckableTag } = Tag;
-const format = 'HH:mm';
-const tagsData = ['皖苏', '李东东', '吴西西'];
+// const { TextArea } = Input;
+// const { CheckableTag } = Tag;
+// const format = 'HH:mm';
+// const tagsData = ['皖苏', '李东东', '吴西西'];
 const { Option } = Select;
 const data = [
   {key:'',
@@ -90,16 +89,15 @@ frequencyData.forEach(function(item,index) {
   frequencyChildren.push(<Option key={index}>{item.value}</Option>)
 })
 
-const config = {
-  rules: [{ type: 'object', required: true, message: 'Please select time!' }],
-};
-const formStyle = {
-  marginLeft:50,
-  display:'block'
-};
-const indexrelation = [];
-let num = 1;
-let show = false;
+// const config = {
+//   rules: [{ type: 'object', required: true, message: 'Please select time!' }],
+// };
+// const formStyle = {
+//   marginLeft:50,
+//   display:'block'
+// };
+// const indexrelation = [];
+
 @connect(({ strategyedit, loading }) => ({
   strategyedit,
   loading: loading.models.loading,
@@ -114,7 +112,7 @@ class StrategyAddEdit extends Component {
     this.detailsid = props.match.params.detailsid;
     this.state = {
       selectedRows:[],
-      startDate:'',
+      // startDate:'',
   }
   }
 
@@ -173,33 +171,32 @@ class StrategyAddEdit extends Component {
         }
   }
 
-  handleSubmit = (e) => {
-    e.preventDefault();
-    this.props.form.validateFields((err, values) =>{
-      // if(!err) {
-      //   const { dispatch } = this.props;
-      //   return dispatch({
-      //     type: '/strategyadd/strategyAdd',
-      //     payload: values,
-      //   }).then();
-      // };
-    })
-
-  }
+  // handleSubmit = (e) => {
+  //   e.preventDefault();
+  //   this.props.form.validateFields((err, values) =>{
+  //     // if(!err) {
+  //     //   const { dispatch } = this.props;
+  //     //   return dispatch({
+  //     //     type: '/strategyadd/strategyAdd',
+  //     //     payload: values,
+  //     //   }).then();
+  //     // };
+  //   })
+  // }
 
   save = (tableValue) => {
     this.props.form.validateFields((err, values) => {
         if(!err){
           const alarmResults =[];
-          const obj = {};
           (tableValue.tableDt).forEach(function(item,index){
             alarmResults.push({name:`指标名${index+1}`,x:item.nextIndicator});
           });
-          values.tableDt = tableValue.tableDt;
+          const obj = values;
+          obj.tableDt = tableValue.tableDt
           alarmResults[alarmResults.length-1].x = '';
-          values.result = alarmResults;
-          console.log(alarmResults,'alarmResults');
-          console.log(values,'lplp');
+          obj.result = alarmResults;
+          // console.log(alarmResults,'alarmResults');
+          console.log(obj,'lplp');
             // values.tableDt就是个表格数据的数组，可对获取的值进行处理校验处理
         }
     })
@@ -221,39 +218,40 @@ class StrategyAddEdit extends Component {
     const required = true;
 
     const { strategyedit } = this.props;
-    const { list, tableone, tabletwo} = strategyedit;
-    const  dataSource  = [...tableone];
-    const tabletwoSource = [...tabletwo];
-    const rowSelection = {
-      onChange: (selectedRowKeys, selectedRows) => {
-        // console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-        this.setState({
-          selectedRows: selectedRows,
-        });
-        // console.log(this.state.detailsid);
-      },
+    // const { list, tableone, tabletwo} = strategyedit;
+       const { list } = strategyedit;
+    // const  dataSource  = [...tableone];
+    // const tabletwoSource = [...tabletwo];
+    // const rowSelection = {
+    //   onChange: (selectedRowKeys, selectedRows) => {
+    //     // console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+    //     this.setState({
+    //       selectedRows: selectedRows,
+    //     });
+    //     // console.log(this.state.detailsid);
+    //   },
 
-    }
+    // }
 
-    const editResources = values => {
-      const { dispatch } = this.props;
-      return dispatch({
+    // const editResources = values => {
+    //   const { dispatch } = this.props;
+    //   return dispatch({
 
-      }).then();
-    };
-//适用对象的列
-    const objColumns = [
-      {
-        title:'IP地址',
-        dataIndex:'ip',
-        key:'ip'
-      },
-      {
-        title:'监测对象',
-        dataIndex:'monitorObj',
-        key:'monitorObj'
-      }
-    ]
+    //   }).then();
+    // };
+// 适用对象的列
+    // const objColumns = [
+    //   {
+    //     title:'IP地址',
+    //     dataIndex:'ip',
+    //     key:'ip'
+    //   },
+    //   {
+    //     title:'监测对象',
+    //     dataIndex:'monitorObj',
+    //     key:'monitorObj'
+    //   }
+    // ]
 
     return (
       <PageHeaderWrapper title="告警详细信息">
@@ -264,7 +262,7 @@ class StrategyAddEdit extends Component {
         </Card>
 
         <Card>
-        <Descriptions title='告警内容' ></Descriptions>
+        <Descriptions title='告警内容' />
         <Form
           onSubmit={this.handleSubmit}
           {...formItemLayout}
@@ -297,11 +295,11 @@ class StrategyAddEdit extends Component {
            </Col>
          </Row>
 
-           <Descriptions title='触发条件'></Descriptions>
+           <Descriptions title='触发条件'/>
            <EditStrategy 
             onSubmit={this.save}
             detailsid={this.detailsid}
-           ></EditStrategy>
+           />
           {/* <Descriptions.Item label='在过去的:'></Descriptions.Item> */}
           {/* <Form.Item label='在过去的'  style={{marginLeft:50}}>
             {

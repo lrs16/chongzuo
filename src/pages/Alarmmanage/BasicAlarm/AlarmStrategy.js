@@ -92,12 +92,12 @@ class AlarmStrategy extends Component {
 
   // 编辑
 
-  // strategyEdit = (e) => {
-  //   if(this.state.detailsid.length>1){
-  //     alert('每次只能选择一条数据编辑');
-
-  // }
-  // }
+  strategyEdit = (e) => {
+    if(this.state.detailsid.length>1){
+      alert('每次只能选择一条数据编辑');
+      e.preventDefault();
+  }
+  }
 
   gotoPage = e => {
     if (this.state.selectedRows.length === 0) {
@@ -179,7 +179,7 @@ class AlarmStrategy extends Component {
     const rowSelection = {
       onChange: (selectedRows) => {
         this.setState({
-          selectedRows: [selectedRows],
+          selectedRows: [...selectedRows],
         });
       },
     };

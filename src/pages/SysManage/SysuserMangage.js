@@ -12,7 +12,7 @@ import {
   Badge,
   Tooltip,
   Form,
-  Pagination,
+  // Pagination,
 } from 'antd';
 import {
   ToolOutlined,

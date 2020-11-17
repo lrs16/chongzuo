@@ -85,7 +85,6 @@ class MaintenancePlan extends Component {
   };
 
   maintenanceAdd = e => {
-    console.log(this.state.selectedRows.length + 'pp');
     if (this.state.selectedRows.length == 0) {
       message.info('每次至少选择一条数据编辑');
       e.preventDefault();

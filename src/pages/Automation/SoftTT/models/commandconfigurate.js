@@ -32,7 +32,6 @@ export default {
     },
 
     *deleteCommand({payload:{id}}, { call }) {
-      console.log({id},'{}');
       return yield call(deleteCommand,id);
     },
 

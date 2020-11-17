@@ -14,10 +14,9 @@ import { Card,
 import { connect } from 'dva';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import CurrentalarmDetail from './components/CurrentalarmDetail';
-import { ChartCard } from '@/components/Charts';
+// import { ChartCard } from '@/components/Charts';
 import ExportJsonExcel from 'js-export-excel';
-import { Chart, Interval, Interaction, registerInteraction, Tooltip } from 'bizcharts';
-//import resources from '../Automation/Scenarios/models/resources';
+import { Chart, Interval, Interaction, Tooltip } from 'bizcharts';
 
 const { TabPane } = Tabs;
 const { Search } = Input;
@@ -36,7 +35,7 @@ class CurrentAlarm extends Component {
   state = {
     current: 1,
     pageSize: 3,
-    queKey: '',
+    // queKey: '',
     selectedRows: [],
   };
 
@@ -118,7 +117,7 @@ class CurrentAlarm extends Component {
     if (this.state.selectedRows.length) {
       const confirmList = [];
       this.state.selectedRows.forEach(item => {
-        const id = item.id;
+        const id = item.id.toString();
         confirmList.push(id);
       });
       const { dispatch } = this.props;
@@ -142,7 +141,7 @@ class CurrentAlarm extends Component {
     if (this.state.selectedRows.length) {
       const confirmList = [];
       this.state.selectedRows.forEach(item => {
-        const id = item.id;
+        const id = item.id.toString();
         confirmList.push(id);
       });
       const { dispatch } = this.props;
@@ -166,7 +165,7 @@ class CurrentAlarm extends Component {
     if (this.state.selectedRows.length) {
       const closeList = [];
       this.state.selectedRows.forEach(item => {
-        const id = item.id;
+        const id = item.id.toString();
         closeList.push(id);
       });
       const { dispatch } = this.props;
@@ -187,7 +186,7 @@ class CurrentAlarm extends Component {
   };
 
   exportExcel = () => {
-    const { currentalarm } = this.props;
+    // const { currentalarm } = this.props;
     const { selectedRows } = this.state;
     const option = {};
 
@@ -197,21 +196,21 @@ class CurrentAlarm extends Component {
         sheetData: selectedRows.map(item => {
           const result = {};
           selectedRows.forEach(c => {
-            result[c.line] = item['line'];
-            result[c.alarmTitle] = item['alarmTitle'];
-            result[c.alarmDetail] = item['alarmDetail'];
-            result[c.equipmentName] = item['equipmentName'];
-            result[c.ip] = item['ip'];
-            result[c.alarmTime] = item['alarmTime'];
-            result[c.recoveryTime] = item['recoveryTime'];
-            result[c.level] = item['level'];
-            result[c.threshold] = item['threshold'];
-            result[c.currentValue] = item['currentValue'];
-            result[c.duration] = item['duration'];
-            result[c.alarmStatus] = item['alarmStatus'];
-            result[c.alarmTimes] = item['alarmTimes'];
-            result[c.alarmNotification] = item['alarmNotification'];
-            result[c.alarmId] = item['alarmId'];
+            result[c.line] = item.line;
+            result[c.alarmTitle] = item.alarmTitle;
+            result[c.alarmDetail] = item.alarmDetail;
+            result[c.equipmentName] = item.equipmentName;
+            result[c.ip] = item.ip;
+            result[c.alarmTime] = item.alarmTime;
+            result[c.recoveryTime] = item.recoveryTime;
+            result[c.level] = item.level;
+            result[c.threshold] = item.threshold;
+            result[c.currentValue] = item.currentValue;
+            result[c.duration] = item.duration;
+            result[c.alarmStatus] = item.alarmStatus;
+            result[c.alarmTimes] = item.alarmTimes;
+            result[c.alarmNotification] = item.alarmNotification;
+            result[c.alarmId] = item.alarmId;
           });
           // console.log(result);
           return result;
@@ -235,7 +234,7 @@ class CurrentAlarm extends Component {
           '告警通知',
           '告警ID',
         ],
-        columnWidths: selectedRows.map(item => 10),
+        columnWidths: selectedRows.map(() => 10),
       },
     ];
     const toExcel = new ExportJsonExcel(option);
@@ -243,11 +242,20 @@ class CurrentAlarm extends Component {
   };
 
   render() {
+    const { currentalarm } = this.props;
+    const {
+      basicInfo = [],
+      list = [],
+      opera = [],
+      currentInfo = [],
+      notificationInfo = [],
+    } = currentalarm;
+    const dataSource = [...list];
     const rowSelection = {
       onChange: (selectedRowKeys, selectedRows) => {
         // console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
         this.setState({
-          selectedRows: selectedRows,
+          selectedRows: [...selectedRows],
         });
       },
     };
@@ -258,7 +266,7 @@ class CurrentAlarm extends Component {
         dataIndex: 'alarmTitle',
         key: 'alarmTitle',
         width: 150,
-        render: (text, record) => (
+        render: (text) => (
           <CurrentalarmDetail
             basic={basicInfo}
             opera={opera}
@@ -342,15 +350,7 @@ class CurrentAlarm extends Component {
         width: 200,
       },
     ];
-    const { currentalarm } = this.props;
-    const {
-      basicInfo = [],
-      list = [],
-      opera = [],
-      currentInfo = [],
-      notificationInfo = [],
-    } = currentalarm;
-    const dataSource = [...list];
+  
 
     const pagination = {
       showSizeChanger: true,
@@ -685,8 +685,7 @@ class CurrentAlarm extends Component {
                 scroll={{ x: 2000 }}
                 rowSelection={rowSelection}
                 rowKey={record => record.id}
-              ></Table>
-            
+              />
             </TabPane>
          
             {/* <TabPane tab="tab2" key="2">
