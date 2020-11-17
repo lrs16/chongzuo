@@ -130,7 +130,7 @@ export default {
     },
 
     // SSh信息表格数据编辑填充
-    *searchSshInfotoEdit({ payload: { id } }, { call, put }) {
+    *searchSshInfotoEdit({ payload: { id } }, { call }) {
       // const response = yield call(searchSshInfoList, id);
       // yield put({
       //   type: 'newSshInfoList',

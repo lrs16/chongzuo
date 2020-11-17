@@ -220,13 +220,13 @@ export async function updateCommand(values) {
     body:JSON.stringify(values),
   });
 }
-//  删除配置信息
+// 删除配置信息
 export async function deleteCommand(id){
   return request(`/auto/commandConfig/${id}`,{
     method:'DELETE'
   });
 }
-//  编辑通过id查找
+// 编辑通过id查找
 export async function editSearchinfo(id){
   return request(`/auto/commandConfig/${id}`);
 }

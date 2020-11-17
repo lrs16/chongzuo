@@ -67,12 +67,13 @@ class SoftExetute extends Component {
       const wordStr = res.msg.split('\n');
       const strContent = wordStr.map((item, index) => {
         return (
+          // eslint-disable-next-line react/no-array-index-key
           <p key={index} style={{ marginBottom: 0 }}>
             {item}
           </p>
         );
       });
-      const title = `${hostsIp  }-${  hostsSshUsername}`;
+      const title = `${hostsIp}-${hostsSshUsername}`;
 
       const sametypes = panes.filter(obj => {
         return obj.key === title;
@@ -107,6 +108,7 @@ class SoftExetute extends Component {
     const wordStr = commitlist.split('\n');
     const strContent = wordStr.map((item, index) => {
       return (
+        // eslint-disable-next-line react/no-array-index-key
         <p key={index} style={{ marginBottom: 0 }}>
           {item}
         </p>
@@ -114,7 +116,7 @@ class SoftExetute extends Component {
     });
 
     const { panes } = this.state;
-    const title = `${hostsIp  }-${  hostsSshUsername}`;
+    const title = `${hostsIp}-${hostsSshUsername}`;
 
     const sametype = panes.filter(obj => {
       return obj.key === title;
@@ -223,8 +225,8 @@ class SoftExetute extends Component {
       setTimeout(() => {
         if (res.state) {
           const { textAreaValue } = this.state;
-          const resMsg = `${"命令已执行"}${'\xa0'} ${  res.msg}`;
-          const datatime = `${moment().format('YYYY-MM-DD HH:mm:ss')  }\xa0`;
+          const resMsg = `${"命令已执行"}${'\xa0'} ${res.msg}`;
+          const datatime = `${moment().format('YYYY-MM-DD HH:mm:ss')}\xa0`;
           const infoList = datatime + resMsg;
           textAreaValue.push(infoList);
           this.setState({ textAreaVisible: true, textAreaValue });
@@ -251,8 +253,8 @@ class SoftExetute extends Component {
       setTimeout(() => {
         if (res.state) {
           const { textAreaValue } = this.state;
-          const resMsg = `${"命令已执行"}${'\xa0'} ${  res.msg}`;
-          const datatime = `${moment().format('YYYY-MM-DD HH:mm:ss')  }\xa0`;
+          const resMsg = `${"命令已执行"}${'\xa0'} ${res.msg}`;
+          const datatime = `${moment().format('YYYY-MM-DD HH:mm:ss')}\xa0`;
           const infoList = datatime + resMsg;
           textAreaValue.push(infoList);
           this.setState({ textAreaVisible: true, textAreaValue });
@@ -279,8 +281,8 @@ class SoftExetute extends Component {
       setTimeout(() => {
         if (res.state) {
           const { textAreaValue } = this.state;
-          const resMsg = `${"命令已执行"}${'\xa0'} ${  res.msg}`;
-          const datatime = `${moment().format('YYYY-MM-DD HH:mm:ss')  }\xa0`;
+          const resMsg = `${"命令已执行"}${'\xa0'} ${res.msg}`;
+          const datatime = `${moment().format('YYYY-MM-DD HH:mm:ss')}\xa0`;
           const infoList = datatime + resMsg;
           textAreaValue.push(infoList);
           this.setState({ textAreaVisible: true, textAreaValue });

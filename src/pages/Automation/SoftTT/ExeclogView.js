@@ -270,12 +270,14 @@ class ExecLogView extends Component {
         .replace(/execRemark/g, "执行备注")
     );
 
-    for (const key in DescriptionItemList1) {
-      delete DescriptionItemList1['主机账号id'];
-      delete DescriptionItemList1.execPass;
-      delete DescriptionItemList1.execSalt;
-      delete DescriptionItemList1.id;
-    }
+    Object.keys(DescriptionItemList1).forEach(key => {
+      if (key) {
+        delete DescriptionItemList1.主机账号id;
+        delete DescriptionItemList1.execPass;
+        delete DescriptionItemList1.execSalt;
+        delete DescriptionItemList1.id;
+      }
+    });
 
     const pagination = {
       showSizeChanger: true,
