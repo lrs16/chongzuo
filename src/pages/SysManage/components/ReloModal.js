@@ -1,8 +1,7 @@
 /* eslint-disable no-useless-constructor */
 /* eslint-disable react/destructuring-assignment */
 import React, { Component } from 'react';
-import { Form, Input, Modal, Radio } from 'antd';
-import { element } from 'prop-types';
+import { Form, Input, Button, Radio, Drawer } from 'antd';
 
 const formItemLayout = {
   labelCol: {
@@ -21,10 +20,6 @@ const withClick = (element, handleClick = () => {}) => {
   return <element.type {...element.props} onClick={handleClick} />;
 };
 class ReloModal extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   state = {
     visible: false,
   };
@@ -65,15 +60,15 @@ class ReloModal extends Component {
     return (
       <>
         {withClick(children, this.handleopenClick)}
-        <Modal
+        <Drawer
           title={title}
+          width={600}
+          onClose={this.hanldleCancel}
           visible={visible}
-          centered
-          maskClosable={false}
-          onCancel={this.hanldleCancel}
-          onOk={this.handleOk}
+          bodyStyle={{ paddingBottom: 60 }}
+          // destroyOnClose
         >
-          <Form {...formItemLayout}>
+          <Form {...formItemLayout} onSubmit={this.handleOk}>
             <Form.Item label="ID">
               {getFieldDecorator('id', {
                 initialValue: id,
@@ -123,7 +118,26 @@ class ReloModal extends Component {
               )}
             </Form.Item>
           </Form>
-        </Modal>
+          <div
+            style={{
+              position: 'absolute',
+              right: 0,
+              bottom: 0,
+              width: '100%',
+              borderTop: '1px solid #e9e9e9',
+              padding: '10px 16px',
+              background: '#fff',
+              textAlign: 'right',
+            }}
+          >
+            <Button onClick={this.hanldleCancel} style={{ marginRight: 8 }}>
+              取消
+            </Button>
+            <Button onClick={this.handleOk} type="primary">
+              提交
+            </Button>
+          </div>
+        </Drawer>
       </>
     );
   }

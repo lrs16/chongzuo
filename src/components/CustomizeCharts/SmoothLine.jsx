@@ -1,20 +1,22 @@
 import React from 'react';
-import { Chart, Line, Point, Tooltip } from 'bizcharts';
+import { Chart, Line, Point, Tooltip, Axis } from 'bizcharts';
+import DataSet from '@antv/data-set';
 
 function SmoothLine(props) {
-  const { data, height, padding } = props;
+  const { data, cols, height, padding } = props;
+  const dv = new DataSet.View().source(data);
+  dv.transform({
+    type: 'sort-by',
+    fields: ['name'], // 根据指定的字段集进行排序，与lodash的sortBy行为一致
+    order: 'ASC', // 默认为 ASC，DESC 则为逆序
+  });
+
   return (
-    <Chart
-      scale={{ temperature: { min: 0 } }}
-      padding={padding}
-      autoFit
-      height={height}
-      data={data}
-      interactions={['element-active']}
-    >
-      <Line shape="smooth" position="month*temperature" color="city" label="temperature" />
-      <Point position="month*temperature" color="city" shape="circle" />
+    <Chart padding={padding} scale={cols} autoFit height={height} data={dv.rows}>
+      <Line shape="smooth" position="date*value" color="name" />
+      <Point position="date*value" color="name" shape="circle" />
       <Tooltip shared showCrosshairs />
+      <Axis />
     </Chart>
   );
 }

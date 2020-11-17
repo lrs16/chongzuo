@@ -1,7 +1,7 @@
 /* eslint-disable no-useless-constructor */
 /* eslint-disable react/destructuring-assignment */
 import React, { Component } from 'react';
-import { Form, Input, Modal, Radio } from 'antd';
+import { Form, Input, Drawer, Radio, Button } from 'antd';
 
 const formItemLayout = {
   labelCol: {
@@ -20,10 +20,6 @@ const withClick = (element, handleClick = () => {}) => {
   return <element.type {...element.props} onClick={handleClick} />;
 };
 class MenuModal extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   state = {
     visible: false,
   };
@@ -73,13 +69,12 @@ class MenuModal extends Component {
     return (
       <>
         {withClick(children, this.handleopenClick)}
-        <Modal
+        <Drawer
           title={title}
+          width={600}
+          onClose={this.hanldleCancel}
           visible={visible}
-          centered
-          maskClosable={false}
-          onCancel={this.hanldleCancel}
-          onOk={this.handleOk}
+          bodyStyle={{ paddingBottom: 60 }}
         >
           <Form {...formItemLayout}>
             <Form.Item label="菜单编码">
@@ -164,7 +159,26 @@ class MenuModal extends Component {
               )}
             </Form.Item>
           </Form>
-        </Modal>
+          <div
+            style={{
+              position: 'absolute',
+              right: 0,
+              bottom: 0,
+              width: '100%',
+              borderTop: '1px solid #e9e9e9',
+              padding: '10px 16px',
+              background: '#fff',
+              textAlign: 'right',
+            }}
+          >
+            <Button onClick={this.hanldleCancel} style={{ marginRight: 8 }}>
+              取消
+            </Button>
+            <Button onClick={this.handleOk} type="primary">
+              提交
+            </Button>
+          </div>
+        </Drawer>
       </>
     );
   }

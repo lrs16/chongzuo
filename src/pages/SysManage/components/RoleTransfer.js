@@ -38,7 +38,6 @@ class RoleTransfer extends Component {
       vote.rolecode = datas[i].roleCode;
       newArr.push(vote);
     }
-    console.log(newArr,'oo');
     return newArr;
   };
 

@@ -13,151 +13,19 @@ const eliminationsMap = ['default', 'error'];
 const eliminations = ['已消除', '未消除'];
 const statusMap = ['success', 'error'];
 const configstatus = ['已确认', '未确认'];
-const Donutdata = [
-  {
-    type: '业务指标告警',
-    count: 600,
+const cols = {
+  value: {
+    min: 100,
+    range: [0, 0.95],
+    alias: '',
+    tickCount: 5,
   },
-  {
-    type: '终端在线和入库告警',
-    count: 200,
+  date: {
+    // max: 24,
+    range: [0.02, 0.95],
+    alias: '',
   },
-  {
-    type: '接口数据告警',
-    count: 100,
-  },
-  {
-    type: 'KAFKA中间件告警',
-    count: 390,
-  },
-  {
-    type: '主站系统运行告警',
-    count: 400,
-  },
-];
-// 数据源
-const smoothdata = [
-  {
-    month: 'Jan',
-    city: 'Tokyo',
-    temperature: 7,
-  },
-  {
-    month: 'Jan',
-    city: 'London',
-    temperature: 3.9,
-  },
-  {
-    month: 'Feb',
-    city: 'Tokyo',
-    temperature: 6.9,
-  },
-  {
-    month: 'Feb',
-    city: 'London',
-    temperature: 4.2,
-  },
-  {
-    month: 'Mar',
-    city: 'Tokyo',
-    temperature: 9.5,
-  },
-  {
-    month: 'Mar',
-    city: 'London',
-    temperature: 5.7,
-  },
-  {
-    month: 'Apr',
-    city: 'Tokyo',
-    temperature: 14.5,
-  },
-  {
-    month: 'Apr',
-    city: 'London',
-    temperature: 8.5,
-  },
-  {
-    month: 'May',
-    city: 'Tokyo',
-    temperature: 18.4,
-  },
-  {
-    month: 'May',
-    city: 'London',
-    temperature: 11.9,
-  },
-  {
-    month: 'Jun',
-    city: 'Tokyo',
-    temperature: 21.5,
-  },
-  {
-    month: 'Jun',
-    city: 'London',
-    temperature: 15.2,
-  },
-  {
-    month: 'Jul',
-    city: 'Tokyo',
-    temperature: 25.2,
-  },
-  {
-    month: 'Jul',
-    city: 'London',
-    temperature: 17,
-  },
-  {
-    month: 'Aug',
-    city: 'Tokyo',
-    temperature: 26.5,
-  },
-  {
-    month: 'Aug',
-    city: 'London',
-    temperature: 16.6,
-  },
-  {
-    month: 'Sep',
-    city: 'Tokyo',
-    temperature: 23.3,
-  },
-  {
-    month: 'Sep',
-    city: 'London',
-    temperature: 14.2,
-  },
-  {
-    month: 'Oct',
-    city: 'Tokyo',
-    temperature: 18.3,
-  },
-  {
-    month: 'Oct',
-    city: 'London',
-    temperature: 10.3,
-  },
-  {
-    month: 'Nov',
-    city: 'Tokyo',
-    temperature: 13.9,
-  },
-  {
-    month: 'Nov',
-    city: 'London',
-    temperature: 6.6,
-  },
-  {
-    month: 'Dec',
-    city: 'Tokyo',
-    temperature: 9.6,
-  },
-  {
-    month: 'Dec',
-    city: 'London',
-    temperature: 4.8,
-  },
-];
+};
 
 const columns = [
   {
@@ -269,7 +137,15 @@ const DropdownMenu = props => {
 };
 
 function OverVies(props) {
-  const { loading, dispatch, list, match } = props;
+  const {
+    loading,
+    dispatch,
+    list,
+    Donutdata,
+    Smoothdata,
+    match,
+    location: { query },
+  } = props;
   const dataSource = list.data;
   const [selectedRowKeys, setSelectionRow] = useState('');
   const [selectRowdata, setSelectdata] = useState('');
@@ -277,7 +153,38 @@ function OverVies(props) {
     dispatch({
       type: 'alarmovervies/fetchlist',
     });
+    dispatch({
+      type: 'alarmovervies/fetchoverdonut',
+    });
+    dispatch({
+      type: 'alarmovervies/fetchoversmooth',
+    });
   }, []);
+
+  const gettimedatas = () => {
+    const { key } = query;
+    switch (key) {
+      case 'overview':
+        dispatch({
+          type: 'alarmovervies/fetchlist',
+        });
+        dispatch({
+          type: 'alarmovervies/fetchoverdonut',
+        });
+        dispatch({
+          type: 'alarmovervies/fetchoversmooth',
+        });
+        break;
+      case 'quotas':
+        dispatch({
+          type: 'alarmovervies/fetchlist',
+        });
+        break;
+
+      default:
+        break;
+    }
+  };
 
   const rowSelection = {
     onChange: (selectRowKey, selectedRows) => {
@@ -307,7 +214,7 @@ function OverVies(props) {
             <Spin spinning={false} style={{ background: '#ffffff' }}>
               {Donutdata === undefined && <Empty style={{ height: '250px' }} />}
               {Donutdata !== undefined && (
-                <DonutPCT data={Donutdata} height={350} padding={[10, 0, 30, 0]} />
+                <DonutPCT data={Donutdata} cols={cols} height={350} padding={[10, 0, 50, 0]} />
               )}
             </Spin>
           </ChartCard>
@@ -325,9 +232,9 @@ function OverVies(props) {
               时间：{moment().format('YYYY-MM')}
             </div>
             <Spin spinning={false} style={{ background: '#ffffff' }}>
-              {Donutdata === undefined && <Empty style={{ height: '250px' }} />}
-              {Donutdata !== undefined && (
-                <SmoothLine data={smoothdata} height={350} padding={[30, 0, 50, 0]} />
+              {Smoothdata === undefined && <Empty style={{ height: '250px' }} />}
+              {Smoothdata !== undefined && (
+                <SmoothLine data={Smoothdata} height={350} padding={[30, 0, 50, 60]} />
               )}
             </Spin>
           </ChartCard>
@@ -362,5 +269,7 @@ function OverVies(props) {
 
 export default connect(({ alarmovervies, loading }) => ({
   list: alarmovervies.list,
+  Donutdata: alarmovervies.Donutdata,
+  Smoothdata: alarmovervies.Smoothdata,
   loading: loading.models.alarmovervies,
 }))(OverVies);

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Drawer, Button ,Message} from 'antd';
+import { Drawer, Button, Message } from 'antd';
 import MenuTransfer from './MenuTransfer';
 
 // 克隆子元素按钮，并添加事件
@@ -12,10 +12,9 @@ const withClick = (element, showDrawer = () => {}) => {
   loading: loading.models.rolemenu,
 }))
 class RoleMenu extends Component {
-
   state = {
     visible: false,
-    menulist:[],
+    menulist: [],
   };
 
   showDrawer = () => {
@@ -32,34 +31,29 @@ class RoleMenu extends Component {
     });
   };
 
-  handleChange = menulist =>{
-    this.setState(
-      
-      { menulist });
+  handleChange = menulist => {
+    this.setState({ menulist });
   };
-
 
   handleOk = () => {
     const { dispatch } = this.props;
-    const {roleId} = this.props;
-    const menuvalue =  this.state.menulist;
-   // console.log(menuvalue);
+    const { roleId } = this.props;
+    const menuvalue = this.state.menulist;
+    // console.log(menuvalue);
     return dispatch({
       type: 'rolemenu/unpdatemune',
-      payload: { roleId ,menuvalue},
-    }).then(res=>{
+      payload: { roleId, menuvalue },
+    }).then(res => {
       if (res.code === 200) {
         Message.success(res.msg);
         this.onClose();
       } else {
         Message.error('配置菜单失败！');
       }
-
     });
   };
 
-
-  loadsysMenu = () =>{
+  loadsysMenu = () => {
     const { dispatch } = this.props;
     dispatch({
       type: 'rolemenu/fetchdatas',
@@ -67,7 +61,7 @@ class RoleMenu extends Component {
   };
 
   loadroleMenu = () => {
-    const {roleId} = this.props;
+    const { roleId } = this.props;
     const { dispatch } = this.props;
     return dispatch({
       type: 'rolemenu/querymune',
@@ -75,34 +69,32 @@ class RoleMenu extends Component {
     });
   };
 
-
   render() {
     const { visible } = this.state;
-    const { 
+    const {
       loading,
-      children, 
-      title ,
+      children,
+      title,
       roleId,
-      rolemenu: { sysmenu,rolemenus },
+      rolemenu: { sysmenu, rolemenus },
     } = this.props;
     return (
       <>
         {withClick(children, this.showDrawer)}
         <Drawer
           title={title}
-          width={720}
+          width={600}
           onClose={this.onClose}
           visible={visible}
           bodyStyle={{ paddingBottom: 60 }}
           // destroyOnClose
           key={roleId}
         >
-          <MenuTransfer 
-          sysmenu={sysmenu.data}
-          rolemenus={rolemenus.data}
-          openloading={loading} 
-          UpdateMenu={this.handleChange}
-         
+          <MenuTransfer
+            sysmenu={sysmenu.data}
+            rolemenus={rolemenus.data}
+            openloading={loading}
+            UpdateMenu={this.handleChange}
           />
           <div
             style={{

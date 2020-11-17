@@ -14,6 +14,10 @@ body,
   min-height: 100vh;
 }
 
+.ant-layout .ant-layout {
+  min-height: calc(100vh - 120px);
+}
+
 canvas {
   display: block;
 }
@@ -33,11 +37,13 @@ ol {
   .ant-table {
     width: 100%;
     overflow-x: auto;
+
     &-thead > tr,
     &-tbody > tr {
       > th,
       > td {
         white-space: pre;
+
         > span {
           display: block;
         }

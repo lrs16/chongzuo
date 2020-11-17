@@ -15,17 +15,10 @@ export async function UpdateUsers(params) {
   });
 }
 // 删除用户
-export async function removeUsers(userId) {
-  return request(`/upms/user/${userId}`, {
+export async function removeUsers(id) {
+  return request(`/upms/user/${id}`, {
     method: 'DELETE',
     requestType: 'form',
-  });
-}
-
-export async function removeHostInfo(id) {
-  // const hostid = stringify(id);
-  return request(`/auto/hosts/${id}`, {
-    method: 'DELETE',
   });
 }
 
@@ -60,7 +53,6 @@ export async function UpdateMenu(params) {
 export async function removeMenu(id) {
   return request(`/upms/menu/${id}`, {
     method: 'DELETE',
-    data: id,
     requestType: 'form',
   });
 }
@@ -90,7 +82,6 @@ export async function UpdateDept(params) {
 export async function removeDept(id) {
   return request(`/upms/dept/${id}`, {
     method: 'DELETE',
-    data: id,
     requestType: 'form',
   });
 }

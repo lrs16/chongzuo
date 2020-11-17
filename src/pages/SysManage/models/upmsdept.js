@@ -24,13 +24,12 @@ export default {
       return yield call(UpdateDept, payload);
     },
 
-    *remove({ payload }, { call }) {
-      return yield call(removeDept, payload);
+    *remove({ payload: { id } }, { call }) {
+      return yield call(removeDept, id);
     },
 
     // 查询数据
     *search({ payload }, { call, put }) {
-      console.log(payload);
       const response = yield call(searchDept, payload);
       yield put({
         type: 'show',

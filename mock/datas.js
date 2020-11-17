@@ -1,5 +1,5 @@
 import mockjs from 'mockjs';
-
+import moment from 'moment';
 const { Random } = mockjs;
 // 系统管理
 
@@ -390,6 +390,44 @@ function mockalarmsetting(count) {
   return list;
 }
 
+const overDonut = [
+  {
+    type: '业务指标告警',
+    count: 600,
+  },
+  {
+    type: '终端在线和入库告警',
+    count: 200,
+  },
+  {
+    type: '接口数据告警',
+    count: 100,
+  },
+  {
+    type: 'KAFKA中间件告警',
+    count: 390,
+  },
+  {
+    type: '主站系统运行告警',
+    count: 400,
+  },
+];
+
+function mocksmoothdata() {
+  const count = moment().format('DD');
+  const list = [];
+  for (let i = 0; i < 5; i += 1) {
+    for (let j = 1; j <= count; j += 1) {
+      list.push({
+        date: `${j}`,
+        name: ['业务指标', '终端在线和入库', '接口数据', 'KAFKA中间件', '主站系统运行'][i % 5],
+        value: Random.integer(180, 200),
+      });
+    }
+  }
+  return list;
+}
+
 export default {
   'GET /api-upms/upms_user/getCurrUserInfo': CurrUserInfo, // 根据token获取用户信息
   'GET /api-upms/upms_user/getCurrUserMenus': CurrUserMenus, // 根据token获取用户菜单
@@ -447,6 +485,25 @@ export default {
       data: {
         data,
         total: count,
+      },
+    });
+  },
+
+  // 计量业务告警： 告警概览（饼图）
+  'GET /api/alarmmanage/overviewdonut': (req, res) => {
+    res.json({
+      data: {
+        data: overDonut,
+      },
+    });
+  },
+
+  // 计量业务告警： 告警概览（曲线图）
+  'GET /api/alarmmanage/overviewsmooth': (req, res) => {
+    const data = mocksmoothdata();
+    res.json({
+      data: {
+        data,
       },
     });
   },

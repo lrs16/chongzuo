@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { Card, Row, Col, Form, Select, Input, Button, Table } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Card, Row, Col, Form, Select, Input, Button, Table, Message } from 'antd';
 import { connect } from 'dva';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
@@ -43,6 +43,7 @@ const columns = [
     title: '创建人',
     dataIndex: 'founder',
     key: 'founder',
+    width: 80,
   },
   {
     title: '创建时间',
@@ -60,24 +61,99 @@ function SysSetting(props) {
     dispatch,
   } = props;
   const dataSource = list.data;
+  const [selectedRowKeys, setSelectionRow] = useState('');
+  const [selectRowdata, setSelectdata] = useState('');
+  const [current, setCurrent] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
   useEffect(() => {
     dispatch({
-      type: 'alarmovervies/fetchlist',
+      type: 'measuralarmsetting/fetchlist',
     });
   }, []);
 
+  const rowSelection = {
+    onChange: (selectRowKey, selectedRows) => {
+      setSelectionRow(selectRowKey);
+      setSelectdata(selectedRows);
+    },
+  };
+
+  const searchdata = (values, page, size) => {
+    dispatch({
+      type: 'measuralarmsetting/fetchlist',
+      payload: {
+        ...values,
+        pageSize: size,
+        current: page,
+      },
+    });
+  };
+
+  const onShowSizeChange = (page, size) => {
+    validateFields((err, values) => {
+      if (!err) {
+        searchdata(values, page, size);
+      }
+    });
+    setPageSize(size);
+  };
+
+  const changePage = page => {
+    validateFields((err, values) => {
+      if (!err) {
+        searchdata(values, page, pageSize);
+      }
+    });
+    setCurrent(page);
+  };
+
+  const pagination = {
+    showSizeChanger: true,
+    onShowSizeChange: (page, size) => onShowSizeChange(page, size),
+    current,
+    pageSize,
+    total: list.total,
+    onChange: page => changePage(page),
+  };
+
   const handleSearch = () => {
+    setCurrent(1);
     validateFields((err, values) => {
       if (err) {
         return;
       }
-      console.log(values);
+      searchdata(values, current, pageSize);
     });
   };
 
   const handleReset = () => {
     resetFields();
+  };
+
+  const handlestartup = () => {
+    if (selectedRowKeys.length === 0) {
+      Message.error('至少选择一条记录');
+    } else {
+      dispatch({
+        type: 'measuralarmsetting/alarmstartup',
+        payload: {
+          selectedRowKeys,
+        },
+      });
+    }
+  };
+  const handlestopusing = () => {
+    if (selectedRowKeys.length === 0) {
+      Message.error('至少选择一条记录');
+    } else {
+      dispatch({
+        type: 'measuralarmsetting/alarmstopusing',
+        payload: {
+          selectedRowKeys,
+        },
+      });
+    }
   };
 
   return (
@@ -122,14 +198,21 @@ function SysSetting(props) {
           <Button type="primary" style={{ marginRight: 8 }}>
             编 辑
           </Button>
-          <Button type="primary" style={{ marginRight: 8 }}>
+          <Button type="primary" onClick={handlestartup} style={{ marginRight: 8 }}>
             启 用
           </Button>
-          <Button type="danger" ghost style={{ marginRight: 8 }}>
+          <Button type="danger" ghost onClick={handlestopusing} style={{ marginRight: 8 }}>
             停 用
           </Button>
         </div>
-        <Table columns={columns} loading={loading} dataSource={dataSource} />
+        <Table
+          rowSelection={rowSelection}
+          columns={columns}
+          loading={loading}
+          dataSource={dataSource}
+          rowKey={record => record.id}
+          pagination={pagination}
+        />
       </Card>
     </PageHeaderWrapper>
   );

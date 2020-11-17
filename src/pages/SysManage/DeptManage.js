@@ -128,7 +128,7 @@ class DeptManage extends Component {
     }).then(res => {
       if (res.code === 200) {
         Message.success(res.msg);
-        this.reloadlist();
+        this.getlist();
         this.reloadtree();
       } else {
         Message.error('更新组织失败');
@@ -144,10 +144,10 @@ class DeptManage extends Component {
     }).then(res => {
       if (res.code === 200) {
         Message.success(res.msg);
-        this.reloadlist();
+        this.getlist();
         this.reloadtree();
       } else {
-        Message.error('删除菜单失败');
+        Message.error('删除组织失败');
       }
     });
   };
@@ -206,7 +206,7 @@ class DeptManage extends Component {
               <a type="link">编辑</a>
             </DeptModal>
             <Divider type="vertical" />
-            <Popconfirm title="确定删除此菜单吗？" onConfirm={() => this.handleDelete(record.id)}>
+            <Popconfirm title="确定删除此组织吗？" onConfirm={() => this.handleDelete(record.id)}>
               <a type="link">删除</a>
             </Popconfirm>
           </div>

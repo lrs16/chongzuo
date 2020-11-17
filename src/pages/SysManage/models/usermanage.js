@@ -4,8 +4,6 @@ import {
   UpdateUsers,
   removeUsers,
   SearchUsers,
-  resetUsers,
-  removeHostInfo,
   queryUserRole,
   queryUserMenu,
 } from '../services/api';
@@ -35,13 +33,6 @@ export default {
     // 删除
     *remove({ payload: { id } }, { call }) {
       return yield call(removeUsers, id);
-    },
-    // 重置
-    // *reset({ payload: { id } }, { call }) {
-    //   return yield call(resetUsers, id);
-    // },
-    *remove({ payload: { id } }, { call }) {
-      return yield call(removeHostInfo, id);
     },
     // 查询
     *search({ payload }, { call, put }) {

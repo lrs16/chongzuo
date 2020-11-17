@@ -2,7 +2,6 @@ import React from 'react';
 
 function TrddData() {
   const source = this.props.datas;
-  console.log(source);
 
   toTree = data => {
     const result = [];
