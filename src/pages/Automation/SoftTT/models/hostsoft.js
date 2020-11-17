@@ -8,7 +8,7 @@ import {
   queryEditSoft,
   queryRemoveSoft,
   batchAddhost,
-  batchAddprocess,
+  // batchAddprocess,
   querySoftwaresList,
   queryToHostList, // 树杈数据
 } from '../services/host';

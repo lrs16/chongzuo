@@ -53,7 +53,7 @@ export async function myHosts(params) {
   });
 }
 
-//mxj
+// mxj
 // 程序执行
 export async function querySoftExetute() {
   return request(`/api/softexetuteList`);
@@ -199,14 +199,14 @@ export async function querySecretThief(id) {
   });
 }
 
-//命令配置列表和搜索
+// 命令配置列表和搜索
 export async function configList(params){
   return request(`/auto/commandConfig/listPage`,{
     method: 'POST',
     body: JSON.stringify(params),
   });
 }
-//保存接口
+// 保存接口
 export async function saveCommandlist(params) {
   return request(`/auto/commandConfig`,{
     method:'POST',
@@ -220,13 +220,13 @@ export async function updateCommand(values) {
     body:JSON.stringify(values),
   });
 }
-//删除配置信息
+//  删除配置信息
 export async function deleteCommand(id){
   return request(`/auto/commandConfig/${id}`,{
     method:'DELETE'
   });
 }
-//编辑通过id查找
+//  编辑通过id查找
 export async function editSearchinfo(id){
   return request(`/auto/commandConfig/${id}`);
 }

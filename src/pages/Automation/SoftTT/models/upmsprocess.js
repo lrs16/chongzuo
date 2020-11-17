@@ -32,9 +32,8 @@ export default {
       });
     },
 
-    //批量添加数据
-    *batchAddprocess({ payload }, { call, put }) {
-      console.log(payload,'flolo');
+    //  批量添加数据
+    *batchAddprocess({ payload }, { call }) {
       return yield call(batchAddprocess, payload);
     },
 

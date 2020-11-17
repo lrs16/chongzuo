@@ -12,24 +12,19 @@ import {
   Badge,
   Popconfirm,
   Row,
-  Col,
-  Select,
-  Layout
 } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import HostEdit from './components/HostEdit';
-import HostSoft from './components/Host_Soft';
-import BatchAdd from './components/BatchAdd';
+// import HostSoft from './components/Host_Soft';
+// import BatchAdd from './components/BatchAdd';
 // import HostManageTree from '@/components/HostManageTree';
 
 const statusMap = ['default', 'success'];
 const status = ['停用', '在用'];
-const cabinet = ['A座机柜', 'B座机柜'];
+// const cabinet = ['A座机柜', 'B座机柜'];
 const operatSystem = ['window', 'linux'];
 const hostPart = ['安全接入区', '二区', '三区'];
 const { Search } = Input;
-const { Option } = Select;
-const { Sider, Content } = Layout;
 
 @connect(({ hostsoft, loading }) => ({
   hostsoft,

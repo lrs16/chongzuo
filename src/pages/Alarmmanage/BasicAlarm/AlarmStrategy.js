@@ -7,7 +7,6 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 const color = ['#f50', '#f47920', '#dea32c', '#00ae9d', '#45b97c', '#70a19f'];
 const statusMap = ['#D3D3D3', '#00ae9d'];
 const status = ['已停用', '已启用'];
-const { Option } = Select;
 
 @connect(({ alarmstrategy, loading }) => ({
   alarmstrategy,
@@ -31,10 +30,10 @@ class AlarmStrategy extends Component {
     });
   };
 
-  handleSubmit = e => {
-    e.preventDefault();
-    this.props.form.validateFields((err, value) => {});
-  };
+  // handleSubmit = e => {
+  //   e.preventDefault();
+  //   this.props.form.validateFields((err, value) => {});
+  // };
 
   handleReset = () => {
     this.props.form.resetFields();
@@ -65,18 +64,15 @@ class AlarmStrategy extends Component {
       this.setState({ pageSize });
     }, 0);
   };
+
   // 批量删除
   handleDeleteOk = () => {
-    // confirm({
-    // title:'确定要删除吗',
-    // onOk() {
     if (this.state.selectedRows.length) {
       const idList = [];
       this.state.selectedRows.forEach(item => {
         const id = item.detailsid;
         idList.push(id);
       });
-      console.log(idList);
       const { dispatch } = this.props;
       dispatch({
         type: 'alarmstrategy/strategyList',
@@ -181,10 +177,9 @@ class AlarmStrategy extends Component {
       },
     };
     const rowSelection = {
-      onChange: (selectedRowKeys, selectedRows) => {
-        // console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+      onChange: (selectedRows) => {
         this.setState({
-          selectedRows: selectedRows,
+          selectedRows: [selectedRows],
         });
       },
     };
@@ -194,7 +189,7 @@ class AlarmStrategy extends Component {
         title: '级别',
         dataIndex: 'level',
         key: 'level',
-        render: (text, record) => <Tag color={color[record.level]} style={{ padding: 10 }}></Tag>,
+        render: (text, record) => <Tag color={color[record.level]} style={{ padding: 10 }}/>,
       },
       {
         title: '告警标题',
@@ -295,7 +290,7 @@ class AlarmStrategy extends Component {
           >
             <div>
               <Button style={{ marginRight: 10 }}>
-                <Link to={`alarmstrategy/strategyadd`} onClick={this.strategyAdd}>
+                <Link to="alarmstrategy/strategyadd" onClick={this.strategyAdd}>
                   新增
                 </Link>
               </Button>
@@ -354,7 +349,7 @@ class AlarmStrategy extends Component {
             rowSelection={rowSelection}
             pagination={pagination}
             rowKey={record => record.id}
-          ></Table>
+          />
         </Card>
       </PageHeaderWrapper>
     );

@@ -1,6 +1,7 @@
 import { queryDeptTree } from '@/services/api';
 import {
   // queryUsers,
+  resetUsers,
   UpdateUsers,
   removeUsers,
   SearchUsers,
@@ -33,6 +34,10 @@ export default {
     // 删除
     *remove({ payload: { id } }, { call }) {
       return yield call(removeUsers, id);
+    },
+    //  重置密码
+    *reset({payload:{ id }},{ call }) {
+      return yield call(resetUsers,id);
     },
     // 查询
     *search({ payload }, { call, put }) {
