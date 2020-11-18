@@ -1,4 +1,3 @@
-// import { queryCurrent, query as queryUsers } from '@/services/user';
 import { queryCurrent, queryMenus, queryAllMenus } from '@/services/user';
 
 const compare = p => {
@@ -10,29 +9,22 @@ const compare = p => {
 };
 
 const addauth = (sysmenu, usermenu, authority) => {
-  const data = sysmenu.map((item, index) => {
+  const data = sysmenu.map(obj => {
+    const item = obj;
     item.menuauth = 'incontrol';
-    usermenu.map((item1, index1) => {
-      if (item.id == item1.id) {
+    usermenu.map(item1 => {
+      if (item.id === item1.id) {
         item.menuauth = authority;
       }
+      return item1;
     });
     return item;
   });
   return data;
 };
 
-const menuArr = (sysmenu, usermenu, authority) => {
-  var data = sysmenu.map((item, index) => {
-    item.menuauth = 'incontrol';
-    usermenu.map((item1, index1) => {
-      if (item.id == item1.id) {
-        item.menuauth = authority;
-      }
-    });
-    return item;
-  });
-  const datas = data.sort(compare('menuSort'));
+const menuArr = menulist => {
+  const datas = menulist.sort(compare('menuSort'));
   const newArr = [];
   const menu = 'menu.';
 
@@ -67,7 +59,8 @@ const toTree = data => {
   if (!Array.isArray(data)) {
     return result;
   }
-  data.forEach(item => {
+  data.forEach(obj => {
+    const item = obj;
     delete item.routes;
   });
   const map = {};
@@ -107,15 +100,15 @@ const UserModel = {
       const response = yield call(queryMenus);
       const menures = yield call(queryAllMenus);
       if (response.code === 200 && menures.code === 200) {
-        const userinfo = yield call(queryCurrent);
-        const menus = menuArr(menures.data, response.data, userinfo.data.loginCode);
+        const loginCode = JSON.parse(sessionStorage.getItem('userauthority'));
+        const menulist = addauth(menures.data, response.data, loginCode[0]);
+        const menus = menuArr(menulist);
         const menuData = toTree(menus);
-        const menulist = addauth(menures.data, response.data, userinfo.data.loginCode);
         yield put({
           type: 'saveUserMenu',
           payload: {
             menuData,
-            authority: ['incontrol', `${userinfo.data.loginCode}`],
+            authority: ['incontrol', `${loginCode[0]}`],
             menulist,
           },
         });

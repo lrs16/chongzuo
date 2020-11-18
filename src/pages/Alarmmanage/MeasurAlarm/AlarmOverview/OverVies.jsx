@@ -29,12 +29,6 @@ const cols = {
 
 const columns = [
   {
-    title: '级别',
-    dataIndex: 'leve',
-    key: 'leve',
-    width: 60,
-  },
-  {
     title: '监控项',
     dataIndex: 'type',
     key: 'type',

@@ -8,7 +8,7 @@ export async function query() {
 //   return request('/api/currentUser');
 // }
 
-//获取系统菜单
+// 获取系统菜单
 export async function queryAllMenus() {
   return request('/upms/menu/list');
 }

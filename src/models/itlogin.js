@@ -1,9 +1,6 @@
-import { routerRedux } from 'dva/router';
-import { stringify } from 'querystring';
 import { ITSMLogin } from '@/services/login';
 import { queryCurrent } from '@/services/user';
 import { setAuthority } from '@/utils/authority';
-import { getPageQuery } from '@/utils/utils';
 
 const Model = {
   namespace: 'itlogin',
