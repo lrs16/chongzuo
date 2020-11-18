@@ -3,10 +3,10 @@ import React, { Component } from 'react';
 import { Table, Badge } from 'antd';
 
 const recordingMap = ['success', 'error', 'default'];
-const recording = ['已确认', '未确认', '已取消'];
+const recording = ['取消告警', '确认告警', '已取消'];
 
 const statusMap = ['error', 'success', 'default'];
-const status = ['未消除', '已消除', '已取消'];
+const status = ['执行失败', '执行成功', '已取消'];
 class OperationRecord extends Component {
   render() {
     const columns = [
@@ -46,13 +46,22 @@ class OperationRecord extends Component {
         ),
       },
     ];
-
+    const rowSelection = {
+      onChange:(selectedRows) =>{
+        console.log(selectedRows);
+      }
+    }
     const { data } = this.props;
     // console.log(data);
     const dataSource = [...data];
     return (
       <div>
-        <Table dataSource={dataSource} rowKey={record => record.operatid} columns={columns} />
+        <Table 
+        dataSource={dataSource} 
+        rowKey={record => record.operatid} 
+        columns={columns} 
+        rowSelection={rowSelection}
+        />
       </div>
     );
   }

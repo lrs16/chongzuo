@@ -9,6 +9,11 @@ const statusMap = ['error', 'success', 'default'];
 const status = ['未消除', '已消除', '已取消'];
 class AlarmHistory extends Component {
   render() {
+    const rowSelection = {
+      onChange:(selectedRows) =>{
+        console.log(selectedRows);
+      }
+    };
     const columns = [
       {
         title: '告警时间',
@@ -52,7 +57,12 @@ class AlarmHistory extends Component {
     const dataSource = [...data];
     return (
       <div>
-        <Table dataSource={dataSource} rowKey={record => record.historyid} columns={columns} />
+        <Table 
+        dataSource={dataSource} 
+        rowKey={record => record.historyid} 
+        columns={columns} 
+        rowSelection={rowSelection}
+        />
       </div>
     );
   }

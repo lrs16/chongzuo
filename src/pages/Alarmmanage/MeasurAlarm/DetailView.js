@@ -8,7 +8,7 @@ import AlarmHistory from './components/AlarmHistory';
 import NoticHistory from './components/NoticHistory';
 
 const { TabPane } = Tabs;
-const operations = <Button href="/alarmmanage/details">返回列表</Button>;
+const operations = <Button href="/alarmmanage/measuralarm/details">返回列表</Button>;
 
 @connect(({ alarmdetails, loading }) => ({
   alarmdetails,

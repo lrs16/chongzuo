@@ -6,6 +6,11 @@ const statusMap = ['error', 'success'];
 const status = ['发送失败', '发送成功'];
 class NoticHistory extends Component {
   render() {
+    const rowSelection = {
+      onChange:(selectedRows) =>{
+        console.log(selectedRows);
+      }
+    };
     const columns = [
       {
         title: '短信内容',
@@ -50,7 +55,11 @@ class NoticHistory extends Component {
     const dataSource = [...data];
     return (
       <div>
-        <Table dataSource={dataSource} rowKey={record => record.notichid} columns={columns} />
+        <Table dataSource={dataSource} 
+        rowKey={record => record.notichid} 
+        columns={columns} 
+        rowSelection={rowSelection}
+        />
       </div>
     );
   }

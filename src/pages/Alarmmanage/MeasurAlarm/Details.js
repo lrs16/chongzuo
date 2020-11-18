@@ -74,11 +74,21 @@ class Details extends Component {
     }
     const columns = [
       {
+        title:'操作',
+        dataIndex:'',
+        width:120,
+        render:(text,record) =>(
+          <Link to="/alarmmanage/measuralarm/details/detailview/:detailsid">
+           <Button type='primary'>工单处理</Button>
+          </Link>
+         
+        ),
+      },
+      {
         title:'级别',
         dataIndex:'level',
         key:'level',
         width:120,
-      
         render: (text, record) => (
           <span>
             <Link to={`/alarmmanage/details/detailview/${record.detailsid}`}>{text}</Link>
