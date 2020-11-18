@@ -10,14 +10,12 @@ function AlarmOverview(props) {
   const handleTabChange = key => {
     switch (key) {
       case 'overview':
-        console.log(key);
         router.push({
           pathname: `${match.url}/overview`,
           query: { key },
         });
         break;
       case 'quotas':
-        console.log(key);
         router.push({
           pathname: `${match.url}/quotas`,
           query: { key },

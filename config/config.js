@@ -537,12 +537,12 @@ export default {
                   name: '组织管理',
                   component: './SysManage/DeptManage',
                 },
-                // {
-                //   path: '/sysmanage/dropdownvalueset',
-                //   icon: 'cluster',
-                //   name: '下拉值管理',
-                //   component: './SysManage/DropdownValueset',
-                // },
+                {
+                  path: '/sysmanage/dropdownvalueset',
+                  icon: 'cluster',
+                  name: '下拉值管理',
+                  component: './SysManage/DropdownValueset',
+                },
                 {
                   // 采控管理
                   path: '/sysmanage/agent',

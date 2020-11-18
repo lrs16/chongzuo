@@ -63,8 +63,7 @@ function SysSetting(props) {
   const dataSource = list.data;
   const [selectedRowKeys, setSelectionRow] = useState('');
   const [selectRowdata, setSelectdata] = useState('');
-  const [current, setCurrent] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [paginations, setPageinations] = useState({ current: 1, pageSize: 10 });
 
   useEffect(() => {
     dispatch({
@@ -96,34 +95,43 @@ function SysSetting(props) {
         searchdata(values, page, size);
       }
     });
-    setPageSize(size);
+    setPageinations({
+      ...paginations,
+      pageSize: size,
+    });
   };
 
   const changePage = page => {
     validateFields((err, values) => {
       if (!err) {
-        searchdata(values, page, pageSize);
+        searchdata(values, page, paginations.pageSize);
       }
     });
-    setCurrent(page);
+    setPageinations({
+      ...paginations,
+      current: page,
+    });
   };
 
   const pagination = {
     showSizeChanger: true,
     onShowSizeChange: (page, size) => onShowSizeChange(page, size),
-    current,
-    pageSize,
+    current: paginations.current,
+    pageSize: paginations.pageSize,
     total: list.total,
     onChange: page => changePage(page),
   };
 
   const handleSearch = () => {
-    setCurrent(1);
+    setPageinations({
+      ...paginations,
+      current: 1,
+    });
     validateFields((err, values) => {
       if (err) {
         return;
       }
-      searchdata(values, current, pageSize);
+      searchdata(values, paginations.current, paginations.pageSize);
     });
   };
 

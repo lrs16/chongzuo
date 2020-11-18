@@ -147,44 +147,26 @@ function OverVies(props) {
     location: { query },
   } = props;
   const dataSource = list.data;
+  const { key } = query;
   const [selectedRowKeys, setSelectionRow] = useState('');
   const [selectRowdata, setSelectdata] = useState('');
-  useEffect(() => {
+  const getdatas = pagekey => {
     dispatch({
       type: 'alarmovervies/fetchlist',
+      payload: { key: pagekey },
     });
     dispatch({
       type: 'alarmovervies/fetchoverdonut',
+      payload: { key: pagekey },
     });
     dispatch({
       type: 'alarmovervies/fetchoversmooth',
+      payload: { key: pagekey },
     });
-  }, []);
-
-  const gettimedatas = () => {
-    const { key } = query;
-    switch (key) {
-      case 'overview':
-        dispatch({
-          type: 'alarmovervies/fetchlist',
-        });
-        dispatch({
-          type: 'alarmovervies/fetchoverdonut',
-        });
-        dispatch({
-          type: 'alarmovervies/fetchoversmooth',
-        });
-        break;
-      case 'quotas':
-        dispatch({
-          type: 'alarmovervies/fetchlist',
-        });
-        break;
-
-      default:
-        break;
-    }
   };
+  useEffect(() => {
+    getdatas(key);
+  }, [key]);
 
   const rowSelection = {
     onChange: (selectRowKey, selectedRows) => {
