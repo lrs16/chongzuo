@@ -31,10 +31,10 @@ const eliminate = ['未消除', '已消除', '已取消'];
 }))
 class Details extends Component {
   componentDidMount() {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'alarmdetails/alarmList',
-    });
+    // const { dispatch } = this.props;
+    // dispatch({
+    //   type: 'alarmdetails/alarmList',
+    // });
   }
 
   show = () => {
