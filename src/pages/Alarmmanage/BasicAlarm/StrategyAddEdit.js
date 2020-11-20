@@ -8,7 +8,7 @@ import { Card,
         //  Tag,
          Form,
          Select,
-        //  Button,   
+         Button,   
         //  TimePicker,
         //  Popconfirm,
         message,
@@ -17,9 +17,11 @@ import { Card,
         // Radio 
    } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import EditStrategy from './components/EditStrategy';
+// import Description from '@/components/DescriptionList/Description';
+// import { Link } from 'umi';
+// import EditStrategy from './components/EditStrategy';
 
-// const { TextArea } = Input;
+const { TextArea } = Input;
 // const { CheckableTag } = Tag;
 // const format = 'HH:mm';
 // const tagsData = ['皖苏', '李东东', '吴西西'];
@@ -97,7 +99,10 @@ frequencyData.forEach(function(item,index) {
 //   display:'block'
 // };
 // const indexrelation = [];
-
+// const monitoItems = '';
+// const cycle = '';
+// const relationexpre = '';
+// const value = '';
 @connect(({ strategyedit, loading }) => ({
   strategyedit,
   loading: loading.models.loading,
@@ -171,32 +176,18 @@ class StrategyAddEdit extends Component {
         }
   }
 
-  // handleSubmit = (e) => {
-  //   e.preventDefault();
-  //   this.props.form.validateFields((err, values) =>{
-  //     // if(!err) {
-  //     //   const { dispatch } = this.props;
-  //     //   return dispatch({
-  //     //     type: '/strategyadd/strategyAdd',
-  //     //     payload: values,
-  //     //   }).then();
-  //     // };
-  //   })
-  // }
-
-  save = (tableValue) => {
+  save = () => {
     this.props.form.validateFields((err, values) => {
         if(!err){
-          const alarmResults =[];
-          (tableValue.tableDt).forEach(function(item,index){
-            alarmResults.push({name:`指标名${index+1}`,x:item.nextIndicator});
-          });
-          const obj = values;
-          obj.tableDt = tableValue.tableDt
-          alarmResults[alarmResults.length-1].x = '';
-          obj.result = alarmResults;
-          // console.log(alarmResults,'alarmResults');
-          console.log(obj,'lplp');
+          console.log(values,'values');
+          const obj = {};
+          obj.values = values;
+          obj.values.result = `${values.monitoItems}.max(${values.cycle})${values.relationexpre}${values.value}`;
+          delete obj.values.monitoItems;
+          delete obj.values.cycle;
+          delete obj.values.relationexpre;
+          delete obj.values.value;
+          console.log(obj);
             // values.tableDt就是个表格数据的数组，可对获取的值进行处理校验处理
         }
     })
@@ -204,6 +195,16 @@ class StrategyAddEdit extends Component {
 
   render() {
     const formItemLayout = {
+      labelCol: {
+        xs: { span: 24 },
+        sm: { span: 6 },
+      },
+      wrapperCol: {
+        xs: { span: 24 },
+        sm: { span: 18 },
+      },
+    };
+    const formItemLayoutaction = {
       labelCol: {
         xs: { span: 24 },
         sm: { span: 4 },
@@ -294,12 +295,117 @@ class StrategyAddEdit extends Component {
              </Form.Item>
            </Col>
          </Row>
+         <Row>
+           <Col span={12}>
+             <Form.Item label='告警等级'>
+              {getFieldDecorator('alarmLevel',{
+                rules:[
+                  {
+                    required,
+                    message:'请输入 '
+                  },
+                ],
+                initialValue:''
+              })(<Input placeholder="请输入" />)}
+              </Form.Item>
+           </Col>
+           <Col span={12}>
+             <Form.Item label='告警频率'>
+                {getFieldDecorator('alarmFrequency',{
+                  rules:[
+                    {
+                      message:'请输入'
+                    },
+                  ],
+                  initialValue:''
+                })(<Input placeholder='请输入'/>)}
+             </Form.Item>
+           </Col>
+         </Row>
 
            <Descriptions title='触发条件'/>
-           <EditStrategy 
+           <Row>
+             <Col span={6}>
+              <Form.Item label='监控项'>
+                  {getFieldDecorator('monitoItems',{
+                    rules:[
+                      {
+                        message:'请输入'
+                      },
+                    ],
+                    initialValue:''
+                  })(
+                  <Select placeholder='请输入'>
+                    <Option key='1' value='监控项1'>监控项1</Option>
+                    <Option key='2' value='监控项2'>监控项2</Option>
+                    <Option key='3' value='监控项3'>监控项3</Option>
+                  </Select>
+                  )}
+              </Form.Item>
+             </Col>
+             <Col span={6}>
+              <Form.Item label='周期'>
+                  {getFieldDecorator('cycle',{
+                    rules:[
+                      {
+                        message:'请输入'
+                      },
+                    ],
+                    initialValue:''
+                  })( 
+                  <Select placeholder='请输入'>
+                      <Option key='1' value='1'>1</Option>
+                      <Option key='2' value='2'>2</Option>
+                      <Option key='3' value='3'>3</Option>
+                  </Select>
+                  )}
+              </Form.Item>
+             </Col>
+             <Col span={6}>
+              <Form.Item label='关系式'>
+                  {getFieldDecorator('relationexpre',{
+                    rules:[
+                      {
+                        message:'请输入'
+                      },
+                    ],
+                    initialValue:''
+                  })(
+                    <Select placeholder='请输入'>
+                      <Option key='1' value='<'>小于</Option>
+                      <Option key='2' value='>'>大于</Option>
+                      <Option key='3' value='='>等于</Option>
+                    </Select>
+                  )}
+              </Form.Item>
+             </Col>
+             <Col span={6}>
+              <Form.Item label='值'>
+                  {getFieldDecorator('value',{
+                    rules:[
+                      {
+                        message:'请输入'
+                      },
+                    ],
+                    initialValue:''
+                  })(
+                    <Input/>
+                  )}
+              </Form.Item>
+             </Col>
+           </Row>
+           <Row>
+             <Col span={24} style={{ textAlign: 'right' }}>
+               <div style={{marginTop:'5px'}}>
+                   <Button onClick={this.props.history.goBack} style={{display:'inline',marginRight:'5px'}}>取消</Button>
+                 <Button type='primary' htmlType='submit' onClick={this.save}>提交</Button>
+               </div>
+            </Col>
+          </Row>
+           {/* <EditStrategy 
             onSubmit={this.save}
             detailsid={this.detailsid}
-           />
+           /> */}
           {/* <Descriptions.Item label='在过去的:'></Descriptions.Item> */}
           {/* <Form.Item label='在过去的'  style={{marginLeft:50}}>
             {
@@ -327,7 +433,67 @@ class StrategyAddEdit extends Component {
           </Row> */}
       
 
-          {/* <Descriptions title='执行动作'></Descriptions>
+          <Descriptions title='执行动作' column={1}>
+              {/* <Descriptions.Item > */}
+            
+{/* 
+                <Row>
+                  <Col span={12}>
+                    <Form.Item label='通知内容'>
+                        {getFieldDecorator('remark',{
+                          rules:[
+                            {
+                              required,
+                            },
+                          ],
+                          initialValue:''
+                        })(
+                        <TextArea/>)}
+                      </Form.Item>
+                  </Col>
+                </Row> */}
+             
+                {/* </Descriptions.Item> */}
+
+                {/* <Description.Item> */}
+                  
+           
+             
+              {/* </Description.Item> */}
+          </Descriptions>
+          <Form  {...formItemLayoutaction}>
+                <Row>
+                  <Col span={17}>
+                  <Form.Item label='通知标题' >
+                      {getFieldDecorator('delaystrate',{
+                        rules:[
+                          {
+                            // required,
+                          },
+                        ],
+                        initialValue:''
+                      })(<Input/>)
+                      }
+                  </Form.Item>
+                  </Col>
+                </Row>
+
+                <Row>
+                  <Col span={17}>
+                    <Form.Item label='通知内容'>
+                        {getFieldDecorator('remark',{
+                          rules:[
+                            {
+                              // required,
+                            },
+                          ],
+                          initialValue:''
+                        })(
+                        <TextArea/>)}
+                      </Form.Item>
+                  </Col>
+                </Row> 
+          </Form>
           {/* <Descriptions column={1}>
             <Descriptions.Item label='通知方式:' style={{marginLeft:50}}>
               <Checkbox value='shortMessage'>短信</Checkbox>
@@ -400,31 +566,7 @@ class StrategyAddEdit extends Component {
                      />)}
             </Form.Item> */}
 
-            {/* <Form.Item label='延迟策略' style={{display:'block',marginLeft:50, marginTop:15}}>
-              {getFieldDecorator('delaystrate',{
-                rules:[
-                  {
-                    required,
-                  },
-                ],
-                initialValue:list.delaystrate?list.delaystrate:''
-              })(<Select style={{width:200}}>
-                   {frequencyChildren}
-                 </Select>)
-              }
-            </Form.Item> */}
-
-            {/* <Form.Item label='通知内容' style={{display:'block',marginLeft:50, marginTop:10}}>
-              {getFieldDecorator('remark',{
-                rules:[
-                  {
-                    required,
-                  },
-                ],
-                initialValue:list.remark?list.remark:''
-              })(
-              <Input style={{width:1000}}/>)}
-            </Form.Item> */}
+          
 
           {/* <Descriptions title='适用对象'></Descriptions>
           <Form.Item>

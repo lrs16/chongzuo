@@ -93,8 +93,8 @@ class AlarmStrategy extends Component {
   // 编辑
 
   strategyEdit = (e) => {
-    if(this.state.detailsid.length>1){
-      alert('每次只能选择一条数据编辑');
+    if(this.state.selectedRows.length>1){
+      message.info('每次只能选择一条数据编辑');
       e.preventDefault();
   }
   }

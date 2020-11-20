@@ -1,4 +1,6 @@
 import { Form, Input, Row, Button,Table,Col,Popconfirm,Select } from 'antd';
+import React from 'react';
+
 const { Option } = Select;
 class EditStrategy extends React.Component {
   constructor(props) {
@@ -54,7 +56,7 @@ class EditStrategy extends React.Component {
     const { dataSource } = this.state;
     dataSource.splice(index,1);
     this.setState({
-        dataSource: dataSource,
+        dataSource: [...dataSource],
         count: index + 1,
     });
     // const { alarmRelate } = this.state;
@@ -66,7 +68,7 @@ class EditStrategy extends React.Component {
   }
 
 render() {
-  const { form: { getFieldDecorator },dataSource } = this.props
+  const { form: { getFieldDecorator }} = this.props
   const required = true;
   const { detailsid } = this.props;
 	return (
@@ -146,7 +148,7 @@ render() {
                               ],
                               initialValue:this.state.dataSource[index].threshold
                           })(
-                                <Input type='number' style={{width:'100px'}}></Input>
+                                <Input type='number' style={{width:'100px'}}/>
                           )}
                       </Form.Item>
                   },

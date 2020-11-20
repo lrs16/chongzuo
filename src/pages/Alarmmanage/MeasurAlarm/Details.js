@@ -5,7 +5,6 @@ import { Card,
          Table, 
          Button, 
          Badge, 
-         Tag,
          Form,
          Select,
          Row,
@@ -15,8 +14,8 @@ import { Card,
  } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
-const gradeMap = ['red', 'orange', 'blue'];
-const grade = ['特急', '紧急', '一般'];
+// const gradeMap = ['red', 'orange', 'blue'];
+// const grade = ['特急', '紧急', '一般'];
 
 const ackstatusMap = ['success', 'error'];
 const ackstatus = ['已确认', '未确认'];
@@ -31,10 +30,14 @@ const eliminate = ['未消除', '已消除', '已取消'];
 }))
 class Details extends Component {
   componentDidMount() {
-    // const { dispatch } = this.props;
-    // dispatch({
-    //   type: 'alarmdetails/alarmList',
-    // });
+  //  this.getList();
+  };
+
+  getList = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'alarmdetails/alarmList',
+    });
   }
 
   show = () => {
@@ -71,13 +74,28 @@ class Details extends Component {
         xs:{span:20},
         sm:{span:12}
       },
-    }
+    };
+    const alarmList = [
+      {
+        level:'级别',
+        category:'类别',
+        subclass:'子类',
+        confirmStatus:'1',
+        eliminationState:'0',
+        warnContent:'告警内容11111111111111111111111111111111111111111111111',
+        accumulated:'当月累计',
+        annualCumulative:'年度累计',
+        confirmwarntime:'确认警告时间',
+        warningTime:'本次警告时间',
+        lastWarntime:'上次警告时间',
+      }
+    ];
     const columns = [
       {
         title:'操作',
         dataIndex:'',
         width:120,
-        render:(text,record) =>(
+        render:() =>(
           <Link to="/alarmmanage/measuralarm/details/detailview/:detailsid">
            <Button type='primary'>工单处理</Button>
           </Link>
@@ -89,23 +107,13 @@ class Details extends Component {
         dataIndex:'level',
         key:'level',
         width:120,
-        render: (text, record) => (
-          <span>
-            <Link to={`/alarmmanage/details/detailview/${record.detailsid}`}>{text}</Link>
-          </span>
-        ),
-        // render: text => <Link to={`/profile/basic/${text.replace(/\s+/gi, '-')}`}>{text}</Link>,
       },
       {
         title:'类别',
         dataIndex:'category',
         key:'category',
         width:120,
-        render: (text, record) => (
-          <span>
-            <Tag color={gradeMap[record.grade]}>{grade[record.grade]}</Tag>
-          </span>
-        ),
+      
       },
       {
         title:'子类',
@@ -117,18 +125,23 @@ class Details extends Component {
         title:'确认状态',
         dataIndex:'confirmStatus',
         key:'confirmStatus',
-        width:120
+        width:120,
+        render: (text, record) => (
+          <span>
+            <Badge status={eliminateMap[record.confirmStatus]} text={eliminate[record.confirmStatus]} />
+          </span>
+        ),
       },
       {
         title:'消除状态',
         dataIndex:'eliminationState',
         key:'eliminationState',
         width:120,
-        // render: (text, record) => (
-        //   <span>
-        //     <Badge status={ackstatusMap[record.ackstatus]} text={ackstatus[record.ackstatus]} />
-        //   </span>
-        // ),
+        render: (text, record) => (
+          <span>
+            <Badge status={eliminateMap[record.eliminationState]} text={ackstatus[record.eliminationState]}/>
+          </span>
+        ),
       },
       {
         title:'警告内容',
@@ -195,7 +208,7 @@ class Details extends Component {
         key: 'action',
         fixed: 'right',
         width: 280,
-        render: (text, record) => (
+        render: () => (
           <span>
             <Button type="link">确认</Button>
             <Button type="link">手工消除</Button>
@@ -204,21 +217,7 @@ class Details extends Component {
         ),
       },
     ];
-    const alarmList = [
-      {
-        level:'级别',
-        category:'类别',
-        subclass:'子类',
-        confirmStatus:'确认状态',
-        eliminationState:'消除状态',
-        warnContent:'告警内容11111111111111111111111111111111111111111111111',
-        accumulated:'当月累计',
-        annualCumulative:'年度累计',
-        confirmwarntime:'确认警告时间',
-        warningTime:'本次警告时间',
-        lastWarntime:'上次警告时间',
-      }
-    ];
+ 
     const rowSelection = {
       onChange: (selectedRows)=> {
         console.log(selectedRows);
@@ -240,7 +239,7 @@ class Details extends Component {
                 <Form.Item label='类别'>
                 { getFieldDecorator('category',{
                   initialValue:''
-                })(<Select></Select>)}
+                })(<Select/>)}
               </Form.Item>
               </Col>
 
@@ -248,7 +247,7 @@ class Details extends Component {
                 <Form.Item label='子类'>
                   { getFieldDecorator('subclass',{
                     initialValue:''
-                  })(<Select></Select>)}
+                  })(<Select/>)}
                 </Form.Item>
               </Col>
 
@@ -256,7 +255,7 @@ class Details extends Component {
                 <Form.Item label='级别'>
                   { getFieldDecorator('level',{
 
-                  })(<Input></Input>)}
+                  })(<Input/>)}
 
                 </Form.Item>
               </Col>
@@ -279,7 +278,7 @@ class Details extends Component {
                 <Form.Item label='类别'>
                 { getFieldDecorator('category',{
                   initialValue:''
-                })(<Select></Select>)}
+                })(<Select/>)}
               </Form.Item>
               </Col>
 
@@ -287,7 +286,7 @@ class Details extends Component {
                 <Form.Item label='子类'>
                   { getFieldDecorator('subclass',{
                     initialValue:''
-                  })(<Select></Select>)}
+                  })(<Select/>)}
                 </Form.Item>
               </Col>
 
@@ -295,7 +294,7 @@ class Details extends Component {
                 <Form.Item label='级别'>
                   { getFieldDecorator('level',{
 
-                  })(<Input></Input>)}
+                  })(<Input/>)}
 
                 </Form.Item>
               </Col>
@@ -306,19 +305,19 @@ class Details extends Component {
                 <Form.Item label='确认状态'>
                   { getFieldDecorator('confirmStatus',{
 
-                  })(<Select></Select>)}
+                  })(<Select/>)}
                 </Form.Item>
               </Col>
              
               <Col span={8}>
                 <Form.Item label='告警内容'>
-                  { getFieldDecorator('alarmContent')(<Input></Input>)}
+                  { getFieldDecorator('alarmContent')(<Input/>)}
                 </Form.Item>
               </Col>
 
               <Col span={8}>
                 <Form.Item label='确认告警时间'>
-                  {getFieldDecorator('confirmAlarmtime')(<DatePicker></DatePicker>)}
+                  {getFieldDecorator('confirmAlarmtime')(<DatePicker/>)}
                 </Form.Item>
               </Col>
               </Row>
@@ -326,13 +325,13 @@ class Details extends Component {
             <Row>
                 <Col span={8}>
                   <Form.Item label='本次告警时间'>
-                    { getFieldDecorator('alarmtime')(<DatePicker></DatePicker>)}
+                    { getFieldDecorator('alarmtime')(<DatePicker/>)}
                   </Form.Item>
                 </Col>
 
                 <Col span={8}>
                   <Form.Item label='上次告警时间'>
-                    { getFieldDecorator('lastAlarmtime')(<DatePicker></DatePicker>)}
+                    { getFieldDecorator('lastAlarmtime')(<DatePicker/>)}
                   </Form.Item>
                 </Col>
 

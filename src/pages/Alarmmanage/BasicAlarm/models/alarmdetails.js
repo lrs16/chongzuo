@@ -22,6 +22,7 @@ export default {
         payload: response,
       });
     },
+
     *fetchbasic({ payload }, { call, put }) {
       const response = yield call(queryDetailBasic, payload);
       yield put({
@@ -29,6 +30,7 @@ export default {
         payload: response,
       });
     },
+
     *fetchoperats({ payload }, { call, put }) {
       const response = yield call(queryOperats, payload);
       yield put({
@@ -36,7 +38,7 @@ export default {
         payload: response,
       });
     },
-    //告警信息明细的列表
+    //  告警信息明细的列表
     *alarmList({ payload }, { call, put }) {
       const response = yield call(alarmList,payload);
       yield put({
