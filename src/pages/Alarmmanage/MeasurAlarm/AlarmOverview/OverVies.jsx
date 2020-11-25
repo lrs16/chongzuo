@@ -1,5 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import { Card, Row, Col, Spin, Empty, Button, Dropdown, Menu, Table, Message, Badge } from 'antd';
+import React, { useState, useEffect, createContext } from 'react';
+import {
+  Card,
+  Row,
+  Col,
+  Spin,
+  Empty,
+  Button,
+  Dropdown,
+  Menu,
+  Table,
+  Message,
+  Badge,
+  Tabs,
+} from 'antd';
 import router from 'umi/router';
 import moment from 'moment';
 import { connect } from 'dva';
@@ -8,6 +21,25 @@ import { ChartCard } from '@/components/Charts';
 import DonutPCT from '@/components/CustomizeCharts/DonutPCT';
 import SmoothLine from '@/components/CustomizeCharts/SmoothLine';
 import FromOverVies from './components/FromOverVies';
+
+const { TabPane } = Tabs;
+
+const keysmap = new Map([
+  ['quotas', 0],
+  ['databaseterminal', 1],
+  ['connector', 2],
+  ['KAFKA', 3],
+  ['KAFKA0', 4],
+  ['sysrun', 5],
+]);
+
+const tabsmap = [
+  { key: '0', name: '全部', color: '', data: 356 },
+  { key: '1', name: '待确认', color: '#ff0000', data: 6 },
+  { key: '2', name: '已确认', color: '', data: 300 },
+  { key: '3', name: '待消除', color: '#ff0000', data: 16 },
+  { key: '4', name: '已消除', color: '', data: 340 },
+];
 
 const eliminationsMap = ['default', 'error'];
 const eliminations = ['已消除', '未消除'];
@@ -130,37 +162,73 @@ const DropdownMenu = props => {
   );
 };
 
+export const FromContext = createContext();
+
 function OverVies(props) {
-  const {
-    loading,
-    dispatch,
-    list,
-    Donutdata,
-    Smoothdata,
-    match,
-    location: { query },
-  } = props;
+  const { loading, dispatch, list, Donutdata, Smoothdata, match } = props;
+  const Donuttitle = props.route.name;
+  const Linetitle = Donuttitle === '告警概览' ? '月度告警趋势' : `月度${Donuttitle}趋势`;
   const dataSource = list.data;
-  const { key } = query;
-  const [selectedRowKeys, setSelectionRow] = useState('');
-  const [selectRowdata, setSelectdata] = useState('');
-  const getdatas = pagekey => {
-    dispatch({
-      type: 'alarmovervies/fetchlist',
-      payload: { key: pagekey },
-    });
+  const { path } = match;
+  const pagename = path.substring(path.lastIndexOf('/') + 1);
+  const pagetype = keysmap.get(pagename);
+  const [querykeys, setQueryKeys] = useState({ type: '', configstatus: '', elimination: '' });
+  const [selectedRowKeys, setSelectionRow] = useState([]);
+  const [selectRowdata, setSelectdata] = useState([]);
+  const [paginations, setPageinations] = useState({ current: 1, pageSize: 10 });
+  const getdatas = () => {
     dispatch({
       type: 'alarmovervies/fetchoverdonut',
-      payload: { key: pagekey },
+      payload: { key: pagename },
     });
     dispatch({
       type: 'alarmovervies/fetchoversmooth',
-      payload: { key: pagekey },
+      payload: { key: pagename },
     });
   };
+
+  const searchdata = (values, page, size) => {
+    dispatch({
+      type: 'alarmovervies/fetchlist',
+      payload: {
+        ...values,
+        type: pagetype,
+        pageSize: size,
+        current: page,
+      },
+    });
+  };
+
+  const handleTabs = key => {
+    switch (key) {
+      case '0':
+        setQueryKeys({ configstatus: '', elimination: '' });
+        break;
+      case '1':
+        setQueryKeys({ configstatus: 0, elimination: '' });
+        break;
+      case '2':
+        setQueryKeys({ configstatus: 1, elimination: '' });
+        break;
+      case '3':
+        setQueryKeys({ configstatus: '', elimination: 0 });
+        break;
+      case 'KAFKA':
+        setQueryKeys({ configstatus: '', elimination: 1 });
+        break;
+      default:
+        break;
+    }
+  };
+
   useEffect(() => {
-    getdatas(key);
-  }, [key]);
+    getdatas();
+    setQueryKeys(querykeys);
+  }, [path]);
+
+  useEffect(() => {
+    searchdata(querykeys, paginations.current, paginations.pageSize);
+  }, [querykeys]);
 
   const rowSelection = {
     onChange: (selectRowKey, selectedRows) => {
@@ -182,21 +250,46 @@ function OverVies(props) {
     }
   };
 
+  const onShowSizeChange = (page, size) => {
+    searchdata(querykeys, page, size);
+    setPageinations({
+      ...paginations,
+      pageSize: size,
+    });
+  };
+
+  const changePage = page => {
+    searchdata(querykeys, page, paginations.pageSize);
+    setPageinations({
+      ...paginations,
+      current: page,
+    });
+  };
+
+  const pagination = {
+    showSizeChanger: true,
+    onShowSizeChange: (page, size) => onShowSizeChange(page, size),
+    current: paginations.current,
+    pageSize: paginations.pageSize,
+    total: list.total,
+    onChange: page => changePage(page),
+  };
+
   return (
     <>
       <Row gutter={24}>
         <Col span={12}>
-          <ChartCard title="告警概览">
+          <ChartCard title={Donuttitle}>
             <Spin spinning={false} style={{ background: '#ffffff' }}>
               {Donutdata === undefined && <Empty style={{ height: '250px' }} />}
               {Donutdata !== undefined && (
-                <DonutPCT data={Donutdata} cols={cols} height={350} padding={[10, 0, 50, 0]} />
+                <DonutPCT data={Donutdata} cols={cols} height={350} padding={[40, 40, 60, 40]} />
               )}
             </Spin>
           </ChartCard>
         </Col>
         <Col span={12}>
-          <ChartCard title="月度告警数量">
+          <ChartCard title={Linetitle}>
             <div
               style={{
                 position: 'absolute',
@@ -216,9 +309,10 @@ function OverVies(props) {
           </ChartCard>
         </Col>
       </Row>
-      <h3 style={{ fontWeight: 'bold', margin: '12px 0' }}>当前告警</h3>
-      <Card>
-        <FromOverVies />
+      <Card style={{ marginTop: 24 }}>
+        <FromContext.Provider value={{ setQueryKeys }}>
+          <FromOverVies />
+        </FromContext.Provider>
         <div style={{ margin: '10px 0 24px 0' }}>
           <Button type="primary" style={{ marginRight: 8 }} onClick={handleConfig}>
             确认告警
@@ -230,6 +324,19 @@ function OverVies(props) {
           </Button>
           <Button style={{ marginRight: 8 }}>导 出</Button>
         </div>
+        <Tabs defaultActiveKey="0" onChange={handleTabs}>
+          {tabsmap.map(({ key, name, color, data }) => [
+            <TabPane
+              tab={
+                <>
+                  <span>{name}</span>
+                  <span style={{ color: `${color}` }}>（{data}）</span>
+                </>
+              }
+              key={key}
+            />,
+          ])}
+        </Tabs>
         <Table
           rowSelection={rowSelection}
           columns={columns}
@@ -237,6 +344,7 @@ function OverVies(props) {
           loading={loading}
           rowKey={record => record.id}
           scroll={{ x: 1400 }}
+          pagination={pagination}
         />
       </Card>
     </>

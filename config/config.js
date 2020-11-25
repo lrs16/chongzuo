@@ -383,7 +383,7 @@ export default {
                         },
                         {
                           path: '/alarmmanage/measuralarm/alarmoverview/quotas',
-                          name: '业务指标警告',
+                          name: '业务指标告警',
                           component: './Alarmmanage/MeasurAlarm/AlarmOverview/OverVies',
                         },
                         {
@@ -393,17 +393,22 @@ export default {
                         },
                         {
                           path: '/alarmmanage/measuralarm/alarmoverview/connector',
-                          name: '接口告警',
+                          name: '接口数据核查告警',
                           component: './Alarmmanage/MeasurAlarm/AlarmOverview/OverVies',
                         },
                         {
                           path: '/alarmmanage/measuralarm/alarmoverview/KAFKA',
-                          name: 'KAFKA中间件告警',
+                          name: 'KAFKA消费告警',
+                          component: './Alarmmanage/MeasurAlarm/AlarmOverview/OverVies',
+                        },
+                        {
+                          path: '/alarmmanage/measuralarm/alarmoverview/KAFKA0',
+                          name: 'KAFKA消费（凌晨）告警',
                           component: './Alarmmanage/MeasurAlarm/AlarmOverview/OverVies',
                         },
                         {
                           path: '/alarmmanage/measuralarm/alarmoverview/sysrun',
-                          name: '主站系统运行',
+                          name: '主站系统运行告警',
                           component: './Alarmmanage/MeasurAlarm/AlarmOverview/OverVies',
                         },
                       ],

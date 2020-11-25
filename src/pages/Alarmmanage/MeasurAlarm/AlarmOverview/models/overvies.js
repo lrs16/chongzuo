@@ -19,16 +19,16 @@ export default {
       });
     },
     // 告警概览：饼图
-    *fetchoverdonut({ payload }, { call, put }) {
-      const response = yield call(AlarmoverDonut, payload);
+    *fetchoverdonut({ payload: { key } }, { call, put }) {
+      const response = yield call(AlarmoverDonut, key);
       yield put({
         type: 'savedonut',
         payload: response.data,
       });
     },
     // 告警概览：曲线
-    *fetchoversmooth({ payload }, { call, put }) {
-      const response = yield call(AlarmoverSmooth, payload);
+    *fetchoversmooth({ payload: { key } }, { call, put }) {
+      const response = yield call(AlarmoverSmooth, key);
       yield put({
         type: 'savesmooth',
         payload: response.data,
@@ -54,13 +54,13 @@ export default {
     savedonut(state, action) {
       return {
         ...state,
-        Donutdata: action.payload.data,
+        Donutdata: action.payload,
       };
     },
     savesmooth(state, action) {
       return {
         ...state,
-        Smoothdata: action.payload.data,
+        Smoothdata: action.payload,
       };
     },
   },

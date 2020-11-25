@@ -90,7 +90,7 @@ class IndicatorChain extends Component {
 
   handleSearch = () => {
     const currentPage = 1;
-    const pageSize = this.state.pageSize;
+    const { pageSize } = this.state;
     this.props.form.validateFields((err, values) => {
       if (err) {
         return;

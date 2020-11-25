@@ -12,26 +12,37 @@ function AlarmOverview(props) {
       case 'overview':
         router.push({
           pathname: `${match.url}/overview`,
-          query: { key },
         });
         break;
       case 'quotas':
         router.push({
           pathname: `${match.url}/quotas`,
-          query: { key },
         });
         break;
       case 'databaseterminal':
-        router.push(`${match.url}/databaseterminal`);
+        router.push({
+          pathname: `${match.url}/databaseterminal`,
+        });
         break;
       case 'connector':
-        router.push(`${match.url}/connector`);
+        router.push({
+          pathname: `${match.url}/connector`,
+        });
         break;
       case 'KAFKA':
-        router.push(`${match.url}/KAFKA`);
+        router.push({
+          pathname: `${match.url}/KAFKA`,
+        });
+        break;
+      case 'KAFKA0':
+        router.push({
+          pathname: `${match.url}/KAFKA0`,
+        });
         break;
       case 'sysrun':
-        router.push(`${match.url}/sysrun`);
+        router.push({
+          pathname: `${match.url}/sysrun`,
+        });
         break;
       default:
         break;
@@ -45,7 +56,7 @@ function AlarmOverview(props) {
     },
     {
       key: 'quotas',
-      tab: '业务指标警告',
+      tab: '业务指标告警',
     },
     {
       key: 'databaseterminal',
@@ -53,15 +64,19 @@ function AlarmOverview(props) {
     },
     {
       key: 'connector',
-      tab: '接口数据告警',
+      tab: '接口数据核查告警',
     },
     {
       key: 'KAFKA',
-      tab: 'KAFKA中间件告警',
+      tab: 'KAFKA消费告警',
+    },
+    {
+      key: 'KAFKA0',
+      tab: 'KAFKA消费（凌晨）告警',
     },
     {
       key: 'sysrun',
-      tab: '主站系统运行',
+      tab: '主站系统运行告警',
     },
   ];
 

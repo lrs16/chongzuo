@@ -1,7 +1,6 @@
 import { routerRedux } from 'dva/router';
 import { stringify } from 'querystring';
 import { fakeAccountLogin, getFakeCaptcha, fakeLogout } from '@/services/login';
-import { queryCurrent } from '@/services/user';
 import { setAuthority } from '@/utils/authority';
 import { getPageQuery } from '@/utils/utils';
 
@@ -15,6 +14,7 @@ const Model = {
 
   effects: {
     *login({ payload }, { call, put }) {
+      const { logincode } = payload;
       const response = yield call(fakeAccountLogin, payload);
 
       if (response.code === -1) {
@@ -26,11 +26,10 @@ const Model = {
 
       if (response.code === 200) {
         sessionStorage.setItem('access_token', response.data.access_token);
-        const userinfo = yield call(queryCurrent); // 正式环境
         yield put({
           type: 'changeLoginStatus',
           payload: {
-            currentAuthority: userinfo.data.loginCode,
+            currentAuthority: logincode,
             // currentAuthority: response.currentAuthority,
             response,
           },

@@ -1,10 +1,10 @@
-import { Icon, Tooltip } from 'antd';
+// import { Icon, Tooltip } from 'antd';
 import React from 'react';
 import { connect } from 'dva';
 import { formatMessage } from 'umi-plugin-react/locale';
 import Avatar from './AvatarDropdown';
 import HeaderSearch from '../HeaderSearch';
-import SelectLang from '../SelectLang';
+// import SelectLang from '../SelectLang';
 import styles from './index.less';
 
 const GlobalHeaderRight = props => {
@@ -34,10 +34,8 @@ const GlobalHeaderRight = props => {
             id: 'component.globalHeader.search.example3',
           }),
         ]}
-        onSearch={value => {
-        }}
-        onPressEnter={value => {
-        }}
+        onSearch={value => {}}
+        onPressEnter={value => {}}
       />
       {/* 帮助
       

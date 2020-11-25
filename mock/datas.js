@@ -391,27 +391,248 @@ function mockalarmsetting(count) {
 }
 
 const overDonut = [
-  {
-    type: '业务指标告警',
-    count: 600,
-  },
-  {
-    type: '终端在线和入库告警',
-    count: 200,
-  },
-  {
-    type: '接口数据告警',
-    count: 100,
-  },
-  {
-    type: 'KAFKA中间件告警',
-    count: 390,
-  },
-  {
-    type: '主站系统运行告警',
-    count: 400,
-  },
+  { type: '业务指标告警', count: 600 },
+  { type: '终端在线和入库告警', count: 200 },
+  { type: '接口数据告警', count: 100 },
+  { type: 'KAFKA中间件告警', count: 390 },
+  { type: '主站系统运行告警', count: 400 },
 ];
+
+function mocktypedonut(key) {
+  const list = [];
+  switch (key) {
+    case 'overview':
+      for (let i = 0; i < 7; i += 1) {
+        list.push({
+          type: ['业务指标', '终端在线和入库', '接口数据', 'KAFKA中间件', '主站系统运行'][i % 5],
+          count: Random.integer(100, 1000),
+        });
+      }
+      break;
+    case 'quotas':
+      for (let i = 0; i < 6; i += 1) {
+        list.push({
+          type: ['终端覆盖率', '完整率', '自动抄表率', '关口0点采集', '关口整点采集', '售电量分析'][
+            i % 6
+          ],
+          count: Random.integer(100, 1000),
+        });
+      }
+      break;
+    case 'databaseterminal':
+      for (let i = 0; i < 3; i += 1) {
+        list.push({
+          type: ['终端在线率', '入库数量（整点）', '入库数量（0-7点）'][i % 3],
+          count: Random.integer(100, 1000),
+        });
+      }
+      break;
+    case 'connector':
+      for (let i = 0; i < 5; i += 1) {
+        list.push({
+          type: [
+            '抄表结算接口',
+            '参数下发',
+            '测量点主表生成',
+            '费控指令-kafa指令超时',
+            '档案同步接口',
+          ][i % 5],
+          count: Random.integer(100, 1000),
+        });
+      }
+      break;
+    case 'KAFKA':
+      for (let i = 0; i < 9; i += 1) {
+        list.push({
+          type: [
+            'kafka节点监控',
+            '下行主题-低压相关',
+            '下行主题-其他回复接口',
+            '下行主题-广西102关口方面二区和安全接入区',
+            '下行主题-广西102档案下发（关口相关）',
+            '上行主题-低压相关',
+            '上行主题-其他回复接口',
+            '上行主题-广西102关口方面二区和安全接入区',
+            '上行主题-广西102档案下发（关口相关）',
+          ][i % 9],
+          count: Random.integer(100, 1000),
+        });
+      }
+      break;
+    case 'KAFKA0':
+      for (let i = 0; i < 9; i += 1) {
+        list.push({
+          type: [
+            'kafka节点监控',
+            '下行主题-低压相关',
+            '下行主题-其他回复接口',
+            '下行主题-广西102关口方面二区和安全接入区',
+            '下行主题-广西102档案下发（关口相关）',
+            '上行主题-低压相关',
+            '上行主题-其他回复接口',
+            '上行主题-广西102关口方面二区和安全接入区',
+            '上行主题-广西102档案下发（关口相关）',
+          ][i % 9],
+          count: Random.integer(100, 1000),
+        });
+      }
+      break;
+    case 'sysrun':
+      for (let i = 0; i < 4; i += 1) {
+        list.push({
+          type: ['登录检测', '数据召测-低压', '数据召测-负控配变', '数据召测-厂站'][i % 4],
+          count: Random.integer(100, 1000),
+        });
+      }
+      break;
+    default:
+      break;
+  }
+  return list;
+}
+
+function mocktypeline(key) {
+  const count = moment().format('DD');
+  const list = [];
+  switch (key) {
+    case 'overview':
+      for (let i = 0; i < 7; i += 1) {
+        for (let j = 1; j <= count; j += 1) {
+          list.push({
+            date: `${j}`,
+            name: [
+              '月度告警总数',
+              '业务指标监控告警',
+              '终端在线和入库告警',
+              '接口数据核查告警',
+              'KAFKA消费告警',
+              'KAFKA消费（凌晨）告警',
+              '主站系统运行告警',
+            ][i % 7],
+            value: Random.integer(0, 60),
+          });
+        }
+      }
+      break;
+    case 'quotas':
+      for (let i = 0; i < 7; i += 1) {
+        for (let j = 1; j <= count; j += 1) {
+          list.push({
+            date: `${j}`,
+            name: [
+              '月度业务指标监控告警总数',
+              '终端覆盖率',
+              '完整率',
+              '自动抄表率',
+              '关口0点采集',
+              '关口整点采集',
+              '售电量分析',
+            ][i % 7],
+            value: Random.integer(0, 60),
+          });
+        }
+      }
+      break;
+    case 'databaseterminal':
+      for (let i = 0; i < 4; i += 1) {
+        for (let j = 1; j <= count; j += 1) {
+          list.push({
+            date: `${j}`,
+            name: [
+              '月度终端在线和入库告警总数',
+              '终端在线率',
+              '入库数量（整点）',
+              '入库数量（0-7点）',
+            ][i % 4],
+            value: Random.integer(0, 60),
+          });
+        }
+      }
+      break;
+    case 'connector':
+      for (let i = 0; i < 6; i += 1) {
+        for (let j = 1; j <= count; j += 1) {
+          list.push({
+            date: `${j}`,
+            name: [
+              '月度接口数据核查告警总数',
+              '抄表结算接口',
+              '参数下发',
+              '测量点主表生成',
+              '费控指令-kafa指令超时',
+              '档案同步接口',
+            ][i % 6],
+            value: Random.integer(0, 60),
+          });
+        }
+      }
+      break;
+    case 'KAFKA':
+      for (let i = 0; i < 10; i += 1) {
+        for (let j = 1; j <= count; j += 1) {
+          list.push({
+            date: `${j}`,
+            name: [
+              '月度KAFKA消费告警总数',
+              'kafka节点监控',
+              '下行主题-低压相关',
+              '下行主题-其他回复接口',
+              '下行主题-广西102关口方面二区和安全接入区',
+              '下行主题-广西102档案下发（关口相关）',
+              '上行主题-低压相关',
+              '上行主题-其他回复接口',
+              '上行主题-广西102关口方面二区和安全接入区',
+              '上行主题-广西102档案下发（关口相关）',
+            ][i % 6],
+            value: Random.integer(0, 60),
+          });
+        }
+      }
+      break;
+    case 'KAFKA0':
+      for (let i = 0; i < 10; i += 1) {
+        for (let j = 1; j <= count; j += 1) {
+          list.push({
+            date: `${j}`,
+            name: [
+              '月度KAFKA消费告警总数',
+              'kafka节点监控',
+              '下行主题-低压相关',
+              '下行主题-其他回复接口',
+              '下行主题-广西102关口方面二区和安全接入区',
+              '下行主题-广西102档案下发（关口相关）',
+              '上行主题-低压相关',
+              '上行主题-其他回复接口',
+              '上行主题-广西102关口方面二区和安全接入区',
+              '上行主题-广西102档案下发（关口相关）',
+            ][i % 6],
+            value: Random.integer(0, 60),
+          });
+        }
+      }
+      break;
+    case 'sysrun':
+      for (let i = 0; i < 5; i += 1) {
+        for (let j = 1; j <= count; j += 1) {
+          list.push({
+            date: `${j}`,
+            name: [
+              '月度主站系统告警总数',
+              '登录检测',
+              '数据召测-低压',
+              '数据召测-负控配变',
+              '数据召测-厂站',
+            ][i % 6],
+            value: Random.integer(0, 60),
+          });
+        }
+      }
+      break;
+    default:
+      break;
+  }
+  return list;
+}
 
 function mocksmoothdata() {
   const count = moment().format('DD');
@@ -500,16 +721,15 @@ export default {
 
   // 计量业务告警： 告警概览（曲线图）
   'GET /api/alarmmanage/overviewsmooth': (req, res) => {
-    const data = mocksmoothdata();
+    const { key } = req.query;
+    const data = mocktypeline(key);
     res.json({
-      data: {
-        data,
-      },
+      data,
     });
   },
 
   // 计量业务告警： 告警概览
-  'GET /api/alarmmanage/overview': (req, res) => {
+  'POST /api/alarmmanage/overview': (req, res) => {
     const count = 30;
     const data = mockalarmover(count);
     res.json({
@@ -517,6 +737,15 @@ export default {
         data,
         total: count,
       },
+    });
+  },
+
+  // 计量业务告警： 业务指标告警（饼图）
+  'GET /api/alarmmanage/typedonut': (req, res) => {
+    const { key } = req.query;
+    const donutdata = mocktypedonut(key);
+    res.json({
+      data: donutdata,
     });
   },
   // 计量业务告警： 告警概览确认告警
