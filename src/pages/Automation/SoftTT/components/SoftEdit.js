@@ -12,16 +12,12 @@ const formItemLayout = {
   },
   colon: false,
 };
-const { TextArea } = Input;
 const { TabPane } = Tabs;
 const withClick = (element, handleClick = () => {}) => {
   return <element.type {...element.props} onClick={handleClick} />;
 };
 
 class SoftEdit extends Component {
-  constructor(props) {
-    super(props);
-  }
 
   state = {
     visible: false,
@@ -60,9 +56,8 @@ class SoftEdit extends Component {
     this.props.form.validateFields((err, value) => {
       if (!err) {
         this.hanldeCancel();
-        const { hostId } = this.props;
-        value.hostId = hostId;
-        this.props.onSumit(value);
+        const hostIds = this.props.hostId;
+        this.props.onSumit(value,hostIds);
         this.props.form.resetFields();
       }
     });
@@ -94,7 +89,7 @@ class SoftEdit extends Component {
           width={720}
           title={title}
           visible={visible}
-          maskClosable={true}
+          maskClosable="true"
           onClose={this.onClose}
           centered="true"
           onCancel={this.hanldeCance}
@@ -105,7 +100,7 @@ class SoftEdit extends Component {
                 <Form.Item label="id">
                   {getFieldDecorator('id', {
                     initialValue: id,
-                  })(<Input disabled></Input>)}
+                  })(<Input disabled />)}
                 </Form.Item>
 
                 <Form.Item label="软件名称">
@@ -117,7 +112,7 @@ class SoftEdit extends Component {
                       },
                     ],
                     initialValue: softwareName,
-                  })(<Input placeholder="请输入"></Input>)}
+                  })(<Input placeholder="请输入"/>)}
                 </Form.Item>
 
                 <Form.Item label="绝对目录">
@@ -162,8 +157,8 @@ class SoftEdit extends Component {
               <Form>
                 <Form.Item>
                   {getFieldDecorator('softwareStartCommand', {
-                    initialValue: softwareStartCommand ? softwareStartCommand : 'null',
-                  })(<Input.TextArea rows={34} style={{ width: 720 }}></Input.TextArea>)}
+                    initialValue: softwareStartCommand||'null',
+                  })(<Input.TextArea rows={34} style={{ width: 720 }}/>)}
                 </Form.Item>
               </Form>
             </TabPane>
@@ -172,7 +167,7 @@ class SoftEdit extends Component {
               <Form>
                 <Form.Item>
                   {getFieldDecorator('softwareStopCommand', {
-                    initialValue: softwareStopCommand ? softwareStopCommand : 'null',
+                    initialValue: softwareStopCommand||'null',
                   })(<Input.TextArea rows={34} style={{ width: 720 }} />)}
                 </Form.Item>
               </Form>
@@ -182,8 +177,8 @@ class SoftEdit extends Component {
               <Form>
                 <Form.Item>
                   {getFieldDecorator('softwareCheckCommand', {
-                    initialValue: softwareCheckCommand ? softwareCheckCommand : 'null',
-                  })(<Input.TextArea rows={34} style={{ width: 720 }}></Input.TextArea>)}
+                    initialValue: softwareCheckCommand||'null',
+                  })(<Input.TextArea rows={34} style={{ width: 720 }}/>)}
                 </Form.Item>
               </Form>
             </TabPane>

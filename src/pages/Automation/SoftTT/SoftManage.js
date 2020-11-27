@@ -3,25 +3,18 @@ import { connect } from 'dva';
 import moment from 'moment';
 import { Card, 
          Table, 
-         Form, 
-         Input, 
          Button, 
          Message, 
          Divider, 
-         Badge, 
          Popconfirm,
-         Layout,
          Row,
          Col } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import SoftEdit from './components/SoftEdit';
 // import SoftProcess from './components/Soft_Process';
-import HostSoft from './components/Host_Soft';
-import BatchAdd from './components/BatchAdd';
+// import HostSoft from './components/Host_Soft';
+// import BatchAdd from './components/BatchAdd';
 import SoftManageTree from '@/components/SoftManageTree';
-
-const { Search } = Input;
-const { Sider, Content } = Layout;
 
 @connect(({ hostsoft, loading }) => ({
   hostsoft,
@@ -53,37 +46,40 @@ class SoftManage extends Component {
   //   });
   // };
 
-  getSoftlist = (hostId) => {
+  getSoftlist = (hostIds) => {
     // const { hostId } = this.state;
     // const hostId = values.hostId;
     const { dispatch } = this.props ;
     dispatch({
       type: 'hostsoft/getSoftwaresList',
-      payload: { hostId } || { deleteHostId },
+      // payload: { hostId } || { deleteHostId },
+        payload: { hostIds } ,
     });
 
     dispatch({
       type: 'hostsoft/getToHostList',
-      payload: { hostId } || { deleteHostId },
+      // payload: { hostId } || { deleteHostId },
+      payload: { hostIds } ,
     });
   };
 
-  handleUpdate = values => {
+  handleUpdate = (value,hostIds) => {
+    // console.log(hostIds,'hostIds');
     const { dispatch } = this.props;
     return dispatch({
       type: 'hostsoft/softSave',
-      payload: values,
+      payload: {value,hostIds}
     }).then(res => {
       if (res.code === 200) {
         Message.success(res.msg);
-        this.getSoftlist(values.hostId);
+        this.getSoftlist(hostIds);
       } else {
         Message.error(res.msg);
       }
     });
   };
 
-  handleEdite = values => {
+  handleEdite = (values,hostIds) => {
     const { dispatch } = this.props;
     return dispatch({
       type: 'hostsoft/softEdit',
@@ -91,7 +87,7 @@ class SoftManage extends Component {
     }).then(res => {
       if (res.code === 200) {
         Message.success(res.msg);
-        this.getSoftlist(values.hostId);
+        this.getSoftlist(hostIds);
       } else {
         Message.error(res.msg);
       }
@@ -158,18 +154,20 @@ class SoftManage extends Component {
   };
 
   getChildValue = val => {
-    const hostId = val[0];
-    this.setState({ hostId: hostId});
+    const hostIds = val[0];
+    this.setState({ 
+      hostId: hostIds
+    });
 
     const { dispatch } = this.props;
     dispatch({
       type: 'hostsoft/getSoftwaresList',
-      payload: { hostId },
+      payload:  { hostIds } ,
     });
 
     dispatch({
       type: 'hostsoft/getToHostList',
-      payload: { hostId },
+      payload:  { hostIds } ,
     });
   };
 
@@ -288,7 +286,7 @@ class SoftManage extends Component {
               <a type="link">配置进程</a>
             </HostSoft> */}
             <Divider type="vertical" />
-            <SoftEdit onSumit={values => this.handleEdite(values)} title="编辑软件" record={record} hostId={this.state.hostId}>
+            <SoftEdit onSumit={(values,hostIds) => this.handleEdite(values,hostIds)} title="编辑软件" record={record} hostId={this.state.hostId}>
               <a type="link">编辑软件</a>
             </SoftEdit>
             <Divider type="vertical" />
@@ -315,10 +313,13 @@ class SoftManage extends Component {
     return (
       <PageHeaderWrapper>
         {/* <Card> */}
-        <Row style={{ display: 'flex' }} style={{ background: '#f1f1f1' }}>
+        <Row 
+          style={{ background: '#f1f1f1' }}>
           <Col span={5}>
               <Card  bordered={false}>
-                  <SoftManageTree toFatherValue={this.getChildValue.bind(this)}/>
+                  <SoftManageTree 
+                  toFatherValue={this.getChildValue}
+                  />
               </Card>
           </Col>
           <Col span={19}>
@@ -328,7 +329,7 @@ class SoftManage extends Component {
                   <Search placeholder="请输入关键字" onSearch={values => this.handleSearch(values)} />
                 </Form> */}
             
-                <SoftEdit onSumit={value => this.handleUpdate(value)} hostId={this.state.hostId}>
+                <SoftEdit onSumit={(value,hostIds) => this.handleUpdate(value,hostIds)} hostId={this.state.hostId}>
                   <Button
                     style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
                     type="dashed"

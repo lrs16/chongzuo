@@ -18,6 +18,7 @@ class DeptTree extends Component {
     });
   }
 
+//  处理数据，生成更多的父子节点，未知？
   toTree = data => {
     const result = [];
     if (!Array.isArray(data)) {
@@ -41,6 +42,7 @@ class DeptTree extends Component {
     return result;
   };
 
+// 生成子节点
   renderTreeNodes = data =>
     data.map(item => {
       if (item.children) {
@@ -53,6 +55,7 @@ class DeptTree extends Component {
       return <TreeNode key={item.id} title={item.name} {...item}/>;
     });
 
+//  用户点击每个子节点的事件
   onSelect = (selectedKeys, info) => {
     if(selectedKeys !== undefined) {
       this.props.toFatherValue(selectedKeys);

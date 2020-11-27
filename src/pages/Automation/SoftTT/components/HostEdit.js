@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { Form, Input, Button, Radio, Select, Drawer, message } from 'antd';
+import { Form, Input, Button, Radio, Select, Drawer} from 'antd';
 import { ip_reg } from '@/utils/Regexp';
+
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
@@ -38,13 +39,9 @@ const withClick = (element, handleClick = () => {}) => {
 };
 
 class HostEdit extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   state = {
     visible: false,
-    value:2
+    // value:2
   };
 
   handleopenClick = () => {
@@ -93,7 +90,7 @@ class HostEdit extends Component {
   render() {
     const { visible } = this.state;
     const { children, title } = this.props;
-    const { cities } = this.state;
+    // const { cities } = this.state;
 
     // Form双向绑定
     const { getFieldDecorator } = this.props.form;
@@ -101,13 +98,11 @@ class HostEdit extends Component {
     const {
       id,
       hostsName,
-      createTime,
       hostsStatus,
       hostsIp,
       hostsSort,
       hostsZoneId,
       hostsOsId,
-      hostsCabinetId,
       hostsRemark,
     } = this.props.record;
 
@@ -119,7 +114,7 @@ class HostEdit extends Component {
           visible={visible}
           width={720}
           centered="true"
-          maskClosable={true}
+          maskClosable="true"
           onClose={this.hanldleCancel}
         >
           <Form {...formItemLayout}>
@@ -155,7 +150,7 @@ class HostEdit extends Component {
                   },
                 ],
                 initialValue: hostsIp,
-              })(<Input placeholder="请输入" disabled={hostsIp ? true : false} />)}
+              })(<Input placeholder="请输入" disabled={!!hostsIp} />)}
             </Form.Item>
 
             <Form.Item label="主机状态">
@@ -166,7 +161,7 @@ class HostEdit extends Component {
                     message: '请输入',
                   },
                 ],
-                initialValue: hostsStatus ? hostsStatus : '1',
+                initialValue: hostsStatus || '1',
               })(
                 <Radio.Group>
                   <Radio value="0">停用</Radio>
@@ -183,7 +178,7 @@ class HostEdit extends Component {
                     message: '请输入',
                   },
                 ],
-                initialValue: hostsZoneId?hostsZoneId:'2',
+                initialValue: hostsZoneId||'2',
               })(
                 <Radio.Group>
                   <Radio value='0'>安全接入区</Radio>
@@ -196,7 +191,7 @@ class HostEdit extends Component {
 
             <Form.Item label="主机排序">
               {getFieldDecorator('hostsSort', {
-                initialValue: hostsSort ? hostsSort : '1',
+                initialValue: hostsSort || '1',
               })(<Input type="number" />)}
             </Form.Item>
 

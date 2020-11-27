@@ -1,6 +1,5 @@
-import react, { Component } from 'react';
 import { connect } from 'dva';
-import moment from 'moment';
+// import moment from 'moment';
 import {
   Layout,
   Card,

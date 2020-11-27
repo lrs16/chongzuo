@@ -4,7 +4,7 @@ import { connect } from 'dva';
 import { Card, 
          Descriptions, 
          Input, 
-        //  Checkbox, 
+         Checkbox, 
         //  Tag,
          Form,
          Select,
@@ -98,11 +98,10 @@ frequencyData.forEach(function(item,index) {
 //   marginLeft:50,
 //   display:'block'
 // };
-// const indexrelation = [];
-// const monitoItems = '';
-// const cycle = '';
-// const relationexpre = '';
-// const value = '';
+
+const responseData = [{name:"数据库锁死",value:{oracleBlyw:'数据库返回'}},
+];
+const {value:{ oracleBlyw }} = responseData[0];
 @connect(({ strategyedit, loading }) => ({
   strategyedit,
   loading: loading.models.loading,
@@ -204,14 +203,14 @@ class StrategyAddEdit extends Component {
         sm: { span: 18 },
       },
     };
-    const formItemLayoutaction = {
+    const formItemLayoutmonitor = {
       labelCol: {
         xs: { span: 24 },
-        sm: { span: 4 },
+        sm: { span: 8 },
       },
       wrapperCol: {
         xs: { span: 24 },
-        sm: { span: 20 },
+        sm: { span: 16 },
       },
     };
 
@@ -260,6 +259,15 @@ class StrategyAddEdit extends Component {
           <Descriptions>
             <Descriptions.Item label='告警ID'>{list.id}</Descriptions.Item>
           </Descriptions>
+
+          <Row>
+             <Col span={24} style={{ textAlign: 'right' }}>
+               <div style={{marginTop:'5px'}}>
+                   <Button onClick={this.props.history.goBack} style={{display:'inline',marginRight:'5px'}}>取消</Button>
+                 <Button type='primary' htmlType='submit' onClick={this.save}>提交</Button>
+               </div>
+            </Col>
+          </Row>
         </Card>
 
         <Card>
@@ -268,82 +276,84 @@ class StrategyAddEdit extends Component {
           onSubmit={this.handleSubmit}
           {...formItemLayout}
         >
-         <Row>
-           <Col span={12}>
-             <Form.Item label='告警标题'>
-              {getFieldDecorator('alatitle',{
-                rules:[
-                  {
-                    required,
-                    message:'请输入 '
-                  },
-                ],
-                initialValue: list.alatitle?list.alatitle:''
-              })(<Input placeholder="请输入" />)}
-              </Form.Item>
-           </Col>
-           <Col span={12}>
-             <Form.Item label='描述'>
-                {getFieldDecorator('describe',{
+          <Row>
+            <Col span={12}>
+              <Form.Item label='告警标题'>
+                {getFieldDecorator('alatitle',{
                   rules:[
                     {
-                      message:'请输入'
+                      required,
+                      message:'请输入 '
                     },
                   ],
-                  initialValue:list.describe?list.describe:''
-                })(<Input placeholder='请输入'/>)}
-             </Form.Item>
-           </Col>
-         </Row>
-         <Row>
-           <Col span={12}>
-             <Form.Item label='告警等级'>
-              {getFieldDecorator('alarmLevel',{
-                rules:[
-                  {
-                    required,
-                    message:'请输入 '
-                  },
-                ],
-                initialValue:''
-              })(<Input placeholder="请输入" />)}
+                  initialValue: list.alatitle?list.alatitle:''
+                })(<Input placeholder="请输入" />)}
+                </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item label='描述'>
+                  {getFieldDecorator('describe',{
+                    rules:[
+                      {
+                        message:'请输入'
+                      },
+                    ],
+                    initialValue:list.describe?list.describe:''
+                  })(<Input placeholder='请输入'/>)}
               </Form.Item>
-           </Col>
-           <Col span={12}>
-             <Form.Item label='告警频率'>
-                {getFieldDecorator('alarmFrequency',{
+            </Col>
+          </Row>
+          <Row>
+            <Col span={12}>
+              <Form.Item label='告警等级'>
+                {getFieldDecorator('alarmLevel',{
                   rules:[
                     {
-                      message:'请输入'
+                      required,
+                      message:'请输入 '
                     },
                   ],
                   initialValue:''
-                })(<Input placeholder='请输入'/>)}
-             </Form.Item>
-           </Col>
-         </Row>
-
-           <Descriptions title='触发条件'/>
-           <Row>
-             <Col span={6}>
-              <Form.Item label='监控项'>
-                  {getFieldDecorator('monitoItems',{
+                })(<Input placeholder="请输入" />)}
+                </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item label='告警频率'>
+                  {getFieldDecorator('alarmFrequency',{
                     rules:[
                       {
                         message:'请输入'
                       },
                     ],
                     initialValue:''
-                  })(
-                  <Select placeholder='请输入'>
-                    <Option key='1' value='监控项1'>监控项1</Option>
-                    <Option key='2' value='监控项2'>监控项2</Option>
-                    <Option key='3' value='监控项3'>监控项3</Option>
-                  </Select>
-                  )}
+                  })(<Input placeholder='请输入'/>)}
               </Form.Item>
-             </Col>
-             <Col span={6}>
+            </Col>
+          </Row>
+        </Form>
+
+        <Descriptions title='触发条件'/>
+          <Form {...formItemLayoutmonitor}>
+            <Row>
+              <Col span={6}>
+                <Form.Item label='监控项'>
+                    {getFieldDecorator('monitoItems',{
+                      rules:[
+                        {
+                          message:'请输入'
+                        },
+                      ],
+                      initialValue: oracleBlyw
+                    })(
+                    <Select placeholder='请输入'>
+                      <Option key='1' value='监控项1'>监控项1</Option>
+                      <Option key='2' value='监控项2'>监控项2</Option>
+                      <Option key='3' value='监控项3'>监控项3</Option>
+                    </Select>
+                    )}
+                </Form.Item>
+              </Col>
+              <Col span={6}>
               <Form.Item label='周期'>
                   {getFieldDecorator('cycle',{
                     rules:[
@@ -361,7 +371,7 @@ class StrategyAddEdit extends Component {
                   )}
               </Form.Item>
              </Col>
-             <Col span={6}>
+              <Col span={6}>
               <Form.Item label='关系式'>
                   {getFieldDecorator('relationexpre',{
                     rules:[
@@ -379,7 +389,7 @@ class StrategyAddEdit extends Component {
                   )}
               </Form.Item>
              </Col>
-             <Col span={6}>
+              <Col span={6}>
               <Form.Item label='值'>
                   {getFieldDecorator('value',{
                     rules:[
@@ -394,200 +404,84 @@ class StrategyAddEdit extends Component {
               </Form.Item>
              </Col>
            </Row>
-           <Row>
-             <Col span={24} style={{ textAlign: 'right' }}>
-               <div style={{marginTop:'5px'}}>
-                   <Button onClick={this.props.history.goBack} style={{display:'inline',marginRight:'5px'}}>取消</Button>
-                 <Button type='primary' htmlType='submit' onClick={this.save}>提交</Button>
-               </div>
-            </Col>
-          </Row>
-           {/* <EditStrategy 
-            onSubmit={this.save}
-            detailsid={this.detailsid}
-           /> */}
-          {/* <Descriptions.Item label='在过去的:'></Descriptions.Item> */}
-          {/* <Form.Item label='在过去的'  style={{marginLeft:50}}>
-            {
-              getFieldDecorator('past',{
-                rules:[
-                  {
-                    required,
-                  },
-                ],
-                initialValue:list.past?list.past:''
-              })(<Select style={{width:200}}>
-                   {frequencyChildren}
-                 </Select>)
-            }
-          </Form.Item> */}
-{/*          
-          <Row>
-            <Col span={24} style={{ textAlign: 'right' }}>
-              <div style={{display:this.detailsid?'inline-block':'none',marginTop:'5px'}}>
-                <Button style={{display:'inline',marginRight:'5px'}}>取消</Button>
-                <Button type='primary' htmlType='submit' onClick={this.save}>提交</Button>
-              </div>
-            </Col>
-            
-          </Row> */}
-      
-
-          <Descriptions title='执行动作' column={1}>
-              {/* <Descriptions.Item > */}
-            
-{/* 
-                <Row>
-                  <Col span={12}>
-                    <Form.Item label='通知内容'>
-                        {getFieldDecorator('remark',{
-                          rules:[
-                            {
-                              required,
-                            },
-                          ],
-                          initialValue:''
-                        })(
-                        <TextArea/>)}
-                      </Form.Item>
-                  </Col>
-                </Row> */}
-             
-                {/* </Descriptions.Item> */}
-
-                {/* <Description.Item> */}
-                  
-           
-             
-              {/* </Description.Item> */}
-          </Descriptions>
-          <Form  {...formItemLayoutaction}>
-                <Row>
-                  <Col span={17}>
-                  <Form.Item label='通知标题' >
-                      {getFieldDecorator('delaystrate',{
-                        rules:[
-                          {
-                            // required,
-                          },
-                        ],
-                        initialValue:''
-                      })(<Input/>)
-                      }
-                  </Form.Item>
-                  </Col>
-                </Row>
-
-                <Row>
-                  <Col span={17}>
-                    <Form.Item label='通知内容'>
-                        {getFieldDecorator('remark',{
-                          rules:[
-                            {
-                              // required,
-                            },
-                          ],
-                          initialValue:''
-                        })(
-                        <TextArea/>)}
-                      </Form.Item>
-                  </Col>
-                </Row> 
           </Form>
-          {/* <Descriptions column={1}>
-            <Descriptions.Item label='通知方式:' style={{marginLeft:50}}>
-              <Checkbox value='shortMessage'>短信</Checkbox>
-              <Checkbox value='mail'>邮件</Checkbox>
-              <Checkbox value='enterpriseCredit'>企信</Checkbox>
-            </Descriptions.Item> */}
-            {/* <Form.Item label='通知方式' style={{marginLeft:50, marginTop:10}}>
-              {getFieldDecorator('notiMethod',{
-                rules:[
-                  {
-                    required,
-                    message:'请输入',
-                  },
-                ],
-                initialValue:list.notiMethod?list.notiMethod:''
-              })(
-                <Checkbox.Group>
-                  <Checkbox value='shortMessage'>短信</Checkbox>
-                  <Checkbox value='mail'>邮件</Checkbox>
-                  <Checkbox value='enterprise'>企信</Checkbox>
-              </Checkbox.Group>
-              )}
 
-
-            </Form.Item> */}
-{/* 
-            <Form.Item label='通知对象' style={{display:'block',marginLeft:50,marginTop:20}}>
-              {getFieldDecorator('notiObj',{
-                rules:[
-                  {
-                    required,
-                  },
-                ],
-                initialValue:list.notiObj?list.notiObj:''
-              })(<Select 
-                   style={{width:400}}
-                   mode='multiple'
-                   defaultValue={['全部']}
-              >
-                   {children}
-                 </Select>)
-              }
-            </Form.Item> */}
-
-            {/* <Form.Item label='告警频率' style={{display:'block',marginLeft:50,marginTop:20}}>
-              {getFieldDecorator('alafrequency',{
-                rules:[
-                  {
-                    required,
-                  },
-                ],
-                initialValue:list.alafrequency?list.alafrequency:''
-              })(<Select style={{width:200}}>
-                   {frequencyChildren}
-                 </Select>)
-              }
-            </Form.Item> */}
-
-            {/* <Form.Item label='生效时间' style={{display:'block',marginLeft:50, marginTop:10}}>
-                {getFieldDecorator('forcetime', {
+          <Descriptions title='执行动作' column={1}/>
+         
+          <Form  {...formItemLayout}>
+            <Row>
+              <Col span={12}>
+                <Form.Item label='通知方式'>
+                {getFieldDecorator('notiMethod',{
                   rules:[
                     {
-                      required
+                      required,
+                      message:'请输入',
                     },
                   ],
-                  initialValue: list.forcetime?moment(list.forcetime,'HH:mm'):''
-                  // initialValue: moment(list.forcetime) || ''
-                })(<TimePicker 
-                      format={format}
-                     />)}
-            </Form.Item> */}
+                  initialValue:''
+                })(
+                  <Checkbox.Group>
+                    <Checkbox value='shortMessage'>短信</Checkbox>
+                    <Checkbox value='mail'>邮件</Checkbox>
+                    <Checkbox value='enterprise'>企信</Checkbox>
+                </Checkbox.Group>
+                )}
+              </Form.Item>
+            </Col>
+          </Row>
 
-          
-
-          {/* <Descriptions title='适用对象'></Descriptions>
-          <Form.Item>
-            <Popconfirm title='确定删除吗？' onConfirm={this.handleDeleteOk}>
-              <Button style={{float:'right'}}>删除</Button>
-              {/* <Button>批量删除</Button> */}
-            {/* </Popconfirm>
-          </Form.Item>  */}
-          
-         
-          {/* <EditResources
-            onSumit={values => editResources(values)}>
-            <Button style={{float:'right', marginRight:10,zIndex:999}}>编辑资源</Button>
-          </EditResources>
-          <Table 
-            columns={objColumns}
-            dataSource={tabletwoSource}
-            rowSelection={rowSelection}
-          >
-          </Table> */}
-
+          <Row>
+            <Col span={12}>
+              <Form.Item label='通知对象'>
+                {getFieldDecorator('notiObj',{
+                  rules:[
+                    {
+                      required,
+                    },
+                  ],
+                  initialValue:''
+                })(<Select 
+                    // mode='multiple'
+                    // defaultValue={['全部']}
+                >
+                    {children}
+                  </Select>)
+                }
+              </Form.Item> 
+            </Col>
+          </Row>
+          <Row>
+            <Col span={12}>
+              <Form.Item label='通知标题' >
+                {getFieldDecorator('delaystrate',{
+                  rules:[
+                    {
+                      // required,
+                    },
+                  ],
+                  initialValue:''
+                })(<Input/>)
+                }
+            </Form.Item>
+            </Col>
+          </Row>
+            
+          <Row>
+            <Col span={12}>
+              <Form.Item label='通知内容'>
+                {getFieldDecorator('remark',{
+                  rules:[
+                    {
+                      // required,
+                    },
+                  ],
+                  initialValue:''
+                })(
+                <TextArea/>)}
+              </Form.Item>
+            </Col>
+          </Row> 
         </Form>
         </Card>
       

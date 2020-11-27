@@ -30,7 +30,7 @@ export async function removeHostInfo(id) {
   });
 }
 
-//批量添加主机
+// 批量添加主机
 export async function batchAddhost(params) {
   return request(`/auto/hosts/batchSave`, {
     method: 'POST',
@@ -49,9 +49,9 @@ export async function searchSofts(params) {
 }
 
 export async function querySaveSoft(params) {
-  return request(`/auto/softwares/${params.hostId}`, {
+  return request(`/auto/softwares/${params.hostIds}`, {
     method: 'POST',
-    body: JSON.stringify(params),
+    body: JSON.stringify(params.value),
   });
 }
 
@@ -109,15 +109,15 @@ export async function batchAddprocess(params) {
 }
 
 // 请求主机的软件信息， 生成表格 /auto/hostsHandle/tree/{hostsId}/softwares/  mxj
-export async function querySoftwaresList(hostId) {
-  return request(`/auto/hostsHandle/tree/${hostId}/softwares`, {
+export async function querySoftwaresList(hostIds) {
+  return request(`/auto/hostsHandle/tree/${hostIds}/softwares`, {
     method: 'GET',
   });
 }
 
 // 根据树杈点击的主机编号, 获取主机ip和端口 /auto/hosts/{id}根据编号查询信息  mxj
-export async function queryToHostList(id) {
-  return request(`/auto/hosts/${id}`, {
+export async function queryToHostList(hostIds) {
+  return request(`/auto/hosts/${hostIds}`, {
     method: 'GET',
   });
 }

@@ -84,16 +84,16 @@ export default {
       return yield call(queryRemoveSoft, payload);
     },
 
-    *getSoftwaresList({ payload: { hostId } }, { call, put }) {
-      const response = yield call(querySoftwaresList, hostId);
+    *getSoftwaresList({ payload: { hostIds } }, { call, put }) {
+      const response = yield call(querySoftwaresList, hostIds);
       yield put({
         type: 'treesoftdata',
         payload: response,
       });
     },
 
-    *getToHostList({ payload: { hostId } }, { call, put }) {
-      const response = yield call(queryToHostList, hostId);
+    *getToHostList({ payload: { hostIds } }, { call, put }) {
+      const response = yield call(queryToHostList, hostIds);
       yield put({
         type: 'treehostdata',
         payload: response.data,

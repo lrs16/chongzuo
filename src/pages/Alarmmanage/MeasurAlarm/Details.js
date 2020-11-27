@@ -29,6 +29,11 @@ const eliminate = ['未消除', '已消除', '已取消'];
   loading: loading.models.alarmdetails,
 }))
 class Details extends Component {
+  state = {
+    current: 1,
+    pageSize: 1,
+    quekey:'',
+  }
   componentDidMount() {
   //  this.getList();
   };
@@ -52,6 +57,18 @@ class Details extends Component {
 
   handleReset = () => {
     this.props.form.resetFields();
+  }
+
+  onShowSizeChange = (current, pageSize) => {
+    setTimeout(() => {
+      this.setState({ pageSize });
+    },0);
+  }
+
+  changePage = page => {
+    setTimeout(() => {
+      this.setState({ current: page});
+    })
   }
 
   render() {
@@ -88,7 +105,20 @@ class Details extends Component {
         confirmwarntime:'确认警告时间',
         warningTime:'本次警告时间',
         lastWarntime:'上次警告时间',
-      }
+      },
+      {
+        level:'级别',
+        category:'类别',
+        subclass:'子类',
+        confirmStatus:'1',
+        eliminationState:'0',
+        warnContent:'告警内容11111111111111111111111111111111111111111111111',
+        accumulated:'当月累计',
+        annualCumulative:'年度累计',
+        confirmwarntime:'确认警告时间',
+        warningTime:'本次警告时间',
+        lastWarntime:'上次警告时间',
+      },
     ];
     const columns = [
       {
@@ -223,6 +253,18 @@ class Details extends Component {
         console.log(selectedRows);
       },
     };
+
+    const pagination = {
+      showSizeChanger:true,
+      showQuickJumper:true,
+      onShowSizeChange:(current, pageSize) => this.onShowSizeChange(current, pageSize),
+      total:85,
+      showTotal:(total,current)=> `共 ${total} 条记录 第${this.state.current} 页`,
+      current: this.state.current,
+      pageSize:this.state.pageSize,
+      onChange: page => this.changePage(page), 
+    };
+
     const { getFieldDecorator } = this.props.form;
     // const { alarmdetails:{ alarmList } } = this.props;
     const dataSource = [...alarmList];
@@ -359,6 +401,7 @@ class Details extends Component {
             columns={columns}
             rowSelection={rowSelection}
             scroll={{ x: 1500 }}
+            pagination={pagination}
           />
         </Card>
       </PageHeaderWrapper>

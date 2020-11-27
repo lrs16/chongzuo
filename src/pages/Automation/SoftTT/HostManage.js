@@ -101,7 +101,7 @@ class HostManage extends Component {
 
   handleEdite = values => {
     const { dispatch } = this.props;
-    return dispatch({
+    dispatch({
       type: 'hostsoft/edit',
       payload: values,
     }).then(res => {

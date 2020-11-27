@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Form, Modal, Input, Radio, Select, Drawer, Message } from 'antd';
-import Item from 'antd/lib/list/Item';
+import { Form, Modal, Input, Select } from 'antd';
+
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
@@ -18,7 +18,7 @@ const withClick = (element, handleClick = () => {}) => {
 }
 const { Option } = Select;
 const { TextArea } = Input;
-//命令类型 
+//  命令类型 
 const selectType = [
   {
     key:'1',
@@ -37,7 +37,7 @@ const selectData = [];
 selectType.forEach(function(item){
 selectData.push(<Option value={item.key} key={item.key}>{item.value}</Option>)
 });
-//命令分类
+//  命令分类
 const  commandClassification = [
   {
     key:'1',
@@ -60,7 +60,7 @@ const classData = [];
 commandClassification.forEach(function(item){
   classData.push(<Option value={item.key} key={item.key}>{item.value}</Option>)
 });
-//命令状态下拉值
+//  命令状态下拉值
 const statu = [
   {
     key:'1',
@@ -127,8 +127,9 @@ class CommandAdd extends Component {
     })
     
   }
+
   render() {
-    const {commandconfigurate:{ editInfo }} = this.props;
+    // const {commandconfigurate:{ editInfo }} = this.props;
     const { visible } = this.state;
     const { children, title } = this.props;
     const { getFieldDecorator } = this.props.form;
@@ -153,7 +154,7 @@ class CommandAdd extends Component {
         title={title}
         visible={visible}
         centered
-        maskClosable={true}
+        maskClosable='true'
         onCancel={this.handleCancel}
         onOk={this.handleOk}
         >
@@ -176,7 +177,7 @@ class CommandAdd extends Component {
                       message:'命令类型不能为空'
                     }
                   ],
-                  initialValue:commandType?commandType:'1'
+                  initialValue:commandType||'1'
                 })(
                 <Select 
                      getPopupContainer={triggerNode => triggerNode.parentNode}
@@ -197,7 +198,7 @@ class CommandAdd extends Component {
                       message:'命令分类不能为空'
                     }
                   ],
-                  initialValue:commandClass?commandClass:'1'
+                  initialValue:commandClass||'1'
                 })(<Select
                   getPopupContainer={triggerNode => triggerNode.parentNode}
                   // defaultValue='1'
@@ -239,7 +240,7 @@ class CommandAdd extends Component {
             <Form.Item label='命令状态'>
             {
                 getFieldDecorator('commandState',{
-                  initialValue:commandState?commandState:'1'
+                  initialValue:commandState||'1'
                 })(<Select
                   getPopupContainer={triggerNode => triggerNode.parentNode}
                   // defaultValue='1'
@@ -252,7 +253,7 @@ class CommandAdd extends Component {
             <Form.Item label='命令排序'>
             {
                 getFieldDecorator('commandSort',{
-                  initialValue:commandSort?commandSort:'0'
+                  initialValue:commandSort||'0'
                 })(<Input type='number'/>)
               }
             </Form.Item>

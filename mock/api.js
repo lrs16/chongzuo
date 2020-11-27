@@ -608,7 +608,7 @@ const historyList = [
     alarmId: 'GJBH202005150006',
   },
 ];
-//基本信息
+//  基本信息
 const alarmBasic = {
   title: 'xxxxxxxxxxx主机xxx实例名（xxx）没有响应',
   name: 'xxx数据库n.n',
@@ -650,7 +650,7 @@ const operaRecord = [
     statue: 1,
   },
 ];
-//详情页的告警历史
+//  详情页的告警历史
 const detailAlarm = [
   {
     id: 1,
@@ -683,7 +683,7 @@ const detailAlarm = [
     action: '降级',
   },
 ];
-//性情页的告警通知
+//  性情页的告警通知
 const alarmNotice = [
   {
     id: 1,
@@ -722,7 +722,7 @@ const alarmNotice = [
     statue: 0,
   },
 ];
-//告警策略的列表展示
+//  告警策略的列表展示
 const strategyList = [
   {
     id: 1,
@@ -758,7 +758,7 @@ const strategyList = [
     state: '0',
   },
 ];
-//告警策略的详细数据
+//  告警策略的详细数据
 const strateDetails = {
   id: 'GJCL20200514001',
   notiMethod: 'shortMessage',
@@ -779,7 +779,7 @@ const strateDetails = {
       '该告警已累计告警$告警次数$次，未恢复之前，$延迟策略$后再次通知您，请尽快处理防止告警风暴无',
   },
 };
-//告警策略的第一个表的数据
+//  告警策略的第一个表的数据
 const tableOne = [
   {
     warnIndex: '指标1；指标2；指标3；指标4',
@@ -806,7 +806,7 @@ const tableOne = [
     alarmLevel: '严重',
   },
 ];
-//告警策略的第二个表
+//  告警策略的第二个表
 const tableTwo = [
   {
     ip: '172.35.25.210',
@@ -854,132 +854,59 @@ const mainplayList = [
 ];
 
 // 当前告警列表
-const currentList = [
-  {
-    alarmTitle: '',
-    alarmDetail: '',
-  },
-];
-
-// 主机的列表展示
-const hostList = [
-  {
-    id: '1',
-    code: '1272798439866699778',
-    group: 'test',
-    equipmentName: '张三',
-    statue: '1',
-    ip: '172.168.7.0',
-    action: '李四',
-  },
-  {
-    id: '2',
-    code: '1272798439866699778',
-    group: 'test',
-    equipmentName: '张三',
-    statue: '0',
-    ip: '172.168.7.0',
-    action: '李四',
-  },
-  {
-    id: '3',
-    code: '1272798439866699778',
-    group: 'test',
-    equipmentName: '张三',
-    statue: '1',
-    ip: '172.168.7.0',
-    action: '李四',
-  },
-];
-
-// 保存新增数据
-const saveData = [
-  {
-    code: '1272798439866699778',
-    group: 'test',
-    equipmentName: '张三',
-    statue: '1',
-    action: '李四',
-  },
-  {
-    code: '1272798439866699778',
-    group: 'test',
-    equipmentName: '张三',
-    statue: '0',
-    action: '李四',
-  },
-  {
-    code: '1272798439866699778',
-    group: 'test',
-    equipmentName: '张三',
-    statue: '1',
-    action: '李四',
-  },
-];
-// 保存编辑接口
-const saveEdit = [
-  {
-    code: '1272798439866699778',
-    group: 'test',
-    equipmentName: '张三',
-    statue: '1',
-    action: '李四',
-  },
-  {
-    code: '1272798439866699778',
-    group: 'test',
-    equipmentName: '张三',
-    statue: '0',
-    action: '李四',
-  },
-  {
-    code: '1272798439866699778',
-    group: 'test',
-    equipmentName: '张三',
-    statue: '1',
-    action: '李四',
-  },
-];
-// 删除数据
-const removeHost = [
-  {
-    code: '1272798439866699778',
-    group: 'test',
-    equipmentName: '张三',
-    statue: '1',
-    action: '李四',
-  },
-  {
-    code: '1272798439866699778',
-    group: 'test',
-    equipmentName: '张三',
-    statue: '0',
-    action: '李四',
-  },
-  {
-    code: '1272798439866699778',
-    group: 'test',
-    equipmentName: '张三',
-    statue: '1',
-    action: '李四',
-  },
-];
-
-// //告警明细列表
-// const alarmList = [
+// const currentList = [
 //   {
-//     level:'级别',
-//     category:'类别',
-//     subclass:'子类',
-//     confirmStatus:'确认状态',
-//     eliminationState:'消除状态',
-//     accumulated:'当月累计',
-//     annualCumulative:'年度累计',
-//     confirmwarntime:'确认警告时间',
-//     warningTime:'本次警告时间',
-//     lastWarntime:'上次警告时间',
-//   }
-// ]
+//     alarmTitle: '',
+//     alarmDetail: '',
+//   },
+// ];
+
+// 通知组设置
+const infogroup = [
+  {
+    id:'1',
+    alertNotifier:'徐华聪',
+    mobilePhone:'13214576859',
+    notiMethod:'手机短信'
+  },
+  {
+    id:'2',
+    alertNotifier:'徐华聪',
+    mobilePhone:'13214576859',
+    notiMethod:'手机短信'
+  },
+  {
+    id:'3',
+    alertNotifier:'徐华聪',
+    mobilePhone:'13214576859',
+    notiMethod:'手机短信'
+  },
+]
+
+//  联系人设置
+const contactSettings = [
+  {
+    id:'1',
+    fullName:'徐华聪',
+    systemAccount:'xu_hc1234',
+    telephoneNumber:'13214576859',
+    organization:'博联/运维部'
+  },
+  {
+    id:'2',
+    fullName:'徐华聪',
+    systemAccount:'xu_hc1234',
+    telephoneNumber:'13214576859',
+    organization:'博联/运维部'
+  },
+  {
+    id:'3',
+    fullName:'徐华聪',
+    systemAccount:'xu_hc1234',
+    telephoneNumber:'13214576859',
+    organization:'博联/运维部'
+  },
+]
 
 export const getFactoryTypes = [
   {
@@ -1134,4 +1061,6 @@ export default {
   // 'GET /api/configList':configList,
   // //告警明细
   // 'GET /api/alarmList':alarmList,
+  'GET /api/infogroup': infogroup,
+  'GET /api/contactSettings':contactSettings
 };
