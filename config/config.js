@@ -116,6 +116,65 @@ export default {
             //   component: './Admin',
             //   authority: ['admin'],
             // },
+            {
+              path: '/ITSM',
+              name: 'IT服务管理',
+              dynamic: true,
+              icon: 'deployment-unit',
+              routes: [
+                {
+                  path: '/ITSM',
+                  redirect: '/ITSM/eventmanage',
+                },
+                {
+                  path: '/ITSM/eventmanage',
+                  name: '事件管理',
+                  icon: 'control',
+                  routes: [
+                    {
+                      path: '/ITSM/eventmanage',
+                      redirect: '/ITSM/eventmanage/registration',
+                    },
+                    {
+                      path: '/automation/STT/hostlist',
+                      name: '事件登记',
+                      icon: 'cloud-server',
+                      component: './ITSM/Eventmanage/Registration',
+                    },
+                  ],
+                },
+                {
+                  path: '/ITSM/problemmanage',
+                  name: '问题管理',
+                  icon: 'control',
+                  component: './ITSM/Problemmanage/Registration',
+                },
+                {
+                  path: '/ITSM/demandmanage',
+                  name: '需求管理',
+                  icon: 'control',
+
+                  routes: [
+                    {
+                      path: '/ITSM/demandmanage',
+                      redirect: '/ITSM/demandmanage/registration',
+                    },
+                    {
+                      path: '/ITSM/demandmanage/registration',
+                      name: '需求登记',
+                      icon: 'cloud-server',
+                      component: './ITSM/Demandmanage/Registration',
+                    },
+                  ],
+                },
+                {
+                  path: '/ITSM/faultmanage',
+                  name: '故障管理',
+                  icon: 'control',
+                  component: './ITSM/Faultmanage/Registration',
+                },
+              ],
+            },
             // 自动化运维
             {
               path: '/automation',
@@ -137,7 +196,6 @@ export default {
                   path: '/automation/opsscene',
                   name: '运维场景',
                   icon: 'control',
-
                   component: './Automation/Scenarios/OpsScene',
                 },
                 {

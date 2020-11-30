@@ -213,7 +213,7 @@ function OverVies(props) {
       case '3':
         setQueryKeys({ configstatus: '', elimination: 0 });
         break;
-      case 'KAFKA':
+      case '4':
         setQueryKeys({ configstatus: '', elimination: 1 });
         break;
       default:
