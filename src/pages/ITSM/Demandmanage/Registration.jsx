@@ -5,7 +5,7 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 function AlarmOverview(props) {
   const pagetitle = props.route.name;
 
-  return <PageHeaderWrapper title={pagetitle}>需求管理</PageHeaderWrapper>;
+  return <PageHeaderWrapper title={pagetitle}>123</PageHeaderWrapper>;
 }
 
 export default AlarmOverview;

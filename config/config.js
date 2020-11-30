@@ -136,10 +136,28 @@ export default {
                       redirect: '/ITSM/eventmanage/registration',
                     },
                     {
-                      path: '/automation/STT/hostlist',
+                      path: '/ITSM/eventmanage/registration',
                       name: '事件登记',
                       icon: 'cloud-server',
                       component: './ITSM/Eventmanage/Registration',
+                    },
+                    {
+                      path: '/ITSM/eventmanage/to-do',
+                      name: '事件待办',
+                      icon: 'cloud-server',
+                      component: './ITSM/Eventmanage/ToDolist',
+                    },
+                    {
+                      path: '/ITSM/eventmanage/query',
+                      name: '事件查询',
+                      icon: 'cloud-server',
+                      component: './ITSM/Eventmanage/QueryList',
+                    },
+                    {
+                      path: '/ITSM/eventmanage/overtime',
+                      name: '超时查询',
+                      icon: 'cloud-server',
+                      component: './ITSM/Eventmanage/Overtime',
                     },
                   ],
                 },
@@ -153,7 +171,6 @@ export default {
                   path: '/ITSM/demandmanage',
                   name: '需求管理',
                   icon: 'control',
-
                   routes: [
                     {
                       path: '/ITSM/demandmanage',
@@ -164,6 +181,18 @@ export default {
                       name: '需求登记',
                       icon: 'cloud-server',
                       component: './ITSM/Demandmanage/Registration',
+                    },
+                    {
+                      path: '/ITSM/demandmanage/to-do',
+                      name: '需求待办',
+                      icon: 'cloud-server',
+                      component: './ITSM/Demandmanage/ToDolist',
+                    },
+                    {
+                      path: '/ITSM/demandmanage/query',
+                      name: '需求查询',
+                      icon: 'cloud-server',
+                      component: './ITSM/Demandmanage/QueryList',
                     },
                   ],
                 },
