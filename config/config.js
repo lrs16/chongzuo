@@ -165,7 +165,18 @@ export default {
                   path: '/ITSM/problemmanage',
                   name: '问题管理',
                   icon: 'control',
-                  component: './ITSM/Problemmanage/Registration',
+                  routes: [
+                    {
+                      path: '/ITSM/problemmanage',
+                      redirect: '/ITSM/problemmanage/registration',
+                    },
+                    {
+                      path: '/ITSM/problemmanage/registration',
+                      name: '问题登记',
+                      icon: 'cloud-server',
+                      component: './ITSM/Problemmanage/Registration',
+                    },
+                  ],
                 },
                 {
                   path: '/ITSM/demandmanage',
@@ -649,6 +660,23 @@ export default {
                     },
                   ],
                 },
+                {
+                  path:'/sysmanage/processmanagement',
+                  name:'流程管理',
+                  icon:'smile',
+                  routes: [
+                    // {
+                    //   path:'/sysmanage/processmanagement',
+                    //   redirect:'/sysmanage/processmanagement/processmodel'
+                    // },
+                    {
+                      path:'/sysmanage/processmanagement/processmodel',
+                      name:'流程模型',
+                      icon:'smile',
+                      component:'./SysManage/ProcessManagement/ProcessModel'
+                    },
+                  ]
+                },
               ],
             },
             {
@@ -756,6 +784,10 @@ export default {
     //   changeOrigin: true,
     //   // pathRewrite: { '^/apiauth': '' }
     // },
+    '/activiti':{
+      target:'http://172.16.4.211:9901/',
+      changeOrigin: true,
+    },
     '/api/': {
       target: 'http://localhost:8000/', // mock接口数据
       changeOrigin: true,
