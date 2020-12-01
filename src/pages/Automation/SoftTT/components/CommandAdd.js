@@ -145,6 +145,7 @@ class CommandAdd extends Component {
       commandRemark,
       // founder
     } = this.state.data;
+    console.log(this.state.data);
 
 
     return (

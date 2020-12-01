@@ -215,13 +215,14 @@ class ProcessModel extends Component {
               // onSumit={values => this.handleEdite(values)}
               title="编辑模型"
               record={record}
+              modelsId={record.id}
               // refresh={this.getlist}
             >
-              <a type="link">编辑模型</a>
+              <Button type='primary' style={{padding:0,marginRight:10}}>编辑模型</Button>
             </ModelEdit>
-            <Divider type="vertical" />
+            {/* <Divider type="vertical" /> */}
             <Popconfirm title="确定删除此模型吗？" onConfirm={() => this.handleDelete(record.id)}>
-              <a type="link">删除模型</a>
+              <Button type='danger' style={{padding:0}}>删除模型</Button>
             </Popconfirm>
           </div>
         ),

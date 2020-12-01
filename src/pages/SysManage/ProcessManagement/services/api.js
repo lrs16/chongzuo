@@ -20,4 +20,10 @@ export async function deleteModels(id) {
   });
 }
 
+export async function editModels(modelId) {
+  return request(`/modeler/modeler.html?modelId=${modelId}`,{
+    method:'GET'
+  });
+}
+
 

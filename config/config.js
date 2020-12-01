@@ -782,6 +782,10 @@ export default {
       target: 'http://172.16.4.211:9901/',
       changeOrigin: true,
     },
+    '/modeler':{
+      target:'http://172.16.4.211:9901/',
+      changeOrigin: true,
+    },
     '/api/': {
       target: 'http://localhost:8000/', // mock接口数据
       changeOrigin: true,

@@ -1,14 +1,17 @@
 import {
   searchModels,
   saveModels,
-  deleteModels
+  deleteModels,
+  editModels
 } from '../services/api';
 
 export default {
   namespace: 'processmanagement',
 
   state: {
-    list:[]
+    list:[],
+    editInfo:[],
+    reshtml:'',
   },
 
   effects: {
@@ -27,7 +30,18 @@ export default {
 
     *modelDelete({ payload: { id }}, { call }) {
       return yield call(deleteModels,id)
+    },
+
+    *editModels({ payload: { modelsId }}, { call, put }) {
+      const response = yield call(editModels,modelsId);
+      yield put({
+        type: 'gethtml',
+        payload: response,
+      });
+     // return yield call(editModels,modelsId);
     }
+
+
   },
 
   reducers: {
@@ -37,6 +51,11 @@ export default {
         list: action.payload.data,
       };
     },
-
+    gethtml(state, action) {
+      return {
+        ...state,
+        reshtml: action.payload,
+      };
+    },
   },
 };
