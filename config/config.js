@@ -176,6 +176,18 @@ export default {
                       icon: 'cloud-server',
                       component: './ITSM/Problemmanage/Registration',
                     },
+                    {
+                      path: '/ITSM/problemmanage/besolved',
+                      name: '问题待办',
+                      icon: 'cloud-server',
+                      component: './ITSM/Problemmanage/Besolved',
+                    },
+                    {
+                      path: '/ITSM/problemmanage/problemquery',
+                      name: '问题查询',
+                      icon: 'cloud-server',
+                      component: './ITSM/Problemmanage/Problemquery',
+                    },
                   ],
                 },
                 {

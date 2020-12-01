@@ -9,21 +9,12 @@ import {
   Button,
   Message,
   Divider,
-  Badge,
   Popconfirm,
   Row,
 } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ModelEdit from './components/ModelEdit';
-// import HostSoft from './components/Host_Soft';
-// import BatchAdd from './components/BatchAdd';
-// import HostManageTree from '@/components/HostManageTree';
 
-const statusMap = ['default', 'success'];
-const status = ['停用', '在用'];
-// const cabinet = ['A座机柜', 'B座机柜'];
-const operatSystem = ['window', 'linux'];
-const hostPart = ['安全接入区', '二区', '三区'];
 const { Search } = Input;
 
 @connect(({ processmanagement, loading }) => ({
@@ -194,14 +185,16 @@ class ProcessModel extends Component {
         dataIndex: 'createTime',
         key: 'createTime',
         width:200,
-        ellipsis: true
+        ellipsis: true,
+        render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
       },
       {
         title: '最后更新时间',
         dataIndex: 'lastUpdateTime',
         key: 'lastUpdateTime',
         width:200,
-        ellipsis: true
+        ellipsis: true,
+        render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
       },
       {
         title: '元数据',
@@ -227,7 +220,7 @@ class ProcessModel extends Component {
               <a type="link">编辑模型</a>
             </ModelEdit>
             <Divider type="vertical" />
-            <Popconfirm title="确定删除此菜单吗？" onConfirm={() => this.handleDelete(record.id)}>
+            <Popconfirm title="确定删除此模型吗？" onConfirm={() => this.handleDelete(record.id)}>
               <a type="link">删除模型</a>
             </Popconfirm>
           </div>
@@ -238,19 +231,11 @@ class ProcessModel extends Component {
     return (
       <PageHeaderWrapper title="流程模型">
         <Card>
-          {/* <Layout>
-            <Sider theme='light'>
-              {/* <HostManageTree /> */}
-            {/* </Sider>  */}
-      
-          {/* <Content style={{ background: '#fff' }}> */}
             <Row>
               <Form style={{ float: 'right', width: '30%' }}>
                 <Search placeholder="请输入关键字" onSearch={values => this.handleSearch(values)} />
               </Form>
             </Row>
-            {/* <Row gutter={16}>
-              <Col className="gutter-row" span={12}> */}
                 <div>
                   <ModelEdit onSumit={this.handleUpdate}>
                     <Button
@@ -262,22 +247,6 @@ class ProcessModel extends Component {
                     </Button>
                   </ModelEdit>
                 </div>
-              {/* </Col> */}
-{/* 
-              <Col className="gutter-row" span={12}>
-                <div>
-                  <BatchAdd hostId="hostId" onsumitBatch={str => this.handleBatchadd(str)}>
-                    <Button
-                      style={{ width: '100%', margin: '16px 0 8px 0' }}
-                      type="dashed"
-                      icon="plus"
-                    >
-                      批量添加
-                    </Button>
-                  </BatchAdd>
-                </div>
-              </Col> */}
-            {/* </Row> */}
             <Table
             columns={columns}
             dataSource={dataSource}
@@ -285,10 +254,6 @@ class ProcessModel extends Component {
             pagination={pagination}
             scroll={{ x: 1500 }}
           />
-          {/* </Content> */}
-         
-        
-          {/* </Layout> */}
         </Card>
       </PageHeaderWrapper>
     );
