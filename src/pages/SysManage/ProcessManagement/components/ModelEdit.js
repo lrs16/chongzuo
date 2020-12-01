@@ -107,7 +107,7 @@ class ProcessModel extends Component {
   }
 }
 ProcessModel.defaultProps = {
-  title: '添加进程',
+  title: '添加模型',
   record: {
     description: '',
     key: '',

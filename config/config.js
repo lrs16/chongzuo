@@ -147,12 +147,12 @@ export default {
                       icon: 'cloud-server',
                       component: './ITSM/Eventmanage/ToDolist',
                     },
-                    {
-                      path: '/ITSM/eventmanage/query',
-                      name: '事件查询',
-                      icon: 'cloud-server',
-                      component: './ITSM/Eventmanage/QueryList',
-                    },
+                    // {
+                    //   path: '/ITSM/eventmanage/query',
+                    //   name: '事件查询',
+                    //   icon: 'cloud-server',
+                    //   component: './ITSM/Eventmanage/QueryList',
+                    // },
                     {
                       path: '/ITSM/eventmanage/overtime',
                       name: '超时查询',

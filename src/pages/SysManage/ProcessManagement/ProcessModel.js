@@ -220,15 +220,15 @@ class ProcessModel extends Component {
           <div>
             <ModelEdit
               // onSumit={values => this.handleEdite(values)}
-              title="编辑主机"
+              title="编辑模型"
               record={record}
               // refresh={this.getlist}
             >
-              <a type="link">编辑主机</a>
+              <a type="link">编辑模型</a>
             </ModelEdit>
             <Divider type="vertical" />
             <Popconfirm title="确定删除此菜单吗？" onConfirm={() => this.handleDelete(record.id)}>
-              <a type="link">删除主机</a>
+              <a type="link">删除模型</a>
             </Popconfirm>
           </div>
         ),
