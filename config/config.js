@@ -31,11 +31,11 @@ const plugins = [
       // },
       pwa: pwa
         ? {
-            workboxPluginMode: 'InjectManifest',
-            workboxOptions: {
-              importWorkboxFrom: 'local',
-            },
-          }
+          workboxPluginMode: 'InjectManifest',
+          workboxOptions: {
+            importWorkboxFrom: 'local',
+          },
+        }
         : false, // default close dll, because issue https://github.com/ant-design/ant-design-pro/issues/4665
       // dll features https://webpack.js.org/plugins/dll-plugin/
       // dll: {
@@ -224,6 +224,12 @@ export default {
                   name: '故障管理',
                   icon: 'control',
                   component: './ITSM/Faultmanage/Registration',
+                },
+                {
+                  path: '/ITSM/onsitemanage',
+                  name: '巡检管理',
+                  icon: 'control',
+                  component: './ITSM/OnSitemanage',
                 },
               ],
             },
@@ -673,19 +679,19 @@ export default {
                   ],
                 },
                 {
-                  path:'/sysmanage/processmanagement',
-                  name:'流程管理',
-                  icon:'smile',
+                  path: '/sysmanage/processmanagement',
+                  name: '流程管理',
+                  icon: 'smile',
                   routes: [
                     // {
                     //   path:'/sysmanage/processmanagement',
                     //   redirect:'/sysmanage/processmanagement/processmodel'
                     // },
                     {
-                      path:'/sysmanage/processmanagement/processmodel',
-                      name:'流程模型',
-                      icon:'smile',
-                      component:'./SysManage/ProcessManagement/ProcessModel'
+                      path: '/sysmanage/processmanagement/processmodel',
+                      name: '流程模型',
+                      icon: 'smile',
+                      component: './SysManage/ProcessManagement/ProcessModel'
                     },
                   ]
                 },
@@ -763,41 +769,17 @@ export default {
       target: 'http://172.16.4.211:9901/', // 计量业务监控
       changeOrigin: true,
     },
-    // '/monitor/kpiData/': {
-    //   target: 'http://172.16.4.93:9901/', //指标环比
-    //   changeOrigin: true,
-    // },
-    '/api-eai-job/oma/': {
-      target: 'http://172.16.4.211:8800/', // 脚本管理服务器地址,211正式，250测试
+    '/inspection/': {
+      target: 'http://172.16.4.93:8080/', //
       changeOrigin: true,
-      // pathRewrite: { '^/server': '' },
     },
-
-    // '/oma/': {
-    //   target: 'http://172.16.4.100:8807/', //脚本管理服务器地址,211正式，250测试
-    //   changeOrigin: true,
-    //   // pathRewrite: { '^/server': '' },
-    // },
     '/basicMonitor/': {
       // 检测管理，基础平台
       target: 'http://172.16.4.211:8889/',
       changeOrigin: true,
-      // pathRewrite: { '^/apiauth': '' }
     },
-    // '/api-monitoring-business/': {
-    //   // 计量现场接口
-    //   target: 'http://172.16.4.211:8800/',
-    //   changeOrigin: true,
-    //   // pathRewrite: { '^/apiauth': '' }
-    // },
-    // '/api-meter-auto/': {
-    //   // 计量现场接口
-    //   target: 'http://172.16.4.211:8800/',
-    //   changeOrigin: true,
-    //   // pathRewrite: { '^/apiauth': '' }
-    // },
-    '/activiti':{
-      target:'http://172.16.4.211:9901/',
+    '/activiti': {
+      target: 'http://172.16.4.211:9901/',
       changeOrigin: true,
     },
     '/api/': {
