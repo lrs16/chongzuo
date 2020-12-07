@@ -908,6 +908,131 @@ const contactSettings = [
   },
 ]
 
+//  故障待办列表 mxj
+const FaultTodoList = [
+  {
+    faultID: 'gz202004100001',
+    faultTitle: 'XX系统警告故障',
+    faultSource: '系统警告',
+    faultClafit: '系统应用',
+    declarant: '已登记',
+    currProceLink: '徐姑姑',
+    faultStatus: '管理员',
+    overTime: '2020-04-27 09:42',
+    sendTime: '2020-04-22 05:42',
+    priority: '高',
+  },
+  {
+    faultID: 'gz202004100002',
+    faultTitle: 'XX巡检发现故障',
+    faultSource: '巡检发现',
+    faultClafit: '网络安全',
+    declarant: '待审核',
+    currProceLink: '楼三关',
+    faultStatus: '管理员',
+    overTime: '2020-04-27 09:42',
+    sendTime: '2020-04-22 05:42',
+    priority: '中',
+  },
+  {
+    faultID: 'gz202004100003',
+    faultTitle: 'XX系统警告故障',
+    faultSource: '系统警告',
+    faultClafit: '数据库',
+    declarant: '待处理',
+    currProceLink: '王有才',
+    faultStatus: '管理员',
+    overTime: '2020-04-27 09:42',
+    sendTime: '2020-04-22 05:42',
+    priority: '低',
+  },
+  {
+    faultID: 'gz202004100004',
+    faultTitle: 'XX系统警告故障',
+    faultSource: '系统警告',
+    faultClafit: '中间件',
+    declarant: '待关闭',
+    currProceLink: '赵四',
+    faultStatus: '管理员',
+    overTime: '2020-04-27 09:42',
+    sendTime: '2020-04-22 05:42',
+    priority: '低',
+  },
+  {
+    faultID: 'gz202004100005',
+    faultTitle: 'XX系统警告故障',
+    faultSource: '系统警告',
+    faultClafit: '软件',
+    declarant: '已登记',
+    currProceLink: '朱一一',
+    faultStatus: '管理员',
+    overTime: '2020-04-27 09:42',
+    sendTime: '2020-04-22 05:42',
+    priority: '低',
+  },
+];
+
+//  故障查询列表 mxj
+const FaultSearchList = [
+  {
+    faultID: 'gz202004100001',
+    faultTitle: '111111',
+    faultSource: '用户电话申告',
+    faultClass: '硬件缺陷',
+    applicant: '广西电网有限责任公司南宁供电局',
+    declarant: '朱三三',
+    faultworkStatus: '已登记',
+    regist: '管理员',
+    createtime: '2020-12-02 09:02:37',
+    priority: '低',
+    
+  }, {
+    faultID: 'gz202004100002',
+    faultTitle: '111111',
+    faultSource: '用户电话申告',
+    faultClass: '硬件缺陷',
+    applicant: '广西电网有限责任公司南宁供电局',
+    declarant: '朱三三',
+    faultworkStatus: '已登记',
+    regist: '管理员',
+    createtime: '2020-12-02 09:02:37',
+    priority: '低',
+  }, {
+    faultID: 'gz202004100003',
+    faultTitle: '111111',
+    faultSource: '用户电话申告',
+    faultClass: '硬件缺陷',
+    applicant: '广西电网有限责任公司南宁供电局',
+    declarant: '朱三三',
+    faultworkStatus: '已登记',
+    regist: '管理员',
+    createtime: '2020-12-02 09:02:37',
+    priority: '低',
+  }, {
+    faultID: 'gz202004100004',
+    faultTitle: '111111',
+    faultSource: '用户电话申告',
+    faultClass: '硬件缺陷',
+    applicant: '广西电网有限责任公司南宁供电局',
+    declarant: '朱三三',
+    faultworkStatus: '已登记',
+    regist: '管理员',
+    createtime: '2020-12-02 09:02:37',
+    priority: '低',
+  }, {
+    faultID: 'gz202004100005',
+    faultTitle: '111111',
+    faultSource: '用户电话申告',
+    faultClass: '硬件缺陷',
+    applicant: '广西电网有限责任公司南宁供电局',
+    declarant: '朱三三',
+    faultworkStatus: '已登记',
+    regist: '管理员',
+    createtime: '2020-12-02 09:02:37',
+    priority: '低',
+  },
+];
+
 export const getFactoryTypes = [
   {
     key: '0',
@@ -950,6 +1075,10 @@ export default {
   'GET /api/resouresList': ResourcesList,
 
   'GET /api/detailsList': DetailsList,
+
+  // 故障待办列表 mxj
+  'GET /api/FaultTodoList': FaultTodoList, 
+  'GET /api/FaultSearchList': FaultSearchList, 
 
   // MOCK菜单与权限
   'GET /api/sysmenus': [

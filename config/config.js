@@ -223,7 +223,44 @@ export default {
                   path: '/ITSM/faultmanage',
                   name: '故障管理',
                   icon: 'control',
-                  component: './ITSM/Faultmanage/Registration',
+                  // component: './ITSM/Faultmanage/Registration',
+
+                  routes: [
+                    {
+                      path: '/ITSM/faultmanage',
+                      redirect: '/ITSM/faultmanage/registration',
+                    },
+                    {
+                      path: '/ITSM/faultmanage/registration',
+                      name: '故障登记',
+                      icon: 'control',
+                      component: './ITSM/Faultmanage/Registration',
+                    },
+                    {
+                      path: '/ITSM/faultmanage/faultmanagepro',
+                      name: '故障管理流程',
+                      icon: 'cloud-server',
+                      component: './ITSM/Faultmanage/FaultManageProView',
+                    },
+                    {
+                      path: '/ITSM/faultmanage/todolist',
+                      name: '故障待办',
+                      icon: 'control',
+                      component: './ITSM/Faultmanage/ToDOlist',
+                    },
+                    {
+                      path: '/ITSM/faultmanage/querylist',
+                      name: '故障查询',
+                      icon: 'control',
+                      component: './ITSM/Faultmanage/QueryList',
+                    },
+                    {
+                      path: '/ITSM/faultmanage/overtime',
+                      name: '超时查询',
+                      icon: 'control',
+                      component: './ITSM/Faultmanage/Overtime',
+                    },
+                  ],
                 },
                 {
                   path: '/ITSM/onsitemanage',
