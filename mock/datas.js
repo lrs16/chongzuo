@@ -649,6 +649,28 @@ function mocksmoothdata() {
   return list;
 }
 
+function mocksearchdata(count) {
+  const list = [];
+  for (let i = 0; i < count; i += 1) {
+    list.push({
+      id: Random.string('123456789', 5),
+      title: Random.cword(
+        'KAFKA消费情况：KAFKA  主题AutodataAsk消费异常，消息量连续增长超阈值告警,供售电量分析：波动值超过波动阈值0.1',
+        10,
+        25,
+      ),
+      source: ['用户电话申告', '企信'][i % 2],
+      type: ['咨询', '缺陷', '故障', '数据处理', '其他'][i % 5],
+      filledby: Random.cname(),
+      handler: Random.cname(),
+      state: ['事件登记', '事件处理', '事件回访'][i % 3],
+      time: Random.datetime(),
+      level: Random.cword('高中低', 1),
+    });
+  }
+  return list;
+}
+
 export default {
   'GET /api-upms/upms_user/getCurrUserInfo': CurrUserInfo, // 根据token获取用户信息
   'GET /api-upms/upms_user/getCurrUserMenus': CurrUserMenus, // 根据token获取用户菜单
@@ -769,6 +791,18 @@ export default {
   'GET /api/alarmmanage/alarmsetting': (req, res) => {
     const count = 50;
     const data = mockalarmsetting(count);
+    res.json({
+      data: {
+        data,
+        total: count,
+      },
+    });
+  },
+
+  // IT服务管理
+  'POST /api/event/queryList': (req, res) => {
+    const count = 50;
+    const data = mocksearchdata(count);
     res.json({
       data: {
         data,

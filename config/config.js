@@ -31,11 +31,11 @@ const plugins = [
       // },
       pwa: pwa
         ? {
-          workboxPluginMode: 'InjectManifest',
-          workboxOptions: {
-            importWorkboxFrom: 'local',
-          },
-        }
+            workboxPluginMode: 'InjectManifest',
+            workboxOptions: {
+              importWorkboxFrom: 'local',
+            },
+          }
         : false, // default close dll, because issue https://github.com/ant-design/ant-design-pro/issues/4665
       // dll features https://webpack.js.org/plugins/dll-plugin/
       // dll: {
@@ -147,12 +147,18 @@ export default {
                       icon: 'cloud-server',
                       component: './ITSM/Eventmanage/ToDolist',
                     },
-                    // {
-                    //   path: '/ITSM/eventmanage/query',
-                    //   name: '事件查询',
-                    //   icon: 'cloud-server',
-                    //   component: './ITSM/Eventmanage/QueryList',
-                    // },
+                    {
+                      path: '/ITSM/eventmanage/to-do/record/:pangekey/:id',
+                      name: '事件办理',
+                      icon: 'cloud-server',
+                      component: './ITSM/Eventmanage/ToDodetails',
+                    },
+                    {
+                      path: '/ITSM/eventmanage/query',
+                      name: '事件查询',
+                      icon: 'cloud-server',
+                      component: './ITSM/Eventmanage/QueryList',
+                    },
                     {
                       path: '/ITSM/eventmanage/overtime',
                       name: '超时查询',
@@ -675,13 +681,6 @@ export default {
                       hideInMenu: true,
                       component: './Alarmmanage/BasicAlarm/StrategyAddEdit',
                     },
-                    {
-                      path: '/alarmmanage/basicalarm/alarmstrategy/strategyedit/:detailsid',
-                      name: '编辑策略',
-                      icon: 'cloud-server',
-                      hideInMenu: false,
-                      component: './Alarmmanage/BasicAlarm/StrategyAddEdit',
-                    },
                   ],
                 },
               ],
@@ -752,8 +751,9 @@ export default {
                       path: '/sysmanage/processmanagement/processmodel',
                       name: '流程模型',
                       icon: 'smile',
-                      component: './SysManage/ProcessManagement/ProcessModel'
+                      component: './SysManage/ProcessManagement/ProcessModel',
                     },
+<<<<<<< HEAD
                     {
                       path: '/sysmanage/processmanagement/modeledit/:id',
                       name: '编辑模型',
@@ -769,6 +769,9 @@ export default {
                     }
               
                   ]
+=======
+                  ],
+>>>>>>> 事件管理：事件登记、事件待办
                 },
               ],
             },
