@@ -1191,5 +1191,6 @@ export default {
   // //告警明细
   // 'GET /api/alarmList':alarmList,
   'GET /api/infogroup': infogroup,
-  'GET /api/contactSettings':contactSettings
+  'GET /api/contactSettings':contactSettings,
+  // 'GET /api/problemList':problemList
 };

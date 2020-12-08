@@ -754,6 +754,20 @@ export default {
                       icon: 'smile',
                       component: './SysManage/ProcessManagement/ProcessModel'
                     },
+                    {
+                      path: '/sysmanage/processmanagement/modeledit/:id',
+                      name: '编辑模型',
+                      icon: 'smile',
+                      component: './SysManage/ProcessManagement/ModelEdit'
+                    },
+                    {
+                      path:'/sysmanage/processmanagement/processdefinition',
+                      name:'流程定义',
+                      icon:'smile',
+                      component:'./SysManage/ProcessManagement/ProcessDefinition'
+
+                    }
+              
                   ]
                 },
               ],
@@ -843,7 +857,15 @@ export default {
       target: 'http://172.16.4.211:9901/',
       changeOrigin: true,
     },
+    // '/activiti': {
+    //   target: 'http://172.16.4.179:9901/',
+    //   changeOrigin: true,
+    // },
     '/modeler':{
+      target:'http://172.16.4.211:9901/',
+      changeOrigin: true,
+    },
+    'editor-app/':{
       target:'http://172.16.4.211:9901/',
       changeOrigin: true,
     },

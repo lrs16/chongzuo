@@ -15,17 +15,25 @@ import {
 import Link from 'umi/link';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ModelAdd from './components/ModelAdd';
+import DefinitionPng from './components/DefinitionPng';
 
 const { Search } = Input;
 @connect(({ processmanagement, loading }) => ({
   processmanagement,
   loading: loading.models.processmanagement,
 }))
-class ProcessModel extends Component {
+class ProcessDefinition extends Component {
   state = {
     current: 1,
     pageSize: 10,
     queKey: '',
+    bodyParams:{
+      name:'',
+      key:'',
+      category:''
+    }
+
+
   };
 
   componentDidMount() {
@@ -35,13 +43,13 @@ class ProcessModel extends Component {
   getlist = () => {
     const page = this.state.current;
     const limit = this.state.pageSize;
-    const { queKey } = this.state;
+    const { bodyParams } = this.state;
     this.props.dispatch({
-      type: 'processmanagement/fetchlist',
+      type: 'processmanagement/definitionList',
       payload: {
         page,
         limit,
-        queKey,
+        bodyParams
       },
     })
   };
@@ -93,7 +101,7 @@ class ProcessModel extends Component {
   handleDelete = id => {
     const { dispatch } = this.props;
     return dispatch({
-      type: 'processmanagement/modelDelete',
+      type: 'processmanagement/deleteDefinition',
       payload: { id },
     }).then(res => {
       if (res.code === 200) {
@@ -145,7 +153,7 @@ class ProcessModel extends Component {
       onShowSizeChange: (current, pageSize) => this.onShowSizeChange(current, pageSize),
       current: this.state.current,
       pageSize: this.state.pageSize,
-      total: list.total,
+      // total: list.total,
       onChange: page => this.changePage(page),
     };
 
@@ -158,48 +166,92 @@ class ProcessModel extends Component {
         ellipsis: true
       },
       {
-        title: '模型关键字',
+        title: '流程key',
         dataIndex: 'key',
         key: 'key',
         width:200,
         ellipsis: true
       },
       {
-        title: '模型名称',
+        title: '流程名称',
         dataIndex: 'name',
         key: 'name',
         width:200,
         ellipsis: true
       },
       {
-        title: '模型版本',
+        title: '流程版本',
         dataIndex: 'version',
         key: 'version',
         width:200,
         ellipsis: true
       },
       {
-        title: '元数据',
-        dataIndex: 'metaInfo',
-        key: 'metaInfo',
+        title: '流程描述',
+        dataIndex: 'description',
+        key: 'description',
         width: 150,
         ellipsis: true,
       },
       {
-        title: '创建时间',
-        dataIndex: 'createTime',
-        key: 'createTime',
+        title: '所属分类',
+        dataIndex: 'category',
+        key: 'category',
+        width:200,
+        ellipsis: true,
+      },
+      {
+        title: '部署时间',
+        dataIndex: 'deploymentTime',
+        key: 'deploymentTime',
         width:200,
         ellipsis: true,
         render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
       },
       {
-        title: '最后更新时间',
-        dataIndex: 'lastUpdateTime',
-        key: 'lastUpdateTime',
+        title:'流程定义',
+        dataIndex:'resourceName',
+        key:'resourceName',
         width:200,
         ellipsis: true,
-        render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
+      },
+      {
+        title:'流程图',
+        dataIndex:'diagramResourceName',
+        key:'',
+        width:200,
+        ellipsis:true,
+        render:(text,record) => (
+          <>
+            <DefinitionPng
+              id={record.id}
+              resourceName={record.diagramResourceName}
+            >
+              <a type="link">{text}</a>
+            </DefinitionPng>
+          </>
+        )
+      },
+      {
+        title:'状态名称',
+        dataIndex:'suspendStateName',
+        key:'suspendStateName',
+        width:200,
+        ellipsis:true
+      },
+      {
+        title:'部署编号',
+        dataIndex:'deploymentId',
+        key:'deploymentId',
+        width:200,
+        ellipsis:true
+      },
+      {
+        title:'状态编号',
+        dataIndex:'suspendState',
+        key:'suspendState',
+        width:200,
+        ellipsis:true
       },
       {
         title: '操作',
@@ -257,4 +309,4 @@ class ProcessModel extends Component {
   }
 }
 
-export default ProcessModel;
+export default ProcessDefinition;

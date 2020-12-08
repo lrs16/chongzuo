@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import { connect } from 'dva';
-import { Form, Input, Message,Drawer,Button } from 'antd';
+import { Form, Input, Modal } from 'antd';
 
 const formItemLayout = {
   labelCol: {
@@ -18,24 +17,13 @@ const withClick = (element, handleClick = () => {}) => {
   return <element.type {...element.props} onClick={handleClick} />;
 };
 
-@connect(({ processmanagement, loading }) => ({
-  processmanagement,
-  loading: loading.models.processmanagement,
-}))
-
-class ProcessModel extends Component {
+class ModelAdd extends Component {
 
   state = {
     visible: false,
-    data:{}
   };
 
   handleopenClick = () => {
-    const { modelsId } = this.props;
-    this.props.dispatch({
-      type:'processmanagement/editModels',
-      payload: { modelsId }
-    });
     this.setState({
       visible: true,
     });
@@ -56,25 +44,14 @@ class ProcessModel extends Component {
       visible: false,
     });
     this.props.form.resetFields();
-  
   };
-
-  onClose = () => {
-    this.setState({
-      visible: false,
-    });
-    this.props.form.resetFields();
-  };
-
 
   render() {
-
-    const responseData = this.state.data;
     const { visible } = this.state;
-    const { children, title,processmanagement:{reshtml} } = this.props;
-    const reshtmls = '<strong>content</strong>'
+    const { children, title } = this.props;
     const { getFieldDecorator } = this.props.form;
     const required = true;
+ 
     const {
       name,
       description,
@@ -84,24 +61,26 @@ class ProcessModel extends Component {
     return (
       <>
         {withClick(children, this.handleopenClick)}
-        <Drawer
-          width={720}
+        <Modal
           title={title}
           visible={visible}
           centered
           maskClosable={false}
-          onClose={this.onClose}
           onCancel={this.handleCancel}
-          // onOk={this.handleOk}
+          onOk={this.handleOk}
         >
-              <div dangerouslySetInnerHTML = {{__html:reshtml || ''}} />
-      
-          
-          {/* <Form {...formItemLayout}>
-            <Form.Item label="模型说明">
-              {getFieldDecorator('description', {
-                initialValue:description || '',
-              })(<Input  />)}
+          <Form {...formItemLayout}>
+            
+          <Form.Item label="模型名称">
+              {getFieldDecorator('name', {
+                rules: [
+                  {
+                    required,
+                    message: '请输入',
+                  },
+                ],
+                initialValue: name || '',
+              })(<Input placeholder="请输入..." />)}
             </Form.Item>
 
             <Form.Item label="模型Key">
@@ -116,31 +95,18 @@ class ProcessModel extends Component {
               })(<Input placeholder="请输入..." />)}
             </Form.Item>
 
-            <Form.Item label="模型名称">
-              {getFieldDecorator('name', {
-                rules: [
-                  {
-                    required,
-                    message: '请输入',
-                  },
-                ],
-                initialValue: name || '',
-              })(<Input placeholder="请输入..." />)}
+            <Form.Item label="模型说明">
+              {getFieldDecorator('description', {
+                initialValue:description || '',
+              })(<Input  />)}
             </Form.Item>
-
-          </Form> */}
-            {/* <Button onClick={this.onClose} style={{ marginRight: 8 }}>
-              取消
-            </Button>
-            <Button onClick={this.handleOk} type="primary">
-              提交
-            </Button> */}
-        </Drawer>
+          </Form>
+        </Modal>
       </>
     );
   }
 }
-ProcessModel.defaultProps = {
+ModelAdd.defaultProps = {
   title: '添加模型',
   record: {
     description: '',
@@ -148,4 +114,4 @@ ProcessModel.defaultProps = {
     name: '',
   },
 };
-export default Form.create()(ProcessModel);
+export default Form.create()(ModelAdd);

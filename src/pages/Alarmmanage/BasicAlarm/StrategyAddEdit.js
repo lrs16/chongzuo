@@ -176,6 +176,7 @@ class StrategyAddEdit extends Component {
   }
 
   save = () => {
+    console.log('ggg');
     this.props.form.validateFields((err, values) => {
         if(!err){
           console.log(values,'values');
