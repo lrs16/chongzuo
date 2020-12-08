@@ -280,15 +280,15 @@ export default {
                           path: '/ITSM/faultmanage/faultstaticount/faultsumstatic',
                           name: '故障汇总统计',
                           icon: 'control',
-                          component: './ITSM/Faultmanage/FaultStatiCount/FaultSumStatic'
+                          component: './ITSM/Faultmanage/FaultStatiCount/FaultSumStatic',
                         },
                         {
                           path: '/ITSM/faultmanage/faultstaticount/faultbreakdownlist',
                           name: '故障明细表',
                           icon: 'control',
-                          component: './ITSM/Faultmanage/FaultStatiCount/FaultBreakdownList'
+                          component: './ITSM/Faultmanage/FaultStatiCount/FaultBreakdownList',
                         },
-                      ]
+                      ],
                     },
                   ],
                 },
@@ -753,25 +753,19 @@ export default {
                       icon: 'smile',
                       component: './SysManage/ProcessManagement/ProcessModel',
                     },
-<<<<<<< HEAD
                     {
                       path: '/sysmanage/processmanagement/modeledit/:id',
                       name: '编辑模型',
                       icon: 'smile',
-                      component: './SysManage/ProcessManagement/ModelEdit'
+                      component: './SysManage/ProcessManagement/ModelEdit',
                     },
                     {
-                      path:'/sysmanage/processmanagement/processdefinition',
-                      name:'流程定义',
-                      icon:'smile',
-                      component:'./SysManage/ProcessManagement/ProcessDefinition'
-
-                    }
-              
-                  ]
-=======
+                      path: '/sysmanage/processmanagement/processdefinition',
+                      name: '流程定义',
+                      icon: 'smile',
+                      component: './SysManage/ProcessManagement/ProcessDefinition',
+                    },
                   ],
->>>>>>> 事件管理：事件登记、事件待办
                 },
               ],
             },
@@ -864,12 +858,12 @@ export default {
     //   target: 'http://172.16.4.179:9901/',
     //   changeOrigin: true,
     // },
-    '/modeler':{
-      target:'http://172.16.4.211:9901/',
+    '/modeler': {
+      target: 'http://172.16.4.211:9901/',
       changeOrigin: true,
     },
-    'editor-app/':{
-      target:'http://172.16.4.211:9901/',
+    'editor-app/': {
+      target: 'http://172.16.4.211:9901/',
       changeOrigin: true,
     },
     '/api/': {
