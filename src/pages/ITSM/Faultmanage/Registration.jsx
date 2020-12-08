@@ -9,21 +9,96 @@ import {
   Select,
   DatePicker,
   Upload,
-  Icon
+  Icon,
+  TreeSelect
 } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 // import DescriptionList from '@/components/DescriptionList';
 
 const { TextArea } = Input;
 const { Option } = Select;
+const { TreeNode } = TreeSelect;
 // const { Description } = DescriptionList;
-const declarantCompany = [ // 申报人单位
-  { key: 1, value: '单位一' },
-  { key: 2, value: '单位二' },
-  { key: 3, value: '单位三' },
-  { key: 4, value: '单位四' },
-  { key: 5, value: '单位五' },
-  { key: 6, value: '单位六' },
+// const declarantCompany = [ // 申报人单位
+//   { key: 1, value: '单位一' },
+//   { key: 2, value: '单位二' },
+//   { key: 3, value: '单位三' },
+//   { key: 4, value: '单位四' },
+//   { key: 5, value: '单位五' },
+//   { key: 6, value: '单位六' },
+// ];
+
+const treeDatas = [
+  {
+    "id": "-1",
+    "parentId": "0",
+    "weight": 0,
+    "name": "广西博联公司",
+    "children": [
+        {
+            "id": "1",
+            "parentId": "-1",
+            "weight": 0,
+            "name": "运行维护部",
+            "children": [
+                {
+                    "id": "1323886017773572097",
+                    "parentId": "1",
+                    "weight": 0,
+                    "name": "部门领导"
+                },
+                {
+                    "id": "1324152080692154370",
+                    "parentId": "1",
+                    "weight": 0,
+                    "name": "运维服务一组"
+                },
+                {
+                    "id": "1324166627062714370",
+                    "parentId": "1",
+                    "weight": 0,
+                    "name": "运维服务二组"
+                }
+            ]
+        },
+        {
+            "id": "2",
+            "parentId": "-1",
+            "weight": 0,
+            "name": "办公室"
+        },
+        {
+            "id": "3",
+            "parentId": "-1",
+            "weight": 0,
+            "name": "人力资源部"
+        },
+        {
+            "id": "4",
+            "parentId": "-1",
+            "weight": 0,
+            "name": "财务部"
+        },
+        {
+          "id": "5",
+          "parentId": "-1",
+          "weight": 0,
+          "name": "市场营销部"
+        },
+        {
+          "id": "6",
+          "parentId": "-1",
+          "weight": 0,
+          "name": "集成部"
+        },
+        {
+          "id": "7",
+          "parentId": "-1",
+          "weight": 0,
+          "name": "研发部"
+        }
+    ]
+  }
 ];
 
 const declarantDepart = [ // 申报人部门
@@ -79,7 +154,45 @@ const degUrgen = [ // 紧急程度
   { key: 4, value: '紧急' },
 ];
 class Registration extends Component {
-  state = {};
+  state = {
+    value: undefined,
+  };
+
+  toTree = data => {
+    const result = [];
+    if (!Array.isArray(data)) {
+      return result;
+    }
+    const map = {};
+    data.forEach(item => {
+      map[item.weight] = item;
+    });
+    data.forEach(item => {
+      const parent = map[item.pid];
+      if (parent) {
+        (parent.children || (parent.children = [])).push(item);
+      } else {
+        result.push(item);
+      }
+    });
+    return result;
+  };
+
+  renderTreeNodes = data =>
+    data.map(item => {
+      if (item.children) {
+        return (
+          <TreeNode value={item.name} title={item.name} key={item.id} dataRef={item} >
+            {this.renderTreeNodes(item.children)}
+          </TreeNode>
+        );
+      }
+      return <TreeNode key={item.id} value={item.name} title={item.name} {...item} />;
+    });
+
+  onChange = val => {
+    this.setState({value: val});
+  }
 
   normFile = e => {
     // console.log('Upload event:', e);
@@ -89,13 +202,14 @@ class Registration extends Component {
     return e && e.fileList;
   };
 
-  saveHandle = () => {
-    this.props.form.validateFieldsAndScroll((err, fieldsValue) => {
-      // console.log(err, fieldsValue);
-      console.log(console.clear());
-        if (err) return;
-        const url = '/ITSM/faultmanage/faultmanagepro';
-        this.props.history.push(url,fieldsValue);
+  saveHandle = (e) => {
+    e.preventDefault();
+    // fieldsValue
+    this.props.form.validateFieldsAndScroll((err) => {
+        if (!err) {
+          const url = '/ITSM/faultmanage/faultmanagepro';
+          this.props.history.push(url);
+        }
     });
     
   };
@@ -109,6 +223,9 @@ class Registration extends Component {
     const config = {
       rules: [{ type: 'object', required: true, message: 'Please select time!' }],
     };
+
+    const treeData = this.toTree(treeDatas);
+
     return (
       <PageHeaderWrapper
         title={this.props.route.name}
@@ -127,11 +244,11 @@ class Registration extends Component {
               <Col xl={8} xs={12}>
                 <Form.Item label="申报人">
                   {getFieldDecorator('declarant', {
-                    rules: [
-                      {
-                        required: true,
-                      },
-                    ],
+                    // rules: [
+                    //   {
+                    //     required: true,
+                    //   },
+                    // ],
                     // initialValue: '',
                   })(<Input placeholder="请输入" allowClear />)}
                 </Form.Item>
@@ -140,16 +257,31 @@ class Registration extends Component {
               <Col xl={8} xs={12}>
                 <Form.Item label="申报人单位">
                   {getFieldDecorator('declarantCompany', {
-                    rules: [
-                      {
-                        required: true,
-                      },
-                    ],
-                    // initialValue: '',
+                    // rules: [
+                    //   {
+                    //     required: true,
+                    //   },
+                    // ],
+                    initialValue: this.state.value,
                   })(
-                    <Select placeholder="请选择">
-                      {declarantCompany.map(({ key, value }) => [<Option key={key}>{value}</Option>])}
-                    </Select>,
+                    // <Select placeholder="请选择">
+                    //   {declarantCompany.map(({ key, value }) => [<Option key={key}>{value}</Option>])}
+                    // </Select>,
+                    <>
+                      <TreeSelect
+                        defaultExpandAll
+                        value={this.state.value}
+                        style={{ width: '100%' }}
+                        dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+                        placeholder="请选择命令"
+                        onChange={this.onChange}
+                        treeCheckable
+                        multiple
+                      >
+                        {treeData && this.renderTreeNodes(treeData)}
+                      </TreeSelect>
+
+                    </>
                   )}
                 </Form.Item>
               </Col>
@@ -157,11 +289,11 @@ class Registration extends Component {
               <Col xl={8} xs={12}>
                 <Form.Item label="申报人部门">
                   {getFieldDecorator('declarantDepart', {
-                    rules: [
-                      {
-                        required: true,
-                      },
-                    ],
+                    // rules: [
+                    //   {
+                    //     required: true,
+                    //   },
+                    // ],
                     // initialValue: '', 
                   })(
                     <Select placeholder="请选择">
@@ -174,11 +306,11 @@ class Registration extends Component {
               <Col xl={8} xs={12}>
                 <Form.Item label="申报人电话">
                   {getFieldDecorator('declarantPhone', {
-                    rules: [
-                      {
-                        required: true,
-                      },
-                    ],
+                    // rules: [
+                    //   {
+                    //     required: true,
+                    //   },
+                    // ],
                     // initialValue: '',
                   })(<Input placeholder="请输入" allowClear />)}
                 </Form.Item>
@@ -187,11 +319,11 @@ class Registration extends Component {
               <Col xl={8} xs={12}>
                 <Form.Item label="故障来源">
                   {getFieldDecorator('faultSource', {
-                    rules: [
-                      {
-                        required: true,
-                      },
-                    ],
+                    // rules: [
+                    //   {
+                    //     required: true,
+                    //   },
+                    // ],
                     // initialValue: '', 
                   })(
                     <Select placeholder="请选择">
@@ -204,11 +336,11 @@ class Registration extends Component {
               <Col xl={8} xs={12}>
                 <Form.Item label="故障类型">
                   {getFieldDecorator('faultType', {
-                    rules: [
-                      {
-                        required: true,
-                      },
-                    ],
+                    // rules: [
+                    //   {
+                    //     required: true,
+                    //   },
+                    // ],
                     // initialValue: '',
                   })(
                     <Select placeholder="请选择">
@@ -221,11 +353,11 @@ class Registration extends Component {
               <Col xl={8} xs={12}>
                 <Form.Item label="故障对象">
                   {getFieldDecorator('faultObj', {
-                    rules: [
-                      {
-                        required: true,
-                      },
-                    ],
+                    // rules: [
+                    //   {
+                    //     required: true,
+                    //   },
+                    // ],
                     // initialValue: '',
                   })(
                     <Select placeholder="请选择">
@@ -238,11 +370,11 @@ class Registration extends Component {
               <Col xl={8} xs={12}>
                 <Form.Item label="故障地点">
                   {getFieldDecorator('faultLocat', {
-                    rules: [
-                      {
-                        required: true,
-                      },
-                    ],
+                    // rules: [
+                    //   {
+                    //     required: true,
+                    //   },
+                    // ],
                     // initialValue: '',
                   })(<Input placeholder="请输入" allowClear />)}
                 </Form.Item>
@@ -251,11 +383,11 @@ class Registration extends Component {
               <Col xl={8} xs={12}>
                 <Form.Item label="严重程度">
                   {getFieldDecorator('severity', {
-                    rules: [
-                      {
-                        required: true,
-                      },
-                    ],
+                    // rules: [
+                    //   {
+                    //     required: true,
+                    //   },
+                    // ],
                     // initialValue: '',
                   })(
                     <Select placeholder="请选择">
@@ -268,11 +400,11 @@ class Registration extends Component {
               <Col xl={8} xs={12}>
                 <Form.Item label="紧急程度">
                   {getFieldDecorator('degUrgen', {
-                    rules: [
-                      {
-                        required: true,
-                      },
-                    ],
+                    // rules: [
+                    //   {
+                    //     required: true,
+                    //   },
+                    // ],
                     // initialValue: '',
                   })(
                     <Select placeholder="请选择">
@@ -291,11 +423,11 @@ class Registration extends Component {
               <Col span={24}>
                 <Form.Item label="故障名称">
                   {getFieldDecorator('faultName', {
-                    rules: [
-                      {
-                        required: true,
-                      },
-                    ],
+                    // rules: [
+                    //   {
+                    //     required: true,
+                    //   },
+                    // ],
                     // initialValue: '',
                   })(<Input placeholder="请输入" allowClear />)}
                 </Form.Item>
@@ -304,11 +436,11 @@ class Registration extends Component {
               <Col span={24}>
                 <Form.Item label="故障概要">
                   {getFieldDecorator('faultSum', {
-                    rules: [
-                      {
-                        required: true,
-                      },
-                    ],
+                    // rules: [
+                    //   {
+                    //     required: true,
+                    //   },
+                    // ],
                     // initialValue: '',
                   })(<TextArea rows={5} placeholder="请输入" />)}
                 </Form.Item>
@@ -317,11 +449,11 @@ class Registration extends Component {
               <Col span={24}>
                 <Form.Item label="范围说明">
                   {getFieldDecorator('scopeDesc', {
-                    rules: [
-                      {
-                        required: true,
-                      },
-                    ],
+                    // rules: [
+                    //   {
+                    //     required: true,
+                    //   },
+                    // ],
                     // initialValue: '',
                   })(<TextArea rows={5} placeholder="请描述范围" />)}
                 </Form.Item>

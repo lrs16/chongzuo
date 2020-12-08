@@ -152,11 +152,14 @@ class QueryList extends Component {
         dataIndex: 'faultID',
         key: 'faultID',
         width: 150,
-        render: (text) => {
+        render: (text, record) => {
           return (
             <Link
               to={{
                 pathname: `/ITSM/faultmanage/faultmanagepro`,
+                state: {
+                  querylistdata: record,
+                }
               }}
             >
               {text}

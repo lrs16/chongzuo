@@ -260,6 +260,30 @@ export default {
                       icon: 'control',
                       component: './ITSM/Faultmanage/Overtime',
                     },
+                    {
+                      path: '/ITSM/faultmanage/faultstaticount',
+                      name: '故障统计',
+                      icon: 'control',
+                      // component: './ITSM/Faultmanage/FaultStatiCount',
+                      routes: [
+                        // {
+                        //   path: '/ITSM/faultmanage/faultstaticount',
+                        //   redirect: '/ITSM/faultmanage/faultstaticount/faultsumstatic',
+                        // },
+                        {
+                          path: '/ITSM/faultmanage/faultstaticount/faultsumstatic',
+                          name: '故障汇总统计',
+                          icon: 'control',
+                          component: './ITSM/Faultmanage/FaultStatiCount/FaultSumStatic'
+                        },
+                        {
+                          path: '/ITSM/faultmanage/faultstaticount/faultbreakdownlist',
+                          name: '故障明细表',
+                          icon: 'control',
+                          component: './ITSM/Faultmanage/FaultStatiCount/FaultBreakdownList'
+                        },
+                      ]
+                    },
                   ],
                 },
                 {

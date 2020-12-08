@@ -11,16 +11,23 @@ import {
     Upload,
     Icon,
     Timeline,
-    Tabs
+    Tabs,
 } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 // eslint-disable-next-line import/no-unresolved
 import creatHistory from 'history/createHashHistory'; // 返回上一页
+import GGEditor, { Flow, Item, ItemPanel } from 'gg-editor';
+import styles from './index.less';
 
 const history = creatHistory(); // 返回上一页
 const { TextArea } = Input;
 const { Option } = Select;
 const { TabPane } = Tabs;
+
+const data = {
+    nodes: [],
+    edges: [],
+};
 
 const declarantCompany = [ // 申报人单位
     { key: 1, value: '单位一' },
@@ -86,7 +93,14 @@ const degUrgen = [ // 紧急程度
 class FaultManageProView extends Component {
     state = {
         // tabActiveKey: 'faultwork',
+        getReseiveData: [],
     };
+
+    componentDidMount() {
+        if (this.props.location.state)
+            // console.log(this.props.location.state.data);
+            this.state.getReseiveData.push(this.props.location.state.todolistdata);
+    }
 
     normFile = e => {
         // console.log('Upload event:', e);
@@ -130,7 +144,7 @@ class FaultManageProView extends Component {
         const config = {
             rules: [{ type: 'object', required: true, message: 'Please select time!' }],
         };
-
+        const itemObj = { ...this.state.getReseiveData[0] };
         return (
             <PageHeaderWrapper
                 // title="故障管理流程"
@@ -152,7 +166,7 @@ class FaultManageProView extends Component {
 
                     <Tabs>
                         <TabPane tab="故障工单" key="1">
-                            <Timeline style={{display: 'flex', marginBottom: 50}}>
+                            <Timeline style={{ display: 'flex', marginBottom: 50 }}>
                                 <Timeline.Item color="red" style={{ color: 'red' }}>
                                     <p>故障登记 (已登记)</p>
                                     <span>到达时间：2020-12-03 11:30:35</span><br />
@@ -178,7 +192,7 @@ class FaultManageProView extends Component {
                                                         required: true,
                                                     },
                                                 ],
-                                                initialValue: '',
+                                                initialValue: itemObj ? itemObj.faultID : '',
                                             })(<Input />)}
                                         </Form.Item>
                                     </Col>
@@ -440,8 +454,92 @@ class FaultManageProView extends Component {
                             </Form>
                         </TabPane>
                         <TabPane tab="故障流程" key="2">
-                            故障流程
-                    </TabPane>
+                            <GGEditor>
+                                <ItemPanel className={styles.itemPanel}>
+                                    <Item
+                                        className={styles.item}
+                                        model={{
+                                            type: 'circle',
+                                            size: 50,
+                                            label: 'circle',
+                                        }}
+                                    >
+                                        <img
+                                            src="https://gw.alicdn.com/tfs/TB1IRuSnRr0gK0jSZFnXXbRRXXa-110-112.png"
+                                            width="55"
+                                            height="56"
+                                            draggable={false}
+                                            alt=''
+                                        />
+                                    </Item>
+                                    <Item
+                                        className={styles.item}
+                                        model={{
+                                            type: 'rect',
+                                            size: [80, 24],
+                                            label: 'rect',
+                                        }}
+                                    >
+                                        <img
+                                            src="https://gw.alicdn.com/tfs/TB1reKOnUT1gK0jSZFrXXcNCXXa-178-76.png"
+                                            width="89"
+                                            height="38"
+                                            draggable={false}
+                                            alt=''
+                                        />
+                                    </Item>
+                                    <Item
+                                        className={styles.item}
+                                        model={{
+                                            type: 'ellipse',
+                                            size: [100, 50],
+                                            label: 'ellipse',
+                                        }}
+                                    >
+                                        <img
+                                            src="https://gw.alicdn.com/tfs/TB1AvmVnUH1gK0jSZSyXXXtlpXa-216-126.png"
+                                            width="108"
+                                            height="63"
+                                            draggable={false}
+                                            alt=''
+                                        />
+                                    </Item>
+                                    <Item
+                                        className={styles.item}
+                                        model={{
+                                            type: 'diamond',
+                                            size: [80, 80],
+                                            label: 'diamond',
+                                        }}
+                                    >
+                                        <img
+                                            src="https://gw.alicdn.com/tfs/TB1EB9VnNz1gK0jSZSgXXavwpXa-178-184.png"
+                                            width="89"
+                                            height="92"
+                                            draggable={false}
+                                            alt=''
+                                        />
+                                    </Item>
+                                    <Item
+                                        className={styles.item}
+                                        model={{
+                                            type: 'triangle',
+                                            size: [30, 30],
+                                            label: 'triangle',
+                                        }}
+                                    >
+                                        <img
+                                            src="https://gw.alicdn.com/tfs/TB12sC2nKH2gK0jSZJnXXaT1FXa-126-156.png"
+                                            width="63"
+                                            height="78"
+                                            draggable={false}
+                                            alt=''
+                                        />
+                                    </Item>
+                                </ItemPanel>
+                                <Flow className={styles.graph} data={data} />
+                            </GGEditor>
+                        </TabPane>
                         <TabPane tab="跟进信息" key="3">
                             跟进信息
                     </TabPane>

@@ -11,7 +11,7 @@ import {
   Icon,
   Table,
   // Tooltip,
-  Modal
+  Modal,
 } from 'antd';
 import { connect } from 'dva';
 import Link from 'umi/link';
@@ -46,6 +46,89 @@ const priority = [ // 优先级
   { key: 4, value: '紧急' },
 ];
 
+// const treeDatas = [
+//   {
+//     "id": "1",
+//     "parentId": "0",
+//     "weight": 0,
+//     "name": "主机信息",
+//     "children": [
+//         {
+//             "id": "1318362398454063105",
+//             "parentId": "1",
+//             "weight": 1,
+//             "name": "172.16.4.211"
+//         },
+//         {
+//             "id": "1318482837854228481",
+//             "parentId": "1",
+//             "weight": 1,
+//             "name": "10.172.210.13_测试服务器"
+//         },
+//         {
+//             "id": "1320556274236002305",
+//             "parentId": "1",
+//             "weight": 1,
+//             "name": "10.172.208.13_缓存服务器1"
+//         },
+//         {
+//             "id": "1320565461959577601",
+//             "parentId": "1",
+//             "weight": 1,
+//             "name": "10.172.208.14_缓存服务器2"
+//         },
+//         {
+//             "id": "1320566329979179010",
+//             "parentId": "1",
+//             "weight": 1,
+//             "name": "10.172.208.15_缓存服务器3"
+//         },
+//         {
+//             "id": "1320566508165795842",
+//             "parentId": "1",
+//             "weight": 1,
+//             "name": "10.172.208.20_缓存服务器4"
+//         },
+//         {
+//             "id": "1320567195813548033",
+//             "parentId": "1",
+//             "weight": 1,
+//             "name": "10.172.208.21_缓存服务器5"
+//         },
+//         {
+//             "id": "1320567392681594882",
+//             "parentId": "1",
+//             "weight": 1,
+//             "name": "10.172.208.22_缓存服务器6"
+//         },
+//         {
+//             "id": "1320567525976576002",
+//             "parentId": "1",
+//             "weight": 1,
+//             "name": "10.172.208.16_计算服务器1"
+//         },
+//         {
+//             "id": "1320567748333408257",
+//             "parentId": "1",
+//             "weight": 1,
+//             "name": "10.172.208.28_通信服务器2"
+//         },
+//         {
+//             "id": "1320567897373806593",
+//             "parentId": "1",
+//             "weight": 1,
+//             "name": "10.172.208.36_通信服务器3"
+//         },
+//         {
+//             "id": "1320568056224681986",
+//             "parentId": "1",
+//             "weight": 3,
+//             "name": "10.172.208.37_通信服务器4"
+//         }
+//     ]
+//   }
+// ];
+
 @connect(({ fault, loading }) => ({  // 连接fault.js文件
   fault,
   loading: loading.models.fault,
@@ -53,6 +136,9 @@ const priority = [ // 优先级
 
 class ToDOlist extends Component {
   state = {
+    // current: 1,
+    // pageSize: 10,
+    // queKey: '',
     expand: false,
     visible: false
   };
@@ -69,6 +155,34 @@ class ToDOlist extends Component {
     });
   }
 
+  // changePage = page => {
+  //   this.props.dispatch({
+  //     type: 'fault/fetchfaultTodoList',
+  //     payload: {
+  //       page,
+  //       limit: this.state.pageSize,
+  //       queKey: this.state.queKey,
+  //     },
+  //   });
+  //   setTimeout(() => {
+  //     this.setState({ current: page });
+  //   }, 0);
+  // };
+
+  // onShowSizeChange = (current, pageSize) => {
+  //   this.props.dispatch({
+  //     type: 'fault/fetchfaultTodoList',
+  //     payload: {
+  //       queKey: this.state.queKey,
+  //       page: current,
+  //       limit: pageSize,
+  //     },
+  //   });
+  //   setTimeout(() => {
+  //     this.setState({ pageSize });
+  //   }, 0);
+  // };
+
   handleSearch = e => {  // 查询
     e.preventDefault();
     // this.props.form.validateFields((err, values) => {
@@ -79,6 +193,42 @@ class ToDOlist extends Component {
   handleReset = () => { // 重置
     this.props.form.resetFields();
   };
+
+  downloadExcel = () => { // 导出
+    // const { todolist } = this.props.fault; // 表格数据
+    // // console.log(todolist);
+    // const option = {};
+
+    // option.fileName = 'excel';
+    // option.datas = [
+    //   {
+    //     sheetData: todolist.map(item => {
+    //       const result = {};
+    //       todolist.forEach(c => {
+    //         result[c.line] = item['line'];
+    //         result[c.currProceLink] = item['currProceLink'];
+    //         result[c.declarant] = item['declarant'];
+    //         result[c.faultClafit] = item['faultClafit'];
+    //         result[c.faultID] = item['faultID'];
+    //         result[c.faultSource] = item['faultSource'];
+    //         result[c.faultStatus] = item['faultStatus'];
+    //         result[c.faultTitle] = item['faultTitle'];
+    //         result[c.overTime] = item['overTime'];
+    //         result[c.priority] = item['priority'];
+    //         result[c.sendTime] = item['sendTime'];
+    //       });
+    //       // console.log(result);
+    //       return result;
+    //     }),
+    //     sheetName: 'ExcelName',
+    //     // sheetFilter:todolist.map(item => item.level),
+    //     sheetHeader: [],
+    //     columnWidths: todolist.map(item => 10),
+    //   },
+    // ];
+    // const toExcel = new ExportJsonExcel(option);
+    // toExcel.saveExcel();
+  }
 
   showItem = () => {
     const { expand } = this.state;
@@ -143,7 +293,7 @@ class ToDOlist extends Component {
               to={{
                 pathname: `/ITSM/faultmanage/faultmanagepro`,
                 state: {
-                  data: record,
+                  todolistdata: record,
                 }
               }}
             >
@@ -228,6 +378,15 @@ class ToDOlist extends Component {
 
     const { fault: { todolist } } = this.props;
     const dataSource = [...todolist];
+
+    // const pagination = {
+    //   showSizeChanger: true,
+    //   onShowSizeChange: (current, pageSize) => this.onShowSizeChange(current, pageSize),
+    //   current: this.state.current,
+    //   pageSize: this.state.pageSize,
+    //   total: xxx.total,
+    //   onChange: page => this.changePage(page),
+    // };
 
     return (
       <PageHeaderWrapper title={this.props.route.name}>
@@ -343,7 +502,7 @@ class ToDOlist extends Component {
                               <Col span={5}>
                                 <Search
                                   placeholder="input search text"
-                                  onSearch={value => console.log(value)}
+                                  // onSearch={value => console.log(value)}
                                   style={{width: '100%', marginBottom: 2}}
                                 />
                                 <Card>
@@ -354,7 +513,7 @@ class ToDOlist extends Component {
                                 {/* <Card style={{ marginLeft: 8 }} bordered={false}> */}
                                     <Search
                                       placeholder="input search text"
-                                      onSearch={value => console.log(value)}
+                                      // onSearch={value => console.log(value)}
                                       style={{width: '25%', marginBottom: 2}}
                                     />
                                     <Table
@@ -406,10 +565,11 @@ class ToDOlist extends Component {
           </Form>
 
           <div>
-            <Button type="primary" style={{ marginBottom: 25 }}>导出数据</Button>
+            <Button type="primary" style={{ marginBottom: 25 }} onClick={this.downloadExcel}>导出数据</Button>
             <Table
               columns={columns}
               dataSource={dataSource}
+              // pagination={pagination}
               rowKey={record => record.faultID}
             />
           </div>
