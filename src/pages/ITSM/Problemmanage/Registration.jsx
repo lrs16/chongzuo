@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useState } from 'react';
-// import { connect } from 'dva';
+import { connect } from 'dva';
+import moment from 'moment';
 import {
   Form,
   Card,
@@ -9,7 +10,8 @@ import {
   Row,
   Col,
   Upload,
-  Icon 
+  Icon,
+  DatePicker 
 } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
@@ -62,16 +64,17 @@ const Registration = (props)  =>{
   })
   };
 
-  // onChange = (info) => {
-  //   if (info.file.status !== 'uploading') {
-  //     console.log(info.file, info.fileList);
-  //   }
-  //   if (info.file.status === 'done') {
-  //     // message.success(`${info.file.name} file uploaded successfully`);
-  //   } else if (info.file.status === 'error') {
-  //     // message.error(`${info.file.name} file upload failed.`);
-  //   }
-  // }
+  const {
+    loading,
+    list,
+    dispatch
+  } = props;
+
+  useEffect(() => {
+    dispatch({
+      type:'problemmanage/fetchlist',
+    });
+  },[]);
 
   return (
  
@@ -114,8 +117,8 @@ const Registration = (props)  =>{
                         // required,
                         message:'请输入问题编号'
                       }
-                    ]
-
+                    ],
+                    initialValue: list.questionNumber || ''
                   })(<Input/>)}
                 </Form.Item>
 
@@ -129,7 +132,8 @@ const Registration = (props)  =>{
                         // required,
                         message:'请输入问题来源'
                       }
-                    ]
+                    ],
+                    initialValue: list.questionSource || ''
                   })(<Input/>)}
                 </Form.Item>
               </Col>
@@ -142,7 +146,8 @@ const Registration = (props)  =>{
                         // required,
                         message:'请输入问题分类'
                       }
-                    ]
+                    ],
+                    initialValue: list.questionClass || ''
                   })(<Input/>)}
                 </Form.Item>
               </Col>
@@ -155,7 +160,8 @@ const Registration = (props)  =>{
                         // required,
                         message:'请输入紧急度'
                       }
-                    ]
+                    ],
+                    initialValue: list.urgency || ''
                   })(<Input/>)}
                 </Form.Item>
               </Col>
@@ -168,7 +174,8 @@ const Registration = (props)  =>{
                         // required,
                         message:'请输入影响度'
                       }
-                    ]
+                    ],
+                    initialValue: list.influenceDegree || ''
                   })(<Input/>)}
                 </Form.Item>
               </Col>
@@ -181,7 +188,8 @@ const Registration = (props)  =>{
                         // required,
                         message:'请输入优先级'
                       }
-                    ]
+                    ],
+                    initialValue: list.priority || ''
                   })(<Input/>)}
                 </Form.Item>
               </Col>
@@ -194,7 +202,8 @@ const Registration = (props)  =>{
                         // required,
                         message:'请输入填报人单位'
                       }
-                    ]
+                    ],
+                    initialValue: list.applicant || ''
                   })(<Input/>)}
                 </Form.Item>
               </Col>
@@ -207,7 +216,8 @@ const Registration = (props)  =>{
                         // required,
                         message:'请输入填报人部门'
                       }
-                    ]
+                    ],
+                    initialValue: list.Department || ''
                   })(<Input/>)}
                 </Form.Item>
               </Col>
@@ -220,7 +230,8 @@ const Registration = (props)  =>{
                         // required,
                         message:'请输入填报人'
                       }
-                    ]
+                    ],
+                    initialValue: list.filledBy || ''
                   })(<Input/>)}
                 </Form.Item>
               </Col>
@@ -235,7 +246,8 @@ const Registration = (props)  =>{
                         // required,
                         message:'请输入联系电话'
                       }
-                    ]
+                    ],
+                    initialValue: list.contactNumber || ''
                   })(<Input/>)}
                 </Form.Item>
               </Col>
@@ -248,8 +260,9 @@ const Registration = (props)  =>{
                         // required,
                         message:'请输入登记时间'
                       }
-                    ]
-                  })(<Input/>)}
+                    ],
+                    initialValue: moment(list.registTime) || ''
+                  })(<DatePicker format='YYYY-MM-DD HH:mm'/>)}
                 </Form.Item>
               </Col>
 
@@ -261,8 +274,9 @@ const Registration = (props)  =>{
                         // required,
                         message:'请输入紧急度'
                       }
-                    ]
-                  })(<Input/>)}
+                    ],
+                    initialValue: moment(list.orderCreationtime) || ''
+                  })(<DatePicker format='YYYY-MM-DD HH:mm'/>)}
                 </Form.Item>
               </Col>
 
@@ -274,7 +288,8 @@ const Registration = (props)  =>{
                         // required,
                         message:'请输入紧急度'
                       }
-                    ]
+                    ],
+                    initialValue: list.questionTitle || ''
                   })(<Input/>)}
                 </Form.Item>
               </Col>
@@ -287,7 +302,8 @@ const Registration = (props)  =>{
                         // required,
                         message:'请输入问题描述'
                       }
-                    ]
+                    ],
+                    initialValue: list.problemDescription || ''
                   })(<TextArea/>)}
                 </Form.Item>
               </Col>
@@ -300,9 +316,9 @@ const Registration = (props)  =>{
                         // required,
                         message:'请输入问题描述'
                       }
-                    ]
+                    ],
                   })(<Upload {...data}>
-                       <Button>
+                       <Button type='primary'>
                          <Icon type="upload" /> Click to Upload
                        </Button>
                     </Upload>)}
@@ -317,4 +333,9 @@ const Registration = (props)  =>{
   
 }
 
-export default Form.create({})(Registration);
+export default Form.create({})(
+  connect(({ problemmanage, loading }) => ({
+    list: problemmanage.list,
+    loading: loading.models.problemmanage
+  }))(Registration),
+);

@@ -6,7 +6,8 @@ import {
   releaseModels,
   definitionList,
   imgResource,
-  deleteDefinition
+  deleteDefinition,
+  stateChange
 } from '../services/api';
 
 export default {
@@ -65,6 +66,10 @@ export default {
 
     *deleteDefinition({ payload: { id }}, { call }) {
       return yield call(deleteDefinition, id);
+    },
+
+    *stateChange({ payload: {id,suspendState}},{call}) {
+      return yield call(stateChange,id,suspendState);
     }
   },
 

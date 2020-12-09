@@ -58,4 +58,9 @@ export async function deleteDefinition(id) {
   })
 }
 
+//  激活或挂起
+export async function stateChange(id,suspendState) {
+  return request(`/activiti/definition/activeOrSuspend/${id}/${suspendState}`);
+}
+
 

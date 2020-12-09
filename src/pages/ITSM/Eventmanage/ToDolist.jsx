@@ -105,6 +105,7 @@ function ToDolist(props) {
   } = props;
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 10 });
   const [expand, setExpand] = useState(false);
+  console.log(props,'props');
 
   useEffect(() => {
     validateFields((err, values) => {

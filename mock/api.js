@@ -1047,6 +1047,7 @@ export const getFactoryTypes = [
     name: '工段',
   },
 ];
+
 function getFakeCaptcha(req, res) {
   return res.json('captcha-xxx');
 }

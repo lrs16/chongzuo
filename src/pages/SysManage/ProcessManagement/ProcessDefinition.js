@@ -10,7 +10,8 @@ import {
   Message,
   Popconfirm, 
   Row,
-  Divider
+  Divider,
+  message
 } from 'antd';
 import Link from 'umi/link';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
@@ -142,6 +143,21 @@ class ProcessDefinition extends Component {
     });
   }
 
+  stateChange = (id,suspendState) => {
+    const { dispatch } = this.props;
+    return dispatch({
+      type:'processmanagement/stateChange',
+      payload:{id,suspendState}
+    }).then(res => {
+      if(res.code === 200) {
+        message.success(res.msg);
+        this.getlist();
+      }else {
+        message.error(res.msg);
+      }
+    });
+  }
+
   render() {
     const {
       processmanagement: { list },
@@ -261,12 +277,10 @@ class ProcessDefinition extends Component {
         fixed: 'right',
         render: (text, record) => (
           <div style={{margin:0}}>
-            <Link to={`/sysmanage/processmanagement/modeledit/${record.id}`}>
-            编辑
-            </Link>
+            <a onClick={() =>this.stateChange(record.id,record.suspendState)}>{record.suspendState === '1'?'挂起':'激活'}</a>
             <Divider type="vertical" />
       
-            <Popconfirm title="确定删除此模型吗？" onConfirm={() => this.handleDelete(record.id)}>
+            <Popconfirm title="确定删除此模型吗？" onConfirm={() => this.handleDelete(record.deploymentId)}>
                  <a type="link">删除</a>
             </Popconfirm>
             <Divider type="vertical" />

@@ -242,12 +242,12 @@ export default {
                       icon: 'control',
                       component: './ITSM/Faultmanage/Registration',
                     },
-                    {
-                      path: '/ITSM/faultmanage/faultmanagepro',
-                      name: '故障管理流程',
-                      icon: 'cloud-server',
-                      component: './ITSM/Faultmanage/FaultManageProView',
-                    },
+                    // {
+                    //   path: '/ITSM/faultmanage/faultmanagepro',
+                    //   name: '故障管理流程',
+                    //   icon: 'cloud-server',
+                    //   component: './ITSM/Faultmanage/FaultManageProView',
+                    // },
                     {
                       path: '/ITSM/faultmanage/todolist',
                       name: '故障待办',
