@@ -232,7 +232,7 @@ class MeasurFace extends Component {
       measurface: {
         // settldata,
         archdata, // 档案同步
-        issuedata, // 参考下发
+        issuedata, // 参数下发
         filetdata,
         tabledata, // 测量点主表生成
         orderdata,
@@ -301,7 +301,7 @@ class MeasurFace extends Component {
               </ChartCard>
             </Col>
             <Col xl={12} xs={24} style={{ marginBottom: 24 }}>
-              <ChartCard title="参考下发（1h/刷新）" contentHeight={350}>
+              <ChartCard title="参数下发（1h/刷新）" contentHeight={350}>
                 <Spin spinning={loading} style={{ background: '#ffffff' }}>
                   {issuedata.length === 0 && <Empty style={{ height: '250px' }} />}
                   {issuedata.length > 0 && (

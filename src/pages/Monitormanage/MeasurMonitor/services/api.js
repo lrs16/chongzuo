@@ -54,7 +54,7 @@ export async function queryArchives() {
   return request(`/monitor/interfaceCheck/datbjk`);
 }
 
-// 参考下发，检查完毕
+// 参数下发，检查完毕
 export async function queryIssue() {
   return request(`/monitor/interfaceCheck/csxf`);
 }

@@ -30,7 +30,7 @@ const columns = [
     key: 'checkStatus',
     render: (text, record) => {
       const status = record.checkStatus;
-      const statuswaitetext = '待待巡检';
+      const statuswaitetext = '等待巡检';
       const statuswaitico = 'processing';
       const statustext = status.length === 4 ? '成功' : '巡检中';
       const statusico = status.length === 4 ? 'success' : 'error';

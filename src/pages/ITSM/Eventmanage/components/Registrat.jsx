@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useRef, useImperativeHandle } from 'react';
 import { Row, Col, Form, Input, Select, Upload, Button, Checkbox, DatePicker } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
 import styles from '../index.less';
@@ -35,10 +35,18 @@ const sysmodular = [
   { key: 5, value: '账号缺陷' },
 ];
 
-function Registrat(props) {
+const Registrat = React.forwardRef((props, ref) => {
   const { formItemLayout, forminladeLayout, show } = props;
-  const { setRegistration, setActiveKey, setShow } = useContext(RegistratContext);
-  const { getFieldDecorator, getFieldsValue } = props.form;
+  const { getFieldDecorator } = props.form;
+  const { setActiveKey, setShow } = useContext(RegistratContext);
+  const attRef = useRef();
+  useImperativeHandle(
+    ref,
+    () => ({
+      attRef,
+    }),
+    [],
+  );
 
   const required = true;
 
@@ -47,18 +55,12 @@ function Registrat(props) {
     setActiveKey(['1', '2']);
   };
 
-  const handleSubmit = () => {
-    getFieldsValue(values => {
-      console.log(values);
-    });
-  };
-
   return (
     <Row gutter={24} style={{ paddingTop: 24 }}>
-      <Form {...formItemLayout} onSubmit={handleSubmit}>
+      <Form {...formItemLayout}>
         <Col span={8}>
           <Form.Item label="建单时间">
-            {getFieldDecorator('form1', {
+            {getFieldDecorator('re1', {
               rules: [
                 {
                   required,
@@ -70,7 +72,7 @@ function Registrat(props) {
         </Col>
         <Col span={8}>
           <Form.Item label="事件来源">
-            {getFieldDecorator('form2', {
+            {getFieldDecorator('re2', {
               rules: [
                 {
                   required,
@@ -90,28 +92,28 @@ function Registrat(props) {
         </Col>
         <Col span={8}>
           <Form.Item label="申报人">
-            {getFieldDecorator('form3', {
+            {getFieldDecorator('re3', {
               rules: [{ required, message: '请输入申报人' }],
             })(<Input placeholder="请输入" />)}
           </Form.Item>
         </Col>
         <Col span={8}>
           <Form.Item label="申报人单位">
-            {getFieldDecorator('form4', {
+            {getFieldDecorator('re4', {
               rules: [{ required, message: '请选择申报人单位' }],
             })(<Input placeholder="请输入" />)}
           </Form.Item>
         </Col>
         <Col span={8}>
           <Form.Item label="申报人部门">
-            {getFieldDecorator('form5', {
+            {getFieldDecorator('re5', {
               rules: [{ required, message: '请选择申报人部门' }],
             })(<Input placeholder="请输入" />)}
           </Form.Item>
         </Col>
         <Col span={8}>
           <Form.Item label="申报人电话">
-            {getFieldDecorator('form6', {
+            {getFieldDecorator('re6', {
               rules: [
                 {
                   required,
@@ -125,7 +127,7 @@ function Registrat(props) {
         </Col>
         <Col span={8}>
           <Form.Item label="回访方式">
-            {getFieldDecorator('form7')(
+            {getFieldDecorator('re7')(
               <Select placeholder="请选择">
                 {returnvisit.map(({ key, value }) => [
                   <Option key={key} value={key}>
@@ -138,7 +140,7 @@ function Registrat(props) {
         </Col>
         <Col span={8}>
           <Form.Item label="影响度">
-            {getFieldDecorator('form8')(
+            {getFieldDecorator('re8')(
               <Select placeholder="请选择">
                 {degreemap.map(({ key, value }) => [
                   <Option key={key} value={key}>
@@ -151,7 +153,7 @@ function Registrat(props) {
         </Col>
         <Col span={8}>
           <Form.Item label="系统模块">
-            {getFieldDecorator('form9')(
+            {getFieldDecorator('re9')(
               <Select placeholder="请选择">
                 {sysmodular.map(({ key, value }) => [
                   <Option key={key} value={key}>
@@ -164,27 +166,27 @@ function Registrat(props) {
         </Col>
         <Col span={8}>
           <Form.Item label="事件分类">
-            {getFieldDecorator('form10')(<Input placeholder="请输入" />)}
+            {getFieldDecorator('re10')(<Input placeholder="请输入" />)}
           </Form.Item>
         </Col>
         <Col span={8}>
           <Form.Item label="紧急度">
-            {getFieldDecorator('form11')(<Input placeholder="请输入" />)}
+            {getFieldDecorator('re11')(<Input placeholder="请输入" />)}
           </Form.Item>
         </Col>
         <Col span={8}>
           <Form.Item label="优先级">
-            {getFieldDecorator('form12')(<Input placeholder="请输入" />)}
+            {getFieldDecorator('re12')(<Input placeholder="请输入" />)}
           </Form.Item>
         </Col>
         <Col span={24}>
           <Form.Item label="事件标题" {...forminladeLayout}>
-            {getFieldDecorator('form13')(<Input placeholder="请输入" />)}
+            {getFieldDecorator('re13')(<Input placeholder="请输入" />)}
           </Form.Item>
         </Col>
         <Col span={24}>
           <Form.Item label="一线标签" {...forminladeLayout}>
-            {getFieldDecorator('form14')(
+            {getFieldDecorator('re14')(
               <Input placeholder="请输入标签，至少两个字符，回车确认，最多输入八个标签" />,
             )}
           </Form.Item>
@@ -211,9 +213,7 @@ function Registrat(props) {
         </Col>
         <Col span={24}>
           <Form.Item label="事件描述" {...forminladeLayout}>
-            {getFieldDecorator('form15')(
-              <TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />,
-            )}
+            {getFieldDecorator('re15')(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
           </Form.Item>
         </Col>
         <Col span={24}>
@@ -227,7 +227,7 @@ function Registrat(props) {
             {...forminladeLayout}
             extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
           >
-            {getFieldDecorator('form17')(
+            {getFieldDecorator('re17')(
               <Upload>
                 <Button type="primary">
                   <DownloadOutlined /> 上传附件
@@ -238,22 +238,22 @@ function Registrat(props) {
         </Col>
         <Col span={8}>
           <Form.Item label="登记人">
-            {getFieldDecorator('form18')(<Input placeholder="请输入" />)}
+            {getFieldDecorator('re18')(<Input placeholder="请输入" />)}
           </Form.Item>
         </Col>
         <Col span={8}>
           <Form.Item label="登记人单位">
-            {getFieldDecorator('form19')(<Input placeholder="请输入" />)}
+            {getFieldDecorator('re19')(<Input placeholder="请输入" />)}
           </Form.Item>
         </Col>
         <Col span={8}>
           <Form.Item label="登记人部门">
-            {getFieldDecorator('form20')(<Input placeholder="请输入" />)}
+            {getFieldDecorator('re20')(<Input placeholder="请输入" />)}
           </Form.Item>
         </Col>
       </Form>
     </Row>
   );
-}
+});
 
 export default Form.create({})(Registrat);

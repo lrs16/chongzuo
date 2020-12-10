@@ -1,4 +1,4 @@
-import React, { useState, createContext } from 'react';
+import React, { useState, createContext, createRef, useRef } from 'react';
 import { Card, Form, Button, Collapse } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import styles from './index.less';
@@ -32,18 +32,33 @@ export const RegistratContext = createContext();
 
 function Registration(props) {
   const pagetitle = props.route.name;
-  const [registratkeys, setRegistration] = useState('');
   const [show, setShow] = useState(false);
   const [activeKey, setActiveKey] = useState(['1']);
-  //console.log(registratkeys);
+  // console.log(registratkeys);
+  const RegistratRef = useRef();
+  const HandleRef = useRef();
+
   const callback = key => {
     setActiveKey(key);
+  };
+
+  const handlesubmit = () => {
+    RegistratRef.current.validateFields((err, values) => {
+      if (!err) {
+        console.log(values);
+      }
+    });
+    HandleRef.current.validateFields((err, values) => {
+      if (!err) {
+        console.log(values);
+      }
+    });
   };
 
   return (
     <PageHeaderWrapper title={pagetitle}>
       <Card style={{ textAlign: 'right' }}>
-        <Button type="primary" style={{ marginRight: 8 }}>
+        <Button type="primary" style={{ marginRight: 8 }} onClick={handlesubmit}>
           保 存
         </Button>
         <Button type="primary" style={{ marginRight: 8 }}>
@@ -61,17 +76,22 @@ function Registration(props) {
           onChange={callback}
         >
           <Panel header="事件登记" key="1">
-            <RegistratContext.Provider value={{ setRegistration, setActiveKey, setShow }}>
+            <RegistratContext.Provider value={{ setActiveKey, setShow }}>
               <Registrat
                 formItemLayout={formItemLayout}
                 forminladeLayout={forminladeLayout}
                 show={show}
+                ref={RegistratRef}
               />
             </RegistratContext.Provider>
           </Panel>
           {show === true && (
             <Panel header="事件处理" key="2">
-              <Handle formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />
+              <Handle
+                formItemLayout={formItemLayout}
+                forminladeLayout={forminladeLayout}
+                ref={HandleRef}
+              />
             </Panel>
           )}
         </Collapse>

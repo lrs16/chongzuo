@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useRef, useImperativeHandle } from 'react';
 import { Row, Col, Form, Input, Select, Upload, Button } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
 import styles from '../index.less';
@@ -37,31 +37,38 @@ const result = [
   { key: 1, value: '转问题解决' },
 ];
 
-function Handle(props) {
+const Handle = React.forwardRef((props, ref) => {
   const { formItemLayout, forminladeLayout } = props;
-  const { getFieldDecorator, resetFields, validateFields } = props.form;
-
+  const { getFieldDecorator } = props.form;
+  const attRef = useRef();
+  useImperativeHandle(
+    ref,
+    () => ({
+      attRef,
+    }),
+    [],
+  );
   return (
     <Row gutter={24}>
       <Form {...formItemLayout}>
         <Col span={8}>
           <Form.Item label="处理人">
-            {getFieldDecorator('form1')(<Input placeholder="请输入" />)}
+            {getFieldDecorator('ha1')(<Input placeholder="请输入" />)}
           </Form.Item>
         </Col>
         <Col span={8}>
           <Form.Item label="处理人单位">
-            {getFieldDecorator('form2')(<Input placeholder="请输入" />)}
+            {getFieldDecorator('ha2')(<Input placeholder="请输入" />)}
           </Form.Item>
         </Col>
         <Col span={8}>
           <Form.Item label="处理人部门">
-            {getFieldDecorator('form3')(<Input placeholder="请输入" />)}
+            {getFieldDecorator('ha3')(<Input placeholder="请输入" />)}
           </Form.Item>
         </Col>
         <Col span={8}>
           <Form.Item label="影响度">
-            {getFieldDecorator('form4')(
+            {getFieldDecorator('ha4')(
               <Select placeholder="请选择">
                 {degreemap.map(({ key, value }) => [
                   <Option key={key} value={key}>
@@ -74,7 +81,7 @@ function Handle(props) {
         </Col>
         <Col span={8}>
           <Form.Item label="紧急度">
-            {getFieldDecorator('form5')(
+            {getFieldDecorator('ha5')(
               <Select placeholder="请选择">
                 {degreemap.map(({ key, value }) => [
                   <Option key={key} value={key}>
@@ -87,7 +94,7 @@ function Handle(props) {
         </Col>
         <Col span={8}>
           <Form.Item label="优先级">
-            {getFieldDecorator('form6')(
+            {getFieldDecorator('ha6')(
               <Select placeholder="请选择">
                 {degreemap.map(({ key, value }) => [
                   <Option key={key} value={key}>
@@ -100,7 +107,7 @@ function Handle(props) {
         </Col>
         <Col span={8}>
           <Form.Item label="事件分类">
-            {getFieldDecorator('form7')(
+            {getFieldDecorator('ha7')(
               <Select placeholder="请选择">
                 {eventclass.map(({ key, value }) => [
                   <Option key={key} value={key}>
@@ -113,7 +120,7 @@ function Handle(props) {
         </Col>
         <Col span={8}>
           <Form.Item label="事件对象">
-            {getFieldDecorator('form8')(
+            {getFieldDecorator('ha8')(
               <Select placeholder="请选择">
                 {eventobject.map(({ key, value }) => [
                   <Option key={key} value={key}>
@@ -126,7 +133,7 @@ function Handle(props) {
         </Col>
         <Col span={8}>
           <Form.Item label="处理结果">
-            {getFieldDecorator('form9')(
+            {getFieldDecorator('ha9')(
               <Select placeholder="请选择">
                 {result.map(({ key, value }) => [
                   <Option key={key} value={key}>
@@ -139,17 +146,17 @@ function Handle(props) {
         </Col>
         <Col span={8}>
           <Form.Item label="接单时间">
-            {getFieldDecorator('form10')(<Input placeholder="请输入" />)}
+            {getFieldDecorator('ha10')(<Input placeholder="请输入" />)}
           </Form.Item>
         </Col>
         <Col span={8}>
           <Form.Item label="结束时间">
-            {getFieldDecorator('form11')(<Input placeholder="请输入" />)}
+            {getFieldDecorator('ha11')(<Input placeholder="请输入" />)}
           </Form.Item>
         </Col>
         <Col span={24}>
           <Form.Item label="二线标签" {...forminladeLayout}>
-            {getFieldDecorator('form12')(
+            {getFieldDecorator('ha12')(
               <Input placeholder="请输入标签，至少两个字符，回车确认，最多输入八个标签" />,
             )}
           </Form.Item>
@@ -176,9 +183,7 @@ function Handle(props) {
         </Col>
         <Col span={24}>
           <Form.Item label="解决方案" {...forminladeLayout}>
-            {getFieldDecorator('form13')(
-              <TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />,
-            )}
+            {getFieldDecorator('ha13')(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
           </Form.Item>
         </Col>
         <Col span={24}>
@@ -187,7 +192,7 @@ function Handle(props) {
             {...forminladeLayout}
             extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
           >
-            {getFieldDecorator('form14')(
+            {getFieldDecorator('ha14')(
               <Upload>
                 <Button type="primary">
                   <DownloadOutlined /> 上传附件
@@ -199,6 +204,6 @@ function Handle(props) {
       </Form>
     </Row>
   );
-}
+});
 
 export default Form.create({})(Handle);
