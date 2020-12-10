@@ -1,4 +1,5 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
+// import { connect } from 'dva';
 import {
   Card,
   Form,
@@ -13,20 +14,31 @@ import {
   TreeSelect
 } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-// import DescriptionList from '@/components/DescriptionList';
 
 const { TextArea } = Input;
 const { Option } = Select;
 const { TreeNode } = TreeSelect;
-// const { Description } = DescriptionList;
-// const declarantCompany = [ // 申报人单位
-//   { key: 1, value: '单位一' },
-//   { key: 2, value: '单位二' },
-//   { key: 3, value: '单位三' },
-//   { key: 4, value: '单位四' },
-//   { key: 5, value: '单位五' },
-//   { key: 6, value: '单位六' },
-// ];
+const formItemLayout = {
+  labelCol: {
+    xs: { span:24},
+    sm: { span: 6},
+  },
+  wrapperCol: {
+    xs: { span:24},
+    sm: { span:18}
+  },
+};
+
+const forminladeLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 2 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 22 },
+  },
+};
 
 const treeDatas = [
   {
@@ -132,13 +144,13 @@ const faultType = [ // 故障类型
 ];
 
 const faultObj = [ // 故障对象
-  { key: 1, value: '' },
-  { key: 2, value: '' },
-  { key: 3, value: '' },
-  { key: 4, value: '' },
+  { key: 1, value: 'ss' },
+  { key: 2, value: 'ss' },
+  { key: 3, value: 'ss' },
+  { key: 4, value: 'ss' },
   { key: 5, value: '/设备' },
-  { key: 6, value: '' },
-  { key: 7, value: '' },
+  { key: 6, value: 'ss' },
+  { key: 7, value: 'ss' },
 ];
 
 const severity = [ // 严重程度
@@ -153,12 +165,31 @@ const degUrgen = [ // 紧急程度
   { key: 3, value: '高' },
   { key: 4, value: '紧急' },
 ];
-class Registration extends Component {
-  state = {
-    value: undefined,
+
+function Registration(props) {
+  const pagetitle = props.route.name;
+
+  const {
+    form: { getFieldDecorator, resetFields, validateFields },
+  } = props;
+
+  const [treevalue, setTreevalue] = useState();
+
+  useEffect(() => {
+  }, []);
+
+  const close = () => {
+    validateFields((err, values) => {
+      console.log(err, values);
+    });
+    resetFields();
   };
 
-  toTree = data => {
+  const onChange = val => {
+    setTreevalue(val);
+  }
+
+  const toTree = data => {
     const result = [];
     if (!Array.isArray(data)) {
       return result;
@@ -178,363 +209,201 @@ class Registration extends Component {
     return result;
   };
 
-  renderTreeNodes = data =>
+  const renderTreeNodes = data =>
     data.map(item => {
       if (item.children) {
         return (
           <TreeNode value={item.name} title={item.name} key={item.id} dataRef={item} >
-            {this.renderTreeNodes(item.children)}
+            {renderTreeNodes(item.children)}
           </TreeNode>
         );
       }
       return <TreeNode key={item.id} value={item.name} title={item.name} {...item} />;
     });
 
-  onChange = val => {
-    this.setState({value: val});
-  }
+  const treeData = toTree(treeDatas);
 
-  normFile = e => {
-    // console.log('Upload event:', e);
-    if (Array.isArray(e)) {
-      return e;
-    }
-    return e && e.fileList;
-  };
-
-  saveHandle = (e) => {
-    e.preventDefault();
-    // fieldsValue
-    this.props.form.validateFieldsAndScroll((err) => {
-        if (!err) {
-          const url = '/ITSM/faultmanage/faultmanagepro';
-          this.props.history.push(url);
+  return (
+    <PageHeaderWrapper title={pagetitle}>
+      <Card
+        extra={
+          <>
+            <Button type="primary" style={{ marginRight: 8 }}>保 存</Button>
+            <Button type="primary" style={{ marginRight: 8 }}>流 转</Button>
+            <Button type="default" onClick={close}>关 闭</Button>
+          </>
         }
-    });
-    
-  };
-
-  close = () => { // 重置
-    this.props.form.resetFields();
-  };
-
-  render() {
-    const { getFieldDecorator } = this.props.form;
-    const config = {
-      rules: [{ type: 'object', required: true, message: 'Please select time!' }],
-    };
-
-    const treeData = this.toTree(treeDatas);
-
-    return (
-      <PageHeaderWrapper
-        title={this.props.route.name}
       >
-        <Card
-          extra={
-            <>
-              <Button type="primary" style={{ marginRight: 8 }} onClick={this.saveHandle}>保 存</Button>
-              <Button type="primary" style={{ marginRight: 8 }}>流 转</Button>
-              <Button type="default" onClick={this.close}>关 闭</Button>
-            </>
-          }
-        >
-          <Form>
-            <Row gutter={24}>
-              <Col xl={8} xs={12}>
-                <Form.Item label="申报人">
-                  {getFieldDecorator('declarant', {
-                    // rules: [
-                    //   {
-                    //     required: true,
-                    //   },
-                    // ],
-                    // initialValue: '',
-                  })(<Input placeholder="请输入" allowClear />)}
-                </Form.Item>
-              </Col>
+        <Form {...formItemLayout}>
+          <Row gutter={24}>
+            <Col xl={8} xs={12}>
+              <Form.Item label="申报人">
+                {getFieldDecorator('declarant', {})(<Input placeholder="请输入" allowClear />)}
+              </Form.Item>
+            </Col>
 
-              <Col xl={8} xs={12}>
-                <Form.Item label="申报人单位">
-                  {getFieldDecorator('declarantCompany', {
-                    // rules: [
-                    //   {
-                    //     required: true,
-                    //   },
-                    // ],
-                    initialValue: this.state.value,
-                  })(
-                    // <Select placeholder="请选择">
-                    //   {declarantCompany.map(({ key, value }) => [<Option key={key}>{value}</Option>])}
-                    // </Select>,
-                    <>
-                      <TreeSelect
-                        defaultExpandAll
-                        value={this.state.value}
-                        style={{ width: '100%' }}
-                        dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-                        placeholder="请选择命令"
-                        onChange={this.onChange}
-                        treeCheckable
-                        multiple
-                      >
-                        {treeData && this.renderTreeNodes(treeData)}
-                      </TreeSelect>
+            <Col xl={8} xs={12}>
+              <Form.Item label="申报人单位">
+                {getFieldDecorator('declarantCompany', {
+                  initialValue: treevalue,
+                })(
+                  <>
+                    <TreeSelect
+                      defaultExpandAll
+                      value={treevalue}
+                      style={{ width: '100%' }}
+                      dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+                      placeholder="请选择单位"
+                      onChange={onChange}
+                      treeCheckable
+                      multiple
+                    >
+                      {treeData && renderTreeNodes(treeData)}
+                    </TreeSelect>
+                  </>
+                )}
+              </Form.Item>
+            </Col>
 
-                    </>
-                  )}
-                </Form.Item>
-              </Col>
+            <Col xl={8} xs={12}>
+              <Form.Item label="申报人部门">
+                {getFieldDecorator('declarantDepart', {})(
+                  <Select placeholder="请选择">
+                    {declarantDepart.map(({ key, value }) => [<Option key={key}>{value}</Option>])}
+                  </Select>,
+                )}
+              </Form.Item>
+            </Col>
 
-              <Col xl={8} xs={12}>
-                <Form.Item label="申报人部门">
-                  {getFieldDecorator('declarantDepart', {
-                    // rules: [
-                    //   {
-                    //     required: true,
-                    //   },
-                    // ],
-                    // initialValue: '', 
-                  })(
-                    <Select placeholder="请选择">
-                      {declarantDepart.map(({ key, value }) => [<Option key={key}>{value}</Option>])}
-                    </Select>,
-                  )}
-                </Form.Item>
-              </Col>
+            <Col xl={8} xs={12}>
+              <Form.Item label="申报人电话">
+                {getFieldDecorator('declarantPhone', {})(<Input placeholder="请输入" allowClear />)}
+              </Form.Item>
+            </Col>
 
-              <Col xl={8} xs={12}>
-                <Form.Item label="申报人电话">
-                  {getFieldDecorator('declarantPhone', {
-                    // rules: [
-                    //   {
-                    //     required: true,
-                    //   },
-                    // ],
-                    // initialValue: '',
-                  })(<Input placeholder="请输入" allowClear />)}
-                </Form.Item>
-              </Col>
+            <Col xl={8} xs={12}>
+              <Form.Item label="故障来源">
+                {getFieldDecorator('faultSource', {})(
+                  <Select placeholder="请选择">
+                    {faultSource.map(({ key, value }) => [<Option key={key}>{value}</Option>])}
+                  </Select>,
+                )}
+              </Form.Item>
+            </Col>
 
-              <Col xl={8} xs={12}>
-                <Form.Item label="故障来源">
-                  {getFieldDecorator('faultSource', {
-                    // rules: [
-                    //   {
-                    //     required: true,
-                    //   },
-                    // ],
-                    // initialValue: '', 
-                  })(
-                    <Select placeholder="请选择">
-                      {faultSource.map(({ key, value }) => [<Option key={key}>{value}</Option>])}
-                    </Select>,
-                  )}
-                </Form.Item>
-              </Col>
+            <Col xl={8} xs={12}>
+              <Form.Item label="故障类型">
+                {getFieldDecorator('faultType', {})(
+                  <Select placeholder="请选择">
+                    {faultType.map(({ key, value }) => [<Option key={key}>{value}</Option>])}
+                  </Select>,
+                )}
+              </Form.Item>
+            </Col>
 
-              <Col xl={8} xs={12}>
-                <Form.Item label="故障类型">
-                  {getFieldDecorator('faultType', {
-                    // rules: [
-                    //   {
-                    //     required: true,
-                    //   },
-                    // ],
-                    // initialValue: '',
-                  })(
-                    <Select placeholder="请选择">
-                      {faultType.map(({ key, value }) => [<Option key={key}>{value}</Option>])}
-                    </Select>,
-                  )}
-                </Form.Item>
-              </Col>
+            <Col xl={8} xs={12}>
+              <Form.Item label="故障对象">
+                {getFieldDecorator('faultObj', {})(
+                  <Select placeholder="请选择">
+                    {faultObj.map(({ key, value }) => [<Option key={key}>{value}</Option>])}
+                  </Select>,
+                )}
+              </Form.Item>
+            </Col>
 
-              <Col xl={8} xs={12}>
-                <Form.Item label="故障对象">
-                  {getFieldDecorator('faultObj', {
-                    // rules: [
-                    //   {
-                    //     required: true,
-                    //   },
-                    // ],
-                    // initialValue: '',
-                  })(
-                    <Select placeholder="请选择">
-                      {faultObj.map(({ key, value }) => [<Option key={key}>{value}</Option>])}
-                    </Select>,
-                  )}
-                </Form.Item>
-              </Col>
+            <Col xl={8} xs={12}>
+              <Form.Item label="故障地点">
+                {getFieldDecorator('faultLocat', {})(<Input placeholder="请输入" allowClear />)}
+              </Form.Item>
+            </Col>
 
-              <Col xl={8} xs={12}>
-                <Form.Item label="故障地点">
-                  {getFieldDecorator('faultLocat', {
-                    // rules: [
-                    //   {
-                    //     required: true,
-                    //   },
-                    // ],
-                    // initialValue: '',
-                  })(<Input placeholder="请输入" allowClear />)}
-                </Form.Item>
-              </Col>
+            <Col xl={8} xs={12}>
+              <Form.Item label="严重程度">
+                {getFieldDecorator('severity', {})(
+                  <Select placeholder="请选择">
+                    {severity.map(({ key, value }) => [<Option key={key}>{value}</Option>])}
+                  </Select>,
+                )}
+              </Form.Item>
+            </Col>
 
-              <Col xl={8} xs={12}>
-                <Form.Item label="严重程度">
-                  {getFieldDecorator('severity', {
-                    // rules: [
-                    //   {
-                    //     required: true,
-                    //   },
-                    // ],
-                    // initialValue: '',
-                  })(
-                    <Select placeholder="请选择">
-                      {severity.map(({ key, value }) => [<Option key={key}>{value}</Option>])}
-                    </Select>,
-                  )}
-                </Form.Item>
-              </Col>
+            <Col xl={8} xs={12}>
+              <Form.Item label="紧急程度">
+                {getFieldDecorator('degUrgen', {})(
+                  <Select placeholder="请选择">
+                    {degUrgen.map(({ key, value }) => [<Option key={key}>{value}</Option>])}
+                  </Select>,
+                )}
+              </Form.Item>
+            </Col>
 
-              <Col xl={8} xs={12}>
-                <Form.Item label="紧急程度">
-                  {getFieldDecorator('degUrgen', {
-                    // rules: [
-                    //   {
-                    //     required: true,
-                    //   },
-                    // ],
-                    // initialValue: '',
-                  })(
-                    <Select placeholder="请选择">
-                      {degUrgen.map(({ key, value }) => [<Option key={key}>{value}</Option>])}
-                    </Select>,
-                  )}
-                </Form.Item>
-              </Col>
+            <Col xl={8} xs={12}>
+              <Form.Item label="故障发生时间">
+                {getFieldDecorator('faultHappentime')(<DatePicker showTime style={{ width: '100%' }} />)}
+              </Form.Item>
+            </Col>
 
-              <Col xl={8} xs={12}>
-                <Form.Item label="故障发生时间">
-                  {getFieldDecorator('faultHappentime', config)(<DatePicker showTime style={{ width: '100%' }} />)}
-                </Form.Item>
-              </Col>
+            <Col span={24}>
+              <Form.Item label="故障名称" {...forminladeLayout}>
+                {getFieldDecorator('faultName', {})(<Input placeholder="请输入" allowClear />)}
+              </Form.Item>
+            </Col>
 
-              <Col span={24}>
-                <Form.Item label="故障名称">
-                  {getFieldDecorator('faultName', {
-                    // rules: [
-                    //   {
-                    //     required: true,
-                    //   },
-                    // ],
-                    // initialValue: '',
-                  })(<Input placeholder="请输入" allowClear />)}
-                </Form.Item>
-              </Col>
+            <Col span={24}>
+              <Form.Item label="故障概要" {...forminladeLayout}>
+                {getFieldDecorator('faultSum', {})(<TextArea rows={5} placeholder="请输入" />)}
+              </Form.Item>
+            </Col>
 
-              <Col span={24}>
-                <Form.Item label="故障概要">
-                  {getFieldDecorator('faultSum', {
-                    // rules: [
-                    //   {
-                    //     required: true,
-                    //   },
-                    // ],
-                    // initialValue: '',
-                  })(<TextArea rows={5} placeholder="请输入" />)}
-                </Form.Item>
-              </Col>
+            <Col span={24}>
+              <Form.Item label="范围说明" {...forminladeLayout}>
+                {getFieldDecorator('scopeDesc', {})(<TextArea rows={5} placeholder="请描述范围" />)}
+              </Form.Item>
+            </Col>
 
-              <Col span={24}>
-                <Form.Item label="范围说明">
-                  {getFieldDecorator('scopeDesc', {
-                    // rules: [
-                    //   {
-                    //     required: true,
-                    //   },
-                    // ],
-                    // initialValue: '',
-                  })(<TextArea rows={5} placeholder="请描述范围" />)}
-                </Form.Item>
-              </Col>
-
-              <Col span={24}>
-                <Form.Item label="附件列表：" extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb" style={{ display: "flex" }}>
-                  {getFieldDecorator('upload', {
-                    valuePropName: 'fileList',
-                    getValueFromEvent: this.normFile,
-                  })(
-                    <Upload name="logo" action="" listType="picture">
-                      <Button type="primary">
-                        <Icon type="upload" style={{ fontSize: 18 }} /> 添加附件
+            <Col span={24}>
+              <Form.Item label="附件列表：" extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb" style={{ display: "flex" }} {...forminladeLayout}>
+                {getFieldDecorator('upload', {
+                  valuePropName: 'fileList',
+                  // getValueFromEvent: this.normFile,
+                })(
+                  <Upload name="logo" action="" listType="picture">
+                    <Button type="primary">
+                      <Icon type="upload" style={{ fontSize: 18 }} /> 添加附件
                       </Button>
-                    </Upload>,
-                  )}
-                </Form.Item>
-              </Col>
+                  </Upload>,
+                )}
+              </Form.Item>
+            </Col>
 
-              <Col span={8}>
-                <Form.Item label="登记人">
-                  {getFieldDecorator('regist', {
-                    initialValue: '管理员',
-                  })(<Input allowClear />)}
-                </Form.Item>
-              </Col>
+            <Col span={8}>
+              <Form.Item label="登记人">
+                {getFieldDecorator('regist', {
+                  initialValue: '管理员',
+                })(<Input allowClear />)}
+              </Form.Item>
+            </Col>
 
-              <Col span={8}>
-                <Form.Item label="登记人部门">
-                  {getFieldDecorator('registDepart', {
-                    initialValue: '广西电网有限责任公司',
-                  })(<Input allowClear />)}
-                </Form.Item>
-              </Col>
+            <Col span={8}>
+              <Form.Item label="登记人部门">
+                {getFieldDecorator('registDepart', {
+                  initialValue: '广西电网有限责任公司',
+                })(<Input allowClear />)}
+              </Form.Item>
+            </Col>
 
-              <Col span={8}>
-                <Form.Item label="登记人单位">
-                  {getFieldDecorator('registCompany', {
-                    initialValue: '广西电网有限责任公司',
-                  })(<Input allowClear />)}
-                </Form.Item>
-              </Col>
-            </Row>
-          </Form>
-        </Card>
-
-        {/* <Card style={{ marginBottom: 24, marginTop: '-1px' }}>
-          <DescriptionList size="large" title="故障登记">
-            <Description term="故障编号">故障编号</Description>
-            <Description term="故障发生时间">故障发生时间</Description>
-            <Description term="故障记录时间">故障记录时间</Description>
-            <Description term="故障来源">故障来源</Description>
-            <Description term="系统模块">系统模块</Description>
-            <Description term="故障地点"> 故障地点</Description>
-          </DescriptionList>
-          <DescriptionList size="large">
-            <Description term="严重程度">严重程度</Description>
-            <Description term="紧急程度">紧急程度</Description>
-          </DescriptionList>
-          <DescriptionList size="large">
-            <Description term="故障名称">故障名称</Description>
-          </DescriptionList>
-          <DescriptionList size="large">
-            <Description term="故障概要">故障概要</Description>
-          </DescriptionList>
-          <DescriptionList size="large">
-            <Description term="范围说明">范围说明</Description>
-          </DescriptionList>
-          <DescriptionList size="large">
-            <Description term="上传附件">上传附件</Description>
-          </DescriptionList>
-          <DescriptionList size="large">
-            <Description term="填报人">填报人</Description>
-            <Description term="填报人单位">填报人单位</Description>
-            <Description term="填报人部门">填报人部门</Description>
-          </DescriptionList>
-        </Card> */}
-      </PageHeaderWrapper>
-    );
-  }
+            <Col span={8}>
+              <Form.Item label="登记人单位">
+                {getFieldDecorator('registCompany', {
+                  initialValue: '广西电网有限责任公司',
+                })(<Input allowClear />)}
+              </Form.Item>
+            </Col>
+          </Row>
+        </Form>
+      </Card>
+    </PageHeaderWrapper>
+  );
 }
 
-export default Form.create()(Registration);
+export default Form.create({})(Registration);
