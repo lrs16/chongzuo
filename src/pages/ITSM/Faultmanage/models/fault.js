@@ -18,7 +18,7 @@ export default {
           const response = yield call(queryfaultTodoList, payload);
           yield put({
             type: 'show',
-            payload: response,
+            payload: response.data,
           });
       },
 
@@ -26,7 +26,7 @@ export default {
           const response = yield call(queryfaultSearchList, payload);
           yield put({
             type: 'faultquerydata',
-            payload: response,
+            payload: response.data,
           });
       },
 

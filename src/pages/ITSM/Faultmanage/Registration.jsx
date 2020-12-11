@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 // import { connect } from 'dva';
+// import Link from 'umi/link';
 import {
   Card,
   Form,
@@ -11,21 +12,24 @@ import {
   DatePicker,
   Upload,
   Icon,
-  TreeSelect
+  TreeSelect,
+  message
 } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
+
+import ModelCircula from './components/ModelCircula';
 
 const { TextArea } = Input;
 const { Option } = Select;
 const { TreeNode } = TreeSelect;
 const formItemLayout = {
   labelCol: {
-    xs: { span:24},
-    sm: { span: 6},
+    xs: { span: 24 },
+    sm: { span: 6 },
   },
   wrapperCol: {
-    xs: { span:24},
-    sm: { span:18}
+    xs: { span: 24 },
+    sm: { span: 18 }
   },
 };
 
@@ -47,68 +51,68 @@ const treeDatas = [
     "weight": 0,
     "name": "广西博联公司",
     "children": [
-        {
-            "id": "1",
-            "parentId": "-1",
+      {
+        "id": "1",
+        "parentId": "-1",
+        "weight": 0,
+        "name": "运行维护部",
+        "children": [
+          {
+            "id": "1323886017773572097",
+            "parentId": "1",
             "weight": 0,
-            "name": "运行维护部",
-            "children": [
-                {
-                    "id": "1323886017773572097",
-                    "parentId": "1",
-                    "weight": 0,
-                    "name": "部门领导"
-                },
-                {
-                    "id": "1324152080692154370",
-                    "parentId": "1",
-                    "weight": 0,
-                    "name": "运维服务一组"
-                },
-                {
-                    "id": "1324166627062714370",
-                    "parentId": "1",
-                    "weight": 0,
-                    "name": "运维服务二组"
-                }
-            ]
-        },
-        {
-            "id": "2",
-            "parentId": "-1",
+            "name": "部门领导"
+          },
+          {
+            "id": "1324152080692154370",
+            "parentId": "1",
             "weight": 0,
-            "name": "办公室"
-        },
-        {
-            "id": "3",
-            "parentId": "-1",
+            "name": "运维服务一组"
+          },
+          {
+            "id": "1324166627062714370",
+            "parentId": "1",
             "weight": 0,
-            "name": "人力资源部"
-        },
-        {
-            "id": "4",
-            "parentId": "-1",
-            "weight": 0,
-            "name": "财务部"
-        },
-        {
-          "id": "5",
-          "parentId": "-1",
-          "weight": 0,
-          "name": "市场营销部"
-        },
-        {
-          "id": "6",
-          "parentId": "-1",
-          "weight": 0,
-          "name": "集成部"
-        },
-        {
-          "id": "7",
-          "parentId": "-1",
-          "weight": 0,
-          "name": "研发部"
-        }
+            "name": "运维服务二组"
+          }
+        ]
+      },
+      {
+        "id": "2",
+        "parentId": "-1",
+        "weight": 0,
+        "name": "办公室"
+      },
+      {
+        "id": "3",
+        "parentId": "-1",
+        "weight": 0,
+        "name": "人力资源部"
+      },
+      {
+        "id": "4",
+        "parentId": "-1",
+        "weight": 0,
+        "name": "财务部"
+      },
+      {
+        "id": "5",
+        "parentId": "-1",
+        "weight": 0,
+        "name": "市场营销部"
+      },
+      {
+        "id": "6",
+        "parentId": "-1",
+        "weight": 0,
+        "name": "集成部"
+      },
+      {
+        "id": "7",
+        "parentId": "-1",
+        "weight": 0,
+        "name": "研发部"
+      }
     ]
   }
 ];
@@ -171,18 +175,44 @@ function Registration(props) {
 
   const {
     form: { getFieldDecorator, resetFields, validateFields },
+    history
   } = props;
 
-  const [treevalue, setTreevalue] = useState();
+  const [treevalue, setTreevalue] = useState('');
 
   useEffect(() => {
   }, []);
 
-  const close = () => {
-    validateFields((err, values) => {
-      console.log(err, values);
-    });
+  const close = () => { // 关闭
     resetFields();
+  };
+
+  const handleSave = () => { // 保存
+    validateFields((err, values) => {
+      if (!err) {
+        const url = '/ITSM/faultmanage/registration/record/1';
+        const state = values;
+        history.push(url,state);
+        message.success('保存成功！');
+      }
+
+      // <Link
+      //   to={{
+      //     pathname: `/ITSM/faultmanage/registration/record/1`,
+      //   }}
+      // />
+    });
+  }
+
+  const handleCircula = () => { // 流转
+  }
+
+  const normFile = e => {
+    // console.log('Upload event:', e);
+    if (Array.isArray(e)) {
+      return e;
+    }
+    return e && e.fileList;
   };
 
   const onChange = val => {
@@ -228,8 +258,12 @@ function Registration(props) {
       <Card
         extra={
           <>
-            <Button type="primary" style={{ marginRight: 8 }}>保 存</Button>
-            <Button type="primary" style={{ marginRight: 8 }}>流 转</Button>
+            <Button type="primary" style={{ marginRight: 8 }} onClick={handleSave}>
+              保 存
+            </Button>
+            <ModelCircula title="流转" onSubmit={handleCircula}>
+              <Button type="primary" style={{ marginRight: 8 }}>流 转</Button>
+            </ModelCircula>
             <Button type="default" onClick={close}>关 闭</Button>
           </>
         }
@@ -250,7 +284,7 @@ function Registration(props) {
                   <>
                     <TreeSelect
                       defaultExpandAll
-                      value={treevalue}
+                      // value={treevalue}
                       style={{ width: '100%' }}
                       dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
                       placeholder="请选择单位"
@@ -365,7 +399,7 @@ function Registration(props) {
               <Form.Item label="附件列表：" extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb" style={{ display: "flex" }} {...forminladeLayout}>
                 {getFieldDecorator('upload', {
                   valuePropName: 'fileList',
-                  // getValueFromEvent: this.normFile,
+                  getValueFromEvent: normFile,
                 })(
                   <Upload name="logo" action="" listType="picture">
                     <Button type="primary">

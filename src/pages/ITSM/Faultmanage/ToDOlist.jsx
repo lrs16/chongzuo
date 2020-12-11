@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-// import { connect } from 'dva';
-// import Link from 'umi/link';
+import { connect } from 'dva';
+import Link from 'umi/link';
 import {
   Card,
   Input,
@@ -57,114 +57,186 @@ const priority = [ // 优先级
   { key: 4, value: '紧急' },
 ];
 
-const columns = [
-  {
-    title: '序号',
-    dataIndex: 'index',
-    key: 'index',
-    width: 100,
-    render: (text, record, index) => `${index + 1}`,
-  },
-  {
-    title: '故障编号',
-    dataIndex: 'faultID',
-    key: 'faultID',
-    width: 150,
-    // render: (text, record) => {
-    //   return (
-    //     <Link
-    //       to={{
-    //         pathname: `/ITSM/faultmanage/faultmanagepro`,
-    //         state: {
-    //           todolistdata: record,
-    //         }
-    //       }}
-    //     >
-    //       {text}
-    //     </Link>
-    //   );
-    // },
-  },
-  {
-    title: '故障标题',
-    dataIndex: 'faultTitle',
-    key: 'faultTitle',
-    width: 200,
-  },
-  {
-    title: '故障来源',
-    dataIndex: 'faultSource',
-    key: 'faultSource',
-    width: 120,
-  },
-  {
-    title: '故障分类',
-    dataIndex: 'faultClass',
-    key: 'faultClass',
-    width: 120,
-  },
-  {
-    title: '申报人',
-    dataIndex: 'declarant',
-    key: 'declarant',
-    width: 120,
-  },
-  {
-    title: '当前处理环节',
-    dataIndex: 'currProceLink',
-    key: 'currProceLink',
-    width: 150,
-  },
-  {
-    title: '故障状态',
-    dataIndex: 'faultStatus',
-    key: 'faultStatus',
-    width: 120,
-  },
-  {
-    title: '超时时间',
-    dataIndex: 'overTime',
-    key: 'overTime',
-    width: 200,
-  },
-  {
-    title: '发送时间',
-    dataIndex: 'sendTime',
-    key: 'sendTime',
-    width: 200,
-  },
-  {
-    title: '优先级',
-    dataIndex: 'priority',
-    key: 'priority',
-    width: 100,
-  },
-];
+
 
 function ToDOlist(props) {
   const pagetitle = props.route.name;
 
   const {
-    form: { getFieldDecorator, resetFields },
+    form: { getFieldDecorator, resetFields, validateFields },
+    loading,
+    todolist,
+    dispatch,
   } = props;
 
   const [expand, setExpand] = useState(false);
+  const [paginations, setPageinations] = useState({ current: 1, pageSize: 10 }); // 分页state
+
+  const columns = [
+    {
+      title: '序号',
+      dataIndex: 'index',
+      key: 'index',
+      width: 100,
+      render: (text, record, index) => `${(paginations.current - 1) * (paginations.pageSize) + (index + 1)}`,
+    },
+    {
+      title: '故障编号',
+      dataIndex: 'faultID',
+      key: 'faultID',
+      width: 150,
+      render: (text, record) => {
+        return (
+          <Link
+            to={{
+              pathname: `/ITSM/faultmanage/registration/record/${record.faultID}`,
+              state: {
+                todolistdata: record,
+              }
+            }}
+          >
+            {text}
+          </Link>
+        );
+      },
+    },
+    {
+      title: '故障标题',
+      dataIndex: 'faultTitle',
+      key: 'faultTitle',
+      width: 200,
+    },
+    {
+      title: '故障来源',
+      dataIndex: 'faultSource',
+      key: 'faultSource',
+      width: 120,
+    },
+    {
+      title: '故障分类',
+      dataIndex: 'faultClass',
+      key: 'faultClass',
+      width: 120,
+    },
+    {
+      title: '申报人',
+      dataIndex: 'declarant',
+      key: 'declarant',
+      width: 120,
+    },
+    {
+      title: '当前处理环节',
+      dataIndex: 'currProceLink',
+      key: 'currProceLink',
+      width: 150,
+    },
+    {
+      title: '故障状态',
+      dataIndex: 'faultStatus',
+      key: 'faultStatus',
+      width: 120,
+    },
+    {
+      title: '超时时间',
+      dataIndex: 'overTime',
+      key: 'overTime',
+      width: 200,
+    },
+    {
+      title: '发送时间',
+      dataIndex: 'sendTime',
+      key: 'sendTime',
+      width: 200,
+    },
+    {
+      title: '优先级',
+      dataIndex: 'priority',
+      key: 'priority',
+      width: 100,
+    },
+  ];
 
   useEffect(() => {
+    validateFields((err, values) => {
+      if (!err) {
+        dispatch({
+          type: 'fault/fetchfaultTodoList',
+          payload: {
+            ...values,
+            current: paginations.current,
+            pageSize: paginations.pageSize,
+          },
+        });
+      }
+    });
   }, []);
+
+  const searchdata = (values, page, size) => {
+    dispatch({
+      type: 'fault/fetchfaultTodoList',
+      payload: {
+        ...values,
+        pageSize: size,
+        current: page,
+      },
+    });
+  };
 
   const handleReset = () => {
     resetFields();
   }
 
-  // const handleSearch = () => {
-  // };
+  const handleSearch = () => {
+    setPageinations({
+      ...paginations,
+      current: 1,
+    });
+    validateFields((err, values) => {
+      if (err) {
+        return;
+      }
+      searchdata(values, paginations.current, paginations.pageSize);
+    });
+  };
+
+  const onShowSizeChange = (page, size) => {
+    validateFields((err, values) => {
+      if (!err) {
+        searchdata(values, page, size);
+      }
+    });
+    setPageinations({
+      ...paginations,
+      pageSize: size,
+    });
+  };
+
+  const changePage = page => {
+    validateFields((err, values) => {
+      if (!err) {
+        searchdata(values, page, paginations.pageSize);
+      }
+    });
+    setPageinations({
+      ...paginations,
+      current: page,
+    });
+  };
+
+  const pagination = {
+    showSizeChanger: true,
+    onShowSizeChange: (page, size) => onShowSizeChange(page, size),
+    current: paginations.current,
+    pageSize: paginations.pageSize,
+    total: todolist.total,
+    onChange: page => changePage(page),
+  };
 
   return (
     <PageHeaderWrapper title={pagetitle}>
       <Card>
         <Row gutter={24}>
-          <Form {...formItemLayout}>
+          <Form {...formItemLayout} onSubmit={handleSearch}>
             <Col span={8}>
               <Form.Item label="故障编号">
                 {getFieldDecorator('faultID', {})(<Input />)}
@@ -255,7 +327,7 @@ function ToDOlist(props) {
             {expand === false && (
               <Col span={8}>
                 <Form.Item>
-                  <Button type="primary">
+                  <Button type="primary" onClick={handleSearch}>
                     查 询
                   </Button>
                   <Button style={{ marginLeft: 8 }} onClick={handleReset}>
@@ -282,7 +354,7 @@ function ToDOlist(props) {
               </Col>
             )}
             {expand === true && (
-              <Col span={24} style={{ textAlign: 'right' }}>
+              <Col span={24} style={{ textAlign: 'right' }} onClick={handleSearch}>
                 <Button type="primary">
                   查 询
                 </Button>
@@ -314,15 +386,21 @@ function ToDOlist(props) {
           <Button type="primary">导出数据</Button>
         </div>
         <Table
-          // loading={loading}
+          loading={loading}
           columns={columns}
-          // dataSource={dataSource}
+          dataSource={todolist.data}
           table-layout="fixed"
           rowKey={record => record.faultID}
+          pagination={pagination}
         />
       </Card>
     </PageHeaderWrapper>
   );
 }
-
-export default Form.create({})(ToDOlist);
+export default Form.create({})(
+  connect(({ fault, loading }) => ({
+    todolist: fault.todolist,
+    html: fault.html,
+    loading: loading.models.fault,
+  }))(ToDOlist),
+);

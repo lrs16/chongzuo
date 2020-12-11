@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-// import { connect } from 'dva';
-// import Link from 'umi/link';
+import { connect } from 'dva';
+import Link from 'umi/link';
 import {
   Card,
   Input,
@@ -48,114 +48,184 @@ const priority = [ // 优先级
   { key: 4, value: '紧急' },
 ];
 
-const columns = [
-  {
-    title: '序号',
-    dataIndex: 'index',
-    key: 'index',
-    width: 100,
-    render: (text, record, index) => `${index + 1}`,
-  },
-  {
-    title: '故障编号',
-    dataIndex: 'faultID',
-    key: 'faultID',
-    width: 150,
-    // render: (text, record) => {
-    //   return (
-    //     <Link
-    //       to={{
-    //         pathname: `/ITSM/faultmanage/faultmanagepro`,
-    //         state: {
-    //           querylistdata: record,
-    //         }
-    //       }}
-    //     >
-    //       {text}
-    //     </Link>
-    //   );
-    // },
-  },
-  {
-    title: '故障标题',
-    dataIndex: 'faultTitle',
-    key: 'faultTitle',
-    width: 200,
-  },
-  {
-    title: '故障来源',
-    dataIndex: 'faultSource',
-    key: 'faultSource',
-    width: 150,
-  },
-  {
-    title: '故障分类',
-    dataIndex: 'faultClass',
-    key: 'faultClass',
-    width: 150,
-  },
-  {
-    title: '申报单位',
-    dataIndex: 'applicant',
-    key: 'applicant',
-    width: 260,
-  },
-  {
-    title: '申报人',
-    dataIndex: 'declarant',
-    key: 'declarant',
-    width: 120,
-  },
-  {
-    title: '工单状态',
-    dataIndex: 'faultworkStatus',
-    key: 'faultworkStatus',
-    width: 120,
-  },
-  {
-    title: '登记人',
-    dataIndex: 'regist',
-    key: 'regist',
-    width: 120,
-  },
-  {
-    title: '创建时间',
-    dataIndex: 'createtime',
-    key: 'createtime',
-    width: 200,
-  },
-  {
-    title: '优先级',
-    dataIndex: 'priority',
-    key: 'priority',
-    width: 100,
-  },
-];
-
 function QueryList(props) {
   const pagetitle = props.route.name;
 
   const {
-    form: { getFieldDecorator, resetFields },
+    form: { getFieldDecorator, resetFields, validateFields },
+    loading,
+    faultquerydata,
+    dispatch,
   } = props;
 
   const [expand, setExpand] = useState(false);
+  const [paginations, setPageinations] = useState({ current: 1, pageSize: 10 }); // 分页state
+
+  const columns = [
+    {
+      title: '序号',
+      dataIndex: 'index',
+      key: 'index',
+      width: 100,
+      render: (text, record, index) => `${(paginations.current - 1) * (paginations.pageSize) + (index + 1)}`,
+    },
+    {
+      title: '故障编号',
+      dataIndex: 'faultID',
+      key: 'faultID',
+      width: 150,
+      render: (text, record) => {
+        return (
+          <Link
+            to={{
+              pathname: `/ITSM/faultmanage/registration/record/${record.faultID}`,
+              state: {
+                querylistdata: record,
+              }
+            }}
+          >
+            {text}
+          </Link>
+        );
+      },
+    },
+    {
+      title: '故障标题',
+      dataIndex: 'faultTitle',
+      key: 'faultTitle',
+      width: 150,
+    },
+    {
+      title: '故障来源',
+      dataIndex: 'faultSource',
+      key: 'faultSource',
+      width: 150,
+    },
+    {
+      title: '故障分类',
+      dataIndex: 'faultClass',
+      key: 'faultClass',
+      width: 150,
+    },
+    {
+      title: '申报单位',
+      dataIndex: 'applicant',
+      key: 'applicant',
+      width: 200,
+    },
+    {
+      title: '申报人',
+      dataIndex: 'declarant',
+      key: 'declarant',
+      width: 120,
+    },
+    {
+      title: '工单状态',
+      dataIndex: 'faultworkStatus',
+      key: 'faultworkStatus',
+      width: 200,
+    },
+    {
+      title: '登记人',
+      dataIndex: 'regist',
+      key: 'regist',
+      width: 120,
+    },
+    {
+      title: '创建时间',
+      dataIndex: 'createtime',
+      key: 'createtime',
+      width: 200,
+    },
+    {
+      title: '优先级',
+      dataIndex: 'priority',
+      key: 'priority',
+      width: 100,
+    },
+  ];
 
   useEffect(() => {
+    validateFields((err, values) => {
+      if (!err) {
+        dispatch({
+          type: 'fault/fetchfaultSearchList',
+          payload: {
+            ...values,
+            current: paginations.current,
+            pageSize: paginations.pageSize,
+          },
+        });
+      }
+    });
   }, []);
+
+  const searchdata = (values, page, size) => {
+    dispatch({
+      type: 'fault/fetchfaultSearchList',
+      payload: {
+        ...values,
+        pageSize: size,
+        current: page,
+      },
+    });
+  };
 
   const handleReset = () => {
     resetFields();
   }
 
-  // const handleSearch = () => {
-  // };
+  const handleSearch = () => {
+    setPageinations({
+      ...paginations,
+      current: 1,
+    });
+    validateFields((err, values) => {
+      if (err) {
+        return;
+      }
+      searchdata(values, paginations.current, paginations.pageSize);
+    });
+  };
+
+  const onShowSizeChange = (page, size) => {
+    validateFields((err, values) => {
+      if (!err) {
+        searchdata(values, page, size);
+      }
+    });
+    setPageinations({
+      ...paginations,
+      pageSize: size,
+    });
+  };
+
+  const changePage = page => {
+    validateFields((err, values) => {
+      if (!err) {
+        searchdata(values, page, paginations.pageSize);
+      }
+    });
+    setPageinations({
+      ...paginations,
+      current: page,
+    });
+  };
+
+  const pagination = {
+    showSizeChanger: true,
+    onShowSizeChange: (page, size) => onShowSizeChange(page, size),
+    current: paginations.current,
+    pageSize: paginations.pageSize,
+    total: faultquerydata.total,
+    onChange: page => changePage(page),
+  };
 
   return (
     <PageHeaderWrapper title={pagetitle}>
       <Card>
         <Row gutter={24}>
-          <Form {...formItemLayout}>
+          <Form {...formItemLayout} onSubmit={handleSearch}>
             <Col span={8}>
               <Form.Item label="故障编号">
                 {getFieldDecorator('faultID', {})(<Input />)}
@@ -328,7 +398,7 @@ function QueryList(props) {
             {expand === false && (
               <Col span={8}>
                 <Form.Item>
-                  <Button type="primary">
+                  <Button type="primary" onClick={handleSearch}>
                     查 询
                   </Button>
                   <Button style={{ marginLeft: 8 }} onClick={handleReset}>
@@ -356,7 +426,7 @@ function QueryList(props) {
             )}
             {expand === true && (
               <Col span={24} style={{ textAlign: 'right' }}>
-                <Button type="primary">
+                <Button type="primary" onClick={handleSearch}>
                   查 询
                 </Button>
                 <Button style={{ marginLeft: 8 }} onClick={handleReset}>
@@ -387,15 +457,21 @@ function QueryList(props) {
           <Button type="primary">导出数据</Button>
         </div>
         <Table
-          // loading={loading}
+          loading={loading}
           columns={columns}
-          // dataSource={dataSource}
+          dataSource={faultquerydata.data}
           table-layout="fixed"
           rowKey={record => record.faultID}
+          pagination={pagination}
         />
       </Card>
     </PageHeaderWrapper>
   );
 }
-
-export default Form.create({})(QueryList);
+export default Form.create({})(
+  connect(({ fault, loading }) => ({
+    faultquerydata: fault.faultquerydata,
+    html: fault.html,
+    loading: loading.models.fault,
+  }))(QueryList),
+);

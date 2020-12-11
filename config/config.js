@@ -242,6 +242,12 @@ export default {
                       icon: 'control',
                       component: './ITSM/Faultmanage/Registration',
                     },
+                    {
+                      path: '/ITSM/faultmanage/registration/record/:id',
+                      name: '故障管理流程',
+                      icon: 'cloud-server',
+                      component: './ITSM/Faultmanage/Registrdetails',
+                    },
                     // {
                     //   path: '/ITSM/faultmanage/faultmanagepro',
                     //   name: '故障管理流程',

@@ -1,11 +1,17 @@
 import request from '@/utils/request';
 
-export async function queryfaultTodoList() { // 故障待办列表
-    return request('/api/FaultTodoList');
+export async function queryfaultTodoList(params) { // 故障待办列表
+    return request('/api/fault/faulttodolist', {
+      method: 'POST',
+      body: JSON.stringify(params),
+    });
 }
 
-export async function queryfaultSearchList() { // 故障待办列表
-    return request('/api/FaultSearchList');
+export async function queryfaultSearchList(params) { // 故障查询列表
+    return request('/api/fault/faultsearchlist', {
+      method: 'POST',
+      body: JSON.stringify(params),
+    });
 }
 
 // 故障明细表
@@ -15,6 +21,5 @@ export async function queryFaultDetailList(params) {
       body: JSON.stringify(params),
     });
   }
-  
 
 
