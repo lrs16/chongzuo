@@ -663,8 +663,28 @@ function mocksearchdata(count) {
       type: ['咨询', '缺陷', '故障', '数据处理', '其他'][i % 5],
       filledby: Random.cname(),
       handler: Random.cname(),
-      state: ['事件登记', '事件处理', '事件回访'][i % 3],
+      state: Random.integer(1, 7),
       time: Random.datetime(),
+      level: Random.cword('高中低', 1),
+    });
+  }
+  return list;
+}
+
+function mockeventlistdata(count) {
+  const list = [];
+  for (let i = 0; i < count; i += 1) {
+    list.push({
+      id: Random.string('123456789', 5),
+      creationtime: Random.datetime(),
+      Declarant: Random.cname(),
+      Declarantunit: '南方电网计量中心',
+      Declarantdep: '运行维护部',
+      type: ['咨询', '缺陷', '故障', '数据处理', '其他'][i % 5],
+      eventobject: ['配网采集', '主网采集', '终端掉线', '配网档案', '实用话指标'][i % 5],
+      filledby: Random.cname(),
+      handler: Random.cname(),
+      state: Random.integer(1, 7),
       level: Random.cword('高中低', 1),
     });
   }
@@ -799,10 +819,22 @@ export default {
     });
   },
 
-  // IT服务管理
-  'POST /api/event/queryList': (req, res) => {
+  // IT服务管理：事件待办
+  'POST /api/event/queryTodoList': (req, res) => {
     const count = 50;
     const data = mocksearchdata(count);
+    res.json({
+      data: {
+        data,
+        total: count,
+      },
+    });
+  },
+
+  // IT服务管理：事件查询
+  'POST /api/event/queryList': (req, res) => {
+    const count = 50;
+    const data = mockeventlistdata(count);
     res.json({
       data: {
         data,

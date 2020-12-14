@@ -1,7 +1,7 @@
-import { queryEventodoList } from '../services/api';
+import { queryList } from '../services/api';
 
 export default {
-  namespace: 'eventtodo',
+  namespace: 'eventquery',
 
   state: {
     list: [],
@@ -10,7 +10,7 @@ export default {
   effects: {
     // 列表
     *fetchlist({ payload }, { call, put }) {
-      const response = yield call(queryEventodoList, payload);
+      const response = yield call(queryList, payload);
       yield put({
         type: 'save',
         payload: response.data,

@@ -1,8 +1,7 @@
-import React, { useContext, useRef, useImperativeHandle } from 'react';
+import React, { useRef, useImperativeHandle } from 'react';
 import { Row, Col, Form, Input, Select, Upload, Button, Checkbox, DatePicker } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
 import styles from '../index.less';
-import { RegistratContext } from '../Registration';
 import { phone_reg } from '@/utils/Regexp';
 
 const { Option } = Select;
@@ -36,9 +35,10 @@ const sysmodular = [
 ];
 
 const Registrat = React.forwardRef((props, ref) => {
-  const { formItemLayout, forminladeLayout, show } = props;
+  const { formItemLayout, forminladeLayout, show, ChangeShow, ChangeActiveKey } = props;
   const { getFieldDecorator } = props.form;
-  const { setActiveKey, setShow } = useContext(RegistratContext);
+  const required = true;
+
   const attRef = useRef();
   useImperativeHandle(
     ref,
@@ -48,11 +48,9 @@ const Registrat = React.forwardRef((props, ref) => {
     [],
   );
 
-  const required = true;
-
   const handleself = e => {
-    setShow(e.target.checked);
-    setActiveKey(['1', '2']);
+    ChangeShow(e.target.checked);
+    ChangeActiveKey(['registratform', 'handleform']);
   };
 
   return (
@@ -191,7 +189,7 @@ const Registrat = React.forwardRef((props, ref) => {
             )}
           </Form.Item>
         </Col>
-        <Col span="22" offset={2}>
+        <Col span={22} offset={2}>
           <span>您可输入相关标签（例如重点标签）</span>
           <div
             style={{

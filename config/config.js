@@ -148,16 +148,38 @@ export default {
                       component: './ITSM/Eventmanage/ToDolist',
                     },
                     {
-                      path: '/ITSM/eventmanage/to-do/record/:pangekey/:id',
+                      path: '/ITSM/eventmanage/to-do/record',
                       name: '事件办理',
                       icon: 'cloud-server',
                       component: './ITSM/Eventmanage/ToDodetails',
+                      routes: [
+                        {
+                          path: '/ITSM/eventmanage/to-do/record',
+                          redirect: '/ITSM/eventmanage/to-do/record/workorder',
+                        },
+                        {
+                          path: '/ITSM/eventmanage/to-do/record/workorder',
+                          name: '事件工单',
+                          component: './ITSM/Eventmanage/WorkOrder',
+                        },
+                        {
+                          path: '/ITSM/eventmanage/to-do/record/process',
+                          name: '事件流程',
+                          component: './ITSM/Eventmanage/Process',
+                        },
+                      ],
                     },
                     {
                       path: '/ITSM/eventmanage/query',
                       name: '事件查询',
                       icon: 'cloud-server',
                       component: './ITSM/Eventmanage/QueryList',
+                    },
+                    {
+                      path: '/ITSM/eventmanage/query/details',
+                      name: '事件详情',
+                      icon: 'cloud-server',
+                      component: './ITSM/Eventmanage/EventDetails',
                     },
                     {
                       path: '/ITSM/eventmanage/overtime',
@@ -856,7 +878,7 @@ export default {
       target: 'http://172.16.4.211:8889/',
       changeOrigin: true,
     },
-    '/activiti': {
+    '/activiti/': {
       target: 'http://172.16.4.211:9901/',
       changeOrigin: true,
     },
@@ -864,14 +886,14 @@ export default {
     //   target: 'http://172.16.4.179:9901/',
     //   changeOrigin: true,
     // },
-    '/modeler': {
+    '/modeler/': {
       target: 'http://172.16.4.211:9901/',
       changeOrigin: true,
     },
-    'editor-app/': {
-      target: 'http://172.16.4.211:9901/',
-      changeOrigin: true,
-    },
+    // 'editor-app/': {
+    //   target: 'http://172.16.4.211:9901/',
+    //   changeOrigin: true,
+    // },
     '/api/': {
       target: 'http://localhost:8000/', // mock接口数据
       changeOrigin: true,

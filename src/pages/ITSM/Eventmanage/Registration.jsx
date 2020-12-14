@@ -1,4 +1,4 @@
-import React, { useState, createContext, createRef, useRef } from 'react';
+import React, { useState, createContext, useRef } from 'react';
 import { Card, Form, Button, Collapse } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import styles from './index.less';
@@ -33,7 +33,7 @@ export const RegistratContext = createContext();
 function Registration(props) {
   const pagetitle = props.route.name;
   const [show, setShow] = useState(false);
-  const [activeKey, setActiveKey] = useState(['1']);
+  const [activeKey, setActiveKey] = useState(['registratform']);
   // console.log(registratkeys);
   const RegistratRef = useRef();
   const HandleRef = useRef();
@@ -42,17 +42,28 @@ function Registration(props) {
     setActiveKey(key);
   };
 
-  const handlesubmit = () => {
+  const getregistrats = () => {
     RegistratRef.current.validateFields((err, values) => {
       if (!err) {
         console.log(values);
       }
     });
+  };
+
+  const gethandles = () => {
     HandleRef.current.validateFields((err, values) => {
       if (!err) {
         console.log(values);
       }
     });
+  };
+
+  const handlesubmit = () => {
+    if (show) {
+      getregistrats();
+      gethandles();
+    }
+    getregistrats();
   };
 
   return (
@@ -75,18 +86,18 @@ function Registration(props) {
           style={{ marginTop: '-25px' }}
           onChange={callback}
         >
-          <Panel header="事件登记" key="1">
-            <RegistratContext.Provider value={{ setActiveKey, setShow }}>
-              <Registrat
-                formItemLayout={formItemLayout}
-                forminladeLayout={forminladeLayout}
-                show={show}
-                ref={RegistratRef}
-              />
-            </RegistratContext.Provider>
+          <Panel header="事件登记" key="registratform">
+            <Registrat
+              ChangeShow={isshow => setShow(isshow)}
+              ChangeActiveKey={keys => setActiveKey(keys)}
+              formItemLayout={formItemLayout}
+              forminladeLayout={forminladeLayout}
+              show={show}
+              ref={RegistratRef}
+            />
           </Panel>
           {show === true && (
-            <Panel header="事件处理" key="2">
+            <Panel header="事件处理" key="handleform">
               <Handle
                 formItemLayout={formItemLayout}
                 forminladeLayout={forminladeLayout}

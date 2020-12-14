@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
-import Link from 'umi/link';
-import { Card, Row, Col, Form, Input, Select, Button, DatePicker, Table } from 'antd';
+import router from 'umi/router';
+import { Card, Row, Col, Form, Input, Select, Button, DatePicker, Table, Badge } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 
@@ -46,16 +46,17 @@ const columns = [
     dataIndex: 'title',
     key: 'title',
     render: (text, record) => {
-      const panlekey = 'host';
-      return (
-        <Link
-          to={{
-            pathname: `/ITSM/eventmanage/to-do/record/${panlekey}/${record.id}`,
-          }}
-        >
-          {text}
-        </Link>
-      );
+      const handleClick = () => {
+        router.push({
+          pathname: `/ITSM/eventmanage/to-do/record/workorder`,
+          query: {
+            pangekey: record.state,
+            id: record.id,
+            validate: false,
+          },
+        });
+      };
+      return <a onClick={handleClick}>{text}</a>;
     },
   },
   {
@@ -82,6 +83,19 @@ const columns = [
     title: '工单状态',
     dataIndex: 'state',
     key: 'state',
+    render: (text, record) => {
+      const textmaps = [
+        '待登记',
+        '已登记',
+        '已派单待处理',
+        '处理中',
+        '已处理待回访',
+        '已回访',
+        '重分派',
+        '已关闭',
+      ];
+      return <>{textmaps[record.state]}</>;
+    },
   },
   {
     title: '发送时间',
@@ -105,7 +119,6 @@ function ToDolist(props) {
   } = props;
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 10 });
   const [expand, setExpand] = useState(false);
-  console.log(props,'props');
 
   useEffect(() => {
     validateFields((err, values) => {
@@ -342,7 +355,6 @@ function ToDolist(props) {
 export default Form.create({})(
   connect(({ eventtodo, loading }) => ({
     list: eventtodo.list,
-    html: eventtodo.html,
     loading: loading.models.eventtodo,
   }))(ToDolist),
 );
