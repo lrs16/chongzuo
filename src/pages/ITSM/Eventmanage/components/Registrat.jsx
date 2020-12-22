@@ -1,4 +1,5 @@
-import React, { useRef, useImperativeHandle } from 'react';
+import React, { useRef, useImperativeHandle, forwardRef, useState } from 'react';
+import moment from 'moment';
 import { Row, Col, Form, Input, Select, Upload, Button, Checkbox, DatePicker } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
 import styles from '../index.less';
@@ -8,38 +9,56 @@ const { Option } = Select;
 const { TextArea } = Input;
 
 const sourcemap = [
-  { key: 0, value: '用户电话申告' },
-  { key: 1, value: '企信' },
+  { key: '001', value: '用户电话申告' },
+  { key: '002', value: '企信' },
 ];
 
 const returnvisit = [
-  { key: 0, value: '企信回访' },
-  { key: 1, value: '电话回访' },
-  { key: 2, value: '短信回访' },
-  { key: 3, value: '邮箱回访' },
+  { key: '001', value: '企信回访' },
+  { key: '002', value: '电话回访' },
+  { key: '003', value: '短信回访' },
+  { key: '004', value: '邮箱回访' },
 ];
 
 const degreemap = [
-  { key: 0, value: '高' },
-  { key: 1, value: '中' },
-  { key: 2, value: '低' },
+  { key: '001', value: '低' },
+  { key: '002', value: '中' },
+  { key: '003', value: '高' },
 ];
 
-const sysmodular = [
-  { key: 0, value: '配网采集' },
-  { key: 1, value: '主网采集' },
-  { key: 2, value: '终端掉线' },
-  { key: 3, value: '配网档案' },
-  { key: 4, value: '实用化指标' },
-  { key: 5, value: '账号缺陷' },
+const objectmap = [
+  { key: '001', value: '配网采集' },
+  { key: '002', value: '主网采集' },
+  { key: '003', value: '终端掉线' },
+  { key: '004', value: '配网档案' },
+  { key: '005', value: '实用化指标' },
+  { key: '006', value: '账号缺陷' },
 ];
 
-const Registrat = React.forwardRef((props, ref) => {
-  const { formItemLayout, forminladeLayout, show, ChangeShow, ChangeActiveKey } = props;
+const typemap = [
+  { key: '001', value: '咨询' },
+  { key: '002', value: '缺陷' },
+  { key: '003', value: '故障' },
+  { key: '004', value: '数据处理' },
+  { key: '005', value: '账号权限' },
+  { key: '006', value: '其它' },
+];
+
+const Registrat = forwardRef((props, ref) => {
+  const {
+    formItemLayout,
+    forminladeLayout,
+    ChangeShow,
+    ChangeCheck,
+    ChangeActiveKey,
+    info,
+  } = props;
   const { getFieldDecorator } = props.form;
   const required = true;
-
+  const { main, register } = info.data;
+  const [check, setCheck] = useState(false);
   const attRef = useRef();
+  console.log(check);
   useImperativeHandle(
     ref,
     () => ({
@@ -53,30 +72,52 @@ const Registrat = React.forwardRef((props, ref) => {
     ChangeActiveKey(['registratform', 'handleform']);
   };
 
+  const handlcheckChange = value => {
+    if (value === '005') {
+      ChangeCheck(true);
+      setCheck(true);
+    } else {
+      ChangeCheck(false);
+      setCheck(false);
+    }
+  };
+
   return (
     <Row gutter={24} style={{ paddingTop: 24 }}>
       <Form {...formItemLayout}>
         <Col span={8}>
+          <Form.Item label="事件编号">
+            {getFieldDecorator('main_event_no', {
+              initialValue: main.event_no,
+            })(<Input disabled />)}
+          </Form.Item>
+        </Col>
+        <Col span={8}>
           <Form.Item label="建单时间">
-            {getFieldDecorator('re1', {
+            {getFieldDecorator('main_add_time', {
+              rules: [{ required }],
+              initialValue: main.add_time,
+            })(<Input disabled />)}
+          </Form.Item>
+        </Col>
+        <Col span={8}>
+          <Form.Item label="登记时间">
+            {getFieldDecorator('register_occur_time', {
               rules: [
                 {
                   required,
-                  message: '请选择建单时间',
+                  message: '请选择登记时间',
                 },
               ],
-            })(<DatePicker />)}
+              // initialValue: register.occur_time,
+            })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" />)}
           </Form.Item>
         </Col>
         <Col span={8}>
           <Form.Item label="事件来源">
-            {getFieldDecorator('re2', {
-              rules: [
-                {
-                  required,
-                  message: '请选择事件来源',
-                },
-              ],
+            {getFieldDecorator('main_event_source', {
+              rules: [{ required, message: '请选择事件来源' }],
+              initialValue: main.event_source,
             })(
               <Select placeholder="请选择">
                 {sourcemap.map(({ key, value }) => [
@@ -90,28 +131,53 @@ const Registrat = React.forwardRef((props, ref) => {
         </Col>
         <Col span={8}>
           <Form.Item label="申报人">
-            {getFieldDecorator('re3', {
+            {getFieldDecorator('register_application_user', {
               rules: [{ required, message: '请输入申报人' }],
+              initialValue: register.application_user,
+            })(<Input placeholder="请输入" />)}
+          </Form.Item>
+        </Col>
+        <Col span={8} style={{ display: 'none' }}>
+          <Form.Item label="申报人id">
+            {getFieldDecorator('register_application_user_id', {
+              rules: [{ required, message: '请输入申报人' }],
+              initialValue: register.application_user_id,
             })(<Input placeholder="请输入" />)}
           </Form.Item>
         </Col>
         <Col span={8}>
           <Form.Item label="申报人单位">
-            {getFieldDecorator('re4', {
+            {getFieldDecorator('register_application_unit', {
               rules: [{ required, message: '请选择申报人单位' }],
+              initialValue: register.application_unit,
             })(<Input placeholder="请输入" />)}
+          </Form.Item>
+        </Col>
+        <Col span={8} style={{ display: 'none' }}>
+          <Form.Item label="申报人单位id">
+            {getFieldDecorator('register_application_unit_id', {
+              initialValue: register.application_unit_id,
+            })(<Input />)}
           </Form.Item>
         </Col>
         <Col span={8}>
           <Form.Item label="申报人部门">
-            {getFieldDecorator('re5', {
+            {getFieldDecorator('register_application_dept', {
               rules: [{ required, message: '请选择申报人部门' }],
+              initialValue: register.application_dept,
+            })(<Input placeholder="请输入" />)}
+          </Form.Item>
+        </Col>
+        <Col span={8} style={{ display: 'none' }}>
+          <Form.Item label="申报人部门id">
+            {getFieldDecorator('register_application_dept_id', {
+              initialValue: register.application_dept_id,
             })(<Input placeholder="请输入" />)}
           </Form.Item>
         </Col>
         <Col span={8}>
           <Form.Item label="申报人电话">
-            {getFieldDecorator('re6', {
+            {getFieldDecorator('register_application_user_phone', {
               rules: [
                 {
                   required,
@@ -120,12 +186,16 @@ const Registrat = React.forwardRef((props, ref) => {
                   message: '请输入正确的正确的手机号码',
                 },
               ],
+              initialValue: register.application_user_phone,
             })(<Input placeholder="请输入" />)}
           </Form.Item>
         </Col>
         <Col span={8}>
           <Form.Item label="回访方式">
-            {getFieldDecorator('re7')(
+            {getFieldDecorator('register_revisit_way', {
+              rules: [{ required, message: '请选择回访方式' }],
+              initialValue: register.revisit_way,
+            })(
               <Select placeholder="请选择">
                 {returnvisit.map(({ key, value }) => [
                   <Option key={key} value={key}>
@@ -138,7 +208,10 @@ const Registrat = React.forwardRef((props, ref) => {
         </Col>
         <Col span={8}>
           <Form.Item label="影响度">
-            {getFieldDecorator('re8')(
+            {getFieldDecorator('register_event_effect', {
+              rules: [{ required, message: '请选择影响度' }],
+              initialValue: register.event_effect,
+            })(
               <Select placeholder="请选择">
                 {degreemap.map(({ key, value }) => [
                   <Option key={key} value={key}>
@@ -150,10 +223,13 @@ const Registrat = React.forwardRef((props, ref) => {
           </Form.Item>
         </Col>
         <Col span={8}>
-          <Form.Item label="系统模块">
-            {getFieldDecorator('re9')(
-              <Select placeholder="请选择">
-                {sysmodular.map(({ key, value }) => [
+          <Form.Item label="事件分类">
+            {getFieldDecorator('main_event_type', {
+              rules: [{ required, message: '请选择事件分类' }],
+              initialValue: main.event_type,
+            })(
+              <Select placeholder="请选择" onChange={handlcheckChange}>
+                {typemap.map(({ key, value }) => [
                   <Option key={key} value={key}>
                     {value}
                   </Option>,
@@ -163,26 +239,62 @@ const Registrat = React.forwardRef((props, ref) => {
           </Form.Item>
         </Col>
         <Col span={8}>
-          <Form.Item label="事件分类">
-            {getFieldDecorator('re10')(<Input placeholder="请输入" />)}
+          <Form.Item label="事件对象">
+            {getFieldDecorator('main_event_object', {
+              rules: [{ required, message: '请选择事件对象' }],
+              initialValue: main.event_object,
+            })(
+              <Select placeholder="请选择">
+                {objectmap.map(({ key, value }) => [
+                  <Option key={key} value={key}>
+                    {value}
+                  </Option>,
+                ])}
+              </Select>,
+            )}
           </Form.Item>
         </Col>
         <Col span={8}>
           <Form.Item label="紧急度">
-            {getFieldDecorator('re11')(<Input placeholder="请输入" />)}
+            {getFieldDecorator('register_event_emergent', {
+              rules: [{ required, message: '请选择紧急度' }],
+              initialValue: register.event_emergent,
+            })(
+              <Select placeholder="请选择">
+                {degreemap.map(({ key, value }) => [
+                  <Option key={key} value={key}>
+                    {value}
+                  </Option>,
+                ])}
+              </Select>,
+            )}
           </Form.Item>
         </Col>
         <Col span={8}>
           <Form.Item label="优先级">
-            {getFieldDecorator('re12')(<Input placeholder="请输入" />)}
+            {getFieldDecorator('register_event_prior', {
+              rules: [{ required, message: '请选择优先级' }],
+              initialValue: register.event_prior,
+            })(
+              <Select placeholder="请选择">
+                {degreemap.map(({ key, value }) => [
+                  <Option key={key} value={key}>
+                    {value}
+                  </Option>,
+                ])}
+              </Select>,
+            )}
           </Form.Item>
         </Col>
         <Col span={24}>
           <Form.Item label="事件标题" {...forminladeLayout}>
-            {getFieldDecorator('re13')(<Input placeholder="请输入" />)}
+            {getFieldDecorator('main_title', {
+              rules: [{ required, message: '请输入事件标题' }],
+              initialValue: main.title,
+            })(<Input placeholder="请输入" />)}
           </Form.Item>
         </Col>
-        <Col span={24}>
+        {/* <Col span={24}>
           <Form.Item label="一线标签" {...forminladeLayout}>
             {getFieldDecorator('re14')(
               <Input placeholder="请输入标签，至少两个字符，回车确认，最多输入八个标签" />,
@@ -208,18 +320,26 @@ const Registrat = React.forwardRef((props, ref) => {
               <Button>标签4</Button>
             </div>
           </div>
-        </Col>
+        </Col> */}
         <Col span={24}>
           <Form.Item label="事件描述" {...forminladeLayout}>
-            {getFieldDecorator('re15')(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
+            {getFieldDecorator('main_content', {
+              rules: [{ required, message: '请输入事件描述' }],
+              initialValue: main.content,
+            })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
           </Form.Item>
         </Col>
-        <Col span={24}>
-          <Form.Item label="自行处理" {...forminladeLayout}>
-            {getFieldDecorator('show')(<Checkbox checked={show} onClick={handleself} />)}
-          </Form.Item>
-        </Col>
-        <Col span={24}>
+        {check === false && (
+          <Col span={24}>
+            <Form.Item label="自行处理" {...forminladeLayout}>
+              {getFieldDecorator('register_selfhandle', {
+                valuePropName: 'checked',
+                initialValue: Boolean(Number(register.selfhandle)),
+              })(<Checkbox onClick={handleself} />)}
+            </Form.Item>
+          </Col>
+        )}
+        {/* <Col span={24}>
           <Form.Item
             label="上传附件"
             {...forminladeLayout}
@@ -233,25 +353,94 @@ const Registrat = React.forwardRef((props, ref) => {
               </Upload>,
             )}
           </Form.Item>
-        </Col>
+        </Col> */}
         <Col span={8}>
           <Form.Item label="登记人">
-            {getFieldDecorator('re18')(<Input placeholder="请输入" />)}
+            {getFieldDecorator('register_register_user', {
+              rules: [{ required }],
+              initialValue: register.register_user,
+            })(<Input disabled />)}
+          </Form.Item>
+        </Col>
+        <Col span={8} style={{ display: 'none' }}>
+          <Form.Item label="登记人ID">
+            {getFieldDecorator('register_register_user_id', {
+              rules: [{ required }],
+              initialValue: register.register_user_id,
+            })(<Input disabled />)}
           </Form.Item>
         </Col>
         <Col span={8}>
           <Form.Item label="登记人单位">
-            {getFieldDecorator('re19')(<Input placeholder="请输入" />)}
+            {getFieldDecorator('register_register_unit', {
+              rules: [{ required }],
+              initialValue: register.register_register_unit,
+            })(<Input disabled />)}
+          </Form.Item>
+        </Col>
+        <Col span={8} style={{ display: 'none' }}>
+          <Form.Item label="登记人单位ID">
+            {getFieldDecorator('register_register_unit_id', {
+              rules: [{ required }],
+              initialValue: register.register_unit_id,
+            })(<Input disabled />)}
           </Form.Item>
         </Col>
         <Col span={8}>
           <Form.Item label="登记人部门">
-            {getFieldDecorator('re20')(<Input placeholder="请输入" />)}
+            {getFieldDecorator('register_register_dept', {
+              rules: [{ required }],
+              initialValue: register.register_dept,
+            })(<Input disabled />)}
+          </Form.Item>
+        </Col>
+        <Col span={8} style={{ display: 'none' }}>
+          <Form.Item label="登记人部门ID">
+            {getFieldDecorator('register_register_dept_id', {
+              rules: [{ required }],
+              initialValue: register.register_dept_id,
+            })(<Input disabled />)}
           </Form.Item>
         </Col>
       </Form>
     </Row>
   );
 });
+
+Registrat.defaultProps = {
+  info: {
+    data: {
+      main: {
+        add_time: moment().format('YYYY-MM-DD HH:mm:ss'),
+        content: '',
+        event_no: '',
+        event_object: '',
+        event_source: '',
+        event_type: '',
+      },
+      register: {
+        application_dept: '计量中心',
+        application_dept_id: '7AC3EF0F639302A2E0530A644F130365',
+        application_unit: '南宁供电局',
+        application_unit_id: '7AC3EF0F718E02A2E0530A644F130365',
+        application_user: '',
+        application_user_id: '12121212',
+        application_user_phone: '',
+        event_effect: '',
+        event_emergent: '',
+        event_prior: '',
+        occur_time: '',
+        register_dept: '广西电网有限责任公司',
+        register_dept_id: '7AC3EF0F701402A2E0530A644F130365',
+        register_unit: '广西电网有限责任公司',
+        register_unit_id: '7AC3EF0F701402A2E0530A644F130365',
+        register_user: '管理员',
+        register_user_id: '1',
+        revisit_way: '',
+        selfhandle: '0',
+      },
+    },
+  },
+};
 
 export default Form.create({})(Registrat);

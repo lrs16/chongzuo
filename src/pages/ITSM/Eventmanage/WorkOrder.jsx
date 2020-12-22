@@ -1,8 +1,10 @@
 import React, { useState, createContext, useRef, useEffect } from 'react';
-import { Collapse, Steps } from 'antd';
 import router from 'umi/router';
+import { connect } from 'dva';
+import { Collapse, Steps, Spin } from 'antd';
 import styles from './index.less';
 import Registrat from './components/Registrat';
+import Check from './components/Check';
 import Handle from './components/Handle';
 import ReturnVisit from './components/ReturnVisit';
 import Registratdes from './components/Registratdes';
@@ -27,8 +29,8 @@ const stepstitless = [
 ];
 
 const Collapsekeymap = new Map([
-  [0, 'registratform'],
-  [1, 'registratform'],
+  ['1', 'registratform'],
+  ['1', 'registratform'],
   [2, 'handleform'],
   [3, 'handleform'],
   [4, 'visitform'],
@@ -37,8 +39,8 @@ const Collapsekeymap = new Map([
 ]);
 
 const currentmap = new Map([
-  [0, 0],
-  [1, 0],
+  ['1', 0],
+  ['1', 0],
   [2, 1],
   [3, 1],
   [4, 2],
@@ -71,13 +73,19 @@ const forminladeLayout = {
 export const RegistratContext = createContext();
 
 function WorkOrder(props) {
-  const { location } = props;
+  const { location, dispatch, loading, info } = props;
   const { validate, pangekey, id } = location.query;
+  const [formregistrat, setFormregistrat] = useState('');
+  const [formcheck, setFormcheck] = useState('');
+  const [formhandle, setFormhandle] = useState('');
+  const [formvisit, setFormvisit] = useState('');
+  const [ischeck, setIscheck] = useState(false); // 是否在校验状态
   const [show, setShow] = useState(false);
+  const [check, setCheck] = useState(false); // 事件分类是否权限账号
   const [steptitle, setTitle] = useState([]);
   const [activeKey, setActiveKey] = useState([]);
-  // console.log(registratkeys);
   const RegistratRef = useRef();
+  const CheckRef = useRef();
   const HandleRef = useRef();
   const ReturnVisitRef = useRef();
 
@@ -185,10 +193,9 @@ function WorkOrder(props) {
     }
   };
 
-  useEffect(() => {
-    setActiveKey([`${Collapsekeymap.get(pangekey)}`]);
-    stepstitle();
-  }, []);
+  const callback = key => {
+    setActiveKey(key);
+  };
 
   const routerRefresh = () => {
     router.push({
@@ -203,18 +210,43 @@ function WorkOrder(props) {
 
   const getregistrats = () => {
     RegistratRef.current.validateFields((err, values) => {
-      if (!err) {
-        console.log(values);
+      if (!err === false) {
+        setIscheck(false);
+        routerRefresh();
+      } else {
+        setIscheck(true);
+        setFormregistrat({
+          ...values,
+          register_occur_time: values.register_occur_time.format('YYYY-MM-DD HH:mm:ss'),
+          register_selfhandle: String(Number(values.register_selfhandle)),
+        });
       }
-      routerRefresh();
+    });
+  };
+  const getchecks = () => {
+    CheckRef.current.validateFields((err, values) => {
+      if (!err) {
+        setIscheck(true);
+        setFormhandle({
+          ...values,
+        });
+      } else {
+        setIscheck(false);
+        routerRefresh();
+      }
     });
   };
   const gethandles = () => {
     HandleRef.current.validateFields((err, values) => {
       if (!err) {
-        console.log(values);
+        setIscheck(true);
+        setFormhandle({
+          ...values,
+        });
+      } else {
+        setIscheck(false);
+        routerRefresh();
       }
-      routerRefresh();
     });
   };
   const getreturnvisit = () => {
@@ -226,17 +258,38 @@ function WorkOrder(props) {
     });
   };
 
+  const eventsave = () => {
+    if (ischeck === true) {
+      dispatch({
+        type: 'eventtodo/eventsave',
+        payload: {
+          ...formregistrat,
+          ...formcheck,
+          ...formhandle,
+          ...formvisit,
+          flow_instance_id: info.data.register.flowNodeInstanceIds,
+          flow_node_instance_id: info.data.register.flow_node_instance_ids,
+          flow_node_name: info.flow_node_name,
+          edit_state: info._edit_state,
+        },
+      });
+    }
+  };
+
   const handlesubmit = () => {
     switch (pangekey) {
-      case 1: {
+      case '1': {
         if (show) {
           getregistrats();
           gethandles();
+        } else {
+          getregistrats();
         }
-        getregistrats();
         break;
       }
-      case 2:
+      case '2': {
+        break;
+      }
       case 3:
       case 6:
         gethandles();
@@ -251,82 +304,117 @@ function WorkOrder(props) {
   };
 
   useEffect(() => {
-    if (validate === true) {
+    dispatch({
+      type: 'eventtodo/eventflow',
+      payload: {
+        taskId: id,
+      },
+    });
+  }, []);
+
+  useEffect(() => {
+    setActiveKey([`${Collapsekeymap.get(pangekey)}`]);
+    stepstitle();
+  }, []);
+
+  useEffect(() => {
+    if (validate === true && ischeck === false) {
       handlesubmit();
     }
   }, [validate]);
 
-  const callback = key => {
-    setActiveKey(key);
-  };
+  useEffect(() => {
+    if (ischeck === true) {
+      eventsave();
+      setIscheck(false);
+    }
+  }, [ischeck]);
 
   return (
     <div className={styles.collapse}>
-      <Steps
-        current={currentmap.get(pangekey)}
-        size="small"
-        style={{ background: '#fff', padding: 24, border: '1px solid #e8e8e8' }}
-      >
-        {steptitle.map(({ key, value, description }) => [
-          <Step title={value} description={description} />,
-        ])}
-      </Steps>
-      <Collapse
-        expandIconPosition="right"
-        // defaultActiveKey={['1']}
-        activeKey={activeKey}
-        bordered={false}
-        onChange={callback}
-        style={{ marginTop: '-25px' }}
-      >
-        {(pangekey === 0 || pangekey === 1) && (
-          <Panel header="事件登记" key="registratform">
-            <Registrat
-              ChangeShow={isshow => setShow(isshow)}
-              ChangeActiveKey={keys => setActiveKey(keys)}
-              formItemLayout={formItemLayout}
-              forminladeLayout={forminladeLayout}
-              show={show}
-              ref={RegistratRef}
-            />
-          </Panel>
+      <Spin spinning={loading}>
+        <Steps
+          current={currentmap.get(pangekey)}
+          size="small"
+          style={{ background: '#fff', padding: 24, border: '1px solid #e8e8e8' }}
+        >
+          {steptitle.map(({ key, value, description }) => [
+            <Step title={value} description={description} />,
+          ])}
+        </Steps>
+        {loading === false && (
+          <Collapse
+            expandIconPosition="right"
+            // defaultActiveKey={['1']}
+            activeKey={activeKey}
+            bordered={false}
+            onChange={callback}
+            style={{ marginTop: '-25px' }}
+          >
+            {pangekey === '1' && (
+              <Panel header="事件登记" key="registratform">
+                <Registrat
+                  ChangeShow={isshow => setShow(isshow)}
+                  ChangeCheck={checked => setCheck(checked)}
+                  ChangeActiveKey={keys => setActiveKey(keys)}
+                  formItemLayout={formItemLayout}
+                  forminladeLayout={forminladeLayout}
+                  show={show}
+                  ref={RegistratRef}
+                  info={info}
+                />
+              </Panel>
+            )}
+            {pangekey !== '1' && (
+              <Panel header="事件登记" key="registratdes">
+                <Registratdes />
+              </Panel>
+            )}
+            {(pangekey === '2' || pangekey === '3') && check === true && (
+              <Panel header="事件审核" key="checkform">
+                <Check
+                  formItemLayout={formItemLayout}
+                  forminladeLayout={forminladeLayout}
+                  ref={CheckRef}
+                />
+              </Panel>
+            )}
+            {(show === true || pangekey === 2 || pangekey === 3 || pangekey === 6) && (
+              <Panel header="事件处理" key="handleform">
+                <Handle
+                  formItemLayout={formItemLayout}
+                  forminladeLayout={forminladeLayout}
+                  ref={HandleRef}
+                />
+              </Panel>
+            )}
+            {(pangekey === 4 || pangekey === 5 || pangekey === 7) && (
+              <Panel header="事件处理" key="handledes">
+                <Handledes />
+              </Panel>
+            )}
+            {(pangekey === 4 || pangekey === 5) && (
+              <Panel header="事件回访" key="visitform">
+                <ReturnVisit
+                  formItemLayout={formItemLayout}
+                  forminladeLayout={forminladeLayout}
+                  ref={ReturnVisitRef}
+                />
+              </Panel>
+            )}
+            {(pangekey === 6 || pangekey === 7) && (
+              <Panel header="事件回访" key="visitform">
+                <ReturnVisitdes />
+              </Panel>
+            )}
+          </Collapse>
         )}
-        {(show === true || pangekey !== 1) && (
-          <Panel header="事件登记" key="registratdes">
-            <Registratdes />
-          </Panel>
-        )}
-        {(show === true || pangekey === 2 || pangekey === 3 || pangekey === 6) && (
-          <Panel header="事件处理" key="handleform">
-            <Handle
-              formItemLayout={formItemLayout}
-              forminladeLayout={forminladeLayout}
-              ref={HandleRef}
-            />
-          </Panel>
-        )}
-        {(pangekey === 4 || pangekey === 5 || pangekey === 7) && (
-          <Panel header="事件处理" key="handledes">
-            <Handledes />
-          </Panel>
-        )}
-        {(pangekey === 4 || pangekey === 5) && (
-          <Panel header="事件回访" key="visitform">
-            <ReturnVisit
-              formItemLayout={formItemLayout}
-              forminladeLayout={forminladeLayout}
-              ref={ReturnVisitRef}
-            />
-          </Panel>
-        )}
-        {(pangekey === 6 || pangekey === 7) && (
-          <Panel header="事件回访" key="visitform">
-            <ReturnVisitdes />
-          </Panel>
-        )}
-      </Collapse>
+      </Spin>
     </div>
   );
 }
 
-export default WorkOrder;
+export default connect(({ eventtodo, loading }) => ({
+  info: eventtodo.info,
+  loading: loading.models.eventtodo,
+}))(WorkOrder);

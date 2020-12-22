@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { Card, Row, Col, Form, Input, Button, Checkbox, Upload } from 'antd';
+import { Card, Row, Col, Form, Input, Button, Checkbox, Upload, DatePicker } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownloadOutlined } from '@ant-design/icons';
 
@@ -28,6 +28,7 @@ const forminladeLayout = {
 function Registration(props) {
   const pagetitle = props.route.name;
   const { getFieldDecorator, resetFields, validateFields } = props.form;
+  const required = true;
   return (
     <PageHeaderWrapper title={pagetitle}>
       <Card
@@ -47,42 +48,60 @@ function Registration(props) {
           <Form {...formItemLayout}>
             <Col span="8">
               <Form.Item label="需求编号">
-                {getFieldDecorator('form1')(<Input placeholder="请输入" />)}
+                {getFieldDecorator('demandId')(<Input placeholder="请输入" />)}
               </Form.Item>
             </Col>
             <Col span="8">
               <Form.Item label="建单时间">
-                {getFieldDecorator('form2')(<Input placeholder="请输入" />)}
+                {getFieldDecorator('creationTime', {
+                  rules: [{ required }],
+                  initialValue: '',
+                })(<Input placeholder="请输入" />)}
               </Form.Item>
             </Col>
             <Col span="8">
               <Form.Item label="登记时间">
-                {getFieldDecorator('form3')(<Input placeholder="请输入" />)}
+                {getFieldDecorator('registerTime', {
+                  rules: [{ required }],
+                  initialValue: '',
+                })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" />)}
               </Form.Item>
             </Col>
             <Col span="8">
               <Form.Item label="提出人">
-                {getFieldDecorator('form4')(<Input placeholder="请输入" />)}
+                {getFieldDecorator('proposer', {
+                  rules: [{ required }],
+                  initialValue: '',
+                })(<Input placeholder="请输入" />)}
               </Form.Item>
             </Col>
             <Col span="8">
               <Form.Item label="提出单位">
-                {getFieldDecorator('form5')(<Input placeholder="请输入" />)}
+                {getFieldDecorator('proposingUnit', {
+                  rules: [{ required }],
+                  initialValue: '',
+                })(<Input placeholder="请输入" />)}
               </Form.Item>
             </Col>
             <Col span="8">
               <Form.Item label="提出部门">
-                {getFieldDecorator('form6')(<Input placeholder="请输入" />)}
+                {getFieldDecorator('proposingDepartment', {
+                  rules: [{ required }],
+                  initialValue: '',
+                })(<Input placeholder="请输入" />)}
               </Form.Item>
             </Col>
             <Col span="8">
               <Form.Item label="提出人电话">
-                {getFieldDecorator('form7')(<Input placeholder="请输入" />)}
+                {getFieldDecorator('proposerPhone', {
+                  rules: [{ required }],
+                  initialValue: '',
+                })(<Input placeholder="请输入" />)}
               </Form.Item>
             </Col>
             <Col span="8">
               <Form.Item label="需求类型">
-                {getFieldDecorator('form8')(<Input placeholder="请输入" />)}
+                {getFieldDecorator('demandType')(<Input placeholder="请输入" />)}
               </Form.Item>
             </Col>
             <Col span="24">

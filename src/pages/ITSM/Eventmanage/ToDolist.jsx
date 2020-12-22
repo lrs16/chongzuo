@@ -38,20 +38,21 @@ const formItemLayout = {
 const columns = [
   {
     title: '事件编号',
-    dataIndex: 'id',
-    key: 'id',
+    dataIndex: 'event_no',
+    key: 'event_no',
   },
   {
     title: '事件标题',
     dataIndex: 'title',
     key: 'title',
+    width: 200,
     render: (text, record) => {
       const handleClick = () => {
         router.push({
           pathname: `/ITSM/eventmanage/to-do/record/workorder`,
           query: {
-            pangekey: record.state,
-            id: record.id,
+            pangekey: record.event_status,
+            id: record.task_id,
             validate: false,
           },
         });
@@ -61,51 +62,78 @@ const columns = [
   },
   {
     title: '事件来源',
-    dataIndex: 'source',
-    key: 'source',
+    dataIndex: 'event_source',
+    key: 'event_source',
+    render: (text, record) => {
+      const textmaps = new Map([
+        ['001', '用户电话申告'],
+        ['002', '企信'],
+      ]);
+      return <>{textmaps.get(record.event_source)}</>;
+    },
   },
   {
     title: '事件分类',
-    dataIndex: 'type',
-    key: 'type',
+    dataIndex: 'event_type',
+    key: 'event_type',
+    render: (text, record) => {
+      const textmaps = new Map([
+        ['001', '咨询'],
+        ['002', '缺陷'],
+        ['003', '故障'],
+        ['004', '数据处理'],
+        ['005', '账号权限'],
+        ['006', '其它'],
+      ]);
+      return <>{textmaps.get(record.event_type)}</>;
+    },
   },
   {
     title: '填报人',
-    dataIndex: 'filledby',
-    key: 'filledby',
+    dataIndex: 'register_user',
+    key: 'register_user',
   },
-  {
-    title: '处理人',
-    dataIndex: 'handler',
-    key: 'handler',
-  },
+  // {
+  //   title: '处理人',
+  //   dataIndex: 'handle_user',
+  //   key: 'handle_user',
+  // },
   {
     title: '工单状态',
-    dataIndex: 'state',
-    key: 'state',
+    dataIndex: 'event_status',
+    key: 'event_status',
     render: (text, record) => {
-      const textmaps = [
-        '待登记',
-        '已登记',
-        '已派单待处理',
-        '处理中',
-        '已处理待回访',
-        '已回访',
-        '重分派',
-        '已关闭',
-      ];
-      return <>{textmaps[record.state]}</>;
+      const textmaps = new Map([
+        ['1', '已登记'],
+        ['2', '待审核'],
+        ['3', '审核中'],
+        ['4', '待处理'],
+        ['5', '处理中'],
+        ['6', '待确认'],
+        ['7', '确认中'],
+        ['8', '重分派'],
+        ['9', '已关闭'],
+      ]);
+      return <>{textmaps.get(record.event_status)}</>;
     },
   },
   {
     title: '发送时间',
-    dataIndex: 'time',
-    key: 'time',
+    dataIndex: 'create_time',
+    key: 'create_time',
   },
   {
     title: '优先级',
-    dataIndex: 'level',
-    key: 'level',
+    dataIndex: 'event_prior',
+    key: 'event_prior',
+    render: (text, record) => {
+      const textmaps = new Map([
+        ['001', '低'],
+        ['002', '中'],
+        ['003', '高'],
+      ]);
+      return <>{textmaps.get(record.event_prior)}</>;
+    },
   },
 ];
 
@@ -119,6 +147,7 @@ function ToDolist(props) {
   } = props;
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 10 });
   const [expand, setExpand] = useState(false);
+  console.log(list);
 
   useEffect(() => {
     validateFields((err, values) => {
@@ -127,7 +156,7 @@ function ToDolist(props) {
           type: 'eventtodo/fetchlist',
           payload: {
             ...values,
-            current: paginations.current,
+            pageIndex: paginations.current,
             pageSize: paginations.pageSize,
           },
         });
@@ -141,7 +170,7 @@ function ToDolist(props) {
       payload: {
         ...values,
         pageSize: size,
-        current: page,
+        pageIndex: page,
       },
     });
   };
@@ -203,20 +232,20 @@ function ToDolist(props) {
           <Form {...formItemLayout} onSubmit={handleSearch}>
             <Col span={8}>
               <Form.Item label="事件编号">
-                {getFieldDecorator('form1', {})(<Input placeholder="请输入" />)}
+                {getFieldDecorator('eventNo', {})(<Input placeholder="请输入" />)}
               </Form.Item>
             </Col>
             {expand === true && (
               <>
                 <Col span={8}>
                   <Form.Item label="事件标题">
-                    {getFieldDecorator('form2', {})(<Input placeholder="请输入" />)}
+                    {getFieldDecorator('eventTitle ', {})(<Input placeholder="请输入" />)}
                   </Form.Item>
                 </Col>
                 <Col span={8}>
                   <Form.Item label="事件来源">
                     {getFieldDecorator(
-                      'form3',
+                      'eventSource ',
                       {},
                     )(
                       <Select placeholder="请选择">
@@ -234,7 +263,7 @@ function ToDolist(props) {
             <Col span={8}>
               <Form.Item label="工单状态">
                 {getFieldDecorator(
-                  'form4',
+                  'eventStatus',
                   {},
                 )(
                   <Select placeholder="请选择">
@@ -250,23 +279,23 @@ function ToDolist(props) {
             {expand === true && (
               <>
                 <Col span={8}>
-                  <Form.Item label="填报人">
-                    {getFieldDecorator('form5', {})(<Input placeholder="请输入" />)}
+                  <Form.Item label="填报人ID">
+                    {getFieldDecorator('registerUserId', {})(<Input placeholder="请输入" />)}
                   </Form.Item>
                 </Col>
                 <Col span={8}>
-                  <Form.Item label="处理人">
-                    {getFieldDecorator('form6', {})(<Input placeholder="请输入" />)}
+                  <Form.Item label="处理人ID">
+                    {getFieldDecorator('handlerId', {})(<Input placeholder="请输入" />)}
                   </Form.Item>
                 </Col>
-                <Col span={8}>
+                {/* <Col span={8}>
                   <Form.Item label="发送时间">
                     {getFieldDecorator('contenttime')(<DatePicker showTime />)}
                   </Form.Item>
-                </Col>
+                </Col> */}
                 <Col span={8}>
                   <Form.Item label="优先级">
-                    {getFieldDecorator('lasttime')(
+                    {getFieldDecorator('eventPrior')(
                       <Select placeholder="请选择">
                         {levelmap.map(({ key, value }) => (
                           <Option key={key} value={key}>
@@ -343,7 +372,7 @@ function ToDolist(props) {
         <Table
           loading={loading}
           columns={columns}
-          dataSource={list.data}
+          dataSource={list.rows}
           rowKey={record => record.id}
           pagination={pagination}
         />
