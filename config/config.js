@@ -216,6 +216,24 @@ export default {
                       icon: 'cloud-server',
                       component: './ITSM/Problemmanage/Problemquery',
                     },
+                    {
+                      path: '/ITSM/problemmanage/besolveddetail/:id',
+                      name: '问题待办详情页',
+                      icon: 'cloud-server',
+                      component: './ITSM/Problemmanage/Besolvedetail',
+                    },
+                    {
+                      path: '/ITSM/problemmanage/querydetail/:id',
+                      name: '问题查询详情页',
+                      icon: 'cloud-server',
+                      component: './ITSM/Problemmanage/Besolvedetail',
+                    },
+                    {
+                      path: '/ITSM/problemmanage/lrs',
+                      name: '个人用',
+                      icon: 'cloud-server',
+                      component: './ITSM/Problemmanage/Lrsaaa',
+                    },
                   ],
                 },
                 {
@@ -876,13 +894,11 @@ export default {
   },
   proxy: {
     '/oauth/': {
-      target: 'http://172.16.4.211:9901/', // 登录
-      // target: 'http://172.16.4.115:9901/',
+      target: 'http://172.16.4.77:9901/', // 登录
       changeOrigin: true,
     },
     '/upms/': {
-      target: 'http://172.16.4.211:9901/', // 用户管理
-      // target: 'http://172.16.4.115:9901/',
+      target: 'http://172.16.4.77:9901/', // 用户管理
       changeOrigin: true,
     },
     '/auto/': {
@@ -928,6 +944,10 @@ export default {
     // http://172.16.4.115:9901/itsm
     '/api/': {
       target: 'http://localhost:8000/', // mock接口数据
+      changeOrigin: true,
+    },
+    '/sys/': {
+      target: 'http://172.16.4.211:9901/',
       changeOrigin: true,
     },
   },

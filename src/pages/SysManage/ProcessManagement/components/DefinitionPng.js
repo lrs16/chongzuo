@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Form, Modal } from 'antd';
+import { Modal } from 'antd';
 
 const withClick = (element, handleClick = () => {}) => {
   return <element.type {...element.props} onClick={handleClick} />;
@@ -10,23 +10,28 @@ const withClick = (element, handleClick = () => {}) => {
   processmanagement,
   loading: loading.models.processmanagement,
 }))
-
 class DefinitionPng extends Component {
-
   state = {
     visible: false,
-    imgSrc:''
+    imgSrc: '',
   };
 
   handleopenClick = () => {
+    const {
+      processmanagement: { editInfo },
+    } = this.props;
+    const blob = new Blob([editInfo]);
+    const imageUrl = (window.URL || window.webkitURL).createObjectURL(blob);
+    this.setState({ imgSrc: imageUrl });
+
     const { id } = this.props;
     const { resourceName } = this.props;
     this.props.dispatch({
-      type:'processmanagement/imgResource',
+      type: 'processmanagement/imgResource',
       payload: {
         id,
-        resourceName
-      }
+        resourceName,
+      },
     });
     this.setState({
       visible: true,
@@ -34,29 +39,18 @@ class DefinitionPng extends Component {
   };
 
   handleOk = () => {
-    this.props.form.validateFields((err, values) => {
-      if (!err) {
-        this.handleCancel();
-        this.props.onSumit(values);
-        this.props.form.resetFields();
-      }
-    });
+    this.handleCancel();
   };
 
   handleCancel = () => {
     this.setState({
       visible: false,
     });
-    this.props.form.resetFields();
   };
 
   render() {
     const { visible } = this.state;
     const { children, title } = this.props;
-    const { imgSrc } = this.props;
-    console.log('imgSrc: ', imgSrc);
-   
- 
     return (
       <>
         {withClick(children, this.handleopenClick)}
@@ -65,17 +59,15 @@ class DefinitionPng extends Component {
           visible={visible}
           centered
           maskClosable={false}
+          width={750}
           onCancel={this.handleCancel}
           onOk={this.handleOk}
         >
-          <div>
-            <img src={this.state.imgSrc} alt="" />
-          </div>
-         
+          <img src={this.state.imgSrc} alt="" />
         </Modal>
       </>
     );
   }
 }
 
-export default Form.create()(DefinitionPng);
+export default DefinitionPng;

@@ -19,7 +19,7 @@ const formItemLayout = {
 };
 
 // 克隆子元素按钮，并添加事件
-const withClick = (element, handleClick = () => { }) => {
+const withClick = (element, handleClick = () => {}) => {
   return <element.type {...element.props} onClick={handleClick} />;
 };
 
@@ -62,7 +62,7 @@ class StartModal extends Component {
     data.map(item => {
       if (item.children) {
         return (
-          <TreeNode value={item.name} title={item.name} key={item.id} dataRef={item} >
+          <TreeNode value={item.name} title={item.name} key={item.id} dataRef={item}>
             {this.renderTreeNodes(item.children)}
           </TreeNode>
         );
@@ -74,7 +74,7 @@ class StartModal extends Component {
     this.setState({
       visible: true,
       result: [],
-      value: undefined
+      value: undefined,
     });
     // this.props.form.setFieldsValue({ commands: this.state.value });
     const { dispatch } = this.props;
@@ -89,10 +89,10 @@ class StartModal extends Component {
       }).then(res => {
         const userNameDropdownVal = res.user.map(item => {
           return item.val;
-        })
+        });
         const userNameDropdownValnoTrim = userNameDropdownVal.filter(item => {
           return item && item.trim();
-        })
+        });
 
         // const portDropdownVal = res.port.map(item => {
         //   return item.val;
@@ -106,7 +106,7 @@ class StartModal extends Component {
           hostsSshPassword: res.pass,
           // portDropdownVal: portDropdownValtoString[0],
         });
-      })
+      });
     }
     return '';
   };
@@ -123,7 +123,6 @@ class StartModal extends Component {
         const resultStr = item.substring(i + 1, item.length);
         resultCommand.push(resultStr);
       }
-
     });
     this.setState({ result: resultCommand, value });
   };
@@ -139,7 +138,8 @@ class StartModal extends Component {
         const str = values.command.toString();
         const commands = str.replace(/[\r\n]/g, '');
         const { hostsIp, hostsSshUsername } = values;
-        dispatch({ // 执行ssh命令接口
+        dispatch({
+          // 执行ssh命令接口
           type: 'softexetute/getExecCommand',
           payload: {
             passWord,
@@ -177,19 +177,18 @@ class StartModal extends Component {
 
   onSearchUsername = searchText => {
     this.setState({
-      userNameDropdownVal: !searchText ? [] : [searchText, searchText.repeat(2), searchText.repeat(3)],
+      userNameDropdownVal: !searchText
+        ? []
+        : [searchText, searchText.repeat(2), searchText.repeat(3)],
     });
   };
 
   render() {
     const { visible, ipDropdownVal, userNameDropdownVal } = this.state;
-    const {
-      softexetute,
-      children,
-      title,
-    } = this.props;
-
-    const ipDropdownValChildren = ipDropdownVal.map(item => <Option key={item.key}>{item.val}</Option>);
+    const { softexetute, children, title } = this.props;
+    const ipDropdownValChildren = ipDropdownVal.map(item => (
+      <Option key={item.key}>{item.val}</Option>
+    ));
     // Form双向绑定
     const { getFieldDecorator } = this.props.form;
     const required = true;
@@ -219,11 +218,10 @@ class StartModal extends Component {
                     message: '主机IP不能为空',
                   },
                 ],
-
               })(
                 <AutoComplete onSearch={this.onSearchIp} placeholder="请输入主机IP.." allowClear>
                   {ipDropdownValChildren}
-                </AutoComplete>
+                </AutoComplete>,
               )}
             </Form.Item>
             {/* <Form.Item label="主机端口">
@@ -277,8 +275,7 @@ class StartModal extends Component {
                   >
                     {treeData && this.renderTreeNodes(treeData)}
                   </TreeSelect>
-
-                </>
+                </>,
               )}
             </Form.Item>
             <Form.Item label="执行命令">
@@ -290,11 +287,7 @@ class StartModal extends Component {
                     message: '执行命令不能为空',
                   },
                 ],
-              })(
-                <TextArea rows={5}>
-                  {this.state.result.join(';')}
-                </TextArea>
-              )}
+              })(<TextArea rows={5}>{this.state.result.join(';')}</TextArea>)}
             </Form.Item>
           </Form>
         </Modal>

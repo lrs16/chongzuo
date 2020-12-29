@@ -1,167 +1,332 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
-import {
-  Form,
-  Card,
-  Input,
-  Button,
-  Row,
-  Col,
-  Table
-} from 'antd';
+import Link from 'umi/link';
+import { Form, Card, Input, Button, Row, Col, Table } from 'antd';
+import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
+const formItemLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 8 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 16 },
+  },
+};
 const columns = [
   {
-    title:'问题编号',
-    dataIndex:'numberProblem',
-    key:'numberProblem'
+    title: '问题编号',
+    dataIndex: 'no',
+    key: 'no',
+    render: (text, record) => (
+      <Link
+        to={{
+          pathname: `/ITSM/problemmanage/besolveddetail/${record.id}`,
+          state: {
+            currentProcess: record.currentNode,
+          },
+        }}
+      >
+        {text}
+      </Link>
+    ),
   },
   {
-    title:'问题标题',
-    dataIndex:'questionTitle',
-    key:'questionTitle'
+    title: '问题标题',
+    dataIndex: 'title',
+    key: 'title',
   },
   {
-    title:'问题来源',
-    dataIndex:'problemSource',
-    key:''
+    title: '问题来源',
+    dataIndex: 'source',
+    key: 'source',
   },
   {
-    title:'问题分类',
-    dataIndex:'problemClass',
-    key:''
+    title: '问题分类',
+    dataIndex: 'sourcecn',
+    key: 'sourcecn',
   },
   {
-    title:'当前处理环节',
-    dataIndex:'currentProcess',
-    key:'currentProcess'
+    title: '当前处理环节',
+    dataIndex: 'currentNode',
+    key: 'currentNode',
   },
   {
-    title:'发送人',
-    dataIndex:'sender',
-    key:'Sender'
+    title: '发送人',
+    dataIndex: 'sender',
+    key: 'Sender',
   },
   {
-    title:'发送时间',
-    dataIndex:'sendTime',
-    key:'sendTime'
+    title: '发送时间',
+    dataIndex: 'createTime',
+    key: 'createTime',
   },
   {
-    title:'优先级',
-    dataIndex:'priority',
-    key:'priority'
+    title: '优先级',
+    dataIndex: 'priority',
+    key: 'priority',
   },
-]
+  {
+    title: '状态',
+    dataIndex: 'state',
+    key: 'state',
+  },
+];
 
 function Besolved(props) {
-
   const pagetitle = props.route.name;
-  const { getFieldDecorator, resetFields, validateFields } = props.form;
-  const required = true;
-  const { 
-    dispatch, 
+  const {
+    form: { getFieldDecorator, resetFields, validateFields },
+    dispatch,
     besolveList,
-    loading
+    loading,
   } = props;
-  console.log('props: ', props);
-  
+  console.log(besolveList, 'besolveList');
+  const required = true;
+  const [expand, setExpand] = useState(false);
+  const [paginations, setPaginations] = useState({ current: 1, pageSize: 10 });
+  const [selectedRows, setSelectedRows] = useState([]);
 
   useEffect(() => {
+    getTobolist();
+    getTobolist();
+  }, []);
+
+  const handleReset = () => {
+    resetFields();
+  };
+
+  const searchdata = (values, page, pageSize) => {
     dispatch({
-      type:'problemmanage/besolveList'
-    })
-  },[])
+      type: 'problemmanage/searchBesolve',
+      payload: {
+        values,
+        pageSize,
+        current: page,
+      },
+    });
+  };
+
+  const getTobolist = () => {
+    dispatch({
+      type: 'problemmanage/besolveList',
+      payload: {
+        current: paginations.current,
+        pageSize: paginations.pageSize,
+      },
+    });
+  };
+
+  const onShowSizeChange = (page, pageSize) => {
+    validateFields((err, values) => {
+      if (!err) {
+        searchdata(values, page, pageSize);
+      }
+    });
+    setPaginations({
+      ...paginations,
+      pageSize,
+    });
+  };
+
+  const changePage = page => {
+    validateFields((err, values) => {
+      if (!err) {
+        searchdata(values, page, paginations.pageSize);
+      }
+    });
+    setPaginations({
+      ...paginations,
+      current: page,
+    });
+  };
+
+  const rowSelection = {
+    onChange: (selectedRowKeys, selectedRows) => {
+      console.log(selectedRows);
+      setSelectedRows(selectedRows);
+    },
+  };
+
+  const pagination = {
+    showSizeChanger: true,
+    onShowSizeChange: (page, pageSize) => onShowSizeChange(page, pageSize),
+    current: paginations.current,
+    pageSize: paginations.pageSize,
+    // total:besolveList.total,
+    onChange: page => changePage(page),
+  };
+
+  const handleSearch = () => {
+    setPaginations({
+      ...paginations,
+      current: 1,
+    });
+    validateFields((err, values) => {
+      if (err) {
+        return;
+      }
+      searchdata(values, paginations.current, paginations.pageSize);
+    });
+  };
 
   return (
     <PageHeaderWrapper title={pagetitle}>
-      <Card
-        extra={
-          <>
-            <Button 
-              type="primary" 
-              style={{marginRight:'8px'}}
-              htmlType='submit'
-            >
-              保存
-            </Button>
-        
-
-            <Button
-              type='primary'
-              style={{marginRight: 8}}
-            >
-              流转
-            </Button>
-
-            <Button
-              type='primary'
-              >
-              关闭
-            </Button>
-          </>
-        }
-        >
-          <Row gutter={16}>
-          <Form>
-            <Col className="gutter-row" span={8}>
-            <Form.Item label='问题编号'>
-              { getFieldDecorator('questionNumber',{
-                rules:[
-                  {
-                    required,
-                    message:'请输入问题编号'
-                  }
-                ]
-
-              })(<Input/>)}
-            </Form.Item>
-
+      <Card>
+        <Row gutter={16}>
+          <Form {...formItemLayout}>
+            <Col span={8}>
+              <Form.Item label="问题编号">
+                {getFieldDecorator('no', {
+                  rules: [
+                    {
+                      message: '请输入问题编号',
+                    },
+                  ],
+                })(<Input />)}
+              </Form.Item>
             </Col>
 
             <Col className="gutter-row" span={8}>
-            <Form.Item label='问题来源'>
-              { getFieldDecorator('questionSource',{
-                rules:[
-                  {
-                    required,
-                    message:'请输入问题来源'
-                  }
-                ]
-              })(<Input/>)}
-            </Form.Item>
+              <Form.Item label="当前处理环节">
+                {getFieldDecorator('currentNode', {
+                  rules: [
+                    {
+                      message: '请输入处理环节',
+                    },
+                  ],
+                })(<Input />)}
+              </Form.Item>
             </Col>
 
-            <Col className="gutter-row" span={8}>
-            <Form.Item label='问题分类'>
-              {getFieldDecorator('questionClass',{
-                rules: [
-                  {
-                    required,
-                    message:'请输入问题分类'
-                  }
-                ]
-              })}
-            </Form.Item>
-            </Col>
+            {expand === true && (
+              <>
+                <Col span={8}>
+                  <Form.Item label="问题标题">
+                    {getFieldDecorator('questionTitle', {})(<Input />)}
+                  </Form.Item>
+                </Col>
+              </>
+            )}
+
+            {expand === true && (
+              <>
+                <Col span={8}>
+                  <Form.Item label="问题来源">
+                    {getFieldDecorator('sourceProblem', {})(<Input />)}
+                  </Form.Item>
+                </Col>
+
+                <Col span={8}>
+                  <Form.Item label="问题分类">
+                    {getFieldDecorator('problemClass', {})(<Input />)}
+                  </Form.Item>
+                </Col>
+
+                <Col span={8}>
+                  <Form.Item label="发送人">{getFieldDecorator('Sender', {})(<Input />)}</Form.Item>
+                </Col>
+              </>
+            )}
+
+            {expand === true && (
+              <>
+                <Col span={8}>
+                  <Form.Item label="发送时间">
+                    {getFieldDecorator('SendTime', {})(<Input />)}
+                  </Form.Item>
+                </Col>
+
+                <Col span={8}>
+                  <Form.Item label="优先级">
+                    {getFieldDecorator('priority', {})(<Input />)}
+                  </Form.Item>
+                </Col>
+              </>
+            )}
+
+            {expand === false && (
+              <Col span={8}>
+                <Button type="primary" onClick={handleSearch}>
+                  查询
+                </Button>
+
+                <Button style={{ marginLeft: 8 }} onClick={handleReset}>
+                  重置
+                </Button>
+
+                <Button
+                  style={{ marginLeft: 8 }}
+                  type="link"
+                  onClick={() => {
+                    setExpand(!expand);
+                  }}
+                >
+                  {expand ? (
+                    <>
+                      关闭 <UpOutlined />
+                    </>
+                  ) : (
+                    <>
+                      展开 <DownOutlined />
+                    </>
+                  )}
+                </Button>
+              </Col>
+            )}
+
+            {expand === true && (
+              <Col span={24} style={{ textAlign: 'right' }}>
+                <Button type="primary" onClick={handleSearch}>
+                  查询
+                </Button>
+                <Button style={{ marginLeft: 8 }} onClick={handleReset}>
+                  重置
+                </Button>
+                <Button
+                  style={{ marginLeft: 8 }}
+                  type="link"
+                  onClick={() => {
+                    setExpand(!expand);
+                  }}
+                >
+                  {expand ? (
+                    <>
+                      关闭 <UpOutlined />
+                    </>
+                  ) : (
+                    <>
+                      展开 <DownOutlined />
+                    </>
+                  )}
+                </Button>
+              </Col>
+            )}
           </Form>
-          </Row>
+        </Row>
+        <div style={{ marginBottom: 24 }}>
+          <Button type="primary">导出数据</Button>
+        </div>
 
-          <Table 
-            loading={loading}
-            columns={columns}
-            dataSource={besolveList.data}
-            />
+        <Table
+          loading={loading}
+          columns={columns}
+          dataSource={besolveList.rows}
+          rowKey={record => record.id}
+          pagination={pagination}
+          rowSelection={rowSelection}
+        />
       </Card>
-
     </PageHeaderWrapper>
-  )
-  
+  );
 }
 
 export default Form.create({})(
-  connect(({problemmanage,loading}) =>({
+  connect(({ problemmanage, loading }) => ({
     besolveList: problemmanage.besolveList,
-    loading:loading.models.problemmanage
-  }))(Besolved)
+    // html: problemmanage.html,
+    loading: loading.models.problemmanage,
+  }))(Besolved),
 );

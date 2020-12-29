@@ -1,18 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
-import {
-  Card,
-  Table,
-  Form,
-  Input,
-  Button,
-  Message,
-  Divider,
-  Badge,
-  Popconfirm,
-  Row,
-} from 'antd';
+import { Card, Table, Form, Input, Button, Message, Divider, Badge, Popconfirm, Row } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import HostEdit from './components/HostEdit';
 // import HostSoft from './components/Host_Soft';
@@ -130,6 +119,7 @@ class HostManage extends Component {
   };
 
   handleUpdate = values => {
+    console.log('values: ', values);
     const { dispatch } = this.props;
     return dispatch({
       type: 'hostsoft/update',
@@ -178,8 +168,8 @@ class HostManage extends Component {
         title: '主机名称',
         dataIndex: 'hostsName',
         key: 'hostsName',
-        width:200,
-        ellipsis: true
+        width: 200,
+        ellipsis: true,
       },
       {
         title: '主机IP',
@@ -192,28 +182,28 @@ class HostManage extends Component {
         title: '主机分区',
         dataIndex: 'hostsZoneId',
         key: 'hostsZoneId',
-        width:150,
+        width: 150,
         render: (text, record) => <span>{hostPart[record.hostsZoneId]}</span>,
       },
       {
         title: '操作系统',
         dataIndex: 'hostsOsId',
         key: 'hostsOsId',
-        width:150,
+        width: 150,
         render: (text, record) => <span>{operatSystem[record.hostsOsId]}</span>,
       },
       {
         title: '主机状态',
         dataIndex: 'hostsStatus',
         key: 'hostsStatus',
-        width:150,
+        width: 150,
         render: (text, record) => (
           <span>
             <Badge status={statusMap[record.hostsStatus]} text={status[record.hostsStatus]} />
           </span>
         ),
       },
-    
+
       // {
       //   title: '机柜',
       //   dataIndex: 'hostsCabinetId',
@@ -224,33 +214,33 @@ class HostManage extends Component {
         title: '主机排序',
         dataIndex: 'hostsSort',
         key: 'hostsSort',
-        width:150,
+        width: 150,
       },
       {
         title: '主机备注',
         dataIndex: 'hostsRemark',
         key: 'hostsRemark',
-        width:200,
-        ellipsis: true
+        width: 200,
+        ellipsis: true,
       },
       {
-        title:'创建人',
-        dataIndex:'createUserNameExt',
-        key:'createUserNameExt',
-        width:150,
+        title: '创建人',
+        dataIndex: 'createUserNameExt',
+        key: 'createUserNameExt',
+        width: 150,
       },
       {
-        title:'创建时间',
-        dataIndex:'createTime',
-        key:'createTime',
-        width:200,
-        ellipsis: true
+        title: '创建时间',
+        dataIndex: 'createTime',
+        key: 'createTime',
+        width: 200,
+        ellipsis: true,
       },
       {
         title: '更新时间',
         dataIndex: 'updateTime',
         key: 'updateTime',
-        width:200,
+        width: 200,
         ellipsis: true,
         render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
       },
@@ -294,29 +284,25 @@ class HostManage extends Component {
           {/* <Layout>
             <Sider theme='light'>
               {/* <HostManageTree /> */}
-            {/* </Sider>  */}
-      
+          {/* </Sider>  */}
+
           {/* <Content style={{ background: '#fff' }}> */}
-            <Row>
-              <Form style={{ float: 'right', width: '30%' }}>
-                <Search placeholder="请输入关键字" onSearch={values => this.handleSearch(values)} />
-              </Form>
-            </Row>
-            {/* <Row gutter={16}>
+          <Row>
+            <Form style={{ float: 'right', width: '30%' }}>
+              <Search placeholder="请输入关键字" onSearch={values => this.handleSearch(values)} />
+            </Form>
+          </Row>
+          {/* <Row gutter={16}>
               <Col className="gutter-row" span={12}> */}
-                <div>
-                  <HostEdit onSumit={this.handleUpdate}>
-                    <Button
-                      style={{ width: '100%', margin: '16px 0 8px 0' }}
-                      type="dashed"
-                      icon="plus"
-                    >
-                      添加主机
-                    </Button>
-                  </HostEdit>
-                </div>
-              {/* </Col> */}
-{/* 
+          <div>
+            <HostEdit onSumit={this.handleUpdate}>
+              <Button style={{ width: '100%', margin: '16px 0 8px 0' }} type="dashed" icon="plus">
+                添加主机
+              </Button>
+            </HostEdit>
+          </div>
+          {/* </Col> */}
+          {/* 
               <Col className="gutter-row" span={12}>
                 <div>
                   <BatchAdd hostId="hostId" onsumitBatch={str => this.handleBatchadd(str)}>
@@ -330,8 +316,8 @@ class HostManage extends Component {
                   </BatchAdd>
                 </div>
               </Col> */}
-            {/* </Row> */}
-            <Table
+          {/* </Row> */}
+          <Table
             columns={columns}
             dataSource={dataSource}
             rowKey={record => record.id}
@@ -339,8 +325,7 @@ class HostManage extends Component {
             scroll={{ x: 1500 }}
           />
           {/* </Content> */}
-         
-        
+
           {/* </Layout> */}
         </Card>
       </PageHeaderWrapper>
