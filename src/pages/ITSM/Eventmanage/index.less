@@ -40,6 +40,34 @@
 
 .collapse {
   :global(.ant-steps-horizontal:not(.ant-steps-label-vertical) .ant-steps-item-description) {
-    max-width: 190px;
+    max-width: 210px;
+    text-align: left;
   }
+}
+
+.stepDescription {
+  position: relative;
+  left: 38px;
+  padding-top: 8px;
+  font-size: 14px;
+  text-align: left;
+
+  > div {
+    margin-top: 8px;
+    margin-bottom: 4px;
+  }
+}
+
+.textSecondary {
+  color: @text-color-secondary;
+}
+
+@media screen and (max-width: @screen-sm) {
+  .stepDescription {
+    left: 8px;
+  }
+}
+
+.blobimg img {
+  height: 300px;
 }

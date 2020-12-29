@@ -37,56 +37,110 @@ export const RegistratContext = createContext();
 function Registration(props) {
   const pagetitle = props.route.name;
   const { dispatch, loading } = props;
-  const [show, setShow] = useState(false);
-  const [check, setCheck] = useState(false);
+  const [formregistrat, setFormregistrat] = useState('');
+  const [formhandle, setFormhandle] = useState('');
+  const [show, setShow] = useState(false); // 自行处理
+  const [check, setCheck] = useState(false); // 审批
+  const [flowtype, setFlowtype] = useState('1'); // 流转类型
+  const [ischeck, setIscheck] = useState({ save: false, flow: false }); // 是否在校验状态
   const [activeKey, setActiveKey] = useState(['registratform']);
   const RegistratRef = useRef();
   const HandleRef = useRef();
-  console.log(check);
 
   const callback = key => {
     setActiveKey(key);
   };
 
-  const getregistrat = () => {
+  const submittype = type => {
+    switch (type) {
+      case 'save':
+        setIscheck({ ...ischeck, save: true });
+        break;
+      case 'flow':
+        setIscheck({ ...ischeck, flow: true });
+        break;
+      default:
+        break;
+    }
+  };
+
+  const getregistrat = type => {
     RegistratRef.current.validateFields((err, values) => {
       if (!err) {
-        const { register_occur_time, register_selfhandle } = values;
-        dispatch({
-          type: 'eventregist/eventstart',
-          payload: {
-            ...values,
-            register_selfhandle: String(Number(register_selfhandle)),
-            register_occur_time: register_occur_time.format('YYYY-MM-DD HH:mm:ss'),
-          },
+        setFormregistrat({
+          ...values,
+          register_occur_time: values.register_occur_time.format('YYYY-MM-DD HH:mm:ss'),
+          register_selfhandle: String(Number(values.register_selfhandle)),
         });
+        submittype(type);
+      } else {
+        setIscheck({ save: false, flow: false });
       }
     });
   };
 
-  const gethandle = () => {
+  const gethandle = type => {
     HandleRef.current.validateFields((err, values) => {
       if (!err) {
-        console.log(values);
+        setFormhandle({
+          ...values,
+          handle_end_time: values.handle_end_time.format('YYYY-MM-DD HH:mm:ss'),
+        });
+        submittype(type);
+      } else {
+        setIscheck({ save: false, flow: false });
       }
     });
   };
 
-  const getcheck = () => {
-    HandleRef.current.validateFields((err, values) => {
-      if (!err) {
-        console.log(values);
-      }
+  const eventsave = () => {
+    dispatch({
+      type: 'eventregist/eventstart',
+      payload: {
+        ...formregistrat,
+        ...formhandle,
+      },
+    });
+  };
+
+  const eventflow = () => {
+    dispatch({
+      type: 'eventregist/eventsaveflow',
+      payload: {
+        formvalue: {
+          ...formregistrat,
+          ...formhandle,
+        },
+        flowtype,
+      },
     });
   };
 
   const handlesubmit = () => {
     if (show) {
-      getregistrat();
-      gethandle();
+      getregistrat('save');
+      gethandle('save');
+    } else {
+      getregistrat('save');
     }
-    getregistrat();
   };
+
+  const handleflow = () => {
+    if (show) {
+      getregistrat('flow');
+      gethandle('flow');
+    }
+    getregistrat('flow');
+  };
+
+  useEffect(() => {
+    if (ischeck.save) {
+      eventsave();
+    }
+    if (ischeck.flow) {
+      eventflow();
+    }
+  }, [ischeck]);
 
   const handleclose = () => {
     router.push({
@@ -101,7 +155,7 @@ function Registration(props) {
           <Button type="primary" style={{ marginRight: 8 }} onClick={handlesubmit}>
             保 存
           </Button>
-          <Button type="primary" style={{ marginRight: 8 }}>
+          <Button type="primary" style={{ marginRight: 8 }} onClick={handleflow}>
             流 转
           </Button>
           <Button type="default" onClick={handleclose}>
@@ -120,8 +174,9 @@ function Registration(props) {
             <Panel header="事件登记" key="registratform">
               <Registrat
                 ChangeShow={isshow => setShow(isshow)}
-                ChangeCheck={ischeck => setCheck(ischeck)}
+                ChangeCheck={checked => setCheck(checked)}
                 ChangeActiveKey={keys => setActiveKey(keys)}
+                ChangeFlowtype={type => setFlowtype(type)}
                 formItemLayout={formItemLayout}
                 forminladeLayout={forminladeLayout}
                 show={show}

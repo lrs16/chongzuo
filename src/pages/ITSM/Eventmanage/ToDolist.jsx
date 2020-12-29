@@ -8,9 +8,14 @@ import { DownOutlined, UpOutlined } from '@ant-design/icons';
 const { Option } = Select;
 
 const statemap = [
-  { key: '0', value: '事件登记' },
-  { key: '1', value: '事件处理' },
-  { key: '2', value: '事件回访' },
+  { key: '1', value: '已登记' },
+  { key: '2', value: '待审核' },
+  { key: '3', value: '审核中' },
+  { key: '4', value: '待处理' },
+  { key: '5', value: '处理中' },
+  { key: '6', value: '待确认' },
+  { key: '7', value: '确认中' },
+  { key: '8', value: '重分派' },
 ];
 
 const sourcemap = [
@@ -53,7 +58,10 @@ const columns = [
           query: {
             pangekey: record.event_status,
             id: record.task_id,
+            mainId: record.main_id,
+            check: record.check_result,
             validate: false,
+            //type: '',
           },
         });
       };
@@ -145,9 +153,8 @@ function ToDolist(props) {
     list,
     dispatch,
   } = props;
-  const [paginations, setPageinations] = useState({ current: 1, pageSize: 10 });
+  const [paginations, setPageinations] = useState({ current: 1, pageSize: 30 });
   const [expand, setExpand] = useState(false);
-  console.log(list);
 
   useEffect(() => {
     validateFields((err, values) => {
@@ -156,7 +163,7 @@ function ToDolist(props) {
           type: 'eventtodo/fetchlist',
           payload: {
             ...values,
-            pageIndex: paginations.current,
+            pageIndex: paginations.current - 1,
             pageSize: paginations.pageSize,
           },
         });
@@ -170,7 +177,7 @@ function ToDolist(props) {
       payload: {
         ...values,
         pageSize: size,
-        pageIndex: page,
+        pageIndex: page - 1,
       },
     });
   };
@@ -232,22 +239,25 @@ function ToDolist(props) {
           <Form {...formItemLayout} onSubmit={handleSearch}>
             <Col span={8}>
               <Form.Item label="事件编号">
-                {getFieldDecorator('eventNo', {})(<Input placeholder="请输入" />)}
+                {getFieldDecorator('eventNo', {
+                  initialValue: '',
+                })(<Input placeholder="请输入" />)}
               </Form.Item>
             </Col>
             {expand === true && (
               <>
                 <Col span={8}>
                   <Form.Item label="事件标题">
-                    {getFieldDecorator('eventTitle ', {})(<Input placeholder="请输入" />)}
+                    {getFieldDecorator('eventTitle', {
+                      initialValue: '',
+                    })(<Input placeholder="请输入" />)}
                   </Form.Item>
                 </Col>
                 <Col span={8}>
                   <Form.Item label="事件来源">
-                    {getFieldDecorator(
-                      'eventSource ',
-                      {},
-                    )(
+                    {getFieldDecorator('eventSource', {
+                      initialValue: '',
+                    })(
                       <Select placeholder="请选择">
                         {sourcemap.map(({ key, value }) => (
                           <Option key={key} value={key}>
@@ -262,10 +272,9 @@ function ToDolist(props) {
             )}
             <Col span={8}>
               <Form.Item label="工单状态">
-                {getFieldDecorator(
-                  'eventStatus',
-                  {},
-                )(
+                {getFieldDecorator('eventStatus', {
+                  initialValue: '',
+                })(
                   <Select placeholder="请选择">
                     {statemap.map(({ key, value }) => (
                       <Option key={key} value={key}>
@@ -279,13 +288,17 @@ function ToDolist(props) {
             {expand === true && (
               <>
                 <Col span={8}>
-                  <Form.Item label="填报人ID">
-                    {getFieldDecorator('registerUserId', {})(<Input placeholder="请输入" />)}
+                  <Form.Item label="登记人">
+                    {getFieldDecorator('registerUser', {
+                      initialValue: '',
+                    })(<Input placeholder="请输入" />)}
                   </Form.Item>
                 </Col>
                 <Col span={8}>
-                  <Form.Item label="处理人ID">
-                    {getFieldDecorator('handlerId', {})(<Input placeholder="请输入" />)}
+                  <Form.Item label="申报人">
+                    {getFieldDecorator('applicationUser', {
+                      initialValue: '',
+                    })(<Input placeholder="请输入" />)}
                   </Form.Item>
                 </Col>
                 {/* <Col span={8}>
@@ -295,7 +308,9 @@ function ToDolist(props) {
                 </Col> */}
                 <Col span={8}>
                   <Form.Item label="优先级">
-                    {getFieldDecorator('eventPrior')(
+                    {getFieldDecorator('eventPrior', {
+                      initialValue: '',
+                    })(
                       <Select placeholder="请选择">
                         {levelmap.map(({ key, value }) => (
                           <Option key={key} value={key}>
@@ -373,7 +388,7 @@ function ToDolist(props) {
           loading={loading}
           columns={columns}
           dataSource={list.rows}
-          rowKey={record => record.id}
+          rowKey={record => record.event_no}
           pagination={pagination}
         />
       </Card>

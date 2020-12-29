@@ -1,4 +1,4 @@
-import React, { useRef, useImperativeHandle, forwardRef, useState } from 'react';
+import React, { useRef, useImperativeHandle, forwardRef, useState, useEffect } from 'react';
 import moment from 'moment';
 import { Row, Col, Form, Input, Select, Upload, Button, Checkbox, DatePicker } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
@@ -24,6 +24,7 @@ const degreemap = [
   { key: '001', value: '低' },
   { key: '002', value: '中' },
   { key: '003', value: '高' },
+  { key: '004', value: '紧急' },
 ];
 
 const objectmap = [
@@ -51,14 +52,15 @@ const Registrat = forwardRef((props, ref) => {
     ChangeShow,
     ChangeCheck,
     ChangeActiveKey,
+    ChangeFlowtype,
     info,
+    main,
   } = props;
-  const { getFieldDecorator } = props.form;
+  const { register } = info;
+  const { getFieldDecorator, validateFields } = props.form;
   const required = true;
-  const { main, register } = info.data;
   const [check, setCheck] = useState(false);
   const attRef = useRef();
-  console.log(check);
   useImperativeHandle(
     ref,
     () => ({
@@ -67,18 +69,36 @@ const Registrat = forwardRef((props, ref) => {
     [],
   );
 
+  useEffect(() => {
+    if (main.event_type === '005') {
+      setCheck(true);
+    }
+  }, [main]);
+
   const handleself = e => {
     ChangeShow(e.target.checked);
     ChangeActiveKey(['registratform', 'handleform']);
+    // validateFields([
+    //   'register_event_effect',
+    //   'main_event_type',
+    //   'main_event_object',
+    //   'register_event_emergent',
+    //   'register_event_prior'], (err, values) => {
+    //     if (!err) {
+
+    //     }
+    //   });
   };
 
   const handlcheckChange = value => {
     if (value === '005') {
       ChangeCheck(true);
       setCheck(true);
+      ChangeFlowtype('3');
     } else {
       ChangeCheck(false);
       setCheck(false);
+      ChangeFlowtype('1');
     }
   };
 
@@ -103,13 +123,8 @@ const Registrat = forwardRef((props, ref) => {
         <Col span={8}>
           <Form.Item label="登记时间">
             {getFieldDecorator('register_occur_time', {
-              rules: [
-                {
-                  required,
-                  message: '请选择登记时间',
-                },
-              ],
-              // initialValue: register.occur_time,
+              rules: [{ required, message: '请选择登记时间' }],
+              initialValue: moment(register.occur_time),
             })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" />)}
           </Form.Item>
         </Col>
@@ -213,11 +228,14 @@ const Registrat = forwardRef((props, ref) => {
               initialValue: register.event_effect,
             })(
               <Select placeholder="请选择">
-                {degreemap.map(({ key, value }) => [
-                  <Option key={key} value={key}>
-                    {value}
-                  </Option>,
-                ])}
+                {degreemap.map(({ key, value }, index) => {
+                  if (index < 3)
+                    return (
+                      <Option key={key} value={key}>
+                        {value}
+                      </Option>
+                    );
+                })}
               </Select>,
             )}
           </Form.Item>
@@ -277,11 +295,14 @@ const Registrat = forwardRef((props, ref) => {
               initialValue: register.event_prior,
             })(
               <Select placeholder="请选择">
-                {degreemap.map(({ key, value }) => [
-                  <Option key={key} value={key}>
-                    {value}
-                  </Option>,
-                ])}
+                {degreemap.map(({ key, value }, index) => {
+                  if (index < 3)
+                    return (
+                      <Option key={key} value={key}>
+                        {value}
+                      </Option>
+                    );
+                })}
               </Select>,
             )}
           </Form.Item>
@@ -374,7 +395,7 @@ const Registrat = forwardRef((props, ref) => {
           <Form.Item label="登记人单位">
             {getFieldDecorator('register_register_unit', {
               rules: [{ required }],
-              initialValue: register.register_register_unit,
+              initialValue: register.register_unit,
             })(<Input disabled />)}
           </Form.Item>
         </Col>
@@ -408,39 +429,37 @@ const Registrat = forwardRef((props, ref) => {
 });
 
 Registrat.defaultProps = {
+  main: {
+    add_time: moment().format('YYYY-MM-DD HH:mm:ss'),
+    content: '',
+    event_no: '',
+    event_object: '',
+    event_source: '',
+    event_type: '',
+  },
   info: {
-    data: {
-      main: {
-        add_time: moment().format('YYYY-MM-DD HH:mm:ss'),
-        content: '',
-        event_no: '',
-        event_object: '',
-        event_source: '',
-        event_type: '',
-      },
-      register: {
-        application_dept: '计量中心',
-        application_dept_id: '7AC3EF0F639302A2E0530A644F130365',
-        application_unit: '南宁供电局',
-        application_unit_id: '7AC3EF0F718E02A2E0530A644F130365',
-        application_user: '',
-        application_user_id: '12121212',
-        application_user_phone: '',
-        event_effect: '',
-        event_emergent: '',
-        event_prior: '',
-        occur_time: '',
-        register_dept: '广西电网有限责任公司',
-        register_dept_id: '7AC3EF0F701402A2E0530A644F130365',
-        register_unit: '广西电网有限责任公司',
-        register_unit_id: '7AC3EF0F701402A2E0530A644F130365',
-        register_user: '管理员',
-        register_user_id: '1',
-        revisit_way: '',
-        selfhandle: '0',
-      },
+    register: {
+      application_dept: '计量中心',
+      application_dept_id: '7AC3EF0F639302A2E0530A644F130365',
+      application_unit: '南宁供电局',
+      application_unit_id: '7AC3EF0F718E02A2E0530A644F130365',
+      application_user: '',
+      application_user_id: '12121212',
+      application_user_phone: '',
+      event_effect: '',
+      event_emergent: '',
+      event_prior: '',
+      occur_time: moment().format('YYYY-MM-DD HH:mm:ss'),
+      register_dept: '广西电网有限责任公司',
+      register_dept_id: '7AC3EF0F701402A2E0530A644F130365',
+      register_unit: '广西电网有限责任公司',
+      register_unit_id: '7AC3EF0F701402A2E0530A644F130365',
+      register_user: '管理员',
+      register_user_id: '1',
+      revisit_way: '',
+      selfhandle: '0',
     },
   },
 };
 
-export default Form.create({})(Registrat);
+export default Form.create()(Registrat);

@@ -34,21 +34,58 @@ const formItemLayout = {
     sm: { span: 16 },
   },
 };
+// 事件来源
+const sourcemaps = new Map([
+  ['001', '用户电话申告'],
+  ['002', '企信'],
+]);
+// 事件分类
+const typemap = new Map([
+  ['001', '咨询'],
+  ['002', '缺陷'],
+  ['003', '故障'],
+  ['004', '数据处理'],
+  ['005', '账号权限'],
+  ['006', '其它'],
+]);
+
+// 回访方式
+const revisitwaymap = new Map([
+  ['001', '企信回访'],
+  ['002', '电话回访'],
+  ['003', '短信回访'],
+  ['004', '邮箱回访'],
+]);
+// 事件对象
+const objectmap = new Map([
+  ['001', '配网采集'],
+  ['002', '主网采集'],
+  ['003', '终端掉线'],
+  ['004', '配网档案'],
+  ['005', '实用化指标'],
+  ['006', '账号缺陷'],
+]);
+// 影响、紧急度
+const degreemap = new Map([
+  ['001', '低'],
+  ['002', '中'],
+  ['003', '高'],
+  ['004', '紧急'],
+]);
 
 const columns = [
   {
     title: '事件编号',
-    dataIndex: 'id',
-    key: 'id',
-    width: 100,
+    dataIndex: 'event_no',
+    key: 'event_no',
+    width: 150,
     fixed: 'left',
     render: (text, record) => {
       const handleClick = () => {
         router.push({
           pathname: `/ITSM/eventmanage/query/details`,
           query: {
-            pangekey: record.state,
-            id: record.id,
+            id: record.task_id,
           },
         });
       };
@@ -56,104 +93,151 @@ const columns = [
     },
   },
   {
-    title: '建单时间',
-    dataIndex: 'creationtime',
-    key: 'creationtime',
+    title: '事件标题',
+    dataIndex: 'title',
+    key: 'title',
     fixed: 'left',
-    width: 150,
+    width: 200,
+  },
+  {
+    title: '建单时间',
+    dataIndex: 'add_time',
+    key: 'add_time',
+    fixed: 'left',
+    width: 200,
   },
   {
     title: '工单状态',
-    dataIndex: 'state',
-    key: 'state',
+    dataIndex: 'event_status',
+    key: 'event_status',
     fixed: 'left',
     width: 100,
     render: (text, record) => {
-      const textmaps = [
-        '待登记',
-        '已登记',
-        '已派单待处理',
-        '处理中',
-        '已处理待回访',
-        '已回访',
-        '重分派',
-        '已关闭',
-      ];
-      return <>{textmaps[record.state]}</>;
+      const textmaps = new Map([
+        ['1', '已登记'],
+        ['2', '待审核'],
+        ['3', '审核中'],
+        ['4', '待处理'],
+        ['5', '处理中'],
+        ['6', '待确认'],
+        ['7', '确认中'],
+        ['8', '重分派'],
+        ['9', '已关闭'],
+      ]);
+      return <>{textmaps.get(record.event_status)}</>;
     },
   },
   {
     title: '申报人',
-    dataIndex: 'Declarant',
-    key: 'Declarant',
+    dataIndex: 'application_user',
+    key: 'application_user',
     fixed: 'left',
     width: 100,
   },
   {
     title: '申报人单位',
-    dataIndex: 'Declarantunit',
-    key: 'Declarantunit',
+    dataIndex: 'application_unit',
+    key: 'application_unit',
     width: 200,
   },
   {
     title: '申报人部门',
-    dataIndex: 'Declarantdep',
-    key: 'Declarantdep',
+    dataIndex: 'application_dept',
+    key: 'application_dept',
     width: 200,
   },
   {
     title: '事件分类',
-    dataIndex: 'type',
-    key: 'type',
+    dataIndex: 'event_type',
+    key: 'event_type',
     width: 80,
-  },
-  {
-    title: '事件对象',
-    dataIndex: 'eventobjects',
-    key: 'eventobjects',
-    width: 80,
-  },
-  {
-    title: '标签',
-    dataIndex: 'eventobject',
-    key: 'eventobject',
-    width: 150,
     render: (text, record) => {
-      const tags = ['标签1', '标签2', '标签3'];
-      return (
-        <>
-          {tags.map(obj => (
-            <Tag color="#108ee9" style={{ margin: 2 }}>
-              {obj}
-            </Tag>
-          ))}
-        </>
-      );
+      return <>{typemap.get(record.event_type)}</>;
     },
   },
   {
+    title: '事件对象',
+    dataIndex: 'event_object',
+    key: 'event_object',
+    width: 80,
+    render: (text, record) => {
+      return <>{objectmap.get(record.event_object)}</>;
+    },
+  },
+  // {
+  //   title: '标签',
+  //   dataIndex: 'eventobject',
+  //   key: 'eventobject',
+  //   width: 150,
+  //   render: (text, record) => {
+  //     const tags = ['标签1', '标签2', '标签3'];
+  //     return (
+  //       <>
+  //         {tags.map(obj => (
+  //           <Tag color="#108ee9" style={{ margin: 2 }}>
+  //             {obj}
+  //           </Tag>
+  //         ))}
+  //       </>
+  //     );
+  //   },
+  // },
+  {
     title: '回访方式',
-    dataIndex: 'level1',
-    key: 'level1',
+    dataIndex: 'revisit_way',
+    key: 'revisit_way',
     width: 100,
+    render: (text, record) => {
+      return <>{revisitwaymap.get(record.revisit_way)}</>;
+    },
   },
   {
     title: '事件来源',
-    dataIndex: 'level2',
-    key: 'level2',
-    width: 100,
-  },
-  {
-    title: '工单状态',
-    dataIndex: 'level3',
-    key: 'level3',
-    width: 100,
+    dataIndex: 'event_source',
+    key: 'event_source',
+    width: 150,
+    render: (text, record) => {
+      return <>{sourcemaps.get(record.event_source)}</>;
+    },
   },
   {
     title: '影响度',
-    dataIndex: 'level4',
-    key: 'level4',
-    width: 100,
+    dataIndex: 'event_effect',
+    key: 'event_effect',
+    width: 80,
+    render: (text, record) => {
+      return <>{degreemap.get(record.event_effect)}</>;
+    },
+  },
+  {
+    title: '优先级',
+    dataIndex: 'event_prior',
+    key: 'event_prior',
+    width: 80,
+    render: (text, record) => {
+      return <>{degreemap.get(record.event_prior)}</>;
+    },
+  },
+  {
+    title: '紧急度',
+    dataIndex: 'event_emergent',
+    key: 'event_emergent',
+    width: 80,
+    render: (text, record) => {
+      return <>{degreemap.get(record.event_emergent)}</>;
+    },
+  },
+  {
+    title: '登记人',
+    dataIndex: 'register_user',
+    key: 'register_user',
+    width: 80,
+  },
+  {
+    title: '处理人',
+    dataIndex: 'handler',
+    key: 'handler',
+    width: 80,
   },
 ];
 
@@ -165,7 +249,7 @@ function QueryList(props) {
     list,
     dispatch,
   } = props;
-  const [paginations, setPageinations] = useState({ current: 1, pageSize: 10 });
+  const [paginations, setPageinations] = useState({ current: 0, pageSize: 10 });
   const [expand, setExpand] = useState(false);
 
   useEffect(() => {
@@ -175,7 +259,7 @@ function QueryList(props) {
           type: 'eventquery/fetchlist',
           payload: {
             ...values,
-            current: paginations.current,
+            pageIndex: paginations.current,
             pageSize: paginations.pageSize,
           },
         });
@@ -189,7 +273,7 @@ function QueryList(props) {
       payload: {
         ...values,
         pageSize: size,
-        current: page,
+        pageIndex: page,
       },
     });
   };
@@ -251,22 +335,25 @@ function QueryList(props) {
           <Form {...formItemLayout} onSubmit={handleSearch}>
             <Col span={8}>
               <Form.Item label="事件编号">
-                {getFieldDecorator('form1', {})(<Input placeholder="请输入" />)}
+                {getFieldDecorator('eventNo', {
+                  initialValue: '',
+                })(<Input placeholder="请输入" />)}
               </Form.Item>
             </Col>
             {expand === true && (
               <>
                 <Col span={8}>
                   <Form.Item label="事件标题">
-                    {getFieldDecorator('form2', {})(<Input placeholder="请输入" />)}
+                    {getFieldDecorator('eventTitle', {
+                      initialValue: '',
+                    })(<Input placeholder="请输入" />)}
                   </Form.Item>
                 </Col>
                 <Col span={8}>
                   <Form.Item label="事件来源">
-                    {getFieldDecorator(
-                      'form3',
-                      {},
-                    )(
+                    {getFieldDecorator('eventSource', {
+                      initialValue: '',
+                    })(
                       <Select placeholder="请选择">
                         {sourcemap.map(({ key, value }) => (
                           <Option key={key} value={key}>
@@ -281,10 +368,9 @@ function QueryList(props) {
             )}
             <Col span={8}>
               <Form.Item label="工单状态">
-                {getFieldDecorator(
-                  'form4',
-                  {},
-                )(
+                {getFieldDecorator('eventStatus', {
+                  initialValue: '',
+                })(
                   <Select placeholder="请选择">
                     {statemap.map(({ key, value }) => (
                       <Option key={key} value={key}>
@@ -298,23 +384,29 @@ function QueryList(props) {
             {expand === true && (
               <>
                 <Col span={8}>
-                  <Form.Item label="填报人">
-                    {getFieldDecorator('form5', {})(<Input placeholder="请输入" />)}
+                  <Form.Item label="登记人">
+                    {getFieldDecorator('registerUser', {
+                      initialValue: '',
+                    })(<Input placeholder="请输入" />)}
                   </Form.Item>
                 </Col>
                 <Col span={8}>
-                  <Form.Item label="处理人">
-                    {getFieldDecorator('form6', {})(<Input placeholder="请输入" />)}
+                  <Form.Item label="申报人">
+                    {getFieldDecorator('applicationUser', {
+                      initialValue: '',
+                    })(<Input placeholder="请输入" />)}
                   </Form.Item>
                 </Col>
-                <Col span={8}>
+                {/* <Col span={8}>
                   <Form.Item label="发送时间">
                     {getFieldDecorator('contenttime')(<DatePicker showTime />)}
                   </Form.Item>
-                </Col>
+                </Col> */}
                 <Col span={8}>
                   <Form.Item label="优先级">
-                    {getFieldDecorator('lasttime')(
+                    {getFieldDecorator('eventPrior', {
+                      initialValue: '',
+                    })(
                       <Select placeholder="请选择">
                         {levelmap.map(({ key, value }) => (
                           <Option key={key} value={key}>
@@ -391,7 +483,7 @@ function QueryList(props) {
         <Table
           loading={loading}
           columns={columns}
-          dataSource={list.data}
+          dataSource={list.rows}
           scroll={{ x: 1800 }}
           rowKey={record => record.id}
           pagination={pagination}

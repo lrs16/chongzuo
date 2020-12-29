@@ -1,4 +1,5 @@
 import React, { useRef, useImperativeHandle } from 'react';
+import moment from 'moment';
 import { Row, Col, Form, Input, Select, Upload, Button, DatePicker } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
 
@@ -6,26 +7,36 @@ const { Option } = Select;
 const { TextArea } = Input;
 
 const sourcemap = [
-  { key: 0, value: '用户电话申告' },
-  { key: 1, value: '企信' },
+  { key: '001', value: '用户电话申告' },
+  { key: '002', value: '企信' },
 ];
 
 const returnvisit = [
-  { key: 0, value: '企信回访' },
-  { key: 1, value: '电话回访' },
-  { key: 2, value: '短信回访' },
-  { key: 3, value: '邮箱回访' },
+  { key: '001', value: '企信回访' },
+  { key: '002', value: '电话回访' },
+  { key: '003', value: '短信回访' },
+  { key: '004', value: '邮箱回访' },
 ];
 
 const satisfactions = [
-  { key: 0, value: '满意' },
-  { key: 1, value: '一般' },
-  { key: 2, value: '不满意' },
+  { key: '001', value: '满意' },
+  { key: '002', value: '一般' },
+  { key: '003', value: '不满意' },
+];
+
+const result = [
+  { key: '001', value: '误报' },
+  { key: '002', value: '根本解决' },
+  { key: '003', value: '代替方法' },
+  { key: '004', value: '自动消失' },
+  { key: '005', value: '转问题解决' },
 ];
 
 const ReturnVisit = React.forwardRef((props, ref) => {
-  const { formItemLayout, forminladeLayout } = props;
+  const { formItemLayout, forminladeLayout, info, main, ChangeFlowtype } = props;
+  const { finish } = info;
   const { getFieldDecorator } = props.form;
+  console.log(props);
   const attRef = useRef();
   useImperativeHandle(
     ref,
@@ -37,18 +48,22 @@ const ReturnVisit = React.forwardRef((props, ref) => {
 
   const required = true;
 
+  const handlcheckChange = value => {
+    if (value === '001') {
+      ChangeFlowtype('1');
+    } else {
+      ChangeFlowtype('3');
+    }
+  };
+
   return (
     <Row gutter={24} style={{ paddingTop: 24 }}>
       <Form {...formItemLayout}>
         <Col span={8}>
           <Form.Item label="回访方式">
-            {getFieldDecorator('visit7', {
-              rules: [
-                {
-                  required,
-                  message: '请选择回访方式',
-                },
-              ],
+            {getFieldDecorator('finish_revisit_way', {
+              rules: [{ required, message: '请选择回访方式' }],
+              initialValue: finish.revisit_way,
             })(
               <Select placeholder="请选择">
                 {returnvisit.map(({ key, value }) => [
@@ -62,16 +77,12 @@ const ReturnVisit = React.forwardRef((props, ref) => {
         </Col>
         <Col span={8}>
           <Form.Item label="处理结果">
-            {getFieldDecorator('visit2', {
-              rules: [
-                {
-                  required,
-                  message: '请选择处理结果',
-                },
-              ],
+            {getFieldDecorator('main_event_result', {
+              rules: [{ required, message: '请选择处理结果' }],
+              initialValue: main.event_result,
             })(
               <Select placeholder="请选择">
-                {sourcemap.map(({ key, value }) => [
+                {result.map(({ key, value }) => [
                   <Option key={key} value={key}>
                     {value}
                   </Option>,
@@ -82,15 +93,11 @@ const ReturnVisit = React.forwardRef((props, ref) => {
         </Col>
         <Col span={8}>
           <Form.Item label="满意度">
-            {getFieldDecorator('visit3', {
-              rules: [
-                {
-                  required,
-                  message: '请选择满意度',
-                },
-              ],
+            {getFieldDecorator('finish_satisfaction', {
+              rules: [{ required, message: '请选择满意度' }],
+              initialValue: finish.satisfaction,
             })(
-              <Select placeholder="请选择">
+              <Select placeholder="请选择" onChange={handlcheckChange}>
                 {satisfactions.map(({ key, value }) => [
                   <Option key={key} value={key}>
                     {value}
@@ -102,24 +109,29 @@ const ReturnVisit = React.forwardRef((props, ref) => {
         </Col>
         <Col span={24}>
           <Form.Item label="回访内容" {...forminladeLayout}>
-            {getFieldDecorator('visit15')(
-              <TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />,
-            )}
+            {getFieldDecorator('finish_content', {
+              rules: [{ required, message: '请输入回访内容' }],
+              initialValue: finish.content,
+            })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
+          </Form.Item>
+        </Col>
+        <Col span={8}>
+          <Form.Item label="填单时间">
+            {getFieldDecorator('finish_add_time', {
+              rules: [{ required }],
+              initialValue: finish.add_time,
+            })(<Input disabled />)}
           </Form.Item>
         </Col>
         <Col span={8}>
           <Form.Item label="回访时间">
-            {getFieldDecorator('re1', {
-              rules: [
-                {
-                  required,
-                  message: '请选择回访时间',
-                },
-              ],
-            })(<DatePicker />)}
+            {getFieldDecorator('finish_revisit_time', {
+              rules: [{ required, message: '请选择回访时间' }],
+              initialValue: moment(finish.revisit_time),
+            })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" />)}
           </Form.Item>
         </Col>
-        <Col span={24}>
+        {/* <Col span={24}>
           <Form.Item
             label="上传附件"
             {...forminladeLayout}
@@ -133,25 +145,79 @@ const ReturnVisit = React.forwardRef((props, ref) => {
               </Upload>,
             )}
           </Form.Item>
-        </Col>
+        </Col> */}
         <Col span={8}>
-          <Form.Item label="登记人">
-            {getFieldDecorator('visit18')(<Input placeholder="请输入" />)}
+          <Form.Item label="回访人">
+            {getFieldDecorator('finish_revisitor', {
+              rules: [{ required }],
+              initialValue: finish.revisitor,
+            })(<Input placeholder="请输入" disabled />)}
+          </Form.Item>
+        </Col>
+        <Col span={8} style={{ display: 'none' }}>
+          <Form.Item label="回访人ID">
+            {getFieldDecorator('finish_revisitor_id', {
+              rules: [{ required }],
+              initialValue: finish.revisitor_id,
+            })(<Input placeholder="请输入" />)}
           </Form.Item>
         </Col>
         <Col span={8}>
-          <Form.Item label="登记人单位">
-            {getFieldDecorator('visit19')(<Input placeholder="请输入" />)}
+          <Form.Item label="回访人单位">
+            {getFieldDecorator('finish_revisit_unit', {
+              rules: [{ required }],
+              initialValue: finish.revisit_unit,
+            })(<Input placeholder="请输入" disabled />)}
+          </Form.Item>
+        </Col>
+        <Col span={8} style={{ display: 'none' }}>
+          <Form.Item label="回访人单位ID">
+            {getFieldDecorator('finish_revisit_unit_id', {
+              rules: [{ required }],
+              initialValue: finish.revisit_unit_id,
+            })(<Input placeholder="请输入" />)}
           </Form.Item>
         </Col>
         <Col span={8}>
           <Form.Item label="登记人部门">
-            {getFieldDecorator('visit20')(<Input placeholder="请输入" />)}
+            {getFieldDecorator('finish_revisit_dept', {
+              rules: [{ required }],
+              initialValue: finish.revisit_dept,
+            })(<Input placeholder="请输入" />)}
+          </Form.Item>
+        </Col>
+        <Col span={8} style={{ display: 'none' }}>
+          <Form.Item label="登记人部门ID">
+            {getFieldDecorator('finish_revisit_dept_id', {
+              rules: [{ required }],
+              initialValue: finish.revisit_dept_id,
+            })(<Input placeholder="请输入" />)}
           </Form.Item>
         </Col>
       </Form>
     </Row>
   );
 });
+
+ReturnVisit.defaultProps = {
+  info: {
+    finish: {
+      revisit_way: '',
+      satisfaction: '',
+      add_time: moment().format('YYYY-MM-DD HH:mm:ss'),
+      revisit_time: moment().format('YYYY-MM-DD HH:mm:ss'),
+      content: '',
+      revisitor: '管理员',
+      revisitor_id: '1',
+      revisit_unit: '广西电网有限责任公司',
+      revisit_unit_id: '7AC3EF0F718E02A2E0530A644F130365',
+      revisit_dept: '广西电网有限责任公司',
+      revisit_dept_id: '7AC3EF0F639302A2E0530A644F130365',
+    },
+  },
+  main: {
+    event_result: '',
+  },
+};
 
 export default Form.create({})(ReturnVisit);

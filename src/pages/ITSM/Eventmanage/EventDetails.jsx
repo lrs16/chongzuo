@@ -1,28 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import router from 'umi/router';
+import { connect } from 'dva';
 import { Button, Collapse } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import styles from './index.less';
 import Registratdes from './components/Registratdes';
+import Checkdes from './components/Checkdes';
 import Handledes from './components/Handledes';
 import ReturnVisitdes from './components/ReturnVisitdes';
 
 const { Panel } = Collapse;
 
-const Collapsekeymap = new Map([
-  [0, 'registratdes'],
-  [1, 'registratdes'],
-  [2, 'registratdes'],
-  [3, 'handledes'],
-  [4, 'handledes'],
-  [5, 'visitdes'],
-  [6, 'handledes'],
-  [7, 'visitdes'],
+// panel详情
+const Panelheadermap = new Map([
+  ['register', '事件登记'],
+  ['handle', '事件处理'],
+  ['check', '事件审核'],
+  ['finish', '事件确认'],
 ]);
 
 function EventDetails(props) {
-  const { match, location } = props;
-  const { pangekey, id } = location.query;
+  const { match, location, dispatch, info, loading } = props;
+  const { data } = info;
+  const { id } = location.query;
   const pagetitle = props.route.name;
   const [activeKey, setActiveKey] = useState([]);
   const handleclose = () => {
@@ -35,38 +35,57 @@ function EventDetails(props) {
     setActiveKey(key);
   };
 
+  // 初始化打开
   useEffect(() => {
-    setActiveKey([`${Collapsekeymap.get(pangekey)}`]);
+    dispatch({
+      type: 'eventtodo/eventopenflow',
+      payload: {
+        taskId: id,
+      },
+    });
   }, []);
+
+  // 初始化值panel
+  useEffect(() => {
+    setActiveKey([1]);
+  }, [info]);
+
+  console.log(data);
 
   return (
     <PageHeaderWrapper title={pagetitle} extra={<Button onClick={handleclose}>返回</Button>}>
       <div className={styles.collapse}>
-        <Collapse
-          expandIconPosition="right"
-          activeKey={activeKey}
-          bordered={false}
-          onChange={callback}
-        >
-          {pangekey !== 0 && (
-            <Panel header="事件登记" key="registratdes">
-              <Registratdes />
-            </Panel>
-          )}
-          {(pangekey !== 0 || pangekey !== 1 || pangekey !== 2) && (
-            <Panel header="事件处理" key="handledes">
-              <Handledes />
-            </Panel>
-          )}
-          {(pangekey === 5 || pangekey === 6 || pangekey === 7) && (
-            <Panel header="事件回访" key="visitdes">
-              <ReturnVisitdes />
-            </Panel>
-          )}
-        </Collapse>
+        {data !== undefined && loading === false && (
+          <Collapse
+            expandIconPosition="right"
+            activeKey={activeKey}
+            bordered={false}
+            onChange={callback}
+          >
+            {data.map((obj, index) => {
+              // panel详情组件
+              const Paneldesmap = new Map([
+                ['register', <Registratdes info={Object.values(obj)[0]} main={data[0].main} />],
+                ['handle', <Handledes info={Object.values(obj)[0]} main={data[0].main} />],
+                ['check', <Checkdes info={Object.values(obj)[0]} main={data[0].main} />],
+                ['finish', <ReturnVisitdes info={Object.values(obj)[0]} main={data[0].main} />],
+              ]);
+
+              if (index > 0)
+                return (
+                  <Panel Panel header={Panelheadermap.get(Object.keys(obj)[0])} key={index}>
+                    {Paneldesmap.get(Object.keys(obj)[0])}
+                  </Panel>
+                );
+            })}
+          </Collapse>
+        )}
       </div>
     </PageHeaderWrapper>
   );
 }
 
-export default EventDetails;
+export default connect(({ eventtodo, loading }) => ({
+  info: eventtodo.info,
+  loading: loading.models.eventtodo,
+}))(EventDetails);
