@@ -1,7 +1,6 @@
 import router from 'umi/router';
 import { message } from 'antd';
 import { EventFlowStart, EventSave, EventFlow } from '../services/api';
-import { conformsTo } from 'lodash';
 
 const replacerec = values => {
   const newarr = JSON.parse(

@@ -1,8 +1,41 @@
-import React from 'react';
+import React, { useRef, useImperativeHandle, forwardRef } from 'react';
+import moment from 'moment';
 import { Card, Row, Col, Form, Input, Button, Select, Upload, DatePicker, Cascader } from 'antd';
+import { phone_reg } from '@/utils/Regexp';
 
 const { Option } = Select;
 const { TextArea } = Input;
+
+const formItemLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 6 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 18 },
+  },
+};
+const forminladeLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 2 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 22 },
+  },
+};
+const formpartLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 4 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 20 },
+  },
+};
 
 const demandtype = [
   { key: '001', value: '新增功能' },
@@ -82,148 +115,207 @@ const modulemap = [
     ],
   },
 ];
-function Registrat(props) {
-  const { formItemLayout, forminladeLayout } = props;
-  const { getFieldDecorator, resetFields, validateFields } = props.form;
+const Registrat = forwardRef((props, ref) => {
+  const { register } = props;
+  const { getFieldDecorator } = props.form;
   const required = true;
+  const attRef = useRef();
+  useImperativeHandle(
+    ref,
+    () => ({
+      attRef,
+    }),
+    [],
+  );
+
   return (
-    <Row gutter="24">
+    <>
       <Form {...formItemLayout}>
-        <Col span="8">
-          <Form.Item label="需求编号">
-            {getFieldDecorator('demandId')(<Input placeholder="请输入" />)}
-          </Form.Item>
-        </Col>
-        <Col span="8">
-          <Form.Item label="建单时间">
-            {getFieldDecorator('creationTime', {
-              rules: [{ required }],
-              initialValue: '',
-            })(<Input placeholder="请输入" />)}
-          </Form.Item>
-        </Col>
-        <Col span="8">
-          <Form.Item label="登记时间">
-            {getFieldDecorator('registerTime', {
-              rules: [{ required }],
-              initialValue: '',
-            })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" />)}
-          </Form.Item>
-        </Col>
-        <Col span="8">
-          <Form.Item label="提出人">
-            {getFieldDecorator('proposer', {
-              rules: [{ required }],
-              initialValue: '',
-            })(<Input placeholder="请输入" />)}
-          </Form.Item>
-        </Col>
-        <Col span="8">
-          <Form.Item label="提出单位">
-            {getFieldDecorator('proposingUnit', {
-              rules: [{ required }],
-              initialValue: '',
-            })(<Input placeholder="请输入" />)}
-          </Form.Item>
-        </Col>
-        <Col span="8">
-          <Form.Item label="提出部门">
-            {getFieldDecorator('proposingDepartment', {
-              rules: [{ required }],
-              initialValue: '',
-            })(<Input placeholder="请输入" />)}
-          </Form.Item>
-        </Col>
-        <Col span="8">
-          <Form.Item label="提出人电话">
-            {getFieldDecorator('proposerPhone', {
-              rules: [{ required }],
-              initialValue: '',
-            })(<Input placeholder="请输入" />)}
-          </Form.Item>
-        </Col>
-        <Col span="8">
-          <Form.Item label="需求类型">
-            {getFieldDecorator('demandType', {
-              rules: [{ required }],
-              initialValue: '',
-            })(
-              <Select placeholder="请选择">
-                {demandtype.map(({ key, value }) => [
-                  <Option key={key} value={key}>
-                    {value}
-                  </Option>,
-                ])}
-              </Select>,
+        <Row gutter={24}>
+          <Col span={8}>
+            <Form.Item label="事件编号">
+              {getFieldDecorator('demandId', {
+                initialValue: register.demandId,
+              })(<Input disabled />)}
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label="建单时间">
+              {getFieldDecorator('creationTime', {
+                rules: [{ required }],
+                initialValue: moment(register.creationTime),
+              })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" disabled />)}
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row gutter={24}>
+          <Col span={8}>
+            <Form.Item label="申请人">
+              {getFieldDecorator('proposer', {
+                rules: [{ required, message: '请输入提出人' }],
+                initialValue: register.proposer,
+              })(<Input placeholder="请输入" />)}
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label="申请人单位">
+              {getFieldDecorator('proposingUnit', {
+                rules: [{ required, message: '请输入提出人单位' }],
+                initialValue: register.proposingUnit,
+              })(<Input placeholder="请输入" />)}
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label="申请人部门">
+              {getFieldDecorator('proposingDepartment', {
+                rules: [{ required, message: '请输入提出人部门' }],
+                initialValue: register.proposingDepartment,
+              })(<Input placeholder="请输入" />)}
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label="申请人电话">
+              {getFieldDecorator('proposerPhone', {
+                rules: [
+                  {
+                    required,
+                    len: 11,
+                    validator: phone_reg,
+                    message: '请输入正确的正确的手机号码',
+                  },
+                ],
+                initialValue: register.proposerPhone,
+              })(<Input placeholder="请输入" />)}
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label="申请时间">
+              {getFieldDecorator('registerTime', {
+                rules: [{ required, message: '请选择登记时间' }],
+                initialValue: moment(register.creationTime),
+              })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" />)}
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label="期待完成时间">
+              {getFieldDecorator('completeTime', {
+                rules: [{ required, message: '请选择期待完成时间' }],
+                initialValue: moment(register.completeTime),
+              })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" />)}
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label="需求类型">
+              {getFieldDecorator('demandType', {
+                rules: [{ required, message: '请选择需求类型' }],
+                initialValue: register.demandType,
+              })(
+                <Select placeholder="请选择">
+                  {demandtype.map(({ key, value }) => [
+                    <Option key={key} value={key}>
+                      {value}
+                    </Option>,
+                  ])}
+                </Select>,
+              )}
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label="所属功能模块">
+              {getFieldDecorator('functionalModule', {
+                rules: [{ required, message: '请选择所属功能模块' }],
+                initialValue: register.functionalModule,
+              })(<Cascader options={modulemap} />)}
+            </Form.Item>
+          </Col>
+          <Col span={24}>
+            <Form.Item label="需求标题" {...forminladeLayout}>
+              {getFieldDecorator('title', {
+                rules: [{ required, message: '请输入需求标题' }],
+                initialValue: register.title,
+              })(<Input placeholder="请输入" />)}
+            </Form.Item>
+          </Col>
+          <Col span={24}>
+            <Form.Item label="需求原因" {...forminladeLayout}>
+              {getFieldDecorator('reason', {
+                rules: [{ required, message: '请输入需求原因' }],
+                initialValue: register.reason,
+              })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
+            </Form.Item>
+          </Col>
+          <Col span={24}>
+            <Form.Item label="需求详述" {...forminladeLayout}>
+              {getFieldDecorator('detail', {
+                rules: [{ required, message: '请输入需求详述' }],
+                initialValue: register.detail,
+              })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
+            </Form.Item>
+          </Col>
+          {/* <Col span={24}>
+          <Form.Item
+            label="上传附件"
+            {...forminladeLayout}
+            extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
+          >
+            {getFieldDecorator('form17')(
+              <Upload>
+                <Button type="primary">
+                  <DownloadOutlined /> 上传附件
+                    </Button>
+              </Upload>,
             )}
           </Form.Item>
-        </Col>
-        <Col span="24">
-          <Form.Item label="所属功能模块" {...forminladeLayout}>
-            {getFieldDecorator('form9', {
-              rules: [{ required }],
-              initialValue: '',
-            })(<Cascader options={modulemap} />)}
-          </Form.Item>
-        </Col>
-        <Col span="24">
-          <Form.Item label="需求原因" {...forminladeLayout}>
-            {getFieldDecorator('form10', {
-              rules: [{ required }],
-              initialValue: '',
-            })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
-          </Form.Item>
-        </Col>
-        <Col span="24">
-          <Form.Item label="需求详述" {...forminladeLayout}>
-            {getFieldDecorator('form11', {
-              rules: [{ required }],
-              initialValue: '',
-            })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
-          </Form.Item>
-        </Col>
-        {/* <Col span="24">
-              <Form.Item
-                label="上传附件"
-                {...forminladeLayout}
-                extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
-              >
-                {getFieldDecorator('form17')(
-                  <Upload>
-                    <Button type="primary">
-                      <DownloadOutlined /> 上传附件
-                    </Button>
-                  </Upload>,
-                )}
-              </Form.Item>
-            </Col> */}
-        <Col span="8">
-          <Form.Item label="登记人">
-            {getFieldDecorator('form18', {
-              rules: [{ required }],
-              initialValue: '',
-            })(<Input placeholder="请输入" />)}
-          </Form.Item>
-        </Col>
-        <Col span="8">
-          <Form.Item label="登记人单位">
-            {getFieldDecorator('form19', {
-              rules: [{ required }],
-              initialValue: '',
-            })(<Input placeholder="请输入" />)}
-          </Form.Item>
-        </Col>
-        <Col span="8">
-          <Form.Item label="登记人部门">
-            {getFieldDecorator('form20', {
-              rules: [{ required }],
-              initialValue: '',
-            })(<Input placeholder="请输入" />)}
-          </Form.Item>
-        </Col>
+        </Col> */}
+          <Col span={8}>
+            <Form.Item label="登记人">
+              {getFieldDecorator('registerPerson', {
+                rules: [{ required }],
+                initialValue: register.registerPerson,
+              })(<Input placeholder="请输入" disabled />)}
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label="登记人单位">
+              {getFieldDecorator('registrationUnit', {
+                rules: [{ required }],
+                initialValue: register.registrationUnit,
+              })(<Input placeholder="请输入" disabled />)}
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label="登记人部门">
+              {getFieldDecorator('registrationDepartment', {
+                rules: [{ required }],
+                initialValue: register.registrationDepartment,
+              })(<Input placeholder="请输入" disabled />)}
+            </Form.Item>
+          </Col>
+        </Row>
       </Form>
-    </Row>
+    </>
   );
-}
+});
+
+Registrat.defaultProps = {
+  register: {
+    creationTime: moment().format(),
+    completeTime: moment().format(),
+    demandId: '',
+    demandType: '',
+    detail: '',
+    functionalModule: '',
+    proposer: '',
+    proposerPhone: '',
+    proposingDepartment: '计量中心',
+    proposingUnit: '广西电网有限责任公司',
+    reason: '',
+    registerPerson: '管理员',
+    registerTime: moment().format(),
+    registrationDepartment: '计量中心',
+    registrationUnit: '广西电网有限责任公司',
+    title: '',
+  },
+};
 
 export default Form.create()(Registrat);

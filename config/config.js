@@ -238,6 +238,7 @@ export default {
                       name: '需求待办',
                       icon: 'cloud-server',
                       component: './ITSM/Demandmanage/ToDolist',
+                      // component: './ITSM/Demandmanage/Details',
                     },
                     {
                       path: '/ITSM/demandmanage/query',
@@ -893,8 +894,14 @@ export default {
       target: 'http://172.16.4.211:9901/',
       changeOrigin: true,
     },
+    // 事件管理
     '/itsm/': {
-      target: 'http://172.16.4.115:9901/',
+      target: 'http://172.16.4.211:9901/',
+      changeOrigin: true,
+    },
+    // 需求管理
+    '/demand/': {
+      target: 'http://172.16.4.57:8888/',
       changeOrigin: true,
     },
     // http://172.16.4.115:9901/itsm

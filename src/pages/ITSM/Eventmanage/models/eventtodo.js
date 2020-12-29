@@ -60,7 +60,6 @@ export default {
     // 编辑保存
     *eventsave({ payload: { paloadvalues, pangekey, flow_instance_id } }, { call, put }) {
       const values = replacerec({ ...paloadvalues });
-      console.log(values);
       const { register_selfhandle } = values;
       const registres = yield call(EventSaveFlow, values);
       if (registres.code === 200) {
@@ -98,7 +97,6 @@ export default {
     // 编辑流转,流转成功转回待办列表
     *eventflow({ payload: { flow, paloadvalues } }, { call }) {
       const values = replacerec({ ...paloadvalues });
-      console.log(values);
       const registres = yield call(EventSaveFlow, values);
       if (registres.code === 200) {
         const response = yield call(EventFlow, flow);
@@ -108,6 +106,16 @@ export default {
             pathname: `/ITSM/eventmanage/to-do`,
           });
         }
+      }
+    },
+
+    *eventransfer({ payload: { flow } }, { call }) {
+      const response = yield call(EventFlow, flow);
+      if (response.code === 200) {
+        message.success(response.msg, 5);
+        router.push({
+          pathname: `/ITSM/eventmanage/to-do`,
+        });
       }
     },
 

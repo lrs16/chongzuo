@@ -119,10 +119,10 @@ function ToDolist(props) {
     validateFields((err, values) => {
       if (!err) {
         dispatch({
-          type: 'eventtodo/fetchlist',
+          type: 'demandtodo/fetchlist',
           payload: {
             ...values,
-            current: paginations.current,
+            currentPage: paginations.current,
             pageSize: paginations.pageSize,
           },
         });
@@ -132,11 +132,11 @@ function ToDolist(props) {
 
   const searchdata = (values, page, size) => {
     dispatch({
-      type: 'eventtodo/fetchlist',
+      type: 'demandtodo/fetchlist',
       payload: {
         ...values,
         pageSize: size,
-        current: page,
+        currentPage: page,
       },
     });
   };
@@ -348,8 +348,8 @@ function ToDolist(props) {
 }
 
 export default Form.create({})(
-  connect(({ eventtodo, loading }) => ({
-    list: eventtodo.list,
-    loading: loading.models.eventtodo,
+  connect(({ demandtodo, loading }) => ({
+    list: demandtodo.list,
+    loading: loading.models.demandtodo,
   }))(ToDolist),
 );

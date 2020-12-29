@@ -4,6 +4,7 @@ import { connect } from 'dva';
 import { Button, Popover, Popconfirm } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import Backoff from './components/Backoff';
+import SelectUser from '@/components/SelectUser';
 
 function ToDodetails(props) {
   const { match, children, location, dispatch } = props;
@@ -11,6 +12,7 @@ function ToDodetails(props) {
   const pagetitle = props.route.name;
   const [backvalue, setBackvalue] = useState('');
   const [Popvisible, setVisible] = useState(false);
+  const [UserId, setUserId] = useState('');
 
   const handleHold = type => {
     router.push({
@@ -65,6 +67,20 @@ function ToDodetails(props) {
       },
     });
   };
+
+  // 转单
+  const eventtransfer = () => {
+    dispatch({
+      type: 'eventtodo/eventransfer',
+      payload: {
+        flow: {
+          id,
+          userIds: '1311225321495728129',
+          type: '3',
+        },
+      },
+    });
+  };
   const deleteflow = () => {
     dispatch({
       type: 'eventtodo/deleteflow',
@@ -106,10 +122,8 @@ function ToDodetails(props) {
         </Popconfirm>
       )}
       {(pangekey === '2' ||
-        pangekey === '3' ||
-        pangekey === '4' ||
-        (pangekey === '6' && check !== '2') ||
-        (pangekey === '7' && check !== '2')) && (
+        (pangekey === '4' && check === '') ||
+        (pangekey === '6' && check === '')) && (
         // <Button type="danger" ghost style={{ marginRight: 8 }} onClick={() => handleHold('back')}>
         //   回退
         // </Button>
@@ -130,15 +144,20 @@ function ToDodetails(props) {
         </Button>
       )}
       {pangekey === '5' && (
-        <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleHold('other')}>
-          转单
-        </Button>
+        <SelectUser handleSubmit={() => eventtransfer()}>
+          <Button type="primary" style={{ marginRight: 8 }}>
+            转单
+          </Button>
+        </SelectUser>
       )}
       {pangekey !== '4' && (
-        <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleHold('flow')}>
-          流转
-        </Button>
+        <SelectUser handleSubmit={() => handleHold('flow')}>
+          <Button type="primary" style={{ marginRight: 8 }}>
+            流转
+          </Button>
+        </SelectUser>
       )}
+
       <Button onClick={handleclose}>返回</Button>
     </>
   );

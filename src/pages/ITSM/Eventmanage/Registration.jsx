@@ -7,7 +7,7 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import styles from './index.less';
 import Handle from './components/Handle';
 import Registrat from './components/Registrat';
-import Check from './components/Check';
+import SelectUser from '@/components/SelectUser';
 
 const { Panel } = Collapse;
 
@@ -155,9 +155,11 @@ function Registration(props) {
           <Button type="primary" style={{ marginRight: 8 }} onClick={handlesubmit}>
             保 存
           </Button>
-          <Button type="primary" style={{ marginRight: 8 }} onClick={handleflow}>
-            流 转
-          </Button>
+          <SelectUser handleSubmit={() => handleflow()}>
+            <Button type="primary" style={{ marginRight: 8 }}>
+              流 转
+            </Button>
+          </SelectUser>
           <Button type="default" onClick={handleclose}>
             关 闭
           </Button>

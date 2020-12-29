@@ -77,14 +77,6 @@ function WorkOrder(props) {
   const { data, edit } = info;
 
   const { flow_instance_id, flow_node_instance_id, flow_node_name, _edit_state } = info; //流程基本信息
-  const userinfo = {
-    handler: '管理员',
-    handler_id: '1',
-    handle_unit: '广西电网有限责任公司',
-    handle_unit_id: '7AC3EF0F718E02A2E0530A644F130365',
-    handle_dept: '广西电网有限责任公司',
-    handle_dept_id: '7AC3EF0F639302A2E0530A644F130365',
-  };
   // 保存、流转表单信息
   const paloadvalues = {
     ...formregistrat,
@@ -202,7 +194,7 @@ function WorkOrder(props) {
         payload: {
           flow: {
             id,
-            userIds: '1',
+            userIds: sessionStorage.getItem('NextflowUserId'),
             type: flowtype,
           },
           paloadvalues,
@@ -229,21 +221,11 @@ function WorkOrder(props) {
   // };
 
   // 转单
-  const eventransfer = () => {
-    if (ischeck === true) {
-      dispatch({
-        type: 'eventtodo/eventflow',
-        payload: {
-          flow: {
-            id,
-            userIds: '1311225321495728129',
-            type: '3',
-          },
-          paloadvalues,
-        },
-      });
-    }
-  };
+  // const eventransfer = () => {
+  //   if (ischeck === true) {
+
+  //   }
+  // };
   // 点击保存，流转触发表单校验
   const handlesubmit = () => {
     switch (pangekey) {
@@ -345,7 +327,7 @@ function WorkOrder(props) {
         eventflow();
         break;
       case 'other':
-        eventransfer();
+        // eventransfer();
         break;
       default:
         break;
