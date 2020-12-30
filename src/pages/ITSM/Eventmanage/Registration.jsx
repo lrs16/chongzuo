@@ -36,7 +36,7 @@ export const RegistratContext = createContext();
 
 function Registration(props) {
   const pagetitle = props.route.name;
-  const { dispatch, loading } = props;
+  const { dispatch, loading, userinfo } = props;
   const [formregistrat, setFormregistrat] = useState('');
   const [formhandle, setFormhandle] = useState('');
   const [show, setShow] = useState(false); // 自行处理
@@ -46,6 +46,11 @@ function Registration(props) {
   const [activeKey, setActiveKey] = useState(['registratform']);
   const RegistratRef = useRef();
   const HandleRef = useRef();
+  useEffect(() => {
+    dispatch({
+      type: 'eventregist/fetchuser',
+    });
+  }, []);
 
   const callback = key => {
     setActiveKey(key);
@@ -148,22 +153,26 @@ function Registration(props) {
     });
   };
 
+  const operations = (
+    <>
+      <Button type="primary" style={{ marginRight: 8 }} onClick={handlesubmit}>
+        保 存
+      </Button>
+      <SelectUser handleSubmit={() => handleflow()}>
+        <Button type="primary" style={{ marginRight: 8 }}>
+          流 转
+        </Button>
+      </SelectUser>
+      <Button type="default" onClick={handleclose}>
+        关 闭
+      </Button>
+    </>
+  );
+
   return (
-    <PageHeaderWrapper title={pagetitle}>
+    <PageHeaderWrapper title={pagetitle} extra={operations}>
       <Spin tip="正在提交数据..." spinning={Boolean(loading)}>
-        <Card style={{ textAlign: 'right' }}>
-          <Button type="primary" style={{ marginRight: 8 }} onClick={handlesubmit}>
-            保 存
-          </Button>
-          <SelectUser handleSubmit={() => handleflow()}>
-            <Button type="primary" style={{ marginRight: 8 }}>
-              流 转
-            </Button>
-          </SelectUser>
-          <Button type="default" onClick={handleclose}>
-            关 闭
-          </Button>
-        </Card>
+        <Card style={{ textAlign: 'right' }}></Card>
         <div className={styles.collapse}>
           <Collapse
             expandIconPosition="right"
@@ -183,6 +192,7 @@ function Registration(props) {
                 forminladeLayout={forminladeLayout}
                 show={show}
                 ref={RegistratRef}
+                userinfo={userinfo}
               />
             </Panel>
             {show === true && check === false && (
@@ -191,6 +201,7 @@ function Registration(props) {
                   formItemLayout={formItemLayout}
                   forminladeLayout={forminladeLayout}
                   ref={HandleRef}
+                  userinfo={userinfo}
                 />
               </Panel>
             )}
@@ -201,6 +212,7 @@ function Registration(props) {
   );
 }
 
-export default connect(({ loading }) => ({
+export default connect(({ eventregist, loading }) => ({
+  userinfo: eventregist.userinfo,
   loading: loading.models.eventregist,
 }))(Registration);

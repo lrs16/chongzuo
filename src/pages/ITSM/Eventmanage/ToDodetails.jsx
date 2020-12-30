@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import router from 'umi/router';
 import { connect } from 'dva';
-import { Button, Popover, Popconfirm } from 'antd';
+import { Button, Popover, Popconfirm, message } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import Backoff from './components/Backoff';
 import SelectUser from '@/components/SelectUser';
@@ -43,6 +43,10 @@ function ToDodetails(props) {
   };
 
   useEffect(() => {
+    message.info('请接单..', 3);
+  }, []);
+
+  useEffect(() => {
     if (backvalue !== '') {
       dispatch({
         type: 'eventtodo/eventback',
@@ -75,7 +79,7 @@ function ToDodetails(props) {
       payload: {
         flow: {
           id,
-          userIds: '1311225321495728129',
+          userIds: sessionStorage.getItem('NextflowUserId'),
           type: '3',
         },
       },
@@ -214,5 +218,6 @@ function ToDodetails(props) {
 }
 
 export default connect(({ eventtodo, loading }) => ({
+  eventtodo,
   loading: loading.effects['eventtodo/eventback'],
 }))(ToDodetails);

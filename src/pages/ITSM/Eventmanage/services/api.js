@@ -1,5 +1,12 @@
 import request from '@/utils/request';
 
+// 启动获取用户信息
+export async function EventUser() {
+  return request(`/itsm/event/flow/getUserInfo`, {
+    method: 'GET',
+  });
+}
+
 // 启动事件流程/itsm/event/flow/start
 export async function EventFlowStart() {
   return request(`/itsm/event/flow/start`, {
@@ -122,7 +129,7 @@ export async function queryList({
   );
 }
 
-///itsm/event/form/downloadExcel
+//itsm/event/form/downloadExcel
 export async function querydownload(params) {
   return request(`/itsm/event/form/downloadExcel`, {
     method: 'GET',

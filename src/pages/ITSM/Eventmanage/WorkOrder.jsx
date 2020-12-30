@@ -58,7 +58,7 @@ const forminladeLayout = {
 export const RegistratContext = createContext();
 
 function WorkOrder(props) {
-  const { location, dispatch, loading, recordsloading, info, records } = props;
+  const { location, dispatch, loading, recordsloading, info, records, userinfo } = props;
   const { validate, pangekey, id, mainId, type } = location.query;
   const [formregistrat, setFormregistrat] = useState('');
   const [formcheck, setFormcheck] = useState('');
@@ -88,6 +88,12 @@ function WorkOrder(props) {
     flow_node_name,
     _edit_state,
   };
+
+  useEffect(() => {
+    dispatch({
+      type: 'eventregist/fetchuser',
+    });
+  }, []);
 
   const callback = key => {
     setActiveKey(key);
@@ -346,7 +352,12 @@ function WorkOrder(props) {
         <Steps
           current={records.length - 1}
           progressDot
-          style={{ background: '#fff', padding: 24, border: '1px solid #e8e8e8' }}
+          style={{
+            background: '#fff',
+            padding: 24,
+            border: '1px solid #e8e8e8',
+            overflowX: 'auto',
+          }}
         >
           {records.map(obj => {
             const desc = (
@@ -384,6 +395,7 @@ function WorkOrder(props) {
                   ref={RegistratRef}
                   info={edit}
                   main={data[0].main}
+                  userinfo={userinfo}
                 />
               </Panel>
             )}
@@ -397,6 +409,7 @@ function WorkOrder(props) {
                   ref={CheckRef}
                   info={finishfirst}
                   main={data[0].main}
+                  userinfo={userinfo}
                 />
               </Panel>
             )}
@@ -408,6 +421,7 @@ function WorkOrder(props) {
                   ref={CheckRef}
                   info={edit}
                   main={data[0].main}
+                  userinfo={userinfo}
                 />
               </Panel>
             )}
@@ -420,6 +434,7 @@ function WorkOrder(props) {
                   ref={HandleRef}
                   info={finishfirst}
                   main={data[0].main}
+                  userinfo={userinfo}
                 />
               </Panel>
             )}
@@ -434,6 +449,7 @@ function WorkOrder(props) {
                     ref={HandleRef}
                     info={edit}
                     main={data[0].main}
+                    userinfo={userinfo}
                   />
                 </Panel>
               )}
@@ -446,6 +462,7 @@ function WorkOrder(props) {
                   ref={ReturnVisitRef}
                   info={finishfirst}
                   main={data[0].main}
+                  userinfo={userinfo}
                 />
               </Panel>
             )}
@@ -458,6 +475,7 @@ function WorkOrder(props) {
                   ref={ReturnVisitRef}
                   info={edit}
                   main={data[0].main}
+                  userinfo={userinfo}
                 />
               </Panel>
             )}
@@ -501,7 +519,9 @@ function WorkOrder(props) {
   );
 }
 
-export default connect(({ eventtodo, loading }) => ({
+export default connect(({ eventtodo, eventregist, loading }) => ({
+  userinfo: eventregist.userinfo,
+  //userloading: loading.effects['eventregist/fetchuser'],
   info: eventtodo.info,
   records: eventtodo.records,
   loading: loading.models.eventtodo,

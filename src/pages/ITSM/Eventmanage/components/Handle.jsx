@@ -41,7 +41,7 @@ const result = [
 ];
 
 const Handle = React.forwardRef((props, ref) => {
-  const { formItemLayout, forminladeLayout, info, main } = props;
+  const { formItemLayout, forminladeLayout, info, main, userinfo } = props;
   const { handle } = info;
   const { getFieldDecorator } = props.form;
   const required = true;
@@ -59,40 +59,40 @@ const Handle = React.forwardRef((props, ref) => {
         <Col span={8}>
           <Form.Item label="处理人">
             {getFieldDecorator('handle_user', {
-              initialValue: handle.handler,
+              initialValue: userinfo.userName,
             })(<Input placeholder="请输入" disabled />)}
           </Form.Item>
         </Col>
         <Col span={8} style={{ display: 'none' }}>
           <Form.Item label="处理人ID">
             {getFieldDecorator('handle_user_id', {
-              initialValue: handle.handler_id,
+              initialValue: userinfo.userId,
             })(<Input placeholder="请输入" disabled />)}
           </Form.Item>
         </Col>
         <Col span={8}>
           <Form.Item label="处理人单位">
             {getFieldDecorator('handle_handle_unit', {
-              initialValue: handle.handle_unit,
+              initialValue: userinfo.unitName,
             })(<Input placeholder="请输入" disabled />)}
           </Form.Item>
         </Col>
         <Col span={8} style={{ display: 'none' }}>
           <Form.Item label="处理人单位ID">
             {getFieldDecorator('handle_handle_unit_id', {
-              initialValue: handle.handle_unit_id,
+              initialValue: userinfo.unitId,
             })(<Input placeholder="请输入" disabled />)}
           </Form.Item>
         </Col>
         <Col span={8}>
           <Form.Item label="处理人部门">
             {getFieldDecorator('handle_handle_dept', {
-              initialValue: handle.handle_dept,
+              initialValue: userinfo.deptName,
             })(<Input placeholder="请输入" disabled />)}
           </Form.Item>
-          <Form.Item label="处理人部门" style={{ display: 'none' }}>
+          <Form.Item label="处理人部门ID" style={{ display: 'none' }}>
             {getFieldDecorator('handle_handle_dept_id', {
-              initialValue: handle.handler_dept_id,
+              initialValue: userinfo.deptId,
             })(<Input placeholder="请输入" disabled />)}
           </Form.Item>
         </Col>
@@ -289,6 +289,14 @@ Handle.defaultProps = {
   main: {
     event_object: '',
     event_type: '',
+  },
+  userinfo: {
+    deptName: '',
+    deptId: '',
+    unitName: '',
+    unitId: '',
+    userName: '',
+    userId: '',
   },
 };
 

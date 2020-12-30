@@ -55,6 +55,7 @@ const Registrat = forwardRef((props, ref) => {
     ChangeFlowtype,
     info,
     main,
+    userinfo,
   } = props;
   const { register } = info;
   const { getFieldDecorator, validateFields } = props.form;
@@ -222,25 +223,6 @@ const Registrat = forwardRef((props, ref) => {
           </Form.Item>
         </Col>
         <Col span={8}>
-          <Form.Item label="影响度">
-            {getFieldDecorator('register_event_effect', {
-              rules: [{ required, message: '请选择影响度' }],
-              initialValue: register.event_effect,
-            })(
-              <Select placeholder="请选择">
-                {degreemap.map(({ key, value }, index) => {
-                  if (index < 3)
-                    return (
-                      <Option key={key} value={key}>
-                        {value}
-                      </Option>
-                    );
-                })}
-              </Select>,
-            )}
-          </Form.Item>
-        </Col>
-        <Col span={8}>
           <Form.Item label="事件分类">
             {getFieldDecorator('main_event_type', {
               rules: [{ required, message: '请选择事件分类' }],
@@ -268,6 +250,25 @@ const Registrat = forwardRef((props, ref) => {
                     {value}
                   </Option>,
                 ])}
+              </Select>,
+            )}
+          </Form.Item>
+        </Col>
+        <Col span={8}>
+          <Form.Item label="影响度">
+            {getFieldDecorator('register_event_effect', {
+              rules: [{ required, message: '请选择影响度' }],
+              initialValue: register.event_effect,
+            })(
+              <Select placeholder="请选择">
+                {degreemap.map(({ key, value }, index) => {
+                  if (index < 3)
+                    return (
+                      <Option key={key} value={key}>
+                        {value}
+                      </Option>
+                    );
+                })}
               </Select>,
             )}
           </Form.Item>
@@ -379,7 +380,7 @@ const Registrat = forwardRef((props, ref) => {
           <Form.Item label="登记人">
             {getFieldDecorator('register_register_user', {
               rules: [{ required }],
-              initialValue: register.register_user,
+              initialValue: userinfo.userName,
             })(<Input disabled />)}
           </Form.Item>
         </Col>
@@ -387,7 +388,7 @@ const Registrat = forwardRef((props, ref) => {
           <Form.Item label="登记人ID">
             {getFieldDecorator('register_register_user_id', {
               rules: [{ required }],
-              initialValue: register.register_user_id,
+              initialValue: userinfo.userId,
             })(<Input disabled />)}
           </Form.Item>
         </Col>
@@ -395,7 +396,7 @@ const Registrat = forwardRef((props, ref) => {
           <Form.Item label="登记人单位">
             {getFieldDecorator('register_register_unit', {
               rules: [{ required }],
-              initialValue: register.register_unit,
+              initialValue: userinfo.unitName,
             })(<Input disabled />)}
           </Form.Item>
         </Col>
@@ -403,7 +404,7 @@ const Registrat = forwardRef((props, ref) => {
           <Form.Item label="登记人单位ID">
             {getFieldDecorator('register_register_unit_id', {
               rules: [{ required }],
-              initialValue: register.register_unit_id,
+              initialValue: userinfo.unitId,
             })(<Input disabled />)}
           </Form.Item>
         </Col>
@@ -411,7 +412,7 @@ const Registrat = forwardRef((props, ref) => {
           <Form.Item label="登记人部门">
             {getFieldDecorator('register_register_dept', {
               rules: [{ required }],
-              initialValue: register.register_dept,
+              initialValue: userinfo.deptName,
             })(<Input disabled />)}
           </Form.Item>
         </Col>
@@ -419,7 +420,7 @@ const Registrat = forwardRef((props, ref) => {
           <Form.Item label="登记人部门ID">
             {getFieldDecorator('register_register_dept_id', {
               rules: [{ required }],
-              initialValue: register.register_dept_id,
+              initialValue: userinfo.deptId,
             })(<Input disabled />)}
           </Form.Item>
         </Col>
@@ -434,7 +435,7 @@ Registrat.defaultProps = {
     content: '',
     event_no: '',
     event_object: '',
-    event_source: '',
+    event_source: '002',
     event_type: '',
   },
   info: {
@@ -446,19 +447,27 @@ Registrat.defaultProps = {
       application_user: '',
       application_user_id: '12121212',
       application_user_phone: '',
-      event_effect: '',
-      event_emergent: '',
-      event_prior: '',
+      event_effect: '001',
+      event_emergent: '001',
+      event_prior: '001',
       occur_time: moment().format('YYYY-MM-DD HH:mm:ss'),
-      register_dept: '广西电网有限责任公司',
-      register_dept_id: '7AC3EF0F701402A2E0530A644F130365',
-      register_unit: '广西电网有限责任公司',
-      register_unit_id: '7AC3EF0F701402A2E0530A644F130365',
-      register_user: '管理员',
+      // register_dept: '广西电网有限责任公司',
+      // register_dept_id: '7AC3EF0F701402A2E0530A644F130365',
+      // register_unit: '广西电网有限责任公司',
+      // register_unit_id: '7AC3EF0F701402A2E0530A644F130365',
+      // register_user: '管理员',
       register_user_id: '1',
-      revisit_way: '',
+      revisit_way: '001',
       selfhandle: '0',
     },
+  },
+  userinfo: {
+    deptName: '',
+    deptId: '',
+    unitName: '',
+    unitId: '',
+    userName: '',
+    userId: '',
   },
 };
 

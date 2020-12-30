@@ -238,7 +238,28 @@ export default {
                       name: '需求待办',
                       icon: 'cloud-server',
                       component: './ITSM/Demandmanage/ToDolist',
-                      // component: './ITSM/Demandmanage/Details',
+                    },
+                    {
+                      path: '/ITSM/demandmanage/to-do/record',
+                      name: '需求办理',
+                      icon: 'cloud-server',
+                      component: './ITSM/Demandmanage/ToDodetails',
+                      routes: [
+                        {
+                          path: '/ITSM/demandmanage/to-do/record',
+                          redirect: '/ITSM/demandmanage/to-do/record/workorder',
+                        },
+                        {
+                          path: '/ITSM/demandmanage/to-do/record/workorder',
+                          name: '需求工单',
+                          component: './ITSM/Demandmanage/WorkOrder',
+                        },
+                        {
+                          path: '/ITSM/demandmanage/to-do/record/process',
+                          name: '需求流程',
+                          component: './ITSM/Demandmanage/Process',
+                        },
+                      ],
                     },
                     {
                       path: '/ITSM/demandmanage/query',
@@ -901,7 +922,7 @@ export default {
     },
     // 需求管理
     '/demand/': {
-      target: 'http://172.16.4.57:8888/',
+      target: 'http://172.16.4.211:7777/',
       changeOrigin: true,
     },
     // http://172.16.4.115:9901/itsm

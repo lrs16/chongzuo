@@ -58,7 +58,7 @@ function Registratdes(props) {
       <Descriptions.Item label="影响度">{degreemap.get(info.event_effect)}</Descriptions.Item>
       <Descriptions.Item label="紧急度">{degreemap.get(info.event_emergent)}</Descriptions.Item>
       <Descriptions.Item label="优先级" span={3}>
-        >{degreemap.get(info.event_prior)}
+        {degreemap.get(info.event_prior)}
       </Descriptions.Item>
       <Descriptions.Item label="事件标题" span={3}>
         {main.title}

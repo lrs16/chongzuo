@@ -33,7 +33,7 @@ const result = [
 ];
 
 const ReturnVisit = React.forwardRef((props, ref) => {
-  const { formItemLayout, forminladeLayout, info, main, ChangeFlowtype } = props;
+  const { formItemLayout, forminladeLayout, info, main, ChangeFlowtype, userinfo } = props;
   const { finish } = info;
   const { getFieldDecorator } = props.form;
   console.log(props);
@@ -146,11 +146,12 @@ const ReturnVisit = React.forwardRef((props, ref) => {
             )}
           </Form.Item>
         </Col> */}
+        <Row> </Row>
         <Col span={8}>
           <Form.Item label="回访人">
             {getFieldDecorator('finish_revisitor', {
               rules: [{ required }],
-              initialValue: finish.revisitor,
+              initialValue: userinfo.userName,
             })(<Input placeholder="请输入" disabled />)}
           </Form.Item>
         </Col>
@@ -158,7 +159,7 @@ const ReturnVisit = React.forwardRef((props, ref) => {
           <Form.Item label="回访人ID">
             {getFieldDecorator('finish_revisitor_id', {
               rules: [{ required }],
-              initialValue: finish.revisitor_id,
+              initialValue: userinfo.userId,
             })(<Input placeholder="请输入" />)}
           </Form.Item>
         </Col>
@@ -166,7 +167,7 @@ const ReturnVisit = React.forwardRef((props, ref) => {
           <Form.Item label="回访人单位">
             {getFieldDecorator('finish_revisit_unit', {
               rules: [{ required }],
-              initialValue: finish.revisit_unit,
+              initialValue: userinfo.unitName,
             })(<Input placeholder="请输入" disabled />)}
           </Form.Item>
         </Col>
@@ -174,23 +175,23 @@ const ReturnVisit = React.forwardRef((props, ref) => {
           <Form.Item label="回访人单位ID">
             {getFieldDecorator('finish_revisit_unit_id', {
               rules: [{ required }],
-              initialValue: finish.revisit_unit_id,
+              initialValue: userinfo.unitId,
             })(<Input placeholder="请输入" />)}
           </Form.Item>
         </Col>
         <Col span={8}>
-          <Form.Item label="登记人部门">
+          <Form.Item label="回访人部门">
             {getFieldDecorator('finish_revisit_dept', {
               rules: [{ required }],
-              initialValue: finish.revisit_dept,
-            })(<Input placeholder="请输入" />)}
+              initialValue: userinfo.deptName,
+            })(<Input placeholder="请输入" disabled />)}
           </Form.Item>
         </Col>
         <Col span={8} style={{ display: 'none' }}>
-          <Form.Item label="登记人部门ID">
+          <Form.Item label="回访人部门ID">
             {getFieldDecorator('finish_revisit_dept_id', {
               rules: [{ required }],
-              initialValue: finish.revisit_dept_id,
+              initialValue: userinfo.deptId,
             })(<Input placeholder="请输入" />)}
           </Form.Item>
         </Col>
@@ -217,6 +218,14 @@ ReturnVisit.defaultProps = {
   },
   main: {
     event_result: '',
+  },
+  userinfo: {
+    deptName: '',
+    deptId: '',
+    unitName: '',
+    unitId: '',
+    userName: '',
+    userId: '',
   },
 };
 

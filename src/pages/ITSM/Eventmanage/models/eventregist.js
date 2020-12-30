@@ -1,6 +1,6 @@
 import router from 'umi/router';
 import { message } from 'antd';
-import { EventFlowStart, EventSave, EventFlow } from '../services/api';
+import { EventFlowStart, EventSave, EventFlow, EventUser } from '../services/api';
 
 const replacerec = values => {
   const newarr = JSON.parse(
@@ -19,9 +19,18 @@ export default {
   namespace: 'eventregist',
   state: {
     flowmsg: '',
+    userinfo: '',
   },
 
   effects: {
+    // 打开登记，加载用户信息
+    *fetchuser(_, { call, put }) {
+      const response = yield call(EventUser);
+      yield put({
+        type: 'saveuser',
+        payload: response.data,
+      });
+    },
     // 启动流程,保存
     *eventstart({ payload }, { call }) {
       const { register_selfhandle } = payload;
@@ -44,6 +53,7 @@ export default {
             query: {
               pangekey: register_selfhandle === '1' ? '5' : '1',
               id: registres.taskId,
+              mainId: flow_instance_id,
               validate: false,
             },
           });
@@ -68,7 +78,7 @@ export default {
         if (registres.code === 200) {
           const flowpayload = {
             id: registres.taskId,
-            userIds: '1',
+            userIds: sessionStorage.getItem('NextflowUserId'),
             type: flowtype,
           };
           const flowreponse = yield call(EventFlow, flowpayload);
@@ -88,6 +98,12 @@ export default {
       return {
         ...state,
         flowmsg: action.payload,
+      };
+    },
+    saveuser(state, action) {
+      return {
+        ...state,
+        userinfo: action.payload,
       };
     },
   },

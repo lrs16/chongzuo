@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Radio } from 'antd';
+import { connect } from 'dva';
+import { Modal, Radio, Spin } from 'antd';
 
 // 克隆子元素按钮，并添加事件
 const withClick = (element, showDrawer = () => {}) => {
   return <element.type {...element.props} onClick={showDrawer} />;
 };
 
-function index(props) {
-  const { children, handleSubmit } = props;
+const SelectUser = props => {
+  const { children, dispatch, handleSubmit, usermanage, userloading } = props;
   const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const users = usermanage.data.rows;
 
   const [value, setValue] = useState('1');
 
@@ -19,6 +22,19 @@ function index(props) {
 
   useEffect(() => {
     sessionStorage.setItem('NextflowUserId', value);
+  }, []);
+
+  useEffect(() => {
+    dispatch({
+      type: 'usermanage/search',
+      payload: {
+        payload: {
+          page: 1,
+          limit: 20,
+          queKey: '',
+        },
+      },
+    });
   }, []);
 
   const showModal = () => {
@@ -43,14 +59,24 @@ function index(props) {
         onOk={handleOk}
         onCancel={handleCancel}
       >
-        <Radio.Group onChange={handleChange} value={value}>
-          <Radio value="1">管理员</Radio>
-          <Radio value="1311225321495728129">user</Radio>
-          <Radio value="1310135708685438978">elin</Radio>
-        </Radio.Group>
+        <Spin tip="正在提交数据..." spinning={Boolean(userloading)}>
+          {userloading === false && (
+            <Radio.Group onChange={handleChange} value={value}>
+              {users.map(({ id, userName }) => [
+                <Radio key={id} value={id}>
+                  {userName}
+                </Radio>,
+              ])}
+            </Radio.Group>
+          )}
+        </Spin>
       </Modal>
     </>
   );
-}
+};
 
-export default index;
+export default connect(({ usermanage, loading }) => ({
+  usermanage,
+  userloading: loading.effects['usermanage/search'],
+  loading: loading.models.demandregister,
+}))(SelectUser);
