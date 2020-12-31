@@ -152,7 +152,7 @@ const Registrat = forwardRef((props, ref) => {
           <Col span={8}>
             <Form.Item label="申请人">
               {getFieldDecorator('proposer', {
-                rules: [{ required, message: '请输入提出人' }],
+                rules: [{ required, message: '请输入申请人' }],
                 initialValue: register.proposer,
               })(<Input placeholder="请输入" />)}
             </Form.Item>
@@ -160,7 +160,7 @@ const Registrat = forwardRef((props, ref) => {
           <Col span={8}>
             <Form.Item label="申请人单位">
               {getFieldDecorator('proposingUnit', {
-                rules: [{ required, message: '请输入提出人单位' }],
+                rules: [{ required, message: '请输申请人单位' }],
                 initialValue: register.proposingUnit,
               })(<Input placeholder="请输入" />)}
             </Form.Item>
@@ -168,7 +168,7 @@ const Registrat = forwardRef((props, ref) => {
           <Col span={8}>
             <Form.Item label="申请人部门">
               {getFieldDecorator('proposingDepartment', {
-                rules: [{ required, message: '请输入提出人部门' }],
+                rules: [{ required, message: '请输入申请人部门' }],
                 initialValue: register.proposingDepartment,
               })(<Input placeholder="请输入" />)}
             </Form.Item>
@@ -196,14 +196,14 @@ const Registrat = forwardRef((props, ref) => {
               })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" />)}
             </Form.Item>
           </Col>
-          <Col span={8}>
+          {/* <Col span={8}>
             <Form.Item label="期待完成时间">
               {getFieldDecorator('completeTime', {
                 rules: [{ required, message: '请选择期待完成时间' }],
                 initialValue: moment(register.completeTime),
               })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" />)}
             </Form.Item>
-          </Col>
+          </Col> */}
           <Col span={8}>
             <Form.Item label="需求类型">
               {getFieldDecorator('demandType', {
@@ -310,7 +310,7 @@ Registrat.defaultProps = {
     proposingDepartment: '计量中心',
     proposingUnit: '广西电网有限责任公司',
     reason: '',
-    registerPerson: '管理员',
+    registerPerson: 'admin',
     registerTime: moment().format(),
     registrationDepartment: '计量中心',
     registrationUnit: '广西电网有限责任公司',

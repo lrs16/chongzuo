@@ -88,7 +88,9 @@ const UserModel = {
   effects: {
     *fetchCurrent(_, { call, put }) {
       const response = yield call(queryCurrent);
-
+      if (response.code === 200) {
+        sessionStorage.setItem('userauthorityid', response.data.id);
+      }
       yield put({
         type: 'saveCurrentUser',
         payload: {

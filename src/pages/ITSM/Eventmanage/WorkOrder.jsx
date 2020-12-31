@@ -351,7 +351,8 @@ function WorkOrder(props) {
       {recordsloading === false && (
         <Steps
           current={records.length - 1}
-          progressDot
+          size="small"
+          // progressDot
           style={{
             background: '#fff',
             padding: 24,
@@ -364,8 +365,8 @@ function WorkOrder(props) {
               <div className={styles.stepDescription}>
                 处理人：{obj.user}
                 <DingdingOutlined />
-                <div>{obj.addTime}</div>
-                <div>{obj.endTime}</div>
+                <div>开始时间：{obj.addTime}</div>
+                <div>结束时间：{obj.endTime}</div>
               </div>
             );
             return <Step title={obj.nodeName} description={desc} />;
@@ -521,7 +522,7 @@ function WorkOrder(props) {
 
 export default connect(({ eventtodo, eventregist, loading }) => ({
   userinfo: eventregist.userinfo,
-  //userloading: loading.effects['eventregist/fetchuser'],
+  // userloading: loading.effects['eventregist/fetchuser'],
   info: eventtodo.info,
   records: eventtodo.records,
   loading: loading.models.eventtodo,

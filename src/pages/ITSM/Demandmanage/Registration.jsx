@@ -19,6 +19,7 @@ function Registration(props) {
         creationTime: values.creationTime.format(),
         registerTime: values.registerTime.format(),
         functionalModule: values.functionalModule.join('/'),
+        nextUser: sessionStorage.getItem('NextflowUserId'),
       },
     });
   };
@@ -47,23 +48,23 @@ function Registration(props) {
     });
   };
 
+  const operations = (
+    <>
+      <Button type="primary" style={{ marginRight: 8 }} onClick={() => getregistrat('save')}>
+        保存
+      </Button>
+      <SelectUser handleSubmit={() => getregistrat('next')}>
+        <Button type="primary" style={{ marginRight: 8 }}>
+          流转
+        </Button>
+      </SelectUser>
+      <Button type="default">关闭</Button>
+    </>
+  );
+
   return (
-    <PageHeaderWrapper title={pagetitle}>
-      <Card
-        extra={
-          <>
-            <Button type="primary" style={{ marginRight: 8 }} onClick={() => getregistrat('save')}>
-              保存
-            </Button>
-            <SelectUser handleSubmit={() => getregistrat('next')}>
-              <Button type="primary" style={{ marginRight: 8 }}>
-                流转
-              </Button>
-            </SelectUser>
-            <Button type="default">关闭</Button>
-          </>
-        }
-      >
+    <PageHeaderWrapper title={pagetitle} extra={operations}>
+      <Card>
         <Registrat ref={RegistratRef} />
       </Card>
     </PageHeaderWrapper>

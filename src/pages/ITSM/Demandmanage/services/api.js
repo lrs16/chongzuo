@@ -23,3 +23,18 @@ export async function DemandtoDoList(params) {
     body: JSON.stringify(params),
   });
 }
+
+// 编辑历史记录
+export async function DemandRecords(processId) {
+  return request(`/demand/todo/processLog/${processId}`, {
+    method: 'GET',
+  });
+}
+
+// 编辑流程图/demand/todo/processImage/{processId}
+export async function DemandImage(processId) {
+  return request(`/demand/todo/processImage/${processId}`, {
+    method: 'GET',
+    responseType: 'blob',
+  });
+}

@@ -146,7 +146,6 @@ const ReturnVisit = React.forwardRef((props, ref) => {
             )}
           </Form.Item>
         </Col> */}
-        <Row> </Row>
         <Col span={8}>
           <Form.Item label="回访人">
             {getFieldDecorator('finish_revisitor', {

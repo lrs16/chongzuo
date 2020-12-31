@@ -207,7 +207,7 @@ const Handle = React.forwardRef((props, ref) => {
           </Form.Item>
         </Col>
         <Col span={8}>
-          <Form.Item label="处理完成时间">
+          <Form.Item label="完成时间">
             {getFieldDecorator('handle_end_time', {
               rules: [{ required }],
               initialValue: moment(handle.end_time),
@@ -244,6 +244,7 @@ const Handle = React.forwardRef((props, ref) => {
         <Col span={24}>
           <Form.Item label="解决方案" {...forminladeLayout}>
             {getFieldDecorator('handle_content', {
+              rules: [{ required, message: '请输入解决方案' }],
               initialValue: handle.content,
             })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
           </Form.Item>

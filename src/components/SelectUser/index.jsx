@@ -13,7 +13,7 @@ const SelectUser = props => {
 
   const users = usermanage.data.rows;
 
-  const [value, setValue] = useState('1');
+  const [value, setValue] = useState('');
 
   const handleChange = e => {
     setValue(e.target.value);
@@ -59,7 +59,7 @@ const SelectUser = props => {
         onOk={handleOk}
         onCancel={handleCancel}
       >
-        <Spin tip="正在提交数据..." spinning={Boolean(userloading)}>
+        <Spin tip="正在加载数据..." spinning={Boolean(userloading)}>
           {userloading === false && (
             <Radio.Group onChange={handleChange} value={value}>
               {users.map(({ id, userName }) => [

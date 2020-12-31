@@ -43,7 +43,9 @@ function ToDodetails(props) {
   };
 
   useEffect(() => {
-    message.info('请接单..', 3);
+    if (pangekey === '4') {
+      message.info('请接单..', 3);
+    }
   }, []);
 
   useEffect(() => {
@@ -66,7 +68,7 @@ function ToDodetails(props) {
       type: 'eventtodo/eventaccept',
       payload: {
         id,
-        userIds: '1',
+        userIds: sessionStorage.getItem('userauthorityid'),
         type: '1',
       },
     });

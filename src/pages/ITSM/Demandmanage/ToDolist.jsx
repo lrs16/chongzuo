@@ -38,13 +38,13 @@ const formItemLayout = {
 const columns = [
   {
     title: '需求编号',
-    dataIndex: 'id',
-    key: 'id',
+    dataIndex: 'demandId',
+    key: 'demandId',
   },
   {
     title: '需求标题',
-    dataIndex: 'title',
-    key: 'title',
+    dataIndex: 'demandTitle',
+    key: 'demandTitle',
     render: (text, record) => {
       const handleClick = () => {
         router.push({
@@ -61,8 +61,8 @@ const columns = [
   },
   {
     title: '需求类型',
-    dataIndex: 'type',
-    key: 'type',
+    dataIndex: 'demandType',
+    key: 'demandType',
   },
   {
     title: '功能模块',
@@ -72,35 +72,18 @@ const columns = [
 
   {
     title: '当前处理环节',
-    dataIndex: 'state',
-    key: 'state',
-    render: (text, record) => {
-      const textmaps = [
-        '需求登记',
-        '需求审核',
-        '需求复核',
-        '处理中',
-        '运维审核',
-        '需求跟踪',
-        '需求确认',
-      ];
-      return <>{textmaps[record.state]}</>;
-    },
+    dataIndex: 'taskName',
+    key: 'taskName',
   },
   {
     title: '提出人',
-    dataIndex: 'filledby',
-    key: 'filledby',
-  },
-  {
-    title: '处理人',
-    dataIndex: 'handler',
-    key: 'handler',
+    dataIndex: 'sender',
+    key: 'sender',
   },
   {
     title: '发送时间',
-    dataIndex: 'time',
-    key: 'time',
+    dataIndex: 'sendTime',
+    key: 'sendTime',
   },
 ];
 
@@ -121,9 +104,12 @@ function ToDolist(props) {
         dispatch({
           type: 'demandtodo/fetchlist',
           payload: {
-            ...values,
+            // ...values,
             currentPage: paginations.current,
             pageSize: paginations.pageSize,
+            userId: '',
+            demandId: '',
+            nodeName: '',
           },
         });
       }
@@ -137,6 +123,7 @@ function ToDolist(props) {
         ...values,
         pageSize: size,
         currentPage: page,
+        validate: false,
       },
     });
   };
@@ -191,9 +178,21 @@ function ToDolist(props) {
     resetFields();
   };
 
+  const handleClick = () => {
+    router.push({
+      pathname: `/ITSM/demandmanage/to-do/record/workorder`,
+      query: {
+        pangekey: '需求验证',
+        processId: '10069',
+        validate: false,
+      },
+    });
+  };
+
   return (
     <PageHeaderWrapper title={pagetitle}>
       <Card>
+        <Button onClick={handleClick}>进入详情</Button>
         <Row gutter={24}>
           <Form {...formItemLayout} onSubmit={handleSearch}>
             <Col span={8}>
@@ -338,7 +337,7 @@ function ToDolist(props) {
         <Table
           loading={loading}
           columns={columns}
-          dataSource={list.data}
+          dataSource={list.rows}
           rowKey={record => record.id}
           pagination={pagination}
         />
