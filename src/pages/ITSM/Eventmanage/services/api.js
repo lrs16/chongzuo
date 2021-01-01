@@ -32,7 +32,7 @@ export async function EventFlow(params) {
   });
 }
 
-//删除/itsm/event/flow/delete
+// 删除/itsm/event/flow/delete
 export async function EventDelete(params) {
   return request(`/itsm/event/flow/delete`, {
     method: 'POST',

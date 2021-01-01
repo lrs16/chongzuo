@@ -44,6 +44,7 @@ function Registration(props) {
   const [flowtype, setFlowtype] = useState('1'); // 流转类型
   const [ischeck, setIscheck] = useState({ save: false, flow: false }); // 是否在校验状态
   const [activeKey, setActiveKey] = useState(['registratform']);
+  const [defaultvalue, setDefaultvalue] = useState('');
   const RegistratRef = useRef();
   const HandleRef = useRef();
   useEffect(() => {
@@ -76,12 +77,25 @@ function Registration(props) {
           ...values,
           register_occur_time: values.register_occur_time.format('YYYY-MM-DD HH:mm:ss'),
           register_selfhandle: String(Number(values.register_selfhandle)),
+          register_supplement: String(Number(values.register_supplement)),
         });
         submittype(type);
       } else {
         setIscheck({ save: false, flow: false });
       }
     });
+  };
+
+  const getregistinfo = () => {
+    setDefaultvalue(
+      RegistratRef.current.getFieldsValue([
+        'register_event_effect',
+        'main_event_type',
+        'main_event_object',
+        'register_event_emergent',
+        'register_event_prior',
+      ]),
+    );
   };
 
   const gethandle = type => {
@@ -147,6 +161,13 @@ function Registration(props) {
     }
   }, [ischeck]);
 
+  useEffect(() => {
+    getregistinfo();
+    if (show === true) {
+      getregistinfo();
+    }
+  }, [show]);
+
   const handleclose = () => {
     router.push({
       pathname: `/ITSM/eventmanage/to-do`,
@@ -158,7 +179,7 @@ function Registration(props) {
       <Button type="primary" style={{ marginRight: 8 }} onClick={handlesubmit}>
         保 存
       </Button>
-      <SelectUser handleSubmit={() => handleflow()}>
+      <SelectUser handleSubmit={() => handleflow()} flowtype={flowtype}>
         <Button type="primary" style={{ marginRight: 8 }}>
           流 转
         </Button>
@@ -172,14 +193,12 @@ function Registration(props) {
   return (
     <PageHeaderWrapper title={pagetitle} extra={operations}>
       <Spin tip="正在提交数据..." spinning={Boolean(loading)}>
-        <Card style={{ textAlign: 'right' }}></Card>
         <div className={styles.collapse}>
           <Collapse
             expandIconPosition="right"
             // defaultActiveKey={['1']}
             activeKey={activeKey}
             bordered={false}
-            style={{ marginTop: '-25px' }}
             onChange={callback}
           >
             <Panel header="事件登记" key="registratform">
@@ -188,6 +207,7 @@ function Registration(props) {
                 ChangeCheck={checked => setCheck(checked)}
                 ChangeActiveKey={keys => setActiveKey(keys)}
                 ChangeFlowtype={type => setFlowtype(type)}
+                changeDefaultvalue={values => setDefaultvalue(values)}
                 formItemLayout={formItemLayout}
                 forminladeLayout={forminladeLayout}
                 show={show}
@@ -202,6 +222,7 @@ function Registration(props) {
                   forminladeLayout={forminladeLayout}
                   ref={HandleRef}
                   userinfo={userinfo}
+                  defaultvalue={defaultvalue}
                 />
               </Panel>
             )}

@@ -1,4 +1,4 @@
-import React, { useRef, useImperativeHandle } from 'react';
+import React, { useRef, useImperativeHandle, useEffect } from 'react';
 import moment from 'moment';
 import { Row, Col, Form, Input, Select, Upload, Button, DatePicker } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
@@ -8,9 +8,9 @@ const { Option } = Select;
 const { TextArea } = Input;
 
 const degreemap = [
-  { key: '001', value: '高' },
+  { key: '001', value: '低' },
   { key: '002', value: '中' },
-  { key: '003', value: '低' },
+  { key: '003', value: '高' },
   { key: '004', value: '紧急' },
 ];
 
@@ -41,7 +41,7 @@ const result = [
 ];
 
 const Handle = React.forwardRef((props, ref) => {
-  const { formItemLayout, forminladeLayout, info, main, userinfo } = props;
+  const { formItemLayout, forminladeLayout, info, main, userinfo, defaultvalue } = props;
   const { handle } = info;
   const { getFieldDecorator } = props.form;
   const required = true;
@@ -53,9 +53,20 @@ const Handle = React.forwardRef((props, ref) => {
     }),
     [],
   );
+  useEffect(() => {
+    sessionStorage.setItem('Nextflowtype', '确认');
+  }, []);
+
   return (
     <Row gutter={24} style={{ marginTop: 24 }}>
       <Form {...formItemLayout}>
+        <Col span={8} style={{ display: 'none' }}>
+          <Form.Item label="处理表单id">
+            {getFieldDecorator('handle_id', {
+              initialValue: handle.id,
+            })(<Input placeholder="请输入" disabled />)}
+          </Form.Item>
+        </Col>
         <Col span={8}>
           <Form.Item label="处理人">
             {getFieldDecorator('handle_user', {
@@ -96,92 +107,250 @@ const Handle = React.forwardRef((props, ref) => {
             })(<Input placeholder="请输入" disabled />)}
           </Form.Item>
         </Col>
-        <Col span={8}>
-          <Form.Item label="影响度">
-            {getFieldDecorator('handle_event_effect', {
-              rules: [{ required, message: '请选择影响度' }],
-              initialValue: handle.event_effect,
-            })(
-              <Select placeholder="请选择">
-                {degreemap.map(({ key, value }, index) => {
-                  if (index < 3)
-                    return (
+        {/* 保存环节 */}
+        {defaultvalue !== undefined && (
+          <>
+            <Col span={8}>
+              <Form.Item label="影响度">
+                {getFieldDecorator('handle_event_effect', {
+                  rules: [{ required, message: '请选择影响度' }],
+                  initialValue: defaultvalue.register_event_effect,
+                })(
+                  <Select placeholder="请选择">
+                    {degreemap.map(({ key, value }, index) => {
+                      if (index < 3)
+                        return (
+                          <Option key={key} value={key}>
+                            {value}
+                          </Option>
+                        );
+                    })}
+                  </Select>,
+                )}
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item label="紧急度">
+                {getFieldDecorator('handle_event_emergent', {
+                  rules: [{ required, message: '请选择紧急度' }],
+                  initialValue: defaultvalue.register_event_emergent,
+                })(
+                  <Select placeholder="请选择">
+                    {degreemap.map(({ key, value }) => [
                       <Option key={key} value={key}>
                         {value}
-                      </Option>
-                    );
-                })}
-              </Select>,
-            )}
-          </Form.Item>
-        </Col>
-        <Col span={8}>
-          <Form.Item label="紧急度">
-            {getFieldDecorator('handle_event_emergent', {
-              rules: [{ required, message: '请选择紧急度' }],
-              initialValue: handle.event_emergent,
-            })(
-              <Select placeholder="请选择">
-                {degreemap.map(({ key, value }) => [
-                  <Option key={key} value={key}>
-                    {value}
-                  </Option>,
-                ])}
-              </Select>,
-            )}
-          </Form.Item>
-        </Col>
-        <Col span={8}>
-          <Form.Item label="优先级">
-            {getFieldDecorator('handle_event_prior', {
-              rules: [{ required, message: '请选择优先级' }],
-              initialValue: handle.event_prior,
-            })(
-              <Select placeholder="请选择">
-                {degreemap.map(({ key, value }, index) => {
-                  if (index < 3)
-                    return (
+                      </Option>,
+                    ])}
+                  </Select>,
+                )}
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item label="优先级">
+                {getFieldDecorator('handle_event_prior', {
+                  rules: [{ required, message: '请选择优先级' }],
+                  initialValue: defaultvalue.register_event_prior,
+                })(
+                  <Select placeholder="请选择">
+                    {degreemap.map(({ key, value }, index) => {
+                      if (index < 3)
+                        return (
+                          <Option key={key} value={key}>
+                            {value}
+                          </Option>
+                        );
+                    })}
+                  </Select>,
+                )}
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item label="事件分类">
+                {getFieldDecorator('main_event_type', {
+                  rules: [{ required, message: '请选择事件分类' }],
+                  initialValue: defaultvalue.main_event_type,
+                })(
+                  <Select placeholder="请选择">
+                    {eventclass.map(({ key, value, disabled }) => [
+                      <Option key={key} value={key} disabled={disabled}>
+                        {value}
+                      </Option>,
+                    ])}
+                  </Select>,
+                )}
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item label="事件对象">
+                {getFieldDecorator('main_event_object', {
+                  rules: [{ required, message: '请选择事件对象' }],
+                  initialValue: defaultvalue.main_event_object,
+                })(
+                  <Select placeholder="请选择">
+                    {eventobject.map(({ key, value }) => [
                       <Option key={key} value={key}>
                         {value}
-                      </Option>
-                    );
-                })}
-              </Select>,
+                      </Option>,
+                    ])}
+                  </Select>,
+                )}
+              </Form.Item>
+            </Col>
+          </>
+        )}
+        {/* 登记时自行处理 */}
+        {defaultvalue === undefined && (
+          <>
+            {handle.event_effect !== '' && (
+              <>
+                <Col span={8}>
+                  <Form.Item label="影响度">
+                    {getFieldDecorator('handle_event_effect', {
+                      rules: [{ required, message: '请选择影响度' }],
+                      initialValue: handle.event_effect,
+                    })(
+                      <Select placeholder="请选择">
+                        {degreemap.map(({ key, value }, index) => {
+                          if (index < 3)
+                            return (
+                              <Option key={key} value={key}>
+                                {value}
+                              </Option>
+                            );
+                        })}
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="紧急度">
+                    {getFieldDecorator('handle_event_emergent', {
+                      rules: [{ required, message: '请选择紧急度' }],
+                      initialValue: handle.event_emergent,
+                    })(
+                      <Select placeholder="请选择">
+                        {degreemap.map(({ key, value }) => [
+                          <Option key={key} value={key}>
+                            {value}
+                          </Option>,
+                        ])}
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="优先级">
+                    {getFieldDecorator('handle_event_prior', {
+                      rules: [{ required, message: '请选择优先级' }],
+                      initialValue: handle.event_prior,
+                    })(
+                      <Select placeholder="请选择">
+                        {degreemap.map(({ key, value }, index) => {
+                          if (index < 3)
+                            return (
+                              <Option key={key} value={key}>
+                                {value}
+                              </Option>
+                            );
+                        })}
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
+              </>
             )}
-          </Form.Item>
-        </Col>
-        <Col span={8}>
-          <Form.Item label="事件分类">
-            {getFieldDecorator('main_event_type', {
-              rules: [{ required, message: '请选择事件分类' }],
-              initialValue: main.event_type,
-            })(
-              <Select placeholder="请选择">
-                {eventclass.map(({ key, value, disabled }) => [
-                  <Option key={key} value={key} disabled={disabled}>
-                    {value}
-                  </Option>,
-                ])}
-              </Select>,
+            {handle.event_effect === '' && (
+              <>
+                <Col span={8}>
+                  <Form.Item label="影响度">
+                    {getFieldDecorator('handle_event_effect', {
+                      rules: [{ required, message: '请选择影响度' }],
+                      initialValue: main.event_effect,
+                    })(
+                      <Select placeholder="请选择">
+                        {degreemap.map(({ key, value }, index) => {
+                          if (index < 3)
+                            return (
+                              <Option key={key} value={key}>
+                                {value}
+                              </Option>
+                            );
+                        })}
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="紧急度">
+                    {getFieldDecorator('handle_event_emergent', {
+                      rules: [{ required, message: '请选择紧急度' }],
+                      initialValue: main.event_emergent,
+                    })(
+                      <Select placeholder="请选择">
+                        {degreemap.map(({ key, value }) => [
+                          <Option key={key} value={key}>
+                            {value}
+                          </Option>,
+                        ])}
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="优先级">
+                    {getFieldDecorator('handle_event_prior', {
+                      rules: [{ required, message: '请选择优先级' }],
+                      initialValue: main.event_prior,
+                    })(
+                      <Select placeholder="请选择">
+                        {degreemap.map(({ key, value }, index) => {
+                          if (index < 3)
+                            return (
+                              <Option key={key} value={key}>
+                                {value}
+                              </Option>
+                            );
+                        })}
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
+              </>
             )}
-          </Form.Item>
-        </Col>
-        <Col span={8}>
-          <Form.Item label="事件对象">
-            {getFieldDecorator('main_event_object', {
-              rules: [{ required, message: '请选择事件对象' }],
-              initialValue: main.event_object,
-            })(
-              <Select placeholder="请选择">
-                {eventobject.map(({ key, value }) => [
-                  <Option key={key} value={key}>
-                    {value}
-                  </Option>,
-                ])}
-              </Select>,
-            )}
-          </Form.Item>
-        </Col>
+            <Col span={8}>
+              <Form.Item label="事件分类">
+                {getFieldDecorator('main_event_type', {
+                  rules: [{ required, message: '请选择事件分类' }],
+                  initialValue: main.event_type,
+                })(
+                  <Select placeholder="请选择">
+                    {eventclass.map(({ key, value, disabled }) => [
+                      <Option key={key} value={key} disabled={disabled}>
+                        {value}
+                      </Option>,
+                    ])}
+                  </Select>,
+                )}
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item label="事件对象">
+                {getFieldDecorator('main_event_object', {
+                  rules: [{ required, message: '请选择事件对象' }],
+                  initialValue: main.event_object,
+                })(
+                  <Select placeholder="请选择">
+                    {eventobject.map(({ key, value }) => [
+                      <Option key={key} value={key}>
+                        {value}
+                      </Option>,
+                    ])}
+                  </Select>,
+                )}
+              </Form.Item>
+            </Col>
+          </>
+        )}
         <Col span={8}>
           <Form.Item label="处理结果">
             {getFieldDecorator('handle_handle_result', {
@@ -285,11 +454,15 @@ Handle.defaultProps = {
       handle_unit_id: '7AC3EF0F718E02A2E0530A644F130365',
       handle_dept: '广西电网有限责任公司',
       handle_dept_id: '7AC3EF0F639302A2E0530A644F130365',
+      handle_id: '',
     },
   },
   main: {
     event_object: '',
     event_type: '',
+    event_effect: '',
+    event_emergent: '',
+    event_prior: '',
   },
   userinfo: {
     deptName: '',

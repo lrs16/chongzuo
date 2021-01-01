@@ -11,7 +11,7 @@ export default {
   menu: {
     locale: false,
   },
-  title: '运维辅助平台',
+  title: '计量主站自动化系统',
   pwa: false,
   iconfontUrl: '',
 };

@@ -54,7 +54,7 @@ const SelectUser = props => {
     <>
       {withClick(children, showModal)}
       <Modal
-        title="请选择下一节点处理人"
+        title={`请选择${sessionStorage.getItem('Nextflowtype')}人`}
         visible={isModalVisible}
         onOk={handleOk}
         onCancel={handleCancel}
@@ -74,6 +74,8 @@ const SelectUser = props => {
     </>
   );
 };
+
+SelectUser.defaultProps = { pangekey: '0' };
 
 export default connect(({ usermanage, loading }) => ({
   usermanage,

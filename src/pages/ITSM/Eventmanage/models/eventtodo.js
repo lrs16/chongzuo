@@ -52,6 +52,12 @@ export default {
     // 打开编辑
     *eventopenflow({ payload: { taskId } }, { call, put }) {
       const response = yield call(EventopenFlow, taskId);
+      if (response.code === -1) {
+        message.error(response.msg, 2);
+        router.push({
+          pathname: `/ITSM/eventmanage/to-do`,
+        });
+      }
       yield put({
         type: 'saveinfo',
         payload: response,
@@ -62,9 +68,13 @@ export default {
       const values = replacerec({ ...paloadvalues });
       const { register_selfhandle } = values;
       const registres = yield call(EventSaveFlow, values);
+      if (registres.code === -1) {
+        message.error(registres.msg, 3);
+      }
+
       if (registres.code === 200) {
         const { taskId } = registres;
-        message.success(registres.msg, 5);
+        message.success(registres.msg, 3);
         if (register_selfhandle === '1') {
           router.push({
             pathname: `/ITSM/eventmanage/to-do/record/workorder`,
@@ -108,7 +118,7 @@ export default {
         }
       }
     },
-
+    // 转单、结束流程
     *eventransfer({ payload: { flow } }, { call }) {
       const response = yield call(EventFlow, flow);
       if (response.code === 200) {

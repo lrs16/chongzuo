@@ -13,6 +13,7 @@ function ToDodetails(props) {
   const [backvalue, setBackvalue] = useState('');
   const [Popvisible, setVisible] = useState(false);
   const [UserId, setUserId] = useState('');
+  const [buttontype, setButtontype] = useState('');
 
   const handleHold = type => {
     router.push({
@@ -20,6 +21,7 @@ function ToDodetails(props) {
       query: {
         pangekey,
         id,
+        mainId,
         validate: true,
         type,
       },
@@ -62,6 +64,13 @@ function ToDodetails(props) {
     }
   }, [backvalue]);
 
+  useEffect(() => {
+    if (pangekey === '6' || pangekey === '7') {
+      setButtontype(sessionStorage.getItem('satisfaction'));
+    }
+  }, []);
+  console.log(buttontype);
+
   // 接单
   const eventaccpt = () => {
     dispatch({
@@ -87,11 +96,26 @@ function ToDodetails(props) {
       },
     });
   };
+  // 结束流程
+  const overflow = () => {
+    dispatch({
+      type: 'eventtodo/eventransfer',
+      payload: {
+        flow: {
+          id,
+          userIds: '1',
+          type: '1',
+        },
+      },
+    });
+  };
   const deleteflow = () => {
     dispatch({
-      type: 'eventtodo/deleteflow',
+      type: 'eventtodo/eventback',
       payload: {
-        mainId,
+        id,
+        userIds: '1',
+        type: '2',
       },
     });
   };
@@ -139,7 +163,7 @@ function ToDodetails(props) {
           </Button>
         </Popover>
       )}
-      {pangekey !== '2' && pangekey !== '3' && pangekey !== '4' && (
+      {pangekey !== '3' && pangekey !== '4' && (
         <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleHold('save')}>
           保存
         </Button>
@@ -156,13 +180,27 @@ function ToDodetails(props) {
           </Button>
         </SelectUser>
       )}
-      {pangekey !== '4' && (
+      {pangekey !== '4' && pangekey !== '6' && pangekey !== '7' && (
         <SelectUser handleSubmit={() => handleHold('flow')}>
           <Button type="primary" style={{ marginRight: 8 }}>
             流转
           </Button>
         </SelectUser>
       )}
+      {(pangekey === '6' || pangekey === '7') &&
+        sessionStorage.getItem('satisfaction') === '重分派' && (
+          <SelectUser handleSubmit={() => handleHold('flow')}>
+            <Button type="primary" style={{ marginRight: 8 }}>
+              重分派
+            </Button>
+          </SelectUser>
+        )}
+      {(pangekey === '6' || pangekey === '7') &&
+        sessionStorage.getItem('satisfaction') !== '重分派' && (
+          <Button type="primary" style={{ marginRight: 8 }} onClick={overflow}>
+            结束
+          </Button>
+        )}
 
       <Button onClick={handleclose}>返回</Button>
     </>

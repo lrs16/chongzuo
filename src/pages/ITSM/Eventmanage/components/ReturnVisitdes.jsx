@@ -1,5 +1,6 @@
 import React from 'react';
 import { Descriptions } from 'antd';
+import styles from '../index.less';
 
 const returnvisit = new Map([
   ['001', '企信回访'],
@@ -25,17 +26,19 @@ const result = new Map([
 function ReturnVisitdes(props) {
   const { info, main } = props;
   return (
-    <Descriptions style={{ marginTop: 24 }}>
-      <Descriptions.Item label="回访方式">{returnvisit.get(info.revisit_way)}</Descriptions.Item>
-      <Descriptions.Item label="处理结果">{result.get(main.event_result)}</Descriptions.Item>
-      <Descriptions.Item label="满意度">{satisfactions.get(info.satisfaction)}</Descriptions.Item>
-      <Descriptions.Item label="回访内容">{info.content}</Descriptions.Item>
-      <Descriptions.Item label="填单时间">{info.add_time}</Descriptions.Item>
-      <Descriptions.Item label="回访时间">{info.revisit_time}</Descriptions.Item>
-      <Descriptions.Item label="登记人">{info.revisitor}</Descriptions.Item>
-      <Descriptions.Item label="登记人单位">{info.revisit_unit}</Descriptions.Item>
-      <Descriptions.Item label="登记人部门">{info.revisit_dept}</Descriptions.Item>
-    </Descriptions>
+    <div className={styles.collapse}>
+      <Descriptions style={{ marginTop: 24 }}>
+        <Descriptions.Item label="回访方式">{returnvisit.get(info.revisit_way)}</Descriptions.Item>
+        <Descriptions.Item label="处理结果">{result.get(main.event_result)}</Descriptions.Item>
+        <Descriptions.Item label="满意度">{satisfactions.get(info.satisfaction)}</Descriptions.Item>
+        <Descriptions.Item label="回访内容">{info.content}</Descriptions.Item>
+        <Descriptions.Item label="填单时间">{info.add_time}</Descriptions.Item>
+        <Descriptions.Item label="回访时间">{info.revisit_time}</Descriptions.Item>
+        <Descriptions.Item label="登记人">{info.revisitor}</Descriptions.Item>
+        <Descriptions.Item label="登记人单位">{info.revisit_unit}</Descriptions.Item>
+        <Descriptions.Item label="登记人部门">{info.revisit_dept}</Descriptions.Item>
+      </Descriptions>
+    </div>
   );
 }
 

@@ -6,7 +6,7 @@ import { DownloadOutlined } from '@ant-design/icons';
 const { TextArea } = Input;
 
 const Check = forwardRef((props, ref) => {
-  const { formItemLayout, forminladeLayout, info, ChangeFlowtype } = props;
+  const { formItemLayout, forminladeLayout, info, ChangeFlowtype, userinfo } = props;
   const { check } = info;
   const { getFieldDecorator } = props.form;
   const [adopt, setAdopt] = useState('001');
@@ -19,12 +19,18 @@ const Check = forwardRef((props, ref) => {
     [],
   );
 
+  useEffect(() => {
+    sessionStorage.setItem('Nextflowtype', '处理');
+  }, []);
+
   const handleAdopt = e => {
     setAdopt(e.target.value);
     if (e.target.value === '001') {
       ChangeFlowtype('1');
+      sessionStorage.setItem('Nextflowtype', '处理');
     } else {
       ChangeFlowtype('3');
+      sessionStorage.setItem('Nextflowtype', '确认');
     }
   };
 
@@ -96,7 +102,7 @@ const Check = forwardRef((props, ref) => {
           <Form.Item label="审核人">
             {getFieldDecorator('check_check_user', {
               rules: [{ required: true }],
-              initialValue: check.check_user,
+              initialValue: userinfo.userName,
             })(<Input placeholder="请输入" disabled />)}
           </Form.Item>
         </Col>
@@ -104,7 +110,7 @@ const Check = forwardRef((props, ref) => {
           <Form.Item label="审核人ID">
             {getFieldDecorator('check_check_user_id', {
               rules: [{ required: true }],
-              initialValue: check.check_user_id,
+              initialValue: userinfo.userId,
             })(<Input placeholder="请输入" disabled />)}
           </Form.Item>
         </Col>
@@ -112,7 +118,7 @@ const Check = forwardRef((props, ref) => {
           <Form.Item label="审核人单位">
             {getFieldDecorator('check_check_unit', {
               rules: [{ required: true }],
-              initialValue: check.check_unit,
+              initialValue: userinfo.unitName,
             })(<Input placeholder="请输入" disabled />)}
           </Form.Item>
         </Col>
@@ -120,7 +126,7 @@ const Check = forwardRef((props, ref) => {
           <Form.Item label="审核人单位ID">
             {getFieldDecorator('check_check_unit_id', {
               rules: [{ required: true }],
-              initialValue: check.check_unit_id,
+              initialValue: userinfo.unitId,
             })(<Input placeholder="请输入" disabled />)}
           </Form.Item>
         </Col>
@@ -128,7 +134,7 @@ const Check = forwardRef((props, ref) => {
           <Form.Item label="审核人部门">
             {getFieldDecorator('check_check_dept', {
               rules: [{ required: true }],
-              initialValue: check.check_dept,
+              initialValue: userinfo.deptName,
             })(<Input placeholder="请输入" disabled />)}
           </Form.Item>
         </Col>
@@ -136,7 +142,7 @@ const Check = forwardRef((props, ref) => {
           <Form.Item label="审核人部门ID">
             {getFieldDecorator('check_check_dept_id', {
               rules: [{ required: true }],
-              initialValue: check.check_dept_id,
+              initialValue: userinfo.deptId,
             })(<Input placeholder="请输入" />)}
           </Form.Item>
         </Col>
@@ -159,6 +165,14 @@ Check.defaultProps = {
       check_dept: '计量中心',
       check_dept_id: '7AC3EF0F718E02A2E0530A644F130365',
     },
+  },
+  userinfo: {
+    deptName: '',
+    deptId: '',
+    unitName: '',
+    unitId: '',
+    userName: '',
+    userId: '',
   },
 };
 

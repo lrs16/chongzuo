@@ -53,14 +53,16 @@ const Registrat = forwardRef((props, ref) => {
     ChangeCheck,
     ChangeActiveKey,
     ChangeFlowtype,
+    changeDefaultvalue,
     info,
     main,
     userinfo,
   } = props;
   const { register } = info;
-  const { getFieldDecorator, validateFields } = props.form;
+  const { getFieldDecorator, getFieldsValue } = props.form;
   const required = true;
   const [check, setCheck] = useState(false);
+  const [revisitway, setRevisitway] = useState(false);
   const attRef = useRef();
   useImperativeHandle(
     ref,
@@ -76,36 +78,56 @@ const Registrat = forwardRef((props, ref) => {
     }
   }, [main]);
 
+  useEffect(() => {
+    sessionStorage.setItem('Nextflowtype', '处理');
+  }, []);
+
+  useEffect(() => {
+    getFieldsValue(['register_revisit_way']);
+  }, []);
+
+  const getdefault = () => {
+    // setTimeout(() => {
+    //   changeDefaultvalue(getFieldsValue([
+    //     'register_event_effect',
+    //     'main_event_type',
+    //     'main_event_object',
+    //     'register_event_emergent',
+    //     'register_event_prior',
+    //   ]));
+    // }, 0)
+  };
+
   const handleself = e => {
     ChangeShow(e.target.checked);
     ChangeActiveKey(['registratform', 'handleform']);
-    // validateFields([
-    //   'register_event_effect',
-    //   'main_event_type',
-    //   'main_event_object',
-    //   'register_event_emergent',
-    //   'register_event_prior'], (err, values) => {
-    //     if (!err) {
-
-    //     }
-    //   });
   };
 
   const handlcheckChange = value => {
+    //  getdefault();
     if (value === '005') {
       ChangeCheck(true);
       setCheck(true);
       ChangeFlowtype('3');
+      sessionStorage.setItem('Nextflowtype', '审核');
     } else {
       ChangeCheck(false);
       setCheck(false);
       ChangeFlowtype('1');
+      sessionStorage.setItem('Nextflowtype', '处理');
     }
   };
 
   return (
-    <Row gutter={24} style={{ paddingTop: 24 }}>
-      <Form {...formItemLayout}>
+    <Form {...formItemLayout}>
+      <Row gutter={24} style={{ paddingTop: 24 }}>
+        <Col span={8} style={{ display: 'none' }}>
+          <Form.Item label="处理表单id">
+            {getFieldDecorator('register_id', {
+              initialValue: register.id,
+            })(<Input placeholder="请输入" disabled />)}
+          </Form.Item>
+        </Col>
         <Col span={8}>
           <Form.Item label="事件编号">
             {getFieldDecorator('main_event_no', {
@@ -197,8 +219,8 @@ const Registrat = forwardRef((props, ref) => {
               rules: [
                 {
                   required,
-                  len: 11,
-                  validator: phone_reg,
+                  // len: 11,
+                  // validator: phone_reg,
                   message: '请输入正确的正确的手机号码',
                 },
               ],
@@ -244,7 +266,7 @@ const Registrat = forwardRef((props, ref) => {
               rules: [{ required, message: '请选择事件对象' }],
               initialValue: main.event_object,
             })(
-              <Select placeholder="请选择">
+              <Select placeholder="请选择" onChange={getdefault}>
                 {objectmap.map(({ key, value }) => [
                   <Option key={key} value={key}>
                     {value}
@@ -260,7 +282,7 @@ const Registrat = forwardRef((props, ref) => {
               rules: [{ required, message: '请选择影响度' }],
               initialValue: register.event_effect,
             })(
-              <Select placeholder="请选择">
+              <Select placeholder="请选择" onChange={getdefault}>
                 {degreemap.map(({ key, value }, index) => {
                   if (index < 3)
                     return (
@@ -279,7 +301,7 @@ const Registrat = forwardRef((props, ref) => {
               rules: [{ required, message: '请选择紧急度' }],
               initialValue: register.event_emergent,
             })(
-              <Select placeholder="请选择">
+              <Select placeholder="请选择" onChange={getdefault}>
                 {degreemap.map(({ key, value }) => [
                   <Option key={key} value={key}>
                     {value}
@@ -295,7 +317,7 @@ const Registrat = forwardRef((props, ref) => {
               rules: [{ required, message: '请选择优先级' }],
               initialValue: register.event_prior,
             })(
-              <Select placeholder="请选择">
+              <Select placeholder="请选择" onChange={getdefault}>
                 {degreemap.map(({ key, value }, index) => {
                   if (index < 3)
                     return (
@@ -352,8 +374,8 @@ const Registrat = forwardRef((props, ref) => {
           </Form.Item>
         </Col>
         {check === false && (
-          <Col span={24}>
-            <Form.Item label="自行处理" {...forminladeLayout}>
+          <Col span={8}>
+            <Form.Item label="自行处理">
               {getFieldDecorator('register_selfhandle', {
                 valuePropName: 'checked',
                 initialValue: Boolean(Number(register.selfhandle)),
@@ -361,6 +383,16 @@ const Registrat = forwardRef((props, ref) => {
             </Form.Item>
           </Col>
         )}
+        <Col span={8}>
+          <Form.Item label="是否补单">
+            {getFieldDecorator('register_supplement', {
+              valuePropName: 'checked',
+              initialValue: Boolean(Number(register.supplement)),
+            })(<Checkbox />)}
+          </Form.Item>
+        </Col>
+      </Row>
+      <Row gutter={24}>
         {/* <Col span={24}>
           <Form.Item
             label="上传附件"
@@ -424,8 +456,8 @@ const Registrat = forwardRef((props, ref) => {
             })(<Input disabled />)}
           </Form.Item>
         </Col>
-      </Form>
-    </Row>
+      </Row>
+    </Form>
   );
 });
 
@@ -459,6 +491,8 @@ Registrat.defaultProps = {
       register_user_id: '1',
       revisit_way: '001',
       selfhandle: '0',
+      supplement: '0',
+      id: '',
     },
   },
   userinfo: {

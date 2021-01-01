@@ -21,7 +21,7 @@ const Collapsekeymap = new Map([
   ['1', 'registratform'],
   ['2', 'checkform'],
   ['3', 'checkform'],
-  ['4', 'handleform'],
+  ['4', '1'],
   ['5', 'handleform'],
   ['6', 'visitform'],
   ['7', 'visitform'],
@@ -69,6 +69,7 @@ function WorkOrder(props) {
   const [check, setCheck] = useState(false); // 事件分类是否权限账号
   const [activeKey, setActiveKey] = useState([]);
   const [finishfirst, setFinishfirst] = useState(undefined); // 初始化待确认,待审核
+  const [defaultvalue, setDefaultvalue] = useState(''); //自行处理后处理表单回填信息
   const [flowtype, setFlowtype] = useState('1'); // 流转类型
   const RegistratRef = useRef();
   const CheckRef = useRef();
@@ -118,6 +119,7 @@ function WorkOrder(props) {
           ...values,
           register_occur_time: values.register_occur_time.format('YYYY-MM-DD HH:mm:ss'),
           register_selfhandle: String(Number(values.register_selfhandle)),
+          register_supplement: String(Number(values.register_supplement)),
         });
       } else {
         setIscheck(false);
@@ -188,6 +190,7 @@ function WorkOrder(props) {
         payload: {
           paloadvalues,
           pangekey,
+          flow_instance_id,
         },
       });
     }
@@ -208,30 +211,6 @@ function WorkOrder(props) {
       });
     }
   };
-
-  // 回退
-  // const eventback = () => {
-  //   if (ischeck === true) {
-  //     dispatch({
-  //       type: 'eventtodo/eventback',
-  //       payload: {
-  //         flow: {
-  //           id,
-  //           userIds: '1',
-  //           type: '2',
-  //         },
-  //         paloadvalues,
-  //       },
-  //     });
-  //   }
-  // };
-
-  // 转单
-  // const eventransfer = () => {
-  //   if (ischeck === true) {
-
-  //   }
-  // };
   // 点击保存，流转触发表单校验
   const handlesubmit = () => {
     switch (pangekey) {
@@ -301,6 +280,9 @@ function WorkOrder(props) {
   useEffect(() => {
     setActiveKey([`${Collapsekeymap.get(pangekey)}`]);
   }, [info]);
+  useEffect(() => {
+    setActiveKey([`${Collapsekeymap.get(pangekey)}`]);
+  }, [pangekey]);
 
   // 初始化流转类型,自动接单value
   useEffect(() => {
@@ -364,7 +346,7 @@ function WorkOrder(props) {
             const desc = (
               <div className={styles.stepDescription}>
                 处理人：{obj.user}
-                <DingdingOutlined />
+                {/* <DingdingOutlined /> */}
                 <div>开始时间：{obj.addTime}</div>
                 <div>结束时间：{obj.endTime}</div>
               </div>

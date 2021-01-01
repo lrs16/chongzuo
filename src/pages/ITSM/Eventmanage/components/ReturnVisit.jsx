@@ -1,4 +1,4 @@
-import React, { useRef, useImperativeHandle } from 'react';
+import React, { useRef, useImperativeHandle, useEffect } from 'react';
 import moment from 'moment';
 import { Row, Col, Form, Input, Select, Upload, Button, DatePicker } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
@@ -36,7 +36,6 @@ const ReturnVisit = React.forwardRef((props, ref) => {
   const { formItemLayout, forminladeLayout, info, main, ChangeFlowtype, userinfo } = props;
   const { finish } = info;
   const { getFieldDecorator } = props.form;
-  console.log(props);
   const attRef = useRef();
   useImperativeHandle(
     ref,
@@ -45,52 +44,61 @@ const ReturnVisit = React.forwardRef((props, ref) => {
     }),
     [],
   );
-
+  useEffect(() => {
+    sessionStorage.setItem('Nextflowtype', '结束');
+    sessionStorage.setItem('satisfaction', '结束');
+  }, []);
   const required = true;
 
   const handlcheckChange = value => {
-    if (value === '001') {
+    if (value !== '003') {
       ChangeFlowtype('1');
+      sessionStorage.setItem('satisfaction', '结束');
     } else {
       ChangeFlowtype('3');
+      sessionStorage.setItem('satisfaction', '重分派');
     }
   };
 
   return (
     <Row gutter={24} style={{ paddingTop: 24 }}>
       <Form {...formItemLayout}>
-        <Col span={8}>
-          <Form.Item label="回访方式">
-            {getFieldDecorator('finish_revisit_way', {
-              rules: [{ required, message: '请选择回访方式' }],
-              initialValue: finish.revisit_way,
-            })(
-              <Select placeholder="请选择">
-                {returnvisit.map(({ key, value }) => [
-                  <Option key={key} value={key}>
-                    {value}
-                  </Option>,
-                ])}
-              </Select>,
-            )}
-          </Form.Item>
-        </Col>
-        <Col span={8}>
-          <Form.Item label="处理结果">
-            {getFieldDecorator('main_event_result', {
-              rules: [{ required, message: '请选择处理结果' }],
-              initialValue: main.event_result,
-            })(
-              <Select placeholder="请选择">
-                {result.map(({ key, value }) => [
-                  <Option key={key} value={key}>
-                    {value}
-                  </Option>,
-                ])}
-              </Select>,
-            )}
-          </Form.Item>
-        </Col>
+        {finish !== null && (
+          <>
+            <Col span={8}>
+              <Form.Item label="回访方式">
+                {getFieldDecorator('finish_revisit_way', {
+                  rules: [{ required, message: '请选择回访方式' }],
+                  initialValue: finish.revisit_way,
+                })(
+                  <Select placeholder="请选择">
+                    {returnvisit.map(({ key, value }) => [
+                      <Option key={key} value={key}>
+                        {value}
+                      </Option>,
+                    ])}
+                  </Select>,
+                )}
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item label="处理结果">
+                {getFieldDecorator('main_event_result', {
+                  rules: [{ required, message: '请选择处理结果' }],
+                  initialValue: main.event_result,
+                })(
+                  <Select placeholder="请选择">
+                    {result.map(({ key, value }) => [
+                      <Option key={key} value={key}>
+                        {value}
+                      </Option>,
+                    ])}
+                  </Select>,
+                )}
+              </Form.Item>
+            </Col>
+          </>
+        )}
         <Col span={8}>
           <Form.Item label="满意度">
             {getFieldDecorator('finish_satisfaction', {
@@ -217,6 +225,7 @@ ReturnVisit.defaultProps = {
   },
   main: {
     event_result: '',
+    revisit_way: '',
   },
   userinfo: {
     deptName: '',
