@@ -1,4 +1,5 @@
 import React, { useRef, useImperativeHandle, forwardRef, useState, useEffect } from 'react';
+import router from 'umi/router';
 import moment from 'moment';
 import { Row, Col, Form, Input, Select, Upload, Button, Checkbox, DatePicker } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
@@ -36,6 +37,16 @@ const objectmap = [
   { key: '006', value: '账号缺陷' },
 ];
 
+const typemaps = new Map([
+  ['', '处理'],
+  ['001', '处理'],
+  ['002', '处理'],
+  ['003', '处理'],
+  ['004', '处理'],
+  ['005', '审核'],
+  ['006', '处理'],
+]);
+
 const typemap = [
   { key: '001', value: '咨询' },
   { key: '002', value: '缺陷' },
@@ -57,8 +68,11 @@ const Registrat = forwardRef((props, ref) => {
     info,
     main,
     userinfo,
+    sethandlevalue,
+    location,
   } = props;
   const { register } = info;
+  const { pangekey, id, mainId, validate } = location.query;
   const { getFieldDecorator, getFieldsValue } = props.form;
   const required = true;
   const [check, setCheck] = useState(false);
@@ -71,40 +85,50 @@ const Registrat = forwardRef((props, ref) => {
     }),
     [],
   );
+  const gethandelvalue = getFieldsValue([
+    'register_event_effect',
+    'main_event_type',
+    'main_event_object',
+    'register_event_emergent',
+    'register_event_prior',
+  ]);
+
+  const routerRefresh = () => {
+    router.push({
+      pathname: location.pathname,
+      query: {
+        pangekey,
+        id,
+        mainId,
+        next: sessionStorage.getItem('Nextflowtype'),
+      },
+    });
+  };
 
   useEffect(() => {
+    if (register.revisit_way === '003') {
+      setRevisitway(true);
+    }
     if (main.event_type === '005') {
       setCheck(true);
     }
-  }, [main]);
+  }, [info]);
 
   useEffect(() => {
-    sessionStorage.setItem('Nextflowtype', '处理');
-  }, []);
+    sessionStorage.setItem('Nextflowtype', typemaps.get(main.event_type));
+    routerRefresh();
+  }, [info]);
 
-  useEffect(() => {
-    getFieldsValue(['register_revisit_way']);
-  }, []);
-
-  const getdefault = () => {
-    // setTimeout(() => {
-    //   changeDefaultvalue(getFieldsValue([
-    //     'register_event_effect',
-    //     'main_event_type',
-    //     'main_event_object',
-    //     'register_event_emergent',
-    //     'register_event_prior',
-    //   ]));
-    // }, 0)
-  };
-
+  // 自行处理
   const handleself = e => {
     ChangeShow(e.target.checked);
     ChangeActiveKey(['registratform', 'handleform']);
+    if (sethandlevalue === 'true') {
+      changeDefaultvalue(gethandelvalue);
+    }
   };
-
+  // 005时走审核
   const handlcheckChange = value => {
-    //  getdefault();
     if (value === '005') {
       ChangeCheck(true);
       setCheck(true);
@@ -116,18 +140,30 @@ const Registrat = forwardRef((props, ref) => {
       ChangeFlowtype('1');
       sessionStorage.setItem('Nextflowtype', '处理');
     }
+    if (sethandlevalue === 'true') {
+      changeDefaultvalue(gethandelvalue);
+    }
+    routerRefresh();
+  };
+
+  // 003手机号码必填
+  const handlrevisitway = value => {
+    if (value === '003') {
+      setRevisitway(true);
+    } else {
+      setRevisitway(false);
+    }
+  };
+
+  const changeHandlevalue = () => {
+    if (sethandlevalue === 'true') {
+      changeDefaultvalue(gethandelvalue);
+    }
   };
 
   return (
     <Form {...formItemLayout}>
       <Row gutter={24} style={{ paddingTop: 24 }}>
-        <Col span={8} style={{ display: 'none' }}>
-          <Form.Item label="处理表单id">
-            {getFieldDecorator('register_id', {
-              initialValue: register.id,
-            })(<Input placeholder="请输入" disabled />)}
-          </Form.Item>
-        </Col>
         <Col span={8}>
           <Form.Item label="事件编号">
             {getFieldDecorator('main_event_no', {
@@ -151,22 +187,7 @@ const Registrat = forwardRef((props, ref) => {
             })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" />)}
           </Form.Item>
         </Col>
-        <Col span={8}>
-          <Form.Item label="事件来源">
-            {getFieldDecorator('main_event_source', {
-              rules: [{ required, message: '请选择事件来源' }],
-              initialValue: main.event_source,
-            })(
-              <Select placeholder="请选择">
-                {sourcemap.map(({ key, value }) => [
-                  <Option key={key} value={key}>
-                    {value}
-                  </Option>,
-                ])}
-              </Select>,
-            )}
-          </Form.Item>
-        </Col>
+
         <Col span={8}>
           <Form.Item label="申报人">
             {getFieldDecorator('register_application_user', {
@@ -214,28 +235,13 @@ const Registrat = forwardRef((props, ref) => {
           </Form.Item>
         </Col>
         <Col span={8}>
-          <Form.Item label="申报人电话">
-            {getFieldDecorator('register_application_user_phone', {
-              rules: [
-                {
-                  required,
-                  // len: 11,
-                  // validator: phone_reg,
-                  message: '请输入正确的正确的手机号码',
-                },
-              ],
-              initialValue: register.application_user_phone,
-            })(<Input placeholder="请输入" />)}
-          </Form.Item>
-        </Col>
-        <Col span={8}>
-          <Form.Item label="回访方式">
-            {getFieldDecorator('register_revisit_way', {
-              rules: [{ required, message: '请选择回访方式' }],
-              initialValue: register.revisit_way,
+          <Form.Item label="事件来源">
+            {getFieldDecorator('main_event_source', {
+              rules: [{ required, message: '请选择事件来源' }],
+              initialValue: main.event_source,
             })(
               <Select placeholder="请选择">
-                {returnvisit.map(({ key, value }) => [
+                {sourcemap.map(({ key, value }) => [
                   <Option key={key} value={key}>
                     {value}
                   </Option>,
@@ -244,6 +250,46 @@ const Registrat = forwardRef((props, ref) => {
             )}
           </Form.Item>
         </Col>
+        <Col span={8}>
+          <Form.Item label="申报人电话">
+            {getFieldDecorator('register_application_user_phone', {
+              rules: [
+                {
+                  required,
+                  message: '请输入申报人电话',
+                },
+              ],
+              initialValue: register.application_user_phone,
+            })(<Input placeholder="请输入" />)}
+          </Form.Item>
+        </Col>
+        {revisitway === true && (
+          <Col span={8}>
+            <Form.Item label="手机号码">
+              {getFieldDecorator('register_mobile_phone', {
+                rules: [
+                  {
+                    required,
+                    len: 11,
+                    validator: phone_reg,
+                    message: '请输入正确的正确的手机号码',
+                  },
+                ],
+                initialValue: register.mobile_phone,
+              })(<Input placeholder="请输入" />)}
+            </Form.Item>
+          </Col>
+        )}
+        {revisitway !== true && (
+          <Col span={8}>
+            <Form.Item label="手机号码">
+              {getFieldDecorator('register_mobile_phone', {
+                initialValue: register.mobile_phone,
+              })(<Input placeholder="请输入" />)}
+            </Form.Item>
+          </Col>
+        )}
+
         <Col span={8}>
           <Form.Item label="事件分类">
             {getFieldDecorator('main_event_type', {
@@ -266,8 +312,24 @@ const Registrat = forwardRef((props, ref) => {
               rules: [{ required, message: '请选择事件对象' }],
               initialValue: main.event_object,
             })(
-              <Select placeholder="请选择" onChange={getdefault}>
+              <Select placeholder="请选择" onChange={changeHandlevalue}>
                 {objectmap.map(({ key, value }) => [
+                  <Option key={key} value={key}>
+                    {value}
+                  </Option>,
+                ])}
+              </Select>,
+            )}
+          </Form.Item>
+        </Col>
+        <Col span={8}>
+          <Form.Item label="回访方式">
+            {getFieldDecorator('register_revisit_way', {
+              rules: [{ required, message: '请选择回访方式' }],
+              initialValue: register.revisit_way,
+            })(
+              <Select placeholder="请选择" onChange={handlrevisitway}>
+                {returnvisit.map(({ key, value }) => [
                   <Option key={key} value={key}>
                     {value}
                   </Option>,
@@ -282,7 +344,7 @@ const Registrat = forwardRef((props, ref) => {
               rules: [{ required, message: '请选择影响度' }],
               initialValue: register.event_effect,
             })(
-              <Select placeholder="请选择" onChange={getdefault}>
+              <Select placeholder="请选择" onChange={changeHandlevalue}>
                 {degreemap.map(({ key, value }, index) => {
                   if (index < 3)
                     return (
@@ -301,7 +363,7 @@ const Registrat = forwardRef((props, ref) => {
               rules: [{ required, message: '请选择紧急度' }],
               initialValue: register.event_emergent,
             })(
-              <Select placeholder="请选择" onChange={getdefault}>
+              <Select placeholder="请选择" onChange={changeHandlevalue}>
                 {degreemap.map(({ key, value }) => [
                   <Option key={key} value={key}>
                     {value}
@@ -317,7 +379,7 @@ const Registrat = forwardRef((props, ref) => {
               rules: [{ required, message: '请选择优先级' }],
               initialValue: register.event_prior,
             })(
-              <Select placeholder="请选择" onChange={getdefault}>
+              <Select placeholder="请选择" onChange={changeHandlevalue}>
                 {degreemap.map(({ key, value }, index) => {
                   if (index < 3)
                     return (
@@ -479,6 +541,7 @@ Registrat.defaultProps = {
       application_user: '',
       application_user_id: '12121212',
       application_user_phone: '',
+      mobile_phone: '',
       event_effect: '001',
       event_emergent: '001',
       event_prior: '001',
@@ -491,8 +554,6 @@ Registrat.defaultProps = {
       register_user_id: '1',
       revisit_way: '001',
       selfhandle: '0',
-      supplement: '0',
-      id: '',
     },
   },
   userinfo: {

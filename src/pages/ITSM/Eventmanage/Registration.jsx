@@ -36,7 +36,8 @@ export const RegistratContext = createContext();
 
 function Registration(props) {
   const pagetitle = props.route.name;
-  const { dispatch, loading, userinfo } = props;
+  const { dispatch, loading, userinfo, location } = props;
+  const { next } = location.query;
   const [formregistrat, setFormregistrat] = useState('');
   const [formhandle, setFormhandle] = useState('');
   const [show, setShow] = useState(false); // 自行处理
@@ -86,17 +87,16 @@ function Registration(props) {
     });
   };
 
-  const getregistinfo = () => {
-    setDefaultvalue(
-      RegistratRef.current.getFieldsValue([
-        'register_event_effect',
-        'main_event_type',
-        'main_event_object',
-        'register_event_emergent',
-        'register_event_prior',
-      ]),
-    );
-  };
+  // const getregistinfo = () => {
+  //   RegistratRef.current.getFieldsValue([
+  //     'register_event_effect',
+  //     'main_event_type',
+  //     'main_event_object',
+  //     'register_event_emergent',
+  //     'register_event_prior',
+  //   ])
+  // };
+  // console.log(getregistinfo());
 
   const gethandle = type => {
     HandleRef.current.validateFields((err, values) => {
@@ -161,12 +161,12 @@ function Registration(props) {
     }
   }, [ischeck]);
 
-  useEffect(() => {
-    getregistinfo();
-    if (show === true) {
-      getregistinfo();
-    }
-  }, [show]);
+  // useEffect(() => {
+  //   getregistinfo();
+  //   if (show === true) {
+  //     getregistinfo();
+  //   }
+  // }, [show]);
 
   const handleclose = () => {
     router.push({
@@ -179,11 +179,21 @@ function Registration(props) {
       <Button type="primary" style={{ marginRight: 8 }} onClick={handlesubmit}>
         保 存
       </Button>
-      <SelectUser handleSubmit={() => handleflow()} flowtype={flowtype}>
-        <Button type="primary" style={{ marginRight: 8 }}>
-          流 转
-        </Button>
-      </SelectUser>
+
+      {next === '审核' && (
+        <SelectUser handleSubmit={() => handleflow()} flowtype={flowtype}>
+          <Button type="primary" style={{ marginRight: 8 }}>
+            审 核
+          </Button>
+        </SelectUser>
+      )}
+      {next !== '审核' && (
+        <SelectUser handleSubmit={() => handleflow()} flowtype={flowtype}>
+          <Button type="primary" style={{ marginRight: 8 }}>
+            流 转
+          </Button>
+        </SelectUser>
+      )}
       <Button type="default" onClick={handleclose}>
         关 闭
       </Button>
@@ -213,6 +223,8 @@ function Registration(props) {
                 show={show}
                 ref={RegistratRef}
                 userinfo={userinfo}
+                sethandlevalue="true"
+                location={location}
               />
             </Panel>
             {show === true && check === false && (
@@ -223,6 +235,7 @@ function Registration(props) {
                   ref={HandleRef}
                   userinfo={userinfo}
                   defaultvalue={defaultvalue}
+                  location={location}
                 />
               </Panel>
             )}

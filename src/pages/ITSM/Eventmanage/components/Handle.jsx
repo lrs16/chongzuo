@@ -1,4 +1,5 @@
 import React, { useRef, useImperativeHandle, useEffect } from 'react';
+import router from 'umi/router';
 import moment from 'moment';
 import { Row, Col, Form, Input, Select, Upload, Button, DatePicker } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
@@ -41,7 +42,8 @@ const result = [
 ];
 
 const Handle = React.forwardRef((props, ref) => {
-  const { formItemLayout, forminladeLayout, info, main, userinfo, defaultvalue } = props;
+  const { formItemLayout, forminladeLayout, info, main, userinfo, defaultvalue, location } = props;
+  const { pangekey, id, mainId } = location.query;
   const { handle } = info;
   const { getFieldDecorator } = props.form;
   const required = true;
@@ -53,8 +55,23 @@ const Handle = React.forwardRef((props, ref) => {
     }),
     [],
   );
+
+  const changerouter = () => {
+    router.push({
+      pathname: location.pathname,
+      query: {
+        pangekey,
+        id,
+        mainId,
+        validate: false,
+        next: '确认',
+      },
+    });
+  };
+
   useEffect(() => {
     sessionStorage.setItem('Nextflowtype', '确认');
+    //   changerouter();
   }, []);
 
   return (
@@ -108,7 +125,7 @@ const Handle = React.forwardRef((props, ref) => {
           </Form.Item>
         </Col>
         {/* 保存环节 */}
-        {defaultvalue !== undefined && (
+        {defaultvalue !== '' && defaultvalue !== undefined && (
           <>
             <Col span={8}>
               <Form.Item label="影响度">
@@ -199,7 +216,7 @@ const Handle = React.forwardRef((props, ref) => {
           </>
         )}
         {/* 登记时自行处理 */}
-        {defaultvalue === undefined && (
+        {(defaultvalue === '' || defaultvalue === undefined) && (
           <>
             {handle.event_effect !== '' && (
               <>
@@ -355,7 +372,7 @@ const Handle = React.forwardRef((props, ref) => {
           <Form.Item label="处理结果">
             {getFieldDecorator('handle_handle_result', {
               rules: [{ required, message: '请选择处理结果' }],
-              initialValue: handle.handle_result,
+              initialValue: main.event_result,
             })(
               <Select placeholder="请选择">
                 {result.map(({ key, value }) => [
@@ -454,7 +471,7 @@ Handle.defaultProps = {
       handle_unit_id: '7AC3EF0F718E02A2E0530A644F130365',
       handle_dept: '广西电网有限责任公司',
       handle_dept_id: '7AC3EF0F639302A2E0530A644F130365',
-      handle_id: '',
+      id: '',
     },
   },
   main: {

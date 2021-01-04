@@ -58,7 +58,7 @@ const forminladeLayout = {
 export const RegistratContext = createContext();
 
 function WorkOrder(props) {
-  const { location, dispatch, loading, recordsloading, info, records, userinfo } = props;
+  const { location, match, dispatch, loading, recordsloading, info, records, userinfo } = props;
   const { validate, pangekey, id, mainId, type } = location.query;
   const [formregistrat, setFormregistrat] = useState('');
   const [formcheck, setFormcheck] = useState('');
@@ -69,14 +69,13 @@ function WorkOrder(props) {
   const [check, setCheck] = useState(false); // 事件分类是否权限账号
   const [activeKey, setActiveKey] = useState([]);
   const [finishfirst, setFinishfirst] = useState(undefined); // 初始化待确认,待审核
-  const [defaultvalue, setDefaultvalue] = useState(''); //自行处理后处理表单回填信息
+  const [defaultvalue, setDefaultvalue] = useState(''); // 自行处理后处理表单回填信息
   const [flowtype, setFlowtype] = useState('1'); // 流转类型
   const RegistratRef = useRef();
   const CheckRef = useRef();
   const HandleRef = useRef();
   const ReturnVisitRef = useRef();
   const { data, edit } = info;
-
   const { flow_instance_id, flow_node_instance_id, flow_node_name, _edit_state } = info; //流程基本信息
   // 保存、流转表单信息
   const paloadvalues = {
@@ -106,7 +105,9 @@ function WorkOrder(props) {
       query: {
         pangekey,
         id,
+        mainId,
         validate: false,
+        next: sessionStorage.getItem('Nextflowtype'),
       },
     });
   };
@@ -155,18 +156,6 @@ function WorkOrder(props) {
       }
     });
   };
-  // 接单信息
-  // const rechandles = () => {
-  //   setTimeout(() => {
-  //     HandleRef.current.validateFields((err, values) => {
-  //       setFormhandle({
-  //         ...values,
-  //         handle_end_time: values.handle_end_time.format('YYYY-MM-DD HH:mm:ss'),
-  //       });
-  //     });
-  //   }, 30000);
-
-  // };
   const getreturnvisit = () => {
     ReturnVisitRef.current.validateFields((err, values) => {
       if (!err) {
@@ -196,7 +185,7 @@ function WorkOrder(props) {
     }
   };
   // 流转
-  const eventflow = () => {
+  const eventflow = newflowtype => {
     if (ischeck === true) {
       dispatch({
         type: 'eventtodo/eventflow',
@@ -204,7 +193,7 @@ function WorkOrder(props) {
           flow: {
             id,
             userIds: sessionStorage.getItem('NextflowUserId'),
-            type: flowtype,
+            type: newflowtype,
           },
           paloadvalues,
         },
@@ -293,6 +282,7 @@ function WorkOrder(props) {
     if (pangekey !== '1') {
       setFlowtype('1');
     }
+
     // 自动接单
     // if (records !== '' && pangekey === '4') {
     //   rechandles();
@@ -312,10 +302,10 @@ function WorkOrder(props) {
         eventsave();
         break;
       case 'flow':
-        eventflow();
+        eventflow('1');
         break;
       case 'other':
-        // eventransfer();
+        eventflow('3');
         break;
       default:
         break;
@@ -372,6 +362,7 @@ function WorkOrder(props) {
                   ChangeCheck={checked => setCheck(checked)}
                   ChangeActiveKey={keys => setActiveKey(keys)}
                   ChangeFlowtype={newtype => setFlowtype(newtype)}
+                  changeDefaultvalue={values => setDefaultvalue(values)}
                   formItemLayout={formItemLayout}
                   forminladeLayout={forminladeLayout}
                   show={show}
@@ -379,6 +370,8 @@ function WorkOrder(props) {
                   info={edit}
                   main={data[0].main}
                   userinfo={userinfo}
+                  sethandlevalue="true"
+                  location={location}
                 />
               </Panel>
             )}
@@ -393,18 +386,21 @@ function WorkOrder(props) {
                   info={finishfirst}
                   main={data[0].main}
                   userinfo={userinfo}
+                  location={location}
                 />
               </Panel>
             )}
             {pangekey === '3' && (
               <Panel header="事件审核" key="checkform">
                 <Check
+                  ChangeFlowtype={newtype => setFlowtype(newtype)}
                   formItemLayout={formItemLayout}
                   forminladeLayout={forminladeLayout}
                   ref={CheckRef}
                   info={edit}
                   main={data[0].main}
                   userinfo={userinfo}
+                  location={location}
                 />
               </Panel>
             )}
@@ -418,6 +414,8 @@ function WorkOrder(props) {
                   info={finishfirst}
                   main={data[0].main}
                   userinfo={userinfo}
+                  defaultvalue={defaultvalue}
+                  location={location}
                 />
               </Panel>
             )}
@@ -433,6 +431,7 @@ function WorkOrder(props) {
                     info={edit}
                     main={data[0].main}
                     userinfo={userinfo}
+                    location={location}
                   />
                 </Panel>
               )}
@@ -446,6 +445,7 @@ function WorkOrder(props) {
                   info={finishfirst}
                   main={data[0].main}
                   userinfo={userinfo}
+                  location={location}
                 />
               </Panel>
             )}
@@ -459,6 +459,7 @@ function WorkOrder(props) {
                   info={edit}
                   main={data[0].main}
                   userinfo={userinfo}
+                  location={location}
                 />
               </Panel>
             )}

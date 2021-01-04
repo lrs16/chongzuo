@@ -85,7 +85,7 @@ const columns = [
         router.push({
           pathname: `/ITSM/eventmanage/query/details`,
           query: {
-            id: record.task_id,
+            main_id: record.main_id,
           },
         });
       };

@@ -1,10 +1,11 @@
-import { queryList } from '../services/api';
+import { queryList, queryOpenView } from '../services/api';
 
 export default {
   namespace: 'eventquery',
 
   state: {
     list: [],
+    info: '',
   },
 
   effects: {
@@ -16,6 +17,13 @@ export default {
         payload: response.data,
       });
     },
+    *fetchopenview({ payload: { main_id } }, { call, put }) {
+      const response = yield call(queryOpenView, main_id);
+      yield put({
+        type: 'saveinfo',
+        payload: response.data,
+      });
+    },
   },
 
   reducers: {
@@ -23,6 +31,12 @@ export default {
       return {
         ...state,
         list: action.payload,
+      };
+    },
+    saveinfo(state, action) {
+      return {
+        ...state,
+        info: action.payload,
       };
     },
   },

@@ -1,12 +1,19 @@
 import React, { useRef, useImperativeHandle, forwardRef, useState, useEffect } from 'react';
+import router from 'umi/router';
 import moment from 'moment';
 import { Row, Col, Form, Input, Radio, Upload, Button, DatePicker } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
 
 const { TextArea } = Input;
 
+const nextsmap = new Map([
+  ['001', '处理'],
+  ['002', '确认'],
+]);
+
 const Check = forwardRef((props, ref) => {
-  const { formItemLayout, forminladeLayout, info, ChangeFlowtype, userinfo } = props;
+  const { formItemLayout, forminladeLayout, info, ChangeFlowtype, userinfo, location } = props;
+  const { pangekey, id, mainId } = location.query;
   const { check } = info;
   const { getFieldDecorator } = props.form;
   const [adopt, setAdopt] = useState('001');
@@ -19,9 +26,23 @@ const Check = forwardRef((props, ref) => {
     [],
   );
 
+  const routerRefresh = () => {
+    router.push({
+      pathname: location.pathname,
+      query: {
+        pangekey,
+        id,
+        mainId,
+        next: sessionStorage.getItem('Nextflowtype'),
+      },
+    });
+  };
+
   useEffect(() => {
-    sessionStorage.setItem('Nextflowtype', '处理');
-  }, []);
+    sessionStorage.setItem('Nextflowtype', nextsmap.get(check.check_result));
+    setAdopt(check.check_result);
+    routerRefresh();
+  }, [info]);
 
   const handleAdopt = e => {
     setAdopt(e.target.value);
@@ -32,12 +53,20 @@ const Check = forwardRef((props, ref) => {
       ChangeFlowtype('3');
       sessionStorage.setItem('Nextflowtype', '确认');
     }
+    routerRefresh();
   };
 
   return (
     <Row gutter={24} style={{ paddingTop: 24 }}>
       <Form {...formItemLayout}>
         <Col span={24}>
+          <Col span={8} style={{ display: 'none' }}>
+            <Form.Item label="审核表单id">
+              {getFieldDecorator('check_id', {
+                initialValue: check.id,
+              })(<Input placeholder="请输入" disabled />)}
+            </Form.Item>
+          </Col>
           <Form.Item label="审核结果" {...forminladeLayout}>
             {getFieldDecorator('check_check_result', {
               rules: [{ required: true, message: '请选择审核结果' }],
@@ -51,15 +80,14 @@ const Check = forwardRef((props, ref) => {
           </Form.Item>
         </Col>
         <Col span={24}>
-          {adopt === '002' && (
+          {adopt === '001' && (
             <Form.Item label="审核意见" {...forminladeLayout}>
               {getFieldDecorator('check_content', {
-                rules: [{ required: false, message: '请输入审核意见' }],
-                initialValue: check.check_content,
+                initialValue: check.content,
               })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
             </Form.Item>
           )}
-          {adopt === '001' && (
+          {adopt === '002' && (
             <Form.Item label="审核意见" {...forminladeLayout}>
               {getFieldDecorator('check_content', {
                 rules: [{ required: true, message: '请输入审核意见' }],
@@ -84,7 +112,7 @@ const Check = forwardRef((props, ref) => {
             })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" />)}
           </Form.Item>
         </Col>
-        {/* <Col span={24}>
+        <Col span={24}>
           <Form.Item
             label="上传附件"
             {...forminladeLayout}
@@ -97,7 +125,8 @@ const Check = forwardRef((props, ref) => {
                 </Button>
               </Upload>,
             )}
-          </Form.Item> */}
+          </Form.Item>
+        </Col>
         <Col span={8}>
           <Form.Item label="审核人">
             {getFieldDecorator('check_check_user', {
@@ -164,6 +193,7 @@ Check.defaultProps = {
       check_unit_id: '7AC3EF0F718E02A2E0530A644F130365',
       check_dept: '计量中心',
       check_dept_id: '7AC3EF0F718E02A2E0530A644F130365',
+      id: '',
     },
   },
   userinfo: {

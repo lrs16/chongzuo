@@ -232,6 +232,23 @@ function ToDolist(props) {
     resetFields();
   };
 
+  //  测试下载功能
+  const test = () => {
+    dispatch({
+      type: 'eventtodo/eventdownload',
+    }).then(res => {
+      // console.log(res);
+      const filename = `下载.xls`;
+      const blob = new Blob([res]);
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      a.click();
+      window.URL.revokeObjectURL(url);
+    });
+  };
+
   return (
     <PageHeaderWrapper title={pagetitle}>
       <Card>
@@ -382,7 +399,9 @@ function ToDolist(props) {
           </Form>
         </Row>
         <div style={{ marginBottom: 24 }}>
-          <Button type="primary">导出数据</Button>
+          <Button type="primary" onClick={() => test()}>
+            导出数据
+          </Button>
         </div>
         <Table
           loading={loading}

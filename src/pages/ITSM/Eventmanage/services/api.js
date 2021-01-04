@@ -2,7 +2,7 @@ import request from '@/utils/request';
 
 // 启动获取用户信息
 export async function EventUser() {
-  return request(`/itsm/event/flow/getUserInfo`, {
+  return request(`/itsm/common/function/getUserInfo`, {
     method: 'GET',
   });
 }
@@ -129,8 +129,15 @@ export async function queryList({
   );
 }
 
-//itsm/event/form/downloadExcel
-export async function querydownload(params) {
+// 事件查询，查看详情 /itsm/event/form/openView
+export async function queryOpenView(main_id) {
+  return request(`/itsm/event/form/openView?main_id=${main_id}`, {
+    method: 'GET',
+  });
+}
+
+// 下载itsm/event/form/downloadExcel
+export async function querydownload() {
   return request(`/itsm/event/form/downloadExcel`, {
     method: 'GET',
     responseType: 'blob',

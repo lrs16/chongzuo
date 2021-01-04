@@ -1,4 +1,5 @@
 import React, { useRef, useImperativeHandle, useEffect } from 'react';
+import router from 'umi/router';
 import moment from 'moment';
 import { Row, Col, Form, Input, Select, Upload, Button, DatePicker } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
@@ -24,6 +25,12 @@ const satisfactions = [
   { key: '003', value: '不满意' },
 ];
 
+const nextsmap = new Map([
+  ['001', '结束'],
+  ['002', '结束'],
+  ['003', '确认'],
+]);
+
 const result = [
   { key: '001', value: '误报' },
   { key: '002', value: '根本解决' },
@@ -33,10 +40,20 @@ const result = [
 ];
 
 const ReturnVisit = React.forwardRef((props, ref) => {
-  const { formItemLayout, forminladeLayout, info, main, ChangeFlowtype, userinfo } = props;
+  const {
+    formItemLayout,
+    forminladeLayout,
+    info,
+    main,
+    ChangeFlowtype,
+    userinfo,
+    location,
+  } = props;
+  const { pangekey, id, mainId } = location.query;
   const { finish } = info;
   const { getFieldDecorator } = props.form;
   const attRef = useRef();
+  const required = true;
   useImperativeHandle(
     ref,
     () => ({
@@ -44,61 +61,77 @@ const ReturnVisit = React.forwardRef((props, ref) => {
     }),
     [],
   );
+  const routerRefresh = () => {
+    router.push({
+      pathname: location.pathname,
+      query: {
+        pangekey,
+        id,
+        mainId,
+        next: sessionStorage.getItem('Nextflowtype'),
+      },
+    });
+  };
   useEffect(() => {
-    sessionStorage.setItem('Nextflowtype', '结束');
-    sessionStorage.setItem('satisfaction', '结束');
-  }, []);
-  const required = true;
+    sessionStorage.setItem('Nextflowtype', nextsmap.get(finish.satisfaction));
+    routerRefresh();
+  }, [info]);
 
   const handlcheckChange = value => {
-    if (value !== '003') {
-      ChangeFlowtype('1');
-      sessionStorage.setItem('satisfaction', '结束');
-    } else {
+    if (value === '003') {
       ChangeFlowtype('3');
-      sessionStorage.setItem('satisfaction', '重分派');
+      sessionStorage.setItem('Nextflowtype', '处理');
+    } else {
+      ChangeFlowtype('1');
+      sessionStorage.setItem('Nextflowtype', '结束');
     }
+    routerRefresh();
   };
 
   return (
     <Row gutter={24} style={{ paddingTop: 24 }}>
       <Form {...formItemLayout}>
-        {finish !== null && (
-          <>
-            <Col span={8}>
-              <Form.Item label="回访方式">
-                {getFieldDecorator('finish_revisit_way', {
-                  rules: [{ required, message: '请选择回访方式' }],
-                  initialValue: finish.revisit_way,
-                })(
-                  <Select placeholder="请选择">
-                    {returnvisit.map(({ key, value }) => [
-                      <Option key={key} value={key}>
-                        {value}
-                      </Option>,
-                    ])}
-                  </Select>,
-                )}
-              </Form.Item>
-            </Col>
-            <Col span={8}>
-              <Form.Item label="处理结果">
-                {getFieldDecorator('main_event_result', {
-                  rules: [{ required, message: '请选择处理结果' }],
-                  initialValue: main.event_result,
-                })(
-                  <Select placeholder="请选择">
-                    {result.map(({ key, value }) => [
-                      <Option key={key} value={key}>
-                        {value}
-                      </Option>,
-                    ])}
-                  </Select>,
-                )}
-              </Form.Item>
-            </Col>
-          </>
-        )}
+        <>
+          <Col span={8} style={{ display: 'none' }}>
+            <Form.Item label="回访表单id">
+              {getFieldDecorator('finish_id', {
+                initialValue: finish.id,
+              })(<Input placeholder="请输入" disabled />)}
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label="回访方式">
+              {getFieldDecorator('finish_revisit_way', {
+                rules: [{ required, message: '请选择回访方式' }],
+                initialValue: main.revisit_way,
+              })(
+                <Select placeholder="请选择">
+                  {returnvisit.map(({ key, value }) => [
+                    <Option key={key} value={key}>
+                      {value}
+                    </Option>,
+                  ])}
+                </Select>,
+              )}
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label="处理结果">
+              {getFieldDecorator('main_event_result', {
+                rules: [{ required, message: '请选择处理结果' }],
+                initialValue: main.event_result,
+              })(
+                <Select placeholder="请选择">
+                  {result.map(({ key, value }) => [
+                    <Option key={key} value={key}>
+                      {value}
+                    </Option>,
+                  ])}
+                </Select>,
+              )}
+            </Form.Item>
+          </Col>
+        </>
         <Col span={8}>
           <Form.Item label="满意度">
             {getFieldDecorator('finish_satisfaction', {
@@ -139,7 +172,7 @@ const ReturnVisit = React.forwardRef((props, ref) => {
             })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" />)}
           </Form.Item>
         </Col>
-        {/* <Col span={24}>
+        <Col span={24}>
           <Form.Item
             label="上传附件"
             {...forminladeLayout}
@@ -153,7 +186,7 @@ const ReturnVisit = React.forwardRef((props, ref) => {
               </Upload>,
             )}
           </Form.Item>
-        </Col> */}
+        </Col>
         <Col span={8}>
           <Form.Item label="回访人">
             {getFieldDecorator('finish_revisitor', {
@@ -211,7 +244,7 @@ ReturnVisit.defaultProps = {
   info: {
     finish: {
       revisit_way: '',
-      satisfaction: '',
+      satisfaction: '001',
       add_time: moment().format('YYYY-MM-DD HH:mm:ss'),
       revisit_time: moment().format('YYYY-MM-DD HH:mm:ss'),
       content: '',
@@ -221,6 +254,7 @@ ReturnVisit.defaultProps = {
       revisit_unit_id: '7AC3EF0F718E02A2E0530A644F130365',
       revisit_dept: '广西电网有限责任公司',
       revisit_dept_id: '7AC3EF0F639302A2E0530A644F130365',
+      id: '',
     },
   },
   main: {

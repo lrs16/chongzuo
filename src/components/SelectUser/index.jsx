@@ -8,7 +8,7 @@ const withClick = (element, showDrawer = () => {}) => {
 };
 
 const SelectUser = props => {
-  const { children, dispatch, handleSubmit, usermanage, userloading } = props;
+  const { children, dispatch, handleSubmit, usermanage, userloading, location } = props;
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const users = usermanage.data.rows;
@@ -39,6 +39,7 @@ const SelectUser = props => {
 
   const showModal = () => {
     setIsModalVisible(true);
+    sessionStorage.setItem('formvalidate', true);
   };
 
   const handleOk = () => {

@@ -71,36 +71,24 @@ export default {
       if (registres.code === -1) {
         message.error(registres.msg, 3);
       }
-
       if (registres.code === 200) {
         const { taskId } = registres;
         message.success(registres.msg, 3);
-        if (register_selfhandle === '1') {
-          router.push({
-            pathname: `/ITSM/eventmanage/to-do/record/workorder`,
-            query: {
-              pangekey: '5',
-              id: registres.taskId,
-              mainId: flow_instance_id,
-              validate: false,
-            },
-          });
-        } else {
-          router.push({
-            pathname: `/ITSM/eventmanage/to-do/record/workorder`,
-            query: {
-              pangekey,
-              id: registres.taskId,
-              mainId: flow_instance_id,
-              validate: false,
-            },
-          });
-        }
         // 保存成功重新加载
         const response = yield call(EventopenFlow, taskId);
         yield put({
           type: 'saveinfo',
           payload: response,
+        });
+        router.push({
+          pathname: `/ITSM/eventmanage/to-do/record/workorder`,
+          query: {
+            pangekey: response.data[0].main.event_status,
+            id: registres.taskId,
+            mainId: flow_instance_id,
+            next: sessionStorage.getItem('Nextflowtype'),
+            validate: false,
+          },
         });
       }
     },
@@ -109,7 +97,11 @@ export default {
       const values = replacerec({ ...paloadvalues });
       const registres = yield call(EventSaveFlow, values);
       if (registres.code === 200) {
-        const response = yield call(EventFlow, flow);
+        const flowpayload = {
+          ...flow,
+          id: registres.taskId,
+        };
+        const response = yield call(EventFlow, flowpayload);
         if (response.code === 200) {
           message.success(response.msg, 5);
           router.push({

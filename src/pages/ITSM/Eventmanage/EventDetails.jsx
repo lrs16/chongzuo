@@ -21,8 +21,7 @@ const Panelheadermap = new Map([
 
 function EventDetails(props) {
   const { match, location, dispatch, info, loading } = props;
-  const { data } = info;
-  const { id } = location.query;
+  const { main_id } = location.query;
   const pagetitle = props.route.name;
   const [activeKey, setActiveKey] = useState([]);
   const handleclose = () => {
@@ -38,9 +37,9 @@ function EventDetails(props) {
   // 初始化打开
   useEffect(() => {
     dispatch({
-      type: 'eventtodo/eventopenflow',
+      type: 'eventquery/fetchopenview',
       payload: {
-        taskId: id,
+        main_id,
       },
     });
   }, []);
@@ -50,25 +49,23 @@ function EventDetails(props) {
     setActiveKey([1]);
   }, [info]);
 
-  console.log(data);
-
   return (
     <PageHeaderWrapper title={pagetitle} extra={<Button onClick={handleclose}>返回</Button>}>
       <div className={styles.collapse}>
-        {data !== undefined && loading === false && (
+        {info !== '' && loading === false && (
           <Collapse
             expandIconPosition="right"
             activeKey={activeKey}
             bordered={false}
             onChange={callback}
           >
-            {data.map((obj, index) => {
+            {info.map((obj, index) => {
               // panel详情组件
               const Paneldesmap = new Map([
-                ['register', <Registratdes info={Object.values(obj)[0]} main={data[0].main} />],
-                ['handle', <Handledes info={Object.values(obj)[0]} main={data[0].main} />],
-                ['check', <Checkdes info={Object.values(obj)[0]} main={data[0].main} />],
-                ['finish', <ReturnVisitdes info={Object.values(obj)[0]} main={data[0].main} />],
+                ['register', <Registratdes info={Object.values(obj)[0]} main={info[0].main} />],
+                ['handle', <Handledes info={Object.values(obj)[0]} main={info[0].main} />],
+                ['check', <Checkdes info={Object.values(obj)[0]} main={info[0].main} />],
+                ['finish', <ReturnVisitdes info={Object.values(obj)[0]} main={info[0].main} />],
               ]);
 
               if (index > 0)
@@ -85,7 +82,7 @@ function EventDetails(props) {
   );
 }
 
-export default connect(({ eventtodo, loading }) => ({
-  info: eventtodo.info,
-  loading: loading.models.eventtodo,
+export default connect(({ eventquery, loading }) => ({
+  info: eventquery.info,
+  loading: loading.models.eventquery,
 }))(EventDetails);

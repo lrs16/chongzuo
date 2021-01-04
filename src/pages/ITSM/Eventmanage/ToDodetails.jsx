@@ -6,15 +6,23 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import Backoff from './components/Backoff';
 import SelectUser from '@/components/SelectUser';
 
+const pagetitlemaps = new Map([
+  ['1', '事件登记'],
+  ['2', '事件审核'],
+  ['3', '事件审核'],
+  ['4', '事件处理'],
+  ['5', '事件处理'],
+  ['6', '事件确认'],
+  ['7', '事件确认'],
+  ['8', '事件处理'],
+  ['9', '事件详情'],
+]);
+
 function ToDodetails(props) {
   const { match, children, location, dispatch } = props;
-  const { pangekey, id, mainId, check } = location.query;
-  const pagetitle = props.route.name;
+  const { pangekey, id, mainId, check, next } = location.query;
   const [backvalue, setBackvalue] = useState('');
   const [Popvisible, setVisible] = useState(false);
-  const [UserId, setUserId] = useState('');
-  const [buttontype, setButtontype] = useState('');
-
   const handleHold = type => {
     router.push({
       pathname: `${props.match.url}/workorder`,
@@ -46,7 +54,7 @@ function ToDodetails(props) {
 
   useEffect(() => {
     if (pangekey === '4') {
-      message.info('请接单..', 3);
+      message.info('请接单..', 1);
     }
   }, []);
 
@@ -64,13 +72,6 @@ function ToDodetails(props) {
     }
   }, [backvalue]);
 
-  useEffect(() => {
-    if (pangekey === '6' || pangekey === '7') {
-      setButtontype(sessionStorage.getItem('satisfaction'));
-    }
-  }, []);
-  console.log(buttontype);
-
   // 接单
   const eventaccpt = () => {
     dispatch({
@@ -83,19 +84,6 @@ function ToDodetails(props) {
     });
   };
 
-  // 转单
-  const eventtransfer = () => {
-    dispatch({
-      type: 'eventtodo/eventransfer',
-      payload: {
-        flow: {
-          id,
-          userIds: sessionStorage.getItem('NextflowUserId'),
-          type: '3',
-        },
-      },
-    });
-  };
   // 结束流程
   const overflow = () => {
     dispatch({
@@ -120,26 +108,6 @@ function ToDodetails(props) {
     });
   };
 
-  // 测试下载功能
-  //   const test = () => {
-  //   dispatch({
-  //     type: 'eventtodo/eventdownload',
-  //     payload: {
-  //       mainId,
-  //     },
-  //   }).then(res => {
-  //       // console.log(res);
-  //       const filename = `下载.xls`;
-  //       const blob = new Blob([res]);
-  //       const url = window.URL.createObjectURL(blob);
-  //       const a = document.createElement('a');
-  //       a.href = url;
-  //       a.download = filename;
-  //       a.click();
-  //       window.URL.revokeObjectURL(url);
-  //     });
-  // };
-
   const operations = (
     <>
       {/* 测试下载功能 */}
@@ -163,44 +131,58 @@ function ToDodetails(props) {
           </Button>
         </Popover>
       )}
-      {pangekey !== '3' && pangekey !== '4' && (
+      {pangekey !== '4' && (
         <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleHold('save')}>
           保存
         </Button>
+      )}
+      {pangekey === '1' && sessionStorage.getItem('Nextflowtype') === '审核' && (
+        <SelectUser handleSubmit={() => handleHold('other')}>
+          <Button type="primary" style={{ marginRight: 8 }}>
+            审核
+          </Button>
+        </SelectUser>
       )}
       {pangekey === '4' && (
         <Button type="primary" style={{ marginRight: 8 }} onClick={eventaccpt}>
           接单
         </Button>
       )}
-      {pangekey === '5' && (
-        <SelectUser handleSubmit={() => eventtransfer()}>
-          <Button type="primary" style={{ marginRight: 8 }}>
-            转单
-          </Button>
-        </SelectUser>
-      )}
-      {pangekey !== '4' && pangekey !== '6' && pangekey !== '7' && (
-        <SelectUser handleSubmit={() => handleHold('flow')}>
+      {(pangekey === '5' ||
+        (pangekey === '1' && next === '处理') ||
+        (next === '处理' && (pangekey === '2' || pangekey === '3'))) && (
+        <SelectUser handleSubmit={() => handleHold('flow')} location={location}>
           <Button type="primary" style={{ marginRight: 8 }}>
             流转
           </Button>
         </SelectUser>
       )}
-      {(pangekey === '6' || pangekey === '7') &&
-        sessionStorage.getItem('satisfaction') === '重分派' && (
-          <SelectUser handleSubmit={() => handleHold('flow')}>
-            <Button type="primary" style={{ marginRight: 8 }}>
-              重分派
-            </Button>
-          </SelectUser>
-        )}
-      {(pangekey === '6' || pangekey === '7') &&
-        sessionStorage.getItem('satisfaction') !== '重分派' && (
-          <Button type="primary" style={{ marginRight: 8 }} onClick={overflow}>
-            结束
+      {next === '确认' && (pangekey === '2' || pangekey === '3') && (
+        <SelectUser handleSubmit={() => handleHold('other')}>
+          <Button type="primary" style={{ marginRight: 8 }}>
+            确认
           </Button>
-        )}
+        </SelectUser>
+      )}
+      {pangekey === '5' && (
+        <SelectUser handleSubmit={() => handleHold('other')}>
+          <Button ghost type="primary" style={{ marginRight: 8 }}>
+            转单
+          </Button>
+        </SelectUser>
+      )}
+      {(pangekey === '6' || pangekey === '7') && next === '处理' && (
+        <SelectUser handleSubmit={() => handleHold('other')}>
+          <Button type="primary" style={{ marginRight: 8 }}>
+            重分派
+          </Button>
+        </SelectUser>
+      )}
+      {(pangekey === '6' || pangekey === '7') && next === '结束' && (
+        <Button type="primary" style={{ marginRight: 8 }} onClick={overflow}>
+          结束
+        </Button>
+      )}
 
       <Button onClick={handleclose}>返回</Button>
     </>
@@ -246,7 +228,7 @@ function ToDodetails(props) {
   ];
   return (
     <PageHeaderWrapper
-      title={pagetitle}
+      title={pagetitlemaps.get(pangekey)}
       extra={operations}
       tabList={tabList}
       tabActiveKey={location.pathname.replace(`${match.path}/`, '')}
