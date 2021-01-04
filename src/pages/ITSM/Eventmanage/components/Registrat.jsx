@@ -86,11 +86,11 @@ const Registrat = forwardRef((props, ref) => {
     [],
   );
   const gethandelvalue = getFieldsValue([
-    'register_event_effect',
-    'main_event_type',
-    'main_event_object',
-    'register_event_emergent',
-    'register_event_prior',
+    'register_eventEffect',
+    'main_eventType',
+    'main_eventObject',
+    'register_eventEmergent',
+    'register_eventPrior',
   ]);
 
   const routerRefresh = () => {
@@ -106,16 +106,16 @@ const Registrat = forwardRef((props, ref) => {
   };
 
   useEffect(() => {
-    if (register.revisit_way === '003') {
+    if (register.revisitWay === '003') {
       setRevisitway(true);
     }
-    if (main.event_type === '005') {
+    if (main.eventType === '005') {
       setCheck(true);
     }
   }, [info]);
 
   useEffect(() => {
-    sessionStorage.setItem('Nextflowtype', typemaps.get(main.event_type));
+    sessionStorage.setItem('Nextflowtype', typemaps.get(main.eventType));
     routerRefresh();
   }, [info]);
 
@@ -166,79 +166,79 @@ const Registrat = forwardRef((props, ref) => {
       <Row gutter={24} style={{ paddingTop: 24 }}>
         <Col span={8}>
           <Form.Item label="事件编号">
-            {getFieldDecorator('main_event_no', {
-              initialValue: main.event_no,
+            {getFieldDecorator('main_eventNo', {
+              initialValue: main.eventNo,
             })(<Input disabled />)}
           </Form.Item>
         </Col>
         <Col span={8}>
           <Form.Item label="建单时间">
-            {getFieldDecorator('main_add_time', {
+            {getFieldDecorator('main_addTime', {
               rules: [{ required }],
-              initialValue: main.add_time,
+              initialValue: main.addTime,
             })(<Input disabled />)}
           </Form.Item>
         </Col>
         <Col span={8}>
           <Form.Item label="登记时间">
-            {getFieldDecorator('register_occur_time', {
+            {getFieldDecorator('register_occurTime', {
               rules: [{ required, message: '请选择登记时间' }],
-              initialValue: moment(register.occur_time),
+              initialValue: moment(register.occurTime),
             })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" />)}
           </Form.Item>
         </Col>
 
         <Col span={8}>
           <Form.Item label="申报人">
-            {getFieldDecorator('register_application_user', {
+            {getFieldDecorator('register_applicationUser', {
               rules: [{ required, message: '请输入申报人' }],
-              initialValue: register.application_user,
+              initialValue: register.applicationUser,
             })(<Input placeholder="请输入" />)}
           </Form.Item>
         </Col>
         <Col span={8} style={{ display: 'none' }}>
           <Form.Item label="申报人id">
-            {getFieldDecorator('register_application_user_id', {
+            {getFieldDecorator('register_applicationUserId', {
               rules: [{ required, message: '请输入申报人' }],
-              initialValue: register.application_user_id,
+              initialValue: register.applicationUserId,
             })(<Input placeholder="请输入" />)}
           </Form.Item>
         </Col>
         <Col span={8}>
           <Form.Item label="申报人单位">
-            {getFieldDecorator('register_application_unit', {
+            {getFieldDecorator('register_applicationUnit', {
               rules: [{ required, message: '请选择申报人单位' }],
-              initialValue: register.application_unit,
+              initialValue: register.applicationUnit,
             })(<Input placeholder="请输入" />)}
           </Form.Item>
         </Col>
         <Col span={8} style={{ display: 'none' }}>
           <Form.Item label="申报人单位id">
-            {getFieldDecorator('register_application_unit_id', {
-              initialValue: register.application_unit_id,
+            {getFieldDecorator('register_applicationUnitId', {
+              initialValue: register.applicationUnitId,
             })(<Input />)}
           </Form.Item>
         </Col>
         <Col span={8}>
           <Form.Item label="申报人部门">
-            {getFieldDecorator('register_application_dept', {
+            {getFieldDecorator('register_applicationDept', {
               rules: [{ required, message: '请选择申报人部门' }],
-              initialValue: register.application_dept,
+              initialValue: register.applicationDept,
             })(<Input placeholder="请输入" />)}
           </Form.Item>
         </Col>
         <Col span={8} style={{ display: 'none' }}>
           <Form.Item label="申报人部门id">
-            {getFieldDecorator('register_application_dept_id', {
-              initialValue: register.application_dept_id,
+            {getFieldDecorator('register_applicationDeptId', {
+              initialValue: register.applicationDeptId,
             })(<Input placeholder="请输入" />)}
           </Form.Item>
         </Col>
         <Col span={8}>
           <Form.Item label="事件来源">
-            {getFieldDecorator('main_event_source', {
+            {getFieldDecorator('main_eventSource', {
               rules: [{ required, message: '请选择事件来源' }],
-              initialValue: main.event_source,
+              initialValue: main.eventSource,
             })(
               <Select placeholder="请选择">
                 {sourcemap.map(({ key, value }) => [
@@ -252,21 +252,21 @@ const Registrat = forwardRef((props, ref) => {
         </Col>
         <Col span={8}>
           <Form.Item label="申报人电话">
-            {getFieldDecorator('register_application_user_phone', {
+            {getFieldDecorator('register_applicationUserPhone', {
               rules: [
                 {
                   required,
                   message: '请输入申报人电话',
                 },
               ],
-              initialValue: register.application_user_phone,
+              initialValue: register.applicationUserPhone,
             })(<Input placeholder="请输入" />)}
           </Form.Item>
         </Col>
         {revisitway === true && (
           <Col span={8}>
             <Form.Item label="手机号码">
-              {getFieldDecorator('register_mobile_phone', {
+              {getFieldDecorator('register_mobilePhone', {
                 rules: [
                   {
                     required,
@@ -275,7 +275,7 @@ const Registrat = forwardRef((props, ref) => {
                     message: '请输入正确的正确的手机号码',
                   },
                 ],
-                initialValue: register.mobile_phone,
+                initialValue: register.mobilePhone,
               })(<Input placeholder="请输入" />)}
             </Form.Item>
           </Col>
@@ -283,8 +283,8 @@ const Registrat = forwardRef((props, ref) => {
         {revisitway !== true && (
           <Col span={8}>
             <Form.Item label="手机号码">
-              {getFieldDecorator('register_mobile_phone', {
-                initialValue: register.mobile_phone,
+              {getFieldDecorator('register_mobilePhone', {
+                initialValue: register.mobilePhone,
               })(<Input placeholder="请输入" />)}
             </Form.Item>
           </Col>
@@ -292,9 +292,9 @@ const Registrat = forwardRef((props, ref) => {
 
         <Col span={8}>
           <Form.Item label="事件分类">
-            {getFieldDecorator('main_event_type', {
+            {getFieldDecorator('main_eventType', {
               rules: [{ required, message: '请选择事件分类' }],
-              initialValue: main.event_type,
+              initialValue: main.eventType,
             })(
               <Select placeholder="请选择" onChange={handlcheckChange}>
                 {typemap.map(({ key, value }) => [
@@ -308,9 +308,9 @@ const Registrat = forwardRef((props, ref) => {
         </Col>
         <Col span={8}>
           <Form.Item label="事件对象">
-            {getFieldDecorator('main_event_object', {
+            {getFieldDecorator('main_eventObject', {
               rules: [{ required, message: '请选择事件对象' }],
-              initialValue: main.event_object,
+              initialValue: main.eventObject,
             })(
               <Select placeholder="请选择" onChange={changeHandlevalue}>
                 {objectmap.map(({ key, value }) => [
@@ -324,9 +324,9 @@ const Registrat = forwardRef((props, ref) => {
         </Col>
         <Col span={8}>
           <Form.Item label="回访方式">
-            {getFieldDecorator('register_revisit_way', {
+            {getFieldDecorator('register_revisitWay', {
               rules: [{ required, message: '请选择回访方式' }],
-              initialValue: register.revisit_way,
+              initialValue: register.revisitWay,
             })(
               <Select placeholder="请选择" onChange={handlrevisitway}>
                 {returnvisit.map(({ key, value }) => [
@@ -340,9 +340,9 @@ const Registrat = forwardRef((props, ref) => {
         </Col>
         <Col span={8}>
           <Form.Item label="影响度">
-            {getFieldDecorator('register_event_effect', {
+            {getFieldDecorator('register_eventEffect', {
               rules: [{ required, message: '请选择影响度' }],
-              initialValue: register.event_effect,
+              initialValue: register.eventEffect,
             })(
               <Select placeholder="请选择" onChange={changeHandlevalue}>
                 {degreemap.map(({ key, value }, index) => {
@@ -359,9 +359,9 @@ const Registrat = forwardRef((props, ref) => {
         </Col>
         <Col span={8}>
           <Form.Item label="紧急度">
-            {getFieldDecorator('register_event_emergent', {
+            {getFieldDecorator('register_eventEmergent', {
               rules: [{ required, message: '请选择紧急度' }],
-              initialValue: register.event_emergent,
+              initialValue: register.eventEmergent,
             })(
               <Select placeholder="请选择" onChange={changeHandlevalue}>
                 {degreemap.map(({ key, value }) => [
@@ -375,9 +375,9 @@ const Registrat = forwardRef((props, ref) => {
         </Col>
         <Col span={8}>
           <Form.Item label="优先级">
-            {getFieldDecorator('register_event_prior', {
+            {getFieldDecorator('register_eventPrior', {
               rules: [{ required, message: '请选择优先级' }],
-              initialValue: register.event_prior,
+              initialValue: register.eventPrior,
             })(
               <Select placeholder="请选择" onChange={changeHandlevalue}>
                 {degreemap.map(({ key, value }, index) => {
@@ -472,7 +472,7 @@ const Registrat = forwardRef((props, ref) => {
         </Col> */}
         <Col span={8}>
           <Form.Item label="登记人">
-            {getFieldDecorator('register_register_user', {
+            {getFieldDecorator('register_registerUser', {
               rules: [{ required }],
               initialValue: userinfo.userName,
             })(<Input disabled />)}
@@ -480,7 +480,7 @@ const Registrat = forwardRef((props, ref) => {
         </Col>
         <Col span={8} style={{ display: 'none' }}>
           <Form.Item label="登记人ID">
-            {getFieldDecorator('register_register_user_id', {
+            {getFieldDecorator('register_registerUserId', {
               rules: [{ required }],
               initialValue: userinfo.userId,
             })(<Input disabled />)}
@@ -488,7 +488,7 @@ const Registrat = forwardRef((props, ref) => {
         </Col>
         <Col span={8}>
           <Form.Item label="登记人单位">
-            {getFieldDecorator('register_register_unit', {
+            {getFieldDecorator('register_registerUnit', {
               rules: [{ required }],
               initialValue: userinfo.unitName,
             })(<Input disabled />)}
@@ -496,7 +496,7 @@ const Registrat = forwardRef((props, ref) => {
         </Col>
         <Col span={8} style={{ display: 'none' }}>
           <Form.Item label="登记人单位ID">
-            {getFieldDecorator('register_register_unit_id', {
+            {getFieldDecorator('register_registerUnitId', {
               rules: [{ required }],
               initialValue: userinfo.unitId,
             })(<Input disabled />)}
@@ -504,7 +504,7 @@ const Registrat = forwardRef((props, ref) => {
         </Col>
         <Col span={8}>
           <Form.Item label="登记人部门">
-            {getFieldDecorator('register_register_dept', {
+            {getFieldDecorator('register_registerDept', {
               rules: [{ required }],
               initialValue: userinfo.deptName,
             })(<Input disabled />)}
@@ -512,7 +512,7 @@ const Registrat = forwardRef((props, ref) => {
         </Col>
         <Col span={8} style={{ display: 'none' }}>
           <Form.Item label="登记人部门ID">
-            {getFieldDecorator('register_register_dept_id', {
+            {getFieldDecorator('register_registerDeptId', {
               rules: [{ required }],
               initialValue: userinfo.deptId,
             })(<Input disabled />)}
@@ -525,34 +525,34 @@ const Registrat = forwardRef((props, ref) => {
 
 Registrat.defaultProps = {
   main: {
-    add_time: moment().format('YYYY-MM-DD HH:mm:ss'),
+    addTime: moment().format('YYYY-MM-DD HH:mm:ss'),
     content: '',
-    event_no: '',
-    event_object: '',
-    event_source: '002',
-    event_type: '',
+    eventNo: '',
+    eventObject: '',
+    eventSource: '002',
+    eventType: '',
   },
   info: {
     register: {
-      application_dept: '计量中心',
-      application_dept_id: '7AC3EF0F639302A2E0530A644F130365',
-      application_unit: '南宁供电局',
-      application_unit_id: '7AC3EF0F718E02A2E0530A644F130365',
+      applicationDept: '计量中心',
+      applicationDeptId: '7AC3EF0F639302A2E0530A644F130365',
+      applicationUnit: '南宁供电局',
+      applicationUnitId: '7AC3EF0F718E02A2E0530A644F130365',
       application_user: '',
-      application_user_id: '12121212',
-      application_user_phone: '',
-      mobile_phone: '',
-      event_effect: '001',
-      event_emergent: '001',
-      event_prior: '001',
+      applicationUserId: '12121212',
+      applicationUserPhone: '',
+      mobilePhone: '',
+      eventEffect: '001',
+      eventEmergent: '001',
+      eventPrior: '001',
       occur_time: moment().format('YYYY-MM-DD HH:mm:ss'),
-      // register_dept: '广西电网有限责任公司',
-      // register_dept_id: '7AC3EF0F701402A2E0530A644F130365',
-      // register_unit: '广西电网有限责任公司',
-      // register_unit_id: '7AC3EF0F701402A2E0530A644F130365',
-      // register_user: '管理员',
-      register_user_id: '1',
-      revisit_way: '001',
+      // registerDept: '广西电网有限责任公司',
+      // registerDeptId: '7AC3EF0F701402A2E0530A644F130365',
+      // registerUnit: '广西电网有限责任公司',
+      // registerUnitId: '7AC3EF0F701402A2E0530A644F130365',
+      // registerUser: '管理员',
+      registerUserId: '1',
+      revisitWay: '001',
       selfhandle: '0',
     },
   },

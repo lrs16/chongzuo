@@ -43,17 +43,17 @@ const formItemLayout = {
 const columns = [
   {
     title: '事件编号',
-    dataIndex: 'event_no',
-    key: 'event_no',
+    dataIndex: 'eventNo',
+    key: 'eventNo',
     render: (text, record) => {
       const handleClick = () => {
         router.push({
           pathname: `/ITSM/eventmanage/to-do/record/workorder`,
           query: {
-            pangekey: record.event_status,
-            id: record.task_id,
-            mainId: record.main_id,
-            check: record.check_result,
+            pangekey: record.eventStatus,
+            id: record.taskId,
+            mainId: record.mainId,
+            check: record.checkResult,
             validate: false,
             //type: '',
           },
@@ -70,20 +70,20 @@ const columns = [
   },
   {
     title: '事件来源',
-    dataIndex: 'event_source',
-    key: 'event_source',
+    dataIndex: 'eventSource',
+    key: 'eventSource',
     render: (text, record) => {
       const textmaps = new Map([
         ['001', '用户电话申告'],
         ['002', '企信'],
       ]);
-      return <>{textmaps.get(record.event_source)}</>;
+      return <>{textmaps.get(record.eventSource)}</>;
     },
   },
   {
     title: '事件分类',
-    dataIndex: 'event_type',
-    key: 'event_type',
+    dataIndex: 'eventType',
+    key: 'eventType',
     render: (text, record) => {
       const textmaps = new Map([
         ['001', '咨询'],
@@ -93,13 +93,13 @@ const columns = [
         ['005', '账号权限'],
         ['006', '其它'],
       ]);
-      return <>{textmaps.get(record.event_type)}</>;
+      return <>{textmaps.get(record.eventType)}</>;
     },
   },
   {
     title: '填报人',
-    dataIndex: 'register_user',
-    key: 'register_user',
+    dataIndex: 'registerUser',
+    key: 'registerUser',
   },
   // {
   //   title: '处理人',
@@ -108,8 +108,8 @@ const columns = [
   // },
   {
     title: '工单状态',
-    dataIndex: 'event_status',
-    key: 'event_status',
+    dataIndex: 'eventStatus',
+    key: 'eventStatus',
     render: (text, record) => {
       const textmaps = new Map([
         ['1', '已登记'],
@@ -122,25 +122,25 @@ const columns = [
         ['8', '重分派'],
         ['9', '已关闭'],
       ]);
-      return <>{textmaps.get(record.event_status)}</>;
+      return <>{textmaps.get(record.eventStatus)}</>;
     },
   },
   {
     title: '发送时间',
-    dataIndex: 'create_time',
-    key: 'create_time',
+    dataIndex: 'createTime',
+    key: 'createTime',
   },
   {
     title: '优先级',
-    dataIndex: 'event_prior',
-    key: 'event_prior',
+    dataIndex: 'eventPrior',
+    key: 'eventPrior',
     render: (text, record) => {
       const textmaps = new Map([
         ['001', '低'],
         ['002', '中'],
         ['003', '高'],
       ]);
-      return <>{textmaps.get(record.event_prior)}</>;
+      return <>{textmaps.get(record.eventPrior)}</>;
     },
   },
 ];

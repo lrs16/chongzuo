@@ -76,7 +76,7 @@ function Registration(props) {
       if (!err) {
         setFormregistrat({
           ...values,
-          register_occur_time: values.register_occur_time.format('YYYY-MM-DD HH:mm:ss'),
+          register_occurTime: values.register_occurTime.format('YYYY-MM-DD HH:mm:ss'),
           register_selfhandle: String(Number(values.register_selfhandle)),
           register_supplement: String(Number(values.register_supplement)),
         });

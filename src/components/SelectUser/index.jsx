@@ -8,7 +8,7 @@ const withClick = (element, showDrawer = () => {}) => {
 };
 
 const SelectUser = props => {
-  const { children, dispatch, handleSubmit, usermanage, userloading, location } = props;
+  const { children, dispatch, handleSubmit, usermanage, userloading, changorder } = props;
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const users = usermanage.data.rows;
@@ -22,6 +22,12 @@ const SelectUser = props => {
 
   useEffect(() => {
     sessionStorage.setItem('NextflowUserId', value);
+  }, []);
+
+  useEffect(() => {
+    if (changorder !== undefined) {
+      sessionStorage.setItem('Nextflowtype', '处理');
+    }
   }, []);
 
   useEffect(() => {
@@ -39,7 +45,6 @@ const SelectUser = props => {
 
   const showModal = () => {
     setIsModalVisible(true);
-    sessionStorage.setItem('formvalidate', true);
   };
 
   const handleOk = () => {
@@ -51,11 +56,13 @@ const SelectUser = props => {
     setIsModalVisible(false);
   };
 
+  const nextflowuser = changorder === '转单' ? '处理' : sessionStorage.getItem('Nextflowtype');
+
   return (
     <>
       {withClick(children, showModal)}
       <Modal
-        title={`请选择${sessionStorage.getItem('Nextflowtype')}人`}
+        title={`请选择${nextflowuser}人`}
         visible={isModalVisible}
         onOk={handleOk}
         onCancel={handleCancel}

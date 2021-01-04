@@ -42,8 +42,7 @@ const result = [
 ];
 
 const Handle = React.forwardRef((props, ref) => {
-  const { formItemLayout, forminladeLayout, info, main, userinfo, defaultvalue, location } = props;
-  const { pangekey, id, mainId } = location.query;
+  const { formItemLayout, forminladeLayout, info, main, userinfo, defaultvalue } = props;
   const { handle } = info;
   const { getFieldDecorator } = props.form;
   const required = true;
@@ -56,22 +55,8 @@ const Handle = React.forwardRef((props, ref) => {
     [],
   );
 
-  const changerouter = () => {
-    router.push({
-      pathname: location.pathname,
-      query: {
-        pangekey,
-        id,
-        mainId,
-        validate: false,
-        next: '确认',
-      },
-    });
-  };
-
   useEffect(() => {
     sessionStorage.setItem('Nextflowtype', '确认');
-    //   changerouter();
   }, []);
 
   return (
@@ -86,40 +71,40 @@ const Handle = React.forwardRef((props, ref) => {
         </Col>
         <Col span={8}>
           <Form.Item label="处理人">
-            {getFieldDecorator('handle_user', {
+            {getFieldDecorator('handler', {
               initialValue: userinfo.userName,
             })(<Input placeholder="请输入" disabled />)}
           </Form.Item>
         </Col>
         <Col span={8} style={{ display: 'none' }}>
           <Form.Item label="处理人ID">
-            {getFieldDecorator('handle_user_id', {
+            {getFieldDecorator('handle_handlerId', {
               initialValue: userinfo.userId,
             })(<Input placeholder="请输入" disabled />)}
           </Form.Item>
         </Col>
         <Col span={8}>
           <Form.Item label="处理人单位">
-            {getFieldDecorator('handle_handle_unit', {
+            {getFieldDecorator('handle_handleUnit', {
               initialValue: userinfo.unitName,
             })(<Input placeholder="请输入" disabled />)}
           </Form.Item>
         </Col>
         <Col span={8} style={{ display: 'none' }}>
           <Form.Item label="处理人单位ID">
-            {getFieldDecorator('handle_handle_unit_id', {
+            {getFieldDecorator('handle_handleUnitId', {
               initialValue: userinfo.unitId,
             })(<Input placeholder="请输入" disabled />)}
           </Form.Item>
         </Col>
         <Col span={8}>
           <Form.Item label="处理人部门">
-            {getFieldDecorator('handle_handle_dept', {
+            {getFieldDecorator('handle_handleDept', {
               initialValue: userinfo.deptName,
             })(<Input placeholder="请输入" disabled />)}
           </Form.Item>
           <Form.Item label="处理人部门ID" style={{ display: 'none' }}>
-            {getFieldDecorator('handle_handle_dept_id', {
+            {getFieldDecorator('handle_handleDeptId', {
               initialValue: userinfo.deptId,
             })(<Input placeholder="请输入" disabled />)}
           </Form.Item>
@@ -129,9 +114,9 @@ const Handle = React.forwardRef((props, ref) => {
           <>
             <Col span={8}>
               <Form.Item label="影响度">
-                {getFieldDecorator('handle_event_effect', {
+                {getFieldDecorator('handle_eventEffect', {
                   rules: [{ required, message: '请选择影响度' }],
-                  initialValue: defaultvalue.register_event_effect,
+                  initialValue: defaultvalue.register_eventEffect,
                 })(
                   <Select placeholder="请选择">
                     {degreemap.map(({ key, value }, index) => {
@@ -148,9 +133,9 @@ const Handle = React.forwardRef((props, ref) => {
             </Col>
             <Col span={8}>
               <Form.Item label="紧急度">
-                {getFieldDecorator('handle_event_emergent', {
+                {getFieldDecorator('handle_eventEmergent', {
                   rules: [{ required, message: '请选择紧急度' }],
-                  initialValue: defaultvalue.register_event_emergent,
+                  initialValue: defaultvalue.register_eventEmergent,
                 })(
                   <Select placeholder="请选择">
                     {degreemap.map(({ key, value }) => [
@@ -164,9 +149,9 @@ const Handle = React.forwardRef((props, ref) => {
             </Col>
             <Col span={8}>
               <Form.Item label="优先级">
-                {getFieldDecorator('handle_event_prior', {
+                {getFieldDecorator('handle_eventPrior', {
                   rules: [{ required, message: '请选择优先级' }],
-                  initialValue: defaultvalue.register_event_prior,
+                  initialValue: defaultvalue.register_eventPrior,
                 })(
                   <Select placeholder="请选择">
                     {degreemap.map(({ key, value }, index) => {
@@ -183,9 +168,9 @@ const Handle = React.forwardRef((props, ref) => {
             </Col>
             <Col span={8}>
               <Form.Item label="事件分类">
-                {getFieldDecorator('main_event_type', {
+                {getFieldDecorator('main_eventType', {
                   rules: [{ required, message: '请选择事件分类' }],
-                  initialValue: defaultvalue.main_event_type,
+                  initialValue: defaultvalue.main_eventType,
                 })(
                   <Select placeholder="请选择">
                     {eventclass.map(({ key, value, disabled }) => [
@@ -199,9 +184,9 @@ const Handle = React.forwardRef((props, ref) => {
             </Col>
             <Col span={8}>
               <Form.Item label="事件对象">
-                {getFieldDecorator('main_event_object', {
+                {getFieldDecorator('main_eventObject', {
                   rules: [{ required, message: '请选择事件对象' }],
-                  initialValue: defaultvalue.main_event_object,
+                  initialValue: defaultvalue.main_eventObject,
                 })(
                   <Select placeholder="请选择">
                     {eventobject.map(({ key, value }) => [
@@ -222,9 +207,9 @@ const Handle = React.forwardRef((props, ref) => {
               <>
                 <Col span={8}>
                   <Form.Item label="影响度">
-                    {getFieldDecorator('handle_event_effect', {
+                    {getFieldDecorator('handle_eventEffect', {
                       rules: [{ required, message: '请选择影响度' }],
-                      initialValue: handle.event_effect,
+                      initialValue: handle.eventEffect,
                     })(
                       <Select placeholder="请选择">
                         {degreemap.map(({ key, value }, index) => {
@@ -241,9 +226,9 @@ const Handle = React.forwardRef((props, ref) => {
                 </Col>
                 <Col span={8}>
                   <Form.Item label="紧急度">
-                    {getFieldDecorator('handle_event_emergent', {
+                    {getFieldDecorator('handle_eventEmergent', {
                       rules: [{ required, message: '请选择紧急度' }],
-                      initialValue: handle.event_emergent,
+                      initialValue: handle.eventEmergent,
                     })(
                       <Select placeholder="请选择">
                         {degreemap.map(({ key, value }) => [
@@ -257,9 +242,9 @@ const Handle = React.forwardRef((props, ref) => {
                 </Col>
                 <Col span={8}>
                   <Form.Item label="优先级">
-                    {getFieldDecorator('handle_event_prior', {
+                    {getFieldDecorator('handle_eventPrior', {
                       rules: [{ required, message: '请选择优先级' }],
-                      initialValue: handle.event_prior,
+                      initialValue: handle.eventPrior,
                     })(
                       <Select placeholder="请选择">
                         {degreemap.map(({ key, value }, index) => {
@@ -280,9 +265,9 @@ const Handle = React.forwardRef((props, ref) => {
               <>
                 <Col span={8}>
                   <Form.Item label="影响度">
-                    {getFieldDecorator('handle_event_effect', {
+                    {getFieldDecorator('handle_eventEffect', {
                       rules: [{ required, message: '请选择影响度' }],
-                      initialValue: main.event_effect,
+                      initialValue: main.eventEffect,
                     })(
                       <Select placeholder="请选择">
                         {degreemap.map(({ key, value }, index) => {
@@ -299,9 +284,9 @@ const Handle = React.forwardRef((props, ref) => {
                 </Col>
                 <Col span={8}>
                   <Form.Item label="紧急度">
-                    {getFieldDecorator('handle_event_emergent', {
+                    {getFieldDecorator('handle_eventEmergent', {
                       rules: [{ required, message: '请选择紧急度' }],
-                      initialValue: main.event_emergent,
+                      initialValue: main.eventEmergent,
                     })(
                       <Select placeholder="请选择">
                         {degreemap.map(({ key, value }) => [
@@ -315,9 +300,9 @@ const Handle = React.forwardRef((props, ref) => {
                 </Col>
                 <Col span={8}>
                   <Form.Item label="优先级">
-                    {getFieldDecorator('handle_event_prior', {
+                    {getFieldDecorator('handle_eventPrior', {
                       rules: [{ required, message: '请选择优先级' }],
-                      initialValue: main.event_prior,
+                      initialValue: main.eventPrior,
                     })(
                       <Select placeholder="请选择">
                         {degreemap.map(({ key, value }, index) => {
@@ -336,9 +321,9 @@ const Handle = React.forwardRef((props, ref) => {
             )}
             <Col span={8}>
               <Form.Item label="事件分类">
-                {getFieldDecorator('main_event_type', {
+                {getFieldDecorator('main_eventType', {
                   rules: [{ required, message: '请选择事件分类' }],
-                  initialValue: main.event_type,
+                  initialValue: main.eventType,
                 })(
                   <Select placeholder="请选择">
                     {eventclass.map(({ key, value, disabled }) => [
@@ -352,9 +337,9 @@ const Handle = React.forwardRef((props, ref) => {
             </Col>
             <Col span={8}>
               <Form.Item label="事件对象">
-                {getFieldDecorator('main_event_object', {
+                {getFieldDecorator('main_eventObject', {
                   rules: [{ required, message: '请选择事件对象' }],
-                  initialValue: main.event_object,
+                  initialValue: main.eventObject,
                 })(
                   <Select placeholder="请选择">
                     {eventobject.map(({ key, value }) => [
@@ -370,7 +355,7 @@ const Handle = React.forwardRef((props, ref) => {
         )}
         <Col span={8}>
           <Form.Item label="处理结果">
-            {getFieldDecorator('handle_handle_result', {
+            {getFieldDecorator('handle_handleResult', {
               rules: [{ required, message: '请选择处理结果' }],
               initialValue: main.event_result,
             })(
@@ -386,17 +371,17 @@ const Handle = React.forwardRef((props, ref) => {
         </Col>
         <Col span={8}>
           <Form.Item label="接单时间">
-            {getFieldDecorator('handle_add_time', {
+            {getFieldDecorator('handle_addTime', {
               rules: [{ required }],
-              initialValue: handle.add_time,
+              initialValue: handle.addTime,
             })(<Input placeholder="请输入" disabled />)}
           </Form.Item>
         </Col>
         <Col span={8}>
           <Form.Item label="完成时间">
-            {getFieldDecorator('handle_end_time', {
+            {getFieldDecorator('handle_endTime', {
               rules: [{ required }],
-              initialValue: moment(handle.end_time),
+              initialValue: moment(handle.endTime),
             })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" />)}
           </Form.Item>
         </Col>
@@ -458,28 +443,22 @@ const Handle = React.forwardRef((props, ref) => {
 Handle.defaultProps = {
   info: {
     handle: {
-      add_time: moment().format('YYYY-MM-DD HH:mm:ss'),
+      addTime: moment().format('YYYY-MM-DD HH:mm:ss'),
       content: '',
-      end_time: moment().format('YYYY-MM-DD HH:mm:ss'),
-      event_effect: '',
-      event_emergent: '',
-      event_prior: '',
-      handle_result: '',
-      handler: '管理员',
-      handler_id: '1',
-      handle_unit: '广西电网有限责任公司',
-      handle_unit_id: '7AC3EF0F718E02A2E0530A644F130365',
-      handle_dept: '广西电网有限责任公司',
-      handle_dept_id: '7AC3EF0F639302A2E0530A644F130365',
+      endTime: moment().format('YYYY-MM-DD HH:mm:ss'),
+      eventEffect: '',
+      eventEmergent: '',
+      eventPrior: '',
+      handleResult: '',
       id: '',
     },
   },
   main: {
-    event_object: '',
-    event_type: '',
-    event_effect: '',
-    event_emergent: '',
-    event_prior: '',
+    eventObject: '',
+    eventType: '',
+    eventEffect: '',
+    eventEmergent: '',
+    eventPrior: '',
   },
   userinfo: {
     deptName: '',

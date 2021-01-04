@@ -76,17 +76,17 @@ function WorkOrder(props) {
   const HandleRef = useRef();
   const ReturnVisitRef = useRef();
   const { data, edit } = info;
-  const { flow_instance_id, flow_node_instance_id, flow_node_name, _edit_state } = info; //流程基本信息
+  const { flowInstanceId, flowNodeInstanceId, flowNodeName, editState } = info; //流程基本信息
   // 保存、流转表单信息
   const paloadvalues = {
     ...formregistrat,
     ...formcheck,
     ...formhandle,
     ...formvisit,
-    flow_instance_id,
-    flow_node_instance_id,
-    flow_node_name,
-    _edit_state,
+    flowInstanceId,
+    flowNodeInstanceId,
+    flowNodeName,
+    editState,
   };
 
   useEffect(() => {
@@ -118,7 +118,7 @@ function WorkOrder(props) {
         setIscheck(true);
         setFormregistrat({
           ...values,
-          register_occur_time: values.register_occur_time.format('YYYY-MM-DD HH:mm:ss'),
+          register_occurTime: values.register_occurTime.format('YYYY-MM-DD HH:mm:ss'),
           register_selfhandle: String(Number(values.register_selfhandle)),
           register_supplement: String(Number(values.register_supplement)),
         });
@@ -134,7 +134,7 @@ function WorkOrder(props) {
         setIscheck(true);
         setFormcheck({
           ...values,
-          check_check_time: values.check_check_time.format('YYYY-MM-DD HH:mm:ss'),
+          check_checkTime: values.check_checkTime.format('YYYY-MM-DD HH:mm:ss'),
         });
       } else {
         setIscheck(false);
@@ -148,7 +148,7 @@ function WorkOrder(props) {
         setIscheck(true);
         setFormhandle({
           ...values,
-          handle_end_time: values.handle_end_time.format('YYYY-MM-DD HH:mm:ss'),
+          handle_endTime: values.handle_endTime.format('YYYY-MM-DD HH:mm:ss'),
         });
       } else {
         setIscheck(false);
@@ -162,7 +162,7 @@ function WorkOrder(props) {
         setIscheck(true);
         setFormvisit({
           ...values,
-          finish_revisit_time: values.finish_revisit_time.format('YYYY-MM-DD HH:mm:ss'),
+          finish_revisitTime: values.finish_revisitTime.format('YYYY-MM-DD HH:mm:ss'),
         });
       } else {
         setIscheck(false);
@@ -179,7 +179,7 @@ function WorkOrder(props) {
         payload: {
           paloadvalues,
           pangekey,
-          flow_instance_id,
+          flowInstanceId,
         },
       });
     }
@@ -237,23 +237,6 @@ function WorkOrder(props) {
       },
     });
   }, []);
-  // 待处理自动接单
-  // useEffect(() => {
-  //   if (pangekey === '4' && formhandle !== '') {
-  //     dispatch({
-  //       type: 'eventtodo/eventflow',
-  //       payload: {
-  //         flow: {
-  //           id,
-  //           userIds: '1',
-  //           type: flowtype,
-  //         },
-  //         paloadvalues,
-  //         pangekey,
-  //       },
-  //     });
-  //   }
-  // }, [formhandle]);
 
   // 获取事件流程记录
   useEffect(() => {
@@ -275,18 +258,12 @@ function WorkOrder(props) {
 
   // 初始化流转类型,自动接单value
   useEffect(() => {
-    //
     if (data !== undefined && data[0].main.event_type === '005') {
       setFlowtype('3');
     }
     if (pangekey !== '1') {
       setFlowtype('1');
     }
-
-    // 自动接单
-    // if (records !== '' && pangekey === '4') {
-    //   rechandles();
-    // }
   }, [loading]);
 
   useEffect(() => {

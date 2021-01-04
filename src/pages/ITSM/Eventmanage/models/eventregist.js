@@ -7,10 +7,7 @@ const replacerec = values => {
     JSON.stringify(values)
       .replace(/main_/g, 'main.')
       .replace(/handle_/g, 'handle.')
-      .replace(/handle.handle./g, 'handle.handle_')
-      .replace(/handle.user/g, 'handle.handler')
-      .replace(/register_/g, 'register.')
-      .replace(/register.register./g, 'register.register_'),
+      .replace(/register_/g, 'register.'),
   );
   return newarr;
 };
@@ -37,12 +34,12 @@ export default {
       const values = replacerec(payload);
       const response = yield call(EventFlowStart);
       if (response.code === 200) {
-        const { flow_instance_id, flow_node_instance_id, flow_node_name } = response;
+        const { flowInstanceId, flowNodeInstanceId, flowNodeName } = response;
         const registratpayload = {
-          flow_instance_id,
-          flow_node_instance_id,
-          flow_node_name,
-          _edit_state: 'add',
+          flowInstanceId,
+          flowNodeInstanceId,
+          flowNodeName,
+          editState: 'add',
           ...values,
         };
         const registres = yield call(EventSave, registratpayload);
@@ -53,7 +50,7 @@ export default {
             query: {
               pangekey: register_selfhandle === '1' ? '5' : '1',
               id: registres.taskId,
-              mainId: flow_instance_id,
+              mainId: flowInstanceId,
               validate: false,
             },
           });
@@ -66,12 +63,12 @@ export default {
       const values = replacerec(formvalue);
       const response = yield call(EventFlowStart);
       if (response.code === 200) {
-        const { flow_instance_id, flow_node_instance_id, flow_node_name } = response;
+        const { flowInstanceId, flowNodeInstanceId, flowNodeName } = response;
         const registratpayload = {
-          flow_instance_id,
-          flow_node_instance_id,
-          flow_node_name,
-          _edit_state: 'add',
+          flowInstanceId,
+          flowNodeInstanceId,
+          flowNodeName,
+          editState: 'add',
           ...values,
         };
         const registres = yield call(EventSave, registratpayload);

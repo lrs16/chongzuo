@@ -17,14 +17,9 @@ const replacerec = values => {
     JSON.stringify(values)
       .replace(/main_/g, 'main.')
       .replace(/handle_/g, 'handle.')
-      .replace(/handle.handle./g, 'handle.handle_')
-      .replace(/handle.user/g, 'handle.handler')
       .replace(/register_/g, 'register.')
-      .replace(/register.register./g, 'register.register_')
       .replace(/check_/g, 'check.')
-      .replace(/check.check./g, 'check.check_')
-      .replace(/finish_/g, 'finish.')
-      .replace(/finish.finish./g, 'finish.finish_'),
+      .replace(/finish_/g, 'finish.'),
   );
   return newarr;
 };
@@ -64,15 +59,14 @@ export default {
       });
     },
     // 编辑保存
-    *eventsave({ payload: { paloadvalues, pangekey, flow_instance_id } }, { call, put }) {
-      const values = replacerec({ ...paloadvalues });
-      const { register_selfhandle } = values;
+    *eventsave({ payload: { paloadvalues, flowInstanceId } }, { call, put }) {
+      const values = replacerec({ ...paloadvalues, flowInstanceId });
       const registres = yield call(EventSaveFlow, values);
       if (registres.code === -1) {
         message.error(registres.msg, 3);
       }
       if (registres.code === 200) {
-        const { taskId } = registres;
+        const { taskId, eventStatus } = registres;
         message.success(registres.msg, 3);
         // 保存成功重新加载
         const response = yield call(EventopenFlow, taskId);
@@ -83,9 +77,9 @@ export default {
         router.push({
           pathname: `/ITSM/eventmanage/to-do/record/workorder`,
           query: {
-            pangekey: response.data[0].main.event_status,
+            pangekey: eventStatus,
             id: registres.taskId,
-            mainId: flow_instance_id,
+            mainId: flowInstanceId,
             next: sessionStorage.getItem('Nextflowtype'),
             validate: false,
           },

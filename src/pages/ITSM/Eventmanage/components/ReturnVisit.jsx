@@ -80,7 +80,7 @@ const ReturnVisit = React.forwardRef((props, ref) => {
   const handlcheckChange = value => {
     if (value === '003') {
       ChangeFlowtype('3');
-      sessionStorage.setItem('Nextflowtype', '处理');
+      sessionStorage.setItem('Nextflowtype', '确');
     } else {
       ChangeFlowtype('1');
       sessionStorage.setItem('Nextflowtype', '结束');
@@ -101,9 +101,9 @@ const ReturnVisit = React.forwardRef((props, ref) => {
           </Col>
           <Col span={8}>
             <Form.Item label="回访方式">
-              {getFieldDecorator('finish_revisit_way', {
+              {getFieldDecorator('finish_revisitWay', {
                 rules: [{ required, message: '请选择回访方式' }],
-                initialValue: main.revisit_way,
+                initialValue: main.revisitWay,
               })(
                 <Select placeholder="请选择">
                   {returnvisit.map(({ key, value }) => [
@@ -117,9 +117,9 @@ const ReturnVisit = React.forwardRef((props, ref) => {
           </Col>
           <Col span={8}>
             <Form.Item label="处理结果">
-              {getFieldDecorator('main_event_result', {
+              {getFieldDecorator('main_eventResult', {
                 rules: [{ required, message: '请选择处理结果' }],
-                initialValue: main.event_result,
+                initialValue: main.eventResult,
               })(
                 <Select placeholder="请选择">
                   {result.map(({ key, value }) => [
@@ -158,17 +158,17 @@ const ReturnVisit = React.forwardRef((props, ref) => {
         </Col>
         <Col span={8}>
           <Form.Item label="填单时间">
-            {getFieldDecorator('finish_add_time', {
+            {getFieldDecorator('finish_addTime', {
               rules: [{ required }],
-              initialValue: finish.add_time,
+              initialValue: finish.addTime,
             })(<Input disabled />)}
           </Form.Item>
         </Col>
         <Col span={8}>
           <Form.Item label="回访时间">
-            {getFieldDecorator('finish_revisit_time', {
+            {getFieldDecorator('finish_revisitTime', {
               rules: [{ required, message: '请选择回访时间' }],
-              initialValue: moment(finish.revisit_time),
+              initialValue: moment(finish.revisitTime),
             })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" />)}
           </Form.Item>
         </Col>
@@ -197,7 +197,7 @@ const ReturnVisit = React.forwardRef((props, ref) => {
         </Col>
         <Col span={8} style={{ display: 'none' }}>
           <Form.Item label="回访人ID">
-            {getFieldDecorator('finish_revisitor_id', {
+            {getFieldDecorator('finish_revisitorId', {
               rules: [{ required }],
               initialValue: userinfo.userId,
             })(<Input placeholder="请输入" />)}
@@ -205,7 +205,7 @@ const ReturnVisit = React.forwardRef((props, ref) => {
         </Col>
         <Col span={8}>
           <Form.Item label="回访人单位">
-            {getFieldDecorator('finish_revisit_unit', {
+            {getFieldDecorator('finish_revisitUnit', {
               rules: [{ required }],
               initialValue: userinfo.unitName,
             })(<Input placeholder="请输入" disabled />)}
@@ -213,7 +213,7 @@ const ReturnVisit = React.forwardRef((props, ref) => {
         </Col>
         <Col span={8} style={{ display: 'none' }}>
           <Form.Item label="回访人单位ID">
-            {getFieldDecorator('finish_revisit_unit_id', {
+            {getFieldDecorator('finish_revisitUnitId', {
               rules: [{ required }],
               initialValue: userinfo.unitId,
             })(<Input placeholder="请输入" />)}
@@ -221,7 +221,7 @@ const ReturnVisit = React.forwardRef((props, ref) => {
         </Col>
         <Col span={8}>
           <Form.Item label="回访人部门">
-            {getFieldDecorator('finish_revisit_dept', {
+            {getFieldDecorator('finish_revisitDept', {
               rules: [{ required }],
               initialValue: userinfo.deptName,
             })(<Input placeholder="请输入" disabled />)}
@@ -229,7 +229,7 @@ const ReturnVisit = React.forwardRef((props, ref) => {
         </Col>
         <Col span={8} style={{ display: 'none' }}>
           <Form.Item label="回访人部门ID">
-            {getFieldDecorator('finish_revisit_dept_id', {
+            {getFieldDecorator('finish_revisitDeptId', {
               rules: [{ required }],
               initialValue: userinfo.deptId,
             })(<Input placeholder="请输入" />)}
@@ -243,23 +243,17 @@ const ReturnVisit = React.forwardRef((props, ref) => {
 ReturnVisit.defaultProps = {
   info: {
     finish: {
-      revisit_way: '',
+      revisitWay: '',
       satisfaction: '001',
-      add_time: moment().format('YYYY-MM-DD HH:mm:ss'),
-      revisit_time: moment().format('YYYY-MM-DD HH:mm:ss'),
+      addTime: moment().format('YYYY-MM-DD HH:mm:ss'),
+      revisitTime: moment().format('YYYY-MM-DD HH:mm:ss'),
       content: '',
-      revisitor: '管理员',
-      revisitor_id: '1',
-      revisit_unit: '广西电网有限责任公司',
-      revisit_unit_id: '7AC3EF0F718E02A2E0530A644F130365',
-      revisit_dept: '广西电网有限责任公司',
-      revisit_dept_id: '7AC3EF0F639302A2E0530A644F130365',
       id: '',
     },
   },
   main: {
-    event_result: '',
-    revisit_way: '',
+    eventResult: '',
+    revisitWay: '',
   },
   userinfo: {
     deptName: '',

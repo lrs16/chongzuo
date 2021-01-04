@@ -108,6 +108,15 @@ function ToDodetails(props) {
     });
   };
 
+  //点击转单
+  const Transfer = () => {
+    sessionStorage.setItem('Nextflowtype', '处理');
+  };
+
+  const Flow = () => {
+    sessionStorage.setItem('Nextflowtype', '确认');
+  };
+
   const operations = (
     <>
       {/* 测试下载功能 */}
@@ -165,7 +174,7 @@ function ToDodetails(props) {
         </SelectUser>
       )}
       {pangekey === '5' && (
-        <SelectUser handleSubmit={() => handleHold('other')}>
+        <SelectUser handleSubmit={() => handleHold('other')} changorder="转单">
           <Button ghost type="primary" style={{ marginRight: 8 }}>
             转单
           </Button>

@@ -39,8 +39,8 @@ const Check = forwardRef((props, ref) => {
   };
 
   useEffect(() => {
-    sessionStorage.setItem('Nextflowtype', nextsmap.get(check.check_result));
-    setAdopt(check.check_result);
+    sessionStorage.setItem('Nextflowtype', nextsmap.get(check.checkResult));
+    setAdopt(check.checkResult);
     routerRefresh();
   }, [info]);
 
@@ -68,9 +68,9 @@ const Check = forwardRef((props, ref) => {
             </Form.Item>
           </Col>
           <Form.Item label="审核结果" {...forminladeLayout}>
-            {getFieldDecorator('check_check_result', {
+            {getFieldDecorator('check_checkResult', {
               rules: [{ required: true, message: '请选择审核结果' }],
-              initialValue: check.check_result,
+              initialValue: check.checkResult,
             })(
               <Radio.Group onChange={handleAdopt}>
                 <Radio value="001">通过</Radio>
@@ -98,17 +98,17 @@ const Check = forwardRef((props, ref) => {
         </Col>
         <Col span={8}>
           <Form.Item label="接单时间">
-            {getFieldDecorator('check_add_time', {
+            {getFieldDecorator('check_addTime', {
               rules: [{ required: true }],
-              initialValue: check.add_time,
+              initialValue: check.addTime,
             })(<Input placeholder="请输入" disabled />)}
           </Form.Item>
         </Col>
         <Col span={8}>
           <Form.Item label="审核时间">
-            {getFieldDecorator('check_check_time', {
+            {getFieldDecorator('check_checkTime', {
               rules: [{ required: true }],
-              initialValue: moment(check.check_time),
+              initialValue: moment(check.checkTime),
             })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" />)}
           </Form.Item>
         </Col>
@@ -129,7 +129,7 @@ const Check = forwardRef((props, ref) => {
         </Col>
         <Col span={8}>
           <Form.Item label="审核人">
-            {getFieldDecorator('check_check_user', {
+            {getFieldDecorator('check_checkUser', {
               rules: [{ required: true }],
               initialValue: userinfo.userName,
             })(<Input placeholder="请输入" disabled />)}
@@ -137,7 +137,7 @@ const Check = forwardRef((props, ref) => {
         </Col>
         <Col span={8} style={{ display: 'none' }}>
           <Form.Item label="审核人ID">
-            {getFieldDecorator('check_check_user_id', {
+            {getFieldDecorator('check_checkUserId', {
               rules: [{ required: true }],
               initialValue: userinfo.userId,
             })(<Input placeholder="请输入" disabled />)}
@@ -145,7 +145,7 @@ const Check = forwardRef((props, ref) => {
         </Col>
         <Col span={8}>
           <Form.Item label="审核人单位">
-            {getFieldDecorator('check_check_unit', {
+            {getFieldDecorator('check_checkUnit', {
               rules: [{ required: true }],
               initialValue: userinfo.unitName,
             })(<Input placeholder="请输入" disabled />)}
@@ -153,7 +153,7 @@ const Check = forwardRef((props, ref) => {
         </Col>
         <Col span={8} style={{ display: 'none' }}>
           <Form.Item label="审核人单位ID">
-            {getFieldDecorator('check_check_unit_id', {
+            {getFieldDecorator('check_checkUnitId', {
               rules: [{ required: true }],
               initialValue: userinfo.unitId,
             })(<Input placeholder="请输入" disabled />)}
@@ -161,7 +161,7 @@ const Check = forwardRef((props, ref) => {
         </Col>
         <Col span={8}>
           <Form.Item label="审核人部门">
-            {getFieldDecorator('check_check_dept', {
+            {getFieldDecorator('check_checkDept', {
               rules: [{ required: true }],
               initialValue: userinfo.deptName,
             })(<Input placeholder="请输入" disabled />)}
@@ -169,7 +169,7 @@ const Check = forwardRef((props, ref) => {
         </Col>
         <Col span={8} style={{ display: 'none' }}>
           <Form.Item label="审核人部门ID">
-            {getFieldDecorator('check_check_dept_id', {
+            {getFieldDecorator('check_checkDeptId', {
               rules: [{ required: true }],
               initialValue: userinfo.deptId,
             })(<Input placeholder="请输入" />)}
@@ -183,16 +183,10 @@ const Check = forwardRef((props, ref) => {
 Check.defaultProps = {
   info: {
     check: {
-      check_result: '001',
+      checkResult: '001',
       content: '',
-      add_time: moment().format('YYYY-MM-DD HH:mm:ss'),
-      check_time: moment().format('YYYY-MM-DD HH:mm:ss'),
-      check_user: '管理员',
-      check_user_id: '1',
-      check_unit: '广西电网有限责任公司',
-      check_unit_id: '7AC3EF0F718E02A2E0530A644F130365',
-      check_dept: '计量中心',
-      check_dept_id: '7AC3EF0F718E02A2E0530A644F130365',
+      addTime: moment().format('YYYY-MM-DD HH:mm:ss'),
+      checkTime: moment().format('YYYY-MM-DD HH:mm:ss'),
       id: '',
     },
   },
