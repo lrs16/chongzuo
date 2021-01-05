@@ -10,14 +10,14 @@ export default {
   },
 
   effects: {
-    // 列表
+    // 登记时保存
     *start({ payload }, { call }) {
       const response = yield call(DemandStart, payload);
       if (response.code === 200) {
         message.success(response.msg, 5);
-        router.push({
-          pathname: `/ITSM/demandmanage/to-do`,
-        });
+        // router.push({
+        //   pathname: `/ITSM/demandmanage/to-do`,
+        // });
       }
     },
     *startandnext({ payload }, { call }) {

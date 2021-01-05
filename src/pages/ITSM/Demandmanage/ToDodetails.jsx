@@ -5,7 +5,7 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
 function ToDoregist(props) {
   const { match, children, location } = props;
-  const { pangekey, processId } = location.query;
+  const { pangekey, id, mainId } = location.query;
   const pagetitle = props.route.name;
   const cRef = useRef();
 
@@ -14,7 +14,7 @@ function ToDoregist(props) {
       pathname: `${props.match.url}/workorder`,
       query: {
         pangekey,
-        processId,
+        processInstanceId: mainId,
         validate: true,
       },
     });
@@ -45,7 +45,7 @@ function ToDoregist(props) {
           pathname: `${match.url}/workorder`,
           query: {
             pangekey,
-            processId,
+            id,
           },
         });
         break;
@@ -54,7 +54,7 @@ function ToDoregist(props) {
           pathname: `${match.url}/process`,
           query: {
             pangekey,
-            processId,
+            id,
           },
         });
         break;

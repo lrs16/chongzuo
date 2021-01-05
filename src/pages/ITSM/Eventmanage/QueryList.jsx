@@ -92,7 +92,7 @@ const columns = [
           query: {
             pangekey: record.eventStatus,
             id: record.taskId,
-            mainId: record.mainId,
+            mainId: record.id,
           },
         });
       };

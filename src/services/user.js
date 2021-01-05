@@ -33,3 +33,10 @@ export async function UserChangPW(params) {
 export async function queryNotices() {
   return request('/api/notices');
 }
+
+// ITSM获取当前处理人信息
+export async function ITSMUser() {
+  return request(`/itsm/common/function/getUserInfo`, {
+    method: 'GET',
+  });
+}

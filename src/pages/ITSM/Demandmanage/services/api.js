@@ -18,10 +18,12 @@ export async function DemandStartAndNext(params) {
 
 // 需求待办列表
 export async function DemandtoDoList(params) {
-  return request(`/demand/todo/toDoList`, {
-    method: 'POST',
-    body: JSON.stringify(params),
-  });
+  return request(
+    `/demand/todo/toDoList?limit=${params.limit}&page=${params.page}&userId=${params.userId}`,
+    {
+      method: 'GET',
+    },
+  );
 }
 
 // 编辑历史记录

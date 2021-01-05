@@ -6,11 +6,16 @@ import Registrat from './components/Registrat';
 import SelectUser from '@/components/SelectUser';
 
 function Registration(props) {
-  const { dispatch, loading } = props;
+  const { dispatch, userinfo } = props;
   const pagetitle = props.route.name;
-  // 保存
+  // 获取用户信息
+  useEffect(() => {
+    dispatch({
+      type: 'itsmuser/fetchuser',
+    });
+  }, []);
+  // 保存，保存提交
   const RegistratRef = useRef();
-  // 保存提交
   const handlesubmit = values => {
     dispatch({
       type: 'demandregister/start',
@@ -19,7 +24,8 @@ function Registration(props) {
         creationTime: values.creationTime.format(),
         registerTime: values.registerTime.format(),
         functionalModule: values.functionalModule.join('/'),
-        nextUser: sessionStorage.getItem('NextflowUserId'),
+        //nextUser: sessionStorage.getItem('userauthorityid'),
+        nextUser: 'ELIN',
       },
     });
   };
@@ -31,6 +37,8 @@ function Registration(props) {
         creationTime: values.creationTime.format(),
         registerTime: values.registerTime.format(),
         functionalModule: values.functionalModule.join('/'),
+        //nextUser: sessionStorage.getItem('NextflowUserId'),
+        nextUser: 'ELIN',
       },
     });
   };
@@ -71,13 +79,13 @@ function Registration(props) {
   return (
     <PageHeaderWrapper title={pagetitle} extra={operations}>
       <Card>
-        <Registrat ref={RegistratRef} />
+        <Registrat ref={RegistratRef} userinfo={userinfo} />
       </Card>
     </PageHeaderWrapper>
   );
 }
 
-export default connect(({ demandregister, loading }) => ({
-  demandregister,
+export default connect(({ itsmuser, loading }) => ({
+  userinfo: itsmuser.userinfo,
   loading: loading.models.demandregister,
 }))(Registration);

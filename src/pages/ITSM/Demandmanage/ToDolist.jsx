@@ -48,10 +48,11 @@ const columns = [
     render: (text, record) => {
       const handleClick = () => {
         router.push({
-          pathname: `/ITSM/eventmanage/to-do/record/workorder`,
+          pathname: `/ITSM/demandmanage/to-do/record/workorder`,
           query: {
-            pangekey: record.state,
-            id: record.id,
+            pangekey: record.taskName,
+            id: record.taskId,
+            mainId: record.processInstanceId,
             validate: false,
           },
         });
@@ -105,11 +106,10 @@ function ToDolist(props) {
           type: 'demandtodo/fetchlist',
           payload: {
             // ...values,
-            currentPage: paginations.current,
-            pageSize: paginations.pageSize,
-            userId: '',
-            demandId: '',
-            nodeName: '',
+            page: paginations.current,
+            limit: paginations.pageSize,
+            //userId: sessionStorage.getItem('userauthorityid'),
+            userId: 'ELIN',
           },
         });
       }
@@ -183,7 +183,7 @@ function ToDolist(props) {
       pathname: `/ITSM/demandmanage/to-do/record/workorder`,
       query: {
         pangekey: '需求验证',
-        processId: '10069',
+        processId: '35062',
         validate: false,
       },
     });
@@ -338,7 +338,7 @@ function ToDolist(props) {
           loading={loading}
           columns={columns}
           dataSource={list.rows}
-          rowKey={record => record.id}
+          rowKey={record => record.demandId}
           pagination={pagination}
         />
       </Card>

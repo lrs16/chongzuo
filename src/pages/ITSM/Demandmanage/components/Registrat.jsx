@@ -117,7 +117,7 @@ const modulemap = [
   },
 ];
 const Registrat = forwardRef((props, ref) => {
-  const { register } = props;
+  const { register, userinfo } = props;
   const { getFieldDecorator } = props.form;
   const required = true;
   const attRef = useRef();
@@ -188,9 +188,9 @@ const Registrat = forwardRef((props, ref) => {
                 rules: [
                   {
                     required,
-                    len: 11,
-                    validator: phone_reg,
-                    message: '请输入正确的正确的手机号码',
+                    // len: 11,
+                    // validator: phone_reg,
+                    message: '请输入申请人电话',
                   },
                 ],
                 initialValue: register.proposerPhone,
@@ -254,7 +254,7 @@ const Registrat = forwardRef((props, ref) => {
               })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
             </Form.Item>
           </Col>
-          <Col span={24}>
+          {/* <Col span={24}>
             <Form.Item
               label="上传附件"
               {...forminladeLayout}
@@ -268,20 +268,28 @@ const Registrat = forwardRef((props, ref) => {
                 </Upload>,
               )}
             </Form.Item>
-          </Col>
+          </Col> */}
           <Col span={8}>
             <Form.Item label="登记人">
               {getFieldDecorator('registerPerson', {
                 rules: [{ required }],
-                initialValue: register.registerPerson,
+                initialValue: userinfo.userName,
               })(<Input placeholder="请输入" disabled />)}
             </Form.Item>
           </Col>
+          {/* <Col span={8} style={{ display: 'none' }}>
+            <Form.Item label="登记人ID">
+              {getFieldDecorator('registerPerson', {
+                rules: [{ required }],
+                initialValue: userinfo.userName,
+              })(<Input placeholder="请输入" disabled />)}
+            </Form.Item>
+          </Col> */}
           <Col span={8}>
             <Form.Item label="登记人单位">
               {getFieldDecorator('registrationUnit', {
                 rules: [{ required }],
-                initialValue: register.registrationUnit,
+                initialValue: userinfo.unitName,
               })(<Input placeholder="请输入" disabled />)}
             </Form.Item>
           </Col>
@@ -289,7 +297,7 @@ const Registrat = forwardRef((props, ref) => {
             <Form.Item label="登记人部门">
               {getFieldDecorator('registrationDepartment', {
                 rules: [{ required }],
-                initialValue: register.registrationDepartment,
+                initialValue: userinfo.deptName,
               })(<Input placeholder="请输入" disabled />)}
             </Form.Item>
           </Col>
@@ -317,6 +325,14 @@ Registrat.defaultProps = {
     registrationDepartment: '计量中心',
     registrationUnit: '广西电网有限责任公司',
     title: '',
+  },
+  userinfo: {
+    deptName: '',
+    deptId: '',
+    unitName: '',
+    unitId: '',
+    userName: '',
+    userId: '',
   },
 };
 
