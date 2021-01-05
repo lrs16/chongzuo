@@ -30,7 +30,8 @@ const SelectUser = props => {
     }
   }, []);
 
-  useEffect(() => {
+  const showModal = () => {
+    setIsModalVisible(true);
     dispatch({
       type: 'usermanage/search',
       payload: {
@@ -41,10 +42,6 @@ const SelectUser = props => {
         },
       },
     });
-  }, []);
-
-  const showModal = () => {
-    setIsModalVisible(true);
   };
 
   const handleOk = () => {

@@ -17,8 +17,8 @@ export default {
         payload: response.data,
       });
     },
-    *fetchopenview({ payload: { main_id } }, { call, put }) {
-      const response = yield call(queryOpenView, main_id);
+    *fetchopenview({ payload: { mainId } }, { call, put }) {
+      const response = yield call(queryOpenView, mainId);
       yield put({
         type: 'saveinfo',
         payload: response.data,

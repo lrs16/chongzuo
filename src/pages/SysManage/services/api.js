@@ -72,8 +72,16 @@ export async function queryDeptList() {
 
 // 添加组织
 export async function UpdateDept(params) {
-  return request('/upms/dept/saveOrUpdate', {
+  return request('/upms/dept/', {
     method: 'POST',
+    body: JSON.stringify(params),
+  });
+}
+
+// 编辑组织
+export async function EditeDept(params) {
+  return request('/upms/dept/', {
+    method: 'PUT',
     body: JSON.stringify(params),
   });
 }

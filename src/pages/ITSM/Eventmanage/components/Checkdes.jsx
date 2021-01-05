@@ -13,12 +13,12 @@ function Checkdes(props) {
   return (
     <div className={styles.collapse}>
       <Descriptions style={{ marginTop: 24 }}>
-        <Descriptions.Item label="审核结果">{resultmap.get(info.check_result)}</Descriptions.Item>
+        <Descriptions.Item label="审核结果">{resultmap.get(info.checkResult)}</Descriptions.Item>
         <Descriptions.Item label="审核意见">{info.content}</Descriptions.Item>
-        <Descriptions.Item label="审核时间">{info.check_time}</Descriptions.Item>
-        <Descriptions.Item label="审核人">{info.check_user}</Descriptions.Item>
-        <Descriptions.Item label="审核人单位">{info.check_unit}</Descriptions.Item>
-        <Descriptions.Item label="申报人部门">{info.check_dept}</Descriptions.Item>
+        <Descriptions.Item label="审核时间">{info.checkTime}</Descriptions.Item>
+        <Descriptions.Item label="审核人">{info.checkUser}</Descriptions.Item>
+        <Descriptions.Item label="审核人单位">{info.checkUnit}</Descriptions.Item>
+        <Descriptions.Item label="申报人部门">{info.checkDept}</Descriptions.Item>
       </Descriptions>
     </div>
   );

@@ -180,9 +180,9 @@ const Registrat = forwardRef((props, ref) => {
           </Form.Item>
         </Col>
         <Col span={8}>
-          <Form.Item label="登记时间">
+          <Form.Item label="发生时间">
             {getFieldDecorator('register_occurTime', {
-              rules: [{ required, message: '请选择登记时间' }],
+              rules: [{ required, message: '请选择发生时间' }],
               initialValue: moment(register.occurTime),
             })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" />)}
           </Form.Item>
@@ -284,6 +284,14 @@ const Registrat = forwardRef((props, ref) => {
           <Col span={8}>
             <Form.Item label="手机号码">
               {getFieldDecorator('register_mobilePhone', {
+                rules: [
+                  {
+                    //  required,
+                    len: 11,
+                    validator: phone_reg,
+                    message: '请输入正确的正确的手机号码',
+                  },
+                ],
                 initialValue: register.mobilePhone,
               })(<Input placeholder="请输入" />)}
             </Form.Item>

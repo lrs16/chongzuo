@@ -15,7 +15,7 @@ import {
   Popconfirm,
 } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import DeptTree from '@/components/DeptTree';
+//import DeptTree from '@/components/DeptTree';
 // import DeptList from './components/DeptList';
 import DeptModal from './components/DeptModal';
 
@@ -231,9 +231,7 @@ class DeptManage extends Component {
       <PageHeaderWrapper title="组织管理">
         <Card>
           <Layout>
-            <Sider theme="light">
-              <DeptTree />
-            </Sider>
+            <Sider theme="light">{/* <DeptTree /> */}</Sider>
             <Content style={{ background: '#fff' }}>
               <div style={{ background: '#fff' }}>
                 <Form style={{ float: 'right', width: '30%' }}>

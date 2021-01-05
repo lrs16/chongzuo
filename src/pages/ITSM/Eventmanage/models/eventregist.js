@@ -30,6 +30,7 @@ export default {
     },
     // 启动流程,保存
     *eventstart({ payload }, { call }) {
+      console.log(payload);
       const { register_selfhandle } = payload;
       const values = replacerec(payload);
       const response = yield call(EventFlowStart);

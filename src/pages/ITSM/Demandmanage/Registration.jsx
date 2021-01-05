@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { connect } from 'dva';
 import { Card, Button } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
@@ -47,6 +47,12 @@ function Registration(props) {
       }
     });
   };
+
+  useEffect(() => {
+    dispatch({
+      type: 'eventregist/fetchuser',
+    });
+  }, []);
 
   const operations = (
     <>

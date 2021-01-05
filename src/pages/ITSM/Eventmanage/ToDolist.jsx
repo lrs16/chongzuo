@@ -171,6 +171,7 @@ function ToDolist(props) {
     });
   }, []);
 
+  // 查询
   const searchdata = (values, page, size) => {
     dispatch({
       type: 'eventtodo/fetchlist',
@@ -179,6 +180,28 @@ function ToDolist(props) {
         pageSize: size,
         pageIndex: page - 1,
       },
+    });
+  };
+
+  //  下载
+  const download = () => {
+    validateFields((err, values) => {
+      if (!err) {
+        dispatch({
+          type: 'eventtodo/eventdownload',
+          payload: { ...values },
+        }).then(res => {
+          // console.log(res);
+          const filename = `下载.xls`;
+          const blob = new Blob([res]);
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = filename;
+          a.click();
+          window.URL.revokeObjectURL(url);
+        });
+      }
     });
   };
 
@@ -230,23 +253,6 @@ function ToDolist(props) {
 
   const handleReset = () => {
     resetFields();
-  };
-
-  //  测试下载功能
-  const test = () => {
-    dispatch({
-      type: 'eventtodo/eventdownload',
-    }).then(res => {
-      // console.log(res);
-      const filename = `下载.xls`;
-      const blob = new Blob([res]);
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = filename;
-      a.click();
-      window.URL.revokeObjectURL(url);
-    });
   };
 
   return (
@@ -399,7 +405,7 @@ function ToDolist(props) {
           </Form>
         </Row>
         <div style={{ marginBottom: 24 }}>
-          <Button type="primary" onClick={() => test()}>
+          <Button type="primary" onClick={() => download()}>
             导出数据
           </Button>
         </div>

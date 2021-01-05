@@ -97,24 +97,17 @@ function ToDodetails(props) {
       },
     });
   };
+
+  // 删除
   const deleteflow = () => {
     dispatch({
-      type: 'eventtodo/eventback',
+      type: 'eventtodo/deleteflow',
       payload: {
-        id,
+        mainId,
         userIds: '1',
         type: '2',
       },
     });
-  };
-
-  //点击转单
-  const Transfer = () => {
-    sessionStorage.setItem('Nextflowtype', '处理');
-  };
-
-  const Flow = () => {
-    sessionStorage.setItem('Nextflowtype', '确认');
   };
 
   const operations = (

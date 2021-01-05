@@ -80,7 +80,7 @@ const ReturnVisit = React.forwardRef((props, ref) => {
   const handlcheckChange = value => {
     if (value === '003') {
       ChangeFlowtype('3');
-      sessionStorage.setItem('Nextflowtype', '确');
+      sessionStorage.setItem('Nextflowtype', '处理');
     } else {
       ChangeFlowtype('1');
       sessionStorage.setItem('Nextflowtype', '结束');

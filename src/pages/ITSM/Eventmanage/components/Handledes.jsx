@@ -40,7 +40,7 @@ const degreemap = new Map([
   ['003', '高'],
   ['004', '紧急'],
 ]);
-//处理结果
+// 处理结果
 const resultmap = new Map([
   ['001', '误报'],
   ['002', '根本解决'],
@@ -56,18 +56,18 @@ function Handledes(props) {
     <div className={styles.collapse}>
       <Descriptions style={{ marginTop: 24 }}>
         <Descriptions.Item label="处理人">{info.handler}</Descriptions.Item>
-        <Descriptions.Item label="处理人单位">{info.handle_unit}</Descriptions.Item>
-        <Descriptions.Item label="处理人部门">{info.handle_dept}</Descriptions.Item>
-        <Descriptions.Item label="事件分类">{typemap.get(main.event_type)}</Descriptions.Item>
-        <Descriptions.Item label="事件对象">{objectmap.get(main.event_object)}</Descriptions.Item>
-        <Descriptions.Item label="影响度">{degreemap.get(info.event_effect)}</Descriptions.Item>
-        <Descriptions.Item label="紧急度">{degreemap.get(info.event_emergent)}</Descriptions.Item>
+        <Descriptions.Item label="处理人单位">{info.handleUnit}</Descriptions.Item>
+        <Descriptions.Item label="处理人部门">{info.handleDept}</Descriptions.Item>
+        <Descriptions.Item label="事件分类">{typemap.get(main.eventType)}</Descriptions.Item>
+        <Descriptions.Item label="事件对象">{objectmap.get(main.eventObject)}</Descriptions.Item>
+        <Descriptions.Item label="影响度">{degreemap.get(info.eventEffect)}</Descriptions.Item>
+        <Descriptions.Item label="紧急度">{degreemap.get(info.eventEmergent)}</Descriptions.Item>
         <Descriptions.Item label="优先级" span={3}>
           {degreemap.get(info.event_prior)}
         </Descriptions.Item>
-        <Descriptions.Item label="处理结果">{resultmap.get(info.handle_result)}</Descriptions.Item>
-        <Descriptions.Item label="接单时间">{info.add_time}</Descriptions.Item>
-        <Descriptions.Item label="处理完成时间">{info.end_time}</Descriptions.Item>
+        <Descriptions.Item label="处理结果">{resultmap.get(info.handleResult)}</Descriptions.Item>
+        <Descriptions.Item label="接单时间">{info.addTime}</Descriptions.Item>
+        <Descriptions.Item label="处理完成时间">{info.endTime}</Descriptions.Item>
         {/* <Descriptions.Item label="二线标签"span={3}>No. 18, Wantang Road, Xihu District, Hangzhou, Zhejiang, China</Descriptions.Item> */}
         <Descriptions.Item label="解决方案" span={3}>
           {info.content}

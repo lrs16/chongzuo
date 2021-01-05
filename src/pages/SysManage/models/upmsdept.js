@@ -1,4 +1,4 @@
-import { queryDeptList, UpdateDept, removeDept, searchDept } from '../services/api';
+import { queryDeptList, UpdateDept, EditeDept, removeDept, searchDept } from '../services/api';
 
 export default {
   namespace: 'upmsdept',
@@ -15,13 +15,13 @@ export default {
         payload: response,
       });
     },
-    // 添加或编辑
+    // 添加
     *update({ payload }, { call }) {
       return yield call(UpdateDept, payload);
     },
-
+    // 编辑
     *edite({ payload }, { call }) {
-      return yield call(UpdateDept, payload);
+      return yield call(EditeDept, payload);
     },
 
     *remove({ payload: { id } }, { call }) {

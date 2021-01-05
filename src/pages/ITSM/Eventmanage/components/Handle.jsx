@@ -43,6 +43,7 @@ const result = [
 
 const Handle = React.forwardRef((props, ref) => {
   const { formItemLayout, forminladeLayout, info, main, userinfo, defaultvalue } = props;
+  console.log(defaultvalue);
   const { handle } = info;
   const { getFieldDecorator } = props.form;
   const required = true;
@@ -71,7 +72,7 @@ const Handle = React.forwardRef((props, ref) => {
         </Col>
         <Col span={8}>
           <Form.Item label="处理人">
-            {getFieldDecorator('handler', {
+            {getFieldDecorator('handle_handler', {
               initialValue: userinfo.userName,
             })(<Input placeholder="请输入" disabled />)}
           </Form.Item>
@@ -200,10 +201,10 @@ const Handle = React.forwardRef((props, ref) => {
             </Col>
           </>
         )}
-        {/* 登记时自行处理 */}
+        {/* 登记时自行处理,处理环节 */}
         {(defaultvalue === '' || defaultvalue === undefined) && (
           <>
-            {handle.event_effect !== '' && (
+            {handle.eventEffect !== '' && (
               <>
                 <Col span={8}>
                   <Form.Item label="影响度">
@@ -261,7 +262,7 @@ const Handle = React.forwardRef((props, ref) => {
                 </Col>
               </>
             )}
-            {handle.event_effect === '' && (
+            {handle.eventEffect === '' && (
               <>
                 <Col span={8}>
                   <Form.Item label="影响度">
@@ -357,7 +358,7 @@ const Handle = React.forwardRef((props, ref) => {
           <Form.Item label="处理结果">
             {getFieldDecorator('handle_handleResult', {
               rules: [{ required, message: '请选择处理结果' }],
-              initialValue: main.event_result,
+              initialValue: main.eventResult,
             })(
               <Select placeholder="请选择">
                 {result.map(({ key, value }) => [

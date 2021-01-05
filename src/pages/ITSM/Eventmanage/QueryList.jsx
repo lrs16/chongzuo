@@ -8,9 +8,14 @@ import { DownOutlined, UpOutlined } from '@ant-design/icons';
 const { Option } = Select;
 
 const statemap = [
-  { key: '0', value: '事件登记' },
-  { key: '1', value: '事件处理' },
-  { key: '2', value: '事件回访' },
+  { key: '1', value: '已登记' },
+  { key: '2', value: '待审核' },
+  { key: '3', value: '审核中' },
+  { key: '4', value: '待处理' },
+  { key: '5', value: '处理中' },
+  { key: '6', value: '待确认' },
+  { key: '7', value: '确认中' },
+  { key: '8', value: '重分派' },
 ];
 
 const sourcemap = [
@@ -76,8 +81,8 @@ const degreemap = new Map([
 const columns = [
   {
     title: '事件编号',
-    dataIndex: 'event_no',
-    key: 'event_no',
+    dataIndex: 'eventNo',
+    key: 'eventNo',
     width: 150,
     fixed: 'left',
     render: (text, record) => {
@@ -85,7 +90,9 @@ const columns = [
         router.push({
           pathname: `/ITSM/eventmanage/query/details`,
           query: {
-            main_id: record.main_id,
+            pangekey: record.eventStatus,
+            id: record.taskId,
+            mainId: record.mainId,
           },
         });
       };
@@ -101,15 +108,15 @@ const columns = [
   },
   {
     title: '建单时间',
-    dataIndex: 'add_time',
-    key: 'add_time',
+    dataIndex: 'addTime',
+    key: 'addTime',
     fixed: 'left',
     width: 200,
   },
   {
     title: '工单状态',
-    dataIndex: 'event_status',
-    key: 'event_status',
+    dataIndex: 'eventStatus',
+    key: 'eventStatus',
     fixed: 'left',
     width: 100,
     render: (text, record) => {
@@ -124,44 +131,44 @@ const columns = [
         ['8', '重分派'],
         ['9', '已关闭'],
       ]);
-      return <>{textmaps.get(record.event_status)}</>;
+      return <>{textmaps.get(record.eventStatus)}</>;
     },
   },
   {
     title: '申报人',
-    dataIndex: 'application_user',
-    key: 'application_user',
+    dataIndex: 'applicationUser',
+    key: 'applicationUser',
     fixed: 'left',
     width: 100,
   },
   {
     title: '申报人单位',
-    dataIndex: 'application_unit',
-    key: 'application_unit',
-    width: 200,
+    dataIndex: 'applicationUnit',
+    key: 'applicationUnit',
+    width: 120,
   },
   {
     title: '申报人部门',
-    dataIndex: 'application_dept',
-    key: 'application_dept',
-    width: 200,
+    dataIndex: 'applicationDept',
+    key: 'applicationDept',
+    width: 120,
   },
   {
     title: '事件分类',
-    dataIndex: 'event_type',
-    key: 'event_type',
-    width: 80,
+    dataIndex: 'eventType',
+    key: 'eventType',
+    width: 120,
     render: (text, record) => {
-      return <>{typemap.get(record.event_type)}</>;
+      return <>{typemap.get(record.eventType)}</>;
     },
   },
   {
     title: '事件对象',
-    dataIndex: 'event_object',
-    key: 'event_object',
-    width: 80,
+    dataIndex: 'eventObject',
+    key: 'eventObject',
+    width: 120,
     render: (text, record) => {
-      return <>{objectmap.get(record.event_object)}</>;
+      return <>{objectmap.get(record.eventObject)}</>;
     },
   },
   // {
@@ -184,11 +191,11 @@ const columns = [
   // },
   {
     title: '回访方式',
-    dataIndex: 'revisit_way',
-    key: 'revisit_way',
-    width: 100,
+    dataIndex: 'revisitWay',
+    key: 'revisitWay',
+    width: 120,
     render: (text, record) => {
-      return <>{revisitwaymap.get(record.revisit_way)}</>;
+      return <>{revisitwaymap.get(record.revisitWay)}</>;
     },
   },
   {
@@ -197,7 +204,7 @@ const columns = [
     key: 'event_source',
     width: 150,
     render: (text, record) => {
-      return <>{sourcemaps.get(record.event_source)}</>;
+      return <>{sourcemaps.get(record.eventSource)}</>;
     },
   },
   {
@@ -206,7 +213,7 @@ const columns = [
     key: 'event_effect',
     width: 80,
     render: (text, record) => {
-      return <>{degreemap.get(record.event_effect)}</>;
+      return <>{degreemap.get(record.eventEffect)}</>;
     },
   },
   {
@@ -215,7 +222,7 @@ const columns = [
     key: 'event_prior',
     width: 80,
     render: (text, record) => {
-      return <>{degreemap.get(record.event_prior)}</>;
+      return <>{degreemap.get(record.eventPrior)}</>;
     },
   },
   {
@@ -224,12 +231,12 @@ const columns = [
     key: 'event_emergent',
     width: 80,
     render: (text, record) => {
-      return <>{degreemap.get(record.event_emergent)}</>;
+      return <>{degreemap.get(record.eventEmergent)}</>;
     },
   },
   {
     title: '登记人',
-    dataIndex: 'register_user',
+    dataIndex: 'registerUser',
     key: 'register_user',
     width: 80,
   },
@@ -275,6 +282,28 @@ function QueryList(props) {
         pageSize: size,
         pageIndex: page,
       },
+    });
+  };
+
+  //  下载
+  const download = () => {
+    validateFields((err, values) => {
+      if (!err) {
+        dispatch({
+          type: 'eventtodo/eventdownload',
+          payload: { ...values },
+        }).then(res => {
+          // console.log(res);
+          const filename = `下载.xls`;
+          const blob = new Blob([res]);
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = filename;
+          a.click();
+          window.URL.revokeObjectURL(url);
+        });
+      }
     });
   };
 
@@ -478,7 +507,9 @@ function QueryList(props) {
           </Form>
         </Row>
         <div style={{ marginBottom: 24 }}>
-          <Button type="primary">导出数据</Button>
+          <Button type="primary" onClick={() => download()}>
+            导出数据
+          </Button>
         </div>
         <Table
           loading={loading}

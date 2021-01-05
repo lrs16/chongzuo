@@ -2,6 +2,7 @@ import React, { useRef, useImperativeHandle, forwardRef } from 'react';
 import moment from 'moment';
 import { Card, Row, Col, Form, Input, Button, Select, Upload, DatePicker, Cascader } from 'antd';
 import { phone_reg } from '@/utils/Regexp';
+import { DownloadOutlined } from '@ant-design/icons';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -147,6 +148,14 @@ const Registrat = forwardRef((props, ref) => {
               })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" disabled />)}
             </Form.Item>
           </Col>
+          <Col span={8}>
+            <Form.Item label="申请时间">
+              {getFieldDecorator('registerTime', {
+                rules: [{ required, message: '请选择申请时间' }],
+                initialValue: moment(register.creationTime),
+              })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" />)}
+            </Form.Item>
+          </Col>
         </Row>
         <Row gutter={24}>
           <Col span={8}>
@@ -188,22 +197,15 @@ const Registrat = forwardRef((props, ref) => {
               })(<Input placeholder="请输入" />)}
             </Form.Item>
           </Col>
+
           <Col span={8}>
-            <Form.Item label="申请时间">
-              {getFieldDecorator('registerTime', {
-                rules: [{ required, message: '请选择登记时间' }],
-                initialValue: moment(register.creationTime),
-              })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" />)}
-            </Form.Item>
-          </Col>
-          {/* <Col span={8}>
             <Form.Item label="期待完成时间">
               {getFieldDecorator('completeTime', {
                 rules: [{ required, message: '请选择期待完成时间' }],
                 initialValue: moment(register.completeTime),
               })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" />)}
             </Form.Item>
-          </Col> */}
+          </Col>
           <Col span={8}>
             <Form.Item label="需求类型">
               {getFieldDecorator('demandType', {
@@ -220,10 +222,10 @@ const Registrat = forwardRef((props, ref) => {
               )}
             </Form.Item>
           </Col>
-          <Col span={8}>
-            <Form.Item label="所属功能模块">
+          <Col span={24}>
+            <Form.Item label="所属模块" {...forminladeLayout}>
               {getFieldDecorator('functionalModule', {
-                rules: [{ required, message: '请选择所属功能模块' }],
+                rules: [{ required, message: '请选择所属模块' }],
                 initialValue: register.functionalModule,
               })(<Cascader options={modulemap} />)}
             </Form.Item>
@@ -252,21 +254,21 @@ const Registrat = forwardRef((props, ref) => {
               })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
             </Form.Item>
           </Col>
-          {/* <Col span={24}>
-          <Form.Item
-            label="上传附件"
-            {...forminladeLayout}
-            extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
-          >
-            {getFieldDecorator('form17')(
-              <Upload>
-                <Button type="primary">
-                  <DownloadOutlined /> 上传附件
-                    </Button>
-              </Upload>,
-            )}
-          </Form.Item>
-        </Col> */}
+          <Col span={24}>
+            <Form.Item
+              label="上传附件"
+              {...forminladeLayout}
+              extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
+            >
+              {getFieldDecorator('form17')(
+                <Upload>
+                  <Button type="primary">
+                    <DownloadOutlined /> 上传附件
+                  </Button>
+                </Upload>,
+              )}
+            </Form.Item>
+          </Col>
           <Col span={8}>
             <Form.Item label="登记人">
               {getFieldDecorator('registerPerson', {

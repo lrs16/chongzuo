@@ -21,7 +21,7 @@ const Panelheadermap = new Map([
 
 function EventDetails(props) {
   const { match, location, dispatch, info, loading } = props;
-  const { main_id } = location.query;
+  const { pangekey, id, mainId } = location.query;
   const pagetitle = props.route.name;
   const [activeKey, setActiveKey] = useState([]);
   const handleclose = () => {
@@ -39,7 +39,7 @@ function EventDetails(props) {
     dispatch({
       type: 'eventquery/fetchopenview',
       payload: {
-        main_id,
+        mainId,
       },
     });
   }, []);

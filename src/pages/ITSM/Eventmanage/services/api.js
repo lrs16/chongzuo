@@ -130,16 +130,27 @@ export async function queryList({
 }
 
 // 事件查询，查看详情 /itsm/event/form/openView
-export async function queryOpenView(main_id) {
-  return request(`/itsm/event/form/openView?main_id=${main_id}`, {
+export async function queryOpenView(mainId) {
+  return request(`/itsm/event/form/openView?mainId=${mainId}`, {
     method: 'GET',
   });
 }
 
 // 下载itsm/event/form/downloadExcel
-export async function querydownload() {
-  return request(`/itsm/event/form/downloadExcel`, {
-    method: 'GET',
-    responseType: 'blob',
-  });
+export async function querydownload({
+  eventNo,
+  eventPrior,
+  eventSource,
+  eventStatus,
+  eventTitle,
+  applicationUser,
+  registerUser,
+}) {
+  return request(
+    `/itsm/event/form/downloadQueryExcel?eventNo=${eventNo}&eventPrior=${eventPrior}&eventSource=${eventSource}&eventStatus=${eventStatus}&eventTitle=${eventTitle}&applicationUser=${applicationUser}&registerUserId=${registerUser}`,
+    {
+      method: 'GET',
+      responseType: 'blob',
+    },
+  );
 }

@@ -46,22 +46,22 @@ function Registratdes(props) {
   return (
     <div className={styles.collapse}>
       <Descriptions style={{ marginTop: 24 }}>
-        <Descriptions.Item label="事件编号">{main.event_no}</Descriptions.Item>
-        <Descriptions.Item label="建单时间">{main.add_time}</Descriptions.Item>
-        <Descriptions.Item label="事件来源">{sourcemaps.get(main.event_source)}</Descriptions.Item>
-        <Descriptions.Item label="申报人">{info.application_user}</Descriptions.Item>
-        <Descriptions.Item label="申报人单位">{info.application_unit}</Descriptions.Item>
-        <Descriptions.Item label="申报人部门">{info.application_dept}</Descriptions.Item>
-        <Descriptions.Item label="申报人电话">{info.application_user_phone}</Descriptions.Item>
+        <Descriptions.Item label="事件编号">{main.eventNo}</Descriptions.Item>
+        <Descriptions.Item label="建单时间">{main.addTime}</Descriptions.Item>
+        <Descriptions.Item label="事件来源">{sourcemaps.get(main.eventSource)}</Descriptions.Item>
+        <Descriptions.Item label="申报人">{info.applicationUser}</Descriptions.Item>
+        <Descriptions.Item label="申报人单位">{info.applicationUnit}</Descriptions.Item>
+        <Descriptions.Item label="申报人部门">{info.applicationDept}</Descriptions.Item>
+        <Descriptions.Item label="申报人电话">{info.applicationUserPhone}</Descriptions.Item>
         <Descriptions.Item label="回访方式">
           {revisitwaymap.get(info.revisit_way)}
         </Descriptions.Item>
-        <Descriptions.Item label="事件分类">{typemap.get(main.event_type)}</Descriptions.Item>
-        <Descriptions.Item label="事件对象">{objectmap.get(main.event_object)}</Descriptions.Item>
-        <Descriptions.Item label="影响度">{degreemap.get(info.event_effect)}</Descriptions.Item>
-        <Descriptions.Item label="紧急度">{degreemap.get(info.event_emergent)}</Descriptions.Item>
+        <Descriptions.Item label="事件分类">{typemap.get(main.eventType)}</Descriptions.Item>
+        <Descriptions.Item label="事件对象">{objectmap.get(main.eventObject)}</Descriptions.Item>
+        <Descriptions.Item label="影响度">{degreemap.get(info.eventEffect)}</Descriptions.Item>
+        <Descriptions.Item label="紧急度">{degreemap.get(info.eventEmergent)}</Descriptions.Item>
         <Descriptions.Item label="优先级" span={3}>
-          {degreemap.get(info.event_prior)}
+          {degreemap.get(info.eventPrior)}
         </Descriptions.Item>
         <Descriptions.Item label="事件标题" span={3}>
           {main.title}
@@ -76,9 +76,9 @@ function Registratdes(props) {
           <Checkbox defaultChecked={Boolean(Number(info.supplement))} disabled />
         </Descriptions.Item>
         <Descriptions.Item label="附件" span={3}></Descriptions.Item>
-        <Descriptions.Item label="登记人">{info.register_user}</Descriptions.Item>
-        <Descriptions.Item label="登记人单位">{info.register_unit}</Descriptions.Item>
-        <Descriptions.Item label="登记人部门">{info.register_dept}</Descriptions.Item>
+        <Descriptions.Item label="登记人">{info.registerUser}</Descriptions.Item>
+        <Descriptions.Item label="登记人单位">{info.registerUnit}</Descriptions.Item>
+        <Descriptions.Item label="登记人部门">{info.registerDept}</Descriptions.Item>
       </Descriptions>
     </div>
   );

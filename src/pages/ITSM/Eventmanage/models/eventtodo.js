@@ -136,7 +136,7 @@ export default {
       const response = yield call(EventFlow, payload);
       if (response.code === 200) {
         message.success(response.msg, 5);
-        const taskId = response.flow_node_instance_id;
+        const taskId = response.flowNodeInstanceId;
         const openres = yield call(EventopenFlow, taskId);
         yield put({
           type: 'saveinfo',
@@ -180,9 +180,9 @@ export default {
         payload: response,
       });
     },
-    //下载
-    *eventdownload(_, { call }) {
-      return yield call(querydownload);
+    // 下载
+    *eventdownload({ payload }, { call }) {
+      return yield call(querydownload, { ...payload });
     },
   },
 

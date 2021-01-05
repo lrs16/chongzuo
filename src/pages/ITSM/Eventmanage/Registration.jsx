@@ -103,7 +103,7 @@ function Registration(props) {
       if (!err) {
         setFormhandle({
           ...values,
-          handle_end_time: values.handle_end_time.format('YYYY-MM-DD HH:mm:ss'),
+          handle_endTime: values.handle_endTime.format('YYYY-MM-DD HH:mm:ss'),
         });
         submittype(type);
       } else {
