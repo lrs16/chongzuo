@@ -335,28 +335,28 @@ export default {
                       component: './ITSM/Faultmanage/Registration',
                     },
                     {
-                      path: '/ITSM/faultmanage/registration/record/:id',
-                      name: '故障管理流程',
-                      icon: 'cloud-server',
-                      component: './ITSM/Faultmanage/Registrdetails',
-                    },
-                    // {
-                    //   path: '/ITSM/faultmanage/faultmanagepro',
-                    //   name: '故障管理流程',
-                    //   icon: 'cloud-server',
-                    //   component: './ITSM/Faultmanage/FaultManageProView',
-                    // },
-                    {
                       path: '/ITSM/faultmanage/todolist',
                       name: '故障待办',
                       icon: 'control',
                       component: './ITSM/Faultmanage/ToDOlist',
                     },
                     {
+                      path: '/ITSM/faultmanage/todolist/record/:id',
+                      name: '故障待办详情页',
+                      icon: 'cloud-server',
+                      component: './ITSM/Faultmanage/Todolistdetails',
+                    },
+                    {
                       path: '/ITSM/faultmanage/querylist',
                       name: '故障查询',
                       icon: 'control',
                       component: './ITSM/Faultmanage/QueryList',
+                    },
+                    {
+                      path: '/ITSM/faultmanage/querylist/record/:id',
+                      name: '故障查询详情页',
+                      icon: 'cloud-server',
+                      component: './ITSM/Faultmanage/Querylistdetails',
                     },
                     {
                       path: '/ITSM/faultmanage/overtime',
@@ -378,13 +378,13 @@ export default {
                           path: '/ITSM/faultmanage/faultstaticount/faultsumstatic',
                           name: '故障汇总统计',
                           icon: 'control',
-                          component: './ITSM/Faultmanage/FaultStatiCount/FaultSumStatic',
+                          component: './ITSM/Faultmanage/FaultStatiCount/Faultsumstatic',
                         },
                         {
                           path: '/ITSM/faultmanage/faultstaticount/faultbreakdownlist',
                           name: '故障明细表',
                           icon: 'control',
-                          component: './ITSM/Faultmanage/FaultStatiCount/FaultBreakdownList',
+                          component: './ITSM/Faultmanage/FaultStatiCount/Faultbreakdownlist',
                         },
                       ],
                     },
@@ -819,7 +819,7 @@ export default {
                 {
                   path: '/sysmanage/dropdownvalueset',
                   icon: 'cluster',
-                  name: '下拉值管理',
+                  name: '数据字典',
                   component: './SysManage/DropdownValueset',
                 },
                 {
@@ -934,6 +934,10 @@ export default {
     '/auto/': {
       target: 'http://172.16.4.211:9901/', // 软件启停
       // target: 'http://172.16.4.115:9901/',
+      changeOrigin: true,
+    },
+    '/sys': {
+      target: 'http://172.16.4.211:9901/', // 字典维护
       changeOrigin: true,
     },
     '/monitor/': {

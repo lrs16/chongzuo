@@ -67,7 +67,7 @@ class Overtime extends Component {
         dataIndex: 'index',
         key: 'index',
         width: 100,
-        render:(text,record,index)=>`${index+1}`,
+        render: (text, record, index) => `${index + 1}`,
       },
       {
         title: '工作单编号',
@@ -148,14 +148,14 @@ class Overtime extends Component {
         width: 100,
       },
     ];
-    
+
     const columns1 = [
       {
         title: '序号',
         dataIndex: 'index',
         key: 'index',
         width: 100,
-        render:(text,record,index)=>`${index+1}`,
+        render: (text, record, index) => `${index + 1}`,
       },
       {
         title: '工单编号',
@@ -236,14 +236,14 @@ class Overtime extends Component {
         width: 150,
       },
     ]
-    
+
     const columns2 = [
       {
         title: '序号',
         dataIndex: 'index',
         key: 'index',
         width: 100,
-        render:(text,record,index)=>`${index+1}`,
+        render: (text, record, index) => `${index + 1}`,
       },
       {
         title: '工作单编号',
@@ -341,17 +341,17 @@ class Overtime extends Component {
     ];
 
     const contentTabList = {
-      'timeoutnotdeal': 
+      'timeoutnotdeal':
         <Table
           columns={columns}
           rowKey={record => record.workID}
         />,
-      'timeoutdeal': 
+      'timeoutdeal':
         <Table
           columns={columns1}
           rowKey={record => record.workID}
         />,
-      'betimeout': 
+      'betimeout':
         <Table
           columns={columns2}
           rowKey={record => record.workID}
@@ -372,10 +372,10 @@ class Overtime extends Component {
     const { getFieldDecorator } = this.props.form;
 
     return (
-      <PageHeaderWrapper 
-        title={this.props.route.name} 
-        tabList={tabList} 
-        onTabChange={this.handleTabChange} 
+      <PageHeaderWrapper
+        title={this.props.route.name}
+        tabList={tabList}
+        onTabChange={this.handleTabChange}
         tabActiveKey={this.state.tabActiveKey}
       >
         <Card>
@@ -491,7 +491,7 @@ class Overtime extends Component {
               </Col>
             </Row>
           </Form>
-          
+
           <div>
             <Button type="primary" style={{ marginBottom: 25 }}>导出数据</Button>
             {contentTabList[this.state.tabActiveKey]}

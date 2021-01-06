@@ -37,7 +37,7 @@ const columns = [
   },
 ];
 
-function FaultSumStatic(props) {
+function Faultsumstatic(props) {
   const pagetitle = props.route.name;
 
   const {
@@ -90,5 +90,5 @@ export default Form.create({})(
   //   html: fault.html,
   //   loading: loading.models.fault,
   // }))
-  (FaultSumStatic),
+  (Faultsumstatic),
 );

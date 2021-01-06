@@ -104,7 +104,7 @@ const columns = [
   },
 ];
 
-function FaultBreakdownList(props) {
+function Faultbreakdownlist(props) {
   const pagetitle = props.route.name;
 
   const {
@@ -326,5 +326,5 @@ export default Form.create({})(
     getfaultBreakdownList: fault.getfaultBreakdownList,
     html: fault.html,
     loading: loading.models.fault,
-  }))(FaultBreakdownList),
+  }))(Faultbreakdownlist),
 );

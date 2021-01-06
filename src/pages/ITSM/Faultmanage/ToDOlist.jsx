@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
+import moment from 'moment';
 import Link from 'umi/link';
 import {
   Card,
@@ -12,8 +13,6 @@ import {
   Col,
   Icon,
   Table,
-  // Tooltip,
-  Modal,
 } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
@@ -29,35 +28,36 @@ const formItemLayout = {
 };
 
 const { Option } = Select;
-const { RangePicker } = DatePicker;
-// const { Search } = Input;
+const createTime = new Date(); // 发送时间
 
 const faultSource = [ // 故障来源
-  { key: 1, value: '用户电话申告' },
-  { key: 2, value: '用户自助申告' },
-  { key: 3, value: '巡检发现' },
-  { key: 4, value: '系统监控发现' },
-  { key: 5, value: '企信' },
-  { key: 6, value: '值班' },
-  { key: 7, value: '其它' },
-  { key: 8, value: '春风行动' },
-];
-
-const currLinks = [ // 当前环节
-  { key: 1, value: '缺陷登记' },
-  { key: 2, value: '缺陷审核' },
-  { key: 3, value: '缺陷处理' },
-  { key: 4, value: '缺陷关闭' },
+  { key: 1, value: '系统告警' },
+  { key: 2, value: '巡检发现' },
 ];
 
 const priority = [ // 优先级
   { key: 1, value: '低' },
   { key: 2, value: '中' },
   { key: 3, value: '高' },
-  { key: 4, value: '紧急' },
 ];
 
+const faultType = [ // 故障类型
+  { key: 1, value: '系统应用' },
+  { key: 2, value: '网络安全' },
+  { key: 3, value: '数据库' },
+  { key: 4, value: '中间件' },
+  { key: 5, value: '环境/设备' },
+  { key: 6, value: '软件' },
+  { key: 7, value: '其他' },
+];
 
+const currentNode = [ // 当前处理环节
+  { key: 1, value: '故障登记' },
+  { key: 2, value: '故障审核' },
+  { key: 3, value: '故障处理' },
+  { key: 4, value: '故障总结' },
+  { key: 5, value: '故障关闭' },
+];
 
 function ToDOlist(props) {
   const pagetitle = props.route.name;
@@ -65,8 +65,8 @@ function ToDOlist(props) {
   const {
     form: { getFieldDecorator, resetFields, validateFields },
     loading,
-    todolist,
     dispatch,
+    faultTodoList, // 真实待办列表数据
   } = props;
 
   const [expand, setExpand] = useState(false);
@@ -81,18 +81,22 @@ function ToDOlist(props) {
       render: (text, record, index) => `${(paginations.current - 1) * (paginations.pageSize) + (index + 1)}`,
     },
     {
+      title: 'id',
+      dataIndex: 'id',
+      key: 'id',
+    },
+    {
       title: '故障编号',
-      dataIndex: 'faultID',
-      key: 'faultID',
-      width: 150,
+      dataIndex: 'no',
+      key: 'no',
+      width: 200,
       render: (text, record) => {
         return (
           <Link
             to={{
-              pathname: `/ITSM/faultmanage/registration/record/${record.faultID}`,
-              state: {
-                todolistdata: record,
-              }
+              pathname: `/ITSM/faultmanage/todolist/record/${record.id}`,
+              // todocoloumns: record,
+              paneKey: record.currentNode
             }}
           >
             {text}
@@ -102,112 +106,108 @@ function ToDOlist(props) {
     },
     {
       title: '故障标题',
-      dataIndex: 'faultTitle',
-      key: 'faultTitle',
+      dataIndex: 'title',
+      key: 'title',
       width: 200,
     },
     {
       title: '故障来源',
-      dataIndex: 'faultSource',
-      key: 'faultSource',
-      width: 120,
+      dataIndex: 'source',
+      key: 'source',
+      width: 100,
     },
     {
-      title: '故障分类',
-      dataIndex: 'faultClass',
-      key: 'faultClass',
-      width: 120,
-    },
-    {
-      title: '申报人',
-      dataIndex: 'declarant',
-      key: 'declarant',
-      width: 120,
+      title: '故障类型',
+      dataIndex: 'type',
+      key: 'type',
+      width: 100,
     },
     {
       title: '当前处理环节',
-      dataIndex: 'currProceLink',
-      key: 'currProceLink',
+      dataIndex: 'currentNode',
+      key: 'currentNode',
       width: 150,
     },
     {
-      title: '故障状态',
-      dataIndex: 'faultStatus',
-      key: 'faultStatus',
-      width: 120,
-    },
-    {
-      title: '超时时间',
-      dataIndex: 'overTime',
-      key: 'overTime',
-      width: 200,
+      title: '登记人',
+      dataIndex: 'registerUser',
+      key: 'registerUser',
+      width: 150,
     },
     {
       title: '发送时间',
-      dataIndex: 'sendTime',
-      key: 'sendTime',
+      dataIndex: 'createTime',
+      key: 'createTime',
       width: 200,
     },
     {
-      title: '优先级',
-      dataIndex: 'priority',
-      key: 'priority',
+      title: '严重程度',
+      dataIndex: 'registerLevel',
+      key: 'registerLevel',
       width: 100,
     },
   ];
 
-  useEffect(() => {
-    validateFields((err, values) => {
-      if (!err) {
-        dispatch({
-          type: 'fault/fetchfaultTodoList',
-          payload: {
-            ...values,
-            current: paginations.current,
-            pageSize: paginations.pageSize,
-          },
-        });
-      }
-    });
-  }, []);
-
-  const searchdata = (values, page, size) => {
+  const getTodolists = () => {
     dispatch({
-      type: 'fault/fetchfaultTodoList',
+      type: 'fault/getfaultTodoList',
       payload: {
-        ...values,
-        pageSize: size,
-        current: page,
+        current: paginations.current,
+        pageSize: paginations.pageSize,
       },
     });
-  };
+  }
+
+  useEffect(() => {
+    getTodolists();
+  }, []);
 
   const handleReset = () => {
     resetFields();
   }
+
+  const searchdata = (values, page, pageSize) => {
+    dispatch({
+      type: 'fault/getSearchfaultTodo',
+      payload: {
+        values,
+        pageSize,
+        current: page,
+      },
+    });
+  };
 
   const handleSearch = () => {
     setPageinations({
       ...paginations,
       current: 1,
     });
+    let thetime;
     validateFields((err, values) => {
+      // 时间转换
+      const addDateZero = (num) => {
+        return (num < 10 ? `0${num}` : num);
+      }
+      const d = new Date(values.createTime);
+      thetime = `${d.getFullYear()}-${addDateZero(d.getMonth() + 1)}-${addDateZero(d.getDate())} ${addDateZero(d.getHours())}:${addDateZero(d.getMinutes())}:${addDateZero(d.getMinutes())}`;
+      const values1 = values;
+      values1.createTime = thetime;
       if (err) {
         return;
       }
-      searchdata(values, paginations.current, paginations.pageSize);
+      searchdata(values1, paginations.current, paginations.pageSize);
     });
   };
 
-  const onShowSizeChange = (page, size) => {
+  const onShowSizeChange = (page, pageSize) => {
     validateFields((err, values) => {
       if (!err) {
-        searchdata(values, page, size);
+        searchdata(values, page, pageSize);
       }
     });
     setPageinations({
       ...paginations,
-      pageSize: size,
+      pageSize,
     });
   };
 
@@ -225,10 +225,10 @@ function ToDOlist(props) {
 
   const pagination = {
     showSizeChanger: true,
-    onShowSizeChange: (page, size) => onShowSizeChange(page, size),
+    onShowSizeChange: (page, pageSize) => onShowSizeChange(page, pageSize),
     current: paginations.current,
     pageSize: paginations.pageSize,
-    total: todolist.total,
+    total: faultTodoList ? faultTodoList.total : '',
     onChange: page => changePage(page),
   };
 
@@ -239,75 +239,72 @@ function ToDOlist(props) {
           <Form {...formItemLayout} onSubmit={handleSearch}>
             <Col span={8}>
               <Form.Item label="故障编号">
-                {getFieldDecorator('faultID', {})(<Input />)}
+                {getFieldDecorator('no', {})(<Input placeholder="请输入" />)}
               </Form.Item>
             </Col>
+
             <Col span={8}>
-              <Form.Item label="故障标题">
-                {getFieldDecorator('faultTitle', {})(<Input />)}
+              <Form.Item label="当前处理环节">
+                {getFieldDecorator('currentNode', {})(
+                  <Select placeholder="请选择">
+                    {currentNode.map(({ value }) => [<Option key={value}>{value}</Option>])}
+                  </Select>,
+                )}
               </Form.Item>
             </Col>
             {expand === true && (
               <>
                 <Col span={8}>
+                  <Form.Item label="故障标题">
+                    {getFieldDecorator('title', {})(<Input placeholder="请输入" />)}
+                  </Form.Item>
+                </Col>
+
+                <Col span={8}>
                   <Form.Item label="故障来源">
-                    {getFieldDecorator('faultSource', {
+                    {getFieldDecorator('source', {
                       initialValue: '',
                     })(
                       <Select placeholder="请选择">
-                        {faultSource.map(({ key, value }) => [<Option key={key}>{value}</Option>])}
+                        {faultSource.map(({ value }) => [<Option key={value}>{value}</Option>])}
                       </Select>,
                     )}
                   </Form.Item>
                 </Col>
 
                 <Col span={8}>
-                  <Form.Item label="故障分类">
-                    {getFieldDecorator('faultClass', {
-                      initialValue: '',
-                    })(<Select />)}
-                  </Form.Item>
-                </Col>
-
-                <Col span={8}>
-                  <Form.Item label="当前环节">
-                    {getFieldDecorator('currLinks', {
+                  <Form.Item label="故障类型">
+                    {getFieldDecorator('type', {
                       initialValue: '',
                     })(
                       <Select placeholder="请选择">
-                        {currLinks.map(({ key, value }) => [<Option key={key}>{value}</Option>])}
+                        {faultType.map(({ value }) => [<Option key={value}>{value}</Option>])}
                       </Select>,
                     )}
                   </Form.Item>
                 </Col>
 
                 <Col span={8}>
-                  <Form.Item label="发送人">
-                    {getFieldDecorator('sender', {
+                  <Form.Item label="登记人">
+                    {getFieldDecorator('registerUser', {
                       initialValue: '',
-                    })(
-                      <Input
-                        suffix={
-                          <div>
-                            <Icon type="ellipsis" style={{ color: '#000000', cursor: 'pointer' }} />
-                            <Modal
-                              title="人员选择"
-                              centered
-                              width={1200}
-                              footer={null}
-                            >
-                              aa
-                            </Modal>
-                          </div>
-                        }
-                      />
-                    )}
+                    })(<Input placeholder="请输入" />)}
+                  </Form.Item>
+                </Col>
+
+                <Col span={8}>
+                  <Form.Item label="处理人">
+                    {getFieldDecorator('handleEnterNames', {
+                      initialValue: '',
+                    })(<Input placeholder="请输入" />)}
                   </Form.Item>
                 </Col>
 
                 <Col span={8}>
                   <Form.Item label="发送时间">
-                    {getFieldDecorator('sendTime')(<RangePicker style={{ width: '100%' }} />)}
+                    {getFieldDecorator('createTime', {
+                      initialValue: moment(createTime)
+                    })(<DatePicker showTime format="YYYY-MM-DD HH:mm" style={{ width: '100%' }} placeholder="请选择" />)}
                   </Form.Item>
                 </Col>
 
@@ -317,7 +314,7 @@ function ToDOlist(props) {
                       initialValue: '',
                     })(
                       <Select placeholder="请选择">
-                        {priority.map(({ key, value }) => [<Option key={key}>{value}</Option>])}
+                        {priority.map(({ value }) => [<Option key={value}>{value}</Option>])}
                       </Select>,
                     )}
                   </Form.Item>
@@ -387,10 +384,11 @@ function ToDOlist(props) {
         </div>
         <Table
           loading={loading}
-          columns={columns}
-          dataSource={todolist.data}
+          columns={columns.filter(item => item.title !== 'id' || item.key !== 'id')}
+          dataSource={faultTodoList.rows}
           table-layout="fixed"
-          rowKey={record => record.faultID}
+          // scroll={{x:800}}
+          rowKey={record => record.id}
           pagination={pagination}
         />
       </Card>
@@ -399,7 +397,7 @@ function ToDOlist(props) {
 }
 export default Form.create({})(
   connect(({ fault, loading }) => ({
-    todolist: fault.todolist,
+    faultTodoList: fault.faultTodoList, // 真实故障待办列表
     html: fault.html,
     loading: loading.models.fault,
   }))(ToDOlist),

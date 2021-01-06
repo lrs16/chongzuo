@@ -153,3 +153,33 @@ export async function searchRole(params) {
     body: JSON.stringify(params),
   });
 }
+
+// 查询下拉值全部数据
+export async function querySearchDropdownValue(page,limit,bodyParams) {
+  return request(`/sys/dict/listPage/${page}/${limit}`,{
+    method: 'POST',
+    body: JSON.stringify(bodyParams)
+  });
+}
+
+export async function removeDict(id) { // 删除字典
+  return request(`/sys/dict/${id}`, {
+    method: 'DELETE',
+    requestType: 'form',
+  });
+}
+
+export async function addDict(params) { // 新增字典
+  return request('/sys/dict', {
+    method: 'POST',
+    body: JSON.stringify(params),
+  });
+}
+
+export async function editeDict(params) { // 更新字典
+  return request('/sys/dict', {
+    method: 'PUT',
+    body: JSON.stringify(params),
+  });
+}
+

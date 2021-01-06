@@ -1,5 +1,4 @@
-// import React, { useState } from 'react';
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Card,
   Form,
@@ -11,16 +10,18 @@ import {
   DatePicker,
   Upload,
   Icon,
-  Timeline,
-  Tabs,
+  Steps,
+  Collapse
 } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 // eslint-disable-next-line import/no-unresolved
 import creatHistory from 'history/createHashHistory'; // 返回上一页
+import styles from './index.less';
 
 const { TextArea } = Input;
 const { Option } = Select;
-const { TabPane } = Tabs;
+const { Step } = Steps;
+const { Panel } = Collapse;
 
 const history = creatHistory(); // 返回上一页
 
@@ -108,9 +109,21 @@ const degUrgen = [ // 紧急程度
   { key: 4, value: '紧急' },
 ];
 
+const tabList = [
+  {
+    key: 'faultForm',
+    tab: '故障工单',
+  },
+  {
+    key: 'faultPro',
+    tab: '故障流程',
+  },
+];
+
 function ToDoregist(props) {
   const pagetitle = props.route.name;
-
+  const [activeKey, setActiveKey] = useState(['1']);
+  const [tabActiveKey, setTabActiveKey] = useState('faultForm');
   const {
     form: { getFieldDecorator },
     // location // 获取传入数据
@@ -120,219 +133,225 @@ function ToDoregist(props) {
   const handleClose = () => {
     history.goBack(); // 返回上一页
   }
+
+  const handleTabChange = (key) => {
+    setTabActiveKey(key);
+  };
+
+  const callback = key => {
+    setActiveKey(key);
+  };
+
   return (
-    <PageHeaderWrapper title={pagetitle}>
-      <Card
-        extra={
-          <>
-            <Button type="danger" style={{ marginRight: 8 }}>删 除</Button>
-            <Button type="primary" style={{ marginRight: 8 }}>保 存</Button>
-            {/* <ModelCircula> */}
-            <Button type="primary" style={{ marginRight: 8 }}>流 转</Button>
-            {/* </ModelCircula> */}
+    <PageHeaderWrapper
+      extra={
+        <>
+          <Button type="danger">删 除</Button>
+          <Button type="primary">保 存</Button>
+          <Button type="primary">流 转</Button>
+          <Button type="default" onClick={handleClose}>返 回</Button>
+        </>
+      }
+      title={pagetitle}
+      tabList={tabList}
+      onTabChange={handleTabChange}
+      tabActiveKey={tabActiveKey}
+    >
+      {
+        (tabActiveKey === 'faultForm' &&
+          <div className={styles.collapse}>
 
-            <Button type="default" onClick={handleClose}>关 闭</Button>
-          </>
-        }
-      >
+            <Card>
+              <Steps size="small" current={1}>
+                <Step title="故障登记（已登记）" description="到达时间: 2020-11-01处理人:张三." />
+              </Steps>
+            </Card>
 
-        <Tabs>
-          <TabPane tab="故障工单" key="1">
-            <Timeline style={{ display: 'flex', marginBottom: 50 }}>
-              <Timeline.Item color="red" style={{ color: 'red' }}>
-                <p>故障登记 (已登记)</p>
-                <span>到达时间：2020-12-03 11:30:35</span><br />
-                <span>登记人：管理员(广西电网有限责任公司)</span><br />
-                <span>已登记：2020-12-03 11:30:35</span>
-              </Timeline.Item>
-              <Timeline.Item color="red" style={{ color: 'red' }}>
-                <p>故障登记 (已登记)</p>
-                <span>到达时间：2020-12-03 11:30:35</span><br />
-                <span>登记人：管理员(广西电网有限责任公司)</span><br />
-                <span>已登记：2020-12-03 11:30:35</span>
-              </Timeline.Item>
-              <Timeline.Item>Technical testing 2015-09-01</Timeline.Item>
-              <Timeline.Item>Network problems being solved 2015-09-01</Timeline.Item>
-            </Timeline>
-            <Form {...formItemLayout}>
-              <Row gutter={24}>
-                <Col xl={8} xs={12}>
-                  <Form.Item label="故障编号">
-                    {getFieldDecorator('faultID', {})(<Input />)}
-                  </Form.Item>
-                </Col>
+            <Collapse
+              expandIconPosition="right"
+              activeKey={activeKey}
+              bordered={false}
+              style={{ marginTop: '-25px' }}
+              onChange={callback}
+            >
+              <Panel header="故障登记" key="1">
+                <Form {...formItemLayout}>
+                  <Row gutter={24}>
+                    <Col xl={8} xs={12}>
+                      <Form.Item label="故障编号">
+                        {getFieldDecorator('faultID', {})(<Input />)}
+                      </Form.Item>
+                    </Col>
 
-                <Col xl={8} xs={12}>
-                  <Form.Item label="登记时间">
-                    {getFieldDecorator('registTime')(<DatePicker style={{ width: 505.66 }} />)}
-                  </Form.Item>
-                </Col>
+                    <Col xl={8} xs={12}>
+                      <Form.Item label="登记时间">
+                        {getFieldDecorator('registTime')(<DatePicker style={{ width: '100%' }} />)}
+                      </Form.Item>
+                    </Col>
 
-                <Col xl={8} xs={12}>
-                  <Form.Item label="故障发生时间">
-                    {getFieldDecorator('faultHappentime')(<DatePicker style={{ width: 505.66 }} />)}
-                  </Form.Item>
-                </Col>
+                    <Col xl={8} xs={12}>
+                      <Form.Item label="故障发生时间">
+                        {getFieldDecorator('faultHappentime')(<DatePicker style={{ width: '100%' }} />)}
+                      </Form.Item>
+                    </Col>
 
-                <Col xl={8} xs={12}>
-                  <Form.Item label="申报人">
-                    {getFieldDecorator('declarant', {})(<Input placeholder="请输入" allowClear />)}
-                  </Form.Item>
-                </Col>
+                    <Col xl={8} xs={12}>
+                      <Form.Item label="申报人">
+                        {getFieldDecorator('declarant', {})(<Input placeholder="请输入" allowClear />)}
+                      </Form.Item>
+                    </Col>
 
-                <Col xl={8} xs={12}>
-                  <Form.Item label="申报人单位">
-                    {getFieldDecorator('declarantCompany', {})(
-                      <Select placeholder="请选择">
-                        {declarantCompany.map(({ key, value }) => [<Option key={key}>{value}</Option>])}
-                      </Select>,
-                    )}
-                  </Form.Item>
-                </Col>
+                    <Col xl={8} xs={12}>
+                      <Form.Item label="申报人单位">
+                        {getFieldDecorator('declarantCompany', {})(
+                          <Select placeholder="请选择">
+                            {declarantCompany.map(({ key, value }) => [<Option key={key}>{value}</Option>])}
+                          </Select>,
+                        )}
+                      </Form.Item>
+                    </Col>
 
-                <Col xl={8} xs={12}>
-                  <Form.Item label="申报人部门">
-                    {getFieldDecorator('declarantDepart', {})(
-                      <Select placeholder="请选择">
-                        {declarantDepart.map(({ key, value }) => [<Option key={key}>{value}</Option>])}
-                      </Select>,
-                    )}
-                  </Form.Item>
-                </Col>
+                    <Col xl={8} xs={12}>
+                      <Form.Item label="申报人部门">
+                        {getFieldDecorator('declarantDepart', {})(
+                          <Select placeholder="请选择">
+                            {declarantDepart.map(({ key, value }) => [<Option key={key}>{value}</Option>])}
+                          </Select>,
+                        )}
+                      </Form.Item>
+                    </Col>
 
-                <Col xl={8} xs={12}>
-                  <Form.Item label="申报人电话">
-                    {getFieldDecorator('declarantPhone', {})(<Input placeholder="请输入" allowClear />)}
-                  </Form.Item>
-                </Col>
+                    <Col xl={8} xs={12}>
+                      <Form.Item label="申报人电话">
+                        {getFieldDecorator('declarantPhone', {})(<Input placeholder="请输入" allowClear />)}
+                      </Form.Item>
+                    </Col>
 
-                <Col xl={8} xs={12}>
-                  <Form.Item label="故障来源">
-                    {getFieldDecorator('faultSource', {})(
-                      <Select placeholder="请选择">
-                        {faultSource.map(({ key, value }) => [<Option key={key}>{value}</Option>])}
-                      </Select>,
-                    )}
-                  </Form.Item>
-                </Col>
+                    <Col xl={8} xs={12}>
+                      <Form.Item label="故障来源">
+                        {getFieldDecorator('faultSource', {})(
+                          <Select placeholder="请选择">
+                            {faultSource.map(({ key, value }) => [<Option key={key}>{value}</Option>])}
+                          </Select>,
+                        )}
+                      </Form.Item>
+                    </Col>
 
-                <Col xl={8} xs={12}>
-                  <Form.Item label="故障类型">
-                    {getFieldDecorator('faultType', {})(
-                      <Select placeholder="请选择">
-                        {faultType.map(({ key, value }) => [<Option key={key}>{value}</Option>])}
-                      </Select>,
-                    )}
-                  </Form.Item>
-                </Col>
+                    <Col xl={8} xs={12}>
+                      <Form.Item label="故障类型">
+                        {getFieldDecorator('faultType', {})(
+                          <Select placeholder="请选择">
+                            {faultType.map(({ key, value }) => [<Option key={key}>{value}</Option>])}
+                          </Select>,
+                        )}
+                      </Form.Item>
+                    </Col>
 
-                <Col xl={8} xs={12}>
-                  <Form.Item label="故障对象">
-                    {getFieldDecorator('faultObj', {})(
-                      <Select placeholder="请选择">
-                        {faultObj.map(({ key, value }) => [<Option key={key}>{value}</Option>])}
-                      </Select>,
-                    )}
-                  </Form.Item>
-                </Col>
+                    <Col xl={8} xs={12}>
+                      <Form.Item label="故障对象">
+                        {getFieldDecorator('faultObj', {})(
+                          <Select placeholder="请选择">
+                            {faultObj.map(({ key, value }) => [<Option key={key}>{value}</Option>])}
+                          </Select>,
+                        )}
+                      </Form.Item>
+                    </Col>
 
-                <Col xl={8} xs={12}>
-                  <Form.Item label="故障地点">
-                    {getFieldDecorator('faultLocat', {})(<Input placeholder="请输入" allowClear />)}
-                  </Form.Item>
-                </Col>
+                    <Col xl={8} xs={12}>
+                      <Form.Item label="故障地点">
+                        {getFieldDecorator('faultLocat', {})(<Input placeholder="请输入" allowClear />)}
+                      </Form.Item>
+                    </Col>
 
-                <Col xl={8} xs={12}>
-                  <Form.Item label="严重程度">
-                    {getFieldDecorator('severity', {})(
-                      <Select placeholder="请选择">
-                        {severity.map(({ key, value }) => [<Option key={key}>{value}</Option>])}
-                      </Select>,
-                    )}
-                  </Form.Item>
-                </Col>
+                    <Col xl={8} xs={12}>
+                      <Form.Item label="严重程度">
+                        {getFieldDecorator('severity', {})(
+                          <Select placeholder="请选择">
+                            {severity.map(({ key, value }) => [<Option key={key}>{value}</Option>])}
+                          </Select>,
+                        )}
+                      </Form.Item>
+                    </Col>
 
-                <Col xl={8} xs={12}>
-                  <Form.Item label="紧急程度">
-                    {getFieldDecorator('degUrgen', {})(
-                      <Select placeholder="请选择">
-                        {degUrgen.map(({ key, value }) => [<Option key={key}>{value}</Option>])}
-                      </Select>,
-                    )}
-                  </Form.Item>
-                </Col>
+                    <Col xl={8} xs={12}>
+                      <Form.Item label="紧急程度">
+                        {getFieldDecorator('degUrgen', {})(
+                          <Select placeholder="请选择">
+                            {degUrgen.map(({ key, value }) => [<Option key={key}>{value}</Option>])}
+                          </Select>,
+                        )}
+                      </Form.Item>
+                    </Col>
 
-                <Col xl={8} xs={12}>
-                  <Form.Item label="故障发生时间">
-                    {getFieldDecorator('faultHappentime')(<DatePicker showTime style={{ width: '100%' }} />)}
-                  </Form.Item>
-                </Col>
+                    <Col xl={8} xs={12}>
+                      <Form.Item label="故障发生时间">
+                        {getFieldDecorator('faultHappentime')(<DatePicker showTime style={{ width: '100%' }} />)}
+                      </Form.Item>
+                    </Col>
 
-                <Col span={24}>
-                  <Form.Item label="故障名称" {...forminladeLayout}>
-                    {getFieldDecorator('faultName', {})(<Input placeholder="请输入" allowClear />)}
-                  </Form.Item>
-                </Col>
+                    <Col span={24}>
+                      <Form.Item label="故障名称" {...forminladeLayout}>
+                        {getFieldDecorator('faultName', {})(<Input placeholder="请输入" allowClear />)}
+                      </Form.Item>
+                    </Col>
 
-                <Col span={24}>
-                  <Form.Item label="故障概要" {...forminladeLayout}>
-                    {getFieldDecorator('faultSum', {})(<TextArea rows={5} placeholder="请输入" />)}
-                  </Form.Item>
-                </Col>
+                    <Col span={24}>
+                      <Form.Item label="故障概要" {...forminladeLayout}>
+                        {getFieldDecorator('faultSum', {})(<TextArea rows={5} placeholder="请输入" />)}
+                      </Form.Item>
+                    </Col>
 
-                <Col span={24}>
-                  <Form.Item label="范围说明" {...forminladeLayout}>
-                    {getFieldDecorator('scopeDesc', {})(<TextArea rows={5} placeholder="请描述范围" />)}
-                  </Form.Item>
-                </Col>
+                    <Col span={24}>
+                      <Form.Item label="范围说明" {...forminladeLayout}>
+                        {getFieldDecorator('scopeDesc', {})(<TextArea rows={5} placeholder="请描述范围" />)}
+                      </Form.Item>
+                    </Col>
 
-                <Col span={24}>
-                  <Form.Item label="附件列表：" extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb" style={{ display: "flex" }} {...forminladeLayout}>
-                    {getFieldDecorator('upload', {
-                      valuePropName: 'fileList',
-                    })(
-                      <Upload name="logo" action="" listType="picture">
-                        <Button type="primary">
-                          <Icon type="upload" style={{ fontSize: 18 }} /> 添加附件
+                    <Col span={24}>
+                      <Form.Item label="附件列表：" extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb" style={{ display: "flex" }} {...forminladeLayout}>
+                        {getFieldDecorator('upload', {
+                          valuePropName: 'fileList',
+                        })(
+                          <Upload name="logo" action="" listType="picture">
+                            <Button type="primary">
+                              <Icon type="upload" style={{ fontSize: 18 }} /> 添加附件
                                 </Button>
-                      </Upload>,
-                    )}
-                  </Form.Item>
-                </Col>
+                          </Upload>,
+                        )}
+                      </Form.Item>
+                    </Col>
 
-                <Col span={8}>
-                  <Form.Item label="登记人">
-                    {getFieldDecorator('regist', {})(<Input allowClear />)}
-                  </Form.Item>
-                </Col>
+                    <Col span={8}>
+                      <Form.Item label="登记人">
+                        {getFieldDecorator('regist', {})(<Input allowClear />)}
+                      </Form.Item>
+                    </Col>
 
-                <Col span={8}>
-                  <Form.Item label="登记人部门">
-                    {getFieldDecorator('registDepart', {})(<Input allowClear />)}
-                  </Form.Item>
-                </Col>
+                    <Col span={8}>
+                      <Form.Item label="登记人部门">
+                        {getFieldDecorator('registDepart', {})(<Input allowClear />)}
+                      </Form.Item>
+                    </Col>
 
-                <Col span={8}>
-                  <Form.Item label="登记人单位">
-                    {getFieldDecorator('registCompany', {})(<Input allowClear />)}
-                  </Form.Item>
-                </Col>
-              </Row>
-            </Form>
-          </TabPane>
-          <TabPane tab="故障流程" key="2">
-            故障流程
-                        </TabPane>
-          <TabPane tab="跟进信息" key="3">
-            跟进信息
-                    </TabPane>
-          <TabPane tab="关联工单" key="4">
-            关联工单
-                    </TabPane>
-        </Tabs>
-      </Card>
+                    <Col span={8}>
+                      <Form.Item label="登记人单位">
+                        {getFieldDecorator('registCompany', {})(<Input allowClear />)}
+                      </Form.Item>
+                    </Col>
+                  </Row>
+                </Form>
+              </Panel>
+            </Collapse>
+          </div>
+        )
+      }
+      {
+        (tabActiveKey === 'faultPro' && <Card>ww22</Card>)
+      }
+
     </PageHeaderWrapper>
   );
+
 }
 
 export default Form.create({})(ToDoregist);

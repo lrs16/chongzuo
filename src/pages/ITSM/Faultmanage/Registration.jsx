@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
-// import { connect } from 'dva';
+import { connect } from 'dva';
+import moment from 'moment';
 // import Link from 'umi/link';
+// import router from 'umi/router';
 import {
   Card,
   Form,
@@ -12,16 +14,20 @@ import {
   DatePicker,
   Upload,
   Icon,
-  TreeSelect,
-  message
+  message,
+  Radio,
+  Collapse
 } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import styles from './index.less';
+import SelectUser from './components/SelectUser';
+// import ModelCircula from './components/ModelCircula';
 
-import ModelCircula from './components/ModelCircula';
-
+const { Panel } = Collapse;
 const { TextArea } = Input;
 const { Option } = Select;
-const { TreeNode } = TreeSelect;
+const RadioGroup = Radio.Group;
+
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
@@ -44,167 +50,115 @@ const forminladeLayout = {
   },
 };
 
-const treeDatas = [
-  {
-    "id": "-1",
-    "parentId": "0",
-    "weight": 0,
-    "name": "广西博联公司",
-    "children": [
-      {
-        "id": "1",
-        "parentId": "-1",
-        "weight": 0,
-        "name": "运行维护部",
-        "children": [
-          {
-            "id": "1323886017773572097",
-            "parentId": "1",
-            "weight": 0,
-            "name": "部门领导"
-          },
-          {
-            "id": "1324152080692154370",
-            "parentId": "1",
-            "weight": 0,
-            "name": "运维服务一组"
-          },
-          {
-            "id": "1324166627062714370",
-            "parentId": "1",
-            "weight": 0,
-            "name": "运维服务二组"
-          }
-        ]
-      },
-      {
-        "id": "2",
-        "parentId": "-1",
-        "weight": 0,
-        "name": "办公室"
-      },
-      {
-        "id": "3",
-        "parentId": "-1",
-        "weight": 0,
-        "name": "人力资源部"
-      },
-      {
-        "id": "4",
-        "parentId": "-1",
-        "weight": 0,
-        "name": "财务部"
-      },
-      {
-        "id": "5",
-        "parentId": "-1",
-        "weight": 0,
-        "name": "市场营销部"
-      },
-      {
-        "id": "6",
-        "parentId": "-1",
-        "weight": 0,
-        "name": "集成部"
-      },
-      {
-        "id": "7",
-        "parentId": "-1",
-        "weight": 0,
-        "name": "研发部"
-      }
-    ]
-  }
-];
-
-const declarantDepart = [ // 申报人部门
-  { key: 1, value: '部门一' },
-  { key: 2, value: '部门二' },
-  { key: 3, value: '部门三' },
-  { key: 4, value: '部门四' },
-  { key: 5, value: '部门五' },
-  { key: 6, value: '部门六' },
-];
-
 const faultSource = [ // 故障来源
-  { key: 1, value: '用户电话申告' },
-  { key: 2, value: '用户自助申告' },
-  { key: 3, value: '巡检发现' },
-  { key: 4, value: '系统监控发现' },
-  { key: 5, value: '企信' },
-  { key: 6, value: '值班' },
-  { key: 7, value: '其它' },
-  { key: 8, value: '春风行动' },
+  { key: 0, value: '系统告警' },
+  { key: 1, value: '巡检发现' }
 ];
 
 const faultType = [ // 故障类型
-  { key: 1, value: '系统应用' },
-  { key: 2, value: '网络安全' },
-  { key: 3, value: '数据库' },
-  { key: 4, value: '中间件' },
-  { key: 5, value: '环境/设备' },
-  { key: 6, value: '软件' },
-  { key: 7, value: '其他' },
-];
-
-const faultObj = [ // 故障对象
-  { key: 1, value: 'ss' },
-  { key: 2, value: 'ss' },
-  { key: 3, value: 'ss' },
-  { key: 4, value: 'ss' },
-  { key: 5, value: '/设备' },
-  { key: 6, value: 'ss' },
-  { key: 7, value: 'ss' },
+  { key: 0, value: '系统应用' },
+  { key: 1, value: '网络安全' },
+  { key: 2, value: '数据库' },
+  { key: 3, value: '中间件' },
+  { key: 4, value: '环境/设备' },
+  { key: 5, value: '软件' },
+  { key: 6, value: '其他' },
 ];
 
 const severity = [ // 严重程度
-  { key: 1, value: '一般缺陷' },
-  { key: 2, value: '紧急缺陷' },
-  { key: 3, value: '严重缺陷' },
+  { key: 0, value: '紧急' },
+  { key: 1, value: '重大' },
+  { key: 2, value: '一般' },
 ];
 
-const degUrgen = [ // 紧急程度
-  { key: 1, value: '低' },
-  { key: 2, value: '中' },
-  { key: 3, value: '高' },
-  { key: 4, value: '紧急' },
+// const yxfw = [ // 影响范围
+// { key: 0, value: '自动抄表率' },
+// { key: 1, value: '服务器' },
+// { key: 2, value: '数据传输' },
+// { key: 3, value: '网络通道' },
+// { key: 4, value: 'VNC' },
+// { key: 5, value: '专变自动抄表率' },
+// { key: 6, value: '费控、召测' },
+// ];
+
+const sysmodular = [ // 系统模块
+  { key: 0, value: '配网采集' },
+  { key: 1, value: '主网采集' },
+  { key: 2, value: '终端掉线' },
+  { key: 3, value: '配网档案' },
+  { key: 4, value: '实用化指标' },
+  { key: 5, value: '账号缺陷' },
 ];
+
+// 故障登记时间 registerOccurTime
+// 故障发生时间 registerTime
+const registerOccurTime = new Date();
+const registerTime = new Date();
 
 function Registration(props) {
   const pagetitle = props.route.name;
-
+  const [activeKey, setActiveKey] = useState(['1']);
+  const [openModal, setOpenModal] = useState(false);
+  // const [ischeck, setIscheck] = useState();
   const {
-    form: { getFieldDecorator, resetFields, validateFields },
-    history
+    form: { getFieldDecorator, resetFields, validateFields, },
+    dispatch,
+    newno, // 新的故障编号
+    curruserinfo, // 获取登录用户信息
+    // history,
+    // saveuserid: { flowTaskId },
   } = props;
 
-  const [treevalue, setTreevalue] = useState('');
+  // 接口
+  const getNewno = () => { // 获取新的故障编号
+    dispatch({
+      type: 'fault/getFaultRegisterNo'
+    });
+  }
+
+  const getCurrUserInfo = () => {  // 获取登录用户信息
+    dispatch({
+      type: 'fault/getCurrUserInfo'
+    });
+  }
 
   useEffect(() => {
+    getNewno(); // 新的故障编号
+    getCurrUserInfo(); // 获取登录用户信息
   }, []);
 
   const close = () => { // 关闭
     resetFields();
   };
 
-  const handleSave = () => { // 保存
+  const callback = key => {
+    setActiveKey(key);
+  };
+
+  const handleSave = () => { // 保存成功后根据后端给的流程ID跳待办里的详情
+    let happentime;
+    let registtime;
     validateFields((err, values) => {
-      if (!err) {
-        const url = '/ITSM/faultmanage/registration/record/1';
-        const state = values;
-        history.push(url,state);
-        message.success('保存成功！');
+      // 时间转换
+      const addDateZero = (num) => {
+        return (num < 10 ? `0${num}` : num);
       }
-
-      // <Link
-      //   to={{
-      //     pathname: `/ITSM/faultmanage/registration/record/1`,
-      //   }}
-      // />
+      const d = new Date(values.registerOccurTime);
+      const d1 = new Date(values.registerTime);
+      happentime = `${d.getFullYear()}-${addDateZero(d.getMonth() + 1)}-${addDateZero(d.getDate())} ${addDateZero(d.getHours())}:${addDateZero(d.getMinutes())}:${addDateZero(d.getMinutes())}`; // :${  addDateZero(d1.getSeconds())
+      registtime = `${d1.getFullYear()}-${addDateZero(d1.getMonth() + 1)}-${addDateZero(d1.getDate())} ${addDateZero(d1.getHours())}:${addDateZero(d1.getMinutes())}:${addDateZero(d1.getMinutes())}`;
+      if (!err) {
+        const formValues = values;
+        formValues.registerOccurTime = happentime;
+        formValues.registerTime = registtime;
+        // formValues.taskId = id.flowTaskId;
+        formValues.editState = 'add';
+        dispatch({
+          type: 'fault/getSaveUserId',
+          payload: { formValues }
+        })
+      }
     });
-  }
-
-  const handleCircula = () => { // 流转
   }
 
   const normFile = e => {
@@ -215,229 +169,324 @@ function Registration(props) {
     return e && e.fileList;
   };
 
-  const onChange = val => {
-    setTreevalue(val);
-  }
+  const required = true;
 
-  const toTree = data => {
-    const result = [];
-    if (!Array.isArray(data)) {
-      return result;
+  const handleUpload = (info) => {
+    // if (info.file.status !== 'uploading') {
+    //   console.log("file info--->>", info.file);
+    // }
+    if (info.file.status === 'done') {
+      message.success(`${info.file.name} 文件上传成功！`);
+    } else if (info.file.status === 'error') {
+      message.error(`${info.file.name} 文件上传失败！`);
     }
-    const map = {};
-    data.forEach(item => {
-      map[item.weight] = item;
-    });
-    data.forEach(item => {
-      const parent = map[item.pid];
-      if (parent) {
-        (parent.children || (parent.children = [])).push(item);
-      } else {
-        result.push(item);
-      }
-    });
-    return result;
   };
 
-  const renderTreeNodes = data =>
-    data.map(item => {
-      if (item.children) {
-        return (
-          <TreeNode value={item.name} title={item.name} key={item.id} dataRef={item} >
-            {renderTreeNodes(item.children)}
-          </TreeNode>
-        );
-      }
-      return <TreeNode key={item.id} value={item.name} title={item.name} {...item} />;
-    });
+  const fileProps = {
+    name: 'file',
+    // action: fileUrl,
+    action: '',
+    accept: '',
+    multiple: false,
+    withCredentials: true,
+    onChange: handleUpload,
+  }
 
-  const treeData = toTree(treeDatas);
+  const faultcircula = () => { // 流转
+    let happentime;
+    let registtime;
+    validateFields((err, values) => {
+      // 时间转换
+      const addDateZero = (num) => {
+        return (num < 10 ? `0${num}` : num);
+      }
+      const d = new Date(values.registerOccurTime);
+      const d1 = new Date(values.registerTime);
+      happentime = `${d.getFullYear()}-${addDateZero(d.getMonth() + 1)}-${addDateZero(d.getDate())} ${addDateZero(d.getHours())}:${addDateZero(d.getMinutes())}:${addDateZero(d.getMinutes())}`; // :${  addDateZero(d1.getSeconds())
+      registtime = `${d1.getFullYear()}-${addDateZero(d1.getMonth() + 1)}-${addDateZero(d1.getDate())} ${addDateZero(d1.getHours())}:${addDateZero(d1.getMinutes())}:${addDateZero(d1.getMinutes())}`;
+      if (!err) {
+        setOpenModal(true);
+        const formValues = values;
+        formValues.registerOccurTime = happentime;
+        formValues.registerTime = registtime;
+        // formValues.taskId = id.flowTaskId;
+        formValues.editState = 'add';
+        formValues.registerEffect = String(formValues.registerEffect);
+        dispatch({
+          type: 'fault/getSaveUserId1',
+          payload: { formValues }
+        })
+      }
+    });
+  }
 
   return (
     <PageHeaderWrapper title={pagetitle}>
-      <Card
-        extra={
-          <>
-            <Button type="primary" style={{ marginRight: 8 }} onClick={handleSave}>
-              保 存
+      <Card style={{ textAlign: 'right' }}>
+        <Button type="primary" style={{ marginRight: 8 }} onClick={handleSave}>
+          保存
             </Button>
-            <ModelCircula title="流转" onSubmit={handleCircula}>
-              <Button type="primary" style={{ marginRight: 8 }}>流 转</Button>
-            </ModelCircula>
-            <Button type="default" onClick={close}>关 闭</Button>
-          </>
-        }
-      >
-        <Form {...formItemLayout}>
-          <Row gutter={24}>
-            <Col xl={8} xs={12}>
-              <Form.Item label="申报人">
-                {getFieldDecorator('declarant', {})(<Input placeholder="请输入" allowClear />)}
-              </Form.Item>
-            </Col>
-
-            <Col xl={8} xs={12}>
-              <Form.Item label="申报人单位">
-                {getFieldDecorator('declarantCompany', {
-                  initialValue: treevalue,
-                })(
-                  <>
-                    <TreeSelect
-                      defaultExpandAll
-                      // value={treevalue}
-                      style={{ width: '100%' }}
-                      dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-                      placeholder="请选择单位"
-                      onChange={onChange}
-                      treeCheckable
-                      multiple
-                    >
-                      {treeData && renderTreeNodes(treeData)}
-                    </TreeSelect>
-                  </>
-                )}
-              </Form.Item>
-            </Col>
-
-            <Col xl={8} xs={12}>
-              <Form.Item label="申报人部门">
-                {getFieldDecorator('declarantDepart', {})(
-                  <Select placeholder="请选择">
-                    {declarantDepart.map(({ key, value }) => [<Option key={key}>{value}</Option>])}
-                  </Select>,
-                )}
-              </Form.Item>
-            </Col>
-
-            <Col xl={8} xs={12}>
-              <Form.Item label="申报人电话">
-                {getFieldDecorator('declarantPhone', {})(<Input placeholder="请输入" allowClear />)}
-              </Form.Item>
-            </Col>
-
-            <Col xl={8} xs={12}>
-              <Form.Item label="故障来源">
-                {getFieldDecorator('faultSource', {})(
-                  <Select placeholder="请选择">
-                    {faultSource.map(({ key, value }) => [<Option key={key}>{value}</Option>])}
-                  </Select>,
-                )}
-              </Form.Item>
-            </Col>
-
-            <Col xl={8} xs={12}>
-              <Form.Item label="故障类型">
-                {getFieldDecorator('faultType', {})(
-                  <Select placeholder="请选择">
-                    {faultType.map(({ key, value }) => [<Option key={key}>{value}</Option>])}
-                  </Select>,
-                )}
-              </Form.Item>
-            </Col>
-
-            <Col xl={8} xs={12}>
-              <Form.Item label="故障对象">
-                {getFieldDecorator('faultObj', {})(
-                  <Select placeholder="请选择">
-                    {faultObj.map(({ key, value }) => [<Option key={key}>{value}</Option>])}
-                  </Select>,
-                )}
-              </Form.Item>
-            </Col>
-
-            <Col xl={8} xs={12}>
-              <Form.Item label="故障地点">
-                {getFieldDecorator('faultLocat', {})(<Input placeholder="请输入" allowClear />)}
-              </Form.Item>
-            </Col>
-
-            <Col xl={8} xs={12}>
-              <Form.Item label="严重程度">
-                {getFieldDecorator('severity', {})(
-                  <Select placeholder="请选择">
-                    {severity.map(({ key, value }) => [<Option key={key}>{value}</Option>])}
-                  </Select>,
-                )}
-              </Form.Item>
-            </Col>
-
-            <Col xl={8} xs={12}>
-              <Form.Item label="紧急程度">
-                {getFieldDecorator('degUrgen', {})(
-                  <Select placeholder="请选择">
-                    {degUrgen.map(({ key, value }) => [<Option key={key}>{value}</Option>])}
-                  </Select>,
-                )}
-              </Form.Item>
-            </Col>
-
-            <Col xl={8} xs={12}>
-              <Form.Item label="故障发生时间">
-                {getFieldDecorator('faultHappentime')(<DatePicker showTime style={{ width: '100%' }} />)}
-              </Form.Item>
-            </Col>
-
-            <Col span={24}>
-              <Form.Item label="故障名称" {...forminladeLayout}>
-                {getFieldDecorator('faultName', {})(<Input placeholder="请输入" allowClear />)}
-              </Form.Item>
-            </Col>
-
-            <Col span={24}>
-              <Form.Item label="故障概要" {...forminladeLayout}>
-                {getFieldDecorator('faultSum', {})(<TextArea rows={5} placeholder="请输入" />)}
-              </Form.Item>
-            </Col>
-
-            <Col span={24}>
-              <Form.Item label="范围说明" {...forminladeLayout}>
-                {getFieldDecorator('scopeDesc', {})(<TextArea rows={5} placeholder="请描述范围" />)}
-              </Form.Item>
-            </Col>
-
-            <Col span={24}>
-              <Form.Item label="附件列表：" extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb" style={{ display: "flex" }} {...forminladeLayout}>
-                {getFieldDecorator('upload', {
-                  valuePropName: 'fileList',
-                  getValueFromEvent: normFile,
-                })(
-                  <Upload name="logo" action="" listType="picture">
-                    <Button type="primary">
-                      <Icon type="upload" style={{ fontSize: 18 }} /> 添加附件
-                      </Button>
-                  </Upload>,
-                )}
-              </Form.Item>
-            </Col>
-
-            <Col span={8}>
-              <Form.Item label="登记人">
-                {getFieldDecorator('regist', {
-                  initialValue: '管理员',
-                })(<Input allowClear />)}
-              </Form.Item>
-            </Col>
-
-            <Col span={8}>
-              <Form.Item label="登记人部门">
-                {getFieldDecorator('registDepart', {
-                  initialValue: '广西电网有限责任公司',
-                })(<Input allowClear />)}
-              </Form.Item>
-            </Col>
-
-            <Col span={8}>
-              <Form.Item label="登记人单位">
-                {getFieldDecorator('registCompany', {
-                  initialValue: '广西电网有限责任公司',
-                })(<Input allowClear />)}
-              </Form.Item>
-            </Col>
-          </Row>
-        </Form>
+        <SelectUser handleSubmit={() => faultcircula()} visible={openModal}>
+          <Button type="primary" style={{ marginRight: 8 }}>流转</Button>
+        </SelectUser>
+        <Button type="default" onClick={close}>关闭</Button>
       </Card>
+      <div className={styles.collapse}>
+        <Collapse
+          expandIconPosition="right"
+          activeKey={activeKey}
+          bordered={false}
+          style={{ marginTop: '-25px' }}
+          onChange={callback}
+        >
+          <Panel header="故障登记" key="1">
+            <Form {...formItemLayout}>
+              <Row gutter={24}>
+                <Col xl={8} xs={12}>
+                  <Form.Item label="故障编号">
+                    {getFieldDecorator('no', {
+                      initialValue: newno.troubleNo || '',
+                    })(<Input placeholder="请输入" disabled />)}
+                  </Form.Item>
+                </Col>
+
+                <Col xl={8} xs={12}>
+                  <Form.Item label="故障发生时间">
+                    {getFieldDecorator('registerOccurTime', {
+                      rules: [
+                        {
+                          required,
+                          message: '请选择时间',
+                        },
+                      ],
+                      initialValue: moment(registerOccurTime) || ''
+                    })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} />)}
+                  </Form.Item>
+                </Col>
+
+                <Col xl={8} xs={12}>
+                  <Form.Item label="故障登记时间">
+                    {getFieldDecorator('registerTime', {
+                      rules: [
+                        {
+                          required,
+                          message: '请选择时间',
+                        },
+                      ],
+                      initialValue: moment(registerTime) || ''
+                    })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} />)}
+                  </Form.Item>
+                </Col>
+
+                <Col xl={8} xs={12}>
+                  <Form.Item label="故障来源">
+                    {getFieldDecorator('source', {
+                      rules: [
+                        {
+                          required,
+                          message: '请选择',
+                        },
+                      ],
+                    })(
+                      <Select placeholder="请选择">
+                        {faultSource.map(({ value }) => [<Option key={value}>{value}</Option>])}
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
+
+                <Col span={8}>
+                  <Form.Item label="系统模块">
+                    {getFieldDecorator('registerModel', {
+                      rules: [
+                        {
+                          required,
+                          message: '请选择',
+                        },
+                      ],
+                    })(
+                      <Select placeholder="请选择">
+                        {sysmodular.map(({ value }) => [
+                          <Option key={value}>
+                            {value}
+                          </Option>,
+                        ])}
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
+
+                <Col xl={8} xs={12}>
+                  <Form.Item label="故障类型">
+                    {getFieldDecorator('type', {
+                      rules: [
+                        {
+                          required,
+                          message: '请选择',
+                        },
+                      ],
+                    })(
+                      <Select placeholder="请选择">
+                        {faultType.map(({ value }) => [<Option key={value}>{value}</Option>])}
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
+
+                <Col xl={8} xs={12}>
+                  <Form.Item label="故障地点">
+                    {getFieldDecorator('registerAddress', {
+                      rules: [
+                        {
+                          required,
+                          message: '请输入',
+                        },
+                      ],
+                    })(<Input placeholder="请输入" allowClear />)}
+                  </Form.Item>
+                </Col>
+
+                <Col xl={8} xs={12}>
+                  <Form.Item label="严重程度">
+                    {getFieldDecorator('registerLevel', {
+                      rules: [
+                        {
+                          required,
+                          message: '请选择',
+                        },
+                      ],
+                    })(
+                      <Select placeholder="请选择">
+                        {severity.map(({ value }) => [<Option key={value}>{value}</Option>])}
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
+
+                {/* <Col xl={8} xs={12}>
+                  <Form.Item label="影响范围">
+                    {getFieldDecorator('yxfw', {
+                      rules: [
+                        {
+                          required,
+                          message: '请选择',
+                        },
+                      ],
+                    })(
+                      <Select placeholder="请选择">
+                        {yxfw.map(({ value }) => [<Option key={value}>{value}</Option>])}
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col> */}
+
+                <Col span={8}>
+                  <Form.Item label="故障名称">
+                    {getFieldDecorator('title', {
+                      rules: [
+                        {
+                          required,
+                          message: '请输入',
+                        },
+                      ],
+                    })(<Input placeholder="请输入" allowClear />)}
+                  </Form.Item>
+                </Col>
+
+                <Col span={24}>
+                  <Form.Item label="故障概要" {...forminladeLayout}>
+                    {getFieldDecorator('content', {
+                      rules: [
+                        {
+                          required,
+                          message: '请输入',
+                        },
+                      ],
+                    })(<TextArea rows={5} placeholder="请输入" />)}
+                  </Form.Item>
+                </Col>
+
+                <Col span={24}>
+                  <Form.Item label="是否影响业务" {...forminladeLayout}>
+                    {getFieldDecorator('registerEffect', {
+                      initialValue: '',
+                    })(
+                      <RadioGroup>
+                        <Radio value={0}>是</Radio>
+                        <Radio value={1}>否</Radio>
+                      </RadioGroup>,
+                    )}
+                  </Form.Item>
+                </Col>
+
+                <Col span={24}>
+                  <Form.Item label="附件上传：" extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb" style={{ display: "flex" }} {...forminladeLayout}>
+                    {getFieldDecorator('upload', {
+                      valuePropName: 'fileList',
+                      getValueFromEvent: normFile,
+                    })(
+                      <Upload name="logo" action="" {...fileProps}>
+                        <Button type="primary">
+                          <Icon type="upload" style={{ fontSize: 18 }} /> 添加附件
+                      </Button>
+                      </Upload>,
+                    )}
+                  </Form.Item>
+                </Col>
+
+                <Col span={8}>
+                  <Form.Item label="登记人">
+                    {getFieldDecorator('registerUser', {
+                      rules: [
+                        {
+                          required,
+                        },
+                      ],
+                      initialValue: curruserinfo.loginCode || '',
+                    })(<Input disabled />)}
+                  </Form.Item>
+                </Col>
+
+                <Col span={8}>
+                  <Form.Item label="登记人部门">
+                    {getFieldDecorator('registerDept', {
+                      rules: [
+                        {
+                          required,
+                        },
+                      ],
+                      initialValue: curruserinfo.deptNameExt || '',
+                    })(<Input disabled />)}
+                  </Form.Item>
+                </Col>
+
+                <Col span={8}>
+                  <Form.Item label="登记人单位">
+                    {getFieldDecorator('registerUnit', {
+                      rules: [
+                        {
+                          required,
+                        },
+                      ],
+                      initialValue: '广西电网有限责任公司',
+                    })(<Input disabled />)}
+                  </Form.Item>
+                </Col>
+              </Row>
+            </Form>
+          </Panel>
+        </Collapse>
+      </div>
     </PageHeaderWrapper>
   );
 }
 
-export default Form.create({})(Registration);
+export default Form.create({})(
+  connect(({ fault, loading }) => ({
+    newno: fault.newno, // 获取新的故障编号
+    curruserinfo: fault.curruserinfo, // 获取登录用户信息
+    saveuserid: fault.saveuserid, // 保存用户数据携带的id
+    html: fault.html,
+    loading: loading.models.fault,
+  }))(Registration),
+);
