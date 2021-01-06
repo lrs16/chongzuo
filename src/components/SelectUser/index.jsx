@@ -64,10 +64,22 @@ const SelectUser = props => {
         });
         break;
       case 'problem':
-        getchecks();
+        dispatch({
+          type: 'itsmuser/problemuserlist',
+          payload: {
+            taskId,
+            type: sessionStorage.getItem('flowtype'),
+          },
+        });
         break;
       case 'troub':
-        troub();
+        dispatch({
+          type: 'itsmuser/troubleuserlist',
+          payload: {
+            taskId,
+            type: sessionStorage.getItem('flowtype'),
+          },
+        });
         break;
       default:
         break;

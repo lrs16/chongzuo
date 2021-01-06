@@ -98,6 +98,7 @@ function WorkOrder(props) {
   }, []);
 
   // 更新流转类型
+  console.log(flowtype);
   useEffect(() => {
     sessionStorage.setItem('flowtype', flowtype);
   }, [flowtype]);

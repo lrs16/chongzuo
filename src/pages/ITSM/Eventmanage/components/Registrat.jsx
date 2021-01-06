@@ -47,6 +47,16 @@ const typemaps = new Map([
   ['006', '处理'],
 ]);
 
+const flowtypemaps = new Map([
+  ['', '1'],
+  ['001', '1'],
+  ['002', '1'],
+  ['003', '1'],
+  ['004', '1'],
+  ['005', '3'],
+  ['006', '1'],
+]);
+
 const typemap = [
   { key: '001', value: '咨询' },
   { key: '002', value: '缺陷' },
@@ -116,6 +126,7 @@ const Registrat = forwardRef((props, ref) => {
 
   useEffect(() => {
     sessionStorage.setItem('Nextflowmane', typemaps.get(main.eventType));
+    sessionStorage.setItem('flowtype', flowtypemaps.get(main.eventType));
     routerRefresh();
   }, [info]);
 
