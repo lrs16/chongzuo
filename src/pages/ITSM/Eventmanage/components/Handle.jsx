@@ -43,7 +43,6 @@ const result = [
 
 const Handle = React.forwardRef((props, ref) => {
   const { formItemLayout, forminladeLayout, info, main, userinfo, defaultvalue } = props;
-  console.log(defaultvalue);
   const { handle } = info;
   const { getFieldDecorator } = props.form;
   const required = true;
@@ -57,7 +56,7 @@ const Handle = React.forwardRef((props, ref) => {
   );
 
   useEffect(() => {
-    sessionStorage.setItem('Nextflowtype', '确认');
+    sessionStorage.setItem('Nextflowmane', '确认');
   }, []);
 
   return (

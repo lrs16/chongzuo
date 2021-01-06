@@ -53,9 +53,7 @@ function Registratdes(props) {
         <Descriptions.Item label="申报人单位">{info.applicationUnit}</Descriptions.Item>
         <Descriptions.Item label="申报人部门">{info.applicationDept}</Descriptions.Item>
         <Descriptions.Item label="申报人电话">{info.applicationUserPhone}</Descriptions.Item>
-        <Descriptions.Item label="回访方式">
-          {revisitwaymap.get(info.revisit_way)}
-        </Descriptions.Item>
+        <Descriptions.Item label="回访方式">{revisitwaymap.get(info.revisitWay)}</Descriptions.Item>
         <Descriptions.Item label="事件分类">{typemap.get(main.eventType)}</Descriptions.Item>
         <Descriptions.Item label="事件对象">{objectmap.get(main.eventObject)}</Descriptions.Item>
         <Descriptions.Item label="影响度">{degreemap.get(info.eventEffect)}</Descriptions.Item>

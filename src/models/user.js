@@ -90,6 +90,7 @@ const UserModel = {
       const response = yield call(queryCurrent);
       if (response.code === 200) {
         sessionStorage.setItem('userauthorityid', response.data.id);
+        sessionStorage.setItem('userName', response.data.userName);
       }
       yield put({
         type: 'saveCurrentUser',
@@ -106,6 +107,7 @@ const UserModel = {
         const menulist = addauth(menures.data, response.data, loginCode[0]);
         const menus = menuArr(menulist);
         const menuData = toTree(menus);
+        // console.log(menuData);
         yield put({
           type: 'saveUserMenu',
           payload: {

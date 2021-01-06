@@ -33,13 +33,13 @@ const Check = forwardRef((props, ref) => {
         pangekey,
         id,
         mainId,
-        next: sessionStorage.getItem('Nextflowtype'),
+        next: sessionStorage.getItem('Nextflowmane'),
       },
     });
   };
 
   useEffect(() => {
-    sessionStorage.setItem('Nextflowtype', nextsmap.get(check.checkResult));
+    sessionStorage.setItem('Nextflowmane', nextsmap.get(check.checkResult));
     setAdopt(check.checkResult);
     routerRefresh();
   }, [info]);
@@ -48,10 +48,10 @@ const Check = forwardRef((props, ref) => {
     setAdopt(e.target.value);
     if (e.target.value === '001') {
       ChangeFlowtype('1');
-      sessionStorage.setItem('Nextflowtype', '处理');
+      sessionStorage.setItem('Nextflowmane', '处理');
     } else {
       ChangeFlowtype('3');
-      sessionStorage.setItem('Nextflowtype', '确认');
+      sessionStorage.setItem('Nextflowmane', '确认');
     }
     routerRefresh();
   };

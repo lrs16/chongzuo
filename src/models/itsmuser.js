@@ -1,22 +1,19 @@
 import router from 'umi/router';
 import { message } from 'antd';
-import { ITSMUser } from '@/services/user';
-
-const replacerec = values => {
-  const newarr = JSON.parse(
-    JSON.stringify(values)
-      .replace(/main_/g, 'main.')
-      .replace(/handle_/g, 'handle.')
-      .replace(/register_/g, 'register.'),
-  );
-  return newarr;
-};
+import {
+  ITSMUser,
+  EventFlowUserList,
+  DemandFlowUserList,
+  TroubleFlowUserList,
+  ProblemFlowUserList,
+} from '@/services/user';
 
 export default {
   namespace: 'itsmuser',
   state: {
     flowmsg: '',
     userinfo: '',
+    userlist: '',
   },
 
   effects: {
@@ -28,6 +25,38 @@ export default {
         payload: response.data,
       });
     },
+    // 加载事件下一环节处理人列表
+    *eventuserlist({ payload: { taskId, type } }, { call, put }) {
+      const response = yield call(EventFlowUserList, taskId, type);
+      yield put({
+        type: 'savelist',
+        payload: response.data,
+      });
+    },
+    // 加载需求下一环节处理人列表
+    *demanduserlist({ payload: { taskId, type } }, { call, put }) {
+      const response = yield call(DemandFlowUserList, taskId, type);
+      yield put({
+        type: 'savelist',
+        payload: response.data,
+      });
+    },
+    // 加载故障下一环节处理人列表
+    *troubleuserlist({ payload: { taskId, type } }, { call, put }) {
+      const response = yield call(TroubleFlowUserList, taskId, type);
+      yield put({
+        type: 'savelist',
+        payload: response.data,
+      });
+    },
+    // 加载问题下一环节处理人列表
+    *problemuserlist({ payload: { taskId, type } }, { call, put }) {
+      const response = yield call(ProblemFlowUserList, taskId, type);
+      yield put({
+        type: 'savelist',
+        payload: response.data,
+      });
+    },
   },
 
   reducers: {
@@ -35,6 +64,13 @@ export default {
       return {
         ...state,
         userinfo: action.payload,
+      };
+    },
+
+    savelist(state, action) {
+      return {
+        ...state,
+        userlist: action.payload,
       };
     },
   },

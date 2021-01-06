@@ -8,7 +8,7 @@ const { Step } = Steps;
 
 function Process(props) {
   const { location, dispatch, imgblob, records, loading } = props;
-  //  const { mainId } = location.query;
+  const { id, mainId } = location.query;
 
   const imgsrc = () => {
     const img = document.createElement('img');
@@ -23,16 +23,16 @@ function Process(props) {
     dispatch({
       type: 'demandtodo/demandimage',
       payload: {
-        processId: '10053',
+        processId: mainId,
       },
     });
     dispatch({
       type: 'demandtodo/demandrecords',
       payload: {
-        processId: '10053',
+        processId: mainId,
       },
     });
-  }, []);
+  }, [mainId]);
 
   useEffect(() => {
     if (imgblob !== '' && document.getElementsByTagName('img').length < 2) {

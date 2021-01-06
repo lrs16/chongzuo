@@ -133,6 +133,13 @@ const Registrat = forwardRef((props, ref) => {
     <>
       <Form {...formItemLayout}>
         <Row gutter={24}>
+          <Col span={8} style={{ display: 'none' }}>
+            <Form.Item label="表单id">
+              {getFieldDecorator('id', {
+                initialValue: register.id,
+              })(<Input disabled />)}
+            </Form.Item>
+          </Col>
           <Col span={8}>
             <Form.Item label="事件编号">
               {getFieldDecorator('demandId', {
@@ -226,7 +233,7 @@ const Registrat = forwardRef((props, ref) => {
             <Form.Item label="所属模块" {...forminladeLayout}>
               {getFieldDecorator('functionalModule', {
                 rules: [{ required, message: '请选择所属模块' }],
-                initialValue: register.functionalModule,
+                initialValue: register.functionalModule.split('/'),
               })(<Cascader options={modulemap} />)}
             </Form.Item>
           </Col>
@@ -277,14 +284,14 @@ const Registrat = forwardRef((props, ref) => {
               })(<Input placeholder="请输入" disabled />)}
             </Form.Item>
           </Col>
-          {/* <Col span={8} style={{ display: 'none' }}>
+          <Col span={8} style={{ display: 'none' }}>
             <Form.Item label="登记人ID">
-              {getFieldDecorator('registerPerson', {
+              {getFieldDecorator('registerPersonId', {
                 rules: [{ required }],
-                initialValue: userinfo.userName,
+                initialValue: userinfo.userId,
               })(<Input placeholder="请输入" disabled />)}
             </Form.Item>
-          </Col> */}
+          </Col>
           <Col span={8}>
             <Form.Item label="登记人单位">
               {getFieldDecorator('registrationUnit', {

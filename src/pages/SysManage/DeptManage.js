@@ -13,14 +13,17 @@ import {
   Divider,
   Badge,
   Popconfirm,
+  Tree,
 } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-//import DeptTree from '@/components/DeptTree';
+
+// import DeptTree from '@/components/DeptTree';
 // import DeptList from './components/DeptList';
 import DeptModal from './components/DeptModal';
 
 const { Search } = Input;
 const { Sider, Content } = Layout;
+const { TreeNode } = Tree;
 const statusMap = ['success', 'default'];
 const status = ['启用', '停用'];
 
@@ -31,7 +34,7 @@ const status = ['启用', '停用'];
 class DeptManage extends Component {
   state = {
     current: 1,
-    pageSize: 10,
+    pageSize: 5000,
     queKey: '',
   };
 
@@ -227,6 +230,20 @@ class DeptManage extends Component {
       onChange: page => this.changePage(page),
     };
     const dataSource = data.rows;
+    console.log(dataSource);
+    const renderTreeNodes = datas => {
+      datas.map(item => {
+        if (item.children) {
+          return (
+            <TreeNode title={item.title} key={item.key} dataRef={item}>
+              {this.renderTreeNodes(item.children)}
+            </TreeNode>
+          );
+        }
+        return <TreeNode key={item.key} {...item} />;
+      });
+    };
+
     return (
       <PageHeaderWrapper title="组织管理">
         <Card>
@@ -258,6 +275,11 @@ class DeptManage extends Component {
                   dochangpage = {this.changePage}
                   doSizeChange = {this.onShowSizeChange}
                 /> */}
+                {/* <Tree
+                  checkable
+                >
+                  {renderTreeNodes(dataSource)}
+                </Tree> */}
                 <Table
                   loading={loading}
                   dataSource={dataSource}

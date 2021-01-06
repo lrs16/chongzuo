@@ -1,7 +1,7 @@
 import React, { useState, createContext, useRef, useEffect } from 'react';
 import router from 'umi/router';
 import { connect } from 'dva';
-import { Collapse, Steps, Spin } from 'antd';
+import { Collapse, Steps, Spin, message } from 'antd';
 import styles from './index.less';
 import Registrat from './components/Registrat';
 import Check from './components/Check';
@@ -76,7 +76,7 @@ function WorkOrder(props) {
   const HandleRef = useRef();
   const ReturnVisitRef = useRef();
   const { data, edit } = info;
-  const { flowInstanceId, flowNodeInstanceId, flowNodeName, editState } = info; //流程基本信息
+  const { flowInstanceId, flowNodeInstanceId, flowNodeName, editState } = info; // 流程基本信息
   // 保存、流转表单信息
   const paloadvalues = {
     ...formregistrat,
@@ -89,11 +89,18 @@ function WorkOrder(props) {
     editState,
   };
 
+  // 初始化用户信息，流程类型
   useEffect(() => {
     dispatch({
       type: 'eventregist/fetchuser',
     });
+    sessionStorage.setItem('Processtype', 'event');
   }, []);
+
+  // 更新流转类型
+  useEffect(() => {
+    sessionStorage.setItem('flowtype', flowtype);
+  }, [flowtype]);
 
   const callback = key => {
     setActiveKey(key);
@@ -107,9 +114,15 @@ function WorkOrder(props) {
         id,
         mainId,
         validate: false,
-        next: sessionStorage.getItem('Nextflowtype'),
+        next: sessionStorage.getItem('Nextflowmane'),
       },
     });
+  };
+
+  const formerr = () => {
+    setIscheck(false);
+    message.error('请将信息填写完整...');
+    routerRefresh();
   };
 
   const getregistrats = () => {
@@ -123,8 +136,7 @@ function WorkOrder(props) {
           register_supplement: String(Number(values.register_supplement)),
         });
       } else {
-        setIscheck(false);
-        routerRefresh();
+        formerr();
       }
     });
   };
@@ -137,8 +149,7 @@ function WorkOrder(props) {
           check_checkTime: values.check_checkTime.format('YYYY-MM-DD HH:mm:ss'),
         });
       } else {
-        setIscheck(false);
-        routerRefresh();
+        formerr();
       }
     });
   };
@@ -151,8 +162,7 @@ function WorkOrder(props) {
           handle_endTime: values.handle_endTime.format('YYYY-MM-DD HH:mm:ss'),
         });
       } else {
-        setIscheck(false);
-        routerRefresh();
+        formerr();
       }
     });
   };
@@ -165,8 +175,7 @@ function WorkOrder(props) {
           finish_revisitTime: values.finish_revisitTime.format('YYYY-MM-DD HH:mm:ss'),
         });
       } else {
-        setIscheck(false);
-        routerRefresh();
+        formerr();
       }
     });
   };
@@ -200,6 +209,7 @@ function WorkOrder(props) {
       });
     }
   };
+
   // 点击保存，流转触发表单校验
   const handlesubmit = () => {
     switch (pangekey) {

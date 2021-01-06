@@ -43,32 +43,104 @@ const forminladeLayout = {
 };
 
 function WorkOrder(props) {
-  const { dispatch, location, records, loading } = props;
+  const { dispatch, location, records, info, userinfo, loading } = props;
   const [activeKey, setActiveKey] = useState(['form']);
-  const [formregistrat, setFormregistrat] = useState('');
-  const { pangekey, processId, validate } = location.query;
-  console.log(validate);
-  //  const [flowtype, setFlowtype] = useState('1'); // 流转类型
+  const { pangekey, id, mainId, type, validate } = location.query;
+  // const [ischeck, setIscheck] = useState(false); // 是否在校验状态
+  const [flowtype, setFlowtype] = useState('1'); // 流转类型
+
+  // 初始化用户信息，流程类型
+  useEffect(() => {
+    dispatch({
+      type: 'eventregist/fetchuser',
+    });
+    sessionStorage.setItem('Processtype', 'demand');
+  }, []);
+  // 更新流转类型
+  useEffect(() => {
+    sessionStorage.setItem('flowtype', flowtype);
+  }, [flowtype]);
+
+  // 刷新路由
+  const routerRefresh = () => {
+    router.push({
+      pathname: `${props.match.url}`,
+      query: {
+        pangekey,
+        id,
+        mainId,
+        validate: false,
+        next: sessionStorage.getItem('Nextflowmane'),
+      },
+    });
+  };
+
+  // 登记表单
   const RegistratRef = useRef();
   const getregistrats = () => {
     RegistratRef.current.validateFields((err, values) => {
       if (!err) {
-        setFormregistrat({
-          ...values,
-        });
+        switch (type) {
+          case 'save': {
+            dispatch({
+              type: 'demandtodo/demandregisterupdate',
+              payload: {
+                paloadvalues: {
+                  ...values,
+                  creationTime: values.creationTime.format(),
+                  registerTime: values.registerTime.format(),
+                  functionalModule: values.functionalModule.join('/'),
+                  nextUser: sessionStorage.getItem('userauthorityid'),
+                  // nextUser: sessionStorage.getItem('userName'),
+                },
+                processInstanceId: mainId,
+              },
+            });
+            break;
+          }
+          case 'flow':
+            console.log('走流转接口');
+            break;
+          default:
+            break;
+        }
+        routerRefresh();
       }
     });
   };
+  // 表单
   const ExamineRef = useRef();
   const getdemandexamine = () => {
     ExamineRef.current.validateFields((err, values) => {
       if (!err) {
-        setFormregistrat({
-          ...values,
-        });
+        switch (type) {
+          case 'save': {
+            dispatch({
+              type: 'demandtodo/demandregisterupdate',
+              payload: {
+                paloadvalues: {
+                  ...values,
+                  creationTime: values.creationTime.format(),
+                  registerTime: values.registerTime.format(),
+                  functionalModule: values.functionalModule.join('/'),
+                  nextUser: sessionStorage.getItem('NextflowUserId'),
+                  // nextUser: sessionStorage.getItem('userName'),
+                },
+                processInstanceId: mainId,
+              },
+            });
+            break;
+          }
+          case 'flow':
+            console.log('走流转接口');
+            break;
+          default:
+            break;
+        }
       }
     });
   };
+  // 表单
   const ReviewRef = useRef();
   const getreviewref = () => {
     ReviewRef.current.validateFields((err, values) => {
@@ -79,6 +151,7 @@ function WorkOrder(props) {
       }
     });
   };
+  // 表单
   const VerificationRef = useRef();
   const getverificationref = () => {
     ReviewRef.current.validateFields((err, values) => {
@@ -90,39 +163,27 @@ function WorkOrder(props) {
     });
   };
 
-  const callback = key => {
-    setActiveKey(key);
-  };
-
-  useEffect(() => {
-    dispatch({
-      type: 'demandtodo/demandrecords',
-      payload: {
-        processId,
-      },
-    });
-  }, [processId]);
-
-  const handleflow = pangekey => {
+  const handleflow = () => {
     switch (pangekey) {
-      case '需求登记':
-        getregistrats();
+      case '需求登记': {
+        getregistrats(type);
         break;
+      }
       case '需求审核':
       case '运维审核':
         getdemandexamine();
         break;
       case '需求复核':
-        getreviewref();
+        // getreviewref();
         break;
       case '开发跟踪':
-        getverificationref();
+        // getverificationref();
         break;
       case '需求验证':
-        getreturnvisit();
+        // getdemandexamine();
         break;
       case '需求确认':
-        getreturnvisit();
+        // getdemandexamine();
         break;
       default:
         break;
@@ -130,9 +191,28 @@ function WorkOrder(props) {
   };
   useEffect(() => {
     if (validate === true) {
-      getdemandexamine();
+      handleflow();
     }
   }, [validate]);
+
+  const callback = key => {
+    setActiveKey(key);
+  };
+  // 加载流程记录，加载编辑历史
+  useEffect(() => {
+    dispatch({
+      type: 'demandtodo/demandrecords',
+      payload: {
+        processId: mainId,
+      },
+    });
+    dispatch({
+      type: 'demandtodo/demandopenflow',
+      payload: {
+        processInstanceId: mainId,
+      },
+    });
+  }, [mainId]);
 
   return (
     <div className={styles.collapse}>
@@ -167,16 +247,31 @@ function WorkOrder(props) {
         <Panel header={pangekey} key="form">
           {pangekey === '需求登记' && (
             <Registrat
-              ref={RegistratRef}
               formItemLayout={formItemLayout}
               forminladeLayout={forminladeLayout}
+              ref={RegistratRef}
+              register={info.demandForm}
+              userinfo={userinfo}
             />
           )}
-          {(pangekey === '需求审核' || pangekey === '运维审核') && (
+          {pangekey === '需求审核' && (
             <Examine
               ref={ExamineRef}
               formItemLayout={formItemLayout}
               forminladeLayout={forminladeLayout}
+              text="复核"
+              // register={info.demandForm}
+              userinfo={userinfo}
+            />
+          )}
+          {pangekey === '运维审核' && (
+            <Examine
+              ref={ExamineRef}
+              formItemLayout={formItemLayout}
+              forminladeLayout={forminladeLayout}
+              text="运维"
+              // register={info.demandForm}
+              userinfo={userinfo}
             />
           )}
           {pangekey === '需求复核' && (
@@ -216,7 +311,9 @@ function WorkOrder(props) {
   );
 }
 
-export default connect(({ demandtodo, loading }) => ({
+export default connect(({ demandtodo, itsmuser, loading }) => ({
+  userinfo: itsmuser.userinfo,
   records: demandtodo.records,
+  info: demandtodo.info,
   loading: loading.models.demantodo,
 }))(WorkOrder);

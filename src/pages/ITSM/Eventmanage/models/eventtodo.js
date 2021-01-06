@@ -80,13 +80,13 @@ export default {
             pangekey: eventStatus,
             id: registres.taskId,
             mainId: flowInstanceId,
-            next: sessionStorage.getItem('Nextflowtype'),
+            next: sessionStorage.getItem('Nextflowmane'),
             validate: false,
           },
         });
       }
     },
-    // 编辑流转,流转成功转回待办列表
+    // 编辑流转,流转成功转回待办列表,转单
     *eventflow({ payload: { flow, paloadvalues } }, { call }) {
       const values = replacerec({ ...paloadvalues });
       const registres = yield call(EventSaveFlow, values);
@@ -147,7 +147,7 @@ export default {
           query: {
             pangekey: '5',
             id: taskId,
-            mainId: response.flow_instance_id,
+            mainId: response.flowInstanceId,
             validate: false,
           },
         });

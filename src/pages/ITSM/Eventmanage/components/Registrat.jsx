@@ -100,7 +100,7 @@ const Registrat = forwardRef((props, ref) => {
         pangekey,
         id,
         mainId,
-        next: sessionStorage.getItem('Nextflowtype'),
+        next: sessionStorage.getItem('Nextflowmane'),
       },
     });
   };
@@ -115,7 +115,7 @@ const Registrat = forwardRef((props, ref) => {
   }, [info]);
 
   useEffect(() => {
-    sessionStorage.setItem('Nextflowtype', typemaps.get(main.eventType));
+    sessionStorage.setItem('Nextflowmane', typemaps.get(main.eventType));
     routerRefresh();
   }, [info]);
 
@@ -133,12 +133,12 @@ const Registrat = forwardRef((props, ref) => {
       ChangeCheck(true);
       setCheck(true);
       ChangeFlowtype('3');
-      sessionStorage.setItem('Nextflowtype', '审核');
+      sessionStorage.setItem('Nextflowmane', '审核');
     } else {
       ChangeCheck(false);
       setCheck(false);
       ChangeFlowtype('1');
-      sessionStorage.setItem('Nextflowtype', '处理');
+      sessionStorage.setItem('Nextflowmane', '处理');
     }
     if (sethandlevalue === 'true') {
       changeDefaultvalue(gethandelvalue);

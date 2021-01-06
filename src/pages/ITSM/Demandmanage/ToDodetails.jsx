@@ -9,13 +9,15 @@ function ToDoregist(props) {
   const pagetitle = props.route.name;
   const cRef = useRef();
 
-  const handleHold = () => {
+  const handleHold = type => {
     router.push({
       pathname: `${props.match.url}/workorder`,
       query: {
         pangekey,
-        processInstanceId: mainId,
+        id,
+        mainId,
         validate: true,
+        type,
       },
     });
   };
@@ -29,10 +31,10 @@ function ToDoregist(props) {
       <Button type="danger" ghost style={{ marginRight: 8 }}>
         删除
       </Button>
-      <Button type="primary" style={{ marginRight: 8 }} onClick={handleHold}>
+      <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleHold('save')}>
         保存
       </Button>
-      <Button type="primary" style={{ marginRight: 8 }}>
+      <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleHold('flow')}>
         流转
       </Button>
       <Button onClick={handleclose}>返回</Button>
@@ -46,6 +48,7 @@ function ToDoregist(props) {
           query: {
             pangekey,
             id,
+            mainId,
           },
         });
         break;
@@ -55,6 +58,7 @@ function ToDoregist(props) {
           query: {
             pangekey,
             id,
+            mainId,
           },
         });
         break;

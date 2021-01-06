@@ -6,8 +6,7 @@ import { DownloadOutlined } from '@ant-design/icons';
 const { TextArea } = Input;
 
 const Examine = forwardRef((props, ref) => {
-  const { formItemLayout, forminladeLayout, info, ChangeFlowtype } = props;
-  const { check } = info;
+  const { formItemLayout, forminladeLayout, info, userinfo, text } = props;
   const { getFieldDecorator } = props.form;
   const required = true;
   const [adopt, setAdopt] = useState('001');
@@ -22,21 +21,16 @@ const Examine = forwardRef((props, ref) => {
 
   const handleAdopt = e => {
     setAdopt(e.target.value);
-    if (e.target.value === '001') {
-      ChangeFlowtype('1');
-    } else {
-      ChangeFlowtype('3');
-    }
   };
 
   return (
     <Row gutter={24} style={{ paddingTop: 24 }}>
       <Form {...formItemLayout}>
         <Col span={8}>
-          <Form.Item label="复核结果">
-            {getFieldDecorator('form1', {
-              rules: [{ required: true, message: '请选择复核结果' }],
-              initialValue: info.form1,
+          <Form.Item label={`${text}结果`}>
+            {getFieldDecorator('result', {
+              rules: [{ required: true, message: `请选择${text}结果` }],
+              initialValue: info.result,
             })(
               <Radio.Group onChange={handleAdopt}>
                 <Radio value="001">通过</Radio>
@@ -46,10 +40,10 @@ const Examine = forwardRef((props, ref) => {
           </Form.Item>
         </Col>
         <Col span={8}>
-          <Form.Item label="复核时间">
-            {getFieldDecorator('creationTime', {
-              rules: [{ required, message: '请选择复核时间' }],
-              initialValue: moment(info.creationTime),
+          <Form.Item label={`${text}时间`}>
+            {getFieldDecorator('reviewTime', {
+              rules: [{ required, message: `请选择${text}时间` }],
+              initialValue: moment(info.reviewTime),
             })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" />)}
           </Form.Item>
         </Col>
@@ -64,43 +58,43 @@ const Examine = forwardRef((props, ref) => {
         </Col> */}
         <Row />
         <Col span={8}>
-          <Form.Item label="复核人">
-            {getFieldDecorator('registerPerson', {
+          <Form.Item label={`${text}人`}>
+            {getFieldDecorator('userName', {
               rules: [{ required: true }],
-              initialValue: info.registerPerson,
+              initialValue: userinfo.userName,
             })(<Input placeholder="请输入" disabled />)}
           </Form.Item>
         </Col>
         <Col span={8}>
-          <Form.Item label="复核人单位">
-            {getFieldDecorator('registrationUnit', {
+          <Form.Item label={`${text}人单位`}>
+            {getFieldDecorator('unit', {
               rules: [{ required: true }],
-              initialValue: info.registrationUnit,
+              initialValue: info.unit,
             })(<Input placeholder="请输入" disabled />)}
           </Form.Item>
         </Col>
         <Col span={8}>
-          <Form.Item label="复核人部门">
-            {getFieldDecorator('registrationDepartment', {
+          <Form.Item label={`${text}人部门`}>
+            {getFieldDecorator('department', {
               rules: [{ required: true }],
-              initialValue: info.registrationDepartment,
+              initialValue: info.department,
             })(<Input placeholder="请输入" disabled />)}
           </Form.Item>
         </Col>
         <Col span={24}>
-          {adopt === '002' && (
-            <Form.Item label="复核意见" {...forminladeLayout}>
-              {getFieldDecorator('reason', {
-                rules: [{ required: false, message: '请输入审核意见' }],
-                initialValue: info.reason,
+          {adopt === '001' && (
+            <Form.Item label={`${text}意见`} {...forminladeLayout}>
+              {getFieldDecorator('opinion', {
+                rules: [{ required: false, message: `请输入${text}意见` }],
+                initialValue: info.opinion,
               })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
             </Form.Item>
           )}
-          {adopt === '001' && (
-            <Form.Item label="审核意见" {...forminladeLayout}>
-              {getFieldDecorator('reason', {
-                rules: [{ required: true, message: '请输入审核意见' }],
-                initialValue: info.reason,
+          {adopt === '002' && (
+            <Form.Item label={`${text}意见`} {...forminladeLayout}>
+              {getFieldDecorator('opinion', {
+                rules: [{ required: true, message: `请输入${text}意见` }],
+                initialValue: info.opinion,
               })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
             </Form.Item>
           )}

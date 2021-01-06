@@ -40,3 +40,29 @@ export async function ITSMUser() {
     method: 'GET',
   });
 }
+
+// ITSM事件获取下一环节处理人列表
+export async function EventFlowUserList(taskId, type) {
+  return request(`/itsm/event/flow/getNextFlowUserList?taskId=${taskId}&type=${type}`, {
+    method: 'GET',
+  });
+}
+// ITSM需求获取下一环节处理人列表
+export async function DemandFlowUserList(taskId, type) {
+  return request(`/itsm/event/flow/getNextFlowUserList?taskId=${taskId}&type=${type}`, {
+    method: 'GET',
+  });
+}
+// ITSM故障获取下一环节处理人列表
+export async function TroubleFlowUserList(taskId, type) {
+  return request(`/itsm/trouble/flow/assignee=${taskId}&type=${type}`, {
+    method: 'GET',
+  });
+}
+
+// 加载问题下一环节处理人列表
+export async function ProblemFlowUserList(taskId, type) {
+  return request(`/itsm/problem/flow/assignee=${taskId}&type=${type}`, {
+    method: 'GET',
+  });
+}

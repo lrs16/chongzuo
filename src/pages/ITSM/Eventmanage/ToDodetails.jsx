@@ -64,7 +64,7 @@ function ToDodetails(props) {
         type: 'eventtodo/eventback',
         payload: {
           id,
-          userIds: '1',
+          userIds: sessionStorage.getItem('userauthorityid'),
           type: '2',
           ...backvalue,
         },
@@ -91,7 +91,7 @@ function ToDodetails(props) {
       payload: {
         flow: {
           id,
-          userIds: '1',
+          userIds: sessionStorage.getItem('userauthorityid'),
           type: '1',
         },
       },
@@ -104,7 +104,7 @@ function ToDodetails(props) {
       type: 'eventtodo/deleteflow',
       payload: {
         mainId,
-        userIds: '1',
+        userIds: sessionStorage.getItem('userauthorityid'),
         type: '2',
       },
     });
@@ -138,8 +138,8 @@ function ToDodetails(props) {
           保存
         </Button>
       )}
-      {pangekey === '1' && sessionStorage.getItem('Nextflowtype') === '审核' && (
-        <SelectUser handleSubmit={() => handleHold('other')}>
+      {pangekey === '1' && sessionStorage.getItem('Nextflowmane') === '审核' && (
+        <SelectUser handleSubmit={() => handleHold('other')} taskId={id}>
           <Button type="primary" style={{ marginRight: 8 }}>
             审核
           </Button>
@@ -153,28 +153,28 @@ function ToDodetails(props) {
       {(pangekey === '5' ||
         (pangekey === '1' && next === '处理') ||
         (next === '处理' && (pangekey === '2' || pangekey === '3'))) && (
-        <SelectUser handleSubmit={() => handleHold('flow')} location={location}>
+        <SelectUser handleSubmit={() => handleHold('flow')} taskId={id}>
           <Button type="primary" style={{ marginRight: 8 }}>
             流转
           </Button>
         </SelectUser>
       )}
       {next === '确认' && (pangekey === '2' || pangekey === '3') && (
-        <SelectUser handleSubmit={() => handleHold('other')}>
+        <SelectUser handleSubmit={() => handleHold('other')} taskId={id}>
           <Button type="primary" style={{ marginRight: 8 }}>
             确认
           </Button>
         </SelectUser>
       )}
       {pangekey === '5' && (
-        <SelectUser handleSubmit={() => handleHold('other')} changorder="转单">
+        <SelectUser handleSubmit={() => handleHold('other')} changorder="转单" taskId={id}>
           <Button ghost type="primary" style={{ marginRight: 8 }}>
             转单
           </Button>
         </SelectUser>
       )}
       {(pangekey === '6' || pangekey === '7') && next === '处理' && (
-        <SelectUser handleSubmit={() => handleHold('other')}>
+        <SelectUser handleSubmit={() => handleHold('other')} taskId={id}>
           <Button type="primary" style={{ marginRight: 8 }}>
             重分派
           </Button>

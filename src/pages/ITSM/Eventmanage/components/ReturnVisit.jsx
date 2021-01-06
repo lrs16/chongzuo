@@ -28,7 +28,7 @@ const satisfactions = [
 const nextsmap = new Map([
   ['001', '结束'],
   ['002', '结束'],
-  ['003', '确认'],
+  ['003', '处理'],
 ]);
 
 const result = [
@@ -68,22 +68,22 @@ const ReturnVisit = React.forwardRef((props, ref) => {
         pangekey,
         id,
         mainId,
-        next: sessionStorage.getItem('Nextflowtype'),
+        next: sessionStorage.getItem('Nextflowmane'),
       },
     });
   };
   useEffect(() => {
-    sessionStorage.setItem('Nextflowtype', nextsmap.get(finish.satisfaction));
+    sessionStorage.setItem('Nextflowmane', nextsmap.get(finish.satisfaction));
     routerRefresh();
   }, [info]);
 
   const handlcheckChange = value => {
     if (value === '003') {
       ChangeFlowtype('3');
-      sessionStorage.setItem('Nextflowtype', '处理');
+      sessionStorage.setItem('Nextflowmane', '处理');
     } else {
       ChangeFlowtype('1');
-      sessionStorage.setItem('Nextflowtype', '结束');
+      sessionStorage.setItem('Nextflowmane', '结束');
     }
     routerRefresh();
   };

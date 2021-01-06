@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { connect } from 'dva';
 import { Card, Button } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
@@ -8,12 +8,20 @@ import SelectUser from '@/components/SelectUser';
 function Registration(props) {
   const { dispatch, userinfo } = props;
   const pagetitle = props.route.name;
-  // 获取用户信息
+  const [flowtype, setFlowtype] = useState('1'); // 流转类型
+
+  // 初始化用户信息，流程类型
   useEffect(() => {
     dispatch({
-      type: 'itsmuser/fetchuser',
+      type: 'eventregist/fetchuser',
     });
+    sessionStorage.setItem('Processtype', 'demand');
   }, []);
+  // 更新流转类型
+  // useEffect(() => {
+  //   sessionStorage.setItem('flowtype', flowtype);
+  // }, [flowtype]);
+
   // 保存，保存提交
   const RegistratRef = useRef();
   const handlesubmit = values => {
@@ -24,8 +32,8 @@ function Registration(props) {
         creationTime: values.creationTime.format(),
         registerTime: values.registerTime.format(),
         functionalModule: values.functionalModule.join('/'),
-        //nextUser: sessionStorage.getItem('userauthorityid'),
-        nextUser: 'ELIN',
+        nextUser: sessionStorage.getItem('userauthorityid'),
+        // nextUser: sessionStorage.getItem('userName'),
       },
     });
   };
@@ -37,8 +45,8 @@ function Registration(props) {
         creationTime: values.creationTime.format(),
         registerTime: values.registerTime.format(),
         functionalModule: values.functionalModule.join('/'),
-        //nextUser: sessionStorage.getItem('NextflowUserId'),
-        nextUser: 'ELIN',
+        // nextUser: sessionStorage.getItem('NextflowUserId'),
+        nextUser: sessionStorage.getItem('userName'),
       },
     });
   };
@@ -56,22 +64,16 @@ function Registration(props) {
     });
   };
 
-  useEffect(() => {
-    dispatch({
-      type: 'eventregist/fetchuser',
-    });
-  }, []);
-
   const operations = (
     <>
       <Button type="primary" style={{ marginRight: 8 }} onClick={() => getregistrat('save')}>
         保存
       </Button>
-      <SelectUser handleSubmit={() => getregistrat('next')}>
+      {/* <SelectUser handleSubmit={() => getregistrat('next')}>
         <Button type="primary" style={{ marginRight: 8 }}>
           流转
         </Button>
-      </SelectUser>
+      </SelectUser> */}
       <Button type="default">关闭</Button>
     </>
   );

@@ -63,7 +63,7 @@ function Handledes(props) {
         <Descriptions.Item label="影响度">{degreemap.get(info.eventEffect)}</Descriptions.Item>
         <Descriptions.Item label="紧急度">{degreemap.get(info.eventEmergent)}</Descriptions.Item>
         <Descriptions.Item label="优先级" span={3}>
-          {degreemap.get(info.event_prior)}
+          {degreemap.get(info.eventPrior)}
         </Descriptions.Item>
         <Descriptions.Item label="处理结果">{resultmap.get(info.handleResult)}</Descriptions.Item>
         <Descriptions.Item label="接单时间">{info.addTime}</Descriptions.Item>

@@ -40,3 +40,25 @@ export async function DemandImage(processId) {
     responseType: 'blob',
   });
 }
+
+// 待办编辑
+export async function DemandOpenFlow(processInstanceId) {
+  return request(`/demand/todo/todoDetail/${processInstanceId}`, {
+    method: 'GET',
+  });
+}
+
+// 通用保存
+export async function DemandSaveOrUpdate(processInstanceId) {
+  return request(`/demand/todo/todoDetail/${processInstanceId}`, {
+    method: 'GET',
+  });
+}
+
+// 编辑保存/demand/todo/registerSaveOrUpdate
+export async function registerSaveOrUpdate(params) {
+  return request(`/demand/todo/registerSaveOrUpdate`, {
+    method: 'POST',
+    body: JSON.stringify(params),
+  });
+}

@@ -64,6 +64,14 @@ const columns = [
     title: '需求类型',
     dataIndex: 'demandType',
     key: 'demandType',
+    render: (text, record) => {
+      const demandtype = new Map([
+        ['001', '新增功能'],
+        ['002', '功能变更'],
+        ['003', '其他'],
+      ]);
+      return <>{demandtype.get(record.demandType)}</>;
+    },
   },
   {
     title: '功能模块',
@@ -108,8 +116,8 @@ function ToDolist(props) {
             // ...values,
             page: paginations.current,
             limit: paginations.pageSize,
-            //userId: sessionStorage.getItem('userauthorityid'),
-            userId: 'ELIN',
+            userId: sessionStorage.getItem('userauthorityid'),
+            // userId: sessionStorage.getItem('userName'),
           },
         });
       }
@@ -178,21 +186,9 @@ function ToDolist(props) {
     resetFields();
   };
 
-  const handleClick = () => {
-    router.push({
-      pathname: `/ITSM/demandmanage/to-do/record/workorder`,
-      query: {
-        pangekey: '需求验证',
-        processId: '35062',
-        validate: false,
-      },
-    });
-  };
-
   return (
     <PageHeaderWrapper title={pagetitle}>
       <Card>
-        <Button onClick={handleClick}>进入详情</Button>
         <Row gutter={24}>
           <Form {...formItemLayout} onSubmit={handleSearch}>
             <Col span={8}>

@@ -413,7 +413,7 @@ function ToDolist(props) {
           loading={loading}
           columns={columns}
           dataSource={list.rows}
-          rowKey={record => record.event_no}
+          rowKey={record => record.eventNo}
           pagination={pagination}
         />
       </Card>

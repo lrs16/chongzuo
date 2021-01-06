@@ -256,7 +256,7 @@ function QueryList(props) {
     list,
     dispatch,
   } = props;
-  const [paginations, setPageinations] = useState({ current: 0, pageSize: 10 });
+  const [paginations, setPageinations] = useState({ current: 1, pageSize: 10 });
   const [expand, setExpand] = useState(false);
 
   useEffect(() => {
@@ -266,7 +266,7 @@ function QueryList(props) {
           type: 'eventquery/fetchlist',
           payload: {
             ...values,
-            pageIndex: paginations.current,
+            pageIndex: paginations.current - 1,
             pageSize: paginations.pageSize,
           },
         });
@@ -280,7 +280,7 @@ function QueryList(props) {
       payload: {
         ...values,
         pageSize: size,
-        pageIndex: page,
+        pageIndex: page - 1,
       },
     });
   };
