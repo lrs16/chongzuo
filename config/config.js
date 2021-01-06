@@ -936,10 +936,6 @@ export default {
       // target: 'http://172.16.4.115:9901/',
       changeOrigin: true,
     },
-    '/sys': {
-      target: 'http://172.16.4.211:9901/', // 字典维护
-      changeOrigin: true,
-    },
     '/monitor/': {
       target: 'http://172.16.4.211:9901/', // 计量业务监控
       changeOrigin: true,

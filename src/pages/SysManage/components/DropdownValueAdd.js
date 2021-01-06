@@ -138,7 +138,7 @@ class DropdownValueAdd extends Component {
     }
 }
 DropdownValueAdd.defaultProps = {
-    title: '添加下拉值',
+    title: '添加字典',
     record: {
         dictModule: '',
         dictType: '',

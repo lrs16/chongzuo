@@ -9,11 +9,11 @@ import {
     DatePicker,
     // Upload,
     // Icon,
-    // Radio
+    Radio
 } from 'antd';
 
 const { TextArea } = Input;
-// const RadioGroup = Radio.Group;
+const RadioGroup = Radio.Group;
 const checkTime = new Date();
 
 
@@ -61,10 +61,10 @@ const ExamineChild = React.forwardRef((props, ref) => {
                     </Form.Item>
                 </Col>
 
-                {/* <Col span={24}>
+                <Col span={24}>
                     <Form.Item label="是否上传故障报告" {...forminladeLayout}>
                         {getFieldDecorator('uploadFaultReport', {
-                            initialValue: Number(check.uploadFaultReport)
+                            initialValue: check ? Number(check.checkReportSign) : ''
                         })(
                             <RadioGroup>
                                 <Radio value={0}>是</Radio>
@@ -72,7 +72,7 @@ const ExamineChild = React.forwardRef((props, ref) => {
                             </RadioGroup>,
                         )}
                     </Form.Item>
-                </Col> */}
+                </Col>
 
                 {/* <Col span={24}>
                     <Form.Item label="上传附件" extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb" style={{ display: "flex" }} {...forminladeLayout}>

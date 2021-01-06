@@ -71,15 +71,15 @@ const severity = [ // 严重程度
   { key: 2, value: '一般' },
 ];
 
-// const yxfw = [ // 影响范围
-// { key: 0, value: '自动抄表率' },
-// { key: 1, value: '服务器' },
-// { key: 2, value: '数据传输' },
-// { key: 3, value: '网络通道' },
-// { key: 4, value: 'VNC' },
-// { key: 5, value: '专变自动抄表率' },
-// { key: 6, value: '费控、召测' },
-// ];
+const registerScope = [ // 影响范围
+{ key: 0, value: '自动抄表率' },
+{ key: 1, value: '服务器' },
+{ key: 2, value: '数据传输' },
+{ key: 3, value: '网络通道' },
+{ key: 4, value: 'VNC' },
+{ key: 5, value: '专变自动抄表率' },
+{ key: 6, value: '费控、召测' },
+];
 
 const sysmodular = [ // 系统模块
   { key: 0, value: '配网采集' },
@@ -363,9 +363,9 @@ function Registration(props) {
                   </Form.Item>
                 </Col>
 
-                {/* <Col xl={8} xs={12}>
+                <Col xl={8} xs={12}>
                   <Form.Item label="影响范围">
-                    {getFieldDecorator('yxfw', {
+                    {getFieldDecorator('registerScope', {
                       rules: [
                         {
                           required,
@@ -374,11 +374,11 @@ function Registration(props) {
                       ],
                     })(
                       <Select placeholder="请选择">
-                        {yxfw.map(({ value }) => [<Option key={value}>{value}</Option>])}
+                        {registerScope.map(({ value }) => [<Option key={value}>{value}</Option>])}
                       </Select>,
                     )}
                   </Form.Item>
-                </Col> */}
+                </Col>
 
                 <Col span={8}>
                   <Form.Item label="故障名称">
@@ -409,7 +409,7 @@ function Registration(props) {
                 <Col span={24}>
                   <Form.Item label="是否影响业务" {...forminladeLayout}>
                     {getFieldDecorator('registerEffect', {
-                      initialValue: '',
+                      initialValue: 0,
                     })(
                       <RadioGroup>
                         <Radio value={0}>是</Radio>

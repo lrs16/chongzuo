@@ -2,14 +2,10 @@ import React, { Component } from 'react';
 import { connect } from 'dva';
 import {
   Card,
-  // Row,
-  // Col,
   Form,
   Input,
   Button,
   Table,
-  // Select,
-  // DatePicker,
   Message,
   Divider,
   Popconfirm,
@@ -21,8 +17,6 @@ import DropdownValueAdd from './components/DropdownValueAdd';
 import DropdownValueEdit from './components/DropdownValueEdit';
 
 const { Search } = Input;
-// const dictStateExt = ['禁止', '使用'];
-// const isModifyExt = ['否', '是'];
 @connect(({ umpsdropdown, loading }) => ({
   umpsdropdown,
   loading: loading.models.umpsdropdown,
@@ -69,7 +63,7 @@ class DropdownValueset extends Component {
       queKey: values,
     });
     this.props.dispatch({
-      type: 'umpsdropdown/getSearchDropdownValueList',
+      type: 'umpsdropdown/search',
       payload: {
         queKey: values,
         page,
@@ -77,10 +71,11 @@ class DropdownValueset extends Component {
       },
     });
   };
+  
 
   onShowSizeChange = (current, pageSize) => {
     this.props.dispatch({
-      type: 'umpsdropdown/getSearchDropdownValueList',
+      type: 'umpsdropdown/search',
       payload: {
         queKey: this.state.queKey,
         page: current,
@@ -94,7 +89,7 @@ class DropdownValueset extends Component {
 
   changePage = page => {
     this.props.dispatch({
-      type: 'umpsdropdown/getSearchDropdownValueList',
+      type: 'umpsdropdown/search',
       payload: {
         queKey: this.state.queKey,
         page,
@@ -127,13 +122,12 @@ class DropdownValueset extends Component {
       type: 'umpsdropdown/edite',
       payload: values,
     }).then(res => {
-      console.log(res);
-      // if (res.code === 200) {
-      //   Message.success(res.msg);
-      //   this.getlist();
-      // } else {
-      //   Message.error(res.msg);
-      // }
+      if (res.code === 200) {
+        Message.success(res.msg);
+        this.getlist();
+      } else {
+        Message.error(res.msg);
+      }
     });
   };
 
@@ -143,13 +137,12 @@ class DropdownValueset extends Component {
       type: 'umpsdropdown/fetchAdd',
       payload: values,
     }).then(res => {
-      console.log(res,'res');
-      // if (res.code === 200) {
-      //   Message.success(res.msg);
-      //   this.getlist();
-      // } else {
-      //   Message.error(res.msg);
-      // }
+      if (res.code === 200) {
+        Message.success(res.msg);
+        this.getlist();
+      } else {
+        Message.error(res.msg);
+      }
     });
   };
 
@@ -277,7 +270,7 @@ class DropdownValueset extends Component {
           </Form>
           <DropdownValueAdd onSumit={this.handleAdd}>
             <Button style={{ width: '100%', marginTop: 16, marginBottom: 8 }} type="dashed" icon="plus">
-              新建下拉值
+              新建字典
         </Button>
           </DropdownValueAdd>
 

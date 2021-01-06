@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Form, Input, Modal, Radio, InputNumber  } from 'antd';
 
+const RadioGroup = Radio.Group;
+
 const formItemLayout = {
     labelCol: {
         xs: { span: 24 },
@@ -53,7 +55,14 @@ class DropdownValueEdit extends Component {
         const { getFieldDecorator } = this.props.form;
         const required = true;
         const {
-            id, dictModule, dictType, dictCode, dictName, dictState, isModify, dictSort, dictRemarks
+            id, 
+            dictModule, 
+            dictType, 
+            dictCode, 
+            dictName, 
+            dictState, 
+            dictSort, 
+            dictRemarks
         } = this.props.record;
         return (
             <>
@@ -136,10 +145,15 @@ class DropdownValueEdit extends Component {
                                     },
                                 ],
                                 initialValue: dictState || '',
-                            })(<Input placeholder="请输入..." />)}
+                            })(
+                                <RadioGroup>
+                                    <Radio value="0">停止</Radio>
+                                    <Radio value="1">使用</Radio>
+                                </RadioGroup>,
+                            )}
                         </Form.Item>
 
-                        <Form.Item label="是否能修改">
+                        {/* <Form.Item label="是否能修改">
                             {getFieldDecorator('isModify', {
                                 rules: [
                                     {
@@ -154,7 +168,7 @@ class DropdownValueEdit extends Component {
                                     <Radio value="1">是</Radio>
                                 </Radio.Group>,
                             )}
-                        </Form.Item>
+                        </Form.Item> */}
 
                         <Form.Item label="字典排序">
                             {getFieldDecorator('dictSort', {
@@ -186,7 +200,7 @@ class DropdownValueEdit extends Component {
     }
 }
 DropdownValueEdit.defaultProps = {
-    title: '编辑',
+    title: '编辑字典',
     record: {
         id: '',
         dictModule: '',

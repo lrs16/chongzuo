@@ -1,5 +1,6 @@
 import {
-    querySearchDropdownValue,
+    querySearchDropdownValue, // 数据字典list表数据
+    querySearchDropdownValue1, // 数据字典查询
     removeDict,
     addDict,
     editeDict
@@ -13,6 +14,7 @@ export default {
     },
 
     effects: {
+        // 数据字典list表数据
         *getSearchDropdownValueList({ payload: { page, limit, bodyParams } }, { call, put }) {
             const response = yield call(querySearchDropdownValue, page, limit, bodyParams);
             yield put({
@@ -21,6 +23,16 @@ export default {
             }
             )
         },
+
+        // 数据字典查询
+        *search({ payload }, { call, put }) {
+            const response = yield call(querySearchDropdownValue1, payload);
+            yield put({
+                type: 'dropdownvaluelist',
+                payload: response,
+            });
+        },
+        
         // 添加或编辑
         *fetchAdd({ payload }, { call }) {
            return yield call(addDict, payload);
@@ -41,6 +53,6 @@ export default {
                 ...state,
                 list: action.payload.data,
             }
-        }
+        },
     },
 };

@@ -23,24 +23,6 @@ const registerOccurTime = new Date();
 // 故障登记时间 registerTime
 const registerTime = new Date();
 
-// const declarantCompany = [ // 申报人单位
-//     { key: 1, value: '单位一' },
-//     { key: 2, value: '单位二' },
-//     { key: 3, value: '单位三' },
-//     { key: 4, value: '单位四' },
-//     { key: 5, value: '单位五' },
-//     { key: 6, value: '单位六' },
-// ];
-
-// const declarantDepart = [ // 申报人部门
-//     { key: 1, value: '部门一' },
-//     { key: 2, value: '部门二' },
-//     { key: 3, value: '部门三' },
-//     { key: 4, value: '部门四' },
-//     { key: 5, value: '部门五' },
-//     { key: 6, value: '部门六' },
-// ];
-
 const faultSource = [ // 故障来源
     { key: 0, value: '系统告警' },
     { key: 1, value: '巡检发现' }

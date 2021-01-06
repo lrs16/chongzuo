@@ -103,6 +103,7 @@ function Todolistdetails(props) {
 
   const [transferpaneKey, setTransferpaneKey] = useState();
   const [notransferpaneKey, setnoTransferpaneKey] = useState();
+  // const [handleEdit, setHandleEdit] = useState(false);
 
   const RegisterRef = useRef(); // 故障登记
   const ExamineRef = useRef(); // 故障审核
@@ -482,8 +483,10 @@ function Todolistdetails(props) {
       type: 'fault/troubleHandleOrder',
       payload: { taskId }
     }).then(res => {
+      // console.log(res);
       if (res.code === 200) {
         message.info(res.msg);
+        // setHandleEdit(true);
       } else {
         message.error(res.msg);
       }
@@ -604,7 +607,7 @@ function Todolistdetails(props) {
 
 
                     { // 故障登记详情页---（故障审核时）
-                      (paneKey === '故障审核' || paneKey === '故障处理' || paneKey === '故障总结' || paneKey === '故障关闭') &&
+                      (paneKey === '故障审核' || paneKey === '故障处理' || paneKey === '故障总结' || paneKey === '故障关闭') && 
                       ( // 登记详情 后续的项展开都会被显示
                         <Panel header="故障登记" key="RegisterQuery">
                           <RegisterQuery
