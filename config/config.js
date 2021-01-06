@@ -924,11 +924,11 @@ export default {
   },
   proxy: {
     '/oauth/': {
-      target: 'http://172.16.4.77:9901/', // 登录
+      target: 'http://172.16.4.211:9901/', // 登录
       changeOrigin: true,
     },
     '/upms/': {
-      target: 'http://172.16.4.77:9901/', // 用户管理
+      target: 'http://172.16.4.211:9901/', // 用户管理
       changeOrigin: true,
     },
     '/auto/': {
@@ -958,6 +958,11 @@ export default {
     //   changeOrigin: true,
     // },
     '/modeler/': {
+      target: 'http://172.16.4.211:9901/',
+      changeOrigin: true,
+    },
+    // ITSM通用接口
+    '/itsm/common/': {
       target: 'http://172.16.4.211:9901/',
       changeOrigin: true,
     },

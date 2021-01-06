@@ -47,8 +47,9 @@ const SelectUser = props => {
   useEffect(() => {
     if (changorder !== undefined) {
       sessionStorage.setItem('Nextflowmane', '处理');
+      sessionStorage.setItem('flowtype', '3');
     }
-  }, []);
+  }, [changorder]);
 
   const showModal = () => {
     setIsModalVisible(true);

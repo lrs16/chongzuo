@@ -160,11 +160,9 @@ function ToDodetails(props) {
         </SelectUser>
       )}
       {next === '确认' && (pangekey === '2' || pangekey === '3') && (
-        <SelectUser handleSubmit={() => handleHold('other')} taskId={id}>
-          <Button type="primary" style={{ marginRight: 8 }}>
-            确认
-          </Button>
-        </SelectUser>
+        <Button type="primary" style={{ marginRight: 8 }} onClick={handleHold('other')}>
+          确认
+        </Button>
       )}
       {pangekey === '5' && (
         <SelectUser handleSubmit={() => handleHold('other')} changorder="转单" taskId={id}>

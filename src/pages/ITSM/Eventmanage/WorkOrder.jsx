@@ -97,12 +97,6 @@ function WorkOrder(props) {
     sessionStorage.setItem('Processtype', 'event');
   }, []);
 
-  // 更新流转类型
-  console.log(flowtype);
-  useEffect(() => {
-    sessionStorage.setItem('flowtype', flowtype);
-  }, [flowtype]);
-
   const callback = key => {
     setActiveKey(key);
   };
