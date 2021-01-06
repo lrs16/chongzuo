@@ -4,14 +4,19 @@ import { Card, Descriptions, Collapse } from 'antd';
 const { Panel } = Collapse;
 
 function Confirmationcountersignature(props) {
-  const { currentProcess, problemFlowNodeRows, statue, currentObj } = props;
-
+  const { 
+    countersignatureDetail, 
+    statue
+   } = props;
+   const { problemFlowNodeRows } = countersignatureDetail;
   return (
     <>
-      {/* { */}
-      {/* // expand !== '确认会签' && statue >= state && ( */}
-      <Collapse expandIconPosition="right" style={{ backgroundColor: 'white', marginTop: '20px' }}>
-        <Panel header="确认会签" key="5">
+      <Collapse 
+        expandIconPosition="right" 
+        style={{ backgroundColor: 'white', marginTop: '20px' }}
+        defaultActiveKey={['65']}
+      >
+        <Panel header="确认会签" key={statue}>
           <Descriptions>
             <Descriptions.Item label="会签单位">
               {problemFlowNodeRows ? problemFlowNodeRows[4].confirmUnit : ''}

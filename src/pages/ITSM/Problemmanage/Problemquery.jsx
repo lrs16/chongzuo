@@ -24,11 +24,7 @@ const columns = [
     render: (text, record) => (
       <Link
         to={{
-          pathname: `/ITSM/problemmanage/querydetail/${record.id}`,
-          state: {
-            currentProcess: record.currentNode,
-            currentObj: '问题查询',
-          },
+          pathname: `/ITSM/problemmanage/querydetail/${record.mainId}/queryworkdetail`,
         }}
       >
         {text}
@@ -85,7 +81,6 @@ function Besolved(props) {
     besolveList,
     loading,
   } = props;
-  console.log(besolveList, 'besolveList');
   const required = true;
   const [expand, setExpand] = useState(false);
   const [paginations, setPaginations] = useState({ current: 1, pageSize: 10 });
@@ -157,7 +152,7 @@ function Besolved(props) {
     onShowSizeChange: (page, pageSize) => onShowSizeChange(page, pageSize),
     current: paginations.current,
     pageSize: paginations.pageSize,
-    // total:besolveList.total,
+    total:besolveList.total,
     onChange: page => changePage(page),
   };
 

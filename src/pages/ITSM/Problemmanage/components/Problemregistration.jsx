@@ -8,16 +8,17 @@ const { Panel } = Collapse;
 const { Step } = Steps;
 
 function Problemregistration(props) {
-  const { currentProcess, registrationDetail, statue, queryStatue } = props;
+  const { registrationDetail, statue, queryStatue } = props;
 
   return (
     <>
       {statue !== 5 && (
         <Collapse
           expandIconPosition="right"
+          defaultActiveKey={['1']}
           style={{ backgroundColor: 'white', marginTop: '20px' }}
         >
-          <Panel header="问题登记" key="1" style={{ marginBottom: '0px', paddingBottom: '0px' }}>
+          <Panel header="问题登记" key="1">
             <Descriptions>
               <Descriptions.Item label="问题编号">
                 {registrationDetail ? registrationDetail.main.no : ''}
@@ -79,6 +80,7 @@ function Problemregistration(props) {
       {statue === 5 && (
         <Collapse
           expandIconPosition="right"
+          defaultActiveKey={['1']}
           style={{ backgroundColor: 'white', paddingLeft: '0px' }}
         >
           <Panel header="问题登记" key="1" style={{ marginBottom: '0px', paddingBottom: '0px' }}>

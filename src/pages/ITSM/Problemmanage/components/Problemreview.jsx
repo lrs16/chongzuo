@@ -3,21 +3,22 @@ import { Card, Descriptions, Menu, Collapse } from 'antd';
 
 const { Panel } = Collapse;
 function Problemreview(props) {
-  const { reviewInfo, currentProcess, statue, reviesDetail } = props;
-
+  const { statue, reviesDetail } = props;
   return (
     <>
       {/* { */}
       {/* expand !== '问题审核' && statue >= state && ( */}
-      <Collapse expandIconPosition="right" style={{ backgroundColor: 'white', marginTop: '20px' }}>
-        <Panel header="问题审核" key="2" style={{ marginBottom: '0px', paddingBottom: '0px' }}>
+      <Collapse 
+        expandIconPosition="right" 
+        style={{ backgroundColor: 'white', marginTop: '20px' }}
+        >
+        <Panel 
+          header="问题审核" 
+          style={{ marginBottom: '0px', paddingBottom: '0px' }}
+        >
           <Descriptions>
             <Descriptions.Item label="审核单位">
-              {reviesDetail
-                ? reviesDetail.problemFlowNodeRows[1]
-                  ? reviesDetail.problemFlowNodeRows[1].checkUnit
-                  : ''
-                : ''}
+            {reviesDetail ? reviesDetail.problemFlowNodeRows[1].checkUnit : ''}
             </Descriptions.Item>
             <Descriptions.Item label="审核部门">
               {reviesDetail ? reviesDetail.problemFlowNodeRows[1].checkDept : ''}

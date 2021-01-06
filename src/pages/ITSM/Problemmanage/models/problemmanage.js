@@ -18,6 +18,9 @@ import {
   queryList,
   fileUpload,
   problemHandleOrder,
+  tobeListpeople,
+  queryDetail,
+  transferOrder
 } from '../services/api';
 
 export default {
@@ -41,6 +44,8 @@ export default {
     useInfo: [],
     imageSource: '',
     flowlog: '',
+    peopleList:[],
+    queryDetaildata:[]
   },
 
   effects: {
@@ -62,7 +67,6 @@ export default {
     },
 
     *fetchUseinfo({ payload }, { call, put }) {
-      console.log('payload: ');
       const response = yield call(queryCurrent);
       yield put({
         type: 'getuseInfo',
@@ -83,15 +87,14 @@ export default {
         const resRegister = yield call(saveRegister, saveiInfo);
         if (resRegister.code === 200) {
           switch (jumpType) {
-            case 0:
+            case 1:
               route.push({
-                pathname: `/ITSM/problemmanage/besolveddetail/${response.flowTaskId}`,
-                state: { currentProcess: '问题登记' },
+                pathname: `/ITSM/problemmanage/besolveddetail/workorder/${response.flowTaskId}`,
                 // params:{ currentProcess:'问题登记'}
               });
               break;
 
-            case 1:
+            case 0:
               route.push({ pathname: `/ITSM/problemmanage/besolved` });
               break;
 
@@ -119,6 +122,15 @@ export default {
     //  回退
     *tobeBack({ payload: { id, values } }, { call }) {
       return yield call(backReason, id, values);
+    },
+
+    //  流转到下一节点前选人
+    *optionPeople({ payload: { taskId } }, { call, put }) {
+      return yield call(tobeListpeople, taskId);
+      // yield put({
+      //   type:'comconfigtree',
+      //   payload: response
+      // })
     },
 
     //  流转到下一个节点
@@ -152,6 +164,7 @@ export default {
 
     //  获取工作流流程图
     *getgetFlowImage({ payload: { id } }, { call, put }) {
+      console.log('id: ', id);
       const response = yield call(getFlowImage, id);
       yield put({
         type: 'imageSource',
@@ -205,6 +218,20 @@ export default {
     *problemHandleOrder({ payload: { id } }, { call, put }) {
       return yield call(problemHandleOrder, id);
     },
+
+    *queryDetail({payload:{id}},{call,put}) {
+      const response = yield call(queryDetail,id);
+      yield put ({
+        type:'queryDetaildata',
+        payload: response
+      })
+    },
+
+    *transferOrder({payload:{taskId,userIds}},{call,put}) {
+      return yield call(transferOrder,taskId,userIds);
+    }
+
+
   },
 
   reducers: {
@@ -301,5 +328,19 @@ export default {
         flowlog: action.payload.problemFlowLogs,
       };
     },
+
+    peopleList(state,action) {
+      return {
+        ...state,
+        peopleList:action.payload.data
+      }
+    },
+
+    queryDetaildata(state,action) {
+      return {
+        ...state,
+        queryDetaildata: action.payload
+      }
+    }
   },
 };

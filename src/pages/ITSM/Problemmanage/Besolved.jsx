@@ -1,7 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
 import Link from 'umi/link';
-import { Form, Card, Input, Button, Row, Col, Table } from 'antd';
+import { 
+  Form,
+  Card,
+  Input,
+  Button,
+  Row,
+  Col,
+  Table,
+  DatePicker
+ } from 'antd';
+ import moment from 'moment';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
@@ -23,7 +33,7 @@ const columns = [
     render: (text, record) => (
       <Link
         to={{
-          pathname: `/ITSM/problemmanage/besolveddetail/${record.id}`,
+          pathname: `/ITSM/problemmanage/besolveddetail/workorder/${record.id}`,
           state: {
             currentProcess: record.currentNode,
           },
@@ -68,11 +78,6 @@ const columns = [
     dataIndex: 'priority',
     key: 'priority',
   },
-  {
-    title: '状态',
-    dataIndex: 'state',
-    key: 'state',
-  },
 ];
 
 function Besolved(props) {
@@ -83,7 +88,6 @@ function Besolved(props) {
     besolveList,
     loading,
   } = props;
-  console.log(besolveList, 'besolveList');
   const required = true;
   const [expand, setExpand] = useState(false);
   const [paginations, setPaginations] = useState({ current: 1, pageSize: 10 });
@@ -145,7 +149,6 @@ function Besolved(props) {
 
   const rowSelection = {
     onChange: (selectedRowKeys, selectedRows) => {
-      console.log(selectedRows);
       setSelectedRows(selectedRows);
     },
   };
@@ -155,7 +158,7 @@ function Besolved(props) {
     onShowSizeChange: (page, pageSize) => onShowSizeChange(page, pageSize),
     current: paginations.current,
     pageSize: paginations.pageSize,
-    // total:besolveList.total,
+    total:besolveList.total,
     onChange: page => changePage(page),
   };
 
@@ -171,6 +174,19 @@ function Besolved(props) {
       searchdata(values, paginations.current, paginations.pageSize);
     });
   };
+
+  const handleDelete = () => {
+    if(selectedRows.length) {
+      const idList = [];
+      selectedRows.forEach(item => {
+        const id = item.mainId;
+        idList.push(id);
+      });
+      console.log(idList,'idList');
+
+    }
+
+  }
 
   return (
     <PageHeaderWrapper title={pagetitle}>
@@ -235,7 +251,13 @@ function Besolved(props) {
               <>
                 <Col span={8}>
                   <Form.Item label="发送时间">
-                    {getFieldDecorator('SendTime', {})(<Input />)}
+                    {getFieldDecorator('SendTime', {
+                      initialValue: moment(new Date())
+                    })
+                    (<DatePicker
+                      showTime 
+                      format="YYYY-MM-DD HH:mm"
+                     />)}
                   </Form.Item>
                 </Col>
 

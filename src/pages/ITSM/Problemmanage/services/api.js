@@ -61,11 +61,13 @@ export async function deleteTobo(id) {
 //  退回原因
 export async function backReason(id, values) {
   const obj = values;
-  obj.id = id;
+  obj.userIds = id;
   obj.taskId = id;
+  obj.result = -1;
   return request(`/itsm/problem/flow/submit`, {
     method: 'POST',
-    body: JSON.stringify(obj),
+    data:obj,
+    requestType:'form'
   });
 }
 
@@ -76,7 +78,7 @@ export async function todoInformation(id) {
 
 //  流转的待办人的接口
 export async function tobeListpeople(taskId) {
-  return request(`/itsm/problem/flow/assignee?taskId=${taskId}`);
+  return request(`/itsm/problem/flow/assignee?taskId=${taskId}&result=1`);
 }
 
 //  待办人保存接口
@@ -92,6 +94,7 @@ export async function saveTobelist(taskId, result) {
 
 //  后端返回的流程
 export async function getFlowImage(id) {
+  console.log('id: ', id);
   return request(`/itsm/problem/flow/getFlowImage?id=${id}`, {
     method: 'GET',
     responseType: 'blob',
@@ -137,4 +140,17 @@ export async function fileUpload(params) {
 
 export async function problemHandleOrder(id) {
   return request(`/itsm/problem/flow/problemHandleOrder?taskId=${id}`);
+}
+
+//  查询详情
+export async function queryDetail(id) {
+  console.log('id: ', id);
+  return request(`/itsm/problem/flow/getOrderDetail?id=${id}`)
+}
+
+//  转单
+export async function transferOrder(taskId,userIds) {
+  return request(`/itsm/problem/flow/transfer`,{
+    method:'POST'
+  })
 }

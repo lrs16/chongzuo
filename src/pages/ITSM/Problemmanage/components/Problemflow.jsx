@@ -1,22 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import { Card, Timeline, Form } from 'antd';
+import { Card, Form,Steps,Divider   } from 'antd';
 
 let image;
+let id;
+const { Step } = Steps;
 function Problemflow(props) {
   const { id, imageSource, flowlog, dispatch } = props;
   const list = [];
   if (flowlog) {
     flowlog.forEach(function(item) {
       list.push(
-        <Timeline.Item>
-          {item.name}
-          {item.startTime}
-        </Timeline.Item>,
-      );
+        <Step
+          // key={item.id}
+          title={`处理人:${item.formHandler}`}
+          description={`${item.startTime}`}
+          subTitle={item.backReason}
+        />
+      ) 
     });
   }
+  
   // const [image,setImage] = useState('');
   const blob = new Blob([imageSource]);
   image = (window.URL || window.webkitURL).createObjectURL(blob);
@@ -42,13 +47,22 @@ function Problemflow(props) {
 
   return (
     <>
-      <div title="流转日志">
-        <img src={image} alt="" />
-      </div>
+      <p>流程图</p>
+        <Divider />
+      {/* <Card title="流转日志" style={{margin:'0px'}}> */}
+          <img src={image} alt="" />
+      {/* </Card> */}
 
-      <Card title="流转日志" bordered={false}>
-        {list}
-      </Card>
+        {/* <Card title="流转日志"> */}
+        <p>流转日志</p>
+        <Divider />
+          <Steps  
+          progressDot 
+          current={list.length - 1}
+          direction="vertical"
+          >{list}</Steps>
+        {/* </Card> */}
+   
     </>
   );
 }

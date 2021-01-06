@@ -1,23 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { connect } from 'dva';
-import moment from 'moment';
-import {
-  Form,
-  Card,
-  Input,
-  Button,
-  Row,
-  Col,
-  Upload,
-  Icon,
-  DatePicker,
-  Select,
-  message,
-} from 'antd';
-import Link from 'umi/link';
+import React, { useEffect,useState, createContext, createRef, useRef } from 'react';
+import { Card, Form, Button, Collapse } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import Regexp, { phone_reg } from '@/utils/Regexp';
-import Circulation from './components/Circulation';
+import styles from './index.less';
+import { connect } from 'dva';
+// import Handle from './components/Handle';
+import Registrat from './components/Registrat';
+
+const { Panel } = Collapse;
 
 const formItemLayout = {
   labelCol: {
@@ -29,7 +18,6 @@ const formItemLayout = {
     sm: { span: 18 },
   },
 };
-
 const forminladeLayout = {
   labelCol: {
     xs: { span: 24 },
@@ -40,37 +28,51 @@ const forminladeLayout = {
     sm: { span: 22 },
   },
 };
-
-const { TextArea } = Input;
-const { Option } = Select;
 let formatdatetime;
 let createDatetime;
 let jumpType = 0;
-const Registration = props => {
-  const [next, setNext] = useState(false);
-  const [save, setSave] = useState({});
-  const pagetitle = props.route.name;
+export const RegistratContext = createContext();
 
+function Registration(props) {
+  const pagetitle = props.route.name;
   const {
     form: { getFieldDecorator, validateFields },
     dispatch,
-    id,
-    newno,
     list,
-    useInfo,
+    newno,
+    useInfo
   } = props;
-  const required = true;
-  const data = {
-    name: 'file',
-    action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
-    headers: {
-      authorization: 'authorization-text',
-    },
+  const [show, setShow] = useState(false);
+  const [activeKey, setActiveKey] = useState(['1']);
+  // console.log(registratkeys);
+  const RegistratRef = useRef();
+
+  const getNewno = () => {
+    dispatch({
+      type: 'problemmanage/getregisterNo',
+    });
   };
 
-  const onFinish = jumpType => {
-    props.form.validateFields((err, values) => {
-      //  登记时间
+  const getUserinfo = () => {
+    dispatch({
+      type: 'problemmanage/fetchUseinfo',
+    });
+  };
+  useEffect(() => {
+    // dispatch({
+    //   type:'problemmanage/fetchlist',
+    // });
+    // getADDid();
+    getUserinfo();
+    getNewno();
+  }, []);
+
+  const callback = key => {
+    setActiveKey(key);
+  };
+
+  const handlesubmit = (jumpType) => {
+    RegistratRef.current.validateFields((err, values) => {
       const addDateZero = num => {
         return num < 10 ? '0' + num : num;
       };
@@ -113,347 +115,60 @@ const Registration = props => {
         saveData.editState = 'add';
         dispatch({
           type: 'problemmanage/getAddid',
-          payload: { saveData, jumpType },
+          payload: { saveData,jumpType },
         });
       }
     });
   };
 
-  const getADDid = () => {
-    dispatch({
-      type: 'problemmanage/getAddid',
-    });
-  };
-
-  const getNewno = () => {
-    dispatch({
-      type: 'problemmanage/getregisterNo',
-    });
-  };
-
-  const getUserinfo = () => {
-    dispatch({
-      type: 'problemmanage/fetchUseinfo',
-    });
-  };
-
-  useEffect(() => {
-    // dispatch({
-    //   type:'problemmanage/fetchlist',
-    // });
-    // getADDid();
-    getUserinfo();
-    getNewno();
-  }, []);
-
   const handleCirculation = () => {
-    onFinish(1);
+    handlesubmit(1);
   };
 
-  const gotoApi = () => {
-    const result = 1;
-    const taskId = id;
-    return dispatch({
-      type: 'problemmanage/gotoCirculation',
-      payload: { taskId, result },
-    }).then(res => {
-      if (res.code === 200) {
-        message.info(res.msg);
-        props.history.push('/ITSM/problemmanage/besolved');
-      } else {
-        message.error(res.msg);
-      }
-    });
-  };
+  const handClose = () => {
+    props.history.push('/ITSM/problemmanage/besolved');
+  }
 
   return (
-    <PageHeaderWrapper title={pagetitle}>
-      <Card
-        extra={
-          <>
-            <Button
-              type="primary"
-              style={{ marginRight: '8px' }}
-              htmlType="submit"
-              onClick={() => onFinish(0)}
-            >
-              保存
-            </Button>
-
-            {/* <Circulation
-              target='问题登记'
-              taskId={id.flowTaskId}
-            > */}
-            <Button type="primary" style={{ marginRight: 8 }} onClick={handleCirculation}>
-              流转
-            </Button>
-
-            {/* </Circulation> */}
-
-            <Button type="primary">关闭</Button>
-          </>
-        }
-      >
-        <Row>
-          <Form {...formItemLayout} onSubmit={onFinish}>
-            <Col span={8}>
-              <Form.Item label="问题编号">
-                {getFieldDecorator('no', {
-                  rules: [
-                    {
-                      // required,
-                      message: '请输入问题编号',
-                    },
-                  ],
-                  initialValue: newno.problemNo || '',
-                })(<Input disabled />)}
-              </Form.Item>
-            </Col>
-
-            <Col span={8}>
-              <Form.Item label="问题来源">
-                {getFieldDecorator('source', {
-                  rules: [
-                    {
-                      required,
-                      message: '请输入问题来源',
-                    },
-                  ],
-                  initialValue: list.questionSource || '',
-                })(
-                  <Select>
-                    <Option value="重复性分析事件">重复性分析事件</Option>
-                    <Option value="事件升级">事件升级</Option>
-                    <Option value="巡检发现">巡检发现</Option>
-                    <Option value="系统监控发现">系统监控发现</Option>
-                    <Option value="其他">其他</Option>
-                  </Select>,
-                )}
-              </Form.Item>
-            </Col>
-
-            <Col span={8}>
-              <Form.Item label="问题分类">
-                {getFieldDecorator('type', {
-                  rules: [
-                    {
-                      required,
-                      message: '请输入问题分类',
-                    },
-                  ],
-                  initialValue: list.questionClass || '',
-                })(
-                  <Select>
-                    <Option value="功能">功能</Option>
-                    <Option value="程序">程序</Option>
-                  </Select>,
-                )}
-              </Form.Item>
-            </Col>
-
-            <Col span={8}>
-              <Form.Item label="紧急度">
-                {getFieldDecorator('emergent', {
-                  rules: [
-                    {
-                      required,
-                      message: '请输入紧急度',
-                    },
-                  ],
-                  initialValue: list.urgency || '',
-                })(
-                  <Select>
-                    <Option value="低">低</Option>
-                    <Option value="中">中</Option>
-                    <Option value="高">高</Option>
-                  </Select>,
-                )}
-              </Form.Item>
-            </Col>
-
-            <Col span={8}>
-              <Form.Item label="影响度">
-                {getFieldDecorator('effect', {
-                  rules: [
-                    {
-                      required,
-                      message: '请输入影响度',
-                    },
-                  ],
-                  initialValue: list.influenceDegree || '',
-                })(
-                  <Select>
-                    <Option value="低">低</Option>
-                    <Option value="中">中</Option>
-                    <Option value="高">高</Option>
-                  </Select>,
-                )}
-              </Form.Item>
-            </Col>
-
-            <Col span={8}>
-              <Form.Item label="优先级">
-                {getFieldDecorator('priority', {
-                  rules: [
-                    {
-                      required,
-                      message: '请输入优先级',
-                    },
-                  ],
-                  initialValue: list.priority || '',
-                })(
-                  <Select>
-                    <Option value="低">低</Option>
-                    <Option value="中">中</Option>
-                    <Option value="高">高</Option>
-                  </Select>,
-                )}
-              </Form.Item>
-            </Col>
-
-            <Col span={8}>
-              <Form.Item label="填报人单位">
-                {getFieldDecorator('registerUnit', {
-                  rules: [
-                    {
-                      // required,
-                      message: '请输入填报人单位',
-                    },
-                  ],
-                  initialValue: list.applicant || '',
-                })(
-                  <Select>
-                    <Option value="单位">单位</Option>
-                    <Option value="部门">部门</Option>
-                  </Select>,
-                )}
-              </Form.Item>
-            </Col>
-
-            <Col span={8}>
-              <Form.Item label="填报人部门">
-                {getFieldDecorator('registerDept', {
-                  rules: [
-                    {
-                      // required,
-                      message: '请输入填报人部门',
-                    },
-                  ],
-                  initialValue: useInfo.deptNameExt || '',
-                })(<Input disabled />)}
-              </Form.Item>
-            </Col>
-
-            <Col span={8}>
-              <Form.Item label="填报人">
-                {getFieldDecorator('registerUser', {
-                  rules: [
-                    {
-                      required,
-                      message: '请输入填报人',
-                    },
-                  ],
-                  initialValue: list.filledBy || '',
-                })(<Input />)}
-              </Form.Item>
-            </Col>
-
-            <Col span={8}>
-              <Form.Item label="联系电话">
-                {getFieldDecorator('phone', {
-                  rules: [
-                    {
-                      required,
-                      len: 11,
-                      validator: phone_reg,
-                      message: '请输入正确的手机号码',
-                    },
-                  ],
-                  initialValue: list.contactNumber || '',
-                })(<Input />)}
-              </Form.Item>
-            </Col>
-
-            <Col span={8}>
-              <Form.Item label="登记时间">
-                {getFieldDecorator('registerTime', {
-                  rules: [
-                    {
-                      required,
-                      message: '请输入登记时间',
-                    },
-                  ],
-                  initialValue: moment(list.registTime) || '',
-                })(<DatePicker showTime format="YYYY-MM-DD HH:mm" />)}
-              </Form.Item>
-            </Col>
-
-            <Col span={8}>
-              <Form.Item label="建单时间">
-                {getFieldDecorator('now', {
-                  rules: [
-                    {
-                      required,
-                      message: '请输入紧急度',
-                    },
-                  ],
-                  initialValue: moment(list.orderCreationtime) || '',
-                })(<DatePicker format="YYYY-MM-DD HH:mm" showTime />)}
-              </Form.Item>
-            </Col>
-
-            <Col span={24}>
-              <Form.Item label="问题标题" {...forminladeLayout}>
-                {getFieldDecorator('title', {
-                  rules: [
-                    {
-                      required,
-                      message: '请输入紧急度',
-                    },
-                  ],
-                  initialValue: list.questionTitle || '',
-                })(<Input />)}
-              </Form.Item>
-            </Col>
-
-            <Col span={24}>
-              <Form.Item label="问题描述" {...forminladeLayout}>
-                {getFieldDecorator('content', {
-                  rules: [
-                    {
-                      required,
-                      message: '请输入问题描述',
-                    },
-                  ],
-                  initialValue: list.problemDescription || '',
-                })(<TextArea />)}
-              </Form.Item>
-            </Col>
-
-            <Col span={24}>
-              <Form.Item label="上传附件" {...forminladeLayout}>
-                {getFieldDecorator('uploadAttachment', {
-                  rules: [
-                    {
-                      // required,
-                      message: '请输入问题描述',
-                    },
-                  ],
-                })(
-                  <Upload {...data}>
-                    <Button type="primary">
-                      <Icon type="upload" /> Click to Upload
-                    </Button>
-                  </Upload>,
-                )}
-              </Form.Item>
-            </Col>
-          </Form>
-        </Row>
-      </Card>
+    <PageHeaderWrapper 
+    title={pagetitle}
+    extra={
+      <>
+       <Button type="primary" style={{ marginRight: 8 }} onClick={()=>handlesubmit(0)}>
+          保 存
+        </Button>
+        <Button type="primary" style={{ marginRight: 8 }} onClick={handleCirculation}>
+          流 转
+        </Button>
+        <Button type="default" onClick={handClose}>关 闭</Button>
+      </>
+    }
+    >
+      <div className={styles.collapse} style={{marginTop:'20px'}}>
+        <Collapse
+          expandIconPosition="right"
+          activeKey={activeKey}
+          bordered={false}
+          onChange={callback}
+        >
+          <Panel header="问题登记" key="1" >
+            <RegistratContext.Provider value={{ setActiveKey, setShow }}>
+              <Registrat
+                formItemLayout={formItemLayout}
+                forminladeLayout={forminladeLayout}
+                show={show}
+                ref={RegistratRef}
+                list={list}
+                newno={newno}
+                useInfo={useInfo}
+              />
+            </RegistratContext.Provider>
+          </Panel>
+        </Collapse>
+      </div>
     </PageHeaderWrapper>
   );
-};
+}
 
 export default Form.create({})(
   connect(({ problemmanage, loading }) => ({

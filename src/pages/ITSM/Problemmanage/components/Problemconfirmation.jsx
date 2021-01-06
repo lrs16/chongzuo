@@ -5,14 +5,17 @@ const { SubMenu } = Menu;
 const { Panel } = Collapse;
 
 function Problemconfirmation(props) {
-  const { confirmationDetail, currentProcess, statue, currentObj } = props;
+  const { confirmationDetail, currentProcess, querySign, statue } = props;
 
   return (
     <>
       {/* { */}
       {/* // expand !== '问题确认' && statue >= state && ( */}
-      <Collapse expandIconPosition="right" style={{ backgroundColor: 'white', marginTop: '20px' }}>
-        <Panel header="问题确认" key="1">
+      <Collapse 
+        expandIconPosition="right" 
+        style={{ backgroundColor: 'white', marginTop: '20px' }}
+      >
+        <Panel header="问题确认">
           <Descriptions>
             <Descriptions.Item label="确认单位">
               {confirmationDetail ? confirmationDetail.problemFlowNodeRows[3].confirmUnit : ''}
@@ -42,32 +45,7 @@ function Problemconfirmation(props) {
           </Descriptions>
         </Panel>
       </Collapse>
-      {/* // ) */}
-      {/* // } */}
-      {/* {
-      expand === '问题确认' && currentObj ==='问题查询' && statue >= state && (
-      <Collapse expandIconPosition='right' style={{backgroundColor:'white'}}>
-        <Panel header="问题确认" key="1">
-          <Descriptions>
-                  <Descriptions.Item label='确认单位'>{confirmInfo.confirmationUnit || ''}</Descriptions.Item>
-                  <Descriptions.Item label='确认部门'>{confirmInfo.confirmationDepartment || ''}</Descriptions.Item>
-                  <Descriptions.Item label='确认人'>{confirmInfo.confirmer || ''}</Descriptions.Item>
-                  <Descriptions.Item label='确认结果'>{confirmInfo.confirmResults || ''}</Descriptions.Item>
-                  <Descriptions.Item label='确认时间'>{confirmInfo.confirmTime}</Descriptions.Item>
-                
-          </Descriptions>
 
-          <Descriptions>
-            <Descriptions.Item label='确认意见'>{confirmInfo.confirmOpinion || ''}</Descriptions.Item>
-          </Descriptions>
-
-          <Descriptions>
-            <Descriptions.Item label='上传附件'><span style={{color:'blue',textDecoration:'underline'}}>{confirmInfo.confirmOpinion || ''}</span></Descriptions.Item>
-          </Descriptions>
-        </Panel>
-      </Collapse>
-      )
-    } */}
     </>
   );
 }

@@ -5,11 +5,11 @@ const { TextArea } = Input;
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
-    sm: { span: 8 },
+    sm: { span: 3 },
   },
   wrapperCol: {
     xs: { span: 24 },
-    sm: { span: 16 },
+    sm: { span: 21 },
   },
 };
 
@@ -59,14 +59,14 @@ function Reasonregression(props) {
         <Card>
           <Form {...formItemLayout}>
             <Form.Item label="退回原因">
-              {getFieldDecorator('reason', {
+              {getFieldDecorator('backReason', {
                 rules: [
                   {
                     required,
                     message: '请说明退回原因',
                   },
                 ],
-              })(<TextArea />)}
+              })(<TextArea style={{height:'200px'}}/>)}
             </Form.Item>
           </Form>
         </Card>

@@ -81,7 +81,7 @@ const props = {
   showUploadList: true, //  展示文件列表
 };
 
-function Besolveddetail(props) {
+function Techprocess(props) {
   const pagetitle = props.route.name;
   useEffect(() => {
     getInformation();
@@ -108,33 +108,32 @@ function Besolveddetail(props) {
   console.log(closecircu,activekey,currntStatus,'closecircu');
   // const [receiveOrders,setReceiveOrders] = useState(false);
   const list = [];
-  // if (todoDetail) {
-  //   // console.log('todoDetail: ', todoDetail);
-  //   // currntStatus = Number(todoDetail.main.status);
-  //   currntStatus = Number(5);
-  //   if((currntStatus === 69) || (currntStatus === 85)) {
-  //     closecircu = '';
-  //   }
-  //   const { problemFlowLogs } = todoDetail;
-  //   // problemFlowLogs.shift();
-  //   problemFlowLogs.forEach(function(item) {
-  //     list.push(
-  //       <Step
-  //         key={item.id}
-  //         title={`${item.name}(${item.status})`}
-  //         subTitle={item.startTime}
-  //         description={`登记人:${item.formHandler}`}
-  //       />,
-  //     );
-  //   });
-  //   list.shift();
-  // }
+  if (todoDetail) {
+    // console.log('todoDetail: ', todoDetail);
+    currntStatus = Number(todoDetail.main.status);
+    if((currntStatus === 69) || (currntStatus === 85)) {
+      closecircu = '';
+    }
+    const { problemFlowLogs } = todoDetail;
+    // problemFlowLogs.shift();
+    problemFlowLogs.forEach(function(item) {
+      list.push(
+        <Step
+          key={item.id}
+          title={`${item.name}(${item.status})`}
+          subTitle={item.startTime}
+          description={`登记人:${item.formHandler}`}
+        />,
+      );
+    });
+    list.shift();
+  }
 
-  // if(todoDetail['confirmType']){
-  //   confirmType =todoDetail.confirmType;
-  // }else if(confirm){
-  //   confirmType = confirm.confirmType;
-  // }
+  if(todoDetail['confirmType']){
+    confirmType =todoDetail.confirmType;
+  }else if(confirm){
+    confirmType = confirm.confirmType;
+  }
   // console.log(confirmType,'confirmType');
 
   
@@ -489,60 +488,17 @@ function Besolveddetail(props) {
     });
   };
 
-  const fileUpload = () => {
-    return dispatch({
-      type: 'problemmanage/tobaUpload',
-      // payload:{saveData}
-    }).then(res => {
-      if (res.code === 200) {
-        message.info(res.msg);
-      } else {
-        message.error(res.msg);
-      }
-    });
-  };
 
-  const problemHandleOrder = () => {
-    return dispatch({
-      type: 'problemmanage/problemHandleOrder',
-      payload: { id },
-    }).then(res => {
-      if (res.code === 200) {
-        message.info(res.msg);
-        showEdit = false;
-        currntStatus = 45;
-        getInformation();
-      } else {
-        message.error(res.msg);
-      }
-    });
-  };
   const tabList = [
     {
       key: 'workorder',
-      tab: '问题工单',
+      tab: '事件工单',
     },
     {
       key: 'process',
-      tab: '问题流程',
+      tab: '事件流程',
     },
   ];
-
-  const handleTabChange = key => {
-    console.log('key: ', key);
-    const { match } = props;
-    switch (key) {
-      case 'workorder':
-        route.push(`/ITSM/problemmanage/besolveddetail/workorder/${id}`);
-        break;
-      case 'process':
-        route.push(`/ITSM/problemmanage/besolveddetail/process/${id}`);
-        break;
-      default:
-        break;
-    }
-  }
-  const { match, children, location } = props;
 
   return (
     <PageHeaderWrapper 
@@ -550,24 +506,12 @@ function Besolveddetail(props) {
       extra={
         <>
           <>
-            {activekey === '1' && currntStatus === 5 && (
-              <Button type="danger" ghost style={{ marginRight: 8 }} onClick={handleDelete}>
-                删除
-              </Button>
-            )}
-             {/* <Button type="danger" ghost style={{ marginRight: 8 }} onClick={handleDelete}>
-                删除
-              </Button> */}
-
-            {activekey === '1' && currntStatus !== 5 && (
               <Reasonregression reasonSubmit={values => reasonSubmit(values)}>
                 <Button type="primary" ghost style={{ marginRight: 8 }}>
                   回退
                 </Button>
               </Reasonregression>
-            )}
 
-            {activekey === '1' && currntStatus !== 29 && (
               <Button
                 type="primary"
                 style={{ marginRight: 8 }}
@@ -575,45 +519,7 @@ function Besolveddetail(props) {
               >
                 保存
               </Button>
-            )}
-
-            {activekey === '1' && currntStatus === 29 && (
-              <Button type="primary" style={{ marginRight: 8 }} onClick={problemHandleOrder}>
-                接单
-              </Button>
-            )}
-
-            {
-              activekey === '1' && (currntStatus !== 29) && closecircu === '关闭' && (
-                <SelectUser
-                taskId={id}
-                currentObj={currntStatus}
-                onSubmit={()=>handleSubmit(circaSign)}
-              >
-                <Button
-                  type="primary"
-                  style={{ marginRight: 8 }}
-                  // onClick={() => handleSubmit(circaSign)}
-                >
-                  流转
-                </Button>
-              </SelectUser>
-              )
-            }
-
-            { 
-               activekey === '1' &&  ((currntStatus === 69) || (currntStatus === 85)) && closecircu === ''&& (
-                <Button
-                type="primary"
-                style={{ marginRight: 8 }}
-                onClick={() => handleSubmit(circaSign)}
-              >
-                流转
-              </Button>
-               )
-
-            } 
-
+     
             <Button type="default">
               <Link to="/ITSM/problemmanage/problemquery">返回</Link>
             </Button>
@@ -621,14 +527,17 @@ function Besolveddetail(props) {
         </>
       }
       tabList={tabList}
-      tabActiveKey={location.pathname.replace(`${match.path}/`, '')}
-      onTabChange={handleTabChange}
     >
-      {children}
+      <Card 
+      >
+         <Problemflow id={todoDetail ? todoDetail.main.id : ''} />
+      </Card>
+   
+    
+
     </PageHeaderWrapper>
   );
 }
-
 export default Form.create({})(
   connect(({ problemmanage, loading }) => ({
     todoDetail: problemmanage.todoDetail,
@@ -639,5 +548,5 @@ export default Form.create({})(
     counterInfo: problemmanage.counterInfo,
     closeInfo: problemmanage.closeInfo,
     loading: loading.models.problemmanage,
-  }))(Besolveddetail),
+  }))(Queryprocess),
 );

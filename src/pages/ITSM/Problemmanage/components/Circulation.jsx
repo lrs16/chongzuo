@@ -1,6 +1,7 @@
 import React, { useState, useEffect, Children } from 'react';
-import { Modal, Tree, Form, Card, Tabs, Radio, Input, Button, Row, Col } from 'antd';
+import { Modal, Tree, Form, Card, Tabs, Radio, Input, message, Row, Col } from 'antd';
 import Link from 'umi/link';
+import route from 'umi/router';
 
 import { connect } from 'dva';
 import { defaults } from 'lodash';
@@ -20,132 +21,93 @@ const formItemLayout = {
 };
 let treeData;
 let result;
-
+const getOption= [];
 const withClick = (element, handleClick = () => {}) => {
   return <element.type {...element.props} onClick={handleClick} />;
 };
 function Circulation(props) {
   const [visible, setVisible] = useState(false);
-  const [golist, setGolist] = useState(false);
+  const [list, setList] = useState([]);
+  const [user, setUser] = useState('');
   const {
     form: { getFieldDecorator, validateFields },
     children,
     dispatch,
     currentObj,
-    target,
+    selectData,
     taskId,
     tobepeople,
   } = props;
   const handleopenClick = () => {
+    console.log(list,'list');
+    console.log(getOption,'getOption');
     setVisible(true);
-    dispatch({
-      type: 'problemmanage/fetchComConfigTree',
-    });
+    return dispatch({
+      type: 'problemmanage/optionPeople',
+      payload: {taskId}
+    }).then(res  => {
+      if(res.code === 200) {
+        console.log('res: ', res);
+        // if(selectData.length) {
+          (res.data).forEach(function(item){
+            getOption.push(<Radio value={item.id} key={item.id}>{item.userName}</Radio>)
+            console.log(getOption,'getOption');
+            setList(getOption);
+          })
+     
+        // }
+      }
+    })
   };
 
   const handleCancel = () => {
     setVisible(false);
+    // getOption.length = 0;
+    // list.length = 0;
   };
 
   const handleCirculation = () => {
-    switch (currentObj) {
-      case '5':
-        result = 1;
-        getback(result);
-        break;
-      case '9':
-        result = 1;
-        getback(result);
-        break;
-      case '25':
-        result = 1;
-        getback(result);
-        break;
-      case '29':
-        result = 1;
-        getback(result);
-        break;
-      case '45':
-        result = 1;
-        getback(result);
-        break;
-      case '65':
-        result = 1;
-        getback(result);
-        break;
-      case '69':
-        result = 1;
-        getback(result);
-        break;
-      case '85':
-        result = 1;
-        getback(result);
-        break;
-      default:
-        break;
+    if(!user.length) {
+      message.info('请选择处理人')
+      return;
     }
+    props.onSubmit();
+    handleCancel();
+    getOption.length = 0;
   };
 
   const getback = result => {
     console.log('result: ', result);
-    dispatch({
+    return dispatch({
       type: 'problemmanage/gotoCirculation',
       payload: { taskId, result },
-    });
+    }).then(res => {
+      if(res.code === 200) {
+        route.push({pathname:`/ITSM/problemmanage/besolved`})
+      }
+    })
   };
+
+  const onChange = (e) => {
+    setUser(e.target.value);
+  }
 
   return (
     <>
       {withClick(children, handleopenClick)}
       <Modal
         visible={visible}
-        // centered='true'
         maskClosable={false}
         width={850}
         checkable
-        // height={1000}
         onCancel={handleCancel}
-        // onOk={handleCirculation}
-        footer={null}
+        onOk={handleCirculation}
       >
-        <Card bordered={false} title="选择提交节点">
+        <Card bordered={false} title="请选择下一节点处理人">
           <Form layout="inline">
-            <Row>
-              <Col span={9}>
-                <Form.Item>
-                  <Radio.Group>
-                    <Radio value={1}>默认</Radio>
-                    <Radio value={2}>配置节点</Radio>
-                  </Radio.Group>
-                </Form.Item>
-              </Col>
-
-              <Col span={5}>
-                <Form.Item>{getFieldDecorator('search', {})(<Input />)}</Form.Item>
-              </Col>
-
-              <Col span={10}>
-                <Form.Item>
-                  <Button type="primary" style={{ marginRight: '10px' }}>
-                    查询
-                  </Button>
-                  <Button
-                    type="primary"
-                    style={{ marginRight: '10px' }}
-                    onClick={handleCirculation}
-                  >
-                    <Link
-                      to={{
-                        pathname: '/ITSM/problemmanage/besolved',
-                      }}
-                    >
-                      确定
-                    </Link>
-                  </Button>
-                  <Button>取消</Button>
-                </Form.Item>
-              </Col>
-            </Row>
+             <Radio.Group onChange={onChange}>
+                {list}
+             </Radio.Group>
           </Form>
         </Card>
       </Modal>

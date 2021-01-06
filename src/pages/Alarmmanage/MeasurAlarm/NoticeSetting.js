@@ -4,7 +4,7 @@ import { connect } from 'dva';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
 @connect()
-class Settings extends Component {
+class Tobesetting extends Component {
   handleTabChange = key => {
     const { match } = this.props;
     switch (key) {
@@ -44,4 +44,4 @@ class Settings extends Component {
   }
 }
 
-export default Settings;
+export default Tobesetting;
