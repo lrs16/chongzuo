@@ -33,7 +33,7 @@ import Problemclosed from './components/Problemclosed';
 import Associateworkorder from './components/Associateworkorder';
 import Circulation from './components/Circulation';
 import Reasonregression from './components/Reasonregression';
-import SelectUser from '@/components/SelectUser';
+import SelectUser from '@/components/ProblemSelectuser';
 
 const { TabPane } = Tabs;
 const { TextArea } = Input;
