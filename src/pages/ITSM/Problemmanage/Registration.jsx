@@ -41,7 +41,7 @@ function Registration(props) {
   } = props;
   const [show, setShow] = useState(false);
   const [activeKey, setActiveKey] = useState(['1']);
-  // console.log(registratkeys);
+  const [flowtype, setFlowtype] = useState('2');
   const RegistratRef = useRef();
 
   const getNewno = () => {

@@ -1,4 +1,4 @@
-import React, { useEffect,useRef } from 'react';
+import React, { useEffect,useRef,useState  } from 'react';
 import {
   Form,
   Button,
@@ -55,7 +55,7 @@ const forminladeLayout = {
 let currntStatus = '';
 let showEdit = false;
 const saveSign = '';
-const circaSign = 'circa';
+const circaSign = 'problem';
 let confirmType;
 let closecircu = '关闭';
 let handleTime;
@@ -68,6 +68,7 @@ function Workorder(props) {
   const HandleRef = useRef();
   const ProblemconfirmRef = useRef();
   const CloseRef = useRef();
+  const [flowtype, setFlowtype] = useState('1');
 
   const {
     dispatch,
@@ -117,6 +118,13 @@ function Workorder(props) {
     });
   };
 
+  const getInformation = () => {
+    dispatch({
+      type: 'problemmanage/ToDodetails',
+      payload: { id },
+    })
+    };
+
   const saveApi = (saveData, params2) => {
     return dispatch({
       type: 'problemmanage/tobeSave',
@@ -137,49 +145,6 @@ function Workorder(props) {
   const solvingDisbled = () => {
     if ((currntStatus === 29 ) || (currntStatus === 9)) {
       showEdit = true;
-    }
-  };
-
-  const getInformation = () => {
-    dispatch({
-      type: 'problemmanage/ToDodetails',
-      payload: { id },
-    })
-    };
-  
-
-  const handleSubmit = params2 => {
-    switch (currntStatus) {
-      case 5:
-        // circulationSign = currntStatus;
-        saveRegister(params2);
-        break;
-      case 25:
-        savePrevies(params2);
-        break;
-      case 9:
-        savePrevies(params2);
-        break;
-      case 29:
-        saveHandle(params2);
-        break;
-      case 45:
-        saveHandle(params2);
-        break;
-      case 49:
-        saveConfirm(params2);
-        break;
-      case 65:
-        saveConfirm(params2);
-        break;
-      case 69:
-        saveClose(params2);
-        break;
-      case 85:
-        saveClose(params2);
-        break;
-      default:
-        break;
     }
   };
 
@@ -365,6 +330,42 @@ function Workorder(props) {
     });
   };
 
+  const handleSubmit = params2 => {
+    switch (currntStatus) {
+      case 5:
+        // circulationSign = currntStatus;
+        saveRegister(params2);
+        break;
+      case 25:
+        savePrevies(params2);
+        break;
+      case 9:
+        savePrevies(params2);
+        break;
+      case 29:
+        saveHandle(params2);
+        break;
+      case 45:
+        saveHandle(params2);
+        break;
+      case 49:
+        saveConfirm(params2);
+        break;
+      case 65:
+        saveConfirm(params2);
+        break;
+      case 69:
+        saveClose(params2);
+        break;
+      case 85:
+        saveClose(params2);
+        break;
+      default:
+        break;
+    }
+  };
+
+
   const getUserinfo = () => {
     dispatch({
       type: 'problemmanage/fetchUseinfo',
@@ -376,7 +377,12 @@ function Workorder(props) {
     solvingDisbled();
     getUserinfo();
     getNewno();
+    sessionStorage.setItem('Processtype','problem');
   }, []);
+
+  useEffect(() => {
+    sessionStorage.setItem('flowtype', flowtype);
+  }, [flowtype]);
 
   // const transferOrder = () => {
   //   return dispatch({
