@@ -129,6 +129,18 @@ const Registrat = forwardRef((props, ref) => {
     [],
   );
 
+  // const routerRefresh = () => {
+  //   router.push({
+  //     pathname: location.pathname,
+  //     query: {
+  //       pangekey,
+  //       id,
+  //       mainId,
+  //       next: sessionStorage.getItem('Nextflowmane'),
+  //     },
+  //   });
+  // };
+
   return (
     <>
       <Form {...formItemLayout}>

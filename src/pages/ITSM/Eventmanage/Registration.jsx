@@ -37,7 +37,6 @@ export const RegistratContext = createContext();
 function Registration(props) {
   const pagetitle = props.route.name;
   const { dispatch, loading, userinfo, location } = props;
-  const { next } = location.query;
   const [formregistrat, setFormregistrat] = useState('');
   const [formhandle, setFormhandle] = useState('');
   const [show, setShow] = useState(false); // 自行处理
@@ -50,7 +49,7 @@ function Registration(props) {
   const HandleRef = useRef();
   useEffect(() => {
     dispatch({
-      type: 'eventregist/fetchuser',
+      type: 'itsmuser/fetchuser',
     });
     sessionStorage.setItem('Processtype', 'event');
   }, []);
@@ -247,7 +246,7 @@ function Registration(props) {
   );
 }
 
-export default connect(({ eventregist, loading }) => ({
-  userinfo: eventregist.userinfo,
+export default connect(({ itsmuser, loading }) => ({
+  userinfo: itsmuser.userinfo,
   loading: loading.models.eventregist,
 }))(Registration);

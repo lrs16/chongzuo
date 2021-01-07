@@ -92,7 +92,7 @@ function WorkOrder(props) {
   // 初始化用户信息，流程类型
   useEffect(() => {
     dispatch({
-      type: 'eventregist/fetchuser',
+      type: 'userinfo/fetchuser',
     });
     sessionStorage.setItem('Processtype', 'event');
   }, []);
@@ -514,8 +514,8 @@ function WorkOrder(props) {
   );
 }
 
-export default connect(({ eventtodo, eventregist, loading }) => ({
-  userinfo: eventregist.userinfo,
+export default connect(({ eventtodo, itsmuser, loading }) => ({
+  userinfo: itsmuser.userinfo,
   // userloading: loading.effects['eventregist/fetchuser'],
   info: eventtodo.info,
   records: eventtodo.records,

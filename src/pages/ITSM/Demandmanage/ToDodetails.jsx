@@ -2,12 +2,12 @@ import React, { useRef } from 'react';
 import router from 'umi/router';
 import { Button } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import SelectUser from '@/components/SelectUser';
 
 function ToDoregist(props) {
   const { match, children, location } = props;
   const { pangekey, id, mainId } = location.query;
   const pagetitle = props.route.name;
-  const cRef = useRef();
 
   const handleHold = type => {
     router.push({
@@ -21,11 +21,13 @@ function ToDoregist(props) {
       },
     });
   };
+
   const handleclose = () => {
     router.push({
       pathname: `/ITSM/demandmanage/to-do`,
     });
   };
+
   const operations = (
     <>
       <Button type="danger" ghost style={{ marginRight: 8 }}>
@@ -34,9 +36,11 @@ function ToDoregist(props) {
       <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleHold('save')}>
         保存
       </Button>
-      <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleHold('flow')}>
-        流转
-      </Button>
+      <SelectUser handleSubmit={() => handleHold('other')} changorder="审核">
+        <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleHold('flow')}>
+          流转
+        </Button>
+      </SelectUser>
       <Button onClick={handleclose}>返回</Button>
     </>
   );
@@ -84,7 +88,6 @@ function ToDoregist(props) {
       tabList={tabList}
       tabActiveKey={location.pathname.replace(`${match.path}/`, '')}
       onTabChange={handleTabChange}
-      ref={cRef}
     >
       {children}
     </PageHeaderWrapper>

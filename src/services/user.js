@@ -54,15 +54,15 @@ export async function DemandFlowUserList(taskId, type) {
   });
 }
 // ITSM故障获取下一环节处理人列表
-export async function TroubleFlowUserList(taskId, type) {
-  return request(`/itsm/trouble/flow/assignee=${taskId}&type=${type}`, {
+export async function TroubleFlowUserList(taskId, result) {
+  return request(`/itsm/trouble/flow/assignee=${taskId}&result=${result}`, {
     method: 'GET',
   });
 }
 
 // 加载问题下一环节处理人列表
-export async function ProblemFlowUserList(taskId, type) {
-  return request(`/itsm/problem/flow/assignee=${taskId}&type=${type}`, {
+export async function ProblemFlowUserList(taskId, result) {
+  return request(`/itsm/problem/flow/assignee=${taskId}&result=${result}`, {
     method: 'GET',
   });
 }

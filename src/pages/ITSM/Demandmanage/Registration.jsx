@@ -13,7 +13,7 @@ function Registration(props) {
   // 初始化用户信息，流程类型
   useEffect(() => {
     dispatch({
-      type: 'eventregist/fetchuser',
+      type: 'itsmuser/fetchuser',
     });
     sessionStorage.setItem('Processtype', 'demand');
   }, []);

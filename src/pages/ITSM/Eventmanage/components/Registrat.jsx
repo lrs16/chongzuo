@@ -82,7 +82,7 @@ const Registrat = forwardRef((props, ref) => {
     location,
   } = props;
   const { register } = info;
-  const { pangekey, id, mainId, validate } = location.query;
+  const { pangekey, id, mainId } = location.query;
   const { getFieldDecorator, getFieldsValue } = props.form;
   const required = true;
   const [check, setCheck] = useState(false);

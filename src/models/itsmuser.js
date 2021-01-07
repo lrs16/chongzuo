@@ -42,16 +42,16 @@ export default {
       });
     },
     // 加载故障下一环节处理人列表
-    *troubleuserlist({ payload: { taskId, type } }, { call, put }) {
-      const response = yield call(TroubleFlowUserList, taskId, type);
+    *troubleuserlist({ payload: { taskId, result } }, { call, put }) {
+      const response = yield call(TroubleFlowUserList, taskId, result);
       yield put({
         type: 'savelist',
         payload: response.data,
       });
     },
     // 加载问题下一环节处理人列表
-    *problemuserlist({ payload: { taskId, type } }, { call, put }) {
-      const response = yield call(ProblemFlowUserList, taskId, type);
+    *problemuserlist({ payload: { taskId, result } }, { call, put }) {
+      const response = yield call(ProblemFlowUserList, taskId, result);
       yield put({
         type: 'savelist',
         payload: response.data,

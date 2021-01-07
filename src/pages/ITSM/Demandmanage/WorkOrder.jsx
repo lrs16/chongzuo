@@ -52,7 +52,7 @@ function WorkOrder(props) {
   // 初始化用户信息，流程类型
   useEffect(() => {
     dispatch({
-      type: 'eventregist/fetchuser',
+      type: 'itsmuser/fetchuser',
     });
     sessionStorage.setItem('Processtype', 'demand');
   }, []);
@@ -259,7 +259,7 @@ function WorkOrder(props) {
               ref={ExamineRef}
               formItemLayout={formItemLayout}
               forminladeLayout={forminladeLayout}
-              text="复核"
+              text="审核"
               // register={info.demandForm}
               userinfo={userinfo}
             />

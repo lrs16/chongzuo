@@ -121,7 +121,7 @@ const Examine = forwardRef((props, ref) => {
 Examine.defaultProps = {
   info: {
     creationTime: moment().format(),
-    form1: '',
+    result: '001',
     form2: '',
     reason: '',
     registerPerson: '',
