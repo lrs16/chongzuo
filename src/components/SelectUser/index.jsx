@@ -15,36 +15,24 @@ const SelectUser = props => {
 
   const dataArr = datas => {
     const newArr = [];
-    if (
-      sessionStorage.getItem('Processtype') === 'event' ||
-      sessionStorage.getItem('Processtype') === 'demand'
-    ) {
-      if (!Array.isArray(datas)) {
-        return newArr;
-      }
-      for (let i = 0; i < datas.length; i += 1) {
+    if (!Array.isArray(datas)) {
+      return newArr;
+    }
+    for (let i = 0; i < datas.length; i += 1) {
+      if (datas[i].id === undefined) {
+        const vote = {};
+        vote.label = datas[i].userName;
+        vote.value = datas[i].userId;
+        newArr.push(vote);
+      } else {
         const vote = {};
         vote.label = datas[i].userName;
         vote.value = datas[i].id;
         newArr.push(vote);
       }
-      return newArr;
     }
-    if (
-      sessionStorage.getItem('Processtype') === 'problem' ||
-      sessionStorage.getItem('Processtype') === 'troub'
-    ) {
-      if (!Array.isArray(datas)) {
-        return newArr;
-      }
-      for (let i = 0; i < datas.length; i += 1) {
-        const vote = {};
-        vote.label = datas[i].userName;
-        vote.value = datas[i].userId;
-        newArr.push(vote);
-      }
-      return newArr;
-    }
+
+    return newArr;
   };
 
   const [value, setValue] = useState('');
@@ -89,7 +77,7 @@ const SelectUser = props => {
           type: 'itsmuser/problemuserlist',
           payload: {
             taskId,
-            result: sessionStorage.getItem('flowtype'),
+            type: sessionStorage.getItem('flowtype'),
           },
         });
         break;
@@ -98,7 +86,7 @@ const SelectUser = props => {
           type: 'itsmuser/troubleuserlist',
           payload: {
             taskId,
-            result: sessionStorage.getItem('flowtype'),
+            type: sessionStorage.getItem('flowtype'),
           },
         });
         break;
