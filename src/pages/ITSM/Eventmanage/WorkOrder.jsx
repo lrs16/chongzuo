@@ -273,7 +273,7 @@ function WorkOrder(props) {
         processId: mainId,
       },
     });
-  }, [location.query]);
+  }, [id]);
 
   // 初始化值panel
   useEffect(() => {
