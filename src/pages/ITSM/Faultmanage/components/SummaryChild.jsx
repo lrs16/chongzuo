@@ -11,11 +11,12 @@ import {
     // Icon,
     Select
 } from 'antd';
+
 const { Option } = Select;
 const finishTime = new Date();
 
 const SummaryChild = React.forwardRef((props, ref) => {
-    const { formItemLayout, forminladeLayout, finish } = props;
+    const { formItemLayout, forminladeLayout, finish, curruserinfo } = props;
     const { getFieldDecorator } = props.form;
     const attRef = useRef();
     useImperativeHandle(
@@ -99,24 +100,24 @@ const SummaryChild = React.forwardRef((props, ref) => {
                     <Col span={8}>
                         <Form.Item label="总结人">
                             {getFieldDecorator('finishUser', {
-                                initialValue: finish ? finish.finishUser : '',
-                            })(<Input allowClear />)}
+                                initialValue: finish ? finish.finishUser : curruserinfo.loginCode,
+                            })(<Input allowClear disabled/>)}
                         </Form.Item>
                     </Col>
 
                     <Col span={8}>
                         <Form.Item label="总结人部门">
                             {getFieldDecorator('finishDept', {
-                                initialValue: finish ? finish.finishDept : '',
-                            })(<Input allowClear />)}
+                                initialValue: finish ? finish.finishDept : curruserinfo.deptNameExt,
+                            })(<Input allowClear disabled/>)}
                         </Form.Item>
                     </Col>
 
                     <Col span={8}>
                         <Form.Item label="总结人单位">
-                            {getFieldDecorator('finishDutyUnit', {
-                                initialValue: finish ? finish.finishDutyUnit : '',
-                            })(<Input allowClear />)}
+                            {getFieldDecorator('finishUnit', {
+                                initialValue: finish ? finish.finishUnit : '广西电网有限责任公司',
+                            })(<Input allowClear disabled/>)}
                         </Form.Item>
                     </Col>
                 </Row>

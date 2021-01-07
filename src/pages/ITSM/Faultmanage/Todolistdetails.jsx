@@ -176,6 +176,7 @@ function Todolistdetails(props) {
     setActiveKey([`${Collapsekeymap.get(paneKey)}`]);
     getfaultTodoDetailData();
     if (paneKey === '故障处理') {
+      message.info('请先接单！');
       setActiveKey([`${Collapsekeymap.get('registerDetails')}`]);
     }
   }, []);
@@ -428,6 +429,7 @@ function Todolistdetails(props) {
                 type: 'fault/getSubmitProToNextNode',
                 payload: { taskId, result }
               })
+              getfaultTodoDetailData();
               router.push(`/ITSM/faultmanage/querylist`);
             }
           } else {
@@ -486,7 +488,6 @@ function Todolistdetails(props) {
       // console.log(res);
       if (res.code === 200) {
         message.info(res.msg);
-        // setHandleEdit(true);
       } else {
         message.error(res.msg);
       }
@@ -527,7 +528,7 @@ function Todolistdetails(props) {
           }
           {
             paneKey === '故障处理' && transferpaneKey && (
-              <SelectUser handleSubmit={() => faulttransfer()}>
+              <SelectUser handleSubmit={() => faulttransfer()} taskId={id}>
                 <Button type="primary">转单</Button>
               </SelectUser>
             )
@@ -565,7 +566,7 @@ function Todolistdetails(props) {
                   size="small"
                   style={{
                     background: '#fff',
-                    padding: 20,
+                    padding: 10,
                     // border: '1px solid #e8e8e8',
                     overflowX: 'auto',
                   }}
@@ -627,6 +628,7 @@ function Todolistdetails(props) {
                             formItemLayout={formItemLayout}
                             forminladeLayout={forminladeLayout}
                             check={check}
+                            curruserinfo={curruserinfo}
                           />
                         </Panel>
                       )
@@ -679,6 +681,7 @@ function Todolistdetails(props) {
                             formItemLayout={formItemLayout}
                             forminladeLayout={forminladeLayout}
                             finish={finish}
+                            curruserinfo={curruserinfo}
                           />
                         </Panel>
                       )
@@ -692,7 +695,7 @@ function Todolistdetails(props) {
                         <Panel header="故障总结" key="SummaryQuery">
                           <SummaryQuery
                             ref={SummaryRef}
-                            detailsdata={troubleFlowNodeRows !== undefined && troubleFlowNodeRows[3]}
+                            detailsdata={troubleFlowNodeRows !== undefined && troubleFlowNodeRows[4]}
                           />
                         </Panel>
                       )
@@ -706,6 +709,7 @@ function Todolistdetails(props) {
                             formItemLayout={formItemLayout}
                             forminladeLayout={forminladeLayout}
                             close={close}
+                            curruserinfo={curruserinfo}
                           />
                         </Panel>
                       )

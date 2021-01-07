@@ -71,6 +71,7 @@ function ToDOlist(props) {
 
   const [expand, setExpand] = useState(false);
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 10 }); // 分页state
+  // const [selectedRow, setSelectedRow] = useState([]);
 
   const columns = [
     {
@@ -232,6 +233,12 @@ function ToDOlist(props) {
     onChange: page => changePage(page),
   };
 
+  // const rowSelection = {
+  //   onChange: (selectedRows) => {
+  //     setSelectedRow(selectedRows);
+  //   },
+  // };
+
   return (
     <PageHeaderWrapper title={pagetitle}>
       <Card>
@@ -390,6 +397,7 @@ function ToDOlist(props) {
           // scroll={{x:800}}
           rowKey={record => record.id}
           pagination={pagination}
+          // rowSelection={rowSelection}
         />
       </Card>
     </PageHeaderWrapper>

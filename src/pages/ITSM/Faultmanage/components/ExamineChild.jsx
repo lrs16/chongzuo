@@ -18,7 +18,7 @@ const checkTime = new Date();
 
 
 const ExamineChild = React.forwardRef((props, ref) => {
-    const { formItemLayout, forminladeLayout, check } = props;
+    const { formItemLayout, forminladeLayout, check, curruserinfo } = props;
     const { getFieldDecorator } = props.form;
     const attRef = useRef();
     useImperativeHandle(
@@ -64,7 +64,7 @@ const ExamineChild = React.forwardRef((props, ref) => {
                 <Col span={24}>
                     <Form.Item label="是否上传故障报告" {...forminladeLayout}>
                         {getFieldDecorator('uploadFaultReport', {
-                            initialValue: check ? Number(check.checkReportSign) : ''
+                            initialValue: check ? Number(check.checkReportSign) : 0
                         })(
                             <RadioGroup>
                                 <Radio value={0}>是</Radio>
@@ -91,24 +91,24 @@ const ExamineChild = React.forwardRef((props, ref) => {
                 <Col span={8}>
                     <Form.Item label="审核人">
                         {getFieldDecorator('checkUser', {
-                            initialValue: check ? check.checkUser : ''
-                        })(<Input allowClear />)}
+                            initialValue: check ? check.checkUser : curruserinfo.loginCode
+                        })(<Input allowClear disabled/>)}
                     </Form.Item>
                 </Col>
 
                 <Col span={8}>
                     <Form.Item label="审核人部门">
                         {getFieldDecorator('checkDept', {
-                            initialValue: check ? check.checkDept : ''
-                        })(<Input allowClear />)}
+                            initialValue: check ? check.checkDept : curruserinfo.deptNameExt
+                        })(<Input allowClear disabled/>)}
                     </Form.Item>
                 </Col>
 
                 <Col span={8}>
                     <Form.Item label="审核人单位">
                         {getFieldDecorator('checkUnit', {
-                            initialValue: check ? check.checkUnit : ''
-                        })(<Input allowClear />)}
+                            initialValue: check ? check.checkUnit : '广西电网有限责任公司'
+                        })(<Input allowClear disabled/>)}
                     </Form.Item>
                 </Col>
             </Form>

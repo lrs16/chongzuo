@@ -223,7 +223,7 @@ function Querylistdetails(props) {
                                                 <Panel header="故障总结" key="SummaryQuery">
                                                     <SummaryQuery
                                                         ref={SummaryRef}
-                                                        detailsdata={troubleFlowNodeRows !== undefined && troubleFlowNodeRows[3]}
+                                                        detailsdata={troubleFlowNodeRows !== undefined && troubleFlowNodeRows[4]}
                                                     />
                                                 </Panel>
                                             )
@@ -235,7 +235,7 @@ function Querylistdetails(props) {
                                                 <Panel header="故障关闭" key="CloseQuery">
                                                     <CloseQuery
                                                         ref={CloseRef}
-                                                        detailsdata={troubleFlowNodeRows !== undefined && troubleFlowNodeRows[4]}
+                                                        detailsdata={troubleFlowNodeRows !== undefined && troubleFlowNodeRows[5]}
                                                     />
                                                 </Panel>
                                             )

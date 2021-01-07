@@ -132,7 +132,7 @@ const HandleChild = React.forwardRef((props, ref) => {
 
                 <Col span={8}>
                     <Form.Item label="处理人">
-                        {getFieldDecorator('handleUser', {
+                        {getFieldDecorator('handler', {
                             initialValue: curruserinfo.loginCode || '',
                         })(<Input disabled />)}
                     </Form.Item>

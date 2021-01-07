@@ -15,7 +15,7 @@ const { TextArea } = Input;
 const closeTime = new Date();
 
 const CloseChild = React.forwardRef((props, ref) => {
-    const { formItemLayout, forminladeLayout, close } = props;
+    const { formItemLayout, forminladeLayout, close, curruserinfo } = props;
     const { getFieldDecorator } = props.form;
     const attRef = useRef();
     useImperativeHandle(
@@ -76,24 +76,24 @@ const CloseChild = React.forwardRef((props, ref) => {
                     <Col span={8}>
                         <Form.Item label="关闭人">
                             {getFieldDecorator('closeUser', {
-                                initialValue: close ? close.closeUser : ''
-                            })(<Input allowClear />)}
+                                initialValue: close ? close.closeUser : curruserinfo.loginCode,
+                            })(<Input allowClear disabled/>)}
                         </Form.Item>
                     </Col>
 
                     <Col span={8}>
                         <Form.Item label="关闭人部门">
                             {getFieldDecorator('closeDept', {
-                                initialValue: close ? close.closeDept : ''
-                            })(<Input allowClear />)}
+                                initialValue: close ? close.closeDept : curruserinfo.deptNameExt,
+                            })(<Input allowClear disabled/>)}
                         </Form.Item>
                     </Col>
 
                     <Col span={8}>
                         <Form.Item label="关闭人单位">
                             {getFieldDecorator('closeUnit', {
-                                initialValue: close ? close.closeUnit : ''
-                            })(<Input allowClear />)}
+                                initialValue: close ? close.closeUnit : '广西电网有限责任公司'
+                            })(<Input allowClear disabled/>)}
                         </Form.Item>
                     </Col>
                 </Row>

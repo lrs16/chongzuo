@@ -308,7 +308,7 @@ const RegisterChild = React.forwardRef((props, ref) => {
                     <Form.Item label="登记人">
                         {getFieldDecorator('registerUser', {
                             initialValue: tododetailslist ? tododetailslist.register.registerUser : ''
-                        })(<Input allowClear />)}
+                        })(<Input allowClear disabled/>)}
                     </Form.Item>
                 </Col>
 
@@ -316,7 +316,7 @@ const RegisterChild = React.forwardRef((props, ref) => {
                     <Form.Item label="登记部门">
                         {getFieldDecorator('registerDept', {
                             initialValue: tododetailslist ? tododetailslist.register.registerDept : ''
-                        })(<Input allowClear />)}
+                        })(<Input allowClear disabled/>)}
                     </Form.Item>
                 </Col>
 
@@ -324,7 +324,7 @@ const RegisterChild = React.forwardRef((props, ref) => {
                     <Form.Item label="登记单位">
                         {getFieldDecorator('registerUnit', {
                             initialValue: tododetailslist ? tododetailslist.register.registerUnit : ''
-                        })(<Input allowClear />)}
+                        })(<Input allowClear disabled/>)}
                     </Form.Item>
                 </Col>
             </Form>
