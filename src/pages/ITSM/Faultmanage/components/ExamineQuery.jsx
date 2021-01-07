@@ -7,6 +7,11 @@ import DescriptionList from '@/components/DescriptionList';
 const { Description } = DescriptionList;
 const RadioGroup = Radio.Group;
 
+// const reportmap = new Map([
+//     [0, '是'],
+//     [1, '否'],
+//   ]);
+
 const ExamineQuery = React.forwardRef((props, ref) => {
     const { detailsdata } = props;
     const attRef = useRef();
@@ -25,6 +30,7 @@ const ExamineQuery = React.forwardRef((props, ref) => {
                         <DescriptionList size="large">
                             <Description term="审核时间">{detailsdata.checkTime || ''}</Description>
                             <Description term="审核意见">{detailsdata.checkOpinion || ''}</Description>
+                            {/* <Descriptions.Item label="审核结果">{resultmap.get(info.checkResult)}</Descriptions.Item> */}
                             <Description term="是否上传故障报告">
                                 <RadioGroup defaultValue={Number(detailsdata.uploadFaultReport)}>
                                     <Radio value={0}>是</Radio>

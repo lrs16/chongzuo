@@ -16,10 +16,9 @@ import {
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 // eslint-disable-next-line import/no-unresolved
 import creatHistory from 'history/createHashHistory'; // 返回上一页
+import SelectUser from '@/components/SelectUser'; // 选人组件
 import styles from './index.less';
-// import ModelCircula from './components/ModelCircula';
 import ModelRollback from './components/ModelRollback'; // 回退组件
-import SelectUser from './components/SelectUser'; // 选人组件
 
 // 各个子组件
 import RegisterChild from './components/RegisterChild';
@@ -179,6 +178,7 @@ function Todolistdetails(props) {
       message.info('请先接单！');
       setActiveKey([`${Collapsekeymap.get('registerDetails')}`]);
     }
+    sessionStorage.setItem('Processtype', 'troub');
   }, []);
 
   const handleDelete = () => { // 删除操作！
@@ -246,13 +246,11 @@ function Todolistdetails(props) {
 
         }).then(res => {
           if (res.code === 200) {
+            getfaultTodoDetailData();
             if (cirStatus) {
               faultcircula();
-            } else {
-              message.success(res.msg);
-              getfaultTodoDetailData();
-              router.push(`/ITSM/faultmanage/todolist`);
             }
+            message.success(res.msg);
           } else {
             message.error(res.msg);
           }
@@ -292,13 +290,11 @@ function Todolistdetails(props) {
           payload: { formValues }
         }).then(res => {
           if (res.code === 200) {
+            getfaultTodoDetailData();
             if (cirStatus) {
               faultcircula();
-            } else {
-              message.success(res.msg);
-              getfaultTodoDetailData();
-              router.push(`/ITSM/faultmanage/todolist`);
             }
+            message.success(res.msg);
           } else {
             message.error(res.msg);
           }
@@ -332,19 +328,17 @@ function Todolistdetails(props) {
           formValues.handleId = tododetailslist.editGuid;
           formValues.editState = 'add';
         }
-
+        console.log(formValues);
         return dispatch({
           type: 'fault/getfromsave', // 保存接口
           payload: { formValues }
         }).then(res => {
           if (res.code === 200) {
+            getfaultTodoDetailData();
             if (cirStatus) {
               faultcircula();
-            } else {
-              message.success(res.msg);
-              getfaultTodoDetailData();
-              router.push(`/ITSM/faultmanage/todolist`);
             }
+            message.success(res.msg);
           } else {
             message.error(res.msg);
           }
@@ -380,13 +374,11 @@ function Todolistdetails(props) {
           payload: { formValues }
         }).then(res => {
           if (res.code === 200) {
+            getfaultTodoDetailData();
             if (cirStatus) {
               faultcircula();
-            } else {
-              message.success(res.msg);
-              getfaultTodoDetailData();
-              router.push(`/ITSM/faultmanage/todolist`);
             }
+            message.success(res.msg);
           } else {
             message.error(res.msg);
           }
@@ -420,8 +412,8 @@ function Todolistdetails(props) {
           payload: { formValues }
         }).then(res => {
           if (res.code === 200) {
+            getfaultTodoDetailData();
             message.success(res.msg);
-            router.push(`/ITSM/faultmanage/todolist`);
             if (cirStatus) {
               const result = 1;
               const taskId = id;
@@ -537,6 +529,8 @@ function Todolistdetails(props) {
             (transferpaneKey || paneKey === '故障登记' || paneKey === '故障审核' || paneKey === '故障总结' || paneKey === '故障关闭') && (
               <SelectUser
                 handleSubmit={() => handleSave(currenStatus)}
+                taskId={id}
+                changorder='处理'
               >
                 <Button
                   type="primary"
@@ -558,18 +552,19 @@ function Todolistdetails(props) {
       {
         (tabActiveKey === 'faultForm' &&
           <div className={styles.collapse}>
-            <Card>
+            <Card
+              style={{
+                background: '#fff',
+                // padding: 10,
+                border: '1px solid #e8e8e8',
+                overflowX: 'auto',
+              }}
+            >
               <>
                 <Steps
                   current={stepcurrentmap.get(paneKey)} 
                   // current={troubleFlowLogs && troubleFlowLogs.length - 1}
                   size="small"
-                  style={{
-                    background: '#fff',
-                    padding: 10,
-                    // border: '1px solid #e8e8e8',
-                    overflowX: 'auto',
-                  }}
                 >
                   {
                     troubleFlowLogs && troubleFlowLogs.map(({ key, name, status, timeText, formHandler, startTime }) => [

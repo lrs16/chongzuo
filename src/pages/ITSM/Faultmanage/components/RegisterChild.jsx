@@ -152,7 +152,7 @@ const RegisterChild = React.forwardRef((props, ref) => {
                             initialValue: tododetailslist ? tododetailslist.main.source : ''
                         })(
                             <Select placeholder="请选择">
-                                {faultSource.map(({ key, value }) => [<Option key={key}>{value}</Option>])}
+                                {faultSource.map(({ value }) => [<Option key={value}>{value}</Option>])}
                             </Select>,
                         )}
                     </Form.Item>
@@ -170,8 +170,8 @@ const RegisterChild = React.forwardRef((props, ref) => {
                             initialValue: tododetailslist ? tododetailslist.register.registerModel : ''
                         })(
                             <Select placeholder="请选择">
-                                {sysmodular.map(({ key, value }) => [
-                                    <Option key={key}>
+                                {sysmodular.map(({ value }) => [
+                                    <Option key={value}>
                                         {value}
                                     </Option>,
                                 ])}
@@ -192,7 +192,7 @@ const RegisterChild = React.forwardRef((props, ref) => {
                             initialValue: tododetailslist ? tododetailslist.main.type : ''
                         })(
                             <Select placeholder="请选择">
-                                {faultType.map(({ key, value }) => [<Option key={key}>{value}</Option>])}
+                                {faultType.map(({ value }) => [<Option key={value}>{value}</Option>])}
                             </Select>,
                         )}
                     </Form.Item>
