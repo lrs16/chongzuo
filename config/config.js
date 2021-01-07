@@ -124,7 +124,7 @@ export default {
               routes: [
                 {
                   path: '/ITSM',
-                  redirect: '/ITSM/eventmanage',
+                  redirect: '/ITSM/problemmanage',
                 },
                 {
                   path: '/ITSM/eventmanage',
@@ -216,12 +216,12 @@ export default {
                       icon: 'cloud-server',
                       component: './ITSM/Problemmanage/Problemquery',
                     },
-                    {
-                      path: '/ITSM/problemmanage/besolveddetail/:id',
-                      name: '问题待办详情页',
-                      icon: 'cloud-server',
-                      component: './ITSM/Problemmanage/Besolvedetail',
-                    },
+                    // {
+                    //   path: '/ITSM/problemmanage/besolveddetail/:id',
+                    //   name: '问题待办详情页',
+                    //   icon: 'cloud-server',
+                    //   component: './ITSM/Problemmanage/Besolvedetail',
+                    // },
                     {
                       path: '/ITSM/problemmanage/besolveddetail/workorder/:id',
                       name: '问题工单',

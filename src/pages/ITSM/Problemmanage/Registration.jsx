@@ -1,10 +1,9 @@
-import React, { useEffect,useState, createContext, createRef, useRef } from 'react';
-import { Card, Form, Button, Collapse } from 'antd';
+import React, { useEffect,useState, createContext, useRef } from 'react';
+import { Form, Button, Collapse } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import styles from './index.less';
 import { connect } from 'dva';
-// import Handle from './components/Handle';
 import Registrat from './components/Registrat';
+import styles from './index.less';
 
 const { Panel } = Collapse;
 
@@ -28,9 +27,7 @@ const forminladeLayout = {
     sm: { span: 22 },
   },
 };
-let formatdatetime;
-let createDatetime;
-let jumpType = 0;
+
 export const RegistratContext = createContext();
 
 function Registration(props) {
@@ -59,10 +56,6 @@ function Registration(props) {
     });
   };
   useEffect(() => {
-    // dispatch({
-    //   type:'problemmanage/fetchlist',
-    // });
-    // getADDid();
     getUserinfo();
     getNewno();
   }, []);
@@ -73,44 +66,10 @@ function Registration(props) {
 
   const handlesubmit = (jumpType) => {
     RegistratRef.current.validateFields((err, values) => {
-      const addDateZero = num => {
-        return num < 10 ? '0' + num : num;
-      };
-      const d = new Date(values.registerTime);
-      formatdatetime =
-        d.getFullYear() +
-        '-' +
-        addDateZero(d.getMonth() + 1) +
-        '-' +
-        addDateZero(d.getDate()) +
-        ' ' +
-        addDateZero(d.getHours()) +
-        ':' +
-        addDateZero(d.getMinutes()) +
-        ':' +
-        addDateZero(d.getSeconds());
-      //  建单时间
-      const createDateZero = num => {
-        return num < 10 ? '0' + num : num;
-      };
-      const create = new Date(values.now);
-      createDatetime =
-        create.getFullYear() +
-        '-' +
-        createDateZero(create.getMonth() + 1) +
-        '-' +
-        createDateZero(create.getDate()) +
-        ' ' +
-        createDateZero(create.getHours()) +
-        ':' +
-        createDateZero(create.getMinutes()) +
-        ':' +
-        createDateZero(create.getSeconds());
-
       if (!err) {
         const saveData = values;
-        saveData.registerTime = formatdatetime;
-        saveData.now = createDatetime;
+        saveData.registerTime =  (saveData.registerTime).format('YYYY-MM-DD HH:mm:ss');
+        saveData.registerOccurTime = (saveData.registerOccurTime).format('YYYY-MM-DD HH:mm:ss');
         // saveData.taskId = id.flowTaskId;
         saveData.editState = 'add';
         dispatch({

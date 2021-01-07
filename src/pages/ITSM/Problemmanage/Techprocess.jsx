@@ -1,21 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useRef } from 'react';
 import {
   Card,
-  Row,
-  Col,
   Form,
   Input,
   Button,
   Tabs,
-  Upload,
-  Icon,
   message,
   Select,
   Collapse,
   Steps,
-  DatePicker,
 } from 'antd';
-import moment from 'moment';
 import { connect } from 'dva';
 import Link from 'umi/link';
 import route from 'umi/router';
@@ -23,14 +17,12 @@ import Regexp, { phone_reg } from '@/utils/Regexp';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import Problemworkorder from './components/Problemworkorder';
 import Problemflow from './components/Problemflow';
-import Problemsolving from './components/Problemsolving';
-import Problemreview from './components/Problemreview';
-import Problemconfirmation from './components/Problemconfirmation';
-import Problemregistration from './components/Problemregistration';
-import Confirmationcountersignature from './components/Confirmationcountersignature';
-import Problemclosed from './components/Problemclosed';
-import Associateworkorder from './components/Associateworkorder';
-import Circulation from './components/Circulation';
+import Registrat from './components/Registrat';
+import Previewedit from './components/Previewedit';
+import Handleedit from './components/Handleedit';
+import Problemconfirmedit from './components/Problemconfirmedit';
+import Closeedit from './components/Closeedit';
+
 import Reasonregression from './components/Reasonregression';
 import SelectUser from '@/components/ProblemSelectuser';
 
@@ -40,71 +32,36 @@ const { Panel } = Collapse;
 const { Option } = Select;
 const { Step } = Steps;
 
-const formItemLayout = {
-  labelCol: {
-    xs: { span: 24 },
-    sm: { span: 6 },
-  },
-  wrapperCol: {
-    xs: { span: 24 },
-    sm: { span: 15 },
-  },
-};
 
-const forminladeLayout = {
-  labelCol: {
-    xs: { span: 24 },
-    sm: { span: 2 },
-  },
-  wrapperCol: {
-    xs: { span: 24 },
-    sm: { span: 22 },
-  },
-};
-
-let formatdatetime;
-let createDatetime;
 let currntStatus = '';
 let problemFlowid;
 let showEdit = false;
-let saveSign = '';
+const saveSign = '';
 let circaSign = 'circa';
-let confirmType;
 let closecircu = '关闭';
-const props = {
-  name: 'file',
-  action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
-  headers: {
-    authorization: 'authorization-text',
-  },
-  multiple: true, //  支持多个文件
-  showUploadList: true, //  展示文件列表
-};
 
 function Techprocess(props) {
   const pagetitle = props.route.name;
+  const RegistratRef = useRef();
+  const PreviesRef = useRef();
+  const HandleRef = useRef();
+  const ProblemconfirmRef = useRef();
+  const CloseRef = useRef();
   useEffect(() => {
     getInformation();
     solvingDisbled();
   }, []);
 
   const {
-    form: { getFieldDecorator, validateFields },
+    form: { validateFields },
     dispatch,
     todoDetail,
-    // location: {
-    //   state: { currentObj },
-    // },
-    todoDetail: { check, handle, confirm,close },
+    todoDetail: { confirm },
   } = props;
 
   const {
     params: { id },
   } = props.match;
-  const panes = ['1', '2', '3'];
-  const required = true;
-  const [filelist, setFilelist] = useState([]);
-  const [activekey, setActivekey] = useState(panes[0]);
   const list = [];
   if (todoDetail.main) {
     currntStatus = Number(todoDetail.main.status);
@@ -189,46 +146,12 @@ function Techprocess(props) {
   };
 
   const saveRegister = (params2) => {
-    validateFields((err, values) => {
-      //  登记时间
-      const addDateZero = num => {
-        return num < 10 ? '0' + num : num;
-      };
-      const d = new Date(values.registerTime);
-      formatdatetime =
-        d.getFullYear() +
-        '-' +
-        addDateZero(d.getMonth() + 1) +
-        '-' +
-        addDateZero(d.getDate()) +
-        ' ' +
-        addDateZero(d.getHours()) +
-        ':' +
-        addDateZero(d.getMinutes()) +
-        ':' +
-        addDateZero(d.getSeconds());
-      //  建单时间
-      const createDateZero = num => {
-        return num < 10 ? '0' + num : num;
-      };
-      const create = new Date(values.now);
-      createDatetime =
-        create.getFullYear() +
-        '-' +
-        createDateZero(create.getMonth() + 1) +
-        '-' +
-        createDateZero(create.getDate()) +
-        ' ' +
-        createDateZero(create.getHours()) +
-        ':' +
-        createDateZero(create.getMinutes()) +
-        ':' +
-        createDateZero(create.getSeconds());
-
+    console.log('params2: ', params2);
+    RegistratRef.current.validateFields((err, values) => {
       if(params2?!err:true) {
         const saveData = values;
-        saveData.registerTime = formatdatetime;
-        saveData.now = createDatetime;
+        saveData.registerTime = (saveData.registerTime).format('YYYY-MM-DD HH:mm:ss');
+        saveData.registerOccurTime = (saveData.registerOccurTime).format('YYYY-MM-DD HH:mm:ss');
         saveData.taskId = id;
         if (todoDetail.editState === 'edit') {
           saveData.registerId = todoDetail.register.id;
@@ -244,14 +167,13 @@ function Techprocess(props) {
         }).then(res => {
           if (res.code === 200) {
             message.info(res.msg);
-            route.push({pathname:`/ITSM/problemmanage/besolved`})
+            // route.push({pathname:`/ITSM/problemmanage/besolved`})
             if (params2) {
               gotoCirapi();
-              route.push({pathname:`/ITSM/problemmanage/besolved`})
             }
           } else {
             message.error(res.msg);
-            // props.history.push(`/ITSM/problemmanage/besolved`);
+            // route.push({pathname:`/ITSM/problemmanage/besolved`})
           }
         });
       } 
@@ -261,26 +183,10 @@ function Techprocess(props) {
 
   //  登记保存特殊处理
   const savePrevies = params2 => {
-    validateFields((err, values) => {
+    PreviesRef.current.validateFields((err, values) => {
       const saveData = values;
       if (values.checkTime) {
-        const createDateZero = num => {
-          return num < 10 ? '0' + num : num;
-        };
-        const create = new Date(values.checkTime);
-        createDatetime =
-          create.getFullYear() +
-          '-' +
-          createDateZero(create.getMonth() + 1) +
-          '-' +
-          createDateZero(create.getDate()) +
-          ' ' +
-          createDateZero(create.getHours()) +
-          ':' +
-          createDateZero(create.getMinutes()) +
-          ':' +
-          createDateZero(create.getSeconds());
-        saveData.checkTime = createDatetime;
+        saveData.checkTime = (saveData.checkTime).format('YYYY-MM-DD HH:mm:ss');
       } else {
         saveData.checkTime = '';
       }
@@ -300,26 +206,10 @@ function Techprocess(props) {
   };
 
   const saveHandle = params2 => {
-    validateFields((err, values) => {
+    HandleRef.current.validateFields((err, values) => {
       const saveData = values;
       if (values.handleTime) {
-        const addDateZero = num => {
-          return num < 10 ? '0' + num : num;
-        };
-        const d = new Date(values.handleTime);
-        formatdatetime =
-          d.getFullYear() +
-          '-' +
-          addDateZero(d.getMonth() + 1) +
-          '-' +
-          addDateZero(d.getDate()) +
-          ' ' +
-          addDateZero(d.getHours()) +
-          ':' +
-          addDateZero(d.getMinutes()) +
-          ':' +
-          addDateZero(d.getSeconds());
-        saveData.handleTime = formatdatetime;
+        saveData.handleTime = ( saveData.handleTime).format('YYYY-MM-DD HH:mm:ss');
       } else {
         saveData.handleTime = '';
       }
@@ -333,31 +223,13 @@ function Techprocess(props) {
           saveData.handleId = todoDetail.editGuid;
           saveData.editState = 'add';
         }
-
         saveApi(saveData, params2);
       }
     });
   };
 
   const saveConfirm = params2 => {
-    validateFields((err, values) => {
-      const addDateZero = num => {
-        return num < 10 ? '0' + num : num;
-      };
-      const d = new Date(values.confirmTime);
-      formatdatetime =
-        d.getFullYear() +
-        '-' +
-        addDateZero(d.getMonth() + 1) +
-        '-' +
-        addDateZero(d.getDate()) +
-        ' ' +
-        addDateZero(d.getHours()) +
-        ':' +
-        addDateZero(d.getMinutes()) +
-        ':' +
-        addDateZero(d.getSeconds());
-
+    ProblemconfirmRef.current.validateFields((err, values) => {
       if (params2?!err:true) {
         const saveData = values;
         saveData.taskId = id;
@@ -373,54 +245,24 @@ function Techprocess(props) {
           saveData.confirmTime = '';
         } else {
           saveData.confirmType = 0;
-          saveData.confirmTime = formatdatetime;
+          saveData.confirmTime = (saveData.confirmTime).format('YYYY-MM-DD HH:mm:ss');
         }
         saveApi(saveData, params2);
       }
     });
   };
 
-  const saveCountersignature = (params2) => {
-    validateFields((err, values) => {
-      const addDateZero = num => {
-        return num < 10 ? '0' + num : num;
-      };
-      const d = new Date(values.confirmTime);
-      formatdatetime =
-        d.getFullYear() +
-        '-' +
-        addDateZero(d.getMonth() + 1) +
-        '-' +
-        addDateZero(d.getDate()) +
-        ' ' +
-        addDateZero(d.getHours()) +
-        ':' +
-        addDateZero(d.getMinutes()) +
-        ':' +
-        addDateZero(d.getSeconds());
-
-      if (params2?!err:true) {
-        const saveData = values;
-        saveData.taskId = id;
-        saveData.editState = todoDetail.editState;
-        saveData.confirmId = todoDetail.editGuid;
-        saveData.confirmTime = formatdatetime;
-        saveData.confirmType = 1;
-        saveApi(saveData);
-      }
-    });
-  };
-
   const saveClose = params2 => {
-    validateFields((err, values) => {
+    CloseRef.current.validateFields((err, values) => {
       if (params2?!err:true) {
         const saveData = values;
         saveData.taskId = id;
-        saveData.editState = todoDetail.editState;
         if (todoDetail.editState === 'edit') {
           saveData.closeId = todoDetail.close.id;
+          saveData.editState = 'edit';
         } else {
           saveData.closeId = todoDetail.editGuid;
+          saveData.editState = 'add';
         }
         saveApi(saveData, params2);
       }
@@ -434,12 +276,9 @@ function Techprocess(props) {
     }).then(res => {
       if (res.code === 200) {
         message.info(res.msg);
-        route.push({pathname:`/ITSM/problemmanage/besolved`})
+        getInformation();
         if (params2) {
-          console.log('params2: ', params2);
           gotoCirapi();
-          // props.history.goBack();
-          route.push({pathname:`/ITSM/problemmanage/besolved`})
         }
       } else {
         message.error(res.msg);
@@ -499,8 +338,6 @@ function Techprocess(props) {
 
   
   const handleTabChange = key => {
-    console.log('key: ', key);
-    const { match } = props;
     switch (key) {
       case 'workorder':
         route.push(`/ITSM/problemmanage/besolveddetail/workorder/${id}`);
@@ -512,7 +349,7 @@ function Techprocess(props) {
         break;
     }
   }
-  const { match, children, location } = props;
+  const { match, location } = props;
 
   return (
     <PageHeaderWrapper 
@@ -548,9 +385,6 @@ function Techprocess(props) {
       >
          <Problemflow id={problemFlowid} />
       </Card>
-   
-    
-
     </PageHeaderWrapper>
   );
 }

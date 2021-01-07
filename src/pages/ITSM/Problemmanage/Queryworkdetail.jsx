@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import {
   Form,
   Button,
@@ -7,39 +7,27 @@ import { connect } from 'dva';
 import Link from 'umi/link';
 import route from 'umi/router';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import Problemworkorder from './components/Problemworkorder';
-import Problemflow from './components/Problemflow';
 import Problemsolving from './components/Problemsolving';
 import Problemreview from './components/Problemreview';
 import Problemconfirmation from './components/Problemconfirmation';
 import Problemregistration from './components/Problemregistration';
-import Confirmationcountersignature from './components/Confirmationcountersignature';
 import Problemclosed from './components/Problemclosed';
-import Associateworkorder from './components/Associateworkorder';
-import Circulation from './components/Circulation';
-import Reasonregression from './components/Reasonregression';
-
 
 let currntStatus = '';
-let queryStatue = '';
 
-let confirmType;
+// let confirmType;
 
 
 function Queryworkdetail(props) {
   const pagetitle = props.route.name;
-  useEffect(() => {
-    getInformation()
-  }, []);
-
   const {
     dispatch,
-    queryDetaildata
+    queryDetaildata,
+    queryDetaildata:{ problemFlowNodeRows,main},
   } = props;
   const {
     params: { id },
   } = props.match;
- console.log(queryDetaildata.main,'fff');
  if (queryDetaildata.main) {
   currntStatus = Number(queryDetaildata.main.status);
 }
@@ -55,6 +43,10 @@ function Queryworkdetail(props) {
       payload: { id },
     });
   };
+
+  useEffect(() => {
+    getInformation()
+  }, []);
   if (queryDetaildata.main) {
     currntStatus = Number(queryDetaildata.main.status);
     console.log('status: ', currntStatus);
@@ -72,7 +64,6 @@ function Queryworkdetail(props) {
   ];
 
   const handleTabChange = key => {
-    const { match } = props;
     switch (key) {
       case 'queryworkdetail':
         route.push(`/ITSM/problemmanage/querydetail/${id}/queryworkdetail`);
@@ -84,12 +75,12 @@ function Queryworkdetail(props) {
         break;
     }
   }
-  const { match, children, location } = props;
+  const { match, location } = props;
 
 
   return (
     <PageHeaderWrapper 
-      title='工单查询'
+      title={pagetitle}
       extra={
         <>
           <Button style={{ marginRight: 8 }}>
@@ -107,6 +98,8 @@ function Queryworkdetail(props) {
         <Problemregistration
           registrationDetail={queryDetaildata}
           statue={currntStatus}
+          problemFlowNodeRows={problemFlowNodeRows}
+          main={main}
           querySign='yes'
         />
       )}

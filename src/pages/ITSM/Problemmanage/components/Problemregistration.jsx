@@ -8,7 +8,15 @@ const { Panel } = Collapse;
 const { Step } = Steps;
 
 function Problemregistration(props) {
-  const { registrationDetail, statue, queryStatue } = props;
+  const { 
+    registrationDetail,
+    statue,
+    queryStatue,
+    problemFlowNodeRows,
+    main,
+    querySign
+   } = props;
+   console.log(registrationDetail,'registrationDetail');
 
   return (
     <>
@@ -77,7 +85,7 @@ function Problemregistration(props) {
         </Collapse>
       )}
 
-      {statue === 5 && (
+      {querySign !=='' && statue === 5 && (
         <Collapse
           expandIconPosition="right"
           defaultActiveKey={['1']}
@@ -86,50 +94,50 @@ function Problemregistration(props) {
           <Panel header="问题登记" key="1" style={{ marginBottom: '0px', paddingBottom: '0px' }}>
             <Descriptions>
               <Descriptions.Item label="问题编号">
-                {registrationDetail ? registrationDetail.main.no : ''}
+                {main ? main.no : ''}
               </Descriptions.Item>
               <Descriptions.Item label="问题来源">
-                {registrationDetail ? registrationDetail.main.source : ''}
+                {main ? main.source : ''}
               </Descriptions.Item>
               <Descriptions.Item label="问题分类">
-                {registrationDetail ? registrationDetail.main.type : ''}
+                {main ? main.type : ''}
               </Descriptions.Item>
               <Descriptions.Item label="紧急度">
-                {registrationDetail ? registrationDetail.main.emergent : ''}
+                {main ? main.emergent : ''}
               </Descriptions.Item>
               <Descriptions.Item label="影响度">
-                {registrationDetail ? registrationDetail.main.effect : ''}
+                {main ? main.effect : ''}
               </Descriptions.Item>
               <Descriptions.Item label="优先级">
-                {registrationDetail ? registrationDetail.main.priority : ''}
+                {main ? main.priority : ''}
               </Descriptions.Item>
               <Descriptions.Item label="填报人单位">
-                {registrationDetail ? registrationDetail.register.registerUnit : ''}
+                {problemFlowNodeRows ? problemFlowNodeRows[0].registerUnit : ''}
               </Descriptions.Item>
               <Descriptions.Item label="填报人部门">
-                {registrationDetail ? registrationDetail.register.registerDept : ''}
+                {problemFlowNodeRows ? problemFlowNodeRows[0].registerDept : ''}
               </Descriptions.Item>
               <Descriptions.Item label="填报人">
-                {registrationDetail ? registrationDetail.register.registerUser : ''}
+                {problemFlowNodeRows ? problemFlowNodeRows[0].registerUser : ''}
               </Descriptions.Item>
               <Descriptions.Item label="联系电话">
-                {registrationDetail ? registrationDetail.register.phone : ''}
+                {problemFlowNodeRows ? problemFlowNodeRows[0].phone : ''}
               </Descriptions.Item>
               <Descriptions.Item label="登记时间">
-                {registrationDetail ? registrationDetail.register.registerTime : ''}
+                {problemFlowNodeRows ? problemFlowNodeRows[0].registerTime : ''}
               </Descriptions.Item>
               <Descriptions.Item label="建单时间">
-                {registrationDetail ? registrationDetail.now : ''}
+                {problemFlowNodeRows ? problemFlowNodeRows[0].addTime : ''}
               </Descriptions.Item>
             </Descriptions>
             <Descriptions>
               <Descriptions.Item label="问题标题">
-                {registrationDetail ? registrationDetail.main.title : ''}
+                {main ? main.title : ''}
               </Descriptions.Item>
             </Descriptions>
             <Descriptions>
               <Descriptions.Item label="问题描述">
-                {registrationDetail ? registrationDetail.main.content : ''}
+                {main ? main.content : ''}
               </Descriptions.Item>
             </Descriptions>
 

@@ -9,12 +9,13 @@ import { phone_reg } from '@/utils/Regexp';
 
 const { Option } = Select;
 const { TextArea } = Input;
+let occurtime;
 
 
 const Registrat = React.forwardRef((props, ref) => {
   const { formItemLayout, forminladeLayout, show } = props;
   const { getFieldDecorator } = props.form;
-  const { setActiveKey, setShow } = useContext(RegistratContext);
+  // const { setActiveKey, setShow } = useContext(RegistratContext);
   const attRef = useRef();
   useImperativeHandle(
     ref,
@@ -26,8 +27,20 @@ const Registrat = React.forwardRef((props, ref) => {
   const {
     list,
     newno,
-    useInfo
+    useInfo,
+    register,
+    main
   } = props;
+  if(register) {
+    if(register.registerOccurTime !== null) {
+      occurtime = moment(register.registerOccurTime);
+    } else {
+      occurtime = moment(Date.now())
+    }
+  } else {
+    occurtime = moment(Date.now())
+  }
+
 
   const required = true;
 
@@ -77,7 +90,7 @@ const Registrat = React.forwardRef((props, ref) => {
                       message: '请输入登记时间',
                     },
                   ],
-                  initialValue: moment(Date.now()) || '',
+                  initialValue: register?moment(register.registerTime):moment(Date.now()),
                 })(<DatePicker 
                      showTime 
                      format="YYYY-MM-DD HH:mm:ss"
@@ -87,14 +100,14 @@ const Registrat = React.forwardRef((props, ref) => {
 
             <Col span={8}>
               <Form.Item label="发生时间">
-                {getFieldDecorator('registerTime', {
+                {getFieldDecorator('registerOccurTime', {
                   rules: [
                     {
                       required,
                       message: '请输入登记时间',
                     },
                   ],
-                  initialValue: moment(Date.now()) || '',
+                  initialValue: occurtime,
                 })(<DatePicker 
                      showTime 
                      format="YYYY-MM-DD HH:mm:ss"
@@ -112,7 +125,7 @@ const Registrat = React.forwardRef((props, ref) => {
                       message: '请输入问题来源',
                     },
                   ],
-                  initialValue: '重复性分析事件',
+                  initialValue: main?main.source:'重复性分析事件',
                 })(
                   <Select>
                     <Option value="重复性分析事件">重复性分析事件</Option>
@@ -134,7 +147,7 @@ const Registrat = React.forwardRef((props, ref) => {
                       message: '请输入问题分类',
                     },
                   ],
-                  initialValue: '功能',
+                  initialValue: main?main.type:'功能',
                 })(
                   <Select>
                     <Option value="功能">功能</Option>
@@ -155,7 +168,7 @@ const Registrat = React.forwardRef((props, ref) => {
                       message: '请输入正确的手机号码',
                     },
                   ],
-                  // initialValue: list.contactNumber || '',
+                  initialValue: register?register.phone:'',
                 })(<Input />)}
               </Form.Item>
             </Col>  
@@ -169,7 +182,7 @@ const Registrat = React.forwardRef((props, ref) => {
                       message: '请输入紧急度',
                     },
                   ],
-                  initialValue: '低',
+                  initialValue: main?main.emergent:'低',
                 })(
                   <Select>
                     <Option value="低">低</Option>
@@ -189,7 +202,7 @@ const Registrat = React.forwardRef((props, ref) => {
                       message: '请输入影响度',
                     },
                   ],
-                  initialValue: '低',
+                  initialValue: main?main.effect:'低',
                 })(
                   <Select>
                     <Option value="低">低</Option>
@@ -209,7 +222,7 @@ const Registrat = React.forwardRef((props, ref) => {
                       message: '请输入优先级',
                     },
                   ],
-                  initialValue: '低',
+                  initialValue: main?main.priority:'低',
                 })(
                   <Select>
                     <Option value="低">低</Option>
@@ -220,21 +233,16 @@ const Registrat = React.forwardRef((props, ref) => {
               </Form.Item>
             </Col>
 
-  
-
-              
-
-
             <Col span={24}>
               <Form.Item label="问题标题" {...forminladeLayout}>
                 {getFieldDecorator('title', {
                   rules: [
                     {
                       required,
-                      message: '请输入紧急度',
+                      message: '请输入问题标题',
                     },
                   ],
-                  // initialValue: list.questionTitle || '',
+                  initialValue: main?main.title:'',
                 })(<Input />)}
               </Form.Item>
             </Col>
@@ -248,7 +256,7 @@ const Registrat = React.forwardRef((props, ref) => {
                       message: '请输入问题描述',
                     },
                   ],
-                  // initialValue: list.problemDescription || '',
+                  initialValue: main?main.content:'',
                 })(<TextArea />)}
               </Form.Item>
             </Col>
@@ -256,7 +264,7 @@ const Registrat = React.forwardRef((props, ref) => {
             <Col span={8}>
               <Form.Item label="填报人">
                 {getFieldDecorator('registerUser', {
-                  initialValue: useInfo.loginCode || '',
+                  initialValue: useInfo?useInfo.loginCode:'',
                 })(<Input disabled/>)}
               </Form.Item>
             </Col>

@@ -1,13 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import {
   Card,
   Form,
-  Input,
   Button,
-  Tabs,
-  Select,
-  Collapse,
-  Steps,
 } from 'antd';
 import { connect } from 'dva';
 import Link from 'umi/link';
@@ -15,18 +10,7 @@ import route from 'umi/router';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import Problemflow from './components/Problemflow';
 
-let currntStatus = '';
 let imageId;
-
-const props = {
-  name: 'file',
-  action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
-  headers: {
-    authorization: 'authorization-text',
-  },
-  multiple: true, //  支持多个文件
-  showUploadList: true, //  展示文件列表
-};
 
 function Queryimage(props) {
   const pagetitle = props.route.name;
@@ -35,7 +19,6 @@ function Queryimage(props) {
   }, []);
 
   const {
-    form: { getFieldDecorator, validateFields },
     dispatch,
     queryDetaildata,
   } = props;
@@ -67,7 +50,6 @@ function Queryimage(props) {
   ];
 
   const handleTabChange = key => {
-    const { match } = props;
     switch (key) {
       case 'queryworkdetail':
         route.push(`/ITSM/problemmanage/querydetail/${id}/queryworkdetail`);
