@@ -97,6 +97,12 @@ function WorkOrder(props) {
     sessionStorage.setItem('Processtype', 'event');
   }, []);
 
+  // 更新流转类型
+  // console.log(flowtype);
+  // useEffect(() => {
+  //   sessionStorage.setItem('flowtype', flowtype);
+  // }, [flowtype]);
+
   const callback = key => {
     setActiveKey(key);
   };
@@ -204,6 +210,22 @@ function WorkOrder(props) {
       });
     }
   };
+  // 确认
+  const eventcheck = newflowtype => {
+    if (ischeck === true) {
+      dispatch({
+        type: 'eventtodo/eventflow',
+        payload: {
+          flow: {
+            id,
+            userIds: data[1].register.registerUserId,
+            type: newflowtype,
+          },
+          paloadvalues,
+        },
+      });
+    }
+  };
 
   // 点击保存，流转触发表单校验
   const handlesubmit = () => {
@@ -251,7 +273,7 @@ function WorkOrder(props) {
         processId: mainId,
       },
     });
-  }, [mainId]);
+  }, [location.query]);
 
   // 初始化值panel
   useEffect(() => {
@@ -262,14 +284,14 @@ function WorkOrder(props) {
   }, [pangekey]);
 
   // 初始化流转类型,自动接单value
-  useEffect(() => {
-    if (data !== undefined && data[0].main.event_type === '005') {
-      setFlowtype('3');
-    }
-    if (pangekey !== '1') {
-      setFlowtype('1');
-    }
-  }, [loading]);
+  // useEffect(() => {
+  //   if (data !== undefined && data[0].main.event_type === '005') {
+  //     setFlowtype('3');
+  //   }
+  //   if (pangekey !== '1') {
+  //     setFlowtype('1');
+  //   }
+  // }, [loading]);
 
   useEffect(() => {
     if (validate === true && ischeck === false) {
@@ -288,6 +310,12 @@ function WorkOrder(props) {
         break;
       case 'other':
         eventflow('3');
+        break;
+      case 'check':
+        eventcheck('3');
+        break;
+      case 'flowcheck':
+        eventcheck('1');
         break;
       default:
         break;

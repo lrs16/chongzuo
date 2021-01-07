@@ -150,8 +150,7 @@ function ToDodetails(props) {
           接单
         </Button>
       )}
-      {(pangekey === '5' ||
-        (pangekey === '1' && next === '处理') ||
+      {((pangekey === '1' && next === '处理') ||
         (next === '处理' && (pangekey === '2' || pangekey === '3'))) && (
         <SelectUser handleSubmit={() => handleHold('flow')} taskId={id}>
           <Button type="primary" style={{ marginRight: 8 }}>
@@ -159,17 +158,22 @@ function ToDodetails(props) {
           </Button>
         </SelectUser>
       )}
-      {next === '确认' && (pangekey === '2' || pangekey === '3') && (
-        <Button type="primary" style={{ marginRight: 8 }} onClick={handleHold('other')}>
+      {next === '确认' && pangekey !== '5' && (
+        <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleHold('check')}>
           确认
         </Button>
       )}
       {pangekey === '5' && (
-        <SelectUser handleSubmit={() => handleHold('other')} changorder="转单" taskId={id}>
-          <Button ghost type="primary" style={{ marginRight: 8 }}>
-            转单
+        <>
+          <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleHold('flowcheck')}>
+            确认
           </Button>
-        </SelectUser>
+          <SelectUser handleSubmit={() => handleHold('other')} changorder="处理" taskId={id}>
+            <Button ghost type="primary" style={{ marginRight: 8 }}>
+              转单
+            </Button>
+          </SelectUser>
+        </>
       )}
       {(pangekey === '6' || pangekey === '7') && next === '处理' && (
         <SelectUser handleSubmit={() => handleHold('other')} taskId={id}>

@@ -48,19 +48,12 @@ function Registration(props) {
   const [defaultvalue, setDefaultvalue] = useState('');
   const RegistratRef = useRef();
   const HandleRef = useRef();
-
-  // 初始化用户信息，流程类型
   useEffect(() => {
     dispatch({
       type: 'eventregist/fetchuser',
     });
     sessionStorage.setItem('Processtype', 'event');
   }, []);
-
-  // 更新流转类型
-  useEffect(() => {
-    sessionStorage.setItem('flowtype', flowtype);
-  }, [flowtype]);
 
   const callback = key => {
     setActiveKey(key);
@@ -187,9 +180,9 @@ function Registration(props) {
       <Button type="primary" style={{ marginRight: 8 }} onClick={handlesubmit}>
         保 存
       </Button>
-
-      {/* {next === '审核' && (
-        <SelectUser handleSubmit={() => handleflow()} flowtype={flowtype} >
+      {/* 
+      {next === '审核' && (
+        <SelectUser handleSubmit={() => handleflow()} flowtype={flowtype}>
           <Button type="primary" style={{ marginRight: 8 }}>
             审 核
           </Button>

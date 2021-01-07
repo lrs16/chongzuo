@@ -147,7 +147,8 @@ export default {
           query: {
             pangekey: '5',
             id: taskId,
-            mainId: openres.flowInstanceId,
+            mainId: response.flowInstanceId,
+            next: sessionStorage.getItem('Nextflowmane'),
             validate: false,
           },
         });

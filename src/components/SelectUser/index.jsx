@@ -10,6 +10,7 @@ const withClick = (element, showDrawer = () => {}) => {
 const SelectUser = props => {
   const { children, dispatch, handleSubmit, userlist, loading, changorder, taskId } = props;
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [defaultvalue, setDefaultvalue] = useState('');
   const type = sessionStorage.getItem('Processtype');
 
   const dataArr = datas => {
@@ -46,7 +47,7 @@ const SelectUser = props => {
 
   useEffect(() => {
     if (changorder !== undefined) {
-      sessionStorage.setItem('Nextflowmane', '处理');
+      sessionStorage.setItem('Nextflowmane', changorder);
       sessionStorage.setItem('flowtype', '3');
     }
   }, [changorder]);
@@ -96,8 +97,8 @@ const SelectUser = props => {
     setIsModalVisible(false);
   };
 
-  const nextflowuser = changorder === '转单' ? '处理' : sessionStorage.getItem('Nextflowmane');
-
+  const nextflowuser =
+    changorder !== undefined ? changorder : sessionStorage.getItem('Nextflowmane');
   return (
     <>
       {withClick(children, showModal)}
@@ -119,7 +120,11 @@ const SelectUser = props => {
                   )
                 })}
               </Radio.Group> */}
-              <Checkbox.Group options={dataArr(userlist)} onChange={handleChange} />
+              <Checkbox.Group
+                defaultValue={defaultvalue}
+                options={dataArr(userlist)}
+                onChange={handleChange}
+              />
             </>
           )}
         </Spin>

@@ -145,11 +145,13 @@ const Registrat = forwardRef((props, ref) => {
       setCheck(true);
       ChangeFlowtype('3');
       sessionStorage.setItem('Nextflowmane', '审核');
+      sessionStorage.setItem('flowtype', '3');
     } else {
       ChangeCheck(false);
       setCheck(false);
       ChangeFlowtype('1');
       sessionStorage.setItem('Nextflowmane', '处理');
+      sessionStorage.setItem('flowtype', '1');
     }
     if (sethandlevalue === 'true') {
       changeDefaultvalue(gethandelvalue);

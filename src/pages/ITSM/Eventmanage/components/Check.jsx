@@ -11,6 +11,11 @@ const nextsmap = new Map([
   ['002', '确认'],
 ]);
 
+const typemaps = new Map([
+  ['001', '1'],
+  ['002', '3'],
+]);
+
 const Check = forwardRef((props, ref) => {
   const { formItemLayout, forminladeLayout, info, ChangeFlowtype, userinfo, location } = props;
   const { pangekey, id, mainId } = location.query;
@@ -40,6 +45,7 @@ const Check = forwardRef((props, ref) => {
 
   useEffect(() => {
     sessionStorage.setItem('Nextflowmane', nextsmap.get(check.checkResult));
+    sessionStorage.setItem('flowtype', typemaps.get(check.checkResult));
     setAdopt(check.checkResult);
     routerRefresh();
   }, [info]);
@@ -47,11 +53,13 @@ const Check = forwardRef((props, ref) => {
   const handleAdopt = e => {
     setAdopt(e.target.value);
     if (e.target.value === '001') {
-      ChangeFlowtype('1');
+      //  ChangeFlowtype('1');
       sessionStorage.setItem('Nextflowmane', '处理');
+      sessionStorage.setItem('flowtype', '1');
     } else {
-      ChangeFlowtype('3');
+      //  ChangeFlowtype('3');
       sessionStorage.setItem('Nextflowmane', '确认');
+      sessionStorage.setItem('flowtype', '3');
     }
     routerRefresh();
   };
@@ -112,7 +120,7 @@ const Check = forwardRef((props, ref) => {
             })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" />)}
           </Form.Item>
         </Col>
-        <Col span={24}>
+        {/* <Col span={24}>
           <Form.Item
             label="上传附件"
             {...forminladeLayout}
@@ -126,7 +134,7 @@ const Check = forwardRef((props, ref) => {
               </Upload>,
             )}
           </Form.Item>
-        </Col>
+        </Col> */}
         <Col span={8}>
           <Form.Item label="审核人">
             {getFieldDecorator('check_checkUser', {

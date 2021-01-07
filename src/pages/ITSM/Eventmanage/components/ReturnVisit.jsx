@@ -31,6 +31,12 @@ const nextsmap = new Map([
   ['003', '处理'],
 ]);
 
+const typemaps = new Map([
+  ['001', '1'],
+  ['002', '1'],
+  ['003', '3'],
+]);
+
 const result = [
   { key: '001', value: '误报' },
   { key: '002', value: '根本解决' },
@@ -74,6 +80,7 @@ const ReturnVisit = React.forwardRef((props, ref) => {
   };
   useEffect(() => {
     sessionStorage.setItem('Nextflowmane', nextsmap.get(finish.satisfaction));
+    sessionStorage.setItem('flowtype', typemaps.get(main.eventResult));
     routerRefresh();
   }, [info]);
 
@@ -81,6 +88,7 @@ const ReturnVisit = React.forwardRef((props, ref) => {
     if (value === '003') {
       ChangeFlowtype('3');
       sessionStorage.setItem('Nextflowmane', '处理');
+      sessionStorage.setItem('flowtype', '3');
     } else {
       ChangeFlowtype('1');
       sessionStorage.setItem('Nextflowmane', '结束');
