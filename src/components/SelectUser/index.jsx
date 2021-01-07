@@ -15,17 +15,36 @@ const SelectUser = props => {
 
   const dataArr = datas => {
     const newArr = [];
-    if (!Array.isArray(datas)) {
+    if (
+      sessionStorage.getItem('Processtype') === 'event' ||
+      sessionStorage.getItem('Processtype') === 'demand'
+    ) {
+      if (!Array.isArray(datas)) {
+        return newArr;
+      }
+      for (let i = 0; i < datas.length; i += 1) {
+        const vote = {};
+        vote.label = datas[i].userName;
+        vote.value = datas[i].id;
+        newArr.push(vote);
+      }
       return newArr;
     }
-    for (let i = 0; i < datas.length; i += 1) {
-      const vote = {};
-      vote.label = datas[i].userName;
-      vote.value = datas[i].userId;
-      newArr.push(vote);
+    if (
+      sessionStorage.getItem('Processtype') === 'problem' ||
+      sessionStorage.getItem('Processtype') === 'troub'
+    ) {
+      if (!Array.isArray(datas)) {
+        return newArr;
+      }
+      for (let i = 0; i < datas.length; i += 1) {
+        const vote = {};
+        vote.label = datas[i].userName;
+        vote.value = datas[i].userId;
+        newArr.push(vote);
+      }
+      return newArr;
     }
-
-    return newArr;
   };
 
   const [value, setValue] = useState('');

@@ -15,8 +15,15 @@ export default {
       const response = yield call(DemandStart, payload);
       if (response.code === 200) {
         message.success(response.msg, 5);
+
         // router.push({
-        //   pathname: `/ITSM/demandmanage/to-do`,
+        //   pathname: `/ITSM/eventmanage/to-do/record/workorder`,
+        //   query: {
+        //     pangekey: register_selfhandle === '1' ? '5' : '1',
+        //     id: registres.taskId,
+        //     mainId: flowInstanceId,
+        //     validate: false,
+        //   },
         // });
       }
     },
