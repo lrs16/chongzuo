@@ -15,6 +15,7 @@ export default {
       const response = yield call(DemandStart, payload);
       if (response.code === 200) {
         message.success(response.msg, 5);
+<<<<<<< HEAD
 
         // router.push({
         //   pathname: `/ITSM/eventmanage/to-do/record/workorder`,
@@ -24,6 +25,10 @@ export default {
         //     mainId: flowInstanceId,
         //     validate: false,
         //   },
+=======
+        // router.push({
+        //   pathname: `/ITSM/demandmanage/to-do`,
+>>>>>>> 465151b... 更新问题管理代码
         // });
       }
     },

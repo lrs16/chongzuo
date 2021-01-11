@@ -16,9 +16,16 @@ import {
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 // eslint-disable-next-line import/no-unresolved
 import creatHistory from 'history/createHashHistory'; // 返回上一页
+<<<<<<< HEAD
 import SelectUser from '@/components/SelectUser'; // 选人组件
 import styles from './index.less';
 import ModelRollback from './components/ModelRollback'; // 回退组件
+=======
+import styles from './index.less';
+// import ModelCircula from './components/ModelCircula';
+import ModelRollback from './components/ModelRollback'; // 回退组件
+import SelectUser from './components/SelectUser'; // 选人组件
+>>>>>>> 465151b... 更新问题管理代码
 
 // 各个子组件
 import RegisterChild from './components/RegisterChild';
@@ -178,7 +185,10 @@ function Todolistdetails(props) {
       message.info('请先接单！');
       setActiveKey([`${Collapsekeymap.get('registerDetails')}`]);
     }
+<<<<<<< HEAD
     sessionStorage.setItem('Processtype', 'troub');
+=======
+>>>>>>> 465151b... 更新问题管理代码
   }, []);
 
   const handleDelete = () => { // 删除操作！
@@ -246,11 +256,21 @@ function Todolistdetails(props) {
 
         }).then(res => {
           if (res.code === 200) {
+<<<<<<< HEAD
             getfaultTodoDetailData();
             if (cirStatus) {
               faultcircula();
             }
             message.success(res.msg);
+=======
+            if (cirStatus) {
+              faultcircula();
+            } else {
+              message.success(res.msg);
+              getfaultTodoDetailData();
+              router.push(`/ITSM/faultmanage/todolist`);
+            }
+>>>>>>> 465151b... 更新问题管理代码
           } else {
             message.error(res.msg);
           }
@@ -290,11 +310,21 @@ function Todolistdetails(props) {
           payload: { formValues }
         }).then(res => {
           if (res.code === 200) {
+<<<<<<< HEAD
             getfaultTodoDetailData();
             if (cirStatus) {
               faultcircula();
             }
             message.success(res.msg);
+=======
+            if (cirStatus) {
+              faultcircula();
+            } else {
+              message.success(res.msg);
+              getfaultTodoDetailData();
+              router.push(`/ITSM/faultmanage/todolist`);
+            }
+>>>>>>> 465151b... 更新问题管理代码
           } else {
             message.error(res.msg);
           }
@@ -328,17 +358,31 @@ function Todolistdetails(props) {
           formValues.handleId = tododetailslist.editGuid;
           formValues.editState = 'add';
         }
+<<<<<<< HEAD
         console.log(formValues);
+=======
+
+>>>>>>> 465151b... 更新问题管理代码
         return dispatch({
           type: 'fault/getfromsave', // 保存接口
           payload: { formValues }
         }).then(res => {
           if (res.code === 200) {
+<<<<<<< HEAD
             getfaultTodoDetailData();
             if (cirStatus) {
               faultcircula();
             }
             message.success(res.msg);
+=======
+            if (cirStatus) {
+              faultcircula();
+            } else {
+              message.success(res.msg);
+              getfaultTodoDetailData();
+              router.push(`/ITSM/faultmanage/todolist`);
+            }
+>>>>>>> 465151b... 更新问题管理代码
           } else {
             message.error(res.msg);
           }
@@ -374,11 +418,21 @@ function Todolistdetails(props) {
           payload: { formValues }
         }).then(res => {
           if (res.code === 200) {
+<<<<<<< HEAD
             getfaultTodoDetailData();
             if (cirStatus) {
               faultcircula();
             }
             message.success(res.msg);
+=======
+            if (cirStatus) {
+              faultcircula();
+            } else {
+              message.success(res.msg);
+              getfaultTodoDetailData();
+              router.push(`/ITSM/faultmanage/todolist`);
+            }
+>>>>>>> 465151b... 更新问题管理代码
           } else {
             message.error(res.msg);
           }
@@ -412,8 +466,13 @@ function Todolistdetails(props) {
           payload: { formValues }
         }).then(res => {
           if (res.code === 200) {
+<<<<<<< HEAD
             getfaultTodoDetailData();
             message.success(res.msg);
+=======
+            message.success(res.msg);
+            router.push(`/ITSM/faultmanage/todolist`);
+>>>>>>> 465151b... 更新问题管理代码
             if (cirStatus) {
               const result = 1;
               const taskId = id;
@@ -529,8 +588,11 @@ function Todolistdetails(props) {
             (transferpaneKey || paneKey === '故障登记' || paneKey === '故障审核' || paneKey === '故障总结' || paneKey === '故障关闭') && (
               <SelectUser
                 handleSubmit={() => handleSave(currenStatus)}
+<<<<<<< HEAD
                 taskId={id}
                 changorder='处理'
+=======
+>>>>>>> 465151b... 更新问题管理代码
               >
                 <Button
                   type="primary"
@@ -552,6 +614,7 @@ function Todolistdetails(props) {
       {
         (tabActiveKey === 'faultForm' &&
           <div className={styles.collapse}>
+<<<<<<< HEAD
             <Card
               style={{
                 background: '#fff',
@@ -560,11 +623,23 @@ function Todolistdetails(props) {
                 overflowX: 'auto',
               }}
             >
+=======
+            <Card>
+>>>>>>> 465151b... 更新问题管理代码
               <>
                 <Steps
                   current={stepcurrentmap.get(paneKey)} 
                   // current={troubleFlowLogs && troubleFlowLogs.length - 1}
                   size="small"
+<<<<<<< HEAD
+=======
+                  style={{
+                    background: '#fff',
+                    padding: 10,
+                    // border: '1px solid #e8e8e8',
+                    overflowX: 'auto',
+                  }}
+>>>>>>> 465151b... 更新问题管理代码
                 >
                   {
                     troubleFlowLogs && troubleFlowLogs.map(({ key, name, status, timeText, formHandler, startTime }) => [

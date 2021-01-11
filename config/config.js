@@ -968,6 +968,7 @@ export default {
     },
     // 事件管理
     '/itsm/event/': {
+<<<<<<< HEAD
       target: 'http://172.16.4.211:9901/',
       changeOrigin: true,
     },
@@ -978,7 +979,19 @@ export default {
     },
     // 故障管理
     '/itsm/trouble/': {
+=======
+>>>>>>> 465151b... 更新问题管理代码
       target: 'http://172.16.4.211:9901/',
+      changeOrigin: true,
+    },
+    // 问题管理
+    '/itsm/problem/': {
+      target: 'http://172.16.4.77:9901/',
+      changeOrigin: true,
+    },
+    // 故障管理
+    '/itsm/trouble/': {
+      target: 'http://172.16.4.77:9901/',
       changeOrigin: true,
     },
     // 需求管理

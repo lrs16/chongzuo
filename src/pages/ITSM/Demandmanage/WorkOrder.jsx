@@ -52,7 +52,11 @@ function WorkOrder(props) {
   // 初始化用户信息，流程类型
   useEffect(() => {
     dispatch({
+<<<<<<< HEAD
       type: 'itsmuser/fetchuser',
+=======
+      type: 'eventregist/fetchuser',
+>>>>>>> 465151b... 更新问题管理代码
     });
     sessionStorage.setItem('Processtype', 'demand');
   }, []);
@@ -259,7 +263,11 @@ function WorkOrder(props) {
               ref={ExamineRef}
               formItemLayout={formItemLayout}
               forminladeLayout={forminladeLayout}
+<<<<<<< HEAD
               text="审核"
+=======
+              text="复核"
+>>>>>>> 465151b... 更新问题管理代码
               // register={info.demandForm}
               userinfo={userinfo}
             />

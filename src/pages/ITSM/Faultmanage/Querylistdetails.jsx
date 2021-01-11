@@ -151,6 +151,7 @@ function Querylistdetails(props) {
             {
                 (tabActiveKey === 'faultForm' &&
                     <div className={styles.collapse}>
+<<<<<<< HEAD
                         <Card
                             style={{
                                 background: '#fff',
@@ -159,10 +160,21 @@ function Querylistdetails(props) {
                                 overflowX: 'auto',
                             }}
                         >
+=======
+                        <Card>
+>>>>>>> 465151b... 更新问题管理代码
                             <>
                                 <Steps
                                     current={stepcurrentmap.get(paneKey)}
                                     size="small"
+<<<<<<< HEAD
+=======
+                                    style={{
+                                        background: '#fff',
+                                        padding: 20,
+                                        overflowX: 'auto',
+                                    }}
+>>>>>>> 465151b... 更新问题管理代码
                                 >
                                     {
                                         troubleFlowLogs && troubleFlowLogs.map(({ key, name, status, timeText, formHandler, startTime }) => [
