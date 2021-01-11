@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Card, Descriptions, Collapse } from 'antd';
+import React from 'react';
+import {  Descriptions, Collapse } from 'antd';
 
 const { Panel } = Collapse;
 

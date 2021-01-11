@@ -1,20 +1,19 @@
-import React, { useContext, useRef, useImperativeHandle } from 'react';
-import { Row, Col, Form, Input, Select, Upload, Button, Checkbox, DatePicker } from 'antd';
-import { DownloadOutlined } from '@ant-design/icons';
-import styles from '../index.less';
+import React, { useRef, useImperativeHandle } from 'react';
+import { 
+        Row,
+        Col, 
+        Form,
+        Input,
+        DatePicker
+        } from 'antd';
 import moment from 'moment';
-import Link from 'umi/link';
-import { RegistratContext } from '../Registration';
 
-
-const { Option } = Select;
 const { TextArea } = Input;
 
 
 const Previewedit = React.forwardRef((props, ref) => {
-  const { formItemLayout, forminladeLayout, show } = props;
+  const { formItemLayout, forminladeLayout } = props;
   const { getFieldDecorator } = props.form;
-  // const { setActiveKey, setShow } = useContext(RegistratContext);
   const attRef = useRef();
   useImperativeHandle(
     ref,
@@ -42,7 +41,7 @@ const Previewedit = React.forwardRef((props, ref) => {
                 message:'请输入审核时间'
               }
             ],
-            initialValue: check ? moment(check.checkTime) : moment(new Date()),
+            c: check ? moment(check.checkTime) : moment(new Date()),
           })(<DatePicker 
                showTime 
                format="YYYY-MM-DD HH:mm:ss" 

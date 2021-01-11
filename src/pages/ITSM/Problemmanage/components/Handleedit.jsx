@@ -1,21 +1,22 @@
-import React, { useContext, useRef, useImperativeHandle } from 'react';
-import { Row, Col, Form, Input, Select, Upload, Button, Checkbox, DatePicker } from 'antd';
-import { DownloadOutlined } from '@ant-design/icons';
-import styles from '../index.less';
-import moment from 'moment';
-import Link from 'umi/link';
-import { RegistratContext } from '../Registration';
-
+import React, {  useRef, useImperativeHandle } from 'react';
+import { 
+          Row,
+          Col,
+          Form,
+          Input,
+          Select,
+          DatePicker
+        } from 'antd';
 
 const { Option } = Select;
 const { TextArea } = Input;
 
 
 const Handleedit = React.forwardRef((props, ref) => {
-  const { formItemLayout, forminladeLayout, show } = props;
+  const { formItemLayout, forminladeLayout } = props;
   const { getFieldDecorator } = props.form;
-  // const { setActiveKey, setShow } = useContext(RegistratContext);
   const attRef = useRef();
+  console.log('attRef: ', attRef);
   useImperativeHandle(
     ref,
     () => ({

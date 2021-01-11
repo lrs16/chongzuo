@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Card, Descriptions, Menu, Divider, Collapse } from 'antd';
+import {  Descriptions, Menu, Collapse } from 'antd';
 
 const { SubMenu } = Menu;
 const { Panel } = Collapse;
@@ -51,10 +51,6 @@ function Problemsolving(props) {
           </Descriptions>
         </Panel>
       </Collapse>
-    
-
-   
-     
     </>
   );
 }

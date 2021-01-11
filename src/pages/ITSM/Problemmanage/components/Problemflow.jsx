@@ -47,21 +47,24 @@ function Problemflow(props) {
 
   return (
     <>
+     <Card>
       <p>流程图</p>
-        <Divider />
-      {/* <Card title="流转日志" style={{margin:'0px'}}> */}
-          <img src={image} alt="" />
-      {/* </Card> */}
-
-        {/* <Card title="流转日志"> */}
-        <p>流转日志</p>
-        <Divider />
-          <Steps  
-          progressDot 
-          current={list.length - 1}
-          direction="vertical"
-          >{list}</Steps>
+          <Divider />
+        {/* <Card title="流转日志" style={{margin:'0px'}}> */}
+            <img src={image} alt="" />
         {/* </Card> */}
+
+          {/* <Card title="流转日志"> */}
+          <p>流转日志</p>
+          <Divider />
+            <Steps  
+            progressDot 
+            current={list.length - 1}
+            direction="vertical"
+            >{list}</Steps>
+          {/* </Card> */}
+      </Card>
+     
    
     </>
   );

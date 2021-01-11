@@ -29,7 +29,7 @@ const Registrat = React.forwardRef((props, ref) => {
     newno,
     useInfo,
     register,
-    main
+    main,
   } = props;
   if(register) {
     if(register.registerOccurTime !== null) {

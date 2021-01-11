@@ -1,13 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { Card, Descriptions, Menu, Collapse } from 'antd';
+import React from 'react';
+import {  Descriptions, Collapse } from 'antd';
 
 const { Panel } = Collapse;
 function Problemreview(props) {
-  const { statue, reviesDetail } = props;
+  const {  reviesDetail,loading } = props;
   return (
     <>
-      {/* { */}
-      {/* expand !== '问题审核' && statue >= state && ( */}
+    { loading === false && (
       <Collapse 
         expandIconPosition="right" 
         style={{ backgroundColor: 'white', marginTop: '20px' }}
@@ -46,33 +45,8 @@ function Problemreview(props) {
           </Descriptions>
         </Panel>
       </Collapse>
-      {/* ) */}
-      {/* } */}
-      {/* {
-     expand === '问题审核' && currentObj ==='问题查询' && statue >= state && (
-      <Collapse expandIconPosition='right' style={{backgroundColor:'white',paddingLeft:'0px'}}>
-        <Panel  header="问题审核" key="2" style={{marginBottom:'0px',paddingBottom:'0px'}}>
-        <Descriptions>
-                    <Descriptions.Item label='审核单位'>{reviewInfo.auditUnit || ''}</Descriptions.Item>
-                    <Descriptions.Item label='审核部门'>{reviewInfo.auditDepartment || ''}</Descriptions.Item>
-                    <Descriptions.Item label='审核人'>{reviewInfo.Reviewer || ''}</Descriptions.Item>
-                   
-                  </Descriptions>
-                
-                <Descriptions>
-                  <Descriptions.Item label='审核时间'>{}</Descriptions.Item>
-                </Descriptions>
-
-                <Descriptions>
-                  <Descriptions.Item label='审核意见'>{reviewInfo.auditOpinion || ''}</Descriptions.Item>
-                </Descriptions>
-                <Descriptions>
-                  <Descriptions.Item label='上传附件'><span style={{color:'blue',textDecoration:'underline'}}>{reviewInfo.auditOpinion || ''}</span></Descriptions.Item>
-                </Descriptions>
-        </Panel>
-      </Collapse>
-     )
-   } */}
+      ) }
+     
     </>
   );
 }

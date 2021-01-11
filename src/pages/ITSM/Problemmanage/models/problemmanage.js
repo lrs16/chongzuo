@@ -115,8 +115,8 @@ export default {
       return yield call(saveRegister, saveData);
     },
 
-    *delete({ payload: { id } }, { call }) {
-      return yield call(deleteTobo, id);
+    *delete({ payload: { deleteid } }, { call }) {
+      return yield call(deleteTobo, deleteid);
     },
 
     //  回退

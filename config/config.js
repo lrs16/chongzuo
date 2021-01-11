@@ -216,29 +216,11 @@ export default {
                       icon: 'cloud-server',
                       component: './ITSM/Problemmanage/Problemquery',
                     },
-                    // {
-                    //   path: '/ITSM/problemmanage/besolveddetail/:id',
-                    //   name: '问题待办详情页',
-                    //   icon: 'cloud-server',
-                    //   component: './ITSM/Problemmanage/Besolvedetail',
-                    // },
                     {
                       path: '/ITSM/problemmanage/besolveddetail/workorder/:id',
                       name: '问题工单',
                       icon: 'cloud-server',
                       component: './ITSM/Problemmanage/Workorder',
-                    },
-                    {
-                      path: '/ITSM/problemmanage/besolveddetail/process/:id',
-                      name: '问题流程',
-                      icon: 'cloud-server',
-                      component: './ITSM/Problemmanage/Techprocess',
-                    },
-                    {
-                      path: '/ITSM/problemmanage/querydetail/:id',
-                      name: '问题查询详情页',
-                      icon: 'cloud-server',
-                      component: './ITSM/Problemmanage/Querydetail',
                     },
                     {
                       path: '/ITSM/problemmanage/querydetail/:id/queryworkdetail',
@@ -247,17 +229,11 @@ export default {
                       component: './ITSM/Problemmanage/Queryworkdetail',
                     },
                     {
-                      path: '/ITSM/problemmanage/querydetail/:id/process',
-                      name: '查询流程',
+                      path: '/ITSM/problemmanage/person',
+                      name: '查询工单',
                       icon: 'cloud-server',
-                      component: './ITSM/Problemmanage/Queryimage',
+                      component: './ITSM/Problemmanage/Queryworkdetail',
                     },
-                    // {
-                    //   path: '/ITSM/problemmanage/besolveddetail/:id/queryworkdetail',
-                    //   name: '查询工单',
-                    //   icon: 'cloud-server',
-                    //   component: './ITSM/Problemmanage/Queryworkdetail',
-                    // },
                     {
                       path: '/ITSM/problemmanage/process',
                       name: '个人用',

@@ -81,14 +81,8 @@ function Besolved(props) {
     besolveList,
     loading,
   } = props;
-  const required = true;
   const [expand, setExpand] = useState(false);
   const [paginations, setPaginations] = useState({ current: 1, pageSize: 10 });
-  const [selectedRows, setSelectedRows] = useState([]);
-
-  useEffect(() => {
-    getQuery();
-  }, []);
 
   const getQuery = () => {
     dispatch({
@@ -100,6 +94,10 @@ function Besolved(props) {
       },
     });
   };
+
+  useEffect(() => {
+    getQuery();
+  }, []);
 
   const handleReset = () => {
     resetFields();
@@ -140,12 +138,12 @@ function Besolved(props) {
     });
   };
 
-  const rowSelection = {
-    onChange: (selectedRowKeys, selectedRows) => {
-      console.log(selectedRows);
-      setSelectedRows(selectedRows);
-    },
-  };
+  // const rowSelection = {
+  //   onChange: (selectedRowKeys, selectedRows) => {
+  //     console.log(selectedRows);
+  //     setSelectedRows(selectedRows);
+  //   },
+  // };
 
   const pagination = {
     showSizeChanger: true,
@@ -347,7 +345,7 @@ function Besolved(props) {
           dataSource={besolveList.rows}
           rowKey={record => record.id}
           pagination={pagination}
-          rowSelection={rowSelection}
+          // rowSelection={rowSelection}
         />
       </Card>
     </PageHeaderWrapper>

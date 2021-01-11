@@ -1,4 +1,4 @@
-import React, { useEffect,useRef,useState  } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Form,
   Button,
@@ -9,7 +9,7 @@ import {
 import moment from 'moment';
 import { connect } from 'dva';
 import Link from 'umi/link';
-import route from 'umi/router';
+import router from 'umi/router';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import SelectUser from '@/components/SelectUser';
 import Registrat from './components/Registrat';
@@ -17,12 +17,17 @@ import Previewedit from './components/Previewedit';
 import Handleedit from './components/Handleedit';
 import Problemconfirmedit from './components/Problemconfirmedit';
 import Closeedit from './components/Closeedit';
+import Systemoperatoredit from './components/Systemoperatoredit';
+import Businessaudit from './components/Businessaudit';
+import Specialaudit from './components/Specialaudit';
+
 
 import Problemsolving from './components/Problemsolving';
 import Problemreview from './components/Problemreview';
 import Problemconfirmation from './components/Problemconfirmation';
 import Problemregistration from './components/Problemregistration';
 import Reasonregression from './components/Reasonregression';
+import Problemflow from './components/Problemflow';
 
 import styles from './index.less';
 
@@ -59,7 +64,8 @@ const circaSign = 'problem';
 let confirmType;
 let closecircu = '关闭';
 let handleTime;
-let  receivingTime;
+let receivingTime;
+let problemFlowid;
 
 function Workorder(props) {
   const pagetitle = props.route.name;
@@ -69,13 +75,15 @@ function Workorder(props) {
   const ProblemconfirmRef = useRef();
   const CloseRef = useRef();
   const [flowtype, setFlowtype] = useState('1');
+  const [tabActiveKey, setTabActiveKey] = useState('workorder');
 
   const {
     dispatch,
     todoDetail,
-    todoDetail: { check, handle, confirm,close,register,main },
+    todoDetail: { check, handle, confirm, close, register, main },
     useInfo,
-    newno
+    newno,
+    loading
   } = props;
 
   const {
@@ -83,32 +91,72 @@ function Workorder(props) {
   } = props.match;
 
   const { problemFlowLogs } = todoDetail;
+
+  const selectNextflow = () => {
+    switch (currntStatus) {
+      case 5:
+        sessionStorage.setItem('Nextflowmane', '审核');
+        break;
+      case 25:
+        sessionStorage.setItem('Nextflowmane', '处理');
+        break;
+      case 9:
+        sessionStorage.setItem('Nextflowmane', '处理');
+        break;
+      case 29:
+        sessionStorage.setItem('Nextflowmane', '确认');
+        break;
+      case 45:
+        sessionStorage.setItem('Nextflowmane', '确认');
+        break;
+      case 49:
+        sessionStorage.setItem('Nextflowmane', '关闭');
+        break;
+      case 65:
+        sessionStorage.setItem('Nextflowmane', '关闭');
+        break;
+      default:
+        break;
+    }
+  }
+
+  const solvingDisbled = () => {
+    if ((currntStatus === 29) || (currntStatus === 9)) {
+      showEdit = true;
+    } else {
+      showEdit = false;
+    }
+  };
+
   if (todoDetail.main) {
     currntStatus = Number(todoDetail.main.status);
-    if((currntStatus === 69) || (currntStatus === 85)) {
+    problemFlowid = todoDetail.main.id;
+    selectNextflow();
+    solvingDisbled();
+    if ((currntStatus === 69) || (currntStatus === 85)) {
       closecircu = '';
     }
   }
 
-  if(todoDetail.hasOwnProperty('confirmType')){
-    confirmType =todoDetail.confirmType;
-  }else if(confirm){
+  if (todoDetail.hasOwnProperty('confirmType')) {
+    confirmType = todoDetail.confirmType;
+  } else if (confirm) {
     confirmType = confirm.confirmType;
   }
 
-  if(handle) {
-    if(handle.handleTime) {
+  if (handle) {
+    if (handle.handleTime) {
       handleTime = moment(handle.handleTime)
     }
-  }else {
+  } else {
     handleTime = moment(new Date());
   }
 
-  if(handle) {
-    if(handle.addtime) {
+  if (handle) {
+    if (handle.addtime) {
       receivingTime = moment(handle.addtime)
     }
-  }else {
+  } else {
     receivingTime = moment(new Date());
   }
 
@@ -123,7 +171,20 @@ function Workorder(props) {
       type: 'problemmanage/ToDodetails',
       payload: { id },
     })
-    };
+  };
+
+  const gotoCirapi = () => {
+    const result = 1;
+    const taskId = id;
+    return dispatch({
+      type: 'problemmanage/gotoCirculation',
+      payload: { taskId, result },
+    }).then(res => {
+      if (res.code === 200) {
+        router.push(`/ITSM/problemmanage/besolved`)
+      }
+    })
+  };
 
   const saveApi = (saveData, params2) => {
     return dispatch({
@@ -142,16 +203,9 @@ function Workorder(props) {
     });
   };
 
-  const solvingDisbled = () => {
-    if ((currntStatus === 29 ) || (currntStatus === 9)) {
-      showEdit = true;
-    }
-  };
-
   const saveRegister = (params2) => {
-    console.log('params2: ', params2);
     RegistratRef.current.validateFields((err, values) => {
-      if(params2?!err:true) {
+      if (params2 ? !err : true) {
         const saveData = values;
         saveData.registerTime = (saveData.registerTime).format('YYYY-MM-DD HH:mm:ss');
         saveData.registerOccurTime = (saveData.registerOccurTime).format('YYYY-MM-DD HH:mm:ss');
@@ -170,21 +224,18 @@ function Workorder(props) {
         }).then(res => {
           if (res.code === 200) {
             message.info(res.msg);
-            // route.push({pathname:`/ITSM/problemmanage/besolved`})
             if (params2) {
               gotoCirapi();
             }
           } else {
             message.error(res.msg);
-            // route.push({pathname:`/ITSM/problemmanage/besolved`})
           }
         });
-      } 
-     
+      }
     });
   };
 
-  //  审核保存特殊处理
+  //  审核保存
   const savePrevies = params2 => {
     PreviesRef.current.validateFields((err, values) => {
       const saveData = values;
@@ -193,8 +244,7 @@ function Workorder(props) {
       } else {
         saveData.checkTime = '';
       }
-
-      if (params2?!err:true) {
+      if (params2 ? !err : true) {
         saveData.taskId = id;
         if (todoDetail.editState === 'edit') {
           saveData.checkId = todoDetail.check.id;
@@ -209,14 +259,15 @@ function Workorder(props) {
   };
 
   const saveHandle = params2 => {
+    console.log(HandleRef, 'HandleRef');
     HandleRef.current.validateFields((err, values) => {
       const saveData = values;
       if (values.handleTime) {
-        saveData.handleTime = ( saveData.handleTime).format('YYYY-MM-DD HH:mm:ss');
+        saveData.handleTime = (saveData.handleTime).format('YYYY-MM-DD HH:mm:ss');
       } else {
         saveData.handleTime = '';
       }
-      if (params2?!err:true) {
+      if (params2 ? !err : true) {
         saveData.taskId = id;
         saveData.editState = todoDetail.editState;
         if (todoDetail.editState === 'edit') {
@@ -233,7 +284,7 @@ function Workorder(props) {
 
   const saveConfirm = params2 => {
     ProblemconfirmRef.current.validateFields((err, values) => {
-      if (params2?!err:true) {
+      if (params2 ? !err : true) {
         const saveData = values;
         saveData.taskId = id;
         saveData.editState = todoDetail.editState;
@@ -257,7 +308,7 @@ function Workorder(props) {
 
   const saveClose = params2 => {
     CloseRef.current.validateFields((err, values) => {
-      if (params2?!err:true) {
+      if (params2 ? !err : true) {
         const saveData = values;
         saveData.taskId = id;
         if (todoDetail.editState === 'edit') {
@@ -279,35 +330,22 @@ function Workorder(props) {
     }).then(res => {
       if (res.code === 200) {
         message.info(res.msg);
-        route.push(`/ITSM/problemmanage/besolved`)
+        router.push(`/ITSM/problemmanage/besolved`)
       } else {
         message.error(res.msg);
       }
     });
   };
 
-  const gotoCirapi = () => {
-    const result = 1;
-    const taskId = id;
-    return dispatch({
-      type: 'problemmanage/gotoCirculation',
-      payload: { taskId, result },
-    }).then(res => {
-      if(res.code === 200) {
-        route.push(`/ITSM/problemmanage/besolved`)
-      }
-    })
-  };
-
   const handleDelete = () => {
-    const id = todoDetail.main.id;
+    const deleteid = todoDetail.main.id;
     dispatch({
       type: 'problemmanage/delete',
-      payload: { id },
+      payload: { deleteid },
     }).then(res => {
       if (res.code === 200) {
         message.info(res.msg);
-        route.push({pathname:`/ITSM/problemmanage/besolved`})
+        router.push({ pathname: `/ITSM/problemmanage/besolved` })
       } else {
         message.error(res.msg);
       }
@@ -374,10 +412,10 @@ function Workorder(props) {
 
   useEffect(() => {
     getInformation();
-    solvingDisbled();
     getUserinfo();
     getNewno();
-    sessionStorage.setItem('Processtype','problem');
+    sessionStorage.setItem('Processtype', 'problem');
+    sessionStorage.setItem('Nextflowmane', 'ff');
   }, []);
 
   useEffect(() => {
@@ -398,6 +436,7 @@ function Workorder(props) {
   // }
 
 
+
   const tabList = [
     {
       key: 'workorder',
@@ -409,23 +448,12 @@ function Workorder(props) {
     },
   ];
 
-  
-  const handleTabChange = key => {
-    const { match } = props;
-    switch (key) {
-      case 'workorder':
-        route.push(`/ITSM/problemmanage/besolveddetail/workorder/${id}`);
-        break;
-      case 'process':
-        route.push(`/ITSM/problemmanage/besolveddetail/process/${id}`);
-        break;
-      default:
-        break;
-    }
-  }
-  const { match, location } = props;
+  const handleTabChange = (key) => { // tab切换
+    setTabActiveKey(key);
+  };
+
   return (
-    <PageHeaderWrapper 
+    <PageHeaderWrapper
       title={pagetitle}
       extra={
         <>
@@ -436,7 +464,7 @@ function Workorder(props) {
               </Button>
             )}
 
-            { ( currntStatus !== 5 && currntStatus !== 45) && (
+            { (currntStatus !== 5 && currntStatus !== 45) && (
               <Reasonregression reasonSubmit={values => reasonSubmit(values)}>
                 <Button type="primary" ghost style={{ marginRight: 8 }}>
                   回退
@@ -480,35 +508,34 @@ function Workorder(props) {
               </Button>
             )}
 
-            {(currntStatus !== 29) && (currntStatus !== 69)  && (currntStatus !== 85) && (
-                <SelectUser
+            {(currntStatus !== 29) && (currntStatus !== 69) && (currntStatus !== 85) && (
+              <SelectUser
                 taskId={id}
                 currentObj={currntStatus}
-                handleSubmit={()=>handleSubmit(circaSign)}
+                handleSubmit={() => handleSubmit(circaSign)}
               >
                 <Button
                   type="primary"
                   style={{ marginRight: 8 }}
-                  // onClick={() => handleSubmit(circaSign)}
+                // onClick={() => handleSubmit(circaSign)}
                 >
                   流转
                 </Button>
               </SelectUser>
 
-              )
+            )
             }
 
-            { ((currntStatus === 69) || (currntStatus === 85)) && closecircu === ''&& (
-                <Button
+            { ((currntStatus === 69) || (currntStatus === 85)) && closecircu === '' && (
+              <Button
                 type="primary"
                 style={{ marginRight: 8 }}
                 onClick={() => handleSubmit(circaSign)}
               >
                 流转
               </Button>
-               )
-
-            } 
+            )
+            }
 
             <Button type="default">
               <Link to="/ITSM/problemmanage/problemquery">返回</Link>
@@ -517,167 +544,222 @@ function Workorder(props) {
         </>
       }
       tabList={tabList}
-      tabActiveKey={location.pathname.replace(`${match.path}/`, '')}
       onTabChange={handleTabChange}
+      tabActiveKey={tabActiveKey}
     >
-      <div  className={styles.collapse}>
-    { problemFlowLogs && (
-          <Steps
-          current={problemFlowLogs.length -1} 
-          size="small"
-          // progressDot
-          style={{
-            background: '#fff',
-            padding: 24,
-            border: '1px solid #e8e8e8',
-            overflowX: 'auto',
-          }}
-        >
-          {problemFlowLogs.map(obj => {
-            const desc = (
-              <div className={styles.stepDescription}>
-                处理人：{obj.formHandler}
-                <div>开始时间：{obj.startTime}</div>
-              </div>
-            );
-            return <Step title={obj.name} description={desc} />;
-          })}
-        </Steps>
-      
+      {/* 编辑页 */}
+      {
+        (tabActiveKey === 'workorder' &&
+          <>
+            <div className={styles.collapse}>
+              {problemFlowLogs && (
+                <Steps
+                  current={problemFlowLogs.length - 1}
+                  size="small"
+                  // progressDot
+                  style={{
+                    background: '#fff',
+                    padding: 24,
+                    border: '1px solid #e8e8e8',
+                    overflowX: 'auto',
+                  }}
+                >
+                  {problemFlowLogs.map(obj => {
+                    const desc = (
+                      <div className={styles.stepDescription}>
+                        处理人：{obj.formHandler}
+                        <div>开始时间：{obj.startTime}</div>
+                      </div>
+                    );
+                    return <Step title={obj.name} description={desc} />;
+                  })}
+                </Steps>
+
+              )
+              }
+
+            </div>
+            <Collapse
+              expandIconPosition="right"
+              defaultActiveKey={['1']}
+            >
+              {
+                currntStatus === 5 && (
+                  <Panel
+                    header="问题登记"
+                    key='1'
+                    style={{ backgroundColor: 'white' }}
+                  >
+                    <Registrat
+                      formItemLayout={formItemLayout}
+                      forminladeLayout={forminladeLayout}
+                      ref={RegistratRef}
+                      newno={newno}
+                      useInfo={useInfo}
+                      register={register}
+                      main={main}
+                    />
+                  </Panel>
+                )
+              }
+
+              {
+                (currntStatus === 9 || currntStatus === 25) && (
+                  <Panel
+                    header="问题审核"
+                    key='1'
+                    style={{ backgroundColor: 'white' }}
+                  >
+                    <Previewedit
+                      formItemLayout={formItemLayout}
+                      forminladeLayout={forminladeLayout}
+                      ref={PreviesRef}
+                      useInfo={useInfo}
+                      check={check}
+                      loading={loading}
+                    />
+                  </Panel>
+                )
+              }
+
+              {
+                (currntStatus === 29 || currntStatus === 45) && (
+                  <Panel
+                    header="问题处理"
+                    key='1'
+                    style={{ backgroundColor: 'white' }}
+                  >
+                    <Handleedit
+                      formItemLayout={formItemLayout}
+                      forminladeLayout={forminladeLayout}
+                      showEdit={showEdit}
+                      ref={HandleRef}
+                      useInfo={useInfo}
+                      handle={handle}
+                      handleTime={handleTime}
+                      receivingTime={receivingTime}
+                      loading={loading}
+                    />
+                  </Panel>
+                )
+              }
+
+              {
+                confirmType === '0' && (currntStatus === 65 || currntStatus === 49) && (
+                  <Panel
+                    header="问题确认"
+                    key='1'
+                    style={{ backgroundColor: 'white' }}
+                  >
+                    <Problemconfirmedit
+                      formItemLayout={formItemLayout}
+                      forminladeLayout={forminladeLayout}
+                      useInfo={useInfo}
+                      ref={ProblemconfirmRef}
+                      confirm={confirm}
+                    />
+                  </Panel>
+                )
+              }
+
+              {
+                (currntStatus === 69 || currntStatus === 85) && (
+                  <Panel
+                    header="问题关闭"
+                    key='1'
+                    style={{ backgroundColor: 'white' }}
+                  >
+                    <Closeedit
+                      formItemLayout={formItemLayout}
+                      forminladeLayout={forminladeLayout}
+                      ref={CloseRef}
+                      useInfo={useInfo}
+                      close={close}
+                    />
+                  </Panel>
+                )
+              }
+
+              {/* { */}
+                {/* <Panel
+                  header='系统运维商审核环节'
+                  key='1'
+                  style={{ backgroundColor:'white'}}
+                >
+                  <Systemoperatoredit 
+                    formItemLayout={formItemLayout}
+                    forminladeLayout={forminladeLayout}
+                 />
+                </Panel>
+
+                <Panel
+                  header='自动化业务人员会签审核环节'
+                  key='1'
+                  style={{ backgroundColor:'white'}}
+                >
+                  <Businessaudit 
+                    formItemLayout={formItemLayout}
+                    forminladeLayout={forminladeLayout}
+                 />
+                </Panel>
+
+                <Panel
+                  header='自动化科专责会签审核环节'
+                  key='1'
+                  style={{ backgroundColor:'white'}}
+                >
+                  <Specialaudit 
+                    formItemLayout={formItemLayout}
+                    forminladeLayout={forminladeLayout}
+                 />
+                </Panel> */}
+      {/* } */}
+            </Collapse>
+            
+           
+            <div>
+              {currntStatus !== 5 && (
+                <Problemregistration
+                  registrationDetail={todoDetail}
+                  statue={currntStatus}
+                  register={register}
+                  main={main}
+                  loading={loading}
+                />
+              )}
+
+              {currntStatus >= 29 && (
+                <Problemreview
+                  reviesDetail={todoDetail}
+                  loading={loading}
+                />
+              )}
+
+              {currntStatus > 45 && (
+                <Problemsolving
+                  solvingDetail={todoDetail}
+                  loading={loading}
+                />
+              )}
+
+              {currntStatus > 65 && (
+                <Problemconfirmation
+                  confirmationDetail={todoDetail}
+                  loading={loading}
+                />
+              )}
+            </div>
+   
+
+          </>
         )
       }
 
-    </div>
-
-        {/* 编辑页 */}
-      <Collapse
-          expandIconPosition="right"
-          bordered={false}
-          style={{backgroundColor:'white'}}
-          defaultActiveKey={['1']}
-      >
-        {/* 问题登记 */}
-        {
-          currntStatus === 5 && (
-            <Panel 
-              header="问题登记"
-              key='1'
-              style={{backgroundColor:'white'}}
-              >
-                {
-                  currntStatus === 5 && (
-                    <Registrat
-                    formItemLayout={formItemLayout}
-                    forminladeLayout={forminladeLayout}
-                    ref={RegistratRef}
-                    newno={newno}
-                    useInfo={useInfo}
-                    register={register}
-                    main={main}
-                  />
-                  )
-                }
-          </Panel>
-            )
-        }
-
-        {
-          (currntStatus === 9 || currntStatus === 25) && (
-            <Panel 
-            header="问题审核"
-            key='1'
-            style={{backgroundColor:'white'}}
-            >
-              <Previewedit
-              formItemLayout={formItemLayout}
-              forminladeLayout={forminladeLayout}
-              ref={PreviesRef}
-              useInfo={useInfo}
-              check={check}
-              />
-        </Panel>
-          )
-        }
-
-        {
-           (currntStatus === 29 || currntStatus === 45) && (
-            <Panel 
-            header="问题处理"
-            key='1'
-            style={{backgroundColor:'white'}}
-            >
-              <Handleedit
-                formItemLayout={formItemLayout}
-                forminladeLayout={forminladeLayout}
-                showEdit={showEdit}
-                ref={HandleRef}
-                useInfo={useInfo}
-                handle={handle}
-                handleTime={handleTime}
-                receivingTime={receivingTime}
-                />
-        </Panel>
-           )
-        }
-
-        {
-           confirmType === '0' && (currntStatus === 65 || currntStatus === 49) && (
-            <Panel 
-            header="问题确认"
-            key='1'
-            style={{backgroundColor:'white'}}
-            >
-              <Problemconfirmedit
-                formItemLayout={formItemLayout}
-                forminladeLayout={forminladeLayout}
-                useInfo={useInfo}
-                ref={ProblemconfirmRef}
-                confirm={confirm}
-                />
-        </Panel>
-           )
-        }
-
-        {
-           (currntStatus === 69 || currntStatus === 85) && (
-            <Panel 
-            header="问题关闭"
-            key='1'
-            style={{backgroundColor:'white'}}
-            >
-              <Closeedit
-                formItemLayout={formItemLayout}
-                forminladeLayout={forminladeLayout}
-                ref={CloseRef}
-                useInfo={useInfo}
-                close={close}
-                />
-        </Panel>
-           )
-        }
-      </Collapse>
-
-      {/* 展示详情页  */}
-      { currntStatus !== 5 && (
-        <Problemregistration
-          registrationDetail={todoDetail}
-          statue={currntStatus}
-          register={register}
-          main={main}
-        />
-      )}
-
-      { currntStatus >= 29 && (
-        <Problemreview reviesDetail={todoDetail} />
-      )}
-
-      { currntStatus > 45 && (
-        <Problemsolving solvingDetail={todoDetail} />
-      )}
-
-      { currntStatus > 65 && (
-        <Problemconfirmation confirmationDetail={todoDetail} />
-      )}
+      {
+        (tabActiveKey === 'process' && (
+          <Problemflow id={problemFlowid} />
+        ))
+      }
 
       {/* {currntStatus > 65 && (
         <Confirmationcountersignature countersignatureDetail={todoDetail} />

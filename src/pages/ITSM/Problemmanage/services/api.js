@@ -52,8 +52,8 @@ export async function searchBesolve(current, pageSize, values) {
   });
 }
 
-export async function deleteTobo(id) {
-  return request(`/itsm/problem/flow/deleteInstance?ids=${id}`, {
+export async function deleteTobo(deleteid) {
+  return request(`/itsm/problem/flow/deleteInstance?ids=${deleteid}`, {
     method: 'DELETE',
   });
 }

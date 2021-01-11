@@ -1,26 +1,21 @@
-import React, { useEffect, useState } from 'react';
-import { Descriptions, Card, Menu, Steps, Collapse, Timeline } from 'antd';
-import { connect } from 'dva';
-import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import React from 'react';
+import { Descriptions, Collapse } from 'antd';
 
-const { SubMenu } = Menu;
 const { Panel } = Collapse;
-const { Step } = Steps;
 
 function Problemregistration(props) {
   const { 
     registrationDetail,
     statue,
-    queryStatue,
     problemFlowNodeRows,
     main,
-    querySign
+    querySign,
+    loading
    } = props;
-   console.log(registrationDetail,'registrationDetail');
 
   return (
     <>
-      {statue !== 5 && (
+      {statue !== 5 && loading === false && (
         <Collapse
           expandIconPosition="right"
           defaultActiveKey={['1']}
@@ -85,7 +80,7 @@ function Problemregistration(props) {
         </Collapse>
       )}
 
-      {querySign !=='' && statue === 5 && (
+      {querySign !=='' &&  loading === false && statue === 5 && (
         <Collapse
           expandIconPosition="right"
           defaultActiveKey={['1']}
