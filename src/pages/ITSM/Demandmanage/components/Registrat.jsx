@@ -233,7 +233,7 @@ const Registrat = forwardRef((props, ref) => {
               })(
                 <Select placeholder="请选择">
                   {demandtype.map(({ key, value }) => [
-                    <Option key={key} value={key}>
+                    <Option key={key} value={value}>
                       {value}
                     </Option>,
                   ])}

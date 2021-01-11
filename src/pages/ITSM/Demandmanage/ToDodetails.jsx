@@ -1,25 +1,21 @@
-import React, { useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import router from 'umi/router';
 import { Button } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import WorkOrder from './WorkOrder';
+import Process from './Process';
 import SelectUser from '@/components/SelectUser';
 
 function ToDoregist(props) {
   const { match, children, location } = props;
-  const { pangekey, id, mainId } = location.query;
-  const pagetitle = props.route.name;
+  const { taskName, taskId, mainId } = location.query;
+  const [tabActivekey, settabActivekey] = useState('workorder'); // 打开标签
+  const [validate, setValidate] = useState(false); // 初始化校验状态
+  const [buttontype, setButtonType] = useState('');
 
   const handleHold = type => {
-    router.push({
-      pathname: `${props.match.url}/workorder`,
-      query: {
-        pangekey,
-        id,
-        mainId,
-        validate: true,
-        type,
-      },
-    });
+    setValidate(true);
+    setButtonType(type);
   };
 
   const handleclose = () => {
@@ -27,6 +23,9 @@ function ToDoregist(props) {
       pathname: `/ITSM/demandmanage/to-do`,
     });
   };
+  useEffect(() => {
+    sessionStorage.setItem('NextflowUserId', '1310135708685438978');
+  }, []);
 
   const operations = (
     <>
@@ -36,8 +35,8 @@ function ToDoregist(props) {
       <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleHold('save')}>
         保存
       </Button>
-      <SelectUser handleSubmit={() => handleHold('other')} changorder="审核">
-        <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleHold('flow')}>
+      <SelectUser handleSubmit={() => handleHold('flow')} changorder="审核" taskId={taskId}>
+        <Button type="primary" style={{ marginRight: 8 }}>
           流转
         </Button>
       </SelectUser>
@@ -47,24 +46,10 @@ function ToDoregist(props) {
   const handleTabChange = key => {
     switch (key) {
       case 'workorder':
-        router.push({
-          pathname: `${match.url}/workorder`,
-          query: {
-            pangekey,
-            id,
-            mainId,
-          },
-        });
+        settabActivekey('workorder');
         break;
       case 'process':
-        router.push({
-          pathname: `${match.url}/process`,
-          query: {
-            pangekey,
-            id,
-            mainId,
-          },
-        });
+        settabActivekey('process');
         break;
       default:
         break;
@@ -83,13 +68,23 @@ function ToDoregist(props) {
   ];
   return (
     <PageHeaderWrapper
-      title={pagetitle}
+      title={taskName}
       extra={operations}
       tabList={tabList}
-      tabActiveKey={location.pathname.replace(`${match.path}/`, '')}
+      tabActiveKey={tabActivekey}
       onTabChange={handleTabChange}
     >
-      {children}
+      {tabActivekey === 'workorder' && (
+        <WorkOrder
+          location={location}
+          changValidate={value => {
+            setValidate(value);
+          }}
+          validate={validate}
+          type={buttontype}
+        />
+      )}
+      {tabActivekey === 'process' && <Process location={location} />}
     </PageHeaderWrapper>
   );
 }

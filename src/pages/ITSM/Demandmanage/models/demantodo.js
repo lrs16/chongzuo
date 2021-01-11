@@ -6,6 +6,10 @@ import {
   DemandImage,
   DemandOpenFlow,
   registerSaveOrUpdate,
+  DemandSaveOrUpdate,
+  NextStep,
+  TrackList,
+  TrackUpdata,
 } from '../services/api';
 
 export default {
@@ -16,6 +20,7 @@ export default {
     imgblob: '',
     records: '',
     info: '',
+    tracklist: '',
   },
 
   effects: {
@@ -64,6 +69,38 @@ export default {
         });
       }
     },
+    // 编辑通用流转
+    *demandnextstep({ payload }, { call }) {
+      const response = yield call(NextStep, payload);
+      if (response.code === 200) {
+        message.success(response.msg, 2);
+        router.push({
+          pathname: `/ITSM/demandmanage/to-do`,
+        });
+      }
+    },
+    // 编辑通用保存
+    *demandsave({ payload }, { call }) {
+      const response = yield call(DemandSaveOrUpdate, payload);
+      if (response.code === 200) {
+        message.success(response.msg, 2);
+      }
+    },
+    // 需求跟踪查询
+    *fetchtracklist({ payload: { demandId } }, { call, put }) {
+      const response = yield call(TrackList, demandId);
+      yield put({
+        type: 'savetracklist',
+        payload: response.data,
+      });
+    },
+    // 需求跟踪保存
+    *tracksave({ payload }, { call }) {
+      const response = yield call(TrackUpdata, payload);
+      if (response.code === 200) {
+        message.success(response.msg, 2);
+      }
+    },
   },
 
   reducers: {
@@ -89,6 +126,12 @@ export default {
       return {
         ...state,
         info: action.payload,
+      };
+    },
+    savetracklist(state, action) {
+      return {
+        ...state,
+        tracklist: action.payload,
       };
     },
   },

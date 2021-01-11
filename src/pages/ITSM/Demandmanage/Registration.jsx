@@ -32,7 +32,7 @@ function Registration(props) {
         creationTime: values.creationTime.format(),
         registerTime: values.registerTime.format(),
         functionalModule: values.functionalModule.join('/'),
-        nextUser: sessionStorage.getItem('userauthorityid'),
+        nextUserIds: sessionStorage.getItem('userauthorityid').split(','),
         // nextUser: sessionStorage.getItem('userName'),
       },
     });
@@ -45,23 +45,23 @@ function Registration(props) {
         creationTime: values.creationTime.format(),
         registerTime: values.registerTime.format(),
         functionalModule: values.functionalModule.join('/'),
-        // nextUser: sessionStorage.getItem('NextflowUserId'),
-        nextUser: sessionStorage.getItem('userName'),
+        nextUserIds: sessionStorage.getItem('userauthorityid').split(','),
+        // nextUser: sessionStorage.getItem('userName'),
       },
     });
   };
-  // 保存校验
+  // 保存,流转获取表单数据
   const getregistrat = type => {
-    RegistratRef.current.validateFields((err, values) => {
-      if (!err) {
-        if (type === 'save') {
-          handlesubmit(values);
-        }
-        if (type === 'next') {
+    if (type === 'save') {
+      handlesubmit(RegistratRef.current.getFieldsValue());
+    }
+    if (type === 'next') {
+      RegistratRef.current.validateFields((err, values) => {
+        if (!err) {
           handlenext(values);
         }
-      }
-    });
+      });
+    }
   };
 
   const operations = (
@@ -69,11 +69,11 @@ function Registration(props) {
       <Button type="primary" style={{ marginRight: 8 }} onClick={() => getregistrat('save')}>
         保存
       </Button>
-      {/* <SelectUser handleSubmit={() => getregistrat('next')}>
+      <SelectUser handleSubmit={() => getregistrat('next')}>
         <Button type="primary" style={{ marginRight: 8 }}>
           流转
         </Button>
-      </SelectUser> */}
+      </SelectUser>
       <Button type="default">关闭</Button>
     </>
   );

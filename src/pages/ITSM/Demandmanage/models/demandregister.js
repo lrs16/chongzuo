@@ -14,17 +14,16 @@ export default {
     *start({ payload }, { call }) {
       const response = yield call(DemandStart, payload);
       if (response.code === 200) {
-        message.success(response.msg, 5);
-
-        // router.push({
-        //   pathname: `/ITSM/eventmanage/to-do/record/workorder`,
-        //   query: {
-        //     pangekey: register_selfhandle === '1' ? '5' : '1',
-        //     id: registres.taskId,
-        //     mainId: flowInstanceId,
-        //     validate: false,
-        //   },
-        // });
+        message.success('操作成功', 2);
+        const { taskId, processId } = response.data;
+        router.push({
+          pathname: `/ITSM/demandmanage/to-do/record/workorder`,
+          query: {
+            pangekey: '需求登记',
+            mainId: processId,
+            taskId,
+          },
+        });
       }
     },
     *startandnext({ payload }, { call }) {

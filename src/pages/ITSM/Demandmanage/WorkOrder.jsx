@@ -1,4 +1,4 @@
-import React, { useState, createContext, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import router from 'umi/router';
 import moment from 'moment';
 import { connect } from 'dva';
@@ -8,8 +8,8 @@ import styles from './index.less';
 import { DingdingOutlined } from '@ant-design/icons';
 import Registrat from './components/Registrat';
 import Examine from './components/Examine';
-import Review from './components/Review';
-import Verification from './components/Verification';
+import Track from './components/Track';
+import TableForm from './components/TableForm';
 
 const { Panel } = Collapse;
 const { Step } = Steps;
@@ -43,11 +43,21 @@ const forminladeLayout = {
 };
 
 function WorkOrder(props) {
-  const { dispatch, location, records, info, userinfo, loading } = props;
+  const {
+    dispatch,
+    location,
+    records,
+    info,
+    userinfo,
+    loading,
+    validate,
+    type,
+    changValidate,
+  } = props;
   const [activeKey, setActiveKey] = useState(['form']);
-  const { pangekey, id, mainId, type, validate } = location.query;
+  const { taskName, taskId, mainId } = location.query;
   // const [ischeck, setIscheck] = useState(false); // 是否在校验状态
-  const [flowtype, setFlowtype] = useState('1'); // 流转类型
+  // const [flowtype, setFlowtype] = useState('1'); // 流转类型
 
   // 初始化用户信息，流程类型
   useEffect(() => {
@@ -58,129 +68,149 @@ function WorkOrder(props) {
   }, []);
   // 更新流转类型
   useEffect(() => {
-    sessionStorage.setItem('flowtype', flowtype);
-  }, [flowtype]);
+    sessionStorage.setItem('flowtype', 1);
+  }, []);
 
   // 刷新路由
-  const routerRefresh = () => {
-    router.push({
-      pathname: `${props.match.url}`,
-      query: {
-        pangekey,
-        id,
-        mainId,
-        validate: false,
-        next: sessionStorage.getItem('Nextflowmane'),
-      },
-    });
-  };
-
   // 登记表单
   const RegistratRef = useRef();
+
   const getregistrats = () => {
-    RegistratRef.current.validateFields((err, values) => {
-      if (!err) {
-        switch (type) {
-          case 'save': {
-            dispatch({
-              type: 'demandtodo/demandregisterupdate',
-              payload: {
-                paloadvalues: {
-                  ...values,
-                  creationTime: values.creationTime.format(),
-                  registerTime: values.registerTime.format(),
-                  functionalModule: values.functionalModule.join('/'),
-                  nextUser: sessionStorage.getItem('userauthorityid'),
-                  // nextUser: sessionStorage.getItem('userName'),
-                },
-                processInstanceId: mainId,
-              },
-            });
-            break;
-          }
-          case 'flow':
-            console.log('走流转接口');
-            break;
-          default:
-            break;
+    if (type === 'save') {
+      const values = RegistratRef.current.getFieldsValue();
+      dispatch({
+        type: 'demandtodo/demandregisterupdate',
+        payload: {
+          paloadvalues: {
+            ...values,
+            creationTime: values.creationTime.format(),
+            registerTime: values.registerTime.format(),
+            functionalModule: values.functionalModule.join('/'),
+            nextUser: sessionStorage.getItem('userauthorityid'),
+            id: info.demandForm.id,
+          },
+          processInstanceId: mainId,
+        },
+      });
+    }
+    if (type === 'flow') {
+      RegistratRef.current.validateFields((err, values) => {
+        if (!err) {
+          dispatch({
+            type: 'demandregister/startandnext',
+            payload: {
+              ...values,
+              creationTime: values.creationTime.format(),
+              registerTime: values.registerTime.format(),
+              functionalModule: values.functionalModule.join('/'),
+              nextUserIds: sessionStorage.getItem('userauthorityid').split(','),
+              // nextUser: sessionStorage.getItem('userName'),
+              taskId,
+            },
+          });
         }
-        routerRefresh();
-      }
-    });
+      });
+    }
   };
-  // 表单
+  // 需求审核，运维审核,需求复核表单
+  const setid = () => {
+    const { historys } = info;
+    const infotaskName = info.taskName;
+    if (historys !== [] && historys?.slice(-1)[0].taskName === infotaskName) {
+      return info.historys?.slice(-1)[0].id;
+    }
+    if (historys === [] || historys?.slice(-1)[0]?.taskName !== infotaskName) {
+      return '';
+    }
+  };
   const ExamineRef = useRef();
   const getdemandexamine = () => {
-    ExamineRef.current.validateFields((err, values) => {
-      if (!err) {
-        switch (type) {
-          case 'save': {
-            dispatch({
-              type: 'demandtodo/demandregisterupdate',
-              payload: {
-                paloadvalues: {
-                  ...values,
-                  creationTime: values.creationTime.format(),
-                  registerTime: values.registerTime.format(),
-                  functionalModule: values.functionalModule.join('/'),
-                  nextUser: sessionStorage.getItem('NextflowUserId'),
-                  // nextUser: sessionStorage.getItem('userName'),
-                },
-                processInstanceId: mainId,
-              },
-            });
-            break;
-          }
-          case 'flow':
-            console.log('走流转接口');
-            break;
-          default:
-            break;
+    const id = setid();
+    if (type === 'save') {
+      const values = ExamineRef.current.getFieldsValue();
+      dispatch({
+        type: 'demandtodo/demandsave',
+        payload: {
+          ...values,
+          reviewTime: values.reviewTime.format(),
+          business: Number(values.business),
+          releases: Number(values.releases),
+          nextUserIds: sessionStorage.getItem('userauthorityid').split(),
+          registerId: info.demandForm.id,
+          id,
+          taskName: info.taskName,
+        },
+      });
+    }
+    if (type === 'flow') {
+      ExamineRef.current.validateFields((err, values) => {
+        if (!err) {
+          dispatch({
+            type: 'demandtodo/demandnextstep',
+            payload: {
+              ...values,
+              reviewTime: values.reviewTime.format(),
+              nextUserIds: sessionStorage.getItem('userauthorityid').split(),
+              taskId,
+              registerId: info.demandForm.id,
+              id: info.historys[info.historys.length - 1].id,
+              taskName: info.taskName,
+            },
+          });
         }
-      }
-    });
+      });
+    }
   };
-  // 表单
-  const ReviewRef = useRef();
-  const getreviewref = () => {
-    ReviewRef.current.validateFields((err, values) => {
-      if (!err) {
-        setFormregistrat({
+  // 需求跟踪
+  const TrackRef = useRef();
+  const getdemantrack = () => {
+    const id = setid();
+    if (type === 'save') {
+      const values = ExamineRef.current.getFieldsValue();
+      dispatch({
+        type: 'demandtodo/demandsave',
+        payload: {
           ...values,
-        });
-      }
-    });
+          reviewTime: values.reviewTime.format(),
+          nextUserIds: sessionStorage.getItem('userauthorityid').split(),
+          registerId: info.demandForm.id,
+          id,
+          taskName: info.taskName,
+        },
+      });
+    }
+    if (type === 'flow') {
+      ExamineRef.current.validateFields((err, values) => {
+        if (!err) {
+          dispatch({
+            type: 'demandtodo/demandnextstep',
+            payload: {
+              ...values,
+              reviewTime: values.reviewTime.format(),
+              nextUserIds: sessionStorage.getItem('userauthorityid').split(),
+              taskId,
+              registerId: info.demandForm.id,
+              id: info.historys[info.historys.length - 1].id,
+              taskName: info.taskName,
+            },
+          });
+        }
+      });
+    }
   };
-  // 表单
-  const VerificationRef = useRef();
-  const getverificationref = () => {
-    ReviewRef.current.validateFields((err, values) => {
-      if (!err) {
-        setFormregistrat({
-          ...values,
-        });
-      }
-    });
-  };
-
   const handleflow = () => {
-    switch (pangekey) {
+    switch (taskName) {
       case '需求登记': {
-        getregistrats(type);
+        getregistrats();
         break;
       }
       case '需求审核':
       case '运维审核':
+      case '需求复核':
         getdemandexamine();
         break;
-      case '需求复核':
-        // getreviewref();
-        break;
       case '开发跟踪':
-        // getverificationref();
-        break;
-      case '需求验证':
-        // getdemandexamine();
+        getdemantrack();
         break;
       case '需求确认':
         // getdemandexamine();
@@ -190,10 +220,8 @@ function WorkOrder(props) {
     }
   };
   useEffect(() => {
-    if (validate === true) {
-      handleflow();
-    }
-  }, [validate]);
+    handleflow();
+  }, [type]);
 
   const callback = key => {
     setActiveKey(key);
@@ -237,60 +265,88 @@ function WorkOrder(props) {
           })}
         </Steps>
       )}
-      <Collapse
-        expandIconPosition="right"
-        activeKey={activeKey}
-        bordered={false}
-        onChange={callback}
-        style={{ marginTop: '-25px' }}
-      >
-        <Panel header={pangekey} key="form">
-          {pangekey === '需求登记' && (
-            <Registrat
-              formItemLayout={formItemLayout}
-              forminladeLayout={forminladeLayout}
-              ref={RegistratRef}
-              register={info.demandForm}
-              userinfo={userinfo}
-            />
-          )}
-          {pangekey === '需求审核' && (
-            <Examine
-              ref={ExamineRef}
-              formItemLayout={formItemLayout}
-              forminladeLayout={forminladeLayout}
-              text="审核"
-              // register={info.demandForm}
-              userinfo={userinfo}
-            />
-          )}
-          {pangekey === '运维审核' && (
-            <Examine
-              ref={ExamineRef}
-              formItemLayout={formItemLayout}
-              forminladeLayout={forminladeLayout}
-              text="运维"
-              // register={info.demandForm}
-              userinfo={userinfo}
-            />
-          )}
-          {pangekey === '需求复核' && (
-            <Review
-              ref={ReviewRef}
-              formItemLayout={formItemLayout}
-              forminladeLayout={forminladeLayout}
-            />
-          )}
-          {pangekey === '需求验证' && (
-            <Verification
-              ref={VerificationRef}
-              formItemLayout={formItemLayout}
-              forminladeLayout={forminladeLayout}
-            />
-          )}
-        </Panel>
+      <Spin spinning={loading}>
+        {loading === false && info !== '' && (
+          <Collapse
+            expandIconPosition="right"
+            activeKey={activeKey}
+            bordered={false}
+            onChange={callback}
+            style={{ marginTop: '-25px' }}
+          >
+            <Panel header={taskName} key="form">
+              {taskName === '需求登记' && (
+                <Registrat
+                  formItemLayout={formItemLayout}
+                  forminladeLayout={forminladeLayout}
+                  ref={RegistratRef}
+                  register={info.demandForm}
+                  userinfo={userinfo}
+                />
+              )}
+              {taskName === '需求审核' && (
+                <Examine
+                  ref={ExamineRef}
+                  formItemLayout={formItemLayout}
+                  forminladeLayout={forminladeLayout}
+                  text="审核"
+                  userinfo={userinfo}
+                  taskName={info.taskName}
+                  info={
+                    info.historys?.slice(-1)[0].taskName === info.taskName
+                      ? info.historys.slice(-1)
+                      : ''
+                  }
+                />
+              )}
+              {taskName === '运维审核' && (
+                <Examine
+                  ref={ExamineRef}
+                  formItemLayout={formItemLayout}
+                  forminladeLayout={forminladeLayout}
+                  text="运维"
+                  // register={info.demandForm}
+                  userinfo={userinfo}
+                  taskName={info.taskName}
+                  info={
+                    info.historys?.slice(-1)[0].taskName === info.taskName
+                      ? info.historys.slice(-1)
+                      : ''
+                  }
+                />
+              )}
+              {taskName === '需求复核' && (
+                <Examine
+                  ref={ExamineRef}
+                  formItemLayout={formItemLayout}
+                  forminladeLayout={forminladeLayout}
+                  text="复核"
+                  userinfo={userinfo}
+                  taskName={info.taskName}
+                  info={
+                    info.historys?.slice(-1)[0].taskName === info.taskName
+                      ? info.historys.slice(-1)
+                      : ''
+                  }
+                />
+              )}
+              {taskName === '需求跟踪' && (
+                <Track
+                  ref={TrackRef}
+                  userinfo={userinfo}
+                  taskName={info.taskName}
+                  info={
+                    info.historys?.slice(-1)[0].taskName === info.taskName
+                      ? info.historys.slice(-1)
+                      : ''
+                  }
+                  demandId={info.demandForm.demandId}
+                />
+                // <TableForm value={data} />
+              )}
+            </Panel>
 
-        {/* {data.map((obj, index) => {
+            {/* {data.map((obj, index) => {
               // panel详情组件
               const Paneldesmap = new Map([
                 ['register', <Registratdes info={Object.values(obj)[0]} main={data[0].main} />],
@@ -306,14 +362,17 @@ function WorkOrder(props) {
                   </Panel>
                 );
             })} */}
-      </Collapse>
+          </Collapse>
+        )}
+      </Spin>
     </div>
   );
 }
 
-export default connect(({ demandtodo, itsmuser, loading }) => ({
+export default connect(({ demandtodo, itsmuser, demandregister, loading }) => ({
   userinfo: itsmuser.userinfo,
   records: demandtodo.records,
   info: demandtodo.info,
-  loading: loading.models.demantodo,
+  demandregister,
+  loading: loading.effects['demandtodo/demandopenflow'],
 }))(WorkOrder);

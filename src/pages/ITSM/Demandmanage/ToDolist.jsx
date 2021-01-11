@@ -50,10 +50,9 @@ const columns = [
         router.push({
           pathname: `/ITSM/demandmanage/to-do/record/workorder`,
           query: {
-            pangekey: record.taskName,
-            id: record.taskId,
+            taskName: record.taskName,
+            taskId: record.taskId,
             mainId: record.processInstanceId,
-            validate: false,
           },
         });
       };
@@ -93,6 +92,9 @@ const columns = [
     title: '发送时间',
     dataIndex: 'sendTime',
     key: 'sendTime',
+    // render: (text, record) => {
+    //   return <>{text.format('YYYY-MM-DD HH:mm:ss')}</>;
+    // },
   },
 ];
 
@@ -104,7 +106,7 @@ function ToDolist(props) {
     list,
     dispatch,
   } = props;
-  const [paginations, setPageinations] = useState({ current: 1, pageSize: 10 });
+  const [paginations, setPageinations] = useState({ current: 1, pageSize: 50 });
   const [expand, setExpand] = useState(false);
 
   useEffect(() => {
@@ -116,8 +118,8 @@ function ToDolist(props) {
             // ...values,
             page: paginations.current,
             limit: paginations.pageSize,
-            // userId: sessionStorage.getItem('userauthorityid'),
-            userId: 'ELIN',
+            userId: sessionStorage.getItem('userauthorityid'),
+            // userId: 'ELIN',
           },
         });
       }

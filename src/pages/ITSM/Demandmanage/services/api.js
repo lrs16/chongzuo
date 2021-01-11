@@ -49,9 +49,10 @@ export async function DemandOpenFlow(processInstanceId) {
 }
 
 // 通用保存
-export async function DemandSaveOrUpdate(processInstanceId) {
-  return request(`/demand/todo/todoDetail/${processInstanceId}`, {
-    method: 'GET',
+export async function DemandSaveOrUpdate(params) {
+  return request(`/demand/todo/processSaveOrUpdate`, {
+    method: 'POST',
+    body: JSON.stringify(params),
   });
 }
 
@@ -60,5 +61,28 @@ export async function registerSaveOrUpdate(params) {
   return request(`/demand/todo/registerSaveOrUpdate`, {
     method: 'POST',
     body: JSON.stringify(params),
+  });
+}
+
+// 编辑流转 /demand/todo/nextStep
+export async function NextStep(params) {
+  return request(`/demand/todo/nextStep`, {
+    method: 'POST',
+    body: JSON.stringify(params),
+  });
+}
+
+// 需求跟踪保存/demand/track/addOrUpdate
+export async function TrackUpdata(params) {
+  return request(`/demand/track/addOrUpdate`, {
+    method: 'POST',
+    body: JSON.stringify(params),
+  });
+}
+
+// 需求跟踪查询 /demand/track/list/{demandId}
+export async function TrackList(demandId) {
+  return request(`/demand/track/list/${demandId}`, {
+    method: 'GET',
   });
 }
