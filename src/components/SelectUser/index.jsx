@@ -19,7 +19,6 @@ const SelectUser = props => {
       return newArr;
     }
     for (let i = 0; i < datas.length; i += 1) {
-<<<<<<< HEAD
       if (datas[i].id === undefined) {
         const vote = {};
         vote.label = datas[i].userName;
@@ -31,12 +30,6 @@ const SelectUser = props => {
         vote.value = datas[i].id;
         newArr.push(vote);
       }
-=======
-      const vote = {};
-      vote.label = datas[i].userName;
-      vote.value = datas[i].userId;
-      newArr.push(vote);
->>>>>>> 465151b... 更新问题管理代码
     }
 
     return newArr;

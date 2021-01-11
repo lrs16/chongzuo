@@ -42,26 +42,16 @@ export default {
       });
     },
     // 加载故障下一环节处理人列表
-<<<<<<< HEAD
     *troubleuserlist({ payload: { taskId, result } }, { call, put }) {
       const response = yield call(TroubleFlowUserList, taskId, result);
-=======
-    *troubleuserlist({ payload: { taskId, type } }, { call, put }) {
-      const response = yield call(TroubleFlowUserList, taskId, type);
->>>>>>> 465151b... 更新问题管理代码
       yield put({
         type: 'savelist',
         payload: response.data,
       });
     },
     // 加载问题下一环节处理人列表
-<<<<<<< HEAD
     *problemuserlist({ payload: { taskId, result } }, { call, put }) {
       const response = yield call(ProblemFlowUserList, taskId, result);
-=======
-    *problemuserlist({ payload: { taskId, type } }, { call, put }) {
-      const response = yield call(ProblemFlowUserList, taskId, type);
->>>>>>> 465151b... 更新问题管理代码
       yield put({
         type: 'savelist',
         payload: response.data,

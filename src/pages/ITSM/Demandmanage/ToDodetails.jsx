@@ -36,17 +36,11 @@ function ToDoregist(props) {
       <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleHold('save')}>
         保存
       </Button>
-<<<<<<< HEAD
       <SelectUser handleSubmit={() => handleHold('other')} changorder="审核">
         <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleHold('flow')}>
           流转
         </Button>
       </SelectUser>
-=======
-      <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleHold('flow')}>
-        流转
-      </Button>
->>>>>>> 465151b... 更新问题管理代码
       <Button onClick={handleclose}>返回</Button>
     </>
   );
