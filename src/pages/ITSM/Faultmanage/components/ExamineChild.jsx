@@ -1,4 +1,4 @@
-import React, { useRef, useImperativeHandle } from 'react';
+import React, { useRef, useImperativeHandle, useEffect } from 'react';
 import moment from 'moment';
 import {
     Form,
@@ -14,8 +14,6 @@ import {
 
 const { TextArea } = Input;
 const RadioGroup = Radio.Group;
-const checkTime = new Date();
-
 
 const ExamineChild = React.forwardRef((props, ref) => {
     const { formItemLayout, forminladeLayout, check, curruserinfo } = props;
@@ -29,9 +27,26 @@ const ExamineChild = React.forwardRef((props, ref) => {
         [],
     );
     const required = true;
+    useEffect(() => {
+        sessionStorage.setItem('Nextflowmane','处理');
+    });
+
     return (
         <Row gutter={24}>
             <Form {...formItemLayout}>
+                <Col span={24}>
+                    <Form.Item label="审核结果" {...forminladeLayout}>
+                        {getFieldDecorator('checkResult', {
+                        rules: [{ required: true, message: '请选择审核结果' }],
+                        initialValue: 0,
+                        })(
+                        <Radio.Group>
+                            <Radio value={0}>通过</Radio>
+                            <Radio value={1}>不通过</Radio>
+                        </Radio.Group>,
+                        )}
+                    </Form.Item>
+                </Col>
 
                 <Col span={24}>
                     <Form.Item label="审核时间" {...forminladeLayout}>
@@ -42,7 +57,7 @@ const ExamineChild = React.forwardRef((props, ref) => {
                                     message: '请选择时间',
                                 },
                             ],
-                            initialValue: check ? moment(check.checkTime) : moment(checkTime)
+                            initialValue: check ? moment(check.checkTime) : moment(Date.now())
                         })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" />)}
                     </Form.Item>
                 </Col>
@@ -62,7 +77,7 @@ const ExamineChild = React.forwardRef((props, ref) => {
                 </Col>
 
                 <Col span={24}>
-                    <Form.Item label="是否上传故障报告" {...forminladeLayout}>
+                    <Form.Item label="上传故障报告" {...forminladeLayout}>
                         {getFieldDecorator('uploadFaultReport', {
                             initialValue: check ? Number(check.checkReportSign) : 0
                         })(
@@ -97,17 +112,17 @@ const ExamineChild = React.forwardRef((props, ref) => {
                 </Col>
 
                 <Col span={8}>
-                    <Form.Item label="审核人部门">
-                        {getFieldDecorator('checkDept', {
-                            initialValue: check ? check.checkDept : curruserinfo.deptNameExt
+                    <Form.Item label="审核单位">
+                        {getFieldDecorator('checkUnit', {
+                            initialValue: check ? check.checkUnit : '广西电网有限责任公司'
                         })(<Input allowClear disabled/>)}
                     </Form.Item>
                 </Col>
 
                 <Col span={8}>
-                    <Form.Item label="审核人单位">
-                        {getFieldDecorator('checkUnit', {
-                            initialValue: check ? check.checkUnit : '广西电网有限责任公司'
+                    <Form.Item label="审核部门">
+                        {getFieldDecorator('checkDept', {
+                            initialValue: check ? check.checkDept : curruserinfo.deptNameExt
                         })(<Input allowClear disabled/>)}
                     </Form.Item>
                 </Col>

@@ -15,7 +15,7 @@ export default {
 
     effects: {
         // 数据字典list表数据
-        *getSearchDropdownValueList({ payload: { page, limit, bodyParams } }, { call, put }) {
+        *getSearchDropdownValueList({ payload: { page, limit, bodyParams} }, { call, put }) {
             const response = yield call(querySearchDropdownValue, page, limit, bodyParams);
             yield put({
                 type: 'dropdownvaluelist',

@@ -1,4 +1,4 @@
-import React, { useRef, useImperativeHandle } from 'react';
+import React, { useRef, useImperativeHandle, useEffect } from 'react';
 import moment from 'moment';
 import {
     Form,
@@ -12,7 +12,6 @@ import {
 } from 'antd';
 
 const { TextArea } = Input;
-const closeTime = new Date();
 
 const CloseChild = React.forwardRef((props, ref) => {
     const { formItemLayout, forminladeLayout, close, curruserinfo } = props;
@@ -26,6 +25,9 @@ const CloseChild = React.forwardRef((props, ref) => {
         [],
     );
     const required = true;
+    useEffect(() => {
+        sessionStorage.setItem('Nextflowmane','关闭');
+    });
     return (
         <Row gutter={24}>
             <Form {...formItemLayout}>
@@ -54,7 +56,7 @@ const CloseChild = React.forwardRef((props, ref) => {
                                         message: '请选择时间',
                                     },
                                 ],
-                                initialValue: close ? moment(close.closeTime) : moment(closeTime)
+                                initialValue: close ? moment(close.closeTime) : moment(Date.now())
                             })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" />)}
                         </Form.Item>
                     </Col>

@@ -13,11 +13,14 @@ import {
   Col,
   Icon,
   Table,
+  Popconfirm,
+  message,
   // Badge
 } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
-// const severitystatusMap = ['#FF3703', '#FF9B2F', '#FFDC1D'];
+// const severitystatus = ['紧急', '重大', '一般'];
+// const statusMap = ['error', 'warning', 'processing'];
 
 const formItemLayout = {
   labelCol: {
@@ -31,11 +34,6 @@ const formItemLayout = {
 };
 
 const { Option } = Select;
-
-const registerOccurTime = new Date(); // registerOccurTime故障发生时间
-const registerTime = new Date(); // registerTime故障登记时间
-const handleStartTimeBegin = new Date(); // handleStartTimeBegin故障处理开始时间
-const handleStartTimeEnd = new Date(); // handleStartTimeEnd故障处理完成时间
 
 // const faultStatusmap = ['待登记', '已登记', '已受理', '待审核', '审核中', '已审核', '待处理', '处理中', '已处理', '待总结', '总结中', '已总结', '待关闭', '关闭中', '已关闭'];
 
@@ -90,15 +88,16 @@ function QueryList(props) {
 
   const [expand, setExpand] = useState(false);
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 10 }); // 分页state
+  const [selectedRow, setSelectedRow] = useState([]);
 
   const columns = [
-    {
-      title: '序号',
-      dataIndex: 'index',
-      key: 'index',
-      width: 100,
-      render: (text, record, index) => `${(paginations.current - 1) * (paginations.pageSize) + (index + 1)}`,
-    },
+    // {
+    //   title: '序号',
+    //   dataIndex: 'index',
+    //   key: 'index',
+    //   width: 100,
+    //   render: (text, record, index) => `${(paginations.current - 1) * (paginations.pageSize) + (index + 1)}`,
+    // },
     {
       title: 'id',
       dataIndex: 'id',
@@ -109,6 +108,7 @@ function QueryList(props) {
       dataIndex: 'no',
       key: 'no',
       width: 150,
+      fixed: 'left',
       render: (text, record) => {
         return (
           <Link
@@ -129,27 +129,26 @@ function QueryList(props) {
       dataIndex: 'registerOccurTime',
       key: 'registerOccurTime',
       width: 200,
+      fixed: 'left',
     },
     {
       title: '故障登记时间',
       dataIndex: 'registerTime',
       key: 'registerTime',
       width: 200,
+      fixed: 'left',
     },
     {
       title: '严重程度',
       dataIndex: 'registerLevel',
       key: 'registerLevel',
       width: 120,
+      fixed: 'left',
       // render: (text, record) => {
-      //   const colors = severitystatusMap[record.registerLevel];
-      //   // const severity1 = text[record.registerLevel];
-      //   return (
-      //     <span>
-      //       <Badge color={colors} />
-
-      //     </span>
-      //   );
+      //   // console.log(text, record);
+      //   <span>
+      //   <Badge status={statusMap[record.registerLevel]} text={severitystatus[record.registerLevel]} />
+      // </span>
       // },
     },
     {
@@ -157,6 +156,7 @@ function QueryList(props) {
       dataIndex: 'source',
       key: 'source',
       width: 150,
+      fixed: 'left',
     },
     {
       title: '系统模块',
@@ -289,34 +289,17 @@ function QueryList(props) {
       ...paginations,
       current: 1,
     });
-    let time1;
-    let time2;
-    let time3;
-    let time4;
+    
     validateFields((err, values) => {
-      // 时间转换 
-      const addDateZero = (num) => {
-        return (num < 10 ? `0${num}` : num);
-      }
-      const d = new Date(values.registerOccurTime); // registerOccurTime故障发生时间
-      const d1 = new Date(values.registerTime); // registerTime故障登记时间
-      const d2 = new Date(values.handleStartTimeBegin); // handleStartTimeBegin故障处理开始时间
-      const d3 = new Date(values.handleStartTimeEnd); // handleStartTimeEnd故障处理完成时间
-
-      time1 = `${d.getFullYear()}-${addDateZero(d.getMonth() + 1)}-${addDateZero(d.getDate())} ${addDateZero(d.getHours())}:${addDateZero(d.getMinutes())}:${addDateZero(d.getMinutes())}`;
-      time2 = `${d1.getFullYear()}-${addDateZero(d1.getMonth() + 1)}-${addDateZero(d1.getDate())} ${addDateZero(d1.getHours())}:${addDateZero(d1.getMinutes())}:${addDateZero(d1.getMinutes())}`;
-      time3 = `${d2.getFullYear()}-${addDateZero(d2.getMonth() + 1)}-${addDateZero(d2.getDate())} ${addDateZero(d2.getHours())}:${addDateZero(d2.getMinutes())}:${addDateZero(d2.getMinutes())}`;
-      time4 = `${d3.getFullYear()}-${addDateZero(d3.getMonth() + 1)}-${addDateZero(d3.getDate())} ${addDateZero(d3.getHours())}:${addDateZero(d3.getMinutes())}:${addDateZero(d3.getMinutes())}`;
-
-      const values1 = values;
-      values1.registerOccurTime = time1;
-      values1.registerTime = time2;
-      values1.handleStartTimeBegin = time3;
-      values1.handleStartTimeEnd = time4;
+      const formValues = values;
+      formValues.registerOccurTime = values.registerOccurTime.format('YYYY-MM-DD HH:mm:ss');
+      formValues.registerTime = values.registerTime.format('YYYY-MM-DD HH:mm:ss');
+      formValues.handleStartTimeBegin = values.handleStartTimeBegin.format('YYYY-MM-DD HH:mm:ss');
+      formValues.handleStartTimeEnd = values.handleStartTimeEnd.format('YYYY-MM-DD HH:mm:ss');
       if (err) {
         return;
       }
-      searchdata(values1, paginations.current, paginations.pageSize);
+      searchdata(formValues, paginations.current, paginations.pageSize);
     });
   };
 
@@ -353,6 +336,35 @@ function QueryList(props) {
     onChange: page => changePage(page),
   };
 
+  const rowSelection = {
+    onChange: (selectedRows) => {
+      setSelectedRow([...selectedRows]);
+    },
+  };
+
+  // 批量删除
+  const handleDeleteAll = () => {
+    if (selectedRow.length) {
+      const ids = [];
+      selectedRow.forEach(item => {
+        ids.push(item);
+      });
+      dispatch({
+        type: 'fault/remove',
+      payload: { id: ids }
+      }).then(res => {
+        if (res.code === 200) {
+          message.success(res.msg);
+          getQuerylists();
+        } else {
+          message.error('删除失败!');
+        }
+      });
+    } else {
+      message.info('至少选择一条数据');
+    }
+  };
+
   return (
     <PageHeaderWrapper title={pagetitle}>
       <Card>
@@ -367,7 +379,7 @@ function QueryList(props) {
             <Col xl={8} xs={12}>
               <Form.Item label="故障发生时间">
                 {getFieldDecorator('registerOccurTime', {
-                  initialValue: moment(registerOccurTime)
+                  initialValue: moment(Date.now()) || ''
                 })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} />)}
               </Form.Item>
             </Col>
@@ -376,7 +388,7 @@ function QueryList(props) {
                 <Col xl={8} xs={12}>
                   <Form.Item label="故障登记时间">
                     {getFieldDecorator('registerTime', {
-                      initialValue: moment(registerTime)
+                      initialValue: moment(Date.now()) || ''
                     })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} />)}
                   </Form.Item>
                 </Col>
@@ -472,7 +484,7 @@ function QueryList(props) {
                 <Col xl={8} xs={12}>
                   <Form.Item label="故障处理开始时间">
                     {getFieldDecorator('handleStartTimeBegin', {
-                      initialValue: moment(handleStartTimeBegin)
+                      initialValue: moment(Date.now()) || ''
                     })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} />)}
                   </Form.Item>
                 </Col>
@@ -480,7 +492,7 @@ function QueryList(props) {
                 <Col xl={8} xs={12}>
                   <Form.Item label="故障处理完成时间">
                     {getFieldDecorator('handleStartTimeEnd', {
-                      initialValue: moment(handleStartTimeEnd)
+                      initialValue: moment(Date.now()) || ''
                     })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} />)}
                   </Form.Item>
                 </Col>
@@ -568,6 +580,9 @@ function QueryList(props) {
         </Row>
         <div style={{ marginBottom: 24 }}>
           <Button type="primary">导出数据</Button>
+          <Popconfirm title="确定删除吗？" onConfirm={handleDeleteAll}>
+            <Button type="danger" style={{ marginLeft: 10 }}>批量删除</Button>
+          </Popconfirm>
         </div>
         <Table
           loading={loading}
@@ -576,6 +591,7 @@ function QueryList(props) {
           table-layout="fixed"
           rowKey={record => record.id}
           pagination={pagination}
+          rowSelection={rowSelection}
           scroll={{ x: 800 }}
         />
       </Card>

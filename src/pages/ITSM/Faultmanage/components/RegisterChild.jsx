@@ -1,4 +1,4 @@
-import React, { useRef, useImperativeHandle } from 'react';
+import React, { useRef, useImperativeHandle, useEffect } from 'react';
 import moment from 'moment';
 import {
     Form,
@@ -17,11 +17,6 @@ import {
 const { TextArea } = Input;
 const { Option } = Select;
 const RadioGroup = Radio.Group;
-
-// 故障发生时间 registerOccurTime
-const registerOccurTime = new Date();
-// 故障登记时间 registerTime
-const registerTime = new Date();
 
 const faultSource = [ // 故障来源
     { key: 0, value: '系统告警' },
@@ -53,20 +48,23 @@ const sysmodular = [ // 系统模块
     { key: 5, value: '账号缺陷' },
 ];
 
-// const yxfw = [ // 影响范围
-// { key: 0, value: '自动抄表率' },
-// { key: 1, value: '服务器' },
-// { key: 2, value: '数据传输' },
-// { key: 3, value: '网络通道' },
-// { key: 4, value: 'VNC' },
-// { key: 5, value: '专变自动抄表率' },
-// { key: 6, value: '费控、召测' },
-// ];
+const registerScope = [ // 影响范围
+    { key: 0, value: '自动抄表率' },
+    { key: 1, value: '服务器' },
+    { key: 2, value: '数据传输' },
+    { key: 3, value: '网络\\通道' },
+    { key: 4, value: 'VNC' },
+    { key: 5, value: '专变自动抄表率' },
+    { key: 6, value: '费控、召测' },
+];
 
 const RegisterChild = React.forwardRef((props, ref) => {
     const { formItemLayout, forminladeLayout, tododetailslist } = props;
     const { getFieldDecorator } = props.form;
     const attRef = useRef();
+    useEffect(() => {
+        sessionStorage.setItem('Nextflowmane', '审核');
+    });
     useImperativeHandle(
         ref,
         () => ({
@@ -108,26 +106,12 @@ const RegisterChild = React.forwardRef((props, ref) => {
                     <Form.Item label="故障编号">
                         {getFieldDecorator('no', {
                             initialValue: tododetailslist ? tododetailslist.main.no : ''
-                        })(<Input disabled/>)}
+                        })(<Input disabled />)}
                     </Form.Item>
                 </Col>
 
                 <Col xl={8} xs={12}>
-                    <Form.Item label="故障发生时间">
-                        {getFieldDecorator('registerOccurTime', {
-                            rules: [
-                                {
-                                    required,
-                                    message: '请选择时间',
-                                },
-                            ],
-                            initialValue: tododetailslist ? moment(tododetailslist.register.registerOccurTime) : moment(registerOccurTime)
-                        })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} />)}
-                    </Form.Item>
-                </Col>
-
-                <Col xl={8} xs={12}>
-                    <Form.Item label="故障登记时间">
+                    <Form.Item label="登记时间">
                         {getFieldDecorator('registerTime', {
                             rules: [
                                 {
@@ -135,7 +119,21 @@ const RegisterChild = React.forwardRef((props, ref) => {
                                     message: '请选择时间',
                                 },
                             ],
-                            initialValue: tododetailslist ? moment(tododetailslist.register.registerTime) : moment(registerTime)
+                            initialValue: tododetailslist ? moment(tododetailslist.register.registerTime) : moment(Date.now())
+                        })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} />)}
+                    </Form.Item>
+                </Col>
+
+                <Col xl={8} xs={12}>
+                    <Form.Item label="发生时间">
+                        {getFieldDecorator('registerOccurTime', {
+                            rules: [
+                                {
+                                    required,
+                                    message: '请选择时间',
+                                },
+                            ],
+                            initialValue: tododetailslist ? moment(tododetailslist.register.registerOccurTime) : moment(Date.now())
                         })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} />)}
                     </Form.Item>
                 </Col>
@@ -230,22 +228,23 @@ const RegisterChild = React.forwardRef((props, ref) => {
                     </Form.Item>
                 </Col>
 
-                {/* <Col xl={8} xs={12}>
-                  <Form.Item label="影响范围">
-                    {getFieldDecorator('yxfw', {
-                      rules: [
-                        {
-                          required,
-                          message: '请选择',
-                        },
-                      ],
-                    })(
-                      <Select placeholder="请选择">
-                        {yxfw.map(({ value }) => [<Option key={value}>{value}</Option>])}
-                      </Select>,
-                    )}
-                  </Form.Item>
-                </Col> */}
+                <Col xl={8} xs={12}>
+                    <Form.Item label="影响范围">
+                        {getFieldDecorator('registerScope', {
+                            rules: [
+                                {
+                                    required,
+                                    message: '请选择',
+                                },
+                            ],
+                            initialValue: tododetailslist ? tododetailslist.register.registerScope : ''
+                        })(
+                            <Select placeholder="请选择">
+                                {registerScope.map(({ value }) => [<Option key={value}>{value}</Option>])}
+                            </Select>,
+                        )}
+                    </Form.Item>
+                </Col>
 
                 <Col span={8}>
                     <Form.Item label="故障名称">
@@ -308,15 +307,7 @@ const RegisterChild = React.forwardRef((props, ref) => {
                     <Form.Item label="登记人">
                         {getFieldDecorator('registerUser', {
                             initialValue: tododetailslist ? tododetailslist.register.registerUser : ''
-                        })(<Input allowClear disabled/>)}
-                    </Form.Item>
-                </Col>
-
-                <Col span={8}>
-                    <Form.Item label="登记部门">
-                        {getFieldDecorator('registerDept', {
-                            initialValue: tododetailslist ? tododetailslist.register.registerDept : ''
-                        })(<Input allowClear disabled/>)}
+                        })(<Input allowClear disabled />)}
                     </Form.Item>
                 </Col>
 
@@ -324,7 +315,15 @@ const RegisterChild = React.forwardRef((props, ref) => {
                     <Form.Item label="登记单位">
                         {getFieldDecorator('registerUnit', {
                             initialValue: tododetailslist ? tododetailslist.register.registerUnit : ''
-                        })(<Input allowClear disabled/>)}
+                        })(<Input allowClear disabled />)}
+                    </Form.Item>
+                </Col>
+
+                <Col span={8}>
+                    <Form.Item label="登记部门">
+                        {getFieldDecorator('registerDept', {
+                            initialValue: tododetailslist ? tododetailslist.register.registerDept : ''
+                        })(<Input allowClear disabled />)}
                     </Form.Item>
                 </Col>
             </Form>

@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { connect } from 'dva';
-// import moment from 'moment';
 import {
     Form,
     Button,
@@ -54,23 +53,6 @@ const Collapsekeymap = new Map([ // 展开详情页
     ['89', 'CloseQuery'],
 ]);
 
-const stepcurrentmap = new Map([ // 流程图
-    ['5', 1], // 登记
-    ['9', 1],
-
-    ['25', 2], // 审核 
-    ['29', 2], // 审核 
-
-    ['45', 3], // 处理 
-    ['49', 3], // 处理 
-
-    ['65', 4], // 总结 
-    ['69', 4], // 总结 
-
-    ['85', 5], // 关闭 
-    ['89', 5], // 关闭 
-]);
-
 function Querylistdetails(props) {
     const pagetitle = props.route.name;
     const [activeKey, setActiveKey] = useState();
@@ -110,20 +92,19 @@ function Querylistdetails(props) {
 
     const querydetailsList = () => { // 故障查询详情数据
         if (ids)
-        dispatch({
-            type: 'fault/getfaultQueryDetailData', 
-            payload: { id: ids },
-        });
+            dispatch({
+                type: 'fault/getfaultQueryDetailData',
+                payload: { id: ids },
+            });
     }
 
     useEffect(() => {
         setActiveKey([`${Collapsekeymap.get(paneKey)}`]);
         querydetailsList();
-        // getfaultTodoDetailData();
     }, []);
 
     const handleClose = () => { // 返回上一页
-        history.goBack(); 
+        history.goBack();
     }
 
     const callback = key => { // tab激活
@@ -159,9 +140,10 @@ function Querylistdetails(props) {
                                 overflowX: 'auto',
                             }}
                         >
-                            <>
-                                <Steps
-                                    current={stepcurrentmap.get(paneKey)}
+                            {troubleFlowLogs &&
+                                (<Steps
+                                    // current={stepcurrentmap.get(paneKey)}
+                                    current={troubleFlowLogs.length - 1}
                                     size="small"
                                 >
                                     {
@@ -173,8 +155,8 @@ function Querylistdetails(props) {
                                                 </div>
                                             } />
                                         ])}
-                                </Steps>
-                            </>
+                                </Steps>)
+                            }
                         </Card>
                         <Spin spinning={loading}>
                             {
@@ -253,52 +235,48 @@ function Querylistdetails(props) {
             {
                 (tabActiveKey === 'faultPro' && (
                     <div className={styles.collapse}>
-                        <Card>
+                        <Card title='故障管理流程'>
                             <div
                                 style={{
                                     background: '#fff',
                                     padding: 20,
-                                    overflowX: 'auto',
                                 }}
                             >
                                 <img src={image} alt='' />
                             </div>
                         </Card>
-                        <Collapse
-                            expandIconPosition="right"
-                            bordered={false}
-                            style={{ marginTop: '-25px' }}
-                            defaultActiveKey={['1']}
-                        >
-                            <Panel header="流转日志" key="1" showArrow={false}>
-                                <div className={styles.steps}>
-                                    <Steps
-                                        current={stepcurrentmap.get(paneKey)}
-                                        size="small"
-                                        direction="vertical"
-                                        progressDot
-                                        style={{
-                                            background: '#fff',
-                                            padding: 24,
-                                            border: '1px solid #e8e8e8',
-                                            overflowX: 'auto',
-                                            marginTop: '20px'
-                                        }}
-                                    >
-                                        {
-                                            flowlog && flowlog.troubleFlowLogs.map(({ key, name, status, startTime, formHandler, backReason }) => [
-                                                name !== '开始节点' && name !== '结束节点' && <Step key={key} title={`${name}${'\xa0'}${'\xa0'}(${status})`} description={
-                                                    <div className={styles.stepDescription}>    
-                                                        处理人：{formHandler}
-                                                        <div>{startTime}</div>
-                                                        <div>{status === '退回' && `回退原因：${backReason}`}</div>
-                                                    </div>
-                                                } />
-                                            ])}
-                                    </Steps>
-                                </div>
-                            </Panel>
-                        </Collapse>
+                        <Card title='流转日志' style={{ marginTop: '-1px' }}>
+                            {
+                                loading === false && flowlog &&
+                                (
+                                    <div className={styles.steps}>
+                                        <Steps
+                                            // current={stepcurrentmap.get(paneKey)}
+                                            current={flowlog.troubleFlowLogs.length - 1}
+                                            size="small"
+                                            direction="vertical"
+                                            progressDot
+                                            style={{
+                                                background: '#fff',
+                                                padding: 24,
+                                                border: '1px solid #e8e8e8',
+                                            }}
+                                        >
+                                            {
+                                                flowlog && flowlog.troubleFlowLogs.map(({ key, name, status, startTime, formHandler, backReason }) => [
+                                                    name !== '开始节点' && name !== '结束节点' && <Step key={key} title={`${name}${'\xa0'}${'\xa0'}(${status})`} description={
+                                                        <div className={styles.stepDescription}>
+                                                            处理人：{formHandler}
+                                                            <div>{startTime}</div>
+                                                            <div>{status === '退回' && `回退原因：${backReason}`}</div>
+                                                        </div>
+                                                    } />
+                                                ])}
+                                        </Steps>
+                                    </div>
+                                )
+                            }
+                        </Card>
                     </div>
                 ))
             }

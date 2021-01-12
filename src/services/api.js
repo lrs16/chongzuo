@@ -149,3 +149,11 @@ export async function queryHostTree(params) {
     body: JSON.stringify(params),
   });
 }
+
+// 数据字典结构树 /sys/dict/tree mxj
+export async function querDictTree(params) {
+  return request(`/sys/dict/tree`, {
+    method: 'POST',
+    body: JSON.stringify(params),
+  });
+}

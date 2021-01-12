@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
-// import Link from 'umi/link';
-// import router from 'umi/router';
+import router from 'umi/router';
 import {
   Card,
   Form,
@@ -19,9 +18,8 @@ import {
   Collapse
 } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import SelectUser from '@/components/SelectUser'; // 选人组件
 import styles from './index.less';
-import SelectUser from './components/SelectUser';
-// import ModelCircula from './components/ModelCircula';
 
 const { Panel } = Collapse;
 const { TextArea } = Input;
@@ -72,13 +70,13 @@ const severity = [ // 严重程度
 ];
 
 const registerScope = [ // 影响范围
-{ key: 0, value: '自动抄表率' },
-{ key: 1, value: '服务器' },
-{ key: 2, value: '数据传输' },
-{ key: 3, value: '网络通道' },
-{ key: 4, value: 'VNC' },
-{ key: 5, value: '专变自动抄表率' },
-{ key: 6, value: '费控、召测' },
+  { key: 0, value: '自动抄表率' },
+  { key: 1, value: '服务器' },
+  { key: 2, value: '数据传输' },
+  { key: 3, value: '网络\\通道' },
+  { key: 4, value: 'VNC' },
+  { key: 5, value: '专变自动抄表率' },
+  { key: 6, value: '费控、召测' },
 ];
 
 const sysmodular = [ // 系统模块
@@ -90,16 +88,10 @@ const sysmodular = [ // 系统模块
   { key: 5, value: '账号缺陷' },
 ];
 
-// 故障登记时间 registerOccurTime
-// 故障发生时间 registerTime
-const registerOccurTime = new Date();
-const registerTime = new Date();
-
 function Registration(props) {
   const pagetitle = props.route.name;
   const [activeKey, setActiveKey] = useState(['1']);
-  const [openModal, setOpenModal] = useState(false);
-  // const [ischeck, setIscheck] = useState();
+
   const {
     form: { getFieldDecorator, resetFields, validateFields, },
     dispatch,
@@ -125,10 +117,17 @@ function Registration(props) {
   useEffect(() => {
     getNewno(); // 新的故障编号
     getCurrUserInfo(); // 获取登录用户信息
+    sessionStorage.setItem('Processtype', 'troub');
+    sessionStorage.setItem('Nextflowmane','审核');
   }, []);
+
+  useEffect(() => {
+    sessionStorage.setItem('flowtype', '1');
+  }, ['1']);
 
   const close = () => { // 关闭
     resetFields();
+    router.push(`/ITSM/faultmanage/todolist`);
   };
 
   const callback = key => {
@@ -136,22 +135,11 @@ function Registration(props) {
   };
 
   const handleSave = () => { // 保存成功后根据后端给的流程ID跳待办里的详情
-    let happentime;
-    let registtime;
     validateFields((err, values) => {
-      // 时间转换
-      const addDateZero = (num) => {
-        return (num < 10 ? `0${num}` : num);
-      }
-      const d = new Date(values.registerOccurTime);
-      const d1 = new Date(values.registerTime);
-      happentime = `${d.getFullYear()}-${addDateZero(d.getMonth() + 1)}-${addDateZero(d.getDate())} ${addDateZero(d.getHours())}:${addDateZero(d.getMinutes())}:${addDateZero(d.getMinutes())}`; // :${  addDateZero(d1.getSeconds())
-      registtime = `${d1.getFullYear()}-${addDateZero(d1.getMonth() + 1)}-${addDateZero(d1.getDate())} ${addDateZero(d1.getHours())}:${addDateZero(d1.getMinutes())}:${addDateZero(d1.getMinutes())}`;
       if (!err) {
         const formValues = values;
-        formValues.registerOccurTime = happentime;
-        formValues.registerTime = registtime;
-        // formValues.taskId = id.flowTaskId;
+        formValues.registerOccurTime = values.registerOccurTime.format('YYYY-MM-DD HH:mm:ss');
+        formValues.registerTime = values.registerTime.format('YYYY-MM-DD HH:mm:ss');
         formValues.editState = 'add';
         dispatch({
           type: 'fault/getSaveUserId',
@@ -193,22 +181,11 @@ function Registration(props) {
   }
 
   const faultcircula = () => { // 流转
-    let happentime;
-    let registtime;
     validateFields((err, values) => {
-      // 时间转换
-      const addDateZero = (num) => {
-        return (num < 10 ? `0${num}` : num);
-      }
-      const d = new Date(values.registerOccurTime);
-      const d1 = new Date(values.registerTime);
-      happentime = `${d.getFullYear()}-${addDateZero(d.getMonth() + 1)}-${addDateZero(d.getDate())} ${addDateZero(d.getHours())}:${addDateZero(d.getMinutes())}:${addDateZero(d.getMinutes())}`; // :${  addDateZero(d1.getSeconds())
-      registtime = `${d1.getFullYear()}-${addDateZero(d1.getMonth() + 1)}-${addDateZero(d1.getDate())} ${addDateZero(d1.getHours())}:${addDateZero(d1.getMinutes())}:${addDateZero(d1.getMinutes())}`;
-      if (!err) {
-        setOpenModal(true);
+     if (!err) {
         const formValues = values;
-        formValues.registerOccurTime = happentime;
-        formValues.registerTime = registtime;
+        formValues.registerOccurTime = values.registerOccurTime.format('YYYY-MM-DD HH:mm:ss');
+        formValues.registerTime = values.registerTime.format('YYYY-MM-DD HH:mm:ss');
         // formValues.taskId = id.flowTaskId;
         formValues.editState = 'add';
         formValues.registerEffect = String(formValues.registerEffect);
@@ -226,7 +203,7 @@ function Registration(props) {
         <Button type="primary" style={{ marginRight: 8 }} onClick={handleSave}>
           保存
             </Button>
-        <SelectUser handleSubmit={() => faultcircula()} visible={openModal}>
+        <SelectUser handleSubmit={() => faultcircula()}>
           <Button type="primary" style={{ marginRight: 8 }}>流转</Button>
         </SelectUser>
         <Button type="default" onClick={close}>关闭</Button>
@@ -251,21 +228,7 @@ function Registration(props) {
                 </Col>
 
                 <Col xl={8} xs={12}>
-                  <Form.Item label="故障发生时间">
-                    {getFieldDecorator('registerOccurTime', {
-                      rules: [
-                        {
-                          required,
-                          message: '请选择时间',
-                        },
-                      ],
-                      initialValue: moment(registerOccurTime) || ''
-                    })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} />)}
-                  </Form.Item>
-                </Col>
-
-                <Col xl={8} xs={12}>
-                  <Form.Item label="故障登记时间">
+                  <Form.Item label="登记时间">
                     {getFieldDecorator('registerTime', {
                       rules: [
                         {
@@ -273,7 +236,21 @@ function Registration(props) {
                           message: '请选择时间',
                         },
                       ],
-                      initialValue: moment(registerTime) || ''
+                      initialValue: moment(Date.now()) || ''
+                    })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} />)}
+                  </Form.Item>
+                </Col>
+
+                <Col xl={8} xs={12}>
+                  <Form.Item label="发生时间">
+                    {getFieldDecorator('registerOccurTime', {
+                      rules: [
+                        {
+                          required,
+                          message: '请选择时间',
+                        },
+                      ],
+                      initialValue: moment(Date.now()) || ''
                     })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} />)}
                   </Form.Item>
                 </Col>
@@ -437,38 +414,38 @@ function Registration(props) {
                 <Col span={8}>
                   <Form.Item label="登记人">
                     {getFieldDecorator('registerUser', {
-                      rules: [
-                        {
-                          required,
-                        },
-                      ],
+                      // rules: [
+                      //   {
+                      //     required,
+                      //   },
+                      // ],
                       initialValue: curruserinfo.loginCode || '',
                     })(<Input disabled />)}
                   </Form.Item>
                 </Col>
 
                 <Col span={8}>
-                  <Form.Item label="登记人部门">
-                    {getFieldDecorator('registerDept', {
-                      rules: [
-                        {
-                          required,
-                        },
-                      ],
-                      initialValue: curruserinfo.deptNameExt || '',
+                  <Form.Item label="登记单位">
+                    {getFieldDecorator('registerUnit', {
+                      // rules: [
+                      //   {
+                      //     required,
+                      //   },
+                      // ],
+                      initialValue: '广西电网有限责任公司',
                     })(<Input disabled />)}
                   </Form.Item>
                 </Col>
 
                 <Col span={8}>
-                  <Form.Item label="登记人单位">
-                    {getFieldDecorator('registerUnit', {
-                      rules: [
-                        {
-                          required,
-                        },
-                      ],
-                      initialValue: '广西电网有限责任公司',
+                  <Form.Item label="登记部门">
+                    {getFieldDecorator('registerDept', {
+                      // rules: [
+                      //   {
+                      //     required,
+                      //   },
+                      // ],
+                      initialValue: curruserinfo.deptNameExt || '',
                     })(<Input disabled />)}
                   </Form.Item>
                 </Col>

@@ -1,4 +1,4 @@
-import React, { useRef, useImperativeHandle } from 'react';
+import React, { useRef, useImperativeHandle, useEffect } from 'react';
 import moment from 'moment';
 import {
     Form,
@@ -14,10 +14,6 @@ import {
 
 const { TextArea } = Input;
 const { Option } = Select;
-// 故障处理开始时间 handleStartTime
-// 故障恢复时间 handleEndTime
-const handleStartTime = new Date();
-const handleEndTime = new Date();
 
 const handleResult = [ // 处理结果
     { key: 0, value: '根本解决' },
@@ -39,6 +35,9 @@ const HandleChild = React.forwardRef((props, ref) => {
         [],
     );
     const required = true;
+    useEffect(() => {
+        sessionStorage.setItem('Nextflowmane','总结');
+    });
     return (
         <Row gutter={24}>
             <Form {...formItemLayout}>
@@ -93,7 +92,7 @@ const HandleChild = React.forwardRef((props, ref) => {
                                     message: '请选择时间',
                                 },
                             ],
-                            initialValue: handle ? moment(handle.handleStartTime) : moment(handleStartTime)
+                            initialValue:  moment(Date.now()) || moment(handle.handleStartTime)
                         })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }}/>)}
                     </Form.Item>
                 </Col>
@@ -107,7 +106,7 @@ const HandleChild = React.forwardRef((props, ref) => {
                                     message: '请选择时间',
                                 },
                             ],
-                            initialValue: handle ? moment(handle.handleEndTime) : moment(handleEndTime)
+                            initialValue: moment(Date.now()) || moment(handle.handleEndTime) 
                         })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }}/>)}
                     </Form.Item>
                 </Col>
@@ -139,17 +138,17 @@ const HandleChild = React.forwardRef((props, ref) => {
                 </Col>
 
                 <Col span={8}>
-                    <Form.Item label="处理人部门">
-                        {getFieldDecorator('handleDept', {
-                            initialValue: curruserinfo.deptNameExt || '',
+                    <Form.Item label="处理单位">
+                        {getFieldDecorator('handleUnit', {
+                            initialValue: '广西电网有限责任公司',
                         })(<Input disabled />)}
                     </Form.Item>
                 </Col>
 
                 <Col span={8}>
-                    <Form.Item label="处理人单位">
-                        {getFieldDecorator('handleUnit', {
-                            initialValue: '广西电网有限责任公司',
+                    <Form.Item label="处理部门">
+                        {getFieldDecorator('handleDept', {
+                            initialValue: curruserinfo.deptNameExt || '',
                         })(<Input disabled />)}
                     </Form.Item>
                 </Col>

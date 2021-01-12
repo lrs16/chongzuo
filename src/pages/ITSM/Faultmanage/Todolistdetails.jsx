@@ -36,9 +36,9 @@ import SummaryQuery from './components/SummaryQuery';
 
 const { Step } = Steps;
 const { Panel } = Collapse;
-let image;
 const history1 = creatHistory(); // 返回上一页
 
+let image; // 流程图
 let tosaveStatus; // 保存状态
 const currenStatus = 'circle'; // 保存状态
 
@@ -76,33 +76,18 @@ const tabList = [
 ];
 
 const Collapsekeymap = new Map([
-  ['故障登记', 'RegisterChild'], // 登记  012,展开登记
-  ['故障审核', 'ExamineChild'], // 审核 345展开审核，同时显示-- 登记查询详情
-  ['故障处理', 'HandleChild'], // 处理 678展开处理， 同时展示登-- 记查询详情、审核查询详情
-  ['registerDetails', 'RegisterQuery'], // 处理 678展开处理， 同时展示登-- 记查询详情、审核查询详情
-  ['故障总结', 'SummaryChild'], // 总结 9，10，11展开总结， 同时展示-- 登记查询详情、审核查询详情，处理查询详情
-  ['故障关闭', 'CloseChild'], // 关闭 12，13，14展开关闭， 同时展示-- 登记查询详情、审核查询详情，处理查询详情，总结查询详情
-]);
-
-const stepcurrentmap = new Map([ // 流程
-  ['故障登记', 1], // 登记  012,展开登记
-  ['故障审核', 2], // 审核 345展开审核，同时显示-- 登记查询详情
-  ['故障处理', 3], // 处理 678展开处理， 同时展示登-- 记查询详情、审核查询详情
-  ['故障总结', 4], // 总结 9，10，11展开总结， 同时展示-- 登记查询详情、审核查询详情，处理查询详情
-  ['故障关闭', 5], // 关闭 12，13，14展开关闭， 同时展示-- 登记查询详情、审核查询详情，处理查询详情，总结查询详情
+  ['故障登记', 'RegisterChild'], // 登记
+  ['故障审核', 'ExamineChild'], // 审核
+  ['故障处理', 'HandleChild'], // 处理
+  ['registerDetails', 'RegisterQuery'], // 处理
+  ['故障总结', 'SummaryChild'], // 总结
+  ['故障关闭', 'CloseChild'], // 关闭
 ]);
 
 function Todolistdetails(props) {
   const pagetitle = props.route.name;
-  // const [current, setCurrent] = useState(0);
   const [activeKey, setActiveKey] = useState([]);
   const [tabActiveKey, setTabActiveKey] = useState('faultForm');
-  // const [modalVisible, setModalVisible] = useState(false);
-  // const [treeDatas, setTreeData] = useState([]);
-
-  const [transferpaneKey, setTransferpaneKey] = useState();
-  const [notransferpaneKey, setnoTransferpaneKey] = useState();
-  // const [handleEdit, setHandleEdit] = useState(false);
 
   const RegisterRef = useRef(); // 故障登记
   const ExamineRef = useRef(); // 故障审核
@@ -128,14 +113,13 @@ function Todolistdetails(props) {
   image = (window.URL || window.webkitURL).createObjectURL(blob);
 
   const handleClose = () => { // 返回上一页
-    history1.goBack(); 
+    history1.goBack();
   }
 
   const getFlowImage = () => { // 流程图
     dispatch({
       type: 'fault/fetchGetFlowImage',
       payload: { id: tododetailslist.main.id }
-      // payload: { id: tododetailslist.taskId }
     });
   }
 
@@ -143,7 +127,6 @@ function Todolistdetails(props) {
     dispatch({
       type: 'fault/fetchGetFlowLog',
       payload: { id: tododetailslist.main.id }
-      // payload: { id: tododetailslist.taskId }
     })
   }
 
@@ -174,12 +157,12 @@ function Todolistdetails(props) {
     getCurrUserInfo(); // 获取登录用户信息
     setActiveKey([`${Collapsekeymap.get(paneKey)}`]);
     getfaultTodoDetailData();
-    if (paneKey === '故障处理') {
-      message.info('请先接单！');
-      setActiveKey([`${Collapsekeymap.get('registerDetails')}`]);
-    }
     sessionStorage.setItem('Processtype', 'troub');
   }, []);
+
+  useEffect(() => {
+    sessionStorage.setItem('flowtype', '1');
+  }, ['1']);
 
   const handleDelete = () => { // 删除操作！
     dispatch({
@@ -216,23 +199,12 @@ function Todolistdetails(props) {
 
   // 各个表单验证
   const saveRegister = (cirStatus) => { // 故障登记
-    let happentime;
-    let registtime;
     // eslint-disable-next-line consistent-return
     RegisterRef.current.validateFields((err, values) => {
-      // 时间转换
-      const createDateZero = (num) => {
-        return (num < 10 ? `0${num}` : num);
-      }
-      const d = new Date(values.registerOccurTime);
-      const d1 = new Date(values.registerTime);
-      happentime = `${d.getFullYear()}-${createDateZero(d.getMonth() + 1)}-${createDateZero(d.getDate())} ${createDateZero(d.getHours())}:${createDateZero(d.getMinutes())}:${createDateZero(d.getSeconds())}`;
-      registtime = `${d1.getFullYear()}-${createDateZero(d1.getMonth() + 1)}-${createDateZero(d1.getDate())} ${createDateZero(d1.getHours())}:${createDateZero(d1.getMinutes())}:${createDateZero(d1.getSeconds())}`;
-
-      if (cirStatus?!err:true) {
+      if (cirStatus ? !err : true) {
         const formValues = values;
-        formValues.registerOccurTime = happentime;
-        formValues.registerTime = registtime;
+        formValues.registerOccurTime = values.registerOccurTime.format('YYYY-MM-DD HH:mm:ss');
+        formValues.registerTime = values.registerTime.format('YYYY-MM-DD HH:mm:ss');
         formValues.taskId = id;
         formValues.editState = tododetailslist.editState;
         // formValues.registerEffect = String(Number(values.registerEffect))
@@ -249,8 +221,9 @@ function Todolistdetails(props) {
             getfaultTodoDetailData();
             if (cirStatus) {
               faultcircula();
+            } else {
+              message.success(res.msg);
             }
-            message.success(res.msg);
           } else {
             message.error(res.msg);
           }
@@ -260,23 +233,11 @@ function Todolistdetails(props) {
   }
 
   const saveExamine = (cirStatus) => { // 故障审核
-    let checktimes; // 审核时间
-
     // eslint-disable-next-line consistent-return
     ExamineRef.current.validateFields((err, values) => {
       const formValues = values;
-
-      if (values.checkTime) {
-        const addDateZero = (num) => {
-          return (num < 10 ? `0${num}` : num);
-        }
-        const d = new Date(values.checkTime);
-        checktimes = `${d.getFullYear()}-${addDateZero(d.getMonth() + 1)}-${addDateZero(d.getDate())} ${addDateZero(d.getHours())}:${addDateZero(d.getMinutes())}:${addDateZero(d.getMinutes())}`; // :${  addDateZero(d1.getSeconds())
-        formValues.checkTime = checktimes;
-      } else {
-        formValues.checkTime = '';
-      }
-      if (cirStatus?!err:true) {
+      formValues.checkTime = values.checkTime.format('YYYY-MM-DD HH:mm:ss');
+      if (cirStatus ? !err : true) {
         formValues.taskId = id;
         if (tododetailslist.editState === 'edit') {
           formValues.checkId = tododetailslist.check.id;
@@ -293,8 +254,9 @@ function Todolistdetails(props) {
             getfaultTodoDetailData();
             if (cirStatus) {
               faultcircula();
+            } else {
+              message.success(res.msg);
             }
-            message.success(res.msg);
           } else {
             message.error(res.msg);
           }
@@ -304,21 +266,12 @@ function Todolistdetails(props) {
   }
 
   const saveHandle = (cirStatus) => { // 故障处理
-    let handleStartTimes; // 故障处理开始时间
-    let handleEndTimes; // 故障恢复时间
     // eslint-disable-next-line consistent-return
     HandleRef.current.validateFields((err, values) => {
-      const addDateZero = (num) => {
-        return (num < 10 ? `0${num}` : num);
-      }
-      const d = new Date(values.handleStartTime);
-      handleStartTimes = `${d.getFullYear()}-${addDateZero(d.getMonth() + 1)}-${addDateZero(d.getDate())} ${addDateZero(d.getHours())}:${addDateZero(d.getMinutes())}:${addDateZero(d.getMinutes())}`; // :${  addDateZero(d1.getSeconds())
-      const d1 = new Date(values.handleEndTime);
-      handleEndTimes = `${d1.getFullYear()}-${addDateZero(d1.getMonth() + 1)}-${addDateZero(d1.getDate())} ${addDateZero(d1.getHours())}:${addDateZero(d1.getMinutes())}:${addDateZero(d1.getMinutes())}`; // :${  addDateZero(d1.getSeconds())
-      if (cirStatus?!err:true) {
+      if (cirStatus ? !err : true) {
         const formValues = values;
-        formValues.handleStartTime = handleStartTimes;
-        formValues.handleEndTime = handleEndTimes;
+        formValues.handleStartTime = values.handleStartTime.format('YYYY-MM-DD HH:mm:ss');
+        formValues.handleEndTime = values.handleEndTime.format('YYYY-MM-DD HH:mm:ss');
         formValues.taskId = id;
         formValues.editState = tododetailslist.editState;
         if (tododetailslist.editState === 'edit') {
@@ -328,7 +281,6 @@ function Todolistdetails(props) {
           formValues.handleId = tododetailslist.editGuid;
           formValues.editState = 'add';
         }
-        console.log(formValues);
         return dispatch({
           type: 'fault/getfromsave', // 保存接口
           payload: { formValues }
@@ -337,8 +289,9 @@ function Todolistdetails(props) {
             getfaultTodoDetailData();
             if (cirStatus) {
               faultcircula();
+            } else {
+              message.success(res.msg);
             }
-            message.success(res.msg);
           } else {
             message.error(res.msg);
           }
@@ -348,18 +301,11 @@ function Todolistdetails(props) {
   }
 
   const saveSummary = (cirStatus) => { // 故障总结
-    let finishTimes; // 审核时间
     // eslint-disable-next-line consistent-return
     SummaryRef.current.validateFields((err, values) => {
-      const addDateZero = (num) => {
-        return (num < 10 ? `0${num}` : num);
-      }
-      const d = new Date(values.finishTime);
-      finishTimes = `${d.getFullYear()}-${addDateZero(d.getMonth() + 1)}-${addDateZero(d.getDate())} ${addDateZero(d.getHours())}:${addDateZero(d.getMinutes())}:${addDateZero(d.getMinutes())}`; // :${  addDateZero(d1.getSeconds())
-
-      if (cirStatus?!err:true) {
+      if (cirStatus ? !err : true) {
         const formValues = values;
-        formValues.finishTime = finishTimes;
+        formValues.finishTime = values.finishTime.format('YYYY-MM-DD HH:mm:ss');
         formValues.taskId = id;
         formValues.editState = tododetailslist.editState;
         if (tododetailslist.editState === 'edit') {
@@ -377,8 +323,9 @@ function Todolistdetails(props) {
             getfaultTodoDetailData();
             if (cirStatus) {
               faultcircula();
+            } else {
+              message.success(res.msg);
             }
-            message.success(res.msg);
           } else {
             message.error(res.msg);
           }
@@ -388,18 +335,11 @@ function Todolistdetails(props) {
   }
 
   const saveClose = (cirStatus) => { // 故障关闭    跳转到故障查询页
-    let closeTimes; // 审核时间
     // eslint-disable-next-line consistent-return
     CloseRef.current.validateFields((err, values) => {
-      const addDateZero = (num) => {
-        return (num < 10 ? `0${num}` : num);
-      }
-      const d = new Date(values.closeTime);
-      closeTimes = `${d.getFullYear()}-${addDateZero(d.getMonth() + 1)}-${addDateZero(d.getDate())} ${addDateZero(d.getHours())}:${addDateZero(d.getMinutes())}:${addDateZero(d.getMinutes())}`; // :${  addDateZero(d1.getSeconds())
-
-      if (cirStatus?!err:true) {
+      if (cirStatus ? !err : true) {
         const formValues = values;
-        formValues.closeTime = closeTimes;
+        formValues.closeTime = values.closeTime.format('YYYY-MM-DD HH:mm:ss');
         formValues.taskId = id;
         formValues.editState = tododetailslist.editState;
         if (tododetailslist.editState === 'edit') {
@@ -413,7 +353,6 @@ function Todolistdetails(props) {
         }).then(res => {
           if (res.code === 200) {
             getfaultTodoDetailData();
-            message.success(res.msg);
             if (cirStatus) {
               const result = 1;
               const taskId = id;
@@ -423,6 +362,8 @@ function Todolistdetails(props) {
               })
               getfaultTodoDetailData();
               router.push(`/ITSM/faultmanage/querylist`);
+            } else {
+              message.success(res.msg);
             }
           } else {
             message.error(res.msg);
@@ -469,15 +410,11 @@ function Todolistdetails(props) {
   }
 
   const handleReceivs = () => { // 接单接口
-    setTransferpaneKey('故障处理');
-    setnoTransferpaneKey('转单');
-    setActiveKey([`${Collapsekeymap.get('故障处理')}`]);
     const taskId = id;
     return dispatch({
       type: 'fault/troubleHandleOrder',
       payload: { taskId }
     }).then(res => {
-      // console.log(res);
       if (res.code === 200) {
         message.info(res.msg);
       } else {
@@ -486,61 +423,76 @@ function Todolistdetails(props) {
     })
   }
 
-  const faulttransfer = () => { // 转单接口操作！
-    
-  }
+  // const faulttransfer = () => { // 转单接口操作！
+
+  // }
 
   return (
     <PageHeaderWrapper
       extra={
         <>
-          {
+          { // 删除按钮只有故障登记有
             paneKey === '故障登记' && (
               <Popconfirm title="确定删除吗？" onConfirm={() => handleDelete()}>
                 <Button type="danger">删除</Button>
               </Popconfirm>
             )
           }
-          {
-            paneKey === '故障处理' && notransferpaneKey !== '转单' && (
+          { // 接单只有故障处理时有
+            paneKey === '故障处理' && (
               <Button type="primary" onClick={() => handleReceivs()}>接单</Button>
             )
           }
-          {
-            paneKey !== '故障登记' && paneKey !== '故障关闭' && notransferpaneKey !== '转单' && (
+          { // 回退按钮--故障审核，故障处理， 故障总结有
+            paneKey !== '故障登记' && paneKey !== '故障处理' && paneKey !== '故障关闭' && (
               <ModelRollback title="填写回退意见" rollbackSubmit={values => rollbackSubmit(values)}>
                 <Button type="danger" ghost>回退</Button>
               </ModelRollback>
             )
           }
-          {
-            (transferpaneKey || paneKey === '故障登记' || paneKey === '故障审核' || paneKey === '故障总结' || paneKey === '故障关闭') && (
+          {/* { // 保存按钮都有，但是在有接单按钮时没有
+            (paneKey === '故障登记' || paneKey === '故障审核' || paneKey === '故障总结' || paneKey === '故障关闭') && (
               <Button type="primary" onClick={() => handleSave(tosaveStatus)}>保存</Button>
             )
+          } */}
+          <Button type="primary" onClick={() => handleSave(tosaveStatus)}>保存</Button>
+          { // 转单只有故障处理时有
+            paneKey === '故障处理' && (
+              <Button type="primary">转单</Button>
+            )
           }
-          {
-            paneKey === '故障处理' && transferpaneKey && (
+
+          {/* {
+           (paneKey === '故障登记' || paneKey === '故障审核' || paneKey === '故障总结' || paneKey === '故障关闭') && (
               <SelectUser handleSubmit={() => faulttransfer()} taskId={id}>
                 <Button type="primary">转单</Button>
               </SelectUser>
             )
-          }
-          {
-            (transferpaneKey || paneKey === '故障登记' || paneKey === '故障审核' || paneKey === '故障总结' || paneKey === '故障关闭') && (
+          } */}
+          {/* { // 流转按钮都有，接单时没有
+            (paneKey === '故障登记' || paneKey === '故障审核' || paneKey === '故障总结' || paneKey === '故障关闭') && (
               <SelectUser
                 handleSubmit={() => handleSave(currenStatus)}
                 taskId={id}
-                changorder='处理'
               >
                 <Button
                   type="primary"
-                  // onClick={() => handleSave(currenStatus)}
                 >
                   流转
                 </Button>
               </SelectUser>
             )
-          }
+          } */}
+          <SelectUser
+            handleSubmit={() => handleSave(currenStatus)}
+            taskId={id}
+          >
+            <Button
+              type="primary"
+            >
+              流转
+                </Button>
+          </SelectUser>
           <Button type="default" onClick={handleClose}>返回</Button>
         </>
       }
@@ -560,10 +512,10 @@ function Todolistdetails(props) {
                 overflowX: 'auto',
               }}
             >
-              <>
-                <Steps
-                  current={stepcurrentmap.get(paneKey)} 
-                  // current={troubleFlowLogs && troubleFlowLogs.length - 1}
+              {
+                troubleFlowLogs &&
+                (<Steps
+                  current={troubleFlowLogs.length - 1}
                   size="small"
                 >
                   {
@@ -575,8 +527,8 @@ function Todolistdetails(props) {
                         </div>
                       } />
                     ])}
-                </Steps>
-              </>
+                </Steps>)
+              }
             </Card>
             <Spin spinning={loading}>
               {
@@ -603,7 +555,7 @@ function Todolistdetails(props) {
 
 
                     { // 故障登记详情页---（故障审核时）
-                      (paneKey === '故障审核' || paneKey === '故障处理' || paneKey === '故障总结' || paneKey === '故障关闭') && 
+                      (paneKey === '故障审核' || paneKey === '故障处理' || paneKey === '故障总结' || paneKey === '故障关闭') &&
                       ( // 登记详情 后续的项展开都会被显示
                         <Panel header="故障登记" key="RegisterQuery">
                           <RegisterQuery
@@ -617,7 +569,7 @@ function Todolistdetails(props) {
                     { // 故障审核编辑页
                       (paneKey === '故障审核') &&
                       ( // 展开审核表单时，显示故障登记详情（1）
-                        <Panel header="故障审核" key="ExamineChild">
+                        <Panel header="系统运维商审核" key="ExamineChild">
                           <ExamineChild
                             ref={ExamineRef}
                             formItemLayout={formItemLayout}
@@ -633,7 +585,7 @@ function Todolistdetails(props) {
                     { // 故障审核详情页---（故障处理时）
                       (paneKey === '故障处理' || paneKey === '故障总结' || paneKey === '故障关闭') &&
                       ( // 审核详情
-                        <Panel Panel header="故障审核" key="ExamineQuery">
+                        <Panel Panel header="系统运维商审核" key="ExamineQuery">
                           <ExamineQuery
                             ref={ExamineRef}
                             detailsdata={troubleFlowNodeRows !== undefined && troubleFlowNodeRows[1]}
@@ -642,9 +594,9 @@ function Todolistdetails(props) {
                       )
                     }
                     { // 故障处理编辑页
-                      (paneKey === transferpaneKey) &&
+                      (paneKey === '故障处理') &&
                       ( // 展开处理表单时，显示故障审核详情以及登记详情（2）
-                        <Panel header="故障处理" key="HandleChild">
+                        <Panel header="系统运维商处理" key="HandleChild">
                           <HandleChild
                             ref={HandleRef}
                             formItemLayout={formItemLayout}
@@ -660,7 +612,7 @@ function Todolistdetails(props) {
                     { // 故障处理详情页---故障总结时
                       (paneKey === '故障总结' || paneKey === '故障关闭') &&
                       ( // 处理详情
-                        <Panel header="故障处理" key="HandleQuery">
+                        <Panel header="系统运维商处理" key="HandleQuery">
                           <HandleQuery
                             ref={HandleRef}
                             detailsdata={troubleFlowNodeRows !== undefined && troubleFlowNodeRows[2]}
@@ -670,7 +622,7 @@ function Todolistdetails(props) {
                     }
                     { // 故障总结编辑页
                       (paneKey === '故障总结') && (
-                        <Panel header="故障总结" key="SummaryChild">
+                        <Panel header="系统运维商确认总结" key="SummaryChild">
                           <SummaryChild
                             ref={SummaryRef}
                             formItemLayout={formItemLayout}
@@ -687,10 +639,10 @@ function Todolistdetails(props) {
                     { // 故障总结详情页--（故障关闭时）
                       (paneKey === '故障关闭') &&
                       (
-                        <Panel header="故障总结" key="SummaryQuery">
+                        <Panel header="系统运维商确认总结" key="SummaryQuery">
                           <SummaryQuery
                             ref={SummaryRef}
-                            detailsdata={troubleFlowNodeRows !== undefined && troubleFlowNodeRows[4]}
+                            detailsdata={troubleFlowNodeRows !== undefined && troubleFlowNodeRows[3]}
                           />
                         </Panel>
                       )
@@ -719,54 +671,48 @@ function Todolistdetails(props) {
       {
         (tabActiveKey === 'faultPro' && (
           <div className={styles.collapse}>
-            <Card>
-              <div 
-                  style={{
-                    background: '#fff',
-                    padding: 20,
-                    overflowX: 'auto',
-                  }}
+            <Card title='故障管理流程'>
+              <div
+                style={{
+                  background: '#fff',
+                  padding: 20,
+                }}
               >
                 {/* 通过图片--二进制 展示流程图 */}
                 <img src={image} alt='' />
               </div>
             </Card>
-            <Collapse
-              expandIconPosition="right"
-              bordered={false}
-              style={{ marginTop: '-25px' }}
-              defaultActiveKey={['1']}
-            >
-              <Panel header="流转日志" key="1" showArrow={false}>
-                <div className={styles.steps}>
-                  <Steps
-                    current={stepcurrentmap.get(paneKey)} 
-                    // current={flowlog && flowlog.troubleFlowLogs.length - 1}
-                    size="small"
-                    direction="vertical"
-                    progressDot
-                    style={{
-                      background: '#fff',
-                      padding: 24,
-                      border: '1px solid #e8e8e8',
-                      overflowX: 'auto',
-                      marginTop: '20px'
-                    }}
-                  >
-                    {
-                      flowlog && flowlog.troubleFlowLogs.map(({ key, name, status, startTime, formHandler, backReason }) => [
-                        name !== '开始节点' && name !== '结束节点' && <Step key={key} title={`${name}${'\xa0'}${'\xa0'}(${status})`} description={
-                          <div className={styles.stepDescription}>
-                            处理人：{formHandler}
-                            <div>{startTime}</div>
-                            <div>{status === '退回' && `回退原因：${backReason}`}</div>
-                          </div>
-                        } />
-                      ])}
-                  </Steps>
-                </div>
-              </Panel>
-            </Collapse>
+            <Card title='流转日志' style={{ marginTop: '-1px' }}>
+              {
+                loading === false && flowlog &&
+                (
+                  <div className={styles.steps}>
+                    <Steps
+                      current={flowlog.troubleFlowLogs.length - 1}
+                      size="small"
+                      direction="vertical"
+                      progressDot
+                      style={{
+                        background: '#fff',
+                        padding: 24,
+                        border: '1px solid #e8e8e8',
+                      }}
+                    >
+                      {
+                        flowlog && flowlog.troubleFlowLogs.map(({ key, name, status, startTime, formHandler, backReason }) => [
+                          name !== '开始节点' && name !== '结束节点' && <Step key={key} title={`${name}${'\xa0'}${'\xa0'}(${status})`} description={
+                            <div className={styles.stepDescription}>
+                              处理人：{formHandler}
+                              <div>{startTime}</div>
+                              <div>{status === '退回' && `回退原因：${backReason}`}</div>
+                            </div>
+                          } />
+                        ])}
+                    </Steps>
+                  </div>
+                )
+              }
+            </Card>
           </div>
         ))
       }

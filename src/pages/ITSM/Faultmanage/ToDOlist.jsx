@@ -28,7 +28,6 @@ const formItemLayout = {
 };
 
 const { Option } = Select;
-const createTime = new Date(); // 发送时间
 
 const faultSource = [ // 故障来源
   { key: 1, value: '系统告警' },
@@ -96,7 +95,6 @@ function ToDOlist(props) {
           <Link
             to={{
               pathname: `/ITSM/faultmanage/todolist/record/${record.id}`,
-              // todocoloumns: record,
               paneKey: record.currentNode
             }}
           >
@@ -183,20 +181,13 @@ function ToDOlist(props) {
       ...paginations,
       current: 1,
     });
-    let thetime;
     validateFields((err, values) => {
-      // 时间转换
-      const addDateZero = (num) => {
-        return (num < 10 ? `0${num}` : num);
-      }
-      const d = new Date(values.createTime);
-      thetime = `${d.getFullYear()}-${addDateZero(d.getMonth() + 1)}-${addDateZero(d.getDate())} ${addDateZero(d.getHours())}:${addDateZero(d.getMinutes())}:${addDateZero(d.getMinutes())}`;
-      const values1 = values;
-      values1.createTime = thetime;
+      const formValues = values;
+      formValues.createTime = values.createTime.format('YYYY-MM-DD HH:mm:ss');
       if (err) {
         return;
       }
-      searchdata(values1, paginations.current, paginations.pageSize);
+      searchdata(formValues, paginations.current, paginations.pageSize);
     });
   };
 
@@ -310,8 +301,8 @@ function ToDOlist(props) {
                 <Col span={8}>
                   <Form.Item label="发送时间">
                     {getFieldDecorator('createTime', {
-                      initialValue: moment(createTime)
-                    })(<DatePicker showTime format="YYYY-MM-DD HH:mm" style={{ width: '100%' }} placeholder="请选择" />)}
+                      initialValue: moment(Date.now()) || ''
+                    })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} placeholder="请选择" />)}
                   </Form.Item>
                 </Col>
 
