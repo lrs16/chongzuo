@@ -9,7 +9,6 @@ import { DingdingOutlined } from '@ant-design/icons';
 import Registrat from './components/Registrat';
 import Examine from './components/Examine';
 import Track from './components/Track';
-import TableForm from './components/TableForm';
 
 const { Panel } = Collapse;
 const { Step } = Steps;
@@ -342,7 +341,6 @@ function WorkOrder(props) {
                   }
                   demandId={info.demandForm.demandId}
                 />
-                // <TableForm value={data} />
               )}
             </Panel>
 

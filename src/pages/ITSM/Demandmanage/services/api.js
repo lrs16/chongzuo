@@ -86,3 +86,10 @@ export async function TrackList(demandId) {
     method: 'GET',
   });
 }
+
+// 需求跟踪删除TrackDelete
+export async function TrackDelete(id) {
+  return request(`/demand/track/delete/${id}`, {
+    method: 'DELETE',
+  });
+}

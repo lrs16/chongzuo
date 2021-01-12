@@ -32,9 +32,11 @@ function ToDoregist(props) {
       <Button type="danger" ghost style={{ marginRight: 8 }}>
         删除
       </Button>
-      <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleHold('save')}>
-        保存
-      </Button>
+      {taskName !== '需求跟踪' && (
+        <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleHold('save')}>
+          保存
+        </Button>
+      )}
       <SelectUser handleSubmit={() => handleHold('flow')} changorder="审核" taskId={taskId}>
         <Button type="primary" style={{ marginRight: 8 }}>
           流转

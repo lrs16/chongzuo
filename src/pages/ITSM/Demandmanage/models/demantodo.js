@@ -10,6 +10,7 @@ import {
   NextStep,
   TrackList,
   TrackUpdata,
+  TrackDelete,
 } from '../services/api';
 
 export default {
@@ -97,8 +98,21 @@ export default {
     // 需求跟踪保存
     *tracksave({ payload }, { call }) {
       const response = yield call(TrackUpdata, payload);
+      s;
       if (response.code === 200) {
         message.success(response.msg, 2);
+      }
+    },
+    // 需求跟踪删除
+    *trackdelete({ payload: { id, demandId } }, { call, put }) {
+      const response = yield call(TrackDelete, id);
+      if (response.code === 200) {
+        message.success(response.msg, 2);
+        const reslist = yield call(TrackList, demandId);
+        yield put({
+          type: 'savetracklist',
+          payload: reslist.data,
+        });
       }
     },
   },
