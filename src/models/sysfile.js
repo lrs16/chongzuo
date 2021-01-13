@@ -1,4 +1,5 @@
-import { FileUpload } from '@/services/upload';
+import { FileUpload, FileDownload, FileDelete } from '@/services/upload';
+import { message } from 'antd';
 
 const Model = {
   namespace: 'sysfile',
@@ -13,6 +14,15 @@ const Model = {
         type: 'save',
         payload: response,
       });
+    },
+    *downloadfile({ payload: { id } }, { call }) {
+      return yield call(FileDownload, id);
+    },
+    *deletefile({ payload: { id } }, { call }) {
+      const response = yield call(FileDelete, id);
+      if (response.code === 200) {
+        message.success(response.msg, 2);
+      }
     },
   },
   reducers: {

@@ -12,9 +12,8 @@ import {
   Popconfirm,
   message,
 } from 'antd';
-import { DownloadOutlined } from '@ant-design/icons';
+import { DownloadOutlined, PaperClipOutlined, DeleteOutlined } from '@ant-design/icons';
 import styles from './style.less';
-import { FileUpload } from '@/services/upload';
 
 const { Option } = Select;
 
@@ -28,8 +27,9 @@ const progressmap = [
 function Track(props) {
   const { dispatch, userinfo, demandId, tracklist, loading } = props;
   const [data, setData] = useState([]);
-  const [cacheOriginData, SetcacheOriginData] = useState({});
-  const [uploadkey, SetKeyUpload] = useState('');
+  const [cacheOriginData, setcacheOriginData] = useState({});
+  const [uploadkey, setKeyUpload] = useState('');
+  const [fileslist, setFilesList] = useState([]);
 
   useEffect(() => {
     dispatch({
@@ -49,15 +49,48 @@ function Track(props) {
     }
   }, [tracklist]);
 
+  // 点击编辑生成filelist,
+  const handlefileedit = (key, values) => {
+    setKeyUpload(key);
+    if (!values) {
+      setFilesList([]);
+    } else {
+      setFilesList(JSON.parse(values));
+    }
+  };
+
+  // 列表中下载附件
+  const handledownload = info => {
+    dispatch({
+      type: 'sysfile/downloadfile',
+      payload: {
+        id: info.id,
+      },
+    }).then(res => {
+      // console.log(res);
+      const filename = info.name;
+      const blob = new Blob([res]);
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      a.click();
+      window.URL.revokeObjectURL(url);
+    });
+  };
+
   // 新增一条记录
   const newMember = () => {
+    setFilesList([]);
+    setKeyUpload('');
     const newData = data.map(item => ({ ...item }));
     newData.push({
       key: data.length + 1,
       id: '',
       developSchedule: '',
       trackDirections: '',
-      attachment: '',
+      attachment: '[]',
+      attachmentId: '',
       stalker: '',
       trackUnit: '',
       trackDepartment: '',
@@ -77,7 +110,6 @@ function Track(props) {
   const handleFieldChange = (e, fieldName, key) => {
     const newData = data.map(item => ({ ...item }));
     const target = getRowByKey(key, newData);
-    console.log(target);
     if (target) {
       target[fieldName] = e;
       setData(newData);
@@ -92,7 +124,7 @@ function Track(props) {
     if (target) {
       // 进入编辑状态时保存原始数据
       if (!target.editable) {
-        SetcacheOriginData({ key: { ...target } });
+        setcacheOriginData({ key: { ...target } });
       }
       target.editable = !target.editable;
       setData(newData);
@@ -137,29 +169,53 @@ function Track(props) {
     setData(newData);
   };
 
+  // 在上传组件中删除附件
+  const handledeletfile = info => {
+    // 表格删除历史记录
+    const target = getRowByKey(uploadkey) || {};
+    delete target.isNew;
+    const id = target.id === '' ? '' : target.id;
+    dispatch({
+      type: 'demandtodo/tracksave',
+      payload: {
+        ...target,
+        id,
+        demandId,
+      },
+    });
+    // 删除文件
+    dispatch({
+      type: 'sysfile/deletefile',
+      payload: {
+        id: info.id,
+      },
+    });
+  };
+
   // 上传
   const uploadprops = {
     name: 'file',
-    //action: `${FileUpload}`,
-    action: 'http://172.16.4.211:9901/sys/file/upload',
+    // action: { FileUpload },
+    action: '/sys/file/upload',
     method: 'POST',
     headers: {
       Authorization: `Bearer ${sessionStorage.getItem('access_token')}`,
     },
+    // multiple: true,
+    showUploadList: { showDownloadIcon: true },
+    defaultFileList: fileslist,
     onChange(info) {
       if (info.file.status === 'done') {
         if (info.file.response.code === 200) {
           message.success(`${info.file.name} 上传成功`);
-          const attachmentlist = [];
-          console.log(info.fileList);
-          info.fileList.forEach(e => {
-            // const vote = {};
-            // vote.uid = e.uid;
-            // vote.
-            attachmentlist.push(e.response.data);
-          });
-          console.log(attachmentlist);
-          // handleFieldChange(info.file.response.data, 'attachment', uploadkey);
+          const voice = {};
+          voice.uid = info.file.response.data.id;
+          voice.id = info.file.response.data.id;
+          voice.name = info.file.response.data.fileName;
+          voice.status = 'done';
+          voice.fileUrl = '';
+          fileslist.push(voice);
+          handleFieldChange(JSON.stringify(fileslist), 'attachment', uploadkey);
         }
         if (info.file.response.code === -1) {
           message.error(`${info.file.name} 上传失败`);
@@ -167,6 +223,35 @@ function Track(props) {
       } else if (info.file.status === 'error') {
         message.error(`${info.file.name} 上传失败.`);
       }
+    },
+    onPreview(info) {
+      handledownload(info);
+    },
+    onDownload(info) {
+      handledownload(info);
+    },
+    onRemove(info) {
+      // 删除记录，并保存信息
+      const newfilelist = fileslist.filter(item => item.id !== info.id);
+      handleFieldChange(JSON.stringify(newfilelist), 'attachment', uploadkey);
+      const target = getRowByKey(uploadkey) || {};
+      delete target.isNew;
+      const id = target.id === '' ? '' : target.id;
+      dispatch({
+        type: 'demandtodo/tracksave',
+        payload: {
+          ...target,
+          id,
+          demandId,
+        },
+      });
+      // 删除文件
+      dispatch({
+        type: 'sysfile/deletefile',
+        payload: {
+          id: info.id,
+        },
+      });
     },
   };
 
@@ -211,7 +296,7 @@ function Track(props) {
       title: '跟踪说明',
       dataIndex: 'trackDirections',
       key: 'trackDirections',
-      width: 150,
+      width: 200,
       render: (text, record) => {
         if (record.editable) {
           return (
@@ -229,34 +314,58 @@ function Track(props) {
       title: '上传附件',
       dataIndex: 'attachment',
       key: 'attachment',
-      width: 120,
+      width: 250,
       render: (text, record) => {
         if (record.editable) {
           return (
-            // <Input placeholder="请输入"
-            //   defaultValue={text}
-            //   onChange={e => handleFieldChange(e.target.value, 'attachment', record.key)}
-            // />
-            <>
-              <Upload {...uploadprops} onClick={SetKeyUpload(record.key)}>
+            <div
+              onMouseOver={() => {
+                setKeyUpload(record.key);
+              }}
+              onFocus={() => 0}
+            >
+              <Upload {...uploadprops}>
                 <Button type="primary">
-                  <DownloadOutlined /> 上传附件
+                  <DownloadOutlined /> 添加附件
                 </Button>
               </Upload>
-            </>
+            </div>
           );
         }
-        return text;
+        return (
+          <>
+            {text !== '' && tracklist !== '' && (
+              <div className={styles.greylink}>
+                {JSON.parse(text).map(obj => {
+                  return (
+                    <div key={obj.id}>
+                      <PaperClipOutlined
+                        style={{ marginRight: 8, fontSize: 11, color: 'rgba(0, 0, 0, 0.45)' }}
+                      />
+                      <a onClick={() => handledownload(obj)}>{obj.name}</a>
+                      {/* <a onClick={() => handledeletfile(obj.uid)}>
+                        <DeleteOutlined
+                          style={{ marginLeft: 8, fontSize: 12, color: 'rgba(0, 0, 0, 0.45)' }}
+                        />
+                      </a> */}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+            {text === '' && <>{text}</>}
+          </>
+        );
       },
     },
     {
       title: '跟踪时间',
       dataIndex: 'gmtCreate',
       key: 'gmtCreate',
-      width: 180,
+      width: 200,
       render: (text, record) => {
+        const dateFormat = 'YYYY-MM-DD HH:mm';
         if (record.editable) {
-          const dateFormat = 'YYYY-MM-DD HH:mm:ss';
           return (
             <DatePicker
               showTime
@@ -266,7 +375,7 @@ function Track(props) {
             />
           );
         }
-        return text;
+        return moment(text).format('YYYY-MM-DD HH:mm');
       },
     },
     {
@@ -309,7 +418,12 @@ function Track(props) {
         if (record.editable) {
           if (record.isNew) {
             return (
-              <span>
+              <span
+                onMouseOver={() => {
+                  setKeyUpload(record.key);
+                }}
+                onFocus={() => 0}
+              >
                 <a onClick={e => saveRow(e, record.key)}>保存</a>
                 <Divider type="vertical" />
                 <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
@@ -319,7 +433,12 @@ function Track(props) {
             );
           }
           return (
-            <span>
+            <span
+              onMouseOver={() => {
+                setKeyUpload(record.key);
+              }}
+              onFocus={() => 0}
+            >
               <a onClick={e => saveRow(e, record.key)}>保存</a>
               <Divider type="vertical" />
               <a onClick={e => cancel(e, record.key)}>取消</a>
@@ -328,7 +447,14 @@ function Track(props) {
         }
         return (
           <span>
-            <a onClick={e => toggleEditable(e, record.key)}>编辑</a>
+            <a
+              onClick={e => {
+                toggleEditable(e, record.key);
+                handlefileedit(record.key, record.attachment);
+              }}
+            >
+              编辑
+            </a>
             <Divider type="vertical" />
             <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
               <a>删除</a>

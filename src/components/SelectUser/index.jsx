@@ -10,7 +10,7 @@ const withClick = (element, showDrawer = () => {}) => {
 const SelectUser = props => {
   const { children, dispatch, handleSubmit, userlist, loading, changorder, taskId } = props;
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [defaultvalue, setDefaultvalue] = useState('');
+  const [defaultvalue, setDefaultvalue] = useState([]);
   const type = sessionStorage.getItem('Processtype');
 
   const dataArr = datas => {

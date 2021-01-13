@@ -98,7 +98,6 @@ export default {
     // 需求跟踪保存
     *tracksave({ payload }, { call }) {
       const response = yield call(TrackUpdata, payload);
-      s;
       if (response.code === 200) {
         message.success(response.msg, 2);
       }
