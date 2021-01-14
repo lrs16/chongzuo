@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { connect } from 'dva';
 import router from 'umi/router';
-// import moment from 'moment';
+import moment from 'moment';
 import {
   Card,
   Form,
@@ -525,7 +525,7 @@ function Todolistdetails(props) {
                       name !== '开始节点' && name !== '结束节点' && <Step key={key} title={`${name}${'\xa0'}${'\xa0'}(${status})${'\xa0'}${'\xa0'}${timeText}`} description={
                         <div className={styles.stepDescription}>
                           处理人：{formHandler}
-                          <div>开始时间：{startTime}</div>
+                          <div>开始时间：{moment(startTime).format('YYYY-MM-DD hh:mm:ss')}</div>
                         </div>
                       } />
                     ])}
@@ -703,7 +703,7 @@ function Todolistdetails(props) {
                           name !== '开始节点' && name !== '结束节点' && <Step key={key} title={`${name}${'\xa0'}${'\xa0'}(${status})`} description={
                             <div className={styles.stepDescription}>
                               处理人：{formHandler}
-                              <div>{startTime}</div>
+                              <div>{moment(startTime).format('YYYY-MM-DD hh:mm:ss')}</div>
                               <div>{status === '退回' && `回退原因：${backReason}`}</div>
                             </div>
                           } />

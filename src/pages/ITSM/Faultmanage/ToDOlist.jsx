@@ -183,7 +183,9 @@ function ToDOlist(props) {
     });
     validateFields((err, values) => {
       const formValues = values;
-      formValues.createTime = values.createTime.format('YYYY-MM-DD HH:mm:ss');
+      if(formValues.createTime) {
+        formValues.createTime = values.createTime.format('YYYY-MM-DD HH:mm:ss');
+      }
       if (err) {
         return;
       }
@@ -229,6 +231,28 @@ function ToDOlist(props) {
   //     setSelectedRow(selectedRows);
   //   },
   // };
+
+  //  下载 /导出功能
+  const download = () => {
+    // validateFields((err, values) => {
+    //   if (!err) {
+    //     dispatch({
+    //       type: 'fault/faultdownload',
+    //       payload: { ...values },
+    //     }).then(res => {
+    //       console.log(res);
+    //       const filename = `下载.xls`;
+    //       const blob = new Blob([res]);
+    //       const url = window.URL.createObjectURL(blob);
+    //       const a = document.createElement('a');
+    //       a.href = url;
+    //       a.download = filename;
+    //       a.click();
+    //       window.URL.revokeObjectURL(url);
+    //     });
+    //   }
+    // });
+  };
 
   return (
     <PageHeaderWrapper title={pagetitle}>
@@ -378,7 +402,7 @@ function ToDOlist(props) {
           </Form>
         </Row>
         <div style={{ marginBottom: 24 }}>
-          <Button type="primary">导出数据</Button>
+          <Button type="primary" onClick={() => download()}>导出数据</Button>
         </div>
         <Table
           loading={loading}

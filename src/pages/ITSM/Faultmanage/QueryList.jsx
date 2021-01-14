@@ -292,10 +292,12 @@ function QueryList(props) {
     
     validateFields((err, values) => {
       const formValues = values;
-      formValues.registerOccurTime = values.registerOccurTime.format('YYYY-MM-DD HH:mm:ss');
-      formValues.registerTime = values.registerTime.format('YYYY-MM-DD HH:mm:ss');
-      formValues.handleStartTimeBegin = values.handleStartTimeBegin.format('YYYY-MM-DD HH:mm:ss');
-      formValues.handleStartTimeEnd = values.handleStartTimeEnd.format('YYYY-MM-DD HH:mm:ss');
+      if(formValues.registerOccurTimeBegin || formValues.registerTimeBegin || formValues.handleStartTimeBegin || formValues.handleStartTimeEnd) {
+        formValues.registerOccurTimeBegin = values.registerOccurTimeBegin.format('YYYY-MM-DD HH:mm:ss');
+        formValues.registerTimeBegin = values.registerTimeBegin.format('YYYY-MM-DD HH:mm:ss');
+        formValues.handleStartTimeBegin = values.handleStartTimeBegin.format('YYYY-MM-DD HH:mm:ss');
+        formValues.handleStartTimeEnd = values.handleStartTimeEnd.format('YYYY-MM-DD HH:mm:ss');
+      }
       if (err) {
         return;
       }
@@ -377,29 +379,30 @@ function QueryList(props) {
             </Col>
 
             <Col xl={8} xs={12}>
-              <Form.Item label="故障发生时间">
-                {getFieldDecorator('registerOccurTime', {
-                  initialValue: moment(Date.now()) || ''
-                })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} />)}
+              <Form.Item label="故障来源">
+                {getFieldDecorator('source')(
+                  <Select placeholder="请选择">
+                    {faultSource.map(({ value }) => [<Option key={value}>{value}</Option>])}
+                  </Select>,
+                )}
               </Form.Item>
             </Col>
+            
             {expand === true && (
               <>
                 <Col xl={8} xs={12}>
-                  <Form.Item label="故障登记时间">
-                    {getFieldDecorator('registerTime', {
+                  <Form.Item label="故障发生时间">
+                    {getFieldDecorator('registerOccurTimeBegin', {
                       initialValue: moment(Date.now()) || ''
                     })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} />)}
                   </Form.Item>
                 </Col>
 
                 <Col xl={8} xs={12}>
-                  <Form.Item label="故障来源">
-                    {getFieldDecorator('source')(
-                      <Select placeholder="请选择">
-                        {faultSource.map(({ value }) => [<Option key={value}>{value}</Option>])}
-                      </Select>,
-                    )}
+                  <Form.Item label="故障登记时间">
+                    {getFieldDecorator('registerTimeBegin', {
+                      initialValue: moment(Date.now()) || ''
+                    })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} />)}
                   </Form.Item>
                 </Col>
 

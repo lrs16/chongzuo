@@ -9,7 +9,6 @@ import {
     DatePicker,
     Upload,
     Icon,
-    Badge 
 } from 'antd';
 
 const { TextArea } = Input;
@@ -88,14 +87,6 @@ const SummaryChild = React.forwardRef((props, ref) => {
                             {getFieldDecorator('finishTime2', {
                                 initialValue: moment(Date.now())
                             })(<DatePicker showTime disabled format="YYYY-MM-DD HH:mm:ss" />)}
-                        </Form.Item>
-                    </Col>
-
-                    <Col span={24}>
-                        <Form.Item label="上传状态" {...forminladeLayout}>
-                            {getFieldDecorator('finishStatus', {
-                                initialValue: '正常'
-                            })(<Badge status='success' text='正常' />)}
                         </Form.Item>
                     </Col>
 

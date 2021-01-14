@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { connect } from 'dva';
+import moment from 'moment';
 import {
     Form,
     Button,
@@ -151,7 +152,7 @@ function Querylistdetails(props) {
                                             name !== '开始节点' && name !== '结束节点' && <Step key={key} title={`${name}${'\xa0'}${'\xa0'}(${status})${'\xa0'}${'\xa0'}${timeText}`} description={
                                                 <div className={styles.stepDescription}>
                                                     处理人：{formHandler}
-                                                    <div>开始时间：{startTime}</div>
+                                                    <div>开始时间：{moment(startTime).format('YYYY-MM-DD hh:mm:ss')}</div>
                                                 </div>
                                             } />
                                         ])}
@@ -267,7 +268,7 @@ function Querylistdetails(props) {
                                                     name !== '开始节点' && name !== '结束节点' && <Step key={key} title={`${name}${'\xa0'}${'\xa0'}(${status})`} description={
                                                         <div className={styles.stepDescription}>
                                                             处理人：{formHandler}
-                                                            <div>{startTime}</div>
+                                                            <div>{moment(startTime).format('YYYY-MM-DD hh:mm:ss')}</div>
                                                             <div>{status === '退回' && `回退原因：${backReason}`}</div>
                                                         </div>
                                                     } />

@@ -31,7 +31,7 @@ class DropdownValueset extends Component {
       dictModule: '',
       dictName: '',
       dictRemarks: '',
-      dictState: '',
+      dictState: '1',
       dictType: '',
       isModify: '',
     },
@@ -119,7 +119,6 @@ class DropdownValueset extends Component {
   };
 
   handleEdite = values => { // 编辑
-    console.log(values)
     const { dispatch } = this.props;
     const { dictCode, dictModule, dictName, dictRemarks, dictSort, dictType } = values;
     const { parentId } = this.state;
@@ -191,13 +190,13 @@ class DropdownValueset extends Component {
         title: '字典模块',
         dataIndex: 'dictModule',
         key: 'dictModule',
-        width: 100,
+        width: 200,
       },
       {
         title: '字典类型',
         dataIndex: 'dictType',
         key: 'dictType',
-        width: 100,
+        width: 200,
       },
       {
         title: '字典代码',
@@ -301,7 +300,13 @@ class DropdownValueset extends Component {
         <Row
           style={{ background: '#f1f1f1' }}>
           <Col span={5}>
-            <Card bordered={false}>
+            <Card 
+              bordered={false}
+              style={{
+                maxHeight: 750,
+                overflowY: 'auto',
+              }}
+            >
               <DictTree
                 toFatherValue={this.getChildValue}
               />

@@ -13,6 +13,7 @@ import {
 
   queryfaultTodoList1, // 故障待办列表
   querySearchfaultTodoList1, // 故障待办列表 查询
+  querydownload, // 故障待办列表 导出
   queryfaultTodoDetailEdit, // 故障待办详情页--编辑
   deleteInstance, // 删除操作！
   queryRollBack, // 回退操作！
@@ -161,6 +162,11 @@ export default {
         type: 'faultTodoList',
         payload: response,
       });
+    },
+
+    // 故障待办列表数据 下载
+    *faultdownload({ payload }, { call }) {
+      return yield call(querydownload, { ...payload });
     },
 
     //  故障待办详情页--编辑

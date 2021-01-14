@@ -87,6 +87,25 @@ export async function querySearchfaultTodoList1(current, pageSize, values) {
   })
 }
 
+// 故障待办列表  下载/itsm/trouble/flow/expExcelWaitDoList
+export async function querydownload({
+  title,
+  source,
+  type,
+  registerUser,
+  handleEnterNames,
+  createTime,
+  priority,
+}) {
+  return request(
+    `/itsm/trouble/flow/expExcelWaitDoList?title=${title}&source=${source}&type=${type}&registerUser=${registerUser}&handleEnterNames=${handleEnterNames}&createTime=${createTime}&priority=${priority}`,
+    {
+      method: 'POST',
+      responseType: 'blob',
+    },
+  );
+}
+
 // ***故障待办详情页 （*故障工单页）
 
 // /itsm/trouble/flow/openFlow 根据流程待办id，进入待办流程编辑页 (故障待办详情页---共五个编辑页)
