@@ -417,6 +417,8 @@ function Todolistdetails(props) {
     }).then(res => {
       if (res.code === 200) {
         message.info(res.msg);
+        main.status = '45';
+        getfaultTodoDetailData();
       } else {
         message.error(res.msg);
       }
@@ -438,16 +440,16 @@ function Todolistdetails(props) {
               </Popconfirm>
             )
           }
-          { // 接单只有故障处理时有
-            paneKey === '故障处理' && (
-              <Button type="primary" onClick={() => handleReceivs()}>接单</Button>
-            )
-          }
           { // 回退按钮--故障审核，故障处理， 故障总结有
-            paneKey !== '故障登记' && paneKey !== '故障处理' && paneKey !== '故障关闭' && (
+            paneKey !== '故障登记' && paneKey !== '故障关闭' && (main && main.status === '29') && (
               <ModelRollback title="填写回退意见" rollbackSubmit={values => rollbackSubmit(values)}>
                 <Button type="danger" ghost>回退</Button>
               </ModelRollback>
+            )
+          }
+          { // 接单只有故障处理时有
+            (main && main.status === '29') && (
+              <Button type="primary" onClick={() => handleReceivs()}>接单</Button>
             )
           }
           {/* { // 保存按钮都有，但是在有接单按钮时没有
@@ -455,9 +457,9 @@ function Todolistdetails(props) {
               <Button type="primary" onClick={() => handleSave(tosaveStatus)}>保存</Button>
             )
           } */}
-          <Button type="primary" onClick={() => handleSave(tosaveStatus)}>保存</Button>
+          {(main && main.status !== '29') && (<Button type="primary" onClick={() => handleSave(tosaveStatus)}>保存</Button>)}
           { // 转单只有故障处理时有
-            paneKey === '故障处理' && (
+            (main && main.status === '45') && (
               <Button type="primary">转单</Button>
             )
           }
@@ -483,7 +485,7 @@ function Todolistdetails(props) {
               </SelectUser>
             )
           } */}
-          <SelectUser
+          {(main && main.status !== '29') && (<SelectUser
             handleSubmit={() => handleSave(currenStatus)}
             taskId={id}
           >
@@ -492,7 +494,7 @@ function Todolistdetails(props) {
             >
               流转
                 </Button>
-          </SelectUser>
+          </SelectUser>)}
           <Button type="default" onClick={handleClose}>返回</Button>
         </>
       }
@@ -554,18 +556,6 @@ function Todolistdetails(props) {
                     }
 
 
-                    { // 故障登记详情页---（故障审核时）
-                      (paneKey === '故障审核' || paneKey === '故障处理' || paneKey === '故障总结' || paneKey === '故障关闭') &&
-                      ( // 登记详情 后续的项展开都会被显示
-                        <Panel header="故障登记" key="RegisterQuery">
-                          <RegisterQuery
-                            ref={RegisterRef}
-                            detailsdata={troubleFlowNodeRows}
-                            maindata={main}
-                          />
-                        </Panel>
-                      )
-                    }
                     { // 故障审核编辑页
                       (paneKey === '故障审核') &&
                       ( // 展开审核表单时，显示故障登记详情（1）
@@ -580,21 +570,21 @@ function Todolistdetails(props) {
                         </Panel>
                       )
                     }
-
-
-                    { // 故障审核详情页---（故障处理时）
-                      (paneKey === '故障处理' || paneKey === '故障总结' || paneKey === '故障关闭') &&
-                      ( // 审核详情
-                        <Panel Panel header="系统运维商审核" key="ExamineQuery">
-                          <ExamineQuery
-                            ref={ExamineRef}
-                            detailsdata={troubleFlowNodeRows !== undefined && troubleFlowNodeRows[1]}
+                    { // 故障登记详情页---（故障审核时）
+                      (paneKey === '故障审核' || paneKey === '故障处理' || paneKey === '故障总结' || paneKey === '故障关闭') &&
+                      ( // 登记详情 后续的项展开都会被显示
+                        <Panel header="故障登记" key="RegisterQuery">
+                          <RegisterQuery
+                            ref={RegisterRef}
+                            detailsdata={troubleFlowNodeRows}
+                            maindata={main}
                           />
                         </Panel>
                       )
                     }
+
                     { // 故障处理编辑页
-                      (paneKey === '故障处理') &&
+                      (paneKey === '故障处理') && (main && main.status === '45') &&
                       ( // 展开处理表单时，显示故障审核详情以及登记详情（2）
                         <Panel header="系统运维商处理" key="HandleChild">
                           <HandleChild
@@ -607,19 +597,19 @@ function Todolistdetails(props) {
                         </Panel>
                       )
                     }
-
-
-                    { // 故障处理详情页---故障总结时
-                      (paneKey === '故障总结' || paneKey === '故障关闭') &&
-                      ( // 处理详情
-                        <Panel header="系统运维商处理" key="HandleQuery">
-                          <HandleQuery
-                            ref={HandleRef}
-                            detailsdata={troubleFlowNodeRows !== undefined && troubleFlowNodeRows[2]}
+                    { // 故障审核详情页---（故障处理时）
+                      (paneKey === '故障处理' || paneKey === '故障总结' || paneKey === '故障关闭') &&
+                      ( // 审核详情
+                        <Panel Panel header="系统运维商审核" key="ExamineQuery">
+                          <ExamineQuery
+                            ref={ExamineRef}
+                            detailsdata={troubleFlowNodeRows !== undefined && troubleFlowNodeRows[1]}
                           />
                         </Panel>
                       )
                     }
+
+
                     { // 故障总结编辑页
                       (paneKey === '故障总结') && (
                         <Panel header="系统运维商确认总结" key="SummaryChild">
@@ -633,20 +623,19 @@ function Todolistdetails(props) {
                         </Panel>
                       )
                     }
-
-
-
-                    { // 故障总结详情页--（故障关闭时）
-                      (paneKey === '故障关闭') &&
-                      (
-                        <Panel header="系统运维商确认总结" key="SummaryQuery">
-                          <SummaryQuery
-                            ref={SummaryRef}
-                            detailsdata={troubleFlowNodeRows !== undefined && troubleFlowNodeRows[3]}
+                    { // 故障处理详情页---故障总结时
+                      (paneKey === '故障总结' || paneKey === '故障关闭') &&
+                      ( // 处理详情
+                        <Panel header="系统运维商处理" key="HandleQuery">
+                          <HandleQuery
+                            ref={HandleRef}
+                            detailsdata={troubleFlowNodeRows !== undefined && troubleFlowNodeRows[2]}
                           />
                         </Panel>
                       )
                     }
+
+
                     {// 故障关闭编辑页
                       (paneKey === '故障关闭') &&
                       (
@@ -657,6 +646,17 @@ function Todolistdetails(props) {
                             forminladeLayout={forminladeLayout}
                             close={close}
                             curruserinfo={curruserinfo}
+                          />
+                        </Panel>
+                      )
+                    }
+                    { // 故障总结详情页--（故障关闭时）
+                      (paneKey === '故障关闭') &&
+                      (
+                        <Panel header="系统运维商确认总结" key="SummaryQuery">
+                          <SummaryQuery
+                            ref={SummaryRef}
+                            detailsdata={troubleFlowNodeRows !== undefined && troubleFlowNodeRows[3]}
                           />
                         </Panel>
                       )

@@ -25,7 +25,7 @@ class DropdownValueset extends Component {
   state = {
     current: 1,
     pageSize: 10,
-    parentId: '',
+    parentId: '0',
     bodyParams: {
       dictCode: '',
       dictModule: '',
@@ -58,16 +58,16 @@ class DropdownValueset extends Component {
 
   getChildValue = (val) => { // 获取pid
     const pid = val[0];
-    this.setState({  parentId: pid })
+    this.setState({ parentId: pid })
     const { dispatch } = this.props;
     const page = this.state.current;
     const limit = this.state.pageSize;
     const { bodyParams } = this.state;
     bodyParams.pid = pid;
-    
+
     dispatch({
       type: 'umpsdropdown/getSearchDropdownValueList',
-      payload:  { 
+      payload: {
         page,
         limit,
         bodyParams,
@@ -119,10 +119,19 @@ class DropdownValueset extends Component {
   };
 
   handleEdite = values => { // 编辑
+    console.log(values)
     const { dispatch } = this.props;
+    const { dictCode, dictModule, dictName, dictRemarks, dictSort, dictType } = values;
+    const { parentId } = this.state;
+    const pid = parentId;
+    const listValues = values;
+    listValues.pid = parentId;
+
     return dispatch({
       type: 'umpsdropdown/edite',
-      payload: values,
+      payload: {
+        dictCode, dictModule, dictName, dictRemarks, dictSort, dictType, pid
+      },
     }).then(res => {
       if (res.code === 200) {
         Message.success(res.msg);
@@ -133,19 +142,27 @@ class DropdownValueset extends Component {
     });
   };
 
+  // eslint-disable-next-line consistent-return
   handleAdd = values => { // 添加
     const { dispatch } = this.props;
-    return dispatch({
-      type: 'umpsdropdown/fetchAdd',
-      payload: values,
-    }).then(res => {
-      if (res.code === 200) {
-        Message.success(res.msg);
-        this.getlist();
-      } else {
-        Message.error(res.msg);
-      }
-    });
+    const { dictCode, dictModule, dictName, dictRemarks, dictSort, dictState, dictType } = values;
+    const { parentId } = this.state;
+    const pid = parentId;
+    if (parentId) {
+      return dispatch({
+        type: 'umpsdropdown/fetchAdd',
+        payload: {
+          dictCode, dictModule, dictName, dictRemarks, dictSort, dictState, dictType, pid
+        },
+      }).then(res => {
+        if (res.code === 200) {
+          Message.success(res.msg);
+          this.getlist();
+        } else {
+          Message.error(res.msg);
+        }
+      });
+    }
   };
 
   render() {
@@ -292,7 +309,7 @@ class DropdownValueset extends Component {
           </Col>
           <Col span={19}>
             <Card style={{ marginLeft: 8 }} bordered={false}>
-              <DropdownValueAdd onSumit={this.handleAdd}>
+              <DropdownValueAdd onSumit={this.handleAdd} parentId={this.state.parentId}>
                 <Button
                   style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
                   type="dashed"

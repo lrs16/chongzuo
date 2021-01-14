@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Form, Input, Modal, InputNumber } from 'antd';
+import { Form, Input, Modal, InputNumber, Message } from 'antd';
 
 const formItemLayout = {
     labelCol: {
@@ -20,13 +20,20 @@ const withClick = (element, handleClick = () => { }) => {
 class DropdownValueAdd extends Component {
     state = {
         visible: false,
-        inputValue: ''
+        inputValue: 'system'
     };
 
     handleopenClick = () => {
-        this.setState({
-            visible: true,
-        });
+        this.handleInputValueBlur();
+        const { parentId } = this.props;
+        if (parentId) {
+            this.setState({
+                visible: true,
+            });
+        } else {
+            Message.info('请选择上级编号！');
+        }
+        this.props.form.resetFields();
     };
 
     handleOk = () => {
@@ -46,20 +53,28 @@ class DropdownValueAdd extends Component {
         this.props.form.resetFields();
     };
 
-    handleInputValueFous = () => {
+    handleInputValueFous = () => { // 获取焦点
         this.props.form.setFieldsValue({ dictModule: '' });
     }
 
-    handleInputValueBlur = e => {
-        const { value } = e.target;
-        this.setState({inputValue: value});
+    handleInputValueBlur = () => { // 失去焦点
         this.props.form.validateFields((err, values) => {
-          const { dictModule } = values;
-          if (dictModule === this.state.inputValue || dictModule === '') {
-            this.props.form.setFieldsValue({ dictModule:  this.state.inputValue});
-          } else {
-            this.props.form.setFieldsValue({ dictModule });
-          }
+            // const { inputValue } = this.state;
+            const { dictModule } = values;
+            if(dictModule) {
+                this.setState({ inputValue: dictModule });
+            }
+            // setTimeout(() => {
+            //     this.setState({ inputValue: dictModule });
+            // }, 0);
+            // 失去焦点的时候，判断，输入的值
+            // 输入的值为空，则值为system
+            if (this.state.inputValue === '' || dictModule === '') {
+                this.props.form.setFieldsValue({ dictModule: 'system' });
+            } 
+            // else {
+            //     this.props.form.setFieldsValue({ dictModule: inputValue });
+            // }
         });
     }
 
@@ -67,8 +82,6 @@ class DropdownValueAdd extends Component {
         const { visible } = this.state;
         const { children, title } = this.props;
         const { getFieldDecorator } = this.props.form;
-        // const required = true;
-
         return (
             <>
                 {withClick(children, this.handleopenClick)}
@@ -84,52 +97,34 @@ class DropdownValueAdd extends Component {
                     <Form {...formItemLayout}>
                         <Form.Item label="字典模块">
                             {getFieldDecorator('dictModule', {
-                                // rules: [
-                                //     {
-                                //         required,
-                                //         message: '请输入',
-                                //     },
-                                // ],
-                                initialValue: this.state.inputValue,
-                            })(<Input placeholder="请输入..." onFocus={this.handleInputValueFous} onBlur={this.handleInputValueBlur} />)}
-                            {/* <Input placeholder="请输入..." onFocus={() => this.handleInputValueFous()} onBlur={() => this.handleInputValueBlur()} /> */}
+                                initialValue: 'system',
+                            })(<Input placeholder="请输入..."onFocus={() => this.handleInputValueFous()} onBlur={() => this.handleInputValueBlur()} />)}
                         </Form.Item>
 
                         <Form.Item label="字典类型">
                             {getFieldDecorator('dictType', {
-                            })(<Input placeholder="请输入..."/>)}
+                            })(<Input placeholder="请输入字母类型" />)}
                         </Form.Item>
 
                         <Form.Item label="字典代码">
                             {getFieldDecorator('dictCode', {
-                                // rules: [
-                                //     {
-                                //         required,
-                                //         message: '请输入',
-                                //     },
-                                // ],
-                            })(<Input placeholder="请输入..." />)}
+                            })(<Input placeholder="请输入字典代码" />)}
                         </Form.Item>
 
                         <Form.Item label="字典名称">
                             {getFieldDecorator('dictName', {
-                            })(<Input placeholder="请输入..."/>)}
+                            })(<Input placeholder="请输入字典名称" />)}
                         </Form.Item>
 
                         <Form.Item label="字典排序">
                             {getFieldDecorator('dictSort', {
-                            })(<InputNumber style={{width: '100%'}} placeholder="请输入数字..."/>)}
+                                initialValue: 0,
+                            })(<InputNumber style={{ width: '100%' }} placeholder="请输入数字..." />)}
                         </Form.Item>
 
                         <Form.Item label="字典备注">
                             {getFieldDecorator('dictRemarks', {
-                                // rules: [
-                                //     {
-                                //         required,
-                                //         message: '请输入',
-                                //     },
-                                // ],
-                            })(<Input placeholder="请输入..." />)}
+                            })(<Input placeholder="请输入字典备注" />)}
                         </Form.Item>
                     </Form>
                 </Modal>

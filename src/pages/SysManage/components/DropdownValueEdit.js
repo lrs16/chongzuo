@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Form, Input, Modal, Radio, InputNumber  } from 'antd';
+import { Form, Input, Modal, Radio, InputNumber } from 'antd';
 
 const RadioGroup = Radio.Group;
 
@@ -55,13 +55,13 @@ class DropdownValueEdit extends Component {
         const { getFieldDecorator } = this.props.form;
         const required = true;
         const {
-            id, 
-            dictModule, 
-            dictType, 
-            dictCode, 
-            dictName, 
-            dictState, 
-            dictSort, 
+            // id, 
+            dictModule,
+            dictType,
+            dictCode,
+            dictName,
+            dictState,
+            dictSort,
             dictRemarks
         } = this.props.record;
         return (
@@ -76,7 +76,7 @@ class DropdownValueEdit extends Component {
                     width={650}
                 >
                     <Form {...formItemLayout}>
-                        <Form.Item label="id">
+                        {/* <Form.Item label="id">
                             {getFieldDecorator('id', {
                                 rules: [
                                     {
@@ -86,7 +86,7 @@ class DropdownValueEdit extends Component {
                                 ],
                                 initialValue: id || '',
                             })(<Input placeholder="请输入..." />)}
-                        </Form.Item>
+                        </Form.Item> */}
 
                         <Form.Item label="字典模块">
                             {getFieldDecorator('dictModule', {
@@ -147,8 +147,8 @@ class DropdownValueEdit extends Component {
                                 initialValue: dictState || '',
                             })(
                                 <RadioGroup>
-                                    <Radio value="0">停止</Radio>
                                     <Radio value="1">使用</Radio>
+                                    <Radio value="0">停止</Radio>
                                 </RadioGroup>,
                             )}
                         </Form.Item>
@@ -178,8 +178,8 @@ class DropdownValueEdit extends Component {
                                         message: '请输入',
                                     },
                                 ],
-                                initialValue: dictSort || '',
-                            })(<InputNumber placeholder="请输入..." style={{width: '100%'}} />)}
+                                initialValue: dictSort || 0,
+                            })(<InputNumber placeholder="请输入..." style={{ width: '100%' }} />)}
                         </Form.Item>
 
                         <Form.Item label="字典备注">
