@@ -4,7 +4,7 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import Problemregistration from './Problemregistration';
 import Problemreview from './Problemreview';
 import Problemsolving from './Problemsolving';
-import Problemconfirmation from './Problemconfirmation';
+import Operatorconfirmades from './Operatorconfirmades';
 import Confirmationcountersignature from './Confirmationcountersignature';
 import Problemclosed from './Problemclosed';
 
@@ -41,7 +41,7 @@ function Problemworkorder(props) {
       </div>
 
       <div style={{ marginBottom: '20px' }}>
-        <Problemconfirmation
+        <Operatorconfirmades
           currentProcess={currentProcess}
           statue={statue}
           id={id}

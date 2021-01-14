@@ -20,11 +20,16 @@ import Closeedit from './components/Closeedit';
 import Systemoperatoredit from './components/Systemoperatoredit';
 import Businessaudit from './components/Businessaudit';
 import Specialaudit from './components/Specialaudit';
+import Developerprocessdit from './components/Developerprocessdit';
+import Operatorconfirmaedit from './components/Operatorconfirmaedit';
+import Businessleaderconfirmedit from './components/Businessleaderconfirmedit';
+import Registrationconfirm from './components/Registrationconfirm';
 
 
 import Problemsolving from './components/Problemsolving';
 import Problemreview from './components/Problemreview';
-import Problemconfirmation from './components/Problemconfirmation';
+import Businessaudes from './components/Businessaudes';
+import Operatorconfirmades from './components/Operatorconfirmades';
 import Problemregistration from './components/Problemregistration';
 import Reasonregression from './components/Reasonregression';
 import Problemflow from './components/Problemflow';
@@ -66,8 +71,11 @@ let closecircu = '关闭';
 let handleTime;
 let receivingTime;
 let problemFlowid;
+let checkType;
+let flowNodeName;
 
 function Workorder(props) {
+  console.log('props: ', props);
   const pagetitle = props.route.name;
   const RegistratRef = useRef();
   const PreviesRef = useRef();
@@ -130,7 +138,9 @@ function Workorder(props) {
 
   if (todoDetail.main) {
     currntStatus = Number(todoDetail.main.status);
+    checkType = todoDetail.checkType;
     problemFlowid = todoDetail.main.id;
+    flowNodeName = todoDetail.flowNodeName;
     selectNextflow();
     solvingDisbled();
     if ((currntStatus === 69) || (currntStatus === 85)) {
@@ -209,6 +219,7 @@ function Workorder(props) {
         const saveData = values;
         saveData.registerTime = (saveData.registerTime).format('YYYY-MM-DD HH:mm:ss');
         saveData.registerOccurTime = (saveData.registerOccurTime).format('YYYY-MM-DD HH:mm:ss');
+        saveData.registerExpectTime = (saveData.registerExpectTime).format('YYYY-MM-DD HH:mm:ss');
         saveData.taskId = id;
         if (todoDetail.editState === 'edit') {
           saveData.registerId = todoDetail.register.id;
@@ -236,7 +247,7 @@ function Workorder(props) {
   };
 
   //  审核保存
-  const savePrevies = params2 => {
+  const savePrevies =(params2,checkType)  => {
     PreviesRef.current.validateFields((err, values) => {
       const saveData = values;
       if (values.checkTime) {
@@ -253,13 +264,13 @@ function Workorder(props) {
           saveData.checkId = todoDetail.editGuid;
           saveData.editState = 'add';
         }
+        saveData.checkType = todoDetail.checkType;
         saveApi(saveData, params2);
       }
     });
   };
 
   const saveHandle = params2 => {
-    console.log(HandleRef, 'HandleRef');
     HandleRef.current.validateFields((err, values) => {
       const saveData = values;
       if (values.handleTime) {
@@ -290,8 +301,10 @@ function Workorder(props) {
         saveData.editState = todoDetail.editState;
         if (todoDetail.editState === 'edit') {
           saveData.confirmId = todoDetail.confirm.id;
+          saveData.editState = 'edit';
         } else {
           saveData.confirmId = todoDetail.editGuid;
+          saveData.editState = 'add';
         }
 
         if (todoDetail.flowNodeName === '确认会签') {
@@ -368,17 +381,17 @@ function Workorder(props) {
     });
   };
 
-  const handleSubmit = params2 => {
+  const handleSubmit = (params2,checkType) => {
     switch (currntStatus) {
       case 5:
         // circulationSign = currntStatus;
         saveRegister(params2);
         break;
       case 25:
-        savePrevies(params2);
+        savePrevies(params2,checkType);
         break;
       case 9:
-        savePrevies(params2);
+        savePrevies(params2,checkType);
         break;
       case 29:
         saveHandle(params2);
@@ -508,11 +521,11 @@ function Workorder(props) {
               </Button>
             )}
 
-            {(currntStatus !== 29) && (currntStatus !== 69) && (currntStatus !== 85) && (
+            {(currntStatus !== 29) && (currntStatus !== 65) && (currntStatus !== 85) && (
               <SelectUser
                 taskId={id}
                 currentObj={currntStatus}
-                handleSubmit={() => handleSubmit(circaSign)}
+                handleSubmit={() => handleSubmit(circaSign,checkType)}
               >
                 <Button
                   type="primary"
@@ -526,7 +539,7 @@ function Workorder(props) {
             )
             }
 
-            { ((currntStatus === 69) || (currntStatus === 85)) && closecircu === '' && (
+            { ((currntStatus === 65) || (currntStatus === 85)) && (
               <Button
                 type="primary"
                 style={{ marginRight: 8 }}
@@ -604,13 +617,13 @@ function Workorder(props) {
               }
 
               {
-                (currntStatus === 9 || currntStatus === 25) && (
+                checkType === '1' && (currntStatus === 9 || currntStatus === 25) && (
                   <Panel
-                    header="问题审核"
+                    header="系统运维商审核环节"
                     key='1'
                     style={{ backgroundColor: 'white' }}
                   >
-                    <Previewedit
+                    <Systemoperatoredit
                       formItemLayout={formItemLayout}
                       forminladeLayout={forminladeLayout}
                       ref={PreviesRef}
@@ -621,21 +634,21 @@ function Workorder(props) {
                   </Panel>
                 )
               }
-
+            
               {
-                (currntStatus === 29 || currntStatus === 45) && (
+                 checkType === '2' && (currntStatus === 9 || currntStatus === 25) && (
                   <Panel
-                    header="问题处理"
+                    header="自动化科审核"
                     key='1'
                     style={{ backgroundColor: 'white' }}
                   >
-                    <Handleedit
+                    <Businessaudit
                       formItemLayout={formItemLayout}
                       forminladeLayout={forminladeLayout}
                       showEdit={showEdit}
-                      ref={HandleRef}
+                      ref={PreviesRef}
                       useInfo={useInfo}
-                      handle={handle}
+                      check={check}
                       handleTime={handleTime}
                       receivingTime={receivingTime}
                       loading={loading}
@@ -645,75 +658,92 @@ function Workorder(props) {
               }
 
               {
-                confirmType === '0' && (currntStatus === 65 || currntStatus === 49) && (
+                 (currntStatus === 29 || currntStatus === 45) && (
                   <Panel
-                    header="问题确认"
-                    key='1'
-                    style={{ backgroundColor: 'white' }}
-                  >
-                    <Problemconfirmedit
-                      formItemLayout={formItemLayout}
-                      forminladeLayout={forminladeLayout}
-                      useInfo={useInfo}
-                      ref={ProblemconfirmRef}
-                      confirm={confirm}
-                    />
-                  </Panel>
+                  header='系统开发商处理'
+                  key='1'
+                  style={{ backgroundColor:'white'}}
+                >
+                  <Developerprocessdit 
+                     formItemLayout={formItemLayout}
+                     forminladeLayout={forminladeLayout}
+                     showEdit={showEdit}
+                     ref={HandleRef}
+                     useInfo={useInfo}
+                     handle={handle}
+                     handleTime={handleTime}
+                     receivingTime={receivingTime}
+                     loading={loading}
+                 />
+                </Panel>
                 )
               }
 
               {
-                (currntStatus === 69 || currntStatus === 85) && (
+                flowNodeName === '系统运维商确认' && (currntStatus === 65 || currntStatus === 49) && (
                   <Panel
-                    header="问题关闭"
-                    key='1'
-                    style={{ backgroundColor: 'white' }}
-                  >
-                    <Closeedit
-                      formItemLayout={formItemLayout}
-                      forminladeLayout={forminladeLayout}
-                      ref={CloseRef}
-                      useInfo={useInfo}
-                      close={close}
-                    />
-                  </Panel>
+                  header='系统运维商确认'
+                  key='1'
+                  style={{ backgroundColor:'white'}}
+                >
+                  <Operatorconfirmaedit 
+                     formItemLayout={formItemLayout}
+                     forminladeLayout={forminladeLayout}
+                     showEdit={showEdit}
+                     ref={ProblemconfirmRef}
+                     useInfo={useInfo}
+                     handle={handle}
+                     handleTime={handleTime}
+                     receivingTime={receivingTime}
+                     loading={loading}
+                 />
+                </Panel>
                 )
               }
 
-              {/* { */}
-                {/* <Panel
-                  header='系统运维商审核环节'
+              {
+                flowNodeName === '自动化科确认' &&(currntStatus === 65 || currntStatus === 49) && (
+                  <Panel
+                  header='自动化科业务负责人确认'
                   key='1'
                   style={{ backgroundColor:'white'}}
                 >
-                  <Systemoperatoredit 
-                    formItemLayout={formItemLayout}
-                    forminladeLayout={forminladeLayout}
+                  <Operatorconfirmaedit 
+                     formItemLayout={formItemLayout}
+                     forminladeLayout={forminladeLayout}
+                     showEdit={showEdit}
+                     ref={ProblemconfirmRef}
+                     useInfo={useInfo}
+                     handle={handle}
+                     handleTime={handleTime}
+                     receivingTime={receivingTime}
+                     loading={loading}
                  />
                 </Panel>
+                )
+              }
 
-                <Panel
-                  header='自动化业务人员会签审核环节'
+             {
+                 (currntStatus === 69) && (
+                  <Panel
+                  header='问题登记人员确认'
                   key='1'
                   style={{ backgroundColor:'white'}}
                 >
-                  <Businessaudit 
-                    formItemLayout={formItemLayout}
-                    forminladeLayout={forminladeLayout}
+                  <Operatorconfirmaedit 
+                     formItemLayout={formItemLayout}
+                     forminladeLayout={forminladeLayout}
+                     showEdit={showEdit}
+                     ref={HandleRef}
+                     useInfo={useInfo}
+                     handle={handle}
+                     handleTime={handleTime}
+                     receivingTime={receivingTime}
+                     loading={loading}
                  />
                 </Panel>
-
-                <Panel
-                  header='自动化科专责会签审核环节'
-                  key='1'
-                  style={{ backgroundColor:'white'}}
-                >
-                  <Specialaudit 
-                    formItemLayout={formItemLayout}
-                    forminladeLayout={forminladeLayout}
-                 />
-                </Panel> */}
-      {/* } */}
+                )
+              }
             </Collapse>
             
            
@@ -728,8 +758,15 @@ function Workorder(props) {
                 />
               )}
 
-              {currntStatus >= 29 && (
+              {  currntStatus >= 25 && (
                 <Problemreview
+                  reviesDetail={todoDetail}
+                  loading={loading}
+                />
+              )}
+
+              {currntStatus >= 25 && (
+                <Businessaudes
                   reviesDetail={todoDetail}
                   loading={loading}
                 />
@@ -742,8 +779,8 @@ function Workorder(props) {
                 />
               )}
 
-              {currntStatus > 65 && (
-                <Problemconfirmation
+              {currntStatus >= 65 && (
+                <Operatorconfirmades
                   confirmationDetail={todoDetail}
                   loading={loading}
                 />

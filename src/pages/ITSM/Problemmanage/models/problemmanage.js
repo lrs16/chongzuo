@@ -260,6 +260,9 @@ export default {
     },
     //  待办人
     gotopeople(state, action) {
+      console.log('action: ', action);
+      console.log('state: ', state);
+
       return {
         ...state,
         tobopeople: action.payload.data,

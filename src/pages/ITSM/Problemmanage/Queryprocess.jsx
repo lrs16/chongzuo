@@ -25,7 +25,7 @@ import Problemworkorder from './components/Problemworkorder';
 import Problemflow from './components/Problemflow';
 import Problemsolving from './components/Problemsolving';
 import Problemreview from './components/Problemreview';
-import Problemconfirmation from './components/Problemconfirmation';
+import Operatorconfirmades from './components/Operatorconfirmades';
 import Problemregistration from './components/Problemregistration';
 import Confirmationcountersignature from './components/Confirmationcountersignature';
 import Problemclosed from './components/Problemclosed';

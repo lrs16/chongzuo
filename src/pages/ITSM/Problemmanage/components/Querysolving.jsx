@@ -33,7 +33,7 @@ function Problemsolving(props) {
               {solvingDetail ? solvingDetail.problemFlowNodeRows[2].addTime : ''}
             </Descriptions.Item>
             <Descriptions.Item label="处理时间">
-              {solvingDetail ? solvingDetail.problemFlowNodeRows[2].handleTime : ''}
+              {solvingDetail ? solvingDetail.NodeRows[2].handleTime : ''}
             </Descriptions.Item>
             <Descriptions.Item label="处理结果">
               {solvingDetail ? solvingDetail.problemFlowNodeRows[2].handleResult : ''}

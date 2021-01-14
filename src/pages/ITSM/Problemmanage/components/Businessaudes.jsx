@@ -2,7 +2,7 @@ import React from 'react';
 import {  Descriptions, Collapse } from 'antd';
 
 const { Panel } = Collapse;
-function Problemreview(props) {
+function Businessaudes(props) {
   const {  reviesDetail,loading } = props;
   console.log('reviesDetail: ', reviesDetail);
   return (
@@ -13,24 +13,24 @@ function Problemreview(props) {
         style={{ backgroundColor: 'white', marginTop: '20px' }}
         >
         <Panel 
-          header="系统运维商审核" 
+          header="自动化科审核" 
           style={{ marginBottom: '0px', paddingBottom: '0px' }}
         >
           <Descriptions>
             <Descriptions.Item label="审核结果">
-            {reviesDetail ? reviesDetail.problemFlowNodeRows[1].checkResult : ''}
+            {reviesDetail ? reviesDetail.problemFlowNodeRows[2].checkResult : ''}
             </Descriptions.Item>
           </Descriptions>
 
           <Descriptions>
             <Descriptions.Item label="审核时间">
-              {reviesDetail ? reviesDetail.problemFlowNodeRows[1].checkTime : ''}
+              {reviesDetail ? reviesDetail.problemFlowNodeRows[2].checkTime : ''}
             </Descriptions.Item>
           </Descriptions>
 
           <Descriptions>
             <Descriptions.Item label="审核意见">
-              {reviesDetail ? reviesDetail.problemFlowNodeRows[1].checkOpinion : ''}
+              {reviesDetail ? reviesDetail.problemFlowNodeRows[2].checkOpinion : ''}
             </Descriptions.Item>
           </Descriptions>
 
@@ -42,15 +42,15 @@ function Problemreview(props) {
 
           <Descriptions>
             <Descriptions.Item label="审核人">
-                {reviesDetail ? reviesDetail.problemFlowNodeRows[1].checkUser : ''}
+                {reviesDetail ? reviesDetail.problemFlowNodeRows[2].checkUser : ''}
               </Descriptions.Item>
 
               <Descriptions.Item label="审核单位">
-                {reviesDetail ? reviesDetail.problemFlowNodeRows[1].checkUnit : ''}
+                {reviesDetail ? reviesDetail.problemFlowNodeRows[2].checkUnit : ''}
               </Descriptions.Item>
 
               <Descriptions.Item label="审核部门">
-                {reviesDetail ? reviesDetail.problemFlowNodeRows[1].checkDept : ''}
+                {reviesDetail ? reviesDetail.problemFlowNodeRows[2].checkDept : ''}
               </Descriptions.Item>
           </Descriptions>
            
@@ -61,4 +61,4 @@ function Problemreview(props) {
     </>
   );
 }
-export default Problemreview;
+export default Businessaudes;

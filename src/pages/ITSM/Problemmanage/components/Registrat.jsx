@@ -157,9 +157,85 @@ const Registrat = React.forwardRef((props, ref) => {
               </Form.Item>
             </Col>
 
-            <Col span={8} {...formItemLayout}>
+            <Col span={8}>
+              <Form.Item label="重要程度">
+                {getFieldDecorator('importance', {
+                  rules: [
+                    {
+                      required,
+                      message: '请选择重要程度',
+                    },
+                  ],
+                  initialValue: main?main.importance:'一般',
+                })(
+                  <Select>
+                    <Option value="一般">一般</Option>
+                    <Option value="紧急">紧急</Option>
+                    <Option value="重大">重大</Option>
+                  </Select>,
+                )}
+              </Form.Item>
+            </Col>
+
+            <Col span={8}>
+              <Form.Item label="期望完成时间">
+                {getFieldDecorator('registerExpectTime', {
+                  rules: [
+                    {
+                      required,
+                      message: '请选择期望完成时间',
+                    },
+                  ],
+                  initialValue: occurtime,
+                })(<DatePicker 
+                     showTime 
+                     format="YYYY-MM-DD HH:mm:ss"
+                 />)}
+              </Form.Item>
+            </Col>
+
+            <Col span={8}>
+              <Form.Item label="所属项目">
+                {getFieldDecorator('registerProject', {
+                  rules: [
+                    {
+                      required,
+                      message: '请输入所属项目',
+                    },
+                  ],
+                  initialValue: register?register.registerProject:'',
+                })(<Input />)}
+              </Form.Item>
+            </Col> 
+
+            
+            <Col span={8}>
+              <Form.Item label="影响范围">
+                {getFieldDecorator('registerScope', {
+                  rules: [
+                    {
+                      required,
+                      message: '请选择影响范围',
+                    },
+                  ],
+                  initialValue: main?register.registerScope:'影响范围',
+                })(
+                  <Select>
+                    <Option value="影响范围">影响范围</Option>
+                    <Option value="服务器">服务器</Option>
+                    <Option value="数据传输">数据传输</Option>
+                    <Option value="网络\通道">网络\通道</Option>
+                    <Option value="VNC">VNC</Option>
+                    <Option value="专变自动抄表率">专变自动抄表率</Option>
+                    <Option value="费控、召测">费控、召测</Option>
+                  </Select>,
+                )}
+              </Form.Item>
+            </Col>
+
+            <Col span={8}>
               <Form.Item label="联系电话">
-                {getFieldDecorator('phone', {
+                {getFieldDecorator('registerUserPhone', {
                   rules: [
                     {
                       required,
@@ -168,70 +244,10 @@ const Registrat = React.forwardRef((props, ref) => {
                       message: '请输入正确的手机号码',
                     },
                   ],
-                  initialValue: register?register.phone:'',
+                  initialValue: register?register.registerUserPhone:'',
                 })(<Input />)}
               </Form.Item>
             </Col>  
-
-            <Col span={8}>
-              <Form.Item label="紧急度">
-                {getFieldDecorator('emergent', {
-                  rules: [
-                    {
-                      required,
-                      message: '请输入紧急度',
-                    },
-                  ],
-                  initialValue: main?main.emergent:'低',
-                })(
-                  <Select>
-                    <Option value="低">低</Option>
-                    <Option value="中">中</Option>
-                    <Option value="高">高</Option>
-                  </Select>,
-                )}
-              </Form.Item>
-            </Col>
-
-            <Col span={8}>
-              <Form.Item label="影响度">
-                {getFieldDecorator('effect', {
-                  rules: [
-                    {
-                      required,
-                      message: '请输入影响度',
-                    },
-                  ],
-                  initialValue: main?main.effect:'低',
-                })(
-                  <Select>
-                    <Option value="低">低</Option>
-                    <Option value="中">中</Option>
-                    <Option value="高">高</Option>
-                  </Select>,
-                )}
-              </Form.Item>
-            </Col>
-
-            <Col span={8}>
-              <Form.Item label="优先级">
-                {getFieldDecorator('priority', {
-                  rules: [
-                    {
-                      required,
-                      message: '请输入优先级',
-                    },
-                  ],
-                  initialValue: main?main.priority:'低',
-                })(
-                  <Select>
-                    <Option value="低">低</Option>
-                    <Option value="中">中</Option>
-                    <Option value="高">高</Option>
-                  </Select>,
-                )}
-              </Form.Item>
-            </Col>
 
             <Col span={24}>
               <Form.Item label="问题标题" {...forminladeLayout}>
@@ -260,6 +276,22 @@ const Registrat = React.forwardRef((props, ref) => {
                 })(<TextArea />)}
               </Form.Item>
             </Col>
+
+            <Col span={24}>
+          <Form.Item
+            label="上传附件"
+            {...forminladeLayout}
+            extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
+          >
+            {getFieldDecorator('attachIds')(
+              <Upload>
+                <Button type="primary">
+                  <DownloadOutlined /> 上传附件
+                </Button>
+              </Upload>,
+            )}
+          </Form.Item>
+        </Col>
 
             <Col span={8}>
               <Form.Item label="填报人">

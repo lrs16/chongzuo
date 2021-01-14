@@ -1,4 +1,4 @@
-import React, { useRef,useImperativeHandle,useState } from 'react';
+import React, { useRef, useImperativeHandle,useState } from 'react';
 import {
   Row,
   Col,
@@ -6,15 +6,19 @@ import {
   Input,
   DatePicker,
   Radio,
-  Alert
+  Alert,
+  Upload,
+  Button
 } from 'antd';
+import { DownloadOutlined } from '@ant-design/icons';
 import moment from 'moment';
-import { defaults } from 'lodash';
 
 const { TextArea } = Input;
 
-const Specialaudit = React.forwardRef((props,ref) => {
-  const { formItemLayout,forminladeLayout } = props;
+
+const Specialaudit = React.forwardRef((props, ref) => {
+  const { formItemLayout, forminladeLayout } = props;
+  const [ result,setResult ]  = useState(1);
   const { getFieldDecorator } = props.form;
   const attRef = useRef();
   useImperativeHandle(
@@ -24,26 +28,32 @@ const Specialaudit = React.forwardRef((props,ref) => {
     }),
     [],
   );
+  const {
+    check,
+    useInfo
+  } = props;
 
+  
   const onChange = (e) => {
     console.log('e: ', e);
+    console.log(result,'result');
   }
 
   const required = true;
 
   return (
     <Row gutter={16}>
-      <Form>
-        <Col span={23}>
+      <Form {...formItemLayout}>
+      <Col span={23}>
           <Form.Item label='审核结果' {...forminladeLayout}>
-          { getFieldDecorator('m1',{
+          { getFieldDecorator('checkResult',{
             rules:[
               {
                 required,
                 message:'请输入审核结果'
               }
             ],
-            initialValue:1
+            initialValue: result
           })(
             <Radio.Group onChange={onChange}>
               <Radio value={1}>A</Radio>
@@ -53,31 +63,30 @@ const Specialaudit = React.forwardRef((props,ref) => {
             </Radio.Group>
           )
           }
-          </Form.Item>
+        </Form.Item>
         </Col>
-        <Col span={23}>
-          <Form.Item label='审核时间' {...forminladeLayout}>
-            {
-              getFieldDecorator('m2',{
-                rules:[
-                  {
-                    required,
-                    message:'请输入审核时间'
-                  }
-                ]
-              })(
-                <DatePicker
-                  showTime
-                  format='YYYY-MM-DD HH:mm:ss'
-                />
-              )
-            }
-          </Form.Item>
-        </Col>
-        <Col span={23}>
+      <Col span={8}>
+        <Form.Item label="审核时间">
+          {getFieldDecorator('checkTime', {
+            rules:[
+              {
+                required,
+                message:'请输入审核时间'
+              }
+            ],
+            initialValue: check ? moment(check.checkTime) : moment(new Date()),
+          })(<DatePicker 
+               showTime 
+               format="YYYY-MM-DD HH:mm:ss" 
+          />)}
+        </Form.Item>
+      </Col>
+
+      
+      <Col span={23}>
           <Form.Item label='审核意见' {...forminladeLayout}>
             {
-              getFieldDecorator('m3',{
+              getFieldDecorator('checkOpinion',{
                 rules:[
                   {
                     required,
@@ -88,46 +97,85 @@ const Specialaudit = React.forwardRef((props,ref) => {
                 <TextArea/>
               )
             }
+          </Form.Item>
+        </Col>
 
-          </Form.Item>
-        </Col>
-        <Col span={23}>
-          <Form.Item label='上传附件' {...forminladeLayout} >
-          </Form.Item>
-        </Col>
         <Col span={8}>
-          <Form.Item label='审核人'>
+          <Form.Item label='上传问题报告'>
             {
-              getFieldDecorator('m5',{
-
-              })(<Input disabled/>)
-            }
-
-          </Form.Item>
-          
-        </Col>
-  
-        <Col span={8}>
-          <Form.Item label='审核人单位'>
-            {
-              getFieldDecorator('m6')(<Input disabled/>)
+              getFieldDecorator('m4',{
+              
+              })(
+                <>
+                <Radio.Group>
+                  <Radio value={1}>A</Radio>
+                  <Radio value={2}>B</Radio>
+                </Radio.Group>           
+              </>
+              )
             }
           </Form.Item>
-
         </Col>
-  
-        <Col span={8}>
-          <Form.Item label='审核人部门'>
-            {
-              getFieldDecorator('m6')(<Input disabled/>)
-            }
+
+        {/* <Col span={23}>
+          <Form.Item {...forminladeLayout} label=''>
+            <Alert 
+              message="若需要上传故障报告请于故障处理完成五个工作日内进行上传。" 
+              type="warning" 
+              showIcon
+              />
           </Form.Item>
+        </Col> */}
 
+        <Col span={24}>
+          <Form.Item 
+            label='上传附件'
+            {...forminladeLayout}
+            extra='只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb'
+            >
+              {getFieldDecorator('attachIds')(
+                <Upload>
+                  <Button type='primary'>
+                    <DownloadOutlined /> 上传附件
+                  </Button>
+                </Upload>,
+              )}
+          </Form.Item>
         </Col>
 
-      </Form>
-    </Row>
-  )
-})
+      <Col span={8}>
+        <Form.Item label="审核人">
+          {getFieldDecorator('checkUser', {
+            // rules: [
+            //   {
+            //     required,
+            //     message: '请输入审核人',
+            //   },
+            // ],
+            initialValue: useInfo?useInfo.loginCode:'',
+          })(<Input disabled/>)}
+        </Form.Item>
+      </Col>
+
+      <Col span={8}>
+        <Form.Item label="审核单位">
+          {getFieldDecorator('checkUnit', {
+            initialValue: '单位',
+          })(<Input disabled/>)}
+        </Form.Item>
+      </Col>
+
+      <Col span={8}>
+        <Form.Item label="审核部门">
+          {getFieldDecorator('checkDept', {
+           initialValue: useInfo?useInfo.deptNameExt:'',
+          })(<Input disabled/>)}
+        </Form.Item>
+      </Col>
+    </Form>
+  </Row>
+
+  );
+});
 
 export default Form.create({})(Specialaudit);

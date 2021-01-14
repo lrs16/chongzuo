@@ -6,17 +6,21 @@ import {
   Input,
   DatePicker,
   Radio,
-  Alert
+  Alert,
+  Upload,
+  Button
 } from 'antd';
+import { DownloadOutlined } from '@ant-design/icons';
 import moment from 'moment';
 
 const { TextArea } = Input;
 
-const Systemoperatoredit = React.forwardRef((props,ref) => {
-  const { formItemLayout,forminladeLayout } = props;
+
+const Systemoperatoredit = React.forwardRef((props, ref) => {
+  const { formItemLayout, forminladeLayout } = props;
   const { getFieldDecorator } = props.form;
-  const [value,setValue] = useState(1);
   const attRef = useRef();
+  const [value,setValue] = useState('');
   useImperativeHandle(
     ref,
     () => ({
@@ -24,62 +28,62 @@ const Systemoperatoredit = React.forwardRef((props,ref) => {
     }),
     [],
   );
+  const {
+    check,
+    useInfo
+  } = props;
 
+  
   const onChange = (e) => {
-    console.log('e: ', e);
-
+    setValue(e.target.value);
   }
+
   const required = true;
 
   return (
     <Row gutter={16}>
       <Form {...formItemLayout}>
-        <Col span={23}>
+      <Col span={23}>
           <Form.Item label='审核结果' {...forminladeLayout}>
-          { getFieldDecorator('m1',{
+          { getFieldDecorator('checkResult',{
             rules:[
               {
                 required,
                 message:'请输入审核结果'
               }
             ],
-            initialValue:value
+            initialValue:check?check.checkResult:'通过'
           })(
             <Radio.Group onChange={onChange}>
-              <Radio value={1}>A</Radio>
-              <Radio value={2}>B</Radio>
-              <Radio value={3}>C</Radio>
-              <Radio value={4}>D</Radio>
+              <Radio value='通过'>通过</Radio>
+              <Radio value='不通过'>不通过</Radio>
             </Radio.Group>
           )
           }
         </Form.Item>
         </Col>
+      <Col span={8}>
+        <Form.Item label="审核时间">
+          {getFieldDecorator('checkTime', {
+            rules:[
+              {
+                required,
+                message:'请输入审核时间'
+              }
+            ],
+            initialValue: check ? moment(check.checkTime) : moment(new Date()),
+          })(<DatePicker 
+               showTime 
+               format="YYYY-MM-DD HH:mm:ss" 
+          />)}
+        </Form.Item>
+      </Col>
 
-        <Col span={23}>
-          <Form.Item label='审核时间' {...forminladeLayout}>
-            {
-              getFieldDecorator('m2',{
-                rules:[
-                  {
-                    required,
-                    message:'请输入审核时间'
-                  }
-                ]
-              })(
-                <DatePicker
-                  showTime
-                  format='YYYY-MM-DD HH:mm:ss'
-                />
-              )
-            }
-          </Form.Item>
-        </Col>
-
-        <Col span={23}>
+      
+      <Col span={23}>
           <Form.Item label='审核意见' {...forminladeLayout}>
             {
-              getFieldDecorator('m3',{
+              getFieldDecorator('checkOpinion',{
                 rules:[
                   {
                     required,
@@ -90,80 +94,68 @@ const Systemoperatoredit = React.forwardRef((props,ref) => {
                 <TextArea/>
               )
             }
-
           </Form.Item>
-
         </Col>
-        
-        <Col span={8}>
-          <Form.Item label='上传问题报告'>
-            {
-              getFieldDecorator('m4',{
-              
-              })(
-                <>
-                <Radio.Group>
-                  <Radio value={1}>A</Radio>
-                  <Radio value={2}>B</Radio>
-                </Radio.Group>           
-              </>
-              )
-            }
 
-          </Form.Item>
-
-        </Col>
-        
-        <Col span={23}>
-          <Form.Item {...forminladeLayout} label='ff'>
+        {/* <Col span={23}>
+          <Form.Item {...forminladeLayout} label=''>
             <Alert 
               message="若需要上传故障报告请于故障处理完成五个工作日内进行上传。" 
               type="warning" 
               showIcon
               />
           </Form.Item>
-        </Col>
+        </Col> */}
 
-        <Col span={23}>
-          <Form.Item label='上传附件' {...forminladeLayout} >
-
+        <Col span={24}>
+          <Form.Item 
+            label='上传附件'
+            {...forminladeLayout}
+            extra='只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb'
+            >
+              {getFieldDecorator('attachIds')(
+                <Upload>
+                  <Button type='primary'>
+                    <DownloadOutlined /> 上传附件
+                  </Button>
+                </Upload>,
+              )}
           </Form.Item>
         </Col>
 
-        <Col span={8}>
-          <Form.Item label='审核人'>
-            {
-              getFieldDecorator('m5',{
+      <Col span={8}>
+        <Form.Item label="审核人">
+          {getFieldDecorator('checkUser', {
+            // rules: [
+            //   {
+            //     required,
+            //     message: '请输入审核人',
+            //   },
+            // ],
+            initialValue: useInfo?useInfo.loginCode:'',
+          })(<Input disabled/>)}
+        </Form.Item>
+      </Col>
 
-              })(<Input disabled/>)
-            }
+      <Col span={8}>
+        <Form.Item label="审核单位">
+          {getFieldDecorator('checkUnit', {
+            initialValue: '单位',
+          })(<Input disabled/>)}
+        </Form.Item>
+      </Col>
 
-          </Form.Item>
-          
-        </Col>
-  
-        <Col span={8}>
-          <Form.Item label='审核人单位'>
-            {
-              getFieldDecorator('m6')(<Input disabled/>)
-            }
-          </Form.Item>
+      <Col span={8}>
+        <Form.Item label="审核部门">
+          {getFieldDecorator('checkDept', {
+           initialValue: useInfo?useInfo.deptNameExt:'',
+          })(<Input disabled/>)}
+        </Form.Item>
+      </Col>
+    </Form>
+  </Row>
 
-        </Col>
-  
-        <Col span={8}>
-          <Form.Item label='审核人部门'>
-            {
-              getFieldDecorator('m6')(<Input disabled/>)
-            }
-          </Form.Item>
-
-        </Col>
-  
-      </Form>
-
-    </Row>
-  )
+  );
 });
 
 export default Form.create({})(Systemoperatoredit);

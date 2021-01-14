@@ -8,7 +8,7 @@ import Link from 'umi/link';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import Problemsolving from './components/Problemsolving';
 import Problemreview from './components/Problemreview';
-import Problemconfirmation from './components/Problemconfirmation';
+import Operatorconfirmades from './components/Operatorconfirmades';
 import Problemregistration from './components/Problemregistration';
 import Problemclosed from './components/Problemclosed';
 import Problemflow from './components/Problemflow';
@@ -108,7 +108,7 @@ function Queryworkdetail(props) {
           )}
 
           { currntStatus >=65 && (
-            <Problemconfirmation 
+            <Operatorconfirmades 
             confirmationDetail={queryDetaildata}
             statue={currntStatus}
             querySign='yes'

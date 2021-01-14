@@ -70,6 +70,7 @@ function Registration(props) {
         const saveData = values;
         saveData.registerTime =  (saveData.registerTime).format('YYYY-MM-DD HH:mm:ss');
         saveData.registerOccurTime = (saveData.registerOccurTime).format('YYYY-MM-DD HH:mm:ss');
+        saveData.registerExpectTime = (saveData.registerExpectTime).format('YYYY-MM-DD HH:mm:ss');
         // saveData.taskId = id.flowTaskId;
         saveData.editState = 'add';
         dispatch({
