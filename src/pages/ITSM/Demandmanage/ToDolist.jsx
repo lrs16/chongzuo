@@ -40,11 +40,6 @@ const columns = [
     title: '需求编号',
     dataIndex: 'demandId',
     key: 'demandId',
-  },
-  {
-    title: '需求标题',
-    dataIndex: 'demandTitle',
-    key: 'demandTitle',
     render: (text, record) => {
       const handleClick = () => {
         router.push({
@@ -58,6 +53,11 @@ const columns = [
       };
       return <a onClick={handleClick}>{text}</a>;
     },
+  },
+  {
+    title: '需求标题',
+    dataIndex: 'demandTitle',
+    key: 'demandTitle',
   },
   {
     title: '需求类型',

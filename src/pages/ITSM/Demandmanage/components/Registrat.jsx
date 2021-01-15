@@ -1,8 +1,9 @@
-import React, { useRef, useImperativeHandle, forwardRef } from 'react';
+import React, { useRef, useImperativeHandle, forwardRef, useEffect, useState } from 'react';
 import moment from 'moment';
 import { Card, Row, Col, Form, Input, Button, Select, Upload, DatePicker, Cascader } from 'antd';
 import { phone_reg } from '@/utils/Regexp';
 import { DownloadOutlined } from '@ant-design/icons';
+import SysUpload from '@/components/SysUpload';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -117,9 +118,15 @@ const modulemap = [
   },
 ];
 const Registrat = forwardRef((props, ref) => {
-  const { register, userinfo } = props;
+  const { register, userinfo, files, ChangeFiles } = props;
   const { getFieldDecorator } = props.form;
   const required = true;
+
+  const [fileslist, setFilesList] = useState([]);
+  useEffect(() => {
+    ChangeFiles(fileslist);
+  }, [fileslist]);
+
   const attRef = useRef();
   useImperativeHandle(
     ref,
@@ -273,21 +280,17 @@ const Registrat = forwardRef((props, ref) => {
               })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
             </Form.Item>
           </Col>
-          {/* <Col span={24}>
+          <Col span={24}>
             <Form.Item
               label="上传附件"
               {...forminladeLayout}
               extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
             >
-              {getFieldDecorator('form17')(
-                <Upload>
-                  <Button type="primary">
-                    <DownloadOutlined /> 上传附件
-                  </Button>
-                </Upload>,
-              )}
+              <div style={{ width: 400 }}>
+                <SysUpload fileslist={files} ChangeFileslist={newvalue => setFilesList(newvalue)} />
+              </div>
             </Form.Item>
-          </Col> */}
+          </Col>
           <Col span={8}>
             <Form.Item label="登记人">
               {getFieldDecorator('registerPerson', {

@@ -6,10 +6,21 @@ export default {
   namespace: 'demandregister',
 
   state: {
-    // list: [],
+    data: '',
   },
 
   effects: {
+    // 上传,删除附件触发保存
+    *uploadchange({ payload }, { call, put }) {
+      const response = yield call(DemandStart, payload);
+      if (response.code === 200) {
+        yield put({
+          type: 'save',
+          payload: response.data,
+        });
+      }
+    },
+
     // 登记时保存
     *start({ payload }, { call }) {
       const response = yield call(DemandStart, payload);
@@ -37,5 +48,12 @@ export default {
     },
   },
 
-  reducers: {},
+  reducers: {
+    save(state, action) {
+      return {
+        ...state,
+        data: action.payload,
+      };
+    },
+  },
 };

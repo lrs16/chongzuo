@@ -9,16 +9,10 @@ import { DingdingOutlined } from '@ant-design/icons';
 import Registrat from './components/Registrat';
 import Examine from './components/Examine';
 import Track from './components/Track';
+import Registratdes from './components/Registratdes';
 
 const { Panel } = Collapse;
 const { Step } = Steps;
-
-// const Panelheadermap = new Map([
-//   ['register', '事件登记'],
-//   ['handle', '事件处理'],
-//   ['check', '事件审核'],
-//   ['finish', '事件确认'],
-// ]);
 
 const formItemLayout = {
   labelCol: {
@@ -57,6 +51,7 @@ function WorkOrder(props) {
   const { taskName, taskId, mainId } = location.query;
   // const [ischeck, setIscheck] = useState(false); // 是否在校验状态
   // const [flowtype, setFlowtype] = useState('1'); // 流转类型
+  const [files, setFiles] = useState([]); // 下载列表
 
   // 初始化用户信息，流程类型
   useEffect(() => {
@@ -121,6 +116,7 @@ function WorkOrder(props) {
     if (historys === [] || historys?.slice(-1)[0]?.taskName !== infotaskName) {
       return '';
     }
+    return null;
   };
   const ExamineRef = useRef();
   const getdemandexamine = () => {
@@ -260,7 +256,7 @@ function WorkOrder(props) {
                 <div>{moment(obj.time).format('YYYY-MM-DD hh:mm:ss')}</div>
               </div>
             );
-            return <Step title={obj.taskName} description={desc} key={index} />;
+            return <Step title={obj.taskName} description={desc} key={index.toString()} />;
           })}
         </Steps>
       )}
@@ -278,6 +274,10 @@ function WorkOrder(props) {
                 <Registrat
                   formItemLayout={formItemLayout}
                   forminladeLayout={forminladeLayout}
+                  files={files}
+                  ChangeFiles={newvalue => {
+                    setFiles(newvalue);
+                  }}
                   ref={RegistratRef}
                   register={info.demandForm}
                   userinfo={userinfo}
@@ -294,7 +294,7 @@ function WorkOrder(props) {
                   info={
                     info.historys?.slice(-1)[0].taskName === info.taskName
                       ? info.historys.slice(-1)
-                      : ''
+                      : undefined
                   }
                 />
               )}
@@ -310,7 +310,7 @@ function WorkOrder(props) {
                   info={
                     info.historys?.slice(-1)[0].taskName === info.taskName
                       ? info.historys.slice(-1)
-                      : ''
+                      : undefined
                   }
                 />
               )}
@@ -325,7 +325,7 @@ function WorkOrder(props) {
                   info={
                     info.historys?.slice(-1)[0].taskName === info.taskName
                       ? info.historys.slice(-1)
-                      : ''
+                      : undefined
                   }
                 />
               )}
@@ -337,11 +337,15 @@ function WorkOrder(props) {
                   info={
                     info.historys?.slice(-1)[0].taskName === info.taskName
                       ? info.historys.slice(-1)
-                      : ''
+                      : undefined
                   }
                   demandId={info.demandForm.demandId}
                 />
               )}
+            </Panel>
+
+            <Panel header="需求登记" key="registdes">
+              <Registratdes info={info.demandForm} />
             </Panel>
 
             {/* {data.map((obj, index) => {

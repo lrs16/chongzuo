@@ -6,9 +6,10 @@ import Registrat from './components/Registrat';
 import SelectUser from '@/components/SelectUser';
 
 function Registration(props) {
-  const { dispatch, userinfo } = props;
+  const { dispatch, userinfo, data, info, loading } = props;
   const pagetitle = props.route.name;
-  const [flowtype, setFlowtype] = useState('1'); // 流转类型
+  // const [flowtype, setFlowtype] = useState('1'); // 流转类型
+  const [files, setFiles] = useState([]); // 下载列表
 
   // 初始化用户信息，流程类型
   useEffect(() => {
@@ -17,6 +18,19 @@ function Registration(props) {
     });
     sessionStorage.setItem('Processtype', 'demand');
   }, []);
+
+  // 附件更新后，刷新
+  useEffect(() => {
+    if (data !== '') {
+      dispatch({
+        type: 'demandtodo/demandopenflow',
+        payload: {
+          processInstanceId: data.processId,
+        },
+      });
+    }
+  }, [data]);
+
   // 更新流转类型
   // useEffect(() => {
   //   sessionStorage.setItem('flowtype', flowtype);
@@ -64,6 +78,24 @@ function Registration(props) {
     }
   };
 
+  // 上传删除附件触发保存
+  useEffect(() => {
+    if (files.length > 0) {
+      const values = RegistratRef.current.getFieldsValue();
+      dispatch({
+        type: 'demandregister/uploadchange',
+        payload: {
+          ...values,
+          creationTime: values.creationTime.format(),
+          registerTime: values.registerTime.format(),
+          attachment: JSON.stringify(files),
+          functionalModule: values.functionalModule.join('/'),
+          nextUserIds: sessionStorage.getItem('userauthorityid').split(','),
+        },
+      });
+    }
+  }, [files]);
+
   const operations = (
     <>
       <Button type="primary" style={{ marginRight: 8 }} onClick={() => getregistrat('save')}>
@@ -81,13 +113,23 @@ function Registration(props) {
   return (
     <PageHeaderWrapper title={pagetitle} extra={operations}>
       <Card>
-        <Registrat ref={RegistratRef} userinfo={userinfo} />
+        <Registrat
+          ref={RegistratRef}
+          userinfo={userinfo}
+          files={info.demandForm !== undefined ? JSON.parse(info.demandForm.attachment) : files}
+          ChangeFiles={newvalue => {
+            setFiles(newvalue);
+          }}
+          register={info.demandForm !== undefined ? info.demandForm : undefined}
+        />
       </Card>
     </PageHeaderWrapper>
   );
 }
 
-export default connect(({ itsmuser, loading }) => ({
+export default connect(({ itsmuser, demandregister, demandtodo, loading }) => ({
   userinfo: itsmuser.userinfo,
+  data: demandregister.data,
+  info: demandtodo.info,
   loading: loading.models.demandregister,
 }))(Registration);

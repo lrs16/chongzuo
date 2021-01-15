@@ -29,13 +29,6 @@ const Examine = forwardRef((props, ref) => {
   const handleAdopt = e => {
     setAdopt(e.target.value);
   };
-  const result = info[0] === undefined ? 1 : info[0].result;
-  const reviewTime = info[0] === undefined ? moment().format() : info[0].reviewTime;
-  const project = info[0] === undefined ? '' : info[0].project;
-  const opinion = info[0] === undefined ? '' : info[0].opinion;
-  const business = info[0] === undefined ? '' : info[0].business;
-  const releases = info[0] === undefined ? '' : info[0].releases;
-  const priority = info[0] === undefined ? '' : info[0].priority;
 
   return (
     <Form {...formItemLayout}>
@@ -44,7 +37,7 @@ const Examine = forwardRef((props, ref) => {
           <Form.Item label={`${text}结果`}>
             {getFieldDecorator('result', {
               rules: [{ required: true, message: `请选择${text}结果` }],
-              initialValue: result,
+              initialValue: info[0].result,
             })(
               <Radio.Group onChange={handleAdopt}>
                 <Radio value={1}>通过</Radio>
@@ -58,7 +51,7 @@ const Examine = forwardRef((props, ref) => {
             <Form.Item label="需求优先级">
               {getFieldDecorator('priority', {
                 rules: [{ required: true, message: '请选择需求优先级' }],
-                initialValue: priority,
+                initialValue: info[0].priority,
               })(
                 <Select placeholder="请选择">
                   {degreemap.map(({ key, value }) => {
@@ -77,7 +70,7 @@ const Examine = forwardRef((props, ref) => {
           <Form.Item label={`${text}时间`}>
             {getFieldDecorator('reviewTime', {
               rules: [{ required, message: `请选择${text}时间` }],
-              initialValue: moment(reviewTime),
+              initialValue: moment(info[0].reviewTime),
             })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" />)}
           </Form.Item>
         </Col>
@@ -87,7 +80,7 @@ const Examine = forwardRef((props, ref) => {
             <Form.Item label="所属项目">
               {getFieldDecorator('project', {
                 rules: [{ required: true, message: '请输入所属项目' }],
-                initialValue: project,
+                initialValue: info[0].project,
               })(<Input placeholder="请输入" />)}
             </Form.Item>
           </Col>
@@ -97,7 +90,7 @@ const Examine = forwardRef((props, ref) => {
             <Form.Item label={`${text}意见`} {...forminladeLayout}>
               {getFieldDecorator('opinion', {
                 rules: [{ required: false, message: `请输入${text}意见` }],
-                initialValue: opinion,
+                initialValue: info[0].opinion,
               })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
             </Form.Item>
           )}
@@ -105,7 +98,7 @@ const Examine = forwardRef((props, ref) => {
             <Form.Item label={`${text}意见`} {...forminladeLayout}>
               {getFieldDecorator('opinion', {
                 rules: [{ required: true, message: `请输入${text}意见` }],
-                initialValue: opinion,
+                initialValue: info[0].opinion,
               })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
             </Form.Item>
           )}
@@ -115,7 +108,7 @@ const Examine = forwardRef((props, ref) => {
                 <Form.Item label="是否影响业务">
                   {getFieldDecorator('business', {
                     valuePropName: 'checked',
-                    initialValue: Number(business),
+                    initialValue: Number(info[0].business),
                   })(<Checkbox />)}
                 </Form.Item>
               </Col>
@@ -123,7 +116,7 @@ const Examine = forwardRef((props, ref) => {
                 <Form.Item label="是否影响发布">
                   {getFieldDecorator('releases', {
                     valuePropName: 'checked',
-                    initialValue: Number(releases),
+                    initialValue: Number(info[0].releases),
                   })(<Checkbox />)}
                 </Form.Item>
               </Col>
@@ -183,15 +176,17 @@ const Examine = forwardRef((props, ref) => {
 });
 
 Examine.defaultProps = {
-  info: {
-    creationTime: moment().format(),
-    result: 1,
-    project: '',
-    reason: '',
-    registerPerson: '',
-    registrationDepartment: '',
-    registrationUnit: '',
-  },
+  info: [
+    {
+      creationTime: moment().format(),
+      result: 1,
+      project: '',
+      reason: '',
+      registerPerson: '',
+      registrationDepartment: '',
+      registrationUnit: '',
+    },
+  ],
   userinfo: {
     deptName: '',
     deptId: '',
