@@ -184,12 +184,12 @@ class DropdownValueEdit extends Component {
 
                         <Form.Item label="字典备注">
                             {getFieldDecorator('dictRemarks', {
-                                rules: [
-                                    {
-                                        required,
-                                        message: '请输入',
-                                    },
-                                ],
+                                // rules: [
+                                //     {
+                                //         required,
+                                //         message: '请输入',
+                                //     },
+                                // ],
                                 initialValue: dictRemarks || '',
                             })(<Input placeholder="请输入..." />)}
                         </Form.Item>

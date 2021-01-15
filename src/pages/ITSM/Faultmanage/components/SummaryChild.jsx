@@ -9,12 +9,14 @@ import {
     DatePicker,
     Upload,
     Icon,
+    Alert
 } from 'antd';
 
 const { TextArea } = Input;
 
 const SummaryChild = React.forwardRef((props, ref) => {
     const { formItemLayout, forminladeLayout, finish, curruserinfo } = props;
+    const message = '上传故障分析报告已超时， 实际上传时间已超过要求上传时间。'
     const { getFieldDecorator } = props.form;
     const attRef = useRef();
     useImperativeHandle(
@@ -27,9 +29,11 @@ const SummaryChild = React.forwardRef((props, ref) => {
     const required = true;
     useEffect(() => {
         sessionStorage.setItem('Nextflowmane', '关闭');
+        
     });
     return (
         <Row gutter={24}>
+            <Alert message={message} type="error" showIcon/>
             <Form {...formItemLayout}>
                 <Row gutter={24}>
                     <Col span={24}>
@@ -58,11 +62,11 @@ const SummaryChild = React.forwardRef((props, ref) => {
                     <Form.Item label="上传故障分析报告" extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb" style={{ display: "flex" }}>
                         {getFieldDecorator('upload1', {
                             valuePropName: 'fileList',
-                            rules: [
-                                {
-                                    required,
-                                },
-                            ],
+                            // rules: [
+                            //     {
+                            //         required,
+                            //     },
+                            // ],
                         })(
                             <Upload name="logo" action="" listType="picture">
                                 <Button type="primary">

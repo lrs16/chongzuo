@@ -87,23 +87,26 @@ export async function querySearchfaultTodoList1(current, pageSize, values) {
   })
 }
 
-// 故障待办列表  下载/itsm/trouble/flow/expExcelWaitDoList
-export async function querydownload({
-  title,
-  source,
-  type,
-  registerUser,
-  handleEnterNames,
-  createTime,
-  priority,
-}) {
-  return request(
-    `/itsm/trouble/flow/expExcelWaitDoList?title=${title}&source=${source}&type=${type}&registerUser=${registerUser}&handleEnterNames=${handleEnterNames}&createTime=${createTime}&priority=${priority}`,
-    {
-      method: 'POST',
-      responseType: 'blob',
-    },
-  );
+// 故障待办列表  导出下载/itsm/trouble/flow/expExcelWaitDoList
+export async function querydownload(current, pageSize, values) {
+  const params = values;
+  params.pageNum = current; // 当前页
+  params.pageSize = pageSize; // 页码
+  return request(`/itsm/trouble/flow/expExcelWaitDoList`, {
+    method: 'POST',
+    body: JSON.stringify(params)
+  })
+}
+
+// 故障查询列表  导出下载/itsm/trouble/flow/expExcelOrderList
+export async function querydownload1(current, pageSize, values) {
+  const params = values;
+  params.pageNum = current; // 当前页
+  params.pageSize = pageSize; // 页码
+  return request(`/itsm/trouble/flow/expExcelOrderList`, {
+    method: 'POST',
+    body: JSON.stringify(params)
+  })
 }
 
 // ***故障待办详情页 （*故障工单页）

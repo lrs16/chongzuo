@@ -181,7 +181,7 @@ function QueryList(props) {
       // },
     },
     {
-      title: '故障标题',
+      title: '故障名称',
       dataIndex: 'title',
       key: 'title',
       width: 200,
@@ -230,20 +230,22 @@ function QueryList(props) {
     },
     {
       title: '故障处理开始时间',
-      dataIndex: 'handleStartTimeBegin',
-      key: 'handleStartTimeBegin',
+      // dataIndex: 'handleStartTimeBegin',
+      dataIndex: 'handleStartTime',
+      key: 'handleStartTime',
       width: 200,
     },
     {
       title: '故障处理完成时间',
-      dataIndex: 'handleStartTimeEnd',
-      key: 'handleStartTimeEnd',
+      // dataIndex: 'handleStartTimeEnd',
+      dataIndex: 'handleEndTime',
+      key: 'handleEndTime',
       width: 200,
     },
     {
       title: '故障处理人',
-      dataIndex: 'handleEnterNames',
-      key: 'handleEnterNames',
+      dataIndex: 'handler',
+      key: 'handler',
       width: 150,
       ellipsis: true,
     },
@@ -367,6 +369,31 @@ function QueryList(props) {
     }
   };
 
+  //  下载 /导出功能
+  const download = (page, pageSize) => {
+    validateFields((err, values) => {
+      if (!err) {
+        dispatch({
+          type: 'fault/faultQuerydownload',
+          payload: { 
+            values,
+            pageSize,
+            current: page,
+          },
+        }).then(res => {
+          const filename = `下载.xls`;
+          const blob = new Blob([res]);
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = filename;
+          a.click();
+          window.URL.revokeObjectURL(url);
+        });
+      }
+    });
+  };
+
   return (
     <PageHeaderWrapper title={pagetitle}>
       <Card>
@@ -374,7 +401,7 @@ function QueryList(props) {
           <Form {...formItemLayout} onSubmit={handleSearch}>
             <Col span={8}>
               <Form.Item label="故障编号">
-                {getFieldDecorator('no', {})(<Input />)}
+                {getFieldDecorator('no', {})(<Input allowClear/>)}
               </Form.Item>
             </Col>
 
@@ -454,7 +481,7 @@ function QueryList(props) {
 
                 <Col span={8}>
                   <Form.Item label="登记人">
-                    {getFieldDecorator('registerUser', {
+                    {getFieldDecorator('rgister_user', {
                       initialValue: '',
                     })(<Input allowClear />)}
                   </Form.Item>
@@ -503,7 +530,7 @@ function QueryList(props) {
                 <Col xl={8} xs={12}>
                   <Form.Item label="故障处理人">
                     {getFieldDecorator('handleEnterNames', {
-                      // initialValue: '',
+                      initialValue: '',
                     })(
                       <Select placeholder="请选择" />,
                     )}
@@ -513,7 +540,7 @@ function QueryList(props) {
                 <Col xl={8} xs={12}>
                   <Form.Item label="处理结果">
                     {getFieldDecorator('handleResult', {
-                      // initialValue: '',
+                      initialValue: '',
                     })(
                       <Select placeholder="请选择">
                         {handleResult.map(({ value }) => [<Option key={value}>{value}</Option>])}
@@ -582,8 +609,11 @@ function QueryList(props) {
           </Form>
         </Row>
         <div style={{ marginBottom: 24 }}>
-          <Button type="primary">导出数据</Button>
-          <Popconfirm title="确定删除吗？" onConfirm={handleDeleteAll}>
+          <Popconfirm title="确定导出数据？" onConfirm={() => download()}>
+            <Button type="primary">导出数据</Button>
+          </Popconfirm>
+          
+          <Popconfirm title="确定删除吗？" onConfirm={handleDeleteAll} icon={<Icon type="question-circle-o" style={{ color: 'red' }} />}>
             <Button type="danger" style={{ marginLeft: 10 }}>批量删除</Button>
           </Popconfirm>
         </div>

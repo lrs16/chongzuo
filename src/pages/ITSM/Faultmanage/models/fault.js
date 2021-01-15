@@ -14,6 +14,7 @@ import {
   queryfaultTodoList1, // 故障待办列表
   querySearchfaultTodoList1, // 故障待办列表 查询
   querydownload, // 故障待办列表 导出
+  querydownload1, // 故障查询列表 导出
   queryfaultTodoDetailEdit, // 故障待办详情页--编辑
   deleteInstance, // 删除操作！
   queryRollBack, // 回退操作！
@@ -165,8 +166,13 @@ export default {
     },
 
     // 故障待办列表数据 下载
-    *faultdownload({ payload }, { call }) {
-      return yield call(querydownload, { ...payload });
+    *faultTododownload({ payload: { current, pageSize, values } }, { call }) {
+      return yield call(querydownload, current, pageSize, values);
+    },
+
+    // 故障查询列表数据 下载
+    *faultQuerydownload({ payload: { current, pageSize, values } }, { call }) {
+      return yield call(querydownload1, current, pageSize, values);
     },
 
     //  故障待办详情页--编辑

@@ -13,6 +13,7 @@ import {
   Col,
   Icon,
   Table,
+  Popconfirm
 } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
@@ -34,10 +35,10 @@ const faultSource = [ // 故障来源
   { key: 2, value: '巡检发现' },
 ];
 
-const priority = [ // 优先级
-  { key: 1, value: '低' },
-  { key: 2, value: '中' },
-  { key: 3, value: '高' },
+const severity = [ // 严重程度
+  { key: 0, value: '紧急' },
+  { key: 1, value: '重大' },
+  { key: 2, value: '一般' },
 ];
 
 const faultType = [ // 故障类型
@@ -104,7 +105,7 @@ function ToDOlist(props) {
       },
     },
     {
-      title: '故障标题',
+      title: '故障名称',
       dataIndex: 'title',
       key: 'title',
       width: 200,
@@ -148,12 +149,17 @@ function ToDOlist(props) {
   ];
 
   const getTodolists = () => {
-    dispatch({
-      type: 'fault/getfaultTodoList',
-      payload: {
-        current: paginations.current,
-        pageSize: paginations.pageSize,
-      },
+    validateFields((err, values) => {
+      if (!err) {
+        dispatch({
+          type: 'fault/getfaultTodoList',
+          payload: {
+            ...values,
+            current: paginations.current,
+            pageSize: paginations.pageSize,
+          },
+        });
+      }
     });
   }
 
@@ -233,25 +239,28 @@ function ToDOlist(props) {
   // };
 
   //  下载 /导出功能
-  const download = () => {
-    // validateFields((err, values) => {
-    //   if (!err) {
-    //     dispatch({
-    //       type: 'fault/faultdownload',
-    //       payload: { ...values },
-    //     }).then(res => {
-    //       console.log(res);
-    //       const filename = `下载.xls`;
-    //       const blob = new Blob([res]);
-    //       const url = window.URL.createObjectURL(blob);
-    //       const a = document.createElement('a');
-    //       a.href = url;
-    //       a.download = filename;
-    //       a.click();
-    //       window.URL.revokeObjectURL(url);
-    //     });
-    //   }
-    // });
+  const download = (page, pageSize) => {
+    validateFields((err, values) => {
+      if (!err) {
+        dispatch({
+          type: 'fault/faultTododownload',
+          payload: { 
+            values,
+            pageSize,
+            current: page,
+          },
+        }).then(res => {
+          const filename = `下载.xls`;
+          const blob = new Blob([res]);
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = filename;
+          a.click();
+          window.URL.revokeObjectURL(url);
+        });
+      }
+    });
   };
 
   return (
@@ -261,24 +270,17 @@ function ToDOlist(props) {
           <Form {...formItemLayout} onSubmit={handleSearch}>
             <Col span={8}>
               <Form.Item label="故障编号">
-                {getFieldDecorator('no', {})(<Input placeholder="请输入" />)}
+                {getFieldDecorator('no', {})(<Input placeholder="请输入" allowClear/>)}
               </Form.Item>
             </Col>
 
-            <Col span={8}>
-              <Form.Item label="当前处理环节">
-                {getFieldDecorator('currentNode', {})(
-                  <Select placeholder="请选择">
-                    {currentNode.map(({ value }) => [<Option key={value}>{value}</Option>])}
-                  </Select>,
-                )}
-              </Form.Item>
-            </Col>
             {expand === true && (
               <>
                 <Col span={8}>
-                  <Form.Item label="故障标题">
-                    {getFieldDecorator('title', {})(<Input placeholder="请输入" />)}
+                  <Form.Item label="故障名称">
+                    {getFieldDecorator('title', {
+                      initialValue: '',
+                    })(<Input placeholder="请输入" allowClear/>)}
                   </Form.Item>
                 </Col>
 
@@ -293,7 +295,21 @@ function ToDOlist(props) {
                     )}
                   </Form.Item>
                 </Col>
+              </>
+            )}
 
+            <Col span={8}>
+              <Form.Item label="当前处理环节">
+                {getFieldDecorator('currentNode', {})(
+                  <Select placeholder="请选择">
+                    {currentNode.map(({ value }) => [<Option key={value}>{value}</Option>])}
+                  </Select>,
+                )}
+              </Form.Item>
+            </Col>
+
+            {expand === true && (
+              <>
                 <Col span={8}>
                   <Form.Item label="故障类型">
                     {getFieldDecorator('type', {
@@ -310,15 +326,7 @@ function ToDOlist(props) {
                   <Form.Item label="登记人">
                     {getFieldDecorator('registerUser', {
                       initialValue: '',
-                    })(<Input placeholder="请输入" />)}
-                  </Form.Item>
-                </Col>
-
-                <Col span={8}>
-                  <Form.Item label="处理人">
-                    {getFieldDecorator('handleEnterNames', {
-                      initialValue: '',
-                    })(<Input placeholder="请输入" />)}
+                    })(<Input placeholder="请输入" allowClear/>)}
                   </Form.Item>
                 </Col>
 
@@ -330,13 +338,13 @@ function ToDOlist(props) {
                   </Form.Item>
                 </Col>
 
-                <Col span={8}>
-                  <Form.Item label="优先级">
-                    {getFieldDecorator('priority', {
+                <Col xl={8}>
+                  <Form.Item label="严重程度">
+                    {getFieldDecorator('registerLevel', {
                       initialValue: '',
                     })(
                       <Select placeholder="请选择">
-                        {priority.map(({ value }) => [<Option key={value}>{value}</Option>])}
+                        {severity.map(({ value }) => [<Option key={value}>{value}</Option>])}
                       </Select>,
                     )}
                   </Form.Item>
@@ -402,17 +410,17 @@ function ToDOlist(props) {
           </Form>
         </Row>
         <div style={{ marginBottom: 24 }}>
-          <Button type="primary" onClick={() => download()}>导出数据</Button>
+          <Popconfirm title="确定导出数据？" onConfirm={() => download()}>
+            <Button type="primary">导出数据</Button>
+          </Popconfirm>
         </div>
         <Table
           loading={loading}
           columns={columns.filter(item => item.title !== 'id' || item.key !== 'id')}
           dataSource={faultTodoList.rows}
-          table-layout="fixed"
-          // scroll={{x:800}}
           rowKey={record => record.id}
           pagination={pagination}
-          // rowSelection={rowSelection}
+        // rowSelection={rowSelection}
         />
       </Card>
     </PageHeaderWrapper>
