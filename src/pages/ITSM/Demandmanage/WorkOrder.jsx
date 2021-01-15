@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect } from 'react';
-import router from 'umi/router';
 import moment from 'moment';
 import { connect } from 'dva';
 import { Collapse, Steps, Spin } from 'antd';
@@ -274,7 +273,11 @@ function WorkOrder(props) {
                 <Registrat
                   formItemLayout={formItemLayout}
                   forminladeLayout={forminladeLayout}
-                  files={files}
+                  files={
+                    info.demandForm.attachment !== ''
+                      ? JSON.parse(info.demandForm.attachment)
+                      : files
+                  }
                   ChangeFiles={newvalue => {
                     setFiles(newvalue);
                   }}

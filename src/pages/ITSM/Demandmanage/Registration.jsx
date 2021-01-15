@@ -1,12 +1,13 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { connect } from 'dva';
-import { Card, Button } from 'antd';
+import { Card, Button, Spin } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import Registrat from './components/Registrat';
 import SelectUser from '@/components/SelectUser';
 
 function Registration(props) {
-  const { dispatch, userinfo, data, info, loading } = props;
+  const { dispatch, location, userinfo, info, loading } = props;
+  const { mainId } = location.query;
   const pagetitle = props.route.name;
   // const [flowtype, setFlowtype] = useState('1'); // 流转类型
   const [files, setFiles] = useState([]); // 下载列表
@@ -21,15 +22,15 @@ function Registration(props) {
 
   // 附件更新后，刷新
   useEffect(() => {
-    if (data !== '') {
+    if (mainId !== undefined) {
       dispatch({
         type: 'demandtodo/demandopenflow',
         payload: {
-          processInstanceId: data.processId,
+          processInstanceId: mainId,
         },
       });
     }
-  }, [data]);
+  }, [mainId]);
 
   // 更新流转类型
   // useEffect(() => {
@@ -113,23 +114,26 @@ function Registration(props) {
   return (
     <PageHeaderWrapper title={pagetitle} extra={operations}>
       <Card>
-        <Registrat
-          ref={RegistratRef}
-          userinfo={userinfo}
-          files={info.demandForm !== undefined ? JSON.parse(info.demandForm.attachment) : files}
-          ChangeFiles={newvalue => {
-            setFiles(newvalue);
-          }}
-          register={info.demandForm !== undefined ? info.demandForm : undefined}
-        />
+        <Spin spinning={loading}>
+          {loading === false && (
+            <Registrat
+              ref={RegistratRef}
+              userinfo={userinfo}
+              files={mainId !== undefined ? JSON.parse(info.demandForm.attachment) : files}
+              ChangeFiles={newvalue => {
+                setFiles(newvalue);
+              }}
+              register={mainId !== undefined ? info.demandForm : undefined}
+            />
+          )}
+        </Spin>
       </Card>
     </PageHeaderWrapper>
   );
 }
 
-export default connect(({ itsmuser, demandregister, demandtodo, loading }) => ({
+export default connect(({ itsmuser, demandtodo, loading }) => ({
   userinfo: itsmuser.userinfo,
-  data: demandregister.data,
   info: demandtodo.info,
-  loading: loading.models.demandregister,
+  loading: loading.models.demandtodo,
 }))(Registration);

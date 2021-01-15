@@ -1,10 +1,32 @@
 import React from 'react';
+import { connect } from 'dva';
 import moment from 'moment';
 import { Descriptions } from 'antd';
 import styles from '../index.less';
+import { PaperClipOutlined } from '@ant-design/icons';
 
 function Registratdes(props) {
-  const { info } = props;
+  const { dispatch, info } = props;
+
+  // 列表中下载附件
+  const handledownload = uploadinfo => {
+    dispatch({
+      type: 'sysfile/downloadfile',
+      payload: {
+        id: uploadinfo.id,
+      },
+    }).then(res => {
+      // console.log(res);
+      const filename = uploadinfo.name;
+      const blob = new Blob([res]);
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      a.click();
+      window.URL.revokeObjectURL(url);
+    });
+  };
   return (
     <div className={styles.collapse}>
       <Descriptions style={{ marginTop: 24 }}>
@@ -35,7 +57,21 @@ function Registratdes(props) {
           {info.detail}
         </Descriptions.Item>
         <Descriptions.Item label="附件" span={3}>
-          {info.attachment}
+          {JSON.parse(info.attachment).map(obj => {
+            return (
+              <div key={obj.id}>
+                <PaperClipOutlined
+                  style={{ marginRight: 8, fontSize: 11, color: 'rgba(0, 0, 0, 0.45)' }}
+                />
+                <a onClick={() => handledownload(obj)}>{obj.name}</a>
+                {/* <a onClick={() => handledeletfile(obj.uid)}>
+                        <DeleteOutlined
+                          style={{ marginLeft: 8, fontSize: 12, color: 'rgba(0, 0, 0, 0.45)' }}
+                        />
+                      </a> */}
+              </div>
+            );
+          })}
         </Descriptions.Item>
         <Descriptions.Item label="登记人">{info.registerPerson}</Descriptions.Item>
         <Descriptions.Item label="登记人单位">{info.registrationUnit}</Descriptions.Item>
@@ -45,4 +81,6 @@ function Registratdes(props) {
   );
 }
 
-export default Registratdes;
+export default connect(({ loading }) => ({
+  loading: loading.effects['sysfile/downloadfile'],
+}))(Registratdes);
