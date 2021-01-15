@@ -1,4 +1,4 @@
-import React, { useRef, useImperativeHandle,useState } from 'react';
+import React, { useContext,useRef, useImperativeHandle,useState } from 'react';
 import {
   Row,
   Col,
@@ -12,6 +12,7 @@ import {
 } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
 import moment from 'moment';
+import {FatherContext} from '../Workorder';
 
 const { TextArea } = Input;
 
@@ -19,8 +20,9 @@ const { TextArea } = Input;
 const Systemoperatoredit = React.forwardRef((props, ref) => {
   const { formItemLayout, forminladeLayout } = props;
   const { getFieldDecorator } = props.form;
+  const {flowtype,setFlowtype } = useContext(FatherContext);
   const attRef = useRef();
-  const [value,setValue] = useState('');
+  // let {num ,setNum } = useContext(NumContext);
   useImperativeHandle(
     ref,
     () => ({
@@ -35,7 +37,7 @@ const Systemoperatoredit = React.forwardRef((props, ref) => {
 
   
   const onChange = (e) => {
-    setValue(e.target.value);
+    setFlowtype(e.target.value);
   }
 
   const required = true;
@@ -52,11 +54,11 @@ const Systemoperatoredit = React.forwardRef((props, ref) => {
                 message:'请输入审核结果'
               }
             ],
-            initialValue:check?check.checkResult:'通过'
+            initialValue:check?check.checkResult:flowtype
           })(
             <Radio.Group onChange={onChange}>
-              <Radio value='通过'>通过</Radio>
-              <Radio value='不通过'>不通过</Radio>
+              <Radio value='1'>通过</Radio>
+              <Radio value='0'>不通过</Radio>
             </Radio.Group>
           )
           }
@@ -89,7 +91,8 @@ const Systemoperatoredit = React.forwardRef((props, ref) => {
                     required,
                     message:'请输入审核意见'
                   }
-                ]
+                ],
+                initialValue: check ? check.checkOpinion:''
               })(
                 <TextArea/>
               )
@@ -97,29 +100,19 @@ const Systemoperatoredit = React.forwardRef((props, ref) => {
           </Form.Item>
         </Col>
 
-        {/* <Col span={23}>
-          <Form.Item {...forminladeLayout} label=''>
-            <Alert 
-              message="若需要上传故障报告请于故障处理完成五个工作日内进行上传。" 
-              type="warning" 
-              showIcon
-              />
-          </Form.Item>
-        </Col> */}
-
         <Col span={24}>
-          <Form.Item 
-            label='上传附件'
+          <Form.Item
+            label="上传附件"
             {...forminladeLayout}
-            extra='只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb'
-            >
-              {getFieldDecorator('attachIds')(
-                <Upload>
-                  <Button type='primary'>
-                    <DownloadOutlined /> 上传附件
-                  </Button>
-                </Upload>,
-              )}
+            extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
+          >
+            {getFieldDecorator('checkAttachIds')(
+              <Upload>
+                <Button type="primary">
+                  <DownloadOutlined /> 上传附件
+                </Button>
+              </Upload>,
+            )}
           </Form.Item>
         </Col>
 

@@ -278,20 +278,21 @@ const Registrat = React.forwardRef((props, ref) => {
             </Col>
 
             <Col span={24}>
-          <Form.Item
-            label="上传附件"
-            {...forminladeLayout}
-            extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
-          >
-            {getFieldDecorator('attachIds')(
-              <Upload>
-                <Button type="primary">
-                  <DownloadOutlined /> 上传附件
-                </Button>
-              </Upload>,
-            )}
-          </Form.Item>
-        </Col>
+              <Form.Item
+                label="上传附件"
+                {...forminladeLayout}
+                extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
+              >
+                {getFieldDecorator('registerAttachIds')(
+                  <Upload>
+                    <Button type="primary">
+                      <DownloadOutlined /> 上传附件
+                    </Button>
+                  </Upload>,
+                )}
+              </Form.Item>
+            </Col>
+
 
             <Col span={8}>
               <Form.Item label="填报人">

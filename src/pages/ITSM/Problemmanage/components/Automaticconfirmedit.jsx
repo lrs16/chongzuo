@@ -1,4 +1,4 @@
-import React, { useRef,useImperativeHandle,useState } from 'react';
+import React, { useRef,useImperativeHandle,useContext } from 'react';
 import {
   Row,
   Col,
@@ -11,11 +11,13 @@ import {
 } from 'antd';
 import moment from 'moment';
 import { DownloadOutlined } from '@ant-design/icons';
+import {FatherContext} from '../Workorder';
 
 const { TextArea } = Input;
 
-const Registrationconfirm = React.forwardRef((props,ref) => {
+const Automaticconfirmedit = React.forwardRef((props,ref) => {
   const { formItemLayout,forminladeLayout } = props;
+  const {flowtype,setFlowtype } = useContext(FatherContext);
   const { getFieldDecorator } = props.form;
   const attRef = useRef();
   useImperativeHandle(
@@ -25,9 +27,12 @@ const Registrationconfirm = React.forwardRef((props,ref) => {
     }),
     [],
   );
-
+  const {
+    confirm,
+    useInfo,
+  } = props;
   const onChange = (e) => {
-    console.log('e: ', e);
+    setFlowtype(e.target.value);
   }
 
   const required = true;
@@ -37,20 +42,18 @@ const Registrationconfirm = React.forwardRef((props,ref) => {
       <Form>
         <Col span={23}>
           <Form.Item label='确认结果' {...forminladeLayout}>
-          { getFieldDecorator('m1',{
+          { getFieldDecorator('confirmResult',{
             rules:[
               {
                 required,
-                message:'请输入审核结果'
+                message:'请输入确认结果'
               }
             ],
-            initialValue:1
+            initialValue:confirm?confirm.confirmResult:flowtype
           })(
             <Radio.Group onChange={onChange}>
-              <Radio value={1}>A</Radio>
-              <Radio value={2}>B</Radio>
-              <Radio value={3}>C</Radio>
-              <Radio value={4}>D</Radio>
+              <Radio value='1'>通过</Radio>
+              <Radio value='0'>不通过</Radio>
             </Radio.Group>
           )
           }
@@ -59,13 +62,14 @@ const Registrationconfirm = React.forwardRef((props,ref) => {
         <Col span={23}>
           <Form.Item label='确认时间' {...forminladeLayout}>
             {
-              getFieldDecorator('m2',{
+              getFieldDecorator('confirmTime',{
                 rules:[
                   {
                     required,
                     message:'请输入审核时间'
                   }
-                ]
+                ],
+                initialValue: confirm ? moment(confirm.confirmTime) : moment(Date.now())
               })(
                 <DatePicker
                   showTime
@@ -78,7 +82,7 @@ const Registrationconfirm = React.forwardRef((props,ref) => {
         <Col span={23}>
           <Form.Item label='确认意见' {...forminladeLayout}>
             {
-              getFieldDecorator('m3',{
+              getFieldDecorator('confirmContent',{
                 rules:[
                   {
                     required,
@@ -110,10 +114,10 @@ const Registrationconfirm = React.forwardRef((props,ref) => {
         </Col>
         
         <Col span={8}>
-          <Form.Item label='审核人'>
+          <Form.Item label='确认人'>
             {
-              getFieldDecorator('m5',{
-
+              getFieldDecorator('confirmUser',{
+                initialValue: useInfo?useInfo.loginCode:'',
               })(<Input disabled/>)
             }
 
@@ -122,18 +126,22 @@ const Registrationconfirm = React.forwardRef((props,ref) => {
         </Col>
   
         <Col span={8}>
-          <Form.Item label='审核人单位'>
+          <Form.Item label='确认人单位'>
             {
-              getFieldDecorator('m6')(<Input disabled/>)
+              getFieldDecorator('confirmUnit',{
+                initialValue: '单位',
+              })(<Input disabled/>)
             }
           </Form.Item>
 
         </Col>
   
         <Col span={8}>
-          <Form.Item label='审核人部门'>
+          <Form.Item label='确认人部门'>
             {
-              getFieldDecorator('m6')(<Input disabled/>)
+              getFieldDecorator('confirmDept',{
+                initialValue: useInfo?useInfo.deptNameExt:'',
+              })(<Input disabled/>)
             }
           </Form.Item>
 
@@ -144,4 +152,4 @@ const Registrationconfirm = React.forwardRef((props,ref) => {
   )
 })
 
-export default Form.create({})(Registrationconfirm);
+export default Form.create({})(Automaticconfirmedit);

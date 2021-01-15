@@ -64,6 +64,7 @@ export async function backReason(id, values) {
   obj.userIds = id;
   obj.taskId = id;
   obj.result = -1;
+  console.log('obj: ', obj);
   return request(`/itsm/problem/flow/submit`, {
     method: 'POST',
     data:obj,
@@ -153,4 +154,22 @@ export async function transferOrder(taskId,userIds) {
   return request(`/itsm/problem/flow/transfer`,{
     method:'POST'
   })
+}
+
+
+// 下载itsm/event/form/downloadExcel
+export async function querydownload(params) {
+  return request(
+    `/itsm/problem/flow/expExcelOrderList`,
+    {
+      method: 'POST',
+      responseType: 'blob',
+      body:JSON.stringify(params)
+    },
+  );
+}
+
+// 下载文件
+export async function downFile(id){
+  return request(`/sys/file/${id}`)
 }

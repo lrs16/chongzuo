@@ -1,12 +1,15 @@
 import React, {  useRef, useImperativeHandle } from 'react';
 import { 
-          Row,
-          Col,
-          Form,
-          Input,
-          Select,
-          DatePicker
-        } from 'antd';
+    Row,
+    Col,
+    Form,
+    Input,
+    Select,
+    DatePicker,
+    Upload,
+    Button
+  } from 'antd';
+import { DownloadOutlined } from '@ant-design/icons';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -92,6 +95,23 @@ const Developerprocessdit = React.forwardRef((props, ref) => {
           })(<TextArea disabled={showEdit} />)}
         </Form.Item>
       </Col>
+
+      <Col span={24}>
+              <Form.Item
+                label="上传附件"
+                {...forminladeLayout}
+                extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
+              >
+                {getFieldDecorator('handleAttachIds')(
+                  <Upload>
+                    <Button type="primary">
+                      <DownloadOutlined /> 上传附件
+                    </Button>
+                  </Upload>,
+                )}
+              </Form.Item>
+            </Col>
+
 
       <Col span={8}>
         <Form.Item label="处理人">

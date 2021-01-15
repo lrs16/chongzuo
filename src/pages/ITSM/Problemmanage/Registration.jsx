@@ -65,7 +65,16 @@ function Registration(props) {
   };
 
   const handlesubmit = (jumpType) => {
+    const fileids = [];
     RegistratRef.current.validateFields((err, values) => {
+      if(values.registerAttachIds) {
+        const { fileList } = values.registerAttachIds;
+        fileList.forEach(item => {
+          fileids.push(item.uid);
+        });
+        console.log(fileids,'fileids');
+      }
+      console.log('saveData: ', values);
       if (!err) {
         const saveData = values;
         saveData.registerTime =  (saveData.registerTime).format('YYYY-MM-DD HH:mm:ss');
@@ -73,6 +82,8 @@ function Registration(props) {
         saveData.registerExpectTime = (saveData.registerExpectTime).format('YYYY-MM-DD HH:mm:ss');
         // saveData.taskId = id.flowTaskId;
         saveData.editState = 'add';
+        console.log('saveData: ', saveData);
+        saveData.registerAttachIds=fileids.toString();
         dispatch({
           type: 'problemmanage/getAddid',
           payload: { saveData,jumpType },

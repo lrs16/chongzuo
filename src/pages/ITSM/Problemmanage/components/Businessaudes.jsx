@@ -1,10 +1,15 @@
 import React from 'react';
-import {  Descriptions, Collapse } from 'antd';
+import {  Descriptions, Collapse, Radio } from 'antd';
 
 const { Panel } = Collapse;
 function Businessaudes(props) {
   const {  reviesDetail,loading } = props;
-  console.log('reviesDetail: ', reviesDetail);
+  const { problemFlowNodeRows } = reviesDetail;
+  let value;
+  if(problemFlowNodeRows) {
+    value = problemFlowNodeRows[2].checkResult;
+    console.log('value: ', value);
+  }
   return (
     <>
     { loading === false && (
@@ -18,39 +23,44 @@ function Businessaudes(props) {
         >
           <Descriptions>
             <Descriptions.Item label="审核结果">
-            {reviesDetail ? reviesDetail.problemFlowNodeRows[2].checkResult : ''}
+              <Radio.Group value={value} disabled>
+                <Radio value='1'>通过</Radio>
+                <Radio value='0'>不通过</Radio>
+              </Radio.Group>
             </Descriptions.Item>
           </Descriptions>
 
           <Descriptions>
             <Descriptions.Item label="审核时间">
-              {reviesDetail ? reviesDetail.problemFlowNodeRows[2].checkTime : ''}
+              {problemFlowNodeRows ? problemFlowNodeRows[2].checkTime : ''}
             </Descriptions.Item>
           </Descriptions>
 
           <Descriptions>
             <Descriptions.Item label="审核意见">
-              {reviesDetail ? reviesDetail.problemFlowNodeRows[2].checkOpinion : ''}
+              {problemFlowNodeRows ? problemFlowNodeRows[2].checkOpinion : ''}
             </Descriptions.Item>
           </Descriptions>
 
           <Descriptions>
             <Descriptions.Item label="上传附件">
-            <span style={{ color: 'blue', textDecoration: 'underline' }}>000</span>
+            <span style={{ color: 'blue', textDecoration: 'underline' }}>
+            {problemFlowNodeRows ? problemFlowNodeRows[2].checkAttachIds : ''}
+            </span>
             </Descriptions.Item>
           </Descriptions>
 
           <Descriptions>
             <Descriptions.Item label="审核人">
-                {reviesDetail ? reviesDetail.problemFlowNodeRows[2].checkUser : ''}
+                {problemFlowNodeRows ? problemFlowNodeRows[2].checkUser : ''}
               </Descriptions.Item>
 
               <Descriptions.Item label="审核单位">
-                {reviesDetail ? reviesDetail.problemFlowNodeRows[2].checkUnit : ''}
+                {problemFlowNodeRows ? problemFlowNodeRows[2].checkUnit : ''}
               </Descriptions.Item>
 
               <Descriptions.Item label="审核部门">
-                {reviesDetail ? reviesDetail.problemFlowNodeRows[2].checkDept : ''}
+                {problemFlowNodeRows ? problemFlowNodeRows[2].checkDept : ''}
               </Descriptions.Item>
           </Descriptions>
            

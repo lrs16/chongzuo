@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState,createContext } from 'react';
 import {
   Form,
   Button,
@@ -22,19 +22,19 @@ import Businessaudit from './components/Businessaudit';
 import Specialaudit from './components/Specialaudit';
 import Developerprocessdit from './components/Developerprocessdit';
 import Operatorconfirmaedit from './components/Operatorconfirmaedit';
-import Businessleaderconfirmedit from './components/Businessleaderconfirmedit';
-import Registrationconfirm from './components/Registrationconfirm';
-
+import Automaticconfirmedit from './components/Automaticconfirmedit';
 
 import Problemsolving from './components/Problemsolving';
 import Problemreview from './components/Problemreview';
 import Businessaudes from './components/Businessaudes';
 import Operatorconfirmades from './components/Operatorconfirmades';
 import Problemregistration from './components/Problemregistration';
+import Automaticconfirmdes from './components/Automaticconfirmdes';
 import Reasonregression from './components/Reasonregression';
 import Problemflow from './components/Problemflow';
 
 import styles from './index.less';
+
 
 const { Panel } = Collapse;
 const { Step } = Steps;
@@ -66,25 +66,26 @@ let currntStatus = '';
 let showEdit = false;
 const saveSign = '';
 const circaSign = 'problem';
-let confirmType;
 let closecircu = '关闭';
 let handleTime;
 let receivingTime;
 let problemFlowid;
 let checkType;
 let flowNodeName;
+let confirmType;
 
+export const FatherContext = createContext();
 function Workorder(props) {
-  console.log('props: ', props);
   const pagetitle = props.route.name;
   const RegistratRef = useRef();
   const PreviesRef = useRef();
   const HandleRef = useRef();
   const ProblemconfirmRef = useRef();
   const CloseRef = useRef();
+  // const Operatoraudit = useRef();
   const [flowtype, setFlowtype] = useState('1');
   const [tabActiveKey, setTabActiveKey] = useState('workorder');
-
+  console.log('flowtype: ', flowtype);
   const {
     dispatch,
     todoDetail,
@@ -101,27 +102,24 @@ function Workorder(props) {
   const { problemFlowLogs } = todoDetail;
 
   const selectNextflow = () => {
-    switch (currntStatus) {
-      case 5:
-        sessionStorage.setItem('Nextflowmane', '审核');
+    switch (flowNodeName) {
+      case '问题登记':
+        sessionStorage.setItem('Nextflowmane', '系统运维商审核');
         break;
-      case 25:
-        sessionStorage.setItem('Nextflowmane', '处理');
+      case '系统运维商审核':
+        sessionStorage.setItem('Nextflowmane', '自动化科审核');
         break;
-      case 9:
-        sessionStorage.setItem('Nextflowmane', '处理');
+      case '自动化科审核':
+        sessionStorage.setItem('Nextflowmane', '系统开发商处理');
         break;
-      case 29:
-        sessionStorage.setItem('Nextflowmane', '确认');
+      case '系统开发商处理':
+        sessionStorage.setItem('Nextflowmane', '系统运维商确认');
         break;
-      case 45:
-        sessionStorage.setItem('Nextflowmane', '确认');
+      case '系统运维商确认':
+        sessionStorage.setItem('Nextflowmane', '自动化科业务负责人确认');
         break;
-      case 49:
-        sessionStorage.setItem('Nextflowmane', '关闭');
-        break;
-      case 65:
-        sessionStorage.setItem('Nextflowmane', '关闭');
+      case '自动化科业务负责人确认':
+        sessionStorage.setItem('Nextflowmane', '问题登记人员确认');
         break;
       default:
         break;
@@ -139,6 +137,7 @@ function Workorder(props) {
   if (todoDetail.main) {
     currntStatus = Number(todoDetail.main.status);
     checkType = todoDetail.checkType;
+    confirmType = Number(todoDetail.confirmType);
     problemFlowid = todoDetail.main.id;
     flowNodeName = todoDetail.flowNodeName;
     selectNextflow();
@@ -147,6 +146,7 @@ function Workorder(props) {
       closecircu = '';
     }
   }
+
 
   if (todoDetail.hasOwnProperty('confirmType')) {
     confirmType = todoDetail.confirmType;
@@ -170,6 +170,8 @@ function Workorder(props) {
     receivingTime = moment(new Date());
   }
 
+
+
   const getNewno = () => {
     dispatch({
       type: 'problemmanage/getregisterNo',
@@ -184,7 +186,7 @@ function Workorder(props) {
   };
 
   const gotoCirapi = () => {
-    const result = 1;
+    const result = flowtype;
     const taskId = id;
     return dispatch({
       type: 'problemmanage/gotoCirculation',
@@ -214,12 +216,20 @@ function Workorder(props) {
   };
 
   const saveRegister = (params2) => {
+    const fileids = [];
     RegistratRef.current.validateFields((err, values) => {
+      if(values.registerAttachIds) {
+        const { fileList } = values.registerAttachIds;
+        fileList.forEach(item => {
+          fileids.push(item.uid);
+        });
+      }
       if (params2 ? !err : true) {
         const saveData = values;
         saveData.registerTime = (saveData.registerTime).format('YYYY-MM-DD HH:mm:ss');
         saveData.registerOccurTime = (saveData.registerOccurTime).format('YYYY-MM-DD HH:mm:ss');
         saveData.registerExpectTime = (saveData.registerExpectTime).format('YYYY-MM-DD HH:mm:ss');
+        saveData.registerAttachIds=fileids.toString();
         saveData.taskId = id;
         if (todoDetail.editState === 'edit') {
           saveData.registerId = todoDetail.register.id;
@@ -248,7 +258,14 @@ function Workorder(props) {
 
   //  审核保存
   const savePrevies =(params2,checkType)  => {
+    const fileids = [];
     PreviesRef.current.validateFields((err, values) => {
+      if(values.checkAttachIds) {
+        const { fileList } = values.checkAttachIds;
+        fileList.forEach(item => {
+          fileids.push(item.uid);
+        });
+      }
       const saveData = values;
       if (values.checkTime) {
         saveData.checkTime = (saveData.checkTime).format('YYYY-MM-DD HH:mm:ss');
@@ -257,6 +274,9 @@ function Workorder(props) {
       }
       if (params2 ? !err : true) {
         saveData.taskId = id;
+        if( saveData.checkAttachIds){
+          saveData.checkAttachIds=fileids.toString();
+        }
         if (todoDetail.editState === 'edit') {
           saveData.checkId = todoDetail.check.id;
           saveData.editState = todoDetail.editState;
@@ -264,15 +284,28 @@ function Workorder(props) {
           saveData.checkId = todoDetail.editGuid;
           saveData.editState = 'add';
         }
-        saveData.checkType = todoDetail.checkType;
+        if(flowNodeName === '系统运维商审核'){
+          saveData.checkType = '1';
+        } else {
+          saveData.checkType = '2';
+        }
+        console.log(params2,'params2');
         saveApi(saveData, params2);
       }
     });
   };
 
   const saveHandle = params2 => {
+    const fileids = [];
     HandleRef.current.validateFields((err, values) => {
+      if(values.handleAttachIds) {
+        const { fileList } = values.handleAttachIds;
+        fileList.forEach(item => {
+          fileids.push(item.uid);
+        });
+      }
       const saveData = values;
+      saveData.handleAttachIds=fileids.toString();
       if (values.handleTime) {
         saveData.handleTime = (saveData.handleTime).format('YYYY-MM-DD HH:mm:ss');
       } else {
@@ -294,11 +327,20 @@ function Workorder(props) {
   };
 
   const saveConfirm = params2 => {
+    const fileids = [];
     ProblemconfirmRef.current.validateFields((err, values) => {
+      if(values.confirmAttachIds) {
+        const { fileList } = values.confirmAttachIds;
+        fileList.forEach(item => {
+          fileids.push(item.uid);
+        });
+      }
       if (params2 ? !err : true) {
         const saveData = values;
+        saveData.confirmAttachIds=fileids.toString();
         saveData.taskId = id;
         saveData.editState = todoDetail.editState;
+        saveData.confirmTime = (values.confirmTime).format('YYYY-MM-DD HH:mm:ss');
         if (todoDetail.editState === 'edit') {
           saveData.confirmId = todoDetail.confirm.id;
           saveData.editState = 'edit';
@@ -306,31 +348,20 @@ function Workorder(props) {
           saveData.confirmId = todoDetail.editGuid;
           saveData.editState = 'add';
         }
-
-        if (todoDetail.flowNodeName === '确认会签') {
-          saveData.confirmType = 1;
-          saveData.confirmTime = '';
-        } else {
-          saveData.confirmType = 0;
-          saveData.confirmTime = (saveData.confirmTime).format('YYYY-MM-DD HH:mm:ss');
+        switch (todoDetail.flowNodeName){
+          case '系统运维商确认':
+            saveData.confirmType = 1;
+            break;
+          case '自动化科业务负责人确认':
+            saveData.confirmType = 2;
+            break;
+          case '问题登记人员确认':
+            saveData.confirmType = 3;
+            break;
+          default:
+            break
         }
-        saveApi(saveData, params2);
-      }
-    });
-  };
-
-  const saveClose = params2 => {
-    CloseRef.current.validateFields((err, values) => {
-      if (params2 ? !err : true) {
-        const saveData = values;
-        saveData.taskId = id;
-        if (todoDetail.editState === 'edit') {
-          saveData.closeId = todoDetail.close.id;
-          saveData.editState = 'edit';
-        } else {
-          saveData.closeId = todoDetail.editGuid;
-          saveData.editState = 'add';
-        }
+        console.log(saveData,'saveData');
         saveApi(saveData, params2);
       }
     });
@@ -381,41 +412,33 @@ function Workorder(props) {
     });
   };
 
-  const handleSubmit = (params2,checkType) => {
-    switch (currntStatus) {
-      case 5:
-        // circulationSign = currntStatus;
+  const handleSubmit = (params2) => {
+    switch (flowNodeName) {
+      case '问题登记':
         saveRegister(params2);
         break;
-      case 25:
-        savePrevies(params2,checkType);
+      case '系统运维商审核':
+        savePrevies(params2);
         break;
-      case 9:
-        savePrevies(params2,checkType);
+      case '自动化科审核':
+        savePrevies(params2);
         break;
-      case 29:
+      case '系统开发商处理':
         saveHandle(params2);
         break;
-      case 45:
-        saveHandle(params2);
-        break;
-      case 49:
+      case '系统运维商确认':
         saveConfirm(params2);
         break;
-      case 65:
+      case '自动化科业务负责人确认':
         saveConfirm(params2);
         break;
-      case 69:
-        saveClose(params2);
-        break;
-      case 85:
-        saveClose(params2);
+      case '问题登记人员确认':
+        saveConfirm(params2);
         break;
       default:
         break;
     }
   };
-
 
   const getUserinfo = () => {
     dispatch({
@@ -477,7 +500,10 @@ function Workorder(props) {
               </Button>
             )}
 
-            { (currntStatus !== 5 && currntStatus !== 45) && (
+            { 
+            (flowNodeName === '系统运维商审核' || flowNodeName === '系统运维商确认'
+            || flowNodeName === '自动化科业务负责人确认' || flowNodeName === '问题登记人员确认') 
+             && (
               <Reasonregression reasonSubmit={values => reasonSubmit(values)}>
                 <Button type="primary" ghost style={{ marginRight: 8 }}>
                   回退
@@ -495,12 +521,12 @@ function Workorder(props) {
               </Button>
             )}
 
-            {/* {
+            {
               currntStatus === 45 &&(
                 <SelectUser
                 taskId={id}
                 currentObj={currntStatus}
-                onSubmit={transferOrder}
+                // onSubmit={transferOrder}
               >
                 <Button
                   type="primary"
@@ -512,7 +538,7 @@ function Workorder(props) {
               </SelectUser>
 
               )
-            } */}
+            }
 
 
             { currntStatus === 29 && (
@@ -521,11 +547,17 @@ function Workorder(props) {
               </Button>
             )}
 
-            {(currntStatus !== 29) && (currntStatus !== 65) && (currntStatus !== 85) && (
+            {
+            flowNodeName !== '问题登记人员确认' && 
+            flowtype ==='1' &&
+            flowNodeName !== '系统开发商处理' &&
+            flowNodeName !== '自动化科业务负责人确认' &&
+            currntStatus !== 29 &&
+             (
               <SelectUser
                 taskId={id}
-                currentObj={currntStatus}
-                handleSubmit={() => handleSubmit(circaSign,checkType)}
+                // result={}
+                handleSubmit={() => handleSubmit(circaSign)}
               >
                 <Button
                   type="primary"
@@ -539,11 +571,17 @@ function Workorder(props) {
             )
             }
 
-            { ((currntStatus === 65) || (currntStatus === 85)) && (
+            { 
+            (flowNodeName === '问题登记人员确认' || 
+            flowtype === '0' ||
+            flowNodeName === '系统开发商处理' ||
+            flowNodeName === '自动化科业务负责人确认'
+            ) &&
+            currntStatus !== 29  && (
               <Button
                 type="primary"
                 style={{ marginRight: 8 }}
-                onClick={() => handleSubmit(circaSign)}
+                onClick={() => handleSubmit(flowNodeName)}
               >
                 流转
               </Button>
@@ -617,48 +655,55 @@ function Workorder(props) {
               }
 
               {
-                checkType === '1' && (currntStatus === 9 || currntStatus === 25) && (
+                flowNodeName === '系统运维商审核' && (
                   <Panel
                     header="系统运维商审核环节"
                     key='1'
                     style={{ backgroundColor: 'white' }}
                   >
-                    <Systemoperatoredit
-                      formItemLayout={formItemLayout}
-                      forminladeLayout={forminladeLayout}
-                      ref={PreviesRef}
-                      useInfo={useInfo}
-                      check={check}
-                      loading={loading}
-                    />
+                    <FatherContext.Provider value = {{ flowtype ,setFlowtype}}>
+                      <Systemoperatoredit
+                        formItemLayout={formItemLayout}
+                        forminladeLayout={forminladeLayout}
+                        ref={PreviesRef}
+                        useInfo={useInfo}
+                        check={check}
+                        loading={loading}
+                      />
+                    </FatherContext.Provider>
+                   
                   </Panel>
                 )
               }
             
               {
-                 checkType === '2' && (currntStatus === 9 || currntStatus === 25) && (
+                 flowNodeName === '自动化科审核'&& (
                   <Panel
                     header="自动化科审核"
                     key='1'
                     style={{ backgroundColor: 'white' }}
                   >
-                    <Businessaudit
-                      formItemLayout={formItemLayout}
-                      forminladeLayout={forminladeLayout}
-                      showEdit={showEdit}
-                      ref={PreviesRef}
-                      useInfo={useInfo}
-                      check={check}
-                      handleTime={handleTime}
-                      receivingTime={receivingTime}
-                      loading={loading}
-                    />
+                    <FatherContext.Provider value = {{ flowtype ,setFlowtype}}>
+                      <Businessaudit
+                        formItemLayout={formItemLayout}
+                        forminladeLayout={forminladeLayout}
+                        showEdit={showEdit}
+                        ref={PreviesRef}
+                        useInfo={useInfo}
+                        check={check}
+                        handleTime={handleTime}
+                        receivingTime={receivingTime}
+                        loading={loading}
+                      />
+
+                    </FatherContext.Provider>
+                   
                   </Panel>
                 )
               }
 
               {
-                 (currntStatus === 29 || currntStatus === 45) && (
+                  flowNodeName === '系统开发商处理' && (
                   <Panel
                   header='系统开发商处理'
                   key='1'
@@ -680,67 +725,75 @@ function Workorder(props) {
               }
 
               {
-                flowNodeName === '系统运维商确认' && (currntStatus === 65 || currntStatus === 49) && (
+                flowNodeName === '系统运维商确认'  && (
                   <Panel
                   header='系统运维商确认'
                   key='1'
                   style={{ backgroundColor:'white'}}
                 >
-                  <Operatorconfirmaedit 
-                     formItemLayout={formItemLayout}
-                     forminladeLayout={forminladeLayout}
-                     showEdit={showEdit}
-                     ref={ProblemconfirmRef}
-                     useInfo={useInfo}
-                     handle={handle}
-                     handleTime={handleTime}
-                     receivingTime={receivingTime}
-                     loading={loading}
-                 />
+                  <FatherContext.Provider value = {{ flowtype ,setFlowtype}}>
+                    <Operatorconfirmaedit 
+                      formItemLayout={formItemLayout}
+                      forminladeLayout={forminladeLayout}
+                      showEdit={showEdit}
+                      ref={ProblemconfirmRef}
+                      useInfo={useInfo}
+                      handle={handle}
+                      handleTime={handleTime}
+                      receivingTime={receivingTime}
+                      loading={loading}
+                  />
+                  </FatherContext.Provider>
+              
                 </Panel>
                 )
               }
 
               {
-                flowNodeName === '自动化科确认' &&(currntStatus === 65 || currntStatus === 49) && (
+                flowNodeName === '自动化科业务负责人确认' && (
                   <Panel
                   header='自动化科业务负责人确认'
                   key='1'
                   style={{ backgroundColor:'white'}}
                 >
-                  <Operatorconfirmaedit 
-                     formItemLayout={formItemLayout}
-                     forminladeLayout={forminladeLayout}
-                     showEdit={showEdit}
-                     ref={ProblemconfirmRef}
-                     useInfo={useInfo}
-                     handle={handle}
-                     handleTime={handleTime}
-                     receivingTime={receivingTime}
-                     loading={loading}
-                 />
+                  <FatherContext.Provider value={{ flowtype ,setFlowtype}}>
+                    <Operatorconfirmaedit 
+                      formItemLayout={formItemLayout}
+                      forminladeLayout={forminladeLayout}
+                      showEdit={showEdit}
+                      ref={ProblemconfirmRef}
+                      useInfo={useInfo}
+                      handle={handle}
+                      handleTime={handleTime}
+                      receivingTime={receivingTime}
+                      loading={loading}
+                  />
+                  </FatherContext.Provider>
+               
                 </Panel>
                 )
               }
 
              {
-                 (currntStatus === 69) && (
+                 flowNodeName === '问题登记人员确认'  && (
                   <Panel
                   header='问题登记人员确认'
                   key='1'
                   style={{ backgroundColor:'white'}}
                 >
-                  <Operatorconfirmaedit 
-                     formItemLayout={formItemLayout}
-                     forminladeLayout={forminladeLayout}
-                     showEdit={showEdit}
-                     ref={HandleRef}
-                     useInfo={useInfo}
-                     handle={handle}
-                     handleTime={handleTime}
-                     receivingTime={receivingTime}
-                     loading={loading}
-                 />
+                  <FatherContext.Provider value={{ flowtype ,setFlowtype}}>
+                    <Operatorconfirmaedit 
+                      formItemLayout={formItemLayout}
+                      forminladeLayout={forminladeLayout}
+                      showEdit={showEdit}
+                      ref={ProblemconfirmRef}
+                      useInfo={useInfo}
+                      handle={handle}
+                      handleTime={handleTime}
+                      receivingTime={receivingTime}
+                      loading={loading}
+                  />
+                  </FatherContext.Provider>
                 </Panel>
                 )
               }
@@ -758,14 +811,14 @@ function Workorder(props) {
                 />
               )}
 
-              {  currntStatus >= 25 && (
+              {  flowNodeName !== '系统运维商审核' && currntStatus >= 25 && (
                 <Problemreview
                   reviesDetail={todoDetail}
                   loading={loading}
                 />
               )}
 
-              {currntStatus >= 25 && (
+              { (flowNodeName !== '自动化科审核' && flowNodeName !== '系统运维商审核') && currntStatus >= 25 && (
                 <Businessaudes
                   reviesDetail={todoDetail}
                   loading={loading}
@@ -779,8 +832,15 @@ function Workorder(props) {
                 />
               )}
 
-              {currntStatus >= 65 && (
+              {confirmType > 1 && currntStatus >= 65 && (
                 <Operatorconfirmades
+                  confirmationDetail={todoDetail}
+                  loading={loading}
+                />
+              )}
+
+              {confirmType > 2 && currntStatus >= 65 && (
+                <Automaticconfirmdes
                   confirmationDetail={todoDetail}
                   loading={loading}
                 />

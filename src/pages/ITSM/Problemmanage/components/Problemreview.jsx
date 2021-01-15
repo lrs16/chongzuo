@@ -1,13 +1,38 @@
 import React from 'react';
-import {  Descriptions, Collapse } from 'antd';
+import { connect } from 'dva';
+import {  
+   Descriptions,
+   Collapse,
+   Radio  } from 'antd';
 
 const { Panel } = Collapse;
+
+// let id;
 function Problemreview(props) {
-  const {  reviesDetail,loading } = props;
-  console.log('reviesDetail: ', reviesDetail);
+  const {  
+    dispatch,
+    reviesDetail,
+    loading } = props;
+
+    // if(reviesDetail) {
+    //   id =  reviesDetail.problemFlowNodeRows[1].checkAttachIds;
+    // }
+    const { problemFlowNodeRows } = reviesDetail;
+    let value;
+    if(problemFlowNodeRows) {
+      value = problemFlowNodeRows[1].checkResult;
+      console.log('value: ', value);
+    }
+
+    const fileDown = (id) => {
+      dispatch({
+        type:'problemmanage/filedownload',
+        payload:{id}
+      })
+    } 
   return (
     <>
-    { loading === false && (
+    { loading === false && problemFlowNodeRows && (
       <Collapse 
         expandIconPosition="right" 
         style={{ backgroundColor: 'white', marginTop: '20px' }}
@@ -18,7 +43,10 @@ function Problemreview(props) {
         >
           <Descriptions>
             <Descriptions.Item label="审核结果">
-            {reviesDetail ? reviesDetail.problemFlowNodeRows[1].checkResult : ''}
+            <Radio.Group value={value} disabled>
+              <Radio value='1'>通过</Radio>
+              <Radio value='0'>不通过</Radio>
+            </Radio.Group>
             </Descriptions.Item>
           </Descriptions>
 
@@ -36,7 +64,9 @@ function Problemreview(props) {
 
           <Descriptions>
             <Descriptions.Item label="上传附件">
-            <span style={{ color: 'blue', textDecoration: 'underline' }}>000</span>
+            <span style={{ color: 'blue', textDecoration: 'underline' }} onClick={() => fileDown(reviesDetail.problemFlowNodeRows[1].checkAttachIds)}>
+            {reviesDetail ? reviesDetail.problemFlowNodeRows[1].checkAttachIds : ''}
+            </span>
             </Descriptions.Item>
           </Descriptions>
 
@@ -61,4 +91,10 @@ function Problemreview(props) {
     </>
   );
 }
-export default Problemreview;
+export default (
+  connect(({ problemmanage, loading }) => ({
+    
+    loading: loading.models.problemmanage,
+  }))
+)
+(Problemreview);

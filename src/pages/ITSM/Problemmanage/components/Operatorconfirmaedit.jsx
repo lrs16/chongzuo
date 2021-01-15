@@ -1,4 +1,4 @@
-import React, { useRef,useImperativeHandle,useState } from 'react';
+import React, { useRef,useImperativeHandle,useContext  } from 'react';
 import {
   Row,
   Col,
@@ -11,11 +11,13 @@ import {
 } from 'antd';
 import moment from 'moment';
 import { DownloadOutlined } from '@ant-design/icons';
+import {FatherContext} from '../Workorder';
 
 const { TextArea } = Input;
 
 const Operatorconfirmaedit = React.forwardRef((props,ref) => {
   const { formItemLayout,forminladeLayout } = props;
+  const {flowtype,setFlowtype } = useContext(FatherContext);
   const { getFieldDecorator } = props.form;
   const attRef = useRef();
   useImperativeHandle(
@@ -30,7 +32,7 @@ const Operatorconfirmaedit = React.forwardRef((props,ref) => {
     useInfo,
   } = props;
   const onChange = (e) => {
-    console.log('e: ', e);
+    setFlowtype(e.target.value);
   }
 
   const required = true;
@@ -47,11 +49,11 @@ const Operatorconfirmaedit = React.forwardRef((props,ref) => {
                 message:'请输入确认结果'
               }
             ],
-            initialValue:1
+            initialValue:confirm?confirm.confirmResult:'1'
           })(
             <Radio.Group onChange={onChange}>
-              <Radio value='通过'>通过</Radio>
-              <Radio value='不通过'>不通过</Radio>
+              <Radio value='1'>通过</Radio>
+              <Radio value='0'>不通过</Radio>
             </Radio.Group>
           )
           }
@@ -96,20 +98,21 @@ const Operatorconfirmaedit = React.forwardRef((props,ref) => {
         </Col>
 
         <Col span={24}>
-          <Form.Item 
-            label='上传附件'
+          <Form.Item
+            label="上传附件"
             {...forminladeLayout}
-            extra='只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb'
-            >
-              {getFieldDecorator('attachIds')(
-                <Upload>
-                  <Button type='primary'>
-                    <DownloadOutlined /> 上传附件
-                  </Button>
-                </Upload>,
-              )}
+            extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
+          >
+            {getFieldDecorator('confirmAttachIds')(
+              <Upload>
+                <Button type="primary">
+                  <DownloadOutlined /> 上传附件
+                </Button>
+              </Upload>,
+            )}
           </Form.Item>
         </Col>
+
         
         <Col span={8}>
           <Form.Item label='确认人'>

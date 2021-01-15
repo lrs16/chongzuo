@@ -10,8 +10,10 @@ import Problemsolving from './components/Problemsolving';
 import Problemreview from './components/Problemreview';
 import Operatorconfirmades from './components/Operatorconfirmades';
 import Problemregistration from './components/Problemregistration';
-import Problemclosed from './components/Problemclosed';
 import Problemflow from './components/Problemflow';
+import Businessaudes from './components/Businessaudes';
+import Automaticconfirmdes from './components/Automaticconfirmdes';
+import Registrationconfirmdes from './components/Registrationconfirmdes';
 
 let currntStatus = '';
 let problemFlowid;
@@ -28,6 +30,7 @@ function Queryworkdetail(props) {
   const {
     params: { id },
   } = props.match;
+ 
   if (queryDetaildata.main) {
     currntStatus = Number(queryDetaildata.main.status);
     problemFlowid =  queryDetaildata.main.id;
@@ -76,9 +79,9 @@ function Queryworkdetail(props) {
    
       {/* 查询详情 */}
       {
-        (tabActiveKey === 'workorder' && 
+        (tabActiveKey === 'workorder' && problemFlowNodeRows && 
           <>
-            { currntStatus >= 5 && (
+            { problemFlowNodeRows.length >= 1 && (
             <Problemregistration
             registrationDetail={queryDetaildata}
             statue={currntStatus}
@@ -89,7 +92,7 @@ function Queryworkdetail(props) {
            />
            )}
 
-          { currntStatus >= 25 && (
+          { problemFlowNodeRows.length >= 2 && (
             <Problemreview 
             reviesDetail={queryDetaildata}
             statue={currntStatus}
@@ -98,7 +101,16 @@ function Queryworkdetail(props) {
             />
           )}
 
-          { currntStatus >= 45 && (
+          {
+             problemFlowNodeRows.length >= 3 && (
+              <Businessaudes
+              reviesDetail={queryDetaildata}
+              loading={loading}
+            />
+             )
+          }
+
+          { problemFlowNodeRows.length >= 4 && (
             <Problemsolving 
             solvingDetail={queryDetaildata}
             statue={currntStatus}
@@ -107,7 +119,7 @@ function Queryworkdetail(props) {
               />
           )}
 
-          { currntStatus >=65 && (
+          { problemFlowNodeRows.length >= 5 && (
             <Operatorconfirmades 
             confirmationDetail={queryDetaildata}
             statue={currntStatus}
@@ -116,13 +128,18 @@ function Queryworkdetail(props) {
             />
           )}
 
-          { currntStatus >=85 && (
-            <Problemclosed 
-            closeInfo={queryDetaildata}
-            statue={currntStatus}
-            querySign='yes'
-            loading={loading}
-            />
+          { problemFlowNodeRows.length >= 6 && (
+           <Automaticconfirmdes
+           confirmationDetail={queryDetaildata}
+           loading={loading}
+         />
+          )}
+
+          { problemFlowNodeRows.length >= 7 && (
+           <Registrationconfirmdes
+           confirmationDetail={queryDetaildata}
+           loading={loading}
+         />
           )}
      </>
         )

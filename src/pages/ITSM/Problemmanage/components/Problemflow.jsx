@@ -2,12 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { Card, Form,Steps,Divider   } from 'antd';
+import styles from '../index.less';
 
 let image;
 let id;
 const { Step } = Steps;
 function Problemflow(props) {
   const { id, imageSource, flowlog, dispatch } = props;
+  console.log('flowlog: ', flowlog);
   const list = [];
   if (flowlog) {
     flowlog.forEach(function(item) {
@@ -57,11 +59,32 @@ function Problemflow(props) {
           {/* <Card title="流转日志"> */}
           <p>流转日志</p>
           <Divider />
-            <Steps  
-            progressDot 
-            current={list.length - 1}
-            direction="vertical"
-            >{list}</Steps>
+          {flowlog && (
+          <div className={styles.processstept}>
+            <Steps
+              current={flowlog.length - 1}
+              progressDot
+              direction="vertical"
+              style={{ background: '#fff', padding: 24, border: '1px solid #e8e8e8' }}
+            >
+              {flowlog.map(obj => {
+                // const backoff = obj.fallbackMsg === '' ? '' : '（回退）';
+                const desc = (
+                  <div>
+                    <div>{obj.name}</div>
+                    <div>处理人：{obj.user}</div>
+                    <div>{obj.startTime}</div>
+                    <div>{obj.endTime}</div>
+                    {/* {obj.fallbackMsg !== '' && <div>回退原因：{obj.fallbackMsg}）</div>} */}
+                  </div>
+                );
+                // return <Step title={`${obj.nodeName}${backoff}`} description={desc} />;
+                return <Step description={desc} />;
+              })}
+            </Steps>
+          </div>
+        )}
+    
           {/* </Card> */}
       </Card>
      

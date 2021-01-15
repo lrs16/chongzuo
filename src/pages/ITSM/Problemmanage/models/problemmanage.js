@@ -20,7 +20,9 @@ import {
   problemHandleOrder,
   tobeListpeople,
   queryDetail,
-  transferOrder
+  transferOrder,
+  querydownload,
+  downFile
 } from '../services/api';
 
 export default {
@@ -229,7 +231,16 @@ export default {
 
     *transferOrder({payload:{taskId,userIds}},{call,put}) {
       return yield call(transferOrder,taskId,userIds);
-    }
+    },
+
+    *eventdownload({ payload:{values} }, { call }) {
+      return yield call(querydownload, { values });
+    },
+
+    *filedownload({ payload:{id} }, { call }) {
+      console.log('id: ', id);
+      return yield call(downFile,  id );
+    },
 
 
   },

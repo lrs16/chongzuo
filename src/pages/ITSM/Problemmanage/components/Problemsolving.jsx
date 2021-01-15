@@ -36,7 +36,9 @@ function Problemsolving(props) {
 
               <Descriptions>
                 <Descriptions.Item label="上传附件">
-                  <span style={{ color: 'blue', textDecoration: 'underline' }}>11</span>666
+                  <span style={{ color: 'blue', textDecoration: 'underline' }}>
+                  {solvingDetail ? solvingDetail.problemFlowNodeRows[3].handleAttachIds : ''}
+                  </span>
                 </Descriptions.Item>
               </Descriptions>
 
