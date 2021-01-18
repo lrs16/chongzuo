@@ -1,4 +1,4 @@
-import React, { useRef,useImperativeHandle,useContext  } from 'react';
+import React, { useEffect,useRef,useImperativeHandle,useContext,useState  } from 'react';
 import {
   Row,
   Col,
@@ -12,14 +12,19 @@ import {
 import moment from 'moment';
 import { DownloadOutlined } from '@ant-design/icons';
 import {FatherContext} from '../Workorder';
+import SysUpload from '@/components/SysUpload';
 
 const { TextArea } = Input;
 
 const Operatorconfirmaedit = React.forwardRef((props,ref) => {
-  const { formItemLayout,forminladeLayout } = props;
+  const { formItemLayout,forminladeLayout,files,ChangeFiles } = props;
   const {flowtype,setFlowtype } = useContext(FatherContext);
   const { getFieldDecorator } = props.form;
   const attRef = useRef();
+  const [fileslist, setFilesList] = useState([]);
+  useEffect(() => {
+    ChangeFiles(fileslist);
+  }, [fileslist]);
   useImperativeHandle(
     ref,
     () => ({
@@ -31,6 +36,7 @@ const Operatorconfirmaedit = React.forwardRef((props,ref) => {
     confirm,
     useInfo,
   } = props;
+  console.log(confirm,'confirm');
   const onChange = (e) => {
     setFlowtype(e.target.value);
   }
@@ -79,40 +85,57 @@ const Operatorconfirmaedit = React.forwardRef((props,ref) => {
             }
           </Form.Item>
         </Col>
-        <Col span={23}>
-          <Form.Item label='确认意见' {...forminladeLayout}>
-            {
-              getFieldDecorator('confirmContent',{
-                rules:[
-                  {
-                    required,
-                    message:'请输入审核意见'
-                  }
-                ]
-              })(
-                <TextArea/>
-              )
-            }
-
-          </Form.Item>
-        </Col>
+        {
+          flowtype === '1' && (
+            <Col span={23}>
+            <Form.Item label='确认意见' {...forminladeLayout}>
+              {
+                getFieldDecorator('confirmContent',{
+                  initialValue: confirm?confirm.confirmContent:'',
+                })(
+                  <TextArea/>
+                )
+              }
+  
+            </Form.Item>
+          </Col>
+          )
+        }
+        {
+          flowtype === '0' && (
+            <Col span={23}>
+            <Form.Item label='确认意见' {...forminladeLayout}>
+              {
+                getFieldDecorator('confirmContent',{
+                  rules:[
+                    {
+                      required,
+                      message:'请输入审核意见'
+                    }
+                  ],
+                  initialValue: confirm?confirm.confirmContent:'',
+                })(
+                  <TextArea/>
+                )
+              }
+  
+            </Form.Item>
+          </Col>
+          )
+        }
+    
 
         <Col span={24}>
-          <Form.Item
-            label="上传附件"
-            {...forminladeLayout}
-            extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
-          >
-            {getFieldDecorator('confirmAttachIds')(
-              <Upload>
-                <Button type="primary">
-                  <DownloadOutlined /> 上传附件
-                </Button>
-              </Upload>,
-            )}
-          </Form.Item>
-        </Col>
-
+              <Form.Item
+                label="上传附件"
+                {...forminladeLayout}
+                extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
+              >
+                <div style={{ width: 400 }}>
+                  <SysUpload fileslist={files} ChangeFileslist={newvalue => setFilesList(newvalue)} />
+                </div>
+              </Form.Item>
+            </Col>
         
         <Col span={8}>
           <Form.Item label='确认人'>

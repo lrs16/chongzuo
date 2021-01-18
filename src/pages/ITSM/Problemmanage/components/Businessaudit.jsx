@@ -34,6 +34,7 @@ const Businessaudit = React.forwardRef((props, ref) => {
     useInfo
   } = props;
 
+
   
   const onChange = (e) => {
     setFlowtype(e.target.value);
@@ -53,7 +54,7 @@ const Businessaudit = React.forwardRef((props, ref) => {
                 message:'请输入审核结果'
               }
             ],
-            initialValue: check?check.checkResult:'1'
+            initialValue: check.checkResult?check.checkResult:'1'
           })(
             <Radio.Group onChange={onChange}>
               <Radio value='1'>通过</Radio>

@@ -8,6 +8,7 @@ import SelectUser from '@/components/SelectUser';
 function Registration(props) {
   const { dispatch, userinfo } = props;
   const pagetitle = props.route.name;
+  console.log('props: ', props);
   // const [flowtype, setFlowtype] = useState('1'); // 流转类型
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
   console.log(files);

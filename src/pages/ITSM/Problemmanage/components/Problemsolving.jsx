@@ -8,7 +8,7 @@ function Problemsolving(props) {
 
   return (
     <>
-      { loading === false && (
+      { loading === false && solvingDetail && (
         <Collapse 
           expandIconPosition="right" 
           style={{ backgroundColor: 'white', marginTop: '20px' }}

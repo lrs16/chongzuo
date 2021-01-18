@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useImperativeHandle } from 'react';
+import React, { useState, useRef, useImperativeHandle,useEffect } from 'react';
 import { Row, Col, Form, Input, Select, Upload, Button, Checkbox, DatePicker } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
 import styles from '../index.less';
@@ -6,6 +6,7 @@ import moment from 'moment';
 import Link from 'umi/link';
 import { RegistratContext } from '../Registration';
 import { phone_reg } from '@/utils/Regexp';
+import SysUpload from '@/components/SysUpload';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -13,9 +14,13 @@ let occurtime;
 
 
 const Registrat = React.forwardRef((props, ref) => {
-  const { formItemLayout, forminladeLayout, show } = props;
+  const { formItemLayout, forminladeLayout, files,ChangeFiles } = props;
   const { getFieldDecorator } = props.form;
   // const { setActiveKey, setShow } = useContext(RegistratContext);
+  const [fileslist, setFilesList] = useState([]);
+  useEffect(() => {
+    ChangeFiles(fileslist);
+  }, [fileslist]);
   const attRef = useRef();
   useImperativeHandle(
     ref,
@@ -24,6 +29,7 @@ const Registrat = React.forwardRef((props, ref) => {
     }),
     [],
   );
+
   const {
     list,
     newno,
@@ -31,6 +37,7 @@ const Registrat = React.forwardRef((props, ref) => {
     register,
     main,
   } = props;
+
   if(register) {
     if(register.registerOccurTime !== null) {
       occurtime = moment(register.registerOccurTime);
@@ -60,26 +67,6 @@ const Registrat = React.forwardRef((props, ref) => {
                 })(<Input disabled />)}
               </Form.Item>
             </Col>
-{/* 
-            
-            <Col span={8}>
-              <Form.Item label="影响范围">
-                {getFieldDecorator('now', {
-                  rules: [
-                    {
-                      required,
-                      message: '请输入影响范围',
-                    },
-                  ],
-                  initialValue: '',
-                })(<Select 
-                    >
-                      <Option>FF</Option>
-                    </Select>
-                 )}
-              </Form.Item>
-            </Col> */}
-
             
             <Col span={8}>
               <Form.Item label="登记时间">
@@ -125,7 +112,7 @@ const Registrat = React.forwardRef((props, ref) => {
                       message: '请输入问题来源',
                     },
                   ],
-                  initialValue: main?main.source:'重复性分析事件',
+                  initialValue: main?main.source:'请选择',
                 })(
                   <Select>
                     <Option value="重复性分析事件">重复性分析事件</Option>
@@ -147,7 +134,7 @@ const Registrat = React.forwardRef((props, ref) => {
                       message: '请输入问题分类',
                     },
                   ],
-                  initialValue: main?main.type:'功能',
+                  initialValue: main?main.type:'请选择',
                 })(
                   <Select>
                     <Option value="功能">功能</Option>
@@ -166,7 +153,7 @@ const Registrat = React.forwardRef((props, ref) => {
                       message: '请选择重要程度',
                     },
                   ],
-                  initialValue: main?main.importance:'一般',
+                  initialValue: main?main.importance:'请选择',
                 })(
                   <Select>
                     <Option value="一般">一般</Option>
@@ -218,7 +205,7 @@ const Registrat = React.forwardRef((props, ref) => {
                       message: '请选择影响范围',
                     },
                   ],
-                  initialValue: main?register.registerScope:'影响范围',
+                  initialValue: main?register.registerScope:'请选择',
                 })(
                   <Select>
                     <Option value="影响范围">影响范围</Option>
@@ -278,20 +265,16 @@ const Registrat = React.forwardRef((props, ref) => {
             </Col>
 
             <Col span={24}>
-              <Form.Item
-                label="上传附件"
-                {...forminladeLayout}
-                extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
-              >
-                {getFieldDecorator('registerAttachIds')(
-                  <Upload>
-                    <Button type="primary">
-                      <DownloadOutlined /> 上传附件
-                    </Button>
-                  </Upload>,
-                )}
-              </Form.Item>
-            </Col>
+            <Form.Item
+              label="上传附件"
+              {...forminladeLayout}
+              extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
+            >
+              <div style={{ width: 400 }}>
+                <SysUpload fileslist={files} ChangeFileslist={newvalue => setFilesList(newvalue)} />
+              </div>
+            </Form.Item>
+          </Col>
 
 
             <Col span={8}>

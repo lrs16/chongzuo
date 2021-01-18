@@ -37,11 +37,14 @@ function Registration(props) {
     dispatch,
     list,
     newno,
-    useInfo
+    useInfo,
+    info,
+    loading
   } = props;
   const [show, setShow] = useState(false);
   const [activeKey, setActiveKey] = useState(['1']);
   const [flowtype, setFlowtype] = useState('2');
+  const [files, setFiles] = useState([]); // 下载列表
   const RegistratRef = useRef();
 
   const getNewno = () => {
@@ -72,9 +75,7 @@ function Registration(props) {
         fileList.forEach(item => {
           fileids.push(item.uid);
         });
-        console.log(fileids,'fileids');
       }
-      console.log('saveData: ', values);
       if (!err) {
         const saveData = values;
         saveData.registerTime =  (saveData.registerTime).format('YYYY-MM-DD HH:mm:ss');
@@ -99,6 +100,25 @@ function Registration(props) {
   const handClose = () => {
     props.history.push('/ITSM/problemmanage/besolved');
   }
+
+    // 上传删除附件触发保存
+    useEffect(() => {
+      if (files.length > 0) {
+        const values = RegistratRef.current.getFieldsValue();
+        dispatch({
+          type: 'problemmanage/uploadchange',
+          payload: {
+            ...values,
+            registerExpectTime: values.registerOccurTime.format('YYYY-MM-DD HH:mm:ss'),
+            registerTime: values.registerTime.format('YYYY-MM-DD HH:mm:ss'),
+            registerOccurTime: values.registerOccurTime.format('YYYY-MM-DD HH:mm:ss'),
+            registerAttachments: JSON.stringify(files),
+            // functionalModule: values.functionalModule.join('/'),
+            // nextUserIds: sessionStorage.getItem('userauthorityid').split(','),
+          },
+        });
+      }
+    }, [files]);
 
   return (
     <PageHeaderWrapper 
@@ -132,6 +152,10 @@ function Registration(props) {
                 list={list}
                 newno={newno}
                 useInfo={useInfo}
+                files={info.demandForm !== undefined ? JSON.parse(info.demandForm.attachment) : files}
+                ChangeFiles={newvalue => {
+                  setFiles(newvalue);
+                }}
               />
             </RegistratContext.Provider>
           </Panel>
@@ -142,11 +166,12 @@ function Registration(props) {
 }
 
 export default Form.create({})(
-  connect(({ problemmanage, loading }) => ({
+  connect(({ problemmanage, demandtodo, itsmuser, loading }) => ({
     list: problemmanage.list,
     id: problemmanage.id,
     newno: problemmanage.newno,
     useInfo: problemmanage.useInfo,
+    info: demandtodo.info,
     loading: loading.models.problemmanage,
   }))(Registration),
 );

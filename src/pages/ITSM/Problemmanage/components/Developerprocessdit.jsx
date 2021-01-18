@@ -1,4 +1,4 @@
-import React, {  useRef, useImperativeHandle } from 'react';
+import React, {  useEffect,useState,useRef, useImperativeHandle } from 'react';
 import { 
     Row,
     Col,
@@ -10,14 +10,19 @@ import {
     Button
   } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
+import SysUpload from '@/components/SysUpload';
 
 const { Option } = Select;
 const { TextArea } = Input;
 
 
 const Developerprocessdit = React.forwardRef((props, ref) => {
-  const { formItemLayout, forminladeLayout } = props;
+  const { formItemLayout, forminladeLayout,files,ChangeFiles } = props;
   const { getFieldDecorator } = props.form;
+  const [fileslist, setFilesList] = useState([]);
+  useEffect(() => {
+    ChangeFiles(fileslist);
+  }, [fileslist]);
   const attRef = useRef();
   useImperativeHandle(
     ref,
@@ -97,20 +102,16 @@ const Developerprocessdit = React.forwardRef((props, ref) => {
       </Col>
 
       <Col span={24}>
-              <Form.Item
-                label="上传附件"
-                {...forminladeLayout}
-                extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
-              >
-                {getFieldDecorator('handleAttachIds')(
-                  <Upload>
-                    <Button type="primary">
-                      <DownloadOutlined /> 上传附件
-                    </Button>
-                  </Upload>,
-                )}
-              </Form.Item>
-            </Col>
+        <Form.Item
+          label="上传附件"
+          {...forminladeLayout}
+          extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
+        >
+          <div style={{ width: 400 }}>
+            <SysUpload fileslist={files} ChangeFileslist={newvalue => setFilesList(newvalue)} />
+          </div>
+        </Form.Item>
+      </Col>
 
 
       <Col span={8}>

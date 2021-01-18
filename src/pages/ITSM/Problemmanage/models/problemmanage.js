@@ -47,7 +47,8 @@ export default {
     imageSource: '',
     flowlog: '',
     peopleList:[],
-    queryDetaildata:[]
+    queryDetaildata:[],
+    data:''
   },
 
   effects: {
@@ -129,10 +130,6 @@ export default {
     //  流转到下一节点前选人
     *optionPeople({ payload: { taskId } }, { call, put }) {
       return yield call(tobeListpeople, taskId);
-      // yield put({
-      //   type:'comconfigtree',
-      //   payload: response
-      // })
     },
 
     //  流转到下一个节点
@@ -238,10 +235,13 @@ export default {
     },
 
     *filedownload({ payload:{id} }, { call }) {
-      console.log('id: ', id);
       return yield call(downFile,  id );
     },
 
+      // 上传,删除附件触发保存
+    *uploadchange({ payload }, { call, put }) {
+      return yield call(saveRegister, payload);
+    },
 
   },
 
