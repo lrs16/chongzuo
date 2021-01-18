@@ -21,18 +21,19 @@ import styles from './index.less';
 import ModelRollback from './components/ModelRollback'; // 回退组件
 
 // 各个子组件
-import RegisterChild from './components/RegisterChild';
-import ExamineChild from './components/ExamineChild';
-import HandleChild from './components/HandleChild';
-import SummaryChild from './components/SummaryChild';
-import CloseChild from './components/CloseChild';
+import RegisterChild from './components/RegisterChild'; // 故障登记
+import ExamineChild from './components/ExamineChild'; // 系统运维商审核
+import HandleChild from './components/HandleChild'; // 系统运维商处理
+import SummaryChild from './components/SummaryChild'; // 系统运维商总结
+import ExamineSecondChild from './components/ExamineSecondChild'; // 自动化科业务负责人审核
+import ConfirmChild from './components/ConfirmChild'; // 自动化科专责确认
 
 // 故障查询详情子组件
-import RegisterQuery from './components/RegisterQuery';
-import ExamineQuery from './components/ExamineQuery';
-import HandleQuery from './components/HandleQuery';
-import SummaryQuery from './components/SummaryQuery';
-// import CloseQuery from './components/CloseQuery';
+import RegisterQuery from './components/RegisterQuery'; // 故障登记
+import ExamineQuery from './components/ExamineQuery'; // 系统运维商审核
+import HandleQuery from './components/HandleQuery'; // 系统运维商处理
+import SummaryQuery from './components/SummaryQuery'; // 系统运维商总结
+import ExamineSecondQuery from './components/ExamineSecondQuery'; // 自动化科业务负责人审核
 
 const { Step } = Steps;
 const { Panel } = Collapse;
@@ -76,12 +77,13 @@ const tabList = [
 ];
 
 const Collapsekeymap = new Map([
-  ['故障登记', 'RegisterChild'], // 登记
-  ['故障审核', 'ExamineChild'], // 审核
-  ['故障处理', 'HandleChild'], // 处理
-  ['registerDetails', 'RegisterQuery'], // 处理
-  ['故障总结', 'SummaryChild'], // 总结
-  ['故障关闭', 'CloseChild'], // 关闭
+  ['故障登记', 'RegisterChild'], // 故障登记
+  ['系统运维商审核', 'ExamineChild'], // 系统运维商审核
+  ['系统运维商处理', 'HandleChild'], // 系统运维商处理
+  ['registerDetails', 'RegisterQuery'], // 系统运维商处理详情
+  ['系统运维商确认总结', 'SummaryChild'], // 系统运维商确认总结
+  ['自动化科业务负责人审核', 'ExamineSecondChild'], // 自动化科业务负责人审核
+  ['自动化科专责确认', 'ConfirmChild'], // 自动化科专责确认
 ]);
 
 function Todolistdetails(props) {
@@ -90,20 +92,21 @@ function Todolistdetails(props) {
   const [tabActiveKey, setTabActiveKey] = useState('faultForm');
 
   const RegisterRef = useRef(); // 故障登记
-  const ExamineRef = useRef(); // 故障审核
-  const HandleRef = useRef(); // 故障处理
-  const SummaryRef = useRef(); // 故障总结
-  const CloseRef = useRef(); // 故障关闭
+  const ExamineRef = useRef(); // 系统运维商审核  自动化科业务负责人审核
+  const HandleRef = useRef(); // 系统运维商处理
+  const SummaryRef = useRef(); // 系统运维商确认总结
+  const ConfirmRef = useRef(); // 自动化科专责确认
 
   const {
     location: { paneKey }, // 获取传入数据 // paneKey故障登记传过来的当前状态以及待办页传过来的状态（故障登记）
     loading,
     tododetailslist, // 待办详情数据--编辑
-    tododetailslist: { troubleFlowLogs, check, handle, finish, close, troubleFlowNodeRows, main }, // troubleFlowLogs流程图数据  troubleFlowNodeRows详情是数据
+    tododetailslist: { troubleFlowLogs, check, handle, finish, confirm, troubleFlowNodeRows, main }, // troubleFlowLogs流程图数据  troubleFlowNodeRows详情是数据
     flowimageview, // 故障流程的流程图片数据
     flowlog, // 故障流程的流程日志
     dispatch,
     curruserinfo, // 当前用户登录信息
+    curruserinfo: { userId } // 当前用户登录id
   } = props;
 
   const { params: { id } } = props.match; // 获取taskId
@@ -232,13 +235,14 @@ function Todolistdetails(props) {
     });
   }
 
-  const saveExamine = (cirStatus) => { // 故障审核
+  const saveExamine = (cirStatus) => { // 审核类型：1-系统运维商审核；2-自动化科业务负责人审核
     // eslint-disable-next-line consistent-return
     ExamineRef.current.validateFields((err, values) => {
       const formValues = values;
       formValues.checkTime = values.checkTime.format('YYYY-MM-DD HH:mm:ss');
       if (cirStatus ? !err : true) {
         formValues.taskId = id;
+        formValues.checkType = paneKey === '系统运维商审核' ? '1' : '2';
         if (tododetailslist.editState === 'edit') {
           formValues.checkId = tododetailslist.check.id;
           formValues.editState = tododetailslist.editState;
@@ -265,7 +269,7 @@ function Todolistdetails(props) {
     });
   }
 
-  const saveHandle = (cirStatus) => { // 故障处理
+  const saveHandle = (cirStatus) => { // 系统运维商处理
     // eslint-disable-next-line consistent-return
     HandleRef.current.validateFields((err, values) => {
       if (cirStatus ? !err : true) {
@@ -300,7 +304,7 @@ function Todolistdetails(props) {
     });
   }
 
-  const saveSummary = (cirStatus) => { // 故障总结
+  const saveSummary = (cirStatus) => { // 系统运维商确认总结
     // eslint-disable-next-line consistent-return
     SummaryRef.current.validateFields((err, values) => {
       if (cirStatus ? !err : true) {
@@ -334,18 +338,19 @@ function Todolistdetails(props) {
     });
   }
 
-  const saveClose = (cirStatus) => { // 故障关闭    跳转到故障查询页
+  const saveConfirm = (cirStatus) => { // 自动化科专责确认
     // eslint-disable-next-line consistent-return
-    CloseRef.current.validateFields((err, values) => {
+    ConfirmRef.current.validateFields((err, values) => {
       if (cirStatus ? !err : true) {
         const formValues = values;
-        formValues.closeTime = values.closeTime.format('YYYY-MM-DD HH:mm:ss');
+        formValues.confirmTime = values.confirmTime.format('YYYY-MM-DD HH:mm:ss');
         formValues.taskId = id;
         formValues.editState = tododetailslist.editState;
+        formValues.confirmUserId = userId; // 当前登录人id
         if (tododetailslist.editState === 'edit') {
-          formValues.closeId = tododetailslist.close.id;
+          formValues.confirmId = tododetailslist.confirm.id;
         } else {
-          formValues.closeId = tododetailslist.editGuid;
+          formValues.confirmId = tododetailslist.editGuid;
         }
         return dispatch({
           type: 'fault/getfromsave', // 保存接口
@@ -354,14 +359,7 @@ function Todolistdetails(props) {
           if (res.code === 200) {
             getfaultTodoDetailData();
             if (cirStatus) {
-              const result = 1;
-              const taskId = id;
-              dispatch({
-                type: 'fault/getSubmitProToNextNode',
-                payload: { taskId, result }
-              })
-              getfaultTodoDetailData();
-              router.push(`/ITSM/faultmanage/querylist`);
+              faultcircula();
             } else {
               message.success(res.msg);
             }
@@ -378,17 +376,20 @@ function Todolistdetails(props) {
       case '故障登记':
         saveRegister(savestatus);
         break;
-      case '故障审核':
+      case '系统运维商审核':
         saveExamine(savestatus);
         break;
-      case '故障处理':
+      case '系统运维商处理':
         saveHandle(savestatus);
         break;
-      case '故障总结':
+      case '系统运维商确认总结':
         saveSummary(savestatus);
         break;
-      case '故障关闭':
-        saveClose(savestatus);
+      case '自动化科业务负责人审核':
+        saveExamine(savestatus);
+        break;
+      case '自动化科专责确认':
+        saveConfirm(savestatus);
         break;
       default:
         break
@@ -439,34 +440,45 @@ function Todolistdetails(props) {
               </Popconfirm>
             )
           }
-          { // 回退按钮--故障审核，故障处理， 故障总结有
+          { // 回退按钮--系统运维商审核，系统运维商处理， 系统运维商确认总结，自动化科业务负责人审核有
             (paneKey !== '故障登记' && paneKey !== '故障关闭' && (main && main.status !== '45')) && (
               <ModelRollback title="填写回退意见" rollbackSubmit={values => rollbackSubmit(values)}>
                 <Button type="danger" ghost>回退</Button>
               </ModelRollback>
             )
           }
-          { // 接单只有故障处理时有
-            (main && main.status === '29') && (
+          { // 接单只有系统运维商处理时有
+            (main && main.status === '40') && (
               <Button type="primary" onClick={() => handleReceivs()}>接单</Button>
             )
           }
-          {(main && main.status !== '29') && (<Button type="primary" onClick={() => handleSave(tosaveStatus)}>保存</Button>)}
-          { // 转单只有故障处理时有
+          {(main && main.status !== '40') && (<Button type="primary" onClick={() => handleSave(tosaveStatus)}>保存</Button>)}
+          { // 转单只有系统运维商处理时有
             (main && main.status === '45') && (
               <Button type="primary">转单</Button>
             )
           }
-          {(main && main.status !== '29') && (<SelectUser
-            handleSubmit={() => handleSave(currenStatus)}
-            taskId={id}
-          >
-            <Button
-              type="primary"
-            >
-              流转
-                </Button>
-          </SelectUser>)}
+          {/* 确认过程的时候不需要选人 */}
+          {
+            paneKey === '自动化科专责确认' ?
+              <Button
+                type="primary"
+                onClick={() => handleSave(currenStatus)}
+              >
+                流转
+              </Button>
+              :
+              (main && main.status !== '40') && (<SelectUser
+                handleSubmit={() => handleSave(currenStatus)}
+                taskId={id}
+              >
+                <Button
+                  type="primary"
+                >
+                  流转
+                    </Button>
+              </SelectUser>)
+          }
           <Button type="default" onClick={handleClose}>返回</Button>
         </>
       }
@@ -526,9 +538,9 @@ function Todolistdetails(props) {
                         </Panel>
                       )
                     }
-                    { // 故障审核编辑页
-                      (paneKey === '故障审核') &&
-                      ( // 展开审核表单时，显示故障登记详情（1）
+                    { // 系统运维商审核编辑页
+                      (paneKey === '系统运维商审核') &&
+                      ( // 展开系统运维商审核表单时，显示故障登记详情（1）
                         <Panel header="系统运维商审核" key="ExamineChild">
                           <ExamineChild
                             ref={ExamineRef}
@@ -540,8 +552,8 @@ function Todolistdetails(props) {
                         </Panel>
                       )
                     }
-                    { // 故障处理编辑页
-                      (paneKey === '故障处理') && (main && main.status === '45') &&
+                    { // 系统运维商处理编辑页
+                      (paneKey === '系统运维商处理') && (main && main.status === '45') &&
                       ( // 展开处理表单时，显示故障审核详情以及登记详情（2）
                         <Panel header="系统运维商处理" key="HandleChild">
                           <HandleChild
@@ -554,8 +566,8 @@ function Todolistdetails(props) {
                         </Panel>
                       )
                     }
-                    { // 故障总结编辑页
-                      (paneKey === '故障总结') && (
+                    { // 系统运维商确认总结编辑页
+                      (paneKey === '系统运维商确认总结') && (
                         <Panel header="系统运维商确认总结" key="SummaryChild">
                           <SummaryChild
                             ref={SummaryRef}
@@ -567,15 +579,28 @@ function Todolistdetails(props) {
                         </Panel>
                       )
                     }
-                    {// 故障关闭编辑页
-                      (paneKey === '故障关闭') &&
-                      (
-                        <Panel header="故障关闭" key="CloseChild">
-                          <CloseChild
-                            ref={CloseRef}
+                    { // 自动化科业务负责人审核编辑页
+                      (paneKey === '自动化科业务负责人审核') && (
+                        <Panel header="自动化科业务负责人审核" key="ExamineSecondChild">
+                          <ExamineSecondChild
+                            ref={ExamineRef}
                             formItemLayout={formItemLayout}
                             forminladeLayout={forminladeLayout}
-                            close={close}
+                            check={check}
+                            curruserinfo={curruserinfo}
+                          />
+                        </Panel>
+                      )
+                    }
+                    {// 自动化科专责确认编辑页
+                      (paneKey === '自动化科专责确认') &&
+                      (
+                        <Panel header="自动化科专责确认" key="ConfirmChild">
+                          <ConfirmChild
+                            ref={ConfirmRef}
+                            formItemLayout={formItemLayout}
+                            forminladeLayout={forminladeLayout}
+                            confirm={confirm}
                             curruserinfo={curruserinfo}
                           />
                         </Panel>
@@ -583,8 +608,8 @@ function Todolistdetails(props) {
                     }
 
 
-                    { // 故障登记详情页---（故障审核时）
-                      (paneKey === '故障审核' || paneKey === '故障处理' || paneKey === '故障总结' || paneKey === '故障关闭') &&
+                    { // 故障登记详情页-1--（系统运维商审核时、系统运维商处理时、系统运维商确认总结时、自动化科业务负责人审核时、自动化科专责确认时）
+                      (paneKey === '系统运维商审核' || paneKey === '系统运维商处理' || paneKey === '系统运维商确认总结' || paneKey === '自动化科业务负责人审核' || paneKey === '自动化科专责确认') &&
                       ( // 登记详情 后续的项展开都会被显示
                         <Panel header="故障登记" key="RegisterQuery">
                           <RegisterQuery
@@ -595,9 +620,9 @@ function Todolistdetails(props) {
                         </Panel>
                       )
                     }
-                    { // 故障审核详情页---（故障处理时）
-                      (paneKey === '故障处理' || paneKey === '故障总结' || paneKey === '故障关闭') &&
-                      ( // 审核详情
+                    { // 系统运维商审核详情页2---（系统运维商处理时、系统运维商确认总结时、自动化科业务负责人审核时、自动化科专责确认时）
+                      (paneKey === '系统运维商处理' || paneKey === '系统运维商确认总结' || paneKey === '自动化科业务负责人审核' || paneKey === '自动化科专责确认') &&
+                      ( // 系统运维商审核详情
                         <Panel Panel header="系统运维商审核" key="ExamineQuery">
                           <ExamineQuery
                             ref={ExamineRef}
@@ -606,9 +631,9 @@ function Todolistdetails(props) {
                         </Panel>
                       )
                     }
-                    { // 故障处理详情页---故障总结时
-                      (paneKey === '故障总结' || paneKey === '故障关闭') &&
-                      ( // 处理详情
+                    { // 系统运维商处理详情页3---系统运维商确认总结时、自动化科业务负责人审核时、自动化科专责确认时
+                      (paneKey === '系统运维商确认总结' || paneKey === '自动化科业务负责人审核' || paneKey === '自动化科专责确认') &&
+                      ( // 系统运维商处理详情
                         <Panel header="系统运维商处理" key="HandleQuery">
                           <HandleQuery
                             ref={HandleRef}
@@ -617,13 +642,24 @@ function Todolistdetails(props) {
                         </Panel>
                       )
                     }
-                    { // 故障总结详情页--（故障关闭时）
-                      (paneKey === '故障关闭') &&
+                    { // 系统运维商确认总结详情页4--（自动化科业务负责人审核时、自动化科专责确认时）
+                      (paneKey === '自动化科业务负责人审核' || paneKey === '自动化科专责确认') &&
                       (
                         <Panel header="系统运维商确认总结" key="SummaryQuery">
                           <SummaryQuery
                             ref={SummaryRef}
                             detailsdata={troubleFlowNodeRows !== undefined && troubleFlowNodeRows[3]}
+                          />
+                        </Panel>
+                      )
+                    }
+                    { // 自动化科业务负责人审核详情页5---（自动化科专责确认时）
+                      (paneKey === '自动化科专责确认') &&
+                      ( // 处理详情
+                        <Panel header="自动化科业务负责人审核" key="ExamineSecondQuery">
+                          <ExamineSecondQuery
+                            ref={ExamineRef}
+                            detailsdata={troubleFlowNodeRows !== undefined && troubleFlowNodeRows[4]}
                           />
                         </Panel>
                       )
@@ -642,7 +678,7 @@ function Todolistdetails(props) {
               <div
                 style={{
                   background: '#fff',
-                  padding: 20,
+                  // padding: 20,
                 }}
               >
                 {/* 通过图片--二进制 展示流程图 */}

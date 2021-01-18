@@ -25,14 +25,14 @@ const RegisterQuery = React.forwardRef((props, ref) => {
                     <>
                         <DescriptionList size="large">
                             <Description term="故障编号">{maindata.no || ''}</Description>
-                            <Description term="故障发生时间">{detailsdata[0].registerOccurTime || ''}</Description>
-                            <Description term="故障记录时间">{detailsdata[0].registerTime || ''}</Description>
+                            <Description term="登记时间">{detailsdata[0].registerTime || ''}</Description>
+                            <Description term="发生时间">{detailsdata[0].registerOccurTime || ''}</Description>
                             <Description term="故障来源">{maindata.source || ''}</Description>
                             <Description term="系统模块">{detailsdata[0].registerModel || ''}</Description>
+                            <Description term="故障类型">{maindata.type || ''}</Description>
                             <Description term="故障地点"> {detailsdata[0].registerAddress || ''}</Description>
-                        </DescriptionList>
-                        <DescriptionList size="large">
                             <Description term="严重程度">{detailsdata[0].registerLevel || ''}</Description>
+                            <Description term="影响范围">{detailsdata[0].registerScope || ''}</Description>
                         </DescriptionList>
                         <DescriptionList size="large">
                             <Description term="故障名称">{maindata.title || ''}</Description>
@@ -40,15 +40,12 @@ const RegisterQuery = React.forwardRef((props, ref) => {
                         <DescriptionList size="large">
                             <Description term="故障概要">{maindata.content || ''}</Description>
                         </DescriptionList>
-                        {/* <DescriptionList size="large">
-                            <Description term="范围说明">{detailsdata[0].registerScope || ''}</Description>
-                        </DescriptionList> */}
                         <DescriptionList size="large">
                             <Description term="是否影响业务">
-                            <RadioGroup defaultValue={Number(detailsdata[0].registerEffect)}>
-                                <Radio value={0}>是</Radio>
-                                <Radio value={1}>否</Radio>
-                            </RadioGroup>
+                                <RadioGroup defaultValue={Number(detailsdata[0].registerEffect)} disabled>
+                                    <Radio value={0}>是</Radio>
+                                    <Radio value={1}>否</Radio>
+                                </RadioGroup>
                             </Description>
                         </DescriptionList>
                         <DescriptionList size="large">

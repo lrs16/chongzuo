@@ -36,7 +36,7 @@ const HandleChild = React.forwardRef((props, ref) => {
     );
     const required = true;
     useEffect(() => {
-        sessionStorage.setItem('Nextflowmane','总结');
+        sessionStorage.setItem('Nextflowmane','系统运维商确认总结');
     });
     return (
         <Row gutter={24}>
@@ -92,7 +92,7 @@ const HandleChild = React.forwardRef((props, ref) => {
                                     message: '请选择时间',
                                 },
                             ],
-                            initialValue:  moment(Date.now()) || moment(handle.handleStartTime)
+                            initialValue: moment(handle.handleStartTime) || moment(Date.now()) 
                         })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }}/>)}
                     </Form.Item>
                 </Col>
@@ -106,7 +106,7 @@ const HandleChild = React.forwardRef((props, ref) => {
                                     message: '请选择时间',
                                 },
                             ],
-                            initialValue: moment(Date.now()) || moment(handle.handleEndTime) 
+                            initialValue: moment(handle.handleEndTime) || moment(Date.now())
                         })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }}/>)}
                     </Form.Item>
                 </Col>

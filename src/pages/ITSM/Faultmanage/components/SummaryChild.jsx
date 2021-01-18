@@ -28,8 +28,7 @@ const SummaryChild = React.forwardRef((props, ref) => {
     );
     const required = true;
     useEffect(() => {
-        sessionStorage.setItem('Nextflowmane', '关闭');
-        
+        sessionStorage.setItem('Nextflowmane', '自动化科业务负责人审核');  
     });
     return (
         <Row gutter={24}>
@@ -52,15 +51,15 @@ const SummaryChild = React.forwardRef((props, ref) => {
 
                     <Col span={24}>
                     <Form.Item label="总结说明" {...forminladeLayout}>
-                        {getFieldDecorator('zjsm', {
-                            initialValue: ''
+                        {getFieldDecorator('finishContent', {
+                            initialValue: finish ? finish.finishContent : ''
                         })(<TextArea rows={5} placeholder="请输入" />)}
                     </Form.Item>
                 </Col>
 
                 <Col span={8}>
                     <Form.Item label="上传故障分析报告" extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb" style={{ display: "flex" }}>
-                        {getFieldDecorator('upload1', {
+                        {getFieldDecorator('finishAttachAnalysisIds', {
                             valuePropName: 'fileList',
                             // rules: [
                             //     {
@@ -79,8 +78,8 @@ const SummaryChild = React.forwardRef((props, ref) => {
 
                     <Col span={8}>
                         <Form.Item label="要求上传时间">
-                            {getFieldDecorator('finishTime1', {
-                                initialValue: moment(Date.now())
+                            {getFieldDecorator('finishRequiredTime', {
+                                // initialValue: finish.finishRequiredTime !== null ? moment(finish.finishRequiredTime) : moment(Date.now())
                             })(<DatePicker showTime disabled format="YYYY-MM-DD HH:mm:ss" />)}
                         </Form.Item>
                     </Col>
@@ -88,8 +87,8 @@ const SummaryChild = React.forwardRef((props, ref) => {
 
                     <Col span={8}>
                         <Form.Item label="实际上传时间">
-                            {getFieldDecorator('finishTime2', {
-                                initialValue: moment(Date.now())
+                            {getFieldDecorator('finishPracticeTime', {
+                                // initialValue: finish.finishRequiredTime !== null ? moment(finish.finishPracticeTime) : moment(Date.now())
                             })(<DatePicker showTime disabled format="YYYY-MM-DD HH:mm:ss" />)}
                         </Form.Item>
                     </Col>

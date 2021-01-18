@@ -59,22 +59,15 @@ class DropdownValueAdd extends Component {
 
     handleInputValueBlur = () => { // 失去焦点
         this.props.form.validateFields((err, values) => {
-            // const { inputValue } = this.state;
             const { dictModule } = values;
-            if(dictModule) {
+            if (dictModule) {
                 this.setState({ inputValue: dictModule });
             }
-            // setTimeout(() => {
-            //     this.setState({ inputValue: dictModule });
-            // }, 0);
             // 失去焦点的时候，判断，输入的值
             // 输入的值为空，则值为system
             if (this.state.inputValue === '' || dictModule === '') {
                 this.props.form.setFieldsValue({ dictModule: 'system' });
-            } 
-            // else {
-            //     this.props.form.setFieldsValue({ dictModule: inputValue });
-            // }
+            }
         });
     }
 
@@ -82,6 +75,7 @@ class DropdownValueAdd extends Component {
         const { visible } = this.state;
         const { children, title } = this.props;
         const { getFieldDecorator } = this.props.form;
+        const required = true;
         return (
             <>
                 {withClick(children, this.handleopenClick)}
@@ -97,23 +91,48 @@ class DropdownValueAdd extends Component {
                     <Form {...formItemLayout}>
                         <Form.Item label="字典模块">
                             {getFieldDecorator('dictModule', {
+                                rules: [
+                                    {
+                                        required,
+                                        message: '请输入',
+                                    },
+                                ],
                                 initialValue: 'system',
-                            })(<Input placeholder="请输入..."onFocus={() => this.handleInputValueFous()} onBlur={() => this.handleInputValueBlur()} />)}
+                            })(<Input placeholder="请输入..." onFocus={() => this.handleInputValueFous()} onBlur={() => this.handleInputValueBlur()} allowClear />)}
                         </Form.Item>
 
                         <Form.Item label="字典类型">
                             {getFieldDecorator('dictType', {
-                            })(<Input placeholder="请输入字母类型" />)}
+                                initialValue: '',
+                                rules: [{
+                                    required: true,
+                                    message: '请输入正确的字典类型',
+                                }, {
+                                    pattern: /^([A-Za-z]{2,8})$/,
+                                }],
+                            })(<Input placeholder="请输入字母类型" allowClear />)}
                         </Form.Item>
 
                         <Form.Item label="字典代码">
                             {getFieldDecorator('dictCode', {
-                            })(<Input placeholder="请输入字典代码" />)}
+                                rules: [
+                                    {
+                                        required,
+                                        message: '请输入',
+                                    },
+                                ],
+                            })(<Input placeholder="请输入字典代码" allowClear />)}
                         </Form.Item>
 
                         <Form.Item label="字典名称">
                             {getFieldDecorator('dictName', {
-                            })(<Input placeholder="请输入字典名称" />)}
+                                rules: [
+                                    {
+                                        required,
+                                        message: '请输入',
+                                    },
+                                ],
+                            })(<Input placeholder="请输入字典名称" allowClear />)}
                         </Form.Item>
 
                         <Form.Item label="字典排序">
@@ -124,7 +143,7 @@ class DropdownValueAdd extends Component {
 
                         <Form.Item label="字典备注">
                             {getFieldDecorator('dictRemarks', {
-                            })(<Input placeholder="请输入字典备注" />)}
+                            })(<Input placeholder="请输入字典备注" allowClear />)}
                         </Form.Item>
                     </Form>
                 </Modal>

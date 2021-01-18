@@ -18,13 +18,10 @@ const formItemLayout = {
 const withClick = (element, handleClick = () => { }) => {
     return <element.type {...element.props} onClick={handleClick} />;
 };
-
-
 class DropdownValueEdit extends Component {
     state = {
         visible: false,
     };
-
 
     handleopenClick = () => {
         this.setState({
@@ -97,19 +94,19 @@ class DropdownValueEdit extends Component {
                                     },
                                 ],
                                 initialValue: dictModule || '',
-                            })(<Input placeholder="请输入..." />)}
+                            })(<Input placeholder="请输入..." allowClear />)}
                         </Form.Item>
 
                         <Form.Item label="字典类型">
                             {getFieldDecorator('dictType', {
-                                rules: [
-                                    {
-                                        required,
-                                        message: '请输入',
-                                    },
-                                ],
+                                rules: [{
+                                    required: true,
+                                    message: '请输入正确的字典类型',
+                                }, {
+                                    pattern: /^([A-Za-z]{2,8})$/,
+                                }],
                                 initialValue: dictType || '',
-                            })(<Input />)}
+                            })(<Input allowClear />)}
                         </Form.Item>
 
                         <Form.Item label="字典代码">
@@ -121,7 +118,7 @@ class DropdownValueEdit extends Component {
                                     },
                                 ],
                                 initialValue: dictCode || '',
-                            })(<Input placeholder="请输入..." />)}
+                            })(<Input placeholder="请输入..." allowClear />)}
                         </Form.Item>
 
                         <Form.Item label="字典名称">
@@ -133,7 +130,7 @@ class DropdownValueEdit extends Component {
                                     },
                                 ],
                                 initialValue: dictName || '',
-                            })(<Input />)}
+                            })(<Input allowClear />)}
                         </Form.Item>
 
                         <Form.Item label="字典状态">
@@ -172,26 +169,14 @@ class DropdownValueEdit extends Component {
 
                         <Form.Item label="字典排序">
                             {getFieldDecorator('dictSort', {
-                                rules: [
-                                    {
-                                        required,
-                                        message: '请输入',
-                                    },
-                                ],
                                 initialValue: dictSort || 0,
                             })(<InputNumber placeholder="请输入..." style={{ width: '100%' }} />)}
                         </Form.Item>
 
                         <Form.Item label="字典备注">
                             {getFieldDecorator('dictRemarks', {
-                                // rules: [
-                                //     {
-                                //         required,
-                                //         message: '请输入',
-                                //     },
-                                // ],
                                 initialValue: dictRemarks || '',
-                            })(<Input placeholder="请输入..." />)}
+                            })(<Input placeholder="请输入..." allowClear />)}
                         </Form.Item>
                     </Form>
                 </Modal>
@@ -202,7 +187,7 @@ class DropdownValueEdit extends Component {
 DropdownValueEdit.defaultProps = {
     title: '编辑字典',
     record: {
-        id: '',
+        // id: '',
         dictModule: '',
         dictType: '',
         dictCode: '',

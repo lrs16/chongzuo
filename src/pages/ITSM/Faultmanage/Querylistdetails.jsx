@@ -15,11 +15,12 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import creatHistory from 'history/createHashHistory'; // 返回上一页
 import styles from './index.less';
 // 各个子组件
-import RegisterQuery from './components/RegisterQuery';
-import ExamineQuery from './components/ExamineQuery';
-import HandleQuery from './components/HandleQuery';
-import SummaryQuery from './components/SummaryQuery';
-import CloseQuery from './components/CloseQuery';
+import RegisterQuery from './components/RegisterQuery'; // 故障登记
+import ExamineQuery from './components/ExamineQuery'; // 系统运维商审核
+import HandleQuery from './components/HandleQuery'; // 系统运维商处理
+import SummaryQuery from './components/SummaryQuery'; // 系统运维商确认总结
+import ExamineSecondQuery from './components/ExamineSecondQuery'; // 自动化科业务负责人审核
+import ConfirmQuery from './components/ConfirmQuery'; // 自动化科专责确认
 
 const { Panel } = Collapse;
 const { Step } = Steps;
@@ -41,17 +42,21 @@ const Collapsekeymap = new Map([ // 展开详情页
     ['5', 'RegisterQuery'], // 登记（已登记、已提交待审核）
     ['9', 'RegisterQuery'],
 
-    ['25', 'ExamineQuery'], // 审核（审核中、已审核待处理）
+    ['25', 'ExamineQuery'], // 系统运维商审核（审核中、已审核待处理）自动化科业务负责人审核
     ['29', 'ExamineQuery'],
 
-    ['45', 'HandleQuery'], // 处理（处理中、已处理待总结）
+    ['45', 'HandleQuery'], // 系统运维商处理（处理中、已处理待总结）
     ['49', 'HandleQuery'],
 
-    ['65', 'SummaryQuery'], // 总结（总结中、已总结待关闭）
+    ['65', 'SummaryQuery'], // 系统运维商确认总结（总结中、已总结待关闭）
     ['69', 'SummaryQuery'],
 
-    ['85', 'CloseQuery'], // 关闭（关闭中、已关闭）
-    ['89', 'CloseQuery'],
+    ['250', 'ExamineSecondQuery'], // 自动化科业务负责人审核2
+    ['290', 'ExamineSecondQuery'],
+
+    ['80', 'ConfirmQuery'], // 自动化科专责确认
+    ['85', 'ConfirmQuery'],
+    ['255', 'ConfirmQuery'],
 ]);
 
 function Querylistdetails(props) {
@@ -59,10 +64,10 @@ function Querylistdetails(props) {
     const [activeKey, setActiveKey] = useState();
     const [tabActiveKey, setTabActiveKey] = useState('faultForm'); // tab切换
     const RegisterRef = useRef(); // 故障登记
-    const ExamineRef = useRef(); // 故障审核
-    const HandleRef = useRef(); // 故障处理
-    const SummaryRef = useRef(); // 故障总结
-    const CloseRef = useRef(); // 故障关闭
+    const ExamineRef = useRef(); // 系统运维商审核
+    const HandleRef = useRef(); // 系统运维商处理
+    const SummaryRef = useRef(); // 系统运维商总结
+    const ConfirmRef = useRef(); // 自动化科专责确认
     const {
         location: { paneKey, ids }, // ids 列表传过来的id
         dispatch,
@@ -170,7 +175,7 @@ function Querylistdetails(props) {
                                         onChange={callback}
                                     >
                                         {
-                                            (paneKey === '5' || paneKey === '9' || paneKey === '25' || paneKey === '29' || paneKey === '45' || paneKey === '49' || paneKey === '65' || paneKey === '69' || paneKey === '85' || paneKey === '89') && (
+                                            (paneKey === '5' || paneKey === '9' || paneKey === '25' || paneKey === '29' || paneKey === '45' || paneKey === '49' || paneKey === '65' || paneKey === '69' || paneKey === '80' || paneKey === '85' || paneKey === '255') && (
                                                 <Panel header="故障登记" key="RegisterQuery">
                                                     <RegisterQuery
                                                         ref={RegisterRef}
@@ -182,8 +187,8 @@ function Querylistdetails(props) {
                                         }
 
                                         {
-                                            (paneKey === '25' || paneKey === '29' || paneKey === '45' || paneKey === '49' || paneKey === '65' || paneKey === '69' || paneKey === '85' || paneKey === '89') && (
-                                                <Panel Panel header="故障审核" key="ExamineQuery">
+                                            (paneKey === '25' || paneKey === '29' || paneKey === '45' || paneKey === '49' || paneKey === '65' || paneKey === '69' || paneKey === '80' || paneKey === '85' || paneKey === '255') && (
+                                                <Panel Panel header="系统运维商审核" key="ExamineQuery">
                                                     <ExamineQuery
                                                         ref={ExamineRef}
                                                         detailsdata={troubleFlowNodeRows !== undefined && troubleFlowNodeRows[1]}
@@ -193,8 +198,8 @@ function Querylistdetails(props) {
                                         }
 
                                         {
-                                            (paneKey === '45' || paneKey === '49' || paneKey === '65' || paneKey === '69' || paneKey === '85' || paneKey === '89') && (
-                                                <Panel header="故障处理" key="HandleQuery">
+                                            (paneKey === '45' || paneKey === '49' || paneKey === '65' || paneKey === '69' || paneKey === '80' || paneKey === '85' || paneKey === '255') && (
+                                                <Panel header="系统运维商处理" key="HandleQuery">
                                                     <HandleQuery
                                                         ref={HandleRef}
                                                         detailsdata={troubleFlowNodeRows !== undefined && troubleFlowNodeRows[2]}
@@ -204,10 +209,21 @@ function Querylistdetails(props) {
                                         }
 
                                         {
-                                            (paneKey === '65' || paneKey === '69' || paneKey === '85' || paneKey === '89') && (
-                                                <Panel header="故障总结" key="SummaryQuery">
+                                            (paneKey === '65' || paneKey === '69' || paneKey === '80' || paneKey === '85' || paneKey === '255') && (
+                                                <Panel header="系统运维商确认总结" key="SummaryQuery">
                                                     <SummaryQuery
                                                         ref={SummaryRef}
+                                                        detailsdata={troubleFlowNodeRows !== undefined && troubleFlowNodeRows[3]}
+                                                    />
+                                                </Panel>
+                                            )
+                                        }
+
+                                        {
+                                            (paneKey === '80' || paneKey === '85' || paneKey === '255') && (
+                                                <Panel header="自动化科业务负责人审核" key="ExamineSecondQuery">
+                                                    <ExamineSecondQuery
+                                                        ref={ExamineRef}
                                                         detailsdata={troubleFlowNodeRows !== undefined && troubleFlowNodeRows[4]}
                                                     />
                                                 </Panel>
@@ -215,11 +231,10 @@ function Querylistdetails(props) {
                                         }
 
                                         {
-
-                                            (paneKey === '85' || paneKey === '89') && (
-                                                <Panel header="故障关闭" key="CloseQuery">
-                                                    <CloseQuery
-                                                        ref={CloseRef}
+                                            (paneKey === '80' || paneKey === '85' || paneKey === '255') && (
+                                                <Panel header="自动化科专责确认" key="ConfirmQuery">
+                                                    <ConfirmQuery
+                                                        ref={ConfirmRef}
                                                         detailsdata={troubleFlowNodeRows !== undefined && troubleFlowNodeRows[5]}
                                                     />
                                                 </Panel>
@@ -240,7 +255,7 @@ function Querylistdetails(props) {
                             <div
                                 style={{
                                     background: '#fff',
-                                    padding: 20,
+                                    // padding: 20,
                                 }}
                             >
                                 <img src={image} alt='' />

@@ -63,7 +63,7 @@ const RegisterChild = React.forwardRef((props, ref) => {
     const { getFieldDecorator } = props.form;
     const attRef = useRef();
     useEffect(() => {
-        sessionStorage.setItem('Nextflowmane', '审核');
+        sessionStorage.setItem('Nextflowmane', '系统运维商审核');
     });
     useImperativeHandle(
         ref,

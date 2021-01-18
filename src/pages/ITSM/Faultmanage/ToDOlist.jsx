@@ -126,7 +126,7 @@ function ToDOlist(props) {
       title: '当前处理环节',
       dataIndex: 'currentNode',
       key: 'currentNode',
-      width: 150,
+      width: 200,
     },
     {
       title: '登记人',

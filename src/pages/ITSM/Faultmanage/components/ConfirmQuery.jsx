@@ -5,7 +5,7 @@ import DescriptionList from '@/components/DescriptionList';
 
 const { Description } = DescriptionList;
 
-const SummaryQuery = React.forwardRef((props, ref) => {
+const ConfirmQuery = React.forwardRef((props, ref) => {
     const { detailsdata } = props;
 
     const attRef = useRef();
@@ -22,29 +22,26 @@ const SummaryQuery = React.forwardRef((props, ref) => {
                 detailsdata !== undefined && (
                     <>
                         <DescriptionList size="large">
-                            <Description term="总结时间">{detailsdata.finishTime || ''}</Description>
+                            <Description term="确认结果">{detailsdata.confirmResult || ''}</Description>
+                            <Description term="确认时间">{detailsdata.confirmTime || ''}</Description>
                         </DescriptionList>
                         <DescriptionList size="large">
-                            <Description term="总结说明">{detailsdata.finishContent || ''}</Description>
-                        </DescriptionList>
-                        <DescriptionList size="large">
-                            <Description term="上传故障分析报告">xx故障分析报告.doc</Description>
-                            <Description term="要求上传时间">{detailsdata.finishRequiredTime || ''}</Description>
-                            <Description term="实际上传时间">{detailsdata.finishPracticeTime || ''}</Description>
+                            <Description term="确认说明">{detailsdata.confirmContent || ''}</Description>
                         </DescriptionList>
                         <DescriptionList size="large">
                             <Description term="上传附件">XXXX附件.doc</Description>
                         </DescriptionList>
                         <DescriptionList size="large">
-                            <Description term="总结人">{detailsdata.finishUser || ''}</Description>
-                            <Description term="总结人单位">{detailsdata.finishUnit || ''}</Description>
-                            <Description term="总结人部门">{detailsdata.finishDept || ''}</Description>
+                            <Description term="确认人">{detailsdata.confirmUser || ''}</Description>
+                            <Description term="确认单位">{detailsdata.confirmUnit || ''}</Description>
+                            <Description term="确认部门">{detailsdata.confirmDept || ''}</Description>
                         </DescriptionList>
                     </>
                 )
             }
+
         </div>
     );
 });
 
-export default SummaryQuery;
+export default ConfirmQuery;

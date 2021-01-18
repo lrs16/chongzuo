@@ -7,7 +7,12 @@ import DescriptionList from '@/components/DescriptionList';
 const { Description } = DescriptionList;
 const RadioGroup = Radio.Group;
 
-const ExamineQuery = React.forwardRef((props, ref) => {
+// const reportmap = new Map([
+//     [0, '是'],
+//     [1, '否'],
+//   ]);
+
+const ExamineSecondQuery = React.forwardRef((props, ref) => {
     const { detailsdata } = props;
     const attRef = useRef();
     useImperativeHandle(
@@ -37,14 +42,6 @@ const ExamineQuery = React.forwardRef((props, ref) => {
                             <Description term="审核意见">{detailsdata.checkOpinion || ''}</Description>
                         </DescriptionList>
                         <DescriptionList size="large">
-                            <Description term="上传故障报告">
-                                <RadioGroup defaultValue={Number(detailsdata.checkReportSign)} disabled>
-                                    <Radio value={0}>是</Radio>
-                                    <Radio value={1}>否</Radio>
-                                </RadioGroup>
-                            </Description>
-                        </DescriptionList>
-                        <DescriptionList size="large">
                             <Description term="上传附件">XXXX附件.doc</Description>
                         </DescriptionList>
                         <DescriptionList size="large">
@@ -59,4 +56,4 @@ const ExamineQuery = React.forwardRef((props, ref) => {
     );
 });
 
-export default ExamineQuery;
+export default ExamineSecondQuery;
