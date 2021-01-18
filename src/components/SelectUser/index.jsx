@@ -63,9 +63,17 @@ const SelectUser = props => {
     setIsModalVisible(true);
     switch (type) {
       case 'event':
-      case 'demand':
         dispatch({
           type: 'itsmuser/eventuserlist',
+          payload: {
+            taskId,
+            result: sessionStorage.getItem('flowtype'),
+          },
+        });
+        break;
+      case 'demand':
+        dispatch({
+          type: 'itsmuser/demanduserlist',
           payload: {
             taskId,
             type: sessionStorage.getItem('flowtype'),

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
+import moment from 'moment';
 import router from 'umi/router';
 import { Card, Row, Col, Form, Input, Select, Button, DatePicker, Table, Badge } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
@@ -92,9 +93,9 @@ const columns = [
     title: '发送时间',
     dataIndex: 'sendTime',
     key: 'sendTime',
-    // render: (text, record) => {
-    //   return <>{text.format('YYYY-MM-DD HH:mm:ss')}</>;
-    // },
+    render: (text, record) => {
+      return <>{moment(text).format('YYYY-MM-DD HH:mm')}</>;
+    },
   },
 ];
 

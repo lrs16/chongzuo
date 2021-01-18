@@ -7,11 +7,11 @@ function SysUpload(props) {
   const { dispatch, fileslist, ChangeFileslist } = props;
   const [uploadfiles, setUploadFiles] = useState([]);
 
-  // useEffect(() => {
-  //   if (uploadfiles.length > 1) {
-  //     ChangeFileslist(uploadfiles.slice(0));
-  //   }
-  // }, [uploadfiles]);
+  useEffect(() => {
+    if (fileslist.length > 0) {
+      setUploadFiles(fileslist);
+    }
+  }, []);
 
   // 上传文件类型
   const filestype = `application/msword,application/vnd.ms-excel,

@@ -45,6 +45,7 @@ function Registration(props) {
   const [ischeck, setIscheck] = useState({ save: false, flow: false }); // 是否在校验状态
   const [activeKey, setActiveKey] = useState(['registratform']);
   const [defaultvalue, setDefaultvalue] = useState('');
+  const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
   const RegistratRef = useRef();
   const HandleRef = useRef();
   useEffect(() => {
@@ -73,17 +74,14 @@ function Registration(props) {
 
   const getregistrat = type => {
     RegistratRef.current.validateFields((err, values) => {
-      if (!err) {
-        setFormregistrat({
-          ...values,
-          register_occurTime: values.register_occurTime.format('YYYY-MM-DD HH:mm:ss'),
-          register_selfhandle: String(Number(values.register_selfhandle)),
-          register_supplement: String(Number(values.register_supplement)),
-        });
-        submittype(type);
-      } else {
-        setIscheck({ save: false, flow: false });
-      }
+      setFormregistrat({
+        ...values,
+        register_occurTime: values.register_occurTime.format('YYYY-MM-DD HH:mm:ss'),
+        register_fileIds: JSON.stringify(files.arr),
+        register_selfhandle: String(Number(values.register_selfhandle)),
+        register_supplement: String(Number(values.register_supplement)),
+      });
+      submittype(type);
     });
   };
 
@@ -161,12 +159,12 @@ function Registration(props) {
     }
   }, [ischeck]);
 
-  // useEffect(() => {
-  //   getregistinfo();
-  //   if (show === true) {
-  //     getregistinfo();
-  //   }
-  // }, [show]);
+  // 上传附件触发保存
+  useEffect(() => {
+    if (files.ischange) {
+      handlesubmit();
+    }
+  }, [files]);
 
   const handleclose = () => {
     router.push({
@@ -218,6 +216,9 @@ function Registration(props) {
                 ChangeActiveKey={keys => setActiveKey(keys)}
                 ChangeFlowtype={type => setFlowtype(type)}
                 changeDefaultvalue={values => setDefaultvalue(values)}
+                ChangeFiles={newvalue => {
+                  setFiles(newvalue);
+                }}
                 formItemLayout={formItemLayout}
                 forminladeLayout={forminladeLayout}
                 show={show}
@@ -225,6 +226,7 @@ function Registration(props) {
                 userinfo={userinfo}
                 sethandlevalue="true"
                 location={location}
+                files={files.arr}
               />
             </Panel>
             {show === true && check === false && (
@@ -236,6 +238,9 @@ function Registration(props) {
                   userinfo={userinfo}
                   defaultvalue={defaultvalue}
                   location={location}
+                  ChangeFiles={newvalue => {
+                    setFiles(newvalue);
+                  }}
                 />
               </Panel>
             )}

@@ -5,6 +5,7 @@ import { Row, Col, Form, Input, Select, Upload, Button, Checkbox, DatePicker } f
 import { DownloadOutlined } from '@ant-design/icons';
 import styles from '../index.less';
 import { phone_reg } from '@/utils/Regexp';
+import SysUpload from '@/components/SysUpload';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -80,6 +81,8 @@ const Registrat = forwardRef((props, ref) => {
     userinfo,
     sethandlevalue,
     location,
+    files,
+    ChangeFiles,
   } = props;
   const { register } = info;
   const { pangekey, id, mainId } = location.query;
@@ -87,6 +90,10 @@ const Registrat = forwardRef((props, ref) => {
   const required = true;
   const [check, setCheck] = useState(false);
   const [revisitway, setRevisitway] = useState(false);
+  const [fileslist, setFilesList] = useState({ arr: [], ischange: false });
+  useEffect(() => {
+    ChangeFiles(fileslist);
+  }, [fileslist]);
   const attRef = useRef();
   useImperativeHandle(
     ref,
@@ -476,21 +483,17 @@ const Registrat = forwardRef((props, ref) => {
         </Col>
       </Row>
       <Row gutter={24}>
-        {/* <Col span={24}>
+        <Col span={24}>
           <Form.Item
             label="上传附件"
             {...forminladeLayout}
             extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
           >
-            {getFieldDecorator('re17')(
-              <Upload>
-                <Button type="primary">
-                  <DownloadOutlined /> 上传附件
-                </Button>
-              </Upload>,
-            )}
+            <div style={{ width: 400 }}>
+              <SysUpload fileslist={files} ChangeFileslist={newvalue => setFilesList(newvalue)} />
+            </div>
           </Form.Item>
-        </Col> */}
+        </Col>
         <Col span={8}>
           <Form.Item label="登记人">
             {getFieldDecorator('register_registerUser', {

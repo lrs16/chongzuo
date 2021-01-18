@@ -48,8 +48,8 @@ export async function EventFlowUserList(taskId, type) {
   });
 }
 // ITSM需求获取下一环节处理人列表
-export async function DemandFlowUserList(taskId, type) {
-  return request(`/itsm/event/flow/getNextFlowUserList?taskId=${taskId}&type=${type}`, {
+export async function DemandFlowUserList(taskId, result) {
+  return request(`/demand/process/listCandidateUser?taskId=${taskId}&result=${result}`, {
     method: 'GET',
   });
 }

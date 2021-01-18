@@ -1,7 +1,7 @@
 import React, { useRef, useImperativeHandle, forwardRef, useState, useEffect } from 'react';
 import moment from 'moment';
-import { Row, Col, Form, Input, Radio, Upload, Button, DatePicker, Select, Checkbox } from 'antd';
-import { DownloadOutlined } from '@ant-design/icons';
+import { Row, Col, Form, Input, Radio, DatePicker, Select, Checkbox } from 'antd';
+import SysUpload from '@/components/SysUpload';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -13,9 +13,22 @@ const degreemap = [
 ];
 
 const Examine = forwardRef((props, ref) => {
-  const { formItemLayout, forminladeLayout, userinfo, text, taskName, info } = props;
+  const {
+    formItemLayout,
+    forminladeLayout,
+    userinfo,
+    text,
+    taskName,
+    info,
+    files,
+    ChangeFiles,
+  } = props;
   const { getFieldDecorator } = props.form;
   const required = true;
+  const [fileslist, setFilesList] = useState({ arr: [], ischange: false });
+  useEffect(() => {
+    ChangeFiles(fileslist);
+  }, [fileslist]);
   const [adopt, setAdopt] = useState(1);
   const attRef = useRef();
   useImperativeHandle(
@@ -28,6 +41,7 @@ const Examine = forwardRef((props, ref) => {
 
   const handleAdopt = e => {
     setAdopt(e.target.value);
+    console.log(e.target.value);
   };
 
   return (
@@ -123,6 +137,17 @@ const Examine = forwardRef((props, ref) => {
             </>
           )}
         </Col>
+        <Col span={24}>
+          <Form.Item
+            label="上传附件"
+            {...forminladeLayout}
+            extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
+          >
+            <div style={{ width: 400 }}>
+              <SysUpload fileslist={files} ChangeFileslist={newvalue => setFilesList(newvalue)} />
+            </div>
+          </Form.Item>
+        </Col>
         <Col span={8}>
           <Form.Item label={`${text}人`}>
             {getFieldDecorator('userName', {
@@ -155,21 +180,6 @@ const Examine = forwardRef((props, ref) => {
             })(<Input placeholder="请输入" disabled />)}
           </Form.Item>
         </Col>
-
-        {/* <Col span={24}>
-          <Form.Item
-            label="上传附件"
-            {...forminladeLayout}
-            extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
-          >
-            {getFieldDecorator('check2')(
-              <Upload>
-                <Button type="primary">
-                  <DownloadOutlined /> 上传附件
-                </Button>
-              </Upload>,
-            )}
-          </Form.Item> */}
       </Row>
     </Form>
   );

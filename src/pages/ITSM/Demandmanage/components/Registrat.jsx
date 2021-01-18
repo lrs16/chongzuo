@@ -1,8 +1,6 @@
 import React, { useRef, useImperativeHandle, forwardRef, useEffect, useState } from 'react';
 import moment from 'moment';
-import { Card, Row, Col, Form, Input, Button, Select, Upload, DatePicker, Cascader } from 'antd';
-import { phone_reg } from '@/utils/Regexp';
-import { DownloadOutlined } from '@ant-design/icons';
+import { Row, Col, Form, Input, Select, DatePicker, Cascader } from 'antd';
 import SysUpload from '@/components/SysUpload';
 
 const { Option } = Select;
@@ -135,6 +133,10 @@ const Registrat = forwardRef((props, ref) => {
     }),
     [],
   );
+
+  useEffect(() => {
+    sessionStorage.setItem('flowtype', 1);
+  }, [register]);
 
   return (
     <>

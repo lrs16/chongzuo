@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import moment from 'moment';
 import { connect } from 'dva';
-import { Collapse, Steps, Spin } from 'antd';
+import { Collapse, Steps, Spin, message } from 'antd';
 import { DatePicker } from 'antd';
 import styles from './index.less';
 import { DingdingOutlined } from '@ant-design/icons';
@@ -54,6 +54,10 @@ function WorkOrder(props) {
     sessionStorage.setItem('flowtype', 1);
   }, []);
 
+  const formerr = () => {
+    message.error('请将信息填写完整...');
+  };
+
   // 刷新路由
   // 登记表单
   const RegistratRef = useRef(null);
@@ -67,6 +71,7 @@ function WorkOrder(props) {
             ...values,
             creationTime: values.creationTime.format(),
             registerTime: values.registerTime.format(),
+            attachment: JSON.stringify(files.arr),
             functionalModule: values.functionalModule.join('/'),
             nextUser: sessionStorage.getItem('userauthorityid'),
             id: info.demandForm.id,
@@ -84,12 +89,15 @@ function WorkOrder(props) {
               ...values,
               creationTime: values.creationTime.format(),
               registerTime: values.registerTime.format(),
+              attachment: JSON.stringify(files.arr),
               functionalModule: values.functionalModule.join('/'),
               nextUserIds: sessionStorage.getItem('userauthorityid').split(','),
               // nextUser: sessionStorage.getItem('userName'),
               taskId,
             },
           });
+        } else {
+          formerr();
         }
       });
     }
@@ -98,10 +106,10 @@ function WorkOrder(props) {
   const setid = () => {
     const { historys } = info;
     const infotaskName = info.taskName;
-    if (historys !== [] && historys?.slice(-1)[0].taskName === infotaskName) {
+    if (historys.length > 0 && historys?.slice(-1)[0].taskName === infotaskName) {
       return info.historys?.slice(-1)[0].id;
     }
-    if (historys === [] || historys?.slice(-1)[0]?.taskName !== infotaskName) {
+    if (historys.length === 0 || historys?.slice(-1)[0]?.taskName !== infotaskName) {
       return '';
     }
     return null;
@@ -118,6 +126,7 @@ function WorkOrder(props) {
           reviewTime: values.reviewTime.format(),
           business: Number(values.business),
           releases: Number(values.releases),
+          attachment: JSON.stringify(files.arr),
           nextUserIds: sessionStorage.getItem('userauthorityid').split(),
           registerId: info.demandForm.id,
           id,
@@ -133,6 +142,9 @@ function WorkOrder(props) {
             payload: {
               ...values,
               reviewTime: values.reviewTime.format(),
+              business: Number(values.business),
+              releases: Number(values.releases),
+              attachment: JSON.stringify(files.arr),
               nextUserIds: sessionStorage.getItem('userauthorityid').split(),
               taskId,
               registerId: info.demandForm.id,
@@ -140,6 +152,8 @@ function WorkOrder(props) {
               taskName: info.taskName,
             },
           });
+        } else {
+          formerr();
         }
       });
     }
@@ -203,9 +217,11 @@ function WorkOrder(props) {
     }
   };
   useEffect(() => {
-    handleflow();
+    if (type !== '') {
+      handleflow();
+    }
   }, [type]);
-
+  console.log(files);
   // 保存删除附件驱动表单保存
   useEffect(() => {
     if (taskName === '需求登记' && files.ischange === true) {
@@ -226,24 +242,24 @@ function WorkOrder(props) {
         },
       });
     }
-    // if (taskName !== '需求登记' && taskName !== '需求跟踪') {
-    //   const id = setid();
-    //   const values = ExamineRef.current.getFieldsValue();
-    //   dispatch({
-    //     type: 'demandtodo/demandsave',
-    //     payload: {
-    //       ...values,
-    //       reviewTime: values.reviewTime.format(),
-    //       business: Number(values.business),
-    //       releases: Number(values.releases),
-    //       attachment: JSON.stringify(files),
-    //       nextUserIds: sessionStorage.getItem('userauthorityid').split(),
-    //       registerId: info.demandForm.id,
-    //       id,
-    //       taskName: info.taskName,
-    //     },
-    //   });
-    // }
+    if (taskName !== '需求登记' && taskName !== '需求跟踪' && files.ischange === true) {
+      const id = setid();
+      const values = ExamineRef.current.getFieldsValue();
+      dispatch({
+        type: 'demandtodo/demandsave',
+        payload: {
+          ...values,
+          reviewTime: values.reviewTime.format(),
+          business: Number(values.business),
+          releases: Number(values.releases),
+          attachment: JSON.stringify(files.arr),
+          nextUserIds: sessionStorage.getItem('userauthorityid').split(),
+          registerId: info.demandForm.id,
+          id,
+          taskName: info.taskName,
+        },
+      });
+    }
   }, [files]);
 
   const callback = key => {
@@ -309,12 +325,26 @@ function WorkOrder(props) {
                     setFiles(newvalue);
                   }}
                   ref={RegistratRef}
-                  wrappedComponentRef={RegistratRef}
                   register={info.demandForm}
                   userinfo={userinfo}
                 />
               )}
-              {taskName === '需求审核' && (
+              {taskName === '需求审核' && info.historys.length === 0 && (
+                <Examine
+                  ref={ExamineRef}
+                  formItemLayout={formItemLayout}
+                  forminladeLayout={forminladeLayout}
+                  text="审核"
+                  userinfo={userinfo}
+                  taskName={info.taskName}
+                  info={undefined}
+                  files={files.arr}
+                  ChangeFiles={newvalue => {
+                    setFiles(newvalue);
+                  }}
+                />
+              )}
+              {taskName === '需求审核' && info.historys.length > 0 && (
                 <Examine
                   ref={ExamineRef}
                   formItemLayout={formItemLayout}
@@ -327,6 +357,14 @@ function WorkOrder(props) {
                       ? info.historys.slice(-1)
                       : undefined
                   }
+                  files={
+                    info.historys?.slice(-1)[0].taskName === info.taskName
+                      ? JSON.parse(info.historys?.slice(-1)[0].attachment)
+                      : []
+                  }
+                  ChangeFiles={newvalue => {
+                    setFiles(newvalue);
+                  }}
                 />
               )}
               {taskName === '运维审核' && (
@@ -338,6 +376,14 @@ function WorkOrder(props) {
                   // register={info.demandForm}
                   userinfo={userinfo}
                   taskName={info.taskName}
+                  files={
+                    info.historys?.slice(-1)[0].taskName === info.taskName
+                      ? JSON.parse(info.historys?.slice(-1)[0].attachment)
+                      : []
+                  }
+                  ChangeFiles={newvalue => {
+                    setFiles(newvalue);
+                  }}
                   info={
                     info.historys?.slice(-1)[0].taskName === info.taskName
                       ? info.historys.slice(-1)
@@ -353,6 +399,14 @@ function WorkOrder(props) {
                   text="复核"
                   userinfo={userinfo}
                   taskName={info.taskName}
+                  files={
+                    info.historys?.slice(-1)[0].attachment !== ''
+                      ? JSON.parse(info.historys?.slice(-1)[0].attachment)
+                      : []
+                  }
+                  ChangeFiles={newvalue => {
+                    setFiles(newvalue);
+                  }}
                   info={
                     info.historys?.slice(-1)[0].taskName === info.taskName
                       ? info.historys.slice(-1)
@@ -365,6 +419,14 @@ function WorkOrder(props) {
                   ref={TrackRef}
                   userinfo={userinfo}
                   taskName={info.taskName}
+                  files={
+                    info.historys?.slice(-1)[0].attachment !== ''
+                      ? JSON.parse(info.historys?.slice(-1)[0].attachment)
+                      : []
+                  }
+                  ChangeFiles={newvalue => {
+                    setFiles(newvalue);
+                  }}
                   info={
                     info.historys?.slice(-1)[0].taskName === info.taskName
                       ? info.historys.slice(-1)

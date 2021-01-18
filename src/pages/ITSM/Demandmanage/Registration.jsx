@@ -33,7 +33,7 @@ function Registration(props) {
         ...values,
         creationTime: values.creationTime.format(),
         registerTime: values.registerTime.format(),
-        attachment: JSON.stringify(files),
+        attachment: JSON.stringify(files.arr),
         functionalModule: values.functionalModule.join('/'),
         nextUserIds: sessionStorage.getItem('userauthorityid').split(','),
         // nextUser: sessionStorage.getItem('userName'),
@@ -93,11 +93,11 @@ function Registration(props) {
       <Button type="primary" style={{ marginRight: 8 }} onClick={() => getregistrat('save')}>
         保存
       </Button>
-      <SelectUser handleSubmit={() => getregistrat('next')}>
+      {/* <SelectUser handleSubmit={() => getregistrat('next')}>
         <Button type="primary" style={{ marginRight: 8 }}>
           流转
         </Button>
-      </SelectUser>
+      </SelectUser> */}
       <Button type="default">关闭</Button>
     </>
   );

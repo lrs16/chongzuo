@@ -7,7 +7,7 @@ import Process from './Process';
 import SelectUser from '@/components/SelectUser';
 
 function ToDoregist(props) {
-  const { match, children, location } = props;
+  const { location } = props;
   const { taskName, taskId, mainId } = location.query;
   const [tabActivekey, settabActivekey] = useState('workorder'); // 打开标签
   const [validate, setValidate] = useState(false); // 初始化校验状态
