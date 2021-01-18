@@ -5,7 +5,7 @@ import { DownloadOutlined } from '@ant-design/icons';
 
 function SysUpload(props) {
   const { dispatch, fileslist, ChangeFileslist } = props;
-  const [uploadfiles, setUploadFiles] = useState([{}]);
+  const [uploadfiles, setUploadFiles] = useState([]);
 
   // useEffect(() => {
   //   if (uploadfiles.length > 1) {
@@ -62,7 +62,7 @@ function SysUpload(props) {
           voice.status = 'done';
           voice.fileUrl = '';
           uploadfiles.push(voice);
-          ChangeFileslist(uploadfiles.slice(1));
+          ChangeFileslist({ arr: uploadfiles, ischange: true });
         }
         if (info.file.response.code === -1) {
           message.error(`${info.file.name} 上传失败`);
@@ -80,7 +80,7 @@ function SysUpload(props) {
     onRemove(info) {
       // 删除记录,更新父级fileslist
       const newfilelist = fileslist.filter(item => item.id !== info.id);
-      setUploadFiles(newfilelist);
+      ChangeFileslist({ arr: newfilelist, ischange: true });
       // 删除文件
       dispatch({
         type: 'sysfile/deletefile',

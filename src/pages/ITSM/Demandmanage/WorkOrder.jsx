@@ -35,22 +35,12 @@ const forminladeLayout = {
 };
 
 function WorkOrder(props) {
-  const {
-    dispatch,
-    location,
-    records,
-    info,
-    userinfo,
-    loading,
-    validate,
-    type,
-    changValidate,
-  } = props;
+  const { dispatch, location, records, info, userinfo, loading, type } = props;
   const [activeKey, setActiveKey] = useState(['form']);
   const { taskName, taskId, mainId } = location.query;
   // const [ischeck, setIscheck] = useState(false); // 是否在校验状态
   // const [flowtype, setFlowtype] = useState('1'); // 流转类型
-  const [files, setFiles] = useState([]); // 下载列表
+  const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
 
   // 初始化用户信息，流程类型
   useEffect(() => {
@@ -59,15 +49,14 @@ function WorkOrder(props) {
     });
     sessionStorage.setItem('Processtype', 'demand');
   }, []);
-  // 更新流转类型
+  // 更新流转类型,下载列表
   useEffect(() => {
     sessionStorage.setItem('flowtype', 1);
   }, []);
 
   // 刷新路由
   // 登记表单
-  const RegistratRef = useRef();
-
+  const RegistratRef = useRef(null);
   const getregistrats = () => {
     if (type === 'save') {
       const values = RegistratRef.current.getFieldsValue();
@@ -217,6 +206,46 @@ function WorkOrder(props) {
     handleflow();
   }, [type]);
 
+  // 保存删除附件驱动表单保存
+  useEffect(() => {
+    if (taskName === '需求登记' && files.ischange === true) {
+      const values = RegistratRef.current.getFieldsValue();
+      dispatch({
+        type: 'demandtodo/demandregisterupdate',
+        payload: {
+          paloadvalues: {
+            ...values,
+            creationTime: values.creationTime.format(),
+            registerTime: values.registerTime.format(),
+            attachment: JSON.stringify(files.arr),
+            functionalModule: values.functionalModule.join('/'),
+            nextUser: sessionStorage.getItem('userauthorityid'),
+            id: info.demandForm.id,
+          },
+          processInstanceId: mainId,
+        },
+      });
+    }
+    // if (taskName !== '需求登记' && taskName !== '需求跟踪') {
+    //   const id = setid();
+    //   const values = ExamineRef.current.getFieldsValue();
+    //   dispatch({
+    //     type: 'demandtodo/demandsave',
+    //     payload: {
+    //       ...values,
+    //       reviewTime: values.reviewTime.format(),
+    //       business: Number(values.business),
+    //       releases: Number(values.releases),
+    //       attachment: JSON.stringify(files),
+    //       nextUserIds: sessionStorage.getItem('userauthorityid').split(),
+    //       registerId: info.demandForm.id,
+    //       id,
+    //       taskName: info.taskName,
+    //     },
+    //   });
+    // }
+  }, [files]);
+
   const callback = key => {
     setActiveKey(key);
   };
@@ -274,14 +303,13 @@ function WorkOrder(props) {
                   formItemLayout={formItemLayout}
                   forminladeLayout={forminladeLayout}
                   files={
-                    info.demandForm.attachment !== ''
-                      ? JSON.parse(info.demandForm.attachment)
-                      : files
+                    info.demandForm.attachment !== '' ? JSON.parse(info.demandForm.attachment) : []
                   }
                   ChangeFiles={newvalue => {
                     setFiles(newvalue);
                   }}
                   ref={RegistratRef}
+                  wrappedComponentRef={RegistratRef}
                   register={info.demandForm}
                   userinfo={userinfo}
                 />

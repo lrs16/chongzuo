@@ -6,11 +6,11 @@ import Registrat from './components/Registrat';
 import SelectUser from '@/components/SelectUser';
 
 function Registration(props) {
-  const { dispatch, location, userinfo, info, loading } = props;
-  const { mainId } = location.query;
+  const { dispatch, userinfo } = props;
   const pagetitle = props.route.name;
   // const [flowtype, setFlowtype] = useState('1'); // 流转类型
-  const [files, setFiles] = useState([]); // 下载列表
+  const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
+  console.log(files);
 
   // 初始化用户信息，流程类型
   useEffect(() => {
@@ -19,18 +19,6 @@ function Registration(props) {
     });
     sessionStorage.setItem('Processtype', 'demand');
   }, []);
-
-  // 附件更新后，刷新
-  useEffect(() => {
-    if (mainId !== undefined) {
-      dispatch({
-        type: 'demandtodo/demandopenflow',
-        payload: {
-          processInstanceId: mainId,
-        },
-      });
-    }
-  }, [mainId]);
 
   // 更新流转类型
   // useEffect(() => {
@@ -46,6 +34,7 @@ function Registration(props) {
         ...values,
         creationTime: values.creationTime.format(),
         registerTime: values.registerTime.format(),
+        attachment: JSON.stringify(files),
         functionalModule: values.functionalModule.join('/'),
         nextUserIds: sessionStorage.getItem('userauthorityid').split(','),
         // nextUser: sessionStorage.getItem('userName'),
@@ -59,16 +48,19 @@ function Registration(props) {
         ...values,
         creationTime: values.creationTime.format(),
         registerTime: values.registerTime.format(),
+        attachment: JSON.stringify(files),
         functionalModule: values.functionalModule.join('/'),
         nextUserIds: sessionStorage.getItem('userauthorityid').split(','),
         // nextUser: sessionStorage.getItem('userName'),
       },
     });
   };
+
   // 保存,流转获取表单数据
   const getregistrat = type => {
     if (type === 'save') {
-      handlesubmit(RegistratRef.current.getFieldsValue());
+      const values = RegistratRef.current.getFieldsValue();
+      handlesubmit(values);
     }
     if (type === 'next') {
       RegistratRef.current.validateFields((err, values) => {
@@ -79,9 +71,9 @@ function Registration(props) {
     }
   };
 
-  // 上传删除附件触发保存
+  // 上传附件触发保存
   useEffect(() => {
-    if (files.length > 0) {
+    if (files.ischange) {
       const values = RegistratRef.current.getFieldsValue();
       dispatch({
         type: 'demandregister/uploadchange',
@@ -89,7 +81,7 @@ function Registration(props) {
           ...values,
           creationTime: values.creationTime.format(),
           registerTime: values.registerTime.format(),
-          attachment: JSON.stringify(files),
+          attachment: JSON.stringify(files.arr),
           functionalModule: values.functionalModule.join('/'),
           nextUserIds: sessionStorage.getItem('userauthorityid').split(','),
         },
@@ -114,26 +106,20 @@ function Registration(props) {
   return (
     <PageHeaderWrapper title={pagetitle} extra={operations}>
       <Card>
-        <Spin spinning={loading}>
-          {loading === false && (
-            <Registrat
-              ref={RegistratRef}
-              userinfo={userinfo}
-              files={mainId !== undefined ? JSON.parse(info.demandForm.attachment) : files}
-              ChangeFiles={newvalue => {
-                setFiles(newvalue);
-              }}
-              register={mainId !== undefined ? info.demandForm : undefined}
-            />
-          )}
-        </Spin>
+        <Registrat
+          ref={RegistratRef}
+          userinfo={userinfo}
+          files={files.arr}
+          ChangeFiles={newvalue => {
+            setFiles(newvalue);
+          }}
+        />
       </Card>
     </PageHeaderWrapper>
   );
 }
 
-export default connect(({ itsmuser, demandtodo, loading }) => ({
+export default connect(({ itsmuser, loading }) => ({
   userinfo: itsmuser.userinfo,
-  info: demandtodo.info,
-  loading: loading.models.demandtodo,
+  loading: loading.models.itsmuser,
 }))(Registration);

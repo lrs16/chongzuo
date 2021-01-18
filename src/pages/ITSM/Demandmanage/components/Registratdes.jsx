@@ -57,21 +57,25 @@ function Registratdes(props) {
           {info.detail}
         </Descriptions.Item>
         <Descriptions.Item label="附件" span={3}>
-          {JSON.parse(info.attachment).map(obj => {
-            return (
-              <div key={obj.id}>
-                <PaperClipOutlined
-                  style={{ marginRight: 8, fontSize: 11, color: 'rgba(0, 0, 0, 0.45)' }}
-                />
-                <a onClick={() => handledownload(obj)}>{obj.name}</a>
-                {/* <a onClick={() => handledeletfile(obj.uid)}>
+          {info.attachment !== '' && (
+            <>
+              {JSON.parse(info.attachment).map(obj => {
+                return (
+                  <div key={obj.id}>
+                    <PaperClipOutlined
+                      style={{ marginRight: 8, fontSize: 11, color: 'rgba(0, 0, 0, 0.45)' }}
+                    />
+                    <a onClick={() => handledownload(obj)}>{obj.name}</a>
+                    {/* <a onClick={() => handledeletfile(obj.uid)}>
                         <DeleteOutlined
                           style={{ marginLeft: 8, fontSize: 12, color: 'rgba(0, 0, 0, 0.45)' }}
                         />
                       </a> */}
-              </div>
-            );
-          })}
+                  </div>
+                );
+              })}
+            </>
+          )}
         </Descriptions.Item>
         <Descriptions.Item label="登记人">{info.registerPerson}</Descriptions.Item>
         <Descriptions.Item label="登记人单位">{info.registrationUnit}</Descriptions.Item>

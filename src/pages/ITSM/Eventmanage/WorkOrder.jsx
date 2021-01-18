@@ -183,7 +183,6 @@ function WorkOrder(props) {
 
   // 保存
   const eventsave = () => {
-    console.log(paloadvalues,'paloadvalues');
     if (ischeck === true) {
       dispatch({
         type: 'eventtodo/eventsave',
@@ -197,7 +196,6 @@ function WorkOrder(props) {
   };
   // 流转
   const eventflow = newflowtype => {
-    console.log(paloadvalues,'paloadvalues');
     if (ischeck === true) {
       dispatch({
         type: 'eventtodo/eventflow',

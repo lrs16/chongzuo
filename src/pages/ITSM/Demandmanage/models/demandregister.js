@@ -14,10 +14,13 @@ export default {
     *uploadchange({ payload }, { call }) {
       const response = yield call(DemandStart, payload);
       if (response.code === 200) {
+        const { taskId, processId } = response.data;
         router.push({
-          pathname: `/ITSM/demandmanage/registration`,
+          pathname: `/ITSM/demandmanage/to-do/record/workorder`,
           query: {
-            mainId: response.data.processId,
+            taskName: '需求登记',
+            mainId: processId,
+            taskId,
           },
         });
       }
@@ -32,7 +35,7 @@ export default {
         router.push({
           pathname: `/ITSM/demandmanage/to-do/record/workorder`,
           query: {
-            pangekey: '需求登记',
+            taskName: '需求登记',
             mainId: processId,
             taskId,
           },
