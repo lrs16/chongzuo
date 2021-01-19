@@ -34,8 +34,8 @@ export default {
       });
     },
     // 加载需求下一环节处理人列表
-    *demanduserlist({ payload: { taskId, type } }, { call, put }) {
-      const response = yield call(DemandFlowUserList, taskId, type);
+    *demanduserlist({ payload: { taskId, result } }, { call, put }) {
+      const response = yield call(DemandFlowUserList, taskId, result);
       yield put({
         type: 'savelist',
         payload: response.data,

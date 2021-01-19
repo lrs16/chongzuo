@@ -387,17 +387,17 @@ function WorkOrder(props) {
   // 上传附件触发保存
   useEffect(() => {
     if (files.ischange) {
-      console.log(files);
-      //   router.push({
-      //     pathname: `${props.match.url}`,
-      //     query: {
-      //       pangekey,
-      //       id,
-      //       mainId,
-      //       validate: true,
-      //       type: 'save',
-      //     },
-      //   });
+      router.push({
+        pathname: `${props.match.url}`,
+        query: {
+          pangekey,
+          id,
+          mainId,
+          validate: true,
+          type: 'save',
+        },
+      });
+      //  handlesubmit();
     }
   }, [files]);
 

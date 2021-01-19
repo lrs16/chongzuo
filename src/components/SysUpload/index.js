@@ -25,7 +25,7 @@ function SysUpload(props) {
     dispatch({
       type: 'sysfile/downloadfile',
       payload: {
-        id: info.id,
+        id: info.uid,
       },
     }).then(res => {
       // console.log(res);
@@ -58,7 +58,6 @@ function SysUpload(props) {
           message.success(`${info.file.name} 上传成功`);
           const voice = {};
           voice.uid = info.file.response.data.id;
-          voice.id = info.file.response.data.id;
           voice.name = info.file.response.data.fileName;
           voice.status = 'done';
           voice.fileUrl = '';

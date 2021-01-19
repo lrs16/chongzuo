@@ -1,6 +1,7 @@
 import React from 'react';
 import { Descriptions, Checkbox } from 'antd';
 import styles from '../index.less';
+import Downloadfile from '@/components/SysUpload/Downloadfile';
 
 // 来源
 const sourcemaps = new Map([
@@ -73,7 +74,10 @@ function Registratdes(props) {
         <Descriptions.Item label="是否补单">
           <Checkbox defaultChecked={Boolean(Number(info.supplement))} disabled />
         </Descriptions.Item>
-        <Descriptions.Item label="附件" span={3}></Descriptions.Item>
+        <div style={{ clear: 'both' }} />
+        <Descriptions.Item label="附件" span={3}>
+          {info.fileIds !== '' && <Downloadfile files={info.fileIds} />}
+        </Descriptions.Item>
         <Descriptions.Item label="登记人">{info.registerUser}</Descriptions.Item>
         <Descriptions.Item label="登记人单位">{info.registerUnit}</Descriptions.Item>
         <Descriptions.Item label="登记人部门">{info.registerDept}</Descriptions.Item>

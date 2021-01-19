@@ -67,7 +67,7 @@ const SelectUser = props => {
           type: 'itsmuser/eventuserlist',
           payload: {
             taskId,
-            result: sessionStorage.getItem('flowtype'),
+            type: sessionStorage.getItem('flowtype'),
           },
         });
         break;
@@ -76,7 +76,7 @@ const SelectUser = props => {
           type: 'itsmuser/demanduserlist',
           payload: {
             taskId,
-            type: sessionStorage.getItem('flowtype'),
+            result: sessionStorage.getItem('flowtype'),
           },
         });
         break;

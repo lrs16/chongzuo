@@ -184,6 +184,13 @@ const Registrat = forwardRef((props, ref) => {
   return (
     <Form {...formItemLayout}>
       <Row gutter={24} style={{ paddingTop: 24 }}>
+        <Col span={8} style={{ display: 'none' }}>
+          <Form.Item label="表单id">
+            {getFieldDecorator('register_id', {
+              initialValue: register.id,
+            })(<Input disabled />)}
+          </Form.Item>
+        </Col>
         <Col span={8}>
           <Form.Item label="事件编号">
             {getFieldDecorator('main_eventNo', {
