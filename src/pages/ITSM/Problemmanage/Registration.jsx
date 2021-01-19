@@ -46,7 +46,6 @@ function Registration(props) {
   const [activeKey, setActiveKey] = useState(['1']);
   const [flowtype, setFlowtype] = useState('2');
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
-  console.log('files: ', files);
   const RegistratRef = useRef();
 
   const getNewno = () => {
@@ -61,16 +60,9 @@ function Registration(props) {
     });
   };
 
-  const startProcess = () => {
-    dispatch({
-      type: 'problemmanage/startProcess',
-    });
-  };
-
   useEffect(() => {
     getUserinfo();
     getNewno();
-    startProcess();
   }, []);
 
   const callback = key => {
@@ -84,7 +76,6 @@ function Registration(props) {
         saveData.registerTime =  (saveData.registerTime).format('YYYY-MM-DD HH:mm:ss');
         saveData.registerOccurTime = (saveData.registerOccurTime).format('YYYY-MM-DD HH:mm:ss');
         saveData.registerExpectTime = (saveData.registerExpectTime).format('YYYY-MM-DD HH:mm:ss');
-        // saveData.taskId = id.flowTaskId;
         saveData.editState = 'add';
         dispatch({
           type: 'problemmanage/getAddid',

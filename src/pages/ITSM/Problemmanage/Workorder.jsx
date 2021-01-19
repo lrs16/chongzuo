@@ -69,6 +69,7 @@ let problemFlowid;
 let checkType;
 let flowNodeName;
 let confirmType;
+let listData;
 
 export const FatherContext = createContext();
 function Workorder(props) {
@@ -81,7 +82,7 @@ function Workorder(props) {
   // const Operatoraudit = useRef();
   const [flowtype, setFlowtype] = useState('1');
   const [tabActiveKey, setTabActiveKey] = useState('workorder');
-  const [files, setFiles] = useState([]); // 下载列表
+  const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
   const {
     dispatch,
     todoDetail,
@@ -169,6 +170,8 @@ function Workorder(props) {
 
 
 
+
+
   const getNewno = () => {
     dispatch({
       type: 'problemmanage/getregisterNo',
@@ -181,6 +184,21 @@ function Workorder(props) {
       payload: { id },
     })
   };
+
+    // //  各阶段的files
+    if(check) {
+      if(check.checkAttachments !== '') {
+        listData = JSON.parse(todoDetail.check.checkAttachments)
+        // getInformation();
+      } else {
+        listData = '';
+        // getInformation();
+      }
+    } else {
+      listData = '';
+      // getInformation();
+    }
+    
 
   const gotoCirapi = () => {
     const result = flowtype;
@@ -212,124 +230,7 @@ function Workorder(props) {
     });
   };
 
-    // 上传删除附件触发保存
-    useEffect(() => {
-      if (files.length > 0) {
-        const saveData = {};
-        switch (flowNodeName) {
-          case '问题登记':
-            saveData.registerAttachments = JSON.stringify(files);
-            saveData.taskId = id;
-            if (todoDetail.editState === 'edit') {
-              saveData.registerId = todoDetail.register.id;
-              saveData.editState = 'edit';
-            } else {
-              saveData.editState = 'add';
-              saveData.registerId = todoDetail.editGuid;
-            }
-            break;
 
-          case ('系统运维商审核') :
-            saveData.checkAttachments = JSON.stringify(files);
-            saveData.taskId = id;
-            if (todoDetail.editState === 'edit') {
-              saveData.checkId = todoDetail.check.id;
-              saveData.editState = todoDetail.editState;
-            } else {
-              saveData.checkId = todoDetail.editGuid;
-              saveData.editState = 'add';
-            }
-              saveData.checkType = '1';
-            console.log(saveData,'saveData');
-            break;
-
-          case ('自动化科审核') :
-            saveData.checkAttachments = JSON.stringify(files);
-            saveData.taskId = id;
-            if (todoDetail.editState === 'edit') {
-              saveData.checkId = todoDetail.check.id;
-              saveData.editState = todoDetail.editState;
-            } else {
-              saveData.checkId = todoDetail.editGuid;
-              saveData.editState = 'add';
-            }
-              saveData.checkType = '2';
-            console.log(saveData,'saveData');
-            break;
-
-          case '系统开发商处理':
-            saveData.handleAttachments = JSON.stringify(files);
-            saveData.taskId = id;
-            saveData.editState = todoDetail.editState;
-            if (todoDetail.editState === 'edit') {
-              saveData.handleId = todoDetail.handle.id;
-              saveData.editState = todoDetail.editState;
-            } else {
-              saveData.handleId = todoDetail.editGuid;
-              saveData.editState = 'add';
-            }
-            console.log(saveData,'saveData');
-            break;
-
-          case '系统运维商确认':
-            saveData.confirmAttachments = JSON.stringify(files);
-            saveData.taskId = id;
-            saveData.editState = todoDetail.editState;
-            if (todoDetail.editState === 'edit') {
-              saveData.confirmId = todoDetail.confirm.id;
-              saveData.editState = 'edit';
-            } else {
-              saveData.confirmId = todoDetail.editGuid;
-              saveData.editState = 'add';
-            }
-              saveData.confirmType = 1;
-            break;
-
-          case '自动化科业务负责人确认':
-            saveData.confirmAttachments = JSON.stringify(files);
-            saveData.taskId = id;
-            saveData.editState = todoDetail.editState;
-            if (todoDetail.editState === 'edit') {
-              saveData.confirmId = todoDetail.confirm.id;
-              saveData.editState = 'edit';
-            } else {
-              saveData.confirmId = todoDetail.editGuid;
-              saveData.editState = 'add';
-            }
-              saveData.confirmType = 2;
-            break;
-
-          case '问题登记人员确认':
-            saveData.confirmAttachments = JSON.stringify(files);
-            saveData.taskId = id;
-            saveData.editState = todoDetail.editState;
-            if (todoDetail.editState === 'edit') {
-              saveData.confirmId = todoDetail.confirm.id;
-              saveData.editState = 'edit';
-            } else {
-              saveData.confirmId = todoDetail.editGuid;
-              saveData.editState = 'add';
-            }
-              saveData.confirmType = 3;
-            break;
-
-          default:
-            break;
-        }
-        dispatch({
-          type: 'problemmanage/uploadchange',
-          payload: {
-            ...saveData,
-            // registerExpectTime: values.registerOccurTime.format('YYYY-MM-DD HH:mm:ss'),
-            // registerTime: values.registerTime.format('YYYY-MM-DD HH:mm:ss'),
-            // registerOccurTime: values.registerOccurTime.format('YYYY-MM-DD HH:mm:ss'),
-            // registerAttachments: JSON.stringify(files),
-            // functionalModule: values.functionalModule.join('/'),
-            // nextUserIds: sessionStorage.getItem('userauthorityid').split(','),
-          },
-        });
-      }
-    }, [files]);
 
   const saveRegister = (params2) => {
     const fileids = [];
@@ -349,6 +250,9 @@ function Workorder(props) {
           saveData.registerId = todoDetail.editGuid;
         }
 
+        if(files.ischange) {
+          saveData.registerAttachments = JSON.stringify(files.arr);
+        }
 
         return dispatch({
           type: 'problemmanage/tobeSave',
@@ -356,6 +260,7 @@ function Workorder(props) {
         }).then(res => {
           if (res.code === 200) {
             message.info(res.msg);
+            getInformation();
             if (params2) {
               gotoCirapi();
             }
@@ -390,6 +295,10 @@ function Workorder(props) {
         } else {
           saveData.checkType = '2';
         }
+        if(files.ischange) {
+          saveData.checkAttachments = JSON.stringify(files.arr);
+        }
+
         saveApi(saveData, params2);
       }
     });
@@ -414,6 +323,11 @@ function Workorder(props) {
           saveData.handleId = todoDetail.editGuid;
           saveData.editState = 'add';
         }
+
+        if(files.ischange) {
+          saveData.handleAttachments = JSON.stringify(files.arr);
+        }
+
         saveApi(saveData, params2);
       }
     });
@@ -446,7 +360,9 @@ function Workorder(props) {
           default:
             break
         }
-        console.log(saveData,'saveData');
+        if(files.ischange) {
+          saveData.confirmAttachments = JSON.stringify(files.arr);
+        }
         saveApi(saveData, params2);
       }
     });
@@ -524,6 +440,13 @@ function Workorder(props) {
         break;
     }
   };
+
+  // 上传删除附件触发保存
+  useEffect(() => {
+    if (files.ischange) {
+      handleSubmit(saveSign);
+    }
+  }, [files]);
 
   const getUserinfo = () => {
     dispatch({
@@ -685,7 +608,7 @@ function Workorder(props) {
     >
       {/* 编辑页 */}
       {
-        (tabActiveKey === 'workorder' &&
+        (tabActiveKey === 'workorder' && todoDetail && 
           <>
             <div className={styles.collapse}>
               {problemFlowLogs && (
@@ -734,7 +657,9 @@ function Workorder(props) {
                       useInfo={useInfo}
                       register={register}
                       main={main}
-                      files={info.demandForm !== undefined ? JSON.parse(info.demandForm.attachment) : files}
+                      files={
+                        todoDetail.register.registerAttachments !== '' ? JSON.parse(todoDetail.register.registerAttachments) : []
+                      }
                       ChangeFiles={newvalue => {
                         setFiles(newvalue);
                       }}
@@ -758,7 +683,7 @@ function Workorder(props) {
                         useInfo={useInfo}
                         check={check}
                         loading={loading}
-                        files={info.demandForm !== undefined ? JSON.parse(info.demandForm.attachment) : files}
+                        files={listData}
                         ChangeFiles={newvalue => {
                           setFiles(newvalue);
                         }}
@@ -785,7 +710,7 @@ function Workorder(props) {
                         useInfo={useInfo}
                         check={check}
                         loading={loading}
-                        files={info.demandForm !== undefined ? JSON.parse(info.demandForm.attachment) : files}
+                        files={listData}
                         ChangeFiles={newvalue => {
                           setFiles(newvalue);
                         }}
