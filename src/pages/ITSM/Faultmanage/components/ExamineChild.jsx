@@ -1,15 +1,13 @@
-import React, { useRef, useImperativeHandle, useEffect } from 'react';
+import React, { useRef, useImperativeHandle, useEffect, useState } from 'react';
+import SysUpload from '@/components/SysUpload'; // 附件下载组件
 import moment from 'moment';
 import {
     Form,
-    // Button,
     Row,
     Col,
     Input,
     DatePicker,
     Alert,
-    // Upload,
-    // Icon,
     Radio
 } from 'antd';
 
@@ -17,10 +15,14 @@ const { TextArea } = Input;
 const RadioGroup = Radio.Group;
 
 const ExamineChild = React.forwardRef((props, ref) => {
-    const { formItemLayout, forminladeLayout, check, curruserinfo } = props;
+    const { formItemLayout, forminladeLayout, check, curruserinfo, ChangeFiles } = props;
     const { getFieldDecorator } = props.form;
     const message = '若需要上传故障报告请于故障处理完成五个工作日内进行上传。'
     const attRef = useRef();
+    const [fileslist, setFilesList] = useState({ arr: [], ischange: false }); // 下载列表
+    useEffect(() => {
+        ChangeFiles(fileslist);
+      }, [fileslist]);
     useImperativeHandle(
         ref,
         () => ({
@@ -92,19 +94,17 @@ const ExamineChild = React.forwardRef((props, ref) => {
                     </Form.Item>
                 </Col>
 
-                {/* <Col span={24}>
-                    <Form.Item label="上传附件" extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb" style={{ display: "flex" }} {...forminladeLayout}>
-                        {getFieldDecorator('checkAttachIds', {
-                            valuePropName: 'fileList',
-                        })(
-                            <Upload name="logo" action="" listType="picture">
-                                <Button type="primary">
-                                    <Icon type="upload" style={{ fontSize: 18 }} /> 添加附件
-                          </Button>
-                            </Upload>,
-                        )}
+                <Col span={24}>
+                    <Form.Item
+                        label="上传附件"
+                        {...forminladeLayout}
+                        extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
+                    >
+                        <div style={{ width: 400 }}>
+                            <SysUpload  fileslist={check ? JSON.parse(check.checkAttachments) : []} ChangeFileslist={newvalue => setFilesList(newvalue)} />
+                        </div>
                     </Form.Item>
-                </Col> */}
+                </Col>
 
                 <Col span={8}>
                     <Form.Item label="审核人">

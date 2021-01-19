@@ -1,17 +1,14 @@
-import React, { useRef, useImperativeHandle, useEffect } from 'react';
+import React, { useRef, useImperativeHandle, useEffect, useState } from 'react';
 import moment from 'moment';
+import SysUpload from '@/components/SysUpload'; // 附件下载组件
 import {
     Form,
-    Button,
     Row,
     Col,
     Input,
     Select,
     DatePicker,
-    Upload,
-    Icon,
     Radio,
-    message
 } from 'antd';
 
 const { TextArea } = Input;
@@ -59,12 +56,16 @@ const registerScope = [ // 影响范围
 ];
 
 const RegisterChild = React.forwardRef((props, ref) => {
-    const { formItemLayout, forminladeLayout, tododetailslist } = props;
+    const { formItemLayout, forminladeLayout, tododetailslist, ChangeFiles } = props;
     const { getFieldDecorator } = props.form;
     const attRef = useRef();
     useEffect(() => {
         sessionStorage.setItem('Nextflowmane', '系统运维商审核');
     });
+    const [fileslist, setFilesList] = useState({ arr: [], ischange: false }); // 下载列表
+    useEffect(() => {
+        ChangeFiles(fileslist);
+      }, [fileslist]);
     useImperativeHandle(
         ref,
         () => ({
@@ -73,31 +74,6 @@ const RegisterChild = React.forwardRef((props, ref) => {
         [],
     );
 
-    const normFile = e => {
-        // console.log('Upload event:', e);
-        if (Array.isArray(e)) {
-            return e;
-        }
-        return e && e.fileList;
-    };
-    const handleUpload = (info) => {
-        if (info.file.status === 'done') {
-            message.success(`${info.file.name} 文件上传成功！`);
-        } else if (info.file.status === 'error') {
-            message.error(`${info.file.name} 文件上传失败！`);
-        }
-    };
-
-    const fileProps = {
-        name: 'file',
-        // action: fileUrl,
-        action: '',
-        accept: '',
-        multiple: false,
-        withCredentials: true,
-        onChange: handleUpload,
-        // defaultFileList: query ? query.upload[0] : ''
-    }
     const required = true;
     return (
         <Row gutter={24}>
@@ -288,18 +264,14 @@ const RegisterChild = React.forwardRef((props, ref) => {
                 </Col>
 
                 <Col span={24}>
-                    <Form.Item label="附件上传：" extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb" style={{ display: "flex" }} {...forminladeLayout}>
-                        {getFieldDecorator('upload', {
-                            valuePropName: 'fileList',
-                            getValueFromEvent: normFile,
-                            // initialValue: query ? query.upload[0] : ''
-                        })(
-                            <Upload name="logo" action="" {...fileProps}>
-                                <Button type="primary">
-                                    <Icon type="upload" style={{ fontSize: 18 }} /> 添加附件
-                      </Button>
-                            </Upload>,
-                        )}
+                    <Form.Item
+                        label="上传附件"
+                        {...forminladeLayout}
+                        extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
+                    >
+                        <div style={{ width: 400 }}>
+                            <SysUpload  fileslist={tododetailslist ? JSON.parse(tododetailslist.register.registerAttachments) : []} ChangeFileslist={newvalue => setFilesList(newvalue)} />
+                        </div>
                     </Form.Item>
                 </Col>
 

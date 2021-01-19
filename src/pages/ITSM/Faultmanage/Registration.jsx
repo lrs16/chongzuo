@@ -11,14 +11,12 @@ import {
   Input,
   Select,
   DatePicker,
-  Upload,
-  Icon,
-  message,
   Radio,
   Collapse
 } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import SelectUser from '@/components/SelectUser'; // 选人组件
+import SysUpload from '@/components/SysUpload'; // 附件下载组件
 import styles from './index.less';
 
 const { Panel } = Collapse;
@@ -91,6 +89,7 @@ const sysmodular = [ // 系统模块
 function Registration(props) {
   const pagetitle = props.route.name;
   const [activeKey, setActiveKey] = useState(['1']);
+  const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
 
   const {
     form: { getFieldDecorator, resetFields, validateFields, },
@@ -118,7 +117,7 @@ function Registration(props) {
     getNewno(); // 新的故障编号
     getCurrUserInfo(); // 获取登录用户信息
     sessionStorage.setItem('Processtype', 'troub');
-    sessionStorage.setItem('Nextflowmane','审核');
+    sessionStorage.setItem('Nextflowmane', '审核');
   }, []);
 
   useEffect(() => {
@@ -141,6 +140,7 @@ function Registration(props) {
         formValues.registerOccurTime = values.registerOccurTime.format('YYYY-MM-DD HH:mm:ss');
         formValues.registerTime = values.registerTime.format('YYYY-MM-DD HH:mm:ss');
         formValues.editState = 'add';
+        formValues.registerAttachments = JSON.stringify(files.arr);
         dispatch({
           type: 'fault/getSaveUserId',
           payload: { formValues }
@@ -149,40 +149,11 @@ function Registration(props) {
     });
   }
 
-  const normFile = e => {
-    // console.log('Upload event:', e);
-    if (Array.isArray(e)) {
-      return e;
-    }
-    return e && e.fileList;
-  };
-
   const required = true;
-
-  const handleUpload = (info) => {
-    // if (info.file.status !== 'uploading') {
-    //   console.log("file info--->>", info.file);
-    // }
-    if (info.file.status === 'done') {
-      message.success(`${info.file.name} 文件上传成功！`);
-    } else if (info.file.status === 'error') {
-      message.error(`${info.file.name} 文件上传失败！`);
-    }
-  };
-
-  const fileProps = {
-    name: 'file',
-    // action: fileUrl,
-    action: '',
-    accept: '',
-    multiple: false,
-    withCredentials: true,
-    onChange: handleUpload,
-  }
 
   const faultcircula = () => { // 流转
     validateFields((err, values) => {
-     if (!err) {
+      if (!err) {
         const formValues = values;
         formValues.registerOccurTime = values.registerOccurTime.format('YYYY-MM-DD HH:mm:ss');
         formValues.registerTime = values.registerTime.format('YYYY-MM-DD HH:mm:ss');
@@ -397,17 +368,14 @@ function Registration(props) {
                 </Col>
 
                 <Col span={24}>
-                  <Form.Item label="附件上传：" extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb" style={{ display: "flex" }} {...forminladeLayout}>
-                    {getFieldDecorator('upload', {
-                      valuePropName: 'fileList',
-                      getValueFromEvent: normFile,
-                    })(
-                      <Upload name="logo" action="" {...fileProps}>
-                        <Button type="primary">
-                          <Icon type="upload" style={{ fontSize: 18 }} /> 添加附件
-                      </Button>
-                      </Upload>,
-                    )}
+                  <Form.Item
+                    label="上传附件"
+                    {...forminladeLayout}
+                    extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
+                  >
+                    <div style={{ width: 400 }}>
+                      <SysUpload  fileslist={files.arr} ChangeFileslist={newvalue => setFiles(newvalue)}/>
+                    </div>
                   </Form.Item>
                 </Col>
 

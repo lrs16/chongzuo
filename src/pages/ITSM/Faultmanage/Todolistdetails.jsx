@@ -90,6 +90,7 @@ function Todolistdetails(props) {
   const pagetitle = props.route.name;
   const [activeKey, setActiveKey] = useState([]);
   const [tabActiveKey, setTabActiveKey] = useState('faultForm');
+  const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
 
   const RegisterRef = useRef(); // 故障登记
   const ExamineRef = useRef(); // 系统运维商审核  自动化科业务负责人审核
@@ -210,6 +211,7 @@ function Todolistdetails(props) {
         formValues.registerTime = values.registerTime.format('YYYY-MM-DD HH:mm:ss');
         formValues.taskId = id;
         formValues.editState = tododetailslist.editState;
+        formValues.registerAttachments = JSON.stringify(files.arr);
         // formValues.registerEffect = String(Number(values.registerEffect))
         if (tododetailslist.editState === 'edit') {
           formValues.registerId = tododetailslist.register.id;
@@ -530,6 +532,9 @@ function Todolistdetails(props) {
                       (paneKey === '故障登记') && (
                         <Panel header="故障登记" key="RegisterChild">
                           <RegisterChild
+                            ChangeFiles={newvalue => {
+                              setFiles(newvalue);
+                            }}
                             ref={RegisterRef}
                             formItemLayout={formItemLayout}
                             forminladeLayout={forminladeLayout}
@@ -548,6 +553,9 @@ function Todolistdetails(props) {
                             forminladeLayout={forminladeLayout}
                             check={check}
                             curruserinfo={curruserinfo}
+                            ChangeFiles={newvalue => {
+                              setFiles(newvalue);
+                            }}
                           />
                         </Panel>
                       )

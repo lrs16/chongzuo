@@ -3,6 +3,7 @@ import {
     Radio
 } from 'antd';
 import DescriptionList from '@/components/DescriptionList';
+import Downloadfile from '@/components/SysUpload/Downloadfile'; // 下载组件调用
 
 const { Description } = DescriptionList;
 const RadioGroup = Radio.Group;
@@ -48,8 +49,8 @@ const RegisterQuery = React.forwardRef((props, ref) => {
                                 </RadioGroup>
                             </Description>
                         </DescriptionList>
-                        <DescriptionList size="large">
-                            <Description term="上传附件">上传附件</Description>
+                        <DescriptionList size="large" span={3}>
+                            <Description term="上传附件"> {detailsdata[0].registerAttachments !== '' && <Downloadfile files={detailsdata[0].registerAttachments} />}</Description>
                         </DescriptionList>
                         <DescriptionList size="large">
                             <Description term="填报人">{detailsdata[0].registerUser || ''}</Description>
