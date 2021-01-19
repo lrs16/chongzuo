@@ -117,7 +117,6 @@ const modulemap = [
 ];
 const Registrat = forwardRef((props, ref) => {
   const { register, userinfo, files, ChangeFiles } = props;
-  console.log('files: ', files);
   const { getFieldDecorator } = props.form;
   const required = true;
 

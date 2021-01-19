@@ -81,7 +81,7 @@ export default {
             id: registres.taskId,
             mainId: flowInstanceId,
             next: sessionStorage.getItem('Nextflowmane'),
-            validate: false,
+            //validate: false,
           },
         });
       }

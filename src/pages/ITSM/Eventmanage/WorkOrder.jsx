@@ -93,10 +93,19 @@ function WorkOrder(props) {
   // 初始化用户信息，流程类型
   useEffect(() => {
     dispatch({
-      type: 'userinfo/fetchuser',
+      type: 'itsmuser/fetchuser',
     });
     sessionStorage.setItem('Processtype', 'event');
   }, []);
+
+  // 初始化历史附件
+  useEffect(() => {
+    if (edit !== undefined && Object.values(edit)[0] !== null) {
+      if (Object.values(edit)[0].fileIds !== '') {
+        setFiles({ ...files, arr: JSON.parse(Object.values(edit)[0].fileIds) });
+      }
+    }
+  }, [info]);
 
   // 更新流转类型
   // console.log(flowtype);
@@ -139,6 +148,7 @@ function WorkOrder(props) {
           register_supplement: String(Number(values.register_supplement)),
           register_fileIds: JSON.stringify(files.arr),
         });
+        routerRefresh();
       });
     } else {
       RegistratRef.current.validateFields((err, values) => {
@@ -169,6 +179,7 @@ function WorkOrder(props) {
           check_fileIds: JSON.stringify(files.arr),
         });
       });
+      routerRefresh();
     } else {
       CheckRef.current.validateFields((err, values) => {
         if (!err) {
@@ -196,6 +207,7 @@ function WorkOrder(props) {
           handle_fileIds: JSON.stringify(files.arr),
         });
       });
+      routerRefresh();
     } else {
       HandleRef.current.validateFields((err, values) => {
         if (!err) {
@@ -221,6 +233,7 @@ function WorkOrder(props) {
           finish_fileIds: JSON.stringify(files.arr),
         });
       });
+      routerRefresh();
     } else {
       ReturnVisitRef.current.validateFields((err, values) => {
         if (!err) {
@@ -397,7 +410,6 @@ function WorkOrder(props) {
           type: 'save',
         },
       });
-      //  handlesubmit();
     }
   }, [files]);
 

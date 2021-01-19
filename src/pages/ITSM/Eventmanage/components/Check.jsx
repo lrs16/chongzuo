@@ -3,6 +3,7 @@ import router from 'umi/router';
 import moment from 'moment';
 import { Row, Col, Form, Input, Radio, Upload, Button, DatePicker } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
+import SysUpload from '@/components/SysUpload';
 
 const { TextArea } = Input;
 
@@ -17,11 +18,16 @@ const typemaps = new Map([
 ]);
 
 const Check = forwardRef((props, ref) => {
-  const { formItemLayout, forminladeLayout, info, ChangeFlowtype, userinfo, location } = props;
+  const { formItemLayout, forminladeLayout, info, userinfo, location, files, ChangeFiles } = props;
   const { pangekey, id, mainId } = location.query;
   const { check } = info;
   const { getFieldDecorator } = props.form;
   const [adopt, setAdopt] = useState('001');
+  const [fileslist, setFilesList] = useState({ arr: [], ischange: false });
+  useEffect(() => {
+    ChangeFiles(fileslist);
+  }, [fileslist]);
+
   const attRef = useRef();
   useImperativeHandle(
     ref,
@@ -120,21 +126,17 @@ const Check = forwardRef((props, ref) => {
             })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" />)}
           </Form.Item>
         </Col>
-        {/* <Col span={24}>
+        <Col span={24}>
           <Form.Item
             label="上传附件"
             {...forminladeLayout}
             extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
           >
-            {getFieldDecorator('check2')(
-              <Upload>
-                <Button type="primary">
-                  <DownloadOutlined /> 上传附件
-                </Button>
-              </Upload>,
-            )}
+            <div style={{ width: 400 }}>
+              <SysUpload fileslist={files} ChangeFileslist={newvalue => setFilesList(newvalue)} />
+            </div>
           </Form.Item>
-        </Col> */}
+        </Col>
         <Col span={8}>
           <Form.Item label="审核人">
             {getFieldDecorator('check_checkUser', {

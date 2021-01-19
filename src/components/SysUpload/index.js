@@ -21,7 +21,6 @@ function SysUpload(props) {
 
   // 下载附件
   const handledownload = info => {
-    console.log('info: ', info);
     dispatch({
       type: 'sysfile/downloadfile',
       payload: {
@@ -79,13 +78,13 @@ function SysUpload(props) {
     },
     onRemove(info) {
       // 删除记录,更新父级fileslist
-      const newfilelist = fileslist.filter(item => item.id !== info.id);
+      const newfilelist = fileslist.filter(item => item.uid !== info.uid);
       ChangeFileslist({ arr: newfilelist, ischange: true });
       // 删除文件
       dispatch({
         type: 'sysfile/deletefile',
         payload: {
-          id: info.id,
+          id: info.uid,
         },
       });
     },

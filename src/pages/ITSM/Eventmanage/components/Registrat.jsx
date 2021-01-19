@@ -91,9 +91,17 @@ const Registrat = forwardRef((props, ref) => {
   const [check, setCheck] = useState(false);
   const [revisitway, setRevisitway] = useState(false);
   const [fileslist, setFilesList] = useState({ arr: [], ischange: false });
+  console.log(fileslist);
   useEffect(() => {
-    ChangeFiles(fileslist);
+    if (fileslist.ischange) {
+      ChangeFiles(fileslist);
+    }
   }, [fileslist]);
+
+  useEffect(() => {
+    setFilesList({ ...fileslist, arr: files });
+  }, [info]);
+
   const attRef = useRef();
   useImperativeHandle(
     ref,

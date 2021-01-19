@@ -26,7 +26,7 @@ function Downloadfile(props) {
     <>
       {JSON.parse(files).map(obj => {
         return (
-          <div key={obj.uid}>
+          <div key={obj.uid} style={{ float: 'left', marginRight: 30 }}>
             <PaperClipOutlined
               style={{ marginRight: 8, fontSize: 11, color: 'rgba(0, 0, 0, 0.45)' }}
             />
