@@ -81,8 +81,8 @@ function Problemregistration(props) {
 
             <Descriptions>
               <Descriptions.Item label="上传附件">
-                <span style={{ color: 'blue', textDecoration: 'underline' }} onClick={() => fileDown( registrationDetail.problemFlowNodeRows[0].registerAttachIds)}>
-                   {registrationDetail ? registrationDetail.problemFlowNodeRows[0].registerAttachIds : ''}
+                <span style={{ color: 'blue', textDecoration: 'underline' }} >
+                  ff           
                </span>
               </Descriptions.Item>
             </Descriptions>

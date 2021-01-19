@@ -46,6 +46,7 @@ function Registration(props) {
   const [activeKey, setActiveKey] = useState(['1']);
   const [flowtype, setFlowtype] = useState('2');
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
+  console.log(files.arr,'files.arr');
   const RegistratRef = useRef();
 
   const getNewno = () => {

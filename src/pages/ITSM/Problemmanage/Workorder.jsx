@@ -14,8 +14,8 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import SelectUser from '@/components/SelectUser';
 import Registrat from './components/Registrat';
 import Systemoperatoredit from './components/Systemoperatoredit';
-import Businessaudit from './components/Businessaudit';
-import Specialaudit from './components/Specialaudit';
+import Businessleaderconfirmedit from './components/Businessleaderconfirmedit';
+import Problemconfirmedit from './components/Problemconfirmedit';
 import Developerprocessdit from './components/Developerprocessdit';
 import Operatorconfirmaedit from './components/Operatorconfirmaedit';
 import Automaticconfirmedit from './components/Automaticconfirmedit';
@@ -70,6 +70,7 @@ let checkType;
 let flowNodeName;
 let confirmType;
 let listData;
+let fileSign;
 
 export const FatherContext = createContext();
 function Workorder(props) {
@@ -168,10 +169,6 @@ function Workorder(props) {
     receivingTime = moment(new Date());
   }
 
-
-
-
-
   const getNewno = () => {
     dispatch({
       type: 'problemmanage/getregisterNo',
@@ -188,16 +185,17 @@ function Workorder(props) {
     // //  各阶段的files
     if(check) {
       if(check.checkAttachments !== '') {
-        listData = JSON.parse(todoDetail.check.checkAttachments)
+        listData = JSON.parse(todoDetail.check.checkAttachments);
         // getInformation();
       } else {
-        listData = '';
+        listData = [];
         // getInformation();
       }
     } else {
-      listData = '';
+      listData = [];
       // getInformation();
     }
+    // console.log(listData,'listData');
     
 
   const gotoCirapi = () => {
@@ -213,7 +211,7 @@ function Workorder(props) {
     })
   };
 
-  const saveApi = (saveData, params2) => {
+  const saveApi = (saveData, params2,uploadSive) => {
     return dispatch({
       type: 'problemmanage/tobeSave',
       payload: { saveData },
@@ -221,6 +219,9 @@ function Workorder(props) {
       if (res.code === 200) {
         message.info(res.msg);
         getInformation();
+        if(uploadSive) {
+          props.history.go(0);
+        }
         if (params2) {
           gotoCirapi();
         }
@@ -231,8 +232,7 @@ function Workorder(props) {
   };
 
 
-
-  const saveRegister = (params2) => {
+  const saveRegister = (params2,uploadSive) => {
     const fileids = [];
     RegistratRef.current.validateFields((err, values) => {
       if (params2 ? !err : true) {
@@ -261,6 +261,9 @@ function Workorder(props) {
           if (res.code === 200) {
             message.info(res.msg);
             getInformation();
+            if(uploadSive) {
+              props.history.go(0);
+            }
             if (params2) {
               gotoCirapi();
             }
@@ -273,7 +276,7 @@ function Workorder(props) {
   };
 
   //  审核保存
-  const savePrevies =(params2)  => {
+  const savePrevies =(params2,uploadSive)  => {
     PreviesRef.current.validateFields((err, values) => {
       const saveData = values;
       if (values.checkTime) {
@@ -299,12 +302,12 @@ function Workorder(props) {
           saveData.checkAttachments = JSON.stringify(files.arr);
         }
 
-        saveApi(saveData, params2);
+        saveApi(saveData, params2,uploadSive);
       }
     });
   };
 
-  const saveHandle = params2 => {
+  const saveHandle = (params2,uploadSive) => {
     HandleRef.current.validateFields((err, values) => {
       const saveData = values;
       if (values.handleTime) {
@@ -328,18 +331,19 @@ function Workorder(props) {
           saveData.handleAttachments = JSON.stringify(files.arr);
         }
 
-        saveApi(saveData, params2);
+        saveApi(saveData, params2,uploadSive);
       }
     });
   };
 
-  const saveConfirm = params2 => {
+  const saveConfirm = (params2,uploadSive) => {
     ProblemconfirmRef.current.validateFields((err, values) => {
       if (params2 ? !err : true) {
         const saveData = values;
         saveData.taskId = id;
         saveData.editState = todoDetail.editState;
         saveData.confirmTime = (values.confirmTime).format('YYYY-MM-DD HH:mm:ss');
+        console.log('saveData: ', saveData);
         if (todoDetail.editState === 'edit') {
           saveData.confirmId = todoDetail.confirm.id;
           saveData.editState = 'edit';
@@ -363,7 +367,7 @@ function Workorder(props) {
         if(files.ischange) {
           saveData.confirmAttachments = JSON.stringify(files.arr);
         }
-        saveApi(saveData, params2);
+        saveApi(saveData, params2,uploadSive);
       }
     });
   };
@@ -413,28 +417,28 @@ function Workorder(props) {
     });
   };
 
-  const handleSubmit = (params2) => {
+  const handleSubmit = (params2,uploadSive) => {
     switch (flowNodeName) {
       case '问题登记':
-        saveRegister(params2);
+        saveRegister(params2,uploadSive);
         break;
       case '系统运维商审核':
-        savePrevies(params2);
+        savePrevies(params2,uploadSive);
         break;
       case '自动化科审核':
-        savePrevies(params2);
+        savePrevies(params2,uploadSive);
         break;
       case '系统开发商处理':
-        saveHandle(params2);
+        saveHandle(params2,uploadSive);
         break;
       case '系统运维商确认':
-        saveConfirm(params2);
+        saveConfirm(params2,uploadSive);
         break;
       case '自动化科业务负责人确认':
-        saveConfirm(params2);
+        saveConfirm(params2,uploadSive);
         break;
       case '问题登记人员确认':
-        saveConfirm(params2);
+        saveConfirm(params2,uploadSive);
         break;
       default:
         break;
@@ -443,8 +447,10 @@ function Workorder(props) {
 
   // 上传删除附件触发保存
   useEffect(() => {
+     fileSign = '附件';
+     console.log(files.ischange);
     if (files.ischange) {
-      handleSubmit(saveSign);
+      handleSubmit(saveSign,fileSign);
     }
   }, [files]);
 
@@ -459,27 +465,12 @@ function Workorder(props) {
     getUserinfo();
     getNewno();
     sessionStorage.setItem('Processtype', 'problem');
-    sessionStorage.setItem('Nextflowmane', 'ff');
+    sessionStorage.setItem('Nextflowmane', '');
   }, []);
 
   useEffect(() => {
     sessionStorage.setItem('flowtype', flowtype);
   }, [flowtype]);
-
-  // const transferOrder = () => {
-  //   return dispatch({
-  //     type:'problemmanage/transferOrder',
-  //     payload:{id}
-  //   }).then(res => {
-  //     if(res.code === 200) {
-  //       message.info(res.msg);
-  //     }else {
-  //       message.error(res.msg);
-  //     }
-  //   })
-  // }
-
-
 
   const tabList = [
     {
@@ -684,6 +675,7 @@ function Workorder(props) {
                         check={check}
                         loading={loading}
                         files={listData}
+                        // files={todoDetail.check !== undefined ?JSON.parse(todoDetail.check.checkAttachments):[]}
                         ChangeFiles={newvalue => {
                           setFiles(newvalue);
                         }}
@@ -710,7 +702,7 @@ function Workorder(props) {
                         useInfo={useInfo}
                         check={check}
                         loading={loading}
-                        files={listData}
+                        files={todoDetail.check !== undefined ?JSON.parse(todoDetail.check.checkAttachments):[]}
                         ChangeFiles={newvalue => {
                           setFiles(newvalue);
                         }}
@@ -738,10 +730,10 @@ function Workorder(props) {
                      handle={handle}
                      handleTime={handleTime}
                      receivingTime={receivingTime}
-                     files={info.demandForm !== undefined ? JSON.parse(info.demandForm.attachment) : files}
+                     files={todoDetail.handle !== undefined ?JSON.parse(todoDetail.handle.handleAttachments):[]}
                      ChangeFiles={newvalue => {
-                       setFiles(newvalue);
-                     }}
+                        setFiles(newvalue);
+                      }}
                      loading={loading}
                  />
                 </Panel>
@@ -765,10 +757,10 @@ function Workorder(props) {
                       handle={confirm}
                       handleTime={handleTime}
                       receivingTime={receivingTime}
-                      files={info.demandForm !== undefined ? JSON.parse(info.demandForm.attachment) : files}
+                      files={todoDetail.confirm !== undefined ?JSON.parse(todoDetail.confirm.confirmAttachments):[]}
                       ChangeFiles={newvalue => {
-                        setFiles(newvalue);
-                      }}
+                         setFiles(newvalue);
+                       }}
                       loading={loading}
                   />
                   </FatherContext.Provider>
@@ -785,7 +777,7 @@ function Workorder(props) {
                   style={{ backgroundColor:'white'}}
                 >
                   <FatherContext.Provider value={{ flowtype ,setFlowtype}}>
-                    <Operatorconfirmaedit 
+                    <Businessleaderconfirmedit 
                       formItemLayout={formItemLayout}
                       forminladeLayout={forminladeLayout}
                       showEdit={showEdit}
@@ -794,10 +786,10 @@ function Workorder(props) {
                       confirm={confirm}
                       handleTime={handleTime}
                       receivingTime={receivingTime}
-                      files={info.demandForm !== undefined ? JSON.parse(info.demandForm.attachment) : files}
+                      files={todoDetail.confirm !== undefined ?JSON.parse(todoDetail.confirm.confirmAttachments):[]}
                       ChangeFiles={newvalue => {
-                        setFiles(newvalue);
-                      }}
+                         setFiles(newvalue);
+                       }}
                       loading={loading}
                   />
                   </FatherContext.Provider>
@@ -814,7 +806,7 @@ function Workorder(props) {
                   style={{ backgroundColor:'white'}}
                 >
                   <FatherContext.Provider value={{ flowtype ,setFlowtype}}>
-                    <Operatorconfirmaedit 
+                    <Problemconfirmedit 
                       formItemLayout={formItemLayout}
                       forminladeLayout={forminladeLayout}
                       showEdit={showEdit}
@@ -823,10 +815,10 @@ function Workorder(props) {
                       handle={confirm}
                       handleTime={handleTime}
                       receivingTime={receivingTime}
-                      files={info.demandForm !== undefined ? JSON.parse(info.demandForm.attachment) : files}
+                      files={todoDetail.confirm !== undefined ?JSON.parse(todoDetail.confirm.confirmAttachments):[]}
                       ChangeFiles={newvalue => {
-                        setFiles(newvalue);
-                      }}
+                         setFiles(newvalue);
+                       }}
                       loading={loading}
                   />
                   </FatherContext.Provider>
