@@ -10,6 +10,7 @@ function Registration(props) {
   const pagetitle = props.route.name;
   // const [flowtype, setFlowtype] = useState('1'); // 流转类型
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
+  console.log('files: ', files);
 
   // 初始化用户信息，流程类型
   useEffect(() => {

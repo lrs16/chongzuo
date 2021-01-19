@@ -244,7 +244,6 @@ function Workorder(props) {
             break;
 
           case ('自动化科审核') :
-            console.log('ff');
             saveData.checkAttachments = JSON.stringify(files);
             saveData.taskId = id;
             if (todoDetail.editState === 'edit') {

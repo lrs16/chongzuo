@@ -48,7 +48,8 @@ export default {
     flowlog: '',
     peopleList:[],
     queryDetaildata:[],
-    data:''
+    data:'',
+    startid:''
   },
 
   effects: {
@@ -78,7 +79,6 @@ export default {
     },
     //  登记保存
     *getAddid({ payload: { saveData, jumpType } }, { call, put }) {
-      console.log('jumpType: ', jumpType);
       const response = yield call(getAddid);
       if (response.code === 200) {
         yield put({
@@ -89,16 +89,17 @@ export default {
         saveiInfo.taskId = response.flowTaskId;
         const resRegister = yield call(saveRegister, saveiInfo);
         if (resRegister.code === 200) {
+          console.log('jumpType: ', jumpType);
           switch (jumpType) {
+            case 0:
+              route.push({ pathname: `/ITSM/problemmanage/besolved` });
+              break;
+              
             case 1:
               route.push({
                 pathname: `/ITSM/problemmanage/besolveddetail/workorder/${response.flowTaskId}`,
                 // params:{ currentProcess:'问题登记'}
               });
-              break;
-
-            case 0:
-              route.push({ pathname: `/ITSM/problemmanage/besolved` });
               break;
 
             default:
@@ -107,6 +108,16 @@ export default {
         }
       }
     },
+
+    //  启动流程
+    *startProcess({ payload }, { call,put }) {
+      const response =  yield call(getAddid);
+      yield put({
+        type: 'getstartid',
+        payload: response,
+      });
+    },
+
 
     // 流转登记保存
     *saveCirculation({ payload: { saveData } }, { call }) {
@@ -271,9 +282,6 @@ export default {
     },
     //  待办人
     gotopeople(state, action) {
-      console.log('action: ', action);
-      console.log('state: ', state);
-
       return {
         ...state,
         tobopeople: action.payload.data,
@@ -282,7 +290,6 @@ export default {
 
     // 问题添加登记的id
     getid(state, action) {
-      console.log('ididi');
       return {
         ...state,
         id: action.payload,
@@ -354,6 +361,13 @@ export default {
       return {
         ...state,
         queryDetaildata: action.payload
+      }
+    },
+    
+    getstartid(state,action) {
+      return {
+        ...state,
+        startid: action.payload.flowTaskId
       }
     }
   },

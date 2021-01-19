@@ -21,6 +21,7 @@ function SysUpload(props) {
 
   // 下载附件
   const handledownload = info => {
+    console.log('info: ', info);
     dispatch({
       type: 'sysfile/downloadfile',
       payload: {

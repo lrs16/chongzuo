@@ -39,12 +39,14 @@ function Registration(props) {
     newno,
     useInfo,
     info,
+    startid,
     loading
   } = props;
   const [show, setShow] = useState(false);
   const [activeKey, setActiveKey] = useState(['1']);
   const [flowtype, setFlowtype] = useState('2');
-  const [files, setFiles] = useState([]); // 下载列表
+  const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
+  console.log('files: ', files);
   const RegistratRef = useRef();
 
   const getNewno = () => {
@@ -58,9 +60,17 @@ function Registration(props) {
       type: 'problemmanage/fetchUseinfo',
     });
   };
+
+  const startProcess = () => {
+    dispatch({
+      type: 'problemmanage/startProcess',
+    });
+  };
+
   useEffect(() => {
     getUserinfo();
     getNewno();
+    startProcess();
   }, []);
 
   const callback = key => {
@@ -68,14 +78,7 @@ function Registration(props) {
   };
 
   const handlesubmit = (jumpType) => {
-    const fileids = [];
     RegistratRef.current.validateFields((err, values) => {
-      if(values.registerAttachIds) {
-        const { fileList } = values.registerAttachIds;
-        fileList.forEach(item => {
-          fileids.push(item.uid);
-        });
-      }
       if (!err) {
         const saveData = values;
         saveData.registerTime =  (saveData.registerTime).format('YYYY-MM-DD HH:mm:ss');
@@ -83,8 +86,6 @@ function Registration(props) {
         saveData.registerExpectTime = (saveData.registerExpectTime).format('YYYY-MM-DD HH:mm:ss');
         // saveData.taskId = id.flowTaskId;
         saveData.editState = 'add';
-        console.log('saveData: ', saveData);
-        saveData.registerAttachIds=fileids.toString();
         dispatch({
           type: 'problemmanage/getAddid',
           payload: { saveData,jumpType },
@@ -101,22 +102,22 @@ function Registration(props) {
     props.history.push('/ITSM/problemmanage/besolved');
   }
 
-    // 上传删除附件触发保存
+    // 上传附件触发保存
     useEffect(() => {
-      if (files.length > 0) {
+      const jumpType = 1;
+      if (files.ischange) {
         const values = RegistratRef.current.getFieldsValue();
+        const saveData = values;
+        saveData.taskId = startid;
+        saveData.registerExpectTime =  values.registerOccurTime.format('YYYY-MM-DD HH:mm:ss');
+        saveData.registerTime =  values.registerTime.format('YYYY-MM-DD HH:mm:ss');
+        saveData.registerOccurTime = values.registerOccurTime.format('YYYY-MM-DD HH:mm:ss');
+        saveData.registerAttachments = JSON.stringify(files.arr);
+        saveData.editState = 'add';
         dispatch({
-          type: 'problemmanage/uploadchange',
-          payload: {
-            ...values,
-            registerExpectTime: values.registerOccurTime.format('YYYY-MM-DD HH:mm:ss'),
-            registerTime: values.registerTime.format('YYYY-MM-DD HH:mm:ss'),
-            registerOccurTime: values.registerOccurTime.format('YYYY-MM-DD HH:mm:ss'),
-            registerAttachments: JSON.stringify(files),
-            // functionalModule: values.functionalModule.join('/'),
-            // nextUserIds: sessionStorage.getItem('userauthorityid').split(','),
-          },
-        });
+          type:'problemmanage/getAddid',
+          payload:{saveData,jumpType}
+        })
       }
     }, [files]);
 
@@ -152,7 +153,7 @@ function Registration(props) {
                 list={list}
                 newno={newno}
                 useInfo={useInfo}
-                files={info.demandForm !== undefined ? JSON.parse(info.demandForm.attachment) : files}
+                files={files.arr}
                 ChangeFiles={newvalue => {
                   setFiles(newvalue);
                 }}
@@ -172,6 +173,7 @@ export default Form.create({})(
     newno: problemmanage.newno,
     useInfo: problemmanage.useInfo,
     info: demandtodo.info,
+    startid: problemmanage.startid,
     loading: loading.models.problemmanage,
   }))(Registration),
 );

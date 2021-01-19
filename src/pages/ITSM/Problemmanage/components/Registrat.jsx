@@ -15,6 +15,7 @@ let occurtime;
 
 const Registrat = React.forwardRef((props, ref) => {
   const { formItemLayout, forminladeLayout, files,ChangeFiles } = props;
+  console.log('files: ', files);
   const { getFieldDecorator } = props.form;
   // const { setActiveKey, setShow } = useContext(RegistratContext);
   const [fileslist, setFilesList] = useState([]);
