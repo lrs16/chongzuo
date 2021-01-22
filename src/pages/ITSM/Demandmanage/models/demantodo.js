@@ -11,6 +11,7 @@ import {
   TrackList,
   TrackUpdata,
   TrackDelete,
+  DemandgoBack,
 } from '../services/api';
 
 export default {
@@ -51,19 +52,19 @@ export default {
       });
     },
     // 打开编辑
-    *demandopenflow({ payload: { processInstanceId } }, { call, put }) {
-      const response = yield call(DemandOpenFlow, processInstanceId);
+    *demandopenflow({ payload: { processInstanceId, taskId } }, { call, put }) {
+      const response = yield call(DemandOpenFlow, processInstanceId, taskId);
       yield put({
         type: 'saveinfo',
         payload: response.data,
       });
     },
     // 登记编辑保存
-    *demandregisterupdate({ payload: { paloadvalues, processInstanceId } }, { call, put }) {
+    *demandregisterupdate({ payload: { paloadvalues, processInstanceId, taskId } }, { call, put }) {
       const response = yield call(registerSaveOrUpdate, paloadvalues);
       if (response.code === 200) {
         message.success(response.msg, 2);
-        const resopen = yield call(DemandOpenFlow, processInstanceId);
+        const resopen = yield call(DemandOpenFlow, processInstanceId, taskId);
         yield put({
           type: 'saveinfo',
           payload: resopen.data,
@@ -72,6 +73,7 @@ export default {
     },
     // 编辑通用流转
     *demandnextstep({ payload }, { call }) {
+      console.log(payload);
       const response = yield call(NextStep, payload);
       if (response.code === 200) {
         message.success(response.msg, 2);
@@ -81,10 +83,25 @@ export default {
       }
     },
     // 编辑通用保存
-    *demandsave({ payload }, { call }) {
-      const response = yield call(DemandSaveOrUpdate, payload);
+    *demandsave({ payload: { paloadvalues, processInstanceId, taskId } }, { call, put }) {
+      const response = yield call(DemandSaveOrUpdate, paloadvalues);
       if (response.code === 200) {
         message.success(response.msg, 2);
+        const openres = yield call(DemandOpenFlow, processInstanceId, taskId);
+        yield put({
+          type: 'saveinfo',
+          payload: openres.data,
+        });
+      }
+    },
+    // 编辑回退
+    *demanback({ payload }, { call }) {
+      const resmsg = yield call(DemandgoBack, payload);
+      if (resmsg.code === 200) {
+        message.success(resmsg.msg, 3);
+        router.push({
+          pathname: `/ITSM/demandmanage/to-do`,
+        });
       }
     },
     // 需求跟踪查询

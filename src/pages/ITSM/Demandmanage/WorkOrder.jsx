@@ -1,10 +1,8 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useContext } from 'react';
 import moment from 'moment';
 import { connect } from 'dva';
 import { Collapse, Steps, Spin, message } from 'antd';
-import { DatePicker } from 'antd';
 import styles from './index.less';
-import { DingdingOutlined } from '@ant-design/icons';
 import Registrat from './components/Registrat';
 import Examine from './components/Examine';
 import Track from './components/Track';
@@ -39,7 +37,7 @@ function WorkOrder(props) {
   const [activeKey, setActiveKey] = useState(['form']);
   const { taskName, taskId, mainId } = location.query;
   // const [ischeck, setIscheck] = useState(false); // 是否在校验状态
-  // const [flowtype, setFlowtype] = useState('1'); // 流转类型
+  const [paloads, setPaloads] = useState('');
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
 
   // 初始化用户信息，流程类型
@@ -49,10 +47,35 @@ function WorkOrder(props) {
     });
     sessionStorage.setItem('Processtype', 'demand');
   }, []);
-  // 更新流转类型,下载列表
+
+  // 初始化历史附件
   useEffect(() => {
-    sessionStorage.setItem('flowtype', 1);
-  }, []);
+    if (
+      info !== '' &&
+      taskName === '需求登记' &&
+      loading === false &&
+      info.demandForm.attachment !== '[]'
+    ) {
+      setFiles({ ...files, arr: JSON.parse(info.demandForm.attachment) });
+    }
+  }, [info]);
+
+  // 加载流程记录，加载编辑历史
+  useEffect(() => {
+    dispatch({
+      type: 'demandtodo/demandrecords',
+      payload: {
+        processId: mainId,
+      },
+    });
+    dispatch({
+      type: 'demandtodo/demandopenflow',
+      payload: {
+        processInstanceId: mainId,
+        taskId,
+      },
+    });
+  }, [mainId]);
 
   const formerr = () => {
     message.error('请将信息填写完整...');
@@ -73,10 +96,11 @@ function WorkOrder(props) {
             registerTime: values.registerTime.format(),
             attachment: JSON.stringify(files.arr),
             functionalModule: values.functionalModule.join('/'),
-            nextUser: sessionStorage.getItem('userauthorityid'),
+            nextUserIds: [{ nodeName: '', userIds: [] }],
             id: info.demandForm.id,
           },
           processInstanceId: mainId,
+          taskId,
         },
       });
     }
@@ -91,7 +115,7 @@ function WorkOrder(props) {
               registerTime: values.registerTime.format(),
               attachment: JSON.stringify(files.arr),
               functionalModule: values.functionalModule.join('/'),
-              nextUserIds: sessionStorage.getItem('userauthorityid').split(','),
+              nextUserIds: JSON.parse(sessionStorage.getItem('NextflowUserId')),
               // nextUser: sessionStorage.getItem('userName'),
               taskId,
             },
@@ -117,45 +141,78 @@ function WorkOrder(props) {
   const ExamineRef = useRef();
   const getdemandexamine = () => {
     const id = setid();
-    if (type === 'save') {
-      const values = ExamineRef.current.getFieldsValue();
-      dispatch({
-        type: 'demandtodo/demandsave',
-        payload: {
-          ...values,
-          reviewTime: values.reviewTime.format(),
-          business: Number(values.business),
-          releases: Number(values.releases),
-          attachment: JSON.stringify(files.arr),
-          nextUserIds: sessionStorage.getItem('userauthorityid').split(),
-          registerId: info.demandForm.id,
-          id,
-          taskName: info.taskName,
-        },
-      });
-    }
-    if (type === 'flow') {
-      ExamineRef.current.validateFields((err, values) => {
-        if (!err) {
+    switch (type) {
+      case 'save':
+        ExamineRef.current.validateFields((err, values) => {
           dispatch({
-            type: 'demandtodo/demandnextstep',
+            type: 'demandtodo/demandsave',
             payload: {
-              ...values,
-              reviewTime: values.reviewTime.format(),
-              business: Number(values.business),
-              releases: Number(values.releases),
-              attachment: JSON.stringify(files.arr),
-              nextUserIds: sessionStorage.getItem('userauthorityid').split(),
+              paloadvalues: {
+                ...values,
+                reviewTime: values.reviewTime.format(),
+                business: Number(values.business),
+                releases: Number(values.releases),
+                attachment: JSON.stringify(files.arr),
+                registerId: info.demandForm.id,
+                id,
+                taskName: info.taskName,
+              },
+              processInstanceId: mainId,
               taskId,
-              registerId: info.demandForm.id,
-              id: info.historys[info.historys.length - 1].id,
-              taskName: info.taskName,
             },
           });
-        } else {
-          formerr();
-        }
-      });
+        });
+        break;
+      case 'flow':
+        ExamineRef.current.validateFields((err, values) => {
+          if (!err) {
+            dispatch({
+              type: 'demandtodo/demandnextstep',
+              payload: {
+                ...values,
+                reviewTime: values.reviewTime.format(),
+                business: Number(values.business),
+                releases: Number(values.releases),
+                attachment: JSON.stringify(files.arr),
+                nextUserIds: JSON.parse(sessionStorage.getItem('NextflowUserId')),
+                registerId: info.demandForm.id,
+                id,
+                taskName: info.taskName,
+                taskId,
+              },
+            });
+          } else {
+            formerr();
+          }
+        });
+        break;
+      case 'regist':
+        ExamineRef.current.validateFields((err, values) => {
+          if (!err) {
+            dispatch({
+              type: 'demandtodo/demandnextstep',
+              payload: {
+                ...values,
+                reviewTime: values.reviewTime.format(),
+                business: Number(values.business),
+                releases: Number(values.releases),
+                attachment: JSON.stringify(files.arr),
+                nextUserIds: [
+                  { nodeName: '需求登记', userIds: info.demandForm.registerPersonId.split() },
+                ],
+                registerId: info.demandForm.id,
+                id,
+                taskName: info.taskName,
+                taskId,
+              },
+            });
+          } else {
+            formerr();
+          }
+        });
+        break;
+      default:
+        break;
     }
   };
   // 需求跟踪
@@ -201,12 +258,15 @@ function WorkOrder(props) {
         getregistrats();
         break;
       }
-      case '需求审核':
-      case '运维审核':
-      case '需求复核':
+      case '业务科室领导审核':
+      case '系统开发商审核':
+      case '自动化科专责审核':
+      case '自动化科业务人员审核':
+      case '市场部领导审核':
+      case '科室领导审核':
         getdemandexamine();
         break;
-      case '开发跟踪':
+      case '系统开发商处理':
         getdemantrack();
         break;
       case '需求确认':
@@ -221,43 +281,49 @@ function WorkOrder(props) {
       handleflow();
     }
   }, [type]);
-  console.log(files);
+
   // 保存删除附件驱动表单保存
   useEffect(() => {
     if (taskName === '需求登记' && files.ischange === true) {
-      const values = RegistratRef.current.getFieldsValue();
-      dispatch({
-        type: 'demandtodo/demandregisterupdate',
-        payload: {
-          paloadvalues: {
-            ...values,
-            creationTime: values.creationTime.format(),
-            registerTime: values.registerTime.format(),
-            attachment: JSON.stringify(files.arr),
-            functionalModule: values.functionalModule.join('/'),
-            nextUser: sessionStorage.getItem('userauthorityid'),
-            id: info.demandForm.id,
+      RegistratRef.current.validateFields((err, values) => {
+        dispatch({
+          type: 'demandtodo/demandregisterupdate',
+          payload: {
+            paloadvalues: {
+              ...values,
+              creationTime: values.creationTime.format(),
+              registerTime: values.registerTime.format(),
+              attachment: JSON.stringify(files.arr),
+              functionalModule: values.functionalModule.join('/'),
+              nextUserIds: [{ nodeName: '', userIds: [] }],
+              id: info.demandForm.id,
+            },
+            processInstanceId: mainId,
+            taskId,
           },
-          processInstanceId: mainId,
-        },
+        });
       });
     }
     if (taskName !== '需求登记' && taskName !== '需求跟踪' && files.ischange === true) {
       const id = setid();
-      const values = ExamineRef.current.getFieldsValue();
-      dispatch({
-        type: 'demandtodo/demandsave',
-        payload: {
-          ...values,
-          reviewTime: values.reviewTime.format(),
-          business: Number(values.business),
-          releases: Number(values.releases),
-          attachment: JSON.stringify(files.arr),
-          nextUserIds: sessionStorage.getItem('userauthorityid').split(),
-          registerId: info.demandForm.id,
-          id,
-          taskName: info.taskName,
-        },
+      ExamineRef.current.validateFields((err, values) => {
+        dispatch({
+          type: 'demandtodo/demandsave',
+          payload: {
+            paloadvalues: {
+              ...values,
+              reviewTime: values.reviewTime.format(),
+              business: Number(values.business),
+              releases: Number(values.releases),
+              attachment: JSON.stringify(files.arr),
+              registerId: info.demandForm.id,
+              id,
+              taskName: info.taskName,
+            },
+            processInstanceId: mainId,
+            taskId,
+          },
+        });
       });
     }
   }, [files]);
@@ -265,21 +331,6 @@ function WorkOrder(props) {
   const callback = key => {
     setActiveKey(key);
   };
-  // 加载流程记录，加载编辑历史
-  useEffect(() => {
-    dispatch({
-      type: 'demandtodo/demandrecords',
-      payload: {
-        processId: mainId,
-      },
-    });
-    dispatch({
-      type: 'demandtodo/demandopenflow',
-      payload: {
-        processInstanceId: mainId,
-      },
-    });
-  }, [mainId]);
 
   return (
     <div className={styles.collapse}>
@@ -313,8 +364,8 @@ function WorkOrder(props) {
             onChange={callback}
             style={{ marginTop: '-25px' }}
           >
-            <Panel header={taskName} key="form">
-              {taskName === '需求登记' && (
+            <Panel header={info.taskName} key="form">
+              {info.taskName === '需求登记' && (
                 <Registrat
                   formItemLayout={formItemLayout}
                   forminladeLayout={forminladeLayout}
@@ -329,92 +380,76 @@ function WorkOrder(props) {
                   userinfo={userinfo}
                 />
               )}
-              {taskName === '需求审核' && info.historys.length === 0 && (
+              {info.taskName === '业务科室领导审核' && info.historys.length === 0 && (
                 <Examine
                   ref={ExamineRef}
+                  location={location}
                   formItemLayout={formItemLayout}
                   forminladeLayout={forminladeLayout}
                   text="审核"
                   userinfo={userinfo}
                   taskName={info.taskName}
                   info={undefined}
-                  files={files.arr}
+                  files={[]}
                   ChangeFiles={newvalue => {
                     setFiles(newvalue);
                   }}
                 />
               )}
-              {taskName === '需求审核' && info.historys.length > 0 && (
-                <Examine
-                  ref={ExamineRef}
-                  formItemLayout={formItemLayout}
-                  forminladeLayout={forminladeLayout}
-                  text="审核"
-                  userinfo={userinfo}
-                  taskName={info.taskName}
-                  info={
-                    info.historys?.slice(-1)[0].taskName === info.taskName
-                      ? info.historys.slice(-1)
-                      : undefined
-                  }
-                  files={
-                    info.historys?.slice(-1)[0].taskName === info.taskName
-                      ? JSON.parse(info.historys?.slice(-1)[0].attachment)
-                      : []
-                  }
-                  ChangeFiles={newvalue => {
-                    setFiles(newvalue);
-                  }}
-                />
-              )}
-              {taskName === '运维审核' && (
-                <Examine
-                  ref={ExamineRef}
-                  formItemLayout={formItemLayout}
-                  forminladeLayout={forminladeLayout}
-                  text="运维"
-                  // register={info.demandForm}
-                  userinfo={userinfo}
-                  taskName={info.taskName}
-                  files={
-                    info.historys?.slice(-1)[0].taskName === info.taskName
-                      ? JSON.parse(info.historys?.slice(-1)[0].attachment)
-                      : []
-                  }
-                  ChangeFiles={newvalue => {
-                    setFiles(newvalue);
-                  }}
-                  info={
-                    info.historys?.slice(-1)[0].taskName === info.taskName
-                      ? info.historys.slice(-1)
-                      : undefined
-                  }
-                />
-              )}
-              {taskName === '需求复核' && (
-                <Examine
-                  ref={ExamineRef}
-                  formItemLayout={formItemLayout}
-                  forminladeLayout={forminladeLayout}
-                  text="复核"
-                  userinfo={userinfo}
-                  taskName={info.taskName}
-                  files={
-                    info.historys?.slice(-1)[0].attachment !== ''
-                      ? JSON.parse(info.historys?.slice(-1)[0].attachment)
-                      : []
-                  }
-                  ChangeFiles={newvalue => {
-                    setFiles(newvalue);
-                  }}
-                  info={
-                    info.historys?.slice(-1)[0].taskName === info.taskName
-                      ? info.historys.slice(-1)
-                      : undefined
-                  }
-                />
-              )}
-              {taskName === '需求跟踪' && (
+              {(info.taskName === '业务科室领导审核' && info.historys.length > 0) ||
+                info.taskName === '自动化科业务人员审核' ||
+                (info.taskName === '科室领导审核' && (
+                  <Examine
+                    ref={ExamineRef}
+                    location={location}
+                    formItemLayout={formItemLayout}
+                    forminladeLayout={forminladeLayout}
+                    text="审核"
+                    userinfo={userinfo}
+                    taskName={info.taskName}
+                    info={
+                      info.historys?.slice(-1)[0].taskName === info.taskName
+                        ? info.historys.slice(-1)
+                        : undefined
+                    }
+                    files={
+                      info.historys?.slice(-1)[0].taskName === info.taskName
+                        ? JSON.parse(info.historys?.slice(-1)[0].attachment)
+                        : []
+                    }
+                    ChangeFiles={newvalue => {
+                      setFiles(newvalue);
+                    }}
+                  />
+                ))}
+              {(info.taskName === '业务科室领导审核' && info.historys.length > 0) ||
+                info.taskName === '系统开发商审核' ||
+                info.taskName === '自动化科业务人员审核' ||
+                (info.taskName === '市场部领导审核' && (
+                  <Examine
+                    ref={ExamineRef}
+                    location={location}
+                    formItemLayout={formItemLayout}
+                    forminladeLayout={forminladeLayout}
+                    text="审核"
+                    userinfo={userinfo}
+                    taskName={info.taskName}
+                    info={
+                      info.historys?.slice(-1)[0].taskName === info.taskName
+                        ? info.historys.slice(-1)
+                        : undefined
+                    }
+                    files={
+                      info.historys?.slice(-1)[0].taskName === info.taskName
+                        ? JSON.parse(info.historys?.slice(-1)[0].attachment)
+                        : []
+                    }
+                    ChangeFiles={newvalue => {
+                      setFiles(newvalue);
+                    }}
+                  />
+                ))}
+              {taskName === '系统开发商处理' && (
                 <Track
                   ref={TrackRef}
                   userinfo={userinfo}
@@ -469,5 +504,5 @@ export default connect(({ demandtodo, itsmuser, demandregister, loading }) => ({
   records: demandtodo.records,
   info: demandtodo.info,
   demandregister,
-  loading: loading.effects['demandtodo/demandopenflow'],
+  loading: loading.models.demandtodo,
 }))(WorkOrder);

@@ -72,6 +72,7 @@ function WorkOrder(props) {
   const [defaultvalue, setDefaultvalue] = useState(''); // 自行处理后处理表单回填信息
   const [flowtype, setFlowtype] = useState('1'); // 流转类型
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
+  const [handefiles, setHandleFiles] = useState({ arr: [], ischange: false }); // 登记时自行处理附件列表
   const RegistratRef = useRef();
   const CheckRef = useRef();
   const HandleRef = useRef();
@@ -139,17 +140,33 @@ function WorkOrder(props) {
   // 登记表单
   const getregistrats = () => {
     if (type === 'save') {
-      RegistratRef.current.validateFields((err, values) => {
-        setIscheck(true);
-        setFormregistrat({
-          ...values,
-          register_occurTime: values.register_occurTime.format('YYYY-MM-DD HH:mm:ss'),
-          register_selfhandle: String(Number(values.register_selfhandle)),
-          register_supplement: String(Number(values.register_supplement)),
-          register_fileIds: JSON.stringify(files.arr),
+      if (show) {
+        RegistratRef.current.validateFields((err, values) => {
+          if (!err) {
+            setIscheck(true);
+            setFormregistrat({
+              ...values,
+              register_occurTime: values.register_occurTime.format('YYYY-MM-DD HH:mm:ss'),
+              register_selfhandle: String(Number(values.register_selfhandle)),
+              register_supplement: String(Number(values.register_supplement)),
+              register_fileIds: JSON.stringify(files.arr),
+            });
+          } else {
+            formerr();
+          }
         });
-        routerRefresh();
-      });
+      } else {
+        RegistratRef.current.validateFields((err, values) => {
+          setIscheck(true);
+          setFormregistrat({
+            ...values,
+            register_occurTime: values.register_occurTime.format('YYYY-MM-DD HH:mm:ss'),
+            register_selfhandle: String(Number(values.register_selfhandle)),
+            register_supplement: String(Number(values.register_supplement)),
+            register_fileIds: JSON.stringify(files.arr),
+          });
+        });
+      }
     } else {
       RegistratRef.current.validateFields((err, values) => {
         if (!err) {
@@ -175,18 +192,17 @@ function WorkOrder(props) {
         setIscheck(true);
         setFormcheck({
           ...values,
-          check_checkTime: values.check_checkTime.format('YYYY-MM-DD HH:mm'),
+          check_checkTime: values.check_checkTime.format('YYYY-MM-DD HH:mm:ss'),
           check_fileIds: JSON.stringify(files.arr),
         });
       });
-      routerRefresh();
     } else {
       CheckRef.current.validateFields((err, values) => {
         if (!err) {
           setIscheck(true);
           setFormcheck({
             ...values,
-            check_checkTime: values.check_checkTime.format('YYYY-MM-DD HH:mm'),
+            check_checkTime: values.check_checkTime.format('YYYY-MM-DD HH:mm:ss'),
             check_fileIds: JSON.stringify(files.arr),
           });
         } else {
@@ -199,22 +215,36 @@ function WorkOrder(props) {
   // 处理表单
   const gethandles = () => {
     if (type === 'save') {
-      HandleRef.current.validateFields((err, values) => {
-        setIscheck(true);
-        setFormhandle({
-          ...values,
-          handle_endTime: values.handle_endTime.format('YYYY-MM-DD HH:mm'),
-          handle_fileIds: JSON.stringify(files.arr),
+      if (show) {
+        HandleRef.current.validateFields((err, values) => {
+          if (!err) {
+            setIscheck(true);
+            setFormhandle({
+              ...values,
+              handle_endTime: values.handle_endTime.format('YYYY-MM-DD HH:mm:ss'),
+              handle_fileIds: JSON.stringify(handefiles.arr),
+            });
+          } else {
+            formerr();
+          }
         });
-      });
-      routerRefresh();
+      } else {
+        HandleRef.current.validateFields((err, values) => {
+          setIscheck(true);
+          setFormhandle({
+            ...values,
+            handle_endTime: values.handle_endTime.format('YYYY-MM-DD HH:mm:ss'),
+            handle_fileIds: JSON.stringify(files.arr),
+          });
+        });
+      }
     } else {
       HandleRef.current.validateFields((err, values) => {
         if (!err) {
           setIscheck(true);
           setFormhandle({
             ...values,
-            handle_endTime: values.handle_endTime.format('YYYY-MM-DD HH:mm'),
+            handle_endTime: values.handle_endTime.format('YYYY-MM-DD HH:mm:ss'),
             handle_fileIds: JSON.stringify(files.arr),
           });
         } else {
@@ -229,18 +259,17 @@ function WorkOrder(props) {
         setIscheck(true);
         setFormvisit({
           ...values,
-          finish_revisitTime: values.finish_revisitTime.format('YYYY-MM-DD HH:mm'),
+          finish_revisitTime: values.finish_revisitTime.format('YYYY-MM-DD HH:mm:ss'),
           finish_fileIds: JSON.stringify(files.arr),
         });
       });
-      routerRefresh();
     } else {
       ReturnVisitRef.current.validateFields((err, values) => {
         if (!err) {
           setIscheck(true);
           setFormvisit({
             ...values,
-            finish_revisitTime: values.finish_revisitTime.format('YYYY-MM-DD HH:mm'),
+            finish_revisitTime: values.finish_revisitTime.format('YYYY-MM-DD HH:mm:ss'),
             finish_fileIds: JSON.stringify(files.arr),
           });
         } else {
@@ -294,6 +323,20 @@ function WorkOrder(props) {
         },
       });
     }
+  };
+
+  // 结束流程
+  const overflow = () => {
+    dispatch({
+      type: 'eventtodo/eventransfer',
+      payload: {
+        flow: {
+          id,
+          userIds: sessionStorage.getItem('userauthorityid'),
+          type: '1',
+        },
+      },
+    });
   };
 
   // 点击保存，流转触发表单校验
@@ -386,6 +429,9 @@ function WorkOrder(props) {
       case 'flowcheck':
         eventcheck('1');
         break;
+      case 'over':
+        overflow();
+        break;
       default:
         break;
     }
@@ -410,9 +456,9 @@ function WorkOrder(props) {
           type: 'save',
         },
       });
+      setFiles({ ...files, ischange: false });
     }
   }, [files]);
-
   return (
     <div className={styles.collapse}>
       {recordsloading === false && (
@@ -474,7 +520,25 @@ function WorkOrder(props) {
                 />
               </Panel>
             )}
-
+            {show === true && pangekey === '1' && (
+              <Panel header="事件处理" key="handleform">
+                <Handle
+                  formItemLayout={formItemLayout}
+                  forminladeLayout={forminladeLayout}
+                  ref={HandleRef}
+                  info={finishfirst}
+                  main={data[0].main}
+                  userinfo={userinfo}
+                  defaultvalue={defaultvalue}
+                  location={location}
+                  ChangeFiles={newvalue => {
+                    setHandleFiles(newvalue);
+                  }}
+                  files={[]}
+                  show={show}
+                />
+              </Panel>
+            )}
             {pangekey === '2' && (
               <Panel header="事件审核" key="checkform">
                 <Check
@@ -489,7 +553,7 @@ function WorkOrder(props) {
                   ChangeFiles={newvalue => {
                     setFiles(newvalue);
                   }}
-                  files={files.arr}
+                  files={[]}
                 />
               </Panel>
             )}
@@ -511,14 +575,14 @@ function WorkOrder(props) {
                 />
               </Panel>
             )}
-            {((edit !== undefined && pangekey === '5' && edit.handle === null) ||
-              (show === true && pangekey === '1')) && (
+
+            {edit !== undefined && pangekey === '5' && edit.handle.fileIds === 'null' && (
               <Panel header="事件处理" key="handleform">
                 <Handle
                   formItemLayout={formItemLayout}
                   forminladeLayout={forminladeLayout}
                   ref={HandleRef}
-                  info={finishfirst}
+                  info={edit === null ? finishfirst : edit}
                   main={data[0].main}
                   userinfo={userinfo}
                   defaultvalue={defaultvalue}
@@ -526,30 +590,30 @@ function WorkOrder(props) {
                   ChangeFiles={newvalue => {
                     setFiles(newvalue);
                   }}
-                  files={files.arr}
+                  files={[]}
+                  show={show}
                 />
               </Panel>
             )}
-            {pangekey !== '1' &&
-              (show === true ||
-                (edit !== undefined && pangekey === '5' && edit.handle !== null) ||
-                pangekey === 6) && (
-                <Panel header="事件处理" key="handleform">
-                  <Handle
-                    formItemLayout={formItemLayout}
-                    forminladeLayout={forminladeLayout}
-                    ref={HandleRef}
-                    info={edit}
-                    main={data[0].main}
-                    userinfo={userinfo}
-                    location={location}
-                    ChangeFiles={newvalue => {
-                      setFiles(newvalue);
-                    }}
-                    files={edit.handle.fileIds !== '' ? JSON.parse(edit.handle.fileIds) : []}
-                  />
-                </Panel>
-              )}
+            {edit !== undefined && pangekey === '5' && edit.handle.fileIds !== 'null' && (
+              <Panel header="事件处理" key="handleform">
+                <Handle
+                  formItemLayout={formItemLayout}
+                  forminladeLayout={forminladeLayout}
+                  ref={HandleRef}
+                  info={edit === null ? finishfirst : edit}
+                  main={data[0].main}
+                  userinfo={userinfo}
+                  defaultvalue={defaultvalue}
+                  location={location}
+                  ChangeFiles={newvalue => {
+                    setFiles(newvalue);
+                  }}
+                  files={!edit.handle.fileIds === false ? JSON.parse(edit.handle.fileIds) : []}
+                  show={show}
+                />
+              </Panel>
+            )}
             {pangekey === '6' && edit.finish === null && (
               <Panel header="事件确认" key="visitform">
                 <ReturnVisit
@@ -564,7 +628,7 @@ function WorkOrder(props) {
                   ChangeFiles={newvalue => {
                     setFiles(newvalue);
                   }}
-                  files={files.arr}
+                  files={[]}
                 />
               </Panel>
             )}
@@ -582,7 +646,7 @@ function WorkOrder(props) {
                   ChangeFiles={newvalue => {
                     setFiles(newvalue);
                   }}
-                  files={edit.finish.fileIds !== '' ? JSON.parse(edit.finish.fileIds) : []}
+                  files={edit.finish.fileIds === 'null' ? [] : JSON.parse(edit.finish.fileIds)}
                 />
               </Panel>
             )}

@@ -4,7 +4,7 @@ import { Descriptions } from 'antd';
 import styles from '../index.less';
 import Downloadfile from '@/components/SysUpload/Downloadfile';
 
-function Registratdes(props) {
+function Examinedes(props) {
   const { info } = props;
   return (
     <div className={styles.collapse}>
@@ -46,4 +46,4 @@ function Registratdes(props) {
   );
 }
 
-export default Registratdes;
+export default Examinedes;

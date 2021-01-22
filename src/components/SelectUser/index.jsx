@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
-import { Modal, Radio, Spin, Checkbox } from 'antd';
+import { Modal, message, Spin, Checkbox } from 'antd';
 
 // 克隆子元素按钮，并添加事件
 const withClick = (element, showDrawer = () => {}) => {
@@ -9,6 +9,7 @@ const withClick = (element, showDrawer = () => {}) => {
 
 const SelectUser = props => {
   const { children, dispatch, handleSubmit, userlist, loading, changorder, taskId } = props;
+
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [defaultvalue, setDefaultvalue] = useState([]);
   const type = sessionStorage.getItem('Processtype');
@@ -36,6 +37,7 @@ const SelectUser = props => {
   };
 
   const [value, setValue] = useState('');
+  const [demandvalue, setDemandValue] = useState([]);
 
   // 单选下一环节人员
   // const handleChange = e => {
@@ -48,12 +50,27 @@ const SelectUser = props => {
     sessionStorage.setItem('NextflowUserId', checkedValues.join(','));
   };
 
-  useEffect(() => {
-    sessionStorage.setItem('NextflowUserId', value);
-  }, []);
+  // 需求多选下一环节人员
+  const handledemandChange = (values, nodeName, key) => {
+    const obj = {};
+    obj.nodeName = nodeName;
+    obj.userIds = values;
+    const target = demandvalue.filter((_, index) => key === index)[0];
+    if (target === undefined) {
+      demandvalue.push(obj);
+    } else {
+      demandvalue.splice(key, 1, obj);
+    }
+    sessionStorage.setItem('NextflowUserId', JSON.stringify(demandvalue));
+    // setValue(values);
+  };
+
+  // useEffect(() => {
+  //   sessionStorage.setItem('NextflowUserId', value);
+  // }, []);
 
   useEffect(() => {
-    if (changorder !== undefined) {
+    if (changorder !== undefined && type === 'event') {
       sessionStorage.setItem('Nextflowmane', changorder);
       sessionStorage.setItem('flowtype', '3');
     }
@@ -104,8 +121,29 @@ const SelectUser = props => {
   };
 
   const handleOk = () => {
-    handleSubmit();
-    setIsModalVisible(false);
+    if (type !== 'demand') {
+      if (value.length === 0) {
+        message.error('最少选择一个处理人！');
+      } else {
+        handleSubmit();
+        setIsModalVisible(false);
+      }
+    }
+    if (type === 'demand') {
+      const newArr = [];
+      const nameArr = [];
+      for (let i = 0; i < demandvalue.length; i += 1) {
+        const idnum = demandvalue[i].userIds.length;
+        newArr.push(idnum);
+        nameArr.push(demandvalue[i].nodeName);
+      }
+      if (newArr.indexOf(0) !== -1 || nameArr.length < userlist.length) {
+        message.error('最少选择一个处理人！');
+      } else {
+        handleSubmit();
+        setIsModalVisible(false);
+      }
+    }
   };
 
   const handleCancel = () => {
@@ -118,28 +156,50 @@ const SelectUser = props => {
     <>
       {withClick(children, showModal)}
       <Modal
-        title={`请选择${nextflowuser}人`}
+        title="选择下一环节处理人"
         visible={isModalVisible}
         onOk={handleOk}
         onCancel={handleCancel}
       >
         <Spin tip="正在加载数据..." spinning={Boolean(loading)}>
-          {loading === false && (
+          {loading === false && type !== 'demand' && (
             <>
-              {/* <Radio.Group onChange={handleChange} value={value}>
-                {userlist.map((obj) => {
-                  return (
-                    <Radio key={obj.userId} value={obj.userId}>
-                      {obj.userName}
-                    </Radio>
-                  )
-                })}
-              </Radio.Group> */}
-              <Checkbox.Group
-                defaultValue={defaultvalue}
-                options={dataArr(userlist)}
-                onChange={handleChange}
-              />
+              <div>{nextflowuser}人员</div>
+              <div style={{ marginTop: 12 }}>
+                <Checkbox.Group
+                  defaultValue={defaultvalue}
+                  options={dataArr(userlist)}
+                  onChange={handleChange}
+                />
+              </div>
+            </>
+          )}
+          {type === 'demand' && userlist !== '' && (
+            <>
+              {userlist.map((obj, index) => {
+                return (
+                  <div key={index.toString()}>
+                    <div>{obj.nodeName}人员</div>
+                    <div style={{ marginTop: 12 }}>
+                      <Checkbox.Group
+                        defaultValue={defaultvalue}
+                        options={dataArr(obj.users)}
+                        onChange={values => handledemandChange(values, obj.nodeName, index)}
+                        key={index.toString()}
+                      />
+                      {/* {obj.users.map((item, i) => {
+                        return (
+                          <Checkbox
+                            key={i.toString()}
+                            onChange={() => handledemandChange(item.userId, obj.nodeName)} >
+                            {item.userName}
+                          </Checkbox>
+                        )
+                      })} */}
+                    </div>
+                  </div>
+                );
+              })}
             </>
           )}
         </Spin>

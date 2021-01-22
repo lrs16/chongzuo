@@ -21,7 +21,7 @@ const Model = {
     *deletefile({ payload: { id } }, { call }) {
       const response = yield call(FileDelete, id);
       if (response.code === 200) {
-        message.success(response.msg, 2);
+        message.success('附件删除成功', 2);
       }
     },
   },

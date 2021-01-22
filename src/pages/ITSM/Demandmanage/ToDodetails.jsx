@@ -1,47 +1,68 @@
 import React, { useState, useEffect } from 'react';
 import router from 'umi/router';
-import { Button } from 'antd';
+import { Button, Popover } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import WorkOrder from './WorkOrder';
 import Process from './Process';
+import Backoff from './components/Backoff';
 import SelectUser from '@/components/SelectUser';
 
 function ToDoregist(props) {
-  const { location } = props;
-  const { taskName, taskId, mainId } = location.query;
+  const { location, dispatch } = props;
+  const { taskName, taskId, result } = location.query;
   const [tabActivekey, settabActivekey] = useState('workorder'); // 打开标签
-  const [validate, setValidate] = useState(false); // 初始化校验状态
   const [buttontype, setButtonType] = useState('');
+  const [backvalue, setBackvalue] = useState('');
+  const [Popvisible, setVisible] = useState(false);
 
   const handleHold = type => {
-    setValidate(true);
     setButtonType(type);
   };
-
   const handleclose = () => {
     router.push({
       pathname: `/ITSM/demandmanage/to-do`,
     });
   };
-  useEffect(() => {
-    sessionStorage.setItem('NextflowUserId', '1310135708685438978');
-  }, []);
+  // 回退
+  const content = (
+    <Backoff
+      ChangeBackvalue={value => setBackvalue(value)}
+      ChangeVisible={visi => setVisible(visi)}
+    />
+  );
+  const handleVisibleChange = visible => {
+    setVisible(visible);
+  };
 
   const operations = (
     <>
       <Button type="danger" ghost style={{ marginRight: 8 }}>
         删除
       </Button>
+      {/* {taskName !== '需求登记' && (
+        <Popover content={content} visible={Popvisible} onVisibleChange={handleVisibleChange}>
+          <Button type="primary" ghost style={{ marginRight: 8 }}>
+            回退上一步
+          </Button>
+        </Popover>
+      )} */}
       {taskName !== '需求跟踪' && (
         <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleHold('save')}>
           保存
         </Button>
       )}
-      <SelectUser handleSubmit={() => handleHold('flow')} changorder="审核" taskId={taskId}>
-        <Button type="primary" style={{ marginRight: 8 }}>
-          流转
+      {result !== '0' && (
+        <SelectUser handleSubmit={() => handleHold('flow')} taskId={taskId}>
+          <Button type="primary" style={{ marginRight: 8 }}>
+            流转
+          </Button>
+        </SelectUser>
+      )}
+      {result === '0' && (
+        <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleHold('regist')}>
+          登记
         </Button>
-      </SelectUser>
+      )}
       <Button onClick={handleclose}>返回</Button>
     </>
   );
@@ -76,16 +97,7 @@ function ToDoregist(props) {
       tabActiveKey={tabActivekey}
       onTabChange={handleTabChange}
     >
-      {tabActivekey === 'workorder' && (
-        <WorkOrder
-          location={location}
-          changValidate={value => {
-            setValidate(value);
-          }}
-          validate={validate}
-          type={buttontype}
-        />
-      )}
+      {tabActivekey === 'workorder' && <WorkOrder location={location} type={buttontype} />}
       {tabActivekey === 'process' && <Process location={location} />}
     </PageHeaderWrapper>
   );

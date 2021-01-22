@@ -1,6 +1,7 @@
 import React from 'react';
 import { Descriptions } from 'antd';
 import styles from '../index.less';
+import Downloadfile from '@/components/SysUpload/Downloadfile';
 
 // 来源
 const sourcemaps = new Map([
@@ -54,7 +55,7 @@ function Handledes(props) {
 
   return (
     <div className={styles.collapse}>
-      <Descriptions style={{ marginTop: 24 }}>
+      <Descriptions style={{ marginTop: 24 }} size="middle">
         <Descriptions.Item label="处理人">{info.handler}</Descriptions.Item>
         <Descriptions.Item label="处理人单位">{info.handleUnit}</Descriptions.Item>
         <Descriptions.Item label="处理人部门">{info.handleDept}</Descriptions.Item>
@@ -72,7 +73,9 @@ function Handledes(props) {
         <Descriptions.Item label="解决方案" span={3}>
           {info.content}
         </Descriptions.Item>
-        {/* <Descriptions.Item label="上传附件"span={3}>No. 18, Wantang Road, Xihu District, Hangzhou, Zhejiang, China</Descriptions.Item> */}
+        <Descriptions.Item label="附件" span={3}>
+          {info.fileIds !== '' && <Downloadfile files={info.fileIds} />}
+        </Descriptions.Item>
       </Descriptions>
     </div>
   );

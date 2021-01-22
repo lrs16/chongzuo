@@ -1,4 +1,12 @@
-import React, { useRef, useImperativeHandle, forwardRef, useState, useEffect } from 'react';
+import React, {
+  useRef,
+  useImperativeHandle,
+  forwardRef,
+  useState,
+  useEffect,
+  useContext,
+} from 'react';
+import router from 'umi/router';
 import moment from 'moment';
 import { Row, Col, Form, Input, Radio, DatePicker, Select, Checkbox } from 'antd';
 import SysUpload from '@/components/SysUpload';
@@ -6,10 +14,17 @@ import SysUpload from '@/components/SysUpload';
 const { TextArea } = Input;
 const { Option } = Select;
 
-const degreemap = [
-  { key: '001', value: '低' },
-  { key: '002', value: '中' },
-  { key: '003', value: '高' },
+const leadermap = new Map([
+  [0, 0],
+  [1, 1],
+  [2, 1],
+  [3, 1],
+  [4, 1],
+]);
+
+const options = [
+  { label: '科室领导审核', value: 4 },
+  { label: '市场部领导审核', value: 3 },
 ];
 
 const Examine = forwardRef((props, ref) => {
@@ -18,18 +33,25 @@ const Examine = forwardRef((props, ref) => {
     forminladeLayout,
     userinfo,
     text,
-    taskName,
     info,
     files,
     ChangeFiles,
+    location,
   } = props;
-  const { getFieldDecorator } = props.form;
+  const { getFieldDecorator, setFieldsValue } = props.form;
+  const { taskName, taskId, result, mainId } = location.query;
   const required = true;
+  // 附件历史
   const [fileslist, setFilesList] = useState({ arr: [], ischange: false });
   useEffect(() => {
     ChangeFiles(fileslist);
   }, [fileslist]);
+  // 审核结果与流转类型
   const [adopt, setAdopt] = useState(1);
+  useEffect(() => {
+    sessionStorage.setItem('flowtype', adopt);
+  }, [adopt]);
+
   const attRef = useRef();
   useImperativeHandle(
     ref,
@@ -39,9 +61,49 @@ const Examine = forwardRef((props, ref) => {
     [],
   );
 
+  const routerRefresh = () => {
+    router.push({
+      pathname: location.pathname,
+      query: {
+        taskId,
+        taskName,
+        mainId,
+        result: sessionStorage.getItem('flowtype'),
+      },
+    });
+  };
+
+  useEffect(() => {
+    sessionStorage.setItem('flowtype', info[0].result);
+    setAdopt(leadermap.get(info[0].result));
+    routerRefresh();
+  }, []);
+  // 初始化流转类型
+
   const handleAdopt = e => {
     setAdopt(e.target.value);
-    console.log(e.target.value);
+    sessionStorage.setItem('flowtype', e.target.value);
+    routerRefresh();
+  };
+
+  const handleChangeresult = values => {
+    if (values.length === 2) {
+      setFieldsValue({ result: 2 }, () => {});
+      sessionStorage.setItem('flowtype', 2);
+    }
+    if (values.length === 1 && values[0] === 3) {
+      setFieldsValue({ result: 3 }, () => {});
+      sessionStorage.setItem('flowtype', 3);
+    }
+    if (values.length === 1 && values[0] === 4) {
+      setFieldsValue({ result: 4 }, () => {});
+      sessionStorage.setItem('flowtype', 4);
+    }
+    if (values.length === 0) {
+      setFieldsValue({ result: 1 }, () => {});
+      sessionStorage.setItem('flowtype', 1);
+    }
+    routerRefresh();
   };
 
   return (
@@ -51,7 +113,7 @@ const Examine = forwardRef((props, ref) => {
           <Form.Item label={`${text}结果`}>
             {getFieldDecorator('result', {
               rules: [{ required: true, message: `请选择${text}结果` }],
-              initialValue: info[0].result,
+              initialValue: leadermap.get(info[0].result),
             })(
               <Radio.Group onChange={handleAdopt}>
                 <Radio value={1}>通过</Radio>
@@ -60,26 +122,6 @@ const Examine = forwardRef((props, ref) => {
             )}
           </Form.Item>
         </Col>
-        {taskName === '需求复核' && (
-          <Col span={8}>
-            <Form.Item label="需求优先级">
-              {getFieldDecorator('priority', {
-                rules: [{ required: true, message: '请选择需求优先级' }],
-                initialValue: info[0].priority,
-              })(
-                <Select placeholder="请选择">
-                  {degreemap.map(({ key, value }) => {
-                    return (
-                      <Option key={key} value={value}>
-                        {value}
-                      </Option>
-                    );
-                  })}
-                </Select>,
-              )}
-            </Form.Item>
-          </Col>
-        )}
         <Col span={8}>
           <Form.Item label={`${text}时间`}>
             {getFieldDecorator('reviewTime', {
@@ -88,7 +130,13 @@ const Examine = forwardRef((props, ref) => {
             })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" />)}
           </Form.Item>
         </Col>
-
+        {taskName === '自动化科专责审核' && adopt === 1 && (
+          <Col span={8}>
+            <Form.Item>
+              <Checkbox.Group options={options} onChange={values => handleChangeresult(values)} />
+            </Form.Item>
+          </Col>
+        )}
         {taskName === '需求审核' && (
           <Col span={8}>
             <Form.Item label="所属项目">
@@ -116,6 +164,7 @@ const Examine = forwardRef((props, ref) => {
               })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
             </Form.Item>
           )}
+
           {taskName === '需求复核' && (
             <>
               <Col span={8}>
@@ -195,6 +244,8 @@ Examine.defaultProps = {
       registerPerson: '',
       registrationDepartment: '',
       registrationUnit: '',
+      depleader: false,
+      marketleader: false,
     },
   ],
   userinfo: {

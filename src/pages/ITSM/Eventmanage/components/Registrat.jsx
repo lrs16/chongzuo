@@ -91,7 +91,6 @@ const Registrat = forwardRef((props, ref) => {
   const [check, setCheck] = useState(false);
   const [revisitway, setRevisitway] = useState(false);
   const [fileslist, setFilesList] = useState({ arr: [], ischange: false });
-  console.log(fileslist);
   useEffect(() => {
     if (fileslist.ischange) {
       ChangeFiles(fileslist);

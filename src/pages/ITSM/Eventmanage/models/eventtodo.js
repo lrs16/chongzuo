@@ -67,13 +67,9 @@ export default {
       }
       if (registres.code === 200) {
         const { taskId, eventStatus } = registres;
-        message.success(registres.msg, 3);
+        message.success('保存成功', 3);
         // 保存成功重新加载
         const response = yield call(EventopenFlow, taskId);
-        yield put({
-          type: 'saveinfo',
-          payload: response,
-        });
         router.push({
           pathname: `/ITSM/eventmanage/to-do/record/workorder`,
           query: {
@@ -81,8 +77,12 @@ export default {
             id: registres.taskId,
             mainId: flowInstanceId,
             next: sessionStorage.getItem('Nextflowmane'),
-            //validate: false,
+            validate: false,
           },
+        });
+        yield put({
+          type: 'saveinfo',
+          payload: response,
         });
       }
     },
@@ -97,7 +97,7 @@ export default {
         };
         const response = yield call(EventFlow, flowpayload);
         if (response.code === 200) {
-          message.success(response.msg, 5);
+          message.success(response.msg, 3);
           router.push({
             pathname: `/ITSM/eventmanage/to-do`,
           });
@@ -108,7 +108,7 @@ export default {
     *eventransfer({ payload: { flow } }, { call }) {
       const response = yield call(EventFlow, flow);
       if (response.code === 200) {
-        message.success(response.msg, 5);
+        message.success(response.msg, 3);
         router.push({
           pathname: `/ITSM/eventmanage/to-do`,
         });
@@ -123,7 +123,7 @@ export default {
       if (resmsg.code === 200) {
         const response = yield call(EventFlow, payload);
         if (response.code === 200) {
-          message.success(response.msg, 5);
+          message.success(response.msg, 3);
           router.push({
             pathname: `/ITSM/eventmanage/to-do`,
           });
@@ -135,7 +135,7 @@ export default {
     *eventaccept({ payload }, { call, put }) {
       const response = yield call(EventFlow, payload);
       if (response.code === 200) {
-        message.success(response.msg, 5);
+        message.success(response.msg, 3);
         const taskId = response.flowNodeInstanceId;
         const openres = yield call(EventopenFlow, taskId);
         yield put({
@@ -157,8 +157,11 @@ export default {
     // 删除
     *deleteflow({ payload }, { call }) {
       const response = yield call(EventDelete, payload);
+      if (response.code === -1) {
+        message.error(response.msg, 3);
+      }
       if (response.code === 200) {
-        message.success(response.msg, 5);
+        message.success(response.msg, 3);
         router.push({
           pathname: `/ITSM/eventmanage/to-do`,
         });

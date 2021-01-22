@@ -1,8 +1,7 @@
-import React, { useRef, useImperativeHandle, useEffect } from 'react';
-import router from 'umi/router';
+import React, { useRef, useImperativeHandle, useEffect, useState } from 'react';
 import moment from 'moment';
-import { Row, Col, Form, Input, Select, Upload, Button, DatePicker } from 'antd';
-import { DownloadOutlined } from '@ant-design/icons';
+import { Row, Col, Form, Input, Select, DatePicker } from 'antd';
+import SysUpload from '@/components/SysUpload';
 import styles from '../index.less';
 
 const { Option } = Select;
@@ -42,10 +41,30 @@ const result = [
 ];
 
 const Handle = React.forwardRef((props, ref) => {
-  const { formItemLayout, forminladeLayout, info, main, userinfo, defaultvalue } = props;
+  const {
+    formItemLayout,
+    forminladeLayout,
+    info,
+    main,
+    userinfo,
+    defaultvalue,
+    files,
+    ChangeFiles,
+    show,
+  } = props;
   const { handle } = info;
   const { getFieldDecorator } = props.form;
   const required = true;
+  const [fileslist, setFilesList] = useState({ arr: [], ischange: false });
+  useEffect(() => {
+    if (fileslist.ischange) {
+      ChangeFiles(fileslist);
+    }
+  }, [fileslist]);
+
+  useEffect(() => {
+    setFilesList({ ...fileslist, arr: files });
+  }, [info]);
   const attRef = useRef();
   useImperativeHandle(
     ref,
@@ -420,21 +439,19 @@ const Handle = React.forwardRef((props, ref) => {
             })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
           </Form.Item>
         </Col>
-        {/* <Col span={24}>
-          <Form.Item
-            label="上传附件"
-            {...forminladeLayout}
-            extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
-          >
-            {getFieldDecorator('ha14')(
-              <Upload>
-                <Button type="primary">
-                  <DownloadOutlined /> 上传附件
-                </Button>
-              </Upload>,
-            )}
-          </Form.Item>
-        </Col> */}
+        {!show && (
+          <Col span={24}>
+            <Form.Item
+              label="上传附件"
+              {...forminladeLayout}
+              extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
+            >
+              <div style={{ width: 400 }}>
+                <SysUpload fileslist={files} ChangeFileslist={newvalue => setFilesList(newvalue)} />
+              </div>
+            </Form.Item>
+          </Col>
+        )}
       </Form>
     </Row>
   );

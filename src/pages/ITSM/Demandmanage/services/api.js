@@ -42,10 +42,13 @@ export async function DemandImage(processId) {
 }
 
 // 待办编辑
-export async function DemandOpenFlow(processInstanceId) {
-  return request(`/demand/todo/todoDetail/${processInstanceId}`, {
-    method: 'GET',
-  });
+export async function DemandOpenFlow(processInstanceId, taskId) {
+  return request(
+    `/demand/todo/todoDetail?processInstanceId=${processInstanceId}&taskId=${taskId}`,
+    {
+      method: 'GET',
+    },
+  );
 }
 
 // 通用保存
@@ -55,8 +58,15 @@ export async function DemandSaveOrUpdate(params) {
     body: JSON.stringify(params),
   });
 }
+// 回退
+export async function DemandgoBack(params) {
+  return request(`/demand/todo/goBack/${params.taskId}`, {
+    method: 'POST',
+    body: JSON.stringify(params),
+  });
+}
 
-// 编辑保存/demand/todo/registerSaveOrUpdate
+// 编辑登记保存/demand/todo/registerSaveOrUpdate
 export async function registerSaveOrUpdate(params) {
   return request(`/demand/todo/registerSaveOrUpdate`, {
     method: 'POST',

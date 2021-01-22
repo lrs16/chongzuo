@@ -52,9 +52,33 @@
 }
 
 .collapse {
+  :global(.ant-descriptions-item-label) {
+    padding-left: 30px;
+    vertical-align: top;
+  }
+}
+
+.collapse {
   :global(.ant-descriptions-row > td) {
     width: 33%;
   }
+}
+
+.collapse {
+  :global(.ant-descriptions-bordered.ant-descriptions-small .ant-descriptions-item-label, ) {
+    padding: 8px 24px;
+  }
+}
+
+.collapse th {
+  display: table-cell;
+  white-space: nowrap;
+  text-align: right;
+  padding-left: 30px;
+}
+
+.collapse tr {
+  vertical-align: middle;
 }
 
 .stepDescription {

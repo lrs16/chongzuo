@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
 import router from 'umi/router';
-import { Card, Row, Col, Form, Input, Select, Button, DatePicker, Table, Badge } from 'antd';
+import { Card, Row, Col, Form, Input, Select, Button, DatePicker, Table } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 
@@ -49,6 +49,7 @@ const columns = [
             taskName: record.taskName,
             taskId: record.taskId,
             mainId: record.processInstanceId,
+            result: '1',
           },
         });
       };
@@ -93,7 +94,7 @@ const columns = [
     title: '发送时间',
     dataIndex: 'sendTime',
     key: 'sendTime',
-    render: (text, record) => {
+    render: text => {
       return <>{moment(text).format('YYYY-MM-DD HH:mm')}</>;
     },
   },
@@ -111,7 +112,7 @@ function ToDolist(props) {
   const [expand, setExpand] = useState(false);
 
   useEffect(() => {
-    validateFields((err, values) => {
+    validateFields(err => {
       if (!err) {
         dispatch({
           type: 'demandtodo/fetchlist',
@@ -337,7 +338,7 @@ function ToDolist(props) {
           loading={loading}
           columns={columns}
           dataSource={list.rows}
-          rowKey={record => record.demandId}
+          rowKey={(_, index) => index.toString()}
           pagination={pagination}
         />
       </Card>

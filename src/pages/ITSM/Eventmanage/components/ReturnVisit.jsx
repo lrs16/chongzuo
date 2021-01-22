@@ -1,8 +1,8 @@
-import React, { useRef, useImperativeHandle, useEffect } from 'react';
+import React, { useRef, useImperativeHandle, useEffect, useState } from 'react';
 import router from 'umi/router';
 import moment from 'moment';
-import { Row, Col, Form, Input, Select, Upload, Button, DatePicker } from 'antd';
-import { DownloadOutlined } from '@ant-design/icons';
+import { Row, Col, Form, Input, Select, DatePicker } from 'antd';
+import SysUpload from '@/components/SysUpload';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -54,12 +54,25 @@ const ReturnVisit = React.forwardRef((props, ref) => {
     ChangeFlowtype,
     userinfo,
     location,
+    files,
+    ChangeFiles,
   } = props;
   const { pangekey, id, mainId } = location.query;
   const { finish } = info;
   const { getFieldDecorator } = props.form;
   const attRef = useRef();
   const required = true;
+  const [fileslist, setFilesList] = useState({ arr: [], ischange: false });
+  useEffect(() => {
+    if (fileslist.ischange) {
+      ChangeFiles(fileslist);
+    }
+  }, [fileslist]);
+
+  useEffect(() => {
+    setFilesList({ ...fileslist, arr: files });
+  }, [info]);
+
   useImperativeHandle(
     ref,
     () => ({
@@ -186,13 +199,9 @@ const ReturnVisit = React.forwardRef((props, ref) => {
             {...forminladeLayout}
             extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
           >
-            {getFieldDecorator('visit17')(
-              <Upload>
-                <Button type="primary">
-                  <DownloadOutlined /> 上传附件
-                </Button>
-              </Upload>,
-            )}
+            <div style={{ width: 400 }}>
+              <SysUpload fileslist={files} ChangeFileslist={newvalue => setFilesList(newvalue)} />
+            </div>
           </Form.Item>
         </Col>
         <Col span={8}>

@@ -1,16 +1,15 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { connect } from 'dva';
-import { Card, Button, Spin } from 'antd';
+import { Card, Button } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import Registrat from './components/Registrat';
-import SelectUser from '@/components/SelectUser';
+// import SelectUser from '@/components/SelectUser';
 
 function Registration(props) {
   const { dispatch, userinfo } = props;
   const pagetitle = props.route.name;
   // const [flowtype, setFlowtype] = useState('1'); // 流转类型
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
-  console.log('files: ', files);
 
   // 初始化用户信息，流程类型
   useEffect(() => {
@@ -36,7 +35,12 @@ function Registration(props) {
         registerTime: values.registerTime.format(),
         attachment: JSON.stringify(files.arr),
         functionalModule: values.functionalModule.join('/'),
-        nextUserIds: sessionStorage.getItem('userauthorityid').split(','),
+        nextUserIds: [
+          {
+            nodeName: '',
+            userIds: [],
+          },
+        ],
         // nextUser: sessionStorage.getItem('userName'),
       },
     });
@@ -50,7 +54,7 @@ function Registration(props) {
         registerTime: values.registerTime.format(),
         attachment: JSON.stringify(files),
         functionalModule: values.functionalModule.join('/'),
-        nextUserIds: sessionStorage.getItem('userauthorityid').split(','),
+        nextUserIds: [{ nodeName: '', userIds: [] }],
         // nextUser: sessionStorage.getItem('userName'),
       },
     });
@@ -59,8 +63,9 @@ function Registration(props) {
   // 保存,流转获取表单数据
   const getregistrat = type => {
     if (type === 'save') {
-      const values = RegistratRef.current.getFieldsValue();
-      handlesubmit(values);
+      RegistratRef.current.validateFields((err, values) => {
+        handlesubmit(values);
+      });
     }
     if (type === 'next') {
       RegistratRef.current.validateFields((err, values) => {
@@ -74,17 +79,18 @@ function Registration(props) {
   // 上传附件触发保存
   useEffect(() => {
     if (files.ischange) {
-      const values = RegistratRef.current.getFieldsValue();
-      dispatch({
-        type: 'demandregister/uploadchange',
-        payload: {
-          ...values,
-          creationTime: values.creationTime.format(),
-          registerTime: values.registerTime.format(),
-          attachment: JSON.stringify(files.arr),
-          functionalModule: values.functionalModule.join('/'),
-          nextUserIds: sessionStorage.getItem('userauthorityid').split(','),
-        },
+      RegistratRef.current.validateFields((err, values) => {
+        dispatch({
+          type: 'demandregister/uploadchange',
+          payload: {
+            ...values,
+            creationTime: values.creationTime.format(),
+            registerTime: values.registerTime.format(),
+            attachment: JSON.stringify(files.arr),
+            functionalModule: values.functionalModule.join('/'),
+            nextUserIds: [{ nodeName: '', userIds: [] }],
+          },
+        });
       });
     }
   }, [files]);

@@ -44,9 +44,12 @@ const degreemap = new Map([
 
 function Registratdes(props) {
   const { info, main } = props;
+  const content = {
+    __html: main.content?.replace(/[\n]/g, '<br/>'),
+  };
   return (
     <div className={styles.collapse}>
-      <Descriptions style={{ marginTop: 24 }}>
+      <Descriptions style={{ marginTop: 24 }} size="middle">
         <Descriptions.Item label="事件编号">{main.eventNo}</Descriptions.Item>
         <Descriptions.Item label="建单时间">{main.addTime}</Descriptions.Item>
         <Descriptions.Item label="事件来源">{sourcemaps.get(main.eventSource)}</Descriptions.Item>
@@ -66,15 +69,14 @@ function Registratdes(props) {
           {main.title}
         </Descriptions.Item>
         <Descriptions.Item label="事件描述" span={3}>
-          {main.content}
+          <div dangerouslySetInnerHTML={content} />
         </Descriptions.Item>
         <Descriptions.Item label="自行处理">
           <Checkbox defaultChecked={Boolean(Number(info.selfhandle))} disabled />
         </Descriptions.Item>
-        <Descriptions.Item label="是否补单">
+        <Descriptions.Item label="是否补单" span={2}>
           <Checkbox defaultChecked={Boolean(Number(info.supplement))} disabled />
         </Descriptions.Item>
-        <div style={{ clear: 'both' }} />
         <Descriptions.Item label="附件" span={3}>
           {info.fileIds !== '' && <Downloadfile files={info.fileIds} />}
         </Descriptions.Item>

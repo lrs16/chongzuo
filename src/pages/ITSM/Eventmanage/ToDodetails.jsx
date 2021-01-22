@@ -84,20 +84,6 @@ function ToDodetails(props) {
     });
   };
 
-  // 结束流程
-  const overflow = () => {
-    dispatch({
-      type: 'eventtodo/eventransfer',
-      payload: {
-        flow: {
-          id,
-          userIds: sessionStorage.getItem('userauthorityid'),
-          type: '1',
-        },
-      },
-    });
-  };
-
   // 删除
   const deleteflow = () => {
     dispatch({
@@ -183,7 +169,7 @@ function ToDodetails(props) {
         </SelectUser>
       )}
       {(pangekey === '6' || pangekey === '7') && next === '结束' && (
-        <Button type="primary" style={{ marginRight: 8 }} onClick={overflow}>
+        <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleHold('over')}>
           结束
         </Button>
       )}

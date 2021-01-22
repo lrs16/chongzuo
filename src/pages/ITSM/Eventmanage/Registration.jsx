@@ -241,6 +241,7 @@ function Registration(props) {
                   ChangeFiles={newvalue => {
                     setFiles(newvalue);
                   }}
+                  show={show}
                 />
               </Panel>
             )}

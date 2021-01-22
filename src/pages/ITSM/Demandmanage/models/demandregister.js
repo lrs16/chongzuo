@@ -21,6 +21,7 @@ export default {
             taskName: '需求登记',
             mainId: processId,
             taskId,
+            result: '1',
           },
         });
       }
@@ -38,6 +39,7 @@ export default {
             taskName: '需求登记',
             mainId: processId,
             taskId,
+            result: '1',
           },
         });
       }

@@ -1,8 +1,7 @@
 import React, { useRef, useImperativeHandle, forwardRef, useState, useEffect } from 'react';
 import router from 'umi/router';
 import moment from 'moment';
-import { Row, Col, Form, Input, Radio, Upload, Button, DatePicker } from 'antd';
-import { DownloadOutlined } from '@ant-design/icons';
+import { Row, Col, Form, Input, Radio, DatePicker } from 'antd';
 import SysUpload from '@/components/SysUpload';
 
 const { TextArea } = Input;
@@ -25,8 +24,14 @@ const Check = forwardRef((props, ref) => {
   const [adopt, setAdopt] = useState('001');
   const [fileslist, setFilesList] = useState({ arr: [], ischange: false });
   useEffect(() => {
-    ChangeFiles(fileslist);
+    if (fileslist.ischange) {
+      ChangeFiles(fileslist);
+    }
   }, [fileslist]);
+
+  useEffect(() => {
+    setFilesList({ ...fileslist, arr: files });
+  }, [info]);
 
   const attRef = useRef();
   useImperativeHandle(

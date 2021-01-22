@@ -26,21 +26,21 @@ const forminladeLayout = {
     sm: { span: 22 },
   },
 };
-const formpartLayout = {
-  labelCol: {
-    xs: { span: 24 },
-    sm: { span: 4 },
-  },
-  wrapperCol: {
-    xs: { span: 24 },
-    sm: { span: 20 },
-  },
-};
 
 const demandtype = [
   { key: '001', value: '新增功能' },
   { key: '002', value: '功能变更' },
   { key: '003', value: '其他' },
+];
+
+const projectmap = [
+  { key: 0, value: '项目一' },
+  { key: 1, value: '项目二' },
+  { key: 2, value: '项目三' },
+];
+const prioritymap = [
+  { key: 0, value: '一般需求' },
+  { key: 1, value: '紧急需求' },
 ];
 
 const modulemap = [
@@ -122,8 +122,14 @@ const Registrat = forwardRef((props, ref) => {
 
   const [fileslist, setFilesList] = useState({ arr: [], ischange: false });
   useEffect(() => {
-    ChangeFiles(fileslist);
+    if (fileslist.ischange) {
+      ChangeFiles(fileslist);
+    }
   }, [fileslist]);
+
+  useEffect(() => {
+    setFilesList({ ...fileslist, arr: files });
+  }, [register]);
 
   const attRef = useRef();
   useImperativeHandle(
@@ -156,6 +162,8 @@ const Registrat = forwardRef((props, ref) => {
               })(<Input disabled />)}
             </Form.Item>
           </Col>
+        </Row>
+        <Row gutter={24}>
           <Col span={8}>
             <Form.Item label="建单时间">
               {getFieldDecorator('creationTime', {
@@ -172,8 +180,14 @@ const Registrat = forwardRef((props, ref) => {
               })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" />)}
             </Form.Item>
           </Col>
-        </Row>
-        <Row gutter={24}>
+          <Col span={8}>
+            <Form.Item label="期待完成时间">
+              {getFieldDecorator('completeTime', {
+                rules: [{ required, message: '请选择期待完成时间' }],
+                initialValue: moment(register.completeTime),
+              })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" />)}
+            </Form.Item>
+          </Col>
           <Col span={8}>
             <Form.Item label="申请人">
               {getFieldDecorator('proposer', {
@@ -199,27 +213,34 @@ const Registrat = forwardRef((props, ref) => {
             </Form.Item>
           </Col>
           <Col span={8}>
-            <Form.Item label="申请人电话">
+            <Form.Item label="联系电话">
               {getFieldDecorator('proposerPhone', {
                 rules: [
                   {
                     required,
                     // len: 11,
                     // validator: phone_reg,
-                    message: '请输入申请人电话',
+                    message: '请输入联系电话',
                   },
                 ],
                 initialValue: register.proposerPhone,
               })(<Input placeholder="请输入" />)}
             </Form.Item>
           </Col>
-
           <Col span={8}>
-            <Form.Item label="期待完成时间">
-              {getFieldDecorator('completeTime', {
-                rules: [{ required, message: '请选择期待完成时间' }],
-                initialValue: moment(register.completeTime),
-              })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" />)}
+            <Form.Item label="所属项目">
+              {getFieldDecorator('project', {
+                rules: [{ required, message: '请选择所属项目' }],
+                initialValue: register.project,
+              })(
+                <Select placeholder="请选择">
+                  {projectmap.map(({ key, value }) => [
+                    <Option key={key} value={key}>
+                      {value}
+                    </Option>,
+                  ])}
+                </Select>,
+              )}
             </Form.Item>
           </Col>
           <Col span={8}>
@@ -244,6 +265,22 @@ const Registrat = forwardRef((props, ref) => {
                 rules: [{ required, message: '请选择所属模块' }],
                 initialValue: register.functionalModule.split('/'),
               })(<Cascader options={modulemap} />)}
+            </Form.Item>
+          </Col>
+          <Col span={24}>
+            <Form.Item label="需求优先级" {...forminladeLayout}>
+              {getFieldDecorator('priority', {
+                rules: [{ required, message: '请选择需求优先级' }],
+                initialValue: register.priority,
+              })(
+                <Select placeholder="请选择">
+                  {prioritymap.map(({ key, value }) => [
+                    <Option key={key} value={value}>
+                      {value}
+                    </Option>,
+                  ])}
+                </Select>,
+              )}
             </Form.Item>
           </Col>
           <Col span={24}>
