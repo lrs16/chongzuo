@@ -109,19 +109,38 @@ const Examine = forwardRef((props, ref) => {
   return (
     <Form {...formItemLayout}>
       <Row gutter={24} style={{ paddingTop: 24 }}>
-        <Col span={8}>
-          <Form.Item label={`${text}结果`}>
-            {getFieldDecorator('result', {
-              rules: [{ required: true, message: `请选择${text}结果` }],
-              initialValue: leadermap.get(info[0].result),
-            })(
-              <Radio.Group onChange={handleAdopt}>
-                <Radio value={1}>通过</Radio>
-                <Radio value={0}>不通过</Radio>
-              </Radio.Group>,
-            )}
-          </Form.Item>
-        </Col>
+        {taskName !== '自动化科业务负责人确认' && (
+          <Col span={8}>
+            <Form.Item label={`${text}结果`}>
+              {getFieldDecorator('result', {
+                rules: [{ required: true, message: `请选择${text}结果` }],
+                initialValue: leadermap.get(info[0].result),
+              })(
+                <Radio.Group onChange={handleAdopt}>
+                  <Radio value={1}>通过</Radio>
+                  <Radio value={0}>不通过</Radio>
+                </Radio.Group>,
+              )}
+            </Form.Item>
+          </Col>
+        )}
+        {taskName === '自动化科业务负责人确认' && (
+          <Col span={8}>
+            <Form.Item label={`${text}结果`}>
+              {getFieldDecorator('result', {
+                rules: [{ required: true, message: `请选择${text}结果` }],
+                initialValue: leadermap.get(info[0].result),
+              })(
+                <Radio.Group onChange={handleAdopt}>
+                  <Radio value={1}>通过</Radio>
+                  <Radio value={0}>重新处理</Radio>
+                  <Radio value={2}>需求取消</Radio>
+                </Radio.Group>,
+              )}
+            </Form.Item>
+          </Col>
+        )}
+
         <Col span={8}>
           <Form.Item label={`${text}时间`}>
             {getFieldDecorator('reviewTime', {
@@ -134,16 +153,6 @@ const Examine = forwardRef((props, ref) => {
           <Col span={8}>
             <Form.Item>
               <Checkbox.Group options={options} onChange={values => handleChangeresult(values)} />
-            </Form.Item>
-          </Col>
-        )}
-        {taskName === '需求审核' && (
-          <Col span={8}>
-            <Form.Item label="所属项目">
-              {getFieldDecorator('project', {
-                rules: [{ required: true, message: '请输入所属项目' }],
-                initialValue: info[0].project,
-              })(<Input placeholder="请输入" />)}
             </Form.Item>
           </Col>
         )}

@@ -2,6 +2,7 @@ import React, { useRef, useImperativeHandle, forwardRef, useEffect, useState } f
 import moment from 'moment';
 import { Row, Col, Form, Input, Select, DatePicker, Cascader } from 'antd';
 import SysUpload from '@/components/SysUpload';
+import SysDict from '@/components/SysDict';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -117,8 +118,9 @@ const modulemap = [
 ];
 const Registrat = forwardRef((props, ref) => {
   const { register, userinfo, files, ChangeFiles } = props;
-  const { getFieldDecorator } = props.form;
+  const { getFieldDecorator, setFieldsValue } = props.form;
   const required = true;
+  const [selectvalue, setSelectValue] = useState([]);
 
   const [fileslist, setFilesList] = useState({ arr: [], ischange: false });
   useEffect(() => {
@@ -143,6 +145,8 @@ const Registrat = forwardRef((props, ref) => {
   useEffect(() => {
     sessionStorage.setItem('flowtype', 1);
   }, [register]);
+
+  const options = selectvalue.map(obj => <Option key={obj.key}>{obj.val}</Option>);
 
   return (
     <>
@@ -256,6 +260,19 @@ const Registrat = forwardRef((props, ref) => {
                     </Option>,
                   ])}
                 </Select>,
+                // <SysDict
+                //   dictModule='demand'
+                //   dictType='priority'
+                //   handleChange={newvalue => setSelectValue(newvalue)}
+                // >
+                //   <Select placeholder="请选择">
+                //     {selectvalue.map(obj => [
+                //       <Option key={obj.key} value={obj.val}>
+                //         {obj.val}
+                //       </Option>,
+                //     ])}
+                //   </Select>
+                // </SysDict>
               )}
             </Form.Item>
           </Col>

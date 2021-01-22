@@ -32,12 +32,14 @@ function Track(props) {
   const [fileslist, setFilesList] = useState([]);
 
   useEffect(() => {
-    dispatch({
-      type: 'demandtodo/fetchtracklist',
-      payload: {
-        demandId,
-      },
-    });
+    if (tracklist === '') {
+      dispatch({
+        type: 'demandtodo/fetchtracklist',
+        payload: {
+          demandId,
+        },
+      });
+    }
   }, [demandId]);
 
   useEffect(() => {
@@ -134,6 +136,8 @@ function Track(props) {
   const saveRow = (e, key) => {
     const target = getRowByKey(key) || {};
     delete target.isNew;
+    delete target.key;
+    delete target.editable;
     toggleEditable(e, key);
     const id = target.id === '' ? '' : target.id;
     dispatch({

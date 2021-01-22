@@ -397,34 +397,10 @@ function WorkOrder(props) {
                 />
               )}
               {(info.taskName === '业务科室领导审核' && info.historys.length > 0) ||
-                info.taskName === '自动化科业务人员审核' ||
-                (info.taskName === '科室领导审核' && (
-                  <Examine
-                    ref={ExamineRef}
-                    location={location}
-                    formItemLayout={formItemLayout}
-                    forminladeLayout={forminladeLayout}
-                    text="审核"
-                    userinfo={userinfo}
-                    taskName={info.taskName}
-                    info={
-                      info.historys?.slice(-1)[0].taskName === info.taskName
-                        ? info.historys.slice(-1)
-                        : undefined
-                    }
-                    files={
-                      info.historys?.slice(-1)[0].taskName === info.taskName
-                        ? JSON.parse(info.historys?.slice(-1)[0].attachment)
-                        : []
-                    }
-                    ChangeFiles={newvalue => {
-                      setFiles(newvalue);
-                    }}
-                  />
-                ))}
-              {(info.taskName === '业务科室领导审核' && info.historys.length > 0) ||
                 info.taskName === '系统开发商审核' ||
                 info.taskName === '自动化科业务人员审核' ||
+                info.taskName === '自动化科业务人员审核' ||
+                info.taskName === '科室领导审核' ||
                 (info.taskName === '市场部领导审核' && (
                   <Examine
                     ref={ExamineRef}
@@ -470,6 +446,31 @@ function WorkOrder(props) {
                   demandId={info.demandForm.demandId}
                 />
               )}
+              {info.taskName === '自动化科业务负责人确认' ||
+                (info.taskName === '科室领导审核' && (
+                  <Examine
+                    ref={ExamineRef}
+                    location={location}
+                    formItemLayout={formItemLayout}
+                    forminladeLayout={forminladeLayout}
+                    text="确认"
+                    userinfo={userinfo}
+                    taskName={info.taskName}
+                    info={
+                      info.historys?.slice(-1)[0].taskName === info.taskName
+                        ? info.historys.slice(-1)
+                        : undefined
+                    }
+                    files={
+                      info.historys?.slice(-1)[0].taskName === info.taskName
+                        ? JSON.parse(info.historys?.slice(-1)[0].attachment)
+                        : []
+                    }
+                    ChangeFiles={newvalue => {
+                      setFiles(newvalue);
+                    }}
+                  />
+                ))}
             </Panel>
 
             <Panel header="需求登记" key="registdes">

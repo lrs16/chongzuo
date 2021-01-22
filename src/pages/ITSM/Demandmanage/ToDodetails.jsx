@@ -36,9 +36,11 @@ function ToDoregist(props) {
 
   const operations = (
     <>
-      <Button type="danger" ghost style={{ marginRight: 8 }}>
-        删除
-      </Button>
+      {taskName === '需求登记' && (
+        <Button type="danger" ghost style={{ marginRight: 8 }}>
+          删除
+        </Button>
+      )}
       {/* {taskName !== '需求登记' && (
         <Popover content={content} visible={Popvisible} onVisibleChange={handleVisibleChange}>
           <Button type="primary" ghost style={{ marginRight: 8 }}>
@@ -46,7 +48,7 @@ function ToDoregist(props) {
           </Button>
         </Popover>
       )} */}
-      {taskName !== '需求跟踪' && (
+      {taskName !== '系统开发商处理' && (
         <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleHold('save')}>
           保存
         </Button>

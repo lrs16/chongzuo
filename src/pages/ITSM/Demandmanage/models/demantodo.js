@@ -73,7 +73,6 @@ export default {
     },
     // 编辑通用流转
     *demandnextstep({ payload }, { call }) {
-      console.log(payload);
       const response = yield call(NextStep, payload);
       if (response.code === 200) {
         message.success(response.msg, 2);
@@ -112,11 +111,16 @@ export default {
         payload: response.data,
       });
     },
-    // 需求跟踪保存
-    *tracksave({ payload }, { call }) {
+    // 系统开发商处理
+    *tracksave({ payload }, { call, put }) {
       const response = yield call(TrackUpdata, payload);
       if (response.code === 200) {
         message.success(response.msg, 2);
+        const openres = yield call(TrackList, payload.demandId);
+        yield put({
+          type: 'savetracklist',
+          payload: openres.data,
+        });
       }
     },
     // 需求跟踪删除
