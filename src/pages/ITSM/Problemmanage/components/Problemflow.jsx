@@ -71,11 +71,10 @@ function Problemflow(props) {
                 // const backoff = obj.fallbackMsg === '' ? '' : '（回退）';
                 const desc = (
                   <div>
-                    <div>{obj.name}</div>
-                    <div>处理人：{obj.user}</div>
-                    <div>{obj.startTime}</div>
-                    <div>{obj.endTime}</div>
-                    {/* {obj.fallbackMsg !== '' && <div>回退原因：{obj.fallbackMsg}）</div>} */}
+                    <div>当前环节:{obj.name}</div>
+                    <div>处理人：{obj.formHandler}</div>
+                    <div>开始时间:{obj.startTime}</div>
+                    <div>状态:{obj.status}</div>
                   </div>
                 );
                 // return <Step title={`${obj.nodeName}${backoff}`} description={desc} />;

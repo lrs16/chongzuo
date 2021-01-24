@@ -520,7 +520,7 @@ function Workorder(props) {
             )}
 
             { 
-            (flowNodeName === '系统运维商审核' || flowNodeName === '自动化科审核' || flowNodeName === '系统运维商确认'
+            (flowNodeName === '系统运维商审核'  || flowNodeName === '系统运维商确认'
             || flowNodeName === '自动化科业务负责人确认' || flowNodeName === '问题登记人员确认') 
              && (
               <Reasonregression reasonSubmit={values => reasonSubmit(values)}>
