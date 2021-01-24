@@ -1,5 +1,6 @@
 import React from 'react';
 import {  Descriptions, Collapse,Radio } from 'antd';
+import Downloadfile from '@/components/SysUpload/Downloadfile';
 
 const { Panel } = Collapse;
 
@@ -43,9 +44,9 @@ function Operatorconfirmades(props) {
   
             <Descriptions>
               <Descriptions.Item label="上传附件">
-                <span style={{ color: 'blue', textDecoration: 'underline' }}>
-                {confirmationDetail ? confirmationDetail.problemFlowNodeRows[4].handleAttachIds : ''}
-                </span>
+                <span style={{ color: 'blue', textDecoration: 'underline' }} >
+                {problemFlowNodeRows[4].confirmAttachments !== null && <Downloadfile files={problemFlowNodeRows[4].confirmAttachments} />}          
+               </span>
               </Descriptions.Item>
             </Descriptions>
 

@@ -1,10 +1,12 @@
 import React from 'react';
 import { Descriptions, Collapse } from 'antd';
+import Downloadfile from '@/components/SysUpload/Downloadfile';
 
 const { Panel } = Collapse;
 
 function Problemsolving(props) {
   const { solvingDetail, statue,loading } = props;
+  const { problemFlowNodeRows } = solvingDetail;
 
   return (
     <>
@@ -35,12 +37,12 @@ function Problemsolving(props) {
               </Descriptions>
 
               <Descriptions>
-                <Descriptions.Item label="上传附件">
-                  <span style={{ color: 'blue', textDecoration: 'underline' }}>
-                  {solvingDetail ? solvingDetail.problemFlowNodeRows[3].handleAttachIds : ''}
-                  </span>
-                </Descriptions.Item>
-              </Descriptions>
+              <Descriptions.Item label="上传附件">
+                <span style={{ color: 'blue', textDecoration: 'underline' }} >
+                {problemFlowNodeRows[3].handleAttachments !== null && <Downloadfile files={problemFlowNodeRows[3].handleAttachments} />}          
+               </span>
+              </Descriptions.Item>
+            </Descriptions>
 
               <Descriptions>
                 <Descriptions.Item label="处理人">

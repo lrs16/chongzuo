@@ -72,7 +72,7 @@ function Registration(props) {
 
   const handlesubmit = (jumpType) => {
     RegistratRef.current.validateFields((err, values) => {
-      if (!err) {
+      if (jumpType?!err:true) {
         const saveData = values;
         saveData.registerTime =  (saveData.registerTime).format('YYYY-MM-DD HH:mm:ss');
         saveData.registerOccurTime = (saveData.registerOccurTime).format('YYYY-MM-DD HH:mm:ss');
@@ -87,7 +87,7 @@ function Registration(props) {
   };
 
   const handleCirculation = () => {
-    handlesubmit(1);
+    handlesubmit(0);
   };
 
   const handClose = () => {
@@ -96,7 +96,7 @@ function Registration(props) {
 
     // 上传附件触发保存
     useEffect(() => {
-      const jumpType = 1;
+      const jumpType = 0;
       if (files.ischange) {
         const values = RegistratRef.current.getFieldsValue();
         const saveData = values;
@@ -118,12 +118,12 @@ function Registration(props) {
     title={pagetitle}
     extra={
       <>
-       <Button type="primary" style={{ marginRight: 8 }} onClick={()=>handlesubmit(0)}>
+       <Button type="primary" style={{ marginRight: 8 }} onClick={handleCirculation}>
           保 存
         </Button>
-        <Button type="primary" style={{ marginRight: 8 }} onClick={handleCirculation}>
+        {/* <Button type="primary" style={{ marginRight: 8 }} onClick={handleCirculation}>
           流 转
-        </Button>
+        </Button> */}
         <Button type="default" onClick={handClose}>关 闭</Button>
       </>
     }

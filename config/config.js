@@ -228,18 +228,6 @@ export default {
                       icon: 'cloud-server',
                       component: './ITSM/Problemmanage/Queryworkdetail',
                     },
-                    {
-                      path: '/ITSM/problemmanage/person',
-                      name: '查询工单',
-                      icon: 'cloud-server',
-                      component: './ITSM/Problemmanage/Queryworkdetail',
-                    },
-                    {
-                      path: '/ITSM/problemmanage/process',
-                      name: '个人用',
-                      icon: 'cloud-server',
-                      component: './ITSM/Problemmanage/Test',
-                    },
                   ],
                 },
                 {
@@ -949,7 +937,7 @@ export default {
     },
     // 问题管理
     '/itsm/problem/': {
-      target: 'http://172.16.4.77:9901/',
+      target: 'http://172.16.4.211:9901/',
       changeOrigin: true,
     },
     // 故障管理

@@ -91,14 +91,13 @@ export default {
         if (resRegister.code === 200) {
           console.log('jumpType: ', jumpType);
           switch (jumpType) {
-            case 0:
-              route.push({ pathname: `/ITSM/problemmanage/besolved` });
-              break;
+            // case 0:
+            //   route.push({ pathname: `/ITSM/problemmanage/besolved` });
+            //   break;
               
-            case 1:
+            case 0:
               route.push({
                 pathname: `/ITSM/problemmanage/besolveddetail/workorder/${response.flowTaskId}`,
-                // params:{ currentProcess:'问题登记'}
               });
               break;
 
@@ -144,8 +143,8 @@ export default {
     },
 
     //  流转到下一个节点
-    *gotoCirculation({ payload: { taskId, result } }, { call, put }) {
-      return yield call(saveTobelist, taskId, result);
+    *gotoCirculation({ payload: { flow } }, { call, put }) {
+      return yield call(saveTobelist,flow);
     },
 
     *besolveList({ payload: { current, pageSize } }, { call, put }) {

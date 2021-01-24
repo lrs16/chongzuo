@@ -95,7 +95,6 @@ function Besolved(props) {
 
   useEffect(() => {
     getTobolist();
-    getTobolist();
   }, []);
 
   const handleReset = () => {
@@ -348,7 +347,6 @@ function Besolved(props) {
           dataSource={besolveList.rows}
           rowKey={record => record.id}
           pagination={pagination}
-          rowSelection={rowSelection}
         />
       </Card>
     </PageHeaderWrapper>

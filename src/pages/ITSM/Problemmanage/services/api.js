@@ -82,14 +82,15 @@ export async function tobeListpeople(taskId) {
   return request(`/itsm/problem/flow/assignee?taskId=${taskId}&result=1`);
 }
 
-//  待办人保存接口
-export async function saveTobelist(taskId, result) {
-  const obj = {};
-  obj.taskId = taskId;
-  obj.userIds = 1;
-  return request(`/itsm/problem/flow/submit?taskId=${taskId}&userIds=1&result=${result}`, {
+//  流转待办人保存接口
+export async function saveTobelist(params) {
+  // const obj = {};
+  // obj.taskId = taskId;
+  // obj.userIds = 1;
+  return request(`/itsm/problem/flow/submit`, {
     method: 'POST',
-    // body:JSON.stringify(obj)
+    data: params,
+    requestType:'form'
   });
 }
 

@@ -14,11 +14,8 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import SelectUser from '@/components/SelectUser';
 import Registrat from './components/Registrat';
 import Systemoperatoredit from './components/Systemoperatoredit';
-import Businessleaderconfirmedit from './components/Businessleaderconfirmedit';
-import Problemconfirmedit from './components/Problemconfirmedit';
 import Developerprocessdit from './components/Developerprocessdit';
 import Operatorconfirmaedit from './components/Operatorconfirmaedit';
-import Automaticconfirmedit from './components/Automaticconfirmedit';
 
 import Problemsolving from './components/Problemsolving';
 import Problemreview from './components/Problemreview';
@@ -28,6 +25,9 @@ import Problemregistration from './components/Problemregistration';
 import Automaticconfirmdes from './components/Automaticconfirmdes';
 import Reasonregression from './components/Reasonregression';
 import Problemflow from './components/Problemflow';
+
+import AutomationCirculation from './components/AutomationCirculation';
+
 
 import styles from './index.less';
 
@@ -62,15 +62,14 @@ let currntStatus = '';
 let showEdit = false;
 const saveSign = '';
 const circaSign = 'problem';
-let closecircu = '关闭';
 let handleTime;
 let receivingTime;
 let problemFlowid;
 let checkType;
 let flowNodeName;
 let confirmType;
-let listData;
 let fileSign;
+// let flowtype = 1;
 
 export const FatherContext = createContext();
 function Workorder(props) {
@@ -79,18 +78,17 @@ function Workorder(props) {
   const PreviesRef = useRef();
   const HandleRef = useRef();
   const ProblemconfirmRef = useRef();
-  const CloseRef = useRef();
-  // const Operatoraudit = useRef();
   const [flowtype, setFlowtype] = useState('1');
   const [tabActiveKey, setTabActiveKey] = useState('workorder');
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
+  // sessionStorage.setItem('NextflowUserId','1301703398013276161');
+
   const {
     dispatch,
     todoDetail,
-    todoDetail: { check, handle, confirm, close, register, main },
+    todoDetail: { check, handle, confirm, register, main },
     useInfo,
     newno,
-    info,
     loading
   } = props;
 
@@ -98,7 +96,8 @@ function Workorder(props) {
     params: { id },
   } = props.match;
 
-  const { problemFlowLogs } = todoDetail;
+  const { problemFlowLogs,problemFlowNodeRows } = todoDetail;
+
 
   const selectNextflow = () => {
     switch (flowNodeName) {
@@ -135,16 +134,13 @@ function Workorder(props) {
 
   if (todoDetail.main) {
     currntStatus = Number(todoDetail.main.status);
-    checkType = todoDetail.checkType;
     confirmType = Number(todoDetail.confirmType);
     problemFlowid = todoDetail.main.id;
     flowNodeName = todoDetail.flowNodeName;
     selectNextflow();
     solvingDisbled();
-    if ((currntStatus === 69) || (currntStatus === 85)) {
-      closecircu = '';
-    }
   }
+  // console.log(flowtype);
 
 
   if (todoDetail.hasOwnProperty('confirmType')) {
@@ -169,6 +165,10 @@ function Workorder(props) {
     receivingTime = moment(new Date());
   }
 
+  if(currntStatus === 45) {
+    // setFlowtype(9);
+  }
+
   const getNewno = () => {
     dispatch({
       type: 'problemmanage/getregisterNo',
@@ -182,42 +182,51 @@ function Workorder(props) {
     })
   };
 
-    // //  各阶段的files
-    if(check) {
-      if(check.checkAttachments !== '') {
-        listData = JSON.parse(todoDetail.check.checkAttachments);
-        // getInformation();
-      } else {
-        listData = [];
-        // getInformation();
-      }
-    } else {
-      listData = [];
-      // getInformation();
+  const gotoCirapi = (closessign) => {
+    let result;
+    if(closessign) {
+      result = 255
+    }else {
+     result = flowtype;
     }
-    // console.log(listData,'listData');
-    
 
-  const gotoCirapi = () => {
-    const result = flowtype;
+    if(flowNodeName === '系统开发商处理') {
+      result = 1;
+    }
     const taskId = id;
     return dispatch({
       type: 'problemmanage/gotoCirculation',
-      payload: { taskId, result },
+      payload: {
+        flow:{ taskId,
+               result,
+               userIds:sessionStorage.getItem('NextflowUserId'),
+         }
+      },
     }).then(res => {
       if (res.code === 200) {
+        message.info(res.msg);
         router.push(`/ITSM/problemmanage/besolved`)
+      } else {
+        message.info(res.error);
       }
     })
   };
 
+  const closeOrder = () => {
+     const closeWork = '关闭';
+    gotoCirapi(closeWork);
+  }
+
   const saveApi = (saveData, params2,uploadSive) => {
+    console.log('params2: ', params2);
     return dispatch({
       type: 'problemmanage/tobeSave',
       payload: { saveData },
     }).then(res => {
       if (res.code === 200) {
-        message.info(res.msg);
+        if(!params2){
+          message.info(res.msg);
+        } 
         getInformation();
         if(uploadSive) {
           props.history.go(0);
@@ -233,14 +242,12 @@ function Workorder(props) {
 
 
   const saveRegister = (params2,uploadSive) => {
-    const fileids = [];
     RegistratRef.current.validateFields((err, values) => {
       if (params2 ? !err : true) {
         const saveData = values;
         saveData.registerTime = (saveData.registerTime).format('YYYY-MM-DD HH:mm:ss');
         saveData.registerOccurTime = (saveData.registerOccurTime).format('YYYY-MM-DD HH:mm:ss');
         saveData.registerExpectTime = (saveData.registerExpectTime).format('YYYY-MM-DD HH:mm:ss');
-        saveData.registerAttachIds=fileids.toString();
         saveData.taskId = id;
         if (todoDetail.editState === 'edit') {
           saveData.registerId = todoDetail.register.id;
@@ -259,7 +266,8 @@ function Workorder(props) {
           payload: { saveData },
         }).then(res => {
           if (res.code === 200) {
-            message.info(res.msg);
+              message.info(res.msg);
+        
             getInformation();
             if(uploadSive) {
               props.history.go(0);
@@ -316,6 +324,12 @@ function Workorder(props) {
         saveData.handleTime = '';
       }
 
+      if (values.orderReceivingtime) {
+        saveData.orderReceivingtime = (saveData.orderReceivingtime).format('YYYY-MM-DD HH:mm:ss');
+      } else {
+        saveData.orderReceivingtime = '';
+      }
+
       if (params2 ? !err : true) {
         saveData.taskId = id;
         saveData.editState = todoDetail.editState;
@@ -343,7 +357,6 @@ function Workorder(props) {
         saveData.taskId = id;
         saveData.editState = todoDetail.editState;
         saveData.confirmTime = (values.confirmTime).format('YYYY-MM-DD HH:mm:ss');
-        console.log('saveData: ', saveData);
         if (todoDetail.editState === 'edit') {
           saveData.confirmId = todoDetail.confirm.id;
           saveData.editState = 'edit';
@@ -417,6 +430,7 @@ function Workorder(props) {
     });
   };
 
+
   const handleSubmit = (params2,uploadSive) => {
     switch (flowNodeName) {
       case '问题登记':
@@ -448,7 +462,6 @@ function Workorder(props) {
   // 上传删除附件触发保存
   useEffect(() => {
      fileSign = '附件';
-     console.log(files.ischange);
     if (files.ischange) {
       handleSubmit(saveSign,fileSign);
     }
@@ -471,6 +484,13 @@ function Workorder(props) {
   useEffect(() => {
     sessionStorage.setItem('flowtype', flowtype);
   }, [flowtype]);
+
+  useEffect(() => {
+    if(currntStatus === 45) {
+      setFlowtype(9);
+    }
+    sessionStorage.setItem('flowtype', flowtype);
+  }, [currntStatus]);
 
   const tabList = [
     {
@@ -500,7 +520,7 @@ function Workorder(props) {
             )}
 
             { 
-            (flowNodeName === '系统运维商审核' || flowNodeName === '系统运维商确认'
+            (flowNodeName === '系统运维商审核' || flowNodeName === '自动化科审核' || flowNodeName === '系统运维商确认'
             || flowNodeName === '自动化科业务负责人确认' || flowNodeName === '问题登记人员确认') 
              && (
               <Reasonregression reasonSubmit={values => reasonSubmit(values)}>
@@ -525,7 +545,7 @@ function Workorder(props) {
                 <SelectUser
                 taskId={id}
                 currentObj={currntStatus}
-                // onSubmit={transferOrder}
+                handleSubmit={gotoCirapi}
               >
                 <Button
                   type="primary"
@@ -547,10 +567,17 @@ function Workorder(props) {
             )}
 
             {
-            flowNodeName !== '问题登记人员确认' && 
+            // flowNodeName !== '问题登记人员确认' && 
             flowtype ==='1' &&
-            flowNodeName !== '系统开发商处理' &&
-            flowNodeName !== '自动化科业务负责人确认' &&
+            // flowNodeName !== '系统开发商处理' &&
+            // flowNodeName !== '自动化科业务负责人确认' &&
+            // flowNodeName !== '系统运维商审核' &&
+            (flowNodeName === '系统运维商确认' || 
+            flowNodeName === '自动化科审核' ||
+            flowNodeName === '系统运维商确认' ||
+            flowNodeName === '问题登记'
+            )&&
+            
             currntStatus !== 29 &&
              (
               <SelectUser
@@ -570,13 +597,46 @@ function Workorder(props) {
             )
             }
 
+            {
+        
+            flowNodeName === '系统运维商审核' &&
+             (
+              <AutomationCirculation
+                taskId={id}
+                handleSubmit={() => handleSubmit(circaSign)}
+              >
+                <Button
+                  type="primary"
+                  style={{ marginRight: 8 }}
+                // onClick={() => handleSubmit(circaSign)}
+                >
+                  流转
+                </Button>
+              </AutomationCirculation>
+
+            )
+            
+
+            }
+
+
+            {
+              flowNodeName === '问题登记' && problemFlowNodeRows.length > 2 && (
+                <Button 
+                type='primary'
+                onClick={closeOrder}
+                >
+                  关闭工单
+                </Button>
+              )
+            }
+
             { 
             (flowNodeName === '问题登记人员确认' || 
             flowtype === '0' ||
             flowNodeName === '系统开发商处理' ||
             flowNodeName === '自动化科业务负责人确认'
-            ) &&
-            currntStatus !== 29  && (
+            ) && currntStatus !== 29  && (
               <Button
                 type="primary"
                 style={{ marginRight: 8 }}
@@ -587,8 +647,10 @@ function Workorder(props) {
             )
             }
 
+       
+
             <Button type="default">
-              <Link to="/ITSM/problemmanage/problemquery">返回</Link>
+              <Link to="/ITSM/problemmanage/besolved">返回</Link>
             </Button>
           </>
         </>
@@ -649,7 +711,7 @@ function Workorder(props) {
                       register={register}
                       main={main}
                       files={
-                        todoDetail.register.registerAttachments !== '' ? JSON.parse(todoDetail.register.registerAttachments) : []
+                        todoDetail.register !== undefined && todoDetail.register.registerAttachments?JSON.parse(todoDetail.register.registerAttachments):[]
                       }
                       ChangeFiles={newvalue => {
                         setFiles(newvalue);
@@ -674,8 +736,11 @@ function Workorder(props) {
                         useInfo={useInfo}
                         check={check}
                         loading={loading}
-                        files={listData}
-                        // files={todoDetail.check !== undefined ?JSON.parse(todoDetail.check.checkAttachments):[]}
+                        flowNodeName={flowNodeName}
+                        // files={listData}
+                        files={
+                          todoDetail.check !== undefined && todoDetail.check.checkAttachments?JSON.parse(todoDetail.check.checkAttachments):[]
+                        }
                         ChangeFiles={newvalue => {
                           setFiles(newvalue);
                         }}
@@ -702,7 +767,11 @@ function Workorder(props) {
                         useInfo={useInfo}
                         check={check}
                         loading={loading}
-                        files={todoDetail.check !== undefined ?JSON.parse(todoDetail.check.checkAttachments):[]}
+                        flowNodeName={flowNodeName}
+                        // files={listData}
+                        files={
+                          todoDetail.check !== undefined && todoDetail.check.checkAttachments?JSON.parse(todoDetail.check.checkAttachments):[]
+                        }
                         ChangeFiles={newvalue => {
                           setFiles(newvalue);
                         }}
@@ -730,7 +799,9 @@ function Workorder(props) {
                      handle={handle}
                      handleTime={handleTime}
                      receivingTime={receivingTime}
-                     files={todoDetail.handle !== undefined ?JSON.parse(todoDetail.handle.handleAttachments):[]}
+                     files={
+                      todoDetail.handle !== undefined && todoDetail.handle.handleAttachments?JSON.parse(todoDetail.handle.handleAttachments):[]
+                    }
                      ChangeFiles={newvalue => {
                         setFiles(newvalue);
                       }}
@@ -757,7 +828,10 @@ function Workorder(props) {
                       handle={confirm}
                       handleTime={handleTime}
                       receivingTime={receivingTime}
-                      files={todoDetail.confirm !== undefined ?JSON.parse(todoDetail.confirm.confirmAttachments):[]}
+                      flowNodeName={flowNodeName}
+                      files={
+                        todoDetail.confirm !== undefined && todoDetail.confirm.confirmAttachments?JSON.parse(todoDetail.confirm.confirmAttachments):[]
+                      }
                       ChangeFiles={newvalue => {
                          setFiles(newvalue);
                        }}
@@ -777,7 +851,7 @@ function Workorder(props) {
                   style={{ backgroundColor:'white'}}
                 >
                   <FatherContext.Provider value={{ flowtype ,setFlowtype}}>
-                    <Businessleaderconfirmedit 
+                    <Operatorconfirmaedit 
                       formItemLayout={formItemLayout}
                       forminladeLayout={forminladeLayout}
                       showEdit={showEdit}
@@ -786,7 +860,10 @@ function Workorder(props) {
                       confirm={confirm}
                       handleTime={handleTime}
                       receivingTime={receivingTime}
-                      files={todoDetail.confirm !== undefined ?JSON.parse(todoDetail.confirm.confirmAttachments):[]}
+                      flowNodeName={flowNodeName}
+                      files={
+                        todoDetail.confirm !== undefined && todoDetail.confirm.confirmAttachments?JSON.parse(todoDetail.confirm.confirmAttachments):[]
+                      }
                       ChangeFiles={newvalue => {
                          setFiles(newvalue);
                        }}
@@ -806,7 +883,7 @@ function Workorder(props) {
                   style={{ backgroundColor:'white'}}
                 >
                   <FatherContext.Provider value={{ flowtype ,setFlowtype}}>
-                    <Problemconfirmedit 
+                    <Operatorconfirmaedit 
                       formItemLayout={formItemLayout}
                       forminladeLayout={forminladeLayout}
                       showEdit={showEdit}
@@ -815,7 +892,10 @@ function Workorder(props) {
                       handle={confirm}
                       handleTime={handleTime}
                       receivingTime={receivingTime}
-                      files={todoDetail.confirm !== undefined ?JSON.parse(todoDetail.confirm.confirmAttachments):[]}
+                      flowNodeName={flowNodeName}
+                      files={
+                        todoDetail.confirm !== undefined && todoDetail.confirm.confirmAttachments?JSON.parse(todoDetail.confirm.confirmAttachments):[]
+                      }
                       ChangeFiles={newvalue => {
                          setFiles(newvalue);
                        }}

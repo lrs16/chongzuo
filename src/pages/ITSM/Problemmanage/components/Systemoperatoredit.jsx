@@ -19,10 +19,11 @@ const { TextArea } = Input;
 
 
 const Systemoperatoredit = React.forwardRef((props, ref) => {
-  const { formItemLayout, forminladeLayout,files,ChangeFiles } = props;
+  const { formItemLayout, forminladeLayout,flowNodeName,files,ChangeFiles } = props;
   // console.log('files: ', files);
   const { getFieldDecorator } = props.form;
   const {flowtype,setFlowtype } = useContext(FatherContext);
+  console.log(useContext(FatherContext),'lll');
   const [fileslist, setFilesList] = useState([]);
   useEffect(() => {
     ChangeFiles(fileslist);
@@ -144,8 +145,9 @@ const Systemoperatoredit = React.forwardRef((props, ref) => {
             </Col>
             )
           }
-  
-          <Col span={24}>
+          {
+            flowNodeName === '系统运维商审核' && (
+              <Col span={24}>
               <Form.Item
                 label="上传附件"
                 {...forminladeLayout}
@@ -156,6 +158,25 @@ const Systemoperatoredit = React.forwardRef((props, ref) => {
                 </div>
               </Form.Item>
             </Col>
+            )
+          }
+       
+          {
+            flowNodeName === '自动化科审核' && (
+              <Col span={24}>
+              <Form.Item
+                label="上传附件"
+                {...forminladeLayout}
+                extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
+              >
+                <div style={{ width: 400 }}>
+                  <SysUpload fileslist={files} ChangeFileslist={newvalue => setFilesList(newvalue)} />
+                </div>
+              </Form.Item>
+            </Col>
+            )
+          }
+       
   
         <Col span={8}>
           <Form.Item label="审核人">

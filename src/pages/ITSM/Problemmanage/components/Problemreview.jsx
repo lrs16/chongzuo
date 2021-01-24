@@ -4,6 +4,8 @@ import {
    Descriptions,
    Collapse,
    Radio  } from 'antd';
+import Downloadfile from '@/components/SysUpload/Downloadfile';
+
 
 const { Panel } = Collapse;
 
@@ -62,13 +64,14 @@ function Problemreview(props) {
             </Descriptions.Item>
           </Descriptions>
 
+      
           <Descriptions>
-            <Descriptions.Item label="上传附件">
-            <span style={{ color: 'blue', textDecoration: 'underline' }} onClick={() => fileDown(reviesDetail.problemFlowNodeRows[1].checkAttachIds)}>
-            {reviesDetail ? reviesDetail.problemFlowNodeRows[1].checkAttachIds : ''}
-            </span>
-            </Descriptions.Item>
-          </Descriptions>
+              <Descriptions.Item label="上传附件">
+                <span style={{ color: 'blue', textDecoration: 'underline' }} >
+                {problemFlowNodeRows[1].checkAttachments !== null && <Downloadfile files={problemFlowNodeRows[1].checkAttachments} />}          
+               </span>
+              </Descriptions.Item>
+            </Descriptions>
 
           <Descriptions>
             <Descriptions.Item label="审核人">

@@ -1,7 +1,5 @@
 import React, { useState, useRef, useImperativeHandle,useEffect } from 'react';
 import { Row, Col, Form, Input, Select, Upload, Button, Checkbox, DatePicker } from 'antd';
-import { DownloadOutlined } from '@ant-design/icons';
-import styles from '../index.less';
 import moment from 'moment';
 import Link from 'umi/link';
 import { RegistratContext } from '../Registration';
@@ -52,8 +50,9 @@ const Registrat = React.forwardRef((props, ref) => {
   const required = true;
 
   return (
-    <Row gutter={24} style={{ paddingTop: 24,marginTop:'20px' }}>
-        <Form {...formItemLayout}>
+    <>
+      <Row gutter={24} style={{ paddingTop: 24,marginTop:'20px' }}>
+          <Form {...formItemLayout}>
             <Col span={8}>
               <Form.Item label="问题编号">
                 {getFieldDecorator('no', {
@@ -112,9 +111,9 @@ const Registrat = React.forwardRef((props, ref) => {
                       message: '请输入问题来源',
                     },
                   ],
-                  initialValue: main?main.source:'请选择',
+                  initialValue: main?main.source:'',
                 })(
-                  <Select>
+                  <Select placeholder='请选择'>
                     <Option value="重复性分析事件">重复性分析事件</Option>
                     <Option value="事件升级">事件升级</Option>
                     <Option value="巡检发现">巡检发现</Option>
@@ -134,7 +133,7 @@ const Registrat = React.forwardRef((props, ref) => {
                       message: '请输入问题分类',
                     },
                   ],
-                  initialValue: main?main.type:'请选择',
+                  initialValue: main?main.type:'',
                 })(
                   <Select>
                     <Option value="功能">功能</Option>
@@ -153,9 +152,9 @@ const Registrat = React.forwardRef((props, ref) => {
                       message: '请选择重要程度',
                     },
                   ],
-                  initialValue: main?main.importance:'请选择',
+                  initialValue:  main?main.importance:'',
                 })(
-                  <Select>
+                  <Select placeholder='请选择'>
                     <Option value="一般">一般</Option>
                     <Option value="紧急">紧急</Option>
                     <Option value="重大">重大</Option>
@@ -190,8 +189,8 @@ const Registrat = React.forwardRef((props, ref) => {
                       message: '请输入所属项目',
                     },
                   ],
-                  initialValue: register?register.registerProject:'',
-                })(<Input />)}
+                  initialValue: main?register.registerProject:'',
+                })(<Input placeholder='请输入'/>)}
               </Form.Item>
             </Col> 
 
@@ -205,9 +204,12 @@ const Registrat = React.forwardRef((props, ref) => {
                       message: '请选择影响范围',
                     },
                   ],
-                  initialValue: main?register.registerScope:'请选择',
+                  initialValue: main?register.registerScope:'',
                 })(
-                  <Select>
+                  <Select  
+                  placeholder="请选择"
+                  optionFilterProp="children"
+                  showSearch>
                     <Option value="影响范围">影响范围</Option>
                     <Option value="服务器">服务器</Option>
                     <Option value="数据传输">数据传输</Option>
@@ -219,6 +221,8 @@ const Registrat = React.forwardRef((props, ref) => {
                 )}
               </Form.Item>
             </Col>
+
+      
 
             <Col span={8}>
               <Form.Item label="联系电话">
@@ -232,7 +236,7 @@ const Registrat = React.forwardRef((props, ref) => {
                     },
                   ],
                   initialValue: register?register.registerUserPhone:'',
-                })(<Input />)}
+                })(<Input placeholder='请输入'/>)}
               </Form.Item>
             </Col>  
 
@@ -246,7 +250,7 @@ const Registrat = React.forwardRef((props, ref) => {
                     },
                   ],
                   initialValue: main?main.title:'',
-                })(<Input />)}
+                })(<Input  placeholder='请输入'/>)}
               </Form.Item>
             </Col>
 
@@ -260,7 +264,7 @@ const Registrat = React.forwardRef((props, ref) => {
                     },
                   ],
                   initialValue: main?main.content:'',
-                })(<TextArea />)}
+                })(<TextArea placeholder='请输入'/>)}
               </Form.Item>
             </Col>
 
@@ -317,29 +321,10 @@ const Registrat = React.forwardRef((props, ref) => {
                 })(<Input disabled/>)}
               </Form.Item>
             </Col>
-
-{/* 
-            <Col span={24}>
-              <Form.Item label="上传附件" {...forminladeLayout}>
-                {getFieldDecorator('uploadAttachment', {
-                  rules: [
-                    {
-                      // required,
-                      message: '请输入问题描述',
-                    },
-                  ],
-                })(
-                  <Upload {...data}>
-                    <Button type="primary">
-                      <Icon type="upload" /> Click to Upload
-                    </Button>
-                  </Upload>,
-                )}
-              </Form.Item>
-            </Col> */}
           </Form>
-       
-    </Row>
+        </Row>
+    </>
+   
   );
 });
 

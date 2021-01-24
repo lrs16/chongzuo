@@ -1,5 +1,6 @@
 import React from 'react';
 import {  Descriptions, Collapse, Radio } from 'antd';
+import Downloadfile from '@/components/SysUpload/Downloadfile';
 
 const { Panel } = Collapse;
 function Businessaudes(props) {
@@ -12,7 +13,7 @@ function Businessaudes(props) {
   }
   return (
     <>
-    { loading === false && (
+    { loading === false && problemFlowNodeRows && (
       <Collapse 
         expandIconPosition="right" 
         style={{ backgroundColor: 'white', marginTop: '20px' }}
@@ -43,12 +44,12 @@ function Businessaudes(props) {
           </Descriptions>
 
           <Descriptions>
-            <Descriptions.Item label="上传附件">
-            <span style={{ color: 'blue', textDecoration: 'underline' }}>
-            {problemFlowNodeRows ? problemFlowNodeRows[2].checkAttachIds : ''}
-            </span>
-            </Descriptions.Item>
-          </Descriptions>
+              <Descriptions.Item label="上传附件">
+                <span style={{ color: 'blue', textDecoration: 'underline' }} >
+                {problemFlowNodeRows[2].checkAttachments !== null && <Downloadfile files={problemFlowNodeRows[2].checkAttachments} />}          
+               </span>
+              </Descriptions.Item>
+            </Descriptions>
 
           <Descriptions>
             <Descriptions.Item label="审核人">

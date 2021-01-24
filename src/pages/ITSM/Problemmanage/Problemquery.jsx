@@ -167,6 +167,26 @@ function Besolved(props) {
     });
   };
 
+  const download = () => {
+    validateFields((err,values) => {
+      if(!err) {
+        dispatch({
+          type:'problemmanage/eventdownload',
+          payload:{...values}
+        }).then(res => {
+          const filename = `下载.xls`;
+          const blob = new Blob([res]);
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = filename;
+          a.click();
+          window.URL.revokeObjectURL(url);
+        })
+      }
+    })
+  }
+
   return (
     <PageHeaderWrapper title={pagetitle}>
       <Card>
@@ -336,7 +356,10 @@ function Besolved(props) {
           </Form>
         </Row>
         <div style={{ marginBottom: 24 }}>
-          <Button type="primary">导出数据</Button>
+          <Button 
+            type="primary"
+            onClick={() => download()}
+            >导出数据</Button>
         </div>
 
         <Table

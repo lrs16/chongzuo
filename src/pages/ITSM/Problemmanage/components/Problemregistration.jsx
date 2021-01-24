@@ -1,5 +1,6 @@
 import React from 'react';
 import { Descriptions, Collapse } from 'antd';
+import Downloadfile from '@/components/SysUpload/Downloadfile';
 import { connect } from 'dva';
 
 const { Panel } = Collapse;
@@ -14,16 +15,10 @@ function Problemregistration(props) {
     loading,
    } = props;
    const { problemFlowNodeRows } = registrationDetail;
-
-   const fileDown = (id) => {
-    dispatch({
-      type:'problemmanage/filedownload',
-      payload:{id}
-    })
-  } 
+ 
   return (
     <>
-      {statue !== 5 && loading === false && (
+      {statue !== 5 && loading === false && main && problemFlowNodeRows && (
         <Collapse
           expandIconPosition="right"
           defaultActiveKey={['1']}
@@ -32,60 +27,88 @@ function Problemregistration(props) {
           <Panel header="问题登记" key="1">
             <Descriptions>
               <Descriptions.Item label="问题编号">
-                {main ? main.no : ''}
+                { main.no}
               </Descriptions.Item>
-              <Descriptions.Item label="问题来源">
-                {main ? main.source : ''}
-              </Descriptions.Item>
-              <Descriptions.Item label="问题分类">
-                {main ? main.type : ''}
-              </Descriptions.Item>
-              <Descriptions.Item label="紧急度">
-                {main ? main.emergent : ''}
-              </Descriptions.Item>
-              <Descriptions.Item label="影响度">
-                {main ? main.effect : ''}
-              </Descriptions.Item>
-              <Descriptions.Item label="优先级">
-                {main ? main.priority : ''}
-              </Descriptions.Item>
-              <Descriptions.Item label="填报人单位">
-                {problemFlowNodeRows ? problemFlowNodeRows[0].registerUnit : ''}
-              </Descriptions.Item>
-              <Descriptions.Item label="填报人部门">
-                {problemFlowNodeRows ? problemFlowNodeRows[0].registerDept : ''}
-              </Descriptions.Item>
-              <Descriptions.Item label="填报人">
-                {problemFlowNodeRows ? problemFlowNodeRows[0].registerUser : ''}
-              </Descriptions.Item>
-              <Descriptions.Item label="联系电话">
-                {problemFlowNodeRows ? problemFlowNodeRows[0].phone : ''}
-              </Descriptions.Item>
+
               <Descriptions.Item label="登记时间">
-                {problemFlowNodeRows ? problemFlowNodeRows[0].registerTime : ''}
+                { problemFlowNodeRows[0].registerTime}
               </Descriptions.Item>
-              <Descriptions.Item label="建单时间">
-                {registrationDetail ? registrationDetail.now : ''}
+
+              <Descriptions.Item label="发生时间">
+                {problemFlowNodeRows[0].registerOccurTime}
               </Descriptions.Item>
+
+              <Descriptions.Item label="问题来源">
+                { main.source}
+              </Descriptions.Item>
+
+              <Descriptions.Item label="问题分类">
+                {main.type}
+              </Descriptions.Item>
+
+              <Descriptions.Item label="重要程度">
+                {main.emergent}
+              </Descriptions.Item>
+
+              <Descriptions.Item label="期待完成时间">
+                {problemFlowNodeRows[0].registerExpectTime}
+              </Descriptions.Item>
+
+              <Descriptions.Item label="所属项目">
+                { problemFlowNodeRows[0].registerProject}
+              </Descriptions.Item>
+
+              <Descriptions.Item label="影响范围">
+                {registrationDetail.now}
+              </Descriptions.Item>
+           
             </Descriptions>
+
             <Descriptions>
-              <Descriptions.Item label="问题标题">
-                {main ? main.title : ''}
-              </Descriptions.Item>
-            </Descriptions>
-            <Descriptions>
-              <Descriptions.Item label="问题描述">
-                {main ? main.content : ''}
+             <Descriptions.Item label="联系电话">
+                { problemFlowNodeRows[0].registerUserPhone }
               </Descriptions.Item>
             </Descriptions>
 
             <Descriptions>
-              <Descriptions.Item label="上传附件">
-                <span style={{ color: 'blue', textDecoration: 'underline' }} >
-                  ff           
-               </span>
+              <Descriptions.Item label="问题标题">
+                { main.title}
               </Descriptions.Item>
             </Descriptions>
+
+            <Descriptions>
+              <Descriptions.Item label="问题描述">
+                { main.content}
+              </Descriptions.Item>
+            </Descriptions>
+
+            <Descriptions>
+            <Descriptions.Item label="上传附件">
+              <span style={{ color: 'blue', textDecoration: 'underline' }} >
+              {problemFlowNodeRows[0].registerAttachments !== null && <Downloadfile files={problemFlowNodeRows[0].registerAttachments} />}          
+              </span>
+            </Descriptions.Item>
+          </Descriptions>
+
+          <Descriptions>
+            <Descriptions.Item label="填报人">
+              { problemFlowNodeRows[0].registerUser }
+            </Descriptions.Item>
+
+            <Descriptions.Item label="填报人单位">
+                { problemFlowNodeRows[0].registerUnit }
+            </Descriptions.Item>
+
+            <Descriptions.Item label="填报人部门">
+                {problemFlowNodeRows[0].registerDept}
+              </Descriptions.Item>
+
+
+          </Descriptions>
+
+     
+
+
           </Panel>
         </Collapse>
       )}
