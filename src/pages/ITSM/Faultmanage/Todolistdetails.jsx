@@ -99,7 +99,6 @@ function Todolistdetails(props) {
   const [result, setResult] = useState('1');
   const [resultsecond, setResultsecond] = useState('1');
   const [resultconfirm, setResultconfirm] = useState('1');
-  console.log(resultconfirm, 'resultconfirm');
 
   const RegisterRef = useRef(); // 故障登记
   const ExamineRef = useRef(); // 系统运维商审核  自动化科业务负责人审核
@@ -491,51 +490,73 @@ function Todolistdetails(props) {
   }
 
   const handleFaulttransfer = () => { // 转单接口操作！
-    // eslint-disable-next-line consistent-return
-    ExamineRef.current.validateFields((err, values) => {
-      if (!err) {
-        const taskId = id;
-        return dispatch({
-          type: 'fault/getSubmitProToNextNode',
-          payload: {
-            ...values,
-            taskId,
-            result: '9',
-            userIds: sessionStorage.getItem('NextflowUserId')
-          }
-        }).then(res => {
-          if (res.code === 200) {
-            message.success(res.msg);
-            router.push(`/ITSM/faultmanage/registration`);
-          } else {
-            message.error(res.msg);
-            router.push(`/ITSM/faultmanage/registration`);
-          }
-        })
+    const taskId = id;
+    return dispatch({
+      type: 'fault/getSubmitProToNextNode',
+      payload: {
+        taskId,
+        result: '9',
+        userIds: sessionStorage.getItem('NextflowUserId')
       }
-    });
+    }).then(res => {
+      if (res.code === 200) {
+        message.success(res.msg);
+        router.push(`/ITSM/faultmanage/todolist`);
+      } else {
+        message.error(res.msg);
+        router.push(`/ITSM/faultmanage/todolist`);
+      }
+    })
   }
 
   const handleRegist = () => { // 登记按钮回到登记页
     // eslint-disable-next-line consistent-return
     ExamineRef.current.validateFields((err, values) => {
+      const formValues = values;
+      if (formValues.checkTime) {
+        formValues.checkTime = values.checkTime.format('YYYY-MM-DD HH:mm:ss');
+      } else {
+        formValues.checkTime = '';
+      }
       if (!err) {
-        const taskId = id;
+        formValues.checkUserId = userId; // 当前登录人id
+        formValues.taskId = id;
+        formValues.checkType = paneKey === '系统运维商审核' ? '1' : '2';
+        if (files.ischange) {
+          formValues.checkAttachments = JSON.stringify(files.arr);
+        }
+
+        if (tododetailslist.editState === 'edit') {
+          formValues.checkId = tododetailslist.check.id;
+          formValues.editState = tododetailslist.editState;
+        } else {
+          formValues.checkId = tododetailslist.editGuid;
+          formValues.editState = 'add';
+        }
         return dispatch({
-          type: 'fault/getSubmitProToNextNode',
-          payload: {
-            ...values,
-            taskId,
-            result: '0',
-            userIds: ''
-          }
+          type: 'fault/getfromsave', // 保存接口
+          payload: { formValues }
+        // eslint-disable-next-line consistent-return
         }).then(res => {
-          if (res.code === 200) {
-            message.success(res.msg);
-            router.push(`/ITSM/faultmanage/registration`);
-          } else {
-            message.error(res.msg);
-            router.push(`/ITSM/faultmanage/registration`);
+          if(res.code === 200) {
+            const taskId = id;
+            return dispatch({
+              type: 'fault/getSubmitProToNextNode',
+              payload: {
+                ...values,
+                taskId,
+                result: '0',
+                userIds: ''
+              }
+            }).then(res1 => {
+              if (res1.code === 200) {
+                message.success(res1.msg);
+                router.push(`/ITSM/faultmanage/registration`);
+              } else {
+                message.error(res1.msg);
+                router.push(`/ITSM/faultmanage/registration`);
+              }
+            })
           }
         })
       }
@@ -545,23 +566,51 @@ function Todolistdetails(props) {
   const toHandle = () => { // 第二次审核回到处理
     // eslint-disable-next-line consistent-return
     ExamineRef.current.validateFields((err, values) => {
+      const formValues = values;
+      if (formValues.checkTime) {
+        formValues.checkTime = values.checkTime.format('YYYY-MM-DD HH:mm:ss');
+      } else {
+        formValues.checkTime = '';
+      }
       if (!err) {
-        const taskId = id;
+        formValues.checkUserId = userId; // 当前登录人id
+        formValues.taskId = id;
+        formValues.checkType = paneKey === '系统运维商审核' ? '1' : '2';
+        if (files.ischange) {
+          formValues.checkAttachments = JSON.stringify(files.arr);
+        }
+
+        if (tododetailslist.editState === 'edit') {
+          formValues.checkId = tododetailslist.check.id;
+          formValues.editState = tododetailslist.editState;
+        } else {
+          formValues.checkId = tododetailslist.editGuid;
+          formValues.editState = 'add';
+        }
         return dispatch({
-          type: 'fault/getSubmitProToNextNode',
-          payload: {
-            ...values,
-            taskId,
-            result: '0',
-            userIds: ''
-          }
+          type: 'fault/getfromsave', // 保存接口
+          payload: { formValues }
+        // eslint-disable-next-line consistent-return
         }).then(res => {
-          if (res.code === 200) {
-            message.success(res.msg);
-            router.push(`/ITSM/faultmanage/todolist`);
-          } else {
-            message.error(res.msg);
-            router.push(`/ITSM/faultmanage/todolist`);
+          if(res.code === 200) {
+            const taskId = id;
+            return dispatch({
+              type: 'fault/getSubmitProToNextNode',
+              payload: {
+                ...values,
+                taskId,
+                result: '0',
+                userIds: ''
+              }
+            }).then(res1 => {
+              if (res1.code === 200) {
+                message.success(res1.msg);
+                router.push(`/ITSM/faultmanage/todolist`);
+              } else {
+                message.error(res1.msg);
+                router.push(`/ITSM/faultmanage/todolist`);
+              }
+            })
           }
         })
       }
@@ -572,22 +621,44 @@ function Todolistdetails(props) {
     // eslint-disable-next-line consistent-return
     ConfirmRef.current.validateFields((err, values) => {
       if (!err) {
-        const taskId = id;
+        const formValues = values;
+        formValues.confirmTime = values.confirmTime.format('YYYY-MM-DD HH:mm:ss');
+        formValues.taskId = id;
+        formValues.editState = tododetailslist.editState;
+        formValues.confirmUserId = userId; // 当前登录人id
+        if (files.ischange) {
+          formValues.confirmAttachments = JSON.stringify(files.arr);
+        }
+
+        if (tododetailslist.editState === 'edit') {
+          formValues.confirmId = tododetailslist.confirm.id;
+        } else {
+          formValues.confirmId = tododetailslist.editGuid;
+        }
         return dispatch({
-          type: 'fault/getSubmitProToNextNode',
-          payload: {
-            ...values,
-            taskId,
-            result: '0',
-            userIds: ''
-          }
+          type: 'fault/getfromsave', // 保存接口
+          payload: { formValues }
+        // eslint-disable-next-line consistent-return
         }).then(res => {
-          if (res.code === 200) {
-            message.success(res.msg);
-            router.push(`/ITSM/faultmanage/todolist`);
-          } else {
-            message.error(res.msg);
-            router.push(`/ITSM/faultmanage/todolist`);
+          if(res.code === 200) {
+            const taskId = id;
+            return dispatch({
+              type: 'fault/getSubmitProToNextNode',
+              payload: {
+                ...values,
+                taskId,
+                result: '0',
+                userIds: ''
+              }
+            }).then(res1 => {
+              if (res1.code === 200) {
+                message.success(res1.msg);
+                router.push(`/ITSM/faultmanage/todolist`);
+              } else {
+                message.error(res1.msg);
+                router.push(`/ITSM/faultmanage/todolist`);
+              }
+            })
           }
         })
       }
@@ -628,14 +699,14 @@ function Todolistdetails(props) {
               </SelectUser>
             )
           }
-          {/* 确认过程的时候不需要选人 */}
+          {/* 确认过程的时候不需要选人 1通过直接关闭 */}
           {
             paneKey === '自动化科专责确认' ?
               (resultconfirm === '1' && (<Button
                 type="primary"
                 onClick={() => handleSave(currenStatus)}
               >
-                流转
+                关闭
               </Button>))
               :
               ((main && main.status !== '40') && result === '1' && resultsecond === '1') && (<SelectUser
@@ -725,6 +796,7 @@ function Todolistdetails(props) {
                             formItemLayout={formItemLayout}
                             forminladeLayout={forminladeLayout}
                             tododetailslist={tododetailslist}
+                            main={main}
                           />
                         </Panel>
                       )
@@ -828,7 +900,7 @@ function Todolistdetails(props) {
                       )
                     }
 
-                    {troubleFlowNodeRows && (troubleFlowNodeRows.map((obj, index) => {
+                    {troubleFlowNodeRows && (troubleFlowNodeRows.map((obj) => {
                       // panel详情组件
                       const Paneldesmap = new Map([
                         ['故障登记', <RegisterQuery info={obj} maindata={main} />],
@@ -839,7 +911,7 @@ function Todolistdetails(props) {
                         ['自动化科专责确认', <ConfirmQuery info={obj} maindata={main} />],
                       ]);
                       return (
-                        <Panel Panel header={obj.fnname} key={index}>
+                        <Panel Panel header={obj.fnname} key={obj.id}>
                           {Paneldesmap.get(obj.fnname)}
                         </Panel>
                       );

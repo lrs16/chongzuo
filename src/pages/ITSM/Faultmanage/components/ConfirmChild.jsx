@@ -103,7 +103,7 @@ const ConfirmChild = React.forwardRef((props, ref) => {
                         <Form.Item
                             label="上传附件"
                             {...forminladeLayout}
-                            extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
+                            extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb"
                         >
                             <div style={{ width: 400 }}>
                                 <SysUpload fileslist={(confirm && confirm.confirmAttachments) ? JSON.parse(confirm.confirmAttachments) : []} ChangeFileslist={newvalue => setFilesList(newvalue)} />
@@ -114,7 +114,7 @@ const ConfirmChild = React.forwardRef((props, ref) => {
                     <Col span={8}>
                         <Form.Item label="确认人">
                             {getFieldDecorator('confirmUser', {
-                                initialValue: confirm ? confirm.confirmUser : curruserinfo.loginCode,
+                                initialValue: confirm ? confirm.confirmUser : curruserinfo.userName,
                             })(<Input allowClear disabled />)}
                         </Form.Item>
                     </Col>

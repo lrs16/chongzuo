@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
-import moment from 'moment';
+// import moment from 'moment';
 import Link from 'umi/link';
 import {
   Card,
@@ -292,18 +292,25 @@ function QueryList(props) {
       current: 1,
     });
 
-    validateFields((err, values) => {
-      const formValues = values;
-      if (formValues.registerOccurTimeBegin || formValues.registerTimeBegin || formValues.handleStartTimeBegin || formValues.handleStartTimeEnd) {
-        formValues.registerOccurTimeBegin = values.registerOccurTimeBegin.format('YYYY-MM-DD HH:mm:ss');
-        formValues.registerTimeBegin = values.registerTimeBegin.format('YYYY-MM-DD HH:mm:ss');
-        formValues.handleStartTimeBegin = values.handleStartTimeBegin.format('YYYY-MM-DD HH:mm:ss');
-        formValues.handleStartTimeEnd = values.handleStartTimeEnd.format('YYYY-MM-DD HH:mm:ss');
-      }
+    validateFields((err, fieldsValue) => {
       if (err) {
         return;
       }
-      searchdata(formValues, paginations.current, paginations.pageSize);
+      const values = fieldsValue;
+      if(fieldsValue.registerOccurTimeBegin) {
+        values.registerOccurTimeBegin = fieldsValue.registerOccurTimeBegin.format('YYYY-MM-DD HH:mm:ss');
+      }
+      if(fieldsValue.registerTimeBegin) {
+        values.registerTimeBegin = fieldsValue.registerTimeBegin.format('YYYY-MM-DD HH:mm:ss');
+      }
+      if(fieldsValue.handleStartTimeBegin) {
+        values.handleStartTimeBegin = fieldsValue.handleStartTimeBegin.format('YYYY-MM-DD HH:mm:ss');
+      }
+      if(values.handleStartTimeEnd) {
+        values.handleStartTimeEnd = fieldsValue.handleStartTimeEnd.format('YYYY-MM-DD HH:mm:ss');
+      }
+      
+      searchdata(values, paginations.current, paginations.pageSize);
     });
   };
 
@@ -420,7 +427,6 @@ function QueryList(props) {
                 <Col xl={8} xs={12}>
                   <Form.Item label="故障发生时间">
                     {getFieldDecorator('registerOccurTimeBegin', {
-                      initialValue: moment(Date.now()) || ''
                     })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} />)}
                   </Form.Item>
                 </Col>
@@ -428,7 +434,6 @@ function QueryList(props) {
                 <Col xl={8} xs={12}>
                   <Form.Item label="故障登记时间">
                     {getFieldDecorator('registerTimeBegin', {
-                      initialValue: moment(Date.now()) || ''
                     })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} />)}
                   </Form.Item>
                 </Col>
@@ -514,7 +519,6 @@ function QueryList(props) {
                 <Col xl={8} xs={12}>
                   <Form.Item label="故障处理开始时间">
                     {getFieldDecorator('handleStartTimeBegin', {
-                      initialValue: moment(Date.now()) || ''
                     })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} />)}
                   </Form.Item>
                 </Col>
@@ -522,7 +526,6 @@ function QueryList(props) {
                 <Col xl={8} xs={12}>
                   <Form.Item label="故障处理完成时间">
                     {getFieldDecorator('handleStartTimeEnd', {
-                      initialValue: moment(Date.now()) || ''
                     })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} />)}
                   </Form.Item>
                 </Col>

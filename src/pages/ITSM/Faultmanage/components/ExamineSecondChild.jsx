@@ -92,7 +92,7 @@ const ExamineSecondChild = React.forwardRef((props, ref) => {
                     <Form.Item
                         label="上传附件"
                         {...forminladeLayout}
-                        extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
+                        extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb"
                     >
                         <div style={{ width: 400 }}>
                             <SysUpload fileslist={(check && check.checkAttachments) ? JSON.parse(check.checkAttachments) : []} ChangeFileslist={newvalue => setFilesList(newvalue)} />
@@ -103,7 +103,7 @@ const ExamineSecondChild = React.forwardRef((props, ref) => {
                 <Col span={8}>
                     <Form.Item label="审核人">
                         {getFieldDecorator('checkUser', {
-                            initialValue: check ? check.checkUser : curruserinfo.loginCode
+                            initialValue: check ? check.checkUser : curruserinfo.userName
                         })(<Input allowClear disabled />)}
                     </Form.Item>
                 </Col>

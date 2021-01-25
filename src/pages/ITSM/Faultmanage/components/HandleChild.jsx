@@ -174,7 +174,7 @@ const HandleChild = React.forwardRef((props, ref) => {
                     <Form.Item
                         label="上传附件"
                         {...forminladeLayout}
-                        extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
+                        extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb"
                     >
                         <div
                             style={{ width: 400 }}
@@ -191,7 +191,7 @@ const HandleChild = React.forwardRef((props, ref) => {
                 <Col span={8}>
                     <Form.Item label="处理人">
                         {getFieldDecorator('handler', {
-                            initialValue: curruserinfo.loginCode || '',
+                            initialValue: curruserinfo.userName || '',
                         })(<Input disabled />)}
                     </Form.Item>
                 </Col>

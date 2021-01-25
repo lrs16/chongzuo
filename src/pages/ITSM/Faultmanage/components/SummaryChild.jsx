@@ -106,7 +106,7 @@ const SummaryChild = React.forwardRef((props, ref) => {
                         <Form.Item
                             label="上传附件"
                             {...forminladeLayout}
-                            extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
+                            extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb"
                         >
                             <div
                                 style={{ width: 400 }}
@@ -123,7 +123,7 @@ const SummaryChild = React.forwardRef((props, ref) => {
                     <Col span={8}>
                         <Form.Item label="总结人">
                             {getFieldDecorator('finishUser', {
-                                initialValue: finish ? finish.finishUser : curruserinfo.loginCode,
+                                initialValue: finish ? finish.finishUser : curruserinfo.userName,
                             })(<Input allowClear disabled />)}
                         </Form.Item>
                     </Col>

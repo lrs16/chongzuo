@@ -56,7 +56,7 @@ const registerScope = [ // 影响范围
 ];
 
 const RegisterChild = React.forwardRef((props, ref) => {
-    const { formItemLayout, forminladeLayout, tododetailslist, ChangeFiles } = props;
+    const { formItemLayout, forminladeLayout, tododetailslist, ChangeFiles, main } = props;
     const { getFieldDecorator } = props.form;
     const attRef = useRef();
     useEffect(() => {
@@ -81,7 +81,7 @@ const RegisterChild = React.forwardRef((props, ref) => {
                 <Col xl={8} xs={12}>
                     <Form.Item label="故障编号">
                         {getFieldDecorator('no', {
-                            initialValue: (tododetailslist && tododetailslist.main.no) ? tododetailslist.main.no : ''
+                            initialValue: main.no || ''
                         })(<Input disabled />)}
                     </Form.Item>
                 </Col>
@@ -123,7 +123,7 @@ const RegisterChild = React.forwardRef((props, ref) => {
                                     message: '请选择',
                                 },
                             ],
-                            initialValue: tododetailslist ? tododetailslist.main.source : ''
+                            initialValue: main.source || ''
                         })(
                             <Select placeholder="请选择">
                                 {faultSource.map(({ value }) => [<Option key={value}>{value}</Option>])}
@@ -163,7 +163,7 @@ const RegisterChild = React.forwardRef((props, ref) => {
                                     message: '请选择',
                                 },
                             ],
-                            initialValue: tododetailslist ? tododetailslist.main.type : ''
+                            initialValue: main.type || ''
                         })(
                             <Select placeholder="请选择">
                                 {faultType.map(({ value }) => [<Option key={value}>{value}</Option>])}
@@ -231,7 +231,7 @@ const RegisterChild = React.forwardRef((props, ref) => {
                                     message: '请输入',
                                 },
                             ],
-                            initialValue: tododetailslist ? tododetailslist.main.title : ''
+                            initialValue: main.title || ''
                         })(<Input placeholder="请输入" allowClear />)}
                     </Form.Item>
                 </Col>
@@ -245,7 +245,7 @@ const RegisterChild = React.forwardRef((props, ref) => {
                                     message: '请输入',
                                 },
                             ],
-                            initialValue: tododetailslist ? tododetailslist.main.content : ''
+                            initialValue: main.content || ''
                         })(<TextArea rows={5} placeholder="请输入" />)}
                     </Form.Item>
                 </Col>
@@ -267,7 +267,7 @@ const RegisterChild = React.forwardRef((props, ref) => {
                     <Form.Item
                         label="上传附件"
                         {...forminladeLayout}
-                        extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
+                        extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb"
                     >
                         <div style={{ width: 400 }}>
                             <SysUpload  fileslist={tododetailslist ? JSON.parse(tododetailslist.register.registerAttachments) : []} ChangeFileslist={newvalue => setFilesList(newvalue)} />

@@ -942,7 +942,8 @@ export default {
     },
     // 故障管理
     '/itsm/trouble/': {
-      target: 'http://172.16.4.77:9901/',
+      // target: 'http://172.16.4.77:9901/',
+      target: 'http://172.16.4.211:9901/',
       changeOrigin: true,
     },
     // 需求管理

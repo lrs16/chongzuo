@@ -149,6 +149,13 @@ function Registration(props) {
     });
   }
 
+  // 上传附件触发保存
+  // useEffect(() => {
+  //   if (files.ischange) {
+  //     handleSave();
+  //   }
+  // }, [files]);
+
   const required = true;
 
   // const faultcircula = () => { // 流转
@@ -371,7 +378,7 @@ function Registration(props) {
                   <Form.Item
                     label="上传附件"
                     {...forminladeLayout}
-                    extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
+                    extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb"
                   >
                     <div style={{ width: 400 }}>
                       <SysUpload  fileslist={files.arr} ChangeFileslist={newvalue => setFiles(newvalue)}/>
@@ -382,12 +389,7 @@ function Registration(props) {
                 <Col span={8}>
                   <Form.Item label="登记人">
                     {getFieldDecorator('registerUser', {
-                      // rules: [
-                      //   {
-                      //     required,
-                      //   },
-                      // ],
-                      initialValue: curruserinfo.loginCode || '',
+                      initialValue: curruserinfo.userName || '',
                     })(<Input disabled />)}
                   </Form.Item>
                 </Col>
@@ -395,11 +397,6 @@ function Registration(props) {
                 <Col span={8}>
                   <Form.Item label="登记单位">
                     {getFieldDecorator('registerUnit', {
-                      // rules: [
-                      //   {
-                      //     required,
-                      //   },
-                      // ],
                       initialValue: '广西电网有限责任公司',
                     })(<Input disabled />)}
                   </Form.Item>
@@ -408,11 +405,6 @@ function Registration(props) {
                 <Col span={8}>
                   <Form.Item label="登记部门">
                     {getFieldDecorator('registerDept', {
-                      // rules: [
-                      //   {
-                      //     required,
-                      //   },
-                      // ],
                       initialValue: curruserinfo.deptNameExt || '',
                     })(<Input disabled />)}
                   </Form.Item>
