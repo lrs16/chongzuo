@@ -156,8 +156,8 @@ export async function toSelectTodoperson(taskId) {
 // /itsm/trouble/flow/submit 根据待办id提交流程至下一节点 参数1 backReason--退回原因  参数2 result --流程分支走向标识：-1 退回|0 不通过|1 下一环节 
 // 参数3 taskId(必填) --流程待办id
 // 参数4 userIds 待办人id，多人则用’,’分隔
-export async function submitProToNextNode(taskId, result) {
-  return request(`/itsm/trouble/flow/submit?taskId=${taskId}&userIds=1&result=${result}`,{
+export async function submitProToNextNode(taskId, result, userIds) {
+  return request(`/itsm/trouble/flow/submit?taskId=${taskId}&userIds=${userIds}&result=${result}`,{
     method:'POST',
   })
 }

@@ -205,8 +205,8 @@ export default {
     },
 
     // // 根据待办id提交流程至下一节点（流转）
-    *getSubmitProToNextNode({ payload: { taskId, result } }, { call }) {
-      return yield call(submitProToNextNode, taskId, result);
+    *getSubmitProToNextNode({ payload: { taskId, result, userIds } }, { call }) {
+      return yield call(submitProToNextNode, taskId, result, userIds);
     },
 
     *getSaveUserId1({ payload: { formValues } }, { call, put }) { // 故障登记页流转操作

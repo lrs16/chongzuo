@@ -52,7 +52,6 @@ class DropdownValueEdit extends Component {
         const { getFieldDecorator } = this.props.form;
         const required = true;
         const {
-            // id, 
             dictModule,
             dictType,
             dictCode,
@@ -73,18 +72,6 @@ class DropdownValueEdit extends Component {
                     width={650}
                 >
                     <Form {...formItemLayout}>
-                        {/* <Form.Item label="id">
-                            {getFieldDecorator('id', {
-                                rules: [
-                                    {
-                                        required,
-                                        message: '请输入',
-                                    },
-                                ],
-                                initialValue: id || '',
-                            })(<Input placeholder="请输入..." />)}
-                        </Form.Item> */}
-
                         <Form.Item label="字典模块">
                             {getFieldDecorator('dictModule', {
                                 rules: [
@@ -102,8 +89,7 @@ class DropdownValueEdit extends Component {
                                 rules: [{
                                     required: true,
                                     message: '请输入正确的字典类型',
-                                }, {
-                                    pattern: /^([A-Za-z]{2,8})$/,
+                                    pattern: /^([A-Za-z\\.]{2,16})$/,
                                 }],
                                 initialValue: dictType || '',
                             })(<Input allowClear />)}
@@ -187,7 +173,6 @@ class DropdownValueEdit extends Component {
 DropdownValueEdit.defaultProps = {
     title: '编辑字典',
     record: {
-        // id: '',
         dictModule: '',
         dictType: '',
         dictCode: '',

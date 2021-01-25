@@ -1,14 +1,12 @@
-import React, { useRef, useImperativeHandle, useEffect } from 'react';
+import React, { useRef, useImperativeHandle, useEffect, useState } from 'react';
 import moment from 'moment';
+import SysUpload from '@/components/SysUpload'; // 附件下载组件
 import {
     Form,
-    // Button,
     Row,
     Col,
     Input,
     DatePicker,
-    // Upload,
-    // Icon,
     Select
 } from 'antd';
 
@@ -24,9 +22,16 @@ const handleResult = [ // 处理结果
 ];
 
 const HandleChild = React.forwardRef((props, ref) => {
-    const { formItemLayout, forminladeLayout, handle, curruserinfo } = props;
+    const { formItemLayout, forminladeLayout, handle, curruserinfo, ChangeFiles, ChangeFileskey } = props;
     const { getFieldDecorator } = props.form;
     const attRef = useRef();
+    const [fileslist, setFilesList] = useState({ arr: [], ischange: false }); // 下载列表
+    useEffect(() => {
+        ChangeFiles(fileslist);
+    }, [fileslist]);
+    // useEffect(() => {
+    //     setFilesList({ ...fileslist, arr: handle.handleAttachments });
+    // }, [handle]);
     useImperativeHandle(
         ref,
         () => ({
@@ -36,7 +41,7 @@ const HandleChild = React.forwardRef((props, ref) => {
     );
     const required = true;
     useEffect(() => {
-        sessionStorage.setItem('Nextflowmane','系统运维商确认总结');
+        sessionStorage.setItem('Nextflowmane', '系统运维商确认总结');
     });
     return (
         <Row gutter={24}>
@@ -92,8 +97,8 @@ const HandleChild = React.forwardRef((props, ref) => {
                                     message: '请选择时间',
                                 },
                             ],
-                            initialValue: moment(handle.handleStartTime) || moment(Date.now()) 
-                        })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }}/>)}
+                            initialValue: (handle && handle.handleStartTime) ? moment(handle.handleStartTime) : moment(Date.now())
+                        })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} />)}
                     </Form.Item>
                 </Col>
 
@@ -106,8 +111,8 @@ const HandleChild = React.forwardRef((props, ref) => {
                                     message: '请选择时间',
                                 },
                             ],
-                            initialValue: moment(handle.handleEndTime) || moment(Date.now())
-                        })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }}/>)}
+                            initialValue: (handle && handle.handleStartTime) ? moment(handle.handleEndTime) : moment(Date.now())
+                        })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} />)}
                     </Form.Item>
                 </Col>
 
@@ -126,6 +131,60 @@ const HandleChild = React.forwardRef((props, ref) => {
                                 {handleResult.map(({ value }) => [<Option key={value}>{value}</Option>])}
                             </Select>,
                         )}
+                    </Form.Item>
+                </Col>
+
+                <Col span={24}>
+                    <Form.Item
+                        label="上传故障处理记录表"
+                        {...forminladeLayout}
+                        extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
+                    >
+                        <div
+                            style={{ width: 400 }}
+                            onMouseOver={() => {
+                                ChangeFileskey('1');
+                            }}
+                            onFocus={() => 0}
+                        >
+                            <SysUpload fileslist={(handle && handle.handleRecordAttachments) ? JSON.parse(handle.handleRecordAttachments) : []} ChangeFileslist={newvalue => setFilesList(newvalue)} />
+                        </div>
+                    </Form.Item>
+                </Col>
+
+                <Col span={24}>
+                    <Form.Item
+                        label="故障系统截图"
+                        {...forminladeLayout}
+                        extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
+                    >
+                        <div
+                            style={{ width: 400 }}
+                            onMouseOver={() => {
+                                ChangeFileskey('2');
+                            }}
+                            onFocus={() => 0}
+                        >
+                            <SysUpload fileslist={(handle && handle.handlePictureAttachments) ? JSON.parse(handle.handlePictureAttachments) : []} ChangeFileslist={newvalue => setFilesList(newvalue)} />
+                        </div>
+                    </Form.Item>
+                </Col>
+
+                <Col span={24}>
+                    <Form.Item
+                        label="上传附件"
+                        {...forminladeLayout}
+                        extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
+                    >
+                        <div
+                            style={{ width: 400 }}
+                            onMouseOver={() => {
+                                ChangeFileskey('3');
+                            }}
+                            onFocus={() => 0}
+                        >
+                            <SysUpload fileslist={(handle && handle.handleAttachments) ? JSON.parse(handle.handleAttachments) : []} ChangeFileslist={newvalue => setFilesList(newvalue)} />
+                        </div>
                     </Form.Item>
                 </Col>
 
@@ -152,45 +211,6 @@ const HandleChild = React.forwardRef((props, ref) => {
                         })(<Input disabled />)}
                     </Form.Item>
                 </Col>
-
-                {/* <Col span={24}>
-                    <Form.Item label="上传故障处理记录附件" extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb" style={{ display: "flex" }} labelCol={{
-                        xs: { span: 24 },
-                        sm: { span: 3 },
-                    }}>
-                        {getFieldDecorator('upload2', {
-                            rules: [
-                                {
-                                    required,
-                                },
-                            ],
-                            valuePropName: 'fileList',
-                        })(
-                            <Upload name="logo" action="" listType="picture">
-                                <Button type="primary">
-                                    <Icon type="upload" style={{ fontSize: 18 }} /> 添加附件
-                          </Button>
-                            </Upload>,
-                        )}
-                    </Form.Item>
-                </Col> */}
-
-                {/* <Col span={24}>
-                    <Form.Item label="上传附件" extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb" style={{ display: "flex" }} labelCol={{
-                        xs: { span: 24 },
-                        sm: { span: 3 },
-                    }}>
-                        {getFieldDecorator('upload', {
-                            valuePropName: 'fileList',
-                        })(
-                            <Upload name="logo" action="" listType="picture">
-                                <Button type="primary">
-                                    <Icon type="upload" style={{ fontSize: 18 }} /> 添加附件
-                          </Button>
-                            </Upload>,
-                        )}
-                    </Form.Item>
-                </Col> */}
             </Form>
         </Row>
     );

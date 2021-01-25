@@ -14,7 +14,7 @@ import {
   Icon,
   Table,
   Popconfirm,
-  message,
+  // message,
   // Badge
 } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
@@ -88,7 +88,7 @@ function QueryList(props) {
 
   const [expand, setExpand] = useState(false);
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 10 }); // 分页state
-  const [selectedRow, setSelectedRow] = useState([]);
+  // const [selectedRow, setSelectedRow] = useState([]);
 
   const columns = [
     // {
@@ -291,10 +291,10 @@ function QueryList(props) {
       ...paginations,
       current: 1,
     });
-    
+
     validateFields((err, values) => {
       const formValues = values;
-      if(formValues.registerOccurTimeBegin || formValues.registerTimeBegin || formValues.handleStartTimeBegin || formValues.handleStartTimeEnd) {
+      if (formValues.registerOccurTimeBegin || formValues.registerTimeBegin || formValues.handleStartTimeBegin || formValues.handleStartTimeEnd) {
         formValues.registerOccurTimeBegin = values.registerOccurTimeBegin.format('YYYY-MM-DD HH:mm:ss');
         formValues.registerTimeBegin = values.registerTimeBegin.format('YYYY-MM-DD HH:mm:ss');
         formValues.handleStartTimeBegin = values.handleStartTimeBegin.format('YYYY-MM-DD HH:mm:ss');
@@ -347,27 +347,27 @@ function QueryList(props) {
   };
 
   // 批量删除
-  const handleDeleteAll = () => {
-    if (selectedRow.length) {
-      const ids = [];
-      selectedRow.forEach(item => {
-        ids.push(item);
-      });
-      dispatch({
-        type: 'fault/remove',
-      payload: { id: ids }
-      }).then(res => {
-        if (res.code === 200) {
-          message.success(res.msg);
-          getQuerylists();
-        } else {
-          message.error('删除失败!');
-        }
-      });
-    } else {
-      message.info('至少选择一条数据');
-    }
-  };
+  // const handleDeleteAll = () => {
+  //   if (selectedRow.length) {
+  //     const ids = [];
+  //     selectedRow.forEach(item => {
+  //       ids.push(item);
+  //     });
+  //     dispatch({
+  //       type: 'fault/remove',
+  //     payload: { id: ids }
+  //     }).then(res => {
+  //       if (res.code === 200) {
+  //         message.success(res.msg);
+  //         getQuerylists();
+  //       } else {
+  //         message.error('删除失败!');
+  //       }
+  //     });
+  //   } else {
+  //     message.info('至少选择一条数据');
+  //   }
+  // };
 
   //  下载 /导出功能
   const download = (page, pageSize) => {
@@ -375,7 +375,7 @@ function QueryList(props) {
       if (!err) {
         dispatch({
           type: 'fault/faultQuerydownload',
-          payload: { 
+          payload: {
             values,
             pageSize,
             current: page,
@@ -401,7 +401,7 @@ function QueryList(props) {
           <Form {...formItemLayout} onSubmit={handleSearch}>
             <Col span={8}>
               <Form.Item label="故障编号">
-                {getFieldDecorator('no', {})(<Input allowClear/>)}
+                {getFieldDecorator('no', {})(<Input allowClear />)}
               </Form.Item>
             </Col>
 
@@ -414,7 +414,7 @@ function QueryList(props) {
                 )}
               </Form.Item>
             </Col>
-            
+
             {expand === true && (
               <>
                 <Col xl={8} xs={12}>
@@ -612,10 +612,10 @@ function QueryList(props) {
           <Popconfirm title="确定导出数据？" onConfirm={() => download()}>
             <Button type="primary">导出数据</Button>
           </Popconfirm>
-          
-          <Popconfirm title="确定删除吗？" onConfirm={handleDeleteAll} icon={<Icon type="question-circle-o" style={{ color: 'red' }} />}>
+
+          {/* <Popconfirm title="确定删除吗？" onConfirm={handleDeleteAll} icon={<Icon type="question-circle-o" style={{ color: 'red' }} />}>
             <Button type="danger" style={{ marginLeft: 10 }}>批量删除</Button>
-          </Popconfirm>
+          </Popconfirm> */}
         </div>
         <Table
           loading={loading}

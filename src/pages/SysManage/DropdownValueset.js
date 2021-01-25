@@ -118,18 +118,18 @@ class DropdownValueset extends Component {
     });
   };
 
-  handleEdite = values => { // 编辑
+  handleEdite = (values, record) => { // 编辑
     const { dispatch } = this.props;
     const { dictCode, dictModule, dictName, dictRemarks, dictSort, dictType } = values;
     const { parentId } = this.state;
     const pid = parentId;
     const listValues = values;
     listValues.pid = parentId;
-
+    const ids = record.id;
     return dispatch({
       type: 'umpsdropdown/edite',
       payload: {
-        dictCode, dictModule, dictName, dictRemarks, dictSort, dictType, pid
+        dictCode, dictModule, dictName, dictRemarks, dictSort, dictType, pid, id: ids
       },
     }).then(res => {
       if (res.code === 200) {

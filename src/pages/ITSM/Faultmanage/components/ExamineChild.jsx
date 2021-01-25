@@ -7,7 +7,6 @@ import {
     Col,
     Input,
     DatePicker,
-    Alert,
     Radio
 } from 'antd';
 
@@ -15,14 +14,13 @@ const { TextArea } = Input;
 const RadioGroup = Radio.Group;
 
 const ExamineChild = React.forwardRef((props, ref) => {
-    const { formItemLayout, forminladeLayout, check, curruserinfo, ChangeFiles } = props;
+    const { formItemLayout, forminladeLayout, check, curruserinfo, ChangeFiles,ChangeResult, result } = props;
     const { getFieldDecorator } = props.form;
-    const message = '若需要上传故障报告请于故障处理完成五个工作日内进行上传。'
     const attRef = useRef();
     const [fileslist, setFilesList] = useState({ arr: [], ischange: false }); // 下载列表
     useEffect(() => {
         ChangeFiles(fileslist);
-      }, [fileslist]);
+    }, [fileslist]);
     useImperativeHandle(
         ref,
         () => ({
@@ -32,8 +30,12 @@ const ExamineChild = React.forwardRef((props, ref) => {
     );
     const required = true;
     useEffect(() => {
-        sessionStorage.setItem('Nextflowmane','系统运维商处理');
+        sessionStorage.setItem('Nextflowmane', '系统运维商处理');
     });
+
+    const onChange = (e) => {
+        ChangeResult(e.target.value);
+    }
 
     return (
         <Row gutter={24}>
@@ -41,13 +43,13 @@ const ExamineChild = React.forwardRef((props, ref) => {
                 <Col span={24}>
                     <Form.Item label="审核结果" {...forminladeLayout}>
                         {getFieldDecorator('checkResult', {
-                        rules: [{ required: true, message: '请选择审核结果' }],
-                        initialValue: check ? check.checkResult : '0',
+                            rules: [{ required: true, message: '请选择审核结果' }],
+                            initialValue: check ? check.checkResult : '1',
                         })(
-                        <Radio.Group>
-                            <Radio value='0'>通过</Radio>
-                            <Radio value='1'>不通过</Radio>
-                        </Radio.Group>,
+                            <Radio.Group onChange={onChange}>
+                                <Radio value='1'>通过</Radio>
+                                <Radio value='0'>不通过</Radio>
+                            </Radio.Group>,
                         )}
                     </Form.Item>
                 </Col>
@@ -67,21 +69,25 @@ const ExamineChild = React.forwardRef((props, ref) => {
                 </Col>
 
                 <Col span={24}>
-                    <Form.Item label="审核意见" {...forminladeLayout}>
-                        {getFieldDecorator('checkOpinion', {
-                            rules: [
-                                {
-                                    required,
-                                    message: '请输入',
-                                },
-                            ],
-                            initialValue: check ? check.checkOpinion : ''
-                        })(<TextArea rows={5} placeholder="请输入" />)}
-                    </Form.Item>
+                    {result === '1' && (
+                        <Form.Item label="审核意见" {...forminladeLayout}>
+                            {getFieldDecorator('checkOpinion', {
+                                rules: [{ required: false, message: '请输入', }],
+                                initialValue: check ? check.checkOpinion : ''
+                            })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
+                        </Form.Item>
+                    )}
+                    {result === '0' && (
+                        <Form.Item label="审核意见" {...forminladeLayout}>
+                            {getFieldDecorator('checkOpinion', {
+                                rules: [{ required: true, message: '请输入', }],
+                                initialValue: check ? check.checkOpinion : ''
+                            })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
+                        </Form.Item>
+                    )}
                 </Col>
 
                 <Col span={24}>
-                    <Alert message={message} type="warning" showIcon/>
                     <Form.Item label="上传故障报告" {...forminladeLayout}>
                         {getFieldDecorator('checkReportSign', {
                             initialValue: check ? Number(check.checkReportSign) : 0
@@ -101,7 +107,7 @@ const ExamineChild = React.forwardRef((props, ref) => {
                         extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
                     >
                         <div style={{ width: 400 }}>
-                            <SysUpload  fileslist={check ? JSON.parse(check.checkAttachments) : []} ChangeFileslist={newvalue => setFilesList(newvalue)} />
+                            <SysUpload fileslist={(check && check.checkAttachments) ? JSON.parse(check.checkAttachments) : []} ChangeFileslist={newvalue => setFilesList(newvalue)} />
                         </div>
                     </Form.Item>
                 </Col>
@@ -110,7 +116,7 @@ const ExamineChild = React.forwardRef((props, ref) => {
                     <Form.Item label="审核人">
                         {getFieldDecorator('checkUser', {
                             initialValue: check ? check.checkUser : curruserinfo.loginCode
-                        })(<Input allowClear disabled/>)}
+                        })(<Input allowClear disabled />)}
                     </Form.Item>
                 </Col>
 
@@ -118,7 +124,7 @@ const ExamineChild = React.forwardRef((props, ref) => {
                     <Form.Item label="审核单位">
                         {getFieldDecorator('checkUnit', {
                             initialValue: check ? check.checkUnit : '广西电网有限责任公司'
-                        })(<Input allowClear disabled/>)}
+                        })(<Input allowClear disabled />)}
                     </Form.Item>
                 </Col>
 
@@ -126,7 +132,7 @@ const ExamineChild = React.forwardRef((props, ref) => {
                     <Form.Item label="审核部门">
                         {getFieldDecorator('checkDept', {
                             initialValue: check ? check.checkDept : curruserinfo.deptNameExt
-                        })(<Input allowClear disabled/>)}
+                        })(<Input allowClear disabled />)}
                     </Form.Item>
                 </Col>
             </Form>

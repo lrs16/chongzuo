@@ -34,6 +34,7 @@ import ExamineQuery from './components/ExamineQuery'; // 系统运维商审核
 import HandleQuery from './components/HandleQuery'; // 系统运维商处理
 import SummaryQuery from './components/SummaryQuery'; // 系统运维商总结
 import ExamineSecondQuery from './components/ExamineSecondQuery'; // 自动化科业务负责人审核
+import ConfirmQuery from './components/ConfirmQuery'; // 自动化科专责确认
 
 const { Step } = Steps;
 const { Panel } = Collapse;
@@ -81,6 +82,7 @@ const Collapsekeymap = new Map([
   ['系统运维商审核', 'ExamineChild'], // 系统运维商审核
   ['系统运维商处理', 'HandleChild'], // 系统运维商处理
   ['registerDetails', 'RegisterQuery'], // 系统运维商处理详情
+  // ['40', 'RegisterQuery'], // 系统运维商处理详情
   ['系统运维商确认总结', 'SummaryChild'], // 系统运维商确认总结
   ['自动化科业务负责人审核', 'ExamineSecondChild'], // 自动化科业务负责人审核
   ['自动化科专责确认', 'ConfirmChild'], // 自动化科专责确认
@@ -90,7 +92,14 @@ function Todolistdetails(props) {
   const pagetitle = props.route.name;
   const [activeKey, setActiveKey] = useState([]);
   const [tabActiveKey, setTabActiveKey] = useState('faultForm');
+
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
+  const [fileskey, setFileskey] = useState('1'); // 下载列表
+
+  const [result, setResult] = useState('1');
+  const [resultsecond, setResultsecond] = useState('1');
+  const [resultconfirm, setResultconfirm] = useState('1');
+  console.log(resultconfirm, 'resultconfirm');
 
   const RegisterRef = useRef(); // 故障登记
   const ExamineRef = useRef(); // 系统运维商审核  自动化科业务负责人审核
@@ -184,11 +193,10 @@ function Todolistdetails(props) {
   }
 
   const faultcircula = () => { // 流转
-    const result = 1;
     const taskId = id;
     return dispatch({
       type: 'fault/getSubmitProToNextNode',
-      payload: { taskId, result }
+      payload: { taskId, result: '1', userIds: sessionStorage.getItem('NextflowUserId') }
     }).then(res => {
       if (res.code === 200) {
         getfaultTodoDetailData();
@@ -211,7 +219,11 @@ function Todolistdetails(props) {
         formValues.registerTime = values.registerTime.format('YYYY-MM-DD HH:mm:ss');
         formValues.taskId = id;
         formValues.editState = tododetailslist.editState;
-        formValues.registerAttachments = JSON.stringify(files.arr);
+        formValues.registerUserId = userId; // 当前登录人id
+        if (files.ischange) {
+          formValues.registerAttachments = JSON.stringify(files.arr);
+        }
+
         // formValues.registerEffect = String(Number(values.registerEffect))
         if (tododetailslist.editState === 'edit') {
           formValues.registerId = tododetailslist.register.id;
@@ -241,10 +253,19 @@ function Todolistdetails(props) {
     // eslint-disable-next-line consistent-return
     ExamineRef.current.validateFields((err, values) => {
       const formValues = values;
-      formValues.checkTime = values.checkTime.format('YYYY-MM-DD HH:mm:ss');
+      if (formValues.checkTime) {
+        formValues.checkTime = values.checkTime.format('YYYY-MM-DD HH:mm:ss');
+      } else {
+        formValues.checkTime = '';
+      }
       if (cirStatus ? !err : true) {
+        formValues.checkUserId = userId; // 当前登录人id
         formValues.taskId = id;
         formValues.checkType = paneKey === '系统运维商审核' ? '1' : '2';
+        if (files.ischange) {
+          formValues.checkAttachments = JSON.stringify(files.arr);
+        }
+
         if (tododetailslist.editState === 'edit') {
           formValues.checkId = tododetailslist.check.id;
           formValues.editState = tododetailslist.editState;
@@ -274,12 +295,23 @@ function Todolistdetails(props) {
   const saveHandle = (cirStatus) => { // 系统运维商处理
     // eslint-disable-next-line consistent-return
     HandleRef.current.validateFields((err, values) => {
-      if (cirStatus ? !err : true) {
-        const formValues = values;
+      const formValues = values;
+      if (formValues.handleStartTime || formValues.handleEndTime) {
         formValues.handleStartTime = values.handleStartTime.format('YYYY-MM-DD HH:mm:ss');
         formValues.handleEndTime = values.handleEndTime.format('YYYY-MM-DD HH:mm:ss');
+      }
+      if (cirStatus ? !err : true) {
         formValues.taskId = id;
         formValues.editState = tododetailslist.editState;
+        formValues.handlerId = userId; // 当前登录人id
+        if (fileskey === '1') {
+          formValues.handleRecordAttachments = JSON.stringify(files.arr);
+        } else if (fileskey === '2') {
+          formValues.handlePictureAttachments = JSON.stringify(files.arr);
+        } else {
+          formValues.handleAttachments = JSON.stringify(files.arr);
+        }
+
         if (tododetailslist.editState === 'edit') {
           formValues.handleId = tododetailslist.handle.id;
           formValues.editState = tododetailslist.editState;
@@ -311,9 +343,10 @@ function Todolistdetails(props) {
     SummaryRef.current.validateFields((err, values) => {
       if (cirStatus ? !err : true) {
         const formValues = values;
-        formValues.finishTime = values.finishTime.format('YYYY-MM-DD HH:mm:ss');
         formValues.taskId = id;
         formValues.editState = tododetailslist.editState;
+        formValues.finishUserId = userId; // 当前登录人id  
+
         if (tododetailslist.editState === 'edit') {
           formValues.finishId = tododetailslist.finish.id;
           formValues.editState = tododetailslist.editState;
@@ -321,6 +354,24 @@ function Todolistdetails(props) {
           formValues.finishId = tododetailslist.editGuid;
           formValues.editState = 'add';
         }
+        if (files.ischange) {
+          if (fileskey === '1') {
+            formValues.finishAnalysisAttachments = JSON.stringify(files.arr);
+          } else {
+            formValues.finishAttachments = JSON.stringify(files.arr);
+          }
+        }
+
+        formValues.finishTime = values.finishTime.format('YYYY-MM-DD HH:mm:ss');
+        formValues.finishRequiredTime = values.finishRequiredTime.format('YYYY-MM-DD HH:mm:ss'); // 要求上传时间
+        if ((files.arr).length !== 0) {
+          formValues.finishPracticeTime = (files.arr)[0].nowtime;
+        } else if (values.finishPracticeTime !== '') {
+          formValues.finishPracticeTime = values.finishPracticeTime.format('YYYY-MM-DD HH:mm:ss');
+        } else {
+          formValues.finishPracticeTime = ''
+        }
+
         return dispatch({
           type: 'fault/getfromsave', // 保存接口
           payload: { formValues }
@@ -349,6 +400,10 @@ function Todolistdetails(props) {
         formValues.taskId = id;
         formValues.editState = tododetailslist.editState;
         formValues.confirmUserId = userId; // 当前登录人id
+        if (files.ischange) {
+          formValues.confirmAttachments = JSON.stringify(files.arr);
+        }
+
         if (tododetailslist.editState === 'edit') {
           formValues.confirmId = tododetailslist.confirm.id;
         } else {
@@ -398,6 +453,13 @@ function Todolistdetails(props) {
     }
   };
 
+  // 上传附件触发保存
+  useEffect(() => {
+    if (files.ischange) {
+      handleSave(tosaveStatus);
+    }
+  }, [files]);
+
   const rollbackSubmit = (values) => { // 回退操作
     dispatch({
       type: 'fault/rollback',
@@ -428,8 +490,109 @@ function Todolistdetails(props) {
     })
   }
 
-  // const faulttransfer = () => { // 转单接口操作！
-  // }
+  const handleFaulttransfer = () => { // 转单接口操作！
+    // eslint-disable-next-line consistent-return
+    ExamineRef.current.validateFields((err, values) => {
+      if (!err) {
+        const taskId = id;
+        return dispatch({
+          type: 'fault/getSubmitProToNextNode',
+          payload: {
+            ...values,
+            taskId,
+            result: '9',
+            userIds: sessionStorage.getItem('NextflowUserId')
+          }
+        }).then(res => {
+          if (res.code === 200) {
+            message.success(res.msg);
+            router.push(`/ITSM/faultmanage/registration`);
+          } else {
+            message.error(res.msg);
+            router.push(`/ITSM/faultmanage/registration`);
+          }
+        })
+      }
+    });
+  }
+
+  const handleRegist = () => { // 登记按钮回到登记页
+    // eslint-disable-next-line consistent-return
+    ExamineRef.current.validateFields((err, values) => {
+      if (!err) {
+        const taskId = id;
+        return dispatch({
+          type: 'fault/getSubmitProToNextNode',
+          payload: {
+            ...values,
+            taskId,
+            result: '0',
+            userIds: ''
+          }
+        }).then(res => {
+          if (res.code === 200) {
+            message.success(res.msg);
+            router.push(`/ITSM/faultmanage/registration`);
+          } else {
+            message.error(res.msg);
+            router.push(`/ITSM/faultmanage/registration`);
+          }
+        })
+      }
+    });
+  }
+
+  const toHandle = () => { // 第二次审核回到处理
+    // eslint-disable-next-line consistent-return
+    ExamineRef.current.validateFields((err, values) => {
+      if (!err) {
+        const taskId = id;
+        return dispatch({
+          type: 'fault/getSubmitProToNextNode',
+          payload: {
+            ...values,
+            taskId,
+            result: '0',
+            userIds: ''
+          }
+        }).then(res => {
+          if (res.code === 200) {
+            message.success(res.msg);
+            router.push(`/ITSM/faultmanage/todolist`);
+          } else {
+            message.error(res.msg);
+            router.push(`/ITSM/faultmanage/todolist`);
+          }
+        })
+      }
+    });
+  }
+
+  const toHandle1 = () => { // 确认回到处理
+    // eslint-disable-next-line consistent-return
+    ConfirmRef.current.validateFields((err, values) => {
+      if (!err) {
+        const taskId = id;
+        return dispatch({
+          type: 'fault/getSubmitProToNextNode',
+          payload: {
+            ...values,
+            taskId,
+            result: '0',
+            userIds: ''
+          }
+        }).then(res => {
+          if (res.code === 200) {
+            message.success(res.msg);
+            router.push(`/ITSM/faultmanage/todolist`);
+          } else {
+            message.error(res.msg);
+            router.push(`/ITSM/faultmanage/todolist`);
+          }
+        })
+      }
+    });
+  }
 
   return (
     <PageHeaderWrapper
@@ -442,8 +605,8 @@ function Todolistdetails(props) {
               </Popconfirm>
             )
           }
-          { // 回退按钮--系统运维商审核，系统运维商处理， 系统运维商确认总结，自动化科业务负责人审核有
-            (paneKey !== '故障登记' && paneKey !== '故障关闭' && (main && main.status !== '45')) && (
+          { // 回退按钮--系统运维商审核， 系统运维商确认总结，自动化科业务负责人审核, 自动化科确认有
+            (paneKey !== '故障登记' && paneKey !== '故障关闭' && (main && main.status !== '45') && (main && main.status !== '40')) && (
               <ModelRollback title="填写回退意见" rollbackSubmit={values => rollbackSubmit(values)}>
                 <Button type="danger" ghost>回退</Button>
               </ModelRollback>
@@ -457,20 +620,25 @@ function Todolistdetails(props) {
           {(main && main.status !== '40') && (<Button type="primary" onClick={() => handleSave(tosaveStatus)}>保存</Button>)}
           { // 转单只有系统运维商处理时有
             (main && main.status === '45') && (
-              <Button type="primary">转单</Button>
+              <SelectUser
+                handleSubmit={handleFaulttransfer}
+                taskId={id}
+              >
+                <Button type="primary">转单</Button>
+              </SelectUser>
             )
           }
           {/* 确认过程的时候不需要选人 */}
           {
             paneKey === '自动化科专责确认' ?
-              <Button
+              (resultconfirm === '1' && (<Button
                 type="primary"
                 onClick={() => handleSave(currenStatus)}
               >
                 流转
-              </Button>
+              </Button>))
               :
-              (main && main.status !== '40') && (<SelectUser
+              ((main && main.status !== '40') && result === '1' && resultsecond === '1') && (<SelectUser
                 handleSubmit={() => handleSave(currenStatus)}
                 taskId={id}
               >
@@ -481,6 +649,24 @@ function Todolistdetails(props) {
                     </Button>
               </SelectUser>)
           }
+          {result === '0' && (<Button
+            type="primary"
+            onClick={handleRegist}
+          >
+            登记
+          </Button>)}
+          {(resultsecond === '0') && (<Button
+            type="primary"
+            onClick={toHandle}
+          >
+            处理
+          </Button>)}
+          {resultconfirm === '0' && (<Button
+            type="primary"
+            onClick={toHandle1}
+          >
+            处理
+          </Button>)}
           <Button type="default" onClick={handleClose}>返回</Button>
         </>
       }
@@ -520,7 +706,7 @@ function Todolistdetails(props) {
             </Card>
             <Spin spinning={loading}>
               {
-                loading === false && tododetailslist !== undefined && (
+                loading === false && tododetailslist && (
                   <Collapse
                     expandIconPosition="right"
                     activeKey={activeKey}
@@ -556,6 +742,10 @@ function Todolistdetails(props) {
                             ChangeFiles={newvalue => {
                               setFiles(newvalue);
                             }}
+                            ChangeResult={newvalue => {
+                              setResult(newvalue);
+                            }}
+                            result={result}
                           />
                         </Panel>
                       )
@@ -570,6 +760,10 @@ function Todolistdetails(props) {
                             forminladeLayout={forminladeLayout}
                             handle={handle}
                             curruserinfo={curruserinfo}
+                            ChangeFiles={newvalue => {
+                              setFiles(newvalue);
+                            }}
+                            ChangeFileskey={newvalue => setFileskey(newvalue)}
                           />
                         </Panel>
                       )
@@ -581,8 +775,13 @@ function Todolistdetails(props) {
                             ref={SummaryRef}
                             formItemLayout={formItemLayout}
                             forminladeLayout={forminladeLayout}
+                            tododetailslist={tododetailslist}
                             finish={finish}
                             curruserinfo={curruserinfo}
+                            ChangeFiles={newvalue => {
+                              setFiles(newvalue);
+                            }}
+                            ChangeFileskey={newvalue => setFileskey(newvalue)}
                           />
                         </Panel>
                       )
@@ -596,6 +795,13 @@ function Todolistdetails(props) {
                             forminladeLayout={forminladeLayout}
                             check={check}
                             curruserinfo={curruserinfo}
+                            ChangeFiles={newvalue => {
+                              setFiles(newvalue);
+                            }}
+                            ChangeResult={newvalue => {
+                              setResultsecond(newvalue);
+                            }}
+                            resultsecond={resultsecond}
                           />
                         </Panel>
                       )
@@ -610,67 +816,34 @@ function Todolistdetails(props) {
                             forminladeLayout={forminladeLayout}
                             confirm={confirm}
                             curruserinfo={curruserinfo}
+                            ChangeFiles={newvalue => {
+                              setFiles(newvalue);
+                            }}
+                            ChangeResult={newvalue => {
+                              setResultconfirm(newvalue);
+                            }}
+                            resultconfirm={resultconfirm}
                           />
                         </Panel>
                       )
                     }
 
-
-                    { // 故障登记详情页-1--（系统运维商审核时、系统运维商处理时、系统运维商确认总结时、自动化科业务负责人审核时、自动化科专责确认时）
-                      (paneKey === '系统运维商审核' || paneKey === '系统运维商处理' || paneKey === '系统运维商确认总结' || paneKey === '自动化科业务负责人审核' || paneKey === '自动化科专责确认') &&
-                      ( // 登记详情 后续的项展开都会被显示
-                        <Panel header="故障登记" key="RegisterQuery">
-                          <RegisterQuery
-                            ref={RegisterRef}
-                            detailsdata={troubleFlowNodeRows}
-                            maindata={main}
-                          />
+                    {troubleFlowNodeRows && (troubleFlowNodeRows.map((obj, index) => {
+                      // panel详情组件
+                      const Paneldesmap = new Map([
+                        ['故障登记', <RegisterQuery info={obj} maindata={main} />],
+                        ['系统运维商审核', <ExamineQuery info={obj} maindata={main} />],
+                        ['系统运维商处理', <HandleQuery info={obj} maindata={main} />],
+                        ['系统运维商确认总结', <SummaryQuery info={obj} maindata={main} />],
+                        ['自动化科业务负责人审核', <ExamineSecondQuery info={obj} maindata={main} />],
+                        ['自动化科专责确认', <ConfirmQuery info={obj} maindata={main} />],
+                      ]);
+                      return (
+                        <Panel Panel header={obj.fnname} key={index}>
+                          {Paneldesmap.get(obj.fnname)}
                         </Panel>
-                      )
-                    }
-                    { // 系统运维商审核详情页2---（系统运维商处理时、系统运维商确认总结时、自动化科业务负责人审核时、自动化科专责确认时）
-                      (paneKey === '系统运维商处理' || paneKey === '系统运维商确认总结' || paneKey === '自动化科业务负责人审核' || paneKey === '自动化科专责确认') &&
-                      ( // 系统运维商审核详情
-                        <Panel Panel header="系统运维商审核" key="ExamineQuery">
-                          <ExamineQuery
-                            ref={ExamineRef}
-                            detailsdata={troubleFlowNodeRows !== undefined && troubleFlowNodeRows[1]}
-                          />
-                        </Panel>
-                      )
-                    }
-                    { // 系统运维商处理详情页3---系统运维商确认总结时、自动化科业务负责人审核时、自动化科专责确认时
-                      (paneKey === '系统运维商确认总结' || paneKey === '自动化科业务负责人审核' || paneKey === '自动化科专责确认') &&
-                      ( // 系统运维商处理详情
-                        <Panel header="系统运维商处理" key="HandleQuery">
-                          <HandleQuery
-                            ref={HandleRef}
-                            detailsdata={troubleFlowNodeRows !== undefined && troubleFlowNodeRows[2]}
-                          />
-                        </Panel>
-                      )
-                    }
-                    { // 系统运维商确认总结详情页4--（自动化科业务负责人审核时、自动化科专责确认时）
-                      (paneKey === '自动化科业务负责人审核' || paneKey === '自动化科专责确认') &&
-                      (
-                        <Panel header="系统运维商确认总结" key="SummaryQuery">
-                          <SummaryQuery
-                            ref={SummaryRef}
-                            detailsdata={troubleFlowNodeRows !== undefined && troubleFlowNodeRows[3]}
-                          />
-                        </Panel>
-                      )
-                    }
-                    { // 自动化科业务负责人审核详情页5---（自动化科专责确认时）
-                      (paneKey === '自动化科专责确认') &&
-                      ( // 处理详情
-                        <Panel header="自动化科业务负责人审核" key="ExamineSecondQuery">
-                          <ExamineSecondQuery
-                            ref={ExamineRef}
-                            detailsdata={troubleFlowNodeRows !== undefined && troubleFlowNodeRows[4]}
-                          />
-                        </Panel>
-                      )
+                      );
+                    }))
                     }
                   </Collapse>
                 )

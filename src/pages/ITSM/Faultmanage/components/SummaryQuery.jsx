@@ -1,50 +1,39 @@
-import React, { useRef, useImperativeHandle } from 'react';
+import React from 'react';
 import {
 } from 'antd';
 import DescriptionList from '@/components/DescriptionList';
+import Downloadfile from '@/components/SysUpload/Downloadfile'; // 下载组件调用
 
 const { Description } = DescriptionList;
 
-const SummaryQuery = React.forwardRef((props, ref) => {
-    const { detailsdata } = props;
+function SummaryQuery(props) {
+    const { info } = props;
 
-    const attRef = useRef();
-    useImperativeHandle(
-        ref,
-        () => ({
-            attRef,
-        }),
-        [],
-    );
     return (
         <div style={{ paddingLeft: 45, paddingTop: 10 }}>
-            {
-                detailsdata !== undefined && (
-                    <>
-                        <DescriptionList size="large">
-                            <Description term="总结时间">{detailsdata.finishTime || ''}</Description>
-                        </DescriptionList>
-                        <DescriptionList size="large">
-                            <Description term="总结说明">{detailsdata.finishContent || ''}</Description>
-                        </DescriptionList>
-                        <DescriptionList size="large">
-                            <Description term="上传故障分析报告">xx故障分析报告.doc</Description>
-                            <Description term="要求上传时间">{detailsdata.finishRequiredTime || ''}</Description>
-                            <Description term="实际上传时间">{detailsdata.finishPracticeTime || ''}</Description>
-                        </DescriptionList>
-                        <DescriptionList size="large">
-                            <Description term="上传附件">XXXX附件.doc</Description>
-                        </DescriptionList>
-                        <DescriptionList size="large">
-                            <Description term="总结人">{detailsdata.finishUser || ''}</Description>
-                            <Description term="总结人单位">{detailsdata.finishUnit || ''}</Description>
-                            <Description term="总结人部门">{detailsdata.finishDept || ''}</Description>
-                        </DescriptionList>
-                    </>
-                )
-            }
+            <>
+                <DescriptionList size="large">
+                    <Description term="总结时间">{info.finishTime || ''}</Description>
+                </DescriptionList>
+                <DescriptionList size="large">
+                    <Description term="总结说明">{info.finishContent || ''}</Description>
+                </DescriptionList>
+                <DescriptionList size="large">
+                    <Description term="上传故障分析报告">{info.finishAnalysisAttachments && <Downloadfile files={info.finishAnalysisAttachments} />}</Description>
+                    <Description term="要求上传时间">{info.finishRequiredTime || ''}</Description>
+                    <Description term="实际上传时间">{info.finishAnalysisAttachments && info.finishAnalysisAttachments === '[]' ? '' : (JSON.parse(info.finishAnalysisAttachments))[0].nowtime}</Description>
+                </DescriptionList>
+                <DescriptionList size="large">
+                    <Description term="上传附件">{info.finishAttachments && <Downloadfile files={info.finishAttachments} />}</Description>
+                </DescriptionList>
+                <DescriptionList size="large">
+                    <Description term="总结人">{info.finishUser || ''}</Description>
+                    <Description term="总结人单位">{info.finishUnit || ''}</Description>
+                    <Description term="总结人部门">{info.finishDept || ''}</Description>
+                </DescriptionList>
+            </>
         </div>
     );
-});
+};
 
 export default SummaryQuery;

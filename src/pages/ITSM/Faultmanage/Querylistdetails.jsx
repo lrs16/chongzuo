@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
 import {
@@ -6,7 +6,6 @@ import {
     Button,
     Collapse,
     Card,
-    Spin,
     Steps
 } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
@@ -38,38 +37,13 @@ const tabList = [
     },
 ];
 
-const Collapsekeymap = new Map([ // 展开详情页
-    ['5', 'RegisterQuery'], // 登记（已登记、已提交待审核）
-    ['9', 'RegisterQuery'],
-
-    ['25', 'ExamineQuery'], // 系统运维商审核（审核中、已审核待处理）自动化科业务负责人审核
-    ['29', 'ExamineQuery'],
-
-    ['45', 'HandleQuery'], // 系统运维商处理（处理中、已处理待总结）
-    ['49', 'HandleQuery'],
-
-    ['65', 'SummaryQuery'], // 系统运维商确认总结（总结中、已总结待关闭）
-    ['69', 'SummaryQuery'],
-
-    ['250', 'ExamineSecondQuery'], // 自动化科业务负责人审核2
-    ['290', 'ExamineSecondQuery'],
-
-    ['80', 'ConfirmQuery'], // 自动化科专责确认
-    ['85', 'ConfirmQuery'],
-    ['255', 'ConfirmQuery'],
-]);
-
 function Querylistdetails(props) {
     const pagetitle = props.route.name;
     const [activeKey, setActiveKey] = useState();
     const [tabActiveKey, setTabActiveKey] = useState('faultForm'); // tab切换
-    const RegisterRef = useRef(); // 故障登记
-    const ExamineRef = useRef(); // 系统运维商审核
-    const HandleRef = useRef(); // 系统运维商处理
-    const SummaryRef = useRef(); // 系统运维商总结
-    const ConfirmRef = useRef(); // 自动化科专责确认
+    
     const {
-        location: { paneKey, ids }, // ids 列表传过来的id
+        location: { ids }, // ids 列表传过来的id
         dispatch,
         loading,
         querydetailslist,
@@ -105,7 +79,6 @@ function Querylistdetails(props) {
     }
 
     useEffect(() => {
-        setActiveKey([`${Collapsekeymap.get(paneKey)}`]);
         querydetailsList();
     }, []);
 
@@ -113,9 +86,14 @@ function Querylistdetails(props) {
         history.goBack();
     }
 
-    const callback = key => { // tab激活
+    const callback = key => {
         setActiveKey(key);
     };
+
+    // 初始化值panel
+    useEffect(() => {
+        setActiveKey('0'); // 初始化值panel
+    }, [troubleFlowNodeRows]);
 
     const handleTabChange = (key) => { // tab切换
         setTabActiveKey(key);
@@ -164,87 +142,33 @@ function Querylistdetails(props) {
                                 </Steps>)
                             }
                         </Card>
-                        <Spin spinning={loading}>
-                            {
-                                loading === false && querydetailslist !== undefined && (
-                                    <Collapse
-                                        expandIconPosition="right"
-                                        activeKey={activeKey}
-                                        bordered={false}
-                                        style={{ marginTop: '-25px' }}
-                                        onChange={callback}
-                                    >
-                                        {
-                                            (paneKey === '5' || paneKey === '9' || paneKey === '25' || paneKey === '29' || paneKey === '45' || paneKey === '49' || paneKey === '65' || paneKey === '69' || paneKey === '80' || paneKey === '85' || paneKey === '255') && (
-                                                <Panel header="故障登记" key="RegisterQuery">
-                                                    <RegisterQuery
-                                                        ref={RegisterRef}
-                                                        detailsdata={troubleFlowNodeRows}
-                                                        maindata={main}
-                                                    />
-                                                </Panel>
-                                            )
-                                        }
-
-                                        {
-                                            (paneKey === '25' || paneKey === '29' || paneKey === '45' || paneKey === '49' || paneKey === '65' || paneKey === '69' || paneKey === '80' || paneKey === '85' || paneKey === '255') && (
-                                                <Panel Panel header="系统运维商审核" key="ExamineQuery">
-                                                    <ExamineQuery
-                                                        ref={ExamineRef}
-                                                        detailsdata={troubleFlowNodeRows !== undefined && troubleFlowNodeRows[1]}
-                                                    />
-                                                </Panel>
-                                            )
-                                        }
-
-                                        {
-                                            (paneKey === '45' || paneKey === '49' || paneKey === '65' || paneKey === '69' || paneKey === '80' || paneKey === '85' || paneKey === '255') && (
-                                                <Panel header="系统运维商处理" key="HandleQuery">
-                                                    <HandleQuery
-                                                        ref={HandleRef}
-                                                        detailsdata={troubleFlowNodeRows !== undefined && troubleFlowNodeRows[2]}
-                                                    />
-                                                </Panel>
-                                            )
-                                        }
-
-                                        {
-                                            (paneKey === '65' || paneKey === '69' || paneKey === '80' || paneKey === '85' || paneKey === '255') && (
-                                                <Panel header="系统运维商确认总结" key="SummaryQuery">
-                                                    <SummaryQuery
-                                                        ref={SummaryRef}
-                                                        detailsdata={troubleFlowNodeRows !== undefined && troubleFlowNodeRows[3]}
-                                                    />
-                                                </Panel>
-                                            )
-                                        }
-
-                                        {
-                                            (paneKey === '80' || paneKey === '85' || paneKey === '255') && (
-                                                <Panel header="自动化科业务负责人审核" key="ExamineSecondQuery">
-                                                    <ExamineSecondQuery
-                                                        ref={ExamineRef}
-                                                        detailsdata={troubleFlowNodeRows !== undefined && troubleFlowNodeRows[4]}
-                                                    />
-                                                </Panel>
-                                            )
-                                        }
-
-                                        {
-                                            (paneKey === '80' || paneKey === '85' || paneKey === '255') && (
-                                                <Panel header="自动化科专责确认" key="ConfirmQuery">
-                                                    <ConfirmQuery
-                                                        ref={ConfirmRef}
-                                                        detailsdata={troubleFlowNodeRows !== undefined && troubleFlowNodeRows[5]}
-                                                    />
-                                                </Panel>
-                                            )
-
-                                        }
-                                    </Collapse>
-                                )
-                            }
-                        </Spin>
+                        <div className={styles.collapse}>
+                            {troubleFlowNodeRows && loading === false && (
+                                <Collapse
+                                    expandIconPosition="right"
+                                    activeKey={activeKey}
+                                    bordered={false}
+                                    onChange={callback}
+                                >
+                                    {troubleFlowNodeRows.map((obj, index) => {
+                                        // panel详情组件
+                                        const Paneldesmap = new Map([
+                                            ['故障登记', <RegisterQuery info={obj} maindata={main} />],
+                                            ['系统运维商审核', <ExamineQuery info={obj} maindata={main} />],
+                                            ['系统运维商处理', <HandleQuery info={obj} maindata={main} />],
+                                            ['系统运维商确认总结', <SummaryQuery info={obj} maindata={main} />],
+                                            ['自动化科业务负责人审核', <ExamineSecondQuery info={obj} maindata={main} />],
+                                            ['自动化科专责确认', <ConfirmQuery info={obj} maindata={main} />],
+                                        ]);
+                                        return (
+                                            <Panel Panel header={obj.fnname} key={index}>
+                                                {Paneldesmap.get(obj.fnname)}
+                                            </Panel>
+                                        );
+                                    })}
+                                </Collapse>
+                            )}
+                        </div>
                     </div>
                 )
             }

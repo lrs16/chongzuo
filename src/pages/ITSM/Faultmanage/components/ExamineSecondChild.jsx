@@ -1,24 +1,27 @@
-import React, { useRef, useImperativeHandle, useEffect } from 'react';
+import React, { useRef, useImperativeHandle, useEffect, useState } from 'react';
 import moment from 'moment';
 import {
     Form,
-    // Button,
     Row,
     Col,
     Input,
     DatePicker,
-    // Upload,
-    // Icon,
     Radio
 } from 'antd';
+import SysUpload from '@/components/SysUpload'; // 附件下载组件
 
 const { TextArea } = Input;
 // const RadioGroup = Radio.Group;
 
 const ExamineSecondChild = React.forwardRef((props, ref) => {
-    const { formItemLayout, forminladeLayout, check, curruserinfo } = props;
+    const { formItemLayout, forminladeLayout, check, curruserinfo, ChangeFiles, ChangeResult, resultsecond } = props;
     const { getFieldDecorator } = props.form;
     const attRef = useRef();
+    const [fileslist, setFilesList] = useState({ arr: [], ischange: false }); // 下载列表
+
+    useEffect(() => {
+        ChangeFiles(fileslist);
+    }, [fileslist]);
     useImperativeHandle(
         ref,
         () => ({
@@ -31,6 +34,10 @@ const ExamineSecondChild = React.forwardRef((props, ref) => {
         sessionStorage.setItem('Nextflowmane', '自动化科专责确认');
     });
 
+    const onChange = (e) => {
+        ChangeResult(e.target.value);
+    }
+
     return (
         <Row gutter={24}>
             <Form {...formItemLayout}>
@@ -38,11 +45,11 @@ const ExamineSecondChild = React.forwardRef((props, ref) => {
                     <Form.Item label="审核结果" {...forminladeLayout}>
                         {getFieldDecorator('checkResult', {
                             rules: [{ required: true, message: '请选择审核结果' }],
-                            initialValue: check ? check.checkResult : '0',
+                            initialValue: check ? check.checkResult : '1',
                         })(
-                            <Radio.Group>
-                                <Radio value='0'>通过</Radio>
-                                <Radio value='1'>不通过</Radio>
+                            <Radio.Group onChange={onChange}>
+                                <Radio value='1'>通过</Radio>
+                                <Radio value='0'>不通过</Radio>
                             </Radio.Group>,
                         )}
                     </Form.Item>
@@ -63,32 +70,35 @@ const ExamineSecondChild = React.forwardRef((props, ref) => {
                 </Col>
 
                 <Col span={24}>
-                    <Form.Item label="审核意见" {...forminladeLayout}>
-                        {getFieldDecorator('checkOpinion', {
-                            rules: [
-                                {
-                                    required,
-                                    message: '请输入',
-                                },
-                            ],
-                            initialValue: check ? check.checkOpinion : ''
-                        })(<TextArea rows={5} placeholder="请输入" />)}
-                    </Form.Item>
+                    {resultsecond === '1' && ( // 1 通过
+                        <Form.Item label="审核意见" {...forminladeLayout}>
+                            {getFieldDecorator('checkOpinion', {
+                                rules: [{ required: false, message: '请输入', }],
+                                initialValue: check ? check.checkOpinion : ''
+                            })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
+                        </Form.Item>
+                    )}
+                    {resultsecond === '0' && ( // 0 不通过
+                        <Form.Item label="审核意见" {...forminladeLayout}>
+                            {getFieldDecorator('checkOpinion', {
+                                rules: [{ required: true, message: '请输入', }],
+                                initialValue: check ? check.checkOpinion : ''
+                            })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
+                        </Form.Item>
+                    )}
                 </Col>
 
-                {/* <Col span={24}>
-                    <Form.Item label="上传附件" extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb" style={{ display: "flex" }} {...forminladeLayout}>
-                        {getFieldDecorator('checkAttachIds', {
-                            valuePropName: 'fileList',
-                        })(
-                            <Upload name="logo" action="" listType="picture">
-                                <Button type="primary">
-                                    <Icon type="upload" style={{ fontSize: 18 }} /> 添加附件
-                          </Button>
-                            </Upload>,
-                        )}
+                <Col span={24}>
+                    <Form.Item
+                        label="上传附件"
+                        {...forminladeLayout}
+                        extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
+                    >
+                        <div style={{ width: 400 }}>
+                            <SysUpload fileslist={(check && check.checkAttachments) ? JSON.parse(check.checkAttachments) : []} ChangeFileslist={newvalue => setFilesList(newvalue)} />
+                        </div>
                     </Form.Item>
-                </Col> */}
+                </Col>
 
                 <Col span={8}>
                     <Form.Item label="审核人">

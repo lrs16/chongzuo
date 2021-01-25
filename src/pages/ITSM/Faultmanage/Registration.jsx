@@ -15,7 +15,7 @@ import {
   Collapse
 } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import SelectUser from '@/components/SelectUser'; // 选人组件
+// import SelectUser from '@/components/SelectUser'; // 选人组件
 import SysUpload from '@/components/SysUpload'; // 附件下载组件
 import styles from './index.less';
 
@@ -151,22 +151,22 @@ function Registration(props) {
 
   const required = true;
 
-  const faultcircula = () => { // 流转
-    validateFields((err, values) => {
-      if (!err) {
-        const formValues = values;
-        formValues.registerOccurTime = values.registerOccurTime.format('YYYY-MM-DD HH:mm:ss');
-        formValues.registerTime = values.registerTime.format('YYYY-MM-DD HH:mm:ss');
-        // formValues.taskId = id.flowTaskId;
-        formValues.editState = 'add';
-        formValues.registerEffect = String(formValues.registerEffect);
-        dispatch({
-          type: 'fault/getSaveUserId1',
-          payload: { formValues }
-        })
-      }
-    });
-  }
+  // const faultcircula = () => { // 流转
+  //   validateFields((err, values) => {
+  //     if (!err) {
+  //       const formValues = values;
+  //       formValues.registerOccurTime = values.registerOccurTime.format('YYYY-MM-DD HH:mm:ss');
+  //       formValues.registerTime = values.registerTime.format('YYYY-MM-DD HH:mm:ss');
+  //       // formValues.taskId = id.flowTaskId;
+  //       formValues.editState = 'add';
+  //       formValues.registerEffect = String(formValues.registerEffect);
+  //       dispatch({
+  //         type: 'fault/getSaveUserId1',
+  //         payload: { formValues }
+  //       })
+  //     }
+  //   });
+  // }
 
   return (
     <PageHeaderWrapper title={pagetitle}>
@@ -174,9 +174,9 @@ function Registration(props) {
         <Button type="primary" style={{ marginRight: 8 }} onClick={handleSave}>
           保存
             </Button>
-        <SelectUser handleSubmit={() => faultcircula()}>
+        {/* <SelectUser handleSubmit={() => faultcircula()}>
           <Button type="primary" style={{ marginRight: 8 }}>流转</Button>
-        </SelectUser>
+        </SelectUser> */}
         <Button type="default" onClick={close}>关闭</Button>
       </Card>
       <div className={styles.collapse}>

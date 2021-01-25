@@ -7,6 +7,7 @@ function SysUpload(props) {
   const { dispatch, fileslist, ChangeFileslist } = props;
   const [uploadfiles, setUploadFiles] = useState([]);
 
+
   useEffect(() => {
     if (fileslist.length > 0) {
       setUploadFiles(fileslist);
@@ -58,6 +59,7 @@ function SysUpload(props) {
           const voice = {};
           voice.uid = info.file.response.data.id;
           voice.name = info.file.response.data.fileName;
+          voice.nowtime = info.file.response.data.createTime;
           voice.status = 'done';
           voice.fileUrl = '';
           uploadfiles.push(voice);

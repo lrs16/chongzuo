@@ -1,29 +1,32 @@
-import React, { useRef, useImperativeHandle, useEffect } from 'react';
+import React, { useRef, useImperativeHandle, useEffect, useState } from 'react';
 import moment from 'moment';
 import {
     Form,
-    // Button,
     Row,
     Col,
     Input,
     DatePicker,
-    Select
-    // Upload,
-    // Icon,
+    // Select
+    Radio
 } from 'antd';
+import SysUpload from '@/components/SysUpload'; // 附件下载组件
 
 const { TextArea } = Input;
-const { Option } = Select;
+// const { Option } = Select;
 
-const confirmResult = [ // 确认结果
-    { key: 0, value: '通过' },
-    { key: 1, value: '不通过' },
-];
+// const confirmResult = [ // 确认结果
+//     { key: 0, value: '通过' },
+//     { key: 1, value: '不通过' },
+// ];
 
 const ConfirmChild = React.forwardRef((props, ref) => {
-    const { formItemLayout, forminladeLayout, confirm, curruserinfo } = props;
+    const { formItemLayout, forminladeLayout, confirm, curruserinfo, ChangeFiles, ChangeResult, resultconfirm } = props;
     const { getFieldDecorator } = props.form;
     const attRef = useRef();
+    const [fileslist, setFilesList] = useState({ arr: [], ischange: false }); // 下载列表
+    useEffect(() => {
+        ChangeFiles(fileslist);
+    }, [fileslist]);
     useImperativeHandle(
         ref,
         () => ({
@@ -32,9 +35,10 @@ const ConfirmChild = React.forwardRef((props, ref) => {
         [],
     );
     const required = true;
-    // useEffect(() => {
-    //     sessionStorage.setItem('Nextflowmane', '关闭');
-    // });
+
+    const onChange = (e) => {
+        ChangeResult(e.target.value);
+    }
     return (
         <Row gutter={24}>
             <Form {...formItemLayout}>
@@ -49,11 +53,15 @@ const ConfirmChild = React.forwardRef((props, ref) => {
                                         message: '请选择',
                                     },
                                 ],
-                                initialValue: confirm ? confirm.confirmResult : ''
+                                initialValue: confirm ? confirm.confirmResult : '1'
                             })(
-                                <Select placeholder="请选择">
-                                    {confirmResult.map(({ value }) => [<Option key={value}>{value}</Option>])}
-                                </Select>,
+                                <Radio.Group onChange={onChange}>
+                                    <Radio value='1'>通过</Radio>
+                                    <Radio value='0'>不通过</Radio>
+                                </Radio.Group>,
+                                // <Select placeholder="请选择">
+                                //     {confirmResult.map(({ value }) => [<Option key={value}>{value}</Option>])}
+                                // </Select>,
                             )}
                         </Form.Item>
                     </Col>
@@ -73,32 +81,35 @@ const ConfirmChild = React.forwardRef((props, ref) => {
                     </Col>
 
                     <Col span={24}>
-                        <Form.Item label="确认说明" {...forminladeLayout}>
-                            {getFieldDecorator('confirmContent', {
-                                rules: [
-                                    {
-                                        required,
-                                        message: '请输入',
-                                    },
-                                ],
-                                initialValue: confirm ? confirm.confirmContent : ''
-                            })(<TextArea rows={5} placeholder="请输入" />)}
-                        </Form.Item>
+                        {resultconfirm === '1' && (
+                            <Form.Item label="确认说明" {...forminladeLayout}>
+                                {getFieldDecorator('confirmContent', {
+                                    rules: [{ required: false, message: '请输入', }],
+                                    initialValue: confirm ? confirm.confirmContent : ''
+                                })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
+                            </Form.Item>
+                        )}
+                        {resultconfirm === '0' && (
+                            <Form.Item label="确认说明" {...forminladeLayout}>
+                                {getFieldDecorator('confirmContent', {
+                                    rules: [{ required: true, message: '请输入', }],
+                                    initialValue: confirm ? confirm.confirmContent : ''
+                                })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
+                            </Form.Item>
+                        )}
                     </Col>
 
-                    {/* <Col span={24}>
-                        <Form.Item label="上传附件" extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb" style={{ display: "flex" }} {...forminladeLayout}>
-                            {getFieldDecorator('upload', {
-                                valuePropName: 'fileList',
-                            })(
-                                <Upload name="logo" action="" listType="picture">
-                                    <Button type="primary">
-                                        <Icon type="upload" style={{ fontSize: 18 }} /> 添加附件
-                          </Button>
-                                </Upload>,
-                            )}
+                    <Col span={24}>
+                        <Form.Item
+                            label="上传附件"
+                            {...forminladeLayout}
+                            extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
+                        >
+                            <div style={{ width: 400 }}>
+                                <SysUpload fileslist={(confirm && confirm.confirmAttachments) ? JSON.parse(confirm.confirmAttachments) : []} ChangeFileslist={newvalue => setFilesList(newvalue)} />
+                            </div>
                         </Form.Item>
-                    </Col> */}
+                    </Col>
 
                     <Col span={8}>
                         <Form.Item label="确认人">

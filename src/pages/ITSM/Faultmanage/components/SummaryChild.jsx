@@ -1,24 +1,28 @@
-import React, { useRef, useImperativeHandle, useEffect } from 'react';
+import React, { useRef, useImperativeHandle, useEffect, useState } from 'react';
 import moment from 'moment';
 import {
     Form,
-    Button,
     Row,
     Col,
     Input,
     DatePicker,
-    Upload,
-    Icon,
-    Alert
+    // Alert,
 } from 'antd';
+import SysUpload from '@/components/SysUpload'; // 附件下载组件
 
 const { TextArea } = Input;
 
 const SummaryChild = React.forwardRef((props, ref) => {
-    const { formItemLayout, forminladeLayout, finish, curruserinfo } = props;
-    const message = '上传故障分析报告已超时， 实际上传时间已超过要求上传时间。'
+    const { formItemLayout, forminladeLayout, finish, curruserinfo, ChangeFiles, tododetailslist, ChangeFileskey } = props;
+    // const message = '上传故障分析报告已超时， 实际上传时间已超过要求上传时间。'
     const { getFieldDecorator } = props.form;
     const attRef = useRef();
+
+    const [fileslist, setFilesList] = useState({ arr: [], ischange: false }); // 下载列表
+    useEffect(() => {
+        ChangeFiles(fileslist);
+    }, [fileslist]);
+
     useImperativeHandle(
         ref,
         () => ({
@@ -28,11 +32,12 @@ const SummaryChild = React.forwardRef((props, ref) => {
     );
     const required = true;
     useEffect(() => {
-        sessionStorage.setItem('Nextflowmane', '自动化科业务负责人审核');  
+        sessionStorage.setItem('Nextflowmane', '自动化科业务负责人审核');
     });
+
     return (
         <Row gutter={24}>
-            <Alert message={message} type="error" showIcon/>
+            {/* <Alert message={message} type="error" showIcon /> */}
             <Form {...formItemLayout}>
                 <Row gutter={24}>
                     <Col span={24}>
@@ -50,60 +55,68 @@ const SummaryChild = React.forwardRef((props, ref) => {
                     </Col>
 
                     <Col span={24}>
-                    <Form.Item label="总结说明" {...forminladeLayout}>
-                        {getFieldDecorator('finishContent', {
-                            initialValue: finish ? finish.finishContent : ''
-                        })(<TextArea rows={5} placeholder="请输入" />)}
-                    </Form.Item>
-                </Col>
+                        <Form.Item label="总结说明" {...forminladeLayout}>
+                            {getFieldDecorator('finishContent', {
+                                initialValue: finish ? finish.finishContent : ''
+                            })(<TextArea rows={5} placeholder="请输入" />)}
+                        </Form.Item>
+                    </Col>
 
-                <Col span={8}>
-                    <Form.Item label="上传故障分析报告" extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb" style={{ display: "flex" }}>
-                        {getFieldDecorator('finishAttachAnalysisIds', {
-                            valuePropName: 'fileList',
-                            // rules: [
-                            //     {
-                            //         required,
-                            //     },
-                            // ],
-                        })(
-                            <Upload name="logo" action="" listType="picture">
-                                <Button type="primary">
-                                    <Icon type="upload" style={{ fontSize: 18 }} /> 添加附件
-                        </Button>
-                            </Upload>,
-                        )}
-                    </Form.Item>
-                </Col>
+                    <Col span={10}>
+                        <Form.Item label="上传故障分析报告" extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb">
+                            {getFieldDecorator('finishAnalysisAttachments', {
+                                // rules: [
+                                //     {
+                                //         required,
+                                //         message: '请上传故障分析报告',
+                                //     },
+                                // ],
+                            })(
+                                <div
+                                    style={{ width: 400 }}
+                                    onMouseOver={() => {
+                                        ChangeFileskey('1');
+                                    }}
+                                    onFocus={() => 0}
+                                >
+                                    <SysUpload fileslist={(finish && finish.finishAnalysisAttachments) ? JSON.parse(finish.finishAnalysisAttachments) : []} ChangeFileslist={newvalue => setFilesList(newvalue)} />
+                                </div>
+                            )}
+                        </Form.Item>
+                    </Col>
 
-                    <Col span={8}>
+                    <Col span={7}>
                         <Form.Item label="要求上传时间">
                             {getFieldDecorator('finishRequiredTime', {
-                                // initialValue: finish.finishRequiredTime !== null ? moment(finish.finishRequiredTime) : moment(Date.now())
+                                initialValue: (tododetailslist && tododetailslist.requiredUploadTime) ? moment(tododetailslist.requiredUploadTime) : moment(finish.finishRequiredTime)
                             })(<DatePicker showTime disabled format="YYYY-MM-DD HH:mm:ss" />)}
                         </Form.Item>
                     </Col>
-                    
 
-                    <Col span={8}>
+                    <Col span={7}>
                         <Form.Item label="实际上传时间">
                             {getFieldDecorator('finishPracticeTime', {
-                                // initialValue: finish.finishRequiredTime !== null ? moment(finish.finishPracticeTime) : moment(Date.now())
+                                // initialValue: finish.finishAnalysisAttachments === '[]' || finish.finishAnalysisAttachments === undefined || (!finish && !finish.finishAnalysisAttachments)? '' : moment((JSON.parse(finish.finishAnalysisAttachments))[0].nowtime)
+                                initialValue: (finish && finish.finishAnalysisAttachments) ? moment((JSON.parse(finish.finishAnalysisAttachments))[0].nowtime) : ''
                             })(<DatePicker showTime disabled format="YYYY-MM-DD HH:mm:ss" />)}
                         </Form.Item>
                     </Col>
 
                     <Col span={24}>
-                        <Form.Item label="上传附件" extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb" style={{ display: "flex" }} {...forminladeLayout}>
-                            {getFieldDecorator('upload', {
-                                valuePropName: 'fileList',
-                            })(
-                                <Upload name="logo" action="" listType="picture">
-                                    <Button type="primary">
-                                        <Icon type="upload" style={{ fontSize: 18 }} /> 添加附件
-                          </Button>
-                                </Upload>,
-                            )}
+                        <Form.Item
+                            label="上传附件"
+                            {...forminladeLayout}
+                            extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
+                        >
+                            <div
+                                style={{ width: 400 }}
+                                onMouseOver={() => {
+                                    ChangeFileskey('2');
+                                }}
+                                onFocus={() => 0}
+                            >
+                                <SysUpload fileslist={(finish && finish.finishAttachments) ? JSON.parse(finish.finishAttachments) : []} ChangeFileslist={newvalue => setFilesList(newvalue)} />
+                            </div>
                         </Form.Item>
                     </Col>
 

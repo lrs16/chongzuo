@@ -81,7 +81,7 @@ const RegisterChild = React.forwardRef((props, ref) => {
                 <Col xl={8} xs={12}>
                     <Form.Item label="故障编号">
                         {getFieldDecorator('no', {
-                            initialValue: tododetailslist ? tododetailslist.main.no : ''
+                            initialValue: (tododetailslist && tododetailslist.main.no) ? tododetailslist.main.no : ''
                         })(<Input disabled />)}
                     </Form.Item>
                 </Col>
