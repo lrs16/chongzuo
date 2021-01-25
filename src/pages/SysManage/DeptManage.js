@@ -34,7 +34,7 @@ const status = ['启用', '停用'];
 class DeptManage extends Component {
   state = {
     current: 1,
-    pageSize: 5000,
+    pageSize: 10,
     queKey: '',
   };
 
@@ -230,7 +230,6 @@ class DeptManage extends Component {
       onChange: page => this.changePage(page),
     };
     const dataSource = data.rows;
-    console.log(dataSource);
     const renderTreeNodes = datas => {
       datas.map(item => {
         if (item.children) {

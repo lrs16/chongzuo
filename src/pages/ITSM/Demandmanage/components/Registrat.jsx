@@ -160,7 +160,7 @@ const Registrat = forwardRef((props, ref) => {
             </Form.Item>
           </Col>
           <Col span={8}>
-            <Form.Item label="事件编号">
+            <Form.Item label="需求编号">
               {getFieldDecorator('demandId', {
                 initialValue: register.demandId,
               })(<Input disabled />)}

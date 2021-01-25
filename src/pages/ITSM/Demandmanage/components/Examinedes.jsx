@@ -4,43 +4,34 @@ import { Descriptions } from 'antd';
 import styles from '../index.less';
 import Downloadfile from '@/components/SysUpload/Downloadfile';
 
+const resultmap = new Map([
+  [1, '通过'],
+  [0, '不通过'],
+]);
+
 function Examinedes(props) {
   const { info } = props;
+  const content = {
+    __html: info.reason?.replace(/[\n]/g, '<br/>'),
+  };
   return (
     <div className={styles.collapse}>
       <Descriptions style={{ marginTop: 24 }} size="middle">
-        <Descriptions.Item label="需求编号">{info.demandId}</Descriptions.Item>
-        <Descriptions.Item label="建单时间">
-          {moment(info.creationTime).format('YYYY-MM-DD HH:MM')}
+        <Descriptions.Item label="审核结果" span={3}>
+          {resultmap.get(info.result)}
         </Descriptions.Item>
-        <Descriptions.Item label="申请时间">
-          {moment(info.registerTime).format('YYYY-MM-DD HH:MM')}
+        <Descriptions.Item label="审核时间" span={3}>
+          {moment(info.reviewTime).format('YYYY-MM-DD HH:MM')}
         </Descriptions.Item>
-        <Descriptions.Item label="期待完成时间">
-          {moment(info.completeTime).format('YYYY-MM-DD HH:MM')}
-        </Descriptions.Item>
-        <Descriptions.Item label="申请人">{info.proposer}</Descriptions.Item>
-        <Descriptions.Item label="申请单位">{info.proposingUnit}</Descriptions.Item>
-        <Descriptions.Item label="申请部门">{info.proposingDepartment}</Descriptions.Item>
-        <Descriptions.Item label="联系电话">{info.proposerPhone}</Descriptions.Item>
-        <Descriptions.Item label="所属项目">缺</Descriptions.Item>
-        <Descriptions.Item label="功能模块">{info.functionalModule}</Descriptions.Item>
-        <Descriptions.Item label="功能变更类型">{info.demandType}</Descriptions.Item>
-        <Descriptions.Item label="需求标题" span={3}>
-          {info.title}
-        </Descriptions.Item>
-        <Descriptions.Item label="申请原因" span={3}>
-          {info.reason}
-        </Descriptions.Item>
-        <Descriptions.Item label="详细申请内容" span={3}>
-          {info.detail}
+        <Descriptions.Item label="审核意见" span={3}>
+          <div dangerouslySetInnerHTML={{ __html: info.reason?.replace(/[\n]/g, '<br/>') }} />
         </Descriptions.Item>
         <Descriptions.Item label="附件" span={3}>
           {info.attachment !== '' && <Downloadfile files={info.attachment} />}
         </Descriptions.Item>
-        <Descriptions.Item label="登记人">{info.registerPerson}</Descriptions.Item>
-        <Descriptions.Item label="登记人单位">{info.registrationUnit}</Descriptions.Item>
-        <Descriptions.Item label="登记人部门">{info.registrationDepartment}</Descriptions.Item>
+        <Descriptions.Item label="审核人">{info.userName}</Descriptions.Item>
+        <Descriptions.Item label="审核人单位">{info.unit}</Descriptions.Item>
+        <Descriptions.Item label="审核人部门">{info.department}</Descriptions.Item>
       </Descriptions>
     </div>
   );

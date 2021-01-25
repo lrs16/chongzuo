@@ -14,14 +14,6 @@ import SysUpload from '@/components/SysUpload';
 const { TextArea } = Input;
 const { Option } = Select;
 
-const leadermap = new Map([
-  [0, 0],
-  [1, 1],
-  [2, 1],
-  [3, 1],
-  [4, 1],
-]);
-
 const options = [
   { label: '科室领导审核', value: 4 },
   { label: '市场部领导审核', value: 3 },
@@ -75,7 +67,7 @@ const Examine = forwardRef((props, ref) => {
 
   useEffect(() => {
     sessionStorage.setItem('flowtype', info[0].result);
-    setAdopt(leadermap.get(info[0].result));
+    setAdopt(info[0].result);
     routerRefresh();
   }, []);
   // 初始化流转类型
@@ -88,18 +80,22 @@ const Examine = forwardRef((props, ref) => {
 
   const handleChangeresult = values => {
     if (values.length === 2) {
+      setAdopt(2);
       setFieldsValue({ result: 2 }, () => {});
       sessionStorage.setItem('flowtype', 2);
     }
     if (values.length === 1 && values[0] === 3) {
+      setAdopt(3);
       setFieldsValue({ result: 3 }, () => {});
       sessionStorage.setItem('flowtype', 3);
     }
     if (values.length === 1 && values[0] === 4) {
+      setAdopt(4);
       setFieldsValue({ result: 4 }, () => {});
       sessionStorage.setItem('flowtype', 4);
     }
     if (values.length === 0) {
+      setAdopt(1);
       setFieldsValue({ result: 1 }, () => {});
       sessionStorage.setItem('flowtype', 1);
     }
@@ -109,27 +105,30 @@ const Examine = forwardRef((props, ref) => {
   return (
     <Form {...formItemLayout}>
       <Row gutter={24} style={{ paddingTop: 24 }}>
-        {taskName !== '自动化科业务负责人确认' && (
+        {taskName !== '自动化科负责人确认' && (
           <Col span={8}>
             <Form.Item label={`${text}结果`}>
               {getFieldDecorator('result', {
                 rules: [{ required: true, message: `请选择${text}结果` }],
-                initialValue: leadermap.get(info[0].result),
+                initialValue: info[0].result,
               })(
                 <Radio.Group onChange={handleAdopt}>
-                  <Radio value={1}>通过</Radio>
+                  {(adopt === 1 || adopt === 0) && <Radio value={1}>通过</Radio>}
+                  {adopt === 2 && <Radio value={2}>通过</Radio>}
+                  {adopt === 3 && <Radio value={3}>通过</Radio>}
+                  {adopt === 4 && <Radio value={4}>通过</Radio>}
                   <Radio value={0}>不通过</Radio>
                 </Radio.Group>,
               )}
             </Form.Item>
           </Col>
         )}
-        {taskName === '自动化科业务负责人确认' && (
+        {taskName === '自动化科负责人确认' && (
           <Col span={8}>
             <Form.Item label={`${text}结果`}>
               {getFieldDecorator('result', {
                 rules: [{ required: true, message: `请选择${text}结果` }],
-                initialValue: leadermap.get(info[0].result),
+                initialValue: info[0].result,
               })(
                 <Radio.Group onChange={handleAdopt}>
                   <Radio value={1}>通过</Radio>
@@ -149,7 +148,7 @@ const Examine = forwardRef((props, ref) => {
             })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" />)}
           </Form.Item>
         </Col>
-        {taskName === '自动化科专责审核' && adopt === 1 && (
+        {taskName === '自动化科专责审核' && adopt !== 0 && (
           <Col span={8}>
             <Form.Item>
               <Checkbox.Group options={options} onChange={values => handleChangeresult(values)} />
@@ -157,7 +156,7 @@ const Examine = forwardRef((props, ref) => {
           </Col>
         )}
         <Col span={24}>
-          {adopt === 1 && (
+          {adopt !== 0 && (
             <Form.Item label={`${text}意见`} {...forminladeLayout}>
               {getFieldDecorator('opinion', {
                 rules: [{ required: false, message: `请输入${text}意见` }],

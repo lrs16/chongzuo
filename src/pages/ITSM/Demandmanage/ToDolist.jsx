@@ -108,7 +108,7 @@ function ToDolist(props) {
     list,
     dispatch,
   } = props;
-  const [paginations, setPageinations] = useState({ current: 1, pageSize: 50 });
+  const [paginations, setPageinations] = useState({ current: 1, pageSize: 10 });
   const [expand, setExpand] = useState(false);
 
   useEffect(() => {
@@ -132,10 +132,10 @@ function ToDolist(props) {
     dispatch({
       type: 'demandtodo/fetchlist',
       payload: {
-        ...values,
-        pageSize: size,
-        currentPage: page,
-        validate: false,
+        // ...values,
+        limit: size,
+        page,
+        userId: sessionStorage.getItem('userauthorityid'),
       },
     });
   };

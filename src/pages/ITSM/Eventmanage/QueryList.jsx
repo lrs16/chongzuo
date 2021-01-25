@@ -19,14 +19,14 @@ const statemap = [
 ];
 
 const sourcemap = [
-  { key: '0', value: '用户电话申告' },
-  { key: '1', value: '企信' },
+  { key: '001', value: '用户电话申告' },
+  { key: '002', value: '企信' },
 ];
 
 const levelmap = [
-  { key: '0', value: '高' },
-  { key: '1', value: '中' },
-  { key: '1', value: '低' },
+  { key: '001', value: '高' },
+  { key: '002', value: '中' },
+  { key: '003', value: '低' },
 ];
 
 const formItemLayout = {

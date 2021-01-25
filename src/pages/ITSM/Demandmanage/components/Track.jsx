@@ -12,6 +12,7 @@ import {
   Popconfirm,
   message,
 } from 'antd';
+import router from 'umi/router';
 import { DownloadOutlined, PaperClipOutlined, DeleteOutlined } from '@ant-design/icons';
 import styles from './style.less';
 
@@ -26,10 +27,27 @@ const progressmap = [
 
 function Track(props) {
   const { dispatch, userinfo, demandId, tracklist, loading } = props;
+  //  const { taskName, taskId, mainId } = location.query;
   const [data, setData] = useState([]);
   const [cacheOriginData, setcacheOriginData] = useState({});
   const [uploadkey, setKeyUpload] = useState('');
   const [fileslist, setFilesList] = useState([]);
+
+  // const routerRefresh = () => {
+  //   router.push({
+  //     pathname: location.pathname,
+  //     query: {
+  //       taskId,
+  //       taskName,
+  //       mainId,
+  //       result: sessionStorage.getItem('flowtype'),
+  //     },
+  //   });
+  // };
+  useEffect(() => {
+    sessionStorage.setItem('flowtype', 1);
+    // routerRefresh();
+  }, []);
 
   useEffect(() => {
     if (tracklist === '') {
@@ -220,6 +238,20 @@ function Track(props) {
           voice.fileUrl = '';
           fileslist.push(voice);
           handleFieldChange(JSON.stringify(fileslist), 'attachment', uploadkey);
+          const target = getRowByKey(uploadkey) || {};
+          delete target.isNew;
+          delete target.key;
+          delete target.editable;
+          const id = target.id === '' ? '' : target.id;
+          dispatch({
+            type: 'demandtodo/tracksave',
+            payload: {
+              ...target,
+              attachment: JSON.stringify(fileslist),
+              id,
+              demandId,
+            },
+          });
         }
         if (info.file.response.code === -1) {
           message.error(`${info.file.name} 上传失败`);
@@ -347,11 +379,6 @@ function Track(props) {
                         style={{ marginRight: 8, fontSize: 11, color: 'rgba(0, 0, 0, 0.45)' }}
                       />
                       <a onClick={() => handledownload(obj)}>{obj.name}</a>
-                      {/* <a onClick={() => handledeletfile(obj.uid)}>
-                        <DeleteOutlined
-                          style={{ marginLeft: 8, fontSize: 12, color: 'rgba(0, 0, 0, 0.45)' }}
-                        />
-                      </a> */}
                     </div>
                   );
                 })}
@@ -387,7 +414,7 @@ function Track(props) {
       dataIndex: 'stalker',
       key: 'stalker',
       width: 100,
-      render: (text, record) => {
+      render: () => {
         return userinfo.userName;
       },
     },
@@ -396,7 +423,7 @@ function Track(props) {
       dataIndex: 'trackUnit',
       key: 'trackUnit',
       width: 120,
-      render: (text, record) => {
+      render: () => {
         return userinfo.unitName;
       },
     },
@@ -405,7 +432,7 @@ function Track(props) {
       dataIndex: 'trackDepartment',
       key: 'trackDepartment',
       width: 120,
-      render: (text, record) => {
+      render: () => {
         return userinfo.deptName;
       },
     },

@@ -41,28 +41,42 @@ function ToDoregist(props) {
           删除
         </Button>
       )}
-      {/* {taskName !== '需求登记' && (
+      {(taskName === '业务科室领导审核' ||
+        taskName === '系统开发商审核' ||
+        taskName === '自动化科负责人确认' ||
+        taskName === '需求登记人员确认') && (
         <Popover content={content} visible={Popvisible} onVisibleChange={handleVisibleChange}>
           <Button type="primary" ghost style={{ marginRight: 8 }}>
-            回退上一步
+            回退
           </Button>
         </Popover>
-      )} */}
+      )}
       {taskName !== '系统开发商处理' && (
         <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleHold('save')}>
           保存
         </Button>
       )}
-      {result !== '0' && (
+      {result !== '0' && taskName !== '自动化科业务人员审核' && taskName !== '自动化科负责人确认' && (
         <SelectUser handleSubmit={() => handleHold('flow')} taskId={taskId}>
           <Button type="primary" style={{ marginRight: 8 }}>
             流转
           </Button>
         </SelectUser>
       )}
-      {result === '0' && (
+      {((result !== '0' && taskName === '自动化科业务人员审核') ||
+        (result === '0' && taskName === '自动化科负责人确认')) && (
+        <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleHold('flow')}>
+          流转
+        </Button>
+      )}
+      {result === '2' && taskName === '自动化科负责人确认' && (
+        <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleHold('flow')}>
+          结束
+        </Button>
+      )}
+      {result === '0' && (taskName === '业务科室领导审核' || taskName === '系统开发商审核') && (
         <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleHold('regist')}>
-          登记
+          重新登记
         </Button>
       )}
       <Button onClick={handleclose}>返回</Button>

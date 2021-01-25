@@ -1,12 +1,14 @@
 import React, { useState, useRef, useEffect, useContext } from 'react';
 import moment from 'moment';
 import { connect } from 'dva';
-import { Collapse, Steps, Spin, message } from 'antd';
+import { Collapse, Steps, Spin, message, Table } from 'antd';
 import styles from './index.less';
 import Registrat from './components/Registrat';
 import Examine from './components/Examine';
 import Track from './components/Track';
 import Registratdes from './components/Registratdes';
+import Examinedes from './components/Examinedes';
+import Tracklist from './components/Tracklist';
 
 const { Panel } = Collapse;
 const { Step } = Steps;
@@ -215,40 +217,74 @@ function WorkOrder(props) {
         break;
     }
   };
+
+  // 自动化科业务人员审核
+  const nonextusrs = () => {
+    const id = setid();
+    switch (type) {
+      case 'save':
+        ExamineRef.current.validateFields((err, values) => {
+          dispatch({
+            type: 'demandtodo/demandsave',
+            payload: {
+              paloadvalues: {
+                ...values,
+                reviewTime: values.reviewTime.format(),
+                business: Number(values.business),
+                releases: Number(values.releases),
+                attachment: JSON.stringify(files.arr),
+                registerId: info.demandForm.id,
+                id,
+                taskName: info.taskName,
+              },
+              processInstanceId: mainId,
+              taskId,
+            },
+          });
+        });
+        break;
+      case 'flow':
+        ExamineRef.current.validateFields((err, values) => {
+          if (!err) {
+            dispatch({
+              type: 'demandtodo/demandnextstep',
+              payload: {
+                ...values,
+                reviewTime: values.reviewTime.format(),
+                business: Number(values.business),
+                releases: Number(values.releases),
+                attachment: JSON.stringify(files.arr),
+                nextUserIds: [{ nodeName: '', userIds: [] }],
+                registerId: info.demandForm.id,
+                id,
+                taskName: info.taskName,
+                taskId,
+              },
+            });
+          } else {
+            formerr();
+          }
+        });
+        break;
+      default:
+        break;
+    }
+  };
+
   // 需求跟踪
   const TrackRef = useRef();
   const getdemantrack = () => {
-    const id = setid();
-    if (type === 'save') {
-      const values = ExamineRef.current.getFieldsValue();
+    if (type === 'flow') {
       dispatch({
-        type: 'demandtodo/demandsave',
+        type: 'demandtodo/demandnextstep',
         payload: {
-          ...values,
-          reviewTime: values.reviewTime.format(),
-          nextUserIds: sessionStorage.getItem('userauthorityid').split(),
+          nextUserIds: JSON.parse(sessionStorage.getItem('NextflowUserId')),
+          userId: sessionStorage.getItem('userauthorityid'),
+          taskId,
           registerId: info.demandForm.id,
-          id,
+          id: info.historys[info.historys.length - 1].id,
           taskName: info.taskName,
         },
-      });
-    }
-    if (type === 'flow') {
-      ExamineRef.current.validateFields((err, values) => {
-        if (!err) {
-          dispatch({
-            type: 'demandtodo/demandnextstep',
-            payload: {
-              ...values,
-              reviewTime: values.reviewTime.format(),
-              nextUserIds: sessionStorage.getItem('userauthorityid').split(),
-              taskId,
-              registerId: info.demandForm.id,
-              id: info.historys[info.historys.length - 1].id,
-              taskName: info.taskName,
-            },
-          });
-        }
       });
     }
   };
@@ -261,10 +297,13 @@ function WorkOrder(props) {
       case '业务科室领导审核':
       case '系统开发商审核':
       case '自动化科专责审核':
-      case '自动化科业务人员审核':
       case '市场部领导审核':
       case '科室领导审核':
         getdemandexamine();
+        break;
+      case '自动化科业务人员审核':
+      case '自动化科负责人确认':
+        nonextusrs();
         break;
       case '系统开发商处理':
         getdemantrack();
@@ -396,35 +435,35 @@ function WorkOrder(props) {
                   }}
                 />
               )}
-              {(info.taskName === '业务科室领导审核' && info.historys.length > 0) ||
+              {((info.taskName === '业务科室领导审核' && info.historys.length > 0) ||
                 info.taskName === '系统开发商审核' ||
-                info.taskName === '自动化科业务人员审核' ||
+                info.taskName === '自动化科专责审核' ||
                 info.taskName === '自动化科业务人员审核' ||
                 info.taskName === '科室领导审核' ||
-                (info.taskName === '市场部领导审核' && (
-                  <Examine
-                    ref={ExamineRef}
-                    location={location}
-                    formItemLayout={formItemLayout}
-                    forminladeLayout={forminladeLayout}
-                    text="审核"
-                    userinfo={userinfo}
-                    taskName={info.taskName}
-                    info={
-                      info.historys?.slice(-1)[0].taskName === info.taskName
-                        ? info.historys.slice(-1)
-                        : undefined
-                    }
-                    files={
-                      info.historys?.slice(-1)[0].taskName === info.taskName
-                        ? JSON.parse(info.historys?.slice(-1)[0].attachment)
-                        : []
-                    }
-                    ChangeFiles={newvalue => {
-                      setFiles(newvalue);
-                    }}
-                  />
-                ))}
+                info.taskName === '市场部领导审核') && (
+                <Examine
+                  ref={ExamineRef}
+                  location={location}
+                  formItemLayout={formItemLayout}
+                  forminladeLayout={forminladeLayout}
+                  text="审核"
+                  userinfo={userinfo}
+                  taskName={info.taskName}
+                  info={
+                    info.historys?.slice(-1)[0].taskName === info.taskName
+                      ? info.historys.slice(-1)
+                      : undefined
+                  }
+                  files={
+                    info.historys?.slice(-1)[0].taskName === info.taskName
+                      ? JSON.parse(info.historys?.slice(-1)[0].attachment)
+                      : []
+                  }
+                  ChangeFiles={newvalue => {
+                    setFiles(newvalue);
+                  }}
+                />
+              )}
               {taskName === '系统开发商处理' && (
                 <Track
                   ref={TrackRef}
@@ -446,53 +485,51 @@ function WorkOrder(props) {
                   demandId={info.demandForm.demandId}
                 />
               )}
-              {info.taskName === '自动化科业务负责人确认' ||
-                (info.taskName === '科室领导审核' && (
-                  <Examine
-                    ref={ExamineRef}
-                    location={location}
-                    formItemLayout={formItemLayout}
-                    forminladeLayout={forminladeLayout}
-                    text="确认"
-                    userinfo={userinfo}
-                    taskName={info.taskName}
-                    info={
-                      info.historys?.slice(-1)[0].taskName === info.taskName
-                        ? info.historys.slice(-1)
-                        : undefined
-                    }
-                    files={
-                      info.historys?.slice(-1)[0].taskName === info.taskName
-                        ? JSON.parse(info.historys?.slice(-1)[0].attachment)
-                        : []
-                    }
-                    ChangeFiles={newvalue => {
-                      setFiles(newvalue);
-                    }}
-                  />
-                ))}
+              {info.taskName === '自动化科负责人确认' && (
+                <Examine
+                  ref={ExamineRef}
+                  location={location}
+                  formItemLayout={formItemLayout}
+                  forminladeLayout={forminladeLayout}
+                  text="确认"
+                  userinfo={userinfo}
+                  taskName={info.taskName}
+                  info={
+                    info.historys?.slice(-1)[0].taskName === info.taskName
+                      ? info.historys.slice(-1)
+                      : undefined
+                  }
+                  files={
+                    info.historys?.slice(-1)[0].taskName === info.taskName
+                      ? JSON.parse(info.historys?.slice(-1)[0].attachment)
+                      : []
+                  }
+                  ChangeFiles={newvalue => {
+                    setFiles(newvalue);
+                  }}
+                />
+              )}
             </Panel>
 
             <Panel header="需求登记" key="registdes">
               <Registratdes info={info.demandForm} />
             </Panel>
 
-            {/* {data.map((obj, index) => {
+            {info.historys.map((obj, index) => {
               // panel详情组件
-              const Paneldesmap = new Map([
-                ['register', <Registratdes info={Object.values(obj)[0]} main={data[0].main} />],
-                ['handle', <Handledes info={Object.values(obj)[0]} main={data[0].main} />],
-                ['check', <Checkdes info={Object.values(obj)[0]} main={data[0].main} />],
-                ['finish', <ReturnVisitdes info={Object.values(obj)[0]} main={data[0].main} />],
-              ]);
-
-              if (index > 0)
+              if (obj.taskName !== '系统开发商处理')
                 return (
-                  <Panel Panel header={Panelheadermap.get(Object.keys(obj)[0])} key={index}>
-                    {Paneldesmap.get(Object.keys(obj)[0])}
+                  <Panel header={obj.taskName} key={index.toString()}>
+                    <Examinedes info={obj} />
                   </Panel>
                 );
-            })} */}
+              if (obj.taskName === '系统开发商处理')
+                return (
+                  <Panel header={obj.taskName} key={index.toString()}>
+                    <Tracklist demandId={info.demandForm.demandId} />
+                  </Panel>
+                );
+            })}
           </Collapse>
         )}
       </Spin>

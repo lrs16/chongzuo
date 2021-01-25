@@ -30,10 +30,10 @@ function Registratdes(props) {
           {info.title}
         </Descriptions.Item>
         <Descriptions.Item label="申请原因" span={3}>
-          {info.reason}
+          <div dangerouslySetInnerHTML={{ __html: info.reason?.replace(/[\n]/g, '<br/>') }} />
         </Descriptions.Item>
         <Descriptions.Item label="详细申请内容" span={3}>
-          {info.detail}
+          <div dangerouslySetInnerHTML={{ __html: info.detail?.replace(/[\n]/g, '<br/>') }} />
         </Descriptions.Item>
         <Descriptions.Item label="附件" span={3}>
           {info.attachment !== '' && <Downloadfile files={info.attachment} />}

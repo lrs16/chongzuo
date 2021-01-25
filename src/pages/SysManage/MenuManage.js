@@ -1,11 +1,25 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
-import { Card, Table, Divider, Button, Message, Popconfirm, Input, Form, Icon, Tag } from 'antd';
+import {
+  Card,
+  Table,
+  Divider,
+  Button,
+  Message,
+  Popconfirm,
+  Input,
+  Form,
+  Icon,
+  Tag,
+  Layout,
+} from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import MenuModal from './components/MenuModal';
 
 const { Search } = Input;
+const { Sider, Content } = Layout;
+
 @connect(({ upmsmenu, loading }) => ({
   upmsmenu,
   loading: loading.models.upmsmenu,
@@ -205,8 +219,11 @@ class MenuManage extends Component {
     return (
       <PageHeaderWrapper title="菜单管理">
         <Card>
-          <div>
-            {/* <div style={{ float: 'left', width: '60%' }}>
+          <Layout>
+            <Sider theme="light">{/* <DeptTree /> */}</Sider>
+            <Content style={{ background: '#fff' }}>
+              <div>
+                {/* <div style={{ float: 'left', width: '60%' }}>
               {mainnav.map(item => {
                 return (
                   <Button key={item.id} style={{ marginRight: 10 }}>
@@ -215,25 +232,30 @@ class MenuManage extends Component {
                 );
               })}
             </div> */}
-            <Form style={{ float: 'right', width: '30%' }}>
-                <Search placeholder="请输入关键字" onSearch={values => this.handleSearch(values)} />
-            </Form>
-            <MenuModal onSumit={handleUpdate}>
-              <Button
-                style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
-                type="dashed"
-                icon="plus"
-              >
-                新建菜单
-              </Button>
-            </MenuModal>
-            <Table 
-            dataSource={dataSource} 
-            columns={columns} 
-            rowKey={record => record.id} 
-            pagination={pagination}
-            />
-          </div>
+                <Form style={{ float: 'right', width: '30%' }}>
+                  <Search
+                    placeholder="请输入关键字"
+                    onSearch={values => this.handleSearch(values)}
+                  />
+                </Form>
+                <MenuModal onSumit={handleUpdate}>
+                  <Button
+                    style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
+                    type="dashed"
+                    icon="plus"
+                  >
+                    新建菜单
+                  </Button>
+                </MenuModal>
+                <Table
+                  dataSource={dataSource}
+                  columns={columns}
+                  rowKey={record => record.id}
+                  pagination={pagination}
+                />
+              </div>
+            </Content>
+          </Layout>
         </Card>
       </PageHeaderWrapper>
     );
