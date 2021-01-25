@@ -12,7 +12,6 @@ import {
   Popconfirm,
   message,
 } from 'antd';
-import router from 'umi/router';
 import { DownloadOutlined, PaperClipOutlined, DeleteOutlined } from '@ant-design/icons';
 import styles from './style.less';
 
@@ -26,33 +25,16 @@ const progressmap = [
 ];
 
 function Track(props) {
-  const { dispatch, userinfo, demandId, tracklist, loading } = props;
-  //  const { taskName, taskId, mainId } = location.query;
+  const { dispatch, userinfo, demandId, trackslist, loading } = props;
   const [data, setData] = useState([]);
   const [cacheOriginData, setcacheOriginData] = useState({});
   const [uploadkey, setKeyUpload] = useState('');
   const [fileslist, setFilesList] = useState([]);
 
-  // const routerRefresh = () => {
-  //   router.push({
-  //     pathname: location.pathname,
-  //     query: {
-  //       taskId,
-  //       taskName,
-  //       mainId,
-  //       result: sessionStorage.getItem('flowtype'),
-  //     },
-  //   });
-  // };
   useEffect(() => {
-    sessionStorage.setItem('flowtype', 1);
-    // routerRefresh();
-  }, []);
-
-  useEffect(() => {
-    if (tracklist === '') {
+    if (trackslist === []) {
       dispatch({
-        type: 'demandtodo/fetchtracklist',
+        type: 'chacklist/fetchtracklist',
         payload: {
           demandId,
         },
@@ -61,13 +43,13 @@ function Track(props) {
   }, [demandId]);
 
   useEffect(() => {
-    if (tracklist !== '') {
-      const newarr = tracklist.map((item, index) => {
+    if (trackslist !== '') {
+      const newarr = trackslist.map((item, index) => {
         return Object.assign(item, { key: index });
       });
       setData(newarr);
     }
-  }, [tracklist]);
+  }, [trackslist]);
 
   // 点击编辑生成filelist,
   const handlefileedit = (key, values) => {
@@ -238,20 +220,6 @@ function Track(props) {
           voice.fileUrl = '';
           fileslist.push(voice);
           handleFieldChange(JSON.stringify(fileslist), 'attachment', uploadkey);
-          const target = getRowByKey(uploadkey) || {};
-          delete target.isNew;
-          delete target.key;
-          delete target.editable;
-          const id = target.id === '' ? '' : target.id;
-          dispatch({
-            type: 'demandtodo/tracksave',
-            payload: {
-              ...target,
-              attachment: JSON.stringify(fileslist),
-              id,
-              demandId,
-            },
-          });
         }
         if (info.file.response.code === -1) {
           message.error(`${info.file.name} 上传失败`);
@@ -379,6 +347,11 @@ function Track(props) {
                         style={{ marginRight: 8, fontSize: 11, color: 'rgba(0, 0, 0, 0.45)' }}
                       />
                       <a onClick={() => handledownload(obj)}>{obj.name}</a>
+                      {/* <a onClick={() => handledeletfile(obj.uid)}>
+                        <DeleteOutlined
+                          style={{ marginLeft: 8, fontSize: 12, color: 'rgba(0, 0, 0, 0.45)' }}
+                        />
+                      </a> */}
                     </div>
                   );
                 })}
@@ -414,7 +387,7 @@ function Track(props) {
       dataIndex: 'stalker',
       key: 'stalker',
       width: 100,
-      render: () => {
+      render: (text, record) => {
         return userinfo.userName;
       },
     },
@@ -423,7 +396,7 @@ function Track(props) {
       dataIndex: 'trackUnit',
       key: 'trackUnit',
       width: 120,
-      render: () => {
+      render: (text, record) => {
         return userinfo.unitName;
       },
     },
@@ -432,7 +405,7 @@ function Track(props) {
       dataIndex: 'trackDepartment',
       key: 'trackDepartment',
       width: 120,
-      render: () => {
+      render: (text, record) => {
         return userinfo.deptName;
       },
     },
@@ -520,7 +493,7 @@ function Track(props) {
   );
 }
 
-export default connect(({ demandtodo, loading }) => ({
-  tracklist: demandtodo.tracklist,
-  loading: loading.models.demandtodo,
+export default connect(({ chacklist, loading }) => ({
+  trackslist: chacklist.trackslist,
+  loading: loading.models.chacklist,
 }))(Track);

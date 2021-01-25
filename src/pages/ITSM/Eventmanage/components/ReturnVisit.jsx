@@ -93,7 +93,7 @@ const ReturnVisit = React.forwardRef((props, ref) => {
   };
   useEffect(() => {
     sessionStorage.setItem('Nextflowmane', nextsmap.get(finish.satisfaction));
-    sessionStorage.setItem('flowtype', typemaps.get(main.eventResult));
+    sessionStorage.setItem('flowtype', typemaps.get(finish.satisfaction));
     routerRefresh();
   }, [info]);
 
@@ -105,6 +105,7 @@ const ReturnVisit = React.forwardRef((props, ref) => {
     } else {
       ChangeFlowtype('1');
       sessionStorage.setItem('Nextflowmane', '结束');
+      sessionStorage.setItem('flowtype', '1');
     }
     routerRefresh();
   };

@@ -91,7 +91,7 @@ export async function TrackUpdata(params) {
 }
 
 // 需求跟踪查询 /demand/track/list/{demandId}
-export async function TrackList(demandId) {
+export async function TracksList(demandId) {
   return request(`/demand/track/list/${demandId}`, {
     method: 'GET',
   });

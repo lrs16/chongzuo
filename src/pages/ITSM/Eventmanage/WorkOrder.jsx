@@ -459,6 +459,9 @@ function WorkOrder(props) {
       setFiles({ ...files, ischange: false });
     }
   }, [files]);
+
+  console.log(info);
+
   return (
     <div className={styles.collapse}>
       {recordsloading === false && (
@@ -487,7 +490,7 @@ function WorkOrder(props) {
         </Steps>
       )}
       <Spin spinning={loading}>
-        {loading === false && data !== undefined && (
+        {loading === false && info !== '' && data !== undefined && (
           <Collapse
             expandIconPosition="right"
             // defaultActiveKey={['1']}
@@ -576,13 +579,13 @@ function WorkOrder(props) {
               </Panel>
             )}
 
-            {edit !== undefined && pangekey === '5' && edit.handle.fileIds === 'null' && (
+            {edit !== undefined && pangekey === '5' && edit.handle === null && (
               <Panel header="事件处理" key="handleform">
                 <Handle
                   formItemLayout={formItemLayout}
                   forminladeLayout={forminladeLayout}
                   ref={HandleRef}
-                  info={edit === null ? finishfirst : edit}
+                  info={finishfirst}
                   main={data[0].main}
                   userinfo={userinfo}
                   defaultvalue={defaultvalue}
@@ -595,7 +598,7 @@ function WorkOrder(props) {
                 />
               </Panel>
             )}
-            {edit !== undefined && pangekey === '5' && edit.handle.fileIds !== 'null' && (
+            {edit !== undefined && pangekey === '5' && edit.handle !== null && (
               <Panel header="事件处理" key="handleform">
                 <Handle
                   formItemLayout={formItemLayout}
@@ -632,7 +635,7 @@ function WorkOrder(props) {
                 />
               </Panel>
             )}
-            {((pangekey === '6' && edit.finish !== null) || pangekey === '7') && (
+            {pangekey === '7' && (
               <Panel header="事件确认" key="visitform">
                 <ReturnVisit
                   ChangeFlowtype={newtype => setFlowtype(newtype)}

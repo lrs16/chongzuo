@@ -5,18 +5,17 @@ import { PaperClipOutlined } from '@ant-design/icons';
 import styles from './style.less';
 
 function Tracklist(props) {
-  const { dispatch, demandId, tracklist } = props;
+  const { dispatch, demandId, trackslist, loading } = props;
 
   useEffect(() => {
-    if (tracklist === '') {
-      dispatch({
-        type: 'demandtodo/fetchtracklist',
-        payload: {
-          demandId,
-        },
-      });
-    }
+    dispatch({
+      type: 'chacklist/fetchtracklist',
+      payload: {
+        demandId,
+      },
+    });
   }, []);
+
   const columns = [
     {
       title: 'ID',
@@ -63,7 +62,7 @@ function Tracklist(props) {
         };
         return (
           <>
-            {text !== '' && tracklist !== '' && (
+            {text !== '' && trackslist !== '' && (
               <div className={styles.greylink}>
                 {JSON.parse(text).map(obj => {
                   return (
@@ -108,10 +107,18 @@ function Tracklist(props) {
     },
   ];
 
-  return <Table pagination={false} columns={columns} scroll={{ x: 1400 }} dataSource={tracklist} />;
+  return (
+    <Table
+      pagination={false}
+      columns={columns}
+      scroll={{ x: 1400 }}
+      dataSource={trackslist}
+      loading={loading}
+    />
+  );
 }
 
-export default connect(({ demandtodo, loading }) => ({
-  tracklist: demandtodo.tracklist,
-  loading: loading.models.demandtodo,
+export default connect(({ chacklist, loading }) => ({
+  trackslist: chacklist.trackslist,
+  loading: loading.models.chacklist,
 }))(Tracklist);

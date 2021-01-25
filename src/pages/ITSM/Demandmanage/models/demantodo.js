@@ -8,9 +8,6 @@ import {
   registerSaveOrUpdate,
   DemandSaveOrUpdate,
   NextStep,
-  TrackList,
-  TrackUpdata,
-  TrackDelete,
   DemandgoBack,
 } from '../services/api';
 
@@ -22,7 +19,6 @@ export default {
     imgblob: '',
     records: '',
     info: '',
-    tracklist: '',
   },
 
   effects: {
@@ -103,38 +99,6 @@ export default {
         });
       }
     },
-    // 需求跟踪查询
-    *fetchtracklist({ payload: { demandId } }, { call, put }) {
-      const response = yield call(TrackList, demandId);
-      yield put({
-        type: 'savetracklist',
-        payload: response.data,
-      });
-    },
-    // 系统开发商处理
-    *tracksave({ payload }, { call, put }) {
-      const response = yield call(TrackUpdata, payload);
-      if (response.code === 200) {
-        message.success(response.msg, 2);
-        const openres = yield call(TrackList, payload.demandId);
-        yield put({
-          type: 'savetracklist',
-          payload: openres.data,
-        });
-      }
-    },
-    // 需求跟踪删除
-    *trackdelete({ payload: { id, demandId } }, { call, put }) {
-      const response = yield call(TrackDelete, id);
-      if (response.code === 200) {
-        message.success(response.msg, 2);
-        const reslist = yield call(TrackList, demandId);
-        yield put({
-          type: 'savetracklist',
-          payload: reslist.data,
-        });
-      }
-    },
   },
 
   reducers: {
@@ -160,12 +124,6 @@ export default {
       return {
         ...state,
         info: action.payload,
-      };
-    },
-    savetracklist(state, action) {
-      return {
-        ...state,
-        tracklist: action.payload,
       };
     },
   },
