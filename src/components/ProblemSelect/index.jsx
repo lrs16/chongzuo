@@ -36,8 +36,8 @@ const SelectUser = props => {
     return newArr;
   };
 
-  const [value, setValue] = useState([]);
-  const [specialvalue, setSpecialvalue] = useState([]);
+  const [value, setValue] = useState('');
+  const [demandvalue, setDemandValue] = useState([]);
 
   // 单选下一环节人员
   // const handleChange = e => {
@@ -50,13 +50,24 @@ const SelectUser = props => {
     sessionStorage.setItem('NextflowUserId', checkedValues.join(','));
   };
 
-  const specialhandleChange = checkedValues => {
-    setSpecialvalue(checkedValues);
-    sessionStorage.setItem('AutoflowUserId', checkedValues.join(','));
+  // 需求多选下一环节人员
+  const handledemandChange = (values, nodeName, key) => {
+    const obj = {};
+    obj.nodeName = nodeName;
+    obj.userIds = values;
+    const target = demandvalue.filter((_, index) => key === index)[0];
+    if (target === undefined) {
+      demandvalue.push(obj);
+    } else {
+      demandvalue.splice(key, 1, obj);
+    }
+    sessionStorage.setItem('NextflowUserId', JSON.stringify(demandvalue));
+    // setValue(values);
   };
 
-
-
+  // useEffect(() => {
+  //   sessionStorage.setItem('NextflowUserId', value);
+  // }, []);
 
   useEffect(() => {
     if (changorder !== undefined && type === 'event') {
@@ -77,21 +88,35 @@ const SelectUser = props => {
           },
         });
         break;
-
       default:
         break;
     }
   };
 
   const handleOk = () => {
-    const params = value.length && specialvalue.length;
-    if(params < 1){
-      message.info('每种角色必须选择一个人');
-    } else {
-      handleSubmit();
-      setIsModalVisible(false);
+    if (type !== 'demand') {
+      if (value.length === 0) {
+        message.error('最少选择一个处理人！');
+      } else {
+        handleSubmit();
+        setIsModalVisible(false);
+      }
     }
-
+    if (type === 'demand') {
+      const newArr = [];
+      const nameArr = [];
+      for (let i = 0; i < demandvalue.length; i += 1) {
+        const idnum = demandvalue[i].userIds.length;
+        newArr.push(idnum);
+        nameArr.push(demandvalue[i].nodeName);
+      }
+      if (newArr.indexOf(0) !== -1 || nameArr.length < userlist.length) {
+        message.error('最少选择一个处理人！');
+      } else {
+        handleSubmit();
+        setIsModalVisible(false);
+      }
+    }
   };
 
   const handleCancel = () => {
@@ -110,23 +135,14 @@ const SelectUser = props => {
         onCancel={handleCancel}
       >
         <Spin tip="正在加载数据..." spinning={Boolean(loading)}>
-          {loading === false && userlist && (
+          {loading === false && type !== 'demand' && (
             <>
-              <div>自动化业务人员人员</div>
+              <div>{nextflowuser}人员</div>
               <div style={{ marginTop: 12 }}>
                 <Checkbox.Group
                   defaultValue={defaultvalue}
-                  options={dataArr(userlist.dutyData)}
+                  options={dataArr(userlist.data)}
                   onChange={handleChange}
-                />
-              </div>
-
-              <div>自动化科专责人员</div>
-              <div style={{ marginTop: 12 }}>
-                <Checkbox.Group
-                  defaultValue={defaultvalue}
-                  options={dataArr(userlist.serviceData)}
-                  onChange={specialhandleChange}
                 />
               </div>
             </>

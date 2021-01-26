@@ -34,9 +34,7 @@ const columns = [
       <Link
         to={{
           pathname: `/ITSM/problemmanage/besolveddetail/workorder/${record.id}`,
-          state: {
-            currentProcess: record.currentNode,
-          },
+          paneKey: record.status, // 传状态
         }}
       >
         {text}
@@ -74,9 +72,9 @@ const columns = [
     key: 'createTime',
   },
   {
-    title: '优先级',
-    dataIndex: 'priority',
-    key: 'priority',
+    title: '重要程度',
+    dataIndex: 'importance',
+    key: 'importance',
   },
 ];
 
@@ -268,7 +266,7 @@ function Besolved(props) {
                 </Col>
 
                 <Col span={8}>
-                  <Form.Item label="优先级">
+                  <Form.Item label="重要程度">
                     {getFieldDecorator('priority', {})(<Input />)}
                   </Form.Item>
                 </Col>

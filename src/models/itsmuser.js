@@ -54,7 +54,7 @@ export default {
       const response = yield call(ProblemFlowUserList, taskId, result);
       yield put({
         type: 'savelist',
-        payload: response.data,
+        payload: response,
       });
     },
   },

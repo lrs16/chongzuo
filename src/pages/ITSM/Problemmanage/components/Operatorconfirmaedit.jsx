@@ -177,7 +177,7 @@ const Operatorconfirmaedit = React.forwardRef((props,ref) => {
           <Form.Item label='确认人'>
             {
               getFieldDecorator('confirmUser',{
-                initialValue: useInfo?useInfo.loginCode:'',
+                initialValue: useInfo?useInfo.userName:'',
               })(<Input disabled/>)
             }
 

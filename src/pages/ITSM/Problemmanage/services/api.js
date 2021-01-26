@@ -122,9 +122,10 @@ export async function realselist() {
   });
 }
 
-// 问题查询列表查询
-export async function queryList(current, pageSize, values) {
-  const obj = values;
+// // 问题查询列表查询
+export async function queryList(current, pageSize) {
+  console.log('current,pageSize: ', current, pageSize);
+  const obj = {};
   obj.pageNum = current;
   obj.pageSize = pageSize;
   return request(`/itsm/problem/flow/getOrderPage`, {

@@ -888,11 +888,11 @@ export default {
   },
   proxy: {
     '/oauth/': {
-      target: 'http://172.16.4.211:9901/', // 登录
+      target: 'http://172.16.4.77:9901/', // 登录
       changeOrigin: true,
     },
     '/upms/': {
-      target: 'http://172.16.4.211:9901/', // 用户管理
+      target: 'http://172.16.4.77:9901/', // 用户管理
       changeOrigin: true,
     },
     '/auto/': {
@@ -937,7 +937,7 @@ export default {
     },
     // 问题管理
     '/itsm/problem/': {
-      target: 'http://172.16.4.211:9901/',
+      target: 'http://172.16.4.77:9901/',
       changeOrigin: true,
     },
     // 故障管理

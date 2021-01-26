@@ -164,6 +164,7 @@ export default {
     },
     //  列表查询
     *queryList({ payload: { current, pageSize, values } }, { call, put }) {
+      console.log('current: ', current);
       const response = yield call(queryList, current, pageSize, values);
       yield put({
         type: 'besolveListpage',

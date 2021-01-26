@@ -123,7 +123,7 @@ const Developerprocessdit = React.forwardRef((props, ref) => {
             //     message: '请输入处理人',
             //   },
             // ],
-            initialValue: useInfo?useInfo.loginCode:'',
+            initialValue: useInfo?useInfo.userName:'',
           })(<Input disabled />)}
         </Form.Item>
       </Col>

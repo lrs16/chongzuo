@@ -11,7 +11,8 @@ import { connect } from 'dva';
 import Link from 'umi/link';
 import router from 'umi/router';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import SelectUser from '@/components/SelectUser';
+import SelectUser from '@/components/ProblemSelect';
+import TransferOrder from '@/components/TransferOrder';
 import Registrat from './components/Registrat';
 import Systemoperatoredit from './components/Systemoperatoredit';
 import Developerprocessdit from './components/Developerprocessdit';
@@ -69,6 +70,7 @@ let checkType;
 let flowNodeName;
 let confirmType;
 let fileSign;
+let selSign;
 // let flowtype = 1;
 
 export const FatherContext = createContext();
@@ -89,9 +91,22 @@ function Workorder(props) {
     todoDetail: { check, handle, confirm, register, main },
     useInfo,
     newno,
+    userlist,
+    location: { paneKey },
     loading
   } = props;
 
+  console.log(paneKey,'paneKey');
+  
+    if(userlist.selSign !== undefined) {
+      if(flowNodeName === '系统开发商处理'){
+        selSign = '0';
+      } else {
+        selSign = userlist.selSign
+      }
+    }
+
+ 
   const {
     params: { id },
   } = props.match;
@@ -140,7 +155,6 @@ function Workorder(props) {
     selectNextflow();
     solvingDisbled();
   }
-  // console.log(flowtype);
 
 
   if (todoDetail.hasOwnProperty('confirmType')) {
@@ -165,9 +179,7 @@ function Workorder(props) {
     receivingTime = moment(new Date());
   }
 
-  if(currntStatus === 45) {
-    // setFlowtype(9);
-  }
+
 
   const getNewno = () => {
     dispatch({
@@ -183,17 +195,52 @@ function Workorder(props) {
   };
 
   const gotoCirapi = (closessign) => {
+
     let result;
     if(closessign) {
       result = 255
-    }else {
+      // if(closessign === '转单') {
+      //   result = 9;
+      // }
+    } else {
      result = flowtype;
     }
 
     if(flowNodeName === '系统开发商处理') {
-      result = 1;
+      result = 1
     }
+
+ 
     const taskId = id;
+    let selectPerson;
+    if(flowNodeName === '系统运维商审核') {
+      selectPerson  = sessionStorage.getItem('NextflowUserId') + ',' + sessionStorage.getItem('AutoflowUserId');
+    } else {
+      selectPerson = sessionStorage.getItem('NextflowUserId');
+      console.log('selectPerson: ', selectPerson);
+    }
+    
+    return dispatch({
+      type: 'problemmanage/gotoCirculation',
+      payload: {
+        flow:{ taskId,
+               result,
+               userIds:selectPerson,
+         }
+      },
+    }).then(res => {
+      if (res.code === 200) {
+        message.info(res.msg);
+        router.push(`/ITSM/problemmanage/besolved`)
+      } else {
+        message.info(res.error);
+      }
+    })
+  };
+
+  const gotoTransferorder = () => {
+    const taskId = id;
+    const result = 9;
     return dispatch({
       type: 'problemmanage/gotoCirculation',
       payload: {
@@ -210,7 +257,9 @@ function Workorder(props) {
         message.info(res.error);
       }
     })
-  };
+  }
+
+
 
   const closeOrder = () => {
      const closeWork = '关闭';
@@ -218,7 +267,6 @@ function Workorder(props) {
   }
 
   const saveApi = (saveData, params2,uploadSive) => {
-    console.log('params2: ', params2);
     return dispatch({
       type: 'problemmanage/tobeSave',
       payload: { saveData },
@@ -368,7 +416,7 @@ function Workorder(props) {
           case '系统运维商确认':
             saveData.confirmType = 1;
             break;
-          case '自动化科业务负责人确认':
+          case '自动化科业务人员确认':
             saveData.confirmType = 2;
             break;
           case '问题登记人员确认':
@@ -448,7 +496,7 @@ function Workorder(props) {
       case '系统运维商确认':
         saveConfirm(params2,uploadSive);
         break;
-      case '自动化科业务负责人确认':
+      case '自动化科业务人员确认':
         saveConfirm(params2,uploadSive);
         break;
       case '问题登记人员确认':
@@ -477,6 +525,7 @@ function Workorder(props) {
     getInformation();
     getUserinfo();
     getNewno();
+    getSelectperson();
     sessionStorage.setItem('Processtype', 'problem');
     sessionStorage.setItem('Nextflowmane', '');
   }, []);
@@ -488,9 +537,24 @@ function Workorder(props) {
   useEffect(() => {
     if(currntStatus === 45) {
       setFlowtype(9);
+    }else {
+      setFlowtype('1');
     }
     sessionStorage.setItem('flowtype', flowtype);
   }, [currntStatus]);
+
+  console.log(flowtype,'flowtype')
+
+  const getSelectperson = () => {
+    const taskId = id;
+    dispatch({
+      type: 'itsmuser/problemuserlist',
+      payload: {
+        taskId,
+        result: 1,
+      },
+    });
+  }
 
   const tabList = [
     {
@@ -508,6 +572,7 @@ function Workorder(props) {
   };
 
   return (
+   
     <PageHeaderWrapper
       title={pagetitle}
       extra={
@@ -541,11 +606,11 @@ function Workorder(props) {
             )}
 
             {
-              currntStatus === 45 &&(
-                <SelectUser
+              (currntStatus === 45) &&(
+                <TransferOrder
                 taskId={id}
                 currentObj={currntStatus}
-                handleSubmit={gotoCirapi}
+                handleSubmit={gotoTransferorder}
               >
                 <Button
                   type="primary"
@@ -554,7 +619,7 @@ function Workorder(props) {
                 >
                   转单
                 </Button>
-              </SelectUser>
+              </TransferOrder>
 
               )
             }
@@ -567,18 +632,12 @@ function Workorder(props) {
             )}
 
             {
-            // flowNodeName !== '问题登记人员确认' && 
             flowtype ==='1' &&
-            // flowNodeName !== '系统开发商处理' &&
-            // flowNodeName !== '自动化科业务负责人确认' &&
-            // flowNodeName !== '系统运维商审核' &&
-            (flowNodeName === '系统运维商确认' || 
-            flowNodeName === '自动化科审核' ||
-            flowNodeName === '系统运维商确认' ||
-            flowNodeName === '问题登记'
-            )&&
-            
-            currntStatus !== 29 &&
+            flowNodeName !== '系统运维商审核' &&
+            flowNodeName !== '系统运维商确认' &&
+      
+            (userlist && selSign === '1') &&
+            // currntStatus !== 29 &&
              (
               <SelectUser
                 taskId={id}
@@ -590,7 +649,7 @@ function Workorder(props) {
                   style={{ marginRight: 8 }}
                 // onClick={() => handleSubmit(circaSign)}
                 >
-                  流转
+                  流转1
                 </Button>
               </SelectUser>
 
@@ -598,8 +657,32 @@ function Workorder(props) {
             }
 
             {
+            // flowtype ==='1' &&
+
+            flowNodeName === '系统运维商确认' &&
+            flowtype === '1' && 
+             (
+              <SelectUser
+                taskId={id}
+                // result={}
+                handleSubmit={() => handleSubmit(circaSign)}
+              >
+                <Button
+                  type="primary"
+                  style={{ marginRight: 8 }}
+                // onClick={() => handleSubmit(circaSign)}
+                >
+                  流转2
+                </Button>
+              </SelectUser>
+
+            )
+            }
+
+
+            {
         
-            flowNodeName === '系统运维商审核' &&
+            flowNodeName === '系统运维商审核' && flowtype ==='1' &&
              (
               <AutomationCirculation
                 taskId={id}
@@ -610,7 +693,7 @@ function Workorder(props) {
                   style={{ marginRight: 8 }}
                 // onClick={() => handleSubmit(circaSign)}
                 >
-                  流转
+                  流转3
                 </Button>
               </AutomationCirculation>
 
@@ -618,8 +701,6 @@ function Workorder(props) {
             
 
             }
-
-
             {
               flowNodeName === '问题登记' && problemFlowNodeRows.length > 2 && (
                 <Button 
@@ -632,20 +713,40 @@ function Workorder(props) {
             }
 
             { 
-            (flowNodeName === '问题登记人员确认' || 
-            flowtype === '0' ||
-            flowNodeName === '系统开发商处理' ||
-            flowNodeName === '自动化科业务负责人确认'
-            ) && currntStatus !== 29  && (
+            (
+              // flowNodeName === '问题登记人员确认' || 
+              // flowNodeName === '系统开发商处理' ||
+              // // flowNodeName === '系统运维商审核' ||
+              // flowNodeName === '自动化科审核' ||
+              // flowNodeName === '系统运维商确认' ||
+              // flowNodeName === '自动化科业务人员确认' ||
+              flowtype === '0' ||
+              (userlist && selSign === '0')
+            )
+            &&
+            currntStatus !== 29 &&
+             (
               <Button
                 type="primary"
                 style={{ marginRight: 8 }}
                 onClick={() => handleSubmit(flowNodeName)}
               >
-                流转
+                流转4
               </Button>
             )
             }
+
+            {/* {
+              flowNodeName === '系统开发商处理' && currntStatus !== 29 &&(
+                <Button
+                type="primary"
+                style={{ marginRight: 8 }}
+                onClick={() => handleSubmit(flowNodeName)}
+              >
+                流转88
+              </Button>
+              )
+            } */}
 
        
 
@@ -691,6 +792,7 @@ function Workorder(props) {
               }
 
             </div>
+            
             <Collapse
               expandIconPosition="right"
               defaultActiveKey={['1']}
@@ -844,7 +946,7 @@ function Workorder(props) {
               }
 
               {
-                flowNodeName === '自动化科业务负责人确认' && (
+                flowNodeName === '自动化科业务人员确认' && (
                   <Panel
                   header='自动化科业务负责人确认'
                   key='1'
@@ -974,7 +1076,7 @@ function Workorder(props) {
   );
 }
 export default Form.create({})(
-  connect(({ problemmanage, demandtodo, loading }) => ({
+  connect(({ problemmanage, demandtodo,itsmuser, loading }) => ({
     todoDetail: problemmanage.todoDetail,
     reviewInfo: problemmanage.reviewInfo,
     eventtableList: problemmanage.eventtableList,
@@ -985,6 +1087,7 @@ export default Form.create({})(
     newno: problemmanage.newno,
     useInfo: problemmanage.useInfo,
     info: demandtodo.info,
+    userlist: itsmuser.userlist,
     loading: loading.models.problemmanage,
   }))(Workorder),
 );

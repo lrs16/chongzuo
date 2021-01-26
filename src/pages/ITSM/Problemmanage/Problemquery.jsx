@@ -24,7 +24,7 @@ const columns = [
     render: (text, record) => (
       <Link
         to={{
-          pathname: `/ITSM/problemmanage/querydetail/${record.mainId}/queryworkdetail`,
+          pathname: `/ITSM/problemmanage/querydetail/${record.id}/queryworkdetail`,
         }}
       >
         {text}
@@ -43,33 +43,33 @@ const columns = [
   },
   {
     title: '问题分类',
-    dataIndex: 'sourcecn',
-    key: 'sourcecn',
+    dataIndex: 'type',
+    key: 'type',
   },
   {
-    title: '当前处理环节',
-    dataIndex: 'currentNode',
-    key: 'currentNode',
+    title: '工单状态',
+    dataIndex: 'type',
+    key: 'type',
+  },
+  {
+    title: '影响范围',
+    dataIndex: 'registerScope',
+    key: 'registerScope',
+  },
+  {
+    title: '处理人',
+    dataIndex: 'handler',
+    key: 'handler',
+  },
+  {
+    title: '处理单位',
+    dataIndex: 'handleUnit',
+    key: 'handleUnit',
   },
   {
     title: '发送人',
     dataIndex: 'sender',
     key: 'Sender',
-  },
-  {
-    title: '发送时间',
-    dataIndex: 'createTime',
-    key: 'createTime',
-  },
-  {
-    title: '优先级',
-    dataIndex: 'priority',
-    key: 'priority',
-  },
-  {
-    title: '状态',
-    dataIndex: 'state',
-    key: 'state',
   },
 ];
 
@@ -86,7 +86,7 @@ function Besolved(props) {
 
   const getQuery = () => {
     dispatch({
-      type: 'problemmanage/besolveList',
+      type: 'problemmanage/queryList',
       payload: {
         // ...values,
         current: paginations.current,
@@ -252,19 +252,72 @@ function Besolved(props) {
                 </Col>
 
                 <Col span={8}>
-                  <Form.Item label="问题分类">{getFieldDecorator('type', {})(<Input />)}</Form.Item>
+                  <Form.Item label="问题分类">{getFieldDecorator('type', {})
+                  ( <Select>
+                    <Option value="功能问题">功能问题</Option>
+                    <Option value="程序问题">程序问题</Option>
+                  </Select>,)}</Form.Item>
                 </Col>
 
                 <Col span={8}>
-                  <Form.Item label="登记人">
+                  <Form.Item label="影响范围">{getFieldDecorator('type', {})
+                  ( <Select>
+                    <Option value="功能问题">功能问题</Option>
+                    <Option value="程序问题">程序问题</Option>
+                  </Select>,)}</Form.Item>
+                </Col>
+
+                <Col span={8}>
+                  <Form.Item label="处理人">
                     {getFieldDecorator(
                       'registerUser',
                       {},
                     )(
-                      <Select>
-                        <Option value="功能问题">功能问题</Option>
-                        <Option value="程序问题">程序问题</Option>
-                      </Select>,
+                      <Input />
+                    )}
+                  </Form.Item>
+                </Col>
+
+                <Col span={8}>
+                  <Form.Item label="处理单位">
+                    {getFieldDecorator(
+                      'handleUnit',
+                      {},
+                    )(
+                      <Input />
+                    )}
+                  </Form.Item>
+                </Col>
+
+                <Col span={8}>
+                  <Form.Item label="发送人">
+                    {getFieldDecorator(
+                      'sender',
+                      {},
+                    )(
+                      <Input />
+                    )}
+                  </Form.Item>
+                </Col>
+
+                <Col span={8}>
+                  <Form.Item label="发送时间">
+                    {getFieldDecorator(
+                      'sender',
+                      {},
+                    )(
+                      <Input />
+                    )}
+                  </Form.Item>
+                </Col>
+
+                <Col span={8}>
+                  <Form.Item label='重要程度'>
+                    {getFieldDecorator(
+                      'sender',
+                      {},
+                    )(
+                      <Input />
                     )}
                   </Form.Item>
                 </Col>

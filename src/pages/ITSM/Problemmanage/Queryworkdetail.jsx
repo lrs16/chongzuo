@@ -2,6 +2,7 @@ import React, { useEffect,useState } from 'react';
 import {
   Form,
   Button,
+  Steps,
 } from 'antd';
 import { connect } from 'dva';
 import Link from 'umi/link';
@@ -15,8 +16,12 @@ import Businessaudes from './components/Businessaudes';
 import Automaticconfirmdes from './components/Automaticconfirmdes';
 import Registrationconfirmdes from './components/Registrationconfirmdes';
 
+import styles from './index.less';
+
 let currntStatus = '';
 let problemFlowid;
+
+const { Step } = Steps;
 
 function Queryworkdetail(props) {
   const pagetitle = props.route.name;
@@ -24,7 +29,7 @@ function Queryworkdetail(props) {
   const {
     dispatch,
     queryDetaildata,
-    queryDetaildata:{ problemFlowNodeRows,main},
+    queryDetaildata:{ problemFlowNodeRows,main,problemFlowLogs},
     loading
   } = props;
   const {
@@ -81,6 +86,35 @@ function Queryworkdetail(props) {
       {
         (tabActiveKey === 'workorder' && problemFlowNodeRows && 
           <>
+           <div className={styles.collapse}>
+              {problemFlowLogs && (
+                <Steps
+                  current={problemFlowLogs.length - 1}
+                  size="small"
+                  // progressDot
+                  style={{
+                    background: '#fff',
+                    padding: 24,
+                    border: '1px solid #e8e8e8',
+                    overflowX: 'auto',
+                  }}
+                >
+                  {problemFlowLogs.map(obj => {
+                    const desc = (
+                      <div className={styles.stepDescription}>
+                        处理人：{obj.formHandler}
+                        <div>开始时间：{obj.startTime}</div>
+                      </div>
+                    );
+                    return <Step title={obj.name} description={desc} />;
+                  })}
+                </Steps>
+
+              )
+              }
+
+            </div>
+            
             { problemFlowNodeRows.length >= 1 && (
             <Problemregistration
             registrationDetail={queryDetaildata}

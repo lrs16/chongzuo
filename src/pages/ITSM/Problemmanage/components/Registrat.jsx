@@ -210,7 +210,7 @@ const Registrat = React.forwardRef((props, ref) => {
                   placeholder="请选择"
                   optionFilterProp="children"
                   showSearch>
-                    <Option value="影响范围">影响范围</Option>
+                    <Option value="自动抄表率">自动抄表率</Option>
                     <Option value="服务器">服务器</Option>
                     <Option value="数据传输">数据传输</Option>
                     <Option value="网络\通道">网络\通道</Option>
@@ -230,9 +230,9 @@ const Registrat = React.forwardRef((props, ref) => {
                   rules: [
                     {
                       required,
-                      len: 11,
-                      validator: phone_reg,
-                      message: '请输入正确的手机号码',
+                      // len: 11,
+                      // validator: phone_reg,
+                      message: '请输入手机号码',
                     },
                   ],
                   initialValue: register?register.registerUserPhone:'',
@@ -284,7 +284,7 @@ const Registrat = React.forwardRef((props, ref) => {
             <Col span={8}>
               <Form.Item label="填报人">
                 {getFieldDecorator('registerUser', {
-                  initialValue: useInfo?useInfo.loginCode:'',
+                  initialValue: useInfo?useInfo.userName:'',
                 })(<Input disabled/>)}
               </Form.Item>
             </Col>

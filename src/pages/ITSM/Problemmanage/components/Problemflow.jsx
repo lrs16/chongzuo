@@ -75,6 +75,11 @@ function Problemflow(props) {
                     <div>处理人：{obj.formHandler}</div>
                     <div>开始时间:{obj.startTime}</div>
                     <div>状态:{obj.status}</div>
+                    {
+                      obj.status === '退回' && (
+                        <div>回退原因:{obj.backReason}</div>
+                      )
+                    }
                   </div>
                 );
                 // return <Step title={`${obj.nodeName}${backoff}`} description={desc} />;
