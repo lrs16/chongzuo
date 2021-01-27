@@ -52,7 +52,7 @@ function Process(props) {
               current={records.length - 1}
               progressDot
               direction="vertical"
-              style={{ background: '#fff', padding: 24, border: '1px solid #e8e8e8' }}
+              style={{ background: '#fff', padding: 24 }}
             >
               {records.map(obj => {
                 const backoff = obj.fallbackMsg === '' ? '' : '（回退）';

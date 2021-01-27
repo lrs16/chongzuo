@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import moment from 'moment';
+import router from 'umi/router';
 import { connect } from 'dva';
-import { Steps, Collapse, Spin } from 'antd';
+import { Steps, Collapse, Spin, Button } from 'antd';
 import styles from './index.less';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import Process from './Process';
@@ -17,6 +18,11 @@ function Details(props) {
   const { taskName, taskId, mainId } = location.query;
   const [tabActivekey, settabActivekey] = useState('workorder'); // 打开标签
   const [activeKey, setActiveKey] = useState(['registdes']);
+  const handleclose = () => {
+    router.push({
+      pathname: `/ITSM/eventmanage/query`,
+    });
+  };
   const handleTabChange = key => {
     switch (key) {
       case 'workorder':
@@ -67,6 +73,7 @@ function Details(props) {
       tabList={tabList}
       tabActiveKey={tabActivekey}
       onTabChange={handleTabChange}
+      extra={<Button onClick={handleclose}>返回</Button>}
     >
       {tabActivekey === 'workorder' && (
         <div className={styles.collapse}>
