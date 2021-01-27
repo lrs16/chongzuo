@@ -109,13 +109,7 @@ const Registrat = forwardRef((props, ref) => {
     }),
     [],
   );
-  const gethandelvalue = getFieldsValue([
-    'register_eventEffect',
-    'main_eventType',
-    'main_eventObject',
-    'register_eventEmergent',
-    'register_eventPrior',
-  ]);
+  const gethandelvalue = getFieldsValue(['main_eventType', 'main_eventObject']);
 
   const routerRefresh = () => {
     router.push({

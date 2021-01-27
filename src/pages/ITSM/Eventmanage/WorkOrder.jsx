@@ -108,12 +108,6 @@ function WorkOrder(props) {
     }
   }, [info]);
 
-  // 更新流转类型
-  // console.log(flowtype);
-  // useEffect(() => {
-  //   sessionStorage.setItem('flowtype', flowtype);
-  // }, [flowtype]);
-
   const callback = key => {
     setActiveKey(key);
   };
@@ -395,16 +389,6 @@ function WorkOrder(props) {
     setActiveKey([`${Collapsekeymap.get(pangekey)}`]);
   }, [pangekey]);
 
-  // 初始化流转类型,自动接单value
-  // useEffect(() => {
-  //   if (data !== undefined && data[0].main.event_type === '005') {
-  //     setFlowtype('3');
-  //   }
-  //   if (pangekey !== '1') {
-  //     setFlowtype('1');
-  //   }
-  // }, [loading]);
-
   useEffect(() => {
     if (validate === true && ischeck === false) {
       handlesubmit();
@@ -517,7 +501,11 @@ function WorkOrder(props) {
                   userinfo={userinfo}
                   sethandlevalue="true"
                   location={location}
-                  files={edit.register.fileIds !== '' ? JSON.parse(edit.register.fileIds) : []}
+                  files={
+                    edit.register.fileIds !== ('' || undefined)
+                      ? JSON.parse(edit.register.fileIds)
+                      : []
+                  }
                 />
               </Panel>
             )}
@@ -572,7 +560,9 @@ function WorkOrder(props) {
                   ChangeFiles={newvalue => {
                     setFiles(newvalue);
                   }}
-                  files={edit.check.fileIds !== '' ? JSON.parse(edit.check.fileIds) : []}
+                  files={
+                    edit.check.fileIds !== ('' || undefined) ? JSON.parse(edit.check.fileIds) : []
+                  }
                 />
               </Panel>
             )}
@@ -671,22 +661,6 @@ function WorkOrder(props) {
                   </Panel>
                 );
             })}
-
-            {/* {pangekey !== '1' && (
-              <Panel header="事件登记" key="registratdes">
-                <Registratdes />
-              </Panel>
-            )}
-            {(pangekey === '6' || pangekey === '7' || pangekey === '8') && (
-              <Panel header="事件处理" key="handledes">
-                <Handledes />
-              </Panel>
-            )}
-            {(pangekey === '8') && (
-              <Panel header="事件回访" key="visitdes">
-                <ReturnVisitdes />
-              </Panel>
-            )} */}
           </Collapse>
         )}
       </Spin>

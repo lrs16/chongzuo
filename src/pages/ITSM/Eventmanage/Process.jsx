@@ -61,7 +61,7 @@ function Process(props) {
                     <div>处理人：{obj.user}</div>
                     <div>{obj.addTime}</div>
                     <div>{obj.endTime}</div>
-                    {obj.fallbackMsg !== '' && <div>回退原因：{obj.fallbackMsg}）</div>}
+                    {obj.fallbackMsg !== '' && <div>回退原因：{obj.fallbackMsg}</div>}
                   </div>
                 );
                 return <Step title={`${obj.nodeName}${backoff}`} description={desc} />;
