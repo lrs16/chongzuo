@@ -214,3 +214,19 @@ export async function SearchUsers(params) {
     body: JSON.stringify(params),
   });
 }
+
+// 数据字典结构树 /sys/dict/keyVal
+export async function querkeyVal(dictModule, dictType) {
+  return request(`/sys/dict/keyVal`, {
+    method: 'POST',
+    data: { dictModule, dictType },
+    requestType: 'form',
+  });
+}
+
+export async function queryFaultdictVal(id) {
+  return request(`/sys/dict/queryChildDictLower`, {
+    method: 'POST',
+    data: { id },
+  });
+}

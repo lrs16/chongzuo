@@ -100,6 +100,11 @@ function Todolistdetails(props) {
   const [resultsecond, setResultsecond] = useState('1');
   const [resultconfirm, setResultconfirm] = useState('1');
 
+  // 数据字典--处理结果
+  const [selectvalue, setSelectValue] = useState('');
+
+  const [showButton, setShowButton] = useState();
+
   const RegisterRef = useRef(); // 故障登记
   const ExamineRef = useRef(); // 系统运维商审核  自动化科业务负责人审核
   const HandleRef = useRef(); // 系统运维商处理
@@ -165,11 +170,24 @@ function Todolistdetails(props) {
     });
   }
 
+  const dictDatas = () => { // 处理结果
+    dispatch({
+      type: 'fault/keyval',
+      payload: {
+        dictModule: 'trouble',
+        dictType: 'handleresult',
+      },
+    }).then(res => {
+      setSelectValue(res.data.handleresult);
+    });
+  }
+
   useEffect(() => {
     getCurrUserInfo(); // 获取登录用户信息
     setActiveKey([`${Collapsekeymap.get(paneKey)}`]);
     getfaultTodoDetailData();
     sessionStorage.setItem('Processtype', 'troub');
+    dictDatas();
   }, []);
 
   useEffect(() => {
@@ -277,6 +295,8 @@ function Todolistdetails(props) {
           payload: { formValues }
         }).then(res => {
           if (res.code === 200) {
+            // 保存成功后隐藏回退按钮
+            setShowButton(false);
             getfaultTodoDetailData();
             if (cirStatus) {
               faultcircula();
@@ -284,6 +304,7 @@ function Todolistdetails(props) {
               message.success(res.msg);
             }
           } else {
+            setShowButton(true);
             message.error(res.msg);
           }
         })
@@ -318,6 +339,7 @@ function Todolistdetails(props) {
           formValues.handleId = tododetailslist.editGuid;
           formValues.editState = 'add';
         }
+        // console.log(formValues, 'formValues')
         return dispatch({
           type: 'fault/getfromsave', // 保存接口
           payload: { formValues }
@@ -376,6 +398,7 @@ function Todolistdetails(props) {
           payload: { formValues }
         }).then(res => {
           if (res.code === 200) {
+            setShowButton(false);
             getfaultTodoDetailData();
             if (cirStatus) {
               faultcircula();
@@ -413,6 +436,7 @@ function Todolistdetails(props) {
           payload: { formValues }
         }).then(res => {
           if (res.code === 200) {
+            setShowButton(false);
             getfaultTodoDetailData();
             if (cirStatus) {
               faultcircula();
@@ -587,6 +611,7 @@ function Todolistdetails(props) {
           formValues.checkId = tododetailslist.editGuid;
           formValues.editState = 'add';
         }
+
         return dispatch({
           type: 'fault/getfromsave', // 保存接口
           payload: { formValues }
@@ -677,7 +702,7 @@ function Todolistdetails(props) {
             )
           }
           { // 回退按钮--系统运维商审核， 系统运维商确认总结，自动化科业务负责人审核, 自动化科确认有
-            (paneKey !== '故障登记' && paneKey !== '故障关闭' && (main && main.status !== '45') && (main && main.status !== '40')) && (
+            (paneKey !== '故障登记' && paneKey !== '故障关闭' && (main && main.status !== '45') && (main && main.status !== '40')) && showButton !== false && (
               <ModelRollback title="填写回退意见" rollbackSubmit={values => rollbackSubmit(values)}>
                 <Button type="danger" ghost>回退</Button>
               </ModelRollback>
@@ -694,6 +719,7 @@ function Todolistdetails(props) {
               <SelectUser
                 handleSubmit={handleFaulttransfer}
                 taskId={id}
+                changorder="请选择转单处理"
               >
                 <Button type="primary">转单</Button>
               </SelectUser>
@@ -832,6 +858,7 @@ function Todolistdetails(props) {
                             forminladeLayout={forminladeLayout}
                             handle={handle}
                             curruserinfo={curruserinfo}
+                            selectvalue={selectvalue}
                             ChangeFiles={newvalue => {
                               setFiles(newvalue);
                             }}

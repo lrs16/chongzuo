@@ -14,6 +14,7 @@ const { TextArea } = Input;
 
 const SummaryChild = React.forwardRef((props, ref) => {
     const { formItemLayout, forminladeLayout, finish, curruserinfo, ChangeFiles, tododetailslist, ChangeFileskey } = props;
+    console.log(finish, tododetailslist, '寻找时间');
     // const message = '上传故障分析报告已超时， 实际上传时间已超过要求上传时间。'
     const { getFieldDecorator } = props.form;
     const attRef = useRef();

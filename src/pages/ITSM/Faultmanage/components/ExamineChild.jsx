@@ -15,7 +15,6 @@ const RadioGroup = Radio.Group;
 
 const ExamineChild = React.forwardRef((props, ref) => {
     const { formItemLayout, forminladeLayout, check, curruserinfo, ChangeFiles,ChangeResult, result } = props;
-   
     const { getFieldDecorator } = props.form;
     const attRef = useRef();
     const [fileslist, setFilesList] = useState({ arr: [], ischange: false }); // 下载列表
@@ -78,7 +77,7 @@ const ExamineChild = React.forwardRef((props, ref) => {
                             })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
                         </Form.Item>
                     )}
-                    {result === '0' && (
+                    {result === '0' && check.checkResult === '0' && (
                         <Form.Item label="审核意见" {...forminladeLayout}>
                             {getFieldDecorator('checkOpinion', {
                                 rules: [{ required: true, message: '请输入', }],

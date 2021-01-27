@@ -70,6 +70,9 @@ function ToDOlist(props) {
   } = props;
 
   const [expand, setExpand] = useState(false);
+  // 数据字典
+  // const [selectvalue, setSelectValue] = useState('');
+  // const [selectvalue2, setSelectValue2] = useState('');
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 10 }); // 分页state
   // const [selectedRow, setSelectedRow] = useState([]);
 
@@ -163,8 +166,35 @@ function ToDOlist(props) {
     });
   }
 
+  // const dictDatas = () => { // 故障来源
+  //   dispatch({
+  //     type: 'fault/keyval',
+  //     payload: {
+  //       dictModule: 'trouble',
+  //       dictType: 'source',
+  //     },
+  //   }).then(res => {
+  //     setSelectValue(res.data.source);
+  //   });
+  // }
+
+  // const dictDatas2 = () => { // 严重程度
+  //   dispatch({
+  //     type: 'fault/keyval',
+  //     payload: {
+  //       dictModule: 'public',
+  //       dictType: 'priority',
+  //     },
+  //   }).then(res => {
+  //     setSelectValue2(res.data.priority);
+  //   });
+  // }
+
   useEffect(() => {
     getTodolists();
+    // 数据字典数据
+    // dictDatas();
+    // dictDatas2();
   }, []);
 
   const handleReset = () => {
@@ -250,14 +280,16 @@ function ToDOlist(props) {
             current: page,
           },
         }).then(res => {
-          const filename = `下载.xls`;
-          const blob = new Blob([res]);
-          const url = window.URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = filename;
-          a.click();
-          window.URL.revokeObjectURL(url);
+          const url = `/itsm/trouble/flow/expExcelOrderList`;
+          window.location.href = url;
+          // const filename = `下载.xls`;
+          // const blob = new Blob([res]);
+          // const url = window.URL.createObjectURL(blob);
+          // const a = document.createElement('a');
+          // a.href = url;
+          // a.download = filename;
+          // a.click();
+          // window.URL.revokeObjectURL(url);
         });
       }
     });

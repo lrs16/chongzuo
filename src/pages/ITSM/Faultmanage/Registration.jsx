@@ -46,10 +46,10 @@ const forminladeLayout = {
   },
 };
 
-const faultSource = [ // 故障来源
-  { key: 0, value: '系统告警' },
-  { key: 1, value: '巡检发现' }
-];
+// const faultSource = [ // 故障来源
+//   { key: 0, value: '系统告警' },
+//   { key: 1, value: '巡检发现' }
+// ];
 
 const faultType = [ // 故障类型
   { key: 0, value: '系统应用' },
@@ -61,35 +61,42 @@ const faultType = [ // 故障类型
   { key: 6, value: '其他' },
 ];
 
-const severity = [ // 严重程度
-  { key: 0, value: '紧急' },
-  { key: 1, value: '重大' },
-  { key: 2, value: '一般' },
-];
+// const severity = [ // 严重程度
+//   { key: 0, value: '紧急' },
+//   { key: 1, value: '重大' },
+//   { key: 2, value: '一般' },
+// ];
 
-const registerScope = [ // 影响范围
-  { key: 0, value: '自动抄表率' },
-  { key: 1, value: '服务器' },
-  { key: 2, value: '数据传输' },
-  { key: 3, value: '网络\\通道' },
-  { key: 4, value: 'VNC' },
-  { key: 5, value: '专变自动抄表率' },
-  { key: 6, value: '费控、召测' },
-];
+// const registerScope = [ // 影响范围
+//   { key: 0, value: '自动抄表率' },
+//   { key: 1, value: '服务器' },
+//   { key: 2, value: '数据传输' },
+//   { key: 3, value: '网络\\通道' },
+//   { key: 4, value: 'VNC' },
+//   { key: 5, value: '专变自动抄表率' },
+//   { key: 6, value: '费控、召测' },
+// ];
 
-const sysmodular = [ // 系统模块
-  { key: 0, value: '配网采集' },
-  { key: 1, value: '主网采集' },
-  { key: 2, value: '终端掉线' },
-  { key: 3, value: '配网档案' },
-  { key: 4, value: '实用化指标' },
-  { key: 5, value: '账号缺陷' },
-];
+// const sysmodular = [ // 系统模块
+//   { key: 0, value: '配网采集' },
+//   { key: 1, value: '主网采集' },
+//   { key: 2, value: '终端掉线' },
+//   { key: 3, value: '配网档案' },
+//   { key: 4, value: '实用化指标' },
+//   { key: 5, value: '账号缺陷' },
+// ];
 
 function Registration(props) {
   const pagetitle = props.route.name;
   const [activeKey, setActiveKey] = useState(['1']);
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
+
+  // 数据字典
+  const [selectvalue, setSelectValue] = useState('');
+  const [selectvalue1, setSelectValue1] = useState('');
+  const [selectvalue2, setSelectValue2] = useState('');
+  const [selectvalue3, setSelectValue3] = useState('');
+  // const [selectvalue4, setSelectValue4] = useState();
 
   const {
     form: { getFieldDecorator, resetFields, validateFields, },
@@ -113,9 +120,66 @@ function Registration(props) {
     });
   }
 
+  const dictDatas = () => { // 故障来源
+    dispatch({
+      type: 'fault/keyval',
+      payload: {
+        dictModule: 'trouble',
+        dictType: 'source',
+      },
+    }).then(res => {
+      setSelectValue(res.data.source);
+    });
+  }
+
+  const dictDatas1 = () => { // 系统模块
+    dispatch({
+      type: 'fault/keyval',
+      payload: {
+        dictModule: 'trouble',
+        dictType: 'model',
+      },
+    }).then(res => {
+      setSelectValue1(res.data.model);
+    });
+  }
+
+  const dictDatas2 = () => { // 严重程度
+    dispatch({
+      type: 'fault/keyval',
+      payload: {
+        dictModule: 'public',
+        dictType: 'priority',
+      },
+    }).then(res => {
+      setSelectValue2(res.data.priority);
+    });
+  }
+
+  const dictDatas3 = () => { // 影响范围
+    dispatch({
+      type: 'fault/keyval',
+      payload: {
+        dictModule: 'public',
+        dictType: 'effect',
+      },
+    }).then(res => {
+      setSelectValue3(res.data.effect);
+    });
+  }
+
+ 
+
   useEffect(() => {
     getNewno(); // 新的故障编号
     getCurrUserInfo(); // 获取登录用户信息
+    // 数据字典数据
+    dictDatas();
+    dictDatas1();
+    dictDatas2();
+    dictDatas3();
+    // dictDatas4();
+
     sessionStorage.setItem('Processtype', 'troub');
     sessionStorage.setItem('Nextflowmane', '审核');
   }, []);
@@ -234,7 +298,7 @@ function Registration(props) {
                 </Col>
 
                 <Col xl={8} xs={12}>
-                  <Form.Item label="故障来源">
+                  {selectvalue && selectvalue !== undefined && (<Form.Item label="故障来源">
                     {getFieldDecorator('source', {
                       rules: [
                         {
@@ -244,14 +308,16 @@ function Registration(props) {
                       ],
                     })(
                       <Select placeholder="请选择">
-                        {faultSource.map(({ value }) => [<Option key={value}>{value}</Option>])}
+                        {
+                          selectvalue.map(({ val }) => [<Option key={val}>{val}</Option>])
+                        }
                       </Select>,
                     )}
-                  </Form.Item>
+                  </Form.Item>)}
                 </Col>
 
                 <Col span={8}>
-                  <Form.Item label="系统模块">
+                  {selectvalue1 && selectvalue1 !== undefined && (<Form.Item label="系统模块">
                     {getFieldDecorator('registerModel', {
                       rules: [
                         {
@@ -261,14 +327,12 @@ function Registration(props) {
                       ],
                     })(
                       <Select placeholder="请选择">
-                        {sysmodular.map(({ value }) => [
-                          <Option key={value}>
-                            {value}
-                          </Option>,
-                        ])}
-                      </Select>,
+                        {
+                          selectvalue1.map(({ val }) => [<Option key={val}>{val}</Option>])
+                        }
+                      </Select>
                     )}
-                  </Form.Item>
+                  </Form.Item>)}
                 </Col>
 
                 <Col xl={8} xs={12}>
@@ -302,7 +366,7 @@ function Registration(props) {
                 </Col>
 
                 <Col xl={8} xs={12}>
-                  <Form.Item label="严重程度">
+                  {selectvalue2 && selectvalue2 !== undefined && (<Form.Item label="严重程度">
                     {getFieldDecorator('registerLevel', {
                       rules: [
                         {
@@ -312,14 +376,17 @@ function Registration(props) {
                       ],
                     })(
                       <Select placeholder="请选择">
-                        {severity.map(({ value }) => [<Option key={value}>{value}</Option>])}
+
+                        {
+                          selectvalue2.map(({ val }) => [<Option key={val}>{val}</Option>])
+                        }
                       </Select>,
                     )}
-                  </Form.Item>
+                  </Form.Item>)}
                 </Col>
 
                 <Col xl={8} xs={12}>
-                  <Form.Item label="影响范围">
+                  {selectvalue3 && selectvalue3 !== undefined && (<Form.Item label="影响范围">
                     {getFieldDecorator('registerScope', {
                       rules: [
                         {
@@ -329,10 +396,12 @@ function Registration(props) {
                       ],
                     })(
                       <Select placeholder="请选择">
-                        {registerScope.map(({ value }) => [<Option key={value}>{value}</Option>])}
+                        {
+                          selectvalue3.map(({ val }) => [<Option key={val}>{val}</Option>])
+                        }
                       </Select>,
                     )}
-                  </Form.Item>
+                  </Form.Item>)}
                 </Col>
 
                 <Col span={8}>
@@ -381,7 +450,7 @@ function Registration(props) {
                     extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb"
                   >
                     <div style={{ width: 400 }}>
-                      <SysUpload  fileslist={files.arr} ChangeFileslist={newvalue => setFiles(newvalue)}/>
+                      <SysUpload fileslist={files.arr} ChangeFileslist={newvalue => setFiles(newvalue)} />
                     </div>
                   </Form.Item>
                 </Col>

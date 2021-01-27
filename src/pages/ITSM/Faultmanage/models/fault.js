@@ -29,6 +29,8 @@ import {
   queryOrderDetail, // 故障查询列表详情页
 
   SearchUsers, // 获取流转，转单 系统所有的用户
+  querkeyVal, // 数据字典
+  queryFaultdictVal, // 数据字典
 } from '../services/api';
 
 export default {
@@ -284,6 +286,14 @@ export default {
       })
     },
 
+    *keyval({ payload: { dictModule, dictType } }, { call }) { // 数据字典数据
+      return yield call(querkeyVal, dictModule, dictType);
+    },
+
+    *faultdictVal({ payload: { id } }, { call }) { // 数据字典数据1]
+      return yield call(queryFaultdictVal, id);
+    },
+
   },
 
   reducers: {
@@ -394,6 +404,5 @@ export default {
         querydetailslist: action.payload
       }
     },
-
   },
 };

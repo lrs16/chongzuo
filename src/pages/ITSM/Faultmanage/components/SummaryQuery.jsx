@@ -21,7 +21,7 @@ function SummaryQuery(props) {
                 <DescriptionList size="large">
                     <Description term="上传故障分析报告">{info.finishAnalysisAttachments && <Downloadfile files={info.finishAnalysisAttachments} />}</Description>
                     <Description term="要求上传时间">{info.finishRequiredTime || ''}</Description>
-                    <Description term="实际上传时间">{info.finishAnalysisAttachments && info.finishAnalysisAttachments === '[]' ? '' : (JSON.parse(info.finishAnalysisAttachments))[0].nowtime}</Description>
+                    <Description term="实际上传时间">{info.finishAnalysisAttachments === null || info.finishAnalysisAttachments === '[]' ? '' : (JSON.parse(info.finishAnalysisAttachments))[0].nowtime}</Description>
                 </DescriptionList>
                 <DescriptionList size="large">
                     <Description term="上传附件">{info.finishAttachments && <Downloadfile files={info.finishAttachments} />}</Description>
