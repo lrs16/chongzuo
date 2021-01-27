@@ -119,11 +119,13 @@ const modulemap = [
 ];
 const Registrat = forwardRef((props, ref) => {
   const { register, userinfo, files, ChangeFiles, location } = props;
-  const { getFieldDecorator, setFieldsValue } = props.form;
+  const { getFieldDecorator } = props.form;
   const required = true;
-  const [selectvalue, setSelectValue] = useState([]);
-
+  const [selectdata, setSelectData] = useState([]);
   const [fileslist, setFilesList] = useState({ arr: [], ischange: false });
+
+  console.log(selectdata);
+
   useEffect(() => {
     if (fileslist.ischange) {
       ChangeFiles(fileslist);
@@ -157,11 +159,14 @@ const Registrat = forwardRef((props, ref) => {
     }
     sessionStorage.setItem('flowtype', 1);
   }, []);
-
-  const options = selectvalue.map(obj => <Option key={obj.key}>{obj.val}</Option>);
-
   return (
     <>
+      <SysDict
+        typeid="1354273739344187393"
+        commonid="1354288354950123522"
+        ChangeSelectdata={newvalue => setSelectData(newvalue)}
+        style={{ display: 'non' }}
+      />
       <Form {...formItemLayout}>
         <Row gutter={24}>
           <Col span={8} style={{ display: 'none' }}>

@@ -894,11 +894,11 @@ export default {
   },
   proxy: {
     '/oauth/': {
-      target: 'http://172.16.4.77:9901/', // 登录
+      target: 'http://172.16.4.211:9901/', // 登录
       changeOrigin: true,
     },
     '/upms/': {
-      target: 'http://172.16.4.77:9901/', // 用户管理
+      target: 'http://172.16.4.211:9901/', // 用户管理
       changeOrigin: true,
     },
     '/auto/': {
@@ -948,7 +948,6 @@ export default {
     },
     // 故障管理
     '/itsm/trouble/': {
-      // target: 'http://172.16.4.77:9901/',
       target: 'http://172.16.4.211:9901/',
       changeOrigin: true,
     },
@@ -957,7 +956,6 @@ export default {
       target: 'http://172.16.4.211:7777/',
       changeOrigin: true,
     },
-    // http://172.16.4.115:9901/itsm
     '/api/': {
       target: 'http://localhost:8000/', // mock接口数据
       changeOrigin: true,

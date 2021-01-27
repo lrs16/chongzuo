@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import ReactDom from 'react-dom';
 import { connect } from 'dva';
 import { Card, Steps } from 'antd';
 import styles from './index.less';

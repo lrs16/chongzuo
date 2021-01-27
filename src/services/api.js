@@ -158,11 +158,19 @@ export async function querDictTree(params) {
   });
 }
 
-// 数据字典结构树 /sys/dict/keyVal
+// 数据字典select /sys/dict/keyVal
 export async function querkeyVal(dictModule, dictType) {
   return request(`/sys/dict/keyVal`, {
     method: 'POST',
     data: { dictModule, dictType },
     requestType: 'form',
+  });
+}
+
+// 数据字典树型 /sys/dict/queryChildDictLower
+export async function queryChildDictLower(params) {
+  return request(`/sys/dict/queryChildDictLower`, {
+    method: 'POST',
+    body: JSON.stringify(params),
   });
 }

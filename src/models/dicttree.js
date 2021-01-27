@@ -1,4 +1,4 @@
-import { querDictTree, querkeyVal } from '@/services/api';
+import { querDictTree, querkeyVal, queryChildDictLower } from '@/services/api';
 
 export default {
   namespace: 'dicttree',
@@ -17,6 +17,9 @@ export default {
     },
     *keyval({ payload: { dictModule, dictType } }, { call }) {
       return yield call(querkeyVal, dictModule, dictType);
+    },
+    *childdictLower({ payload }, { call }) {
+      return yield call(queryChildDictLower, payload);
     },
   },
 

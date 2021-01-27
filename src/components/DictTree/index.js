@@ -20,7 +20,7 @@ class DeptTree extends Component {
       dictCode: '',
       dictName: '',
       dictRemarks: '',
-    }
+    },
   };
 
   componentDidMount() {
@@ -29,12 +29,12 @@ class DeptTree extends Component {
     dispatch({
       type: 'dicttree/fetch',
       payload: {
-        params
+        params,
       },
     });
   }
 
-//  处理数据，生成更多的父子节点，未知？
+  //  处理数据，生成更多的父子节点，未知？
   toTree = data => {
     const result = [];
     if (!Array.isArray(data)) {
@@ -58,7 +58,7 @@ class DeptTree extends Component {
     return result;
   };
 
-// 生成子节点
+  // 生成子节点
   renderTreeNodes = data =>
     data.map(item => {
       if (item.children) {
@@ -68,12 +68,12 @@ class DeptTree extends Component {
           </TreeNode>
         );
       }
-      return <TreeNode key={item.key} title={item.title} {...item}/>;
+      return <TreeNode key={item.key} title={item.title} {...item} />;
     });
 
-//  用户点击每个子节点的事件
-  onSelect = (selectedKeys) => {
-    if(selectedKeys !== undefined) {
+  //  用户点击每个子节点的事件
+  onSelect = selectedKeys => {
+    if (selectedKeys !== undefined) {
       this.props.toFatherValue(selectedKeys);
     }
   };

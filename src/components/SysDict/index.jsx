@@ -1,29 +1,48 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
-import { message, Select } from 'antd';
 
-const { Option } = Select;
+const selects = [
+  { dictModule: 'event', dictType: 'type' },
+  { dictModule: 'event', dictType: 'source' },
+  { dictModule: 'event', dictType: 'handleresult' },
+  { dictModule: 'event', dictType: 'source' },
+];
 
-function SysDict(props) {
-  const { dispatch, dictModule, dictType, handleChange } = props;
-  const handleClick = () => {
+function DictTree(props) {
+  const { dispatch, typeid, commonid, ChangeSelectdata } = props;
+  const [ischange, setIsChange] = useState(false);
+  const [selectlist, setSelectList] = useState([]);
+
+  useEffect(() => {
     dispatch({
-      type: 'dicttree/keyval',
-      payload: {
-        dictModule,
-        dictType,
-      },
+      type: 'dicttree/childdictLower',
+      payload: { id: typeid },
     }).then(res => {
       if (res.code === 200) {
-        handleChange(res.data.priority);
-      } else {
-        message.error('数据加载失败！', 2);
+        const test = res.data.children;
+        selectlist.push(res.data.children);
+        dispatch({
+          type: 'dicttree/childdictLower',
+          payload: { id: commonid },
+        }).then(ress => {
+          if (ress.code === 200) {
+            selectlist.push({ ...ress.data.children });
+            setIsChange(true);
+          }
+        });
       }
     });
-  };
-  return <div onClick={() => handleClick()} />;
+  }, []);
+  useEffect(() => {
+    if (ischange) {
+      ChangeSelectdata(selectlist);
+    }
+  }, [ischange]);
+
+  return null;
 }
 
 export default connect(({ dicttree, loading }) => ({
-  data: dicttree.data,
-}))(SysDict);
+  dicttree,
+  loading: loading.models.dicttree,
+}))(DictTree);
