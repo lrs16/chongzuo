@@ -156,6 +156,7 @@ function Workorder(props) {
 
   if (todoDetail.main) {
     currntStatus = Number(todoDetail.main.status);
+    console.log('currntStatus: ', currntStatus);
     confirmType = Number(todoDetail.confirmType);
      const editstate = todoDetail.editState;
     problemFlowid = todoDetail.main.id;

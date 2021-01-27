@@ -49,8 +49,8 @@ const columns = [
   },
   {
     title: '工单状态',
-    dataIndex: 'type',
-    key: 'type',
+    dataIndex: 'statuscn',
+    key: 'statuscn',
   },
   {
     title: '影响范围',
@@ -85,8 +85,10 @@ function Besolved(props) {
     prioritylist,
     scopeList,
     projectList,
+    orderList,
     loading,
   } = props;
+  console.log(orderList,'orderList');
   const [expand, setExpand] = useState(false);
   const [paginations, setPaginations] = useState({ current: 1, pageSize: 10 });
   const [selectedRows, setSelectedRows] = useState([]);
@@ -150,6 +152,16 @@ function Besolved(props) {
     });
   }
 
+  // 问题工单
+  const getorder = () => {
+    const dictModule = 'problem';
+    const dictType = 'orderstate';
+    dispatch({
+      type: 'problemdropdown/keyvalorder',
+      payload:{ dictModule, dictType}
+    });
+  }
+
   useEffect(() => {
     getQuery();
     getSource();
@@ -157,6 +169,7 @@ function Besolved(props) {
     getpriority();
     getscope();
     getProject();
+    getorder();
   }, []);
 
   const handleReset = () => {
@@ -286,13 +299,16 @@ function Besolved(props) {
                   'status',
                   {},
                 )(
-                  <Select>
-                    <Option value="问题登记">问题登记</Option>
-                    <Option value="问题审核">问题审核</Option>
-                    <Option value="问题处理">问题处理</Option>
-                    <Option value="问题确认">问题确认</Option>
-                    <Option value="确认会签">确认会签</Option>
-                    <Option value="问题关闭">问题关闭</Option>
+                  <Select placeholder="请选择">
+                      {
+                        orderList.orderstate && orderList.orderstate.length  && (
+                          (orderList.orderstate).map(({ key, val }) => (
+                            <Option key={key} value={key}>
+                              {val}
+                            </Option>
+                          ))
+                        )
+                      }
                   </Select>,
                 )}
               </Form.Item>
@@ -527,6 +543,7 @@ export default Form.create({})(
     prioritylist: problemdropdown.prioritylist,
     scopeList: problemdropdown.scopeList,
     projectList: problemdropdown.projectList,
+    orderList: problemdropdown.orderList,
     loading: loading.models.problemmanage,
   }))(Besolved),
 );

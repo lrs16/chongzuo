@@ -96,6 +96,7 @@ function Besolved(props) {
     stateList,
     loading,
   } = props;
+  console.log(stateList,'stateList');
   const required = true;
   const [expand, setExpand] = useState(false);
   const [paginations, setPaginations] = useState({ current: 1, pageSize: 10 });
@@ -298,7 +299,7 @@ function Besolved(props) {
                 })(
                   <Select placeholder="请选择">
                   {
-                    stateList && stateList.state.length && (
+                    stateList.state && stateList.state.length > 0 && (
                       (stateList.state).map(({ key, val }) => (
                         <Option key={key} value={val}>
                           {val}

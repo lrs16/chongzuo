@@ -13,7 +13,8 @@ export default {
     scopeList:[],
     handleList:[],
     projectList:[],
-    stateList:[]
+    stateList:[],
+    orderList:[]
   },
 
   effects: {
@@ -81,6 +82,15 @@ export default {
         payload: response
       })
     },
+      //  工单状态
+    *keyvalorder({ payload: { dictModule, dictType } }, { call,put }) {
+      const response = yield call(querkeyVal, dictModule, dictType);
+      console.log('response: ', response);
+      yield put({
+        type:'orderList',
+        payload: response
+      })
+    },
   },
 
   reducers: {
@@ -130,6 +140,13 @@ export default {
       return {
         ...state,
         stateList: action.payload.data
+      }
+    },
+
+    orderList(state,action) {
+      return {
+        ...state,
+        orderList: action.payload.data
       }
     },
 
