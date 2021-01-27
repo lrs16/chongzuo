@@ -152,7 +152,7 @@ const HandleChild = React.forwardRef((props, ref) => {
                 <Col span={20}>
                     <Col span={14}>
                         <Form.Item
-                            label="上传故障处理记录表"
+                            label="*上传故障处理记录表"
                             {...forminladeLayout1}
                             extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb"
                         >
@@ -200,7 +200,7 @@ const HandleChild = React.forwardRef((props, ref) => {
                 <Col span={20}>
                     <Col span={14}>
                         <Form.Item
-                            label="故障系统截图"
+                            label="*故障系统截图"
                             {...forminladeLayout1}
                             extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb"
                         >

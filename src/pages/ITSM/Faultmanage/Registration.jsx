@@ -92,11 +92,10 @@ function Registration(props) {
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
 
   // 数据字典
-  const [selectvalue, setSelectValue] = useState('');
-  const [selectvalue1, setSelectValue1] = useState('');
   const [selectvalue2, setSelectValue2] = useState('');
   const [selectvalue3, setSelectValue3] = useState('');
-  // const [selectvalue4, setSelectValue4] = useState();
+  const [arr, setArr] = useState();
+  const [arr1, setArr1] = useState();
 
   const {
     form: { getFieldDecorator, resetFields, validateFields, },
@@ -117,30 +116,6 @@ function Registration(props) {
   const getCurrUserInfo = () => {  // 获取登录用户信息
     dispatch({
       type: 'fault/getCurrUserInfo'
-    });
-  }
-
-  const dictDatas = () => { // 故障来源
-    dispatch({
-      type: 'fault/keyval',
-      payload: {
-        dictModule: 'trouble',
-        dictType: 'source',
-      },
-    }).then(res => {
-      setSelectValue(res.data.source);
-    });
-  }
-
-  const dictDatas1 = () => { // 系统模块
-    dispatch({
-      type: 'fault/keyval',
-      payload: {
-        dictModule: 'trouble',
-        dictType: 'model',
-      },
-    }).then(res => {
-      setSelectValue1(res.data.model);
     });
   }
 
@@ -168,17 +143,25 @@ function Registration(props) {
     });
   }
 
- 
+  const dictDatas = () => { // 故障分类(未完成--分级)
+    dispatch({
+      type: 'fault/faultdictVal',
+      payload: { id: '1354278126724583426' },
+    }).then(res => {
+      const obj = res.data[0].children;
+      setArr(obj[0]);
+      setArr1(obj[2]);
+    })
+  }
+
 
   useEffect(() => {
     getNewno(); // 新的故障编号
     getCurrUserInfo(); // 获取登录用户信息
     // 数据字典数据
     dictDatas();
-    dictDatas1();
     dictDatas2();
     dictDatas3();
-    // dictDatas4();
 
     sessionStorage.setItem('Processtype', 'troub');
     sessionStorage.setItem('Nextflowmane', '审核');
@@ -298,7 +281,7 @@ function Registration(props) {
                 </Col>
 
                 <Col xl={8} xs={12}>
-                  {selectvalue && selectvalue !== undefined && (<Form.Item label="故障来源">
+                  {arr && (<Form.Item label={arr.title}>
                     {getFieldDecorator('source', {
                       rules: [
                         {
@@ -309,7 +292,7 @@ function Registration(props) {
                     })(
                       <Select placeholder="请选择">
                         {
-                          selectvalue.map(({ val }) => [<Option key={val}>{val}</Option>])
+                          arr.children.map((val) => [<Option key={val.title}>{val.title}</Option>])
                         }
                       </Select>,
                     )}
@@ -317,7 +300,7 @@ function Registration(props) {
                 </Col>
 
                 <Col span={8}>
-                  {selectvalue1 && selectvalue1 !== undefined && (<Form.Item label="系统模块">
+                  {arr1 && (<Form.Item label={arr1.title}>
                     {getFieldDecorator('registerModel', {
                       rules: [
                         {
@@ -328,7 +311,7 @@ function Registration(props) {
                     })(
                       <Select placeholder="请选择">
                         {
-                          selectvalue1.map(({ val }) => [<Option key={val}>{val}</Option>])
+                          arr1.children.map((val) => [<Option key={val.title}>{val.title}</Option>])
                         }
                       </Select>
                     )}

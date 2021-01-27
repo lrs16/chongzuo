@@ -328,7 +328,7 @@ function Todolistdetails(props) {
           formValues.handleRecordAttachments = JSON.stringify(files.arr);
         } else if (fileskey === '2') {
           formValues.handlePictureAttachments = JSON.stringify(files.arr);
-        } else {
+        } else if(fileskey === '3') {
           formValues.handleAttachments = JSON.stringify(files.arr);
         }
 
