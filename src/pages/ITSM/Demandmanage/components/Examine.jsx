@@ -19,6 +19,14 @@ const options = [
   { label: '市场部领导审核', value: 3 },
 ];
 
+const resultmap = new Map([
+  [0, []],
+  [1, []],
+  [2, [3, 4]],
+  [3, [3]],
+  [4, [4]],
+]);
+
 const Examine = forwardRef((props, ref) => {
   const {
     formItemLayout,
@@ -81,6 +89,7 @@ const Examine = forwardRef((props, ref) => {
   };
 
   const handleChangeresult = values => {
+    console.log(values);
     if (values.length === 2) {
       setAdopt(2);
       setFieldsValue({ result: 2 }, () => {});
@@ -153,7 +162,11 @@ const Examine = forwardRef((props, ref) => {
         {taskName === '自动化科专责审核' && adopt !== 0 && (
           <Col span={8}>
             <Form.Item>
-              <Checkbox.Group options={options} onChange={values => handleChangeresult(values)} />
+              <Checkbox.Group
+                defaultValue={resultmap.get(info[0].result)}
+                options={options}
+                onChange={values => handleChangeresult(values)}
+              />
             </Form.Item>
           </Col>
         )}
