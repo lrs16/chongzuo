@@ -65,7 +65,8 @@ const toTree = data => {
   });
   const map = {};
   data.forEach(item => {
-    map[item.menuSort] = item;
+    // map[item.menuSort] = item;
+    map[item.id] = item;
   });
   data.forEach(item => {
     const parent = map[item.pid];
@@ -107,7 +108,7 @@ const UserModel = {
         const menulist = addauth(menures.data, response.data, loginCode[0]);
         const menus = menuArr(menulist);
         const menuData = toTree(menus);
-        // console.log(menuData);
+        console.log(menuData);
         yield put({
           type: 'saveUserMenu',
           payload: {

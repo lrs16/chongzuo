@@ -190,6 +190,8 @@ class MenuManage extends Component {
         title: '操作',
         dataIndex: 'action',
         key: 'action',
+        fixed: 'right',
+        width: 150,
         render: (text, record) => (
           <div>
             <MenuModal onSumit={values => handleEdite(values)} title="编辑菜单" record={record}>
@@ -252,6 +254,7 @@ class MenuManage extends Component {
                   columns={columns}
                   rowKey={record => record.id}
                   pagination={pagination}
+                  scroll={{ x: 1300 }}
                 />
               </div>
             </Content>

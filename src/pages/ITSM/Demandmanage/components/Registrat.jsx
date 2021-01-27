@@ -124,8 +124,6 @@ const Registrat = forwardRef((props, ref) => {
   const [selectdata, setSelectData] = useState([]);
   const [fileslist, setFilesList] = useState({ arr: [], ischange: false });
 
-  console.log(selectdata);
-
   useEffect(() => {
     if (fileslist.ischange) {
       ChangeFiles(fileslist);
@@ -159,10 +157,15 @@ const Registrat = forwardRef((props, ref) => {
     }
     sessionStorage.setItem('flowtype', 1);
   }, []);
+
+  if (selectdata.length > 0) {
+    const test = selectdata.filter(item => item.title === '需求功能变更类型')[0].children;
+    console.log(test);
+  }
   return (
     <>
       <SysDict
-        typeid="1354273739344187393"
+        typeid="1354274450639425537"
         commonid="1354288354950123522"
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'non' }}

@@ -902,7 +902,7 @@ export default {
       changeOrigin: true,
     },
     '/auto/': {
-      target: 'http://172.16.4.211:9901/', // 软件启停
+      target: 'http://172.16.4.212:9901/', // 软件启停
       // target: 'http://172.16.4.115:9901/',
       changeOrigin: true,
     },
