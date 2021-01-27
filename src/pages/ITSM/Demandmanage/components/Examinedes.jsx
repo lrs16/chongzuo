@@ -11,27 +11,26 @@ const resultmap = new Map([
 
 function Examinedes(props) {
   const { info } = props;
-  const content = {
-    __html: info.reason?.replace(/[\n]/g, '<br/>'),
-  };
+  const text = info.taskName.indexOf('确认') === -1 ? '审核' : '确认';
+
   return (
     <div className={styles.collapse}>
       <Descriptions style={{ marginTop: 24 }} size="middle">
-        <Descriptions.Item label="审核结果" span={3}>
+        <Descriptions.Item label={`${text}结果`} span={3}>
           {resultmap.get(info.result)}
         </Descriptions.Item>
-        <Descriptions.Item label="审核时间" span={3}>
+        <Descriptions.Item label={`${text}时间`} span={3}>
           {moment(info.reviewTime).format('YYYY-MM-DD HH:MM')}
         </Descriptions.Item>
-        <Descriptions.Item label="审核意见" span={3}>
+        <Descriptions.Item label={`${text}意见`} span={3}>
           <div dangerouslySetInnerHTML={{ __html: info.opinion?.replace(/[\n]/g, '<br/>') }} />
         </Descriptions.Item>
         <Descriptions.Item label="附件" span={3}>
           {info.attachment !== '' && <Downloadfile files={info.attachment} />}
         </Descriptions.Item>
-        <Descriptions.Item label="审核人">{info.userName}</Descriptions.Item>
-        <Descriptions.Item label="审核人单位">{info.unit}</Descriptions.Item>
-        <Descriptions.Item label="审核人部门">{info.department}</Descriptions.Item>
+        <Descriptions.Item label={`${text}人`}>{info.userName}</Descriptions.Item>
+        <Descriptions.Item label={`${text}人单位`}>{info.unit}</Descriptions.Item>
+        <Descriptions.Item label={`${text}人部门`}>{info.department}</Descriptions.Item>
       </Descriptions>
     </div>
   );
