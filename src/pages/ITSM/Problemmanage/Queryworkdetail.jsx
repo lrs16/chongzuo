@@ -3,6 +3,8 @@ import {
   Form,
   Button,
   Steps,
+  Collapse,
+  Card
 } from 'antd';
 import { connect } from 'dva';
 import Link from 'umi/link';
@@ -22,6 +24,7 @@ let currntStatus = '';
 let problemFlowid;
 
 const { Step } = Steps;
+const { Panel } = Collapse;
 
 function Queryworkdetail(props) {
   const pagetitle = props.route.name;
@@ -89,95 +92,88 @@ function Queryworkdetail(props) {
            <div className={styles.collapse}>
               {problemFlowLogs && (
                 <Steps
-                  current={problemFlowLogs.length - 1}
-                  size="small"
-                  // progressDot
-                  style={{
-                    background: '#fff',
-                    padding: 24,
-                    border: '1px solid #e8e8e8',
-                    overflowX: 'auto',
-                  }}
-                >
-                  {problemFlowLogs.map(obj => {
-                    const desc = (
-                      <div className={styles.stepDescription}>
-                        处理人：{obj.formHandler}
-                        <div>开始时间：{obj.startTime}</div>
-                      </div>
-                    );
-                    return <Step title={obj.name} description={desc} />;
-                  })}
-                </Steps>
-
-              )
-              }
-
+                                current={problemFlowLogs.length - 1}
+                                size="small"
+                                // progressDot
+                                style={{
+                                  background: '#fff',
+                                  padding: 24,
+                                  border: '1px solid #e8e8e8',
+                                  overflowX: 'auto',
+                                }}
+                              >
+                                {problemFlowLogs.map((obj,index) => {
+                                  const desc = (
+                                    <div className={styles.stepDescription}>
+                                      处理人：{obj.formHandler}
+                                      <div>开始时间：{obj.startTime}</div>
+                                    </div>
+                                  );
+                                  return <Step title={obj.name} description={desc} key={index}/>;
+                                })}
+                              </Steps>
+                )
+                }
             </div>
+
+           <div className={styles.collapse}>
+              {problemFlowNodeRows && loading === false && (
+                    <Collapse
+                    expandIconPosition="right"
+                    // activeKey={activeKey}
+                    bordered={false}
+                    // onChange={callback}
+                    >
+                        {problemFlowNodeRows.map((obj, index) => {
+                            // panel详情组件
+                            const Paneldesmap = new Map([
+                              ['问题登记', <Problemregistration 
+                              info={obj}
+                              statue={currntStatus}
+                              problemFlowNodeRows={problemFlowNodeRows}
+                              main={main}
+                            />],
+                            ['系统运维商审核', <Problemreview 
+                                info={obj}
+                                main={main}
+                            
+                            />],
+                            ['自动化科审核', <Problemreview 
+                                info={obj}
+                                main={main}
+                            />],
+                            ['系统开发商处理', <Problemsolving 
+                            info={obj}
+                            main={main}
+                            />],
+                            ['系统运维商确认', <Operatorconfirmades
+                              info={obj}
+                              main={main}
+                            />],
+                            ['自动化科业务人员确认', <Operatorconfirmades 
+                            info={obj}
+                            main={main}
+                            />],
+                            ['问题登记人员确认', <Operatorconfirmades 
+                            info={obj}
+                            main={main}
+                            />],
+                            ]);
+                            return (
+                                <Panel Panel header={obj.fnname} key={index}>
+                                    {Paneldesmap.get(obj.fnname)}
+                                </Panel>
+                            );
+                        })}
+                    </Collapse>
+                )}
+           </div>
             
-            { problemFlowNodeRows.length >= 1 && (
-            <Problemregistration
-            registrationDetail={queryDetaildata}
-            statue={currntStatus}
-            problemFlowNodeRows={problemFlowNodeRows}
-            main={main}
-            querySign='yes'
-            loading={loading}
-           />
-           )}
-
-          { problemFlowNodeRows.length >= 2 && (
-            <Problemreview 
-            reviesDetail={queryDetaildata}
-            statue={currntStatus}
-            querySign='yes'
-            loading={loading}
-            />
-          )}
-
-          {
-             problemFlowNodeRows.length >= 3 && (
-              <Businessaudes
-              reviesDetail={queryDetaildata}
-              loading={loading}
-            />
-             )
-          }
-
-          { problemFlowNodeRows.length >= 4 && (
-            <Problemsolving 
-            solvingDetail={queryDetaildata}
-            statue={currntStatus}
-            querySign='yes'
-            loading={loading}
-              />
-          )}
-
-          { problemFlowNodeRows.length >= 5 && (
-            <Operatorconfirmades 
-            confirmationDetail={queryDetaildata}
-            statue={currntStatus}
-            querySign='yes'
-            loading={loading}
-            />
-          )}
-
-          { problemFlowNodeRows.length >= 6 && (
-           <Automaticconfirmdes
-           confirmationDetail={queryDetaildata}
-           loading={loading}
-         />
-          )}
-
-          { problemFlowNodeRows.length >= 7 && (
-           <Registrationconfirmdes
-           confirmationDetail={queryDetaildata}
-           loading={loading}
-         />
-          )}
-     </>
+            {/* </Collapse> */}
+          </>
         )
       }
+
 
       {
         (tabActiveKey === 'process' && (

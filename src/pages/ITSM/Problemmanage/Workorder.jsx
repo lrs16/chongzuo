@@ -25,6 +25,7 @@ import Operatorconfirmades from './components/Operatorconfirmades';
 import Problemregistration from './components/Problemregistration';
 import Automaticconfirmdes from './components/Automaticconfirmdes';
 import Reasonregression from './components/Reasonregression';
+import Registrationconfirmdes from './components/Registrationconfirmdes';
 import Problemflow from './components/Problemflow';
 
 import AutomationCirculation from './components/AutomationCirculation';
@@ -46,6 +47,8 @@ const formItemLayout = {
     sm: { span: 15 },
   },
 };
+
+
 
 const forminladeLayout = {
   labelCol: {
@@ -71,6 +74,7 @@ let flowNodeName;
 let confirmType;
 let fileSign;
 let selSign;
+
 // let flowtype = 1;
 
 export const FatherContext = createContext();
@@ -93,10 +97,13 @@ function Workorder(props) {
     newno,
     userlist,
     location: { paneKey },
+    handleList,
     loading
   } = props;
 
-  console.log(paneKey,'paneKey');
+
+  let showback = true;
+
   
     if(userlist.selSign !== undefined) {
       if(flowNodeName === '系统开发商处理'){
@@ -150,8 +157,13 @@ function Workorder(props) {
   if (todoDetail.main) {
     currntStatus = Number(todoDetail.main.status);
     confirmType = Number(todoDetail.confirmType);
+     const editstate = todoDetail.editState;
     problemFlowid = todoDetail.main.id;
     flowNodeName = todoDetail.flowNodeName;
+    const backbutton = (currntStatus === 25 || (currntStatus === 65 && editstate === 'edit'));
+    if(backbutton) {
+      showback = false;
+    }
     selectNextflow();
     solvingDisbled();
   }
@@ -217,7 +229,6 @@ function Workorder(props) {
       selectPerson  = sessionStorage.getItem('NextflowUserId') + ',' + sessionStorage.getItem('AutoflowUserId');
     } else {
       selectPerson = sessionStorage.getItem('NextflowUserId');
-      console.log('selectPerson: ', selectPerson);
     }
     
     return dispatch({
@@ -272,6 +283,7 @@ function Workorder(props) {
       payload: { saveData },
     }).then(res => {
       if (res.code === 200) {
+        showback = false;
         if(!params2){
           message.info(res.msg);
         } 
@@ -521,10 +533,20 @@ function Workorder(props) {
     });
   };
 
+  const gethandle = () => {
+    const dictModule = 'problem';
+    const dictType = 'handleresult';
+    dispatch({
+      type: 'problemdropdown/keyvalHandleresult',
+      payload:{ dictModule, dictType}
+    });
+  }
+
   useEffect(() => {
     getInformation();
     getUserinfo();
     getNewno();
+    gethandle();
     getSelectperson();
     sessionStorage.setItem('Processtype', 'problem');
     sessionStorage.setItem('Nextflowmane', '');
@@ -543,7 +565,6 @@ function Workorder(props) {
     sessionStorage.setItem('flowtype', flowtype);
   }, [currntStatus]);
 
-  console.log(flowtype,'flowtype')
 
   const getSelectperson = () => {
     const taskId = id;
@@ -586,8 +607,8 @@ function Workorder(props) {
 
             { 
             (flowNodeName === '系统运维商审核'  || flowNodeName === '系统运维商确认'
-            || flowNodeName === '自动化科业务负责人确认' || flowNodeName === '问题登记人员确认') 
-             && (
+            || flowNodeName === '自动化科业务人员确认' || flowNodeName === '问题登记人员确认') 
+            && showback === true && (
               <Reasonregression reasonSubmit={values => reasonSubmit(values)}>
                 <Button type="primary" ghost style={{ marginRight: 8 }}>
                   回退
@@ -595,7 +616,7 @@ function Workorder(props) {
               </Reasonregression>
             )}
 
-            { currntStatus !== 29 && (
+            { currntStatus !== 29 && tabActiveKey === 'workorder' &&(
               <Button
                 type="primary"
                 style={{ marginRight: 8 }}
@@ -636,8 +657,8 @@ function Workorder(props) {
             flowNodeName !== '系统运维商审核' &&
             flowNodeName !== '系统运维商确认' &&
       
-            (userlist && selSign === '1') &&
-            // currntStatus !== 29 &&
+            (userlist && selSign === '1') && 
+            tabActiveKey === 'workorder'  &&
              (
               <SelectUser
                 taskId={id}
@@ -649,7 +670,7 @@ function Workorder(props) {
                   style={{ marginRight: 8 }}
                 // onClick={() => handleSubmit(circaSign)}
                 >
-                  流转1
+                  流转
                 </Button>
               </SelectUser>
 
@@ -661,6 +682,7 @@ function Workorder(props) {
 
             flowNodeName === '系统运维商确认' &&
             flowtype === '1' && 
+            tabActiveKey === 'workorder'  &&
              (
               <SelectUser
                 taskId={id}
@@ -672,7 +694,7 @@ function Workorder(props) {
                   style={{ marginRight: 8 }}
                 // onClick={() => handleSubmit(circaSign)}
                 >
-                  流转2
+                  流转
                 </Button>
               </SelectUser>
 
@@ -683,6 +705,7 @@ function Workorder(props) {
             {
         
             flowNodeName === '系统运维商审核' && flowtype ==='1' &&
+            tabActiveKey === 'workorder'  &&
              (
               <AutomationCirculation
                 taskId={id}
@@ -693,7 +716,7 @@ function Workorder(props) {
                   style={{ marginRight: 8 }}
                 // onClick={() => handleSubmit(circaSign)}
                 >
-                  流转3
+                  流转
                 </Button>
               </AutomationCirculation>
 
@@ -725,13 +748,14 @@ function Workorder(props) {
             )
             &&
             currntStatus !== 29 &&
+            tabActiveKey === 'workorder'  &&
              (
               <Button
                 type="primary"
                 style={{ marginRight: 8 }}
                 onClick={() => handleSubmit(flowNodeName)}
               >
-                流转4
+                流转
               </Button>
             )
             }
@@ -792,8 +816,9 @@ function Workorder(props) {
               }
 
             </div>
-            
-            <Collapse
+
+            <div className={styles.collapse}>
+              <Collapse
               expandIconPosition="right"
               defaultActiveKey={['1']}
             >
@@ -901,6 +926,7 @@ function Workorder(props) {
                      handle={handle}
                      handleTime={handleTime}
                      receivingTime={receivingTime}
+                     handleresult={handleList.handleresult}
                      files={
                       todoDetail.handle !== undefined && todoDetail.handle.handleAttachments?JSON.parse(todoDetail.handle.handleAttachments):[]
                     }
@@ -1009,55 +1035,62 @@ function Workorder(props) {
               }
             </Collapse>
             
-           
-            <div>
-              {currntStatus !== 5 && (
-                <Problemregistration
-                  registrationDetail={todoDetail}
-                  statue={currntStatus}
-                  register={register}
-                  main={main}
-                  loading={loading}
-                />
-              )}
-
-              {  flowNodeName !== '系统运维商审核' && currntStatus >= 25 && (
-                <Problemreview
-                  reviesDetail={todoDetail}
-                  loading={loading}
-                />
-              )}
-
-              { (flowNodeName !== '自动化科审核' && flowNodeName !== '系统运维商审核') && currntStatus >= 25 && (
-                <Businessaudes
-                  reviesDetail={todoDetail}
-                  loading={loading}
-                />
-              )}
-
-              {currntStatus > 45 && (
-                <Problemsolving
-                  solvingDetail={todoDetail}
-                  loading={loading}
-                />
-              )}
-
-              {confirmType > 1 && currntStatus >= 65 && (
-                <Operatorconfirmades
-                  confirmationDetail={todoDetail}
-                  loading={loading}
-                />
-              )}
-
-              {confirmType > 2 && currntStatus >= 65 && (
-                <Automaticconfirmdes
-                  confirmationDetail={todoDetail}
-                  loading={loading}
-                />
-              )}
             </div>
-   
-
+            
+       
+            <div className={styles.collapse}>
+              {problemFlowNodeRows && loading === false && (
+                    <Collapse
+                    expandIconPosition="right"
+                    // activeKey={activeKey}
+                    bordered={false}
+                    // onChange={callback}
+                    >
+                        {problemFlowNodeRows.map((obj, index) => {
+                            // panel详情组件
+                            const Paneldesmap = new Map([
+                              ['问题登记', <Problemregistration 
+                              info={obj}
+                              statue={currntStatus}
+                              problemFlowNodeRows={problemFlowNodeRows}
+                              main={main}
+                            />],
+                            ['系统运维商审核', <Problemreview 
+                                info={obj}
+                                main={main}
+                            
+                            />],
+                            ['自动化科审核', <Problemreview 
+                                info={obj}
+                                main={main}
+                            />],
+                            ['系统开发商处理', <Problemsolving 
+                            info={obj}
+                            main={main}
+                            />],
+                            ['系统运维商确认', <Operatorconfirmades
+                              info={obj}
+                              main={main}
+                            />],
+                            ['自动化科业务人员确认', <Operatorconfirmades 
+                            info={obj}
+                            main={main}
+                            />],
+                            ['问题登记人员确认', <Operatorconfirmades 
+                            info={obj}
+                            main={main}
+                            />],
+                            ]);
+                            return (
+                                <Panel Panel header={obj.fnname} key={index}>
+                                    {Paneldesmap.get(obj.fnname)}
+                                </Panel>
+                            );
+                        })}
+                    </Collapse>
+                )}
+           </div>
+            
           </>
         )
       }
@@ -1076,7 +1109,7 @@ function Workorder(props) {
   );
 }
 export default Form.create({})(
-  connect(({ problemmanage, demandtodo,itsmuser, loading }) => ({
+  connect(({ problemmanage, demandtodo,itsmuser,problemdropdown, loading }) => ({
     todoDetail: problemmanage.todoDetail,
     reviewInfo: problemmanage.reviewInfo,
     eventtableList: problemmanage.eventtableList,
@@ -1086,6 +1119,7 @@ export default Form.create({})(
     closeInfo: problemmanage.closeInfo,
     newno: problemmanage.newno,
     useInfo: problemmanage.useInfo,
+    handleList: problemdropdown.handleList,
     info: demandtodo.info,
     userlist: itsmuser.userlist,
     loading: loading.models.problemmanage,

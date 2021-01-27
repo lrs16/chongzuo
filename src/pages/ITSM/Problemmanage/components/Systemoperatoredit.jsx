@@ -20,10 +20,8 @@ const { TextArea } = Input;
 
 const Systemoperatoredit = React.forwardRef((props, ref) => {
   const { formItemLayout, forminladeLayout,flowNodeName,files,ChangeFiles } = props;
-  // console.log('files: ', files);
   const { getFieldDecorator } = props.form;
   const {flowtype,setFlowtype } = useContext(FatherContext);
-  console.log(useContext(FatherContext),'lll');
   const [fileslist, setFilesList] = useState([]);
   useEffect(() => {
     ChangeFiles(fileslist);

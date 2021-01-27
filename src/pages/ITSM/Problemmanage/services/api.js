@@ -23,7 +23,6 @@ export async function getAddid() {
 
 //  登记保存
 export async function saveRegister(params) {
-  console.log('save');
   return request(`/itsm/problem/flow/saveFlow`, {
     method: 'POST',
     body: JSON.stringify(params),
@@ -32,7 +31,6 @@ export async function saveRegister(params) {
 
 //  待办
 export async function besolveList(current, pageSize) {
-  console.log('current,pageSize: ', current, pageSize);
   const obj = {};
   obj.pageNum = current;
   obj.pageSize = pageSize;
@@ -64,7 +62,6 @@ export async function backReason(id, values) {
   obj.userIds = id;
   obj.taskId = id;
   obj.result = -1;
-  console.log('obj: ', obj);
   return request(`/itsm/problem/flow/submit`, {
     method: 'POST',
     data:obj,
@@ -96,7 +93,6 @@ export async function saveTobelist(params) {
 
 //  后端返回的流程
 export async function getFlowImage(id) {
-  console.log('id: ', id);
   return request(`/itsm/problem/flow/getFlowImage?id=${id}`, {
     method: 'GET',
     responseType: 'blob',
@@ -123,9 +119,14 @@ export async function realselist() {
 }
 
 // // 问题查询列表查询
-export async function queryList(current, pageSize) {
-  console.log('current,pageSize: ', current, pageSize);
-  const obj = {};
+export async function queryList(current, pageSize,values) {
+  let obj;
+  if(values) {
+     obj = values;
+  } else {
+     obj = {};
+  }
+  
   obj.pageNum = current;
   obj.pageSize = pageSize;
   return request(`/itsm/problem/flow/getOrderPage`, {
@@ -175,3 +176,14 @@ export async function querydownload(params) {
 export async function downFile(id){
   return request(`/sys/file/${id}`)
 }
+
+// 数据字典结构树 /sys/dict/keyVal
+export async function querkeyVal(dictModule, dictType) {
+  return request(`/sys/dict/keyVal`, {
+    method: 'POST',
+    data: { dictModule, dictType },
+    requestType: 'form',
+  });
+}
+
+

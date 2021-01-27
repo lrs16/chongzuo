@@ -34,8 +34,14 @@ const Registrat = React.forwardRef((props, ref) => {
     useInfo,
     register,
     main,
+    source,
+    type,
+    priority,
+    scope,
+    project
   } = props;
 
+// console.log(scope,'scope');
   if(register) {
     if(register.registerOccurTime !== null) {
       occurtime = moment(register.registerOccurTime);
@@ -113,13 +119,18 @@ const Registrat = React.forwardRef((props, ref) => {
                   ],
                   initialValue: main?main.source:'',
                 })(
-                  <Select placeholder='请选择'>
-                    <Option value="重复性分析事件">重复性分析事件</Option>
-                    <Option value="事件升级">事件升级</Option>
-                    <Option value="巡检发现">巡检发现</Option>
-                    <Option value="系统监控发现">系统监控发现</Option>
-                    <Option value="其他">其他</Option>
-                  </Select>,
+                  <Select placeholder="请选择">
+                    {
+                      source && source.length && (
+                        source.map(({ key, val }) => (
+                          <Option key={key} value={val}>
+                            {val}
+                          </Option>
+                        ))
+                      )
+                    }
+                </Select>,
+               
                 )}
               </Form.Item>
             </Col>
@@ -135,10 +146,17 @@ const Registrat = React.forwardRef((props, ref) => {
                   ],
                   initialValue: main?main.type:'',
                 })(
-                  <Select>
-                    <Option value="功能">功能</Option>
-                    <Option value="程序">程序</Option>
-                  </Select>,
+                  <Select placeholder="请选择">
+                  {
+                    type && type.length && (
+                      type.map(({ key, val }) => (
+                        <Option key={key} value={val}>
+                          {val}
+                        </Option>
+                      ))
+                    )
+                  }
+              </Select>,
                 )}
               </Form.Item>
             </Col>
@@ -154,11 +172,17 @@ const Registrat = React.forwardRef((props, ref) => {
                   ],
                   initialValue:  main?main.importance:'',
                 })(
-                  <Select placeholder='请选择'>
-                    <Option value="一般">一般</Option>
-                    <Option value="紧急">紧急</Option>
-                    <Option value="重大">重大</Option>
-                  </Select>,
+                  <Select placeholder="请选择">
+                  {
+                    priority && priority.length && (
+                      priority.map(({ key, val }) => (
+                        <Option key={key} value={val}>
+                          {val}
+                        </Option>
+                      ))
+                    )
+                  }
+              </Select>,
                 )}
               </Form.Item>
             </Col>
@@ -190,7 +214,19 @@ const Registrat = React.forwardRef((props, ref) => {
                     },
                   ],
                   initialValue: main?register.registerProject:'',
-                })(<Input placeholder='请输入'/>)}
+                })(
+                  <Select placeholder="请选择">
+                  {
+                    project && project.length && (
+                      project.map(({ key, val }) => (
+                        <Option key={key} value={val}>
+                          {val}
+                        </Option>
+                      ))
+                    )
+                  }
+              </Select>,
+                )}
               </Form.Item>
             </Col> 
 
@@ -206,18 +242,17 @@ const Registrat = React.forwardRef((props, ref) => {
                   ],
                   initialValue: main?register.registerScope:'',
                 })(
-                  <Select  
-                  placeholder="请选择"
-                  optionFilterProp="children"
-                  showSearch>
-                    <Option value="自动抄表率">自动抄表率</Option>
-                    <Option value="服务器">服务器</Option>
-                    <Option value="数据传输">数据传输</Option>
-                    <Option value="网络\通道">网络\通道</Option>
-                    <Option value="VNC">VNC</Option>
-                    <Option value="专变自动抄表率">专变自动抄表率</Option>
-                    <Option value="费控、召测">费控、召测</Option>
-                  </Select>,
+                  <Select placeholder="请选择">
+                  {
+                    scope && scope.length && (
+                      scope.map(({ key, val }) => (
+                        <Option key={key} value={val}>
+                          {val}
+                        </Option>
+                      ))
+                    )
+                  }
+              </Select>,
                 )}
               </Form.Item>
             </Col>

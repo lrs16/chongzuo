@@ -67,7 +67,7 @@ function Problemflow(props) {
               direction="vertical"
               style={{ background: '#fff', padding: 24, border: '1px solid #e8e8e8' }}
             >
-              {flowlog.map(obj => {
+              {flowlog.map((obj,index) => {
                 // const backoff = obj.fallbackMsg === '' ? '' : '（回退）';
                 const desc = (
                   <div>
@@ -83,7 +83,7 @@ function Problemflow(props) {
                   </div>
                 );
                 // return <Step title={`${obj.nodeName}${backoff}`} description={desc} />;
-                return <Step description={desc} />;
+                return <Step description={desc} key={index}/>;
               })}
             </Steps>
           </div>

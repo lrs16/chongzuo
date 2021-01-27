@@ -36,7 +36,8 @@ const Developerprocessdit = React.forwardRef((props, ref) => {
     useInfo,
     handleTime,
     handle,
-    receivingTime
+    receivingTime,
+    handleresult
   } = props;
 
   const required = true;
@@ -77,13 +78,17 @@ const Developerprocessdit = React.forwardRef((props, ref) => {
             required,
             initialValue: handle ? handle.handleResult : '',
           })(
-            <Select disabled={showEdit}>
-              <Option key={19} value="根本解决">根本解决</Option>
-              <Option key={20} value="替代解决">替代解决</Option>
-              <Option key={21} value="需要发布">需要发布</Option>
-              <Option key={22} value="误报">误报</Option>
-              <Option key={23} value="自动恢复">自动恢复</Option>
-            </Select>,
+            <Select placeholder="请选择" disabled={showEdit}>
+            {
+              handleresult && handleresult.length && (
+                handleresult.map(({ key, val }) => (
+                  <Option key={key} value={val}>
+                    {val}
+                  </Option>
+                ))
+              )
+            }
+        </Select>,
           )}
         </Form.Item>
       </Col>
@@ -108,8 +113,12 @@ const Developerprocessdit = React.forwardRef((props, ref) => {
           extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
         >
           <div style={{ width: 400 }}>
-            <SysUpload fileslist={files} ChangeFileslist={newvalue => setFilesList(newvalue)} />
+            <SysUpload 
+            fileslist={files} 
+            ChangeFileslist={newvalue => setFilesList(newvalue)} 
+            />
           </div>
+
         </Form.Item>
       </Col>
 

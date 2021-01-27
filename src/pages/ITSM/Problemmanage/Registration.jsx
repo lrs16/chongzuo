@@ -38,7 +38,11 @@ function Registration(props) {
     list,
     newno,
     useInfo,
-    info,
+    keyVallist,
+    typelist,
+    prioritylist,
+    scopeList,
+    projectList,
     startid,
     loading
   } = props;
@@ -46,7 +50,6 @@ function Registration(props) {
   const [activeKey, setActiveKey] = useState(['1']);
   const [flowtype, setFlowtype] = useState('2');
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
-  console.log(files.arr,'files.arr');
   const RegistratRef = useRef();
 
   const getNewno = () => {
@@ -60,11 +63,63 @@ function Registration(props) {
       type: 'problemmanage/fetchUseinfo',
     });
   };
+//  问题来源
+  const getSource = () => {
+    const dictModule = 'problem';
+    const dictType = 'source';
+    dispatch({
+      type: 'problemdropdown/keyvalsource',
+      payload:{ dictModule, dictType}
+    });
+  }
+//  问题分类
+  const gettype = () => {
+    const dictModule = 'problem';
+    const dictType = 'type';
+    dispatch({
+      type: 'problemdropdown/keyvaltype',
+      payload:{ dictModule, dictType}
+    });
+  }
+//  重要程度
+  const getpriority = () => {
+    const dictModule = 'public';
+    const dictType = 'priority';
+    dispatch({
+      type: 'problemdropdown/keyvalpriority',
+      payload:{ dictModule, dictType}
+    });
+  }
+//  影响范围
+  const getscope = () => {
+    const dictModule = 'public';
+    const dictType = 'effect';
+    dispatch({
+      type: 'problemdropdown/keyvalScope',
+      payload:{ dictModule, dictType}
+    });
+  }
+
+  // 所属项目
+  const getProject = () => {
+    const dictModule = 'public';
+    const dictType = 'project';
+    dispatch({
+      type: 'problemdropdown/keyvalProject',
+      payload:{ dictModule, dictType}
+    });
+  }
 
   useEffect(() => {
     getUserinfo();
     getNewno();
+    getSource();
+    gettype();
+    getpriority();
+    getscope();
+    getProject();
   }, []);
+
 
   const callback = key => {
     setActiveKey(key);
@@ -149,6 +204,12 @@ function Registration(props) {
                 ChangeFiles={newvalue => {
                   setFiles(newvalue);
                 }}
+                source={keyVallist.source}
+                type={typelist.type}
+                priority={prioritylist.priority}
+                scope={scopeList.effect}
+                project={projectList.project}
+
               />
             </RegistratContext.Provider>
           </Panel>
@@ -159,12 +220,17 @@ function Registration(props) {
 }
 
 export default Form.create({})(
-  connect(({ problemmanage, demandtodo, itsmuser, loading }) => ({
+  connect(({ problemmanage, demandtodo, problemdropdown, loading }) => ({
     list: problemmanage.list,
     id: problemmanage.id,
     newno: problemmanage.newno,
     useInfo: problemmanage.useInfo,
     info: demandtodo.info,
+    keyVallist: problemdropdown.keyVallist,
+    typelist: problemdropdown.typelist,
+    prioritylist: problemdropdown.prioritylist,
+    scopeList: problemdropdown.scopeList,
+    projectList: problemdropdown.projectList,
     startid: problemmanage.startid,
     loading: loading.models.problemmanage,
   }))(Registration),

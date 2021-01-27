@@ -22,8 +22,11 @@ import {
   queryDetail,
   transferOrder,
   querydownload,
-  downFile
+  downFile,
+  querkeyVal
 } from '../services/api';
+
+
 
 export default {
   namespace: 'problemmanage',
@@ -49,7 +52,8 @@ export default {
     peopleList:[],
     queryDetaildata:[],
     data:'',
-    startid:''
+    startid:'',
+    keyVallist:[]
   },
 
   effects: {
@@ -164,7 +168,6 @@ export default {
     },
     //  列表查询
     *queryList({ payload: { current, pageSize, values } }, { call, put }) {
-      console.log('current: ', current);
       const response = yield call(queryList, current, pageSize, values);
       yield put({
         type: 'besolveListpage',
@@ -241,8 +244,9 @@ export default {
       return yield call(transferOrder,taskId,userIds);
     },
 
-    *eventdownload({ payload:{values} }, { call }) {
-      return yield call(querydownload, { values });
+    *eventdownload({ payload }, { call }) {
+      console.log('payload: ', payload);
+      return yield call(querydownload, { payload });
     },
 
     *filedownload({ payload:{id} }, { call }) {
@@ -253,6 +257,16 @@ export default {
     *uploadchange({ payload }, { call, put }) {
       return yield call(saveRegister, payload);
     },
+    //  数据字典
+    *keyval({ payload: { dictModule, dictType } }, { call,put }) {
+      const response = yield call(querkeyVal, dictModule, dictType);
+      yield put({
+        type:'keyVallist',
+        payload: response
+      })
+    },
+
+
 
   },
 
@@ -369,6 +383,14 @@ export default {
         ...state,
         startid: action.payload.flowTaskId
       }
-    }
+    },
+
+    keyVallist(state,action) {
+      return {
+        ...state,
+        keyVallist: action.payload.data
+      }
+    },
+
   },
 };

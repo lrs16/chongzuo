@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
 import Link from 'umi/link';
-import { Form, Card, Input, Button, Row, Col, Table, Select, message } from 'antd';
+import moment from 'moment';
+import { Form, Card, Input, Button, Row, Col, Table, Select, DatePicker } from 'antd';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
@@ -68,8 +69,8 @@ const columns = [
   },
   {
     title: '发送人',
-    dataIndex: 'sender',
-    key: 'Sender',
+    dataIndex: 'registerUser',
+    key: 'registerUser',
   },
 ];
 
@@ -79,24 +80,83 @@ function Besolved(props) {
     form: { getFieldDecorator, resetFields, validateFields },
     dispatch,
     besolveList,
+    keyVallist,
+    typelist,
+    prioritylist,
+    scopeList,
+    projectList,
     loading,
   } = props;
   const [expand, setExpand] = useState(false);
   const [paginations, setPaginations] = useState({ current: 1, pageSize: 10 });
+  const [selectedRows, setSelectedRows] = useState([]);
 
   const getQuery = () => {
-    dispatch({
-      type: 'problemmanage/queryList',
-      payload: {
-        // ...values,
-        current: paginations.current,
-        pageSize: paginations.pageSize,
-      },
+    validateFields((err, values) => {
+        dispatch({
+          type: 'problemmanage/queryList',
+          payload: {
+            // ...values,
+            current: paginations.current,
+            pageSize: paginations.pageSize,
+          },
+        });
     });
   };
+    //  问题来源
+    const getSource = () => {
+      const dictModule = 'problem';
+      const dictType = 'source';
+      dispatch({
+        type: 'problemdropdown/keyvalsource',
+        payload:{ dictModule, dictType}
+      });
+    }
+  //  问题分类
+  const gettype = () => {
+    const dictModule = 'problem';
+    const dictType = 'type';
+    dispatch({
+      type: 'problemdropdown/keyvaltype',
+      payload:{ dictModule, dictType}
+    });
+  }
+//  重要程度
+  const getpriority = () => {
+    const dictModule = 'public';
+    const dictType = 'priority';
+    dispatch({
+      type: 'problemdropdown/keyvalpriority',
+      payload:{ dictModule, dictType}
+    });
+  }
+//  影响范围
+  const getscope = () => {
+    const dictModule = 'public';
+    const dictType = 'effect';
+    dispatch({
+      type: 'problemdropdown/keyvalScope',
+      payload:{ dictModule, dictType}
+    });
+  }
+
+  // 所属项目
+  const getProject = () => {
+    const dictModule = 'public';
+    const dictType = 'project';
+    dispatch({
+      type: 'problemdropdown/keyvalProject',
+      payload:{ dictModule, dictType}
+    });
+  }
 
   useEffect(() => {
     getQuery();
+    getSource();
+    gettype();
+    getpriority();
+    getscope();
+    getProject();
   }, []);
 
   const handleReset = () => {
@@ -138,12 +198,12 @@ function Besolved(props) {
     });
   };
 
-  // const rowSelection = {
-  //   onChange: (selectedRowKeys, selectedRows) => {
-  //     console.log(selectedRows);
-  //     setSelectedRows(selectedRows);
-  //   },
-  // };
+  const rowSelection = {
+    onChange: (selectedRowKeys, selectedRows) => {
+      setSelectedRows(selectedRows);
+    },
+  };
+
 
   const pagination = {
     showSizeChanger: true,
@@ -160,19 +220,35 @@ function Besolved(props) {
       current: 1,
     });
     validateFields((err, values) => {
+      const obj = values;
+      if(values.registerOccurTime){
+        obj.registerOccurTime = (values.registerOccurTime).format('YYYY-MM-DD HH:mm:ss');
+      }
       if (err) {
         return;
       }
-      searchdata(values, paginations.current, paginations.pageSize);
+      searchdata(obj, paginations.current, paginations.pageSize);
     });
   };
 
   const download = () => {
     validateFields((err,values) => {
+      const selectList = [];
+      if(selectedRows.length) {
+        selectedRows.forEach(function(item){
+          selectList.push(item.id);
+        })
+      }
+      const downparams = values;
+      (downparams.registerUserId) = selectList.toString();
+
+      if(values.createTimeBegin) {
+        (values.createTimeBegin).format('YYYY-MM-DD')
+      }
       if(!err) {
         dispatch({
           type:'problemmanage/eventdownload',
-          payload:{...values}
+          payload:{...downparams}
         }).then(res => {
           const filename = `下载.xls`;
           const blob = new Blob([res]);
@@ -240,37 +316,61 @@ function Besolved(props) {
                       'source',
                       {},
                     )(
-                      <Select>
-                        <Option value="重复性分析事件">重复性分析事件</Option>
-                        <Option value="事件升级">事件升级</Option>
-                        <Option value="巡检发现">巡检发现</Option>
-                        <Option value="系统监控发现">系统监控发现</Option>
-                        <Option value="其他">其他</Option>
-                      </Select>,
+                      <Select placeholder="请选择">
+                      {
+                        keyVallist && keyVallist.source.length && (
+                          (keyVallist.source).map(({ key, val }) => (
+                            <Option key={key} value={val}>
+                              {val}
+                            </Option>
+                          ))
+                        )
+                      }
+                  </Select>,
                     )}
                   </Form.Item>
                 </Col>
 
                 <Col span={8}>
-                  <Form.Item label="问题分类">{getFieldDecorator('type', {})
-                  ( <Select>
-                    <Option value="功能问题">功能问题</Option>
-                    <Option value="程序问题">程序问题</Option>
-                  </Select>,)}</Form.Item>
+                  <Form.Item label="问题分类">
+                    {getFieldDecorator('problemClass', {})
+                    (
+                    <Select placeholder="请选择">
+                      {
+                        prioritylist && prioritylist.priority.length && (
+                          (prioritylist.priority).map(({ key, val }) => (
+                            <Option key={key} value={val}>
+                              {val}
+                            </Option>
+                          ))
+                        )
+                      }
+                  </Select>,
+                    )}
+                  </Form.Item>
                 </Col>
 
                 <Col span={8}>
-                  <Form.Item label="影响范围">{getFieldDecorator('type', {})
-                  ( <Select>
-                    <Option value="功能问题">功能问题</Option>
-                    <Option value="程序问题">程序问题</Option>
-                  </Select>,)}</Form.Item>
+                  <Form.Item label="影响范围">{getFieldDecorator('registerScope', {})
+                  ( 
+                    <Select placeholder="请选择">
+                      {
+                        scopeList && scopeList.effect.length && (
+                          (scopeList.effect).map(({ key, val }) => (
+                            <Option key={key} value={val}>
+                              {val}
+                            </Option>
+                          ))
+                        )
+                      }
+                  </Select>,
+                  )}</Form.Item>
                 </Col>
 
                 <Col span={8}>
                   <Form.Item label="处理人">
                     {getFieldDecorator(
-                      'registerUser',
+                      'handler',
                       {},
                     )(
                       <Input />
@@ -292,7 +392,7 @@ function Besolved(props) {
                 <Col span={8}>
                   <Form.Item label="发送人">
                     {getFieldDecorator(
-                      'sender',
+                      'registerUser',
                       {},
                     )(
                       <Input />
@@ -303,21 +403,32 @@ function Besolved(props) {
                 <Col span={8}>
                   <Form.Item label="发送时间">
                     {getFieldDecorator(
-                      'sender',
+                      'registerOccurTime',
                       {},
                     )(
-                      <Input />
+                      <DatePicker />
                     )}
                   </Form.Item>
                 </Col>
 
+
                 <Col span={8}>
                   <Form.Item label='重要程度'>
                     {getFieldDecorator(
-                      'sender',
+                      'importance',
                       {},
                     )(
-                      <Input />
+                      <Select placeholder="请选择">
+                      {
+                        prioritylist && prioritylist.priority.length && (
+                          prioritylist.priority.map(({ key, val }) => (
+                            <Option key={key} value={val}>
+                              {val}
+                            </Option>
+                          ))
+                        )
+                      }
+                  </Select>,
                     )}
                   </Form.Item>
                 </Col>
@@ -326,26 +437,6 @@ function Besolved(props) {
 
             {expand === true && (
               <>
-                <Col span={8}>
-                  <Form.Item label="创建时间">
-                    {getFieldDecorator('createTimeBegin', {})(<Input />)}
-                  </Form.Item>
-                </Col>
-
-                <Col span={8}>
-                  <Form.Item label="优先级">
-                    {getFieldDecorator(
-                      'priority',
-                      {},
-                    )(
-                      <Select>
-                        <Option value="高">高</Option>
-                        <Option value="中">中</Option>
-                        <Option value="低">低</Option>
-                      </Select>,
-                    )}
-                  </Form.Item>
-                </Col>
               </>
             )}
 
@@ -421,7 +512,7 @@ function Besolved(props) {
           dataSource={besolveList.rows}
           rowKey={record => record.id}
           pagination={pagination}
-          // rowSelection={rowSelection}
+          rowSelection={rowSelection}
         />
       </Card>
     </PageHeaderWrapper>
@@ -429,9 +520,13 @@ function Besolved(props) {
 }
 
 export default Form.create({})(
-  connect(({ problemmanage, loading }) => ({
+  connect(({ problemmanage,problemdropdown,loading }) => ({
     besolveList: problemmanage.besolveList,
-    // html: problemmanage.html,
+    keyVallist: problemdropdown.keyVallist,
+    typelist: problemdropdown.typelist,
+    prioritylist: problemdropdown.prioritylist,
+    scopeList: problemdropdown.scopeList,
+    projectList: problemdropdown.projectList,
     loading: loading.models.problemmanage,
   }))(Besolved),
 );

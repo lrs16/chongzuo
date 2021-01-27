@@ -14,16 +14,17 @@ function Problemreview(props) {
   const {  
     dispatch,
     reviesDetail,
+    info,
+    main,
     loading } = props;
 
     // if(reviesDetail) {
-    //   id =  reviesDetail.problemFlowNodeRows[1].checkAttachIds;
+    //   id =  info.checkAttachIds;
     // }
-    const { problemFlowNodeRows } = reviesDetail;
+    // const { problemFlowNodeRows } = reviesDetail;
     let value;
-    if(problemFlowNodeRows) {
-      value = problemFlowNodeRows[1].checkResult;
-      console.log('value: ', value);
+    if(info) {
+      value = info.checkResult;
     }
 
     const fileDown = (id) => {
@@ -33,16 +34,9 @@ function Problemreview(props) {
       })
     } 
   return (
-    <>
-    { loading === false && problemFlowNodeRows && (
-      <Collapse 
-        expandIconPosition="right" 
-        style={{ backgroundColor: 'white', marginTop: '20px' }}
-        >
-        <Panel 
-          header="系统运维商审核" 
-          style={{ marginBottom: '0px', paddingBottom: '0px' }}
-        >
+   
+      <div>
+         <>
           <Descriptions>
             <Descriptions.Item label="审核结果">
             <Radio.Group value={value} disabled>
@@ -54,13 +48,13 @@ function Problemreview(props) {
 
           <Descriptions>
             <Descriptions.Item label="审核时间">
-              {reviesDetail ? reviesDetail.problemFlowNodeRows[1].checkTime : ''}
+              {info.checkTime}
             </Descriptions.Item>
           </Descriptions>
 
           <Descriptions>
             <Descriptions.Item label="审核意见">
-              {reviesDetail ? reviesDetail.problemFlowNodeRows[1].checkOpinion : ''}
+              {info.checkOpinion}
             </Descriptions.Item>
           </Descriptions>
 
@@ -68,30 +62,27 @@ function Problemreview(props) {
           <Descriptions>
               <Descriptions.Item label="上传附件">
                 <span style={{ color: 'blue', textDecoration: 'underline' }} >
-                {problemFlowNodeRows[1].checkAttachments !== null && <Downloadfile files={problemFlowNodeRows[1].checkAttachments} />}          
+                {info.checkAttachments !== null && <Downloadfile files={info.checkAttachments} />}          
                </span>
               </Descriptions.Item>
             </Descriptions>
 
           <Descriptions>
             <Descriptions.Item label="审核人">
-                {reviesDetail ? reviesDetail.problemFlowNodeRows[1].checkUser : ''}
+                {info.checkUser}
               </Descriptions.Item>
 
               <Descriptions.Item label="审核单位">
-                {reviesDetail ? reviesDetail.problemFlowNodeRows[1].checkUnit : ''}
+                {info.checkUnit}
               </Descriptions.Item>
 
               <Descriptions.Item label="审核部门">
-                {reviesDetail ? reviesDetail.problemFlowNodeRows[1].checkDept : ''}
+                {info.checkDept}
               </Descriptions.Item>
           </Descriptions>
-           
-        </Panel>
-      </Collapse>
-      ) }
-     
-    </>
+          </>
+       </div>
+  
   );
 }
 export default (

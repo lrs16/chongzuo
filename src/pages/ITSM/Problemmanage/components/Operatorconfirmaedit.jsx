@@ -36,7 +36,6 @@ const Operatorconfirmaedit = React.forwardRef((props,ref) => {
     confirm,
     useInfo,
   } = props;
-  console.log(confirm,'confirm');
   const onChange = (e) => {
     setFlowtype(e.target.value);
   }
