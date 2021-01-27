@@ -10,7 +10,7 @@ export async function DemandStart(params) {
 
 // 需求登记流转
 export async function DemandStartAndNext(params) {
-  return request(`/demand/register/startAndNext`, {
+  return request(`/demand/todo/completeRegister`, {
     method: 'POST',
     body: JSON.stringify(params),
   });
@@ -19,7 +19,7 @@ export async function DemandStartAndNext(params) {
 // 需求待办列表
 export async function DemandtoDoList(params) {
   return request(
-    `/demand/todo/toDoList?limit=${params.limit}&page=${params.page}&userId=${params.userId}`,
+    `/demand/todo/toDoList?limit=${params.limit}&page=${params.page}&userId=${params.userId}&demandId=${params.demandId}`,
     {
       method: 'GET',
     },
@@ -28,6 +28,13 @@ export async function DemandtoDoList(params) {
 
 // 编辑历史记录
 export async function DemandRecords(processId) {
+  return request(`/demand/todo/taskHistory/${processId}`, {
+    method: 'GET',
+  });
+}
+
+// 流程日志(未用)
+export async function DemandProcess(processId) {
   return request(`/demand/todo/processLog/${processId}`, {
     method: 'GET',
   });
@@ -63,6 +70,12 @@ export async function DemandgoBack(params) {
   return request(`/demand/todo/goBack/${params.taskId}`, {
     method: 'POST',
     body: JSON.stringify(params),
+  });
+}
+// 删除/demand/process/delete
+export async function DemandDlete(processId) {
+  return request(`/demand/process/delete?processId=${processId}`, {
+    method: 'DELETE',
   });
 }
 
@@ -102,4 +115,15 @@ export async function TrackDelete(id) {
   return request(`/demand/track/delete/${id}`, {
     method: 'DELETE',
   });
+}
+
+// 需求查询列表
+export async function DemandQuery(params) {
+  console.log(params);
+  return request(
+    `/demand/query/demandQuery?limit=${params.limit}&page=${params.page}&demandId=${params.demandId}`,
+    {
+      method: 'GET',
+    },
+  );
 }

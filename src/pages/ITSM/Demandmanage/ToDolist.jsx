@@ -9,20 +9,24 @@ import { DownOutlined, UpOutlined } from '@ant-design/icons';
 const { Option } = Select;
 
 const statemap = [
-  { key: '0', value: '事件登记' },
-  { key: '1', value: '事件处理' },
-  { key: '2', value: '事件回访' },
+  { key: '0', value: '需求登记' },
+  { key: '1', value: '业务科室领导审核' },
+  { key: '2', value: '系统开发商审核' },
+  { key: '3', value: '自动化科专责审核' },
+  { key: '4', value: '自动化科业务人员审核' },
+  { key: '5', value: '市场部领导审核' },
+  { key: '6', value: '科室领导审核' },
+  { key: '7', value: '市场部领导审核' },
+  { key: '8', value: '科室领导审核' },
+  { key: '9', value: '系统开发商处理' },
+  { key: '10', value: '自动化科负责人确认' },
+  { key: '11', value: '需求登记人员确认' },
 ];
 
-const sourcemap = [
-  { key: '0', value: '用户电话申告' },
-  { key: '1', value: '企信' },
-];
-
-const levelmap = [
-  { key: '0', value: '高' },
-  { key: '1', value: '中' },
-  { key: '1', value: '低' },
+const demandtypes = [
+  { key: '001', value: '新增功能' },
+  { key: '002', value: '功能变更' },
+  { key: '003', value: '其他' },
 ];
 
 const formItemLayout = {
@@ -112,16 +116,15 @@ function ToDolist(props) {
   const [expand, setExpand] = useState(false);
 
   useEffect(() => {
-    validateFields(err => {
+    validateFields((err, values) => {
       if (!err) {
         dispatch({
           type: 'demandtodo/fetchlist',
           payload: {
-            // ...values,
+            ...values,
             page: paginations.current,
             limit: paginations.pageSize,
             userId: sessionStorage.getItem('userauthorityid'),
-            // userId: 'ELIN',
           },
         });
       }
@@ -132,7 +135,7 @@ function ToDolist(props) {
     dispatch({
       type: 'demandtodo/fetchlist',
       payload: {
-        // ...values,
+        ...values,
         limit: size,
         page,
         userId: sessionStorage.getItem('userauthorityid'),
@@ -196,44 +199,18 @@ function ToDolist(props) {
         <Row gutter={24}>
           <Form {...formItemLayout} onSubmit={handleSearch}>
             <Col span={8}>
-              <Form.Item label="事件编号">
-                {getFieldDecorator('form1', {})(<Input placeholder="请输入" />)}
+              <Form.Item label="需求编号">
+                {getFieldDecorator('demandId', {
+                  initialValue: '',
+                })(<Input placeholder="请输入" />)}
               </Form.Item>
             </Col>
-            {expand === true && (
-              <>
-                <Col span={8}>
-                  <Form.Item label="事件标题">
-                    {getFieldDecorator('form2', {})(<Input placeholder="请输入" />)}
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item label="事件来源">
-                    {getFieldDecorator(
-                      'form3',
-                      {},
-                    )(
-                      <Select placeholder="请选择">
-                        {sourcemap.map(({ key, value }) => (
-                          <Option key={key} value={key}>
-                            {value}
-                          </Option>
-                        ))}
-                      </Select>,
-                    )}
-                  </Form.Item>
-                </Col>
-              </>
-            )}
             <Col span={8}>
-              <Form.Item label="工单状态">
-                {getFieldDecorator(
-                  'form4',
-                  {},
-                )(
+              <Form.Item label="当前处理环节">
+                {getFieldDecorator('taskName', { initialValue: '' })(
                   <Select placeholder="请选择">
                     {statemap.map(({ key, value }) => (
-                      <Option key={key} value={key}>
+                      <Option key={key} value={value}>
                         {value}
                       </Option>
                     ))}
@@ -244,31 +221,35 @@ function ToDolist(props) {
             {expand === true && (
               <>
                 <Col span={8}>
-                  <Form.Item label="填报人">
-                    {getFieldDecorator('form5', {})(<Input placeholder="请输入" />)}
+                  <Form.Item label="需求标题">
+                    {getFieldDecorator('title', {
+                      initialValue: '',
+                    })(<Input placeholder="请输入" />)}
                   </Form.Item>
                 </Col>
                 <Col span={8}>
-                  <Form.Item label="处理人">
-                    {getFieldDecorator('form6', {})(<Input placeholder="请输入" />)}
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item label="发送时间">
-                    {getFieldDecorator('contenttime')(<DatePicker showTime />)}
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item label="优先级">
-                    {getFieldDecorator('lasttime')(
+                  <Form.Item label="需求类型">
+                    {getFieldDecorator('demandType', { initialValue: '' })(
                       <Select placeholder="请选择">
-                        {levelmap.map(({ key, value }) => (
-                          <Option key={key} value={key}>
+                        {demandtypes.map(({ key, value }) => (
+                          <Option key={key} value={value}>
                             {value}
                           </Option>
                         ))}
                       </Select>,
                     )}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="发送人">
+                    {getFieldDecorator('registerPerson', {
+                      initialValue: '',
+                    })(<Input placeholder="请输入" />)}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="发送时间">
+                    {getFieldDecorator('creationTime')(<DatePicker showTime />)}
                   </Form.Item>
                 </Col>
               </>

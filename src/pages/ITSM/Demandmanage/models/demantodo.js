@@ -9,6 +9,8 @@ import {
   DemandSaveOrUpdate,
   NextStep,
   DemandgoBack,
+  DemandDlete,
+  DemandQuery,
 } from '../services/api';
 
 export default {
@@ -22,9 +24,17 @@ export default {
   },
 
   effects: {
-    // 列表
+    // 待办列表
     *fetchlist({ payload }, { call, put }) {
       const response = yield call(DemandtoDoList, { ...payload });
+      yield put({
+        type: 'save',
+        payload: response.data,
+      });
+    },
+    // 查询列表
+    *querylist({ payload }, { call, put }) {
+      const response = yield call(DemandQuery, { ...payload });
       yield put({
         type: 'save',
         payload: response.data,
@@ -86,6 +96,16 @@ export default {
         yield put({
           type: 'saveinfo',
           payload: openres.data,
+        });
+      }
+    },
+    // 删除
+    *demanddelete({ payload: { processId } }, { call }) {
+      const response = yield call(DemandDlete, processId);
+      if (response.code === 200) {
+        message.success(response.msg, 2);
+        router.push({
+          pathname: `/ITSM/demandmanage/to-do`,
         });
       }
     },

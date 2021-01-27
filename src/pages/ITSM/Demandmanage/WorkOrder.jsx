@@ -35,11 +35,22 @@ const forminladeLayout = {
 };
 
 function WorkOrder(props) {
-  const { dispatch, location, records, info, userinfo, loading, type } = props;
+  const {
+    dispatch,
+    location,
+    records,
+    info,
+    userinfo,
+    loading,
+    type,
+    ChangeType,
+    changRegisterId,
+    ChangeHistroyLength,
+  } = props;
   const [activeKey, setActiveKey] = useState(['form']);
   const { taskName, taskId, mainId } = location.query;
-  // const [ischeck, setIscheck] = useState(false); // 是否在校验状态
-  const [paloads, setPaloads] = useState('');
+  //  const [ischeck, setIscheck] = useState(false); // 是否在校验状态
+  //  const [paloads, setPaloads] = useState('');
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
 
   // 初始化用户信息，流程类型
@@ -49,16 +60,27 @@ function WorkOrder(props) {
     });
     sessionStorage.setItem('Processtype', 'demand');
   }, []);
+  // 回调用户ID
+  useEffect(() => {
+    if (info !== '') {
+      changRegisterId(info.demandForm.id);
+      ChangeHistroyLength(info.historys.length);
+    }
+  }, [info]);
 
   // 初始化历史附件
   useEffect(() => {
-    if (
-      info !== '' &&
-      taskName === '需求登记' &&
-      loading === false &&
-      info.demandForm.attachment !== '[]'
-    ) {
-      setFiles({ ...files, arr: JSON.parse(info.demandForm.attachment) });
+    if (info !== '') {
+      if (taskName === '需求登记' && info.demandForm.attachment !== '[]') {
+        setFiles({ ...files, arr: JSON.parse(info.demandForm.attachment) });
+      }
+      if (
+        taskName !== '需求登记' &&
+        info.historys.length > 0 &&
+        info.historys?.slice(-1)[0].taskName === info.taskName
+      ) {
+        setFiles({ ...files, arr: JSON.parse(info.historys?.slice(-1)[0].attachment) });
+      }
     }
   }, [info]);
 
@@ -131,11 +153,10 @@ function WorkOrder(props) {
   // 需求审核，运维审核,需求复核表单
   const setid = () => {
     const { historys } = info;
-    const infotaskName = info.taskName;
-    if (historys.length > 0 && historys?.slice(-1)[0].taskName === infotaskName) {
+    if (historys.length > 0 && historys?.slice(-1)[0].taskId === null) {
       return info.historys?.slice(-1)[0].id;
     }
-    if (historys.length === 0 || historys?.slice(-1)[0]?.taskName !== infotaskName) {
+    if (historys.length === 0 || historys?.slice(-1)[0].taskId !== null) {
       return '';
     }
     return null;
@@ -266,6 +287,31 @@ function WorkOrder(props) {
           }
         });
         break;
+      case 'confirm':
+        ExamineRef.current.validateFields((err, values) => {
+          if (!err) {
+            dispatch({
+              type: 'demandtodo/demandnextstep',
+              payload: {
+                ...values,
+                reviewTime: values.reviewTime.format(),
+                business: Number(values.business),
+                releases: Number(values.releases),
+                attachment: JSON.stringify(files.arr),
+                nextUserIds: [
+                  { nodeName: '需求登记人员确认', userIds: [info.demandForm.registerPersonId] },
+                ],
+                registerId: info.demandForm.id,
+                id,
+                taskName: info.taskName,
+                taskId,
+              },
+            });
+          } else {
+            formerr();
+          }
+        });
+        break;
       default:
         break;
     }
@@ -303,17 +349,16 @@ function WorkOrder(props) {
         break;
       case '自动化科业务人员审核':
       case '自动化科负责人确认':
+      case '需求登记人员确认':
         nonextusrs();
         break;
       case '系统开发商处理':
         getdemantrack();
         break;
-      case '需求确认':
-        // getdemandexamine();
-        break;
       default:
         break;
     }
+    ChangeType('');
   };
   useEffect(() => {
     if (type !== '') {
@@ -342,6 +387,7 @@ function WorkOrder(props) {
           },
         });
       });
+      setFiles({ ...files, ischange: false });
     }
     if (taskName !== '需求登记' && taskName !== '需求跟踪' && files.ischange === true) {
       const id = setid();
@@ -364,6 +410,7 @@ function WorkOrder(props) {
           },
         });
       });
+      setFiles({ ...files, ischange: false });
     }
   }, [files]);
 
@@ -387,7 +434,9 @@ function WorkOrder(props) {
           {records.map((obj, index) => {
             const desc = (
               <div>
-                <div>{moment(obj.time).format('YYYY-MM-DD hh:mm:ss')}</div>
+                <div>处理人：{obj.userName}</div>
+                <div>开始时间：{moment(obj.startTime).format('YYYY-MM-DD hh:mm:ss')}</div>
+                <div>结束时间：{moment(obj.endTime).format('YYYY-MM-DD hh:mm:ss')}</div>
               </div>
             );
             return <Step title={obj.taskName} description={desc} key={index.toString()} />;
@@ -401,7 +450,6 @@ function WorkOrder(props) {
             activeKey={activeKey}
             bordered={false}
             onChange={callback}
-            style={{ marginTop: '-25px' }}
           >
             <Panel header={info.taskName} key="form">
               {info.taskName === '需求登记' && (
@@ -417,6 +465,7 @@ function WorkOrder(props) {
                   ref={RegistratRef}
                   register={info.demandForm}
                   userinfo={userinfo}
+                  location={location}
                 />
               )}
               {info.taskName === '业务科室领导审核' && info.historys.length === 0 && (
@@ -435,8 +484,31 @@ function WorkOrder(props) {
                   }}
                 />
               )}
-              {((info.taskName === '业务科室领导审核' && info.historys.length > 0) ||
-                info.taskName === '系统开发商审核' ||
+              {info.taskName === '业务科室领导审核' && info.historys.length > 0 && (
+                <Examine
+                  ref={ExamineRef}
+                  location={location}
+                  formItemLayout={formItemLayout}
+                  forminladeLayout={forminladeLayout}
+                  text="审核"
+                  userinfo={userinfo}
+                  taskName={info.taskName}
+                  info={
+                    info.historys?.slice(-1)[0].taskId === null
+                      ? info.historys.slice(-1)
+                      : undefined
+                  }
+                  files={
+                    info.historys?.slice(-1)[0].taskId === null
+                      ? JSON.parse(info.historys?.slice(-1)[0].attachment)
+                      : []
+                  }
+                  ChangeFiles={newvalue => {
+                    setFiles(newvalue);
+                  }}
+                />
+              )}
+              {(info.taskName === '系统开发商审核' ||
                 info.taskName === '自动化科专责审核' ||
                 info.taskName === '自动化科业务人员审核' ||
                 info.taskName === '科室领导审核' ||
@@ -469,11 +541,8 @@ function WorkOrder(props) {
                   ref={TrackRef}
                   userinfo={userinfo}
                   taskName={info.taskName}
-                  files={
-                    info.historys?.slice(-1)[0].attachment !== ''
-                      ? JSON.parse(info.historys?.slice(-1)[0].attachment)
-                      : []
-                  }
+                  taskId={info.taskId}
+                  mainId={info.taskId}
                   ChangeFiles={newvalue => {
                     setFiles(newvalue);
                   }}
@@ -485,7 +554,7 @@ function WorkOrder(props) {
                   demandId={info.demandForm.demandId}
                 />
               )}
-              {info.taskName === '自动化科负责人确认' && (
+              {(info.taskName === '自动化科负责人确认' || info.taskName === '需求登记人员确认') && (
                 <Examine
                   ref={ExamineRef}
                   location={location}

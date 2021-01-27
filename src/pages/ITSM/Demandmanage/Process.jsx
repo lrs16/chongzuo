@@ -46,23 +46,25 @@ function Process(props) {
         <div style={{ background: '#fff' }} id="divimg" className={styles.blobimg} />
       </Card>
       <Card title="流转日志" style={{ marginTop: '-1px' }}>
-        {records !== '' && (
-          <Steps
-            current={records.length - 1}
-            progressDot
-            direction="vertical"
-            style={{ background: '#fff', padding: 24 }}
-          >
-            {records.map((obj, index) => {
-              const desc = (
-                <div>
-                  <div>{moment(obj.time).format('YYYY-MM-DD hh:mm:ss')}</div>
-                </div>
-              );
-              return <Step title={obj.taskName} description={desc} key={index} />;
-            })}
-          </Steps>
-        )}
+        <div className={styles.processstept}>
+          {records !== '' && (
+            <Steps
+              current={records.length - 1}
+              progressDot
+              direction="vertical"
+              style={{ background: '#fff', padding: 24 }}
+            >
+              {records.map((obj, index) => {
+                const desc = (
+                  <div>
+                    <div>{moment(obj.time).format('YYYY-MM-DD hh:mm:ss')}</div>
+                  </div>
+                );
+                return <Step title={obj.taskName} description={desc} key={index.toString()} />;
+              })}
+            </Steps>
+          )}
+        </div>
       </Card>
     </>
   );

@@ -24,7 +24,7 @@ function Examinedes(props) {
           {moment(info.reviewTime).format('YYYY-MM-DD HH:MM')}
         </Descriptions.Item>
         <Descriptions.Item label="审核意见" span={3}>
-          <div dangerouslySetInnerHTML={{ __html: info.reason?.replace(/[\n]/g, '<br/>') }} />
+          <div dangerouslySetInnerHTML={{ __html: info.opinion?.replace(/[\n]/g, '<br/>') }} />
         </Descriptions.Item>
         <Descriptions.Item label="附件" span={3}>
           {info.attachment !== '' && <Downloadfile files={info.attachment} />}

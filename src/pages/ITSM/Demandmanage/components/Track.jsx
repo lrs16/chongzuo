@@ -30,20 +30,19 @@ function Track(props) {
   const [cacheOriginData, setcacheOriginData] = useState({});
   const [uploadkey, setKeyUpload] = useState('');
   const [fileslist, setFilesList] = useState([]);
+  const [newbutton, setNewButton] = useState(false);
 
   useEffect(() => {
-    if (trackslist === []) {
-      dispatch({
-        type: 'chacklist/fetchtracklist',
-        payload: {
-          demandId,
-        },
-      });
-    }
-  }, [demandId]);
+    dispatch({
+      type: 'chacklist/fetchtracklist',
+      payload: {
+        demandId,
+      },
+    });
+  }, []);
 
   useEffect(() => {
-    if (trackslist !== '') {
+    if (trackslist.length > 0) {
       const newarr = trackslist.map((item, index) => {
         return Object.assign(item, { key: index });
       });
@@ -69,7 +68,6 @@ function Track(props) {
         id: info.id,
       },
     }).then(res => {
-      // console.log(res);
       const filename = info.name;
       const blob = new Blob([res]);
       const url = window.URL.createObjectURL(blob);
@@ -101,6 +99,7 @@ function Track(props) {
       isNew: true,
     });
     setData(newData);
+    setNewButton(true);
   };
 
   // 获取行
@@ -135,28 +134,52 @@ function Track(props) {
   // 保存记录
   const saveRow = (e, key) => {
     const target = getRowByKey(key) || {};
-    delete target.isNew;
     delete target.key;
-    delete target.editable;
-    toggleEditable(e, key);
+    target.editable = false;
     const id = target.id === '' ? '' : target.id;
     dispatch({
-      type: 'demandtodo/tracksave',
+      type: 'chacklist/tracksave',
       payload: {
         ...target,
         id,
         demandId,
+        stalker: userinfo.userName,
+        trackDepartment: userinfo.deptName,
+        trackUnit: userinfo.unitName,
       },
+    }).then(res => {
+      if (res.code === 200) {
+        message.success(res.msg, 2);
+        dispatch({
+          type: 'chacklist/fetchtracklist',
+          payload: {
+            demandId,
+          },
+        });
+      }
     });
+    if (target.isNew) {
+      setNewButton(false);
+    }
   };
 
   const remove = key => {
+    const target = getRowByKey(key) || {};
     dispatch({
-      type: 'demandtodo/tracksave',
+      type: 'chacklist/trackdelete',
       payload: {
-        id: key,
-        demandId,
+        id: target.id,
       },
+    }).then(res => {
+      if (res.code === 200) {
+        message.success(res.msg, 2);
+        dispatch({
+          type: 'chacklist/fetchtracklist',
+          payload: {
+            demandId,
+          },
+        });
+      }
     });
   };
 
@@ -171,29 +194,6 @@ function Track(props) {
     }
     target.editable = false;
     setData(newData);
-  };
-
-  // 在上传组件中删除附件
-  const handledeletfile = info => {
-    // 表格删除历史记录
-    const target = getRowByKey(uploadkey) || {};
-    delete target.isNew;
-    const id = target.id === '' ? '' : target.id;
-    dispatch({
-      type: 'demandtodo/tracksave',
-      payload: {
-        ...target,
-        id,
-        demandId,
-      },
-    });
-    // 删除文件
-    dispatch({
-      type: 'sysfile/deletefile',
-      payload: {
-        id: info.id,
-      },
-    });
   };
 
   // 上传
@@ -240,15 +240,7 @@ function Track(props) {
       handleFieldChange(JSON.stringify(newfilelist), 'attachment', uploadkey);
       const target = getRowByKey(uploadkey) || {};
       delete target.isNew;
-      const id = target.id === '' ? '' : target.id;
-      dispatch({
-        type: 'demandtodo/tracksave',
-        payload: {
-          ...target,
-          id,
-          demandId,
-        },
-      });
+      delete target.editable;
       // 删除文件
       dispatch({
         type: 'sysfile/deletefile',
@@ -338,7 +330,7 @@ function Track(props) {
         }
         return (
           <>
-            {text !== '' && tracklist !== '' && (
+            {text !== null && trackslist !== [] && (
               <div className={styles.greylink}>
                 {JSON.parse(text).map(obj => {
                   return (
@@ -347,11 +339,6 @@ function Track(props) {
                         style={{ marginRight: 8, fontSize: 11, color: 'rgba(0, 0, 0, 0.45)' }}
                       />
                       <a onClick={() => handledownload(obj)}>{obj.name}</a>
-                      {/* <a onClick={() => handledeletfile(obj.uid)}>
-                        <DeleteOutlined
-                          style={{ marginLeft: 8, fontSize: 12, color: 'rgba(0, 0, 0, 0.45)' }}
-                        />
-                      </a> */}
                     </div>
                   );
                 })}
@@ -430,9 +417,7 @@ function Track(props) {
               >
                 <a onClick={e => saveRow(e, record.key)}>保存</a>
                 <Divider type="vertical" />
-                <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
-                  <a>删除</a>
-                </Popconfirm>
+                <a onClick={e => cancel(e, record.key)}>取消</a>
               </span>
             );
           }
@@ -445,7 +430,9 @@ function Track(props) {
             >
               <a onClick={e => saveRow(e, record.key)}>保存</a>
               <Divider type="vertical" />
-              <a onClick={e => cancel(e, record.key)}>取消</a>
+              <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
+                <a>删除</a>
+              </Popconfirm>
             </span>
           );
         }
@@ -486,6 +473,7 @@ function Track(props) {
         ghost
         onClick={() => newMember()}
         icon="plus"
+        disabled={newbutton}
       >
         新增跟踪记录
       </Button>

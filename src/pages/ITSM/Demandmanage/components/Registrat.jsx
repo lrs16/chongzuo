@@ -1,4 +1,5 @@
 import React, { useRef, useImperativeHandle, forwardRef, useEffect, useState } from 'react';
+import router from 'umi/router';
 import moment from 'moment';
 import { Row, Col, Form, Input, Select, DatePicker, Cascader } from 'antd';
 import SysUpload from '@/components/SysUpload';
@@ -117,7 +118,7 @@ const modulemap = [
   },
 ];
 const Registrat = forwardRef((props, ref) => {
-  const { register, userinfo, files, ChangeFiles } = props;
+  const { register, userinfo, files, ChangeFiles, location } = props;
   const { getFieldDecorator, setFieldsValue } = props.form;
   const required = true;
   const [selectvalue, setSelectValue] = useState([]);
@@ -141,10 +142,21 @@ const Registrat = forwardRef((props, ref) => {
     }),
     [],
   );
-
   useEffect(() => {
+    if (location !== undefined) {
+      const { taskName, taskId, mainId } = location.query;
+      router.push({
+        pathname: location.pathname,
+        query: {
+          taskId,
+          taskName,
+          mainId,
+          result: '1',
+        },
+      });
+    }
     sessionStorage.setItem('flowtype', 1);
-  }, [register]);
+  }, []);
 
   const options = selectvalue.map(obj => <Option key={obj.key}>{obj.val}</Option>);
 

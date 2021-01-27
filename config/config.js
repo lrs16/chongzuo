@@ -279,6 +279,12 @@ export default {
                       icon: 'cloud-server',
                       component: './ITSM/Demandmanage/QueryList',
                     },
+                    {
+                      path: '/ITSM/demandmanage/query/details',
+                      name: '需求详情',
+                      icon: 'cloud-server',
+                      component: './ITSM/Demandmanage/Details',
+                    },
                   ],
                 },
                 {

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import router from 'umi/router';
+import { connect } from 'dva';
 import { Button, Popover } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import WorkOrder from './WorkOrder';
@@ -9,10 +10,12 @@ import SelectUser from '@/components/SelectUser';
 
 function ToDoregist(props) {
   const { location, dispatch } = props;
-  const { taskName, taskId, result } = location.query;
+  const { taskName, taskId, result, mainId } = location.query;
   const [tabActivekey, settabActivekey] = useState('workorder'); // 打开标签
   const [buttontype, setButtonType] = useState('');
   const [backvalue, setBackvalue] = useState('');
+  const [registerId, setRegisterId] = useState('');
+  const [histroylength, setHistroyLength] = useState(0);
   const [Popvisible, setVisible] = useState(false);
 
   const handleHold = type => {
@@ -23,6 +26,16 @@ function ToDoregist(props) {
       pathname: `/ITSM/demandmanage/to-do`,
     });
   };
+
+  const handledelete = () => {
+    dispatch({
+      type: 'demandtodo/demanddelete',
+      payload: {
+        processId: mainId,
+      },
+    });
+  };
+
   // 回退
   const content = (
     <Backoff
@@ -33,11 +46,25 @@ function ToDoregist(props) {
   const handleVisibleChange = visible => {
     setVisible(visible);
   };
+  useEffect(() => {
+    if (backvalue !== '') {
+      dispatch({
+        type: 'demandtodo/demanback',
+        payload: {
+          taskId,
+          taskName,
+          registerId,
+          processId: mainId,
+          ...backvalue,
+        },
+      });
+    }
+  }, [backvalue]);
 
   const operations = (
     <>
-      {taskName === '需求登记' && (
-        <Button type="danger" ghost style={{ marginRight: 8 }}>
+      {taskName === '需求登记' && histroylength === 0 && (
+        <Button type="danger" ghost style={{ marginRight: 8 }} onClick={() => handledelete()}>
           删除
         </Button>
       )}
@@ -56,29 +83,49 @@ function ToDoregist(props) {
           保存
         </Button>
       )}
-      {result !== '0' && taskName !== '自动化科业务人员审核' && taskName !== '自动化科负责人确认' && (
+      {((result !== '0' &&
+        taskName !== '自动化科业务人员审核' &&
+        taskName !== '自动化科负责人确认' &&
+        taskName !== '需求登记人员确认') ||
+        taskName === '系统开发商处理') && (
         <SelectUser handleSubmit={() => handleHold('flow')} taskId={taskId}>
           <Button type="primary" style={{ marginRight: 8 }}>
             流转
           </Button>
         </SelectUser>
       )}
-      {((result !== '0' && taskName === '自动化科业务人员审核') ||
-        (result === '0' && taskName === '自动化科负责人确认')) && (
+      {result !== '0' && taskName === '自动化科业务人员审核' && (
         <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleHold('flow')}>
           流转
         </Button>
       )}
-      {result === '2' && taskName === '自动化科负责人确认' && (
+      {result === '1' && taskName === '自动化科负责人确认' && (
+        <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleHold('confirm')}>
+          登记人确认
+        </Button>
+      )}
+      {result === '0' && (taskName === '自动化科负责人确认' || taskName === '需求登记人员确认') && (
+        <SelectUser handleSubmit={() => handleHold('flow')} taskId={taskId}>
+          <Button type="primary" style={{ marginRight: 8 }}>
+            再处理
+          </Button>
+        </SelectUser>
+      )}
+      {((result === '2' && taskName === '自动化科负责人确认') ||
+        (result === '1' && taskName === '需求登记人员确认')) && (
         <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleHold('flow')}>
           结束
         </Button>
       )}
-      {result === '0' && (taskName === '业务科室领导审核' || taskName === '系统开发商审核') && (
-        <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleHold('regist')}>
-          重新登记
-        </Button>
-      )}
+      {result === '0' &&
+        (taskName === '业务科室领导审核' ||
+          taskName === '科室领导审核' ||
+          taskName === '系统开发商审核' ||
+          taskName === '自动化科专责审核') && (
+          <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleHold('regist')}>
+            重新登记
+          </Button>
+        )}
       <Button onClick={handleclose}>返回</Button>
     </>
   );
@@ -113,10 +160,21 @@ function ToDoregist(props) {
       tabActiveKey={tabActivekey}
       onTabChange={handleTabChange}
     >
-      {tabActivekey === 'workorder' && <WorkOrder location={location} type={buttontype} />}
+      {tabActivekey === 'workorder' && (
+        <WorkOrder
+          location={location}
+          type={buttontype}
+          ChangeType={newvalue => setButtonType(newvalue)}
+          changRegisterId={newvalue => setRegisterId(newvalue)}
+          ChangeHistroyLength={newvalue => setHistroyLength(newvalue)}
+        />
+      )}
       {tabActivekey === 'process' && <Process location={location} />}
     </PageHeaderWrapper>
   );
 }
 
-export default ToDoregist;
+export default connect(({ demandtodo, loading }) => ({
+  demandtodo,
+  loading: loading.models.demandtodo,
+}))(ToDoregist);

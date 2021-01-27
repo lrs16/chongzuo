@@ -36,7 +36,9 @@ const Examine = forwardRef((props, ref) => {
   // 附件历史
   const [fileslist, setFilesList] = useState({ arr: [], ischange: false });
   useEffect(() => {
-    ChangeFiles(fileslist);
+    if (fileslist.ischange) {
+      ChangeFiles(fileslist);
+    }
   }, [fileslist]);
   // 审核结果与流转类型
   const [adopt, setAdopt] = useState(1);

@@ -1,18 +1,6 @@
 import router from 'umi/router';
 import { message } from 'antd';
-import {
-  DemandtoDoList,
-  DemandRecords,
-  DemandImage,
-  DemandOpenFlow,
-  registerSaveOrUpdate,
-  DemandSaveOrUpdate,
-  NextStep,
-  TracksList,
-  TrackUpdata,
-  TrackDelete,
-  DemandgoBack,
-} from '../services/api';
+import { TracksList, TrackUpdata, TrackDelete } from '../services/api';
 
 export default {
   namespace: 'chacklist',
@@ -31,28 +19,12 @@ export default {
       });
     },
     // 系统开发商处理保存
-    *tracksave({ payload }, { call, put }) {
-      const response = yield call(TrackUpdata, payload);
-      if (response.code === 200) {
-        message.success(response.msg, 2);
-        const openres = yield call(TracksList, payload.demandId);
-        yield put({
-          type: 'savetracklist',
-          payload: openres.data,
-        });
-      }
+    *tracksave({ payload }, { call }) {
+      return yield call(TrackUpdata, payload);
     },
     // 需求跟踪删除
-    *trackdelete({ payload: { id, demandId } }, { call, put }) {
-      const response = yield call(TrackDelete, id);
-      if (response.code === 200) {
-        message.success(response.msg, 2);
-        const reslist = yield call(TracksList, demandId);
-        yield put({
-          type: 'savetracklist',
-          payload: reslist.data,
-        });
-      }
+    *trackdelete({ payload: { id } }, { call }) {
+      return yield call(TrackDelete, id);
     },
   },
 

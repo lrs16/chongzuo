@@ -460,8 +460,6 @@ function WorkOrder(props) {
     }
   }, [files]);
 
-  console.log(info);
-
   return (
     <div className={styles.collapse}>
       {recordsloading === false && (
