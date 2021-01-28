@@ -69,14 +69,6 @@ const columns = [
     title: '需求类型',
     dataIndex: 'demandType',
     key: 'demandType',
-    render: (text, record) => {
-      const demandtype = new Map([
-        ['001', '新增功能'],
-        ['002', '功能变更'],
-        ['003', '其他'],
-      ]);
-      return <>{demandtype.get(record.demandType)}</>;
-    },
   },
   {
     title: '功能模块',
@@ -91,6 +83,11 @@ const columns = [
   },
   {
     title: '提出人',
+    dataIndex: 'proposer',
+    key: 'proposer',
+  },
+  {
+    title: '登记人',
     dataIndex: 'sender',
     key: 'sender',
   },

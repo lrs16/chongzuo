@@ -107,7 +107,7 @@ function ToDoregist(props) {
       {result === '0' && (taskName === '自动化科负责人确认' || taskName === '需求登记人员确认') && (
         <SelectUser handleSubmit={() => handleHold('flow')} taskId={taskId}>
           <Button type="primary" style={{ marginRight: 8 }}>
-            再处理
+            重新处理
           </Button>
         </SelectUser>
       )}

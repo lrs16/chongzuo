@@ -1,15 +1,9 @@
-import React, {
-  useRef,
-  useImperativeHandle,
-  forwardRef,
-  useState,
-  useEffect,
-  useContext,
-} from 'react';
+import React, { useRef, useImperativeHandle, forwardRef, useState, useEffect } from 'react';
 import router from 'umi/router';
 import moment from 'moment';
 import { Row, Col, Form, Input, Radio, DatePicker, Select, Checkbox } from 'antd';
 import SysUpload from '@/components/SysUpload';
+import KeyVal from '@/components/SysDict/KeyVal';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -41,6 +35,7 @@ const Examine = forwardRef((props, ref) => {
   const { getFieldDecorator, setFieldsValue } = props.form;
   const { taskName, taskId, result, mainId } = location.query;
   const required = true;
+  const [selectdata, setSelectData] = useState([]);
   // 附件历史
   const [fileslist, setFilesList] = useState({ arr: [], ischange: false });
   useEffect(() => {
@@ -89,7 +84,6 @@ const Examine = forwardRef((props, ref) => {
   };
 
   const handleChangeresult = values => {
-    console.log(values);
     if (values.length === 2) {
       setAdopt(2);
       setFieldsValue({ result: 2 }, () => {});
@@ -114,146 +108,153 @@ const Examine = forwardRef((props, ref) => {
   };
 
   return (
-    <Form {...formItemLayout}>
-      <Row gutter={24} style={{ paddingTop: 24 }}>
-        {taskName !== '自动化科负责人确认' && (
-          <Col span={8}>
-            <Form.Item label={`${text}结果`}>
-              {getFieldDecorator('result', {
-                rules: [{ required: true, message: `请选择${text}结果` }],
-                initialValue: info[0].result,
-              })(
-                <Radio.Group onChange={handleAdopt}>
-                  {(adopt === 1 || adopt === 0) && <Radio value={1}>通过</Radio>}
-                  {adopt === 2 && <Radio value={2}>通过</Radio>}
-                  {adopt === 3 && <Radio value={3}>通过</Radio>}
-                  {adopt === 4 && <Radio value={4}>通过</Radio>}
-                  <Radio value={0}>不通过</Radio>
-                </Radio.Group>,
-              )}
-            </Form.Item>
-          </Col>
-        )}
-        {taskName === '自动化科负责人确认' && (
-          <Col span={8}>
-            <Form.Item label={`${text}结果`}>
-              {getFieldDecorator('result', {
-                rules: [{ required: true, message: `请选择${text}结果` }],
-                initialValue: info[0].result,
-              })(
-                <Radio.Group onChange={handleAdopt}>
-                  <Radio value={1}>通过</Radio>
-                  <Radio value={0}>重新处理</Radio>
-                  <Radio value={2}>需求取消</Radio>
-                </Radio.Group>,
-              )}
-            </Form.Item>
-          </Col>
-        )}
-
-        <Col span={8}>
-          <Form.Item label={`${text}时间`}>
-            {getFieldDecorator('reviewTime', {
-              rules: [{ required, message: `请选择${text}时间` }],
-              initialValue: moment(info[0].reviewTime),
-            })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" />)}
-          </Form.Item>
-        </Col>
-        {taskName === '自动化科专责审核' && adopt !== 0 && (
-          <Col span={8}>
-            <Form.Item>
-              <Checkbox.Group
-                defaultValue={resultmap.get(info[0].result)}
-                options={options}
-                onChange={values => handleChangeresult(values)}
-              />
-            </Form.Item>
-          </Col>
-        )}
-        <Col span={24}>
-          {adopt !== 0 && (
-            <Form.Item label={`${text}意见`} {...forminladeLayout}>
-              {getFieldDecorator('opinion', {
-                rules: [{ required: false, message: `请输入${text}意见` }],
-                initialValue: info[0].opinion,
-              })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
-            </Form.Item>
+    <>
+      <KeyVal
+        dictModule="demand"
+        dictType="confirm"
+        ChangeSelectdata={newvalue => setSelectData(newvalue)}
+      />
+      <Form {...formItemLayout}>
+        <Row gutter={24} style={{ paddingTop: 24 }}>
+          {taskName !== '自动化科负责人确认' && (
+            <Col span={8}>
+              <Form.Item label={`${text}结果`}>
+                {getFieldDecorator('result', {
+                  rules: [{ required: true, message: `请选择${text}结果` }],
+                  initialValue: info[0].result,
+                })(
+                  <Radio.Group onChange={handleAdopt}>
+                    {(adopt === 1 || adopt === 0) && <Radio value={1}>通过</Radio>}
+                    {adopt === 2 && <Radio value={2}>通过</Radio>}
+                    {adopt === 3 && <Radio value={3}>通过</Radio>}
+                    {adopt === 4 && <Radio value={4}>通过</Radio>}
+                    <Radio value={0}>不通过</Radio>
+                  </Radio.Group>,
+                )}
+              </Form.Item>
+            </Col>
           )}
-          {adopt === 0 && (
-            <Form.Item label={`${text}意见`} {...forminladeLayout}>
-              {getFieldDecorator('opinion', {
-                rules: [{ required: true, message: `请输入${text}意见` }],
-                initialValue: info[0].opinion,
-              })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
-            </Form.Item>
+          {taskName === '自动化科负责人确认' && (
+            <Col span={8}>
+              <Form.Item label={`${text}结果`}>
+                {getFieldDecorator('result', {
+                  rules: [{ required: true, message: `请选择${text}结果` }],
+                  initialValue: info[0].result,
+                })(
+                  <Radio.Group onChange={handleAdopt}>
+                    <Radio value={1}>通过</Radio>
+                    <Radio value={0}>重新处理</Radio>
+                    <Radio value={2}>需求取消</Radio>
+                  </Radio.Group>,
+                )}
+              </Form.Item>
+            </Col>
           )}
 
-          {taskName === '需求复核' && (
-            <>
-              <Col span={8}>
-                <Form.Item label="是否影响业务">
-                  {getFieldDecorator('business', {
-                    valuePropName: 'checked',
-                    initialValue: Number(info[0].business),
-                  })(<Checkbox />)}
-                </Form.Item>
-              </Col>
-              <Col span={8}>
-                <Form.Item label="是否影响发布">
-                  {getFieldDecorator('releases', {
-                    valuePropName: 'checked',
-                    initialValue: Number(info[0].releases),
-                  })(<Checkbox />)}
-                </Form.Item>
-              </Col>
-            </>
+          <Col span={8}>
+            <Form.Item label={`${text}时间`}>
+              {getFieldDecorator('reviewTime', {
+                rules: [{ required, message: `请选择${text}时间` }],
+                initialValue: moment(info[0].reviewTime),
+              })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" />)}
+            </Form.Item>
+          </Col>
+          {taskName === '自动化科专责审核' && adopt !== 0 && (
+            <Col span={8}>
+              <Form.Item>
+                <Checkbox.Group
+                  defaultValue={resultmap.get(info[0].result)}
+                  options={options}
+                  onChange={values => handleChangeresult(values)}
+                />
+              </Form.Item>
+            </Col>
           )}
-        </Col>
-        <Col span={24}>
-          <Form.Item
-            label="上传附件"
-            {...forminladeLayout}
-            extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
-          >
-            <div style={{ width: 400 }}>
-              <SysUpload fileslist={files} ChangeFileslist={newvalue => setFilesList(newvalue)} />
-            </div>
-          </Form.Item>
-        </Col>
-        <Col span={8}>
-          <Form.Item label={`${text}人`}>
-            {getFieldDecorator('userName', {
-              rules: [{ required: true }],
-              initialValue: userinfo.userName,
-            })(<Input placeholder="请输入" disabled />)}
-          </Form.Item>
-        </Col>
-        <Col span={8} style={{ display: 'none' }}>
-          <Form.Item label={`${text}人ID`}>
-            {getFieldDecorator('userId', {
-              rules: [{ required: true }],
-              initialValue: userinfo.userId,
-            })(<Input placeholder="请输入" disabled />)}
-          </Form.Item>
-        </Col>
-        <Col span={8}>
-          <Form.Item label={`${text}人单位`}>
-            {getFieldDecorator('unit', {
-              rules: [{ required: true }],
-              initialValue: userinfo.unitName,
-            })(<Input placeholder="请输入" disabled />)}
-          </Form.Item>
-        </Col>
-        <Col span={8}>
-          <Form.Item label={`${text}人部门`}>
-            {getFieldDecorator('department', {
-              rules: [{ required: true }],
-              initialValue: userinfo.deptName,
-            })(<Input placeholder="请输入" disabled />)}
-          </Form.Item>
-        </Col>
-      </Row>
-    </Form>
+          <Col span={24}>
+            {adopt !== 0 && (
+              <Form.Item label={`${text}意见`} {...forminladeLayout}>
+                {getFieldDecorator('opinion', {
+                  rules: [{ required: false, message: `请输入${text}意见` }],
+                  initialValue: info[0].opinion,
+                })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
+              </Form.Item>
+            )}
+            {adopt === 0 && (
+              <Form.Item label={`${text}意见`} {...forminladeLayout}>
+                {getFieldDecorator('opinion', {
+                  rules: [{ required: true, message: `请输入${text}意见` }],
+                  initialValue: info[0].opinion,
+                })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
+              </Form.Item>
+            )}
+
+            {taskName === '需求复核' && (
+              <>
+                <Col span={8}>
+                  <Form.Item label="是否影响业务">
+                    {getFieldDecorator('business', {
+                      valuePropName: 'checked',
+                      initialValue: Number(info[0].business),
+                    })(<Checkbox />)}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="是否影响发布">
+                    {getFieldDecorator('releases', {
+                      valuePropName: 'checked',
+                      initialValue: Number(info[0].releases),
+                    })(<Checkbox />)}
+                  </Form.Item>
+                </Col>
+              </>
+            )}
+          </Col>
+          <Col span={24}>
+            <Form.Item
+              label="上传附件"
+              {...forminladeLayout}
+              extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
+            >
+              <div style={{ width: 400 }}>
+                <SysUpload fileslist={files} ChangeFileslist={newvalue => setFilesList(newvalue)} />
+              </div>
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label={`${text}人`}>
+              {getFieldDecorator('userName', {
+                rules: [{ required: true }],
+                initialValue: userinfo.userName,
+              })(<Input placeholder="请输入" disabled />)}
+            </Form.Item>
+          </Col>
+          <Col span={8} style={{ display: 'none' }}>
+            <Form.Item label={`${text}人ID`}>
+              {getFieldDecorator('userId', {
+                rules: [{ required: true }],
+                initialValue: userinfo.userId,
+              })(<Input placeholder="请输入" disabled />)}
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label={`${text}人单位`}>
+              {getFieldDecorator('unit', {
+                rules: [{ required: true }],
+                initialValue: userinfo.unitName,
+              })(<Input placeholder="请输入" disabled />)}
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label={`${text}人部门`}>
+              {getFieldDecorator('department', {
+                rules: [{ required: true }],
+                initialValue: userinfo.deptName,
+              })(<Input placeholder="请输入" disabled />)}
+            </Form.Item>
+          </Col>
+        </Row>
+      </Form>
+    </>
   );
 });
 

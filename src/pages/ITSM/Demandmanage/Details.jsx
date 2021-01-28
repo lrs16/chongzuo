@@ -59,10 +59,9 @@ function Details(props) {
       },
     });
     dispatch({
-      type: 'demandtodo/demandopenflow',
+      type: 'demandquery/detail',
       payload: {
         processInstanceId: mainId,
-        taskId,
       },
     });
   }, [mainId]);
@@ -137,8 +136,8 @@ function Details(props) {
   );
 }
 
-export default connect(({ demandtodo, loading }) => ({
+export default connect(({ demandtodo, demanquery, loading }) => ({
   records: demandtodo.records,
-  info: demandtodo.info,
+  info: demanquery.info,
   loading: loading.models.demandtodo,
 }))(Details);

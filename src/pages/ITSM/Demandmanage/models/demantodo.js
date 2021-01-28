@@ -32,14 +32,6 @@ export default {
         payload: response.data,
       });
     },
-    // 查询列表
-    *querylist({ payload }, { call, put }) {
-      const response = yield call(DemandQuery, { ...payload });
-      yield put({
-        type: 'save',
-        payload: response.data,
-      });
-    },
 
     // 编辑流转记录/itsm/event/form/getTaskByProcessId?processId=
     *demandrecords({ payload: { processId } }, { call, put }) {

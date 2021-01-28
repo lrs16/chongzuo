@@ -18,8 +18,13 @@ export async function DemandStartAndNext(params) {
 
 // 需求待办列表
 export async function DemandtoDoList(params) {
+  const { limit, page, userId, demandId, taskName } = params;
+  const registerPerson = params.registerPerson !== undefined ? params.registerPerson : '';
+  const demandType = params.demandType !== undefined ? params.demandType : '';
+  const title = params.title !== undefined ? params.title : '';
+  const creationTime = params.creationTime !== undefined ? params.creationTime : '';
   return request(
-    `/demand/todo/toDoList?limit=${params.limit}&page=${params.page}&userId=${params.userId}&demandId=${params.demandId}`,
+    `/demand/todo/toDoList?limit=${limit}&page=${page}&userId=${userId}&demandId=${demandId}&demandType=${demandType}&registerPerson=${registerPerson}&taskName=${taskName}&title=${title}`,
     {
       method: 'GET',
     },
@@ -44,7 +49,7 @@ export async function DemandProcess(processId) {
 export async function DemandImage(processId) {
   return request(`/demand/todo/processImage/${processId}`, {
     method: 'GET',
-    responseType: 'blob',
+    //  responseType: 'blob',
   });
 }
 
@@ -119,11 +124,31 @@ export async function TrackDelete(id) {
 
 // 需求查询列表
 export async function DemandQuery(params) {
-  console.log(params);
+  const { limit, page, demandId, taskName } = params;
+  const registerPerson = params.registerPerson !== undefined ? params.registerPerson : '';
+  const demandType = params.demandType !== undefined ? params.demandType : '';
+  const title = params.title !== undefined ? params.title : '';
+  const creationTime =
+    params.creationTime !== undefined ? params.creationTime.format('YYYY-MM-DD') : '';
   return request(
-    `/demand/query/demandQuery?limit=${params.limit}&page=${params.page}&demandId=${params.demandId}`,
+    `/demand/query/demandQuery?limit=${limit}&page=${page}&demandId=${demandId}&demandType=${demandType}&registerPerson=${registerPerson}&taskName=${taskName}&title=${title}`,
     {
       method: 'GET',
     },
   );
+}
+
+// 需求查询详情/demand/query/detail
+export async function QueryDetail(processInstanceId) {
+  return request(`/demand/query/detail?processInstanceId=${processInstanceId}`, {
+    method: 'GET',
+  });
+}
+
+// 导出 /demand/query/export
+export async function QueryExport() {
+  return request(`/demand/query/export`, {
+    method: 'GET',
+    responseType: 'blob',
+  });
 }

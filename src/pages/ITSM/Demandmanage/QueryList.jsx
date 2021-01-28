@@ -68,14 +68,14 @@ const columns = [
     title: '需求类型',
     dataIndex: 'demandType',
     key: 'demandType',
-    render: (text, record) => {
-      const demandtype = new Map([
-        ['001', '新增功能'],
-        ['002', '功能变更'],
-        ['003', '其他'],
-      ]);
-      return <>{demandtype.get(record.demandType)}</>;
-    },
+    // render: (text, record) => {
+    //   const demandtype = new Map([
+    //     ['001', '新增功能'],
+    //     ['002', '功能变更'],
+    //     ['003', '其他'],
+    //   ]);
+    //   return <>{demandtype.get(record.demandType)}</>;
+    // },
   },
   {
     title: '功能模块',
@@ -90,6 +90,11 @@ const columns = [
   },
   {
     title: '提出人',
+    dataIndex: 'proposer',
+    key: 'proposer',
+  },
+  {
+    title: '登记人',
     dataIndex: 'sender',
     key: 'sender',
   },
@@ -118,7 +123,7 @@ function QueryList(props) {
     validateFields((err, values) => {
       if (!err) {
         dispatch({
-          type: 'demandtodo/querylist',
+          type: 'demandquery/querylist',
           payload: {
             ...values,
             page: paginations.current,
@@ -131,7 +136,7 @@ function QueryList(props) {
 
   const searchdata = (values, page, size) => {
     dispatch({
-      type: 'demandtodo/querylist',
+      type: 'demandquery/querylist',
       payload: {
         ...values,
         limit: size,
@@ -190,6 +195,20 @@ function QueryList(props) {
     resetFields();
   };
 
+  const download = () => {
+    dispatch({
+      type: 'demandquery/download',
+    }).then(res => {
+      const filename = `${moment().format('YYYY-MM-DD HH:mm')}.xlsx`;
+      const url = window.URL.createObjectURL(res);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      a.click();
+      window.URL.revokeObjectURL(url);
+    });
+  };
+
   return (
     <PageHeaderWrapper title={pagetitle}>
       <Card>
@@ -246,7 +265,7 @@ function QueryList(props) {
                 </Col>
                 <Col span={8}>
                   <Form.Item label="发送时间">
-                    {getFieldDecorator('creationTime')(<DatePicker showTime />)}
+                    {getFieldDecorator('creationTime')(<DatePicker />)}
                   </Form.Item>
                 </Col>
               </>
@@ -310,7 +329,10 @@ function QueryList(props) {
           </Form>
         </Row>
         <div style={{ marginBottom: 24 }}>
-          <Button type="primary">导出数据</Button>
+          <Button type="primary" onClick={() => download()}>
+            {' '}
+            导出数据
+          </Button>
         </div>
         <Table
           loading={loading}
@@ -325,8 +347,8 @@ function QueryList(props) {
 }
 
 export default Form.create({})(
-  connect(({ demandtodo, loading }) => ({
-    list: demandtodo.list,
-    loading: loading.models.demandtodo,
+  connect(({ demandquery, loading }) => ({
+    list: demandquery.list,
+    loading: loading.models.demandquery,
   }))(QueryList),
 );

@@ -17,13 +17,6 @@ import styles from './style.less';
 
 const { Option } = Select;
 
-const progressmap = [
-  { key: '001', value: '计划中' },
-  { key: '002', value: '已开发' },
-  { key: '003', value: '已部署' },
-  { key: '003', value: '已发布' },
-];
-
 function Track(props) {
   const { dispatch, userinfo, demandId, trackslist, loading } = props;
   const [data, setData] = useState([]);
@@ -31,6 +24,7 @@ function Track(props) {
   const [uploadkey, setKeyUpload] = useState('');
   const [fileslist, setFilesList] = useState([]);
   const [newbutton, setNewButton] = useState(false);
+  const [progressmap, setProgressmap] = useState('');
 
   useEffect(() => {
     dispatch({
@@ -38,6 +32,17 @@ function Track(props) {
       payload: {
         demandId,
       },
+    });
+    dispatch({
+      type: 'dicttree/keyval',
+      payload: {
+        dictModule: 'demand',
+        dictType: 'schedule',
+      },
+    }).then(res => {
+      if (res.code === 200) {
+        setProgressmap(res.data.schedule);
+      }
     });
   }, []);
 
@@ -275,10 +280,10 @@ function Track(props) {
               defaultValue={text}
               onChange={e => handleFieldChange(e, 'developSchedule', record.key)}
             >
-              {progressmap.map(({ key, value }) => {
+              {progressmap.map(obj => {
                 return (
-                  <Option key={key} value={value}>
-                    {value}
+                  <Option key={obj.key} value={obj.val}>
+                    {obj.val}
                   </Option>
                 );
               })}
