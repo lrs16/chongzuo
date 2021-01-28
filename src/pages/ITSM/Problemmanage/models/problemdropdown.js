@@ -23,74 +23,124 @@ export default {
     //  问题数据来源
     *keyvalsource({ payload: { dictModule, dictType } }, { call,put }) {
       const response = yield call(querkeyVal, dictModule, dictType);
-      yield put({
-        type:'keyVallist',
-        payload: response
-      })
+      switch(dictType) {
+        case 'source':
+          yield put({
+            type:'keyVallist',
+            payload: response
+          })
+          break;
+        case 'type':
+          yield put({
+            type:'typelist',
+            payload: response
+          })
+          break;
+        case 'priority':
+          yield put({
+            type:'prioritylist',
+            payload: response
+          })
+          break;
+        case 'effect':
+          yield put({
+            type:'scopeList',
+            payload: response
+          })
+          break;
+        case 'handleresult':
+          yield put({
+            type:'handleList',
+            payload: response
+          })
+          break;
+        case 'project':
+          yield put({
+            type:'projectList',
+            payload: response
+          })
+          break;
+        case 'orderstate':
+          yield put({
+            type:'orderList',
+            payload: response
+          })
+          break;
+        case 'state':
+          yield put({
+            type:'stateList',
+            payload: response
+          })
+          break;
+        default:
+          break;
+        
+      }
+
     },
     //  问题分类
-    *keyvaltype({ payload: { dictModule, dictType } }, { call,put }) {
-      const response = yield call(querkeyVal, dictModule, dictType);
-      yield put({
-        type:'typelist',
-        payload: response
-      })
-    },
-    //  问题重要程度
-    *keyvalpriority({ payload: { dictModule, dictType } }, { call,put }) {
-      const response = yield call(querkeyVal, dictModule, dictType);
-      yield put({
-        type:'prioritylist',
-        payload: response
-      })
-    },
+    // *keyvaltype({ payload: { dictModule, dictType } }, { call,put }) {
+    //   const response = yield call(querkeyVal, dictModule, dictType);
+    //   yield put({
+    //     type:'typelist',
+    //     payload: response
+    //   })
+    // },
+    // //  问题重要程度
+    // *keyvalpriority({ payload: { dictModule, dictType } }, { call,put }) {
+    //   const response = yield call(querkeyVal, dictModule, dictType);
+    //   yield put({
+    //     type:'prioritylist',
+    //     payload: response
+    //   })
+    // },
 
-    //  问题影响范围
-    *keyvalScope({ payload: { dictModule, dictType } }, { call,put }) {
-      const response = yield call(querkeyVal, dictModule, dictType);
-      yield put({
-        type:'scopeList',
-        payload: response
-      })
-    },
+    // //  问题影响范围
+    // *keyvalScope({ payload: { dictModule, dictType } }, { call,put }) {
+    //   const response = yield call(querkeyVal, dictModule, dictType);
+    //   yield put({
+    //     type:'scopeList',
+    //     payload: response
+    //   })
+    // },
 
-    //  处理结果
-    *keyvalHandleresult({ payload: { dictModule, dictType } }, { call,put }) {
-      const response = yield call(querkeyVal, dictModule, dictType);
-      yield put({
-        type:'handleList',
-        payload: response
-      })
-    },
+    // //  处理结果
+    // *keyvalHandleresult({ payload: { dictModule, dictType } }, { call,put }) {
+    //   const response = yield call(querkeyVal, dictModule, dictType);
+    //   yield put({
+    //     type:'handleList',
+    //     payload: response
+    //   })
+    // },
 
-      //  所属项目
-    *keyvalProject({ payload: { dictModule, dictType } }, { call,put }) {
-      const response = yield call(querkeyVal, dictModule, dictType);
-      console.log('response: ', response);
-      yield put({
-        type:'projectList',
-        payload: response
-      })
-    },
+    //   //  所属项目
+    // *keyvalProject({ payload: { dictModule, dictType } }, { call,put }) {
+    //   const response = yield call(querkeyVal, dictModule, dictType);
+    //   console.log('response: ', response);
+    //   yield put({
+    //     type:'projectList',
+    //     payload: response
+    //   })
+    // },
 
-      //  当前处理环节
-    *keyvalstate({ payload: { dictModule, dictType } }, { call,put }) {
-      const response = yield call(querkeyVal, dictModule, dictType);
-      console.log('response: ', response);
-      yield put({
-        type:'stateList',
-        payload: response
-      })
-    },
-      //  工单状态
-    *keyvalorder({ payload: { dictModule, dictType } }, { call,put }) {
-      const response = yield call(querkeyVal, dictModule, dictType);
-      console.log('response: ', response);
-      yield put({
-        type:'orderList',
-        payload: response
-      })
-    },
+    //   //  当前处理环节
+    // *keyvalstate({ payload: { dictModule, dictType } }, { call,put }) {
+    //   const response = yield call(querkeyVal, dictModule, dictType);
+    //   console.log('response: ', response);
+    //   yield put({
+    //     type:'stateList',
+    //     payload: response
+    //   })
+    // },
+    //   //  工单状态
+    // *keyvalorder({ payload: { dictModule, dictType } }, { call,put }) {
+    //   const response = yield call(querkeyVal, dictModule, dictType);
+    //   console.log('response: ', response);
+    //   yield put({
+    //     type:'orderList',
+    //     payload: response
+    //   })
+    // },
   },
 
   reducers: {

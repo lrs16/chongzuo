@@ -1,9 +1,6 @@
 import React, { useState, useRef, useImperativeHandle,useEffect } from 'react';
-import { Row, Col, Form, Input, Select, Upload, Button, Checkbox, DatePicker } from 'antd';
+import { Row, Col, Form, Input, Select, DatePicker } from 'antd';
 import moment from 'moment';
-import Link from 'umi/link';
-import { RegistratContext } from '../Registration';
-import { phone_reg } from '@/utils/Regexp';
 import SysUpload from '@/components/SysUpload';
 
 const { Option } = Select;
@@ -14,7 +11,6 @@ let occurtime;
 const Registrat = React.forwardRef((props, ref) => {
   const { formItemLayout, forminladeLayout, files,ChangeFiles } = props;
   const { getFieldDecorator } = props.form;
-  // const { setActiveKey, setShow } = useContext(RegistratContext);
   const [fileslist, setFilesList] = useState([]);
   useEffect(() => {
     ChangeFiles(fileslist);
@@ -29,7 +25,6 @@ const Registrat = React.forwardRef((props, ref) => {
   );
 
   const {
-    list,
     newno,
     useInfo,
     register,
@@ -41,7 +36,6 @@ const Registrat = React.forwardRef((props, ref) => {
     project
   } = props;
 
-// console.log(scope,'scope');
   if(register) {
     if(register.registerOccurTime !== null) {
       occurtime = moment(register.registerOccurTime);
@@ -51,7 +45,6 @@ const Registrat = React.forwardRef((props, ref) => {
   } else {
     occurtime = moment(Date.now())
   }
-
 
   const required = true;
 
@@ -64,7 +57,6 @@ const Registrat = React.forwardRef((props, ref) => {
                 {getFieldDecorator('no', {
                   rules: [
                     {
-                      // required,
                       message: '请输入问题编号',
                     },
                   ],
@@ -130,7 +122,6 @@ const Registrat = React.forwardRef((props, ref) => {
                       )
                     }
                 </Select>,
-               
                 )}
               </Form.Item>
             </Col>
@@ -230,7 +221,6 @@ const Registrat = React.forwardRef((props, ref) => {
               </Form.Item>
             </Col> 
 
-            
             <Col span={8}>
               <Form.Item label="影响范围">
                 {getFieldDecorator('registerScope', {
@@ -257,16 +247,12 @@ const Registrat = React.forwardRef((props, ref) => {
               </Form.Item>
             </Col>
 
-      
-
             <Col span={8}>
               <Form.Item label="联系电话">
                 {getFieldDecorator('registerUserPhone', {
                   rules: [
                     {
                       required,
-                      // len: 11,
-                      // validator: phone_reg,
                       message: '请输入手机号码',
                     },
                   ],
@@ -315,7 +301,6 @@ const Registrat = React.forwardRef((props, ref) => {
             </Form.Item>
           </Col>
 
-
             <Col span={8}>
               <Form.Item label="填报人">
                 {getFieldDecorator('registerUser', {
@@ -329,7 +314,6 @@ const Registrat = React.forwardRef((props, ref) => {
                 {getFieldDecorator('registerUnit', {
                   rules: [
                     {
-                      // required,
                       message: '请输入填报人单位',
                     },
                   ],
@@ -348,7 +332,6 @@ const Registrat = React.forwardRef((props, ref) => {
                 {getFieldDecorator('registerDept', {
                   rules: [
                     {
-                      // required,
                       message: '请输入填报人部门',
                     },
                   ],
@@ -359,7 +342,6 @@ const Registrat = React.forwardRef((props, ref) => {
           </Form>
         </Row>
     </>
-   
   );
 });
 

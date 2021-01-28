@@ -156,7 +156,6 @@ function Workorder(props) {
 
   if (todoDetail.main) {
     currntStatus = Number(todoDetail.main.status);
-    console.log('currntStatus: ', currntStatus);
     confirmType = Number(todoDetail.confirmType);
      const editstate = todoDetail.editState;
     problemFlowid = todoDetail.main.id;
@@ -538,7 +537,7 @@ function Workorder(props) {
     const dictModule = 'problem';
     const dictType = 'handleresult';
     dispatch({
-      type: 'problemdropdown/keyvalHandleresult',
+      type: 'problemdropdown/keyvalsource',
       payload:{ dictModule, dictType}
     });
   }
@@ -802,14 +801,14 @@ function Workorder(props) {
                     overflowX: 'auto',
                   }}
                 >
-                  {problemFlowLogs.map(obj => {
+                  {problemFlowLogs.map((obj,index) => {
                     const desc = (
                       <div className={styles.stepDescription}>
                         处理人：{obj.formHandler}
                         <div>开始时间：{obj.startTime}</div>
                       </div>
                     );
-                    return <Step title={obj.name} description={desc} />;
+                    return <Step title={obj.name} description={desc} key={index}/>;
                   })}
                 </Steps>
 
@@ -1102,9 +1101,6 @@ function Workorder(props) {
         ))
       }
 
-      {/* {currntStatus > 65 && (
-        <Confirmationcountersignature countersignatureDetail={todoDetail} />
-      )} */}
 
     </PageHeaderWrapper>
   );

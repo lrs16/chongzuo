@@ -148,7 +148,6 @@ export async function problemHandleOrder(id) {
 
 //  查询详情
 export async function queryDetail(id) {
-  console.log('id: ', id);
   return request(`/itsm/problem/flow/getOrderDetail?id=${id}`)
 }
 

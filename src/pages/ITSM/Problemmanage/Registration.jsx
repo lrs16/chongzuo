@@ -63,52 +63,46 @@ function Registration(props) {
       type: 'problemmanage/fetchUseinfo',
     });
   };
-//  问题来源
-  const getSource = () => {
-    const dictModule = 'problem';
-    const dictType = 'source';
+
+  const getSourceapi = (dictModule,dictType) => {
     dispatch({
       type: 'problemdropdown/keyvalsource',
       payload:{ dictModule, dictType}
     });
   }
+//  问题来源
+  const getSource = () => {
+    const dictModule = 'problem';
+    const dictType = 'source';
+    getSourceapi(dictModule,dictType);
+  }
 //  问题分类
   const gettype = () => {
     const dictModule = 'problem';
     const dictType = 'type';
-    dispatch({
-      type: 'problemdropdown/keyvaltype',
-      payload:{ dictModule, dictType}
-    });
+    getSourceapi(dictModule,dictType);
   }
 //  重要程度
   const getpriority = () => {
     const dictModule = 'public';
     const dictType = 'priority';
-    dispatch({
-      type: 'problemdropdown/keyvalpriority',
-      payload:{ dictModule, dictType}
-    });
+    getSourceapi(dictModule,dictType);
   }
 //  影响范围
   const getscope = () => {
     const dictModule = 'public';
     const dictType = 'effect';
-    dispatch({
-      type: 'problemdropdown/keyvalScope',
-      payload:{ dictModule, dictType}
-    });
+    getSourceapi(dictModule,dictType);
   }
 
   // 所属项目
   const getProject = () => {
     const dictModule = 'public';
     const dictType = 'project';
-    dispatch({
-      type: 'problemdropdown/keyvalProject',
-      payload:{ dictModule, dictType}
-    });
+    getSourceapi(dictModule,dictType);
   }
+
+
 
   useEffect(() => {
     getUserinfo();

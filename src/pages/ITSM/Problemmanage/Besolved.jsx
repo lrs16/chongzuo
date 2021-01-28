@@ -96,68 +96,55 @@ function Besolved(props) {
     stateList,
     loading,
   } = props;
-  console.log(stateList,'stateList');
   const required = true;
   const [expand, setExpand] = useState(false);
   const [paginations, setPaginations] = useState({ current: 1, pageSize: 10 });
   const [selectedRows, setSelectedRows] = useState([]);
 
-
-  //  问题来源
-  const getSource = () => {
-    const dictModule = 'problem';
-    const dictType = 'source';
+  const getSourceapi = (dictModule,dictType) => {
     dispatch({
       type: 'problemdropdown/keyvalsource',
       payload:{ dictModule, dictType}
     });
   }
+//  问题来源
+  const getSource = () => {
+    const dictModule = 'problem';
+    const dictType = 'source';
+    getSourceapi(dictModule,dictType);
+  }
 //  问题分类
   const gettype = () => {
     const dictModule = 'problem';
     const dictType = 'type';
-    dispatch({
-      type: 'problemdropdown/keyvaltype',
-      payload:{ dictModule, dictType}
-    });
+    getSourceapi(dictModule,dictType);
   }
 //  重要程度
   const getpriority = () => {
     const dictModule = 'public';
     const dictType = 'priority';
-    dispatch({
-      type: 'problemdropdown/keyvalpriority',
-      payload:{ dictModule, dictType}
-    });
+    getSourceapi(dictModule,dictType);
   }
 //  影响范围
   const getscope = () => {
     const dictModule = 'public';
     const dictType = 'effect';
-    dispatch({
-      type: 'problemdropdown/keyvalScope',
-      payload:{ dictModule, dictType}
-    });
+    getSourceapi(dictModule,dictType);
   }
 
   // 所属项目
   const getProject = () => {
     const dictModule = 'public';
     const dictType = 'project';
-    dispatch({
-      type: 'problemdropdown/keyvalProject',
-      payload:{ dictModule, dictType}
-    });
+    getSourceapi(dictModule,dictType);
   }
+
 
   // 当前状态
   const getstate = () => {
     const dictModule = 'problem';
     const dictType = 'state';
-    dispatch({
-      type: 'problemdropdown/keyvalstate',
-      payload:{ dictModule, dictType}
-    });
+    getSourceapi(dictModule,dictType);
   }
 
   useEffect(() => {
@@ -244,8 +231,8 @@ function Besolved(props) {
         return;
       }
       const obj = values;
-      if(values.registerOccurTime) {
-        obj.registerOccurTime = (values.registerOccurTime).format('YYYY-MM-DD HH:mm:ss');
+      if(values.registerTime) {
+        obj.registerTime = (values.registerTime).format('YYYY-MM-DD HH:mm:ss');
       }
       searchdata(obj, paginations.current, paginations.pageSize);
     });
@@ -316,7 +303,7 @@ function Besolved(props) {
               <>
                 <Col span={8}>
                   <Form.Item label="问题标题">
-                    {getFieldDecorator('questionTitle', {})(<Input />)}
+                    {getFieldDecorator('title', {})(<Input />)}
                   </Form.Item>
                 </Col>
               </>
@@ -326,7 +313,7 @@ function Besolved(props) {
               <>
                 <Col span={8}>
                   <Form.Item label="问题来源">
-                    {getFieldDecorator('sourceProblem', {})
+                    {getFieldDecorator('source', {})
                     (
                     <Select placeholder="请选择">
                       {
@@ -345,7 +332,7 @@ function Besolved(props) {
 
                 <Col span={8}>
                   <Form.Item label="问题分类">
-                    {getFieldDecorator('problemClass', {})
+                    {getFieldDecorator('type', {})
                     (
                     <Select placeholder="请选择">
                       {
@@ -363,7 +350,7 @@ function Besolved(props) {
                 </Col>
 
                 <Col span={8}>
-                  <Form.Item label="发送人">{getFieldDecorator('Sender', {})(<Input />)}</Form.Item>
+                  <Form.Item label="发送人">{getFieldDecorator('registerUser', {})(<Input />)}</Form.Item>
                 </Col>
               </>
             )}
@@ -372,7 +359,7 @@ function Besolved(props) {
               <>
                 <Col span={8}>
                   <Form.Item label="发送时间">
-                    {getFieldDecorator('registerOccurTime', {
+                    {getFieldDecorator('registerTime', {
                     })
                     (<DatePicker />)}
                   </Form.Item>
@@ -380,7 +367,7 @@ function Besolved(props) {
 
                 <Col span={8}>
                   <Form.Item label="重要程度">
-                    {getFieldDecorator('priority', {})
+                    {getFieldDecorator('importance', {})
                     (
                      <Select placeholder="请选择">
                       {

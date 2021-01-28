@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
 import Link from 'umi/link';
-import moment from 'moment';
 import { Form, Card, Input, Button, Row, Col, Table, Select, DatePicker } from 'antd';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
@@ -81,85 +80,68 @@ function Besolved(props) {
     dispatch,
     besolveList,
     keyVallist,
-    typelist,
     prioritylist,
     scopeList,
-    projectList,
     orderList,
     loading,
   } = props;
-  console.log(orderList,'orderList');
   const [expand, setExpand] = useState(false);
   const [paginations, setPaginations] = useState({ current: 1, pageSize: 10 });
   const [selectedRows, setSelectedRows] = useState([]);
 
   const getQuery = () => {
-    validateFields((err, values) => {
         dispatch({
           type: 'problemmanage/queryList',
           payload: {
-            // ...values,
             current: paginations.current,
             pageSize: paginations.pageSize,
           },
         });
-    });
   };
-    //  问题来源
-    const getSource = () => {
-      const dictModule = 'problem';
-      const dictType = 'source';
-      dispatch({
-        type: 'problemdropdown/keyvalsource',
-        payload:{ dictModule, dictType}
-      });
-    }
-  //  问题分类
+  const getSourceapi = (dictModule,dictType) => {
+    dispatch({
+      type: 'problemdropdown/keyvalsource',
+      payload:{ dictModule, dictType}
+    });
+  }
+//  问题来源
+  const getSource = () => {
+    const dictModule = 'problem';
+    const dictType = 'source';
+    getSourceapi(dictModule,dictType);
+  }
+//  问题分类
   const gettype = () => {
     const dictModule = 'problem';
     const dictType = 'type';
-    dispatch({
-      type: 'problemdropdown/keyvaltype',
-      payload:{ dictModule, dictType}
-    });
+    getSourceapi(dictModule,dictType);
   }
 //  重要程度
   const getpriority = () => {
     const dictModule = 'public';
     const dictType = 'priority';
-    dispatch({
-      type: 'problemdropdown/keyvalpriority',
-      payload:{ dictModule, dictType}
-    });
+    getSourceapi(dictModule,dictType);
   }
 //  影响范围
   const getscope = () => {
     const dictModule = 'public';
     const dictType = 'effect';
-    dispatch({
-      type: 'problemdropdown/keyvalScope',
-      payload:{ dictModule, dictType}
-    });
+    getSourceapi(dictModule,dictType);
   }
 
   // 所属项目
   const getProject = () => {
     const dictModule = 'public';
     const dictType = 'project';
-    dispatch({
-      type: 'problemdropdown/keyvalProject',
-      payload:{ dictModule, dictType}
-    });
+    getSourceapi(dictModule,dictType);
   }
+
 
   // 问题工单
   const getorder = () => {
     const dictModule = 'problem';
     const dictType = 'orderstate';
-    dispatch({
-      type: 'problemdropdown/keyvalorder',
-      payload:{ dictModule, dictType}
-    });
+    getSourceapi(dictModule,dictType);
   }
 
   useEffect(() => {
@@ -212,8 +194,8 @@ function Besolved(props) {
   };
 
   const rowSelection = {
-    onChange: (selectedRowKeys, selectedRows) => {
-      setSelectedRows(selectedRows);
+    onChange: (selectedRowKeys, select) => {
+      setSelectedRows(select);
     },
   };
 
@@ -234,8 +216,8 @@ function Besolved(props) {
     });
     validateFields((err, values) => {
       const obj = values;
-      if(values.registerOccurTime){
-        obj.registerOccurTime = (values.registerOccurTime).format('YYYY-MM-DD HH:mm:ss');
+      if(values.createTimeBegin){
+        obj.createTimeBegin = (values.createTimeBegin).format('YYYY-MM-DD HH:mm:ss');
       }
       if (err) {
         return;
@@ -256,7 +238,7 @@ function Besolved(props) {
       (downparams.registerUserId) = selectList.toString();
 
       if(values.createTimeBegin) {
-        (values.createTimeBegin).format('YYYY-MM-DD')
+        downparams.createTimeBegin = (values.createTimeBegin).format('YYYY-MM-DD')
       }
       if(!err) {
         dispatch({
@@ -302,8 +284,8 @@ function Besolved(props) {
                   <Select placeholder="请选择">
                       {
                         orderList.orderstate && orderList.orderstate.length  && (
-                          (orderList.orderstate).map(({ key, val }) => (
-                            <Option key={key} value={key}>
+                          (orderList.orderstate).map(({ key, val },index) => (
+                            <Option key={index} value={key}>
                               {val}
                             </Option>
                           ))
@@ -349,7 +331,7 @@ function Besolved(props) {
 
                 <Col span={8}>
                   <Form.Item label="问题分类">
-                    {getFieldDecorator('problemClass', {})
+                    {getFieldDecorator('type', {})
                     (
                     <Select placeholder="请选择">
                       {
@@ -419,7 +401,7 @@ function Besolved(props) {
                 <Col span={8}>
                   <Form.Item label="发送时间">
                     {getFieldDecorator(
-                      'registerOccurTime',
+                      'createTimeBegin',
                       {},
                     )(
                       <DatePicker />
