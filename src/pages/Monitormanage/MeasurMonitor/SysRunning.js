@@ -10,6 +10,13 @@ import { ChartCard } from '@/components/Charts';
 // import SelectArea from '@/components/Selects/SelectArea';
 // import GridContent from '@/components/PageHeaderWrapper/GridContent';
 
+let tjsj = {
+  webOnline: '', // 主站在线
+  fkpb: '', // 负控配变数据召测
+  dy: '', // 低压
+  cz: '', // 厂站
+};
+
 const changeTree = datas => {
   const newArr = [];
   if (!Array.isArray(datas)) {
@@ -19,11 +26,13 @@ const changeTree = datas => {
   vote.name = 'login';
   vote.children = datas;
   newArr.push(vote);
-
+  if (datas.length > 0) {
+    tjsj.webOnline = datas[0].date;
+  }
   return newArr;
 };
 
-const changefacetree = datas => {
+const changefacetree = (datas, type) => {
   const newArr = [];
   const data = [];
   if (!Array.isArray(datas)) {
@@ -39,6 +48,13 @@ const changefacetree = datas => {
   vote.area = '计量中心';
   vote.children = datas;
   newArr.push(vote);
+
+  // 设置统计时间
+  if (datas.length > 0) {
+    if ('fkpb' === type) tjsj.fkpb = datas[0].date;
+    if ('dy' === type) tjsj.dy = datas[0].date;
+    if ('cz' === type) tjsj.cz = datas[0].date;
+  }
 
   return newArr;
 };
@@ -58,41 +74,46 @@ class SysRunning extends Component {
     });
     dispatch({
       type: 'sysrunning/fetchZCdist',
-      payload: { type: '配变' },
+      payload: { type: '负控配变数据召测' },
     });
     dispatch({
       type: 'sysrunning/fetchZCcontrol',
-      payload: { type: '费控' },
+      payload: { type: '低压数据召测' },
+    });
+    dispatch({
+      type: 'sysrunning/fetchZCdown',
+      payload: { type: '厂站数据召读' },
     });
   }
 
   render() {
     const {
       loading,
-      sysrunning: { onlinestate, ZCdist, ZCcontrol },
+      sysrunning: { onlinestate, ZCdist, ZCcontrol, ZCdown },
     } = this.props;
     const onlinestates = changeTree(onlinestate);
-    const ZCdists = changefacetree(ZCdist);
-    const ZCcontrols = changefacetree(ZCcontrol);
+    const ZCdists = changefacetree(ZCdist, 'fkpb'); // 负控配变数据召测
+    const ZCcontrols = changefacetree(ZCcontrol, 'dy'); // 低压
+    const ZCdowns = changefacetree(ZCdown, 'cz'); // 厂站
     return (
       <div>
         <Row gutter={24} type="flex">
           <Col xl={12} xs={24} style={{ marginBottom: 24 }}>
-            <ChartCard title="登录检测" contentHeight={350}>
+            <ChartCard title={`登录检测  ${tjsj.webOnline}`} contentHeight={350}>
               <Spin spinning={loading} style={{ background: '#ffffff' }}>
                 {onlinestates.length === 0 && <Empty style={{ height: '250px' }} />}
                 {onlinestates.length > 0 && (
                   <Treecompactbox
                     datas={onlinestates[0]}
                     height={350}
-                    padding={[15, 130, 15, 20]}
+                    padding={[15, 180, 15, 20]}
                   />
                 )}
               </Spin>
             </ChartCard>
           </Col>
           <Col xl={12} xs={24} style={{ marginBottom: 24 }}>
-            <ChartCard title="数据召测-费控" contentHeight={350}>
+            <ChartCard title={`数据召测-低压 ${tjsj.fkpb}`} contentHeight={350}>
               {/* <div
                 style={{
                   margin: '10px',
@@ -108,13 +129,13 @@ class SysRunning extends Component {
               <Spin spinning={loading} style={{ background: '#ffffff' }}>
                 {ZCcontrols.length === 0 && <Empty style={{ height: '250px' }} />}
                 {ZCcontrols.length > 0 && (
-                  <EdgeLine datas={ZCcontrols[0]} height={350} padding={[15, 60, 15, 50]} />
+                  <EdgeLine datas={ZCcontrols[0]} height={350} padding={[15, 90, 15, 50]} />
                 )}
               </Spin>
             </ChartCard>
           </Col>
           <Col xl={12} xs={24} style={{ marginBottom: 24 }}>
-            <ChartCard title="数据召测-负控配变" contentHeight={350}>
+            <ChartCard title={`数据召测-负控配变 ${tjsj.fkpb}`} contentHeight={350}>
               {/* <div
                 style={{
                   margin: '10px',
@@ -130,7 +151,18 @@ class SysRunning extends Component {
               <Spin spinning={loading} style={{ background: '#ffffff' }}>
                 {ZCdists.length === 0 && <Empty style={{ height: '250px' }} />}
                 {ZCdists.length > 0 && (
-                  <EdgeLine datas={ZCdists[0]} height={350} padding={[15, 60, 15, 50]} />
+                  <EdgeLine datas={ZCdists[0]} height={350} padding={[15, 90, 15, 50]} />
+                )}
+              </Spin>
+            </ChartCard>
+          </Col>
+
+          <Col xl={12} xs={24} style={{ marginBottom: 24 }}>
+            <ChartCard title={`数据召测-厂站 ${tjsj.cz}`} contentHeight={350}>
+              <Spin spinning={loading} style={{ background: '#ffffff' }}>
+                {ZCdowns.length === 0 && <Empty style={{ height: '250px' }} />}
+                {ZCdowns.length > 0 && (
+                  <EdgeLine datas={ZCdowns[0]} height={350} padding={[15, 90, 15, 50]} />
                 )}
               </Spin>
             </ChartCard>

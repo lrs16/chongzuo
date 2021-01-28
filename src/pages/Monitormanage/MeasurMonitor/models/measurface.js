@@ -54,7 +54,7 @@ export default {
       const response = yield call(queryMaintable);
       yield put({
         type: 'gettable',
-        payload: response.data,
+        payload: response.data.records,
       });
     },
     // 费控指令
@@ -62,7 +62,7 @@ export default {
       const response = yield call(queryOrder);
       yield put({
         type: 'getorder',
-        payload: response.data,
+        payload: response.data.records,
       });
     },
   },

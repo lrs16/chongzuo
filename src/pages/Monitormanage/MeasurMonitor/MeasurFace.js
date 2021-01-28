@@ -21,7 +21,7 @@ const changearchdata = datas => {
     const arrss = arr[i];
     for (let t = 0; t < arrss.length; t += 1) {
       const vote = {};
-      vote.clock = moment(arrss[t].date).format('HH');
+      vote.clock = moment(arrss[t].date).format('MM/DD HH:mm');
       vote.alert = arrss[t].flag;
       vote.value = arrss[t].total;
       vote.name = arrss[t].type;
@@ -39,9 +39,9 @@ const changehour = datas => {
   for (let i = 0; i < datas.length; i += 1) {
     const vote = {};
     vote.value = datas[i].total;
-    vote.date = moment(datas[i].date).format('HH');
+    vote.date = moment(datas[i].date).format('MM/DD HH:mm');
     vote.alert = false;
-    vote.alertvalue = 10;
+    vote.alertvalue = datas[i].alarm;
     newArr.push(vote);
   }
   return newArr;
@@ -55,8 +55,12 @@ const changetable = datas => {
     const vote = {};
     vote.name = '未同步';
     vote.value = datas[i].total;
-    vote.clock = moment(datas[i].date).format('HH');
+    vote.clock = moment(datas[i].date).format('MM/DD HH:mm');
+    // vote.clock = moment(datas[i].date).format('MM/DD HH:mm');
     newArr.push(vote);
+  }
+  if (datas.length > 0) {
+    tjsj.cldzb = datas[0].date;
   }
   return newArr;
 };
@@ -70,7 +74,9 @@ const changefacetree = datas => {
   vote.area = '计量中心';
   vote.children = datas;
   newArr.push(vote);
-
+  if (datas.length > 0) {
+    tjsj.zdzc = datas[0].date;
+  }
   return newArr;
 };
 const Filecontent = '阈值：电能表<2000   终端<1000   采集关系<10000';
@@ -120,6 +126,9 @@ const Donutdata = [
 //   ],
 // };
 
+let tjsj = {
+  zdzc: '', // 自动召测测试
+};
 // 有用
 const Filecols = {
   clock: {
@@ -159,7 +168,7 @@ const Tablecols = {
 };
 const timecols = {
   value: {
-    min: -10,
+    min: 0,
     max: 50,
     range: [0, 1],
     alias: '超时记录数',
@@ -197,13 +206,13 @@ class MeasurFace extends Component {
     //   type: 'measurface/fetchsettl',
     // });
     dispatch({
-      type: 'measurface/fetcharch',
+      type: 'measurface/fetcharch', // 档案同步
     });
     dispatch({
-      type: 'measurface/fetchissue',
+      type: 'measurface/fetchissue', // 参数下发
     });
     dispatch({
-      type: 'measurface/fetchfile',
+      type: 'measurface/fetchfile', //
     });
     dispatch({
       type: 'measurface/fetchtable',
@@ -241,6 +250,7 @@ class MeasurFace extends Component {
     const archdatas = changearchdata(archdata);
     const orderdatas = changehour(orderdata);
     const tabledatas = changetable(tabledata);
+    // console.log('打印',tabledata.records);
     const facetree = changefacetree(filetdata);
     return (
       <PageHeaderWrapper title="接口数据核查情况">
@@ -301,7 +311,10 @@ class MeasurFace extends Component {
               </ChartCard>
             </Col>
             <Col xl={12} xs={24} style={{ marginBottom: 24 }}>
-              <ChartCard title="参数下发（1h/刷新）" contentHeight={350}>
+              <ChartCard
+                title={`参数下发  ${issuedata.length > 0 ? issuedata[0].date : ''}`}
+                contentHeight={350}
+              >
                 <Spin spinning={loading} style={{ background: '#ffffff' }}>
                   {issuedata.length === 0 && <Empty style={{ height: '250px' }} />}
                   {issuedata.length > 0 && (
@@ -316,12 +329,12 @@ class MeasurFace extends Component {
               </ChartCard>
             </Col>
             <Col xl={12} xs={24} style={{ marginBottom: 24 }}>
-              <ChartCard title="1h/自动召测测试" contentHeight={350}>
+              <ChartCard title={`自动召测测试  ${tjsj.zdzc}`} contentHeight={350}>
                 <div style={{ margin: '0px 0 0 0' }}>
                   <Spin spinning={loading} style={{ background: '#ffffff' }}>
                     {facetree.length === 0 && <Empty style={{ height: '250px' }} />}
                     {facetree.length !== 0 && (
-                      <EdgeLine datas={facetree[0]} height={350} padding={[20, 60, 10, 50]} />
+                      <EdgeLine datas={facetree[0]} height={350} padding={[20, 100, 10, 50]} />
                     )}
                   </Spin>
                 </div>

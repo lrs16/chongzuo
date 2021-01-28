@@ -88,14 +88,14 @@ class EdgeLine extends Component {
                   if (hasChildren === false) {
                     if (state === '失败') {
                       return {
-                        content: `${area}(招测${state})`,
+                        content: `${area}(召测${state})`,
                         style: {
                           fill: 'red',
                         },
                       };
                     }
                     return {
-                      content: `${area}(招测${state})`,
+                      content: `${area}(召测${state})`,
                       style: {
                         fill: '#444',
                       },

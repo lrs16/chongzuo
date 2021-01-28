@@ -4,12 +4,18 @@ import { connect } from 'dva';
 // import numeral from 'numeral';
 import moment from 'moment';
 import { Row, Col, Empty, Spin, Card, Form, Input, Button, DatePicker, Table } from 'antd';
-import Columnar from '@/components/CustomizeCharts/Columnar';
+// import Columnar from '@/components/CustomizeCharts/Columnar';
+import GroupColumnar from '@/components/CustomizeCharts/GroupColumnar';
 import SeriesLine from '@/components/CustomizeCharts/SeriesLine';
 import { ChartCard } from '@/components/Charts';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
 const { RangePicker } = DatePicker;
+
+let tjsj = {
+  xzl: '', // 在线率 统计时间
+  xzl_sjsj: '', // 在线率 数据时间
+};
 
 const dataArr = datas => {
   const newArr = [];
@@ -17,12 +23,34 @@ const dataArr = datas => {
     return newArr;
   }
   for (let i = 0; i < datas.length; i += 1) {
-    const vote = {};
-    vote.rate = Math.floor(datas[i].rate * 100);
-    vote.type = datas[i].area.substring(0, 2);
+    let vote = {};
+    vote.rate = datas[i].zbzxl; // Math.floor(datas[i].rate * 100);
+    vote.type = '专变';
+    vote.name = datas[i].gddwmc.substring(0, 2);
     newArr.push(vote);
-  }
 
+    let gbzxl = {};
+    gbzxl.rate = datas[i].gbzxl; // Math.floor(datas[i].rate * 100);
+    gbzxl.type = '公变'; // Math.floor(datas[i].rate * 100);
+    gbzxl.name = datas[i].gddwmc.substring(0, 2);
+    newArr.push(gbzxl);
+
+    let dyzxl = {};
+    dyzxl.rate = datas[i].dyzxl; // Math.floor(datas[i].rate * 100);
+    dyzxl.type = '低压'; // Math.floor(datas[i].rate * 100);
+    dyzxl.name = datas[i].gddwmc.substring(0, 2);
+    newArr.push(dyzxl);
+
+    let czzxl = {};
+    czzxl.rate = datas[i].czzxl; // Math.floor(datas[i].rate * 100);
+    czzxl.type = '厂站'; // Math.floor(datas[i].rate * 100);
+    czzxl.name = datas[i].gddwmc.substring(0, 2);
+    newArr.push(czzxl);
+  }
+  if (datas.length > 0) {
+    tjsj.xzl = datas[0].cjsj;
+    tjsj.xzl_sjsj = moment(datas[0].sjsj).format('YYYY-MM-DD');
+  }
   return newArr;
 };
 const dataLine = datas => {
@@ -34,7 +62,7 @@ const dataLine = datas => {
     const vote = {};
     vote.value = parseInt(datas[i].value);
     vote.name = datas[i].type;
-    vote.clock = moment(datas[i].date).format('HH');
+    vote.clock = moment(datas[i].date).format('MM/DD HH:mm');
     newArr.push(vote);
   }
 
@@ -171,18 +199,18 @@ class DatabaseTerminal extends Component {
 
     const operatingmodes = dataArr(operatingmode);
     const storagechecks = dataLine(storagecheck);
-    const thehours = dataLine(thehour);
+    const thehours = {}; // dataLine(thehour);
     // console.log(operatingmode);
     return (
       <PageHeaderWrapper title="终端在线和入库">
-        <h3>终端在线</h3>
-        <ChartCard contentHeight={350} style={{ marginBottom: 24 }}>
+        <h3>终端在线 {`${tjsj.xzl_sjsj}`}</h3>
+        <ChartCard title={`统计时间 ${tjsj.xzl}`} contentHeight={350} style={{ marginBottom: 24 }}>
           <Spin spinning={loading} style={{ background: '#ffffff' }}>
             {(operatingmodes.length === 0 || operatingmode === undefined) && (
               <Empty style={{ height: '250px' }} />
             )}
             {operatingmodes.length > 0 && (
-              <Columnar
+              <GroupColumnar
                 data={operatingmodes}
                 height={350}
                 scale={scale}
@@ -191,7 +219,7 @@ class DatabaseTerminal extends Component {
             )}
           </Spin>
         </ChartCard>
-        <h3>入库核查</h3>
+        <h3>日冻结电能量(非厂站采集入库) 数量</h3>
         <ChartCard contentHeight={350} style={{ marginBottom: 24 }}>
           <Spin spinning={loading} style={{ background: '#ffffff' }}>
             {storagechecks.length === 0 && <Empty style={{ height: '250px' }} />}

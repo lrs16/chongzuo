@@ -11,17 +11,17 @@ export async function queryFacadata(params) {
 
 // 请求完整率，检查完毕
 export async function queryCompleterate(sortarea) {
-  return request(`/monitor/gatherKpi/wzl?area=${sortarea}`);
+  return request(`/monitor/gatherKpi/wzl?currentPage=1&pageSize=1&area=${sortarea}`);
 }
 
 // 终端覆盖率，检查完毕
 export async function queryCoverage(sortarea) {
-  return request(`/monitor/gatherKpi/fgl?area=${sortarea}`);
+  return request(`/monitor/gatherKpi/fgl?currentPage=1&pageSize=1&area=${sortarea}`);
 }
 
 // 抄表率,检查完毕
 export async function queryMeterread(sortarea) {
-  return request(`/monitor/gatherKpi/cbl?area=${sortarea}`);
+  return request(`/monitor/gatherKpi/cbl?currentPage=1&pageSize=1&area=${sortarea}`);
 }
 
 // 关口零点采集，检查完毕
@@ -40,8 +40,8 @@ export async function querySales(sortarea) {
 }
 
 // 关口供电量，检查完毕
-export async function querySupply(sortarea) {
-  return request(`/monitor/gatherKpi/gdl?area=${sortarea}`);
+export async function querySupply(area) {
+  return request(`/monitor/gatherKpi/gdl?currentPage=1&pageSize=12&area=${area}`);
 }
 
 // 抄表结算，检查完毕(后端未完成)
@@ -51,7 +51,7 @@ export async function querySettlement() {
 
 // 档案同步，检查完毕
 export async function queryArchives() {
-  return request(`/monitor/interfaceCheck/datbjk`);
+  return request(`/monitor/interfaceCheck/datbjk?currentPage=1&pageSize=12`);
 }
 
 // 参数下发，检查完毕
@@ -66,7 +66,7 @@ export async function queryFiletest() {
 
 // 测量点主表生成Main table，检查完毕
 export async function queryMaintable() {
-  return request(`/monitor/interfaceCheck/cldzbsc`);
+  return request(`/monitor/interfaceCheck/cldzbsc?currentPage=1&pageSize=12`);
 }
 
 // 费控指令-KAFKA指令超时order，检查完毕

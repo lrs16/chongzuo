@@ -21,11 +21,15 @@ export default {
     supplydata: [],
   },
 
+  // Effect 被称为副作用，在我们的应用中，最常见的就是异步操作，Effects 的最终流向是通过 Reducers 改变 State。
+  // 核心需要关注下 put, call, select。
   effects: {
     *fetchcomplete({ payload: { area } }, { call, put }) {
+      // call 触发service里面的方法
+      // call的第一个参数是你要调用的函数，第二个参数开始是你要传递的参数，可一 一传递。
       const response = yield call(queryCompleterate, area);
       yield put({
-        type: 'getcomplete',
+        type: 'getcomplete', // 跟 Reducers 关联
         payload: response.data,
       });
     },
@@ -59,8 +63,8 @@ export default {
     },
 
     // 售电量
-    *fetchsales({ payload: { sortarea } }, { call, put }) {
-      const response = yield call(querySales, sortarea);
+    *fetchsales({ payload: { area } }, { call, put }) {
+      const response = yield call(querySales, area);
       yield put({
         type: 'getsales',
         payload: response.data,
@@ -68,8 +72,8 @@ export default {
     },
 
     // 供电量
-    *fetchsupply({ payload: { sortarea } }, { call, put }) {
-      const response = yield call(querySupply, sortarea);
+    *fetchsupply({ payload: { area } }, { call, put }) {
+      const response = yield call(querySupply, area);
       yield put({
         type: 'getsupply',
         payload: response.data,

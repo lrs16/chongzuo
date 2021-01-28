@@ -30,51 +30,52 @@ const selectoption = [
   '贺州供电局',
 ];
 const { Option } = Select;
+
+// 声明变量保存统计时间
+let tjsj = {
+  cjwzl: '', // 采集完整率
+  zdfgl: '', // 终端复盖率
+  zdcbl: '', // 自动抄表率
+  gk0dcj: '', // 关口0点采集
+  gkzdcj: '', // 关口整点点采集
+};
 const dataArr = datas => {
   const newArr = [];
-  if (!Array.isArray(datas)) {
+  if (!Array.isArray(datas.records)) {
     return newArr;
   }
-  for (let i = 0; i < datas.length; i += 1) {
+  const records = datas.records;
+  for (let i = 0; i < records.length; i += 1) {
     const vote = {};
-    vote.rate = datas[i].rate;
-    vote.type = datas[i].type;
-    vote.alertvalue = 90;
+    vote.rate = records[i].value;
+    vote.type = records[i].type;
+    vote.alertvalue = records[i].alarm;
     newArr.push(vote);
   }
 
+  tjsj.cjwzl = records[0].tjsj;
   return newArr;
 };
 
-const celldata = datas => {
-  const data = datas[0];
-  const textmaps = new Map([
-    ['tddc', '统调电厂'],
-    ['dfdc', '地方电厂'],
-    ['bdz', '变电站'],
-    ['zb', '专变'],
-    ['gb', '公变'],
-    ['dy', '低压'],
-  ]);
+const celldata = (datas, type) => {
+  let records = datas.records;
   const newArr = [];
-  if (!Array.isArray(datas)) {
+  if (!Array.isArray(records)) {
     return newArr;
   }
-  if (data !== undefined) {
-    Object.keys(data).map(key => {
-      //  console.log(data[key]);// key=>属性名    data[key]=>属性值
-      if (key !== 'dqbm') {
-        newArr.push({
-          type: textmaps.get(key),
-          rate: data[key],
-          alertvalue: 90,
-        });
-      }
-
-      return newArr;
-    });
-    return newArr.slice(2);
+  for (let i = 0; i < records.length; i += 1) {
+    const vote = {};
+    vote.rate = records[i].value;
+    vote.type = records[i].type;
+    vote.alertvalue = records[i].alarm;
+    newArr.push(vote);
   }
+  if ('fgl' === type) {
+    tjsj.zdfgl = records[0].tjsj;
+  } else if ('cbl' === type) {
+    tjsj.zdcbl = records[0].tjsj;
+  }
+  return newArr;
 };
 
 const changedate = datas => {
@@ -85,10 +86,14 @@ const changedate = datas => {
   for (let i = 0; i < datas.length; i += 1) {
     const vote = {};
     vote.value = datas[i].data;
-    vote.date = moment(datas[i].date).format('MM/DD');
-    vote.alertvalue = 27000;
+    vote.date = moment(datas[i].fssj).format('MM/DD');
+    vote.alertvalue = datas[i].alarm;
     newArr.push(vote);
   }
+  if (datas.length > 0) {
+    tjsj.gk0dcj = datas[datas.length - 1].date;
+  }
+
   return newArr;
 };
 
@@ -97,18 +102,26 @@ const changehour = datas => {
   if (!Array.isArray(datas)) {
     return newArr;
   }
+  datas = datas.reverse();
   for (let i = 0; i < datas.length; i += 1) {
     const vote = {};
     vote.value = datas[i].data;
-    vote.date = datas[i].hour;
-    vote.alertvalue = 0;
+    // vote.date = datas[i].hour;
+    vote.date = moment(datas[i].fssj).format('MM/DD HH');
+    vote.alertvalue = datas[i].alarm;
     vote.alert = false;
     newArr.push(vote);
+  }
+  if (datas.length > 0) {
+    tjsj.gkzdcj = datas[0].date;
   }
   return newArr;
 };
 
 const changesales = datas => {
+  if (datas) {
+    datas = datas.records;
+  }
   const newArr = [];
   if (!Array.isArray(datas)) {
     return newArr;
@@ -116,9 +129,9 @@ const changesales = datas => {
   for (let i = 0; i < datas.length; i += 1) {
     const vote = {};
     vote.value = datas[i].rate;
-    vote.date = moment(datas[i].date).format('HH');
-    vote.Max警戒值 = 10;
-    vote.Min警戒值 = -10;
+    vote.date = moment(datas[i].date).format('MM/DD HH:mm');
+    vote.Max警戒值 = datas[i].alarmMax;
+    vote.Min警戒值 = datas[i].alarmMin;
     newArr.push(vote);
   }
   return newArr;
@@ -221,11 +234,11 @@ class Collection extends Component {
     });
     dispatch({
       type: 'collection/fetchsales',
-      payload: { sortarea },
+      payload: { area },
     });
     dispatch({
       type: 'collection/fetchsupply',
-      payload: { sortarea },
+      payload: { area },
     });
   }
 
@@ -240,8 +253,8 @@ class Collection extends Component {
     } = this.props;
 
     const completedata = dataArr(complete);
-    const coverages = celldata(coverage);
-    const meterreads = celldata(meterread);
+    const coverages = celldata(coverage, 'fgl');
+    const meterreads = celldata(meterread, 'cbl');
     const zeroreads = changedate(zeroread);
     const hourreads = changehour(hourread);
     const salesdatas = changesales(salesdata);
@@ -288,7 +301,7 @@ class Collection extends Component {
           <Row gutter={24} type="flex">
             <Col xl={12} lg={24} style={{ marginBottom: 24 }}>
               <ChartCard
-                title="采集完整率"
+                title={`采集完整率 ${tjsj.cjwzl}`}
                 action={
                   <Tooltip title="指标说明">
                     <Icon type="info-circle-o" />
@@ -306,7 +319,7 @@ class Collection extends Component {
             </Col>
             <Col xl={12} lg={24} style={{ marginBottom: 24 }}>
               <ChartCard
-                title="终端覆盖率"
+                title={`终端覆盖率 ${tjsj.zdfgl}`}
                 action={
                   <Tooltip title="指标说明">
                     <Icon type="info-circle-o" />
@@ -324,7 +337,7 @@ class Collection extends Component {
             </Col>
             <Col xl={12} lg={24} style={{ marginBottom: 24 }}>
               <ChartCard
-                title="自动抄表率"
+                title={`自动抄表率 ${tjsj.zdcbl}`}
                 action={
                   <Tooltip title="指标说明">
                     <Icon type="info-circle-o" />
@@ -342,7 +355,7 @@ class Collection extends Component {
             </Col>
             <Col xl={12} lg={24} style={{ marginBottom: 24 }}>
               <ChartCard
-                title="关口0点采集"
+                title={`关口0点采集 ${tjsj.gk0dcj}`}
                 action={
                   <Tooltip title="指标说明">
                     <Icon type="info-circle-o" />
@@ -365,7 +378,7 @@ class Collection extends Component {
             </Col>
             <Col xl={12} lg={24} style={{ marginBottom: 24 }}>
               <ChartCard
-                title="关口整点采集"
+                title={`关口整点采集 ${tjsj.gkzdcj}`}
                 action={
                   <Tooltip title="指标说明">
                     <Icon type="info-circle-o" />
@@ -380,7 +393,7 @@ class Collection extends Component {
                       height={350}
                       data={hourreads}
                       cols={timecols}
-                      padding={[30, 40, 30, 60]}
+                      padding={[30, 40, 80, 60]}
                     />
                   )}
                 </Spin>
@@ -413,7 +426,7 @@ class Collection extends Component {
 
             <Col xl={12} lg={24} style={{ marginBottom: 24 }}>
               <ChartCard
-                title="售电量分析（与前一日售电量比值）"
+                title="售电量分析（昨日供电量-前日供电量)/前日供电量"
                 action={
                   <Tooltip title="指标说明">
                     <Icon type="info-circle-o" />
