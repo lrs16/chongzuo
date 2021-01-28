@@ -953,7 +953,7 @@ export default {
     },
     // 需求管理
     '/demand/': {
-      target: 'http://172.16.4.211:7777/',
+      target: 'http://172.16.4.211:9901/',
       changeOrigin: true,
     },
     '/api/': {

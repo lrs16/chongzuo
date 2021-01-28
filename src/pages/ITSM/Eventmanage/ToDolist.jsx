@@ -24,9 +24,9 @@ const sourcemap = [
 ];
 
 const levelmap = [
-  { key: '003', value: '高' },
+  { key: '003', value: '低' },
   { key: '002', value: '中' },
-  { key: '001', value: '低' },
+  { key: '001', value: '高' },
 ];
 
 const formItemLayout = {

@@ -68,31 +68,23 @@ const columns = [
     title: '需求类型',
     dataIndex: 'demandType',
     key: 'demandType',
-    // render: (text, record) => {
-    //   const demandtype = new Map([
-    //     ['001', '新增功能'],
-    //     ['002', '功能变更'],
-    //     ['003', '其他'],
-    //   ]);
-    //   return <>{demandtype.get(record.demandType)}</>;
-    // },
   },
   {
-    title: '功能模块',
-    dataIndex: 'module',
-    key: 'module',
-  },
-
-  {
-    title: '当前处理环节',
-    dataIndex: 'taskName',
-    key: 'taskName',
-  },
-  {
-    title: '提出人',
+    title: '申请人',
     dataIndex: 'proposer',
     key: 'proposer',
   },
+  // {
+  //   title: '功能模块',
+  //   dataIndex: 'module',
+  //   key: 'module',
+  // },
+  {
+    title: '工单状态',
+    dataIndex: 'taskName',
+    key: 'taskName',
+  },
+
   {
     title: '登记人',
     dataIndex: 'sender',
@@ -105,6 +97,11 @@ const columns = [
     render: text => {
       return <>{moment(text).format('YYYY-MM-DD HH:mm')}</>;
     },
+  },
+  {
+    title: '优先级',
+    dataIndex: 'priority',
+    key: 'priority',
   },
 ];
 

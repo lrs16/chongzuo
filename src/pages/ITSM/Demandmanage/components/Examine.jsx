@@ -36,6 +36,7 @@ const Examine = forwardRef((props, ref) => {
   const { taskName, taskId, result, mainId } = location.query;
   const required = true;
   const [selectdata, setSelectData] = useState([]);
+
   // 附件历史
   const [fileslist, setFilesList] = useState({ arr: [], ischange: false });
   useEffect(() => {
@@ -176,7 +177,7 @@ const Examine = forwardRef((props, ref) => {
                 {getFieldDecorator('opinion', {
                   rules: [{ required: false, message: `请输入${text}意见` }],
                   initialValue: info[0].opinion,
-                })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
+                })(<TextArea autoSize={{ minRows: 3 }} allowClear placeholder="请输入" />)}
               </Form.Item>
             )}
             {adopt === 0 && (
@@ -184,7 +185,7 @@ const Examine = forwardRef((props, ref) => {
                 {getFieldDecorator('opinion', {
                   rules: [{ required: true, message: `请输入${text}意见` }],
                   initialValue: info[0].opinion,
-                })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
+                })(<TextArea autoSize={{ minRows: 3 }} allowClear placeholder="请输入" />)}
               </Form.Item>
             )}
 
@@ -213,7 +214,7 @@ const Examine = forwardRef((props, ref) => {
             <Form.Item
               label="上传附件"
               {...forminladeLayout}
-              extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
+              // extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
             >
               <div style={{ width: 400 }}>
                 <SysUpload fileslist={files} ChangeFileslist={newvalue => setFilesList(newvalue)} />

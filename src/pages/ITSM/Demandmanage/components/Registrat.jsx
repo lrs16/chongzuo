@@ -70,6 +70,11 @@ const Registrat = forwardRef((props, ref) => {
     sessionStorage.setItem('flowtype', 1);
   }, []);
 
+  const proposer = register.proposer === '' ? userinfo.userName : register.proposer;
+  const proposingUnit = register.proposingUnit === '' ? userinfo.unitName : register.proposingUnit;
+  const proposingDepartment =
+    register.proposingDepartment === undefined ? userinfo.deptName : register.proposingDepartment;
+
   const getTypebyTitle = title => {
     if (selectdata.length > 0) {
       return selectdata.filter(item => item.title === title)[0].children;
@@ -136,24 +141,24 @@ const Registrat = forwardRef((props, ref) => {
             <Form.Item label="申请人">
               {getFieldDecorator('proposer', {
                 rules: [{ required, message: '请输入申请人' }],
-                initialValue: register.proposer,
-              })(<Input placeholder="请输入" />)}
+                initialValue: proposer,
+              })(<Input placeholder="请输入" allowClear />)}
             </Form.Item>
           </Col>
           <Col span={8}>
             <Form.Item label="申请人单位">
               {getFieldDecorator('proposingUnit', {
                 rules: [{ required, message: '请输申请人单位' }],
-                initialValue: register.proposingUnit,
-              })(<Input placeholder="请输入" />)}
+                initialValue: proposingUnit,
+              })(<Input placeholder="请输入" allowClear />)}
             </Form.Item>
           </Col>
           <Col span={8}>
             <Form.Item label="申请人部门">
               {getFieldDecorator('proposingDepartment', {
                 rules: [{ required, message: '请输入申请人部门' }],
-                initialValue: register.proposingDepartment,
-              })(<Input placeholder="请输入" />)}
+                initialValue: proposingDepartment,
+              })(<Input placeholder="请输入" allowClear />)}
             </Form.Item>
           </Col>
           <Col span={8}>
@@ -212,7 +217,6 @@ const Registrat = forwardRef((props, ref) => {
                 <Cascader
                   fieldNames={{ label: 'title', value: 'title', children: 'children' }}
                   options={modulemap}
-                  placeholder="Please select"
                 />,
               )}
             </Form.Item>
@@ -238,7 +242,7 @@ const Registrat = forwardRef((props, ref) => {
               {getFieldDecorator('title', {
                 rules: [{ required, message: '请输入需求标题' }],
                 initialValue: register.title,
-              })(<Input placeholder="请输入" />)}
+              })(<Input placeholder="请输入" allowClear />)}
             </Form.Item>
           </Col>
           <Col span={24}>
@@ -246,7 +250,7 @@ const Registrat = forwardRef((props, ref) => {
               {getFieldDecorator('reason', {
                 rules: [{ required, message: '请输入需求原因' }],
                 initialValue: register.reason,
-              })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
+              })(<TextArea autoSize={{ minRows: 3 }} allowClear placeholder="请输入" />)}
             </Form.Item>
           </Col>
           <Col span={24}>
@@ -254,14 +258,14 @@ const Registrat = forwardRef((props, ref) => {
               {getFieldDecorator('detail', {
                 rules: [{ required, message: '请输入需求详述' }],
                 initialValue: register.detail,
-              })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
+              })(<TextArea autoSize={{ minRows: 3 }} allowClear placeholder="请输入" />)}
             </Form.Item>
           </Col>
           <Col span={24}>
             <Form.Item
               label="上传附件"
               {...forminladeLayout}
-              extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
+              // extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
             >
               <div style={{ width: 400 }}>
                 <SysUpload fileslist={files} ChangeFileslist={newvalue => setFilesList(newvalue)} />
@@ -319,10 +323,7 @@ Registrat.defaultProps = {
     proposingDepartment: '计量中心',
     proposingUnit: '广西电网有限责任公司',
     reason: '',
-    registerPerson: 'admin',
     registerTime: moment().format(),
-    registrationDepartment: '计量中心',
-    registrationUnit: '广西电网有限责任公司',
     title: '',
   },
   userinfo: {

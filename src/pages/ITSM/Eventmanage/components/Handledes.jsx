@@ -52,6 +52,7 @@ const resultmap = new Map([
 
 function Handledes(props) {
   const { info, main } = props;
+  console.log(info);
 
   return (
     <div className={styles.collapse}>
@@ -61,11 +62,6 @@ function Handledes(props) {
         <Descriptions.Item label="处理人部门">{info.handleDept}</Descriptions.Item>
         <Descriptions.Item label="事件分类">{typemap.get(main.eventType)}</Descriptions.Item>
         <Descriptions.Item label="事件对象">{objectmap.get(main.eventObject)}</Descriptions.Item>
-        <Descriptions.Item label="影响度">{degreemap.get(info.eventEffect)}</Descriptions.Item>
-        <Descriptions.Item label="紧急度">{degreemap.get(info.eventEmergent)}</Descriptions.Item>
-        <Descriptions.Item label="优先级" span={3}>
-          {degreemap.get(info.eventPrior)}
-        </Descriptions.Item>
         <Descriptions.Item label="处理结果">{resultmap.get(info.handleResult)}</Descriptions.Item>
         <Descriptions.Item label="接单时间">{info.addTime}</Descriptions.Item>
         <Descriptions.Item label="处理完成时间">{info.endTime}</Descriptions.Item>
@@ -74,7 +70,7 @@ function Handledes(props) {
           {info.content}
         </Descriptions.Item>
         <Descriptions.Item label="附件" span={3}>
-          {info.fileIds !== '' && <Downloadfile files={info.fileIds} />}
+          {info.fileIds !== 'null' && <Downloadfile files={info.fileIds} />}
         </Descriptions.Item>
       </Descriptions>
     </div>

@@ -136,8 +136,8 @@ function Details(props) {
   );
 }
 
-export default connect(({ demandtodo, demanquery, loading }) => ({
+export default connect(({ demandtodo, demandquery, loading }) => ({
   records: demandtodo.records,
-  info: demanquery.info,
+  info: demandquery.info,
   loading: loading.models.demandtodo,
 }))(Details);

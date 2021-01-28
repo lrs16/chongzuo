@@ -1,42 +1,26 @@
 import React, { useRef, useImperativeHandle, forwardRef, useState, useEffect } from 'react';
 import router from 'umi/router';
 import moment from 'moment';
-import { Row, Col, Form, Input, Select, Upload, Button, Checkbox, DatePicker } from 'antd';
+import {
+  Row,
+  Col,
+  Form,
+  Input,
+  Select,
+  Upload,
+  Button,
+  Checkbox,
+  DatePicker,
+  Cascader,
+} from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
 import styles from '../index.less';
 import { phone_reg } from '@/utils/Regexp';
 import SysUpload from '@/components/SysUpload';
+import SysDict from '@/components/SysDict';
 
 const { Option } = Select;
 const { TextArea } = Input;
-
-const sourcemap = [
-  { key: '001', value: '用户电话申告' },
-  { key: '002', value: '企信' },
-];
-
-const returnvisit = [
-  { key: '001', value: '企信回访' },
-  { key: '002', value: '电话回访' },
-  { key: '003', value: '短信回访' },
-  { key: '004', value: '邮箱回访' },
-];
-
-const degreemap = [
-  { key: '001', value: '低' },
-  { key: '002', value: '中' },
-  { key: '003', value: '高' },
-  { key: '004', value: '紧急' },
-];
-
-const objectmap = [
-  { key: '001', value: '配网采集' },
-  { key: '002', value: '主网采集' },
-  { key: '003', value: '终端掉线' },
-  { key: '004', value: '配网档案' },
-  { key: '005', value: '实用化指标' },
-  { key: '006', value: '账号缺陷' },
-];
 
 const typemaps = new Map([
   ['', '处理'],
@@ -58,15 +42,6 @@ const flowtypemaps = new Map([
   ['006', '1'],
 ]);
 
-const typemap = [
-  { key: '001', value: '咨询' },
-  { key: '002', value: '缺陷' },
-  { key: '003', value: '故障' },
-  { key: '004', value: '数据处理' },
-  { key: '005', value: '账号权限' },
-  { key: '006', value: '其它' },
-];
-
 const Registrat = forwardRef((props, ref) => {
   const {
     formItemLayout,
@@ -86,11 +61,12 @@ const Registrat = forwardRef((props, ref) => {
   } = props;
   const { register } = info;
   const { pangekey, id, mainId } = location.query;
-  const { getFieldDecorator, getFieldsValue } = props.form;
+  const { getFieldDecorator, getFieldsValue, setFieldsValue } = props.form;
   const required = true;
   const [check, setCheck] = useState(false);
   const [revisitway, setRevisitway] = useState(false);
   const [fileslist, setFilesList] = useState({ arr: [], ischange: false });
+  const [selectdata, setSelectData] = useState([]);
   useEffect(() => {
     if (fileslist.ischange) {
       ChangeFiles(fileslist);
@@ -146,9 +122,10 @@ const Registrat = forwardRef((props, ref) => {
       changeDefaultvalue(gethandelvalue);
     }
   };
-  // 005时走审核
+
+  // 007时走审核
   const handlcheckChange = value => {
-    if (value === '005') {
+    if (value === '007') {
       ChangeCheck(true);
       setCheck(true);
       ChangeFlowtype('3');
@@ -182,261 +159,277 @@ const Registrat = forwardRef((props, ref) => {
     }
   };
 
-  return (
-    <Form {...formItemLayout}>
-      <Row gutter={24} style={{ paddingTop: 24 }}>
-        <Col span={8} style={{ display: 'none' }}>
-          <Form.Item label="表单id">
-            {getFieldDecorator('register_id', {
-              initialValue: register.id,
-            })(<Input disabled />)}
-          </Form.Item>
-        </Col>
-        <Col span={8}>
-          <Form.Item label="事件编号">
-            {getFieldDecorator('main_eventNo', {
-              initialValue: main.eventNo,
-            })(<Input disabled />)}
-          </Form.Item>
-        </Col>
-        <Col span={8}>
-          <Form.Item label="建单时间">
-            {getFieldDecorator('main_addTime', {
-              rules: [{ required }],
-              initialValue: main.addTime,
-            })(<Input disabled />)}
-          </Form.Item>
-        </Col>
-        <Col span={8}>
-          <Form.Item label="发生时间">
-            {getFieldDecorator('register_occurTime', {
-              rules: [{ required, message: '请选择发生时间' }],
-              initialValue: moment(register.occurTime),
-            })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" />)}
-          </Form.Item>
-        </Col>
+  const getTypebyTitle = title => {
+    if (selectdata.length > 0) {
+      return selectdata.filter(item => item.title === title)[0].children;
+    }
+    return [];
+  };
 
-        <Col span={8}>
-          <Form.Item label="申报人">
-            {getFieldDecorator('register_applicationUser', {
-              rules: [{ required, message: '请输入申报人' }],
-              initialValue: register.applicationUser,
-            })(<Input placeholder="请输入" />)}
-          </Form.Item>
-        </Col>
-        <Col span={8} style={{ display: 'none' }}>
-          <Form.Item label="申报人id">
-            {getFieldDecorator('register_applicationUserId', {
-              rules: [{ required, message: '请输入申报人' }],
-              initialValue: register.applicationUserId,
-            })(<Input placeholder="请输入" />)}
-          </Form.Item>
-        </Col>
-        <Col span={8}>
-          <Form.Item label="申报人单位">
-            {getFieldDecorator('register_applicationUnit', {
-              rules: [{ required, message: '请选择申报人单位' }],
-              initialValue: register.applicationUnit,
-            })(<Input placeholder="请输入" />)}
-          </Form.Item>
-        </Col>
-        <Col span={8} style={{ display: 'none' }}>
-          <Form.Item label="申报人单位id">
-            {getFieldDecorator('register_applicationUnitId', {
-              initialValue: register.applicationUnitId,
-            })(<Input />)}
-          </Form.Item>
-        </Col>
-        <Col span={8}>
-          <Form.Item label="申报人部门">
-            {getFieldDecorator('register_applicationDept', {
-              rules: [{ required, message: '请选择申报人部门' }],
-              initialValue: register.applicationDept,
-            })(<Input placeholder="请输入" />)}
-          </Form.Item>
-        </Col>
-        <Col span={8} style={{ display: 'none' }}>
-          <Form.Item label="申报人部门id">
-            {getFieldDecorator('register_applicationDeptId', {
-              initialValue: register.applicationDeptId,
-            })(<Input placeholder="请输入" />)}
-          </Form.Item>
-        </Col>
-        <Col span={8}>
-          <Form.Item label="事件来源">
-            {getFieldDecorator('main_eventSource', {
-              rules: [{ required, message: '请选择事件来源' }],
-              initialValue: main.eventSource,
-            })(
-              <Select placeholder="请选择">
-                {sourcemap.map(({ key, value }) => [
-                  <Option key={key} value={key}>
-                    {value}
-                  </Option>,
-                ])}
-              </Select>,
-            )}
-          </Form.Item>
-        </Col>
-        <Col span={8}>
-          <Form.Item label="申报人电话">
-            {getFieldDecorator('register_applicationUserPhone', {
-              rules: [
-                {
-                  required,
-                  message: '请输入申报人电话',
-                },
-              ],
-              initialValue: register.applicationUserPhone,
-            })(<Input placeholder="请输入" />)}
-          </Form.Item>
-        </Col>
-        {revisitway === true && (
+  const sourcemap = getTypebyTitle('事件来源');
+  const typemap = getTypebyTitle('事件分类');
+  const objectmap = getTypebyTitle('事件对象');
+  const returnvisit = getTypebyTitle('回访方式');
+  const effectmap = getTypebyTitle('影响度');
+  const emergentmap = getTypebyTitle('紧急度');
+  const priormap = getTypebyTitle('优先级');
+
+  return (
+    <>
+      <SysDict
+        typeid="1354273739344187393"
+        commonid="1354288354950123522"
+        ChangeSelectdata={newvalue => setSelectData(newvalue)}
+        style={{ display: 'non' }}
+      />
+      <Form {...formItemLayout}>
+        <Row gutter={24} style={{ paddingTop: 24 }}>
+          <Col span={8} style={{ display: 'none' }}>
+            <Form.Item label="表单id">
+              {getFieldDecorator('register_id', {
+                initialValue: register.id,
+              })(<Input disabled />)}
+            </Form.Item>
+          </Col>
           <Col span={8}>
-            <Form.Item label="手机号码">
-              {getFieldDecorator('register_mobilePhone', {
+            <Form.Item label="事件编号">
+              {getFieldDecorator('main_eventNo', {
+                initialValue: main.eventNo,
+              })(<Input disabled />)}
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label="建单时间">
+              {getFieldDecorator('main_addTime', {
+                rules: [{ required }],
+                initialValue: main.addTime,
+              })(<Input disabled />)}
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label="发生时间">
+              {getFieldDecorator('register_occurTime', {
+                rules: [{ required, message: '请选择发生时间' }],
+                initialValue: moment(register.occurTime),
+              })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" />)}
+            </Form.Item>
+          </Col>
+
+          <Col span={8}>
+            <Form.Item label="申报人">
+              {getFieldDecorator('register_applicationUser', {
+                rules: [{ required, message: '请输入申报人' }],
+                initialValue: register.applicationUser,
+              })(<Input placeholder="请输入" />)}
+            </Form.Item>
+          </Col>
+          <Col span={8} style={{ display: 'none' }}>
+            <Form.Item label="申报人id">
+              {getFieldDecorator('register_applicationUserId', {
+                rules: [{ required, message: '请输入申报人' }],
+                initialValue: register.applicationUserId,
+              })(<Input placeholder="请输入" />)}
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label="申报人单位">
+              {getFieldDecorator('register_applicationUnit', {
+                rules: [{ required, message: '请选择申报人单位' }],
+                initialValue: register.applicationUnit,
+              })(<Input placeholder="请输入" />)}
+            </Form.Item>
+          </Col>
+          <Col span={8} style={{ display: 'none' }}>
+            <Form.Item label="申报人单位id">
+              {getFieldDecorator('register_applicationUnitId', {
+                initialValue: register.applicationUnitId,
+              })(<Input />)}
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label="申报人部门">
+              {getFieldDecorator('register_applicationDept', {
+                rules: [{ required, message: '请选择申报人部门' }],
+                initialValue: register.applicationDept,
+              })(<Input placeholder="请输入" />)}
+            </Form.Item>
+          </Col>
+          <Col span={8} style={{ display: 'none' }}>
+            <Form.Item label="申报人部门id">
+              {getFieldDecorator('register_applicationDeptId', {
+                initialValue: register.applicationDeptId,
+              })(<Input placeholder="请输入" />)}
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label="事件来源">
+              {getFieldDecorator('main_eventSource', {
+                rules: [{ required, message: '请选择事件来源' }],
+                initialValue: main.eventSource,
+              })(
+                <Select placeholder="请选择">
+                  {sourcemap.map(obj => [
+                    <Option key={obj.key} value={obj.dict_code}>
+                      {obj.title}
+                    </Option>,
+                  ])}
+                </Select>,
+              )}
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label="申报人电话">
+              {getFieldDecorator('register_applicationUserPhone', {
                 rules: [
                   {
                     required,
-                    len: 11,
-                    validator: phone_reg,
-                    message: '请输入正确的正确的手机号码',
+                    message: '请输入申报人电话',
                   },
                 ],
-                initialValue: register.mobilePhone,
+                initialValue: register.applicationUserPhone,
               })(<Input placeholder="请输入" />)}
             </Form.Item>
           </Col>
-        )}
-        {revisitway !== true && (
-          <Col span={8}>
-            <Form.Item label="手机号码">
-              {getFieldDecorator('register_mobilePhone', {
-                rules: [
-                  {
-                    //  required,
-                    len: 11,
-                    validator: phone_reg,
-                    message: '请输入正确的正确的手机号码',
-                  },
-                ],
-                initialValue: register.mobilePhone,
-              })(<Input placeholder="请输入" />)}
-            </Form.Item>
-          </Col>
-        )}
+          {revisitway === true && (
+            <Col span={8}>
+              <Form.Item label="手机号码">
+                {getFieldDecorator('register_mobilePhone', {
+                  rules: [
+                    {
+                      required,
+                      len: 11,
+                      validator: phone_reg,
+                      message: '请输入正确的正确的手机号码',
+                    },
+                  ],
+                  initialValue: register.mobilePhone,
+                })(<Input placeholder="请输入" />)}
+              </Form.Item>
+            </Col>
+          )}
+          {revisitway !== true && (
+            <Col span={8}>
+              <Form.Item label="手机号码">
+                {getFieldDecorator('register_mobilePhone', {
+                  rules: [
+                    {
+                      //  required,
+                      len: 11,
+                      validator: phone_reg,
+                      message: '请输入正确的正确的手机号码',
+                    },
+                  ],
+                  initialValue: register.mobilePhone,
+                })(<Input placeholder="请输入" />)}
+              </Form.Item>
+            </Col>
+          )}
 
-        <Col span={8}>
-          <Form.Item label="事件分类">
-            {getFieldDecorator('main_eventType', {
-              rules: [{ required, message: '请选择事件分类' }],
-              initialValue: main.eventType,
-            })(
-              <Select placeholder="请选择" onChange={handlcheckChange}>
-                {typemap.map(({ key, value }) => [
-                  <Option key={key} value={key}>
-                    {value}
-                  </Option>,
-                ])}
-              </Select>,
-            )}
-          </Form.Item>
-        </Col>
-        <Col span={8}>
-          <Form.Item label="事件对象">
-            {getFieldDecorator('main_eventObject', {
-              rules: [{ required, message: '请选择事件对象' }],
-              initialValue: main.eventObject,
-            })(
-              <Select placeholder="请选择" onChange={changeHandlevalue}>
-                {objectmap.map(({ key, value }) => [
-                  <Option key={key} value={key}>
-                    {value}
-                  </Option>,
-                ])}
-              </Select>,
-            )}
-          </Form.Item>
-        </Col>
-        <Col span={8}>
-          <Form.Item label="回访方式">
-            {getFieldDecorator('register_revisitWay', {
-              rules: [{ required, message: '请选择回访方式' }],
-              initialValue: register.revisitWay,
-            })(
-              <Select placeholder="请选择" onChange={handlrevisitway}>
-                {returnvisit.map(({ key, value }) => [
-                  <Option key={key} value={key}>
-                    {value}
-                  </Option>,
-                ])}
-              </Select>,
-            )}
-          </Form.Item>
-        </Col>
-        <Col span={8}>
-          <Form.Item label="影响度">
-            {getFieldDecorator('register_eventEffect', {
-              rules: [{ required, message: '请选择影响度' }],
-              initialValue: register.eventEffect,
-            })(
-              <Select placeholder="请选择" onChange={changeHandlevalue}>
-                {degreemap.map(({ key, value }, index) => {
-                  if (index < 3)
-                    return (
-                      <Option key={key} value={key}>
-                        {value}
-                      </Option>
-                    );
-                })}
-              </Select>,
-            )}
-          </Form.Item>
-        </Col>
-        <Col span={8}>
-          <Form.Item label="紧急度">
-            {getFieldDecorator('register_eventEmergent', {
-              rules: [{ required, message: '请选择紧急度' }],
-              initialValue: register.eventEmergent,
-            })(
-              <Select placeholder="请选择" onChange={changeHandlevalue}>
-                {degreemap.map(({ key, value }) => [
-                  <Option key={key} value={key}>
-                    {value}
-                  </Option>,
-                ])}
-              </Select>,
-            )}
-          </Form.Item>
-        </Col>
-        <Col span={8}>
-          <Form.Item label="优先级">
-            {getFieldDecorator('register_eventPrior', {
-              rules: [{ required, message: '请选择优先级' }],
-              initialValue: register.eventPrior,
-            })(
-              <Select placeholder="请选择" onChange={changeHandlevalue}>
-                {degreemap.map(({ key, value }, index) => {
-                  if (index < 3)
-                    return (
-                      <Option key={key} value={key}>
-                        {value}
-                      </Option>
-                    );
-                })}
-              </Select>,
-            )}
-          </Form.Item>
-        </Col>
-        <Col span={24}>
-          <Form.Item label="事件标题" {...forminladeLayout}>
-            {getFieldDecorator('main_title', {
-              rules: [{ required, message: '请输入事件标题' }],
-              initialValue: main.title,
-            })(<Input placeholder="请输入" />)}
-          </Form.Item>
-        </Col>
-        {/* <Col span={24}>
+          <Col span={8}>
+            <Form.Item label="事件分类">
+              {getFieldDecorator('main_eventType', {
+                rules: [{ required, message: '请选择事件分类' }],
+                initialValue: main.eventType,
+              })(
+                <Select placeholder="请选择">
+                  {typemap.map(obj => [
+                    <Option key={obj.key} value={obj.dict_code}>
+                      {obj.title}
+                    </Option>,
+                  ])}
+                </Select>,
+              )}
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label="事件对象">
+              {getFieldDecorator('main_eventObject', {
+                rules: [{ required, message: '请选择事件对象' }],
+                initialValue: main.eventObject,
+              })(
+                <Cascader
+                  fieldNames={{ label: 'title', value: 'dict_code', children: 'children' }}
+                  options={objectmap}
+                  onChange={handlcheckChange}
+                  placeholder="请选择"
+                  expandTrigger="hover"
+                />,
+              )}
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label="回访方式">
+              {getFieldDecorator('register_revisitWay', {
+                rules: [{ required, message: '请选择回访方式' }],
+                initialValue: register.revisitWay,
+              })(
+                <Select placeholder="请选择" onChange={handlrevisitway}>
+                  {returnvisit.map(obj => [
+                    <Option key={obj.key} value={obj.dict_code}>
+                      {obj.title}
+                    </Option>,
+                  ])}
+                </Select>,
+              )}
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label="影响度">
+              {getFieldDecorator('register_eventEffect', {
+                rules: [{ required, message: '请选择影响度' }],
+                initialValue: register.eventEffect,
+              })(
+                <Select placeholder="请选择" onChange={changeHandlevalue}>
+                  {effectmap.map(obj => [
+                    <Option key={obj.key} value={obj.dict_code}>
+                      {obj.title}
+                    </Option>,
+                  ])}
+                </Select>,
+              )}
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label="紧急度">
+              {getFieldDecorator('register_eventEmergent', {
+                rules: [{ required, message: '请选择紧急度' }],
+                initialValue: register.eventEmergent,
+              })(
+                <Select placeholder="请选择" onChange={changeHandlevalue}>
+                  {emergentmap.map(obj => [
+                    <Option key={obj.key} value={obj.dict_code}>
+                      {obj.title}
+                    </Option>,
+                  ])}
+                </Select>,
+              )}
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label="优先级">
+              {getFieldDecorator('register_eventPrior', {
+                rules: [{ required, message: '请选择优先级' }],
+                initialValue: register.eventPrior,
+              })(
+                <Select placeholder="请选择" onChange={changeHandlevalue}>
+                  {priormap.map(obj => [
+                    <Option key={obj.key} value={obj.dict_code}>
+                      {obj.title}
+                    </Option>,
+                  ])}
+                </Select>,
+              )}
+            </Form.Item>
+          </Col>
+          <Col span={24}>
+            <Form.Item label="事件标题" {...forminladeLayout}>
+              {getFieldDecorator('main_title', {
+                rules: [{ required, message: '请输入事件标题' }],
+                initialValue: main.title,
+              })(<Input placeholder="请输入" />)}
+            </Form.Item>
+          </Col>
+          {/* <Col span={24}>
           <Form.Item label="一线标签" {...forminladeLayout}>
             {getFieldDecorator('re14')(
               <Input placeholder="请输入标签，至少两个字符，回车确认，最多输入八个标签" />,
@@ -463,95 +456,96 @@ const Registrat = forwardRef((props, ref) => {
             </div>
           </div>
         </Col> */}
-        <Col span={24}>
-          <Form.Item label="事件描述" {...forminladeLayout}>
-            {getFieldDecorator('main_content', {
-              rules: [{ required, message: '请输入事件描述' }],
-              initialValue: main.content,
-            })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
-          </Form.Item>
-        </Col>
-        {check === false && (
-          <Col span={8}>
-            <Form.Item label="自行处理">
-              {getFieldDecorator('register_selfhandle', {
-                valuePropName: 'checked',
-                initialValue: Boolean(Number(register.selfhandle)),
-              })(<Checkbox onClick={handleself} />)}
+          <Col span={24}>
+            <Form.Item label="事件描述" {...forminladeLayout}>
+              {getFieldDecorator('main_content', {
+                rules: [{ required, message: '请输入事件描述' }],
+                initialValue: main.content,
+              })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
             </Form.Item>
           </Col>
-        )}
-        <Col span={8}>
-          <Form.Item label="是否补单">
-            {getFieldDecorator('register_supplement', {
-              valuePropName: 'checked',
-              initialValue: Boolean(Number(register.supplement)),
-            })(<Checkbox />)}
-          </Form.Item>
-        </Col>
-      </Row>
-      <Row gutter={24}>
-        <Col span={24}>
-          <Form.Item
-            label="上传附件"
-            {...forminladeLayout}
-            extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
-          >
-            <div style={{ width: 400 }}>
-              <SysUpload fileslist={files} ChangeFileslist={newvalue => setFilesList(newvalue)} />
-            </div>
-          </Form.Item>
-        </Col>
-        <Col span={8}>
-          <Form.Item label="登记人">
-            {getFieldDecorator('register_registerUser', {
-              rules: [{ required }],
-              initialValue: userinfo.userName,
-            })(<Input disabled />)}
-          </Form.Item>
-        </Col>
-        <Col span={8} style={{ display: 'none' }}>
-          <Form.Item label="登记人ID">
-            {getFieldDecorator('register_registerUserId', {
-              rules: [{ required }],
-              initialValue: userinfo.userId,
-            })(<Input disabled />)}
-          </Form.Item>
-        </Col>
-        <Col span={8}>
-          <Form.Item label="登记人单位">
-            {getFieldDecorator('register_registerUnit', {
-              rules: [{ required }],
-              initialValue: userinfo.unitName,
-            })(<Input disabled />)}
-          </Form.Item>
-        </Col>
-        <Col span={8} style={{ display: 'none' }}>
-          <Form.Item label="登记人单位ID">
-            {getFieldDecorator('register_registerUnitId', {
-              rules: [{ required }],
-              initialValue: userinfo.unitId,
-            })(<Input disabled />)}
-          </Form.Item>
-        </Col>
-        <Col span={8}>
-          <Form.Item label="登记人部门">
-            {getFieldDecorator('register_registerDept', {
-              rules: [{ required }],
-              initialValue: userinfo.deptName,
-            })(<Input disabled />)}
-          </Form.Item>
-        </Col>
-        <Col span={8} style={{ display: 'none' }}>
-          <Form.Item label="登记人部门ID">
-            {getFieldDecorator('register_registerDeptId', {
-              rules: [{ required }],
-              initialValue: userinfo.deptId,
-            })(<Input disabled />)}
-          </Form.Item>
-        </Col>
-      </Row>
-    </Form>
+          {check === false && (
+            <Col span={8}>
+              <Form.Item label="自行处理">
+                {getFieldDecorator('register_selfhandle', {
+                  valuePropName: 'checked',
+                  initialValue: Boolean(Number(register.selfhandle)),
+                })(<Checkbox onClick={handleself} />)}
+              </Form.Item>
+            </Col>
+          )}
+          <Col span={8}>
+            <Form.Item label="是否补单">
+              {getFieldDecorator('register_supplement', {
+                valuePropName: 'checked',
+                initialValue: Boolean(Number(register.supplement)),
+              })(<Checkbox />)}
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row gutter={24}>
+          <Col span={24}>
+            <Form.Item
+              label="上传附件"
+              {...forminladeLayout}
+              // extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
+            >
+              <div style={{ width: 400 }}>
+                <SysUpload fileslist={files} ChangeFileslist={newvalue => setFilesList(newvalue)} />
+              </div>
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label="登记人">
+              {getFieldDecorator('register_registerUser', {
+                rules: [{ required }],
+                initialValue: userinfo.userName,
+              })(<Input disabled />)}
+            </Form.Item>
+          </Col>
+          <Col span={8} style={{ display: 'none' }}>
+            <Form.Item label="登记人ID">
+              {getFieldDecorator('register_registerUserId', {
+                rules: [{ required }],
+                initialValue: userinfo.userId,
+              })(<Input disabled />)}
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label="登记人单位">
+              {getFieldDecorator('register_registerUnit', {
+                rules: [{ required }],
+                initialValue: userinfo.unitName,
+              })(<Input disabled />)}
+            </Form.Item>
+          </Col>
+          <Col span={8} style={{ display: 'none' }}>
+            <Form.Item label="登记人单位ID">
+              {getFieldDecorator('register_registerUnitId', {
+                rules: [{ required }],
+                initialValue: userinfo.unitId,
+              })(<Input disabled />)}
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label="登记人部门">
+              {getFieldDecorator('register_registerDept', {
+                rules: [{ required }],
+                initialValue: userinfo.deptName,
+              })(<Input disabled />)}
+            </Form.Item>
+          </Col>
+          <Col span={8} style={{ display: 'none' }}>
+            <Form.Item label="登记人部门ID">
+              {getFieldDecorator('register_registerDeptId', {
+                rules: [{ required }],
+                initialValue: userinfo.deptId,
+              })(<Input disabled />)}
+            </Form.Item>
+          </Col>
+        </Row>
+      </Form>
+    </>
   );
 });
 

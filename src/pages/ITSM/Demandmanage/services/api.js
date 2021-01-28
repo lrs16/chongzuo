@@ -22,9 +22,10 @@ export async function DemandtoDoList(params) {
   const registerPerson = params.registerPerson !== undefined ? params.registerPerson : '';
   const demandType = params.demandType !== undefined ? params.demandType : '';
   const title = params.title !== undefined ? params.title : '';
-  const creationTime = params.creationTime !== undefined ? params.creationTime : '';
+  const creationTime =
+    params.creationTime !== undefined ? params.creationTime.format('YYYY-MM-DD') : '';
   return request(
-    `/demand/todo/toDoList?limit=${limit}&page=${page}&userId=${userId}&demandId=${demandId}&demandType=${demandType}&registerPerson=${registerPerson}&taskName=${taskName}&title=${title}`,
+    `/demand/todo/toDoList?limit=${limit}&page=${page}&userId=${userId}&demandId=${demandId}&demandType=${demandType}&registerPerson=${registerPerson}&taskName=${taskName}&title=${title}&creationTime=${creationTime}`,
     {
       method: 'GET',
     },
@@ -131,7 +132,7 @@ export async function DemandQuery(params) {
   const creationTime =
     params.creationTime !== undefined ? params.creationTime.format('YYYY-MM-DD') : '';
   return request(
-    `/demand/query/demandQuery?limit=${limit}&page=${page}&demandId=${demandId}&demandType=${demandType}&registerPerson=${registerPerson}&taskName=${taskName}&title=${title}`,
+    `/demand/query/demandQuery?limit=${limit}&page=${page}&demandId=${demandId}&demandType=${demandType}&registerPerson=${registerPerson}&taskName=${taskName}&title=${title}&creationTime=${creationTime}`,
     {
       method: 'GET',
     },

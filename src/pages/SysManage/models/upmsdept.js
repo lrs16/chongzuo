@@ -1,10 +1,18 @@
-import { queryDeptList, UpdateDept, EditeDept, removeDept, searchDept } from '../services/api';
+import {
+  queryDeptList,
+  UpdateDept,
+  EditeDept,
+  removeDept,
+  searchDept,
+  NeedDeptTree,
+} from '../services/api';
 
 export default {
   namespace: 'upmsdept',
 
   state: {
     data: [],
+    treedata: '',
   },
 
   effects: {
@@ -36,6 +44,15 @@ export default {
         payload: response,
       });
     },
+
+    // 按需加载树
+    *needtree({ payload }, { call, put }) {
+      const response = yield call(NeedDeptTree, payload);
+      yield put({
+        type: 'showtree',
+        payload: response.data,
+      });
+    },
   },
 
   reducers: {
@@ -43,6 +60,12 @@ export default {
       return {
         ...state,
         ...payload,
+      };
+    },
+    showtree(state, action) {
+      return {
+        ...state,
+        treedata: action.payload,
       };
     },
   },

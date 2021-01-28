@@ -108,6 +108,12 @@ function WorkOrder(props) {
     }
   }, [info]);
 
+  // 更新流转类型
+  // console.log(flowtype);
+  // useEffect(() => {
+  //   sessionStorage.setItem('flowtype', flowtype);
+  // }, [flowtype]);
+
   const callback = key => {
     setActiveKey(key);
   };
@@ -144,6 +150,7 @@ function WorkOrder(props) {
               register_selfhandle: String(Number(values.register_selfhandle)),
               register_supplement: String(Number(values.register_supplement)),
               register_fileIds: JSON.stringify(files.arr),
+              main_eventObject: values.main_eventObject.slice(-1)[0],
             });
           } else {
             formerr();
@@ -158,6 +165,7 @@ function WorkOrder(props) {
             register_selfhandle: String(Number(values.register_selfhandle)),
             register_supplement: String(Number(values.register_supplement)),
             register_fileIds: JSON.stringify(files.arr),
+            main_eventObject: values.main_eventObject.slice(-1)[0],
           });
         });
       }
@@ -171,6 +179,7 @@ function WorkOrder(props) {
             register_selfhandle: String(Number(values.register_selfhandle)),
             register_supplement: String(Number(values.register_supplement)),
             register_fileIds: JSON.stringify(files.arr),
+            main_eventObject: values.main_eventObject.slice(-1)[0],
           });
         } else {
           formerr();
@@ -217,6 +226,7 @@ function WorkOrder(props) {
               ...values,
               handle_endTime: values.handle_endTime.format('YYYY-MM-DD HH:mm:ss'),
               handle_fileIds: JSON.stringify(handefiles.arr),
+              main_eventObject: values.main_eventObject.slice(-1)[0],
             });
           } else {
             formerr();
@@ -229,6 +239,7 @@ function WorkOrder(props) {
             ...values,
             handle_endTime: values.handle_endTime.format('YYYY-MM-DD HH:mm:ss'),
             handle_fileIds: JSON.stringify(files.arr),
+            main_eventObject: values.main_eventObject.slice(-1)[0],
           });
         });
       }
@@ -240,6 +251,7 @@ function WorkOrder(props) {
             ...values,
             handle_endTime: values.handle_endTime.format('YYYY-MM-DD HH:mm:ss'),
             handle_fileIds: JSON.stringify(files.arr),
+            main_eventObject: values.main_eventObject.slice(-1)[0],
           });
         } else {
           formerr();
@@ -389,6 +401,16 @@ function WorkOrder(props) {
     setActiveKey([`${Collapsekeymap.get(pangekey)}`]);
   }, [pangekey]);
 
+  // 初始化流转类型,自动接单value
+  // useEffect(() => {
+  //   if (data !== undefined && data[0].main.event_type === '005') {
+  //     setFlowtype('3');
+  //   }
+  //   if (pangekey !== '1') {
+  //     setFlowtype('1');
+  //   }
+  // }, [loading]);
+
   useEffect(() => {
     if (validate === true && ischeck === false) {
       handlesubmit();
@@ -501,11 +523,7 @@ function WorkOrder(props) {
                   userinfo={userinfo}
                   sethandlevalue="true"
                   location={location}
-                  files={
-                    edit.register.fileIds !== ('' || undefined)
-                      ? JSON.parse(edit.register.fileIds)
-                      : []
-                  }
+                  files={edit.register.fileIds !== '[]' ? JSON.parse(edit.register.fileIds) : []}
                 />
               </Panel>
             )}
@@ -560,33 +578,32 @@ function WorkOrder(props) {
                   ChangeFiles={newvalue => {
                     setFiles(newvalue);
                   }}
-                  files={
-                    edit.check.fileIds !== ('' || undefined) ? JSON.parse(edit.check.fileIds) : []
-                  }
+                  files={edit.check.fileIds !== '[]' ? JSON.parse(edit.check.fileIds) : []}
                 />
               </Panel>
             )}
-
-            {edit !== undefined && pangekey === '5' && edit.handle === null && (
-              <Panel header="事件处理" key="handleform">
-                <Handle
-                  formItemLayout={formItemLayout}
-                  forminladeLayout={forminladeLayout}
-                  ref={HandleRef}
-                  info={finishfirst}
-                  main={data[0].main}
-                  userinfo={userinfo}
-                  defaultvalue={defaultvalue}
-                  location={location}
-                  ChangeFiles={newvalue => {
-                    setFiles(newvalue);
-                  }}
-                  files={[]}
-                  show={show}
-                />
-              </Panel>
-            )}
-            {edit !== undefined && pangekey === '5' && edit.handle !== null && (
+            {edit !== undefined &&
+              ((pangekey === '5' && edit.handle === null) ||
+                (pangekey === '5' && edit.handle.fileIds === null)) && (
+                <Panel header="事件处理" key="handleform">
+                  <Handle
+                    formItemLayout={formItemLayout}
+                    forminladeLayout={forminladeLayout}
+                    ref={HandleRef}
+                    info={finishfirst}
+                    main={data[0].main}
+                    userinfo={userinfo}
+                    defaultvalue={defaultvalue}
+                    location={location}
+                    ChangeFiles={newvalue => {
+                      setFiles(newvalue);
+                    }}
+                    files={[]}
+                    show={show}
+                  />
+                </Panel>
+              )}
+            {edit !== undefined && pangekey === '5' && edit.handle.fileIds !== null && (
               <Panel header="事件处理" key="handleform">
                 <Handle
                   formItemLayout={formItemLayout}
@@ -600,7 +617,7 @@ function WorkOrder(props) {
                   ChangeFiles={newvalue => {
                     setFiles(newvalue);
                   }}
-                  files={!edit.handle.fileIds === false ? JSON.parse(edit.handle.fileIds) : []}
+                  files={edit.handle.fileIds === '[]' ? [] : JSON.parse(edit.handle.fileIds)}
                   show={show}
                 />
               </Panel>
@@ -637,7 +654,7 @@ function WorkOrder(props) {
                   ChangeFiles={newvalue => {
                     setFiles(newvalue);
                   }}
-                  files={edit.finish.fileIds === 'null' ? [] : JSON.parse(edit.finish.fileIds)}
+                  files={edit.finish.fileIds === '[]' ? [] : JSON.parse(edit.finish.fileIds)}
                 />
               </Panel>
             )}

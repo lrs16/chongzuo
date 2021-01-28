@@ -40,6 +40,7 @@ class DeptManage extends Component {
 
   componentDidMount() {
     this.getlist();
+    this.getdeptree('0');
   }
 
   getlist = () => {
@@ -53,6 +54,13 @@ class DeptManage extends Component {
         limit,
         queKey,
       },
+    });
+  };
+
+  getdeptree = pid => {
+    this.props.dispatch({
+      type: 'upmsdept/needtree',
+      payload: { pid },
     });
   };
 
@@ -155,6 +163,18 @@ class DeptManage extends Component {
     });
   };
 
+  renderTreeNodes = data =>
+    data.map(item => {
+      if (item.children) {
+        return (
+          <TreeNode title={item.title} key={item.key} dataRef={item}>
+            {this.renderTreeNodes(item.children)}
+          </TreeNode>
+        );
+      }
+      return <TreeNode key={item.key} {...item} dataRef={item} />;
+    });
+
   render() {
     const columns = [
       {
@@ -219,8 +239,9 @@ class DeptManage extends Component {
 
     const {
       loading,
-      upmsdept: { data },
+      upmsdept: { data, treedata },
     } = this.props;
+
     const pagination = {
       showSizeChanger: true,
       onShowSizeChange: (current, pageSize) => this.onShowSizeChange(current, pageSize),
@@ -247,7 +268,9 @@ class DeptManage extends Component {
       <PageHeaderWrapper title="组织管理">
         <Card>
           <Layout>
-            <Sider theme="light">{/* <DeptTree /> */}</Sider>
+            <Sider theme="light">
+              {/* <Tree loadData={this.onLoadData}>{this.renderTreeNodes(this.state.treeData)}</Tree> */}
+            </Sider>
             <Content style={{ background: '#fff' }}>
               <div style={{ background: '#fff' }}>
                 <Form style={{ float: 'right', width: '30%' }}>

@@ -100,6 +100,13 @@ export async function searchDept(params) {
     body: JSON.stringify(params),
   });
 }
+// 按需加载组织机构树
+export async function NeedDeptTree(params) {
+  return request('/upms/dept/need', {
+    method: 'POST',
+    body: JSON.stringify(params),
+  });
+}
 
 // 请求权限列表
 export async function queryRoleList() {
@@ -163,39 +170,41 @@ export async function searchRole(params) {
 }
 
 // 数据字典list列表数据
-export async function querySearchDropdownValue(page,limit,bodyParams) {
-  return request(`/sys/dict/listPage/${page}/${limit}`,{
+export async function querySearchDropdownValue(page, limit, bodyParams) {
+  return request(`/sys/dict/listPage/${page}/${limit}`, {
     method: 'POST',
-    body: JSON.stringify(bodyParams)
+    body: JSON.stringify(bodyParams),
   });
 }
 
 // 数据字典list列表数据 查询功能
-export async function querySearchDropdownValue1(params) { 
+export async function querySearchDropdownValue1(params) {
   return request(`/sys/dict/listPage`, {
     method: 'POST',
     body: JSON.stringify(params),
   });
 }
 
-export async function removeDict(id) { // 删除字典
+export async function removeDict(id) {
+  // 删除字典
   return request(`/sys/dict/${id}`, {
     method: 'DELETE',
     requestType: 'form',
   });
 }
 
-export async function addDict(params) { // 新增字典
+export async function addDict(params) {
+  // 新增字典
   return request('/sys/dict/', {
     method: 'POST',
     body: JSON.stringify(params),
   });
 }
 
-export async function editeDict(params) { // 更新字典
+export async function editeDict(params) {
+  // 更新字典
   return request('/sys/dict/', {
     method: 'PUT',
     body: JSON.stringify(params),
   });
 }
-

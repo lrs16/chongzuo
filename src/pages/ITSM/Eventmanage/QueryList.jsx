@@ -16,6 +16,7 @@ const statemap = [
   { key: '6', value: '待确认' },
   { key: '7', value: '确认中' },
   { key: '8', value: '重分派' },
+  { key: '9', value: '已关闭' },
 ];
 
 const sourcemap = [

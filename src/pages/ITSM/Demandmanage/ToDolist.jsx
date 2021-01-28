@@ -99,6 +99,11 @@ const columns = [
       return <>{moment(text).format('YYYY-MM-DD HH:mm')}</>;
     },
   },
+  {
+    title: '优先级',
+    dataIndex: 'priority',
+    key: 'priority',
+  },
 ];
 
 function ToDolist(props) {
@@ -246,7 +251,7 @@ function ToDolist(props) {
                 </Col>
                 <Col span={8}>
                   <Form.Item label="发送时间">
-                    {getFieldDecorator('creationTime')(<DatePicker showTime />)}
+                    {getFieldDecorator('creationTime')(<DatePicker />)}
                   </Form.Item>
                 </Col>
               </>
@@ -309,9 +314,9 @@ function ToDolist(props) {
             )}
           </Form>
         </Row>
-        <div style={{ marginBottom: 24 }}>
+        {/* <div style={{ marginBottom: 24 }}>
           <Button type="primary">导出数据</Button>
-        </div>
+        </div> */}
         <Table
           loading={loading}
           columns={columns}

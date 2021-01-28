@@ -58,11 +58,11 @@ function EventDetails(props) {
   const tabList = [
     {
       key: 'workorder',
-      tab: '需求工单',
+      tab: '事件工单',
     },
     {
       key: 'process',
-      tab: '需求流程',
+      tab: '事件流程',
     },
   ];
 

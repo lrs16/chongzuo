@@ -21,7 +21,7 @@ function Checkdes(props) {
           {info.content}
         </Descriptions.Item>
         <Descriptions.Item label="附件" span={3}>
-          {info.fileIds !== '' && <Downloadfile files={info.fileIds} />}
+          {info.fileIds !== 'null' && <Downloadfile files={info.fileIds} />}
         </Descriptions.Item>
         <Descriptions.Item label="审核人">{info.checkUser}</Descriptions.Item>
         <Descriptions.Item label="审核人单位">{info.checkUnit}</Descriptions.Item>
