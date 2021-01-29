@@ -18,7 +18,7 @@ const { Option } = Select;
 const RadioGroup = Radio.Group;
 
 const RegisterChild = React.forwardRef((props, ref) => {
-    const { formItemLayout, forminladeLayout, tododetailslist, ChangeFiles, main } = props;
+    const { formItemLayout, forminladeLayout, tododetailslist, ChangeFiles, main, curruserinfo } = props;
     const { getFieldDecorator } = props.form;
     const attRef = useRef();
 
@@ -273,23 +273,23 @@ const RegisterChild = React.forwardRef((props, ref) => {
                 <Col span={8}>
                     <Form.Item label="登记人">
                         {getFieldDecorator('registerUser', {
-                            initialValue: tododetailslist ? tododetailslist.register.registerUser : ''
+                            initialValue: tododetailslist ? tododetailslist.register.registerUser : curruserinfo.userName
                         })(<Input allowClear disabled />)}
                     </Form.Item>
                 </Col>
 
                 <Col span={8}>
-                    <Form.Item label="登记单位">
+                    <Form.Item label="登记人单位">
                         {getFieldDecorator('registerUnit', {
-                            initialValue: tododetailslist ? tododetailslist.register.registerUnit : ''
+                            initialValue: tododetailslist ? tododetailslist.register.registerUnit : curruserinfo.unitName
                         })(<Input allowClear disabled />)}
                     </Form.Item>
                 </Col>
 
                 <Col span={8}>
-                    <Form.Item label="登记部门">
+                    <Form.Item label="登记人部门">
                         {getFieldDecorator('registerDept', {
-                            initialValue: tododetailslist ? tododetailslist.register.registerDept : ''
+                            initialValue: tododetailslist ? tododetailslist.register.registerDept : curruserinfo.deptName
                         })(<Input allowClear disabled />)}
                     </Form.Item>
                 </Col>
@@ -297,5 +297,13 @@ const RegisterChild = React.forwardRef((props, ref) => {
         </Row>
     );
 });
+
+RegisterChild.defaultProps = {
+    curruserinfo: {
+        deptName: '',
+        unitName: '',
+        userName: ''
+    }
+}
 
 export default Form.create({})(RegisterChild);

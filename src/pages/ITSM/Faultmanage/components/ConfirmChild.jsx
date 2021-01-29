@@ -121,17 +121,17 @@ const ConfirmChild = React.forwardRef((props, ref) => {
                     </Col>
 
                     <Col span={8}>
-                        <Form.Item label="确认单位">
+                        <Form.Item label="确认人单位">
                             {getFieldDecorator('confirmUnit', {
-                                initialValue: confirm.confirmUnit || '运维部'
+                                initialValue: confirm.confirmUnit || curruserinfo.unitName
                             })(<Input allowClear disabled />)}
                         </Form.Item>
                     </Col>
 
                     <Col span={8}>
-                        <Form.Item label="确认部门">
+                        <Form.Item label="确认人部门">
                             {getFieldDecorator('confirmDept', {
-                                initialValue: confirm.confirmDept || curruserinfo.deptNameExt,
+                                initialValue: confirm.confirmDept || curruserinfo.deptName,
                             })(<Input allowClear disabled />)}
                         </Form.Item>
                     </Col>
@@ -152,9 +152,9 @@ ConfirmChild.defaultProps = {
         confirmTime: moment().format()
     },
     curruserinfo: {
-        confirmDept: '',
-        confirmUnit: '',
-        confirmUser: ''
+        deptName: '',
+        unitName: '',
+        userName: ''
     }
 }
 

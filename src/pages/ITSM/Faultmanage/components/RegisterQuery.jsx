@@ -43,9 +43,9 @@ function RegisterQuery (props){
                     <Description term="上传附件"> {info.registerAttachments && <Downloadfile files={info.registerAttachments} />}</Description>
                 </DescriptionList>
                 <DescriptionList size="large">
-                    <Description term="填报人">{info.registerUser || ''}</Description>
-                    <Description term="填报人单位">{info.registerUnit || ''}</Description>
-                    <Description term="填报人部门">{info.registerDept || ''}</Description>
+                    <Description term="登记人">{info.registerUser || ''}</Description>
+                    <Description term="登记人单位">{info.registerUnit || ''}</Description>
+                    <Description term="登记人部门">{info.registerDept || ''}</Description>
                 </DescriptionList></>
         </div>
     );

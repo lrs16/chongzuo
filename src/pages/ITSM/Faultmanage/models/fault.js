@@ -8,6 +8,7 @@ import {
   // 真实接口
   queryTroubleGetNewno, // 获取新的故障编号
   queryCurrUserInfo, // 获取登录用户信息
+  ITSMUser, 
   querySaveUserId, // 保存用户数据携带的id 故障流程启动
   querySavefaultRegister, // 故障登记保存
 
@@ -43,6 +44,7 @@ export default {
     // 真实接口
     newno: '', // 获取新的故障编号
     curruserinfo: [], // 获取登录用户信息
+    userinfo: '',
     saveuserid: '', // 用户数据携带的id
     saveuserid1: '',
 
@@ -114,6 +116,14 @@ export default {
       yield put({
         type: 'getcurruserinfo',
         payload: response,
+      });
+    },
+    
+    *fetchuser(_, { call, put }) {
+      const response = yield call(ITSMUser);
+      yield put({
+        type: 'saveuser',
+        payload: response.data,
       });
     },
 
@@ -348,6 +358,13 @@ export default {
         ...state,
         curruserinfo: action.payload.data
       }
+    },
+
+    saveuser(state, action) {
+      return {
+        ...state,
+        userinfo: action.payload,
+      };
     },
 
     // 用户数据携带的id

@@ -16,7 +16,6 @@ const RadioGroup = Radio.Group;
 
 const ExamineChild = React.forwardRef((props, ref) => {
     const { formItemLayout, forminladeLayout, check, curruserinfo, ChangeFiles, ChangeResult } = props;
-
     const { getFieldDecorator } = props.form;
     const attRef = useRef();
     const [fileslist, setFilesList] = useState({ arr: [], ischange: false }); // 下载列表
@@ -84,7 +83,7 @@ const ExamineChild = React.forwardRef((props, ref) => {
                         <Form.Item label="审核意见" {...forminladeLayout}>
                             {getFieldDecorator('checkOpinion', {
                                 rules: [{ required: false, message: '请输入', }],
-                                initialValue: check ? check.checkOpinion : ''
+                                initialValue: check.checkOpinion
                             })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
                         </Form.Item>
                     )}
@@ -92,7 +91,7 @@ const ExamineChild = React.forwardRef((props, ref) => {
                         <Form.Item label="审核意见" {...forminladeLayout}>
                             {getFieldDecorator('checkOpinion', {
                                 rules: [{ required: true, message: '请输入', }],
-                                initialValue: check ? check.checkOpinion : ''
+                                initialValue: check.checkOpinion
                             })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
                         </Form.Item>
                     )}
@@ -132,17 +131,17 @@ const ExamineChild = React.forwardRef((props, ref) => {
                 </Col>
 
                 <Col span={8}>
-                    <Form.Item label="审核单位">
+                    <Form.Item label="审核人单位">
                         {getFieldDecorator('checkUnit', {
-                            initialValue: check.checkUnit || '运维部'
+                            initialValue: check.checkUnit || curruserinfo.unitName
                         })(<Input allowClear disabled />)}
                     </Form.Item>
                 </Col>
 
                 <Col span={8}>
-                    <Form.Item label="审核部门">
+                    <Form.Item label="审核人部门">
                         {getFieldDecorator('checkDept', {
-                            initialValue: check.checkDept || curruserinfo.deptNameExt
+                            initialValue: check.checkDept || curruserinfo.deptName
                         })(<Input allowClear disabled />)}
                     </Form.Item>
                 </Col>
@@ -154,15 +153,15 @@ const ExamineChild = React.forwardRef((props, ref) => {
 ExamineChild.defaultProps = {
     check: {
         checkAttachments: '',
-        checkReportSign: '',
+        checkReportSign: 0,
         checkOpinion: '',
         checkResult: '1',
         checkTime: moment().format()
     },
     curruserinfo: {
-        checkDept: '',
-        checkUnit: '',
-        checkUser: ''
+        deptName: '',
+        unitName: '',
+        userName: ''
     }
 }
 

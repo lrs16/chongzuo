@@ -161,7 +161,7 @@ function Todolistdetails(props) {
 
   const getCurrUserInfo = () => {  // 获取登录用户信息
     dispatch({
-      type: 'fault/getCurrUserInfo'
+      type: 'fault/fetchuser'
     });
   }
 
@@ -342,8 +342,19 @@ function Todolistdetails(props) {
   const saveSummary = (cirStatus) => { // 系统运维商确认总结
     // eslint-disable-next-line consistent-return
     SummaryRef.current.validateFields((err, values) => {
-
       if (cirStatus ? !err : true) {
+        // if(values.finishAnalysisAttachments !== '[]' && values.finishAnalysisAttachments !== undefined && values.finishAnalysisAttachments !== null) {
+        //   // SummaryRef.current.setFields({
+        //   //   finishAnalysisAttachments: {
+        //   //     value: values.finishAnalysisAttachments,
+        //   //     errors: [new Error('forbid ha')],
+        //   //   },
+        //   // });
+        //   SummaryRef.current.setFieldsValue({
+        //     finishAnalysisAttachments: values.finishAnalysisAttachments
+        //   });
+        // }
+        // console.log(values.finishAnalysisAttachments, 'fuuufufuf')
         const formValues = values;
         formValues.taskId = id;
         formValues.editState = tododetailslist.editState;
@@ -363,13 +374,6 @@ function Todolistdetails(props) {
             formValues.finishAttachments = JSON.stringify(files.arr);
           }
         }
-
-        // SummaryRef.current.setFields({
-        //   arrs: {
-        //     value: values.finishAnalysisAttachments,
-        //     errors: [new Error('forbid ha')],
-        //   },
-        // });
 
         formValues.finishTime = values.finishTime.format('YYYY-MM-DD HH:mm:ss');
         formValues.finishRequiredTime = values.finishRequiredTime.format('YYYY-MM-DD HH:mm:ss'); // 要求上传时间
@@ -809,6 +813,7 @@ function Todolistdetails(props) {
                             forminladeLayout={forminladeLayout}
                             tododetailslist={tododetailslist}
                             main={main}
+                            curruserinfo={curruserinfo}
                           />
                         </Panel>
                       )
@@ -993,6 +998,6 @@ export default Form.create({})(
     flowlog: fault.flowlog, // 流转日志
     html: fault.html,
     loading: loading.models.fault,
-    curruserinfo: fault.curruserinfo, // 获取登录用户信息
+    curruserinfo: fault.userinfo, // 获取登录用户信息
   }))(Todolistdetails),
 );

@@ -31,8 +31,8 @@ function ConfirmQuery(props) {
                 </DescriptionList>
                 <DescriptionList size="large">
                     <Description term="确认人">{info.confirmUser || ''}</Description>
-                    <Description term="确认单位">{info.confirmUnit || ''}</Description>
-                    <Description term="确认部门">{info.confirmDept || ''}</Description>
+                    <Description term="确认人单位">{info.confirmUnit || ''}</Description>
+                    <Description term="确认人部门">{info.confirmDept || ''}</Description>
                 </DescriptionList>
             </>
         </div>

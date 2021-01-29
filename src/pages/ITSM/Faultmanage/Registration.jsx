@@ -69,10 +69,10 @@ function Registration(props) {
       type: 'fault/getFaultRegisterNo'
     });
   }
-
+  
   const getCurrUserInfo = () => {  // 获取登录用户信息
     dispatch({
-      type: 'fault/getCurrUserInfo'
+      type: 'fault/fetchuser'
     });
   }
 
@@ -114,11 +114,11 @@ function Registration(props) {
   }
 
   // 上传附件触发保存
-  // useEffect(() => {
-  //   if (files.ischange) {
-  //     handleSave();
-  //   }
-  // }, [files]);
+  useEffect(() => {
+    if (files.ischange) {
+      handleSave();
+    }
+  }, [files]);
 
   const required = true;
 
@@ -391,17 +391,17 @@ function Registration(props) {
                 </Col>
 
                 <Col span={8}>
-                  <Form.Item label="登记单位">
+                  <Form.Item label="登记人单位">
                     {getFieldDecorator('registerUnit', {
-                      initialValue: '运维部',
+                      initialValue: curruserinfo.unitName || '',
                     })(<Input disabled />)}
                   </Form.Item>
                 </Col>
 
                 <Col span={8}>
-                  <Form.Item label="登记部门">
+                  <Form.Item label="登记人部门">
                     {getFieldDecorator('registerDept', {
-                      initialValue: curruserinfo.deptNameExt || '',
+                      initialValue: curruserinfo.deptName || '',
                     })(<Input disabled />)}
                   </Form.Item>
                 </Col>
@@ -417,7 +417,7 @@ function Registration(props) {
 export default Form.create({})(
   connect(({ fault, loading }) => ({
     newno: fault.newno, // 获取新的故障编号
-    curruserinfo: fault.curruserinfo, // 获取登录用户信息
+    curruserinfo: fault.userinfo, // 获取登录用户信息
     saveuserid: fault.saveuserid, // 保存用户数据携带的id
     html: fault.html,
     loading: loading.models.fault,

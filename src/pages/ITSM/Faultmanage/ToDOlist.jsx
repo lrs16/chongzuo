@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
-import moment from 'moment';
+// import moment from 'moment';
 import Link from 'umi/link';
 import {
   Card,
@@ -166,7 +166,9 @@ function ToDOlist(props) {
       if (formValues.createTime) {
         formValues.createTime = values.createTime.format('YYYY-MM-DD HH:mm:ss');
       }
-      formValues.type = values.type.join('/');
+      if(formValues.type) {
+        formValues.type = values.type.join('/');
+      }
       if (err) {
         return;
       }

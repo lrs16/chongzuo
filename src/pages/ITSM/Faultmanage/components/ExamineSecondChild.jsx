@@ -118,17 +118,17 @@ const ExamineSecondChild = React.forwardRef((props, ref) => {
                 </Col>
 
                 <Col span={8}>
-                    <Form.Item label="审核单位">
+                    <Form.Item label="审核人单位">
                         {getFieldDecorator('checkUnit', {
-                            initialValue: check.checkUnit || '运维部'
+                            initialValue: check.checkUnit || curruserinfo.unitName
                         })(<Input allowClear disabled />)}
                     </Form.Item>
                 </Col>
 
                 <Col span={8}>
-                    <Form.Item label="审核部门">
+                    <Form.Item label="审核人部门">
                         {getFieldDecorator('checkDept', {
-                            initialValue: check.checkDept || curruserinfo.deptNameExt
+                            initialValue: check.checkDept || curruserinfo.deptName
                         })(<Input allowClear disabled />)}
                     </Form.Item>
                 </Col>
@@ -149,9 +149,9 @@ ExamineSecondChild.defaultProps = {
         checkTime: moment().format()
     },
     curruserinfo: {
-        checkDept: '',
-        checkUnit: '',
-        checkUser: ''
+        deptName: '',
+        unitName: '',
+        userName: ''
     }
 }
 

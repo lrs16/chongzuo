@@ -252,23 +252,23 @@ const HandleChild = React.forwardRef((props, ref) => {
                     <Col span={8}>
                         <Form.Item label="处理人">
                             {getFieldDecorator('handler', {
-                                initialValue: curruserinfo.userName || '',
+                                initialValue: handle.handler || curruserinfo.userName,
                             })(<Input disabled />)}
                         </Form.Item>
                     </Col>
 
                     <Col span={8}>
-                        <Form.Item label="处理单位">
+                        <Form.Item label="处理人单位">
                             {getFieldDecorator('handleUnit', {
-                                initialValue: '运维部',
+                                initialValue: handle.handleUnit || curruserinfo.deptName,
                             })(<Input disabled />)}
                         </Form.Item>
                     </Col>
 
                     <Col span={8}>
-                        <Form.Item label="处理部门">
+                        <Form.Item label="处理人部门">
                             {getFieldDecorator('handleDept', {
-                                initialValue: curruserinfo.deptNameExt || '',
+                                initialValue: handle.handleDept || curruserinfo.deptName,
                             })(<Input disabled />)}
                         </Form.Item>
                     </Col>
@@ -277,5 +277,19 @@ const HandleChild = React.forwardRef((props, ref) => {
         </Row>
     );
 });
+
+HandleChild.defaultProps = {
+    handle: {
+        handleContent: '',
+        handleReason: '',
+        handleAdvise: '',
+        handleResult: ''
+    },
+    curruserinfo: {
+        deptName: '',
+        unitName: '',
+        userName: ''
+    }
+}
 
 export default Form.create({})(HandleChild);

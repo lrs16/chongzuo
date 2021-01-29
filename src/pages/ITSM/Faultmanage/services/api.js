@@ -46,9 +46,13 @@ export async function queryTroubleGetNewno() {
 export async function queryCurrUserInfo() {
   return request('/upms/user/getCurrUserInfo');
 }
-// export async function queryCurrUserInfo() {
-//   return request('/itsm/event/flow/getUserInfo');
-// }
+
+// ITSM获取当前处理人信息
+export async function ITSMUser() {
+  return request(`/itsm/common/function/getUserInfo`, {
+    method: 'GET',
+  });
+}
 
 // 保存用户数据携带的id /itsm/trouble/flow/start 故障流程启动
 export async function querySaveUserId() {
@@ -87,6 +91,13 @@ export async function querySearchfaultTodoList1(current, pageSize, values) {
   })
 }
 
+// export async function querySearchfaultTodoList1(params) {
+//   return request(`/itsm/trouble/flow/getWaitDoPage`, {
+//     method: 'POST',
+//     body: JSON.stringify(params)
+//   })
+// }
+
 // 故障待办列表  导出下载/itsm/trouble/flow/expExcelWaitDoList
 export async function querydownload(current, pageSize, values) {
   const params = values;
@@ -94,6 +105,10 @@ export async function querydownload(current, pageSize, values) {
   params.pageSize = pageSize; // 页码
   return request(`/itsm/trouble/flow/expExcelWaitDoList`, {
     method: 'POST',
+    headers: {
+      Authorization: `Bearer ${sessionStorage.getItem('access_token')}`,
+    },
+    responseType:'blob',
     body: JSON.stringify(params)
   })
 }

@@ -175,7 +175,7 @@ function QueryList(props) {
       title: '登记人部门',
       dataIndex: 'registerDept',
       key: 'registerDept',
-      width: 150,
+      width: 200,
     },
     {
       title: '审核人',
@@ -273,10 +273,13 @@ function QueryList(props) {
       if (fieldsValue.handleStartTimeBegin) {
         values.handleStartTimeBegin = fieldsValue.handleStartTimeBegin.format('YYYY-MM-DD');
       }
-      if (values.handleStartTimeEnd) {
+      if (fieldsValue.handleStartTimeEnd) {
         values.handleStartTimeEnd = fieldsValue.handleStartTimeEnd.format('YYYY-MM-DD');
       }
-      values.type = fieldsValue.type.join('/');
+
+      if(fieldsValue.type) {
+        values.type = fieldsValue.type.join('/');
+      }
 
       searchdata(values, paginations.current, paginations.pageSize);
     });

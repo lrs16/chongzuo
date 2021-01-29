@@ -131,17 +131,17 @@ const SummaryChild = React.forwardRef((props, ref) => {
                     </Col>
 
                     <Col span={8}>
-                        <Form.Item label="总结单位">
+                        <Form.Item label="总结人单位">
                             {getFieldDecorator('finishUnit', {
-                                initialValue: finish.finishUnit || '运维部',
+                                initialValue: finish.finishUnit || curruserinfo.unitName,
                             })(<Input allowClear disabled />)}
                         </Form.Item>
                     </Col>
 
                     <Col span={8}>
-                        <Form.Item label="总结部门">
+                        <Form.Item label="总结人部门">
                             {getFieldDecorator('finishDept', {
-                                initialValue: finish.finishDept || curruserinfo.deptNameExt,
+                                initialValue: finish.finishDept || curruserinfo.deptName,
                             })(<Input allowClear disabled />)}
                         </Form.Item>
                     </Col>
@@ -157,9 +157,9 @@ SummaryChild.defaultProps = {
         finishTime: moment().format()
     },
     curruserinfo: {
-        finishDept: '',
-        finishUnit: '',
-        finishUser: ''
+        deptName: '',
+        unitName: '',
+        userName: ''
     }
 }
 
