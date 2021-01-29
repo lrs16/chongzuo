@@ -59,6 +59,10 @@ const Handle = React.forwardRef((props, ref) => {
     });
     return data;
   };
+
+  const displayRender = label => {
+    return label[label.length - 1];
+  };
   const handlcheckChange = value => {
     setFieldsValue({ main_eventObject: value?.slice(-1)[0] }, () => {});
   };
@@ -162,6 +166,7 @@ const Handle = React.forwardRef((props, ref) => {
                       onChange={handlcheckChange}
                       placeholder="请选择"
                       expandTrigger="hover"
+                      displayRender={displayRender}
                     />,
                   )}
                 </Form.Item>
@@ -191,7 +196,7 @@ const Handle = React.forwardRef((props, ref) => {
                 <Form.Item label="事件对象">
                   {getFieldDecorator('main_eventObject', {
                     rules: [{ required, message: '请选择事件对象' }],
-                    initialValue: main.eventObject,
+                    initialValue: main.eventObject.split(),
                   })(
                     <Cascader
                       fieldNames={{ label: 'title', value: 'dict_code', children: 'children' }}
@@ -199,6 +204,7 @@ const Handle = React.forwardRef((props, ref) => {
                       onChange={handlcheckChange}
                       placeholder="请选择"
                       expandTrigger="hover"
+                      displayRender={displayRender}
                     />,
                   )}
                 </Form.Item>

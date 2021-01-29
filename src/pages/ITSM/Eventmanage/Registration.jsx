@@ -85,16 +85,9 @@ function Registration(props) {
     });
   };
 
-  // const getregistinfo = () => {
-  //   RegistratRef.current.getFieldsValue([
-  //     'register_event_effect',
-  //     'main_event_type',
-  //     'main_event_object',
-  //     'register_event_emergent',
-  //     'register_event_prior',
-  //   ])
-  // };
-  // console.log(getregistinfo());
+  const formerr = () => {
+    message.error('请将信息填写完整...');
+  };
 
   const gethandle = type => {
     HandleRef.current.validateFields((err, values) => {
@@ -102,10 +95,12 @@ function Registration(props) {
         setFormhandle({
           ...values,
           handle_endTime: values.handle_endTime.format('YYYY-MM-DD HH:mm:ss'),
+          handle_fileIds: '[]',
         });
         submittype(type);
       } else {
         setIscheck({ save: false, flow: false });
+        formerr();
       }
     });
   };

@@ -150,7 +150,6 @@ function WorkOrder(props) {
               register_selfhandle: String(Number(values.register_selfhandle)),
               register_supplement: String(Number(values.register_supplement)),
               register_fileIds: JSON.stringify(files.arr),
-              main_eventObject: values.main_eventObject.slice(-1)[0],
             });
           } else {
             formerr();
@@ -165,7 +164,6 @@ function WorkOrder(props) {
             register_selfhandle: String(Number(values.register_selfhandle)),
             register_supplement: String(Number(values.register_supplement)),
             register_fileIds: JSON.stringify(files.arr),
-            main_eventObject: values.main_eventObject.slice(-1)[0],
           });
         });
       }
@@ -179,7 +177,6 @@ function WorkOrder(props) {
             register_selfhandle: String(Number(values.register_selfhandle)),
             register_supplement: String(Number(values.register_supplement)),
             register_fileIds: JSON.stringify(files.arr),
-            main_eventObject: values.main_eventObject.slice(-1)[0],
           });
         } else {
           formerr();
@@ -226,7 +223,6 @@ function WorkOrder(props) {
               ...values,
               handle_endTime: values.handle_endTime.format('YYYY-MM-DD HH:mm:ss'),
               handle_fileIds: JSON.stringify(handefiles.arr),
-              main_eventObject: values.main_eventObject.slice(-1)[0],
             });
           } else {
             formerr();
@@ -239,7 +235,6 @@ function WorkOrder(props) {
             ...values,
             handle_endTime: values.handle_endTime.format('YYYY-MM-DD HH:mm:ss'),
             handle_fileIds: JSON.stringify(files.arr),
-            main_eventObject: values.main_eventObject.slice(-1)[0],
           });
         });
       }
@@ -251,7 +246,6 @@ function WorkOrder(props) {
             ...values,
             handle_endTime: values.handle_endTime.format('YYYY-MM-DD HH:mm:ss'),
             handle_fileIds: JSON.stringify(files.arr),
-            main_eventObject: values.main_eventObject.slice(-1)[0],
           });
         } else {
           formerr();
@@ -466,6 +460,8 @@ function WorkOrder(props) {
     }
   }, [files]);
 
+  console.log(undefined && '[]');
+
   return (
     <div className={styles.collapse}>
       {recordsloading === false && (
@@ -494,7 +490,7 @@ function WorkOrder(props) {
         </Steps>
       )}
       <Spin spinning={loading}>
-        {loading === false && info !== '' && data !== undefined && (
+        {loading === false && info !== '' && data !== undefined && edit !== undefined && (
           <Collapse
             expandIconPosition="right"
             // defaultActiveKey={['1']}
@@ -523,7 +519,11 @@ function WorkOrder(props) {
                   userinfo={userinfo}
                   sethandlevalue="true"
                   location={location}
-                  files={edit.register.fileIds !== '[]' ? JSON.parse(edit.register.fileIds) : []}
+                  files={
+                    edit.register.fileIds === (undefined || '[]')
+                      ? []
+                      : JSON.parse(edit.register.fileIds)
+                  }
                 />
               </Panel>
             )}
@@ -582,27 +582,25 @@ function WorkOrder(props) {
                 />
               </Panel>
             )}
-            {edit !== undefined &&
-              ((pangekey === '5' && edit.handle === null) ||
-                (pangekey === '5' && edit.handle.fileIds === null)) && (
-                <Panel header="事件处理" key="handleform">
-                  <Handle
-                    formItemLayout={formItemLayout}
-                    forminladeLayout={forminladeLayout}
-                    ref={HandleRef}
-                    info={finishfirst}
-                    main={data[0].main}
-                    userinfo={userinfo}
-                    defaultvalue={defaultvalue}
-                    location={location}
-                    ChangeFiles={newvalue => {
-                      setFiles(newvalue);
-                    }}
-                    files={[]}
-                    show={show}
-                  />
-                </Panel>
-              )}
+            {edit !== undefined && pangekey === '5' && edit.handle.fileIds === null && (
+              <Panel header="事件处理" key="handleform">
+                <Handle
+                  formItemLayout={formItemLayout}
+                  forminladeLayout={forminladeLayout}
+                  ref={HandleRef}
+                  info={finishfirst}
+                  main={data[0].main}
+                  userinfo={userinfo}
+                  defaultvalue={defaultvalue}
+                  location={location}
+                  ChangeFiles={newvalue => {
+                    setFiles(newvalue);
+                  }}
+                  files={[]}
+                  show={show}
+                />
+              </Panel>
+            )}
             {edit !== undefined && pangekey === '5' && edit.handle.fileIds !== null && (
               <Panel header="事件处理" key="handleform">
                 <Handle

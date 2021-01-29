@@ -159,6 +159,10 @@ const Registrat = forwardRef((props, ref) => {
     }
   };
 
+  const displayRender = label => {
+    return label[label.length - 1];
+  };
+
   const getTypebyTitle = title => {
     if (selectdata.length > 0) {
       return selectdata.filter(item => item.title === title)[0].children;
@@ -345,7 +349,7 @@ const Registrat = forwardRef((props, ref) => {
             <Form.Item label="事件对象">
               {getFieldDecorator('main_eventObject', {
                 rules: [{ required, message: '请选择事件对象' }],
-                initialValue: main.eventObject,
+                initialValue: main.eventObject.split(),
               })(
                 <Cascader
                   fieldNames={{ label: 'title', value: 'dict_code', children: 'children' }}
@@ -353,6 +357,7 @@ const Registrat = forwardRef((props, ref) => {
                   onChange={handlcheckChange}
                   placeholder="请选择"
                   expandTrigger="hover"
+                  displayRender={displayRender}
                 />,
               )}
             </Form.Item>
