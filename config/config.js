@@ -124,7 +124,7 @@ export default {
               routes: [
                 {
                   path: '/ITSM',
-                  redirect: '/ITSM/demandmanage',
+                  redirect: '/ITSM/eventmanage',
                 },
                 {
                   path: '/ITSM/eventmanage',

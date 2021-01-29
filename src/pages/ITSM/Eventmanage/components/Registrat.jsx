@@ -22,26 +22,6 @@ import SysDict from '@/components/SysDict';
 const { Option } = Select;
 const { TextArea } = Input;
 
-const typemaps = new Map([
-  ['', '处理'],
-  ['001', '处理'],
-  ['002', '处理'],
-  ['003', '处理'],
-  ['004', '处理'],
-  ['005', '审核'],
-  ['006', '处理'],
-]);
-
-const flowtypemaps = new Map([
-  ['', '1'],
-  ['001', '1'],
-  ['002', '1'],
-  ['003', '1'],
-  ['004', '1'],
-  ['005', '3'],
-  ['006', '1'],
-]);
-
 const Registrat = forwardRef((props, ref) => {
   const {
     formItemLayout,
@@ -109,8 +89,13 @@ const Registrat = forwardRef((props, ref) => {
   }, [info]);
 
   useEffect(() => {
-    sessionStorage.setItem('Nextflowmane', typemaps.get(main.eventType));
-    sessionStorage.setItem('flowtype', flowtypemaps.get(main.eventType));
+    if (main.eventObject === '007') {
+      sessionStorage.setItem('Nextflowmane', '审核');
+      sessionStorage.setItem('flowtype', '3');
+    } else {
+      sessionStorage.setItem('Nextflowmane', '流转');
+      sessionStorage.setItem('flowtype', '1');
+    }
     routerRefresh();
   }, [info]);
 
@@ -125,7 +110,8 @@ const Registrat = forwardRef((props, ref) => {
 
   // 007时走审核
   const handlcheckChange = value => {
-    if (value === '007') {
+    setFieldsValue({ main_eventObject: value.slice(-1)[0] }, () => {});
+    if (value.slice(-1)[0] === '007') {
       ChangeCheck(true);
       setCheck(true);
       ChangeFlowtype('3');

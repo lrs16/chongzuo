@@ -94,7 +94,7 @@ function ToDoregist(props) {
           </Button>
         </SelectUser>
       )}
-      {result !== '0' && taskName === '自动化科业务人员审核' && (
+      {result === '1' && taskName === '自动化科业务人员审核' && (
         <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleHold('flow')}>
           流转
         </Button>
@@ -104,13 +104,16 @@ function ToDoregist(props) {
           登记人确认
         </Button>
       )}
-      {result === '0' && (taskName === '自动化科负责人确认' || taskName === '需求登记人员确认') && (
-        <SelectUser handleSubmit={() => handleHold('flow')} taskId={taskId}>
-          <Button type="primary" style={{ marginRight: 8 }}>
-            重新处理
-          </Button>
-        </SelectUser>
-      )}
+      {result === '0' &&
+        (taskName === '自动化科负责人确认' ||
+          taskName === '需求登记人员确认' ||
+          taskName === '自动化科业务人员审核') && (
+          <SelectUser handleSubmit={() => handleHold('flow')} taskId={taskId}>
+            <Button type="primary" style={{ marginRight: 8 }}>
+              重新处理
+            </Button>
+          </SelectUser>
+        )}
       {((result === '2' && taskName === '自动化科负责人确认') ||
         (result === '1' && taskName === '需求登记人员确认')) && (
         <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleHold('flow')}>

@@ -125,7 +125,7 @@ const Registrat = forwardRef((props, ref) => {
             <Form.Item label="申请时间">
               {getFieldDecorator('registerTime', {
                 rules: [{ required, message: '请选择申请时间' }],
-                initialValue: moment(register.creationTime),
+                initialValue: moment(register.registerTime),
               })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" />)}
             </Form.Item>
           </Col>

@@ -73,6 +73,7 @@ function WorkOrder(props) {
   const [flowtype, setFlowtype] = useState('1'); // 流转类型
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
   const [handefiles, setHandleFiles] = useState({ arr: [], ischange: false }); // 登记时自行处理附件列表
+  const [isdelay, setIsDelay] = useState(true);
   const RegistratRef = useRef();
   const CheckRef = useRef();
   const HandleRef = useRef();
@@ -97,22 +98,19 @@ function WorkOrder(props) {
       type: 'itsmuser/fetchuser',
     });
     sessionStorage.setItem('Processtype', 'event');
+    setTimeout(() => {
+      setIsDelay(false);
+    }, 500);
   }, []);
 
   // 初始化历史附件
   useEffect(() => {
-    if (edit !== undefined && Object.values(edit)[0] !== null) {
+    if (edit !== undefined && edit !== '' && Object.values(edit)[0] !== null) {
       if (Object.values(edit)[0].fileIds !== '') {
         setFiles({ ...files, arr: JSON.parse(Object.values(edit)[0].fileIds) });
       }
     }
   }, [info]);
-
-  // 更新流转类型
-  // console.log(flowtype);
-  // useEffect(() => {
-  //   sessionStorage.setItem('flowtype', flowtype);
-  // }, [flowtype]);
 
   const callback = key => {
     setActiveKey(key);
@@ -395,16 +393,6 @@ function WorkOrder(props) {
     setActiveKey([`${Collapsekeymap.get(pangekey)}`]);
   }, [pangekey]);
 
-  // 初始化流转类型,自动接单value
-  // useEffect(() => {
-  //   if (data !== undefined && data[0].main.event_type === '005') {
-  //     setFlowtype('3');
-  //   }
-  //   if (pangekey !== '1') {
-  //     setFlowtype('1');
-  //   }
-  // }, [loading]);
-
   useEffect(() => {
     if (validate === true && ischeck === false) {
       handlesubmit();
@@ -460,7 +448,8 @@ function WorkOrder(props) {
     }
   }, [files]);
 
-  console.log(undefined && '[]');
+  console.log(loading, !loading);
+  console.log(info);
 
   return (
     <div className={styles.collapse}>
@@ -490,7 +479,7 @@ function WorkOrder(props) {
         </Steps>
       )}
       <Spin spinning={loading}>
-        {loading === false && info !== '' && data !== undefined && edit !== undefined && (
+        {data !== undefined && edit !== undefined && (
           <Collapse
             expandIconPosition="right"
             // defaultActiveKey={['1']}
@@ -519,11 +508,7 @@ function WorkOrder(props) {
                   userinfo={userinfo}
                   sethandlevalue="true"
                   location={location}
-                  files={
-                    edit.register.fileIds === (undefined || '[]')
-                      ? []
-                      : JSON.parse(edit.register.fileIds)
-                  }
+                  files={edit.register.fileIds === '[]' ? [] : JSON.parse(edit.register.fileIds)}
                 />
               </Panel>
             )}
@@ -578,11 +563,11 @@ function WorkOrder(props) {
                   ChangeFiles={newvalue => {
                     setFiles(newvalue);
                   }}
-                  files={edit.check.fileIds !== '[]' ? JSON.parse(edit.check.fileIds) : []}
+                  files={edit.check.fileIds === '[]' ? [] : JSON.parse(edit.check.fileIds)}
                 />
               </Panel>
             )}
-            {edit !== undefined && pangekey === '5' && edit.handle.fileIds === null && (
+            {pangekey === '5' && edit.handle === null && (
               <Panel header="事件处理" key="handleform">
                 <Handle
                   formItemLayout={formItemLayout}
@@ -601,7 +586,7 @@ function WorkOrder(props) {
                 />
               </Panel>
             )}
-            {edit !== undefined && pangekey === '5' && edit.handle.fileIds !== null && (
+            {pangekey === '5' && edit.handle !== null && edit.handle.fileIds !== undefined && (
               <Panel header="事件处理" key="handleform">
                 <Handle
                   formItemLayout={formItemLayout}
@@ -638,7 +623,7 @@ function WorkOrder(props) {
                 />
               </Panel>
             )}
-            {pangekey === '7' && (
+            {pangekey === '7' && edit.finish.fileIds !== undefined && (
               <Panel header="事件确认" key="visitform">
                 <ReturnVisit
                   ChangeFlowtype={newtype => setFlowtype(newtype)}
@@ -685,9 +670,8 @@ function WorkOrder(props) {
 
 export default connect(({ eventtodo, itsmuser, loading }) => ({
   userinfo: itsmuser.userinfo,
-  // userloading: loading.effects['eventregist/fetchuser'],
   info: eventtodo.info,
   records: eventtodo.records,
-  loading: loading.models.eventtodo,
+  loading: loading.effects['eventtodo/eventopenflow'],
   recordsloading: loading.effects['eventtodo/eventrecords'],
 }))(WorkOrder);

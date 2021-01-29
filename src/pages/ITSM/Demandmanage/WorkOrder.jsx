@@ -116,8 +116,9 @@ function WorkOrder(props) {
         payload: {
           paloadvalues: {
             ...values,
-            creationTime: values.creationTime.format(),
-            registerTime: values.registerTime.format(),
+            creationTime: values.creationTime.format('YYYY-MM-DD HH:mm:ss'),
+            registerTime: values.registerTime.format('YYYY-MM-DD HH:mm:ss'),
+            completeTime: values.completeTime.format('YYYY-MM-DD HH:mm:ss'),
             attachment: JSON.stringify(files.arr),
             functionalModule: values.functionalModule.join('/'),
             nextUserIds: [{ nodeName: '', userIds: [] }],
@@ -135,8 +136,9 @@ function WorkOrder(props) {
             type: 'demandregister/startandnext',
             payload: {
               ...values,
-              creationTime: values.creationTime.format(),
-              registerTime: values.registerTime.format(),
+              creationTime: values.creationTime.format('YYYY-MM-DD HH:mm:ss'),
+              registerTime: values.registerTime.format('YYYY-MM-DD HH:mm:ss'),
+              completeTime: values.completeTime.format('YYYY-MM-DD HH:mm:ss'),
               attachment: JSON.stringify(files.arr),
               functionalModule: values.functionalModule.join('/'),
               nextUserIds: JSON.parse(sessionStorage.getItem('NextflowUserId')),
@@ -172,7 +174,7 @@ function WorkOrder(props) {
             payload: {
               paloadvalues: {
                 ...values,
-                reviewTime: values.reviewTime.format(),
+                reviewTime: values.reviewTime.format('YYYY-MM-DD HH:mm:ss'),
                 business: Number(values.business),
                 releases: Number(values.releases),
                 attachment: JSON.stringify(files.arr),
@@ -193,7 +195,7 @@ function WorkOrder(props) {
               type: 'demandtodo/demandnextstep',
               payload: {
                 ...values,
-                reviewTime: values.reviewTime.format(),
+                reviewTime: values.reviewTime.format('YYYY-MM-DD HH:mm:ss'),
                 business: Number(values.business),
                 releases: Number(values.releases),
                 attachment: JSON.stringify(files.arr),
@@ -216,7 +218,7 @@ function WorkOrder(props) {
               type: 'demandtodo/demandnextstep',
               payload: {
                 ...values,
-                reviewTime: values.reviewTime.format(),
+                reviewTime: values.reviewTime.format('YYYY-MM-DD HH:mm:ss'),
                 business: Number(values.business),
                 releases: Number(values.releases),
                 attachment: JSON.stringify(files.arr),
@@ -250,7 +252,7 @@ function WorkOrder(props) {
             payload: {
               paloadvalues: {
                 ...values,
-                reviewTime: values.reviewTime.format(),
+                reviewTime: values.reviewTime.format('YYYY-MM-DD HH:mm:ss'),
                 business: Number(values.business),
                 releases: Number(values.releases),
                 attachment: JSON.stringify(files.arr),
@@ -271,7 +273,7 @@ function WorkOrder(props) {
               type: 'demandtodo/demandnextstep',
               payload: {
                 ...values,
-                reviewTime: values.reviewTime.format(),
+                reviewTime: values.reviewTime.format('YYYY-MM-DD HH:mm:ss'),
                 business: Number(values.business),
                 releases: Number(values.releases),
                 attachment: JSON.stringify(files.arr),
@@ -294,7 +296,7 @@ function WorkOrder(props) {
               type: 'demandtodo/demandnextstep',
               payload: {
                 ...values,
-                reviewTime: values.reviewTime.format(),
+                reviewTime: values.reviewTime.format('YYYY-MM-DD HH:mm:ss'),
                 business: Number(values.business),
                 releases: Number(values.releases),
                 attachment: JSON.stringify(files.arr),
@@ -375,8 +377,9 @@ function WorkOrder(props) {
           payload: {
             paloadvalues: {
               ...values,
-              creationTime: values.creationTime.format(),
-              registerTime: values.registerTime.format(),
+              creationTime: values.creationTime.format('YYYY-MM-DD HH:mm:ss'),
+              registerTime: values.registerTime.format('YYYY-MM-DD HH:mm:ss'),
+              completeTime: values.completeTime.format('YYYY-MM-DD HH:mm:ss'),
               attachment: JSON.stringify(files.arr),
               functionalModule: values.functionalModule.join('/'),
               nextUserIds: [{ nodeName: '', userIds: [] }],
@@ -397,7 +400,7 @@ function WorkOrder(props) {
           payload: {
             paloadvalues: {
               ...values,
-              reviewTime: values.reviewTime.format(),
+              reviewTime: values.reviewTime.format('YYYY-MM-DD HH:mm:ss'),
               business: Number(values.business),
               releases: Number(values.releases),
               attachment: JSON.stringify(files.arr),

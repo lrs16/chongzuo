@@ -31,8 +31,9 @@ function Registration(props) {
       type: 'demandregister/start',
       payload: {
         ...values,
-        creationTime: values.creationTime.format(),
-        registerTime: values.registerTime.format(),
+        creationTime: values.creationTime.format('YYYY-MM-DD HH:mm:ss'),
+        registerTime: values.registerTime.format('YYYY-MM-DD HH:mm:ss'),
+        completeTime: values.completeTime.format('YYYY-MM-DD HH:mm:ss'),
         attachment: JSON.stringify(files.arr),
         functionalModule: values.functionalModule.join('/'),
         nextUserIds: [
@@ -50,8 +51,9 @@ function Registration(props) {
       type: 'demandregister/startandnext',
       payload: {
         ...values,
-        creationTime: values.creationTime.format(),
-        registerTime: values.registerTime.format(),
+        creationTime: values.creationTime.format('YYYY-MM-DD HH:mm:ss'),
+        registerTime: values.registerTime.format('YYYY-MM-DD HH:mm:ss'),
+        completeTime: values.completeTime.format('YYYY-MM-DD HH:mm:ss'),
         attachment: JSON.stringify(files),
         functionalModule: values.functionalModule.join('/'),
         nextUserIds: [{ nodeName: '', userIds: [] }],
@@ -84,8 +86,9 @@ function Registration(props) {
           type: 'demandregister/uploadchange',
           payload: {
             ...values,
-            creationTime: values.creationTime.format(),
-            registerTime: values.registerTime.format(),
+            creationTime: values.creationTime.format('YYYY-MM-DD HH:mm:ss'),
+            registerTime: values.registerTime.format('YYYY-MM-DD HH:mm:ss'),
+            completeTime: values.completeTime.format('YYYY-MM-DD HH:mm:ss'),
             attachment: JSON.stringify(files.arr),
             functionalModule: values.functionalModule.join('/'),
             nextUserIds: [{ nodeName: '', userIds: [] }],
