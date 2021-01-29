@@ -7,17 +7,20 @@ import {
     Col,
     Input,
     DatePicker,
-    Radio
+    Radio,
+    // message
 } from 'antd';
 
 const { TextArea } = Input;
 const RadioGroup = Radio.Group;
 
 const ExamineChild = React.forwardRef((props, ref) => {
-    const { formItemLayout, forminladeLayout, check, curruserinfo, ChangeFiles,ChangeResult, result } = props;
+    const { formItemLayout, forminladeLayout, check, curruserinfo, ChangeFiles, ChangeResult } = props;
+
     const { getFieldDecorator } = props.form;
     const attRef = useRef();
     const [fileslist, setFilesList] = useState({ arr: [], ischange: false }); // 下载列表
+    const [adopt, setAdopt] = useState('1');
     useEffect(() => {
         ChangeFiles(fileslist);
     }, [fileslist]);
@@ -33,18 +36,26 @@ const ExamineChild = React.forwardRef((props, ref) => {
         sessionStorage.setItem('Nextflowmane', '系统运维商处理');
     });
 
+    useEffect(() => {
+        if (check !== undefined) {
+            setAdopt(check.checkResult);
+            ChangeResult(check.checkResult);
+        }
+    }, []);
+
     const onChange = (e) => {
+        setAdopt(e.target.value);
         ChangeResult(e.target.value);
     }
 
     return (
-        <Row gutter={24}>
+        <Row gutter={24} style={{ paddingTop: 24 }}>
             <Form {...formItemLayout}>
                 <Col span={24}>
                     <Form.Item label="审核结果" {...forminladeLayout}>
                         {getFieldDecorator('checkResult', {
                             rules: [{ required: true, message: '请选择审核结果' }],
-                            initialValue: check ? check.checkResult : '1',
+                            initialValue: check.checkResult
                         })(
                             <Radio.Group onChange={onChange}>
                                 <Radio value='1'>通过</Radio>
@@ -69,7 +80,7 @@ const ExamineChild = React.forwardRef((props, ref) => {
                 </Col>
 
                 <Col span={24}>
-                    {result === '1' && (
+                    {adopt === '1' && (
                         <Form.Item label="审核意见" {...forminladeLayout}>
                             {getFieldDecorator('checkOpinion', {
                                 rules: [{ required: false, message: '请输入', }],
@@ -77,7 +88,7 @@ const ExamineChild = React.forwardRef((props, ref) => {
                             })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
                         </Form.Item>
                     )}
-                    {result === '0' && check.checkResult === '0' && (
+                    {adopt === '0' && (
                         <Form.Item label="审核意见" {...forminladeLayout}>
                             {getFieldDecorator('checkOpinion', {
                                 rules: [{ required: true, message: '请输入', }],
@@ -104,7 +115,7 @@ const ExamineChild = React.forwardRef((props, ref) => {
                     <Form.Item
                         label="上传附件"
                         {...forminladeLayout}
-                        extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb"
+                        // extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb"
                     >
                         <div style={{ width: 400 }}>
                             <SysUpload fileslist={(check && check.checkAttachments) ? JSON.parse(check.checkAttachments) : []} ChangeFileslist={newvalue => setFilesList(newvalue)} />
@@ -115,7 +126,7 @@ const ExamineChild = React.forwardRef((props, ref) => {
                 <Col span={8}>
                     <Form.Item label="审核人">
                         {getFieldDecorator('checkUser', {
-                            initialValue: check ? check.checkUser : curruserinfo.userName
+                            initialValue: check.checkUser || curruserinfo.userName
                         })(<Input allowClear disabled />)}
                     </Form.Item>
                 </Col>
@@ -123,7 +134,7 @@ const ExamineChild = React.forwardRef((props, ref) => {
                 <Col span={8}>
                     <Form.Item label="审核单位">
                         {getFieldDecorator('checkUnit', {
-                            initialValue: check ? check.checkUnit : '广西电网有限责任公司'
+                            initialValue: check.checkUnit || '运维部'
                         })(<Input allowClear disabled />)}
                     </Form.Item>
                 </Col>
@@ -131,7 +142,7 @@ const ExamineChild = React.forwardRef((props, ref) => {
                 <Col span={8}>
                     <Form.Item label="审核部门">
                         {getFieldDecorator('checkDept', {
-                            initialValue: check ? check.checkDept : curruserinfo.deptNameExt
+                            initialValue: check.checkDept || curruserinfo.deptNameExt
                         })(<Input allowClear disabled />)}
                     </Form.Item>
                 </Col>
@@ -139,5 +150,20 @@ const ExamineChild = React.forwardRef((props, ref) => {
         </Row>
     );
 });
+
+ExamineChild.defaultProps = {
+    check: {
+        checkAttachments: '',
+        checkReportSign: '',
+        checkOpinion: '',
+        checkResult: '1',
+        checkTime: moment().format()
+    },
+    curruserinfo: {
+        checkDept: '',
+        checkUnit: '',
+        checkUser: ''
+    }
+}
 
 export default Form.create({})(ExamineChild);

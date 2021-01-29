@@ -9,17 +9,10 @@ import {
     DatePicker,
     Select
 } from 'antd';
+import SysDict from '@/components/SysDict';
 
 const { TextArea } = Input;
 const { Option } = Select;
-
-// const handleResult = [ // 处理结果
-//     { key: 0, value: '根本解决' },
-//     { key: 1, value: '无法解决' },
-//     { key: 2, value: '代替方法' },
-//     { key: 3, value: '误报' },
-//     { key: 4, value: '自动消失' },
-// ];
 
 const forminladeLayout1 = {
     wrapperCol: {
@@ -35,16 +28,15 @@ const forminladeLayout1 = {
 };
 
 const HandleChild = React.forwardRef((props, ref) => {
-    const { formItemLayout, forminladeLayout, handle, curruserinfo, ChangeFiles, ChangeFileskey, selectvalue } = props;
+    const { formItemLayout, forminladeLayout, handle, curruserinfo, ChangeFiles, ChangeFileskey } = props;
     const { getFieldDecorator } = props.form;
     const attRef = useRef();
     const [fileslist, setFilesList] = useState({ arr: [], ischange: false }); // 下载列表
+    const [selectdata, setSelectData] = useState([]);
     useEffect(() => {
         ChangeFiles(fileslist);
     }, [fileslist]);
-    // useEffect(() => {
-    //     setFilesList({ ...fileslist, arr: handle.handleAttachments });
-    // }, [handle]);
+
     useImperativeHandle(
         ref,
         () => ({
@@ -53,13 +45,28 @@ const HandleChild = React.forwardRef((props, ref) => {
         [],
     );
     const required = true;
-    
+
     useEffect(() => {
         sessionStorage.setItem('Nextflowmane', '系统运维商确认总结');
     });
 
+    const getTypebyTitle = (title) => {
+        if (selectdata.length > 0) {
+            return selectdata.filter(item => item.title === title)[0].children;
+        }
+        return [];
+    };
+
+    const handleResult = getTypebyTitle('故障处理结果');
+
     return (
-        <Row gutter={24}>
+        <Row gutter={24} style={{ paddingTop: 24 }}>
+            <SysDict
+                typeid="1354278126724583426"
+                commonid="1354288354950123522"
+                ChangeSelectdata={newvalue => setSelectData(newvalue)}
+                style={{ display: 'non' }}
+            />
             <Form {...formItemLayout}>
                 <Col span={24}>
                     <Form.Item label="故障详细描述" {...forminladeLayout}>
@@ -132,7 +139,7 @@ const HandleChild = React.forwardRef((props, ref) => {
                 </Col>
 
                 <Col span={8}>
-                    {selectvalue && selectvalue !== undefined && (<Form.Item label="处理结果">
+                    <Form.Item label="处理结果">
                         {getFieldDecorator('handleResult', {
                             rules: [
                                 {
@@ -143,18 +150,22 @@ const HandleChild = React.forwardRef((props, ref) => {
                             initialValue: handle ? handle.handleResult : ''
                         })(
                             <Select placeholder="请选择">
-                                {selectvalue.map(({ val }) => [<Option key={val}>{val}</Option>])}
+                                {handleResult.map(obj => [
+                                    <Option key={obj.key} value={obj.title}>
+                                        {obj.title}
+                                    </Option>,
+                                ])}
                             </Select>,
                         )}
-                    </Form.Item>)}
+                    </Form.Item>
                 </Col>
 
                 <Col span={20}>
                     <Col span={14}>
                         <Form.Item
-                            label="*上传故障处理记录表"
+                            label={<><span style={{ color: 'red' }}>*</span><span>上传故障处理记录表</span></>}
                             {...forminladeLayout1}
-                            extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb"
+                            // extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb"
                         >
                             {/* {getFieldDecorator('handleRecordAttachments', 
                             {
@@ -200,9 +211,9 @@ const HandleChild = React.forwardRef((props, ref) => {
                 <Col span={20}>
                     <Col span={14}>
                         <Form.Item
-                            label="*故障系统截图"
+                            label={<><span style={{ color: 'red' }}>*</span><span>故障系统截图</span></>}
                             {...forminladeLayout1}
-                            extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb"
+                            // extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb"
                         >
                             <div
                                 style={{ width: 400 }}
@@ -222,7 +233,7 @@ const HandleChild = React.forwardRef((props, ref) => {
                         <Form.Item
                             label="上传附件"
                             {...forminladeLayout1}
-                            extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb"
+                            // extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb"
                         >
                             <div
                                 style={{ width: 400 }}
@@ -249,7 +260,7 @@ const HandleChild = React.forwardRef((props, ref) => {
                     <Col span={8}>
                         <Form.Item label="处理单位">
                             {getFieldDecorator('handleUnit', {
-                                initialValue: '广西电网有限责任公司',
+                                initialValue: '运维部',
                             })(<Input disabled />)}
                         </Form.Item>
                     </Col>

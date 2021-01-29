@@ -135,7 +135,7 @@ function Querylistdetails(props) {
                                             name !== '开始节点' && name !== '结束节点' && <Step key={key} title={`${name}${'\xa0'}${'\xa0'}(${status})${'\xa0'}${'\xa0'}${timeText}`} description={
                                                 <div className={styles.stepDescription}>
                                                     处理人：{formHandler}
-                                                    <div>开始时间：{moment(startTime).format('YYYY-MM-DD hh:mm:ss')}</div>
+                                                    <div>结束时间：{moment(startTime).format('YYYY-MM-DD hh:mm:ss')}</div>
                                                 </div>
                                             } />
                                         ])}

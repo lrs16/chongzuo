@@ -100,11 +100,6 @@ function Todolistdetails(props) {
   const [resultsecond, setResultsecond] = useState('1');
   const [resultconfirm, setResultconfirm] = useState('1');
 
-  // 数据字典--处理结果
-  const [selectvalue, setSelectValue] = useState('');
-
-  const [showButton, setShowButton] = useState();
-
   const RegisterRef = useRef(); // 故障登记
   const ExamineRef = useRef(); // 系统运维商审核  自动化科业务负责人审核
   const HandleRef = useRef(); // 系统运维商处理
@@ -170,24 +165,11 @@ function Todolistdetails(props) {
     });
   }
 
-  const dictDatas = () => { // 处理结果
-    dispatch({
-      type: 'fault/keyval',
-      payload: {
-        dictModule: 'trouble',
-        dictType: 'handleresult',
-      },
-    }).then(res => {
-      setSelectValue(res.data.handleresult);
-    });
-  }
-
   useEffect(() => {
     getCurrUserInfo(); // 获取登录用户信息
     setActiveKey([`${Collapsekeymap.get(paneKey)}`]);
     getfaultTodoDetailData();
     sessionStorage.setItem('Processtype', 'troub');
-    dictDatas();
   }, []);
 
   useEffect(() => {
@@ -237,6 +219,7 @@ function Todolistdetails(props) {
         formValues.taskId = id;
         formValues.editState = tododetailslist.editState;
         formValues.registerUserId = userId; // 当前登录人id
+        formValues.type = values.type.join('/');
         if (files.ischange) {
           formValues.registerAttachments = JSON.stringify(files.arr);
         }
@@ -296,7 +279,6 @@ function Todolistdetails(props) {
         }).then(res => {
           if (res.code === 200) {
             // 保存成功后隐藏回退按钮
-            setShowButton(false);
             getfaultTodoDetailData();
             if (cirStatus) {
               faultcircula();
@@ -304,7 +286,6 @@ function Todolistdetails(props) {
               message.success(res.msg);
             }
           } else {
-            setShowButton(true);
             message.error(res.msg);
           }
         })
@@ -328,7 +309,7 @@ function Todolistdetails(props) {
           formValues.handleRecordAttachments = JSON.stringify(files.arr);
         } else if (fileskey === '2') {
           formValues.handlePictureAttachments = JSON.stringify(files.arr);
-        } else if(fileskey === '3') {
+        } else if (fileskey === '3') {
           formValues.handleAttachments = JSON.stringify(files.arr);
         }
 
@@ -339,7 +320,6 @@ function Todolistdetails(props) {
           formValues.handleId = tododetailslist.editGuid;
           formValues.editState = 'add';
         }
-        // console.log(formValues, 'formValues')
         return dispatch({
           type: 'fault/getfromsave', // 保存接口
           payload: { formValues }
@@ -362,6 +342,7 @@ function Todolistdetails(props) {
   const saveSummary = (cirStatus) => { // 系统运维商确认总结
     // eslint-disable-next-line consistent-return
     SummaryRef.current.validateFields((err, values) => {
+
       if (cirStatus ? !err : true) {
         const formValues = values;
         formValues.taskId = id;
@@ -383,6 +364,13 @@ function Todolistdetails(props) {
           }
         }
 
+        // SummaryRef.current.setFields({
+        //   arrs: {
+        //     value: values.finishAnalysisAttachments,
+        //     errors: [new Error('forbid ha')],
+        //   },
+        // });
+
         formValues.finishTime = values.finishTime.format('YYYY-MM-DD HH:mm:ss');
         formValues.finishRequiredTime = values.finishRequiredTime.format('YYYY-MM-DD HH:mm:ss'); // 要求上传时间
         if ((files.arr).length !== 0) {
@@ -398,7 +386,6 @@ function Todolistdetails(props) {
           payload: { formValues }
         }).then(res => {
           if (res.code === 200) {
-            setShowButton(false);
             getfaultTodoDetailData();
             if (cirStatus) {
               faultcircula();
@@ -436,7 +423,6 @@ function Todolistdetails(props) {
           payload: { formValues }
         }).then(res => {
           if (res.code === 200) {
-            setShowButton(false);
             getfaultTodoDetailData();
             if (cirStatus) {
               faultcircula();
@@ -560,9 +546,9 @@ function Todolistdetails(props) {
         return dispatch({
           type: 'fault/getfromsave', // 保存接口
           payload: { formValues }
-        // eslint-disable-next-line consistent-return
+          // eslint-disable-next-line consistent-return
         }).then(res => {
-          if(res.code === 200) {
+          if (res.code === 200) {
             const taskId = id;
             return dispatch({
               type: 'fault/getSubmitProToNextNode',
@@ -615,9 +601,9 @@ function Todolistdetails(props) {
         return dispatch({
           type: 'fault/getfromsave', // 保存接口
           payload: { formValues }
-        // eslint-disable-next-line consistent-return
+          // eslint-disable-next-line consistent-return
         }).then(res => {
-          if(res.code === 200) {
+          if (res.code === 200) {
             const taskId = id;
             return dispatch({
               type: 'fault/getSubmitProToNextNode',
@@ -663,9 +649,9 @@ function Todolistdetails(props) {
         return dispatch({
           type: 'fault/getfromsave', // 保存接口
           payload: { formValues }
-        // eslint-disable-next-line consistent-return
+          // eslint-disable-next-line consistent-return
         }).then(res => {
-          if(res.code === 200) {
+          if (res.code === 200) {
             const taskId = id;
             return dispatch({
               type: 'fault/getSubmitProToNextNode',
@@ -702,7 +688,7 @@ function Todolistdetails(props) {
             )
           }
           { // 回退按钮--系统运维商审核， 系统运维商确认总结，自动化科业务负责人审核, 自动化科确认有
-            (paneKey !== '故障登记' && paneKey !== '故障关闭' && (main && main.status !== '45') && (main && main.status !== '40')) && showButton !== false && (
+            (paneKey !== '故障登记' && paneKey !== '故障关闭' && (main && main.status !== '45') && (main && main.status !== '40')) && check === undefined && finish === undefined && confirm === undefined && (
               <ModelRollback title="填写回退意见" rollbackSubmit={values => rollbackSubmit(values)}>
                 <Button type="danger" ghost>回退</Button>
               </ModelRollback>
@@ -732,7 +718,7 @@ function Todolistdetails(props) {
                 type="primary"
                 onClick={() => handleSave(currenStatus)}
               >
-                关闭
+                结束
               </Button>))
               :
               ((main && main.status !== '40') && result === '1' && resultsecond === '1') && (<SelectUser
@@ -794,7 +780,7 @@ function Todolistdetails(props) {
                       name !== '开始节点' && name !== '结束节点' && <Step key={key} title={`${name}${'\xa0'}${'\xa0'}(${status})${'\xa0'}${'\xa0'}${timeText}`} description={
                         <div className={styles.stepDescription}>
                           处理人：{formHandler}
-                          <div>开始时间：{moment(startTime).format('YYYY-MM-DD hh:mm:ss')}</div>
+                          <div>结束时间：{moment(startTime).format('YYYY-MM-DD hh:mm:ss')}</div>
                         </div>
                       } />
                     ])}
@@ -843,7 +829,6 @@ function Todolistdetails(props) {
                             ChangeResult={newvalue => {
                               setResult(newvalue);
                             }}
-                            result={result}
                           />
                         </Panel>
                       )
@@ -858,7 +843,6 @@ function Todolistdetails(props) {
                             forminladeLayout={forminladeLayout}
                             handle={handle}
                             curruserinfo={curruserinfo}
-                            selectvalue={selectvalue}
                             ChangeFiles={newvalue => {
                               setFiles(newvalue);
                             }}
@@ -921,7 +905,6 @@ function Todolistdetails(props) {
                             ChangeResult={newvalue => {
                               setResultconfirm(newvalue);
                             }}
-                            resultconfirm={resultconfirm}
                           />
                         </Panel>
                       )

@@ -17,7 +17,6 @@ const SummaryChild = React.forwardRef((props, ref) => {
     const message = '上传故障分析报告已超时， 实际上传时间已超过要求上传时间。'
     const { getFieldDecorator } = props.form;
     const attRef = useRef();
-
     const [fileslist, setFilesList] = useState({ arr: [], ischange: false }); // 下载列表
     useEffect(() => {
         ChangeFiles(fileslist);
@@ -36,10 +35,10 @@ const SummaryChild = React.forwardRef((props, ref) => {
     });
 
     return (
-        <Row gutter={24}>
+        <Row gutter={24} style={{ paddingTop: 15 }}>
             {
                 (finish && finish.finishRequiredTime !== undefined && finish.finishPracticeTime !== undefined) && (new Date(Date.parse(finish.finishRequiredTime)) < new Date(Date.parse(finish.finishPracticeTime))) === true &&
-                <Alert message={message} type="error" showIcon />
+                <Alert message={message} type="error" showIcon style={{ width: '94%', marginLeft: '3%', marginBottom: 15 }} />
             }
             <Form {...formItemLayout}>
                 <Row gutter={24}>
@@ -52,7 +51,7 @@ const SummaryChild = React.forwardRef((props, ref) => {
                                         message: '请选择时间',
                                     },
                                 ],
-                                initialValue: finish ? moment(finish.finishTime) : moment(Date.now())
+                                initialValue: moment(finish.finishTime)
                             })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" />)}
                         </Form.Item>
                     </Col>
@@ -60,19 +59,18 @@ const SummaryChild = React.forwardRef((props, ref) => {
                     <Col span={24}>
                         <Form.Item label="总结说明" {...forminladeLayout}>
                             {getFieldDecorator('finishContent', {
-                                initialValue: finish ? finish.finishContent : ''
+                                initialValue: finish.finishContent
                             })(<TextArea rows={5} placeholder="请输入" />)}
                         </Form.Item>
                     </Col>
 
                     <Col span={10}>
                         <>
-                            <Form.Item label={<><span style={{ color: 'red' }}>*</span><span>上传故障分析报告</span></>} extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb">
+                            <Form.Item label={<><span style={{ color: 'red' }}>*</span><span>上传故障分析报告</span></>}>
                                 {getFieldDecorator('finishAnalysisAttachments', {
                                     // rules: [
                                     //     {
                                     //         required,
-                                    //         message: '请上传故障分析报告',
                                     //     },
                                     // ],
                                 })(
@@ -101,8 +99,7 @@ const SummaryChild = React.forwardRef((props, ref) => {
                     <Col span={7}>
                         <Form.Item label="实际上传时间">
                             {getFieldDecorator('finishPracticeTime', {
-                                // initialValue: finish.finishAnalysisAttachments === '[]' || finish.finishAnalysisAttachments === undefined || (!finish && !finish.finishAnalysisAttachments)? '' : moment((JSON.parse(finish.finishAnalysisAttachments))[0].nowtime)
-                                initialValue: (finish && finish.finishAnalysisAttachments) ? moment((JSON.parse(finish.finishAnalysisAttachments))[0].nowtime) : ''
+                                initialValue: (finish.finishAnalysisAttachments !== undefined && finish.finishAnalysisAttachments !== null && finish.finishAnalysisAttachments !== '[]') ? (moment((JSON.parse(finish.finishAnalysisAttachments))[0].nowtime) || '[]') : ''
                             })(<DatePicker showTime disabled format="YYYY-MM-DD HH:mm:ss" />)}
                         </Form.Item>
                     </Col>
@@ -111,7 +108,7 @@ const SummaryChild = React.forwardRef((props, ref) => {
                         <Form.Item
                             label="上传附件"
                             {...forminladeLayout}
-                            extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb"
+                        // extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb"
                         >
                             <div
                                 style={{ width: 400 }}
@@ -128,7 +125,7 @@ const SummaryChild = React.forwardRef((props, ref) => {
                     <Col span={8}>
                         <Form.Item label="总结人">
                             {getFieldDecorator('finishUser', {
-                                initialValue: finish ? finish.finishUser : curruserinfo.userName,
+                                initialValue: finish.finishUser || curruserinfo.userName,
                             })(<Input allowClear disabled />)}
                         </Form.Item>
                     </Col>
@@ -136,7 +133,7 @@ const SummaryChild = React.forwardRef((props, ref) => {
                     <Col span={8}>
                         <Form.Item label="总结单位">
                             {getFieldDecorator('finishUnit', {
-                                initialValue: finish ? finish.finishUnit : '广西电网有限责任公司',
+                                initialValue: finish.finishUnit || '运维部',
                             })(<Input allowClear disabled />)}
                         </Form.Item>
                     </Col>
@@ -144,7 +141,7 @@ const SummaryChild = React.forwardRef((props, ref) => {
                     <Col span={8}>
                         <Form.Item label="总结部门">
                             {getFieldDecorator('finishDept', {
-                                initialValue: finish ? finish.finishDept : curruserinfo.deptNameExt,
+                                initialValue: finish.finishDept || curruserinfo.deptNameExt,
                             })(<Input allowClear disabled />)}
                         </Form.Item>
                     </Col>
@@ -153,5 +150,17 @@ const SummaryChild = React.forwardRef((props, ref) => {
         </Row>
     );
 });
+
+SummaryChild.defaultProps = {
+    finish: {
+        finishContent: '',
+        finishTime: moment().format()
+    },
+    curruserinfo: {
+        finishDept: '',
+        finishUnit: '',
+        finishUser: ''
+    }
+}
 
 export default Form.create({})(SummaryChild);

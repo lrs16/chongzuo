@@ -14,10 +14,12 @@ import {
   Icon,
   Table,
   Popconfirm,
-  message,
+  // message,
+  Cascader
   // Badge
 } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import SysDict from '@/components/SysDict';
 
 // const severitystatus = ['紧急', '重大', '一般'];
 // const statusMap = ['error', 'warning', 'processing'];
@@ -36,42 +38,6 @@ const formItemLayout = {
 const { Option } = Select;
 
 // const faultStatusmap = ['待登记', '已登记', '已受理', '待审核', '审核中', '已审核', '待处理', '处理中', '已处理', '待总结', '总结中', '已总结', '待关闭', '关闭中', '已关闭'];
-
-const faultSource = [ // 故障来源
-  { key: 0, value: '系统告警' },
-  { key: 1, value: '巡检发现' }
-];
-
-const severity = [ // 严重程度
-  { key: 0, value: '紧急' },
-  { key: 1, value: '重大' },
-  { key: 2, value: '一般' },
-];
-
-const handleResult = [ // 处理结果
-  { key: 0, value: '已处理' },
-  { key: 1, value: '未处理' },
-];
-
-const faultType = [ // 故障类型
-  { key: 0, value: '系统应用' },
-  { key: 1, value: '网络安全' },
-  { key: 2, value: '数据库' },
-  { key: 3, value: '中间件' },
-  { key: 4, value: '环境/设备' },
-  { key: 5, value: '软件' },
-  { key: 6, value: '其他' },
-];
-
-const sysmodular = [
-  { key: 0, value: '配网采集' },
-  { key: 1, value: '主网采集' },
-  { key: 2, value: '终端掉线' },
-  { key: 3, value: '配网档案' },
-  { key: 4, value: '实用化指标' },
-  { key: 5, value: '账号缺陷' },
-];
-
 // const sourceMap = ['系统告警', '巡检发现'];
 // const registerModelMap = ['配网采集', '主网采集', '终端掉线', '配网档案', '实用化指标', '账号缺陷'];
 // const typeMap = ['系统应用', '网络安全', '数据库', '中间件', '环境/设备', '软件', '其他'];
@@ -89,6 +55,7 @@ function QueryList(props) {
   const [expand, setExpand] = useState(false);
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 10 }); // 分页state
   const [selectedRow, setSelectedRow] = useState([]);
+  const [selectdata, setSelectData] = useState([]);
 
   const columns = [
     // {
@@ -168,7 +135,7 @@ function QueryList(props) {
       title: '故障类型',
       dataIndex: 'type',
       key: 'type',
-      width: 150,
+      width: 200,
     },
     {
       title: '工单状态',
@@ -297,19 +264,20 @@ function QueryList(props) {
         return;
       }
       const values = fieldsValue;
-      if(fieldsValue.registerOccurTimeBegin) {
+      if (fieldsValue.registerOccurTimeBegin) {
         values.registerOccurTimeBegin = fieldsValue.registerOccurTimeBegin.format('YYYY-MM-DD');
       }
-      if(fieldsValue.registerTimeBegin) {
+      if (fieldsValue.registerTimeBegin) {
         values.registerTimeBegin = fieldsValue.registerTimeBegin.format('YYYY-MM-DD');
       }
-      if(fieldsValue.handleStartTimeBegin) {
+      if (fieldsValue.handleStartTimeBegin) {
         values.handleStartTimeBegin = fieldsValue.handleStartTimeBegin.format('YYYY-MM-DD');
       }
-      if(values.handleStartTimeEnd) {
+      if (values.handleStartTimeEnd) {
         values.handleStartTimeEnd = fieldsValue.handleStartTimeEnd.format('YYYY-MM-DD');
       }
-      
+      values.type = fieldsValue.type.join('/');
+
       searchdata(values, paginations.current, paginations.pageSize);
     });
   };
@@ -354,27 +322,27 @@ function QueryList(props) {
   };
 
   // 批量删除
-  const handleDeleteAll = () => {
-    if (selectedRow.length) {
-      const ids = [];
-      selectedRow.forEach(item => {
-        ids.push(item);
-      });
-      dispatch({
-        type: 'fault/remove',
-      payload: { id: ids }
-      }).then(res => {
-        if (res.code === 200) {
-          message.success(res.msg);
-          getQuerylists();
-        } else {
-          message.error('删除失败!');
-        }
-      });
-    } else {
-      message.info('至少选择一条数据');
-    }
-  };
+  // const handleDeleteAll = () => {
+  //   if (selectedRow.length) {
+  //     const ids = [];
+  //     selectedRow.forEach(item => {
+  //       ids.push(item);
+  //     });
+  //     dispatch({
+  //       type: 'fault/remove',
+  //       payload: { id: ids }
+  //     }).then(res => {
+  //       if (res.code === 200) {
+  //         message.success(res.msg);
+  //         getQuerylists();
+  //       } else {
+  //         message.error('删除失败!');
+  //       }
+  //     });
+  //   } else {
+  //     message.info('至少选择一条数据');
+  //   }
+  // };
 
   //  下载 /导出功能
   const download = (page, pageSize) => {
@@ -388,9 +356,8 @@ function QueryList(props) {
             current: page,
           },
         }).then(res => {
-          const filename = `下载.xls`;
-          const blob = new Blob([res]);
-          const url = window.URL.createObjectURL(blob);
+          const filename = `下载.xlsx`;
+          const url = window.URL.createObjectURL(res);
           const a = document.createElement('a');
           a.href = url;
           a.download = filename;
@@ -401,8 +368,26 @@ function QueryList(props) {
     });
   };
 
+  const getTypebyTitle = (title) => {
+    if (selectdata.length > 0) {
+      return selectdata.filter(item => item.title === title)[0].children;
+    }
+    return [];
+  };
+  const faultSource = getTypebyTitle('故障来源');
+  const priority = getTypebyTitle('严重程度');
+  const handleResult = getTypebyTitle('故障处理结果');
+  const sysmodular = getTypebyTitle('故障系统模块');
+  const faultType = getTypebyTitle('故障分类');
+
   return (
     <PageHeaderWrapper title={pagetitle}>
+      <SysDict
+        typeid="1354278126724583426"
+        commonid="1354288354950123522"
+        ChangeSelectdata={newvalue => setSelectData(newvalue)}
+        style={{ display: 'non' }}
+      />
       <Card>
         <Row gutter={24}>
           <Form {...formItemLayout} onSubmit={handleSearch}>
@@ -416,7 +401,11 @@ function QueryList(props) {
               <Form.Item label="故障来源">
                 {getFieldDecorator('source')(
                   <Select placeholder="请选择">
-                    {faultSource.map(({ value }) => [<Option key={value}>{value}</Option>])}
+                    {faultSource.map(obj => [
+                      <Option key={obj.key} value={obj.title}>
+                        {obj.title}
+                      </Option>,
+                    ])}
                   </Select>,
                 )}
               </Form.Item>
@@ -441,10 +430,11 @@ function QueryList(props) {
                 <Col span={8}>
                   <Form.Item label="系统模块">
                     {getFieldDecorator('registerModel')(
+
                       <Select placeholder="请选择">
-                        {sysmodular.map(({ value }) => [
-                          <Option key={value} value={value}>
-                            {value}
+                        {sysmodular.map(obj => [
+                          <Option key={obj.key} value={obj.title}>
+                            {obj.title}
                           </Option>,
                         ])}
                       </Select>,
@@ -455,9 +445,11 @@ function QueryList(props) {
                 <Col xl={8} xs={12}>
                   <Form.Item label="故障类型">
                     {getFieldDecorator('type')(
-                      <Select placeholder="请选择">
-                        {faultType.map(({ value }) => [<Option key={value}>{value}</Option>])}
-                      </Select>,
+                      <Cascader
+                        placeholder="请选择"
+                        options={faultType}
+                        fieldNames={{ label: 'title', value: 'title', children: 'children' }}
+                      />
                     )}
                   </Form.Item>
                 </Col>
@@ -478,7 +470,11 @@ function QueryList(props) {
                   <Form.Item label="严重程度">
                     {getFieldDecorator('registerLevel')(
                       <Select placeholder="请选择">
-                        {severity.map(({ value }) => [<Option key={value}>{value}</Option>])}
+                        {priority.map(obj => [
+                          <Option key={obj.key} value={obj.title}>
+                            {obj.title}
+                          </Option>,
+                        ])}
                       </Select>,
                     )}
                   </Form.Item>
@@ -546,7 +542,11 @@ function QueryList(props) {
                       initialValue: '',
                     })(
                       <Select placeholder="请选择">
-                        {handleResult.map(({ value }) => [<Option key={value}>{value}</Option>])}
+                        {handleResult.map(obj => [
+                          <Option key={obj.key} value={obj.title}>
+                            {obj.title}
+                          </Option>,
+                        ])}
                       </Select>,
                     )}
                   </Form.Item>
@@ -616,9 +616,9 @@ function QueryList(props) {
             <Button type="primary">导出数据</Button>
           </Popconfirm>
 
-          <Popconfirm title="确定删除吗？" onConfirm={handleDeleteAll} icon={<Icon type="question-circle-o" style={{ color: 'red' }} />}>
+          {/* <Popconfirm title="确定删除吗？" onConfirm={handleDeleteAll} icon={<Icon type="question-circle-o" style={{ color: 'red' }} />}>
             <Button type="danger" style={{ marginLeft: 10 }}>批量删除</Button>
-          </Popconfirm>
+          </Popconfirm> */}
         </div>
         <Table
           loading={loading}

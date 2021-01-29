@@ -13,9 +13,11 @@ import {
   Col,
   Icon,
   Table,
-  Popconfirm
+  Popconfirm,
+  Cascader
 } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import SysDict from '@/components/SysDict';
 
 const formItemLayout = {
   labelCol: {
@@ -30,35 +32,6 @@ const formItemLayout = {
 
 const { Option } = Select;
 
-const faultSource = [ // 故障来源
-  { key: 1, value: '系统告警' },
-  { key: 2, value: '巡检发现' },
-];
-
-const severity = [ // 严重程度
-  { key: 0, value: '紧急' },
-  { key: 1, value: '重大' },
-  { key: 2, value: '一般' },
-];
-
-const faultType = [ // 故障类型
-  { key: 1, value: '系统应用' },
-  { key: 2, value: '网络安全' },
-  { key: 3, value: '数据库' },
-  { key: 4, value: '中间件' },
-  { key: 5, value: '环境/设备' },
-  { key: 6, value: '软件' },
-  { key: 7, value: '其他' },
-];
-
-const currentNode = [ // 当前处理环节
-  { key: 1, value: '故障登记' },
-  { key: 2, value: '故障审核' },
-  { key: 3, value: '故障处理' },
-  { key: 4, value: '故障总结' },
-  { key: 5, value: '故障关闭' },
-];
-
 function ToDOlist(props) {
   const pagetitle = props.route.name;
 
@@ -70,10 +43,8 @@ function ToDOlist(props) {
   } = props;
 
   const [expand, setExpand] = useState(false);
-  // 数据字典
-  // const [selectvalue, setSelectValue] = useState('');
-  // const [selectvalue2, setSelectValue2] = useState('');
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 10 }); // 分页state
+  const [selectdata, setSelectData] = useState([]);
   // const [selectedRow, setSelectedRow] = useState([]);
 
   const columns = [
@@ -123,7 +94,7 @@ function ToDOlist(props) {
       title: '故障类型',
       dataIndex: 'type',
       key: 'type',
-      width: 100,
+      width: 200,
     },
     {
       title: '当前处理环节',
@@ -166,35 +137,8 @@ function ToDOlist(props) {
     });
   }
 
-  // const dictDatas = () => { // 故障来源
-  //   dispatch({
-  //     type: 'fault/keyval',
-  //     payload: {
-  //       dictModule: 'trouble',
-  //       dictType: 'source',
-  //     },
-  //   }).then(res => {
-  //     setSelectValue(res.data.source);
-  //   });
-  // }
-
-  // const dictDatas2 = () => { // 严重程度
-  //   dispatch({
-  //     type: 'fault/keyval',
-  //     payload: {
-  //       dictModule: 'public',
-  //       dictType: 'priority',
-  //     },
-  //   }).then(res => {
-  //     setSelectValue2(res.data.priority);
-  //   });
-  // }
-
   useEffect(() => {
     getTodolists();
-    // 数据字典数据
-    // dictDatas();
-    // dictDatas2();
   }, []);
 
   const handleReset = () => {
@@ -219,9 +163,10 @@ function ToDOlist(props) {
     });
     validateFields((err, values) => {
       const formValues = values;
-      if(formValues.createTime) {
+      if (formValues.createTime) {
         formValues.createTime = values.createTime.format('YYYY-MM-DD HH:mm:ss');
       }
+      formValues.type = values.type.join('/');
       if (err) {
         return;
       }
@@ -274,35 +219,49 @@ function ToDOlist(props) {
       if (!err) {
         dispatch({
           type: 'fault/faultTododownload',
-          payload: { 
+          payload: {
             values,
             pageSize,
             current: page,
           },
         }).then(res => {
-          const url = `/itsm/trouble/flow/expExcelOrderList`;
-          window.location.href = url;
-          // const filename = `下载.xls`;
-          // const blob = new Blob([res]);
-          // const url = window.URL.createObjectURL(blob);
-          // const a = document.createElement('a');
-          // a.href = url;
-          // a.download = filename;
-          // a.click();
-          // window.URL.revokeObjectURL(url);
+          const filename = `下载.xlsx`;
+          const url = window.URL.createObjectURL(res);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = filename;
+          a.click();
+          window.URL.revokeObjectURL(url);
         });
       }
     });
   };
 
+  const getTypebyTitle = (title) => {
+    if (selectdata.length > 0) {
+      return selectdata.filter(item => item.title === title)[0].children;
+    }
+    return [];
+  };
+  const faultSource = getTypebyTitle('故障来源');
+  const priority = getTypebyTitle('严重程度');
+  const currentNode = getTypebyTitle('当前处理环节');
+  const faultType = getTypebyTitle('故障分类');
+
   return (
     <PageHeaderWrapper title={pagetitle}>
+      <SysDict
+        typeid="1354278126724583426"
+        commonid="1354288354950123522"
+        ChangeSelectdata={newvalue => setSelectData(newvalue)}
+        style={{ display: 'non' }}
+      />
       <Card>
         <Row gutter={24}>
           <Form {...formItemLayout} onSubmit={handleSearch}>
             <Col span={8}>
               <Form.Item label="故障编号">
-                {getFieldDecorator('no', {})(<Input placeholder="请输入" allowClear/>)}
+                {getFieldDecorator('no', {})(<Input placeholder="请输入" allowClear />)}
               </Form.Item>
             </Col>
 
@@ -312,7 +271,7 @@ function ToDOlist(props) {
                   <Form.Item label="故障名称">
                     {getFieldDecorator('title', {
                       initialValue: '',
-                    })(<Input placeholder="请输入" allowClear/>)}
+                    })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
 
@@ -322,7 +281,11 @@ function ToDOlist(props) {
                       initialValue: '',
                     })(
                       <Select placeholder="请选择">
-                        {faultSource.map(({ value }) => [<Option key={value}>{value}</Option>])}
+                        {faultSource.map(obj => [
+                          <Option key={obj.key} value={obj.title}>
+                            {obj.title}
+                          </Option>,
+                        ])}
                       </Select>,
                     )}
                   </Form.Item>
@@ -334,7 +297,11 @@ function ToDOlist(props) {
               <Form.Item label="当前处理环节">
                 {getFieldDecorator('currentNode', {})(
                   <Select placeholder="请选择">
-                    {currentNode.map(({ value }) => [<Option key={value}>{value}</Option>])}
+                    {currentNode.map(obj => [
+                      <Option key={obj.key} value={obj.title}>
+                        {obj.title}
+                      </Option>,
+                    ])}
                   </Select>,
                 )}
               </Form.Item>
@@ -347,9 +314,11 @@ function ToDOlist(props) {
                     {getFieldDecorator('type', {
                       initialValue: '',
                     })(
-                      <Select placeholder="请选择">
-                        {faultType.map(({ value }) => [<Option key={value}>{value}</Option>])}
-                      </Select>,
+                      <Cascader
+                        placeholder="请选择"
+                        options={faultType}
+                        fieldNames={{ label: 'title', value: 'title', children: 'children' }}
+                      />
                     )}
                   </Form.Item>
                 </Col>
@@ -358,14 +327,14 @@ function ToDOlist(props) {
                   <Form.Item label="登记人">
                     {getFieldDecorator('registerUser', {
                       initialValue: '',
-                    })(<Input placeholder="请输入" allowClear/>)}
+                    })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
 
                 <Col span={8}>
                   <Form.Item label="发送时间">
                     {getFieldDecorator('createTime', {
-                      initialValue: moment(Date.now()) || ''
+                      // initialValue: moment(Date.now()) || ''
                     })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} placeholder="请选择" />)}
                   </Form.Item>
                 </Col>
@@ -376,7 +345,11 @@ function ToDOlist(props) {
                       initialValue: '',
                     })(
                       <Select placeholder="请选择">
-                        {severity.map(({ value }) => [<Option key={value}>{value}</Option>])}
+                        {priority.map(obj => [
+                          <Option key={obj.key} value={obj.title}>
+                            {obj.title}
+                          </Option>,
+                        ])}
                       </Select>,
                     )}
                   </Form.Item>

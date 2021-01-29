@@ -9,63 +9,25 @@ import {
     Select,
     DatePicker,
     Radio,
+    Cascader
 } from 'antd';
+import SysDict from '@/components/SysDict';
 
 const { TextArea } = Input;
 const { Option } = Select;
 const RadioGroup = Radio.Group;
 
-const faultSource = [ // 故障来源
-    { key: 0, value: '系统告警' },
-    { key: 1, value: '巡检发现' }
-];
-
-const faultType = [ // 故障类型
-    { key: 0, value: '系统应用' },
-    { key: 1, value: '网络安全' },
-    { key: 2, value: '数据库' },
-    { key: 3, value: '中间件' },
-    { key: 4, value: '环境/设备' },
-    { key: 5, value: '软件' },
-    { key: 6, value: '其他' },
-];
-
-const severity = [ // 严重程度
-    { key: 0, value: '紧急' },
-    { key: 1, value: '重大' },
-    { key: 2, value: '一般' },
-];
-
-const sysmodular = [ // 系统模块
-    { key: 0, value: '配网采集' },
-    { key: 1, value: '主网采集' },
-    { key: 2, value: '终端掉线' },
-    { key: 3, value: '配网档案' },
-    { key: 4, value: '实用化指标' },
-    { key: 5, value: '账号缺陷' },
-];
-
-const registerScope = [ // 影响范围
-    { key: 0, value: '自动抄表率' },
-    { key: 1, value: '服务器' },
-    { key: 2, value: '数据传输' },
-    { key: 3, value: '网络\\通道' },
-    { key: 4, value: 'VNC' },
-    { key: 5, value: '专变自动抄表率' },
-    { key: 6, value: '费控、召测' },
-];
-
 const RegisterChild = React.forwardRef((props, ref) => {
     const { formItemLayout, forminladeLayout, tododetailslist, ChangeFiles, main } = props;
     const { getFieldDecorator } = props.form;
     const attRef = useRef();
-    useEffect(() => {
-        sessionStorage.setItem('Nextflowmane', '系统运维商审核');
-    });
+
     const [fileslist, setFilesList] = useState({ arr: [], ischange: false }); // 下载列表
+    const [selectdata, setSelectData] = useState([]);
     useEffect(() => {
         ChangeFiles(fileslist);
-      }, [fileslist]);
+    }, [fileslist]);
+
     useImperativeHandle(
         ref,
         () => ({
@@ -75,8 +37,27 @@ const RegisterChild = React.forwardRef((props, ref) => {
     );
 
     const required = true;
+
+    const getTypebyTitle = (title) => {
+        if (selectdata.length > 0) {
+            return selectdata.filter(item => item.title === title)[0].children;
+        }
+        return [];
+    };
+    const faultSource = getTypebyTitle('故障来源');
+    const sysmodular = getTypebyTitle('故障系统模块');
+    const priority = getTypebyTitle('严重程度');
+    const effect = getTypebyTitle('影响范围');
+    const faultType = getTypebyTitle('故障分类');
+
     return (
-        <Row gutter={24}>
+        <Row gutter={24} style={{ paddingTop: 24 }}>
+            <SysDict
+                typeid="1354278126724583426"
+                commonid="1354288354950123522"
+                ChangeSelectdata={newvalue => setSelectData(newvalue)}
+                style={{ display: 'non' }}
+            />
             <Form {...formItemLayout}>
                 <Col xl={8} xs={12}>
                     <Form.Item label="故障编号">
@@ -126,7 +107,11 @@ const RegisterChild = React.forwardRef((props, ref) => {
                             initialValue: main.source || ''
                         })(
                             <Select placeholder="请选择">
-                                {faultSource.map(({ value }) => [<Option key={value}>{value}</Option>])}
+                                {faultSource.map(obj => [
+                                    <Option key={obj.key} value={obj.title}>
+                                        {obj.title}
+                                    </Option>,
+                                ])}
                             </Select>,
                         )}
                     </Form.Item>
@@ -144,9 +129,9 @@ const RegisterChild = React.forwardRef((props, ref) => {
                             initialValue: tododetailslist ? tododetailslist.register.registerModel : ''
                         })(
                             <Select placeholder="请选择">
-                                {sysmodular.map(({ value }) => [
-                                    <Option key={value}>
-                                        {value}
+                                {sysmodular.map(obj => [
+                                    <Option key={obj.key} value={obj.title}>
+                                        {obj.title}
                                     </Option>,
                                 ])}
                             </Select>,
@@ -163,11 +148,13 @@ const RegisterChild = React.forwardRef((props, ref) => {
                                     message: '请选择',
                                 },
                             ],
-                            initialValue: main.type || ''
+                            initialValue: main.type.split('/') || ''
                         })(
-                            <Select placeholder="请选择">
-                                {faultType.map(({ value }) => [<Option key={value}>{value}</Option>])}
-                            </Select>,
+                            <Cascader
+                                placeholder="请选择"
+                                options={faultType}
+                                fieldNames={{ label: 'title', value: 'title', children: 'children' }}
+                            />
                         )}
                     </Form.Item>
                 </Col>
@@ -198,8 +185,12 @@ const RegisterChild = React.forwardRef((props, ref) => {
                             initialValue: tododetailslist ? tododetailslist.register.registerLevel : ''
                         })(
                             <Select placeholder="请选择">
-                                {severity.map(({ value }) => [<Option key={value}>{value}</Option>])}
-                            </Select>,
+                                {priority.map(obj => [
+                                    <Option key={obj.key} value={obj.title}>
+                                        {obj.title}
+                                    </Option>,
+                                ])}
+                            </Select>
                         )}
                     </Form.Item>
                 </Col>
@@ -216,8 +207,12 @@ const RegisterChild = React.forwardRef((props, ref) => {
                             initialValue: tododetailslist ? tododetailslist.register.registerScope : ''
                         })(
                             <Select placeholder="请选择">
-                                {registerScope.map(({ value }) => [<Option key={value}>{value}</Option>])}
-                            </Select>,
+                                {effect.map(obj => [
+                                    <Option key={obj.key} value={obj.title}>
+                                        {obj.title}
+                                    </Option>,
+                                ])}
+                            </Select>
                         )}
                     </Form.Item>
                 </Col>
@@ -267,10 +262,10 @@ const RegisterChild = React.forwardRef((props, ref) => {
                     <Form.Item
                         label="上传附件"
                         {...forminladeLayout}
-                        extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb"
+                        // extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb"
                     >
                         <div style={{ width: 400 }}>
-                            <SysUpload  fileslist={tododetailslist ? JSON.parse(tododetailslist.register.registerAttachments) : []} ChangeFileslist={newvalue => setFilesList(newvalue)} />
+                            <SysUpload fileslist={tododetailslist ? JSON.parse(tododetailslist.register.registerAttachments) : []} ChangeFileslist={newvalue => setFilesList(newvalue)} />
                         </div>
                     </Form.Item>
                 </Col>

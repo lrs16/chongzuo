@@ -12,11 +12,13 @@ import {
   Select,
   DatePicker,
   Radio,
-  Collapse
+  Collapse,
+  Cascader
 } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 // import SelectUser from '@/components/SelectUser'; // 选人组件
 import SysUpload from '@/components/SysUpload'; // 附件下载组件
+import SysDict from '@/components/SysDict';
 import styles from './index.less';
 
 const { Panel } = Collapse;
@@ -46,56 +48,11 @@ const forminladeLayout = {
   },
 };
 
-// const faultSource = [ // 故障来源
-//   { key: 0, value: '系统告警' },
-//   { key: 1, value: '巡检发现' }
-// ];
-
-const faultType = [ // 故障类型
-  { key: 0, value: '系统应用' },
-  { key: 1, value: '网络安全' },
-  { key: 2, value: '数据库' },
-  { key: 3, value: '中间件' },
-  { key: 4, value: '环境/设备' },
-  { key: 5, value: '软件' },
-  { key: 6, value: '其他' },
-];
-
-// const severity = [ // 严重程度
-//   { key: 0, value: '紧急' },
-//   { key: 1, value: '重大' },
-//   { key: 2, value: '一般' },
-// ];
-
-// const registerScope = [ // 影响范围
-//   { key: 0, value: '自动抄表率' },
-//   { key: 1, value: '服务器' },
-//   { key: 2, value: '数据传输' },
-//   { key: 3, value: '网络\\通道' },
-//   { key: 4, value: 'VNC' },
-//   { key: 5, value: '专变自动抄表率' },
-//   { key: 6, value: '费控、召测' },
-// ];
-
-// const sysmodular = [ // 系统模块
-//   { key: 0, value: '配网采集' },
-//   { key: 1, value: '主网采集' },
-//   { key: 2, value: '终端掉线' },
-//   { key: 3, value: '配网档案' },
-//   { key: 4, value: '实用化指标' },
-//   { key: 5, value: '账号缺陷' },
-// ];
-
 function Registration(props) {
   const pagetitle = props.route.name;
   const [activeKey, setActiveKey] = useState(['1']);
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
-
-  // 数据字典
-  const [selectvalue2, setSelectValue2] = useState('');
-  const [selectvalue3, setSelectValue3] = useState('');
-  const [arr, setArr] = useState();
-  const [arr1, setArr1] = useState();
+  const [selectdata, setSelectData] = useState([]);
 
   const {
     form: { getFieldDecorator, resetFields, validateFields, },
@@ -119,50 +76,9 @@ function Registration(props) {
     });
   }
 
-  const dictDatas2 = () => { // 严重程度
-    dispatch({
-      type: 'fault/keyval',
-      payload: {
-        dictModule: 'public',
-        dictType: 'priority',
-      },
-    }).then(res => {
-      setSelectValue2(res.data.priority);
-    });
-  }
-
-  const dictDatas3 = () => { // 影响范围
-    dispatch({
-      type: 'fault/keyval',
-      payload: {
-        dictModule: 'public',
-        dictType: 'effect',
-      },
-    }).then(res => {
-      setSelectValue3(res.data.effect);
-    });
-  }
-
-  const dictDatas = () => { // 故障分类(未完成--分级)
-    dispatch({
-      type: 'fault/faultdictVal',
-      payload: { id: '1354278126724583426' },
-    }).then(res => {
-      const obj = res.data[0].children;
-      setArr(obj[0]);
-      setArr1(obj[2]);
-    })
-  }
-
-
   useEffect(() => {
     getNewno(); // 新的故障编号
     getCurrUserInfo(); // 获取登录用户信息
-    // 数据字典数据
-    dictDatas();
-    dictDatas2();
-    dictDatas3();
-
     sessionStorage.setItem('Processtype', 'troub');
     sessionStorage.setItem('Nextflowmane', '审核');
   }, []);
@@ -188,6 +104,7 @@ function Registration(props) {
         formValues.registerTime = values.registerTime.format('YYYY-MM-DD HH:mm:ss');
         formValues.editState = 'add';
         formValues.registerAttachments = JSON.stringify(files.arr);
+        formValues.type = values.type.join('/');
         dispatch({
           type: 'fault/getSaveUserId',
           payload: { formValues }
@@ -222,8 +139,26 @@ function Registration(props) {
   //   });
   // }
 
+  const getTypebyTitle = (title) => {
+    if (selectdata.length > 0) {
+      return selectdata.filter(item => item.title === title)[0].children;
+    }
+    return [];
+  };
+  const faultSource = getTypebyTitle('故障来源');
+  const sysmodular = getTypebyTitle('故障系统模块');
+  const priority = getTypebyTitle('严重程度');
+  const effect = getTypebyTitle('影响范围');
+  const faultType = getTypebyTitle('故障分类');
+
   return (
     <PageHeaderWrapper title={pagetitle}>
+      <SysDict
+        typeid="1354278126724583426"
+        commonid="1354288354950123522"
+        ChangeSelectdata={newvalue => setSelectData(newvalue)}
+        style={{ display: 'non' }}
+      />
       <Card style={{ textAlign: 'right' }}>
         <Button type="primary" style={{ marginRight: 8 }} onClick={handleSave}>
           保存
@@ -243,7 +178,7 @@ function Registration(props) {
         >
           <Panel header="故障登记" key="1">
             <Form {...formItemLayout}>
-              <Row gutter={24}>
+              <Row gutter={24} style={{ paddingTop: 24 }}>
                 <Col xl={8} xs={12}>
                   <Form.Item label="故障编号">
                     {getFieldDecorator('no', {
@@ -281,7 +216,7 @@ function Registration(props) {
                 </Col>
 
                 <Col xl={8} xs={12}>
-                  {arr && (<Form.Item label={arr.title}>
+                  <Form.Item label='故障来源'>
                     {getFieldDecorator('source', {
                       rules: [
                         {
@@ -291,16 +226,18 @@ function Registration(props) {
                       ],
                     })(
                       <Select placeholder="请选择">
-                        {
-                          arr.children.map((val) => [<Option key={val.title}>{val.title}</Option>])
-                        }
+                        {faultSource.map(obj => [
+                          <Option key={obj.key} value={obj.title}>
+                            {obj.title}
+                          </Option>,
+                        ])}
                       </Select>,
                     )}
-                  </Form.Item>)}
+                  </Form.Item>
                 </Col>
 
                 <Col span={8}>
-                  {arr1 && (<Form.Item label={arr1.title}>
+                  <Form.Item label="系统模块">
                     {getFieldDecorator('registerModel', {
                       rules: [
                         {
@@ -310,12 +247,14 @@ function Registration(props) {
                       ],
                     })(
                       <Select placeholder="请选择">
-                        {
-                          arr1.children.map((val) => [<Option key={val.title}>{val.title}</Option>])
-                        }
-                      </Select>
+                        {sysmodular.map(obj => [
+                          <Option key={obj.key} value={obj.title}>
+                            {obj.title}
+                          </Option>,
+                        ])}
+                      </Select>,
                     )}
-                  </Form.Item>)}
+                  </Form.Item>
                 </Col>
 
                 <Col xl={8} xs={12}>
@@ -328,9 +267,11 @@ function Registration(props) {
                         },
                       ],
                     })(
-                      <Select placeholder="请选择">
-                        {faultType.map(({ value }) => [<Option key={value}>{value}</Option>])}
-                      </Select>,
+                      <Cascader
+                        placeholder="请选择"
+                        options={faultType}
+                        fieldNames={{ label: 'title', value: 'title', children: 'children' }}
+                      />
                     )}
                   </Form.Item>
                 </Col>
@@ -349,7 +290,7 @@ function Registration(props) {
                 </Col>
 
                 <Col xl={8} xs={12}>
-                  {selectvalue2 && selectvalue2 !== undefined && (<Form.Item label="严重程度">
+                  <Form.Item label="严重程度">
                     {getFieldDecorator('registerLevel', {
                       rules: [
                         {
@@ -359,17 +300,18 @@ function Registration(props) {
                       ],
                     })(
                       <Select placeholder="请选择">
-
-                        {
-                          selectvalue2.map(({ val }) => [<Option key={val}>{val}</Option>])
-                        }
-                      </Select>,
+                        {priority.map(obj => [
+                          <Option key={obj.key} value={obj.title}>
+                            {obj.title}
+                          </Option>,
+                        ])}
+                      </Select>
                     )}
-                  </Form.Item>)}
+                  </Form.Item>
                 </Col>
 
                 <Col xl={8} xs={12}>
-                  {selectvalue3 && selectvalue3 !== undefined && (<Form.Item label="影响范围">
+                  <Form.Item label="影响范围">
                     {getFieldDecorator('registerScope', {
                       rules: [
                         {
@@ -379,12 +321,14 @@ function Registration(props) {
                       ],
                     })(
                       <Select placeholder="请选择">
-                        {
-                          selectvalue3.map(({ val }) => [<Option key={val}>{val}</Option>])
-                        }
-                      </Select>,
+                        {effect.map(obj => [
+                          <Option key={obj.key} value={obj.title}>
+                            {obj.title}
+                          </Option>,
+                        ])}
+                      </Select>
                     )}
-                  </Form.Item>)}
+                  </Form.Item>
                 </Col>
 
                 <Col span={8}>
@@ -430,7 +374,7 @@ function Registration(props) {
                   <Form.Item
                     label="上传附件"
                     {...forminladeLayout}
-                    extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb"
+                    // extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb"
                   >
                     <div style={{ width: 400 }}>
                       <SysUpload fileslist={files.arr} ChangeFileslist={newvalue => setFiles(newvalue)} />
@@ -449,7 +393,7 @@ function Registration(props) {
                 <Col span={8}>
                   <Form.Item label="登记单位">
                     {getFieldDecorator('registerUnit', {
-                      initialValue: '广西电网有限责任公司',
+                      initialValue: '运维部',
                     })(<Input disabled />)}
                   </Form.Item>
                 </Col>

@@ -6,27 +6,23 @@ import {
     Col,
     Input,
     DatePicker,
-    // Select
     Radio
 } from 'antd';
 import SysUpload from '@/components/SysUpload'; // 附件下载组件
 
 const { TextArea } = Input;
-// const { Option } = Select;
-
-// const confirmResult = [ // 确认结果
-//     { key: 0, value: '通过' },
-//     { key: 1, value: '不通过' },
-// ];
 
 const ConfirmChild = React.forwardRef((props, ref) => {
-    const { formItemLayout, forminladeLayout, confirm, curruserinfo, ChangeFiles, ChangeResult, resultconfirm } = props;
+    const { formItemLayout, forminladeLayout, confirm, curruserinfo, ChangeFiles, ChangeResult } = props;
     const { getFieldDecorator } = props.form;
     const attRef = useRef();
     const [fileslist, setFilesList] = useState({ arr: [], ischange: false }); // 下载列表
+    const [adopt, setAdopt] = useState('1');
+
     useEffect(() => {
         ChangeFiles(fileslist);
     }, [fileslist]);
+
     useImperativeHandle(
         ref,
         () => ({
@@ -36,11 +32,19 @@ const ConfirmChild = React.forwardRef((props, ref) => {
     );
     const required = true;
 
+    useEffect(() => {
+        if (confirm !== undefined) {
+            setAdopt(confirm.confirmResult);
+            ChangeResult(confirm.confirmResult);
+        }
+    }, []);
+
     const onChange = (e) => {
+        setAdopt(e.target.value);
         ChangeResult(e.target.value);
     }
     return (
-        <Row gutter={24}>
+        <Row gutter={24} style={{ paddingTop: 24 }}>
             <Form {...formItemLayout}>
                 <Row gutter={24}>
 
@@ -59,9 +63,6 @@ const ConfirmChild = React.forwardRef((props, ref) => {
                                     <Radio value='1'>通过</Radio>
                                     <Radio value='0'>不通过</Radio>
                                 </Radio.Group>,
-                                // <Select placeholder="请选择">
-                                //     {confirmResult.map(({ value }) => [<Option key={value}>{value}</Option>])}
-                                // </Select>,
                             )}
                         </Form.Item>
                     </Col>
@@ -81,7 +82,7 @@ const ConfirmChild = React.forwardRef((props, ref) => {
                     </Col>
 
                     <Col span={24}>
-                        {resultconfirm === '1' && (
+                        {adopt === '1' && (
                             <Form.Item label="确认说明" {...forminladeLayout}>
                                 {getFieldDecorator('confirmContent', {
                                     rules: [{ required: false, message: '请输入', }],
@@ -89,7 +90,7 @@ const ConfirmChild = React.forwardRef((props, ref) => {
                                 })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
                             </Form.Item>
                         )}
-                        {resultconfirm === '0' && (
+                        {adopt === '0' && (
                             <Form.Item label="确认说明" {...forminladeLayout}>
                                 {getFieldDecorator('confirmContent', {
                                     rules: [{ required: true, message: '请输入', }],
@@ -103,7 +104,7 @@ const ConfirmChild = React.forwardRef((props, ref) => {
                         <Form.Item
                             label="上传附件"
                             {...forminladeLayout}
-                            extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb"
+                            // extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb"
                         >
                             <div style={{ width: 400 }}>
                                 <SysUpload fileslist={(confirm && confirm.confirmAttachments) ? JSON.parse(confirm.confirmAttachments) : []} ChangeFileslist={newvalue => setFilesList(newvalue)} />
@@ -114,7 +115,7 @@ const ConfirmChild = React.forwardRef((props, ref) => {
                     <Col span={8}>
                         <Form.Item label="确认人">
                             {getFieldDecorator('confirmUser', {
-                                initialValue: confirm ? confirm.confirmUser : curruserinfo.userName,
+                                initialValue: confirm.confirmUser || curruserinfo.userName,
                             })(<Input allowClear disabled />)}
                         </Form.Item>
                     </Col>
@@ -122,7 +123,7 @@ const ConfirmChild = React.forwardRef((props, ref) => {
                     <Col span={8}>
                         <Form.Item label="确认单位">
                             {getFieldDecorator('confirmUnit', {
-                                initialValue: confirm ? confirm.confirmUnit : '广西电网有限责任公司'
+                                initialValue: confirm.confirmUnit || '运维部'
                             })(<Input allowClear disabled />)}
                         </Form.Item>
                     </Col>
@@ -130,7 +131,7 @@ const ConfirmChild = React.forwardRef((props, ref) => {
                     <Col span={8}>
                         <Form.Item label="确认部门">
                             {getFieldDecorator('confirmDept', {
-                                initialValue: confirm ? confirm.confirmDept : curruserinfo.deptNameExt,
+                                initialValue: confirm.confirmDept || curruserinfo.deptNameExt,
                             })(<Input allowClear disabled />)}
                         </Form.Item>
                     </Col>
@@ -139,5 +140,22 @@ const ConfirmChild = React.forwardRef((props, ref) => {
         </Row>
     );
 });
+
+ConfirmChild.defaultProps = {
+    confirm: {
+        confirmDept: '',
+        confirmUnit: '',
+        confirmUser: '',
+        confirmAttachments: '',
+        confirmContent: '',
+        confirmResult: '1',
+        confirmTime: moment().format()
+    },
+    curruserinfo: {
+        confirmDept: '',
+        confirmUnit: '',
+        confirmUser: ''
+    }
+}
 
 export default Form.create({})(ConfirmChild);
