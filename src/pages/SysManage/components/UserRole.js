@@ -32,7 +32,6 @@ class UserRole extends Component {
   };
 
   handleChange = rolelist => {
-    console.log(rolelist);
     this.setState({ rolelist });
     // console.log(this.state.rolelist + 'pp');
   };
@@ -41,7 +40,6 @@ class UserRole extends Component {
     const { dispatch } = this.props;
     const { userId } = this.props;
     const rolevalue = this.state.rolelist;
-    console.log(rolevalue);
     return dispatch({
       type: 'userrole/unpdaterole',
       payload: { userId, rolevalue },

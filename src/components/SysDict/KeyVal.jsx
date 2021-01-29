@@ -12,7 +12,7 @@ function KeyVal(props) {
       },
     }).then(res => {
       if (res.code === 200) {
-        ChangeSelectdata(res.data.priority);
+        ChangeSelectdata(res.data);
       } else {
         ChangeSelectdata([]);
       }

@@ -5,6 +5,7 @@ import router from 'umi/router';
 import { Card, Row, Col, Form, Input, Select, Button, DatePicker, Table } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
+import KeyVal from '@/components/SysDict/KeyVal';
 
 const { Option } = Select;
 
@@ -21,12 +22,6 @@ const statemap = [
   { key: '9', value: '系统开发商处理' },
   { key: '10', value: '自动化科负责人确认' },
   { key: '11', value: '需求登记人员确认' },
-];
-
-const demandtypes = [
-  { key: '001', value: '新增功能' },
-  { key: '002', value: '功能变更' },
-  { key: '003', value: '其他' },
 ];
 
 const formItemLayout = {
@@ -116,6 +111,7 @@ function ToDolist(props) {
   } = props;
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 10 });
   const [expand, setExpand] = useState(false);
+  const [selectdata, setSelectData] = useState('');
 
   useEffect(() => {
     validateFields((err, values) => {
@@ -197,6 +193,12 @@ function ToDolist(props) {
 
   return (
     <PageHeaderWrapper title={pagetitle}>
+      <KeyVal
+        style={{ display: 'none' }}
+        dictModule="demand"
+        dictType="source"
+        ChangeSelectdata={newvalue => setSelectData(newvalue)}
+      />
       <Card>
         <Row gutter={24}>
           <Form {...formItemLayout} onSubmit={handleSearch}>
@@ -233,9 +235,9 @@ function ToDolist(props) {
                   <Form.Item label="需求类型">
                     {getFieldDecorator('demandType', { initialValue: '' })(
                       <Select placeholder="请选择">
-                        {demandtypes.map(({ key, value }) => (
-                          <Option key={key} value={value}>
-                            {value}
+                        {selectdata.source.map(obj => (
+                          <Option key={obj.key} value={obj.val}>
+                            {obj.val}
                           </Option>
                         ))}
                       </Select>,

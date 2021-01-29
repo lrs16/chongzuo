@@ -20,7 +20,7 @@ const Backoff = props => {
   return (
     <Form>
       <Form.Item label="请填写回退原因">
-        {getFieldDecorator('reviewVO', {
+        {getFieldDecorator('result', {
           rules: [{ required: 'true', message: '请输入回退原因' }],
         })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
       </Form.Item>

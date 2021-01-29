@@ -14,6 +14,7 @@ import {
 } from 'antd';
 import { DownloadOutlined, PaperClipOutlined, DeleteOutlined } from '@ant-design/icons';
 import styles from './style.less';
+import KeyVal from '@/components/SysDict/KeyVal';
 
 const { Option } = Select;
 
@@ -24,7 +25,7 @@ function Track(props) {
   const [uploadkey, setKeyUpload] = useState('');
   const [fileslist, setFilesList] = useState([]);
   const [newbutton, setNewButton] = useState(false);
-  const [progressmap, setProgressmap] = useState('');
+  const [selectdata, setSelectData] = useState([]);
 
   useEffect(() => {
     dispatch({
@@ -32,17 +33,6 @@ function Track(props) {
       payload: {
         demandId,
       },
-    });
-    dispatch({
-      type: 'dicttree/keyval',
-      payload: {
-        dictModule: 'demand',
-        dictType: 'schedule',
-      },
-    }).then(res => {
-      if (res.code === 200) {
-        setProgressmap(res.data.schedule);
-      }
     });
   }, []);
 
@@ -280,7 +270,7 @@ function Track(props) {
               defaultValue={text}
               onChange={e => handleFieldChange(e, 'developSchedule', record.key)}
             >
-              {progressmap.map(obj => {
+              {selectdata.schedule.map(obj => {
                 return (
                   <Option key={obj.key} value={obj.val}>
                     {obj.val}
@@ -465,6 +455,12 @@ function Track(props) {
 
   return (
     <>
+      <KeyVal
+        style={{ display: 'none' }}
+        dictModule="demand"
+        dictType="schedule"
+        ChangeSelectdata={newvalue => setSelectData(newvalue)}
+      />
       <Table
         columns={columns}
         scroll={{ x: 1400 }}

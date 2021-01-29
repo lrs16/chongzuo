@@ -93,7 +93,7 @@ const Registrat = forwardRef((props, ref) => {
         typeid="1354274450639425537"
         commonid="1354288354950123522"
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
-        style={{ display: 'non' }}
+        style={{ display: 'none' }}
       />
       <Form {...formItemLayout}>
         <Row gutter={24}>

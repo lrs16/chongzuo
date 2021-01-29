@@ -5,6 +5,7 @@ import router from 'umi/router';
 import { Card, Row, Col, Form, Input, Select, Button, DatePicker, Table } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
+import KeyVal from '@/components/SysDict/KeyVal';
 
 const { Option } = Select;
 
@@ -115,6 +116,7 @@ function QueryList(props) {
   } = props;
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 10 });
   const [expand, setExpand] = useState(false);
+  const [selectdata, setSelectData] = useState('');
 
   useEffect(() => {
     validateFields((err, values) => {
@@ -208,6 +210,12 @@ function QueryList(props) {
 
   return (
     <PageHeaderWrapper title={pagetitle}>
+      <KeyVal
+        style={{ display: 'none' }}
+        dictModule="demand"
+        dictType="source"
+        ChangeSelectdata={newvalue => setSelectData(newvalue)}
+      />
       <Card>
         <Row gutter={24}>
           <Form {...formItemLayout} onSubmit={handleSearch}>
@@ -244,9 +252,9 @@ function QueryList(props) {
                   <Form.Item label="需求类型">
                     {getFieldDecorator('demandType', { initialValue: '' })(
                       <Select placeholder="请选择">
-                        {demandtypes.map(({ key, value }) => (
-                          <Option key={key} value={value}>
-                            {value}
+                        {selectdata.source.map(obj => (
+                          <Option key={obj.key} value={obj.val}>
+                            {obj.val}
                           </Option>
                         ))}
                       </Select>,
