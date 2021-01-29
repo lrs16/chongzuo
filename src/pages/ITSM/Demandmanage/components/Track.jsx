@@ -99,7 +99,7 @@ function Track(props) {
       stalker: '',
       trackUnit: '',
       trackDepartment: '',
-      gmtCreate: moment().format(),
+      gmtCreate: moment().format('YYYY-MM-DD HH:mm:ss'),
       editable: true,
       isNew: true,
     });
@@ -360,18 +360,20 @@ function Track(props) {
       key: 'gmtCreate',
       width: 200,
       render: (text, record) => {
-        const dateFormat = 'YYYY-MM-DD HH:mm';
+        const dateFormat = 'YYYY-MM-DD HH:mm:ss';
         if (record.editable) {
           return (
             <DatePicker
               showTime
               defaultValue={moment(text, dateFormat)}
               // format={dateFormat}
-              onChange={e => handleFieldChange(e.format(), 'gmtCreate', record.key)}
+              onChange={e =>
+                handleFieldChange(e.format('YYYY-MM-DD HH:mm:ss'), 'gmtCreate', record.key)
+              }
             />
           );
         }
-        return moment(text).format('YYYY-MM-DD HH:mm');
+        return moment(text).format('YYYY-MM-DD HH:mm:ss');
       },
     },
     {

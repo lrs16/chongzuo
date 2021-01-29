@@ -254,7 +254,7 @@ function QueryList(props) {
                   </Form.Item>
                 </Col>
                 <Col span={8}>
-                  <Form.Item label="发送人">
+                  <Form.Item label="登记人">
                     {getFieldDecorator('registerPerson', {
                       initialValue: '',
                     })(<Input placeholder="请输入" />)}

@@ -50,7 +50,7 @@ export async function DemandProcess(processId) {
 export async function DemandImage(processId) {
   return request(`/demand/todo/processImage/${processId}`, {
     method: 'GET',
-    //  responseType: 'blob',
+    responseType: 'blob',
   });
 }
 

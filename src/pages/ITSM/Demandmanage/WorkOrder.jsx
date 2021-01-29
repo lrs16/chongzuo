@@ -289,6 +289,31 @@ function WorkOrder(props) {
           }
         });
         break;
+      case 'regist':
+        ExamineRef.current.validateFields((err, values) => {
+          if (!err) {
+            dispatch({
+              type: 'demandtodo/demandnextstep',
+              payload: {
+                ...values,
+                reviewTime: values.reviewTime.format('YYYY-MM-DD HH:mm:ss'),
+                business: Number(values.business),
+                releases: Number(values.releases),
+                attachment: JSON.stringify(files.arr),
+                nextUserIds: [
+                  { nodeName: '需求登记', userIds: info.demandForm.registerPersonId.split() },
+                ],
+                registerId: info.demandForm.id,
+                id,
+                taskName: info.taskName,
+                taskId,
+              },
+            });
+          } else {
+            formerr();
+          }
+        });
+        break;
       case 'confirm':
         ExamineRef.current.validateFields((err, values) => {
           if (!err) {
