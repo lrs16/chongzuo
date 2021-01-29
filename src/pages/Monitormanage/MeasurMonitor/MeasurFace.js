@@ -11,6 +11,34 @@ import LineChart from '@/components/CustomizeCharts/LineChart';
 import SelectArea from '@/components/Selects/SelectArea';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
+//抄表接口数据
+let settl ={
+  total: 0,
+  tjsj: ''
+};
+
+const changeSettData = datas => {
+  const arr =  Object.values(datas);
+  const newArrs = []; // 新的数组格式
+  if (!Array.isArray(arr)) {
+    return newArrs;
+  }
+  settl.total = 0;
+  for (let i = 0; i < arr.length; i += 1) {
+    let vote ={};
+    vote.type = arr[i].type;
+    vote.count = arr[i].total;
+    settl.total += arr[i].total;
+    newArrs.push(vote);
+  }
+  if(arr.length>0){
+    settl.tjsj = arr[0].date;
+  }
+  return newArrs;
+};
+
+
+
 const changearchdata = datas => {
   const arr = Object.values(datas);
   const newArrs = []; // 新的数组格式
@@ -96,35 +124,7 @@ const Donutdata = [
   },
 ];
 
-// const facetree = {
-//   area: '计量中心',
-//   children: [
-//     {
-//       area: '南宁',
-//       status: 0,
-//     },
-//     {
-//       area: '柳州',
-//       status: 0,
-//     },
-//     {
-//       area: '桂林',
-//       status: 0,
-//     },
-//     {
-//       area: '贵港',
-//       status: 1,
-//     },
-//     {
-//       area: '玉林',
-//       status: 0,
-//     },
-//     {
-//       area: '梧州',
-//       status: 1,
-//     },
-//   ],
-// };
+
 
 let tjsj = {
   zdzc: '', // 自动召测测试
@@ -202,9 +202,9 @@ class MeasurFace extends Component {
 
   getdatas() {
     const { dispatch } = this.props;
-    // dispatch({
-    //   type: 'measurface/fetchsettl',
-    // });
+    dispatch({
+      type: 'measurface/fetchsettl',
+    });
     dispatch({
       type: 'measurface/fetcharch', // 档案同步
     });
@@ -239,7 +239,7 @@ class MeasurFace extends Component {
     const {
       loading,
       measurface: {
-        // settldata,
+        settldata, // 抄表结算接口数据
         archdata, // 档案同步
         issuedata, // 参数下发
         filetdata,
@@ -247,6 +247,7 @@ class MeasurFace extends Component {
         orderdata,
       },
     } = this.props;
+    const settldatas = changeSettData(settldata);
     const archdatas = changearchdata(archdata);
     const orderdatas = changehour(orderdata);
     const tabledatas = changetable(tabledata);
@@ -257,7 +258,7 @@ class MeasurFace extends Component {
         <div>
           <Row gutter={24} type="flex">
             <Col xl={12} xs={24} style={{ marginBottom: 24 }}>
-              <ChartCard title="抄表结算接口（仅每月1日有数据）">
+              <ChartCard title={`抄表结算接口 ${settl.tjsj}`}>
                 <div
                   style={{
                     position: 'absolute',
@@ -278,9 +279,9 @@ class MeasurFace extends Component {
                 </div>
 
                 <Spin spinning={loading} style={{ background: '#ffffff' }}>
-                  {Donutdata === undefined && <Empty style={{ height: '250px' }} />}
-                  {Donutdata !== undefined && (
-                    <Donut data={Donutdata} height={350} padding={[0, 0, 0, 0]} />
+                  {settldatas === undefined && <Empty style={{ height: '250px' }} />}
+                  {settldatas !== undefined && (
+                    <Donut data={settldatas} height={350} total ={settl.total} padding={[10, 10,10, 10]} />
                   )}
                 </Spin>
               </ChartCard>

@@ -18,11 +18,11 @@ import DataSet from '@antv/data-set';
 //   { type: '待处理', count: 17},
 // ];
 
-const total = '1000';
+// const total = '1000';
 class Donut extends Component {
   render() {
     const { DataView } = DataSet;
-    const { data, height, padding } = this.props;
+    const { data, height, padding, total } = this.props;
     const dv = new DataView();
     dv.source(data).transform({
       type: 'percent',
@@ -69,7 +69,7 @@ class Donut extends Component {
             <Interaction type="element-single-selected" />
             <Annotation.Text
               position={['50%', '50%']}
-              content={`总处理${total}`}
+              content={`合计:${total}`}
               style={{
                 lineHeight: '240px',
                 fontSize: '30',

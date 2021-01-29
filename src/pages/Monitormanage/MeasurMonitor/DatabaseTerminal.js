@@ -234,6 +234,7 @@ class DatabaseTerminal extends Component {
             )}
           </Spin>
         </ChartCard>
+        {/*
         <h3>入库数量（2-4时）</h3>
         <ChartCard contentHeight={350} style={{ marginBottom: 24 }}>
           <Spin spinning={loading} style={{ background: '#ffffff' }}>
@@ -249,6 +250,7 @@ class DatabaseTerminal extends Component {
             )}
           </Spin>
         </ChartCard>
+        */}
         {/* <h3>入库量历史查询（5分钟入库量）</h3>
         <Card>
           <Row>

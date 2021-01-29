@@ -36,7 +36,7 @@ export async function queryHourread() {
 
 // 关口售电量，检查完毕
 export async function querySales(sortarea) {
-  return request(`/monitor/gatherKpi/sdl?area=${sortarea}`);
+  return request(`/monitor/gatherKpi/sdl?currentPage=1&pageSize=12&area=${sortarea}`);
 }
 
 // 关口供电量，检查完毕

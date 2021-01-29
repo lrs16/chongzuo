@@ -402,7 +402,7 @@ class Collection extends Component {
 
             <Col xl={12} lg={24} style={{ marginBottom: 24 }}>
               <ChartCard
-                title="供电量分析（与前一日供电量比值）"
+                title="全网区-售电量分析（昨日售电量-前日售电量)/前日售电量"
                 action={
                   <Tooltip title="指标说明">
                     <Icon type="info-circle-o" />
@@ -426,7 +426,7 @@ class Collection extends Component {
 
             <Col xl={12} lg={24} style={{ marginBottom: 24 }}>
               <ChartCard
-                title="售电量分析（昨日供电量-前日供电量)/前日供电量"
+                title="供电量分析（昨日供电量-前日供电量)/前日供电量"
                 action={
                   <Tooltip title="指标说明">
                     <Icon type="info-circle-o" />
