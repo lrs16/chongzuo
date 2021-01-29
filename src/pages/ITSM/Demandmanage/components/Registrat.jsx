@@ -75,17 +75,17 @@ const Registrat = forwardRef((props, ref) => {
   const proposingDepartment =
     register.proposingDepartment === undefined ? userinfo.deptName : register.proposingDepartment;
 
-  const getTypebyTitle = title => {
+  const getTypebyTitle = key => {
     if (selectdata.length > 0) {
-      return selectdata.filter(item => item.title === title)[0].children;
+      return selectdata.filter(item => item.key === key)[0].children;
     }
     return [];
   };
 
-  const demandtype = getTypebyTitle('需求功能变更类型');
-  const prioritymap = getTypebyTitle('需求优先级');
-  const projectmap = getTypebyTitle('所属项目');
-  const modulemap = getTypebyTitle('需求功能模块');
+  const demandtype = getTypebyTitle('1352069854860939266');
+  const prioritymap = getTypebyTitle('1352166246400921601');
+  const projectmap = getTypebyTitle('1354241446307172354');
+  const modulemap = getTypebyTitle('1352070663392727041');
 
   return (
     <>

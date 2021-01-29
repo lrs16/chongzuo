@@ -20,7 +20,6 @@ export default {
     },
     // 系统开发商处理保存
     *tracksave({ payload }, { call }) {
-      console.log(payload);
       return yield call(TrackUpdata, payload);
     },
     // 需求跟踪删除
