@@ -28,6 +28,7 @@ const Handle = React.forwardRef((props, ref) => {
   useEffect(() => {
     if (fileslist.ischange) {
       ChangeFiles(fileslist);
+      setFilesList({ ...fileslist, ischange: false });
     }
   }, [fileslist]);
 

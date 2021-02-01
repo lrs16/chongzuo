@@ -51,10 +51,13 @@ function ToDoregist(props) {
       dispatch({
         type: 'demandtodo/demanback',
         payload: {
+          result: 5,
           taskId,
           taskName,
           registerId,
           processId: mainId,
+          userId: sessionStorage.getItem('userauthorityid'),
+          attachment: '[]',
           ...backvalue,
         },
       });

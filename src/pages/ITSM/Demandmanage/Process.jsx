@@ -7,14 +7,11 @@ import styles from './index.less';
 const { Step } = Steps;
 
 function Process(props) {
-  const { location, dispatch, imgblob, records, loading } = props;
+  const { location, dispatch, imgblob, processs, loading } = props;
   const { id, mainId } = location.query;
 
   const imgsrc = () => {
     const img = document.createElement('img');
-    // img.onload = () => {
-    //   window.URL.revokeObjectURL(img.src);
-    // };
     img.src = window.URL.createObjectURL(imgblob);
     document.getElementById('divimg').appendChild(img);
   };
@@ -27,7 +24,7 @@ function Process(props) {
       },
     });
     dispatch({
-      type: 'demandtodo/demandrecords',
+      type: 'demandtodo/demandprocess',
       payload: {
         processId: mainId,
       },
@@ -47,14 +44,14 @@ function Process(props) {
       </Card>
       <Card title="流转日志" style={{ marginTop: '-1px' }}>
         <div className={styles.processstept}>
-          {records !== '' && (
+          {processs !== '' && (
             <Steps
-              current={records.length - 1}
+              current={processs.length - 1}
               progressDot
               direction="vertical"
               style={{ background: '#fff', padding: 24 }}
             >
-              {records.map((obj, index) => {
+              {processs.map((obj, index) => {
                 const desc = (
                   <div>
                     <div>{moment(obj.time).format('YYYY-MM-DD hh:mm:ss')}</div>
@@ -72,6 +69,6 @@ function Process(props) {
 
 export default connect(({ demandtodo, loading }) => ({
   imgblob: demandtodo.imgblob,
-  records: demandtodo.records,
+  processs: demandtodo.processs,
   loading: loading.models.demantodo,
 }))(Process);

@@ -48,8 +48,9 @@ const Registrat = forwardRef((props, ref) => {
   const [fileslist, setFilesList] = useState({ arr: [], ischange: false });
   const [selectdata, setSelectData] = useState([]);
   useEffect(() => {
-    if (fileslist.ischange) {
+    if (fileslist.ischange === true) {
       ChangeFiles(fileslist);
+      setFilesList({ ...fileslist, ischange: false });
     }
   }, [fileslist]);
 
@@ -83,7 +84,7 @@ const Registrat = forwardRef((props, ref) => {
     if (register.revisitWay === '003') {
       setRevisitway(true);
     }
-    if (main.eventType === '005') {
+    if (main.eventObject === '007') {
       setCheck(true);
     }
   }, [info]);
@@ -93,7 +94,7 @@ const Registrat = forwardRef((props, ref) => {
       sessionStorage.setItem('Nextflowmane', '审核');
       sessionStorage.setItem('flowtype', '3');
     } else {
-      sessionStorage.setItem('Nextflowmane', '流转');
+      sessionStorage.setItem('Nextflowmane', '处理');
       sessionStorage.setItem('flowtype', '1');
     }
     routerRefresh();
@@ -149,20 +150,20 @@ const Registrat = forwardRef((props, ref) => {
     return label[label.length - 1];
   };
 
-  const getTypebyTitle = title => {
+  const getTypebyTitle = key => {
     if (selectdata.length > 0) {
-      return selectdata.filter(item => item.title === title)[0].children;
+      return selectdata.filter(item => item.key === key)[0].children;
     }
     return [];
   };
 
-  const sourcemap = getTypebyTitle('事件来源');
-  const typemap = getTypebyTitle('事件分类');
-  const objectmap = getTypebyTitle('事件对象');
-  const returnvisit = getTypebyTitle('回访方式');
-  const effectmap = getTypebyTitle('影响度');
-  const emergentmap = getTypebyTitle('紧急度');
-  const priormap = getTypebyTitle('优先级');
+  const sourcemap = getTypebyTitle('486844540120989696'); // 事件来源
+  const typemap = getTypebyTitle('486844495669755904'); // 事件分类
+  const objectmap = getTypebyTitle('482599461999083520'); // 事件对象
+  const returnvisit = getTypebyTitle('486852783895478272'); // 回访方式
+  const effectmap = getTypebyTitle('482610561507393536'); // 影响度
+  const emergentmap = getTypebyTitle('482610561503199232'); // 紧急度
+  const priormap = getTypebyTitle('482610561499004928'); // 优先级
 
   return (
     <>

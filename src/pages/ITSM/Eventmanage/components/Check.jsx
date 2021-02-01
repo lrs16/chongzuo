@@ -26,6 +26,7 @@ const Check = forwardRef((props, ref) => {
   useEffect(() => {
     if (fileslist.ischange) {
       ChangeFiles(fileslist);
+      setFilesList({ ...fileslist, ischange: false });
     }
   }, [fileslist]);
 
@@ -55,9 +56,11 @@ const Check = forwardRef((props, ref) => {
   };
 
   useEffect(() => {
-    sessionStorage.setItem('Nextflowmane', nextsmap.get(check.checkResult));
-    sessionStorage.setItem('flowtype', typemaps.get(check.checkResult));
-    setAdopt(check.checkResult);
+    if (check !== undefined) {
+      sessionStorage.setItem('Nextflowmane', nextsmap.get(check.checkResult));
+      sessionStorage.setItem('flowtype', typemaps.get(check.checkResult));
+      setAdopt(check.checkResult);
+    }
     routerRefresh();
   }, [info]);
 

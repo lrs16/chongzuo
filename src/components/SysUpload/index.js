@@ -7,7 +7,6 @@ function SysUpload(props) {
   const { dispatch, fileslist, ChangeFileslist } = props;
   const [uploadfiles, setUploadFiles] = useState([]);
 
-
   useEffect(() => {
     if (fileslist.length > 0) {
       setUploadFiles(fileslist);
@@ -15,10 +14,7 @@ function SysUpload(props) {
   }, []);
 
   // 上传文件类型
-  const filestype = `application/msword,application/vnd.ms-excel,
-  application / vnd.openxmlformats - officedocument.spreadsheetml.sheet,
-  image/png,image/jpeg,
-  `;
+  const filestype = `application/msword,application/vnd.ms-excel,application / vnd.openxmlformats - officedocument.spreadsheetml.sheet,image/png,image/jpeg, `;
 
   // 下载附件
   const handledownload = info => {

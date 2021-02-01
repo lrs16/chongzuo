@@ -73,7 +73,7 @@ function WorkOrder(props) {
   const [flowtype, setFlowtype] = useState('1'); // 流转类型
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
   const [handefiles, setHandleFiles] = useState({ arr: [], ischange: false }); // 登记时自行处理附件列表
-  const [isdelay, setIsDelay] = useState(true);
+  const [isdelay, setIsDelay] = useState(false);
   const RegistratRef = useRef();
   const CheckRef = useRef();
   const HandleRef = useRef();
@@ -99,7 +99,7 @@ function WorkOrder(props) {
     });
     sessionStorage.setItem('Processtype', 'event');
     setTimeout(() => {
-      setIsDelay(false);
+      setIsDelay(true);
     }, 500);
   }, []);
 
@@ -107,7 +107,7 @@ function WorkOrder(props) {
   useEffect(() => {
     if (edit !== undefined && edit !== '' && Object.values(edit)[0] !== null) {
       if (Object.values(edit)[0].fileIds !== '') {
-        setFiles({ ...files, arr: JSON.parse(Object.values(edit)[0].fileIds) });
+        setFiles({ ...files, arr: JSON.parse(Object.values(edit)[0].fileIds), ischange: false });
       }
     }
   }, [info]);
@@ -433,7 +433,7 @@ function WorkOrder(props) {
 
   // 上传附件触发保存
   useEffect(() => {
-    if (files.ischange) {
+    if (files.ischange === true) {
       router.push({
         pathname: `${props.match.url}`,
         query: {
@@ -446,10 +446,7 @@ function WorkOrder(props) {
       });
       setFiles({ ...files, ischange: false });
     }
-  }, [files]);
-
-  console.log(loading, !loading);
-  console.log(info);
+  }, [files.ischange]);
 
   return (
     <div className={styles.collapse}>
@@ -479,7 +476,7 @@ function WorkOrder(props) {
         </Steps>
       )}
       <Spin spinning={loading}>
-        {data !== undefined && edit !== undefined && (
+        {isdelay && loading === false && data !== undefined && edit !== undefined && (
           <Collapse
             expandIconPosition="right"
             // defaultActiveKey={['1']}
@@ -488,7 +485,7 @@ function WorkOrder(props) {
             onChange={callback}
             style={{ marginTop: '-25px' }}
           >
-            {pangekey === '1' && (
+            {pangekey === '1' && edit.register.fileIds !== undefined && (
               <Panel header="事件登记" key="registratform">
                 <Registrat
                   ChangeShow={isshow => setShow(isshow)}

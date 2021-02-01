@@ -10,7 +10,7 @@ import {
   NextStep,
   DemandgoBack,
   DemandDlete,
-  DemandQuery,
+  DemandProcess,
 } from '../services/api';
 
 export default {
@@ -21,6 +21,7 @@ export default {
     imgblob: '',
     records: '',
     info: '',
+    processs: '',
   },
 
   effects: {
@@ -38,6 +39,14 @@ export default {
       const response = yield call(DemandRecords, processId);
       yield put({
         type: 'saverecords',
+        payload: response.data,
+      });
+    },
+    // 流转日志含回退信息
+    *demandprocess({ payload: { processId } }, { call, put }) {
+      const response = yield call(DemandProcess, processId);
+      yield put({
+        type: 'savereprocess',
         payload: response.data,
       });
     },
@@ -124,6 +133,12 @@ export default {
       return {
         ...state,
         records: action.payload,
+      };
+    },
+    savereprocess(state, action) {
+      return {
+        ...state,
+        processs: action.payload,
       };
     },
     saveimg(state, action) {

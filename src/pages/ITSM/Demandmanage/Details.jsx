@@ -20,7 +20,7 @@ function Details(props) {
   const [activeKey, setActiveKey] = useState(['registdes']);
   const handleclose = () => {
     router.push({
-      pathname: `/ITSM/eventmanage/query`,
+      pathname: `/ITSM/demandmanage/query`,
     });
   };
   const handleTabChange = key => {
