@@ -359,8 +359,10 @@ function QueryList(props) {
             current: page,
           },
         }).then(res => {
+          // console.log(res);
           const filename = `下载.xlsx`;
-          const url = window.URL.createObjectURL(res);
+          const blob = new Blob([res]);
+          const url = window.URL.createObjectURL(blob);
           const a = document.createElement('a');
           a.href = url;
           a.download = filename;

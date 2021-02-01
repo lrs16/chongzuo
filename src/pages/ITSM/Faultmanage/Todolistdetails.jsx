@@ -110,7 +110,7 @@ function Todolistdetails(props) {
     location: { paneKey }, // 获取传入数据 // paneKey故障登记传过来的当前状态以及待办页传过来的状态（故障登记）
     loading,
     tododetailslist, // 待办详情数据--编辑
-    tododetailslist: { troubleFlowLogs, check, handle, finish, confirm, troubleFlowNodeRows, main }, // troubleFlowLogs流程图数据  troubleFlowNodeRows详情是数据
+    tododetailslist: { troubleFlowLogs, check, handle, finish, confirm, troubleFlowNodeRows, main, editState }, // troubleFlowLogs流程图数据  troubleFlowNodeRows详情是数据
     flowimageview, // 故障流程的流程图片数据
     flowlog, // 故障流程的流程日志
     dispatch,
@@ -699,13 +699,13 @@ function Todolistdetails(props) {
             )
           }
           { // 接单只有系统运维商处理时有
-            (main && main.status === '40') && (
+            (main && (main.status === '40' || main.status === '45') && editState === 'add') && (
               <Button type="primary" onClick={() => handleReceivs()}>接单</Button>
             )
           }
-          {(main && main.status !== '40') && (<Button type="primary" onClick={() => handleSave(tosaveStatus)}>保存</Button>)}
+          {(main && main.status !== '40') && !(main.status === '45' && editState === 'add') && (<Button type="primary" onClick={() => handleSave(tosaveStatus)}>保存</Button>)}
           { // 转单只有系统运维商处理时有
-            (main && main.status === '45') && (
+            (main && (main.status === '45' || main.status === '40') && editState === 'edit') && (
               <SelectUser
                 handleSubmit={handleFaulttransfer}
                 taskId={id}
@@ -725,7 +725,7 @@ function Todolistdetails(props) {
                 结束
               </Button>))
               :
-              ((main && main.status !== '40') && result === '1' && resultsecond === '1') && (<SelectUser
+              ((main && main.status !== '40') && !(main.status === '45' && editState === 'add') && result === '1' && resultsecond === '1') && (<SelectUser
                 handleSubmit={() => handleSave(currenStatus)}
                 taskId={id}
               >
@@ -839,7 +839,7 @@ function Todolistdetails(props) {
                       )
                     }
                     { // 系统运维商处理编辑页
-                      (paneKey === '系统运维商处理') && (main && main.status === '45') &&
+                      (paneKey === '系统运维商处理') && (main && main.status === '45' && editState === 'edit') &&
                       ( // 展开处理表单时，显示故障审核详情以及登记详情（2）
                         <Panel header="系统运维商处理" key="HandleChild">
                           <HandleChild
