@@ -188,7 +188,7 @@ const Operatorconfirmaedit = React.forwardRef((props,ref) => {
           <Form.Item label='确认人单位'>
             {
               getFieldDecorator('confirmUnit',{
-                initialValue: '单位',
+                initialValue: '广西电网有限责任公司',
               })(<Input disabled/>)
             }
           </Form.Item>

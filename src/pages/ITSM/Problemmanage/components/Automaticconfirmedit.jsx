@@ -20,7 +20,6 @@ const { TextArea } = Input;
 
 const Automaticconfirmedit = React.forwardRef((props, ref) => {
   const { formItemLayout, forminladeLayout,files,ChangeFiles } = props;
-  // console.log('files: ', files);
   const { getFieldDecorator } = props.form;
   const {flowtype,setFlowtype } = useContext(FatherContext);
   const [fileslist, setFilesList] = useState([]);

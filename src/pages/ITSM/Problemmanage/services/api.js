@@ -165,7 +165,7 @@ export async function querydownload(params) {
     `/itsm/problem/flow/expExcelOrderList`,
     {
       method: 'POST',
-      responseType: 'blob',
+      // responseType: 'blob',
       body:JSON.stringify(params)
     },
   );

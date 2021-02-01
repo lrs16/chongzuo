@@ -193,7 +193,7 @@ const Systemoperatoredit = React.forwardRef((props, ref) => {
         <Col span={8}>
           <Form.Item label="审核单位">
             {getFieldDecorator('checkUnit', {
-              initialValue: '单位',
+              initialValue: '广西电网有限责任公司',
             })(<Input disabled/>)}
           </Form.Item>
         </Col>

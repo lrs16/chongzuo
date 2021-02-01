@@ -4,7 +4,6 @@ import {
   Button,
   Steps,
   Collapse,
-  Card
 } from 'antd';
 import { connect } from 'dva';
 import Link from 'umi/link';
@@ -14,9 +13,7 @@ import Problemreview from './components/Problemreview';
 import Operatorconfirmades from './components/Operatorconfirmades';
 import Problemregistration from './components/Problemregistration';
 import Problemflow from './components/Problemflow';
-import Businessaudes from './components/Businessaudes';
-import Automaticconfirmdes from './components/Automaticconfirmdes';
-import Registrationconfirmdes from './components/Registrationconfirmdes';
+import moment from 'moment';
 
 import styles from './index.less';
 
@@ -102,15 +99,15 @@ function Queryworkdetail(props) {
                                   overflowX: 'auto',
                                 }}
                               >
-                                {problemFlowLogs.map((obj,index) => {
-                                  const desc = (
-                                    <div className={styles.stepDescription}>
-                                      处理人：{obj.formHandler}
-                                      <div>开始时间：{obj.startTime}</div>
-                                    </div>
-                                  );
-                                  return <Step title={obj.name} description={desc} key={index}/>;
-                                })}
+                               {
+                              problemFlowLogs && problemFlowLogs.map(({ key, name, status, timeText, formHandler, startTime }) => [
+                                name !== '开始节点' && name !== '结束节点' && <Step key={key} title={`${name}${'\xa0'}${'\xa0'}(${status})${'\xa0'}${'\xa0'}${timeText}`} description={
+                                  <div className={styles.stepDescription}>
+                                    处理人：{formHandler}
+                                    <div>结束时间：{moment(startTime).format('YYYY-MM-DD hh:mm:ss')}</div>
+                                  </div>
+                                } />
+                              ])}
                               </Steps>
                 )
                 }

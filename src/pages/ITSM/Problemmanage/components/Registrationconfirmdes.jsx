@@ -10,7 +10,6 @@ function Registrationconfirmdes(props) {
   let value;
   if(problemFlowNodeRows) {
     value = problemFlowNodeRows[6].confirmResult;
-    console.log('value: ', value);
   }
 
   return (

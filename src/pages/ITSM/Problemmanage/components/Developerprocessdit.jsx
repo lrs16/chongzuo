@@ -75,7 +75,12 @@ const Developerprocessdit = React.forwardRef((props, ref) => {
       <Col span={8}>
         <Form.Item label="处理结果">
           {getFieldDecorator('handleResult', {
-            required,
+            rules:[
+              {
+                required,
+                message:'请选择处理结果'
+              }
+            ],
             initialValue: handle ? handle.handleResult : '',
           })(
             <Select placeholder="请选择" disabled={showEdit}>
@@ -140,7 +145,7 @@ const Developerprocessdit = React.forwardRef((props, ref) => {
       <Col span={8}>
         <Form.Item label="处理单位">
           {getFieldDecorator('handleUnit', {
-            initialValue: '单位',
+            initialValue: '广西电网有限责任公司',
           })(<Input disabled />)}
         </Form.Item>
       </Col>

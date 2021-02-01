@@ -245,7 +245,6 @@ export default {
     },
 
     *eventdownload({ payload }, { call }) {
-      console.log('payload: ', payload);
       return yield call(querydownload, { payload });
     },
 

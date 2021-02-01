@@ -10,7 +10,6 @@ function Automaticconfirmdes(props) {
   let value;
   if(problemFlowNodeRows) {
     value = problemFlowNodeRows[5].confirmResult;
-    console.log('value: ', value);
   }
 
   return (

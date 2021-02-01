@@ -74,6 +74,7 @@ let flowNodeName;
 let confirmType;
 let fileSign;
 let selSign;
+let deletenoode;
 
 // let flowtype = 1;
 
@@ -103,6 +104,7 @@ function Workorder(props) {
 
 
   let showback = true;
+  let nodedata;
 
   
     if(userlist.selSign !== undefined) {
@@ -497,8 +499,6 @@ function Workorder(props) {
         saveRegister(params2,uploadSive);
         break;
       case '系统运维商审核':
-        savePrevies(params2,uploadSive);
-        break;
       case '自动化科审核':
         savePrevies(params2,uploadSive);
         break;
@@ -506,11 +506,7 @@ function Workorder(props) {
         saveHandle(params2,uploadSive);
         break;
       case '系统运维商确认':
-        saveConfirm(params2,uploadSive);
-        break;
       case '自动化科业务人员确认':
-        saveConfirm(params2,uploadSive);
-        break;
       case '问题登记人员确认':
         saveConfirm(params2,uploadSive);
         break;
@@ -758,21 +754,7 @@ function Workorder(props) {
                 流转
               </Button>
             )
-            }
-
-            {/* {
-              flowNodeName === '系统开发商处理' && currntStatus !== 29 &&(
-                <Button
-                type="primary"
-                style={{ marginRight: 8 }}
-                onClick={() => handleSubmit(flowNodeName)}
-              >
-                流转88
-              </Button>
-              )
-            } */}
-
-       
+            }  
 
             <Button type="default">
               <Link to="/ITSM/problemmanage/besolved">返回</Link>
@@ -801,15 +783,15 @@ function Workorder(props) {
                     overflowX: 'auto',
                   }}
                 >
-                  {problemFlowLogs.map((obj,index) => {
-                    const desc = (
-                      <div className={styles.stepDescription}>
-                        处理人：{obj.formHandler}
-                        <div>开始时间：{obj.startTime}</div>
-                      </div>
-                    );
-                    return <Step title={obj.name} description={desc} key={index}/>;
-                  })}
+                    {
+                    problemFlowLogs && problemFlowLogs.map(({ key, name, status, timeText, formHandler, startTime }) => [
+                      name !== '开始节点' && name !== '结束节点' && <Step key={key} title={`${name}${'\xa0'}${'\xa0'}(${status})${'\xa0'}${'\xa0'}${timeText}`} description={
+                        <div className={styles.stepDescription}>
+                          处理人：{formHandler}
+                          <div>结束时间：{moment(startTime).format('YYYY-MM-DD hh:mm:ss')}</div>
+                        </div>
+                      } />
+                    ])}
                 </Steps>
 
               )

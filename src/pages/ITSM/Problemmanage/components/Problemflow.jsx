@@ -9,7 +9,6 @@ let id;
 const { Step } = Steps;
 function Problemflow(props) {
   const { id, imageSource, flowlog, dispatch } = props;
-  console.log('flowlog: ', flowlog);
   const list = [];
   if (flowlog) {
     flowlog.forEach(function(item) {

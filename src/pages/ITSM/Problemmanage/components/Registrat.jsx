@@ -317,12 +317,9 @@ const Registrat = React.forwardRef((props, ref) => {
                       message: '请输入填报人单位',
                     },
                   ],
-                  initialValue: '单位',
+                  initialValue: '广西电网有限责任公司',
                 })(
-                  <Select disabled>
-                    <Option value="单位">单位</Option>
-                    <Option value="部门">部门</Option>
-                  </Select>,
+                  <Input disabled/>,
                 )}
               </Form.Item>
             </Col>

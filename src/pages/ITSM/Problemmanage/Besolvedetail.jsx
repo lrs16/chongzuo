@@ -105,11 +105,9 @@ function Besolveddetail(props) {
   const required = true;
   const [filelist, setFilelist] = useState([]);
   const [activekey, setActivekey] = useState(panes[0]);
-  console.log(closecircu,activekey,currntStatus,'closecircu');
   // const [receiveOrders,setReceiveOrders] = useState(false);
   const list = [];
   if (todoDetail) {
-    // console.log('todoDetail: ', todoDetail);
     currntStatus = Number(todoDetail.main.status);
     if((currntStatus === 69) || (currntStatus === 85)) {
       closecircu = '';
@@ -439,9 +437,7 @@ function Besolveddetail(props) {
         message.info(res.msg);
         route.push({pathname:`/ITSM/problemmanage/besolved`})
         if (params2) {
-          console.log('params2: ', params2);
           gotoCirapi();
-          // props.history.goBack();
           route.push({pathname:`/ITSM/problemmanage/besolved`})
         }
       } else {

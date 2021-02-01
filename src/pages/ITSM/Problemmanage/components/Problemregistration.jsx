@@ -7,9 +7,6 @@ const { Panel } = Collapse;
 
 function Problemregistration(props) {
   const { 
-    dispatch,
-    registrationDetail,
-    statue,
     main,
     info,
     loading,
@@ -41,7 +38,7 @@ function Problemregistration(props) {
                 </Descriptions.Item>
 
                 <Descriptions.Item label="重要程度">
-                  {main.emergent}
+                  {main.importance}
                 </Descriptions.Item>
 
                 <Descriptions.Item label="期待完成时间">
@@ -53,7 +50,7 @@ function Problemregistration(props) {
                 </Descriptions.Item>
 
                 <Descriptions.Item label="影响范围">
-                  {info.now}
+                  {info.registerScope}
                 </Descriptions.Item>
             
               </Descriptions>
