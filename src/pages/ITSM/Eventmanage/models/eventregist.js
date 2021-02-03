@@ -48,7 +48,7 @@ export default {
           router.push({
             pathname: `/ITSM/eventmanage/to-do/record/workorder`,
             query: {
-              pangekey: register_selfhandle === '1' ? '5' : '1',
+              taskName: register_selfhandle === '1' ? '处理中' : '已登记',
               id: registres.taskId,
               mainId: flowInstanceId,
               validate: false,

@@ -936,7 +936,7 @@ export default {
       target: 'http://172.16.4.211:9901/',
       changeOrigin: true,
     },
-    // 事件管理
+    // 事件管理,问题，故障
     '/itsm/event/': {
       target: 'http://172.16.4.211:9901/',
       changeOrigin: true,

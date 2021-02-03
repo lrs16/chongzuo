@@ -7,27 +7,27 @@ import Backoff from './components/Backoff';
 import SelectUser from '@/components/SelectUser';
 
 const pagetitlemaps = new Map([
-  ['1', '事件登记'],
-  ['2', '事件审核'],
-  ['3', '事件审核'],
-  ['4', '事件处理'],
-  ['5', '事件处理'],
-  ['6', '事件确认'],
-  ['7', '事件确认'],
-  ['8', '事件处理'],
-  ['9', '事件详情'],
+  ['已登记', '事件登记'],
+  ['待审核', '事件审核'],
+  ['已审核', '事件审核'],
+  ['待处理', '事件处理'],
+  ['处理中', '事件处理'],
+  ['待确认', '事件确认'],
+  ['已确认', '事件确认'],
+  ['重分派', '事件处理'],
+  ['已关闭', '事件详情'],
 ]);
 
 function ToDodetails(props) {
   const { match, children, location, dispatch } = props;
-  const { pangekey, id, mainId, check, next } = location.query;
+  const { taskName, id, mainId, check, next } = location.query;
   const [backvalue, setBackvalue] = useState('');
   const [Popvisible, setVisible] = useState(false);
   const handleHold = type => {
     router.push({
       pathname: `${props.match.url}/workorder`,
       query: {
-        pangekey,
+        taskName,
         id,
         mainId,
         validate: true,
@@ -53,7 +53,7 @@ function ToDodetails(props) {
   };
 
   useEffect(() => {
-    if (pangekey === '4') {
+    if (taskName === '待处理') {
       message.info('请接单..', 1);
     }
   }, []);
@@ -100,16 +100,16 @@ function ToDodetails(props) {
     <>
       {/* 测试下载功能 */}
       {/* <Button onClick={()=>test()}>下载</Button> */}
-      {pangekey === '1' && (
+      {taskName === '已登记' && (
         <Popconfirm title="确定删除此事件单吗？" onConfirm={() => deleteflow()}>
           <Button type="danger" ghost style={{ marginRight: 8 }}>
             删除
           </Button>
         </Popconfirm>
       )}
-      {(pangekey === '2' ||
-        (pangekey === '4' && check === '') ||
-        (pangekey === '6' && check === '')) && (
+      {(taskName === '待审核' ||
+        (taskName === '待处理' && check === '') ||
+        (taskName === '待确认' && check === '')) && (
         // <Button type="danger" ghost style={{ marginRight: 8 }} onClick={() => handleHold('back')}>
         //   回退
         // </Button>
@@ -119,37 +119,38 @@ function ToDodetails(props) {
           </Button>
         </Popover>
       )}
-      {pangekey !== '4' && (
+      {taskName !== '待处理' && (
         <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleHold('save')}>
           保存
         </Button>
       )}
-      {pangekey === '1' && sessionStorage.getItem('Nextflowmane') === '审核' && (
+      {taskName === '已登记' && next === '审核' && (
         <SelectUser handleSubmit={() => handleHold('other')} taskId={id}>
           <Button type="primary" style={{ marginRight: 8 }}>
             审核
           </Button>
         </SelectUser>
       )}
-      {pangekey === '4' && (
+      {taskName === '待处理' && (
         <Button type="primary" style={{ marginRight: 8 }} onClick={eventaccpt}>
           接单
         </Button>
       )}
-      {((pangekey === '1' && next === '处理') ||
-        (next === '处理' && (pangekey === '2' || pangekey === '3'))) && (
+      {((taskName === '已登记' && next === '处理') ||
+        (next === '处理' && taskName === '待审核') ||
+        (next === '处理' && taskName === '审核中')) && (
         <SelectUser handleSubmit={() => handleHold('flow')} taskId={id}>
           <Button type="primary" style={{ marginRight: 8 }}>
             流转
           </Button>
         </SelectUser>
       )}
-      {next === '确认' && pangekey !== '5' && (
+      {next === '确认' && taskName !== '处理中' && (
         <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleHold('check')}>
           确认
         </Button>
       )}
-      {pangekey === '5' && (
+      {taskName === '处理中' && (
         <>
           <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleHold('flowcheck')}>
             确认
@@ -161,14 +162,14 @@ function ToDodetails(props) {
           </SelectUser>
         </>
       )}
-      {(pangekey === '6' || pangekey === '7') && next === '处理' && (
+      {(taskName === '待确认' || taskName === '确认中') && next === '处理' && (
         <SelectUser handleSubmit={() => handleHold('other')} taskId={id}>
           <Button type="primary" style={{ marginRight: 8 }}>
             重分派
           </Button>
         </SelectUser>
       )}
-      {(pangekey === '6' || pangekey === '7') && next === '结束' && (
+      {(taskName === '待确认' || taskName === '确认中') && next === '结束' && (
         <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleHold('over')}>
           结束
         </Button>
@@ -183,7 +184,7 @@ function ToDodetails(props) {
         router.push({
           pathname: `${match.url}/workorder`,
           query: {
-            pangekey,
+            taskName,
             id,
             mainId,
             validate: false,
@@ -194,7 +195,7 @@ function ToDodetails(props) {
         router.push({
           pathname: `${match.url}/process`,
           query: {
-            pangekey,
+            taskName,
             id,
             mainId,
             validate: false,
@@ -218,7 +219,7 @@ function ToDodetails(props) {
   ];
   return (
     <PageHeaderWrapper
-      title={pagetitlemaps.get(pangekey)}
+      title={pagetitlemaps.get(taskName)}
       extra={operations}
       tabList={tabList}
       tabActiveKey={location.pathname.replace(`${match.path}/`, '')}

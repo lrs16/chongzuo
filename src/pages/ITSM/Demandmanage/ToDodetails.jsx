@@ -122,6 +122,7 @@ function ToDoregist(props) {
       )}
       {result === '0' &&
         (taskName === '业务科室领导审核' ||
+          taskName === '市场部领导审核' ||
           taskName === '科室领导审核' ||
           taskName === '系统开发商审核' ||
           taskName === '自动化科专责审核' ||

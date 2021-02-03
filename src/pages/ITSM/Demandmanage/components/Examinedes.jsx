@@ -7,6 +7,9 @@ import Downloadfile from '@/components/SysUpload/Downloadfile';
 const resultmap = new Map([
   [1, '通过'],
   [0, '不通过'],
+  [2, '通过'],
+  [3, '通过'],
+  [4, '通过'],
 ]);
 
 function Examinedes(props) {
@@ -16,8 +19,9 @@ function Examinedes(props) {
   return (
     <div className={styles.collapse}>
       <Descriptions style={{ marginTop: 24 }} size="middle">
-        <Descriptions.Item label={`${text}结果`} span={3}>
-          {resultmap.get(info.result)}
+        <Descriptions.Item label={`${text}结果`}>{resultmap.get(info.result)}</Descriptions.Item>
+        <Descriptions.Item>
+          {resultmap.get(info.result) === 2 && <>科室领导审核</>}
         </Descriptions.Item>
         <Descriptions.Item label={`${text}时间`} span={3}>
           {moment(info.reviewTime).format('YYYY-MM-DD HH:MM')}

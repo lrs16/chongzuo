@@ -42,23 +42,12 @@ export async function EventDelete(params) {
 }
 
 // 事件待办列表
-export async function EventgetAllTask({
-  pageIndex,
-  pageSize,
-  eventNo,
-  eventPrior,
-  eventSource,
-  eventStatus,
-  eventTitle,
-  applicationUser,
-  registerUser,
-}) {
-  return request(
-    `/itsm/event/form/findTaskByCandidateOrAssigned?pageIndex=${pageIndex}&pageSize=${pageSize}&eventNo=${eventNo}&eventPrior=${eventPrior}&eventSource=${eventSource}&eventStatus=${eventStatus}&eventTitle=${eventTitle}&applicationUser=${applicationUser}&registerUserId=${registerUser}`,
-    {
-      method: 'GET',
-    },
-  );
+export async function EventgetAllTask(params) {
+  return request(`/itsm/event/form/findTaskByCandidateOrAssigned`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+  });
 }
 
 // 根据流程待办id进入流程编辑页
@@ -110,23 +99,12 @@ export async function queryEventodoList(params) {
 }
 
 // 事件查询 /itsm/event/form/getEventQueryList
-export async function queryList({
-  pageIndex,
-  pageSize,
-  eventNo,
-  eventPrior,
-  eventSource,
-  eventStatus,
-  eventTitle,
-  applicationUser,
-  registerUser,
-}) {
-  return request(
-    `/itsm/event/form/getEventQueryList?pageIndex=${pageIndex}&pageSize=${pageSize}&eventNo=${eventNo}&eventPrior=${eventPrior}&eventSource=${eventSource}&eventStatus=${eventStatus}&eventTitle=${eventTitle}&applicationUser=${applicationUser}&registerUserId=${registerUser}`,
-    {
-      method: 'GET',
-    },
-  );
+export async function queryList(params) {
+  return request(`/itsm/event/form/getEventQueryList`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+  });
 }
 
 // 事件查询，查看详情 /itsm/event/form/openView
@@ -137,20 +115,10 @@ export async function queryOpenView(mainId) {
 }
 
 // 下载itsm/event/form/downloadExcel
-export async function querydownload({
-  eventNo,
-  eventPrior,
-  eventSource,
-  eventStatus,
-  eventTitle,
-  applicationUser,
-  registerUser,
-}) {
-  return request(
-    `/itsm/event/form/downloadQueryExcel?eventNo=${eventNo}&eventPrior=${eventPrior}&eventSource=${eventSource}&eventStatus=${eventStatus}&eventTitle=${eventTitle}&applicationUser=${applicationUser}&registerUserId=${registerUser}`,
-    {
-      method: 'GET',
-      responseType: 'blob',
-    },
-  );
+export async function querydownload(params) {
+  return request(`/itsm/event/form/downloadQueryExcel`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+  });
 }

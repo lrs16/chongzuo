@@ -76,6 +76,7 @@ function Registration(props) {
     RegistratRef.current.validateFields((err, values) => {
       setFormregistrat({
         ...values,
+        main_eventObject: values.main_eventObject?.slice(-1)[0],
         register_occurTime: values.register_occurTime.format('YYYY-MM-DD HH:mm:ss'),
         register_fileIds: JSON.stringify(files.arr),
         register_selfhandle: String(Number(values.register_selfhandle)),
@@ -94,6 +95,7 @@ function Registration(props) {
       if (!err) {
         setFormhandle({
           ...values,
+          main_eventObject: values.main_eventObject?.slice(-1)[0],
           handle_endTime: values.handle_endTime.format('YYYY-MM-DD HH:mm:ss'),
           handle_fileIds: '[]',
         });

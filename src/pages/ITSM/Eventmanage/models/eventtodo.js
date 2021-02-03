@@ -73,7 +73,7 @@ export default {
         router.push({
           pathname: `/ITSM/eventmanage/to-do/record/workorder`,
           query: {
-            pangekey: eventStatus,
+            taskName: eventStatus,
             id: registres.taskId,
             mainId: flowInstanceId,
             next: sessionStorage.getItem('Nextflowmane'),
@@ -145,7 +145,7 @@ export default {
         router.push({
           pathname: `/ITSM/eventmanage/to-do/record/workorder`,
           query: {
-            pangekey: '5',
+            taskName: '处理中',
             id: taskId,
             mainId: response.flowInstanceId,
             next: sessionStorage.getItem('Nextflowmane'),

@@ -14,7 +14,7 @@ function Checkdes(props) {
   return (
     <div className={styles.collapse}>
       <Descriptions style={{ marginTop: 24 }} size="middle">
-        <Descriptions.Item label="审核结果">{resultmap.get(info.checkResult)}</Descriptions.Item>
+        <Descriptions.Item label="审核结果">{info.checkResult}</Descriptions.Item>
         <Descriptions.Item label="审核时间">{info.checkTime}</Descriptions.Item>
         <div style={{ clear: 'both' }} />
         <Descriptions.Item label="审核意见" span={3}>

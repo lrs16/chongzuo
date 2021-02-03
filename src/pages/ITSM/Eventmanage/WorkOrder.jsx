@@ -18,13 +18,13 @@ const { Step } = Steps;
 
 // panle,map
 const Collapsekeymap = new Map([
-  ['1', 'registratform'],
-  ['2', 'checkform'],
-  ['3', 'checkform'],
-  ['4', '1'],
-  ['5', 'handleform'],
-  ['6', 'visitform'],
-  ['7', 'visitform'],
+  ['已登记', 'registratform'],
+  ['待审核', 'checkform'],
+  ['审核中', 'checkform'],
+  ['待处理', '1'],
+  ['处理中', 'handleform'],
+  ['待确认', 'visitform'],
+  ['确认中', 'visitform'],
 ]);
 // panel详情
 const Panelheadermap = new Map([
@@ -59,7 +59,7 @@ export const RegistratContext = createContext();
 
 function WorkOrder(props) {
   const { location, match, dispatch, loading, recordsloading, info, records, userinfo } = props;
-  const { validate, pangekey, id, mainId, type } = location.query;
+  const { validate, taskName, id, mainId, type } = location.query;
   const [formregistrat, setFormregistrat] = useState('');
   const [formcheck, setFormcheck] = useState('');
   const [formhandle, setFormhandle] = useState('');
@@ -78,7 +78,7 @@ function WorkOrder(props) {
   const CheckRef = useRef();
   const HandleRef = useRef();
   const ReturnVisitRef = useRef();
-  const { data, edit } = info;
+  const { data, edit, main } = info;
   const { flowInstanceId, flowNodeInstanceId, flowNodeName, editState } = info; // 流程基本信息
   // 保存、流转表单信息
   const paloadvalues = {
@@ -98,10 +98,12 @@ function WorkOrder(props) {
       type: 'itsmuser/fetchuser',
     });
     sessionStorage.setItem('Processtype', 'event');
+  }, []);
+  useEffect(() => {
     setTimeout(() => {
       setIsDelay(true);
-    }, 500);
-  }, []);
+    }, 100);
+  }, [info]);
 
   // 初始化历史附件
   useEffect(() => {
@@ -120,7 +122,7 @@ function WorkOrder(props) {
     router.push({
       pathname: `${props.match.url}`,
       query: {
-        pangekey,
+        taskName,
         id,
         mainId,
         validate: false,
@@ -144,6 +146,7 @@ function WorkOrder(props) {
             setIscheck(true);
             setFormregistrat({
               ...values,
+              main_eventObject: values.main_eventObject?.slice(-1)[0],
               register_occurTime: values.register_occurTime.format('YYYY-MM-DD HH:mm:ss'),
               register_selfhandle: String(Number(values.register_selfhandle)),
               register_supplement: String(Number(values.register_supplement)),
@@ -158,6 +161,7 @@ function WorkOrder(props) {
           setIscheck(true);
           setFormregistrat({
             ...values,
+            main_eventObject: values.main_eventObject?.slice(-1)[0],
             register_occurTime: values.register_occurTime.format('YYYY-MM-DD HH:mm:ss'),
             register_selfhandle: String(Number(values.register_selfhandle)),
             register_supplement: String(Number(values.register_supplement)),
@@ -171,6 +175,7 @@ function WorkOrder(props) {
           setIscheck(true);
           setFormregistrat({
             ...values,
+            main_eventObject: values.main_eventObject?.slice(-1)[0],
             register_occurTime: values.register_occurTime.format('YYYY-MM-DD HH:mm:ss'),
             register_selfhandle: String(Number(values.register_selfhandle)),
             register_supplement: String(Number(values.register_supplement)),
@@ -219,6 +224,7 @@ function WorkOrder(props) {
             setIscheck(true);
             setFormhandle({
               ...values,
+              main_eventObject: values.main_eventObject?.slice(-1)[0],
               handle_endTime: values.handle_endTime.format('YYYY-MM-DD HH:mm:ss'),
               handle_fileIds: JSON.stringify(handefiles.arr),
             });
@@ -231,6 +237,7 @@ function WorkOrder(props) {
           setIscheck(true);
           setFormhandle({
             ...values,
+            main_eventObject: values.main_eventObject?.slice(-1)[0],
             handle_endTime: values.handle_endTime.format('YYYY-MM-DD HH:mm:ss'),
             handle_fileIds: JSON.stringify(files.arr),
           });
@@ -242,6 +249,7 @@ function WorkOrder(props) {
           setIscheck(true);
           setFormhandle({
             ...values,
+            main_eventObject: values.main_eventObject?.slice(-1)[0],
             handle_endTime: values.handle_endTime.format('YYYY-MM-DD HH:mm:ss'),
             handle_fileIds: JSON.stringify(files.arr),
           });
@@ -284,7 +292,7 @@ function WorkOrder(props) {
         type: 'eventtodo/eventsave',
         payload: {
           paloadvalues,
-          pangekey,
+          taskName,
           flowInstanceId,
         },
       });
@@ -339,8 +347,8 @@ function WorkOrder(props) {
 
   // 点击保存，流转触发表单校验
   const handlesubmit = () => {
-    switch (pangekey) {
-      case '1': {
+    switch (taskName) {
+      case '已登记': {
         if (show) {
           getregistrats();
           gethandles();
@@ -349,16 +357,16 @@ function WorkOrder(props) {
         }
         break;
       }
-      case '2':
-      case '3':
+      case '待审核':
+      case '审核中':
         getchecks();
         break;
-      case '5':
-      case '8':
+      case '处理中':
+      case '重分派':
         gethandles();
         break;
-      case '6':
-      case '7':
+      case '待确认':
+      case '确认中':
         getreturnvisit();
         break;
       default:
@@ -387,15 +395,16 @@ function WorkOrder(props) {
 
   // 初始化值panel
   useEffect(() => {
-    setActiveKey([`${Collapsekeymap.get(pangekey)}`]);
+    setActiveKey([`${Collapsekeymap.get(taskName)}`]);
   }, [info]);
   useEffect(() => {
-    setActiveKey([`${Collapsekeymap.get(pangekey)}`]);
-  }, [pangekey]);
+    setActiveKey([`${Collapsekeymap.get(taskName)}`]);
+  }, [taskName]);
 
   useEffect(() => {
     if (validate === true && ischeck === false) {
       handlesubmit();
+      setIsDelay(false);
     }
   }, [validate]);
 
@@ -437,7 +446,7 @@ function WorkOrder(props) {
       router.push({
         pathname: `${props.match.url}`,
         query: {
-          pangekey,
+          taskName,
           id,
           mainId,
           validate: true,
@@ -485,7 +494,7 @@ function WorkOrder(props) {
             onChange={callback}
             style={{ marginTop: '-25px' }}
           >
-            {pangekey === '1' && edit.register.fileIds !== undefined && (
+            {taskName === '已登记' && edit.register.fileIds !== undefined && (
               <Panel header="事件登记" key="registratform">
                 <Registrat
                   ChangeShow={isshow => setShow(isshow)}
@@ -501,7 +510,7 @@ function WorkOrder(props) {
                   show={show}
                   ref={RegistratRef}
                   info={edit}
-                  main={data[0].main}
+                  main={main}
                   userinfo={userinfo}
                   sethandlevalue="true"
                   location={location}
@@ -509,14 +518,14 @@ function WorkOrder(props) {
                 />
               </Panel>
             )}
-            {show === true && pangekey === '1' && (
+            {show === true && taskName === '已登记' && (
               <Panel header="事件处理" key="handleform">
                 <Handle
                   formItemLayout={formItemLayout}
                   forminladeLayout={forminladeLayout}
                   ref={HandleRef}
                   info={finishfirst}
-                  main={data[0].main}
+                  main={main}
                   userinfo={userinfo}
                   defaultvalue={defaultvalue}
                   location={location}
@@ -528,7 +537,7 @@ function WorkOrder(props) {
                 />
               </Panel>
             )}
-            {pangekey === '2' && (
+            {taskName === '待审核' && (
               <Panel header="事件审核" key="checkform">
                 <Check
                   ChangeFlowtype={newtype => setFlowtype(newtype)}
@@ -536,7 +545,7 @@ function WorkOrder(props) {
                   forminladeLayout={forminladeLayout}
                   ref={CheckRef}
                   info={finishfirst}
-                  main={data[0].main}
+                  main={main}
                   userinfo={userinfo}
                   location={location}
                   ChangeFiles={newvalue => {
@@ -546,7 +555,7 @@ function WorkOrder(props) {
                 />
               </Panel>
             )}
-            {pangekey === '3' && (
+            {taskName === '审核中' && edit.check.fileIds !== undefined && (
               <Panel header="事件审核" key="checkform">
                 <Check
                   ChangeFlowtype={newtype => setFlowtype(newtype)}
@@ -554,7 +563,7 @@ function WorkOrder(props) {
                   forminladeLayout={forminladeLayout}
                   ref={CheckRef}
                   info={edit}
-                  main={data[0].main}
+                  main={main}
                   userinfo={userinfo}
                   location={location}
                   ChangeFiles={newvalue => {
@@ -564,14 +573,14 @@ function WorkOrder(props) {
                 />
               </Panel>
             )}
-            {pangekey === '5' && edit.handle === null && (
+            {taskName === '处理中' && edit.handle === null && (
               <Panel header="事件处理" key="handleform">
                 <Handle
                   formItemLayout={formItemLayout}
                   forminladeLayout={forminladeLayout}
                   ref={HandleRef}
                   info={finishfirst}
-                  main={data[0].main}
+                  main={main}
                   userinfo={userinfo}
                   defaultvalue={defaultvalue}
                   location={location}
@@ -583,14 +592,14 @@ function WorkOrder(props) {
                 />
               </Panel>
             )}
-            {pangekey === '5' && edit.handle !== null && edit.handle.fileIds !== undefined && (
+            {taskName === '处理中' && edit.handle !== null && edit.handle.fileIds !== undefined && (
               <Panel header="事件处理" key="handleform">
                 <Handle
                   formItemLayout={formItemLayout}
                   forminladeLayout={forminladeLayout}
                   ref={HandleRef}
                   info={edit === null ? finishfirst : edit}
-                  main={data[0].main}
+                  main={main}
                   userinfo={userinfo}
                   defaultvalue={defaultvalue}
                   location={location}
@@ -602,7 +611,7 @@ function WorkOrder(props) {
                 />
               </Panel>
             )}
-            {pangekey === '6' && edit.finish === null && (
+            {taskName === '待确认' && edit.finish === null && (
               <Panel header="事件确认" key="visitform">
                 <ReturnVisit
                   ChangeFlowtype={newtype => setFlowtype(newtype)}
@@ -610,7 +619,7 @@ function WorkOrder(props) {
                   forminladeLayout={forminladeLayout}
                   ref={ReturnVisitRef}
                   info={finishfirst}
-                  main={data[0].main}
+                  main={main}
                   userinfo={userinfo}
                   location={location}
                   ChangeFiles={newvalue => {
@@ -620,7 +629,7 @@ function WorkOrder(props) {
                 />
               </Panel>
             )}
-            {pangekey === '7' && edit.finish.fileIds !== undefined && (
+            {taskName === '确认中' && edit.finish.fileIds !== undefined && (
               <Panel header="事件确认" key="visitform">
                 <ReturnVisit
                   ChangeFlowtype={newtype => setFlowtype(newtype)}
@@ -628,7 +637,7 @@ function WorkOrder(props) {
                   forminladeLayout={forminladeLayout}
                   ref={ReturnVisitRef}
                   info={edit}
-                  main={data[0].main}
+                  main={main}
                   userinfo={userinfo}
                   location={location}
                   ChangeFiles={newvalue => {

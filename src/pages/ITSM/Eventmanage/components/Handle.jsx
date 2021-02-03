@@ -48,10 +48,15 @@ const Handle = React.forwardRef((props, ref) => {
     sessionStorage.setItem('Nextflowmane', '确认');
   }, []);
 
+  const eventObject = main.eventObject.split();
+  if (main.eventObject.length === 6) {
+    eventObject.unshift(main.eventObject.slice(0, 3));
+  }
+
   const adddisabled = datas => {
     const data = datas.map(obj => {
       const item = obj;
-      if (item.dict_code === '007') {
+      if (item.dict_code === '005') {
         item.disabled = true;
       } else {
         item.disabled = false;
@@ -68,24 +73,23 @@ const Handle = React.forwardRef((props, ref) => {
     setFieldsValue({ main_eventObject: value?.slice(-1)[0] }, () => {});
   };
 
-  const getTypebyTitle = title => {
+  const getTypebykey = key => {
     if (selectdata.length > 0) {
-      return selectdata.filter(item => item.title === title)[0].children;
+      return selectdata.filter(item => item.key === key)[0].children;
     }
     return [];
   };
-  const typemap = getTypebyTitle('事件分类');
-  const objectmap = getTypebyTitle('事件对象');
-  const resultmap = getTypebyTitle('事件处理结果');
-
-  const bojectmaps = adddisabled(objectmap);
+  const typemap = getTypebykey('486844495669755904');
+  const objectmap = getTypebykey('482599461999083520');
+  const resultmap = getTypebykey('486846455059841024');
+  const typemaps = adddisabled(typemap);
 
   return (
     <>
       <DictLower
         typeid="1354273739344187393"
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
-        style={{ display: 'non' }}
+        style={{ display: 'none' }}
       />
       <Row gutter={24} style={{ marginTop: 24 }}>
         <Form {...formItemLayout}>
@@ -146,8 +150,8 @@ const Handle = React.forwardRef((props, ref) => {
                     initialValue: defaultvalue.main_eventType,
                   })(
                     <Select placeholder="请选择">
-                      {typemap.map(obj => [
-                        <Option key={obj.key} value={obj.dict_code}>
+                      {typemaps.map(obj => [
+                        <Option key={obj.key} value={obj.dict_code} disabled={obj.disabled}>
                           {obj.title}
                         </Option>,
                       ])}
@@ -159,11 +163,11 @@ const Handle = React.forwardRef((props, ref) => {
                 <Form.Item label="事件对象">
                   {getFieldDecorator('main_eventObject', {
                     rules: [{ required, message: '请选择事件对象' }],
-                    initialValue: defaultvalue.main_eventObject,
+                    initialValue: eventObject,
                   })(
                     <Cascader
                       fieldNames={{ label: 'title', value: 'dict_code', children: 'children' }}
-                      options={bojectmaps}
+                      options={objectmap}
                       onChange={handlcheckChange}
                       placeholder="请选择"
                       expandTrigger="hover"
@@ -184,8 +188,8 @@ const Handle = React.forwardRef((props, ref) => {
                     initialValue: main.eventType,
                   })(
                     <Select placeholder="请选择">
-                      {typemap.map(obj => [
-                        <Option key={obj.key} value={obj.dict_code}>
+                      {typemaps.map(obj => [
+                        <Option key={obj.key} value={obj.dict_code} disabled={obj.disabled}>
                           {obj.title}
                         </Option>,
                       ])}
@@ -197,11 +201,11 @@ const Handle = React.forwardRef((props, ref) => {
                 <Form.Item label="事件对象">
                   {getFieldDecorator('main_eventObject', {
                     rules: [{ required, message: '请选择事件对象' }],
-                    initialValue: main.eventObject.split(),
+                    initialValue: eventObject,
                   })(
                     <Cascader
                       fieldNames={{ label: 'title', value: 'dict_code', children: 'children' }}
-                      options={bojectmaps}
+                      options={objectmap}
                       onChange={handlcheckChange}
                       placeholder="请选择"
                       expandTrigger="hover"

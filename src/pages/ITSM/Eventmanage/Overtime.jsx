@@ -1,9 +1,7 @@
 import React from 'react';
-import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
 function Overtime(props) {
-  const pagetitle = props.route.name;
-  return <PageHeaderWrapper title={pagetitle}>查询</PageHeaderWrapper>;
+  return <div>12312313</div>;
 }
 
 export default Overtime;

@@ -18,7 +18,7 @@ const typemaps = new Map([
 
 const Check = forwardRef((props, ref) => {
   const { formItemLayout, forminladeLayout, info, userinfo, location, files, ChangeFiles } = props;
-  const { pangekey, id, mainId } = location.query;
+  const { taskName, id, mainId } = location.query;
   const { check } = info;
   const { getFieldDecorator } = props.form;
   const [adopt, setAdopt] = useState('001');
@@ -47,7 +47,7 @@ const Check = forwardRef((props, ref) => {
     router.push({
       pathname: location.pathname,
       query: {
-        pangekey,
+        taskName,
         id,
         mainId,
         next: sessionStorage.getItem('Nextflowmane'),

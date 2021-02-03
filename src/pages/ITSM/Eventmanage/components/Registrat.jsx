@@ -1,19 +1,7 @@
 import React, { useRef, useImperativeHandle, forwardRef, useState, useEffect } from 'react';
 import router from 'umi/router';
 import moment from 'moment';
-import {
-  Row,
-  Col,
-  Form,
-  Input,
-  Select,
-  Upload,
-  Button,
-  Checkbox,
-  DatePicker,
-  Cascader,
-} from 'antd';
-import { DownloadOutlined } from '@ant-design/icons';
+import { Row, Col, Form, Input, Select, Checkbox, DatePicker, Cascader } from 'antd';
 import styles from '../index.less';
 import { phone_reg } from '@/utils/Regexp';
 import SysUpload from '@/components/SysUpload';
@@ -40,7 +28,7 @@ const Registrat = forwardRef((props, ref) => {
     ChangeFiles,
   } = props;
   const { register } = info;
-  const { pangekey, id, mainId } = location.query;
+  const { taskName, id, mainId } = location.query;
   const { getFieldDecorator, getFieldsValue, setFieldsValue } = props.form;
   const required = true;
   const [check, setCheck] = useState(false);
@@ -72,7 +60,7 @@ const Registrat = forwardRef((props, ref) => {
     router.push({
       pathname: location.pathname,
       query: {
-        pangekey,
+        taskName,
         id,
         mainId,
         next: sessionStorage.getItem('Nextflowmane'),
@@ -84,13 +72,13 @@ const Registrat = forwardRef((props, ref) => {
     if (register.revisitWay === '003') {
       setRevisitway(true);
     }
-    if (main.eventObject === '007') {
+    if (main.eventType === '005') {
       setCheck(true);
     }
   }, [info]);
 
   useEffect(() => {
-    if (main.eventObject === '007') {
+    if (main.eventType === '005') {
       sessionStorage.setItem('Nextflowmane', '审核');
       sessionStorage.setItem('flowtype', '3');
     } else {
@@ -109,10 +97,9 @@ const Registrat = forwardRef((props, ref) => {
     }
   };
 
-  // 007时走审核
+  // 事件分类005时走审核
   const handlcheckChange = value => {
-    setFieldsValue({ main_eventObject: value.slice(-1)[0] }, () => {});
-    if (value.slice(-1)[0] === '007') {
+    if (value === '005') {
       ChangeCheck(true);
       setCheck(true);
       ChangeFlowtype('3');
@@ -129,6 +116,11 @@ const Registrat = forwardRef((props, ref) => {
       changeDefaultvalue(gethandelvalue);
     }
     routerRefresh();
+  };
+
+  //
+  const handlobjectChange = value => {
+    setFieldsValue({ main_eventObject: value?.slice(-1)[0] }, () => {});
   };
 
   // 003手机号码必填
@@ -150,20 +142,42 @@ const Registrat = forwardRef((props, ref) => {
     return label[label.length - 1];
   };
 
-  const getTypebyTitle = key => {
+  // const changenulltostr = (datas) => {
+  //   for (var x in datas) {
+  //     if (datas[x] === null) { // 如果是null 把直接内容转为 ''
+  //       datas[x] = '';
+  //     };
+  //   }
+  //   return datas;
+  // };
+  // changenulltostr(main);
+  // changenulltostr(register);
+
+  const getTypebykey = key => {
     if (selectdata.length > 0) {
       return selectdata.filter(item => item.key === key)[0].children;
     }
     return [];
   };
+  const eventObject = main.eventObject.split();
+  if (main.eventObject.length === 6) {
+    eventObject.unshift(main.eventObject.slice(0, 3));
+  }
 
-  const sourcemap = getTypebyTitle('486844540120989696'); // 事件来源
-  const typemap = getTypebyTitle('486844495669755904'); // 事件分类
-  const objectmap = getTypebyTitle('482599461999083520'); // 事件对象
-  const returnvisit = getTypebyTitle('486852783895478272'); // 回访方式
-  const effectmap = getTypebyTitle('482610561507393536'); // 影响度
-  const emergentmap = getTypebyTitle('482610561503199232'); // 紧急度
-  const priormap = getTypebyTitle('482610561499004928'); // 优先级
+  // const strtoarr = (data) => {
+  //   const arr = data.slice();
+  //   for (let i = 0; i < data.length; i += 3) {
+  //     arr.push(data.slice(0,))
+  //   }
+  // };
+
+  const sourcemap = getTypebykey('486844540120989696'); // 事件来源
+  const typemap = getTypebykey('486844495669755904'); // 事件分类
+  const objectmap = getTypebykey('482599461999083520'); // 事件对象
+  const returnvisit = getTypebykey('486852783895478272'); // 回访方式
+  const effectmap = getTypebykey('482610561507393536'); // 影响度
+  const emergentmap = getTypebykey('482610561503199232'); // 紧急度
+  const priormap = getTypebykey('482610561499004928'); // 优先级
 
   return (
     <>
@@ -171,7 +185,7 @@ const Registrat = forwardRef((props, ref) => {
         typeid="1354273739344187393"
         commonid="1354288354950123522"
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
-        style={{ display: 'non' }}
+        style={{ display: 'none' }}
       />
       <Form {...formItemLayout}>
         <Row gutter={24} style={{ paddingTop: 24 }}>
@@ -322,7 +336,7 @@ const Registrat = forwardRef((props, ref) => {
                 rules: [{ required, message: '请选择事件分类' }],
                 initialValue: main.eventType,
               })(
-                <Select placeholder="请选择">
+                <Select placeholder="请选择" onChange={handlcheckChange}>
                   {typemap.map(obj => [
                     <Option key={obj.key} value={obj.dict_code}>
                       {obj.title}
@@ -336,12 +350,12 @@ const Registrat = forwardRef((props, ref) => {
             <Form.Item label="事件对象">
               {getFieldDecorator('main_eventObject', {
                 rules: [{ required, message: '请选择事件对象' }],
-                initialValue: main.eventObject.split(),
+                initialValue: eventObject,
               })(
                 <Cascader
                   fieldNames={{ label: 'title', value: 'dict_code', children: 'children' }}
                   options={objectmap}
-                  onChange={handlcheckChange}
+                  onChange={handlobjectChange}
                   placeholder="请选择"
                   expandTrigger="hover"
                   displayRender={displayRender}
@@ -351,9 +365,9 @@ const Registrat = forwardRef((props, ref) => {
           </Col>
           <Col span={8}>
             <Form.Item label="回访方式">
-              {getFieldDecorator('register_revisitWay', {
+              {getFieldDecorator('main_revisitWay', {
                 rules: [{ required, message: '请选择回访方式' }],
-                initialValue: register.revisitWay,
+                initialValue: main.revisitWay,
               })(
                 <Select placeholder="请选择" onChange={handlrevisitway}>
                   {returnvisit.map(obj => [
@@ -367,9 +381,9 @@ const Registrat = forwardRef((props, ref) => {
           </Col>
           <Col span={8}>
             <Form.Item label="影响度">
-              {getFieldDecorator('register_eventEffect', {
+              {getFieldDecorator('main_eventEffect', {
                 rules: [{ required, message: '请选择影响度' }],
-                initialValue: register.eventEffect,
+                initialValue: main.eventEffect,
               })(
                 <Select placeholder="请选择" onChange={changeHandlevalue}>
                   {effectmap.map(obj => [
@@ -383,9 +397,9 @@ const Registrat = forwardRef((props, ref) => {
           </Col>
           <Col span={8}>
             <Form.Item label="紧急度">
-              {getFieldDecorator('register_eventEmergent', {
+              {getFieldDecorator('main_eventEmergent', {
                 rules: [{ required, message: '请选择紧急度' }],
-                initialValue: register.eventEmergent,
+                initialValue: main.eventEmergent,
               })(
                 <Select placeholder="请选择" onChange={changeHandlevalue}>
                   {emergentmap.map(obj => [
@@ -399,9 +413,9 @@ const Registrat = forwardRef((props, ref) => {
           </Col>
           <Col span={8}>
             <Form.Item label="优先级">
-              {getFieldDecorator('register_eventPrior', {
+              {getFieldDecorator('main_eventPrior', {
                 rules: [{ required, message: '请选择优先级' }],
-                initialValue: register.eventPrior,
+                initialValue: main.eventPrior,
               })(
                 <Select placeholder="请选择" onChange={changeHandlevalue}>
                   {priormap.map(obj => [
@@ -549,6 +563,10 @@ Registrat.defaultProps = {
     eventObject: '',
     eventSource: '002',
     eventType: '',
+    revisitWay: '001',
+    eventEffect: '001',
+    eventEmergent: '001',
+    eventPrior: '001',
   },
   info: {
     register: {
@@ -560,9 +578,6 @@ Registrat.defaultProps = {
       applicationUserId: '12121212',
       applicationUserPhone: '',
       mobilePhone: '',
-      eventEffect: '001',
-      eventEmergent: '001',
-      eventPrior: '001',
       occur_time: moment().format('YYYY-MM-DD HH:mm:ss'),
       // registerDept: '广西电网有限责任公司',
       // registerDeptId: '7AC3EF0F701402A2E0530A644F130365',
@@ -570,7 +585,6 @@ Registrat.defaultProps = {
       // registerUnitId: '7AC3EF0F701402A2E0530A644F130365',
       // registerUser: '管理员',
       registerUserId: '1',
-      revisitWay: '001',
       selfhandle: '0',
     },
   },

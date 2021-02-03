@@ -1,42 +1,33 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
+import moment from 'moment';
 import router from 'umi/router';
-import { Card, Row, Col, Form, Input, Select, Button, DatePicker, Table, Badge } from 'antd';
+import { Card, Row, Col, Form, Input, Select, Button, DatePicker, Table } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
+import SysDict from '@/components/SysDict';
 
 const { Option } = Select;
-
-const statemap = [
-  { key: '1', value: '已登记' },
-  { key: '2', value: '待审核' },
-  { key: '3', value: '审核中' },
-  { key: '4', value: '待处理' },
-  { key: '5', value: '处理中' },
-  { key: '6', value: '待确认' },
-  { key: '7', value: '确认中' },
-  { key: '8', value: '重分派' },
-];
-
-const sourcemap = [
-  { key: '002', value: '用户电话申告' },
-  { key: '001', value: '企信' },
-];
-
-const levelmap = [
-  { key: '003', value: '低' },
-  { key: '002', value: '中' },
-  { key: '001', value: '高' },
-];
+const { RangePicker } = DatePicker;
 
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
-    sm: { span: 8 },
+    sm: { span: 6 },
   },
   wrapperCol: {
     xs: { span: 24 },
-    sm: { span: 16 },
+    sm: { span: 18 },
+  },
+};
+const forminladeLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 3 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 21 },
   },
 };
 
@@ -50,7 +41,7 @@ const columns = [
         router.push({
           pathname: `/ITSM/eventmanage/to-do/record/workorder`,
           query: {
-            pangekey: record.eventStatus,
+            taskName: record.eventStatus,
             id: record.taskId,
             mainId: record.mainId,
             check: record.checkResult,
@@ -72,29 +63,11 @@ const columns = [
     title: '事件来源',
     dataIndex: 'eventSource',
     key: 'eventSource',
-    render: (text, record) => {
-      const textmaps = new Map([
-        ['001', '用户电话申告'],
-        ['002', '企信'],
-      ]);
-      return <>{textmaps.get(record.eventSource)}</>;
-    },
   },
   {
     title: '事件分类',
     dataIndex: 'eventType',
     key: 'eventType',
-    render: (text, record) => {
-      const textmaps = new Map([
-        ['001', '咨询'],
-        ['002', '缺陷'],
-        ['003', '故障'],
-        ['004', '数据处理'],
-        ['005', '账号权限'],
-        ['006', '其它'],
-      ]);
-      return <>{textmaps.get(record.eventType)}</>;
-    },
   },
   {
     title: '填报人',
@@ -110,20 +83,6 @@ const columns = [
     title: '工单状态',
     dataIndex: 'eventStatus',
     key: 'eventStatus',
-    render: (text, record) => {
-      const textmaps = new Map([
-        ['1', '已登记'],
-        ['2', '待审核'],
-        ['3', '审核中'],
-        ['4', '待处理'],
-        ['5', '处理中'],
-        ['6', '待确认'],
-        ['7', '确认中'],
-        ['8', '重分派'],
-        ['9', '已关闭'],
-      ]);
-      return <>{textmaps.get(record.eventStatus)}</>;
-    },
   },
   {
     title: '发送时间',
@@ -134,14 +93,6 @@ const columns = [
     title: '优先级',
     dataIndex: 'eventPrior',
     key: 'eventPrior',
-    render: (text, record) => {
-      const textmaps = new Map([
-        ['001', '低'],
-        ['002', '中'],
-        ['003', '高'],
-      ]);
-      return <>{textmaps.get(record.eventPrior)}</>;
-    },
   },
 ];
 
@@ -155,6 +106,7 @@ function ToDolist(props) {
   } = props;
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 10 });
   const [expand, setExpand] = useState(false);
+  const [selectdata, setSelectData] = useState([]);
 
   useEffect(() => {
     validateFields((err, values) => {
@@ -177,6 +129,10 @@ function ToDolist(props) {
       type: 'eventtodo/fetchlist',
       payload: {
         ...values,
+        eventObject: values.eventObject?.slice(-1)[0],
+        createTime: '',
+        time1: moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss'),
+        time2: moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss'),
         pageSize: size,
         pageIndex: page - 1,
       },
@@ -255,8 +211,25 @@ function ToDolist(props) {
     resetFields();
   };
 
+  const getTypebykey = key => {
+    if (selectdata.length > 0) {
+      return selectdata.filter(item => item.key === key)[0].children;
+    }
+    return [];
+  };
+
+  const sourcemap = getTypebykey('486844540120989696'); // 事件来源
+  const statusmap = getTypebykey('1356421038388285441'); // 工单状态
+  const priormap = getTypebykey('482610561499004928'); // 优先级
+
   return (
     <PageHeaderWrapper title={pagetitle}>
+      <SysDict
+        typeid="1354273739344187393"
+        commonid="1354288354950123522"
+        ChangeSelectdata={newvalue => setSelectData(newvalue)}
+        style={{ display: 'none' }}
+      />
       <Card>
         <Row gutter={24}>
           <Form {...formItemLayout} onSubmit={handleSearch}>
@@ -282,9 +255,9 @@ function ToDolist(props) {
                       initialValue: '',
                     })(
                       <Select placeholder="请选择">
-                        {sourcemap.map(({ key, value }) => (
-                          <Option key={key} value={key}>
-                            {value}
+                        {sourcemap.map(obj => (
+                          <Option key={obj.key} value={obj.dict_code}>
+                            {obj.title}
                           </Option>
                         ))}
                       </Select>,
@@ -299,9 +272,9 @@ function ToDolist(props) {
                   initialValue: '',
                 })(
                   <Select placeholder="请选择">
-                    {statemap.map(({ key, value }) => (
-                      <Option key={key} value={key}>
-                        {value}
+                    {statusmap.map(obj => (
+                      <Option key={obj.key} value={obj.dict_code}>
+                        {obj.title}
                       </Option>
                     ))}
                   </Select>,
@@ -324,24 +297,24 @@ function ToDolist(props) {
                     })(<Input placeholder="请输入" />)}
                   </Form.Item>
                 </Col>
-                {/* <Col span={8}>
-                  <Form.Item label="发送时间">
-                    {getFieldDecorator('contenttime')(<DatePicker showTime />)}
-                  </Form.Item>
-                </Col> */}
                 <Col span={8}>
                   <Form.Item label="优先级">
                     {getFieldDecorator('eventPrior', {
                       initialValue: '',
                     })(
                       <Select placeholder="请选择">
-                        {levelmap.map(({ key, value }) => (
-                          <Option key={key} value={key}>
-                            {value}
+                        {priormap.map(obj => (
+                          <Option key={obj.key} value={obj.dict_code}>
+                            {obj.title}
                           </Option>
                         ))}
                       </Select>,
                     )}
+                  </Form.Item>
+                </Col>
+                <Col span={16}>
+                  <Form.Item label="发送时间" {...forminladeLayout}>
+                    {getFieldDecorator('createTime')(<RangePicker showTime />)}
                   </Form.Item>
                 </Col>
               </>

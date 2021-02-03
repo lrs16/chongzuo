@@ -1,84 +1,48 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
+import moment from 'moment';
 import router from 'umi/router';
-import { Card, Row, Col, Form, Input, Select, Button, DatePicker, Table, Badge, Tag } from 'antd';
+import {
+  Card,
+  Row,
+  Col,
+  Form,
+  Input,
+  Select,
+  Button,
+  DatePicker,
+  Table,
+  Badge,
+  Tag,
+  Cascader,
+} from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
+import SysDict from '@/components/SysDict';
 
 const { Option } = Select;
-
-const statemap = [
-  { key: '1', value: '已登记' },
-  { key: '2', value: '待审核' },
-  { key: '3', value: '审核中' },
-  { key: '4', value: '待处理' },
-  { key: '5', value: '处理中' },
-  { key: '6', value: '待确认' },
-  { key: '7', value: '确认中' },
-  { key: '8', value: '重分派' },
-  { key: '9', value: '已关闭' },
-];
-
-const sourcemap = [
-  { key: '001', value: '用户电话申告' },
-  { key: '002', value: '企信' },
-];
-
-const levelmap = [
-  { key: '001', value: '高' },
-  { key: '002', value: '中' },
-  { key: '003', value: '低' },
-];
+const { RangePicker } = DatePicker;
 
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
-    sm: { span: 8 },
+    sm: { span: 6 },
   },
   wrapperCol: {
     xs: { span: 24 },
-    sm: { span: 16 },
+    sm: { span: 18 },
   },
 };
-// 事件来源
-const sourcemaps = new Map([
-  ['001', '用户电话申告'],
-  ['002', '企信'],
-]);
-// 事件分类
-const typemap = new Map([
-  ['001', '咨询'],
-  ['002', '缺陷'],
-  ['003', '故障'],
-  ['004', '数据处理'],
-  ['005', '账号权限'],
-  ['006', '其它'],
-]);
-
-// 回访方式
-const revisitwaymap = new Map([
-  ['001', '企信回访'],
-  ['002', '电话回访'],
-  ['003', '短信回访'],
-  ['004', '邮箱回访'],
-]);
-// 事件对象
-const objectmap = new Map([
-  ['001', '配网采集'],
-  ['002', '主网采集'],
-  ['003', '终端掉线'],
-  ['004', '配网档案'],
-  ['005', '实用化指标'],
-  ['006', '账号缺陷'],
-]);
-// 影响、紧急度
-const degreemap = new Map([
-  ['001', '低'],
-  ['002', '中'],
-  ['003', '高'],
-  ['004', '紧急'],
-]);
-
+const forminladeLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 2 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 22 },
+  },
+};
 const columns = [
   {
     title: '事件编号',
@@ -120,20 +84,6 @@ const columns = [
     key: 'eventStatus',
     fixed: 'left',
     width: 100,
-    render: (text, record) => {
-      const textmaps = new Map([
-        ['1', '已登记'],
-        ['2', '待审核'],
-        ['3', '审核中'],
-        ['4', '待处理'],
-        ['5', '处理中'],
-        ['6', '待确认'],
-        ['7', '确认中'],
-        ['8', '重分派'],
-        ['9', '已关闭'],
-      ]);
-      return <>{textmaps.get(record.eventStatus)}</>;
-    },
   },
   {
     title: '申报人',
@@ -159,18 +109,12 @@ const columns = [
     dataIndex: 'eventType',
     key: 'eventType',
     width: 120,
-    render: (text, record) => {
-      return <>{typemap.get(record.eventType)}</>;
-    },
   },
   {
     title: '事件对象',
     dataIndex: 'eventObject',
     key: 'eventObject',
     width: 120,
-    render: (text, record) => {
-      return <>{objectmap.get(record.eventObject)}</>;
-    },
   },
   // {
   //   title: '标签',
@@ -195,45 +139,30 @@ const columns = [
     dataIndex: 'revisitWay',
     key: 'revisitWay',
     width: 120,
-    render: (text, record) => {
-      return <>{revisitwaymap.get(record.revisitWay)}</>;
-    },
   },
   {
     title: '事件来源',
     dataIndex: 'event_source',
     key: 'event_source',
     width: 150,
-    render: (text, record) => {
-      return <>{sourcemaps.get(record.eventSource)}</>;
-    },
   },
   {
     title: '影响度',
     dataIndex: 'event_effect',
     key: 'event_effect',
     width: 80,
-    render: (text, record) => {
-      return <>{degreemap.get(record.eventEffect)}</>;
-    },
   },
   {
     title: '优先级',
     dataIndex: 'event_prior',
     key: 'event_prior',
     width: 80,
-    render: (text, record) => {
-      return <>{degreemap.get(record.eventPrior)}</>;
-    },
   },
   {
     title: '紧急度',
     dataIndex: 'event_emergent',
     key: 'event_emergent',
     width: 80,
-    render: (text, record) => {
-      return <>{degreemap.get(record.eventEmergent)}</>;
-    },
   },
   {
     title: '登记人',
@@ -259,6 +188,7 @@ function QueryList(props) {
   } = props;
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 10 });
   const [expand, setExpand] = useState(false);
+  const [selectdata, setSelectData] = useState([]);
 
   useEffect(() => {
     validateFields((err, values) => {
@@ -280,6 +210,10 @@ function QueryList(props) {
       type: 'eventquery/fetchlist',
       payload: {
         ...values,
+        eventObject: values.eventObject?.slice(-1)[0],
+        createTime: '',
+        time1: moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss'),
+        time2: moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss'),
         pageSize: size,
         pageIndex: page - 1,
       },
@@ -358,8 +292,38 @@ function QueryList(props) {
     resetFields();
   };
 
+  const displayRender = label => {
+    return label[label.length - 1];
+  };
+
+  const getTypebykey = key => {
+    if (selectdata.length > 0) {
+      return selectdata.filter(item => item.key === key)[0].children;
+    }
+    return [];
+  };
+
+  const sourcemap = getTypebykey('486844540120989696'); // 事件来源
+  const statusmap = getTypebykey('1356421038388285441'); // 工单状态
+  const typemap = getTypebykey('486844495669755904'); // 事件分类
+  const objectmap = getTypebykey('482599461999083520'); // 事件对象
+  const returnvisit = getTypebykey('486852783895478272'); // 回访方式
+  const effectmap = getTypebykey('482610561507393536'); // 影响度
+  const emergentmap = getTypebykey('482610561503199232'); // 紧急度
+  const priormap = getTypebykey('482610561499004928'); // 优先级
+  const checkresultmap = getTypebykey('1356439651098824706'); // 审核结果
+  const yesornomap = getTypebykey('1356502855556534273'); // 是否
+  const handleresultmap = getTypebykey('486846455059841024'); // 处理结果
+  const satisfactionmap = getTypebykey('486855005945462784'); // 满意度
+
   return (
     <PageHeaderWrapper title={pagetitle}>
+      <SysDict
+        typeid="1354273739344187393"
+        commonid="1354288354950123522"
+        ChangeSelectdata={newvalue => setSelectData(newvalue)}
+        style={{ display: 'none' }}
+      />
       <Card>
         <Row gutter={24}>
           <Form {...formItemLayout} onSubmit={handleSearch}>
@@ -370,41 +334,15 @@ function QueryList(props) {
                 })(<Input placeholder="请输入" />)}
               </Form.Item>
             </Col>
-            {expand === true && (
-              <>
-                <Col span={8}>
-                  <Form.Item label="事件标题">
-                    {getFieldDecorator('eventTitle', {
-                      initialValue: '',
-                    })(<Input placeholder="请输入" />)}
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item label="事件来源">
-                    {getFieldDecorator('eventSource', {
-                      initialValue: '',
-                    })(
-                      <Select placeholder="请选择">
-                        {sourcemap.map(({ key, value }) => (
-                          <Option key={key} value={key}>
-                            {value}
-                          </Option>
-                        ))}
-                      </Select>,
-                    )}
-                  </Form.Item>
-                </Col>
-              </>
-            )}
             <Col span={8}>
               <Form.Item label="工单状态">
                 {getFieldDecorator('eventStatus', {
                   initialValue: '',
                 })(
                   <Select placeholder="请选择">
-                    {statemap.map(({ key, value }) => (
-                      <Option key={key} value={key}>
-                        {value}
+                    {statusmap.map(obj => (
+                      <Option key={obj.key} value={obj.title}>
+                        {obj.title}
                       </Option>
                     ))}
                   </Select>,
@@ -414,37 +352,301 @@ function QueryList(props) {
             {expand === true && (
               <>
                 <Col span={8}>
-                  <Form.Item label="登记人">
-                    {getFieldDecorator('registerUser', {
+                  <Form.Item label="事件分类">
+                    {getFieldDecorator('eventType', {
                       initialValue: '',
-                    })(<Input placeholder="请输入" />)}
+                    })(
+                      <Select placeholder="请选择">
+                        {typemap.map(obj => [
+                          <Option key={obj.key} value={obj.title}>
+                            {obj.title}
+                          </Option>,
+                        ])}
+                      </Select>,
+                    )}
                   </Form.Item>
                 </Col>
                 <Col span={8}>
-                  <Form.Item label="申报人">
-                    {getFieldDecorator('applicationUser', {
+                  <Form.Item label="事件对象">
+                    {getFieldDecorator('eventObject', {
                       initialValue: '',
-                    })(<Input placeholder="请输入" />)}
+                    })(
+                      <Cascader
+                        fieldNames={{ label: 'title', value: 'title', children: 'children' }}
+                        options={objectmap}
+                        placeholder="请选择"
+                        expandTrigger="hover"
+                        displayRender={displayRender}
+                      />,
+                    )}
                   </Form.Item>
                 </Col>
-                {/* <Col span={8}>
-                  <Form.Item label="发送时间">
-                    {getFieldDecorator('contenttime')(<DatePicker showTime />)}
+                <Col span={8}>
+                  <Form.Item label="回访方式">
+                    {getFieldDecorator('revisitWay', {
+                      initialValue: '',
+                    })(
+                      <Select placeholder="请选择">
+                        {returnvisit.map(obj => [
+                          <Option key={obj.key} value={obj.title}>
+                            {obj.title}
+                          </Option>,
+                        ])}
+                      </Select>,
+                    )}
                   </Form.Item>
-                </Col> */}
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="事件来源">
+                    {getFieldDecorator('eventSource', {
+                      initialValue: '',
+                    })(
+                      <Select placeholder="请选择">
+                        {sourcemap.map(obj => [
+                          <Option key={obj.key} value={obj.title}>
+                            {obj.title}
+                          </Option>,
+                        ])}
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="影响度">
+                    {getFieldDecorator('eventEffect', {
+                      initialValue: '',
+                    })(
+                      <Select placeholder="请选择">
+                        {effectmap.map(obj => [
+                          <Option key={obj.key} value={obj.title}>
+                            {obj.title}
+                          </Option>,
+                        ])}
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="紧急度">
+                    {getFieldDecorator('eventEmergent', {
+                      initialValue: '',
+                    })(
+                      <Select placeholder="请选择">
+                        {emergentmap.map(obj => [
+                          <Option key={obj.key} value={obj.title}>
+                            {obj.title}
+                          </Option>,
+                        ])}
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
                 <Col span={8}>
                   <Form.Item label="优先级">
                     {getFieldDecorator('eventPrior', {
                       initialValue: '',
                     })(
                       <Select placeholder="请选择">
-                        {levelmap.map(({ key, value }) => (
-                          <Option key={key} value={key}>
-                            {value}
-                          </Option>
-                        ))}
+                        {priormap.map(obj => [
+                          <Option key={obj.key} value={obj.title}>
+                            {obj.title}
+                          </Option>,
+                        ])}
                       </Select>,
                     )}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="自行处理">
+                    {getFieldDecorator('selfhandle', {
+                      initialValue: '',
+                    })(
+                      <Select placeholder="请选择">
+                        {yesornomap.map(obj => [
+                          <Option key={obj.key} value={obj.title}>
+                            {obj.title}
+                          </Option>,
+                        ])}
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="是否补单">
+                    {getFieldDecorator('supplement', {
+                      initialValue: '',
+                    })(
+                      <Select placeholder="请选择">
+                        {yesornomap.map(obj => [
+                          <Option key={obj.key} value={obj.title}>
+                            {obj.title}
+                          </Option>,
+                        ])}
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="审核结果">
+                    {getFieldDecorator('checkResult', {
+                      initialValue: '',
+                    })(
+                      <Select placeholder="请选择">
+                        {checkresultmap.map(obj => [
+                          <Option key={obj.key} value={obj.title}>
+                            {obj.title}
+                          </Option>,
+                        ])}
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="处理结果">
+                    {getFieldDecorator('eventResult', {
+                      initialValue: '',
+                    })(
+                      <Select placeholder="请选择">
+                        {handleresultmap.map(obj => [
+                          <Option key={obj.key} value={obj.title}>
+                            {obj.title}
+                          </Option>,
+                        ])}
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="满意度">
+                    {getFieldDecorator('satisfaction', {
+                      initialValue: '',
+                    })(
+                      <Select placeholder="请选择">
+                        {satisfactionmap.map(obj => [
+                          <Option key={obj.key} value={obj.title}>
+                            {obj.title}
+                          </Option>,
+                        ])}
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="事件标题">
+                    {getFieldDecorator('eventTitle', {
+                      initialValue: '',
+                    })(<Input placeholder="请输入" />)}
+                  </Form.Item>
+                </Col>
+
+                <Col span={8} style={{ clear: 'both' }}>
+                  <Form.Item label="申报人">
+                    {getFieldDecorator('applicationUser', {
+                      initialValue: '',
+                    })(<Input placeholder="请输入" />)}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="申报人单位">
+                    {getFieldDecorator('applicationUnit', {
+                      initialValue: '',
+                    })(<Input placeholder="请输入" />)}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="申报人部门">
+                    {getFieldDecorator('applicationDept', {
+                      initialValue: '',
+                    })(<Input placeholder="请输入" />)}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="登记人">
+                    {getFieldDecorator('userName', {
+                      initialValue: '',
+                    })(<Input placeholder="请输入" />)}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="登记人单位">
+                    {getFieldDecorator('unitName', {
+                      initialValue: '',
+                    })(<Input placeholder="请输入" />)}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="登记人部门">
+                    {getFieldDecorator('deptName', {
+                      initialValue: '',
+                    })(<Input placeholder="请输入" />)}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="审核人">
+                    {getFieldDecorator('checkUser', {
+                      initialValue: '',
+                    })(<Input placeholder="请输入" />)}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="审核人单位">
+                    {getFieldDecorator('checkUnit', {
+                      initialValue: '',
+                    })(<Input placeholder="请输入" />)}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="审核人部门">
+                    {getFieldDecorator('checkDept', {
+                      initialValue: '',
+                    })(<Input placeholder="请输入" />)}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="处理人">
+                    {getFieldDecorator('handler', {
+                      initialValue: '',
+                    })(<Input placeholder="请输入" />)}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="处理人单位">
+                    {getFieldDecorator('handleUnit', {
+                      initialValue: '',
+                    })(<Input placeholder="请输入" />)}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="处理人部门">
+                    {getFieldDecorator('handleDept', {
+                      initialValue: '',
+                    })(<Input placeholder="请输入" />)}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="回访人">
+                    {getFieldDecorator('revisitor', {
+                      initialValue: '',
+                    })(<Input placeholder="请输入" />)}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="回访人单位">
+                    {getFieldDecorator('revisitUnit', {
+                      initialValue: '',
+                    })(<Input placeholder="请输入" />)}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="回访人部门">
+                    {getFieldDecorator('revisitDept', {
+                      initialValue: '',
+                    })(<Input placeholder="请输入" />)}
+                  </Form.Item>
+                </Col>
+                <Col span={24}>
+                  <Form.Item label="建单时间" {...forminladeLayout}>
+                    {getFieldDecorator('createTime')(<RangePicker showTime />)}
                   </Form.Item>
                 </Col>
               </>
