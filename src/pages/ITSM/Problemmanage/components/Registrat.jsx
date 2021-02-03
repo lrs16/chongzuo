@@ -33,8 +33,10 @@ const Registrat = React.forwardRef((props, ref) => {
     type,
     priority,
     scope,
-    project
+    project,
+    validafile
   } = props;
+  console.log(scope,'scope');
 
   if(register) {
     if(register.registerOccurTime !== null) {
@@ -60,7 +62,7 @@ const Registrat = React.forwardRef((props, ref) => {
                       message: '请输入问题编号',
                     },
                   ],
-                  initialValue: newno.problemNo || '',
+                  initialValue:main.no,
                 })(<Input disabled />)}
               </Form.Item>
             </Col>
@@ -109,7 +111,7 @@ const Registrat = React.forwardRef((props, ref) => {
                       message: '请输入问题来源',
                     },
                   ],
-                  initialValue: main?main.source:'',
+                  initialValue: main.source,
                 })(
                   <Select placeholder="请选择">
                     {
@@ -135,7 +137,7 @@ const Registrat = React.forwardRef((props, ref) => {
                       message: '请输入问题分类',
                     },
                   ],
-                  initialValue: main?main.type:'',
+                  initialValue: main.type,
                 })(
                   <Select placeholder="请选择">
                   {
@@ -161,7 +163,7 @@ const Registrat = React.forwardRef((props, ref) => {
                       message: '请选择重要程度',
                     },
                   ],
-                  initialValue:  main?main.importance:'',
+                  initialValue:  main.importance,
                 })(
                   <Select placeholder="请选择">
                   {
@@ -204,7 +206,7 @@ const Registrat = React.forwardRef((props, ref) => {
                       message: '请输入所属项目',
                     },
                   ],
-                  initialValue: main?register.registerProject:'',
+                  initialValue: register.registerProject,
                 })(
                   <Select placeholder="请选择">
                   {
@@ -230,7 +232,7 @@ const Registrat = React.forwardRef((props, ref) => {
                       message: '请选择影响范围',
                     },
                   ],
-                  initialValue: main?register.registerScope:'',
+                  initialValue: register.registerScope,
                 })(
                   <Select placeholder="请选择">
                   {
@@ -270,7 +272,7 @@ const Registrat = React.forwardRef((props, ref) => {
                       message: '请输入问题标题',
                     },
                   ],
-                  initialValue: main?main.title:'',
+                  initialValue: main.title,
                 })(<Input  placeholder='请输入'/>)}
               </Form.Item>
             </Col>
@@ -284,7 +286,7 @@ const Registrat = React.forwardRef((props, ref) => {
                       message: '请输入问题描述',
                     },
                   ],
-                  initialValue: main?main.content:'',
+                  initialValue: main.content,
                 })(<TextArea placeholder='请输入'/>)}
               </Form.Item>
             </Col>
@@ -300,11 +302,11 @@ const Registrat = React.forwardRef((props, ref) => {
               </div>
             </Form.Item>
           </Col>
-
+         
             <Col span={8}>
               <Form.Item label="填报人">
                 {getFieldDecorator('registerUser', {
-                  initialValue: useInfo?useInfo.userName:'',
+                  initialValue: useInfo.userName,
                 })(<Input disabled/>)}
               </Form.Item>
             </Col>
@@ -332,7 +334,7 @@ const Registrat = React.forwardRef((props, ref) => {
                       message: '请输入填报人部门',
                     },
                   ],
-                  initialValue: useInfo?useInfo.deptNameExt:'',
+                  initialValue:useInfo.deptNameExt,
                 })(<Input disabled/>)}
               </Form.Item>
             </Col>
@@ -341,5 +343,24 @@ const Registrat = React.forwardRef((props, ref) => {
     </>
   );
 });
+
+Registrat.defaultProps = {
+  main:{
+    no:'',
+    source:'',
+    type:'',
+    importance:'',
+    title:'',
+    content:'',
+  },
+  register:{
+    registerProject:'',
+    registerScope:'',
+  },
+  useInfo:{
+    userName:'',
+    deptNameExt:'',
+  }
+}
 
 export default Form.create({})(Registrat);

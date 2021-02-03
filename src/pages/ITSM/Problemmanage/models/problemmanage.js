@@ -89,8 +89,16 @@ export default {
           type: 'getid',
           payload: response,
         });
+        const responseId = yield call(getNewno);
+        yield put({
+          type: 'getNewno',
+          payload: response,
+        });
+
         const saveiInfo = saveData;
         saveiInfo.taskId = response.flowTaskId;
+        saveiInfo.no = responseId.problemNo;
+
         const resRegister = yield call(saveRegister, saveiInfo);
         if (resRegister.code === 200) {
           console.log('jumpType: ', jumpType);

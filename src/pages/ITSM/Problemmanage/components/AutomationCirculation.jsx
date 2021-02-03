@@ -112,7 +112,7 @@ const SelectUser = props => {
         <Spin tip="正在加载数据..." spinning={Boolean(loading)}>
           {loading === false && userlist && (
             <>
-              <div>自动化业务人员人员</div>
+              <div>自动化业务人员</div>
               <div style={{ marginTop: 12 }}>
                 <Checkbox.Group
                   defaultValue={defaultvalue}

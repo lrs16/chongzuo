@@ -38,27 +38,6 @@ const Systemoperatoredit = React.forwardRef((props, ref) => {
     check,
     useInfo
   } = props;
-  let checkTime;
-  let checkResult;
-  if(check) {
-    if(check.checkTime) {
-      checkTime = moment(check.checkTime);
-    }else {
-      checkTime = moment(new Date())
-    }
-  } else {
-    checkTime = moment(new Date())
-  }
-
-  if(check) {
-    if(check.checkResult) {
-      checkResult = check.checkResult;
-    }else {
-      checkResult = '1'
-    }
-  } else {
-    checkResult = '1'
-  }
 
   const onChange = (e) => {
     setFlowtype(e.target.value);
@@ -78,7 +57,7 @@ const Systemoperatoredit = React.forwardRef((props, ref) => {
                   message:'请输入审核结果'
                 }
               ],
-              initialValue:checkResult
+              initialValue:check.checkResult
             })(
               <Radio.Group onChange={onChange}>
                 <Radio value='1'>通过</Radio>
@@ -98,7 +77,7 @@ const Systemoperatoredit = React.forwardRef((props, ref) => {
                   message:'请输入审核时间'
                 }
               ],
-              initialValue: checkTime,
+              initialValue: moment(check.checkTime),
             })(<DatePicker 
                  showTime 
                  format="YYYY-MM-DD HH:mm:ss" 
@@ -112,7 +91,7 @@ const Systemoperatoredit = React.forwardRef((props, ref) => {
               <Form.Item label='审核意见' {...forminladeLayout}>
                 {
                   getFieldDecorator('checkOpinion',{
-                    initialValue: check ? check.checkOpinion:''
+                    initialValue:check.checkOpinion
                   })(
                     <TextArea/>
                   )
@@ -134,7 +113,7 @@ const Systemoperatoredit = React.forwardRef((props, ref) => {
                         message:'请输入审核意见'
                       }
                     ],
-                    initialValue: check ? check.checkOpinion:''
+                    initialValue: check.checkOpinion
                   })(
                     <TextArea/>
                   )
@@ -179,13 +158,7 @@ const Systemoperatoredit = React.forwardRef((props, ref) => {
         <Col span={8}>
           <Form.Item label="审核人">
             {getFieldDecorator('checkUser', {
-              // rules: [
-              //   {
-              //     required,
-              //     message: '请输入审核人',
-              //   },
-              // ],
-              initialValue: useInfo?useInfo.userName:'',
+              initialValue: useInfo.userName,
             })(<Input disabled/>)}
           </Form.Item>
         </Col>
@@ -201,7 +174,7 @@ const Systemoperatoredit = React.forwardRef((props, ref) => {
         <Col span={8}>
           <Form.Item label="审核部门">
             {getFieldDecorator('checkDept', {
-             initialValue: useInfo?useInfo.deptNameExt:'',
+             initialValue: useInfo.deptNameExt,
             })(<Input disabled/>)}
           </Form.Item>
         </Col>
@@ -209,5 +182,17 @@ const Systemoperatoredit = React.forwardRef((props, ref) => {
     </Row>
   );
 });
+
+Systemoperatoredit.defaultProps = {
+  check:{
+    checkOpinion:'',
+    checkTime:moment().format(),
+    checkResult:'1'
+  },
+  useInfo:{
+    userName:'', 
+    deptNameExt:'', 
+  }
+}
 
 export default Form.create({})(Systemoperatoredit);

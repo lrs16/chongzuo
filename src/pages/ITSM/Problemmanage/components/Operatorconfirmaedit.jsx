@@ -54,7 +54,7 @@ const Operatorconfirmaedit = React.forwardRef((props,ref) => {
                 message:'请输入确认结果'
               }
             ],
-            initialValue:confirm?confirm.confirmResult:'1'
+            initialValue:confirm.confirmResult
           })(
             <Radio.Group onChange={onChange}>
               <Radio value='1'>通过</Radio>
@@ -74,7 +74,7 @@ const Operatorconfirmaedit = React.forwardRef((props,ref) => {
                     message:'请输入审核时间'
                   }
                 ],
-                initialValue: confirm ? moment(confirm.confirmTime) : moment(Date.now())
+                initialValue: moment(confirm.confirmTime)
               })(
                 <DatePicker
                   showTime
@@ -90,7 +90,7 @@ const Operatorconfirmaedit = React.forwardRef((props,ref) => {
             <Form.Item label='确认意见' {...forminladeLayout}>
               {
                 getFieldDecorator('confirmContent',{
-                  initialValue: confirm?confirm.confirmContent:'',
+                  initialValue: confirm.confirmContent,
                 })(
                   <TextArea/>
                 )
@@ -112,7 +112,7 @@ const Operatorconfirmaedit = React.forwardRef((props,ref) => {
                       message:'请输入审核意见'
                     }
                   ],
-                  initialValue: confirm?confirm.confirmContent:'',
+                  initialValue: confirm.confirmContent,
                 })(
                   <TextArea/>
                 )
@@ -176,7 +176,7 @@ const Operatorconfirmaedit = React.forwardRef((props,ref) => {
           <Form.Item label='确认人'>
             {
               getFieldDecorator('confirmUser',{
-                initialValue: useInfo?useInfo.userName:'',
+                initialValue: useInfo.userName,
               })(<Input disabled/>)
             }
 
@@ -199,7 +199,7 @@ const Operatorconfirmaedit = React.forwardRef((props,ref) => {
           <Form.Item label='确认人部门'>
             {
               getFieldDecorator('confirmDept',{
-                initialValue: useInfo?useInfo.deptNameExt:'',
+                initialValue: useInfo.deptNameExt,
               })(<Input disabled/>)
             }
           </Form.Item>
@@ -210,5 +210,19 @@ const Operatorconfirmaedit = React.forwardRef((props,ref) => {
     </Row>
   )
 })
+
+Operatorconfirmaedit.defaultProps = {
+  confirm:{
+    confirmResult:'1',
+    confirmTime:moment().format(),
+    confirmContent:'',
+  },
+
+  useInfo:{
+    userName:'',
+    deptNameExt:''
+  }
+}
+
 
 export default Form.create({})(Operatorconfirmaedit);

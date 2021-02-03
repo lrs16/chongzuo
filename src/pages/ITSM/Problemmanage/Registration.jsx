@@ -52,11 +52,11 @@ function Registration(props) {
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
   const RegistratRef = useRef();
 
-  const getNewno = () => {
-    dispatch({
-      type: 'problemmanage/getregisterNo',
-    });
-  };
+  // const getNewno = () => {
+  //   dispatch({
+  //     type: 'problemmanage/getregisterNo',
+  //   });
+  // };
 
   const getUserinfo = () => {
     dispatch({
@@ -106,7 +106,7 @@ function Registration(props) {
 
   useEffect(() => {
     getUserinfo();
-    getNewno();
+    // getNewno();
     getSource();
     gettype();
     getpriority();
@@ -192,7 +192,6 @@ function Registration(props) {
                 show={show}
                 ref={RegistratRef}
                 list={list}
-                newno={newno}
                 useInfo={useInfo}
                 files={files.arr}
                 ChangeFiles={newvalue => {

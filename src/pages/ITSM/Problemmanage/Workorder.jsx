@@ -74,7 +74,6 @@ let flowNodeName;
 let confirmType;
 let fileSign;
 let selSign;
-let deletenoode;
 
 // let flowtype = 1;
 
@@ -99,9 +98,13 @@ function Workorder(props) {
     userlist,
     location: { paneKey },
     handleList,
+    keyVallist,
+    typelist,
+    prioritylist,
+    scopeList,
+    projectList,
     loading
   } = props;
-
 
   let showback = true;
   let nodedata;
@@ -121,7 +124,6 @@ function Workorder(props) {
   } = props.match;
 
   const { problemFlowLogs,problemFlowNodeRows } = todoDetail;
-
 
   const selectNextflow = () => {
     switch (flowNodeName) {
@@ -303,6 +305,8 @@ function Workorder(props) {
   };
 
 
+
+
   const saveRegister = (params2,uploadSive) => {
     RegistratRef.current.validateFields((err, values) => {
       if (params2 ? !err : true) {
@@ -329,6 +333,7 @@ function Workorder(props) {
         }).then(res => {
           if (res.code === 200) {
               message.info(res.msg);
+              setFiles({ ...files, ischange: false });
         
             getInformation();
             if(uploadSive) {
@@ -343,6 +348,7 @@ function Workorder(props) {
         });
       }
     });
+ 
   };
 
   //  审核保存
@@ -538,12 +544,55 @@ function Workorder(props) {
     });
   }
 
+  const getSourceapi = (dictModule,dictType) => {
+    dispatch({
+      type: 'problemdropdown/keyvalsource',
+      payload:{ dictModule, dictType}
+    });
+  }
+//  问题来源
+  const getSource = () => {
+    const dictModule = 'problem';
+    const dictType = 'source';
+    getSourceapi(dictModule,dictType);
+  }
+//  问题分类
+  const gettype = () => {
+    const dictModule = 'problem';
+    const dictType = 'type';
+    getSourceapi(dictModule,dictType);
+  }
+//  重要程度
+  const getpriority = () => {
+    const dictModule = 'public';
+    const dictType = 'priority';
+    getSourceapi(dictModule,dictType);
+  }
+//  影响范围
+  const getscope = () => {
+    const dictModule = 'public';
+    const dictType = 'effect';
+    getSourceapi(dictModule,dictType);
+  }
+
+  // 所属项目
+  const getProject = () => {
+    const dictModule = 'public';
+    const dictType = 'project';
+    getSourceapi(dictModule,dictType);
+  }
+
   useEffect(() => {
     getInformation();
     getUserinfo();
     getNewno();
     gethandle();
     getSelectperson();
+    getSource();
+    gettype();
+    getpriority();
+    getscope();
+    getProject();
     sessionStorage.setItem('Processtype', 'problem');
     sessionStorage.setItem('Nextflowmane', '');
   }, []);
@@ -721,7 +770,7 @@ function Workorder(props) {
 
             }
             {
-              flowNodeName === '问题登记' && problemFlowNodeRows.length > 2 && (
+              flowNodeName === '问题登记' && (problemFlowLogs && problemFlowLogs.length > 2) && (
                 <Button 
                 type='primary'
                 onClick={closeOrder}
@@ -815,7 +864,7 @@ function Workorder(props) {
                       formItemLayout={formItemLayout}
                       forminladeLayout={forminladeLayout}
                       ref={RegistratRef}
-                      newno={newno}
+                      registerno={newno}
                       useInfo={useInfo}
                       register={register}
                       main={main}
@@ -825,6 +874,11 @@ function Workorder(props) {
                       ChangeFiles={newvalue => {
                         setFiles(newvalue);
                       }}
+                      source={keyVallist.source}
+                      type={typelist.type}
+                      priority={prioritylist.priority}
+                      scope={scopeList.effect}
+                      project={projectList.project}
                     />
                   </Panel>
                 )
@@ -946,6 +1000,7 @@ function Workorder(props) {
                          setFiles(newvalue);
                        }}
                       loading={loading}
+                      confirm={confirm}
                   />
                   </FatherContext.Provider>
               
@@ -1009,6 +1064,7 @@ function Workorder(props) {
                       ChangeFiles={newvalue => {
                          setFiles(newvalue);
                        }}
+                      confirm={confirm}
                       loading={loading}
                   />
                   </FatherContext.Provider>
@@ -1101,6 +1157,11 @@ export default Form.create({})(
     handleList: problemdropdown.handleList,
     info: demandtodo.info,
     userlist: itsmuser.userlist,
+    keyVallist: problemdropdown.keyVallist,
+    typelist: problemdropdown.typelist,
+    prioritylist: problemdropdown.prioritylist,
+    scopeList: problemdropdown.scopeList,
+    projectList: problemdropdown.projectList,
     loading: loading.models.problemmanage,
   }))(Workorder),
 );

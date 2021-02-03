@@ -55,7 +55,7 @@ function Queryworkdetail(props) {
   const tabList = [
     {
       key: 'workorder',
-      tab: '查询工单',
+      tab: '问题工单',
     },
     {
       key: 'process',

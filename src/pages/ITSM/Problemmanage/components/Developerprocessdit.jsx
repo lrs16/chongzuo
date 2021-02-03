@@ -9,6 +9,7 @@ import {
     Upload,
     Button
   } from 'antd';
+import moment from 'moment';
 import { DownloadOutlined } from '@ant-design/icons';
 import SysUpload from '@/components/SysUpload';
 
@@ -34,7 +35,6 @@ const Developerprocessdit = React.forwardRef((props, ref) => {
   const {
     showEdit,
     useInfo,
-    handleTime,
     handle,
     receivingTime,
     handleresult
@@ -48,7 +48,7 @@ const Developerprocessdit = React.forwardRef((props, ref) => {
       <Col span={8}>
         <Form.Item label='接单时间'>
           { getFieldDecorator('orderReceivingtime',{
-             initialValue: receivingTime
+             initialValue: moment(handle.addtime)
           })(<DatePicker
                 showTime
                 disabled={showEdit}
@@ -65,7 +65,7 @@ const Developerprocessdit = React.forwardRef((props, ref) => {
                 message: '请输入处理完成时间',
               },
             ],
-            initialValue: handleTime,
+            initialValue: receivingTime,
           })((<DatePicker 
                 showTime
                 disabled={showEdit}
@@ -81,7 +81,7 @@ const Developerprocessdit = React.forwardRef((props, ref) => {
                 message:'请选择处理结果'
               }
             ],
-            initialValue: handle ? handle.handleResult : '',
+            initialValue:handle.handleResult,
           })(
             <Select placeholder="请选择" disabled={showEdit}>
             {
@@ -106,7 +106,7 @@ const Developerprocessdit = React.forwardRef((props, ref) => {
                 message:'请输入解决方案' 
               }
             ],
-            initialValue: handle ? handle.handleContent : '',
+            initialValue: handle.handleContent,
           })(<TextArea disabled={showEdit} />)}
         </Form.Item>
       </Col>
@@ -131,13 +131,7 @@ const Developerprocessdit = React.forwardRef((props, ref) => {
       <Col span={8}>
         <Form.Item label="处理人">
           {getFieldDecorator('handler', {
-            // rules: [
-            //   {
-            //     required,
-            //     message: '请输入处理人',
-            //   },
-            // ],
-            initialValue: useInfo?useInfo.userName:'',
+            initialValue: useInfo.userName,
           })(<Input disabled />)}
         </Form.Item>
       </Col>
@@ -153,7 +147,7 @@ const Developerprocessdit = React.forwardRef((props, ref) => {
       <Col span={8}>
         <Form.Item label="处理部门">
           {getFieldDecorator('handleDept', {
-            initialValue: useInfo?useInfo.deptNameExt:'',
+            initialValue: useInfo.deptNameExt,
           })(<Input disabled />)}
         </Form.Item>
       </Col>
@@ -162,5 +156,18 @@ const Developerprocessdit = React.forwardRef((props, ref) => {
   </Row>
   );
 });
+
+Developerprocessdit.defaultProps = {
+  handle:{
+    addtime:moment().format(),
+    handleTime:moment().format(),
+    handleResult:'',
+    handleContent:'',
+  },
+  useInfo:{
+    userName:'',
+    deptNameExt:'',
+  }
+}
 
 export default Form.create({})(Developerprocessdit);
