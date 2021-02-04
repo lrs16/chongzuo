@@ -19,31 +19,62 @@ import KeyVal from '@/components/SysDict/KeyVal';
 const { Option } = Select;
 
 function Track(props) {
-  const { dispatch, userinfo, demandId, trackslist, loading } = props;
+  const { dispatch, userinfo, demandId, loading } = props;
   const [data, setData] = useState([]);
   const [cacheOriginData, setcacheOriginData] = useState({});
   const [uploadkey, setKeyUpload] = useState('');
   const [fileslist, setFilesList] = useState([]);
   const [newbutton, setNewButton] = useState(false);
   const [selectdata, setSelectData] = useState([]);
+  const [trackslist, setTracksList] = useState('');
 
-  useEffect(() => {
+  // 加载列表
+  const getlistdata = () => {
     dispatch({
       type: 'chacklist/fetchtracklist',
       payload: {
         demandId,
       },
+    }).then(res => {
+      if (res.code === 200) {
+        setTracksList(res.data);
+      }
     });
-  }, []);
+  };
+
+  // 保存数据
+  const savedata = (target, id) => {
+    dispatch({
+      type: 'chacklist/tracksave',
+      payload: {
+        ...target,
+        id,
+        demandId,
+        stalker: userinfo.userName,
+        trackDepartment: userinfo.deptName,
+        trackUnit: userinfo.unitName,
+      },
+    }).then(res => {
+      if (res.code === 200) {
+        message.success(res.msg, 2);
+        getlistdata();
+      }
+    });
+  };
+  console.log(trackslist);
 
   useEffect(() => {
-    if (trackslist.length > 0) {
-      const newarr = trackslist.map((item, index) => {
-        return Object.assign(item, { key: index });
-      });
-      setData(newarr);
-    }
-  }, [trackslist]);
+    getlistdata();
+  }, []);
+
+  // useEffect(() => {
+  //   if (trackslist.length > 0) {
+  //     const newarr = trackslist.map((item, index) => {
+  //       return Object.assign(item, { key: index });
+  //     });
+  //     setData(newarr);
+  //   }
+  // }, [trackslist]);
 
   // 点击编辑生成filelist,
   const handlefileedit = (key, values) => {
@@ -76,12 +107,8 @@ function Track(props) {
 
   // 新增一条记录
   const newMember = () => {
-    setFilesList([]);
-    setKeyUpload('');
-    const newData = data.map(item => ({ ...item }));
-    newData.push({
-      key: data.length + 1,
-      id: '',
+    setNewButton(true);
+    const target = {
       developSchedule: '',
       trackDirections: '',
       attachment: '[]',
@@ -92,9 +119,8 @@ function Track(props) {
       gmtCreate: moment().format('YYYY-MM-DD HH:mm:ss'),
       editable: true,
       isNew: true,
-    });
-    setData(newData);
-    setNewButton(true);
+    };
+    savedata(target, '');
   };
 
   // 获取行
@@ -132,27 +158,7 @@ function Track(props) {
     delete target.key;
     target.editable = false;
     const id = target.id === '' ? '' : target.id;
-    dispatch({
-      type: 'chacklist/tracksave',
-      payload: {
-        ...target,
-        id,
-        demandId,
-        stalker: userinfo.userName,
-        trackDepartment: userinfo.deptName,
-        trackUnit: userinfo.unitName,
-      },
-    }).then(res => {
-      if (res.code === 200) {
-        message.success(res.msg, 2);
-        dispatch({
-          type: 'chacklist/fetchtracklist',
-          payload: {
-            demandId,
-          },
-        });
-      }
-    });
+    savedata(target, id);
     if (target.isNew) {
       setNewButton(false);
     }
@@ -173,7 +179,7 @@ function Track(props) {
           payload: {
             demandId,
           },
-        });
+        }).then(res => {});
       }
     });
   };
@@ -464,7 +470,7 @@ function Track(props) {
       <Table
         columns={columns}
         scroll={{ x: 1400 }}
-        dataSource={data}
+        dataSource={trackslist}
         rowClassName={record => (record.editable ? styles.editable : '')}
         rowKey={record => record.id}
         loading={loading}
