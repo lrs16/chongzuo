@@ -34,9 +34,7 @@ const Registrat = React.forwardRef((props, ref) => {
     priority,
     scope,
     project,
-    validafile
   } = props;
-  console.log(scope,'scope');
 
   if(register) {
     if(register.registerOccurTime !== null) {

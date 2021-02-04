@@ -48,23 +48,28 @@ function Problemflow(props) {
 
   return (
     <>
-     <Card>
-      <p>流程图</p>
-          <Divider />
+     <Card title='流程图'>
+      {/* <p>流程图</p> */}
+          {/* <Divider /> */}
         {/* <Card title="流转日志" style={{margin:'0px'}}> */}
             <img src={image} alt="" />
         {/* </Card> */}
 
           {/* <Card title="流转日志"> */}
-          <p>流转日志</p>
+          {/* <p>流转日志</p>
           <Divider />
-          {flowlog && (
+    
+          {/* </Card> */}
+      </Card>
+
+      <Card title='流转日志'>
+      {flowlog && (
           <div className={styles.processstept}>
             <Steps
               current={flowlog.length - 1}
               progressDot
               direction="vertical"
-              style={{ background: '#fff', padding: 24, border: '1px solid #e8e8e8' }}
+              style={{ background: '#fff', padding: 24}}
             >
               {flowlog.map((obj,index) => {
                 // const backoff = obj.fallbackMsg === '' ? '' : '（回退）';
@@ -87,8 +92,6 @@ function Problemflow(props) {
             </Steps>
           </div>
         )}
-    
-          {/* </Card> */}
       </Card>
      
    

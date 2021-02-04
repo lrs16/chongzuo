@@ -3,7 +3,7 @@ import { connect } from 'dva';
 import { Modal, message, Spin, Checkbox } from 'antd';
 
 // 克隆子元素按钮，并添加事件
-const withClick = (element, showDrawer = () => {}) => {
+const withClick = (element, showDrawer = () => { }) => {
   return <element.type {...element.props} onClick={showDrawer} />;
 };
 
@@ -55,9 +55,6 @@ const SelectUser = props => {
     sessionStorage.setItem('AutoflowUserId', checkedValues.join(','));
   };
 
-
-
-
   useEffect(() => {
     if (changorder !== undefined && type === 'event') {
       sessionStorage.setItem('Nextflowmane', changorder);
@@ -77,7 +74,6 @@ const SelectUser = props => {
           },
         });
         break;
-
       default:
         break;
     }
@@ -85,21 +81,18 @@ const SelectUser = props => {
 
   const handleOk = () => {
     const params = value.length && specialvalue.length;
-    if(params < 1){
+    if (params < 1) {
       message.info('每种角色必须选择一个人');
     } else {
       handleSubmit();
       setIsModalVisible(false);
     }
-
   };
 
   const handleCancel = () => {
     setIsModalVisible(false);
   };
 
-  const nextflowuser =
-    changorder !== undefined ? changorder : sessionStorage.getItem('Nextflowmane');
   return (
     <>
       {withClick(children, showModal)}

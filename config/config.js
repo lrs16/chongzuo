@@ -224,7 +224,7 @@ export default {
                     },
                     {
                       path: '/ITSM/problemmanage/querydetail/:id/queryworkdetail',
-                      name: '查询工单',
+                      name: '问题查询',
                       icon: 'cloud-server',
                       component: './ITSM/Problemmanage/Queryworkdetail',
                     },

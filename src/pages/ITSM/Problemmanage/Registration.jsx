@@ -1,4 +1,4 @@
-import React, { useEffect,useState, createContext, useRef } from 'react';
+import React, { useEffect, useState, createContext, useRef } from 'react';
 import { Form, Button, Collapse } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { connect } from 'dva';
@@ -33,10 +33,8 @@ export const RegistratContext = createContext();
 function Registration(props) {
   const pagetitle = props.route.name;
   const {
-    form: { getFieldDecorator, validateFields },
     dispatch,
     list,
-    newno,
     useInfo,
     keyVallist,
     typelist,
@@ -44,19 +42,11 @@ function Registration(props) {
     scopeList,
     projectList,
     startid,
-    loading
   } = props;
   const [show, setShow] = useState(false);
   const [activeKey, setActiveKey] = useState(['1']);
-  const [flowtype, setFlowtype] = useState('2');
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
   const RegistratRef = useRef();
-
-  // const getNewno = () => {
-  //   dispatch({
-  //     type: 'problemmanage/getregisterNo',
-  //   });
-  // };
 
   const getUserinfo = () => {
     dispatch({
@@ -64,49 +54,46 @@ function Registration(props) {
     });
   };
 
-  const getSourceapi = (dictModule,dictType) => {
+  const getSourceapi = (dictModule, dictType) => {
     dispatch({
       type: 'problemdropdown/keyvalsource',
-      payload:{ dictModule, dictType}
+      payload: { dictModule, dictType }
     });
   }
-//  问题来源
+  //  问题来源
   const getSource = () => {
     const dictModule = 'problem';
     const dictType = 'source';
-    getSourceapi(dictModule,dictType);
+    getSourceapi(dictModule, dictType);
   }
-//  问题分类
+  //  问题分类
   const gettype = () => {
     const dictModule = 'problem';
     const dictType = 'type';
-    getSourceapi(dictModule,dictType);
+    getSourceapi(dictModule, dictType);
   }
-//  重要程度
+  //  重要程度
   const getpriority = () => {
     const dictModule = 'public';
     const dictType = 'priority';
-    getSourceapi(dictModule,dictType);
+    getSourceapi(dictModule, dictType);
   }
-//  影响范围
+  //  影响范围
   const getscope = () => {
     const dictModule = 'public';
     const dictType = 'effect';
-    getSourceapi(dictModule,dictType);
+    getSourceapi(dictModule, dictType);
   }
 
   // 所属项目
   const getProject = () => {
     const dictModule = 'public';
     const dictType = 'project';
-    getSourceapi(dictModule,dictType);
+    getSourceapi(dictModule, dictType);
   }
-
-
 
   useEffect(() => {
     getUserinfo();
-    // getNewno();
     getSource();
     gettype();
     getpriority();
@@ -121,15 +108,15 @@ function Registration(props) {
 
   const handlesubmit = (jumpType) => {
     RegistratRef.current.validateFields((err, values) => {
-      if (jumpType?!err:true) {
+      if (jumpType ? !err : true) {
         const saveData = values;
-        saveData.registerTime =  (saveData.registerTime).format('YYYY-MM-DD HH:mm:ss');
+        saveData.registerTime = (saveData.registerTime).format('YYYY-MM-DD HH:mm:ss');
         saveData.registerOccurTime = (saveData.registerOccurTime).format('YYYY-MM-DD HH:mm:ss');
         saveData.registerExpectTime = (saveData.registerExpectTime).format('YYYY-MM-DD HH:mm:ss');
         saveData.editState = 'add';
         dispatch({
           type: 'problemmanage/getAddid',
-          payload: { saveData,jumpType },
+          payload: { saveData, jumpType },
         });
       }
     });
@@ -143,41 +130,38 @@ function Registration(props) {
     props.history.push('/ITSM/problemmanage/besolved');
   }
 
-    // 上传附件触发保存
-    useEffect(() => {
-      const jumpType = 0;
-      if (files.ischange) {
-        const values = RegistratRef.current.getFieldsValue();
-        const saveData = values;
-        saveData.taskId = startid;
-        saveData.registerExpectTime =  values.registerOccurTime.format('YYYY-MM-DD HH:mm:ss');
-        saveData.registerTime =  values.registerTime.format('YYYY-MM-DD HH:mm:ss');
-        saveData.registerOccurTime = values.registerOccurTime.format('YYYY-MM-DD HH:mm:ss');
-        saveData.registerAttachments = JSON.stringify(files.arr);
-        saveData.editState = 'add';
-        dispatch({
-          type:'problemmanage/getAddid',
-          payload:{saveData,jumpType}
-        })
-      }
-    }, [files]);
+  // 上传附件触发保存
+  useEffect(() => {
+    const jumpType = 0;
+    if (files.ischange) {
+      const values = RegistratRef.current.getFieldsValue();
+      const saveData = values;
+      saveData.taskId = startid;
+      saveData.registerExpectTime = values.registerOccurTime.format('YYYY-MM-DD HH:mm:ss');
+      saveData.registerTime = values.registerTime.format('YYYY-MM-DD HH:mm:ss');
+      saveData.registerOccurTime = values.registerOccurTime.format('YYYY-MM-DD HH:mm:ss');
+      saveData.registerAttachments = JSON.stringify(files.arr);
+      saveData.editState = 'add';
+      dispatch({
+        type: 'problemmanage/getAddid',
+        payload: { saveData, jumpType }
+      })
+    }
+  }, [files]);
 
   return (
-    <PageHeaderWrapper 
-    title={pagetitle}
-    extra={
-      <>
-       <Button type="primary" style={{ marginRight: 8 }} onClick={handleCirculation}>
-          保 存
+    <PageHeaderWrapper
+      title={pagetitle}
+      extra={
+        <>
+          <Button type="primary" style={{ marginRight: 8 }} onClick={handleCirculation}>
+            保 存
         </Button>
-        {/* <Button type="primary" style={{ marginRight: 8 }} onClick={handleCirculation}>
-          流 转
-        </Button> */}
-        <Button type="default" onClick={handClose}>关 闭</Button>
-      </>
-    }
+          <Button type="default" onClick={handClose}>关 闭</Button>
+        </>
+      }
     >
-      <div className={styles.collapse} style={{marginTop:'20px'}}>
+      <div className={styles.collapse} style={{ marginTop: '20px' }}>
         <Collapse
           expandIconPosition="right"
           activeKey={activeKey}

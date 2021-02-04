@@ -25,6 +25,9 @@ const columns = [
       <Link
         to={{
           pathname: `/ITSM/problemmanage/querydetail/${record.id}/queryworkdetail`,
+          query: {
+            taskName: record.statuscn,
+          }
         }}
       >
         {text}
@@ -83,6 +86,7 @@ function Besolved(props) {
     prioritylist,
     scopeList,
     orderList,
+    typelist,
     loading,
   } = props;
   const [expand, setExpand] = useState(false);
@@ -90,50 +94,50 @@ function Besolved(props) {
   const [selectedRows, setSelectedRows] = useState([]);
 
   const getQuery = () => {
-        dispatch({
-          type: 'problemmanage/queryList',
-          payload: {
-            current: paginations.current,
-            pageSize: paginations.pageSize,
-          },
-        });
+    dispatch({
+      type: 'problemmanage/queryList',
+      payload: {
+        current: paginations.current,
+        pageSize: paginations.pageSize,
+      },
+    });
   };
-  const getSourceapi = (dictModule,dictType) => {
+  const getSourceapi = (dictModule, dictType) => {
     dispatch({
       type: 'problemdropdown/keyvalsource',
-      payload:{ dictModule, dictType}
+      payload: { dictModule, dictType }
     });
   }
-//  问题来源
+  //  问题来源
   const getSource = () => {
     const dictModule = 'problem';
     const dictType = 'source';
-    getSourceapi(dictModule,dictType);
+    getSourceapi(dictModule, dictType);
   }
-//  问题分类
+  //  问题分类
   const gettype = () => {
     const dictModule = 'problem';
     const dictType = 'type';
-    getSourceapi(dictModule,dictType);
+    getSourceapi(dictModule, dictType);
   }
-//  重要程度
+  //  重要程度
   const getpriority = () => {
     const dictModule = 'public';
     const dictType = 'priority';
-    getSourceapi(dictModule,dictType);
+    getSourceapi(dictModule, dictType);
   }
-//  影响范围
+  //  影响范围
   const getscope = () => {
     const dictModule = 'public';
     const dictType = 'effect';
-    getSourceapi(dictModule,dictType);
+    getSourceapi(dictModule, dictType);
   }
 
   // 所属项目
   const getProject = () => {
     const dictModule = 'public';
     const dictType = 'project';
-    getSourceapi(dictModule,dictType);
+    getSourceapi(dictModule, dictType);
   }
 
 
@@ -141,7 +145,7 @@ function Besolved(props) {
   const getorder = () => {
     const dictModule = 'problem';
     const dictType = 'orderstate';
-    getSourceapi(dictModule,dictType);
+    getSourceapi(dictModule, dictType);
   }
 
   useEffect(() => {
@@ -205,7 +209,7 @@ function Besolved(props) {
     onShowSizeChange: (page, pageSize) => onShowSizeChange(page, pageSize),
     current: paginations.current,
     pageSize: paginations.pageSize,
-    total:besolveList.total,
+    total: besolveList.total,
     onChange: page => changePage(page),
   };
 
@@ -216,7 +220,7 @@ function Besolved(props) {
     });
     validateFields((err, values) => {
       const obj = values;
-      if(values.createTimeBegin){
+      if (values.createTimeBegin) {
         obj.createTimeBegin = (values.createTimeBegin).format('YYYY-MM-DD HH:mm:ss');
       }
       if (err) {
@@ -227,23 +231,23 @@ function Besolved(props) {
   };
 
   const download = () => {
-    validateFields((err,values) => {
+    validateFields((err, values) => {
       const selectList = [];
-      if(selectedRows.length) {
-        selectedRows.forEach(function(item){
+      if (selectedRows.length) {
+        selectedRows.forEach(function (item) {
           selectList.push(item.id);
         })
       }
       const downparams = values;
       (downparams.registerUserId) = selectList.toString();
 
-      if(values.createTimeBegin) {
+      if (values.createTimeBegin) {
         downparams.createTimeBegin = (values.createTimeBegin).format('YYYY-MM-DD')
       }
-      if(!err) {
+      if (!err) {
         dispatch({
-          type:'problemmanage/eventdownload',
-          payload:{...downparams}
+          type: 'problemmanage/eventdownload',
+          payload: { ...downparams }
         }).then(res => {
           const filename = `下载.xls`;
           const blob = new Blob([res]);
@@ -282,15 +286,15 @@ function Besolved(props) {
                   {},
                 )(
                   <Select placeholder="请选择">
-                      {
-                        orderList.orderstate && orderList.orderstate.length  && (
-                          (orderList.orderstate).map(({ key, val },index) => (
-                            <Option key={index} value={key}>
-                              {val}
-                            </Option>
-                          ))
-                        )
-                      }
+                    {
+                      orderList.orderstate && orderList.orderstate.length && (
+                        (orderList.orderstate).map(({ key, val }, index) => (
+                          <Option key={index} value={key}>
+                            {val}
+                          </Option>
+                        ))
+                      )
+                    }
                   </Select>,
                 )}
               </Form.Item>
@@ -315,16 +319,16 @@ function Besolved(props) {
                       {},
                     )(
                       <Select placeholder="请选择">
-                      {
-                        keyVallist && keyVallist.source.length && (
-                          (keyVallist.source).map(({ key, val }) => (
-                            <Option key={key} value={val}>
-                              {val}
-                            </Option>
-                          ))
-                        )
-                      }
-                  </Select>,
+                        {
+                          keyVallist && keyVallist.source.length && (
+                            (keyVallist.source).map(({ key, val }) => (
+                              <Option key={key} value={val}>
+                                {val}
+                              </Option>
+                            ))
+                          )
+                        }
+                      </Select>,
                     )}
                   </Form.Item>
                 </Col>
@@ -332,37 +336,37 @@ function Besolved(props) {
                 <Col span={8}>
                   <Form.Item label="问题分类">
                     {getFieldDecorator('type', {})
-                    (
-                    <Select placeholder="请选择">
-                      {
-                        prioritylist && prioritylist.priority.length && (
-                          (prioritylist.priority).map(({ key, val }) => (
-                            <Option key={key} value={val}>
-                              {val}
-                            </Option>
-                          ))
-                        )
-                      }
-                  </Select>,
-                    )}
+                      (
+                        <Select placeholder="请选择">
+                          {
+                            typelist && typelist.type.length && (
+                              (typelist.type).map(({ key, val }) => (
+                                <Option key={key} value={val}>
+                                  {val}
+                                </Option>
+                              ))
+                            )
+                          }
+                        </Select>,
+                      )}
                   </Form.Item>
                 </Col>
 
                 <Col span={8}>
                   <Form.Item label="影响范围">{getFieldDecorator('registerScope', {})
-                  ( 
-                    <Select placeholder="请选择">
-                      {
-                        scopeList && scopeList.effect.length && (
-                          (scopeList.effect).map(({ key, val }) => (
-                            <Option key={key} value={val}>
-                              {val}
-                            </Option>
-                          ))
-                        )
-                      }
-                  </Select>,
-                  )}</Form.Item>
+                    (
+                      <Select placeholder="请选择">
+                        {
+                          scopeList && scopeList.effect.length && (
+                            (scopeList.effect).map(({ key, val }) => (
+                              <Option key={key} value={val}>
+                                {val}
+                              </Option>
+                            ))
+                          )
+                        }
+                      </Select>,
+                    )}</Form.Item>
                 </Col>
 
                 <Col span={8}>
@@ -417,16 +421,16 @@ function Besolved(props) {
                       {},
                     )(
                       <Select placeholder="请选择">
-                      {
-                        prioritylist && prioritylist.priority.length && (
-                          prioritylist.priority.map(({ key, val }) => (
-                            <Option key={key} value={val}>
-                              {val}
-                            </Option>
-                          ))
-                        )
-                      }
-                  </Select>,
+                        {
+                          prioritylist && prioritylist.priority.length && (
+                            prioritylist.priority.map(({ key, val }) => (
+                              <Option key={key} value={val}>
+                                {val}
+                              </Option>
+                            ))
+                          )
+                        }
+                      </Select>,
                     )}
                   </Form.Item>
                 </Col>
@@ -460,10 +464,10 @@ function Besolved(props) {
                       关闭 <UpOutlined />
                     </>
                   ) : (
-                    <>
-                      展开 <DownOutlined />
-                    </>
-                  )}
+                      <>
+                        展开 <DownOutlined />
+                      </>
+                    )}
                 </Button>
               </Col>
             )}
@@ -488,20 +492,20 @@ function Besolved(props) {
                       关闭 <UpOutlined />
                     </>
                   ) : (
-                    <>
-                      展开 <DownOutlined />
-                    </>
-                  )}
+                      <>
+                        展开 <DownOutlined />
+                      </>
+                    )}
                 </Button>
               </Col>
             )}
           </Form>
         </Row>
         <div style={{ marginBottom: 24 }}>
-          <Button 
+          <Button
             type="primary"
             onClick={() => download()}
-            >导出数据</Button>
+          >导出数据</Button>
         </div>
 
         <Table
@@ -518,7 +522,7 @@ function Besolved(props) {
 }
 
 export default Form.create({})(
-  connect(({ problemmanage,problemdropdown,loading }) => ({
+  connect(({ problemmanage, problemdropdown, loading }) => ({
     besolveList: problemmanage.besolveList,
     keyVallist: problemdropdown.keyVallist,
     typelist: problemdropdown.typelist,

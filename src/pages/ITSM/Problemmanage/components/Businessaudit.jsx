@@ -1,4 +1,4 @@
-import React, { useRef, useImperativeHandle, useState,useContext } from 'react';
+import React, { useRef, useImperativeHandle, useContext } from 'react';
 import {
   Row,
   Col,
@@ -6,20 +6,18 @@ import {
   Input,
   DatePicker,
   Radio,
-  Alert,
   Upload,
   Button
 } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
-import {FatherContext} from '../Workorder';
+import { FatherContext } from '../Workorder';
 import moment from 'moment';
 
 const { TextArea } = Input;
 
-
 const Businessaudit = React.forwardRef((props, ref) => {
   const { formItemLayout, forminladeLayout } = props;
-  const {flowtype,setFlowtype } = useContext(FatherContext);
+  const { flowtype, setFlowtype } = useContext(FatherContext);
   const { getFieldDecorator } = props.form;
   const attRef = useRef();
   useImperativeHandle(
@@ -34,8 +32,6 @@ const Businessaudit = React.forwardRef((props, ref) => {
     useInfo
   } = props;
 
-
-  
   const onChange = (e) => {
     setFlowtype(e.target.value);
   }
@@ -45,56 +41,56 @@ const Businessaudit = React.forwardRef((props, ref) => {
   return (
     <Row gutter={16}>
       <Form {...formItemLayout}>
-      <Col span={23}>
+        <Col span={23}>
           <Form.Item label='审核结果' {...forminladeLayout}>
-          { getFieldDecorator('checkResult',{
-            rules:[
-              {
-                required,
-                message:'请输入审核结果'
-              }
-            ],
-            initialValue: check.checkResult?check.checkResult:'1'
-          })(
-            <Radio.Group onChange={onChange}>
-              <Radio value='1'>通过</Radio>
-              <Radio value='0'>不通过</Radio>
-            </Radio.Group>
-          )
-          }
-        </Form.Item>
+            {getFieldDecorator('checkResult', {
+              rules: [
+                {
+                  required,
+                  message: '请输入审核结果'
+                }
+              ],
+              initialValue: check.checkResult ? check.checkResult : '1'
+            })(
+              <Radio.Group onChange={onChange}>
+                <Radio value='1'>通过</Radio>
+                <Radio value='0'>不通过</Radio>
+              </Radio.Group>
+            )
+            }
+          </Form.Item>
         </Col>
-      <Col span={8}>
-        <Form.Item label="审核时间">
-          {getFieldDecorator('checkTime', {
-            rules:[
-              {
-                required,
-                message:'请输入审核时间'
-              }
-            ],
-            initialValue: check ? moment(check.checkTime) : moment(new Date()),
-          })(<DatePicker 
-               showTime 
-               format="YYYY-MM-DD HH:mm:ss" 
-          />)}
-        </Form.Item>
-      </Col>
+        <Col span={8}>
+          <Form.Item label="审核时间">
+            {getFieldDecorator('checkTime', {
+              rules: [
+                {
+                  required,
+                  message: '请输入审核时间'
+                }
+              ],
+              initialValue: check ? moment(check.checkTime) : moment(new Date()),
+            })(<DatePicker
+              showTime
+              format="YYYY-MM-DD HH:mm:ss"
+            />)}
+          </Form.Item>
+        </Col>
 
-      
-      <Col span={23}>
+
+        <Col span={23}>
           <Form.Item label='审核意见' {...forminladeLayout}>
             {
-              getFieldDecorator('checkOpinion',{
-                rules:[
+              getFieldDecorator('checkOpinion', {
+                rules: [
                   {
                     required,
-                    message:'请输入审核意见'
+                    message: '请输入审核意见'
                   }
                 ],
-                initialValue: check?check.checkOpinion:''
+                initialValue: check ? check.checkOpinion : ''
               })(
-                <TextArea/>
+                <TextArea />
               )
             }
           </Form.Item>
@@ -114,39 +110,39 @@ const Businessaudit = React.forwardRef((props, ref) => {
               </Upload>,
             )}
           </Form.Item>
-         </Col>
+        </Col>
 
-      <Col span={8}>
-        <Form.Item label="审核人">
-          {getFieldDecorator('checkUser', {
-            // rules: [
-            //   {
-            //     required,
-            //     message: '请输入审核人',
-            //   },
-            // ],
-            initialValue: useInfo?useInfo.loginCode:'',
-          })(<Input disabled/>)}
-        </Form.Item>
-      </Col>
+        <Col span={8}>
+          <Form.Item label="审核人">
+            {getFieldDecorator('checkUser', {
+              // rules: [
+              //   {
+              //     required,
+              //     message: '请输入审核人',
+              //   },
+              // ],
+              initialValue: useInfo ? useInfo.loginCode : '',
+            })(<Input disabled />)}
+          </Form.Item>
+        </Col>
 
-      <Col span={8}>
-        <Form.Item label="审核单位">
-          {getFieldDecorator('checkUnit', {
-            initialValue: '单位',
-          })(<Input disabled/>)}
-        </Form.Item>
-      </Col>
+        <Col span={8}>
+          <Form.Item label="审核单位">
+            {getFieldDecorator('checkUnit', {
+              initialValue: '单位',
+            })(<Input disabled />)}
+          </Form.Item>
+        </Col>
 
-      <Col span={8}>
-        <Form.Item label="审核部门">
-          {getFieldDecorator('checkDept', {
-           initialValue: useInfo?useInfo.deptNameExt:'',
-          })(<Input disabled/>)}
-        </Form.Item>
-      </Col>
-    </Form>
-  </Row>
+        <Col span={8}>
+          <Form.Item label="审核部门">
+            {getFieldDecorator('checkDept', {
+              initialValue: useInfo ? useInfo.deptNameExt : '',
+            })(<Input disabled />)}
+          </Form.Item>
+        </Col>
+      </Form>
+    </Row>
 
   );
 });

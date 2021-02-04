@@ -1,11 +1,9 @@
 import React from 'react';
-import {  Descriptions, Collapse,Radio } from 'antd';
+import {  Descriptions,Radio } from 'antd';
 import Downloadfile from '@/components/SysUpload/Downloadfile';
 
-const { Panel } = Collapse;
-
 function Registrationconfirmdes(props) {
-  const { confirmationDetail, loading } = props;
+  const { confirmationDetail } = props;
   const { problemFlowNodeRows } = confirmationDetail;
   let value;
   if(problemFlowNodeRows) {

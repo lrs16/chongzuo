@@ -1,15 +1,13 @@
 import React from 'react';
-import {  Descriptions, Collapse,Radio } from 'antd';
+import { Descriptions, Radio } from 'antd';
 import Downloadfile from '@/components/SysUpload/Downloadfile';
 
-const { Panel } = Collapse;
-
 function Operatorconfirmades(props) {
-  const { confirmationDetail, info } = props;
+  const { info } = props;
   let value;
-    if(info) {
-      value = info.confirmResult;
-    }
+  if (info) {
+    value = info.confirmResult;
+  }
   return (
     <div>
       <Descriptions>
@@ -17,7 +15,7 @@ function Operatorconfirmades(props) {
           <Radio.Group value={value} disabled>
             <Radio value='1'>通过</Radio>
             <Radio value='0'>不通过</Radio>
-        </Radio.Group>
+          </Radio.Group>
         </Descriptions.Item>
       </Descriptions>
 
@@ -29,14 +27,14 @@ function Operatorconfirmades(props) {
 
       <Descriptions>
         <Descriptions.Item label="确认意见">
-        {info.confirmTime}
+          {info.confirmTime}
         </Descriptions.Item>
       </Descriptions>
 
       <Descriptions>
         <Descriptions.Item label="上传附件">
           <span style={{ color: 'blue', textDecoration: 'underline' }} >
-          {info.confirmAttachments !== null && <Downloadfile files={info.confirmAttachments} />}          
+            {info.confirmAttachments !== null && <Downloadfile files={info.confirmAttachments} />}
           </span>
         </Descriptions.Item>
       </Descriptions>
@@ -49,7 +47,7 @@ function Operatorconfirmades(props) {
         <Descriptions.Item label="确认单位">
           {info.confirmUnit}
         </Descriptions.Item>
-            
+
         <Descriptions.Item label="确认部门">
           {info.confirmDept}
         </Descriptions.Item>

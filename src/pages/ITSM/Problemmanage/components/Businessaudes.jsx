@@ -1,14 +1,12 @@
 import React from 'react';
-import {  Descriptions, Collapse, Radio } from 'antd';
-import Downloadfile from '@/components/SysUpload/Downloadfile';
+import { Descriptions, Radio } from 'antd';
 
-const { Panel } = Collapse;
 function Businessaudes(props) {
-  const {  
+  const {
     info,
-    main, } = props;
+  } = props;
   let value;
-  if(info) {
+  if (info) {
     value = info.checkResult;
   }
   return (
@@ -35,27 +33,27 @@ function Businessaudes(props) {
       </Descriptions>
 
       <Descriptions>
-          <Descriptions.Item label="上传附件">
-            <span style={{ color: 'blue', textDecoration: 'underline' }} >
+        <Descriptions.Item label="上传附件">
+          <span style={{ color: 'blue', textDecoration: 'underline' }} >
             {/* {info.checkAttachments !== null && <Downloadfile files={info.checkAttachments} />}           */}
-            </span>
-          </Descriptions.Item>
-        </Descriptions>
+          </span>
+        </Descriptions.Item>
+      </Descriptions>
 
       <Descriptions>
         <Descriptions.Item label="审核人">
-            {info.checkUser}
-          </Descriptions.Item>
+          {info.checkUser}
+        </Descriptions.Item>
 
-          <Descriptions.Item label="审核单位">
-            {info.checkUnit}
-          </Descriptions.Item>
+        <Descriptions.Item label="审核单位">
+          {info.checkUnit}
+        </Descriptions.Item>
 
-          <Descriptions.Item label="审核部门">
-            {info.checkDept}
-          </Descriptions.Item>
+        <Descriptions.Item label="审核部门">
+          {info.checkDept}
+        </Descriptions.Item>
       </Descriptions>
-      </div>
+    </div>
   );
 }
 export default Businessaudes;
