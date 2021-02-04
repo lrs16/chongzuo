@@ -120,5 +120,6 @@ export async function querydownload(params) {
     method: 'POST',
     data: params,
     requestType: 'form',
+    responseType: 'blob',
   });
 }

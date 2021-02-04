@@ -159,8 +159,7 @@ function ToDolist(props) {
           type: 'eventtodo/eventdownload',
           payload: { ...values },
         }).then(res => {
-          // console.log(res);
-          const filename = `下载.xls`;
+          const filename = `${moment().format('YYYY-MM-DD HH:mm')}.xls`;
           const blob = new Blob([res]);
           const url = window.URL.createObjectURL(blob);
           const a = document.createElement('a');

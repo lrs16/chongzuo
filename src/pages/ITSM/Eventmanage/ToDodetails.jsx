@@ -170,11 +170,10 @@ function ToDodetails(props) {
         </SelectUser>
       )}
       {(taskName === '待确认' || taskName === '确认中') && next === '结束' && (
-        <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleHold('over')}>
+        <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleHold('flow')}>
           结束
         </Button>
       )}
-
       <Button onClick={handleclose}>返回</Button>
     </>
   );

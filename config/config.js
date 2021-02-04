@@ -108,14 +108,23 @@ export default {
               path: '/',
               redirect: '/monitormanage/home',
             },
-
-            // {
-            //   path: '/admin',
-            //   name: 'admin',
-            //   icon: 'crown',
-            //   component: './Admin',
-            //   authority: ['admin'],
-            // },
+            {
+              path: '/home',
+              name: '首页',
+              dynamic: true,
+              icon: 'deployment-unit',
+              routes: [
+                {
+                  path: '/home',
+                  redirect: '/home',
+                },
+                {
+                  path: '/ITSM/home',
+                  name: 'IT服务监控台',
+                  icon: 'control',
+                },
+              ],
+            },
             {
               path: '/ITSM',
               name: 'IT服务管理',
@@ -911,8 +920,9 @@ export default {
       changeOrigin: true,
     },
     '/inspection/': {
-      target: 'http://172.16.4.93:8080/', //
+      target: 'http://172.16.4.93:8083/', //
       changeOrigin: true,
+      pathRewrite: { '^/inspection': '' },
     },
     '/basicMonitor/': {
       // 检测管理，基础平台

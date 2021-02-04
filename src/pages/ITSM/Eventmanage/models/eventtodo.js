@@ -104,9 +104,10 @@ export default {
         }
       }
     },
-    // 转单、结束流程
-    *eventransfer({ payload: { flow } }, { call }) {
-      const response = yield call(EventFlow, flow);
+    // 结束流程
+    *overflow({ payload: { flow, paloadvalues } }, { call }) {
+      console.log(paloadvalues);
+      const response = yield call(EventFlow, flow, paloadvalues);
       if (response.code === 200) {
         message.success(response.msg, 3);
         router.push({

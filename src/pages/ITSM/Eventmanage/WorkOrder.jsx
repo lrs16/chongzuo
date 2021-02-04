@@ -99,6 +99,7 @@ function WorkOrder(props) {
     });
     sessionStorage.setItem('Processtype', 'event');
   }, []);
+
   useEffect(() => {
     setTimeout(() => {
       setIsDelay(true);
@@ -132,7 +133,7 @@ function WorkOrder(props) {
   };
 
   const formerr = () => {
-    setIscheck(false);
+    setIsDelay(true);
     message.error('请将信息填写完整...');
     routerRefresh();
   };
@@ -331,16 +332,17 @@ function WorkOrder(props) {
     }
   };
 
-  // 结束流程
+  // 转单，结束
   const overflow = () => {
     dispatch({
-      type: 'eventtodo/eventransfer',
+      type: 'eventtodo/overflow',
       payload: {
         flow: {
           id,
           userIds: sessionStorage.getItem('userauthorityid'),
           type: '1',
         },
+        paloadvalues,
       },
     });
   };
@@ -404,7 +406,6 @@ function WorkOrder(props) {
   useEffect(() => {
     if (validate === true && ischeck === false) {
       handlesubmit();
-      setIsDelay(false);
     }
   }, [validate]);
 
@@ -611,7 +612,7 @@ function WorkOrder(props) {
                 />
               </Panel>
             )}
-            {taskName === '待确认' && edit.finish === null && (
+            {taskName === '待确认' && (
               <Panel header="事件确认" key="visitform">
                 <ReturnVisit
                   ChangeFlowtype={newtype => setFlowtype(newtype)}
@@ -629,7 +630,7 @@ function WorkOrder(props) {
                 />
               </Panel>
             )}
-            {taskName === '确认中' && edit.finish.fileIds !== undefined && (
+            {taskName === '确认中' && edit.finish !== null && edit.finish.fileIds !== undefined && (
               <Panel header="事件确认" key="visitform">
                 <ReturnVisit
                   ChangeFlowtype={newtype => setFlowtype(newtype)}

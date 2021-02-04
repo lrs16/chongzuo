@@ -94,9 +94,9 @@ function OnSitemanage(props) {
     return dispatch({
       type: 'checkmanage/docheck',
     }).then(res => {
+      getdata(1, 10);
       if (res.code === 200) {
         Message.success(res.msg);
-        getdata(1, 10);
       } else {
         Message.error(res.msg);
       }
@@ -131,6 +131,13 @@ function OnSitemanage(props) {
   return (
     <PageHeaderWrapper title={pagetitle}>
       <Card>
+        <Button
+          onClick={() => getdata(1, 10)}
+          type="primary"
+          style={{ marginBottom: 24, float: 'right' }}
+        >
+          搜索
+        </Button>
         <Button onClick={handleCheck} type="dashed" block style={{ marginBottom: 24 }}>
           执行巡检
         </Button>
