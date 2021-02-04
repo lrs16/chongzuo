@@ -142,26 +142,26 @@ const columns = [
   },
   {
     title: '事件来源',
-    dataIndex: 'event_source',
-    key: 'event_source',
+    dataIndex: 'eventSource',
+    key: 'eventSource',
     width: 150,
   },
   {
     title: '影响度',
-    dataIndex: 'event_effect',
-    key: 'event_effect',
+    dataIndex: 'eventEffect',
+    key: 'eventEffect',
     width: 80,
   },
   {
     title: '优先级',
-    dataIndex: 'event_prior',
-    key: 'event_prior',
+    dataIndex: 'eventPrior',
+    key: 'eventPrior',
     width: 80,
   },
   {
     title: '紧急度',
-    dataIndex: 'event_emergent',
-    key: 'event_emergent',
+    dataIndex: 'eventEmergent',
+    key: 'eventEmergent',
     width: 80,
   },
   {
@@ -208,7 +208,7 @@ function QueryList(props) {
   const searchdata = (values, page, size) => {
     if (values.createTime === undefined) {
       dispatch({
-        type: 'eventtodo/fetchlist',
+        type: 'eventquery/fetchlist',
         payload: {
           ...values,
           eventObject: values.eventObject?.slice(-1)[0],

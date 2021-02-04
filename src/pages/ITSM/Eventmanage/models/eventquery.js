@@ -11,7 +11,6 @@ export default {
   effects: {
     // 列表
     *fetchlist({ payload }, { call, put }) {
-      console.log(payload);
       const response = yield call(queryList, payload);
       yield put({
         type: 'save',
