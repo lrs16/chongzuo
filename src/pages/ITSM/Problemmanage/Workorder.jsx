@@ -629,7 +629,7 @@ function Workorder(props) {
                 </Reasonregression>
               )}
 
-            { currntStatus !== 29 && tabActiveKey === 'workorder' && (
+            { (currntStatus !== 29 && currntStatus !== 40) && tabActiveKey === 'workorder' && (
               <Button
                 type="primary"
                 style={{ marginRight: 8 }}
@@ -760,7 +760,7 @@ function Workorder(props) {
                 (userlist && selSign === '0')
               )
               &&
-              currntStatus !== 29 &&
+              (currntStatus !== 29  && currntStatus !== 40) &&
               tabActiveKey === 'workorder' &&
               (
                 <Button
@@ -899,7 +899,7 @@ function Workorder(props) {
                           check={check}
                           loading={loading}
                           flowNodeName={flowNodeName}
-                          // files={listData}
+                          selSign={selSign}
                           files={
                             todoDetail.check !== undefined && todoDetail.check.checkAttachments ? JSON.parse(todoDetail.check.checkAttachments) : []
                           }
@@ -907,9 +907,7 @@ function Workorder(props) {
                             setFiles(newvalue);
                           }}
                         />
-
                       </FatherContext.Provider>
-
                     </Panel>
                   )
                 }
@@ -971,7 +969,6 @@ function Workorder(props) {
                           confirm={confirm}
                         />
                       </FatherContext.Provider>
-
                     </Panel>
                   )
                 }

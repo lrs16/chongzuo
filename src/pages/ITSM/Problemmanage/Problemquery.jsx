@@ -275,7 +275,7 @@ function Besolved(props) {
                       message: '请输入问题编号',
                     },
                   ],
-                })(<Input />)}
+                })(<Input placeholder='请输入'/>)}
               </Form.Item>
             </Col>
 
@@ -304,7 +304,7 @@ function Besolved(props) {
               <>
                 <Col span={8}>
                   <Form.Item label="问题标题">
-                    {getFieldDecorator('title', {})(<Input />)}
+                    {getFieldDecorator('title', {})(<Input placeholder='请输入'/>)}
                   </Form.Item>
                 </Col>
               </>
@@ -375,7 +375,7 @@ function Besolved(props) {
                       'handler',
                       {},
                     )(
-                      <Input />
+                      <Input placeholder='请输入'/>
                     )}
                   </Form.Item>
                 </Col>
@@ -386,7 +386,7 @@ function Besolved(props) {
                       'handleUnit',
                       {},
                     )(
-                      <Input />
+                      <Input placeholder='请输入'/>
                     )}
                   </Form.Item>
                 </Col>
@@ -397,7 +397,7 @@ function Besolved(props) {
                       'registerUser',
                       {},
                     )(
-                      <Input />
+                      <Input placeholder='请输入'/>
                     )}
                   </Form.Item>
                 </Col>

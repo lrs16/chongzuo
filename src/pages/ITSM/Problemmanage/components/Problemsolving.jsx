@@ -22,7 +22,7 @@ function Problemsolving(props) {
 
       <Descriptions>
         <Descriptions.Item label="解决方案">
-          {info.handleTime}
+          {info.handleContent}
         </Descriptions.Item>
       </Descriptions>
 

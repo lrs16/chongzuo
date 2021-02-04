@@ -27,7 +27,7 @@ function Operatorconfirmades(props) {
 
       <Descriptions>
         <Descriptions.Item label="确认意见">
-          {info.confirmTime}
+          {info.confirmContent}
         </Descriptions.Item>
       </Descriptions>
 

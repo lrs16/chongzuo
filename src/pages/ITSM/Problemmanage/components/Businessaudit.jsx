@@ -100,7 +100,6 @@ const Businessaudit = React.forwardRef((props, ref) => {
           <Form.Item
             label="上传附件"
             {...forminladeLayout}
-            extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
           >
             {getFieldDecorator('checkAttachIds')(
               <Upload>

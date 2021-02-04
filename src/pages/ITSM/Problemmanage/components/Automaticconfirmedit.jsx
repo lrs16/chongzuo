@@ -143,7 +143,6 @@ const Automaticconfirmedit = React.forwardRef((props, ref) => {
           <Form.Item
             label="上传附件"
             {...forminladeLayout}
-            extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
           >
             <div style={{ width: 400 }}>
               <SysUpload fileslist={files} ChangeFileslist={newvalue => setFilesList(newvalue)} />
@@ -154,12 +153,6 @@ const Automaticconfirmedit = React.forwardRef((props, ref) => {
         <Col span={8}>
           <Form.Item label="审核人">
             {getFieldDecorator('checkUser', {
-              // rules: [
-              //   {
-              //     required,
-              //     message: '请输入审核人',
-              //   },
-              // ],
               initialValue: useInfo ? useInfo.loginCode : '',
             })(<Input disabled />)}
           </Form.Item>

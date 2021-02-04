@@ -101,7 +101,6 @@ export default {
 
         const resRegister = yield call(saveRegister, saveiInfo);
         if (resRegister.code === 200) {
-          console.log('jumpType: ', jumpType);
           switch (jumpType) {
             // case 0:
             //   route.push({ pathname: `/ITSM/problemmanage/besolved` });

@@ -1,4 +1,4 @@
-import React, { useContext,useRef, useImperativeHandle,useEffect,useState } from 'react';
+import React, { useContext, useRef, useImperativeHandle, useEffect, useState } from 'react';
 import {
   Row,
   Col,
@@ -6,26 +6,23 @@ import {
   Input,
   DatePicker,
   Radio,
-  Alert,
-  Upload,
-  Button
 } from 'antd';
-import { DownloadOutlined } from '@ant-design/icons';
 import moment from 'moment';
-import {FatherContext} from '../Workorder';
+import { FatherContext } from '../Workorder';
 import SysUpload from '@/components/SysUpload';
 
 const { TextArea } = Input;
 
-
 const Systemoperatoredit = React.forwardRef((props, ref) => {
-  const { formItemLayout, forminladeLayout,flowNodeName,files,ChangeFiles } = props;
+  const { formItemLayout, forminladeLayout, flowNodeName, files, ChangeFiles } = props;
   const { getFieldDecorator } = props.form;
-  const {flowtype,setFlowtype } = useContext(FatherContext);
+  const { flowtype, setFlowtype } = useContext(FatherContext);
   const [fileslist, setFilesList] = useState([]);
+
   useEffect(() => {
     ChangeFiles(fileslist);
   }, [fileslist]);
+
   const attRef = useRef();
   useImperativeHandle(
     ref,
@@ -47,17 +44,17 @@ const Systemoperatoredit = React.forwardRef((props, ref) => {
 
   return (
     <Row gutter={16}>
-        <Form {...formItemLayout}>
+      <Form {...formItemLayout}>
         <Col span={23}>
-            <Form.Item label='审核结果' {...forminladeLayout}>
-            { getFieldDecorator('checkResult',{
-              rules:[
+          <Form.Item label='审核结果' {...forminladeLayout}>
+            {getFieldDecorator('checkResult', {
+              rules: [
                 {
                   required,
-                  message:'请输入审核结果'
+                  message: '请输入审核结果'
                 }
               ],
-              initialValue:check.checkResult
+              initialValue: check.checkResult
             })(
               <Radio.Group onChange={onChange}>
                 <Radio value='1'>通过</Radio>
@@ -66,116 +63,114 @@ const Systemoperatoredit = React.forwardRef((props, ref) => {
             )
             }
           </Form.Item>
-          </Col>
-        
+        </Col>
+
         <Col span={8}>
           <Form.Item label="审核时间">
             {getFieldDecorator('checkTime', {
-              rules:[
+              rules: [
                 {
                   required,
-                  message:'请输入审核时间'
+                  message: '请输入审核时间'
                 }
               ],
               initialValue: moment(check.checkTime),
-            })(<DatePicker 
-                 showTime 
-                 format="YYYY-MM-DD HH:mm:ss" 
+            })(<DatePicker
+              showTime
+              format="YYYY-MM-DD HH:mm:ss"
             />)}
           </Form.Item>
         </Col>
 
-          {
-            flowtype === '1' && (
-              <Col span={23}>
+        {
+          flowtype === '1' && (
+            <Col span={23}>
               <Form.Item label='审核意见' {...forminladeLayout}>
                 {
-                  getFieldDecorator('checkOpinion',{
-                    initialValue:check.checkOpinion
+                  getFieldDecorator('checkOpinion', {
+                    initialValue: check.checkOpinion
                   })(
-                    <TextArea/>
+                    <TextArea />
                   )
                 }
               </Form.Item>
             </Col>
-            )
-          }
+          )
+        }
 
-          {
-            flowtype === '0' && (
-              <Col span={23}>
+        {
+          flowtype === '0' && (
+            <Col span={23}>
               <Form.Item label='审核意见' {...forminladeLayout}>
                 {
-                  getFieldDecorator('checkOpinion',{
-                    rules:[
+                  getFieldDecorator('checkOpinion', {
+                    rules: [
                       {
                         required,
-                        message:'请输入审核意见'
+                        message: '请输入审核意见'
                       }
                     ],
                     initialValue: check.checkOpinion
                   })(
-                    <TextArea/>
+                    <TextArea />
                   )
                 }
               </Form.Item>
             </Col>
-            )
-          }
-          {
-            flowNodeName === '系统运维商审核' && (
-              <Col span={24}>
+          )
+        }
+
+        {
+          flowNodeName === '系统运维商审核' && (
+            <Col span={24}>
               <Form.Item
                 label="上传附件"
                 {...forminladeLayout}
-                extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
               >
                 <div style={{ width: 400 }}>
                   <SysUpload fileslist={files} ChangeFileslist={newvalue => setFilesList(newvalue)} />
                 </div>
               </Form.Item>
             </Col>
-            )
-          }
-       
-          {
-            flowNodeName === '自动化科审核' && (
-              <Col span={24}>
+          )
+        }
+
+        {
+          flowNodeName === '自动化科审核' && (
+            <Col span={24}>
               <Form.Item
                 label="上传附件"
                 {...forminladeLayout}
-                extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
               >
                 <div style={{ width: 400 }}>
                   <SysUpload fileslist={files} ChangeFileslist={newvalue => setFilesList(newvalue)} />
                 </div>
               </Form.Item>
             </Col>
-            )
-          }
-       
-  
+          )
+        }
+
         <Col span={8}>
           <Form.Item label="审核人">
             {getFieldDecorator('checkUser', {
               initialValue: useInfo.userName,
-            })(<Input disabled/>)}
+            })(<Input disabled />)}
           </Form.Item>
         </Col>
-  
+
         <Col span={8}>
           <Form.Item label="审核单位">
             {getFieldDecorator('checkUnit', {
               initialValue: '广西电网有限责任公司',
-            })(<Input disabled/>)}
+            })(<Input disabled />)}
           </Form.Item>
         </Col>
-  
+
         <Col span={8}>
           <Form.Item label="审核部门">
             {getFieldDecorator('checkDept', {
-             initialValue: useInfo.deptNameExt,
-            })(<Input disabled/>)}
+              initialValue: useInfo.deptNameExt,
+            })(<Input disabled />)}
           </Form.Item>
         </Col>
       </Form>
@@ -184,14 +179,14 @@ const Systemoperatoredit = React.forwardRef((props, ref) => {
 });
 
 Systemoperatoredit.defaultProps = {
-  check:{
-    checkOpinion:'',
-    checkTime:moment().format(),
-    checkResult:'1'
+  check: {
+    checkOpinion: '',
+    checkTime: moment().format(),
+    checkResult: '1'
   },
-  useInfo:{
-    userName:'', 
-    deptNameExt:'', 
+  useInfo: {
+    userName: '',
+    deptNameExt: '',
   }
 }
 

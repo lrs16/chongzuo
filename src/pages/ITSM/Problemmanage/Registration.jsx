@@ -107,6 +107,7 @@ function Registration(props) {
   };
 
   const handlesubmit = (jumpType) => {
+    console.log('jumpType: ', jumpType);
     RegistratRef.current.validateFields((err, values) => {
       if (jumpType ? !err : true) {
         const saveData = values;

@@ -136,7 +136,7 @@ export async function queryList(current, pageSize,values) {
 }
 
 //  接口上传
-export async function fileUpload(params) {
+export async function fileUpload() {
   return request(`/sys/file/upload`, {
     method: 'POST',
   });
@@ -152,7 +152,7 @@ export async function queryDetail(id) {
 }
 
 //  转单
-export async function transferOrder(taskId,userIds) {
+export async function transferOrder() {
   return request(`/itsm/problem/flow/transfer`,{
     method:'POST'
   })

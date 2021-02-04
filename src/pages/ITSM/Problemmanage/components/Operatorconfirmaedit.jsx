@@ -17,11 +17,13 @@ const Operatorconfirmaedit = React.forwardRef((props, ref) => {
   const { forminladeLayout, files, ChangeFiles, flowNodeName } = props;
   const { flowtype, setFlowtype } = useContext(FatherContext);
   const { getFieldDecorator } = props.form;
-  const attRef = useRef();
+
   const [fileslist, setFilesList] = useState([]);
   useEffect(() => {
     ChangeFiles(fileslist);
   }, [fileslist]);
+
+  const attRef = useRef();
   useImperativeHandle(
     ref,
     () => ({
@@ -126,7 +128,6 @@ const Operatorconfirmaedit = React.forwardRef((props, ref) => {
               <Form.Item
                 label="上传附件"
                 {...forminladeLayout}
-                extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
               >
                 <div style={{ width: 400 }}>
                   <SysUpload fileslist={files} ChangeFileslist={newvalue => setFilesList(newvalue)} />
@@ -137,12 +138,11 @@ const Operatorconfirmaedit = React.forwardRef((props, ref) => {
         }
 
         {
-          flowNodeName === '自动化科业务负责人确认' && (
+          flowNodeName === '自动化科业务人员确认' && (
             <Col span={24}>
               <Form.Item
                 label="上传附件"
                 {...forminladeLayout}
-                extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
               >
                 <div style={{ width: 400 }}>
                   <SysUpload fileslist={files} ChangeFileslist={newvalue => setFilesList(newvalue)} />
@@ -158,7 +158,6 @@ const Operatorconfirmaedit = React.forwardRef((props, ref) => {
               <Form.Item
                 label="上传附件"
                 {...forminladeLayout}
-                extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
               >
                 <div style={{ width: 400 }}>
                   <SysUpload fileslist={files} ChangeFileslist={newvalue => setFilesList(newvalue)} />
