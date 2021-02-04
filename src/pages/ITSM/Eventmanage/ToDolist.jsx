@@ -125,18 +125,30 @@ function ToDolist(props) {
 
   // 查询
   const searchdata = (values, page, size) => {
-    dispatch({
-      type: 'eventtodo/fetchlist',
-      payload: {
-        ...values,
-        eventObject: values.eventObject?.slice(-1)[0],
-        createTime: '',
-        time1: moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss'),
-        time2: moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss'),
-        pageSize: size,
-        pageIndex: page - 1,
-      },
-    });
+    if (values.createTime === undefined) {
+      dispatch({
+        type: 'eventtodo/fetchlist',
+        payload: {
+          ...values,
+          eventObject: values.eventObject?.slice(-1)[0],
+          pageSize: size,
+          pageIndex: page - 1,
+        },
+      });
+    } else {
+      dispatch({
+        type: 'eventtodo/fetchlist',
+        payload: {
+          ...values,
+          createTime: '',
+          time1: moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss'),
+          time2: moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss'),
+          eventObject: values.eventObject?.slice(-1)[0],
+          pageSize: size,
+          pageIndex: page - 1,
+        },
+      });
+    }
   };
 
   //  下载
@@ -256,7 +268,7 @@ function ToDolist(props) {
                     })(
                       <Select placeholder="请选择">
                         {sourcemap.map(obj => (
-                          <Option key={obj.key} value={obj.dict_code}>
+                          <Option key={obj.key} value={obj.title}>
                             {obj.title}
                           </Option>
                         ))}
@@ -273,7 +285,7 @@ function ToDolist(props) {
                 })(
                   <Select placeholder="请选择">
                     {statusmap.map(obj => (
-                      <Option key={obj.key} value={obj.dict_code}>
+                      <Option key={obj.key} value={obj.title}>
                         {obj.title}
                       </Option>
                     ))}
@@ -304,7 +316,7 @@ function ToDolist(props) {
                     })(
                       <Select placeholder="请选择">
                         {priormap.map(obj => (
-                          <Option key={obj.key} value={obj.dict_code}>
+                          <Option key={obj.key} value={obj.title}>
                             {obj.title}
                           </Option>
                         ))}

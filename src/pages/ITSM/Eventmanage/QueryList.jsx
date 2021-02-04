@@ -206,18 +206,30 @@ function QueryList(props) {
   }, []);
 
   const searchdata = (values, page, size) => {
-    dispatch({
-      type: 'eventquery/fetchlist',
-      payload: {
-        ...values,
-        eventObject: values.eventObject?.slice(-1)[0],
-        createTime: '',
-        time1: moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss'),
-        time2: moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss'),
-        pageSize: size,
-        pageIndex: page - 1,
-      },
-    });
+    if (values.createTime === undefined) {
+      dispatch({
+        type: 'eventtodo/fetchlist',
+        payload: {
+          ...values,
+          eventObject: values.eventObject?.slice(-1)[0],
+          pageSize: size,
+          pageIndex: page - 1,
+        },
+      });
+    } else {
+      dispatch({
+        type: 'eventquery/fetchlist',
+        payload: {
+          ...values,
+          eventObject: values.eventObject?.slice(-1)[0],
+          createTime: '',
+          time1: moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss'),
+          time2: moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss'),
+          pageSize: size,
+          pageIndex: page - 1,
+        },
+      });
+    }
   };
 
   //  下载

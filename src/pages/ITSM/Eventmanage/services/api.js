@@ -100,6 +100,7 @@ export async function queryEventodoList(params) {
 
 // 事件查询 /itsm/event/form/getEventQueryList
 export async function queryList(params) {
+  console.log(params);
   return request(`/itsm/event/form/getEventQueryList`, {
     method: 'POST',
     data: params,
