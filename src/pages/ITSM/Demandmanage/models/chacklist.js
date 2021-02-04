@@ -11,8 +11,12 @@ export default {
 
   effects: {
     // 需求跟踪查询
-    *fetchtracklist({ payload: { demandId } }, { call }) {
-      return yield call(TracksList, demandId);
+    *fetchtracklist({ payload: { demandId } }, { call, put }) {
+      const response = yield call(TracksList, demandId);
+      yield put({
+        type: 'savetracks',
+        payload: response.data,
+      });
     },
     // 系统开发商处理保存
     *tracksave({ payload }, { call }) {

@@ -14,67 +14,46 @@ import {
 } from 'antd';
 import { DownloadOutlined, PaperClipOutlined, DeleteOutlined } from '@ant-design/icons';
 import styles from './style.less';
-import KeyVal from '@/components/SysDict/KeyVal';
 
 const { Option } = Select;
 
 function Track(props) {
-  const { dispatch, userinfo, demandId, loading } = props;
+  const { dispatch, userinfo, demandId, trackslist, loading } = props;
   const [data, setData] = useState([]);
   const [cacheOriginData, setcacheOriginData] = useState({});
   const [uploadkey, setKeyUpload] = useState('');
   const [fileslist, setFilesList] = useState([]);
   const [newbutton, setNewButton] = useState(false);
-  const [selectdata, setSelectData] = useState([]);
-  const [trackslist, setTracksList] = useState('');
+  const [progressmap, setProgressmap] = useState('');
 
-  // 加载列表
-  const getlistdata = () => {
+  useEffect(() => {
     dispatch({
       type: 'chacklist/fetchtracklist',
       payload: {
         demandId,
       },
-    }).then(res => {
-      if (res.code === 200) {
-        setTracksList(res.data);
-      }
     });
-  };
-
-  // 保存数据
-  const savedata = (target, id) => {
     dispatch({
-      type: 'chacklist/tracksave',
+      type: 'dicttree/keyval',
       payload: {
-        ...target,
-        id,
-        demandId,
-        stalker: userinfo.userName,
-        trackDepartment: userinfo.deptName,
-        trackUnit: userinfo.unitName,
+        dictModule: 'demand',
+        dictType: 'schedule',
       },
     }).then(res => {
       if (res.code === 200) {
-        message.success(res.msg, 2);
-        getlistdata();
+        setProgressmap(res.data.schedule);
       }
     });
-  };
-  console.log(trackslist);
-
-  useEffect(() => {
-    getlistdata();
   }, []);
 
-  // useEffect(() => {
-  //   if (trackslist.length > 0) {
-  //     const newarr = trackslist.map((item, index) => {
-  //       return Object.assign(item, { key: index });
-  //     });
-  //     setData(newarr);
-  //   }
-  // }, [trackslist]);
+  useEffect(() => {
+    if (trackslist.length > 0) {
+      const newarr = trackslist.map((item, index) => {
+        return Object.assign(item, { key: index });
+      });
+      setData(newarr);
+    }
+  }, [trackslist]);
 
   // 点击编辑生成filelist,
   const handlefileedit = (key, values) => {
@@ -107,8 +86,12 @@ function Track(props) {
 
   // 新增一条记录
   const newMember = () => {
-    setNewButton(true);
-    const target = {
+    setFilesList([]);
+    setKeyUpload('');
+    const newData = data.map(item => ({ ...item }));
+    newData.push({
+      key: data.length + 1,
+      id: '',
       developSchedule: '',
       trackDirections: '',
       attachment: '[]',
@@ -119,8 +102,9 @@ function Track(props) {
       gmtCreate: moment().format('YYYY-MM-DD HH:mm:ss'),
       editable: true,
       isNew: true,
-    };
-    savedata(target, '');
+    });
+    setData(newData);
+    setNewButton(true);
   };
 
   // 获取行
@@ -158,7 +142,27 @@ function Track(props) {
     delete target.key;
     target.editable = false;
     const id = target.id === '' ? '' : target.id;
-    savedata(target, id);
+    dispatch({
+      type: 'chacklist/tracksave',
+      payload: {
+        ...target,
+        id,
+        demandId,
+        stalker: userinfo.userName,
+        trackDepartment: userinfo.deptName,
+        trackUnit: userinfo.unitName,
+      },
+    }).then(res => {
+      if (res.code === 200) {
+        message.success(res.msg, 2);
+        dispatch({
+          type: 'chacklist/fetchtracklist',
+          payload: {
+            demandId,
+          },
+        });
+      }
+    });
     if (target.isNew) {
       setNewButton(false);
     }
@@ -179,7 +183,7 @@ function Track(props) {
           payload: {
             demandId,
           },
-        }).then(res => {});
+        });
       }
     });
   };
@@ -276,7 +280,7 @@ function Track(props) {
               defaultValue={text}
               onChange={e => handleFieldChange(e, 'developSchedule', record.key)}
             >
-              {selectdata.schedule.map(obj => {
+              {progressmap.map(obj => {
                 return (
                   <Option key={obj.key} value={obj.val}>
                     {obj.val}
@@ -461,16 +465,10 @@ function Track(props) {
 
   return (
     <>
-      <KeyVal
-        style={{ display: 'none' }}
-        dictModule="demand"
-        dictType="schedule"
-        ChangeSelectdata={newvalue => setSelectData(newvalue)}
-      />
       <Table
         columns={columns}
         scroll={{ x: 1400 }}
-        dataSource={trackslist}
+        dataSource={data}
         rowClassName={record => (record.editable ? styles.editable : '')}
         rowKey={record => record.id}
         loading={loading}
