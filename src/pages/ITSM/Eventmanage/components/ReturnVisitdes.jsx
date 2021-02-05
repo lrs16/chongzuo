@@ -6,13 +6,13 @@ import Downloadfile from '@/components/SysUpload/Downloadfile';
 function ReturnVisitdes(props) {
   const { info, main } = props;
   return (
-    <div className={styles.collapse} style={{ marginTop: 24 }} size="middle">
-      <Descriptions style={{ marginTop: 24 }}>
+    <div className={styles.collapse} style={{ marginLeft: 30, marginRight: 10 }}>
+      <Descriptions style={{ marginTop: 24 }} size="middle">
         <Descriptions.Item label="回访方式">{info.revisitWay}</Descriptions.Item>
         <Descriptions.Item label="处理结果">{main.eventResult}</Descriptions.Item>
         <Descriptions.Item label="满意度">{info.satisfaction}</Descriptions.Item>
         <Descriptions.Item label="回访内容" span={3}>
-          {info.content}
+          <div dangerouslySetInnerHTML={{ __html: info.content?.replace(/[\n]/g, '<br/>') }} />
         </Descriptions.Item>
         <Descriptions.Item label="填单时间">{info.addTime}</Descriptions.Item>
         <Descriptions.Item label="回访时间" span={2}>
@@ -21,9 +21,9 @@ function ReturnVisitdes(props) {
         <Descriptions.Item label="附件" span={3}>
           {info.fileIds !== '' && <Downloadfile files={info.fileIds} />}
         </Descriptions.Item>
-        <Descriptions.Item label="登记人">{info.revisitor}</Descriptions.Item>
-        <Descriptions.Item label="登记人单位">{info.revisitUnit}</Descriptions.Item>
-        <Descriptions.Item label="登记人部门">{info.revisitDept}</Descriptions.Item>
+        <Descriptions.Item label="回访人">{info.revisitor}</Descriptions.Item>
+        <Descriptions.Item label="回访人单位">{info.revisitUnit}</Descriptions.Item>
+        <Descriptions.Item label="回访人部门">{info.revisitDept}</Descriptions.Item>
       </Descriptions>
     </div>
   );

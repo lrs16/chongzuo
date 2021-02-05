@@ -7,7 +7,7 @@ import Downloadfile from '@/components/SysUpload/Downloadfile';
 function Registratdes(props) {
   const { info } = props;
   return (
-    <div className={styles.collapse}>
+    <div className={styles.collapse} style={{ marginLeft: 30, marginRight: 10 }}>
       <Descriptions style={{ marginTop: 24 }} size="middle">
         <Descriptions.Item label="需求编号">{info.demandId}</Descriptions.Item>
         <Descriptions.Item label="建单时间">

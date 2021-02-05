@@ -7,7 +7,7 @@ function Handledes(props) {
   const { info, main } = props;
 
   return (
-    <div className={styles.collapse}>
+    <div className={styles.collapse} style={{ marginLeft: 30, marginRight: 10 }}>
       <Descriptions style={{ marginTop: 24 }} size="middle">
         <Descriptions.Item label="处理人">{info.handler}</Descriptions.Item>
         <Descriptions.Item label="处理人单位">{info.handleUnit}</Descriptions.Item>
@@ -21,7 +21,7 @@ function Handledes(props) {
         </Descriptions.Item>
         {/* <Descriptions.Item label="二线标签"span={3}>No. 18, Wantang Road, Xihu District, Hangzhou, Zhejiang, China</Descriptions.Item> */}
         <Descriptions.Item label="解决方案" span={3}>
-          {info.content}
+          <div dangerouslySetInnerHTML={{ __html: info.content?.replace(/[\n]/g, '<br/>') }} />
         </Descriptions.Item>
         <Descriptions.Item label="附件" span={3}>
           {info.fileIds !== 'null' && <Downloadfile files={info.fileIds} />}

@@ -17,7 +17,7 @@ function Examinedes(props) {
   const text = info.taskName.indexOf('确认') === -1 ? '审核' : '确认';
 
   return (
-    <div className={styles.collapse}>
+    <div className={styles.collapse} style={{ marginLeft: 30, marginRight: 10 }}>
       <Descriptions style={{ marginTop: 24 }} size="middle">
         <Descriptions.Item label={`${text}结果`}>{resultmap.get(info.result)}</Descriptions.Item>
         <Descriptions.Item>

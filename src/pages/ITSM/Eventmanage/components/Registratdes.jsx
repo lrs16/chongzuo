@@ -5,11 +5,8 @@ import Downloadfile from '@/components/SysUpload/Downloadfile';
 
 function Registratdes(props) {
   const { info, main } = props;
-  const content = {
-    __html: main.content?.replace(/[\n]/g, '<br/>'),
-  };
   return (
-    <div className={styles.collapse}>
+    <div className={styles.collapse} style={{ marginLeft: 30, marginRight: 10 }}>
       <Descriptions style={{ marginTop: 24 }} size="middle">
         <Descriptions.Item label="事件编号">{main.eventNo}</Descriptions.Item>
         <Descriptions.Item label="建单时间">{main.addTime}</Descriptions.Item>
@@ -30,7 +27,7 @@ function Registratdes(props) {
           {main.title}
         </Descriptions.Item>
         <Descriptions.Item label="事件描述" span={3}>
-          <div dangerouslySetInnerHTML={content} />
+          <div dangerouslySetInnerHTML={{ __html: main.content?.replace(/[\n]/g, '<br/>') }} />
         </Descriptions.Item>
         <Descriptions.Item label="自行处理">
           <Checkbox defaultChecked={Boolean(Number(info.selfhandle))} disabled />
