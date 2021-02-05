@@ -15,18 +15,19 @@ const { TextArea } = Input;
 
 const Systemoperatoredit  = React.forwardRef((props, ref) => {
   const { formItemLayout,forminladeLayout, files, ChangeFiles, flowNodeName } = props;
+  console.log('files: ', files);
   const { flowtype, setFlowtype } = useContext(FatherContext);
   const { getFieldDecorator } = props.form;
 
   const [fileslist, setFilesList] = useState([]);
-  const [filess, setFiless] = useState([]);
+  // const [filess, setFiless] = useState([]);
   useEffect(() => {
     ChangeFiles(fileslist);
   }, [fileslist]);
 
-  useEffect(() => {
-    setFiless(files);
-  }, [files]);
+  // useEffect(() => {
+  //   setFiless(files);
+  // }, [files]);
 
   const attRef = useRef();
   useImperativeHandle(
@@ -134,7 +135,7 @@ const Systemoperatoredit  = React.forwardRef((props, ref) => {
                 {...forminladeLayout}
               >
                 <div style={{ width: 400 }}>
-                  <SysUpload fileslist={filess} ChangeFileslist={newvalue => setFilesList(newvalue)} />
+                  <SysUpload fileslist={files} ChangeFileslist={newvalue => setFilesList(newvalue)} />
                 </div>
               </Form.Item>
             </Col>
@@ -149,13 +150,12 @@ const Systemoperatoredit  = React.forwardRef((props, ref) => {
                 {...forminladeLayout}
               >
                 <div style={{ width: 400 }}>
-                  <SysUpload fileslist={filess} ChangeFileslist={newvalue => setFilesList(newvalue)} />
+                  <SysUpload fileslist={files} ChangeFileslist={newvalue => setFilesList(newvalue)} />
                 </div>
               </Form.Item>
             </Col>
           )
         }
-
 
         <Col span={8}>
           <Form.Item label="审核人">

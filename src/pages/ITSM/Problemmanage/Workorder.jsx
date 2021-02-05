@@ -144,7 +144,6 @@ function Workorder(props) {
 
   if (todoDetail.main) {
     currntStatus = Number(todoDetail.main.status);
-    confirmType = Number(todoDetail.confirmType);
     const editstate = todoDetail.editState;
     problemFlowid = todoDetail.main.id;
     flowNodeName = todoDetail.flowNodeName;
@@ -649,7 +648,6 @@ function Workorder(props) {
                   <Button
                     type="primary"
                     style={{ marginRight: 8 }}
-                  // onClick={() => handleSubmit(circaSign)}
                   >
                     转单
                 </Button>
@@ -675,13 +673,11 @@ function Workorder(props) {
               (
                 <SelectUser
                   taskId={id}
-                  // result={}
                   handleSubmit={() => handleSubmit(circaSign)}
                 >
                   <Button
                     type="primary"
                     style={{ marginRight: 8 }}
-                  // onClick={() => handleSubmit(circaSign)}
                   >
                     流转
                 </Button>
@@ -691,21 +687,17 @@ function Workorder(props) {
             }
 
             {
-              // flowtype ==='1' &&
-
               flowNodeName === '系统运维商确认' &&
               flowtype === '1' &&
               tabActiveKey === 'workorder' &&
               (
                 <SelectUser
                   taskId={id}
-                  // result={}
                   handleSubmit={() => handleSubmit(circaSign)}
                 >
                   <Button
                     type="primary"
                     style={{ marginRight: 8 }}
-                  // onClick={() => handleSubmit(circaSign)}
                   >
                     流转
                 </Button>
@@ -714,9 +706,7 @@ function Workorder(props) {
               )
             }
 
-
             {
-
               flowNodeName === '系统运维商审核' && flowtype === '1' &&
               tabActiveKey === 'workorder' &&
               (
@@ -760,7 +750,7 @@ function Workorder(props) {
                 (userlist && selSign === '0')
               )
               &&
-              (currntStatus !== 29  && currntStatus !== 40) &&
+              (currntStatus !== 29 && currntStatus !== 40) &&
               tabActiveKey === 'workorder' &&
               (
                 <Button
@@ -792,7 +782,6 @@ function Workorder(props) {
                 <Steps
                   current={problemFlowLogs.length - 1}
                   size="small"
-                  // progressDot
                   style={{
                     background: '#fff',
                     padding: 24,
@@ -810,10 +799,8 @@ function Workorder(props) {
                       } />
                     ])}
                 </Steps>
-
               )
               }
-
             </div>
 
             <div className={styles.collapse}>
@@ -883,7 +870,7 @@ function Workorder(props) {
                 }
 
                 {
-                  flowNodeName === '自动化科审核' &&(
+                  flowNodeName === '自动化科审核' && (
                     <Panel
                       header="自动化科审核"
                       key='1'
