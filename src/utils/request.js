@@ -61,6 +61,13 @@ const errorHandler = error => {
     if (status >= 404 && status < 422) {
       router.push('/404');
     }
+    if (status >= 500 && status < 504) {
+      notification.error({
+        message: `${status}: ${url}`,
+        description: `${errorText},即将为您跳转到首页。`,
+      });
+      router.push('/');
+    }
     if (status !== 401 && status !== 403) {
       notification.error({
         message: `${status}: ${url}`,
@@ -72,6 +79,7 @@ const errorHandler = error => {
       description: '您的网络发生异常，无法连接服务器',
       message: '网络异常',
     });
+    router.push('/');
   }
 
   return response;

@@ -11,9 +11,13 @@ function ReturnVisitdes(props) {
         <Descriptions.Item label="回访方式">{info.revisitWay}</Descriptions.Item>
         <Descriptions.Item label="处理结果">{main.eventResult}</Descriptions.Item>
         <Descriptions.Item label="满意度">{info.satisfaction}</Descriptions.Item>
-        <Descriptions.Item label="回访内容">{info.content}</Descriptions.Item>
+        <Descriptions.Item label="回访内容" span={3}>
+          {info.content}
+        </Descriptions.Item>
         <Descriptions.Item label="填单时间">{info.addTime}</Descriptions.Item>
-        <Descriptions.Item label="回访时间">{info.revisitTime}</Descriptions.Item>
+        <Descriptions.Item label="回访时间" span={2}>
+          {info.revisitTime}
+        </Descriptions.Item>
         <Descriptions.Item label="附件" span={3}>
           {info.fileIds !== '' && <Downloadfile files={info.fileIds} />}
         </Descriptions.Item>

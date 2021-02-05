@@ -174,7 +174,7 @@ const columns = [
     title: '处理人',
     dataIndex: 'handler',
     key: 'handler',
-    width: 80,
+    width: 200,
   },
 ];
 

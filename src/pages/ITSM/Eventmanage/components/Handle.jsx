@@ -140,7 +140,7 @@ const Handle = React.forwardRef((props, ref) => {
               })(<Input placeholder="请输入" disabled />)}
             </Form.Item>
           </Col>
-          {/* 保存环节 */}
+          {/* 自行处理 */}
           {defaultvalue !== '' && defaultvalue !== undefined && (
             <>
               <Col span={8}>
@@ -163,7 +163,7 @@ const Handle = React.forwardRef((props, ref) => {
                 <Form.Item label="事件对象">
                   {getFieldDecorator('main_eventObject', {
                     rules: [{ required, message: '请选择事件对象' }],
-                    initialValue: eventObject,
+                    initialValue: defaultvalue.main_eventObject,
                   })(
                     <Cascader
                       fieldNames={{ label: 'title', value: 'dict_code', children: 'children' }}
@@ -178,7 +178,7 @@ const Handle = React.forwardRef((props, ref) => {
               </Col>
             </>
           )}
-          {/* 登记时自行处理,处理环节 */}
+          {/* 事件处理 */}
           {(defaultvalue === '' || defaultvalue === undefined) && (
             <>
               <Col span={8}>

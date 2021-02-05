@@ -375,6 +375,9 @@ export default {
                   icon: 'control',
                   component: './ITSM/OnSitemanage',
                 },
+                {
+                  component: './500',
+                },
               ],
             },
             // 自动化运维
@@ -566,7 +569,6 @@ export default {
                       icon: 'cloud-server',
                       component: './Monitormanage/MeasurMonitor/MonitorAddedit',
                     },
-
                     {
                       component: './404',
                     },
@@ -849,15 +851,24 @@ export default {
             {
               component: './404',
             },
+            {
+              component: './500',
+            },
           ],
         },
         {
           component: './404',
         },
+        {
+          component: './500',
+        },
       ],
     },
     {
       component: './404',
+    },
+    {
+      component: './500',
     },
   ],
   // Theme for antd: https://ant.design/docs/react/customize-theme-cn

@@ -332,10 +332,10 @@ function WorkOrder(props) {
     }
   };
 
-  // 转单，结束
+  // 结束
   const overflow = () => {
     dispatch({
-      type: 'eventtodo/overflow',
+      type: 'eventtodo/eventflow',
       payload: {
         flow: {
           id,
