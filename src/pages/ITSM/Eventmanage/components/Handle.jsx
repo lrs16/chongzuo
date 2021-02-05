@@ -236,7 +236,7 @@ const Handle = React.forwardRef((props, ref) => {
             <Form.Item label="接单时间">
               {getFieldDecorator('handle_addTime', {
                 rules: [{ required }],
-                initialValue: handle.addTime,
+                initialValue: moment(handle.addTime).format('YYYY-MM-DD HH:mm:ss'),
               })(<Input placeholder="请输入" disabled />)}
             </Form.Item>
           </Col>
@@ -308,9 +308,9 @@ const Handle = React.forwardRef((props, ref) => {
 Handle.defaultProps = {
   info: {
     handle: {
-      addTime: moment().format('YYYY-MM-DD HH:mm:ss'),
+      // addTime: moment().format("YYYY-MM-DD HH:mm:ss"),
+      // endTime: moment().format("YYYY-MM-DD HH:mm:ss"),
       content: '',
-      endTime: moment().format('YYYY-MM-DD HH:mm:ss'),
       eventEffect: '',
       eventEmergent: '',
       eventPrior: '',

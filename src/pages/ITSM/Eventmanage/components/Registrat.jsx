@@ -164,13 +164,6 @@ const Registrat = forwardRef((props, ref) => {
     eventObject.unshift(main.eventObject.slice(0, 3));
   }
 
-  // const strtoarr = (data) => {
-  //   const arr = data.slice();
-  //   for (let i = 0; i < data.length; i += 3) {
-  //     arr.push(data.slice(0,))
-  //   }
-  // };
-
   const sourcemap = getTypebykey('486844540120989696'); // 事件来源
   const typemap = getTypebykey('486844495669755904'); // 事件分类
   const objectmap = getTypebykey('482599461999083520'); // 事件对象
@@ -178,7 +171,6 @@ const Registrat = forwardRef((props, ref) => {
   const effectmap = getTypebykey('482610561507393536'); // 影响度
   const emergentmap = getTypebykey('482610561503199232'); // 紧急度
   const priormap = getTypebykey('482610561499004928'); // 优先级
-
   return (
     <>
       <SysDict
@@ -207,7 +199,7 @@ const Registrat = forwardRef((props, ref) => {
             <Form.Item label="建单时间">
               {getFieldDecorator('main_addTime', {
                 rules: [{ required }],
-                initialValue: main.addTime,
+                initialValue: moment(main.addTime).format('YYYY-MM-DD HH:mm:ss'),
               })(<Input disabled />)}
             </Form.Item>
           </Col>
@@ -557,7 +549,7 @@ const Registrat = forwardRef((props, ref) => {
 
 Registrat.defaultProps = {
   main: {
-    addTime: moment().format('YYYY-MM-DD HH:mm:ss'),
+    // addTime: moment().format('YYYY-MM-DD HH:mm:ss'),
     content: '',
     eventNo: '',
     eventObject: '',
@@ -578,7 +570,7 @@ Registrat.defaultProps = {
       applicationUserId: '12121212',
       applicationUserPhone: '',
       mobilePhone: '',
-      occur_time: moment().format('YYYY-MM-DD HH:mm:ss'),
+      //occur_time: moment().format('YYYY-MM-DD HH:mm:ss'),
       // registerDept: '广西电网有限责任公司',
       // registerDeptId: '7AC3EF0F701402A2E0530A644F130365',
       // registerUnit: '广西电网有限责任公司',

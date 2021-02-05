@@ -312,8 +312,8 @@ const Registrat = forwardRef((props, ref) => {
 
 Registrat.defaultProps = {
   register: {
-    creationTime: moment().format(),
-    completeTime: moment().format(),
+    // creationTime: moment().format(),
+    // completeTime: moment().format(),
     demandId: '',
     demandType: '',
     detail: '',
@@ -323,7 +323,7 @@ Registrat.defaultProps = {
     proposingDepartment: '计量中心',
     proposingUnit: '广西电网有限责任公司',
     reason: '',
-    registerTime: moment().format(),
+    // registerTime: moment().format(),
     title: '',
   },
   userinfo: {

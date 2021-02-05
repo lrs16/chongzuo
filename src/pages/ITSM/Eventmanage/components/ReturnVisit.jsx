@@ -177,7 +177,7 @@ const ReturnVisit = React.forwardRef((props, ref) => {
             <Form.Item label="填单时间">
               {getFieldDecorator('finish_addTime', {
                 rules: [{ required }],
-                initialValue: finish.addTime,
+                initialValue: moment(finish.addTime).format('YYYY-MM-DD HH:mm:ss'),
               })(<Input disabled />)}
             </Form.Item>
           </Col>
@@ -259,8 +259,8 @@ ReturnVisit.defaultProps = {
     finish: {
       revisitWay: '',
       satisfaction: '001',
-      addTime: moment().format('YYYY-MM-DD HH:mm:ss'),
-      revisitTime: moment().format('YYYY-MM-DD HH:mm:ss'),
+      // addTime: moment().format('YYYY-MM-DD HH:mm:ss'),
+      // revisitTime: moment().format('YYYY-MM-DD HH:mm:ss'),
       content: '',
       id: '',
     },
