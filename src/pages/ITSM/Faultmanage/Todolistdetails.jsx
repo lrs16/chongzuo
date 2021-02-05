@@ -81,8 +81,6 @@ const Collapsekeymap = new Map([
   ['故障登记', 'RegisterChild'], // 故障登记
   ['系统运维商审核', 'ExamineChild'], // 系统运维商审核
   ['系统运维商处理', 'HandleChild'], // 系统运维商处理
-  ['registerDetails', 'RegisterQuery'], // 系统运维商处理详情
-  // ['40', 'RegisterQuery'], // 系统运维商处理详情
   ['系统运维商确认总结', 'SummaryChild'], // 系统运维商确认总结
   ['自动化科业务负责人审核', 'ExamineSecondChild'], // 自动化科业务负责人审核
   ['自动化科专责确认', 'ConfirmChild'], // 自动化科专责确认
@@ -95,10 +93,12 @@ function Todolistdetails(props) {
 
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
   const [fileskey, setFileskey] = useState('1'); // 下载列表
-
+  
   const [result, setResult] = useState('1');
   const [resultsecond, setResultsecond] = useState('1');
   const [resultconfirm, setResultconfirm] = useState('1');
+
+  // const [buttontype, setButtontype] = useState('save');
 
   const RegisterRef = useRef(); // 故障登记
   const ExamineRef = useRef(); // 系统运维商审核  自动化科业务负责人审核
@@ -107,10 +107,10 @@ function Todolistdetails(props) {
   const ConfirmRef = useRef(); // 自动化科专责确认
 
   const {
-    location: { paneKey }, // 获取传入数据 // paneKey故障登记传过来的当前状态以及待办页传过来的状态（故障登记）
+    // location: { paneKey }, // 获取传入数据 // paneKey故障登记传过来的当前状态以及待办页传过来的状态（故障登记）
     loading,
     tododetailslist, // 待办详情数据--编辑
-    tododetailslist: { troubleFlowLogs, check, handle, finish, confirm, troubleFlowNodeRows, main, editState }, // troubleFlowLogs流程图数据  troubleFlowNodeRows详情是数据
+    tododetailslist: { troubleFlowLogs, check, handle, finish, confirm, troubleFlowNodeRows, main, editState, flowNodeName }, // troubleFlowLogs流程图数据  troubleFlowNodeRows详情是数据
     flowimageview, // 故障流程的流程图片数据
     flowlog, // 故障流程的流程日志
     dispatch,
@@ -166,15 +166,23 @@ function Todolistdetails(props) {
   }
 
   useEffect(() => {
-    getCurrUserInfo(); // 获取登录用户信息
-    setActiveKey([`${Collapsekeymap.get(paneKey)}`]);
     getfaultTodoDetailData();
+    getCurrUserInfo(); // 获取登录用户信息
     sessionStorage.setItem('Processtype', 'troub');
   }, []);
 
   useEffect(() => {
     sessionStorage.setItem('flowtype', '1');
   }, ['1']);
+
+  useEffect(() => {
+    if (loading === false) {
+      setActiveKey([`${Collapsekeymap.get(flowNodeName)}`]);
+      if(main && (main.status === '40' || main.status === '45') && editState === 'add') {
+        setActiveKey('0');
+      }
+    }
+  }, [loading]);
 
   const handleDelete = () => { // 删除操作！
     dispatch({
@@ -191,11 +199,19 @@ function Todolistdetails(props) {
     })
   }
 
-  const faultcircula = () => { // 流转
+  const faultcircula = (type) => { // 流转
     const taskId = id;
+    let results;
+    if(type === 'close') {
+      results = '255'; // 关闭
+    } else if(type === 'transfer') {
+      results = '9'; // 转单
+    } else {
+      results = '1'; // 流转
+    }
     return dispatch({
       type: 'fault/getSubmitProToNextNode',
-      payload: { taskId, result: '1', userIds: sessionStorage.getItem('NextflowUserId') }
+      payload: { taskId, result: results, userIds: sessionStorage.getItem('NextflowUserId') }
     }).then(res => {
       if (res.code === 200) {
         getfaultTodoDetailData();
@@ -261,7 +277,7 @@ function Todolistdetails(props) {
       if (cirStatus ? !err : true) {
         formValues.checkUserId = userId; // 当前登录人id
         formValues.taskId = id;
-        formValues.checkType = paneKey === '系统运维商审核' ? '1' : '2';
+        formValues.checkType = flowNodeName === '系统运维商审核' ? '1' : '2';
         if (files.ischange) {
           formValues.checkAttachments = JSON.stringify(files.arr);
         }
@@ -305,12 +321,17 @@ function Todolistdetails(props) {
         formValues.taskId = id;
         formValues.editState = tododetailslist.editState;
         formValues.handlerId = userId; // 当前登录人id
-        if (fileskey === '1') {
-          formValues.handleRecordAttachments = JSON.stringify(files.arr);
-        } else if (fileskey === '2') {
-          formValues.handlePictureAttachments = JSON.stringify(files.arr);
-        } else if (fileskey === '3') {
-          formValues.handleAttachments = JSON.stringify(files.arr);
+
+        if (files.ischange === true) {
+          if (fileskey === '1') {
+            formValues.handleRecordAttachments = JSON.stringify(files.arr);
+          }
+          if (fileskey === '2') {
+            formValues.handlePictureAttachments = JSON.stringify(files.arr);
+          }
+          if (fileskey === '3') {
+            formValues.handleAttachments = JSON.stringify(files.arr);
+          }
         }
 
         if (tododetailslist.editState === 'edit') {
@@ -320,6 +341,7 @@ function Todolistdetails(props) {
           formValues.handleId = tododetailslist.editGuid;
           formValues.editState = 'add';
         }
+
         return dispatch({
           type: 'fault/getfromsave', // 保存接口
           payload: { formValues }
@@ -343,18 +365,6 @@ function Todolistdetails(props) {
     // eslint-disable-next-line consistent-return
     SummaryRef.current.validateFields((err, values) => {
       if (cirStatus ? !err : true) {
-        // if(values.finishAnalysisAttachments !== '[]' && values.finishAnalysisAttachments !== undefined && values.finishAnalysisAttachments !== null) {
-        //   // SummaryRef.current.setFields({
-        //   //   finishAnalysisAttachments: {
-        //   //     value: values.finishAnalysisAttachments,
-        //   //     errors: [new Error('forbid ha')],
-        //   //   },
-        //   // });
-        //   SummaryRef.current.setFieldsValue({
-        //     finishAnalysisAttachments: values.finishAnalysisAttachments
-        //   });
-        // }
-        // console.log(values.finishAnalysisAttachments, 'fuuufufuf')
         const formValues = values;
         formValues.taskId = id;
         formValues.editState = tododetailslist.editState;
@@ -442,7 +452,7 @@ function Todolistdetails(props) {
   }
 
   const handleSave = (savestatus) => { // 表单编辑保存，流转
-    switch (paneKey) {
+    switch (flowNodeName) {
       case '故障登记':
         saveRegister(savestatus);
         break;
@@ -503,26 +513,6 @@ function Todolistdetails(props) {
     })
   }
 
-  const handleFaulttransfer = () => { // 转单接口操作！
-    const taskId = id;
-    return dispatch({
-      type: 'fault/getSubmitProToNextNode',
-      payload: {
-        taskId,
-        result: '9',
-        userIds: sessionStorage.getItem('NextflowUserId')
-      }
-    }).then(res => {
-      if (res.code === 200) {
-        message.success(res.msg);
-        router.push(`/ITSM/faultmanage/todolist`);
-      } else {
-        message.error(res.msg);
-        router.push(`/ITSM/faultmanage/todolist`);
-      }
-    })
-  }
-
   const handleRegist = () => { // 登记按钮回到登记页
     // eslint-disable-next-line consistent-return
     ExamineRef.current.validateFields((err, values) => {
@@ -535,7 +525,7 @@ function Todolistdetails(props) {
       if (!err) {
         formValues.checkUserId = userId; // 当前登录人id
         formValues.taskId = id;
-        formValues.checkType = paneKey === '系统运维商审核' ? '1' : '2';
+        formValues.checkType = flowNodeName === '系统运维商审核' ? '1' : '2';
         if (files.ischange) {
           formValues.checkAttachments = JSON.stringify(files.arr);
         }
@@ -565,7 +555,7 @@ function Todolistdetails(props) {
             }).then(res1 => {
               if (res1.code === 200) {
                 message.success(res1.msg);
-                router.push(`/ITSM/faultmanage/registration`);
+                router.push({pathname: `/ITSM/faultmanage/todolist`,});
               } else {
                 message.error(res1.msg);
                 router.push(`/ITSM/faultmanage/registration`);
@@ -589,7 +579,7 @@ function Todolistdetails(props) {
       if (!err) {
         formValues.checkUserId = userId; // 当前登录人id
         formValues.taskId = id;
-        formValues.checkType = paneKey === '系统运维商审核' ? '1' : '2';
+        formValues.checkType = flowNodeName === '系统运维商审核' ? '1' : '2';
         if (files.ischange) {
           formValues.checkAttachments = JSON.stringify(files.arr);
         }
@@ -685,14 +675,14 @@ function Todolistdetails(props) {
       extra={
         <>
           { // 删除按钮只有故障登记有
-            paneKey === '故障登记' && (
+            flowNodeName === '故障登记' && (
               <Popconfirm title="确定删除吗？" onConfirm={() => handleDelete()}>
                 <Button type="danger">删除</Button>
               </Popconfirm>
             )
           }
           { // 回退按钮--系统运维商审核， 系统运维商确认总结，自动化科业务负责人审核, 自动化科确认有
-            (paneKey !== '故障登记' && paneKey !== '故障关闭' && (main && main.status !== '45') && (main && main.status !== '40')) && check === undefined && finish === undefined && confirm === undefined && (
+            (flowNodeName !== '故障登记' && flowNodeName !== '故障关闭' && (main && main.status !== '45') && (main && main.status !== '40')) && check === undefined && finish === undefined && confirm === undefined && (
               <ModelRollback title="填写回退意见" rollbackSubmit={values => rollbackSubmit(values)}>
                 <Button type="danger" ghost>回退</Button>
               </ModelRollback>
@@ -707,7 +697,7 @@ function Todolistdetails(props) {
           { // 转单只有系统运维商处理时有
             (main && (main.status === '45' || main.status === '40') && editState === 'edit') && (
               <SelectUser
-                handleSubmit={handleFaulttransfer}
+                handleSubmit={() => faultcircula('transfer')}
                 taskId={id}
                 changorder="请选择转单处理"
               >
@@ -717,7 +707,7 @@ function Todolistdetails(props) {
           }
           {/* 确认过程的时候不需要选人 1通过直接关闭 */}
           {
-            paneKey === '自动化科专责确认' ?
+            flowNodeName === '自动化科专责确认' ?
               (resultconfirm === '1' && (<Button
                 type="primary"
                 onClick={() => handleSave(currenStatus)}
@@ -754,7 +744,12 @@ function Todolistdetails(props) {
           >
             处理
           </Button>)}
-          <Button type="default" onClick={handleClose}>返回</Button>
+
+          {
+            (troubleFlowNodeRows !== undefined && troubleFlowNodeRows.length !== 0 && flowNodeName === '故障登记') ? <Button type="primary" onClick={() => faultcircula('close')}>关闭</Button> : 
+            <Button type="default" onClick={handleClose}>返回</Button>
+          }
+          
         </>
       }
       title={pagetitle}
@@ -802,7 +797,7 @@ function Todolistdetails(props) {
                     onChange={callback}
                   >
                     { // 故障登记编辑页---（故障登记时）
-                      (paneKey === '故障登记') && (
+                      (flowNodeName === '故障登记') && (
                         <Panel header="故障登记" key="RegisterChild">
                           <RegisterChild
                             ChangeFiles={newvalue => {
@@ -819,7 +814,7 @@ function Todolistdetails(props) {
                       )
                     }
                     { // 系统运维商审核编辑页
-                      (paneKey === '系统运维商审核') &&
+                      (flowNodeName === '系统运维商审核') &&
                       ( // 展开系统运维商审核表单时，显示故障登记详情（1）
                         <Panel header="系统运维商审核" key="ExamineChild">
                           <ExamineChild
@@ -839,7 +834,7 @@ function Todolistdetails(props) {
                       )
                     }
                     { // 系统运维商处理编辑页
-                      (paneKey === '系统运维商处理') && (main && main.status === '45' && editState === 'edit') &&
+                      (flowNodeName === '系统运维商处理') && (main && main.status === '45' && editState === 'edit') &&
                       ( // 展开处理表单时，显示故障审核详情以及登记详情（2）
                         <Panel header="系统运维商处理" key="HandleChild">
                           <HandleChild
@@ -857,7 +852,7 @@ function Todolistdetails(props) {
                       )
                     }
                     { // 系统运维商确认总结编辑页
-                      (paneKey === '系统运维商确认总结') && (
+                      (flowNodeName === '系统运维商确认总结') && (
                         <Panel header="系统运维商确认总结" key="SummaryChild">
                           <SummaryChild
                             ref={SummaryRef}
@@ -875,7 +870,7 @@ function Todolistdetails(props) {
                       )
                     }
                     { // 自动化科业务负责人审核编辑页
-                      (paneKey === '自动化科业务负责人审核') && (
+                      (flowNodeName === '自动化科业务负责人审核') && (
                         <Panel header="自动化科业务负责人审核" key="ExamineSecondChild">
                           <ExamineSecondChild
                             ref={ExamineRef}
@@ -895,7 +890,7 @@ function Todolistdetails(props) {
                       )
                     }
                     {// 自动化科专责确认编辑页
-                      (paneKey === '自动化科专责确认') &&
+                      (flowNodeName === '自动化科专责确认') &&
                       (
                         <Panel header="自动化科专责确认" key="ConfirmChild">
                           <ConfirmChild
@@ -915,7 +910,7 @@ function Todolistdetails(props) {
                       )
                     }
 
-                    {troubleFlowNodeRows && (troubleFlowNodeRows.map((obj) => {
+                    {troubleFlowNodeRows && (troubleFlowNodeRows.map((obj, index) => {
                       // panel详情组件
                       const Paneldesmap = new Map([
                         ['故障登记', <RegisterQuery info={obj} maindata={main} />],
@@ -926,7 +921,7 @@ function Todolistdetails(props) {
                         ['自动化科专责确认', <ConfirmQuery info={obj} maindata={main} />],
                       ]);
                       return (
-                        <Panel Panel header={obj.fnname} key={obj.id}>
+                        <Panel Panel header={obj.fnname} key={index}>
                           {Paneldesmap.get(obj.fnname)}
                         </Panel>
                       );

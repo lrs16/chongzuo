@@ -58,13 +58,6 @@ function QueryList(props) {
   const [selectdata, setSelectData] = useState([]);
 
   const columns = [
-    // {
-    //   title: '序号',
-    //   dataIndex: 'index',
-    //   key: 'index',
-    //   width: 100,
-    //   render: (text, record, index) => `${(paginations.current - 1) * (paginations.pageSize) + (index + 1)}`,
-    // },
     {
       title: 'id',
       dataIndex: 'id',
@@ -75,7 +68,6 @@ function QueryList(props) {
       dataIndex: 'no',
       key: 'no',
       width: 150,
-      fixed: 'left',
       render: (text, record) => {
         return (
           <Link
@@ -92,38 +84,16 @@ function QueryList(props) {
       },
     },
     {
-      title: '故障发生时间',
-      dataIndex: 'registerOccurTime',
-      key: 'registerOccurTime',
-      width: 200,
-      fixed: 'left',
-    },
-    {
-      title: '故障登记时间',
-      dataIndex: 'registerTime',
-      key: 'registerTime',
-      width: 200,
-      fixed: 'left',
-    },
-    {
-      title: '严重程度',
-      dataIndex: 'registerLevel',
-      key: 'registerLevel',
+      title: '工单状态',
+      dataIndex: 'statuscn',
+      key: 'statuscn',
       width: 120,
-      fixed: 'left',
-      // render: (text, record) => {
-      //   // console.log(text, record);
-      //   <span>
-      //   <Badge status={statusMap[record.registerLevel]} text={severitystatus[record.registerLevel]} />
-      // </span>
-      // },
     },
     {
       title: '故障来源',
       dataIndex: 'source',
       key: 'source',
       width: 150,
-      fixed: 'left',
     },
     {
       title: '系统模块',
@@ -138,88 +108,27 @@ function QueryList(props) {
       width: 200,
     },
     {
-      title: '工单状态',
-      dataIndex: 'statuscn',
-      key: 'statuscn',
-      width: 120,
-      // render: (text, record) => {
-      //   const text1 = faultStatusmap[record.status];
-      //   return text1;
-      // },
-    },
-    {
       title: '故障名称',
       dataIndex: 'title',
       key: 'title',
+      width: 250,
+    },
+    {
+      title: '发生时间',
+      dataIndex: 'registerOccurTime',
+      key: 'registerOccurTime',
       width: 200,
     },
     {
-      title: '故障地点',
-      dataIndex: 'registerAddress',
-      key: 'registerAddress',
+      title: '创建时间',
+      dataIndex: 'registerTime',
+      key: 'registerTime',
       width: 200,
     },
     {
-      title: '登记人',
-      dataIndex: 'registerUser',
-      key: 'registerUser',
-      width: 120,
-    },
-    {
-      title: '登记人单位',
-      dataIndex: 'registerUnit',
-      key: 'registerUnit',
-      width: 200,
-    },
-    {
-      title: '登记人部门',
-      dataIndex: 'registerDept',
-      key: 'registerDept',
-      width: 200,
-    },
-    {
-      title: '审核人',
-      dataIndex: 'checkUser',
-      key: 'checkUser',
-      width: 200,
-    },
-    {
-      title: '审核人单位',
-      dataIndex: 'checkUnit',
-      key: 'checkUnit',
-      width: 200,
-    },
-    {
-      title: '审核人部门',
-      dataIndex: 'checkDept',
-      key: 'checkDept',
-      width: 200,
-    },
-    {
-      title: '故障处理开始时间',
-      // dataIndex: 'handleStartTimeBegin',
-      dataIndex: 'handleStartTime',
-      key: 'handleStartTime',
-      width: 200,
-    },
-    {
-      title: '故障处理完成时间',
-      // dataIndex: 'handleStartTimeEnd',
-      dataIndex: 'handleEndTime',
-      key: 'handleEndTime',
-      width: 200,
-    },
-    {
-      title: '故障处理人',
-      dataIndex: 'handler',
-      key: 'handler',
-      width: 150,
-      ellipsis: true,
-    },
-    {
-      title: '处理结果',
-      dataIndex: 'handleResult',
-      key: 'handleResult',
+      title: '严重程度',
+      dataIndex: 'registerLevel',
+      key: 'registerLevel',
       width: 120,
     },
   ];
@@ -277,7 +186,7 @@ function QueryList(props) {
         values.handleStartTimeEnd = fieldsValue.handleStartTimeEnd.format('YYYY-MM-DD');
       }
 
-      if(fieldsValue.type) {
+      if (fieldsValue.type) {
         values.type = fieldsValue.type.join('/');
       }
 
@@ -359,10 +268,8 @@ function QueryList(props) {
             current: page,
           },
         }).then(res => {
-          // console.log(res);
           const filename = `下载.xlsx`;
-          const blob = new Blob([res]);
-          const url = window.URL.createObjectURL(blob);
+          const url = window.URL.createObjectURL(res);
           const a = document.createElement('a');
           a.href = url;
           a.download = filename;
@@ -379,11 +286,14 @@ function QueryList(props) {
     }
     return [];
   };
+
   const faultSource = getTypebyTitle('故障来源');
   const priority = getTypebyTitle('严重程度');
   const handleResult = getTypebyTitle('故障处理结果');
   const sysmodular = getTypebyTitle('故障系统模块');
   const faultType = getTypebyTitle('故障分类');
+  const faultStatus = getTypebyTitle('工单状态');
+  const effect = getTypebyTitle('影响范围');
 
   return (
     <PageHeaderWrapper title={pagetitle}>
@@ -398,16 +308,25 @@ function QueryList(props) {
           <Form {...formItemLayout} onSubmit={handleSearch}>
             <Col span={8}>
               <Form.Item label="故障编号">
-                {getFieldDecorator('no', {})(<Input allowClear />)}
+                {getFieldDecorator('no', {})(<Input placeholder="请输入" allowClear />)}
               </Form.Item>
             </Col>
 
+            {expand === true && (
+              <Col xl={8} xs={12}>
+                <Form.Item label="登记时间">
+                  {getFieldDecorator('registerTimeBegin', {
+                  })(<DatePicker format="YYYY-MM-DD" style={{ width: '100%' }} />)}
+                </Form.Item>
+              </Col>
+            )}
+
             <Col xl={8} xs={12}>
-              <Form.Item label="故障来源">
-                {getFieldDecorator('source')(
+              <Form.Item label="工单状态">
+                {getFieldDecorator('status', {})(
                   <Select placeholder="请选择">
-                    {faultSource.map(obj => [
-                      <Option key={obj.key} value={obj.title}>
+                    {faultStatus.map(obj => [
+                      <Option key={obj.key} value={obj.dict_code}>
                         {obj.title}
                       </Option>,
                     ])}
@@ -419,16 +338,23 @@ function QueryList(props) {
             {expand === true && (
               <>
                 <Col xl={8} xs={12}>
-                  <Form.Item label="故障发生时间">
+                  <Form.Item label="发生时间">
                     {getFieldDecorator('registerOccurTimeBegin', {
                     })(<DatePicker format="YYYY-MM-DD" style={{ width: '100%' }} />)}
                   </Form.Item>
                 </Col>
 
                 <Col xl={8} xs={12}>
-                  <Form.Item label="故障登记时间">
-                    {getFieldDecorator('registerTimeBegin', {
-                    })(<DatePicker format="YYYY-MM-DD" style={{ width: '100%' }} />)}
+                  <Form.Item label="故障来源">
+                    {getFieldDecorator('source')(
+                      <Select placeholder="请选择">
+                        {faultSource.map(obj => [
+                          <Option key={obj.key} value={obj.title}>
+                            {obj.title}
+                          </Option>,
+                        ])}
+                      </Select>,
+                    )}
                   </Form.Item>
                 </Col>
 
@@ -485,9 +411,53 @@ function QueryList(props) {
                   </Form.Item>
                 </Col>
 
+                <Col xl={8} xs={12}>
+                  <Form.Item label="影响范围">
+                    {getFieldDecorator('registerScope', {})(
+                      <Select placeholder="请选择">
+                        {effect.map(obj => [
+                          <Option key={obj.key} value={obj.title}>
+                            {obj.title}
+                          </Option>,
+                        ])}
+                      </Select>
+                    )}
+                  </Form.Item>
+                </Col>
+
+                <Col xl={8} xs={12}>
+                  <Form.Item label="处理开始时间">
+                    {getFieldDecorator('handleStartTimeBegin', {
+                    })(<DatePicker format="YYYY-MM-DD" style={{ width: '100%' }} />)}
+                  </Form.Item>
+                </Col>
+
+                <Col xl={8} xs={12}>
+                  <Form.Item label="处理完成时间">
+                    {getFieldDecorator('handleStartTimeEnd', {
+                    })(<DatePicker format="YYYY-MM-DD" style={{ width: '100%' }} />)}
+                  </Form.Item>
+                </Col>
+
+                <Col xl={8} xs={12}>
+                  <Form.Item label="处理结果">
+                    {getFieldDecorator('handleResult', {
+                      initialValue: '',
+                    })(
+                      <Select placeholder="请选择">
+                        {handleResult.map(obj => [
+                          <Option key={obj.key} value={obj.title}>
+                            {obj.title}
+                          </Option>,
+                        ])}
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
+
                 <Col span={8}>
                   <Form.Item label="登记人">
-                    {getFieldDecorator('rgister_user', {
+                    {getFieldDecorator('registerUser', {
                       initialValue: '',
                     })(<Input allowClear />)}
                   </Form.Item>
@@ -518,42 +488,50 @@ function QueryList(props) {
                 </Col>
 
                 <Col xl={8} xs={12}>
-                  <Form.Item label="故障处理开始时间">
-                    {getFieldDecorator('handleStartTimeBegin', {
-                    })(<DatePicker format="YYYY-MM-DD" style={{ width: '100%' }} />)}
-                  </Form.Item>
-                </Col>
-
-                <Col xl={8} xs={12}>
-                  <Form.Item label="故障处理完成时间">
-                    {getFieldDecorator('handleStartTimeEnd', {
-                    })(<DatePicker format="YYYY-MM-DD" style={{ width: '100%' }} />)}
-                  </Form.Item>
-                </Col>
-
-                <Col xl={8} xs={12}>
-                  <Form.Item label="故障处理人">
-                    {getFieldDecorator('handleEnterNames', {
+                  <Form.Item label="处理人">
+                    {getFieldDecorator('handler', {
                       initialValue: '',
-                    })(
-                      <Select placeholder="请选择" />,
-                    )}
+                    })(<Input allowClear />)}
+                  </Form.Item>
+                </Col>
+
+                <Col span={8}>
+                  <Form.Item label="处理人单位">
+                    {getFieldDecorator('handleUnit', {
+                      initialValue: '',
+                    })(<Select />,)}
                   </Form.Item>
                 </Col>
 
                 <Col xl={8} xs={12}>
-                  <Form.Item label="处理结果">
-                    {getFieldDecorator('handleResult', {
+                  <Form.Item label="总结人">
+                    {getFieldDecorator('finishUser', {
                       initialValue: '',
-                    })(
-                      <Select placeholder="请选择">
-                        {handleResult.map(obj => [
-                          <Option key={obj.key} value={obj.title}>
-                            {obj.title}
-                          </Option>,
-                        ])}
-                      </Select>,
-                    )}
+                    })(<Input allowClear />)}
+                  </Form.Item>
+                </Col>
+
+                <Col span={8}>
+                  <Form.Item label="总结人单位">
+                    {getFieldDecorator('finishUnit', {
+                      initialValue: '',
+                    })(<Select />,)}
+                  </Form.Item>
+                </Col>
+
+                <Col xl={8} xs={12}>
+                  <Form.Item label="确认人">
+                    {getFieldDecorator('confirmUser', {
+                      initialValue: '',
+                    })(<Input allowClear />)}
+                  </Form.Item>
+                </Col>
+
+                <Col span={8}>
+                  <Form.Item label="确认人单位">
+                    {getFieldDecorator('confirmUnit', {
+                      initialValue: '',
+                    })(<Select />,)}
                   </Form.Item>
                 </Col>
               </>
@@ -633,7 +611,6 @@ function QueryList(props) {
           rowKey={record => record.id}
           pagination={pagination}
           rowSelection={rowSelection}
-          scroll={{ x: 800 }}
         />
       </Card>
     </PageHeaderWrapper>

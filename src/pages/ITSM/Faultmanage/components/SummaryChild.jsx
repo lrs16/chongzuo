@@ -15,12 +15,19 @@ const { TextArea } = Input;
 const SummaryChild = React.forwardRef((props, ref) => {
     const { formItemLayout, forminladeLayout, finish, curruserinfo, ChangeFiles, tododetailslist, ChangeFileskey } = props;
     const message = '上传故障分析报告已超时， 实际上传时间已超过要求上传时间。'
-    const { getFieldDecorator } = props.form;
+    const { getFieldDecorator, setFieldsValue } = props.form;
     const attRef = useRef();
     const [fileslist, setFilesList] = useState({ arr: [], ischange: false }); // 下载列表
+
     useEffect(() => {
         ChangeFiles(fileslist);
     }, [fileslist]);
+
+    useEffect(() => {
+        if (finish && finish.finishAnalysisAttachments !== '[]' && finish.finishAnalysisAttachments !== undefined && finish.finishAnalysisAttachments !== null) {
+            setFieldsValue({ finishAnalysisAttachments: finish.finishAnalysisAttachments }, () => { });
+        }
+    }, []);
 
     useImperativeHandle(
         ref,
@@ -66,13 +73,14 @@ const SummaryChild = React.forwardRef((props, ref) => {
 
                     <Col span={10}>
                         <>
-                            <Form.Item label={<><span style={{ color: 'red' }}>*</span><span>上传故障分析报告</span></>}>
+                            <Form.Item label="上传故障分析报告">
                                 {getFieldDecorator('finishAnalysisAttachments', {
-                                    // rules: [
-                                    //     {
-                                    //         required,
-                                    //     },
-                                    // ],
+                                    rules: [
+                                        {
+                                            required,
+                                            message: '请上传故障分析报告！'
+                                        },
+                                    ],
                                 })(
                                     <div
                                         style={{ width: 400 }}

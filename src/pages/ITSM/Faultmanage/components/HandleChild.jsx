@@ -29,13 +29,27 @@ const forminladeLayout1 = {
 
 const HandleChild = React.forwardRef((props, ref) => {
     const { formItemLayout, forminladeLayout, handle, curruserinfo, ChangeFiles, ChangeFileskey } = props;
-    const { getFieldDecorator } = props.form;
+    const { getFieldDecorator, setFieldsValue } = props.form;
     const attRef = useRef();
     const [fileslist, setFilesList] = useState({ arr: [], ischange: false }); // 下载列表
     const [selectdata, setSelectData] = useState([]);
     useEffect(() => {
         ChangeFiles(fileslist);
     }, [fileslist]);
+
+    useEffect(() => {
+        if (handle && handle.handleRecordAttachments !== '[]' && handle.handleRecordAttachments !== undefined && handle.handleRecordAttachments !== null) {
+            setFieldsValue({ handleRecordAttachments: handle.handleRecordAttachments }, () => { });
+        }
+
+        if (handle && handle.handlePictureAttachments !== '[]' && handle.handlePictureAttachments !== undefined && handle.handlePictureAttachments !== null) {
+            setFieldsValue({ handlePictureAttachments: handle.handlePictureAttachments }, () => { });
+        }
+
+        if (handle && handle.handleAttachments !== '[]' && handle.handleAttachments !== undefined && handle.handleAttachments !== null) {
+            setFieldsValue({ handleAttachments: handle.handleAttachments }, () => { });
+        }
+    }, []);
 
     useImperativeHandle(
         ref,
@@ -44,6 +58,7 @@ const HandleChild = React.forwardRef((props, ref) => {
         }),
         [],
     );
+    
     const required = true;
 
     useEffect(() => {
@@ -163,67 +178,56 @@ const HandleChild = React.forwardRef((props, ref) => {
                 <Col span={20}>
                     <Col span={14}>
                         <Form.Item
-                            label={<><span style={{ color: 'red' }}>*</span><span>上传故障处理记录表</span></>}
+                            label="上传故障处理记录表"
                             {...forminladeLayout1}
-                            // extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb"
+                        // extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb"
                         >
-                            {/* {getFieldDecorator('handleRecordAttachments', 
-                            {
-                                // initialValue: (JSON.parse(handle.handleRecordAttachments) || []).map(f =>
-                                //     JSON.stringify({
-                                //         // 为了提供给上传组件回显
-                                //         uid: f.uid,  // 这是上传组件规定的文件唯一标识，内部会提供给Form以便正常渲染回显列表
-                                //         name: f.name,
-                                //         status: 'done',
-                                //         url: f.fileUrl,
-                                //         // 为了迎合最终向后端提交附件时方便新老文件统一处理
-                                //         saveParams: {
-                                //             filename: f.name,
-                                //             url: f.fileUrl,
-                                //         }
-                                //     })),
-                                rules: [{
-                                    required: true, message: '请上传故障处理记录表', 
-                                }],
-                                // valuePropName: 'fileList',
-                                getValueFromEvent: (e) => {
-                                    if (Array.isArray(e)) {
-                                        return e;
-                                    }
-                                    return e && e.fileList;
-                                }
+                            {getFieldDecorator('handleRecordAttachments', {
+                                rules: [
+                                    {
+                                        required,
+                                        message: '请上传故障处理记录表！'
+                                    },
+                                ],
                             })(
-                               
-                            )} */}
-                            <div
-                                style={{ width: 400 }}
-                                onMouseOver={() => {
-                                    ChangeFileskey('1');
-                                }}
-                                onFocus={() => 0}
-                            >
-                                <SysUpload fileslist={(handle && handle.handleRecordAttachments) ? JSON.parse(handle.handleRecordAttachments) : []} ChangeFileslist={newvalue => setFilesList(newvalue)} />
-                            </div>
-
+                                <div
+                                    style={{ width: 400 }}
+                                    onMouseOver={() => {
+                                        ChangeFileskey('1');
+                                    }}
+                                    onFocus={() => 0}
+                                >
+                                    <SysUpload fileslist={(handle && handle.handleRecordAttachments) ? JSON.parse(handle.handleRecordAttachments) : []} ChangeFileslist={newvalue => setFilesList(newvalue)} />
+                                </div>
+                            )}
                         </Form.Item></Col>
                 </Col>
 
                 <Col span={20}>
                     <Col span={14}>
                         <Form.Item
-                            label={<><span style={{ color: 'red' }}>*</span><span>故障系统截图</span></>}
+                            label="故障系统截图"
                             {...forminladeLayout1}
-                            // extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb"
+                        // extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb"
                         >
-                            <div
-                                style={{ width: 400 }}
-                                onMouseOver={() => {
-                                    ChangeFileskey('2');
-                                }}
-                                onFocus={() => 0}
-                            >
-                                <SysUpload fileslist={(handle && handle.handlePictureAttachments) ? JSON.parse(handle.handlePictureAttachments) : []} ChangeFileslist={newvalue => setFilesList(newvalue)} />
-                            </div>
+                            {getFieldDecorator('handlePictureAttachments', {
+                                rules: [
+                                    {
+                                        required,
+                                        message: '请故障系统截图！'
+                                    },
+                                ],
+                            })(
+                                <div
+                                    style={{ width: 400 }}
+                                    onMouseOver={() => {
+                                        ChangeFileskey('2');
+                                    }}
+                                    onFocus={() => 0}
+                                >
+                                    <SysUpload fileslist={(handle && handle.handlePictureAttachments) ? JSON.parse(handle.handlePictureAttachments) : []} ChangeFileslist={newvalue => setFilesList(newvalue)} />
+                                </div>
+                            )}
                         </Form.Item>
                     </Col>
                 </Col>
@@ -233,17 +237,20 @@ const HandleChild = React.forwardRef((props, ref) => {
                         <Form.Item
                             label="上传附件"
                             {...forminladeLayout1}
-                            // extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb"
+                        // extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb"
                         >
-                            <div
-                                style={{ width: 400 }}
-                                onMouseOver={() => {
-                                    ChangeFileskey('3');
-                                }}
-                                onFocus={() => 0}
-                            >
-                                <SysUpload fileslist={(handle && handle.handleAttachments) ? JSON.parse(handle.handleAttachments) : []} ChangeFileslist={newvalue => setFilesList(newvalue)} />
-                            </div>
+                            {getFieldDecorator('handleAttachments', {})(
+                                <div
+                                    style={{ width: 400 }}
+                                    onMouseOver={() => {
+                                        ChangeFileskey('3');
+                                    }}
+                                    onFocus={() => 0}
+                                >
+                                    <SysUpload fileslist={(handle && handle.handleAttachments) ? JSON.parse(handle.handleAttachments) : []} ChangeFileslist={newvalue => setFilesList(newvalue)} />
+                                </div>
+                            )}
+
                         </Form.Item>
                     </Col>
                 </Col>

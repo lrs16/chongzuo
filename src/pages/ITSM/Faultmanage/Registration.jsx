@@ -163,9 +163,6 @@ function Registration(props) {
         <Button type="primary" style={{ marginRight: 8 }} onClick={handleSave}>
           保存
             </Button>
-        {/* <SelectUser handleSubmit={() => faultcircula()}>
-          <Button type="primary" style={{ marginRight: 8 }}>流转</Button>
-        </SelectUser> */}
         <Button type="default" onClick={close}>关闭</Button>
       </Card>
       <div className={styles.collapse}>
@@ -183,7 +180,13 @@ function Registration(props) {
                   <Form.Item label="故障编号">
                     {getFieldDecorator('no', {
                       initialValue: newno.troubleNo || '',
-                    })(<Input placeholder="请输入" disabled />)}
+                    })(<Input disabled />)}
+                  </Form.Item>
+                </Col>
+
+                <Col span={8}>
+                  <Form.Item>
+                    <Button type="primary" onClick={getNewno}>获取最新编号</Button>
                   </Form.Item>
                 </Col>
 

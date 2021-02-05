@@ -30,6 +30,7 @@ const ConfirmChild = React.forwardRef((props, ref) => {
         }),
         [],
     );
+    
     const required = true;
 
     useEffect(() => {

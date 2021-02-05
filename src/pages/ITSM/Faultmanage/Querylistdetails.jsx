@@ -41,7 +41,7 @@ function Querylistdetails(props) {
     const pagetitle = props.route.name;
     const [activeKey, setActiveKey] = useState();
     const [tabActiveKey, setTabActiveKey] = useState('faultForm'); // tab切换
-    
+
     const {
         location: { ids }, // ids 列表传过来的id
         dispatch,
@@ -103,11 +103,7 @@ function Querylistdetails(props) {
 
     return (
         <PageHeaderWrapper
-            extra={
-                <>
-                    <Button type="default" onClick={handleClose}>返 回</Button>
-                </>
-            }
+            extra={<Button type="default" onClick={handleClose}>返 回</Button>}
             title={pagetitle}
             tabList={tabList}
             onTabChange={handleTabChange}
@@ -115,7 +111,7 @@ function Querylistdetails(props) {
         >
             {
                 (tabActiveKey === 'faultForm' &&
-                    <div className={styles.collapse}>
+                    (<div className={styles.collapse}>
                         <Card
                             style={{
                                 background: '#fff',
@@ -169,7 +165,7 @@ function Querylistdetails(props) {
                                 </Collapse>
                             )}
                         </div>
-                    </div>
+                    </div>)
                 )
             }
             {
