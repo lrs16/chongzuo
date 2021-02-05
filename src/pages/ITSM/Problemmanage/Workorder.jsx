@@ -89,6 +89,7 @@ function Workorder(props) {
     prioritylist,
     scopeList,
     projectList,
+    userinfo,
     loading
   } = props;
 
@@ -172,7 +173,11 @@ function Workorder(props) {
   }
 
 
-
+  const queryDept = () => {
+    dispatch({
+      type: 'itsmuser/fetchuser',
+    });
+  }
   const getNewno = () => {
     dispatch({
       type: 'problemmanage/getregisterNo',
@@ -573,6 +578,7 @@ function Workorder(props) {
     getpriority();
     getscope();
     getProject();
+    queryDept();
     sessionStorage.setItem('Processtype', 'problem');
     sessionStorage.setItem('Nextflowmane', '');
   }, []);
@@ -820,7 +826,7 @@ function Workorder(props) {
                         forminladeLayout={forminladeLayout}
                         ref={RegistratRef}
                         registerno={newno}
-                        useInfo={useInfo}
+                        useInfo={userinfo}
                         register={register}
                         main={main}
                         files={
@@ -851,7 +857,7 @@ function Workorder(props) {
                           formItemLayout={formItemLayout}
                           forminladeLayout={forminladeLayout}
                           ref={PreviesRef}
-                          useInfo={useInfo}
+                          useInfo={userinfo}
                           check={check}
                           loading={loading}
                           flowNodeName={flowNodeName}
@@ -882,7 +888,7 @@ function Workorder(props) {
                           forminladeLayout={forminladeLayout}
                           showEdit={showEdit}
                           ref={PreviesRef}
-                          useInfo={useInfo}
+                          useInfo={userinfo}
                           check={check}
                           loading={loading}
                           flowNodeName={flowNodeName}
@@ -911,7 +917,7 @@ function Workorder(props) {
                         forminladeLayout={forminladeLayout}
                         showEdit={showEdit}
                         ref={HandleRef}
-                        useInfo={useInfo}
+                        useInfo={userinfo}
                         handle={handle}
                         handleTime={handleTime}
                         receivingTime={receivingTime}
@@ -941,7 +947,7 @@ function Workorder(props) {
                           forminladeLayout={forminladeLayout}
                           showEdit={showEdit}
                           ref={ProblemconfirmRef}
-                          useInfo={useInfo}
+                          useInfo={userinfo}
                           handle={confirm}
                           handleTime={handleTime}
                           receivingTime={receivingTime}
@@ -973,7 +979,7 @@ function Workorder(props) {
                           forminladeLayout={forminladeLayout}
                           showEdit={showEdit}
                           ref={ProblemconfirmRef}
-                          useInfo={useInfo}
+                          useInfo={userinfo}
                           confirm={confirm}
                           handleTime={handleTime}
                           receivingTime={receivingTime}
@@ -1005,7 +1011,7 @@ function Workorder(props) {
                           forminladeLayout={forminladeLayout}
                           showEdit={showEdit}
                           ref={ProblemconfirmRef}
-                          useInfo={useInfo}
+                          useInfo={userinfo}
                           handle={confirm}
                           handleTime={handleTime}
                           receivingTime={receivingTime}
@@ -1108,6 +1114,7 @@ export default Form.create({})(
     handleList: problemdropdown.handleList,
     info: demandtodo.info,
     userlist: itsmuser.userlist,
+    userinfo: itsmuser.userinfo,
     keyVallist: problemdropdown.keyVallist,
     typelist: problemdropdown.typelist,
     prioritylist: problemdropdown.prioritylist,

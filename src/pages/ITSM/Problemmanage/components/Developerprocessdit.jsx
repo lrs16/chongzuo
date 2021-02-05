@@ -134,7 +134,7 @@ const Developerprocessdit = React.forwardRef((props, ref) => {
         <Col span={8}>
           <Form.Item label="处理单位">
             {getFieldDecorator('handleUnit', {
-              initialValue: '广西电网有限责任公司',
+              initialValue: useInfo.unitName,
             })(<Input disabled />)}
           </Form.Item>
         </Col>
@@ -142,7 +142,7 @@ const Developerprocessdit = React.forwardRef((props, ref) => {
         <Col span={8}>
           <Form.Item label="处理部门">
             {getFieldDecorator('handleDept', {
-              initialValue: useInfo.deptNameExt,
+              initialValue: useInfo.deptName,
             })(<Input disabled />)}
           </Form.Item>
         </Col>

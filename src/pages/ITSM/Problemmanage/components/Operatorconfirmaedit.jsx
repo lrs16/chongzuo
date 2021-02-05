@@ -183,7 +183,7 @@ const Operatorconfirmaedit = React.forwardRef((props, ref) => {
           <Form.Item label='确认人单位'>
             {
               getFieldDecorator('confirmUnit', {
-                initialValue: '广西电网有限责任公司',
+                initialValue:  useInfo.unitName,
               })(<Input disabled />)
             }
           </Form.Item>
@@ -193,7 +193,7 @@ const Operatorconfirmaedit = React.forwardRef((props, ref) => {
           <Form.Item label='确认人部门'>
             {
               getFieldDecorator('confirmDept', {
-                initialValue: useInfo.deptNameExt,
+                initialValue: useInfo.deptName,
               })(<Input disabled />)
             }
           </Form.Item>

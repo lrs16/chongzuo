@@ -1,5 +1,5 @@
 import {
-  querkeyVal
+  querkeyVal,
 } from '../services/api';
 
 export default {
@@ -13,7 +13,7 @@ export default {
     handleList:[],
     projectList:[],
     stateList:[],
-    orderList:[]
+    orderList:[],
   },
 
   effects: {

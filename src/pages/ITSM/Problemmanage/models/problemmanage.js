@@ -23,10 +23,8 @@ import {
   transferOrder,
   querydownload,
   downFile,
-  querkeyVal
+  querkeyVal,
 } from '../services/api';
-
-
 
 export default {
   namespace: 'problemmanage',
@@ -271,8 +269,6 @@ export default {
         payload: response
       })
     },
-
-
 
   },
 

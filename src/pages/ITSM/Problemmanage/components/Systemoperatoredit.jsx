@@ -15,19 +15,20 @@ const { TextArea } = Input;
 
 const Systemoperatoredit  = React.forwardRef((props, ref) => {
   const { formItemLayout,forminladeLayout, files, ChangeFiles, flowNodeName } = props;
-  console.log('files: ', files);
   const { flowtype, setFlowtype } = useContext(FatherContext);
   const { getFieldDecorator } = props.form;
 
   const [fileslist, setFilesList] = useState([]);
-  // const [filess, setFiless] = useState([]);
+  const [filess, setFiless] = useState([]);
   useEffect(() => {
     ChangeFiles(fileslist);
   }, [fileslist]);
 
-  // useEffect(() => {
-  //   setFiless(files);
-  // }, [files]);
+  useEffect(() => {
+    setFiless(item => {
+      return item;
+    });
+  }, [files]);
 
   const attRef = useRef();
   useImperativeHandle(
@@ -168,7 +169,7 @@ const Systemoperatoredit  = React.forwardRef((props, ref) => {
         <Col span={8}>
           <Form.Item label="审核单位">
             {getFieldDecorator('checkUnit', {
-              initialValue: '广西电网有限责任公司',
+              initialValue: useInfo.unitName,
             })(<Input disabled />)}
           </Form.Item>
         </Col>
@@ -176,11 +177,10 @@ const Systemoperatoredit  = React.forwardRef((props, ref) => {
         <Col span={8}>
           <Form.Item label="审核部门">
             {getFieldDecorator('checkDept', {
-              initialValue: useInfo.deptNameExt,
+              initialValue: useInfo.deptName,
             })(<Input disabled />)}
           </Form.Item>
         </Col>
-
       </Form>
     </Row>
   )

@@ -35,24 +35,24 @@ function Registration(props) {
   const {
     dispatch,
     list,
-    useInfo,
     keyVallist,
     typelist,
     prioritylist,
     scopeList,
     projectList,
     startid,
+    userinfo
   } = props;
   const [show, setShow] = useState(false);
   const [activeKey, setActiveKey] = useState(['1']);
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
   const RegistratRef = useRef();
 
-  const getUserinfo = () => {
-    dispatch({
-      type: 'problemmanage/fetchUseinfo',
-    });
-  };
+  // const getUserinfo = () => {
+  //   dispatch({
+  //     type: 'problemmanage/fetchUseinfo',
+  //   });
+  // };
 
   const getSourceapi = (dictModule, dictType) => {
     dispatch({
@@ -92,13 +92,19 @@ function Registration(props) {
     getSourceapi(dictModule, dictType);
   }
 
+  const queryDept = () => {
+    dispatch({
+      type: 'itsmuser/fetchuser',
+    });
+  }
   useEffect(() => {
-    getUserinfo();
+    // getUserinfo();
     getSource();
     gettype();
     getpriority();
     getscope();
     getProject();
+    queryDept();
   }, []);
 
 
@@ -177,7 +183,7 @@ function Registration(props) {
                 show={show}
                 ref={RegistratRef}
                 list={list}
-                useInfo={useInfo}
+                useInfo={userinfo}
                 files={files.arr}
                 ChangeFiles={newvalue => {
                   setFiles(newvalue);
@@ -198,17 +204,18 @@ function Registration(props) {
 }
 
 export default Form.create({})(
-  connect(({ problemmanage, demandtodo, problemdropdown, loading }) => ({
+  connect(({ problemmanage, demandtodo, problemdropdown, itsmuser, loading }) => ({
     list: problemmanage.list,
     id: problemmanage.id,
     newno: problemmanage.newno,
-    useInfo: problemmanage.useInfo,
+    // useInfo: problemmanage.useInfo,
     info: demandtodo.info,
     keyVallist: problemdropdown.keyVallist,
     typelist: problemdropdown.typelist,
     prioritylist: problemdropdown.prioritylist,
     scopeList: problemdropdown.scopeList,
     projectList: problemdropdown.projectList,
+    userinfo: itsmuser.userinfo,
     startid: problemmanage.startid,
     loading: loading.models.problemmanage,
   }))(Registration),

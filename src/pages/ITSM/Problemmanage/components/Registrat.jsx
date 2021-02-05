@@ -316,7 +316,7 @@ const Registrat = React.forwardRef((props, ref) => {
                     message: '请输入填报人单位',
                   },
                 ],
-                initialValue: '广西电网有限责任公司',
+                initialValue: useInfo.unitName,
               })(
                 <Input disabled />,
               )}
@@ -331,7 +331,7 @@ const Registrat = React.forwardRef((props, ref) => {
                     message: '请输入填报人部门',
                   },
                 ],
-                initialValue: useInfo.deptNameExt,
+                initialValue: useInfo.deptName,
               })(<Input disabled />)}
             </Form.Item>
           </Col>
