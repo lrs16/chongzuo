@@ -86,7 +86,7 @@ export default {
         });
       }
     },
-    // 编辑流转,流转成功转回待办列表,转单
+    // 编辑流转,流转成功转回待办列表,转单，
     *eventflow({ payload: { flow, paloadvalues } }, { call }) {
       const values = replacerec({ ...paloadvalues });
       const registres = yield call(EventSaveFlow, values);
@@ -106,13 +106,16 @@ export default {
     },
     // 结束流程
     *overflow({ payload: { flow, paloadvalues } }, { call }) {
-      console.log(paloadvalues);
-      const response = yield call(EventFlow, flow, paloadvalues);
-      if (response.code === 200) {
-        message.success(response.msg, 3);
-        router.push({
-          pathname: `/ITSM/eventmanage/to-do`,
-        });
+      const values = replacerec({ ...paloadvalues });
+      const registres = yield call(EventSaveFlow, values);
+      if (registres.code === 200) {
+        const response = yield call(EventFlow, flow);
+        if (response.code === 200) {
+          message.success(response.msg, 3);
+          router.push({
+            pathname: `/ITSM/eventmanage/to-do`,
+          });
+        }
       }
     },
 
