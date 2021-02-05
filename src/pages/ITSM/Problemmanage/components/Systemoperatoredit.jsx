@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useImperativeHandle, useEffect, useState } from 'react';
+import React, { useEffect, useRef, useImperativeHandle, useContext, useState } from 'react';
 import {
   Row,
   Col,
@@ -13,15 +13,20 @@ import SysUpload from '@/components/SysUpload';
 
 const { TextArea } = Input;
 
-const Systemoperatoredit = React.forwardRef((props, ref) => {
-  const { formItemLayout, forminladeLayout, flowNodeName, files, ChangeFiles } = props;
-  const { getFieldDecorator } = props.form;
+const Systemoperatoredit  = React.forwardRef((props, ref) => {
+  const { formItemLayout,forminladeLayout, files, ChangeFiles, flowNodeName } = props;
   const { flowtype, setFlowtype } = useContext(FatherContext);
+  const { getFieldDecorator } = props.form;
 
   const [fileslist, setFilesList] = useState([]);
+  const [filess, setFiless] = useState([]);
   useEffect(() => {
     ChangeFiles(fileslist);
   }, [fileslist]);
+
+  useEffect(() => {
+    setFiless(files);
+  }, [files]);
 
   const attRef = useRef();
   useImperativeHandle(
@@ -45,8 +50,8 @@ const Systemoperatoredit = React.forwardRef((props, ref) => {
 
   return (
     <Row gutter={16}>
-      <Form {...formItemLayout}>
-        <Col span={23}>
+      <Form  {...formItemLayout}>
+      <Col span={23}>
           <Form.Item label='审核结果' {...forminladeLayout}>
             {getFieldDecorator('checkResult', {
               rules: [
@@ -129,7 +134,7 @@ const Systemoperatoredit = React.forwardRef((props, ref) => {
                 {...forminladeLayout}
               >
                 <div style={{ width: 400 }}>
-                  <SysUpload fileslist={files} ChangeFileslist={newvalue => setFilesList(newvalue)} />
+                  <SysUpload fileslist={filess} ChangeFileslist={newvalue => setFilesList(newvalue)} />
                 </div>
               </Form.Item>
             </Col>
@@ -144,12 +149,13 @@ const Systemoperatoredit = React.forwardRef((props, ref) => {
                 {...forminladeLayout}
               >
                 <div style={{ width: 400 }}>
-                  <SysUpload fileslist={files} ChangeFileslist={newvalue => setFilesList(newvalue)} />
+                  <SysUpload fileslist={filess} ChangeFileslist={newvalue => setFilesList(newvalue)} />
                 </div>
               </Form.Item>
             </Col>
           )
         }
+
 
         <Col span={8}>
           <Form.Item label="审核人">
@@ -174,10 +180,11 @@ const Systemoperatoredit = React.forwardRef((props, ref) => {
             })(<Input disabled />)}
           </Form.Item>
         </Col>
+
       </Form>
     </Row>
-  );
-});
+  )
+})
 
 Systemoperatoredit.defaultProps = {
   check: {

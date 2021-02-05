@@ -883,7 +883,7 @@ function Workorder(props) {
                 }
 
                 {
-                  flowNodeName === '自动化科审核' && (
+                  flowNodeName === '自动化科审核' &&(
                     <Panel
                       header="自动化科审核"
                       key='1'

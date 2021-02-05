@@ -31,10 +31,12 @@ const Operatorconfirmaedit = React.forwardRef((props, ref) => {
     }),
     [],
   );
+
   const {
     confirm,
     useInfo,
   } = props;
+
   const onChange = (e) => {
     setFlowtype(e.target.value);
   }
@@ -167,7 +169,6 @@ const Operatorconfirmaedit = React.forwardRef((props, ref) => {
           )
         }
 
-
         <Col span={8}>
           <Form.Item label='确认人'>
             {
@@ -175,9 +176,7 @@ const Operatorconfirmaedit = React.forwardRef((props, ref) => {
                 initialValue: useInfo.userName,
               })(<Input disabled />)
             }
-
           </Form.Item>
-
         </Col>
 
         <Col span={8}>
@@ -188,7 +187,6 @@ const Operatorconfirmaedit = React.forwardRef((props, ref) => {
               })(<Input disabled />)
             }
           </Form.Item>
-
         </Col>
 
         <Col span={8}>
@@ -199,7 +197,6 @@ const Operatorconfirmaedit = React.forwardRef((props, ref) => {
               })(<Input disabled />)
             }
           </Form.Item>
-
         </Col>
 
       </Form>

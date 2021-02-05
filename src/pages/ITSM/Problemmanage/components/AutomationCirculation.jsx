@@ -109,7 +109,7 @@ const SelectUser = props => {
               <div style={{ marginTop: 12 }}>
                 <Checkbox.Group
                   defaultValue={defaultvalue}
-                  options={dataArr(userlist.dutyData)}
+                  options={dataArr(userlist.serviceData)}
                   onChange={handleChange}
                 />
               </div>
@@ -118,7 +118,7 @@ const SelectUser = props => {
               <div style={{ marginTop: 12 }}>
                 <Checkbox.Group
                   defaultValue={defaultvalue}
-                  options={dataArr(userlist.serviceData)}
+                  options={dataArr(userlist.dutyData)}
                   onChange={specialhandleChange}
                 />
               </div>
