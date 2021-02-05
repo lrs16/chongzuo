@@ -65,11 +65,6 @@ const columns = [
     key: 'currentNode',
   },
   {
-    title: '发送人',
-    dataIndex: 'registerUser',
-    key: 'registerUser',
-  },
-  {
     title: '发送时间',
     dataIndex: 'createTime',
     key: 'createTime',

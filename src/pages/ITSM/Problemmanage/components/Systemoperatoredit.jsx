@@ -17,8 +17,8 @@ const Systemoperatoredit = React.forwardRef((props, ref) => {
   const { formItemLayout, forminladeLayout, flowNodeName, files, ChangeFiles } = props;
   const { getFieldDecorator } = props.form;
   const { flowtype, setFlowtype } = useContext(FatherContext);
-  const [fileslist, setFilesList] = useState([]);
 
+  const [fileslist, setFilesList] = useState([]);
   useEffect(() => {
     ChangeFiles(fileslist);
   }, [fileslist]);
@@ -31,6 +31,7 @@ const Systemoperatoredit = React.forwardRef((props, ref) => {
     }),
     [],
   );
+
   const {
     check,
     useInfo

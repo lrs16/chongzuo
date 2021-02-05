@@ -69,11 +69,6 @@ const columns = [
     dataIndex: 'handleUnit',
     key: 'handleUnit',
   },
-  {
-    title: '发送人',
-    dataIndex: 'registerUser',
-    key: 'registerUser',
-  },
 ];
 
 function Besolved(props) {
