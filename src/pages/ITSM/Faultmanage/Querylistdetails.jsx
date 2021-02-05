@@ -38,7 +38,7 @@ const tabList = [
 ];
 
 function Querylistdetails(props) {
-    const pagetitle = props.route.name;
+    // const pagetitle = props.route.name;
     const [activeKey, setActiveKey] = useState();
     const [tabActiveKey, setTabActiveKey] = useState('faultForm'); // tab切换
 
@@ -104,7 +104,7 @@ function Querylistdetails(props) {
     return (
         <PageHeaderWrapper
             extra={<Button type="default" onClick={handleClose}>返 回</Button>}
-            title={pagetitle}
+            title={main && main.statuscn}
             tabList={tabList}
             onTabChange={handleTabChange}
             tabActiveKey={tabActiveKey}

@@ -87,7 +87,7 @@ const Collapsekeymap = new Map([
 ]);
 
 function Todolistdetails(props) {
-  const pagetitle = props.route.name;
+  // const pagetitle = props.route.name;
   const [activeKey, setActiveKey] = useState([]);
   const [tabActiveKey, setTabActiveKey] = useState('faultForm');
 
@@ -97,8 +97,6 @@ function Todolistdetails(props) {
   const [result, setResult] = useState('1');
   const [resultsecond, setResultsecond] = useState('1');
   const [resultconfirm, setResultconfirm] = useState('1');
-
-  // const [buttontype, setButtontype] = useState('save');
 
   const RegisterRef = useRef(); // 故障登记
   const ExamineRef = useRef(); // 系统运维商审核  自动化科业务负责人审核
@@ -171,9 +169,9 @@ function Todolistdetails(props) {
     sessionStorage.setItem('Processtype', 'troub');
   }, []);
 
-  useEffect(() => {
-    sessionStorage.setItem('flowtype', '1');
-  }, ['1']);
+  useEffect(() => { 
+      sessionStorage.setItem('flowtype', '1');
+  }, []);
 
   useEffect(() => {
     if (loading === false) {
@@ -700,8 +698,12 @@ function Todolistdetails(props) {
                 handleSubmit={() => faultcircula('transfer')}
                 taskId={id}
                 changorder="请选择转单处理"
+                
               >
-                <Button type="primary">转单</Button>
+                <Button type="primary" onMouseOver={() => {
+                  sessionStorage.setItem('flowtype', '9');
+                }}
+                onFocus={() => 0}>转单</Button>
               </SelectUser>
             )
           }
@@ -721,6 +723,10 @@ function Todolistdetails(props) {
               >
                 <Button
                   type="primary"
+                  onMouseOver={() => {
+                    sessionStorage.setItem('flowtype', '1');
+                  }}
+                  onFocus={() => 0}
                 >
                   流转
                     </Button>
@@ -752,7 +758,7 @@ function Todolistdetails(props) {
           
         </>
       }
-      title={pagetitle}
+      title={flowNodeName}
       tabList={tabList}
       onTabChange={handleTabChange}
       tabActiveKey={tabActiveKey}

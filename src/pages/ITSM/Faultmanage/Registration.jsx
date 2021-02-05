@@ -157,7 +157,7 @@ function Registration(props) {
         typeid="1354278126724583426"
         commonid="1354288354950123522"
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
-        style={{ display: 'non' }}
+        style={{ display: 'none' }}
       />
       <Card style={{ textAlign: 'right' }}>
         <Button type="primary" style={{ marginRight: 8 }} onClick={handleSave}>
@@ -186,7 +186,7 @@ function Registration(props) {
 
                 <Col span={8}>
                   <Form.Item>
-                    <Button type="primary" onClick={getNewno}>获取最新编号</Button>
+                    <Button type="primary" onClick={() => getNewno()}>获取最新编号</Button>
                   </Form.Item>
                 </Col>
 

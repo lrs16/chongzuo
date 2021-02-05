@@ -80,7 +80,7 @@ const HandleChild = React.forwardRef((props, ref) => {
                 typeid="1354278126724583426"
                 commonid="1354288354950123522"
                 ChangeSelectdata={newvalue => setSelectData(newvalue)}
-                style={{ display: 'non' }}
+                style={{ display: 'none' }}
             />
             <Form {...formItemLayout}>
                 <Col span={24}>

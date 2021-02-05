@@ -131,26 +131,36 @@ export default {
     *getSaveUserId({ payload: { formValues } }, { call, put }) {
       const response = yield call(querySaveUserId);
       // console.log(response, '故障流程启动！！');
-      yield put({
-        type: 'getsaveuserid',
-        payload: response,
-      });
-      // 故障流程启动成功时，提交表单数据
-      const { flowTaskId, flowNodeName } = response; // 用户数据携带的id
-      const saveInfo = formValues;
-      saveInfo.taskId = flowTaskId;
-      if (response.code === 200) {
-        const resRegister = yield call(querySavefaultRegister, saveInfo); // querySavefaultRegister登记保存
-        // 保存成功后的操作
-        if (resRegister.code === 200) {
-          // 用户数据携带的id 跳转待办详情页
-          message.success(resRegister.msg);
-          router.push({
-            pathname: `/ITSM/faultmanage/todolist/record/${flowTaskId}`,
-            paneKey: flowNodeName
-          });
-        } else {
-          message.error(resRegister.msg);
+      if(response.code === 200) {
+        yield put({
+          type: 'getsaveuserid',
+          payload: response,
+        });
+        
+        // const responseno = yield call(queryTroubleGetNewno);
+        // yield put({
+        //   type: 'getNewno',
+        //   payload: response,
+        // });
+        
+        // 故障流程启动成功时，提交表单数据
+        const { flowTaskId, flowNodeName } = response; // 用户数据携带的id
+        const saveInfo = formValues;
+        saveInfo.taskId = flowTaskId;
+        // saveInfo.no = responseno.troubleNo;
+        if (response.code === 200) {
+          const resRegister = yield call(querySavefaultRegister, saveInfo); // querySavefaultRegister登记保存
+          // 保存成功后的操作
+          if (resRegister.code === 200) {
+            // 用户数据携带的id 跳转待办详情页
+            message.success(resRegister.msg);
+            router.push({
+              pathname: `/ITSM/faultmanage/todolist/record/${flowTaskId}`,
+              paneKey: flowNodeName
+            });
+          } else {
+            message.error(resRegister.msg);
+          }
         }
       }
     },

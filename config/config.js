@@ -321,7 +321,7 @@ export default {
                     },
                     {
                       path: '/ITSM/faultmanage/todolist/record/:id',
-                      name: '故障待办详情页',
+                      name: '待办详情',
                       icon: 'cloud-server',
                       component: './ITSM/Faultmanage/Todolistdetails',
                     },
@@ -333,7 +333,7 @@ export default {
                     },
                     {
                       path: '/ITSM/faultmanage/querylist/record/:id',
-                      name: '故障查询详情页',
+                      name: '查询详情',
                       icon: 'cloud-server',
                       component: './ITSM/Faultmanage/Querylistdetails',
                     },
