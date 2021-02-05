@@ -9,7 +9,7 @@ export async function queryCurrent() {
 
 //  获取新的问题编号
 export async function getNewno() {
-  return request(`/itsm/problem/flow/getNewNo`);
+  return request(`/problem/flow/getNewNo`);
 }
 
 export async function problemList() {
@@ -18,12 +18,12 @@ export async function problemList() {
 
 //  保存用户数据携带的id
 export async function getAddid() {
-  return request(`/itsm/problem/flow/start`);
+  return request(`/problem/flow/start`);
 }
 
 //  登记保存
 export async function saveRegister(params) {
-  return request(`/itsm/problem/flow/saveFlow`, {
+  return request(`/problem/flow/saveFlow`, {
     method: 'POST',
     body: JSON.stringify(params),
   });
@@ -34,7 +34,7 @@ export async function besolveList(current, pageSize) {
   const obj = {};
   obj.pageNum = current;
   obj.pageSize = pageSize;
-  return request(`/itsm/problem/flow/getWaitDoPage`, {
+  return request(`/problem/flow/getWaitDoPage`, {
     method: 'POST',
     body: JSON.stringify(obj),
   });
@@ -44,14 +44,14 @@ export async function searchBesolve(current, pageSize, values) {
   const obj = values;
   obj.pageNum = current;
   obj.pageSize = pageSize;
-  return request(`/itsm/problem/flow/getWaitDoPage`, {
+  return request(`/problem/flow/getWaitDoPage`, {
     method: 'POST',
     body: JSON.stringify(obj),
   });
 }
 
 export async function deleteTobo(deleteid) {
-  return request(`/itsm/problem/flow/deleteInstance?ids=${deleteid}`, {
+  return request(`/problem/flow/deleteInstance?ids=${deleteid}`, {
     method: 'DELETE',
   });
 }
@@ -62,21 +62,21 @@ export async function backReason(id, values) {
   obj.userIds = id;
   obj.taskId = id;
   obj.result = -1;
-  return request(`/itsm/problem/flow/submit`, {
+  return request(`/problem/flow/submit`, {
     method: 'POST',
-    data:obj,
-    requestType:'form'
+    data: obj,
+    requestType: 'form',
   });
 }
 
 //  登记详情页
 export async function todoInformation(id) {
-  return request(`/itsm/problem/flow/openFlow?taskId=${id}`);
+  return request(`/problem/flow/openFlow?taskId=${id}`);
 }
 
 //  流转的待办人的接口
 export async function tobeListpeople(taskId) {
-  return request(`/itsm/problem/flow/assignee?taskId=${taskId}&result=1`);
+  return request(`/problem/flow/assignee?taskId=${taskId}&result=1`);
 }
 
 //  流转待办人保存接口
@@ -84,16 +84,16 @@ export async function saveTobelist(params) {
   // const obj = {};
   // obj.taskId = taskId;
   // obj.userIds = 1;
-  return request(`/itsm/problem/flow/submit`, {
+  return request(`/problem/flow/submit`, {
     method: 'POST',
     data: params,
-    requestType:'form'
+    requestType: 'form',
   });
 }
 
 //  后端返回的流程
 export async function getFlowImage(id) {
-  return request(`/itsm/problem/flow/getFlowImage?id=${id}`, {
+  return request(`/problem/flow/getFlowImage?id=${id}`, {
     method: 'GET',
     responseType: 'blob',
   });
@@ -101,7 +101,7 @@ export async function getFlowImage(id) {
 
 //  流程日志
 export async function getFlowlog(id) {
-  return request(`/itsm/problem/flow/getFlowLog?id=${id}`);
+  return request(`/problem/flow/getFlowLog?id=${id}`);
 }
 
 // 事件列表
@@ -119,17 +119,17 @@ export async function realselist() {
 }
 
 // // 问题查询列表查询
-export async function queryList(current, pageSize,values) {
+export async function queryList(current, pageSize, values) {
   let obj;
-  if(values) {
-     obj = values;
+  if (values) {
+    obj = values;
   } else {
-     obj = {};
+    obj = {};
   }
-  
+
   obj.pageNum = current;
   obj.pageSize = pageSize;
-  return request(`/itsm/problem/flow/getOrderPage`, {
+  return request(`/problem/flow/getOrderPage`, {
     method: 'POST',
     body: JSON.stringify(obj),
   });
@@ -143,37 +143,33 @@ export async function fileUpload() {
 }
 
 export async function problemHandleOrder(id) {
-  return request(`/itsm/problem/flow/problemHandleOrder?taskId=${id}`);
+  return request(`/problem/flow/problemHandleOrder?taskId=${id}`);
 }
 
 //  查询详情
 export async function queryDetail(id) {
-  return request(`/itsm/problem/flow/getOrderDetail?id=${id}`)
+  return request(`/problem/flow/getOrderDetail?id=${id}`);
 }
 
 //  转单
 export async function transferOrder() {
-  return request(`/itsm/problem/flow/transfer`,{
-    method:'POST'
-  })
+  return request(`/problem/flow/transfer`, {
+    method: 'POST',
+  });
 }
-
 
 // 下载itsm/event/form/downloadExcel
 export async function querydownload(params) {
-  return request(
-    `/itsm/problem/flow/expExcelOrderList`,
-    {
-      method: 'POST',
-      // responseType: 'blob',
-      body:JSON.stringify(params)
-    },
-  );
+  return request(`/problem/flow/expExcelOrderList`, {
+    method: 'POST',
+    // responseType: 'blob',
+    body: JSON.stringify(params),
+  });
 }
 
 // 下载文件
-export async function downFile(id){
-  return request(`/sys/file/${id}`)
+export async function downFile(id) {
+  return request(`/sys/file/${id}`);
 }
 
 // 数据字典结构树 /sys/dict/keyVal
@@ -184,5 +180,3 @@ export async function querkeyVal(dictModule, dictType) {
     requestType: 'form',
   });
 }
-
-

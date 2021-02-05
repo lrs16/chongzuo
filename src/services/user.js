@@ -36,14 +36,14 @@ export async function queryNotices() {
 
 // ITSM获取当前处理人信息
 export async function ITSMUser() {
-  return request(`/itsm/common/function/getUserInfo`, {
+  return request(`/common/function/getUserInfo`, {
     method: 'GET',
   });
 }
 
 // ITSM事件获取下一环节处理人列表
 export async function EventFlowUserList(taskId, type) {
-  return request(`/itsm/event/flow/getNextFlowUserList?taskId=${taskId}&type=${type}`, {
+  return request(`/event/flow/getNextFlowUserList?taskId=${taskId}&type=${type}`, {
     method: 'GET',
   });
 }
@@ -55,14 +55,14 @@ export async function DemandFlowUserList(taskId, result) {
 }
 // ITSM故障获取下一环节处理人列表
 export async function TroubleFlowUserList(taskId, result) {
-  return request(`/itsm/trouble/flow/assignee?taskId=${taskId}&result=${result}`, {
+  return request(`/trouble/flow/assignee?taskId=${taskId}&result=${result}`, {
     method: 'GET',
   });
 }
 
 // 加载问题下一环节处理人列表
 export async function ProblemFlowUserList(taskId, result) {
-  return request(`/itsm/problem/flow/assignee?taskId=${taskId}&result=${result}`, {
+  return request(`/problem/flow/assignee?taskId=${taskId}&result=${result}`, {
     method: 'GET',
   });
 }

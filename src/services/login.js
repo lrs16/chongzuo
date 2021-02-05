@@ -27,7 +27,7 @@ export async function fakeLogout(access_token) {
   });
 }
 
-//ITSM登录请求
+// ITSM登录请求
 export async function ITSMLogin(params) {
   return request('/oauth/jwt/token/itsm', {
     method: 'POST',

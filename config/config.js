@@ -953,22 +953,22 @@ export default {
       changeOrigin: true,
     },
     // ITSM通用接口
-    '/itsm/common/': {
+    '/common/': {
       target: 'http://172.16.4.211:9901/',
       changeOrigin: true,
     },
     // 事件管理,问题，故障
-    '/itsm/event/': {
+    '/event/': {
       target: 'http://172.16.4.211:9901/',
       changeOrigin: true,
     },
     // 问题管理
-    '/itsm/problem/': {
+    '/problem/': {
       target: 'http://172.16.4.211:9901/',
       changeOrigin: true,
     },
     // 故障管理
-    '/itsm/trouble/': {
+    '/trouble/': {
       target: 'http://172.16.4.211:9901/',
       changeOrigin: true,
     },
