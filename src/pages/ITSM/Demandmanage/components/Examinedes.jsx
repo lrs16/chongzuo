@@ -21,7 +21,9 @@ function Examinedes(props) {
       <Descriptions style={{ marginTop: 24 }} size="middle">
         <Descriptions.Item label={`${text}结果`}>{resultmap.get(info.result)}</Descriptions.Item>
         <Descriptions.Item>
-          {/* {resultmap.get(info.result) === 2 && <>科室领导审核</>} */}
+          {info.result === 2 && <>科室领导审核，市场部领导审核</>}
+          {info.result === 4 && <>科室领导审核</>}
+          {info.result === 3 && <>市场部领导审核</>}
         </Descriptions.Item>
         <Descriptions.Item />
         <Descriptions.Item label={`${text}时间`} span={3}>
