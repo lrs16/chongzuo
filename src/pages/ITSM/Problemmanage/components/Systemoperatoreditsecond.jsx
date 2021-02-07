@@ -13,23 +13,22 @@ import SysUpload from '@/components/SysUpload';
 
 const { TextArea } = Input;
 
-const Systemoperatoredit  = React.forwardRef((props, ref) => {
-  const { formItemLayout,forminladeLayout, files, ChangeFiles, flowNodeName,allInfo } = props;
-  let secondFiles = [];
-  if(flowNodeName === '自动化科审核') {
-    if(allInfo.editState !== undefined && (allInfo.editState === 'add')) {
-      secondFiles = [];
-    }else {
-      secondFiles = files;
-    }
-  }
+const Systemoperatoreditsecond  = React.forwardRef((props, ref) => {
+  const { formItemLayout,forminladeLayout, files, ChangeFiles, flowNodeName } = props;
   const { flowtype, setFlowtype } = useContext(FatherContext);
   const { getFieldDecorator } = props.form;
 
   const [fileslist, setFilesList] = useState([]);
+  const [filess, setFiless] = useState([]);
   useEffect(() => {
     ChangeFiles(fileslist);
   }, [fileslist]);
+
+  useEffect(() => {
+    setFiless(item => {
+      return item;
+    });
+  }, [files]);
 
   const attRef = useRef();
   useImperativeHandle(
@@ -145,29 +144,14 @@ const Systemoperatoredit  = React.forwardRef((props, ref) => {
         }
 
         {
-          flowNodeName === '自动化科审核' && (allInfo.editState === 'edit') && (
+          flowNodeName === '自动化科审核' && (
             <Col span={24}>
               <Form.Item
                 label="上传附件"
                 {...forminladeLayout}
               >
-               <div style={{ width: 400 }}>
-                  <SysUpload fileslist={secondFiles} ChangeFileslist={newvalue => setFilesList(newvalue)} />
-                </div>
-              </Form.Item>
-            </Col>
-          )
-        }
-
-        {
-          allInfo.editState !== undefined && (allInfo.editState === 'add') && flowNodeName === '自动化科审核' && (
-            <Col span={24}>
-              <Form.Item
-                label="上传附件"
-                {...forminladeLayout}
-              >
-               <div style={{ width: 400 }}>
-                  <SysUpload fileslist={[]} ChangeFileslist={newvalue => setFilesList(newvalue)} />
+                <div style={{ width: 400 }}>
+                  <SysUpload fileslist={files} ChangeFileslist={newvalue => setFilesList(newvalue)} />
                 </div>
               </Form.Item>
             </Col>
@@ -202,7 +186,7 @@ const Systemoperatoredit  = React.forwardRef((props, ref) => {
   )
 })
 
-Systemoperatoredit.defaultProps = {
+Systemoperatoreditsecond.defaultProps = {
   check: {
     checkOpinion: '',
     checkTime: moment().format(),
@@ -214,4 +198,4 @@ Systemoperatoredit.defaultProps = {
   }
 }
 
-export default Form.create({})(Systemoperatoredit);
+export default Form.create({})(Systemoperatoreditsecond);

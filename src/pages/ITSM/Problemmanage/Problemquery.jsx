@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
 import Link from 'umi/link';
+import moment from 'moment';
 import { Form, Card, Input, Button, Row, Col, Table, Select, DatePicker } from 'antd';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
@@ -68,6 +69,19 @@ const columns = [
     title: '处理单位',
     dataIndex: 'handleUnit',
     key: 'handleUnit',
+  },
+  {
+    title: '发送时间',
+    dataIndex: 'registerTime',
+    key: 'registerTime',
+    render: text => {
+      return <>{moment(text).format('YYYY-MM-DD HH:mm:ss')}</>;
+    }
+  },
+  {
+    title: '重要程度',
+    dataIndex: 'importance',
+    key: 'importance',
   },
 ];
 

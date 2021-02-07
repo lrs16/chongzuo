@@ -17,6 +17,7 @@ import Registrat from './components/Registrat';
 import Systemoperatoredit from './components/Systemoperatoredit';
 import Developerprocessdit from './components/Developerprocessdit';
 import Operatorconfirmaedit from './components/Operatorconfirmaedit';
+import Systemoperatoreditsecond from './components/Systemoperatoreditsecond';
 
 import Problemsolving from './components/Problemsolving';
 import Problemreview from './components/Problemreview';
@@ -92,6 +93,7 @@ function Workorder(props) {
     userinfo,
     loading
   } = props;
+
 
   let showback = true;
 
@@ -861,7 +863,7 @@ function Workorder(props) {
                           check={check}
                           loading={loading}
                           flowNodeName={flowNodeName}
-                          // files={listData}
+                          allInfo={todoDetail}
                           files={
                             todoDetail.check !== undefined && todoDetail.check.checkAttachments ? JSON.parse(todoDetail.check.checkAttachments) : []
                           }
@@ -886,13 +888,12 @@ function Workorder(props) {
                         <Systemoperatoredit
                           formItemLayout={formItemLayout}
                           forminladeLayout={forminladeLayout}
-                          showEdit={showEdit}
                           ref={PreviesRef}
                           useInfo={userinfo}
                           check={check}
                           loading={loading}
                           flowNodeName={flowNodeName}
-                          selSign={selSign}
+                          allInfo={todoDetail}
                           files={
                             todoDetail.check !== undefined && todoDetail.check.checkAttachments ? JSON.parse(todoDetail.check.checkAttachments) : []
                           }
@@ -901,9 +902,11 @@ function Workorder(props) {
                           }}
                         />
                       </FatherContext.Provider>
+
                     </Panel>
                   )
                 }
+
 
                 {
                   flowNodeName === '系统开发商处理' && (
