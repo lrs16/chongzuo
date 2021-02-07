@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
 import { Table } from 'antd';
 import { PaperClipOutlined } from '@ant-design/icons';
@@ -6,14 +6,29 @@ import styles from './style.less';
 
 function Tracklist(props) {
   const { dispatch, demandId, trackslist, loading } = props;
+  const [data, setData] = useState([]);
 
-  useEffect(() => {
+  const getlistdata = () => {
     dispatch({
       type: 'chacklist/fetchtracklist',
       payload: {
         demandId,
       },
+    }).then(res => {
+      if (res.code === 200) {
+        const newarr = res.data.map((item, index) => {
+          return Object.assign(item, { key: index });
+        });
+        setData(newarr);
+      }
     });
+  };
+
+  useEffect(() => {
+    getlistdata();
+    return () => {
+      setData([]);
+    };
   }, []);
 
   const columns = [
@@ -112,13 +127,13 @@ function Tracklist(props) {
       pagination={false}
       columns={columns}
       scroll={{ x: 1400 }}
-      dataSource={trackslist}
+      dataSource={data}
       loading={loading}
     />
   );
 }
 
-export default connect(({ chacklist, loading }) => ({
-  trackslist: chacklist.trackslist,
+export default connect(({ trackslist, loading }) => ({
+  trackslist,
   loading: loading.models.chacklist,
 }))(Tracklist);

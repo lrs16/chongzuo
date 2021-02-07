@@ -116,7 +116,7 @@ function ToDoregist(props) {
       )}
       {((result === '2' && taskName === '自动化科负责人确认') ||
         (result === '1' && taskName === '需求登记人员确认')) && (
-        <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleHold('flow')}>
+        <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleHold('over')}>
           结束
         </Button>
       )}

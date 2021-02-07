@@ -21,8 +21,9 @@ function Examinedes(props) {
       <Descriptions style={{ marginTop: 24 }} size="middle">
         <Descriptions.Item label={`${text}结果`}>{resultmap.get(info.result)}</Descriptions.Item>
         <Descriptions.Item>
-          {resultmap.get(info.result) === 2 && <>科室领导审核</>}
+          {/* {resultmap.get(info.result) === 2 && <>科室领导审核</>} */}
         </Descriptions.Item>
+        <Descriptions.Item />
         <Descriptions.Item label={`${text}时间`} span={3}>
           {moment(info.reviewTime).format('YYYY-MM-DD HH:MM')}
         </Descriptions.Item>

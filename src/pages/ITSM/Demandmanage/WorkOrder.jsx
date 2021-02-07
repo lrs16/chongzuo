@@ -50,7 +50,7 @@ function WorkOrder(props) {
   const [activeKey, setActiveKey] = useState(['form']);
   const { taskName, taskId, mainId } = location.query;
   //  const [ischeck, setIscheck] = useState(false); // 是否在校验状态
-  //  const [paloads, setPaloads] = useState('');
+  const [tracklength, setTrackLength] = useState(0);
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
 
   // 初始化用户信息，流程类型
@@ -236,6 +236,52 @@ function WorkOrder(props) {
           }
         });
         break;
+      case 'confirm':
+        ExamineRef.current.validateFields((err, values) => {
+          if (!err) {
+            dispatch({
+              type: 'demandtodo/demandnextstep',
+              payload: {
+                ...values,
+                reviewTime: values.reviewTime.format('YYYY-MM-DD HH:mm:ss'),
+                business: Number(values.business),
+                releases: Number(values.releases),
+                attachment: JSON.stringify(files.arr),
+                nextUserIds: [
+                  { nodeName: '需求登记人员确认', userIds: [info.demandForm.registerPersonId] },
+                ],
+                registerId: info.demandForm.id,
+                id,
+                taskName: info.taskName,
+                taskId,
+              },
+            });
+          } else {
+            formerr();
+          }
+        });
+        break;
+      case 'over':
+        ExamineRef.current.validateFields((err, values) => {
+          if (!err) {
+            dispatch({
+              type: 'demandtodo/demandnextstep',
+              payload: {
+                ...values,
+                reviewTime: values.reviewTime.format('YYYY-MM-DD HH:mm:ss'),
+                attachment: JSON.stringify(files.arr),
+                registerId: info.demandForm.id,
+                nextUserIds: [{ nodeName: '', userIds: [] }],
+                id,
+                taskName: info.taskName,
+                taskId,
+              },
+            });
+          } else {
+            formerr();
+          }
+        });
+        break;
       default:
         break;
     }
@@ -314,40 +360,19 @@ function WorkOrder(props) {
           }
         });
         break;
-      case 'confirm':
-        ExamineRef.current.validateFields((err, values) => {
-          if (!err) {
-            dispatch({
-              type: 'demandtodo/demandnextstep',
-              payload: {
-                ...values,
-                reviewTime: values.reviewTime.format('YYYY-MM-DD HH:mm:ss'),
-                business: Number(values.business),
-                releases: Number(values.releases),
-                attachment: JSON.stringify(files.arr),
-                nextUserIds: [
-                  { nodeName: '需求登记人员确认', userIds: [info.demandForm.registerPersonId] },
-                ],
-                registerId: info.demandForm.id,
-                id,
-                taskName: info.taskName,
-                taskId,
-              },
-            });
-          } else {
-            formerr();
-          }
-        });
-        break;
+
       default:
         break;
     }
   };
 
   // 需求跟踪
-  const TrackRef = useRef();
   const getdemantrack = () => {
     if (type === 'flow') {
+      if (tracklength === 0) {
+        message.error('请填写完整的跟踪信息。');
+        return;
+      }
       dispatch({
         type: 'demandtodo/demandnextstep',
         payload: {
@@ -372,11 +397,11 @@ function WorkOrder(props) {
       case '自动化科专责审核':
       case '市场部领导审核':
       case '科室领导审核':
+      case '自动化科负责人确认':
+      case '需求登记人员确认':
         getdemandexamine();
         break;
       case '自动化科业务人员审核':
-      case '自动化科负责人确认':
-      case '需求登记人员确认':
         nonextusrs();
         break;
       case '系统开发商处理':
@@ -566,20 +591,17 @@ function WorkOrder(props) {
               )}
               {taskName === '系统开发商处理' && (
                 <Track
-                  ref={TrackRef}
                   userinfo={userinfo}
                   taskName={info.taskName}
                   taskId={info.taskId}
                   mainId={info.taskId}
-                  ChangeFiles={newvalue => {
-                    setFiles(newvalue);
-                  }}
                   info={
                     info.historys?.slice(-1)[0].taskName === info.taskName
                       ? info.historys.slice(-1)
                       : undefined
                   }
                   demandId={info.demandForm.demandId}
+                  ChangeTrackLength={newvalue => setTrackLength(newvalue)}
                 />
               )}
               {(info.taskName === '自动化科负责人确认' || info.taskName === '需求登记人员确认') && (

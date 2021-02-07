@@ -14,46 +14,68 @@ import {
 } from 'antd';
 import { DownloadOutlined, PaperClipOutlined, DeleteOutlined } from '@ant-design/icons';
 import styles from './style.less';
+import KeyVal from '@/components/SysDict/KeyVal';
 
 const { Option } = Select;
 
 function Track(props) {
-  const { dispatch, userinfo, demandId, trackslist, loading } = props;
+  const { dispatch, userinfo, demandId, loading, ChangeTrackLength } = props;
   const [data, setData] = useState([]);
   const [cacheOriginData, setcacheOriginData] = useState({});
   const [uploadkey, setKeyUpload] = useState('');
   const [fileslist, setFilesList] = useState([]);
   const [newbutton, setNewButton] = useState(false);
-  const [progressmap, setProgressmap] = useState('');
+  const [selectdata, setSelectData] = useState([]);
+  const [trackslist, setTracksList] = useState('');
 
-  useEffect(() => {
+  // 加载列表
+  const getlistdata = () => {
     dispatch({
       type: 'chacklist/fetchtracklist',
       payload: {
         demandId,
       },
+    }).then(res => {
+      if (res.code === 200) {
+        const newarr = res.data.map((item, index) => {
+          return Object.assign(item, { key: index });
+        });
+        setData(newarr);
+        ChangeTrackLength(res.data.length);
+        setNewButton(false);
+      }
     });
+  };
+
+  // 提交保存数据
+  const savedata = (target, id) => {
     dispatch({
-      type: 'dicttree/keyval',
+      type: 'chacklist/tracksave',
       payload: {
-        dictModule: 'demand',
-        dictType: 'schedule',
+        ...target,
+        id,
+        demandId,
+        stalker: userinfo.userName,
+        trackDepartment: userinfo.deptName,
+        trackUnit: userinfo.unitName,
       },
     }).then(res => {
       if (res.code === 200) {
-        setProgressmap(res.data.schedule);
+        message.success(res.msg, 2);
+        getlistdata();
       }
     });
-  }, []);
+  };
 
   useEffect(() => {
-    if (trackslist.length > 0) {
-      const newarr = trackslist.map((item, index) => {
-        return Object.assign(item, { key: index });
-      });
-      setData(newarr);
-    }
-  }, [trackslist]);
+    getlistdata();
+    sessionStorage.setItem('flowtype', '1');
+    return () => {
+      setData([]);
+      setFilesList([]);
+      setNewButton(false);
+    };
+  }, []);
 
   // 点击编辑生成filelist,
   const handlefileedit = (key, values) => {
@@ -96,9 +118,9 @@ function Track(props) {
       trackDirections: '',
       attachment: '[]',
       attachmentId: '',
-      stalker: '',
-      trackUnit: '',
-      trackDepartment: '',
+      stalker: userinfo.userName,
+      trackUnit: userinfo.unitName,
+      trackDepartment: userinfo.deptName,
       gmtCreate: moment().format('YYYY-MM-DD HH:mm:ss'),
       editable: true,
       isNew: true,
@@ -136,33 +158,19 @@ function Track(props) {
       setData(newData);
     }
   };
+
   // 保存记录
   const saveRow = (e, key) => {
     const target = getRowByKey(key) || {};
+    if (!target.developSchedule || !target.trackDirections) {
+      message.error('请填写完整信息。');
+      e.target.focus();
+      return;
+    }
     delete target.key;
     target.editable = false;
     const id = target.id === '' ? '' : target.id;
-    dispatch({
-      type: 'chacklist/tracksave',
-      payload: {
-        ...target,
-        id,
-        demandId,
-        stalker: userinfo.userName,
-        trackDepartment: userinfo.deptName,
-        trackUnit: userinfo.unitName,
-      },
-    }).then(res => {
-      if (res.code === 200) {
-        message.success(res.msg, 2);
-        dispatch({
-          type: 'chacklist/fetchtracklist',
-          payload: {
-            demandId,
-          },
-        });
-      }
-    });
+    savedata(target, id);
     if (target.isNew) {
       setNewButton(false);
     }
@@ -178,12 +186,7 @@ function Track(props) {
     }).then(res => {
       if (res.code === 200) {
         message.success(res.msg, 2);
-        dispatch({
-          type: 'chacklist/fetchtracklist',
-          payload: {
-            demandId,
-          },
-        });
+        getlistdata();
       }
     });
   };
@@ -224,7 +227,13 @@ function Track(props) {
           voice.status = 'done';
           voice.fileUrl = '';
           fileslist.push(voice);
-          handleFieldChange(JSON.stringify(fileslist), 'attachment', uploadkey);
+          const newData = data.map(item => ({ ...item }));
+          const target = getRowByKey(uploadkey, newData);
+          target.attachment = JSON.stringify(fileslist);
+          delete target.key;
+          target.editable = false;
+          const id = target.id === '' ? '' : target.id;
+          savedata(target, id);
         }
         if (info.file.response.code === -1) {
           message.error(`${info.file.name} 上传失败`);
@@ -242,10 +251,12 @@ function Track(props) {
     onRemove(info) {
       // 删除记录，并保存信息
       const newfilelist = fileslist.filter(item => item.id !== info.id);
-      handleFieldChange(JSON.stringify(newfilelist), 'attachment', uploadkey);
+      // handleFieldChange(JSON.stringify(newfilelist), 'attachment', uploadkey);
       const target = getRowByKey(uploadkey) || {};
+      target.attachment = JSON.stringify(newfilelist);
       delete target.isNew;
-      delete target.editable;
+      target.editable = false;
+      savedata(target, target.id);
       // 删除文件
       dispatch({
         type: 'sysfile/deletefile',
@@ -274,32 +285,43 @@ function Track(props) {
       render: (text, record) => {
         if (record.editable) {
           return (
-            <Select
-              style={{ width: '100%' }}
-              placeholder="请选择"
-              defaultValue={text}
-              onChange={e => handleFieldChange(e, 'developSchedule', record.key)}
-            >
-              {progressmap.map(obj => {
-                return (
-                  <Option key={obj.key} value={obj.val}>
-                    {obj.val}
-                  </Option>
-                );
-              })}
-            </Select>
+            <div className={text === '' ? styles.requiredform : ''}>
+              <Select
+                style={{ width: '100%' }}
+                placeholder="请选择"
+                defaultValue={text}
+                onChange={e => handleFieldChange(e, 'developSchedule', record.key)}
+              >
+                {selectdata.schedule.map(obj => {
+                  return (
+                    <Option key={obj.key} value={obj.val}>
+                      {obj.val}
+                    </Option>
+                  );
+                })}
+              </Select>
+            </div>
           );
         }
         return text;
       },
     },
     {
-      title: '跟踪说明',
+      title: `跟踪说明`,
       dataIndex: 'trackDirections',
       key: 'trackDirections',
       width: 200,
       render: (text, record) => {
         if (record.editable) {
+          if (text === '') {
+            return (
+              <Input
+                defaultValue={text}
+                onChange={e => handleFieldChange(e.target.value, 'trackDirections', record.key)}
+                style={{ borderColor: '#ff4d4f' }}
+              />
+            );
+          }
           return (
             <Input
               placeholder="请输入"
@@ -381,29 +403,19 @@ function Track(props) {
       dataIndex: 'stalker',
       key: 'stalker',
       width: 100,
-      render: (text, record) => {
-        return userinfo.userName;
-      },
     },
     {
       title: '所在单位',
       dataIndex: 'trackUnit',
       key: 'trackUnit',
       width: 120,
-      render: (text, record) => {
-        return userinfo.unitName;
-      },
     },
     {
       title: '所在部门',
       dataIndex: 'trackDepartment',
       key: 'trackDepartment',
       width: 120,
-      render: (text, record) => {
-        return userinfo.deptName;
-      },
     },
-
     {
       title: '操作',
       key: 'action',
@@ -465,6 +477,12 @@ function Track(props) {
 
   return (
     <>
+      <KeyVal
+        style={{ display: 'none' }}
+        dictModule="demand"
+        dictType="schedule"
+        ChangeSelectdata={newvalue => setSelectData(newvalue)}
+      />
       <Table
         columns={columns}
         scroll={{ x: 1400 }}
