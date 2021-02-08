@@ -55,8 +55,6 @@ const forminladeLayout = {
   },
 };
 
-export const RegistratContext = createContext();
-
 function WorkOrder(props) {
   const { location, match, dispatch, loading, recordsloading, info, records, userinfo } = props;
   const { validate, taskName, id, mainId, type } = location.query;
@@ -407,6 +405,7 @@ function WorkOrder(props) {
     if (validate === true && ischeck === false) {
       handlesubmit();
     }
+    return undefined;
   }, [validate]);
 
   // 保存、流转
@@ -472,7 +471,7 @@ function WorkOrder(props) {
             overflowX: 'auto',
           }}
         >
-          {records.map(obj => {
+          {records.map((obj, index) => {
             const desc = (
               <div className={styles.stepDescription}>
                 处理人：{obj.user}
@@ -481,7 +480,7 @@ function WorkOrder(props) {
                 <div>结束时间：{obj.endTime}</div>
               </div>
             );
-            return <Step title={obj.nodeName} description={desc} />;
+            return <Step title={obj.nodeName} description={desc} key={index.toString()} />;
           })}
         </Steps>
       )}

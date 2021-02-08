@@ -113,7 +113,7 @@ function EventDetails(props) {
                 overflowX: 'auto',
               }}
             >
-              {records.map(obj => {
+              {records.map((obj, index) => {
                 const desc = (
                   <div className={styles.stepDescription}>
                     处理人：{obj.user}
@@ -122,7 +122,7 @@ function EventDetails(props) {
                     <div>结束时间：{obj.endTime}</div>
                   </div>
                 );
-                return <Step title={obj.nodeName} description={desc} />;
+                return <Step title={obj.nodeName} description={desc} key={index.toString()} />;
               })}
             </Steps>
           )}

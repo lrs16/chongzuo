@@ -45,7 +45,7 @@ function SysUpload(props) {
       Authorization: `Bearer ${sessionStorage.getItem('access_token')}`,
     },
     // multiple: true,
-    accept: { filestype },
+    //accept: '.doc,.docx,.xml,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/png,image/jpeg,',
     showUploadList: { showDownloadIcon: true },
     defaultFileList: fileslist,
     onChange(info) {

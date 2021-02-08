@@ -589,7 +589,7 @@ function WorkOrder(props) {
                   }}
                 />
               )}
-              {taskName === '系统开发商处理' && (
+              {taskName === '系统开发商处理' && info.taskName !== undefined && (
                 <Track
                   userinfo={userinfo}
                   taskName={info.taskName}

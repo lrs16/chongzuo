@@ -203,6 +203,9 @@ function QueryList(props) {
         });
       }
     });
+    return () => {
+      setSelectData([]);
+    };
   }, []);
 
   const searchdata = (values, page, size) => {

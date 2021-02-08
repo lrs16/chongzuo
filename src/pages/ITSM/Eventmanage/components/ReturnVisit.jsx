@@ -65,6 +65,7 @@ const ReturnVisit = React.forwardRef((props, ref) => {
         id,
         mainId,
         next: sessionStorage.getItem('Nextflowmane'),
+        validate: false,
       },
     });
   };

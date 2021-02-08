@@ -127,6 +127,10 @@ function ToDolist(props) {
         });
       }
     });
+    return () => {
+      setExpand(false);
+      setSelectData('');
+    };
   }, []);
 
   const searchdata = (values, page, size) => {

@@ -53,7 +53,7 @@ function Process(props) {
               direction="vertical"
               style={{ background: '#fff', padding: 24 }}
             >
-              {records.map(obj => {
+              {records.map((obj, index) => {
                 const backoff = obj.fallbackMsg === '' ? '' : '（回退）';
                 const desc = (
                   <div>
@@ -63,7 +63,13 @@ function Process(props) {
                     {obj.fallbackMsg !== '' && <div>回退原因：{obj.fallbackMsg}</div>}
                   </div>
                 );
-                return <Step title={`${obj.nodeName}${backoff}`} description={desc} />;
+                return (
+                  <Step
+                    title={`${obj.nodeName}${backoff}`}
+                    description={desc}
+                    key={index.toString()}
+                  />
+                );
               })}
             </Steps>
           </div>

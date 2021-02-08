@@ -24,11 +24,18 @@ function DictTree(props) {
         });
       }
     });
+    return () => {
+      setIsChange(false);
+      setSelectList([]);
+    };
   }, []);
   useEffect(() => {
     if (ischange) {
       ChangeSelectdata(selectlist);
     }
+    return () => {
+      setSelectList([]);
+    };
   }, [ischange]);
 
   return null;

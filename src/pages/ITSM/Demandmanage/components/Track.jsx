@@ -73,6 +73,7 @@ function Track(props) {
     return () => {
       setData([]);
       setFilesList([]);
+      setSelectData([]);
       setNewButton(false);
     };
   }, []);

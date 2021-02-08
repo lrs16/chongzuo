@@ -121,6 +121,10 @@ function ToDolist(props) {
         });
       }
     });
+    return () => {
+      setSelectData([]);
+      setExpand(false);
+    };
   }, []);
 
   // 查询

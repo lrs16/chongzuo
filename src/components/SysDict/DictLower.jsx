@@ -12,7 +12,7 @@ function DictLower(props) {
       payload: { id: typeid },
     }).then(res => {
       if (res.code === 200) {
-        selectlist.push(...res.data[0]?.children);
+        selectlist.push(...res.data[0].children);
         setIsChange(true);
       }
     });
@@ -21,6 +21,9 @@ function DictLower(props) {
     if (ischange) {
       ChangeSelectdata(selectlist);
     }
+    return () => {
+      setIsChange(false);
+    };
   }, [ischange]);
 
   return null;

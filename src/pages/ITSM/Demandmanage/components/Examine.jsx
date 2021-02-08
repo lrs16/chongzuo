@@ -43,6 +43,9 @@ const Examine = forwardRef((props, ref) => {
     if (fileslist.ischange) {
       ChangeFiles(fileslist);
     }
+    return () => {
+      setFilesList({ arr: [], ischange: false });
+    };
   }, [fileslist]);
   // 审核结果与流转类型
   const [adopt, setAdopt] = useState(1);
@@ -75,6 +78,9 @@ const Examine = forwardRef((props, ref) => {
     sessionStorage.setItem('flowtype', info[0].result);
     setAdopt(info[0].result);
     routerRefresh();
+    return () => {
+      setAdopt(1);
+    };
   }, []);
   // 初始化流转类型
 
