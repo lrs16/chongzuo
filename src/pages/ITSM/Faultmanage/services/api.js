@@ -247,3 +247,37 @@ export async function queryFaultdictVal(id) {
     data: { id },
   });
 }
+
+
+// ***故障统计
+
+// /trouble/flow/statOrderRelateDict  数据字典相关字段统计故障工单
+export async function queryfaultWorkoderCount(pageNum, pageSize, dictType) {
+  return request(`/trouble/flow/statOrderRelateDict`, {
+    method: 'POST',
+    data: { pageNum, pageSize, dictType },
+    body: JSON.stringify(dictType),
+  });
+}
+
+export async function queryfaultWorkoderCount1(current, pageSize, dictType, values) {
+  const params = values;
+  params.pageNum = current; // 当前页
+  params.pageSize = pageSize; // 页码
+  params.dictType = dictType;
+  return request(`/trouble/flow/statOrderRelateDict`, {
+    method: 'POST',
+    body: JSON.stringify(params),
+  });
+}
+
+export async function querycountdownload(current, pageSize, values, dictType) {
+  const params = values;
+  params.pageNum = current; // 当前页
+  params.pageSize = pageSize; // 页码
+  params.dictType = dictType;
+  return request(`/trouble/flow/expStatOrderRelateDict`, {
+    method: 'POST',
+    body: JSON.stringify(params),
+  });
+}

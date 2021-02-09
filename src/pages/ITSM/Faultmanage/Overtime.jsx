@@ -1,506 +1,218 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
+import { connect } from 'dva';
+import moment from 'moment';
 import {
   Card,
-  Input,
+  Row,
+  Col,
   Form,
   Button,
   DatePicker,
-  Select,
-  Row,
-  Col,
-  Icon,
   Table
 } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
-const { Option } = Select;
 const { RangePicker } = DatePicker;
 
-const timeoutInfo = [ // 超时信息
-  { key: 1, value: '' },
-  { key: 2, value: '待响应' },
-  { key: 3, value: '处理中' },
-  { key: 4, value: '待回访' },
-];
+const formItemLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 8 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 16 },
+  },
+};
 
-class Overtime extends Component {
-  state = {
-    tabActiveKey: 'timeoutnotdeal',
-    expand: false,
+function Overtime(props) {
+  const pagetitle = props.route.name;
+  const {
+    form: { getFieldDecorator, resetFields, validateFields },
+    loading,
+    dispatch,
+    faultWorkoderCountList
+  } = props;
+
+  const [paginations, setPageinations] = useState({ current: 1, pageSize: 10 });
+  const [dictType] = useState('type');
+
+  const columns = [
+    {
+      title: '一级类型',
+      dataIndex: 'type',
+      key: 'type',
+    },
+    {
+      title: '二级类型',
+      dataIndex: 'statName',
+      key: 'statName',
+    },
+    {
+      title: '工单数',
+      dataIndex: 'statCount',
+      key: 'statCount',
+    },
+  ];
+
+  const getfaultWorkoderCountList = () => { // 列表
+    validateFields((err, values) => {
+      if (!err) {
+        dispatch({
+          type: 'faultcount/getfaultWorkoderCount',
+          payload: {
+            ...values,
+            pageNum: paginations.current,
+            pageSize: paginations.pageSize,
+            dictType: 'type'
+          },
+        });
+      }
+    });
+  }
+
+  useEffect(() => {
+    getfaultWorkoderCountList();
+  }, []);
+
+  const handleReset = () => {
+    resetFields();
   };
 
-  handleTabChange = (key) => {
-    this.setState({
-      tabActiveKey: key,
+  const searchdata = (values, page, pageSize, dict) => {
+    dispatch({
+      type: 'faultcount/getfaultWorkoderCount1',
+      payload: {
+        values,
+        pageSize,
+        pageNum: page,
+        dictType: dict,
+      },
     });
   };
 
-  handleSearch = e => {  // 查询
-    e.preventDefault();
-    // this.props.form.validateFields((err, values) => {
-    //   console.log('Received values of form: ', values);
-    // });
+  const handleSearch = () => {
+    setPageinations({
+      ...paginations,
+      current: 1,
+    });
+    validateFields((err, fieldsValue) => {
+      if (err) {
+        return;
+      }
+      const values = {
+        statTimeBegin: moment(fieldsValue.rangeTimeValue[0]).format('YYYY-MM-DD HH:mm:ss'),
+        statTimeEnd: moment(fieldsValue.rangeTimeValue[1]).format('YYYY-MM-DD HH:mm:ss'),
+      };
+      searchdata(values, paginations.current, paginations.pageSize, dictType);
+    });
   };
 
-  handleReset = () => { // 重置
-    this.props.form.resetFields();
+  // const onShowSizeChange = (page, pageSize) => {
+  //   validateFields((err, values) => {
+  //     if (!err) {
+  //       searchdata(values, page, pageSize);
+  //     }
+  //   });
+  //   setPageinations({
+  //     ...paginations,
+  //     pageSize,
+  //   });
+  // };
+
+  // const changePage = page => {
+  //   validateFields((err, values) => {
+  //     if (!err) {
+  //       searchdata(values, page, paginations.pageSize);
+  //     }
+  //   });
+  //   setPageinations({
+  //     ...paginations,
+  //     current: page,
+  //   });
+  // };
+
+  // const pagination = {
+  //   showSizeChanger: true,
+  //   onShowSizeChange: (page, pageSize) => onShowSizeChange(page, pageSize),
+  //   current: paginations.current,
+  //   pageSize: paginations.pageSize,
+  //   // total: 
+  //   onChange: page => changePage(page),
+  // };
+
+  //  下载 /导出功能
+  const download = (page, pageSize) => {
+    validateFields((err, values) => {
+      if (!err) {
+        dispatch({
+          type: 'faultcount/faultcountdownload',
+          payload: {
+            values,
+            pageSize,
+            current: page,
+            dictType
+          },
+        }).then(() => {
+          // console.log(res, 'res')
+          // const filename = `下载.xlsx`;
+          // const url = window.URL.createObjectURL(res);
+          // const a = document.createElement('a');
+          // a.href = url;
+          // a.download = filename;
+          // a.click();
+          // window.URL.revokeObjectURL(url);
+        });
+      }
+    });
   };
 
-  showItem = () => {
-    const { expand } = this.state;
-    this.setState({ expand: !expand });
-    document.getElementById('hideItem').style.display = 'block';
-    document.getElementById('showItem').style.display = 'none';
-  };
-
-  hideItem = () => {
-    const { expand } = this.state;
-    this.setState({ expand: !expand });
-    document.getElementById('hideItem').style.display = 'none';
-    document.getElementById('showItem').style.display = 'block';
-  };
-
-  render() {
-    const columns = [
-      {
-        title: '序号',
-        dataIndex: 'index',
-        key: 'index',
-        width: 100,
-        render: (text, record, index) => `${index + 1}`,
-      },
-      {
-        title: '工作单编号',
-        dataIndex: 'workID',
-        key: 'workID',
-        width: 150,
-      },
-      {
-        title: '申报人单位',
-        dataIndex: 'declarantCompany',
-        key: 'declarantCompany',
-        width: 250,
-      },
-      {
-        title: '工作单标题',
-        dataIndex: 'workTitle',
-        key: 'workTitle',
-        width: 150,
-      },
-      {
-        title: '工作单来源',
-        dataIndex: 'workSource',
-        key: 'workSource',
-        width: 150,
-      },
-      {
-        title: '工作单类型',
-        dataIndex: 'workType',
-        key: 'workType',
-        width: 150,
-      },
-      {
-        title: '工作单分类',
-        dataIndex: 'workClass',
-        key: 'workClass',
-        width: 150,
-      },
-      {
-        title: '申报人',
-        dataIndex: 'declarant',
-        key: 'declarant',
-        width: 120,
-      },
-      {
-        title: '处理人',
-        dataIndex: 'handler',
-        key: 'handler',
-        width: 120,
-      },
-      {
-        title: '当前处理环节',
-        dataIndex: 'currProceLink',
-        key: 'currProceLink',
-        width: 200,
-      },
-      {
-        title: '超时信息',
-        dataIndex: 'timeoutInfo',
-        key: 'timeoutInfo',
-        width: 150,
-      },
-      {
-        title: '发送时间',
-        dataIndex: 'sendTime',
-        key: 'sendTime',
-        width: 200,
-      },
-      {
-        title: '优先级',
-        dataIndex: 'priority',
-        key: 'priority',
-        width: 100,
-      },
-      {
-        title: '发送人',
-        dataIndex: 'sender',
-        key: 'sender',
-        width: 100,
-      },
-    ];
-
-    const columns1 = [
-      {
-        title: '序号',
-        dataIndex: 'index',
-        key: 'index',
-        width: 100,
-        render: (text, record, index) => `${index + 1}`,
-      },
-      {
-        title: '工单编号',
-        dataIndex: 'workID',
-        key: 'workID',
-        width: 150,
-      },
-      {
-        title: '工单标题',
-        dataIndex: 'workTitle',
-        key: 'workTitle',
-        width: 150,
-      },
-      {
-        title: '处理人',
-        dataIndex: 'handler',
-        key: 'handler',
-        width: 120,
-      },
-      {
-        title: '处理人单位',
-        dataIndex: 'handlerCompany',
-        key: 'handlerCompany',
-        width: 150,
-      },
-      {
-        title: '超时类型',
-        dataIndex: 'timeoutType',
-        key: 'timeoutType',
-        width: 150,
-      },
-      {
-        title: '超时原因',
-        dataIndex: 'timeoutReason',
-        key: 'timeoutReason',
-        width: 150,
-      },
-      {
-        title: '超时时长',
-        dataIndex: 'timeoutDurate',
-        key: 'timeoutDurate',
-        width: 150,
-      },
-      {
-        title: '事件送达时间',
-        dataIndex: 'EventServicetime',
-        key: 'EventServicetime',
-        width: 150,
-      },
-      {
-        title: '超时时间',
-        dataIndex: 'overTime',
-        key: 'overTime',
-        width: 150,
-      },
-      {
-        title: '建单时间',
-        dataIndex: 'creationTime',
-        key: 'creationTime',
-        width: 150,
-      },
-      {
-        title: '事件优先级',
-        dataIndex: 'EventPriority',
-        key: 'EventPriority',
-        width: 150,
-      },
-      {
-        title: '事件对象',
-        dataIndex: 'EventObj',
-        key: 'EventObj',
-        width: 150,
-      },
-      {
-        title: '事件分类',
-        dataIndex: 'EventClass',
-        key: 'EventClass',
-        width: 150,
-      },
-    ]
-
-    const columns2 = [
-      {
-        title: '序号',
-        dataIndex: 'index',
-        key: 'index',
-        width: 100,
-        render: (text, record, index) => `${index + 1}`,
-      },
-      {
-        title: '工作单编号',
-        dataIndex: 'workID',
-        key: 'workID',
-        width: 150,
-      },
-      {
-        title: '申报人单位',
-        dataIndex: 'declarantCompany',
-        key: 'declarantCompany',
-        width: 250,
-      },
-      {
-        title: '工作单标题',
-        dataIndex: 'workTitle',
-        key: 'workTitle',
-        width: 150,
-      },
-      {
-        title: '工作单来源',
-        dataIndex: 'workSource',
-        key: 'workSource',
-        width: 150,
-      },
-      {
-        title: '工作单类型',
-        dataIndex: 'workType',
-        key: 'workType',
-        width: 150,
-      },
-      {
-        title: '工作单分类',
-        dataIndex: 'workClass',
-        key: 'workClass',
-        width: 150,
-      },
-      {
-        title: '申报人',
-        dataIndex: 'declarant',
-        key: 'declarant',
-        width: 120,
-      },
-      {
-        title: '当前处理环节',
-        dataIndex: 'currProceLink',
-        key: 'currProceLink',
-        width: 200,
-      },
-      {
-        title: '超时信息',
-        dataIndex: 'timeoutInfo',
-        key: 'timeoutInfo',
-        width: 150,
-      },
-      {
-        title: '超时时间',
-        dataIndex: 'overTime',
-        key: 'overTime',
-        width: 150,
-      },
-      {
-        title: '处理人',
-        dataIndex: 'handler',
-        key: 'handler',
-        width: 120,
-      },
-      {
-        title: '发送时间',
-        dataIndex: 'sendTime',
-        key: 'sendTime',
-        width: 150,
-      },
-      {
-        title: '优先级',
-        dataIndex: 'priority',
-        key: 'priority',
-        width: 100,
-      },
-    ];
-
-    const tabList = [
-      {
-        key: 'timeoutnotdeal',
-        tab: '已超时未处理',
-      },
-      {
-        key: 'timeoutdeal',
-        tab: '超时已处理',
-      },
-      {
-        key: 'betimeout',
-        tab: '即将超时',
-      },
-    ];
-
-    const contentTabList = {
-      'timeoutnotdeal':
-        <Table
-          columns={columns}
-          rowKey={record => record.workID}
-        />,
-      'timeoutdeal':
-        <Table
-          columns={columns1}
-          rowKey={record => record.workID}
-        />,
-      'betimeout':
-        <Table
-          columns={columns2}
-          rowKey={record => record.workID}
-        />,
-    };
-
-    const formItemLayout = {
-      labelCol: {
-        xs: { span: 20 },
-        sm: { span: 7 },
-      },
-      wrapperCol: {
-        xs: { span: 4 },
-        sm: { span: 17 },
-      },
-    };
-
-    const { getFieldDecorator } = this.props.form;
-
-    return (
-      <PageHeaderWrapper
-        title={this.props.route.name}
-        tabList={tabList}
-        onTabChange={this.handleTabChange}
-        tabActiveKey={this.state.tabActiveKey}
-      >
-        <Card>
-          <Form
-            style={{ display: 'block' }}
-            id="showItem"
-            onSubmit={this.handleSearch}
-            {...formItemLayout}
-          >
-            <Row>
-              <Col span={8}>
-                <Form.Item label="处理人">
-                  {getFieldDecorator('handler', {
-                    initialValue: '',
-                  })(<Input />)}
-                </Form.Item>
-              </Col>
-
-              <Col span={8}>
-                <Form.Item label="工单编号">
-                  {getFieldDecorator('workID', {
-                    initialValue: '',
-                  })(<Input />)}
-                </Form.Item>
-              </Col>
-
-              <Col span={7} style={{ textAlign: 'right' }}>
-                <Button type="primary" htmlType="submit" style={{ marginLeft: 8 }}>
+  return (
+    <PageHeaderWrapper title={pagetitle}>
+      <Card>
+        <Row gutter={12}>
+          <Form {...formItemLayout} onSubmit={handleSearch}>
+            <Col span={8}>
+              <Form.Item label="起始时间">
+                {getFieldDecorator('rangeTimeValue', {
+                  // initialValue: ['', ''],
+                })(
+                  <RangePicker showTime format="YYYY-MM-DD HH:mm:ss" />,
+                )}
+              </Form.Item>
+            </Col>
+            <Col span={4} style={{ textAlign: 'right' }}>
+              <Form.Item>
+                <Button type="primary" onClick={handleSearch}>
                   查 询
                 </Button>
-                <Button style={{ marginLeft: 8 }} onClick={this.handleReset}>重 置</Button>
-                <a style={{ marginLeft: 8, fontSize: 12 }} onClick={this.showItem} >
-                  展开 <Icon type={this.state.expand ? 'up' : 'down'} />
-                </a>
-              </Col>
-            </Row>
-          </Form>
-
-          <Form
-            id="hideItem"
-            style={{ display: 'none' }}
-            {...formItemLayout}
-          >
-            <Row>
-              <Col span={8}>
-                <Form.Item label="处理人">
-                  {getFieldDecorator('handler', {
-                    initialValue: '',
-                  })(<Input />)}
-                </Form.Item>
-              </Col>
-
-              <Col span={8}>
-                <Form.Item label="工单编号">
-                  {getFieldDecorator('workID', {
-                    initialValue: '',
-                  })(<Input />)}
-                </Form.Item>
-              </Col>
-
-              <Col span={8}>
-                <Form.Item label="申报人单位">
-                  {getFieldDecorator('declarantCompany', {
-                    initialValue: '',
-                  })(<Input />)}
-                </Form.Item>
-              </Col>
-
-              <Col span={8}>
-                <Form.Item label="工作单标题">
-                  {getFieldDecorator('workTitle', {
-                    initialValue: '',
-                  })(<Select />)}
-                </Form.Item>
-              </Col>
-
-              <Col span={8}>
-                <Form.Item label="申报人">
-                  {getFieldDecorator('declarant', {
-                    initialValue: '',
-                  })(<Input />)}
-                </Form.Item>
-              </Col>
-
-              <Col span={8}>
-                <Form.Item label="超时信息">
-                  {getFieldDecorator('timeoutInfo', {
-                    initialValue: '',
-                  })(
-                    <Select placeholder="请选择">
-                      {timeoutInfo.map(({ key, value }) => [<Option key={key}>{value}</Option>])}
-                    </Select>,
-                  )}
-                </Form.Item>
-              </Col>
-
-              <Col span={8}>
-                <Form.Item label="建单时间">
-                  {getFieldDecorator('creationTime')(<RangePicker style={{ width: '100%' }} />)}
-                </Form.Item>
-              </Col>
-
-              <Col span={24} style={{ textAlign: 'right' }}>
-                <Button type="primary" htmlType="submit">
-                  查 询
-                </Button>
-                <Button style={{ marginLeft: 8 }} onClick={this.handleReset}>
+                <Button style={{ marginLeft: 8 }} onClick={handleReset}>
                   重 置
                 </Button>
-                <a style={{ marginLeft: 8, fontSize: 12 }} onClick={this.hideItem} >
-                  收起 <Icon type={this.state.expand ? 'up' : 'down'} />
-                </a>
-              </Col>
-            </Row>
+              </Form.Item>
+            </Col>
           </Form>
-
-          <div>
-            <Button type="primary" style={{ marginBottom: 25 }}>导出数据</Button>
-            {contentTabList[this.state.tabActiveKey]}
-          </div>
-        </Card>
-      </PageHeaderWrapper>
-    );
-  }
+        </Row>
+        <div style={{ marginBottom: 24 }}>
+          <Button type="primary" onClick={() => download()}>导出数据</Button>
+        </div>
+        <Table
+          loading={loading}
+          columns={columns}
+          dataSource={faultWorkoderCountList}
+          table-layout="fixed"
+          // pagination={pagination}
+          rowKey={record => record.statName}
+        />
+      </Card>
+    </PageHeaderWrapper>
+  );
 }
 
-export default Form.create()(Overtime);
-
+export default Form.create({})(
+  connect(({ faultcount, loading }) => ({
+    html: faultcount.html,
+    loading: loading.models.faultcount,
+    faultWorkoderCountList: faultcount.faultWorkoderCountList,
+  }))(Overtime),
+);
