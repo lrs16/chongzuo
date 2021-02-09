@@ -52,6 +52,17 @@ function WorkOrder(props) {
   //  const [ischeck, setIscheck] = useState(false); // 是否在校验状态
   const [tracklength, setTrackLength] = useState(0);
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
+  const [isnew, setIsNew] = useState(false);
+
+  // 监听info是否已更新
+  useEffect(() => {
+    if (info !== '') {
+      setIsNew(true);
+    }
+    return () => {
+      setIsNew(false);
+    };
+  }, [info]);
 
   // 初始化用户信息，流程类型
   useEffect(() => {
@@ -497,7 +508,7 @@ function WorkOrder(props) {
         </Steps>
       )}
       <Spin spinning={loading}>
-        {loading === false && info !== '' && (
+        {loading === false && info !== '' && isnew && (
           <Collapse
             expandIconPosition="right"
             activeKey={activeKey}

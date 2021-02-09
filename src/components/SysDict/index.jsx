@@ -6,7 +6,7 @@ function DictTree(props) {
   const [ischange, setIsChange] = useState(false);
   const [selectlist, setSelectList] = useState([]);
 
-  useEffect(() => {
+  const getdata = () => {
     dispatch({
       type: 'dicttree/childdictLower',
       payload: { id: typeid },
@@ -24,18 +24,19 @@ function DictTree(props) {
         });
       }
     });
+  };
+
+  useEffect(() => {
+    getdata();
     return () => {
       setIsChange(false);
-      setSelectList([]);
+      // selectlist.splice(0, selectlist.length);
     };
   }, []);
   useEffect(() => {
     if (ischange) {
       ChangeSelectdata(selectlist);
     }
-    return () => {
-      setSelectList([]);
-    };
   }, [ischange]);
 
   return null;

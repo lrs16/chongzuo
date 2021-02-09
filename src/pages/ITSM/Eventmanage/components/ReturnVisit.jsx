@@ -26,13 +26,12 @@ const ReturnVisit = React.forwardRef((props, ref) => {
     forminladeLayout,
     info,
     main,
-    ChangeFlowtype,
     userinfo,
     location,
     files,
     ChangeFiles,
   } = props;
-  const { taskName, id, mainId } = location.query;
+  const { taskName, taskId, mainId } = location.query;
   const { finish } = info;
   const { getFieldDecorator } = props.form;
   const attRef = useRef();
@@ -62,10 +61,9 @@ const ReturnVisit = React.forwardRef((props, ref) => {
       pathname: location.pathname,
       query: {
         taskName,
-        id,
+        taskId,
         mainId,
         next: sessionStorage.getItem('Nextflowmane'),
-        validate: false,
       },
     });
   };
@@ -77,11 +75,9 @@ const ReturnVisit = React.forwardRef((props, ref) => {
 
   const handlcheckChange = value => {
     if (value === '003') {
-      ChangeFlowtype('3');
       sessionStorage.setItem('Nextflowmane', '处理');
       sessionStorage.setItem('flowtype', '3');
     } else {
-      ChangeFlowtype('1');
       sessionStorage.setItem('Nextflowmane', '结束');
       sessionStorage.setItem('flowtype', '1');
     }

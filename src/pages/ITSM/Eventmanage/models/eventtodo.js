@@ -74,10 +74,8 @@ export default {
           pathname: `/ITSM/eventmanage/to-do/record/workorder`,
           query: {
             taskName: eventStatus,
-            id: registres.taskId,
+            taskId: registres.taskId,
             mainId: flowInstanceId,
-            next: sessionStorage.getItem('Nextflowmane'),
-            validate: false,
           },
         });
         yield put({
@@ -150,10 +148,9 @@ export default {
           pathname: `/ITSM/eventmanage/to-do/record/workorder`,
           query: {
             taskName: '处理中',
-            id: taskId,
+            taskId,
             mainId: response.flowInstanceId,
             next: sessionStorage.getItem('Nextflowmane'),
-            validate: false,
           },
         });
       }

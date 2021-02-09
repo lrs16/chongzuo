@@ -49,7 +49,7 @@ export default {
             pathname: `/ITSM/eventmanage/to-do/record/workorder`,
             query: {
               taskName: register_selfhandle === '1' ? '处理中' : '已登记',
-              id: registres.taskId,
+              taskId: registres.taskId,
               mainId: flowInstanceId,
               validate: false,
             },

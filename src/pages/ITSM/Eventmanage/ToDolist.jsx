@@ -42,11 +42,8 @@ const columns = [
           pathname: `/ITSM/eventmanage/to-do/record/workorder`,
           query: {
             taskName: record.eventStatus,
-            id: record.taskId,
+            taskId: record.taskId,
             mainId: record.mainId,
-            check: record.checkResult,
-            validate: false,
-            //type: '',
           },
         });
       };

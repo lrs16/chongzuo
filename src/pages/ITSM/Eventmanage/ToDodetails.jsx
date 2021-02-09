@@ -5,6 +5,8 @@ import { Button, Popover, Popconfirm, message } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import Backoff from './components/Backoff';
 import SelectUser from '@/components/SelectUser';
+import WorkOrder from './WorkOrder';
+import Process from './Process';
 
 const pagetitlemaps = new Map([
   ['已登记', '事件登记'],
@@ -19,21 +21,14 @@ const pagetitlemaps = new Map([
 ]);
 
 function ToDodetails(props) {
-  const { match, children, location, dispatch } = props;
-  const { taskName, id, mainId, check, next } = location.query;
+  const { location, dispatch } = props;
+  const { taskName, taskId, mainId, check, next } = location.query;
+  const [tabActivekey, settabActivekey] = useState('workorder'); // 打开标签
+  const [buttontype, setButtonType] = useState('');
   const [backvalue, setBackvalue] = useState('');
   const [Popvisible, setVisible] = useState(false);
   const handleHold = type => {
-    router.push({
-      pathname: `${props.match.url}/workorder`,
-      query: {
-        taskName,
-        id,
-        mainId,
-        validate: true,
-        type,
-      },
-    });
+    setButtonType(type);
   };
 
   const handleclose = () => {
@@ -63,7 +58,7 @@ function ToDodetails(props) {
       dispatch({
         type: 'eventtodo/eventback',
         payload: {
-          id,
+          taskId,
           userIds: sessionStorage.getItem('userauthorityid'),
           type: '2',
           ...backvalue,
@@ -77,7 +72,7 @@ function ToDodetails(props) {
     dispatch({
       type: 'eventtodo/eventaccept',
       payload: {
-        id,
+        id: taskId,
         userIds: sessionStorage.getItem('userauthorityid'),
         type: '1',
       },
@@ -125,7 +120,7 @@ function ToDodetails(props) {
         </Button>
       )}
       {taskName === '已登记' && next === '审核' && (
-        <SelectUser handleSubmit={() => handleHold('other')} taskId={id}>
+        <SelectUser handleSubmit={() => handleHold('other')} taskId={taskId}>
           <Button type="primary" style={{ marginRight: 8 }}>
             审核
           </Button>
@@ -139,7 +134,7 @@ function ToDodetails(props) {
       {((taskName === '已登记' && next === '处理') ||
         (next === '处理' && taskName === '待审核') ||
         (next === '处理' && taskName === '审核中')) && (
-        <SelectUser handleSubmit={() => handleHold('flow')} taskId={id}>
+        <SelectUser handleSubmit={() => handleHold('flow')} taskId={taskId}>
           <Button type="primary" style={{ marginRight: 8 }}>
             流转
           </Button>
@@ -155,7 +150,7 @@ function ToDodetails(props) {
           <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleHold('flowcheck')}>
             确认
           </Button>
-          <SelectUser handleSubmit={() => handleHold('other')} changorder="处理" taskId={id}>
+          <SelectUser handleSubmit={() => handleHold('other')} changorder="处理" taskId={taskId}>
             <Button ghost type="primary" style={{ marginRight: 8 }}>
               转单
             </Button>
@@ -163,7 +158,7 @@ function ToDodetails(props) {
         </>
       )}
       {(taskName === '待确认' || taskName === '确认中') && next === '处理' && (
-        <SelectUser handleSubmit={() => handleHold('other')} taskId={id}>
+        <SelectUser handleSubmit={() => handleHold('other')} taskId={taskId}>
           <Button type="primary" style={{ marginRight: 8 }}>
             重分派
           </Button>
@@ -180,26 +175,10 @@ function ToDodetails(props) {
   const handleTabChange = key => {
     switch (key) {
       case 'workorder':
-        router.push({
-          pathname: `${match.url}/workorder`,
-          query: {
-            taskName,
-            id,
-            mainId,
-            validate: false,
-          },
-        });
+        settabActivekey('workorder');
         break;
       case 'process':
-        router.push({
-          pathname: `${match.url}/process`,
-          query: {
-            taskName,
-            id,
-            mainId,
-            validate: false,
-          },
-        });
+        settabActivekey('process');
         break;
       default:
         break;
@@ -221,10 +200,17 @@ function ToDodetails(props) {
       title={pagetitlemaps.get(taskName)}
       extra={operations}
       tabList={tabList}
-      tabActiveKey={location.pathname.replace(`${match.path}/`, '')}
+      tabActiveKey={tabActivekey}
       onTabChange={handleTabChange}
     >
-      {children}
+      {tabActivekey === 'workorder' && (
+        <WorkOrder
+          location={location}
+          type={buttontype}
+          ChangeType={newvalue => setButtonType(newvalue)}
+        />
+      )}
+      {tabActivekey === 'process' && <Process location={location} />}
     </PageHeaderWrapper>
   );
 }

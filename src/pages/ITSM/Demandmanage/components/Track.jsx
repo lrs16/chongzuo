@@ -25,7 +25,7 @@ function Track(props) {
   const [uploadkey, setKeyUpload] = useState('');
   const [fileslist, setFilesList] = useState([]);
   const [newbutton, setNewButton] = useState(false);
-  const [selectdata, setSelectData] = useState([]);
+  const [selectdata, setSelectData] = useState(undefined);
   const [trackslist, setTracksList] = useState('');
 
   // 加载列表

@@ -11,9 +11,6 @@ function Process(props) {
 
   const imgsrc = () => {
     const img = document.createElement('img');
-    // img.onload = () => {
-    //   window.URL.revokeObjectURL(img.src);
-    // };
     img.src = window.URL.createObjectURL(imgblob);
     document.getElementById('divimg').appendChild(img);
   };
@@ -45,7 +42,7 @@ function Process(props) {
         <div style={{ background: '#fff' }} id="divimg" className={styles.blobimg} />
       </Card>
       <Card title="流转日志" style={{ marginTop: '-1px' }}>
-        {loading === false && (
+        {records !== '' && (
           <div className={styles.processstept}>
             <Steps
               current={records.length - 1}

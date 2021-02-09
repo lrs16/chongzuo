@@ -23,6 +23,7 @@ function DictLower(props) {
     }
     return () => {
       setIsChange(false);
+      //selectlist.splice(0, selectlist.length);
     };
   }, [ischange]);
 

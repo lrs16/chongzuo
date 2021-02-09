@@ -19,7 +19,7 @@ function KeyVal(props) {
     });
   }, []);
 
-  return undefined;
+  return null;
 }
 
 export default connect(({ dicttree }) => ({

@@ -11,7 +11,6 @@ import Registratdes from './components/Registratdes';
 import Checkdes from './components/Checkdes';
 import Handledes from './components/Handledes';
 import ReturnVisitdes from './components/ReturnVisitdes';
-import { DingdingOutlined } from '@ant-design/icons';
 
 const { Panel } = Collapse;
 const { Step } = Steps;
@@ -55,29 +54,33 @@ const forminladeLayout = {
   },
 };
 
-function WorkOrder(props) {
-  const { location, match, dispatch, loading, recordsloading, info, records, userinfo } = props;
-  const { validate, taskName, id, mainId, type } = location.query;
+function WorkOrder2(props) {
+  const {
+    location,
+    dispatch,
+    loading,
+    recordsloading,
+    info,
+    records,
+    userinfo,
+    type,
+    ChangeType,
+  } = props;
+  const { mainId, taskId, taskName } = location.query;
   const [formregistrat, setFormregistrat] = useState('');
   const [formcheck, setFormcheck] = useState('');
   const [formhandle, setFormhandle] = useState('');
   const [formvisit, setFormvisit] = useState('');
+  const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
+  const [handefiles, setHandleFiles] = useState({ arr: [], ischange: false }); // 登记时自行处理附件列表
   const [ischeck, setIscheck] = useState(false); // 是否在校验状态
   const [show, setShow] = useState(false); // 是否自行处理
   const [check, setCheck] = useState(false); // 事件分类是否权限账号
-  const [activeKey, setActiveKey] = useState([]);
-  const [finishfirst, setFinishfirst] = useState(undefined); // 初始化待确认,待审核
   const [defaultvalue, setDefaultvalue] = useState(''); // 自行处理后处理表单回填信息
-  const [flowtype, setFlowtype] = useState('1'); // 流转类型
-  const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
-  const [handefiles, setHandleFiles] = useState({ arr: [], ischange: false }); // 登记时自行处理附件列表
-  const [isdelay, setIsDelay] = useState(false);
-  const RegistratRef = useRef();
-  const CheckRef = useRef();
-  const HandleRef = useRef();
-  const ReturnVisitRef = useRef();
-  const { data, edit, main } = info;
-  const { flowInstanceId, flowNodeInstanceId, flowNodeName, editState } = info; // 流程基本信息
+  const [activeKey, setActiveKey] = useState([]);
+  const [isnew, setIsNew] = useState(false);
+  const { flowInstanceId, flowNodeInstanceId, flowNodeName, editState, data, edit, main } = info; // 流程基本信息
+  // console.log(location);
   // 保存、流转表单信息
   const paloadvalues = {
     ...formregistrat,
@@ -90,53 +93,68 @@ function WorkOrder(props) {
     editState,
   };
 
-  // 初始化用户信息，流程类型
-  useEffect(() => {
+  // 保存
+  const eventsave = () => {
     dispatch({
-      type: 'itsmuser/fetchuser',
+      type: 'eventtodo/eventsave',
+      payload: {
+        paloadvalues,
+        taskName,
+        flowInstanceId,
+      },
     });
-    sessionStorage.setItem('Processtype', 'event');
-  }, []);
-
-  useEffect(() => {
-    setTimeout(() => {
-      setIsDelay(true);
-    }, 100);
-  }, [info]);
-
-  // 初始化历史附件
-  useEffect(() => {
-    if (edit !== undefined && edit !== '' && Object.values(edit)[0] !== null) {
-      if (Object.values(edit)[0].fileIds !== '') {
-        setFiles({ ...files, arr: JSON.parse(Object.values(edit)[0].fileIds), ischange: false });
-      }
-    }
-  }, [info]);
-
-  const callback = key => {
-    setActiveKey(key);
+  };
+  // 流转
+  const eventflow = newflowtype => {
+    dispatch({
+      type: 'eventtodo/eventflow',
+      payload: {
+        flow: {
+          taskId,
+          userIds: sessionStorage.getItem('NextflowUserId'),
+          type: newflowtype,
+        },
+        paloadvalues,
+      },
+    });
+  };
+  // 确认
+  const eventcheck = newflowtype => {
+    dispatch({
+      type: 'eventtodo/eventflow',
+      payload: {
+        flow: {
+          taskId,
+          userIds: data[1].register.registerUserId,
+          type: newflowtype,
+        },
+        paloadvalues,
+      },
+    });
   };
 
-  const routerRefresh = () => {
-    router.push({
-      pathname: `${props.match.url}`,
-      query: {
-        taskName,
-        id,
-        mainId,
-        validate: false,
-        next: sessionStorage.getItem('Nextflowmane'),
+  // 结束
+  const overflow = () => {
+    dispatch({
+      type: 'eventtodo/overflow',
+      payload: {
+        flow: {
+          taskId,
+          userIds: sessionStorage.getItem('userauthorityid'),
+          type: '1',
+        },
+        paloadvalues,
       },
     });
   };
 
   const formerr = () => {
-    setIsDelay(true);
     message.error('请将信息填写完整...');
-    routerRefresh();
+    ChangeType('');
   };
 
   // 登记表单
+  const RegistratRef = useRef();
   const getregistrats = () => {
     if (type === 'save') {
       if (show) {
@@ -145,7 +163,7 @@ function WorkOrder(props) {
             setIscheck(true);
             setFormregistrat({
               ...values,
-              main_eventObject: values.main_eventObject?.slice(-1)[0],
+              main_eventObject: values.main_eventObject.slice(-1)[0],
               register_occurTime: values.register_occurTime.format('YYYY-MM-DD HH:mm:ss'),
               register_selfhandle: String(Number(values.register_selfhandle)),
               register_supplement: String(Number(values.register_supplement)),
@@ -160,7 +178,7 @@ function WorkOrder(props) {
           setIscheck(true);
           setFormregistrat({
             ...values,
-            main_eventObject: values.main_eventObject?.slice(-1)[0],
+            main_eventObject: values.main_eventObject.slice(-1)[0],
             register_occurTime: values.register_occurTime.format('YYYY-MM-DD HH:mm:ss'),
             register_selfhandle: String(Number(values.register_selfhandle)),
             register_supplement: String(Number(values.register_supplement)),
@@ -174,7 +192,7 @@ function WorkOrder(props) {
           setIscheck(true);
           setFormregistrat({
             ...values,
-            main_eventObject: values.main_eventObject?.slice(-1)[0],
+            main_eventObject: values.main_eventObject.slice(-1)[0],
             register_occurTime: values.register_occurTime.format('YYYY-MM-DD HH:mm:ss'),
             register_selfhandle: String(Number(values.register_selfhandle)),
             register_supplement: String(Number(values.register_supplement)),
@@ -188,6 +206,7 @@ function WorkOrder(props) {
   };
 
   // 审核表单
+  const CheckRef = useRef();
   const getchecks = () => {
     if (type === 'save') {
       CheckRef.current.validateFields((err, values) => {
@@ -215,6 +234,7 @@ function WorkOrder(props) {
   };
 
   // 处理表单
+  const HandleRef = useRef();
   const gethandles = () => {
     if (type === 'save') {
       if (show) {
@@ -236,7 +256,7 @@ function WorkOrder(props) {
           setIscheck(true);
           setFormhandle({
             ...values,
-            main_eventObject: values.main_eventObject?.slice(-1)[0],
+            main_eventObject: values.main_eventObject.slice(-1)[0],
             handle_endTime: values.handle_endTime.format('YYYY-MM-DD HH:mm:ss'),
             handle_fileIds: JSON.stringify(files.arr),
           });
@@ -258,6 +278,9 @@ function WorkOrder(props) {
       });
     }
   };
+
+  // 回访
+  const ReturnVisitRef = useRef();
   const getreturnvisit = () => {
     if (type === 'save') {
       ReturnVisitRef.current.validateFields((err, values) => {
@@ -284,65 +307,9 @@ function WorkOrder(props) {
     }
   };
 
-  // 保存
-  const eventsave = () => {
-    if (ischeck === true) {
-      dispatch({
-        type: 'eventtodo/eventsave',
-        payload: {
-          paloadvalues,
-          taskName,
-          flowInstanceId,
-        },
-      });
-    }
-  };
-  // 流转
-  const eventflow = newflowtype => {
-    if (ischeck === true) {
-      dispatch({
-        type: 'eventtodo/eventflow',
-        payload: {
-          flow: {
-            id,
-            userIds: sessionStorage.getItem('NextflowUserId'),
-            type: newflowtype,
-          },
-          paloadvalues,
-        },
-      });
-    }
-  };
-  // 确认
-  const eventcheck = newflowtype => {
-    if (ischeck === true) {
-      dispatch({
-        type: 'eventtodo/eventflow',
-        payload: {
-          flow: {
-            id,
-            userIds: data[1].register.registerUserId,
-            type: newflowtype,
-          },
-          paloadvalues,
-        },
-      });
-    }
-  };
-
-  // 结束
-  const overflow = () => {
-    dispatch({
-      type: 'eventtodo/overflow',
-      payload: {
-        flow: {
-          id,
-          userIds: sessionStorage.getItem('userauthorityid'),
-          type: '1',
-        },
-        paloadvalues,
-      },
-    });
+  //  console.log(records);
+  const callback = key => {
+    setActiveKey(key);
   };
 
   // 点击保存，流转触发表单校验
@@ -373,41 +340,6 @@ function WorkOrder(props) {
         break;
     }
   };
-  // 初始化打开编辑
-  useEffect(() => {
-    dispatch({
-      type: 'eventtodo/eventopenflow',
-      payload: {
-        taskId: id,
-      },
-    });
-  }, []);
-
-  // 获取事件流程记录
-  useEffect(() => {
-    dispatch({
-      type: 'eventtodo/eventrecords',
-      payload: {
-        processId: mainId,
-      },
-    });
-  }, [id]);
-
-  // 初始化值panel
-  useEffect(() => {
-    setActiveKey([`${Collapsekeymap.get(taskName)}`]);
-  }, [info]);
-  useEffect(() => {
-    setActiveKey([`${Collapsekeymap.get(taskName)}`]);
-  }, [taskName]);
-
-  useEffect(() => {
-    if (validate === true && ischeck === false) {
-      handlesubmit();
-    }
-    return undefined;
-  }, [validate]);
-
   // 保存、流转
   const handletype = () => {
     switch (type) {
@@ -432,34 +364,85 @@ function WorkOrder(props) {
       default:
         break;
     }
+    ChangeType('');
+    setIscheck(false);
   };
+
+  // 初始化打开编辑,获取用户信息，流转类型
   useEffect(() => {
-    if (ischeck === true) {
+    dispatch({
+      type: 'eventtodo/eventopenflow',
+      payload: {
+        taskId,
+      },
+    });
+    dispatch({
+      type: 'itsmuser/fetchuser',
+    });
+    sessionStorage.setItem('Processtype', 'event');
+  }, []);
+
+  // 获取事件流程记录
+  useEffect(() => {
+    dispatch({
+      type: 'eventtodo/eventrecords',
+      payload: {
+        processId: mainId,
+      },
+    });
+  }, [taskId]);
+
+  // 初始化值panel
+  useEffect(() => {
+    setActiveKey([`${Collapsekeymap.get(taskName)}`]);
+    return () => {
+      setActiveKey([]);
+    };
+  }, [taskName]);
+
+  // 初始化历史附件
+  useEffect(() => {
+    if (edit !== undefined && edit !== '' && Object.values(edit)[0] !== null) {
+      if (Object.values(edit)[0].fileIds !== '') {
+        setFiles({ ...files, arr: JSON.parse(Object.values(edit)[0].fileIds), ischange: false });
+      }
+    }
+  }, [info]);
+
+  // 监听info是否已更新
+  useEffect(() => {
+    if (info !== '') {
+      setIsNew(true);
+    }
+    return () => {
+      setIsNew(false);
+    };
+  }, [info]);
+
+  //
+  useEffect(() => {
+    if (type !== '') {
+      handlesubmit();
+    }
+  }, [type]);
+
+  useEffect(() => {
+    if (ischeck) {
       handletype();
-      setIscheck(false);
     }
   }, [ischeck]);
 
   // 上传附件触发保存
   useEffect(() => {
     if (files.ischange === true) {
-      router.push({
-        pathname: `${props.match.url}`,
-        query: {
-          taskName,
-          id,
-          mainId,
-          validate: true,
-          type: 'save',
-        },
-      });
+      ChangeType('save');
       setFiles({ ...files, ischange: false });
     }
   }, [files.ischange]);
 
   return (
     <div className={styles.collapse}>
-      {recordsloading === false && (
+      {recordsloading === false && records !== '' && (
         <Steps
           current={records.length - 1}
           size="small"
@@ -485,7 +468,7 @@ function WorkOrder(props) {
         </Steps>
       )}
       <Spin spinning={loading}>
-        {isdelay && loading === false && data !== undefined && edit !== undefined && (
+        {loading === false && isnew && data !== undefined && edit !== undefined && (
           <Collapse
             expandIconPosition="right"
             // defaultActiveKey={['1']}
@@ -494,13 +477,12 @@ function WorkOrder(props) {
             onChange={callback}
             style={{ marginTop: '-25px' }}
           >
-            {taskName === '已登记' && edit.register.fileIds !== undefined && (
+            {taskName === '已登记' && (
               <Panel header="事件登记" key="registratform">
                 <Registrat
                   ChangeShow={isshow => setShow(isshow)}
                   ChangeCheck={checked => setCheck(checked)}
                   ChangeActiveKey={keys => setActiveKey(keys)}
-                  ChangeFlowtype={newtype => setFlowtype(newtype)}
                   changeDefaultvalue={values => setDefaultvalue(values)}
                   ChangeFiles={newvalue => {
                     setFiles(newvalue);
@@ -524,7 +506,6 @@ function WorkOrder(props) {
                   formItemLayout={formItemLayout}
                   forminladeLayout={forminladeLayout}
                   ref={HandleRef}
-                  info={finishfirst}
                   main={main}
                   userinfo={userinfo}
                   defaultvalue={defaultvalue}
@@ -540,11 +521,9 @@ function WorkOrder(props) {
             {taskName === '待审核' && (
               <Panel header="事件审核" key="checkform">
                 <Check
-                  ChangeFlowtype={newtype => setFlowtype(newtype)}
                   formItemLayout={formItemLayout}
                   forminladeLayout={forminladeLayout}
                   ref={CheckRef}
-                  info={finishfirst}
                   main={main}
                   userinfo={userinfo}
                   location={location}
@@ -558,7 +537,6 @@ function WorkOrder(props) {
             {taskName === '审核中' && edit.check.fileIds !== undefined && (
               <Panel header="事件审核" key="checkform">
                 <Check
-                  ChangeFlowtype={newtype => setFlowtype(newtype)}
                   formItemLayout={formItemLayout}
                   forminladeLayout={forminladeLayout}
                   ref={CheckRef}
@@ -579,7 +557,6 @@ function WorkOrder(props) {
                   formItemLayout={formItemLayout}
                   forminladeLayout={forminladeLayout}
                   ref={HandleRef}
-                  info={finishfirst}
                   main={main}
                   userinfo={userinfo}
                   defaultvalue={defaultvalue}
@@ -598,7 +575,7 @@ function WorkOrder(props) {
                   formItemLayout={formItemLayout}
                   forminladeLayout={forminladeLayout}
                   ref={HandleRef}
-                  info={edit === null ? finishfirst : edit}
+                  info={edit === null ? undefined : edit}
                   main={main}
                   userinfo={userinfo}
                   defaultvalue={defaultvalue}
@@ -614,11 +591,9 @@ function WorkOrder(props) {
             {taskName === '待确认' && (
               <Panel header="事件确认" key="visitform">
                 <ReturnVisit
-                  ChangeFlowtype={newtype => setFlowtype(newtype)}
                   formItemLayout={formItemLayout}
                   forminladeLayout={forminladeLayout}
                   ref={ReturnVisitRef}
-                  info={finishfirst}
                   main={main}
                   userinfo={userinfo}
                   location={location}
@@ -632,7 +607,6 @@ function WorkOrder(props) {
             {taskName === '确认中' && edit.finish !== null && edit.finish.fileIds !== undefined && (
               <Panel header="事件确认" key="visitform">
                 <ReturnVisit
-                  ChangeFlowtype={newtype => setFlowtype(newtype)}
                   formItemLayout={formItemLayout}
                   forminladeLayout={forminladeLayout}
                   ref={ReturnVisitRef}
@@ -678,6 +652,6 @@ export default connect(({ eventtodo, itsmuser, loading }) => ({
   userinfo: itsmuser.userinfo,
   info: eventtodo.info,
   records: eventtodo.records,
-  loading: loading.effects['eventtodo/eventopenflow'],
+  loading: loading.models.eventtodo,
   recordsloading: loading.effects['eventtodo/eventrecords'],
-}))(WorkOrder);
+}))(WorkOrder2);

@@ -17,7 +17,7 @@ const Registrat = forwardRef((props, ref) => {
     ChangeShow,
     ChangeCheck,
     ChangeActiveKey,
-    ChangeFlowtype,
+    // ChangeFlowtype,
     changeDefaultvalue,
     info,
     main,
@@ -28,7 +28,7 @@ const Registrat = forwardRef((props, ref) => {
     ChangeFiles,
   } = props;
   const { register } = info;
-  const { taskName, id, mainId } = location.query;
+  const { taskName, taskId, mainId } = location.query;
   const { getFieldDecorator, getFieldsValue, setFieldsValue } = props.form;
   const required = true;
   const [check, setCheck] = useState(false);
@@ -61,7 +61,7 @@ const Registrat = forwardRef((props, ref) => {
       pathname: location.pathname,
       query: {
         taskName,
-        id,
+        taskId,
         mainId,
         next: sessionStorage.getItem('Nextflowmane'),
       },
@@ -102,13 +102,13 @@ const Registrat = forwardRef((props, ref) => {
     if (value === '005') {
       ChangeCheck(true);
       setCheck(true);
-      ChangeFlowtype('3');
+      //  ChangeFlowtype('3');
       sessionStorage.setItem('Nextflowmane', '审核');
       sessionStorage.setItem('flowtype', '3');
     } else {
       ChangeCheck(false);
       setCheck(false);
-      ChangeFlowtype('1');
+      //  ChangeFlowtype('1');
       sessionStorage.setItem('Nextflowmane', '处理');
       sessionStorage.setItem('flowtype', '1');
     }
