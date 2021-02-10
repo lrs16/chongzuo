@@ -52,11 +52,12 @@ function WorkOrder(props) {
   //  const [ischeck, setIscheck] = useState(false); // 是否在校验状态
   const [tracklength, setTrackLength] = useState(0);
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
-  const [isnew, setIsNew] = useState(false);
+  const [isnew, setIsNew] = useState(false); // 组件重新加载
+  const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
 
   // 监听info是否已更新
   useEffect(() => {
-    if (info !== '') {
+    if (loading) {
       setIsNew(true);
     }
     return () => {
@@ -428,6 +429,38 @@ function WorkOrder(props) {
       handleflow();
     }
   }, [type]);
+  // 请求下拉值
+  useEffect(() => {
+    let doCancel = false;
+    if (!doCancel && taskName === '需求登记') {
+      dispatch({
+        type: 'dicttree/childdictLower',
+        payload: { id: '1354274450639425537' },
+      }).then(res => {
+        if (res.code === 200) {
+          selectdata.arr.push(...res.data[0]?.children);
+          if (!doCancel) {
+            dispatch({
+              type: 'dicttree/childdictLower',
+              payload: { id: '1354288354950123522' },
+            }).then(ress => {
+              if (ress.code === 200) {
+                selectdata.arr.push(...ress.data[0]?.children);
+                setSelectData({ ...selectdata, ischange: true });
+              }
+            });
+          }
+        }
+      });
+    }
+    if (!doCancel && taskName !== '需求登记') {
+      setSelectData({ ...selectdata, ischange: true });
+    }
+    return () => {
+      setSelectData({ arr: [], ischange: true });
+      doCancel = true;
+    };
+  }, []);
 
   // 保存删除附件驱动表单保存
   useEffect(() => {
@@ -507,8 +540,8 @@ function WorkOrder(props) {
           })}
         </Steps>
       )}
-      <Spin spinning={loading}>
-        {loading === false && info !== '' && isnew && (
+      <Spin spinning={loading || !selectdata.ischange}>
+        {loading === false && info !== '' && isnew && selectdata.ischange && (
           <Collapse
             expandIconPosition="right"
             activeKey={activeKey}
@@ -530,6 +563,7 @@ function WorkOrder(props) {
                   register={info.demandForm}
                   userinfo={userinfo}
                   location={location}
+                  selectdata={selectdata.arr}
                 />
               )}
               {info.taskName === '业务科室领导审核' && info.historys.length === 0 && (

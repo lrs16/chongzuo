@@ -3,7 +3,6 @@ import router from 'umi/router';
 import moment from 'moment';
 import { Row, Col, Form, Input, Select, DatePicker, Cascader } from 'antd';
 import SysUpload from '@/components/SysUpload';
-import SysDict from '@/components/SysDict';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -30,10 +29,9 @@ const forminladeLayout = {
 };
 
 const Registrat = forwardRef((props, ref) => {
-  const { register, userinfo, files, ChangeFiles, location } = props;
+  const { register, userinfo, files, ChangeFiles, location, selectdata } = props;
   const { getFieldDecorator } = props.form;
   const required = true;
-  const [selectdata, setSelectData] = useState([]);
   const [fileslist, setFilesList] = useState({ arr: [], ischange: false });
 
   useEffect(() => {
@@ -89,12 +87,6 @@ const Registrat = forwardRef((props, ref) => {
 
   return (
     <>
-      <SysDict
-        typeid="1354274450639425537"
-        commonid="1354288354950123522"
-        ChangeSelectdata={newvalue => setSelectData(newvalue)}
-        style={{ display: 'none' }}
-      />
       <Form {...formItemLayout}>
         <Row gutter={24}>
           <Col span={8} style={{ display: 'none' }}>

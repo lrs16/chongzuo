@@ -3,7 +3,6 @@ import moment from 'moment';
 import { Row, Col, Form, Input, Select, DatePicker, Cascader } from 'antd';
 import SysUpload from '@/components/SysUpload';
 import styles from '../index.less';
-import DictLower from '@/components/SysDict/DictLower';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -19,12 +18,13 @@ const Handle = React.forwardRef((props, ref) => {
     files,
     ChangeFiles,
     show,
+    selectdata,
   } = props;
   const { handle } = info;
   const { getFieldDecorator, setFieldsValue } = props.form;
   const required = true;
   const [fileslist, setFilesList] = useState({ arr: [], ischange: false });
-  const [selectdata, setSelectData] = useState([]);
+
   useEffect(() => {
     if (fileslist.ischange) {
       ChangeFiles(fileslist);
@@ -86,11 +86,6 @@ const Handle = React.forwardRef((props, ref) => {
 
   return (
     <>
-      <DictLower
-        typeid="1354273739344187393"
-        ChangeSelectdata={newvalue => setSelectData(newvalue)}
-        style={{ display: 'none' }}
-      />
       <Row gutter={24} style={{ marginTop: 24 }}>
         <Form {...formItemLayout}>
           <Col span={8} style={{ display: 'none' }}>

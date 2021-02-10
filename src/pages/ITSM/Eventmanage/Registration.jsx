@@ -4,10 +4,10 @@ import moment from 'moment';
 import router from 'umi/router';
 import { Card, Button, Collapse, message, Spin } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import SelectUser from '@/components/SelectUser';
 import styles from './index.less';
 import Handle from './components/Handle';
 import Registrat from './components/Registrat';
-import SelectUser from '@/components/SelectUser';
 
 const { Panel } = Collapse;
 
@@ -41,11 +41,11 @@ function Registration(props) {
   const [formhandle, setFormhandle] = useState('');
   const [show, setShow] = useState(false); // 自行处理
   const [check, setCheck] = useState(false); // 审批
-  const [flowtype, setFlowtype] = useState('1'); // 流转类型
   const [ischeck, setIscheck] = useState({ save: false, flow: false }); // 是否在校验状态
   const [activeKey, setActiveKey] = useState(['registratform']);
   const [defaultvalue, setDefaultvalue] = useState('');
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
+  const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
   const RegistratRef = useRef();
   const HandleRef = useRef();
   useEffect(() => {
@@ -53,6 +53,36 @@ function Registration(props) {
       type: 'itsmuser/fetchuser',
     });
     sessionStorage.setItem('Processtype', 'event');
+  }, []);
+
+  // 请求下拉值
+  useEffect(() => {
+    let doCancel = false;
+    if (!doCancel) {
+      dispatch({
+        type: 'dicttree/childdictLower',
+        payload: { id: '1354273739344187393' },
+      }).then(res => {
+        if (res.code === 200) {
+          selectdata.arr.push(...res.data[0]?.children);
+          if (!doCancel) {
+            dispatch({
+              type: 'dicttree/childdictLower',
+              payload: { id: '1354288354950123522' },
+            }).then(ress => {
+              if (ress.code === 200) {
+                selectdata.arr.push(...ress.data[0]?.children);
+                setSelectData({ ...selectdata, ischange: true });
+              }
+            });
+          }
+        }
+      });
+    }
+    return () => {
+      setSelectData({ arr: [], ischange: false });
+      doCancel = true;
+    };
   }, []);
 
   const callback = key => {
@@ -125,7 +155,7 @@ function Registration(props) {
           ...formregistrat,
           ...formhandle,
         },
-        flowtype,
+        // flowtype,
       },
     });
   };
@@ -199,50 +229,53 @@ function Registration(props) {
     <PageHeaderWrapper title={pagetitle} extra={operations}>
       <Spin tip="正在提交数据..." spinning={Boolean(loading)}>
         <div className={styles.collapse}>
-          <Collapse
-            expandIconPosition="right"
-            // defaultActiveKey={['1']}
-            activeKey={activeKey}
-            bordered={false}
-            onChange={callback}
-          >
-            <Panel header="事件登记" key="registratform">
-              <Registrat
-                ChangeShow={isshow => setShow(isshow)}
-                ChangeCheck={checked => setCheck(checked)}
-                ChangeActiveKey={keys => setActiveKey(keys)}
-                ChangeFlowtype={type => setFlowtype(type)}
-                changeDefaultvalue={values => setDefaultvalue(values)}
-                ChangeFiles={newvalue => {
-                  setFiles(newvalue);
-                }}
-                formItemLayout={formItemLayout}
-                forminladeLayout={forminladeLayout}
-                show={show}
-                ref={RegistratRef}
-                userinfo={userinfo}
-                sethandlevalue="true"
-                location={location}
-                files={files.arr}
-              />
-            </Panel>
-            {show === true && check === false && (
-              <Panel header="事件处理" key="handleform">
-                <Handle
-                  formItemLayout={formItemLayout}
-                  forminladeLayout={forminladeLayout}
-                  ref={HandleRef}
-                  userinfo={userinfo}
-                  defaultvalue={defaultvalue}
-                  location={location}
+          {selectdata.ischange && (
+            <Collapse
+              expandIconPosition="right"
+              // defaultActiveKey={['1']}
+              activeKey={activeKey}
+              bordered={false}
+              onChange={callback}
+            >
+              <Panel header="事件登记" key="registratform">
+                <Registrat
+                  ChangeShow={isshow => setShow(isshow)}
+                  ChangeCheck={checked => setCheck(checked)}
+                  ChangeActiveKey={keys => setActiveKey(keys)}
+                  changeDefaultvalue={values => setDefaultvalue(values)}
                   ChangeFiles={newvalue => {
                     setFiles(newvalue);
                   }}
+                  formItemLayout={formItemLayout}
+                  forminladeLayout={forminladeLayout}
                   show={show}
+                  ref={RegistratRef}
+                  userinfo={userinfo}
+                  sethandlevalue="true"
+                  location={location}
+                  files={files.arr}
+                  selectdata={selectdata.arr}
                 />
               </Panel>
-            )}
-          </Collapse>
+              {show === true && check === false && (
+                <Panel header="事件处理" key="handleform">
+                  <Handle
+                    formItemLayout={formItemLayout}
+                    forminladeLayout={forminladeLayout}
+                    ref={HandleRef}
+                    userinfo={userinfo}
+                    defaultvalue={defaultvalue}
+                    location={location}
+                    ChangeFiles={newvalue => {
+                      setFiles(newvalue);
+                    }}
+                    show={show}
+                    selectdata={selectdata.arr}
+                  />
+                </Panel>
+              )}
+            </Collapse>
+          )}
         </div>
       </Spin>
     </PageHeaderWrapper>

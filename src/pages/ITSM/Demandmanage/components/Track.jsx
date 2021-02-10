@@ -12,9 +12,9 @@ import {
   Popconfirm,
   message,
 } from 'antd';
-import { DownloadOutlined, PaperClipOutlined, DeleteOutlined } from '@ant-design/icons';
-import styles from './style.less';
+import { DownloadOutlined, PaperClipOutlined } from '@ant-design/icons';
 import KeyVal from '@/components/SysDict/KeyVal';
+import styles from './style.less';
 
 const { Option } = Select;
 

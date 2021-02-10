@@ -7,15 +7,22 @@ function DictLower(props) {
   const [selectlist, setSelectList] = useState([]);
 
   useEffect(() => {
-    dispatch({
-      type: 'dicttree/childdictLower',
-      payload: { id: typeid },
-    }).then(res => {
-      if (res.code === 200) {
-        selectlist.push(...res.data[0].children);
-        setIsChange(true);
-      }
-    });
+    let doCancel = false;
+    if (!doCancel) {
+      dispatch({
+        type: 'dicttree/childdictLower',
+        payload: { id: typeid },
+      }).then(res => {
+        if (res.code === 200) {
+          selectlist.push(...res.data[0].children);
+          setIsChange(true);
+        }
+      });
+    }
+    return () => {
+      setIsChange(false);
+      doCancel = true;
+    };
   }, []);
   useEffect(() => {
     if (ischange) {
@@ -23,7 +30,7 @@ function DictLower(props) {
     }
     return () => {
       setIsChange(false);
-      //selectlist.splice(0, selectlist.length);
+      // selectlist.splice(0, selectlist.length);
     };
   }, [ischange]);
 

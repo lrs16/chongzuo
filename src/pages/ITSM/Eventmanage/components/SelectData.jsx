@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
 
-function DictTree(props) {
+function SelectData(props) {
   const { dispatch, typeid, commonid, ChangeSelectdata } = props;
   const [ischange, setIsChange] = useState(false);
   const [selectlist, setSelectList] = useState([]);
 
   useEffect(() => {
-    let doCancel = false;
-    if (!doCancel) {
+    let doeventCancel = false;
+    if (!doeventCancel) {
       dispatch({
         type: 'dicttree/childdictLower',
         payload: { id: typeid },
@@ -29,7 +29,7 @@ function DictTree(props) {
     }
     return () => {
       setIsChange(false);
-      doCancel = true;
+      doeventCancel = true;
     };
   }, []);
   useEffect(() => {
@@ -44,4 +44,4 @@ function DictTree(props) {
 export default connect(({ dicttree, loading }) => ({
   dicttree,
   loading: loading.models.dicttree,
-}))(DictTree);
+}))(SelectData);

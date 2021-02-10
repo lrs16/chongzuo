@@ -3,7 +3,6 @@ import router from 'umi/router';
 import moment from 'moment';
 import { Row, Col, Form, Input, Select, DatePicker } from 'antd';
 import SysUpload from '@/components/SysUpload';
-import SysDict from '@/components/SysDict';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -30,6 +29,7 @@ const ReturnVisit = React.forwardRef((props, ref) => {
     location,
     files,
     ChangeFiles,
+    selectdata,
   } = props;
   const { taskName, taskId, mainId } = location.query;
   const { finish } = info;
@@ -37,7 +37,6 @@ const ReturnVisit = React.forwardRef((props, ref) => {
   const attRef = useRef();
   const required = true;
   const [fileslist, setFilesList] = useState({ arr: [], ischange: false });
-  const [selectdata, setSelectData] = useState([]);
   useEffect(() => {
     if (fileslist.ischange) {
       ChangeFiles(fileslist);
@@ -97,12 +96,6 @@ const ReturnVisit = React.forwardRef((props, ref) => {
 
   return (
     <>
-      <SysDict
-        typeid="1354273739344187393"
-        commonid="1354288354950123522"
-        ChangeSelectdata={newvalue => setSelectData(newvalue)}
-        style={{ display: 'none' }}
-      />
       <Row gutter={24} style={{ paddingTop: 24 }}>
         <Form {...formItemLayout}>
           <>

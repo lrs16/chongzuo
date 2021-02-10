@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { connect } from 'dva';
-import { Card, Button } from 'antd';
+import { Card, Button, Spin } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import Registrat from './components/Registrat';
 // import SelectUser from '@/components/SelectUser';
@@ -10,6 +10,7 @@ function Registration(props) {
   const pagetitle = props.route.name;
   // const [flowtype, setFlowtype] = useState('1'); // 流转类型
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
+  const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
 
   // 初始化用户信息，流程类型
   useEffect(() => {
@@ -98,6 +99,36 @@ function Registration(props) {
     }
   }, [files]);
 
+  // 请求下拉值
+  useEffect(() => {
+    let doCancel = false;
+    if (!doCancel) {
+      dispatch({
+        type: 'dicttree/childdictLower',
+        payload: { id: '1354274450639425537' },
+      }).then(res => {
+        if (res.code === 200) {
+          selectdata.arr.push(...res.data[0]?.children);
+          if (!doCancel) {
+            dispatch({
+              type: 'dicttree/childdictLower',
+              payload: { id: '1354288354950123522' },
+            }).then(ress => {
+              if (ress.code === 200) {
+                selectdata.arr.push(...ress.data[0]?.children);
+                setSelectData({ ...selectdata, ischange: true });
+              }
+            });
+          }
+        }
+      });
+    }
+    return () => {
+      setSelectData({ arr: [], ischange: false });
+      doCancel = true;
+    };
+  }, []);
+
   const operations = (
     <>
       <Button type="primary" style={{ marginRight: 8 }} onClick={() => getregistrat('save')}>
@@ -115,14 +146,19 @@ function Registration(props) {
   return (
     <PageHeaderWrapper title={pagetitle} extra={operations}>
       <Card>
-        <Registrat
-          ref={RegistratRef}
-          userinfo={userinfo}
-          files={files.arr}
-          ChangeFiles={newvalue => {
-            setFiles(newvalue);
-          }}
-        />
+        <Spin spinning={!selectdata.ischange}>
+          {selectdata.ischange && (
+            <Registrat
+              ref={RegistratRef}
+              userinfo={userinfo}
+              files={files.arr}
+              ChangeFiles={newvalue => {
+                setFiles(newvalue);
+              }}
+              selectdata={selectdata.arr}
+            />
+          )}
+        </Spin>
       </Card>
     </PageHeaderWrapper>
   );

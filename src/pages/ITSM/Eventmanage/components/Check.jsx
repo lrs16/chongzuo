@@ -18,7 +18,7 @@ const typemaps = new Map([
 
 const Check = forwardRef((props, ref) => {
   const { formItemLayout, forminladeLayout, info, userinfo, location, files, ChangeFiles } = props;
-  const { taskName, id, mainId } = location.query;
+  const { taskName, taskId, mainId } = location.query;
   const { check } = info;
   const { getFieldDecorator } = props.form;
   const [adopt, setAdopt] = useState('001');
@@ -48,7 +48,7 @@ const Check = forwardRef((props, ref) => {
       pathname: location.pathname,
       query: {
         taskName,
-        id,
+        taskId,
         mainId,
         next: sessionStorage.getItem('Nextflowmane'),
       },

@@ -2,10 +2,10 @@ import React, { useRef, useImperativeHandle, forwardRef, useState, useEffect } f
 import router from 'umi/router';
 import moment from 'moment';
 import { Row, Col, Form, Input, Select, Checkbox, DatePicker, Cascader } from 'antd';
-import styles from '../index.less';
 import { phone_reg } from '@/utils/Regexp';
 import SysUpload from '@/components/SysUpload';
 import SysDict from '@/components/SysDict';
+import styles from '../index.less';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -26,6 +26,7 @@ const Registrat = forwardRef((props, ref) => {
     location,
     files,
     ChangeFiles,
+    selectdata,
   } = props;
   const { register } = info;
   const { taskName, taskId, mainId } = location.query;
@@ -34,7 +35,6 @@ const Registrat = forwardRef((props, ref) => {
   const [check, setCheck] = useState(false);
   const [revisitway, setRevisitway] = useState(false);
   const [fileslist, setFilesList] = useState({ arr: [], ischange: false });
-  const [selectdata, setSelectData] = useState([]);
   useEffect(() => {
     if (fileslist.ischange === true) {
       ChangeFiles(fileslist);
@@ -173,12 +173,6 @@ const Registrat = forwardRef((props, ref) => {
   const priormap = getTypebykey('482610561499004928'); // 优先级
   return (
     <>
-      <SysDict
-        typeid="1354273739344187393"
-        commonid="1354288354950123522"
-        ChangeSelectdata={newvalue => setSelectData(newvalue)}
-        style={{ display: 'none' }}
-      />
       <Form {...formItemLayout}>
         <Row gutter={24} style={{ paddingTop: 24 }}>
           <Col span={8} style={{ display: 'none' }}>
@@ -570,7 +564,7 @@ Registrat.defaultProps = {
       applicationUserId: '12121212',
       applicationUserPhone: '',
       mobilePhone: '',
-      //occur_time: moment().format('YYYY-MM-DD HH:mm:ss'),
+      // occur_time: moment().format('YYYY-MM-DD HH:mm:ss'),
       // registerDept: '广西电网有限责任公司',
       // registerDeptId: '7AC3EF0F701402A2E0530A644F130365',
       // registerUnit: '广西电网有限责任公司',

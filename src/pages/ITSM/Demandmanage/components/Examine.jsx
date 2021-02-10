@@ -3,7 +3,6 @@ import router from 'umi/router';
 import moment from 'moment';
 import { Row, Col, Form, Input, Radio, DatePicker, Select, Checkbox } from 'antd';
 import SysUpload from '@/components/SysUpload';
-import KeyVal from '@/components/SysDict/KeyVal';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -35,7 +34,6 @@ const Examine = forwardRef((props, ref) => {
   const { getFieldDecorator, setFieldsValue } = props.form;
   const { taskName, taskId, result, mainId } = location.query;
   const required = true;
-  const [selectdata, setSelectData] = useState([]);
 
   // 附件历史
   const [fileslist, setFilesList] = useState({ arr: [], ischange: false });
@@ -116,11 +114,6 @@ const Examine = forwardRef((props, ref) => {
 
   return (
     <>
-      <KeyVal
-        dictModule="demand"
-        dictType="confirm"
-        ChangeSelectdata={newvalue => setSelectData(newvalue)}
-      />
       <Form {...formItemLayout}>
         <Row gutter={24} style={{ paddingTop: 24 }}>
           {taskName !== '自动化科负责人确认' && (
