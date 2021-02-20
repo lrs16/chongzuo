@@ -172,17 +172,17 @@ export default {
       });
     },
     //  列表查询
-    *queryList({ payload: { current, pageSize, values } }, { call, put }) {
-      const response = yield call(queryList, current, pageSize, values);
+    *queryList({ payload: { current, pageSize,status,classified,values } }, { call, put }) {
+      const response = yield call(queryList, current, pageSize,status,classified,values);
       yield put({
         type: 'besolveListpage',
         payload: response,
       });
     },
 
+
     //  获取工作流流程图
     *getgetFlowImage({ payload: { id } }, { call, put }) {
-      console.log('id: ', id);
       const response = yield call(getFlowImage, id);
       yield put({
         type: 'imageSource',

@@ -119,7 +119,7 @@ export async function realselist() {
 }
 
 // // 问题查询列表查询
-export async function queryList(current, pageSize, values) {
+export async function queryList(current, pageSize,status,classified,values) {
   let obj;
   if (values) {
     obj = values;
@@ -129,11 +129,14 @@ export async function queryList(current, pageSize, values) {
 
   obj.pageNum = current;
   obj.pageSize = pageSize;
+  obj.status = status;
+  obj.type = classified;
   return request(`/problem/flow/getOrderPage`, {
     method: 'POST',
     body: JSON.stringify(obj),
   });
 }
+
 
 //  接口上传
 export async function fileUpload() {

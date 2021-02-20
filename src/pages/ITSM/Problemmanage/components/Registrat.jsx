@@ -115,7 +115,7 @@ const Registrat = React.forwardRef((props, ref) => {
                   {
                     source && source.length && (
                       source.map(({ key, val }) => (
-                        <Option key={key} value={val}>
+                        <Option key={key} value={key}>
                           {val}
                         </Option>
                       ))
@@ -141,7 +141,7 @@ const Registrat = React.forwardRef((props, ref) => {
                   {
                     type && type.length && (
                       type.map(({ key, val }) => (
-                        <Option key={key} value={val}>
+                        <Option key={key} value={key}>
                           {val}
                         </Option>
                       ))
@@ -167,7 +167,7 @@ const Registrat = React.forwardRef((props, ref) => {
                   {
                     priority && priority.length && (
                       priority.map(({ key, val }) => (
-                        <Option key={key} value={val}>
+                        <Option key={key} value={key}>
                           {val}
                         </Option>
                       ))
@@ -210,7 +210,7 @@ const Registrat = React.forwardRef((props, ref) => {
                   {
                     project && project.length && (
                       project.map(({ key, val }) => (
-                        <Option key={key} value={val}>
+                        <Option key={key} value={key}>
                           {val}
                         </Option>
                       ))
@@ -236,7 +236,7 @@ const Registrat = React.forwardRef((props, ref) => {
                   {
                     scope && scope.length && (
                       scope.map(({ key, val }) => (
-                        <Option key={key} value={val}>
+                        <Option key={key} value={key}>
                           {val}
                         </Option>
                       ))

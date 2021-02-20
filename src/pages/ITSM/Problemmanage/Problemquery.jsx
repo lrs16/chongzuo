@@ -42,13 +42,13 @@ const columns = [
   },
   {
     title: '问题来源',
-    dataIndex: 'source',
-    key: 'source',
+    dataIndex: 'sourcecn',
+    key: 'sourcecn',
   },
   {
     title: '问题分类',
-    dataIndex: 'type',
-    key: 'type',
+    dataIndex: 'typecn',
+    key: 'typecn',
   },
   {
     title: '工单状态',
@@ -57,8 +57,8 @@ const columns = [
   },
   {
     title: '影响范围',
-    dataIndex: 'registerScope',
-    key: 'registerScope',
+    dataIndex: 'registerScopecn',
+    key: 'registerScopecn',
   },
   {
     title: '处理人',
@@ -89,6 +89,7 @@ function Besolved(props) {
   const pagetitle = props.route.name;
   const {
     form: { getFieldDecorator, resetFields, validateFields },
+    location:{ query: {orderStatus,orderClass } },
     dispatch,
     besolveList,
     keyVallist,
@@ -101,13 +102,16 @@ function Besolved(props) {
   const [expand, setExpand] = useState(false);
   const [paginations, setPaginations] = useState({ current: 1, pageSize: 10 });
   const [selectedRows, setSelectedRows] = useState([]);
-
+  const status = orderStatus !== undefined ? orderStatus:'';
+  const classified = orderClass !== undefined ? orderClass:'';
   const getQuery = () => {
     dispatch({
       type: 'problemmanage/queryList',
       payload: {
         current: paginations.current,
         pageSize: paginations.pageSize,
+        status,
+        classified
       },
     });
   };
@@ -178,6 +182,8 @@ function Besolved(props) {
         values,
         pageSize,
         current: page,
+        status,
+        classified
       },
     });
   };
@@ -197,7 +203,7 @@ function Besolved(props) {
   const changePage = page => {
     validateFields((err, values) => {
       if (!err) {
-        searchdata(values, page, paginations.pageSize);
+        searchdata(values, page,paginations.pageSize);
       }
     });
     setPaginations({

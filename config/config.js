@@ -237,6 +237,37 @@ export default {
                       icon: 'cloud-server',
                       component: './ITSM/Problemmanage/Queryworkdetail',
                     },
+                    {
+                      path: '/ITSM/problemmanage/statistics',
+                      name: '问题统计',
+                      icon: 'alibaba',
+                      routes: [
+                        {
+                          path: '/ITSM/problemmanage/statistics/treatmentrate',
+                          name: '问题处理率',
+                          icon: 'fork',
+                          component: './ITSM/Problemmanage/Handlingrate',
+                        },
+                        {
+                          path:'/ITSM/problemmanage/statistics/classifiedstatistics',
+                          name:'问题分类统计',
+                          icon:'experiment',
+                          component:'./ITSM/Problemmanage/ClassifiedStatistics'
+                        },
+                        {
+                          path:'/ITSM/problemmanage/statistics/statusstatistics',
+                          name:'问题状态统计',
+                          icon:'dropbox',
+                          component:'./ITSM/Problemmanage/Statusstatistics'
+                        },
+                        {
+                          path:'/ITSM/problemmanage/statistics/timeoutstatistics',
+                          name:'问题超时统计',
+                          icon:'euro',
+                          component:'./ITSM/Problemmanage/TimeoutStatistics'
+                        },
+                      ],
+                    },
                   ],
                 },
                 {

@@ -178,12 +178,12 @@ class HostEdit extends Component {
                     message: '请输入',
                   },
                 ],
-                initialValue: hostsZoneId||'2',
+                initialValue: hostsZoneId||'3',
               })(
                 <Radio.Group>
-                  <Radio value='0'>安全接入区</Radio>
-                  <Radio value='1'>二区</Radio>
-                  <Radio value='2'>三区</Radio>
+                  <Radio value='1'>安全接入区</Radio>
+                  <Radio value='2'>二区</Radio>
+                  <Radio value='3'>三区</Radio>
                 </Radio.Group>,
               
               )}

@@ -51,13 +51,13 @@ const columns = [
   },
   {
     title: '问题来源',
-    dataIndex: 'source',
-    key: 'source',
+    dataIndex: 'sourcecn',
+    key: 'sourcecn',
   },
   {
     title: '问题分类',
-    dataIndex: 'type',
-    key: 'type',
+    dataIndex: 'typecn',
+    key: 'typecn',
   },
   {
     title: '当前处理环节',
@@ -71,8 +71,8 @@ const columns = [
   },
   {
     title: '重要程度',
-    dataIndex: 'importance',
-    key: 'importance',
+    dataIndex: 'importancecn',
+    key: 'importancecn',
   },
 ];
 
@@ -272,7 +272,7 @@ function Besolved(props) {
                     {
                       stateList.state && stateList.state.length > 0 && (
                         (stateList.state).map(({ key, val }) => (
-                          <Option key={key} value={val}>
+                          <Option key={key} value={key}>
                             {val}
                           </Option>
                         ))
@@ -303,7 +303,7 @@ function Besolved(props) {
                           {
                             keyVallist && keyVallist.source.length && (
                               (keyVallist.source).map(({ key, val }) => (
-                                <Option key={key} value={val}>
+                                <Option key={key} value={key}>
                                   {val}
                                 </Option>
                               ))
@@ -322,7 +322,7 @@ function Besolved(props) {
                           {
                             typelist && typelist.type.length && (
                               (typelist.type).map(({ key, val }) => (
-                                <Option key={key} value={val}>
+                                <Option key={key} value={key}>
                                   {val}
                                 </Option>
                               ))
