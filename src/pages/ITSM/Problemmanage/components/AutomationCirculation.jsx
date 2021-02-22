@@ -8,7 +8,8 @@ const withClick = (element, showDrawer = () => { }) => {
 };
 
 const SelectUser = props => {
-  const { children, dispatch, handleSubmit, userlist, loading, changorder, taskId } = props;
+  const { children, dispatch, handleSubmit, problemlist, loading, changorder, taskId } = props;
+  console.log('problemlist: ', problemlist);
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [defaultvalue, setDefaultvalue] = useState([]);
@@ -103,13 +104,13 @@ const SelectUser = props => {
         onCancel={handleCancel}
       >
         <Spin tip="正在加载数据..." spinning={Boolean(loading)}>
-          {loading === false && userlist && (
+          {loading === false && problemlist && (
             <>
               <div>自动化业务人员</div>
               <div style={{ marginTop: 12 }}>
                 <Checkbox.Group
                   defaultValue={defaultvalue}
-                  options={dataArr(userlist.serviceData)}
+                  options={dataArr(problemlist.serviceData)}
                   onChange={handleChange}
                 />
               </div>
@@ -118,7 +119,7 @@ const SelectUser = props => {
               <div style={{ marginTop: 12 }}>
                 <Checkbox.Group
                   defaultValue={defaultvalue}
-                  options={dataArr(userlist.dutyData)}
+                  options={dataArr(problemlist.dutyData)}
                   onChange={specialhandleChange}
                 />
               </div>
@@ -130,9 +131,9 @@ const SelectUser = props => {
   );
 };
 
-SelectUser.defaultProps = { pangekey: '0' };
+// SelectUser.defaultProps = { pangekey: '0' };
 
 export default connect(({ itsmuser, loading }) => ({
-  userlist: itsmuser.userlist,
+  problemlist: itsmuser.problemlist,
   loading: loading.models.itsmuser,
 }))(SelectUser);

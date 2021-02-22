@@ -17,7 +17,6 @@ import Registrat from './components/Registrat';
 import Systemoperatoredit from './components/Systemoperatoredit';
 import Developerprocessdit from './components/Developerprocessdit';
 import Operatorconfirmaedit from './components/Operatorconfirmaedit';
-import Systemoperatoreditsecond from './components/Systemoperatoreditsecond';
 
 import Problemsolving from './components/Problemsolving';
 import Problemreview from './components/Problemreview';
@@ -81,7 +80,7 @@ function Workorder(props) {
     todoDetail: { check, handle, confirm, register, main },
     useInfo,
     newno,
-    userlist,
+    problemlist,
     handleList,
     keyVallist,
     typelist,
@@ -92,16 +91,17 @@ function Workorder(props) {
     loading
   } = props;
 
-
   let showback = true;
-
-  if (userlist.selSign !== undefined) {
+  console.log(problemlist,'problemlist');
+  if (problemlist.selSign !== undefined) {
     if (flowNodeName === '系统开发商处理') {
       selSign = '0';
     } else {
-      selSign = userlist.selSign
+      selSign = problemlist.selSign
     }
   }
+
+  console.log(selSign,'selSign');
 
   const {
     params: { id },
@@ -660,7 +660,7 @@ function Workorder(props) {
               flowNodeName !== '系统运维商审核' &&
               flowNodeName !== '系统运维商确认' &&
 
-              (userlist && selSign === '1') &&
+              (problemlist && selSign === '1') &&
               tabActiveKey === 'workorder' &&
               (
                 <SelectUser
@@ -733,7 +733,7 @@ function Workorder(props) {
             {
               (
                 flowtype === '0' ||
-                (userlist && selSign === '0')
+                (problemlist && selSign === '0')
               )
               &&
               (currntStatus !== 29 && currntStatus !== 40) &&
@@ -773,6 +773,7 @@ function Workorder(props) {
                     padding: 24,
                     border: '1px solid #e8e8e8',
                     overflowX: 'auto',
+                    marginBottom:24
                   }}
                 >
                   {
@@ -793,6 +794,7 @@ function Workorder(props) {
               <Collapse
                 expandIconPosition="right"
                 defaultActiveKey={['1']}
+                bordered={false}
               >
                 {
                   currntStatus === 5 && (
@@ -1005,7 +1007,6 @@ function Workorder(props) {
 
             </div>
 
-
             <div className={styles.collapse}>
               {problemFlowNodeRows && loading === false && (
                 <Collapse
@@ -1085,7 +1086,7 @@ export default Form.create({})(
     useInfo: problemmanage.useInfo,
     handleList: problemdropdown.handleList,
     info: demandtodo.info,
-    userlist: itsmuser.userlist,
+    problemlist: itsmuser.problemlist,
     userinfo: itsmuser.userinfo,
     keyVallist: problemdropdown.keyVallist,
     typelist: problemdropdown.typelist,

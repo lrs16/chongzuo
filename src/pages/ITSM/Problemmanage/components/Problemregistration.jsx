@@ -1,5 +1,6 @@
 import React from 'react';
 import { Descriptions } from 'antd';
+import styles from '../index.less';
 import Downloadfile from '@/components/SysUpload/Downloadfile';
 
 function Problemregistration(props) {
@@ -9,9 +10,9 @@ function Problemregistration(props) {
   } = props;
 
   return (
-    <div>
+    <div className={styles.collapse}  style={{ marginLeft: 30, marginRight: 10 }}>
       <>
-        <Descriptions>
+        <Descriptions style={{ marginTop: 24 }} size="middle">
           <Descriptions.Item label="问题编号">
             {main.no}
           </Descriptions.Item>
@@ -25,15 +26,15 @@ function Problemregistration(props) {
           </Descriptions.Item>
 
           <Descriptions.Item label="问题来源">
-            {main.source}
+            {main.sourcecn}
           </Descriptions.Item>
 
           <Descriptions.Item label="问题分类">
-            {main.type}
+            {main.typecn}
           </Descriptions.Item>
 
           <Descriptions.Item label="重要程度">
-            {main.importance}
+            {main.importancecn}
           </Descriptions.Item>
 
           <Descriptions.Item label="期待完成时间">
@@ -41,41 +42,31 @@ function Problemregistration(props) {
           </Descriptions.Item>
 
           <Descriptions.Item label="所属项目">
-            {info.registerProject}
+            {info.registerProjectcn}
           </Descriptions.Item>
 
           <Descriptions.Item label="影响范围">
-            {info.registerScope}
+            {info.registerScopecn}
           </Descriptions.Item>
-
-        </Descriptions>
-        <Descriptions>
-          <Descriptions.Item label="联系电话">
+    
+          <Descriptions.Item label="联系电话" span={3}>
             {info.registerUserPhone}
           </Descriptions.Item>
-        </Descriptions>
 
-        <Descriptions>
-          <Descriptions.Item label="问题标题">
+          <Descriptions.Item label="问题标题" span={3}>
             {main.title}
           </Descriptions.Item>
-        </Descriptions>
 
-        <Descriptions>
-          <Descriptions.Item label="问题描述">
-            {main.content}
+          <Descriptions.Item label="问题描述" span={3}>
+            <div dangerouslySetInnerHTML={{ __html: main.content?.replace(/[\n]/g, '<br/>') }} />
           </Descriptions.Item>
-        </Descriptions>
 
-        <Descriptions>
-          <Descriptions.Item label="上传附件">
+          <Descriptions.Item label="上传附件" span={3}>
             <span style={{ color: 'blue', textDecoration: 'underline' }} >
               {info.registerAttachments !== null && <Downloadfile files={info.registerAttachments} />}
             </span>
           </Descriptions.Item>
-        </Descriptions>
 
-        <Descriptions>
           <Descriptions.Item label="填报人">
             {info.registerUser}
           </Descriptions.Item>
@@ -88,7 +79,7 @@ function Problemregistration(props) {
             {info.registerDept}
           </Descriptions.Item>
 
-        </Descriptions>
+          </Descriptions>
       </>
     </div>
   );

@@ -9,6 +9,7 @@ const withClick = (element, showDrawer = () => {}) => {
 
 const SelectUser = props => {
   const { children, dispatch, handleSubmit, userlist, loading, changorder, taskId } = props;
+  console.log('userlist: ', userlist);
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [defaultvalue, setDefaultvalue] = useState([]);
@@ -78,6 +79,7 @@ const SelectUser = props => {
 
   const showModal = () => {
     setIsModalVisible(true);
+    console.log(type,'type');
     switch (type) {
       case 'event':
         dispatch({
@@ -97,15 +99,15 @@ const SelectUser = props => {
           },
         });
         break;
-      case 'problem':
-        dispatch({
-          type: 'itsmuser/problemuserlist',
-          payload: {
-            taskId,
-            result: sessionStorage.getItem('flowtype'),
-          },
-        });
-        break;
+      // case 'problem':
+      //   dispatch({
+      //     type: 'itsmuser/problemuserlist',
+      //     payload: {
+      //       taskId,
+      //       result: sessionStorage.getItem('flowtype'),
+      //     },
+      //   });
+      //   break;
       case 'troub':
         dispatch({
           type: 'itsmuser/troubleuserlist',
@@ -161,7 +163,7 @@ const SelectUser = props => {
         onOk={handleOk}
         onCancel={handleCancel}
       >
-        <Spin tip="正在加载数据..." spinning={Boolean(loading)}>
+        {/* <Spin tip="正在加载数据..." spinning={Boolean(loading)}>
           {loading === false && type !== 'demand' && (
             <>
               <div>{nextflowuser}人员</div>
@@ -173,8 +175,8 @@ const SelectUser = props => {
                 />
               </div>
             </>
-          )}
-          {type === 'demand' && userlist !== '' && (
+          )} */}
+          {/* {type === 'demand' && userlist !== '' && (
             <>
               {userlist.map((obj, index) => {
                 return (
@@ -196,13 +198,13 @@ const SelectUser = props => {
                           </Checkbox>
                         )
                       })} */}
-                    </div>
+                    {/* </div>
                   </div>
                 );
               })}
             </>
-          )}
-        </Spin>
+          )} */}
+        {/* </Spin> */}
       </Modal>
     </>
   );

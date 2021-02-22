@@ -1,22 +1,7 @@
 @import '~antd/lib/style/themes/default.less';
 
-.steps {
-  :global(.ant-steps-vertical.ant-steps-small .ant-steps-item-container .ant-steps-item-title) {
-    width: 380px !important;
-  }
-}
-
-.steps {
-  :global(.ant-steps-dot.ant-steps-small .ant-steps-item-container .ant-steps-item-content) {
-    width: 250px !important;
-  }
-}
-
-.steps {
-  :global(.ant-steps-horizontal:not(.ant-steps-label-vertical) .ant-steps-item-description) {
-    max-width: 380px;
-    white-space: normal;
-  }
+.margin_r button {
+  margin-right: 8px;
 }
 
 .collapse {
@@ -55,14 +40,20 @@
 
 .collapse {
   :global(.ant-steps-horizontal:not(.ant-steps-label-vertical) .ant-steps-item-description) {
-    max-width: 350px;
+    max-width: 210px;
     text-align: left;
   }
 }
 
 .collapse {
   :global(.ant-steps-horizontal:not(.ant-steps-label-vertical) .ant-steps-item) {
-    min-width: 350px;
+    min-width: 250px;
+  }
+}
+
+.collapse {
+  :global(.ant-descriptions-item-label) {
+    vertical-align: top;
   }
 }
 
@@ -72,11 +63,22 @@
   }
 }
 
-// .collapse {
-//   :global(.ant-form) {
-//     margin-top: 24px;
-//   }
-// }
+.collapse {
+  :global(.ant-descriptions-bordered.ant-descriptions-small .ant-descriptions-item-label, ) {
+    padding: 8px 24px;
+  }
+}
+
+.collapse th {
+  display: table-cell;
+  white-space: nowrap;
+  text-align: right;
+  padding-left: 30px;
+}
+
+.collapse tr {
+  vertical-align: middle;
+}
 
 .stepDescription {
   position: relative;
@@ -110,5 +112,3 @@
 .blobimg img {
   height: 220px;
 }
-
-

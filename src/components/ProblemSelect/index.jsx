@@ -8,7 +8,7 @@ const withClick = (element, showDrawer = () => {}) => {
 };
 
 const SelectUser = props => {
-  const { children, dispatch, handleSubmit, userlist, loading, changorder, taskId } = props;
+  const { children, dispatch, handleSubmit, problemlist, loading, changorder, taskId } = props;
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [defaultvalue, setDefaultvalue] = useState([]);
@@ -110,7 +110,7 @@ const SelectUser = props => {
         newArr.push(idnum);
         nameArr.push(demandvalue[i].nodeName);
       }
-      if (newArr.indexOf(0) !== -1 || nameArr.length < userlist.length) {
+      if (newArr.indexOf(0) !== -1 || nameArr.length < problemlist.length) {
         message.error('最少选择一个处理人！');
       } else {
         handleSubmit();
@@ -141,7 +141,7 @@ const SelectUser = props => {
               <div style={{ marginTop: 12 }}>
                 <Checkbox.Group
                   defaultValue={defaultvalue}
-                  options={dataArr(userlist.data)}
+                  options={dataArr(problemlist.data)}
                   onChange={handleChange}
                 />
               </div>
@@ -156,6 +156,6 @@ const SelectUser = props => {
 SelectUser.defaultProps = { pangekey: '0' };
 
 export default connect(({ itsmuser, loading }) => ({
-  userlist: itsmuser.userlist,
+  problemlist: itsmuser.problemlist,
   loading: loading.models.itsmuser,
 }))(SelectUser);

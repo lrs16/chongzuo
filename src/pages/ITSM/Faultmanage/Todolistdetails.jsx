@@ -766,19 +766,18 @@ function Todolistdetails(props) {
       {
         (tabActiveKey === 'faultForm' &&
           <div className={styles.collapse}>
-            <Card
-              style={{
-                background: '#fff',
-                // padding: 10,
-                border: '1px solid #e8e8e8',
-                overflowX: 'auto',
-              }}
-            >
               {
                 troubleFlowLogs &&
                 (<Steps
                   current={troubleFlowLogs.length - 1}
                   size="small"
+                  style={{
+                    background: '#fff',
+                    padding: 24,
+                    border: '1px solid #e8e8e8',
+                    overflowX: 'auto',
+                    marginBottom:50
+                  }}
                 >
                   {
                     troubleFlowLogs && troubleFlowLogs.map(({ key, name, status, timeText, formHandler, startTime }) => [
@@ -791,7 +790,6 @@ function Todolistdetails(props) {
                     ])}
                 </Steps>)
               }
-            </Card>
             <Spin spinning={loading}>
               {
                 loading === false && tododetailslist && (

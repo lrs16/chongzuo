@@ -14,6 +14,7 @@ export default {
     flowmsg: '',
     userinfo: '',
     userlist: '',
+    problemlist:''
   },
 
   effects: {
@@ -36,6 +37,7 @@ export default {
     // 加载需求下一环节处理人列表
     *demanduserlist({ payload: { taskId, result } }, { call, put }) {
       const response = yield call(DemandFlowUserList, taskId, result);
+      console.log('response: ', response);
       yield put({
         type: 'savelist',
         payload: response.data,
@@ -52,8 +54,9 @@ export default {
     // 加载问题下一环节处理人列表
     *problemuserlist({ payload: { taskId, result } }, { call, put }) {
       const response = yield call(ProblemFlowUserList, taskId, result);
+      console.log('response: ', response);
       yield put({
-        type: 'savelist',
+        type: 'problemlist',
         payload: response,
       });
     },
@@ -71,6 +74,13 @@ export default {
       return {
         ...state,
         userlist: action.payload,
+      };
+    },
+
+    problemlist(state, action) {
+      return {
+        ...state,
+        problemlist: action.payload,
       };
     },
   },

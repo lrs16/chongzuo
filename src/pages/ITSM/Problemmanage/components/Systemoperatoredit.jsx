@@ -15,8 +15,6 @@ const { TextArea } = Input;
 
 const Systemoperatoredit = React.forwardRef((props, ref) => {
   const { formItemLayout, forminladeLayout, files, ChangeFiles, flowNodeName, allInfo } = props;
-  console.log('files: ', files);
-  console.log('ChangeFiles: ', ChangeFiles);
   let secondFiles = [];
   if (flowNodeName === '自动化科审核') {
     if (allInfo.editState !== undefined && (allInfo.editState === 'add')) {
