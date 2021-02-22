@@ -197,7 +197,7 @@ const HandleChild = React.forwardRef((props, ref) => {
                                     }}
                                     onFocus={() => 0}
                                 >
-                                    <SysUpload fileslist={(handle && handle.handleRecordAttachments) ? JSON.parse(handle.handleRecordAttachments) : []} ChangeFileslist={newvalue => setFilesList(newvalue)} />
+                                    <SysUpload fileslist={(handle && handle.handleRecordAttachments !== null) ? JSON.parse(handle.handleRecordAttachments) : []} ChangeFileslist={newvalue => setFilesList(newvalue)} />
                                 </div>
                             )}
                         </Form.Item></Col>
@@ -225,7 +225,7 @@ const HandleChild = React.forwardRef((props, ref) => {
                                     }}
                                     onFocus={() => 0}
                                 >
-                                    <SysUpload fileslist={(handle && handle.handlePictureAttachments) ? JSON.parse(handle.handlePictureAttachments) : []} ChangeFileslist={newvalue => setFilesList(newvalue)} />
+                                    <SysUpload fileslist={(handle && handle.handlePictureAttachments !== null) ? JSON.parse(handle.handlePictureAttachments) : []} ChangeFileslist={newvalue => setFilesList(newvalue)} />
                                 </div>
                             )}
                         </Form.Item>
@@ -247,7 +247,7 @@ const HandleChild = React.forwardRef((props, ref) => {
                                     }}
                                     onFocus={() => 0}
                                 >
-                                    <SysUpload fileslist={(handle && handle.handleAttachments) ? JSON.parse(handle.handleAttachments) : []} ChangeFileslist={newvalue => setFilesList(newvalue)} />
+                                    <SysUpload fileslist={(handle && handle.handleAttachments !== null) ? JSON.parse(handle.handleAttachments) : []} ChangeFileslist={newvalue => setFilesList(newvalue)} />
                                 </div>
                             )}
 

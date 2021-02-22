@@ -58,11 +58,9 @@ let currntStatus = '';
 let showEdit = false;
 const saveSign = '';
 const circaSign = 'problem';
-let handleTime;
-let receivingTime;
 let problemFlowid;
 let flowNodeName;
-let confirmType;
+let handleKey;
 let fileSign;
 let selSign;
 
@@ -158,21 +156,6 @@ function Workorder(props) {
     solvingDisbled();
   }
 
-  if (handle) {
-    if (handle.handleTime) {
-      handleTime = moment(handle.handleTime)
-    }
-  } else {
-    handleTime = moment(new Date());
-  }
-
-  if (handle) {
-    if (handle.addtime) {
-      receivingTime = moment(handle.addtime)
-    }
-  } else {
-    receivingTime = moment(new Date());
-  }
 
 
   const queryDept = () => {
@@ -468,6 +451,7 @@ function Workorder(props) {
         message.info(res.msg);
         showEdit = false;
         currntStatus = 45;
+        handleKey = '1';
         getInformation();
       } else {
         message.error(res.msg);
@@ -748,12 +732,6 @@ function Workorder(props) {
 
             {
               (
-                // flowNodeName === '问题登记人员确认' || 
-                // flowNodeName === '系统开发商处理' ||
-                // // flowNodeName === '系统运维商审核' ||
-                // flowNodeName === '自动化科审核' ||
-                // flowNodeName === '系统运维商确认' ||
-                // flowNodeName === '自动化科业务人员确认' ||
                 flowtype === '0' ||
                 (userlist && selSign === '0')
               )
@@ -872,7 +850,6 @@ function Workorder(props) {
                           }}
                         />
                       </FatherContext.Provider>
-
                     </Panel>
                   )
                 }
@@ -909,7 +886,7 @@ function Workorder(props) {
 
 
                 {
-                  flowNodeName === '系统开发商处理' && (
+                  flowNodeName === '系统开发商处理' && currntStatus === 45 && (
                     <Panel
                       header='系统开发商处理'
                       key='1'
@@ -922,8 +899,6 @@ function Workorder(props) {
                         ref={HandleRef}
                         useInfo={userinfo}
                         handle={handle}
-                        handleTime={handleTime}
-                        receivingTime={receivingTime}
                         handleresult={handleList.handleresult}
                         files={
                           todoDetail.handle !== undefined && todoDetail.handle.handleAttachments ? JSON.parse(todoDetail.handle.handleAttachments) : []
@@ -952,8 +927,6 @@ function Workorder(props) {
                           ref={ProblemconfirmRef}
                           useInfo={userinfo}
                           handle={confirm}
-                          handleTime={handleTime}
-                          receivingTime={receivingTime}
                           flowNodeName={flowNodeName}
                           files={
                             todoDetail.confirm !== undefined && todoDetail.confirm.confirmAttachments ? JSON.parse(todoDetail.confirm.confirmAttachments) : []
@@ -984,8 +957,6 @@ function Workorder(props) {
                           ref={ProblemconfirmRef}
                           useInfo={userinfo}
                           confirm={confirm}
-                          handleTime={handleTime}
-                          receivingTime={receivingTime}
                           flowNodeName={flowNodeName}
                           files={
                             todoDetail.confirm !== undefined && todoDetail.confirm.confirmAttachments ? JSON.parse(todoDetail.confirm.confirmAttachments) : []
@@ -1016,8 +987,6 @@ function Workorder(props) {
                           ref={ProblemconfirmRef}
                           useInfo={userinfo}
                           handle={confirm}
-                          handleTime={handleTime}
-                          receivingTime={receivingTime}
                           flowNodeName={flowNodeName}
                           files={
                             todoDetail.confirm !== undefined && todoDetail.confirm.confirmAttachments ? JSON.parse(todoDetail.confirm.confirmAttachments) : []

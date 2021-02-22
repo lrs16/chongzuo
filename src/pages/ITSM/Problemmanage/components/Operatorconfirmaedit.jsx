@@ -14,7 +14,7 @@ import SysUpload from '@/components/SysUpload';
 const { TextArea } = Input;
 
 const Operatorconfirmaedit = React.forwardRef((props, ref) => {
-  const { forminladeLayout, files, ChangeFiles, flowNodeName } = props;
+  const { formItemLayout, forminladeLayout, files, ChangeFiles, flowNodeName } = props;
   const { flowtype, setFlowtype } = useContext(FatherContext);
   const { getFieldDecorator } = props.form;
 
@@ -45,7 +45,7 @@ const Operatorconfirmaedit = React.forwardRef((props, ref) => {
 
   return (
     <Row gutter={16}>
-      <Form>
+      <Form {...formItemLayout}>
         <Col span={23}>
           <Form.Item label='确认结果' {...forminladeLayout}>
             {getFieldDecorator('confirmResult', {
@@ -131,7 +131,7 @@ const Operatorconfirmaedit = React.forwardRef((props, ref) => {
                 label="上传附件"
                 {...forminladeLayout}
               >
-                <div style={{ width: 400 }}>
+                <div>
                   <SysUpload fileslist={files} ChangeFileslist={newvalue => setFilesList(newvalue)} />
                 </div>
               </Form.Item>
@@ -146,7 +146,7 @@ const Operatorconfirmaedit = React.forwardRef((props, ref) => {
                 label="上传附件"
                 {...forminladeLayout}
               >
-                <div style={{ width: 400 }}>
+                <div>
                   <SysUpload fileslist={files} ChangeFileslist={newvalue => setFilesList(newvalue)} />
                 </div>
               </Form.Item>
@@ -183,7 +183,7 @@ const Operatorconfirmaedit = React.forwardRef((props, ref) => {
           <Form.Item label='确认人单位'>
             {
               getFieldDecorator('confirmUnit', {
-                initialValue:  useInfo.unitName,
+                initialValue: useInfo.unitName,
               })(<Input disabled />)
             }
           </Form.Item>

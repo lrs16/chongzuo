@@ -12,6 +12,7 @@ import SysUpload from '@/components/SysUpload';
 
 const { Option } = Select;
 const { TextArea } = Input;
+let handleTime;
 
 const Developerprocessdit = React.forwardRef((props, ref) => {
   const { formItemLayout, forminladeLayout, files, ChangeFiles } = props;
@@ -32,9 +33,13 @@ const Developerprocessdit = React.forwardRef((props, ref) => {
     showEdit,
     useInfo,
     handle,
-    receivingTime,
     handleresult
   } = props;
+  if (handle.handleTime !== null) {
+    handleTime = moment(handle.handleTime)
+  } else {
+    handleTime = moment(new Date());
+  }
 
   const required = true;
 
@@ -44,10 +49,10 @@ const Developerprocessdit = React.forwardRef((props, ref) => {
         <Col span={8}>
           <Form.Item label='接单时间'>
             {getFieldDecorator('orderReceivingtime', {
-              initialValue: moment(handle.addtime)
+              initialValue: moment(handle.addTime)
             })(<DatePicker
               showTime
-              disabled={showEdit}
+              disabled='true'
             />)}
           </Form.Item>
         </Col>
@@ -61,7 +66,7 @@ const Developerprocessdit = React.forwardRef((props, ref) => {
                   message: '请输入处理完成时间',
                 },
               ],
-              initialValue: receivingTime,
+              initialValue: handleTime,
             })((<DatePicker
               showTime
               disabled={showEdit}
