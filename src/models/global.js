@@ -1,11 +1,26 @@
-import { queryNotices } from '@/services/user';
+import { queryNotices, queryAllEvent, queryNoticeCount } from '@/services/user';
+
 const GlobalModel = {
   namespace: 'global',
   state: {
     collapsed: false,
     notices: [],
+    num: 0,
+    eventlist: [],
   },
   effects: {
+    *fetchCount(_, { call }) {
+      return yield call(queryNoticeCount);
+    },
+
+    *fetchallevent({ payload }, { call, put }) {
+      const list = yield call(queryAllEvent, payload);
+      yield put({
+        type: 'saveeventlist',
+        payload: list.data,
+      });
+    },
+
     *fetchNotices(_, { call, put, select }) {
       const data = yield call(queryNotices);
       yield put({
@@ -68,6 +83,18 @@ const GlobalModel = {
     },
   },
   reducers: {
+    savenum(state, action) {
+      return {
+        ...state,
+        num: action.payload,
+      };
+    },
+    saveeventlist(state, action) {
+      return {
+        ...state,
+        count: action.payload,
+      };
+    },
     changeLayoutCollapsed(
       state = {
         notices: [],

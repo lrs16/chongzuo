@@ -8,14 +8,54 @@ import NoticeIcon from '../NoticeIcon';
 import styles from './index.less';
 
 class GlobalHeaderRight extends Component {
-  componentDidMount() {
-    const { dispatch } = this.props;
+  state = {
+    num: 0,
+    pathname: '/',
+  };
 
-    if (dispatch) {
-      dispatch({
-        type: 'global/fetchNotices',
+  componentDidMount() {
+    this.interval = setInterval(() => this.getcount(), 60000);
+    this.getdata();
+  }
+
+  componentWillUpdate(newProps, _) {
+    if (this.state.pathname !== newProps.pathname) {
+      this.getcount();
+      setTimeout(() => {
+        this.setState({ pathname: newProps.pathname });
       });
+      console.log(this.state.pathname);
     }
+  }
+
+  componentWillUnmount() {
+    clearTimeout(this.interval);
+  }
+
+  getcount() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'global/fetchCount',
+    }).then(res => {
+      this.setState({
+        num: res.data,
+      });
+    });
+  }
+
+  getdata() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'global/fetchNotices',
+    });
+    dispatch({
+      type: 'global/fetchallevent',
+      payload: {
+        handleUserName: 'elin',
+        pageNum: 1,
+        pageSize: 200,
+      },
+    });
   }
 
   changeReadState = clickedItem => {
@@ -29,6 +69,7 @@ class GlobalHeaderRight extends Component {
       });
     }
   };
+
   handleNoticeClear = (title, key) => {
     const { dispatch } = this.props;
     message.success(
@@ -44,6 +85,7 @@ class GlobalHeaderRight extends Component {
       });
     }
   };
+
   getNoticeData = () => {
     const { notices = [] } = this.props;
 
@@ -85,6 +127,7 @@ class GlobalHeaderRight extends Component {
     });
     return groupBy(newNotices, 'type');
   };
+
   getUnreadData = noticeData => {
     const unreadMsg = {};
     Object.keys(noticeData).forEach(key => {
@@ -102,17 +145,17 @@ class GlobalHeaderRight extends Component {
   };
 
   render() {
-    const { currentUser, fetchingNotices, onNoticeVisibleChange } = this.props;
+    const { currentUser, loading, onNoticeVisibleChange, eventlist } = this.props;
     const noticeData = this.getNoticeData();
     const unreadMsg = this.getUnreadData(noticeData);
     return (
       <NoticeIcon
         className={styles.action}
-        count={currentUser && currentUser.unreadCount}
+        count={this.state.num}
         onItemClick={item => {
           this.changeReadState(item);
         }}
-        loading={fetchingNotices}
+        loading={loading}
         clearText={formatMessage({
           id: 'component.noticeIcon.clear',
         })}
@@ -124,30 +167,7 @@ class GlobalHeaderRight extends Component {
         onViewMore={() => message.info('Click on view more')}
         clearClose
       >
-        <NoticeIcon.Tab
-          tabKey="notification"
-          count={unreadMsg.notification}
-          list={noticeData.notification}
-          title={formatMessage({
-            id: 'component.globalHeader.notification',
-          })}
-          emptyText={formatMessage({
-            id: 'component.globalHeader.notification.empty',
-          })}
-          showViewMore
-        />
-        <NoticeIcon.Tab
-          tabKey="message"
-          count={unreadMsg.message}
-          list={noticeData.message}
-          title={formatMessage({
-            id: 'component.globalHeader.message',
-          })}
-          emptyText={formatMessage({
-            id: 'component.globalHeader.message.empty',
-          })}
-          showViewMore
-        />
+        {/* 待办 */}
         <NoticeIcon.Tab
           tabKey="event"
           title={formatMessage({
@@ -156,8 +176,34 @@ class GlobalHeaderRight extends Component {
           emptyText={formatMessage({
             id: 'component.globalHeader.event.empty',
           })}
-          count={unreadMsg.event}
+          count={this.state.num}
           list={noticeData.event}
+          showViewMore
+        />
+        {/* 通知 */}
+        <NoticeIcon.Tab
+          tabKey="notification"
+          // count={unreadMsg.notification}
+          // list={noticeData.notification}
+          title={formatMessage({
+            id: 'component.globalHeader.notification',
+          })}
+          emptyText={formatMessage({
+            id: 'component.globalHeader.notification.empty',
+          })}
+          showViewMore
+        />
+        {/* 消息 */}
+        <NoticeIcon.Tab
+          tabKey="message"
+          // count={unreadMsg.message}
+          // list={noticeData.message}
+          title={formatMessage({
+            id: 'component.globalHeader.message',
+          })}
+          emptyText={formatMessage({
+            id: 'component.globalHeader.message.empty',
+          })}
           showViewMore
         />
       </NoticeIcon>
@@ -168,7 +214,10 @@ class GlobalHeaderRight extends Component {
 export default connect(({ user, global, loading }) => ({
   currentUser: user.currentUser,
   collapsed: global.collapsed,
+  num: global.num,
+  eventlist: global.eventlist,
+  notices: global.notices,
   fetchingMoreNotices: loading.effects['global/fetchMoreNotices'],
   fetchingNotices: loading.effects['global/fetchNotices'],
-  notices: global.notices,
+  loading: loading.models.global,
 }))(GlobalHeaderRight);

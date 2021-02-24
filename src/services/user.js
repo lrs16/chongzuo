@@ -29,7 +29,21 @@ export async function UserChangPW(params) {
     body: JSON.stringify(params),
   });
 }
+// 获取通知数
+export async function queryNoticeCount() {
+  return request('/activiti/todoitem/listNum/0');
+}
 
+// 获取待办列表
+export async function queryAllEvent(params) {
+  console.log(params);
+  return request(`/activiti/todoitem/listPage/${params.pageNum}/${params.pageSize}`, {
+    method: 'POST',
+    body: JSON.stringify(params),
+  });
+}
+
+// 获取通知信息
 export async function queryNotices() {
   return request('/api/notices');
 }

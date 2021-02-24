@@ -133,7 +133,19 @@ export default {
               routes: [
                 {
                   path: '/ITSM',
-                  redirect: '/ITSM/eventmanage',
+                  redirect: '/ITSM/home',
+                },
+                {
+                  path: '/ITSM/home',
+                  name: 'IT服务监控台',
+                  icon: 'control',
+                  component: './HomePage',
+                },
+                {
+                  path: '/ITSM/todo',
+                  name: 'IT服务待办',
+                  icon: 'control',
+                  component: './ITSM/ITSMtodo',
                 },
                 {
                   path: '/ITSM/eventmanage',

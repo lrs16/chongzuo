@@ -5,6 +5,7 @@ import { formatMessage } from 'umi-plugin-react/locale';
 import Avatar from './AvatarDropdown';
 import HeaderSearch from '../HeaderSearch';
 // import SelectLang from '../SelectLang';
+import Notice from './NoticeIconView';
 import styles from './index.less';
 
 const GlobalHeaderRight = props => {
@@ -53,6 +54,7 @@ const GlobalHeaderRight = props => {
           <Icon type="question-circle-o" />
         </a>
       </Tooltip> */}
+      <Notice pathname={props.location.pathname} />
       <Avatar />
       {/* <SelectLang className={styles.action} /> */}
     </div>

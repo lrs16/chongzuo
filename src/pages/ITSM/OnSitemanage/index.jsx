@@ -136,7 +136,7 @@ function OnSitemanage(props) {
           type="primary"
           style={{ marginBottom: 24, float: 'right' }}
         >
-          搜索
+          刷新
         </Button>
         <Button onClick={handleCheck} type="dashed" block style={{ marginBottom: 24 }}>
           执行巡检

@@ -1,7 +1,7 @@
-import React, { useState, useRef, useEffect, useContext } from 'react';
-import moment from 'moment';
+import React, { useState, useRef, useEffect } from 'react';
+// import moment from 'moment';
 import { connect } from 'dva';
-import { Collapse, Steps, Spin, message, Table } from 'antd';
+import { Collapse, Steps, Spin, message } from 'antd';
 import styles from './index.less';
 import Registrat from './components/Registrat';
 import Examine from './components/Examine';

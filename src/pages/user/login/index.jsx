@@ -122,9 +122,9 @@ class Login extends Component {
                   id: 'user-login.login.message-invalid-credentials',
                 }),
               )}
-            <Checkbox onChange={this.onChangeCheck} style={{ marginBottom: 20, color: '#1890ff' }}>
+            {/* <Checkbox onChange={this.onChangeCheck} style={{ marginBottom: 20, color: '#1890ff' }}>
               ITSM用户
-            </Checkbox>
+            </Checkbox> */}
             <UserName
               name="logincode"
               placeholder={`${formatMessage({

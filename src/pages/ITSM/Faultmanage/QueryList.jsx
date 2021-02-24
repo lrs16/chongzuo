@@ -15,7 +15,7 @@ import {
   Table,
   Popconfirm,
   // message,
-  Cascader
+  Cascader,
   // Badge
 } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
@@ -133,7 +133,8 @@ function QueryList(props) {
     },
   ];
 
-  const getQuerylists = () => { // 列表 列表接口
+  const getQuerylists = () => {
+    // 列表 列表接口
     dispatch({
       type: 'fault/getfaultQueryList',
       payload: {
@@ -141,13 +142,14 @@ function QueryList(props) {
         pageSize: paginations.pageSize,
       },
     });
-  }
+  };
 
   useEffect(() => {
     getQuerylists();
   }, []);
 
-  const searchdata = (values, page, pageSize) => { // 查询 查询接口
+  const searchdata = (values, page, pageSize) => {
+    // 查询 查询接口
     dispatch({
       type: 'fault/getTosearchfaultSearch',
       payload: {
@@ -158,9 +160,10 @@ function QueryList(props) {
     });
   };
 
-  const handleReset = () => { // 重置
+  const handleReset = () => {
+    // 重置
     resetFields();
-  }
+  };
 
   const handleSearch = () => {
     setPageinations({
@@ -224,11 +227,12 @@ function QueryList(props) {
     current: paginations.current,
     pageSize: paginations.pageSize,
     total: faultQueryList ? faultQueryList.total : '',
+    showTotal: total => `总共  ${total}  条记录`,
     onChange: page => changePage(page),
   };
 
   const rowSelection = {
-    onChange: (selectedRows) => {
+    onChange: selectedRows => {
       setSelectedRow([...selectedRows]);
     },
   };
@@ -280,7 +284,7 @@ function QueryList(props) {
     });
   };
 
-  const getTypebyTitle = (title) => {
+  const getTypebyTitle = title => {
     if (selectdata.length > 0) {
       return selectdata.filter(item => item.title === title)[0].children;
     }
@@ -315,15 +319,20 @@ function QueryList(props) {
             {expand === true && (
               <Col xl={8} xs={12}>
                 <Form.Item label="登记时间">
-                  {getFieldDecorator('registerTimeBegin', {
-                  })(<DatePicker format="YYYY-MM-DD" style={{ width: '100%' }} />)}
+                  {getFieldDecorator(
+                    'registerTimeBegin',
+                    {},
+                  )(<DatePicker format="YYYY-MM-DD" style={{ width: '100%' }} />)}
                 </Form.Item>
               </Col>
             )}
 
             <Col xl={8} xs={12}>
               <Form.Item label="工单状态">
-                {getFieldDecorator('status', {})(
+                {getFieldDecorator(
+                  'status',
+                  {},
+                )(
                   <Select placeholder="请选择">
                     {faultStatus.map(obj => [
                       <Option key={obj.key} value={obj.dict_code}>
@@ -339,8 +348,10 @@ function QueryList(props) {
               <>
                 <Col xl={8} xs={12}>
                   <Form.Item label="发生时间">
-                    {getFieldDecorator('registerOccurTimeBegin', {
-                    })(<DatePicker format="YYYY-MM-DD" style={{ width: '100%' }} />)}
+                    {getFieldDecorator(
+                      'registerOccurTimeBegin',
+                      {},
+                    )(<DatePicker format="YYYY-MM-DD" style={{ width: '100%' }} />)}
                   </Form.Item>
                 </Col>
 
@@ -361,7 +372,6 @@ function QueryList(props) {
                 <Col span={8}>
                   <Form.Item label="系统模块">
                     {getFieldDecorator('registerModel')(
-
                       <Select placeholder="请选择">
                         {sysmodular.map(obj => [
                           <Option key={obj.key} value={obj.title}>
@@ -380,7 +390,7 @@ function QueryList(props) {
                         placeholder="请选择"
                         options={faultType}
                         fieldNames={{ label: 'title', value: 'title', children: 'children' }}
-                      />
+                      />,
                     )}
                   </Form.Item>
                 </Col>
@@ -393,7 +403,9 @@ function QueryList(props) {
 
                 <Col xl={8} xs={12}>
                   <Form.Item label="故障地点">
-                    {getFieldDecorator('registerAddress')(<Input placeholder="请输入" allowClear />)}
+                    {getFieldDecorator('registerAddress')(
+                      <Input placeholder="请输入" allowClear />,
+                    )}
                   </Form.Item>
                 </Col>
 
@@ -413,29 +425,36 @@ function QueryList(props) {
 
                 <Col xl={8} xs={12}>
                   <Form.Item label="影响范围">
-                    {getFieldDecorator('registerScope', {})(
+                    {getFieldDecorator(
+                      'registerScope',
+                      {},
+                    )(
                       <Select placeholder="请选择">
                         {effect.map(obj => [
                           <Option key={obj.key} value={obj.title}>
                             {obj.title}
                           </Option>,
                         ])}
-                      </Select>
+                      </Select>,
                     )}
                   </Form.Item>
                 </Col>
 
                 <Col xl={8} xs={12}>
                   <Form.Item label="处理开始时间">
-                    {getFieldDecorator('handleStartTimeBegin', {
-                    })(<DatePicker format="YYYY-MM-DD" style={{ width: '100%' }} />)}
+                    {getFieldDecorator(
+                      'handleStartTimeBegin',
+                      {},
+                    )(<DatePicker format="YYYY-MM-DD" style={{ width: '100%' }} />)}
                   </Form.Item>
                 </Col>
 
                 <Col xl={8} xs={12}>
                   <Form.Item label="处理完成时间">
-                    {getFieldDecorator('handleStartTimeEnd', {
-                    })(<DatePicker format="YYYY-MM-DD" style={{ width: '100%' }} />)}
+                    {getFieldDecorator(
+                      'handleStartTimeEnd',
+                      {},
+                    )(<DatePicker format="YYYY-MM-DD" style={{ width: '100%' }} />)}
                   </Form.Item>
                 </Col>
 
@@ -467,7 +486,7 @@ function QueryList(props) {
                   <Form.Item label="登记人单位">
                     {getFieldDecorator('registerUnit', {
                       initialValue: '',
-                    })(<Select />,)}
+                    })(<Select />)}
                   </Form.Item>
                 </Col>
 
@@ -483,7 +502,7 @@ function QueryList(props) {
                   <Form.Item label="审核人单位">
                     {getFieldDecorator('checkUnit', {
                       initialValue: '',
-                    })(<Select />,)}
+                    })(<Select />)}
                   </Form.Item>
                 </Col>
 
@@ -499,7 +518,7 @@ function QueryList(props) {
                   <Form.Item label="处理人单位">
                     {getFieldDecorator('handleUnit', {
                       initialValue: '',
-                    })(<Select />,)}
+                    })(<Select />)}
                   </Form.Item>
                 </Col>
 
@@ -515,7 +534,7 @@ function QueryList(props) {
                   <Form.Item label="总结人单位">
                     {getFieldDecorator('finishUnit', {
                       initialValue: '',
-                    })(<Select />,)}
+                    })(<Select />)}
                   </Form.Item>
                 </Col>
 
@@ -531,7 +550,7 @@ function QueryList(props) {
                   <Form.Item label="确认人单位">
                     {getFieldDecorator('confirmUnit', {
                       initialValue: '',
-                    })(<Select />,)}
+                    })(<Select />)}
                   </Form.Item>
                 </Col>
               </>
@@ -554,13 +573,13 @@ function QueryList(props) {
                   >
                     {expand ? (
                       <>
-                        收起 <Icon type='up' />
+                        收起 <Icon type="up" />
                       </>
                     ) : (
-                        <>
-                          展开 <Icon type='down' />
-                        </>
-                      )}
+                      <>
+                        展开 <Icon type="down" />
+                      </>
+                    )}
                   </Button>
                 </Form.Item>
               </Col>
@@ -582,13 +601,13 @@ function QueryList(props) {
                 >
                   {expand ? (
                     <>
-                      收起 <Icon type='up' />
+                      收起 <Icon type="up" />
                     </>
                   ) : (
-                      <>
-                        展开 <Icon type='down' />
-                      </>
-                    )}
+                    <>
+                      展开 <Icon type="down" />
+                    </>
+                  )}
                 </Button>
               </Col>
             )}

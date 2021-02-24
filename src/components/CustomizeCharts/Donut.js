@@ -72,7 +72,7 @@ class Donut extends Component {
               content={`合计:${total}`}
               style={{
                 lineHeight: '240px',
-                fontSize: '30',
+                fontSize: '20',
                 fill: '#262626',
                 textAlign: 'center',
               }}
@@ -96,7 +96,7 @@ class Donut extends Component {
                     // return `${data.type}: ${(data.percent * 100).toFixed(2)}%`;
                     return `${(data.percent * 100).toFixed(0)}%`;
                   },
-                  offset: '-15',
+                  offset: '-10',
                 },
               ]}
             />

@@ -14,7 +14,7 @@ import {
   Icon,
   Table,
   Popconfirm,
-  Cascader
+  Cascader,
 } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import SysDict from '@/components/SysDict';
@@ -53,7 +53,8 @@ function ToDOlist(props) {
       dataIndex: 'index',
       key: 'index',
       width: 100,
-      render: (text, record, index) => `${(paginations.current - 1) * (paginations.pageSize) + (index + 1)}`,
+      render: (text, record, index) =>
+        `${(paginations.current - 1) * paginations.pageSize + (index + 1)}`,
     },
     {
       title: 'id',
@@ -70,7 +71,7 @@ function ToDOlist(props) {
           <Link
             to={{
               pathname: `/ITSM/faultmanage/todolist/record/${record.id}`,
-              paneKey: record.currentNode
+              paneKey: record.currentNode,
             }}
           >
             {text}
@@ -135,7 +136,7 @@ function ToDOlist(props) {
         });
       }
     });
-  }
+  };
 
   useEffect(() => {
     getTodolists();
@@ -143,7 +144,7 @@ function ToDOlist(props) {
 
   const handleReset = () => {
     resetFields();
-  }
+  };
 
   const searchdata = (values, page, pageSize) => {
     dispatch({
@@ -166,7 +167,7 @@ function ToDOlist(props) {
       if (formValues.createTime) {
         formValues.createTime = values.createTime.format('YYYY-MM-DD HH:mm:ss');
       }
-      if(formValues.type) {
+      if (formValues.type) {
         formValues.type = values.type.join('/');
       }
       if (err) {
@@ -206,6 +207,7 @@ function ToDOlist(props) {
     current: paginations.current,
     pageSize: paginations.pageSize,
     total: faultTodoList ? faultTodoList.total : '',
+    showTotal: total => `总共  ${total}  条记录`,
     onChange: page => changePage(page),
   };
 
@@ -239,7 +241,7 @@ function ToDOlist(props) {
     });
   };
 
-  const getTypebyTitle = (title) => {
+  const getTypebyTitle = title => {
     if (selectdata.length > 0) {
       return selectdata.filter(item => item.title === title)[0].children;
     }
@@ -297,7 +299,10 @@ function ToDOlist(props) {
 
             <Col span={8}>
               <Form.Item label="当前处理环节">
-                {getFieldDecorator('currentNode', {})(
+                {getFieldDecorator(
+                  'currentNode',
+                  {},
+                )(
                   <Select placeholder="请选择">
                     {currentNode.map(obj => [
                       <Option key={obj.key} value={obj.title}>
@@ -320,7 +325,7 @@ function ToDOlist(props) {
                         placeholder="请选择"
                         options={faultType}
                         fieldNames={{ label: 'title', value: 'title', children: 'children' }}
-                      />
+                      />,
                     )}
                   </Form.Item>
                 </Col>
@@ -337,7 +342,14 @@ function ToDOlist(props) {
                   <Form.Item label="发送时间">
                     {getFieldDecorator('createTime', {
                       // initialValue: moment(Date.now()) || ''
-                    })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} placeholder="请选择" />)}
+                    })(
+                      <DatePicker
+                        showTime
+                        format="YYYY-MM-DD HH:mm:ss"
+                        style={{ width: '100%' }}
+                        placeholder="请选择"
+                      />,
+                    )}
                   </Form.Item>
                 </Col>
 
@@ -376,22 +388,20 @@ function ToDOlist(props) {
                   >
                     {expand ? (
                       <>
-                        收起 <Icon type='up' />
+                        收起 <Icon type="up" />
                       </>
                     ) : (
-                        <>
-                          展开 <Icon type='down' />
-                        </>
-                      )}
+                      <>
+                        展开 <Icon type="down" />
+                      </>
+                    )}
                   </Button>
                 </Form.Item>
               </Col>
             )}
             {expand === true && (
               <Col span={24} style={{ textAlign: 'right' }} onClick={handleSearch}>
-                <Button type="primary">
-                  查 询
-                </Button>
+                <Button type="primary">查 询</Button>
                 <Button style={{ marginLeft: 8 }} onClick={handleReset}>
                   重 置
                 </Button>
@@ -404,13 +414,13 @@ function ToDOlist(props) {
                 >
                   {expand ? (
                     <>
-                      收起 <Icon type='up' />
+                      收起 <Icon type="up" />
                     </>
                   ) : (
-                      <>
-                        展开 <Icon type='down' />
-                      </>
-                    )}
+                    <>
+                      展开 <Icon type="down" />
+                    </>
+                  )}
                 </Button>
               </Col>
             )}
@@ -427,7 +437,7 @@ function ToDOlist(props) {
           dataSource={faultTodoList.rows}
           rowKey={record => record.id}
           pagination={pagination}
-        // rowSelection={rowSelection}
+          // rowSelection={rowSelection}
         />
       </Card>
     </PageHeaderWrapper>

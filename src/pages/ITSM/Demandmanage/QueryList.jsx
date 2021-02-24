@@ -174,6 +174,7 @@ function QueryList(props) {
     current: paginations.current,
     pageSize: paginations.pageSize,
     total: list.total,
+    showTotal: total => `总共  ${total}  条记录`,
     onChange: page => changePage(page),
   };
 
