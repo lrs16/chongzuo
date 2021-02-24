@@ -18,13 +18,12 @@ class GlobalHeaderRight extends Component {
     this.getdata();
   }
 
-  componentWillUpdate(newProps, _) {
+  componentDidUpdate(newProps, _) {
     if (this.state.pathname !== newProps.pathname) {
-      this.getcount();
       setTimeout(() => {
         this.setState({ pathname: newProps.pathname });
       });
-      console.log(this.state.pathname);
+      this.getcount();
     }
   }
 
