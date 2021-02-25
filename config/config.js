@@ -106,7 +106,7 @@ export default {
           routes: [
             {
               path: '/',
-              redirect: '/monitormanage/home',
+              redirect: '/home',
             },
             {
               path: '/home',
@@ -261,22 +261,22 @@ export default {
                           component: './ITSM/Problemmanage/Handlingrate',
                         },
                         {
-                          path:'/ITSM/problemmanage/statistics/classifiedstatistics',
-                          name:'问题分类统计',
-                          icon:'experiment',
-                          component:'./ITSM/Problemmanage/ClassifiedStatistics'
+                          path: '/ITSM/problemmanage/statistics/classifiedstatistics',
+                          name: '问题分类统计',
+                          icon: 'experiment',
+                          component: './ITSM/Problemmanage/ClassifiedStatistics',
                         },
                         {
-                          path:'/ITSM/problemmanage/statistics/statusstatistics',
-                          name:'问题状态统计',
-                          icon:'dropbox',
-                          component:'./ITSM/Problemmanage/Statusstatistics'
+                          path: '/ITSM/problemmanage/statistics/statusstatistics',
+                          name: '问题状态统计',
+                          icon: 'dropbox',
+                          component: './ITSM/Problemmanage/Statusstatistics',
                         },
                         {
-                          path:'/ITSM/problemmanage/statistics/timeoutstatistics',
-                          name:'问题超时统计',
-                          icon:'euro',
-                          component:'./ITSM/Problemmanage/TimeoutStatistics'
+                          path: '/ITSM/problemmanage/statistics/timeoutstatistics',
+                          name: '问题超时统计',
+                          icon: 'euro',
+                          component: './ITSM/Problemmanage/TimeoutStatistics',
                         },
                       ],
                     },

@@ -448,6 +448,20 @@ function ITHomePage(props) {
             userId: sessionStorage.getItem('userauthorityid'),
           },
         });
+        dispatch({
+          type: 'ithomepage/getdemandtabs',
+          payload: {
+            userId: sessionStorage.getItem('userauthorityid'),
+          },
+        }).then(res => {
+          if (res.code === 200) {
+            const data = Object.keys(res.data).map(objkey => ({
+              name: objkey,
+              data: res.data[objkey],
+            }));
+            setTabsKeys(data);
+          }
+        });
         break;
       }
       default:

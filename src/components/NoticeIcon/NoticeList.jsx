@@ -6,12 +6,12 @@ import styles from './NoticeList.less';
 const NoticeList = ({
   data = [],
   onClick,
-  onClear,
-  title,
+  // onClear,
+  // title,
   onViewMore,
   emptyText,
-  showClear = true,
-  clearText,
+  // showClear = true,
+  // clearText,
   viewMoreText,
   showViewMore = false,
 }) => {
@@ -71,11 +71,11 @@ const NoticeList = ({
         }}
       />
       <div className={styles.bottomBar}>
-        {showClear ? (
+        {/* {showClear ? (
           <div onClick={onClear}>
             {clearText} {title}
           </div>
-        ) : null}
+        ) : null} */}
         {showViewMore ? (
           <div
             onClick={e => {

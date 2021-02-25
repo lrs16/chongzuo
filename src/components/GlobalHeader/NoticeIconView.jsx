@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Tag, message } from 'antd';
 import { connect } from 'dva';
+import router from 'umi/router';
 import { formatMessage } from 'umi-plugin-react/locale';
 import groupBy from 'lodash/groupBy';
 import moment from 'moment';
@@ -11,11 +12,13 @@ class GlobalHeaderRight extends Component {
   state = {
     num: 0,
     pathname: '/',
+    timeoutnum: '',
   };
 
   componentDidMount() {
+    this.getcount();
+    this.getovertimenum();
     this.interval = setInterval(() => this.getcount(), 60000);
-    this.getdata();
   }
 
   componentDidUpdate(newProps, _) {
@@ -42,31 +45,19 @@ class GlobalHeaderRight extends Component {
     });
   }
 
-  getdata() {
+  getovertimenum() {
     const { dispatch } = this.props;
     dispatch({
-      type: 'global/fetchNotices',
-    });
-    dispatch({
-      type: 'global/fetchallevent',
-      payload: {
-        handleUserName: 'elin',
-        pageNum: 1,
-        pageSize: 200,
-      },
+      type: 'global/fetchovertimenum',
+    }).then(res => {
+      this.setState({
+        timeoutnum: res.data,
+      });
     });
   }
 
   changeReadState = clickedItem => {
-    const { id } = clickedItem;
-    const { dispatch } = this.props;
-
-    if (dispatch) {
-      dispatch({
-        type: 'global/changeNoticeReadState',
-        payload: id,
-      });
-    }
+    router.push({ pathname: `/ITSM/todo` });
   };
 
   handleNoticeClear = (title, key) => {
@@ -86,7 +77,25 @@ class GlobalHeaderRight extends Component {
   };
 
   getNoticeData = () => {
-    const { notices = [] } = this.props;
+    //  const { notices = [] } = this.props;
+    const notices = [
+      {
+        description: `总共有（${this.state.timeoutnum.timeoutTimeNum}）个工单已超时`,
+        extra: '已超时',
+        id: '001',
+        status: 'urgent',
+        title: `IT服务管理`,
+        type: 'event',
+      },
+      {
+        description: `总共有（${this.state.timeoutnum.remindTimeNum}）个工单即将超时`,
+        extra: '即将超时',
+        id: '002',
+        status: 'doing',
+        title: `IT服务管理`,
+        type: 'event',
+      },
+    ];
 
     if (notices.length === 0) {
       return {};
@@ -144,7 +153,7 @@ class GlobalHeaderRight extends Component {
   };
 
   render() {
-    const { currentUser, loading, onNoticeVisibleChange, eventlist } = this.props;
+    const { loading, onNoticeVisibleChange } = this.props;
     const noticeData = this.getNoticeData();
     const unreadMsg = this.getUnreadData(noticeData);
     return (
@@ -163,7 +172,7 @@ class GlobalHeaderRight extends Component {
         })}
         onClear={this.handleNoticeClear}
         onPopupVisibleChange={onNoticeVisibleChange}
-        onViewMore={() => message.info('Click on view more')}
+        onViewMore={() => router.push({ pathname: `/ITSM/todo` })}
         clearClose
       >
         {/* 待办 */}
@@ -214,9 +223,9 @@ export default connect(({ user, global, loading }) => ({
   currentUser: user.currentUser,
   collapsed: global.collapsed,
   num: global.num,
-  eventlist: global.eventlist,
-  notices: global.notices,
-  fetchingMoreNotices: loading.effects['global/fetchMoreNotices'],
-  fetchingNotices: loading.effects['global/fetchNotices'],
+  //  eventlist: global.eventlist,
+  //  notices: global.notices,
+  // fetchingMoreNotices: loading.effects['global/fetchMoreNotices'],
+  // fetchingNotices: loading.effects['global/fetchNotices'],
   loading: loading.models.global,
 }))(GlobalHeaderRight);

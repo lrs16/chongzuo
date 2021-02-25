@@ -29,6 +29,7 @@ export default class NoticeIcon extends Component {
 
     if (onItemClick) {
       onItemClick(item, tabProps);
+      this.setState({ visible: false });
     }
   };
 
@@ -50,9 +51,9 @@ export default class NoticeIcon extends Component {
 
   onViewMore = (tabProps, event) => {
     const { onViewMore } = this.props;
-
     if (onViewMore) {
       onViewMore(tabProps, event);
+      this.setState({ visible: false });
     }
   };
 
@@ -68,7 +69,13 @@ export default class NoticeIcon extends Component {
         return null;
       }
 
-      const { list, title, count, tabKey, showClear, showViewMore } = child.props;
+      const {
+        list,
+        title,
+        count,
+        // tabKey, showClear,
+        showViewMore,
+      } = child.props;
       const len = list && list.length ? list.length : 0;
       const msgCount = count || count === 0 ? count : len;
       const tabTitle = msgCount > 0 ? `${title} (${msgCount})` : title;
@@ -78,10 +85,10 @@ export default class NoticeIcon extends Component {
             clearText={clearText}
             viewMoreText={viewMoreText}
             data={list}
-            onClear={() => this.onClear(title, tabKey)}
+            // onClear={() => this.onClear(title, tabKey)}
             onClick={item => this.onItemClick(item, child.props)}
             onViewMore={event => this.onViewMore(child.props, event)}
-            showClear={showClear}
+            // showClear={showClear}
             showViewMore={showViewMore}
             title={title}
             {...child.props}

@@ -31,3 +31,10 @@ export async function ProblemTabs(params) {
     body: JSON.stringify(params),
   });
 }
+
+// 需求节点tab /demand/todo/personalTaskCount
+export async function DemandTabs(userId) {
+  return request(`/demand/todo/personalTaskCount?userId=${userId}`, {
+    method: 'GET',
+  });
+}

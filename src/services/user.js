@@ -36,11 +36,15 @@ export async function queryNoticeCount() {
 
 // 获取待办列表
 export async function queryAllEvent(params) {
-  console.log(params);
   return request(`/activiti/todoitem/listPage/${params.pageNum}/${params.pageSize}`, {
     method: 'POST',
     body: JSON.stringify(params),
   });
+}
+
+// 获取待办超时数
+export async function queryOverTimeNum() {
+  return request('/activiti/todoitem/getOverTimeNum');
 }
 
 // 获取通知信息

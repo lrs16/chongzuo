@@ -1,4 +1,4 @@
-import { TroubleTabs, EventTabs, ProblemTabs, EventAssingned } from '../services/itapi';
+import { TroubleTabs, EventTabs, ProblemTabs, EventAssingned, DemandTabs } from '../services/itapi';
 
 export default {
   namespace: 'ithomepage',
@@ -27,6 +27,10 @@ export default {
     // 问题tab
     *getproblemtabs({ payload }, { call }) {
       return yield call(ProblemTabs, payload);
+    },
+    // 需求tab
+    *getdemandtabs({ payload: { userId } }, { call }) {
+      return yield call(DemandTabs, userId);
     },
   },
 
