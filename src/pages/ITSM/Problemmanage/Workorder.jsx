@@ -92,7 +92,6 @@ function Workorder(props) {
   } = props;
 
   let showback = true;
-  console.log(problemlist,'problemlist');
   if (problemlist.selSign !== undefined) {
     if (flowNodeName === '系统开发商处理') {
       selSign = '0';
@@ -100,8 +99,6 @@ function Workorder(props) {
       selSign = problemlist.selSign
     }
   }
-
-  console.log(selSign,'selSign');
 
   const {
     params: { id },
@@ -217,6 +214,7 @@ function Workorder(props) {
   };
 
   const gotoTransferorder = () => {
+    saveHandle();
     const taskId = id;
     const result = 9;
     return dispatch({

@@ -32,7 +32,7 @@ const columns = [
   {
     title: '工单状态',
     dataIndex: 'statName',
-    key: 'statName'
+    key: 'statName',
   },
   {
     title: '工单数',

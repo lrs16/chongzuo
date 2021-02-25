@@ -89,9 +89,10 @@ function Besolved(props) {
   const pagetitle = props.route.name;
   const {
     form: { getFieldDecorator, resetFields, validateFields },
-    location:{ query: {orderStatus,orderClass } },
+    location:{ query: { orderStatus,orderClass,handleStatus,timeStatus } },
     dispatch,
     besolveList,
+    handleList,
     keyVallist,
     prioritylist,
     scopeList,
@@ -102,19 +103,20 @@ function Besolved(props) {
   const [expand, setExpand] = useState(false);
   const [paginations, setPaginations] = useState({ current: 1, pageSize: 10 });
   const [selectedRows, setSelectedRows] = useState([]);
-  const status = orderStatus !== undefined ? orderStatus:'';
-  const classified = orderClass !== undefined ? orderClass:'';
   const getQuery = () => {
     dispatch({
-      type: 'problemmanage/queryList',
+      type: (handleStatus === '1' || handleStatus === '0' || timeStatus !== undefined) ? 'problemmanage/handlequeryList':'problemmanage/queryList',
       payload: {
-        current: paginations.current,
+        handleStatus,
+        pageNum: paginations.current,
         pageSize: paginations.pageSize,
-        status,
-        classified
+        status:orderStatus,
+        type:orderClass,
+        timeStatus
       },
     });
   };
+
   const getSourceapi = (dictModule, dictType) => {
     dispatch({
       type: 'problemdropdown/keyvalsource',
@@ -162,7 +164,7 @@ function Besolved(props) {
   }
 
   useEffect(() => {
-    getQuery();
+    getList();
     getSource();
     gettype();
     getpriority();
@@ -171,19 +173,32 @@ function Besolved(props) {
     getorder();
   }, []);
 
+  const getList = () => {
+    switch (handleStatus) {
+      case '1':
+      case '0':
+        getQuery();
+        break;
+      default:
+        getQuery();
+        break;
+    }
+  }
+
   const handleReset = () => {
     resetFields();
   };
 
   const searchdata = (values, page, pageSize) => {
     return dispatch({
-      type: 'problemmanage/queryList',
+      type: (handleStatus === '1' || handleStatus === '0') ? 'problemmanage/handlequeryList':'problemmanage/queryList',
       payload: {
-        values,
+        handleStatus,
+        ...values,
         pageSize,
-        current: page,
-        status,
-        classified
+        pageNum: page,
+        status:orderStatus,
+        type:orderClass
       },
     });
   };
@@ -224,7 +239,16 @@ function Besolved(props) {
     onShowSizeChange: (page, pageSize) => onShowSizeChange(page, pageSize),
     current: paginations.current,
     pageSize: paginations.pageSize,
-    total: besolveList.total,
+    // total: besolveList.total,
+    onChange: page => changePage(page),
+  };
+
+  const handlepagination = {
+    showSizeChanger: true,
+    onShowSizeChange: (page, pageSize) => onShowSizeChange(page, pageSize),
+    current: paginations.current,
+    pageSize: paginations.pageSize,
+    // total: handleList.length,
     onChange: page => changePage(page),
   };
 
@@ -523,14 +547,35 @@ function Besolved(props) {
           >导出数据</Button>
         </div>
 
-        <Table
-          loading={loading}
-          columns={columns}
-          dataSource={besolveList.rows}
-          rowKey={record => record.id}
-          pagination={pagination}
-          rowSelection={rowSelection}
-        />
+        {
+          (handleStatus === '1' || handleStatus === '0' || timeStatus !== undefined) && (
+            <Table
+            loading={loading}
+            columns={columns}
+            dataSource={handleList}
+            rowKey={record => record.id}
+            pagination={handlepagination}
+            rowSelection={rowSelection}
+          />
+          )
+        }
+
+        {
+          handleStatus !== '1' && handleStatus !== '0' && timeStatus === undefined && (
+            <Table
+            loading={loading}
+            columns={columns}
+            dataSource={besolveList.rows}
+            rowKey={record => record.id}
+            pagination={pagination}
+            rowSelection={rowSelection}
+          />
+          )
+        }
+
+      
+
+      
       </Card>
     </PageHeaderWrapper>
   );
@@ -539,6 +584,7 @@ function Besolved(props) {
 export default Form.create({})(
   connect(({ problemmanage, problemdropdown, loading }) => ({
     besolveList: problemmanage.besolveList,
+    handleList: problemmanage.handleList,
     keyVallist: problemdropdown.keyVallist,
     typelist: problemdropdown.typelist,
     prioritylist: problemdropdown.prioritylist,

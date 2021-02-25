@@ -17,7 +17,7 @@ function Problemsolving(props) {
         </Descriptions.Item>
 
         <Descriptions.Item label="处理结果">
-          {info.handleResultcn}
+          {info.handleResult}
         </Descriptions.Item>
 
         <Descriptions.Item label="解决方案" span={3}>

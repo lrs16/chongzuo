@@ -4,8 +4,7 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { Card, Form,Steps,Divider   } from 'antd';
 import styles from '../index.less';
 
-let image;
-let id;
+
 const { Step } = Steps;
 function Problemflow(props) {
   const { id, imageSource, flowlog, dispatch } = props;
@@ -23,14 +22,17 @@ function Problemflow(props) {
     });
   }
   
-  // const [image,setImage] = useState('');
-  const blob = new Blob([imageSource]);
-  image = (window.URL || window.webkitURL).createObjectURL(blob);
+  const imgsrc = () => {
+    const img = document.createElement('img');
+    img.src = window.URL.createObjectURL(imageSource);
+    document.getElementById('divimg').appendChild(img);
+  };
 
   useEffect(() => {
-    getFlowImage();
-    getFlowlog();
-  }, []);
+    if (imageSource !== '' && document.getElementsByTagName('img').length < 2) {
+      imgsrc();
+    }
+  }, [imageSource]);
 
   const getFlowImage = () => {
     dispatch({
@@ -46,20 +48,15 @@ function Problemflow(props) {
     });
   };
 
+  useEffect(() => {
+    getFlowImage();
+    getFlowlog();
+  }, []);
+
   return (
     <>
-     <Card title='流程图'>
-      {/* <p>流程图</p> */}
-          {/* <Divider /> */}
-        {/* <Card title="流转日志" style={{margin:'0px'}}> */}
-            <img src={image} alt="" />
-        {/* </Card> */}
-
-          {/* <Card title="流转日志"> */}
-          {/* <p>流转日志</p>
-          <Divider />
-    
-          {/* </Card> */}
+      <Card title="流程图">
+        <div style={{ background: '#fff' }} id="divimg"/>
       </Card>
 
       <Card title='流转日志'>

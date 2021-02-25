@@ -10,6 +10,7 @@ import {
   Button,
   Table
 } from 'antd';
+import Link from 'umi/link';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
 const formItemLayout = {
@@ -23,39 +24,121 @@ const formItemLayout = {
   },
 };
 const { RangePicker } = DatePicker;
+let statTimeBegin;
+let statTimeEnd;
+const newObj = {};
 
 const columns = [
   {
     title: '工单数',
-    dataIndex: 'params1',
-    key: 'params1'
+    dataIndex: 'total',
+    key: 'total',
   },
   {
     title: '已处理',
-    dataIndex: 'params2',
-    key: 'params2'
+    dataIndex: 'processed',
+    key: 'processed',
+    render: (text, record) => (
+      <Link 
+        to={{
+          pathname:'/ITSM/problemmanage/problemquery',
+          query:{handleStatus:'1'}
+        }}
+      >
+        {text}
+      </Link>
+    )
   },
   {
     title: '未处理',
-    dataIndex: 'params3',
-    key: 'params3'
+    dataIndex: 'unprocessed',
+    key: 'unprocessed',
+    render:(text,record) => (
+      <Link
+        to={{
+          pathname:'/ITSM/problemmanage/problemquery',
+          query:{handleStatus:'0'}
+        }}
+      >
+      {text}
+      </Link>
+    )
   },
   {
     title: '处理率',
-    dataIndex: 'params4',
-    key: 'params4'
+    dataIndex: 'treatmentRate',
+    key: 'treatmentRate',
   },
 ]
 function Handlingrate(props) {
   const { pagetitle } = props.route.name;
+  const [changearr,setChangeArr] = useState();
   const {
-    form: { getFieldDecorator },
+    form: { getFieldDecorator,resetFields },
+    handleArr,
+    dispatch
   } = props;
 
   const onChange = (date, dateString) => {
-    console.log('date: ', date);
-    console.log('dateString: ', dateString);
+    [statTimeBegin, statTimeEnd] = dateString;
   }
+
+  const handleListdata = () => {
+    dispatch({
+        type:'problemstatistics/handleLists',
+        payload:{ statTimeBegin, statTimeEnd }
+    }).then(res => {
+      if(res.code === 200) {
+        const newArr = res.data;
+        newArr.forEach((item) =>{
+          switch (item.statName) {
+            case '已处理':
+              newObj.processed = item.statCount
+              break;
+            case '未处理':
+              newObj.unprocessed = item.statCount
+              break;
+            case '合计':
+              newObj.total = item.statCount
+              break;
+            case '处理率':
+              newObj.treatmentRate = item.statCount
+              break;
+            default:
+              break;
+          }
+        });
+        const arr = [];
+        arr[0] = newObj;
+        setChangeArr(arr);
+      }
+    })
+  }
+
+  const download = () => {
+    dispatch({
+      type:'problemstatistics/downloadHandlegrate'
+    }).then(res => {
+      const filename = '下载.xls';
+      const blob = new Blob([res]);
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      a.click();
+      window.URL.revokeObjectURL(url);
+    })
+  }
+
+  const handleReset = () => {
+    resetFields();
+  }
+
+  useEffect(() => {
+    handleListdata();
+  },[])
+
+  
   return (
     <PageHeaderWrapper title={pagetitle}>
       <Card>
@@ -64,17 +147,24 @@ function Handlingrate(props) {
             <Col span={8}>
               <Form.Item label='统计时间'>
                 {
-                  getFieldDecorator('time1', {})(<RangePicker onChange={onChange} />)
+                  getFieldDecorator('time1', {})
+                  (<RangePicker onChange={onChange} />)
                 }
               </Form.Item>
             </Col>
 
             <Col span={8}>
-              <Button type='primary'>
+              <Button 
+              type='primary'
+              onClick={handleListdata}
+              >
                 查询
             </Button>
 
-              <Button style={{ marginLeft: 8 }}>
+              <Button 
+              style={{ marginLeft: 8 }}
+              onClick={handleReset}
+              >
                 重置
             </Button>
             </Col>
@@ -82,13 +172,18 @@ function Handlingrate(props) {
         </Row>
 
         <div>
-          <Button type='primary' style={{ marginBottom: 24 }}>
+          <Button 
+          type='primary' 
+          style={{ marginBottom: 24 }}
+          onClick={download}
+          >
             导出数据
           </Button>
         </div>
 
         <Table
           columns={columns}
+          dataSource={changearr}
         />
 
       </Card>
@@ -98,6 +193,6 @@ function Handlingrate(props) {
 
 export default Form.create({})(
   connect(({ problemstatistics }) => ({
-    // handlingratedata: problemstatistics.handlingratedata
+    handleArr: problemstatistics.handleArr
   }))(Handlingrate),
 );

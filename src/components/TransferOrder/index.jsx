@@ -8,7 +8,7 @@ const withClick = (element, showDrawer = () => {}) => {
 };
 
 const TransferOrder = props => {
-  const { children, dispatch, handleSubmit, userlist, loading, changorder, taskId } = props;
+  const { children, dispatch, handleSubmit, problemlist, loading, changorder, taskId } = props;
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [defaultvalue, setDefaultvalue] = useState([]);
@@ -141,7 +141,7 @@ const TransferOrder = props => {
               <div style={{ marginTop: 12 }}>
                 <Checkbox.Group
                   defaultValue={defaultvalue}
-                  options={dataArr(userlist.data)}
+                  options={dataArr(problemlist.data)}
                   onChange={handleChange}
                 />
               </div>
@@ -154,6 +154,6 @@ const TransferOrder = props => {
 };
 
 export default connect(({ itsmuser, loading }) => ({
-  userlist: itsmuser.userlist,
+  problemlist: itsmuser.problemlist,
   loading: loading.models.itsmuser,
 }))(TransferOrder);

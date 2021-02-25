@@ -93,7 +93,7 @@ function Todolistdetails(props) {
 
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
   const [fileskey, setFileskey] = useState('1'); // 下载列表
-  
+
   const [result, setResult] = useState('1');
   const [resultsecond, setResultsecond] = useState('1');
   const [resultconfirm, setResultconfirm] = useState('1');
@@ -119,9 +119,17 @@ function Todolistdetails(props) {
   const { params: { id } } = props.match; // 获取taskId
 
   // 二进制展示流程图
-  const blob = new Blob([flowimageview]);
-  image = (window.URL || window.webkitURL).createObjectURL(blob);
+  const imgsrc = () => {
+    const img = document.createElement('img');
+    img.src = window.URL.createObjectURL(flowimageview);
+    document.getElementById('divimg').appendChild(img);
+  };
 
+  useEffect(() => {
+    if (flowimageview !== '' && document.getElementsByTagName('img').length < 2) {
+      imgsrc();
+    }
+  }, [flowimageview]);
   const handleClose = () => { // 返回上一页
     history1.goBack();
   }
@@ -169,14 +177,14 @@ function Todolistdetails(props) {
     sessionStorage.setItem('Processtype', 'troub');
   }, []);
 
-  useEffect(() => { 
-      sessionStorage.setItem('flowtype', '1');
+  useEffect(() => {
+    sessionStorage.setItem('flowtype', '1');
   }, []);
 
   useEffect(() => {
     if (loading === false) {
       setActiveKey([`${Collapsekeymap.get(flowNodeName)}`]);
-      if(main && (main.status === '40' || main.status === '45') && editState === 'add') {
+      if (main && (main.status === '40' || main.status === '45') && editState === 'add') {
         setActiveKey('0');
       }
     }
@@ -200,9 +208,9 @@ function Todolistdetails(props) {
   const faultcircula = (type) => { // 流转
     const taskId = id;
     let results;
-    if(type === 'close') {
+    if (type === 'close') {
       results = '255'; // 关闭
-    } else if(type === 'transfer') {
+    } else if (type === 'transfer') {
       results = '9'; // 转单
     } else {
       results = '1'; // 流转
@@ -553,7 +561,7 @@ function Todolistdetails(props) {
             }).then(res1 => {
               if (res1.code === 200) {
                 message.success(res1.msg);
-                router.push({pathname: `/ITSM/faultmanage/todolist`,});
+                router.push({ pathname: `/ITSM/faultmanage/todolist`, });
               } else {
                 message.error(res1.msg);
                 router.push(`/ITSM/faultmanage/registration`);
@@ -698,12 +706,12 @@ function Todolistdetails(props) {
                 handleSubmit={() => faultcircula('transfer')}
                 taskId={id}
                 changorder="请选择转单处理"
-                
+
               >
                 <Button type="primary" onMouseOver={() => {
                   sessionStorage.setItem('flowtype', '9');
                 }}
-                onFocus={() => 0}>转单</Button>
+                  onFocus={() => 0}>转单</Button>
               </SelectUser>
             )
           }
@@ -752,10 +760,10 @@ function Todolistdetails(props) {
           </Button>)}
 
           {
-            (troubleFlowNodeRows !== undefined && troubleFlowNodeRows.length !== 0 && flowNodeName === '故障登记') ? <Button type="primary" onClick={() => faultcircula('close')}>关闭</Button> : 
-            <Button type="default" onClick={handleClose}>返回</Button>
+            (troubleFlowNodeRows !== undefined && troubleFlowNodeRows.length !== 0 && flowNodeName === '故障登记') ? <Button type="primary" onClick={() => faultcircula('close')}>关闭</Button> :
+              <Button type="default" onClick={handleClose}>返回</Button>
           }
-          
+
         </>
       }
       title={flowNodeName}
@@ -766,30 +774,30 @@ function Todolistdetails(props) {
       {
         (tabActiveKey === 'faultForm' &&
           <div className={styles.collapse}>
-              {
-                troubleFlowLogs &&
-                (<Steps
-                  current={troubleFlowLogs.length - 1}
-                  size="small"
-                  style={{
-                    background: '#fff',
-                    padding: 24,
-                    border: '1px solid #e8e8e8',
-                    overflowX: 'auto',
-                    marginBottom:50
-                  }}
-                >
-                  {
-                    troubleFlowLogs && troubleFlowLogs.map(({ key, name, status, timeText, formHandler, startTime }) => [
-                      name !== '开始节点' && name !== '结束节点' && <Step key={key} title={`${name}${'\xa0'}${'\xa0'}(${status})${'\xa0'}${'\xa0'}${timeText}`} description={
-                        <div className={styles.stepDescription}>
-                          处理人：{formHandler}
-                          <div>结束时间：{moment(startTime).format('YYYY-MM-DD hh:mm:ss')}</div>
-                        </div>
-                      } />
-                    ])}
-                </Steps>)
-              }
+            {
+              troubleFlowLogs &&
+              (<Steps
+                current={troubleFlowLogs.length - 1}
+                size="small"
+                style={{
+                  background: '#fff',
+                  padding: 24,
+                  border: '1px solid #e8e8e8',
+                  overflowX: 'auto',
+                  marginBottom: 50
+                }}
+              >
+                {
+                  troubleFlowLogs && troubleFlowLogs.map(({ key, name, status, timeText, formHandler, startTime }) => [
+                    name !== '开始节点' && name !== '结束节点' && <Step key={key} title={`${name}${'\xa0'}${'\xa0'}(${status})${'\xa0'}${'\xa0'}${timeText}`} description={
+                      <div className={styles.stepDescription}>
+                        处理人：{formHandler}
+                        <div>结束时间：{moment(startTime).format('YYYY-MM-DD hh:mm:ss')}</div>
+                      </div>
+                    } />
+                  ])}
+              </Steps>)
+            }
             <Spin spinning={loading}>
               {
                 loading === false && tododetailslist && (
@@ -941,16 +949,8 @@ function Todolistdetails(props) {
       {
         (tabActiveKey === 'faultPro' && (
           <div className={styles.collapse}>
-            <Card title='故障管理流程'>
-              <div
-                style={{
-                  background: '#fff',
-                  // padding: 20,
-                }}
-              >
-                {/* 通过图片--二进制 展示流程图 */}
-                <img src={image} alt='' />
-              </div>
+            <Card title="流程图">
+              <div style={{ background: '#fff' }} id="divimg" />
             </Card>
             <Card title='流转日志' style={{ marginTop: '-1px' }}>
               {

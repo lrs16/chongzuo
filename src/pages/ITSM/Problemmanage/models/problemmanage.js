@@ -24,6 +24,7 @@ import {
   querydownload,
   downFile,
   querkeyVal,
+  handlequeryList
 } from '../services/api';
 
 export default {
@@ -51,7 +52,8 @@ export default {
     queryDetaildata:[],
     data:'',
     startid:'',
-    keyVallist:[]
+    keyVallist:[],
+    handleList:[]
   },
 
   effects: {
@@ -172,14 +174,23 @@ export default {
       });
     },
     //  列表查询
-    *queryList({ payload: { current, pageSize,status,classified,values } }, { call, put }) {
-      const response = yield call(queryList, current, pageSize,status,classified,values);
+    *queryList({ payload}, { call, put }) {
+      console.log('kk');
+      const response = yield call(queryList,payload);
       yield put({
         type: 'besolveListpage',
         payload: response,
       });
     },
 
+    //  处理率列表查询
+    *handlequeryList({ payload}, { call, put }) {
+      const response = yield call(handlequeryList,payload);
+      yield put({
+        type: 'handleListpage',
+        payload: response,
+      });
+    },
 
     //  获取工作流流程图
     *getgetFlowImage({ payload: { id } }, { call, put }) {
@@ -317,6 +328,14 @@ export default {
       return {
         ...state,
         besolveList: action.payload.data,
+      };
+    },
+
+    //  处理率列表
+    handleListpage(state, action) {
+      return {
+        ...state,
+        handleList: action.payload.data,
       };
     },
 

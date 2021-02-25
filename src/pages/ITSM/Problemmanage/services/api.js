@@ -119,22 +119,29 @@ export async function realselist() {
 }
 
 // // 问题查询列表查询
-export async function queryList(current, pageSize,status,classified,values) {
-  let obj;
-  if (values) {
-    obj = values;
-  } else {
-    obj = {};
-  }
-
-  obj.pageNum = current;
-  obj.pageSize = pageSize;
-  obj.status = status;
-  obj.type = classified;
+export async function queryList(params) {
   return request(`/problem/flow/getOrderPage`, {
     method: 'POST',
-    body: JSON.stringify(obj),
+    body: JSON.stringify(params),
   });
+}
+
+// // 处理率查询列表查询
+export async function handlequeryList(params) {
+  console.log('params: ', params);
+  switch(params.handleStatus) {
+    case '0':
+    case '1':
+      return request(`/problem/stat/getOrderByHandledList`,{
+        method:'POST',
+        body:JSON.stringify(params)
+      })
+    default:
+      return request(`/problem/stat/getOrderByTimeList`,{
+        method:'POST',
+        body:JSON.stringify(params)
+      })
+  }
 }
 
 
@@ -182,4 +189,12 @@ export async function querkeyVal(dictModule, dictType) {
     data: { dictModule, dictType },
     requestType: 'form',
   });
+}
+
+//  处理率的列表
+export async function handleGratelist(handleStatus) {
+  return request(`/problem/stat/getOrderByHandledList`,{
+    method:'POST',
+    body:JSON.stringify(handleStatus)
+  })
 }

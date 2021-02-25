@@ -2,7 +2,11 @@ import {
   statusList,
   statusDownload,
   classList,
-  classDownload
+  classDownload,
+  handleGrate,
+  handlegrateDownload,
+  timeoutList,
+  timeoutDownload
 } from '../services/statistics';
 
 export default {
@@ -11,7 +15,9 @@ export default {
   state: {
     handlingratedata:[],
     statusArr:[],
-    classArr:[]
+    classArr:[],
+    handleArr:[],
+    timeoutArr:[]
   },
 
   effects: {
@@ -41,6 +47,29 @@ export default {
      //  导出问题分类统计
      * downloadClass({ payload }, { call }) {
        return yield call(classDownload,payload);
+     },
+
+     // 问题处理率
+     * handleLists({ payload }, { call, put }) {
+      return yield call(handleGrate,payload);
+     },
+
+     // 导出问题处理率
+     * downloadHandlegrate({ payload },{ call }) {
+       return yield call(handlegrateDownload);
+     },
+
+     // 超时统计列表
+     *timeoutLists({ payload }, { call, put }) {
+       const response = yield call(timeoutList,payload);
+       yield put ({
+         type:'timeoutArr',
+         payload: response
+       })
+     },
+     // 导出超时统计
+     *timeDownload({ payload }, { call, put }) {
+       return yield call(timeoutDownload);
      }
 
     
@@ -60,6 +89,13 @@ export default {
     return {
       ...state,
       classArr: action.payload.data
+    }
+  },
+
+  timeoutArr(state,action) {
+    return {
+      ...state,
+      timeoutArr: action.payload.data
     }
   }
   },
