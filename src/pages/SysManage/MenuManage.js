@@ -11,9 +11,9 @@ import {
   Input,
   Form,
   Icon,
-  Tag,
   Layout,
   Tree,
+  message,
 } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import MenuModal from './components/MenuModal';
@@ -21,6 +21,93 @@ import MenuModal from './components/MenuModal';
 const { Search } = Input;
 const { Sider, Content } = Layout;
 const { TreeNode } = Tree;
+
+const datas = {
+  msg: '操作成功',
+  code: 200,
+  data: [
+    {
+      key: '0',
+      parentId: '-1',
+      order: 0,
+      title: '菜单信息',
+      children: [
+        {
+          key: '1254351725958860801',
+          parentId: '0',
+          order: 1,
+          title: 'automation',
+          children: [
+            {
+              key: '1289009294388039682',
+              parentId: '1254351725958860801',
+              order: 105,
+              title: 'STT',
+              children: [
+                {
+                  key: '1289009756680032257',
+                  parentId: '1289009294388039682',
+                  order: 10501,
+                  title: 'STThostlist',
+                },
+                {
+                  key: '1289010151733137409',
+                  parentId: '1289009294388039682',
+                  order: 10502,
+                  title: 'soft',
+                },
+                {
+                  key: '1289010773639368706',
+                  parentId: '1289009294388039682',
+                  order: 10503,
+                  title: 'process',
+                },
+                {
+                  key: '1323470223487012866',
+                  parentId: '1289009294388039682',
+                  order: 10504,
+                  title: 'commandconfigurate',
+                },
+                {
+                  key: '1311103465241448450',
+                  parentId: '1289009294388039682',
+                  order: 10505,
+                  title: 'execlog',
+                },
+                {
+                  key: '1289011387584811010',
+                  parentId: '1289009294388039682',
+                  order: 10507,
+                  title: 'softexetute',
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    },
+  ],
+  state: true,
+};
+
+function getAllLeaf() {
+  const { data } = datas;
+  const result = [];
+  function getLeaf(data) {
+    console.log(data[0].children[0]);
+    // data[0].children[0].forEach(item => {
+    //   if (!item.children) {
+    //     result.push(item)
+    //   } else {
+    //     console.log(item)
+    //     //  getLeaf(item)
+    //   }
+    // })
+  }
+  getLeaf(data);
+  console.log(result);
+  return result;
+}
 
 @connect(({ upmsmenu, loading }) => ({
   upmsmenu,
@@ -32,13 +119,13 @@ class MenuManage extends Component {
     current: 1,
     pageSize: 10,
     queKey: '',
-    pid: '0',
     treeData: [],
   };
 
   componentDidMount() {
     this.getlist();
     this.getalldata();
+    // getAllLeaf();
   }
 
   // 按需加载树节点
@@ -47,7 +134,7 @@ class MenuManage extends Component {
       .dispatch({
         type: 'upmsmenu/fetchdatas',
         payload: {
-          pid: this.state.pid,
+          pid: '0',
         },
       })
       .then(res => {
@@ -57,26 +144,42 @@ class MenuManage extends Component {
       });
   };
 
-  // 点击加载结点
-  onLoadData = treeNode => {
-    console.log(treeNode);
-    // new Promise(resolve => {
-    //   if (treeNode.props.children) {
-    //     resolve();
-    //     return;
-    //   }
-    //   setTimeout(() => {
-    //     treeNode.props.dataRef.children = [
-    //       { title: 'Child Node', key: `${treeNode.props.eventKey}-0` },
-    //       { title: 'Child Node', key: `${treeNode.props.eventKey}-1` },
-    //     ];
-    //     this.setState({
-    //       treeData: [...this.state.treeData],
-    //     });
-    //     resolve();
-    //   }, 1000);
-    // })
+  // 点击节点
+  handleClick = selectedKeys => {
+    setTimeout(() => {
+      this.setState({ pidkey: selectedKeys[0] });
+    }, 0);
   };
+
+  // 点击加载结点
+  onLoadData = treeNode =>
+    new Promise(resolve => {
+      if (treeNode.props.children) {
+        resolve();
+        return;
+      }
+      this.props
+        .dispatch({
+          type: 'upmsmenu/fetchdatas',
+          payload: {
+            pid: treeNode.props.dataRef.key,
+          },
+        })
+        .then(res => {
+          if (res.data !== undefined) {
+            console.log(res.data);
+            treeNode.props.dataRef.children = res.data[0].children[0].children;
+          } else {
+            message.info('已经到最后一层！');
+          }
+        });
+      setTimeout(() => {
+        this.setState({
+          treeData: [...this.state.treeData],
+        });
+        resolve();
+      }, 600);
+    });
 
   // 渲染树结构
   renderTreeNodes = data =>
@@ -279,7 +382,7 @@ class MenuManage extends Component {
         <Card>
           <Layout>
             <Sider theme="light">
-              <Tree loadData={this.onLoadData} onCheck={this.onCheck}>
+              <Tree loadData={this.onLoadData} onCheck={this.onCheck} onSelect={this.handleClick}>
                 {this.renderTreeNodes(this.state.treeData)}
               </Tree>
             </Sider>

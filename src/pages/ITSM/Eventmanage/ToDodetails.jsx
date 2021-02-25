@@ -3,8 +3,8 @@ import router from 'umi/router';
 import { connect } from 'dva';
 import { Button, Popover, Popconfirm, message } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import Backoff from './components/Backoff';
 import SelectUser from '@/components/SelectUser';
+import Backoff from './components/Backoff';
 import WorkOrder from './WorkOrder';
 import Process from './Process';
 
@@ -103,8 +103,8 @@ function ToDodetails(props) {
         </Popconfirm>
       )}
       {(taskName === '待审核' ||
-        (taskName === '待处理' && check === '') ||
-        (taskName === '待确认' && check === '')) && (
+        (taskName === '待处理' && check === null) ||
+        (taskName === '待确认' && check === null)) && (
         // <Button type="danger" ghost style={{ marginRight: 8 }} onClick={() => handleHold('back')}>
         //   回退
         // </Button>

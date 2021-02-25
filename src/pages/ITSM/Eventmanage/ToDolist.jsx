@@ -44,6 +44,7 @@ const columns = [
             taskName: record.eventStatus,
             taskId: record.taskId,
             mainId: record.mainId,
+            check: record.checkResult,
           },
         });
       };
