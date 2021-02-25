@@ -13,27 +13,83 @@ import {
   Icon,
   Tag,
   Layout,
+  Tree,
 } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import MenuModal from './components/MenuModal';
 
 const { Search } = Input;
 const { Sider, Content } = Layout;
+const { TreeNode } = Tree;
 
 @connect(({ upmsmenu, loading }) => ({
   upmsmenu,
   loading: loading.models.upmsmenu,
+  treeloading: loading.effects['upmsmenu/fetchdatas'],
 }))
 class MenuManage extends Component {
   state = {
     current: 1,
     pageSize: 10,
     queKey: '',
+    pid: '0',
+    treeData: [],
   };
 
   componentDidMount() {
     this.getlist();
+    this.getalldata();
   }
+
+  // 按需加载树节点
+  getalldata = () => {
+    this.props
+      .dispatch({
+        type: 'upmsmenu/fetchdatas',
+        payload: {
+          pid: this.state.pid,
+        },
+      })
+      .then(res => {
+        setTimeout(() => {
+          this.setState({ treeData: res.data });
+        }, 0);
+      });
+  };
+
+  // 点击加载结点
+  onLoadData = treeNode => {
+    console.log(treeNode);
+    // new Promise(resolve => {
+    //   if (treeNode.props.children) {
+    //     resolve();
+    //     return;
+    //   }
+    //   setTimeout(() => {
+    //     treeNode.props.dataRef.children = [
+    //       { title: 'Child Node', key: `${treeNode.props.eventKey}-0` },
+    //       { title: 'Child Node', key: `${treeNode.props.eventKey}-1` },
+    //     ];
+    //     this.setState({
+    //       treeData: [...this.state.treeData],
+    //     });
+    //     resolve();
+    //   }, 1000);
+    // })
+  };
+
+  // 渲染树结构
+  renderTreeNodes = data =>
+    data.map(item => {
+      if (item.children) {
+        return (
+          <TreeNode title={item.title} key={item.key} dataRef={item}>
+            {this.renderTreeNodes(item.children)}
+          </TreeNode>
+        );
+      }
+      return <TreeNode key={item.key} {...item} dataRef={item} />;
+    });
 
   getlist = () => {
     const page = this.state.current;
@@ -222,18 +278,13 @@ class MenuManage extends Component {
       <PageHeaderWrapper title="菜单管理">
         <Card>
           <Layout>
-            <Sider theme="light">{/* <DeptTree /> */}</Sider>
+            <Sider theme="light">
+              <Tree loadData={this.onLoadData} onCheck={this.onCheck}>
+                {this.renderTreeNodes(this.state.treeData)}
+              </Tree>
+            </Sider>
             <Content style={{ background: '#fff' }}>
               <div>
-                {/* <div style={{ float: 'left', width: '60%' }}>
-              {mainnav.map(item => {
-                return (
-                  <Button key={item.id} style={{ marginRight: 10 }}>
-                    {item.menuDesc}
-                  </Button>
-                );
-              })}
-            </div> */}
                 <Form style={{ float: 'right', width: '30%' }}>
                   <Search
                     placeholder="请输入关键字"

@@ -8,12 +8,8 @@ export default {
   },
 
   effects: {
-    *fetchdatas({ payload }, { call, put }) {
-      const response = yield call(queryMenuList, payload);
-      yield put({
-        type: 'show',
-        payload: response,
-      });
+    *fetchdatas({ payload }, { call }) {
+      return yield call(queryMenuList, payload);
     },
     // 添加或编辑
     *update({ payload }, { call }) {
@@ -29,8 +25,8 @@ export default {
     },
 
     // 查询数据
-    *search({ payload }, { call , put }) {
-      const response =  yield call(searchMenu, payload);
+    *search({ payload }, { call, put }) {
+      const response = yield call(searchMenu, payload);
       yield put({
         type: 'show',
         payload: response,

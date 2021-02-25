@@ -37,8 +37,11 @@ export async function resetUsers(userId) {
 }
 
 // 请求菜单列表
-export async function queryMenuList() {
-  return request(`/upms/menu/list`);
+export async function queryMenuList(params) {
+  return request(`/upms/menu/tree`, {
+    method: 'POST',
+    body: JSON.stringify(params),
+  });
 }
 
 // 添加菜单

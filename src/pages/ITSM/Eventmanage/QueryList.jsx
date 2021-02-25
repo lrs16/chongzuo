@@ -578,21 +578,21 @@ function QueryList(props) {
                 </Col>
                 <Col span={8}>
                   <Form.Item label="登记人">
-                    {getFieldDecorator('userName', {
+                    {getFieldDecorator('registerUser', {
                       initialValue: '',
                     })(<Input placeholder="请输入" />)}
                   </Form.Item>
                 </Col>
                 <Col span={8}>
                   <Form.Item label="登记人单位">
-                    {getFieldDecorator('unitName', {
+                    {getFieldDecorator('registerUnit', {
                       initialValue: '',
                     })(<Input placeholder="请输入" />)}
                   </Form.Item>
                 </Col>
                 <Col span={8}>
                   <Form.Item label="登记人部门">
-                    {getFieldDecorator('deptName', {
+                    {getFieldDecorator('registerDept', {
                       initialValue: '',
                     })(<Input placeholder="请输入" />)}
                   </Form.Item>
