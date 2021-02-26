@@ -128,7 +128,6 @@ export async function queryList(params) {
 
 // // 处理率查询列表查询
 export async function handlequeryList(params) {
-  console.log('params: ', params);
   switch(params.handleStatus) {
     case '0':
     case '1':

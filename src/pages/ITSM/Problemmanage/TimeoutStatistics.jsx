@@ -14,9 +14,9 @@ import Link from 'umi/link';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
 const { RangePicker } = DatePicker;
-let statTimeBegin;
-let statTimeEnd;
-let formItemLayout = {
+let statTimeBegin = '';
+let statTimeEnd = '';
+const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
     sm: { span: 8 },
@@ -36,22 +36,25 @@ const columns = [
   {
     title: '超时状态',
     dataIndex: 'statName',
-    key: 'statCount'
+    key: 'statName'
   },
   {
     title: '工单数',
     dataIndex: 'statCount',
     key: 'statCount',
-    render: (text,record) => (
-      <Link
-        to={{
-          pathname:'/ITSM/problemmanage/problemquery',
-          query: {timeStatus: record.statCode}
-        }}
-      >
-      {text}
-      </Link>
-    )
+    render: (text, record) => {
+      if (record.statName !== '合计') {
+        return <Link
+          to={{
+            pathname: '/ITSM/problemmanage/problemquery',
+            query: { timeStatus: record.statCode }
+          }}
+        >
+          {text}
+        </Link>
+      }
+      return <span>{text}</span>
+    }
   },
 ]
 function TimeoutStatistics(props) {
@@ -60,24 +63,24 @@ function TimeoutStatistics(props) {
     dispatch,
     timeoutArr
   } = props;
-  if(timeoutArr.length){
-    timeoutArr.forEach((item,index) => {
-      if(index !== 5) {
-        timeoutArr[index].index = index +1;
+  if (timeoutArr.length) {
+    timeoutArr.forEach((item, index) => {
+      if (index !== 5) {
+        timeoutArr[index].index = index + 1;
       }
     })
   }
 
-  const gettimeoutList = () => {
+  const gettimeoutList = (params) => {
     dispatch({
-      type:'problemstatistics/timeoutLists',
-      payload:{ statTimeBegin, statTimeEnd }
+      type: 'problemstatistics/timeoutLists',
+      payload: params? { statTimeBegin, statTimeEnd } : { statTimeBegin:'', statTimeEnd:'' }
     })
   }
 
   const download = () => {
     dispatch({
-      type:'problemstatistics/timeDownload'
+      type: 'problemstatistics/timeDownload'
     }).then(res => {
       const filename = '下载.xls';
       const blob = new Blob([res]);
@@ -90,7 +93,7 @@ function TimeoutStatistics(props) {
     })
   }
 
-  const onChange = (date,dateString) => {
+  const onChange = (date, dateString) => {
     [statTimeBegin, statTimeEnd] = dateString;
 
   }
@@ -101,7 +104,7 @@ function TimeoutStatistics(props) {
 
   useEffect(() => {
     gettimeoutList();
-  },[]);
+  }, []);
 
   return (
     <PageHeaderWrapper>
@@ -112,7 +115,7 @@ function TimeoutStatistics(props) {
               <Form.Item label='统计时间'>
                 {
                   getFieldDecorator('time', {})
-                    (<RangePicker onChange={onChange}/>)
+                    (<RangePicker onChange={onChange} />)
                 }
               </Form.Item>
             </Col>
@@ -122,7 +125,7 @@ function TimeoutStatistics(props) {
           <Col span={8}>
             <Button
               type='primary'
-              onClick={gettimeoutList}
+              onClick={() => gettimeoutList('search')}
             >
               查询
             </Button>
@@ -151,6 +154,7 @@ function TimeoutStatistics(props) {
         <Table
           columns={columns}
           dataSource={timeoutArr}
+          rowKey={record => record.statName}
         />
 
 
@@ -160,7 +164,7 @@ function TimeoutStatistics(props) {
 }
 
 export default Form.create({})(
-  connect(({ problemstatistics }) =>({
+  connect(({ problemstatistics }) => ({
     timeoutArr: problemstatistics.timeoutArr
   }))(TimeoutStatistics)
 );

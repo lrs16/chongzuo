@@ -175,7 +175,6 @@ export default {
     },
     //  列表查询
     *queryList({ payload}, { call, put }) {
-      console.log('kk');
       const response = yield call(queryList,payload);
       yield put({
         type: 'besolveListpage',

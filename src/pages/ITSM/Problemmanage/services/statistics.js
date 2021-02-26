@@ -53,7 +53,6 @@ export async function handlegrateDownload(params) {
 
 //  超时统计列表
 export async function timeoutList(params) {
-  console.log('params: ', params);
   return request(`/problem/stat/statOrderByTime`,{
     method:'POST',
     body:JSON.stringify(params)

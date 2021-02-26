@@ -58,11 +58,11 @@ function Statusstatistics(props) {
     statusArr
   } = props;
 
-  const statusList = () => {
+  const statusList = (params) => {
     dispatch({
       type: 'problemstatistics/fetchstatusList',
-      payload: { statTimeBegin, statTimeEnd }
-    })
+      payload: params? { statTimeBegin, statTimeEnd } : { statTimeBegin:'', statTimeEnd:'' }
+    });
   }
 
   useEffect(() => {
@@ -86,7 +86,6 @@ function Statusstatistics(props) {
 
   const rowSelection = {
     onChange: (selectedRowkeys, select) => {
-      console.log('select: ', select);
     }
   }
 
@@ -96,13 +95,6 @@ function Statusstatistics(props) {
 
   const onChange = (date, dateString) => {
     [statTimeBegin, statTimeEnd] = dateString;
-  }
-
-  const handleSearch = () => {
-    dispatch({
-      type: 'problemstatistics/fetchstatusList',
-      payload: { statTimeBegin, statTimeEnd }
-    })
   }
 
   const handleReset = () => {
@@ -124,7 +116,7 @@ function Statusstatistics(props) {
             </Col>
 
             <Col span={8}>
-              <Button type='primary' onClick={handleSearch}>
+              <Button type='primary' onClick={() => statusList('search')}>
                 查询
               </Button>
 

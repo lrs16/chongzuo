@@ -17,6 +17,7 @@ const formItemLayout = {
   },
 };
 const { Option } = Select;
+let sign = '';
 const columns = [
   {
     title: '问题编号',
@@ -89,7 +90,7 @@ function Besolved(props) {
   const pagetitle = props.route.name;
   const {
     form: { getFieldDecorator, resetFields, validateFields },
-    location:{ query: { orderStatus,orderClass,handleStatus,timeStatus } },
+    location:{ query: { orderStatus,orderClass,handleStatu,timeStatus } },
     dispatch,
     besolveList,
     handleList,
@@ -103,9 +104,15 @@ function Besolved(props) {
   const [expand, setExpand] = useState(false);
   const [paginations, setPaginations] = useState({ current: 1, pageSize: 10 });
   const [selectedRows, setSelectedRows] = useState([]);
+  let handleStatus;
+  if( sign === 'have') {
+    handleStatus = undefined;
+  } else {
+    handleStatus = handleStatu;
+  }
   const getQuery = () => {
     dispatch({
-      type: (handleStatus === '1' || handleStatus === '0' || timeStatus !== undefined) ? 'problemmanage/handlequeryList':'problemmanage/queryList',
+      type: (handleStatus !== undefined) ? 'problemmanage/handlequeryList':'problemmanage/queryList',
       payload: {
         handleStatus,
         pageNum: paginations.current,
@@ -190,8 +197,10 @@ function Besolved(props) {
   };
 
   const searchdata = (values, page, pageSize) => {
+    sign = 'have' 
+    handleStatus = undefined;
     return dispatch({
-      type: (handleStatus === '1' || handleStatus === '0') ? 'problemmanage/handlequeryList':'problemmanage/queryList',
+      type:(handleStatus !== undefined) ? 'problemmanage/handlequeryList':'problemmanage/queryList',
       payload: {
         handleStatus,
         ...values,
@@ -200,7 +209,7 @@ function Besolved(props) {
         status:orderStatus,
         type:orderClass
       },
-    });
+    })
   };
 
   const onShowSizeChange = (page, pageSize) => {
@@ -239,7 +248,7 @@ function Besolved(props) {
     onShowSizeChange: (page, pageSize) => onShowSizeChange(page, pageSize),
     current: paginations.current,
     pageSize: paginations.pageSize,
-    // total: besolveList.total,
+    total: besolveList.total,
     onChange: page => changePage(page),
   };
 
@@ -248,7 +257,7 @@ function Besolved(props) {
     onShowSizeChange: (page, pageSize) => onShowSizeChange(page, pageSize),
     current: paginations.current,
     pageSize: paginations.pageSize,
-    // total: handleList.length,
+    total: handleList.length,
     onChange: page => changePage(page),
   };
 
@@ -548,7 +557,7 @@ function Besolved(props) {
         </div>
 
         {
-          (handleStatus === '1' || handleStatus === '0' || timeStatus !== undefined) && (
+          (handleStatus !== undefined ) && (
             <Table
             loading={loading}
             columns={columns}
@@ -561,7 +570,7 @@ function Besolved(props) {
         }
 
         {
-          handleStatus !== '1' && handleStatus !== '0' && timeStatus === undefined && (
+          handleStatus === undefined && (
             <Table
             loading={loading}
             columns={columns}

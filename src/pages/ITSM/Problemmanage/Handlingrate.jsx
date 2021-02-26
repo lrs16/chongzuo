@@ -24,8 +24,8 @@ const formItemLayout = {
   },
 };
 const { RangePicker } = DatePicker;
-let statTimeBegin;
-let statTimeEnd;
+let statTimeBegin = '';
+let statTimeEnd = '';
 const newObj = {};
 
 const columns = [
@@ -42,7 +42,7 @@ const columns = [
       <Link 
         to={{
           pathname:'/ITSM/problemmanage/problemquery',
-          query:{handleStatus:'1'}
+          query:{handleStatu:'1'}
         }}
       >
         {text}
@@ -57,7 +57,7 @@ const columns = [
       <Link
         to={{
           pathname:'/ITSM/problemmanage/problemquery',
-          query:{handleStatus:'0'}
+          query:{handleStatu:'0'}
         }}
       >
       {text}
@@ -83,12 +83,14 @@ function Handlingrate(props) {
     [statTimeBegin, statTimeEnd] = dateString;
   }
 
-  const handleListdata = () => {
+  const handleListdata = (params) => {
     dispatch({
         type:'problemstatistics/handleLists',
-        payload:{ statTimeBegin, statTimeEnd }
+        payload:params? { statTimeBegin, statTimeEnd } : { statTimeBegin:'', statTimeEnd:'' }
     }).then(res => {
       if(res.code === 200) {
+        statTimeBegin = '';
+        statTimeEnd = '';
         const newArr = res.data;
         newArr.forEach((item) =>{
           switch (item.statName) {
@@ -156,7 +158,7 @@ function Handlingrate(props) {
             <Col span={8}>
               <Button 
               type='primary'
-              onClick={handleListdata}
+              onClick={() => handleListdata('search')}
               >
                 查询
             </Button>
@@ -184,6 +186,7 @@ function Handlingrate(props) {
         <Table
           columns={columns}
           dataSource={changearr}
+          rowKey={record => record.statName}
         />
 
       </Card>

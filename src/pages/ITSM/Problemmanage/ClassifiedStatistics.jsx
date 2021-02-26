@@ -61,20 +61,17 @@ function ClassifiedStatistics(props) {
   const onChange = (date, dateString) => {
     [statTimeBegin, statTimeEnd] = dateString;
   }
-
-  useEffect(() => {
+  
+  const handleList = (params) => {
     dispatch({
       type: 'problemstatistics/fetchClasslist',
-      payload: { dictType: 'type' }
-    })
-  }, []);
-
-  const handleSearch = () => {
-    dispatch({
-      type: 'problemstatistics/fetchClasslist',
-      payload: { statTimeBegin, statTimeEnd, dictType: 'type' }
+      payload: params? { statTimeBegin, statTimeEnd,dictType: 'type' } : { statTimeBegin:'', statTimeEnd:'',dictType: 'type' }
     })
   }
+
+  useEffect(() => {
+    handleList();
+  }, []);
 
   const handleReset = () => {
     resetFields();
@@ -121,7 +118,7 @@ function ClassifiedStatistics(props) {
             <Col span={8}>
               <Button
                 type='primary'
-                onClick={handleSearch}
+                onClick={() => handleList('search')}
               >
                 查询
               </Button>
