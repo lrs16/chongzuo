@@ -1,8 +1,8 @@
 import React from 'react';
 import moment from 'moment';
 import { Descriptions } from 'antd';
-import styles from '../index.less';
 import Downloadfile from '@/components/SysUpload/Downloadfile';
+import styles from '../index.less';
 
 function Registratdes(props) {
   const { info } = props;
@@ -20,19 +20,24 @@ function Registratdes(props) {
           {moment(info.completeTime).format('YYYY-MM-DD HH:MM')}
         </Descriptions.Item>
         <Descriptions.Item label="申请人">{info.proposer}</Descriptions.Item>
-        <Descriptions.Item label="申请单位">{info.proposingUnit}</Descriptions.Item>
-        <Descriptions.Item label="申请部门">{info.proposingDepartment}</Descriptions.Item>
-        <Descriptions.Item label="联系电话">{info.proposerPhone}</Descriptions.Item>
-        <Descriptions.Item label="所属项目">{info.project}</Descriptions.Item>
+        <Descriptions.Item label="申请人单位">{info.proposingUnit}</Descriptions.Item>
+        <Descriptions.Item label="申请人部门">{info.proposingDepartment}</Descriptions.Item>
+        <Descriptions.Item label="联系电话" span={2}>
+          {info.proposerPhone}
+        </Descriptions.Item>
+        <Descriptions.Item label="所属项目" span={3}>
+          {info.project}
+        </Descriptions.Item>
+        <Descriptions.Item label="需求类型">{info.demandType}</Descriptions.Item>
         <Descriptions.Item label="功能模块">{info.functionalModule}</Descriptions.Item>
-        <Descriptions.Item label="功能变更类型">{info.demandType}</Descriptions.Item>
+        <Descriptions.Item label="需求优先级">{info.priority}</Descriptions.Item>
         <Descriptions.Item label="需求标题" span={3}>
           {info.title}
         </Descriptions.Item>
-        <Descriptions.Item label="申请原因" span={3}>
+        <Descriptions.Item label="需求原因" span={3}>
           <div dangerouslySetInnerHTML={{ __html: info.reason?.replace(/[\n]/g, '<br/>') }} />
         </Descriptions.Item>
-        <Descriptions.Item label="详细申请内容" span={3}>
+        <Descriptions.Item label="需求描述" span={3}>
           <div dangerouslySetInnerHTML={{ __html: info.detail?.replace(/[\n]/g, '<br/>') }} />
         </Descriptions.Item>
         <Descriptions.Item label="附件" span={3}>

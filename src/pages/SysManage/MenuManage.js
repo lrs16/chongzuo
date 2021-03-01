@@ -295,7 +295,7 @@ class MenuManage extends Component {
               onSumit={values => handleEdite(values)}
               title="编辑菜单"
               record={record}
-              pidkey={this.state.pidkey}
+              pidkey={record.pid}
             >
               <a type="link">编辑</a>
             </MenuModal>

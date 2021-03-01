@@ -106,7 +106,7 @@ export default {
           routes: [
             {
               path: '/',
-              redirect: '/home',
+              redirect: '/ITSM/home',
             },
             {
               path: '/home',
@@ -116,7 +116,7 @@ export default {
               routes: [
                 {
                   path: '/home',
-                  redirect: '/home',
+                  redirect: '/ITSM/home',
                 },
                 {
                   path: '/ITSM/home',

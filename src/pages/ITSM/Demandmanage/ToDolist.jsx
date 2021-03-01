@@ -17,11 +17,9 @@ const statemap = [
   { key: '4', value: '自动化科业务人员审核' },
   { key: '5', value: '市场部领导审核' },
   { key: '6', value: '科室领导审核' },
-  { key: '7', value: '市场部领导审核' },
-  { key: '8', value: '科室领导审核' },
-  { key: '9', value: '系统开发商处理' },
-  { key: '10', value: '自动化科负责人确认' },
-  { key: '11', value: '需求登记人员确认' },
+  { key: '7', value: '系统开发商处理' },
+  { key: '8', value: '自动化科负责人确认' },
+  { key: '9', value: '需求登记人员确认' },
 ];
 
 const formItemLayout = {

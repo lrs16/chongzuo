@@ -384,7 +384,7 @@ function Track(props) {
       width: 200,
       render: (text, record) => {
         const dateFormat = 'YYYY-MM-DD HH:mm:ss';
-        if (record.editable) {
+        if (record.isNew) {
           return (
             <DatePicker
               showTime

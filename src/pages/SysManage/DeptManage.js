@@ -280,7 +280,7 @@ class DeptManage extends Component {
               onSumit={values => this.handleEdite(values)}
               title="编辑组织"
               record={record}
-              pidkey={this.state.pidkey}
+              pidkey={record.pid}
             >
               <a type="link">编辑</a>
             </DeptModal>
