@@ -46,12 +46,8 @@ export default {
     },
 
     // 按需加载树
-    *needtree({ payload }, { call, put }) {
-      const response = yield call(NeedDeptTree, payload);
-      yield put({
-        type: 'showtree',
-        payload: response.data,
-      });
+    *needtree({ payload }, { call }) {
+      return yield call(NeedDeptTree, payload);
     },
   },
 

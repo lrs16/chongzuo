@@ -14,6 +14,7 @@ import {
   Badge,
   Popconfirm,
   Tree,
+  message,
 } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
@@ -36,33 +37,101 @@ class DeptManage extends Component {
     current: 1,
     pageSize: 10,
     queKey: '',
+    treeData: [],
+    pidkey: '0',
   };
 
   componentDidMount() {
     this.getlist();
-    this.getdeptree('0');
+    this.getdeptree('7AC3EF0F701402A2E0530A644F130365');
   }
 
   getlist = () => {
     const page = this.state.current;
     const limit = this.state.pageSize;
-    const { queKey } = this.state;
+    const { queKey, pidkey } = this.state;
     this.props.dispatch({
       type: 'upmsdept/search',
       payload: {
         page,
         limit,
         queKey,
+        pid: pidkey,
       },
     });
   };
 
   getdeptree = pid => {
+    this.props
+      .dispatch({
+        type: 'upmsdept/needtree',
+        payload: { pid },
+      })
+      .then(res => {
+        setTimeout(() => {
+          this.setState({ treeData: res.data });
+        }, 0);
+      });
+  };
+
+  // 点击节点
+  handleClick = selectedKeys => {
+    setTimeout(() => {
+      this.setState({ pidkey: selectedKeys[0] });
+    }, 0);
+    const page = this.state.current;
+    const limit = this.state.pageSize;
     this.props.dispatch({
-      type: 'upmsdept/needtree',
-      payload: { pid },
+      type: 'upmsdept/search',
+      payload: {
+        page,
+        limit,
+        pid: selectedKeys[0],
+      },
     });
   };
+
+  // 点击加载结点
+  onLoadData = treeNode =>
+    new Promise(resolve => {
+      if (treeNode.props.children) {
+        resolve();
+        return;
+      }
+      this.props
+        .dispatch({
+          type: 'upmsdept/needtree',
+          payload: {
+            pid: treeNode.props.dataRef.key,
+          },
+        })
+        .then(res => {
+          if (res.data !== undefined) {
+            treeNode.props.dataRef.children = res.data;
+          } else {
+            message.info('已经到最后一层！');
+          }
+        });
+      setTimeout(() => {
+        this.setState({
+          treeData: [...this.state.treeData],
+        });
+        resolve();
+      }, 600);
+    });
+
+  // 渲染树结构
+  renderTreeNodes = data =>
+    data.map(item => {
+      if (item.children) {
+        return (
+          <TreeNode title={item.title} key={item.key} dataRef={item}>
+            {this.renderTreeNodes(item.children)}
+          </TreeNode>
+        );
+      }
+      return <TreeNode key={item.key} {...item} dataRef={item} />;
+    });
 
   handleSearch = values => {
     const page = this.state.current;
@@ -85,6 +154,7 @@ class DeptManage extends Component {
       type: 'upmsdept/search',
       payload: {
         queKey: this.state.queKey,
+        pid: this.state.pidkey,
         page,
         limit: this.state.pageSize,
       },
@@ -99,6 +169,7 @@ class DeptManage extends Component {
       type: 'upmsdept/search',
       payload: {
         queKey: this.state.queKey,
+        pid: this.state.pidkey,
         page: current,
         limit: pageSize,
       },
@@ -107,13 +178,6 @@ class DeptManage extends Component {
       this.setState({ pageSize });
     }, 0);
   };
-
-  reloadtree() {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'deptree/fetch',
-    });
-  }
 
   handleUpdate = values => {
     const { dispatch } = this.props;
@@ -124,7 +188,6 @@ class DeptManage extends Component {
       if (res.code === 200) {
         Message.success(res.msg);
         this.getlist();
-        this.reloadtree();
       } else {
         Message.error('添加组织失败');
       }
@@ -140,7 +203,6 @@ class DeptManage extends Component {
       if (res.code === 200) {
         Message.success(res.msg);
         this.getlist();
-        this.reloadtree();
       } else {
         Message.error('更新组织失败');
       }
@@ -156,7 +218,6 @@ class DeptManage extends Component {
       if (res.code === 200) {
         Message.success(res.msg);
         this.getlist();
-        this.reloadtree();
       } else {
         Message.error('删除组织失败');
       }
@@ -182,29 +243,23 @@ class DeptManage extends Component {
         dataIndex: 'id',
         key: 'id',
       },
-      {
-        title: '上级编号',
-        dataIndex: 'pid',
-        key: 'pid',
-      },
-      {
-        title: '组织序号',
-        dataIndex: 'deptSort',
-        key: 'deptSort',
-      },
+      // {
+      //   title: '组织序号',
+      //   dataIndex: 'deptSort',
+      //   key: 'deptSort',
+      // },
       {
         title: '组织名称',
         dataIndex: 'deptName',
         key: 'deptName',
       },
-
-      {
-        title: '更新时间',
-        dataIndex: 'updateTime',
-        key: 'updateTime',
-        sorter: (a, b) => a.name.length - b.name.length,
-        render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
-      },
+      // {
+      //   title: '更新时间',
+      //   dataIndex: 'updateTime',
+      //   key: 'updateTime',
+      //   sorter: (a, b) => a.name.length - b.name.length,
+      //   render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
+      // },
       {
         title: '启用状态',
         dataIndex: 'deptStatus',
@@ -223,8 +278,9 @@ class DeptManage extends Component {
           <div>
             <DeptModal
               onSumit={values => this.handleEdite(values)}
-              title="编辑脚本"
+              title="编辑组织"
               record={record}
+              pidkey={this.state.pidkey}
             >
               <a type="link">编辑</a>
             </DeptModal>
@@ -239,7 +295,7 @@ class DeptManage extends Component {
 
     const {
       loading,
-      upmsdept: { data, treedata },
+      upmsdept: { data },
     } = this.props;
 
     const pagination = {
@@ -251,27 +307,32 @@ class DeptManage extends Component {
       onChange: page => this.changePage(page),
     };
     const dataSource = data.rows;
-    const renderTreeNodes = datas => {
-      datas.map(item => {
-        if (item.children) {
-          return (
-            <TreeNode title={item.title} key={item.key} dataRef={item}>
-              {this.renderTreeNodes(item.children)}
-            </TreeNode>
-          );
-        }
-        return <TreeNode key={item.key} {...item} />;
-      });
-    };
 
     return (
       <PageHeaderWrapper title="组织管理">
         <Card>
           <Layout>
-            <Sider theme="light">
-              {/* <Tree loadData={this.onLoadData}>{this.renderTreeNodes(this.state.treeData)}</Tree> */}
+            <Sider
+              theme="light"
+              width={220}
+              style={{
+                overflow: 'auto',
+                height: '100vh',
+              }}
+            >
+              <Sider theme="light">
+                <Tree loadData={this.onLoadData} onCheck={this.onCheck} onSelect={this.handleClick}>
+                  {this.renderTreeNodes(this.state.treeData)}
+                </Tree>
+              </Sider>
             </Sider>
-            <Content style={{ background: '#fff' }}>
+            <Content
+              style={{
+                overflow: 'auto',
+                height: '100vh',
+                background: '#fff',
+              }}
+            >
               <div style={{ background: '#fff' }}>
                 <Form style={{ float: 'right', width: '30%' }}>
                   <Search
@@ -279,7 +340,7 @@ class DeptManage extends Component {
                     onSearch={values => this.handleSearch(values)}
                   />
                 </Form>
-                <DeptModal onSumit={this.handleUpdate}>
+                <DeptModal onSumit={this.handleUpdate} pidkey={this.state.pidkey}>
                   <Button
                     style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
                     type="dashed"
@@ -288,20 +349,6 @@ class DeptManage extends Component {
                     新建组织
                   </Button>
                 </DeptModal>
-                {/* <DeptList
-                  loading={loading}
-                  datas={dataSource}
-                  total ={data.total}
-                  DeleteData={this.handleDelete}
-                  doEdite={this.handleUpdate}
-                  dochangpage = {this.changePage}
-                  doSizeChange = {this.onShowSizeChange}
-                /> */}
-                {/* <Tree
-                  checkable
-                >
-                  {renderTreeNodes(dataSource)}
-                </Tree> */}
                 <Table
                   loading={loading}
                   dataSource={dataSource}

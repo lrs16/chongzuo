@@ -22,91 +22,17 @@ const { Search } = Input;
 const { Sider, Content } = Layout;
 const { TreeNode } = Tree;
 
-const datas = {
-  msg: '操作成功',
-  code: 200,
-  data: [
-    {
-      key: '0',
-      parentId: '-1',
-      order: 0,
-      title: '菜单信息',
-      children: [
-        {
-          key: '1254351725958860801',
-          parentId: '0',
-          order: 1,
-          title: 'automation',
-          children: [
-            {
-              key: '1289009294388039682',
-              parentId: '1254351725958860801',
-              order: 105,
-              title: 'STT',
-              children: [
-                {
-                  key: '1289009756680032257',
-                  parentId: '1289009294388039682',
-                  order: 10501,
-                  title: 'STThostlist',
-                },
-                {
-                  key: '1289010151733137409',
-                  parentId: '1289009294388039682',
-                  order: 10502,
-                  title: 'soft',
-                },
-                {
-                  key: '1289010773639368706',
-                  parentId: '1289009294388039682',
-                  order: 10503,
-                  title: 'process',
-                },
-                {
-                  key: '1323470223487012866',
-                  parentId: '1289009294388039682',
-                  order: 10504,
-                  title: 'commandconfigurate',
-                },
-                {
-                  key: '1311103465241448450',
-                  parentId: '1289009294388039682',
-                  order: 10505,
-                  title: 'execlog',
-                },
-                {
-                  key: '1289011387584811010',
-                  parentId: '1289009294388039682',
-                  order: 10507,
-                  title: 'softexetute',
-                },
-              ],
-            },
-          ],
-        },
-      ],
-    },
-  ],
-  state: true,
-};
-
-function getAllLeaf() {
-  const { data } = datas;
+function getAllLeaf(data) {
   const result = [];
   function getLeaf(data) {
-    console.log(data[0].children[0]);
-    // data[0].children[0].forEach(item => {
-    //   if (!item.children) {
-    //     result.push(item)
-    //   } else {
-    //     console.log(item)
-    //     //  getLeaf(item)
-    //   }
-    // })
+    if (data[0].children.length === 1) {
+      getLeaf(data[0].children);
+    } else {
+      result.push(data[0].children);
+    }
   }
   getLeaf(data);
-  console.log(result);
-  return result;
+  return result[0];
 }
 
 @connect(({ upmsmenu, loading }) => ({
@@ -120,12 +46,12 @@ class MenuManage extends Component {
     pageSize: 10,
     queKey: '',
     treeData: [],
+    pidkey: '',
   };
 
   componentDidMount() {
     this.getlist();
     this.getalldata();
-    // getAllLeaf();
   }
 
   // 按需加载树节点
@@ -149,6 +75,16 @@ class MenuManage extends Component {
     setTimeout(() => {
       this.setState({ pidkey: selectedKeys[0] });
     }, 0);
+    const page = this.state.current;
+    const limit = this.state.pageSize;
+    this.props.dispatch({
+      type: 'upmsmenu/search',
+      payload: {
+        page,
+        limit,
+        pid: selectedKeys[0],
+      },
+    });
   };
 
   // 点击加载结点
@@ -167,8 +103,8 @@ class MenuManage extends Component {
         })
         .then(res => {
           if (res.data !== undefined) {
-            console.log(res.data);
-            treeNode.props.dataRef.children = res.data[0].children[0].children;
+            const sontreedata = getAllLeaf(res.data);
+            treeNode.props.dataRef.children = sontreedata;
           } else {
             message.info('已经到最后一层！');
           }
@@ -197,13 +133,14 @@ class MenuManage extends Component {
   getlist = () => {
     const page = this.state.current;
     const limit = this.state.pageSize;
-    const { queKey } = this.state;
+    const { queKey, pidkey } = this.state;
     this.props.dispatch({
       type: 'upmsmenu/search',
       payload: {
         page,
         limit,
         queKey,
+        pid: pidkey,
       },
     });
   };
@@ -231,6 +168,7 @@ class MenuManage extends Component {
         queKey: this.state.queKey,
         page,
         limit: this.state.pageSize,
+        pid: this.state.pidkey,
       },
     });
     setTimeout(() => {
@@ -245,6 +183,7 @@ class MenuManage extends Component {
         queKey: this.state.queKey,
         page: current,
         limit: pageSize,
+        pid: this.state.pidkey,
       },
     });
     setTimeout(() => {
@@ -312,7 +251,16 @@ class MenuManage extends Component {
         dataIndex: 'id',
         key: 'id',
       },
-
+      {
+        title: '中文名称',
+        dataIndex: 'menuDesc',
+        key: 'menuDesc',
+      },
+      {
+        title: '英文名称',
+        dataIndex: 'menuName',
+        key: 'menuName',
+      },
       {
         title: '路由',
         dataIndex: 'menuUrl',
@@ -327,16 +275,6 @@ class MenuManage extends Component {
             <Icon type={record.menuIcon} style={{ fontSize: 22 }} />
           </span>
         ),
-      },
-      {
-        title: '英文名称',
-        dataIndex: 'menuName',
-        key: 'menuName',
-      },
-      {
-        title: '中文名称',
-        dataIndex: 'menuDesc',
-        key: 'menuDesc',
       },
       {
         title: '更新时间',

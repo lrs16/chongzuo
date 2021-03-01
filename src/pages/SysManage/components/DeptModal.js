@@ -55,8 +55,7 @@ class MenuModal extends Component {
 
   render() {
     const { visible } = this.state;
-    const { children, title } = this.props;
-
+    const { children, title, pidkey } = this.props;
     // Form双向绑定
     const { getFieldDecorator } = this.props.form;
     const required = true;
@@ -111,13 +110,11 @@ class MenuModal extends Component {
                 rules: [
                   {
                     required,
-                    pattern: new RegExp(/^[0-9]\d*$/, 'g'),
-                    message: '上级编号只能为数字',
                   },
                 ],
-                initialValue: pid,
+                initialValue: pidkey,
               })(
-                <Input placeholder="根目录编号为0" />,
+                <Input placeholder="根目录编号为0" disabled />,
                 // <SelectPid onchange={()=>this.getPid} />,
               )}
             </Form.Item>
