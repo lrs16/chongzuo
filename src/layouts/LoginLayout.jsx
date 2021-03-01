@@ -28,10 +28,10 @@ const LoginLayout = props => {
         <div className={styles.login}>
           <div className={styles.loginlogo}>
             <img src={logo} alt="" />
-            <h1 style={{ color: '#006de1', fontWeight: '700' }}>计量主站自动化系统</h1>
+            <h1 style={{ color: '#006de1', fontWeight: '700' }}>计量主站系统辅助运维模块</h1>
           </div>
           {children}
-          <div className={styles.logintitle}>广西博联信息通信技术有限责任公司</div>
+          <div className={styles.logintitle}>广西电网有限责任公司 计量中心</div>
         </div>
       </div>
     </div>

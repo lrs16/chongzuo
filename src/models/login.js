@@ -63,9 +63,8 @@ const Model = {
     *logout({ payload: { access_token } }, { call, put }) {
       // console.log(payload);
       sessionStorage.clear();
-      const { redirect } = getPageQuery(); // redirect
-
-      if (window.location.pathname !== '/user/login' && !redirect) {
+      // const { redirect } = getPageQuery(); // redirect
+      if (window.location.pathname !== '/user/login') {
         yield put(
           routerRedux.replace({
             pathname: '/user/login',

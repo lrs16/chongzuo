@@ -4,6 +4,9 @@ export default {
       key: 'dark',
       fileName: 'dark.css',
       theme: 'dark',
+      modifyVars: {
+        '@primary-color': '#0366c3',
+      },
     },
     {
       key: 'dust',
