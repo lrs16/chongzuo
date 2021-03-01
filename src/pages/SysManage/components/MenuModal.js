@@ -50,22 +50,13 @@ class MenuModal extends Component {
 
   render() {
     const { visible } = this.state;
-    const { children, title } = this.props;
+    const { children, title, pidkey } = this.props;
 
     // Form双向绑定
     const { getFieldDecorator } = this.props.form;
     const required = true;
     // console.log(this.props.record);
-    const {
-      id,
-      pid,
-      menuSort,
-      menuIcon,
-      menuUrl,
-      menuName,
-      menuDesc,
-      menuHide,
-    } = this.props.record;
+    const { id, menuSort, menuIcon, menuUrl, menuName, menuDesc, menuHide } = this.props.record;
     return (
       <>
         {withClick(children, this.handleopenClick)}
@@ -90,7 +81,7 @@ class MenuModal extends Component {
                     message: '请输入',
                   },
                 ],
-                initialValue: pid,
+                initialValue: pidkey,
               })(<Input placeholder="请输入" />)}
             </Form.Item>
             <Form.Item label="menuSort">

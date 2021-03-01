@@ -291,7 +291,12 @@ class MenuManage extends Component {
         width: 150,
         render: (text, record) => (
           <div>
-            <MenuModal onSumit={values => handleEdite(values)} title="编辑菜单" record={record}>
+            <MenuModal
+              onSumit={values => handleEdite(values)}
+              title="编辑菜单"
+              record={record}
+              pidkey={this.state.pidkey}
+            >
               <a type="link">编辑</a>
             </MenuModal>
             <Divider type="vertical" />
@@ -332,7 +337,7 @@ class MenuManage extends Component {
                     onSearch={values => this.handleSearch(values)}
                   />
                 </Form>
-                <MenuModal onSumit={handleUpdate}>
+                <MenuModal onSumit={handleUpdate} pidkey={this.state.pidkey}>
                   <Button
                     style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
                     type="dashed"
