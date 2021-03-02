@@ -9,7 +9,6 @@ const withClick = (element, showDrawer = () => { }) => {
 
 const SelectUser = props => {
   const { children, dispatch, handleSubmit, problemlist, loading, changorder, taskId } = props;
-  console.log('problemlist: ', problemlist);
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [defaultvalue, setDefaultvalue] = useState([]);

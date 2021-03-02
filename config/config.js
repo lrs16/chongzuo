@@ -197,6 +197,43 @@ export default {
                       component: './ITSM/Eventmanage/QueryList',
                     },
                     {
+                      path:'/ITSM/eventmanage/eventstatistics',
+                      name:'事件统计',
+                      icon:'cloud-server',
+                      routes:[
+                        {
+                          path:'/ITSM/eventmanage/eventstatistics/maintenance',
+                          name:'运维分类情况统计',
+                          icon:'cloud-server',
+                          component: './ITSM/Eventmanage/eventstatistics/Maintenance',
+                        },
+                        {
+                          path:'/ITSM/eventmanage/eventstatistics/maintenanceservice',
+                          name:'软件运维服务指标完成情况',
+                          icon:'cloud-server',
+                          component: './ITSM/Eventmanage/QueryList',
+                        },
+                        {
+                          path:'/ITSM/eventmanage/eventstatistics/solution',
+                          name:'一线事件解决情况',
+                          icon:'cloud-server',
+                          component: './ITSM/Eventmanage/QueryList',
+                        },
+                        {
+                          path:'/ITSM/eventmanage/eventstatistics/workordertopn',
+                          name:'工单TOPN',
+                          icon:'cloud-server',
+                          component: './ITSM/Eventmanage/QueryList',
+                        },
+                        {
+                          path:'/ITSM/eventmanage/eventstatistics/workordertreatmentrate',
+                          name:'工单处理率',
+                          icon:'cloud-server',
+                          component: './ITSM/Eventmanage/QueryList',
+                        },
+                      ]
+                    },
+                    {
                       path: '/ITSM/eventmanage/query/details',
                       name: '事件详情',
                       icon: 'cloud-server',
@@ -256,7 +293,7 @@ export default {
                       routes: [
                         {
                           path: '/ITSM/problemmanage/statistics/treatmentrate',
-                          name: '问题处理率',
+                          name: '问题解决进度管控表',
                           icon: 'fork',
                           component: './ITSM/Problemmanage/Handlingrate',
                         },

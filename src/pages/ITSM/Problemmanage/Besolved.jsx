@@ -226,7 +226,7 @@ function Besolved(props) {
     validateFields((err, values) => {
       if (!err) {
         dispatch({
-          type: 'problemmanage/eventdownload',
+          type: 'problemmanage/besolvedownload',
           payload: { ...values }
         }).then(res => {
           const filename = `下载.xls`;

@@ -28,14 +28,14 @@ let statTimeBegin = '';
 let statTimeEnd = '';
 const newObj = {};
 
-const columns = [
+const columnsDevelopers = [
   {
-    title: '工单数',
+    title: '开发商',
     dataIndex: 'total',
     key: 'total',
   },
   {
-    title: '已处理',
+    title: '负责人',
     dataIndex: 'processed',
     key: 'processed',
     render: (text, record) => (
@@ -50,7 +50,7 @@ const columns = [
     )
   },
   {
-    title: '未处理',
+    title: '问题总数',
     dataIndex: 'unprocessed',
     key: 'unprocessed',
     render:(text,record) => (
@@ -65,14 +65,80 @@ const columns = [
     )
   },
   {
+    title: '待处理',
+    dataIndex: 'treatmentRate',
+    key: 'treatmentRate',
+  },
+  {
+    title: '已处理',
+    dataIndex: 'treatmentRate',
+    key: 'treatmentRate',
+  },
+  {
+    title: '已处理待确认',
+    dataIndex: 'treatmentRate',
+    key: 'treatmentRate',
+  },
+  {
     title: '处理率',
     dataIndex: 'treatmentRate',
     key: 'treatmentRate',
   },
-]
+];
+const columnsBusiness = [
+  {
+    title: '业务负责人',
+    dataIndex: 'total',
+    key: 'total',
+  },
+  {
+    title: '问题总数',
+    dataIndex: 'processed',
+    key: 'processed',
+    render: (text, record) => (
+      <Link 
+        to={{
+          pathname:'/ITSM/problemmanage/problemquery',
+          query:{handleStatu:'1'}
+        }}
+      >
+        {text}
+      </Link>
+    )
+  },
+  {
+    title: '待处理',
+    dataIndex: 'unprocessed',
+    key: 'unprocessed',
+    render:(text,record) => (
+      <Link
+        to={{
+          pathname:'/ITSM/problemmanage/problemquery',
+          query:{handleStatu:'0'}
+        }}
+      >
+      {text}
+      </Link>
+    )
+  },
+  {
+    title: '已处理待确认',
+    dataIndex: 'treatmentRate',
+    key: 'treatmentRate',
+  },
+  {
+    title: '已确认',
+    dataIndex: 'treatmentRate',
+    key: 'treatmentRate',
+  },
+];
+
+
 function Handlingrate(props) {
   const { pagetitle } = props.route.name;
   const [changearr,setChangeArr] = useState();
+  // const [tabActiveKey, setTabActiveKey] = useState('developers');
+  const [tabActiveKey, setTabActiveKey] = useState('developers');
   const {
     form: { getFieldDecorator,resetFields },
     handleArr,
@@ -140,9 +206,30 @@ function Handlingrate(props) {
     handleListdata();
   },[])
 
+  const tabList = [
+    {
+      key: 'developers',
+      tab: '问题解决进度管控表_开发商',
+    },
+    {
+      key: 'business',
+      tab: '问题解决进度管控表_自动化科业务人员',
+    },
+  ];
+
+  const handleTabChange = (key) => { // tab切换
+    setTabActiveKey(key);
+  };
+
+
   
   return (
-    <PageHeaderWrapper title={pagetitle}>
+    <PageHeaderWrapper 
+    title={pagetitle}
+    tabList={tabList}
+    onTabChange={handleTabChange}
+    tabActiveKey={tabActiveKey}
+    >
       <Card>
         <Row gutter={16}>
           <Form {...formItemLayout}>
@@ -183,11 +270,24 @@ function Handlingrate(props) {
           </Button>
         </div>
 
-        <Table
-          columns={columns}
+        {
+          tabActiveKey === 'developers' &&
+          <Table
+          columns={columnsDevelopers}
           dataSource={changearr}
           rowKey={record => record.statName}
         />
+        }
+
+        {
+          tabActiveKey === 'business' &&
+          <Table
+          columns={columnsBusiness}
+          dataSource={changearr}
+          rowKey={record => record.statName}
+        />
+        }
+      
 
       </Card>
     </PageHeaderWrapper>

@@ -24,7 +24,8 @@ import {
   querydownload,
   downFile,
   querkeyVal,
-  handlequeryList
+  handlequeryList,
+  besolveListdownload
 } from '../services/api';
 
 export default {
@@ -261,6 +262,10 @@ export default {
 
     *eventdownload({ payload }, { call }) {
       return yield call(querydownload, { payload });
+    },
+
+    *besolvedownload({ payload }, { call }) {
+      return yield call(besolveListdownload, { payload });
     },
 
     *filedownload({ payload:{id} }, { call }) {

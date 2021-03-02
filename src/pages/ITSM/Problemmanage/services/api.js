@@ -176,6 +176,16 @@ export async function querydownload(params) {
   });
 }
 
+//  待办导出
+// 下载itsm/event/form/downloadExcel
+export async function besolveListdownload(params) {
+  return request(`/problem/flow/expExcelWaitDoList`, {
+    method: 'POST',
+    // responseType: 'blob',
+    body: JSON.stringify(params),
+  });
+}
+
 // 下载文件
 export async function downFile(id) {
   return request(`/sys/file/${id}`);

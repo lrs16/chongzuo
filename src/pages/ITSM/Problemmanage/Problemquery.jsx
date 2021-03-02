@@ -236,11 +236,11 @@ function Besolved(props) {
     });
   };
 
-  const rowSelection = {
-    onChange: (selectedRowKeys, select) => {
-      setSelectedRows(select);
-    },
-  };
+  // const rowSelection = {
+  //   onChange: (selectedRowKeys, select) => {
+  //     setSelectedRows(select);
+  //   },
+  // };
 
 
   const pagination = {
@@ -564,7 +564,6 @@ function Besolved(props) {
             dataSource={handleList}
             rowKey={record => record.id}
             pagination={handlepagination}
-            rowSelection={rowSelection}
           />
           )
         }
@@ -577,7 +576,6 @@ function Besolved(props) {
             dataSource={besolveList.rows}
             rowKey={record => record.id}
             pagination={pagination}
-            rowSelection={rowSelection}
           />
           )
         }

@@ -99,6 +99,20 @@ const Registrat = React.forwardRef((props, ref) => {
             </Form.Item>
           </Col>
 
+          <Col span={8}>
+            <Form.Item label="问题申报人">
+              {getFieldDecorator('registerOccurTime', {
+                rules: [
+                  {
+                    required,
+                    message: '请输入登记时间',
+                  },
+                ],
+                initialValue: occurtime,
+              })(<Input />)}
+            </Form.Item>
+          </Col>
+
 
           <Col span={8}>
             <Form.Item label="问题来源">
@@ -294,9 +308,20 @@ const Registrat = React.forwardRef((props, ref) => {
               label="上传附件"
               {...forminladeLayout}
             >
-              <div style={{ width: 400 }}>
-                <SysUpload fileslist={files} ChangeFileslist={newvalue => setFilesList(newvalue)} />
-              </div>
+              {
+                getFieldDecorator('registerAttachments',{
+                  rules: [
+                    {
+                      required,
+                      message: '请上传附件'
+                    }
+                  ],
+                  initialValue: register?register.registerAttachments :''
+                })(<div style={{ width: 400 }}>
+                  <SysUpload fileslist={files} ChangeFileslist={newvalue => setFilesList(newvalue)} />
+                </div>)
+              }
+
             </Form.Item>
           </Col>
 

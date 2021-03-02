@@ -229,7 +229,7 @@ function ToDOlist(props) {
             current: page,
           },
         }).then(res => {
-          const filename = `下载.xlsx`;
+          const filename = `下载.xls`;
           const url = window.URL.createObjectURL(res);
           const a = document.createElement('a');
           a.href = url;

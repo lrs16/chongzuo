@@ -618,7 +618,8 @@ function Workorder(props) {
                 </Reasonregression>
               )}
 
-            { (currntStatus !== 29 && currntStatus !== 40) && tabActiveKey === 'workorder' && (
+            { 
+              flowNodeName !== '系统开发商处理' && (currntStatus !== 29 && currntStatus !== 40) && tabActiveKey === 'workorder' && (
               <Button
                 type="primary"
                 style={{ marginRight: 8 }}
@@ -626,10 +627,24 @@ function Workorder(props) {
               >
                 保存
               </Button>
-            )}
+            )
+            }
+
+            { 
+              flowNodeName === '系统开发商处理' && (currntStatus !== 29 && currntStatus !== 40 && handle !== undefined) && tabActiveKey === 'workorder' && (
+              <Button
+                type="primary"
+                style={{ marginRight: 8 }}
+                onClick={() => handleSubmit(saveSign)}
+              >
+                保存
+              </Button>
+            )
+            }
+
 
             {
-              (currntStatus === 45) && (
+              (currntStatus === 45) && handle !== undefined &&(
                 <TransferOrder
                   taskId={id}
                   currentObj={currntStatus}
@@ -647,7 +662,7 @@ function Workorder(props) {
             }
 
 
-            { (currntStatus === 29 || currntStatus === 40) && (
+            { (currntStatus === 29 || currntStatus === 40 || currntStatus === 45) &&  handle === undefined &&(
               <Button type="primary" style={{ marginRight: 8 }} onClick={problemHandleOrder}>
                 接单
               </Button>
@@ -732,9 +747,31 @@ function Workorder(props) {
               (
                 flowtype === '0' ||
                 (problemlist && selSign === '0')
+                // || handle !== undefined
               )
               &&
-              (currntStatus !== 29 && currntStatus !== 40) &&
+              flowNodeName !== '系统开发商处理' &&
+              (currntStatus !== 29 && currntStatus !== 40 ) &&
+              tabActiveKey === 'workorder' &&
+              (
+                <Button
+                  type="primary"
+                  style={{ marginRight: 8 }}
+                  onClick={() => handleSubmit(flowNodeName)}
+                >
+                  流转
+                </Button>
+              )
+            }
+            {
+              (
+                flowtype === '0' ||
+                (problemlist && selSign === '0')
+                // || handle !== undefined
+              )
+              && handle !== undefined &&
+              flowNodeName === '系统开发商处理' &&
+              (currntStatus !== 29 && currntStatus !== 40 ) &&
               tabActiveKey === 'workorder' &&
               (
                 <Button
@@ -886,7 +923,7 @@ function Workorder(props) {
 
 
                 {
-                  flowNodeName === '系统开发商处理' && currntStatus === 45 && (
+                  flowNodeName === '系统开发商处理' &&  handle !== undefined && (
                     <Panel
                       header='系统开发商处理'
                       key='1'

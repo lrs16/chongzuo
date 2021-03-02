@@ -136,15 +136,26 @@ const Systemoperatoredit = React.forwardRef((props, ref) => {
                 label="上传附件"
                 {...forminladeLayout}
               >
-                <div style={{ width: 400 }}>
-                  <SysUpload fileslist={files} ChangeFileslist={newvalue => setFilesList(newvalue)} />
-                </div>
+                {
+                  getFieldDecorator('checkAttachments',{
+                    rules: [
+                      {
+                        required,
+                        message:'请上传附件'
+                      }
+                    ],
+                    initialValue:check.checkAttachments
+                  })( <div style={{ width: 400 }}>
+                    <SysUpload fileslist={files} ChangeFileslist={newvalue => setFilesList(newvalue)} />
+                  </div>)
+                }
+               
               </Form.Item>
             </Col>
           )
         }
 
-        {
+{
           flowNodeName === '自动化科审核' && (allInfo.editState === 'edit') && (
             <Col span={24}>
               <Form.Item
@@ -159,7 +170,7 @@ const Systemoperatoredit = React.forwardRef((props, ref) => {
           )
         }
 
-        {
+{
           allInfo.editState !== undefined && (allInfo.editState === 'add') && flowNodeName === '自动化科审核' && (
             <Col span={24}>
               <Form.Item
@@ -173,6 +184,7 @@ const Systemoperatoredit = React.forwardRef((props, ref) => {
             </Col>
           )
         }
+
 
         <Col span={8}>
           <Form.Item label="审核人">
@@ -206,7 +218,8 @@ Systemoperatoredit.defaultProps = {
   check: {
     checkOpinion: '',
     checkTime: moment().format(),
-    checkResult: '1'
+    checkResult: '1',
+    checkAttachments:''
   },
   useInfo: {
     userName: '',

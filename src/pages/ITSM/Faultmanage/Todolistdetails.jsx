@@ -327,10 +327,11 @@ function Todolistdetails(props) {
         formValues.taskId = id;
         formValues.editState = tododetailslist.editState;
         formValues.handlerId = userId; // 当前登录人id
-
+        console.log(files.ischange === true,'ll');
         if (files.ischange === true) {
           if (fileskey === '1') {
             formValues.handleRecordAttachments = JSON.stringify(files.arr);
+            console.log(formValues.handleRecordAttachments,'formValues.handleRecordAttachments');
           }
           if (fileskey === '2') {
             formValues.handlePictureAttachments = JSON.stringify(files.arr);
@@ -760,7 +761,7 @@ function Todolistdetails(props) {
           </Button>)}
 
           {
-            (troubleFlowNodeRows !== undefined && troubleFlowNodeRows.length !== 0 && flowNodeName === '故障登记') ? <Button type="primary" onClick={() => faultcircula('close')}>关闭</Button> :
+            (troubleFlowNodeRows !== undefined && troubleFlowNodeRows.length !== 0 && flowNodeName === '故障登记') ? <Button type="primary" onClick={() => faultcircula('close')}>结束</Button> :
               <Button type="default" onClick={handleClose}>返回</Button>
           }
 
