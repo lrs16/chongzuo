@@ -926,6 +926,12 @@ export default {
                     },
                   ],
                 },
+                {
+                  path: '/sysmanage/expressionsmanage',
+                  name: '常用语管理',
+                  icon: 'smile',
+                  component: './SysManage/Expressionsmanage',
+                },
               ],
             },
             {

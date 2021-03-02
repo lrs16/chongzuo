@@ -44,6 +44,11 @@ export async function queryMenuList(params) {
   });
 }
 
+// 请求所有菜单
+export async function queryAllMenuList() {
+  return request(`/upms/menu/list`);
+}
+
 // 添加菜单
 export async function UpdateMenu(params) {
   return request('/upms/menu/saveOrUpdate', {

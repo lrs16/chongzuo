@@ -1,8 +1,4 @@
-import {
-  queryMenuList,
-  updateRolemenu,
-  queryRolemenu,
-} from '../services/api';
+import { queryAllMenuList, updateRolemenu, queryRolemenu } from '../services/api';
 
 export default {
   namespace: 'rolemenu',
@@ -15,7 +11,7 @@ export default {
   effects: {
     // 获取系统菜单
     *fetchdatas({ payload }, { call, put }) {
-      const response = yield call(queryMenuList, payload);
+      const response = yield call(queryAllMenuList, payload);
       yield put({
         type: 'show',
         payload: response,
@@ -23,8 +19,8 @@ export default {
     },
 
     // 设置菜单权限
-    *unpdatemune({ payload: { roleId,menuvalue } }, { call }) {
-      return yield call(updateRolemenu, roleId,menuvalue);
+    *unpdatemune({ payload: { roleId, menuvalue } }, { call }) {
+      return yield call(updateRolemenu, roleId, menuvalue);
     },
 
     // 获取菜单权限

@@ -547,7 +547,7 @@ Registrat.defaultProps = {
     content: '',
     eventNo: '',
     eventObject: '',
-    eventSource: '002',
+    eventSource: '001',
     eventType: '',
     revisitWay: '001',
     eventEffect: '001',
