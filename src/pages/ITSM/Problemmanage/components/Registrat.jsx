@@ -101,14 +101,14 @@ const Registrat = React.forwardRef((props, ref) => {
 
           <Col span={8}>
             <Form.Item label="问题申报人">
-              {getFieldDecorator('registerOccurTime', {
+              {getFieldDecorator('complainUser', {
                 rules: [
                   {
                     required,
-                    message: '请输入登记时间',
+                    message: '请输入问题申报人',
                   },
                 ],
-                initialValue: occurtime,
+                initialValue: register.complainUser,
               })(<Input />)}
             </Form.Item>
           </Col>
@@ -373,6 +373,7 @@ Registrat.defaultProps = {
     content: '',
   },
   register: {
+    complainUser:''
   },
   useInfo: {
     userName: '',

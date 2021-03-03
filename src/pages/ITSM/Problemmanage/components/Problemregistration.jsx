@@ -21,6 +21,10 @@ function Problemregistration(props) {
             {info.registerTime}
           </Descriptions.Item>
 
+          <Descriptions.Item label="问题申报人">
+            {info.complainUser}
+          </Descriptions.Item>
+
           <Descriptions.Item label="发生时间">
             {info.registerOccurTime}
           </Descriptions.Item>

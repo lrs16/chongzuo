@@ -83,6 +83,7 @@ const HandleChild = React.forwardRef((props, ref) => {
   };
 
   const handleResult = getTypebyTitle('故障处理结果');
+  console.log('handleResult: ', handleResult);
 
   return (
     <Row>
