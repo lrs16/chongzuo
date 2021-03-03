@@ -109,6 +109,7 @@ function Expressions(props) {
   }, [issubmit]);
 
   const getTypebykey = key => {
+    console.log(selectdata);
     if (selectdata.length > 0) {
       return selectdata.filter(item => item.key === key)[0].children;
     }
