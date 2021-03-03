@@ -16,6 +16,10 @@ function Problemsolving(props) {
           {info.addTime}
         </Descriptions.Item>
 
+        <Descriptions.Item label="计划完成时间">
+          {info.planEndTime}
+        </Descriptions.Item>
+
         <Descriptions.Item label="处理结果">
           {info.handleResult}
         </Descriptions.Item>

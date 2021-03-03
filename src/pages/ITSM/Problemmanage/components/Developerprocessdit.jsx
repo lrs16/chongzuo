@@ -13,7 +13,7 @@ import SysUpload from '@/components/SysUpload';
 const { Option } = Select;
 const { TextArea } = Input;
 let handleTime;
-
+let planTime;
 const Developerprocessdit = React.forwardRef((props, ref) => {
   const { formItemLayout, forminladeLayout, files, ChangeFiles } = props;
   const { getFieldDecorator } = props.form;
@@ -41,6 +41,12 @@ const Developerprocessdit = React.forwardRef((props, ref) => {
     handleTime = moment(new Date());
   }
 
+  if (handle.planEndTime !== null) {
+    planTime = moment(handle.planEndTime)
+  } else {
+    planTime = moment(new Date());
+  }
+
   const required = true;
 
   return (
@@ -54,6 +60,23 @@ const Developerprocessdit = React.forwardRef((props, ref) => {
               showTime
               disabled='true'
             />)}
+          </Form.Item>
+        </Col>
+
+        <Col span={8}>
+          <Form.Item label="计划完成时间">
+            {getFieldDecorator('planEndTime', {
+              rules: [
+                {
+                  required,
+                  message: '请输入计划完成时间',
+                },
+              ],
+              initialValue: planTime,
+            })((<DatePicker
+              showTime
+              disabled={showEdit}
+            />))}
           </Form.Item>
         </Col>
 
@@ -163,6 +186,7 @@ Developerprocessdit.defaultProps = {
     handleTime: moment().format(),
     handleResult: '',
     handleContent: '',
+    planEndTime:moment().format()
   },
   useInfo: {
     userName: '',

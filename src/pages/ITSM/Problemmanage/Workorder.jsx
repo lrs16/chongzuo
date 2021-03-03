@@ -356,6 +356,12 @@ function Workorder(props) {
         saveData.orderReceivingtime = '';
       }
 
+      if (values.planEndTime) {
+        saveData.planEndTime = (saveData.planEndTime).format('YYYY-MM-DD HH:mm:ss');
+      } else {
+        saveData.planEndTime = '';
+      }
+
       if (params2 ? !err : true) {
         saveData.taskId = id;
         saveData.editState = todoDetail.editState;
