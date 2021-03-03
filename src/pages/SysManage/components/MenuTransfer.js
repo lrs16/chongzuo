@@ -89,6 +89,7 @@ const TreeTransfer = ({ dataSource, targetKeys, ...restProps }) => {
 class MenuTransfer extends React.Component {
   state = {
     targetKeys: [],
+    treenode: '',
   };
 
   componentWillReceiveProps() {
@@ -112,7 +113,6 @@ class MenuTransfer extends React.Component {
 
   toTree = () => {
     const data = this.addArr(this.props.sysmenu);
-    // onsole.log(data);
     const result = [];
     if (!Array.isArray(data)) {
       return result;
@@ -122,7 +122,7 @@ class MenuTransfer extends React.Component {
     });
     const map = {};
     data.forEach(item => {
-      map[item.menuSort] = item;
+      map[item.key] = item;
     });
     data.forEach(item => {
       const parent = map[item.pid];
@@ -166,12 +166,17 @@ class MenuTransfer extends React.Component {
 
   render() {
     const mytreeData = this.toTree();
-    // const targetData = this.sort(this.props.rolemenus);
-    const { targetKeys } = this.state;
+    const listarr = this.addArr(this.props.sysmenu);
+    const { targetKeys, treenode } = this.state;
 
     return (
       <Spin spinning={this.props.openloading}>
-        <TreeTransfer dataSource={mytreeData} targetKeys={targetKeys} onChange={this.onChange} />
+        <TreeTransfer
+          dataSource={mytreeData}
+          targetKeys={targetKeys}
+          onChange={this.onChange}
+          showSearch
+        />
       </Spin>
     );
   }

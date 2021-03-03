@@ -1068,7 +1068,7 @@ export default {
       changeOrigin: true,
     },
     '/sys/': {
-      target: 'http://172.16.4.211:9901/',
+      target: 'http://172.16.4.211:9901/', // 数据字典
       changeOrigin: true,
     },
   },

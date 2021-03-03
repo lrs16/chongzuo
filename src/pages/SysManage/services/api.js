@@ -216,3 +216,49 @@ export async function editeDict(params) {
     body: JSON.stringify(params),
   });
 }
+
+// 查询常用语
+export async function queryExpressions(field, content, status) {
+  return request(`/common/expressions/query?content=${content}&field=${field}&status=${status}`);
+}
+
+// 获取常用语
+export async function getExpressionsByContentAndField() {
+  return request('/common/expressions/getExpressionsByContentAndField');
+}
+
+// 保存常用语
+export async function saveExpressions(params) {
+  return request('/common/expressions/save', {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+  });
+}
+
+// 修改常用语
+export async function updateExpressions(params) {
+  return request('/common/expressions/update', {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+  });
+}
+
+// 删除常用语
+export async function deleteExpressions(params) {
+  return request('/common/expressions/delete', {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+  });
+}
+
+// 修改常用语状态
+export async function updateStatusExpressions(params) {
+  return request('/common/expressions/updateStatus', {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+  });
+}

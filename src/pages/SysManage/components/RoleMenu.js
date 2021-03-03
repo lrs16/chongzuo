@@ -61,8 +61,7 @@ class RoleMenu extends Component {
   };
 
   loadroleMenu = () => {
-    const { roleId } = this.props;
-    const { dispatch } = this.props;
+    const { roleId, dispatch } = this.props;
     return dispatch({
       type: 'rolemenu/querymune',
       payload: { roleId },

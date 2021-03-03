@@ -28,7 +28,6 @@ class DatatoDree extends Component {
   render() {
     const treeSoure = this.props.treedatas;
     const treeData = this.toTree(treeSoure);
-    console.log(treeData);
     return <DeptTree datas={treeData} />;
   }
 }

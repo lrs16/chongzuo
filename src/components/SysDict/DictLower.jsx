@@ -13,8 +13,8 @@ function DictLower(props) {
         type: 'dicttree/childdictLower',
         payload: { id: typeid },
       }).then(res => {
-        if (res.code === 200) {
-          selectlist.push(...res.data[0].children);
+        if (res.code === 200 && res.data.length > 0) {
+          selectlist.push(...res.data);
           setIsChange(true);
         }
       });

@@ -14,13 +14,13 @@ function DictTree(props) {
         payload: { id: typeid },
       }).then(res => {
         if (res.code === 200) {
-          selectlist.push(...res.data[0]?.children);
+          selectlist.push(...res.data);
           dispatch({
             type: 'dicttree/childdictLower',
             payload: { id: commonid },
           }).then(ress => {
             if (ress.code === 200) {
-              selectlist.push(...ress.data[0]?.children);
+              selectlist.push(...ress.data);
               setIsChange(true);
             }
           });
