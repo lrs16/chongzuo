@@ -438,14 +438,14 @@ function WorkOrder(props) {
         payload: { id: '1354274450639425537' },
       }).then(res => {
         if (res.code === 200) {
-          selectdata.arr.push(...res.data[0]?.children);
+          selectdata.arr.push(...res.data);
           if (!doCancel) {
             dispatch({
               type: 'dicttree/childdictLower',
               payload: { id: '1354288354950123522' },
             }).then(ress => {
               if (ress.code === 200) {
-                selectdata.arr.push(...ress.data[0]?.children);
+                selectdata.arr.push(...ress.data);
                 setSelectData({ ...selectdata, ischange: true });
               }
             });

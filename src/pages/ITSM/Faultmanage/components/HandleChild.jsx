@@ -1,15 +1,8 @@
 import React, { useRef, useImperativeHandle, useEffect, useState } from 'react';
 import moment from 'moment';
 import SysUpload from '@/components/SysUpload'; // 附件下载组件
-import {
-  Form,
-  Row,
-  Col,
-  Input,
-  DatePicker,
-  Select
-} from 'antd';
-import SysDict from '@/components/SysDict';
+import { Form, Row, Col, Input, DatePicker, Select } from 'antd';
+import KeyVal from '@/components/SysDict/KeyVal';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -21,21 +14,20 @@ const formItemLayout = {
   },
   wrapperCol: {
     xs: { span: 24 },
-    sm: { span:  14 },
+    sm: { span: 14 },
   },
 };
 
 const forminladeLayout = {
   labelCol: {
     xs: { span: 24 },
-    sm: { span:  4},
+    sm: { span: 4 },
   },
   wrapperCol: {
     xs: { span: 24 },
-    sm: { span: 15 },
+    sm: { span: 20 },
   },
 };
-
 
 const HandleChild = React.forwardRef((props, ref) => {
   const { handle, curruserinfo, ChangeFiles, ChangeFileskey } = props;
@@ -48,16 +40,31 @@ const HandleChild = React.forwardRef((props, ref) => {
   }, [fileslist]);
 
   useEffect(() => {
-    if (handle && handle.handleRecordAttachments !== '[]' && handle.handleRecordAttachments !== undefined && handle.handleRecordAttachments !== null) {
-      setFieldsValue({ handleRecordAttachments: handle.handleRecordAttachments }, () => { });
+    if (
+      handle &&
+      handle.handleRecordAttachments !== '[]' &&
+      handle.handleRecordAttachments !== undefined &&
+      handle.handleRecordAttachments !== null
+    ) {
+      setFieldsValue({ handleRecordAttachments: handle.handleRecordAttachments }, () => {});
     }
 
-    if (handle && handle.handlePictureAttachments !== '[]' && handle.handlePictureAttachments !== undefined && handle.handlePictureAttachments !== null) {
-      setFieldsValue({ handlePictureAttachments: handle.handlePictureAttachments }, () => { });
+    if (
+      handle &&
+      handle.handlePictureAttachments !== '[]' &&
+      handle.handlePictureAttachments !== undefined &&
+      handle.handlePictureAttachments !== null
+    ) {
+      setFieldsValue({ handlePictureAttachments: handle.handlePictureAttachments }, () => {});
     }
 
-    if (handle && handle.handleAttachments !== '[]' && handle.handleAttachments !== undefined && handle.handleAttachments !== null) {
-      setFieldsValue({ handleAttachments: handle.handleAttachments }, () => { });
+    if (
+      handle &&
+      handle.handleAttachments !== '[]' &&
+      handle.handleAttachments !== undefined &&
+      handle.handleAttachments !== null
+    ) {
+      setFieldsValue({ handleAttachments: handle.handleAttachments }, () => {});
     }
   }, []);
 
@@ -75,19 +82,30 @@ const HandleChild = React.forwardRef((props, ref) => {
     sessionStorage.setItem('Nextflowmane', '系统运维商确认总结');
   });
 
-  const getTypebyTitle = (title) => {
-    if (selectdata.length > 0) {
-      return selectdata.filter(item => item.title === title)[0].children;
-    }
-    return [];
-  };
+  // const getTypebyTitle = (title) => {
+  //   if (selectdata.length > 0) {
+  //     return selectdata.filter(item => item.title === title)[0].children;
+  //   }
+  //   return [];
+  // };
 
+<<<<<<< HEAD
   const handleResult = getTypebyTitle('故障处理结果');
+=======
+  // const handleResult = getTypebyTitle('故障处理结果');
+  // console.log('handleResult: ', handleResult);
+>>>>>>> 数据字典数据格式变更
 
   return (
     <Row>
       <Form {...formItemLayout}>
-        <Col span={18}>
+        <KeyVal
+          style={{ display: 'none' }}
+          dictModule="trouble"
+          dictType="handleresult"
+          ChangeSelectdata={newvalue => setSelectData(newvalue)}
+        />
+        <Col span={24}>
           <Form.Item label="故障详细描述" {...forminladeLayout}>
             {getFieldDecorator('handleContent', {
               rules: [
@@ -96,12 +114,12 @@ const HandleChild = React.forwardRef((props, ref) => {
                   message: '请输入',
                 },
               ],
-              initialValue: handle ? handle.handleContent : ''
-            })(<TextArea  rows={4} placeholder="请输入" />)}
+              initialValue: handle ? handle.handleContent : '',
+            })(<TextArea rows={4} placeholder="请输入" />)}
           </Form.Item>
         </Col>
 
-        <Col span={18}>
+        <Col span={24}>
           <Form.Item label="故障分析及原因" {...forminladeLayout}>
             {getFieldDecorator('handleReason', {
               rules: [
@@ -110,12 +128,12 @@ const HandleChild = React.forwardRef((props, ref) => {
                   message: '请输入',
                 },
               ],
-              initialValue: handle ? handle.handleReason : ''
+              initialValue: handle ? handle.handleReason : '',
             })(<Input allowClear />)}
           </Form.Item>
         </Col>
 
-        <Col span={18}>
+        <Col span={24}>
           <Form.Item label="解决措施或建议" {...forminladeLayout}>
             {getFieldDecorator('handleAdvise', {
               rules: [
@@ -124,12 +142,12 @@ const HandleChild = React.forwardRef((props, ref) => {
                   message: '请输入',
                 },
               ],
-              initialValue: handle ? handle.handleAdvise : ''
+              initialValue: handle ? handle.handleAdvise : '',
             })(<Input allowClear />)}
           </Form.Item>
         </Col>
 
-        <Col span={7}>
+        <Col span={8}>
           <Form.Item label="处理开始时间" {...formItemLayout}>
             {getFieldDecorator('handleStartTime', {
               rules: [
@@ -138,12 +156,15 @@ const HandleChild = React.forwardRef((props, ref) => {
                   message: '请选择时间',
                 },
               ],
-              initialValue: (handle && handle.handleStartTime) ? moment(handle.handleStartTime) : moment(Date.now())
+              initialValue:
+                handle && handle.handleStartTime
+                  ? moment(handle.handleStartTime)
+                  : moment(Date.now()),
             })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} />)}
           </Form.Item>
         </Col>
 
-        <Col span={7}>
+        <Col span={8}>
           <Form.Item label="处理完成时间" {...formItemLayout}>
             {getFieldDecorator('handleEndTime', {
               rules: [
@@ -152,44 +173,47 @@ const HandleChild = React.forwardRef((props, ref) => {
                   message: '请选择时间',
                 },
               ],
-              initialValue: (handle && handle.handleStartTime) ? moment(handle.handleEndTime) : moment(Date.now())
+              initialValue:
+                handle && handle.handleStartTime
+                  ? moment(handle.handleEndTime)
+                  : moment(Date.now()),
             })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} />)}
           </Form.Item>
         </Col>
-
-        <Col span={7}>
-          <Form.Item label="处理结果" {...formItemLayout}>
-            {getFieldDecorator('handleResult', {
-              rules: [
-                {
-                  required,
-                  message: '请选择',
-                },
-              ],
-              initialValue: handle ? handle.handleResult : ''
-            })(
-              <Select placeholder="请选择">
-                {handleResult.map(obj => [
-                  <Option key={obj.key} value={obj.title}>
-                    {obj.title}
-                  </Option>,
-                ])}
-              </Select>,
-            )}
-          </Form.Item>
-        </Col>
-
+        {selectdata.handleresult !== undefined && (
+          <Col span={8}>
+            <Form.Item label="处理结果" {...formItemLayout}>
+              {getFieldDecorator('handleResult', {
+                rules: [
+                  {
+                    required,
+                    message: '请选择',
+                  },
+                ],
+                initialValue: handle ? handle.handleResult : '',
+              })(
+                <Select placeholder="请选择">
+                  {selectdata.handleresult.map(obj => [
+                    <Option key={obj.key} value={obj.val}>
+                      {obj.val}
+                    </Option>,
+                  ])}
+                </Select>,
+              )}
+            </Form.Item>
+          </Col>
+        )}
         <Col span={18}>
           <Form.Item
             label="上传故障处理记录表"
             {...forminladeLayout}
-          // extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb"
+            // extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb"
           >
             {getFieldDecorator('handleRecordAttachments', {
               rules: [
                 {
                   required,
-                  message: '请上传故障处理记录表！'
+                  message: '请上传故障处理记录表！',
                 },
               ],
             })(
@@ -200,8 +224,15 @@ const HandleChild = React.forwardRef((props, ref) => {
                 }}
                 onFocus={() => 0}
               >
-                <SysUpload fileslist={(handle && handle.handleRecordAttachments !== null) ? JSON.parse(handle.handleRecordAttachments) : []} ChangeFileslist={newvalue => setFilesList(newvalue)} />
-              </div>
+                <SysUpload
+                  fileslist={
+                    handle && handle.handleRecordAttachments !== null
+                      ? JSON.parse(handle.handleRecordAttachments)
+                      : []
+                  }
+                  ChangeFileslist={newvalue => setFilesList(newvalue)}
+                />
+              </div>,
             )}
           </Form.Item>
         </Col>
@@ -210,13 +241,13 @@ const HandleChild = React.forwardRef((props, ref) => {
           <Form.Item
             label="故障系统截图"
             {...forminladeLayout}
-          // extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb"
+            // extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb"
           >
             {getFieldDecorator('handlePictureAttachments', {
               rules: [
                 {
                   required,
-                  message: '请故障系统截图！'
+                  message: '请故障系统截图！',
                 },
               ],
             })(
@@ -227,56 +258,72 @@ const HandleChild = React.forwardRef((props, ref) => {
                 }}
                 onFocus={() => 0}
               >
-                <SysUpload fileslist={(handle && handle.handlePictureAttachments !== null) ? JSON.parse(handle.handlePictureAttachments) : []} ChangeFileslist={newvalue => setFilesList(newvalue)} />
-              </div>
+                <SysUpload
+                  fileslist={
+                    handle && handle.handlePictureAttachments !== null
+                      ? JSON.parse(handle.handlePictureAttachments)
+                      : []
+                  }
+                  ChangeFileslist={newvalue => setFilesList(newvalue)}
+                />
+              </div>,
             )}
           </Form.Item>
         </Col>
 
         <Col span={18}>
-            <Form.Item
-              label="上传附件"
-              {...forminladeLayout}
+          <Form.Item
+            label="上传附件"
+            {...forminladeLayout}
             // extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb"
-            >
-              {getFieldDecorator('handleAttachments', {})(
-                <div
-                  style={{ width: 400 }}
-                  onMouseOver={() => {
-                    ChangeFileskey('3');
-                  }}
-                  onFocus={() => 0}
-                >
-                  <SysUpload fileslist={(handle && handle.handleAttachments !== null) ? JSON.parse(handle.handleAttachments) : []} ChangeFileslist={newvalue => setFilesList(newvalue)} />
-                </div>
-              )}
-
-            </Form.Item>
+          >
+            {getFieldDecorator(
+              'handleAttachments',
+              {},
+            )(
+              <div
+                style={{ width: 400 }}
+                onMouseOver={() => {
+                  ChangeFileskey('3');
+                }}
+                onFocus={() => 0}
+              >
+                <SysUpload
+                  fileslist={
+                    handle && handle.handleAttachments !== null
+                      ? JSON.parse(handle.handleAttachments)
+                      : []
+                  }
+                  ChangeFileslist={newvalue => setFilesList(newvalue)}
+                />
+              </div>,
+            )}
+          </Form.Item>
         </Col>
 
-          <Col span={7}>
-            <Form.Item label="处理人">
-              {getFieldDecorator('handler', {
-                initialValue: handle.handler || curruserinfo.userName,
-              })(<Input disabled />)}
-            </Form.Item>
-          </Col>
+        <Col span={8}>
+          <Form.Item label="处理人">
+            {getFieldDecorator('handler', {
+              initialValue: handle.handler || curruserinfo.userName,
+            })(<Input disabled />)}
+          </Form.Item>
+        </Col>
 
-          <Col span={7}>
-            <Form.Item label="处理人单位">
-              {getFieldDecorator('handleUnit', {
-                initialValue: handle.handleUnit || curruserinfo.deptName,
-              })(<Input disabled />)}
-            </Form.Item>
-          </Col>
+        <Col span={8}>
+          <Form.Item label="处理人单位">
+            {getFieldDecorator('handleUnit', {
+              initialValue: handle.handleUnit || curruserinfo.deptName,
+            })(<Input disabled />)}
+          </Form.Item>
+        </Col>
 
-          <Col span={7}>
-            <Form.Item label="处理人部门">
-              {getFieldDecorator('handleDept', {
-                initialValue: handle.handleDept || curruserinfo.deptName,
-              })(<Input disabled />)}
-            </Form.Item>
-          </Col>
+        <Col span={8}>
+          <Form.Item label="处理人部门">
+            {getFieldDecorator('handleDept', {
+              initialValue: handle.handleDept || curruserinfo.deptName,
+            })(<Input disabled />)}
+          </Form.Item>
+        </Col>
       </Form>
     </Row>
   );
@@ -287,13 +334,13 @@ HandleChild.defaultProps = {
     handleContent: '',
     handleReason: '',
     handleAdvise: '',
-    handleResult: ''
+    handleResult: '',
   },
   curruserinfo: {
     deptName: '',
     unitName: '',
-    userName: ''
-  }
-}
+    userName: '',
+  },
+};
 
 export default Form.create({})(HandleChild);
