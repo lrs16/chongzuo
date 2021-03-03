@@ -140,7 +140,6 @@ function Registration(props) {
   // }
 
   const getTypebyTitle = (title) => {
-    console.log(selectdata,'selectdata');
     if (selectdata.length > 0) {
       return selectdata.filter(item => item.title === title)[0].children;
     }

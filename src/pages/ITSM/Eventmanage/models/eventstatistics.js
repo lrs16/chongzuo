@@ -29,6 +29,8 @@ export default {
         payload: response
       })
     },
+
+
     
   },
 
@@ -37,7 +39,7 @@ export default {
   maintenanceArr(state, action) {
     return {
       ...state,
-      eventServicearr: action.payload.data
+      maintenanceArr: action.payload.data
     }
   },
 

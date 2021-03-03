@@ -15,6 +15,7 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
 let startTime;
 let endTime;
+const sign = 'workordertopn';
 const columns = [
   {
     title: '一级对象',
@@ -27,9 +28,9 @@ const columns = [
     key: 'second_object',
   },
   {
-    title: '上周工单数',
-    dataIndex: 'last_num',
-    key: 'last_num',
+    title: '工单数',
+    dataIndex: 'num',
+    key: 'num',
     render: (text, record) => (
       <Link
         to={{
@@ -40,26 +41,6 @@ const columns = [
         {text}
       </Link>
     )
-  },
-  {
-    title: '本周工单数',
-    dataIndex: 'now_num',
-    key: 'now_num',
-    render: (text, record) => (
-      <Link
-        to={{
-          pathname: '/ITSM/problemmanage/problemquery',
-          query: { handleStatu: '0' }
-        }}
-      >
-        {text}
-      </Link>
-    )
-  },
-  {
-    title: '环比',
-    dataIndex: 'points_count',
-    key: 'points_count',
   },
 ];
 
@@ -94,7 +75,7 @@ function Workordertopn(props) {
   const handleListdata = (params) => {
     dispatch({
       type: 'eventstatistics/fetchMaintenancelist',
-      payload: { tabActiveKey, startTime, endTime }
+      payload: { sign, tabActiveKey, startTime, endTime }
     })
   }
 
@@ -116,22 +97,12 @@ function Workordertopn(props) {
 
   const defaultTime = () => {
     //  周统计
-    if (tabActiveKey === 'week') {
-      const day2 = new Date();
-      day2.setTime(day2.getTime());
-      startTime = `${day2.getFullYear()}-${(day2.getMonth() + 1)}-${day2.getDate()}`;
-      const date2 = new Date(day2);
-      date2.setDate(day2.getDate() - 7);
-      endTime = `${date2.getFullYear()}-${(date2.getMonth() + 1)}-${date2.getDate()}`;
-    } else { // 月统计
-      const day2 = new Date();
-      day2.setTime(day2.getTime());
-      startTime = `${day2.getFullYear()}-${(day2.getMonth() + 1)}-${day2.getDate()}`;
-      console.log('startTime: ', startTime);
-      const date2 = new Date(day2);
-      date2.setDate(day2.getDate() - 30);
-      endTime = `${date2.getFullYear()}-${(date2.getMonth() + 1)}-${date2.getDate()}`;
-    }
+    const day2 = new Date();
+    day2.setTime(day2.getTime());
+    endTime = `${day2.getFullYear()}-${(day2.getMonth() + 1)}-${day2.getDate()}`;
+    const date2 = new Date(day2);
+    date2.setDate(day2.getDate() - 7);
+    startTime = `${date2.getFullYear()}-${(date2.getMonth() + 1)}-${date2.getDate()}`;
   }
 
   useEffect(() => {
@@ -139,27 +110,9 @@ function Workordertopn(props) {
     handleListdata();
   }, [tabActiveKey])
 
-  const tabList = [
-    {
-      key: 'week',
-      tab: '运维分类统计情况(周)',
-    },
-    {
-      key: 'month',
-      tab: '运维分类统计情况(月)',
-    },
-  ];
-
-  const handleTabChange = (key) => { // tab切换
-    setTabActiveKey(key);
-  };
-
   return (
     <PageHeaderWrapper
       title={pagetitle}
-      tabList={tabList}
-      onTabChange={handleTabChange}
-      tabActiveKey={tabActiveKey}
     >
       <Card>
         <Row gutter={24}>

@@ -51,7 +51,7 @@ const ExamineSecondChild = React.forwardRef((props, ref) => {
     <Row gutter={24} style={{ paddingTop: 24 }}>
       <Form {...formItemLayout}>
         <Col span={8}>
-          <Form.Item label="审核结果" {...forminladeLayout}>
+          <Form.Item label="审核结果">
             {getFieldDecorator('checkResult', {
               rules: [{ required: true, message: '请选择审核结果' }],
               initialValue: check.checkResult,
@@ -65,7 +65,22 @@ const ExamineSecondChild = React.forwardRef((props, ref) => {
         </Col>
 
         <Col span={8}>
-          <Form.Item label="故障责任方" {...forminladeLayout}>
+          <Form.Item label="故障责任方">
+            {getFieldDecorator('checkBlame', {
+              rules: [
+                {
+                  required,
+                  message: '请输入故障责任方',
+                },
+              ],
+              initialValue: check.checkBlame
+            })(<Input />)}
+          </Form.Item>
+        </Col>
+
+
+        <Col span={8}>
+          <Form.Item label="审核时间">
             {getFieldDecorator('checkTime', {
               rules: [
                 {
@@ -78,22 +93,7 @@ const ExamineSecondChild = React.forwardRef((props, ref) => {
           </Form.Item>
         </Col>
 
-
-        <Col span={8}>
-          <Form.Item label="审核时间" {...forminladeLayout}>
-            {getFieldDecorator('checkTime', {
-              rules: [
-                {
-                  required,
-                  message: '请选择时间',
-                },
-              ],
-              initialValue: check ? moment(check.checkTime) : moment(Date.now())
-            })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" />)}
-          </Form.Item>
-        </Col>
-
-        <Col span={8}>
+        <Col span={23}>
           {adopt === '1' && ( // 1 通过
             <Form.Item label="审核意见" {...forminladeLayout}>
               {getFieldDecorator('checkOpinion', {
@@ -161,7 +161,8 @@ ExamineSecondChild.defaultProps = {
     checkReportSign: '',
     checkOpinion: '',
     checkResult: '1',
-    checkTime: moment().format()
+    checkTime: moment().format(),
+    checkBlame:''
   },
   curruserinfo: {
     deptName: '',

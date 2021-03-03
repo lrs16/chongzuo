@@ -15,21 +15,22 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
 let startTime;
 let endTime;
+const sign = 'solution';
 const columns = [
   {
-    title: '一级对象',
-    dataIndex: 'first_object',
-    key: 'first_object',
+    title: '受理人/处理人',
+    dataIndex: 'user',
+    key: 'user',
   },
   {
-    title: '二级对象',
-    dataIndex: 'second_object',
-    key: 'second_object',
+    title: '工单受理数量',
+    dataIndex: 'is_selfhandle',
+    key: 'is_selfhandle',
   },
   {
-    title: '上周工单数',
-    dataIndex: 'last_num',
-    key: 'last_num',
+    title: '一线处理量',
+    dataIndex: 'not_selfhandle',
+    key: 'not_selfhandle',
     render: (text, record) => (
       <Link
         to={{
@@ -42,9 +43,9 @@ const columns = [
     )
   },
   {
-    title: '本周工单数',
-    dataIndex: 'now_num',
-    key: 'now_num',
+    title: '一线解决率',
+    dataIndex: 'points',
+    key: 'points',
     render: (text, record) => (
       <Link
         to={{
@@ -55,17 +56,11 @@ const columns = [
         {text}
       </Link>
     )
-  },
-  {
-    title: '环比',
-    dataIndex: 'points_count',
-    key: 'points_count',
   },
 ];
 
 function Solution(props) {
   const { pagetitle } = props.route.name;
-  const [tabActiveKey, setTabActiveKey] = useState('week');
   const {
     form: { getFieldDecorator },
     maintenanceArr,
@@ -73,28 +68,18 @@ function Solution(props) {
   } = props;
 
   const onChange = (date) => {
-    if (tabActiveKey === 'week') {
-      const date1 = new Date(date._d);
-      const date2 = new Date(date._d);
-      startTime = `${date1.getFullYear()}-${(date1.getMonth() + 1)}-${date1.getDate()}`;
-      date2.setDate(date1.getDate() + 7);
-      endTime = `${date2.getFullYear()}-${(date2.getMonth() + 1)}-${date2.getDate()}`;
-    } else {
-      startTime = '';
-      endTime = '';
-      const date1 = new Date(date._d);
-      const date2 = new Date(date._d);
-      startTime = `${date1.getFullYear()}-${(date1.getMonth() + 1)}-${date1.getDate()}`;
-      date2.setDate(date1.getDate() + 30);
-      endTime = `${date2.getFullYear()}-${(date2.getMonth() + 1)}-${date2.getDate()}`;
-    }
+    const date1 = new Date(date._d);
+    const date2 = new Date(date._d);
+    startTime = `${date1.getFullYear()}-${(date1.getMonth() + 1)}-${date1.getDate()}`;
+    date2.setDate(date1.getDate() + 7);
+    endTime = `${date2.getFullYear()}-${(date2.getMonth() + 1)}-${date2.getDate()}`;
   }
 
 
   const handleListdata = (params) => {
     dispatch({
       type: 'eventstatistics/fetchMaintenancelist',
-      payload: { tabActiveKey, startTime, endTime }
+      payload: { sign, startTime, endTime }
     })
   }
 
@@ -116,130 +101,59 @@ function Solution(props) {
 
   const defaultTime = () => {
     //  周统计
-    if (tabActiveKey === 'week') {
-      const day2 = new Date();
-      day2.setTime(day2.getTime());
-      startTime = `${day2.getFullYear()}-${(day2.getMonth() + 1)}-${day2.getDate()}`;
-      const date2 = new Date(day2);
-      date2.setDate(day2.getDate() - 7);
-      endTime = `${date2.getFullYear()}-${(date2.getMonth() + 1)}-${date2.getDate()}`;
-    } else { // 月统计
-      const day2 = new Date();
-      day2.setTime(day2.getTime());
-      startTime = `${day2.getFullYear()}-${(day2.getMonth() + 1)}-${day2.getDate()}`;
-      console.log('startTime: ', startTime);
-      const date2 = new Date(day2);
-      date2.setDate(day2.getDate() - 30);
-      endTime = `${date2.getFullYear()}-${(date2.getMonth() + 1)}-${date2.getDate()}`;
-    }
+    const day2 = new Date();
+    day2.setTime(day2.getTime());
+    endTime = `${day2.getFullYear()}-${(day2.getMonth() + 1)}-${day2.getDate()}`;
+    const date2 = new Date(day2);
+    date2.setDate(day2.getDate() - 7);
+    startTime = `${date2.getFullYear()}-${(date2.getMonth() + 1)}-${date2.getDate()}`;
   }
 
   useEffect(() => {
     defaultTime();
     handleListdata();
-  }, [tabActiveKey])
-
-  const tabList = [
-    {
-      key: 'week',
-      tab: '运维分类统计情况(周)',
-    },
-    {
-      key: 'month',
-      tab: '运维分类统计情况(月)',
-    },
-  ];
-
-  const handleTabChange = (key) => { // tab切换
-    setTabActiveKey(key);
-  };
+  }, [])
 
   return (
     <PageHeaderWrapper
       title={pagetitle}
-      tabList={tabList}
-      onTabChange={handleTabChange}
-      tabActiveKey={tabActiveKey}
     >
       <Card>
         <Row gutter={24}>
           <Form layout='inline'>
-            {
-              tabActiveKey === 'week' && (
-                <>
-                  <Col span={15}>
-                    <Form.Item label='开始时间'>
-                      {getFieldDecorator('time1', {
-                        initialValue: startTime ? moment(startTime) : ''
-                      })(<DatePicker
-                        format="YYYY-MM-DD"
-                        onChange={onChange}
-                      />)}
-                    </Form.Item>
+            <>
+              <Col span={15}>
+                <Form.Item label='开始时间'>
+                  {getFieldDecorator('time1', {
+                    initialValue: startTime ? moment(startTime) : ''
+                  })(<DatePicker
+                    format="YYYY-MM-DD"
+                    onChange={onChange}
+                  />)}
+                </Form.Item>
 
-                    <p style={{ display: 'inline', marginRight: 8 }}>-</p>
+                <p style={{ display: 'inline', marginRight: 8 }}>-</p>
 
-                    <Form.Item label=''>
-                      {
-                        getFieldDecorator('time2', {
-                          initialValue: endTime ? moment(endTime) : ''
-                        })
-                          (<DatePicker disabled />)
-                      }
-                    </Form.Item>
+                <Form.Item label=''>
+                  {
+                    getFieldDecorator('time2', {
+                      initialValue: endTime ? moment(endTime) : ''
+                    })
+                      (<DatePicker disabled />)
+                  }
+                </Form.Item>
 
-                    <Button
-                      type='primary'
-                      style={{ marginTop: 6 }}
-                      onClick={() => handleListdata('search')}
-                    >
-                      查询
+                <Button
+                  type='primary'
+                  style={{ marginTop: 6 }}
+                  onClick={() => handleListdata('search')}
+                >
+                  查询
                     </Button>
-                  </Col>
-
-                </>
-              )
-            }
-
-            {
-              tabActiveKey === 'month' && (
-                <>
-                  <Col span={24}>
-                    <Form.Item label='开始时间'>
-                      {getFieldDecorator('time1', {
-                        initialValue: moment(startTime)
-                      })(<DatePicker
-                        format="YYYY-MM-DD"
-                        onChange={onChange}
-                      />)}
-                    </Form.Item>
-
-                    {/* <p>{startTime}</p> */}
-
-                    <p style={{ display: 'inline', marginRight: 8 }}>-</p>
-
-                    <Form.Item label=''>
-                      {
-                        getFieldDecorator('time2', {
-                          initialValue: endTime ? moment(endTime) : ''
-                        })
-                          (<DatePicker disabled />)
-                      }
-                    </Form.Item>
+              </Col>
+            </>
 
 
-
-                    <Button
-                      type='primary'
-                      style={{ marginTop: 6 }}
-                      onClick={() => handleListdata('search')}
-                    >
-                      查询
-                    </Button>
-                  </Col>
-                </>
-              )
-            }
           </Form>
         </Row>
 

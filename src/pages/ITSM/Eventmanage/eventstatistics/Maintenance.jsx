@@ -15,6 +15,7 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
 let startTime;
 let endTime;
+const sign = 'maintenance';
 const columns = [
   {
     title: '一级对象',
@@ -71,7 +72,6 @@ function Maintenance(props) {
     maintenanceArr,
     dispatch
   } = props;
-  console.log(maintenanceArr,'maintenanceArr');
 
   const onChange = (date) => {
     if (tabActiveKey === 'week') {
@@ -95,7 +95,7 @@ function Maintenance(props) {
   const handleListdata = (params) => {
     dispatch({
       type: 'eventstatistics/fetchMaintenancelist',
-      payload: { tabActiveKey, startTime, endTime }
+      payload: { sign,tabActiveKey, startTime, endTime }
     })
   }
 
@@ -114,7 +114,6 @@ function Maintenance(props) {
     })
   }
 
-
   const defaultTime = () => {
     //  周统计
     if (tabActiveKey === 'week') {
@@ -128,6 +127,7 @@ function Maintenance(props) {
       const day2 = new Date();
       day2.setTime(day2.getTime());
       endTime = `${day2.getFullYear()}-${(day2.getMonth() + 1)}-${day2.getDate()}`;
+      console.log('startTime: ', startTime);
       const date2 = new Date(day2);
       date2.setDate(day2.getDate() - 30);
       startTime = `${date2.getFullYear()}-${(date2.getMonth() + 1)}-${date2.getDate()}`;

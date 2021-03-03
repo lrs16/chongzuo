@@ -15,6 +15,7 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
 let startTime;
 let endTime;
+const sign = 'maintenanceservice';
 const columns = [
   {
     title: '服务指标',
@@ -93,8 +94,8 @@ function Maintenanceservice(props) {
 
   const handleListdata = (params) => {
     dispatch({
-      type: 'eventstatistics/fetcheventServiceList',
-      payload: { tabActiveKey, startTime, endTime }
+      type: 'eventstatistics/fetchMaintenancelist',
+      payload: { sign,tabActiveKey, startTime, endTime }
     })
   }
 
@@ -119,18 +120,18 @@ function Maintenanceservice(props) {
     if (tabActiveKey === 'week') {
       const day2 = new Date();
       day2.setTime(day2.getTime());
-      startTime = `${day2.getFullYear()}-${(day2.getMonth() + 1)}-${day2.getDate()}`;
+      endTime = `${day2.getFullYear()}-${(day2.getMonth() + 1)}-${day2.getDate()}`;
       const date2 = new Date(day2);
       date2.setDate(day2.getDate() - 7);
-      endTime = `${date2.getFullYear()}-${(date2.getMonth() + 1)}-${date2.getDate()}`;
+      startTime = `${date2.getFullYear()}-${(date2.getMonth() + 1)}-${date2.getDate()}`;
     } else { // 月统计
       const day2 = new Date();
       day2.setTime(day2.getTime());
-      startTime = `${day2.getFullYear()}-${(day2.getMonth() + 1)}-${day2.getDate()}`;
+      endTime = `${day2.getFullYear()}-${(day2.getMonth() + 1)}-${day2.getDate()}`;
       console.log('startTime: ', startTime);
       const date2 = new Date(day2);
       date2.setDate(day2.getDate() - 30);
-      endTime = `${date2.getFullYear()}-${(date2.getMonth() + 1)}-${date2.getDate()}`;
+      startTime = `${date2.getFullYear()}-${(date2.getMonth() + 1)}-${date2.getDate()}`;
     }
   }
 

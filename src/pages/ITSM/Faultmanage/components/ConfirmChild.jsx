@@ -68,18 +68,18 @@ const ConfirmChild = React.forwardRef((props, ref) => {
           </Col>
 
           <Col span={8}>
-            <Form.Item label="故障责任方">
-              {getFieldDecorator('confirmTime', {
-                rules: [
-                  {
-                    required,
-                    message: '请选择时间',
-                  },
-                ],
-                initialValue: confirm ? moment(confirm.confirmTime) : moment(Date.now())
-              })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} />)}
-            </Form.Item>
-          </Col>
+          <Form.Item label="故障责任方">
+            {getFieldDecorator('checkBlame', {
+              rules: [
+                {
+                  required,
+                  message: '请输入故障责任方',
+                },
+              ],
+              initialValue: confirm.checkBlame
+            })(<Input />)}
+          </Form.Item>
+        </Col>
 
           <Col span={8}>
             <Form.Item label="确认时间">
@@ -162,7 +162,8 @@ ConfirmChild.defaultProps = {
     confirmAttachments: '',
     confirmContent: '',
     confirmResult: '1',
-    confirmTime: moment().format()
+    confirmTime: moment().format(),
+    checkBlame:''
   },
   curruserinfo: {
     deptName: '',
