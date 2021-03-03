@@ -45,13 +45,15 @@ function Problemregistration(props) {
             {info.registerExpectTime}
           </Descriptions.Item>
 
-          <Descriptions.Item label="所属项目">
-            {info.registerProjectcn}
-          </Descriptions.Item>
-
           <Descriptions.Item label="影响范围">
             {info.registerScopecn}
           </Descriptions.Item>
+
+          <Descriptions.Item label="所属项目" span={3}>
+            {info.registerProjectcn}
+          </Descriptions.Item>
+
+        
     
           <Descriptions.Item label="联系电话" span={3}>
             {info.registerUserPhone}

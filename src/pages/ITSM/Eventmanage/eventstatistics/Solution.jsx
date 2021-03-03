@@ -63,7 +63,7 @@ const columns = [
   },
 ];
 
-function Maintenance(props) {
+function Solution(props) {
   const { pagetitle } = props.route.name;
   const [tabActiveKey, setTabActiveKey] = useState('week');
   const {
@@ -71,7 +71,6 @@ function Maintenance(props) {
     maintenanceArr,
     dispatch
   } = props;
-  console.log(maintenanceArr,'maintenanceArr');
 
   const onChange = (date) => {
     if (tabActiveKey === 'week') {
@@ -120,17 +119,18 @@ function Maintenance(props) {
     if (tabActiveKey === 'week') {
       const day2 = new Date();
       day2.setTime(day2.getTime());
-      endTime = `${day2.getFullYear()}-${(day2.getMonth() + 1)}-${day2.getDate()}`;
+      startTime = `${day2.getFullYear()}-${(day2.getMonth() + 1)}-${day2.getDate()}`;
       const date2 = new Date(day2);
       date2.setDate(day2.getDate() - 7);
-      startTime = `${date2.getFullYear()}-${(date2.getMonth() + 1)}-${date2.getDate()}`;
+      endTime = `${date2.getFullYear()}-${(date2.getMonth() + 1)}-${date2.getDate()}`;
     } else { // 月统计
       const day2 = new Date();
       day2.setTime(day2.getTime());
-      endTime = `${day2.getFullYear()}-${(day2.getMonth() + 1)}-${day2.getDate()}`;
+      startTime = `${day2.getFullYear()}-${(day2.getMonth() + 1)}-${day2.getDate()}`;
+      console.log('startTime: ', startTime);
       const date2 = new Date(day2);
       date2.setDate(day2.getDate() - 30);
-      startTime = `${date2.getFullYear()}-${(date2.getMonth() + 1)}-${date2.getDate()}`;
+      endTime = `${date2.getFullYear()}-${(date2.getMonth() + 1)}-${date2.getDate()}`;
     }
   }
 
@@ -266,5 +266,5 @@ function Maintenance(props) {
 export default Form.create({})(
   connect(({ eventstatistics }) => ({
     maintenanceArr: eventstatistics.maintenanceArr
-  }))(Maintenance),
+  }))(Solution),
 );
