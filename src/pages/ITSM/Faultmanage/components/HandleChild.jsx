@@ -157,7 +157,7 @@ const HandleChild = React.forwardRef((props, ref) => {
           </Form.Item>
         </Col>
 
-        {/* <Col span={7}>
+        <Col span={7}>
           <Form.Item label="处理结果" {...formItemLayout}>
             {getFieldDecorator('handleResult', {
               rules: [
@@ -177,7 +177,7 @@ const HandleChild = React.forwardRef((props, ref) => {
               </Select>,
             )}
           </Form.Item>
-        </Col> */}
+        </Col>
 
         <Col span={18}>
           <Form.Item
