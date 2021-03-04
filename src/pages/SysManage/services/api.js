@@ -246,10 +246,9 @@ export async function updateExpressions(params) {
 }
 
 // 删除常用语
-export async function deleteExpressions(params) {
-  return request('/common/expressions/delete', {
+export async function deleteExpressions(ids) {
+  return request(`/common/expressions/delete?ids=${ids}`, {
     method: 'POST',
-    data: params,
     requestType: 'form',
   });
 }

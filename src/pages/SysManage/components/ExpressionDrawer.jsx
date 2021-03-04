@@ -18,7 +18,7 @@ const formItemLayout = {
 
 function ExpressionDrawer(props) {
   const { visible, ChangeVisible, title, modulemap, fieldmap, handleSubmit } = props;
-  const { getFieldDecorator } = props.form;
+  const { getFieldDecorator, validateFields } = props.form;
   const required = true;
   const { id, module, field, content, status } = props.record;
 
@@ -26,8 +26,16 @@ function ExpressionDrawer(props) {
     ChangeVisible(false);
   };
   const handleOk = () => {
+    validateFields((err, values) => {
+      if (!err) {
+        // 关闭弹窗
+        hanldleCancel();
+        // 传数据
+        handleSubmit(values);
+        props.form.resetFields();
+      }
+    });
     ChangeVisible(false);
-    handleSubmit(true);
   };
   return (
     <Drawer
@@ -54,14 +62,13 @@ function ExpressionDrawer(props) {
             ],
             initialValue: module,
           })(
-            // <Select placeholder="请选择">
-            //   {modulemap.map(obj => [
-            //     <Option key={obj.key} value={obj.title}>
-            //       {obj.title}
-            //     </Option>,
-            //   ])}
-            // </Select>
-            <Input placeholder="请输入" />,
+            <Select placeholder="请选择" getPopupContainer={triggerNode => triggerNode.parentNode}>
+              {modulemap.map(obj => [
+                <Option key={obj.key} value={obj.title}>
+                  {obj.title}
+                </Option>,
+              ])}
+            </Select>,
           )}
         </Form.Item>
         <Form.Item label="对应字段">
@@ -74,14 +81,13 @@ function ExpressionDrawer(props) {
             ],
             initialValue: field,
           })(
-            // <Select placeholder="请选择">
-            //   {fieldmap.map(obj => [
-            //     <Option key={obj.key} value={obj.title}>
-            //       {obj.title}
-            //     </Option>,
-            //   ])}
-            // </Select>
-            <Input placeholder="请输入" />,
+            <Select placeholder="请选择" getPopupContainer={triggerNode => triggerNode.parentNode}>
+              {fieldmap.map(obj => [
+                <Option key={obj.key} value={obj.title}>
+                  {obj.title}
+                </Option>,
+              ])}
+            </Select>,
           )}
         </Form.Item>
         <Form.Item label="常用语">

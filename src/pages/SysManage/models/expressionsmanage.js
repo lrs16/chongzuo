@@ -30,30 +30,18 @@ export default {
     },
 
     // 保存
-    *save({ payload }, { call, put }) {
-      const response = yield call(saveExpressions, payload);
-      yield put({
-        type: 'show',
-        payload: response,
-      });
+    *save({ payload }, { call }) {
+      return yield call(saveExpressions, payload);
     },
 
     // 更新
-    *update({ payload }, { call, put }) {
-      const response = yield call(updateExpressions, payload);
-      yield put({
-        type: 'show',
-        payload: response,
-      });
+    *update({ payload }, { call }) {
+      return yield call(updateExpressions, payload);
     },
 
     // 删除
-    *delete({ payload }, { call, put }) {
-      const response = yield call(deleteExpressions, payload);
-      yield put({
-        type: 'show',
-        payload: response,
-      });
+    *delete({ payload }, { call }) {
+      return yield call(deleteExpressions, payload);
     },
 
     // 修改常用语状态
