@@ -102,7 +102,7 @@ const Registrat = forwardRef((props, ref) => {
 
   return (
     <>
-      <GetExpressions record={record} />
+      {/* <GetExpressions record={record} /> */}
       <Form {...formItemLayout}>
         <Row gutter={24}>
           <Col span={8} style={{ display: 'none' }}>
