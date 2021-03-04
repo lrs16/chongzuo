@@ -254,9 +254,9 @@ const Registrat = forwardRef((props, ref) => {
                 <Input
                   placeholder="请输入"
                   allowClear
-                  onPressEnter={value =>
-                    setRecord({ ...record, modules: '事件单', field: 'title', key: '[故障]' })
-                  }
+                  // onPressEnter={value =>
+                  //   setRecord({ ...record, modules: '事件单', field: 'title', key: '[故障]' })
+                  // }
                 />,
               )}
             </Form.Item>

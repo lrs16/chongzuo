@@ -18,14 +18,14 @@ export async function DemandStartAndNext(params) {
 
 // 需求待办列表
 export async function DemandtoDoList(params) {
-  const { limit, page, userId, demandId, taskName } = params;
+  const { limit, page, userId, demandId, taskName, creationStartTime, creationEndTime } = params;
   const registerPerson = params.registerPerson !== undefined ? params.registerPerson : '';
   const demandType = params.demandType !== undefined ? params.demandType : '';
   const title = params.title !== undefined ? params.title : '';
   const creationTime =
     params.creationTime !== undefined ? params.creationTime.format('YYYY-MM-DD') : '';
   return request(
-    `/demand/todo/toDoList?limit=${limit}&page=${page}&userId=${userId}&demandId=${demandId}&demandType=${demandType}&registerPerson=${registerPerson}&taskName=${taskName}&title=${title}&creationTime=${creationTime}`,
+    `/demand/todo/toDoList?limit=${limit}&page=${page}&userId=${userId}&demandId=${demandId}&demandType=${demandType}&registerPerson=${registerPerson}&taskName=${taskName}&title=${title}&creationTime=${creationTime}&creationStartTime=${creationStartTime}&creationEndTime=${creationEndTime}`,
     {
       method: 'GET',
     },

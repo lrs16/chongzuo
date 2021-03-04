@@ -26,7 +26,6 @@ export default {
 
     // 获取
     *getexpressions({ payload: { modules, field, key } }, { call }) {
-      console.log(modules, field, key);
       return yield call(getExpressionsByContentAndField, modules, field, key);
     },
 

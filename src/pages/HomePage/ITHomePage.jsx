@@ -407,6 +407,11 @@ function ITHomePage(props) {
         const values = {
           ...value,
           currentNode: tabkey === '全部待办' ? '' : tabkey,
+          no: value.No,
+          createTimeBegin:
+            value.time === '' ? '' : moment(value.time[0]).format('YYYY-MM-DD HH:mm:ss'),
+          createTimeEnd:
+            value.time === '' ? '' : moment(value.time[1]).format('YYYY-MM-DD HH:mm:ss'),
         };
         dispatch({
           type: 'problemmanage/searchBesolve',
@@ -437,7 +442,9 @@ function ITHomePage(props) {
         const values = {
           taskName: tabkey === '全部待办' ? '' : tabkey,
           demandId: value.No,
-          proposer: value.name,
+          registerPerson: value.name,
+          creationStartTime: value.time === '' ? '' : moment(value.time[0]).format('YYYY-MM-DD'),
+          creationEndTime: value.time === '' ? '' : moment(value.time[1]).format('YYYY-MM-DD'),
         };
         dispatch({
           type: 'demandtodo/fetchlist',
