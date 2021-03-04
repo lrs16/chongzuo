@@ -20,6 +20,7 @@ import RightContent from '@/components/GlobalHeader/RightContent';
 import { getAuthorityFromRouter } from '@/utils/utils';
 import logo from '../../public/menulogo.png';
 // import Layout from './BlankLayout';
+import PageTab from './PageTab';
 
 const noMatch = (
   <Result
@@ -104,12 +105,12 @@ const BasicLayout = props => {
       layout="topmenu"
       fixedHeader
       logo={logo}
-      menuHeaderRender={(logoDom, titleDom) => (
-        <Link to="/">
-          {logoDom}
-          {titleDom}
-        </Link>
-      )}
+      // menuHeaderRender={(logoDom, titleDom) => (
+      //   <Link to="/">
+      //     {logoDom}
+      //     {titleDom}
+      //   </Link>
+      // )}
       menuItemRender={(menuItemProps, defaultDom) => {
         if (menuItemProps.isUrl || menuItemProps.children) {
           return defaultDom;
@@ -164,7 +165,7 @@ const BasicLayout = props => {
       >
         {authorized === Userauth && (
           <Authorized authority={Userauth} noMatch={noMatch}>
-            {children}
+            <PageTab>{children}</PageTab>
           </Authorized>
         )}
         {authorized === 'incontrol' && (

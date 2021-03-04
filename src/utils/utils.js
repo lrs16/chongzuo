@@ -1,5 +1,6 @@
 import { parse } from 'querystring';
 import pathRegexp from 'path-to-regexp';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { RedditSquareFilled } from '@ant-design/icons';
 /* eslint no-useless-escape:0 import/prefer-default-export:0 */
 
@@ -34,7 +35,7 @@ export const getAuthorityFromRouter = (router, configrouter, pathname) => {
   if (pathname === `/`) {
     const redireturl = configrouter[0];
     const authority = router.find(obj => {
-      return obj.menuUrl == redireturl.redirect;
+      return obj.menuUrl === redireturl.redirect;
     });
     if (authority) return authority?.menuauth;
     // return undnefined;
@@ -42,4 +43,23 @@ export const getAuthorityFromRouter = (router, configrouter, pathname) => {
   const authority = router.find(({ menuUrl }) => menuUrl && pathRegexp(menuUrl).exec(pathname));
   if (authority) return authority?.menuauth;
   return undefined;
+};
+
+export const store = {
+  save: (name, value, type = 'localtorage') => {
+    if ((type || '').toLocaleLowerCase() === 'localstorage') {
+      localStorage.setItem(name, JSON.stringify(value));
+    } else if ((type || '').toLocaleLowerCase() === 'sessionstorage') {
+      sessionStorage.setItem(name, JSON.stringify(value));
+    }
+  },
+  // eslint-disable-next-line consistent-return
+  get: (name, type = 'localStorage') => {
+    if ((type || '').toLocaleLowerCase() === 'localstorage') {
+      return JSON.parse(localStorage.getItem(name) || '{}');
+    }
+    if ((type || '').toLocaleLowerCase() === 'sessionstorage') {
+      return JSON.parse(sessionStorage.getItem(name) || '{}');
+    }
+  },
 };
