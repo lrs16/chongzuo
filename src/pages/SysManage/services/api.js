@@ -223,14 +223,13 @@ export async function queryExpressions(field, content, status) {
 }
 
 // 获取常用语
-export async function getExpressionsByContentAndField(params) {
-  // const { module, field, key } = params;
-  console.log(params);
-  return request(`/common/expressions/getExpressionsByContentAndField`, {
-    method: 'GET',
-    body: params,
-    //  requestType: 'form',
-  });
+export async function getAndField(modules, field, key) {
+  return request(
+    `/common/expressions/getExpressionsByContentAndField?module=${modules}&field=${field}&key=${key}`,
+    {
+      method: 'GET',
+    },
+  );
 }
 
 // 保存常用语

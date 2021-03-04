@@ -3,20 +3,17 @@ import { connect } from 'dva';
 
 function GetExpressions(props) {
   const { dispatch, record } = props;
-  const getdatas = () => {
-    const { module, field, key } = record;
-    dispatch({
-      type: 'expressionsmanage/getexpressions',
-      payload: {
-        module,
-        field,
-        key,
-      },
-    });
-  };
   useEffect(() => {
     if (record !== '') {
-      getdatas().then(res => {
+      const { modules, field, key } = record;
+      dispatch({
+        type: 'expressionsmanage/getexpressions',
+        payload: {
+          modules,
+          field,
+          key,
+        },
+      }).then(res => {
         console.log(res);
       });
     }

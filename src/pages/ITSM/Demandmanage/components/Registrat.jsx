@@ -255,7 +255,7 @@ const Registrat = forwardRef((props, ref) => {
                   placeholder="请输入"
                   allowClear
                   onPressEnter={value =>
-                    setRecord({ ...record, module: '事件单', field: '标题', key: value })
+                    setRecord({ ...record, modules: '事件单', field: 'title', key: '[故障]' })
                   }
                 />,
               )}

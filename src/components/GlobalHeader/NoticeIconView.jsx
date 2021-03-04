@@ -80,21 +80,21 @@ class GlobalHeaderRight extends Component {
     //  const { notices = [] } = this.props;
     const notices = [
       {
-        description: `总共有（${this.state.timeoutnum.timeoutTimeNum}）个工单已超时`,
-        extra: '已超时',
+        description: `总共有（${this.state.timeoutnum.timeoutTimeNum}）个工单`,
+        //  extra: '已超时',
         id: '001',
-        status: 'urgent',
+        //  status: 'urgent',
         title: `IT服务管理`,
         type: 'event',
       },
-      {
-        description: `总共有（${this.state.timeoutnum.remindTimeNum}）个工单即将超时`,
-        extra: '即将超时',
-        id: '002',
-        status: 'doing',
-        title: `IT服务管理`,
-        type: 'event',
-      },
+      // {
+      //   description: `总共有（${this.state.timeoutnum.remindTimeNum}）个工单即将超时`,
+      //   extra: '即将超时',
+      //   id: '002',
+      //   status: 'doing',
+      //   title: `IT服务管理`,
+      //   type: 'event',
+      // },
     ];
 
     if (notices.length === 0) {
