@@ -249,7 +249,7 @@ class PageTab extends Component {
     const { pages = [], activeKey, keys } = this.state;
 
     return (
-      <div>
+      <div style={{ margin: '-24px -24px 0' }}>
         <DraggableTabs
           className={`page-tab ${pageTabStyle.page}`}
           hideAdd
