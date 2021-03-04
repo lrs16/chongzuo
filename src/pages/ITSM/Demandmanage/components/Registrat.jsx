@@ -3,6 +3,8 @@ import router from 'umi/router';
 import moment from 'moment';
 import { Row, Col, Form, Input, Select, DatePicker, Cascader } from 'antd';
 import SysUpload from '@/components/SysUpload';
+import GetExpressions from '@/components/GetExpressions';
+// import { getExpressionsByContentAndField } from '@/pages/SysManage/services/api'
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -33,6 +35,7 @@ const Registrat = forwardRef((props, ref) => {
   const { getFieldDecorator } = props.form;
   const required = true;
   const [fileslist, setFilesList] = useState({ arr: [], ischange: false });
+  const [record, setRecord] = useState('');
 
   useEffect(() => {
     if (fileslist.ischange) {
@@ -68,6 +71,18 @@ const Registrat = forwardRef((props, ref) => {
     sessionStorage.setItem('flowtype', 1);
   }, []);
 
+  // useEffect(() => {
+  //   const data = {
+  //     module: '事件单',
+  //     field: '标题',
+  //     key: '事件'
+  //   }
+  //   getExpressionsByContentAndField(data)
+  //     .then(res => {
+  //       console.log(res)
+  //     })
+  // }, [])
+
   const proposer = register.proposer === '' ? userinfo.userName : register.proposer;
   const proposingUnit = register.proposingUnit === '' ? userinfo.unitName : register.proposingUnit;
   const proposingDepartment =
@@ -87,6 +102,7 @@ const Registrat = forwardRef((props, ref) => {
 
   return (
     <>
+      <GetExpressions record={record} />
       <Form {...formItemLayout}>
         <Row gutter={24}>
           <Col span={8} style={{ display: 'none' }}>
@@ -234,7 +250,15 @@ const Registrat = forwardRef((props, ref) => {
               {getFieldDecorator('title', {
                 rules: [{ required, message: '请输入需求标题' }],
                 initialValue: register.title,
-              })(<Input placeholder="请输入" allowClear />)}
+              })(
+                <Input
+                  placeholder="请输入"
+                  allowClear
+                  onPressEnter={value =>
+                    setRecord({ ...record, module: '事件单', field: '标题', key: value })
+                  }
+                />,
+              )}
             </Form.Item>
           </Col>
           <Col span={24}>

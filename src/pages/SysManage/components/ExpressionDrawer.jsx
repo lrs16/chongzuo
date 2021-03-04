@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Drawer, Button, Form, Input, Radio, Select } from 'antd';
 
 const RadioGroup = Radio.Group;
@@ -37,6 +37,7 @@ function ExpressionDrawer(props) {
     });
     ChangeVisible(false);
   };
+
   return (
     <Drawer
       title={title}
