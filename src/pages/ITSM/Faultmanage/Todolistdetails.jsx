@@ -234,6 +234,7 @@ function Todolistdetails(props) {
   const saveRegister = (cirStatus) => { // 故障登记
     // eslint-disable-next-line consistent-return
     RegisterRef.current.validateFields((err, values) => {
+      console.log('values: ', values);
       if (cirStatus ? !err : true) {
         const formValues = values;
         formValues.registerOccurTime = values.registerOccurTime.format('YYYY-MM-DD HH:mm:ss');

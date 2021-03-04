@@ -2,6 +2,7 @@ import React, { useState, useRef, useImperativeHandle, useEffect } from 'react';
 import { Row, Col, Form, Input, Select, DatePicker } from 'antd';
 import moment from 'moment';
 import SysUpload from '@/components/SysUpload';
+import SysDict from '@/components/SysDict';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -12,6 +13,7 @@ const Registrat = React.forwardRef((props, ref) => {
   const { formItemLayout, forminladeLayout, files, ChangeFiles } = props;
   const { getFieldDecorator } = props.form;
   const [fileslist, setFilesList] = useState([]);
+  const [selectdata, setSelectData] = useState([]);
   useEffect(() => {
     ChangeFiles(fileslist);
   }, [fileslist]);
@@ -28,7 +30,7 @@ const Registrat = React.forwardRef((props, ref) => {
     useInfo,
     register,
     main,
-    source,
+    // source,
     type,
     priority,
     scope,
@@ -48,9 +50,28 @@ const Registrat = React.forwardRef((props, ref) => {
 
   const required = true;
 
+  const getTypebyTitle = (title) => {
+    if (selectdata.length > 0) {
+      return selectdata.filter(item => 
+        item.title === title)[0].children;
+    }
+    return [];
+  };
+  const source = getTypebyTitle('问题来源');
+  // const sysmodular = getTypebyTitle('故障系统模块');
+  // const priority = getTypebyTitle('严重程度');
+  // const effect = getTypebyTitle('影响范围');
+  // const faultType = getTypebyTitle('故障分类');
+
   return (
     <>
       <Row gutter={24} style={{ paddingTop: 24, marginTop: '20px' }}>
+      <SysDict
+        typeid="1354278126724583426"
+        commonid="1354288354950123522"
+        ChangeSelectdata={newvalue => setSelectData(newvalue)}
+        style={{ display: 'none' }}
+      />
         <Form {...formItemLayout}>
           <Col span={8}>
             <Form.Item label="问题编号">

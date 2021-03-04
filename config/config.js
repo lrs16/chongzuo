@@ -427,25 +427,20 @@ export default {
                       path: '/ITSM/faultmanage/faultstaticount',
                       name: '故障统计',
                       icon: 'control',
-                      // component: './ITSM/Faultmanage/FaultStatiCount',
-                      // routes: [
-                      //   // {
-                      //   //   path: '/ITSM/faultmanage/faultstaticount',
-                      //   //   redirect: '/ITSM/faultmanage/faultstaticount/faultsumstatic',
-                      //   // },
-                      //   {
-                      //     path: '/ITSM/faultmanage/faultstaticount/faultsumstatic',
-                      //     name: '故障汇总统计',
-                      //     icon: 'control',
-                      //     component: './ITSM/Faultmanage/FaultStatiCount/Faultsumstatic',
-                      //   },
-                      //   {
-                      //     path: '/ITSM/faultmanage/faultstaticount/faultbreakdownlist',
-                      //     name: '故障明细表',
-                      //     icon: 'control',
-                      //     component: './ITSM/Faultmanage/FaultStatiCount/Faultbreakdownlist',
-                      //   },
-                      // ],
+                      routes: [
+                        {
+                          path: '/ITSM/faultmanage/faultstaticount/faultsumstatic',
+                          name: '故障汇总统计',
+                          icon: 'control',
+                          component: './ITSM/Faultmanage/Faultbreakdownlist',
+                        },
+                        {
+                          path: '/ITSM/faultmanage/faultstaticount/breakdowndetail',
+                          name: '故障明细表',
+                          icon: 'control',
+                          component: './ITSM/Faultmanage/Breakdowndetail',
+                        },
+                      ],
                     },
                   ],
                 },

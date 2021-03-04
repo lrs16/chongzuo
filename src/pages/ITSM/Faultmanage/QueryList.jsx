@@ -20,6 +20,7 @@ import {
 } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import SysDict from '@/components/SysDict';
+import { defaults } from 'lodash';
 
 // const severitystatus = ['紧急', '重大', '一般'];
 // const statusMap = ['error', 'warning', 'processing'];
@@ -47,10 +48,13 @@ function QueryList(props) {
 
   const {
     form: { getFieldDecorator, resetFields, validateFields },
+    location:{ query: { dictCode,dictType,status,timeStatus } },
     loading,
     faultQueryList, // 查询列表数据
+    relatedictArr, // 从汇总统计到的列表
     dispatch,
   } = props;
+  console.log(relatedictArr,'relatedictArr');
 
   const [expand, setExpand] = useState(false);
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 10 }); // 分页state
@@ -143,15 +147,47 @@ function QueryList(props) {
       },
     });
   };
+//  故障汇总的列表
+  const  faultList = () => {
+    dispatch({
+      type: 'faultstatics/fetchrelateDictList',
+      payload: {
+        dictCode,
+        dictType,
+      },
+    });
+  }
+
+//  故障状态的列表
+  const  faulthandleList = () => {
+    dispatch({
+      type: 'faultstatics/fetchfaulthandleList',
+      payload: {
+        status,
+      },
+    });
+  }
 
   useEffect(() => {
-    getQuerylists();
+    switch(dictType) {
+      case 'type':
+        faultList();
+        break;
+      case undefined:
+        getQuerylists();
+        break;
+      case 'handle':
+        faulthandleList();
+        break;
+      default:
+      break;
+    }
   }, []);
 
   const searchdata = (values, page, pageSize) => {
     // 查询 查询接口
     dispatch({
-      type: 'fault/getTosearchfaultSearch',
+      type: 'faultstatics/getTosearchfaultSearch',
       payload: {
         values,
         pageSize,
@@ -623,23 +659,41 @@ function QueryList(props) {
             <Button type="danger" style={{ marginLeft: 10 }}>批量删除</Button>
           </Popconfirm> */}
         </div>
-        <Table
-          loading={loading}
-          columns={columns.filter(item => item.title !== 'id' || item.key !== 'id')}
-          dataSource={faultQueryList && faultQueryList.rows}
-          table-layout="fixed"
-          rowKey={record => record.id}
-          pagination={pagination}
-          rowSelection={rowSelection}
-        />
+        {
+          dictType === undefined && (
+            <Table
+            loading={loading}
+            columns={columns.filter(item => item.title !== 'id' || item.key !== 'id')}
+            dataSource={faultQueryList && faultQueryList.rows}
+            table-layout="fixed"
+            rowKey={record => record.id}
+            pagination={pagination}
+          />
+          )
+        }
+
+        {
+          dictType !== undefined && (
+            <Table
+            loading={loading}
+            columns={columns.filter(item => item.title !== 'id' || item.key !== 'id')}
+            dataSource={relatedictArr}
+            rowKey={record => record.id}
+            pagination={pagination}
+          />
+          )
+        }
+
+      
       </Card>
     </PageHeaderWrapper>
   );
 }
 export default Form.create({})(
-  connect(({ fault, loading }) => ({
+  connect(({ fault,faultstatics,loading }) => ({
     faultQueryList: fault.faultQueryList,
     html: fault.html,
+    relatedictArr: faultstatics.relatedictArr,
     loading: loading.models.fault,
   }))(QueryList),
 );
