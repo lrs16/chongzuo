@@ -147,8 +147,9 @@ function QueryList(props) {
       },
     });
   };
-//  故障汇总的列表
+//  故障类型的列表
   const  faultList = () => {
+    console.log('ggg');
     dispatch({
       type: 'faultstatics/fetchrelateDictList',
       payload: {

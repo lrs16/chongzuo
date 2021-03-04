@@ -50,7 +50,7 @@ const columns = [
           pathname: '/ITSM/faultmanage/querylist',
           query: { 
             dictCode: record.statCode,
-            dictType: 'handle',
+            dictType: 'type',
            }
         }}
       >

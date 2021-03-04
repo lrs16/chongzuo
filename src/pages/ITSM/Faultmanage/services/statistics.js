@@ -11,6 +11,7 @@ export async function faultList(params) {
 
 //  数据字典相关字段统计故障工单数据列表,在查询页
 export async function relateDictList(params) {
+  console.log('params: ', params);
   return request(`/trouble/stat/getOrderRelateDictList`,{
     method: 'POST',
     body:JSON.stringify(params)

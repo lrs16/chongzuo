@@ -430,13 +430,13 @@ export default {
                       routes: [
                         {
                           path: '/ITSM/faultmanage/faultstaticount/faultsumstatic',
-                          name: '故障汇总统计',
+                          name: '故障类型统计',
                           icon: 'control',
                           component: './ITSM/Faultmanage/Faultbreakdownlist',
                         },
                         {
                           path: '/ITSM/faultmanage/faultstaticount/breakdowndetail',
-                          name: '故障明细表',
+                          name: '故障状态统计',
                           icon: 'control',
                           component: './ITSM/Faultmanage/Breakdowndetail',
                         },
