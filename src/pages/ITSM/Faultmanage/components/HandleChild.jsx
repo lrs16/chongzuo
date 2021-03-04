@@ -10,11 +10,11 @@ const { Option } = Select;
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
-    sm: { span: 10 },
+    sm: { span: 12 },
   },
   wrapperCol: {
     xs: { span: 24 },
-    sm: { span: 14 },
+    sm: { span: 12 },
   },
 };
 
@@ -89,12 +89,8 @@ const HandleChild = React.forwardRef((props, ref) => {
   //   return [];
   // };
 
-<<<<<<< HEAD
-  const handleResult = getTypebyTitle('故障处理结果');
-=======
   // const handleResult = getTypebyTitle('故障处理结果');
   // console.log('handleResult: ', handleResult);
->>>>>>> 数据字典数据格式变更
 
   return (
     <Row>
@@ -148,7 +144,7 @@ const HandleChild = React.forwardRef((props, ref) => {
         </Col>
 
         <Col span={8}>
-          <Form.Item label="处理开始时间" {...formItemLayout}>
+          <Form.Item label="处理开始时间">
             {getFieldDecorator('handleStartTime', {
               rules: [
                 {
@@ -165,7 +161,7 @@ const HandleChild = React.forwardRef((props, ref) => {
         </Col>
 
         <Col span={8}>
-          <Form.Item label="处理完成时间" {...formItemLayout}>
+          <Form.Item label="处理完成时间">
             {getFieldDecorator('handleEndTime', {
               rules: [
                 {
@@ -182,7 +178,7 @@ const HandleChild = React.forwardRef((props, ref) => {
         </Col>
         {selectdata.handleresult !== undefined && (
           <Col span={8}>
-            <Form.Item label="处理结果" {...formItemLayout}>
+            <Form.Item label="处理结果">
               {getFieldDecorator('handleResult', {
                 rules: [
                   {
@@ -203,7 +199,7 @@ const HandleChild = React.forwardRef((props, ref) => {
             </Form.Item>
           </Col>
         )}
-        <Col span={18}>
+        <Col span={24}>
           <Form.Item
             label="上传故障处理记录表"
             {...forminladeLayout}
@@ -237,7 +233,7 @@ const HandleChild = React.forwardRef((props, ref) => {
           </Form.Item>
         </Col>
 
-        <Col span={18}>
+        <Col span={24}>
           <Form.Item
             label="故障系统截图"
             {...forminladeLayout}
@@ -271,7 +267,7 @@ const HandleChild = React.forwardRef((props, ref) => {
           </Form.Item>
         </Col>
 
-        <Col span={18}>
+        <Col span={24}>
           <Form.Item
             label="上传附件"
             {...forminladeLayout}
