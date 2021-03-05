@@ -27,7 +27,6 @@ export default {
 
     // 运维服务指标统计列表
     *fetcheventServiceList({ payload }, { call, put }) {
-      console.log('fff');
       const response = yield call(maintenanceList,payload);
       yield put ({
         type: 'eventServicearr',

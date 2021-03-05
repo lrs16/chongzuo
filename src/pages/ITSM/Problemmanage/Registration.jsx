@@ -99,17 +99,6 @@ function Registration(props) {
     });
   }
 
-    //  获取常用语
-    const getCompletecontent = () => {
-      dispatch({
-        type: 'problemdropdown/autoCompletecontent',
-        payload: {
-          module:'问题单',
-          field:'标题',
-          key:''
-        },
-      });
-    };
   useEffect(() => {
     // getUserinfo();
     getSource();
@@ -118,7 +107,6 @@ function Registration(props) {
     getscope();
     getProject();
     queryDept();
-    // getCompletecontent();
   }, []);
 
 
@@ -229,7 +217,6 @@ export default Form.create({})(
     prioritylist: problemdropdown.prioritylist,
     scopeList: problemdropdown.scopeList,
     projectList: problemdropdown.projectList,
-    antoArr: problemdropdown.antoArr,
     userinfo: itsmuser.userinfo,
     startid: problemmanage.startid,
     loading: loading.models.problemmanage,

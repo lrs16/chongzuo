@@ -208,10 +208,3 @@ export async function handleGratelist(handleStatus) {
   })
 }
 
-//  常用语
-export async function autoCompletelist(params) {
-  return request(`/common/expressions/getExpressionsByContentAndField`,{
-    method:'POST',
-    body:JSON.stringify(params)
-  })
-}

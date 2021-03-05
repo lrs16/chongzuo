@@ -1,6 +1,5 @@
 import {
   querkeyVal,
-  autoCompletelist
 } from '../services/api';
 
 export default {
@@ -15,7 +14,6 @@ export default {
     projectList:[],
     stateList:[],
     orderList:[],
-    antoArr:[]
   },
 
   effects: {
@@ -77,13 +75,6 @@ export default {
       }
     },
 
-    *autoCompletecontent({ payload }, { call, put }) {
-      const response = yield call(autoCompletelist,payload);
-      yield put ({
-        type: 'antoArr',
-        payload: response
-      })
-    },
   },
 
   reducers: {
@@ -139,13 +130,6 @@ export default {
       return {
         ...state,
         orderList: action.payload.data
-      }
-    },
-
-    antoArr(state,action) {
-      return {
-        ...state,
-        antoArr: action.payload.data
       }
     },
 

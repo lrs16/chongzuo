@@ -19,18 +19,28 @@ const sign = 'workordertreatmentrate';
 const columns = [
   {
     title: '供电单位',
-    dataIndex: 'first_object',
-    key: 'first_object',
+    dataIndex: 'unit',
+    key: 'unit',
   },
   {
     title: '工单数',
-    dataIndex: 'second_object',
-    key: 'second_object',
+    dataIndex: 'order_num',
+    key: 'order_num',
+    render: (text, record) => (
+      <Link
+        to={{
+          pathname: '/ITSM/problemmanage/problemquery',
+          query: { handleStatu: '0' }
+        }}
+      >
+        {text}
+      </Link>
+    )
   },
   {
     title: '完成数',
-    dataIndex: 'last_num',
-    key: 'last_num',
+    dataIndex: 'close_num',
+    key: 'close_num',
     render: (text, record) => (
       <Link
         to={{
@@ -44,8 +54,8 @@ const columns = [
   },
   {
     title: '完成率',
-    dataIndex: 'now_num',
-    key: 'now_num',
+    dataIndex: 'points',
+    key: 'points',
     render: (text, record) => (
       <Link
         to={{

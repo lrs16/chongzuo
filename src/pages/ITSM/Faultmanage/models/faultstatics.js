@@ -32,7 +32,6 @@ export default {
       })
     },
 
-
     // 问题分类统计
     *fetchfaultlist({ payload }, { call, put }) {
       const response = yield call(faultList,payload);

@@ -69,14 +69,14 @@ const ConfirmChild = React.forwardRef((props, ref) => {
 
           <Col span={8}>
           <Form.Item label="故障责任方">
-            {getFieldDecorator('checkBlame', {
+            {getFieldDecorator('blame', {
               rules: [
                 {
                   required,
                   message: '请输入故障责任方',
                 },
               ],
-              initialValue: confirm.checkBlame
+              initialValue: confirm.blame
             })(<Input />)}
           </Form.Item>
         </Col>
@@ -163,7 +163,7 @@ ConfirmChild.defaultProps = {
     confirmContent: '',
     confirmResult: '1',
     confirmTime: moment().format(),
-    checkBlame:''
+    blame:''
   },
   curruserinfo: {
     deptName: '',

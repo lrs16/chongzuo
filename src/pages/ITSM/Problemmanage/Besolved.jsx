@@ -146,18 +146,6 @@ function Besolved(props) {
     });
   };
 
-  //  获取常用语
-  const getCompletecontent = () => {
-    dispatch({
-      type: 'problemdropdown/autoCompletecontent',
-      payload: {
-        module:'问题单',
-        field:'标题',
-        key:''
-      },
-    });
-  };
-
   useEffect(() => {
     getTobolist();
     getSource();
@@ -166,7 +154,6 @@ function Besolved(props) {
     getscope();
     getProject();
     getstate();
-    // getCompletecontent();
   }, []);
 
   const handleReset = () => {
@@ -442,12 +429,12 @@ function Besolved(props) {
             )}
           </Form>
         </Row>
-        <div style={{ marginBottom: 24 }}>
+        {/* <div style={{ marginBottom: 24 }}>
           <Button
             type="primary"
             onClick={() => download()}
           >导出数据</Button>
-        </div>
+        </div> */}
 
         <Table
           loading={loading}
@@ -470,7 +457,6 @@ export default Form.create({})(
     scopeList: problemdropdown.scopeList,
     projectList: problemdropdown.projectList,
     stateList: problemdropdown.stateList,
-    antoArr: problemdropdown.antoArr,
     loading: loading.models.problemmanage,
   }))(Besolved),
 );
