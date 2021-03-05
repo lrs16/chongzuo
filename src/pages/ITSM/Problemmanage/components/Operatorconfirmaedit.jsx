@@ -6,16 +6,21 @@ import {
   Input,
   DatePicker,
   Radio,
+  AutoComplete
 } from 'antd';
 import moment from 'moment';
 import { FatherContext } from '../Workorder';
 import SysUpload from '@/components/SysUpload';
+import { getAndField } from '@/pages/SysManage/services/api';
+
 
 const { TextArea } = Input;
 
 const Operatorconfirmaedit = React.forwardRef((props, ref) => {
   const { formItemLayout, forminladeLayout, files, ChangeFiles, flowNodeName } = props;
   const { flowtype, setFlowtype } = useContext(FatherContext);
+  const [titleautodata, setTitleAutoData] = useState([]);
+  const [desautodata, setDestoData] = useState([]);
   const { getFieldDecorator } = props.form;
 
   const [fileslist, setFilesList] = useState([]);
@@ -40,6 +45,33 @@ const Operatorconfirmaedit = React.forwardRef((props, ref) => {
   const onChange = (e) => {
     setFlowtype(e.target.value);
   }
+
+
+  const handletitleSearch = values => {
+    getAndField(values).then(res => {
+      if (res.code === 200 && res.data.length > 0) {
+        const newdata = res.data.map(item => {
+          return item.content;
+        });
+        setTitleAutoData(newdata);
+      }
+    });
+  };
+
+  const handledesSearch = values => {
+    getAndField(values).then(res => {
+      if (res.code === 200) {
+        const newdata = res.data.map(item => {
+          return item.content;
+        });
+        setDestoData(newdata);
+      }
+    });
+  };
+  // 常用语调用
+  useEffect(() => {
+    handledesSearch({ module: '问题单', field: '回访', key: '' });
+  }, []);
 
   const required = true;
 
@@ -93,7 +125,12 @@ const Operatorconfirmaedit = React.forwardRef((props, ref) => {
                   getFieldDecorator('confirmContent', {
                     initialValue: confirm.confirmContent,
                   })(
-                    <TextArea />
+                    <AutoComplete
+                    dataSource={desautodata}
+                  // onSearch={value => handleSearch(value)}
+                  >
+                    <TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />
+                  </AutoComplete>,
                   )
                 }
 
@@ -115,7 +152,12 @@ const Operatorconfirmaedit = React.forwardRef((props, ref) => {
                     ],
                     initialValue: confirm.confirmContent,
                   })(
-                    <TextArea />
+                    <AutoComplete
+                      dataSource={desautodata}
+                    // onSearch={value => handleSearch(value)}
+                    >
+                      <TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />
+                    </AutoComplete>,
                   )
                 }
 
