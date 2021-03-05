@@ -54,7 +54,6 @@ function QueryList(props) {
     relatedictArr, // 从汇总统计到的列表
     dispatch,
   } = props;
-  console.log(relatedictArr,'relatedictArr');
 
   const [expand, setExpand] = useState(false);
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 10 }); // 分页state
@@ -186,9 +185,10 @@ function QueryList(props) {
   }, []);
 
   const searchdata = (values, page, pageSize) => {
+    console.log('values: ', values);
     // 查询 查询接口
     dispatch({
-      type: 'faultstatics/getTosearchfaultSearch',
+      type: 'fault/getTosearchfaultSearch',
       payload: {
         values,
         pageSize,

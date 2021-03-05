@@ -111,7 +111,7 @@ const Developerprocessdit = React.forwardRef((props, ref) => {
                 {
                   handleresult && handleresult.length && (
                     handleresult.map(({ key, val }) => (
-                      <Option key={key} value={key}>
+                      <Option key={key} value={val}>
                         {val}
                       </Option>
                     ))
