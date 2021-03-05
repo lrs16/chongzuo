@@ -271,7 +271,7 @@ function Besolved(props) {
                     {
                       stateList.current && stateList.current.length > 0 && (
                         (stateList.current).map(({ key, val }) => (
-                          <Option key={key} value={val}>
+                          <Option key={key} value={key}>
                             {val}
                           </Option>
                         ))

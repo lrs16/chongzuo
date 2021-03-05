@@ -181,7 +181,7 @@ export async function querydownload(params) {
 export async function besolveListdownload(params) {
   return request(`/problem/flow/expExcelWaitDoList`, {
     method: 'POST',
-    // responseType: 'blob',
+    responseType: 'blob',
     body: JSON.stringify(params),
   });
 }

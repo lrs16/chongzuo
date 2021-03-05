@@ -169,7 +169,6 @@ export async function querkeyVal(dictModule, dictType) {
 
 // 数据字典树型 /sys/dict/queryChildDictLower
 export async function queryChildDictLower(params) {
-  console.log('params: ', params);
   return request(`/sys/dict/queryChildDictLower`, {
     method: 'POST',
     body: JSON.stringify(params),

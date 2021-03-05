@@ -171,7 +171,7 @@ export default {
     *searchBesolve({ payload: { current, pageSize, values } }, { call, put }) {
       const response = yield call(searchBesolve, current, pageSize, values);
       yield put({
-        type: 'queryArr',
+        type: 'besolveListpage',
         payload: response,
       });
     },
@@ -232,7 +232,6 @@ export default {
 
     // 发布列表
     *realselist({ payload }, { call, put }) {
-      console.log('realse');
       const response = yield call(realselist);
       yield put({
         type: 'realsetableList',
@@ -262,11 +261,11 @@ export default {
     },
 
     *eventdownload({ payload }, { call }) {
-      return yield call(querydownload, { payload });
+      return yield call(querydownload, payload);
     },
 
     *besolvedownload({ payload }, { call }) {
-      return yield call(besolveListdownload, { payload });
+      return yield call(besolveListdownload, payload);
     },
 
     *filedownload({ payload:{id} }, { call }) {
