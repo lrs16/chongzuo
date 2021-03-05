@@ -1,8 +1,7 @@
 import React, { useState, useRef, useImperativeHandle, useEffect } from 'react';
-import { Row, Col, Form, Input, Select, DatePicker } from 'antd';
+import { Row, Col, Form, Input, Select, DatePicker,AutoComplete } from 'antd';
 import moment from 'moment';
 import SysUpload from '@/components/SysUpload';
-import SysDict from '@/components/SysDict';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -35,6 +34,7 @@ const Registrat = React.forwardRef((props, ref) => {
     priority,
     scope,
     project,
+    antoArr
   } = props;
 
 
@@ -54,12 +54,6 @@ const Registrat = React.forwardRef((props, ref) => {
   return (
     <>
       <Row gutter={24} style={{ paddingTop: 24, marginTop: '20px' }}>
-      <SysDict
-        typeid="1354278126724583426"
-        commonid="1354288354950123522"
-        ChangeSelectdata={newvalue => setSelectData(newvalue)}
-        style={{ display: 'none' }}
-      />
         <Form {...formItemLayout}>
           <Col span={8}>
             <Form.Item label="问题编号">
@@ -294,7 +288,8 @@ const Registrat = React.forwardRef((props, ref) => {
                   },
                 ],
                 initialValue: main.title,
-              })(<Input placeholder='请输入' />)}
+              })
+              (<AutoComplete  dataSource={antoArr}/>)}
             </Form.Item>
           </Col>
 

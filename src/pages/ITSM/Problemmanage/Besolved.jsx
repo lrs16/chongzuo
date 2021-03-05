@@ -146,6 +146,18 @@ function Besolved(props) {
     });
   };
 
+  //  获取常用语
+  const getCompletecontent = () => {
+    dispatch({
+      type: 'problemdropdown/autoCompletecontent',
+      payload: {
+        module:'问题单',
+        field:'标题',
+        key:''
+      },
+    });
+  };
+
   useEffect(() => {
     getTobolist();
     getSource();
@@ -154,6 +166,7 @@ function Besolved(props) {
     getscope();
     getProject();
     getstate();
+    // getCompletecontent();
   }, []);
 
   const handleReset = () => {
@@ -457,6 +470,7 @@ export default Form.create({})(
     scopeList: problemdropdown.scopeList,
     projectList: problemdropdown.projectList,
     stateList: problemdropdown.stateList,
+    antoArr: problemdropdown.antoArr,
     loading: loading.models.problemmanage,
   }))(Besolved),
 );
