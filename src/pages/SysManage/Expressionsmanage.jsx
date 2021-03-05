@@ -13,7 +13,7 @@ function Expressions(props) {
   const [selectdata, setSelectData] = useState([]); // 数据字典
   const [savetype, setSaveType] = useState(''); // 保存类型  save:新建  update:编辑
   const [data, setData] = useState('');
-  // const [paginations, setPageinations] = useState({ current: 1, pageSize: 10 });
+  const [paginations, setPageinations] = useState({ current: 0, pageSize: 10 });
 
   const getdatas = () => {
     dispatch({
@@ -22,6 +22,8 @@ function Expressions(props) {
         field: '',
         content: '',
         status: '',
+        pageIndex: paginations.current,
+        pageSize: paginations.pageSize,
       },
     });
   };

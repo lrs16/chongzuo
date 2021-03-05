@@ -118,6 +118,8 @@ function ToDolist(props) {
           type: 'demandtodo/fetchlist',
           payload: {
             ...values,
+            creationStartTime: '',
+            creationEndTime: '',
             page: paginations.current,
             limit: paginations.pageSize,
             userId: sessionStorage.getItem('userauthorityid'),
@@ -136,6 +138,8 @@ function ToDolist(props) {
       type: 'demandtodo/fetchlist',
       payload: {
         ...values,
+        creationStartTime: '',
+        creationEndTime: '',
         limit: size,
         page,
         userId: sessionStorage.getItem('userauthorityid'),

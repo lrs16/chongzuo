@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Tabs } from 'antd';
 import { DndProvider, DragSource, DropTarget } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+import styles from '../global.less';
 
 const TabNode = props => {
   const { connectDragSource, connectDropTarget, children } = props;
@@ -109,9 +110,11 @@ class DraggableTabs extends Component {
 
     return (
       <DndProvider backend={HTML5Backend}>
-        <Tabs renderTabBar={this.renderTabBar} {...this.props}>
-          {orderTabs}
-        </Tabs>
+        <div>
+          <Tabs renderTabBar={this.renderTabBar} {...this.props}>
+            {orderTabs}
+          </Tabs>
+        </div>
       </DndProvider>
     );
   }

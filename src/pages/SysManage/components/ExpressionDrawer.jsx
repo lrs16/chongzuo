@@ -33,9 +33,9 @@ function ExpressionDrawer(props) {
         // 传数据
         handleSubmit(values);
         props.form.resetFields();
+        ChangeVisible(false);
       }
     });
-    ChangeVisible(false);
   };
 
   return (

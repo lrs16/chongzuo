@@ -3,6 +3,7 @@ import router from 'umi/router';
 import moment from 'moment';
 import { Row, Col, Form, Input, Select, DatePicker } from 'antd';
 import SysUpload from '@/components/SysUpload';
+import { getAndField } from '@/pages/SysManage/services/api';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -37,6 +38,9 @@ const ReturnVisit = React.forwardRef((props, ref) => {
   const attRef = useRef();
   const required = true;
   const [fileslist, setFilesList] = useState({ arr: [], ischange: false });
+  const [titleautodata, setTitleAutoData] = useState([]);
+  const [desautodata, setDestoData] = useState([]);
+
   useEffect(() => {
     if (fileslist.ischange) {
       ChangeFiles(fileslist);
@@ -82,6 +86,22 @@ const ReturnVisit = React.forwardRef((props, ref) => {
     }
     routerRefresh();
   };
+
+  const handledesSearch = values => {
+    getAndField(values).then(res => {
+      if (res.code === 200) {
+        const newdata = res.data.map(item => {
+          return item.content;
+        });
+        setDestoData(newdata);
+      }
+    });
+  };
+
+  // 常用语调用
+  useEffect(() => {
+    handledesSearch({ module: '事件单', field: '描述', key: '' });
+  }, []);
 
   const getTypebyTitle = key => {
     if (selectdata.length > 0) {
@@ -160,7 +180,14 @@ const ReturnVisit = React.forwardRef((props, ref) => {
               {getFieldDecorator('finish_content', {
                 rules: [{ required, message: '请输入回访内容' }],
                 initialValue: finish.content,
-              })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
+              })(
+                <AutoComplete
+                  dataSource={desautodata}
+                  // onSearch={value => handleSearch(value)}
+                >
+                  <TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />
+                </AutoComplete>,
+              )}
             </Form.Item>
           </Col>
           <Col span={8}>

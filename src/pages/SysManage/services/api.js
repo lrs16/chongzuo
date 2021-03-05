@@ -218,18 +218,19 @@ export async function editeDict(params) {
 }
 
 // 查询常用语
-export async function queryExpressions(field, content, status) {
-  return request(`/common/expressions/query?content=${content}&field=${field}&status=${status}`);
+export async function queryExpressions(field, content, status, pageIndex, pageSize) {
+  return request(
+    `/common/expressions/query?content=${content}&field=${field}&status=${status}&pageIndex=${pageIndex}&pageSize=${pageSize}`,
+  );
 }
 
 // 获取常用语
-export async function getAndField(modules, field, key) {
-  return request(
-    `/common/expressions/getExpressionsByContentAndField?module=${modules}&field=${field}&key=${key}`,
-    {
-      method: 'GET',
-    },
-  );
+export async function getAndField(params) {
+  return request(`/common/expressions/getExpressionsByContentAndField`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+  });
 }
 
 // 保存常用语

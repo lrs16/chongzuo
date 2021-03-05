@@ -1,29 +1,31 @@
 import React, { useRef, useImperativeHandle, useEffect, useState } from 'react';
 import moment from 'moment';
 import SysUpload from '@/components/SysUpload'; // 附件下载组件
-import {
-  Form,
-  Row,
-  Col,
-  Input,
-  Select,
-  DatePicker,
-  Radio,
-  Cascader
-} from 'antd';
+import { Form, Row, Col, Input, Select, DatePicker, Radio, Cascader } from 'antd';
 import SysDict from '@/components/SysDict';
+import { getAndField } from '@/pages/SysManage/services/api';
 
 const { TextArea } = Input;
 const { Option } = Select;
 const RadioGroup = Radio.Group;
 
 const RegisterChild = React.forwardRef((props, ref) => {
-  const { formItemLayout, forminladeLayout, tododetailslist, ChangeFiles, main, curruserinfo } = props;
+  const {
+    formItemLayout,
+    forminladeLayout,
+    tododetailslist,
+    ChangeFiles,
+    main,
+    curruserinfo,
+  } = props;
   const { getFieldDecorator } = props.form;
   const attRef = useRef();
 
   const [fileslist, setFilesList] = useState({ arr: [], ischange: false }); // 下载列表
   const [selectdata, setSelectData] = useState([]);
+  const [titleautodata, setTitleAutoData] = useState([]);
+  const [desautodata, setDestoData] = useState([]);
+
   useEffect(() => {
     ChangeFiles(fileslist);
   }, [fileslist]);
@@ -38,7 +40,34 @@ const RegisterChild = React.forwardRef((props, ref) => {
 
   const required = true;
 
-  const getTypebyTitle = (title) => {
+  const handletitleSearch = values => {
+    getAndField(values).then(res => {
+      if (res.code === 200 && res.data.length > 0) {
+        const newdata = res.data.map(item => {
+          return item.content;
+        });
+        setTitleAutoData(newdata);
+      }
+    });
+  };
+  const handledesSearch = values => {
+    getAndField(values).then(res => {
+      if (res.code === 200) {
+        const newdata = res.data.map(item => {
+          return item.content;
+        });
+        setDestoData(newdata);
+      }
+    });
+  };
+
+  // 常用语调用
+  useEffect(() => {
+    handletitleSearch({ module: '故障单', field: '标题', key: '' });
+    handledesSearch({ module: '故障单', field: '描述', key: '' });
+  }, []);
+
+  const getTypebyTitle = title => {
     if (selectdata.length > 0) {
       return selectdata.filter(item => item.title === title)[0].children;
     }
@@ -63,7 +92,7 @@ const RegisterChild = React.forwardRef((props, ref) => {
         <Col xl={8} xs={12}>
           <Form.Item label="故障编号">
             {getFieldDecorator('no', {
-              initialValue: main.no || ''
+              initialValue: main.no || '',
             })(<Input disabled />)}
           </Form.Item>
         </Col>
@@ -77,7 +106,9 @@ const RegisterChild = React.forwardRef((props, ref) => {
                   message: '请选择时间',
                 },
               ],
-              initialValue: tododetailslist ? moment(tododetailslist.register.registerTime) : moment(Date.now())
+              initialValue: tododetailslist
+                ? moment(tododetailslist.register.registerTime)
+                : moment(Date.now()),
             })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} />)}
           </Form.Item>
         </Col>
@@ -91,7 +122,9 @@ const RegisterChild = React.forwardRef((props, ref) => {
                   message: '请选择时间',
                 },
               ],
-              initialValue: tododetailslist ? moment(tododetailslist.register.registerOccurTime) : moment(Date.now())
+              initialValue: tododetailslist
+                ? moment(tododetailslist.register.registerOccurTime)
+                : moment(Date.now()),
             })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} />)}
           </Form.Item>
         </Col>
@@ -105,7 +138,7 @@ const RegisterChild = React.forwardRef((props, ref) => {
                   message: '请选择',
                 },
               ],
-              initialValue: main.source || ''
+              initialValue: main.source || '',
             })(
               <Select placeholder="请选择">
                 {faultSource.map(obj => [
@@ -127,7 +160,7 @@ const RegisterChild = React.forwardRef((props, ref) => {
                   message: '请选择',
                 },
               ],
-              initialValue: tododetailslist ? tododetailslist.register.registerModel : ''
+              initialValue: tododetailslist ? tododetailslist.register.registerModel : '',
             })(
               <Select placeholder="请选择">
                 {sysmodular.map(obj => [
@@ -149,13 +182,13 @@ const RegisterChild = React.forwardRef((props, ref) => {
                   message: '请选择',
                 },
               ],
-              initialValue: main.type.split('/') || ''
+              initialValue: main.type.split('/') || '',
             })(
               <Cascader
                 placeholder="请选择"
                 options={faultType}
                 fieldNames={{ label: 'title', value: 'title', children: 'children' }}
-              />
+              />,
             )}
           </Form.Item>
         </Col>
@@ -169,7 +202,7 @@ const RegisterChild = React.forwardRef((props, ref) => {
                   message: '请输入',
                 },
               ],
-              initialValue: tododetailslist ? tododetailslist.register.registerAddress : ''
+              initialValue: tododetailslist ? tododetailslist.register.registerAddress : '',
             })(<Input placeholder="请输入" allowClear />)}
           </Form.Item>
         </Col>
@@ -183,7 +216,7 @@ const RegisterChild = React.forwardRef((props, ref) => {
                   message: '请选择',
                 },
               ],
-              initialValue: tododetailslist ? tododetailslist.register.registerLevel : ''
+              initialValue: tododetailslist ? tododetailslist.register.registerLevel : '',
             })(
               <Select placeholder="请选择">
                 {priority.map(obj => [
@@ -191,7 +224,7 @@ const RegisterChild = React.forwardRef((props, ref) => {
                     {obj.title}
                   </Option>,
                 ])}
-              </Select>
+              </Select>,
             )}
           </Form.Item>
         </Col>
@@ -205,7 +238,7 @@ const RegisterChild = React.forwardRef((props, ref) => {
                   message: '请选择',
                 },
               ],
-              initialValue: tododetailslist ? tododetailslist.register.registerScope : ''
+              initialValue: tododetailslist ? tododetailslist.register.registerScope : '',
             })(
               <Select placeholder="请选择">
                 {effect.map(obj => [
@@ -213,7 +246,7 @@ const RegisterChild = React.forwardRef((props, ref) => {
                     {obj.title}
                   </Option>,
                 ])}
-              </Select>
+              </Select>,
             )}
           </Form.Item>
         </Col>
@@ -227,8 +260,15 @@ const RegisterChild = React.forwardRef((props, ref) => {
                   message: '请输入',
                 },
               ],
-              initialValue: main.title || ''
-            })(<Input placeholder="请输入" allowClear />)}
+              initialValue: main.title || '',
+            })(
+              <AutoComplete
+                dataSource={titleautodata}
+                // onSearch={value => handleSearch(value)}
+              >
+                <Input placeholder="请输入" />
+              </AutoComplete>,
+            )}
           </Form.Item>
         </Col>
 
@@ -241,15 +281,22 @@ const RegisterChild = React.forwardRef((props, ref) => {
                   message: '请输入',
                 },
               ],
-              initialValue: main.content || ''
-            })(<TextArea rows={5} placeholder="请输入" />)}
+              initialValue: main.content || '',
+            })(
+              <AutoComplete
+                dataSource={desautodata}
+                // onSearch={value => handleSearch(value)}
+              >
+                <TextArea autoSize={{ minRows: 5 }} placeholder="请输入" />
+              </AutoComplete>,
+            )}
           </Form.Item>
         </Col>
 
         <Col span={24}>
           <Form.Item label="是否影响业务" {...forminladeLayout}>
             {getFieldDecorator('registerEffect', {
-              initialValue: Number(tododetailslist.register.registerEffect)
+              initialValue: Number(tododetailslist.register.registerEffect),
             })(
               <RadioGroup>
                 <Radio value={0}>是</Radio>
@@ -263,10 +310,15 @@ const RegisterChild = React.forwardRef((props, ref) => {
           <Form.Item
             label="上传附件"
             {...forminladeLayout}
-          // extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb"
+            // extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb"
           >
             <div style={{ width: 400 }}>
-              <SysUpload fileslist={tododetailslist ? JSON.parse(tododetailslist.register.registerAttachments) : []} ChangeFileslist={newvalue => setFilesList(newvalue)} />
+              <SysUpload
+                fileslist={
+                  tododetailslist ? JSON.parse(tododetailslist.register.registerAttachments) : []
+                }
+                ChangeFileslist={newvalue => setFilesList(newvalue)}
+              />
             </div>
           </Form.Item>
         </Col>
@@ -274,7 +326,9 @@ const RegisterChild = React.forwardRef((props, ref) => {
         <Col span={8}>
           <Form.Item label="登记人">
             {getFieldDecorator('registerUser', {
-              initialValue: tododetailslist ? tododetailslist.register.registerUser : curruserinfo.userName
+              initialValue: tododetailslist
+                ? tododetailslist.register.registerUser
+                : curruserinfo.userName,
             })(<Input allowClear disabled />)}
           </Form.Item>
         </Col>
@@ -282,7 +336,9 @@ const RegisterChild = React.forwardRef((props, ref) => {
         <Col span={8}>
           <Form.Item label="登记人单位">
             {getFieldDecorator('registerUnit', {
-              initialValue: tododetailslist ? tododetailslist.register.registerUnit : curruserinfo.unitName
+              initialValue: tododetailslist
+                ? tododetailslist.register.registerUnit
+                : curruserinfo.unitName,
             })(<Input allowClear disabled />)}
           </Form.Item>
         </Col>
@@ -290,7 +346,9 @@ const RegisterChild = React.forwardRef((props, ref) => {
         <Col span={8}>
           <Form.Item label="登记人部门">
             {getFieldDecorator('registerDept', {
-              initialValue: tododetailslist ? tododetailslist.register.registerDept : curruserinfo.deptName
+              initialValue: tododetailslist
+                ? tododetailslist.register.registerDept
+                : curruserinfo.deptName,
             })(<Input allowClear disabled />)}
           </Form.Item>
         </Col>
@@ -303,8 +361,8 @@ RegisterChild.defaultProps = {
   curruserinfo: {
     deptName: '',
     unitName: '',
-    userName: ''
-  }
-}
+    userName: '',
+  },
+};
 
 export default Form.create({})(RegisterChild);

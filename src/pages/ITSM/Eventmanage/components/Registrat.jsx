@@ -1,11 +1,11 @@
 import React, { useRef, useImperativeHandle, forwardRef, useState, useEffect } from 'react';
 import router from 'umi/router';
 import moment from 'moment';
-import { Row, Col, Form, Input, Select, Checkbox, DatePicker, Cascader } from 'antd';
+import { Row, Col, Form, Input, Select, Checkbox, DatePicker, Cascader, AutoComplete } from 'antd';
 import { phone_reg } from '@/utils/Regexp';
 import SysUpload from '@/components/SysUpload';
-import SysDict from '@/components/SysDict';
-import styles from '../index.less';
+// import styles from '../index.less';
+import { getAndField } from '@/pages/SysManage/services/api';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -35,6 +35,9 @@ const Registrat = forwardRef((props, ref) => {
   const [check, setCheck] = useState(false);
   const [revisitway, setRevisitway] = useState(false);
   const [fileslist, setFilesList] = useState({ arr: [], ischange: false });
+  const [titleautodata, setTitleAutoData] = useState([]);
+  const [desautodata, setDestoData] = useState([]);
+
   useEffect(() => {
     if (fileslist.ischange === true) {
       ChangeFiles(fileslist);
@@ -152,6 +155,33 @@ const Registrat = forwardRef((props, ref) => {
   // };
   // changenulltostr(main);
   // changenulltostr(register);
+
+  const handletitleSearch = values => {
+    getAndField(values).then(res => {
+      if (res.code === 200 && res.data.length > 0) {
+        const newdata = res.data.map(item => {
+          return item.content;
+        });
+        setTitleAutoData(newdata);
+      }
+    });
+  };
+  const handledesSearch = values => {
+    getAndField(values).then(res => {
+      if (res.code === 200) {
+        const newdata = res.data.map(item => {
+          return item.content;
+        });
+        setDestoData(newdata);
+      }
+    });
+  };
+
+  // 常用语调用
+  useEffect(() => {
+    handletitleSearch({ module: '事件单', field: '标题', key: '' });
+    handledesSearch({ module: '事件单', field: '描述', key: '' });
+  }, []);
 
   const getTypebykey = key => {
     if (selectdata.length > 0) {
@@ -418,7 +448,14 @@ const Registrat = forwardRef((props, ref) => {
               {getFieldDecorator('main_title', {
                 rules: [{ required, message: '请输入事件标题' }],
                 initialValue: main.title,
-              })(<Input placeholder="请输入" />)}
+              })(
+                <AutoComplete
+                  dataSource={titleautodata}
+                  // onSearch={value => handleSearch(value)}
+                >
+                  <Input placeholder="请输入" />
+                </AutoComplete>,
+              )}
             </Form.Item>
           </Col>
           {/* <Col span={24}>
@@ -453,7 +490,14 @@ const Registrat = forwardRef((props, ref) => {
               {getFieldDecorator('main_content', {
                 rules: [{ required, message: '请输入事件描述' }],
                 initialValue: main.content,
-              })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
+              })(
+                <AutoComplete
+                  dataSource={desautodata}
+                  // onSearch={value => handleSearch(value)}
+                >
+                  <TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />
+                </AutoComplete>,
+              )}
             </Form.Item>
           </Col>
           {check === false && (

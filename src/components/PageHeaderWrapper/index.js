@@ -50,12 +50,15 @@ const PageHeaderWrapper = ({
   ...restProps
 }) => {
   return (
-    <div style={{ margin: '-24px -24px 0',}} className={classNames(wrapperClassName, styles.main)}>
+    <div style={{ margin: '-24px -24px 0' }} className={classNames(wrapperClassName, styles.main)}>
       {top}
       <MenuContext.Consumer>
         {value => {
           return (
-            <div className={styles.wrapper} style={{ padding: '44px 0 0 44px', marginRight:'24px',}}>
+            <div
+              className={styles.wrapper}
+              style={{ padding: '44px 0 0 44px', marginRight: '24px' }}
+            >
               <div
                 className={classNames({
                   [styles.wide]: !fluid && contentWidth === 'Fixed',

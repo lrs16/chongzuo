@@ -1,6 +1,6 @@
 import {
   queryExpressions,
-  getExpressionsByContentAndField,
+  getAndField,
   saveExpressions,
   updateExpressions,
   deleteExpressions,
@@ -16,17 +16,17 @@ export default {
 
   effects: {
     // 查询
-    *query({ payload: { field, content, status } }, { call, put }) {
-      const response = yield call(queryExpressions, field, content, status);
+    *query({ payload: { field, content, status, pageIndex, pageSize } }, { call, put }) {
+      const response = yield call(queryExpressions, field, content, status, pageIndex, pageSize);
       yield put({
         type: 'show',
-        payload: response.data,
+        payload: response.data.rows,
       });
     },
 
     // 获取
-    *getexpressions({ payload: { modules, field, key } }, { call }) {
-      return yield call(getExpressionsByContentAndField, modules, field, key);
+    *getexpressions({ payload }, { call }) {
+      return yield call(getAndField, payload);
     },
 
     // 保存
