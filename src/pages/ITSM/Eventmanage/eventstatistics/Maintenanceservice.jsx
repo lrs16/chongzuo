@@ -19,18 +19,18 @@ const sign = 'maintenanceservice';
 const columns = [
   {
     title: '服务指标',
-    dataIndex: 'first_object',
-    key: 'first_object',
+    dataIndex: 'name',
+    key: 'name',
   },
   {
     title: '上周',
-    dataIndex: 'second_object',
-    key: 'second_object',
+    dataIndex: 'last',
+    key: 'last',
   },
   {
     title: '本周',
-    dataIndex: 'last_num',
-    key: 'last_num',
+    dataIndex: 'now',
+    key: 'now',
     render: (text, record) => (
       <Link
         to={{
@@ -44,8 +44,8 @@ const columns = [
   },
   {
     title: '环比',
-    dataIndex: 'now_num',
-    key: 'now_num',
+    dataIndex: 'points',
+    key: 'points',
     render: (text, record) => (
       <Link
         to={{
@@ -69,7 +69,7 @@ function Maintenanceservice(props) {
   const [tabActiveKey, setTabActiveKey] = useState('week');
   const {
     form: { getFieldDecorator },
-    maintenanceArr,
+    maintenanceService,
     dispatch
   } = props;
 
@@ -94,7 +94,7 @@ function Maintenanceservice(props) {
 
   const handleListdata = (params) => {
     dispatch({
-      type: 'eventstatistics/fetchMaintenancelist',
+      type: 'eventstatistics/fetcheventServiceList',
       payload: { sign,tabActiveKey, startTime, endTime }
     })
   }
@@ -256,7 +256,7 @@ function Maintenanceservice(props) {
 
         <Table
           columns={columns}
-          dataSource={maintenanceArr}
+          dataSource={maintenanceService}
           rowKey={record => record.statName}
         />
       </Card>
@@ -266,6 +266,6 @@ function Maintenanceservice(props) {
 
 export default Form.create({})(
   connect(({ eventstatistics }) => ({
-    eventServicearr: eventstatistics.eventServicearr
+    maintenanceService: eventstatistics.maintenanceService
   }))(Maintenanceservice),
 );

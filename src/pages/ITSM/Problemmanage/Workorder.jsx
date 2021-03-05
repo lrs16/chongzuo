@@ -1053,6 +1053,7 @@ function Workorder(props) {
                 <Collapse
                   expandIconPosition="right"
                   bordered={false}
+                  defaultActiveKey={['0']}
                 // onChange={callback}
                 >
                   {problemFlowNodeRows.map((obj, index) => {
@@ -1063,6 +1064,7 @@ function Workorder(props) {
                         statue={currntStatus}
                         problemFlowNodeRows={problemFlowNodeRows}
                         main={main}
+                        key='0'
                       />],
                       ['系统运维商审核', <Problemreview
                         info={obj}

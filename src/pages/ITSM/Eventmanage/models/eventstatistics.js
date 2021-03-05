@@ -8,6 +8,10 @@ export default {
 
   state: {
     maintenanceArr:[],
+    maintenanceService:[],
+    soluteArr:[],
+    ordertopnArr:[],
+    orderrateArr:[],
     eventServicearr:[],
   },
 
@@ -23,9 +27,35 @@ export default {
 
     // 运维服务指标统计列表
     *fetcheventServiceList({ payload }, { call, put }) {
-      const response = yield call(eventServiceList,payload);
+      console.log('fff');
+      const response = yield call(maintenanceList,payload);
       yield put ({
         type: 'eventServicearr',
+        payload: response
+      })
+    },
+
+    // 运维服务指标统计列表
+    *fetchSelfHandleList({ payload }, { call, put }) {
+      const response = yield call(maintenanceList,payload);
+      yield put ({
+        type: 'soluteArr',
+        payload: response
+      })
+    },
+    // 工单TOPN统计列表
+    *fetchordertopnList({ payload }, { call, put }) {
+      const response = yield call(maintenanceList,payload);
+      yield put ({
+        type: 'ordertopnArr',
+        payload: response
+      })
+    },
+    // 工单处理率统计列表
+    *fetchorderrateList({ payload }, { call, put }) {
+      const response = yield call(maintenanceList,payload);
+      yield put ({
+        type: 'orderrateArr',
         payload: response
       })
     },
@@ -47,7 +77,28 @@ export default {
   eventServicearr(state, action) {
     return {
       ...state,
-      maintenanceArr: action.payload.data
+      maintenanceService: action.payload.data
+    }
+  },
+  // 一线解决统计列表
+  soluteArr(state, action) {
+    return {
+      ...state,
+      soluteArr: action.payload.data
+    }
+  },
+  // 工单TOPN统计列表
+  ordertopnArr(state, action) {
+    return {
+      ...state,
+      ordertopnArr: action.payload.data
+    }
+  },
+  // 处理率统计列表
+  orderrateArr(state, action) {
+    return {
+      ...state,
+      orderrateArr: action.payload.data
     }
   },
 

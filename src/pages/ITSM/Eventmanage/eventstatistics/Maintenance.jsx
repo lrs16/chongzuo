@@ -72,6 +72,7 @@ function Maintenance(props) {
     maintenanceArr,
     dispatch
   } = props;
+  console.log(maintenanceArr,'maintenanceArr');
 
   const onChange = (date) => {
     if (tabActiveKey === 'week') {

@@ -49,7 +49,7 @@ function Workordertopn(props) {
   const [tabActiveKey, setTabActiveKey] = useState('week');
   const {
     form: { getFieldDecorator },
-    maintenanceArr,
+    ordertopnArr,
     dispatch
   } = props;
 
@@ -74,7 +74,7 @@ function Workordertopn(props) {
 
   const handleListdata = (params) => {
     dispatch({
-      type: 'eventstatistics/fetchMaintenancelist',
+      type: 'eventstatistics/fetchordertopnList',
       payload: { sign, tabActiveKey, startTime, endTime }
     })
   }
@@ -208,7 +208,7 @@ function Workordertopn(props) {
 
         <Table
           columns={columns}
-          dataSource={maintenanceArr}
+          dataSource={ordertopnArr}
           rowKey={record => record.statName}
         />
       </Card>
@@ -218,6 +218,6 @@ function Workordertopn(props) {
 
 export default Form.create({})(
   connect(({ eventstatistics }) => ({
-    maintenanceArr: eventstatistics.maintenanceArr
+    ordertopnArr: eventstatistics.ordertopnArr
   }))(Workordertopn),
 );

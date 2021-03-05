@@ -258,7 +258,7 @@ function Besolved(props) {
               </Form.Item>
             </Col>
 
-            <Col className="gutter-row" span={8}>
+            <Col  span={8}>
               <Form.Item label="当前处理环节">
                 {getFieldDecorator('currentNode', {
                   rules: [
@@ -271,7 +271,7 @@ function Besolved(props) {
                     {
                       stateList.current && stateList.current.length > 0 && (
                         (stateList.current).map(({ key, val }) => (
-                          <Option key={key} value={key}>
+                          <Option key={key} value={val}>
                             {val}
                           </Option>
                         ))

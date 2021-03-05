@@ -63,7 +63,7 @@ function Solution(props) {
   const { pagetitle } = props.route.name;
   const {
     form: { getFieldDecorator },
-    maintenanceArr,
+    soluteArr,
     dispatch
   } = props;
 
@@ -78,7 +78,7 @@ function Solution(props) {
 
   const handleListdata = (params) => {
     dispatch({
-      type: 'eventstatistics/fetchMaintenancelist',
+      type: 'eventstatistics/fetchSelfHandleList',
       payload: { sign, startTime, endTime }
     })
   }
@@ -169,7 +169,7 @@ function Solution(props) {
 
         <Table
           columns={columns}
-          dataSource={maintenanceArr}
+          dataSource={soluteArr}
           rowKey={record => record.statName}
         />
       </Card>
@@ -179,6 +179,6 @@ function Solution(props) {
 
 export default Form.create({})(
   connect(({ eventstatistics }) => ({
-    maintenanceArr: eventstatistics.maintenanceArr
+    soluteArr: eventstatistics.soluteArr
   }))(Solution),
 );

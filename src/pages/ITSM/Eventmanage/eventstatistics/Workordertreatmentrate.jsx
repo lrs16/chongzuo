@@ -64,7 +64,7 @@ function Workordertreatmentrate(props) {
   const [tabActiveKey, setTabActiveKey] = useState('week');
   const {
     form: { getFieldDecorator },
-    maintenanceArr,
+    orderrateArr,
     dispatch
   } = props;
 
@@ -79,7 +79,7 @@ function Workordertreatmentrate(props) {
 
   const handleListdata = (params) => {
     dispatch({
-      type: 'eventstatistics/fetchMaintenancelist',
+      type: 'eventstatistics/fetchorderrateList',
       payload: { sign, tabActiveKey, startTime, endTime }
     })
   }
@@ -171,7 +171,7 @@ function Workordertreatmentrate(props) {
 
         <Table
           columns={columns}
-          dataSource={maintenanceArr}
+          dataSource={orderrateArr}
           rowKey={record => record.statName}
         />
       </Card>
@@ -181,6 +181,6 @@ function Workordertreatmentrate(props) {
 
 export default Form.create({})(
   connect(({ eventstatistics }) => ({
-    maintenanceArr: eventstatistics.maintenanceArr
+    orderrateArr: eventstatistics.orderrateArr
   }))(Workordertreatmentrate),
 );
