@@ -30,7 +30,7 @@ const Registrat = React.forwardRef((props, ref) => {
     useInfo,
     register,
     main,
-    // source,
+    source,
     type,
     priority,
     scope,
@@ -50,18 +50,6 @@ const Registrat = React.forwardRef((props, ref) => {
 
   const required = true;
 
-  const getTypebyTitle = (title) => {
-    if (selectdata.length > 0) {
-      return selectdata.filter(item => 
-        item.title === title)[0].children;
-    }
-    return [];
-  };
-  const source = getTypebyTitle('问题来源');
-  // const sysmodular = getTypebyTitle('故障系统模块');
-  // const priority = getTypebyTitle('严重程度');
-  // const effect = getTypebyTitle('影响范围');
-  // const faultType = getTypebyTitle('故障分类');
 
   return (
     <>

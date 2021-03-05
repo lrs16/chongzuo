@@ -54,7 +54,8 @@ export default {
     data:'',
     startid:'',
     keyVallist:[],
-    handleList:[]
+    handleList:[],
+    queryArr:[]
   },
 
   effects: {
@@ -158,7 +159,7 @@ export default {
     *gotoCirculation({ payload: { flow } }, { call, put }) {
       return yield call(saveTobelist,flow);
     },
-
+//  待办列表
     *besolveList({ payload: { current, pageSize } }, { call, put }) {
       const response = yield call(besolveList, current, pageSize);
       yield put({
@@ -170,7 +171,7 @@ export default {
     *searchBesolve({ payload: { current, pageSize, values } }, { call, put }) {
       const response = yield call(searchBesolve, current, pageSize, values);
       yield put({
-        type: 'besolveListpage',
+        type: 'queryArr',
         payload: response,
       });
     },
@@ -178,7 +179,7 @@ export default {
     *queryList({ payload}, { call, put }) {
       const response = yield call(queryList,payload);
       yield put({
-        type: 'besolveListpage',
+        type: 'queryArr',
         payload: response,
       });
     },
@@ -332,6 +333,14 @@ export default {
       return {
         ...state,
         besolveList: action.payload.data,
+      };
+    },
+
+    //  查询列表
+    queryArr(state, action) {
+      return {
+        ...state,
+        queryArr: action.payload.data,
       };
     },
 

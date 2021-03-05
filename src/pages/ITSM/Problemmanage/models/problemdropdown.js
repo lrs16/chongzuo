@@ -63,7 +63,7 @@ export default {
             payload: response
           })
           break;
-        case 'state':
+        case 'current':
           yield put({
             type:'stateList',
             payload: response

@@ -81,8 +81,8 @@ const columns = [
   },
   {
     title: '重要程度',
-    dataIndex: 'importance',
-    key: 'importance',
+    dataIndex: 'importancecn',
+    key: 'importancecn',
   },
 ];
 
@@ -90,9 +90,9 @@ function Besolved(props) {
   const pagetitle = props.route.name;
   const {
     form: { getFieldDecorator, resetFields, validateFields },
-    location:{ query: { orderStatus,orderClass,handleStatu,timeStatus } },
+    location: { query: { orderStatus, orderClass, handleStatu, timeStatus } },
     dispatch,
-    besolveList,
+    queryArr,
     handleList,
     keyVallist,
     prioritylist,
@@ -105,24 +105,26 @@ function Besolved(props) {
   const [paginations, setPaginations] = useState({ current: 1, pageSize: 10 });
   const [selectedRows, setSelectedRows] = useState([]);
   let handleStatus;
-  if( sign === 'have') {
+  if (sign === 'have') {
     handleStatus = undefined;
   } else {
     handleStatus = handleStatu;
   }
+
   const getQuery = () => {
     dispatch({
-      type: (handleStatus !== undefined) ? 'problemmanage/handlequeryList':'problemmanage/queryList',
+      type: (handleStatus !== undefined) ? 'problemmanage/handlequeryList' : 'problemmanage/queryList',
       payload: {
         handleStatus,
         pageNum: paginations.current,
         pageSize: paginations.pageSize,
-        status:orderStatus,
-        type:orderClass,
+        status: orderStatus,
+        type: orderClass,
         timeStatus
       },
     });
   };
+
 
   const getSourceapi = (dictModule, dictType) => {
     dispatch({
@@ -162,7 +164,6 @@ function Besolved(props) {
     getSourceapi(dictModule, dictType);
   }
 
-
   // 问题工单
   const getorder = () => {
     const dictModule = 'problem';
@@ -196,20 +197,41 @@ function Besolved(props) {
     resetFields();
   };
 
-  const searchdata = (values, page, pageSize) => {
-    sign = 'have' 
-    handleStatus = undefined;
+  const queryList = (values, page, pageSize) => {
+    //  不等于undefined
     return dispatch({
-      type:(handleStatus !== undefined) ? 'problemmanage/handlequeryList':'problemmanage/queryList',
+      type: 'problemmanage/queryList',
+      payload: {
+        ...values,
+        pageSize,
+        pageNum: page,
+        // status: orderStatus,
+      },
+    })
+  }
+
+  const handlequeryList = (values, page, pageSize) => {
+    //  不等于undefined
+    return dispatch({
+      type: 'problemmanage/handlequeryList',
       payload: {
         handleStatus,
         ...values,
         pageSize,
         pageNum: page,
-        status:orderStatus,
-        type:orderClass
+        status: orderStatus,
+        type: orderClass
       },
     })
+  }
+
+  const searchdata = (values, page, pageSize) => {
+    sign = 'have'
+    handleStatus = undefined;
+    if (handleStatus !== undefined) {
+      handlequeryList(values, page, pageSize);
+    }
+    queryList(values, page, pageSize);
   };
 
   const onShowSizeChange = (page, pageSize) => {
@@ -227,7 +249,7 @@ function Besolved(props) {
   const changePage = page => {
     validateFields((err, values) => {
       if (!err) {
-        searchdata(values, page,paginations.pageSize);
+        searchdata(values, page, paginations.pageSize);
       }
     });
     setPaginations({
@@ -248,7 +270,7 @@ function Besolved(props) {
     onShowSizeChange: (page, pageSize) => onShowSizeChange(page, pageSize),
     current: paginations.current,
     pageSize: paginations.pageSize,
-    total: besolveList.total,
+    total: queryArr.total,
     onChange: page => changePage(page),
   };
 
@@ -323,14 +345,13 @@ function Besolved(props) {
                       message: '请输入问题编号',
                     },
                   ],
-                })(<Input placeholder='请输入'/>)}
+                })(<Input placeholder='请输入' />)}
               </Form.Item>
             </Col>
 
-            <Col className="gutter-row" span={8}>
+            <Col span={8}>
               <Form.Item label="工单状态">
-                {getFieldDecorator(
-                  'status',
+                {getFieldDecorator('status',
                   {},
                 )(
                   <Select placeholder="请选择">
@@ -348,11 +369,12 @@ function Besolved(props) {
               </Form.Item>
             </Col>
 
+
             {expand === true && (
               <>
                 <Col span={8}>
                   <Form.Item label="问题标题">
-                    {getFieldDecorator('title', {})(<Input placeholder='请输入'/>)}
+                    {getFieldDecorator('title', {})(<Input placeholder='请输入' />)}
                   </Form.Item>
                 </Col>
               </>
@@ -370,7 +392,7 @@ function Besolved(props) {
                         {
                           keyVallist && keyVallist.source.length && (
                             (keyVallist.source).map(({ key, val }) => (
-                              <Option key={key} value={val}>
+                              <Option key={key} value={key}>
                                 {val}
                               </Option>
                             ))
@@ -389,7 +411,7 @@ function Besolved(props) {
                           {
                             typelist && typelist.type.length && (
                               (typelist.type).map(({ key, val }) => (
-                                <Option key={key} value={val}>
+                                <Option key={key} value={key}>
                                   {val}
                                 </Option>
                               ))
@@ -407,7 +429,7 @@ function Besolved(props) {
                         {
                           scopeList && scopeList.effect.length && (
                             (scopeList.effect).map(({ key, val }) => (
-                              <Option key={key} value={val}>
+                              <Option key={key} value={key}>
                                 {val}
                               </Option>
                             ))
@@ -423,7 +445,7 @@ function Besolved(props) {
                       'handler',
                       {},
                     )(
-                      <Input placeholder='请输入'/>
+                      <Input placeholder='请输入' />
                     )}
                   </Form.Item>
                 </Col>
@@ -434,7 +456,7 @@ function Besolved(props) {
                       'handleUnit',
                       {},
                     )(
-                      <Input placeholder='请输入'/>
+                      <Input placeholder='请输入' />
                     )}
                   </Form.Item>
                 </Col>
@@ -445,7 +467,7 @@ function Besolved(props) {
                       'registerUser',
                       {},
                     )(
-                      <Input placeholder='请输入'/>
+                      <Input placeholder='请输入' />
                     )}
                   </Form.Item>
                 </Col>
@@ -472,7 +494,7 @@ function Besolved(props) {
                         {
                           prioritylist && prioritylist.priority.length && (
                             prioritylist.priority.map(({ key, val }) => (
-                              <Option key={key} value={val}>
+                              <Option key={key} value={key}>
                                 {val}
                               </Option>
                             ))
@@ -557,32 +579,32 @@ function Besolved(props) {
         </div>
 
         {
-          (handleStatus !== undefined ) && (
+          (handleStatus !== undefined) && (
             <Table
-            loading={loading}
-            columns={columns}
-            dataSource={handleList}
-            rowKey={record => record.id}
-            pagination={handlepagination}
-          />
+              loading={loading}
+              columns={columns}
+              dataSource={handleList}
+              rowKey={record => record.id}
+              pagination={handlepagination}
+            />
           )
         }
 
         {
           handleStatus === undefined && (
             <Table
-            loading={loading}
-            columns={columns}
-            dataSource={besolveList.rows}
-            rowKey={record => record.id}
-            pagination={pagination}
-          />
+              loading={loading}
+              columns={columns}
+              dataSource={queryArr.rows}
+              rowKey={record => record.id}
+              pagination={pagination}
+            />
           )
         }
 
-      
 
-      
+
+
       </Card>
     </PageHeaderWrapper>
   );
@@ -590,7 +612,7 @@ function Besolved(props) {
 
 export default Form.create({})(
   connect(({ problemmanage, problemdropdown, loading }) => ({
-    besolveList: problemmanage.besolveList,
+    queryArr: problemmanage.queryArr,
     handleList: problemmanage.handleList,
     keyVallist: problemdropdown.keyVallist,
     typelist: problemdropdown.typelist,

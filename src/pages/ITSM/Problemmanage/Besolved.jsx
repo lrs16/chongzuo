@@ -129,11 +129,10 @@ function Besolved(props) {
     getSourceapi(dictModule, dictType);
   }
 
-
-  // 当前状态
+  // 当前处理环节
   const getstate = () => {
     const dictModule = 'problem';
-    const dictType = 'state';
+    const dictType = 'current';
     getSourceapi(dictModule, dictType);
   }
 
@@ -270,8 +269,8 @@ function Besolved(props) {
                 })(
                   <Select placeholder="请选择">
                     {
-                      stateList.state && stateList.state.length > 0 && (
-                        (stateList.state).map(({ key, val }) => (
+                      stateList.current && stateList.current.length > 0 && (
+                        (stateList.current).map(({ key, val }) => (
                           <Option key={key} value={key}>
                             {val}
                           </Option>
@@ -357,7 +356,7 @@ function Besolved(props) {
                           {
                             prioritylist && prioritylist.priority.length && (
                               (prioritylist.priority).map(({ key, val }) => (
-                                <Option key={key} value={val}>
+                                <Option key={key} value={key}>
                                   {val}
                                 </Option>
                               ))
