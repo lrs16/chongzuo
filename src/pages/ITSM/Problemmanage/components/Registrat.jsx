@@ -1,14 +1,8 @@
 import React, { useState, useRef, useImperativeHandle, useEffect } from 'react';
-<<<<<<< HEAD
-import { Row, Col, Form, Input, Select, DatePicker,AutoComplete } from 'antd';
-import moment from 'moment';
-import SysUpload from '@/components/SysUpload';
-=======
 import { Row, Col, Form, Input, Select, DatePicker, AutoComplete } from 'antd';
 import moment from 'moment';
 import SysUpload from '@/components/SysUpload';
 import { getAndField } from '@/pages/SysManage/services/api';
->>>>>>> 故障、问题常用语
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -33,22 +27,7 @@ const Registrat = React.forwardRef((props, ref) => {
     [],
   );
 
-<<<<<<< HEAD
-  const {
-    useInfo,
-    register,
-    main,
-    source,
-    type,
-    priority,
-    scope,
-    project,
-    antoArr
-  } = props;
-
-=======
   const { useInfo, register, main, source, type, priority, scope, project } = props;
->>>>>>> 故障、问题常用语
 
   if (register) {
     if (register.registerOccurTime !== null) {
@@ -306,10 +285,6 @@ const Registrat = React.forwardRef((props, ref) => {
                   },
                 ],
                 initialValue: main.title,
-<<<<<<< HEAD
-              })
-              (<AutoComplete  dataSource={antoArr}/>)}
-=======
               })(
                 <AutoComplete
                   dataSource={titleautodata}
@@ -318,7 +293,6 @@ const Registrat = React.forwardRef((props, ref) => {
                   <Input placeholder="请输入" />
                 </AutoComplete>,
               )}
->>>>>>> 故障、问题常用语
             </Form.Item>
           </Col>
 
