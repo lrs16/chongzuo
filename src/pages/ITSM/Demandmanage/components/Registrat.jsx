@@ -36,6 +36,8 @@ const Registrat = forwardRef((props, ref) => {
   const [fileslist, setFilesList] = useState({ arr: [], ischange: false });
   const [titleautodata, setTitleAutoData] = useState([]);
   const [desautodata, setDestoData] = useState([]);
+  const [titlerecords, setTitleRecords] = useState([]);
+  const [desrecords, setDesRecords] = useState([]);
 
   useEffect(() => {
     if (fileslist.ischange) {
@@ -78,6 +80,7 @@ const Registrat = forwardRef((props, ref) => {
           return item.content;
         });
         setTitleAutoData(newdata);
+        setTitleRecords(newdata);
       }
     });
   };
@@ -88,17 +91,39 @@ const Registrat = forwardRef((props, ref) => {
           return item.content;
         });
         setDestoData(newdata);
+        setDesRecords(newdata);
       }
     });
   };
-  // const handleSearch = (value) => {
-  //   console.log(value)
-  //   const newArr = titleautodata.filter((item) => {
-  //     return item == value
-  //   });
-  //   console.log(newArr)
-  //   if (newArr.length > 0) { setTitleAutoData(newArr); }
-  // }
+
+  const handleSearch = (value, type) => {
+    switch (type) {
+      case 'title': {
+        const newArr = titlerecords.filter(item => {
+          return item.includes(value);
+        });
+        if (newArr.length > 0) {
+          setTitleAutoData(newArr);
+        } else {
+          setTitleAutoData(titlerecords);
+        }
+        break;
+      }
+      case 'des': {
+        const newArr = desrecords.filter(item => {
+          return item.includes(value);
+        });
+        if (newArr.length > 0) {
+          setDestoData(newArr);
+        } else {
+          setDesRecords(desrecords);
+        }
+        break;
+      }
+      default:
+        break;
+    }
+  };
 
   useEffect(() => {
     handletitleSearch({ module: '需求单', field: '标题', key: '' });
@@ -274,7 +299,7 @@ const Registrat = forwardRef((props, ref) => {
               })(
                 <AutoComplete
                   dataSource={titleautodata}
-                  // onSearch={value => handleSearch(value)}
+                  onSearch={value => handleSearch(value, 'title')}
                 >
                   <Input placeholder="请输入" />
                 </AutoComplete>,
@@ -297,7 +322,7 @@ const Registrat = forwardRef((props, ref) => {
               })(
                 <AutoComplete
                   dataSource={desautodata}
-                  // onSearch={value => handleSearch(value)}
+                  onSearch={value => handleSearch(value, 'des')}
                 >
                   <TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />
                 </AutoComplete>,

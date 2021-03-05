@@ -115,9 +115,9 @@ function ITSMtodo(props) {
     dispatch({
       type: 'global/fetchallevent',
       payload: {
-        ...values,
-        limit: size,
-        page,
+        todoUserId: values,
+        pageNum: page,
+        pageSize: size,
       },
     });
   };
@@ -153,7 +153,7 @@ function ITSMtodo(props) {
     dispatch({
       type: 'global/fetchallevent',
       payload: {
-        todoUserId: '1310135708685438978',
+        todoUserId: sessionStorage.getItem('userauthorityid'),
         pageNum: paginations.current,
         pageSize: paginations.pageSize,
       },
