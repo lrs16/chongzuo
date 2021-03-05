@@ -126,7 +126,7 @@ function Todolistdetails(props) {
   };
 
   useEffect(() => {
-    if (flowimageview !== '' && document.getElementsByTagName('img').length < 2) {
+    if (flowimageview !== '' && document.getElementsByTagName('img') !== '' ) {
       imgsrc();
     }
   }, [flowimageview]);
@@ -950,7 +950,7 @@ function Todolistdetails(props) {
       }
       {
         (tabActiveKey === 'faultPro' && (
-          <div className={styles.collapse}>
+          <>
             <Card title="流程图">
               <div style={{ background: '#fff' }} id="divimg" />
             </Card>
@@ -985,7 +985,7 @@ function Todolistdetails(props) {
                 )
               }
             </Card>
-          </div>
+         </>
         ))
       }
     </PageHeaderWrapper>

@@ -28,54 +28,6 @@ const formItemLayout = {
 
 const { Option } = Select;
 
-const columns = [
-  {
-    title: '问题编号',
-    dataIndex: 'no',
-    key: 'no',
-    render: (text, record) => (
-      <Link
-        to={{
-          pathname: `/ITSM/problemmanage/besolveddetail/workorder/${record.id}`,
-          paneKey: record.status, // 传状态
-        }}
-      >
-        {text}
-      </Link>
-    ),
-  },
-  {
-    title: '问题标题',
-    dataIndex: 'title',
-    key: 'title',
-  },
-  {
-    title: '问题来源',
-    dataIndex: 'sourcecn',
-    key: 'sourcecn',
-  },
-  {
-    title: '问题分类',
-    dataIndex: 'typecn',
-    key: 'typecn',
-  },
-  {
-    title: '当前处理环节',
-    dataIndex: 'currentNode',
-    key: 'currentNode',
-  },
-  {
-    title: '发送时间',
-    dataIndex: 'createTime',
-    key: 'createTime',
-  },
-  {
-    title: '重要程度',
-    dataIndex: 'importancecn',
-    key: 'importancecn',
-  },
-];
-
 function Besolved(props) {
   const pagetitle = props.route.name;
   const {
@@ -91,6 +43,62 @@ function Besolved(props) {
   const [expand, setExpand] = useState(false);
   const [paginations, setPaginations] = useState({ current: 1, pageSize: 10 });
 
+
+  const columns = [
+    {
+      title: '序号',
+      dataIndex: 'index',
+      key: 'index',
+      width: 100,
+    //   render: (text, record, index) =>
+    //     `${(paginations.current - 1) * paginations.pageSize + (index + 1)}`,
+    },
+    {
+      title: '问题编号',
+      dataIndex: 'no',
+      key: 'no',
+      render: (text, record) => (
+        <Link
+          to={{
+            pathname: `/ITSM/problemmanage/besolveddetail/workorder/${record.id}`,
+            paneKey: record.status, // 传状态
+          }}
+        >
+          {text}
+        </Link>
+      ),
+    },
+    {
+      title: '问题标题',
+      dataIndex: 'title',
+      key: 'title',
+    },
+    {
+      title: '问题来源',
+      dataIndex: 'sourcecn',
+      key: 'sourcecn',
+    },
+    {
+      title: '问题分类',
+      dataIndex: 'typecn',
+      key: 'typecn',
+    },
+    {
+      title: '当前处理环节',
+      dataIndex: 'currentNode',
+      key: 'currentNode',
+    },
+    {
+      title: '发送时间',
+      dataIndex: 'createTime',
+      key: 'createTime',
+    },
+    {
+      title: '重要程度',
+      dataIndex: 'importancecn',
+      key: 'importancecn',
+    },
+  ];
   const getSourceapi = (dictModule, dictType) => {
     dispatch({
       type: 'problemdropdown/keyvalsource',

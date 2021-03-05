@@ -326,7 +326,7 @@ const Registrat = React.forwardRef((props, ref) => {
                     message: '请上传附件',
                   },
                 ],
-                initialValue: register ? register.registerAttachments : '',
+                initialValue: (register && register.registerAttachments !== '[]')? register.registerAttachments : '',
               })(
                 <div style={{ width: 400 }}>
                   <SysUpload

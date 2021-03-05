@@ -267,7 +267,9 @@ function Workorder(props) {
   };
 
   const saveRegister = (params2, uploadSive) => {
+    console.log('params2: ', params2);
     RegistratRef.current.validateFields((err, values) => {
+      console.log('values: ', values);
       if (params2 ? !err : true) {
         const saveData = values;
         saveData.registerTime = (saveData.registerTime).format('YYYY-MM-DD HH:mm:ss');
