@@ -13,13 +13,15 @@ import {
   DatePicker,
   Radio,
   Collapse,
-  Cascader
+  Cascader,
+  AutoComplete,
 } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 // import SelectUser from '@/components/SelectUser'; // 选人组件
 import SysUpload from '@/components/SysUpload'; // 附件下载组件
 import SysDict from '@/components/SysDict';
 import styles from './index.less';
+import { getAndField } from '@/pages/SysManage/services/api';
 
 const { Panel } = Collapse;
 const { TextArea } = Input;
@@ -33,7 +35,7 @@ const formItemLayout = {
   },
   wrapperCol: {
     xs: { span: 24 },
-    sm: { span: 18 }
+    sm: { span: 18 },
   },
 };
 
@@ -53,9 +55,11 @@ function Registration(props) {
   const [activeKey, setActiveKey] = useState(['1']);
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
   const [selectdata, setSelectData] = useState([]);
+  const [titleautodata, setTitleAutoData] = useState([]);
+  const [desautodata, setDestoData] = useState([]);
 
   const {
-    form: { getFieldDecorator, resetFields, validateFields, },
+    form: { getFieldDecorator, resetFields, validateFields },
     dispatch,
     newno, // 新的故障编号
     curruserinfo, // 获取登录用户信息
@@ -64,17 +68,19 @@ function Registration(props) {
   } = props;
 
   // 接口
-  const getNewno = () => { // 获取新的故障编号
+  const getNewno = () => {
+    // 获取新的故障编号
     dispatch({
-      type: 'fault/getFaultRegisterNo'
+      type: 'fault/getFaultRegisterNo',
     });
-  }
-  
-  const getCurrUserInfo = () => {  // 获取登录用户信息
+  };
+
+  const getCurrUserInfo = () => {
+    // 获取登录用户信息
     dispatch({
-      type: 'fault/fetchuser'
+      type: 'fault/fetchuser',
     });
-  }
+  };
 
   useEffect(() => {
     getNewno(); // 新的故障编号
@@ -87,7 +93,8 @@ function Registration(props) {
     sessionStorage.setItem('flowtype', '1');
   }, ['1']);
 
-  const close = () => { // 关闭
+  const close = () => {
+    // 关闭
     resetFields();
     router.push(`/ITSM/faultmanage/todolist`);
   };
@@ -96,7 +103,8 @@ function Registration(props) {
     setActiveKey(key);
   };
 
-  const handleSave = () => { // 保存成功后根据后端给的流程ID跳待办里的详情
+  const handleSave = () => {
+    // 保存成功后根据后端给的流程ID跳待办里的详情
     validateFields((err, values) => {
       if (!err) {
         const formValues = values;
@@ -107,11 +115,11 @@ function Registration(props) {
         formValues.type = values.type.join('/');
         dispatch({
           type: 'fault/getSaveUserId',
-          payload: { formValues }
-        })
+          payload: { formValues },
+        });
       }
     });
-  }
+  };
 
   // 上传附件触发保存
   useEffect(() => {
@@ -139,7 +147,34 @@ function Registration(props) {
   //   });
   // }
 
-  const getTypebyTitle = (title) => {
+  const handletitleSearch = values => {
+    getAndField(values).then(res => {
+      if (res.code === 200 && res.data.length > 0) {
+        const newdata = res.data.map(item => {
+          return item.content;
+        });
+        setTitleAutoData(newdata);
+      }
+    });
+  };
+  const handledesSearch = values => {
+    getAndField(values).then(res => {
+      if (res.code === 200) {
+        const newdata = res.data.map(item => {
+          return item.content;
+        });
+        setDestoData(newdata);
+      }
+    });
+  };
+
+  // 常用语调用
+  useEffect(() => {
+    handletitleSearch({ module: '故障单', field: '标题', key: '' });
+    handledesSearch({ module: '故障单', field: '描述', key: '' });
+  }, []);
+
+  const getTypebyTitle = title => {
     if (selectdata.length > 0) {
       return selectdata.filter(item => item.title === title)[0].children;
     }
@@ -162,8 +197,10 @@ function Registration(props) {
       <Card style={{ textAlign: 'right' }}>
         <Button type="primary" style={{ marginRight: 8 }} onClick={handleSave}>
           保存
-            </Button>
-        <Button type="default" onClick={close}>关闭</Button>
+        </Button>
+        <Button type="default" onClick={close}>
+          关闭
+        </Button>
       </Card>
       <div className={styles.collapse}>
         <Collapse
@@ -186,7 +223,9 @@ function Registration(props) {
 
                 <Col span={8}>
                   <Form.Item>
-                    <Button type="primary" onClick={() => getNewno()}>获取最新编号</Button>
+                    <Button type="primary" onClick={() => getNewno()}>
+                      获取最新编号
+                    </Button>
                   </Form.Item>
                 </Col>
 
@@ -199,8 +238,14 @@ function Registration(props) {
                           message: '请选择时间',
                         },
                       ],
-                      initialValue: moment(Date.now()) || ''
-                    })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} />)}
+                      initialValue: moment(Date.now()) || '',
+                    })(
+                      <DatePicker
+                        showTime
+                        format="YYYY-MM-DD HH:mm:ss"
+                        style={{ width: '100%' }}
+                      />,
+                    )}
                   </Form.Item>
                 </Col>
 
@@ -213,13 +258,19 @@ function Registration(props) {
                           message: '请选择时间',
                         },
                       ],
-                      initialValue: moment(Date.now()) || ''
-                    })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} />)}
+                      initialValue: moment(Date.now()) || '',
+                    })(
+                      <DatePicker
+                        showTime
+                        format="YYYY-MM-DD HH:mm:ss"
+                        style={{ width: '100%' }}
+                      />,
+                    )}
                   </Form.Item>
                 </Col>
 
                 <Col xl={8} xs={12}>
-                  <Form.Item label='故障来源'>
+                  <Form.Item label="故障来源">
                     {getFieldDecorator('source', {
                       rules: [
                         {
@@ -274,7 +325,7 @@ function Registration(props) {
                         placeholder="请选择"
                         options={faultType}
                         fieldNames={{ label: 'title', value: 'title', children: 'children' }}
-                      />
+                      />,
                     )}
                   </Form.Item>
                 </Col>
@@ -308,7 +359,7 @@ function Registration(props) {
                             {obj.title}
                           </Option>,
                         ])}
-                      </Select>
+                      </Select>,
                     )}
                   </Form.Item>
                 </Col>
@@ -329,7 +380,7 @@ function Registration(props) {
                             {obj.title}
                           </Option>,
                         ])}
-                      </Select>
+                      </Select>,
                     )}
                   </Form.Item>
                 </Col>
@@ -343,7 +394,14 @@ function Registration(props) {
                           message: '请输入',
                         },
                       ],
-                    })(<Input placeholder="请输入" allowClear />)}
+                    })(
+                      <AutoComplete
+                        dataSource={titleautodata}
+                        // onSearch={value => handleSearch(value)}
+                      >
+                        <Input placeholder="请输入" />
+                      </AutoComplete>,
+                    )}
                   </Form.Item>
                 </Col>
 
@@ -356,7 +414,14 @@ function Registration(props) {
                           message: '请输入',
                         },
                       ],
-                    })(<TextArea rows={5} placeholder="请输入" />)}
+                    })(
+                      <AutoComplete
+                        dataSource={desautodata}
+                        // onSearch={value => handleSearch(value)}
+                      >
+                        <TextArea autoSize={{ minRows: 5 }} placeholder="请输入" />
+                      </AutoComplete>,
+                    )}
                   </Form.Item>
                 </Col>
 
@@ -380,7 +445,10 @@ function Registration(props) {
                     // extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb"
                   >
                     <div style={{ width: 400 }}>
-                      <SysUpload fileslist={files.arr} ChangeFileslist={newvalue => setFiles(newvalue)} />
+                      <SysUpload
+                        fileslist={files.arr}
+                        ChangeFileslist={newvalue => setFiles(newvalue)}
+                      />
                     </div>
                   </Form.Item>
                 </Col>

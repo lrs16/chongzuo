@@ -75,7 +75,7 @@ function WorkOrder(props) {
   // 回调用户ID
   useEffect(() => {
     if (info !== '') {
-      changRegisterId(info.demandForm.id);
+      changRegisterId(info.demandForm.id); // formid
       ChangeHistroyLength(info.historys.length);
     }
   }, [info]);

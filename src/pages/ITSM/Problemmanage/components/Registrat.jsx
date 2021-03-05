@@ -1,18 +1,26 @@
 import React, { useState, useRef, useImperativeHandle, useEffect } from 'react';
+<<<<<<< HEAD
 import { Row, Col, Form, Input, Select, DatePicker,AutoComplete } from 'antd';
 import moment from 'moment';
 import SysUpload from '@/components/SysUpload';
+=======
+import { Row, Col, Form, Input, Select, DatePicker, AutoComplete } from 'antd';
+import moment from 'moment';
+import SysUpload from '@/components/SysUpload';
+import { getAndField } from '@/pages/SysManage/services/api';
+>>>>>>> 故障、问题常用语
 
 const { Option } = Select;
 const { TextArea } = Input;
 let occurtime;
 
-
 const Registrat = React.forwardRef((props, ref) => {
   const { formItemLayout, forminladeLayout, files, ChangeFiles } = props;
   const { getFieldDecorator } = props.form;
   const [fileslist, setFilesList] = useState([]);
-  const [selectdata, setSelectData] = useState([]);
+  const [titleautodata, setTitleAutoData] = useState([]);
+  const [desautodata, setDestoData] = useState([]);
+
   useEffect(() => {
     ChangeFiles(fileslist);
   }, [fileslist]);
@@ -25,6 +33,7 @@ const Registrat = React.forwardRef((props, ref) => {
     [],
   );
 
+<<<<<<< HEAD
   const {
     useInfo,
     register,
@@ -37,19 +46,48 @@ const Registrat = React.forwardRef((props, ref) => {
     antoArr
   } = props;
 
+=======
+  const { useInfo, register, main, source, type, priority, scope, project } = props;
+>>>>>>> 故障、问题常用语
 
   if (register) {
     if (register.registerOccurTime !== null) {
       occurtime = moment(register.registerOccurTime);
     } else {
-      occurtime = moment(Date.now())
+      occurtime = moment(Date.now());
     }
   } else {
-    occurtime = moment(Date.now())
+    occurtime = moment(Date.now());
   }
 
   const required = true;
 
+  const handletitleSearch = values => {
+    getAndField(values).then(res => {
+      if (res.code === 200 && res.data.length > 0) {
+        const newdata = res.data.map(item => {
+          return item.content;
+        });
+        setTitleAutoData(newdata);
+      }
+    });
+  };
+  const handledesSearch = values => {
+    getAndField(values).then(res => {
+      if (res.code === 200) {
+        const newdata = res.data.map(item => {
+          return item.content;
+        });
+        setDestoData(newdata);
+      }
+    });
+  };
+
+  // 常用语调用
+  useEffect(() => {
+    handletitleSearch({ module: '问题单', field: '标题', key: '' });
+    handledesSearch({ module: '问题单', field: '描述', key: '' });
+  }, []);
 
   return (
     <>
@@ -78,10 +116,7 @@ const Registrat = React.forwardRef((props, ref) => {
                   },
                 ],
                 initialValue: register ? moment(register.registerTime) : moment(Date.now()),
-              })(<DatePicker
-                showTime
-                format="YYYY-MM-DD HH:mm:ss"
-              />)}
+              })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" />)}
             </Form.Item>
           </Col>
 
@@ -95,10 +130,7 @@ const Registrat = React.forwardRef((props, ref) => {
                   },
                 ],
                 initialValue: occurtime,
-              })(<DatePicker
-                showTime
-                format="YYYY-MM-DD HH:mm:ss"
-              />)}
+              })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" />)}
             </Form.Item>
           </Col>
 
@@ -116,7 +148,6 @@ const Registrat = React.forwardRef((props, ref) => {
             </Form.Item>
           </Col>
 
-
           <Col span={8}>
             <Form.Item label="问题来源">
               {getFieldDecorator('source', {
@@ -129,15 +160,13 @@ const Registrat = React.forwardRef((props, ref) => {
                 initialValue: main.source,
               })(
                 <Select placeholder="请选择">
-                  {
-                    source && source.length && (
-                      source.map(({ key, val }) => (
-                        <Option key={key} value={key}>
-                          {val}
-                        </Option>
-                      ))
-                    )
-                  }
+                  {source &&
+                    source.length &&
+                    source.map(({ key, val }) => (
+                      <Option key={key} value={key}>
+                        {val}
+                      </Option>
+                    ))}
                 </Select>,
               )}
             </Form.Item>
@@ -155,15 +184,13 @@ const Registrat = React.forwardRef((props, ref) => {
                 initialValue: main.type,
               })(
                 <Select placeholder="请选择">
-                  {
-                    type && type.length && (
-                      type.map(({ key, val }) => (
-                        <Option key={key} value={key}>
-                          {val}
-                        </Option>
-                      ))
-                    )
-                  }
+                  {type &&
+                    type.length &&
+                    type.map(({ key, val }) => (
+                      <Option key={key} value={key}>
+                        {val}
+                      </Option>
+                    ))}
                 </Select>,
               )}
             </Form.Item>
@@ -181,15 +208,13 @@ const Registrat = React.forwardRef((props, ref) => {
                 initialValue: main.importance,
               })(
                 <Select placeholder="请选择">
-                  {
-                    priority && priority.length && (
-                      priority.map(({ key, val }) => (
-                        <Option key={key} value={key}>
-                          {val}
-                        </Option>
-                      ))
-                    )
-                  }
+                  {priority &&
+                    priority.length &&
+                    priority.map(({ key, val }) => (
+                      <Option key={key} value={key}>
+                        {val}
+                      </Option>
+                    ))}
                 </Select>,
               )}
             </Form.Item>
@@ -205,10 +230,7 @@ const Registrat = React.forwardRef((props, ref) => {
                   },
                 ],
                 initialValue: occurtime,
-              })(<DatePicker
-                showTime
-                format="YYYY-MM-DD HH:mm:ss"
-              />)}
+              })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" />)}
             </Form.Item>
           </Col>
 
@@ -224,15 +246,13 @@ const Registrat = React.forwardRef((props, ref) => {
                 initialValue: register.registerProject,
               })(
                 <Select placeholder="请选择">
-                  {
-                    project && project.length && (
-                      project.map(({ key, val }) => (
-                        <Option key={key} value={key}>
-                          {val}
-                        </Option>
-                      ))
-                    )
-                  }
+                  {project &&
+                    project.length &&
+                    project.map(({ key, val }) => (
+                      <Option key={key} value={key}>
+                        {val}
+                      </Option>
+                    ))}
                 </Select>,
               )}
             </Form.Item>
@@ -250,15 +270,13 @@ const Registrat = React.forwardRef((props, ref) => {
                 initialValue: register.registerScope,
               })(
                 <Select placeholder="请选择">
-                  {
-                    scope && scope.length && (
-                      scope.map(({ key, val }) => (
-                        <Option key={key} value={key}>
-                          {val}
-                        </Option>
-                      ))
-                    )
-                  }
+                  {scope &&
+                    scope.length &&
+                    scope.map(({ key, val }) => (
+                      <Option key={key} value={key}>
+                        {val}
+                      </Option>
+                    ))}
                 </Select>,
               )}
             </Form.Item>
@@ -274,7 +292,7 @@ const Registrat = React.forwardRef((props, ref) => {
                   },
                 ],
                 initialValue: register ? register.registerUserPhone : '',
-              })(<Input placeholder='请输入' />)}
+              })(<Input placeholder="请输入" />)}
             </Form.Item>
           </Col>
 
@@ -288,8 +306,19 @@ const Registrat = React.forwardRef((props, ref) => {
                   },
                 ],
                 initialValue: main.title,
+<<<<<<< HEAD
               })
               (<AutoComplete  dataSource={antoArr}/>)}
+=======
+              })(
+                <AutoComplete
+                  dataSource={titleautodata}
+                  // onSearch={value => handleSearch(value)}
+                >
+                  <Input placeholder="请输入" />
+                </AutoComplete>,
+              )}
+>>>>>>> 故障、问题常用语
             </Form.Item>
           </Col>
 
@@ -303,29 +332,35 @@ const Registrat = React.forwardRef((props, ref) => {
                   },
                 ],
                 initialValue: main.content,
-              })(<TextArea placeholder='请输入' />)}
+              })(
+                <AutoComplete
+                  dataSource={desautodata}
+                  // onSearch={value => handleSearch(value)}
+                >
+                  <TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />
+                </AutoComplete>,
+              )}
             </Form.Item>
           </Col>
 
           <Col span={24}>
-            <Form.Item
-              label="上传附件"
-              {...forminladeLayout}
-            >
-              {
-                getFieldDecorator('registerAttachments',{
-                  rules: [
-                    {
-                      required,
-                      message: '请上传附件'
-                    }
-                  ],
-                  initialValue: register?register.registerAttachments :''
-                })(<div style={{ width: 400 }}>
-                  <SysUpload fileslist={files} ChangeFileslist={newvalue => setFilesList(newvalue)} />
-                </div>)
-              }
-
+            <Form.Item label="上传附件" {...forminladeLayout}>
+              {getFieldDecorator('registerAttachments', {
+                rules: [
+                  {
+                    required,
+                    message: '请上传附件',
+                  },
+                ],
+                initialValue: register ? register.registerAttachments : '',
+              })(
+                <div style={{ width: 400 }}>
+                  <SysUpload
+                    fileslist={files}
+                    ChangeFileslist={newvalue => setFilesList(newvalue)}
+                  />
+                </div>,
+              )}
             </Form.Item>
           </Col>
 
@@ -346,9 +381,7 @@ const Registrat = React.forwardRef((props, ref) => {
                   },
                 ],
                 initialValue: useInfo.unitName,
-              })(
-                <Input disabled />,
-              )}
+              })(<Input disabled />)}
             </Form.Item>
           </Col>
 
@@ -377,12 +410,12 @@ Registrat.defaultProps = {
     content: '',
   },
   register: {
-    complainUser:''
+    complainUser: '',
   },
   useInfo: {
     userName: '',
     deptNameExt: '',
-  }
-}
+  },
+};
 
 export default Form.create({})(Registrat);
