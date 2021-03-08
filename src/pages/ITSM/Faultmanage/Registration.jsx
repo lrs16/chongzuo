@@ -20,8 +20,8 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 // import SelectUser from '@/components/SelectUser'; // 选人组件
 import SysUpload from '@/components/SysUpload'; // 附件下载组件
 import SysDict from '@/components/SysDict';
-import styles from './index.less';
 import { getAndField } from '@/pages/SysManage/services/api';
+import styles from './index.less';
 
 const { Panel } = Collapse;
 const { TextArea } = Input;
@@ -57,6 +57,8 @@ function Registration(props) {
   const [selectdata, setSelectData] = useState([]);
   const [titleautodata, setTitleAutoData] = useState([]);
   const [desautodata, setDestoData] = useState([]);
+  const [titlerecords, setTitleRecords] = useState([]);
+  const [desrecords, setDesRecords] = useState([]);
 
   const {
     form: { getFieldDecorator, resetFields, validateFields },
@@ -154,6 +156,7 @@ function Registration(props) {
           return item.content;
         });
         setTitleAutoData(newdata);
+        setTitleRecords(newdata);
       }
     });
   };
@@ -164,8 +167,38 @@ function Registration(props) {
           return item.content;
         });
         setDestoData(newdata);
+        setDesRecords(newdata);
       }
     });
+  };
+
+  const handleSearch = (value, type) => {
+    switch (type) {
+      case 'title': {
+        const newArr = titlerecords.filter(item => {
+          return item.includes(value);
+        });
+        if (newArr.length > 0) {
+          setTitleAutoData(newArr);
+        } else {
+          setTitleAutoData(titlerecords);
+        }
+        break;
+      }
+      case 'des': {
+        const newArr = desrecords.filter(item => {
+          return item.includes(value);
+        });
+        if (newArr.length > 0) {
+          setDestoData(newArr);
+        } else {
+          setDesRecords(desrecords);
+        }
+        break;
+      }
+      default:
+        break;
+    }
   };
 
   // 常用语调用
@@ -397,7 +430,7 @@ function Registration(props) {
                     })(
                       <AutoComplete
                         dataSource={titleautodata}
-                        // onSearch={value => handleSearch(value)}
+                        onSearch={value => handleSearch(value, 'title')}
                       >
                         <Input placeholder="请输入" />
                       </AutoComplete>,
@@ -417,7 +450,7 @@ function Registration(props) {
                     })(
                       <AutoComplete
                         dataSource={desautodata}
-                        // onSearch={value => handleSearch(value)}
+                        onSearch={value => handleSearch(value, 'des')}
                       >
                         <TextArea autoSize={{ minRows: 5 }} placeholder="请输入" />
                       </AutoComplete>,

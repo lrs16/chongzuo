@@ -38,8 +38,8 @@ const ReturnVisit = React.forwardRef((props, ref) => {
   const attRef = useRef();
   const required = true;
   const [fileslist, setFilesList] = useState({ arr: [], ischange: false });
-  const [titleautodata, setTitleAutoData] = useState([]);
   const [desautodata, setDestoData] = useState([]);
+  const [desrecords, setDesRecords] = useState([]);
 
   useEffect(() => {
     if (fileslist.ischange) {
@@ -94,8 +94,27 @@ const ReturnVisit = React.forwardRef((props, ref) => {
           return item.content;
         });
         setDestoData(newdata);
+        setDesRecords(newdata);
       }
     });
+  };
+
+  const handleSearch = (value, type) => {
+    switch (type) {
+      case 'des': {
+        const newArr = desrecords.filter(item => {
+          return item.includes(value);
+        });
+        if (newArr.length > 0) {
+          setDestoData(newArr);
+        } else {
+          setDesRecords(desrecords);
+        }
+        break;
+      }
+      default:
+        break;
+    }
   };
 
   // 常用语调用
@@ -183,7 +202,7 @@ const ReturnVisit = React.forwardRef((props, ref) => {
               })(
                 <AutoComplete
                   dataSource={desautodata}
-                  // onSearch={value => handleSearch(value)}
+                  onSearch={value => handleSearch(value, 'des')}
                 >
                   <TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />
                 </AutoComplete>,

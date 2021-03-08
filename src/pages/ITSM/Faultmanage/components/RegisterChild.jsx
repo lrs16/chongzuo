@@ -25,6 +25,8 @@ const RegisterChild = React.forwardRef((props, ref) => {
   const [selectdata, setSelectData] = useState([]);
   const [titleautodata, setTitleAutoData] = useState([]);
   const [desautodata, setDestoData] = useState([]);
+  const [titlerecords, setTitleRecords] = useState([]);
+  const [desrecords, setDesRecords] = useState([]);
 
   useEffect(() => {
     ChangeFiles(fileslist);
@@ -47,6 +49,7 @@ const RegisterChild = React.forwardRef((props, ref) => {
           return item.content;
         });
         setTitleAutoData(newdata);
+        setTitleRecords(newdata);
       }
     });
   };
@@ -57,8 +60,38 @@ const RegisterChild = React.forwardRef((props, ref) => {
           return item.content;
         });
         setDestoData(newdata);
+        setDesRecords(newdata);
       }
     });
+  };
+
+  const handleSearch = (value, type) => {
+    switch (type) {
+      case 'title': {
+        const newArr = titlerecords.filter(item => {
+          return item.includes(value);
+        });
+        if (newArr.length > 0) {
+          setTitleAutoData(newArr);
+        } else {
+          setTitleAutoData(titlerecords);
+        }
+        break;
+      }
+      case 'des': {
+        const newArr = desrecords.filter(item => {
+          return item.includes(value);
+        });
+        if (newArr.length > 0) {
+          setDestoData(newArr);
+        } else {
+          setDesRecords(desrecords);
+        }
+        break;
+      }
+      default:
+        break;
+    }
   };
 
   // 常用语调用
@@ -264,7 +297,7 @@ const RegisterChild = React.forwardRef((props, ref) => {
             })(
               <AutoComplete
                 dataSource={titleautodata}
-                // onSearch={value => handleSearch(value)}
+                onSearch={value => handleSearch(value, 'title')}
               >
                 <Input placeholder="请输入" />
               </AutoComplete>,
@@ -283,10 +316,7 @@ const RegisterChild = React.forwardRef((props, ref) => {
               ],
               initialValue: main.content || '',
             })(
-              <AutoComplete
-                dataSource={desautodata}
-                // onSearch={value => handleSearch(value)}
-              >
+              <AutoComplete dataSource={desautodata} onSearch={value => handleSearch(value, 'des')}>
                 <TextArea autoSize={{ minRows: 5 }} placeholder="请输入" />
               </AutoComplete>,
             )}
