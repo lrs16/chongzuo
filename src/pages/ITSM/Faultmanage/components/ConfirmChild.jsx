@@ -13,7 +13,7 @@ import SysUpload from '@/components/SysUpload'; // 附件下载组件
 const { TextArea } = Input;
 
 const ConfirmChild = React.forwardRef((props, ref) => {
-  const { formItemLayout, forminladeLayout, confirm, curruserinfo, ChangeFiles, ChangeResult } = props;
+  const { formItemLayout, forminladeLayout, confirm,main, curruserinfo, ChangeFiles, ChangeResult } = props;
   const { getFieldDecorator } = props.form;
   const attRef = useRef();
   const [fileslist, setFilesList] = useState({ arr: [], ischange: false }); // 下载列表
@@ -76,7 +76,7 @@ const ConfirmChild = React.forwardRef((props, ref) => {
                   message: '请输入故障责任方',
                 },
               ],
-              initialValue: confirm.blame
+              initialValue: main?main.blame:''
             })(<Input />)}
           </Form.Item>
         </Col>
@@ -163,7 +163,7 @@ ConfirmChild.defaultProps = {
     confirmContent: '',
     confirmResult: '1',
     confirmTime: moment().format(),
-    blame:''
+    // blame:''
   },
   curruserinfo: {
     deptName: '',

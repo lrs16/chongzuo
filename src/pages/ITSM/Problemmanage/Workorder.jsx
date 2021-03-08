@@ -25,6 +25,7 @@ import Problemregistration from './components/Problemregistration';
 import Reasonregression from './components/Reasonregression';
 import Problemflow from './components/Problemflow';
 import AutomationCirculation from './components/AutomationCirculation';
+import Systemoperatorsecond from './components/Systemoperatorsecond';
 
 import styles from './index.less';
 
@@ -267,9 +268,7 @@ function Workorder(props) {
   };
 
   const saveRegister = (params2, uploadSive) => {
-    console.log('params2: ', params2);
     RegistratRef.current.validateFields((err, values) => {
-      console.log('values: ', values);
       if (params2 ? !err : true) {
         const saveData = values;
         saveData.registerTime = (saveData.registerTime).format('YYYY-MM-DD HH:mm:ss');
@@ -313,7 +312,9 @@ function Workorder(props) {
 
   //  审核保存
   const savePrevies = (params2, uploadSive) => {
+    console.log('params2: ', params2);
     PreviesRef.current.validateFields((err, values) => {
+      console.log('values: ', values);
       const saveData = values;
       if (values.checkTime) {
         saveData.checkTime = (saveData.checkTime).format('YYYY-MM-DD HH:mm:ss');
@@ -965,7 +966,7 @@ function Workorder(props) {
                       style={{ backgroundColor: 'white' }}
                     >
                       <FatherContext.Provider value={{ flowtype, setFlowtype }}>
-                        <Operatorconfirmaedit
+                        <Systemoperatorsecond
                           formItemLayout={formItemLayout}
                           forminladeLayout={forminladeLayout}
                           showEdit={showEdit}
@@ -995,7 +996,7 @@ function Workorder(props) {
                       style={{ backgroundColor: 'white' }}
                     >
                       <FatherContext.Provider value={{ flowtype, setFlowtype }}>
-                        <Operatorconfirmaedit
+                        <Systemoperatorsecond
                           formItemLayout={formItemLayout}
                           forminladeLayout={forminladeLayout}
                           showEdit={showEdit}

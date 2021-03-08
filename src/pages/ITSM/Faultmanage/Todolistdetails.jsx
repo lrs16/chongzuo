@@ -43,7 +43,6 @@ const history1 = creatHistory(); // 返回上一页
 let image; // 流程图
 let tosaveStatus; // 保存状态
 const currenStatus = 'circle'; // 保存状态
-
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
@@ -118,35 +117,48 @@ function Todolistdetails(props) {
 
   const { params: { id } } = props.match; // 获取taskId
 
-  // 二进制展示流程图
-  const imgsrc = () => {
-    const img = document.createElement('img');
-    img.src = window.URL.createObjectURL(flowimageview);
-    document.getElementById('divimg').appendChild(img);
-  };
 
-  useEffect(() => {
-    if (flowimageview !== '' && document.getElementsByTagName('img') !== '' ) {
-      imgsrc();
-    }
-  }, [flowimageview]);
+// 二进制展示流程图
+const blob = new Blob([flowimageview]);
+image = (window.URL || window.webkitURL).createObjectURL(blob);
+
+const getFlowImage = () => { // 流程图
+  dispatch({
+    type: 'fault/fetchGetFlowImage',
+    payload: { id: tododetailslist.main.id }
+  });
+}
+
+const getFlowlog = () => { // 流程日志
+  dispatch({
+    type: 'fault/fetchGetFlowLog',
+    payload: { id: tododetailslist.main.id }
+  })
+}
+  
+  // useEffect(() => {
+  //   console.log(flowimageview !== '' && document.getElementsByTagName('img') !== null,'jjj');
+  //   if (flowimageview !== '' && document.getElementsByTagName('img') !== null ) {
+  //     imgsrc();
+  //   }
+  // }, [flowimageview]);
   const handleClose = () => { // 返回上一页
     history1.goBack();
   }
 
-  const getFlowImage = () => { // 流程图
-    dispatch({
-      type: 'fault/fetchGetFlowImage',
-      payload: { id: tododetailslist.main.id }
-    });
-  }
+  // const getFlowImage = () => { // 流程图
+  //   dispatch({
+  //     type: 'fault/fetchGetFlowImage',
+  //     payload: { id: tododetailslist.main.id }
+  //   });
+  // }
 
-  const getFlowlog = () => { // 流程日志
-    dispatch({
-      type: 'fault/fetchGetFlowLog',
-      payload: { id: tododetailslist.main.id }
-    })
-  }
+  // const getFlowlog = () => { // 流程日志
+  //   dispatch({
+  //     type: 'fault/fetchGetFlowLog',
+  //     payload: { id: tododetailslist.main.id }
+  //   })
+  // }
 
   const handleTabChange = (key) => { // tab切换
     setTabActiveKey(key);
@@ -912,6 +924,7 @@ function Todolistdetails(props) {
                             formItemLayout={formItemLayout}
                             forminladeLayout={forminladeLayout}
                             confirm={confirm}
+                            main={main}
                             curruserinfo={curruserinfo}
                             ChangeFiles={newvalue => {
                               setFiles(newvalue);
@@ -952,7 +965,14 @@ function Todolistdetails(props) {
         (tabActiveKey === 'faultPro' && (
           <>
             <Card title="流程图">
-              <div style={{ background: '#fff' }} id="divimg" />
+            <div
+                style={{
+                  background: '#fff',
+                  // padding: 20,
+                }}
+              >
+                <img src={image} alt='' />
+              </div>
             </Card>
             <Card title='流转日志' style={{ marginTop: '-1px' }}>
               {

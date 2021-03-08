@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
 import {
-    Form,
-    Button,
-    Collapse,
-    Card,
-    Steps
+  Form,
+  Button,
+  Collapse,
+  Card,
+  Steps
 } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
@@ -27,205 +27,205 @@ let image;
 const history = creatHistory(); // 返回上一页
 
 const tabList = [
-    {
-        key: 'faultForm',
-        tab: '故障工单',
-    },
-    {
-        key: 'faultPro',
-        tab: '故障流程',
-    },
+  {
+    key: 'faultForm',
+    tab: '故障工单',
+  },
+  {
+    key: 'faultPro',
+    tab: '故障流程',
+  },
 ];
 
 function Querylistdetails(props) {
-    // const pagetitle = props.route.name;
-    const [activeKey, setActiveKey] = useState();
-    const [tabActiveKey, setTabActiveKey] = useState('faultForm'); // tab切换
+  // const pagetitle = props.route.name;
+  const [activeKey, setActiveKey] = useState();
+  const [tabActiveKey, setTabActiveKey] = useState('faultForm'); // tab切换
 
-    const {
-        location: { ids }, // ids 列表传过来的id
-        dispatch,
-        loading,
-        querydetailslist,
-        querydetailslist: { troubleFlowNodeRows, main, troubleFlowLogs },
-        flowimageview,
-        flowlog,
-    } = props;
+  const {
+    location: { ids }, // ids 列表传过来的id
+    dispatch,
+    loading,
+    querydetailslist,
+    querydetailslist: { troubleFlowNodeRows, main, troubleFlowLogs },
+    flowimageview,
+    flowlog,
+  } = props;
 
-    // 二进制展示流程图
-    const blob = new Blob([flowimageview]);
-    image = (window.URL || window.webkitURL).createObjectURL(blob);
+  // 二进制展示流程图
+  const blob = new Blob([flowimageview]);
+  image = (window.URL || window.webkitURL).createObjectURL(blob);
 
-    const getFlowImage = () => { // 流程图片
-        dispatch({
-            type: 'fault/fetchGetFlowImage',
-            payload: { id: querydetailslist.main.id }
-        });
-    }
+  const getFlowImage = () => { // 流程图片
+    dispatch({
+      type: 'fault/fetchGetFlowImage',
+      payload: { id: querydetailslist.main.id }
+    });
+  }
 
-    const getFlowlog = () => { // 流程日志
-        dispatch({
-            type: 'fault/fetchGetFlowLog',
-            payload: { id: querydetailslist.main.id }
-        })
-    }
+  const getFlowlog = () => { // 流程日志
+    dispatch({
+      type: 'fault/fetchGetFlowLog',
+      payload: { id: querydetailslist.main.id }
+    })
+  }
 
-    const querydetailsList = () => { // 故障查询详情数据
-        if (ids)
-            dispatch({
-                type: 'fault/getfaultQueryDetailData',
-                payload: { id: ids },
-            });
-    }
+  const querydetailsList = () => { // 故障查询详情数据
+    if (ids)
+      dispatch({
+        type: 'fault/getfaultQueryDetailData',
+        payload: { id: ids },
+      });
+  }
 
-    useEffect(() => {
-        querydetailsList();
-    }, []);
+  useEffect(() => {
+    querydetailsList();
+  }, []);
 
-    const handleClose = () => { // 返回上一页
-        history.goBack();
-    }
+  const handleClose = () => { // 返回上一页
+    history.goBack();
+  }
 
-    const callback = key => {
-        setActiveKey(key);
-    };
+  const callback = key => {
+    setActiveKey(key);
+  };
 
-    // 初始化值panel
-    useEffect(() => {
-        setActiveKey('0'); // 初始化值panel
-    }, [troubleFlowNodeRows]);
+  // 初始化值panel
+  useEffect(() => {
+    setActiveKey('0'); // 初始化值panel
+  }, [troubleFlowNodeRows]);
 
-    const handleTabChange = (key) => { // tab切换
-        setTabActiveKey(key);
-        getFlowImage();
-        getFlowlog();
-    };
+  const handleTabChange = (key) => { // tab切换
+    setTabActiveKey(key);
+    getFlowImage();
+    getFlowlog();
+  };
 
-    return (
-        <PageHeaderWrapper
-            extra={<Button type="default" onClick={handleClose}>返 回</Button>}
-            title={main && main.statuscn}
-            tabList={tabList}
-            onTabChange={handleTabChange}
-            tabActiveKey={tabActiveKey}
-        >
-            {
-                (tabActiveKey === 'faultForm' &&
-                    (<div className={styles.collapse}>
-                        <Card
-                            style={{
-                                background: '#fff',
-                                // padding: 10,
-                                border: '1px solid #e8e8e8',
-                                overflowX: 'auto',
-                            }}
-                        >
-                            {troubleFlowLogs &&
-                                (<Steps
-                                    // current={stepcurrentmap.get(paneKey)}
-                                    current={troubleFlowLogs.length - 1}
-                                    size="small"
-                                >
-                                    {
-                                        troubleFlowLogs && troubleFlowLogs.map(({ key, name, status, timeText, formHandler, startTime }) => [
-                                            name !== '开始节点' && name !== '结束节点' && <Step key={key} title={`${name}${'\xa0'}${'\xa0'}(${status})${'\xa0'}${'\xa0'}${timeText}`} description={
-                                                <div className={styles.stepDescription}>
-                                                    处理人：{formHandler}
-                                                    <div>结束时间：{moment(startTime).format('YYYY-MM-DD hh:mm:ss')}</div>
-                                                </div>
-                                            } />
-                                        ])}
-                                </Steps>)
-                            }
-                        </Card>
-                        <div className={styles.collapse}>
-                            {troubleFlowNodeRows && loading === false && (
-                                <Collapse
-                                    expandIconPosition="right"
-                                    activeKey={activeKey}
-                                    bordered={false}
-                                    onChange={callback}
-                                >
-                                    {troubleFlowNodeRows.map((obj, index) => {
-                                        // panel详情组件
-                                        const Paneldesmap = new Map([
-                                            ['故障登记', <RegisterQuery info={obj} maindata={main} />],
-                                            ['系统运维商审核', <ExamineQuery info={obj} maindata={main} />],
-                                            ['系统运维商处理', <HandleQuery info={obj} maindata={main} />],
-                                            ['系统运维商确认总结', <SummaryQuery info={obj} maindata={main} />],
-                                            ['自动化科业务负责人审核', <ExamineSecondQuery info={obj} maindata={main} />],
-                                            ['自动化科专责确认', <ConfirmQuery info={obj} maindata={main} />],
-                                        ]);
-                                        return (
-                                            <Panel Panel header={obj.fnname} key={index}>
-                                                {Paneldesmap.get(obj.fnname)}
-                                            </Panel>
-                                        );
-                                    })}
-                                </Collapse>
-                            )}
+  return (
+    <PageHeaderWrapper
+      extra={<Button type="default" onClick={handleClose}>返 回</Button>}
+      title={main && main.statuscn}
+      tabList={tabList}
+      onTabChange={handleTabChange}
+      tabActiveKey={tabActiveKey}
+    >
+      {
+        (tabActiveKey === 'faultForm' &&
+          (<div className={styles.collapse}>
+            <Card
+              style={{
+                background: '#fff',
+                // padding: 10,
+                border: '1px solid #e8e8e8',
+                overflowX: 'auto',
+              }}
+            >
+              {troubleFlowLogs &&
+                (<Steps
+                  // current={stepcurrentmap.get(paneKey)}
+                  current={troubleFlowLogs.length - 1}
+                  size="small"
+                >
+                  {
+                    troubleFlowLogs && troubleFlowLogs.map(({ key, name, status, timeText, formHandler, startTime }) => [
+                      name !== '开始节点' && name !== '结束节点' && <Step key={key} title={`${name}${'\xa0'}${'\xa0'}(${status})${'\xa0'}${'\xa0'}${timeText}`} description={
+                        <div className={styles.stepDescription}>
+                          处理人：{formHandler}
+                          <div>结束时间：{moment(startTime).format('YYYY-MM-DD hh:mm:ss')}</div>
                         </div>
-                    </div>)
-                )
-            }
-            {
-                (tabActiveKey === 'faultPro' && (
-                    <div className={styles.collapse}>
-                        <Card title='故障管理流程'>
-                            <div
-                                style={{
-                                    background: '#fff',
-                                    // padding: 20,
-                                }}
-                            >
-                                <img src={image} alt='' />
+                      } />
+                    ])}
+                </Steps>)
+              }
+            </Card>
+            <div className={styles.collapse}>
+              {troubleFlowNodeRows && loading === false && (
+                <Collapse
+                  expandIconPosition="right"
+                  activeKey={activeKey}
+                  bordered={false}
+                  onChange={callback}
+                >
+                  {troubleFlowNodeRows.map((obj, index) => {
+                    // panel详情组件
+                    const Paneldesmap = new Map([
+                      ['故障登记', <RegisterQuery info={obj} maindata={main} />],
+                      ['系统运维商审核', <ExamineQuery info={obj} maindata={main} />],
+                      ['系统运维商处理', <HandleQuery info={obj} maindata={main} />],
+                      ['系统运维商确认总结', <SummaryQuery info={obj} maindata={main} />],
+                      ['自动化科业务负责人审核', <ExamineSecondQuery info={obj} maindata={main} />],
+                      ['自动化科专责确认', <ConfirmQuery info={obj} maindata={main} />],
+                    ]);
+                    return (
+                      <Panel Panel header={obj.fnname} key={index}>
+                        {Paneldesmap.get(obj.fnname)}
+                      </Panel>
+                    );
+                  })}
+                </Collapse>
+              )}
+            </div>
+          </div>)
+        )
+      }
+      {
+        (tabActiveKey === 'faultPro' && (
+          <div className={styles.collapse}>
+            <Card title='故障管理流程'>
+              <div
+                style={{
+                  background: '#fff',
+                  // padding: 20,
+                }}
+              >
+                <img src={image} alt='' />
+              </div>
+            </Card>
+            <Card title='流转日志' style={{ marginTop: '-1px' }}>
+              {
+                loading === false && flowlog &&
+                (
+                  <div className={styles.steps}>
+                    <Steps
+                      // current={stepcurrentmap.get(paneKey)}
+                      current={flowlog.troubleFlowLogs.length - 1}
+                      size="small"
+                      direction="vertical"
+                      progressDot
+                      style={{
+                        background: '#fff',
+                        padding: 24,
+                        border: '1px solid #e8e8e8',
+                      }}
+                    >
+                      {
+                        flowlog && flowlog.troubleFlowLogs.map(({ key, name, status, startTime, formHandler, backReason }) => [
+                          name !== '开始节点' && name !== '结束节点' && <Step key={key} title={`${name}${'\xa0'}${'\xa0'}(${status})`} description={
+                            <div className={styles.stepDescription}>
+                              处理人：{formHandler}
+                              <div>{moment(startTime).format('YYYY-MM-DD hh:mm:ss')}</div>
+                              <div>{status === '退回' && `回退原因：${backReason}`}</div>
                             </div>
-                        </Card>
-                        <Card title='流转日志' style={{ marginTop: '-1px' }}>
-                            {
-                                loading === false && flowlog &&
-                                (
-                                    <div className={styles.steps}>
-                                        <Steps
-                                            // current={stepcurrentmap.get(paneKey)}
-                                            current={flowlog.troubleFlowLogs.length - 1}
-                                            size="small"
-                                            direction="vertical"
-                                            progressDot
-                                            style={{
-                                                background: '#fff',
-                                                padding: 24,
-                                                border: '1px solid #e8e8e8',
-                                            }}
-                                        >
-                                            {
-                                                flowlog && flowlog.troubleFlowLogs.map(({ key, name, status, startTime, formHandler, backReason }) => [
-                                                    name !== '开始节点' && name !== '结束节点' && <Step key={key} title={`${name}${'\xa0'}${'\xa0'}(${status})`} description={
-                                                        <div className={styles.stepDescription}>
-                                                            处理人：{formHandler}
-                                                            <div>{moment(startTime).format('YYYY-MM-DD hh:mm:ss')}</div>
-                                                            <div>{status === '退回' && `回退原因：${backReason}`}</div>
-                                                        </div>
-                                                    } />
-                                                ])}
-                                        </Steps>
-                                    </div>
-                                )
-                            }
-                        </Card>
-                    </div>
-                ))
-            }
-        </PageHeaderWrapper >
-    );
+                          } />
+                        ])}
+                    </Steps>
+                  </div>
+                )
+              }
+            </Card>
+          </div>
+        ))
+      }
+    </PageHeaderWrapper >
+  );
 }
 
 export default Form.create({})(
-    connect(({ fault, loading }) => ({
-        html: fault.html,
-        loading: loading.models.fault,
-        querydetailslist: fault.querydetailslist,
-        flowimageview: fault.flowimageview, // 流程图view
-        flowlog: fault.flowlog, // 流转日志
-    }))(Querylistdetails),
+  connect(({ fault, loading }) => ({
+    html: fault.html,
+    loading: loading.models.fault,
+    querydetailslist: fault.querydetailslist,
+    flowimageview: fault.flowimageview, // 流程图view
+    flowlog: fault.flowlog, // 流转日志
+  }))(Querylistdetails),
 );

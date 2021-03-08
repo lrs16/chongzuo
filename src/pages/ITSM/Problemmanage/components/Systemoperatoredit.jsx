@@ -144,7 +144,7 @@ const Systemoperatoredit = React.forwardRef((props, ref) => {
                         message:'请上传附件'
                       }
                     ],
-                    initialValue:check.checkAttachments
+                    initialValue:(check && check.checkAttachments !== '[]') ? check.checkAttachments :''
                   })( <div style={{ width: 400 }}>
                     <SysUpload fileslist={files} ChangeFileslist={newvalue => setFilesList(newvalue)} />
                   </div>)

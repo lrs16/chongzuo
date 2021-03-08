@@ -91,34 +91,36 @@ export default {
           type: 'getid',
           payload: response,
         });
+
         const responseId = yield call(getNewno);
-        yield put({
-          type: 'getNewno',
-          payload: response,
-        });
-
-        const saveiInfo = saveData;
-        saveiInfo.taskId = response.flowTaskId;
-        saveiInfo.no = responseId.problemNo;
-
-        const resRegister = yield call(saveRegister, saveiInfo);
-        if (resRegister.code === 200) {
-          switch (jumpType) {
-            // case 0:
-            //   route.push({ pathname: `/ITSM/problemmanage/besolved` });
-            //   break;
-              
-            case 0:
-              route.push({
-                pathname: `/ITSM/problemmanage/besolveddetail/workorder/${response.flowTaskId}`,
-              });
-              break;
-
-            default:
-              break;
+        if(responseId.code === 200) {
+          yield put({
+            type: 'getNewno',
+            payload: response,
+          });
+          const saveiInfo = saveData;
+          saveiInfo.taskId = response.flowTaskId;
+          saveiInfo.no = responseId.problemNo;
+  
+          const resRegister = yield call(saveRegister, saveiInfo);
+          if (resRegister.code === 200) {
+            switch (jumpType) {
+              // case 0:
+              //   route.push({ pathname: `/ITSM/problemmanage/besolved` });
+              //   break;
+                
+              case 0:
+                route.push({
+                  pathname: `/ITSM/problemmanage/besolveddetail/workorder/${response.flowTaskId}`,
+                });
+                break;
+  
+              default:
+                break;
+            }
           }
         }
-      }
+        }
     },
 
     //  启动流程

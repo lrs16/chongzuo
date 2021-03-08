@@ -50,8 +50,8 @@ function Besolved(props) {
       dataIndex: 'index',
       key: 'index',
       width: 100,
-    //   render: (text, record, index) =>
-    //     `${(paginations.current - 1) * paginations.pageSize + (index + 1)}`,
+      render: (text, record, index) =>
+        `${(paginations.current - 1) * paginations.pageSize + (index + 1)}`,
     },
     {
       title: '问题编号',

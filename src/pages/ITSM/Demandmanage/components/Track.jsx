@@ -197,12 +197,9 @@ function Track(props) {
     e.preventDefault();
     const newData = data.map(item => ({ ...item }));
     const target = getRowByKey(key, newData);
-    if (cacheOriginData[key]) {
-      Object.assign(target, cacheOriginData[key]);
-      delete cacheOriginData[key];
-    }
-    target.editable = false;
-    setData(newData);
+    const newArr = newData.filter(item => item.key !== target.key);
+    setData(newArr);
+    setNewButton(false);
   };
 
   // 上传
