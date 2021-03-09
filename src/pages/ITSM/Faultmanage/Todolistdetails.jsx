@@ -246,7 +246,6 @@ const getFlowlog = () => { // 流程日志
   const saveRegister = (cirStatus) => { // 故障登记
     // eslint-disable-next-line consistent-return
     RegisterRef.current.validateFields((err, values) => {
-      console.log('values: ', values);
       if (cirStatus ? !err : true) {
         const formValues = values;
         formValues.registerOccurTime = values.registerOccurTime.format('YYYY-MM-DD HH:mm:ss');
@@ -340,11 +339,9 @@ const getFlowlog = () => { // 流程日志
         formValues.taskId = id;
         formValues.editState = tododetailslist.editState;
         formValues.handlerId = userId; // 当前登录人id
-        console.log(files.ischange === true,'ll');
-        if (files.ischange === true) {
+        if (files.ischange === true && Array.isArray(files.arr)) {
           if (fileskey === '1') {
             formValues.handleRecordAttachments = JSON.stringify(files.arr);
-            console.log(formValues.handleRecordAttachments,'formValues.handleRecordAttachments');
           }
           if (fileskey === '2') {
             formValues.handlePictureAttachments = JSON.stringify(files.arr);
@@ -352,6 +349,10 @@ const getFlowlog = () => { // 流程日志
           if (fileskey === '3') {
             formValues.handleAttachments = JSON.stringify(files.arr);
           }
+        }
+
+        if(files.ischange === true && typeof(files.arr) === 'string'){
+          message.info('上传文件失败，请重新');
         }
 
         if (tododetailslist.editState === 'edit') {

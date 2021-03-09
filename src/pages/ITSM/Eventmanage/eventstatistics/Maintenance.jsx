@@ -34,8 +34,12 @@ const columns = [
     render: (text, record) => (
       <Link
         to={{
-          pathname: '/ITSM/problemmanage/problemquery',
-          query: { handleStatu: '0' }
+          pathname: '/ITSM/eventmanage/query',
+          query: {
+             sign:'last',
+             last_start_time: record.last_start_time,
+             last_end_time: record.last_end_time,
+             }
         }}
       >
         {text}
@@ -49,8 +53,12 @@ const columns = [
     render: (text, record) => (
       <Link
         to={{
-          pathname: '/ITSM/problemmanage/problemquery',
-          query: { handleStatu: '0' }
+          pathname: '/ITSM/eventmanage/query',
+          query: {
+            sign:'now',
+            now_start_time: record.now_start_time,
+            now_end_time: record.now_end_time,
+            }
         }}
       >
         {text}
@@ -67,12 +75,12 @@ const columns = [
 function Maintenance(props) {
   const { pagetitle } = props.route.name;
   const [tabActiveKey, setTabActiveKey] = useState('week');
+  const [time,setTime] = useState('');
   const {
     form: { getFieldDecorator },
     maintenanceArr,
     dispatch
   } = props;
-  console.log(maintenanceArr,'maintenanceArr');
 
   const onChange = (date) => {
     if (tabActiveKey === 'week') {
@@ -96,7 +104,7 @@ function Maintenance(props) {
   const handleListdata = (params) => {
     dispatch({
       type: 'eventstatistics/fetchMaintenancelist',
-      payload: { sign,tabActiveKey, startTime, endTime }
+      payload: { sign, tabActiveKey, startTime, endTime }
     })
   }
 
@@ -125,15 +133,18 @@ function Maintenance(props) {
       date2.setDate(day2.getDate() - 7);
       startTime = `${date2.getFullYear()}-${(date2.getMonth() + 1)}-${date2.getDate()}`;
     } else { // 月统计
+      console.log(startTime,'starttime');
       const day2 = new Date();
       day2.setTime(day2.getTime());
       endTime = `${day2.getFullYear()}-${(day2.getMonth() + 1)}-${day2.getDate()}`;
-      console.log('startTime: ', startTime);
       const date2 = new Date(day2);
       date2.setDate(day2.getDate() - 30);
       startTime = `${date2.getFullYear()}-${(date2.getMonth() + 1)}-${date2.getDate()}`;
+      console.log('startTime: ', startTime);
+      setTime(startTime);
     }
   }
+
 
   useEffect(() => {
     defaultTime();
@@ -153,6 +164,7 @@ function Maintenance(props) {
 
   const handleTabChange = (key) => { // tab切换
     setTabActiveKey(key);
+    startTime = '';
   };
 
   return (
@@ -166,7 +178,7 @@ function Maintenance(props) {
         <Row gutter={24}>
           <Form layout='inline'>
             {
-              tabActiveKey === 'week' && (
+              tabActiveKey === 'week' ? (
                 <>
                   <Col span={15}>
                     <Form.Item label='开始时间'>
@@ -178,6 +190,7 @@ function Maintenance(props) {
                       />)}
                     </Form.Item>
 
+
                     <p style={{ display: 'inline', marginRight: 8 }}>-</p>
 
                     <Form.Item label=''>
@@ -199,11 +212,8 @@ function Maintenance(props) {
                   </Col>
 
                 </>
-              )
-            }
-
-            {
-              tabActiveKey === 'month' && (
+              ) :
+              (
                 <>
                   <Col span={24}>
                     <Form.Item label='开始时间'>
@@ -215,7 +225,6 @@ function Maintenance(props) {
                       />)}
                     </Form.Item>
 
-                    {/* <p>{startTime}</p> */}
 
                     <p style={{ display: 'inline', marginRight: 8 }}>-</p>
 
@@ -240,7 +249,49 @@ function Maintenance(props) {
                   </Col>
                 </>
               )
+
             }
+
+            {/* {
+              tabActiveKey === 'month' && 
+              (
+                <>
+                  <Col span={24}>
+                    <Form.Item label='开始时间'>
+                      {getFieldDecorator('time1', {
+                        initialValue: moment(time)
+                      })(<DatePicker
+                        format="YYYY-MM-DD"
+                        onChange={onChange}
+                      />)}
+                    </Form.Item>
+
+                    <p>{startTime}</p>
+
+                    <p style={{ display: 'inline', marginRight: 8 }}>-</p>
+
+                    <Form.Item label=''>
+                      {
+                        getFieldDecorator('time2', {
+                          initialValue: endTime ? moment(endTime) : ''
+                        })
+                          (<DatePicker disabled />)
+                      }
+                    </Form.Item>
+
+
+
+                    <Button
+                      type='primary'
+                      style={{ marginTop: 6 }}
+                      onClick={() => handleListdata('search')}
+                    >
+                      查询
+                    </Button>
+                  </Col>
+                </>
+              )
+            } */}
           </Form>
         </Row>
 

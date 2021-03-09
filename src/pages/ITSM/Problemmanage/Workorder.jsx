@@ -312,9 +312,7 @@ function Workorder(props) {
 
   //  审核保存
   const savePrevies = (params2, uploadSive) => {
-    console.log('params2: ', params2);
     PreviesRef.current.validateFields((err, values) => {
-      console.log('values: ', values);
       const saveData = values;
       if (values.checkTime) {
         saveData.checkTime = (saveData.checkTime).format('YYYY-MM-DD HH:mm:ss');

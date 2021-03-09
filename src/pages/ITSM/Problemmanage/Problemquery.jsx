@@ -271,6 +271,7 @@ function Besolved(props) {
     current: paginations.current,
     pageSize: paginations.pageSize,
     total: queryArr.total,
+    showTotal: total => `总共  ${total}  条记录`,
     onChange: page => changePage(page),
   };
 

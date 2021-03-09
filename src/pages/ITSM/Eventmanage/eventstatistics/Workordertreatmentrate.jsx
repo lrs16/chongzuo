@@ -29,8 +29,12 @@ const columns = [
     render: (text, record) => (
       <Link
         to={{
-          pathname: '/ITSM/problemmanage/problemquery',
-          query: { handleStatu: '0' }
+          pathname: '/ITSM/eventmanage/query',
+          query: {
+            sign:'last',
+            start_time: record.start_time,
+            end_time: record.end_time,
+            }
         }}
       >
         {text}
@@ -44,8 +48,12 @@ const columns = [
     render: (text, record) => (
       <Link
         to={{
-          pathname: '/ITSM/problemmanage/problemquery',
-          query: { handleStatu: '0' }
+          pathname: '/ITSM/eventmanage/query',
+          query: {
+            sign:'now',
+            start_time: record.start_time,
+            end_time: record.end_time,
+            }
         }}
       >
         {text}
@@ -56,16 +64,6 @@ const columns = [
     title: '完成率',
     dataIndex: 'points',
     key: 'points',
-    render: (text, record) => (
-      <Link
-        to={{
-          pathname: '/ITSM/problemmanage/problemquery',
-          query: { handleStatu: '0' }
-        }}
-      >
-        {text}
-      </Link>
-    )
   },
 ];
 

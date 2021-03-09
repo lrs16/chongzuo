@@ -182,6 +182,13 @@ function QueryList(props) {
   const pagetitle = props.route.name;
   const {
     form: { getFieldDecorator, resetFields, validateFields },
+    location: { query: {
+      sign,
+      last_start_time,
+      last_end_time,
+      now_start_time,
+      now_end_time
+     }},
     loading,
     list,
     dispatch,
@@ -199,6 +206,10 @@ function QueryList(props) {
             ...values,
             pageIndex: paginations.current - 1,
             pageSize: paginations.pageSize,
+            last_start_time,
+            last_end_time,
+            now_start_time,
+            now_end_time
           },
         });
       }
@@ -206,7 +217,7 @@ function QueryList(props) {
     return () => {
       setSelectData([]);
     };
-  }, []);
+  }, [sign]);
 
   const searchdata = (values, page, size) => {
     if (values.createTime === undefined) {
