@@ -1,11 +1,26 @@
 import React, { useRef, useImperativeHandle, forwardRef, useState, useEffect } from 'react';
 import router from 'umi/router';
 import moment from 'moment';
-import { Row, Col, Form, Input, Select, Checkbox, DatePicker, Cascader, AutoComplete } from 'antd';
+import {
+  Row,
+  Col,
+  Form,
+  Input,
+  Select,
+  Checkbox,
+  DatePicker,
+  Cascader,
+  AutoComplete,
+  Upload,
+  Button,
+  message,
+} from 'antd';
 import { phone_reg } from '@/utils/Regexp';
-import SysUpload from '@/components/SysUpload';
+// import SysUpload from '@/components/SysUpload';
 // import styles from '../index.less';
 import { getAndField } from '@/pages/SysManage/services/api';
+import { FileDownload, FileDelete } from '@/services/upload';
+import { DownloadOutlined } from '@ant-design/icons';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -34,21 +49,16 @@ const Registrat = forwardRef((props, ref) => {
   const required = true;
   const [check, setCheck] = useState(false);
   const [revisitway, setRevisitway] = useState(false);
-  const [fileslist, setFilesList] = useState({ arr: [], ischange: false });
+  const [fileslist, setFilesList] = useState([]);
   const [titleautodata, setTitleAutoData] = useState([]);
   const [desautodata, setDestoData] = useState([]);
   const [titlerecords, setTitleRecords] = useState([]);
   const [desrecords, setDesRecords] = useState([]);
 
   useEffect(() => {
-    if (fileslist.ischange === true) {
-      ChangeFiles(fileslist);
-      setFilesList({ ...fileslist, ischange: false });
+    if (files.length > 0) {
+      setFilesList(files);
     }
-  }, [fileslist]);
-
-  useEffect(() => {
-    setFilesList({ ...fileslist, arr: files });
   }, [info]);
 
   const attRef = useRef();
@@ -216,6 +226,7 @@ const Registrat = forwardRef((props, ref) => {
     handledesSearch({ module: '事件单', field: '描述', key: '' });
   }, []);
 
+  // 数据字典
   const getTypebykey = key => {
     if (selectdata.length > 0) {
       return selectdata.filter(item => item.key === key)[0].children;
@@ -234,6 +245,63 @@ const Registrat = forwardRef((props, ref) => {
   const effectmap = getTypebykey('482610561507393536'); // 影响度
   const emergentmap = getTypebykey('482610561503199232'); // 紧急度
   const priormap = getTypebykey('482610561499004928'); // 优先级
+
+  // 附件上传下载
+  const handledownload = filesinfo => {
+    FileDownload(filesinfo.uid).then(res => {
+      const filename = filesinfo.name;
+      const blob = new Blob([res]);
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      a.click();
+      window.URL.revokeObjectURL(url);
+    });
+  };
+
+  const uploadprops = {
+    name: 'file',
+    action: '/sys/file/upload',
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${sessionStorage.getItem('access_token')}`,
+    },
+    showUploadList: { showDownloadIcon: true },
+    defaultFileList: files,
+    onChange(filesinfo) {
+      if (filesinfo.file.status === 'done') {
+        if (filesinfo.file.response.code === 200) {
+          message.success(`${filesinfo.file.name} 上传成功`);
+          const voice = {};
+          voice.uid = filesinfo.file.response.data.id;
+          voice.name = filesinfo.file.response.data.fileName;
+          voice.status = 'done';
+          voice.fileUrl = '';
+          fileslist.push(voice);
+          ChangeFiles({ arr: fileslist, ischange: true });
+        }
+        if (filesinfo.file.response.code === -1) {
+          message.error(`${info.file.name} 上传失败`);
+        }
+      } else if (filesinfo.file.status === 'error') {
+        message.error(`${filesinfo.file.name} 上传失败.`);
+      }
+    },
+    onPreview(filesinfo) {
+      handledownload(filesinfo);
+    },
+    onDownload(filesinfo) {
+      handledownload(filesinfo);
+    },
+    onRemove(filesinfo) {
+      const newfilelist = fileslist.filter(item => item.uid !== filesinfo.uid);
+      ChangeFiles({ arr: newfilelist, ischange: true });
+      // 删除文件
+      FileDelete(filesinfo.uid);
+    },
+  };
+
   return (
     <>
       <Form {...formItemLayout}>
@@ -560,7 +628,11 @@ const Registrat = forwardRef((props, ref) => {
               // extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
             >
               <div style={{ width: 400 }}>
-                <SysUpload fileslist={files} ChangeFileslist={newvalue => setFilesList(newvalue)} />
+                <Upload {...uploadprops}>
+                  <Button type="primary">
+                    <DownloadOutlined /> 上传附件
+                  </Button>
+                </Upload>
               </div>
             </Form.Item>
           </Col>
@@ -641,12 +713,6 @@ Registrat.defaultProps = {
       applicationUserId: '12121212',
       applicationUserPhone: '',
       mobilePhone: '',
-      // occur_time: moment().format('YYYY-MM-DD HH:mm:ss'),
-      // registerDept: '广西电网有限责任公司',
-      // registerDeptId: '7AC3EF0F701402A2E0530A644F130365',
-      // registerUnit: '广西电网有限责任公司',
-      // registerUnitId: '7AC3EF0F701402A2E0530A644F130365',
-      // registerUser: '管理员',
       registerUserId: '1',
       selfhandle: '0',
     },

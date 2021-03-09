@@ -14,7 +14,7 @@ function SysUpload(props) {
   }, []);
 
   // 上传文件类型
-  const filestype = `application/msword,application/vnd.ms-excel,application / vnd.openxmlformats - officedocument.spreadsheetml.sheet,image/png,image/jpeg, `;
+  // const filestype = `application/msword,application/vnd.ms-excel,application / vnd.openxmlformats - officedocument.spreadsheetml.sheet,image/png,image/jpeg, `;
 
   // 下载附件
   const handledownload = info => {
@@ -45,7 +45,7 @@ function SysUpload(props) {
       Authorization: `Bearer ${sessionStorage.getItem('access_token')}`,
     },
     // multiple: true,
-    //accept: '.doc,.docx,.xml,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/png,image/jpeg,',
+    // baccept: '.doc,.docx,.xml,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/png,image/jpeg,',
     showUploadList: { showDownloadIcon: true },
     defaultFileList: fileslist,
     onChange(info) {

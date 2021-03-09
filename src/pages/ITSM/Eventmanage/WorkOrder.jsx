@@ -73,7 +73,7 @@ function WorkOrder2(props) {
   const [formhandle, setFormhandle] = useState('');
   const [formvisit, setFormvisit] = useState('');
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
-  const [handefiles, setHandleFiles] = useState({ arr: [], ischange: false }); // 登记时自行处理附件列表
+  const [registratfiles, setRegistratFiles] = useState({ arr: [], ischange: false }); // 登记上传
   const [ischeck, setIscheck] = useState(false); // 是否在校验状态
   const [show, setShow] = useState(false); // 是否自行处理
   const [check, setCheck] = useState(false); // 事件分类是否权限账号
@@ -169,7 +169,7 @@ function WorkOrder2(props) {
               register_occurTime: values.register_occurTime.format('YYYY-MM-DD HH:mm:ss'),
               register_selfhandle: String(Number(values.register_selfhandle)),
               register_supplement: String(Number(values.register_supplement)),
-              register_fileIds: JSON.stringify(files.arr),
+              register_fileIds: JSON.stringify(registratfiles.arr),
             });
           } else {
             formerr();
@@ -184,7 +184,7 @@ function WorkOrder2(props) {
             register_occurTime: values.register_occurTime.format('YYYY-MM-DD HH:mm:ss'),
             register_selfhandle: String(Number(values.register_selfhandle)),
             register_supplement: String(Number(values.register_supplement)),
-            register_fileIds: JSON.stringify(files.arr),
+            register_fileIds: JSON.stringify(registratfiles.arr),
           });
         });
       }
@@ -198,7 +198,7 @@ function WorkOrder2(props) {
             register_occurTime: values.register_occurTime.format('YYYY-MM-DD HH:mm:ss'),
             register_selfhandle: String(Number(values.register_selfhandle)),
             register_supplement: String(Number(values.register_supplement)),
-            register_fileIds: JSON.stringify(files.arr),
+            register_fileIds: JSON.stringify(registratfiles.arr),
           });
         } else {
           formerr();
@@ -247,7 +247,7 @@ function WorkOrder2(props) {
               ...values,
               main_eventObject: values.main_eventObject?.slice(-1)[0],
               handle_endTime: values.handle_endTime.format('YYYY-MM-DD HH:mm:ss'),
-              handle_fileIds: JSON.stringify(handefiles.arr),
+              handle_fileIds: JSON.stringify(files.arr),
             });
           } else {
             formerr();
@@ -405,7 +405,14 @@ function WorkOrder2(props) {
   // 初始化历史附件
   useEffect(() => {
     if (edit !== undefined && edit !== '' && Object.values(edit)[0] !== null) {
-      if (Object.values(edit)[0].fileIds !== '') {
+      if (Object.values(edit)[0].fileIds !== '' && taskName === '已登记') {
+        setRegistratFiles({
+          ...files,
+          arr: JSON.parse(Object.values(edit)[0].fileIds),
+          ischange: false,
+        });
+      }
+      if (Object.values(edit)[0].fileIds !== '' && taskName !== '已登记') {
         setFiles({ ...files, arr: JSON.parse(Object.values(edit)[0].fileIds), ischange: false });
       }
     }
@@ -433,6 +440,14 @@ function WorkOrder2(props) {
       handletype();
     }
   }, [ischeck]);
+
+  // 登记上传附件触发保存
+  useEffect(() => {
+    if (registratfiles.ischange) {
+      ChangeType('save');
+      setRegistratFiles({ ...files, ischange: false });
+    }
+  }, [registratfiles]);
 
   // 上传附件触发保存
   useEffect(() => {
@@ -521,7 +536,7 @@ function WorkOrder2(props) {
                     ChangeActiveKey={keys => setActiveKey(keys)}
                     changeDefaultvalue={values => setDefaultvalue(values)}
                     ChangeFiles={newvalue => {
-                      setFiles(newvalue);
+                      setRegistratFiles(newvalue);
                     }}
                     formItemLayout={formItemLayout}
                     forminladeLayout={forminladeLayout}
@@ -548,7 +563,7 @@ function WorkOrder2(props) {
                     defaultvalue={defaultvalue}
                     location={location}
                     ChangeFiles={newvalue => {
-                      setHandleFiles(newvalue);
+                      setFiles(newvalue);
                     }}
                     files={[]}
                     show={show}

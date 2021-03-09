@@ -1,10 +1,10 @@
 import React, { useState, createContext, useRef, useEffect } from 'react';
 import { connect } from 'dva';
-import moment from 'moment';
+// import moment from 'moment';
 import router from 'umi/router';
-import { Card, Button, Collapse, message, Spin } from 'antd';
+import { Button, Collapse, message, Spin } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import SelectUser from '@/components/SelectUser';
+// import SelectUser from '@/components/SelectUser';
 import styles from './index.less';
 import Handle from './components/Handle';
 import Registrat from './components/Registrat';
@@ -44,7 +44,8 @@ function Registration(props) {
   const [ischeck, setIscheck] = useState({ save: false, flow: false }); // 是否在校验状态
   const [activeKey, setActiveKey] = useState(['registratform']);
   const [defaultvalue, setDefaultvalue] = useState('');
-  const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
+  const [registratfiles, setRegistratFiles] = useState({ arr: [], ischange: false }); // 登记上传
+  const [handlefiles, setHandleFiles] = useState({ arr: [], ischange: false }); // 处理上传
   const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
   const RegistratRef = useRef();
   const HandleRef = useRef();
@@ -108,7 +109,7 @@ function Registration(props) {
         ...values,
         main_eventObject: values.main_eventObject?.slice(-1)[0],
         register_occurTime: values.register_occurTime.format('YYYY-MM-DD HH:mm:ss'),
-        register_fileIds: JSON.stringify(files.arr),
+        register_fileIds: JSON.stringify(registratfiles.arr),
         register_selfhandle: String(Number(values.register_selfhandle)),
         register_supplement: String(Number(values.register_supplement)),
       });
@@ -127,7 +128,7 @@ function Registration(props) {
           ...values,
           main_eventObject: values.main_eventObject?.slice(-1)[0],
           handle_endTime: values.handle_endTime.format('YYYY-MM-DD HH:mm:ss'),
-          handle_fileIds: '[]',
+          handle_fileIds: JSON.stringify(handlefiles.arr),
         });
         submittype(type);
       } else {
@@ -186,12 +187,20 @@ function Registration(props) {
     }
   }, [ischeck]);
 
-  // 上传附件触发保存
+  // 登记上传附件触发保存
   useEffect(() => {
-    if (files.ischange) {
-      handlesubmit();
+    if (registratfiles.ischange) {
+      getregistrat('save');
     }
-  }, [files]);
+  }, [registratfiles]);
+
+  // 自行处理上传附件触发保存
+  useEffect(() => {
+    if (handlefiles.ischange) {
+      getregistrat('save');
+      gethandle('save');
+    }
+  }, [handlefiles]);
 
   const handleclose = () => {
     router.push({
@@ -227,7 +236,7 @@ function Registration(props) {
 
   return (
     <PageHeaderWrapper title={pagetitle} extra={operations}>
-      <Spin tip="正在提交数据..." spinning={Boolean(loading)}>
+      <Spin tip="正在加载数据..." spinning={!selectdata.ischange}>
         <div className={styles.collapse}>
           {selectdata.ischange && (
             <Collapse
@@ -244,7 +253,7 @@ function Registration(props) {
                   ChangeActiveKey={keys => setActiveKey(keys)}
                   changeDefaultvalue={values => setDefaultvalue(values)}
                   ChangeFiles={newvalue => {
-                    setFiles(newvalue);
+                    setRegistratFiles(newvalue);
                   }}
                   formItemLayout={formItemLayout}
                   forminladeLayout={forminladeLayout}
@@ -253,7 +262,7 @@ function Registration(props) {
                   userinfo={userinfo}
                   sethandlevalue="true"
                   location={location}
-                  files={files.arr}
+                  files={registratfiles.arr}
                   selectdata={selectdata.arr}
                 />
               </Panel>
@@ -267,10 +276,11 @@ function Registration(props) {
                     defaultvalue={defaultvalue}
                     location={location}
                     ChangeFiles={newvalue => {
-                      setFiles(newvalue);
+                      setHandleFiles(newvalue);
                     }}
                     show={show}
                     selectdata={selectdata.arr}
+                    files={[]}
                   />
                 </Panel>
               )}

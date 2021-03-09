@@ -278,22 +278,17 @@ const Handle = React.forwardRef((props, ref) => {
               })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
             </Form.Item>
           </Col>
-          {!show && (
-            <Col span={24} style={{}}>
-              <Form.Item
-                label="上传附件"
-                {...forminladeLayout}
-                // extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
-              >
-                <div style={{ width: 400 }}>
-                  <SysUpload
-                    fileslist={files}
-                    ChangeFileslist={newvalue => setFilesList(newvalue)}
-                  />
-                </div>
-              </Form.Item>
-            </Col>
-          )}
+          <Col span={24} style={{}}>
+            <Form.Item
+              label="上传附件"
+              {...forminladeLayout}
+              // extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
+            >
+              <div style={{ width: 400 }}>
+                <SysUpload fileslist={files} ChangeFileslist={newvalue => setFilesList(newvalue)} />
+              </div>
+            </Form.Item>
+          </Col>
         </Form>
       </Row>
     </>

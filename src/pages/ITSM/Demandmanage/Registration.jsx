@@ -145,8 +145,8 @@ function Registration(props) {
 
   return (
     <PageHeaderWrapper title={pagetitle} extra={operations}>
-      <Card>
-        <Spin spinning={!selectdata.ischange}>
+      <Spin spinning={!selectdata.ischange}>
+        <Card>
           {selectdata.ischange && (
             <Registrat
               ref={RegistratRef}
@@ -158,8 +158,8 @@ function Registration(props) {
               selectdata={selectdata.arr}
             />
           )}
-        </Spin>
-      </Card>
+        </Card>
+      </Spin>
     </PageHeaderWrapper>
   );
 }
