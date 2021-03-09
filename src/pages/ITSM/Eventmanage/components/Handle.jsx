@@ -56,7 +56,7 @@ const Handle = React.forwardRef((props, ref) => {
   const adddisabled = datas => {
     const data = datas.map(obj => {
       const item = obj;
-      if (item.dict_code === '005') {
+      if (item.dict_code === '005' || item.dict_code === '007' || item.dict_code === '008') {
         item.disabled = true;
       } else {
         item.disabled = false;

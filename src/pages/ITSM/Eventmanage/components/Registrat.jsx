@@ -93,7 +93,7 @@ const Registrat = forwardRef((props, ref) => {
   }, [info]);
 
   useEffect(() => {
-    if (main.eventType === '005') {
+    if (main.eventType === '005' || main.eventType === '007' || main.eventType === '008') {
       sessionStorage.setItem('Nextflowmane', '审核');
       sessionStorage.setItem('flowtype', '3');
     } else {
@@ -112,9 +112,9 @@ const Registrat = forwardRef((props, ref) => {
     }
   };
 
-  // 事件分类005时走审核
+  // 事件分类005，007，008时走审核
   const handlcheckChange = value => {
-    if (value === '005') {
+    if (value === '005' || value === '007' || value === '008') {
       ChangeCheck(true);
       setCheck(true);
       //  ChangeFlowtype('3');
