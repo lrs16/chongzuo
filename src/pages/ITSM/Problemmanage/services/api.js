@@ -128,9 +128,8 @@ export async function queryList(params) {
 
 // // 处理率查询列表查询
 export async function handlequeryList(params) {
-  switch(params.handleStatus) {
-    case '0':
-    case '1':
+  switch(params.sign) {
+    case 'problem':
       return request(`/problem/stat/getOrderByHandledList`,{
         method:'POST',
         body:JSON.stringify(params)

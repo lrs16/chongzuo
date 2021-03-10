@@ -18,6 +18,7 @@ const formItemLayout = {
 };
 const { Option } = Select;
 let sign = '';
+let timeoutSearch = ''
 const columns = [
   {
     title: '问题编号',
@@ -90,7 +91,14 @@ function Besolved(props) {
   const pagetitle = props.route.name;
   const {
     form: { getFieldDecorator, resetFields, validateFields },
-    location: { query: { orderStatus, orderClass, handleStatu, timeStatus } },
+    location: { query: 
+      { 
+        status, 
+        type, 
+        handleStatu, 
+        timeStatus,
+        problem
+       } },
     dispatch,
     queryArr,
     handleList,
@@ -104,27 +112,20 @@ function Besolved(props) {
   const [expand, setExpand] = useState(false);
   const [paginations, setPaginations] = useState({ current: 1, pageSize: 10 });
   const [selectedRows, setSelectedRows] = useState([]);
-  let handleStatus;
-  if (sign === 'have') {
-    handleStatus = undefined;
-  } else {
-    handleStatus = handleStatu;
-  }
-
+  sign = problem;
   const getQuery = () => {
     dispatch({
-      type: (handleStatus !== undefined) ? 'problemmanage/handlequeryList' : 'problemmanage/queryList',
+      type: (sign === 'timeout') ?'problemmanage/handlequeryList': 'problemmanage/queryList',
       payload: {
-        handleStatus,
+        // sign,
         pageNum: paginations.current,
         pageSize: paginations.pageSize,
-        status: orderStatus,
-        type: orderClass,
+        status,
+        type,
         timeStatus
       },
     });
   };
-
 
   const getSourceapi = (dictModule, dictType) => {
     dispatch({
@@ -172,7 +173,7 @@ function Besolved(props) {
   }
 
   useEffect(() => {
-    getList();
+    getQuery();
     getSource();
     gettype();
     getpriority();
@@ -182,9 +183,11 @@ function Besolved(props) {
   }, []);
 
   const getList = () => {
-    switch (handleStatus) {
-      case '1':
-      case '0':
+    switch (sign) {
+      case 'class':
+        getQuery();
+        break;
+      case 'status':
         getQuery();
         break;
       default:
@@ -198,41 +201,55 @@ function Besolved(props) {
   };
 
   const queryList = (values, page, pageSize) => {
-    //  不等于undefined
-    return dispatch({
-      type: 'problemmanage/queryList',
-      payload: {
-        ...values,
-        pageSize,
-        pageNum: page,
-        // status: orderStatus,
-      },
-    })
-  }
 
+    //  不等于undefined
+      return dispatch({
+        type: (sign !== 'timeout')?'problemmanage/queryList':'problemmanage/handlequeryList',
+        payload: {
+          ...values,
+          pageSize,
+          pageNum: page,
+          type:sign === 'class'?type:values.type,
+          status:sign === 'status'?status:values.status,
+          timeStatus:sign === 'timeout'?timeStatus:''
+        },
+      })
+   
+  }
   const handlequeryList = (values, page, pageSize) => {
     //  不等于undefined
     return dispatch({
       type: 'problemmanage/handlequeryList',
       payload: {
-        handleStatus,
+        sign,
         ...values,
         pageSize,
         pageNum: page,
-        status: orderStatus,
-        type: orderClass
+        timeStatus:sign === 'timeout'?status:'',
+        status,
+        type
       },
     })
   }
 
   const searchdata = (values, page, pageSize) => {
-    sign = 'have'
-    handleStatus = undefined;
-    if (handleStatus !== undefined) {
-      handlequeryList(values, page, pageSize);
-    }
-    queryList(values, page, pageSize);
+    // if(sign !== 'timeout') {
+      // sign = 'nottimeout';
+      // if(sign === 'timeout') {
+      //   timeoutSearch = 'search';
+      // }
+      queryList(values, page, pageSize);
+    // }
+    // if (problem === 'timeout') {
+    //   sign = 'notclass';
+    //   handlequeryList(values, page, pageSize);
+    // }
+
+   
   };
+
+  console.log((sign === 'timeout' && timeoutSearch ==='')?'1':'2');
+
 
   const onShowSizeChange = (page, pageSize) => {
     validateFields((err, values) => {
@@ -270,19 +287,19 @@ function Besolved(props) {
     onShowSizeChange: (page, pageSize) => onShowSizeChange(page, pageSize),
     current: paginations.current,
     pageSize: paginations.pageSize,
-    total: queryArr.total,
+    total: (sign === 'timeout' && timeoutSearch ==='')?handleList.length:queryArr.total,
     showTotal: total => `总共  ${total}  条记录`,
     onChange: page => changePage(page),
   };
 
-  const handlepagination = {
-    showSizeChanger: true,
-    onShowSizeChange: (page, pageSize) => onShowSizeChange(page, pageSize),
-    current: paginations.current,
-    pageSize: paginations.pageSize,
-    total: handleList.length,
-    onChange: page => changePage(page),
-  };
+  // const handlepagination = {
+  //   showSizeChanger: true,
+  //   onShowSizeChange: (page, pageSize) => onShowSizeChange(page, pageSize),
+  //   current: paginations.current,
+  //   pageSize: paginations.pageSize,
+  //   total: handleList.length,
+  //   onChange: page => changePage(page),
+  // };
 
   const handleSearch = () => {
     setPaginations({
@@ -579,8 +596,8 @@ function Besolved(props) {
           >导出数据</Button>
         </div>
 
-        {
-          (handleStatus !== undefined) && (
+        {/* {
+          (problem !== undefined) && (
             <Table
               loading={loading}
               columns={columns}
@@ -589,19 +606,19 @@ function Besolved(props) {
               pagination={handlepagination}
             />
           )
-        }
+        } */}
 
-        {
-          handleStatus === undefined && (
+        {/* { */}
+          {/* // problem === undefined && ( */}
             <Table
               loading={loading}
               columns={columns}
-              dataSource={queryArr.rows}
+              dataSource={(sign === 'timeout' && timeoutSearch ==='')?handleList:queryArr.rows}
               rowKey={record => record.id}
               pagination={pagination}
             />
-          )
-        }
+          {/* // ) */}
+        {/* } */}
 
 
 

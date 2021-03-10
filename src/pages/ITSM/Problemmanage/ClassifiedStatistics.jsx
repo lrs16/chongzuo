@@ -42,7 +42,10 @@ const columns = [
       <Link
         to={{
           pathname: '/ITSM/problemmanage/problemquery',
-          query: { orderClass: record.statCode }
+          query: { 
+            problem:'class',
+            type: record.statCode
+           }
         }}
       >
         {text}

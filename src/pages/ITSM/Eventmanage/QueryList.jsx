@@ -184,15 +184,19 @@ function QueryList(props) {
     form: { getFieldDecorator, resetFields, validateFields },
     location: { query: {
       sign,
-      last_start_time,
-      last_end_time,
-      now_start_time,
-      now_end_time
+      time1,
+      time2,
+      eventObject,
+      selfhandle,
+      registerUser,
+      handleUnit,
+      eventStatus
      }},
     loading,
     list,
     dispatch,
   } = props;
+  console.log(sign?eventObject:'ff')
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 10 });
   const [expand, setExpand] = useState(false);
   const [selectdata, setSelectData] = useState([]);
@@ -206,10 +210,13 @@ function QueryList(props) {
             ...values,
             pageIndex: paginations.current - 1,
             pageSize: paginations.pageSize,
-            last_start_time,
-            last_end_time,
-            now_start_time,
-            now_end_time
+            time1,
+            time2,
+            eventObject,
+            selfhandle,
+            registerUser,
+            handleUnit,
+            eventStatus
           },
         });
       }
@@ -225,9 +232,13 @@ function QueryList(props) {
         type: 'eventquery/fetchlist',
         payload: {
           ...values,
-          eventObject: values.eventObject?.slice(-1)[0],
+          eventObject: sign?eventObject:values.eventObject?.slice(-1)[0],
           pageSize: size,
           pageIndex: page - 1,
+          time1,
+          time2,
+          selfhandle,
+          registerUser,
         },
       });
     } else {
@@ -235,12 +246,14 @@ function QueryList(props) {
         type: 'eventquery/fetchlist',
         payload: {
           ...values,
-          eventObject: values.eventObject?.slice(-1)[0],
+          eventObject: sign?eventObject:values.eventObject?.slice(-1)[0],
           createTime: '',
-          time1: moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss'),
-          time2: moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss'),
+          time1: sign?time1:moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss'),
+          time2: sign?time2:moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss'),
           pageSize: size,
           pageIndex: page - 1,
+          selfhandle,
+          registerUser,
         },
       });
     }

@@ -374,6 +374,37 @@ export default {
                       icon: 'cloud-server',
                       component: './ITSM/Demandmanage/Details',
                     },
+                    {
+                      path:'/ITSM/demandmanage/demandstatistics',
+                      name:'需求统计',
+                      icon:'cloud-server',
+                      routes:[
+                        {
+                          path: '/ITSM/demandmanage/demandstatistics/demandrequirement',
+                          name: '功能需求统计',
+                          icon: 'cloud-server',
+                          component: './ITSM/Demandmanage/demandstatistics/DemandRequirement',
+                        },
+                        {
+                          path: '/ITSM/demandmanage/demandstatistics/demandstate',
+                          name: '需求状态统计',
+                          icon: 'cloud-server',
+                          component: './ITSM/Demandmanage/demandstatistics/Demandstate',
+                        },
+                        {
+                          path: '/ITSM/demandmanage/demandstatistics/demandschedule',
+                          name: '需求进度统计',
+                          icon: 'cloud-server',
+                          component: './ITSM/Demandmanage/demandstatistics/DemandSchedule',
+                        },
+                        {
+                          path: '/ITSM/demandmanage/demandstatistics/demandtimeout',
+                          name: '需求超时统计',
+                          icon: 'cloud-server',
+                          component: './ITSM/Demandmanage/demandstatistics/DemandTimeout',
+                        },
+                      ]
+                    }
                   ],
                 },
                 {

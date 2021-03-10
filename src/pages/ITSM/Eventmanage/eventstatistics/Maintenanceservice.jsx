@@ -31,31 +31,11 @@ const columns = [
     title: '本周',
     dataIndex: 'now',
     key: 'now',
-    render: (text, record) => (
-      <Link
-        to={{
-          pathname: '/ITSM/problemmanage/problemquery',
-          query: { handleStatu: '0' }
-        }}
-      >
-        {text}
-      </Link>
-    )
   },
   {
     title: '环比',
     dataIndex: 'points',
     key: 'points',
-    render: (text, record) => (
-      <Link
-        to={{
-          pathname: '/ITSM/problemmanage/problemquery',
-          query: { handleStatu: '0' }
-        }}
-      >
-        {text}
-      </Link>
-    )
   },
   {
     title: '备注',
@@ -90,7 +70,6 @@ function Maintenanceservice(props) {
       endTime = `${date2.getFullYear()}-${(date2.getMonth() + 1)}-${date2.getDate()}`;
     }
   }
-
 
   const handleListdata = (params) => {
     dispatch({
@@ -128,7 +107,6 @@ function Maintenanceservice(props) {
       const day2 = new Date();
       day2.setTime(day2.getTime());
       endTime = `${day2.getFullYear()}-${(day2.getMonth() + 1)}-${day2.getDate()}`;
-      console.log('startTime: ', startTime);
       const date2 = new Date(day2);
       date2.setDate(day2.getDate() - 30);
       startTime = `${date2.getFullYear()}-${(date2.getMonth() + 1)}-${date2.getDate()}`;
@@ -168,7 +146,7 @@ function Maintenanceservice(props) {
             {
               tabActiveKey === 'week' && (
                 <>
-                  <Col span={15}>
+                  <Col span={24}>
                     <Form.Item label='开始时间'>
                       {getFieldDecorator('time1', {
                         initialValue: startTime ? moment(startTime) : ''
@@ -207,7 +185,7 @@ function Maintenanceservice(props) {
                 <>
                   <Col span={24}>
                     <Form.Item label='开始时间'>
-                      {getFieldDecorator('time1', {
+                      {getFieldDecorator('startTime', {
                         initialValue: moment(startTime)
                       })(<DatePicker
                         format="YYYY-MM-DD"
@@ -221,7 +199,7 @@ function Maintenanceservice(props) {
 
                     <Form.Item label=''>
                       {
-                        getFieldDecorator('time2', {
+                        getFieldDecorator('endTime', {
                           initialValue: endTime ? moment(endTime) : ''
                         })
                           (<DatePicker disabled />)

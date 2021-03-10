@@ -1,6 +1,9 @@
 import {
   maintenanceList,
-  eventServiceList
+  eventServiceList,
+  eventselfhandleList,
+  eventtopnList,
+  eventhandlerateList
 } from '../services/statistics';
 
 export default {
@@ -27,16 +30,16 @@ export default {
 
     // 运维服务指标统计列表
     *fetcheventServiceList({ payload }, { call, put }) {
-      const response = yield call(maintenanceList,payload);
+      const response = yield call(eventServiceList,payload);
       yield put ({
         type: 'eventServicearr',
         payload: response
       })
     },
 
-    // 运维服务指标统计列表
+    // 一线事件解决情况列表
     *fetchSelfHandleList({ payload }, { call, put }) {
-      const response = yield call(maintenanceList,payload);
+      const response = yield call(eventselfhandleList,payload);
       yield put ({
         type: 'soluteArr',
         payload: response
@@ -44,7 +47,7 @@ export default {
     },
     // 工单TOPN统计列表
     *fetchordertopnList({ payload }, { call, put }) {
-      const response = yield call(maintenanceList,payload);
+      const response = yield call(eventtopnList,payload);
       yield put ({
         type: 'ordertopnArr',
         payload: response
@@ -52,7 +55,7 @@ export default {
     },
     // 工单处理率统计列表
     *fetchorderrateList({ payload }, { call, put }) {
-      const response = yield call(maintenanceList,payload);
+      const response = yield call(eventhandlerateList,payload);
       yield put ({
         type: 'orderrateArr',
         payload: response
@@ -68,7 +71,7 @@ export default {
   maintenanceArr(state, action) {
     return {
       ...state,
-      maintenanceArr: action.payload.data
+      maintenanceArr: action.payload
     }
   },
 

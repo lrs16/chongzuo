@@ -7,8 +7,7 @@ import {
   Form,
   DatePicker,
   Button,
-  Table,
-  Select
+  Table
 } from 'antd';
 import Link from 'umi/link';
 import moment from 'moment';
@@ -16,75 +15,138 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
 let startTime;
 let endTime;
-let value = 20;
-const { Option } = Select;
+const sign = 'solution';
+const renderContent = (value, row, index) => {
+  const obj = {
+    children: value,
+    props: {},
+  };
+  if (index === 4) {
+    obj.props.colSpan = 0;
+  }
+  return obj;
+};
+
 const columns = [
   {
-    title: '一级对象',
-    dataIndex: 'first_object',
-    key: 'first_object',
-  },
-  {
-    title: '二级对象',
-    dataIndex: 'second_object',
-    key: 'second_object',
-  },
-  {
-    title: '工单数',
-    dataIndex: 'num',
-    key: 'num',
-    render: (text, record) => {
-      if (record.first_object !== '合计') {
-        return <Link
-          to={{
-            pathname: '/ITSM/eventmanage/query',
-            query: {
-              sign: 'top',
-              time1: record.start_time,
-              time2: record.end_time,
-              eventObject: record.object_name
-            }
-          }}
-        >
-          {text}
-        </Link>
+    title: 'Name',
+    dataIndex: 'name',
+    render: (text, row, index) => {
+      if (index < 4) {
+        return <a>{text}</a>;
       }
-      return <span>{text}</span>
-    }
+      return {
+        children: <a>{text}</a>,
+        props: {
+          colSpan: 5,
+        },
+      };
+    },
+  },
+  {
+    title: 'Age',
+    dataIndex: 'age',
+    render: renderContent,
+  },
+  {
+    title: 'Home phone',
+    colSpan: 2,
+    dataIndex: 'tel',
+    render: (value, row, index) => {
+      const obj = {
+        children: value,
+        props: {},
+      };
+      if (index === 2) {
+        obj.props.rowSpan = 2;
+      }
+      // These two are merged into above cell
+      if (index === 3) {
+        obj.props.rowSpan = 0;
+      }
+      if (index === 4) {
+        obj.props.colSpan = 0;
+      }
+      return obj;
+    },
+  },
+  {
+    title: 'Phone',
+    colSpan: 0,
+    dataIndex: 'phone',
+    render: renderContent,
+  },
+  {
+    title: 'Address',
+    dataIndex: 'address',
+    render: renderContent,
   },
 ];
 
-function Workordertopn(props) {
+const data = [
+  {
+    key: '1',
+    name: 'John Brown',
+    age: 32,
+    tel: '0571-22098909',
+    phone: 18889898989,
+    address: 'New York No. 1 Lake Park',
+  },
+  {
+    key: '2',
+    name: 'Jim Green',
+    tel: '0571-22098333',
+    phone: 18889898888,
+    age: 42,
+    address: 'London No. 1 Lake Park',
+  },
+  {
+    key: '3',
+    name: 'Joe Black',
+    age: 32,
+    tel: '0575-22098909',
+    phone: 18900010002,
+    address: 'Sidney No. 1 Lake Park',
+  },
+  {
+    key: '4',
+    name: 'Jim Red',
+    age: 18,
+    tel: '0575-22098909',
+    phone: 18900010002,
+    address: 'London No. 2 Lake Park',
+  },
+  {
+    key: '5',
+    name: 'Jake White',
+    age: 18,
+    tel: '0575-22098909',
+    phone: 18900010002,
+    address: 'Dublin No. 2 Lake Park',
+  },
+];
+
+function DemandSchedule(props) {
   const { pagetitle } = props.route.name;
-  const [tabActiveKey, setTabActiveKey] = useState('week');
   const {
     form: { getFieldDecorator },
-    ordertopnArr,
+    soluteArr,
     dispatch
   } = props;
 
   const onChange = (date) => {
-    if (tabActiveKey === 'week') {
-      const date1 = new Date(date._d);
-      const date2 = new Date(date._d);
-      startTime = `${date1.getFullYear()}-${(date1.getMonth() + 1)}-${date1.getDate()}`;
-      date2.setDate(date1.getDate() + 7);
-      endTime = `${date2.getFullYear()}-${(date2.getMonth() + 1)}-${date2.getDate()}`;
-    } else {
-      startTime = '';
-      endTime = '';
-      const date1 = new Date(date._d);
-      const date2 = new Date(date._d);
-      startTime = `${date1.getFullYear()}-${(date1.getMonth() + 1)}-${date1.getDate()}`;
-      date2.setDate(date1.getDate() + 30);
-      endTime = `${date2.getFullYear()}-${(date2.getMonth() + 1)}-${date2.getDate()}`;
-    }
+    const date1 = new Date(date._d);
+    const date2 = new Date(date._d);
+    startTime = `${date1.getFullYear()}-${(date1.getMonth() + 1)}-${date1.getDate()}`;
+    date2.setDate(date1.getDate() + 7);
+    endTime = `${date2.getFullYear()}-${(date2.getMonth() + 1)}-${date2.getDate()}`;
   }
 
-  const handleListdata = (value) => {
+
+  const handleListdata = (params) => {
     dispatch({
-      type: 'eventstatistics/fetchordertopnList',
-      payload: { value, startTime, endTime }
+      type: 'eventstatistics/fetchSelfHandleList',
+      payload: { sign, startTime, endTime }
     })
   }
 
@@ -114,13 +176,10 @@ function Workordertopn(props) {
     startTime = `${date2.getFullYear()}-${(date2.getMonth() + 1)}-${date2.getDate()}`;
   }
 
-  const selectOnchange = (selectvalue) => {
-    handleListdata(selectvalue);
-  }
   useEffect(() => {
     defaultTime();
-    handleListdata(value);
-  }, [tabActiveKey])
+    handleListdata();
+  }, [])
 
   return (
     <PageHeaderWrapper
@@ -130,7 +189,7 @@ function Workordertopn(props) {
         <Row gutter={24}>
           <Form layout='inline'>
             <>
-              <Col span={24}>
+              <Col span={15}>
                 <Form.Item label='开始时间'>
                   {getFieldDecorator('time1', {
                     initialValue: startTime ? moment(startTime) : ''
@@ -151,30 +210,17 @@ function Workordertopn(props) {
                   }
                 </Form.Item>
 
-                <Form.Item label=''>
-                  <Select
-                    placeholder="请选择"
-                    style={{ width: 150 }}
-                    onChange={selectOnchange}
-
-                  >
-                    <Option value="5">5</Option>
-                    <Option value="10">10</Option>
-                    <Option value="15">15</Option>
-                    <Option value="20">20</Option>
-                  </Select>
-                </Form.Item>
-
                 <Button
                   type='primary'
                   style={{ marginTop: 6 }}
                   onClick={() => handleListdata('search')}
                 >
                   查询
-                </Button>
+                    </Button>
               </Col>
-
             </>
+
+
           </Form>
         </Row>
 
@@ -190,7 +236,7 @@ function Workordertopn(props) {
 
         <Table
           columns={columns}
-          dataSource={ordertopnArr}
+          dataSource={data}
           rowKey={record => record.statName}
         />
       </Card>
@@ -200,6 +246,6 @@ function Workordertopn(props) {
 
 export default Form.create({})(
   connect(({ eventstatistics }) => ({
-    ordertopnArr: eventstatistics.ordertopnArr
-  }))(Workordertopn),
+    soluteArr: eventstatistics.soluteArr
+  }))(DemandSchedule),
 );

@@ -32,8 +32,8 @@ const columns = [
           pathname: '/ITSM/eventmanage/query',
           query: {
             sign:'last',
-            start_time: record.start_time,
-            end_time: record.end_time,
+            time1: record.start_time,
+            time2: record.end_time,
             }
         }}
       >
@@ -51,8 +51,10 @@ const columns = [
           pathname: '/ITSM/eventmanage/query',
           query: {
             sign:'now',
-            start_time: record.start_time,
-            end_time: record.end_time,
+            time1: record.start_time,
+            time2: record.end_time,
+            handleUnit: record.unit,
+            eventStatus:'已关闭'
             }
         }}
       >
@@ -121,10 +123,6 @@ function Workordertreatmentrate(props) {
     defaultTime();
     handleListdata();
   }, [tabActiveKey])
-
-  const handleTabChange = (key) => { // tab切换
-    setTabActiveKey(key);
-  };
 
   return (
     <PageHeaderWrapper

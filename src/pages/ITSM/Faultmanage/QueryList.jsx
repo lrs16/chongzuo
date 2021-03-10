@@ -185,7 +185,6 @@ function QueryList(props) {
   }, []);
 
   const searchdata = (values, page, pageSize) => {
-    console.log('values: ', values);
     // 查询 查询接口
     dispatch({
       type: 'fault/getTosearchfaultSearch',

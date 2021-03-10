@@ -7,15 +7,20 @@ import {
   Form,
   DatePicker,
   Button,
-  Table
+  Table,
+  Input
 } from 'antd';
 import Link from 'umi/link';
 import moment from 'moment';
+import lastweek from '../eventstatistics/lastweek.svg';
+import nowweek from '../eventstatistics/nowweek.svg';
+import baifenbi from '../eventstatistics/baifenbi.svg';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
-let startTime;
+let starttime;
+let monthStarttime;
 let endTime;
-const sign = 'maintenance';
+const sign = 'maintenanceservice';
 const columns = [
   {
     title: '一级对象',
@@ -36,10 +41,11 @@ const columns = [
         to={{
           pathname: '/ITSM/eventmanage/query',
           query: {
-             sign:'last',
-             last_start_time: record.last_start_time,
-             last_end_time: record.last_end_time,
-             }
+            sign: 'last',
+            time1: record.last_start_time,
+            time2: record.last_end_time,
+            event_object: record.object_name
+          }
         }}
       >
         {text}
@@ -55,10 +61,11 @@ const columns = [
         to={{
           pathname: '/ITSM/eventmanage/query',
           query: {
-            sign:'now',
-            now_start_time: record.now_start_time,
-            now_end_time: record.now_end_time,
-            }
+            sign: 'last',
+            time1: record.now_start_time,
+            time2: record.now_end_time,
+            eventObject: record.object_name
+          }
         }}
       >
         {text}
@@ -75,9 +82,8 @@ const columns = [
 function Maintenance(props) {
   const { pagetitle } = props.route.name;
   const [tabActiveKey, setTabActiveKey] = useState('week');
-  const [time,setTime] = useState('');
   const {
-    form: { getFieldDecorator },
+    form: { getFieldDecorator, resetFields },
     maintenanceArr,
     dispatch
   } = props;
@@ -86,25 +92,23 @@ function Maintenance(props) {
     if (tabActiveKey === 'week') {
       const date1 = new Date(date._d);
       const date2 = new Date(date._d);
-      startTime = `${date1.getFullYear()}-${(date1.getMonth() + 1)}-${date1.getDate()}`;
+      starttime = `${date1.getFullYear()}-${(date1.getMonth() + 1)}-${date1.getDate()}`;
       date2.setDate(date1.getDate() + 7);
       endTime = `${date2.getFullYear()}-${(date2.getMonth() + 1)}-${date2.getDate()}`;
     } else {
-      startTime = '';
-      endTime = '';
       const date1 = new Date(date._d);
       const date2 = new Date(date._d);
-      startTime = `${date1.getFullYear()}-${(date1.getMonth() + 1)}-${date1.getDate()}`;
+      starttime = `${date1.getFullYear()}-${(date1.getMonth() + 1)}-${date1.getDate()}`;
+      console.log('monthStarttime: ', monthStarttime);
       date2.setDate(date1.getDate() + 30);
       endTime = `${date2.getFullYear()}-${(date2.getMonth() + 1)}-${date2.getDate()}`;
     }
   }
 
-
   const handleListdata = (params) => {
     dispatch({
       type: 'eventstatistics/fetchMaintenancelist',
-      payload: { sign, tabActiveKey, startTime, endTime }
+      payload: { sign, tabActiveKey, starttime, monthStarttime, endTime }
     })
   }
 
@@ -123,6 +127,7 @@ function Maintenance(props) {
     })
   }
 
+
   const defaultTime = () => {
     //  周统计
     if (tabActiveKey === 'week') {
@@ -131,20 +136,17 @@ function Maintenance(props) {
       endTime = `${day2.getFullYear()}-${(day2.getMonth() + 1)}-${day2.getDate()}`;
       const date2 = new Date(day2);
       date2.setDate(day2.getDate() - 7);
-      startTime = `${date2.getFullYear()}-${(date2.getMonth() + 1)}-${date2.getDate()}`;
+      starttime = `${date2.getFullYear()}-${(date2.getMonth() + 1)}-${date2.getDate()}`;
     } else { // 月统计
-      console.log(startTime,'starttime');
       const day2 = new Date();
       day2.setTime(day2.getTime());
       endTime = `${day2.getFullYear()}-${(day2.getMonth() + 1)}-${day2.getDate()}`;
       const date2 = new Date(day2);
       date2.setDate(day2.getDate() - 30);
-      startTime = `${date2.getFullYear()}-${(date2.getMonth() + 1)}-${date2.getDate()}`;
-      console.log('startTime: ', startTime);
-      setTime(startTime);
+      starttime = `${date2.getFullYear()}-${(date2.getMonth() + 1)}-${date2.getDate()}`;
+      // console.log('monthStarttime: ', monthStarttime);
     }
   }
-
 
   useEffect(() => {
     defaultTime();
@@ -164,7 +166,6 @@ function Maintenance(props) {
 
   const handleTabChange = (key) => { // tab切换
     setTabActiveKey(key);
-    startTime = '';
   };
 
   return (
@@ -174,57 +175,81 @@ function Maintenance(props) {
       onTabChange={handleTabChange}
       tabActiveKey={tabActiveKey}
     >
+      <Card style={{margin:20 }}>
+        <Row gutter={16}>
+          <Col className="gutter-row" span={8}>
+            <div className="gutter-box">
+              <div style={{display: 'flex', flexDirection: 'row'}}>
+                <img src={lastweek} alt='' />
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  <span>上周</span>
+                  <span style={{fontWeight:900,fontSize:22}}>{maintenanceArr.last_count}</span>
+                </div>
+              </div>
+            </div>
+          </Col>
+          <Col className="gutter-row" span={8}>
+            <div className="gutter-box">
+            <div style={{display: 'flex', flexDirection: 'row'}}>
+                <img src={nowweek} alt='' />
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  <span>本周</span>
+                  <span style={{fontWeight:900,fontSize:22}}>{maintenanceArr.now_count}</span>
+                </div>
+              </div>
+            </div>
+          </Col>
+          <Col className="gutter-row" span={8}>
+            <div className="gutter-box">
+            <div style={{display: 'flex', flexDirection: 'row'}}>
+                <img src={baifenbi} alt='' />
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  <span>百分比</span>
+                  <span style={{fontWeight:900,fontSize:22}}>{maintenanceArr.points_count}</span>
+                </div>
+              </div>
+            </div>
+          </Col>
+        </Row>
+        {/* <div style={{ display: 'flex', flexDirection: 'row' }}>
+          <div style={{ display: 'flex', flexDirection: 'row' }}>
+            <img src={lastweek} alt='' />
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <p>上周</p>
+              <p>ff</p>
+            </div>
+
+          </div>
+
+          <div>
+            <img src={nowweek} alt='' />
+            <p>本周</p>
+            <p>ff</p>
+          </div>
+
+          <div>
+            <img src={baifenbi} alt='' />
+            <p>环比</p>
+            <p>ff</p>
+          </div>
+
+        </div> */}
+      </Card>
       <Card>
         <Row gutter={24}>
           <Form layout='inline'>
             {
-              tabActiveKey === 'week' ? (
-                <>
-                  <Col span={15}>
-                    <Form.Item label='开始时间'>
-                      {getFieldDecorator('time1', {
-                        initialValue: startTime ? moment(startTime) : ''
-                      })(<DatePicker
-                        format="YYYY-MM-DD"
-                        onChange={onChange}
-                      />)}
-                    </Form.Item>
-
-
-                    <p style={{ display: 'inline', marginRight: 8 }}>-</p>
-
-                    <Form.Item label=''>
-                      {
-                        getFieldDecorator('time2', {
-                          initialValue: endTime ? moment(endTime) : ''
-                        })
-                          (<DatePicker disabled />)
-                      }
-                    </Form.Item>
-
-                    <Button
-                      type='primary'
-                      style={{ marginTop: 6 }}
-                      onClick={() => handleListdata('search')}
-                    >
-                      查询
-                    </Button>
-                  </Col>
-
-                </>
-              ) :
-              (
+              tabActiveKey === 'week' && (
                 <>
                   <Col span={24}>
                     <Form.Item label='开始时间'>
                       {getFieldDecorator('time1', {
-                        initialValue: moment(startTime)
+                        initialValue: moment(starttime)
                       })(<DatePicker
                         format="YYYY-MM-DD"
                         onChange={onChange}
                       />)}
                     </Form.Item>
-
 
                     <p style={{ display: 'inline', marginRight: 8 }}>-</p>
 
@@ -237,8 +262,6 @@ function Maintenance(props) {
                       }
                     </Form.Item>
 
-
-
                     <Button
                       type='primary'
                       style={{ marginTop: 6 }}
@@ -247,32 +270,29 @@ function Maintenance(props) {
                       查询
                     </Button>
                   </Col>
+
                 </>
               )
-
             }
 
-            {/* {
-              tabActiveKey === 'month' && 
-              (
+            {
+              tabActiveKey === 'month' && (
                 <>
                   <Col span={24}>
                     <Form.Item label='开始时间'>
-                      {getFieldDecorator('time1', {
-                        initialValue: moment(time)
+                      {getFieldDecorator('monthStarttime', {
+                        initialValue: moment(starttime)
                       })(<DatePicker
                         format="YYYY-MM-DD"
                         onChange={onChange}
                       />)}
                     </Form.Item>
 
-                    <p>{startTime}</p>
-
                     <p style={{ display: 'inline', marginRight: 8 }}>-</p>
 
                     <Form.Item label=''>
                       {
-                        getFieldDecorator('time2', {
+                        getFieldDecorator('endTime', {
                           initialValue: endTime ? moment(endTime) : ''
                         })
                           (<DatePicker disabled />)
@@ -291,7 +311,7 @@ function Maintenance(props) {
                   </Col>
                 </>
               )
-            } */}
+            }
           </Form>
         </Row>
 
@@ -307,8 +327,8 @@ function Maintenance(props) {
 
         <Table
           columns={columns}
-          dataSource={maintenanceArr}
-          rowKey={record => record.statName}
+          dataSource={maintenanceArr.data}
+          rowKey={record => record.event_object}
         />
       </Card>
     </PageHeaderWrapper>

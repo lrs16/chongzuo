@@ -24,11 +24,6 @@ const columns = [
   },
   {
     title: '工单受理数量',
-    dataIndex: 'is_selfhandle',
-    key: 'is_selfhandle',
-  },
-  {
-    title: '一线处理量',
     dataIndex: 'not_selfhandle',
     key: 'not_selfhandle',
     render: (text, record) => (
@@ -36,8 +31,28 @@ const columns = [
         to={{
           pathname: '/ITSM/eventmanage/query',
           query: { 
-            start_time: record.start_time,
-            end_time: record.end_time,
+            time1: record.start_time,
+            time2: record.end_time,
+           }
+        }}
+      >
+        {text}
+      </Link>
+    )
+  },
+  {
+    title: '一线处理量',
+    dataIndex: 'is_selfhandle',
+    key: 'is_selfhandle',
+    render: (text, record) => (
+      <Link
+        to={{
+          pathname: '/ITSM/eventmanage/query',
+          query: { 
+            time1: record.start_time,
+            time2: record.end_time,
+            selfhandle:'是',
+            registerUser:record.user
            }
         }}
       >
@@ -117,7 +132,7 @@ function Solution(props) {
             <>
               <Col span={15}>
                 <Form.Item label='开始时间'>
-                  {getFieldDecorator('time1', {
+                  {getFieldDecorator('startTime', {
                     initialValue: startTime ? moment(startTime) : ''
                   })(<DatePicker
                     format="YYYY-MM-DD"
@@ -129,7 +144,7 @@ function Solution(props) {
 
                 <Form.Item label=''>
                   {
-                    getFieldDecorator('time2', {
+                    getFieldDecorator('endTime', {
                       initialValue: endTime ? moment(endTime) : ''
                     })
                       (<DatePicker disabled />)
