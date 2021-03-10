@@ -1,14 +1,13 @@
 import {
-  queryExpressions,
+  queryDisableduser,
   getAndField,
-  saveExpressions,
-  updateExpressions,
-  deleteExpressions,
-  updateStatusExpressions,
+  saveDisableduser,
+  updateDisableduser,
+  deleteDisableduser,
 } from '../services/api';
 
 export default {
-  namespace: 'expressionsmanage',
+  namespace: 'disabledusermanage',
 
   state: {
     list: [],
@@ -17,7 +16,7 @@ export default {
   effects: {
     // 查询
     *query({ payload }, { call, put }) {
-      const response = yield call(queryExpressions, payload);
+      const response = yield call(queryDisableduser, payload);
       yield put({
         type: 'show',
         payload: response.data,
@@ -31,26 +30,17 @@ export default {
 
     // 保存
     *save({ payload }, { call }) {
-      return yield call(saveExpressions, payload);
+      return yield call(saveDisableduser, payload);
     },
 
     // 更新
     *update({ payload }, { call }) {
-      return yield call(updateExpressions, payload);
+      return yield call(updateDisableduser, payload);
     },
 
     // 删除
     *delete({ payload }, { call }) {
-      return yield call(deleteExpressions, payload);
-    },
-
-    // 修改常用语状态
-    *dupdatestatus({ payload }, { call, put }) {
-      const response = yield call(updateStatusExpressions, payload);
-      yield put({
-        type: 'show',
-        payload: response,
-      });
+      return yield call(deleteDisableduser, payload);
     },
   },
 

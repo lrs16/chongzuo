@@ -1,19 +1,53 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
-import { Table, Card, Divider, Button, Switch, Message, Popconfirm } from 'antd';
+import {
+  Table,
+  Card,
+  Divider,
+  Button,
+  Switch,
+  Message,
+  Popconfirm,
+  Form,
+  Row,
+  Col,
+  Input,
+  Select,
+  Radio,
+  Spin,
+} from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import DictLower from '@/components/SysDict/DictLower';
 import ExpressionDrawer from './components/ExpressionDrawer';
 
+const RadioGroup = Radio.Group;
+const { Option } = Select;
+
+const formItemLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 8 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 16 },
+  },
+};
+
 function Expressions(props) {
   const pagetitle = props.route.name;
-  const { dispatch, list, loading } = props;
+  const {
+    dispatch,
+    list,
+    loading,
+    form: { getFieldDecorator, resetFields, validateFields },
+  } = props;
   const [visible, setVisible] = useState(false); // 抽屉是否显示
   const [title, setTitle] = useState('');
   const [selectdata, setSelectData] = useState([]); // 数据字典
   const [savetype, setSaveType] = useState(''); // 保存类型  save:新建  update:编辑
   const [data, setData] = useState('');
-  const [paginations, setPageinations] = useState({ current: 0, pageSize: 10 });
+  const [paginations, setPageinations] = useState({ current: 1, pageSize: 10 });
 
   const getdatas = () => {
     dispatch({
@@ -22,7 +56,7 @@ function Expressions(props) {
         field: '',
         content: '',
         status: '',
-        pageIndex: paginations.current,
+        pageIndex: paginations.current - 1,
         pageSize: paginations.pageSize,
       },
     });
@@ -96,6 +130,68 @@ function Expressions(props) {
         getdatas();
       }
     });
+  };
+
+  const searchdata = (values, page, size) => {
+    dispatch({
+      type: 'expressionsmanage/query',
+      payload: {
+        ...values,
+        pageIndex: page - 1,
+        pageSize: size,
+      },
+    });
+  };
+
+  const onShowSizeChange = (page, size) => {
+    validateFields((err, values) => {
+      if (!err) {
+        searchdata(values, page, size);
+      }
+    });
+    setPageinations({
+      ...paginations,
+      pageSize: size,
+    });
+  };
+
+  const changePage = page => {
+    validateFields((err, values) => {
+      if (!err) {
+        searchdata(values, page, paginations.pageSize);
+      }
+    });
+    setPageinations({
+      ...paginations,
+      current: page,
+    });
+  };
+
+  const pagination = {
+    showSizeChanger: true,
+    onShowSizeChange: (page, size) => onShowSizeChange(page, size),
+    current: paginations.current,
+    pageSize: paginations.pageSize,
+    total: list.total,
+    showTotal: total => `总共  ${total}  条记录`,
+    onChange: page => changePage(page),
+  };
+
+  const handleSearch = () => {
+    setPageinations({
+      ...paginations,
+      current: 1,
+    });
+    validateFields((err, values) => {
+      if (err) {
+        return;
+      }
+      searchdata(values, paginations.current, paginations.pageSize);
+    });
+  };
+
+  const handleReset = () => {
+    resetFields();
   };
 
   const getTypebykey = key => {
@@ -174,8 +270,56 @@ function Expressions(props) {
   return (
     <PageHeaderWrapper title={pagetitle}>
       <Card>
+        {selectdata.length > 0 && (
+          <Row gutter={24}>
+            <Form {...formItemLayout} onSubmit={handleSearch}>
+              <Col span={6}>
+                <Form.Item label="常用语">
+                  {getFieldDecorator('content', {
+                    initialValue: '',
+                  })(<Input placeholder="请输入" />)}
+                </Form.Item>
+              </Col>
+              <Col span={6}>
+                <Form.Item label="工单字段">
+                  {getFieldDecorator('field', {
+                    initialValue: '',
+                  })(
+                    <Select placeholder="请选择">
+                      {fieldmap.map(obj => [
+                        <Option key={obj.key} value={obj.title}>
+                          {obj.title}
+                        </Option>,
+                      ])}
+                    </Select>,
+                  )}
+                </Form.Item>
+              </Col>
+              <Col span={6}>
+                <Form.Item label="启用状态">
+                  {getFieldDecorator('status', {
+                    initialValue: '',
+                  })(
+                    <RadioGroup>
+                      <Radio value="1">启用</Radio>
+                      <Radio value="0">停用</Radio>
+                    </RadioGroup>,
+                  )}
+                </Form.Item>
+              </Col>
+              <Col span={6} style={{ paddingTop: 4, textAlign: 'right' }}>
+                <Button type="primary" onClick={handleSearch}>
+                  查 询
+                </Button>
+                <Button style={{ marginLeft: 8 }} onClick={handleReset}>
+                  重 置
+                </Button>
+              </Col>
+            </Form>
+          </Row>
+        )}
         <Button
-          style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
+          style={{ width: '100%', marginBottom: 8 }}
           type="dashed"
           icon="plus"
           onClick={() => handleShowDrawer('新建常用语', 'save')}
@@ -184,9 +328,10 @@ function Expressions(props) {
         </Button>
         <Table
           columns={columns}
-          dataSource={list}
+          dataSource={list.rows}
           loading={loading}
           rowKey={(_, index) => index.toString()}
+          pagination={pagination}
         />
       </Card>
       {/* 抽屉 */}
@@ -209,7 +354,9 @@ function Expressions(props) {
   );
 }
 
-export default connect(({ expressionsmanage, loading }) => ({
-  list: expressionsmanage.list,
-  loading: loading.models.expressionsmanage,
-}))(Expressions);
+export default Form.create({})(
+  connect(({ expressionsmanage, loading }) => ({
+    list: expressionsmanage.list,
+    loading: loading.models.expressionsmanage,
+  }))(Expressions),
+);

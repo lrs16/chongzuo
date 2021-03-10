@@ -1,107 +1,86 @@
-/* eslint-disable no-restricted-syntax */
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
-import { TreeSelect, Form } from 'antd';
+import { Tree, message } from 'antd';
 
-// const { SHOW_PARENT } = TreeSelect;
-// 选择所在组织机构的组件
-@connect(({ deptree, loading }) => ({
-  deptree,
-  loading: loading.models.deptree,
-}))
-class SelectID extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
+const { TreeNode } = Tree;
 
-  static getDerivedStateFromProps(nextProps, prevState) {
-    // 经过getFieldDecorator封装以后，props会有value属性，代表外部传递过来的值
-    if (nextProps.value !== prevState.value) {
-      return {
-        value: nextProps.value,
-      };
-    }
-    return null;
-  }
+function SelectID(props) {
+  const { dispatch, GetTreenode, pid } = props;
+  const [treeData, setTreedData] = useState([]);
 
-  componentDidMount() {
-    const { dispatch } = this.props;
+  const getdeptree = () => {
     dispatch({
-      type: 'deptree/fetch',
-    });
-  }
-
-  toTree = datas => {
-    const data = this.addArr(datas);
-    const result = [];
-    if (!Array.isArray(data)) {
-      return result;
-    }
-    data.forEach(item => {
-      delete item.children;
-    });
-    const map = {};
-    data.forEach(item => {
-      map[item.deptSort] = item;
-    });
-    data.forEach(item => {
-      const parent = map[item.pid];
-      if (parent) {
-        (parent.children || (parent.children = [])).push(item);
+      type: 'upmsdept/needtree',
+      payload: { pid },
+    }).then(res => {
+      if (res.data !== undefined) {
+        setTimeout(() => {
+          setTreedData(res.data);
+        }, 0);
       } else {
-        result.push(item);
+        message.info('无下级组织');
       }
     });
-    return result;
   };
 
-  addArr = datas => {
-    const newArr = [];
-    if (!Array.isArray(datas)) {
-      return newArr;
-    }
-    for (let i = 0; i < datas.length; i += 1) {
-      const vote = {};
-      vote.id = datas[i].id;
-      vote.value = datas[i].id;
-      vote.title = datas[i].deptName;
-      vote.deptSort = datas[i].deptSort;
-      vote.pid = datas[i].pid;
-      newArr.push(vote);
-    }
+  // 加载父级节点
+  useEffect(() => {
+    getdeptree();
+  }, []);
 
-    return newArr;
+  // 点击加载结点
+  const onLoadData = treeNode =>
+    new Promise(resolve => {
+      if (treeNode.props.children) {
+        resolve();
+        return;
+      }
+      dispatch({
+        type: 'upmsdept/needtree',
+        payload: {
+          pid: treeNode.props.dataRef.key,
+        },
+      }).then(res => {
+        if (res.data !== undefined) {
+          treeNode.props.dataRef.children = res.data;
+        } else {
+          message.info('已经到最后一层！');
+        }
+      });
+      setTimeout(() => {
+        const arr = [...treeData];
+        setTreedData(arr);
+        resolve();
+      }, 600);
+    });
+
+  // 渲染树结构
+  const renderTreeNodes = data =>
+    data.map(item => {
+      if (item.children) {
+        return (
+          <TreeNode title={item.title} key={item.key} dataRef={item}>
+            {renderTreeNodes(item.children)}
+          </TreeNode>
+        );
+      }
+      return <TreeNode key={item.key} {...item} dataRef={item} />;
+    });
+
+  const handleClick = (_, e) => {
+    GetTreenode({ ...e.node.props.dataRef });
   };
 
-  handleChange = value => {
-    this.props.onChange(value);
-  };
-
-  render() {
-    // 转换树结构
-    const {
-      deptree: { data },
-      loading,
-    } = this.props;
-    const treeData = this.toTree(data);
-    return (
-      <>
-        <TreeSelect
-          style={{ width: '100%' }}
-          value={this.props.value}
-          dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
-          getPopupContainer={triggerNode => triggerNode.parentNode} // 解决下拉不显示在上层的问题
-          treeData={treeData}
-          placeholder="请选择"
-          treeDefaultExpandAll
-          onChange={this.handleChange}
-          loading={loading}
-        />
-      </>
-    );
-  }
+  return (
+    <div>
+      <Tree loadData={onLoadData} onSelect={handleClick}>
+        {renderTreeNodes(treeData)}
+      </Tree>
+    </div>
+  );
 }
 
-export default SelectID;
-// export default Form.create()(SelectID);
+export default connect(({ upmsdept, loading }) => ({
+  upmsdept,
+  loading: loading.models.upmsdept,
+}))(SelectID);

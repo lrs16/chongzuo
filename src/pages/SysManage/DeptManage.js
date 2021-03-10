@@ -224,18 +224,6 @@ class DeptManage extends Component {
     });
   };
 
-  renderTreeNodes = data =>
-    data.map(item => {
-      if (item.children) {
-        return (
-          <TreeNode title={item.title} key={item.key} dataRef={item}>
-            {this.renderTreeNodes(item.children)}
-          </TreeNode>
-        );
-      }
-      return <TreeNode key={item.key} {...item} dataRef={item} />;
-    });
-
   render() {
     const columns = [
       {
@@ -321,7 +309,7 @@ class DeptManage extends Component {
               }}
             >
               <Sider theme="light">
-                <Tree loadData={this.onLoadData} onCheck={this.onCheck} onSelect={this.handleClick}>
+                <Tree loadData={this.onLoadData} onSelect={this.handleClick}>
                   {this.renderTreeNodes(this.state.treeData)}
                 </Tree>
               </Sider>

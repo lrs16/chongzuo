@@ -144,7 +144,7 @@ class MenuModal extends Component {
                 initialValue: menuHide,
               })(
                 <Radio.Group>
-                  <Radio value="0">不隐藏</Radio>
+                  <Radio value="0">显示</Radio>
                   <Radio value="1">隐藏</Radio>
                 </Radio.Group>,
               )}

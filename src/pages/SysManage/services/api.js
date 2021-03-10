@@ -218,10 +218,12 @@ export async function editeDict(params) {
 }
 
 // 查询常用语
-export async function queryExpressions(field, content, status, pageIndex, pageSize) {
-  return request(
-    `/common/expressions/query?content=${content}&field=${field}&status=${status}&pageIndex=${pageIndex}&pageSize=${pageSize}`,
-  );
+export async function queryExpressions(params) {
+  return request(`/common/expressions/query`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+  });
 }
 
 // 获取常用语
@@ -262,6 +264,42 @@ export async function deleteExpressions(ids) {
 // 修改常用语状态
 export async function updateStatusExpressions(params) {
   return request('/common/expressions/updateStatus', {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+  });
+}
+
+// 查询报障用户
+export async function queryDisableduser(params) {
+  return request(`/common/disableduser/query`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+  });
+}
+
+// 保存报障用户
+export async function saveDisableduser(params) {
+  return request(`/common/disableduser/save`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+  });
+}
+
+// 编辑报障用户
+export async function updateDisableduser(params) {
+  return request(`/common/disableduser/update`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+  });
+}
+
+// 删除报障用户
+export async function deleteDisableduser(params) {
+  return request(`/common/disableduser/delete`, {
     method: 'POST',
     data: params,
     requestType: 'form',
