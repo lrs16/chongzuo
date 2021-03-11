@@ -27,6 +27,7 @@ const { Panel } = Collapse;
 const { TextArea } = Input;
 const { Option } = Select;
 const RadioGroup = Radio.Group;
+let selectCascader;
 
 const formItemLayout = {
   labelCol: {
@@ -69,6 +70,11 @@ function Registration(props) {
     // saveuserid: { flowTaskId },
   } = props;
 
+  const cascaderOnchange = (value,selectedOptions) => {
+    console.log('selectedOptions: ', selectedOptions);
+    selectCascader = selectedOptions[1].dict_code;
+  }
+
   // 接口
   const getNewno = () => {
     // 获取新的故障编号
@@ -108,13 +114,13 @@ function Registration(props) {
   const handleSave = () => {
     // 保存成功后根据后端给的流程ID跳待办里的详情
     validateFields((err, values) => {
-      if (!err) {
+      if (true) {
         const formValues = values;
         formValues.registerOccurTime = values.registerOccurTime.format('YYYY-MM-DD HH:mm:ss');
         formValues.registerTime = values.registerTime.format('YYYY-MM-DD HH:mm:ss');
         formValues.editState = 'add';
         formValues.registerAttachments = JSON.stringify(files.arr);
-        formValues.type = values.type.join('/');
+        formValues.type = selectCascader;
         dispatch({
           type: 'fault/getSaveUserId',
           payload: { formValues },
@@ -358,6 +364,7 @@ function Registration(props) {
                         placeholder="请选择"
                         options={faultType}
                         fieldNames={{ label: 'title', value: 'title', children: 'children' }}
+                        onChange={cascaderOnchange}
                       />,
                     )}
                   </Form.Item>

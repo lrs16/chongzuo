@@ -8,13 +8,12 @@ import {
   DatePicker,
   Button,
   Table,
-  Input
+  Icon,
+  Divider
 } from 'antd';
 import Link from 'umi/link';
 import moment from 'moment';
-import lastweek from '../eventstatistics/lastweek.svg';
-import nowweek from '../eventstatistics/nowweek.svg';
-import baifenbi from '../eventstatistics/baifenbi.svg';
+import iconfontUrl from '@/utils/iconfont';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
 let starttime;
@@ -36,28 +35,32 @@ const columns = [
     title: '上周工单数',
     dataIndex: 'last_num',
     key: 'last_num',
-    render: (text, record) => (
-      <Link
+    render: (text, record) => {
+      if(record.second_object !== '合计') {
+        return <Link
         to={{
           pathname: '/ITSM/eventmanage/query',
           query: {
             sign: 'last',
             time1: record.last_start_time,
             time2: record.last_end_time,
-            event_object: record.object_name
+            eventObject: record.object_name
           }
         }}
       >
         {text}
       </Link>
-    )
+      }
+      return <span>{text}</span>
+    }
   },
   {
     title: '本周工单数',
     dataIndex: 'now_num',
     key: 'now_num',
-    render: (text, record) => (
-      <Link
+    render: (text, record) => {
+      if(record.second_object !== '合计') {
+        return <Link
         to={{
           pathname: '/ITSM/eventmanage/query',
           query: {
@@ -70,7 +73,11 @@ const columns = [
       >
         {text}
       </Link>
-    )
+      }
+      if(record.second_object === '合计') {
+        return <span>{text}</span>
+      }
+    }
   },
   {
     title: '环比',
@@ -79,6 +86,9 @@ const columns = [
   },
 ];
 
+const IconFont = Icon.createFromIconfontCN({
+  scriptUrl: iconfontUrl,
+});
 function Maintenance(props) {
   const { pagetitle } = props.route.name;
   const [tabActiveKey, setTabActiveKey] = useState('week');
@@ -93,14 +103,13 @@ function Maintenance(props) {
       const date1 = new Date(date._d);
       const date2 = new Date(date._d);
       starttime = `${date1.getFullYear()}-${(date1.getMonth() + 1)}-${date1.getDate()}`;
-      date2.setDate(date1.getDate() + 7);
+      date2.setDate(date1.getDate() + 6);
       endTime = `${date2.getFullYear()}-${(date2.getMonth() + 1)}-${date2.getDate()}`;
     } else {
       const date1 = new Date(date._d);
       const date2 = new Date(date._d);
       starttime = `${date1.getFullYear()}-${(date1.getMonth() + 1)}-${date1.getDate()}`;
-      console.log('monthStarttime: ', monthStarttime);
-      date2.setDate(date1.getDate() + 30);
+      date2.setDate(date1.getDate() + 29);
       endTime = `${date2.getFullYear()}-${(date2.getMonth() + 1)}-${date2.getDate()}`;
     }
   }
@@ -114,7 +123,13 @@ function Maintenance(props) {
 
   const download = () => {
     dispatch({
-      type: 'problemstatistics/downloadHandlegrate'
+      type: 'eventstatistics/downloadMaintenance',
+      payload:{
+        time1:starttime,
+        time2:endTime,
+        type:tabActiveKey,
+
+      }
     }).then(res => {
       const filename = '下载.xls';
       const blob = new Blob([res]);
@@ -135,16 +150,15 @@ function Maintenance(props) {
       day2.setTime(day2.getTime());
       endTime = `${day2.getFullYear()}-${(day2.getMonth() + 1)}-${day2.getDate()}`;
       const date2 = new Date(day2);
-      date2.setDate(day2.getDate() - 7);
+      date2.setDate(day2.getDate() - 6);
       starttime = `${date2.getFullYear()}-${(date2.getMonth() + 1)}-${date2.getDate()}`;
     } else { // 月统计
       const day2 = new Date();
       day2.setTime(day2.getTime());
       endTime = `${day2.getFullYear()}-${(day2.getMonth() + 1)}-${day2.getDate()}`;
       const date2 = new Date(day2);
-      date2.setDate(day2.getDate() - 30);
+      date2.setDate(day2.getDate() - 29);
       starttime = `${date2.getFullYear()}-${(date2.getMonth() + 1)}-${date2.getDate()}`;
-      // console.log('monthStarttime: ', monthStarttime);
     }
   }
 
@@ -175,65 +189,56 @@ function Maintenance(props) {
       onTabChange={handleTabChange}
       tabActiveKey={tabActiveKey}
     >
-      <Card style={{margin:20 }}>
+      <Card style={{ margin: 20 }}>
         <Row gutter={16}>
           <Col className="gutter-row" span={8}>
             <div className="gutter-box">
-              <div style={{display: 'flex', flexDirection: 'row'}}>
-                <img src={lastweek} alt='' />
+              <div style={{ display: 'flex', flexDirection: 'row' }}>
+                <IconFont
+                  type="icondingdan"
+                  style={{ fontSize: '4em' }}
+                />
                 <div style={{ display: 'flex', flexDirection: 'column' }}>
                   <span>上周</span>
-                  <span style={{fontWeight:900,fontSize:22}}>{maintenanceArr.last_count}</span>
+                  <span style={{ fontWeight: 900, fontSize: 22 }}>{maintenanceArr.last_count}</span>
                 </div>
               </div>
             </div>
           </Col>
+
           <Col className="gutter-row" span={8}>
+
             <div className="gutter-box">
-            <div style={{display: 'flex', flexDirection: 'row'}}>
-                <img src={nowweek} alt='' />
+       
+              <div style={{ display: 'flex', flexDirection: 'row',postion:'relative' }}>
+              <Divider type="vertical" style={{height:'50px',postion:'position',marginRight:'50px'}} />
+                <IconFont
+                  type="iconshangzhoudingdan"
+                  style={{ fontSize: '4em' }}
+                />
                 <div style={{ display: 'flex', flexDirection: 'column' }}>
                   <span>本周</span>
-                  <span style={{fontWeight:900,fontSize:22}}>{maintenanceArr.now_count}</span>
+                  <span style={{ fontWeight: 900, fontSize: 22 }}>{maintenanceArr.now_count}</span>
                 </div>
               </div>
             </div>
           </Col>
           <Col className="gutter-row" span={8}>
             <div className="gutter-box">
-            <div style={{display: 'flex', flexDirection: 'row'}}>
-                <img src={baifenbi} alt='' />
+              <div style={{ display: 'flex', flexDirection: 'row',postion:'relative'}}>
+              <Divider type="vertical" style={{height:'50px',postion:'position',marginRight:'50px'}} />
+                <IconFont
+                  type="iconicon-huanbifenxi"
+                  style={{ fontSize: '4em' }}
+                />
                 <div style={{ display: 'flex', flexDirection: 'column' }}>
                   <span>百分比</span>
-                  <span style={{fontWeight:900,fontSize:22}}>{maintenanceArr.points_count}</span>
+                  <span style={{ fontWeight: 900, fontSize: 22 }}>{maintenanceArr.points_count}</span>
                 </div>
               </div>
             </div>
           </Col>
         </Row>
-        {/* <div style={{ display: 'flex', flexDirection: 'row' }}>
-          <div style={{ display: 'flex', flexDirection: 'row' }}>
-            <img src={lastweek} alt='' />
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <p>上周</p>
-              <p>ff</p>
-            </div>
-
-          </div>
-
-          <div>
-            <img src={nowweek} alt='' />
-            <p>本周</p>
-            <p>ff</p>
-          </div>
-
-          <div>
-            <img src={baifenbi} alt='' />
-            <p>环比</p>
-            <p>ff</p>
-          </div>
-
-        </div> */}
       </Card>
       <Card>
         <Row gutter={24}>
@@ -242,11 +247,13 @@ function Maintenance(props) {
               tabActiveKey === 'week' && (
                 <>
                   <Col span={24}>
-                    <Form.Item label='开始时间'>
+                    <Form.Item label='起始时间'>
                       {getFieldDecorator('time1', {
                         initialValue: moment(starttime)
                       })(<DatePicker
-                        format="YYYY-MM-DD"
+                        // format="YYYY-MM-DD"
+                        // allowClear='false'
+                        // placeholder='请选择'
                         onChange={onChange}
                       />)}
                     </Form.Item>
@@ -256,7 +263,7 @@ function Maintenance(props) {
                     <Form.Item label=''>
                       {
                         getFieldDecorator('time2', {
-                          initialValue: endTime ? moment(endTime) : ''
+                          initialValue: moment(endTime)
                         })
                           (<DatePicker disabled />)
                       }
@@ -283,7 +290,8 @@ function Maintenance(props) {
                       {getFieldDecorator('monthStarttime', {
                         initialValue: moment(starttime)
                       })(<DatePicker
-                        format="YYYY-MM-DD"
+                        // format="YYYY-MM-DD"
+                        // allowClear='false'
                         onChange={onChange}
                       />)}
                     </Form.Item>
@@ -293,7 +301,7 @@ function Maintenance(props) {
                     <Form.Item label=''>
                       {
                         getFieldDecorator('endTime', {
-                          initialValue: endTime ? moment(endTime) : ''
+                          initialValue: moment(endTime)
                         })
                           (<DatePicker disabled />)
                       }

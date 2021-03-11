@@ -3,7 +3,12 @@ import {
   eventServiceList,
   eventselfhandleList,
   eventtopnList,
-  eventhandlerateList
+  eventhandlerateList,
+  maintenanceDownload,
+  eventserviceDownload,
+  eventselfhandleDownload,
+  eventtopnDownload,
+  eventhandlerateDownload
 } from '../services/statistics';
 
 export default {
@@ -62,6 +67,31 @@ export default {
       })
     },
 
+    //  下载类
+    //   下载运维分类情况统计
+    *downloadMaintenance({payload},{ call, put }) {
+      return yield call(maintenanceDownload, payload)
+    },
+
+    //   下载运维服务指标统计
+    *downloadEventservice({payload},{ call, put }) {
+      return yield call(eventserviceDownload, payload)
+    },
+
+    //   下载运维一线解决统计
+    *downloadEventselfhandle({payload},{ call, put }) {
+      return yield call(eventselfhandleDownload, payload)
+    },
+
+    //   下载topn统计
+    *downloadEventtopn({payload},{ call, put }) {
+      return yield call(eventtopnDownload, payload)
+    },
+
+    //   下载事件处理率
+    *downloadEventhandlerate({payload},{ call, put }) {
+      return yield call(eventhandlerateDownload, payload)
+    }
 
     
   },

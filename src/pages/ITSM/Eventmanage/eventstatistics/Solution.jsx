@@ -26,39 +26,48 @@ const columns = [
     title: '工单受理数量',
     dataIndex: 'not_selfhandle',
     key: 'not_selfhandle',
-    render: (text, record) => (
-      <Link
-        to={{
-          pathname: '/ITSM/eventmanage/query',
-          query: { 
-            time1: record.start_time,
-            time2: record.end_time,
-           }
-        }}
-      >
-        {text}
-      </Link>
-    )
+    render: (text, record) => {
+      if (record.user !== '合计') {
+        return <Link
+          to={{
+            pathname: '/ITSM/eventmanage/query',
+            query: {
+              time1: record.start_time,
+              time2: record.end_time,
+              registerUser: record.user
+            }
+          }
+          }
+        >
+          {text}
+        </Link >
+      }
+      return <span>{text}</span>
+    }
   },
   {
     title: '一线处理量',
     dataIndex: 'is_selfhandle',
     key: 'is_selfhandle',
-    render: (text, record) => (
-      <Link
-        to={{
-          pathname: '/ITSM/eventmanage/query',
-          query: { 
-            time1: record.start_time,
-            time2: record.end_time,
-            selfhandle:'是',
-            registerUser:record.user
-           }
-        }}
-      >
-        {text}
-      </Link>
-    )
+    render: (text, record) => {
+      if (record.user !== '合计') {
+        return <Link
+          to={{
+            pathname: '/ITSM/eventmanage/query',
+            query: {
+              time1: record.start_time,
+              time2: record.end_time,
+              selfhandle: '是',
+              registerUser: record.user
+            }
+          }
+          }
+        >
+          {text}
+        </Link >
+      }
+      return <span>{text}</span>
+    }
   },
   {
     title: '一线解决率',
@@ -93,7 +102,11 @@ function Solution(props) {
 
   const download = () => {
     dispatch({
-      type: 'problemstatistics/downloadHandlegrate'
+      type: 'eventstatistics/downloadEventselfhandle',
+      payload:{
+        time1:startTime,
+        time2:endTime,
+      }
     }).then(res => {
       const filename = '下载.xls';
       const blob = new Blob([res]);
@@ -113,7 +126,7 @@ function Solution(props) {
     day2.setTime(day2.getTime());
     endTime = `${day2.getFullYear()}-${(day2.getMonth() + 1)}-${day2.getDate()}`;
     const date2 = new Date(day2);
-    date2.setDate(day2.getDate() - 7);
+    date2.setDate(day2.getDate() - 6);
     startTime = `${date2.getFullYear()}-${(date2.getMonth() + 1)}-${date2.getDate()}`;
   }
 
@@ -130,12 +143,13 @@ function Solution(props) {
         <Row gutter={24}>
           <Form layout='inline'>
             <>
-              <Col span={15}>
+              <Col span={24}>
                 <Form.Item label='开始时间'>
                   {getFieldDecorator('startTime', {
                     initialValue: startTime ? moment(startTime) : ''
                   })(<DatePicker
                     format="YYYY-MM-DD"
+                    allowClear={false}
                     onChange={onChange}
                   />)}
                 </Form.Item>

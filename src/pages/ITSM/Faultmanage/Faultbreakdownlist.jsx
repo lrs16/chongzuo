@@ -104,7 +104,6 @@ function Faultbreakdownlist(props) {
       a.click();
       window.URL.revokeObjectURL(url);
     })
-
   }
 
   const rowSelection = {

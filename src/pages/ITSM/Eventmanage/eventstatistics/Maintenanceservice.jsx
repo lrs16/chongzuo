@@ -39,8 +39,8 @@ const columns = [
   },
   {
     title: '备注',
-    dataIndex: 'points_count',
-    key: 'points_count',
+    dataIndex: 'remark',
+    key: 'remark',
   },
 ];
 
@@ -58,7 +58,7 @@ function Maintenanceservice(props) {
       const date1 = new Date(date._d);
       const date2 = new Date(date._d);
       startTime = `${date1.getFullYear()}-${(date1.getMonth() + 1)}-${date1.getDate()}`;
-      date2.setDate(date1.getDate() + 7);
+      date2.setDate(date1.getDate() + 6);
       endTime = `${date2.getFullYear()}-${(date2.getMonth() + 1)}-${date2.getDate()}`;
     } else {
       startTime = '';
@@ -66,7 +66,7 @@ function Maintenanceservice(props) {
       const date1 = new Date(date._d);
       const date2 = new Date(date._d);
       startTime = `${date1.getFullYear()}-${(date1.getMonth() + 1)}-${date1.getDate()}`;
-      date2.setDate(date1.getDate() + 30);
+      date2.setDate(date1.getDate() + 29);
       endTime = `${date2.getFullYear()}-${(date2.getMonth() + 1)}-${date2.getDate()}`;
     }
   }
@@ -74,13 +74,18 @@ function Maintenanceservice(props) {
   const handleListdata = (params) => {
     dispatch({
       type: 'eventstatistics/fetcheventServiceList',
-      payload: { sign,tabActiveKey, startTime, endTime }
+      payload: { sign, tabActiveKey, startTime, endTime }
     })
   }
 
   const download = () => {
     dispatch({
-      type: 'problemstatistics/downloadHandlegrate'
+      type: 'eventstatistics/downloadEventservice',
+      payload:{
+        time1:startTime,
+        time2:endTime,
+        type:tabActiveKey,
+      }
     }).then(res => {
       const filename = '下载.xls';
       const blob = new Blob([res]);
@@ -101,14 +106,14 @@ function Maintenanceservice(props) {
       day2.setTime(day2.getTime());
       endTime = `${day2.getFullYear()}-${(day2.getMonth() + 1)}-${day2.getDate()}`;
       const date2 = new Date(day2);
-      date2.setDate(day2.getDate() - 7);
+      date2.setDate(day2.getDate() - 6);
       startTime = `${date2.getFullYear()}-${(date2.getMonth() + 1)}-${date2.getDate()}`;
     } else { // 月统计
       const day2 = new Date();
       day2.setTime(day2.getTime());
       endTime = `${day2.getFullYear()}-${(day2.getMonth() + 1)}-${day2.getDate()}`;
       const date2 = new Date(day2);
-      date2.setDate(day2.getDate() - 30);
+      date2.setDate(day2.getDate() - 29);
       startTime = `${date2.getFullYear()}-${(date2.getMonth() + 1)}-${date2.getDate()}`;
     }
   }
@@ -121,11 +126,11 @@ function Maintenanceservice(props) {
   const tabList = [
     {
       key: 'week',
-      tab: '运维分类统计情况(周)',
+      tab: '软件运维服务指标完成情况(周)',
     },
     {
       key: 'month',
-      tab: '运维分类统计情况(月)',
+      tab: '软件运维服务指标完成情况(月)',
     },
   ];
 
@@ -147,11 +152,12 @@ function Maintenanceservice(props) {
               tabActiveKey === 'week' && (
                 <>
                   <Col span={24}>
-                    <Form.Item label='开始时间'>
+                    <Form.Item label='起始时间'>
                       {getFieldDecorator('time1', {
-                        initialValue: startTime ? moment(startTime) : ''
+                        initialValue: moment(startTime)
                       })(<DatePicker
                         format="YYYY-MM-DD"
+                        allowClear={false}
                         onChange={onChange}
                       />)}
                     </Form.Item>
@@ -161,7 +167,7 @@ function Maintenanceservice(props) {
                     <Form.Item label=''>
                       {
                         getFieldDecorator('time2', {
-                          initialValue: endTime ? moment(endTime) : ''
+                          initialValue:  moment(endTime)
                         })
                           (<DatePicker disabled />)
                       }
@@ -189,6 +195,7 @@ function Maintenanceservice(props) {
                         initialValue: moment(startTime)
                       })(<DatePicker
                         format="YYYY-MM-DD"
+                        allowClear={false}
                         onChange={onChange}
                       />)}
                     </Form.Item>
@@ -200,7 +207,7 @@ function Maintenanceservice(props) {
                     <Form.Item label=''>
                       {
                         getFieldDecorator('endTime', {
-                          initialValue: endTime ? moment(endTime) : ''
+                          initialValue: moment(endTime)
                         })
                           (<DatePicker disabled />)
                       }
@@ -235,7 +242,7 @@ function Maintenanceservice(props) {
         <Table
           columns={columns}
           dataSource={maintenanceService}
-          rowKey={record => record.statName}
+          rowKey={record => record.remark}
         />
       </Card>
     </PageHeaderWrapper>

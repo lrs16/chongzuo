@@ -37,6 +37,7 @@ const formItemLayout = {
 };
 
 const { Option } = Select;
+let searchSign = '';
 
 // const faultStatusmap = ['待登记', '已登记', '已受理', '待审核', '审核中', '已审核', '待处理', '处理中', '已处理', '待总结', '总结中', '已总结', '待关闭', '关闭中', '已关闭'];
 // const sourceMap = ['系统告警', '巡检发现'];
@@ -48,12 +49,13 @@ function QueryList(props) {
 
   const {
     form: { getFieldDecorator, resetFields, validateFields },
-    location:{ query: { dictCode,dictType,status,timeStatus } },
+    location: { query: { dictCode, dictType, status, timeStatus } },
     loading,
     faultQueryList, // 查询列表数据
     relatedictArr, // 从汇总统计到的列表
     dispatch,
   } = props;
+  console.log(relatedictArr,'relatedictArr');
 
   const [expand, setExpand] = useState(false);
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 10 }); // 分页state
@@ -143,12 +145,12 @@ function QueryList(props) {
       payload: {
         current: paginations.current,
         pageSize: paginations.pageSize,
+        status
       },
     });
   };
-//  故障类型的列表
-  const  faultList = () => {
-    console.log('ggg');
+  //  故障类型的列表
+  const faultList = (values, page, pageSize, searchdata) => {
     dispatch({
       type: 'faultstatics/fetchrelateDictList',
       payload: {
@@ -158,18 +160,19 @@ function QueryList(props) {
     });
   }
 
-//  故障状态的列表
-  const  faulthandleList = () => {
+  //  故障状态的列表
+  const faulthandleList = (values, page, pageSize, searchdata) => {
     dispatch({
       type: 'faultstatics/fetchfaulthandleList',
       payload: {
+        ...values,
         status,
       },
     });
   }
 
   useEffect(() => {
-    switch(dictType) {
+    switch (dictType) {
       case 'type':
         faultList();
         break;
@@ -180,20 +183,40 @@ function QueryList(props) {
         faulthandleList();
         break;
       default:
-      break;
+        break;
     }
-  }, []);
+  }, [dictType]);
 
-  const searchdata = (values, page, pageSize) => {
-    // 查询 查询接口
-    dispatch({
-      type: 'fault/getTosearchfaultSearch',
-      payload: {
-        values,
-        pageSize,
-        current: page,
-      },
-    });
+  const searchdata = (values, page, pageSize, searchdata) => {
+    if (searchdata) {
+      searchSign = 'have';
+      dispatch({
+        type: 'fault/getTosearchfaultSearch',
+        payload: {
+          values,
+          pageSize,
+          current: page,
+          status,
+        },
+      });
+    }    // 查询 查询接口
+    if (searchdata === '') {
+      switch (dictType) {
+        case 'type':
+          faultList(values, page, pageSize);
+          break;
+        case undefined:
+          faultList(values, page, pageSize);
+          break;
+        case 'handle':
+          faulthandleList(values, page, pageSize);
+          break;
+        default:
+          break;
+      }
+    }
+
+
   };
 
   const handleReset = () => {
@@ -201,7 +224,7 @@ function QueryList(props) {
     resetFields();
   };
 
-  const handleSearch = () => {
+  const handleSearch = (paramsSearch) => {
     setPageinations({
       ...paginations,
       current: 1,
@@ -229,7 +252,7 @@ function QueryList(props) {
         values.type = fieldsValue.type.join('/');
       }
 
-      searchdata(values, paginations.current, paginations.pageSize);
+      searchdata(values, paginations.current, paginations.pageSize, paramsSearch);
     });
   };
 
@@ -262,7 +285,7 @@ function QueryList(props) {
     onShowSizeChange: (page, pageSize) => onShowSizeChange(page, pageSize),
     current: paginations.current,
     pageSize: paginations.pageSize,
-    total: faultQueryList ? faultQueryList.total : '',
+    total: (dictType !== undefined && searchSign === '') ? relatedictArr.length : faultQueryList.total,
     showTotal: total => `总共  ${total}  条记录`,
     onChange: page => changePage(page),
   };
@@ -623,7 +646,7 @@ function QueryList(props) {
             )}
             {expand === true && (
               <Col span={24} style={{ textAlign: 'right' }}>
-                <Button type="primary" onClick={handleSearch}>
+                <Button type="primary" onClick={() => handleSearch('search')}>
                   查 询
                 </Button>
                 <Button style={{ marginLeft: 8 }} onClick={handleReset}>
@@ -659,38 +682,22 @@ function QueryList(props) {
             <Button type="danger" style={{ marginLeft: 10 }}>批量删除</Button>
           </Popconfirm> */}
         </div>
-        {
-          dictType === undefined && (
-            <Table
-            loading={loading}
-            columns={columns.filter(item => item.title !== 'id' || item.key !== 'id')}
-            dataSource={faultQueryList && faultQueryList.rows}
-            table-layout="fixed"
-            rowKey={record => record.id}
-            pagination={pagination}
-          />
-          )
-        }
 
-        {
-          dictType !== undefined && (
-            <Table
-            loading={loading}
-            columns={columns.filter(item => item.title !== 'id' || item.key !== 'id')}
-            dataSource={relatedictArr}
-            rowKey={record => record.id}
-            pagination={pagination}
-          />
-          )
-        }
+        <Table
+          loading={loading}
+          columns={columns.filter(item => item.title !== 'id' || item.key !== 'id')}
+          dataSource={(dictType !== undefined && searchSign === '') ? relatedictArr : faultQueryList.rows}
+          rowKey={record => record.id}
+          pagination={pagination}
+        />
 
-      
+
       </Card>
     </PageHeaderWrapper>
   );
 }
 export default Form.create({})(
-  connect(({ fault,faultstatics,loading }) => ({
+  connect(({ fault, faultstatics, loading }) => ({
     faultQueryList: fault.faultQueryList,
     html: fault.html,
     relatedictArr: faultstatics.relatedictArr,

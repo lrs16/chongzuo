@@ -56,7 +56,6 @@ const columns = [
 
 function Workordertopn(props) {
   const { pagetitle } = props.route.name;
-  const [tabActiveKey, setTabActiveKey] = useState('week');
   const {
     form: { getFieldDecorator },
     ordertopnArr,
@@ -64,24 +63,14 @@ function Workordertopn(props) {
   } = props;
 
   const onChange = (date) => {
-    if (tabActiveKey === 'week') {
       const date1 = new Date(date._d);
       const date2 = new Date(date._d);
       startTime = `${date1.getFullYear()}-${(date1.getMonth() + 1)}-${date1.getDate()}`;
-      date2.setDate(date1.getDate() + 7);
+      date2.setDate(date1.getDate() + 6);
       endTime = `${date2.getFullYear()}-${(date2.getMonth() + 1)}-${date2.getDate()}`;
-    } else {
-      startTime = '';
-      endTime = '';
-      const date1 = new Date(date._d);
-      const date2 = new Date(date._d);
-      startTime = `${date1.getFullYear()}-${(date1.getMonth() + 1)}-${date1.getDate()}`;
-      date2.setDate(date1.getDate() + 30);
-      endTime = `${date2.getFullYear()}-${(date2.getMonth() + 1)}-${date2.getDate()}`;
-    }
   }
 
-  const handleListdata = (value) => {
+  const handleListdata = () => {
     dispatch({
       type: 'eventstatistics/fetchordertopnList',
       payload: { value, startTime, endTime }
@@ -90,7 +79,12 @@ function Workordertopn(props) {
 
   const download = () => {
     dispatch({
-      type: 'problemstatistics/downloadHandlegrate'
+      type: 'eventstatistics/downloadEventtopn',
+      payload:{
+        time1:startTime,
+        time2:endTime,
+        num:value,
+      }
     }).then(res => {
       const filename = '下载.xls';
       const blob = new Blob([res]);
@@ -110,17 +104,18 @@ function Workordertopn(props) {
     day2.setTime(day2.getTime());
     endTime = `${day2.getFullYear()}-${(day2.getMonth() + 1)}-${day2.getDate()}`;
     const date2 = new Date(day2);
-    date2.setDate(day2.getDate() - 7);
+    date2.setDate(day2.getDate() - 6);
     startTime = `${date2.getFullYear()}-${(date2.getMonth() + 1)}-${date2.getDate()}`;
   }
 
   const selectOnchange = (selectvalue) => {
-    handleListdata(selectvalue);
+    value = selectvalue;
+    handleListdata(value);
   }
   useEffect(() => {
     defaultTime();
-    handleListdata(value);
-  }, [tabActiveKey])
+    handleListdata();
+  }, [])
 
   return (
     <PageHeaderWrapper
@@ -136,6 +131,7 @@ function Workordertopn(props) {
                     initialValue: startTime ? moment(startTime) : ''
                   })(<DatePicker
                     format="YYYY-MM-DD"
+                    allowClear='false'
                     onChange={onChange}
                   />)}
                 </Form.Item>
@@ -168,7 +164,7 @@ function Workordertopn(props) {
                 <Button
                   type='primary'
                   style={{ marginTop: 6 }}
-                  onClick={() => handleListdata('search')}
+                  onClick={() => handleListdata()}
                 >
                   查询
                 </Button>

@@ -232,12 +232,12 @@ function Besolved(props) {
     })
   }
 
-  const searchdata = (values, page, pageSize) => {
+  const searchdata = (values, page, pageSize,search) => {
     // if(sign !== 'timeout') {
       // sign = 'nottimeout';
-      // if(sign === 'timeout') {
-      //   timeoutSearch = 'search';
-      // }
+      if(sign === 'timeout' && search === 'search') {
+        timeoutSearch = 'search';
+      }
       queryList(values, page, pageSize);
     // }
     // if (problem === 'timeout') {
@@ -247,9 +247,6 @@ function Besolved(props) {
 
    
   };
-
-  console.log((sign === 'timeout' && timeoutSearch ==='')?'1':'2');
-
 
   const onShowSizeChange = (page, pageSize) => {
     validateFields((err, values) => {
@@ -301,7 +298,7 @@ function Besolved(props) {
   //   onChange: page => changePage(page),
   // };
 
-  const handleSearch = () => {
+  const handleSearch = (search) => {
     setPaginations({
       ...paginations,
       current: 1,
@@ -314,7 +311,7 @@ function Besolved(props) {
       if (err) {
         return;
       }
-      searchdata(obj, paginations.current, paginations.pageSize);
+      searchdata(obj, paginations.current, paginations.pageSize,search);
     });
   };
 
@@ -532,7 +529,7 @@ function Besolved(props) {
 
             {expand === false && (
               <Col span={8}>
-                <Button type="primary" onClick={handleSearch}>
+                <Button type="primary" onClick={()=>handleSearch('search')}>
                   查询
                 </Button>
 

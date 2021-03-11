@@ -31,10 +31,10 @@ const columns = [
         to={{
           pathname: '/ITSM/eventmanage/query',
           query: {
-            sign:'last',
+            sign: 'last',
             time1: record.start_time,
             time2: record.end_time,
-            }
+          }
         }}
       >
         {text}
@@ -50,12 +50,12 @@ const columns = [
         to={{
           pathname: '/ITSM/eventmanage/query',
           query: {
-            sign:'now',
+            sign: 'now',
             time1: record.start_time,
             time2: record.end_time,
             handleUnit: record.unit,
-            eventStatus:'已关闭'
-            }
+            eventStatus: '已关闭'
+          }
         }}
       >
         {text}
@@ -96,7 +96,12 @@ function Workordertreatmentrate(props) {
 
   const download = () => {
     dispatch({
-      type: 'problemstatistics/downloadHandlegrate'
+      type: 'eventstatistics/downloadEventhandlerate',
+      payload: {
+        time1: startTime,
+        time2: endTime,
+        type: tabActiveKey,
+      }
     }).then(res => {
       const filename = '下载.xls';
       const blob = new Blob([res]);
@@ -115,7 +120,7 @@ function Workordertreatmentrate(props) {
     day2.setTime(day2.getTime());
     endTime = `${day2.getFullYear()}-${(day2.getMonth() + 1)}-${day2.getDate()}`;
     const date2 = new Date(day2);
-    date2.setDate(day2.getDate() - 7);
+    date2.setDate(day2.getDate() - 6);
     startTime = `${date2.getFullYear()}-${(date2.getMonth() + 1)}-${date2.getDate()}`;
   }
 
@@ -132,12 +137,13 @@ function Workordertreatmentrate(props) {
         <Row gutter={24}>
           <Form layout='inline'>
             <>
-              <Col span={15}>
+              <Col span={24}>
                 <Form.Item label='开始时间'>
                   {getFieldDecorator('time1', {
                     initialValue: startTime ? moment(startTime) : ''
                   })(<DatePicker
                     format="YYYY-MM-DD"
+                    allowClear={false}
                     onChange={onChange}
                   />)}
                 </Form.Item>
