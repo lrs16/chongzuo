@@ -12,7 +12,7 @@ function DisableduserManage(props) {
     dispatch,
     list,
     loading,
-    form: { getFieldDecorator, resetFields, validateFields },
+    form: { getFieldDecorator, validateFields },
   } = props;
   const [visible, setVisible] = useState(false); // 抽屉是否显示
   const [title, setTitle] = useState('');
@@ -137,7 +137,7 @@ function DisableduserManage(props) {
   const handleSearch = () => {
     setPageinations({
       ...paginations,
-      current: 1,
+      current: 0,
     });
     validateFields((err, values) => {
       if (err) {
@@ -152,21 +152,25 @@ function DisableduserManage(props) {
       title: 'Id',
       dataIndex: 'id',
       key: 'id',
+      width: 180,
     },
     {
       title: '姓名',
       dataIndex: 'user',
       key: 'user',
+      width: 80,
     },
     {
       title: '电话',
       dataIndex: 'phone',
       key: 'phone',
+      width: 120,
     },
     {
       title: '手机',
       dataIndex: 'mobile',
       key: 'mobile',
+      width: 120,
     },
     {
       title: '公司',
@@ -207,13 +211,13 @@ function DisableduserManage(props) {
           {getFieldDecorator(
             'user',
             {},
-          )(<Search placeholder="请输入用户名" onSearch={values => handleSearch(values)} />)}
+          )(<Search placeholder="请输入姓名查询" onSearch={values => handleSearch(values)} />)}
         </Form>
         <Button
           style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
           type="dashed"
           icon="plus"
-          onClick={() => handleShowDrawer('新建常用语', 'save')}
+          onClick={() => handleShowDrawer('新建报障用户', 'save')}
         >
           新建报障用户
         </Button>

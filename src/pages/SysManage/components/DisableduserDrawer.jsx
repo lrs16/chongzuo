@@ -6,7 +6,7 @@ import DeptSlectId from '@/components/DeptTree/SelectID';
 
 const InputGroup = Input.Group;
 const { Search } = Input;
-const { Option, OptGroup } = AutoComplete;
+const { Option } = AutoComplete;
 
 const formItemLayout = {
   labelCol: {
@@ -200,7 +200,7 @@ function DisableduserDrawer(props) {
                 }}
               >
                 <Search
-                  placeholder="请输入关键字搜索单位"
+                  placeholder="可输入关键字搜索单位"
                   onSearch={values => handleUnitSearch(values)}
                 />
               </AutoComplete>,
@@ -248,7 +248,7 @@ function DisableduserDrawer(props) {
                 }}
               >
                 <Search
-                  placeholder="请输入关键字搜索部门"
+                  placeholder="可输入关键字搜索部门"
                   onSearch={values => handleDeptSearch(values)}
                 />
               </AutoComplete>,

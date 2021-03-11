@@ -14,16 +14,18 @@ import {
   Upload,
   Button,
   message,
+  Spin,
 } from 'antd';
 import { phone_reg } from '@/utils/Regexp';
 // import SysUpload from '@/components/SysUpload';
-// import styles from '../index.less';
 import { getAndField } from '@/pages/SysManage/services/api';
 import { FileDownload, FileDelete } from '@/services/upload';
+import { queryDisableduserByUser } from '@/services/common';
 import { DownloadOutlined } from '@ant-design/icons';
+import styles from '../index.less';
 
 const { Option } = Select;
-const { TextArea } = Input;
+const { TextArea, Search } = Input;
 
 const Registrat = forwardRef((props, ref) => {
   const {
@@ -54,6 +56,8 @@ const Registrat = forwardRef((props, ref) => {
   const [desautodata, setDestoData] = useState([]);
   const [titlerecords, setTitleRecords] = useState([]);
   const [desrecords, setDesRecords] = useState([]);
+  const [disablelist, setDisabledList] = useState([]);
+  const [spinloading, setSpinLoading] = useState(true);
 
   useEffect(() => {
     if (files.length > 0) {
@@ -226,6 +230,44 @@ const Registrat = forwardRef((props, ref) => {
     handledesSearch({ module: '事件单', field: '描述', key: '' });
   }, []);
 
+  // 自动完成报障用户
+  const disableduser = disablelist.map(opt => (
+    <Option key={opt.id} value={opt.id} disableuser={opt}>
+      <Spin spinning={spinloading}>
+        <div className={styles.disableuser}>
+          <span>{opt.user}</span>
+          <span>{opt.phone}</span>
+          <span>{opt.unit}</span>
+          <span>{opt.dept}</span>
+        </div>
+      </Spin>
+    </Option>
+  ));
+
+  // 请求报障用户
+  const SearchDisableduser = value => {
+    queryDisableduserByUser({ user: value }).then(res => {
+      if (res) {
+        const arr = [...res];
+        setSpinLoading(false);
+        setDisabledList(arr);
+      }
+    });
+  };
+
+  // 选择报障用户，信息回填
+  const handleDisableduser = (v, opt) => {
+    const { user, phone, mobile, unit, unitId, dept, deptId } = opt.props.disableuser;
+    setFieldsValue({ register_applicationUser: user });
+    setFieldsValue({ register_applicationUserId: v });
+    setFieldsValue({ register_applicationUserPhone: mobile });
+    setFieldsValue({ register_mobilePhone: phone });
+    setFieldsValue({ register_applicationUnit: unit });
+    setFieldsValue({ register_applicationUnitId: unitId });
+    setFieldsValue({ register_applicationDept: dept });
+    setFieldsValue({ register_applicationDeptId: deptId });
+  };
+
   // 数据字典
   const getTypebykey = key => {
     if (selectdata.length > 0) {
@@ -342,7 +384,20 @@ const Registrat = forwardRef((props, ref) => {
               {getFieldDecorator('register_applicationUser', {
                 rules: [{ required, message: '请输入申报人' }],
                 initialValue: register.applicationUser,
-              })(<Input placeholder="请输入" />)}
+              })(
+                <AutoComplete
+                  dataSource={disableduser}
+                  dropdownMatchSelectWidth={false}
+                  dropdownStyle={{ width: 600 }}
+                  onSelect={(v, opt) => handleDisableduser(v, opt)}
+                >
+                  <Search
+                    placeholder="可输入姓名搜索"
+                    onSearch={values => SearchDisableduser(values)}
+                    allowClear
+                  />
+                </AutoComplete>,
+              )}
             </Form.Item>
           </Col>
           <Col span={8} style={{ display: 'none' }}>
@@ -705,15 +760,15 @@ Registrat.defaultProps = {
   },
   info: {
     register: {
-      applicationDept: '计量中心',
-      applicationDeptId: '7AC3EF0F639302A2E0530A644F130365',
-      applicationUnit: '南宁供电局',
-      applicationUnitId: '7AC3EF0F718E02A2E0530A644F130365',
-      application_user: '',
-      applicationUserId: '12121212',
+      applicationDept: '',
+      applicationDeptId: '',
+      applicationUnit: '',
+      applicationUnitId: '',
+      applicationUser: '',
+      applicationUserId: '',
       applicationUserPhone: '',
       mobilePhone: '',
-      registerUserId: '1',
+      registerUserId: '',
       selfhandle: '0',
     },
   },

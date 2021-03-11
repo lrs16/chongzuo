@@ -1,9 +1,11 @@
 import React, { useRef, useImperativeHandle, forwardRef, useEffect, useState } from 'react';
 import router from 'umi/router';
 import moment from 'moment';
-import { Row, Col, Form, Input, Select, DatePicker, Cascader, AutoComplete } from 'antd';
+import { Row, Col, Form, Input, Select, DatePicker, Cascader, AutoComplete, Spin } from 'antd';
 import SysUpload from '@/components/SysUpload';
 import { getAndField } from '@/pages/SysManage/services/api';
+import { queryDisableduserByUser } from '@/services/common';
+import styles from './style.less';
 
 const { Option } = Select;
 const { TextArea, Search } = Input;
@@ -31,13 +33,15 @@ const forminladeLayout = {
 
 const Registrat = forwardRef((props, ref) => {
   const { register, userinfo, files, ChangeFiles, location, selectdata } = props;
-  const { getFieldDecorator } = props.form;
+  const { getFieldDecorator, setFieldsValue } = props.form;
   const required = true;
-  const [fileslist, setFilesList] = useState({ arr: [], ischange: false });
-  const [titleautodata, setTitleAutoData] = useState([]);
-  const [desautodata, setDestoData] = useState([]);
-  const [titlerecords, setTitleRecords] = useState([]);
-  const [desrecords, setDesRecords] = useState([]);
+  const [fileslist, setFilesList] = useState({ arr: [], ischange: false }); // 附件上传下载
+  const [titleautodata, setTitleAutoData] = useState([]); // 预加载标题常用语
+  const [desautodata, setDestoData] = useState([]); // 预加载描述常用语
+  const [titlerecords, setTitleRecords] = useState([]); // 标题常用语
+  const [desrecords, setDesRecords] = useState([]); // 描述常用语
+  const [disablelist, setDisabledList] = useState([]); // 自动完成下拉列表
+  const [spinloading, setSpinLoading] = useState(true); // 自动完成加载
 
   useEffect(() => {
     if (fileslist.ischange) {
@@ -125,15 +129,51 @@ const Registrat = forwardRef((props, ref) => {
     }
   };
 
+  // 自动完成报障用户
+  const disableduser = disablelist.map(opt => (
+    <Option
+      key={opt.id}
+      value={opt.id}
+      user={opt.user}
+      phone={opt.phone}
+      unit={opt.unit}
+      dept={opt.dept}
+    >
+      <Spin spinning={spinloading}>
+        <div className={styles.disableuser}>
+          <span>{opt.user}</span>
+          <span>{opt.phone}</span>
+          <span>{opt.unit}</span>
+          <span>{opt.dept}</span>
+        </div>
+      </Spin>
+    </Option>
+  ));
+
+  // 请求报障用户
+  const SearchDisableduser = value => {
+    queryDisableduserByUser({ user: value }).then(res => {
+      if (res) {
+        const arr = [...res];
+        setSpinLoading(false);
+        setDisabledList(arr);
+      }
+    });
+  };
+
+  // 选择报障用户，信息回填
+  const handleDisableduser = (v, opt) => {
+    const { user, phone, unit, dept } = opt.props;
+    setFieldsValue({ proposer: user });
+    setFieldsValue({ proposingUnit: unit });
+    setFieldsValue({ proposerPhone: phone });
+    setFieldsValue({ proposingDepartment: dept });
+  };
+
   useEffect(() => {
     handletitleSearch({ module: '需求单', field: '标题', key: '' });
     handledesSearch({ module: '需求单', field: '描述', key: '' });
   }, []);
-
-  const proposer = register.proposer === '' ? userinfo.userName : register.proposer;
-  const proposingUnit = register.proposingUnit === '' ? userinfo.unitName : register.proposingUnit;
-  const proposingDepartment =
-    register.proposingDepartment === undefined ? userinfo.deptName : register.proposingDepartment;
 
   const getTypebyTitle = key => {
     if (selectdata.length > 0) {
@@ -195,15 +235,28 @@ const Registrat = forwardRef((props, ref) => {
             <Form.Item label="申请人">
               {getFieldDecorator('proposer', {
                 rules: [{ required, message: '请输入申请人' }],
-                initialValue: proposer,
-              })(<Input placeholder="请输入" allowClear />)}
+                initialValue: register.proposer,
+              })(
+                <AutoComplete
+                  dataSource={disableduser}
+                  dropdownMatchSelectWidth={false}
+                  dropdownStyle={{ width: 600 }}
+                  onSelect={(v, opt) => handleDisableduser(v, opt)}
+                >
+                  <Search
+                    placeholder="可输入姓名搜索"
+                    onSearch={values => SearchDisableduser(values)}
+                    allowClear
+                  />
+                </AutoComplete>,
+              )}
             </Form.Item>
           </Col>
           <Col span={8}>
             <Form.Item label="申请人单位">
               {getFieldDecorator('proposingUnit', {
                 rules: [{ required, message: '请输申请人单位' }],
-                initialValue: proposingUnit,
+                initialValue: register.proposingUnit,
               })(<Input placeholder="请输入" allowClear />)}
             </Form.Item>
           </Col>
@@ -211,7 +264,7 @@ const Registrat = forwardRef((props, ref) => {
             <Form.Item label="申请人部门">
               {getFieldDecorator('proposingDepartment', {
                 rules: [{ required, message: '请输入申请人部门' }],
-                initialValue: proposingDepartment,
+                initialValue: register.proposingDepartment,
               })(<Input placeholder="请输入" allowClear />)}
             </Form.Item>
           </Col>
@@ -388,8 +441,8 @@ Registrat.defaultProps = {
     functionalModule: '',
     proposer: '',
     proposerPhone: '',
-    proposingDepartment: '计量中心',
-    proposingUnit: '广西电网有限责任公司',
+    proposingDepartment: '',
+    proposingUnit: '',
     reason: '',
     // registerTime: moment().format(),
     title: '',

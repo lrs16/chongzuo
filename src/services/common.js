@@ -16,3 +16,12 @@ export async function queryDeptList(params) {
     requestType: 'form',
   });
 }
+
+// 获取报障用户 /common/disableduser/getDisableduserByUser
+export async function queryDisableduserByUser(params) {
+  return request(`/common/disableduser/getDisableduserByUser`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+  });
+}
