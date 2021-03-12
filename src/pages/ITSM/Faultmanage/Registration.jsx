@@ -58,11 +58,7 @@ function Registration(props) {
   const [desrecords, setDesRecords] = useState([]);
 
   const {
-<<<<<<< HEAD
-    form: { getFieldDecorator, resetFields, getFieldsValue },
-=======
     form: { getFieldDecorator, resetFields, validateFields,setFieldsValue },
->>>>>>> a4941da... 更新问题统计。故障统计，事件统计，检查代码并解决bug
     dispatch,
     newno, // 新的故障编号
     curruserinfo, // 获取登录用户信息
@@ -73,12 +69,8 @@ function Registration(props) {
   const cascaderOnchange = (value, selectedOptions) => {
     console.log('selectedOptions: ', selectedOptions);
     selectCascader = selectedOptions[1].dict_code;
-<<<<<<< HEAD
-  };
-=======
     console.log('selectCascader: ', selectCascader);
   }
->>>>>>> a4941da... 更新问题统计。故障统计，事件统计，检查代码并解决bug
 
   const displayRender = label => {
     return label[label.length - 1];
@@ -114,7 +106,6 @@ function Registration(props) {
 
   const handleSave = () => {
     // 保存成功后根据后端给的流程ID跳待办里的详情
-<<<<<<< HEAD
     const formValues = getFieldsValue();
     dispatch({
       type: 'fault/getSaveUserId',
@@ -128,22 +119,6 @@ function Registration(props) {
           type: formValues.type !== '' ? formValues.type.join('/') : '',
         },
       },
-=======
-    validateFields((err, values) => {
-      if (true) {
-        const formValues = values;
-        formValues.registerOccurTime = values.registerOccurTime.format('YYYY-MM-DD HH:mm:ss');
-        formValues.registerTime = values.registerTime.format('YYYY-MM-DD HH:mm:ss');
-        formValues.editState = 'add';
-        formValues.registerAttachments = JSON.stringify(files.arr);
-        formValues.type = selectCascader;
-        // formValues.type = values.type.join('/');
-        dispatch({
-          type: 'fault/getSaveUserId',
-          payload: { formValues },
-        });
-      }
->>>>>>> a4941da... 更新问题统计。故障统计，事件统计，检查代码并解决bug
     });
   };
 
