@@ -3,6 +3,7 @@ import { Drawer, Button, Form, Input, AutoComplete, message } from 'antd';
 import { phone_reg } from '@/utils/Regexp';
 import { queryUnitList, queryDeptList } from '@/services/common';
 import DeptSlectId from '@/components/DeptTree/SelectID';
+import { CaretRightOutlined } from '@ant-design/icons';
 
 const InputGroup = Input.Group;
 const { Search } = Input;
@@ -167,15 +168,6 @@ function DisableduserDrawer(props) {
         </Form.Item> */}
         <Form.Item label="单位">
           <InputGroup compact>
-            <Button
-              style={{ width: '30%' }}
-              onClick={() => {
-                SetDetpDrawer(!detpdrawer);
-                setType('unit');
-              }}
-            >
-              选择单位
-            </Button>
             {getFieldDecorator('unit', {
               rules: [
                 {
@@ -188,7 +180,7 @@ function DisableduserDrawer(props) {
               <AutoComplete
                 dataSource={unitoptions}
                 optionLabelProp="value"
-                style={{ width: '70%' }}
+                style={{ width: '85%' }}
                 getPopupContainer={triggerNode => triggerNode.parentNode}
                 onSelect={(v, opt) => {
                   setUnitRecord({ ...unitrecord, title: v, value: opt.key });
@@ -205,6 +197,15 @@ function DisableduserDrawer(props) {
                 />
               </AutoComplete>,
             )}
+            <Button
+              style={{ width: '15%' }}
+              onClick={() => {
+                SetDetpDrawer(!detpdrawer);
+                setType('unit');
+              }}
+            >
+              <CaretRightOutlined />
+            </Button>
           </InputGroup>
         </Form.Item>
         <Form.Item label="单位Id" style={{ display: 'none' }}>
@@ -220,26 +221,13 @@ function DisableduserDrawer(props) {
         </Form.Item>
         <Form.Item label="部门">
           <InputGroup compact>
-            <Button
-              style={{ width: '30%' }}
-              onClick={() => {
-                validateFields(['unit', 'unitId'], err => {
-                  if (!err) {
-                    SetDetpDrawer(!detpdrawer);
-                    setType('dept');
-                  }
-                });
-              }}
-            >
-              选择部门
-            </Button>
             {getFieldDecorator('dept', {
               initialValue: dept,
             })(
               <AutoComplete
                 dataSource={deptoptions}
                 optionLabelProp="value"
-                style={{ width: '70%' }}
+                style={{ width: '85%' }}
                 getPopupContainer={triggerNode => triggerNode.parentNode}
                 onSelect={(v, opt) => {
                   setFieldsValue({ dept: v });
@@ -253,6 +241,19 @@ function DisableduserDrawer(props) {
                 />
               </AutoComplete>,
             )}
+            <Button
+              style={{ width: '15%' }}
+              onClick={() => {
+                validateFields(['unit', 'unitId'], err => {
+                  if (!err) {
+                    SetDetpDrawer(!detpdrawer);
+                    setType('dept');
+                  }
+                });
+              }}
+            >
+              <CaretRightOutlined />
+            </Button>
           </InputGroup>
         </Form.Item>
         <Form.Item label="部门Id" style={{ display: 'none' }}>

@@ -4,6 +4,7 @@ import DeptSlectId from '@/components/DeptTree/SelectID';
 // import SelectRole from '@/components/SysRole/SelectRole'
 import { UserOutlined, UploadOutlined } from '@ant-design/icons';
 import { queryUnitList } from '@/services/common';
+import { CaretRightOutlined } from '@ant-design/icons';
 
 const formItemLayout = {
   labelCol: {
@@ -158,14 +159,6 @@ class NewUser extends Component {
               </Form.Item>
               <Form.Item label="所属组织">
                 <InputGroup compact>
-                  <Button
-                    style={{ width: '30%' }}
-                    onClick={() => {
-                      this.setState({ detpdrawer: true });
-                    }}
-                  >
-                    选择部门
-                  </Button>
                   {getFieldDecorator(
                     'deptNameExt',
                     {},
@@ -173,7 +166,7 @@ class NewUser extends Component {
                     <AutoComplete
                       dataSource={deptoptions}
                       optionLabelProp="value"
-                      style={{ width: '70%' }}
+                      style={{ width: '85%' }}
                       getPopupContainer={triggerNode => triggerNode.parentNode}
                       onSelect={(v, opt) => {
                         this.props.form.setFieldsValue({ deptNameExt: v });
@@ -187,6 +180,14 @@ class NewUser extends Component {
                       />
                     </AutoComplete>,
                   )}
+                  <Button
+                    style={{ width: '15%' }}
+                    onClick={() => {
+                      this.setState({ detpdrawer: true });
+                    }}
+                  >
+                    <CaretRightOutlined />
+                  </Button>
                 </InputGroup>
               </Form.Item>
               <Form.Item label="所属组织Id" style={{ display: 'none' }}>

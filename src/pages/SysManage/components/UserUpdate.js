@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Drawer, Button, Form, Input, Radio, Spin, Upload, Avatar, AutoComplete } from 'antd';
 import DeptSlectId from '@/components/DeptTree/SelectID';
-import { UserOutlined, UploadOutlined } from '@ant-design/icons';
+import { UserOutlined, UploadOutlined, CaretRightOutlined } from '@ant-design/icons';
 import { queryUnitList } from '@/services/common';
 
 const formItemLayout = {
@@ -160,14 +160,6 @@ class UpdateUser extends Component {
               </Form.Item>
               <Form.Item label="所属组织">
                 <InputGroup compact>
-                  <Button
-                    style={{ width: '30%' }}
-                    onClick={() => {
-                      this.setState({ detpdrawer: true });
-                    }}
-                  >
-                    选择部门
-                  </Button>
                   {getFieldDecorator('deptNameExt', {
                     initialValue: deptNameExt,
                   })(
@@ -188,6 +180,14 @@ class UpdateUser extends Component {
                       />
                     </AutoComplete>,
                   )}
+                  <Button
+                    style={{ width: '30%' }}
+                    onClick={() => {
+                      this.setState({ detpdrawer: true });
+                    }}
+                  >
+                    <CaretRightOutlined />
+                  </Button>
                 </InputGroup>
               </Form.Item>
               <Form.Item label="所属组织" style={{ display: 'none' }}>
