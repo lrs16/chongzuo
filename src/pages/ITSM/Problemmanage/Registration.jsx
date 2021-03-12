@@ -1,11 +1,8 @@
 import React, { useEffect, useState, createContext, useRef } from 'react';
-import { Form, Button, Collapse } from 'antd';
+import { Form, Button, Card } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { connect } from 'dva';
 import Registrat from './components/Registrat';
-import styles from './index.less';
-
-const { Panel } = Collapse;
 
 const formItemLayout = {
   labelCol: {
@@ -42,7 +39,7 @@ function Registration(props) {
     projectList,
     startid,
     userinfo,
-    antoArr
+    antoArr,
   } = props;
   const [show, setShow] = useState(false);
   const [activeKey, setActiveKey] = useState(['1']);
@@ -58,46 +55,46 @@ function Registration(props) {
   const getSourceapi = (dictModule, dictType) => {
     dispatch({
       type: 'problemdropdown/keyvalsource',
-      payload: { dictModule, dictType }
+      payload: { dictModule, dictType },
     });
-  }
+  };
   //  问题来源
   const getSource = () => {
     const dictModule = 'problem';
     const dictType = 'source';
     getSourceapi(dictModule, dictType);
-  }
+  };
   //  问题分类
   const gettype = () => {
     const dictModule = 'problem';
     const dictType = 'type';
     getSourceapi(dictModule, dictType);
-  }
+  };
   //  重要程度
   const getpriority = () => {
     const dictModule = 'public';
     const dictType = 'priority';
     getSourceapi(dictModule, dictType);
-  }
+  };
   //  影响范围
   const getscope = () => {
     const dictModule = 'public';
     const dictType = 'effect';
     getSourceapi(dictModule, dictType);
-  }
+  };
 
   // 所属项目
   const getProject = () => {
     const dictModule = 'public';
     const dictType = 'project';
     getSourceapi(dictModule, dictType);
-  }
+  };
 
   const queryDept = () => {
     dispatch({
       type: 'itsmuser/fetchuser',
     });
-  }
+  };
 
   useEffect(() => {
     // getUserinfo();
@@ -109,18 +106,13 @@ function Registration(props) {
     queryDept();
   }, []);
 
-
-  const callback = key => {
-    setActiveKey(key);
-  };
-
-  const handlesubmit = (jumpType) => {
+  const handlesubmit = jumpType => {
     RegistratRef.current.validateFields((err, values) => {
       if (jumpType ? !err : true) {
         const saveData = values;
-        saveData.registerTime = (saveData.registerTime).format('YYYY-MM-DD HH:mm:ss');
-        saveData.registerOccurTime = (saveData.registerOccurTime).format('YYYY-MM-DD HH:mm:ss');
-        saveData.registerExpectTime = (saveData.registerExpectTime).format('YYYY-MM-DD HH:mm:ss');
+        saveData.registerTime = saveData.registerTime.format('YYYY-MM-DD HH:mm:ss');
+        saveData.registerOccurTime = saveData.registerOccurTime.format('YYYY-MM-DD HH:mm:ss');
+        saveData.registerExpectTime = saveData.registerExpectTime.format('YYYY-MM-DD HH:mm:ss');
         saveData.editState = 'add';
         dispatch({
           type: 'problemmanage/getAddid',
@@ -136,7 +128,7 @@ function Registration(props) {
 
   const handClose = () => {
     props.history.push('/ITSM/problemmanage/besolved');
-  }
+  };
 
   // 上传附件触发保存
   useEffect(() => {
@@ -152,8 +144,8 @@ function Registration(props) {
       saveData.editState = 'add';
       dispatch({
         type: 'problemmanage/getAddid',
-        payload: { saveData, jumpType }
-      })
+        payload: { saveData, jumpType },
+      });
     }
   }, [files]);
 
@@ -164,43 +156,35 @@ function Registration(props) {
         <>
           <Button type="primary" style={{ marginRight: 8 }} onClick={handleCirculation}>
             保 存
-        </Button>
-          <Button type="default" onClick={handClose}>关 闭</Button>
+          </Button>
+          <Button type="default" onClick={handClose}>
+            关 闭
+          </Button>
         </>
       }
     >
-      <div className={styles.collapse} style={{ marginTop: '20px' }}>
-        <Collapse
-          expandIconPosition="right"
-          activeKey={activeKey}
-          bordered={false}
-          onChange={callback}
-        >
-          <Panel header="问题登记" key="1" >
-            <RegistratContext.Provider value={{ setActiveKey, setShow }}>
-              <Registrat
-                formItemLayout={formItemLayout}
-                forminladeLayout={forminladeLayout}
-                show={show}
-                ref={RegistratRef}
-                list={list}
-                useInfo={userinfo}
-                files={files.arr}
-                ChangeFiles={newvalue => {
-                  setFiles(newvalue);
-                }}
-                source={keyVallist.source}
-                type={typelist.type}
-                priority={prioritylist.priority}
-                scope={scopeList.effect}
-                project={projectList.project}
-                antoArr={antoArr}
-
-              />
-            </RegistratContext.Provider>
-          </Panel>
-        </Collapse>
-      </div>
+      <Card>
+        <RegistratContext.Provider value={{ setActiveKey, setShow }}>
+          <Registrat
+            formItemLayout={formItemLayout}
+            forminladeLayout={forminladeLayout}
+            show={show}
+            ref={RegistratRef}
+            list={list}
+            useInfo={userinfo}
+            files={files.arr}
+            ChangeFiles={newvalue => {
+              setFiles(newvalue);
+            }}
+            source={keyVallist.source}
+            type={typelist.type}
+            priority={prioritylist.priority}
+            scope={scopeList.effect}
+            project={projectList.project}
+            antoArr={antoArr}
+          />
+        </RegistratContext.Provider>
+      </Card>
     </PageHeaderWrapper>
   );
 }

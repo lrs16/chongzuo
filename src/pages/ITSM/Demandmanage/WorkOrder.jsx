@@ -131,6 +131,8 @@ function WorkOrder(props) {
             creationTime: values.creationTime.format('YYYY-MM-DD HH:mm:ss'),
             registerTime: values.registerTime.format('YYYY-MM-DD HH:mm:ss'),
             completeTime: values.completeTime.format('YYYY-MM-DD HH:mm:ss'),
+            proposingDepartment:
+              values.proposingDepartment !== '' ? values.proposingDepartment : values.proposingUnit,
             attachment: JSON.stringify(files.arr),
             functionalModule: values.functionalModule.join('/'),
             nextUserIds: [{ nodeName: '', userIds: [] }],
@@ -151,6 +153,10 @@ function WorkOrder(props) {
               creationTime: values.creationTime.format('YYYY-MM-DD HH:mm:ss'),
               registerTime: values.registerTime.format('YYYY-MM-DD HH:mm:ss'),
               completeTime: values.completeTime.format('YYYY-MM-DD HH:mm:ss'),
+              proposingDepartment:
+                values.proposingDepartment !== ''
+                  ? values.proposingDepartment
+                  : values.proposingUnit,
               attachment: JSON.stringify(files.arr),
               functionalModule: values.functionalModule.join('/'),
               nextUserIds: JSON.parse(sessionStorage.getItem('NextflowUserId')),
@@ -474,6 +480,10 @@ function WorkOrder(props) {
               creationTime: values.creationTime.format('YYYY-MM-DD HH:mm:ss'),
               registerTime: values.registerTime.format('YYYY-MM-DD HH:mm:ss'),
               completeTime: values.completeTime.format('YYYY-MM-DD HH:mm:ss'),
+              proposingDepartment:
+                values.proposingDepartment !== ''
+                  ? values.proposingDepartment
+                  : values.proposingUnit,
               attachment: JSON.stringify(files.arr),
               functionalModule: values.functionalModule.join('/'),
               nextUserIds: [{ nodeName: '', userIds: [] }],

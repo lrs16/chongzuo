@@ -109,6 +109,14 @@ function Registration(props) {
         ...values,
         main_eventObject: values.main_eventObject?.slice(-1)[0],
         register_occurTime: values.register_occurTime.format('YYYY-MM-DD HH:mm:ss'),
+        register_applicationDept:
+          values.register_applicationDept !== ''
+            ? values.register_applicationDept
+            : values.register_applicationUnit,
+        register_applicationDeptId:
+          values.register_applicationDeptId !== ''
+            ? values.register_applicationDeptId
+            : values.register_applicationUnitId,
         register_fileIds: JSON.stringify(registratfiles.arr),
         register_selfhandle: String(Number(values.register_selfhandle)),
         register_supplement: String(Number(values.register_supplement)),

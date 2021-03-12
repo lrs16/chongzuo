@@ -15,15 +15,18 @@ import {
   Button,
   message,
   Spin,
+  Drawer,
 } from 'antd';
 import { phone_reg } from '@/utils/Regexp';
 // import SysUpload from '@/components/SysUpload';
 import { getAndField } from '@/pages/SysManage/services/api';
 import { FileDownload, FileDelete } from '@/services/upload';
-import { queryDisableduserByUser } from '@/services/common';
-import { DownloadOutlined } from '@ant-design/icons';
+import { queryDisableduserByUser, queryUnitList, queryDeptList } from '@/services/common';
+import DeptSlectId from '@/components/DeptTree/SelectID';
+import { DownloadOutlined, CaretRightOutlined } from '@ant-design/icons';
 import styles from '../index.less';
 
+const InputGroup = Input.Group;
 const { Option } = Select;
 const { TextArea, Search } = Input;
 
@@ -47,7 +50,7 @@ const Registrat = forwardRef((props, ref) => {
   } = props;
   const { register } = info;
   const { taskName, taskId, mainId } = location.query;
-  const { getFieldDecorator, getFieldsValue, setFieldsValue } = props.form;
+  const { getFieldDecorator, getFieldsValue, setFieldsValue, validateFields } = props.form;
   const required = true;
   const [check, setCheck] = useState(false);
   const [revisitway, setRevisitway] = useState(false);
@@ -58,6 +61,11 @@ const Registrat = forwardRef((props, ref) => {
   const [desrecords, setDesRecords] = useState([]);
   const [disablelist, setDisabledList] = useState([]);
   const [spinloading, setSpinLoading] = useState(true);
+  const [detpdrawer, SetDetpDrawer] = useState(false); // 组织
+  const [treetype, setTreeType] = useState(''); // 组织类型（单位，部门）
+  const [unitrecord, setUnitRecord] = useState(''); // 自动完成选择的单位信息
+  const [unitdata, setUnitdata] = useState([]); // 自动完成单位下拉表
+  const [deptdata, setDeptdata] = useState([]); // 自动完成部门下拉表
 
   useEffect(() => {
     if (files.length > 0) {
@@ -204,7 +212,7 @@ const Registrat = forwardRef((props, ref) => {
         if (newArr.length > 0) {
           setTitleAutoData(newArr);
         } else {
-          setTitleAutoData(titlerecords);
+          setTitleAutoData([]);
         }
         break;
       }
@@ -215,7 +223,7 @@ const Registrat = forwardRef((props, ref) => {
         if (newArr.length > 0) {
           setDestoData(newArr);
         } else {
-          setDesRecords(desrecords);
+          setDesRecords([]);
         }
         break;
       }
@@ -260,13 +268,70 @@ const Registrat = forwardRef((props, ref) => {
     const { user, phone, mobile, unit, unitId, dept, deptId } = opt.props.disableuser;
     setFieldsValue({ register_applicationUser: user });
     setFieldsValue({ register_applicationUserId: v });
-    setFieldsValue({ register_applicationUserPhone: mobile });
-    setFieldsValue({ register_mobilePhone: phone });
+    setFieldsValue({ register_applicationUserPhone: phone });
+    setFieldsValue({ register_mobilePhone: mobile });
     setFieldsValue({ register_applicationUnit: unit });
     setFieldsValue({ register_applicationUnitId: unitId });
     setFieldsValue({ register_applicationDept: dept });
     setFieldsValue({ register_applicationDeptId: deptId });
   };
+
+  // 关闭组织机构树抽屉
+  const onDeptDrawerClose = () => {
+    SetDetpDrawer(false);
+  };
+
+  // 查询单位
+  const handleUnitSearch = value => {
+    queryUnitList({ key: value }).then(res => {
+      if (res.data !== undefined) {
+        const arr = [...res.data];
+        setUnitdata(arr);
+      }
+    });
+  };
+
+  // 查询部门
+  const handleDeptSearch = value => {
+    const unitIdkey = unitrecord.key !== undefined ? unitrecord.key : '';
+    queryDeptList({ key: value, unitId: unitIdkey }).then(res => {
+      if (res.data !== undefined) {
+        const arr = [...res.data];
+        setDeptdata(arr);
+      }
+    });
+  };
+
+  // 选择单位树结点
+  const handleUnitTreeNode = value => {
+    setUnitRecord(value);
+    setFieldsValue({ register_applicationUnit: value.title });
+    setFieldsValue({ register_applicationUnitId: value.key });
+    setFieldsValue({ register_applicationDept: '' });
+    setFieldsValue({ register_applicationDeptId: '' });
+    SetDetpDrawer(false);
+  };
+
+  // 选择部门树结点
+  const handleDeptTreeNode = value => {
+    setFieldsValue({ register_applicationDept: value.title });
+    setFieldsValue({ register_applicationDeptId: value.key });
+    SetDetpDrawer(false);
+  };
+
+  // 自动完成单位
+  const unitoptions = unitdata.map(opt => (
+    <Option key={opt.id} value={opt.deptName}>
+      {opt.deptName}
+    </Option>
+  ));
+
+  // 自动完成部门
+  const deptoptions = deptdata.map(opt => (
+    <Option key={opt.id} value={opt.deptName}>
+      {opt.deptName}
+    </Option>
+  ));
 
   // 数据字典
   const getTypebykey = key => {
@@ -403,17 +468,47 @@ const Registrat = forwardRef((props, ref) => {
           <Col span={8} style={{ display: 'none' }}>
             <Form.Item label="申报人id">
               {getFieldDecorator('register_applicationUserId', {
-                rules: [{ required, message: '请输入申报人' }],
                 initialValue: register.applicationUserId,
               })(<Input placeholder="请输入" />)}
             </Form.Item>
           </Col>
           <Col span={8}>
             <Form.Item label="申报人单位">
-              {getFieldDecorator('register_applicationUnit', {
-                rules: [{ required, message: '请选择申报人单位' }],
-                initialValue: register.applicationUnit,
-              })(<Input placeholder="请输入" />)}
+              <InputGroup compact>
+                {getFieldDecorator('register_applicationUnit', {
+                  rules: [{ required, message: '请选择申报人单位' }],
+                  initialValue: register.applicationUnit,
+                })(
+                  <AutoComplete
+                    dataSource={unitoptions}
+                    optionLabelProp="value"
+                    style={{ width: '85%' }}
+                    getPopupContainer={triggerNode => triggerNode.parentNode}
+                    onSelect={(v, opt) => {
+                      setUnitRecord({ ...unitrecord, title: v, value: opt.key });
+                      setFieldsValue({ register_applicationUnit: v });
+                      setFieldsValue({ register_applicationUnitId: opt.key });
+                      setFieldsValue({ register_applicationDept: '' });
+                      setFieldsValue({ register_applicationDeptId: '' });
+                      setUnitdata([]);
+                    }}
+                  >
+                    <Search
+                      placeholder="可输入关键字搜索单位"
+                      onSearch={values => handleUnitSearch(values)}
+                    />
+                  </AutoComplete>,
+                )}
+                <Button
+                  style={{ width: '15%' }}
+                  onClick={() => {
+                    SetDetpDrawer(!detpdrawer);
+                    setTreeType('unit');
+                  }}
+                >
+                  <CaretRightOutlined />
+                </Button>
+              </InputGroup>
             </Form.Item>
           </Col>
           <Col span={8} style={{ display: 'none' }}>
@@ -425,10 +520,45 @@ const Registrat = forwardRef((props, ref) => {
           </Col>
           <Col span={8}>
             <Form.Item label="申报人部门">
-              {getFieldDecorator('register_applicationDept', {
-                rules: [{ required, message: '请选择申报人部门' }],
-                initialValue: register.applicationDept,
-              })(<Input placeholder="请输入" />)}
+              <InputGroup compact>
+                {getFieldDecorator('register_applicationDept', {
+                  rules: [{ message: '请选择申报人部门' }],
+                  initialValue: register.applicationDept,
+                })(
+                  <AutoComplete
+                    dataSource={deptoptions}
+                    optionLabelProp="value"
+                    style={{ width: '85%' }}
+                    getPopupContainer={triggerNode => triggerNode.parentNode}
+                    onSelect={(v, opt) => {
+                      setFieldsValue({ register_applicationDept: v });
+                      setFieldsValue({ register_applicationDeptId: opt.key });
+                      setDeptdata([]);
+                    }}
+                  >
+                    <Search
+                      placeholder="可输入关键字搜索部门"
+                      onSearch={values => handleDeptSearch(values)}
+                    />
+                  </AutoComplete>,
+                )}
+                <Button
+                  style={{ width: '15%' }}
+                  onClick={() => {
+                    validateFields(
+                      ['register_applicationUnit', 'register_applicationUnitId'],
+                      err => {
+                        if (!err) {
+                          SetDetpDrawer(!detpdrawer);
+                          setTreeType('dept');
+                        }
+                      },
+                    );
+                  }}
+                >
+                  <CaretRightOutlined />
+                </Button>
+              </InputGroup>
             </Form.Item>
           </Col>
           <Col span={8} style={{ display: 'none' }}>
@@ -741,6 +871,27 @@ const Registrat = forwardRef((props, ref) => {
           </Col>
         </Row>
       </Form>
+      <Drawer
+        title="组织机构"
+        width={320}
+        closable={false}
+        onClose={onDeptDrawerClose}
+        visible={detpdrawer}
+      >
+        {treetype === 'unit' && (
+          <DeptSlectId
+            GetTreenode={newvalue => handleUnitTreeNode(newvalue)}
+            pid="7AC3EF0F701402A2E0530A644F130365"
+          />
+        )}
+        {treetype === 'dept' && (
+          <DeptSlectId
+            GetTreenode={newvalue => handleDeptTreeNode(newvalue)}
+            pid={unitrecord.key !== undefined ? unitrecord.key : register.applicationUnitId}
+            //  pid={unitrecord.key}
+          />
+        )}
+      </Drawer>
     </>
   );
 });
@@ -763,7 +914,7 @@ Registrat.defaultProps = {
       applicationDept: '',
       applicationDeptId: '',
       applicationUnit: '',
-      applicationUnitId: '',
+      applicationUnitId: '7AC3EF0F701402A2E0530A644F130365',
       applicationUser: '',
       applicationUserId: '',
       applicationUserPhone: '',

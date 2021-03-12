@@ -25,7 +25,7 @@ function DisableduserDrawer(props) {
   const { getFieldDecorator, validateFields, setFieldsValue } = props.form;
   const required = true;
   const { id, user, unit, dept, phone, mobile, unitId, deptId } = props.record;
-  const [detpdrawer, SetDetpDrawer] = useState(visible);
+  const [detpdrawer, SetDetpDrawer] = useState(false);
   const [type, setType] = useState('');
   const [unitrecord, setUnitRecord] = useState('');
   const [unitdata, setUnitdata] = useState([]);

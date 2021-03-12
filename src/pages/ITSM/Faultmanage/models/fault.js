@@ -3,15 +3,14 @@ import { message } from 'antd';
 import {
   queryfaultTodoList, // 故障待办list
   queryfaultSearchList, // 故障查询list
-  queryFaultDetailList,// 故障明细list
+  queryFaultDetailList, // 故障明细list
   queryfaultsearchdetailslist, // 故障查询list详情页
   // 真实接口
   queryTroubleGetNewno, // 获取新的故障编号
   queryCurrUserInfo, // 获取登录用户信息
-  ITSMUser, 
+  ITSMUser,
   querySaveUserId, // 保存用户数据携带的id 故障流程启动
   querySavefaultRegister, // 故障登记保存
-
   queryfaultTodoList1, // 故障待办列表
   querySearchfaultTodoList1, // 故障待办列表 查询
   querydownload, // 故障待办列表 导出
@@ -24,11 +23,9 @@ import {
   submitProToNextNode, // 根据待办id提交流程至下一节点
   getFlowImage, // 流程图
   getFlowLog, // 流程日志
-
   queryfaultSearchList1, // 故障查询列表
   queryTosearchfaultSearchList1, // 故障查询列表 查询
   queryOrderDetail, // 故障查询列表详情页
-
   SearchUsers, // 获取流转，转单 系统所有的用户
   querkeyVal, // 数据字典
   queryFaultdictVal, // 数据字典
@@ -67,7 +64,8 @@ export default {
       });
     },
 
-    *fetchfaultTodoList({ payload }, { call, put }) { // 故障待办list
+    *fetchfaultTodoList({ payload }, { call, put }) {
+      // 故障待办list
       const response = yield call(queryfaultTodoList, payload);
       yield put({
         type: 'show',
@@ -75,7 +73,8 @@ export default {
       });
     },
 
-    *fetchfaultSearchList({ payload }, { call, put }) { // 故障查询list
+    *fetchfaultSearchList({ payload }, { call, put }) {
+      // 故障查询list
       const response = yield call(queryfaultSearchList, payload);
       yield put({
         type: 'faultquerydata',
@@ -83,7 +82,8 @@ export default {
       });
     },
 
-    *fetchfaultBreakdownList({ payload }, { call, put }) { // 故障明细表list
+    *fetchfaultBreakdownList({ payload }, { call, put }) {
+      // 故障明细表list
       const response = yield call(queryFaultDetailList, payload);
       yield put({
         type: 'getfaultBreakdownList',
@@ -91,7 +91,8 @@ export default {
       });
     },
 
-    *fetchfaultsearchdetailslist({ payload }, { call, put }) { // 故障查询list详情页
+    *fetchfaultsearchdetailslist({ payload }, { call, put }) {
+      // 故障查询list详情页
       const response = yield call(queryfaultsearchdetailslist, payload);
       yield put({
         type: 'getfaultsearchdetailslist',
@@ -118,7 +119,7 @@ export default {
         payload: response,
       });
     },
-    
+
     *fetchuser(_, { call, put }) {
       const response = yield call(ITSMUser);
       yield put({
@@ -128,24 +129,23 @@ export default {
     },
 
     // 保存用户数据携带的id 故障流程启动
-    *getSaveUserId({ payload: { formValues } }, { call, put }) {
+    *getSaveUserId({ payload }, { call, put }) {
       const response = yield call(querySaveUserId);
-      // console.log(response, '故障流程启动！！');
-      if(response.code === 200) {
+      if (response.code === 200) {
         yield put({
           type: 'getsaveuserid',
           payload: response,
         });
-        
+
         // const responseno = yield call(queryTroubleGetNewno);
         // yield put({
         //   type: 'getNewno',
         //   payload: response,
         // });
-        
+
         // 故障流程启动成功时，提交表单数据
         const { flowTaskId, flowNodeName } = response; // 用户数据携带的id
-        const saveInfo = formValues;
+        const saveInfo = payload;
         saveInfo.taskId = flowTaskId;
         // saveInfo.no = responseno.troubleNo;
         if (response.code === 200) {
@@ -156,7 +156,7 @@ export default {
             message.success(resRegister.msg);
             router.push({
               pathname: `/ITSM/faultmanage/todolist/record/${flowTaskId}`,
-              paneKey: flowNodeName
+              paneKey: flowNodeName,
             });
           } else {
             message.error(resRegister.msg);
@@ -165,7 +165,8 @@ export default {
       }
     },
 
-    *getfromsave({ payload: { formValues } }, { call }) { // 编辑页 保存功能
+    *getfromsave({ payload: { formValues } }, { call }) {
+      // 编辑页 保存功能
       return yield call(querySavefaultRegister, formValues);
     },
 
@@ -202,8 +203,8 @@ export default {
       const response = yield call(queryfaultTodoDetailEdit, id);
       yield put({
         type: 'detailslist',
-        payload: response
-      })
+        payload: response,
+      });
     },
 
     // 删除操作
@@ -213,7 +214,7 @@ export default {
 
     //  回退
     *rollback({ payload }, { call }) {
-      return yield call(queryRollBack, payload)
+      return yield call(queryRollBack, payload);
     },
 
     // 接单
@@ -231,7 +232,8 @@ export default {
       return yield call(submitProToNextNode, taskId, result, userIds);
     },
 
-    *getSaveUserId1({ payload: { formValues } }, { call, put }) { // 故障登记页流转操作
+    *getSaveUserId1({ payload: { formValues } }, { call, put }) {
+      // 故障登记页流转操作
       const response = yield call(querySaveUserId);
       // console.log(response, '故障流程启动！！');
       yield put({
@@ -248,8 +250,8 @@ export default {
         if (resRegister.code === 200) {
           const result = 1;
           const taskId = flowTaskId;
-          const tonext = yield call(submitProToNextNode, taskId, result ); 
-          if(tonext.code === 200) {
+          const tonext = yield call(submitProToNextNode, taskId, result);
+          if (tonext.code === 200) {
             message.success(tonext.msg);
             router.push({
               pathname: `/ITSM/faultmanage/todolist`,
@@ -266,8 +268,8 @@ export default {
       const response = yield call(getFlowImage, id);
       yield put({
         type: 'flowimageview',
-        payload: response
-      })
+        payload: response,
+      });
     },
 
     //  获取日志
@@ -275,10 +277,9 @@ export default {
       const response = yield call(getFlowLog, id);
       yield put({
         type: 'flowlog',
-        payload: response
-      })
+        payload: response,
+      });
     },
-
 
     // 获取故障查询列表数据
     *getfaultQueryList({ payload: { current, pageSize } }, { call, put }) {
@@ -302,22 +303,24 @@ export default {
       const response = yield call(queryOrderDetail, id);
       yield put({
         type: 'querydetailslist',
-        payload: response
-      })
+        payload: response,
+      });
     },
 
-    *keyval({ payload: { dictModule, dictType } }, { call }) { // 数据字典数据
+    *keyval({ payload: { dictModule, dictType } }, { call }) {
+      // 数据字典数据
       return yield call(querkeyVal, dictModule, dictType);
     },
 
-    *faultdictVal({ payload: { id } }, { call }) { // 数据字典数据1]
+    *faultdictVal({ payload: { id } }, { call }) {
+      // 数据字典数据1]
       return yield call(queryFaultdictVal, id);
     },
-
   },
 
   reducers: {
-    usermanage(state, { payload }) { // 查询 获取流转，转单 系统所有的用户
+    usermanage(state, { payload }) {
+      // 查询 获取流转，转单 系统所有的用户
       return {
         ...state,
         ...payload,
@@ -328,17 +331,18 @@ export default {
       return {
         ...state,
         todolist: action.payload,
-      }
+      };
     },
 
     faultquerydata(state, action) {
       return {
         ...state,
         faultquerydata: action.payload,
-      }
+      };
     },
 
-    getfaultBreakdownList(state, action) { // 故障明细表list
+    getfaultBreakdownList(state, action) {
+      // 故障明细表list
       return {
         ...state,
         getfaultBreakdownList: action.payload,
@@ -366,8 +370,8 @@ export default {
     getcurruserinfo(state, action) {
       return {
         ...state,
-        curruserinfo: action.payload.data
-      }
+        curruserinfo: action.payload.data,
+      };
     },
 
     saveuser(state, action) {
@@ -381,24 +385,24 @@ export default {
     getsaveuserid(state, action) {
       return {
         ...state,
-        saveuserid: action.payload
-      }
+        saveuserid: action.payload,
+      };
     },
 
     // 故障待办列表
     faultTodoList(state, action) {
       return {
         ...state,
-        faultTodoList: action.payload.data
-      }
+        faultTodoList: action.payload.data,
+      };
     },
 
     // 故障待办详情--编辑
     detailslist(state, action) {
       return {
         ...state,
-        tododetailslist: action.payload
-      }
+        tododetailslist: action.payload,
+      };
     },
 
     //  流程图
@@ -416,20 +420,20 @@ export default {
       };
     },
 
-
     // 故障查询列表
     faultQueryList(state, action) {
       return {
         ...state,
-        faultQueryList: action.payload.data
-      }
+        faultQueryList: action.payload.data,
+      };
     },
 
-    querydetailslist(state, action) {// 故障查询列表详情
+    querydetailslist(state, action) {
+      // 故障查询列表详情
       return {
         ...state,
-        querydetailslist: action.payload
-      }
+        querydetailslist: action.payload,
+      };
     },
   },
 };

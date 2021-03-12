@@ -1,19 +1,23 @@
 import React, { useState, useRef, useImperativeHandle, useEffect } from 'react';
-import { Row, Col, Form, Input, Select, DatePicker, AutoComplete } from 'antd';
+import { Row, Col, Form, Input, Select, DatePicker, AutoComplete, Spin } from 'antd';
 import moment from 'moment';
 import SysUpload from '@/components/SysUpload';
 import { getAndField } from '@/pages/SysManage/services/api';
+import { queryDisableduserByUser } from '@/services/common';
+import styles from '../index.less';
 
 const { Option } = Select;
-const { TextArea } = Input;
+const { TextArea, Search } = Input;
 let occurtime;
 
 const Registrat = React.forwardRef((props, ref) => {
   const { formItemLayout, forminladeLayout, files, ChangeFiles } = props;
-  const { getFieldDecorator } = props.form;
+  const { getFieldDecorator, setFieldsValue } = props.form;
   const [fileslist, setFilesList] = useState([]);
   const [titleautodata, setTitleAutoData] = useState([]);
   const [desautodata, setDestoData] = useState([]);
+  const [disablelist, setDisabledList] = useState([]); // 自动完成下拉列表
+  const [spinloading, setSpinLoading] = useState(true); // 自动完成加载
 
   useEffect(() => {
     ChangeFiles(fileslist);
@@ -68,9 +72,41 @@ const Registrat = React.forwardRef((props, ref) => {
     handledesSearch({ module: '问题单', field: '描述', key: '' });
   }, []);
 
+  // 自动完成报障用户
+  const disableduser = disablelist.map(opt => (
+    <Option key={opt.id} value={opt.id} disableuser={opt}>
+      <Spin spinning={spinloading}>
+        <div className={styles.disableuser}>
+          <span>{opt.user}</span>
+          <span>{opt.phone}</span>
+          <span>{opt.unit}</span>
+          <span>{opt.dept}</span>
+        </div>
+      </Spin>
+    </Option>
+  ));
+
+  // 请求报障用户
+  const SearchDisableduser = value => {
+    queryDisableduserByUser({ user: value }).then(res => {
+      if (res) {
+        const arr = [...res];
+        setSpinLoading(false);
+        setDisabledList(arr);
+      }
+    });
+  };
+
+  // 选择报障用户，信息回填
+  const handleDisableduser = (v, opt) => {
+    const { user, phone } = opt.props.disableuser;
+    setFieldsValue({ complainUser: user });
+    setFieldsValue({ registerUserPhone: phone });
+  };
+
   return (
     <>
-      <Row gutter={24} style={{ paddingTop: 24, marginTop: '20px' }}>
+      <Row gutter={24} style={{ paddingTop: 24 }}>
         <Form {...formItemLayout}>
           <Col span={8}>
             <Form.Item label="问题编号">
@@ -123,7 +159,20 @@ const Registrat = React.forwardRef((props, ref) => {
                   },
                 ],
                 initialValue: register.complainUser,
-              })(<Input />)}
+              })(
+                <AutoComplete
+                  dataSource={disableduser}
+                  dropdownMatchSelectWidth={false}
+                  dropdownStyle={{ width: 600 }}
+                  onSelect={(v, opt) => handleDisableduser(v, opt)}
+                >
+                  <Search
+                    placeholder="可输入姓名搜索"
+                    onSearch={values => SearchDisableduser(values)}
+                    allowClear
+                  />
+                </AutoComplete>,
+              )}
             </Form.Item>
           </Col>
 
@@ -326,7 +375,10 @@ const Registrat = React.forwardRef((props, ref) => {
                     message: '请上传附件',
                   },
                 ],
-                initialValue: (register && register.registerAttachments !== '[]')? register.registerAttachments : '',
+                initialValue:
+                  register && register.registerAttachments !== '[]'
+                    ? register.registerAttachments
+                    : '',
               })(
                 <div style={{ width: 400 }}>
                   <SysUpload

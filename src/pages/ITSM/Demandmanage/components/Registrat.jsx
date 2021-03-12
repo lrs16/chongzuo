@@ -1,12 +1,27 @@
 import React, { useRef, useImperativeHandle, forwardRef, useEffect, useState } from 'react';
 import router from 'umi/router';
 import moment from 'moment';
-import { Row, Col, Form, Input, Select, DatePicker, Cascader, AutoComplete, Spin } from 'antd';
+import {
+  Row,
+  Col,
+  Form,
+  Input,
+  Select,
+  DatePicker,
+  Cascader,
+  AutoComplete,
+  Spin,
+  Button,
+  Drawer,
+} from 'antd';
 import SysUpload from '@/components/SysUpload';
 import { getAndField } from '@/pages/SysManage/services/api';
-import { queryDisableduserByUser } from '@/services/common';
+import { queryDisableduserByUser, queryUnitList, queryDeptList } from '@/services/common';
+import DeptSlectId from '@/components/DeptTree/SelectID';
+import { CaretRightOutlined } from '@ant-design/icons';
 import styles from './style.less';
 
+const InputGroup = Input.Group;
 const { Option } = Select;
 const { TextArea, Search } = Input;
 
@@ -33,7 +48,7 @@ const forminladeLayout = {
 
 const Registrat = forwardRef((props, ref) => {
   const { register, userinfo, files, ChangeFiles, location, selectdata } = props;
-  const { getFieldDecorator, setFieldsValue } = props.form;
+  const { getFieldDecorator, setFieldsValue, validateFields } = props.form;
   const required = true;
   const [fileslist, setFilesList] = useState({ arr: [], ischange: false }); // 附件上传下载
   const [titleautodata, setTitleAutoData] = useState([]); // 预加载标题常用语
@@ -42,6 +57,11 @@ const Registrat = forwardRef((props, ref) => {
   const [desrecords, setDesRecords] = useState([]); // 描述常用语
   const [disablelist, setDisabledList] = useState([]); // 自动完成下拉列表
   const [spinloading, setSpinLoading] = useState(true); // 自动完成加载
+  const [detpdrawer, SetDetpDrawer] = useState(false); // 组织
+  const [treetype, setTreeType] = useState(''); // 组织类型（单位，部门）
+  const [unitrecord, setUnitRecord] = useState(''); // 自动完成选择的单位信息
+  const [unitdata, setUnitdata] = useState([]); // 自动完成单位下拉表
+  const [deptdata, setDeptdata] = useState([]); // 自动完成部门下拉表
 
   useEffect(() => {
     if (fileslist.ischange) {
@@ -109,7 +129,7 @@ const Registrat = forwardRef((props, ref) => {
         if (newArr.length > 0) {
           setTitleAutoData(newArr);
         } else {
-          setTitleAutoData(titlerecords);
+          setTitleAutoData([]);
         }
         break;
       }
@@ -120,7 +140,7 @@ const Registrat = forwardRef((props, ref) => {
         if (newArr.length > 0) {
           setDestoData(newArr);
         } else {
-          setDesRecords(desrecords);
+          setDesRecords([]);
         }
         break;
       }
@@ -131,14 +151,7 @@ const Registrat = forwardRef((props, ref) => {
 
   // 自动完成报障用户
   const disableduser = disablelist.map(opt => (
-    <Option
-      key={opt.id}
-      value={opt.id}
-      user={opt.user}
-      phone={opt.phone}
-      unit={opt.unit}
-      dept={opt.dept}
-    >
+    <Option key={opt.id} value={opt.id} disableuser={opt}>
       <Spin spinning={spinloading}>
         <div className={styles.disableuser}>
           <span>{opt.user}</span>
@@ -163,12 +176,72 @@ const Registrat = forwardRef((props, ref) => {
 
   // 选择报障用户，信息回填
   const handleDisableduser = (v, opt) => {
-    const { user, phone, unit, dept } = opt.props;
+    const { user, phone, unit, unitId, dept, deptId } = opt.props.disableuser;
     setFieldsValue({ proposer: user });
-    setFieldsValue({ proposingUnit: unit });
+    setFieldsValue({ proposerId: v });
     setFieldsValue({ proposerPhone: phone });
+    setFieldsValue({ proposingUnit: unit });
+    setFieldsValue({ proposingUnitID: unitId });
     setFieldsValue({ proposingDepartment: dept });
+    setFieldsValue({ proposingDepartmentId: deptId });
   };
+
+  // 关闭组织机构树抽屉
+  const onDeptDrawerClose = () => {
+    SetDetpDrawer(false);
+  };
+
+  // 查询单位
+  const handleUnitSearch = value => {
+    queryUnitList({ key: value }).then(res => {
+      if (res.data !== undefined) {
+        const arr = [...res.data];
+        setUnitdata(arr);
+      }
+    });
+  };
+
+  // 查询部门
+  const handleDeptSearch = value => {
+    const unitIdkey = unitrecord.key !== undefined ? unitrecord.key : '';
+    queryDeptList({ key: value, unitId: unitIdkey }).then(res => {
+      if (res.data !== undefined) {
+        const arr = [...res.data];
+        setDeptdata(arr);
+      }
+    });
+  };
+
+  // 选择单位树结点
+  const handleUnitTreeNode = value => {
+    setUnitRecord(value);
+    setFieldsValue({ proposingUnit: value.title });
+    //  setFieldsValue({ unitId: value.key });
+    setFieldsValue({ proposingDepartment: '' });
+    //  setFieldsValue({ deptId: '' });
+    SetDetpDrawer(false);
+  };
+
+  // 选择部门树结点
+  const handleDeptTreeNode = value => {
+    setFieldsValue({ proposingDepartment: value.title });
+    //  setFieldsValue({ deptId: value.key });
+    SetDetpDrawer(false);
+  };
+
+  // 自动完成单位
+  const unitoptions = unitdata.map(opt => (
+    <Option key={opt.id} value={opt.deptName}>
+      {opt.deptName}
+    </Option>
+  ));
+
+  // 自动完成部门
+  const deptoptions = deptdata.map(opt => (
+    <Option key={opt.id} value={opt.deptName}>
+      {opt.deptName}
+    </Option>
+  ));
 
   useEffect(() => {
     handletitleSearch({ module: '需求单', field: '标题', key: '' });
@@ -190,7 +263,7 @@ const Registrat = forwardRef((props, ref) => {
   return (
     <>
       <Form {...formItemLayout}>
-        <Row gutter={24}>
+        <Row gutter={24} style={{ paddingTop: 24 }}>
           <Col span={8} style={{ display: 'none' }}>
             <Form.Item label="表单id">
               {getFieldDecorator('id', {
@@ -252,20 +325,104 @@ const Registrat = forwardRef((props, ref) => {
               )}
             </Form.Item>
           </Col>
+          <Col span={8} style={{ display: 'none' }}>
+            <Form.Item label="申请人id">
+              {getFieldDecorator('proposerId', {
+                initialValue: register.proposerId,
+              })(<Input placeholder="请输入" />)}
+            </Form.Item>
+          </Col>
           <Col span={8}>
             <Form.Item label="申请人单位">
-              {getFieldDecorator('proposingUnit', {
-                rules: [{ required, message: '请输申请人单位' }],
-                initialValue: register.proposingUnit,
-              })(<Input placeholder="请输入" allowClear />)}
+              <InputGroup compact>
+                {getFieldDecorator('proposingUnit', {
+                  rules: [{ required, message: '请输申请人单位' }],
+                  initialValue: register.proposingUnit,
+                })(
+                  <AutoComplete
+                    dataSource={unitoptions}
+                    optionLabelProp="value"
+                    style={{ width: '85%' }}
+                    getPopupContainer={triggerNode => triggerNode.parentNode}
+                    onSelect={(v, opt) => {
+                      setUnitRecord({ ...unitrecord, title: v, value: opt.key });
+                      setFieldsValue({ proposingUnit: v });
+                      setFieldsValue({ proposingUnitID: opt.key });
+                      setFieldsValue({ proposingDepartment: '' });
+                      setFieldsValue({ proposingDepartmentId: '' });
+                      setUnitdata([]);
+                    }}
+                  >
+                    <Search
+                      placeholder="可输入关键字搜索单位"
+                      onSearch={values => handleUnitSearch(values)}
+                    />
+                  </AutoComplete>,
+                )}
+                <Button
+                  style={{ width: '15%' }}
+                  onClick={() => {
+                    SetDetpDrawer(!detpdrawer);
+                    setTreeType('unit');
+                  }}
+                >
+                  <CaretRightOutlined />
+                </Button>
+              </InputGroup>
+            </Form.Item>
+          </Col>
+          <Col span={8} style={{ display: 'none' }}>
+            <Form.Item label="申请单位ID">
+              {getFieldDecorator('proposingUnitID', {
+                initialValue: register.proposingUnitID,
+              })(<Input placeholder="请输入" />)}
             </Form.Item>
           </Col>
           <Col span={8}>
             <Form.Item label="申请人部门">
-              {getFieldDecorator('proposingDepartment', {
-                rules: [{ required, message: '请输入申请人部门' }],
-                initialValue: register.proposingDepartment,
-              })(<Input placeholder="请输入" allowClear />)}
+              <InputGroup compact>
+                {getFieldDecorator('proposingDepartment', {
+                  rules: [{ message: '请输入申请人部门' }],
+                  initialValue: register.proposingDepartment,
+                })(
+                  <AutoComplete
+                    dataSource={deptoptions}
+                    optionLabelProp="value"
+                    style={{ width: '85%' }}
+                    getPopupContainer={triggerNode => triggerNode.parentNode}
+                    onSelect={(v, opt) => {
+                      setFieldsValue({ proposingDepartment: v });
+                      setFieldsValue({ proposingDepartmentId: opt.key });
+                      setDeptdata([]);
+                    }}
+                  >
+                    <Search
+                      placeholder="可输入关键字搜索部门"
+                      onSearch={values => handleDeptSearch(values)}
+                    />
+                  </AutoComplete>,
+                )}
+                <Button
+                  style={{ width: '15%' }}
+                  onClick={() => {
+                    validateFields(['proposingUnit'], err => {
+                      if (!err) {
+                        SetDetpDrawer(!detpdrawer);
+                        setTreeType('dept');
+                      }
+                    });
+                  }}
+                >
+                  <CaretRightOutlined />
+                </Button>
+              </InputGroup>
+            </Form.Item>
+          </Col>
+          <Col span={8} style={{ display: 'none' }}>
+            <Form.Item label="申请部门ID">
+              {getFieldDecorator('proposingDepartmentId', {
+                initialValue: register.proposingDepartmentId,
+              })(<Input placeholder="请输入" />)}
             </Form.Item>
           </Col>
           <Col span={8}>
@@ -427,6 +584,27 @@ const Registrat = forwardRef((props, ref) => {
           </Col>
         </Row>
       </Form>
+      <Drawer
+        title="组织机构"
+        width={320}
+        closable={false}
+        onClose={onDeptDrawerClose}
+        visible={detpdrawer}
+      >
+        {treetype === 'unit' && (
+          <DeptSlectId
+            GetTreenode={newvalue => handleUnitTreeNode(newvalue)}
+            pid="7AC3EF0F701402A2E0530A644F130365"
+          />
+        )}
+        {treetype === 'dept' && (
+          <DeptSlectId
+            GetTreenode={newvalue => handleDeptTreeNode(newvalue)}
+            pid={unitrecord.key !== undefined ? unitrecord.key : register.proposingUnitID}
+            //  pid={unitrecord.key}
+          />
+        )}
+      </Drawer>
     </>
   );
 });
@@ -440,9 +618,12 @@ Registrat.defaultProps = {
     detail: '',
     functionalModule: '',
     proposer: '',
+    proposerId: '',
     proposerPhone: '',
     proposingDepartment: '',
+    proposingDepartmentId: '',
     proposingUnit: '',
+    proposingUnitID: '7AC3EF0F701402A2E0530A644F130365',
     reason: '',
     // registerTime: moment().format(),
     title: '',
