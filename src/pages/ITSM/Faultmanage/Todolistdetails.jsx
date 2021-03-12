@@ -265,7 +265,7 @@ function Todolistdetails(props) {
         formValues.taskId = id;
         formValues.editState = tododetailslist.editState;
         formValues.registerUserId = userId; // 当前登录人id
-        formValues.type = values.type.join('/');
+        formValues.type = values.type.join(',');
         if (files.ischange) {
           formValues.registerAttachments = JSON.stringify(files.arr);
         }

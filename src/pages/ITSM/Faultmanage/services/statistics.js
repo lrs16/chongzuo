@@ -38,7 +38,6 @@ export async function faultDownload(params) {
 
 //  故障状态统计列表
 export async function faulthandleGrate(params) {
-  console.log('params: ', params);
   return request(`/trouble/stat/statOrderByStatus`, {
     method: 'POST',
     body: JSON.stringify(params),

@@ -61,7 +61,6 @@ export default {
      // 故障状态统计查询页面
      *fetchfaulthandleList({ payload }, { call, put }) {
       const response = yield call(faulthandleList,payload);
-      console.log('response: ', response);
       yield put ({
         type:'relatedictArr',
         payload: response

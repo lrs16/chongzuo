@@ -38,43 +38,49 @@ const columns = [
     title: '工单数',
     dataIndex: 'statCount',
     key: 'statCount',
-    render: (text, record) => (
-      <Link
-        to={{
-          pathname: '/ITSM/problemmanage/problemquery',
-          query: { 
-            problem: 'status',
-            status: record.statCode
-           }
-        }}
-      >
-        {text}
-      </Link>
-    )
+    render: (text, record) => {
+      if (record.statName !== '合计') {
+        return <Link
+          to={{
+            pathname: '/ITSM/problemmanage/problemquery',
+            query: {
+              problem: 'status',
+              status: record.statCode
+            }
+          }}
+        >
+          {text}
+        </Link>
+      }
+      return <span>{text}</span>
+    }
   },
 ]
 function Statusstatistics(props) {
   const { pagetitle } = props.route.name;
   const {
-    form: { getFieldDecorator,resetFields },
+    form: { getFieldDecorator, resetFields },
     dispatch,
     statusArr
   } = props;
 
-  const statusList = (params) => {
+  const statusList = () => {
     dispatch({
       type: 'problemstatistics/fetchstatusList',
-      payload: params? { statTimeBegin, statTimeEnd } : { statTimeBegin:'', statTimeEnd:'' }
+      payload: { statTimeBegin, statTimeEnd }
     });
   }
 
   useEffect(() => {
+    statTimeBegin = '';
+    statTimeEnd = '';
     statusList();
   }, [])
 
   const download = () => {
     dispatch({
-      type:'problemstatistics/download'
+      type: 'problemstatistics/download',
+      payload: { statTimeBegin, statTimeEnd }
     }).then(res => {
       const filename = '下载.xls';
       const blob = new Blob([res]);

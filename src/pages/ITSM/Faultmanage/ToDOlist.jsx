@@ -93,8 +93,8 @@ function ToDOlist(props) {
     },
     {
       title: '故障类型',
-      dataIndex: 'type',
-      key: 'type',
+      dataIndex: 'typecn',
+      key: 'typecn',
       width: 200,
     },
     {

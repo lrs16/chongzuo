@@ -74,16 +74,17 @@ function TimeoutStatistics(props) {
     })
   }
 
-  const gettimeoutList = (params) => {
+  const gettimeoutList = () => {
     dispatch({
       type: 'problemstatistics/timeoutLists',
-      payload: params? { statTimeBegin, statTimeEnd } : { statTimeBegin:'', statTimeEnd:'' }
+      payload:{ statTimeBegin, statTimeEnd }
     })
   }
 
   const download = () => {
     dispatch({
-      type: 'problemstatistics/timeDownload'
+      type: 'problemstatistics/timeDownload',
+      payload: { statTimeBegin, statTimeEnd }
     }).then(res => {
       const filename = '下载.xls';
       const blob = new Blob([res]);
@@ -106,6 +107,8 @@ function TimeoutStatistics(props) {
   }
 
   useEffect(() => {
+    statTimeBegin = '';
+    statTimeEnd = '';
     gettimeoutList();
   }, []);
 

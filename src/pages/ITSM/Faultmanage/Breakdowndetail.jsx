@@ -70,14 +70,16 @@ function Breakdownlist(props) {
     [statTimeBegin, statTimeEnd] = dateString;
   }
   
-  const handleList = (params) => {
+  const handleList = () => {
     dispatch({
       type: 'faultstatics/fetchfaulthandle',
-      payload: params? { statTimeBegin, statTimeEnd,dictType: 'type' } : { statTimeBegin:'', statTimeEnd:'',dictType: 'type' }
+      payload: { statTimeBegin, statTimeEnd,dictType: 'type' }
     })
   }
 
   useEffect(() => {
+    statTimeBegin = '';
+    statTimeEnd = '';
     handleList();
   }, []);
 
@@ -88,7 +90,7 @@ function Breakdownlist(props) {
   const download = () => {
     dispatch({
       type: 'faultstatics/downloadFaultdetail',
-      payload: { dictType: 'type'}
+      payload: { dictType: 'type',statTimeBegin, statTimeEnd}
     }).then(res => {
       const filename = '下载.xls';
       const blob = new Blob([res]);

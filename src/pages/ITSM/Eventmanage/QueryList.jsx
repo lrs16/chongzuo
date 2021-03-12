@@ -190,13 +190,13 @@ function QueryList(props) {
       selfhandle,
       registerUser,
       handleUnit,
-      eventStatus
+      eventStatus,
+      applicationUnit
      }},
     loading,
     list,
     dispatch,
   } = props;
-  console.log(sign?eventObject:'ff')
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 10 });
   const [expand, setExpand] = useState(false);
   const [selectdata, setSelectData] = useState([]);
@@ -216,7 +216,8 @@ function QueryList(props) {
             selfhandle,
             registerUser,
             handleUnit,
-            eventStatus
+            eventStatus,
+            applicationUnit
           },
         });
       }
@@ -239,6 +240,7 @@ function QueryList(props) {
           time2,
           selfhandle,
           registerUser,
+          applicationUnit,
         },
       });
     } else {
@@ -254,6 +256,7 @@ function QueryList(props) {
           pageIndex: page - 1,
           selfhandle,
           registerUser,
+          applicationUnit
         },
       });
     }

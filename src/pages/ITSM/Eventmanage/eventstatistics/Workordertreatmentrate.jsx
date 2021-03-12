@@ -34,6 +34,7 @@ const columns = [
             sign: 'last',
             time1: record.start_time,
             time2: record.end_time,
+            applicationUnit: record.unit,
           }
         }}
       >
@@ -53,7 +54,7 @@ const columns = [
             sign: 'now',
             time1: record.start_time,
             time2: record.end_time,
-            handleUnit: record.unit,
+            applicationUnit: record.unit,
             eventStatus: '已关闭'
           }
         }}
@@ -82,7 +83,7 @@ function Workordertreatmentrate(props) {
     const date1 = new Date(date._d);
     const date2 = new Date(date._d);
     startTime = `${date1.getFullYear()}-${(date1.getMonth() + 1)}-${date1.getDate()}`;
-    date2.setDate(date1.getDate() + 7);
+    date2.setDate(date1.getDate() + 6);
     endTime = `${date2.getFullYear()}-${(date2.getMonth() + 1)}-${date2.getDate()}`;
   }
 
@@ -100,7 +101,6 @@ function Workordertreatmentrate(props) {
       payload: {
         time1: startTime,
         time2: endTime,
-        type: tabActiveKey,
       }
     }).then(res => {
       const filename = '下载.xls';

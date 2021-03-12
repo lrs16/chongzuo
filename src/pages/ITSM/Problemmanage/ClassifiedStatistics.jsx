@@ -38,19 +38,23 @@ const columns = [
     title: '工单数',
     dataIndex: 'statCount',
     key: 'statCount',
-    render: (text, record) => (
-      <Link
+    render: (text, record) => {
+      if(record.statName !== '合计') {
+        return <Link
         to={{
           pathname: '/ITSM/problemmanage/problemquery',
-          query: { 
-            problem:'class',
+          query: {
+            problem: 'class',
             type: record.statCode
-           }
+          }
         }}
       >
         {text}
       </Link>
-    )
+      }
+      return <span>{text}</span>
+    }
+
   },
 ]
 function ClassifiedStatistics(props) {
@@ -64,15 +68,17 @@ function ClassifiedStatistics(props) {
   const onChange = (date, dateString) => {
     [statTimeBegin, statTimeEnd] = dateString;
   }
-  
-  const handleList = (params) => {
+
+  const handleList = () => {
     dispatch({
       type: 'problemstatistics/fetchClasslist',
-      payload: params? { statTimeBegin, statTimeEnd,dictType: 'type' } : { statTimeBegin:'', statTimeEnd:'',dictType: 'type' }
+      payload: { statTimeBegin, statTimeEnd, dictType: 'type' }
     })
   }
 
   useEffect(() => {
+    statTimeBegin = '';
+    statTimeEnd = '';
     handleList();
   }, []);
 
@@ -83,7 +89,7 @@ function ClassifiedStatistics(props) {
   const download = () => {
     dispatch({
       type: 'problemstatistics/downloadClass',
-      payload: { dictType: 'type'}
+      payload: { dictType: 'type', statTimeBegin, statTimeEnd }
     }).then(res => {
       const filename = '下载.xls';
       const blob = new Blob([res]);

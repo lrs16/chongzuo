@@ -151,8 +151,8 @@ function Workordertopn(props) {
                   <Select
                     placeholder="请选择"
                     style={{ width: 150 }}
+                    defaultValue={value}
                     onChange={selectOnchange}
-
                   >
                     <Option value="5">5</Option>
                     <Option value="10">10</Option>

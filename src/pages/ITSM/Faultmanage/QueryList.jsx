@@ -57,7 +57,14 @@ function QueryList(props) {
     relatedictArr, // 从汇总统计到的列表
     dispatch,
   } = props;
+<<<<<<< HEAD
   console.log(relatedictArr, 'relatedictArr');
+=======
+  if(relatedictArr.length) {
+    console.log(relatedictArr.length,'relatedictArr');
+  }
+
+>>>>>>> a4941da... 更新问题统计。故障统计，事件统计，检查代码并解决bug
 
   const [expand, setExpand] = useState(false);
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 10 }); // 分页state
@@ -110,8 +117,8 @@ function QueryList(props) {
     },
     {
       title: '故障类型',
-      dataIndex: 'type',
-      key: 'type',
+      dataIndex: 'typecn',
+      key: 'typecn',
       width: 200,
     },
     {
@@ -174,6 +181,7 @@ function QueryList(props) {
   };
 
   useEffect(() => {
+    searchSign = ''
     switch (dictType) {
       case 'type':
         faultList();
@@ -190,7 +198,11 @@ function QueryList(props) {
   }, [dictType]);
 
   const searchdata = (values, page, pageSize, searchdata) => {
+<<<<<<< HEAD
     console.log(searchdata);
+=======
+    console.log('searchdata: ', searchdata);
+>>>>>>> a4941da... 更新问题统计。故障统计，事件统计，检查代码并解决bug
     if (searchdata) {
       searchSign = 'have';
       dispatch({
@@ -202,14 +214,21 @@ function QueryList(props) {
           status,
         },
       });
+<<<<<<< HEAD
     } // 查询 查询接口
     if (searchdata === '') {
+=======
+    }    // 查询 查询接口
+    if (searchdata === '' || searchdata === undefined) {
+      console.log(dictType,'dictType');
+      console.log('ff');
+>>>>>>> a4941da... 更新问题统计。故障统计，事件统计，检查代码并解决bug
       switch (dictType) {
         case 'type':
           faultList(values, page, pageSize);
           break;
         case undefined:
-          faultList(values, page, pageSize);
+          getQuerylists(values, page, pageSize);
           break;
         case 'handle':
           faulthandleList(values, page, pageSize);

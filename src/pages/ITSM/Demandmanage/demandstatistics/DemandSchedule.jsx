@@ -29,40 +29,19 @@ const renderContent = (value, row, index) => {
 
 const columns = [
   {
-    title: 'Name',
+    title: '序号',
     dataIndex: 'name',
-    render: (text, row, index) => {
-      if (index < 4) {
-        return <a>{text}</a>;
-      }
-      return {
-        children: <a>{text}</a>,
-        props: {
-          colSpan: 5,
-        },
-      };
-    },
-  },
-  {
-    title: 'Age',
-    dataIndex: 'age',
-    render: renderContent,
-  },
-  {
-    title: 'Home phone',
-    colSpan: 2,
-    dataIndex: 'tel',
     render: (value, row, index) => {
       const obj = {
         children: value,
         props: {},
       };
-      if (index === 2) {
-        obj.props.rowSpan = 2;
+      if (index === 0) {
+        obj.props.rowSpan = 6;
       }
       // These two are merged into above cell
-      if (index === 3) {
-        obj.props.rowSpan = 0;
+      if (index === 6) {
+        obj.props.rowSpan = 4;
       }
       if (index === 4) {
         obj.props.colSpan = 0;
@@ -71,58 +50,179 @@ const columns = [
     },
   },
   {
-    title: 'Phone',
-    colSpan: 0,
-    dataIndex: 'phone',
-    render: renderContent,
+    title: '月份',
+    dataIndex: 'month',
+    render: (value, row, index) => {
+      const obj = {
+        children: value,
+        props: {},
+      };
+      if (index === 0) {
+        obj.props.rowSpan = 6;
+      }
+      // These two are merged into above cell
+      if (index === 6) {
+        obj.props.rowSpan = 3;
+      }
+      if (index === 4) {
+        obj.props.colSpan = 0;
+      }
+      return obj;
+    },
   },
   {
-    title: 'Address',
+    title: '需求总数',
+    dataIndex: 'age',
+    render: (value, row, index) => {
+      const obj = {
+        children: value,
+        props: {},
+      };
+      if (index === 0) {
+        obj.props.rowSpan = 6;
+      }
+      // These two are merged into above cell
+      if (index === 6) {
+        obj.props.rowSpan = 3;
+      }
+      if (index === 4) {
+        obj.props.colSpan = 0;
+      }
+      return obj;
+    },
+  },
+  {
+    title: '所属功能',
+    dataIndex: 'tel',
+  },
+  {
+    title: '所属功能数',
+    dataIndex: 'phone',
+  },
+  {
+    title: '已开发',
     dataIndex: 'address',
-    render: renderContent,
+  },
+  {
+    title: '已实现',
+    dataIndex: 'params1',
+  },
+  {
+    title: '需求实现率',
+    dataIndex: 'params2',
   },
 ];
 
 const data = [
   {
     key: '1',
-    name: 'John Brown',
-    age: 32,
-    tel: '0571-22098909',
-    phone: 18889898989,
-    address: 'New York No. 1 Lake Park',
+    name: '序号',
+    month:'月份',
+    age: '需求总数',
+    tel: '所属功能',
+    phone: '所属功能数',
+    address: '已开发',
+    params1: '已实现',
+    params2: '需求实现率',
   },
   {
     key: '2',
-    name: 'Jim Green',
-    tel: '0571-22098333',
-    phone: 18889898888,
-    age: 42,
-    address: 'London No. 1 Lake Park',
+    name: '所属功能数',
+    month:'月份',
+    age: '需求总数',
+    tel: '所属功能',
+    phone: '所属功能数',
+    address: '已开发',
+    params1: '已实现',
+    params2: '需求实现率',
   },
   {
     key: '3',
-    name: 'Joe Black',
-    age: 32,
-    tel: '0575-22098909',
-    phone: 18900010002,
-    address: 'Sidney No. 1 Lake Park',
+    name: '所属功能数',
+    month:'月份',
+    age: '需求总数',
+    tel: '所属功能',
+    phone: '所属功能数',
+    address: '已开发',
+    params1: '已实现',
+    params2: '需求实现率',
   },
   {
     key: '4',
-    name: 'Jim Red',
-    age: 18,
-    tel: '0575-22098909',
-    phone: 18900010002,
-    address: 'London No. 2 Lake Park',
+    name: '所属功能数',
+    month:'月份',
+    age: '需求总数',
+    tel: '所属功能',
+    phone: '所属功能数',
+    address: '已开发',
+    params1: '已实现',
+    params2: '需求实现率',
   },
   {
     key: '5',
-    name: 'Jake White',
-    age: 18,
-    tel: '0575-22098909',
-    phone: 18900010002,
-    address: 'Dublin No. 2 Lake Park',
+    name: '所属功能数',
+    month:'月份',
+    age: '需求总数',
+    tel: '所属功能',
+    phone: '所属功能数',
+    address: '已开发',
+    params1: '已实现',
+    params2: '需求实现率',
+  },
+  {
+    key: '6',
+    name: '所属功能数',
+    month:'月份',
+    age: '需求总数',
+    tel: '所属功能',
+    phone: '所属功能数',
+    address: '已开发',
+    params1: '已实现',
+    params2: '需求实现率',
+  },
+  {
+    key: '7',
+    name: '序所属功能数号',
+    month:'月份',
+    age: '需求总数',
+    tel: '所属功能',
+    phone: '所属功能数',
+    address: '已开发',
+    params1: '已实现',
+    params2: '需求实现率',
+  },
+  {
+    key: '8',
+    name: '所属功能数',
+    month:'月份',
+    age: '需求总数',
+    tel: '所属功能',
+    phone: '所属功能数',
+    address: '已开发',
+    params1: '已实现',
+    params2: '需求实现率',
+  },
+  {
+    key: '9',
+    name: '所属功能数',
+    month:'月份',
+    age: '需求总数',
+    tel: '所属功能',
+    phone: '所属功能数',
+    address: '已开发',
+    params1: '已实现',
+    params2: '需求实现率',
+  },
+  {
+    key: '10',
+    name: '所属功能数',
+    month:'月份',
+    age: '需求总数',
+    tel: '所属功能',
+    phone: '所属功能数',
+    address: '已开发',
+    params1: '已实现',
+    params2: '需求实现率',
   },
 ];
 

@@ -75,14 +75,16 @@ function Faultbreakdownlist(props) {
     [statTimeBegin, statTimeEnd] = dateString;
   }
   
-  const handleList = (params) => {
+  const handleList = () => {
     dispatch({
       type: 'faultstatics/fetchfaultlist',
-      payload: params? { statTimeBegin, statTimeEnd,dictType: 'type' } : { statTimeBegin:'', statTimeEnd:'',dictType: 'type' }
+      payload:{ statTimeBegin, statTimeEnd,dictType: 'type' }
     })
   }
 
   useEffect(() => {
+    statTimeBegin = '';
+    statTimeEnd = '';
     handleList();
   }, []);
 
@@ -93,7 +95,7 @@ function Faultbreakdownlist(props) {
   const download = () => {
     dispatch({
       type: 'faultstatics/downloadFaultdownlist',
-      payload: { dictType: 'type'}
+      payload: { dictType: 'type',statTimeBegin, statTimeEnd}
     }).then(res => {
       const filename = '下载.xls';
       const blob = new Blob([res]);
@@ -130,7 +132,7 @@ function Faultbreakdownlist(props) {
             <Col span={8}>
               <Button
                 type='primary'
-                onClick={() => handleList('search')}
+                onClick={() => handleList()}
               >
                 查询
               </Button>

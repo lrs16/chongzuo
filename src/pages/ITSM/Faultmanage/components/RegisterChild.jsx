@@ -41,6 +41,16 @@ const RegisterChild = React.forwardRef((props, ref) => {
   );
 
   const required = true;
+  // let faultObject;
+
+  const type = main.type.split();
+
+  if (main.type.length === 6) {
+    type.unshift(main.type.slice(0, 3));
+  }
+  console.log(type, 'type');
+
+
 
   const handletitleSearch = values => {
     getAndField(values).then(res => {
@@ -215,12 +225,16 @@ const RegisterChild = React.forwardRef((props, ref) => {
                   message: '请选择',
                 },
               ],
+<<<<<<< HEAD
               initialValue: main ? main.typecn : '',
+=======
+              initialValue: type
+>>>>>>> a4941da... 更新问题统计。故障统计，事件统计，检查代码并解决bug
             })(
               <Cascader
                 placeholder="请选择"
                 options={faultType}
-                fieldNames={{ label: 'title', value: 'title', children: 'children' }}
+                fieldNames={{ label: 'title', value: 'dict_code', children: 'children' }}
               />,
             )}
           </Form.Item>
@@ -340,7 +354,7 @@ const RegisterChild = React.forwardRef((props, ref) => {
           <Form.Item
             label="上传附件"
             {...forminladeLayout}
-            // extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb"
+          // extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb"
           >
             <div style={{ width: 400 }}>
               <SysUpload

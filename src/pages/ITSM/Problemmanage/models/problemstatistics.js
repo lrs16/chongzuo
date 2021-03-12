@@ -32,7 +32,7 @@ export default {
 
     // 问题状态下载
     *download({ payload }, { call }) {
-      return yield call(statusDownload, { payload });
+      return yield call(statusDownload, payload);
     },
 
     // 问题分类统计
@@ -69,7 +69,7 @@ export default {
      },
      // 导出超时统计
      *timeDownload({ payload }, { call, put }) {
-       return yield call(timeoutDownload);
+       return yield call(timeoutDownload,payload);
      }
 
     
