@@ -129,8 +129,9 @@ export default {
     },
 
     // 保存用户数据携带的id 故障流程启动
-    *getSaveUserId({ payload }, { call, put }) {
+    *getSaveUserId({ payload: { formValues } }, { call, put }) {
       const response = yield call(querySaveUserId);
+      // console.log(response, '故障流程启动！！');
       if (response.code === 200) {
         yield put({
           type: 'getsaveuserid',
@@ -145,7 +146,7 @@ export default {
 
         // 故障流程启动成功时，提交表单数据
         const { flowTaskId, flowNodeName } = response; // 用户数据携带的id
-        const saveInfo = payload;
+        const saveInfo = formValues;
         saveInfo.taskId = flowTaskId;
         // saveInfo.no = responseno.troubleNo;
         if (response.code === 200) {

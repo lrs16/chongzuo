@@ -49,13 +49,15 @@ function QueryList(props) {
 
   const {
     form: { getFieldDecorator, resetFields, validateFields },
-    location: { query: { dictCode, dictType, status, timeStatus } },
+    location: {
+      query: { dictCode, dictType, status, timeStatus },
+    },
     loading,
     faultQueryList, // 查询列表数据
     relatedictArr, // 从汇总统计到的列表
     dispatch,
   } = props;
-  console.log(relatedictArr,'relatedictArr');
+  console.log(relatedictArr, 'relatedictArr');
 
   const [expand, setExpand] = useState(false);
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 10 }); // 分页state
@@ -145,7 +147,7 @@ function QueryList(props) {
       payload: {
         current: paginations.current,
         pageSize: paginations.pageSize,
-        status
+        status,
       },
     });
   };
@@ -158,7 +160,7 @@ function QueryList(props) {
         dictType,
       },
     });
-  }
+  };
 
   //  故障状态的列表
   const faulthandleList = (values, page, pageSize, searchdata) => {
@@ -169,7 +171,7 @@ function QueryList(props) {
         status,
       },
     });
-  }
+  };
 
   useEffect(() => {
     switch (dictType) {
@@ -188,6 +190,7 @@ function QueryList(props) {
   }, [dictType]);
 
   const searchdata = (values, page, pageSize, searchdata) => {
+    console.log(searchdata);
     if (searchdata) {
       searchSign = 'have';
       dispatch({
@@ -199,7 +202,7 @@ function QueryList(props) {
           status,
         },
       });
-    }    // 查询 查询接口
+    } // 查询 查询接口
     if (searchdata === '') {
       switch (dictType) {
         case 'type':
@@ -215,8 +218,6 @@ function QueryList(props) {
           break;
       }
     }
-
-
   };
 
   const handleReset = () => {
@@ -224,7 +225,7 @@ function QueryList(props) {
     resetFields();
   };
 
-  const handleSearch = (paramsSearch) => {
+  const handleSearch = paramsSearch => {
     setPageinations({
       ...paginations,
       current: 1,
@@ -285,7 +286,8 @@ function QueryList(props) {
     onShowSizeChange: (page, pageSize) => onShowSizeChange(page, pageSize),
     current: paginations.current,
     pageSize: paginations.pageSize,
-    total: (dictType !== undefined && searchSign === '') ? relatedictArr.length : faultQueryList.total,
+    total:
+      dictType !== undefined && searchSign === '' ? relatedictArr.length : faultQueryList.total,
     showTotal: total => `总共  ${total}  条记录`,
     onChange: page => changePage(page),
   };
@@ -686,12 +688,12 @@ function QueryList(props) {
         <Table
           loading={loading}
           columns={columns.filter(item => item.title !== 'id' || item.key !== 'id')}
-          dataSource={(dictType !== undefined && searchSign === '') ? relatedictArr : faultQueryList.rows}
+          dataSource={
+            dictType !== undefined && searchSign === '' ? relatedictArr : faultQueryList.rows
+          }
           rowKey={record => record.id}
           pagination={pagination}
         />
-
-
       </Card>
     </PageHeaderWrapper>
   );

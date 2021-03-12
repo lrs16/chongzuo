@@ -131,7 +131,7 @@ const BasicLayout = props => {
         fixSiderbar
         headerRender={false}
         menuHeaderRender={false}
-        siderWidth={240}
+        siderWidth={280}
         navTheme="light"
         // onCollapse={handleMenuCollapse}
         menuItemRender={(menuItemProps, defaultDom) => {

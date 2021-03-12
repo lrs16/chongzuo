@@ -66,10 +66,10 @@ function Registration(props) {
     // saveuserid: { flowTaskId },
   } = props;
 
-  const cascaderOnchange = (value,selectedOptions) => {
+  const cascaderOnchange = (value, selectedOptions) => {
     console.log('selectedOptions: ', selectedOptions);
     selectCascader = selectedOptions[1].dict_code;
-  }
+  };
 
   // 接口
   const getNewno = () => {
@@ -101,33 +101,19 @@ function Registration(props) {
 
   const handleSave = () => {
     // 保存成功后根据后端给的流程ID跳待办里的详情
-<<<<<<< HEAD
-    validateFields((err, values) => {
-      if (true) {
-        const formValues = values;
-        formValues.registerOccurTime = values.registerOccurTime.format('YYYY-MM-DD HH:mm:ss');
-        formValues.registerTime = values.registerTime.format('YYYY-MM-DD HH:mm:ss');
-        formValues.editState = 'add';
-        formValues.registerAttachments = JSON.stringify(files.arr);
-        formValues.type = selectCascader;
-        dispatch({
-          type: 'fault/getSaveUserId',
-          payload: { formValues },
-        });
-      }
-=======
     const formValues = getFieldsValue();
     dispatch({
       type: 'fault/getSaveUserId',
       payload: {
-        ...formValues,
-        registerOccurTime: formValues.registerOccurTime.format('YYYY-MM-DD HH:mm:ss'),
-        registerTime: formValues.registerTime.format('YYYY-MM-DD HH:mm:ss'),
-        editState: 'add',
-        registerAttachments: JSON.stringify(files.arr),
-        type: formValues.type !== '' ? formValues.type.join('/') : '',
+        formValues: {
+          ...formValues,
+          registerOccurTime: formValues.registerOccurTime.format('YYYY-MM-DD HH:mm:ss'),
+          registerTime: formValues.registerTime.format('YYYY-MM-DD HH:mm:ss'),
+          editState: 'add',
+          registerAttachments: JSON.stringify(files.arr),
+          type: formValues.type !== '' ? formValues.type.join('/') : '',
+        },
       },
->>>>>>> 事件、需求获取报障用户信息，选择申请人单位与部门；
     });
   };
 
@@ -246,258 +232,6 @@ function Registration(props) {
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
       />
-<<<<<<< HEAD
-      <Card style={{ textAlign: 'right' }}>
-        <Button type="primary" style={{ marginRight: 8 }} onClick={handleSave}>
-          保存
-        </Button>
-        <Button type="default" onClick={close}>
-          关闭
-        </Button>
-      </Card>
-      <div className={styles.collapse}>
-        <Collapse
-          expandIconPosition="right"
-          activeKey={activeKey}
-          bordered={false}
-          style={{ marginTop: '-25px' }}
-          onChange={callback}
-        >
-          <Panel header="故障登记" key="1">
-            <Form {...formItemLayout}>
-              <Row gutter={24} style={{ paddingTop: 24 }}>
-                <Col xl={8} xs={12}>
-                  <Form.Item label="故障编号">
-                    {getFieldDecorator('no', {
-                      initialValue: newno.troubleNo || '',
-                    })(<Input disabled />)}
-                  </Form.Item>
-                </Col>
-
-                <Col span={8}>
-                  <Form.Item>
-                    <Button type="primary" onClick={() => getNewno()}>
-                      获取最新编号
-                    </Button>
-                  </Form.Item>
-                </Col>
-
-                <Col xl={8} xs={12}>
-                  <Form.Item label="登记时间">
-                    {getFieldDecorator('registerTime', {
-                      rules: [
-                        {
-                          required,
-                          message: '请选择时间',
-                        },
-                      ],
-                      initialValue: moment(Date.now()) || '',
-                    })(
-                      <DatePicker
-                        showTime
-                        format="YYYY-MM-DD HH:mm:ss"
-                        style={{ width: '100%' }}
-                      />,
-                    )}
-                  </Form.Item>
-                </Col>
-
-                <Col xl={8} xs={12}>
-                  <Form.Item label="发生时间">
-                    {getFieldDecorator('registerOccurTime', {
-                      rules: [
-                        {
-                          required,
-                          message: '请选择时间',
-                        },
-                      ],
-                      initialValue: moment(Date.now()) || '',
-                    })(
-                      <DatePicker
-                        showTime
-                        format="YYYY-MM-DD HH:mm:ss"
-                        style={{ width: '100%' }}
-                      />,
-                    )}
-                  </Form.Item>
-                </Col>
-
-                <Col xl={8} xs={12}>
-                  <Form.Item label="故障来源">
-                    {getFieldDecorator('source', {
-                      rules: [
-                        {
-                          required,
-                          message: '请选择',
-                        },
-                      ],
-                    })(
-                      <Select placeholder="请选择">
-                        {faultSource.map(obj => [
-                          <Option key={obj.key} value={obj.title}>
-                            {obj.title}
-                          </Option>,
-                        ])}
-                      </Select>,
-                    )}
-                  </Form.Item>
-                </Col>
-
-                <Col span={8}>
-                  <Form.Item label="系统模块">
-                    {getFieldDecorator('registerModel', {
-                      rules: [
-                        {
-                          required,
-                          message: '请选择',
-                        },
-                      ],
-                    })(
-                      <Select placeholder="请选择">
-                        {sysmodular.map(obj => [
-                          <Option key={obj.key} value={obj.title}>
-                            {obj.title}
-                          </Option>,
-                        ])}
-                      </Select>,
-                    )}
-                  </Form.Item>
-                </Col>
-
-                <Col xl={8} xs={12}>
-                  <Form.Item label="故障类型">
-                    {getFieldDecorator('type', {
-                      rules: [
-                        {
-                          required,
-                          message: '请选择',
-                        },
-                      ],
-                    })(
-                      <Cascader
-                        placeholder="请选择"
-                        options={faultType}
-                        fieldNames={{ label: 'title', value: 'title', children: 'children' }}
-                        onChange={cascaderOnchange}
-                      />,
-                    )}
-                  </Form.Item>
-                </Col>
-
-                <Col xl={8} xs={12}>
-                  <Form.Item label="故障地点">
-                    {getFieldDecorator('registerAddress', {
-                      rules: [
-                        {
-                          required,
-                          message: '请输入',
-                        },
-                      ],
-                    })(<Input placeholder="请输入" allowClear />)}
-                  </Form.Item>
-                </Col>
-
-                <Col xl={8} xs={12}>
-                  <Form.Item label="严重程度">
-                    {getFieldDecorator('registerLevel', {
-                      rules: [
-                        {
-                          required,
-                          message: '请选择',
-                        },
-                      ],
-                    })(
-                      <Select placeholder="请选择">
-                        {priority.map(obj => [
-                          <Option key={obj.key} value={obj.title}>
-                            {obj.title}
-                          </Option>,
-                        ])}
-                      </Select>,
-                    )}
-                  </Form.Item>
-                </Col>
-
-                <Col xl={8} xs={12}>
-                  <Form.Item label="影响范围">
-                    {getFieldDecorator('registerScope', {
-                      rules: [
-                        {
-                          required,
-                          message: '请选择',
-                        },
-                      ],
-                    })(
-                      <Select placeholder="请选择">
-                        {effect.map(obj => [
-                          <Option key={obj.key} value={obj.title}>
-                            {obj.title}
-                          </Option>,
-                        ])}
-                      </Select>,
-                    )}
-                  </Form.Item>
-                </Col>
-
-                <Col span={8}>
-                  <Form.Item label="故障名称">
-                    {getFieldDecorator('title', {
-                      rules: [
-                        {
-                          required,
-                          message: '请输入',
-                        },
-                      ],
-                    })(
-                      <AutoComplete
-                        dataSource={titleautodata}
-                        onSearch={value => handleSearch(value, 'title')}
-                      >
-                        <Input placeholder="请输入" />
-                      </AutoComplete>,
-                    )}
-                  </Form.Item>
-                </Col>
-
-                <Col span={24}>
-                  <Form.Item label="故障概要" {...forminladeLayout}>
-                    {getFieldDecorator('content', {
-                      rules: [
-                        {
-                          required,
-                          message: '请输入',
-                        },
-                      ],
-                    })(
-                      <AutoComplete
-                        dataSource={desautodata}
-                        onSearch={value => handleSearch(value, 'des')}
-                      >
-                        <TextArea autoSize={{ minRows: 5 }} placeholder="请输入" />
-                      </AutoComplete>,
-                    )}
-                  </Form.Item>
-                </Col>
-
-                <Col span={24}>
-                  <Form.Item label="是否影响业务" {...forminladeLayout}>
-                    {getFieldDecorator('registerEffect', {
-                      initialValue: 0,
-                    })(
-                      <RadioGroup>
-                        <Radio value={0}>是</Radio>
-                        <Radio value={1}>否</Radio>
-                      </RadioGroup>,
-                    )}
-                  </Form.Item>
-                </Col>
-
-                <Col span={24}>
-                  <Form.Item
-                    label="上传附件"
-                    {...forminladeLayout}
-                    // extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb"
-=======
       <Card>
         <Form {...formItemLayout}>
           <Row gutter={24} style={{ paddingTop: 24 }}>
@@ -702,7 +436,6 @@ function Registration(props) {
                   <AutoComplete
                     dataSource={desautodata}
                     onSearch={value => handleSearch(value, 'des')}
->>>>>>> 事件、需求获取报障用户信息，选择申请人单位与部门；
                   >
                     <TextArea autoSize={{ minRows: 5 }} placeholder="请输入" />
                   </AutoComplete>,

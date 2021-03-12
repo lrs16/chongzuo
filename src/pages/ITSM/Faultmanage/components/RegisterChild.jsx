@@ -18,7 +18,6 @@ const RegisterChild = React.forwardRef((props, ref) => {
     main,
     curruserinfo,
   } = props;
-  console.log(main?main.typecn:'ff','main');
   const { getFieldDecorator } = props.form;
   const attRef = useRef();
 
@@ -216,7 +215,7 @@ const RegisterChild = React.forwardRef((props, ref) => {
                   message: '请选择',
                 },
               ],
-              initialValue: main? main.typecn: '',
+              initialValue: main ? main.typecn : '',
             })(
               <Cascader
                 placeholder="请选择"
