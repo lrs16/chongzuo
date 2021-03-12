@@ -225,11 +225,7 @@ const RegisterChild = React.forwardRef((props, ref) => {
                   message: '请选择',
                 },
               ],
-<<<<<<< HEAD
-              initialValue: main ? main.typecn : '',
-=======
               initialValue: type
->>>>>>> a4941da... 更新问题统计。故障统计，事件统计，检查代码并解决bug
             })(
               <Cascader
                 placeholder="请选择"
