@@ -199,7 +199,7 @@ function Maintenance(props) {
                   style={{ fontSize: '4em' }}
                 />
                 <div style={{ display: 'flex', flexDirection: 'column' }}>
-                  <span>上周</span>
+                  <span>{tabActiveKey === 'week'?'上周':'上月'}</span>
                   <span style={{ fontWeight: 900, fontSize: 22 }}>{maintenanceArr.last_count}</span>
                 </div>
               </div>
@@ -217,7 +217,7 @@ function Maintenance(props) {
                   style={{ fontSize: '4em' }}
                 />
                 <div style={{ display: 'flex', flexDirection: 'column' }}>
-                  <span>本周</span>
+                  <span>{tabActiveKey === 'month'?'本月':'本周'}</span>
                   <span style={{ fontWeight: 900, fontSize: 22 }}>{maintenanceArr.now_count}</span>
                 </div>
               </div>
@@ -286,7 +286,7 @@ function Maintenance(props) {
               tabActiveKey === 'month' && (
                 <>
                   <Col span={24}>
-                    <Form.Item label='开始时间'>
+                    <Form.Item label='起始时间'>
                       {getFieldDecorator('monthStarttime', {
                         initialValue: moment(starttime)
                       })(<DatePicker

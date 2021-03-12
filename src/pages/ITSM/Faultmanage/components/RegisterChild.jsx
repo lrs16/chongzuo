@@ -41,14 +41,16 @@ const RegisterChild = React.forwardRef((props, ref) => {
   );
 
   const required = true;
-  // let faultObject;
+  let type;
 
-  const type = main.type.split();
+  if(main.type) {
+    type = main.type.split();
+    if (main.type.length === 6) {
+      type.unshift(main.type.slice(0, 3));
+    }
+  } 
 
-  if (main.type.length === 6) {
-    type.unshift(main.type.slice(0, 3));
-  }
-  console.log(type, 'type');
+  
 
 
 

@@ -20,6 +20,7 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import SysUpload from '@/components/SysUpload'; // 附件下载组件
 import SysDict from '@/components/SysDict';
 import { getAndField } from '@/pages/SysManage/services/api';
+import { ConsoleSqlOutlined } from '_@ant-design_icons@4.3.0@@ant-design/icons';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -58,7 +59,7 @@ function Registration(props) {
   const [desrecords, setDesRecords] = useState([]);
 
   const {
-    form: { getFieldDecorator, resetFields, validateFields,setFieldsValue },
+    form: { getFieldDecorator, resetFields, validateFields,setFieldsValue,getFieldsValue },
     dispatch,
     newno, // 新的故障编号
     curruserinfo, // 获取登录用户信息
@@ -116,12 +117,11 @@ function Registration(props) {
           registerTime: formValues.registerTime.format('YYYY-MM-DD HH:mm:ss'),
           editState: 'add',
           registerAttachments: JSON.stringify(files.arr),
-          type: formValues.type !== '' ? formValues.type.join('/') : '',
+          type: selectCascader
         },
       },
     });
   };
-
 
   const handlobjectChange = (value,selectedOptions) => {
     setFieldsValue({ main_eventObject: value?.slice(-1)[0] }, () => {});
@@ -348,6 +348,7 @@ function Registration(props) {
                   <Cascader
                     placeholder="请选择"
                     options={faultType}
+                    onChange={handlobjectChange}
                     fieldNames={{ label: 'title', value: 'title', children: 'children' }}
                   />,
                 )}

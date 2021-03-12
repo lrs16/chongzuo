@@ -138,7 +138,7 @@ function Workordertreatmentrate(props) {
           <Form layout='inline'>
             <>
               <Col span={24}>
-                <Form.Item label='开始时间'>
+                <Form.Item label='起始时间'>
                   {getFieldDecorator('time1', {
                     initialValue: startTime ? moment(startTime) : ''
                   })(<DatePicker

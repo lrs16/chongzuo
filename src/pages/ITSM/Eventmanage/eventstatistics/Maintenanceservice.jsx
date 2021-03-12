@@ -190,7 +190,7 @@ function Maintenanceservice(props) {
               tabActiveKey === 'month' && (
                 <>
                   <Col span={24}>
-                    <Form.Item label='开始时间'>
+                    <Form.Item label='起始时间'>
                       {getFieldDecorator('startTime', {
                         initialValue: moment(startTime)
                       })(<DatePicker
