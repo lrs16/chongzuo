@@ -25,7 +25,8 @@ import {
   downFile,
   querkeyVal,
   handlequeryList,
-  besolveListdownload
+  besolveListdownload,
+  handleGratelist
 } from '../services/api';
 
 export default {
@@ -55,7 +56,8 @@ export default {
     startid:'',
     keyVallist:[],
     handleList:[],
-    queryArr:[]
+    queryArr:[],
+    handleArr:[]
   },
 
   effects: {
@@ -286,6 +288,14 @@ export default {
         payload: response
       })
     },
+    //  问题工单解决进度管控统计数据列表
+    *handleData({ payload }, { call,put }) {
+      const response = yield call(handleGratelist, payload);
+      yield put({
+        type:'handleArr',
+        payload: response
+      })
+    },
 
   },
 
@@ -424,6 +434,13 @@ export default {
       return {
         ...state,
         keyVallist: action.payload.data
+      }
+    },
+
+    handleArr(state,action) {
+      return {
+        ...state,
+        handleArr: action.payload.data
       }
     },
 

@@ -21,6 +21,12 @@ const columns = [
     title: '受理人/处理人',
     dataIndex: 'user',
     key: 'user',
+    render: (text, record) => {
+      if (record.user !== '合计') {
+        return <span>{text}</span>
+      }
+      return <span style={{fontWeight:700}}>{text}</span>
+    }
   },
   {
     title: '工单受理数量',
@@ -42,7 +48,7 @@ const columns = [
           {text}
         </Link >
       }
-      return <span>{text}</span>
+      return <span style={{fontWeight:700}}>{text}</span>
     }
   },
   {
@@ -66,13 +72,19 @@ const columns = [
           {text}
         </Link >
       }
-      return <span>{text}</span>
+      return <span style={{fontWeight:700}}>{text}</span>
     }
   },
   {
     title: '一线解决率',
     dataIndex: 'points',
     key: 'points',
+    render: (text, record) => {
+      if (record.user !== '合计') {
+        return <span>{text}</span>
+      }
+      return <span style={{fontWeight:700}}>{text}</span>
+    }
   },
 ];
 
@@ -88,7 +100,7 @@ function Solution(props) {
     const date1 = new Date(date._d);
     const date2 = new Date(date._d);
     startTime = `${date1.getFullYear()}-${(date1.getMonth() + 1)}-${date1.getDate()}`;
-    date2.setDate(date1.getDate() + 7);
+    date2.setDate(date1.getDate() + 6);
     endTime = `${date2.getFullYear()}-${(date2.getMonth() + 1)}-${date2.getDate()}`;
   }
 

@@ -16,33 +16,7 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 let startTime;
 let endTime;
 const sign = 'maintenanceservice';
-const columns = [
-  {
-    title: '服务指标',
-    dataIndex: 'name',
-    key: 'name',
-  },
-  {
-    title: '上周',
-    dataIndex: 'last',
-    key: 'last',
-  },
-  {
-    title: '本周',
-    dataIndex: 'now',
-    key: 'now',
-  },
-  {
-    title: '环比',
-    dataIndex: 'points',
-    key: 'points',
-  },
-  {
-    title: '备注',
-    dataIndex: 'remark',
-    key: 'remark',
-  },
-];
+
 
 function Maintenanceservice(props) {
   const { pagetitle } = props.route.name;
@@ -52,6 +26,36 @@ function Maintenanceservice(props) {
     maintenanceService,
     dispatch
   } = props;
+  const tableHeadweek = tabActiveKey === 'week' ? '上周':'上月';
+  const tableHeadmonth = tabActiveKey === 'week' ? '本周':'本月';
+  
+  const columns = [
+    {
+      title: '服务指标',
+      dataIndex: 'name',
+      key: 'name',
+    },
+    {
+      title: tableHeadweek,
+      dataIndex: 'last',
+      key: 'last',
+    },
+    {
+      title: tableHeadmonth,
+      dataIndex: 'now',
+      key: 'now',
+    },
+    {
+      title: '环比',
+      dataIndex: 'points',
+      key: 'points',
+    },
+    {
+      title: '备注',
+      dataIndex: 'remark',
+      key: 'remark',
+    },
+  ];
 
   const onChange = (date) => {
     if (tabActiveKey === 'week') {

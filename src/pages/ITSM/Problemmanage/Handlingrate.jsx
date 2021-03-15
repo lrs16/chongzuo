@@ -27,165 +27,303 @@ const { RangePicker } = DatePicker;
 let statTimeBegin = '';
 let statTimeEnd = '';
 const newObj = {};
-
-const columnsDevelopers = [
-  {
-    title: '开发商',
-    dataIndex: 'total',
-    key: 'total',
-  },
-  {
-    title: '负责人',
-    dataIndex: 'processed',
-    key: 'processed',
-    render: (text, record) => (
-      <Link 
-        to={{
-          pathname:'/ITSM/problemmanage/problemquery',
-          query:{handleStatu:'1'}
-        }}
-      >
-        {text}
-      </Link>
-    )
-  },
-  {
-    title: '问题总数',
-    dataIndex: 'unprocessed',
-    key: 'unprocessed',
-    render:(text,record) => (
-      <Link
-        to={{
-          pathname:'/ITSM/problemmanage/problemquery',
-          query:{handleStatu:'0'}
-        }}
-      >
-      {text}
-      </Link>
-    )
-  },
-  {
-    title: '待处理',
-    dataIndex: 'treatmentRate',
-    key: 'treatmentRate',
-  },
-  {
-    title: '已处理',
-    dataIndex: 'treatmentRate',
-    key: 'treatmentRate',
-  },
-  {
-    title: '已处理待确认',
-    dataIndex: 'treatmentRate',
-    key: 'treatmentRate',
-  },
-  {
-    title: '处理率',
-    dataIndex: 'treatmentRate',
-    key: 'treatmentRate',
-  },
-];
-const columnsBusiness = [
-  {
-    title: '业务负责人',
-    dataIndex: 'total',
-    key: 'total',
-  },
-  {
-    title: '问题总数',
-    dataIndex: 'processed',
-    key: 'processed',
-    render: (text, record) => (
-      <Link 
-        to={{
-          pathname:'/ITSM/problemmanage/problemquery',
-          query:{handleStatu:'1'}
-        }}
-      >
-        {text}
-      </Link>
-    )
-  },
-  {
-    title: '待处理',
-    dataIndex: 'unprocessed',
-    key: 'unprocessed',
-    render:(text,record) => (
-      <Link
-        to={{
-          pathname:'/ITSM/problemmanage/problemquery',
-          query:{handleStatu:'0'}
-        }}
-      >
-      {text}
-      </Link>
-    )
-  },
-  {
-    title: '已处理待确认',
-    dataIndex: 'treatmentRate',
-    key: 'treatmentRate',
-  },
-  {
-    title: '已确认',
-    dataIndex: 'treatmentRate',
-    key: 'treatmentRate',
-  },
-];
-
+const renderContent = (value, row, index) => {
+  const obj = {
+    children: value,
+    props: {},
+  };
+  return obj;
+};
 
 function Handlingrate(props) {
   const { pagetitle } = props.route.name;
-  const [changearr,setChangeArr] = useState();
-  // const [tabActiveKey, setTabActiveKey] = useState('developers');
-  const [tabActiveKey, setTabActiveKey] = useState('developers');
+  const [changearr, setChangeArr] = useState();
+  const [tabActiveKey, setTabActiveKey] = useState('1');
   const {
-    form: { getFieldDecorator,resetFields },
-    handleArr,
+    form: { getFieldDecorator, resetFields },
+    handlingratedata,
     dispatch
   } = props;
+
+  const columnsDevelopers = [
+    {
+      title: '开发商',
+      dataIndex: 'handleDept',
+      key: 'handleDept',
+      render: (text, row, index) => {
+        if (row.handler === '小计') {
+          return {
+            // children: <a>{row.handleDep}</a>,
+            props: {
+              colSpan: 1,
+            },
+          }
+        };
+        if (row.handler === '合计') {
+          return {
+            // children: <a>{row.handler}</a>,
+            props: {
+              colSpan: 1,
+            },
+          }
+        };
+        if (row.handler !== '小计') {
+          return {
+            children: <span>{text}</span>
+          }
+        }
+      },
+    },
+    {
+      title: '负责人',
+      dataIndex: 'handler',
+      key: 'handler',
+      render: (text, row, index) => {
+        if (row.handler === '小计') {
+          return <span style={{ fontWeight: 700 }}>{text}</span>
+        }
+
+        if (row.handler === '合计') {
+          return <span style={{ fontWeight: 700 }}>{text}</span>
+        }
+
+        return <span>{text}</span>
+      }
+    },
+    {
+      title: '问题总数',
+      dataIndex: 'total',
+      key: 'total',
+      render: (text, record, index) => {
+        // if (record.handler === '合计') {
+        //   return <span style={{ fontWeight: 700 }}>{text}</span>
+        // }
+     
+        return <Link
+        to={{
+          pathname: '/ITSM/problemmanage/problemquery',
+          query: {
+            problem: 'handle',
+            handlerId: record.handlerId,
+            status: record.totalCode,
+            handleDeptId: record.handleDeptId,
+            handleProcessGroupType: tabActiveKey
+          }
+        }}
+      >
+        {text}
+      </Link>
+   
+      }
+    },
+    {
+      title: '待处理',
+      dataIndex: 'handlingCount',
+      key: 'handlingCount',
+      render: (text, record) => (
+        <Link
+          to={{
+            pathname: '/ITSM/problemmanage/problemquery',
+            query: {
+              problem: 'handle',
+              handlerId: record.handlerId,
+              status: record.handlingCode,
+              handleDeptId: record.handleDeptId,
+              handleProcessGroupType: tabActiveKey
+            }
+          }}
+        >
+          {text}
+        </Link>
+      )
+    },
+    {
+      title: '已处理待确认',
+      dataIndex: 'handledCount',
+      key: 'handledCount',
+      render: (text, record) => (
+        <Link
+          to={{
+            pathname: '/ITSM/problemmanage/problemquery',
+            query: {
+              problem: 'handle',
+              handlerId: record.handlerId,
+              status: record.handledCode,
+              handleDeptId: record.handleDeptId,
+              handleProcessGroupType: tabActiveKey
+            }
+          }}
+        >
+          {text}
+        </Link>
+      )
+    },
+    {
+      title: '已完成',
+      dataIndex: 'closedCount',
+      key: 'closedCount',
+      render: (text, record) => (
+        <Link
+          to={{
+            pathname: '/ITSM/problemmanage/problemquery',
+            query: {
+              problem: 'handle',
+              handlerId: record.handlerId,
+              status: record.closedCode,
+              handleDeptId: record.handleDeptId,
+              handleProcessGroupType: tabActiveKey
+            }
+          }}
+        >
+          {text}
+        </Link>
+      )
+    },
+    {
+      title: '处理率',
+      dataIndex: 'handleRate',
+      key: 'handleRate',
+      render: (text, record) => (
+        <span>{text}%</span>
+      )
+    },
+  ];
+
+  const columnsBusiness = [
+    {
+      title: '业务负责人',
+      dataIndex: 'handler',
+      key: 'handler',
+      render: (text, row, index) => {
+        if (row.handler === '小计') {
+          return <span style={{ fontWeight: 700 }}>{text}</span>
+        }
+
+        if (row.handler === '合计') {
+          return <span style={{ fontWeight: 700 }}>{text}</span>
+        }
+
+        return <span>{text}</span>
+      }
+    },
+    {
+      title: '问题总数',
+      dataIndex: 'total',
+      key: 'total',
+      render: (text, record, index) => {
+        // if (record.handler === '合计') {
+        //   return <span style={{ fontWeight: 700 }}>{text}</span>
+        // }
+     
+        return <Link
+        to={{
+          pathname: '/ITSM/problemmanage/problemquery',
+          query: {
+            problem: 'handle',
+            handlerId: record.handlerId,
+            status: record.totalCode,
+            handleDeptId: record.handleDeptId,
+            handleProcessGroupType: tabActiveKey
+          }
+        }}
+      >
+        {text}
+      </Link>
+   
+      }
+    },
+    {
+      title: '待处理',
+      dataIndex: 'handlingCount',
+      key: 'handlingCount',
+      render: (text, record, index) => {
+        // if (record.handler === '合计') {
+        //   return <span style={{ fontWeight: 700 }}>{text}</span>
+        // }
+     
+        return <Link
+        to={{
+          pathname: '/ITSM/problemmanage/problemquery',
+          query: {
+            problem: 'handle',
+            handlerId: record.handlerId,
+            status: record.handlingCode,
+            handleDeptId: record.handleDeptId,
+            handleProcessGroupType: tabActiveKey
+          }
+        }}
+      >
+        {text}
+      </Link>
+
+   
+      }
+    },
+    {
+      title: '已处理待确认',
+      dataIndex: 'handledCount',
+      key: 'handledCount',
+      render: (text, record) => {
+        // if(record.handler === '合计') {
+        //   return <span style={{fontWeight:700}}>{text}</span>
+        // }
+         return <Link
+          to={{
+            pathname: '/ITSM/problemmanage/problemquery',
+            query: {
+              problem: 'handle',
+              handlerId: record.handlerId,
+              status: record.handledCode,
+              handleDeptId: record.handleDeptId,
+              handleProcessGroupType: tabActiveKey
+            }
+          }}
+        >
+          {text}
+        </Link>
+      }
+    },
+    {
+      title: '已确认',
+      dataIndex: 'closedCount',
+      key: 'closedCount',
+      render: (text, record) => {
+        // if(record.handler === '合计') {
+        //   return <span style={{fontWeight:700}}>{text}</span>
+        // }
+        return <Link
+          to={{
+            pathname: '/ITSM/problemmanage/problemquery',
+            query: {
+              problem: 'handle',
+              handlerId: record.handlerId,
+              status: record.closedCode,
+              handleDeptId: record.handleDeptId,
+              handleProcessGroupType: tabActiveKey
+            }
+          }}
+        >
+          {text}
+        </Link>
+    }
+    },
+  ];
 
   const onChange = (date, dateString) => {
     [statTimeBegin, statTimeEnd] = dateString;
   }
 
-  const handleListdata = (params) => {
+  const handleListdata = () => {
     dispatch({
-        type:'problemstatistics/handleLists',
-        payload:params? { statTimeBegin, statTimeEnd } : { statTimeBegin:'', statTimeEnd:'' }
-    }).then(res => {
-      if(res.code === 200) {
-        statTimeBegin = '';
-        statTimeEnd = '';
-        const newArr = res.data;
-        newArr.forEach((item) =>{
-          switch (item.statName) {
-            case '已处理':
-              newObj.processed = item.statCount
-              break;
-            case '未处理':
-              newObj.unprocessed = item.statCount
-              break;
-            case '合计':
-              newObj.total = item.statCount
-              break;
-            case '处理率':
-              newObj.treatmentRate = item.statCount
-              break;
-            default:
-              break;
-          }
-        });
-        const arr = [];
-        arr[0] = newObj;
-        setChangeArr(arr);
-      }
+      type: 'problemstatistics/handleLists',
+      payload: { handleProcessGroupType: tabActiveKey, statTimeBegin, statTimeEnd }
     })
   }
 
   const download = () => {
     dispatch({
-      type:'problemstatistics/downloadHandlegrate'
+      type: 'problemstatistics/solveschedule',
+      payload: { handleProcessGroupType: tabActiveKey, statTimeBegin, statTimeEnd }
     }).then(res => {
       const filename = '下载.xls';
       const blob = new Blob([res]);
@@ -203,16 +341,19 @@ function Handlingrate(props) {
   }
 
   useEffect(() => {
+    statTimeBegin = '';
+    statTimeEnd = '';
     handleListdata();
-  },[])
+    handleReset();
+  }, [tabActiveKey])
 
   const tabList = [
     {
-      key: 'developers',
+      key: '1',
       tab: '问题解决进度管控表_开发商',
     },
     {
-      key: 'business',
+      key: '2',
       tab: '问题解决进度管控表_自动化科业务人员',
     },
   ];
@@ -222,13 +363,13 @@ function Handlingrate(props) {
   };
 
 
-  
+
   return (
-    <PageHeaderWrapper 
-    title={pagetitle}
-    tabList={tabList}
-    onTabChange={handleTabChange}
-    tabActiveKey={tabActiveKey}
+    <PageHeaderWrapper
+      title={pagetitle}
+      tabList={tabList}
+      onTabChange={handleTabChange}
+      tabActiveKey={tabActiveKey}
     >
       <Card>
         <Row gutter={16}>
@@ -237,22 +378,22 @@ function Handlingrate(props) {
               <Form.Item label='统计时间'>
                 {
                   getFieldDecorator('time1', {})
-                  (<RangePicker onChange={onChange} />)
+                    (<RangePicker onChange={onChange} />)
                 }
               </Form.Item>
             </Col>
 
             <Col span={8}>
-              <Button 
-              type='primary'
-              onClick={() => handleListdata('search')}
+              <Button
+                type='primary'
+                onClick={() => handleListdata('search')}
               >
                 查询
             </Button>
 
-              <Button 
-              style={{ marginLeft: 8 }}
-              onClick={handleReset}
+              <Button
+                style={{ marginLeft: 8 }}
+                onClick={handleReset}
               >
                 重置
             </Button>
@@ -261,33 +402,33 @@ function Handlingrate(props) {
         </Row>
 
         <div>
-          <Button 
-          type='primary' 
-          style={{ marginBottom: 24 }}
-          onClick={download}
+          <Button
+            type='primary'
+            style={{ marginBottom: 24 }}
+            onClick={download}
           >
             导出数据
           </Button>
         </div>
 
         {
-          tabActiveKey === 'developers' &&
+          tabActiveKey === '1' &&
           <Table
-          columns={columnsDevelopers}
-          dataSource={changearr}
-          rowKey={record => record.statName}
-        />
+            columns={columnsDevelopers}
+            dataSource={handlingratedata}
+            rowKey={record => record.handler}
+          />
         }
 
         {
-          tabActiveKey === 'business' &&
+          tabActiveKey === '2' &&
           <Table
-          columns={columnsBusiness}
-          dataSource={changearr}
-          rowKey={record => record.statName}
-        />
+            columns={columnsBusiness}
+            dataSource={handlingratedata}
+            rowKey={record => record.handler}
+          />
         }
-      
+
 
       </Card>
     </PageHeaderWrapper>
@@ -296,6 +437,6 @@ function Handlingrate(props) {
 
 export default Form.create({})(
   connect(({ problemstatistics }) => ({
-    handleArr: problemstatistics.handleArr
+    handlingratedata: problemstatistics.handlingratedata
   }))(Handlingrate),
 );

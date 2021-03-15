@@ -6,7 +6,8 @@ import {
   handleGrate,
   handlegrateDownload,
   timeoutList,
-  timeoutDownload
+  timeoutDownload,
+  solvescheduleDownload
 } from '../services/statistics';
 
 export default {
@@ -49,9 +50,13 @@ export default {
        return yield call(classDownload,payload);
      },
 
-     // 问题处理率
+     // 问题解决管控表
      * handleLists({ payload }, { call, put }) {
-      return yield call(handleGrate,payload);
+      const response =  yield call(handleGrate,payload);
+      yield put ({
+        type:'handlingratedata',
+        payload:response
+      })
      },
 
      // 导出问题处理率
@@ -70,8 +75,12 @@ export default {
      // 导出超时统计
      *timeDownload({ payload }, { call, put }) {
        return yield call(timeoutDownload,payload);
-     }
+     },
+     // 导出问题工单解决进度管控统计结果
 
+    *solveschedule({ payload }, { call, put }) {
+        return yield call(solvescheduleDownload,payload);
+      },
     
 
   },
@@ -96,6 +105,13 @@ export default {
     return {
       ...state,
       timeoutArr: action.payload.data
+    }
+  },
+
+  handlingratedata(state,action) {
+    return {
+      ...state,
+      handlingratedata: action.payload.data
     }
   }
   },

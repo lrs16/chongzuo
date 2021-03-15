@@ -95,13 +95,16 @@ function Besolved(props) {
       { 
         status, 
         type, 
-        handleStatu, 
+        handleDeptId, 
         timeStatus,
-        problem
+        problem,
+        handlerId,
+        handleProcessGroupType
        } },
     dispatch,
     queryArr,
     handleList,
+    handleArr,
     keyVallist,
     prioritylist,
     scopeList,
@@ -113,18 +116,63 @@ function Besolved(props) {
   const [paginations, setPaginations] = useState({ current: 1, pageSize: 10 });
   const [selectedRows, setSelectedRows] = useState([]);
   sign = problem;
-  const getQuery = () => {
-    dispatch({
-      type: (sign === 'timeout') ?'problemmanage/handlequeryList': 'problemmanage/queryList',
-      payload: {
-        // sign,
-        pageNum: paginations.current,
-        pageSize: paginations.pageSize,
-        status,
-        type,
-        timeStatus
-      },
-    });
+  const getQuery = (values, page, pageSize,search) => {
+    if(search) {
+      dispatch({
+        type: 'problemmanage/queryList',
+        payload: {
+          ...values,
+          pageNum: paginations.current,
+          pageSize: paginations.pageSize
+        },
+      });
+    } else {
+      switch (sign) {
+        case 'timeout':
+          dispatch({
+            type: 'problemmanage/handlequeryList',
+            payload: {
+              pageNum: paginations.current,
+              pageSize: paginations.pageSize,
+              status,
+              type,
+              timeStatus
+            },
+          });
+          break;
+        case undefined:
+        case 'class':
+        case 'status':
+          dispatch({
+            type: 'problemmanage/queryList',
+            payload: {
+              pageNum: paginations.current,
+              pageSize: paginations.pageSize,
+              status,
+              type,
+              timeStatus
+            },
+          });
+          break;
+        case 'handle':
+          dispatch({
+            type: 'problemmanage/handleData',
+            payload: {
+              pageNum: paginations.current,
+              pageSize: paginations.pageSize,
+              handlerId,
+              status,
+              handleDeptId,
+              handleProcessGroupType
+            },
+          });
+          break;
+      
+        default:
+          break;
+      }
+    }
+   
   };
 
   const getSourceapi = (dictModule, dictType) => {
@@ -173,6 +221,7 @@ function Besolved(props) {
   }
 
   useEffect(() => {
+    timeoutSearch = '';
     getQuery();
     getSource();
     gettype();
@@ -181,20 +230,6 @@ function Besolved(props) {
     getProject();
     getorder();
   }, []);
-
-  const getList = () => {
-    switch (sign) {
-      case 'class':
-        getQuery();
-        break;
-      case 'status':
-        getQuery();
-        break;
-      default:
-        getQuery();
-        break;
-    }
-  }
 
   const handleReset = () => {
     resetFields();
@@ -211,40 +246,31 @@ function Besolved(props) {
           pageNum: page,
           type:sign === 'class'?type:values.type,
           status:sign === 'status'?status:values.status,
-          timeStatus:sign === 'timeout'?timeStatus:''
+          timeStatus:sign === 'timeout'?timeStatus:'',
         },
       })
-   
-  }
-  const handlequeryList = (values, page, pageSize) => {
-    //  不等于undefined
-    return dispatch({
-      type: 'problemmanage/handlequeryList',
-      payload: {
-        sign,
-        ...values,
-        pageSize,
-        pageNum: page,
-        timeStatus:sign === 'timeout'?status:'',
-        status,
-        type
-      },
-    })
   }
 
   const searchdata = (values, page, pageSize,search) => {
-    // if(sign !== 'timeout') {
-      // sign = 'nottimeout';
       if(sign === 'timeout' && search === 'search') {
         timeoutSearch = 'search';
       }
-      queryList(values, page, pageSize);
-    // }
-    // if (problem === 'timeout') {
-    //   sign = 'notclass';
-    //   handlequeryList(values, page, pageSize);
-    // }
-
+      if(sign === 'handle' && search === 'search') {
+        timeoutSearch = 'search';
+      }
+      switch (sign) {
+        case undefined:
+        case 'timeout':
+        case 'class':
+        case 'status':
+          queryList(values, page, pageSize,search);
+          break;
+        case 'handle':
+          getQuery(values, page, pageSize,search);
+          break;
+        default:
+          break;
+      }
    
   };
 
@@ -272,12 +298,6 @@ function Besolved(props) {
     });
   };
 
-  // const rowSelection = {
-  //   onChange: (selectedRowKeys, select) => {
-  //     setSelectedRows(select);
-  //   },
-  // };
-
 
   const pagination = {
     showSizeChanger: true,
@@ -289,14 +309,15 @@ function Besolved(props) {
     onChange: page => changePage(page),
   };
 
-  // const handlepagination = {
-  //   showSizeChanger: true,
-  //   onShowSizeChange: (page, pageSize) => onShowSizeChange(page, pageSize),
-  //   current: paginations.current,
-  //   pageSize: paginations.pageSize,
-  //   total: handleList.length,
-  //   onChange: page => changePage(page),
-  // };
+  const handlepagination = {
+    showSizeChanger: true,
+    onShowSizeChange: (page, pageSize) => onShowSizeChange(page, pageSize),
+    current: paginations.current,
+    pageSize: paginations.pageSize,
+    total: handleArr.length,
+    showTotal: total => `总共  ${total}  条记录`,
+    onChange: page => changePage(page),
+  };
 
   const handleSearch = (search) => {
     setPaginations({
@@ -606,14 +627,31 @@ function Besolved(props) {
         } */}
 
         {/* { */}
-          {/* // problem === undefined && ( */}
-            <Table
+          {
+            (sign === 'timeout' || sign === 'class' || sign === 'status'|| sign === undefined || timeoutSearch ===' timeoutSearch' || (sign === 'handle' && timeoutSearch ==='search')) && (
+              <Table
               loading={loading}
               columns={columns}
               dataSource={(sign === 'timeout' && timeoutSearch ==='')?handleList:queryArr.rows}
               rowKey={record => record.id}
               pagination={pagination}
             />
+
+            )
+          }
+  
+            {
+              (sign === 'handle' && timeoutSearch ==='') && (
+                <Table
+                loading={loading}
+                columns={columns}
+                dataSource={handleArr}
+                rowKey={record => record.id}
+                pagination={handlepagination}
+              />
+              )
+            }
+          
           {/* // ) */}
         {/* } */}
 
@@ -629,6 +667,7 @@ export default Form.create({})(
   connect(({ problemmanage, problemdropdown, loading }) => ({
     queryArr: problemmanage.queryArr,
     handleList: problemmanage.handleList,
+    handleArr: problemmanage.handleArr,
     keyVallist: problemdropdown.keyVallist,
     typelist: problemdropdown.typelist,
     prioritylist: problemdropdown.prioritylist,

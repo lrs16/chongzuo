@@ -34,9 +34,9 @@ export async function classDownload(params) {
   })
 }
 
-//  问题处理率
+//  问题解决管控表
 export async function handleGrate(params) {
-  return request(`/problem/stat/statOrderByHandled`,{
+  return request(`/problem/stat/statOrderByHandleProgress`,{
     method:'POST',
     body:JSON.stringify(params)
   })
@@ -62,6 +62,16 @@ export async function timeoutList(params) {
 //  超时统计的导出
 export async function timeoutDownload(params) {
   return request(`/problem/stat/expStatOrderByTime`,{
+    method: 'POST',
+    body:JSON.stringify(params),
+    responseType:'blob'
+    
+  })
+}
+
+//  导出问题工单解决进度管控统计结果
+export async function solvescheduleDownload(params) {
+  return request(`/problem/stat/expStatOrderByHandleProgress`,{
     method: 'POST',
     body:JSON.stringify(params),
     responseType:'blob'

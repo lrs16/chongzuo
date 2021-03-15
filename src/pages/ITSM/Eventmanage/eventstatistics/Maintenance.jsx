@@ -20,71 +20,7 @@ let starttime;
 let monthStarttime;
 let endTime;
 const sign = 'maintenanceservice';
-const columns = [
-  {
-    title: '一级对象',
-    dataIndex: 'first_object',
-    key: 'first_object',
-  },
-  {
-    title: '二级对象',
-    dataIndex: 'second_object',
-    key: 'second_object',
-  },
-  {
-    title: '上周工单数',
-    dataIndex: 'last_num',
-    key: 'last_num',
-    render: (text, record) => {
-      if(record.second_object !== '合计') {
-        return <Link
-        to={{
-          pathname: '/ITSM/eventmanage/query',
-          query: {
-            sign: 'last',
-            time1: record.last_start_time,
-            time2: record.last_end_time,
-            eventObject: record.object_name
-          }
-        }}
-      >
-        {text}
-      </Link>
-      }
-      return <span>{text}</span>
-    }
-  },
-  {
-    title: '本周工单数',
-    dataIndex: 'now_num',
-    key: 'now_num',
-    render: (text, record) => {
-      if(record.second_object !== '合计') {
-        return <Link
-        to={{
-          pathname: '/ITSM/eventmanage/query',
-          query: {
-            sign: 'last',
-            time1: record.now_start_time,
-            time2: record.now_end_time,
-            eventObject: record.object_name
-          }
-        }}
-      >
-        {text}
-      </Link>
-      }
-      if(record.second_object === '合计') {
-        return <span>{text}</span>
-      }
-    }
-  },
-  {
-    title: '环比',
-    dataIndex: 'points_count',
-    key: 'points_count',
-  },
-];
+
 
 const IconFont = Icon.createFromIconfontCN({
   scriptUrl: iconfontUrl,
@@ -97,6 +33,88 @@ function Maintenance(props) {
     maintenanceArr,
     dispatch
   } = props;
+  const tableHeadweek = tabActiveKey === 'week' ? '上周工单数' : '上月工单数';
+  const tableHeadmonth = tabActiveKey === 'week' ? '本周工单数' : '本月工单数';
+
+
+
+  const columns = [
+    {
+      title: '一级对象',
+      dataIndex: 'first_object',
+      key: 'first_object',
+    },
+    {
+      title: '二级对象',
+      dataIndex: 'second_object',
+      key: 'second_object',
+      render: (text, record) => {
+        if (record.second_object === '合计') {
+          return <span style={{ fontWeight: 700 }}>{text}</span>
+        }
+        return <span>{text}</span>
+      }
+    },
+    {
+      title: tableHeadweek,
+      dataIndex: 'last_num',
+      key: 'last_num',
+      render: (text, record) => {
+        if (record.second_object !== '合计') {
+          return <Link
+            to={{
+              pathname: '/ITSM/eventmanage/query',
+              query: {
+                sign: 'last',
+                time1: record.last_start_time,
+                time2: record.last_end_time,
+                eventObject: record.object_name
+              }
+            }}
+          >
+            {text}
+          </Link>
+        }
+        return <span style={{ fontWeight: 700 }}>{text}</span>
+      }
+    },
+    {
+      title: tableHeadmonth,
+      dataIndex: 'now_num',
+      key: 'now_num',
+      render: (text, record) => {
+        if (record.second_object !== '合计') {
+          return <Link
+            to={{
+              pathname: '/ITSM/eventmanage/query',
+              query: {
+                sign: 'last',
+                time1: record.now_start_time,
+                time2: record.now_end_time,
+                eventObject: record.object_name
+              }
+            }}
+          >
+            {text}
+          </Link>
+        }
+        if (record.second_object === '合计') {
+          return <span style={{ fontWeight: 700 }}>{text}</span>
+        }
+      }
+    },
+    {
+      title: '环比',
+      dataIndex: 'points_count',
+      key: 'points_count',
+      render: (text, record) => {
+        if (record.second_object === '合计') {
+          return <span style={{ fontWeight: 700 }}>{text}</span>
+        }
+        return <span>{text}</span>
+      }
+    },
+  ];
 
   const onChange = (date) => {
     if (tabActiveKey === 'week') {
@@ -124,10 +142,10 @@ function Maintenance(props) {
   const download = () => {
     dispatch({
       type: 'eventstatistics/downloadMaintenance',
-      payload:{
-        time1:starttime,
-        time2:endTime,
-        type:tabActiveKey,
+      payload: {
+        time1: starttime,
+        time2: endTime,
+        type: tabActiveKey,
 
       }
     }).then(res => {
@@ -199,7 +217,7 @@ function Maintenance(props) {
                   style={{ fontSize: '4em' }}
                 />
                 <div style={{ display: 'flex', flexDirection: 'column' }}>
-                  <span>{tabActiveKey === 'week'?'上周':'上月'}</span>
+                  <span>{tabActiveKey === 'week' ? '上周' : '上月'}</span>
                   <span style={{ fontWeight: 900, fontSize: 22 }}>{maintenanceArr.last_count}</span>
                 </div>
               </div>
@@ -209,15 +227,15 @@ function Maintenance(props) {
           <Col className="gutter-row" span={8}>
 
             <div className="gutter-box">
-       
-              <div style={{ display: 'flex', flexDirection: 'row',postion:'relative' }}>
-              <Divider type="vertical" style={{height:'50px',postion:'position',marginRight:'50px'}} />
+
+              <div style={{ display: 'flex', flexDirection: 'row', postion: 'relative' }}>
+                <Divider type="vertical" style={{ height: '50px', postion: 'position', marginRight: '50px' }} />
                 <IconFont
                   type="iconshangzhoudingdan"
                   style={{ fontSize: '4em' }}
                 />
                 <div style={{ display: 'flex', flexDirection: 'column' }}>
-                  <span>{tabActiveKey === 'month'?'本月':'本周'}</span>
+                  <span>{tabActiveKey === 'month' ? '本月' : '本周'}</span>
                   <span style={{ fontWeight: 900, fontSize: 22 }}>{maintenanceArr.now_count}</span>
                 </div>
               </div>
@@ -225,8 +243,8 @@ function Maintenance(props) {
           </Col>
           <Col className="gutter-row" span={8}>
             <div className="gutter-box">
-              <div style={{ display: 'flex', flexDirection: 'row',postion:'relative'}}>
-              <Divider type="vertical" style={{height:'50px',postion:'position',marginRight:'50px'}} />
+              <div style={{ display: 'flex', flexDirection: 'row', postion: 'relative' }}>
+                <Divider type="vertical" style={{ height: '50px', postion: 'position', marginRight: '50px' }} />
                 <IconFont
                   type="iconicon-huanbifenxi"
                   style={{ fontSize: '4em' }}
@@ -251,8 +269,7 @@ function Maintenance(props) {
                       {getFieldDecorator('time1', {
                         initialValue: moment(starttime)
                       })(<DatePicker
-                        // format="YYYY-MM-DD"
-                        // allowClear='false'
+                        allowClear={false}
                         // placeholder='请选择'
                         onChange={onChange}
                       />)}
@@ -265,7 +282,10 @@ function Maintenance(props) {
                         getFieldDecorator('time2', {
                           initialValue: moment(endTime)
                         })
-                          (<DatePicker disabled />)
+                          (<DatePicker
+                            allowClear={false}
+                            disabled
+                          />)
                       }
                     </Form.Item>
 

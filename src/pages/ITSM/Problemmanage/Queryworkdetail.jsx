@@ -77,7 +77,7 @@ function Queryworkdetail(props) {
       extra={
         <>
           <Button style={{ marginRight: 8 }}>
-            <Link to="/ITSM/problemmanage/besolved">返回</Link>
+            <Link to="/ITSM/problemmanage/problemquery">返回</Link>
           </Button>
         </>
       }

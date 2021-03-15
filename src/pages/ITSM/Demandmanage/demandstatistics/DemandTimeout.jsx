@@ -94,7 +94,7 @@ function DemandTimeout(props) {
     day2.setTime(day2.getTime());
     endTime = `${day2.getFullYear()}-${(day2.getMonth() + 1)}-${day2.getDate()}`;
     const date2 = new Date(day2);
-    date2.setDate(day2.getDate() - 7);
+    date2.setDate(day2.getDate() - 6);
     startTime = `${date2.getFullYear()}-${(date2.getMonth() + 1)}-${date2.getDate()}`;
   }
 

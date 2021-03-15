@@ -23,6 +23,12 @@ const columns = [
     title: '一级对象',
     dataIndex: 'first_object',
     key: 'first_object',
+    render: (text, record) => {
+      if (record.first_object !== '合计') {
+        return <span>{text}</span>
+      }
+      return <span style={{fontWeight:700}}>{text}</span>
+    }
   },
   {
     title: '二级对象',
@@ -49,7 +55,7 @@ const columns = [
           {text}
         </Link>
       }
-      return <span>{text}</span>
+      return <span style={{fontWeight:700}}>{text}</span>
     }
   },
 ];
@@ -131,7 +137,7 @@ function Workordertopn(props) {
                     initialValue: startTime ? moment(startTime) : ''
                   })(<DatePicker
                     format="YYYY-MM-DD"
-                    allowClear='false'
+                    allowClear={false}
                     onChange={onChange}
                   />)}
                 </Form.Item>
@@ -143,7 +149,9 @@ function Workordertopn(props) {
                     getFieldDecorator('time2', {
                       initialValue: endTime ? moment(endTime) : ''
                     })
-                      (<DatePicker disabled />)
+                      (<DatePicker 
+                        allowClear={false}
+                        disabled />)
                   }
                 </Form.Item>
 

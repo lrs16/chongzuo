@@ -200,10 +200,12 @@ export async function querkeyVal(dictModule, dictType) {
 }
 
 //  处理率的列表
-export async function handleGratelist(handleStatus) {
-  return request(`/problem/stat/getOrderByHandledList`,{
+export async function handleGratelist(params) {
+  return request(`/problem/stat/getOrderByHandleProgress`,{
     method:'POST',
-    body:JSON.stringify(handleStatus)
+    body:JSON.stringify(params)
   })
 }
+
+//  
 
