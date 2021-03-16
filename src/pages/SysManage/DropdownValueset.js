@@ -1,26 +1,17 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
-import {
-  Card,
-  Table,
-  Button,
-  Message,
-  Row,
-  Col,
-  Divider,
-  Popconfirm,
-} from 'antd';
+import { Card, Table, Button, Message, Row, Col, Divider, Popconfirm } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import DictTree from '@/components/DictTree';
 import DropdownValueEdit from './components/DropdownValueEdit';
 import DropdownValueAdd from './components/DropdownValueAdd';
 
-@connect(({ umpsdropdown, loading }) => ({
+@connect(({ umpsdropdown, dicttree, loading }) => ({
   umpsdropdown,
+  dicttree,
   loading: loading.models.umpsdropdown,
 }))
-
 class DropdownValueset extends Component {
   state = {
     current: 1,
@@ -39,7 +30,24 @@ class DropdownValueset extends Component {
 
   componentDidMount() {
     this.getlist();
+    this.getall();
   }
+
+  getall = () => {
+    this.props.dispatch({
+      type: 'dicttree/fetch',
+      payload: {
+        params: {
+          pid: '',
+          dictModule: '',
+          dictType: '',
+          dictCode: '',
+          dictName: '',
+          dictRemarks: '',
+        },
+      },
+    });
+  };
 
   getlist = () => {
     const page = this.state.current;
@@ -53,12 +61,13 @@ class DropdownValueset extends Component {
         limit,
         bodyParams,
       },
-    })
+    });
   };
 
-  getChildValue = (val) => { // 获取pid
+  getChildValue = val => {
+    // 获取pid
     const pid = val[0];
-    this.setState({ parentId: pid })
+    this.setState({ parentId: pid });
     const { dispatch } = this.props;
     const page = this.state.current;
     const limit = this.state.pageSize;
@@ -73,7 +82,7 @@ class DropdownValueset extends Component {
         bodyParams,
       },
     });
-  }
+  };
 
   onShowSizeChange = (current, pageSize) => {
     this.props.dispatch({
@@ -103,7 +112,8 @@ class DropdownValueset extends Component {
     }, 0);
   };
 
-  handleDelete = (id) => { // 删除
+  handleDelete = id => {
+    // 删除
     const { dispatch } = this.props;
     return dispatch({
       type: 'umpsdropdown/remove',
@@ -112,13 +122,15 @@ class DropdownValueset extends Component {
       if (res.code === 200) {
         Message.success(res.msg);
         this.getlist();
+        this.getall();
       } else {
         Message.error(res.msg);
       }
     });
   };
 
-  handleEdite = (values, record) => { // 编辑
+  handleEdite = (values, record) => {
+    // 编辑
     const { dispatch } = this.props;
     const { dictCode, dictModule, dictName, dictRemarks, dictSort, dictType } = values;
     const { parentId } = this.state;
@@ -129,12 +141,20 @@ class DropdownValueset extends Component {
     return dispatch({
       type: 'umpsdropdown/edite',
       payload: {
-        dictCode, dictModule, dictName, dictRemarks, dictSort, dictType, pid, id: ids
+        dictCode,
+        dictModule,
+        dictName,
+        dictRemarks,
+        dictSort,
+        dictType,
+        pid,
+        id: ids,
       },
     }).then(res => {
       if (res.code === 200) {
         Message.success(res.msg);
         this.getlist();
+        this.getall();
       } else {
         Message.error(res.msg);
       }
@@ -142,7 +162,8 @@ class DropdownValueset extends Component {
   };
 
   // eslint-disable-next-line consistent-return
-  handleAdd = values => { // 添加
+  handleAdd = values => {
+    // 添加
     const { dispatch } = this.props;
     const { dictCode, dictModule, dictName, dictRemarks, dictSort, dictState, dictType } = values;
     const { parentId } = this.state;
@@ -151,12 +172,20 @@ class DropdownValueset extends Component {
       return dispatch({
         type: 'umpsdropdown/fetchAdd',
         payload: {
-          dictCode, dictModule, dictName, dictRemarks, dictSort, dictState, dictType, pid
+          dictCode,
+          dictModule,
+          dictName,
+          dictRemarks,
+          dictSort,
+          dictState,
+          dictType,
+          pid,
         },
       }).then(res => {
         if (res.code === 200) {
           Message.success(res.msg);
           this.getlist();
+          this.getall();
         } else {
           Message.error(res.msg);
         }
@@ -167,6 +196,7 @@ class DropdownValueset extends Component {
   render() {
     const {
       umpsdropdown: { list },
+      dicttree: { data },
     } = this.props;
     const dataSource = list.rows;
 
@@ -260,7 +290,7 @@ class DropdownValueset extends Component {
         title: '创建时间',
         dataIndex: 'createTime',
         key: 'createTime',
-        sorter: (a, b) => a.name.length - b.name.length,
+        sorter: (a, b) => a.createTime - b.createTime,
         render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
         width: 200,
       },
@@ -268,7 +298,7 @@ class DropdownValueset extends Component {
         title: '更新时间',
         dataIndex: 'updateTime',
         key: 'updateTime',
-        sorter: (a, b) => a.name.length - b.name.length,
+        sorter: (a, b) => a.updateTime - b.updateTime,
         render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
         width: 200,
       },
@@ -280,10 +310,7 @@ class DropdownValueset extends Component {
         fixed: 'right',
         render: (text, record) => (
           <div>
-            <DropdownValueEdit
-              record={record}
-              onSumit={(values) => this.handleEdite(values, record)}
-            >
+            <DropdownValueEdit record={record} onSumit={values => this.handleEdite(values, record)}>
               <a type="link">编辑</a>
             </DropdownValueEdit>
             <Divider type="vertical" />
@@ -297,19 +324,16 @@ class DropdownValueset extends Component {
 
     return (
       <PageHeaderWrapper>
-        <Row
-          style={{ background: '#f1f1f1' }}>
+        <Row style={{ background: '#f1f1f1' }}>
           <Col span={5}>
-            <Card 
+            <Card
               bordered={false}
               style={{
                 maxHeight: 750,
                 overflowY: 'auto',
               }}
             >
-              <DictTree
-                toFatherValue={this.getChildValue}
-              />
+              <DictTree toFatherValue={this.getChildValue} data={data} />
             </Card>
           </Col>
           <Col span={19}>
@@ -319,10 +343,9 @@ class DropdownValueset extends Component {
                   style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
                   type="dashed"
                   icon="plus"
-
                 >
                   添加字典
-                  </Button>
+                </Button>
               </DropdownValueAdd>
 
               <Table

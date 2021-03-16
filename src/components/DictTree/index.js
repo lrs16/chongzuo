@@ -1,7 +1,7 @@
 /* eslint-disable no-restricted-syntax */
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Tree } from 'antd';
+import { Tree, Spin } from 'antd';
 // import styles from './index.less';
 
 // 展示组织结构树
@@ -11,28 +11,28 @@ const { TreeNode } = Tree;
   loading: loading.models.dicttree,
 }))
 class DeptTree extends Component {
-  state = {
-    // tree需要的参数
-    params: {
-      pid: '',
-      dictModule: '',
-      dictType: '',
-      dictCode: '',
-      dictName: '',
-      dictRemarks: '',
-    },
-  };
+  // state = {
+  //   // tree需要的参数
+  //   params: {
+  //     pid: '',
+  //     dictModule: '',
+  //     dictType: '',
+  //     dictCode: '',
+  //     dictName: '',
+  //     dictRemarks: '',
+  //   },
+  // };
 
-  componentDidMount() {
-    const { params } = this.state;
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'dicttree/fetch',
-      payload: {
-        params,
-      },
-    });
-  }
+  // componentDidMount() {
+  //   const { params } = this.state;
+  //   const { dispatch } = this.props;
+  //   dispatch({
+  //     type: 'dicttree/fetch',
+  //     payload: {
+  //       params,
+  //     },
+  //   });
+  // }
 
   //  处理数据，生成更多的父子节点，未知？
   toTree = data => {
@@ -80,7 +80,9 @@ class DeptTree extends Component {
 
   render() {
     const {
-      dicttree: { data },
+      //  dicttree: { data },
+      data,
+      loading,
     } = this.props;
     const dataSource = [...data];
     const returnTree = this.toTree(dataSource);
@@ -92,15 +94,19 @@ class DeptTree extends Component {
     // })
     return (
       <>
-        {returnTree.length > 0 && (
-          <Tree
-            defaultExpandAll
-            // defaultSelectedKeys={hostId}
-            onSelect={this.onSelect}
-          >
-            {this.renderTreeNodes(returnTree)}
-          </Tree>
-        )}
+        <Spin spinning={loading}>
+          {returnTree.length > 0 && (
+            <Tree
+              // defaultExpandAll
+              // defaultExpandParent
+              defaultExpandedKeys={['0']}
+              // defaultSelectedKeys={hostId}
+              onSelect={this.onSelect}
+            >
+              {this.renderTreeNodes(returnTree)}
+            </Tree>
+          )}
+        </Spin>
       </>
     );
   }
