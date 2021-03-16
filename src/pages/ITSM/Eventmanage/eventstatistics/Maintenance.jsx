@@ -15,6 +15,7 @@ import Link from 'umi/link';
 import moment from 'moment';
 import iconfontUrl from '@/utils/iconfont';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import { CodeSandboxCircleFilled } from '_@ant-design_icons@4.3.0@@ant-design/icons';
 
 let starttime;
 let monthStarttime;
@@ -33,8 +34,22 @@ function Maintenance(props) {
     maintenanceArr,
     dispatch
   } = props;
+
   const tableHeadweek = tabActiveKey === 'week' ? '上周工单数' : '上月工单数';
   const tableHeadmonth = tabActiveKey === 'week' ? '本周工单数' : '本月工单数';
+
+  const { data } = maintenanceArr;
+  
+  if (data && data.length) {
+    for (let i = 0; i < data.length - 1; i++) {
+      for (let j = i + 1; j < data.length; j++) {
+        if (data[i].first_object === data[j].first_object) {
+          data[j].first_object = '';
+        }
+      }
+    }
+  }
+
 
 
 
@@ -180,9 +195,18 @@ function Maintenance(props) {
     }
   }
 
+  //  问题来源
+  const getSource = () => {
+    dispatch({
+      type: 'eventstatistics/primaryobjectList',
+      payload: { dictModule:'order', dictType:'object.node' }
+    });
+  }
+
   useEffect(() => {
     defaultTime();
     handleListdata();
+    getSource();
   }, [tabActiveKey])
 
   const tabList = [
@@ -213,12 +237,12 @@ function Maintenance(props) {
             <div className="gutter-box">
               <div style={{ display: 'flex', flexDirection: 'row' }}>
                 <IconFont
-                  type="icondingdan"
+                  type="iconshangzhoudingdan"
                   style={{ fontSize: '4em' }}
                 />
-                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', marginLeft: '16px' }}>
                   <span>{tabActiveKey === 'week' ? '上周' : '上月'}</span>
-                  <span style={{ fontWeight: 900, fontSize: 22 }}>{maintenanceArr.last_count}</span>
+                  <span style={{ fontWeight: 500, fontSize: 22 }}>{maintenanceArr.last_count}</span>
                 </div>
               </div>
             </div>
@@ -231,27 +255,27 @@ function Maintenance(props) {
               <div style={{ display: 'flex', flexDirection: 'row', postion: 'relative' }}>
                 <Divider type="vertical" style={{ height: '50px', postion: 'position', marginRight: '50px' }} />
                 <IconFont
-                  type="iconshangzhoudingdan"
+                  type="icondingdan"
                   style={{ fontSize: '4em' }}
                 />
-                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', marginLeft: '16px', textAlign: 'center' }}>
                   <span>{tabActiveKey === 'month' ? '本月' : '本周'}</span>
-                  <span style={{ fontWeight: 900, fontSize: 22 }}>{maintenanceArr.now_count}</span>
+                  <span style={{ fontWeight: 500, fontSize: 22 }}>{maintenanceArr.now_count}</span>
                 </div>
               </div>
             </div>
           </Col>
           <Col className="gutter-row" span={8}>
             <div className="gutter-box">
-              <div style={{ display: 'flex', flexDirection: 'row', postion: 'relative' }}>
+              <div style={{ display: 'flex', flexDirection: 'row', postion: 'relative', marginLeft: '16px', textAlign: 'center' }}>
                 <Divider type="vertical" style={{ height: '50px', postion: 'position', marginRight: '50px' }} />
                 <IconFont
                   type="iconicon-huanbifenxi"
                   style={{ fontSize: '4em' }}
                 />
-                <div style={{ display: 'flex', flexDirection: 'column' }}>
-                  <span>百分比</span>
-                  <span style={{ fontWeight: 900, fontSize: 22 }}>{maintenanceArr.points_count}</span>
+                <div style={{ display: 'flex', flexDirection: 'column', marginLeft: '16px', textAlign: 'center' }}>
+                  <span>环比</span>
+                  <span style={{ fontWeight: 500, fontSize: 22 }}>{maintenanceArr.points_count}</span>
                 </div>
               </div>
             </div>
@@ -355,7 +379,7 @@ function Maintenance(props) {
 
         <Table
           columns={columns}
-          dataSource={maintenanceArr.data}
+          dataSource={data}
           rowKey={record => record.event_object}
         />
       </Card>
@@ -365,6 +389,6 @@ function Maintenance(props) {
 
 export default Form.create({})(
   connect(({ eventstatistics }) => ({
-    maintenanceArr: eventstatistics.maintenanceArr
+    maintenanceArr: eventstatistics.maintenanceArr,
   }))(Maintenance),
 );

@@ -8,7 +8,8 @@ import {
   eventserviceDownload,
   eventselfhandleDownload,
   eventtopnDownload,
-  eventhandlerateDownload
+  eventhandlerateDownload,
+  querkeyVal
 } from '../services/statistics';
 
 export default {
@@ -21,6 +22,7 @@ export default {
     ordertopnArr:[],
     orderrateArr:[],
     eventServicearr:[],
+    primaryObject:[]
   },
 
   effects: {
@@ -91,7 +93,7 @@ export default {
     //   下载事件处理率
     *downloadEventhandlerate({payload},{ call, put }) {
       return yield call(eventhandlerateDownload, payload)
-    }
+    },
 
     
   },

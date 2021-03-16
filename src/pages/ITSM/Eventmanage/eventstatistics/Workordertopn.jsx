@@ -68,6 +68,27 @@ function Workordertopn(props) {
     dispatch
   } = props;
 
+  let copy = 1;
+  let zhibiao = 1;
+  let Interface = 1;
+  let advancedFeatures = 1;
+  let terminalSettings = 1;
+  // let advancedFeatures = 1;
+  if (ordertopnArr && ordertopnArr.length) {
+    for (let i = 0; i < ordertopnArr.length - 1; i++) {
+      for (let j = i + 1; j < ordertopnArr.length; j++) {
+        if (ordertopnArr[i].first_object === ordertopnArr[j].first_object) {
+          ordertopnArr[j].first_object = '';
+        }
+      }
+    }
+  }
+
+
+
+
+
+
   const onChange = (date) => {
       const date1 = new Date(date._d);
       const date2 = new Date(date._d);

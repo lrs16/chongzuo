@@ -76,5 +76,14 @@ export async function eventhandlerateDownload(params) {
   })
 }
 
+// 数据字典结构树 /sys/dict/keyVal
+export async function querkeyVal(params) {
+  return request(`/sys/dict/keyVal`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+  });
+}
+
 
 
