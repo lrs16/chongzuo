@@ -375,10 +375,10 @@ export default {
                       component: './ITSM/Demandmanage/Details',
                     },
                     {
-                      path:'/ITSM/demandmanage/demandstatistics',
-                      name:'需求统计',
-                      icon:'cloud-server',
-                      routes:[
+                      path: '/ITSM/demandmanage/demandstatistics',
+                      name: '需求统计',
+                      icon: 'cloud-server',
+                      routes: [
                         {
                           path: '/ITSM/demandmanage/demandstatistics/demandrequirement',
                           name: '功能需求统计',
@@ -403,8 +403,8 @@ export default {
                           icon: 'cloud-server',
                           component: './ITSM/Demandmanage/demandstatistics/DemandTimeout',
                         },
-                      ]
-                    }
+                      ],
+                    },
                   ],
                 },
                 {
@@ -963,6 +963,25 @@ export default {
                   name: '报障用户管理',
                   icon: 'smile',
                   component: './SysManage/DisableduserManage',
+                },
+                {
+                  path: '/sysmanage/timerule',
+                  name: '短信维护',
+                  icon: 'smile',
+                  routes: [
+                    {
+                      path: '/sysmanage/timerule/rules',
+                      name: '短信规则',
+                      icon: 'smile',
+                      component: './SysManage/TimeRule',
+                    },
+                    {
+                      path: '/sysmanage/timerule/orderday',
+                      name: '工作日程',
+                      icon: 'smile',
+                      component: './SysManage/TimeRule/OrderDay',
+                    },
+                  ],
                 },
               ],
             },

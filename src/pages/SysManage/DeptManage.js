@@ -305,19 +305,17 @@ class DeptManage extends Component {
               width={220}
               style={{
                 overflow: 'auto',
-                height: '100vh',
+                height: 'calc(100vh - 177px)',
               }}
             >
-              <Sider theme="light">
-                <Tree loadData={this.onLoadData} onSelect={this.handleClick}>
-                  {this.renderTreeNodes(this.state.treeData)}
-                </Tree>
-              </Sider>
+              <Tree loadData={this.onLoadData} onSelect={this.handleClick}>
+                {this.renderTreeNodes(this.state.treeData)}
+              </Tree>
             </Sider>
             <Content
               style={{
                 overflow: 'auto',
-                height: '100vh',
+                height: 'calc(100vh - 177px)',
                 background: '#fff',
               }}
             >

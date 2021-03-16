@@ -305,3 +305,35 @@ export async function deleteDisableduser(params) {
     requestType: 'form',
   });
 }
+
+// 新建短信规则
+export async function saveTimerule(params) {
+  return request(`/common/timerule/save`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+  });
+}
+
+// 修改短信规则
+export async function updateTimerule(params) {
+  return request(`/common/timerule/update`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+  });
+}
+
+// 删除短信规则
+export async function deleteTimerule(params) {
+  return request(`/common/timerule/delete`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+  });
+}
+
+// 查询短信规则
+export async function queryTimerule(pageIndex, pageSize) {
+  return request(`/common/timerule/query?pageIndex=${pageIndex}&pageSize=${pageSize}`);
+}

@@ -266,32 +266,30 @@ function ToDolist(props) {
               </>
             )}
             {expand === false && (
-              <Col span={8}>
-                <Form.Item>
-                  <Button type="primary" onClick={handleSearch}>
-                    查 询
-                  </Button>
-                  <Button style={{ marginLeft: 8 }} onClick={handleReset}>
-                    重 置
-                  </Button>
-                  <Button
-                    style={{ marginLeft: 8 }}
-                    type="link"
-                    onClick={() => {
-                      setExpand(!expand);
-                    }}
-                  >
-                    {expand ? (
-                      <>
-                        关 闭 <UpOutlined />
-                      </>
-                    ) : (
-                      <>
-                        展 开 <DownOutlined />
-                      </>
-                    )}
-                  </Button>
-                </Form.Item>
+              <Col span={8} style={{ paddingTop: 4 }}>
+                <Button type="primary" onClick={handleSearch}>
+                  查 询
+                </Button>
+                <Button style={{ marginLeft: 8 }} onClick={handleReset}>
+                  重 置
+                </Button>
+                <Button
+                  style={{ marginLeft: 8 }}
+                  type="link"
+                  onClick={() => {
+                    setExpand(!expand);
+                  }}
+                >
+                  {expand ? (
+                    <>
+                      关 闭 <UpOutlined />
+                    </>
+                  ) : (
+                    <>
+                      展 开 <DownOutlined />
+                    </>
+                  )}
+                </Button>
               </Col>
             )}
             {expand === true && (
