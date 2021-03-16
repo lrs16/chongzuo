@@ -20,7 +20,6 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import SysUpload from '@/components/SysUpload'; // 附件下载组件
 import SysDict from '@/components/SysDict';
 import { getAndField } from '@/pages/SysManage/services/api';
-import { ConsoleSqlOutlined } from '_@ant-design_icons@4.3.0@@ant-design/icons';
 
 const { TextArea } = Input;
 const { Option } = Select;

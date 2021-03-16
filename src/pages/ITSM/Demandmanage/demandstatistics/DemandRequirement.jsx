@@ -12,7 +12,6 @@ import {
 import Link from 'umi/link';
 import moment from 'moment';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import { ConsoleSqlOutlined } from '_@ant-design_icons@4.3.0@@ant-design/icons';
 
 
 const { RangePicker } = DatePicker;

@@ -235,22 +235,6 @@ function Besolved(props) {
     resetFields();
   };
 
-  const queryList = (values, page, pageSize) => {
-
-    //  不等于undefined
-      return dispatch({
-        type: (sign !== 'timeout')?'problemmanage/queryList':'problemmanage/handlequeryList',
-        payload: {
-          ...values,
-          pageSize,
-          pageNum: page,
-          type:sign === 'class'?type:values.type,
-          status:sign === 'status'?status:values.status,
-          timeStatus:sign === 'timeout'?timeStatus:'',
-        },
-      })
-  }
-
   const searchdata = (values, page, pageSize,search) => {
       if(sign === 'timeout' && search === 'search') {
         timeoutSearch = 'search';
@@ -263,8 +247,6 @@ function Besolved(props) {
         case 'timeout':
         case 'class':
         case 'status':
-          queryList(values, page, pageSize,search);
-          break;
         case 'handle':
           getQuery(values, page, pageSize,search);
           break;
