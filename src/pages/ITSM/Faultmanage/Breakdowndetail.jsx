@@ -106,7 +106,6 @@ function Breakdownlist(props) {
 
   const rowSelection = {
     onChange: (selectedRowkeys, select) => {
-      console.log('select: ', select);
     }
   }
 

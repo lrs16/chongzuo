@@ -20,7 +20,7 @@ const { Option } = Select;
 let sign = '';
 let timeoutSearch = '';
 let searchSign;
-let pageChangesign = '';
+let initialParams = '';
 const columns = [
   {
     title: '问题编号',
@@ -136,7 +136,7 @@ function Besolved(props) {
           dispatch({
             type: 'problemmanage/queryList',
             payload: {
-              pageNum: page,
+              pageNum: initialParams?paginations.current:page,
               pageSize: paginations.pageSize,
               status,
               type,
@@ -176,13 +176,20 @@ function Besolved(props) {
   };
 
   const getinitiaQuery = () => {
+    if(sign) {
+      getQuery();
+    } else {
       dispatch({
         type: 'problemmanage/queryList',
         payload: {
+          status,
+          type,
+          timeStatus,
           pageNum: paginations.current,
           pageSize: paginations.pageSize,
         },
       });
+    }
     } 
 
   const getSourceapi = (dictModule, dictType) => {
@@ -233,6 +240,7 @@ function Besolved(props) {
   useEffect(() => {
     timeoutSearch = '';
     searchSign = '';
+    initialParams = 'initialParams';
     getinitiaQuery();
     getSource();
     gettype();
@@ -252,12 +260,13 @@ function Besolved(props) {
       type: 'problemmanage/queryList',
       payload: {
         ...values,
-        pageNum: paginations.current,
+        pageNum: page,
         pageSize: paginations.pageSize
       },
     });
   }
   const searchdata = (values, page, pageSize, search) => {
+    initialParams = '';
     if(search) {
       searchSign = 'searchSign';
     }
@@ -288,7 +297,6 @@ function Besolved(props) {
 
   };
 
-  // console.log(sign === 'handle' && timeoutSearch ==='','text');
 
   const onShowSizeChange = (page, pageSize) => {
     validateFields((err, values) => {
@@ -302,10 +310,10 @@ function Besolved(props) {
     });
   };
 
-  const changePage = (page,changePage) => {
+  const changePage = (page) => {
     validateFields((err, values) => {
       if (!err) {
-        searchdata(values, page,paginations.pageSize,changePage);
+        searchdata(values, page,paginations.pageSize);
       }
     });
     setPaginations({
@@ -322,7 +330,7 @@ function Besolved(props) {
     pageSize: paginations.pageSize,
     total: (sign === 'timeout' && timeoutSearch === '') ? handleList.length : queryArr.total,
     showTotal: total => `总共  ${total}  条记录`,
-    onChange: page => changePage(page),
+    onChange: (page) => changePage(page),
   };
 
   const handlepagination = {

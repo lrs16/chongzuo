@@ -38,8 +38,6 @@ const formItemLayout = {
 
 const { Option } = Select;
 let searchSign = '';
-let sign;
-
 // const faultStatusmap = ['待登记', '已登记', '已受理', '待审核', '审核中', '已审核', '待处理', '处理中', '已处理', '待总结', '总结中', '已总结', '待关闭', '关闭中', '已关闭'];
 // const sourceMap = ['系统告警', '巡检发现'];
 // const registerModelMap = ['配网采集', '主网采集', '终端掉线', '配网档案', '实用化指标', '账号缺陷'];
@@ -58,10 +56,6 @@ function QueryList(props) {
     relatedictArr, // 从汇总统计到的列表
     dispatch,
   } = props;
-  if(relatedictArr.length) {
-  }
-
-
 
   const [expand, setExpand] = useState(false);
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 10 }); // 分页state
@@ -164,61 +158,78 @@ function QueryList(props) {
     });
   };
 
-  const getinitiaQuerylists = () => {
+  const getinitiaQuerylists = (values, page, pageSize, searchdata) => {
     // 列表 列表接口
     dispatch({
       type: 'fault/getfaultQueryList',
       payload: {
-        pageNum: paginations.current,
+        ...values,
+        pageNum: searchSign ? page : paginations.current,
         pageSize: paginations.pageSize,
         status,
       },
     });
   };
 
-  
   //  故障类型的列表
   const faultList = (values, page, pageSize, searchdata) => {
-    dispatch({
-      type: 'faultstatics/fetchrelateDictList',
-      payload: {
-        ...values,
-        dictCode,
-        dictType,
-      },
-    });
+    if (searchSign) {
+      getinitiaQuerylists(values, page, pageSize);
+    } else {
+      switch (dictType) {
+        case 'type':
+        case 'handle':
+          dispatch({
+            type: dictType === 'type' ? 'faultstatics/fetchrelateDictList' : 'faultstatics/fetchfaulthandleList',
+            payload: {
+              ...values,
+              dictCode,
+              dictType,
+              status
+            },
+          });
+          break;
+        default:
+          break;
+      }
+    }
   };
 
   //  故障状态的列表
-  const faulthandleList = (values, page, pageSize, searchdata) => {
-    dispatch({
-      type: 'faultstatics/fetchfaulthandleList',
-      payload: {
-        ...values,
-        status,
-      },
-    });
-  };
+  // const faulthandleList = (values, page, pageSize, searchdata) => {
+  //   dispatch({
+  //     type: 'faultstatics/fetchfaulthandleList',
+  //     payload: {
+  //       ...values,
+  //       status,
+  //     },
+  //   });
+  // };
 
   useEffect(() => {
     searchSign = ''
     switch (dictType) {
       case 'type':
+      case 'handle':
         faultList();
         break;
       case undefined:
         getinitiaQuerylists();
         break;
-      case 'handle':
-        faulthandleList();
-        break;
+      // case 'handle':
+      //   faulthandleList();
+      //   break;
       default:
         break;
     }
   }, []);
 
-  const searchdata = (values, page, pageSize, searchdata) => {
-    if (dictType === undefined) {
+  const searchdata = (values, page, pageSize, search) => {
+    if (search) {
+      searchSign = 'searchSign';
+    }
+
+    if (search) {
       searchSign = 'have';
       dispatch({
         type: 'fault/getTosearchfaultSearch',
@@ -229,17 +240,14 @@ function QueryList(props) {
           status,
         },
       });
-    }    // 查询 查询接口
-    if (dictType) {
+    } else {
       switch (dictType) {
         case 'type':
+        case 'handle':
           faultList(values, page, pageSize);
           break;
         case undefined:
           getQuerylists(values, page, pageSize);
-          break;
-        case 'handle':
-          faulthandleList(values, page, pageSize);
           break;
         default:
           break;
@@ -252,7 +260,7 @@ function QueryList(props) {
     resetFields();
   };
 
-  const handleSearch = paramsSearch => {
+  const handleSearch = search => {
     setPageinations({
       ...paginations,
       current: 1,
@@ -280,7 +288,7 @@ function QueryList(props) {
         values.type = fieldsValue.type.join('/');
       }
 
-      searchdata(values, paginations.current, paginations.pageSize, paramsSearch);
+      searchdata(values, paginations.current, paginations.pageSize, search);
     });
   };
 
@@ -313,7 +321,7 @@ function QueryList(props) {
     onShowSizeChange: (page, pageSize) => onShowSizeChange(page, pageSize),
     current: paginations.current,
     pageSize: paginations.pageSize,
-    total:dictType !== undefined && searchSign === '' ? relatedictArr.length : faultQueryList.total,
+    total: dictType !== undefined && searchSign === '' ? relatedictArr.length : faultQueryList.total,
     showTotal: total => `总共  ${total}  条记录`,
     onChange: page => changePage(page),
   };
@@ -618,7 +626,7 @@ function QueryList(props) {
             {expand === false && (
               <Col span={8}>
                 <Form.Item>
-                  <Button type="primary" onClick={handleSearch}>
+                  <Button type="primary" onClick={() => handleSearch('search')}>
                     查 询
                   </Button>
                   <Button style={{ marginLeft: 8 }} onClick={handleReset}>
