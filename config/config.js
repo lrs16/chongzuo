@@ -1051,20 +1051,20 @@ export default {
   },
   proxy: {
     '/oauth/': {
-      target: 'http://172.16.4.211:9901/', // 登录
+      target: ' http://172.16.4.211:9901/', // 登录
       changeOrigin: true,
     },
     '/upms/': {
-      target: 'http://172.16.4.211:9901/', // 用户管理
+      target: ' http://172.16.4.211:9901/', // 用户管理
       changeOrigin: true,
     },
     '/auto/': {
-      target: 'http://172.16.4.211:9901/', // 软件启停
+      target: ' http://172.16.4.211:9901/', // 软件启停
       // target: 'http://172.16.4.115:9901/',
       changeOrigin: true,
     },
     '/monitor/': {
-      target: 'http://172.16.4.211:9901/', // 计量业务监控
+      target: ' http://172.16.4.211:9901/', // 计量业务监控
       changeOrigin: true,
     },
     '/inspection/': {
@@ -1078,7 +1078,7 @@ export default {
       changeOrigin: true,
     },
     '/activiti/': {
-      target: 'http://172.16.4.211:9901/',
+      target: ' http://172.16.4.211:9901/',
       changeOrigin: true,
     },
     // '/activiti': {
@@ -1086,32 +1086,32 @@ export default {
     //   changeOrigin: true,
     // },
     '/modeler/': {
-      target: 'http://172.16.4.211:9901/',
+      target: ' http://172.16.4.211:9901/',
       changeOrigin: true,
     },
     // ITSM通用接口
     '/common/': {
-      target: 'http://172.16.4.211:9901/',
+      target: ' http://172.16.4.211:9901/',
       changeOrigin: true,
     },
     // 事件管理,问题，故障
     '/event/': {
-      target: 'http://172.16.4.211:9901/',
+      target: ' http://172.16.4.211:9901/',
       changeOrigin: true,
     },
     // 问题管理
     '/problem/': {
-      target: 'http://172.16.4.211:9901/',
+      target: ' http://172.16.4.211:9901/',
       changeOrigin: true,
     },
     // 故障管理
     '/trouble/': {
-      target: 'http://172.16.4.211:9901/',
+      target: ' http://172.16.4.211:9901/',
       changeOrigin: true,
     },
     // 需求管理
     '/demand/': {
-      target: 'http://172.16.4.211:9901/',
+      target: ' http://172.16.4.211:9901/',
       changeOrigin: true,
     },
     '/api/': {
@@ -1119,7 +1119,7 @@ export default {
       changeOrigin: true,
     },
     '/sys/': {
-      target: 'http://172.16.4.211:9901/', // 数据字典
+      target: ' http://172.16.4.211:9901/', // 数据字典
       changeOrigin: true,
     },
   },

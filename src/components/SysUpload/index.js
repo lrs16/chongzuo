@@ -2,15 +2,27 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
 import { Upload, Button, message } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
+import { getFileSecuritySuffix } from '@/services/upload';
 
 function SysUpload(props) {
   const { dispatch, fileslist, ChangeFileslist } = props;
   const [uploadfiles, setUploadFiles] = useState([]);
+  const [filetype, setFileType] = useState('');
 
   useEffect(() => {
     if (fileslist.length > 0) {
       setUploadFiles(fileslist);
     }
+  }, []);
+
+  // 不允许上传类型
+  useEffect(() => {
+    getFileSecuritySuffix().then(res => {
+      if (res.code === 200) {
+        const arr = [...res.data];
+        setFileType(arr);
+      }
+    });
   }, []);
 
   // 上传文件类型
@@ -48,24 +60,35 @@ function SysUpload(props) {
     // baccept: '.doc,.docx,.xml,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/png,image/jpeg,',
     showUploadList: { showDownloadIcon: true },
     defaultFileList: fileslist,
-    onChange(info) {
-      if (info.file.status === 'done') {
-        if (info.file.response.code === 200) {
-          message.success(`${info.file.name} 上传成功`);
-          const voice = {};
-          voice.uid = info.file.response.data.id;
-          voice.name = info.file.response.data.fileName;
-          voice.nowtime = info.file.response.data.createTime;
-          voice.status = 'done';
-          voice.fileUrl = '';
-          uploadfiles.push(voice);
-          ChangeFileslist({ arr: uploadfiles, ischange: true });
+    multiple: true,
+
+    beforeUpload(file) {
+      return new Promise((resolve, reject) => {
+        const type = file.name.lastIndexOf('.');
+        const filesuffix = file.name.substring(type + 1, file.name.length);
+        const correctfiletype = filetype.indexOf(filesuffix);
+        if (correctfiletype !== -1) {
+          message.error(`${file.name}文件上传失败，不可上传${filetype.join('/')}类型文件！`);
+          return reject(false);
         }
-        if (info.file.response.code === -1) {
-          message.error(`${info.file.name} 上传失败`);
+        return resolve(true);
+      });
+    },
+    onChange({ file, fileList }) {
+      const alldone = fileList.map(item => item.status !== 'done');
+      if (file.status === 'done' && alldone.indexOf(true) === -1) {
+        const arr = [...fileList];
+        const newarr = [];
+        for (let i = 0; i < arr.length; i += 1) {
+          const vote = {};
+          vote.uid = arr[i]?.response?.data[0]?.id;
+          vote.name = arr[i].name;
+          vote.fileUrl = '';
+          vote.status = arr[i].status;
+          newarr.push(vote);
         }
-      } else if (info.file.status === 'error') {
-        message.error(`${info.file.name} 上传失败.`);
+        setUploadFiles([...newarr]);
+        ChangeFileslist({ arr: newarr, ischange: true });
       }
     },
     onPreview(info) {

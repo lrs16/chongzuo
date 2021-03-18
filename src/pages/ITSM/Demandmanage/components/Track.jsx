@@ -14,6 +14,7 @@ import {
 } from 'antd';
 import { DownloadOutlined, PaperClipOutlined } from '@ant-design/icons';
 import KeyVal from '@/components/SysDict/KeyVal';
+import { getFileSecuritySuffix } from '@/services/upload';
 import styles from './style.less';
 
 const { Option } = Select;
@@ -27,6 +28,7 @@ function Track(props) {
   const [newbutton, setNewButton] = useState(false);
   const [selectdata, setSelectData] = useState(undefined);
   const [trackslist, setTracksList] = useState('');
+  const [filetype, setFileType] = useState('');
 
   // 加载列表
   const getlistdata = () => {
@@ -211,20 +213,38 @@ function Track(props) {
     headers: {
       Authorization: `Bearer ${sessionStorage.getItem('access_token')}`,
     },
-    // multiple: true,
+    multiple: true,
     showUploadList: { showDownloadIcon: true },
     defaultFileList: fileslist,
+
+    beforeUpload(file) {
+      return new Promise((resolve, reject) => {
+        const type = file.name.lastIndexOf('.');
+        const filesuffix = file.name.substring(type + 1, file.name.length);
+        const correctfiletype = filetype.indexOf(filesuffix);
+        if (correctfiletype !== -1) {
+          message.error(`${file.name}文件上传失败，不可上传${filetype.join('/')}类型文件！`);
+          return reject(false);
+        }
+        return resolve(true);
+      });
+    },
+
     onChange(info) {
       if (info.file.status === 'done') {
-        if (info.file.response.code === 200) {
-          message.success(`${info.file.name} 上传成功`);
-          const voice = {};
-          voice.uid = info.file.response.data.id;
-          voice.id = info.file.response.data.id;
-          voice.name = info.file.response.data.fileName;
-          voice.status = 'done';
-          voice.fileUrl = '';
-          fileslist.push(voice);
+        const alldone = info.fileList.map(item => item.status !== 'done');
+        if (info.file.status === 'done' && alldone.indexOf(true) === -1) {
+          const arr = [...info.fileList];
+          const newarr = [];
+          for (let i = 0; i < arr.length; i += 1) {
+            const vote = {};
+            vote.uid = arr[i]?.response?.data[0]?.id;
+            vote.name = arr[i].name;
+            vote.fileUrl = '';
+            vote.status = arr[i].status;
+            newarr.push(vote);
+          }
+          setFilesList([...newarr]);
           const newData = data.map(item => ({ ...item }));
           const target = getRowByKey(uploadkey, newData);
           target.attachment = JSON.stringify(fileslist);
@@ -233,11 +253,6 @@ function Track(props) {
           const id = target.id === '' ? '' : target.id;
           savedata(target, id);
         }
-        if (info.file.response.code === -1) {
-          message.error(`${info.file.name} 上传失败`);
-        }
-      } else if (info.file.status === 'error') {
-        message.error(`${info.file.name} 上传失败.`);
       }
     },
     onPreview(info) {

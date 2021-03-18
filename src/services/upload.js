@@ -1,9 +1,10 @@
 import request from '@/utils/request';
 
 // 附件上传
-export async function FileUpload() {
+export async function FileUpload(param) {
   return request(`/sys/file/upload`, {
     method: 'POST',
+    data: param,
     requestType: 'form',
   });
 }
@@ -20,5 +21,12 @@ export async function FileDownload(id) {
 export async function FileDelete(id) {
   return request(`/sys/file/${id}`, {
     method: 'DELETE',
+  });
+}
+
+// 获取不允许上传文件类型
+export async function getFileSecuritySuffix() {
+  return request(`/sys/file/getFileSecuritySuffix`, {
+    method: 'GET',
   });
 }

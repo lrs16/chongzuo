@@ -8,12 +8,8 @@ const Model = {
   },
 
   effects: {
-    *uploadfile({ payload }, { call, put }) {
-      const response = yield call(FileUpload, payload);
-      yield put({
-        type: 'save',
-        payload: response,
-      });
+    *uploadfile({ payload }, { call }) {
+      return yield call(FileUpload, payload);
     },
     *downloadfile({ payload: { id } }, { call }) {
       return yield call(FileDownload, id);

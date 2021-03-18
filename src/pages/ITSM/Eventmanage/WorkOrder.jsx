@@ -1,4 +1,5 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, createContext, useRef, useEffect } from 'react';
+import router from 'umi/router';
 import { connect } from 'dva';
 import { Collapse, Steps, Spin, message } from 'antd';
 import styles from './index.less';
@@ -10,7 +11,7 @@ import Registratdes from './components/Registratdes';
 import Checkdes from './components/Checkdes';
 import Handledes from './components/Handledes';
 import ReturnVisitdes from './components/ReturnVisitdes';
-// import SelectData from './components/SelectData';
+import SelectData from './components/SelectData';
 
 const { Panel } = Collapse;
 const { Step } = Steps;
@@ -65,10 +66,6 @@ function WorkOrder2(props) {
     userinfo,
     type,
     ChangeType,
-    ChangesetTimeoutTime,
-    ChangeErr,
-    userchoice,
-    ChangeChoice, // 点击【保存】true
   } = props;
   const { mainId, taskId, taskName } = location.query;
   const [formregistrat, setFormregistrat] = useState('');
@@ -83,7 +80,6 @@ function WorkOrder2(props) {
   const [defaultvalue, setDefaultvalue] = useState(''); // 自行处理后处理表单回填信息
   const [activeKey, setActiveKey] = useState([]);
   const [isnew, setIsNew] = useState(false);
-
   const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
   const { flowInstanceId, flowNodeInstanceId, flowNodeName, editState, data, edit, main } = info; // 流程基本信息
   // console.log(location);
@@ -157,7 +153,6 @@ function WorkOrder2(props) {
   const formerr = () => {
     message.error('请将信息填写完整...');
     ChangeType('');
-    ChangeErr(false);
   };
 
   // 登记表单
@@ -213,7 +208,6 @@ function WorkOrder2(props) {
       RegistratRef.current.validateFields((err, values) => {
         if (!err) {
           setIscheck(true);
-          ChangeErr(true);
           setFormregistrat({
             ...values,
             main_eventObject: values.main_eventObject.slice(-1)[0],
@@ -253,7 +247,6 @@ function WorkOrder2(props) {
       CheckRef.current.validateFields((err, values) => {
         if (!err) {
           setIscheck(true);
-          ChangeErr(true);
           setFormcheck({
             ...values,
             check_checkTime: values.check_checkTime.format('YYYY-MM-DD HH:mm:ss'),
@@ -299,7 +292,6 @@ function WorkOrder2(props) {
       HandleRef.current.validateFields((err, values) => {
         if (!err) {
           setIscheck(true);
-          ChangeErr(true);
           setFormhandle({
             ...values,
             main_eventObject: values.main_eventObject?.slice(-1)[0],
@@ -329,7 +321,6 @@ function WorkOrder2(props) {
       ReturnVisitRef.current.validateFields((err, values) => {
         if (!err) {
           setIscheck(true);
-          ChangeErr(true);
           setFormvisit({
             ...values,
             finish_revisitTime: values.finish_revisitTime.format('YYYY-MM-DD HH:mm:ss'),
@@ -451,7 +442,7 @@ function WorkOrder2(props) {
     }
   }, [info]);
 
-  // 监听info是否已更新,回传超时时间
+  // 监听info是否已更新
   useEffect(() => {
     if (loading) {
       setIsNew(true);
@@ -461,29 +452,18 @@ function WorkOrder2(props) {
     };
   }, [info]);
 
-  // 监听info已更新回传超时时间
-  useEffect(() => {
-    if (!loading && isnew) {
-      ChangesetTimeoutTime(main.timeoutTime);
-    }
-  }, [info]);
-
-  // 表单类型
+  //
   useEffect(() => {
     if (type !== '') {
       handlesubmit();
     }
-    if (type === 'save') {
-      ChangeChoice(true);
-    }
   }, [type]);
 
-  // 按钮类型
   useEffect(() => {
-    if (ischeck && userchoice) {
+    if (ischeck) {
       handletype();
     }
-  }, [ischeck, userchoice]);
+  }, [ischeck]);
 
   // 登记上传附件触发保存
   useEffect(() => {
@@ -511,17 +491,17 @@ function WorkOrder2(props) {
       }).then(res => {
         if (res.code === 200) {
           selectdata.arr.push(...res.data);
-        }
-      });
-    }
-    if (!doCancel) {
-      dispatch({
-        type: 'dicttree/childdictLower',
-        payload: { id: '1354288354950123522' },
-      }).then(ress => {
-        if (ress.code === 200) {
-          selectdata.arr.push(...ress.data);
-          setSelectData({ ...selectdata, ischange: true });
+          if (!doCancel) {
+            dispatch({
+              type: 'dicttree/childdictLower',
+              payload: { id: '1354288354950123522' },
+            }).then(ress => {
+              if (ress.code === 200) {
+                selectdata.arr.push(...ress.data);
+                setSelectData({ ...selectdata, ischange: true });
+              }
+            });
+          }
         }
       });
     }

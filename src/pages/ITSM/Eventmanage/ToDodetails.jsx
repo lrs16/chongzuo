@@ -4,7 +4,6 @@ import { connect } from 'dva';
 import { Button, Popover, Popconfirm, message } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import SelectUser from '@/components/SelectUser';
-import User from '@/components/SelectUser/User';
 import Backoff from './components/Backoff';
 import WorkOrder from './WorkOrder';
 import Process from './Process';
@@ -27,13 +26,7 @@ function ToDodetails(props) {
   const [tabActivekey, settabActivekey] = useState('workorder'); // 打开标签
   const [buttontype, setButtonType] = useState('');
   const [backvalue, setBackvalue] = useState('');
-  const [timeoutTime, setTimeoutTime] = useState('');
-  const [uservisible, setUserVisible] = useState(false); // 是否显示选人组件
-  const [noerr, setNoErr] = useState(''); // 表单校验通过
-  const [userchoice, setUserChoice] = useState(false); // 已经选择人员
-  const [changorder, setChangeOrder] = useState(undefined);
   const [Popvisible, setVisible] = useState(false);
-
   const handleHold = type => {
     setButtonType(type);
   };
@@ -98,20 +91,10 @@ function ToDodetails(props) {
     });
   };
 
-  // 点击流转，审核，转回访，回退按钮
-  const handleClick = (type, order) => {
-    handleHold(type);
-    setChangeOrder(order);
-  };
-
-  useEffect(() => {
-    if (noerr) {
-      setUserVisible(true);
-    }
-  }, [noerr]);
-
   const operations = (
     <>
+      {/* 测试下载功能 */}
+      {/* <Button onClick={()=>test()}>下载</Button> */}
       {taskName === '已登记' && (
         <Popconfirm title="确定删除此事件单吗？" onConfirm={() => deleteflow()}>
           <Button type="danger" ghost style={{ marginRight: 8 }}>
@@ -137,14 +120,11 @@ function ToDodetails(props) {
         </Button>
       )}
       {taskName === '已登记' && next === '审核' && (
-        // <SelectUser handleSubmit={() => handleHold('other')} taskId={taskId}>
-        //   <Button type="primary" style={{ marginRight: 8 }}>
-        //     审核
-        //   </Button>
-        // </SelectUser>
-        <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleClick('other')}>
-          审核
-        </Button>
+        <SelectUser handleSubmit={() => handleHold('other')} taskId={taskId}>
+          <Button type="primary" style={{ marginRight: 8 }}>
+            审核
+          </Button>
+        </SelectUser>
       )}
       {taskName === '待处理' && (
         <Button type="primary" style={{ marginRight: 8 }} onClick={eventaccpt}>
@@ -154,9 +134,11 @@ function ToDodetails(props) {
       {((taskName === '已登记' && next === '处理') ||
         (next === '处理' && taskName === '待审核') ||
         (next === '处理' && taskName === '审核中')) && (
-        <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleClick('flow')}>
-          流转
-        </Button>
+        <SelectUser handleSubmit={() => handleHold('flow')} taskId={taskId}>
+          <Button type="primary" style={{ marginRight: 8 }}>
+            流转
+          </Button>
+        </SelectUser>
       )}
       {next === '确认' && taskName !== '处理中' && (
         <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleHold('check')}>
@@ -168,14 +150,11 @@ function ToDodetails(props) {
           <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleHold('flowcheck')}>
             转回访
           </Button>
-          <Button
-            ghost
-            type="primary"
-            style={{ marginRight: 8 }}
-            onClick={() => handleClick('flow', '处理')}
-          >
-            转单
-          </Button>
+          <SelectUser handleSubmit={() => handleHold('other')} changorder="处理" taskId={taskId}>
+            <Button ghost type="primary" style={{ marginRight: 8 }}>
+              转单
+            </Button>
+          </SelectUser>
         </>
       )}
       {(taskName === '待确认' || taskName === '确认中') && next === '处理' && (
@@ -228,23 +207,10 @@ function ToDodetails(props) {
         <WorkOrder
           location={location}
           type={buttontype}
-          ChangeType={v => setButtonType(v)}
-          ChangesetTimeoutTime={v => setTimeoutTime(v)}
-          ChangeErr={v => setNoErr(v)}
-          userchoice={userchoice}
-          ChangeChoice={v => setUserChoice(v)}
+          ChangeType={newvalue => setButtonType(newvalue)}
         />
       )}
       {tabActivekey === 'process' && <Process location={location} />}
-      <User
-        visible={uservisible}
-        ChangeUserVisible={v => setUserVisible(v)}
-        taskId={taskId}
-        changorder={changorder}
-        noerr={noerr}
-        ChangeErr={v => setNoErr(v)}
-        ChangeChoice={v => setUserChoice(v)}
-      />
     </PageHeaderWrapper>
   );
 }

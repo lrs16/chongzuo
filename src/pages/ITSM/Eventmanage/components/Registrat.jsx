@@ -20,7 +20,7 @@ import {
 import { phone_reg } from '@/utils/Regexp';
 // import SysUpload from '@/components/SysUpload';
 import { getAndField } from '@/pages/SysManage/services/api';
-import { FileDownload, FileDelete } from '@/services/upload';
+import { FileDownload, FileDelete, getFileSecuritySuffix } from '@/services/upload';
 import { queryDisableduserByUser, queryUnitList, queryDeptList } from '@/services/common';
 import DeptSlectId from '@/components/DeptTree/SelectID';
 import { DownloadOutlined, CaretRightOutlined } from '@ant-design/icons';
@@ -55,6 +55,7 @@ const Registrat = forwardRef((props, ref) => {
   const [check, setCheck] = useState(false);
   const [revisitway, setRevisitway] = useState(false);
   const [fileslist, setFilesList] = useState([]);
+  const [filetype, setFileType] = useState('');
   const [titleautodata, setTitleAutoData] = useState([]);
   const [desautodata, setDestoData] = useState([]);
   const [titlerecords, setTitleRecords] = useState([]);
@@ -354,6 +355,17 @@ const Registrat = forwardRef((props, ref) => {
   const priormap = getTypebykey('482610561499004928'); // 优先级
 
   // 附件上传下载
+
+  // 不允许上传类型
+  useEffect(() => {
+    getFileSecuritySuffix().then(res => {
+      if (res.code === 200) {
+        const arr = [...res.data];
+        setFileType(arr);
+      }
+    });
+  }, []);
+
   const handledownload = filesinfo => {
     FileDownload(filesinfo.uid).then(res => {
       const filename = filesinfo.name;
@@ -376,23 +388,35 @@ const Registrat = forwardRef((props, ref) => {
     },
     showUploadList: { showDownloadIcon: true },
     defaultFileList: files,
-    onChange(filesinfo) {
-      if (filesinfo.file.status === 'done') {
-        if (filesinfo.file.response.code === 200) {
-          message.success(`${filesinfo.file.name} 上传成功`);
-          const voice = {};
-          voice.uid = filesinfo.file.response.data.id;
-          voice.name = filesinfo.file.response.data.fileName;
-          voice.status = 'done';
-          voice.fileUrl = '';
-          fileslist.push(voice);
-          ChangeFiles({ arr: fileslist, ischange: true });
+    multiple: true,
+    beforeUpload(file) {
+      return new Promise((resolve, reject) => {
+        const type = file.name.lastIndexOf('.');
+        const filesuffix = file.name.substring(type + 1, file.name.length);
+        const correctfiletype = filetype.indexOf(filesuffix);
+        if (correctfiletype !== -1) {
+          message.error(`${file.name}文件上传失败，不可上传${filetype.join('/')}类型文件！`);
+          return reject(false);
         }
-        if (filesinfo.file.response.code === -1) {
-          message.error(`${info.file.name} 上传失败`);
+        return resolve(true);
+      });
+    },
+
+    onChange({ file, fileList }) {
+      const alldone = fileList.map(item => item.status !== 'done');
+      if (file.status === 'done' && alldone.indexOf(true) === -1) {
+        const arr = [...fileList];
+        const newarr = [];
+        for (let i = 0; i < arr.length; i += 1) {
+          const vote = {};
+          vote.uid = arr[i]?.response?.data[0]?.id;
+          vote.name = arr[i].name;
+          vote.fileUrl = '';
+          vote.status = arr[i].status;
+          newarr.push(vote);
         }
-      } else if (filesinfo.file.status === 'error') {
-        message.error(`${filesinfo.file.name} 上传失败.`);
+        setFilesList([...newarr]);
+        ChangeFiles({ arr: newarr, ischange: true });
       }
     },
     onPreview(filesinfo) {
