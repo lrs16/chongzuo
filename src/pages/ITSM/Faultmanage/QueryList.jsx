@@ -38,6 +38,7 @@ const formItemLayout = {
 
 const { Option } = Select;
 let searchSign = '';
+let sign;
 
 // const faultStatusmap = ['待登记', '已登记', '已受理', '待审核', '审核中', '已审核', '待处理', '处理中', '已处理', '待总结', '总结中', '已总结', '待关闭', '关闭中', '已关闭'];
 // const sourceMap = ['系统告警', '巡检发现'];
@@ -58,8 +59,8 @@ function QueryList(props) {
     dispatch,
   } = props;
   if(relatedictArr.length) {
-    console.log(relatedictArr.length,'relatedictArr');
   }
+
 
 
   const [expand, setExpand] = useState(false);
@@ -124,6 +125,12 @@ function QueryList(props) {
       width: 250,
     },
     {
+      title: '故障责任方',
+      dataIndex: 'blame',
+      key: 'blame',
+      width: 120,
+    },
+    {
       title: '发生时间',
       dataIndex: 'registerOccurTime',
       key: 'registerOccurTime',
@@ -136,29 +143,46 @@ function QueryList(props) {
       width: 200,
     },
     {
-      title: '严重程度',
-      dataIndex: 'registerLevel',
-      key: 'registerLevel',
-      width: 120,
+      title: '创建时间',
+      dataIndex: 'registerTime',
+      key: 'registerTime',
+      width: 200,
     },
+
   ];
 
-  const getQuerylists = () => {
+  const getQuerylists = (values, page, pageSize) => {
     // 列表 列表接口
     dispatch({
       type: 'fault/getfaultQueryList',
       payload: {
-        current: paginations.current,
+        ...values,
+        pageNum: page,
         pageSize: paginations.pageSize,
         status,
       },
     });
   };
+
+  const getinitiaQuerylists = () => {
+    // 列表 列表接口
+    dispatch({
+      type: 'fault/getfaultQueryList',
+      payload: {
+        pageNum: paginations.current,
+        pageSize: paginations.pageSize,
+        status,
+      },
+    });
+  };
+
+  
   //  故障类型的列表
   const faultList = (values, page, pageSize, searchdata) => {
     dispatch({
       type: 'faultstatics/fetchrelateDictList',
       payload: {
+        ...values,
         dictCode,
         dictType,
       },
@@ -183,7 +207,7 @@ function QueryList(props) {
         faultList();
         break;
       case undefined:
-        getQuerylists();
+        getinitiaQuerylists();
         break;
       case 'handle':
         faulthandleList();
@@ -191,25 +215,22 @@ function QueryList(props) {
       default:
         break;
     }
-  }, [dictType]);
+  }, []);
 
   const searchdata = (values, page, pageSize, searchdata) => {
-    console.log('searchdata: ', searchdata);
-    if (searchdata) {
+    if (dictType === undefined) {
       searchSign = 'have';
       dispatch({
         type: 'fault/getTosearchfaultSearch',
         payload: {
-          values,
+          ...values,
+          pageNum: page,
           pageSize,
-          current: page,
           status,
         },
       });
     }    // 查询 查询接口
-    if (searchdata === '' || searchdata === undefined) {
-      console.log(dictType,'dictType');
-      console.log('ff');
+    if (dictType) {
       switch (dictType) {
         case 'type':
           faultList(values, page, pageSize);
@@ -292,40 +313,11 @@ function QueryList(props) {
     onShowSizeChange: (page, pageSize) => onShowSizeChange(page, pageSize),
     current: paginations.current,
     pageSize: paginations.pageSize,
-    total:
-      dictType !== undefined && searchSign === '' ? relatedictArr.length : faultQueryList.total,
+    total:dictType !== undefined && searchSign === '' ? relatedictArr.length : faultQueryList.total,
     showTotal: total => `总共  ${total}  条记录`,
     onChange: page => changePage(page),
   };
 
-  const rowSelection = {
-    onChange: selectedRows => {
-      setSelectedRow([...selectedRows]);
-    },
-  };
-
-  // 批量删除
-  // const handleDeleteAll = () => {
-  //   if (selectedRow.length) {
-  //     const ids = [];
-  //     selectedRow.forEach(item => {
-  //       ids.push(item);
-  //     });
-  //     dispatch({
-  //       type: 'fault/remove',
-  //       payload: { id: ids }
-  //     }).then(res => {
-  //       if (res.code === 200) {
-  //         message.success(res.msg);
-  //         getQuerylists();
-  //       } else {
-  //         message.error('删除失败!');
-  //       }
-  //     });
-  //   } else {
-  //     message.info('至少选择一条数据');
-  //   }
-  // };
 
   //  下载 /导出功能
   const download = (page, pageSize) => {
@@ -364,7 +356,7 @@ function QueryList(props) {
   const handleResult = getTypebyTitle('故障处理结果');
   const sysmodular = getTypebyTitle('故障系统模块');
   const faultType = getTypebyTitle('故障分类');
-  const faultStatus = getTypebyTitle('工单状态');
+  const currentNode = getTypebyTitle('当前处理环节');
   const effect = getTypebyTitle('影响范围');
 
   return (
@@ -398,12 +390,12 @@ function QueryList(props) {
             <Col xl={8} xs={12}>
               <Form.Item label="工单状态">
                 {getFieldDecorator(
-                  'status',
+                  'currentNode',
                   {},
                 )(
                   <Select placeholder="请选择">
-                    {faultStatus.map(obj => [
-                      <Option key={obj.key} value={obj.dict_code}>
+                    {currentNode.map(obj => [
+                      <Option key={obj.key} value={obj.title}>
                         {obj.title}
                       </Option>,
                     ])}

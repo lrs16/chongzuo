@@ -207,5 +207,13 @@ export async function handleGratelist(params) {
   })
 }
 
+//  问题超时统计查询页的列表
+export async function timeoutlist(params) {
+  return request(`/problem/stat/getOrderByTimeList`,{
+    method:'POST',
+    body:JSON.stringify(params)
+  })
+}
+
 //  
 

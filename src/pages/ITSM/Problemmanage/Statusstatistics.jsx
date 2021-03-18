@@ -108,6 +108,8 @@ function Statusstatistics(props) {
 
   const handleReset = () => {
     resetFields();
+    statTimeBegin = '';
+    statTimeEnd = '';
   }
 
   return (

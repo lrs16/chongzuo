@@ -18,7 +18,9 @@ const formItemLayout = {
 };
 const { Option } = Select;
 let sign = '';
-let timeoutSearch = ''
+let timeoutSearch = '';
+let searchSign;
+let pageChangesign = '';
 const columns = [
   {
     title: '问题编号',
@@ -91,16 +93,16 @@ function Besolved(props) {
   const pagetitle = props.route.name;
   const {
     form: { getFieldDecorator, resetFields, validateFields },
-    location: { query: 
-      { 
-        status, 
-        type, 
-        handleDeptId, 
+    location: { query:
+      {
+        status,
+        type,
+        handleDeptId,
         timeStatus,
         problem,
         handlerId,
         handleProcessGroupType
-       } },
+      } },
     dispatch,
     queryArr,
     handleList,
@@ -108,7 +110,7 @@ function Besolved(props) {
     keyVallist,
     prioritylist,
     scopeList,
-    orderList,
+    stateList,
     typelist,
     loading,
   } = props;
@@ -116,37 +118,25 @@ function Besolved(props) {
   const [paginations, setPaginations] = useState({ current: 1, pageSize: 10 });
   const [selectedRows, setSelectedRows] = useState([]);
   sign = problem;
-  const getQuery = (values, page, pageSize,search) => {
-    if(search) {
+  const getQuery = (values, page, pageSize, search) => {
+    if (search) {
       dispatch({
         type: 'problemmanage/queryList',
         payload: {
           ...values,
-          pageNum: paginations.current,
-          pageSize: paginations.pageSize
+          pageNum: page,
+          pageSize: paginations.pageSize,
         },
       });
     } else {
       switch (sign) {
-        case 'timeout':
-          dispatch({
-            type: 'problemmanage/handlequeryList',
-            payload: {
-              pageNum: paginations.current,
-              pageSize: paginations.pageSize,
-              status,
-              type,
-              timeStatus
-            },
-          });
-          break;
         case undefined:
         case 'class':
         case 'status':
           dispatch({
             type: 'problemmanage/queryList',
             payload: {
-              pageNum: paginations.current,
+              pageNum: page,
               pageSize: paginations.pageSize,
               status,
               type,
@@ -158,7 +148,7 @@ function Besolved(props) {
           dispatch({
             type: 'problemmanage/handleData',
             payload: {
-              pageNum: paginations.current,
+              pageNum: page,
               pageSize: paginations.pageSize,
               handlerId,
               status,
@@ -167,13 +157,33 @@ function Besolved(props) {
             },
           });
           break;
-      
+        case 'timeout':
+          dispatch({
+            type: 'problemmanage/timeoutData',
+            payload: {
+              pageNum: page,
+              pageSize: paginations.pageSize,
+              timeStatus
+            },
+          });
+          break;
+
         default:
           break;
       }
     }
-   
+
   };
+
+  const getinitiaQuery = () => {
+      dispatch({
+        type: 'problemmanage/queryList',
+        payload: {
+          pageNum: paginations.current,
+          pageSize: paginations.pageSize,
+        },
+      });
+    } 
 
   const getSourceapi = (dictModule, dictType) => {
     dispatch({
@@ -213,16 +223,17 @@ function Besolved(props) {
     getSourceapi(dictModule, dictType);
   }
 
-  // 问题工单
+  // 问题工单状态
   const getorder = () => {
     const dictModule = 'problem';
-    const dictType = 'orderstate';
+    const dictType = 'current';
     getSourceapi(dictModule, dictType);
   }
 
   useEffect(() => {
     timeoutSearch = '';
-    getQuery();
+    searchSign = '';
+    getinitiaQuery();
     getSource();
     gettype();
     getpriority();
@@ -235,26 +246,49 @@ function Besolved(props) {
     resetFields();
   };
 
-  const searchdata = (values, page, pageSize,search) => {
-      if(sign === 'timeout' && search === 'search') {
-        timeoutSearch = 'search';
-      }
-      if(sign === 'handle' && search === 'search') {
-        timeoutSearch = 'search';
-      }
+  //  从统计到查询进行查询后分页的数据，清空数据
+  const emptyData = (values, page, pageSize, search) => {
+    dispatch({
+      type: 'problemmanage/queryList',
+      payload: {
+        ...values,
+        pageNum: paginations.current,
+        pageSize: paginations.pageSize
+      },
+    });
+  }
+  const searchdata = (values, page, pageSize, search) => {
+    if(search) {
+      searchSign = 'searchSign';
+    }
+
+    if (sign === 'timeout' && search === 'search') {
+      timeoutSearch = 'search';
+    }
+
+    if (sign === 'handle' && search === 'search') {
+      timeoutSearch = 'search';
+    }
+
+    if (searchSign) {
+      emptyData(values, page, pageSize, search);
+    } else {
       switch (sign) {
         case undefined:
         case 'timeout':
         case 'class':
         case 'status':
         case 'handle':
-          getQuery(values, page, pageSize,search);
+          getQuery(values, page, pageSize, search);
           break;
         default:
           break;
       }
-   
+    }
+
   };
+
+  // console.log(sign === 'handle' && timeoutSearch ==='','text');
 
   const onShowSizeChange = (page, pageSize) => {
     validateFields((err, values) => {
@@ -268,10 +302,10 @@ function Besolved(props) {
     });
   };
 
-  const changePage = page => {
+  const changePage = (page,changePage) => {
     validateFields((err, values) => {
       if (!err) {
-        searchdata(values, page, paginations.pageSize);
+        searchdata(values, page,paginations.pageSize,changePage);
       }
     });
     setPaginations({
@@ -286,7 +320,7 @@ function Besolved(props) {
     onShowSizeChange: (page, pageSize) => onShowSizeChange(page, pageSize),
     current: paginations.current,
     pageSize: paginations.pageSize,
-    total: (sign === 'timeout' && timeoutSearch ==='')?handleList.length:queryArr.total,
+    total: (sign === 'timeout' && timeoutSearch === '') ? handleList.length : queryArr.total,
     showTotal: total => `总共  ${total}  条记录`,
     onChange: page => changePage(page),
   };
@@ -297,7 +331,7 @@ function Besolved(props) {
     current: paginations.current,
     pageSize: paginations.pageSize,
     total: handleArr.length,
-    showTotal: total => `总共  ${total}  条记录`,
+    showTotal: total => `总共  ${total}条记录`,
     onChange: page => changePage(page),
   };
 
@@ -307,15 +341,16 @@ function Besolved(props) {
       current: 1,
     });
     validateFields((err, values) => {
+      if (err) {
+        return;
+      }
       const obj = values;
       if (values.createTimeBegin) {
         obj.createTimeBegin = (values.createTimeBegin).format('YYYY-MM-DD HH:mm:ss');
       }
-      if (err) {
-        return;
-      }
-      searchdata(obj, paginations.current, paginations.pageSize,search);
+      searchdata(obj, paginations.current, paginations.pageSize, search);
     });
+    
   };
 
   const download = () => {
@@ -369,14 +404,14 @@ function Besolved(props) {
 
             <Col span={8}>
               <Form.Item label="工单状态">
-                {getFieldDecorator('status',
+                {getFieldDecorator('currentNode',
                   {},
                 )(
                   <Select placeholder="请选择">
                     {
-                      orderList.orderstate && orderList.orderstate.length && (
-                        (orderList.orderstate).map(({ key, val }, index) => (
-                          <Option key={index} value={key}>
+                      stateList.current && stateList.current.length && (
+                        (stateList.current).map(({ key, val }, index) => (
+                          <Option key={index} value={val}>
                             {val}
                           </Option>
                         ))
@@ -532,7 +567,7 @@ function Besolved(props) {
 
             {expand === false && (
               <Col span={8}>
-                <Button type="primary" onClick={()=>handleSearch('search')}>
+                <Button type="primary" onClick={() => handleSearch('search')}>
                   查询
                 </Button>
 
@@ -552,17 +587,17 @@ function Besolved(props) {
                       关闭 <UpOutlined />
                     </>
                   ) : (
-                      <>
-                        展开 <DownOutlined />
-                      </>
-                    )}
+                    <>
+                      展开 <DownOutlined />
+                    </>
+                  )}
                 </Button>
               </Col>
             )}
 
             {expand === true && (
               <Col span={24} style={{ textAlign: 'right' }}>
-                <Button type="primary" onClick={handleSearch}>
+                <Button type="primary" onClick={() => handleSearch('search')}>
                   查询
                 </Button>
                 <Button style={{ marginLeft: 8 }} onClick={handleReset}>
@@ -580,10 +615,10 @@ function Besolved(props) {
                       关闭 <UpOutlined />
                     </>
                   ) : (
-                      <>
-                        展开 <DownOutlined />
-                      </>
-                    )}
+                    <>
+                      展开 <DownOutlined />
+                    </>
+                  )}
                 </Button>
               </Col>
             )}
@@ -609,32 +644,33 @@ function Besolved(props) {
         } */}
 
         {/* { */}
-          {
-            (sign === 'timeout' || sign === 'class' || sign === 'status'|| sign === undefined || timeoutSearch ===' timeoutSearch' || (sign === 'handle' && timeoutSearch ==='search')) && (
-              <Table
+        {
+          (sign === 'timeout' || sign === 'class' || sign === 'status' || sign === undefined || timeoutSearch === ' timeoutSearch' || (sign === 'handle' && timeoutSearch === 'search')) && (
+            <Table
               loading={loading}
               columns={columns}
-              dataSource={(sign === 'timeout' && timeoutSearch ==='')?handleList:queryArr.rows}
+              dataSource={(sign === 'timeout') ? handleArr : queryArr.rows}
               rowKey={record => record.id}
               pagination={pagination}
             />
+          )
+        }
 
-            )
-          }
-  
-            {
-              (sign === 'handle' && timeoutSearch ==='') && (
-                <Table
-                loading={loading}
-                columns={columns}
-                dataSource={handleArr}
-                rowKey={record => record.id}
-                pagination={handlepagination}
-              />
-              )
-            }
-          
-          {/* // ) */}
+
+
+        {
+          (sign === 'handle' && timeoutSearch === '') && (
+            <Table
+              loading={loading}
+              columns={columns}
+              dataSource={handleArr}
+              rowKey={record => record.id}
+              pagination={handlepagination}
+            />
+          )
+        }
+
+        {/* // ) */}
         {/* } */}
 
 
@@ -655,7 +691,7 @@ export default Form.create({})(
     prioritylist: problemdropdown.prioritylist,
     scopeList: problemdropdown.scopeList,
     projectList: problemdropdown.projectList,
-    orderList: problemdropdown.orderList,
+    stateList: problemdropdown.stateList,
     loading: loading.models.problemmanage,
   }))(Besolved),
 );

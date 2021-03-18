@@ -22,6 +22,9 @@ import SysDict from '@/components/SysDict';
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
+let paramsSearch = 'search';
+let empty;
+let noStatistic;
 
 const formItemLayout = {
   labelCol: {
@@ -192,7 +195,7 @@ function QueryList(props) {
       handleUnit,
       eventStatus,
       applicationUnit
-     }},
+    } },
     loading,
     list,
     dispatch,
@@ -201,7 +204,13 @@ function QueryList(props) {
   const [expand, setExpand] = useState(false);
   const [selectdata, setSelectData] = useState([]);
 
+  if (sign) {
+    noStatistic = 'noStatistic';
+  }
+
   useEffect(() => {
+    empty = '';
+    noStatistic = '';
     validateFields((err, values) => {
       if (!err) {
         dispatch({
@@ -225,42 +234,137 @@ function QueryList(props) {
     return () => {
       setSelectData([]);
     };
-  }, [sign]);
 
-  const searchdata = (values, page, size) => {
-    if (values.createTime === undefined) {
+  }, []);
+
+  //  查询页查询数据把数据统计的数据清空
+  const queryFunciton = (values, page, size, params) => {
+    console.log(registerUser,'registerUser');
+    empty = 'empty';
+    if (noStatistic) {
+      if (values.createTime === undefined) {
+        console.log('1');
+        dispatch({
+          type: 'eventquery/fetchlist',
+          payload: {
+            ...values,
+            eventObject: values.eventObject ? (values.eventObject).slice(-1)[0]:eventObject,
+            createTime: '',
+            pageSize: size,
+            pageIndex: page - 1,
+            time1: moment(time1).format('YYYY-MM-DD HH:mm:ss'),
+            time2: moment(time2).format('YYYY-MM-DD HH:mm:ss'),
+            selfhandle: values.selfhandle ? values.selfhandle : selfhandle,
+            registerUser: values.registerUser ? values.registerUser : registerUser,
+            applicationUnit: values.applicationUnit ? values.applicationUnit : applicationUnit
+
+          },
+        });
+      } else {
+        console.log('2');
+        dispatch({
+          type: 'eventquery/fetchlist',
+          payload: {
+            ...values,
+            eventObject: values.eventObject ? (values.eventObject).slice(-1)[0] : eventObject,
+            createTime: '',
+            time1: sign ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+            time2: sign ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+            pageSize: size,
+            pageIndex: page - 1,
+            selfhandle: values.selfhandle ? values.selfhandle : selfhandle,
+            registerUser: values.registerUser ? values.registerUser : registerUser,
+            applicationUnit: values.applicationUnit ? values.applicationUnit : applicationUnit
+          },
+        });
+      }
+    }
+
+    if (!noStatistic) {
+      console.log('3');
       dispatch({
         type: 'eventquery/fetchlist',
         payload: {
           ...values,
-          eventObject: sign?eventObject:values.eventObject?.slice(-1)[0],
+          eventObject: values.eventObject ? (values.eventObject).slice(-1)[0] : eventObject,
           pageSize: size,
           pageIndex: page - 1,
-          time1,
-          time2,
-          selfhandle,
-          registerUser,
-          applicationUnit,
-        },
-      });
-    } else {
-      dispatch({
-        type: 'eventquery/fetchlist',
-        payload: {
-          ...values,
-          eventObject: sign?eventObject:values.eventObject?.slice(-1)[0],
-          createTime: '',
-          time1: sign?time1:moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss'),
-          time2: sign?time2:moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss'),
-          pageSize: size,
-          pageIndex: page - 1,
-          selfhandle,
-          registerUser,
-          applicationUnit
         },
       });
     }
+
+  }
+
+  //  查询后点击分页不带统计的参数
+  const changePagelist = (values, page, size, params) => {
+    if (noStatistic) {
+      if (values.createTime === undefined) {
+        console.log('4');
+        dispatch({
+          type: 'eventquery/fetchlist',
+          payload: {
+            ...values,
+            eventObject: values.eventObject ? (values.eventObject).slice(-1)[0] : eventObject,
+            createTime: '',
+            time1:  moment(time1).format('YYYY-MM-DD HH:mm:ss'),
+            time2:  moment(time2).format('YYYY-MM-DD HH:mm:ss'),
+            pageSize: size,
+            pageIndex: page - 1,
+            selfhandle: values.selfhandle ? values.selfhandle : selfhandle,
+            registerUser:  values.registerUser ? values.registerUser : registerUser,
+            applicationUnit: values.applicationUnit ? values.applicationUnit : applicationUnit
+
+          },
+        })
+      } else {
+        console.log('5');
+        dispatch({
+          type: 'eventquery/fetchlist',
+          payload: {
+            ...values,
+            eventObject: values.eventObject ? (values.eventObject).slice(-1)[0] : eventObject,
+            createTime: '',
+            time1:  moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss'),
+            time2:  moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss'),
+            pageSize: size,
+            pageIndex: page - 1,
+            selfhandle: values.selfhandle ? values.selfhandle : selfhandle,
+            registerUser: values.registerUser ? values.registerUser : registerUser,
+            applicationUnit: values.applicationUnit ? values.applicationUnit : applicationUnit
+
+          },
+        });
+      }
+    }
+
+    if(!noStatistic) {
+      console.log('no');
+      dispatch({
+        type: 'eventquery/fetchlist',
+        payload: {
+          ...values,
+          pageSize: size,
+          pageIndex: page - 1,
+        },
+      })
+    }
+
+  }
+
+  const searchdata = (values, page, size, params) => {
+    switch (params) {
+      case 'search':
+        queryFunciton(values, page, size, params)
+        break;
+      case undefined:
+        changePagelist(values, page, size, params);
+        break;
+      default:
+        break;
+    }
   };
+
+
 
   //  下载
   const download = () => {
@@ -318,7 +422,7 @@ function QueryList(props) {
     onChange: page => changePage(page),
   };
 
-  const handleSearch = () => {
+  const handleSearch = (params) => {
     setPageinations({
       ...paginations,
       current: 1,
@@ -327,7 +431,7 @@ function QueryList(props) {
       if (err) {
         return;
       }
-      searchdata(values, paginations.current, paginations.pageSize);
+      searchdata(values, paginations.current, paginations.pageSize, params);
     });
   };
 
@@ -697,7 +801,7 @@ function QueryList(props) {
             {expand === false && (
               <Col span={8}>
                 <Form.Item>
-                  <Button type="primary" onClick={handleSearch}>
+                  <Button type="primary" onClick={() => handleSearch('search')}>
                     查 询
                   </Button>
                   <Button style={{ marginLeft: 8 }} onClick={handleReset}>
@@ -725,7 +829,7 @@ function QueryList(props) {
             )}
             {expand === true && (
               <Col span={24} style={{ textAlign: 'right' }}>
-                <Button type="primary" onClick={handleSearch}>
+                <Button type="primary" onClick={() => handleSearch('search')}>
                   查 询
                 </Button>
                 <Button style={{ marginLeft: 8 }} onClick={handleReset}>

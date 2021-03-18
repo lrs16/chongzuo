@@ -196,10 +196,7 @@ export async function getFlowLog(id) {
 // ***故障查询页
 
 // /trouble/flow/getOrderPage 获取故障工单列表 故障查询列表
-export async function queryfaultSearchList1(current, pageSize) {
-  const params = {};
-  params.pageNum = current; // 当前页
-  params.pageSize = pageSize; // 页码
+export async function queryfaultSearchList1(params) {
   return request(`/trouble/flow/getOrderPage`, {
     method: 'POST',
     body: JSON.stringify(params),
@@ -207,10 +204,7 @@ export async function queryfaultSearchList1(current, pageSize) {
 }
 
 // 故障查询页 查询功能
-export async function queryTosearchfaultSearchList1(current, pageSize, values) {
-  const params = values;
-  params.pageNum = current; // 当前页
-  params.pageSize = pageSize; // 页码
+export async function queryTosearchfaultSearchList1(params) {
   return request(`/trouble/flow/getOrderPage`, {
     method: 'POST',
     body: JSON.stringify(params),

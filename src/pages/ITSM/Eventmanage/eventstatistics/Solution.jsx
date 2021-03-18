@@ -38,6 +38,7 @@ const columns = [
           to={{
             pathname: '/ITSM/eventmanage/query',
             query: {
+              sign:'solution',
               time1: record.start_time,
               time2: record.end_time,
               registerUser: record.user
@@ -61,6 +62,7 @@ const columns = [
           to={{
             pathname: '/ITSM/eventmanage/query',
             query: {
+              sign:'solution',
               time1: record.start_time,
               time2: record.end_time,
               selfhandle: '是',

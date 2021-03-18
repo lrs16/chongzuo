@@ -84,6 +84,8 @@ function ClassifiedStatistics(props) {
 
   const handleReset = () => {
     resetFields();
+    statTimeBegin = '';
+    statTimeEnd = '';
   }
 
   const download = () => {

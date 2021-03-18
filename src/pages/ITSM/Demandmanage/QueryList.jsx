@@ -103,6 +103,7 @@ function QueryList(props) {
   const pagetitle = props.route.name;
   const {
     form: { getFieldDecorator, resetFields, validateFields },
+    location: { query: { module }},
     loading,
     list,
     dispatch,
@@ -120,6 +121,7 @@ function QueryList(props) {
             ...values,
             page: paginations.current,
             limit: paginations.pageSize,
+            module
           },
         });
       }

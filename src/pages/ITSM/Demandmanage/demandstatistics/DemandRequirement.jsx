@@ -18,34 +18,32 @@ const { RangePicker } = DatePicker;
 
 let statTimeBegin = '';
 let statTimeEnd = '';
-const sign = 'solution';
 const columns = [
   {
     title: '一级功能',
-    dataIndex: 'user',
-    key: 'user',
+    dataIndex: 'firstLevel',
+    key: 'firstLevel',
   },
   {
     title: '二级功能',
-    dataIndex: 'is_selfhandle',
-    key: 'is_selfhandle',
+    dataIndex: 'twoLevel',
+    key: 'twoLevel',
   },
   {
     title: '三级功能',
-    dataIndex: 'not_selfhandle',
-    key: 'not_selfhandle',
+    dataIndex: 'threeLevel',
+    key: 'threeLevel',
   },
   {
     title: '工单数',
-    dataIndex: 'points',
-    key: 'points',
+    dataIndex: 'number',
+    key: 'number',
     render: (text, record) => (
       <Link
         to={{
-          pathname: '/ITSM/eventmanage/query',
+          pathname: '/ITSM/demandmanage/query',
           query: {
-            start_time: record.start_time,
-            end_time: record.end_time,
+            module:record.fullName
           }
         }}
       >
@@ -60,9 +58,19 @@ function DemandRequirement(props) {
   const { pagetitle } = props.route.name;
   const {
     form: { getFieldDecorator,resetFields },
-    soluteArr,
+    requirementArr,
     dispatch
   } = props;
+
+  if (requirementArr && requirementArr.length) {
+    for (let i = 0; i < requirementArr.length - 1; i++) {
+      for (let j = i + 1; j < requirementArr.length; j++) {
+        if (requirementArr[i].firstLevel === requirementArr[j].firstLevel) {
+          requirementArr[j].firstLevel = '';
+        }
+      }
+    }
+  }
 
   const onChange = (date, dateString) => {
     [statTimeBegin, statTimeEnd] = dateString;
@@ -71,17 +79,15 @@ function DemandRequirement(props) {
 
 
   const handleListdata = () => {
-    console.log(statTimeBegin, 'statTimeBegin');
-    console.log(statTimeEnd, 'statTimeEnd');
     dispatch({
-      type: 'eventstatistics/fetchSelfHandleList',
+      type: 'demandstatistic/fetchdemandRequirement',
       payload: { statTimeBegin, statTimeEnd }
     })
   }
 
   const download = () => {
     dispatch({
-      type: 'problemstatistics/downloadHandlegrate',
+      type: 'demandstatistic/downloadrequirement',
       payload: { statTimeBegin, statTimeEnd }
     }).then(res => {
       const filename = '下载.xls';
@@ -155,7 +161,7 @@ function DemandRequirement(props) {
 
         <Table
           columns={columns}
-          dataSource={soluteArr}
+          dataSource={requirementArr}
           rowKey={record => record.statName}
         />
       </Card>
@@ -164,7 +170,7 @@ function DemandRequirement(props) {
 }
 
 export default Form.create({})(
-  connect(({ eventstatistics }) => ({
-    soluteArr: eventstatistics.soluteArr
+  connect(({ demandstatistic }) => ({
+    requirementArr: demandstatistic.requirementArr
   }))(DemandRequirement),
 );

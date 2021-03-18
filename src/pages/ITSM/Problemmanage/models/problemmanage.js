@@ -26,7 +26,8 @@ import {
   querkeyVal,
   handlequeryList,
   besolveListdownload,
-  handleGratelist
+  handleGratelist,
+  timeoutlist
 } from '../services/api';
 
 export default {
@@ -291,6 +292,14 @@ export default {
     //  问题工单解决进度管控统计数据列表
     *handleData({ payload }, { call,put }) {
       const response = yield call(handleGratelist, payload);
+      yield put({
+        type:'handleArr',
+        payload: response
+      })
+    },
+    //  问题超时统计数据列表
+    *timeoutData({ payload }, { call,put }) {
+      const response = yield call(timeoutlist, payload);
       yield put({
         type:'handleArr',
         payload: response

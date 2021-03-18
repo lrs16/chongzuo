@@ -17,18 +17,17 @@ const { RangePicker } = DatePicker;
 
 let statTimeBegin = '';
 let statTimeEnd = '';
-const sign = 'solution';
 const columns = [
   {
     title: '工单状态',
-    dataIndex: 'user',
-    key: 'user',
+    dataIndex: 'statusName',
+    key: 'statusName',
   },
 
   {
     title: '工单数',
-    dataIndex: 'not_selfhandle',
-    key: 'not_selfhandle',
+    dataIndex: 'number',
+    key: 'number',
     render: (text, record) => (
       <Link
         to={{
@@ -49,7 +48,7 @@ function Demandstate(props) {
   const { pagetitle } = props.route.name;
   const {
     form: { getFieldDecorator, resetFields },
-    soluteArr,
+    demandstateArr,
     dispatch
   } = props;
 
@@ -58,18 +57,17 @@ function Demandstate(props) {
   }
 
 
-  const handleListdata = (params) => {
-    console.log(statTimeBegin, 'statTimeBegin');
-    console.log(statTimeEnd, 'statTimeEnd');
+  const handleListdata = () => {
     dispatch({
-      type: 'eventstatistics/fetchSelfHandleList',
+      type: 'demandstatistic/fetchdemandstateList',
       payload: { statTimeBegin, statTimeEnd }
     })
   }
 
   const download = () => {
     dispatch({
-      type: 'problemstatistics/downloadHandlegrate'
+      type: 'demandstatistic/downloaddemandstate',
+      payload: { statTimeBegin, statTimeEnd }
     }).then(res => {
       const filename = '下载.xls';
       const blob = new Blob([res]);
@@ -140,7 +138,7 @@ function Demandstate(props) {
 
         <Table
           columns={columns}
-          dataSource={soluteArr}
+          dataSource={demandstateArr}
           rowKey={record => record.statName}
         />
       </Card>
@@ -149,7 +147,7 @@ function Demandstate(props) {
 }
 
 export default Form.create({})(
-  connect(({ eventstatistics }) => ({
-    soluteArr: eventstatistics.soluteArr
+  connect(({ demandstatistic }) => ({
+    demandstateArr: demandstatistic.demandstateArr
   }))(Demandstate),
 );

@@ -57,12 +57,6 @@ export default {
             payload: response
           })
           break;
-        case 'orderstate':
-          yield put({
-            type:'orderList',
-            payload: response
-          })
-          break;
         case 'current':
           yield put({
             type:'stateList',

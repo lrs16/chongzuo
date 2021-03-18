@@ -104,6 +104,8 @@ function TimeoutStatistics(props) {
 
   const handleReset = () => {
     resetFields();
+    statTimeBegin = '';
+    statTimeEnd = '';
   }
 
   useEffect(() => {

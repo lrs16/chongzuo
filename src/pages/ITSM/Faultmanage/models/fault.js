@@ -283,8 +283,8 @@ export default {
     },
 
     // 获取故障查询列表数据
-    *getfaultQueryList({ payload: { current, pageSize } }, { call, put }) {
-      const response = yield call(queryfaultSearchList1, current, pageSize);
+    *getfaultQueryList({ payload }, { call, put }) {
+      const response = yield call(queryfaultSearchList1, payload);
       yield put({
         type: 'faultQueryList',
         payload: response,
@@ -292,8 +292,8 @@ export default {
     },
 
     // 获取故障查询列表数据 查询
-    *getTosearchfaultSearch({ payload: { current, pageSize, values } }, { call, put }) {
-      const response = yield call(queryTosearchfaultSearchList1, current, pageSize, values);
+    *getTosearchfaultSearch({ payload }, { call, put }) {
+      const response = yield call(queryTosearchfaultSearchList1, payload);
       yield put({
         type: 'faultQueryList',
         payload: response,

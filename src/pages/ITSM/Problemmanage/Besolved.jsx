@@ -210,7 +210,7 @@ function Besolved(props) {
     pageSize: paginations.pageSize,
     total: besolveList.total,
     showTotal: total => `总共  ${total}  条记录`,
-    onChange: page => changePage(page),
+    onChange: (page) => changePage(page),
   };
 
   const handleSearch = () => {

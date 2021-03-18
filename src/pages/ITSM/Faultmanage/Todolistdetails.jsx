@@ -266,8 +266,12 @@ function Todolistdetails(props) {
         formValues.editState = tododetailslist.editState;
         formValues.registerUserId = userId; // 当前登录人id
         formValues.type = values.type.join(',');
-        if (files.ischange) {
+        if (files.ischange && Array.isArray(files.arr)) {
           formValues.registerAttachments = JSON.stringify(files.arr);
+        }
+
+        if (files.ischange === true && typeof files.arr === 'string') {
+          message.info('上传文件失败，请重新上传');
         }
 
         // formValues.registerEffect = String(Number(values.registerEffect))
@@ -365,7 +369,7 @@ function Todolistdetails(props) {
         }
 
         if (files.ischange === true && typeof files.arr === 'string') {
-          message.info('上传文件失败，请重新');
+          message.info('上传文件失败，请重新上传');
         }
 
         if (tododetailslist.editState === 'edit') {
@@ -412,12 +416,16 @@ function Todolistdetails(props) {
           formValues.finishId = tododetailslist.editGuid;
           formValues.editState = 'add';
         }
-        if (files.ischange) {
+        if (files.ischange && Array.isArray(files.arr)) {
           if (fileskey === '1') {
             formValues.finishAnalysisAttachments = JSON.stringify(files.arr);
           } else {
             formValues.finishAttachments = JSON.stringify(files.arr);
           }
+        }
+
+        if (files.ischange === true && typeof files.arr === 'string') {
+          message.info('上传文件失败，请重新上传');
         }
 
         formValues.finishTime = values.finishTime.format('YYYY-MM-DD HH:mm:ss');
@@ -459,8 +467,12 @@ function Todolistdetails(props) {
         formValues.taskId = id;
         formValues.editState = tododetailslist.editState;
         formValues.confirmUserId = userId; // 当前登录人id
-        if (files.ischange) {
+        if (files.ischange && Array.isArray(files.arr)) {
           formValues.confirmAttachments = JSON.stringify(files.arr);
+        }
+
+        if (files.ischange === true && typeof files.arr === 'string') {
+          message.info('上传文件失败，请重新上传');
         }
 
         if (tododetailslist.editState === 'edit') {
