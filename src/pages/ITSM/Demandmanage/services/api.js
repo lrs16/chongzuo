@@ -125,10 +125,10 @@ export async function TrackDelete(id) {
 
 // 需求查询列表
 export async function DemandQuery(params) {
-  return request( `/demand/query/demandQuery`, {
-      method: 'POST',
-      body:JSON.stringify(params)
-    },
+  return request(`/demand/query/demandQuery`, {
+    method: 'POST',
+    body: JSON.stringify(params)
+  },
   );
 }
 
@@ -144,5 +144,12 @@ export async function QueryExport() {
   return request(`/demand/query/export`, {
     method: 'GET',
     responseType: 'blob',
+  });
+}
+
+// 登记环节结束流程
+export async function RegisterClose(taskId, userId) {
+  return request(`/demand/todo/registerClose?taskId=${taskId}&userId=${userId}`, {
+    method: 'GET',
   });
 }

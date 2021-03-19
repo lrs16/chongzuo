@@ -3,10 +3,10 @@ import router from 'umi/router';
 import { connect } from 'dva';
 import { Button, Popover } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import SelectUser from '@/components/SelectUser';
 import WorkOrder from './WorkOrder';
 import Process from './Process';
 import Backoff from './components/Backoff';
-import SelectUser from '@/components/SelectUser';
 
 function ToDoregist(props) {
   const { location, dispatch } = props;
@@ -32,6 +32,16 @@ function ToDoregist(props) {
       type: 'demandtodo/demanddelete',
       payload: {
         processId: mainId,
+      },
+    });
+  };
+
+  const handleregisterclose = () => {
+    dispatch({
+      type: 'demandtodo/close',
+      payload: {
+        taskId,
+        userId: sessionStorage.getItem('userauthorityid'),
       },
     });
   };
@@ -71,16 +81,21 @@ function ToDoregist(props) {
           删除
         </Button>
       )}
+      {taskName === '需求登记' && histroylength > 0 && (
+        <Button type="danger" ghost style={{ marginRight: 8 }} onClick={() => handleregisterclose()}>
+          结束
+        </Button>
+      )}
       {(taskName === '业务科室领导审核' ||
         taskName === '系统开发商审核' ||
         taskName === '自动化科负责人确认' ||
         taskName === '需求登记人员确认') && (
-        <Popover content={content} visible={Popvisible} onVisibleChange={handleVisibleChange}>
-          <Button type="primary" ghost style={{ marginRight: 8 }}>
-            回退
+          <Popover content={content} visible={Popvisible} onVisibleChange={handleVisibleChange}>
+            <Button type="primary" ghost style={{ marginRight: 8 }}>
+              回退
           </Button>
-        </Popover>
-      )}
+          </Popover>
+        )}
       {taskName !== '系统开发商处理' && (
         <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleHold('save')}>
           保存
@@ -91,12 +106,12 @@ function ToDoregist(props) {
         taskName !== '自动化科负责人确认' &&
         taskName !== '需求登记人员确认') ||
         taskName === '系统开发商处理') && (
-        <SelectUser handleSubmit={() => handleHold('flow')} taskId={taskId}>
-          <Button type="primary" style={{ marginRight: 8 }}>
-            流转
+          <SelectUser handleSubmit={() => handleHold('flow')} taskId={taskId}>
+            <Button type="primary" style={{ marginRight: 8 }}>
+              流转
           </Button>
-        </SelectUser>
-      )}
+          </SelectUser>
+        )}
       {result === '1' && taskName === '自动化科业务人员审核' && (
         <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleHold('flow')}>
           流转
@@ -116,10 +131,10 @@ function ToDoregist(props) {
       )}
       {((result === '2' && taskName === '自动化科负责人确认') ||
         (result === '1' && taskName === '需求登记人员确认')) && (
-        <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleHold('over')}>
-          结束
-        </Button>
-      )}
+          <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleHold('over')}>
+            结束
+          </Button>
+        )}
       {result === '0' &&
         (taskName === '业务科室领导审核' ||
           taskName === '市场部领导审核' ||

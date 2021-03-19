@@ -11,6 +11,7 @@ import {
   DemandgoBack,
   DemandDlete,
   DemandProcess,
+  RegisterClose
 } from '../services/api';
 
 export default {
@@ -115,6 +116,16 @@ export default {
       const resmsg = yield call(DemandgoBack, payload);
       if (resmsg.code === 200) {
         message.success(resmsg.msg, 3);
+        router.push({
+          pathname: `/ITSM/demandmanage/to-do`,
+        });
+      }
+    },
+    // 登记时结束
+    *close({ payload: { taskId, userId } }, { call }) {
+      const resmsg = yield call(RegisterClose, taskId, userId);
+      if (resmsg.code === 200) {
+        message.success('流程已结束', 3);
         router.push({
           pathname: `/ITSM/demandmanage/to-do`,
         });
