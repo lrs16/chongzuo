@@ -46,6 +46,7 @@ function WorkOrder(props) {
     ChangeType,
     changRegisterId,
     ChangeHistroyLength,
+    ChangeISClose,
   } = props;
   const [activeKey, setActiveKey] = useState(['form']);
   const { taskName, taskId, mainId } = location.query;
@@ -77,6 +78,7 @@ function WorkOrder(props) {
     if (info !== '') {
       changRegisterId(info.demandForm.id); // formid
       ChangeHistroyLength(info.historys.length);
+      ChangeISClose(info.is_close);
     }
   }, [info]);
 
@@ -621,29 +623,29 @@ function WorkOrder(props) {
                 info.taskName === '自动化科业务人员审核' ||
                 info.taskName === '科室领导审核' ||
                 info.taskName === '市场部领导审核') && (
-                <Examine
-                  ref={ExamineRef}
-                  location={location}
-                  formItemLayout={formItemLayout}
-                  forminladeLayout={forminladeLayout}
-                  text="审核"
-                  userinfo={userinfo}
-                  taskName={info.taskName}
-                  info={
-                    info.historys?.slice(-1)[0].taskName === info.taskName
-                      ? info.historys.slice(-1)
-                      : undefined
-                  }
-                  files={
-                    info.historys?.slice(-1)[0].taskName === info.taskName
-                      ? JSON.parse(info.historys?.slice(-1)[0].attachment)
-                      : []
-                  }
-                  ChangeFiles={newvalue => {
-                    setFiles(newvalue);
-                  }}
-                />
-              )}
+                  <Examine
+                    ref={ExamineRef}
+                    location={location}
+                    formItemLayout={formItemLayout}
+                    forminladeLayout={forminladeLayout}
+                    text="审核"
+                    userinfo={userinfo}
+                    taskName={info.taskName}
+                    info={
+                      info.historys?.slice(-1)[0].taskName === info.taskName
+                        ? info.historys.slice(-1)
+                        : undefined
+                    }
+                    files={
+                      info.historys?.slice(-1)[0].taskName === info.taskName
+                        ? JSON.parse(info.historys?.slice(-1)[0].attachment)
+                        : []
+                    }
+                    ChangeFiles={newvalue => {
+                      setFiles(newvalue);
+                    }}
+                  />
+                )}
               {taskName === '系统开发商处理' && info.taskName !== undefined && (
                 <Track
                   userinfo={userinfo}

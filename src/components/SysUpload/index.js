@@ -93,7 +93,7 @@ function SysUpload(props) {
           newarr.push(vote);
         }
         setUploadFiles([...newarr]);
-        //  ChangeFileslist({ arr: newarr, ischange: true });
+        ChangeFileslist({ arr: newarr, ischange: true });
       }
     },
     onPreview(file) {

@@ -17,6 +17,7 @@ function ToDoregist(props) {
   const [registerId, setRegisterId] = useState('');
   const [histroylength, setHistroyLength] = useState(0);
   const [Popvisible, setVisible] = useState(false);
+  const [iscolse, setIsClose] = useState('');
 
   const handleHold = type => {
     setButtonType(type);
@@ -76,12 +77,12 @@ function ToDoregist(props) {
 
   const operations = (
     <>
-      {taskName === '需求登记' && histroylength === 0 && (
+      {taskName === '需求登记' && iscolse === 0 && (
         <Button type="danger" ghost style={{ marginRight: 8 }} onClick={() => handledelete()}>
           删除
         </Button>
       )}
-      {taskName === '需求登记' && histroylength > 0 && (
+      {taskName === '需求登记' && iscolse === 1 && (
         <Button type="danger" ghost style={{ marginRight: 8 }} onClick={() => handleregisterclose()}>
           结束
         </Button>
@@ -187,6 +188,7 @@ function ToDoregist(props) {
           ChangeType={newvalue => setButtonType(newvalue)}
           changRegisterId={newvalue => setRegisterId(newvalue)}
           ChangeHistroyLength={newvalue => setHistroyLength(newvalue)}
+          ChangeISClose={v => setIsClose(v)}
         />
       )}
       {tabActivekey === 'process' && <Process location={location} />}

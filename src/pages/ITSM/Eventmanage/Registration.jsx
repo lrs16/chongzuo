@@ -209,8 +209,7 @@ function Registration(props) {
   // 自行处理上传附件触发保存
   useEffect(() => {
     if (handlefiles.ischange) {
-      getregistrat('save');
-      gethandle('save');
+      handlesubmit();
     }
   }, [handlefiles]);
 
