@@ -15,7 +15,6 @@ import Link from 'umi/link';
 import moment from 'moment';
 import iconfontUrl from '@/utils/iconfont';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import { CodeSandboxCircleFilled } from '_@ant-design_icons@4.3.0@@ant-design/icons';
 
 let starttime;
 let monthStarttime;

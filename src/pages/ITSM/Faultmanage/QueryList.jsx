@@ -136,13 +136,6 @@ function QueryList(props) {
       key: 'registerTime',
       width: 200,
     },
-    {
-      title: '创建时间',
-      dataIndex: 'registerTime',
-      key: 'registerTime',
-      width: 200,
-    },
-
   ];
 
   const getQuerylists = (values, page, pageSize) => {
