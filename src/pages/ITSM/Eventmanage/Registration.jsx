@@ -45,6 +45,7 @@ function Registration(props) {
   const [activeKey, setActiveKey] = useState(['registratform']);
   const [defaultvalue, setDefaultvalue] = useState('');
   const [registratfiles, setRegistratFiles] = useState({ arr: [], ischange: false }); // 登记上传
+  const [registraterr, setRegistratErr] = useState(false);
   const [handlefiles, setHandleFiles] = useState({ arr: [], ischange: false }); // 处理上传
   const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
   const RegistratRef = useRef();
@@ -121,27 +122,30 @@ function Registration(props) {
         register_selfhandle: String(Number(values.register_selfhandle)),
         register_supplement: String(Number(values.register_supplement)),
       });
-      submittype(type);
+      if (show) {
+        if (err) {
+          setIscheck({ save: false, flow: false });
+          message.error('请将登记信息填写完整...');
+        }
+      } else {
+        submittype(type);
+      }
     });
   };
 
-  const formerr = () => {
-    message.error('请将信息填写完整...');
-  };
-
   const gethandle = type => {
-    HandleRef.current.validateFields((err, values) => {
+    RegistratRef.current.validateFields(err => {
       if (!err) {
-        setFormhandle({
-          ...values,
-          main_eventObject: values.main_eventObject?.slice(-1)[0],
-          handle_endTime: values.handle_endTime.format('YYYY-MM-DD HH:mm:ss'),
-          handle_fileIds: JSON.stringify(handlefiles.arr),
+        HandleRef.current.validateFields((e, values) => {
+          setFormhandle({
+            ...values,
+            main_eventObject: values.main_eventObject?.slice(-1)[0],
+            handle_endTime: values.handle_endTime.format('YYYY-MM-DD HH:mm:ss'),
+            handle_fileIds: JSON.stringify(handlefiles.arr),
+          });
+          setIscheck({ save: false, flow: false });
+          submittype(type);
         });
-        submittype(type);
-      } else {
-        setIscheck({ save: false, flow: false });
-        formerr();
       }
     });
   };
@@ -198,7 +202,7 @@ function Registration(props) {
   // 登记上传附件触发保存
   useEffect(() => {
     if (registratfiles.ischange) {
-      getregistrat('save');
+      handlesubmit();
     }
   }, [registratfiles]);
 

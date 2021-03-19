@@ -80,6 +80,16 @@ function Track(props) {
     };
   }, []);
 
+  // 不允许上传类型
+  useEffect(() => {
+    getFileSecuritySuffix().then(res => {
+      if (res.code === 200) {
+        const arr = [...res.data];
+        setFileType(arr);
+      }
+    });
+  }, []);
+
   // 点击编辑生成filelist,
   const handlefileedit = (key, values) => {
     setKeyUpload(key);
@@ -95,7 +105,7 @@ function Track(props) {
     dispatch({
       type: 'sysfile/downloadfile',
       payload: {
-        id: info.id,
+        id: info.uid,
       },
     }).then(res => {
       const filename = info.name;
@@ -224,35 +234,37 @@ function Track(props) {
         const correctfiletype = filetype.indexOf(filesuffix);
         if (correctfiletype !== -1) {
           message.error(`${file.name}文件上传失败，不可上传${filetype.join('/')}类型文件！`);
-          return reject(false);
+          return reject();
         }
-        return resolve(true);
+        return resolve(file);
       });
     },
 
     onChange(info) {
-      if (info.file.status === 'done') {
-        const alldone = info.fileList.map(item => item.status !== 'done');
-        if (info.file.status === 'done' && alldone.indexOf(true) === -1) {
-          const arr = [...info.fileList];
-          const newarr = [];
-          for (let i = 0; i < arr.length; i += 1) {
-            const vote = {};
-            vote.uid = arr[i]?.response?.data[0]?.id;
-            vote.name = arr[i].name;
-            vote.fileUrl = '';
-            vote.status = arr[i].status;
-            newarr.push(vote);
-          }
-          setFilesList([...newarr]);
-          const newData = data.map(item => ({ ...item }));
-          const target = getRowByKey(uploadkey, newData);
-          target.attachment = JSON.stringify(fileslist);
-          delete target.key;
-          target.editable = false;
-          const id = target.id === '' ? '' : target.id;
-          savedata(target, id);
+      const alldone = info.fileList.map(item => item.status !== 'done');
+      if (info.file.status === 'done' && alldone.indexOf(true) === -1) {
+        message.success(`文件上传成功`);
+        const arr = [...info.fileList];
+        const newarr = [];
+        for (let i = 0; i < arr.length; i += 1) {
+          const vote = {};
+          vote.uid =
+            arr[i]?.response?.data[0]?.id !== undefined
+              ? arr[i]?.response?.data[0]?.id
+              : arr[i].uid;
+          vote.name = arr[i].name;
+          vote.fileUrl = '';
+          vote.status = arr[i].status;
+          newarr.push(vote);
         }
+        setFilesList([...newarr]);
+        const newData = data.map(item => ({ ...item }));
+        const target = getRowByKey(uploadkey, newData);
+        target.attachment = JSON.stringify([...newarr]);
+        delete target.key;
+        target.editable = false;
+        const id = target.id === '' ? '' : target.id;
+        savedata(target, id);
       }
     },
     onPreview(info) {
@@ -263,8 +275,7 @@ function Track(props) {
     },
     onRemove(info) {
       // 删除记录，并保存信息
-      const newfilelist = fileslist.filter(item => item.id !== info.id);
-      // handleFieldChange(JSON.stringify(newfilelist), 'attachment', uploadkey);
+      const newfilelist = fileslist.filter(item => item.uid !== info.uid);
       const target = getRowByKey(uploadkey) || {};
       target.attachment = JSON.stringify(newfilelist);
       delete target.isNew;
@@ -274,7 +285,7 @@ function Track(props) {
       dispatch({
         type: 'sysfile/deletefile',
         payload: {
-          id: info.id,
+          id: info.uid,
         },
       });
     },

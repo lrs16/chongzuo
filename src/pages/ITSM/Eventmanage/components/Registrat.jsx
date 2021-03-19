@@ -130,7 +130,7 @@ const Registrat = forwardRef((props, ref) => {
     if (value === '005' || value === '007' || value === '008') {
       ChangeCheck(true);
       setCheck(true);
-      //  ChangeFlowtype('3');
+      ChangeShow(false);
       sessionStorage.setItem('Nextflowmane', '审核');
       sessionStorage.setItem('flowtype', '3');
     } else {
@@ -151,9 +151,9 @@ const Registrat = forwardRef((props, ref) => {
     setFieldsValue({ main_eventObject: value?.slice(-1)[0] }, () => {});
   };
 
-  // 003手机号码必填
+  // 002手机号码必填
   const handlrevisitway = value => {
-    if (value === '003') {
+    if (value === '002') {
       setRevisitway(true);
     } else {
       setRevisitway(false);
@@ -396,9 +396,9 @@ const Registrat = forwardRef((props, ref) => {
         const correctfiletype = filetype.indexOf(filesuffix);
         if (correctfiletype !== -1) {
           message.error(`${file.name}文件上传失败，不可上传${filetype.join('/')}类型文件！`);
-          return reject(false);
+          return reject();
         }
-        return resolve(true);
+        return resolve(file);
       });
     },
 
@@ -409,14 +409,17 @@ const Registrat = forwardRef((props, ref) => {
         const newarr = [];
         for (let i = 0; i < arr.length; i += 1) {
           const vote = {};
-          vote.uid = arr[i]?.response?.data[0]?.id;
+          vote.uid =
+            arr[i]?.response?.data[0]?.id !== undefined
+              ? arr[i]?.response?.data[0]?.id
+              : arr[i].uid;
           vote.name = arr[i].name;
           vote.fileUrl = '';
           vote.status = arr[i].status;
           newarr.push(vote);
         }
         setFilesList([...newarr]);
-        ChangeFiles({ arr: newarr, ischange: true });
+        ChangeFiles({ arr: [...newarr], ischange: true });
       }
     },
     onPreview(filesinfo) {
@@ -427,9 +430,13 @@ const Registrat = forwardRef((props, ref) => {
     },
     onRemove(filesinfo) {
       const newfilelist = fileslist.filter(item => item.uid !== filesinfo.uid);
-      ChangeFiles({ arr: newfilelist, ischange: true });
+
       // 删除文件
-      FileDelete(filesinfo.uid);
+      FileDelete(filesinfo.uid).then(res => {
+        if (res.code === 200) {
+          ChangeFiles({ arr: newfilelist, ischange: true });
+        }
+      });
     },
   };
 

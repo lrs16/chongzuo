@@ -50,14 +50,11 @@ function SysUpload(props) {
 
   const uploadprops = {
     name: 'file',
-    // action: { FileUpload },
     action: '/sys/file/upload',
     method: 'POST',
     headers: {
       Authorization: `Bearer ${sessionStorage.getItem('access_token')}`,
     },
-    // multiple: true,
-    // baccept: '.doc,.docx,.xml,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/png,image/jpeg,',
     showUploadList: { showDownloadIcon: true },
     defaultFileList: fileslist,
     multiple: true,
@@ -69,43 +66,51 @@ function SysUpload(props) {
         const correctfiletype = filetype.indexOf(filesuffix);
         if (correctfiletype !== -1) {
           message.error(`${file.name}文件上传失败，不可上传${filetype.join('/')}类型文件！`);
-          return reject(false);
+          return reject();
         }
-        return resolve(true);
+        return resolve(file);
       });
     },
     onChange({ file, fileList }) {
       const alldone = fileList.map(item => item.status !== 'done');
       if (file.status === 'done' && alldone.indexOf(true) === -1) {
+        message.success(`文件上传成功`);
         const arr = [...fileList];
         const newarr = [];
         for (let i = 0; i < arr.length; i += 1) {
           const vote = {};
-          vote.uid = arr[i]?.response?.data[0]?.id;
+          vote.uid =
+            arr[i]?.response?.data[0]?.id !== undefined
+              ? arr[i]?.response?.data[0]?.id
+              : arr[i].uid;
           vote.name = arr[i].name;
+          vote.nowtime =
+            arr[i]?.response?.data[0]?.createTime !== undefined
+              ? arr[i]?.response?.data[0]?.createTime
+              : arr[i].createTime;
           vote.fileUrl = '';
           vote.status = arr[i].status;
           newarr.push(vote);
         }
         setUploadFiles([...newarr]);
-        ChangeFileslist({ arr: newarr, ischange: true });
+        //  ChangeFileslist({ arr: newarr, ischange: true });
       }
     },
-    onPreview(info) {
-      handledownload(info);
+    onPreview(file) {
+      handledownload(file);
     },
-    onDownload(info) {
-      handledownload(info);
+    onDownload(file) {
+      handledownload(file);
     },
-    onRemove(info) {
+    onRemove(file) {
       // 删除记录,更新父级fileslist
-      const newfilelist = fileslist.filter(item => item.uid !== info.uid);
+      const newfilelist = fileslist.filter(item => item.uid !== file.uid);
       ChangeFileslist({ arr: newfilelist, ischange: true });
       // 删除文件
       dispatch({
         type: 'sysfile/deletefile',
         payload: {
-          id: info.uid,
+          id: file.uid,
         },
       });
     },

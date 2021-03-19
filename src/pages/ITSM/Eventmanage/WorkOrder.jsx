@@ -82,7 +82,9 @@ function WorkOrder2(props) {
   const [isnew, setIsNew] = useState(false);
   const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
   const { flowInstanceId, flowNodeInstanceId, flowNodeName, editState, data, edit, main } = info; // 流程基本信息
-  // console.log(location);
+
+  // console.log(registratfiles)
+
   // 保存、流转表单信息
   const paloadvalues = {
     ...formregistrat,
@@ -469,7 +471,7 @@ function WorkOrder2(props) {
   useEffect(() => {
     if (registratfiles.ischange) {
       ChangeType('save');
-      setRegistratFiles({ ...files, ischange: false });
+      setRegistratFiles({ ...registratfiles, ischange: false });
     }
   }, [registratfiles]);
 
