@@ -43,7 +43,8 @@ const columns = [
         to={{
           pathname: '/ITSM/demandmanage/query',
           query: {
-            module:record.fullName
+            module:record.fullName,
+            statisticalType:'demandRequirement'
           }
         }}
       >

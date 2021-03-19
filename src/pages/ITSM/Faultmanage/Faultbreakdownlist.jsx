@@ -90,6 +90,8 @@ function Faultbreakdownlist(props) {
 
   const handleReset = () => {
     resetFields();
+    statTimeBegin = '';
+    statTimeEnd = '';
   }
 
   const download = () => {
@@ -110,7 +112,6 @@ function Faultbreakdownlist(props) {
 
   const rowSelection = {
     onChange: (selectedRowkeys, select) => {
-      console.log('select: ', select);
     }
   }
 

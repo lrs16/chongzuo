@@ -17,6 +17,7 @@ const RegisterChild = React.forwardRef((props, ref) => {
     ChangeFiles,
     main,
     curruserinfo,
+    saveType
   } = props;
   const { getFieldDecorator } = props.form;
   const attRef = useRef();
@@ -50,6 +51,10 @@ const RegisterChild = React.forwardRef((props, ref) => {
     }
   } 
 
+  const handlobjectChange = (value,selectedOptions) => {
+    saveType(`${selectedOptions[1].dict_code}`);
+  };
+
   
 
 
@@ -65,6 +70,7 @@ const RegisterChild = React.forwardRef((props, ref) => {
       }
     });
   };
+
   const handledesSearch = values => {
     getAndField(values).then(res => {
       if (res.code === 200) {
@@ -232,6 +238,7 @@ const RegisterChild = React.forwardRef((props, ref) => {
               <Cascader
                 placeholder="请选择"
                 options={faultType}
+                onChange={handlobjectChange}
                 fieldNames={{ label: 'title', value: 'dict_code', children: 'children' }}
               />,
             )}

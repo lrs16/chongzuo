@@ -87,6 +87,7 @@ function Todolistdetails(props) {
   const [result, setResult] = useState('1');
   const [resultsecond, setResultsecond] = useState('1');
   const [resultconfirm, setResultconfirm] = useState('1');
+  const [type, setType] = useState('');
 
   const RegisterRef = useRef(); // 故障登记
   const ExamineRef = useRef(); // 系统运维商审核  自动化科业务负责人审核
@@ -265,7 +266,7 @@ function Todolistdetails(props) {
         formValues.taskId = id;
         formValues.editState = tododetailslist.editState;
         formValues.registerUserId = userId; // 当前登录人id
-        formValues.type = values.type.join(',');
+        formValues.type = type;
         if (files.ischange && Array.isArray(files.arr)) {
           formValues.registerAttachments = JSON.stringify(files.arr);
         }
@@ -892,6 +893,9 @@ function Todolistdetails(props) {
                       tododetailslist={tododetailslist}
                       main={main}
                       curruserinfo={curruserinfo}
+                      saveType={newvalue => {
+                        setType(newvalue);
+                      }}
                     />
                   </Panel>
                 )}

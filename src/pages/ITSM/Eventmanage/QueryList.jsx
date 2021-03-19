@@ -24,7 +24,7 @@ const { Option } = Select;
 const { RangePicker } = DatePicker;
 let paramsSearch = 'search';
 let empty;
-let noStatistic;
+let noStatistic = '';
 
 const formItemLayout = {
   labelCol: {
@@ -208,6 +208,8 @@ function QueryList(props) {
     noStatistic = 'noStatistic';
   }
 
+  console.log(noStatistic,'noStatistic');
+
   useEffect(() => {
     empty = '';
     noStatistic = '';
@@ -239,7 +241,7 @@ function QueryList(props) {
 
   //  查询页查询数据把数据统计的数据清空
   const queryFunciton = (values, page, size, params) => {
-    console.log(registerUser,'registerUser');
+    console.log('o');
     empty = 'empty';
     if (noStatistic) {
       if (values.createTime === undefined) {
@@ -280,13 +282,16 @@ function QueryList(props) {
       }
     }
 
-    if (!noStatistic) {
+    if (noStatistic === '') {
       console.log('3');
       dispatch({
         type: 'eventquery/fetchlist',
         payload: {
           ...values,
           eventObject: values.eventObject ? (values.eventObject).slice(-1)[0] : eventObject,
+          createTime:'',
+          time1: values.createTime?moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss'):'',
+          time2: values.createTime?moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss'):'',
           pageSize: size,
           pageIndex: page - 1,
         },
@@ -337,12 +342,15 @@ function QueryList(props) {
       }
     }
 
-    if(!noStatistic) {
+    if(noStatistic === '') {
       console.log('no');
       dispatch({
         type: 'eventquery/fetchlist',
         payload: {
           ...values,
+          createTime:'',
+          time1: values.createTime?moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss'):'',
+          time2: values.createTime?moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss'):'',
           pageSize: size,
           pageIndex: page - 1,
         },

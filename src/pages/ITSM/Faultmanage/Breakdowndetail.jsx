@@ -85,6 +85,8 @@ function Breakdownlist(props) {
 
   const handleReset = () => {
     resetFields();
+    statTimeBegin = '';
+    statTimeEnd = '';
   }
 
   const download = () => {

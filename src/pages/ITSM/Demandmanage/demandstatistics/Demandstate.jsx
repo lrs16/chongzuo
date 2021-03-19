@@ -31,10 +31,9 @@ const columns = [
     render: (text, record) => (
       <Link
         to={{
-          pathname: '/ITSM/eventmanage/query',
+          pathname: '/ITSM/demandmanage/query',
           query: {
-            start_time: record.start_time,
-            end_time: record.end_time,
+            taskName: record.statusName,
           }
         }}
       >
@@ -86,6 +85,8 @@ function Demandstate(props) {
 
   const handleReset = () => {
     resetFields();
+    statTimeBegin = '';
+    statTimeEnd = '';
   }
 
 

@@ -125,12 +125,6 @@ export async function TrackDelete(id) {
 
 // 需求查询列表
 export async function DemandQuery(params) {
-  // const { limit, page, demandId, taskName,module } = params;
-  // const registerPerson = params.registerPerson !== undefined ? params.registerPerson : '';
-  // const demandType = params.demandType !== undefined ? params.demandType : '';
-  // const title = params.title !== undefined ? params.title : '';
-  // const creationTime =
-  //   params.creationTime !== undefined ? params.creationTime.format('YYYY-MM-DD') : '';
   return request( `/demand/query/demandQuery`, {
       method: 'POST',
       body:JSON.stringify(params)

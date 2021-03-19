@@ -68,11 +68,6 @@ const columns = [
     dataIndex: 'proposer',
     key: 'proposer',
   },
-  // {
-  //   title: '功能模块',
-  //   dataIndex: 'module',
-  //   key: 'module',
-  // },
   {
     title: '工单状态',
     dataIndex: 'taskName',
@@ -103,7 +98,7 @@ function QueryList(props) {
   const pagetitle = props.route.name;
   const {
     form: { getFieldDecorator, resetFields, validateFields },
-    location: { query: { module }},
+    location: { query: { module,taskName,statisticalType }},
     loading,
     list,
     dispatch,
@@ -121,7 +116,8 @@ function QueryList(props) {
             ...values,
             page: paginations.current,
             limit: paginations.pageSize,
-            module
+            module,
+            taskName
           },
         });
       }
@@ -135,6 +131,8 @@ function QueryList(props) {
         ...values,
         limit: size,
         page,
+        module,
+        taskName:values.taskName?values.taskName:taskName
       },
     });
   };

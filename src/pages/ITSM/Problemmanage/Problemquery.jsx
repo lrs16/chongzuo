@@ -411,7 +411,7 @@ function Besolved(props) {
             </Col>
 
             <Col span={8}>
-              <Form.Item label="工单状态">
+              <Form.Item label="当前处理环节">
                 {getFieldDecorator('currentNode',
                   {},
                 )(

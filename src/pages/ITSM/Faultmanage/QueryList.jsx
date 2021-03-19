@@ -396,7 +396,7 @@ function QueryList(props) {
             )}
 
             <Col xl={8} xs={12}>
-              <Form.Item label="工单状态">
+              <Form.Item label="当前处理环节">
                 {getFieldDecorator(
                   'currentNode',
                   {},
