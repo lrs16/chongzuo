@@ -69,7 +69,7 @@ const ConfirmChild = React.forwardRef((props, ref) => {
 
           <Col span={8}>
           <Form.Item label="故障责任方">
-            {getFieldDecorator('blame', {
+            {getFieldDecorator('confirmBlame', {
               rules: [
                 {
                   required,

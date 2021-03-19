@@ -66,10 +66,9 @@ function Registration(props) {
     // saveuserid: { flowTaskId },
   } = props;
 
+
   const cascaderOnchange = (value, selectedOptions) => {
-    console.log('selectedOptions: ', selectedOptions);
     selectCascader = selectedOptions[1].dict_code;
-    console.log('selectCascader: ', selectCascader);
   }
 
   const displayRender = label => {

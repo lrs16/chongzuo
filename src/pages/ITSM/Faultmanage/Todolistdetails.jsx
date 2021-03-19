@@ -256,6 +256,7 @@ function Todolistdetails(props) {
 
   // 各个表单验证
   const saveRegister = cirStatus => {
+    // console.log(Array.isArray([{}]));
     // 故障登记
     // eslint-disable-next-line consistent-return
     RegisterRef.current.validateFields((err, values) => {
@@ -266,12 +267,12 @@ function Todolistdetails(props) {
         formValues.taskId = id;
         formValues.editState = tododetailslist.editState;
         formValues.registerUserId = userId; // 当前登录人id
-        formValues.type = type;
-        if (files.ischange && Array.isArray(files.arr)) {
+        formValues.type = values.type?values.type[1]:type;
+        if (files.ischange &&typeof(files.arr) === 'object') {
           formValues.registerAttachments = JSON.stringify(files.arr);
         }
 
-        if (files.ischange === true && typeof files.arr === 'string') {
+        if (files.ischange === true &&  typeof(files.arr) === 'string') {
           message.info('上传文件失败，请重新上传');
         }
 
@@ -313,8 +314,12 @@ function Todolistdetails(props) {
         formValues.checkUserId = userId; // 当前登录人id
         formValues.taskId = id;
         formValues.checkType = flowNodeName === '系统运维商审核' ? '1' : '2';
-        if (files.ischange) {
+        if (files.ischange && typeof(files.arr) === 'object') {
           formValues.checkAttachments = JSON.stringify(files.arr);
+        }
+
+        if (files.ischange && typeof(files.arr) === 'string') {
+          message.info('上传文件失败，请重新上传');
         }
 
         if (tododetailslist.editState === 'edit') {
@@ -343,7 +348,7 @@ function Todolistdetails(props) {
       }
     });
   };
-
+  // console.log(Array.isArray('C:\fakepath\上线期间问题记录 -分工.xlsx'));
   const saveHandle = cirStatus => {
     // 系统运维商处理
     // eslint-disable-next-line consistent-return
@@ -357,7 +362,8 @@ function Todolistdetails(props) {
         formValues.taskId = id;
         formValues.editState = tododetailslist.editState;
         formValues.handlerId = userId; // 当前登录人id
-        if (files.ischange === true && Array.isArray(files.arr)) {
+
+        if (files.ischange === true && typeof(files.arr) === 'object') {
           if (fileskey === '1') {
             formValues.handleRecordAttachments = JSON.stringify(files.arr);
           }
@@ -369,10 +375,9 @@ function Todolistdetails(props) {
           }
         }
 
-        if (files.ischange === true && typeof files.arr === 'string') {
+        if (files.ischange && typeof(files.arr) === 'string') {
           message.info('上传文件失败，请重新上传');
         }
-
         if (tododetailslist.editState === 'edit') {
           formValues.handleId = tododetailslist.handle.id;
           formValues.editState = tododetailslist.editState;
@@ -400,7 +405,9 @@ function Todolistdetails(props) {
     });
   };
 
-  const saveSummary = cirStatus => {
+
+  
+const saveSummary = cirStatus => {
     // 系统运维商确认总结
     // eslint-disable-next-line consistent-return
     SummaryRef.current.validateFields((err, values) => {
@@ -417,7 +424,8 @@ function Todolistdetails(props) {
           formValues.finishId = tododetailslist.editGuid;
           formValues.editState = 'add';
         }
-        if (files.ischange && Array.isArray(files.arr)) {
+        if (files.ischange && typeof(files.arr) === 'object') {
+          console.log(files.arr,'files.arr');
           if (fileskey === '1') {
             formValues.finishAnalysisAttachments = JSON.stringify(files.arr);
           } else {
@@ -425,7 +433,7 @@ function Todolistdetails(props) {
           }
         }
 
-        if (files.ischange === true && typeof files.arr === 'string') {
+        if (files.ischange && typeof(files.arr) === 'string') {
           message.info('上传文件失败，请重新上传');
         }
 
@@ -468,11 +476,11 @@ function Todolistdetails(props) {
         formValues.taskId = id;
         formValues.editState = tododetailslist.editState;
         formValues.confirmUserId = userId; // 当前登录人id
-        if (files.ischange && Array.isArray(files.arr)) {
+        if (files.ischange && ((files.arr) instanceof Array)) {
           formValues.confirmAttachments = JSON.stringify(files.arr);
         }
 
-        if (files.ischange === true && typeof files.arr === 'string') {
+        if (files.ischange === true && ((files.arr) instanceof Array) === false) {
           message.info('上传文件失败，请重新上传');
         }
 

@@ -46,11 +46,11 @@ function Registration(props) {
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
   const RegistratRef = useRef();
 
-  // const getUserinfo = () => {
-  //   dispatch({
-  //     type: 'problemmanage/fetchUseinfo',
-  //   });
-  // };
+  const getUserinfo = () => {
+    dispatch({
+      type: 'problemmanage/fetchUseinfo',
+    });
+  };
 
   const getSourceapi = (dictModule, dictType) => {
     dispatch({
@@ -97,7 +97,7 @@ function Registration(props) {
   };
 
   useEffect(() => {
-    // getUserinfo();
+    getUserinfo();
     getSource();
     gettype();
     getpriority();

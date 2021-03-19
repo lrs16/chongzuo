@@ -29,6 +29,7 @@ const forminladeLayout = {
   },
 };
 
+
 const HandleChild = React.forwardRef((props, ref) => {
   const { handle, curruserinfo, ChangeFiles, ChangeFileskey } = props;
   const { getFieldDecorator, setFieldsValue } = props.form;
@@ -68,6 +69,7 @@ const HandleChild = React.forwardRef((props, ref) => {
     }
   }, []);
 
+  const type = typeof(handle.handleRecordAttachments);
   useImperativeHandle(
     ref,
     () => ({
@@ -222,7 +224,7 @@ const HandleChild = React.forwardRef((props, ref) => {
               >
                 <SysUpload
                   fileslist={
-                    handle && handle.handleRecordAttachments !== null
+                    handle && (handle.handleRecordAttachments !== null)
                       ? JSON.parse(handle.handleRecordAttachments)
                       : []
                   }

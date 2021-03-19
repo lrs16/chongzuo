@@ -50,7 +50,6 @@ const RegisterChild = React.forwardRef((props, ref) => {
       type.unshift(main.type.slice(0, 3));
     }
   } 
-
   const handlobjectChange = (value,selectedOptions) => {
     saveType(`${selectedOptions[1].dict_code}`);
   };

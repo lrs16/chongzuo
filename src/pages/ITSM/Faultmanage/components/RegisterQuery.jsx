@@ -20,7 +20,7 @@ function RegisterQuery (props){
                     <Description term="发生时间">{info.registerOccurTime || ''}</Description>
                     <Description term="故障来源">{maindata.source || ''}</Description>
                     <Description term="系统模块">{info.registerModel || ''}</Description>
-                    <Description term="故障类型">{maindata.type || ''}</Description>
+                    <Description term="故障类型">{maindata.typecn || ''}</Description>
                     <Description term="故障地点"> {info.registerAddress || ''}</Description>
                     <Description term="严重程度">{info.registerLevel || ''}</Description>
                     <Description term="影响范围">{info.registerScope || ''}</Description>
