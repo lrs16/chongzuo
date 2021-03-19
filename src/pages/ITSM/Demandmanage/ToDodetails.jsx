@@ -15,9 +15,11 @@ function ToDoregist(props) {
   const [buttontype, setButtonType] = useState('');
   const [backvalue, setBackvalue] = useState('');
   const [registerId, setRegisterId] = useState('');
-  const [histroylength, setHistroyLength] = useState(0);
+  const [histroytaskid, setHistroyTaskId] = useState('');
   const [Popvisible, setVisible] = useState(false);
   const [iscolse, setIsClose] = useState('');
+
+  console.log(histroytaskid)
 
   const handleHold = type => {
     setButtonType(type);
@@ -90,7 +92,7 @@ function ToDoregist(props) {
       {(taskName === '业务科室领导审核' ||
         taskName === '系统开发商审核' ||
         taskName === '自动化科负责人确认' ||
-        taskName === '需求登记人员确认') && (
+        taskName === '需求登记人员确认') && histroytaskid !== null && (
           <Popover content={content} visible={Popvisible} onVisibleChange={handleVisibleChange}>
             <Button type="primary" ghost style={{ marginRight: 8 }}>
               回退
@@ -187,7 +189,7 @@ function ToDoregist(props) {
           type={buttontype}
           ChangeType={newvalue => setButtonType(newvalue)}
           changRegisterId={newvalue => setRegisterId(newvalue)}
-          ChangeHistroyLength={newvalue => setHistroyLength(newvalue)}
+          ChangeHistroyTaskId={newvalue => setHistroyTaskId(newvalue)}
           ChangeISClose={v => setIsClose(v)}
         />
       )}

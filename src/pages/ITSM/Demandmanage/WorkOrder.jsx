@@ -45,7 +45,7 @@ function WorkOrder(props) {
     type,
     ChangeType,
     changRegisterId,
-    ChangeHistroyLength,
+    ChangeHistroyTaskId,
     ChangeISClose,
   } = props;
   const [activeKey, setActiveKey] = useState(['form']);
@@ -77,7 +77,13 @@ function WorkOrder(props) {
   useEffect(() => {
     if (info !== '') {
       changRegisterId(info.demandForm.id); // formid
-      ChangeHistroyLength(info.historys.length);
+      if ((taskName === '业务科室领导审核' ||
+        taskName === '系统开发商审核' ||
+        taskName === '自动化科负责人确认' ||
+        taskName === '需求登记人员确认') && info.historys.length > 0) {
+        console.log(info.historys?.slice(-1)[0])
+        ChangeHistroyTaskId(info.historys?.slice(-1)[0].taskId);
+      }
       ChangeISClose(info.is_close);
     }
   }, [info]);
