@@ -26,9 +26,9 @@ function Maintenanceservice(props) {
     maintenanceService,
     dispatch
   } = props;
-  const tableHeadweek = tabActiveKey === 'week' ? '上周':'上月';
-  const tableHeadmonth = tabActiveKey === 'week' ? '本周':'本月';
-  
+  const tableHeadweek = tabActiveKey === 'week' ? '上周' : '上月';
+  const tableHeadmonth = tabActiveKey === 'week' ? '本周' : '本月';
+
   const columns = [
     {
       title: '服务指标',
@@ -57,25 +57,17 @@ function Maintenanceservice(props) {
     },
   ];
 
-  const onChange = (date) => {
+  const onChange = (date,dateString) => {
     if (tabActiveKey === 'week') {
-      const date1 = new Date(date._d);
-      const date2 = new Date(date._d);
-      startTime = `${date1.getFullYear()}-${(date1.getMonth() + 1)}-${date1.getDate()}`;
-      date2.setDate(date1.getDate() + 6);
-      endTime = `${date2.getFullYear()}-${(date2.getMonth() + 1)}-${date2.getDate()}`;
+      startTime = dateString;
+      endTime =  moment(dateString).add(+6,'day').format('YYYY-MM-DD');
     } else {
-      startTime = '';
-      endTime = '';
-      const date1 = new Date(date._d);
-      const date2 = new Date(date._d);
-      startTime = `${date1.getFullYear()}-${(date1.getMonth() + 1)}-${date1.getDate()}`;
-      date2.setDate(date1.getDate() + 29);
-      endTime = `${date2.getFullYear()}-${(date2.getMonth() + 1)}-${date2.getDate()}`;
+      startTime = dateString;
+      endTime =  moment(dateString).add(+29,'day').format('YYYY-MM-DD');
     }
   }
 
-  const handleListdata = (params) => {
+  const handleListdata = () => {
     dispatch({
       type: 'eventstatistics/fetcheventServiceList',
       payload: { sign, tabActiveKey, startTime, endTime }
@@ -85,10 +77,10 @@ function Maintenanceservice(props) {
   const download = () => {
     dispatch({
       type: 'eventstatistics/downloadEventservice',
-      payload:{
-        time1:startTime,
-        time2:endTime,
-        type:tabActiveKey,
+      payload: {
+        time1: startTime,
+        time2: endTime,
+        type: tabActiveKey,
       }
     }).then(res => {
       const filename = '下载.xls';
@@ -106,19 +98,11 @@ function Maintenanceservice(props) {
   const defaultTime = () => {
     //  周统计
     if (tabActiveKey === 'week') {
-      const day2 = new Date();
-      day2.setTime(day2.getTime());
-      endTime = `${day2.getFullYear()}-${(day2.getMonth() + 1)}-${day2.getDate()}`;
-      const date2 = new Date(day2);
-      date2.setDate(day2.getDate() - 6);
-      startTime = `${date2.getFullYear()}-${(date2.getMonth() + 1)}-${date2.getDate()}`;
+      startTime = moment().subtract('days', 6).format('YYYY-MM-DD');
+      endTime = moment().format('YYYY-MM-DD');
     } else { // 月统计
-      const day2 = new Date();
-      day2.setTime(day2.getTime());
-      endTime = `${day2.getFullYear()}-${(day2.getMonth() + 1)}-${day2.getDate()}`;
-      const date2 = new Date(day2);
-      date2.setDate(day2.getDate() - 29);
-      startTime = `${date2.getFullYear()}-${(date2.getMonth() + 1)}-${date2.getDate()}`;
+      startTime = moment().subtract('days', 29).format('YYYY-MM-DD');
+      endTime = moment().format('YYYY-MM-DD');
     }
   }
 
@@ -171,7 +155,7 @@ function Maintenanceservice(props) {
                     <Form.Item label=''>
                       {
                         getFieldDecorator('time2', {
-                          initialValue:  moment(endTime)
+                          initialValue: moment(endTime)
                         })
                           (<DatePicker disabled />)
                       }

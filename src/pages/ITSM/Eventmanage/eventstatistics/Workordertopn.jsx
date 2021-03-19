@@ -68,12 +68,6 @@ function Workordertopn(props) {
     dispatch
   } = props;
 
-  let copy = 1;
-  let zhibiao = 1;
-  let Interface = 1;
-  let advancedFeatures = 1;
-  let terminalSettings = 1;
-  // let advancedFeatures = 1;
   if (ordertopnArr && ordertopnArr.length) {
     for (let i = 0; i < ordertopnArr.length - 1; i++) {
       for (let j = i + 1; j < ordertopnArr.length; j++) {
@@ -84,17 +78,9 @@ function Workordertopn(props) {
     }
   }
 
-
-
-
-
-
-  const onChange = (date) => {
-      const date1 = new Date(date._d);
-      const date2 = new Date(date._d);
-      startTime = `${date1.getFullYear()}-${(date1.getMonth() + 1)}-${date1.getDate()}`;
-      date2.setDate(date1.getDate() + 6);
-      endTime = `${date2.getFullYear()}-${(date2.getMonth() + 1)}-${date2.getDate()}`;
+  const onChange = (date,dateString) => {
+    startTime = dateString;
+    endTime =  moment(dateString).add(+6,'day').format('YYYY-MM-DD');
   }
 
   const handleListdata = () => {
@@ -126,13 +112,8 @@ function Workordertopn(props) {
 
 
   const defaultTime = () => {
-    //  周统计
-    const day2 = new Date();
-    day2.setTime(day2.getTime());
-    endTime = `${day2.getFullYear()}-${(day2.getMonth() + 1)}-${day2.getDate()}`;
-    const date2 = new Date(day2);
-    date2.setDate(day2.getDate() - 6);
-    startTime = `${date2.getFullYear()}-${(date2.getMonth() + 1)}-${date2.getDate()}`;
+    startTime = moment().subtract('days', 6).format('YYYY-MM-DD');
+    endTime = moment().format('YYYY-MM-DD');
   }
 
   const selectOnchange = (selectvalue) => {

@@ -21,7 +21,6 @@ let monthStarttime;
 let endTime;
 const sign = 'maintenanceservice';
 
-
 const IconFont = Icon.createFromIconfontCN({
   scriptUrl: iconfontUrl,
 });
@@ -40,17 +39,14 @@ function Maintenance(props) {
   const { data } = maintenanceArr;
   
   if (data && data.length) {
-    for (let i = 0; i < data.length - 1; i++) {
-      for (let j = i + 1; j < data.length; j++) {
+    for (let i = 0; i < data.length - 1; i += 1) {
+      for (let j = i + 1; j < data.length; j += 1) {
         if (data[i].first_object === data[j].first_object) {
           data[j].first_object = '';
         }
       }
     }
   }
-
-
-
 
   const columns = [
     {
@@ -130,23 +126,18 @@ function Maintenance(props) {
     },
   ];
 
-  const onChange = (date) => {
+
+  const onChange = (date,dateString) => {
     if (tabActiveKey === 'week') {
-      const date1 = new Date(date._d);
-      const date2 = new Date(date._d);
-      starttime = `${date1.getFullYear()}-${(date1.getMonth() + 1)}-${date1.getDate()}`;
-      date2.setDate(date1.getDate() + 6);
-      endTime = `${date2.getFullYear()}-${(date2.getMonth() + 1)}-${date2.getDate()}`;
+      starttime = dateString;
+      endTime =  moment(dateString).add(+6,'day').format('YYYY-MM-DD');
     } else {
-      const date1 = new Date(date._d);
-      const date2 = new Date(date._d);
-      starttime = `${date1.getFullYear()}-${(date1.getMonth() + 1)}-${date1.getDate()}`;
-      date2.setDate(date1.getDate() + 29);
-      endTime = `${date2.getFullYear()}-${(date2.getMonth() + 1)}-${date2.getDate()}`;
+      starttime = dateString;
+      endTime =  moment(dateString).add(+29,'day').format('YYYY-MM-DD');
     }
   }
 
-  const handleListdata = (params) => {
+  const handleListdata = () => {
     dispatch({
       type: 'eventstatistics/fetchMaintenancelist',
       payload: { sign, tabActiveKey, starttime, monthStarttime, endTime }
@@ -178,34 +169,18 @@ function Maintenance(props) {
   const defaultTime = () => {
     //  周统计
     if (tabActiveKey === 'week') {
-      const day2 = new Date();
-      day2.setTime(day2.getTime());
-      endTime = `${day2.getFullYear()}-${(day2.getMonth() + 1)}-${day2.getDate()}`;
-      const date2 = new Date(day2);
-      date2.setDate(day2.getDate() - 6);
-      starttime = `${date2.getFullYear()}-${(date2.getMonth() + 1)}-${date2.getDate()}`;
+      starttime = moment().subtract('days', 6).format('YYYY-MM-DD');
+      endTime = moment().format('YYYY-MM-DD');
     } else { // 月统计
-      const day2 = new Date();
-      day2.setTime(day2.getTime());
-      endTime = `${day2.getFullYear()}-${(day2.getMonth() + 1)}-${day2.getDate()}`;
-      const date2 = new Date(day2);
-      date2.setDate(day2.getDate() - 29);
-      starttime = `${date2.getFullYear()}-${(date2.getMonth() + 1)}-${date2.getDate()}`;
+      starttime = moment().subtract('days', 29).format('YYYY-MM-DD');
+      endTime = moment().format('YYYY-MM-DD');
     }
   }
 
-  //  问题来源
-  const getSource = () => {
-    dispatch({
-      type: 'eventstatistics/primaryobjectList',
-      payload: { dictModule:'order', dictType:'object.node' }
-    });
-  }
 
   useEffect(() => {
     defaultTime();
     handleListdata();
-    getSource();
   }, [tabActiveKey])
 
   const tabList = [

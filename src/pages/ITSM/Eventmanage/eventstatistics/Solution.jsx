@@ -98,16 +98,13 @@ function Solution(props) {
     dispatch
   } = props;
 
-  const onChange = (date) => {
-    const date1 = new Date(date._d);
-    const date2 = new Date(date._d);
-    startTime = `${date1.getFullYear()}-${(date1.getMonth() + 1)}-${date1.getDate()}`;
-    date2.setDate(date1.getDate() + 6);
-    endTime = `${date2.getFullYear()}-${(date2.getMonth() + 1)}-${date2.getDate()}`;
+  const onChange = (date,dateString) => {
+    startTime = dateString;
+    endTime =  moment(dateString).add(+6,'day').format('YYYY-MM-DD');
   }
 
 
-  const handleListdata = (params) => {
+  const handleListdata = () => {
     dispatch({
       type: 'eventstatistics/fetchSelfHandleList',
       payload: { sign, startTime, endTime }
@@ -136,12 +133,8 @@ function Solution(props) {
 
   const defaultTime = () => {
     //  周统计
-    const day2 = new Date();
-    day2.setTime(day2.getTime());
-    endTime = `${day2.getFullYear()}-${(day2.getMonth() + 1)}-${day2.getDate()}`;
-    const date2 = new Date(day2);
-    date2.setDate(day2.getDate() - 6);
-    startTime = `${date2.getFullYear()}-${(date2.getMonth() + 1)}-${date2.getDate()}`;
+    startTime = moment().subtract('days', 6).format('YYYY-MM-DD');
+    endTime = moment().format('YYYY-MM-DD');
   }
 
   useEffect(() => {
