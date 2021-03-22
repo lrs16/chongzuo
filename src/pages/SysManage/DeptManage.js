@@ -25,8 +25,8 @@ import DeptModal from './components/DeptModal';
 const { Search } = Input;
 const { Sider, Content } = Layout;
 const { TreeNode } = Tree;
-const statusMap = ['success', 'default'];
-const status = ['启用', '停用'];
+const statusMap = ['default', 'success'];
+const status = ['停用', '启用'];
 
 @connect(({ upmsdept, loading }) => ({
   upmsdept,
@@ -38,7 +38,7 @@ class DeptManage extends Component {
     pageSize: 10,
     queKey: '',
     treeData: [],
-    pidkey: '0',
+    pidkey: '',
   };
 
   componentDidMount() {

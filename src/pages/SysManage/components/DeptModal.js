@@ -19,7 +19,7 @@ const formItemLayout = {
 
 const RadioGroup = Radio.Group;
 // 克隆子元素按钮，并添加事件
-const withClick = (element, handleClick = () => {}) => {
+const withClick = (element, handleClick = () => { }) => {
   return <element.type {...element.props} onClick={handleClick} />;
 };
 class MenuModal extends Component {
@@ -51,7 +51,7 @@ class MenuModal extends Component {
     });
   };
 
-  getPid = () => {};
+  getPid = () => { };
 
   render() {
     const { visible } = this.state;
@@ -129,8 +129,8 @@ class MenuModal extends Component {
                 initialValue: deptStatus,
               })(
                 <RadioGroup>
-                  <Radio value="0">启用</Radio>
-                  <Radio value="1">停用</Radio>
+                  <Radio value="1">启用</Radio>
+                  <Radio value="0">停用</Radio>
                 </RadioGroup>,
               )}
             </Form.Item>
