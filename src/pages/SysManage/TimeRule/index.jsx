@@ -25,7 +25,7 @@ function TimeRules(props) {
   const [title, setTitle] = useState('');
   const [savetype, setSaveType] = useState(''); // 保存类型  save:新建  update:编辑
   const [data, setData] = useState('');
-  const [paginations, setPageinations] = useState({ current: 0, pageSize: 10 });
+  const [paginations, setPageinations] = useState({ current: 0, pageSize: 15 });
   const [servicetype, setServiceType] = useState([]);
   const [ordertype, setOrderType] = useState([]);
   // 请求数据字典

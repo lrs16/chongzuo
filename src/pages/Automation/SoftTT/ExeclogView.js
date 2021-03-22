@@ -39,7 +39,7 @@ const DescriptionItem = ({ title, content }) => (
 class ExecLogView extends Component {
   state = {
     current: 1,
-    pageSize: 10,
+    pageSize: 15,
     queKey: '',
     visible: false,
     DescriptionItemList: [],
@@ -285,6 +285,7 @@ class ExecLogView extends Component {
       current: this.state.current,
       pageSize: this.state.pageSize,
       total: execloglist.total,
+      showTotal: total => `总共  ${total}  条记录`,
       onChange: page => this.changePage(page),
     };
     return (

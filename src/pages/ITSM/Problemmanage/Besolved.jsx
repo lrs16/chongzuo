@@ -41,18 +41,18 @@ function Besolved(props) {
     loading,
   } = props;
   const [expand, setExpand] = useState(false);
-  const [paginations, setPaginations] = useState({ current: 1, pageSize: 10 });
+  const [paginations, setPaginations] = useState({ current: 1, pageSize: 15 });
 
 
   const columns = [
-    {
-      title: '序号',
-      dataIndex: 'index',
-      key: 'index',
-      width: 100,
-      render: (text, record, index) =>
-        `${(paginations.current - 1) * paginations.pageSize + (index + 1)}`,
-    },
+    // {
+    //   title: '序号',
+    //   dataIndex: 'index',
+    //   key: 'index',
+    //   width: 100,
+    //   render: (text, record, index) =>
+    //     `${(paginations.current - 1) * paginations.pageSize + (index + 1)}`,
+    // },
     {
       title: '问题编号',
       dataIndex: 'no',
@@ -263,11 +263,11 @@ function Besolved(props) {
                       message: '请输入问题编号',
                     },
                   ],
-                })(<Input placeholder='请输入'/>)}
+                })(<Input placeholder='请输入' />)}
               </Form.Item>
             </Col>
 
-            <Col  span={8}>
+            <Col span={8}>
               <Form.Item label="当前处理环节">
                 {getFieldDecorator('currentNode', {
                   rules: [
@@ -295,7 +295,7 @@ function Besolved(props) {
               <>
                 <Col span={8}>
                   <Form.Item label="问题标题">
-                    {getFieldDecorator('title', {})(<Input placeholder='请输入'/>)}
+                    {getFieldDecorator('title', {})(<Input placeholder='请输入' />)}
                   </Form.Item>
                 </Col>
               </>
@@ -342,7 +342,7 @@ function Besolved(props) {
                 </Col>
 
                 <Col span={8}>
-                  <Form.Item label="发送人">{getFieldDecorator('registerUser', {})(<Input placeholder='请输入'/>)}</Form.Item>
+                  <Form.Item label="发送人">{getFieldDecorator('registerUser', {})(<Input placeholder='请输入' />)}</Form.Item>
                 </Col>
               </>
             )}
@@ -401,10 +401,10 @@ function Besolved(props) {
                       关闭 <UpOutlined />
                     </>
                   ) : (
-                      <>
-                        展开 <DownOutlined />
-                      </>
-                    )}
+                    <>
+                      展开 <DownOutlined />
+                    </>
+                  )}
                 </Button>
               </Col>
             )}
@@ -429,10 +429,10 @@ function Besolved(props) {
                       关闭 <UpOutlined />
                     </>
                   ) : (
-                      <>
-                        展开 <DownOutlined />
-                      </>
-                    )}
+                    <>
+                      展开 <DownOutlined />
+                    </>
+                  )}
                 </Button>
               </Col>
             )}

@@ -23,7 +23,7 @@ class SoftExetute extends Component {
     const panes = [];
     this.state = {
       current: 1,
-      pageSize: 10,
+      pageSize: 15,
       queKey: '',
       hostId: '',
       // tab标签
@@ -422,6 +422,7 @@ class SoftExetute extends Component {
       current: this.state.current,
       pageSize: this.state.pageSize,
       total: softdata.total,
+      showTotal: total => `总共  ${total}  条记录`,
       onChange: page => this.changePage(page),
     };
 

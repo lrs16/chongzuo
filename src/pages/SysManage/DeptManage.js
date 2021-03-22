@@ -35,7 +35,7 @@ const status = ['停用', '启用'];
 class DeptManage extends Component {
   state = {
     current: 1,
-    pageSize: 10,
+    pageSize: 15,
     queKey: '',
     treeData: [],
     pidkey: '',

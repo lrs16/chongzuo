@@ -22,7 +22,7 @@ import SysDict from '@/components/SysDict';
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
-let paramsSearch = 'search';
+const paramsSearch = 'search';
 let empty;
 let noStatistic = '';
 
@@ -200,7 +200,7 @@ function QueryList(props) {
     list,
     dispatch,
   } = props;
-  const [paginations, setPageinations] = useState({ current: 1, pageSize: 10 });
+  const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
   const [expand, setExpand] = useState(false);
   const [selectdata, setSelectData] = useState([]);
 
@@ -208,7 +208,7 @@ function QueryList(props) {
     noStatistic = 'noStatistic';
   }
 
-  console.log(noStatistic,'noStatistic');
+  console.log(noStatistic, 'noStatistic');
 
   useEffect(() => {
     empty = '';
@@ -250,7 +250,7 @@ function QueryList(props) {
           type: 'eventquery/fetchlist',
           payload: {
             ...values,
-            eventObject: values.eventObject ? (values.eventObject).slice(-1)[0]:eventObject,
+            eventObject: values.eventObject ? (values.eventObject).slice(-1)[0] : eventObject,
             createTime: '',
             pageSize: size,
             pageIndex: page - 1,
@@ -289,9 +289,9 @@ function QueryList(props) {
         payload: {
           ...values,
           eventObject: values.eventObject ? (values.eventObject).slice(-1)[0] : eventObject,
-          createTime:'',
-          time1: values.createTime?moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss'):'',
-          time2: values.createTime?moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss'):'',
+          createTime: '',
+          time1: values.createTime ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+          time2: values.createTime ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
           pageSize: size,
           pageIndex: page - 1,
         },
@@ -311,12 +311,12 @@ function QueryList(props) {
             ...values,
             eventObject: values.eventObject ? (values.eventObject).slice(-1)[0] : eventObject,
             createTime: '',
-            time1:  moment(time1).format('YYYY-MM-DD HH:mm:ss'),
-            time2:  moment(time2).format('YYYY-MM-DD HH:mm:ss'),
+            time1: moment(time1).format('YYYY-MM-DD HH:mm:ss'),
+            time2: moment(time2).format('YYYY-MM-DD HH:mm:ss'),
             pageSize: size,
             pageIndex: page - 1,
             selfhandle: values.selfhandle ? values.selfhandle : selfhandle,
-            registerUser:  values.registerUser ? values.registerUser : registerUser,
+            registerUser: values.registerUser ? values.registerUser : registerUser,
             applicationUnit: values.applicationUnit ? values.applicationUnit : applicationUnit
 
           },
@@ -329,8 +329,8 @@ function QueryList(props) {
             ...values,
             eventObject: values.eventObject ? (values.eventObject).slice(-1)[0] : eventObject,
             createTime: '',
-            time1:  moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss'),
-            time2:  moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss'),
+            time1: moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss'),
+            time2: moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss'),
             pageSize: size,
             pageIndex: page - 1,
             selfhandle: values.selfhandle ? values.selfhandle : selfhandle,
@@ -342,15 +342,15 @@ function QueryList(props) {
       }
     }
 
-    if(noStatistic === '') {
+    if (noStatistic === '') {
       console.log('no');
       dispatch({
         type: 'eventquery/fetchlist',
         payload: {
           ...values,
-          createTime:'',
-          time1: values.createTime?moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss'):'',
-          time2: values.createTime?moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss'):'',
+          createTime: '',
+          time1: values.createTime ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+          time2: values.createTime ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
           pageSize: size,
           pageIndex: page - 1,
         },

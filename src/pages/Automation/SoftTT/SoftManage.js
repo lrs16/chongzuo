@@ -1,20 +1,22 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
-import { Card, 
-         Table, 
-         Button, 
-         Message, 
-         Divider, 
-         Popconfirm,
-         Row,
-         Col } from 'antd';
+import {
+  Card,
+  Table,
+  Button,
+  Message,
+  Divider,
+  Popconfirm,
+  Row,
+  Col
+} from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import SoftManageTree from '@/components/SoftManageTree';
 import SoftEdit from './components/SoftEdit';
 // import SoftProcess from './components/Soft_Process';
 // import HostSoft from './components/Host_Soft';
 // import BatchAdd from './components/BatchAdd';
-import SoftManageTree from '@/components/SoftManageTree';
 
 @connect(({ hostsoft, loading }) => ({
   hostsoft,
@@ -23,9 +25,9 @@ import SoftManageTree from '@/components/SoftManageTree';
 class SoftManage extends Component {
   state = {
     current: 1,
-    pageSize: 10,
+    pageSize: 15,
     queKey: '',
-    hostId:''
+    hostId: ''
   };
 
   // componentDidMount() {
@@ -49,26 +51,26 @@ class SoftManage extends Component {
   getSoftlist = (hostIds) => {
     // const { hostId } = this.state;
     // const hostId = values.hostId;
-    const { dispatch } = this.props ;
+    const { dispatch } = this.props;
     dispatch({
       type: 'hostsoft/getSoftwaresList',
       // payload: { hostId } || { deleteHostId },
-        payload: { hostIds } ,
+      payload: { hostIds },
     });
 
     dispatch({
       type: 'hostsoft/getToHostList',
       // payload: { hostId } || { deleteHostId },
-      payload: { hostIds } ,
+      payload: { hostIds },
     });
   };
 
-  handleUpdate = (value,hostIds) => {
+  handleUpdate = (value, hostIds) => {
     // console.log(hostIds,'hostIds');
     const { dispatch } = this.props;
     return dispatch({
       type: 'hostsoft/softSave',
-      payload: {value,hostIds}
+      payload: { value, hostIds }
     }).then(res => {
       if (res.code === 200) {
         Message.success(res.msg);
@@ -79,7 +81,7 @@ class SoftManage extends Component {
     });
   };
 
-  handleEdite = (values,hostIds) => {
+  handleEdite = (values, hostIds) => {
     const { dispatch } = this.props;
     return dispatch({
       type: 'hostsoft/softEdit',
@@ -94,7 +96,7 @@ class SoftManage extends Component {
     });
   };
 
-  handleDelete = (id,hostId) => {
+  handleDelete = (id, hostId) => {
     const { dispatch } = this.props;
     return dispatch({
       type: 'hostsoft/softRemove',
@@ -155,19 +157,19 @@ class SoftManage extends Component {
 
   getChildValue = val => {
     const hostIds = val[0];
-    this.setState({ 
+    this.setState({
       hostId: hostIds
     });
 
     const { dispatch } = this.props;
     dispatch({
       type: 'hostsoft/getSoftwaresList',
-      payload:  { hostIds } ,
+      payload: { hostIds },
     });
 
     dispatch({
       type: 'hostsoft/getToHostList',
-      payload:  { hostIds } ,
+      payload: { hostIds },
     });
   };
 
@@ -207,7 +209,7 @@ class SoftManage extends Component {
         key: 'softwareStartCommand',
         width: 250,
         ellipsis: true,
-      
+
       },
       {
         title: '停止命令',
@@ -245,7 +247,7 @@ class SoftManage extends Component {
         title: '软件备注',
         dataIndex: 'softwareRemark',
         key: 'softwareRemark',
-        width:200,
+        width: 200,
         ellipsis: true
       },
       {
@@ -286,11 +288,11 @@ class SoftManage extends Component {
               <a type="link">配置进程</a>
             </HostSoft> */}
             <Divider type="vertical" />
-            <SoftEdit onSumit={(values,hostIds) => this.handleEdite(values,hostIds)} title="编辑软件" record={record} hostId={this.state.hostId}>
+            <SoftEdit onSumit={(values, hostIds) => this.handleEdite(values, hostIds)} title="编辑软件" record={record} hostId={this.state.hostId}>
               <a type="link">编辑软件</a>
             </SoftEdit>
             <Divider type="vertical" />
-            <Popconfirm title="确定删除此软件？" onConfirm={() => this.handleDelete(record.id,this.state.hostId)}>
+            <Popconfirm title="确定删除此软件？" onConfirm={() => this.handleDelete(record.id, this.state.hostId)}>
               <a type="link">删除软件</a>
             </Popconfirm>
           </div>
@@ -298,7 +300,7 @@ class SoftManage extends Component {
       },
     ];
     const {
-      hostsoft: { softdata,treesoftdata },
+      hostsoft: { softdata, treesoftdata },
     } = this.props;
     const dataSource = treesoftdata;
     const pagination = {
@@ -307,51 +309,52 @@ class SoftManage extends Component {
       current: this.state.current,
       pageSize: this.state.pageSize,
       total: softdata.total,
+      showTotal: total => `总共  ${total}  条记录`,
       onChange: page => this.changePage(page),
     };
 
     return (
       <PageHeaderWrapper>
         {/* <Card> */}
-        <Row 
+        <Row
           style={{ background: '#f1f1f1' }}>
           <Col span={5}>
-              <Card  bordered={false}>
-                  <SoftManageTree 
-                  toFatherValue={this.getChildValue}
-                  />
-              </Card>
+            <Card bordered={false}>
+              <SoftManageTree
+                toFatherValue={this.getChildValue}
+              />
+            </Card>
           </Col>
           <Col span={19}>
             <Card style={{ marginLeft: 8 }} bordered={false}>
               {/* <Content style={{ background: '#fff' }}> */}
-                {/* <Form style={{ float: 'right', width: '30%' }}>
+              {/* <Form style={{ float: 'right', width: '30%' }}>
                   <Search placeholder="请输入关键字" onSearch={values => this.handleSearch(values)} />
                 </Form> */}
-            
-                <SoftEdit onSumit={(value,hostIds) => this.handleUpdate(value,hostIds)} hostId={this.state.hostId}>
-                  <Button
-                    style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
-                    type="dashed"
-                    icon="plus"
-                    
-                  >
-                    添加软件
-                  </Button>
-                </SoftEdit>
 
-                <Table
-                  columns={columns}
-                  dataSource={dataSource}
-                  rowKey={record => record.id}
-                  pagination={pagination}
-                  scroll={{ x: 1500 }}
-                />
-          </Card>
+              <SoftEdit onSumit={(value, hostIds) => this.handleUpdate(value, hostIds)} hostId={this.state.hostId}>
+                <Button
+                  style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
+                  type="dashed"
+                  icon="plus"
+
+                >
+                  添加软件
+                  </Button>
+              </SoftEdit>
+
+              <Table
+                columns={columns}
+                dataSource={dataSource}
+                rowKey={record => record.id}
+                pagination={pagination}
+                scroll={{ x: 1500 }}
+              />
+            </Card>
           </Col>
-          </Row>
+        </Row>
         {/* </Card> */}
-      
+
       </PageHeaderWrapper>
     );
   }

@@ -58,7 +58,7 @@ function QueryList(props) {
   } = props;
 
   const [expand, setExpand] = useState(false);
-  const [paginations, setPageinations] = useState({ current: 1, pageSize: 10 }); // 分页state
+  const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 }); // 分页state
   const [selectedRow, setSelectedRow] = useState([]);
   const [selectdata, setSelectData] = useState([]);
 

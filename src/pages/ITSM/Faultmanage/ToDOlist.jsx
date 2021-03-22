@@ -43,19 +43,19 @@ function ToDOlist(props) {
   } = props;
 
   const [expand, setExpand] = useState(false);
-  const [paginations, setPageinations] = useState({ current: 1, pageSize: 10 }); // 分页state
+  const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 }); // 分页state
   const [selectdata, setSelectData] = useState([]);
   // const [selectedRow, setSelectedRow] = useState([]);
 
   const columns = [
-    {
-      title: '序号',
-      dataIndex: 'index',
-      key: 'index',
-      width: 100,
-      render: (text, record, index) =>
-        `${(paginations.current - 1) * paginations.pageSize + (index + 1)}`,
-    },
+    // {
+    //   title: '序号',
+    //   dataIndex: 'index',
+    //   key: 'index',
+    //   width: 100,
+    //   render: (text, record, index) =>
+    //     `${(paginations.current - 1) * paginations.pageSize + (index + 1)}`,
+    // },
     {
       title: 'id',
       dataIndex: 'id',
@@ -437,7 +437,7 @@ function ToDOlist(props) {
           dataSource={faultTodoList.rows}
           rowKey={record => record.id}
           pagination={pagination}
-          // rowSelection={rowSelection}
+        // rowSelection={rowSelection}
         />
       </Card>
     </PageHeaderWrapper>

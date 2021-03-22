@@ -115,7 +115,7 @@ function Besolved(props) {
     loading,
   } = props;
   const [expand, setExpand] = useState(false);
-  const [paginations, setPaginations] = useState({ current: 1, pageSize: 10 });
+  const [paginations, setPaginations] = useState({ current: 1, pageSize: 15 });
   const [selectedRows, setSelectedRows] = useState([]);
   sign = problem;
   const getQuery = (values, page, pageSize, search) => {
@@ -136,7 +136,7 @@ function Besolved(props) {
           dispatch({
             type: 'problemmanage/queryList',
             payload: {
-              pageNum: initialParams?paginations.current:page,
+              pageNum: initialParams ? paginations.current : page,
               pageSize: paginations.pageSize,
               status,
               type,
@@ -176,7 +176,7 @@ function Besolved(props) {
   };
 
   const getinitiaQuery = () => {
-    if(sign) {
+    if (sign) {
       getQuery();
     } else {
       dispatch({
@@ -190,7 +190,7 @@ function Besolved(props) {
         },
       });
     }
-    } 
+  }
 
   const getSourceapi = (dictModule, dictType) => {
     dispatch({
@@ -267,7 +267,7 @@ function Besolved(props) {
   }
   const searchdata = (values, page, pageSize, search) => {
     initialParams = '';
-    if(search) {
+    if (search) {
       searchSign = 'searchSign';
     }
 
@@ -313,7 +313,7 @@ function Besolved(props) {
   const changePage = (page) => {
     validateFields((err, values) => {
       if (!err) {
-        searchdata(values, page,paginations.pageSize);
+        searchdata(values, page, paginations.pageSize);
       }
     });
     setPaginations({
@@ -358,7 +358,7 @@ function Besolved(props) {
       }
       searchdata(obj, paginations.current, paginations.pageSize, search);
     });
-    
+
   };
 
   const download = () => {

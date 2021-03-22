@@ -22,7 +22,7 @@ const { Search } = Input;
 class HostManage extends Component {
   state = {
     current: 1,
-    pageSize: 10,
+    pageSize: 15,
     queKey: '',
   };
 
@@ -160,6 +160,7 @@ class HostManage extends Component {
       current: this.state.current,
       pageSize: this.state.pageSize,
       total: hostdata.total,
+      showTotal: total => `总共  ${total}  条记录`,
       onChange: page => this.changePage(page),
     };
 

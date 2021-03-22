@@ -15,7 +15,7 @@ import DropdownValueAdd from './components/DropdownValueAdd';
 class DropdownValueset extends Component {
   state = {
     current: 1,
-    pageSize: 10,
+    pageSize: 15,
     parentId: '0',
     bodyParams: {
       dictCode: '',

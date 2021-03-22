@@ -43,7 +43,7 @@ function getAllLeaf(data) {
 class MenuManage extends Component {
   state = {
     current: 1,
-    pageSize: 10,
+    pageSize: 15,
     queKey: '',
     treeData: [],
     pidkey: '',

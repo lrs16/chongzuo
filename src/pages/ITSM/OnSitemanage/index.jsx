@@ -71,7 +71,7 @@ function OnSitemanage(props) {
   const { dispatch, list, loading } = props;
   const pagetitle = props.route.name;
   const dataSource = list.records;
-  const [paginations, setPageinations] = useState({ current: 1, pageSize: 10 });
+  const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
 
   useEffect(() => {
     dispatch({

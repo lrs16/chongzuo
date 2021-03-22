@@ -15,7 +15,7 @@ const { Search } = Input;
 class ProcessManage extends Component {
   state = {
     current: 1,
-    pageSize: 10,
+    pageSize: 15,
     queKey: '',
   };
 
@@ -209,6 +209,7 @@ class ProcessManage extends Component {
       current: this.state.current,
       pageSize: this.state.pageSize,
       total: list.total,
+      showTotal: total => `总共  ${total}  条记录`,
       onChange: page => this.changePage(page),
     };
 

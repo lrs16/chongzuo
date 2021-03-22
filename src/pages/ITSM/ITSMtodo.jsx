@@ -108,7 +108,7 @@ const columns = [
 function ITSMtodo(props) {
   const { eventlist, loading } = props;
   const pagetitle = props.route.name;
-  const [paginations, setPageinations] = useState({ current: 1, pageSize: 10 });
+  const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
   const { dispatch } = props;
 
   const searchdata = (values, page, size) => {
