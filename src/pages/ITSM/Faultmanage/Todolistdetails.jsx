@@ -321,12 +321,8 @@ function Todolistdetails(props) {
         formValues.checkUserId = userId; // 当前登录人id
         formValues.taskId = id;
         formValues.checkType = flowNodeName === '系统运维商审核' ? '1' : '2';
-        if (files.ischange && typeof (files.arr) === 'object') {
+        if (files.ischange) {
           formValues.checkAttachments = JSON.stringify(files.arr);
-        }
-
-        if (files.ischange && typeof (files.arr) === 'string') {
-          message.info('上传文件失败，请重新上传');
         }
 
         if (tododetailslist.editState === 'edit') {
@@ -369,22 +365,6 @@ function Todolistdetails(props) {
         formValues.taskId = id;
         formValues.editState = tododetailslist.editState;
         formValues.handlerId = userId; // 当前登录人id
-        // if (files.ischange === true && Array.isArray(files.arr)) {
-        //   if (fileskey === '1') {
-        //     formValues.handleRecordAttachments = JSON.stringify(files.arr);
-        //   }
-        //   if (fileskey === '2') {
-        //     formValues.handlePictureAttachments = JSON.stringify(files.arr);
-        //   }
-        //   if (fileskey === '3') {
-        //     formValues.handleAttachments = JSON.stringify(files.arr);
-        //   }
-        // }
-
-        // if (files.ischange === true && typeof files.arr === 'string') {
-        //   message.info('上传文件失败，请重新上传');
-        // }
-
         if (tododetailslist.editState === 'edit') {
           formValues.handleId = tododetailslist.handle.id;
           formValues.editState = tododetailslist.editState;
@@ -430,14 +410,6 @@ function Todolistdetails(props) {
           formValues.finishId = tododetailslist.editGuid;
           formValues.editState = 'add';
         }
-        if (files.ischange) {
-          console.log(files.arr, 'files.arr');
-          if (fileskey === '1') {
-            formValues.finishAnalysisAttachments = JSON.stringify(files.arr);
-          } else {
-            formValues.finishAttachments = JSON.stringify(files.arr);
-          }
-        }
 
         formValues.finishTime = values.finishTime.format('YYYY-MM-DD HH:mm:ss');
         formValues.finishRequiredTime = values.finishRequiredTime.format('YYYY-MM-DD HH:mm:ss'); // 要求上传时间
@@ -470,7 +442,6 @@ function Todolistdetails(props) {
 
   const saveConfirm = cirStatus => {
     // 自动化科专责确认
-    // eslint-disable-next-line consistent-return
     ConfirmRef.current.validateFields((err, values) => {
       if (cirStatus ? !err : true) {
         const formValues = values;
@@ -478,14 +449,10 @@ function Todolistdetails(props) {
         formValues.taskId = id;
         formValues.editState = tododetailslist.editState;
         formValues.confirmUserId = userId; // 当前登录人id
-        if (files.ischange && ((files.arr) instanceof Array)) {
+        if (files.ischange) {
           formValues.confirmAttachments = JSON.stringify(files.arr);
         }
-
-        if (files.ischange === true && ((files.arr) instanceof Array) === false) {
-          message.info('上传文件失败，请重新上传');
-        }
-
+    
         if (tododetailslist.editState === 'edit') {
           formValues.confirmId = tododetailslist.confirm.id;
         } else {
@@ -659,7 +626,6 @@ function Todolistdetails(props) {
         return dispatch({
           type: 'fault/getfromsave', // 保存接口
           payload: { formValues },
-          // eslint-disable-next-line consistent-return
         }).then(res => {
           if (res.code === 200) {
             const taskId = id;

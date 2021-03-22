@@ -15,6 +15,8 @@ const Registrat = React.forwardRef((props, ref) => {
   const { getFieldDecorator, setFieldsValue } = props.form;
   const [fileslist, setFilesList] = useState([]);
   const [titleautodata, setTitleAutoData] = useState([]);
+  const [titlerecords, setTitleRecords] = useState([]);
+  const [desrecords, setDesRecords] = useState([]);
   const [desautodata, setDestoData] = useState([]);
   const [disablelist, setDisabledList] = useState([]); // 自动完成下拉列表
   const [spinloading, setSpinLoading] = useState(true); // 自动完成加载
@@ -66,8 +68,6 @@ const Registrat = React.forwardRef((props, ref) => {
     });
   };
 
-
-
   // 常用语调用
   useEffect(() => {
     handletitleSearch({ module: '问题单', field: '标题', key: '' });
@@ -104,6 +104,35 @@ const Registrat = React.forwardRef((props, ref) => {
     const { user, phone } = opt.props.disableuser;
     setFieldsValue({ complainUser: user });
     setFieldsValue({ registerUserPhone: phone });
+  };
+
+  const handleSearch = (value, selectType) => {
+    switch (selectType) {
+      case 'title': {
+        const newArr = titlerecords.filter(item => {
+          return item.includes(value);
+        });
+        if (newArr.length > 0) {
+          setTitleAutoData(newArr);
+        } else {
+          setTitleAutoData([]);
+        }
+        break;
+      }
+      case 'des': {
+        const newArr = desrecords.filter(item => {
+          return item.includes(value);
+        });
+        if (newArr.length > 0) {
+          setDestoData(newArr);
+        } else {
+          setDesRecords([]);
+        }
+        break;
+      }
+      default:
+        break;
+    }
   };
 
   return (
@@ -339,7 +368,7 @@ const Registrat = React.forwardRef((props, ref) => {
               })(
                 <AutoComplete
                   dataSource={titleautodata}
-                  // onSearch={value => handleSearch(value)}
+                  onSearch={value => handleSearch(value,'title')}
                 >
                   <Input placeholder="请输入" />
                 </AutoComplete>,
@@ -360,7 +389,7 @@ const Registrat = React.forwardRef((props, ref) => {
               })(
                 <AutoComplete
                   dataSource={desautodata}
-                  // onSearch={value => handleSearch(value)}
+                  onSearch={value => handleSearch(value,'des')}
                 >
                   <TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />
                 </AutoComplete>,

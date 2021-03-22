@@ -95,7 +95,6 @@ function Queryworkdetail(props) {
                 <Steps
                   current={problemFlowLogs.length - 1}
                   size="small"
-                  // progressDot
                   style={{
                     background: '#fff',
                     padding: 24,

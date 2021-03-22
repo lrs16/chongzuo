@@ -60,7 +60,6 @@ const saveSign = '';
 const circaSign = 'problem';
 let problemFlowid;
 let flowNodeName;
-let handleKey;
 let fileSign;
 let selSign;
 
@@ -184,7 +183,6 @@ function Workorder(props) {
       result = 1
     }
 
-    const taskId = id;
     let selectPerson;
     if (flowNodeName === '系统运维商审核') {
       selectPerson = `${sessionStorage.getItem('NextflowUserId')},${sessionStorage.getItem('AutoflowUserId')}`;
@@ -196,7 +194,7 @@ function Workorder(props) {
       type: 'problemmanage/gotoCirculation',
       payload: {
         flow: {
-          taskId,
+          taskId:id,
           result,
           userIds: selectPerson,
         }
@@ -216,10 +214,10 @@ function Workorder(props) {
     gotoCirapi(closeWork);
   }
 
-  const saveApi = (saveData, params2, uploadSive) => {
+  const saveApi = (saveData, params2) => {
     return dispatch({
       type: 'problemmanage/tobeSave',
-      payload: { saveData },
+      payload:  {...saveData } ,
     }).then(res => {
       if (res.code === 200) {
         showback = false;
@@ -227,9 +225,6 @@ function Workorder(props) {
           message.info(res.msg);
         }
         getInformation();
-        if (uploadSive) {
-          props.history.go(0);
-        }
         if (params2) {
           gotoCirapi();
         }
@@ -239,38 +234,26 @@ function Workorder(props) {
     });
   };
 
-  const saveRegister = (params2, uploadSive) => {
+  const saveRegister = (params2) => {
     RegistratRef.current.validateFields((err, values) => {
       if (params2 ? !err : true) {
-        const saveData = values;
-        saveData.registerTime = (saveData.registerTime).format('YYYY-MM-DD HH:mm:ss');
-        saveData.registerOccurTime = (saveData.registerOccurTime).format('YYYY-MM-DD HH:mm:ss');
-        saveData.registerExpectTime = (saveData.registerExpectTime).format('YYYY-MM-DD HH:mm:ss');
-        saveData.taskId = id;
-        if (todoDetail.editState === 'edit') {
-          saveData.registerId = todoDetail.register.id;
-          saveData.editState = 'edit';
-        } else {
-          saveData.editState = 'add';
-          saveData.registerId = todoDetail.editGuid;
-        }
-
-        if (files.ischange) {
-          saveData.registerAttachments = JSON.stringify(files.arr);
-        }
-
         return dispatch({
           type: 'problemmanage/tobeSave',
-          payload: { saveData },
+          payload: { 
+            ...values,
+            registerTime:(values.registerTime).format('YYYY-MM-DD HH:mm:ss'),
+            registerOccurTime:(values.registerOccurTime).format('YYYY-MM-DD HH:mm:ss'),
+            registerExpectTime:(values.registerExpectTime).format('YYYY-MM-DD HH:mm:ss'),
+            taskId:id,
+            editState:todoDetail.editState === 'edit'?'edit':'add',
+            registerId:todoDetail.editState === 'edit'?todoDetail.register.id:todoDetail.editGuid,
+            registerAttachments:files.ischange?JSON.stringify(files.arr):null
+           },
         }).then(res => {
           if (res.code === 200) {
             message.info(res.msg);
             setFiles({ ...files, ischange: false });
-
             getInformation();
-            if (uploadSive) {
-              props.history.go(0);
-            }
             if (params2) {
               gotoCirapi();
             }
@@ -285,30 +268,16 @@ function Workorder(props) {
   //  审核保存
   const savePrevies = (params2, uploadSive) => {
     PreviesRef.current.validateFields((err, values) => {
-      const saveData = values;
-      if (values.checkTime) {
-        saveData.checkTime = (saveData.checkTime).format('YYYY-MM-DD HH:mm:ss');
-      } else {
-        saveData.checkTime = '';
-      }
       if (params2 ? !err : true) {
-        saveData.taskId = id;
-        if (todoDetail.editState === 'edit') {
-          saveData.checkId = todoDetail.check.id;
-          saveData.editState = todoDetail.editState;
-        } else {
-          saveData.checkId = todoDetail.editGuid;
-          saveData.editState = 'add';
+        const saveData = {
+          ...values,
+          checkTime:values.checkTime?(values.checkTime).format('YYYY-MM-DD HH:mm:ss'):'',
+          taskId:id,
+          editState:todoDetail.editState === 'edit'?'edit':'add',
+          checkId:todoDetail.editState === 'edit'?todoDetail.check.id:todoDetail.editGuid,
+          checkType:flowNodeName === '系统运维商审核'?'1':'2',
+          checkAttachments:files.ischange?JSON.stringify(files.arr):null
         }
-        if (flowNodeName === '系统运维商审核') {
-          saveData.checkType = '1';
-        } else {
-          saveData.checkType = '2';
-        }
-        if (files.ischange) {
-          saveData.checkAttachments = JSON.stringify(files.arr);
-        }
-
         saveApi(saveData, params2, uploadSive);
       }
     });
@@ -316,40 +285,17 @@ function Workorder(props) {
 
   const saveHandle = (params2, uploadSive) => {
     HandleRef.current.validateFields((err, values) => {
-      const saveData = values;
-      if (values.handleTime) {
-        saveData.handleTime = (saveData.handleTime).format('YYYY-MM-DD HH:mm:ss');
-      } else {
-        saveData.handleTime = '';
-      }
-
-      if (values.orderReceivingtime) {
-        saveData.orderReceivingtime = (saveData.orderReceivingtime).format('YYYY-MM-DD HH:mm:ss');
-      } else {
-        saveData.orderReceivingtime = '';
-      }
-
-      if (values.planEndTime) {
-        saveData.planEndTime = (saveData.planEndTime).format('YYYY-MM-DD HH:mm:ss');
-      } else {
-        saveData.planEndTime = '';
-      }
-
       if (params2 ? !err : true) {
-        saveData.taskId = id;
-        saveData.editState = todoDetail.editState;
-        if (todoDetail.editState === 'edit') {
-          saveData.handleId = todoDetail.handle.id;
-          saveData.editState = todoDetail.editState;
-        } else {
-          saveData.handleId = todoDetail.editGuid;
-          saveData.editState = 'add';
+        const saveData = {
+          ...values,
+          handleTime:values.handleTime?(values.handleTime).format('YYYY-MM-DD HH:mm:ss'):'',
+          orderReceivingtime:values.orderReceivingtime?(values.orderReceivingtime).format('YYYY-MM-DD HH:mm:ss'):'',
+          planEndTime:values.planEndTime?(values.planEndTime).format('YYYY-MM-DD HH:mm:ss'):'',
+          taskId:id,
+          editState:todoDetail.editState === 'edit'?'edit':'add',
+          handleId:todoDetail.editState === 'edit'?todoDetail.handle.id:todoDetail.editGuid,
+          handleAttachments:files.ischange?JSON.stringify(files.arr):null
         }
-
-        if (files.ischange) {
-          saveData.handleAttachments = JSON.stringify(files.arr);
-        }
-
         saveApi(saveData, params2, uploadSive);
       }
     });
@@ -358,16 +304,13 @@ function Workorder(props) {
   const saveConfirm = (params2, uploadSive) => {
     ProblemconfirmRef.current.validateFields((err, values) => {
       if (params2 ? !err : true) {
-        const saveData = values;
-        saveData.taskId = id;
-        saveData.editState = todoDetail.editState;
-        saveData.confirmTime = (values.confirmTime).format('YYYY-MM-DD HH:mm:ss');
-        if (todoDetail.editState === 'edit') {
-          saveData.confirmId = todoDetail.confirm.id;
-          saveData.editState = 'edit';
-        } else {
-          saveData.confirmId = todoDetail.editGuid;
-          saveData.editState = 'add';
+        const saveData = {
+          ...values,
+          taskId:id,
+          confirmTime:values.confirmTime.format('YYYY-MM-DD HH:mm:ss'),
+          editState:todoDetail.editState === 'edit'?'edit':'add',
+          confirmId:todoDetail.editState === 'edit'?todoDetail.confirm.id:todoDetail.editGuid,
+          confirmAttachments:files.ischange?JSON.stringify(files.arr):null
         }
         switch (todoDetail.flowNodeName) {
           case '系统运维商确认':
@@ -381,9 +324,6 @@ function Workorder(props) {
             break;
           default:
             break
-        }
-        if (files.ischange) {
-          saveData.confirmAttachments = JSON.stringify(files.arr);
         }
         saveApi(saveData, params2, uploadSive);
       }
@@ -582,15 +522,15 @@ function Workorder(props) {
     sessionStorage.setItem('flowtype', flowtype);
   }, [currntStatus]);
 
-    // 监听todoDetail是否已更新
-    useEffect(() => {
-      if (loading) {
-        setIsNew(true);
-      }
-      return () => {
-        setIsNew(false);
-      };
-    }, [todoDetail]);
+  // 监听todoDetail是否已更新
+  useEffect(() => {
+    if (loading) {
+      setIsNew(true);
+    }
+    return () => {
+      setIsNew(false);
+    };
+  }, [todoDetail]);
 
   const tabList = [
     {
@@ -630,33 +570,32 @@ function Workorder(props) {
                 </Reasonregression>
               )}
 
-            { 
+            {
               flowNodeName !== '系统开发商处理' && (currntStatus !== 29 && currntStatus !== 40) && tabActiveKey === 'workorder' && (
-              <Button
-                type="primary"
-                style={{ marginRight: 8 }}
-                onClick={() => handleSubmit(saveSign)}
-              >
-                保存
-              </Button>
-            )
+                <Button
+                  type="primary"
+                  style={{ marginRight: 8 }}
+                  onClick={() => handleSubmit(saveSign)}
+                >
+                  保存
+                </Button>
+              )
             }
-
-            { 
-              flowNodeName === '系统开发商处理' && (currntStatus !== 29 && currntStatus !== 40 && handle !== undefined) && tabActiveKey === 'workorder' && (
-              <Button
-                type="primary"
-                style={{ marginRight: 8 }}
-                onClick={() => handleSubmit(saveSign)}
-              >
-                保存
-              </Button>
-            )
-            }
-
 
             {
-              (currntStatus === 45) && handle !== undefined &&(
+              flowNodeName === '系统开发商处理' && (currntStatus !== 29 && currntStatus !== 40 && handle !== undefined) && tabActiveKey === 'workorder' && (
+                <Button
+                  type="primary"
+                  style={{ marginRight: 8 }}
+                  onClick={() => handleSubmit(saveSign)}
+                >
+                  保存
+                </Button>
+              )
+            }
+
+            {
+              (currntStatus === 45) && handle !== undefined && (
                 <TransferOrder
                   taskId={id}
                   currentObj={currntStatus}
@@ -673,8 +612,7 @@ function Workorder(props) {
               )
             }
 
-
-            { (currntStatus === 29 || currntStatus === 40 || currntStatus === 45) &&  handle === undefined &&(
+            { (currntStatus === 29 || currntStatus === 40 || currntStatus === 45) && handle === undefined && (
               <Button type="primary" style={{ marginRight: 8 }} onClick={problemHandleOrder}>
                 接单
               </Button>
@@ -684,7 +622,6 @@ function Workorder(props) {
               flowtype === '1' &&
               flowNodeName !== '系统运维商审核' &&
               flowNodeName !== '系统运维商确认' &&
-
               (problemlist && selSign === '1') &&
               tabActiveKey === 'workorder' &&
               (
@@ -719,7 +656,6 @@ function Workorder(props) {
                     流转
                 </Button>
                 </SelectUser>
-
               )
             }
 
@@ -734,14 +670,11 @@ function Workorder(props) {
                   <Button
                     type="primary"
                     style={{ marginRight: 8 }}
-                  // onClick={() => handleSubmit(circaSign)}
                   >
                     流转
                 </Button>
                 </AutomationCirculation>
-
               )
-
 
             }
             {
@@ -759,11 +692,10 @@ function Workorder(props) {
               (
                 flowtype === '0' ||
                 (problemlist && selSign === '0')
-                // || handle !== undefined
               )
               &&
               flowNodeName !== '系统开发商处理' &&
-              (currntStatus !== 29 && currntStatus !== 40 ) &&
+              (currntStatus !== 29 && currntStatus !== 40) &&
               tabActiveKey === 'workorder' &&
               (
                 <Button
@@ -779,11 +711,10 @@ function Workorder(props) {
               (
                 flowtype === '0' ||
                 (problemlist && selSign === '0')
-                // || handle !== undefined
               )
               && handle !== undefined &&
               flowNodeName === '系统开发商处理' &&
-              (currntStatus !== 29 && currntStatus !== 40 ) &&
+              (currntStatus !== 29 && currntStatus !== 40) &&
               tabActiveKey === 'workorder' &&
               (
                 <Button
@@ -820,7 +751,7 @@ function Workorder(props) {
                     padding: 24,
                     border: '1px solid #e8e8e8',
                     overflowX: 'auto',
-                    marginBottom:24
+                    marginBottom: 24
                   }}
                 >
                   {
@@ -875,7 +806,7 @@ function Workorder(props) {
                 }
 
                 {
-                  flowNodeName === '系统运维商审核' && (
+                  flowNodeName === '系统运维商审核' && loading === false &&(
                     <Panel
                       header="系统运维商审核环节"
                       key='1'
@@ -904,7 +835,7 @@ function Workorder(props) {
                 }
 
                 {
-                  flowNodeName === '自动化科审核' && (
+                  flowNodeName === '自动化科审核' && loading === false &&(
                     <Panel
                       header="自动化科审核"
                       key='1'
@@ -933,9 +864,8 @@ function Workorder(props) {
                   )
                 }
 
-
                 {
-                  flowNodeName === '系统开发商处理' &&  handle !== undefined && (
+                  flowNodeName === '系统开发商处理' && handle !== undefined && loading === false &&(
                     <Panel
                       header='系统开发商处理'
                       key='1'
@@ -962,7 +892,7 @@ function Workorder(props) {
                 }
 
                 {
-                  flowNodeName === '系统运维商确认' && (
+                  flowNodeName === '系统运维商确认'  && loading === false &&(
                     <Panel
                       header='系统运维商确认'
                       key='1'
@@ -992,7 +922,7 @@ function Workorder(props) {
                 }
 
                 {
-                  flowNodeName === '自动化科业务人员确认' && (
+                  flowNodeName === '自动化科业务人员确认'  && loading === false &&(
                     <Panel
                       header='自动化科业务负责人确认'
                       key='1'
@@ -1022,7 +952,7 @@ function Workorder(props) {
                 }
 
                 {
-                  flowNodeName === '问题登记人员确认' && (
+                  flowNodeName === '问题登记人员确认'  && loading === false &&(
                     <Panel
                       header='问题登记人员确认'
                       key='1'
@@ -1051,7 +981,6 @@ function Workorder(props) {
                   )
                 }
               </Collapse>
-
             </div>
 
             <div className={styles.collapse}>
@@ -1060,7 +989,6 @@ function Workorder(props) {
                   expandIconPosition="right"
                   bordered={false}
                   defaultActiveKey={['0']}
-                // onChange={callback}
                 >
                   {problemFlowNodeRows.map((obj, index) => {
                     // panel详情组件
@@ -1107,7 +1035,6 @@ function Workorder(props) {
                 </Collapse>
               )}
             </div>
-
           </>
         )
       }
@@ -1117,7 +1044,6 @@ function Workorder(props) {
           <Problemflow id={problemFlowid} />
         ))
       }
-
 
     </PageHeaderWrapper>
   );

@@ -30,23 +30,17 @@ export async function saveRegister(params) {
 }
 
 //  待办
-export async function besolveList(current, pageSize) {
-  const obj = {};
-  obj.pageNum = current;
-  obj.pageSize = pageSize;
+export async function besolveList(params) {
   return request(`/problem/flow/getWaitDoPage`, {
     method: 'POST',
-    body: JSON.stringify(obj),
+    body: JSON.stringify(params),
   });
 }
 //  待办查询
-export async function searchBesolve(current, pageSize, values) {
-  const obj = values;
-  obj.pageNum = current;
-  obj.pageSize = pageSize;
+export async function searchBesolve(params) {
   return request(`/problem/flow/getWaitDoPage`, {
     method: 'POST',
-    body: JSON.stringify(obj),
+    body: JSON.stringify(params),
   });
 }
 
@@ -58,13 +52,14 @@ export async function deleteTobo(deleteid) {
 
 //  退回原因
 export async function backReason(id, values) {
-  const obj = values;
-  obj.userIds = id;
-  obj.taskId = id;
-  obj.result = -1;
   return request(`/problem/flow/submit`, {
     method: 'POST',
-    data: obj,
+    data: {
+      ...values,
+      userIds:id,
+      taskId:id,
+      result:-1
+    },
     requestType: 'form',
   });
 }
@@ -81,9 +76,6 @@ export async function tobeListpeople(taskId) {
 
 //  流转待办人保存接口
 export async function saveTobelist(params) {
-  // const obj = {};
-  // obj.taskId = taskId;
-  // obj.userIds = 1;
   return request(`/problem/flow/submit`, {
     method: 'POST',
     data: params,
@@ -170,7 +162,6 @@ export async function transferOrder() {
 export async function querydownload(params) {
   return request(`/problem/flow/expExcelOrderList`, {
     method: 'POST',
-    // responseType: 'blob',
     body: JSON.stringify(params),
   });
 }

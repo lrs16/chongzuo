@@ -148,7 +148,7 @@ function Besolved(props) {
     dispatch({
       type: 'problemmanage/besolveList',
       payload: {
-        current: paginations.current,
+        pageNum: paginations.current,
         pageSize: paginations.pageSize,
       },
     });
@@ -172,9 +172,9 @@ function Besolved(props) {
     dispatch({
       type: 'problemmanage/searchBesolve',
       payload: {
-        values,
+        ...values,
         pageSize,
-        current: page,
+        pageNum: page,
       },
     });
   };

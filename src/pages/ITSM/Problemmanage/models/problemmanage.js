@@ -138,8 +138,8 @@ export default {
     },
 
     //  待办保存
-    *tobeSave({ payload: { saveData } }, { call }) {
-      return yield call(saveRegister, saveData);
+    *tobeSave({ payload }, { call }) {
+      return yield call(saveRegister,payload);
     },
 
     *delete({ payload: { deleteid } }, { call }) {
@@ -161,23 +161,23 @@ export default {
       return yield call(saveTobelist,flow);
     },
 //  待办列表
-    *besolveList({ payload: { current, pageSize } }, { call, put }) {
-      const response = yield call(besolveList, current, pageSize);
+    *besolveList({ payload }, { call, put }) {
+      const response = yield call(besolveList,payload);
       yield put({
         type: 'besolveListpage',
         payload: response,
       });
     },
 
-    *searchBesolve({ payload: { current, pageSize, values } }, { call, put }) {
-      const response = yield call(searchBesolve, current, pageSize, values);
+    *searchBesolve({ payload }, { call, put }) {
+      const response = yield call(searchBesolve, payload);
       yield put({
         type: 'besolveListpage',
         payload: response,
       });
     },
     //  列表查询
-    *queryList({ payload}, { call, put }) {
+    *queryList({ payload }, { call, put }) {
       const response = yield call(queryList,payload);
       yield put({
         type: 'queryArr',
