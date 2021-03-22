@@ -473,9 +473,9 @@ const Registrat = forwardRef((props, ref) => {
             </Form.Item>
           </Col>
           <Col span={24}>
-            <Form.Item label="所属模块" {...forminladeLayout}>
+            <Form.Item label="功能模块" {...forminladeLayout}>
               {getFieldDecorator('functionalModule', {
-                rules: [{ required, message: '请选择所属模块' }],
+                rules: [{ required, message: '请选择功能模块' }],
                 initialValue: register.functionalModule.split('/'),
               })(
                 <Cascader
@@ -525,9 +525,9 @@ const Registrat = forwardRef((props, ref) => {
             </Form.Item>
           </Col>
           <Col span={24}>
-            <Form.Item label="需求详述" {...forminladeLayout}>
+            <Form.Item label="需求描述" {...forminladeLayout}>
               {getFieldDecorator('detail', {
-                rules: [{ required, message: '请输入需求详述' }],
+                rules: [{ required, message: '请输入需求描述' }],
                 initialValue: register.detail,
               })(
                 <AutoComplete
@@ -543,7 +543,7 @@ const Registrat = forwardRef((props, ref) => {
             <Form.Item
               label="上传附件"
               {...forminladeLayout}
-              // extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
+            // extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
             >
               <div style={{ width: 400 }}>
                 <SysUpload fileslist={files} ChangeFileslist={newvalue => setFilesList(newvalue)} />
@@ -601,7 +601,7 @@ const Registrat = forwardRef((props, ref) => {
           <DeptSlectId
             GetTreenode={newvalue => handleDeptTreeNode(newvalue)}
             pid={unitrecord.key !== undefined ? unitrecord.key : register.proposingUnitID}
-            //  pid={unitrecord.key}
+          //  pid={unitrecord.key}
           />
         )}
       </Drawer>
