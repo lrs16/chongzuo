@@ -72,6 +72,7 @@ function Workorder(props) {
   const HandleRef = useRef();
   const ProblemconfirmRef = useRef();
   const [flowtype, setFlowtype] = useState('1');
+  const [isnew, setIsNew] = useState(false);
   const [tabActiveKey, setTabActiveKey] = useState('workorder');
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
 
@@ -79,7 +80,6 @@ function Workorder(props) {
     dispatch,
     todoDetail,
     todoDetail: { check, handle, confirm, register, main },
-    useInfo,
     newno,
     problemlist,
     handleList,
@@ -154,8 +154,6 @@ function Workorder(props) {
     solvingDisbled();
   }
 
-
-
   const queryDept = () => {
     dispatch({
       type: 'itsmuser/fetchuser',
@@ -175,7 +173,6 @@ function Workorder(props) {
   };
 
   const gotoCirapi = (closessign) => {
-
     let result;
     if (closessign) {
       result = 255
@@ -213,31 +210,6 @@ function Workorder(props) {
       }
     })
   };
-
-  const gotoTransferorder = () => {
-    saveHandle();
-    const taskId = id;
-    const result = 9;
-    return dispatch({
-      type: 'problemmanage/gotoCirculation',
-      payload: {
-        flow: {
-          taskId,
-          result,
-          userIds: sessionStorage.getItem('NextflowUserId'),
-        }
-      },
-    }).then(res => {
-      if (res.code === 200) {
-        message.info(res.msg);
-        router.push(`/ITSM/problemmanage/besolved`)
-      } else {
-        message.info(res.error);
-      }
-    })
-  }
-
-
 
   const closeOrder = () => {
     const closeWork = '关闭';
@@ -418,6 +390,29 @@ function Workorder(props) {
     });
   };
 
+  const gotoTransferorder = () => {
+    saveHandle();
+    const taskId = id;
+    const result = 9;
+    return dispatch({
+      type: 'problemmanage/gotoCirculation',
+      payload: {
+        flow: {
+          taskId,
+          result,
+          userIds: sessionStorage.getItem('NextflowUserId'),
+        }
+      },
+    }).then(res => {
+      if (res.code === 200) {
+        message.info(res.msg);
+        router.push(`/ITSM/problemmanage/besolved`)
+      } else {
+        message.info(res.error);
+      }
+    })
+  }
+
   const reasonSubmit = values => {
     dispatch({
       type: 'problemmanage/tobeBack',
@@ -456,7 +451,6 @@ function Workorder(props) {
         message.info(res.msg);
         showEdit = false;
         currntStatus = 45;
-        handleKey = '1';
         getInformation();
       } else {
         message.error(res.msg);
@@ -493,6 +487,7 @@ function Workorder(props) {
       handleSubmit(saveSign, fileSign);
     }
   }, [files]);
+
 
   const getUserinfo = () => {
     dispatch({
@@ -586,6 +581,16 @@ function Workorder(props) {
     }
     sessionStorage.setItem('flowtype', flowtype);
   }, [currntStatus]);
+
+    // 监听todoDetail是否已更新
+    useEffect(() => {
+      if (loading) {
+        setIsNew(true);
+      }
+      return () => {
+        setIsNew(false);
+      };
+    }, [todoDetail]);
 
   const tabList = [
     {
@@ -839,7 +844,7 @@ function Workorder(props) {
                 bordered={false}
               >
                 {
-                  currntStatus === 5 && (
+                  currntStatus === 5 && loading === false && (
                     <Panel
                       header="问题登记"
                       key='1'

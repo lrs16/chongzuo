@@ -37,12 +37,10 @@ function Registration(props) {
     prioritylist,
     scopeList,
     projectList,
-    startid,
     userinfo,
     antoArr,
   } = props;
   const [show, setShow] = useState(false);
-  const [activeKey, setActiveKey] = useState(['1']);
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
   const RegistratRef = useRef();
 
@@ -105,18 +103,21 @@ function Registration(props) {
     getProject();
     queryDept();
   }, []);
-
+//  点击保存触发事件
   const handlesubmit = jumpType => {
     RegistratRef.current.validateFields((err, values) => {
       if (jumpType ? !err : true) {
-        const saveData = values;
-        saveData.registerTime = saveData.registerTime.format('YYYY-MM-DD HH:mm:ss');
-        saveData.registerOccurTime = saveData.registerOccurTime.format('YYYY-MM-DD HH:mm:ss');
-        saveData.registerExpectTime = saveData.registerExpectTime.format('YYYY-MM-DD HH:mm:ss');
-        saveData.editState = 'add';
         dispatch({
           type: 'problemmanage/getAddid',
-          payload: { saveData, jumpType },
+          payload: { 
+            ...values,
+            registerTime:values.registerTime.format('YYYY-MM-DD HH:mm:ss'),
+            registerOccurTime:values.registerOccurTime.format('YYYY-MM-DD HH:mm:ss'),
+            registerExpectTime:values.registerExpectTime.format('YYYY-MM-DD HH:mm:ss'),
+            registerAttachments:files.ischange?JSON.stringify(files.arr):null,
+            jumpType,
+            editState:'add' 
+          },
         });
       }
     });
@@ -132,22 +133,15 @@ function Registration(props) {
 
   // 上传附件触发保存
   useEffect(() => {
-    const jumpType = 0;
     if (files.ischange) {
-      const values = RegistratRef.current.getFieldsValue();
-      const saveData = values;
-      saveData.taskId = startid;
-      saveData.registerExpectTime = values.registerOccurTime.format('YYYY-MM-DD HH:mm:ss');
-      saveData.registerTime = values.registerTime.format('YYYY-MM-DD HH:mm:ss');
-      saveData.registerOccurTime = values.registerOccurTime.format('YYYY-MM-DD HH:mm:ss');
-      saveData.registerAttachments = JSON.stringify(files.arr);
-      saveData.editState = 'add';
-      dispatch({
-        type: 'problemmanage/getAddid',
-        payload: { saveData, jumpType },
-      });
+      handlesubmit(0);
     }
   }, [files]);
+
+  // 初始化清空附件元素
+  useEffect(() => {
+    files.arr = [];
+  }, []);
 
   return (
     <PageHeaderWrapper
@@ -164,7 +158,7 @@ function Registration(props) {
       }
     >
       <Card>
-        <RegistratContext.Provider value={{ setActiveKey, setShow }}>
+        <RegistratContext.Provider>
           <Registrat
             formItemLayout={formItemLayout}
             forminladeLayout={forminladeLayout}

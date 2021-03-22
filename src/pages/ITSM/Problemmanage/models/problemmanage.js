@@ -87,7 +87,7 @@ export default {
       });
     },
     //  登记保存
-    *getAddid({ payload: { saveData, jumpType } }, { call, put }) {
+    *getAddid({ payload }, { call, put }) {
       const response = yield call(getAddid);
       if (response.code === 200) {
         yield put({
@@ -101,17 +101,13 @@ export default {
             type: 'getNewno',
             payload: response,
           });
-          const saveiInfo = saveData;
+          const saveiInfo = payload;
           saveiInfo.taskId = response.flowTaskId;
           saveiInfo.no = responseId.problemNo;
   
           const resRegister = yield call(saveRegister, saveiInfo);
           if (resRegister.code === 200) {
-            switch (jumpType) {
-              // case 0:
-              //   route.push({ pathname: `/ITSM/problemmanage/besolved` });
-              //   break;
-                
+            switch (payload.jumpType) {
               case 0:
                 route.push({
                   pathname: `/ITSM/problemmanage/besolveddetail/workorder/${response.flowTaskId}`,
