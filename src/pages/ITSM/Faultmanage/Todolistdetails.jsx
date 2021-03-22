@@ -381,8 +381,6 @@ function Todolistdetails(props) {
           }
         }
 
-        console.log(formValues,'formValues');
-
         if (tododetailslist.editState === 'edit') {
           formValues.handleId = tododetailslist.handle.id;
           formValues.editState = tododetailslist.editState;
