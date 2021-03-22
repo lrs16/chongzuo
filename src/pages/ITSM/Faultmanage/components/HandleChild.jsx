@@ -37,7 +37,9 @@ const HandleChild = React.forwardRef((props, ref) => {
   const [fileslist, setFilesList] = useState({ arr: [], ischange: false }); // 下载列表
   const [selectdata, setSelectData] = useState([]);
   useEffect(() => {
-    ChangeFiles(fileslist);
+    if (fileslist.ischange) {
+      ChangeFiles(fileslist);
+    }
   }, [fileslist]);
 
   useEffect(() => {
@@ -47,7 +49,7 @@ const HandleChild = React.forwardRef((props, ref) => {
       handle.handleRecordAttachments !== undefined &&
       handle.handleRecordAttachments !== null
     ) {
-      setFieldsValue({ handleRecordAttachments: handle.handleRecordAttachments }, () => {});
+      setFieldsValue({ handleRecordAttachments: handle.handleRecordAttachments }, () => { });
     }
 
     if (
@@ -56,7 +58,7 @@ const HandleChild = React.forwardRef((props, ref) => {
       handle.handlePictureAttachments !== undefined &&
       handle.handlePictureAttachments !== null
     ) {
-      setFieldsValue({ handlePictureAttachments: handle.handlePictureAttachments }, () => {});
+      setFieldsValue({ handlePictureAttachments: handle.handlePictureAttachments }, () => { });
     }
 
     if (
@@ -65,7 +67,7 @@ const HandleChild = React.forwardRef((props, ref) => {
       handle.handleAttachments !== undefined &&
       handle.handleAttachments !== null
     ) {
-      setFieldsValue({ handleAttachments: handle.handleAttachments }, () => {});
+      setFieldsValue({ handleAttachments: handle.handleAttachments }, () => { });
     }
   }, []);
 
@@ -205,7 +207,7 @@ const HandleChild = React.forwardRef((props, ref) => {
           <Form.Item
             label="上传故障处理记录表"
             {...forminladeLayout}
-            // extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb"
+          // extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb"
           >
             {getFieldDecorator('handleRecordAttachments', {
               rules: [
@@ -228,7 +230,12 @@ const HandleChild = React.forwardRef((props, ref) => {
                       ? JSON.parse(handle.handleRecordAttachments)
                       : []
                   }
-                  ChangeFileslist={newvalue => setFilesList(newvalue)}
+                  ChangeFileslist={
+                    newvalue => {
+                      setFieldsValue({ handleRecordAttachments: JSON.stringify(newvalue.arr) });
+                      setFilesList(newvalue);
+                    }
+                  }
                 />
               </div>,
             )}
@@ -239,7 +246,7 @@ const HandleChild = React.forwardRef((props, ref) => {
           <Form.Item
             label="故障系统截图"
             {...forminladeLayout}
-            // extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb"
+          // extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb"
           >
             {getFieldDecorator('handlePictureAttachments', {
               rules: [
@@ -262,7 +269,12 @@ const HandleChild = React.forwardRef((props, ref) => {
                       ? JSON.parse(handle.handlePictureAttachments)
                       : []
                   }
-                  ChangeFileslist={newvalue => setFilesList(newvalue)}
+                  ChangeFileslist={
+                    newvalue => {
+                      setFieldsValue({ handlePictureAttachments: JSON.stringify(newvalue.arr) });
+                      setFilesList(newvalue);
+                    }
+                  }
                 />
               </div>,
             )}
@@ -273,7 +285,7 @@ const HandleChild = React.forwardRef((props, ref) => {
           <Form.Item
             label="上传附件"
             {...forminladeLayout}
-            // extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb"
+          // extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb"
           >
             {getFieldDecorator(
               'handleAttachments',
@@ -292,7 +304,12 @@ const HandleChild = React.forwardRef((props, ref) => {
                       ? JSON.parse(handle.handleAttachments)
                       : []
                   }
-                  ChangeFileslist={newvalue => setFilesList(newvalue)}
+                  ChangeFileslist={
+                    newvalue => {
+                      setFieldsValue({ handleAttachments: JSON.stringify(newvalue.arr) });
+                      setFilesList(newvalue);
+                    }
+                  }
                 />
               </div>,
             )}
