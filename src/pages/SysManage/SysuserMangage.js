@@ -279,6 +279,7 @@ class SysuserMangage extends Component {
       current: this.state.current,
       pageSize: this.state.pageSize,
       total: data.total,
+      showTotal: total => `总共  ${total}  条记录`,
       onChange: page => this.changePage(page),
     };
     const dataSource = data.rows;
