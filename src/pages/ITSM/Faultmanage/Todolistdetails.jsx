@@ -26,6 +26,7 @@ import HandleQuery from './components/HandleQuery'; // 系统运维商处理
 import SummaryQuery from './components/SummaryQuery'; // 系统运维商总结
 import ExamineSecondQuery from './components/ExamineSecondQuery'; // 自动化科业务负责人审核
 import ConfirmQuery from './components/ConfirmQuery'; // 自动化科专责确认
+import { compose } from '_redux@4.0.5@redux';
 
 const { Step } = Steps;
 const { Panel } = Collapse;
@@ -83,6 +84,10 @@ function Todolistdetails(props) {
 
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
   const [fileskey, setFileskey] = useState('1'); // 下载列表
+
+  const [files1, setFiles1] = useState([]);
+  const [files2, setFiles2] = useState([]);
+  const [files3, setFiles3] = useState([]);
 
   const [result, setResult] = useState('1');
   const [resultsecond, setResultsecond] = useState('1');
@@ -300,6 +305,8 @@ function Todolistdetails(props) {
     });
   };
 
+  
+
   const saveExamine = cirStatus => {
     // 审核类型：1-系统运维商审核；2-自动化科业务负责人审核
     // eslint-disable-next-line consistent-return
@@ -348,7 +355,7 @@ function Todolistdetails(props) {
       }
     });
   };
-  // console.log(Array.isArray('C:\fakepath\上线期间问题记录 -分工.xlsx'));
+ 
   const saveHandle = cirStatus => {
     // 系统运维商处理
     // eslint-disable-next-line consistent-return
@@ -362,8 +369,7 @@ function Todolistdetails(props) {
         formValues.taskId = id;
         formValues.editState = tododetailslist.editState;
         formValues.handlerId = userId; // 当前登录人id
-
-        if (files.ischange === true && typeof(files.arr) === 'object') {
+        if (files.ischange === true) {
           if (fileskey === '1') {
             formValues.handleRecordAttachments = JSON.stringify(files.arr);
           }
@@ -375,9 +381,8 @@ function Todolistdetails(props) {
           }
         }
 
-        if (files.ischange && typeof(files.arr) === 'string') {
-          message.info('上传文件失败，请重新上传');
-        }
+        console.log(formValues,'formValues');
+
         if (tododetailslist.editState === 'edit') {
           formValues.handleId = tododetailslist.handle.id;
           formValues.editState = tododetailslist.editState;
@@ -405,7 +410,6 @@ function Todolistdetails(props) {
     });
   };
 
-
   
 const saveSummary = cirStatus => {
     // 系统运维商确认总结
@@ -424,17 +428,13 @@ const saveSummary = cirStatus => {
           formValues.finishId = tododetailslist.editGuid;
           formValues.editState = 'add';
         }
-        if (files.ischange && typeof(files.arr) === 'object') {
+        if (files.ischange) {
           console.log(files.arr,'files.arr');
           if (fileskey === '1') {
             formValues.finishAnalysisAttachments = JSON.stringify(files.arr);
           } else {
             formValues.finishAttachments = JSON.stringify(files.arr);
           }
-        }
-
-        if (files.ischange && typeof(files.arr) === 'string') {
-          message.info('上传文件失败，请重新上传');
         }
 
         formValues.finishTime = values.finishTime.format('YYYY-MM-DD HH:mm:ss');
