@@ -265,6 +265,13 @@ const Registrat = forwardRef((props, ref) => {
   const projectmap = getTypebyTitle('1354241446307172354');
   const modulemap = getTypebyTitle('1352070663392727041');
 
+  const disabledDate = (current) => {
+
+    return current && current < moment().add(45, 'days').endOf('day');
+  }
+
+  const newcompleteTime = register.completeTime !== undefined ? register.completeTime : moment().add(90, 'days').calendar();
+
   return (
     <>
       <Form {...formItemLayout}>
@@ -305,8 +312,13 @@ const Registrat = forwardRef((props, ref) => {
             <Form.Item label="期待完成时间">
               {getFieldDecorator('completeTime', {
                 rules: [{ required, message: '请选择期待完成时间' }],
-                initialValue: moment(register.completeTime),
-              })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" />)}
+                initialValue: moment(newcompleteTime),
+              })(<DatePicker
+                // showTime
+                placeholder="请选择时间"
+                format="YYYY-MM-DD"
+                disabledDate={disabledDate}
+              />)}
             </Form.Item>
           </Col>
           <Col span={8}>

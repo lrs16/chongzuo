@@ -10,7 +10,6 @@ import Registratdes from './components/Registratdes';
 import Checkdes from './components/Checkdes';
 import Handledes from './components/Handledes';
 import ReturnVisitdes from './components/ReturnVisitdes';
-import { judgeTimeoutStatus } from './services/api';
 
 const { Panel } = Collapse;
 const { Step } = Steps;

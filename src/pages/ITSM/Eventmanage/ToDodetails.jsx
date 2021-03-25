@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import router from 'umi/router';
 import { connect } from 'dva';
-import { Button, Popover, Popconfirm, message } from 'antd';
+import { Button, Popover, Popconfirm, message, Modal } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import User from '@/components/SelectUser/User';
 import Backoff from './components/Backoff';
@@ -27,11 +27,11 @@ function ToDodetails(props) {
   const [tabActivekey, settabActivekey] = useState('workorder'); // 打开标签
   const [buttontype, setButtonType] = useState('');
   const [backvalue, setBackvalue] = useState('');
-  const [timeoutTime, setTimeoutTime] = useState('');
   const [uservisible, setUserVisible] = useState(false); // 是否显示选人组件
   const [userchoice, setUserChoice] = useState(false); // 已经选择人员
   const [changorder, setChangeOrder] = useState(undefined);
   const [Popvisible, setVisible] = useState(false);
+  const [modalvisible, setModalVisible] = useState();
 
   const handleHold = type => {
     setButtonType(type);
@@ -102,6 +102,14 @@ function ToDodetails(props) {
     handleHold(type);
     setChangeOrder(order);
   };
+
+  // 超时信息填写完成
+  const handleOk = () => {
+    console.log('超时信息')
+  }
+
+  // 超时信息
+
 
   const operations = (
     <>
@@ -232,7 +240,6 @@ function ToDodetails(props) {
           location={location}
           type={buttontype}
           ChangeType={v => setButtonType(v)}
-          ChangesetTimeoutTime={v => setTimeoutTime(v)}
           userchoice={userchoice}
           ChangeChoice={v => setUserChoice(v)}
           ChangeUserVisible={v => setUserVisible(v)}
@@ -247,6 +254,16 @@ function ToDodetails(props) {
         ChangeChoice={v => setUserChoice(v)}
         ChangeType={v => setButtonType(v)}
       />
+      <Modal
+        title="Basic Modal"
+        visible={modalvisible}
+        onOk={handleOk}
+      // onCancel={handleCancel}
+      >
+        <p>Some contents...</p>
+        <p>Some contents...</p>
+        <p>Some contents...</p>
+      </Modal>
     </PageHeaderWrapper>
   );
 }
