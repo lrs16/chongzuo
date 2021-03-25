@@ -611,14 +611,15 @@ const Registrat = forwardRef((props, ref) => {
         {treetype === 'unit' && (
           <DeptSlectId
             GetTreenode={newvalue => handleUnitTreeNode(newvalue)}
-            pid="7AC3EF0F701402A2E0530A644F130365"
+            pid="1"
+            deptType="1"
           />
         )}
         {treetype === 'dept' && (
           <DeptSlectId
             GetTreenode={newvalue => handleDeptTreeNode(newvalue)}
             pid={unitrecord.key}
-          //  pid={unitrecord.key}
+            deptType="2"
           />
         )}
       </Drawer>

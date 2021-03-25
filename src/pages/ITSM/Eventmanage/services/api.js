@@ -142,3 +142,12 @@ export async function timeoutdownload(params) {
     responseType: 'blob',
   });
 }
+
+// 是否超时 
+export async function judgeTimeoutStatus(params) {
+  return request(`/event/flow/judgeTimeoutStatus`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+  });
+}
