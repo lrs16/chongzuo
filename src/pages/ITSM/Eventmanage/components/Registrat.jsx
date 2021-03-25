@@ -339,8 +339,6 @@ const Registrat = forwardRef((props, ref) => {
     </Option>
   ));
 
-  console.log(selectdata)
-
   // 数据字典
   const getTypebykey = key => {
     if (selectdata.length > 0) {

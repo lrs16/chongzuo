@@ -246,54 +246,58 @@ function Registration(props) {
 
   return (
     <PageHeaderWrapper title={pagetitle} extra={operations}>
-      <div className={styles.collapse}>
-        <Collapse
-          expandIconPosition="right"
-          // defaultActiveKey={['1']}
-          activeKey={activeKey}
-          bordered={false}
-          onChange={callback}
-        >
-          <Panel header="事件登记" key="registratform">
-            <Registrat
-              ChangeShow={isshow => setShow(isshow)}
-              ChangeCheck={checked => setCheck(checked)}
-              ChangeActiveKey={keys => setActiveKey(keys)}
-              changeDefaultvalue={values => setDefaultvalue(values)}
-              ChangeFiles={newvalue => {
-                setRegistratFiles(newvalue);
-              }}
-              formItemLayout={formItemLayout}
-              forminladeLayout={forminladeLayout}
-              show={show}
-              ref={RegistratRef}
-              userinfo={userinfo}
-              sethandlevalue="true"
-              location={location}
-              files={registratfiles.arr}
-              selectdata={selectdata.arr}
-            />
-          </Panel>
-          {show === true && check === false && (
-            <Panel header="事件处理" key="handleform">
-              <Handle
-                formItemLayout={formItemLayout}
-                forminladeLayout={forminladeLayout}
-                ref={HandleRef}
-                userinfo={userinfo}
-                defaultvalue={defaultvalue}
-                location={location}
-                ChangeFiles={newvalue => {
-                  setHandleFiles(newvalue);
-                }}
-                show={show}
-                selectdata={selectdata.arr}
-                files={[]}
-              />
-            </Panel>
+      <Spin tip="正在加载数据..." spinning={!selectdata.ischange}>
+        <div className={styles.collapse}>
+          {selectdata.ischange && (
+            <Collapse
+              expandIconPosition="right"
+              // defaultActiveKey={['1']}
+              activeKey={activeKey}
+              bordered={false}
+              onChange={callback}
+            >
+              <Panel header="事件登记" key="registratform">
+                <Registrat
+                  ChangeShow={isshow => setShow(isshow)}
+                  ChangeCheck={checked => setCheck(checked)}
+                  ChangeActiveKey={keys => setActiveKey(keys)}
+                  changeDefaultvalue={values => setDefaultvalue(values)}
+                  ChangeFiles={newvalue => {
+                    setRegistratFiles(newvalue);
+                  }}
+                  formItemLayout={formItemLayout}
+                  forminladeLayout={forminladeLayout}
+                  show={show}
+                  ref={RegistratRef}
+                  userinfo={userinfo}
+                  sethandlevalue="true"
+                  location={location}
+                  files={registratfiles.arr}
+                  selectdata={selectdata.arr}
+                />
+              </Panel>
+              {show === true && check === false && (
+                <Panel header="事件处理" key="handleform">
+                  <Handle
+                    formItemLayout={formItemLayout}
+                    forminladeLayout={forminladeLayout}
+                    ref={HandleRef}
+                    userinfo={userinfo}
+                    defaultvalue={defaultvalue}
+                    location={location}
+                    ChangeFiles={newvalue => {
+                      setHandleFiles(newvalue);
+                    }}
+                    show={show}
+                    selectdata={selectdata.arr}
+                    files={[]}
+                  />
+                </Panel>
+              )}
+            </Collapse>
           )}
-        </Collapse>
-      </div>
+        </div>
+      </Spin>
     </PageHeaderWrapper>
   );
 }
