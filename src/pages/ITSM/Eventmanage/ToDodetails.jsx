@@ -3,7 +3,7 @@ import router from 'umi/router';
 import { connect } from 'dva';
 import { Button, Popover, Popconfirm, message } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import SelectUser from '@/components/SelectUser';
+import User from '@/components/SelectUser/User';
 import Backoff from './components/Backoff';
 import WorkOrder from './WorkOrder';
 import Process from './Process';
@@ -26,7 +26,12 @@ function ToDodetails(props) {
   const [tabActivekey, settabActivekey] = useState('workorder'); // 打开标签
   const [buttontype, setButtonType] = useState('');
   const [backvalue, setBackvalue] = useState('');
+  const [timeoutTime, setTimeoutTime] = useState('');
+  const [uservisible, setUserVisible] = useState(false); // 是否显示选人组件
+  const [userchoice, setUserChoice] = useState(false); // 已经选择人员
+  const [changorder, setChangeOrder] = useState(undefined);
   const [Popvisible, setVisible] = useState(false);
+
   const handleHold = type => {
     setButtonType(type);
   };
@@ -38,8 +43,8 @@ function ToDodetails(props) {
   };
   const content = (
     <Backoff
-      ChangeBackvalue={value => setBackvalue(value)}
-      ChangeVisible={visi => setVisible(visi)}
+      ChangeBackvalue={v => setBackvalue(v)}
+      ChangeVisible={v => setVisible(v)}
     />
   );
 
@@ -91,6 +96,12 @@ function ToDodetails(props) {
     });
   };
 
+  // 点击流转，审核，转回访，回退按钮
+  const handleClick = (type, order) => {
+    handleHold(type);
+    setChangeOrder(order);
+  };
+
   const operations = (
     <>
       {/* 测试下载功能 */}
@@ -105,26 +116,25 @@ function ToDodetails(props) {
       {(taskName === '待审核' ||
         (taskName === '待处理' && check === null) ||
         (taskName === '待确认' && check === null)) && (
-        // <Button type="danger" ghost style={{ marginRight: 8 }} onClick={() => handleHold('back')}>
-        //   回退
-        // </Button>
-        <Popover content={content} visible={Popvisible} onVisibleChange={handleVisibleChange}>
-          <Button type="danger" ghost style={{ marginRight: 8 }}>
-            回退
+          <Popover content={content} visible={Popvisible} onVisibleChange={handleVisibleChange}>
+            <Button type="danger" ghost style={{ marginRight: 8 }}>
+              回退
           </Button>
-        </Popover>
-      )}
+          </Popover>
+        )}
       {taskName !== '待处理' && (
         <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleHold('save')}>
           保存
         </Button>
       )}
       {taskName === '已登记' && next === '审核' && (
-        <SelectUser handleSubmit={() => handleHold('other')} taskId={taskId}>
-          <Button type="primary" style={{ marginRight: 8 }}>
-            审核
-          </Button>
-        </SelectUser>
+        <Button
+          type="primary"
+          style={{ marginRight: 8 }}
+          onClick={() => { handleClick('other') }}
+        >
+          审核
+        </Button>
       )}
       {taskName === '待处理' && (
         <Button type="primary" style={{ marginRight: 8 }} onClick={eventaccpt}>
@@ -134,12 +144,15 @@ function ToDodetails(props) {
       {((taskName === '已登记' && next === '处理') ||
         (next === '处理' && taskName === '待审核') ||
         (next === '处理' && taskName === '审核中')) && (
-        <SelectUser handleSubmit={() => handleHold('flow')} taskId={taskId}>
-          <Button type="primary" style={{ marginRight: 8 }}>
+          <Button
+            type="primary"
+            style={{ marginRight: 8 }}
+            onClick={() => { handleClick('flow') }
+            }
+          >
             流转
           </Button>
-        </SelectUser>
-      )}
+        )}
       {next === '确认' && taskName !== '处理中' && (
         <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleHold('check')}>
           转回访
@@ -147,25 +160,35 @@ function ToDodetails(props) {
       )}
       {taskName === '处理中' && (
         <>
-          <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleHold('flowcheck')}>
+          <Button
+            type="primary"
+            style={{ marginRight: 8 }}
+            onClick={() => { handleHold('flowcheck') }}>
             转回访
           </Button>
-          <SelectUser handleSubmit={() => handleHold('other')} changorder="处理" taskId={taskId}>
-            <Button ghost type="primary" style={{ marginRight: 8 }}>
-              转单
-            </Button>
-          </SelectUser>
+          <Button
+            type="primary"
+            style={{ marginRight: 8 }}
+            onClick={() => { handleClick('other'); setChangeOrder('处理') }}
+          >
+            转单
+          </Button>
         </>
       )}
       {(taskName === '待确认' || taskName === '确认中') && next === '处理' && (
-        <SelectUser handleSubmit={() => handleHold('other')} taskId={taskId}>
-          <Button type="primary" style={{ marginRight: 8 }}>
-            重分派
-          </Button>
-        </SelectUser>
+        <Button
+          type="primary"
+          style={{ marginRight: 8 }}
+          onClick={() => { handleClick('other') }}
+        >
+          重分派
+        </Button>
       )}
       {(taskName === '待确认' || taskName === '确认中') && next === '结束' && (
-        <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleHold('over')}>
+        <Button
+          type="primary"
+          style={{ marginRight: 8 }}
+          onClick={() => { handleHold('over') }}>
           结束
         </Button>
       )}
@@ -207,10 +230,22 @@ function ToDodetails(props) {
         <WorkOrder
           location={location}
           type={buttontype}
-          ChangeType={newvalue => setButtonType(newvalue)}
+          ChangeType={v => setButtonType(v)}
+          ChangesetTimeoutTime={v => setTimeoutTime(v)}
+          userchoice={userchoice}
+          ChangeChoice={v => setUserChoice(v)}
+          ChangeUserVisible={v => setUserVisible(v)}
         />
       )}
       {tabActivekey === 'process' && <Process location={location} />}
+      <User
+        taskId={taskId}
+        visible={uservisible}
+        ChangeUserVisible={v => setUserVisible(v)}
+        changorder={changorder}
+        ChangeChoice={v => setUserChoice(v)}
+        ChangeType={v => setButtonType(v)}
+      />
     </PageHeaderWrapper>
   );
 }

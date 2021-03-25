@@ -1,5 +1,4 @@
-import React, { useState, createContext, useRef, useEffect } from 'react';
-import router from 'umi/router';
+import React, { useState, useRef, useEffect } from 'react';
 import { connect } from 'dva';
 import { Collapse, Steps, Spin, message } from 'antd';
 import styles from './index.less';
@@ -11,7 +10,6 @@ import Registratdes from './components/Registratdes';
 import Checkdes from './components/Checkdes';
 import Handledes from './components/Handledes';
 import ReturnVisitdes from './components/ReturnVisitdes';
-import SelectData from './components/SelectData';
 
 const { Panel } = Collapse;
 const { Step } = Steps;
@@ -65,8 +63,12 @@ function WorkOrder2(props) {
     records,
     userinfo,
     type,
+    userchoice,
     ChangeType,
+    ChangeChoice,
+    ChangeUserVisible,
   } = props;
+
   const { mainId, taskId, taskName } = location.query;
   const [formregistrat, setFormregistrat] = useState('');
   const [formcheck, setFormcheck] = useState('');
@@ -152,187 +154,162 @@ function WorkOrder2(props) {
     });
   };
 
+  // 校验不通过
   const formerr = () => {
     message.error('请将信息填写完整...');
     ChangeType('');
   };
+  // 保存不需要校验
+  const noverification = () => {
+    ChangeChoice(true);
+    setIscheck(true);
+  }
+  // 自行处理保存、转回访、结束，需做校验无需打开选人组件
+  const noUser = (err) => {
+    if (!err) {
+      ChangeChoice(true);
+      setIscheck(true);
+    } else {
+      formerr();
+    }
+  }
+  // 流转、转单，需做校验需打开选人组件
+  const needUser = (err) => {
+    if (!err) {
+      ChangeUserVisible(true);
+      setIscheck(true);
+    } else {
+      formerr();
+    }
+  }
 
   // 登记表单
   const RegistratRef = useRef();
   const getregistrats = () => {
-    if (type === 'save') {
-      if (show) {
-        RegistratRef.current.validateFields((err, values) => {
-          if (!err) {
-            setIscheck(true);
-            setFormregistrat({
-              ...values,
-              main_eventObject: values.main_eventObject.slice(-1)[0],
-              register_occurTime: values.register_occurTime.format('YYYY-MM-DD HH:mm:ss'),
-              register_applicationDept:
-                values.register_applicationDept !== ''
-                  ? values.register_applicationDept
-                  : values.register_applicationUnit,
-              register_applicationDeptId:
-                values.register_applicationDeptId !== ''
-                  ? values.register_applicationDeptId
-                  : values.register_applicationUnitId,
-              register_selfhandle: String(Number(values.register_selfhandle)),
-              register_supplement: String(Number(values.register_supplement)),
-              register_fileIds: JSON.stringify(registratfiles.arr),
-            });
-          } else {
-            formerr();
-          }
-        });
-      } else {
-        RegistratRef.current.validateFields((err, values) => {
-          setIscheck(true);
-          setFormregistrat({
-            ...values,
-            main_eventObject: values.main_eventObject.slice(-1)[0],
-            register_occurTime: values.register_occurTime.format('YYYY-MM-DD HH:mm:ss'),
-            register_applicationDept:
-              values.register_applicationDept !== ''
-                ? values.register_applicationDept
-                : values.register_applicationUnit,
-            register_applicationDeptId:
-              values.register_applicationDeptId !== ''
-                ? values.register_applicationDeptId
-                : values.register_applicationUnitId,
-            register_selfhandle: String(Number(values.register_selfhandle)),
-            register_supplement: String(Number(values.register_supplement)),
-            register_fileIds: JSON.stringify(registratfiles.arr),
-          });
-        });
-      }
-    } else {
-      RegistratRef.current.validateFields((err, values) => {
-        if (!err) {
-          setIscheck(true);
-          setFormregistrat({
-            ...values,
-            main_eventObject: values.main_eventObject.slice(-1)[0],
-            register_occurTime: values.register_occurTime.format('YYYY-MM-DD HH:mm:ss'),
-            register_applicationDept:
-              values.register_applicationDept !== ''
-                ? values.register_applicationDept
-                : values.register_applicationUnit,
-            register_applicationDeptId:
-              values.register_applicationDeptId !== ''
-                ? values.register_applicationDeptId
-                : values.register_applicationUnitId,
-            register_selfhandle: String(Number(values.register_selfhandle)),
-            register_supplement: String(Number(values.register_supplement)),
-            register_fileIds: JSON.stringify(registratfiles.arr),
-          });
-        } else {
-          formerr();
-        }
+    RegistratRef.current.validateFields((err, values) => {
+      setFormregistrat({
+        ...values,
+        main_eventObject: values.main_eventObject.slice(-1)[0],
+        register_occurTime: values.register_occurTime.format('YYYY-MM-DD HH:mm:ss'),
+        register_applicationDept:
+          values.register_applicationDept !== ''
+            ? values.register_applicationDept
+            : values.register_applicationUnit,
+        register_applicationDeptId:
+          values.register_applicationDeptId !== ''
+            ? values.register_applicationDeptId
+            : values.register_applicationUnitId,
+        register_selfhandle: String(Number(values.register_selfhandle)),
+        register_supplement: String(Number(values.register_supplement)),
+        register_fileIds: JSON.stringify(registratfiles.arr),
       });
-    }
+      if (type === 'save') {
+        noverification();
+      } else {
+        needUser(err);
+      }
+    });
   };
 
   // 审核表单
   const CheckRef = useRef();
   const getchecks = () => {
-    if (type === 'save') {
-      CheckRef.current.validateFields((err, values) => {
-        setIscheck(true);
-        setFormcheck({
-          ...values,
-          check_checkTime: values.check_checkTime.format('YYYY-MM-DD HH:mm:ss'),
-          check_fileIds: JSON.stringify(files.arr),
-        });
+    CheckRef.current.validateFields((err, values) => {
+      setFormcheck({
+        ...values,
+        check_checkTime: values.check_checkTime.format('YYYY-MM-DD HH:mm:ss'),
+        check_fileIds: JSON.stringify(files.arr),
       });
-    } else {
-      CheckRef.current.validateFields((err, values) => {
-        if (!err) {
-          setIscheck(true);
-          setFormcheck({
-            ...values,
-            check_checkTime: values.check_checkTime.format('YYYY-MM-DD HH:mm:ss'),
-            check_fileIds: JSON.stringify(files.arr),
-          });
-        } else {
-          formerr();
-        }
-      });
-    }
+      if (type === 'save') {
+        noverification();
+      } else {
+        needUser(err)
+      }
+    });
   };
 
   // 处理表单
   const HandleRef = useRef();
-  const gethandles = () => {
-    if (type === 'save') {
-      if (show) {
-        HandleRef.current.validateFields((err, values) => {
-          if (!err) {
-            setIscheck(true);
-            setFormhandle({
-              ...values,
-              main_eventObject: values.main_eventObject?.slice(-1)[0],
-              handle_endTime: values.handle_endTime.format('YYYY-MM-DD HH:mm:ss'),
-              handle_fileIds: JSON.stringify(files.arr),
-            });
-          } else {
-            formerr();
-          }
+  // 自行处理
+  const gethandleself = () => {
+    RegistratRef.current.validateFields((e, v) => {
+      if (!e) {
+        setFormregistrat({
+          ...v,
+          main_eventObject: v.main_eventObject.slice(-1)[0],
+          register_occurTime: v.register_occurTime.format('YYYY-MM-DD HH:mm:ss'),
+          register_applicationDept: v.register_applicationDept !== '' ? v.register_applicationDept : v.register_applicationUnit,
+          register_applicationDeptId: v.register_applicationDeptId !== '' ? v.register_applicationDeptId : v.register_applicationUnitId,
+          register_selfhandle: String(Number(v.register_selfhandle)),
+          register_supplement: String(Number(v.register_supplement)),
+          register_fileIds: JSON.stringify(registratfiles.arr),
         });
-      } else {
         HandleRef.current.validateFields((err, values) => {
-          setIscheck(true);
-          setFormhandle({
-            ...values,
-            main_eventObject: values.main_eventObject.slice(-1)[0],
-            handle_endTime: values.handle_endTime.format('YYYY-MM-DD HH:mm:ss'),
-            handle_fileIds: JSON.stringify(files.arr),
-          });
-        });
-      }
-    } else {
-      HandleRef.current.validateFields((err, values) => {
-        if (!err) {
-          setIscheck(true);
           setFormhandle({
             ...values,
             main_eventObject: values.main_eventObject?.slice(-1)[0],
             handle_endTime: values.handle_endTime.format('YYYY-MM-DD HH:mm:ss'),
             handle_fileIds: JSON.stringify(files.arr),
           });
-        } else {
-          formerr();
-        }
+          if (type === 'save') {
+            noverification();
+          } else {
+            noUser(err);
+          }
+        })
+      } else {
+        formerr();
+      }
+    })
+  };
+  const gethandles = () => {
+    HandleRef.current.validateFields((err, values) => {
+      setFormhandle({
+        ...values,
+        main_eventObject: values.main_eventObject?.slice(-1)[0],
+        handle_endTime: values.handle_endTime.format('YYYY-MM-DD HH:mm:ss'),
+        handle_fileIds: JSON.stringify(files.arr),
       });
-    }
+      switch (type) {
+        case 'save':
+          noverification();
+          break;
+        case 'flowcheck':
+          noUser(err);
+          break;
+        case 'other':
+        case 'flow':
+          needUser(err);
+          break;
+        default:
+          break;
+      }
+    });
   };
 
   // 回访
   const ReturnVisitRef = useRef();
   const getreturnvisit = () => {
-    if (type === 'save') {
-      ReturnVisitRef.current.validateFields((err, values) => {
-        setIscheck(true);
-        setFormvisit({
-          ...values,
-          finish_revisitTime: values.finish_revisitTime.format('YYYY-MM-DD HH:mm:ss'),
-          finish_fileIds: JSON.stringify(files.arr),
-        });
+    ReturnVisitRef.current.validateFields((err, values) => {
+      setFormvisit({
+        ...values,
+        finish_revisitTime: values.finish_revisitTime.format('YYYY-MM-DD HH:mm:ss'),
+        finish_fileIds: JSON.stringify(files.arr),
       });
-    } else {
-      ReturnVisitRef.current.validateFields((err, values) => {
-        if (!err) {
-          setIscheck(true);
-          setFormvisit({
-            ...values,
-            finish_revisitTime: values.finish_revisitTime.format('YYYY-MM-DD HH:mm:ss'),
-            finish_fileIds: JSON.stringify(files.arr),
-          });
-        } else {
-          formerr();
-        }
-      });
-    }
+      switch (type) {
+        case 'save':
+          noverification()
+          break;
+        case 'other':
+          needUser(err);
+          break;
+        case 'over':
+          noUser(err);
+          break;
+        default:
+          break;
+      }
+    });
   };
 
   //  console.log(records);
@@ -345,8 +322,7 @@ function WorkOrder2(props) {
     switch (taskName) {
       case '已登记': {
         if (show) {
-          getregistrats();
-          gethandles();
+          gethandleself();
         } else {
           getregistrats();
         }
@@ -451,6 +427,8 @@ function WorkOrder2(props) {
     }
     return () => {
       setIsNew(false);
+      ChangeChoice(false);
+      ChangeUserVisible(false);
     };
   }, [info]);
 
@@ -461,11 +439,12 @@ function WorkOrder2(props) {
     }
   }, [type]);
 
+  // 选人完成触发流转
   useEffect(() => {
-    if (ischeck) {
+    if (userchoice && ischeck) {
       handletype();
     }
-  }, [ischeck]);
+  }, [userchoice, ischeck])
 
   // 登记上传附件触发保存
   useEffect(() => {
@@ -725,7 +704,8 @@ function WorkOrder2(props) {
                       {Paneldesmap.get(Object.keys(obj)[0])}
                     </Panel>
                   );
-              })}
+              }
+              )}
             </Collapse>
           )}
       </Spin>

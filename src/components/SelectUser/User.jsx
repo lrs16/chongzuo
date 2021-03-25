@@ -5,18 +5,19 @@ import { Modal, message, Spin, Checkbox } from 'antd';
 const User = props => {
   const {
     dispatch,
+    defaultvalue,
+    demandvalue,
     userlist,
     loading,
     changorder,
     taskId,
     visible,
     ChangeUserVisible,
-    ChangeErr,
     ChangeChoice,
+    ChangeType,
   } = props;
 
   // const [isModalVisible, setIsModalVisible] = useState(false);
-  const [defaultvalue, setDefaultvalue] = useState([]);
   const type = sessionStorage.getItem('Processtype');
 
   const dataArr = datas => {
@@ -42,7 +43,6 @@ const User = props => {
   };
 
   const [value, setValue] = useState('');
-  const [demandvalue, setDemandValue] = useState([]);
 
   // 单选下一环节人员
   // const handleChange = e => {
@@ -125,11 +125,10 @@ const User = props => {
   };
 
   useEffect(() => {
-    showModal();
-    return () => {
-      ChangeErr('');
-    };
-  }, []);
+    if (visible) {
+      showModal();
+    }
+  }, [visible]);
 
   const handleOk = () => {
     if (type !== 'demand') {
@@ -159,6 +158,7 @@ const User = props => {
 
   const handleCancel = () => {
     ChangeUserVisible(false);
+    ChangeType('');
   };
 
   const nextflowuser =
@@ -213,7 +213,7 @@ const User = props => {
   );
 };
 
-User.defaultProps = { pangekey: '0' };
+User.defaultProps = { pangekey: '0', defaultvalue: [], demandvalue: [] };
 
 export default connect(({ itsmuser, loading }) => ({
   userlist: itsmuser.userlist,

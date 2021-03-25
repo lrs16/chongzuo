@@ -67,6 +67,8 @@ const Registrat = forwardRef((props, ref) => {
   const [unitrecord, setUnitRecord] = useState(''); // 自动完成选择的单位信息
   const [unitdata, setUnitdata] = useState([]); // 自动完成单位下拉表
   const [deptdata, setDeptdata] = useState([]); // 自动完成部门下拉表
+  const [unitopen, setUnitopen] = useState(false);
+  const [deptopen, setDeptopen] = useState(false);
 
   useEffect(() => {
     if (files.length > 0) {
@@ -148,7 +150,7 @@ const Registrat = forwardRef((props, ref) => {
 
   //
   const handlobjectChange = value => {
-    setFieldsValue({ main_eventObject: value?.slice(-1)[0] }, () => {});
+    setFieldsValue({ main_eventObject: value?.slice(-1)[0] }, () => { });
   };
 
   // 002手机号码必填
@@ -284,23 +286,26 @@ const Registrat = forwardRef((props, ref) => {
 
   // 查询单位
   const handleUnitSearch = value => {
-    queryUnitList({ key: value }).then(res => {
-      if (res.data !== undefined) {
-        const arr = [...res.data];
-        setUnitdata(arr);
-      }
-    });
+    if (value !== '') {
+      queryUnitList({ key: value }).then(res => {
+        if (res.data !== undefined) {
+          const arr = [...res.data];
+          setUnitdata(arr);
+        }
+      });
+    }
   };
 
   // 查询部门
   const handleDeptSearch = value => {
-    const unitIdkey = unitrecord.key !== undefined ? unitrecord.key : '';
-    queryDeptList({ key: value, unitId: unitIdkey }).then(res => {
-      if (res.data !== undefined) {
-        const arr = [...res.data];
-        setDeptdata(arr);
-      }
-    });
+    if (value !== '') {
+      queryDeptList({ key: value, unitId: unitrecord.key }).then(res => {
+        if (res.data !== undefined) {
+          const arr = [...res.data];
+          setDeptdata(arr);
+        }
+      });
+    }
   };
 
   // 选择单位树结点
@@ -322,17 +327,19 @@ const Registrat = forwardRef((props, ref) => {
 
   // 自动完成单位
   const unitoptions = unitdata.map(opt => (
-    <Option key={opt.id} value={opt.deptName}>
+    <Option key={opt.id} value={opt.id}>
       {opt.deptName}
     </Option>
   ));
 
   // 自动完成部门
   const deptoptions = deptdata.map(opt => (
-    <Option key={opt.id} value={opt.deptName}>
+    <Option key={opt.id} value={opt.id}>
       {opt.deptName}
     </Option>
   ));
+
+  console.log(selectdata)
 
   // 数据字典
   const getTypebykey = key => {
@@ -511,17 +518,23 @@ const Registrat = forwardRef((props, ref) => {
                   initialValue: register.applicationUnit,
                 })(
                   <AutoComplete
+                    defaultActiveFirstOption={false}
+                    filterOption={false}
+                    open={unitopen}
                     dataSource={unitoptions}
                     optionLabelProp="value"
                     style={{ width: '85%' }}
                     getPopupContainer={triggerNode => triggerNode.parentNode}
+                    onFocus={() => setUnitopen(true)}
+                    onBlur={() => setUnitopen(false)}
                     onSelect={(v, opt) => {
-                      setUnitRecord({ ...unitrecord, title: v, value: opt.key });
-                      setFieldsValue({ register_applicationUnit: v });
-                      setFieldsValue({ register_applicationUnitId: opt.key });
+                      setUnitRecord({ ...unitrecord, title: opt.props.children, key: v });
+                      setFieldsValue({ register_applicationUnit: opt.props.children });
+                      setFieldsValue({ register_applicationUnitId: v });
                       setFieldsValue({ register_applicationDept: '' });
                       setFieldsValue({ register_applicationDeptId: '' });
                       setUnitdata([]);
+                      setUnitopen(false);
                     }}
                   >
                     <Search
@@ -557,14 +570,20 @@ const Registrat = forwardRef((props, ref) => {
                   initialValue: register.applicationDept,
                 })(
                   <AutoComplete
+                    defaultActiveFirstOption={false}
+                    filterOption={false}
+                    open={deptopen}
                     dataSource={deptoptions}
                     optionLabelProp="value"
                     style={{ width: '85%' }}
                     getPopupContainer={triggerNode => triggerNode.parentNode}
+                    onFocus={() => setDeptopen(true)}
+                    onBlur={() => setDeptopen(false)}
                     onSelect={(v, opt) => {
-                      setFieldsValue({ register_applicationDept: v });
-                      setFieldsValue({ register_applicationDeptId: opt.key });
+                      setFieldsValue({ register_applicationDept: opt.props.children });
+                      setFieldsValue({ register_applicationDeptId: v });
                       setDeptdata([]);
+                      setUnitopen(false);
                     }}
                   >
                     <Search
@@ -606,11 +625,13 @@ const Registrat = forwardRef((props, ref) => {
                 initialValue: main.eventSource,
               })(
                 <Select placeholder="请选择">
-                  {sourcemap.map(obj => [
-                    <Option key={obj.key} value={obj.dict_code}>
-                      {obj.title}
-                    </Option>,
-                  ])}
+                  {sourcemap.map(obj => {
+                    if (sourcemap.length > 0)
+                      return (
+                        <Option key={obj.key} value={obj.dict_code}>
+                          {obj.title}
+                        </Option>)
+                  })}
                 </Select>,
               )}
             </Form.Item>
@@ -670,11 +691,13 @@ const Registrat = forwardRef((props, ref) => {
                 initialValue: main.eventType,
               })(
                 <Select placeholder="请选择" onChange={handlcheckChange}>
-                  {typemap.map(obj => [
-                    <Option key={obj.key} value={obj.dict_code}>
-                      {obj.title}
-                    </Option>,
-                  ])}
+                  {typemap.map(obj => {
+                    if (typemap.length > 0)
+                      return (
+                        <Option key={obj.key} value={obj.dict_code}>
+                          {obj.title}
+                        </Option>)
+                  })}
                 </Select>,
               )}
             </Form.Item>
@@ -703,11 +726,13 @@ const Registrat = forwardRef((props, ref) => {
                 initialValue: main.revisitWay,
               })(
                 <Select placeholder="请选择" onChange={handlrevisitway}>
-                  {returnvisit.map(obj => [
-                    <Option key={obj.key} value={obj.dict_code}>
-                      {obj.title}
-                    </Option>,
-                  ])}
+                  {returnvisit.map(obj => {
+                    if (returnvisit.length > 0)
+                      return (
+                        <Option key={obj.key} value={obj.dict_code}>
+                          {obj.title}
+                        </Option>)
+                  })}
                 </Select>,
               )}
             </Form.Item>
@@ -719,11 +744,13 @@ const Registrat = forwardRef((props, ref) => {
                 initialValue: main.eventEffect,
               })(
                 <Select placeholder="请选择" onChange={changeHandlevalue}>
-                  {effectmap.map(obj => [
-                    <Option key={obj.key} value={obj.dict_code}>
-                      {obj.title}
-                    </Option>,
-                  ])}
+                  {effectmap.map(obj => {
+                    if (effectmap.length > 0)
+                      return (
+                        <Option key={obj.key} value={obj.dict_code}>
+                          {obj.title}
+                        </Option>)
+                  })}
                 </Select>,
               )}
             </Form.Item>
@@ -735,11 +762,13 @@ const Registrat = forwardRef((props, ref) => {
                 initialValue: main.eventEmergent,
               })(
                 <Select placeholder="请选择" onChange={changeHandlevalue}>
-                  {emergentmap.map(obj => [
-                    <Option key={obj.key} value={obj.dict_code}>
-                      {obj.title}
-                    </Option>,
-                  ])}
+                  {emergentmap.map(obj => {
+                    if (emergentmap.length > 0)
+                      return (
+                        <Option key={obj.key} value={obj.dict_code}>
+                          {obj.title}
+                        </Option>)
+                  })}
                 </Select>,
               )}
             </Form.Item>
@@ -751,11 +780,13 @@ const Registrat = forwardRef((props, ref) => {
                 initialValue: main.eventPrior,
               })(
                 <Select placeholder="请选择" onChange={changeHandlevalue}>
-                  {priormap.map(obj => [
-                    <Option key={obj.key} value={obj.dict_code}>
-                      {obj.title}
-                    </Option>,
-                  ])}
+                  {priormap.map(obj => {
+                    if (priormap.length > 0)
+                      return (
+                        <Option key={obj.key} value={obj.dict_code}>
+                          {obj.title}
+                        </Option>)
+                  })}
                 </Select>,
               )}
             </Form.Item>
@@ -841,7 +872,7 @@ const Registrat = forwardRef((props, ref) => {
             <Form.Item
               label="上传附件"
               {...forminladeLayout}
-              // extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
+            // extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
             >
               <div style={{ width: 400 }}>
                 <Upload {...uploadprops}>
@@ -919,7 +950,7 @@ const Registrat = forwardRef((props, ref) => {
           <DeptSlectId
             GetTreenode={newvalue => handleDeptTreeNode(newvalue)}
             pid={unitrecord.key !== undefined ? unitrecord.key : register.applicationUnitId}
-            //  pid={unitrecord.key}
+          //  pid={unitrecord.key}
           />
         )}
       </Drawer>

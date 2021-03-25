@@ -22,7 +22,7 @@ const { Search } = Input;
 const { Option } = AutoComplete;
 
 // 克隆子元素按钮，并添加事件
-const withClick = (element, showDrawer = () => {}) => {
+const withClick = (element, showDrawer = () => { }) => {
   return <element.type {...element.props} onClick={showDrawer} />;
 };
 class UpdateUser extends Component {
@@ -30,6 +30,7 @@ class UpdateUser extends Component {
     visible: false,
     detpdrawer: false,
     deptdata: [],
+    unitopen: false,
   };
 
   showDrawer = () => {
@@ -64,7 +65,7 @@ class UpdateUser extends Component {
   };
 
   render() {
-    const { visible, detpdrawer } = this.state;
+    const { visible, detpdrawer, unitopen } = this.state;
     const { children, title, loading } = this.props;
     // Form双向绑定
     const { getFieldDecorator } = this.props.form;
@@ -116,7 +117,7 @@ class UpdateUser extends Component {
           onClose={this.onClose}
           visible={visible}
           bodyStyle={{ paddingBottom: 60 }}
-          // destroyOnClose
+        // destroyOnClose
         >
           <div style={{ textAlign: 'center', paddingBottom: '20px' }}>
             <Avatar
@@ -165,13 +166,18 @@ class UpdateUser extends Component {
                   })(
                     <AutoComplete
                       dataSource={deptoptions}
+                      filterOption={false}
+                      open={unitopen}
                       optionLabelProp="value"
                       style={{ width: '70%' }}
                       getPopupContainer={triggerNode => triggerNode.parentNode}
+                      onFocus={() => this.setState({ unitopen: true })}
+                      onBlur={() => this.setState({ unitopen: false })}
                       onSelect={(v, opt) => {
-                        this.props.form.setFieldsValue({ deptNameExt: v });
-                        this.props.form.setFieldsValue({ deptId: opt.key });
+                        this.props.form.setFieldsValue({ deptNameExt: opt.props.children });
+                        this.props.form.setFieldsValue({ deptId: v });
                         this.setState({ deptdata: [] });
+                        this.setState({ unitopen: false })
                       }}
                     >
                       <Search

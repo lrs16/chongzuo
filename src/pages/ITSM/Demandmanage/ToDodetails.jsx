@@ -19,8 +19,6 @@ function ToDoregist(props) {
   const [Popvisible, setVisible] = useState(false);
   const [iscolse, setIsClose] = useState('');
 
-  console.log(histroytaskid)
-
   const handleHold = type => {
     setButtonType(type);
   };

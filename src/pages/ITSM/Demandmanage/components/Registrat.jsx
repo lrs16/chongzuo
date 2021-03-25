@@ -62,6 +62,8 @@ const Registrat = forwardRef((props, ref) => {
   const [unitrecord, setUnitRecord] = useState(''); // 自动完成选择的单位信息
   const [unitdata, setUnitdata] = useState([]); // 自动完成单位下拉表
   const [deptdata, setDeptdata] = useState([]); // 自动完成部门下拉表
+  const [unitopen, setUnitopen] = useState(false);
+  const [deptopen, setDeptopen] = useState(false);
 
   useEffect(() => {
     if (fileslist.ischange) {
@@ -193,23 +195,26 @@ const Registrat = forwardRef((props, ref) => {
 
   // 查询单位
   const handleUnitSearch = value => {
-    queryUnitList({ key: value }).then(res => {
-      if (res.data !== undefined) {
-        const arr = [...res.data];
-        setUnitdata(arr);
-      }
-    });
+    if (value !== '') {
+      queryUnitList({ key: value }).then(res => {
+        if (res.data !== undefined) {
+          const arr = [...res.data];
+          setUnitdata(arr);
+        }
+      });
+    }
   };
 
   // 查询部门
   const handleDeptSearch = value => {
-    const unitIdkey = unitrecord.key !== undefined ? unitrecord.key : '';
-    queryDeptList({ key: value, unitId: unitIdkey }).then(res => {
-      if (res.data !== undefined) {
-        const arr = [...res.data];
-        setDeptdata(arr);
-      }
-    });
+    if (value !== '') {
+      queryDeptList({ key: value, unitId: unitrecord.key }).then(res => {
+        if (res.data !== undefined) {
+          const arr = [...res.data];
+          setDeptdata(arr);
+        }
+      });
+    }
   };
 
   // 选择单位树结点
@@ -231,14 +236,14 @@ const Registrat = forwardRef((props, ref) => {
 
   // 自动完成单位
   const unitoptions = unitdata.map(opt => (
-    <Option key={opt.id} value={opt.deptName}>
+    <Option key={opt.id} value={opt.id}>
       {opt.deptName}
     </Option>
   ));
 
   // 自动完成部门
   const deptoptions = deptdata.map(opt => (
-    <Option key={opt.id} value={opt.deptName}>
+    <Option key={opt.id} value={opt.id}>
       {opt.deptName}
     </Option>
   ));
@@ -340,17 +345,23 @@ const Registrat = forwardRef((props, ref) => {
                   initialValue: register.proposingUnit,
                 })(
                   <AutoComplete
+                    defaultActiveFirstOption={false}
+                    filterOption={false}
+                    open={deptopen}
                     dataSource={unitoptions}
                     optionLabelProp="value"
                     style={{ width: '85%' }}
                     getPopupContainer={triggerNode => triggerNode.parentNode}
+                    onFocus={() => setUnitopen(true)}
+                    onBlur={() => setUnitopen(false)}
                     onSelect={(v, opt) => {
-                      setUnitRecord({ ...unitrecord, title: v, value: opt.key });
-                      setFieldsValue({ proposingUnit: v });
-                      setFieldsValue({ proposingUnitID: opt.key });
+                      setUnitRecord({ ...unitrecord, title: opt.props.children, key: v });
+                      setFieldsValue({ proposingUnit: opt.props.children });
+                      setFieldsValue({ proposingUnitID: v });
                       setFieldsValue({ proposingDepartment: '' });
                       setFieldsValue({ proposingDepartmentId: '' });
                       setUnitdata([]);
+                      setUnitopen(false);
                     }}
                   >
                     <Search
@@ -386,14 +397,20 @@ const Registrat = forwardRef((props, ref) => {
                   initialValue: register.proposingDepartment,
                 })(
                   <AutoComplete
+                    defaultActiveFirstOption={false}
+                    filterOption={false}
+                    open={deptopen}
                     dataSource={deptoptions}
                     optionLabelProp="value"
                     style={{ width: '85%' }}
                     getPopupContainer={triggerNode => triggerNode.parentNode}
+                    onFocus={() => setDeptopen(true)}
+                    onBlur={() => setDeptopen(false)}
                     onSelect={(v, opt) => {
-                      setFieldsValue({ proposingDepartment: v });
-                      setFieldsValue({ proposingDepartmentId: opt.key });
+                      setFieldsValue({ proposingDepartment: opt.props.children });
+                      setFieldsValue({ proposingDepartmentId: v });
                       setDeptdata([]);
+                      setUnitopen(false);
                     }}
                   >
                     <Search
@@ -600,7 +617,7 @@ const Registrat = forwardRef((props, ref) => {
         {treetype === 'dept' && (
           <DeptSlectId
             GetTreenode={newvalue => handleDeptTreeNode(newvalue)}
-            pid={unitrecord.key !== undefined ? unitrecord.key : register.proposingUnitID}
+            pid={unitrecord.key}
           //  pid={unitrecord.key}
           />
         )}

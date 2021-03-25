@@ -5,13 +5,13 @@ import { Tree, message } from 'antd';
 const { TreeNode } = Tree;
 
 function SelectID(props) {
-  const { dispatch, GetTreenode, pid } = props;
+  const { dispatch, GetTreenode, pid, deptType } = props;
   const [treeData, setTreedData] = useState([]);
 
   const getdeptree = () => {
     dispatch({
       type: 'upmsdept/needtree',
-      payload: { pid },
+      payload: { pid, deptType },
     }).then(res => {
       if (res.data !== undefined) {
         setTimeout(() => {
@@ -26,7 +26,10 @@ function SelectID(props) {
   // 加载父级节点
   useEffect(() => {
     getdeptree();
-  }, []);
+    return () => {
+      setTreedData([])
+    }
+  }, [pid]);
 
   // 点击加载结点
   const onLoadData = treeNode =>
@@ -39,6 +42,7 @@ function SelectID(props) {
         type: 'upmsdept/needtree',
         payload: {
           pid: treeNode.props.dataRef.key,
+          deptType,
         },
       }).then(res => {
         if (res.data !== undefined) {
@@ -51,7 +55,7 @@ function SelectID(props) {
         const arr = [...treeData];
         setTreedData(arr);
         resolve();
-      }, 600);
+      }, 1000);
     });
 
   // 渲染树结构
@@ -79,6 +83,10 @@ function SelectID(props) {
     </div>
   );
 }
+SelectID.defaultProps = {
+  pid: '', deptType: ''
+};
+
 
 export default connect(({ upmsdept, loading }) => ({
   upmsdept,

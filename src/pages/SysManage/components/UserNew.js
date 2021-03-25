@@ -24,7 +24,7 @@ const { Search } = Input;
 const { Option } = AutoComplete;
 
 // 克隆子元素按钮，并添加事件
-const withClick = (element, showDrawer = () => {}) => {
+const withClick = (element, showDrawer = () => { }) => {
   return <element.type {...element.props} onClick={showDrawer} />;
 };
 class NewUser extends Component {
@@ -32,6 +32,7 @@ class NewUser extends Component {
     visible: false,
     detpdrawer: false,
     deptdata: [],
+    unitopen: false,
   };
 
   showDrawer = () => {
@@ -66,7 +67,7 @@ class NewUser extends Component {
   };
 
   render() {
-    const { visible, detpdrawer } = this.state;
+    const { visible, detpdrawer, unitopen } = this.state;
     const { children, title, loading } = this.props;
     const { getFieldDecorator } = this.props.form;
     const required = true;
@@ -74,7 +75,7 @@ class NewUser extends Component {
 
     // 自动完成部门
     const deptoptions = this.state.deptdata.map(opt => (
-      <Option key={opt.id} value={opt.deptName}>
+      <Option key={opt.id} value={opt.id} >
         {opt.deptName}
       </Option>
     ));
@@ -90,12 +91,14 @@ class NewUser extends Component {
 
     // 查询部门
     const handleDeptSearch = value => {
-      queryUnitList({ key: value }).then(res => {
-        if (res.data !== undefined) {
-          const arr = [...res.data];
-          this.setState({ deptdata: arr });
-        }
-      });
+      if (value !== '') {
+        queryUnitList({ key: value }).then(res => {
+          if (res.data !== undefined) {
+            const arr = [...res.data];
+            this.setState({ deptdata: arr });
+          }
+        });
+      }
     };
     return (
       <>
@@ -106,7 +109,7 @@ class NewUser extends Component {
           onClose={this.onClose}
           visible={visible}
           bodyStyle={{ paddingBottom: 60 }}
-          // destroyOnClose
+        // destroyOnClose
         >
           <div style={{ textAlign: 'center', paddingBottom: '20px' }}>
             <Avatar
@@ -165,17 +168,22 @@ class NewUser extends Component {
                   )(
                     <AutoComplete
                       dataSource={deptoptions}
+                      filterOption={false}
+                      open={unitopen}
                       optionLabelProp="value"
                       style={{ width: '85%' }}
                       getPopupContainer={triggerNode => triggerNode.parentNode}
+                      onFocus={() => this.setState({ unitopen: true })}
+                      onBlur={() => this.setState({ unitopen: false })}
                       onSelect={(v, opt) => {
-                        this.props.form.setFieldsValue({ deptNameExt: v });
-                        this.props.form.setFieldsValue({ deptId: opt.key });
+                        this.props.form.setFieldsValue({ deptNameExt: opt.props.children });
+                        this.props.form.setFieldsValue({ deptId: v });
                         this.setState({ deptdata: [] });
+                        this.setState({ unitopen: false })
                       }}
                     >
                       <Search
-                        placeholder="可输入关键字搜索部门"
+                        placeholder="可输入关键字搜索单位"
                         onSearch={values => handleDeptSearch(values)}
                       />
                     </AutoComplete>,

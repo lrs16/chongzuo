@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Drawer, Button, Form, Input, AutoComplete } from 'antd';
+import { Drawer, Button, Form, Input, AutoComplete, message } from 'antd';
 import { phone_reg } from '@/utils/Regexp';
 import { queryUnitList, queryDeptList } from '@/services/common';
 import DeptSlectId from '@/components/DeptTree/SelectID';
@@ -31,6 +31,8 @@ function DisableduserDrawer(props) {
   const [unitrecord, setUnitRecord] = useState('');
   const [unitdata, setUnitdata] = useState([]);
   const [deptdata, setDeptdata] = useState([]);
+  const [unitopen, setUnitopen] = useState(false);
+  const [deptopen, setDeptopen] = useState(false);
 
   // setFieldsValue({ unit: unitrecord.title, unitId: unitrecord.key })
 
@@ -61,28 +63,32 @@ function DisableduserDrawer(props) {
 
   // 查询单位
   const handleUnitSearch = value => {
-    queryUnitList({ key: value }).then(res => {
-      if (res.data !== undefined) {
-        const arr = [...res.data];
-        setUnitdata(arr);
-      }
-    });
+    if (value !== '') {
+      queryUnitList({ key: value }).then(res => {
+        if (res.data !== undefined) {
+          const arr = [...res.data];
+          setUnitdata(arr);
+        }
+      });
+    }
+
   };
 
   // 查询部门
   const handleDeptSearch = value => {
-    const unitIdkey = unitrecord.key !== undefined ? unitrecord.key : unitId;
-    queryDeptList({ key: value, unitId: unitIdkey }).then(res => {
-      if (res.data !== undefined) {
-        const arr = [...res.data];
-        setDeptdata(arr);
-      }
-    });
+    if (value !== '') {
+      queryDeptList({ key: value, unitId: unitrecord.key }).then(res => {
+        if (res.data !== undefined) {
+          const arr = [...res.data];
+          setDeptdata(arr);
+        }
+      });
+    }
   };
 
   // 选择单位树结点
   const handleUnitTreeNode = value => {
-    setUnitRecord(value);
+    setUnitRecord({ ...unitrecord, title: value.title, key: value.key });
     setFieldsValue({ unit: value.title });
     setFieldsValue({ unitId: value.key });
     setFieldsValue({ dept: '' });
@@ -99,14 +105,14 @@ function DisableduserDrawer(props) {
 
   // 自动完成单位
   const unitoptions = unitdata.map(opt => (
-    <Option key={opt.id} value={opt.deptName}>
+    <Option key={opt.id} value={opt.id}>
       {opt.deptName}
     </Option>
   ));
 
   // 自动完成部门
   const deptoptions = deptdata.map(opt => (
-    <Option key={opt.id} value={opt.deptName}>
+    <Option key={opt.id} value={opt.id}>
       {opt.deptName}
     </Option>
   ));
@@ -178,17 +184,23 @@ function DisableduserDrawer(props) {
               initialValue: unit,
             })(
               <AutoComplete
+                defaultActiveFirstOption={false}
+                filterOption={false}
+                open={unitopen}
                 dataSource={unitoptions}
                 optionLabelProp="value"
                 style={{ width: '85%' }}
                 getPopupContainer={triggerNode => triggerNode.parentNode}
+                onFocus={() => setUnitopen(true)}
+                onBlur={() => setUnitopen(false)}
                 onSelect={(v, opt) => {
-                  setUnitRecord({ ...unitrecord, title: v, value: opt.key });
-                  setFieldsValue({ unit: v });
-                  setFieldsValue({ unitId: opt.key });
+                  setUnitRecord({ ...unitrecord, title: opt.props.children, key: v });
+                  setFieldsValue({ unit: opt.props.children });
+                  setFieldsValue({ unitId: v });
                   setFieldsValue({ dept: '' });
                   setFieldsValue({ deptId: '' });
                   setUnitdata([]);
+                  setUnitopen(false);
                 }}
               >
                 <Search
@@ -225,14 +237,20 @@ function DisableduserDrawer(props) {
               initialValue: dept,
             })(
               <AutoComplete
+                defaultActiveFirstOption={false}
+                filterOption={false}
+                open={deptopen}
                 dataSource={deptoptions}
                 optionLabelProp="value"
                 style={{ width: '85%' }}
                 getPopupContainer={triggerNode => triggerNode.parentNode}
+                onFocus={() => setDeptopen(true)}
+                onBlur={() => setDeptopen(false)}
                 onSelect={(v, opt) => {
-                  setFieldsValue({ dept: v });
-                  setFieldsValue({ deptId: opt.key });
+                  setFieldsValue({ dept: opt.props.children });
+                  setFieldsValue({ deptId: v });
                   setDeptdata([]);
+                  setUnitopen(false);
                 }}
               >
                 <Search
@@ -272,13 +290,15 @@ function DisableduserDrawer(props) {
         {type === 'unit' && (
           <DeptSlectId
             GetTreenode={newvalue => handleUnitTreeNode(newvalue)}
-            pid="7AC3EF0F701402A2E0530A644F130365"
+            pid="1"
+            deptType="1"
           />
         )}
         {type === 'dept' && (
           <DeptSlectId
             GetTreenode={newvalue => handleDeptTreeNode(newvalue)}
-            pid={unitrecord.key !== undefined ? unitrecord.key : unitId}
+            pid={unitrecord.key}
+            deptType="2"
           />
         )}
       </Drawer>
