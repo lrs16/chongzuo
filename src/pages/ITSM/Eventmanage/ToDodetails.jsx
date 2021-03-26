@@ -34,7 +34,6 @@ function ToDodetails(props) {
   const [Popvisible, setVisible] = useState(false);
   const [modalvisible, setModalVisible] = useState('');
   const [butandorder, setButandOrder] = useState('');    // 流转，转回访，转单，审核，再处理时已经超时暂存按钮类型及选人order类型
-  console.log(uservisible)
 
   const handleHold = type => {
     setButtonType(type);
