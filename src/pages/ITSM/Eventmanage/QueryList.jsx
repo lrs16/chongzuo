@@ -208,8 +208,6 @@ function QueryList(props) {
     noStatistic = 'noStatistic';
   }
 
-  console.log(noStatistic, 'noStatistic');
-
   useEffect(() => {
     empty = '';
     noStatistic = '';
@@ -241,11 +239,9 @@ function QueryList(props) {
 
   //  查询页查询数据把数据统计的数据清空
   const queryFunciton = (values, page, size, params) => {
-    console.log('o');
     empty = 'empty';
     if (noStatistic) {
       if (values.createTime === undefined) {
-        console.log('1');
         dispatch({
           type: 'eventquery/fetchlist',
           payload: {
@@ -263,7 +259,6 @@ function QueryList(props) {
           },
         });
       } else {
-        console.log('2');
         dispatch({
           type: 'eventquery/fetchlist',
           payload: {
@@ -283,7 +278,6 @@ function QueryList(props) {
     }
 
     if (noStatistic === '') {
-      console.log('3');
       dispatch({
         type: 'eventquery/fetchlist',
         payload: {
@@ -304,7 +298,6 @@ function QueryList(props) {
   const changePagelist = (values, page, size, params) => {
     if (noStatistic) {
       if (values.createTime === undefined) {
-        console.log('4');
         dispatch({
           type: 'eventquery/fetchlist',
           payload: {
@@ -322,7 +315,6 @@ function QueryList(props) {
           },
         })
       } else {
-        console.log('5');
         dispatch({
           type: 'eventquery/fetchlist',
           payload: {
@@ -343,7 +335,6 @@ function QueryList(props) {
     }
 
     if (noStatistic === '') {
-      console.log('no');
       dispatch({
         type: 'eventquery/fetchlist',
         payload: {

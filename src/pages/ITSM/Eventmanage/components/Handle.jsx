@@ -70,12 +70,12 @@ const Handle = React.forwardRef((props, ref) => {
     return label[label.length - 1];
   };
   const handlcheckChange = value => {
-    setFieldsValue({ main_eventObject: value?.slice(-1)[0] }, () => {});
+    setFieldsValue({ main_eventObject: value?.slice(-1)[0] }, () => { });
   };
 
   const getTypebykey = key => {
-    if (selectdata.length > 0) {
-      return selectdata.filter(item => item.key === key)[0].children;
+    if (selectdata.ischange) {
+      return selectdata.arr.filter(item => item.key === key)[0].children;
     }
     return [];
   };
@@ -282,7 +282,7 @@ const Handle = React.forwardRef((props, ref) => {
             <Form.Item
               label="上传附件"
               {...forminladeLayout}
-              // extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
+            // extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
             >
               <div style={{ width: 400 }}>
                 <SysUpload fileslist={files} ChangeFileslist={newvalue => setFilesList(newvalue)} />

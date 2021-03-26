@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
 import router from 'umi/router';
 import moment from 'moment';
-import { Card, Row, Col, Form, Input, Select, DatePicker, Button, Table } from 'antd';
+import { Card, Row, Col, Form, Input, Select, DatePicker, Button, Table, Divider, List } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 
@@ -124,27 +124,78 @@ const timeoutcolumns = [
     title: '处理人',
     dataIndex: 'handler',
     key: 'handler',
+    ellipsis: true,
+    width: 120,
+    render: (text) => {
+      if (text !== null && text.indexOf(';') !== -1) {
+        const arr = text.substr(0, text.length - 1).split(';');
+        return (
+          <List
+            size="small"
+            style={{ margin: '-16px', }}
+            dataSource={arr}
+            renderItem={item => <List.Item style={{ padding: '16px' }}>{item}</List.Item>}
+          />
+        );
+      }
+      return text
+    },
   },
   {
     title: '处理人单位',
     dataIndex: 'handleUnit',
     key: 'handleUnit',
+    ellipsis: true,
+    width: 350,
+    render: (text) => {
+      if (text !== null && text.indexOf(';') !== -1) {
+        const arr = text.substr(0, text.length - 1).split(';');
+        return (
+          <List
+            size="small"
+            style={{ margin: '-16px', }}
+            dataSource={arr}
+            renderItem={item => <List.Item style={{ padding: '16px' }}>{item}</List.Item>}
+          />
+        );
+      }
+      return text
+    },
   },
   {
     title: '处理人部门',
     dataIndex: 'handleDept',
     key: 'handleDept',
-  },
-  {
-    title: '超时原因',
-    dataIndex: 'timeoutTime',
-    key: 'timeoutTime',
+    ellipsis: true,
+    width: 350,
+    render: (text) => {
+      if (text !== null && text.indexOf(';') !== -1) {
+        const arr = text.substr(0, text.length - 1).split(';');
+        return (
+          <List
+            size="small"
+            style={{ margin: '-16px', }}
+            dataSource={arr}
+            renderItem={item => <List.Item style={{ padding: '16px' }}>{item}</List.Item>}
+          />
+        );
+      }
+      return text
+    },
   },
   {
     title: '事件对象',
     dataIndex: 'eventObject',
     key: 'eventObject',
+    with: 10,
   },
+  {
+    title: '超时原因',
+    dataIndex: 'timeoutTime',
+    key: 'timeoutTime',
+    fixed: 'right',
+  },
+
 ];
 
 function Overtime(props) {
@@ -374,7 +425,7 @@ function Overtime(props) {
         <div style={{ marginBottom: 24 }}>
           <Button
             type="primary"
-            // onClick={() => download()}
+          // onClick={() => download()}
           >
             导出数据
           </Button>
@@ -385,6 +436,8 @@ function Overtime(props) {
           loading={loading}
           rowKey={(_, index) => index.toString()}
           pagination={pagination}
+          scroll={{ x: 1400 }}
+          bordered
         />
       </Card>
     </PageHeaderWrapper>

@@ -122,16 +122,16 @@ const ReturnVisit = React.forwardRef((props, ref) => {
     handledesSearch({ module: '事件单', field: '回访', key: '' });
   }, []);
 
-  const getTypebyTitle = key => {
-    if (selectdata.length > 0) {
-      return selectdata.filter(item => item.key === key)[0].children;
+  const getTypebykey = key => {
+    if (selectdata.ischange) {
+      return selectdata.arr.filter(item => item.key === key)[0].children;
     }
     return [];
   };
 
-  const revisitwaymap = getTypebyTitle('486852783895478272');
-  const handleresultmap = getTypebyTitle('486846455059841024');
-  const satisfactionmap = getTypebyTitle('486855005945462784');
+  const revisitwaymap = getTypebykey('486852783895478272');
+  const handleresultmap = getTypebykey('486846455059841024');
+  const satisfactionmap = getTypebykey('486855005945462784');
 
   return (
     <>
@@ -229,7 +229,7 @@ const ReturnVisit = React.forwardRef((props, ref) => {
             <Form.Item
               label="上传附件"
               {...forminladeLayout}
-              // extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
+            // extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
             >
               <div style={{ width: 400 }}>
                 <SysUpload fileslist={files} ChangeFileslist={newvalue => setFilesList(newvalue)} />

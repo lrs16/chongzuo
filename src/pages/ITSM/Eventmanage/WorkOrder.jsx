@@ -222,7 +222,7 @@ function WorkOrder2(props) {
       });
       if (type === 'save') {
         noverification();
-      } else {
+      } else if (type !== 'goback') {
         needUser(err)
       }
     });
@@ -432,7 +432,6 @@ function WorkOrder2(props) {
     };
   }, [info]);
 
-  //
   useEffect(() => {
     if (type !== '') {
       handlesubmit();
@@ -519,10 +518,9 @@ function WorkOrder2(props) {
           })}
         </Steps>
       )}
-      <Spin spinning={loading || !selectdata.ischange}>
+      <Spin spinning={loading}>
         {loading === false &&
           isnew &&
-          selectdata.ischange &&
           data !== undefined &&
           edit !== undefined && (
             <Collapse
@@ -553,7 +551,7 @@ function WorkOrder2(props) {
                     sethandlevalue="true"
                     location={location}
                     files={edit.register.fileIds === '[]' ? [] : JSON.parse(edit.register.fileIds)}
-                    selectdata={selectdata.arr}
+                    selectdata={selectdata}
                   />
                 </Panel>
               )}
@@ -572,7 +570,7 @@ function WorkOrder2(props) {
                     }}
                     files={[]}
                     show={show}
-                    selectdata={selectdata.arr}
+                    selectdata={selectdata}
                   />
                 </Panel>
               )}
@@ -589,7 +587,7 @@ function WorkOrder2(props) {
                       setFiles(newvalue);
                     }}
                     files={[]}
-                    selectdata={selectdata.arr}
+                    selectdata={selectdata}
                   />
                 </Panel>
               )}
@@ -607,7 +605,7 @@ function WorkOrder2(props) {
                       setFiles(newvalue);
                     }}
                     files={edit.check.fileIds === '[]' ? [] : JSON.parse(edit.check.fileIds)}
-                    selectdata={selectdata.arr}
+                    selectdata={selectdata}
                   />
                 </Panel>
               )}
@@ -626,7 +624,7 @@ function WorkOrder2(props) {
                     }}
                     files={[]}
                     show={show}
-                    selectdata={selectdata.arr}
+                    selectdata={selectdata}
                   />
                 </Panel>
               )}
@@ -646,7 +644,7 @@ function WorkOrder2(props) {
                     }}
                     files={edit.handle.fileIds === '[]' ? [] : JSON.parse(edit.handle.fileIds)}
                     show={show}
-                    selectdata={selectdata.arr}
+                    selectdata={selectdata}
                   />
                 </Panel>
               )}
@@ -663,7 +661,7 @@ function WorkOrder2(props) {
                       setFiles(newvalue);
                     }}
                     files={[]}
-                    selectdata={selectdata.arr}
+                    selectdata={selectdata}
                   />
                 </Panel>
               )}
@@ -681,7 +679,7 @@ function WorkOrder2(props) {
                       setFiles(newvalue);
                     }}
                     files={edit.finish.fileIds === '[]' ? [] : JSON.parse(edit.finish.fileIds)}
-                    selectdata={selectdata.arr}
+                    selectdata={selectdata}
                   />
                 </Panel>
               )}

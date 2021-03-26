@@ -147,6 +147,15 @@ export async function timeoutdownload(params) {
 export async function judgeTimeoutStatus(params) {
   return request(`/event/flow/judgeTimeoutStatus`, {
     method: 'POST',
+    data: { taskId: params },
+    requestType: 'form',
+  });
+}
+
+// 保存超时信息
+export async function saveTimeoutMsg(params) {
+  return request(`/event/flow/saveTimeoutMsg`, {
+    method: 'POST',
     data: params,
     requestType: 'form',
   });

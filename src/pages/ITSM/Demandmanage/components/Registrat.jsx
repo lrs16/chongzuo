@@ -254,8 +254,8 @@ const Registrat = forwardRef((props, ref) => {
   }, []);
 
   const getTypebyTitle = key => {
-    if (selectdata.length > 0) {
-      return selectdata.filter(item => item.key === key)[0].children;
+    if (selectdata.ischange) {
+      return selectdata.arr.filter(item => item.key === key)[0].children;
     }
     return [];
   };

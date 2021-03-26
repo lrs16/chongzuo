@@ -246,56 +246,54 @@ function Registration(props) {
 
   return (
     <PageHeaderWrapper title={pagetitle} extra={operations}>
-      <Spin tip="正在加载数据..." spinning={!selectdata.ischange}>
+      <Spin tip="正在提交数据..." spinning={!!loading}>
         <div className={styles.collapse}>
-          {selectdata.ischange && (
-            <Collapse
-              expandIconPosition="right"
-              // defaultActiveKey={['1']}
-              activeKey={activeKey}
-              bordered={false}
-              onChange={callback}
-            >
-              <Panel header="事件登记" key="registratform">
-                <Registrat
-                  ChangeShow={isshow => setShow(isshow)}
-                  ChangeCheck={checked => setCheck(checked)}
-                  ChangeActiveKey={keys => setActiveKey(keys)}
-                  changeDefaultvalue={values => setDefaultvalue(values)}
-                  ChangeFiles={newvalue => {
-                    setRegistratFiles(newvalue);
-                  }}
+          <Collapse
+            expandIconPosition="right"
+            // defaultActiveKey={['1']}
+            activeKey={activeKey}
+            bordered={false}
+            onChange={callback}
+          >
+            <Panel header="事件登记" key="registratform">
+              <Registrat
+                ChangeShow={isshow => setShow(isshow)}
+                ChangeCheck={checked => setCheck(checked)}
+                ChangeActiveKey={keys => setActiveKey(keys)}
+                changeDefaultvalue={values => setDefaultvalue(values)}
+                ChangeFiles={newvalue => {
+                  setRegistratFiles(newvalue);
+                }}
+                formItemLayout={formItemLayout}
+                forminladeLayout={forminladeLayout}
+                show={show}
+                ref={RegistratRef}
+                userinfo={userinfo}
+                sethandlevalue="true"
+                location={location}
+                files={registratfiles.arr}
+                selectdata={selectdata}
+              />
+            </Panel>
+            {show === true && check === false && (
+              <Panel header="事件处理" key="handleform">
+                <Handle
                   formItemLayout={formItemLayout}
                   forminladeLayout={forminladeLayout}
-                  show={show}
-                  ref={RegistratRef}
+                  ref={HandleRef}
                   userinfo={userinfo}
-                  sethandlevalue="true"
+                  defaultvalue={defaultvalue}
                   location={location}
-                  files={registratfiles.arr}
-                  selectdata={selectdata.arr}
+                  ChangeFiles={newvalue => {
+                    setHandleFiles(newvalue);
+                  }}
+                  show={show}
+                  selectdata={selectdata}
+                  files={[]}
                 />
               </Panel>
-              {show === true && check === false && (
-                <Panel header="事件处理" key="handleform">
-                  <Handle
-                    formItemLayout={formItemLayout}
-                    forminladeLayout={forminladeLayout}
-                    ref={HandleRef}
-                    userinfo={userinfo}
-                    defaultvalue={defaultvalue}
-                    location={location}
-                    ChangeFiles={newvalue => {
-                      setHandleFiles(newvalue);
-                    }}
-                    show={show}
-                    selectdata={selectdata.arr}
-                    files={[]}
-                  />
-                </Panel>
-              )}
-            </Collapse>
-          )}
+            )}
+          </Collapse>
         </div>
       </Spin>
     </PageHeaderWrapper>

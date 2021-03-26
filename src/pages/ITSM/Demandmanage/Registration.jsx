@@ -6,7 +6,7 @@ import Registrat from './components/Registrat';
 // import SelectUser from '@/components/SelectUser';
 
 function Registration(props) {
-  const { dispatch, userinfo, lacation } = props;
+  const { dispatch, userinfo, loading } = props;
   const pagetitle = props.route.name;
   // const [flowtype, setFlowtype] = useState('1'); // 流转类型
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
@@ -147,19 +147,17 @@ function Registration(props) {
 
   return (
     <PageHeaderWrapper title={pagetitle} extra={operations}>
-      <Spin spinning={!selectdata.ischange}>
+      <Spin tip="正在提交数据..." spinning={!!loading}>
         <Card>
-          {selectdata.ischange && (
-            <Registrat
-              ref={RegistratRef}
-              userinfo={userinfo}
-              files={files.arr}
-              ChangeFiles={newvalue => {
-                setFiles(newvalue);
-              }}
-              selectdata={selectdata.arr}
-            />
-          )}
+          <Registrat
+            ref={RegistratRef}
+            userinfo={userinfo}
+            files={files.arr}
+            ChangeFiles={newvalue => {
+              setFiles(newvalue);
+            }}
+            selectdata={selectdata}
+          />
         </Card>
       </Spin>
     </PageHeaderWrapper>

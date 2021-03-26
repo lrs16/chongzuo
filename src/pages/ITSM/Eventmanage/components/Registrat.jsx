@@ -102,7 +102,7 @@ const Registrat = forwardRef((props, ref) => {
     if (register.revisitWay === '003') {
       setRevisitway(true);
     }
-    if (main.eventType === '005') {
+    if (main.eventType === '005' || main.eventType === '007' || main.eventType === '008') {
       setCheck(true);
     }
   }, [info]);
@@ -341,8 +341,8 @@ const Registrat = forwardRef((props, ref) => {
 
   // 数据字典
   const getTypebykey = key => {
-    if (selectdata.length > 0) {
-      return selectdata.filter(item => item.key === key)[0].children;
+    if (selectdata.ischange) {
+      return selectdata.arr.filter(item => item.key === key)[0].children;
     }
     return [];
   };
@@ -358,6 +358,8 @@ const Registrat = forwardRef((props, ref) => {
   const effectmap = getTypebykey('482610561507393536'); // 影响度
   const emergentmap = getTypebykey('482610561503199232'); // 紧急度
   const priormap = getTypebykey('482610561499004928'); // 优先级
+
+
 
   // 附件上传下载
 
@@ -623,13 +625,11 @@ const Registrat = forwardRef((props, ref) => {
                 initialValue: main.eventSource,
               })(
                 <Select placeholder="请选择">
-                  {sourcemap.map(obj => {
-                    if (sourcemap.length > 0)
-                      return (
-                        <Option key={obj.key} value={obj.dict_code}>
-                          {obj.title}
-                        </Option>)
-                  })}
+                  {sourcemap.map(obj => (
+                    <Option key={obj.key} value={obj.dict_code}>
+                      {obj.title}
+                    </Option>)
+                  )}
                 </Select>,
               )}
             </Form.Item>
@@ -689,13 +689,11 @@ const Registrat = forwardRef((props, ref) => {
                 initialValue: main.eventType,
               })(
                 <Select placeholder="请选择" onChange={handlcheckChange}>
-                  {typemap.map(obj => {
-                    if (typemap.length > 0)
-                      return (
-                        <Option key={obj.key} value={obj.dict_code}>
-                          {obj.title}
-                        </Option>)
-                  })}
+                  {typemap.map(obj => (
+                    <Option key={obj.key} value={obj.dict_code}>
+                      {obj.title}
+                    </Option>)
+                  )}
                 </Select>,
               )}
             </Form.Item>
@@ -724,13 +722,11 @@ const Registrat = forwardRef((props, ref) => {
                 initialValue: main.revisitWay,
               })(
                 <Select placeholder="请选择" onChange={handlrevisitway}>
-                  {returnvisit.map(obj => {
-                    if (returnvisit.length > 0)
-                      return (
-                        <Option key={obj.key} value={obj.dict_code}>
-                          {obj.title}
-                        </Option>)
-                  })}
+                  {returnvisit.map(obj => (
+                    <Option key={obj.key} value={obj.dict_code}>
+                      {obj.title}
+                    </Option>)
+                  )}
                 </Select>,
               )}
             </Form.Item>
@@ -742,13 +738,11 @@ const Registrat = forwardRef((props, ref) => {
                 initialValue: main.eventEffect,
               })(
                 <Select placeholder="请选择" onChange={changeHandlevalue}>
-                  {effectmap.map(obj => {
-                    if (effectmap.length > 0)
-                      return (
-                        <Option key={obj.key} value={obj.dict_code}>
-                          {obj.title}
-                        </Option>)
-                  })}
+                  {effectmap.map(obj => (
+                    <Option key={obj.key} value={obj.dict_code}>
+                      {obj.title}
+                    </Option>)
+                  )}
                 </Select>,
               )}
             </Form.Item>
@@ -760,13 +754,11 @@ const Registrat = forwardRef((props, ref) => {
                 initialValue: main.eventEmergent,
               })(
                 <Select placeholder="请选择" onChange={changeHandlevalue}>
-                  {emergentmap.map(obj => {
-                    if (emergentmap.length > 0)
-                      return (
-                        <Option key={obj.key} value={obj.dict_code}>
-                          {obj.title}
-                        </Option>)
-                  })}
+                  {emergentmap.map(obj => (
+                    <Option key={obj.key} value={obj.dict_code}>
+                      {obj.title}
+                    </Option>)
+                  )}
                 </Select>,
               )}
             </Form.Item>
@@ -778,13 +770,11 @@ const Registrat = forwardRef((props, ref) => {
                 initialValue: main.eventPrior,
               })(
                 <Select placeholder="请选择" onChange={changeHandlevalue}>
-                  {priormap.map(obj => {
-                    if (priormap.length > 0)
-                      return (
-                        <Option key={obj.key} value={obj.dict_code}>
-                          {obj.title}
-                        </Option>)
-                  })}
+                  {priormap.map(obj => (
+                    <Option key={obj.key} value={obj.dict_code}>
+                      {obj.title}
+                    </Option>)
+                  )}
                 </Select>,
               )}
             </Form.Item>

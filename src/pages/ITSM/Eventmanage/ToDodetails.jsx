@@ -7,7 +7,8 @@ import User from '@/components/SelectUser/User';
 import Backoff from './components/Backoff';
 import WorkOrder from './WorkOrder';
 import Process from './Process';
-import { judgeTimeoutStatus } from './services/api';
+import { judgeTimeoutStatus, EventopenFlow, saveTimeoutMsg } from './services/api';
+import TimeoutModal from './components/TimeoutModal';
 
 const pagetitlemaps = new Map([
   ['已登记', '事件登记'],
@@ -31,7 +32,9 @@ function ToDodetails(props) {
   const [userchoice, setUserChoice] = useState(false); // 已经选择人员
   const [changorder, setChangeOrder] = useState(undefined);
   const [Popvisible, setVisible] = useState(false);
-  const [modalvisible, setModalVisible] = useState();
+  const [modalvisible, setModalVisible] = useState('');
+  const [butandorder, setButandOrder] = useState('');    // 流转，转回访，转单，审核，再处理时已经超时暂存按钮类型及选人order类型
+  console.log(uservisible)
 
   const handleHold = type => {
     setButtonType(type);
@@ -50,7 +53,22 @@ function ToDodetails(props) {
   );
 
   const handleVisibleChange = visible => {
-    setVisible(visible);
+
+    judgeTimeoutStatus(taskId).then(res => {
+      if (res.code === 200 && res.status === 'yes' && res.timeoutMsg === '') {
+        message.info('该事件单已超时，请填写超时原因...')
+        setModalVisible(true);
+        setButtonType('goback');
+        setUserVisible(false);
+      };
+      if (res.code === 200 && res.status === 'yes' && res.timeoutMsg !== '') {
+        setVisible(visible);
+      };
+      if (res.code === 200 && res.status === 'no') {
+        setVisible(visible);
+      }
+    })
+
   };
 
   useEffect(() => {
@@ -75,14 +93,33 @@ function ToDodetails(props) {
 
   // 接单
   const eventaccpt = () => {
-    dispatch({
-      type: 'eventtodo/eventaccept',
-      payload: {
-        id: taskId,
-        userIds: sessionStorage.getItem('userauthorityid'),
-        type: '1',
-      },
-    });
+    judgeTimeoutStatus(taskId).then(res => {
+      if (res.code === 200 && res.status === 'yes' && res.timeoutMsg === '') {
+        message.info('该事件单已超时，请填写超时原因...')
+        setModalVisible(true);
+        setButtonType('accpt');
+      };
+      if (res.code === 200 && res.status === 'yes' && res.timeoutMsg !== '') {
+        dispatch({
+          type: 'eventtodo/eventaccept',
+          payload: {
+            id: taskId,
+            userIds: sessionStorage.getItem('userauthorityid'),
+            type: '1',
+          },
+        });
+      };
+      if (res.code === 200 && res.status === 'no') {
+        dispatch({
+          type: 'eventtodo/eventaccept',
+          payload: {
+            id: taskId,
+            userIds: sessionStorage.getItem('userauthorityid'),
+            type: '1',
+          },
+        });
+      }
+    })
   };
 
   // 删除
@@ -99,17 +136,51 @@ function ToDodetails(props) {
 
   // 点击流转，审核，转回访，回退按钮
   const handleClick = (type, order) => {
-    handleHold(type);
-    setChangeOrder(order);
+    judgeTimeoutStatus(taskId).then(res => {
+      if (res.code === 200 && res.status === 'yes' && res.timeoutMsg === '') {
+        message.info('该事件单已超时，请填写超时原因...')
+        setModalVisible(true);
+        setButandOrder({ type, order });
+      };
+      if (res.code === 200 && res.status === 'yes' && res.timeoutMsg !== '') {
+        handleHold(type);
+        setChangeOrder(order);
+      }
+      if (res.code === 200 && res.status === 'no') {
+        handleHold(type);
+        setChangeOrder(order);
+      }
+    })
   };
 
-  // 超时信息填写完成
-  const handleOk = () => {
-    console.log('超时信息')
+  // 保存超时信息,成功校验表单
+  const postTimeOutMsg = (v) => {
+    saveTimeoutMsg({ taskId, ...v }).then(res => {
+      switch (buttontype) {
+        case 'accpt':
+          dispatch({
+            type: 'eventtodo/eventaccept',
+            payload: {
+              id: taskId,
+              userIds: sessionStorage.getItem('userauthorityid'),
+              type: '1',
+            },
+          });
+          break;
+        case 'goback':
+          setVisible(true);
+          break;
+        case 'save':
+          break;
+        default:
+          if (res.code === 200) {
+            handleHold(butandorder.type);
+            setChangeOrder(butandorder.order);
+          }
+          break;
+      }
+    });
   }
-
-  // 超时信息
-
 
   const operations = (
     <>
@@ -125,7 +196,7 @@ function ToDodetails(props) {
       {(taskName === '待审核' ||
         (taskName === '待处理' && check === null) ||
         (taskName === '待确认' && check === null)) && (
-          <Popover content={content} visible={Popvisible} onVisibleChange={handleVisibleChange}>
+          <Popover content={content} visible={Popvisible} onVisibleChange={handleVisibleChange} trigger="click">
             <Button type="danger" ghost style={{ marginRight: 8 }}>
               回退
           </Button>
@@ -254,16 +325,11 @@ function ToDodetails(props) {
         ChangeChoice={v => setUserChoice(v)}
         ChangeType={v => setButtonType(v)}
       />
-      <Modal
-        title="Basic Modal"
-        visible={modalvisible}
-        onOk={handleOk}
-      // onCancel={handleCancel}
-      >
-        <p>Some contents...</p>
-        <p>Some contents...</p>
-        <p>Some contents...</p>
-      </Modal>
+      <TimeoutModal
+        modalvisible={modalvisible}
+        ChangeModalVisible={v => setModalVisible(v)}
+        ChangeTimeOutMsg={v => postTimeOutMsg(v)}
+      />
     </PageHeaderWrapper>
   );
 }

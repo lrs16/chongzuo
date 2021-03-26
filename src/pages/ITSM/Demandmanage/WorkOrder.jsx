@@ -81,7 +81,6 @@ function WorkOrder(props) {
         taskName === '系统开发商审核' ||
         taskName === '自动化科负责人确认' ||
         taskName === '需求登记人员确认') && info.historys.length > 0) {
-        console.log(info.historys?.slice(-1)[0])
         ChangeHistroyTaskId(info.historys?.slice(-1)[0].taskId);
       }
       ChangeISClose(info.is_close);
@@ -558,8 +557,8 @@ function WorkOrder(props) {
           })}
         </Steps>
       )}
-      <Spin spinning={loading || !selectdata.ischange}>
-        {loading === false && info !== '' && isnew && selectdata.ischange && (
+      <Spin spinning={loading}>
+        {loading === false && info !== '' && isnew && (
           <Collapse
             expandIconPosition="right"
             activeKey={activeKey}
@@ -581,7 +580,7 @@ function WorkOrder(props) {
                   register={info.demandForm}
                   userinfo={userinfo}
                   location={location}
-                  selectdata={selectdata.arr}
+                  selectdata={selectdata}
                 />
               )}
               {info.taskName === '业务科室领导审核' && info.historys.length === 0 && (
