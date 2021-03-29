@@ -1122,5 +1122,9 @@ export default {
       target: ' http://172.16.4.211:9901/', // 数据字典
       changeOrigin: true,
     },
+    '/check/': {
+      target: ' http://172.16.4.93:8083/', // 数据字典
+      changeOrigin: true,
+    },
   },
 };

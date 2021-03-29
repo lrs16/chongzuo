@@ -11,70 +11,79 @@ import {
   Table
 } from 'antd';
 import Link from 'umi/link';
-import moment from 'moment';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
-let startTime;
-let endTime;
+let startTime = '';
+let endTime = '';
 const sign = 'solution';
-const columns = [
-  {
-    title: '序号',
-    dataIndex: 'user',
-    key: 'user',
-  },
-  {
-    title: '超时状态',
-    dataIndex: 'is_selfhandle',
-    key: 'is_selfhandle',
-  },
-  {
-    title: '工单数',
-    dataIndex: 'not_selfhandle',
-    key: 'not_selfhandle',
-    render: (text, record) => (
-      <Link
-        to={{
-          pathname: '/ITSM/eventmanage/query',
-          query: { 
-            start_time: record.start_time,
-            end_time: record.end_time,
-           }
-        }}
-      >
-        {text}
-      </Link>
-    )
-  },
-];
+const { RangePicker } = DatePicker;
+
 
 function DemandTimeout(props) {
   const { pagetitle } = props.route.name;
   const {
-    form: { getFieldDecorator },
-    soluteArr,
+    form: { getFieldDecorator,resetFields },
+    demandtomeoutArr,
     dispatch
   } = props;
 
-  const onChange = (date) => {
-    const date1 = new Date(date._d);
-    const date2 = new Date(date._d);
-    startTime = `${date1.getFullYear()}-${(date1.getMonth() + 1)}-${date1.getDate()}`;
-    date2.setDate(date1.getDate() + 7);
-    endTime = `${date2.getFullYear()}-${(date2.getMonth() + 1)}-${date2.getDate()}`;
+  const columns = [
+    {
+      title: '序号',
+      dataIndex: 'user',
+      key: 'user',
+      render:(text,record,index) => {
+        return <span>{index +1}</span>
+      }
+ 
+    },
+    {
+      title: '超时状态',
+      dataIndex: 'status',
+      key: 'status',
+    },
+    {
+      title: '工单数',
+      dataIndex: 'quantity',
+      key: 'quantity',
+      render: (text, record) => {
+        if(record.status !== '合计') {
+          return  <Link
+          to={{
+            pathname: '/ITSM/demandmanage/query',
+            query: { 
+              completeStatus: record.status,
+             }
+          }}
+        >
+          {text}
+        </Link>
+        }
+
+      if (record.status === '合计') {
+        return <span>{text}</span>
+      }
+   
+    }
+    },
+  ];
+
+  const onChange = (date,dateString) => {
+    [startTime, endTime] = dateString;
   }
 
 
   const handleListdata = (params) => {
     dispatch({
-      type: 'eventstatistics/fetchSelfHandleList',
+      type: 'demandstatistic/fetchdemandTimeoutlist',
       payload: { sign, startTime, endTime }
     })
   }
 
   const download = () => {
     dispatch({
-      type: 'problemstatistics/downloadHandlegrate'
+      type: 'demandstatistic/downloaddemandTimeout',
+      payload: { sign, startTime, endTime }
     }).then(res => {
       const filename = '下载.xls';
       const blob = new Blob([res]);
@@ -88,20 +97,18 @@ function DemandTimeout(props) {
   }
 
 
-  const defaultTime = () => {
-    //  周统计
-    const day2 = new Date();
-    day2.setTime(day2.getTime());
-    endTime = `${day2.getFullYear()}-${(day2.getMonth() + 1)}-${day2.getDate()}`;
-    const date2 = new Date(day2);
-    date2.setDate(day2.getDate() - 6);
-    startTime = `${date2.getFullYear()}-${(date2.getMonth() + 1)}-${date2.getDate()}`;
-  }
+
 
   useEffect(() => {
-    defaultTime();
+    // defaultTime();
     handleListdata();
   }, [])
+
+  const handleReset = () => {
+    startTime = '';
+    endTime = '';
+    resetFields();
+  }
 
   return (
     <PageHeaderWrapper
@@ -111,24 +118,11 @@ function DemandTimeout(props) {
         <Row gutter={24}>
           <Form layout='inline'>
             <>
-              <Col span={15}>
-                <Form.Item label='开始时间'>
-                  {getFieldDecorator('time1', {
-                    initialValue: startTime ? moment(startTime) : ''
-                  })(<DatePicker
-                    format="YYYY-MM-DD"
-                    onChange={onChange}
-                  />)}
-                </Form.Item>
-
-                <p style={{ display: 'inline', marginRight: 8 }}>-</p>
-
-                <Form.Item label=''>
+            <Col span={24}>
+                <Form.Item label='起始时间'>
                   {
-                    getFieldDecorator('time2', {
-                      initialValue: endTime ? moment(endTime) : ''
-                    })
-                      (<DatePicker disabled />)
+                    getFieldDecorator('time1', {})
+                      (<RangePicker onChange={onChange} />)
                   }
                 </Form.Item>
 
@@ -138,7 +132,14 @@ function DemandTimeout(props) {
                   onClick={() => handleListdata('search')}
                 >
                   查询
-                    </Button>
+                </Button>
+
+                <Button
+                  style={{ marginLeft: 8 }}
+                  onClick={handleReset}
+                >
+                  重置
+              </Button>
               </Col>
             </>
 
@@ -158,7 +159,7 @@ function DemandTimeout(props) {
 
         <Table
           columns={columns}
-          dataSource={soluteArr}
+          dataSource={demandtomeoutArr}
           rowKey={record => record.statName}
         />
       </Card>
@@ -167,7 +168,7 @@ function DemandTimeout(props) {
 }
 
 export default Form.create({})(
-  connect(({ eventstatistics }) => ({
-    soluteArr: eventstatistics.soluteArr
+  connect(({ demandstatistic }) => ({
+    demandtomeoutArr: demandstatistic.demandtomeoutArr
   }))(DemandTimeout),
 );

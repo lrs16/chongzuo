@@ -33,7 +33,7 @@ export async function saveRegister(params) {
 export async function besolveList(params) {
   return request(`/problem/flow/getWaitDoPage`, {
     method: 'POST',
-    body: JSON.stringify(params),
+    data: params,
   });
 }
 //  待办查询

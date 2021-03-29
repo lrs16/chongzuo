@@ -9,248 +9,170 @@ import {
   Button,
   Table
 } from 'antd';
-import Link from 'umi/link';
-import moment from 'moment';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
 const { RangePicker } = DatePicker;
 let statTimeBegin = '';
 let statTimeEnd = '';
 const sign = 'solution';
-const renderContent = (value, row, index) => {
-  const obj = {
-    children: value,
-    props: {},
-  };
-  if (index === 4) {
-    obj.props.colSpan = 0;
-  }
-  return obj;
-};
-
-const columns = [
-  {
-    title: '序号',
-    dataIndex: 'name',
-    render: (value, row, index) => {
-      const obj = {
-        children: value,
-        props: {},
-      };
-      if (index === 0) {
-        obj.props.rowSpan = 6;
-      }
-      // These two are merged into above cell
-      if (index === 6) {
-        obj.props.rowSpan = 4;
-      }
-      if (index === 4) {
-        obj.props.colSpan = 0;
-      }
-      return obj;
-    },
-  },
-  {
-    title: '月份',
-    dataIndex: 'month',
-    render: (value, row, index) => {
-      const obj = {
-        children: value,
-        props: {},
-      };
-      if (index === 0) {
-        obj.props.rowSpan = 6;
-      }
-      // These two are merged into above cell
-      if (index === 6) {
-        obj.props.rowSpan = 3;
-      }
-      if (index === 4) {
-        obj.props.colSpan = 0;
-      }
-      return obj;
-    },
-  },
-  {
-    title: '需求总数',
-    dataIndex: 'age',
-    render: (value, row, index) => {
-      const obj = {
-        children: value,
-        props: {},
-      };
-      if (index === 0) {
-        obj.props.rowSpan = 6;
-      }
-      // These two are merged into above cell
-      if (index === 6) {
-        obj.props.rowSpan = 3;
-      }
-      if (index === 4) {
-        obj.props.colSpan = 0;
-      }
-      return obj;
-    },
-  },
-  {
-    title: '所属功能',
-    dataIndex: 'tel',
-  },
-  {
-    title: '所属功能数',
-    dataIndex: 'phone',
-  },
-  {
-    title: '已开发',
-    dataIndex: 'address',
-  },
-  {
-    title: '已实现',
-    dataIndex: 'params1',
-  },
-  {
-    title: '需求实现率',
-    dataIndex: 'params2',
-  },
-];
-
-const data = [
-  {
-    key: '1',
-    name: '序号',
-    month: '月份',
-    age: '需求总数',
-    tel: '所属功能',
-    phone: '所属功能数',
-    address: '已开发',
-    params1: '已实现',
-    params2: '需求实现率',
-  },
-  {
-    key: '2',
-    name: '所属功能数',
-    month: '月份',
-    age: '需求总数',
-    tel: '所属功能',
-    phone: '所属功能数',
-    address: '已开发',
-    params1: '已实现',
-    params2: '需求实现率',
-  },
-  {
-    key: '3',
-    name: '所属功能数',
-    month: '月份',
-    age: '需求总数',
-    tel: '所属功能',
-    phone: '所属功能数',
-    address: '已开发',
-    params1: '已实现',
-    params2: '需求实现率',
-  },
-  {
-    key: '4',
-    name: '所属功能数',
-    month: '月份',
-    age: '需求总数',
-    tel: '所属功能',
-    phone: '所属功能数',
-    address: '已开发',
-    params1: '已实现',
-    params2: '需求实现率',
-  },
-  {
-    key: '5',
-    name: '所属功能数',
-    month: '月份',
-    age: '需求总数',
-    tel: '所属功能',
-    phone: '所属功能数',
-    address: '已开发',
-    params1: '已实现',
-    params2: '需求实现率',
-  },
-  {
-    key: '6',
-    name: '所属功能数',
-    month: '月份',
-    age: '需求总数',
-    tel: '所属功能',
-    phone: '所属功能数',
-    address: '已开发',
-    params1: '已实现',
-    params2: '需求实现率',
-  },
-  {
-    key: '7',
-    name: '序所属功能数号',
-    month: '月份',
-    age: '需求总数',
-    tel: '所属功能',
-    phone: '所属功能数',
-    address: '已开发',
-    params1: '已实现',
-    params2: '需求实现率',
-  },
-  {
-    key: '8',
-    name: '所属功能数',
-    month: '月份',
-    age: '需求总数',
-    tel: '所属功能',
-    phone: '所属功能数',
-    address: '已开发',
-    params1: '已实现',
-    params2: '需求实现率',
-  },
-  {
-    key: '9',
-    name: '所属功能数',
-    month: '月份',
-    age: '需求总数',
-    tel: '所属功能',
-    phone: '所属功能数',
-    address: '已开发',
-    params1: '已实现',
-    params2: '需求实现率',
-  },
-  {
-    key: '10',
-    name: '所属功能数',
-    month: '月份',
-    age: '需求总数',
-    tel: '所属功能',
-    phone: '所属功能数',
-    address: '已开发',
-    params1: '已实现',
-    params2: '需求实现率',
-  },
-];
 
 function DemandSchedule(props) {
   const { pagetitle } = props.route.name;
   const {
-    form: { getFieldDecorator,resetFields },
-    soluteArr,
+    form: { getFieldDecorator, resetFields },
+    demandscheduleArr,
     dispatch
   } = props;
+
+ 
+//  对象数组去重
+const uniqueObjArr =(arr, fieldName) => {
+  const result = [];
+  const resultArr = [];
+  arr.map(function(item,index,value){
+    if(result.indexOf(item[fieldName]) === -1) {
+      result.push(item[fieldName]);
+      resultArr.push(item);
+    }
+  })
+  return resultArr;
+}
+
+//  去重并合并到children
+const sortData = (dataArr) => {
+  const orgArrRe = dataArr.map(item => 
+    ({ month: item.month })
+    );
+  const orgArr = uniqueObjArr(orgArrRe, 'month');// 数组去重
+  orgArr.map(function(childOne,index,value){
+    childOne.children = [];
+    dataArr.map(function(childTwo){
+      if(childOne.month === childTwo.month) {
+        childOne.children.push(childTwo);
+      }
+    })
+  })
+
+  // for (const every of orgArr) {
+  //   every.span = every.children ? every.children.length : 0;
+  // }
+
+  orgArr.forEach((every) => { every.span = every.children ? every.children.length : 0; });
+  return orgArr;
+}
+ 
+//  遍历子元素，并赋值纵向合并数rowSpan
+const makeData = (data) => {
+  const sortResult = sortData(data);
+  const dataSource = [];
+  sortResult.forEach((item) => {
+    if (item.children) {
+      item.children.forEach((itemOne, indexOne) => {
+        const myObj = itemOne;
+        myObj.rowSpan = indexOne === 0 ? item.span : 0;
+        dataSource.push(myObj);
+      });
+    }
+  });
+  return dataSource;
+}
+
+
+  const columns = [
+    {
+      title: '序号',
+      dataIndex: 'num',
+      align: 'center',
+      render: (text, record,index) => {
+        if(record.month !== '合计') {
+          const obj = {
+            children: index+1,
+            props: {},
+          };
+          obj.props.rowSpan = record.rowSpan;
+          return obj;
+        }
+
+        if(record.month === '合计') {
+          const obj = {
+            children: '',
+            props: {},
+          };
+          obj.props.rowSpan = record.rowSpan;
+          return obj;
+        }
+      
+      },
+    },
+    {
+      title: '月份',
+      dataIndex: 'month',
+      align: 'center',
+      render: (text, record) => {
+        const obj = {
+          children: text,
+          props: {},
+        };
+        obj.props.rowSpan = record.rowSpan;
+        return obj;
+      },
+    },
+    {
+      title: '需求总数',
+      dataIndex: 'total',
+      className:'center',
+      align: 'center',
+      render: (text, record) => {
+        const obj = {
+          children: text,
+          props: {},
+        };
+        obj.props.rowSpan = record.rowSpan;
+        return obj;
+      },
+    },
+    {
+      title: '所属功能',
+      dataIndex: 'features',
+      align: 'center',
+    },
+    {
+      title: '所属功能数',
+      dataIndex: 'countFeatures',
+      align: 'center',
+    },
+    {
+      title: '已开发',
+      dataIndex: 'countDevelop',
+      align: 'center',
+    },
+    {
+      title: '已实现',
+      dataIndex: 'countAchieve',
+      align: 'center',
+    },
+    {
+      title: '需求实现率',
+      dataIndex: 'countRate',
+      align: 'center',
+    },
+  ];
+
 
   const onChange = (date, dateString) => {
     [statTimeBegin, statTimeEnd] = dateString;
   }
 
-  const handleListdata = (params) => {
-    console.log(statTimeBegin, 'statTimeBegin');
-    console.log(statTimeEnd, 'statTimeEnd');
+  const handleListdata = () => {
     dispatch({
-      type: 'eventstatistics/fetchSelfHandleList',
+      type: 'demandstatistic/fetchdemandSchedulelist',
       payload: { statTimeBegin, statTimeEnd }
     })
   }
 
   const download = () => {
     dispatch({
-      type: 'problemstatistics/downloadHandlegrate',
+      type: 'demandstatistic/downloaddemandSchedule',
       payload: { statTimeBegin, statTimeEnd }
     }).then(res => {
       const filename = '下载.xls';
@@ -269,6 +191,8 @@ function DemandSchedule(props) {
   }, [])
 
   const handleReset = () => {
+    statTimeBegin = '';
+    statTimeEnd = '';
     resetFields();
   }
 
@@ -321,8 +245,9 @@ function DemandSchedule(props) {
         </div>
 
         <Table
+          bordered
           columns={columns}
-          dataSource={data}
+          dataSource={makeData(demandscheduleArr)}
           rowKey={record => record.statName}
         />
       </Card>
@@ -331,7 +256,7 @@ function DemandSchedule(props) {
 }
 
 export default Form.create({})(
-  connect(({ eventstatistics }) => ({
-    soluteArr: eventstatistics.soluteArr
+  connect(({ demandstatistic }) => ({
+    demandscheduleArr: demandstatistic.demandscheduleArr
   }))(DemandSchedule),
 );

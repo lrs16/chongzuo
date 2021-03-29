@@ -25,6 +25,15 @@ export async function eventhandlerateList(params) {
   return request(`/event/statis/eventHandleRate?time1=${params.startTime}&time2=${params.endTime}`); 
 }
 
+//  需求进度列表
+export async function demandSchedulelist(params) {
+  return request(`/demand/statisstics/schedule?startTime=${params.statTimeBegin}&endTime=${params.statTimeEnd}`); 
+}
+//  需求超时列表
+export async function demandTimeoutlist(params) {
+  return request(`/demand/statisstics/timeOut?startTime=${params.startTime}&endTime=${params.endTime}`); 
+}
+
 //  下载类
 
 //  下载功能需求统计
@@ -38,6 +47,21 @@ export async function requirementDownload(params) {
 //  下载需求状态统计
 export async function demandstateDownload(params) {
   return request(`/demand/statisstics/excelStatus?startTime=${params.statTimeBegin}&endTime=${params.statTimeEnd}`,{
+    responseType:'blob',
+    requestType:'form'
+  })
+}
+
+//  下载需求进度统计
+export async function demandscheduleDownload(params) {
+  return request(`/demand/statisstics/excelSchedule?startTime=${params.statTimeBegin}&endTime=${params.statTimeEnd}`,{
+    responseType:'blob',
+    requestType:'form'
+  })
+}
+//  下需求超时导出
+export async function demandtimeoutDownload(params) {
+  return request(`/demand/statisstics/excelTimeOut?startTime=${params.startTime}&endTime=${params.endTime}`,{
     responseType:'blob',
     requestType:'form'
   })

@@ -1,21 +1,54 @@
-import { configurationList } from '../services/monitor';
+import { 
+  configurationList,
+  saveConfiguration,
+  configurationDetail,
+  batchsaveConfiguration,
+  instructionList,
+  instructionSearch
+ } from '../services/monitor';
 
 export default {
   namespace: 'monitorconfiguration',
 
   state: {
-    list: [],
+    detailArr: [],
+    instructionArr:[]
   },
 
   effects: {
+    // 监控配置列表
     *fetch({ payload }, { call, put }) {
-      console.log(payload, 'payload');
-      const response = yield call(configurationList, payload);
+      return yield call(configurationList, payload);
+    },
+    // 表格编辑保存接口
+    *saveConfigura({ payload }, { call, put }) {
+      return yield call(saveConfiguration, payload);
+    },
+    // 表格的详情接口
+    *detailConfigura({ payload:{code,showAlarmDialog,showTerminalDialog} }, { call, put }) {
+      return yield call(configurationDetail, code,showAlarmDialog,showTerminalDialog);
+    },
+    //  详情页表格批量保存
+    *batchSave({ payload }, { call, put }) {
+      return yield call(batchsaveConfiguration, payload);
+    },
+    //  监控指令表格
+    *fetchinstructionList({ payload }, { call, put }) {
+      const response = yield call(instructionList,payload);
       yield put({
-        type: 'list',
-        payload: response.data,
+        type: 'instructionArr',
+        payload: response,
       });
     },
+
+  //   //  监控指令搜索
+    *searchInstruction({ payload }, { call, put }) {
+      const response = yield call(instructionSearch,payload);
+      yield put({
+        type: 'instructionArr',
+        payload: response,
+      });
+    }
   },
 
   reducers: {
@@ -26,10 +59,10 @@ export default {
       };
     },
 
-    list(state, action) {
+    instructionArr(state, action) {
       return {
         ...state,
-        list: action.payload,
+        instructionArr: action.payload.data,
       };
     },
   },

@@ -164,8 +164,3 @@ export async function gethistory(params) {
   return request(`/monitor/terminalInfo/rk/history?${stringify(params)}`);
 }
 
-// 计量业务监测配置
-
-// export async function configurationList() {
-//   return request(`/api/configurationList`);
-// }

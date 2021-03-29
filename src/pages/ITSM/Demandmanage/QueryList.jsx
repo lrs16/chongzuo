@@ -98,12 +98,12 @@ function QueryList(props) {
   const pagetitle = props.route.name;
   const {
     form: { getFieldDecorator, resetFields, validateFields },
-    location: { query: { module, taskName, statisticalType } },
+    location: { query: { module, taskName, statisticalType,completeStatus } },
     loading,
     list,
     dispatch,
   } = props;
-  const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
+  const [paginations, setPageinations] = useState({ current: 1, pageSize: 10 });
   const [expand, setExpand] = useState(false);
   const [selectdata, setSelectData] = useState('');
 
@@ -117,7 +117,8 @@ function QueryList(props) {
             page: paginations.current,
             limit: paginations.pageSize,
             module,
-            taskName
+            taskName,
+            completeStatus
           },
         });
       }
@@ -132,7 +133,8 @@ function QueryList(props) {
         limit: size,
         page,
         module,
-        taskName: values.taskName ? values.taskName : taskName
+        taskName: values.taskName ? values.taskName : taskName,
+        completeStatus
       },
     });
   };
