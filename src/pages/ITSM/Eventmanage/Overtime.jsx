@@ -191,9 +191,8 @@ const timeoutcolumns = [
   },
   {
     title: '超时原因',
-    dataIndex: 'timeoutTime',
-    key: 'timeoutTime',
-    fixed: 'right',
+    dataIndex: 'timeoutMsg',
+    key: 'timeoutMsg',
   },
 
 ];
@@ -308,7 +307,7 @@ function Overtime(props) {
   const handleSearch = () => {
     setPageinations({
       ...paginations,
-      current: 0,
+      current: 1,
     });
     validateFields((err, values) => {
       if (err) {
