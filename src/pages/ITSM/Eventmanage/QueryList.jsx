@@ -220,7 +220,7 @@ function QueryList(props) {
             pageIndex: paginations.current - 1,
             pageSize: paginations.pageSize,
             time1: time1 === undefined ? moment().startOf('month').format('YYYY-MM-DD HH:mm:ss') : time1,
-            time2: time2 === undefined ? moment().format('YYYY-MM-DD HH:mm:ss') : time1,
+            time2: time2 === undefined ? moment().format('YYYY-MM-DD HH:mm:ss') : time2,
             eventObject,
             selfhandle,
             registerUser,
@@ -371,10 +371,14 @@ function QueryList(props) {
       if (!err) {
         dispatch({
           type: 'eventtodo/eventdownload',
-          payload: { ...values },
+          payload: {
+            ...values,
+            time1: time1 === undefined ? moment().startOf('month').format('YYYY-MM-DD HH:mm:ss') : time1,
+            time2: time2 === undefined ? moment().format('YYYY-MM-DD HH:mm:ss') : time2,
+          },
         }).then(res => {
           // console.log(res);
-          const filename = `下载.xls`;
+          const filename = `事件查询_${moment().format('YYYY-MM-DD HH:mm')}.xls`;
           const blob = new Blob([res]);
           const url = window.URL.createObjectURL(blob);
           const a = document.createElement('a');
@@ -792,7 +796,9 @@ function QueryList(props) {
                 </Col>
                 <Col span={24}>
                   <Form.Item label="建单时间" {...forminladeLayout}>
-                    {getFieldDecorator('createTime')(<RangePicker showTime />)}
+                    {getFieldDecorator('createTime', {
+                      initialValue: [moment().startOf('month'), moment()],
+                    })(<RangePicker showTime format='YYYY-MM-DD HH:mm:ss' />)}
                   </Form.Item>
                 </Col>
               </>

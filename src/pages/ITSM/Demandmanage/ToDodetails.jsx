@@ -4,6 +4,7 @@ import { connect } from 'dva';
 import { Button, Popover } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import SelectUser from '@/components/SelectUser';
+import User from '@/components/SelectUser/User';
 import WorkOrder from './WorkOrder';
 import Process from './Process';
 import Backoff from './components/Backoff';
@@ -16,8 +17,12 @@ function ToDoregist(props) {
   const [backvalue, setBackvalue] = useState('');
   const [registerId, setRegisterId] = useState('');
   const [histroytaskid, setHistroyTaskId] = useState('');
+  const [uservisible, setUserVisible] = useState(false); // 是否显示选人组件
+  const [userchoice, setUserChoice] = useState(false); // 已经选择人员
+  const [changorder, setChangeOrder] = useState(undefined);
   const [Popvisible, setVisible] = useState(false);
   const [iscolse, setIsClose] = useState('');
+
 
   const handleHold = type => {
     setButtonType(type);
@@ -189,9 +194,20 @@ function ToDoregist(props) {
           changRegisterId={newvalue => setRegisterId(newvalue)}
           ChangeHistroyTaskId={newvalue => setHistroyTaskId(newvalue)}
           ChangeISClose={v => setIsClose(v)}
+          userchoice={userchoice}
+          ChangeChoice={v => setUserChoice(v)}
+          ChangeUserVisible={v => setUserVisible(v)}
         />
       )}
       {tabActivekey === 'process' && <Process location={location} />}
+      <User
+        taskId={taskId}
+        visible={uservisible}
+        ChangeUserVisible={v => setUserVisible(v)}
+        changorder={changorder}
+        ChangeChoice={v => setUserChoice(v)}
+        ChangeType={v => setButtonType(v)}
+      />
     </PageHeaderWrapper>
   );
 }

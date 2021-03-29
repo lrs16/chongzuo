@@ -192,7 +192,7 @@ function QueryList(props) {
     dispatch({
       type: 'demandquery/download',
     }).then(res => {
-      const filename = `${moment().format('YYYY-MM-DD HH:mm')}.xlsx`;
+      const filename = `需求查询_${moment().format('YYYY-MM-DD HH:mm')}.xlsx`;
       const url = window.URL.createObjectURL(res);
       const a = document.createElement('a');
       a.href = url;

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
 import router from 'umi/router';
 import moment from 'moment';
-import { Card, Row, Col, Form, Input, Select, DatePicker, Button, Table, Divider, List } from 'antd';
+import { Card, Row, Col, Form, Input, Select, DatePicker, Button, Table, List } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 
@@ -205,17 +205,24 @@ function Overtime(props) {
   const [tabActivekey, settabActivekey] = useState('notHandle'); // 打开标签
   const [tablecolumn, setTableColumn] = useState(columns); // 打开标签
   const [expand, setExpand] = useState(false);
-  const [paginations, setPageinations] = useState({ current: 0, pageSize: 10 });
+  const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
 
   const getdatas = tabkey => {
-    dispatch({
-      type: 'eventtimeout/query',
-      payload: {
-        tabType: tabkey,
-        pageIndex: paginations.current,
-        pageSize: paginations.pageSize,
-      },
-    });
+    validateFields((err, values) => {
+      if (!err) {
+        dispatch({
+          type: 'eventtimeout/query',
+          payload: {
+            ...values,
+            tabType: tabkey,
+            time1: values.createTime === undefined ? moment().startOf('month').format('YYYY-MM-DD HH:mm:ss') : moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss'),
+            time2: values.createTime === undefined ? moment().format('YYYY-MM-DD HH:mm:ss') : moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss'),
+            pageIndex: paginations.current - 1,
+            pageSize: paginations.pageSize,
+          },
+        });
+      }
+    })
   };
 
   useEffect(() => {
@@ -251,14 +258,14 @@ function Overtime(props) {
         createTime: values.createTime === undefined ? '' : '',
         time1:
           values.createTime === undefined
-            ? ''
+            ? moment().startOf('month').format('YYYY-MM-DD HH:mm:ss')
             : moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss'),
         time2:
           values.createTime === undefined
-            ? ''
+            ? moment().format('YYYY-MM-DD HH:mm:ss')
             : moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss'),
         tabType: tabActivekey,
-        pageIndex: page,
+        pageIndex: page - 1,
         pageSize: size,
       },
     });
@@ -311,6 +318,21 @@ function Overtime(props) {
     });
   };
 
+  const download = () => {
+    dispatch({
+      type: 'eventtimeout/download',
+      payload: { tabType: tabActivekey },
+    }).then(res => {
+      const filename = `事件超时查询${moment().format('YYYY-MM-DD HH:mm')}.xls`;
+      const url = window.URL.createObjectURL(res);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      a.click();
+      window.URL.revokeObjectURL(url);
+    });
+  };
+
   return (
     <PageHeaderWrapper
       title={pagetitle}
@@ -359,7 +381,9 @@ function Overtime(props) {
                 </Col>
                 <Col span={16}>
                   <Form.Item label="建单时间" {...forminladeLayout}>
-                    {getFieldDecorator('createTime')(<RangePicker showTime />)}
+                    {getFieldDecorator('createTime', {
+                      initialValue: [moment().startOf('month'), moment()],
+                    })(<RangePicker showTime format='YYYY-MM-DD HH:mm:ss' />)}
                   </Form.Item>
                 </Col>
               </>
@@ -425,7 +449,7 @@ function Overtime(props) {
         <div style={{ marginBottom: 24 }}>
           <Button
             type="primary"
-          // onClick={() => download()}
+            onClick={() => download()}
           >
             导出数据
           </Button>
@@ -437,7 +461,8 @@ function Overtime(props) {
           rowKey={(_, index) => index.toString()}
           pagination={pagination}
           scroll={{ x: 1400 }}
-          bordered
+          bordered={tabActivekey === 'timeout'}
+          size={tabActivekey === 'timeout' ? 'middle' : 'default'}
         />
       </Card>
     </PageHeaderWrapper>

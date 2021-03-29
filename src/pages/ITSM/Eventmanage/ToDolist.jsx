@@ -127,30 +127,18 @@ function ToDolist(props) {
 
   // 查询
   const searchdata = (values, page, size) => {
-    if (values.createTime === undefined) {
-      dispatch({
-        type: 'eventtodo/fetchlist',
-        payload: {
-          ...values,
-          eventObject: values.eventObject?.slice(-1)[0],
-          pageSize: size,
-          pageIndex: page - 1,
-        },
-      });
-    } else {
-      dispatch({
-        type: 'eventtodo/fetchlist',
-        payload: {
-          ...values,
-          createTime: '',
-          time1: moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss'),
-          time2: moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss'),
-          eventObject: values.eventObject?.slice(-1)[0],
-          pageSize: size,
-          pageIndex: page - 1,
-        },
-      });
-    }
+    dispatch({
+      type: 'eventtodo/fetchlist',
+      payload: {
+        ...values,
+        createTime: '',
+        time1: values.createTime === undefined ? '' : moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss'),
+        time2: values.createTime === undefined ? '' : moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss'),
+        eventObject: values.eventObject?.slice(-1)[0],
+        pageSize: size,
+        pageIndex: page - 1,
+      },
+    });
   };
 
   //  下载
@@ -161,7 +149,7 @@ function ToDolist(props) {
           type: 'eventtodo/eventdownload',
           payload: { ...values },
         }).then(res => {
-          const filename = `${moment().format('YYYY-MM-DD HH:mm')}.xls`;
+          const filename = `事件待办_${moment().format('YYYY-MM-DD HH:mm')}.xls`;
           const blob = new Blob([res]);
           const url = window.URL.createObjectURL(blob);
           const a = document.createElement('a');
