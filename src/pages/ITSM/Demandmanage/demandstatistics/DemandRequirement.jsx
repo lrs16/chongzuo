@@ -43,8 +43,8 @@ const columns = [
         to={{
           pathname: '/ITSM/demandmanage/query',
           query: {
-            module: record.fullName,
-            statisticalType: 'demandRequirement'
+            module:record.fullName,
+            statisticalType:'demandRequirement'
           }
         }}
       >
@@ -58,7 +58,7 @@ const columns = [
 function DemandRequirement(props) {
   const { pagetitle } = props.route.name;
   const {
-    form: { getFieldDecorator, resetFields },
+    form: { getFieldDecorator,resetFields },
     requirementArr,
     dispatch
   } = props;
@@ -107,7 +107,7 @@ function DemandRequirement(props) {
     handleListdata();
   }, [])
 
-
+  
   const handleReset = () => {
     statTimeBegin = '';
     statTimeEnd = '';
@@ -115,26 +115,7 @@ function DemandRequirement(props) {
   }
 
 
-  const disabledDate = (current) => {
-    // Can not select days before today and today
-    return current && current < moment().endOf('day');
-  }
-
-  const disabledRangeTime = (_, type) => {
-    if (type === 'start') {
-      return {
-        disabledHours: () => range(0, 60).splice(4, 20),
-        disabledMinutes: () => range(30, 60),
-        disabledSeconds: () => [55, 56],
-      };
-    }
-    return {
-      disabledHours: () => range(0, 60).splice(20, 4),
-      disabledMinutes: () => range(0, 31),
-      disabledSeconds: () => [55, 56],
-    };
-  }
-
+  
 
   return (
     <PageHeaderWrapper
@@ -148,18 +129,8 @@ function DemandRequirement(props) {
                 <Form.Item label='起始时间'>
                   {
                     getFieldDecorator('time1', {})
-                      (
-                        <RangePicker 
-                          disabledDate={disabledDate}
-                          disabledTime={disabledRangeTime}
-                          showTime={{
-                            hideDisabledOptions: true,
-                            defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('11:59:59', 'HH:mm:ss')],
-                          }}
-                          onChange={onChange}
-                           />
-      
-                      )
+                      (<RangePicker 
+                        onChange={onChange} />)
                   }
                 </Form.Item>
 

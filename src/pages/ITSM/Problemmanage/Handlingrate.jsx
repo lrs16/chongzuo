@@ -42,7 +42,8 @@ function Handlingrate(props) {
   const {
     form: { getFieldDecorator, resetFields },
     handlingratedata,
-    dispatch
+    dispatch,
+    loading
   } = props;
 
   const columnsDevelopers = [
@@ -191,17 +192,17 @@ function Handlingrate(props) {
 
   const columnsBusiness = [
     {
-      title: '业务负责人',
+      title: '业务负责人dd',
       dataIndex: 'handler',
       key: 'handler',
       render: (text, row, index) => {
-        if (row.handler === '小计') {
-          return <span style={{ fontWeight: 700 }}>{text}</span>
-        }
+        // if (row.handler === '小计') {
+        //   return <span style={{ fontWeight: 700 }}>{text}</span>
+        // }
 
-        if (row.handler === '合计') {
-          return <span style={{ fontWeight: 700 }}>{text}</span>
-        }
+        // if (row.handler === '合计') {
+        //   return <span style={{ fontWeight: 700 }}>{text}</span>
+        // }
 
         return <span>{text}</span>
       }
@@ -423,12 +424,14 @@ function Handlingrate(props) {
         }
 
         {
-          tabActiveKey === '2' &&
-          <Table
+          tabActiveKey === '2' && loading === false && (
+            <Table
             columns={columnsBusiness}
             dataSource={handlingratedata}
             rowKey={record => record.handler}
           />
+          )
+     
         }
 
 
@@ -438,7 +441,8 @@ function Handlingrate(props) {
 }
 
 export default Form.create({})(
-  connect(({ problemstatistics }) => ({
-    handlingratedata: problemstatistics.handlingratedata
+  connect(({ problemstatistics,loading }) => ({
+    handlingratedata: problemstatistics.handlingratedata,
+    loading: loading.models.problemstatistics,
   }))(Handlingrate),
 );
