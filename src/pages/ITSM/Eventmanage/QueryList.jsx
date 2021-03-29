@@ -219,8 +219,8 @@ function QueryList(props) {
             ...values,
             pageIndex: paginations.current - 1,
             pageSize: paginations.pageSize,
-            time1,
-            time2,
+            time1: time1 === undefined ? moment().startOf('month').format('YYYY-MM-DD HH:mm:ss') : time1,
+            time2: time2 === undefined ? moment().format('YYYY-MM-DD HH:mm:ss') : time1,
             eventObject,
             selfhandle,
             registerUser,
@@ -284,8 +284,8 @@ function QueryList(props) {
           ...values,
           eventObject: values.eventObject ? (values.eventObject).slice(-1)[0] : eventObject,
           createTime: '',
-          time1: values.createTime ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-          time2: values.createTime ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+          time1: values.createTime ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : moment().startOf('month').format('YYYY-MM-DD HH:mm:ss'),
+          time2: values.createTime ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : moment().format('YYYY-MM-DD HH:mm:ss'),
           pageSize: size,
           pageIndex: page - 1,
         },
@@ -294,7 +294,7 @@ function QueryList(props) {
 
   }
 
-  //  查询后点击分页不带统计的参数
+  //  查询后点击分页不带统计的参数，翻页、变更每页显示条数
   const changePagelist = (values, page, size, params) => {
     if (noStatistic) {
       if (values.createTime === undefined) {
@@ -340,8 +340,8 @@ function QueryList(props) {
         payload: {
           ...values,
           createTime: '',
-          time1: values.createTime ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-          time2: values.createTime ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+          time1: values.createTime ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : moment().startOf('month').format('YYYY-MM-DD HH:mm:ss'),
+          time2: values.createTime ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : moment().format('YYYY-MM-DD HH:mm:ss'),
           pageSize: size,
           pageIndex: page - 1,
         },

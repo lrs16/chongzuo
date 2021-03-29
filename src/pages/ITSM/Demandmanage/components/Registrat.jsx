@@ -270,7 +270,7 @@ const Registrat = forwardRef((props, ref) => {
     return current && current < moment().add(45, 'days').endOf('day');
   }
 
-  const newcompleteTime = register.completeTime !== undefined ? register.completeTime : moment().add(90, 'days').calendar();
+  const newcompleteTime = register.completeTime !== undefined ? register.completeTime : moment().add(90, 'days');
 
   return (
     <>
@@ -314,9 +314,9 @@ const Registrat = forwardRef((props, ref) => {
                 rules: [{ required, message: '请选择期待完成时间' }],
                 initialValue: moment(newcompleteTime),
               })(<DatePicker
-                // showTime
+                showTime
                 placeholder="请选择时间"
-                format="YYYY-MM-DD"
+                format="YYYY-MM-DD HH:mm:ss"
                 disabledDate={disabledDate}
               />)}
             </Form.Item>
