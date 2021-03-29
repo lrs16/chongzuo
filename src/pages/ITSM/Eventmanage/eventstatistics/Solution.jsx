@@ -156,7 +156,7 @@ function Solution(props) {
                     initialValue: startTime ? moment(startTime) : ''
                   })(<DatePicker
                     format="YYYY-MM-DD"
-                    allowClear={false}
+                    allowClear='false'
                     onChange={onChange}
                   />)}
                 </Form.Item>

@@ -159,15 +159,12 @@ function Track(props) {
 
   // 编辑记录
   const toggleEditable = (e, key,record) => {
-    console.log('record: ', record);
-    console.log(key,'key');
     e.preventDefault();
     const newData = data.map(item => ({ ...item }));
     const target = getRowByKey(key, newData);
     if (target) {
       // 进入编辑状态时保存原始数据
       if (!target.editable) {
-        console.log('1');
         setcacheOriginData({ key: { ...target } });
       }
       target.editable = !target.editable;
@@ -449,7 +446,6 @@ function Track(props) {
       fixed: 'right',
       width: 120,
       render: (text, record) => {
-        console.log(record.isNew);
         if (record.editable === '') {
           return null;
         }

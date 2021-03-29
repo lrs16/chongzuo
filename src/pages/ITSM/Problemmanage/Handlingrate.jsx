@@ -26,14 +26,6 @@ const formItemLayout = {
 const { RangePicker } = DatePicker;
 let statTimeBegin = '';
 let statTimeEnd = '';
-const newObj = {};
-const renderContent = (value, row, index) => {
-  const obj = {
-    children: value,
-    props: {},
-  };
-  return obj;
-};
 
 function Handlingrate(props) {
   const { pagetitle } = props.route.name;
@@ -192,17 +184,17 @@ function Handlingrate(props) {
 
   const columnsBusiness = [
     {
-      title: '业务负责人dd',
+      title: '业务负责人',
       dataIndex: 'handler',
       key: 'handler',
       render: (text, row, index) => {
-        // if (row.handler === '小计') {
-        //   return <span style={{ fontWeight: 700 }}>{text}</span>
-        // }
+        if (row.handler === '小计') {
+          return <span style={{ fontWeight: 700 }}>{text}</span>
+        }
 
-        // if (row.handler === '合计') {
-        //   return <span style={{ fontWeight: 700 }}>{text}</span>
-        // }
+        if (row.handler === '合计') {
+          return <span style={{ fontWeight: 700 }}>{text}</span>
+        }
 
         return <span>{text}</span>
       }
@@ -419,16 +411,16 @@ function Handlingrate(props) {
           <Table
             columns={columnsDevelopers}
             dataSource={handlingratedata}
-            rowKey={record => record.handler}
+            rowKey={tabActiveKey}
           />
         }
 
         {
           tabActiveKey === '2' && loading === false && (
             <Table
+            rowKey={tabActiveKey}
             columns={columnsBusiness}
             dataSource={handlingratedata}
-            rowKey={record => record.handler}
           />
           )
      
