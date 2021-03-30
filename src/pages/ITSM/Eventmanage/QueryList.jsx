@@ -200,7 +200,7 @@ function QueryList(props) {
     list,
     dispatch,
   } = props;
-  const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
+  const [paginations, setPageinations] = useState({ current: 1, pageSize: 10 });
   const [expand, setExpand] = useState(false);
   const [selectdata, setSelectData] = useState([]);
 
@@ -239,6 +239,7 @@ function QueryList(props) {
 
   //  查询页查询数据把数据统计的数据清空
   const queryFunciton = (values, page, size, params) => {
+    console.log('aa', page);
     empty = 'empty';
     if (noStatistic) {
       if (values.createTime === undefined) {
@@ -249,13 +250,12 @@ function QueryList(props) {
             eventObject: values.eventObject ? (values.eventObject).slice(-1)[0] : eventObject,
             createTime: '',
             pageSize: size,
-            pageIndex: page - 1,
+            pageIndex: 0,
             time1: moment(time1).format('YYYY-MM-DD HH:mm:ss'),
             time2: moment(time2).format('YYYY-MM-DD HH:mm:ss'),
             selfhandle: values.selfhandle ? values.selfhandle : selfhandle,
             registerUser: values.registerUser ? values.registerUser : registerUser,
             applicationUnit: values.applicationUnit ? values.applicationUnit : applicationUnit
-
           },
         });
       } else {
@@ -268,7 +268,7 @@ function QueryList(props) {
             time1: sign ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
             time2: sign ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
             pageSize: size,
-            pageIndex: page - 1,
+            pageIndex: 0,
             selfhandle: values.selfhandle ? values.selfhandle : selfhandle,
             registerUser: values.registerUser ? values.registerUser : registerUser,
             applicationUnit: values.applicationUnit ? values.applicationUnit : applicationUnit
@@ -287,7 +287,7 @@ function QueryList(props) {
           time1: values.createTime ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : moment().startOf('month').format('YYYY-MM-DD HH:mm:ss'),
           time2: values.createTime ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : moment().format('YYYY-MM-DD HH:mm:ss'),
           pageSize: size,
-          pageIndex: page - 1,
+          pageIndex: 0,
         },
       });
     }
@@ -296,6 +296,7 @@ function QueryList(props) {
 
   //  查询后点击分页不带统计的参数，翻页、变更每页显示条数
   const changePagelist = (values, page, size, params) => {
+    console.log('page: ', page);
     if (noStatistic) {
       if (values.createTime === undefined) {
         dispatch({
@@ -371,8 +372,8 @@ function QueryList(props) {
           payload: {
             ...values,
             createTime: '',
-            time1: values.createTime?moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss'):time1,
-            time2: values.createTime?moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss'):time2,
+            time1: values.createTime ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : time1,
+            time2: values.createTime ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : time2,
             eventObject: values.eventObject ? (values.eventObject).slice(-1)[0] : eventObject,
             selfhandle: values.selfhandle ? values.selfhandle : selfhandle,
             registerUser: values.registerUser ? values.registerUser : registerUser,
@@ -483,7 +484,7 @@ function QueryList(props) {
               <Form.Item label="事件编号">
                 {getFieldDecorator('eventNo', {
                   initialValue: '',
-                })(<Input placeholder="请输入" />)}
+                })(<Input placeholder="请输入" allowClear />)}
               </Form.Item>
             </Col>
             <Col span={8}>
@@ -491,7 +492,7 @@ function QueryList(props) {
                 {getFieldDecorator('eventStatus', {
                   initialValue: '',
                 })(
-                  <Select placeholder="请选择">
+                  <Select placeholder="请选择" allowClear>
                     {statusmap.map(obj => (
                       <Option key={obj.key} value={obj.title}>
                         {obj.title}
@@ -508,7 +509,7 @@ function QueryList(props) {
                     {getFieldDecorator('eventType', {
                       initialValue: '',
                     })(
-                      <Select placeholder="请选择">
+                      <Select placeholder="请选择" allowClear>
                         {typemap.map(obj => [
                           <Option key={obj.key} value={obj.title}>
                             {obj.title}
@@ -529,6 +530,7 @@ function QueryList(props) {
                         placeholder="请选择"
                         expandTrigger="hover"
                         displayRender={displayRender}
+                        allowClear
                       />,
                     )}
                   </Form.Item>
@@ -538,7 +540,9 @@ function QueryList(props) {
                     {getFieldDecorator('revisitWay', {
                       initialValue: '',
                     })(
-                      <Select placeholder="请选择">
+                      <Select placeholder="请选择"
+                        allowClear
+                      >
                         {returnvisit.map(obj => [
                           <Option key={obj.key} value={obj.title}>
                             {obj.title}
@@ -553,7 +557,7 @@ function QueryList(props) {
                     {getFieldDecorator('eventSource', {
                       initialValue: '',
                     })(
-                      <Select placeholder="请选择">
+                      <Select placeholder="请选择" allowClear>
                         {sourcemap.map(obj => [
                           <Option key={obj.key} value={obj.title}>
                             {obj.title}
@@ -568,7 +572,7 @@ function QueryList(props) {
                     {getFieldDecorator('eventEffect', {
                       initialValue: '',
                     })(
-                      <Select placeholder="请选择">
+                      <Select placeholder="请选择" allowClear>
                         {effectmap.map(obj => [
                           <Option key={obj.key} value={obj.title}>
                             {obj.title}
@@ -583,7 +587,7 @@ function QueryList(props) {
                     {getFieldDecorator('eventEmergent', {
                       initialValue: '',
                     })(
-                      <Select placeholder="请选择">
+                      <Select placeholder="请选择" allowClear>
                         {emergentmap.map(obj => [
                           <Option key={obj.key} value={obj.title}>
                             {obj.title}
@@ -598,7 +602,7 @@ function QueryList(props) {
                     {getFieldDecorator('eventPrior', {
                       initialValue: '',
                     })(
-                      <Select placeholder="请选择">
+                      <Select placeholder="请选择" allowClear>
                         {priormap.map(obj => [
                           <Option key={obj.key} value={obj.title}>
                             {obj.title}
@@ -613,7 +617,7 @@ function QueryList(props) {
                     {getFieldDecorator('selfhandle', {
                       initialValue: '',
                     })(
-                      <Select placeholder="请选择">
+                      <Select placeholder="请选择" allowClear>
                         {yesornomap.map(obj => [
                           <Option key={obj.key} value={obj.title}>
                             {obj.title}
@@ -628,7 +632,7 @@ function QueryList(props) {
                     {getFieldDecorator('supplement', {
                       initialValue: '',
                     })(
-                      <Select placeholder="请选择">
+                      <Select placeholder="请选择" allowClear>
                         {yesornomap.map(obj => [
                           <Option key={obj.key} value={obj.title}>
                             {obj.title}
@@ -643,7 +647,7 @@ function QueryList(props) {
                     {getFieldDecorator('checkResult', {
                       initialValue: '',
                     })(
-                      <Select placeholder="请选择">
+                      <Select placeholder="请选择" allowClear>
                         {checkresultmap.map(obj => [
                           <Option key={obj.key} value={obj.title}>
                             {obj.title}
@@ -658,7 +662,7 @@ function QueryList(props) {
                     {getFieldDecorator('eventResult', {
                       initialValue: '',
                     })(
-                      <Select placeholder="请选择">
+                      <Select placeholder="请选择" allowClear>
                         {handleresultmap.map(obj => [
                           <Option key={obj.key} value={obj.title}>
                             {obj.title}
@@ -673,7 +677,7 @@ function QueryList(props) {
                     {getFieldDecorator('satisfaction', {
                       initialValue: '',
                     })(
-                      <Select placeholder="请选择">
+                      <Select placeholder="请选择" allowClear>
                         {satisfactionmap.map(obj => [
                           <Option key={obj.key} value={obj.title}>
                             {obj.title}
@@ -687,7 +691,7 @@ function QueryList(props) {
                   <Form.Item label="事件标题">
                     {getFieldDecorator('eventTitle', {
                       initialValue: '',
-                    })(<Input placeholder="请输入" />)}
+                    })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
 
@@ -695,112 +699,116 @@ function QueryList(props) {
                   <Form.Item label="申报人">
                     {getFieldDecorator('applicationUser', {
                       initialValue: '',
-                    })(<Input placeholder="请输入" />)}
+                    })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
                 <Col span={8}>
                   <Form.Item label="申报人单位">
                     {getFieldDecorator('applicationUnit', {
                       initialValue: '',
-                    })(<Input placeholder="请输入" />)}
+                    })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
                 <Col span={8}>
                   <Form.Item label="申报人部门">
                     {getFieldDecorator('applicationDept', {
                       initialValue: '',
-                    })(<Input placeholder="请输入" />)}
+                    })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
                 <Col span={8}>
                   <Form.Item label="登记人">
                     {getFieldDecorator('registerUser', {
                       initialValue: '',
-                    })(<Input placeholder="请输入" />)}
+                    })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
                 <Col span={8}>
                   <Form.Item label="登记人单位">
                     {getFieldDecorator('registerUnit', {
                       initialValue: '',
-                    })(<Input placeholder="请输入" />)}
+                    })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
                 <Col span={8}>
                   <Form.Item label="登记人部门">
                     {getFieldDecorator('registerDept', {
                       initialValue: '',
-                    })(<Input placeholder="请输入" />)}
+                    })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
                 <Col span={8}>
                   <Form.Item label="审核人">
                     {getFieldDecorator('checkUser', {
                       initialValue: '',
-                    })(<Input placeholder="请输入" />)}
+                    })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
                 <Col span={8}>
                   <Form.Item label="审核人单位">
                     {getFieldDecorator('checkUnit', {
                       initialValue: '',
-                    })(<Input placeholder="请输入" />)}
+                    })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
                 <Col span={8}>
                   <Form.Item label="审核人部门">
                     {getFieldDecorator('checkDept', {
                       initialValue: '',
-                    })(<Input placeholder="请输入" />)}
+                    })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
                 <Col span={8}>
                   <Form.Item label="处理人">
                     {getFieldDecorator('handler', {
                       initialValue: '',
-                    })(<Input placeholder="请输入" />)}
+                    })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
                 <Col span={8}>
                   <Form.Item label="处理人单位">
                     {getFieldDecorator('handleUnit', {
                       initialValue: '',
-                    })(<Input placeholder="请输入" />)}
+                    })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
                 <Col span={8}>
                   <Form.Item label="处理人部门">
                     {getFieldDecorator('handleDept', {
                       initialValue: '',
-                    })(<Input placeholder="请输入" />)}
+                    })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
                 <Col span={8}>
                   <Form.Item label="回访人">
                     {getFieldDecorator('revisitor', {
                       initialValue: '',
-                    })(<Input placeholder="请输入" />)}
+                    })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
                 <Col span={8}>
                   <Form.Item label="回访人单位">
                     {getFieldDecorator('revisitUnit', {
                       initialValue: '',
-                    })(<Input placeholder="请输入" />)}
+                    })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
                 <Col span={8}>
                   <Form.Item label="回访人部门">
                     {getFieldDecorator('revisitDept', {
                       initialValue: '',
-                    })(<Input placeholder="请输入" />)}
+                    })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
                 <Col span={24}>
                   <Form.Item label="建单时间" {...forminladeLayout}>
                     {getFieldDecorator('createTime', {
                       // initialValue: [moment().startOf('month'), moment()],
-                    })(<RangePicker showTime format='YYYY-MM-DD HH:mm:ss' />)}
+                    })(<RangePicker
+                      showTime
+                      format='YYYY-MM-DD HH:mm:ss'
+                      allowClear
+                    />)}
                   </Form.Item>
                 </Col>
               </>
@@ -868,14 +876,19 @@ function QueryList(props) {
             导出数据
           </Button>
         </div>
-        <Table
-          loading={loading}
-          columns={columns}
-          dataSource={list.rows}
-          scroll={{ x: 1800 }}
-          rowKey={record => record.id}
-          pagination={pagination}
-        />
+        {
+          loading === false && (
+            <Table
+              loading={loading}
+              columns={columns}
+              dataSource={list.rows}
+              scroll={{ x: 1800 }}
+              rowKey={record => record.id}
+              pagination={pagination}
+            />
+          )
+        }
+
       </Card>
     </PageHeaderWrapper>
   );
