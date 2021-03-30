@@ -239,7 +239,6 @@ function QueryList(props) {
 
   //  查询页查询数据把数据统计的数据清空
   const queryFunciton = (values, page, size, params) => {
-    console.log('aa', page);
     empty = 'empty';
     if (noStatistic) {
       if (values.createTime === undefined) {
@@ -296,7 +295,6 @@ function QueryList(props) {
 
   //  查询后点击分页不带统计的参数，翻页、变更每页显示条数
   const changePagelist = (values, page, size, params) => {
-    console.log('page: ', page);
     if (noStatistic) {
       if (values.createTime === undefined) {
         dispatch({
@@ -340,6 +338,7 @@ function QueryList(props) {
         payload: {
           ...values,
           createTime: '',
+          eventObject: values.eventObject ? (values.eventObject).slice(-1)[0] : eventObject,
           time1: values.createTime ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : moment().startOf('month').format('YYYY-MM-DD HH:mm:ss'),
           time2: values.createTime ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : moment().format('YYYY-MM-DD HH:mm:ss'),
           pageSize: size,
