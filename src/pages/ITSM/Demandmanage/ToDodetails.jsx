@@ -22,6 +22,7 @@ function ToDoregist(props) {
   const [changorder, setChangeOrder] = useState(undefined);
   const [Popvisible, setVisible] = useState(false);
   const [iscolse, setIsClose] = useState('');
+  const [butandorder, setButandOrder] = useState('');    // 暂存按钮类型
 
 
   const handleHold = (type) => {
@@ -80,6 +81,13 @@ function ToDoregist(props) {
     }
   }, [backvalue]);
 
+  const selectChoice = (v) => {
+    setUserChoice(v);
+    if (v) {
+      setButtonType(butandorder)
+    }
+  }
+
   const operations = (
     <>
       {taskName === '需求登记' && iscolse === 0 && (
@@ -112,11 +120,17 @@ function ToDoregist(props) {
         taskName !== '自动化科负责人确认' &&
         taskName !== '需求登记人员确认') ||
         taskName === '系统开发商处理') && (
-          <SelectUser handleSubmit={() => handleHold('flow')} taskId={taskId}>
-            <Button type="primary" style={{ marginRight: 8 }}>
-              流转
+          //   <SelectUser handleSubmit={() => handleHold('flow')} taskId={taskId}>
+          //     <Button type="primary" style={{ marginRight: 8 }}>
+          //       流转
+          //   </Button>
+          // </SelectUser>
+          <Button
+            type="primary"
+            style={{ marginRight: 8 }}
+            onClick={() => { handleHold('flow'); setButandOrder('flow') }}>
+            流转
           </Button>
-          </SelectUser>
         )}
       {result === '1' && taskName === '自动化科业务人员审核' && (
         <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleHold('flow')}>
@@ -129,11 +143,14 @@ function ToDoregist(props) {
         </Button>
       )}
       {result === '0' && (taskName === '自动化科负责人确认' || taskName === '需求登记人员确认') && (
-        <SelectUser handleSubmit={() => handleHold('flow')} taskId={taskId}>
-          <Button type="primary" style={{ marginRight: 8 }}>
-            重新处理
-          </Button>
-        </SelectUser>
+        // <SelectUser handleSubmit={() => handleHold('flow')} taskId={taskId}>
+        //   <Button type="primary" style={{ marginRight: 8 }}>
+        //     重新处理
+        //   </Button>
+        // </SelectUser>
+        <Button type="primary" style={{ marginRight: 8 }} onClick={() => { handleHold('flow'); setButandOrder('flow') }}>
+          重新处理
+        </Button>
       )}
       {((result === '2' && taskName === '自动化科负责人确认') ||
         (result === '1' && taskName === '需求登记人员确认')) && (
@@ -205,7 +222,7 @@ function ToDoregist(props) {
         visible={uservisible}
         ChangeUserVisible={v => setUserVisible(v)}
         changorder={changorder}
-        ChangeChoice={v => setUserChoice(v)}
+        ChangeChoice={v => selectChoice(v)}
         ChangeType={v => setButtonType(v)}
       />
     </PageHeaderWrapper>

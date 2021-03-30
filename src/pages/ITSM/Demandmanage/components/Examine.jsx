@@ -7,6 +7,17 @@ import SysUpload from '@/components/SysUpload';
 const { TextArea } = Input;
 const { Option } = Select;
 
+const newLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 4 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 20 },
+  },
+};
+
 const options = [
   { label: '科室领导审核', value: 4 },
   { label: '市场部领导审核', value: 3 },
@@ -91,22 +102,22 @@ const Examine = forwardRef((props, ref) => {
   const handleChangeresult = values => {
     if (values.length === 2) {
       setAdopt(2);
-      setFieldsValue({ result: 2 }, () => {});
+      setFieldsValue({ result: 2 }, () => { });
       sessionStorage.setItem('flowtype', 2);
     }
     if (values.length === 1 && values[0] === 3) {
       setAdopt(3);
-      setFieldsValue({ result: 3 }, () => {});
+      setFieldsValue({ result: 3 }, () => { });
       sessionStorage.setItem('flowtype', 3);
     }
     if (values.length === 1 && values[0] === 4) {
       setAdopt(4);
-      setFieldsValue({ result: 4 }, () => {});
+      setFieldsValue({ result: 4 }, () => { });
       sessionStorage.setItem('flowtype', 4);
     }
     if (values.length === 0) {
       setAdopt(1);
-      setFieldsValue({ result: 1 }, () => {});
+      setFieldsValue({ result: 1 }, () => { });
       sessionStorage.setItem('flowtype', 1);
     }
     routerRefresh();
@@ -135,8 +146,8 @@ const Examine = forwardRef((props, ref) => {
             </Col>
           )}
           {taskName === '自动化科负责人确认' && (
-            <Col span={8}>
-              <Form.Item label={`${text}结果`}>
+            <Col span={12}>
+              <Form.Item label={`${text}结果`} {...newLayout}>
                 {getFieldDecorator('result', {
                   rules: [{ required: true, message: `请选择${text}结果` }],
                   initialValue: info[0].result,
@@ -213,7 +224,7 @@ const Examine = forwardRef((props, ref) => {
             <Form.Item
               label="上传附件"
               {...forminladeLayout}
-              // extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
+            // extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
             >
               <div style={{ width: 400 }}>
                 <SysUpload fileslist={files} ChangeFileslist={newvalue => setFilesList(newvalue)} />

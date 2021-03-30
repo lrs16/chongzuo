@@ -129,56 +129,53 @@ function WorkOrder(props) {
 
   // 刷新路由
   // 登记表单
-  const RegistratRef = useRef(null);
+  const RegistratRef = useRef();
   const getregistrats = () => {
-    if (type === 'save') {
-      const values = RegistratRef.current.getFieldsValue();
-      dispatch({
-        type: 'demandtodo/demandregisterupdate',
-        payload: {
-          paloadvalues: {
-            ...values,
-            creationTime: values.creationTime.format('YYYY-MM-DD HH:mm:ss'),
-            registerTime: values.registerTime.format('YYYY-MM-DD HH:mm:ss'),
-            completeTime: values.completeTime.format('YYYY-MM-DD HH:mm:ss'),
-            proposingDepartment:
-              values.proposingDepartment !== '' ? values.proposingDepartment : values.proposingUnit,
-            attachment: JSON.stringify(files.arr),
-            functionalModule: values.functionalModule.join('/'),
-            nextUserIds: [{ nodeName: '', userIds: [] }],
-            id: info.demandForm.id,
-          },
-          processInstanceId: mainId,
-          taskId,
-        },
-      });
-    }
-    if (type === 'flow') {
-      RegistratRef.current.validateFields((err, values) => {
-        if (!err) {
+    RegistratRef.current.validateFields((err, values) => {
+      const formvalue = {
+        ...values,
+        creationTime: values.creationTime.format('YYYY-MM-DD HH:mm:ss'),
+        registerTime: values.registerTime.format('YYYY-MM-DD HH:mm:ss'),
+        completeTime: values.completeTime.format('YYYY-MM-DD HH:mm:ss'),
+        proposingDepartment:
+          values.proposingDepartment !== '' ? values.proposingDepartment : values.proposingUnit,
+        attachment: JSON.stringify(files.arr),
+        functionalModule: values.functionalModule.join('/'),
+      };
+      switch (type) {
+        case 'save':
           dispatch({
-            type: 'demandregister/startandnext',
+            type: 'demandtodo/demandsave',
             payload: {
-              ...values,
-              creationTime: values.creationTime.format('YYYY-MM-DD HH:mm:ss'),
-              registerTime: values.registerTime.format('YYYY-MM-DD HH:mm:ss'),
-              completeTime: values.completeTime.format('YYYY-MM-DD HH:mm:ss'),
-              proposingDepartment:
-                values.proposingDepartment !== ''
-                  ? values.proposingDepartment
-                  : values.proposingUnit,
-              attachment: JSON.stringify(files.arr),
-              functionalModule: values.functionalModule.join('/'),
-              nextUserIds: JSON.parse(sessionStorage.getItem('NextflowUserId')),
-              // nextUser: sessionStorage.getItem('userName'),
+              paloadvalues: { ...formvalue },
+              processInstanceId: mainId,
               taskId,
             },
           });
-        } else {
-          formerr();
-        }
-      });
-    }
+          break;
+        case 'flow':
+          if (err) {
+            formerr();
+            ChangeType('');
+          } else if (!userchoice) {
+            ChangeUserVisible(true);
+            ChangeType('');
+          } else {
+            dispatch({
+              type: 'demandregister/startandnext',
+              payload: {
+                ...formvalue,
+                nextUserIds: JSON.parse(sessionStorage.getItem('NextflowUserId')),
+                taskId,
+              },
+            });
+          }
+          break;
+        default:
+          break;
+      }
+
+    })
   };
   // 需求审核，运维审核,需求复核表单
   const setid = () => {
@@ -194,203 +191,158 @@ function WorkOrder(props) {
   const ExamineRef = useRef();
   const getdemandexamine = () => {
     const id = setid();
-    switch (type) {
-      case 'save':
-        ExamineRef.current.validateFields((err, values) => {
+    ExamineRef.current.validateFields((err, values) => {
+      const formvalue = {
+        ...values,
+        reviewTime: values.reviewTime.format('YYYY-MM-DD HH:mm:ss'),
+        business: Number(values.business),
+        releases: Number(values.releases),
+        attachment: JSON.stringify(files.arr),
+        registerId: info.demandForm.id,
+        id,
+        taskName: info.taskName,
+      };
+      switch (type) {
+        case 'save':
           dispatch({
             type: 'demandtodo/demandsave',
             payload: {
-              paloadvalues: {
-                ...values,
-                reviewTime: values.reviewTime.format('YYYY-MM-DD HH:mm:ss'),
-                business: Number(values.business),
-                releases: Number(values.releases),
-                attachment: JSON.stringify(files.arr),
-                registerId: info.demandForm.id,
-                id,
-                taskName: info.taskName,
-              },
+              paloadvalues: { ...formvalue },
               processInstanceId: mainId,
               taskId,
             },
           });
-        });
-        break;
-      case 'flow':
-        ExamineRef.current.validateFields((err, values) => {
-          if (!err) {
+          break;
+        case 'flow':
+          if (err) {
+            formerr();
+            ChangeType('');
+          } else if (!userchoice) {
+            ChangeUserVisible(true);
+            ChangeType('');
+          } else {
             dispatch({
               type: 'demandtodo/demandnextstep',
               payload: {
-                ...values,
-                reviewTime: values.reviewTime.format('YYYY-MM-DD HH:mm:ss'),
-                business: Number(values.business),
-                releases: Number(values.releases),
-                attachment: JSON.stringify(files.arr),
+                ...formvalue,
                 nextUserIds: JSON.parse(sessionStorage.getItem('NextflowUserId')),
-                registerId: info.demandForm.id,
-                id,
-                taskName: info.taskName,
                 taskId,
               },
             });
-          } else {
-            formerr();
           }
-        });
-        break;
-      case 'regist':
-        ExamineRef.current.validateFields((err, values) => {
-          if (!err) {
+          break;
+        case 'regist':
+          if (err) {
+            formerr();
+            ChangeType('');
+          } else {
             dispatch({
               type: 'demandtodo/demandnextstep',
               payload: {
-                ...values,
-                reviewTime: values.reviewTime.format('YYYY-MM-DD HH:mm:ss'),
-                business: Number(values.business),
-                releases: Number(values.releases),
-                attachment: JSON.stringify(files.arr),
-                nextUserIds: [
-                  { nodeName: '需求登记', userIds: info.demandForm.registerPersonId.split() },
-                ],
-                registerId: info.demandForm.id,
-                id,
-                taskName: info.taskName,
+                ...formvalue,
+                nextUserIds: [{ nodeName: '需求登记', userIds: info.demandForm.registerPersonId.split() }],
                 taskId,
               },
             });
-          } else {
-            formerr();
           }
-        });
-        break;
-      case 'confirm':
-        ExamineRef.current.validateFields((err, values) => {
-          if (!err) {
+          break;
+        case 'confirm':
+          if (err) {
+            formerr();
+            ChangeType('');
+          } else {
             dispatch({
               type: 'demandtodo/demandnextstep',
               payload: {
-                ...values,
-                reviewTime: values.reviewTime.format('YYYY-MM-DD HH:mm:ss'),
-                business: Number(values.business),
-                releases: Number(values.releases),
-                attachment: JSON.stringify(files.arr),
-                nextUserIds: [
-                  { nodeName: '需求登记人员确认', userIds: [info.demandForm.registerPersonId] },
-                ],
-                registerId: info.demandForm.id,
-                id,
-                taskName: info.taskName,
+                ...formvalue,
+                nextUserIds: [{ nodeName: '需求登记人员确认', userIds: [info.demandForm.registerPersonId] }],
                 taskId,
+                id,
               },
             });
-          } else {
-            formerr();
           }
-        });
-        break;
-      case 'over':
-        ExamineRef.current.validateFields((err, values) => {
-          if (!err) {
+          break;
+        case 'over':
+          if (err) {
+            formerr();
+            ChangeType('');
+          } else {
             dispatch({
               type: 'demandtodo/demandnextstep',
               payload: {
-                ...values,
-                reviewTime: values.reviewTime.format('YYYY-MM-DD HH:mm:ss'),
-                attachment: JSON.stringify(files.arr),
-                registerId: info.demandForm.id,
+                ...formvalue,
                 nextUserIds: [{ nodeName: '', userIds: [] }],
-                id,
-                taskName: info.taskName,
                 taskId,
+                id,
               },
             });
-          } else {
-            formerr();
           }
-        });
-        break;
-      default:
-        break;
-    }
+          break;
+        default:
+          break;
+      }
+    })
+
   };
 
   // 自动化科业务人员审核
   const nonextusrs = () => {
     const id = setid();
-    switch (type) {
-      case 'save':
-        ExamineRef.current.validateFields((err, values) => {
+    ExamineRef.current.validateFields((err, values) => {
+      const formvalue = {
+        ...values,
+        reviewTime: values.reviewTime.format('YYYY-MM-DD HH:mm:ss'),
+        business: Number(values.business),
+        releases: Number(values.releases),
+        attachment: JSON.stringify(files.arr),
+        registerId: info.demandForm.id,
+        id,
+        taskName: info.taskName,
+      };
+      switch (type) {
+        case 'save':
           dispatch({
             type: 'demandtodo/demandsave',
             payload: {
-              paloadvalues: {
-                ...values,
-                reviewTime: values.reviewTime.format('YYYY-MM-DD HH:mm:ss'),
-                business: Number(values.business),
-                releases: Number(values.releases),
-                attachment: JSON.stringify(files.arr),
-                registerId: info.demandForm.id,
-                id,
-                taskName: info.taskName,
-              },
+              paloadvalues: { ...formvalue },
               processInstanceId: mainId,
               taskId,
             },
           });
-        });
-        break;
-      case 'flow':
-        ExamineRef.current.validateFields((err, values) => {
+          break;
+        case 'flow':
           if (!err) {
             dispatch({
               type: 'demandtodo/demandnextstep',
               payload: {
-                ...values,
-                reviewTime: values.reviewTime.format('YYYY-MM-DD HH:mm:ss'),
-                business: Number(values.business),
-                releases: Number(values.releases),
-                attachment: JSON.stringify(files.arr),
+                ...formvalue,
                 nextUserIds: [{ nodeName: '', userIds: [] }],
-                registerId: info.demandForm.id,
-                id,
-                taskName: info.taskName,
                 taskId,
               },
             });
           } else {
             formerr();
           }
-        });
-        break;
-      case 'regist':
-        ExamineRef.current.validateFields((err, values) => {
+          break;
+        case 'regist':
           if (!err) {
             dispatch({
               type: 'demandtodo/demandnextstep',
               payload: {
-                ...values,
-                reviewTime: values.reviewTime.format('YYYY-MM-DD HH:mm:ss'),
-                business: Number(values.business),
-                releases: Number(values.releases),
-                attachment: JSON.stringify(files.arr),
-                nextUserIds: [
-                  { nodeName: '需求登记', userIds: info.demandForm.registerPersonId.split() },
-                ],
-                registerId: info.demandForm.id,
-                id,
-                taskName: info.taskName,
+                ...formvalue,
+                nextUserIds: [{ nodeName: '需求登记', userIds: info.demandForm.registerPersonId.split() }],
                 taskId,
               },
             });
           } else {
             formerr();
           }
-        });
-        break;
-      default:
-        break;
-    }
+          break;
+        default:
+          break;
+      }
+    })
+
   };
 
   // 需求跟踪
@@ -398,19 +350,23 @@ function WorkOrder(props) {
     if (type === 'flow') {
       if (tracklength === 0) {
         message.error('请填写完整的跟踪信息。');
-        return;
+      } else if (!userchoice) {
+        ChangeUserVisible(true);
+        ChangeType('');
+      } else {
+        dispatch({
+          type: 'demandtodo/demandnextstep',
+          payload: {
+            nextUserIds: JSON.parse(sessionStorage.getItem('NextflowUserId')),
+            userId: sessionStorage.getItem('userauthorityid'),
+            taskId,
+            registerId: info.demandForm.id,
+            id: info.historys[info.historys.length - 1].id,
+            taskName: info.taskName,
+          },
+        });
       }
-      dispatch({
-        type: 'demandtodo/demandnextstep',
-        payload: {
-          nextUserIds: JSON.parse(sessionStorage.getItem('NextflowUserId')),
-          userId: sessionStorage.getItem('userauthorityid'),
-          taskId,
-          registerId: info.demandForm.id,
-          id: info.historys[info.historys.length - 1].id,
-          taskName: info.taskName,
-        },
-      });
+
     }
   };
   const handleflow = () => {
