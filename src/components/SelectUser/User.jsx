@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
 import { Modal, message, Spin, Checkbox } from 'antd';
+import styles from './index.less';
 
 const User = props => {
   const {
@@ -170,7 +171,7 @@ const User = props => {
           {loading === false && type !== 'demand' && (
             <>
               <div>{nextflowuser}人员</div>
-              <div style={{ marginTop: 12 }}>
+              <div style={{ marginTop: 12 }} className={styles.useritem}>
                 <Checkbox.Group
                   defaultValue={defaultvalue}
                   options={dataArr(userlist)}
