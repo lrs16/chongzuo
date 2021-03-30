@@ -182,7 +182,7 @@ function QueryList(props) {
       if (err) {
         return;
       }
-      searchdata(values, paginations.current, paginations.pageSize);
+      searchdata(values, 0, paginations.pageSize);
     });
   };
 

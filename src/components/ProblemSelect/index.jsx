@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
 import { Modal, message, Spin, Checkbox } from 'antd';
+import styles from './index.less';
 
 // 克隆子元素按钮，并添加事件
 const withClick = (element, showDrawer = () => {}) => {
@@ -138,7 +139,7 @@ const SelectUser = props => {
           {loading === false && type !== 'demand' && (
             <>
               <div>{nextflowuser}人员</div>
-              <div style={{ marginTop: 12 }}>
+              <div style={{ marginTop: 12 }} className={styles.useritem}>
                 <Checkbox.Group
                   defaultValue={defaultvalue}
                   options={dataArr(problemlist.data)}

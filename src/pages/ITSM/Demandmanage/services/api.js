@@ -144,8 +144,8 @@ export async function QueryExport(params) {
   return request(`/demand/query/export`, {
     method: 'POST',
     responseType: 'blob',
-    data:params,
-    requestType:'form'
+    body:JSON.stringify(params),
+    // requestType:'form'
   });
 }
 

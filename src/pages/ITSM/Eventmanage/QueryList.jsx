@@ -184,7 +184,12 @@ const columns = [
 function QueryList(props) {
   const pagetitle = props.route.name;
   const {
-    form: { getFieldDecorator, resetFields, validateFields },
+    form: {
+      getFieldDecorator,
+      resetFields,
+      validateFields,
+      setFieldsValue
+    },
     location: { query: {
       sign,
       time1,
@@ -209,8 +214,6 @@ function QueryList(props) {
   }
 
   useEffect(() => {
-    empty = '';
-    noStatistic = '';
     validateFields((err, values) => {
       if (!err) {
         dispatch({
@@ -234,59 +237,40 @@ function QueryList(props) {
     return () => {
       setSelectData([]);
     };
-
   }, []);
 
   //  查询页查询数据把数据统计的数据清空
-  const queryFunciton = (values, page, size, params) => {
-    empty = 'empty';
-    if (noStatistic) {
-      if (values.createTime === undefined) {
-        dispatch({
-          type: 'eventquery/fetchlist',
-          payload: {
-            ...values,
-            eventObject: values.eventObject ? (values.eventObject).slice(-1)[0] : eventObject,
-            createTime: '',
-            pageSize: size,
-            pageIndex: 0,
-            time1: moment(time1).format('YYYY-MM-DD HH:mm:ss'),
-            time2: moment(time2).format('YYYY-MM-DD HH:mm:ss'),
-            selfhandle: values.selfhandle ? values.selfhandle : selfhandle,
-            registerUser: values.registerUser ? values.registerUser : registerUser,
-            applicationUnit: values.applicationUnit ? values.applicationUnit : applicationUnit
-          },
-        });
-      } else {
-        dispatch({
-          type: 'eventquery/fetchlist',
-          payload: {
-            ...values,
-            eventObject: values.eventObject ? (values.eventObject).slice(-1)[0] : eventObject,
-            createTime: '',
-            time1: sign ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-            time2: sign ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-            pageSize: size,
-            pageIndex: 0,
-            selfhandle: values.selfhandle ? values.selfhandle : selfhandle,
-            registerUser: values.registerUser ? values.registerUser : registerUser,
-            applicationUnit: values.applicationUnit ? values.applicationUnit : applicationUnit
-          },
-        });
-      }
-    }
-
-    if (noStatistic === '') {
+  const queryFunciton = (values, page, size) => {
+    if(sign) {
       dispatch({
         type: 'eventquery/fetchlist',
         payload: {
           ...values,
           eventObject: values.eventObject ? (values.eventObject).slice(-1)[0] : eventObject,
           createTime: '',
-          time1: values.createTime ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : moment().startOf('month').format('YYYY-MM-DD HH:mm:ss'),
-          time2: values.createTime ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : moment().format('YYYY-MM-DD HH:mm:ss'),
           pageSize: size,
-          pageIndex: 0,
+          pageIndex: page,
+          time1: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : time1,
+          time2: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : time2,
+          selfhandle: values.selfhandle ? values.selfhandle : selfhandle,
+          registerUser: values.registerUser ? values.registerUser : registerUser,
+          applicationUnit: values.applicationUnit ? values.applicationUnit : applicationUnit
+        },
+      });
+    } else {
+      dispatch({
+        type: 'eventquery/fetchlist',
+        payload: {
+          ...values,
+          eventObject: values.eventObject ? (values.eventObject).slice(-1)[0] : eventObject,
+          createTime: '',
+          pageSize: size,
+          pageIndex: page,
+          time1: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : moment().startOf('month').format('YYYY-MM-DD HH:mm:ss'),
+          time2: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : moment().format('YYYY-MM-DD HH:mm:ss'),
+          selfhandle: values.selfhandle ? values.selfhandle : selfhandle,
+          registerUser: values.registerUser ? values.registerUser : registerUser,
+          applicationUnit: values.applicationUnit ? values.applicationUnit : applicationUnit
         },
       });
     }
@@ -294,57 +278,39 @@ function QueryList(props) {
   }
 
   //  查询后点击分页不带统计的参数，翻页、变更每页显示条数
-  const changePagelist = (values, page, size, params) => {
-    if (noStatistic) {
-      if (values.createTime === undefined) {
-        dispatch({
-          type: 'eventquery/fetchlist',
-          payload: {
-            ...values,
-            eventObject: values.eventObject ? (values.eventObject).slice(-1)[0] : eventObject,
-            createTime: '',
-            time1: moment(time1).format('YYYY-MM-DD HH:mm:ss'),
-            time2: moment(time2).format('YYYY-MM-DD HH:mm:ss'),
-            pageSize: size,
-            pageIndex: page - 1,
-            selfhandle: values.selfhandle ? values.selfhandle : selfhandle,
-            registerUser: values.registerUser ? values.registerUser : registerUser,
-            applicationUnit: values.applicationUnit ? values.applicationUnit : applicationUnit
-          },
-        })
-      } else {
-        dispatch({
-          type: 'eventquery/fetchlist',
-          payload: {
-            ...values,
-            eventObject: values.eventObject ? (values.eventObject).slice(-1)[0] : eventObject,
-            createTime: '',
-            time1: moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss'),
-            time2: moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss'),
-            pageSize: size,
-            pageIndex: page - 1,
-            selfhandle: values.selfhandle ? values.selfhandle : selfhandle,
-            registerUser: values.registerUser ? values.registerUser : registerUser,
-            applicationUnit: values.applicationUnit ? values.applicationUnit : applicationUnit
-
-          },
-        });
-      }
-    }
-
-    if (noStatistic === '') {
+  const changePagelist = (values, page, size) => {
+    if(sign) {
       dispatch({
         type: 'eventquery/fetchlist',
         payload: {
           ...values,
-          createTime: '',
           eventObject: values.eventObject ? (values.eventObject).slice(-1)[0] : eventObject,
-          time1: values.createTime ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : moment().startOf('month').format('YYYY-MM-DD HH:mm:ss'),
-          time2: values.createTime ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : moment().format('YYYY-MM-DD HH:mm:ss'),
+          createTime: '',
+          time1: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : time1,
+          time2:  values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : time2,
           pageSize: size,
           pageIndex: page - 1,
+          selfhandle: values.selfhandle ? values.selfhandle : selfhandle,
+          registerUser: values.registerUser ? values.registerUser : registerUser,
+          applicationUnit: values.applicationUnit ? values.applicationUnit : applicationUnit
         },
-      })
+      });
+    } else {
+      dispatch({
+        type: 'eventquery/fetchlist',
+        payload: {
+          ...values,
+          eventObject: values.eventObject ? (values.eventObject).slice(-1)[0] : eventObject,
+          createTime: '',
+          time1: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : moment().startOf('month').format('YYYY-MM-DD HH:mm:ss'),
+          time2:  values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : moment().format('YYYY-MM-DD HH:mm:ss'),
+          pageSize: size,
+          pageIndex: page - 1,
+          selfhandle: values.selfhandle ? values.selfhandle : selfhandle,
+          registerUser: values.registerUser ? values.registerUser : registerUser,
+          applicationUnit: values.applicationUnit ? values.applicationUnit : applicationUnit
+        },
+      });
     }
 
   }
@@ -436,7 +402,7 @@ function QueryList(props) {
       if (err) {
         return;
       }
-      searchdata(values, paginations.current, paginations.pageSize, params);
+      searchdata(values, 0, paginations.pageSize, params);
     });
   };
 
@@ -802,7 +768,7 @@ function QueryList(props) {
                 <Col span={24}>
                   <Form.Item label="建单时间" {...forminladeLayout}>
                     {getFieldDecorator('createTime', {
-                      // initialValue: [moment().startOf('month'), moment()],
+                      initialValue: sign ? [moment(time1), moment(time2)] : [moment().startOf('month'), moment()],
                     })(<RangePicker
                       showTime
                       format='YYYY-MM-DD HH:mm:ss'
