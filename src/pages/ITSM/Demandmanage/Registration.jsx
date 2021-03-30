@@ -164,7 +164,8 @@ function Registration(props) {
   );
 }
 
-export default connect(({ itsmuser, loading }) => ({
+export default connect(({ itsmuser, demandregister, loading }) => ({
   userinfo: itsmuser.userinfo,
-  loading: loading.models.itsmuser,
+  demandregister,
+  loading: loading.models.demandregister,
 }))(Registration);

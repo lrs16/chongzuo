@@ -239,7 +239,7 @@ function ToDolist(props) {
               <Form.Item label="事件编号">
                 {getFieldDecorator('eventNo', {
                   initialValue: '',
-                })(<Input placeholder="请输入" />)}
+                })(<Input placeholder="请输入" allowClear />)}
               </Form.Item>
             </Col>
             {expand === true && (
@@ -248,7 +248,7 @@ function ToDolist(props) {
                   <Form.Item label="事件标题">
                     {getFieldDecorator('eventTitle', {
                       initialValue: '',
-                    })(<Input placeholder="请输入" />)}
+                    })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
                 <Col span={8}>
@@ -256,7 +256,7 @@ function ToDolist(props) {
                     {getFieldDecorator('eventSource', {
                       initialValue: '',
                     })(
-                      <Select placeholder="请选择">
+                      <Select placeholder="请选择" allowClear>
                         {sourcemap.map(obj => (
                           <Option key={obj.key} value={obj.title}>
                             {obj.title}
@@ -273,7 +273,7 @@ function ToDolist(props) {
                 {getFieldDecorator('eventStatus', {
                   initialValue: '',
                 })(
-                  <Select placeholder="请选择">
+                  <Select placeholder="请选择" allowClear>
                     {statusmap.map(obj => (
                       <Option key={obj.key} value={obj.title}>
                         {obj.title}
@@ -289,14 +289,14 @@ function ToDolist(props) {
                   <Form.Item label="登记人">
                     {getFieldDecorator('registerUser', {
                       initialValue: '',
-                    })(<Input placeholder="请输入" />)}
+                    })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
                 <Col span={8}>
                   <Form.Item label="申报人">
                     {getFieldDecorator('applicationUser', {
                       initialValue: '',
-                    })(<Input placeholder="请输入" />)}
+                    })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
                 <Col span={8}>
@@ -306,7 +306,7 @@ function ToDolist(props) {
                     })(
                       <Select placeholder="请选择">
                         {priormap.map(obj => (
-                          <Option key={obj.key} value={obj.title}>
+                          <Option key={obj.key} value={obj.title} allowClear>
                             {obj.title}
                           </Option>
                         ))}
@@ -316,7 +316,7 @@ function ToDolist(props) {
                 </Col>
                 <Col span={16}>
                   <Form.Item label="发送时间" {...forminladeLayout}>
-                    {getFieldDecorator('createTime')(<RangePicker showTime />)}
+                    {getFieldDecorator('createTime')(<RangePicker showTime allowClear />)}
                   </Form.Item>
                 </Col>
               </>

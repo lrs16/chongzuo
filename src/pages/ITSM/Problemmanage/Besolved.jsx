@@ -263,7 +263,7 @@ function Besolved(props) {
                       message: '请输入问题编号',
                     },
                   ],
-                })(<Input placeholder='请输入' />)}
+                })(<Input placeholder='请输入' allowClear />)}
               </Form.Item>
             </Col>
 
@@ -276,7 +276,7 @@ function Besolved(props) {
                     },
                   ],
                 })(
-                  <Select placeholder="请选择">
+                  <Select placeholder="请选择" allowClear>
                     {
                       stateList.current && stateList.current.length > 0 && (
                         (stateList.current).map(({ key, val }) => (
@@ -294,8 +294,8 @@ function Besolved(props) {
             {expand === true && (
               <>
                 <Col span={8}>
-                  <Form.Item label="问题标题">
-                    {getFieldDecorator('title', {})(<Input placeholder='请输入' />)}
+                  <Form.Item label="问题标题" >
+                    {getFieldDecorator('title', {})(<Input placeholder='请输入' allowClear />)}
                   </Form.Item>
                 </Col>
               </>
@@ -307,7 +307,7 @@ function Besolved(props) {
                   <Form.Item label="问题来源">
                     {getFieldDecorator('source', {})
                       (
-                        <Select placeholder="请选择">
+                        <Select placeholder="请选择" allowClear>
                           {
                             keyVallist && keyVallist.source.length && (
                               (keyVallist.source).map(({ key, val }) => (
@@ -326,7 +326,7 @@ function Besolved(props) {
                   <Form.Item label="问题分类">
                     {getFieldDecorator('type', {})
                       (
-                        <Select placeholder="请选择">
+                        <Select placeholder="请选择" allowClear>
                           {
                             typelist && typelist.type.length && (
                               (typelist.type).map(({ key, val }) => (
@@ -342,7 +342,7 @@ function Besolved(props) {
                 </Col>
 
                 <Col span={8}>
-                  <Form.Item label="发送人">{getFieldDecorator('registerUser', {})(<Input placeholder='请输入' />)}</Form.Item>
+                  <Form.Item label="发送人">{getFieldDecorator('registerUser', {})(<Input placeholder='请输入' allowClear />)}</Form.Item>
                 </Col>
               </>
             )}
@@ -353,7 +353,7 @@ function Besolved(props) {
                   <Form.Item label="发送时间">
                     {getFieldDecorator('registerTime', {
                     })
-                      (<DatePicker />)}
+                      (<DatePicker allowClear />)}
                   </Form.Item>
                 </Col>
 
@@ -361,7 +361,7 @@ function Besolved(props) {
                   <Form.Item label="重要程度">
                     {getFieldDecorator('importance', {})
                       (
-                        <Select placeholder="请选择">
+                        <Select placeholder="请选择" allowClear>
                           {
                             prioritylist && prioritylist.priority.length && (
                               (prioritylist.priority).map(({ key, val }) => (

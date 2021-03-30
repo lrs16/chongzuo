@@ -971,7 +971,7 @@ export default {
                   routes: [
                     {
                       path: '/sysmanage/timerule/rules',
-                      name: '短信规则',
+                      name: 'ITSM超时规则',
                       icon: 'smile',
                       component: './SysManage/TimeRule',
                     },

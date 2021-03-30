@@ -306,7 +306,7 @@ export async function deleteDisableduser(params) {
   });
 }
 
-// 新建短信规则
+// 新建超时规则
 export async function saveTimerule(params) {
   return request(`/common/timerule/save`, {
     method: 'POST',
@@ -315,7 +315,7 @@ export async function saveTimerule(params) {
   });
 }
 
-// 修改短信规则
+// 修改超时规则
 export async function updateTimerule(params) {
   return request(`/common/timerule/update`, {
     method: 'POST',
@@ -324,7 +324,7 @@ export async function updateTimerule(params) {
   });
 }
 
-// 删除短信规则
+// 删除超时规则
 export async function deleteTimerule(params) {
   return request(`/common/timerule/delete`, {
     method: 'POST',
@@ -333,7 +333,53 @@ export async function deleteTimerule(params) {
   });
 }
 
-// 查询短信规则
+// 查询超时规则
 export async function queryTimerule(pageIndex, pageSize) {
   return request(`/common/timerule/query?pageIndex=${pageIndex}&pageSize=${pageSize}`);
+}
+
+// 新建工作日程
+export async function saveTimetable(params) {
+  return request(`/common/timetable/save`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+  });
+}
+
+// 修改工作日程
+export async function updateTimetable(params) {
+  return request(`/common/timetable/update`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+  });
+}
+
+// 删除工作日程
+export async function deleteTimetable(params) {
+  return request(`/common/timetable/delete`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+  });
+}
+
+// 查询工作日程
+export async function queryTimetable(pageIndex, pageSize) {
+  return request(`/common/timetable/query?pageIndex=${pageIndex}&pageSize=${pageSize}`);
+}
+
+// 上班工作时间/common/timetable/queryWorkTime
+export async function queryWorkTime() {
+  return request(`/common/timetable/queryWorkTime`);
+}
+
+// 修改上班时间 /common/timetable/updateWorkTime
+export async function updateWorkTime(params) {
+  return request(`/common/timetable/updateWorkTime`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+  });
 }

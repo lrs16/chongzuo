@@ -24,7 +24,7 @@ function ToDoregist(props) {
   const [iscolse, setIsClose] = useState('');
 
 
-  const handleHold = type => {
+  const handleHold = (type) => {
     setButtonType(type);
   };
   const handleclose = () => {

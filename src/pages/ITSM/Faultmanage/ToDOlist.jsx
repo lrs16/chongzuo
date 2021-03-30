@@ -284,7 +284,7 @@ function ToDOlist(props) {
                     {getFieldDecorator('source', {
                       initialValue: '',
                     })(
-                      <Select placeholder="请选择">
+                      <Select placeholder="请选择" allowClear>
                         {faultSource.map(obj => [
                           <Option key={obj.key} value={obj.title}>
                             {obj.title}
@@ -303,7 +303,7 @@ function ToDOlist(props) {
                   'currentNode',
                   {},
                 )(
-                  <Select placeholder="请选择">
+                  <Select placeholder="请选择" allowClear>
                     {currentNode.map(obj => [
                       <Option key={obj.key} value={obj.title}>
                         {obj.title}
@@ -325,6 +325,7 @@ function ToDOlist(props) {
                         placeholder="请选择"
                         options={faultType}
                         fieldNames={{ label: 'title', value: 'title', children: 'children' }}
+                        allowClear
                       />,
                     )}
                   </Form.Item>
@@ -348,6 +349,7 @@ function ToDOlist(props) {
                         format="YYYY-MM-DD HH:mm:ss"
                         style={{ width: '100%' }}
                         placeholder="请选择"
+                        allowClear
                       />,
                     )}
                   </Form.Item>
@@ -358,7 +360,7 @@ function ToDOlist(props) {
                     {getFieldDecorator('registerLevel', {
                       initialValue: '',
                     })(
-                      <Select placeholder="请选择">
+                      <Select placeholder="请选择" allowClear>
                         {priority.map(obj => [
                           <Option key={obj.key} value={obj.title}>
                             {obj.title}

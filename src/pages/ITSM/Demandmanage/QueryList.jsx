@@ -220,13 +220,13 @@ function QueryList(props) {
               <Form.Item label="需求编号">
                 {getFieldDecorator('demandId', {
                   initialValue: '',
-                })(<Input placeholder="请输入" />)}
+                })(<Input placeholder="请输入" allowClear />)}
               </Form.Item>
             </Col>
             <Col span={8}>
               <Form.Item label="当前处理环节">
                 {getFieldDecorator('taskName', { initialValue: '' })(
-                  <Select placeholder="请选择">
+                  <Select placeholder="请选择" allowClear>
                     {statemap.map(({ key, value }) => (
                       <Option key={key} value={value}>
                         {value}
@@ -242,13 +242,13 @@ function QueryList(props) {
                   <Form.Item label="需求标题">
                     {getFieldDecorator('title', {
                       initialValue: '',
-                    })(<Input placeholder="请输入" />)}
+                    })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
                 <Col span={8}>
                   <Form.Item label="需求类型">
                     {getFieldDecorator('demandType', { initialValue: '' })(
-                      <Select placeholder="请选择">
+                      <Select placeholder="请选择" allowClear>
                         {selectdata.source.map(obj => (
                           <Option key={obj.key} value={obj.val}>
                             {obj.val}
@@ -262,12 +262,12 @@ function QueryList(props) {
                   <Form.Item label="登记人">
                     {getFieldDecorator('registerPerson', {
                       initialValue: '',
-                    })(<Input placeholder="请输入" />)}
+                    })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
                 <Col span={8}>
                   <Form.Item label="发送时间">
-                    {getFieldDecorator('creationTime')(<DatePicker />)}
+                    {getFieldDecorator('creationTime')(<DatePicker allowClear />)}
                   </Form.Item>
                 </Col>
               </>

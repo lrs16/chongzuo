@@ -406,7 +406,7 @@ function Besolved(props) {
                       message: '请输入问题编号',
                     },
                   ],
-                })(<Input placeholder='请输入' />)}
+                })(<Input placeholder='请输入' allowClear />)}
               </Form.Item>
             </Col>
 
@@ -415,7 +415,7 @@ function Besolved(props) {
                 {getFieldDecorator('currentNode',
                   {},
                 )(
-                  <Select placeholder="请选择">
+                  <Select placeholder="请选择" allowClear>
                     {
                       stateList.current && stateList.current.length && (
                         (stateList.current).map(({ key, val }, index) => (
@@ -435,7 +435,7 @@ function Besolved(props) {
               <>
                 <Col span={8}>
                   <Form.Item label="问题标题">
-                    {getFieldDecorator('title', {})(<Input placeholder='请输入' />)}
+                    {getFieldDecorator('title', {})(<Input placeholder='请输入' allowClear />)}
                   </Form.Item>
                 </Col>
               </>
@@ -449,7 +449,7 @@ function Besolved(props) {
                       'source',
                       {},
                     )(
-                      <Select placeholder="请选择">
+                      <Select placeholder="请选择" allowClear>
                         {
                           keyVallist && keyVallist.source.length && (
                             (keyVallist.source).map(({ key, val }) => (
@@ -468,7 +468,7 @@ function Besolved(props) {
                   <Form.Item label="问题分类">
                     {getFieldDecorator('type', {})
                       (
-                        <Select placeholder="请选择">
+                        <Select placeholder="请选择" allowClear>
                           {
                             typelist && typelist.type.length && (
                               (typelist.type).map(({ key, val }) => (
@@ -486,7 +486,7 @@ function Besolved(props) {
                 <Col span={8}>
                   <Form.Item label="影响范围">{getFieldDecorator('registerScope', {})
                     (
-                      <Select placeholder="请选择">
+                      <Select placeholder="请选择" allowClear>
                         {
                           scopeList && scopeList.effect.length && (
                             (scopeList.effect).map(({ key, val }) => (
@@ -501,12 +501,12 @@ function Besolved(props) {
                 </Col>
 
                 <Col span={8}>
-                  <Form.Item label="处理人">
+                  <Form.Item label="处理人" >
                     {getFieldDecorator(
                       'handler',
                       {},
                     )(
-                      <Input placeholder='请输入' />
+                      <Input placeholder='请输入' allowClear />
                     )}
                   </Form.Item>
                 </Col>
@@ -517,7 +517,7 @@ function Besolved(props) {
                       'handleUnit',
                       {},
                     )(
-                      <Input placeholder='请输入' />
+                      <Input placeholder='请输入' allowClear />
                     )}
                   </Form.Item>
                 </Col>
@@ -528,7 +528,7 @@ function Besolved(props) {
                       'registerUser',
                       {},
                     )(
-                      <Input placeholder='请输入' />
+                      <Input placeholder='请输入' allowClear />
                     )}
                   </Form.Item>
                 </Col>
@@ -539,7 +539,7 @@ function Besolved(props) {
                       'createTimeBegin',
                       {},
                     )(
-                      <DatePicker />
+                      <DatePicker allowClear />
                     )}
                   </Form.Item>
                 </Col>
@@ -551,7 +551,7 @@ function Besolved(props) {
                       'importance',
                       {},
                     )(
-                      <Select placeholder="请选择">
+                      <Select placeholder="请选择" allowClear>
                         {
                           prioritylist && prioritylist.priority.length && (
                             prioritylist.priority.map(({ key, val }) => (
@@ -567,12 +567,6 @@ function Besolved(props) {
                 </Col>
               </>
             )}
-
-            {expand === true && (
-              <>
-              </>
-            )}
-
             {expand === false && (
               <Col span={8}>
                 <Button type="primary" onClick={() => handleSearch('search')}>

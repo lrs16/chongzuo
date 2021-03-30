@@ -47,6 +47,9 @@ function WorkOrder(props) {
     changRegisterId,
     ChangeHistroyTaskId,
     ChangeISClose,
+    userchoice,
+    ChangeChoice,
+    ChangeUserVisible,
   } = props;
   const [activeKey, setActiveKey] = useState(['form']);
   const { taskName, taskId, mainId } = location.query;
@@ -385,7 +388,6 @@ function WorkOrder(props) {
           }
         });
         break;
-
       default:
         break;
     }

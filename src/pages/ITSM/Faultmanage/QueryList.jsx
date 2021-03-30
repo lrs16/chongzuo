@@ -386,7 +386,7 @@ function QueryList(props) {
                   {getFieldDecorator(
                     'registerTimeBegin',
                     {},
-                  )(<DatePicker format="YYYY-MM-DD" style={{ width: '100%' }} />)}
+                  )(<DatePicker format="YYYY-MM-DD" style={{ width: '100%' }} allowClear />)}
                 </Form.Item>
               </Col>
             )}
@@ -397,7 +397,7 @@ function QueryList(props) {
                   'currentNode',
                   {},
                 )(
-                  <Select placeholder="请选择">
+                  <Select placeholder="请选择" allowClear>
                     {currentNode.map(obj => [
                       <Option key={obj.key} value={obj.title}>
                         {obj.title}
@@ -415,14 +415,14 @@ function QueryList(props) {
                     {getFieldDecorator(
                       'registerOccurTimeBegin',
                       {},
-                    )(<DatePicker format="YYYY-MM-DD" style={{ width: '100%' }} />)}
+                    )(<DatePicker format="YYYY-MM-DD" style={{ width: '100%' }} allowClear />)}
                   </Form.Item>
                 </Col>
 
                 <Col xl={8} xs={12}>
                   <Form.Item label="故障来源">
                     {getFieldDecorator('source')(
-                      <Select placeholder="请选择">
+                      <Select placeholder="请选择" allowClear>
                         {faultSource.map(obj => [
                           <Option key={obj.key} value={obj.title}>
                             {obj.title}
@@ -436,7 +436,7 @@ function QueryList(props) {
                 <Col span={8}>
                   <Form.Item label="系统模块">
                     {getFieldDecorator('registerModel')(
-                      <Select placeholder="请选择">
+                      <Select placeholder="请选择" allowClear>
                         {sysmodular.map(obj => [
                           <Option key={obj.key} value={obj.title}>
                             {obj.title}
@@ -454,6 +454,7 @@ function QueryList(props) {
                         placeholder="请选择"
                         options={faultType}
                         fieldNames={{ label: 'title', value: 'title', children: 'children' }}
+                        allowClear
                       />,
                     )}
                   </Form.Item>
@@ -476,7 +477,7 @@ function QueryList(props) {
                 <Col xl={8} xs={12}>
                   <Form.Item label="严重程度">
                     {getFieldDecorator('registerLevel')(
-                      <Select placeholder="请选择">
+                      <Select placeholder="请选择" allowClear>
                         {priority.map(obj => [
                           <Option key={obj.key} value={obj.title}>
                             {obj.title}
@@ -493,7 +494,7 @@ function QueryList(props) {
                       'registerScope',
                       {},
                     )(
-                      <Select placeholder="请选择">
+                      <Select placeholder="请选择" allowClear>
                         {effect.map(obj => [
                           <Option key={obj.key} value={obj.title}>
                             {obj.title}
@@ -509,7 +510,7 @@ function QueryList(props) {
                     {getFieldDecorator(
                       'handleStartTimeBegin',
                       {},
-                    )(<DatePicker format="YYYY-MM-DD" style={{ width: '100%' }} />)}
+                    )(<DatePicker format="YYYY-MM-DD" style={{ width: '100%' }} allowClear />)}
                   </Form.Item>
                 </Col>
 
@@ -518,7 +519,7 @@ function QueryList(props) {
                     {getFieldDecorator(
                       'handleStartTimeEnd',
                       {},
-                    )(<DatePicker format="YYYY-MM-DD" style={{ width: '100%' }} />)}
+                    )(<DatePicker format="YYYY-MM-DD" style={{ width: '100%' }} allowClear />)}
                   </Form.Item>
                 </Col>
 
@@ -527,7 +528,7 @@ function QueryList(props) {
                     {getFieldDecorator('handleResult', {
                       initialValue: '',
                     })(
-                      <Select placeholder="请选择">
+                      <Select placeholder="请选择" allowClear>
                         {handleResult.map(obj => [
                           <Option key={obj.key} value={obj.title}>
                             {obj.title}
@@ -550,7 +551,7 @@ function QueryList(props) {
                   <Form.Item label="登记人单位">
                     {getFieldDecorator('registerUnit', {
                       initialValue: '',
-                    })(<Select />)}
+                    })(<Input allowClear />)}
                   </Form.Item>
                 </Col>
 
@@ -566,7 +567,7 @@ function QueryList(props) {
                   <Form.Item label="审核人单位">
                     {getFieldDecorator('checkUnit', {
                       initialValue: '',
-                    })(<Select />)}
+                    })(<Input allowClear />)}
                   </Form.Item>
                 </Col>
 
@@ -582,7 +583,7 @@ function QueryList(props) {
                   <Form.Item label="处理人单位">
                     {getFieldDecorator('handleUnit', {
                       initialValue: '',
-                    })(<Select />)}
+                    })(<Input allowClear />)}
                   </Form.Item>
                 </Col>
 
@@ -598,7 +599,7 @@ function QueryList(props) {
                   <Form.Item label="总结人单位">
                     {getFieldDecorator('finishUnit', {
                       initialValue: '',
-                    })(<Select />)}
+                    })(<Input allowClear />)}
                   </Form.Item>
                 </Col>
 
@@ -614,7 +615,7 @@ function QueryList(props) {
                   <Form.Item label="确认人单位">
                     {getFieldDecorator('confirmUnit', {
                       initialValue: '',
-                    })(<Select />)}
+                    })(<Input allowClear />)}
                   </Form.Item>
                 </Col>
               </>

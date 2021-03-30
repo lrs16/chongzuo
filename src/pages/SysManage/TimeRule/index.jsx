@@ -25,7 +25,7 @@ function TimeRules(props) {
   const [title, setTitle] = useState('');
   const [savetype, setSaveType] = useState(''); // 保存类型  save:新建  update:编辑
   const [data, setData] = useState('');
-  const [paginations, setPageinations] = useState({ current: 0, pageSize: 15 });
+  const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
   const [servicetype, setServiceType] = useState([]);
   const [ordertype, setOrderType] = useState([]);
   // 请求数据字典
@@ -47,7 +47,7 @@ function TimeRules(props) {
     dispatch({
       type: 'timerule/query',
       payload: {
-        pageIndex: paginations.current,
+        pageIndex: paginations.current - 1,
         pageSize: paginations.pageSize,
       },
     });
@@ -116,7 +116,7 @@ function TimeRules(props) {
       type: 'timerule/query',
       payload: {
         ...values,
-        pageIndex: page,
+        pageIndex: page - 1,
         pageSize: size,
       },
     });
@@ -223,7 +223,6 @@ function TimeRules(props) {
       dataIndex: 'respondTimeout',
       key: 'respondTimeout',
     },
-
     {
       title: '操作',
       dataIndex: 'action',
