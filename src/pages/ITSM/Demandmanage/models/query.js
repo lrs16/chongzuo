@@ -28,8 +28,8 @@ export default {
       });
     },
     // 查询导出
-    *download(_, { call }) {
-      return yield call(QueryExport);
+    *download({ payload }, { call }) {
+      return yield call(QueryExport, payload);
     },
   },
 

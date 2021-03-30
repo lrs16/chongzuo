@@ -193,6 +193,7 @@ function QueryList(props) {
   const download = () => {
     dispatch({
       type: 'demandquery/download',
+      // payload:{}
     }).then(res => {
       const filename = `需求查询_${moment().format('YYYY-MM-DD HH:mm')}.xlsx`;
       const url = window.URL.createObjectURL(res);

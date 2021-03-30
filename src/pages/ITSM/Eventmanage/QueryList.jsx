@@ -311,7 +311,6 @@ function QueryList(props) {
             selfhandle: values.selfhandle ? values.selfhandle : selfhandle,
             registerUser: values.registerUser ? values.registerUser : registerUser,
             applicationUnit: values.applicationUnit ? values.applicationUnit : applicationUnit
-
           },
         })
       } else {
@@ -363,8 +362,6 @@ function QueryList(props) {
     }
   };
 
-
-
   //  下载
   const download = () => {
     validateFields((err, values) => {
@@ -373,8 +370,13 @@ function QueryList(props) {
           type: 'eventtodo/eventdownload',
           payload: {
             ...values,
-            time1: time1 === undefined ? moment().startOf('month').format('YYYY-MM-DD HH:mm:ss') : time1,
-            time2: time2 === undefined ? moment().format('YYYY-MM-DD HH:mm:ss') : time2,
+            createTime: '',
+            time1: values.createTime?moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss'):time1,
+            time2: values.createTime?moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss'):time2,
+            eventObject: values.eventObject ? (values.eventObject).slice(-1)[0] : eventObject,
+            selfhandle: values.selfhandle ? values.selfhandle : selfhandle,
+            registerUser: values.registerUser ? values.registerUser : registerUser,
+            applicationUnit: values.applicationUnit ? values.applicationUnit : applicationUnit
           },
         }).then(res => {
           // console.log(res);
@@ -797,7 +799,7 @@ function QueryList(props) {
                 <Col span={24}>
                   <Form.Item label="建单时间" {...forminladeLayout}>
                     {getFieldDecorator('createTime', {
-                      initialValue: [moment().startOf('month'), moment()],
+                      // initialValue: [moment().startOf('month'), moment()],
                     })(<RangePicker showTime format='YYYY-MM-DD HH:mm:ss' />)}
                   </Form.Item>
                 </Col>

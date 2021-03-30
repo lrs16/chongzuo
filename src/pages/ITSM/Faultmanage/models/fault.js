@@ -195,8 +195,8 @@ export default {
     },
 
     // 故障查询列表数据 下载
-    *faultQuerydownload({ payload: { current, pageSize, values } }, { call }) {
-      return yield call(querydownload1, current, pageSize, values);
+    *faultQuerydownload({ payload }, { call }) {
+      return yield call(querydownload1, payload);
     },
 
     //  故障待办详情页--编辑

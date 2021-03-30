@@ -327,9 +327,12 @@ function QueryList(props) {
         dispatch({
           type: 'fault/faultQuerydownload',
           payload: {
-            values,
+            ...values,
             pageSize,
             current: page,
+            dictCode,
+            dictType,
+            status
           },
         }).then(res => {
           const filename = `下载.xlsx`;

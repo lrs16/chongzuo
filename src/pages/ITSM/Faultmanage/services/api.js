@@ -116,13 +116,14 @@ export async function querydownload(current, pageSize, values) {
 }
 
 // 故障查询列表  导出下载/trouble/flow/expExcelOrderList
-export async function querydownload1(current, pageSize, values) {
-  const params = values;
-  params.pageNum = current; // 当前页
-  params.pageSize = pageSize; // 页码
+export async function querydownload1(params) {
   return request(`/trouble/flow/expExcelOrderList`, {
     method: 'POST',
-    body: JSON.stringify(params),
+    body: JSON.stringify({
+      ...params,
+      pageNum:params.current,
+      pageSize:params.pageSize
+    }),
   });
 }
 
