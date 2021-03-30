@@ -191,18 +191,27 @@ function QueryList(props) {
   };
 
   const download = () => {
-    dispatch({
-      type: 'demandquery/download',
-      // payload:{}
-    }).then(res => {
-      const filename = `需求查询_${moment().format('YYYY-MM-DD HH:mm')}.xlsx`;
-      const url = window.URL.createObjectURL(res);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = filename;
-      a.click();
-      window.URL.revokeObjectURL(url);
-    });
+    validateFields((err,values) => {
+      dispatch({
+        type: 'demandquery/download',
+        payload:{
+          ...values,
+          module,
+          taskName: values.taskName ? values.taskName : taskName,
+          completeStatus
+        }
+      }).then(res => {
+        const filename = `需求查询_${moment().format('YYYY-MM-DD HH:mm')}.xlsx`;
+        const blob = new Blob([res]);
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.click();
+        window.URL.revokeObjectURL(url);
+      });
+    })
+
   };
 
   return (

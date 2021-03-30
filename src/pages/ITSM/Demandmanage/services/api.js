@@ -140,10 +140,12 @@ export async function QueryDetail(processInstanceId) {
 }
 
 // 导出 /demand/query/export
-export async function QueryExport() {
+export async function QueryExport(params) {
   return request(`/demand/query/export`, {
-    method: 'GET',
+    method: 'POST',
     responseType: 'blob',
+    data:params,
+    requestType:'form'
   });
 }
 
