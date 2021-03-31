@@ -20,6 +20,7 @@ let starttime;
 let monthStarttime;
 let endTime;
 const sign = 'maintenanceservice';
+const { MonthPicker, RangePicker, WeekPicker } = DatePicker;
 
 const IconFont = Icon.createFromIconfontCN({
   scriptUrl: iconfontUrl,
@@ -128,12 +129,13 @@ function Maintenance(props) {
 
 
   const onChange = (date,dateString) => {
+
     if (tabActiveKey === 'week') {
       starttime = dateString;
       endTime =  moment(dateString).add(+6,'day').format('YYYY-MM-DD');
     } else {
-      starttime = dateString;
-      endTime =  moment(dateString).add(+29,'day').format('YYYY-MM-DD');
+      starttime = date.startOf('month').format('YYYY-MM-DD');
+      endTime = date.endOf('month').format('YYYY-MM-DD');
     }
   }
 
@@ -172,8 +174,8 @@ function Maintenance(props) {
       starttime = moment().subtract('days', 6).format('YYYY-MM-DD');
       endTime = moment().format('YYYY-MM-DD');
     } else { // 月统计
-      starttime = moment().subtract('days', 29).format('YYYY-MM-DD');
-      endTime = moment().format('YYYY-MM-DD');
+      starttime = moment().startOf('month').format('YYYY-MM-DD');
+      endTime = moment().endOf('month').format('YYYY-MM-DD');
     }
   }
 
@@ -307,25 +309,13 @@ function Maintenance(props) {
                     <Form.Item label='起始时间'>
                       {getFieldDecorator('monthStarttime', {
                         initialValue: moment(starttime)
-                      })(<DatePicker
+                      })(
+                      <MonthPicker 
                         // format="YYYY-MM-DD"
-                        // allowClear='false'
+                        allowClear='false'
                         onChange={onChange}
                       />)}
                     </Form.Item>
-
-                    <p style={{ display: 'inline', marginRight: 8 }}>-</p>
-
-                    <Form.Item label=''>
-                      {
-                        getFieldDecorator('endTime', {
-                          initialValue: moment(endTime)
-                        })
-                          (<DatePicker disabled />)
-                      }
-                    </Form.Item>
-
-
 
                     <Button
                       type='primary'

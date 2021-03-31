@@ -281,7 +281,7 @@ function QueryList(props) {
         values.type = fieldsValue.type.join('/');
       }
 
-      searchdata(values, 0, paginations.pageSize, search);
+      searchdata(values, 1, paginations.pageSize, search);
     });
   };
 

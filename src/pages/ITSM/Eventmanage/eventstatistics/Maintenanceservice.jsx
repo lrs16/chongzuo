@@ -16,6 +16,7 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 let startTime;
 let endTime;
 const sign = 'maintenanceservice';
+const { MonthPicker, RangePicker, WeekPicker } = DatePicker;
 
 
 function Maintenanceservice(props) {
@@ -24,7 +25,8 @@ function Maintenanceservice(props) {
   const {
     form: { getFieldDecorator },
     maintenanceService,
-    dispatch
+    dispatch,
+    loading
   } = props;
   const tableHeadweek = tabActiveKey === 'week' ? '上周' : '上月';
   const tableHeadmonth = tabActiveKey === 'week' ? '本周' : '本月';
@@ -62,8 +64,8 @@ function Maintenanceservice(props) {
       startTime = dateString;
       endTime =  moment(dateString).add(+6,'day').format('YYYY-MM-DD');
     } else {
-      startTime = dateString;
-      endTime =  moment(dateString).add(+29,'day').format('YYYY-MM-DD');
+      startTime = date.startOf('month').format('YYYY-MM-DD');
+      endTime = date.endOf('month').format('YYYY-MM-DD');
     }
   }
 
@@ -101,8 +103,8 @@ function Maintenanceservice(props) {
       startTime = moment().subtract('days', 6).format('YYYY-MM-DD');
       endTime = moment().format('YYYY-MM-DD');
     } else { // 月统计
-      startTime = moment().subtract('days', 29).format('YYYY-MM-DD');
-      endTime = moment().format('YYYY-MM-DD');
+      startTime = moment().startOf('month').format('YYYY-MM-DD');
+      endTime = moment().endOf('month').format('YYYY-MM-DD');
     }
   }
 
@@ -181,25 +183,15 @@ function Maintenanceservice(props) {
                     <Form.Item label='起始时间'>
                       {getFieldDecorator('startTime', {
                         initialValue: moment(startTime)
-                      })(<DatePicker
-                        format="YYYY-MM-DD"
-                        allowClear={false}
+                      })( <MonthPicker 
+                        // format="YYYY-MM-DD"
+                        allowClear='false'
                         onChange={onChange}
                       />)}
                     </Form.Item>
 
                     {/* <p>{startTime}</p> */}
 
-                    <p style={{ display: 'inline', marginRight: 8 }}>-</p>
-
-                    <Form.Item label=''>
-                      {
-                        getFieldDecorator('endTime', {
-                          initialValue: moment(endTime)
-                        })
-                          (<DatePicker disabled />)
-                      }
-                    </Form.Item>
 
 
 
@@ -238,7 +230,8 @@ function Maintenanceservice(props) {
 }
 
 export default Form.create({})(
-  connect(({ eventstatistics }) => ({
-    maintenanceService: eventstatistics.maintenanceService
+  connect(({ eventstatistics,loading }) => ({
+    maintenanceService: eventstatistics.maintenanceService,
+    loading:loading.models.eventstatistics
   }))(Maintenanceservice),
 );

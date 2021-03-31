@@ -356,7 +356,7 @@ function Besolved(props) {
       if (values.createTimeBegin) {
         obj.createTimeBegin = (values.createTimeBegin).format('YYYY-MM-DD HH:mm:ss');
       }
-      searchdata(obj, 0, paginations.pageSize, search);
+      searchdata(obj, 1, paginations.pageSize, search);
     });
 
   };
