@@ -207,7 +207,7 @@ function Maintenance(props) {
       onTabChange={handleTabChange}
       tabActiveKey={tabActiveKey}
     >
-      <Card style={{ margin: 20 }}>
+      <Card style={{ margin:'24px 0' }}>
         <Row gutter={16}>
           <Col className="gutter-row" span={8}>
             <div className="gutter-box">
