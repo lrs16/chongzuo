@@ -5,6 +5,7 @@ import router from 'umi/router';
 import { Button, Collapse, message, Spin } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 // import SelectUser from '@/components/SelectUser';
+import SysDict from '@/components/SysDict';
 import styles from './index.less';
 import Handle from './components/Handle';
 import Registrat from './components/Registrat';
@@ -56,36 +57,6 @@ function Registration(props) {
     sessionStorage.setItem('Processtype', 'event');
   }, []);
 
-  // 请求下拉值
-  useEffect(() => {
-    let doCancel = false;
-    if (!doCancel) {
-      dispatch({
-        type: 'dicttree/childdictLower',
-        payload: { id: '1354273739344187393' },
-      }).then(res => {
-        if (res.code === 200) {
-          selectdata.arr.push(...res.data);
-          if (!doCancel) {
-            dispatch({
-              type: 'dicttree/childdictLower',
-              payload: { id: '1354288354950123522' },
-            }).then(ress => {
-              if (ress.code === 200) {
-                selectdata.arr.push(...ress.data);
-                setSelectData({ ...selectdata, ischange: true });
-              }
-            });
-          }
-        }
-      });
-    }
-    return () => {
-      setSelectData({ arr: [], ischange: false });
-      doCancel = true;
-    };
-  }, []);
-
   const callback = key => {
     setActiveKey(key);
   };
@@ -109,6 +80,8 @@ function Registration(props) {
         ...values,
         main_eventObject: values.main_eventObject?.slice(-1)[0],
         register_occurTime: values.register_occurTime.format('YYYY-MM-DD HH:mm:ss'),
+        register_applicationUnit: values.applicationUnit,
+        register_applicationUnitId: values.applicationUnit === '' ? '' : values.register_applicationUnitId,
         register_applicationDept:
           values.register_applicationDept !== ''
             ? values.register_applicationDept
@@ -246,6 +219,12 @@ function Registration(props) {
 
   return (
     <PageHeaderWrapper title={pagetitle} extra={operations}>
+      <SysDict
+        typeid="1354273739344187393"
+        commonid="1354288354950123522"
+        ChangeSelectdata={newvalue => setSelectData(newvalue)}
+        style={{ display: 'none' }}
+      />
       <Spin tip="正在提交数据..." spinning={!!loading}>
         <div className={styles.collapse}>
           <Collapse

@@ -2,8 +2,8 @@ import React, { useRef, useEffect, useState } from 'react';
 import { connect } from 'dva';
 import { Card, Button, Spin } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import SysDict from '@/components/SysDict';
 import Registrat from './components/Registrat';
-// import SelectUser from '@/components/SelectUser';
 
 function Registration(props) {
   const { dispatch, userinfo, loading } = props;
@@ -101,36 +101,6 @@ function Registration(props) {
     }
   }, [files]);
 
-  // 请求下拉值
-  useEffect(() => {
-    let doCancel = false;
-    if (!doCancel) {
-      dispatch({
-        type: 'dicttree/childdictLower',
-        payload: { id: '1354274450639425537' },
-      }).then(res => {
-        if (res.code === 200) {
-          selectdata.arr.push(...res.data);
-          if (!doCancel) {
-            dispatch({
-              type: 'dicttree/childdictLower',
-              payload: { id: '1354288354950123522' },
-            }).then(ress => {
-              if (ress.code === 200) {
-                selectdata.arr.push(...ress.data);
-                setSelectData({ ...selectdata, ischange: true });
-              }
-            });
-          }
-        }
-      });
-    }
-    return () => {
-      setSelectData({ arr: [], ischange: false });
-      doCancel = true;
-    };
-  }, []);
-
   const operations = (
     <>
       <Button type="primary" style={{ marginRight: 8 }} onClick={() => getregistrat('save')}>
@@ -147,6 +117,12 @@ function Registration(props) {
 
   return (
     <PageHeaderWrapper title={pagetitle} extra={operations}>
+      <SysDict
+        typeid="1354274450639425537"
+        commonid="1354288354950123522"
+        ChangeSelectdata={newvalue => setSelectData(newvalue)}
+        style={{ display: 'none' }}
+      />
       <Spin tip="正在提交数据..." spinning={!!loading}>
         <Card>
           <Registrat

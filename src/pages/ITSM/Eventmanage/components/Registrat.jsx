@@ -50,7 +50,7 @@ const Registrat = forwardRef((props, ref) => {
   } = props;
   const { register } = info;
   const { taskName, taskId, mainId } = location.query;
-  const { getFieldDecorator, getFieldsValue, setFieldsValue, validateFields } = props.form;
+  const { getFieldDecorator, getFieldsValue, setFieldsValue, validateFields, setFields } = props.form;
   const required = true;
   const [check, setCheck] = useState(false);
   const [revisitway, setRevisitway] = useState(false);
@@ -269,14 +269,18 @@ const Registrat = forwardRef((props, ref) => {
   // 选择报障用户，信息回填
   const handleDisableduser = (v, opt) => {
     const { user, phone, mobile, unit, unitId, dept, deptId } = opt.props.disableuser;
-    setFieldsValue({ register_applicationUser: user });
-    setFieldsValue({ register_applicationUserId: v });
-    setFieldsValue({ register_applicationUserPhone: phone });
-    setFieldsValue({ register_mobilePhone: mobile });
-    setFieldsValue({ register_applicationUnit: unit });
-    setFieldsValue({ register_applicationUnitId: unitId });
-    setFieldsValue({ register_applicationDept: dept });
-    setFieldsValue({ register_applicationDeptId: deptId });
+    setFieldsValue({
+      register_applicationUser: user,
+      register_applicationUserId: v,
+      register_applicationUserPhone: phone,
+      register_mobilePhone: mobile,
+      register_applicationUnit: unit,
+      register_applicationUnitId: unitId,
+      register_applicationDept: dept,
+      register_applicationDeptId: deptId,
+      applicationUnit: unit,
+      applicationDept: dept,
+    });
   };
 
   // 关闭组织机构树抽屉
@@ -298,7 +302,16 @@ const Registrat = forwardRef((props, ref) => {
 
   // 查询部门
   const handleDeptSearch = value => {
-    if (value !== '') {
+    const unitid = getFieldsValue(['register_applicationUnitId']);
+    if (unitid.register_applicationUnitId === '') {
+      setFields({
+        'applicationUnit': {
+          value: '',
+          errors: [new Error('请选择申报人单位')],
+        },
+      })
+    }
+    if (value !== '' && unitid.register_applicationUnitId !== '') {
       queryDeptList({ key: value, unitId: unitrecord.key }).then(res => {
         if (res.data !== undefined) {
           const arr = [...res.data];
@@ -311,17 +324,24 @@ const Registrat = forwardRef((props, ref) => {
   // 选择单位树结点
   const handleUnitTreeNode = value => {
     setUnitRecord(value);
-    setFieldsValue({ register_applicationUnit: value.title });
-    setFieldsValue({ register_applicationUnitId: value.key });
-    setFieldsValue({ register_applicationDept: '' });
-    setFieldsValue({ register_applicationDeptId: '' });
+    setFieldsValue({
+      register_applicationUnit: value.title,
+      register_applicationUnitId: value.key,
+      applicationUnit: value.title,
+      register_applicationDept: '',
+      register_applicationDeptId: '',
+      applicationDept: '',
+    });
     SetDetpDrawer(false);
   };
 
   // 选择部门树结点
   const handleDeptTreeNode = value => {
-    setFieldsValue({ register_applicationDept: value.title });
-    setFieldsValue({ register_applicationDeptId: value.key });
+    setFieldsValue({
+      register_applicationDept: value.title,
+      register_applicationDeptId: value.key,
+      applicationDept: value.title,
+    });
     SetDetpDrawer(false);
   };
 
@@ -512,8 +532,21 @@ const Registrat = forwardRef((props, ref) => {
           </Col>
           <Col span={8}>
             <Form.Item label="申报人单位">
-              <InputGroup compact>
-                {getFieldDecorator('register_applicationUnit', {
+              <InputGroup
+                compact
+                onMouseLeave={() => {
+                  const unit = getFieldsValue(['applicationUnit', 'register_applicationUnit']);
+                  if (unit.applicationUnit !== '') {
+                    validateFields(['register_applicationUnit', 'register_applicationUnitId'], err => {
+                      if (err || unit.applicationUnit !== unit.register_applicationUnit) {
+                        setFields({ 'applicationUnit': { value: '', errors: [new Error('请选择申报人单位')] } })
+                      }
+                    });
+                  }
+
+                }}
+              >
+                {getFieldDecorator('applicationUnit', {
                   rules: [{ required, message: '请选择申报人单位' }],
                   initialValue: register.applicationUnit,
                 })(
@@ -529,10 +562,14 @@ const Registrat = forwardRef((props, ref) => {
                     onBlur={() => setUnitopen(false)}
                     onSelect={(v, opt) => {
                       setUnitRecord({ ...unitrecord, title: opt.props.children, key: v });
-                      setFieldsValue({ register_applicationUnit: opt.props.children });
-                      setFieldsValue({ register_applicationUnitId: v });
-                      setFieldsValue({ register_applicationDept: '' });
-                      setFieldsValue({ register_applicationDeptId: '' });
+                      setFieldsValue({
+                        register_applicationUnit: opt.props.children,
+                        applicationUnit: opt.props.children,
+                        register_applicationUnitId: v,
+                        register_applicationDept: '',
+                        register_applicationDeptId: '',
+                        applicationDept: '',
+                      });
                       setUnitdata([]);
                       setUnitopen(false);
                     }}
@@ -540,6 +577,7 @@ const Registrat = forwardRef((props, ref) => {
                     <Search
                       placeholder="可输入关键字搜索单位"
                       onSearch={values => handleUnitSearch(values)}
+                      allowClear
                     />
                   </AutoComplete>,
                 )}
@@ -556,17 +594,39 @@ const Registrat = forwardRef((props, ref) => {
             </Form.Item>
           </Col>
           <Col span={8} style={{ display: 'none' }}>
+            <Form.Item label="申报人单位">
+              {getFieldDecorator('register_applicationUnit', {
+                rules: [{ required, }],
+                initialValue: register.applicationUnit,
+              })(<Input />)}
+            </Form.Item>
+          </Col>
+          <Col span={8} style={{ display: 'none' }}>
             <Form.Item label="申报人单位id">
               {getFieldDecorator('register_applicationUnitId', {
+                rules: [{ required, }],
                 initialValue: register.applicationUnitId,
               })(<Input />)}
             </Form.Item>
           </Col>
           <Col span={8}>
             <Form.Item label="申报人部门">
-              <InputGroup compact>
-                {getFieldDecorator('register_applicationDept', {
-                  rules: [{ message: '请选择申报人部门' }],
+              <InputGroup
+                compact
+                onMouseLeave={() => {
+                  const dept = getFieldsValue(['applicationUnit', 'register_applicationUnit']);
+                  if (dept.applicationUnit !== '') {
+                    validateFields(['register_applicationUnit', 'register_applicationDeptId'], err => {
+                      if (err || dept.applicationUnit !== dept.register_applicationUnit) {
+                        setFields({ 'applicationDept': { value: '', errors: [new Error('请选择申报人部门')] } })
+                      }
+                    });
+                  }
+
+                }}
+              >
+                {getFieldDecorator('applicationDept', {
+                  rules: [{ message: '请输入关键字' }],
                   initialValue: register.applicationDept,
                 })(
                   <AutoComplete
@@ -580,8 +640,11 @@ const Registrat = forwardRef((props, ref) => {
                     onFocus={() => setDeptopen(true)}
                     onBlur={() => setDeptopen(false)}
                     onSelect={(v, opt) => {
-                      setFieldsValue({ register_applicationDept: opt.props.children });
-                      setFieldsValue({ register_applicationDeptId: v });
+                      setFieldsValue({
+                        register_applicationDept: opt.props.children,
+                        register_applicationDeptId: v,
+                        applicationDept: opt.props.children,
+                      });
                       setDeptdata([]);
                       setUnitopen(false);
                     }}
@@ -589,6 +652,7 @@ const Registrat = forwardRef((props, ref) => {
                     <Search
                       placeholder="可输入关键字搜索部门"
                       onSearch={values => handleDeptSearch(values)}
+                      allowClear
                     />
                   </AutoComplete>,
                 )}
@@ -596,7 +660,7 @@ const Registrat = forwardRef((props, ref) => {
                   style={{ width: '15%' }}
                   onClick={() => {
                     validateFields(
-                      ['register_applicationUnit', 'register_applicationUnitId'],
+                      ['applicationUnit', 'applicationUnitId'],
                       err => {
                         if (!err) {
                           SetDetpDrawer(!detpdrawer);
@@ -612,8 +676,17 @@ const Registrat = forwardRef((props, ref) => {
             </Form.Item>
           </Col>
           <Col span={8} style={{ display: 'none' }}>
+            <Form.Item label="申报人部门">
+              {getFieldDecorator('register_applicationDept', {
+                rules: [{ required, }],
+                initialValue: register.applicationDept,
+              })(<Input placeholder="请输入" />)}
+            </Form.Item>
+          </Col>
+          <Col span={8} style={{ display: 'none' }}>
             <Form.Item label="申报人部门id">
               {getFieldDecorator('register_applicationDeptId', {
+                rules: [{ required, }],
                 initialValue: register.applicationDeptId,
               })(<Input placeholder="请输入" />)}
             </Form.Item>

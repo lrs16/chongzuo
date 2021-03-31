@@ -32,7 +32,7 @@ function ToDodetails(props) {
   const [userchoice, setUserChoice] = useState(false); // 已经选择人员
   const [changorder, setChangeOrder] = useState(undefined);
   const [Popvisible, setVisible] = useState(false);
-  const [modalvisible, setModalVisible] = useState('');
+  const [modalvisible, setModalVisible] = useState(false);
   const [butandorder, setButandOrder] = useState('');    // 流转，转回访，转单，审核，再处理时已经超时暂存按钮类型及选人order类型
 
   const handleHold = type => {

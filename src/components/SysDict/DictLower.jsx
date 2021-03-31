@@ -13,7 +13,7 @@ function DictLower(props) {
         type: 'dicttree/childdictLower',
         payload: { id: typeid },
       }).then(res => {
-        if (res.code === 200 && res.data.length > 0) {
+        if (res.code === 200 && !doCancel && res.data.length > 0) {
           selectlist.push(...res.data);
           setIsChange(true);
         }

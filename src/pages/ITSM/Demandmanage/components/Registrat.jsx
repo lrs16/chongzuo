@@ -48,7 +48,7 @@ const forminladeLayout = {
 
 const Registrat = forwardRef((props, ref) => {
   const { register, userinfo, files, ChangeFiles, location, selectdata } = props;
-  const { getFieldDecorator, setFieldsValue, validateFields } = props.form;
+  const { getFieldDecorator, setFieldsValue, validateFields, setFields, getFieldsValue } = props.form;
   const required = true;
   const [fileslist, setFilesList] = useState({ arr: [], ischange: false }); // 附件上传下载
   const [titleautodata, setTitleAutoData] = useState([]); // 预加载标题常用语
@@ -179,13 +179,15 @@ const Registrat = forwardRef((props, ref) => {
   // 选择报障用户，信息回填
   const handleDisableduser = (v, opt) => {
     const { user, phone, unit, unitId, dept, deptId } = opt.props.disableuser;
-    setFieldsValue({ proposer: user });
-    setFieldsValue({ proposerId: v });
-    setFieldsValue({ proposerPhone: phone });
-    setFieldsValue({ proposingUnit: unit });
-    setFieldsValue({ proposingUnitID: unitId });
-    setFieldsValue({ proposingDepartment: dept });
-    setFieldsValue({ proposingDepartmentId: deptId });
+    setFieldsValue({
+      proposer: user,
+      proposerId: v,
+      proposerPhone: phone,
+      proposingUnit: unit,
+      proposingUnitID: unitId,
+      proposingDepartment: dept,
+      proposingDepartmentId: deptId
+    });
   };
 
   // 关闭组织机构树抽屉
@@ -220,17 +222,24 @@ const Registrat = forwardRef((props, ref) => {
   // 选择单位树结点
   const handleUnitTreeNode = value => {
     setUnitRecord(value);
-    setFieldsValue({ proposingUnit: value.title });
-    //  setFieldsValue({ unitId: value.key });
-    setFieldsValue({ proposingDepartment: '' });
-    //  setFieldsValue({ deptId: '' });
+    setFieldsValue({
+      proposingUnit: value.title,
+      proposingUnitID: value.key,
+      Unit: value.title,
+      proposingDepartment: '',
+      proposingDepartmentId: '',
+      Department: '',
+    });
     SetDetpDrawer(false);
   };
 
   // 选择部门树结点
   const handleDeptTreeNode = value => {
-    setFieldsValue({ proposingDepartment: value.title });
-    //  setFieldsValue({ deptId: value.key });
+    setFieldsValue({
+      proposingDepartment: value.title,
+      proposingDepartmentId: value.key,
+      Department: value.title,
+    });
     SetDetpDrawer(false);
   };
 
@@ -351,15 +360,28 @@ const Registrat = forwardRef((props, ref) => {
           </Col>
           <Col span={8}>
             <Form.Item label="申请人单位">
-              <InputGroup compact>
-                {getFieldDecorator('proposingUnit', {
-                  rules: [{ required, message: '请输申请人单位' }],
+              <InputGroup
+                compact
+                onMouseLeave={() => {
+                  const unit = getFieldsValue(['Unit', 'proposingUnit']);
+                  if (unit.Unit !== '') {
+                    validateFields(['proposingUnit', 'proposingUnitID'], err => {
+                      if (err || unit.Unit !== unit.proposingUnit) {
+                        setFields({ 'Unit': { value: '', errors: [new Error('请选择申报人单位')] } })
+                      }
+                    });
+                  }
+                }
+                }
+              >
+                {getFieldDecorator('Unit', {
+                  rules: [{ required, message: '请输入关键字' }],
                   initialValue: register.proposingUnit,
                 })(
                   <AutoComplete
                     defaultActiveFirstOption={false}
                     filterOption={false}
-                    open={deptopen}
+                    open={unitopen}
                     dataSource={unitoptions}
                     optionLabelProp="value"
                     style={{ width: '85%' }}
@@ -368,10 +390,14 @@ const Registrat = forwardRef((props, ref) => {
                     onBlur={() => setUnitopen(false)}
                     onSelect={(v, opt) => {
                       setUnitRecord({ ...unitrecord, title: opt.props.children, key: v });
-                      setFieldsValue({ proposingUnit: opt.props.children });
-                      setFieldsValue({ proposingUnitID: v });
-                      setFieldsValue({ proposingDepartment: '' });
-                      setFieldsValue({ proposingDepartmentId: '' });
+                      setFieldsValue({
+                        proposingUnit: opt.props.children,
+                        proposingUnitID: v,
+                        Unit: opt.props.children,
+                        proposingDepartment: '',
+                        proposingDepartmentId: '',
+                        Department: '',
+                      });
                       setUnitdata([]);
                       setUnitopen(false);
                     }}
@@ -379,6 +405,7 @@ const Registrat = forwardRef((props, ref) => {
                     <Search
                       placeholder="可输入关键字搜索单位"
                       onSearch={values => handleUnitSearch(values)}
+                      allowClear
                     />
                   </AutoComplete>,
                 )}
@@ -395,17 +422,39 @@ const Registrat = forwardRef((props, ref) => {
             </Form.Item>
           </Col>
           <Col span={8} style={{ display: 'none' }}>
+            <Form.Item label="申请单位">
+              {getFieldDecorator('proposingUnit', {
+                rules: [{ required }],
+                initialValue: register.proposingUnit,
+              })(<Input placeholder="请输入" />)}
+            </Form.Item>
+          </Col>
+          <Col span={8} style={{ display: 'none' }}>
             <Form.Item label="申请单位ID">
               {getFieldDecorator('proposingUnitID', {
+                rules: [{ required }],
                 initialValue: register.proposingUnitID,
               })(<Input placeholder="请输入" />)}
             </Form.Item>
           </Col>
           <Col span={8}>
             <Form.Item label="申请人部门">
-              <InputGroup compact>
-                {getFieldDecorator('proposingDepartment', {
-                  rules: [{ message: '请输入申请人部门' }],
+              <InputGroup
+                compact
+                onMouseLeave={() => {
+                  const dept = getFieldsValue(['Department', 'proposingDepartment']);
+                  if (dept.Department !== '') {
+                    validateFields(['proposingDepartment'], (err) => {
+                      if (err || dept.Department !== dept.proposingDepartment) {
+                        setFields({ 'Department': { value: '', errors: [new Error('请选择申报人部门')] }, })
+                      };
+                    });
+                  }
+                }
+                }
+              >
+                {getFieldDecorator('Department', {
+                  rules: [{ message: '请输入关键字' }],
                   initialValue: register.proposingDepartment,
                 })(
                   <AutoComplete
@@ -419,8 +468,11 @@ const Registrat = forwardRef((props, ref) => {
                     onFocus={() => setDeptopen(true)}
                     onBlur={() => setDeptopen(false)}
                     onSelect={(v, opt) => {
-                      setFieldsValue({ proposingDepartment: opt.props.children });
-                      setFieldsValue({ proposingDepartmentId: v });
+                      setFieldsValue({
+                        proposingDepartment: opt.props.children,
+                        proposingDepartmentId: v,
+                        Department: opt.props.children,
+                      });
                       setDeptdata([]);
                       setUnitopen(false);
                     }}
@@ -449,7 +501,16 @@ const Registrat = forwardRef((props, ref) => {
           </Col>
           <Col span={8} style={{ display: 'none' }}>
             <Form.Item label="申请部门ID">
+              {getFieldDecorator('proposingDepartment', {
+                rules: [{ required }],
+                initialValue: register.proposingDepartment,
+              })(<Input placeholder="请输入" />)}
+            </Form.Item>
+          </Col>
+          <Col span={8} style={{ display: 'none' }}>
+            <Form.Item label="申请部门ID">
               {getFieldDecorator('proposingDepartmentId', {
+                rules: [{ required }],
                 initialValue: register.proposingDepartmentId,
               })(<Input placeholder="请输入" />)}
             </Form.Item>

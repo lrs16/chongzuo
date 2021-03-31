@@ -210,7 +210,7 @@ function ToDolist(props) {
         <Row gutter={24}>
           <Form {...formItemLayout} onSubmit={handleSearch}>
             <Col span={8}>
-              <Form.Item label="需求编号" allowClear>
+              <Form.Item label="需求编号">
                 {getFieldDecorator('demandId', {
                   initialValue: '',
                 })(<Input placeholder="请输入" allowClear />)}

@@ -207,7 +207,7 @@ function QueryList(props) {
   } = props;
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 10 });
   const [expand, setExpand] = useState(false);
-  const [selectdata, setSelectData] = useState([]);
+  const [selectdata, setSelectData] = useState('');
 
   if (sign) {
     noStatistic = 'noStatistic';
@@ -415,8 +415,8 @@ function QueryList(props) {
   };
 
   const getTypebykey = key => {
-    if (selectdata.length > 0) {
-      return selectdata.filter(item => item.key === key)[0].children;
+    if (selectdata.ischange) {
+      return selectdata.arr.filter(item => item.key === key)[0].children;
     }
     return [];
   };

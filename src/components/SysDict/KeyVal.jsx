@@ -13,7 +13,7 @@ function KeyVal(props) {
           dictType,
         },
       }).then(res => {
-        if (res.code === 200) {
+        if (res.code === 200 && !doCancel) {
           ChangeSelectdata(res.data);
         } else {
           ChangeSelectdata([]);

@@ -23,7 +23,7 @@ const RegisterChild = React.forwardRef((props, ref) => {
   const attRef = useRef();
 
   const [fileslist, setFilesList] = useState({ arr: [], ischange: false }); // 下载列表
-  const [selectdata, setSelectData] = useState([]);
+  const [selectdata, setSelectData] = useState('');
   const [titleautodata, setTitleAutoData] = useState([]);
   const [desautodata, setDestoData] = useState([]);
   const [titlerecords, setTitleRecords] = useState([]);
@@ -44,17 +44,17 @@ const RegisterChild = React.forwardRef((props, ref) => {
   const required = true;
   let type;
 
-  if(main.type) {
+  if (main.type) {
     type = main.type.split();
     if (main.type.length === 6) {
       type.unshift(main.type.slice(0, 3));
     }
-  } 
-  const handlobjectChange = (value,selectedOptions) => {
+  }
+  const handlobjectChange = (value, selectedOptions) => {
     saveType(`${selectedOptions[1].dict_code}`);
   };
 
-  
+
 
 
 
@@ -118,8 +118,8 @@ const RegisterChild = React.forwardRef((props, ref) => {
   }, []);
 
   const getTypebyTitle = title => {
-    if (selectdata.length > 0) {
-      return selectdata.filter(item => item.title === title)[0].children;
+    if (selectdata.ischange) {
+      return selectdata.arr.filter(item => item.title === title)[0].children;
     }
     return [];
   };

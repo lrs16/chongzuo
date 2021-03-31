@@ -51,14 +51,14 @@ const forminladeLayout = {
 function Registration(props) {
   const pagetitle = props.route.name;
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
-  const [selectdata, setSelectData] = useState([]);
+  const [selectdata, setSelectData] = useState('');
   const [titleautodata, setTitleAutoData] = useState([]);
   const [desautodata, setDestoData] = useState([]);
   const [titlerecords, setTitleRecords] = useState([]);
   const [desrecords, setDesRecords] = useState([]);
 
   const {
-    form: { getFieldDecorator, resetFields, validateFields,setFieldsValue,getFieldsValue },
+    form: { getFieldDecorator, resetFields, validateFields, setFieldsValue, getFieldsValue },
     dispatch,
     newno, // 新的故障编号
     curruserinfo, // 获取登录用户信息
@@ -121,8 +121,8 @@ function Registration(props) {
     });
   };
 
-  const handlobjectChange = (value,selectedOptions) => {
-    setFieldsValue({ main_eventObject: value?.slice(-1)[0] }, () => {});
+  const handlobjectChange = (value, selectedOptions) => {
+    setFieldsValue({ main_eventObject: value?.slice(-1)[0] }, () => { });
     selectCascader = `${selectedOptions[1].dict_code}`;
   };
 
@@ -211,8 +211,8 @@ function Registration(props) {
   }, []);
 
   const getTypebyTitle = title => {
-    if (selectdata.length > 0) {
-      return selectdata.filter(item => item.title === title)[0].children;
+    if (selectdata.ischange) {
+      return selectdata.arr.filter(item => item.title === title)[0].children;
     }
     return [];
   };
@@ -470,7 +470,7 @@ function Registration(props) {
               <Form.Item
                 label="上传附件"
                 {...forminladeLayout}
-                // extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb"
+              // extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb"
               >
                 <div style={{ width: 400 }}>
                   <SysUpload

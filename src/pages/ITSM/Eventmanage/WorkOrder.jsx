@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { connect } from 'dva';
 import { Collapse, Steps, Spin, message } from 'antd';
+import SysDict from '@/components/SysDict';
 import styles from './index.less';
 import Registrat from './components/Registrat';
 import Check from './components/Check';
@@ -191,12 +192,15 @@ function WorkOrder2(props) {
         ...values,
         main_eventObject: values.main_eventObject.slice(-1)[0],
         register_occurTime: values.register_occurTime.format('YYYY-MM-DD HH:mm:ss'),
+        register_applicationUserId: values.register_applicationUser === '' ? '' : values.register_applicationUser,
+        register_applicationUnit: values.applicationUnit,
+        register_applicationUnitId: values.applicationUnit === '' ? '' : values.register_applicationUnitId,
         register_applicationDept:
-          values.register_applicationDept !== ''
+          values.applicationDept !== ''
             ? values.register_applicationDept
             : values.register_applicationUnit,
         register_applicationDeptId:
-          values.register_applicationDeptId !== ''
+          values.applicationDept !== ''
             ? values.register_applicationDeptId
             : values.register_applicationUnitId,
         register_selfhandle: String(Number(values.register_selfhandle)),
@@ -238,6 +242,8 @@ function WorkOrder2(props) {
           ...v,
           main_eventObject: v.main_eventObject.slice(-1)[0],
           register_occurTime: v.register_occurTime.format('YYYY-MM-DD HH:mm:ss'),
+          register_applicationUnit: v.applicationUnit,
+          register_applicationUnitId: v.applicationUnit === '' ? '' : v.register_applicationUnitId,
           register_applicationDept: v.register_applicationDept !== '' ? v.register_applicationDept : v.register_applicationUnit,
           register_applicationDeptId: v.register_applicationDeptId !== '' ? v.register_applicationDeptId : v.register_applicationUnitId,
           register_selfhandle: String(Number(v.register_selfhandle)),
@@ -461,38 +467,14 @@ function WorkOrder2(props) {
     }
   }, [files.ischange]);
 
-  // 请求下拉值
-  useEffect(() => {
-    let doCancel = false;
-    if (!doCancel) {
-      dispatch({
-        type: 'dicttree/childdictLower',
-        payload: { id: '1354273739344187393' },
-      }).then(res => {
-        if (res.code === 200) {
-          selectdata.arr.push(...res.data);
-          if (!doCancel) {
-            dispatch({
-              type: 'dicttree/childdictLower',
-              payload: { id: '1354288354950123522' },
-            }).then(ress => {
-              if (ress.code === 200) {
-                selectdata.arr.push(...ress.data);
-                setSelectData({ ...selectdata, ischange: true });
-              }
-            });
-          }
-        }
-      });
-    }
-    return () => {
-      setSelectData({ arr: [], ischange: false });
-      doCancel = true;
-    };
-  }, []);
-
   return (
     <div className={styles.collapse}>
+      <SysDict
+        typeid="1354273739344187393"
+        commonid="1354288354950123522"
+        ChangeSelectdata={newvalue => setSelectData(newvalue)}
+        style={{ display: 'none' }}
+      />
       {recordsloading === false && records !== '' && (
         <Steps
           current={records.length - 1}

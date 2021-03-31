@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Drawer, Button, Form, Input, AutoComplete, message } from 'antd';
+import { Drawer, Button, Form, Input, AutoComplete } from 'antd';
 import { phone_reg } from '@/utils/Regexp';
 import { queryUnitList, queryDeptList } from '@/services/common';
 import DeptSlectId from '@/components/DeptTree/SelectID';
@@ -172,7 +172,7 @@ function DisableduserDrawer(props) {
             initialValue: address,
           })(<Input placeholder="请输入" />)}
         </Form.Item> */}
-        <Form.Item label="单位">
+        <Form.Item label="单位" validateStatus="validating">
           <InputGroup compact>
             {getFieldDecorator('unit', {
               rules: [
@@ -231,7 +231,7 @@ function DisableduserDrawer(props) {
             initialValue: unitId,
           })(<Input />)}
         </Form.Item>
-        <Form.Item label="部门">
+        <Form.Item label="部门" validateStatus="validating">
           <InputGroup compact>
             {getFieldDecorator('dept', {
               initialValue: dept,

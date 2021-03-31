@@ -60,7 +60,7 @@ function QueryList(props) {
   const [expand, setExpand] = useState(false);
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 }); // 分页state
   const [selectedRow, setSelectedRow] = useState([]);
-  const [selectdata, setSelectData] = useState([]);
+  const [selectdata, setSelectData] = useState('');
 
   const columns = [
     {
@@ -349,8 +349,8 @@ function QueryList(props) {
   };
 
   const getTypebyTitle = title => {
-    if (selectdata.length > 0) {
-      return selectdata.filter(item => item.title === title)[0].children;
+    if (selectdata.ischange) {
+      return selectdata.arr.filter(item => item.title === title)[0].children;
     }
     return [];
   };

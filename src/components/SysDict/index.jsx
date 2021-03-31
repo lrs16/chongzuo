@@ -13,13 +13,13 @@ function DictTree(props) {
         type: 'dicttree/childdictLower',
         payload: { id: typeid },
       }).then(res => {
-        if (res.code === 200) {
+        if (res.code === 200 && !doCancel) {
           selectlist.push(...res.data);
           dispatch({
             type: 'dicttree/childdictLower',
             payload: { id: commonid },
           }).then(ress => {
-            if (ress.code === 200) {
+            if (res.code === 200 && !doCancel) {
               selectlist.push(...ress.data);
               setIsChange(true);
             }
@@ -29,12 +29,13 @@ function DictTree(props) {
     }
     return () => {
       setIsChange(false);
+      setSelectList([]);
       doCancel = true;
     };
   }, []);
   useEffect(() => {
     if (ischange) {
-      ChangeSelectdata(selectlist);
+      ChangeSelectdata({ arr: selectlist, ischange: true });
     }
   }, [ischange]);
 

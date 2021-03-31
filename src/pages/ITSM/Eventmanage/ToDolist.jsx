@@ -104,7 +104,7 @@ function ToDolist(props) {
   } = props;
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
   const [expand, setExpand] = useState(false);
-  const [selectdata, setSelectData] = useState([]);
+  const [selectdata, setSelectData] = useState('');
 
   useEffect(() => {
     validateFields((err, values) => {
@@ -214,8 +214,8 @@ function ToDolist(props) {
   };
 
   const getTypebykey = key => {
-    if (selectdata.length > 0) {
-      return selectdata.filter(item => item.key === key)[0].children;
+    if (selectdata.ischange) {
+      return selectdata.arr.filter(item => item.key === key)[0].children;
     }
     return [];
   };
