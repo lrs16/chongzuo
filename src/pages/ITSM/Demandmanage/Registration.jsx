@@ -39,7 +39,6 @@ function Registration(props) {
           values.proposingDepartment !== '' ? values.proposingDepartment : values.proposingUnit,
         proposingDepartmentId:
           values.proposingDepartmentId !== '' ? values.proposingDepartmentId : values.proposingUnitID,
-        attachment: JSON.stringify(files),
         attachment: JSON.stringify(files.arr),
         functionalModule: values.functionalModule.join('/'),
         nextUserIds: [

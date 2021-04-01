@@ -148,7 +148,7 @@ function WorkOrder(props) {
       switch (type) {
         case 'save':
           dispatch({
-            type: 'demandtodo/demandsave',
+            type: 'demandtodo/demandregisterupdate',
             payload: {
               paloadvalues: { ...formvalue },
               processInstanceId: mainId,

@@ -185,7 +185,7 @@ const Registrat = forwardRef((props, ref) => {
       proposerPhone: phone,
       proposingUnit: unit,
       Unit: unit,
-      proposingUnitID: unitId,
+      proposingUnitId: unitId,
       proposingDepartment: dept,
       proposingDepartmentId: deptId,
       Department: dept,
@@ -235,7 +235,7 @@ const Registrat = forwardRef((props, ref) => {
     setUnitRecord(value);
     setFieldsValue({
       proposingUnit: value.title,
-      proposingUnitID: value.key,
+      proposingUnitId: value.key,
       Unit: value.title,
       proposingDepartment: '',
       proposingDepartmentId: '',
@@ -398,7 +398,7 @@ const Registrat = forwardRef((props, ref) => {
                       setUnitRecord({ ...unitrecord, title: opt.props.children, key: v });
                       setFieldsValue({
                         proposingUnit: opt.props.children,
-                        proposingUnitID: v,
+                        proposingUnitId: v,
                         Unit: opt.props.children,
                         proposingDepartment: '',
                         proposingDepartmentId: '',
@@ -437,9 +437,9 @@ const Registrat = forwardRef((props, ref) => {
           </Col>
           <Col span={8} style={{ display: 'none' }}>
             <Form.Item label="申请单位ID">
-              {getFieldDecorator('proposingUnitID', {
+              {getFieldDecorator('proposingUnitId', {
                 rules: [{ required }],
-                initialValue: register.proposingUnitID,
+                initialValue: register.proposingUnitId,
               })(<Input placeholder="请输入" />)}
             </Form.Item>
           </Col>
@@ -716,7 +716,7 @@ Registrat.defaultProps = {
     proposingDepartment: '',
     proposingDepartmentId: '',
     proposingUnit: '',
-    proposingUnitID: '7AC3EF0F701402A2E0530A644F130365',
+    proposingUnitId: '1',
     reason: '',
     // registerTime: moment().format(),
     title: '',
