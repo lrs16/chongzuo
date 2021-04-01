@@ -121,8 +121,8 @@ export async function querydownload1(params) {
     method: 'POST',
     body: JSON.stringify({
       ...params,
-      pageNum:params.current,
-      pageSize:params.pageSize
+      pageNum: params.current,
+      pageSize: params.pageSize
     }),
   });
 }
@@ -274,5 +274,13 @@ export async function querycountdownload(current, pageSize, values, dictType) {
   return request(`/trouble/flow/expStatOrderRelateDict`, {
     method: 'POST',
     body: JSON.stringify(params),
+  });
+}
+
+// 故障工单附件打包下载
+export async function downFileToZip(id) {
+  return request(`/trouble/flow/downFileToZip?id=${id}`, {
+    method: 'GET',
+    responseType: 'blob',
   });
 }

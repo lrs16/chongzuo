@@ -12,8 +12,41 @@ import SysUpload from '@/components/SysUpload'; // 附件下载组件
 
 const { TextArea } = Input;
 
+const formItemLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 12 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 12 },
+  },
+};
+
+const ItemLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 10 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 14 },
+  },
+};
+
+const forminladeLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 3 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 19 },
+  },
+};
+
 const SummaryChild = React.forwardRef((props, ref) => {
-  const { formItemLayout, forminladeLayout, finish, curruserinfo, ChangeFiles, tododetailslist, ChangeFileskey } = props;
+  const { finish, curruserinfo, ChangeFiles, tododetailslist, ChangeFileskey } = props;
   const message = '上传故障分析报告已超时， 实际上传时间已超过要求上传时间。'
   const { getFieldDecorator, setFieldsValue } = props.form;
   const attRef = useRef();
@@ -71,7 +104,7 @@ const SummaryChild = React.forwardRef((props, ref) => {
             </Form.Item>
           </Col>
 
-          <Col span={10}>
+          <Col span={8}>
             <>
               <Form.Item label="上传故障分析报告">
                 {getFieldDecorator('finishAnalysisAttachments', {
@@ -83,7 +116,6 @@ const SummaryChild = React.forwardRef((props, ref) => {
                   ],
                 })(
                   <div
-                    style={{ width: 400 }}
                     onMouseOver={() => {
                       ChangeFileskey('1');
                     }}
@@ -103,17 +135,16 @@ const SummaryChild = React.forwardRef((props, ref) => {
               </Form.Item>
             </>
           </Col>
-
-          <Col span={7}>
-            <Form.Item label="要求上传时间">
+          <Col span={8}>
+            <Form.Item label="要求上传时间" {...ItemLayout}>
               {getFieldDecorator('finishRequiredTime', {
                 initialValue: (tododetailslist && tododetailslist.requiredUploadTime) ? moment(tododetailslist.requiredUploadTime) : moment(finish.finishRequiredTime)
               })(<DatePicker showTime disabled format="YYYY-MM-DD HH:mm:ss" />)}
             </Form.Item>
           </Col>
 
-          <Col span={7}>
-            <Form.Item label="实际上传时间">
+          <Col span={8}>
+            <Form.Item label="实际上传时间"{...ItemLayout}>
               {getFieldDecorator('finishPracticeTime', {
                 initialValue: (finish.finishAnalysisAttachments !== undefined && finish.finishAnalysisAttachments !== null && finish.finishAnalysisAttachments !== '[]') ? (moment((JSON.parse(finish.finishAnalysisAttachments))[0].nowtime) || '[]') : ''
               })(<DatePicker showTime disabled format="YYYY-MM-DD HH:mm:ss" />)}
@@ -127,23 +158,23 @@ const SummaryChild = React.forwardRef((props, ref) => {
             // extra="只能上传jpg/png/doc/xls/xlsx/pdf格式文件，单个文件不能超过500kb"
             >
               {
-                getFieldDecorator('finishAttachments',{})(
+                getFieldDecorator('finishAttachments', {})(
                   <div
-                  style={{ width: 400 }}
-                  onMouseOver={() => {
-                    ChangeFileskey('2');
-                  }}
-                  onFocus={() => 0}
-                >
-                  <SysUpload
-                    fileslist={(finish && finish.finishAttachments) ? JSON.parse(finish.finishAttachments) : []}
-                    ChangeFileslist={newvalue => {
-                      setFilesList(newvalue);
-                      setFieldsValue({ finishAttachments: JSON.stringify(newvalue.arr) });
-                    }
-                    }
-                  />
-                </div>
+                    style={{ width: 400 }}
+                    onMouseOver={() => {
+                      ChangeFileskey('2');
+                    }}
+                    onFocus={() => 0}
+                  >
+                    <SysUpload
+                      fileslist={(finish && finish.finishAttachments) ? JSON.parse(finish.finishAttachments) : []}
+                      ChangeFileslist={newvalue => {
+                        setFilesList(newvalue);
+                        setFieldsValue({ finishAttachments: JSON.stringify(newvalue.arr) });
+                      }
+                      }
+                    />
+                  </div>
                 )
               }
             </Form.Item>

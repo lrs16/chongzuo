@@ -8,6 +8,7 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 // eslint-disable-next-line import/no-unresolved
 import creatHistory from 'history/createHashHistory'; // 返回上一页
 import SelectUser from '@/components/SelectUser'; // 选人组件
+import User from '@/components/SelectUser/User';
 import { compose } from '_redux@4.0.5@redux';
 import styles from './index.less';
 import ModelRollback from './components/ModelRollback'; // 回退组件
@@ -85,14 +86,14 @@ function Todolistdetails(props) {
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
   const [fileskey, setFileskey] = useState('1'); // 下载列表
 
-  const [files1, setFiles1] = useState([]);
-  const [files2, setFiles2] = useState([]);
-  const [files3, setFiles3] = useState([]);
-
   const [result, setResult] = useState('1');
   const [resultsecond, setResultsecond] = useState('1');
   const [resultconfirm, setResultconfirm] = useState('1');
   const [type, setType] = useState('');
+
+  const [uservisible, setUserVisible] = useState(false); // 是否显示选人组件
+  const [userchoice, setUserChoice] = useState(false); // 已经选择人员
+  const [changorder, setChangeOrder] = useState(undefined);
 
   const RegisterRef = useRef(); // 故障登记
   const ExamineRef = useRef(); // 系统运维商审核  自动化科业务负责人审核
@@ -198,6 +199,11 @@ function Todolistdetails(props) {
     });
   };
 
+  // 表单校验提示信息
+  const formerr = () => {
+    message.error('请将信息填写完整...');
+  };
+
   useEffect(() => {
     getfaultTodoDetailData();
     getCurrUserInfo(); // 获取登录用户信息
@@ -249,7 +255,7 @@ function Todolistdetails(props) {
       payload: { taskId, result: results, userIds: sessionStorage.getItem('NextflowUserId') },
     }).then(res => {
       if (res.code === 200) {
-        getfaultTodoDetailData();
+        //  getfaultTodoDetailData();  //都要流转了还要获取信息？
         message.success(res.msg);
         router.push(`/ITSM/faultmanage/todolist`);
       } else {
@@ -261,9 +267,7 @@ function Todolistdetails(props) {
 
   // 各个表单验证
   const saveRegister = cirStatus => {
-    // console.log(Array.isArray([{}]));
     // 故障登记
-    // eslint-disable-next-line consistent-return
     RegisterRef.current.validateFields((err, values) => {
       if (cirStatus ? !err : true) {
         const formValues = values;
@@ -293,7 +297,7 @@ function Todolistdetails(props) {
           if (res.code === 200) {
             getfaultTodoDetailData();
             if (cirStatus) {
-              faultcircula();
+              setUserVisible(true);
             } else {
               message.success(res.msg);
             }
@@ -302,6 +306,7 @@ function Todolistdetails(props) {
           }
         });
       }
+      return formerr();
     });
   };
 
@@ -309,7 +314,6 @@ function Todolistdetails(props) {
 
   const saveExamine = cirStatus => {
     // 审核类型：1-系统运维商审核；2-自动化科业务负责人审核
-    // eslint-disable-next-line consistent-return
     ExamineRef.current.validateFields((err, values) => {
       const formValues = values;
       if (formValues.checkTime) {
@@ -340,7 +344,7 @@ function Todolistdetails(props) {
             // 保存成功后隐藏回退按钮
             getfaultTodoDetailData();
             if (cirStatus) {
-              faultcircula();
+              setUserVisible(true);
             } else {
               message.success(res.msg);
             }
@@ -349,12 +353,12 @@ function Todolistdetails(props) {
           }
         });
       }
+      return formerr();
     });
   };
 
   const saveHandle = cirStatus => {
     // 系统运维商处理
-    // eslint-disable-next-line consistent-return
     HandleRef.current.validateFields((err, values) => {
       const formValues = values;
       if (formValues.handleStartTime || formValues.handleEndTime) {
@@ -380,7 +384,7 @@ function Todolistdetails(props) {
           if (res.code === 200) {
             getfaultTodoDetailData();
             if (cirStatus) {
-              faultcircula();
+              setUserVisible(true)
             } else {
               message.success(res.msg);
             }
@@ -389,6 +393,7 @@ function Todolistdetails(props) {
           }
         });
       }
+      return formerr();
     });
   };
 
@@ -428,7 +433,7 @@ function Todolistdetails(props) {
           if (res.code === 200) {
             getfaultTodoDetailData();
             if (cirStatus) {
-              faultcircula();
+              setUserVisible(true)
             } else {
               message.success(res.msg);
             }
@@ -437,6 +442,7 @@ function Todolistdetails(props) {
           }
         });
       }
+      return formerr();
     });
   };
 
@@ -452,7 +458,7 @@ function Todolistdetails(props) {
         if (files.ischange) {
           formValues.confirmAttachments = JSON.stringify(files.arr);
         }
-    
+
         if (tododetailslist.editState === 'edit') {
           formValues.confirmId = tododetailslist.confirm.id;
         } else {
@@ -465,7 +471,7 @@ function Todolistdetails(props) {
           if (res.code === 200) {
             getfaultTodoDetailData();
             if (cirStatus) {
-              faultcircula();
+              setUserVisible(true)
             } else {
               message.success(res.msg);
             }
@@ -474,6 +480,7 @@ function Todolistdetails(props) {
           }
         });
       }
+      return formerr();
     });
   };
 
@@ -701,6 +708,12 @@ function Todolistdetails(props) {
     });
   };
 
+  useEffect(() => {
+    if (userchoice) {
+      faultcircula()
+    }
+  }, [userchoice])
+
   return (
     <PageHeaderWrapper
       extra={
@@ -770,17 +783,25 @@ function Todolistdetails(props) {
             !(main.status === '45' && editState === 'add') &&
             result === '1' &&
             resultsecond === '1' && (
-              <SelectUser handleSubmit={() => handleSave(currenStatus)} taskId={id}>
-                <Button
-                  type="primary"
-                  onMouseOver={() => {
-                    sessionStorage.setItem('flowtype', '1');
-                  }}
-                  onFocus={() => 0}
-                >
-                  流转
-                  </Button>
-              </SelectUser>
+              // <SelectUser handleSubmit={() => handleSave(currenStatus)} taskId={id}>
+              //   <Button
+              //     type="primary"
+              //     onMouseOver={() => {
+              //       sessionStorage.setItem('flowtype', '1');
+              //     }}
+              //     onFocus={() => 0}
+              //   >
+              //     流转
+              //     </Button>
+              // </SelectUser>
+              <Button
+                type="primary"
+                style={{ marginRight: 8 }}
+                onClick={() => { handleSave(currenStatus) }}
+                onMouseOver={() => { sessionStorage.setItem('flowtype', '1') }}
+                onFocus={() => 0}>
+                流转
+              </Button>
             )}
           {result === '0' && (
             <Button type="primary" onClick={handleRegist}>
@@ -839,7 +860,7 @@ function Todolistdetails(props) {
                       description={
                         <div className={styles.stepDescription}>
                           处理人：{formHandler}
-                          <div>结束时间：{moment(startTime).format('YYYY-MM-DD hh:mm:ss')}</div>
+                          <div>结束时间：{moment(startTime).format('YYYY-MM-DD HH:mm:ss')}</div>
                         </div>
                       }
                     />
@@ -1040,6 +1061,14 @@ function Todolistdetails(props) {
           </Card>
         </>
       )}
+      <User
+        taskId={id}
+        visible={uservisible}
+        ChangeUserVisible={v => setUserVisible(v)}
+        changorder={changorder}
+        ChangeChoice={v => setUserChoice(v)}
+        ChangeType={() => 0}
+      />
     </PageHeaderWrapper>
   );
 }

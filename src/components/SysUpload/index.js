@@ -10,9 +10,11 @@ function SysUpload(props) {
   const [filetype, setFileType] = useState('');
 
   useEffect(() => {
-    if (fileslist.length > 0) {
+    let doCancel = false;
+    if (fileslist.length > 0 && !doCancel) {
       setUploadFiles(fileslist);
     }
+    return () => { doCancel = true };
   }, []);
 
   // 不允许上传类型

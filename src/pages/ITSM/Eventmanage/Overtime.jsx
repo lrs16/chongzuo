@@ -23,11 +23,11 @@ const formItemLayout = {
 const forminladeLayout = {
   labelCol: {
     xs: { span: 24 },
-    sm: { span: 3 },
+    sm: { span: 4 },
   },
   wrapperCol: {
     xs: { span: 24 },
-    sm: { span: 21 },
+    sm: { span: 20 },
   },
 };
 
@@ -342,14 +342,14 @@ function Overtime(props) {
       <Card>
         <Row gutter={24}>
           <Form {...formItemLayout}>
-            <Col span={8}>
+            <Col span={7}>
               <Form.Item label="事件编号">
                 {getFieldDecorator('eventNo', {
                   initialValue: '',
                 })(<Input placeholder="请输入" />)}
               </Form.Item>
             </Col>
-            <Col span={8}>
+            <Col span={7}>
               <Form.Item label="当前环节">
                 {getFieldDecorator('flowNodeName', {
                   initialValue: '',
@@ -362,87 +362,57 @@ function Overtime(props) {
                 )}
               </Form.Item>
             </Col>
+            <Col span={10}>
+              <Form.Item label="建单时间" {...forminladeLayout}>
+                {getFieldDecorator('createTime', {
+                  initialValue: [moment().startOf('month'), moment()],
+                })(<RangePicker showTime format='YYYY-MM-DD HH:mm:ss' />)}
+              </Form.Item>
+            </Col>
             {expand === true && (
               <>
-                <Col span={8}>
+                <Col span={7}>
                   <Form.Item label="事件标题">
                     {getFieldDecorator('eventTitle', {
                       initialValue: '',
                     })(<Input placeholder="请输入" />)}
                   </Form.Item>
                 </Col>
-                <Col span={8}>
+                <Col span={7}>
                   <Form.Item label="当前处理人">
                     {getFieldDecorator('userName', {
                       initialValue: '',
                     })(<Input placeholder="请输入" />)}
                   </Form.Item>
                 </Col>
-                <Col span={16}>
-                  <Form.Item label="建单时间" {...forminladeLayout}>
-                    {getFieldDecorator('createTime', {
-                      initialValue: [moment().startOf('month'), moment()],
-                    })(<RangePicker showTime format='YYYY-MM-DD HH:mm:ss' />)}
-                  </Form.Item>
-                </Col>
+
               </>
             )}
-            {expand === false && (
-              <Col span={8}>
-                <Form.Item>
-                  <Button type="primary" onClick={handleSearch}>
-                    查 询
-                  </Button>
-                  <Button style={{ marginLeft: 8 }} onClick={() => resetFields()}>
-                    重 置
-                  </Button>
-                  <Button
-                    style={{ marginLeft: 8 }}
-                    type="link"
-                    onClick={() => {
-                      setExpand(!expand);
-                    }}
-                  >
-                    {expand ? (
-                      <>
-                        关 闭 <UpOutlined />
-                      </>
-                    ) : (
-                      <>
-                        展 开 <DownOutlined />
-                      </>
-                    )}
-                  </Button>
-                </Form.Item>
-              </Col>
-            )}
-            {expand === true && (
-              <Col span={24} style={{ textAlign: 'right', marginBottom: 8 }}>
-                <Button type="primary" onClick={handleSearch}>
-                  查 询
+            <Col span={24} style={{ textAlign: 'right', marginBottom: 8 }}>
+              <Button type="primary" onClick={handleSearch}>
+                查 询
                 </Button>
-                <Button style={{ marginLeft: 8 }} onClick={() => resetFields()}>
-                  重 置
+              <Button style={{ marginLeft: 8 }} onClick={() => resetFields()}>
+                重 置
                 </Button>
-                <Button
-                  style={{ marginLeft: 8 }}
-                  type="link"
-                  onClick={() => {
-                    setExpand(!expand);
-                  }}
-                >
-                  {expand ? (
-                    <>
-                      关 闭 <UpOutlined />
-                    </>
-                  ) : (
-                    <>
-                      展 开 <DownOutlined />
-                    </>
-                  )}
-                </Button>
-              </Col>
-            )}
+              <Button
+                style={{ marginLeft: 8 }}
+                type="link"
+                onClick={() => {
+                  setExpand(!expand);
+                }}
+              >
+                {expand ? (
+                  <>
+                    关 闭 <UpOutlined />
+                  </>
+                ) : (
+                  <>
+                    展 开 <DownOutlined />
+                  </>
+                )}
+              </Button>
+            </Col>
           </Form>
         </Row>
         <div style={{ marginBottom: 24 }}>
