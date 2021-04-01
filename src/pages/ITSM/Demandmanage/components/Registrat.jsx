@@ -481,6 +481,7 @@ const Registrat = forwardRef((props, ref) => {
                     <Search
                       placeholder="可输入关键字搜索部门"
                       onSearch={values => handleDeptSearch(values)}
+                      allowClear
                     />
                   </AutoComplete>,
                 )}

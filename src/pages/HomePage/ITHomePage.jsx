@@ -417,7 +417,7 @@ function ITHomePage(props) {
           type: 'problemmanage/searchBesolve',
           payload: {
             values,
-            current: page,
+            pageNum: page,
             pageSize: size,
           },
         });
