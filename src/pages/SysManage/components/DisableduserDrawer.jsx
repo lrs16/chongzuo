@@ -274,13 +274,13 @@ function DisableduserDrawer(props) {
                 onFocus={() => setDeptopen(true)}
                 onBlur={() => {
                   setDeptopen(false);
-                  const d = getFieldsValue(['sondept', 'dept']);
-                  if (d.sondept !== '') {
-                    validateFields(['unit'], err => {
-                      if (err || d.sondept !== d.dept) {
-                        setFields({ 'sondept': { value: '', errors: [new Error('请选择部门')] } })
-                      }
-                    });
+                  const d = getFieldsValue(['unit', 'sondept', 'dept']);
+                  if (d.unit !== '') {
+                    if (d.sondept !== d.dept) {
+                      setFields({ 'sondept': { value: '', errors: [new Error('请选择部门')] } })
+                    }
+                  } else {
+                    setFieldsValue({ sondept: '' });
                   }
                 }}
                 onSelect={(v, opt) => {

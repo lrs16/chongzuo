@@ -550,11 +550,9 @@ const Registrat = forwardRef((props, ref) => {
                       setUnitopen(false);
                       const unit = getFieldsValue(['applicationUnit', 'register_applicationUnit']);
                       if (unit.applicationUnit !== '') {
-                        validateFields(['register_applicationUnit', 'register_applicationUnitId'], err => {
-                          if (err || unit.applicationUnit !== unit.register_applicationUnit) {
-                            setFields({ 'applicationUnit': { value: '', errors: [new Error('请选择申报人单位')] } })
-                          }
-                        });
+                        if (unit.applicationUnit !== unit.register_applicationUnit) {
+                          setFields({ 'applicationUnit': { value: '', errors: [new Error('请选择申报人单位')] } })
+                        }
                       }
                     }}
                     onSelect={(v, opt) => {
@@ -624,13 +622,13 @@ const Registrat = forwardRef((props, ref) => {
                     onFocus={() => setDeptopen(true)}
                     onBlur={() => {
                       setDeptopen(false);
-                      const dept = getFieldsValue(['applicationUnit', 'register_applicationUnit']);
+                      const dept = getFieldsValue(['applicationUnit', 'applicationDept', 'register_applicationDept']);
                       if (dept.applicationUnit !== '') {
-                        validateFields(['register_applicationUnit', 'register_applicationDeptId'], err => {
-                          if (err || dept.applicationUnit !== dept.register_applicationUnit) {
-                            setFields({ 'applicationDept': { value: '', errors: [new Error('请选择申报人部门')] } })
-                          }
-                        });
+                        if (dept.applicationDept !== dept.register_applicationDept) {
+                          setFields({ 'applicationDept': { value: '', errors: [new Error('请选择申报人部门')] } });
+                        }
+                      } else {
+                        setFieldsValue({ applicationDept: '' })
                       }
                     }}
                     onSelect={(v, opt) => {
@@ -672,7 +670,6 @@ const Registrat = forwardRef((props, ref) => {
           <Col span={8} style={{ display: 'none' }}>
             <Form.Item label="申报人部门">
               {getFieldDecorator('register_applicationDept', {
-                rules: [{ required, }],
                 initialValue: register.applicationDept,
               })(<Input placeholder="请输入" />)}
             </Form.Item>
@@ -680,7 +677,6 @@ const Registrat = forwardRef((props, ref) => {
           <Col span={8} style={{ display: 'none' }}>
             <Form.Item label="申报人部门id">
               {getFieldDecorator('register_applicationDeptId', {
-                rules: [{ required, }],
                 initialValue: register.applicationDeptId,
               })(<Input placeholder="请输入" />)}
             </Form.Item>
