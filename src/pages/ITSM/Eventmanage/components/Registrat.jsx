@@ -302,8 +302,8 @@ const Registrat = forwardRef((props, ref) => {
 
   // 查询部门
   const handleDeptSearch = value => {
-    const unitid = getFieldsValue(['register_applicationUnitId']);
-    if (unitid.register_applicationUnitId === '') {
+    const unit = getFieldsValue(['register_applicationUnit']);
+    if (unit.register_applicationUnit === '') {
       setFields({
         'applicationUnit': {
           value: '',
@@ -311,7 +311,7 @@ const Registrat = forwardRef((props, ref) => {
         },
       })
     }
-    if (value !== '' && unitid.register_applicationUnitId !== '') {
+    if (value !== '' && unit.register_applicationUnit !== '') {
       queryDeptList({ key: value, unitId: unitrecord.key }).then(res => {
         if (res.data !== undefined) {
           const arr = [...res.data];
@@ -532,20 +532,7 @@ const Registrat = forwardRef((props, ref) => {
           </Col>
           <Col span={8}>
             <Form.Item label="申报人单位">
-              <InputGroup
-                compact
-                onMouseLeave={() => {
-                  const unit = getFieldsValue(['applicationUnit', 'register_applicationUnit']);
-                  if (unit.applicationUnit !== '') {
-                    validateFields(['register_applicationUnit', 'register_applicationUnitId'], err => {
-                      if (err || unit.applicationUnit !== unit.register_applicationUnit) {
-                        setFields({ 'applicationUnit': { value: '', errors: [new Error('请选择申报人单位')] } })
-                      }
-                    });
-                  }
-
-                }}
-              >
+              <InputGroup compact>
                 {getFieldDecorator('applicationUnit', {
                   rules: [{ required, message: '请选择申报人单位' }],
                   initialValue: register.applicationUnit,
@@ -559,7 +546,17 @@ const Registrat = forwardRef((props, ref) => {
                     style={{ width: '85%' }}
                     getPopupContainer={triggerNode => triggerNode.parentNode}
                     onFocus={() => setUnitopen(true)}
-                    onBlur={() => setUnitopen(false)}
+                    onBlur={() => {
+                      setUnitopen(false);
+                      const unit = getFieldsValue(['applicationUnit', 'register_applicationUnit']);
+                      if (unit.applicationUnit !== '') {
+                        validateFields(['register_applicationUnit', 'register_applicationUnitId'], err => {
+                          if (err || unit.applicationUnit !== unit.register_applicationUnit) {
+                            setFields({ 'applicationUnit': { value: '', errors: [new Error('请选择申报人单位')] } })
+                          }
+                        });
+                      }
+                    }}
                     onSelect={(v, opt) => {
                       setUnitRecord({ ...unitrecord, title: opt.props.children, key: v });
                       setFieldsValue({
@@ -611,20 +608,7 @@ const Registrat = forwardRef((props, ref) => {
           </Col>
           <Col span={8}>
             <Form.Item label="申报人部门">
-              <InputGroup
-                compact
-                onMouseLeave={() => {
-                  const dept = getFieldsValue(['applicationUnit', 'register_applicationUnit']);
-                  if (dept.applicationUnit !== '') {
-                    validateFields(['register_applicationUnit', 'register_applicationDeptId'], err => {
-                      if (err || dept.applicationUnit !== dept.register_applicationUnit) {
-                        setFields({ 'applicationDept': { value: '', errors: [new Error('请选择申报人部门')] } })
-                      }
-                    });
-                  }
-
-                }}
-              >
+              <InputGroup compact>
                 {getFieldDecorator('applicationDept', {
                   rules: [{ message: '请输入关键字' }],
                   initialValue: register.applicationDept,
@@ -638,7 +622,17 @@ const Registrat = forwardRef((props, ref) => {
                     style={{ width: '85%' }}
                     getPopupContainer={triggerNode => triggerNode.parentNode}
                     onFocus={() => setDeptopen(true)}
-                    onBlur={() => setDeptopen(false)}
+                    onBlur={() => {
+                      setDeptopen(false);
+                      const dept = getFieldsValue(['applicationUnit', 'register_applicationUnit']);
+                      if (dept.applicationUnit !== '') {
+                        validateFields(['register_applicationUnit', 'register_applicationDeptId'], err => {
+                          if (err || dept.applicationUnit !== dept.register_applicationUnit) {
+                            setFields({ 'applicationDept': { value: '', errors: [new Error('请选择申报人部门')] } })
+                          }
+                        });
+                      }
+                    }}
                     onSelect={(v, opt) => {
                       setFieldsValue({
                         register_applicationDept: opt.props.children,
@@ -660,7 +654,7 @@ const Registrat = forwardRef((props, ref) => {
                   style={{ width: '15%' }}
                   onClick={() => {
                     validateFields(
-                      ['applicationUnit', 'applicationUnitId'],
+                      ['applicationUnit'],
                       err => {
                         if (!err) {
                           SetDetpDrawer(!detpdrawer);
@@ -1038,7 +1032,7 @@ Registrat.defaultProps = {
       applicationDept: '',
       applicationDeptId: '',
       applicationUnit: '',
-      applicationUnitId: '7AC3EF0F701402A2E0530A644F130365',
+      applicationUnitId: '1',
       applicationUser: '',
       applicationUserId: '',
       applicationUserPhone: '',

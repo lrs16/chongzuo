@@ -209,7 +209,16 @@ const Registrat = forwardRef((props, ref) => {
 
   // 查询部门
   const handleDeptSearch = value => {
-    if (value !== '') {
+    const u = getFieldsValue(['proposingUnit']);
+    if (u.proposingUnit === '') {
+      setFields({
+        'Unit': {
+          value: '',
+          errors: [new Error('请选择申报人单位')],
+        },
+      })
+    }
+    if (value !== '' && u.proposingUnit !== '') {
       queryDeptList({ key: value, unitId: unitrecord.key }).then(res => {
         if (res.data !== undefined) {
           const arr = [...res.data];
@@ -360,22 +369,9 @@ const Registrat = forwardRef((props, ref) => {
           </Col>
           <Col span={8}>
             <Form.Item label="申请人单位">
-              <InputGroup
-                compact
-                onMouseLeave={() => {
-                  const unit = getFieldsValue(['Unit', 'proposingUnit']);
-                  if (unit.Unit !== '') {
-                    validateFields(['proposingUnit', 'proposingUnitID'], err => {
-                      if (err || unit.Unit !== unit.proposingUnit) {
-                        setFields({ 'Unit': { value: '', errors: [new Error('请选择申报人单位')] } })
-                      }
-                    });
-                  }
-                }
-                }
-              >
+              <InputGroup compact>
                 {getFieldDecorator('Unit', {
-                  rules: [{ required, message: '请输入关键字' }],
+                  rules: [{ required, message: '请选择申请人单位' }],
                   initialValue: register.proposingUnit,
                 })(
                   <AutoComplete
@@ -387,7 +383,17 @@ const Registrat = forwardRef((props, ref) => {
                     style={{ width: '85%' }}
                     getPopupContainer={triggerNode => triggerNode.parentNode}
                     onFocus={() => setUnitopen(true)}
-                    onBlur={() => setUnitopen(false)}
+                    onBlur={() => {
+                      setUnitopen(false);
+                      const unit = getFieldsValue(['Unit', 'proposingUnit']);
+                      if (unit.Unit !== '') {
+                        validateFields(['proposingUnit', 'proposingUnitID'], err => {
+                          if (err || unit.Unit !== unit.proposingUnit) {
+                            setFields({ 'Unit': { value: '', errors: [new Error('请选择申报人单位')] } })
+                          }
+                        });
+                      }
+                    }}
                     onSelect={(v, opt) => {
                       setUnitRecord({ ...unitrecord, title: opt.props.children, key: v });
                       setFieldsValue({
@@ -439,22 +445,9 @@ const Registrat = forwardRef((props, ref) => {
           </Col>
           <Col span={8}>
             <Form.Item label="申请人部门">
-              <InputGroup
-                compact
-                onMouseLeave={() => {
-                  const dept = getFieldsValue(['Department', 'proposingDepartment']);
-                  if (dept.Department !== '') {
-                    validateFields(['proposingDepartment'], (err) => {
-                      if (err || dept.Department !== dept.proposingDepartment) {
-                        setFields({ 'Department': { value: '', errors: [new Error('请选择申报人部门')] }, })
-                      };
-                    });
-                  }
-                }
-                }
-              >
+              <InputGroup compact>
                 {getFieldDecorator('Department', {
-                  rules: [{ message: '请输入关键字' }],
+                  rules: [{ message: '请选择申请人部门' }],
                   initialValue: register.proposingDepartment,
                 })(
                   <AutoComplete
@@ -466,7 +459,17 @@ const Registrat = forwardRef((props, ref) => {
                     style={{ width: '85%' }}
                     getPopupContainer={triggerNode => triggerNode.parentNode}
                     onFocus={() => setDeptopen(true)}
-                    onBlur={() => setDeptopen(false)}
+                    onBlur={() => {
+                      setDeptopen(false);
+                      const dept = getFieldsValue(['Department', 'proposingDepartment']);
+                      if (dept.Department !== '') {
+                        validateFields(['proposingDepartment'], (err) => {
+                          if (err || dept.Department !== dept.proposingDepartment) {
+                            setFields({ 'Department': { value: '', errors: [new Error('请选择申报人部门')] }, })
+                          };
+                        });
+                      }
+                    }}
                     onSelect={(v, opt) => {
                       setFieldsValue({
                         proposingDepartment: opt.props.children,
@@ -486,7 +489,7 @@ const Registrat = forwardRef((props, ref) => {
                 <Button
                   style={{ width: '15%' }}
                   onClick={() => {
-                    validateFields(['proposingUnit'], err => {
+                    validateFields(['Unit'], err => {
                       if (!err) {
                         SetDetpDrawer(!detpdrawer);
                         setTreeType('dept');

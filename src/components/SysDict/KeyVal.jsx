@@ -15,8 +15,6 @@ function KeyVal(props) {
       }).then(res => {
         if (res.code === 200 && !doCancel) {
           ChangeSelectdata(res.data);
-        } else {
-          ChangeSelectdata([]);
         }
       });
     }

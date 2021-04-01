@@ -23,7 +23,7 @@ const formItemLayout = {
 
 function DisableduserDrawer(props) {
   const { visible, ChangeVisible, title, handleSubmit } = props;
-  const { getFieldDecorator, validateFields, setFieldsValue } = props.form;
+  const { getFieldDecorator, validateFields, setFieldsValue, getFieldsValue, setFields } = props.form;
   const required = true;
   const { id, user, unit, dept, phone, mobile, unitId, deptId } = props.record;
   const [detpdrawer, SetDetpDrawer] = useState(false);
@@ -76,7 +76,16 @@ function DisableduserDrawer(props) {
 
   // 查询部门
   const handleDeptSearch = value => {
-    if (value !== '') {
+    const u = getFieldsValue(['unit']);
+    if (u.unit === '') {
+      setFields({
+        'sonunit': {
+          value: '',
+          errors: [new Error('请选择申报人单位')],
+        },
+      })
+    }
+    if (value !== '' && u.unit !== '') {
       queryDeptList({ key: value, unitId: unitrecord.key }).then(res => {
         if (res.data !== undefined) {
           const arr = [...res.data];
@@ -89,17 +98,24 @@ function DisableduserDrawer(props) {
   // 选择单位树结点
   const handleUnitTreeNode = value => {
     setUnitRecord({ ...unitrecord, title: value.title, key: value.key });
-    setFieldsValue({ unit: value.title });
-    setFieldsValue({ unitId: value.key });
-    setFieldsValue({ dept: '' });
-    setFieldsValue({ deptId: '' });
+    setFieldsValue({
+      unit: value.title,
+      unitId: value.key,
+      sonunit: value.title,
+      dept: '',
+      deptId: '',
+      sondept: '',
+    });
     SetDetpDrawer(false);
   };
 
   // 选择部门树结点
   const handleDeptTreeNode = value => {
-    setFieldsValue({ dept: value.title });
-    setFieldsValue({ deptId: value.key });
+    setFieldsValue({
+      dept: value.title,
+      deptId: value.key,
+      sondept: value.title,
+    });
     SetDetpDrawer(false);
   };
 
@@ -172,15 +188,10 @@ function DisableduserDrawer(props) {
             initialValue: address,
           })(<Input placeholder="请输入" />)}
         </Form.Item> */}
-        <Form.Item label="单位" validateStatus="validating">
+        <Form.Item label="单位">
           <InputGroup compact>
-            {getFieldDecorator('unit', {
-              rules: [
-                {
-                  required,
-                  message: '请选择单位',
-                },
-              ],
+            {getFieldDecorator('sonunit', {
+              rules: [{ required, message: '请选择单位' }],
               initialValue: unit,
             })(
               <AutoComplete
@@ -192,13 +203,27 @@ function DisableduserDrawer(props) {
                 style={{ width: '85%' }}
                 getPopupContainer={triggerNode => triggerNode.parentNode}
                 onFocus={() => setUnitopen(true)}
-                onBlur={() => setUnitopen(false)}
+                onBlur={() => {
+                  setUnitopen(false);
+                  const u = getFieldsValue(['sonunit', 'unit']);
+                  if (u.sonunit !== '') {
+                    validateFields(['unit'], err => {
+                      if (err || u.sonunit !== u.unit) {
+                        setFields({ 'sonunit': { value: '', errors: [new Error('请选择单位')] } })
+                      }
+                    });
+                  }
+                }}
                 onSelect={(v, opt) => {
                   setUnitRecord({ ...unitrecord, title: opt.props.children, key: v });
-                  setFieldsValue({ unit: opt.props.children });
-                  setFieldsValue({ unitId: v });
-                  setFieldsValue({ dept: '' });
-                  setFieldsValue({ deptId: '' });
+                  setFieldsValue({
+                    unit: opt.props.children,
+                    unitId: v,
+                    sonunit: opt.props.children,
+                    dept: '',
+                    deptId: '',
+                    sondept: '',
+                  });
                   setUnitdata([]);
                   setUnitopen(false);
                 }}
@@ -206,6 +231,7 @@ function DisableduserDrawer(props) {
                 <Search
                   placeholder="可输入关键字搜索单位"
                   onSearch={values => handleUnitSearch(values)}
+                  allowClear
                 />
               </AutoComplete>,
             )}
@@ -220,20 +246,21 @@ function DisableduserDrawer(props) {
             </Button>
           </InputGroup>
         </Form.Item>
-        <Form.Item label="单位Id" style={{ display: 'none' }}>
-          {getFieldDecorator('unitId', {
-            rules: [
-              {
-                required,
-                message: '请输入单位Id',
-              },
-            ],
+        <Form.Item label="单位" style={{ display: 'none' }}>
+          {getFieldDecorator('unit', {
+            rules: [{ required, message: '请选择单位' }],
             initialValue: unitId,
           })(<Input />)}
         </Form.Item>
-        <Form.Item label="部门" validateStatus="validating">
+        <Form.Item label="单位Id" style={{ display: 'none' }}>
+          {getFieldDecorator('unitId', {
+            rules: [{ required, message: '请输入单位Id' }],
+            initialValue: unitId,
+          })(<Input />)}
+        </Form.Item>
+        <Form.Item label="部门" >
           <InputGroup compact>
-            {getFieldDecorator('dept', {
+            {getFieldDecorator('sondept', {
               initialValue: dept,
             })(
               <AutoComplete
@@ -245,10 +272,23 @@ function DisableduserDrawer(props) {
                 style={{ width: '85%' }}
                 getPopupContainer={triggerNode => triggerNode.parentNode}
                 onFocus={() => setDeptopen(true)}
-                onBlur={() => setDeptopen(false)}
+                onBlur={() => {
+                  setDeptopen(false);
+                  const d = getFieldsValue(['sondept', 'dept']);
+                  if (d.sondept !== '') {
+                    validateFields(['unit'], err => {
+                      if (err || d.sondept !== d.dept) {
+                        setFields({ 'sondept': { value: '', errors: [new Error('请选择部门')] } })
+                      }
+                    });
+                  }
+                }}
                 onSelect={(v, opt) => {
-                  setFieldsValue({ dept: opt.props.children });
-                  setFieldsValue({ deptId: v });
+                  setFieldsValue({
+                    dept: opt.props.children,
+                    deptId: v,
+                    sondept: opt.props.children,
+                  });
                   setDeptdata([]);
                   setUnitopen(false);
                 }}
@@ -256,13 +296,14 @@ function DisableduserDrawer(props) {
                 <Search
                   placeholder="可输入关键字搜索部门"
                   onSearch={values => handleDeptSearch(values)}
+                  allowClear
                 />
               </AutoComplete>,
             )}
             <Button
               style={{ width: '15%' }}
               onClick={() => {
-                validateFields(['unit', 'unitId'], err => {
+                validateFields(['unit', 'sonunit'], err => {
                   if (!err) {
                     SetDetpDrawer(!detpdrawer);
                     setType('dept');
@@ -273,6 +314,11 @@ function DisableduserDrawer(props) {
               <CaretRightOutlined />
             </Button>
           </InputGroup>
+        </Form.Item>
+        <Form.Item label="部门" style={{ display: 'none' }}>
+          {getFieldDecorator('dept', {
+            initialValue: dept,
+          })(<Input />)}
         </Form.Item>
         <Form.Item label="部门Id" style={{ display: 'none' }}>
           {getFieldDecorator('deptId', {
