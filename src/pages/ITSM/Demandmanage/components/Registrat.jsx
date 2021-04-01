@@ -184,9 +184,11 @@ const Registrat = forwardRef((props, ref) => {
       proposerId: v,
       proposerPhone: phone,
       proposingUnit: unit,
+      Unit: unit,
       proposingUnitID: unitId,
       proposingDepartment: dept,
-      proposingDepartmentId: deptId
+      proposingDepartmentId: deptId,
+      Department: dept,
     });
   };
 

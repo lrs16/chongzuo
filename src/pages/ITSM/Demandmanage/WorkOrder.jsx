@@ -137,8 +137,11 @@ function WorkOrder(props) {
         creationTime: values.creationTime.format('YYYY-MM-DD HH:mm:ss'),
         registerTime: values.registerTime.format('YYYY-MM-DD HH:mm:ss'),
         completeTime: values.completeTime.format('YYYY-MM-DD HH:mm:ss'),
+        registerId: info.demandForm.id,
         proposingDepartment:
           values.proposingDepartment !== '' ? values.proposingDepartment : values.proposingUnit,
+        proposingDepartmentId:
+          values.proposingDepartmentId !== '' ? values.proposingDepartmentId : values.proposingUnitID,
         attachment: JSON.stringify(files.arr),
         functionalModule: values.functionalModule.join('/'),
       };

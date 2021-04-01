@@ -35,6 +35,11 @@ function Registration(props) {
         creationTime: values.creationTime.format('YYYY-MM-DD HH:mm:ss'),
         registerTime: values.registerTime.format('YYYY-MM-DD HH:mm:ss'),
         completeTime: values.completeTime.format('YYYY-MM-DD HH:mm:ss'),
+        proposingDepartment:
+          values.proposingDepartment !== '' ? values.proposingDepartment : values.proposingUnit,
+        proposingDepartmentId:
+          values.proposingDepartmentId !== '' ? values.proposingDepartmentId : values.proposingUnitID,
+        attachment: JSON.stringify(files),
         attachment: JSON.stringify(files.arr),
         functionalModule: values.functionalModule.join('/'),
         nextUserIds: [
@@ -57,6 +62,8 @@ function Registration(props) {
         completeTime: values.completeTime.format('YYYY-MM-DD HH:mm:ss'),
         proposingDepartment:
           values.proposingDepartment !== '' ? values.proposingDepartment : values.proposingUnit,
+        proposingDepartmentId:
+          values.proposingDepartmentId !== '' ? values.proposingDepartmentId : values.proposingUnitID,
         attachment: JSON.stringify(files),
         functionalModule: values.functionalModule.join('/'),
         nextUserIds: [{ nodeName: '', userIds: [] }],
