@@ -23,7 +23,6 @@ function DemandSchedule(props) {
     demandscheduleArr,
     dispatch
   } = props;
-
  
 //  对象数组去重
 const uniqueObjArr =(arr, fieldName) => {
@@ -145,16 +144,40 @@ const makeData = (data) => {
       title: '已开发',
       dataIndex: 'countDevelop',
       align: 'center',
+      render: (text, record) => {
+        const obj = {
+          children: text,
+          props: {},
+        };
+        obj.props.rowSpan = record.rowSpan;
+        return obj;
+      },
     },
     {
       title: '已实现',
       dataIndex: 'countAchieve',
       align: 'center',
+      render: (text, record) => {
+        const obj = {
+          children: text,
+          props: {},
+        };
+        obj.props.rowSpan = record.rowSpan;
+        return obj;
+      },
     },
     {
       title: '需求实现率',
       dataIndex: 'countRate',
       align: 'center',
+      render: (text, record) => {
+        const obj = {
+          children: text,
+          props: {},
+        };
+        obj.props.rowSpan = record.rowSpan;
+        return obj;
+      },
     },
   ];
 

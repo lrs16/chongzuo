@@ -98,7 +98,7 @@ function QueryList(props) {
   const pagetitle = props.route.name;
   const {
     form: { getFieldDecorator, resetFields, validateFields },
-    location: { query: { module, taskName, statisticalType,completeStatus } },
+    location: { query: { module, taskName, startTime,endTime,completeStatus } },
     loading,
     list,
     dispatch,
@@ -118,6 +118,8 @@ function QueryList(props) {
             limit: paginations.pageSize,
             module,
             taskName,
+            startTime:startTime?moment(startTime).format('YYYY-MM-DD HH:mm:ss'):'',
+            endTime:endTime?moment(endTime).format('YYYY-MM-DD HH:mm:ss'):'',
             completeStatus
           },
         });
@@ -134,6 +136,8 @@ function QueryList(props) {
         page,
         module,
         taskName: values.taskName ? values.taskName : taskName,
+        // startTime,
+        // endTime,
         completeStatus
       },
     });
@@ -197,6 +201,8 @@ function QueryList(props) {
         payload:{
           ...values,
           module,
+          // startTime:startTime.format('YYYY-MM-DD HH:mm'),
+          // endTime:endTime.format('YYYY-MM-DD HH:mm'),
           taskName: values.taskName ? values.taskName : taskName,
           completeStatus
         }

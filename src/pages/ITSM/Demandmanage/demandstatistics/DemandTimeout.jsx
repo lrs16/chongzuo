@@ -16,6 +16,7 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 let startTime = '';
 let endTime = '';
 const sign = 'solution';
+let searchSign = '';
 const { RangePicker } = DatePicker;
 
 
@@ -53,6 +54,8 @@ function DemandTimeout(props) {
             pathname: '/ITSM/demandmanage/query',
             query: { 
               completeStatus: record.status,
+              startTime:searchSign?startTime:'',
+              endTime:searchSign?endTime:''
              }
           }}
         >
@@ -74,6 +77,9 @@ function DemandTimeout(props) {
 
 
   const handleListdata = (params) => {
+    if(params) {
+      searchSign = 'searchSign';
+    }
     dispatch({
       type: 'demandstatistic/fetchdemandTimeoutlist',
       payload: { sign, startTime, endTime }
@@ -101,6 +107,7 @@ function DemandTimeout(props) {
 
   useEffect(() => {
     // defaultTime();
+    searchSign = '';
     handleListdata();
   }, [])
 

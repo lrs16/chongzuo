@@ -4,17 +4,15 @@ import { Upload, Button, message } from 'antd';
 import { DownloadOutlined } from '@ant-design/icons';
 import { getFileSecuritySuffix } from '@/services/upload';
 
-function SysUpload(props) {
+function Problemexcel(props) {
   const { dispatch, fileslist, ChangeFileslist } = props;
   const [uploadfiles, setUploadFiles] = useState([]);
   const [filetype, setFileType] = useState('');
 
   useEffect(() => {
-    let doCancel = false;
-    if (fileslist.length > 0 && !doCancel) {
+    if (fileslist.length > 0) {
       setUploadFiles(fileslist);
     }
-    return () => { doCancel = true };
   }, []);
 
   // 不允许上传类型
@@ -52,13 +50,13 @@ function SysUpload(props) {
 
   const uploadprops = {
     name: 'file',
-    action: '/sys/file/upload',
+    action: '/problem/flow/excelImportOrder',
     method: 'POST',
     headers: {
       Authorization: `Bearer ${sessionStorage.getItem('access_token')}`,
     },
-    showUploadList: { showDownloadIcon: true },
-    defaultFileList: fileslist,
+    // showUploadList: { showDownloadIcon: true },
+    // defaultFileList: fileslist,
     multiple: true,
 
     beforeUpload(file) {
@@ -76,26 +74,28 @@ function SysUpload(props) {
     onChange({ file, fileList }) {
       const alldone = fileList.map(item => item.status !== 'done');
       if (file.status === 'done' && alldone.indexOf(true) === -1) {
-        console.log('file: ', file);
         message.success(`文件上传成功`);
+        if(file.response.code !== 200) {
+          message.error('文件格式不正确，请按照文件下载模板上传');
+        }
         const arr = [...fileList];
         const newarr = [];
-        for (let i = 0; i < arr.length; i += 1) {
-          const vote = {};
-          vote.uid =
-            arr[i]?.response?.data[0]?.id !== undefined
-              ? arr[i]?.response?.data[0]?.id
-              : arr[i].uid;
-          vote.name = arr[i].name;
-          vote.nowtime =
-            arr[i]?.response?.data[0]?.createTime !== undefined
-              ? arr[i]?.response?.data[0]?.createTime
-              : arr[i].createTime;
-          vote.fileUrl = '';
-          vote.status = arr[i].status;
-          newarr.push(vote);
-        }
-        setUploadFiles([...newarr]);
+        // for (let i = 0; i < arr.length; i += 1) {
+        //   const vote = {};
+        //   vote.uid =
+        //     arr[i]?.response?.data[0]?.id !== undefined
+        //       ? arr[i]?.response?.data[0]?.id
+        //       : arr[i].uid;
+        //   vote.name = arr[i].name;
+        //   vote.nowtime =
+        //     arr[i]?.response?.data[0]?.createTime !== undefined
+        //       ? arr[i]?.response?.data[0]?.createTime
+        //       : arr[i].createTime;
+        //   vote.fileUrl = '';
+        //   vote.status = arr[i].status;
+        //   newarr.push(vote);
+        // }
+        // setUploadFiles([...newarr]);
         ChangeFileslist({ arr: newarr, ischange: true });
       }
     },
@@ -108,7 +108,7 @@ function SysUpload(props) {
     onRemove(file) {
       // 删除记录,更新父级fileslist
       const newfilelist = fileslist.filter(item => item.uid !== file.uid);
-      ChangeFileslist({ arr: newfilelist, ischange: true });
+      // ChangeFileslist({ arr: newfilelist, ischange: true });
       // 删除文件
       dispatch({
         type: 'sysfile/deletefile',
@@ -122,8 +122,8 @@ function SysUpload(props) {
   return (
     <>
       <Upload {...uploadprops}>
-        <Button type="primary">
-          <DownloadOutlined /> 上传附件
+        <Button type='primary'>
+          导入数据
         </Button>
       </Upload>
     </>
@@ -133,4 +133,4 @@ function SysUpload(props) {
 export default connect(({ sysfile, loading }) => ({
   sysfile,
   loading: loading.models.sysfile,
-}))(SysUpload);
+}))(Problemexcel);

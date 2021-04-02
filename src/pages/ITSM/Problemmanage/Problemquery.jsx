@@ -55,6 +55,11 @@ const columns = [
     key: 'typecn',
   },
   {
+    title: '当前处理环节',
+    dataIndex: 'currentNode',
+    key: 'currentNode',
+  },
+  {
     title: '工单状态',
     dataIndex: 'statuscn',
     key: 'statuscn',

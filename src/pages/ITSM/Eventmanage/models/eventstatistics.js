@@ -103,7 +103,7 @@ export default {
   maintenanceArr(state, action) {
     return {
       ...state,
-      maintenanceArr: action.payload
+      maintenanceArr: action.payload.data
     }
   },
 

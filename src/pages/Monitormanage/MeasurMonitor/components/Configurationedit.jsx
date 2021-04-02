@@ -189,13 +189,11 @@ function MonitorConfiguration(props) {
     const term = ['sjzc_dy', 'dazc', 'sjzc_fk', 'sjzc_cz'];
     if (alarm.indexOf(code) != -1) {
       // 告警
-      console.log(1,'1');
       showAlarmDialog = true;
       title = '采集完整率配置';
       sign = true;
     } else if (term.indexOf(code) != -1) {
       // 终端配置
-      console.log(2,'2');
       showTerminalDialog = true;
       title = '档案参数下发召测配置';
       sign = true;
@@ -222,8 +220,6 @@ function MonitorConfiguration(props) {
   };
 
   useEffect (() => {
-    console.log(false);
-  
     sign = false;
   },[])
 

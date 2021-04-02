@@ -10,8 +10,10 @@ import {
   Col,
   Table,
   DatePicker,
-  Select
+  Select,
+  Upload
 } from 'antd';
+import Problemexcel from './components/Problemexcel';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
@@ -42,7 +44,8 @@ function Besolved(props) {
   } = props;
   const [expand, setExpand] = useState(false);
   const [paginations, setPaginations] = useState({ current: 1, pageSize: 15 });
-
+  const [fileslist, setFilesList] = useState([]);
+  const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
 
   const columns = [
     // {
@@ -99,6 +102,8 @@ function Besolved(props) {
       key: 'importancecn',
     },
   ];
+
+
   const getSourceapi = (dictModule, dictType) => {
     dispatch({
       type: 'problemdropdown/keyvalsource',
@@ -153,6 +158,13 @@ function Besolved(props) {
       },
     });
   };
+
+  // 上传删除附件触发保存
+  useEffect(() => {
+    if (files.ischange) {
+      getTobolist();
+    }
+  }, [files]);
 
   useEffect(() => {
     getTobolist();
@@ -249,6 +261,22 @@ function Besolved(props) {
       }
     })
   }
+
+  const exportDownload = () => {
+    dispatch({
+      type: 'problemmanage/exportdownloadExcel',
+    }).then(res => {
+      const filename = '下载.xls';
+      const blob = new Blob([res]);
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      a.click();
+      window.URL.revokeObjectURL(url);
+    })
+  }
+
 
   return (
     <PageHeaderWrapper title={pagetitle}>
@@ -438,12 +466,35 @@ function Besolved(props) {
             )}
           </Form>
         </Row>
-        {/* <div style={{ marginBottom: 24 }}>
+
+        <div style={{ marginBottom: 24, display: 'flex', flexDirection: 'row' }} >
+          <Button type="primary" style={{ marginRight: 8 }} onClick={exportDownload}>
+            导入下载模板
+          </Button>
+
+          {
+            loading === false && (
+              <div>
+              <Problemexcel
+                fileslist={[]}
+                ChangeFileslist={newvalue => setFiles(newvalue)}
+              />
+            </div>
+            )
+
+          }
+       
+
           <Button
+            style={{ marginLeft: 8 }}
             type="primary"
             onClick={() => download()}
-          >导出数据</Button>
-        </div> */}
+          >
+            导出数据
+        </Button>
+        </div>
+
+
 
         <Table
           loading={loading}

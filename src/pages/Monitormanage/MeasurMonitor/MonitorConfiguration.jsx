@@ -82,7 +82,7 @@ function MonitorConfiguration(props) {
 
   useEffect(() => {
     getTobolist();
-  }, [tabActiveKey]);
+  }, []);
 
   // 获取行
   const getRowByKey = (key, newData) => {

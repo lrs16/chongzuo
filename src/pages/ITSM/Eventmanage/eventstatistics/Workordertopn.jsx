@@ -23,22 +23,27 @@ const columns = [
     title: '一级对象',
     dataIndex: 'first_object',
     key: 'first_object',
+    align: 'center',
     render: (text, record) => {
-      if (record.first_object !== '合计') {
-        return <span>{text}</span>
-      }
-      return <span style={{fontWeight:700}}>{text}</span>
-    }
+      const obj = {
+        children: text,
+        props: {},
+      };
+      obj.props.rowSpan = record.rowSpan;
+      return obj;
+    },
   },
   {
     title: '二级对象',
     dataIndex: 'second_object',
     key: 'second_object',
+    align: 'center',
   },
   {
     title: '工单数',
     dataIndex: 'num',
     key: 'num',
+    align: 'center',
     render: (text, record) => {
       if (record.first_object !== '合计') {
         return <Link
@@ -55,7 +60,7 @@ const columns = [
           {text}
         </Link>
       }
-      return <span style={{fontWeight:700}}>{text}</span>
+      return <span style={{ fontWeight: 700 }}>{text}</span>
     }
   },
 ];
@@ -68,19 +73,70 @@ function Workordertopn(props) {
     dispatch
   } = props;
 
-  if (ordertopnArr && ordertopnArr.length) {
-    for (let i = 0; i < ordertopnArr.length - 1; i++) {
-      for (let j = i + 1; j < ordertopnArr.length; j++) {
-        if (ordertopnArr[i].first_object === ordertopnArr[j].first_object) {
-          ordertopnArr[j].first_object = '';
-        }
+  // if (ordertopnArr && ordertopnArr.length) {
+  //   for (let i = 0; i < ordertopnArr.length - 1; i++) {
+  //     for (let j = i + 1; j < ordertopnArr.length; j++) {
+  //       if (ordertopnArr[i].first_object === ordertopnArr[j].first_object) {
+  //         ordertopnArr[j].first_object = '';
+  //       }
+  //     }
+  //   }
+  // }
+  //  对象数组去重
+  const uniqueObjArr = (arr, fieldName) => {
+    const result = [];
+    const resultArr = [];
+    arr.map(function (item, index, value) {
+      if (result.indexOf(item[fieldName]) === -1) {
+        result.push(item[fieldName]);
+        resultArr.push(item);
       }
-    }
+    })
+    return resultArr;
   }
 
-  const onChange = (date,dateString) => {
+  //  去重并合并到children
+  const sortData = (dataArr) => {
+    const orgArrRe = dataArr.map(item =>
+      ({ first_object: item.first_object })
+    );
+    const orgArr = uniqueObjArr(orgArrRe, 'first_object');// 数组去重
+    orgArr.map(function (childOne, index, value) {
+      childOne.children = [];
+      dataArr.map(function (childTwo) {
+        if (childOne.first_object === childTwo.first_object) {
+          childOne.children.push(childTwo);
+        }
+      })
+    })
+
+    for (const every of orgArr) {
+      every.span = every.children ? every.children.length : 0;
+    }
+
+    orgArr.forEach((every) => { every.span = every.children ? every.children.length : 0; });
+    return orgArr;
+  }
+
+  //  遍历子元素，并赋值纵向合并数rowSpan
+  const makeData = (data) => {
+    const sortResult = sortData(data);
+    const dataSource = [];
+    sortResult.forEach((item) => {
+      if (item.children) {
+        item.children.forEach((itemOne, indexOne) => {
+          const myObj = itemOne;
+          myObj.rowSpan = indexOne === 0 ? item.span : 0;
+          dataSource.push(myObj);
+        });
+      }
+    });
+    return dataSource;
+  }
+
+  const onChange = (date, dateString) => {
     startTime = dateString;
-    endTime =  moment(dateString).add(+6,'day').format('YYYY-MM-DD');
+    endTime = moment(dateString).add(+6, 'day').format('YYYY-MM-DD');
   }
 
   const handleListdata = () => {
@@ -93,10 +149,10 @@ function Workordertopn(props) {
   const download = () => {
     dispatch({
       type: 'eventstatistics/downloadEventtopn',
-      payload:{
-        time1:startTime,
-        time2:endTime,
-        num:value,
+      payload: {
+        time1: startTime,
+        time2: endTime,
+        num: value,
       }
     }).then(res => {
       const filename = '下载.xls';
@@ -151,7 +207,7 @@ function Workordertopn(props) {
                     getFieldDecorator('time2', {
                       initialValue: endTime ? moment(endTime) : ''
                     })
-                      (<DatePicker 
+                      (<DatePicker
                         allowClear={false}
                         disabled />)
                   }
@@ -195,8 +251,10 @@ function Workordertopn(props) {
         </div>
 
         <Table
+          bordered
           columns={columns}
-          dataSource={ordertopnArr}
+          pagination={false}
+          dataSource={makeData(ordertopnArr)}
           rowKey={record => record.statName}
         />
       </Card>

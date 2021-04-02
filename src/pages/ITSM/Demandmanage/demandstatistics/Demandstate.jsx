@@ -17,6 +17,7 @@ const { RangePicker } = DatePicker;
 
 let statTimeBegin = '';
 let statTimeEnd = '';
+let searchSign = '';
 const columns = [
   {
     title: '工单状态',
@@ -34,6 +35,8 @@ const columns = [
           pathname: '/ITSM/demandmanage/query',
           query: {
             taskName: record.statusName,
+            startTime:searchSign?statTimeBegin:'',
+            endTime:searchSign?statTimeEnd:''
           }
         }}
       >
@@ -56,7 +59,10 @@ function Demandstate(props) {
   }
 
 
-  const handleListdata = () => {
+  const handleListdata = (params) => {
+    if(params) {
+      searchSign = 'searchSign';
+    }
     dispatch({
       type: 'demandstatistic/fetchdemandstateList',
       payload: { statTimeBegin, statTimeEnd }
@@ -80,6 +86,7 @@ function Demandstate(props) {
   }
 
   useEffect(() => {
+    searchSign = '';
     handleListdata();
   }, [])
 

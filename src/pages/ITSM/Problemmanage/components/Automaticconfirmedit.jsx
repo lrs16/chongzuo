@@ -145,7 +145,10 @@ const Automaticconfirmedit = React.forwardRef((props, ref) => {
             {...forminladeLayout}
           >
             <div style={{ width: 400 }}>
-              <SysUpload fileslist={files} ChangeFileslist={newvalue => setFilesList(newvalue)} />
+              <SysUpload 
+              fileslist={files} 
+              ChangeFileslist={newvalue => setFilesList(newvalue)}
+               />
             </div>
           </Form.Item>
         </Col>

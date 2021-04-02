@@ -27,7 +27,8 @@ import {
   handlequeryList,
   besolveListdownload,
   handleGratelist,
-  timeoutlist
+  timeoutlist,
+  exportExcel
 } from '../services/api';
 
 export default {
@@ -301,7 +302,10 @@ export default {
         payload: response
       })
     },
-
+    //  批量导入
+    *exportdownloadExcel({ payload }, { call, put }) {
+      return yield call(exportExcel)
+    }
   },
 
   reducers: {

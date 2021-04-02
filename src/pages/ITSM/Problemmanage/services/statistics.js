@@ -2,7 +2,7 @@ import request from '@/utils/request';
 
 //  状态列表
 export async function statusList(params) {
-  return request(`/problem/stat/statOrderByStatus`,{
+  return request(`/problem/stat/statOrderByCurrentNodeAndStatus`,{
     method: 'POST',
     body:JSON.stringify(params)
   });
@@ -53,7 +53,7 @@ export async function handlegrateDownload(params) {
 
 //  超时统计列表
 export async function timeoutList(params) {
-  return request(`/problem/stat/statOrderByTime`,{
+  return request(`/problem/stat/statOrderByOverTime`,{
     method:'POST',
     body:JSON.stringify(params)
   })

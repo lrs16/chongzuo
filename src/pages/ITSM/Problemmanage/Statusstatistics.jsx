@@ -30,14 +30,30 @@ let statTimeEnd;
 
 const columns = [
   {
+    title: '当前环节',
+    dataIndex: 'statCurrentNode',
+    key: 'statCurrentNode',
+    align: 'center',
+    render: (text, record) => {
+      const obj = {
+        children: text,
+        props: {},
+      };
+      obj.props.rowSpan = record.rowSpan;
+      return obj;
+    },
+  },
+  {
     title: '工单状态',
     dataIndex: 'statName',
     key: 'statName',
+    align: 'center',
   },
   {
     title: '工单数',
     dataIndex: 'statCount',
     key: 'statCount',
+    align: 'center',
     render: (text, record) => {
       if (record.statName !== '合计') {
         return <Link
@@ -112,6 +128,64 @@ function Statusstatistics(props) {
     statTimeEnd = '';
   }
 
+  //  对象数组去重
+  const uniqueObjArr = (arr, fieldName) => {
+    const result = [];
+    const resultArr = [];
+    arr.map(function (item, index, value) {
+      if (result.indexOf(item[fieldName]) === -1) {
+        result.push(item[fieldName]);
+        resultArr.push(item);
+      }
+    })
+    return resultArr;
+  }
+
+  //  去重并合并到children
+  const sortData = (dataArr) => {
+    const orgArrRe = dataArr.map(item =>
+      ({ statCurrentNode: item.statCurrentNode })
+    );
+    const orgArr = uniqueObjArr(orgArrRe, 'statCurrentNode');// 数组去重
+    orgArr.map(function (childOne) {
+      childOne.children = [];
+      dataArr.map(function (childTwo) {
+        if (childOne.statCurrentNode === childTwo.statCurrentNode) {
+          childOne.children.push(childTwo);
+        }
+      })
+    })
+
+    // for (const every of orgArr) {
+    //   every.span = every.children ? every.children.length : 0;
+    // }
+
+    orgArr.forEach((every) => { every.span = every.children ? every.children.length : 0; });
+    return orgArr;
+  }
+
+  //  遍历子元素，并赋值纵向合并数rowSpan
+  const makeData = (data) => {
+
+    const sortResult = sortData(data);
+    // console.log('sortResult: ', sortResult);
+    const dataSource = [];
+    sortResult.forEach((item) => {
+      // console.log('item: ', item);
+      if (item.children) {
+        // console.log('item.children: ', item.children);
+        item.children.forEach((itemOne, indexOne) => {
+          // console.log('indexOne: ', indexOne);
+          const myObj = itemOne;
+          myObj.rowSpan = indexOne === 0 ? item.span : 0;
+          dataSource.push(myObj);
+        });
+      }
+    });
+    return dataSource;
+  }
+
+
   return (
     <PageHeaderWrapper title={pagetitle}>
       <Card>
@@ -152,11 +226,12 @@ function Statusstatistics(props) {
         </div>
 
         <Table
+          bordered
           columns={columns}
-          dataSource={statusArr}
-          pagination={pagination}
+          dataSource={makeData(statusArr)}
+          pagination={false}
           rowKey={record => record.statCode}
-          rowSelection={rowSelection}
+          // rowSelection={rowSelection}
         />
       </Card>
 

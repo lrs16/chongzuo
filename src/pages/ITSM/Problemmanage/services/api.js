@@ -206,5 +206,10 @@ export async function timeoutlist(params) {
   })
 }
 
-//  
+//  导入Excel表格
+export async function exportExcel() {
+  return request(`/problem/flow/excelImportTemplateDown`,{
+    responseType:'blob'
+  });
+}
 

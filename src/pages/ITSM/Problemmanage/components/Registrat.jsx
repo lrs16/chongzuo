@@ -11,7 +11,7 @@ const { TextArea, Search } = Input;
 let occurtime;
 
 const Registrat = React.forwardRef((props, ref) => {
-  const { formItemLayout, forminladeLayout, files, ChangeFiles } = props;
+  const { formItemLayout, forminladeLayout, files, ChangeFiles,location } = props;
   const { getFieldDecorator, setFieldsValue } = props.form;
   const [fileslist, setFilesList] = useState([]);
   const [titleautodata, setTitleAutoData] = useState([]);

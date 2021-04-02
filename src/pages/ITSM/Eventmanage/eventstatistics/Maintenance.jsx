@@ -13,6 +13,7 @@ import {
 } from 'antd';
 import Link from 'umi/link';
 import moment from 'moment';
+import MergeTable from '@/components/MergeTable';
 import iconfontUrl from '@/utils/iconfont';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
@@ -31,34 +32,33 @@ function Maintenance(props) {
   const {
     form: { getFieldDecorator, resetFields },
     maintenanceArr,
-    dispatch
+    dispatch,
+    loading
   } = props;
 
   const tableHeadweek = tabActiveKey === 'week' ? '上周工单数' : '上月工单数';
   const tableHeadmonth = tabActiveKey === 'week' ? '本周工单数' : '本月工单数';
-
-  const { data } = maintenanceArr;
-  
-  if (data && data.length) {
-    for (let i = 0; i < data.length - 1; i += 1) {
-      for (let j = i + 1; j < data.length; j += 1) {
-        if (data[i].first_object === data[j].first_object) {
-          data[j].first_object = '';
-        }
-      }
-    }
-  }
 
   const columns = [
     {
       title: '一级对象',
       dataIndex: 'first_object',
       key: 'first_object',
+      align: 'center',
+      render: (text, record) => {
+        const obj = {
+          children: text,
+          props: {},
+        };
+        obj.props.rowSpan = record.rowSpan;
+        return obj;
+      },
     },
     {
       title: '二级对象',
       dataIndex: 'second_object',
       key: 'second_object',
+      align: 'center',
       render: (text, record) => {
         if (record.second_object === '合计') {
           return <span style={{ fontWeight: 700 }}>{text}</span>
@@ -70,6 +70,7 @@ function Maintenance(props) {
       title: tableHeadweek,
       dataIndex: 'last_num',
       key: 'last_num',
+      align: 'center',
       render: (text, record) => {
         if (record.second_object !== '合计') {
           return <Link
@@ -93,6 +94,7 @@ function Maintenance(props) {
       title: tableHeadmonth,
       dataIndex: 'now_num',
       key: 'now_num',
+      align: 'center',
       render: (text, record) => {
         if (record.second_object !== '合计') {
           return <Link
@@ -118,6 +120,7 @@ function Maintenance(props) {
       title: '环比',
       dataIndex: 'points_count',
       key: 'points_count',
+      align: 'center',
       render: (text, record) => {
         if (record.second_object === '合计') {
           return <span style={{ fontWeight: 700 }}>{text}</span>
@@ -127,12 +130,11 @@ function Maintenance(props) {
     },
   ];
 
-
-  const onChange = (date,dateString) => {
+  const onChange = (date, dateString) => {
 
     if (tabActiveKey === 'week') {
       starttime = dateString;
-      endTime =  moment(dateString).add(+6,'day').format('YYYY-MM-DD');
+      endTime = moment(dateString).add(+6, 'day').format('YYYY-MM-DD');
     } else {
       starttime = date.startOf('month').format('YYYY-MM-DD');
       endTime = date.endOf('month').format('YYYY-MM-DD');
@@ -179,6 +181,64 @@ function Maintenance(props) {
     }
   }
 
+  //  对象数组去重
+  const uniqueObjArr = (arr, fieldName) => {
+    const result = [];
+    const resultArr = [];
+    arr.map(function (item, index, value) {
+      if (result.indexOf(item[fieldName]) === -1) {
+        result.push(item[fieldName]);
+        resultArr.push(item);
+      }
+    })
+    return resultArr;
+  }
+
+  //  去重并合并到children
+  const sortData = (dataArr) => {
+    console.log('dataArr: ', dataArr);
+    const orgArrRe = dataArr.map(item =>
+      ({ first_object: item.first_object })
+    );
+    const orgArr = uniqueObjArr(orgArrRe, 'first_object');// 数组去重
+    orgArr.map(function (childOne) {
+      childOne.children = [];
+      dataArr.map(function (childTwo) {
+        if (childOne.first_object === childTwo.first_object) {
+          childOne.children.push(childTwo);
+        }
+      })
+    })
+
+    // for (const every of orgArr) {
+    //   every.span = every.children ? every.children.length : 0;
+    // }
+
+    orgArr.forEach((every) => { every.span = every.children ? every.children.length : 0; });
+    return orgArr;
+  }
+
+  //  遍历子元素，并赋值纵向合并数rowSpan
+  const makeData = (data) => {
+
+    const sortResult = sortData(data);
+    // console.log('sortResult: ', sortResult);
+    const dataSource = [];
+    sortResult.forEach((item) => {
+      // console.log('item: ', item);
+      if (item.children) {
+        // console.log('item.children: ', item.children);
+        item.children.forEach((itemOne, indexOne) => {
+          // console.log('indexOne: ', indexOne);
+          const myObj = itemOne;
+          myObj.rowSpan = indexOne === 0 ? item.span : 0;
+          dataSource.push(myObj);
+        });
+      }
+    });
+    return dataSource;
+  }
+
 
   useEffect(() => {
     defaultTime();
@@ -207,7 +267,7 @@ function Maintenance(props) {
       onTabChange={handleTabChange}
       tabActiveKey={tabActiveKey}
     >
-      <Card style={{ margin:'24px 0' }}>
+      <Card style={{ margin: '24px 0' }}>
         <Row gutter={16}>
           <Col className="gutter-row" span={8}>
             <div className="gutter-box">
@@ -310,11 +370,11 @@ function Maintenance(props) {
                       {getFieldDecorator('monthStarttime', {
                         initialValue: moment(starttime)
                       })(
-                      <MonthPicker 
-                        // format="YYYY-MM-DD"
-                        allowClear='false'
-                        onChange={onChange}
-                      />)}
+                        <MonthPicker
+                          // format="YYYY-MM-DD"
+                          allowClear='false'
+                          onChange={onChange}
+                        />)}
                     </Form.Item>
 
                     <Button
@@ -342,17 +402,32 @@ function Maintenance(props) {
         </div>
 
         <Table
+          bordered
           columns={columns}
-          dataSource={data}
+          dataSource={makeData(maintenanceArr)}
+          pagination={false}
           rowKey={record => record.event_object}
-        />
+        />  
+        {/* {
+          loading === false && (
+            <MergeTable
+            column={columns}
+            Mergecell='first_object'
+            tableSource={maintenanceArr}
+           />
+          )
+        } */}
+     
+
+
       </Card>
     </PageHeaderWrapper>
   )
 }
 
 export default Form.create({})(
-  connect(({ eventstatistics }) => ({
+  connect(({ eventstatistics,loading }) => ({
     maintenanceArr: eventstatistics.maintenanceArr,
+    loading: loading.models.eventstatistics,
   }))(Maintenance),
 );

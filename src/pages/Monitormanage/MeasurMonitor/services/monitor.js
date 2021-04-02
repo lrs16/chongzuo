@@ -50,7 +50,11 @@ export async function configurationDetail(code,showAlarmDialog,showTerminalDialo
 
 // 监控指令的表格接口
 export async function instructionList(params) {
-  return request(`/check/comm/commList?rowsPerPage=${params.rowsPerPage}&page=${params.page}&commStatus=${params.commStatus}`)
+  return request(`/check/comm/commList`,{
+    method:'POST',
+    data:params,
+    requestType:'form'
+  })
 }
 
 //  监控指令搜索接口

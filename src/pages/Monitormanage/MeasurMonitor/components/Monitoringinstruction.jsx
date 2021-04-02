@@ -81,10 +81,11 @@ const columns = [
 ]
 function Monitoringinstruction(props) {
   const {
-    form: { validateFields, getFieldDecorator },
+    form: { validateFields, getFieldDecorator,resetFields },
     dispatch,
     instructionArr
   } = props;
+  console.log(instructionArr, 'instructionArr');
   const [paginations, setPaginations] = useState({ current: 1, pageSize: 10 });
 
   const getList = () => {
@@ -98,13 +99,14 @@ function Monitoringinstruction(props) {
   }
 
   useEffect(() => {
-    // getList();
+    getList();
   }, [])
 
   const searchdata = (values, page, pageSize) => {
     dispatch({
       type: 'monitorconfiguration/fetchinstructionList',
       payload: {
+        ...values,
         rowsPerPage: pageSize,
         page,
       }
@@ -155,6 +157,10 @@ function Monitoringinstruction(props) {
         }
       })
     })
+  }
+
+  const handleReset = () => {
+    resetFields();
   }
 
   return (
@@ -214,9 +220,12 @@ function Monitoringinstruction(props) {
             >
               查询
                 </Button>
-            <Button style={{ marginLeft: 8 }}>
+            <Button 
+            style={{ marginLeft: 8 }}
+            onClick={handleReset}
+            >
               重置
-                </Button>
+            </Button>
           </Col>
         </Form>
       </Row>

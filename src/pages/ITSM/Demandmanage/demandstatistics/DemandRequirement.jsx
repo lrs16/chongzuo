@@ -15,6 +15,7 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
 
 const { RangePicker } = DatePicker;
+let searchSign = '';
 
 let statTimeBegin = '';
 let statTimeEnd = '';
@@ -44,7 +45,9 @@ const columns = [
           pathname: '/ITSM/demandmanage/query',
           query: {
             module:record.fullName,
-            statisticalType:'demandRequirement'
+            statisticalType:'demandRequirement',
+            startTime:searchSign?statTimeBegin:'',
+            endTime:searchSign?statTimeEnd:''
           }
         }}
       >
@@ -79,7 +82,10 @@ function DemandRequirement(props) {
 
 
 
-  const handleListdata = () => {
+  const handleListdata = (params) => {
+    if(params) {
+      searchSign = 'searchSign';
+    }
     dispatch({
       type: 'demandstatistic/fetchdemandRequirement',
       payload: { statTimeBegin, statTimeEnd }
@@ -104,6 +110,7 @@ function DemandRequirement(props) {
 
 
   useEffect(() => {
+    searchSign = '';
     handleListdata();
   }, [])
 
