@@ -20,7 +20,6 @@ import {
 } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import SysDict from '@/components/SysDict';
-import { defaults } from 'lodash';
 
 // const severitystatus = ['紧急', '重大', '一般'];
 // const statusMap = ['error', 'warning', 'processing'];
@@ -59,8 +58,26 @@ function QueryList(props) {
 
   const [expand, setExpand] = useState(false);
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 }); // 分页state
-  const [selectedRow, setSelectedRow] = useState([]);
+  //  const [selectedRow, setSelectedRow] = useState([]);
   const [selectdata, setSelectData] = useState('');
+
+  const handledownFileToZip = (id, no) => {
+    dispatch({
+      type: 'fault/downloadzip',
+      payload: {
+        id,
+      },
+    }).then(res => {
+      const filename = `${no}_附件.zip`;
+      const blob = new Blob([res]);
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      a.click();
+      window.URL.revokeObjectURL(url);
+    })
+  }
 
   const columns = [
     {
@@ -135,6 +152,19 @@ function QueryList(props) {
       dataIndex: 'registerTime',
       key: 'registerTime',
       width: 200,
+    },
+    {
+      title: '操作',
+      dataIndex: 'action',
+      key: 'action',
+      fixed: 'right',
+      width: 100,
+      render: (text, record) => {
+        return (
+          <a type="link" onClick={() => handledownFileToZip(record.id, record.no)}>
+            附件下载
+          </a>)
+      },
     },
   ];
 
@@ -696,6 +726,7 @@ function QueryList(props) {
           }
           rowKey={record => record.id}
           pagination={pagination}
+          scroll={{ x: 1400 }}
         />
       </Card>
     </PageHeaderWrapper>

@@ -29,6 +29,7 @@ import {
   SearchUsers, // 获取流转，转单 系统所有的用户
   querkeyVal, // 数据字典
   queryFaultdictVal, // 数据字典
+  downFileToZip,    // 附件下载
 } from '../services/api';
 
 export default {
@@ -317,6 +318,12 @@ export default {
       // 数据字典数据1]
       return yield call(queryFaultdictVal, id);
     },
+
+    *downloadzip({ payload: { id } }, { call }) {
+      // 数据字典数据1]
+      return yield call(downFileToZip, id);
+    },
+
   },
 
   reducers: {
