@@ -390,8 +390,8 @@ function QueryList(props) {
   };
 
   const getTypebyTitle = title => {
-    if (selectdata.length > 0) {
-      return selectdata.filter(item => item.title === title)[0].children;
+    if (selectdata.ischange) {
+      return selectdata.arr.filter(item => item.title === title)[0].children;
     }
     return [];
   };
