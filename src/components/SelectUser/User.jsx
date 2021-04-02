@@ -22,8 +22,6 @@ const User = props => {
   const [defaultvalue, setDefaultValue] = useState([])
   const type = sessionStorage.getItem('Processtype');
 
-  console.log(demandvalue, defaultvalue)
-
   useEffect(() => {
     if (loading) {
       setIsNew(true);

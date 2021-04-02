@@ -19,7 +19,7 @@ const RegisterChild = React.forwardRef((props, ref) => {
     curruserinfo,
     saveType
   } = props;
-  const { getFieldDecorator } = props.form;
+  const { getFieldDecorator, setFieldsValue } = props.form;
   const attRef = useRef();
 
   const [fileslist, setFilesList] = useState({ arr: [], ischange: false }); // 下载列表
@@ -50,13 +50,10 @@ const RegisterChild = React.forwardRef((props, ref) => {
       type.unshift(main.type.slice(0, 3));
     }
   }
-  const handlobjectChange = (value, selectedOptions) => {
-    saveType(`${selectedOptions[1].dict_code}`);
+  const handlobjectChange = (_, selectedOptions) => {
+    setFieldsValue({ type: selectedOptions[1].dict_code });
+    //  saveType(`${selectedOptions[1].dict_code}`);
   };
-
-
-
-
 
   const handletitleSearch = values => {
     getAndField(values).then(res => {
@@ -82,8 +79,8 @@ const RegisterChild = React.forwardRef((props, ref) => {
     });
   };
 
-  const handleSearch = (value, type) => {
-    switch (type) {
+  const handleSearch = (value, t) => {
+    switch (t) {
       case 'title': {
         const newArr = titlerecords.filter(item => {
           return item.includes(value);

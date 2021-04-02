@@ -20,6 +20,7 @@ import {
 } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import SysDict from '@/components/SysDict';
+import { defaults } from 'lodash';
 
 // const severitystatus = ['紧急', '重大', '一般'];
 // const statusMap = ['error', 'warning', 'processing'];
@@ -37,6 +38,7 @@ const formItemLayout = {
 
 const { Option } = Select;
 let searchSign = '';
+let typeparams;
 // const faultStatusmap = ['待登记', '已登记', '已受理', '待审核', '审核中', '已审核', '待处理', '处理中', '已处理', '待总结', '总结中', '已总结', '待关闭', '关闭中', '已关闭'];
 // const sourceMap = ['系统告警', '巡检发现'];
 // const registerModelMap = ['配网采集', '主网采集', '终端掉线', '配网档案', '实用化指标', '账号缺陷'];
@@ -58,8 +60,8 @@ function QueryList(props) {
 
   const [expand, setExpand] = useState(false);
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 }); // 分页state
-  //  const [selectedRow, setSelectedRow] = useState([]);
-  const [selectdata, setSelectData] = useState('');
+  // const [selectedRow, setSelectedRow] = useState([]);
+  const [selectdata, setSelectData] = useState([]);
 
   const handledownFileToZip = (id, no) => {
     dispatch({
@@ -174,6 +176,7 @@ function QueryList(props) {
       type: 'fault/getfaultQueryList',
       payload: {
         ...values,
+        type: typeparams,
         pageNum: page,
         pageSize: paginations.pageSize,
         status,
@@ -187,6 +190,7 @@ function QueryList(props) {
       type: 'fault/getfaultQueryList',
       payload: {
         ...values,
+        type: typeparams,
         pageNum: searchSign ? page : paginations.current,
         pageSize: paginations.pageSize,
         status,
@@ -258,6 +262,7 @@ function QueryList(props) {
         type: 'fault/getTosearchfaultSearch',
         payload: {
           ...values,
+          type: typeparams,
           pageNum: page,
           pageSize,
           status,
@@ -282,6 +287,11 @@ function QueryList(props) {
     // 重置
     resetFields();
   };
+
+  const handlobjectChange = (value, selectedOptions) => {
+    typeparams = `${selectedOptions[1].dict_code}`;
+  };
+
 
   const handleSearch = search => {
     setPageinations({
@@ -358,6 +368,7 @@ function QueryList(props) {
           type: 'fault/faultQuerydownload',
           payload: {
             ...values,
+            type: typeparams,
             pageSize,
             current: page,
             dictCode,
@@ -379,8 +390,8 @@ function QueryList(props) {
   };
 
   const getTypebyTitle = title => {
-    if (selectdata.ischange) {
-      return selectdata.arr.filter(item => item.title === title)[0].children;
+    if (selectdata.length > 0) {
+      return selectdata.filter(item => item.title === title)[0].children;
     }
     return [];
   };
@@ -483,7 +494,8 @@ function QueryList(props) {
                       <Cascader
                         placeholder="请选择"
                         options={faultType}
-                        fieldNames={{ label: 'title', value: 'title', children: 'children' }}
+                        onChange={handlobjectChange}
+                        fieldNames={{ label: 'title', value: 'dict_code', children: 'children' }}
                         allowClear
                       />,
                     )}

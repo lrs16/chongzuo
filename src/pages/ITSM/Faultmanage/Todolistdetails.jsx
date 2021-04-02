@@ -90,6 +90,7 @@ function Todolistdetails(props) {
   const [resultsecond, setResultsecond] = useState('1');
   const [resultconfirm, setResultconfirm] = useState('1');
   const [type, setType] = useState('');
+  const [buttontype, setButtonType] = useState('');
 
   const [uservisible, setUserVisible] = useState(false); // 是否显示选人组件
   const [userchoice, setUserChoice] = useState(false); // 已经选择人员
@@ -471,7 +472,7 @@ function Todolistdetails(props) {
           if (res.code === 200) {
             getfaultTodoDetailData();
             if (cirStatus) {
-              setUserVisible(true)
+              faultcircula()
             } else {
               message.success(res.msg);
             }
@@ -601,6 +602,7 @@ function Todolistdetails(props) {
           }
         });
       }
+      return formerr();
     });
   };
 
@@ -705,12 +707,17 @@ function Todolistdetails(props) {
           }
         });
       }
+      return formerr();
     });
   };
 
   useEffect(() => {
     if (userchoice) {
-      faultcircula()
+      if (buttontype === 'transfer') {
+        faultcircula('transfer')
+      } else (
+        faultcircula()
+      )
     }
   }, [userchoice])
 
@@ -755,21 +762,32 @@ function Todolistdetails(props) {
           )}
           {// 转单只有系统运维商处理时有
             main && (main.status === '45' || main.status === '40') && editState === 'edit' && (
-              <SelectUser
-                handleSubmit={() => faultcircula('transfer')}
-                taskId={id}
-                changorder="请选择转单处理"
+              // <SelectUser
+              //   handleSubmit={() => faultcircula('transfer')}
+              //   taskId={id}
+              //   changorder="请选择转单处理"
+              // >
+              //   <Button
+              //     type="primary"
+              //     onMouseOver={() => {
+              //       sessionStorage.setItem('flowtype', '9');
+              //     }}
+              //     onFocus={() => 0}
+              //   >
+              //     转单
+              // </Button>
+              // </SelectUser>
+              <Button
+                type="primary"
+                style={{ marginRight: 8 }}
+                onClick={() => { handleSave(currenStatus); setChangeOrder('请选择处理'); setButtonType('transfer') }}
+                onMouseOver={() => {
+                  sessionStorage.setItem('flowtype', '9');
+                }}
+                onFocus={() => 0}
               >
-                <Button
-                  type="primary"
-                  onMouseOver={() => {
-                    sessionStorage.setItem('flowtype', '9');
-                  }}
-                  onFocus={() => 0}
-                >
-                  转单
+                转单
               </Button>
-              </SelectUser>
             )}
           {/* 确认过程的时候不需要选人 1通过直接关闭 */}
           {flowNodeName === '自动化科专责确认'
@@ -810,12 +828,12 @@ function Todolistdetails(props) {
           )}
           {resultsecond === '0' && (
             <Button type="primary" onClick={toHandle}>
-              处理
+              重新处理
             </Button>
           )}
           {resultconfirm === '0' && (
             <Button type="primary" onClick={toHandle1}>
-              处理
+              重新处理
             </Button>
           )}
 
