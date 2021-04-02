@@ -6,8 +6,8 @@ import styles from './index.less';
 const User = props => {
   const {
     dispatch,
-    defaultvalue,
-    demandvalue,
+    // defaultvalue,
+    // demandvalue,
     userlist,
     loading,
     changorder,
@@ -17,9 +17,23 @@ const User = props => {
     ChangeChoice,
     ChangeType,
   } = props;
-
-  // const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isnew, setIsNew] = useState(false);
+  const [demandvalue, setDemandValue] = useState([])
+  const [defaultvalue, setDefaultValue] = useState([])
   const type = sessionStorage.getItem('Processtype');
+
+  console.log(demandvalue, defaultvalue)
+
+  useEffect(() => {
+    if (loading) {
+      setIsNew(true);
+    }
+    return () => {
+      setIsNew(false);
+      setDemandValue([]);
+      setDefaultValue([]);
+    };
+  }, [userlist]);
 
   const dataArr = datas => {
     const newArr = [];
@@ -44,6 +58,7 @@ const User = props => {
   };
 
   const [value, setValue] = useState('');
+
 
   // 单选下一环节人员
   // const handleChange = e => {
@@ -129,6 +144,9 @@ const User = props => {
     if (visible) {
       showModal();
     }
+    return () => {
+
+    }
   }, [visible]);
 
   const handleOk = () => {
@@ -153,8 +171,9 @@ const User = props => {
       } else {
         ChangeChoice(true);
         ChangeUserVisible(false);
-      }
+      };
     }
+
   };
 
   const handleCancel = () => {
@@ -162,13 +181,14 @@ const User = props => {
     ChangeType('');
   };
 
+
   const nextflowuser =
     changorder !== undefined ? changorder : sessionStorage.getItem('Nextflowmane');
   return (
     <>
       <Modal title="选择下一环节处理人" visible={visible} onOk={handleOk} onCancel={handleCancel}>
         <Spin tip="正在加载数据..." spinning={Boolean(loading)}>
-          {loading === false && type !== 'demand' && (
+          {loading === false && isnew && type !== 'demand' && (
             <>
               <div>{nextflowuser}人员</div>
               <div style={{ marginTop: 12 }} className={styles.useritem}>
@@ -180,7 +200,7 @@ const User = props => {
               </div>
             </>
           )}
-          {type === 'demand' && userlist !== '' && (
+          {type === 'demand' && loading === false && isnew && userlist !== '' && (
             <>
               {userlist.map((obj, index) => {
                 return (
@@ -214,7 +234,11 @@ const User = props => {
   );
 };
 
-User.defaultProps = { pangekey: '0', defaultvalue: [], demandvalue: [] };
+User.defaultProps = {
+  pangekey: '0',
+  // defaultvalue: [],
+  // demandvalue: []
+};
 
 export default connect(({ itsmuser, loading }) => ({
   userlist: itsmuser.userlist,
