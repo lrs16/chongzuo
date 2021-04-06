@@ -124,6 +124,8 @@ function Todolistdetails(props) {
     curruserinfo: { userId }, // 当前用户登录id
   } = props;
 
+  console.log(tododetailslist)
+
   const {
     params: { id },
   } = props.match; // 获取taskId
@@ -725,8 +727,8 @@ function Todolistdetails(props) {
     <PageHeaderWrapper
       extra={
         <>
-          {// 删除按钮只有故障登记有
-            flowNodeName === '故障登记' && (
+          {// 删除按钮只有故障登记有并且没有流转记录
+            flowNodeName === '故障登记' && troubleFlowLogs.length === 1 && (
               <Popconfirm title="确定删除吗？" onConfirm={() => handleDelete()}>
                 <Button type="danger" ghost>
                   删除
@@ -823,7 +825,7 @@ function Todolistdetails(props) {
             )}
           {result === '0' && (
             <Button type="primary" onClick={handleRegist}>
-              登记
+              重新登记
             </Button>
           )}
           {resultsecond === '0' && (

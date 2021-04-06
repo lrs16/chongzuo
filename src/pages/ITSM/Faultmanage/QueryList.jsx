@@ -20,7 +20,6 @@ import {
 } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import SysDict from '@/components/SysDict';
-import { defaults } from 'lodash';
 
 // const severitystatus = ['紧急', '重大', '一般'];
 // const statusMap = ['error', 'warning', 'processing'];
@@ -285,6 +284,7 @@ function QueryList(props) {
 
   const handleReset = () => {
     // 重置
+    typeparams = '';
     resetFields();
   };
 

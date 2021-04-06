@@ -476,6 +476,25 @@ export default {
                   ],
                 },
                 {
+                  path: '/ITSM/releasemanage',
+                  name: '故障管理',
+                  icon: 'control',
+                  // component: './ITSM/Faultmanage/Registration',
+
+                  routes: [
+                    {
+                      path: '/ITSM/releasemanage',
+                      redirect: '/ITSM/releasemanage/registration',
+                    },
+                    {
+                      path: '/ITSM/releasemanage/registration',
+                      name: '发布登记',
+                      icon: 'control',
+                      component: './ITSM/releasemanage/Registration',
+                    },
+                  ],
+                },
+                {
                   path: '/ITSM/onsitemanage',
                   name: '巡检管理',
                   icon: 'control',
