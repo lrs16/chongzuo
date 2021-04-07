@@ -74,10 +74,13 @@ function Problemexcel(props) {
     onChange({ file, fileList }) {
       const alldone = fileList.map(item => item.status !== 'done');
       if (file.status === 'done' && alldone.indexOf(true) === -1) {
-        message.success(`文件上传成功`);
-        if(file.response.code !== 200) {
+        // message.success(`文件上传成功`);
+        if(file.response.code === 200) {
+          message.success('导入数据成功');
+        } else {
           message.error('文件格式不正确，请按照文件下载模板上传');
         }
+  
         const arr = [...fileList];
         const newarr = [];
         // for (let i = 0; i < arr.length; i += 1) {

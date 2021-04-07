@@ -42,7 +42,8 @@ const Systemoperatoredit = React.forwardRef((props, ref) => {
 
   const {
     check,
-    useInfo
+    useInfo,
+    defaultRadio
   } = props;
 
   const onChange = (e) => {

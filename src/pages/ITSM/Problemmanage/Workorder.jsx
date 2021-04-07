@@ -26,7 +26,7 @@ import Reasonregression from './components/Reasonregression';
 import Problemflow from './components/Problemflow';
 import AutomationCirculation from './components/AutomationCirculation';
 import Systemoperatorsecond from './components/Systemoperatorsecond';
-// import User from '@/components/ProblemSelect/User';
+import User from '@/components/ProblemSelect/User';
 
 import styles from './index.less';
 
@@ -75,6 +75,7 @@ function Workorder(props) {
   const [buttontype, setButtonType] = useState('');
   const [uservisible, setUserVisible] = useState(false); // 是否显示选人组件
   const [changorder, setChangeOrder] = useState(undefined);
+  const [problemchangorder, setProblemchangorder] = useState(undefined);
   const [Popvisible, setVisible] = useState(false);
   const [userchoice, setUserChoice] = useState(false); // 已经选择人员
   const [iscolse, setIsClose] = useState('');
@@ -140,9 +141,9 @@ function Workorder(props) {
     }
   }
 
-  const handleHold = (type) => {
-    setButtonType(type);
-  };
+  // const handleHold = (type) => {
+  //   setButtonType(type);
+  // };
 
   const solvingDisbled = () => {
     const statueList = (currntStatus === 29 || currntStatus === 9 || currntStatus === 40);
@@ -155,7 +156,6 @@ function Workorder(props) {
 
   if (todoDetail.main) {
     currntStatus = Number(todoDetail.main.status);
-    console.log('currntStatus: ', currntStatus);
     const editstate = todoDetail.editState;
     problemFlowid = todoDetail.main.id;
     flowNodeName = todoDetail.flowNodeName;
@@ -185,6 +185,11 @@ function Workorder(props) {
     })
   };
 
+  // 表单校验提示信息
+  const formerr = () => {
+    message.error('请将信息填写完整...');
+  };
+
   const gotoCirapi = (closessign) => {
     let result;
     if (closessign) {
@@ -193,8 +198,13 @@ function Workorder(props) {
       result = flowtype;
     }
 
+
     if (flowNodeName === '系统开发商处理') {
       result = 1
+    }
+
+    if(problemchangorder === 'transfer') {
+      result = 9;
     }
 
     let selectPerson;
@@ -240,7 +250,8 @@ function Workorder(props) {
         }
         getInformation();
         if (params2) {
-          gotoCirapi();
+          setUserVisible(true);
+          // gotoCirapi();
         }
       } else {
         message.error(res.msg);
@@ -248,6 +259,18 @@ function Workorder(props) {
     });
   };
 
+  useEffect(() => {
+    if (userchoice || butandorder) {
+      if (butandorder === 'transfer') {
+        // gotoTransferorder();
+        gotoCirapi('transfer');
+      } else {
+        gotoCirapi();
+      }
+    }
+  }, [userchoice,butandorder])
+
+//  问题登记
   const saveRegister = (params2) => {
     RegistratRef.current.validateFields((err, values) => {
       if (params2 ? !err : true) {
@@ -269,13 +292,18 @@ function Workorder(props) {
             setFiles({ ...files, ischange: false });
             getInformation();
             if (params2) {
-              gotoCirapi();
+              // gotoCirapi();
+              setUserVisible(true);
             }
           } else {
             message.error(res.msg);
           }
         });
       }
+      if(params2) {
+        return formerr();
+      }
+
     });
   };
 
@@ -294,9 +322,12 @@ function Workorder(props) {
         }
         saveApi(saveData, params2, uploadSive);
       }
+      if(params2) {
+        return formerr();
+      }
     });
   };
-
+//   处理保存
   const saveHandle = (params2, uploadSive) => {
     HandleRef.current.validateFields((err, values) => {
       if (params2 ? !err : true) {
@@ -312,6 +343,7 @@ function Workorder(props) {
         }
         saveApi(saveData, params2, uploadSive);
       }
+      return formerr();
     });
   };
 
@@ -345,26 +377,42 @@ function Workorder(props) {
   };
 
   const gotoTransferorder = () => {
-    saveHandle();
+    // saveHandle('系统开发商处理');
     const taskId = id;
     const result = 9;
-    return dispatch({
-      type: 'problemmanage/gotoCirculation',
-      payload: {
-        flow: {
-          taskId,
-          result,
-          userIds: sessionStorage.getItem('NextflowUserId'),
+    HandleRef.current.validateFields((err, values) => {
+      if (!err) {
+        const saveData = {
+          ...values,
+          handleTime: values.handleTime ? (values.handleTime).format('YYYY-MM-DD HH:mm:ss') : '',
+          orderReceivingtime: values.orderReceivingtime ? (values.orderReceivingtime).format('YYYY-MM-DD HH:mm:ss') : '',
+          planEndTime: values.planEndTime ? (values.planEndTime).format('YYYY-MM-DD HH:mm:ss') : '',
+          taskId: id,
+          editState: todoDetail.editState === 'edit' ? 'edit' : 'add',
+          handleId: todoDetail.editState === 'edit' ? todoDetail.handle.id : todoDetail.editGuid,
+          handleAttachments: files.ischange ? JSON.stringify(files.arr) : null
         }
-      },
-    }).then(res => {
-      if (res.code === 200) {
-        message.info(res.msg);
-        router.push(`/ITSM/problemmanage/besolved`)
-      } else {
-        message.info(res.error);
+        saveApi(saveData);
+        return dispatch({
+          type: 'problemmanage/gotoCirculation',
+          payload: {
+            flow: {
+              taskId,
+              result,
+              userIds: sessionStorage.getItem('NextflowUserId'),
+            }
+          },
+        }).then(res => {
+          if (res.code === 200) {
+            message.info(res.msg);
+            router.push(`/ITSM/problemmanage/besolved`)
+          } else {
+            message.info(res.error);
+          }
+        })
       }
-    })
+    });
+
   }
 
   const reasonSubmit = values => {
@@ -538,6 +586,12 @@ function Workorder(props) {
 
   // 监听todoDetail是否已更新
   useEffect(() => {
+    if (check) {
+      setFlowtype(check.checkResult);
+    }
+    if (confirm) {
+      setFlowtype(confirm.confirmResult);
+    }
     if (loading) {
       setIsNew(true);
     }
@@ -568,13 +622,16 @@ function Workorder(props) {
     }
   }
 
+
+
+
   return (
     <PageHeaderWrapper
       title={pagetitle}
       extra={
         <>
           <>
-            { (currntStatus === 5 || currntStatus === 0) && (
+            { (currntStatus === 5 || currntStatus === 0) && problemFlowLogs && problemFlowLogs.length === 1 && (
               <Button type="danger" ghost style={{ marginRight: 8 }} onClick={handleDelete}>
                 删除
               </Button>
@@ -585,7 +642,7 @@ function Workorder(props) {
                 || flowNodeName === '自动化科业务人员确认' || flowNodeName === '问题登记人员确认')
               && showback === true && (
                 <Reasonregression reasonSubmit={values => reasonSubmit(values)}>
-                  <Button type="primary" ghost style={{ marginRight: 8 }}>
+                  <Button type="primary" style={{ marginRight: 8 }}>
                     回退
                 </Button>
                 </Reasonregression>
@@ -617,18 +674,13 @@ function Workorder(props) {
 
             {
               (currntStatus === 45) && handle !== undefined && (
-                <TransferOrder
-                  taskId={id}
-                  currentObj={currntStatus}
-                  handleSubmit={gotoTransferorder}
+                <Button
+                  type="primary"
+                  style={{ marginRight: 8 }}
+                  onClick={() => {handleSubmit(circaSign);setProblemchangorder('transfer')}}
                 >
-                  <Button
-                    type="primary"
-                    style={{ marginRight: 8 }}
-                  >
-                    转单
+                  转单
                 </Button>
-                </TransferOrder>
 
               )
             }
@@ -646,17 +698,18 @@ function Workorder(props) {
               (problemlist && selSign === '1') &&
               tabActiveKey === 'workorder' &&
               (
-                <SelectUser
-                  taskId={id}
-                  handleSubmit={() => handleSubmit(circaSign)}
-                >
+                // <SelectUser
+                //   taskId={id}
+                //   handleSubmit={() => handleSubmit(circaSign)}
+                // >
                 <Button
                   type="primary"
                   style={{ marginRight: 8 }}
-                  onClick={() => { handleHold('flow'); setButandOrder('flow') }}>
+                  onFocus={() => 0}
+                  onClick={() => { handleSubmit(circaSign)}}>
                   流转
                 </Button>
-                </SelectUser>
+                // </SelectUser>
 
               )
             }
@@ -666,17 +719,13 @@ function Workorder(props) {
               flowtype === '1' &&
               tabActiveKey === 'workorder' &&
               (
-                <SelectUser
-                  taskId={id}
-                  handleSubmit={() => handleSubmit(circaSign)}
-                >
-                  <Button
-                    type="primary"
-                    style={{ marginRight: 8 }}
-                  >
-                    流转
-                </Button>
-                </SelectUser>
+                <Button
+                type="primary"
+                style={{ marginRight: 8 }}
+                onFocus={() => 0}
+                onClick={() => { handleSubmit(circaSign)}}>
+                流转
+              </Button>
               )
             }
 
@@ -684,17 +733,24 @@ function Workorder(props) {
               flowNodeName === '系统运维商审核' && flowtype === '1' &&
               tabActiveKey === 'workorder' &&
               (
-                <AutomationCirculation
-                  taskId={id}
-                  handleSubmit={() => handleSubmit(circaSign)}
-                >
-                  <Button
-                    type="primary"
-                    style={{ marginRight: 8 }}
-                  >
-                    流转
-                </Button>
-                </AutomationCirculation>
+                // <AutomationCirculation
+                //   taskId={id}
+                //   handleSubmit={() => handleSubmit(circaSign)}
+                // >
+                //   <Button
+                //     type="primary"
+                //     style={{ marginRight: 8 }}
+                //   >
+                //     流转3
+                // </Button>
+                // </AutomationCirculation>
+                <Button
+                type="primary"
+                style={{ marginRight: 8 }}
+                onFocus={() => 0}
+                onClick={() => { handleSubmit(circaSign) }}>
+                流转
+              </Button>
               )
 
             }
@@ -711,8 +767,8 @@ function Workorder(props) {
 
             {
               (
-                flowtype === '0' ||
-                (problemlist && selSign === '0')
+                flowtype === '0'
+                // (problemlist && selSign === '0')
               )
               &&
               flowNodeName !== '系统开发商处理' &&
@@ -722,9 +778,24 @@ function Workorder(props) {
                 <Button
                   type="primary"
                   style={{ marginRight: 8 }}
-                  onClick={() => handleSubmit(flowNodeName)}
+                  onClick={() =>{ setButandOrder('goback')}}
                 >
-                  流转
+                  {
+                    (flowNodeName === '自动化科审核' || flowNodeName === '系统运维商审核')
+                      ? '重新登记' : '重新处理'}
+                </Button>
+              )
+            }
+            {
+              selSign === '0' && flowtype === '1' &&  flowNodeName !== '系统开发商处理' && (
+                <Button
+                  type="primary"
+                  style={{ marginRight: 8 }}
+                  onClick={() => {handleSubmit();setButandOrder('end')}}
+                >
+                  {
+                    flowNodeName === '问题登记人员确认' ? '结束' : '流转'
+                  }
                 </Button>
               )
             }
@@ -758,14 +829,6 @@ function Workorder(props) {
       onTabChange={handleTabChange}
       tabActiveKey={tabActiveKey}
     >
-      {/* <User
-        taskId={id}
-        visible={uservisible}
-        ChangeUserVisible={v => setUserVisible(v)}
-        changorder={changorder}
-        ChangeChoice={v => selectChoice(v)}
-        ChangeType={v => setButtonType(v)}
-      /> */}
       {/* 编辑页 */}
       {
         (tabActiveKey === 'workorder' && todoDetail &&
@@ -818,7 +881,7 @@ function Workorder(props) {
                         useInfo={userinfo}
                         register={register}
                         main={main}
-                        location={location}
+                        // location={location}
                         files={
                           todoDetail.register !== undefined && todoDetail.register.registerAttachments ? JSON.parse(todoDetail.register.registerAttachments) : []
                         }
@@ -1074,7 +1137,15 @@ function Workorder(props) {
           <Problemflow id={problemFlowid} />
         ))
       }
-
+     <User
+        taskId={id}
+        visible={uservisible}
+        ChangeUserVisible={v => setUserVisible(v)}
+        changorder={changorder}
+        ChangeChoice={v => setUserChoice(v)}
+        currentPeocess={flowNodeName}
+        ChangeType={() => 0}
+      />
     </PageHeaderWrapper>
   );
 }

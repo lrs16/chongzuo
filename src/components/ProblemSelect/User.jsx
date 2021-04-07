@@ -6,8 +6,9 @@ import styles from './index.less';
 const User = props => {
   const {
     dispatch,
-    defaultvalue,
-    demandvalue,
+    // defaultvalue,
+    // demandvalue,
+    currentPeocess,
     problemlist,
     loading,
     changorder,
@@ -17,9 +18,24 @@ const User = props => {
     ChangeChoice,
     ChangeType,
   } = props;
+  const [isnew, setIsNew] = useState(false);
+  const [demandvalue, setDemandValue] = useState([])
+  const [defaultvalue, setDefaultValue] = useState([])
+  const [specialvalue, setSpecialvalue] = useState([]);
+  const type = sessionStorage.getItem('Processtype');
 
   // const [isModalVisible, setIsModalVisible] = useState(false);
-  const type = sessionStorage.getItem('Processtype');
+
+  useEffect(() => {
+    if (loading) {
+      setIsNew(true);
+    }
+    return () => {
+      setIsNew(false);
+      setDemandValue([]);
+      setDefaultValue([]);
+    };
+  }, [problemlist]);
 
   const dataArr = datas => {
     const newArr = [];
@@ -57,18 +73,10 @@ const User = props => {
   };
 
   // 需求多选下一环节人员
-  const handledemandChange = (values, nodeName, key) => {
-    const obj = {};
-    obj.nodeName = nodeName;
-    obj.userIds = values;
-    const target = demandvalue.filter((_, index) => key === index)[0];
-    if (target === undefined) {
-      demandvalue.push(obj);
-    } else {
-      demandvalue.splice(key, 1, obj);
-    }
-    sessionStorage.setItem('NextflowUserId', JSON.stringify(demandvalue));
-    // setValue(values);
+  const handledemandChange = (checkedValues) => {
+    setSpecialvalue(checkedValues);
+    console.log(specialvalue,'specialvalue');
+    sessionStorage.setItem('AutoflowUserId', checkedValues.join(','));
   };
 
   // useEffect(() => {
@@ -129,12 +137,28 @@ const User = props => {
     if (visible) {
       showModal();
     }
+
+    return () => {
+    }
   }, [visible]);
 
   const handleOk = () => {
-    if (type !== 'demand') {
+    console.log(specialvalue,'specialvalue');
+    const params = value.length && specialvalue.length;
+    // console.log('specialvalue.length: ', specialvalue.length);
+    // console.log('value.length: ', value.length);
+    if (currentPeocess !== '系统运维商审核') {
       if (value.length === 0) {
         message.error('最少选择一个处理人！');
+      } else {
+        ChangeChoice(true);
+        ChangeUserVisible(false);
+      }
+    } 
+
+    if(currentPeocess === '系统运维商审核') {
+      if(params < 1) {
+        message.info('每种角色必须选择一个人');
       } else {
         ChangeChoice(true);
         ChangeUserVisible(false);
@@ -148,7 +172,7 @@ const User = props => {
         newArr.push(idnum);
         nameArr.push(demandvalue[i].nodeName);
       }
-      if (newArr.indexOf(0) !== -1 || nameArr.length < userlist.length) {
+      if (newArr.indexOf(0) !== -1 || nameArr.length < problemlist.data.length) {
         message.error('最少选择一个处理人！');
       } else {
         ChangeChoice(true);
@@ -168,7 +192,7 @@ const User = props => {
     <>
       <Modal title="选择下一环节处理人" visible={visible} onOk={handleOk} onCancel={handleCancel}>
         <Spin tip="正在加载数据..." spinning={Boolean(loading)}>
-          {loading === false && type !== 'demand' && (
+          {loading === false && type !== 'demand' && isnew && problemlist !== '' && currentPeocess !== '系统运维商审核' && (
             <>
               <div>{nextflowuser}人员</div>
               <div style={{ marginTop: 12 }} className={styles.useritem}>
@@ -180,6 +204,40 @@ const User = props => {
               </div>
             </>
           )}
+
+          {
+        
+            currentPeocess === '系统运维商审核' && (
+              <>
+              <div>自动化科专责人员</div>
+              <div style={{ marginTop: 12 }}>
+                <Checkbox.Group
+                  defaultValue={defaultvalue}
+                  options={dataArr(problemlist.serviceData)}
+                  onChange={handleChange}
+                />
+              </div>
+              </>
+            )
+          
+          }
+
+          {
+        
+            currentPeocess === '系统运维商审核' && (
+              <>
+              <div>自动化科专责人员</div>
+              <div style={{ marginTop: 12 }}>
+                <Checkbox.Group
+                  defaultValue={defaultvalue}
+                  options={dataArr(problemlist.dutyData)}
+                  onChange={handledemandChange}
+                />
+              </div>
+              </>
+            )
+          
+          }
           {/* <div>{nextflowuser}人员</div>
           <div style={{ marginTop: 12 }}>
             <Checkbox.Group
