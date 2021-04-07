@@ -12,8 +12,8 @@ import {
   Button,
   DatePicker,
   Table,
-  Badge,
-  Tag,
+  // Badge,
+  // Tag,
   Cascader,
 } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
@@ -44,6 +44,16 @@ const forminladeLayout = {
   wrapperCol: {
     xs: { span: 24 },
     sm: { span: 22 },
+  },
+};
+const form10ladeLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 4 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 20 },
   },
 };
 const columns = [
@@ -99,13 +109,13 @@ const columns = [
     title: '申报人单位',
     dataIndex: 'applicationUnit',
     key: 'applicationUnit',
-    width: 120,
+    width: 300,
   },
   {
     title: '申报人部门',
     dataIndex: 'applicationDept',
     key: 'applicationDept',
-    width: 120,
+    width: 300,
   },
   {
     title: '事件分类',
@@ -187,8 +197,7 @@ function QueryList(props) {
     form: {
       getFieldDecorator,
       resetFields,
-      validateFields,
-      setFieldsValue
+      validateFields
     },
     location: { query: {
       sign,
@@ -205,7 +214,7 @@ function QueryList(props) {
     list,
     dispatch,
   } = props;
-  const [paginations, setPageinations] = useState({ current: 1, pageSize: 10 });
+  const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
   const [expand, setExpand] = useState(false);
   const [selectdata, setSelectData] = useState('');
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
@@ -420,6 +429,11 @@ function QueryList(props) {
 
   const handleReset = () => {
     resetFields();
+    validateFields((err, values) => {
+      if (!err) {
+        searchdata(values, 1, 15);
+      }
+    });
   };
 
   const displayRender = label => {
@@ -457,30 +471,67 @@ function QueryList(props) {
       <Card>
         <Row gutter={24}>
           <Form {...formItemLayout} onSubmit={handleSearch}>
-            <Col span={8}>
-              <Form.Item label="事件编号">
-                {getFieldDecorator('eventNo', {
-                  initialValue: '',
-                })(<Input placeholder="请输入" allowClear />)}
-              </Form.Item>
-            </Col>
-            <Col span={8}>
-              <Form.Item label="工单状态">
-                {getFieldDecorator('eventStatus', {
-                  initialValue: '',
-                })(
-                  <Select placeholder="请选择" allowClear>
-                    {statusmap.map(obj => (
-                      <Option key={obj.key} value={obj.title}>
-                        {obj.title}
-                      </Option>
-                    ))}
-                  </Select>,
-                )}
-              </Form.Item>
-            </Col>
+            {expand === false && (
+              <>
+                <Col span={7}>
+                  <Form.Item label="事件编号">
+                    {getFieldDecorator('eventNo', {
+                      initialValue: '',
+                    })(<Input placeholder="请输入" allowClear />)}
+                  </Form.Item>
+                </Col>
+                <Col span={7}>
+                  <Form.Item label="工单状态">
+                    {getFieldDecorator('eventStatus', {
+                      initialValue: '',
+                    })(
+                      <Select placeholder="请选择" allowClear>
+                        {statusmap.map(obj => (
+                          <Option key={obj.key} value={obj.title}>
+                            {obj.title}
+                          </Option>
+                        ))}
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
+                <Col span={10}>
+                  <Form.Item label="建单时间" {...form10ladeLayout}>
+                    {getFieldDecorator('createTime', {
+                      initialValue: sign ? [moment(time1), moment(time2)] : [moment().startOf('month'), moment()],
+                    })(<RangePicker
+                      showTime
+                      format='YYYY-MM-DD HH:mm:ss'
+                      allowClear
+                    />)}
+                  </Form.Item>
+                </Col>
+              </>
+            )}
             {expand === true && (
               <>
+                <Col span={8}>
+                  <Form.Item label="事件编号">
+                    {getFieldDecorator('eventNo', {
+                      initialValue: '',
+                    })(<Input placeholder="请输入" allowClear />)}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item label="工单状态">
+                    {getFieldDecorator('eventStatus', {
+                      initialValue: '',
+                    })(
+                      <Select placeholder="请选择" allowClear>
+                        {statusmap.map(obj => (
+                          <Option key={obj.key} value={obj.title}>
+                            {obj.title}
+                          </Option>
+                        ))}
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
                 <Col span={8}>
                   <Form.Item label="事件分类">
                     {getFieldDecorator('eventType', {
@@ -790,62 +841,31 @@ function QueryList(props) {
                 </Col>
               </>
             )}
-            {expand === false && (
-              <Col span={8}>
-                <Form.Item>
-                  <Button type="primary" onClick={() => handleSearch('search')}>
-                    查 询
-                  </Button>
-                  <Button style={{ marginLeft: 8 }} onClick={handleReset}>
-                    重 置
-                  </Button>
-                  <Button
-                    style={{ marginLeft: 8 }}
-                    type="link"
-                    onClick={() => {
-                      setExpand(!expand);
-                    }}
-                  >
-                    {expand ? (
-                      <>
-                        关 闭 <UpOutlined />
-                      </>
-                    ) : (
-                      <>
-                        展 开 <DownOutlined />
-                      </>
-                    )}
-                  </Button>
-                </Form.Item>
-              </Col>
-            )}
-            {expand === true && (
-              <Col span={24} style={{ textAlign: 'right' }}>
-                <Button type="primary" onClick={() => handleSearch('search')}>
-                  查 询
+            <Col span={24} style={{ textAlign: 'right' }}>
+              <Button type="primary" onClick={() => handleSearch('search')}>
+                查 询
                 </Button>
-                <Button style={{ marginLeft: 8 }} onClick={handleReset}>
-                  重 置
+              <Button style={{ marginLeft: 8 }} onClick={handleReset}>
+                重 置
                 </Button>
-                <Button
-                  style={{ marginLeft: 8 }}
-                  type="link"
-                  onClick={() => {
-                    setExpand(!expand);
-                  }}
-                >
-                  {expand ? (
-                    <>
-                      关 闭 <UpOutlined />
-                    </>
-                  ) : (
-                    <>
-                      展 开 <DownOutlined />
-                    </>
-                  )}
-                </Button>
-              </Col>
-            )}
+              <Button
+                style={{ marginLeft: 8 }}
+                type="link"
+                onClick={() => {
+                  setExpand(!expand);
+                }}
+              >
+                {expand ? (
+                  <>
+                    关 闭 <UpOutlined />
+                  </>
+                ) : (
+                  <>
+                    展 开 <DownOutlined />
+                  </>
+                )}
+              </Button>
+            </Col>
           </Form>
         </Row>
         <div style={{ marginBottom: 24 }}>
