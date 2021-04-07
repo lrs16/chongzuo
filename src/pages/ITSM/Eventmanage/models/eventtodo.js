@@ -10,6 +10,7 @@ import {
   EventDelete,
   EventImage,
   querydownload,
+  querydownloadbyids
 } from '../services/api';
 
 const replacerec = values => {
@@ -186,8 +187,11 @@ export default {
       });
     },
     // 下载
-    *eventdownload({ payload }, { call }) {
-      return yield call(querydownload, { ...payload });
+    *eventdownload({ payload: { values, ids } }, { call }) {
+      if (ids.length === 0) {
+        return yield call(querydownload, { ...values });
+      }
+      return yield call(querydownloadbyids, ids);
     },
   },
 

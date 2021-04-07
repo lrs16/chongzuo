@@ -105,6 +105,7 @@ function ToDolist(props) {
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
   const [expand, setExpand] = useState(false);
   const [selectdata, setSelectData] = useState('');
+  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
 
   useEffect(() => {
     validateFields((err, values) => {
@@ -147,7 +148,10 @@ function ToDolist(props) {
       if (!err) {
         dispatch({
           type: 'eventtodo/eventdownload',
-          payload: { ...values },
+          payload: {
+            values,
+            ids: selectedRowKeys.toString(),
+          },
         }).then(res => {
           const filename = `事件待办_${moment().format('YYYY-MM-DD HH:mm')}.xls`;
           const blob = new Blob([res]);
@@ -194,6 +198,15 @@ function ToDolist(props) {
     total: list.total,
     showTotal: total => `总共  ${total}  条记录`,
     onChange: page => changePage(page),
+  };
+
+  const onSelectChange = RowKeys => {
+    setSelectedRowKeys(RowKeys)
+  };
+
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: onSelectChange,
   };
 
   const handleSearch = () => {
@@ -388,8 +401,9 @@ function ToDolist(props) {
           loading={loading}
           columns={columns}
           dataSource={list.rows}
-          rowKey={record => record.eventNo}
+          rowKey={record => record.id}
           pagination={pagination}
+          rowSelection={rowSelection}
         />
       </Card>
     </PageHeaderWrapper>

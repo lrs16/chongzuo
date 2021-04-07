@@ -124,6 +124,15 @@ export async function querydownload(params) {
   });
 }
 
+export async function querydownloadbyids(params) {
+  return request(`/event/form/downloadQueryExcelByIdS`, {
+    method: 'POST',
+    data: { ids: params },
+    requestType: 'form',
+    responseType: 'blob',
+  });
+}
+
 // 获取超时列表
 export async function querytimeout(params) {
   return request(`/event/form/findTimeoutOrder`, {

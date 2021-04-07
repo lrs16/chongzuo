@@ -208,6 +208,7 @@ function QueryList(props) {
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 10 });
   const [expand, setExpand] = useState(false);
   const [selectdata, setSelectData] = useState('');
+  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
 
   if (sign) {
     noStatistic = 'noStatistic';
@@ -241,7 +242,7 @@ function QueryList(props) {
 
   //  查询页查询数据把数据统计的数据清空
   const queryFunciton = (values, page, size) => {
-    if(sign) {
+    if (sign) {
       dispatch({
         type: 'eventquery/fetchlist',
         payload: {
@@ -279,7 +280,7 @@ function QueryList(props) {
 
   //  查询后点击分页不带统计的参数，翻页、变更每页显示条数
   const changePagelist = (values, page, size) => {
-    if(sign) {
+    if (sign) {
       dispatch({
         type: 'eventquery/fetchlist',
         payload: {
@@ -287,7 +288,7 @@ function QueryList(props) {
           eventObject: values.eventObject ? (values.eventObject).slice(-1)[0] : eventObject,
           createTime: '',
           time1: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : time1,
-          time2:  values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : time2,
+          time2: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : time2,
           pageSize: size,
           pageIndex: page - 1,
           selfhandle: values.selfhandle ? values.selfhandle : selfhandle,
@@ -303,7 +304,7 @@ function QueryList(props) {
           eventObject: values.eventObject ? (values.eventObject).slice(-1)[0] : eventObject,
           createTime: '',
           time1: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : moment().startOf('month').format('YYYY-MM-DD HH:mm:ss'),
-          time2:  values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : moment().format('YYYY-MM-DD HH:mm:ss'),
+          time2: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : moment().format('YYYY-MM-DD HH:mm:ss'),
           pageSize: size,
           pageIndex: page - 1,
           selfhandle: values.selfhandle ? values.selfhandle : selfhandle,
@@ -335,17 +336,19 @@ function QueryList(props) {
         dispatch({
           type: 'eventtodo/eventdownload',
           payload: {
-            ...values,
-            createTime: '',
-            time1: values.createTime ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : time1,
-            time2: values.createTime ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : time2,
-            eventObject: values.eventObject ? (values.eventObject).slice(-1)[0] : eventObject,
-            selfhandle: values.selfhandle ? values.selfhandle : selfhandle,
-            registerUser: values.registerUser ? values.registerUser : registerUser,
-            applicationUnit: values.applicationUnit ? values.applicationUnit : applicationUnit
+            values: {
+              ...values,
+              createTime: '',
+              time1: values.createTime ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : time1,
+              time2: values.createTime ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : time2,
+              eventObject: values.eventObject ? (values.eventObject).slice(-1)[0] : eventObject,
+              selfhandle: values.selfhandle ? values.selfhandle : selfhandle,
+              registerUser: values.registerUser ? values.registerUser : registerUser,
+              applicationUnit: values.applicationUnit ? values.applicationUnit : applicationUnit
+            },
+            ids: selectedRowKeys.toString(),
           },
         }).then(res => {
-          // console.log(res);
           const filename = `事件查询_${moment().format('YYYY-MM-DD HH:mm')}.xls`;
           const blob = new Blob([res]);
           const url = window.URL.createObjectURL(blob);
@@ -391,6 +394,15 @@ function QueryList(props) {
     total: list.total,
     showTotal: total => `总共  ${total}  条记录`,
     onChange: page => changePage(page),
+  };
+
+  const onSelectChange = RowKeys => {
+    setSelectedRowKeys(RowKeys)
+  };
+
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: onSelectChange,
   };
 
   const handleSearch = (params) => {
@@ -850,6 +862,7 @@ function QueryList(props) {
               scroll={{ x: 1800 }}
               rowKey={record => record.id}
               pagination={pagination}
+              rowSelection={rowSelection}
             />
           )
         }
