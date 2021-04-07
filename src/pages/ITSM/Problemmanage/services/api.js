@@ -51,12 +51,12 @@ export async function deleteTobo(deleteid) {
 }
 
 //  退回原因
-export async function backReason(id, values) {
+export async function backReason(id, values, userIds) {
   return request(`/problem/flow/submit`, {
     method: 'POST',
     data: {
       ...values,
-      userIds:id,
+      userIds,
       taskId:id,
       result:-1
     },

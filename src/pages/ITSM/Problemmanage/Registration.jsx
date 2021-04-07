@@ -3,7 +3,6 @@ import { Form, Button, Card } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { connect } from 'dva';
 import Registrat from './components/Registrat';
-import { withConfigConsumer } from '_antd@3.26.20@antd/lib/config-provider/context';
 
 const formItemLayout = {
   labelCol: {

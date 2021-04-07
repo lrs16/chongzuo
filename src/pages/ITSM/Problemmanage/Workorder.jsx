@@ -11,8 +11,6 @@ import { connect } from 'dva';
 import Link from 'umi/link';
 import router from 'umi/router';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import SelectUser from '@/components/ProblemSelect';
-import TransferOrder from '@/components/TransferOrder';
 import Registrat from './components/Registrat';
 import Systemoperatoredit from './components/Systemoperatoredit';
 import Developerprocessdit from './components/Developerprocessdit';
@@ -76,6 +74,8 @@ function Workorder(props) {
   const [uservisible, setUserVisible] = useState(false); // 是否显示选人组件
   const [changorder, setChangeOrder] = useState(undefined);
   const [problemchangorder, setProblemchangorder] = useState(undefined);
+  const [problemHandle, setProblemHandle] = useState('');
+  const [saveHandles, setsaveHandles] = useState('');
   const [Popvisible, setVisible] = useState(false);
   const [userchoice, setUserChoice] = useState(false); // 已经选择人员
   const [iscolse, setIsClose] = useState('');
@@ -113,6 +113,7 @@ function Workorder(props) {
   const {
     params: { id },
   } = props.match;
+
 
   const { problemFlowLogs, problemFlowNodeRows } = todoDetail;
 
@@ -208,7 +209,7 @@ function Workorder(props) {
     }
 
     let selectPerson;
-    if (flowNodeName === '系统运维商审核') {
+    if (flowNodeName === '系统运维商审核' && flowtype === '1') {
       selectPerson = `${sessionStorage.getItem('NextflowUserId')},${sessionStorage.getItem('AutoflowUserId')}`;
     } else {
       selectPerson = sessionStorage.getItem('NextflowUserId');
@@ -239,6 +240,7 @@ function Workorder(props) {
   }
 
   const saveApi = (saveData, params2) => {
+    console.log('params2: ', params2);
     return dispatch({
       type: 'problemmanage/tobeSave',
       payload: { ...saveData },
@@ -246,13 +248,17 @@ function Workorder(props) {
       if (res.code === 200) {
         showback = false;
         if (!params2) {
-          message.info(res.msg);
+          message.info('保存成功');
         }
         getInformation();
-        if (params2) {
+        if (params2 && params2 !== '系统开发商处理') {
           setUserVisible(true);
           // gotoCirapi();
         }
+        // 处理保存的状态
+        // if(params2 === undefined && flowNodeName === '系统开发商处理') {
+
+        // }
       } else {
         message.error(res.msg);
       }
@@ -261,12 +267,7 @@ function Workorder(props) {
 
   useEffect(() => {
     if (userchoice || butandorder) {
-      if (butandorder === 'transfer') {
-        // gotoTransferorder();
-        gotoCirapi('transfer');
-      } else {
-        gotoCirapi();
-      }
+      gotoCirapi();
     }
   }, [userchoice,butandorder])
 
@@ -300,7 +301,7 @@ function Workorder(props) {
           }
         });
       }
-      if(params2) {
+      if(params2 && uservisible === false) {
         return formerr();
       }
 
@@ -322,11 +323,12 @@ function Workorder(props) {
         }
         saveApi(saveData, params2, uploadSive);
       }
-      if(params2) {
+      if(params2  && uservisible === true ) {
         return formerr();
       }
     });
   };
+
 //   处理保存
   const saveHandle = (params2, uploadSive) => {
     HandleRef.current.validateFields((err, values) => {
@@ -342,8 +344,13 @@ function Workorder(props) {
           handleAttachments: files.ischange ? JSON.stringify(files.arr) : null
         }
         saveApi(saveData, params2, uploadSive);
+        if(params2) {
+          setUserVisible(false);
+        }
       }
-      return formerr();
+      if(params2 && uservisible === false) {
+        return formerr();
+      }
     });
   };
 
@@ -372,6 +379,9 @@ function Workorder(props) {
             break
         }
         saveApi(saveData, params2, uploadSive);
+      }
+      if(params2 && uservisible === true ) {
+        return formerr();
       }
     });
   };
@@ -418,7 +428,11 @@ function Workorder(props) {
   const reasonSubmit = values => {
     dispatch({
       type: 'problemmanage/tobeBack',
-      payload: { id, values },
+      payload: { 
+        id,
+       values,
+       userIds: sessionStorage.getItem('NextflowUserId')
+       },
     }).then(res => {
       if (res.code === 200) {
         message.info(res.msg);
@@ -579,7 +593,6 @@ function Workorder(props) {
     if (currntStatus === 45) {
       setFlowtype(9);
     } else {
-      setFlowtype('1');
     }
     sessionStorage.setItem('flowtype', flowtype);
   }, [currntStatus]);
@@ -631,7 +644,14 @@ function Workorder(props) {
       extra={
         <>
           <>
-            { (currntStatus === 5 || currntStatus === 0) && problemFlowLogs && problemFlowLogs.length === 1 && (
+          
+            { (flowNodeName === '问题登记'  && problemFlowLogs && problemFlowLogs.length === 1) && (
+              <Button type="danger" ghost style={{ marginRight: 8 }} onClick={handleDelete}>
+                删除
+              </Button>
+            )}
+
+            { (flowNodeName === '问题登记'  && problemFlowLogs && problemFlowLogs.length >= 3 && problemFlowLogs[problemFlowLogs.length-2].status === '退回') && (
               <Button type="danger" ghost style={{ marginRight: 8 }} onClick={handleDelete}>
                 删除
               </Button>
@@ -653,7 +673,7 @@ function Workorder(props) {
                 <Button
                   type="primary"
                   style={{ marginRight: 8 }}
-                  onClick={() => handleSubmit(saveSign)}
+                  onClick={() => handleSubmit()}
                 >
                   保存
                 </Button>
@@ -665,7 +685,7 @@ function Workorder(props) {
                 <Button
                   type="primary"
                   style={{ marginRight: 8 }}
-                  onClick={() => handleSubmit(saveSign)}
+                  onClick={() => {handleSubmit()}}
                 >
                   保存
                 </Button>
@@ -677,7 +697,7 @@ function Workorder(props) {
                 <Button
                   type="primary"
                   style={{ marginRight: 8 }}
-                  onClick={() => {handleSubmit(circaSign);setProblemchangorder('transfer')}}
+                  onClick={() => {handleSubmit(circaSign);}}
                 >
                   转单
                 </Button>
@@ -692,68 +712,20 @@ function Workorder(props) {
             )}
 
             {
-              flowtype === '1' &&
-              flowNodeName !== '系统运维商审核' &&
-              flowNodeName !== '系统运维商确认' &&
+              flowtype === '1' && 
               (problemlist && selSign === '1') &&
-              tabActiveKey === 'workorder' &&
+              tabActiveKey === 'workorder' && loading === false &&
               (
-                // <SelectUser
-                //   taskId={id}
-                //   handleSubmit={() => handleSubmit(circaSign)}
-                // >
                 <Button
                   type="primary"
                   style={{ marginRight: 8 }}
                   onFocus={() => 0}
-                  onClick={() => { handleSubmit(circaSign)}}>
+                  onClick={() => { handleSubmit(circaSign);setProblemHandle('handle')}}>
                   流转
                 </Button>
-                // </SelectUser>
-
               )
             }
 
-            {
-              flowNodeName === '系统运维商确认' &&
-              flowtype === '1' &&
-              tabActiveKey === 'workorder' &&
-              (
-                <Button
-                type="primary"
-                style={{ marginRight: 8 }}
-                onFocus={() => 0}
-                onClick={() => { handleSubmit(circaSign)}}>
-                流转
-              </Button>
-              )
-            }
-
-            {
-              flowNodeName === '系统运维商审核' && flowtype === '1' &&
-              tabActiveKey === 'workorder' &&
-              (
-                // <AutomationCirculation
-                //   taskId={id}
-                //   handleSubmit={() => handleSubmit(circaSign)}
-                // >
-                //   <Button
-                //     type="primary"
-                //     style={{ marginRight: 8 }}
-                //   >
-                //     流转3
-                // </Button>
-                // </AutomationCirculation>
-                <Button
-                type="primary"
-                style={{ marginRight: 8 }}
-                onFocus={() => 0}
-                onClick={() => { handleSubmit(circaSign) }}>
-                流转
-              </Button>
-              )
-
-            }
             {
               flowNodeName === '问题登记' && (problemFlowLogs && problemFlowLogs.length > 2) && (
                 <Button
@@ -768,7 +740,6 @@ function Workorder(props) {
             {
               (
                 flowtype === '0'
-                // (problemlist && selSign === '0')
               )
               &&
               flowNodeName !== '系统开发商处理' &&
@@ -787,7 +758,7 @@ function Workorder(props) {
               )
             }
             {
-              selSign === '0' && flowtype === '1' &&  flowNodeName !== '系统开发商处理' && (
+              selSign === '0' && flowtype === '1' &&  flowNodeName !== '系统开发商处理' && loading === false && (
                 <Button
                   type="primary"
                   style={{ marginRight: 8 }}
@@ -804,7 +775,7 @@ function Workorder(props) {
                 flowtype === '0' ||
                 (problemlist && selSign === '0')
               )
-              && handle !== undefined &&
+              && handle !== undefined && loading === false &&
               flowNodeName === '系统开发商处理' &&
               (currntStatus !== 29 && currntStatus !== 40) &&
               tabActiveKey === 'workorder' &&
@@ -812,9 +783,9 @@ function Workorder(props) {
                 <Button
                   type="primary"
                   style={{ marginRight: 8 }}
-                  onClick={() => handleSubmit(flowNodeName)}
+                  onClick={() => {handleSubmit(flowNodeName);}}
                 >
-                  流转
+                  流转2
                 </Button>
               )
             }

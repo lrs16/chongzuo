@@ -148,8 +148,8 @@ export default {
     },
 
     //  回退
-    *tobeBack({ payload: { id, values } }, { call }) {
-      return yield call(backReason, id, values);
+    *tobeBack({ payload: { id, values,userIds } }, { call }) {
+      return yield call(backReason, id, values,userIds);
     },
 
     //  流转到下一节点前选人
