@@ -186,15 +186,16 @@ const User = props => {
     ChangeType('');
   };
 
+
   const nextflowuser =
     changorder !== undefined ? changorder : sessionStorage.getItem('Nextflowmane');
   return (
     <>
-      <Modal title="选择下一环节处理人" visible={visible} onOk={handleOk} onCancel={handleCancel}>
+      <Modal title={sessionStorage.getItem('flowtype') === '9'?'请选择转单环节处理人':'请选择下一环节处理人'} visible={visible} onOk={handleOk} onCancel={handleCancel}>
         <Spin tip="正在加载数据..." spinning={Boolean(loading)}>
           {loading === false && type !== 'demand' && isnew && problemlist !== '' && currentPeocess !== '系统运维商审核' && (
             <>
-              <div>{nextflowuser}人员</div>
+              <div>{sessionStorage.getItem('flowtype') === '9'?'转单':'下一环节'}人员</div>
               <div style={{ marginTop: 12 }} className={styles.useritem}>
                 <Checkbox.Group
                   defaultValue={defaultvalue}

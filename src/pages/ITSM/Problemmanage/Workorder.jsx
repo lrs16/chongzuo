@@ -61,6 +61,7 @@ let problemFlowid;
 let flowNodeName;
 let fileSign;
 let selSign;
+let changeOrder = '';
 
 export const FatherContext = createContext();
 function Workorder(props) {
@@ -75,7 +76,7 @@ function Workorder(props) {
   const [changorder, setChangeOrder] = useState(undefined);
   const [problemchangorder, setProblemchangorder] = useState(undefined);
   const [problemHandle, setProblemHandle] = useState('');
-  const [saveHandles, setsaveHandles] = useState('');
+  const [handleProcess, setHandleProcess] = useState('');
   const [Popvisible, setVisible] = useState(false);
   const [userchoice, setUserChoice] = useState(false); // 已经选择人员
   const [iscolse, setIsClose] = useState('');
@@ -100,6 +101,8 @@ function Workorder(props) {
     userinfo,
     loading
   } = props;
+
+
 
   let showback = true;
   if (problemlist.selSign !== undefined) {
@@ -191,7 +194,10 @@ function Workorder(props) {
     message.error('请将信息填写完整...');
   };
 
+
+  console.log(changeOrder,'changeOrder');
   const gotoCirapi = (closessign) => {
+    console.log(changeOrder,'changeOrder');
     let result;
     if (closessign) {
       result = 255
@@ -199,13 +205,8 @@ function Workorder(props) {
       result = flowtype;
     }
 
-
-    if (flowNodeName === '系统开发商处理') {
+    if (flowNodeName === '系统开发商处理' && changeOrder === '') {
       result = 1
-    }
-
-    if(problemchangorder === 'transfer') {
-      result = 9;
     }
 
     let selectPerson;
@@ -240,7 +241,6 @@ function Workorder(props) {
   }
 
   const saveApi = (saveData, params2) => {
-    console.log('params2: ', params2);
     return dispatch({
       type: 'problemmanage/tobeSave',
       payload: { ...saveData },
@@ -253,12 +253,11 @@ function Workorder(props) {
         getInformation();
         if (params2 && params2 !== '系统开发商处理') {
           setUserVisible(true);
-          // gotoCirapi();
         }
-        // 处理保存的状态
-        // if(params2 === undefined && flowNodeName === '系统开发商处理') {
-
-        // }
+        if(params2 === '系统开发商处理' && changeOrder === '') {
+          gotoCirapi();
+        }
+        
       } else {
         message.error(res.msg);
       }
@@ -322,15 +321,18 @@ function Workorder(props) {
           checkAttachments: files.ischange ? JSON.stringify(files.arr) : null
         }
         saveApi(saveData, params2, uploadSive);
+      
       }
-      if(params2  && uservisible === true ) {
+      if(params2 && err) {
         return formerr();
       }
+    
     });
   };
 
 //   处理保存
   const saveHandle = (params2, uploadSive) => {
+    
     HandleRef.current.validateFields((err, values) => {
       if (params2 ? !err : true) {
         const saveData = {
@@ -344,11 +346,11 @@ function Workorder(props) {
           handleAttachments: files.ischange ? JSON.stringify(files.arr) : null
         }
         saveApi(saveData, params2, uploadSive);
-        if(params2) {
-          setUserVisible(false);
+        if(params2 && changeOrder) {
+          setUserVisible(true);
         }
       }
-      if(params2 && uservisible === false) {
+      if(params2 && err) {
         return formerr();
       }
     });
@@ -628,15 +630,19 @@ function Workorder(props) {
     setTabActiveKey(key);
   };
 
-  const selectChoice = (v) => {
-    setUserChoice(v);
-    if (v) {
-      setButtonType(butandorder)
-    }
+
+  const changeorderFunction = () => {
+    // setFlowtype(9);
+    changeOrder = '转单';
   }
 
+  const cancelChangeorder = () => {
+    changeOrder = ''
+  }
 
+  // console.log(changeOrder,'changeOrder');
 
+  
 
   return (
     <PageHeaderWrapper
@@ -697,7 +703,7 @@ function Workorder(props) {
                 <Button
                   type="primary"
                   style={{ marginRight: 8 }}
-                  onClick={() => {handleSubmit(circaSign);}}
+                  onClick={() => {changeorderFunction();handleSubmit(flowNodeName);}}
                 >
                   转单
                 </Button>
@@ -742,7 +748,7 @@ function Workorder(props) {
                 flowtype === '0'
               )
               &&
-              flowNodeName !== '系统开发商处理' &&
+              flowNodeName !== '系统开发商处理' && loading === false &&
               (currntStatus !== 29 && currntStatus !== 40) &&
               tabActiveKey === 'workorder' &&
               (
@@ -783,9 +789,9 @@ function Workorder(props) {
                 <Button
                   type="primary"
                   style={{ marginRight: 8 }}
-                  onClick={() => {handleSubmit(flowNodeName);}}
+                  onClick={() => {cancelChangeorder();handleSubmit(flowNodeName)}}
                 >
-                  流转2
+                  流转
                 </Button>
               )
             }

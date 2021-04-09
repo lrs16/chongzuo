@@ -11,11 +11,11 @@ import {
   Table,
   DatePicker,
   Select,
-  Upload
 } from 'antd';
 import Problemexcel from './components/Problemexcel';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import SysDict from '@/components/SysDict';
 
 const formItemLayout = {
   labelCol: {
@@ -36,15 +36,11 @@ function Besolved(props) {
     form: { getFieldDecorator, resetFields, validateFields },
     dispatch,
     besolveList,
-    keyVallist,
-    typelist,
-    prioritylist,
-    stateList,
     loading,
   } = props;
   const [expand, setExpand] = useState(false);
-  const [paginations, setPaginations] = useState({ current: 1, pageSize: 15 });
-  const [fileslist, setFilesList] = useState([]);
+  const [paginations, setPaginations] = useState({ current: 1, pageSize: 10 });
+  const [selectdata, setSelectData] = useState('');
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
 
   const columns = [
@@ -103,52 +99,6 @@ function Besolved(props) {
     },
   ];
 
-
-  const getSourceapi = (dictModule, dictType) => {
-    dispatch({
-      type: 'problemdropdown/keyvalsource',
-      payload: { dictModule, dictType }
-    });
-  }
-  //  问题来源
-  const getSource = () => {
-    const dictModule = 'problem';
-    const dictType = 'source';
-    getSourceapi(dictModule, dictType);
-  }
-  //  问题分类
-  const gettype = () => {
-    const dictModule = 'problem';
-    const dictType = 'type';
-    getSourceapi(dictModule, dictType);
-  }
-  //  重要程度
-  const getpriority = () => {
-    const dictModule = 'public';
-    const dictType = 'priority';
-    getSourceapi(dictModule, dictType);
-  }
-  //  影响范围
-  const getscope = () => {
-    const dictModule = 'public';
-    const dictType = 'effect';
-    getSourceapi(dictModule, dictType);
-  }
-
-  // 所属项目
-  const getProject = () => {
-    const dictModule = 'public';
-    const dictType = 'project';
-    getSourceapi(dictModule, dictType);
-  }
-
-  // 当前处理环节
-  const getstate = () => {
-    const dictModule = 'problem';
-    const dictType = 'current';
-    getSourceapi(dictModule, dictType);
-  }
-
   const getTobolist = () => {
     dispatch({
       type: 'problemmanage/besolveList',
@@ -168,12 +118,6 @@ function Besolved(props) {
 
   useEffect(() => {
     getTobolist();
-    getSource();
-    gettype();
-    getpriority();
-    getscope();
-    getProject();
-    getstate();
   }, []);
 
   const handleReset = () => {
@@ -277,9 +221,25 @@ function Besolved(props) {
     })
   }
 
+  const getTypebyTitle = title => {
+    if (selectdata.ischange) {
+      return selectdata.arr.filter(item => item.title === title)[0].children;
+    }
+    return [];
+  };
+  const problemSource = getTypebyTitle('问题来源');
+  const priority = getTypebyTitle('严重程度');
+  const currentNode = getTypebyTitle('当前处理环节');
+  const problemType = getTypebyTitle('问题分类');
 
   return (
     <PageHeaderWrapper title={pagetitle}>
+      <SysDict
+        typeid="1354287742015508481"
+        commonid="1354288354950123522"
+        ChangeSelectdata={newvalue => setSelectData(newvalue)}
+        style={{ display: 'none' }}
+      />
       <Card>
         <Row gutter={16}>
           <Form {...formItemLayout}>
@@ -305,15 +265,11 @@ function Besolved(props) {
                   ],
                 })(
                   <Select placeholder="请选择" allowClear>
-                    {
-                      stateList.current && stateList.current.length > 0 && (
-                        (stateList.current).map(({ key, val }) => (
-                          <Option key={key} value={val}>
-                            {val}
-                          </Option>
-                        ))
-                      )
-                    }
+                    {currentNode.map(obj => [
+                      <Option key={obj.key} value={obj.title}>
+                        {obj.title}
+                      </Option>,
+                    ])}
                   </Select>,
                 )}
               </Form.Item>
@@ -336,15 +292,11 @@ function Besolved(props) {
                     {getFieldDecorator('source', {})
                       (
                         <Select placeholder="请选择" allowClear>
-                          {
-                            keyVallist && keyVallist.source.length && (
-                              (keyVallist.source).map(({ key, val }) => (
-                                <Option key={key} value={key}>
-                                  {val}
-                                </Option>
-                              ))
-                            )
-                          }
+                          {problemSource.map(obj => [
+                            <Option key={obj.key} value={obj.dict_code}>
+                              {obj.title}
+                            </Option>,
+                          ])}
                         </Select>,
                       )}
                   </Form.Item>
@@ -355,15 +307,11 @@ function Besolved(props) {
                     {getFieldDecorator('type', {})
                       (
                         <Select placeholder="请选择" allowClear>
-                          {
-                            typelist && typelist.type.length && (
-                              (typelist.type).map(({ key, val }) => (
-                                <Option key={key} value={key}>
-                                  {val}
-                                </Option>
-                              ))
-                            )
-                          }
+                          {problemType.map(obj => [
+                            <Option key={obj.key} value={obj.dict_code}>
+                              {obj.title}
+                            </Option>,
+                          ])}
                         </Select>,
                       )}
                   </Form.Item>
@@ -390,16 +338,11 @@ function Besolved(props) {
                     {getFieldDecorator('importance', {})
                       (
                         <Select placeholder="请选择" allowClear>
-                          {
-                            prioritylist && prioritylist.priority.length && (
-                              (prioritylist.priority).map(({ key, val }) => (
-                                <Option key={key} value={key}>
-                                  {val}
-                                </Option>
-                              ))
-                            )
-                          }
-
+                          {priority.map(obj => [
+                            <Option key={obj.key} value={obj.dict_code}>
+                              {obj.title}
+                            </Option>,
+                          ])}
                         </Select>,
                       )}
                   </Form.Item>
@@ -475,15 +418,15 @@ function Besolved(props) {
           {
             loading === false && (
               <div>
-              <Problemexcel
-                fileslist={[]}
-                ChangeFileslist={newvalue => setFiles(newvalue)}
-              />
-            </div>
+                <Problemexcel
+                  fileslist={[]}
+                  ChangeFileslist={newvalue => setFiles(newvalue)}
+                />
+              </div>
             )
 
           }
-       
+
 
           <Button
             style={{ marginLeft: 8 }}
@@ -509,14 +452,8 @@ function Besolved(props) {
 }
 
 export default Form.create({})(
-  connect(({ problemmanage, problemdropdown, loading }) => ({
+  connect(({ problemmanage, loading }) => ({
     besolveList: problemmanage.besolveList,
-    keyVallist: problemdropdown.keyVallist,
-    typelist: problemdropdown.typelist,
-    prioritylist: problemdropdown.prioritylist,
-    scopeList: problemdropdown.scopeList,
-    projectList: problemdropdown.projectList,
-    stateList: problemdropdown.stateList,
     loading: loading.models.problemmanage,
   }))(Besolved),
 );
