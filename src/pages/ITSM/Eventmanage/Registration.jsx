@@ -82,6 +82,7 @@ function Registration(props) {
         register_occurTime: values.register_occurTime.format('YYYY-MM-DD HH:mm:ss'),
         register_applicationUnit: values.applicationUnit,
         register_applicationUnitId: values.applicationUnit === '' ? '' : values.register_applicationUnitId,
+        register_mobilePhone: values.main_revisitWay === '002' ? values.mobilePhone1 : values.mobilePhone2,
         register_applicationDept:
           values.register_applicationDept !== ''
             ? values.register_applicationDept

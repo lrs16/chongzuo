@@ -99,7 +99,7 @@ const Registrat = forwardRef((props, ref) => {
   };
 
   useEffect(() => {
-    if (register.revisitWay === '003') {
+    if (main.revisitWay === '002') {
       setRevisitway(true);
     }
     if (main.eventType === '005' || main.eventType === '007' || main.eventType === '008') {
@@ -713,7 +713,7 @@ const Registrat = forwardRef((props, ref) => {
           {revisitway === true && (
             <Col span={8}>
               <Form.Item label="手机号码">
-                {getFieldDecorator('register_mobilePhone', {
+                {getFieldDecorator('mobilePhone1', {
                   rules: [
                     {
                       required,
@@ -730,7 +730,7 @@ const Registrat = forwardRef((props, ref) => {
           {revisitway !== true && (
             <Col span={8}>
               <Form.Item label="手机号码">
-                {getFieldDecorator('register_mobilePhone', {
+                {getFieldDecorator('mobilePhone2', {
                   rules: [
                     {
                       //  required,

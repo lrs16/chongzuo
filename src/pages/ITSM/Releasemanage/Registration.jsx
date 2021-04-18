@@ -8,22 +8,20 @@ import Registrat from './components/Registrat';
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
-    sm: { span: 6 },
+    sm: { span: 9 },
   },
   wrapperCol: {
     xs: { span: 24 },
-    sm: { span: 18 },
+    sm: { span: 15 },
   },
 };
 
 const forminladeLayout = {
   labelCol: {
-    xs: { span: 24 },
-    sm: { span: 2 },
+    sm: { span: 24 },
   },
   wrapperCol: {
-    xs: { span: 24 },
-    sm: { span: 22 },
+    sm: { span: 24 },
   },
 };
 
@@ -56,10 +54,11 @@ function Registration(props) {
 
   // 保存,流转获取表单数据
   const getregistrat = type => {
-    console.log(type)
-    RegistratRef.current.validateFields((err, values) => {
-      handlesubmit(values);
-    });
+    console.log(RegistratRef.current)
+    // RegistratRef.current.Forms.validateFieldsAndScroll((err, values) => {
+    //   if (err) return;
+    //   console.log(values)
+    // })
   };
 
   // 上传附件触发保存
@@ -101,7 +100,7 @@ function Registration(props) {
       <Spin tip="正在提交数据..." spinning={!!loading}>
         <Card>
           <Registrat
-            ref={RegistratRef}
+            wrappedComponentRef={RegistratRef}
             userinfo={userinfo}
             files={files.arr}
             ChangeFiles={newvalue => {

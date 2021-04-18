@@ -193,6 +193,7 @@ function WorkOrder2(props) {
         main_eventObject: values.main_eventObject.slice(-1)[0],
         register_occurTime: values.register_occurTime.format('YYYY-MM-DD HH:mm:ss'),
         register_applicationUserId: values.register_applicationUser === '' ? '' : values.register_applicationUser,
+        register_mobilePhone: values.main_revisitWay === '002' ? values.mobilePhone1 : values.mobilePhone2,
         register_applicationUnit: values.applicationUnit,
         register_applicationUnitId: values.applicationUnit === '' ? '' : values.register_applicationUnitId,
         register_applicationDept:
@@ -223,11 +224,21 @@ function WorkOrder2(props) {
         ...values,
         check_checkTime: values.check_checkTime.format('YYYY-MM-DD HH:mm:ss'),
         check_fileIds: JSON.stringify(files.arr),
+        check_content: values.check_checkResult === '001' ? values.content1 : values.content2,
       });
-      if (type === 'save') {
-        noverification();
-      } else if (type !== 'goback') {
-        needUser(err)
+      switch (type) {
+        case 'save':
+          noverification();
+          break;
+        case 'check':
+        case 'goback':
+          noUser(err);
+          break;
+        case 'flow':
+          needUser(err);
+          break;
+        default:
+          break;
       }
     });
   };

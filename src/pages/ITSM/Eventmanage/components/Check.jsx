@@ -104,14 +104,14 @@ const Check = forwardRef((props, ref) => {
         <Col span={24}>
           {adopt === '001' && (
             <Form.Item label="审核意见" {...forminladeLayout}>
-              {getFieldDecorator('check_content', {
+              {getFieldDecorator('content1', {
                 initialValue: check.content,
               })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
             </Form.Item>
           )}
           {adopt === '002' && (
             <Form.Item label="审核意见" {...forminladeLayout}>
-              {getFieldDecorator('check_content', {
+              {getFieldDecorator('content2', {
                 rules: [{ required: true, message: '请输入审核意见' }],
                 initialValue: check.content,
               })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
