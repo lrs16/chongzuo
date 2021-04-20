@@ -31,7 +31,7 @@ function Registration(props) {
   const pagetitle = props.route.name;
   // const [flowtype, setFlowtype] = useState('1'); // 流转类型
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
-  const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
+  const [selectdata, setSelectData] = useState([]); // 下拉值
 
   // 初始化用户信息，流程类型
   useEffect(() => {
@@ -93,7 +93,7 @@ function Registration(props) {
   return (
     <PageHeaderWrapper title={pagetitle} extra={operations}>
       <DictLower
-        typeid="1354274450639425537"
+        typeid="1379323239808897026"
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
       />

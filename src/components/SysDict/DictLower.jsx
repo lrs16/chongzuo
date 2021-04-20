@@ -26,7 +26,7 @@ function DictLower(props) {
   }, []);
   useEffect(() => {
     if (ischange) {
-      ChangeSelectdata(selectlist);
+      ChangeSelectdata({ arr: selectlist, ischange: true });
     }
     return () => {
       setIsChange(false);
