@@ -1,5 +1,6 @@
 import mockjs from 'mockjs';
 import moment from 'moment';
+
 const { Random } = mockjs;
 // 系统管理
 
@@ -691,6 +692,22 @@ function mockeventlistdata(count) {
   return list;
 }
 
+function mockreleasetodo(count) {
+  const list = [];
+  for (let i = 0; i < count; i += 1) {
+    list.push({
+      No: Random.string('123456789', 5),
+      t1: ['发布登记', '平台验证', '业务验证', '发布实施准备', '版本管理员审批', '科室负责人审批', '中心领导审批', '发布实施', '业务复核'][i % 9],
+      t2: ['计划发布', '监时发布'][i % 2],
+      t3: ['博联', '南瑞'][i % 2],
+      t4: Random.cname(),
+      t5: Random.cname(),
+      t6: Random.datetime(),
+    });
+  }
+  return list;
+}
+
 export default {
   'GET /api-upms/upms_user/getCurrUserInfo': CurrUserInfo, // 根据token获取用户信息
   'GET /api-upms/upms_user/getCurrUserMenus': CurrUserMenus, // 根据token获取用户菜单
@@ -838,6 +855,19 @@ export default {
     res.json({
       data: {
         data,
+        total: count,
+      },
+    });
+  },
+
+
+  // IT服务： 发布待办
+  'GET /api/release/todolist': (req, res) => {
+    const count = 50;
+    const rows = mockreleasetodo(count);
+    res.json({
+      data: {
+        rows,
         total: count,
       },
     });

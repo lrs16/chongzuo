@@ -87,7 +87,7 @@
   font-size: 14px;
   text-align: left;
 
-  > div {
+  >div {
     margin-top: 0px;
     margin-bottom: 0px;
   }
@@ -115,4 +115,26 @@
 
 .disableuser span {
   padding-right: 16px;
+}
+
+.requiredform {
+  :global(.ant-input) {
+    border-color: #ff4d4f;
+  }
+}
+
+.requiredselect {
+  :global(.ant-select-selection) {
+    border-color: #ff4d4f;
+  }
+}
+
+.greylink a {
+  color: rgba(0, 0, 0, 0.65);
+  font-style: normal;
+}
+
+.greylink a:hover {
+  color: #1890ff;
+  font-style: normal;
 }

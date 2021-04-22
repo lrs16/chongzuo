@@ -1,19 +1,20 @@
 import React, { useRef, useImperativeHandle, forwardRef, useState, useEffect } from 'react';
 import moment from 'moment';
-import { Row, Col, Form, Input, Alert, DatePicker } from 'antd';
+import { Row, Col, Form, Input, Alert, DatePicker, Select } from 'antd';
 import EditeTable from './EditeTable';
 import TestingFacility from './TestingFacility';
 import DocumentAtt from './DocumentAtt';
 
 const { TextArea } = Input;
+const { Option } = Select;
 
 function Registrat(props, ref) {
-  const { formItemLayout, forminladeLayout, userinfo, register, selectdata } = props;
+  const { formItemLayout, forminladeLayout, userinfo, register, selectdata, isEdit } = props;
   const { getFieldDecorator } = props.form;
   const required = true;
-  console.log(selectdata)
 
-  const [alertvisible, setAlertVisible] = useState(false);
+  const [alertvisible, setAlertVisible] = useState(false);  // 超时告警是否显示
+  const [visible, setVisible] = useState(false); // 抽屉是否显示
 
   const formRef = useRef();
   useImperativeHandle(ref, () => ({
@@ -27,7 +28,7 @@ function Registrat(props, ref) {
   }, [register])
 
   const getTypebyId = key => {
-    if (selectdata.length > 0) {
+    if (selectdata.ischange) {
       return selectdata.arr.filter(item => item.key === key)[0].children;
     }
     return [];
@@ -36,7 +37,7 @@ function Registrat(props, ref) {
   const typemap = getTypebyId('1384055209809940482');       // 发布类型
   const unitmap = getTypebyId('1384056290929545218');       // 责任单位
   const functionmap = getTypebyId('1384052503909240833');   // 功能类型
-  const equipmentmap = getTypebyId('1379323795302518786');  // 设备名称及用途
+  const modulamap = getTypebyId('1384430921586839554');  // 模块
 
   return (
     <>
@@ -48,7 +49,7 @@ function Registrat(props, ref) {
               {getFieldDecorator('register_id', {
                 rules: [{ required, message: `发布编号不能为空` }],
                 initialValue: '',
-              })(<Input />)}
+              })(<Input disabled={!isEdit} />)}
             </Form.Item>
           </Col>
           <Col span={8}>
@@ -56,7 +57,7 @@ function Registrat(props, ref) {
               {getFieldDecorator('form2', {
                 rules: [{ required, message: `请选择出厂测试开始时间` }],
                 initialValue: '',
-              })(<Input />)}
+              })(<Input disabled={!isEdit} />)}
             </Form.Item>
           </Col>
           <Col span={8}>
@@ -64,7 +65,7 @@ function Registrat(props, ref) {
               {getFieldDecorator('form3', {
                 rules: [{ required, message: `请选择出厂测试结束时间` }],
                 initialValue: '',
-              })(<Input />)}
+              })(<Input disabled={!isEdit} />)}
             </Form.Item>
           </Col>
           <Col span={8}>
@@ -72,7 +73,7 @@ function Registrat(props, ref) {
               {getFieldDecorator('form4', {
                 rules: [{ required, message: `请输入出厂测试地点` }],
                 initialValue: '',
-              })(<Input />)}
+              })(<Input disabled={!isEdit} />)}
             </Form.Item>
           </Col>
           <Col span={8}>
@@ -80,7 +81,7 @@ function Registrat(props, ref) {
               {getFieldDecorator('form5', {
                 rules: [{ required, message: `请选择参与测试单位` }],
                 initialValue: '',
-              })(<Input />)}
+              })(<Input disabled={!isEdit} />)}
             </Form.Item>
           </Col>
           <Col span={8}>
@@ -88,7 +89,7 @@ function Registrat(props, ref) {
               {getFieldDecorator('form6', {
                 rules: [{ required, message: `请输入测试人员` }],
                 initialValue: '',
-              })(<Input />)}
+              })(<Input disabled={!isEdit} />)}
             </Form.Item>
           </Col>
           <Col span={8}>
@@ -96,7 +97,15 @@ function Registrat(props, ref) {
               {getFieldDecorator('form7', {
                 rules: [{ required, message: `请选择发布类型` }],
                 initialValue: '',
-              })(<Input />)}
+              })(
+                <Select placeholder="请选择" disabled={!isEdit}>
+                  {typemap.map(obj => [
+                    <Option key={obj.key} value={obj.title}>
+                      {obj.title}
+                    </Option>,
+                  ])}
+                </Select>
+              )}
             </Form.Item>
           </Col>
           <Col span={8}>
@@ -104,7 +113,15 @@ function Registrat(props, ref) {
               {getFieldDecorator('form8', {
                 rules: [{ required, message: `请选择责任单位` }],
                 initialValue: '',
-              })(<Input />)}
+              })(
+                <Select placeholder="请选择" disabled={!isEdit}>
+                  {unitmap.map(obj => [
+                    <Option key={obj.key} value={obj.title}>
+                      {obj.title}
+                    </Option>,
+                  ])}
+                </Select>
+              )}
             </Form.Item>
           </Col>
           <Col span={24}>
@@ -112,32 +129,32 @@ function Registrat(props, ref) {
               {getFieldDecorator('form9', {
                 rules: [{ required, message: `请填写受影响业务范围` }],
                 initialValue: '',
-              })(<TextArea autoSize={{ minRows: 4 }} />)}
+              })(<TextArea autoSize={{ minRows: 4 }} disabled={!isEdit} />)}
             </Form.Item>
           </Col>
           <Col span={24} style={{ marginBottom: 24 }}>
-            <TestingFacility title='测试环境' />
+            <TestingFacility title='测试环境' isEdit />
           </Col>
           <Col span={24} style={{ marginBottom: 12 }}>
-            <EditeTable title='发布清单' />
+            <EditeTable title='发布清单' functionmap={functionmap} modulamap={modulamap} isEdit />
           </Col>
           <Col span={24}>
             <Form.Item label="出厂测试结论" {...forminladeLayout} labelAlign='left'>
               {getFieldDecorator('form10', {
                 rules: [{ required, message: `请填写受影响业务范围` }],
                 initialValue: '',
-              })(<TextArea autoSize={{ minRows: 4 }} />)}
+              })(<TextArea autoSize={{ minRows: 4 }} disabled={!isEdit} />)}
             </Form.Item>
           </Col>
           <Col span={24} style={{ marginBottom: 24 }}>
-            <DocumentAtt />
+            <DocumentAtt rowkey='1' unitmap={unitmap} isEdit />
           </Col>
           <Col span={8}>
             <Form.Item label="出厂测试登记人">
               {getFieldDecorator('form11', {
                 rules: [{ required, message: `请选择出厂测试开始时间` }],
                 initialValue: '',
-              })(<Input />)}
+              })(<Input disabled />)}
             </Form.Item>
           </Col>
           <Col span={8}>
@@ -153,7 +170,7 @@ function Registrat(props, ref) {
               {getFieldDecorator('form13', {
                 rules: [{ required, message: `请选择出厂测试登记单位` }],
                 initialValue: '',
-              })(<Input />)}
+              })(<Input disabled />)}
             </Form.Item>
           </Col>
         </Form>

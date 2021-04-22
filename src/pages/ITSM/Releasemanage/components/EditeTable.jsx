@@ -1,59 +1,35 @@
-import React, { useState } from 'react';
-import { Table, Row, Button, Col } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Table, Row, Button, Col, Cascader, Input, Radio, message, Divider, Select } from 'antd';
+import styles from '../index.less';
 
-const columns = [
-  {
-    title: '序号',
-    dataIndex: 'key',
-    key: 'key',
-    align: 'center',
-  },
-  {
-    title: '功能类型',
-    dataIndex: 't1',
-    key: 't1',
-  },
-  {
-    title: '模块',
-    dataIndex: 't2',
-    key: 't2',
-  },
-  {
-    title: '功能名称',
-    dataIndex: 't3',
-    key: 't3',
-  },
-  {
-    title: '问题类型',
-    dataIndex: 't4',
-    key: 't4',
-  },
-  {
-    title: '测试内容及预期效果',
-    dataIndex: 't5',
-    key: 't5',
-  },
-  {
-    title: '是否通过',
-    dataIndex: 't6',
-    key: 't6',
-  },
-  {
-    title: '开发人员',
-    dataIndex: 't7',
-    key: 't7',
-  },
-  {
-    title: '操作人员',
-    dataIndex: 't8',
-    key: 't8',
-  },
-];
+const dataSource = [{
+  key: 1,
+  t1: '前台功能/变弄功能',
+  t2: 'ITSM',
+  t3: 'ITSM',
+  t4: '用于创建一个实体或收集信息。需要对输入的数据类型进行校验时。',
+  menu: '运维管理->指标统计->终端运维->采集完整率(新)->零点失败列表补招（按钮）、非零点失败列表补招（按钮）。',
+  des: '实现按供电单位进行失败列表的曲线批量召测功能。',
+  step: '运维管理->指标统计->终端运维->采集完整率->零点失败列表补招、非零点失败列表补招',
+  t6: '通过',
+  t7: '张晓晓',
+  t8: sessionStorage.getItem('userName'),
+}]
+
+const { TextArea } = Input;
+const InputGroup = Input.Group;
+const RadioGroup = Input.Group;
+const { Option } = Select;
 
 function EditeTable(props) {
-  const { title } = props;
+  const { title, functionmap, modulamap } = props;
   const [data, setData] = useState([]);
   const [newbutton, setNewButton] = useState(false);
+  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+
+  useEffect(() => {
+    setData([...dataSource])
+  }, [])
 
   // 新增一条记录
   const newMember = () => {
@@ -67,13 +43,325 @@ function EditeTable(props) {
       t3: '',
       t4: '',
       t5: '',
-      t6: '',
+      t6: '通过',
       t7: '',
-      t8: '',
+      t8: sessionStorage.getItem('userName'),
+      editable: false,
+      isNew: true,
     });
     //  setData(newData);
     setNewButton(true);
   };
+
+  const onSelectChange = RowKeys => {
+    setSelectedRowKeys(RowKeys)
+  };
+
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: onSelectChange,
+  };
+
+  // 获取行
+  const getRowByKey = (key, newData) => {
+    return (newData || data).filter(item => item.key === key)[0];
+  };
+  // 更新表单信息
+  const handleFieldChange = (e, fieldName, key) => {
+    const newData = data.map(item => ({ ...item }));
+    const target = getRowByKey(key, newData);
+    if (target) {
+      target[fieldName] = e;
+      setData(newData);
+    }
+  };
+
+  // 点击编辑按钮
+  const editRow = (e, key) => {
+    e.preventDefault();
+    const newData = data.map(item => ({ ...item }));
+    const target = getRowByKey(key, newData);
+    if (target) {
+      target.editable = !target.editable;
+      setData(newData);
+    }
+    // const target = getRowByKey(key);
+    // if (target) {
+    //   data[key - 1].editable = true;
+    //   data[key - 1].isNew = false;
+    // }
+  }
+
+  // 保存记录
+  const saveRow = (e, key) => {
+    e.preventDefault();
+    const newData = data.map(item => ({ ...item }));
+    const target = getRowByKey(key, newData) || {};
+    console.log(target)
+    if (!target.t2 || !target.t3) {
+      message.error('请填写完整信息。');
+      e.target.focus();
+      return;
+    }
+    // delete target.key;
+    if (target && target.editable) {
+      target.editable = !target.editable;
+      setData(newData);
+    }
+    if (target && target.isNew) {
+      target.isNew = !target.isNew;
+      setNewButton(false)
+      setData(newData);
+    }
+    // const id = target.id === '' ? '' : target.id;
+    // savedata(target, id);
+  };
+
+  // 取消按钮
+  const cancel = (e, key) => {
+    e.preventDefault();
+    const newData = data.map(item => ({ ...item }));
+    const target = getRowByKey(key, newData);
+    const newArr = newData.filter(item => item.key !== target.key);
+    setData(newArr);
+    setNewButton(false);
+  };
+
+
+  const columns = [
+    {
+      title: '序号',
+      dataIndex: 'key',
+      key: 'key',
+      width: 60,
+      align: 'center',
+      render: (text, record, index) => {
+        return <>{`${index + 1}`}</>;
+      },
+    },
+    {
+      title: '功能类型',
+      dataIndex: 't1',
+      key: 't1',
+      width: 150,
+      render: (text, record) => {
+        if (record.isNew || record.editable) {
+          return (
+            <div className={text === '' ? styles.requiredform : ''}>
+              <Cascader
+                fieldNames={{ label: 'title', value: 'title', children: 'children' }}
+                options={functionmap}
+                defaultValue={record.isNew ? [] : text.split('/')}
+                onChange={e => handleFieldChange(e, 't1', record.key)}
+
+              />
+            </div>
+          )
+        }
+        return text
+      }
+    },
+    {
+      title: '模块',
+      dataIndex: 't2',
+      key: 't2',
+      width: 100,
+      render: (text, record) => {
+        if (record.isNew || record.editable) {
+          return (
+            <div className={text === '' ? styles.requiredselect : ''}>
+              <Select
+                defaultValue={record.t2}
+                placeholder="请选择"
+                onChange={e => handleFieldChange(e, 't2', record.key)}
+              >
+                {modulamap.map(obj => [
+                  <Option key={obj.key} value={obj.title}>
+                    {obj.title}
+                  </Option>,
+                ])}
+              </Select>
+            </div>
+          )
+        }
+        return text;
+      }
+    },
+    {
+      title: '功能名称',
+      dataIndex: 't3',
+      key: 't3',
+      width: 80,
+      render: (text, record) => {
+        if (record.isNew || record.editable) {
+          return (
+            <div className={text === '' ? styles.requiredform : ''}>
+              <Input
+                onChange={e => handleFieldChange(e.target.value, 't3', record.key)}
+                defaultValue={record.t3}
+                placeholder="请输入"
+              />
+            </div>
+          )
+        }
+        return text;
+      }
+    },
+    {
+      title: '问题类型',
+      dataIndex: 't4',
+      key: 't4',
+      width: 150,
+      render: (text, record) => {
+        if (record.isNew || record.editable) {
+          return (
+            <div className={text === '' ? styles.requiredform : ''}>
+              <TextArea
+                defaultValue={text}
+                autoSize
+                placeholder="请输入"
+                onChange={e => handleFieldChange(e.target.value, 't4', record.key)}
+              />
+            </div>
+          )
+        }
+        return text;
+      }
+    },
+    {
+      title: '测试内容及预期效果',
+      dataIndex: 't5',
+      key: 't5',
+      width: 400,
+      render: (text, record) => {
+        if (record.isNew || record.editable) {
+          return (
+            <div className={text === '' ? styles.requiredform : ''}>
+              <InputGroup compact style={{ marginBottom: 12 }}>
+                <span style={{ width: 70, textAlign: 'right', paddingTop: 4 }}>功能菜单：</span>
+                <TextArea
+                  defaultValue={record.menu}
+                  autoSize
+                  style={{ width: 330 }}
+                  onChange={e => handleFieldChange(e.target.value, 'menu', record.key)}
+                />
+              </InputGroup>
+              <InputGroup compact style={{ marginBottom: 12 }}>
+                <span style={{ width: 70, textAlign: 'right', paddingTop: 4 }}>预期效果：</span>
+                <TextArea
+                  defaultValue={record.des}
+                  autoSize
+                  style={{ width: 330 }}
+                  onChange={e => handleFieldChange(e.target.value, 'menu', record.key)}
+                />
+              </InputGroup>
+              <InputGroup compact>
+                <span style={{ width: 70, textAlign: 'right', paddingTop: 4 }}>验证步骤：</span>
+                <TextArea
+                  defaultValue={record.step}
+                  autoSize
+                  style={{ width: 330 }}
+                  onChange={e => handleFieldChange(e.target.value, 'menu', record.key)}
+                />
+              </InputGroup>
+            </div>
+          )
+        }
+        return (
+          <>
+            <InputGroup compact>
+              <span style={{ width: 70, textAlign: 'right' }}>功能菜单：</span>
+              <span style={{ width: 330 }}>{record.menu}</span>
+            </InputGroup>
+            <Divider type='horizontal' />
+            <InputGroup compact>
+              <span style={{ width: 70, textAlign: 'right' }}>预期效果：</span>
+              <span style={{ width: 330 }}>{record.des}</span>
+            </InputGroup>
+            <Divider type='horizontal' />
+            <InputGroup compact>
+              <span style={{ width: 70, textAlign: 'right' }}>验证步骤：</span>
+              <span style={{ width: 330 }}>{record.step}</span>
+            </InputGroup>
+          </>
+        );
+      }
+    },
+    {
+      title: '是否通过',
+      dataIndex: 't6',
+      key: 't6',
+      width: 80,
+      render: (text, record) => {
+        if (record.isNew || record.editable) {
+          return (
+            <>
+              <RadioGroup value={text}>
+                <Radio value='通过'>通过</Radio>
+                <Radio value='不通过'>不通过</Radio>
+              </RadioGroup>
+            </>
+          )
+        }
+        return text;
+      }
+    },
+    {
+      title: '开发人员',
+      dataIndex: 't7',
+      key: 't7',
+      width: 100,
+      render: (text, record) => {
+        if (record.isNew || record.editable) {
+          return (
+            <div className={text === '' ? styles.requiredform : ''}>
+              <TextArea
+                defaultValue={text}
+                autoSize placeholder="请输入"
+                onChange={e => handleFieldChange(e.target.value, 't7', record.key)}
+              />
+            </div>
+          )
+        }
+        return text;
+      }
+    },
+    {
+      title: '操作人员',
+      dataIndex: 't8',
+      key: 't8',
+      align: 'center',
+      width: 80,
+    },
+    {
+      title: '操作',
+      key: 'action',
+      fixed: 'right',
+      width: 100,
+      align: 'center',
+      render: (text, record) => {
+        if (record.isNew) {
+          return (
+            <>
+              <Button type='link' onClick={e => saveRow(e, record.key)}>保存</Button>
+              <Divider type="vertical" />
+              <Button type='link' onClick={e => cancel(e, record.key)}>取消</Button>
+            </>
+          );
+        } if (record.editable) {
+          return (
+            <Button type='link' onClick={e => saveRow(e, record.key)}>保存</Button>
+          );
+        }
+        return (
+          <Button type='link' onClick={e => editRow(e, record.key)}>编辑</Button>
+        )
+
+      },
+    },
+  ];
+
+
   return (
     <>
       <Row style={{ marginBottom: 8 }} type='flex' align='bottom'>
@@ -104,7 +392,10 @@ function EditeTable(props) {
         dataSource={data}
         bordered
         size='middle'
+        rowKey={(_, index) => index.toString()}
         pagination={false}
+        rowSelection={rowSelection}
+        scroll={{ x: 1500 }}
       />
     </>
   );

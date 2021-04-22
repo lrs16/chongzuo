@@ -406,7 +406,8 @@ function QueryList(props) {
   };
 
   const onSelectChange = RowKeys => {
-    setSelectedRowKeys(RowKeys)
+    setSelectedRowKeys(RowKeys);
+    console.log(RowKeys)
   };
 
   const rowSelection = {

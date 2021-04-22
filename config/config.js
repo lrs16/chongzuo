@@ -492,6 +492,12 @@ export default {
                       icon: 'control',
                       component: './ITSM/releasemanage/Registration',
                     },
+                    {
+                      path: '/ITSM/releasemanage/todolist',
+                      name: '发布待办',
+                      icon: 'control',
+                      component: './ITSM/releasemanage/ToDolist',
+                    },
                   ],
                 },
                 {

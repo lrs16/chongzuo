@@ -6,52 +6,15 @@ const { Option } = Select;
 const typedata = [
   { key: '1', name: '测试环境', type: 'dell', app: '计量运维辅助平台' },
   { key: '2', name: '开发环境', type: 'hp', app: '计量运维辅助平台' },
+  { key: '3', name: '数据库备份', type: 'hp', app: '自动化运维平台' },
 ];
 
-const columns = [
-  {
-    title: '序号',
-    dataIndex: 'key',
-    key: 'key',
-    align: 'center',
-  },
-  {
-    title: '设备名称及用途',
-    dataIndex: 'name',
-    key: 'name',
-    render: (text, record) => {
-      if (record.isNew) {
-        return (
-          <>
-            <Select placeholder="请选择" onChange>
-              {typedata.map(obj => [
-                <Option key={obj.key} value={obj.name}>
-                  {obj.name}
-                </Option>,
-              ])}
-            </Select>
-          </>
-        )
-      }
-      return text;
-    }
-  },
-  {
-    title: '设备型号配置',
-    dataIndex: 'type',
-    key: 'type',
-  },
-  {
-    title: '部署应用',
-    dataIndex: 'app',
-    key: 'app',
-  },
-];
 
 function TestingFacility(props) {
   const { title } = props;
-  const [data, setData] = useState([]);
+  const [data, setData] = useState([{}]);
   const [newbutton, setNewButton] = useState(false);
+  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
 
   // 新增一条记录
   const newMember = () => {
@@ -71,6 +34,71 @@ function TestingFacility(props) {
     //  setData(newData);
     setNewButton(true);
   };
+
+  const handleChange = (value, key) => {
+    const rowdata = JSON.parse(value);
+    const newdata = [...data];
+    newdata[key - 1].name = rowdata.name;
+    newdata[key - 1].type = rowdata.type;
+    newdata[key - 1].app = rowdata.app;
+    setData(newdata);
+    setNewButton(false);
+  }
+
+  const onSelectChange = RowKeys => {
+    setSelectedRowKeys(RowKeys)
+  };
+
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: onSelectChange,
+  };
+
+  const columns = [
+    {
+      title: '序号',
+      dataIndex: 'key',
+      key: 'key',
+      width: 60,
+      align: 'center',
+      render: (text, record, index) => {
+        return <>{`${index + 1}`}</>;
+      },
+    },
+    {
+      title: '设备名称及用途',
+      dataIndex: 'name',
+      key: 'name',
+      render: (text, record) => {
+        if (record.isNew) {
+          return (
+            <>
+              <Select placeholder="请选择" onChange={v => handleChange(v, record.key)}>
+                {typedata.map(obj => [
+                  <Option key={obj.key} value={JSON.stringify(obj)}>
+                    {obj.name}
+                  </Option>,
+                ])}
+              </Select>
+            </>
+          )
+        }
+        return text;
+      }
+    },
+    {
+      title: '设备型号配置',
+      dataIndex: 'type',
+      key: 'type',
+    },
+    {
+      title: '部署应用',
+      dataIndex: 'app',
+      key: 'app',
+    },
+  ];
+
+
   return (
     <>
       <Row style={{ marginBottom: 8 }}>
@@ -91,7 +119,9 @@ function TestingFacility(props) {
         dataSource={data}
         bordered
         size='middle'
+        rowKey={(_, index) => index.toString()}
         pagination={false}
+        rowSelection={rowSelection}
       />
     </>
   );
