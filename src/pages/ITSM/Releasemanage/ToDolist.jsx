@@ -39,12 +39,11 @@ const columns = [
     render: (text, record) => {
       const handleClick = () => {
         router.push({
-          pathname: `/ITSM/eventmanage/to-do/record/workorder`,
+          pathname: `/ITSM/releasemanage/to-do/record`,
           query: {
-            taskName: record.eventStatus,
-            taskId: record.taskId,
-            mainId: record.mainId,
-            check: record.checkResult,
+            taskName: record.t1,
+            taskId: record.No,
+            mainId: record.No,
           },
         });
       };
@@ -370,6 +369,7 @@ function ToDolist(props) {
           rowKey={record => record.id}
           pagination={pagination}
           rowSelection={rowSelection}
+          rowKey={(_, index) => index.toString()}
         />
       </Card>
     </PageHeaderWrapper>

@@ -18,11 +18,11 @@ const dataSource = [{
 
 const { TextArea } = Input;
 const InputGroup = Input.Group;
-const RadioGroup = Input.Group;
+const RadioGroup = Radio.Group;
 const { Option } = Select;
 
 function EditeTable(props) {
-  const { title, functionmap, modulamap } = props;
+  const { title, functionmap, modulamap, isEdit } = props;
   const [data, setData] = useState([]);
   const [newbutton, setNewButton] = useState(false);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
@@ -43,7 +43,7 @@ function EditeTable(props) {
       t3: '',
       t4: '',
       t5: '',
-      t6: '通过',
+      t6: '001',
       t7: '',
       t8: sessionStorage.getItem('userName'),
       editable: false,
@@ -97,7 +97,6 @@ function EditeTable(props) {
     e.preventDefault();
     const newData = data.map(item => ({ ...item }));
     const target = getRowByKey(key, newData) || {};
-    console.log(target)
     if (!target.t2 || !target.t3) {
       message.error('请填写完整信息。');
       e.target.focus();
@@ -297,8 +296,8 @@ function EditeTable(props) {
           return (
             <>
               <RadioGroup value={text}>
-                <Radio value='通过'>通过</Radio>
-                <Radio value='不通过'>不通过</Radio>
+                <Radio value='001'>通过</Radio>
+                <Radio value='002'>不通过</Radio>
               </RadioGroup>
             </>
           )
@@ -317,7 +316,8 @@ function EditeTable(props) {
             <div className={text === '' ? styles.requiredform : ''}>
               <TextArea
                 defaultValue={text}
-                autoSize placeholder="请输入"
+                autoSize
+                placeholder="请输入"
                 onChange={e => handleFieldChange(e.target.value, 't7', record.key)}
               />
             </div>
@@ -361,6 +361,12 @@ function EditeTable(props) {
     },
   ];
 
+  const sclicecolumns = (arr) => {
+    const newarr = arr.slice(0);
+    newarr.pop();
+    return newarr;
+  }
+  const viewcolumns = sclicecolumns(columns);
 
   return (
     <>
@@ -377,18 +383,22 @@ function EditeTable(props) {
           完善功能项<b style={{ color: '#1890ff', padding: '0 3px' }}>0</b>项。</span>
         </Col>
         <Col span={6} style={{ textAlign: 'right' }}>
-          <Button
-            type='primary'
-            style={{ marginRight: 8 }}
-            onClick={() => newMember()}
-            disabled={newbutton}
-          >新增</Button>
-          <Button type='danger' style={{ marginRight: 8 }} ghost>移除</Button>
+          {isEdit && (
+            <>
+              <Button
+                type='primary'
+                style={{ marginRight: 8 }}
+                onClick={() => newMember()}
+                disabled={newbutton}
+              >新增</Button>
+              <Button type='danger' style={{ marginRight: 8 }} ghost>移除</Button>
+            </>
+          )}
           <Button type='primary' >导出清单</Button>
         </Col>
       </Row>
       <Table
-        columns={columns}
+        columns={isEdit ? columns : viewcolumns}
         dataSource={data}
         bordered
         size='middle'

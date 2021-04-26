@@ -5,27 +5,6 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import DictLower from '@/components/SysDict/DictLower';
 import Registrat from './components/Registrat';
 
-const formItemLayout = {
-  labelCol: {
-    xs: { span: 24 },
-    sm: { span: 9 },
-  },
-  wrapperCol: {
-    xs: { span: 24 },
-    sm: { span: 15 },
-  },
-};
-
-const forminladeLayout = {
-  labelCol: {
-    sm: { span: 24 },
-  },
-  wrapperCol: {
-    sm: { span: 24 },
-  },
-};
-
-
 function Registration(props) {
   const { dispatch, userinfo, loading } = props;
   const pagetitle = props.route.name;
@@ -107,9 +86,8 @@ function Registration(props) {
               setFiles(newvalue);
             }}
             selectdata={selectdata}
-            formItemLayout={formItemLayout}
-            forminladeLayout={forminladeLayout}
-            isEdit='true'
+            isEdit
+            taskName='发布登记'
           />
         </Card>
       </Spin>

@@ -11,7 +11,7 @@ const typedata = [
 
 
 function TestingFacility(props) {
-  const { title } = props;
+  const { title, isEdit } = props;
   const [data, setData] = useState([{}]);
   const [newbutton, setNewButton] = useState(false);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
@@ -103,7 +103,7 @@ function TestingFacility(props) {
     <>
       <Row style={{ marginBottom: 8 }}>
         <h4 style={{ float: 'left' }}><span style={{ color: '#f5222d', marginRight: 4, fontWeight: 'normal' }}>*</span>{title}</h4>
-        <div style={{ float: 'right' }}>
+        {isEdit && (<div style={{ float: 'right' }}>
           <Button
             type='primary'
             style={{ marginRight: 8 }}
@@ -113,6 +113,7 @@ function TestingFacility(props) {
           <Button type='danger' style={{ marginRight: 8 }} ghost>移除</Button>
           <Button type='primary' >导出清单</Button>
         </div>
+        )}
       </Row>
       <Table
         columns={columns}

@@ -42,7 +42,7 @@ const files2 = [{
 },
 {
   uid: "e8415f46ee8f431b84d716112215afa5",
-  name: "计量主站运维辅助系统建设项目-工作计划20210129--细化_(林玉娇).xlsx",
+  name: "计量主站运维辅助系统建设项目-工作计划20210129.xlsx",
   fileUrl: "",
   status: "done"
 },];
@@ -60,14 +60,10 @@ const dataSource = [
 ];
 
 function DocumentAtt(props) {
-  const { dispatch, rowkey, unitmap } = props;
+  const { dispatch, rowkey, unitmap, isEdit } = props;
   const [data, setData] = useState([]);
   const [fileslist, setFilesList] = useState({ arr: [], ischange: false });
   const [keyupload, setKeyUpload] = useState('');
-  const [detpdrawer, SetDetpDrawer] = useState(false);
-  const [unitopen, setUnitopen] = useState(false);
-  const [unitrecord, setUnitRecord] = useState('');
-  const [unitdata, setUnitdata] = useState([]);
 
   useEffect(() => {
     if (keyupload !== '') {
@@ -84,7 +80,10 @@ function DocumentAtt(props) {
   useEffect(() => {
     dataSource[rowkey - 1].editable = true;
     dataSource[8].editable = true;
-    setData(dataSource)
+    if (rowkey === '3') {
+      dataSource[3].editable = true;
+    };
+    setData(dataSource);
   }, [rowkey])
 
   // 获取行
@@ -155,6 +154,12 @@ function DocumentAtt(props) {
       dataIndex: 'name',
       key: 'name',
       width: 150,
+      render: (text, record) => {
+        if (isEdit && record.editable && (record.key === rowkey || record.key !== '9' || rowkey === '3')) {
+          return (<><span style={{ color: '#f5222d', marginRight: 4, fontWeight: 'normal' }}>*</span>{text} </>)
+        }
+        return text;
+      },
     },
     {
       title: '附件上传',
@@ -162,7 +167,7 @@ function DocumentAtt(props) {
       key: 'type',
       width: 300,
       render: (text, record) => {
-        if (record.editable && (record.key === rowkey || record.key === '9')) {
+        if (isEdit && record.editable && (record.key === rowkey || record.key === '9' || rowkey === '3')) {
           return (
             <div onMouseOver={() => { setKeyUpload(record.key) }} onFocus={() => 0} style={{ width: 300 }}>
               <SysUpload fileslist={text} ChangeFileslist={newvalue => setFilesList(newvalue)} />
@@ -195,9 +200,9 @@ function DocumentAtt(props) {
       key: 'unit',
       width: 200,
       render: (text, record) => {
-        if (record.editable) {
+        if (isEdit && record.editable && (record.key === rowkey || record.key === '9' || rowkey === '3')) {
           return (
-            <Select placeholder="请选择" onChange>
+            <Select placeholder="请选择" >
               {unitmap.map(obj => [
                 <Option key={obj.key} value={obj.title}>
                   {obj.title}
@@ -226,7 +231,7 @@ function DocumentAtt(props) {
       dataIndex: 'des',
       key: 'des',
       render: (text, record) => {
-        if (record.editable) {
+        if (isEdit && record.editable && (record.key === rowkey || record.key === '9' || rowkey === '3')) {
           return (
             <TextArea
               defaultValue={text}
@@ -239,21 +244,21 @@ function DocumentAtt(props) {
         return text;
       }
     },
-    // {
-    //   title: '操作',
-    //   key: 'action',
-    //   fixed: 'right',
-    //   width: 100,
-    //   align: 'center',
-    //   render: (text, record) => {
-    //     if (record.editable) {
-    //       return (
-    //         <Button type='link' onClick={e => saveRow(e, record.key)}>保存</Button>
-    //       );
-    //     }
-    //     return null;
-    //   },
-    // },
+    {
+      title: '操作',
+      key: 'action',
+      fixed: 'right',
+      width: 100,
+      align: 'center',
+      render: (text, record) => {
+        if (record.editable) {
+          return (
+            <Button type='link' onClick={e => saveRow(e, record.key)}>保存</Button>
+          );
+        }
+        return null;
+      },
+    },
   ];
   return (
     <Table
