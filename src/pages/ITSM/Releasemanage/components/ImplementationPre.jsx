@@ -253,6 +253,30 @@ function ImplementationPre(props, ref) {
         <Col span={24} style={{ marginBottom: 24 }}>
           <DocumentAtt rowkey='5' unitmap={unitmap} isEdit={isEdit} />
         </Col>
+        <Col span={8}>
+          <Form.Item label="登记人" {...forminladeLayout} labelAlign='left'>
+            {getFieldDecorator('form11', {
+              rules: [{ required, message: `请选择登记人` }],
+              initialValue: '',
+            })(<Input disabled />)}
+          </Form.Item>
+        </Col>
+        <Col span={8}>
+          <Form.Item label="登记时间" {...forminladeLayout} labelAlign='left'>
+            {getFieldDecorator('form12', {
+              rules: [{ required, message: `请选择登记时间` }],
+              initialValue: moment(register.creationTime).format("YYYY-MM-DD HH:mm:ss"),
+            })(<Input disabled />)}
+          </Form.Item>
+        </Col>
+        <Col span={8}>
+          <Form.Item label="登记单位" {...forminladeLayout} labelAlign='left'>
+            {getFieldDecorator('form13', {
+              rules: [{ required, message: `请选择登记单位` }],
+              initialValue: '',
+            })(<Input disabled />)}
+          </Form.Item>
+        </Col>
       </Form>
     </Row>
   );

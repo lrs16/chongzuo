@@ -95,6 +95,7 @@ function ToDolist(props) {
   const [expand, setExpand] = useState(false);
   const [selectdata, setSelectData] = useState('');
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+  const [selectedRecords, setSelectedRecords] = useState([]);
 
   useEffect(() => {
     validateFields((err, values) => {
@@ -189,13 +190,14 @@ function ToDolist(props) {
     onChange: page => changePage(page),
   };
 
-  const onSelectChange = RowKeys => {
-    setSelectedRowKeys(RowKeys)
+  const onSelectChange = (RowKeys, record) => {
+    setSelectedRowKeys(RowKeys);
+    setSelectedRecords(record);
   };
 
   const rowSelection = {
     selectedRowKeys,
-    onChange: onSelectChange,
+    onChange: (key, record) => onSelectChange(key, record),
   };
 
   const handleSearch = () => {
@@ -214,6 +216,11 @@ function ToDolist(props) {
   const handleReset = () => {
     resetFields();
   };
+
+  const handleApproval = () => {
+    const newselectds = selectedRecords.filter(item => item.t1 === '版本管理员审批' && item.t2 === '计划发布');
+    console.log(newselectds)
+  }
 
   const getTypebyId = key => {
     if (selectdata.ischange) {
@@ -360,13 +367,13 @@ function ToDolist(props) {
           </Form>
         </Row>
         <div style={{ marginBottom: 24 }}>
-          <Button type="primary" onClick={() => download()}>导出数据</Button >
+          <Button type="primary" onClick={() => download()} style={{ marginRight: 8 }}>导出数据</Button >
+          <Button type="primary" onClick={() => handleApproval()} >版本管理员合并审批</Button >
         </div>
         < Table
           loading={loading}
           columns={columns}
           dataSource={list.rows}
-          rowKey={record => record.id}
           pagination={pagination}
           rowSelection={rowSelection}
           rowKey={(_, index) => index.toString()}

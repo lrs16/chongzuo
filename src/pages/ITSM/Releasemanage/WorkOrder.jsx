@@ -4,6 +4,7 @@ import { Button, Popover, Collapse, Steps } from 'antd';
 import DictLower from '@/components/SysDict/DictLower';
 import Registrat from './components/Registrat';
 import ImplementationPre from './components/ImplementationPre';
+import VersionAudit from './components/VersionAudit';
 import styles from './index.less';
 
 const { Panel } = Collapse;
@@ -18,6 +19,7 @@ function WorkOrder(props) {
   // 保存，保存提交
   const RegistratRef = useRef();
   const ImplementationPreRef = useRef();
+  const VersionAuditRef = useRef();
   const handlesubmit = values => {
     dispatch({
       //  type: 'demandregister/start',
@@ -46,27 +48,46 @@ function WorkOrder(props) {
       >
         {(taskName === '发布登记' || taskName === '平台验证' || taskName === '业务验证') && (
           <Panel header={taskName} key="form">
-            <Registrat
-              wrappedComponentRef={RegistratRef}
-              userinfo={userinfo}
-              files={files.arr}
-              ChangeFiles={newvalue => {
-                setFiles(newvalue);
-              }}
-              selectdata={selectdata}
-              isEdit
-              taskName={taskName}
-            />
+            <div style={{ marginTop: 12 }}>
+              <Registrat
+                wrappedComponentRef={RegistratRef}
+                userinfo={userinfo}
+                files={files.arr}
+                ChangeFiles={newvalue => {
+                  setFiles(newvalue);
+                }}
+                selectdata={selectdata}
+                isEdit
+                taskName={taskName}
+                listType='计划'
+              />
+            </div>
           </Panel>
         )}
         {taskName === '发布实施准备' && (
           <Panel header={taskName} key="form">
-            <ImplementationPre
-              wrappedComponentRef={ImplementationPreRef}
-              selectdata={selectdata}
-              isEdit
-              taskName={taskName}
-            />
+            <div style={{ marginTop: 12 }}>
+              <ImplementationPre
+                wrappedComponentRef={ImplementationPreRef}
+                selectdata={selectdata}
+                isEdit
+                taskName={taskName}
+                listType='计划'
+              />
+            </div>
+          </Panel>
+        )}
+        {taskName === '版本管理员审批' && (
+          <Panel header={taskName} key="form">
+            <div style={{ marginTop: 12 }}>
+              <VersionAudit
+                wrappedComponentRef={VersionAuditRef}
+                selectdata={selectdata}
+                isEdit
+                taskName={taskName}
+                listType='临时'
+              />
+            </div>
           </Panel>
         )}
         <Panel header='发布登记' key="1">

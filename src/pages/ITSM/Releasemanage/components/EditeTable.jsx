@@ -4,6 +4,7 @@ import styles from '../index.less';
 
 const dataSource = [{
   key: 1,
+  t0: '计划',
   t1: '前台功能/变弄功能',
   t2: 'ITSM',
   t3: 'ITSM',
@@ -22,7 +23,7 @@ const RadioGroup = Radio.Group;
 const { Option } = Select;
 
 function EditeTable(props) {
-  const { title, functionmap, modulamap, isEdit } = props;
+  const { title, functionmap, modulamap, isEdit, listType } = props;
   const [data, setData] = useState([]);
   const [newbutton, setNewButton] = useState(false);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
@@ -38,6 +39,7 @@ function EditeTable(props) {
     //  const newData = data.map(item => ({ ...item }));
     data.push({
       key: data.length + 1,
+      t0: listType,
       t1: '',
       t2: '',
       t3: '',
@@ -139,10 +141,19 @@ function EditeTable(props) {
       },
     },
     {
+      title: '清单类型',
+      dataIndex: 't0',
+      key: 't0',
+      width: 100,
+      render: (text, record) => {
+        return text
+      }
+    },
+    {
       title: '功能类型',
       dataIndex: 't1',
       key: 't1',
-      width: 150,
+      width: 200,
       render: (text, record) => {
         if (record.isNew || record.editable) {
           return (
@@ -272,12 +283,12 @@ function EditeTable(props) {
               <span style={{ width: 70, textAlign: 'right' }}>功能菜单：</span>
               <span style={{ width: 330 }}>{record.menu}</span>
             </InputGroup>
-            <Divider type='horizontal' />
+            <Divider type='horizontal' style={{ margin: '6px 0' }} />
             <InputGroup compact>
               <span style={{ width: 70, textAlign: 'right' }}>预期效果：</span>
               <span style={{ width: 330 }}>{record.des}</span>
             </InputGroup>
-            <Divider type='horizontal' />
+            <Divider type='horizontal' style={{ margin: '6px 0' }} />
             <InputGroup compact>
               <span style={{ width: 70, textAlign: 'right' }}>验证步骤：</span>
               <span style={{ width: 330 }}>{record.step}</span>

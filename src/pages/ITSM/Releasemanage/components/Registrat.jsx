@@ -57,17 +57,17 @@ function Registrat(props, ref) {
   }))
 
   useEffect(() => {
-    if (isEdit && taskName === '发布登记' && moment(register.creationTime).format('DD') > 15) {
+    if (isEdit && taskName === '发布登记' && moment(register.creationTime).format('DD') > 25) {
       setAlertVisible(true);
-      setAlertMessage(`${taskName}超时，${taskName}登记时间超过本月25日`);
+      setAlertMessage({ mes: `${taskName}超时`, des: `${taskName}的登记时间为每月1日至25日之间` });
     };
-    if (isEdit && taskName === '平台验证' && moment(register.creationTime).format('DD') > 18) {
+    if (isEdit && taskName === '平台验证' && moment(register.creationTime).format('DD') > 28) {
       setAlertVisible(true);
-      setAlertMessage(`${taskName}超时，${taskName}登记时间超过本月28日`);
+      setAlertMessage({ mes: `${taskName}超时`, des: `${taskName}的登记时间为每月1日至28日之间` });
     }
-    if (isEdit && taskName === '业务验证' && (moment(register.creationTime).format('DD') > 19 || moment(register.creationTime).format('DD') < 7)) {
+    if (isEdit && taskName === '业务验证' && (moment(register.creationTime).format('DD') > 29 || moment(register.creationTime).format('DD') < 7)) {
       setAlertVisible(true);
-      setAlertMessage(`${taskName}超时`);
+      setAlertMessage({ mes: `${taskName}超时`, des: `${taskName}的登记时间为每月7日至28日之间` });
     }
   }, [register])
 
@@ -86,7 +86,7 @@ function Registrat(props, ref) {
 
   return (
     <>
-      {alertvisible && (<Alert message={alertmessage} type='warning' showIcon />)}
+      {alertvisible && (<Alert message={alertmessage.mes} description={alertmessage.des} type='warning' showIcon />)}
       <Row gutter={12} style={{ paddingTop: 24, }}>
         <Form ref={formRef} {...formItemLayout}>
           {taskName === '发布登记' && (

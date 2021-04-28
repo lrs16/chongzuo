@@ -84,6 +84,10 @@ function DocumentAtt(props) {
       dataSource[3].editable = true;
     };
     setData(dataSource);
+    return () => {
+      dataSource[rowkey - 1].editable = false;
+      dataSource[3].editable = false;
+    };
   }, [rowkey])
 
   // 获取行

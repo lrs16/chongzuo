@@ -178,8 +178,10 @@ function Implementationsteps(props) {
               colSpan: 7,
             }
           }
+        } if (!record.isNew) {
+          return <Checkbox />
         }
-        return <Checkbox />;
+        return null;
       }
     },
     {
