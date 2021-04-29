@@ -157,7 +157,7 @@ function DocumentAtt(props) {
       title: '文档名称',
       dataIndex: 'name',
       key: 'name',
-      width: 150,
+      width: 160,
       render: (text, record) => {
         if (isEdit && record.editable && (record.key === rowkey || record.key !== '9' || rowkey === '3')) {
           return (<><span style={{ color: '#f5222d', marginRight: 4, fontWeight: 'normal' }}>*</span>{text} </>)

@@ -8,6 +8,7 @@ const { TextArea } = Input;
 const { Option } = Select;
 const RadioGroup = Radio.Group;
 
+
 const orderkeys = ['1132', '1135'];
 
 const formItemLayout = {
@@ -20,13 +21,20 @@ const formItemLayout = {
     sm: { span: 15 },
   },
 };
-
 const forminladeLayout = {
   labelCol: {
     sm: { span: 24 },
   },
   wrapperCol: {
     sm: { span: 24 },
+  },
+};
+const formuintLayout = {
+  labelCol: {
+    sm: { span: 3 },
+  },
+  wrapperCol: {
+    sm: { span: 21 },
   },
 };
 
@@ -94,7 +102,8 @@ function VersionAudit(props, ref) {
               functionmap={functionmap}
               modulamap={modulamap}
               isEdit={isEdit}
-              listType='计划'
+              listType='临时'
+              taskName={taskName}
             />
           </Col>
           <Col span={8} >
@@ -142,8 +151,8 @@ function VersionAudit(props, ref) {
               )}
             </Form.Item>
           </Col>
-          <Col span={8} >
-            <Form.Item label="变更原因">
+          <Col span={24} >
+            <Form.Item label="变更原因" {...formuintLayout}>
               {getFieldDecorator('form5', {
                 rules: [{ required, message: `请选择变更原因` }],
                 initialValue: '全部',
@@ -158,8 +167,8 @@ function VersionAudit(props, ref) {
               )}
             </Form.Item>
           </Col>
-          <Col span={8} >
-            <Form.Item label="变更内容">
+          <Col span={24} >
+            <Form.Item label="变更内容" {...formuintLayout}>
               {getFieldDecorator('form6', {
                 rules: [{ required, message: `请选择变更内容` }],
                 initialValue: '全部',

@@ -44,7 +44,7 @@ const statumap = new Map([
 ]);
 
 function Registrat(props, ref) {
-  const { taskName, userinfo, register, selectdata, isEdit } = props;
+  const { taskName, mainId, userinfo, register, selectdata, isEdit } = props;
   const { getFieldDecorator } = props.form;
   const required = true;
 
@@ -189,7 +189,14 @@ function Registrat(props, ref) {
             <TestingFacility title='测试环境' isEdit={isEdit} />
           </Col>
           <Col span={24} style={{ marginBottom: 12 }}>
-            <EditeTable title='发布清单' functionmap={functionmap} modulamap={modulamap} isEdit={isEdit} />
+            <EditeTable
+              title='发布清单'
+              functionmap={functionmap}
+              modulamap={modulamap}
+              isEdit={isEdit}
+              taskName={taskName}
+              mainId={mainId}
+            />
           </Col>
           {taskName !== '业务验证' && (
             <Col span={24}>
@@ -237,6 +244,7 @@ function Registrat(props, ref) {
 const WrappedForm = Form.create({ name: 'form' })(forwardRef(Registrat))
 
 WrappedForm.defaultProps = {
+  mainId: '',
   register: {
     creationTime: moment().format(),
     // completeTime: moment().format(),

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Row, Button, Col, Cascader, Input, Radio, message, Divider, Select } from 'antd';
+import { Table, Row, Button, Col, Cascader, Input, Radio, message, Divider, Select, Tabs } from 'antd';
 import styles from '../index.less';
 
 const dataSource = [{
@@ -15,15 +15,17 @@ const dataSource = [{
   t6: '通过',
   t7: '张晓晓',
   t8: sessionStorage.getItem('userName'),
+  t9: '1132',
 }]
 
 const { TextArea } = Input;
 const InputGroup = Input.Group;
 const RadioGroup = Radio.Group;
 const { Option } = Select;
+const { TabPane } = Tabs;
 
 function EditeTable(props) {
-  const { title, functionmap, modulamap, isEdit, listType } = props;
+  const { title, functionmap, modulamap, isEdit, listType, taskName, mainId } = props;
   const [data, setData] = useState([]);
   const [newbutton, setNewButton] = useState(false);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
@@ -48,6 +50,7 @@ function EditeTable(props) {
       t6: '001',
       t7: '',
       t8: sessionStorage.getItem('userName'),
+      t9: mainId,
       editable: false,
       isNew: true,
     });
@@ -129,7 +132,7 @@ function EditeTable(props) {
   };
 
 
-  const columns = [
+  const column = [
     {
       title: '序号',
       dataIndex: 'key',
@@ -348,7 +351,7 @@ function EditeTable(props) {
       title: '操作',
       key: 'action',
       fixed: 'right',
-      width: 100,
+      width: 60,
       align: 'center',
       render: (text, record) => {
         if (record.isNew) {
@@ -365,12 +368,37 @@ function EditeTable(props) {
           );
         }
         return (
-          <Button type='link' onClick={e => editRow(e, record.key)}>编辑</Button>
+          <>
+            {taskName !== '版本管理员审批' && record.t0 === '计划' && (<Button type='link' onClick={e => editRow(e, record.key)}>编辑</Button>)}
+            {taskName === '版本管理员审批' && record.t0 === '临时' && (<Button type='link' onClick={e => editRow(e, record.key)}>编辑</Button>)}
+            {taskName === '版本管理员审批' && record.t0 === '计划' && (<Button type='link' >回退</Button>)}
+          </>
         )
 
       },
     },
   ];
+
+  const orderid = {
+    title: '所属工单',
+    dataIndex: 't9',
+    key: 't9',
+    fixed: 'right',
+    width: 100,
+    align: 'center',
+    render: (text) => {
+      return <a>{text}</a>
+    }
+  };
+
+  const addorderid = (arr) => {
+    const newarr = arr.slice(0);
+    if (taskName === '版本管理员审批') {
+      newarr.splice(-1, 0, orderid);
+    };
+    return newarr
+  };
+  const columns = addorderid(column);
 
   const sclicecolumns = (arr) => {
     const newarr = arr.slice(0);
@@ -379,11 +407,24 @@ function EditeTable(props) {
   }
   const viewcolumns = sclicecolumns(columns);
 
+
+
+
   return (
     <>
+      {taskName === '版本管理员审批' && (
+        <Tabs type='card'>
+          <TabPane tab='博联' key='1' />
+          <TabPane tab='南瑞' key='2' />
+        </Tabs>
+      )}
       <Row style={{ marginBottom: 8 }} type='flex' align='bottom'>
         <Col span={18}>
-          <h4><span style={{ color: '#f5222d', marginRight: 4, fontWeight: 'normal' }}>*</span>{title}</h4>
+          <h4>
+            {taskName === '版本管理员审批' && (
+              <span style={{ color: '#f5222d', marginRight: 4, fontWeight: 'normal' }}>*</span>
+            )}
+            {title}</h4>
           <span><b>前台功能统计：</b>
           缺陷修复项<b style={{ color: '#1890ff', padding: '0 3px' }}>0</b>项，
           变更功能项<b style={{ color: '#1890ff', padding: '0 3px' }}>0</b>项，

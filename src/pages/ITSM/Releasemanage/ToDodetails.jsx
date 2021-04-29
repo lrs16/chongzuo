@@ -5,13 +5,9 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
 import WorkOrder from './WorkOrder';
 
-
-
-
 function ToDodetails(props) {
   const { location, dispatch, userinfo } = props;
-  const { taskName } = location.query;
-
+  const { taskName, mainId } = location.query;
   const [tabActivekey, settabActivekey] = useState('workorder'); // 打开标签
 
   const handleTabChange = key => {
@@ -75,7 +71,7 @@ function ToDodetails(props) {
     >
 
       {tabActivekey === 'workorder' && (
-        <WorkOrder taskName={taskName} />
+        <WorkOrder location={location} />
       )}
     </PageHeaderWrapper>
   );

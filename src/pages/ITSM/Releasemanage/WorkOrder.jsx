@@ -11,7 +11,8 @@ const { Panel } = Collapse;
 const { Step } = Steps;
 
 function WorkOrder(props) {
-  const { taskName, dispatch, userinfo } = props;
+  const { location, dispatch, userinfo } = props;
+  const { taskName, mainId } = location.query;
   const [activeKey, setActiveKey] = useState(['form']);
   const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
@@ -59,6 +60,7 @@ function WorkOrder(props) {
                 selectdata={selectdata}
                 isEdit
                 taskName={taskName}
+                mainId={mainId}
                 listType='计划'
               />
             </div>
@@ -72,6 +74,7 @@ function WorkOrder(props) {
                 selectdata={selectdata}
                 isEdit
                 taskName={taskName}
+                mainId={mainId}
                 listType='计划'
               />
             </div>
@@ -85,6 +88,7 @@ function WorkOrder(props) {
                 selectdata={selectdata}
                 isEdit
                 taskName={taskName}
+                mainId={mainId}
                 listType='临时'
               />
             </div>
@@ -99,6 +103,7 @@ function WorkOrder(props) {
             selectdata={selectdata}
             isEdit={false}
             taskName='发布登记'
+            mainId={mainId}
           />
         </Panel>
       </Collapse>

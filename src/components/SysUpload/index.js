@@ -76,7 +76,6 @@ function SysUpload(props) {
     onChange({ file, fileList }) {
       const alldone = fileList.map(item => item.status !== 'done');
       if (file.status === 'done' && alldone.indexOf(true) === -1) {
-        console.log('file: ', file);
         message.success(`文件上传成功`);
         const arr = [...fileList];
         const newarr = [];
