@@ -3,10 +3,6 @@ import { Form, Button, Card } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { connect } from 'dva';
 import Registrat from './components/Registrat';
-<<<<<<< HEAD
-=======
-// import { withConfigConsumer } from '_antd@3.26.20@antd/lib/config-provider/context';
->>>>>>> 事件，需求切换必填清除校验
 
 const formItemLayout = {
   labelCol: {
@@ -101,8 +97,8 @@ function Registration(props) {
     queryDept();
   }, []);
 <<<<<<< HEAD
-  
-//  点击保存触发事件
+
+  //  点击保存触发事件
 =======
   //  点击保存触发事件
 >>>>>>> 事件，需求切换必填清除校验
@@ -114,11 +110,11 @@ function Registration(props) {
           payload: {
             ...values,
 <<<<<<< HEAD
-            registerTime:values.registerTime.format('YYYY-MM-DD HH:mm:ss'),
-            registerOccurTime:values.registerOccurTime.format('YYYY-MM-DD HH:mm:ss'),
-            registerExpectTime:values.registerExpectTime.format('YYYY-MM-DD HH:mm:ss'),
-            registerAttachments:files.ischange?JSON.stringify(files.arr):null,
-            importance:Number(values.importance)?values.importance:'001',
+            registerTime: values.registerTime.format('YYYY-MM-DD HH:mm:ss'),
+            registerOccurTime: values.registerOccurTime.format('YYYY-MM-DD HH:mm:ss'),
+            registerExpectTime: values.registerExpectTime.format('YYYY-MM-DD HH:mm:ss'),
+            registerAttachments: files.ischange ? JSON.stringify(files.arr) : null,
+            importance: Number(values.importance) ? values.importance : '001',
 =======
             registerTime: values.registerTime.format('YYYY-MM-DD HH:mm:ss'),
             registerOccurTime: values.registerOccurTime.format('YYYY-MM-DD HH:mm:ss'),
