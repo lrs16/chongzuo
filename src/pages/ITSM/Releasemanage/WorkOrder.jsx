@@ -5,6 +5,7 @@ import DictLower from '@/components/SysDict/DictLower';
 import Registrat from './components/Registrat';
 import ImplementationPre from './components/ImplementationPre';
 import VersionAudit from './components/VersionAudit';
+import Examine from './components/Examine';
 import styles from './index.less';
 
 const { Panel } = Collapse;
@@ -21,6 +22,7 @@ function WorkOrder(props) {
   const RegistratRef = useRef();
   const ImplementationPreRef = useRef();
   const VersionAuditRef = useRef();
+  const ExamineRef = useRef();
   const handlesubmit = values => {
     dispatch({
       //  type: 'demandregister/start',
@@ -85,6 +87,20 @@ function WorkOrder(props) {
             <div style={{ marginTop: 12 }}>
               <VersionAudit
                 wrappedComponentRef={VersionAuditRef}
+                selectdata={selectdata}
+                isEdit
+                taskName={taskName}
+                mainId={mainId}
+                listType='临时'
+              />
+            </div>
+          </Panel>
+        )}
+        {(taskName === '科室负责人审批' || taskName === '中心领导审批') && (
+          <Panel header={taskName} key="form">
+            <div style={{ marginTop: 12 }}>
+              <Examine
+                wrappedComponentRef={ExamineRef}
                 selectdata={selectdata}
                 isEdit
                 taskName={taskName}

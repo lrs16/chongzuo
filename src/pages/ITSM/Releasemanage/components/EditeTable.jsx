@@ -407,12 +407,9 @@ function EditeTable(props) {
   }
   const viewcolumns = sclicecolumns(columns);
 
-
-
-
   return (
     <>
-      {taskName === '版本管理员审批' && (
+      {(taskName === '版本管理员审批' || taskName === '科室负责人审批' || taskName === '中心领导审批') && (
         <Tabs type='card'>
           <TabPane tab='博联' key='1' />
           <TabPane tab='南瑞' key='2' />
@@ -421,7 +418,7 @@ function EditeTable(props) {
       <Row style={{ marginBottom: 8 }} type='flex' align='bottom'>
         <Col span={18}>
           <h4>
-            {taskName === '版本管理员审批' && (
+            {(taskName === '发布登记' || taskName === '平台验证' || taskName === '业务验证') && (
               <span style={{ color: '#f5222d', marginRight: 4, fontWeight: 'normal' }}>*</span>
             )}
             {title}</h4>
