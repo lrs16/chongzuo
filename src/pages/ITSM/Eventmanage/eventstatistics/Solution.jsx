@@ -93,7 +93,7 @@ const columns = [
 function Solution(props) {
   const { pagetitle } = props.route.name;
   const {
-    form: { getFieldDecorator },
+    form: { getFieldDecorator,setFieldsValue },
     soluteArr,
     dispatch
   } = props;
@@ -101,6 +101,13 @@ function Solution(props) {
   const onChange = (date,dateString) => {
     startTime = dateString;
     endTime =  moment(dateString).add(+6,'day').format('YYYY-MM-DD');
+    setFieldsValue({ time2: moment(endTime) });
+  }
+
+  const endonChange = (date, dateString) => {
+    endTime = dateString;
+    startTime = moment(dateString).subtract('day', 6).format('YYYY-MM-DD');
+    setFieldsValue({ time1: moment(startTime) })
   }
 
 
@@ -133,14 +140,26 @@ function Solution(props) {
 
   const defaultTime = () => {
     //  周统计
-    startTime = moment().subtract('days', 6).format('YYYY-MM-DD');
-    endTime = moment().format('YYYY-MM-DD');
+    // startTime = moment().subtract('days', 6).format('YYYY-MM-DD');
+    // endTime = moment().format('YYYY-MM-DD');
+
+    startTime = moment().week(moment().week() - 1).startOf('week').format('YYYY-MM-DD HH:mm:ss');
+    endTime = moment().week(moment().week() - 1).endOf('week').format('YYYY-MM-DD');
+    endTime = `${endTime} 00:00:00`;
   }
 
   useEffect(() => {
     defaultTime();
     handleListdata();
   }, [])
+
+  const startdisabledDate = (current) => {
+    return current > moment().subtract('days', 6)
+  }
+
+  const enddisabledDate = (current) => {
+    return current > moment().endOf('day')
+  }
 
   return (
     <PageHeaderWrapper
@@ -152,11 +171,12 @@ function Solution(props) {
             <>
               <Col span={24}>
                 <Form.Item label='起始时间'>
-                  {getFieldDecorator('startTime', {
+                  {getFieldDecorator('time1', {
                     initialValue: startTime ? moment(startTime) : ''
                   })(<DatePicker
                     format="YYYY-MM-DD"
                     allowClear='false'
+                    disabledDate={startdisabledDate}
                     onChange={onChange}
                   />)}
                 </Form.Item>
@@ -165,10 +185,13 @@ function Solution(props) {
 
                 <Form.Item label=''>
                   {
-                    getFieldDecorator('endTime', {
+                    getFieldDecorator('time2', {
                       initialValue: endTime ? moment(endTime) : ''
                     })
-                      (<DatePicker disabled />)
+                      (<DatePicker 
+                        disabledDate={enddisabledDate}
+                        onChange={endonChange}
+                         />)
                   }
                 </Form.Item>
 

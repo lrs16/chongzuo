@@ -74,7 +74,7 @@ function Workordertreatmentrate(props) {
   const { pagetitle } = props.route.name;
   const [tabActiveKey, setTabActiveKey] = useState('week');
   const {
-    form: { getFieldDecorator },
+    form: { getFieldDecorator,setFieldsValue },
     orderrateArr,
     dispatch
   } = props;
@@ -82,6 +82,7 @@ function Workordertreatmentrate(props) {
   const onChange = (date,dateString) => {
     startTime = dateString;
     endTime =  moment(dateString).add(+6,'day').format('YYYY-MM-DD');
+    setFieldsValue({ time2: moment(endTime) });
   }
 
 
@@ -113,14 +114,32 @@ function Workordertreatmentrate(props) {
 
   const defaultTime = () => {
     //  周统计
-    startTime = moment().subtract('days', 6).format('YYYY-MM-DD');
-    endTime = moment().format('YYYY-MM-DD');
+    // startTime = moment().subtract('days', 6).format('YYYY-MM-DD');
+    // endTime = moment().format('YYYY-MM-DD');
+
+    startTime = moment().week(moment().week() - 1).startOf('week').format('YYYY-MM-DD HH:mm:ss');
+    endTime = moment().week(moment().week() - 1).endOf('week').format('YYYY-MM-DD');
+    endTime = `${endTime} 00:00:00`;
   }
 
   useEffect(() => {
     defaultTime();
     handleListdata();
   }, [tabActiveKey])
+
+  const startdisabledDate = (current) => {
+    return current > moment().subtract('days', 6)
+  }
+
+  const enddisabledDate = (current) => {
+    return current > moment().endOf('day')
+  }
+
+  const endonChange = (date, dateString) => {
+    endTime = dateString;
+    startTime = moment(dateString).subtract('day', 6).format('YYYY-MM-DD');
+    setFieldsValue({ time1: moment(startTime) })
+  }
 
   return (
     <PageHeaderWrapper
@@ -137,6 +156,7 @@ function Workordertreatmentrate(props) {
                   })(<DatePicker
                     format="YYYY-MM-DD"
                     allowClear={false}
+                    disabledDate={startdisabledDate}
                     onChange={onChange}
                   />)}
                 </Form.Item>
@@ -148,7 +168,11 @@ function Workordertreatmentrate(props) {
                     getFieldDecorator('time2', {
                       initialValue: endTime ? moment(endTime) : ''
                     })
-                      (<DatePicker disabled />)
+                      (<DatePicker 
+                        allowClear={false}
+                        disabledDate={enddisabledDate}
+                        onChange={endonChange}
+                      />)
                   }
                 </Form.Item>
 

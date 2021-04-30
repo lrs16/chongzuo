@@ -198,6 +198,7 @@ function WorkOrder(props) {
       const formvalue = {
         ...values,
         reviewTime: values.reviewTime.format('YYYY-MM-DD HH:mm:ss'),
+        opinion: values.result === 0 ? values.opinion2 : values.opinion1,
         business: Number(values.business),
         releases: Number(values.releases),
         attachment: JSON.stringify(files.arr),
@@ -295,6 +296,7 @@ function WorkOrder(props) {
       const formvalue = {
         ...values,
         reviewTime: values.reviewTime.format('YYYY-MM-DD HH:mm:ss'),
+        opinion: values.result === 0 ? values.opinion2 : values.opinion1,
         business: Number(values.business),
         releases: Number(values.releases),
         attachment: JSON.stringify(files.arr),
@@ -473,6 +475,7 @@ function WorkOrder(props) {
             paloadvalues: {
               ...values,
               reviewTime: values.reviewTime.format('YYYY-MM-DD HH:mm:ss'),
+              opinion: values.result === 0 ? values.opinion2 : values.opinion1,
               business: Number(values.business),
               releases: Number(values.releases),
               attachment: JSON.stringify(files.arr),

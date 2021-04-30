@@ -48,14 +48,21 @@ function QueryList(props) {
 
   const {
     form: { getFieldDecorator, resetFields, validateFields },
-    location: {
-      query: { dictCode, dictType, status, timeStatus },
+    location: { query:
+      {
+        dictCode,
+        type,
+        status,
+        addTimeBegin,
+        addTimeEnd,
+      },
     },
     loading,
     faultQueryList, // 查询列表数据
-    relatedictArr, // 从汇总统计到的列表
     dispatch,
   } = props;
+
+  console.log(props, 'props');
 
   const [expand, setExpand] = useState(false);
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 }); // 分页state
@@ -169,13 +176,15 @@ function QueryList(props) {
     },
   ];
 
-  const getQuerylists = (values, page, pageSize) => {
+
+  const getinitiaQuerylists = (values, page, pageSize, searchdata) => {
+    console.log(status, 'status');
     // 列表 列表接口
     dispatch({
       type: 'fault/getfaultQueryList',
       payload: {
         ...values,
-        type: typeparams,
+        type,
         pageNum: page,
         pageSize: paginations.pageSize,
         status,
@@ -183,103 +192,29 @@ function QueryList(props) {
     });
   };
 
-  const getinitiaQuerylists = (values, page, pageSize, searchdata) => {
-    // 列表 列表接口
-    dispatch({
-      type: 'fault/getfaultQueryList',
-      payload: {
-        ...values,
-        type: typeparams,
-        pageNum: searchSign ? page : paginations.current,
-        pageSize: paginations.pageSize,
-        status,
-      },
-    });
-  };
-
-  //  故障类型的列表
-  const faultList = (values, page, pageSize, searchdata) => {
-    if (searchSign) {
-      getinitiaQuerylists(values, page, pageSize);
-    } else {
-      switch (dictType) {
-        case 'type':
-        case 'handle':
-          dispatch({
-            type: dictType === 'type' ? 'faultstatics/fetchrelateDictList' : 'faultstatics/fetchfaulthandleList',
-            payload: {
-              ...values,
-              dictCode,
-              dictType,
-              status
-            },
-          });
-          break;
-        default:
-          break;
-      }
-    }
-  };
-
-  //  故障状态的列表
-  // const faulthandleList = (values, page, pageSize, searchdata) => {
-  //   dispatch({
-  //     type: 'faultstatics/fetchfaulthandleList',
-  //     payload: {
-  //       ...values,
-  //       status,
-  //     },
-  //   });
-  // };
-
-  useEffect(() => {
-    searchSign = ''
-    switch (dictType) {
-      case 'type':
-      case 'handle':
-        faultList();
-        break;
-      case undefined:
-        getinitiaQuerylists();
-        break;
-      // case 'handle':
-      //   faulthandleList();
-      //   break;
-      default:
-        break;
-    }
-  }, []);
-
-  const searchdata = (values, page, pageSize, search) => {
-    if (search) {
-      searchSign = 'searchSign';
-    }
-
-    if (search) {
-      searchSign = 'have';
+  const getFaultlist = () => {
+    validateFields((err, values) => {
       dispatch({
-        type: 'fault/getTosearchfaultSearch',
+        type: 'fault/getfaultQueryList',
         payload: {
           ...values,
-          type: typeparams,
-          pageNum: page,
-          pageSize,
+          type,
+          pageNum: 1,
+          pageSize: paginations.pageSize,
+          addTimeBegin,
+          addTimeEnd,
           status,
         },
       });
-    } else {
-      switch (dictType) {
-        case 'type':
-        case 'handle':
-          faultList(values, page, pageSize);
-          break;
-        case undefined:
-          getQuerylists(values, page, pageSize);
-          break;
-        default:
-          break;
-      }
-    }
+    });
+  }
+
+  useEffect(() => {
+    getFaultlist();
+  }, []);
+
+  const searchdata = (values, page, pageSize, search) => {
+    getinitiaQuerylists(values, page, pageSize);
   };
 
   const handleReset = () => {
@@ -354,7 +289,7 @@ function QueryList(props) {
     onShowSizeChange: (page, pageSize) => onShowSizeChange(page, pageSize),
     current: paginations.current,
     pageSize: paginations.pageSize,
-    total: dictType !== undefined && searchSign === '' ? relatedictArr.length : faultQueryList.total,
+    total: faultQueryList.total,
     showTotal: total => `总共  ${total}  条记录`,
     onChange: page => changePage(page),
   };
@@ -372,7 +307,7 @@ function QueryList(props) {
             pageSize,
             current: page,
             dictCode,
-            dictType,
+            type,
             status
           },
         }).then(res => {
@@ -665,7 +600,7 @@ function QueryList(props) {
             {expand === false && (
               <Col span={8}>
                 <Form.Item>
-                  <Button type="primary" onClick={() => handleSearch('search')}>
+                  <Button type="primary" onClick={handleSearch}>
                     查 询
                   </Button>
                   <Button style={{ marginLeft: 8 }} onClick={handleReset}>
@@ -733,9 +668,7 @@ function QueryList(props) {
         <Table
           loading={loading}
           columns={columns.filter(item => item.title !== 'id' || item.key !== 'id')}
-          dataSource={
-            dictType !== undefined && searchSign === '' ? relatedictArr : faultQueryList.rows
-          }
+          dataSource={faultQueryList.rows}
           rowKey={record => record.id}
           pagination={pagination}
           scroll={{ x: 1400 }}

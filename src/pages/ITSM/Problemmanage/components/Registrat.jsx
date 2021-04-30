@@ -5,6 +5,7 @@ import SysUpload from '@/components/SysUpload';
 import { getAndField } from '@/pages/SysManage/services/api';
 import { queryDisableduserByUser } from '@/services/common';
 import styles from '../index.less';
+import SysDict from '@/components/SysDict';
 
 const { Option } = Select;
 const { TextArea, Search } = Input;
@@ -264,7 +265,7 @@ const Registrat = React.forwardRef((props, ref) => {
                     message: '请选择重要程度',
                   },
                 ],
-                initialValue: main.importance,
+                initialValue: main.importance?main.importance:'一般',
               })(
                 <Select placeholder="请选择">
                   {priority &&

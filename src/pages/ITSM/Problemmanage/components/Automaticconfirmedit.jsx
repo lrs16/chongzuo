@@ -164,7 +164,7 @@ const Automaticconfirmedit = React.forwardRef((props, ref) => {
         <Col span={8}>
           <Form.Item label="审核单位">
             {getFieldDecorator('checkUnit', {
-              initialValue: '单位',
+              initialValue: useInfo.unitName
             })(<Input disabled />)}
           </Form.Item>
         </Col>

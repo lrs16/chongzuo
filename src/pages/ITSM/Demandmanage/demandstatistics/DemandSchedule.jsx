@@ -78,31 +78,31 @@ const makeData = (data) => {
 
 
   const columns = [
-    {
-      title: '序号',
-      dataIndex: 'num',
-      align: 'center',
-      render: (text, record,index) => {
-        if(record.month !== '合计') {
-          const obj = {
-            children: index+1,
-            props: {},
-          };
-          obj.props.rowSpan = record.rowSpan;
-          return obj;
-        }
+    // {
+    //   title: '序号',
+    //   dataIndex: 'num',
+    //   align: 'center',
+    //   render: (text, record,index) => {
+    //     if(record.month !== '合计') {
+    //       const obj = {
+    //         children: index+1,
+    //         props: {},
+    //       };
+    //       obj.props.rowSpan = record.rowSpan;
+    //       return obj;
+    //     }
 
-        if(record.month === '合计') {
-          const obj = {
-            children: '',
-            props: {},
-          };
-          obj.props.rowSpan = record.rowSpan;
-          return obj;
-        }
+    //     if(record.month === '合计') {
+    //       const obj = {
+    //         children: '',
+    //         props: {},
+    //       };
+    //       obj.props.rowSpan = record.rowSpan;
+    //       return obj;
+    //     }
       
-      },
-    },
+    //   },
+    // },
     {
       title: '月份',
       dataIndex: 'month',
@@ -271,6 +271,7 @@ const makeData = (data) => {
           bordered
           columns={columns}
           dataSource={makeData(demandscheduleArr)}
+          pagination={false}
           rowKey={record => record.statName}
         />
       </Card>

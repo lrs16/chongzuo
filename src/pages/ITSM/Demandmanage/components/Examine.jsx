@@ -184,7 +184,7 @@ const Examine = forwardRef((props, ref) => {
           <Col span={24}>
             {adopt !== 0 && (
               <Form.Item label={`${text}意见`} {...forminladeLayout}>
-                {getFieldDecorator('opinion', {
+                {getFieldDecorator('opinion1', {
                   rules: [{ required: false, message: `请输入${text}意见` }],
                   initialValue: info[0].opinion,
                 })(<TextArea autoSize={{ minRows: 3 }} allowClear placeholder="请输入" />)}
@@ -192,7 +192,7 @@ const Examine = forwardRef((props, ref) => {
             )}
             {adopt === 0 && (
               <Form.Item label={`${text}意见`} {...forminladeLayout}>
-                {getFieldDecorator('opinion', {
+                {getFieldDecorator('opinion2', {
                   rules: [{ required: true, message: `请输入${text}意见` }],
                   initialValue: info[0].opinion,
                 })(<TextArea autoSize={{ minRows: 3 }} allowClear placeholder="请输入" />)}

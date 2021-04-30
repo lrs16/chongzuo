@@ -1,7 +1,7 @@
 import React from 'react';
 import { Descriptions, Checkbox } from 'antd';
-import styles from '../index.less';
 import Downloadfile from '@/components/SysUpload/Downloadfile';
+import styles from '../index.less';
 
 function Registratdes(props) {
   const { info, main } = props;
@@ -15,9 +15,10 @@ function Registratdes(props) {
         <Descriptions.Item label="申报人单位">{info.applicationUnit}</Descriptions.Item>
         <Descriptions.Item label="申报人部门">{info.applicationDept}</Descriptions.Item>
         <Descriptions.Item label="申报人电话">{info.applicationUserPhone}</Descriptions.Item>
+        <Descriptions.Item label="手机号码">{info.mobilePhone}</Descriptions.Item>
         <Descriptions.Item label="回访方式">{main.revisitWay}</Descriptions.Item>
         <Descriptions.Item label="事件分类">{main.eventType}</Descriptions.Item>
-        <Descriptions.Item label="事件对象">{main.eventObject}</Descriptions.Item>
+        <Descriptions.Item label="事件对象" span={2}>{main.eventObject}</Descriptions.Item>
         <Descriptions.Item label="影响度">{main.eventEffect}</Descriptions.Item>
         <Descriptions.Item label="紧急度">{main.eventEmergent}</Descriptions.Item>
         <Descriptions.Item label="优先级" span={3}>

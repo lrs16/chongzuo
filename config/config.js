@@ -501,6 +501,149 @@ export default {
                   component: './ITSM/OnSitemanage',
                 },
                 {
+                  path:'/ITSM/operationreport',
+                  name:'运维周/月报',
+                  icon:'control',
+                  routes:[
+                    {
+                      path:'/ITSM/operationreport',
+                      redirect:'/ITSM/operationreport/weeklyreport'
+                    },
+                    {
+                      path:'/ITSM/operationreport/weeklyreport',
+                      name:'运维周报',
+                      icon:'cloud-server',
+                      // component:'./ITSM/Operationreport/WeeklyReport/OperationmyweeklyReport',
+                      routes:[
+                        {
+                          path:'/ITSM/operationreport/weeklyreport/myweeklyreport',
+                          name:'我的周报',
+                          icon:'fork',
+                          component:'./ITSM/Operationreport/WeeklyReport/OperationmyweeklyReport'
+                        },
+                        {
+                          path:'/ITSM/operationreport/weeklyreport/softreport/:id',
+                          name:'软件运维周报',
+                          icon:'fork',
+                          component:'./ITSM/Operationreport/WeeklyReport/SoftReport'
+                        },
+                        {
+                          path:'/ITSM/operationreport/weeklyreport/computerroomreport',
+                          name:'机房运维周报',
+                          icon:'fork',
+                          component:'./ITSM/Operationreport/WeeklyReport/ComputerroomReport'
+                        },
+                        {
+                          path:'/ITSM/operationreport/weeklyreport/databasereport',
+                          name:'数据库运维周报',
+                          icon:'fork',
+                          component:'./ITSM/Operationreport/WeeklyReport/DatabaseReport'
+                        },
+                        {
+                          path:'/ITSM/operationreport/weeklyreport/otherreport',
+                          name:'其他运维周报',
+                          icon:'fork',
+                          component:'./ITSM/Operationreport/WeeklyReport/OtherReport'
+                        }
+                      ]
+                    },
+                    {
+                      path:'/ITSM/operationreport/monthlyreport',
+                      name:'运维月报',
+                      icon:'cloud-server',
+                      component:'./ITSM/Operationreport/MonthlyReport/OperationmymonthlyReport',
+                      // routes:[
+                      //   // {
+                      //   //   path:'/ITSM/operationreport/myweeklyreport',
+                      //   //   name:'我的周报',
+                      //   //   icon:'fork',
+                      //   //   component:'./ITSM/Operationreport/MyweeklyReport/OperationmyweeklyReport'
+                      //   // }
+                      // ]
+                    },
+
+                  ]
+                },
+                {
+                  path:'/ITSM/operationplan',
+                  name:'作业计划',
+                  icon:'control',
+
+                  routes:[
+                    {
+                      path:'/ITSM/operationplan',
+                      redirect:'/ITSM/operationplan/myoperationplan'
+                    },
+                    {
+                      path: '/ITSM/operationplan/myoperationplan',
+                      name: '我的作业计划',
+                      icon: 'control',
+                      component: './ITSM/OperationPlan/MyoperationPlan',
+                    },
+                    {
+                      path: '/ITSM/operationplan/operationplanfillin',
+                      name: '作业计划填报',
+                      icon: 'control',
+                      component: './ITSM/OperationPlan/OperationPlanfillintion',
+                    },
+                    {
+                      path: '/ITSM/operationplan/operationplanform/:id/:executestatus/:checkoutstatus/:type',
+                      name: '作业计划',
+                      icon: 'control',
+                      component: './ITSM/OperationPlan/Work',
+                    },
+                    {
+                      path: '/ITSM/operationplan/operationplancheck',
+                      name: '作业计划审核',
+                      icon: 'control',
+                      component: './ITSM/OperationPlan/OperationplanCheck',
+                    },
+                    {
+                      path: '/ITSM/operationplan/taskexecute',
+                      name: '作业计划执行',
+                      icon: 'control',
+                      component: './ITSM/OperationPlan/components/TaskExecute',
+                    },
+                    {
+                      path: '/ITSM/operationplan/operationplansearch',
+                      name: '作业计划查询',
+                      icon: 'control',
+                      component: './ITSM/OperationPlan/TaskSearch',
+                    },
+                    {
+                      path: '/ITSM/operationplan/statistics',
+                      name: '作业计划统计',
+                      icon: 'control',
+                      routes: [
+                        {
+                          path: '/ITSM/operationplan/statistics/status',
+                          name: '作业计划状态统计',
+                          icon: 'fork',
+                          component: './ITSM/OperationPlan/OperationplanStatistics/Status',
+                        },
+                        {
+                          path: '/ITSM/operationplan/statistics/result',
+                          name: '作业计划结果统计',
+                          icon: 'fork',
+                          component: './ITSM/OperationPlan/OperationplanStatistics/Result',
+                        },
+                        {
+                          path: '/ITSM/operationplan/statistics/execute',
+                          name: '作业计划执行情况统计',
+                          icon: 'fork',
+                          component: './ITSM/OperationPlan/OperationplanStatistics/Execute',
+                        },
+                        {
+                          path: '/ITSM/operationplan/statistics/timeout',
+                          name: '作业计划超时统计',
+                          icon: 'fork',
+                          component: './ITSM/OperationPlan/OperationplanStatistics/Timeout',
+                        },
+                      ]
+                    },
+                  ]
+                },
+                {
                   component: './500',
                 },
               ],
@@ -1070,67 +1213,67 @@ export default {
   },
   proxy: {
     '/oauth/': {
-      target: ' http://172.16.4.211:9901/', // 登录
+      target: ' http://172.16.10.11:9901/', // 登录
       changeOrigin: true,
     },
     '/upms/': {
-      target: ' http://172.16.4.211:9901/', // 用户管理
+      target: ' http://172.16.10.11:9901/', // 用户管理
       changeOrigin: true,
     },
     '/auto/': {
-      target: ' http://172.16.4.211:9901/', // 软件启停
-      // target: 'http://172.16.4.211:9901/',
+      target: ' http://172.16.10.11:9901/', // 软件启停
+      // target: 'http://172.16.10.11:9901/',
       changeOrigin: true,
     },
     '/monitor/': {
-      target: ' http://172.16.4.211:9901/', // 计量业务监控
+      target: ' http://172.16.10.11:9901/', // 计量业务监控
       changeOrigin: true,
     },
     '/inspection/': {
-      target: 'http://172.16.4.93:8083/', //
+      target: 'http://172.16.10.93:8083/', //
       changeOrigin: true,
       pathRewrite: { '^/inspection': '' },
     },
     '/basicMonitor/': {
       // 检测管理，基础平台
-      target: 'http://172.16.4.211:8889/',
+      target: 'http://172.16.10.11:8889/',
       changeOrigin: true,
     },
     '/activiti/': {
-      target: ' http://172.16.4.211:9901/',
+      target: ' http://172.16.10.11:9901/',
       changeOrigin: true,
     },
     // '/activiti': {
-    //   target: 'http://172.16.4.179:9901/',
+    //   target: 'http://172.16.10.179:9901/',
     //   changeOrigin: true,
     // },
     '/modeler/': {
-      target: ' http://172.16.4.211:9901/',
+      target: ' http://172.16.10.11:9901/',
       changeOrigin: true,
     },
     // ITSM通用接口
     '/common/': {
-      target: ' http://172.16.4.211:9901/',
+      target: ' http://172.16.10.11:9901/',
       changeOrigin: true,
     },
     // 事件管理,问题，故障
     '/event/': {
-      target: ' http://172.16.4.211:9901/',
+      target: ' http://172.16.10.11:9901/',
       changeOrigin: true,
     },
     // 问题管理
     '/problem/': {
-      target: ' http://172.16.4.211:9901/',
+      target: ' http://172.16.10.11:9901/',
       changeOrigin: true,
     },
     // 故障管理
     '/trouble/': {
-      target: ' http://172.16.4.211:9901/',
+      target: ' http://172.16.10.11:9901/',
       changeOrigin: true,
     },
     // 需求管理
     '/demand/': {
-      target: ' http://172.16.4.211:9901/',
+      target: ' http://172.16.10.11:9901/',
       changeOrigin: true,
     },
     '/api/': {
@@ -1138,11 +1281,11 @@ export default {
       changeOrigin: true,
     },
     '/sys/': {
-      target: ' http://172.16.4.211:9901/', // 数据字典
+      target: ' http://172.16.10.11:9901/', // 数据字典
       changeOrigin: true,
     },
     '/check/': {
-      target: ' http://172.16.4.93:8083/', // 数据字典
+      target: ' http://172.16.10.93:8083/', // 数据字典
       changeOrigin: true,
     },
   },

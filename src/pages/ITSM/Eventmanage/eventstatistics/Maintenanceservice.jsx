@@ -23,7 +23,7 @@ function Maintenanceservice(props) {
   const { pagetitle } = props.route.name;
   const [tabActiveKey, setTabActiveKey] = useState('week');
   const {
-    form: { getFieldDecorator },
+    form: { getFieldDecorator,setFieldsValue },
     maintenanceService,
     dispatch,
     loading
@@ -63,6 +63,7 @@ function Maintenanceservice(props) {
     if (tabActiveKey === 'week') {
       startTime = dateString;
       endTime =  moment(dateString).add(+6,'day').format('YYYY-MM-DD');
+      setFieldsValue({ time2: moment(endTime) });
     } else {
       startTime = date.startOf('month').format('YYYY-MM-DD');
       endTime = date.endOf('month').format('YYYY-MM-DD');
@@ -100,8 +101,9 @@ function Maintenanceservice(props) {
   const defaultTime = () => {
     //  周统计
     if (tabActiveKey === 'week') {
-      startTime = moment().subtract('days', 6).format('YYYY-MM-DD');
-      endTime = moment().format('YYYY-MM-DD');
+      startTime = moment().week(moment().week() - 1).startOf('week').format('YYYY-MM-DD HH:mm:ss');
+      endTime = moment().week(moment().week() - 1).endOf('week').format('YYYY-MM-DD');
+      endTime = `${endTime} 00:00:00`;
     } else { // 月统计
       startTime = moment().startOf('month').format('YYYY-MM-DD');
       endTime = moment().endOf('month').format('YYYY-MM-DD');
@@ -128,6 +130,21 @@ function Maintenanceservice(props) {
     setTabActiveKey(key);
   };
 
+  
+  const startdisabledDate = (current) => {
+    return current > moment().subtract('days', 6)
+  }
+
+  const enddisabledDate = (current) => {
+    return current > moment().endOf('day')
+  }
+
+  const endonChange = (date, dateString) => {
+    endTime = dateString;
+    startTime = moment(dateString).subtract('day', 6).format('YYYY-MM-DD');
+    setFieldsValue({ time1: moment(startTime) })
+  }
+
   return (
     <PageHeaderWrapper
       title={pagetitle}
@@ -148,6 +165,7 @@ function Maintenanceservice(props) {
                       })(<DatePicker
                         format="YYYY-MM-DD"
                         allowClear={false}
+                        disabledDate={startdisabledDate}
                         onChange={onChange}
                       />)}
                     </Form.Item>
@@ -159,7 +177,10 @@ function Maintenanceservice(props) {
                         getFieldDecorator('time2', {
                           initialValue: moment(endTime)
                         })
-                          (<DatePicker disabled />)
+                          (<DatePicker 
+                            disabledDate={enddisabledDate}
+                            onChange={endonChange}
+                           />)
                       }
                     </Form.Item>
 

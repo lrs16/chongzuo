@@ -22,7 +22,6 @@ import Operatorconfirmades from './components/Operatorconfirmades';
 import Problemregistration from './components/Problemregistration';
 import Reasonregression from './components/Reasonregression';
 import Problemflow from './components/Problemflow';
-import AutomationCirculation from './components/AutomationCirculation';
 import Systemoperatorsecond from './components/Systemoperatorsecond';
 import User from '@/components/ProblemSelect/User';
 
@@ -102,8 +101,6 @@ function Workorder(props) {
     loading
   } = props;
 
-
-
   let showback = true;
   if (problemlist.selSign !== undefined) {
     if (flowNodeName === '系统开发商处理') {
@@ -119,6 +116,7 @@ function Workorder(props) {
 
 
   const { problemFlowLogs, problemFlowNodeRows } = todoDetail;
+
 
   const selectNextflow = () => {
     switch (flowNodeName) {
@@ -195,9 +193,7 @@ function Workorder(props) {
   };
 
 
-  console.log(changeOrder,'changeOrder');
   const gotoCirapi = (closessign) => {
-    console.log(changeOrder,'changeOrder');
     let result;
     if (closessign) {
       result = 255
@@ -241,6 +237,7 @@ function Workorder(props) {
   }
 
   const saveApi = (saveData, params2) => {
+    console.log('params2: ', params2);
     return dispatch({
       type: 'problemmanage/tobeSave',
       payload: { ...saveData },
@@ -249,15 +246,23 @@ function Workorder(props) {
         showback = false;
         if (!params2) {
           message.info('保存成功');
-        }
-        getInformation();
-        if (params2 && params2 !== '系统开发商处理') {
+          getInformation();
+        } 
+        // else {
+        //   getInformation();
+        // }
+     
+        if (params2 && params2 !== '系统开发商处理' && flowtype === '1' && !files.ischange) {
           setUserVisible(true);
         }
-        if(params2 === '系统开发商处理' && changeOrder === '') {
+        if( (params2 === '系统开发商处理' && changeOrder === '' && !files.ischange)) {
           gotoCirapi();
         }
-        
+
+        if( (params2 !== '系统开发商处理' && flowtype === '0' && !files.ischange)) {
+          gotoCirapi();
+        }
+
       } else {
         message.error(res.msg);
       }
@@ -321,7 +326,6 @@ function Workorder(props) {
           checkAttachments: files.ischange ? JSON.stringify(files.arr) : null
         }
         saveApi(saveData, params2, uploadSive);
-      
       }
       if(params2 && err) {
         return formerr();
@@ -595,6 +599,7 @@ function Workorder(props) {
     if (currntStatus === 45) {
       setFlowtype(9);
     } else {
+      setFlowtype('1');
     }
     sessionStorage.setItem('flowtype', flowtype);
   }, [currntStatus]);
@@ -632,7 +637,6 @@ function Workorder(props) {
 
 
   const changeorderFunction = () => {
-    // setFlowtype(9);
     changeOrder = '转单';
   }
 
@@ -640,9 +644,10 @@ function Workorder(props) {
     changeOrder = ''
   }
 
-  // console.log(changeOrder,'changeOrder');
+  const setChange = () => {
+    files.ischange = false;
+  }
 
-  
 
   return (
     <PageHeaderWrapper
@@ -650,7 +655,6 @@ function Workorder(props) {
       extra={
         <>
           <>
-          
             { (flowNodeName === '问题登记'  && problemFlowLogs && problemFlowLogs.length === 1) && (
               <Button type="danger" ghost style={{ marginRight: 8 }} onClick={handleDelete}>
                 删除
@@ -719,14 +723,14 @@ function Workorder(props) {
 
             {
               flowtype === '1' && 
-              (problemlist && selSign === '1') &&
+              (selSign === '1') &&
               tabActiveKey === 'workorder' && loading === false &&
               (
                 <Button
                   type="primary"
                   style={{ marginRight: 8 }}
                   onFocus={() => 0}
-                  onClick={() => { handleSubmit(circaSign);setProblemHandle('handle')}}>
+                  onClick={() => { handleSubmit(circaSign);setProblemHandle('handle');setChange()}}>
                   流转
                 </Button>
               )
@@ -748,14 +752,14 @@ function Workorder(props) {
                 flowtype === '0'
               )
               &&
-              flowNodeName !== '系统开发商处理' && loading === false &&
+              (flowNodeName !== '系统开发商处理' && flowNodeName !== '问题登记') && loading === false &&
               (currntStatus !== 29 && currntStatus !== 40) &&
               tabActiveKey === 'workorder' &&
               (
                 <Button
                   type="primary"
                   style={{ marginRight: 8 }}
-                  onClick={() =>{ setButandOrder('goback')}}
+                  onClick={() =>{ handleSubmit(flowNodeName)}}
                 >
                   {
                     (flowNodeName === '自动化科审核' || flowNodeName === '系统运维商审核')

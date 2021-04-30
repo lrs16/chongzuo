@@ -10,7 +10,7 @@ export async function statusList(params) {
 
 //  导出状态列表
 export async function statusDownload(params) {
-  return request(`/problem/stat/expStatOrderByStatus`,{
+  return request(`/problem/stat/expStatOrderByCurrentNodeAndStatus`,{
     method: 'POST',
     body: JSON.stringify(params),
     responseType: 'blob',
@@ -53,6 +53,7 @@ export async function handlegrateDownload(params) {
 
 //  超时统计列表
 export async function timeoutList(params) {
+  console.log('1');
   return request(`/problem/stat/statOrderByOverTime`,{
     method:'POST',
     body:JSON.stringify(params)
@@ -61,7 +62,7 @@ export async function timeoutList(params) {
 
 //  超时统计的导出
 export async function timeoutDownload(params) {
-  return request(`/problem/stat/expStatOrderByTime`,{
+  return request(`/problem/stat/expStatOrderByOverTime`,{
     method: 'POST',
     body:JSON.stringify(params),
     responseType:'blob'
@@ -76,5 +77,13 @@ export async function solvescheduleDownload(params) {
     body:JSON.stringify(params),
     responseType:'blob'
     
+  })
+}
+
+//  问题状态统计列表
+export async function problemstatusList(params) {
+  return request(`/problem/stat/getOrderByCurrentNodeAndStatus`,{
+    method:'POST',
+    body:JSON.stringify(params)
   })
 }

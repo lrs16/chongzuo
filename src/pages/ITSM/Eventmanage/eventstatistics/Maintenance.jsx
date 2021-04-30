@@ -22,6 +22,7 @@ let monthStarttime;
 let endTime;
 const sign = 'maintenanceservice';
 const { MonthPicker, RangePicker, WeekPicker } = DatePicker;
+const mergeCell = 'first_object';
 
 const IconFont = Icon.createFromIconfontCN({
   scriptUrl: iconfontUrl,
@@ -30,7 +31,7 @@ function Maintenance(props) {
   const { pagetitle } = props.route.name;
   const [tabActiveKey, setTabActiveKey] = useState('week');
   const {
-    form: { getFieldDecorator, resetFields },
+    form: { getFieldDecorator, setFieldsValue },
     maintenanceArr,
     dispatch,
     loading
@@ -42,8 +43,8 @@ function Maintenance(props) {
   const columns = [
     {
       title: '一级对象',
-      dataIndex: 'first_object',
-      key: 'first_object',
+      dataIndex: mergeCell,
+      key: mergeCell,
       align: 'center',
       render: (text, record) => {
         const obj = {
@@ -135,10 +136,17 @@ function Maintenance(props) {
     if (tabActiveKey === 'week') {
       starttime = dateString;
       endTime = moment(dateString).add(+6, 'day').format('YYYY-MM-DD');
+      setFieldsValue({ time2: moment(endTime) });
     } else {
       starttime = date.startOf('month').format('YYYY-MM-DD');
       endTime = date.endOf('month').format('YYYY-MM-DD');
     }
+  }
+
+  const endonChange = (date, dateString) => {
+    endTime = dateString;
+    starttime = moment(dateString).subtract('day', 6).format('YYYY-MM-DD');
+    setFieldsValue({ time1: moment(starttime) })
   }
 
   const handleListdata = () => {
@@ -173,77 +181,27 @@ function Maintenance(props) {
   const defaultTime = () => {
     //  周统计
     if (tabActiveKey === 'week') {
-      starttime = moment().subtract('days', 6).format('YYYY-MM-DD');
-      endTime = moment().format('YYYY-MM-DD');
+      starttime = moment().week(moment().week() - 1).startOf('week').format('YYYY-MM-DD HH:mm:ss');
+      endTime = moment().week(moment().week() - 1).endOf('week').format('YYYY-MM-DD');
+      endTime = `${endTime} 00:00:00`;
     } else { // 月统计
       starttime = moment().startOf('month').format('YYYY-MM-DD');
       endTime = moment().endOf('month').format('YYYY-MM-DD');
     }
   }
 
-  //  对象数组去重
-  const uniqueObjArr = (arr, fieldName) => {
-    const result = [];
-    const resultArr = [];
-    arr.map(function (item, index, value) {
-      if (result.indexOf(item[fieldName]) === -1) {
-        result.push(item[fieldName]);
-        resultArr.push(item);
-      }
-    })
-    return resultArr;
-  }
-
-  //  去重并合并到children
-  const sortData = (dataArr) => {
-    console.log('dataArr: ', dataArr);
-    const orgArrRe = dataArr.map(item =>
-      ({ first_object: item.first_object })
-    );
-    const orgArr = uniqueObjArr(orgArrRe, 'first_object');// 数组去重
-    orgArr.map(function (childOne) {
-      childOne.children = [];
-      dataArr.map(function (childTwo) {
-        if (childOne.first_object === childTwo.first_object) {
-          childOne.children.push(childTwo);
-        }
-      })
-    })
-
-    // for (const every of orgArr) {
-    //   every.span = every.children ? every.children.length : 0;
-    // }
-
-    orgArr.forEach((every) => { every.span = every.children ? every.children.length : 0; });
-    return orgArr;
-  }
-
-  //  遍历子元素，并赋值纵向合并数rowSpan
-  const makeData = (data) => {
-
-    const sortResult = sortData(data);
-    // console.log('sortResult: ', sortResult);
-    const dataSource = [];
-    sortResult.forEach((item) => {
-      // console.log('item: ', item);
-      if (item.children) {
-        // console.log('item.children: ', item.children);
-        item.children.forEach((itemOne, indexOne) => {
-          // console.log('indexOne: ', indexOne);
-          const myObj = itemOne;
-          myObj.rowSpan = indexOne === 0 ? item.span : 0;
-          dataSource.push(myObj);
-        });
-      }
-    });
-    return dataSource;
-  }
-
-
   useEffect(() => {
     defaultTime();
     handleListdata();
   }, [tabActiveKey])
+
+  const startdisabledDate = (current) => {
+    return current > moment().subtract('days', 6)
+  }
+
+  const enddisabledDate = (current) => {
+    return current > moment().endOf('day')
+  }
 
   const tabList = [
     {
@@ -330,6 +288,7 @@ function Maintenance(props) {
                         initialValue: moment(starttime)
                       })(<DatePicker
                         allowClear={false}
+                        disabledDate={startdisabledDate}
                         // placeholder='请选择'
                         onChange={onChange}
                       />)}
@@ -344,7 +303,8 @@ function Maintenance(props) {
                         })
                           (<DatePicker
                             allowClear={false}
-                            disabled
+                            disabledDate={enddisabledDate}
+                            onChange={endonChange}
                           />)
                       }
                     </Form.Item>
@@ -401,23 +361,26 @@ function Maintenance(props) {
           </Button>
         </div>
 
-        <Table
-          bordered
-          columns={columns}
-          dataSource={makeData(maintenanceArr)}
-          pagination={false}
-          rowKey={record => record.event_object}
-        />  
         {/* {
           loading === false && (
-            <MergeTable
-            column={columns}
-            Mergecell='first_object'
-            tableSource={maintenanceArr}
-           />
+            <Table
+              bordered
+              columns={columns}
+              dataSource={makeData(maintenanceArr.data)}
+              pagination={false}
+              rowKey={record => record.event_object}
+            />
           )
         } */}
-     
+
+
+        {loading === false && (
+          <MergeTable
+            column={columns}
+            tableSource={maintenanceArr.data}
+            mergecell={mergeCell}
+          />
+        )}
 
 
       </Card>
@@ -426,7 +389,7 @@ function Maintenance(props) {
 }
 
 export default Form.create({})(
-  connect(({ eventstatistics,loading }) => ({
+  connect(({ eventstatistics, loading }) => ({
     maintenanceArr: eventstatistics.maintenanceArr,
     loading: loading.models.eventstatistics,
   }))(Maintenance),

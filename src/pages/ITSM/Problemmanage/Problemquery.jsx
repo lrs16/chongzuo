@@ -101,104 +101,44 @@ function Besolved(props) {
     form: { getFieldDecorator, resetFields, validateFields },
     location: { query:
       {
-        status,
+        progressStatus,
         type,
         handleDeptId,
         timeStatus,
-        problem,
         handlerId,
-        handleProcessGroupType
+        addTimeBegin,
+        addTimeEnd,
+        status,
       } },
     dispatch,
     queryArr,
-    handleList,
-    handleArr,
     loading,
   } = props;
   const [expand, setExpand] = useState(false);
   const [paginations, setPaginations] = useState({ current: 1, pageSize: 10 });
   const [selectedRows, setSelectedRows] = useState([]);
   const [selectdata, setSelectData] = useState('');
-  sign = problem;
-
-  const getQuery = (values, page, pageSize, search) => {
-    if (search) {
-      dispatch({
-        type: 'problemmanage/queryList',
-        payload: {
-          ...values,
-          pageNum: page,
-          pageSize: paginations.pageSize,
-        },
-      });
-    } else {
-      switch (sign) {
-        case undefined:
-        case 'class':
-        case 'status':
-          dispatch({
-            type: 'problemmanage/queryList',
-            payload: {
-              pageNum: initialParams ? paginations.current : page,
-              pageSize: paginations.pageSize,
-              status,
-              type,
-              timeStatus
-            },
-          });
-          break;
-        case 'handle':
-          dispatch({
-            type: 'problemmanage/handleData',
-            payload: {
-              pageNum: page,
-              pageSize: paginations.pageSize,
-              handlerId,
-              status,
-              handleDeptId,
-              handleProcessGroupType
-            },
-          });
-          break;
-        case 'timeout':
-          dispatch({
-            type: 'problemmanage/timeoutData',
-            payload: {
-              pageNum: page,
-              pageSize: paginations.pageSize,
-              timeStatus
-            },
-          });
-          break;
-
-        default:
-          break;
-      }
-    }
-
-  };
 
   const getinitiaQuery = () => {
-    if (sign) {
-      getQuery();
-    } else {
-      dispatch({
-        type: 'problemmanage/queryList',
-        payload: {
-          status,
-          type,
-          timeStatus,
-          pageNum: paginations.current,
-          pageSize: paginations.pageSize,
-        },
-      });
-    }
+    dispatch({
+      type: 'problemmanage/queryList',
+      payload: {
+        status,
+        progressStatus,
+        handlerId,
+        type,
+        timeStatus,
+        handleDeptId,
+        addTimeBegin,
+        addTimeEnd,
+        pageNum: paginations.current,
+        pageSize: paginations.pageSize,
+      },
+    });
+
   }
 
   useEffect(() => {
-    timeoutSearch = '';
-    searchSign = '';
-    initialParams = 'initialParams';
     getinitiaQuery();
   }, []);
 
@@ -206,46 +146,23 @@ function Besolved(props) {
     resetFields();
   };
 
-  //  从统计到查询进行查询后分页的数据，清空数据
-  const emptyData = (values, page, pageSize, search) => {
+  const searchdata = (values, page, pageSize, search) => {
     dispatch({
       type: 'problemmanage/queryList',
       payload: {
         ...values,
+        status,
+        progressStatus,
+        handlerId,
+        type,
+        timeStatus,
+        handleDeptId,
+        addTimeBegin,
+        addTimeEnd,
         pageNum: page,
         pageSize: paginations.pageSize
       },
     });
-  }
-  const searchdata = (values, page, pageSize, search) => {
-    initialParams = '';
-    if (search) {
-      searchSign = 'searchSign';
-    }
-
-    if (sign === 'timeout' && search === 'search') {
-      timeoutSearch = 'search';
-    }
-
-    if (sign === 'handle' && search === 'search') {
-      timeoutSearch = 'search';
-    }
-
-    if (searchSign) {
-      emptyData(values, page, pageSize, search);
-    } else {
-      switch (sign) {
-        case undefined:
-        case 'timeout':
-        case 'class':
-        case 'status':
-        case 'handle':
-          getQuery(values, page, pageSize, search);
-          break;
-        default:
-          break;
-      }
-    }
 
   };
 
@@ -280,20 +197,11 @@ function Besolved(props) {
     onShowSizeChange: (page, pageSize) => onShowSizeChange(page, pageSize),
     current: paginations.current,
     pageSize: paginations.pageSize,
-    total: (sign === 'timeout' && timeoutSearch === '') ? handleList.length : queryArr.total,
+    total: queryArr.total,
     showTotal: total => `总共  ${total}  条记录`,
     onChange: (page) => changePage(page),
   };
 
-  const handlepagination = {
-    showSizeChanger: true,
-    onShowSizeChange: (page, pageSize) => onShowSizeChange(page, pageSize),
-    current: paginations.current,
-    pageSize: paginations.pageSize,
-    total: handleArr.length,
-    showTotal: total => `总共  ${total}条记录`,
-    onChange: page => changePage(page),
-  };
 
   const handleSearch = (search) => {
     setPaginations({
@@ -315,22 +223,33 @@ function Besolved(props) {
 
   const download = () => {
     validateFields((err, values) => {
-      const selectList = [];
-      if (selectedRows.length) {
-        selectedRows.forEach(function (item) {
-          selectList.push(item.id);
-        })
-      }
-      const downparams = values;
-      (downparams.registerUserId) = selectList.toString();
+      // const selectList = [];
+      // if (selectedRows.length) {
+      //   selectedRows.forEach(function (item) {
+      //     selectList.push(item.id);
+      //   })
+      // }
+      // const downparams = values;
+      // (downparams.registerUserId) = selectList.toString();
 
-      if (values.createTimeBegin) {
-        downparams.createTimeBegin = (values.createTimeBegin).format('YYYY-MM-DD')
-      }
+      // if (values.createTimeBegin) {
+      //   downparams.createTimeBegin = (values.createTimeBegin).format('YYYY-MM-DD')
+      // }
       if (!err) {
         dispatch({
           type: 'problemmanage/eventdownload',
-          payload: { ...downparams }
+          payload: {
+            ...values,
+            createTimeBegin: values.createTimeBegin ? (values.createTimeBegin).format('YYYY-MM-DD') : '',
+            status,
+            progressStatus,
+            handlerId,
+            type,
+            timeStatus,
+            handleDeptId,
+            addTimeBegin,
+            addTimeEnd,
+          }
         }).then(res => {
           const filename = `下载.xls`;
           const blob = new Blob([res]);
@@ -359,7 +278,7 @@ function Besolved(props) {
 
   return (
     <PageHeaderWrapper title={pagetitle}>
-        <SysDict
+      <SysDict
         typeid="1354287742015508481"
         commonid="1354288354950123522"
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
@@ -386,7 +305,7 @@ function Besolved(props) {
                   {},
                 )(
                   <Select placeholder="请选择" allowClear>
-                   {currentNode.map(obj => [
+                    {currentNode.map(obj => [
                       <Option key={obj.key} value={obj.title}>
                         {obj.title}
                       </Option>,
@@ -417,10 +336,10 @@ function Besolved(props) {
                     )(
                       <Select placeholder="请选择" allowClear>
                         {problemSource.map(obj => [
-                            <Option key={obj.key} value={obj.dict_code}>
-                              {obj.title}
-                            </Option>,
-                          ])}
+                          <Option key={obj.key} value={obj.dict_code}>
+                            {obj.title}
+                          </Option>,
+                        ])}
                       </Select>,
                     )}
                   </Form.Item>
@@ -445,11 +364,11 @@ function Besolved(props) {
                   <Form.Item label="影响范围">{getFieldDecorator('registerScope', {})
                     (
                       <Select placeholder="请选择" allowClear>
-                      {scopeList.map(obj => [
-                            <Option key={obj.key} value={obj.dict_code}>
-                              {obj.title}
-                            </Option>,
-                          ])}
+                        {scopeList.map(obj => [
+                          <Option key={obj.key} value={obj.dict_code}>
+                            {obj.title}
+                          </Option>,
+                        ])}
                       </Select>,
                     )}</Form.Item>
                 </Col>
@@ -507,10 +426,10 @@ function Besolved(props) {
                     )(
                       <Select placeholder="请选择" allowClear>
                         {priority.map(obj => [
-                            <Option key={obj.key} value={obj.dict_code}>
-                              {obj.title}
-                            </Option>,
-                          ])}
+                          <Option key={obj.key} value={obj.dict_code}>
+                            {obj.title}
+                          </Option>,
+                        ])}
                       </Select>,
                     )}
                   </Form.Item>
@@ -583,40 +502,22 @@ function Besolved(props) {
           >导出数据</Button>
         </div>
 
-        {
-          (sign === 'timeout' || sign === 'class' || sign === 'status' || sign === undefined || timeoutSearch === ' timeoutSearch' || (sign === 'handle' && timeoutSearch === 'search')) && (
-            <Table
-              loading={loading}
-              columns={columns}
-              dataSource={(sign === 'timeout') ? handleArr : queryArr.rows}
-              rowKey={record => record.id}
-              pagination={pagination}
-            />
-          )
-        }
-
-        {
-          (sign === 'handle' && timeoutSearch === '') && (
-            <Table
-              loading={loading}
-              columns={columns}
-              dataSource={handleArr}
-              rowKey={record => record.id}
-              pagination={handlepagination}
-            />
-          )
-        }
-
+        <Table
+          loading={loading}
+          columns={columns}
+          dataSource={queryArr.rows}
+          rowKey={record => record.id}
+          pagination={pagination}
+        />
       </Card>
     </PageHeaderWrapper>
   );
 }
 
 export default Form.create({})(
-  connect(({ problemmanage, loading }) => ({
+  connect(({ problemmanage, problemstatistics, loading }) => ({
     queryArr: problemmanage.queryArr,
-    handleList: problemmanage.handleList,
-    handleArr: problemmanage.handleArr,
+    statusdetailList: problemstatistics.statusdetailList,
     loading: loading.models.problemmanage,
   }))(Besolved),
 );

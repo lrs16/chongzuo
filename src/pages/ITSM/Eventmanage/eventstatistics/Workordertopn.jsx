@@ -12,17 +12,19 @@ import {
 } from 'antd';
 import Link from 'umi/link';
 import moment from 'moment';
+import MergeTable from '@/components/MergeTable';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
 let startTime;
 let endTime;
 let value = 20;
+const mergeCell = 'first_object';
 const { Option } = Select;
 const columns = [
   {
     title: '一级对象',
-    dataIndex: 'first_object',
-    key: 'first_object',
+    dataIndex: mergeCell,
+    key: mergeCell,
     align: 'center',
     render: (text, record) => {
       const obj = {
@@ -68,75 +70,16 @@ const columns = [
 function Workordertopn(props) {
   const { pagetitle } = props.route.name;
   const {
-    form: { getFieldDecorator },
+    form: { getFieldDecorator, setFieldsValue },
     ordertopnArr,
-    dispatch
+    dispatch,
+    loading
   } = props;
-
-  // if (ordertopnArr && ordertopnArr.length) {
-  //   for (let i = 0; i < ordertopnArr.length - 1; i++) {
-  //     for (let j = i + 1; j < ordertopnArr.length; j++) {
-  //       if (ordertopnArr[i].first_object === ordertopnArr[j].first_object) {
-  //         ordertopnArr[j].first_object = '';
-  //       }
-  //     }
-  //   }
-  // }
-  //  对象数组去重
-  const uniqueObjArr = (arr, fieldName) => {
-    const result = [];
-    const resultArr = [];
-    arr.map(function (item, index, value) {
-      if (result.indexOf(item[fieldName]) === -1) {
-        result.push(item[fieldName]);
-        resultArr.push(item);
-      }
-    })
-    return resultArr;
-  }
-
-  //  去重并合并到children
-  const sortData = (dataArr) => {
-    const orgArrRe = dataArr.map(item =>
-      ({ first_object: item.first_object })
-    );
-    const orgArr = uniqueObjArr(orgArrRe, 'first_object');// 数组去重
-    orgArr.map(function (childOne, index, value) {
-      childOne.children = [];
-      dataArr.map(function (childTwo) {
-        if (childOne.first_object === childTwo.first_object) {
-          childOne.children.push(childTwo);
-        }
-      })
-    })
-
-    for (const every of orgArr) {
-      every.span = every.children ? every.children.length : 0;
-    }
-
-    orgArr.forEach((every) => { every.span = every.children ? every.children.length : 0; });
-    return orgArr;
-  }
-
-  //  遍历子元素，并赋值纵向合并数rowSpan
-  const makeData = (data) => {
-    const sortResult = sortData(data);
-    const dataSource = [];
-    sortResult.forEach((item) => {
-      if (item.children) {
-        item.children.forEach((itemOne, indexOne) => {
-          const myObj = itemOne;
-          myObj.rowSpan = indexOne === 0 ? item.span : 0;
-          dataSource.push(myObj);
-        });
-      }
-    });
-    return dataSource;
-  }
 
   const onChange = (date, dateString) => {
     startTime = dateString;
     endTime = moment(dateString).add(+6, 'day').format('YYYY-MM-DD');
+    setFieldsValue({ time2: moment(endTime) });
   }
 
   const handleListdata = () => {
@@ -168,8 +111,11 @@ function Workordertopn(props) {
 
 
   const defaultTime = () => {
-    startTime = moment().subtract('days', 6).format('YYYY-MM-DD');
-    endTime = moment().format('YYYY-MM-DD');
+    // startTime = moment().subtract('days', 6).format('YYYY-MM-DD');
+    // endTime = moment().format('YYYY-MM-DD');
+    startTime = moment().week(moment().week() - 1).startOf('week').format('YYYY-MM-DD HH:mm:ss');
+    endTime = moment().week(moment().week() - 1).endOf('week').format('YYYY-MM-DD');
+    endTime = `${endTime} 00:00:00`;
   }
 
   const selectOnchange = (selectvalue) => {
@@ -180,6 +126,21 @@ function Workordertopn(props) {
     defaultTime();
     handleListdata();
   }, [])
+
+
+  const startdisabledDate = (current) => {
+    return current > moment().subtract('days', 6)
+  }
+
+  const enddisabledDate = (current) => {
+    return current > moment().endOf('day')
+  }
+
+  const endonChange = (date, dateString) => {
+    endTime = dateString;
+    startTime = moment(dateString).subtract('day', 6).format('YYYY-MM-DD');
+    setFieldsValue({ time1: moment(startTime) })
+  }
 
   return (
     <PageHeaderWrapper
@@ -196,6 +157,7 @@ function Workordertopn(props) {
                   })(<DatePicker
                     format="YYYY-MM-DD"
                     allowClear={false}
+                    disabledDate={startdisabledDate}
                     onChange={onChange}
                   />)}
                 </Form.Item>
@@ -209,7 +171,9 @@ function Workordertopn(props) {
                     })
                       (<DatePicker
                         allowClear={false}
-                        disabled />)
+                        disabledDate={enddisabledDate}
+                        onChange={endonChange}
+                      />)
                   }
                 </Form.Item>
 
@@ -250,20 +214,22 @@ function Workordertopn(props) {
           </Button>
         </div>
 
-        <Table
-          bordered
-          columns={columns}
-          pagination={false}
-          dataSource={makeData(ordertopnArr)}
-          rowKey={record => record.statName}
-        />
+
+        {loading === false && (
+          <MergeTable
+            column={columns}
+            tableSource={ordertopnArr}
+            mergecell={mergeCell}
+          />
+        )}
       </Card>
     </PageHeaderWrapper>
   )
 }
 
 export default Form.create({})(
-  connect(({ eventstatistics }) => ({
-    ordertopnArr: eventstatistics.ordertopnArr
+  connect(({ eventstatistics,loading }) => ({
+    ordertopnArr: eventstatistics.ordertopnArr,
+    loading: loading.models.eventstatistics
   }))(Workordertopn),
 );

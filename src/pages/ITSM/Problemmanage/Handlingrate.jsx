@@ -5,7 +5,6 @@ import {
   Row,
   Col,
   Form,
-  Input,
   DatePicker,
   Button,
   Table
@@ -28,8 +27,7 @@ let statTimeBegin = '';
 let statTimeEnd = '';
 
 function Handlingrate(props) {
-  const { pagetitle } = props.route.name;
-  const [changearr, setChangeArr] = useState();
+  const  pagetitle  = props.route.name;
   const [tabActiveKey, setTabActiveKey] = useState('1');
   const {
     form: { getFieldDecorator, resetFields },
@@ -43,10 +41,9 @@ function Handlingrate(props) {
       title: '开发商',
       dataIndex: 'handleDept',
       key: 'handleDept',
-      render: (text, row, index) => {
+      render: (text, row) => {
         if (row.handler === '小计') {
           return {
-            // children: <a>{row.handleDep}</a>,
             props: {
               colSpan: 1,
             },
@@ -54,7 +51,6 @@ function Handlingrate(props) {
         };
         if (row.handler === '合计') {
           return {
-            // children: <a>{row.handler}</a>,
             props: {
               colSpan: 1,
             },
@@ -71,7 +67,7 @@ function Handlingrate(props) {
       title: '负责人',
       dataIndex: 'handler',
       key: 'handler',
-      render: (text, row, index) => {
+      render: (text, row) => {
         if (row.handler === '小计') {
           return <span style={{ fontWeight: 700 }}>{text}</span>
         }
@@ -88,25 +84,23 @@ function Handlingrate(props) {
       dataIndex: 'total',
       key: 'total',
       render: (text, record, index) => {
-        // if (record.handler === '合计') {
-        //   return <span style={{ fontWeight: 700 }}>{text}</span>
-        // }
-     
         return <Link
-        to={{
-          pathname: '/ITSM/problemmanage/problemquery',
-          query: {
-            problem: 'handle',
-            handlerId: record.handlerId,
-            status: record.totalCode,
-            handleDeptId: record.handleDeptId,
-            handleProcessGroupType: tabActiveKey
-          }
-        }}
-      >
-        {text}
-      </Link>
-   
+          to={{
+            pathname: '/ITSM/problemmanage/problemquery',
+            query: {
+              problem: 'handle',
+              handlerId: record.handlerId,
+              progressStatus: record.totalCode,
+              handleDeptId: record.handleDeptId,
+              handleProcessGroupType: tabActiveKey,
+              addTimeBegin: statTimeBegin,
+              addTimeEnd: statTimeEnd,
+            }
+          }}
+        >
+          {text}
+        </Link>
+
       }
     },
     {
@@ -120,9 +114,11 @@ function Handlingrate(props) {
             query: {
               problem: 'handle',
               handlerId: record.handlerId,
-              status: record.handlingCode,
+              progressStatus: record.handlingCode,
               handleDeptId: record.handleDeptId,
-              handleProcessGroupType: tabActiveKey
+              handleProcessGroupType: tabActiveKey,
+              addTimeBegin: statTimeBegin,
+              addTimeEnd: statTimeEnd,
             }
           }}
         >
@@ -141,9 +137,11 @@ function Handlingrate(props) {
             query: {
               problem: 'handle',
               handlerId: record.handlerId,
-              status: record.handledCode,
+              progressStatus: record.handledCode,
               handleDeptId: record.handleDeptId,
-              handleProcessGroupType: tabActiveKey
+              handleProcessGroupType: tabActiveKey,
+              addTimeBegin:statTimeBegin,
+              addTimeEnd:statTimeEnd,
             }
           }}
         >
@@ -162,9 +160,11 @@ function Handlingrate(props) {
             query: {
               problem: 'handle',
               handlerId: record.handlerId,
-              status: record.closedCode,
+              progressStatus: record.closedCode,
               handleDeptId: record.handleDeptId,
-              handleProcessGroupType: tabActiveKey
+              handleProcessGroupType: tabActiveKey,
+              addTimeBegin:statTimeBegin,
+              addTimeEnd:statTimeEnd,
             }
           }}
         >
@@ -176,7 +176,7 @@ function Handlingrate(props) {
       title: '处理率',
       dataIndex: 'handleRate',
       key: 'handleRate',
-      render: (text, record) => (
+      render: (text) => (
         <span>{text}%</span>
       )
     },
@@ -187,7 +187,7 @@ function Handlingrate(props) {
       title: '业务负责人',
       dataIndex: 'handler',
       key: 'handler',
-      render: (text, row, index) => {
+      render: (text, row) => {
         if (row.handler === '小计') {
           return <span style={{ fontWeight: 700 }}>{text}</span>
         }
@@ -203,53 +203,47 @@ function Handlingrate(props) {
       title: '问题总数',
       dataIndex: 'total',
       key: 'total',
-      render: (text, record, index) => {
-        // if (record.handler === '合计') {
-        //   return <span style={{ fontWeight: 700 }}>{text}</span>
-        // }
-     
+      render: (text, record) => {
         return <Link
-        to={{
-          pathname: '/ITSM/problemmanage/problemquery',
-          query: {
-            problem: 'handle',
-            handlerId: record.handlerId,
-            status: record.totalCode,
-            handleDeptId: record.handleDeptId,
-            handleProcessGroupType: tabActiveKey
-          }
-        }}
-      >
-        {text}
-      </Link>
-   
+          to={{
+            pathname: '/ITSM/problemmanage/problemquery',
+            query: {
+              problem: 'handle',
+              handlerId: record.handlerId,
+              progressStatus: record.totalCode,
+              handleDeptId: record.handleDeptId,
+              addTimeBegin: statTimeBegin,
+              addTimeEnd: statTimeEnd,
+            }
+          }}
+        >
+          {text}
+        </Link>
+
       }
     },
     {
       title: '待处理',
       dataIndex: 'handlingCount',
       key: 'handlingCount',
-      render: (text, record, index) => {
-        // if (record.handler === '合计') {
-        //   return <span style={{ fontWeight: 700 }}>{text}</span>
-        // }
-     
+      render: (text, record) => {
         return <Link
-        to={{
-          pathname: '/ITSM/problemmanage/problemquery',
-          query: {
-            problem: 'handle',
-            handlerId: record.handlerId,
-            status: record.handlingCode,
-            handleDeptId: record.handleDeptId,
-            handleProcessGroupType: tabActiveKey
-          }
-        }}
-      >
-        {text}
-      </Link>
+          to={{
+            pathname: '/ITSM/problemmanage/problemquery',
+            query: {
+              problem: 'handle',
+              handlerId: record.handlerId,
+              progressStatus: record.handlingCode,
+              handleDeptId: record.handleDeptId,
+              addTimeBegin: statTimeBegin,
+              addTimeEnd: statTimeEnd,
+            }
+          }}
+        >
+          {text}
+        </Link>
 
-   
+
       }
     },
     {
@@ -257,18 +251,16 @@ function Handlingrate(props) {
       dataIndex: 'handledCount',
       key: 'handledCount',
       render: (text, record) => {
-        // if(record.handler === '合计') {
-        //   return <span style={{fontWeight:700}}>{text}</span>
-        // }
-         return <Link
+        return <Link
           to={{
             pathname: '/ITSM/problemmanage/problemquery',
             query: {
               problem: 'handle',
               handlerId: record.handlerId,
-              status: record.handledCode,
+              progressStatus: record.handledCode,
               handleDeptId: record.handleDeptId,
-              handleProcessGroupType: tabActiveKey
+              addTimeBegin:statTimeBegin,
+              addTimeEnd:statTimeEnd,
             }
           }}
         >
@@ -281,24 +273,22 @@ function Handlingrate(props) {
       dataIndex: 'closedCount',
       key: 'closedCount',
       render: (text, record) => {
-        // if(record.handler === '合计') {
-        //   return <span style={{fontWeight:700}}>{text}</span>
-        // }
         return <Link
           to={{
             pathname: '/ITSM/problemmanage/problemquery',
             query: {
               problem: 'handle',
               handlerId: record.handlerId,
-              status: record.closedCode,
+              progressStatus: record.closedCode,
               handleDeptId: record.handleDeptId,
-              handleProcessGroupType: tabActiveKey
+              addTimeBegin:statTimeBegin,
+              addTimeEnd:statTimeEnd,
             }
           }}
         >
           {text}
         </Link>
-    }
+      }
     },
   ];
 
@@ -356,8 +346,6 @@ function Handlingrate(props) {
   const handleTabChange = (key) => { // tab切换
     setTabActiveKey(key);
   };
-
-
 
   return (
     <PageHeaderWrapper
@@ -418,22 +406,20 @@ function Handlingrate(props) {
         {
           tabActiveKey === '2' && loading === false && (
             <Table
-            rowKey={tabActiveKey}
-            columns={columnsBusiness}
-            dataSource={handlingratedata}
-          />
+              rowKey={tabActiveKey}
+              columns={columnsBusiness}
+              dataSource={handlingratedata}
+            />
           )
-     
+
         }
-
-
       </Card>
     </PageHeaderWrapper>
   )
 }
 
 export default Form.create({})(
-  connect(({ problemstatistics,loading }) => ({
+  connect(({ problemstatistics, loading }) => ({
     handlingratedata: problemstatistics.handlingratedata,
     loading: loading.models.problemstatistics,
   }))(Handlingrate),

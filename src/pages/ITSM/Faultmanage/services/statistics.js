@@ -29,7 +29,7 @@ export async function faultdownlistDownload(params) {
 
 //  导出故障明细表
 export async function faultDownload(params) {
-  return request(`/trouble/stat/expStatOrderByStatus`, {
+  return request(`/trouble/stat/expStatOrderByCurrentNodeAndStatus`, {
     method: 'POST',
     body: JSON.stringify(params),
     responseType: 'blob',
@@ -38,7 +38,7 @@ export async function faultDownload(params) {
 
 //  故障状态统计列表
 export async function faulthandleGrate(params) {
-  return request(`/trouble/stat/statOrderByStatus`, {
+  return request(`/trouble/stat/statOrderByCurrentNodeAndStatus`, {
     method: 'POST',
     body: JSON.stringify(params),
   });

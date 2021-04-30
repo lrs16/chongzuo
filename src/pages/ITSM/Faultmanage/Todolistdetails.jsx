@@ -552,7 +552,7 @@ function Todolistdetails(props) {
     });
   };
 
-  const handleRegist = () => {
+  const handleRegist = (params) => {
     // 登记按钮回到登记页
     // eslint-disable-next-line consistent-return
     ExamineRef.current.validateFields((err, values) => {
@@ -562,7 +562,7 @@ function Todolistdetails(props) {
       } else {
         formValues.checkTime = '';
       }
-      if (!err) {
+      if (params?!err:true) {
         formValues.checkUserId = userId; // 当前登录人id
         formValues.taskId = id;
         formValues.checkType = flowNodeName === '系统运维商审核' ? '1' : '2';
@@ -608,7 +608,7 @@ function Todolistdetails(props) {
     });
   };
 
-  const toHandle = () => {
+  const toHandle = (params) => {
     // 第二次审核回到处理
     // eslint-disable-next-line consistent-return
     ExamineRef.current.validateFields((err, values) => {
@@ -618,7 +618,7 @@ function Todolistdetails(props) {
       } else {
         formValues.checkTime = '';
       }
-      if (!err) {
+      if (params?!err:true) {
         formValues.checkUserId = userId; // 当前登录人id
         formValues.taskId = id;
         formValues.checkType = flowNodeName === '系统运维商审核' ? '1' : '2';
@@ -824,12 +824,12 @@ function Todolistdetails(props) {
               </Button>
             )}
           {result === '0' && (
-            <Button type="primary" onClick={handleRegist}>
+            <Button type="primary" onClick={() =>handleRegist('back')}>
               重新登记
             </Button>
           )}
           {resultsecond === '0' && (
-            <Button type="primary" onClick={toHandle}>
+            <Button type="primary" onClick={()=>toHandle('back')}>
               重新处理
             </Button>
           )}

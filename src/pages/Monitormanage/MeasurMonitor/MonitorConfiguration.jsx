@@ -57,15 +57,16 @@ function MonitorConfiguration(props) {
     }
   };
 
+
   // 点击编辑生成filelist,
-  const handlefileedit = (key, values) => {
-    // setKeyUpload(key);
-    if (!values) {
-      setFilesList([]);
-    } else {
-      setFilesList(JSON.parse(values));
-    }
-  };
+  // const handlefileedit = (key, values) => {
+  //   // setKeyUpload(key);
+  //   if (!values) {
+  //     setFilesList([]);
+  //   } else {
+  //     setFilesList(JSON.parse(values));
+  //   }
+  // };
 
   const getTobolist = () => {
     return dispatch({
@@ -230,7 +231,7 @@ function MonitorConfiguration(props) {
             <a
               onClick={e => {
                 toggleEditable(e, record.key, record);
-                handlefileedit(record.key, record.attachment);
+                // handlefileedit(record.key, record.attachment);
               }}
             >编辑</a>
             <Divider type='vertical' />

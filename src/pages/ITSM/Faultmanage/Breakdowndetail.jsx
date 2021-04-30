@@ -10,6 +10,7 @@ import {
   Table
 } from 'antd';
 import Link from 'umi/link';
+import MergeTable from '@/components/MergeTable';
 
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
@@ -28,7 +29,22 @@ const formItemLayout = {
   }
 }
 
+const mergeCell = 'statCurrentNode';
 const columns = [
+  {
+    title: '当前环节',
+    dataIndex: mergeCell,
+    key: mergeCell,
+    align: 'center',
+    render: (text, record) => {
+      const obj = {
+        children: text,
+        props: {},
+      };
+      obj.props.rowSpan = record.rowSpan;
+      return obj;
+    },
+  },
   {
     title: '工单状态',
     dataIndex: 'statName',
@@ -45,6 +61,8 @@ const columns = [
           pathname: '/ITSM/faultmanage/querylist',
           query: { 
             status: record.statCode,
+            addTimeBegin: statTimeBegin,
+            addTimeEnd: statTimeEnd,
             dictType: 'handle',
            }
         }}
@@ -57,12 +75,14 @@ const columns = [
   },
 
 ]
+
 function Breakdownlist(props) {
   const { pagetitle } = props.route.name;
   const {
     form: { getFieldDecorator, resetFields },
     dispatch,
-    faultdetailArr
+    faultdetailArr,
+    loading
   } = props;
 
 
@@ -103,14 +123,7 @@ function Breakdownlist(props) {
       a.click();
       window.URL.revokeObjectURL(url);
     })
-
   }
-
-  const rowSelection = {
-    onChange: (selectedRowkeys, select) => {
-    }
-  }
-
 
   return (
     <PageHeaderWrapper title={pagetitle}>
@@ -154,12 +167,14 @@ function Breakdownlist(props) {
           </Button>
         </div>
 
-        <Table
-          columns={columns}
-          dataSource={faultdetailArr}
-          rowKey={record => record.statCode}
-          rowSelection={rowSelection}
-        />
+
+        { loading === false && (
+            <MergeTable
+            column={columns}
+            tableSource={faultdetailArr}
+            mergecell={mergeCell}
+          />
+        )}
       </Card>
 
     </PageHeaderWrapper>
@@ -167,7 +182,8 @@ function Breakdownlist(props) {
 }
 
 export default Form.create({})(
-  connect(({ faultstatics }) => ({
-    faultdetailArr: faultstatics.faultdetailArr
+  connect(({ faultstatics,loading }) => ({
+    faultdetailArr: faultstatics.faultdetailArr,
+    loading: loading.models.faultstatics
   }))(Breakdownlist)
 );

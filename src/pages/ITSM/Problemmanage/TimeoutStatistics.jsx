@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'dva';
 import {
   Card,
@@ -49,7 +49,9 @@ const columns = [
             pathname: '/ITSM/problemmanage/problemquery',
             query: { 
               problem: 'timeout',
-              timeStatus: record.statCode
+              timeStatus: record.statCode,
+              addTimeBegin:statTimeBegin,
+              addTimeEnd:statTimeEnd,
              }
           }}
         >
@@ -66,6 +68,7 @@ function TimeoutStatistics(props) {
     dispatch,
     timeoutArr
   } = props;
+  console.log(timeoutArr,'timeoutArr');
   if (timeoutArr.length) {
     timeoutArr.forEach((item, index) => {
       if (index !== 5) {

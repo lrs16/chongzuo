@@ -1,14 +1,18 @@
-import React from 'react';
+import React,{ useEffect } from 'react';
 import {
-  Table
+  Table,
+  Form
 } from 'antd';
+import { connect } from 'dva';
 
 function MergeTable(props) {
   const {
-    column,
-    Mergecell,
-    tableSource
+    column, // 表格的行
+    mergecell, //  合并字段
+    tableSource, // 表格的数据
+    loading
   } = props;
+
 
     //  对象数组去重
     const uniqueObjArr = (arr, fieldName) => {
@@ -26,21 +30,17 @@ function MergeTable(props) {
     //  去重并合并到children
     const sortData = (dataArr) => {
       const orgArrRe = dataArr.map(item =>
-        ({ Mergecell: item.Mergecell })
+        ({ [mergecell]: item[mergecell] })
       );
-      const orgArr = uniqueObjArr(orgArrRe, Mergecell);// 数组去重
+      const orgArr = uniqueObjArr(orgArrRe, [mergecell]);// 数组去重
       orgArr.map(function (childOne) {
         childOne.children = [];
         dataArr.map(function (childTwo) {
-          if (childOne.Mergecell === childTwo.Mergecell) {
+          if (childOne[mergecell] === childTwo[mergecell]) {
             childOne.children.push(childTwo);
           }
         })
       })
-  
-      for (const every of orgArr) {
-        every.span = every.children ? every.children.length : 0;
-      }
   
       orgArr.forEach((every) => { every.span = every.children ? every.children.length : 0; });
       return orgArr;
@@ -59,19 +59,30 @@ function MergeTable(props) {
           });
         }
       });
-      console.log(dataSource);
       return dataSource;
     }
 
     return (
-      <Table
-      bordered
-      columns={column}
-      dataSource={makeData(tableSource)}
-      pagination={false}
-       />
+  
+     <>
+       {tableSource && tableSource.length && mergecell  && (
+          <Table
+            bordered
+            columns={column}
+            dataSource={makeData(tableSource)}
+            pagination={false}
+            rowKey={record => record.statCode}
+          />
+         )}
+     </>
     )
   
 }
 
-export default MergeTable;
+// export default MergeTable;
+export default Form.create({})(
+  connect(({ problemstatistics, loading }) => ({
+    statusArr: problemstatistics.statusArr,
+    loading: loading.models.problemstatistics
+  }))(MergeTable),
+);

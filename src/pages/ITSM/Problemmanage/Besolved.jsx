@@ -447,6 +447,7 @@ function Besolved(props) {
           pagination={pagination}
         />
       </Card>
+    
     </PageHeaderWrapper>
   );
 }

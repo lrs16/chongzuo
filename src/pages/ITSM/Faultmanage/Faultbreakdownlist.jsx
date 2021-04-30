@@ -7,15 +7,15 @@ import {
   Form,
   DatePicker,
   Button,
-  Table
 } from 'antd';
 import Link from 'umi/link';
-
+import MergeTable from '@/components/MergeTable';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
 const { RangePicker } = DatePicker;
 let statTimeBegin;
 let statTimeEnd;
+const mergeCell = 'statCatalogue';
 
 const formItemLayout = {
   labelCol: {
@@ -31,35 +31,48 @@ const formItemLayout = {
 const columns = [
   {
     title: '一级类型',
-    dataIndex: 'statCatalogue',
-    key: 'statCatalogue'
+    dataIndex: mergeCell,
+    key: mergeCell,
+    align: 'center',
+    render: (text, record) => {
+      const obj = {
+        children: text,
+        props: {},
+      };
+      obj.props.rowSpan = record.rowSpan;
+      return obj;
+    },
   },
   {
     title: '二级类型',
     dataIndex: 'statName',
     key: 'statName',
+    align: 'center',
   },
   {
     title: '工单数',
     dataIndex: 'statCount',
     key: 'statCount',
+    align: 'center',
     render: (text, record) => {
-      if(record.statName !== '合计') {
+      if (record.statName !== '合计') {
         return <Link
-        to={{
-          pathname: '/ITSM/faultmanage/querylist',
-          query: { 
-            dictCode: record.statCode,
-            dictType: 'type',
-           }
-        }}
-      >
-        {text}
-      </Link>
-      } 
+          to={{
+            pathname: '/ITSM/faultmanage/querylist',
+            query: {
+              addTimeBegin: statTimeBegin,
+              addTimeEnd: statTimeEnd,
+              type: record.statCode,
+              dictType: 'type',
+            }
+          }}
+        >
+          {text}
+        </Link>
+      }
       return <span>{text}</span>
     }
-     
+
   },
 ]
 function Faultbreakdownlist(props) {
@@ -67,18 +80,19 @@ function Faultbreakdownlist(props) {
   const {
     form: { getFieldDecorator, resetFields },
     dispatch,
-    faultArr
+    faultArr,
+    loading
   } = props;
 
 
   const onChange = (date, dateString) => {
     [statTimeBegin, statTimeEnd] = dateString;
   }
-  
+
   const handleList = () => {
     dispatch({
       type: 'faultstatics/fetchfaultlist',
-      payload:{ statTimeBegin, statTimeEnd,dictType: 'type' }
+      payload: { statTimeBegin, statTimeEnd, dictType: 'type' }
     })
   }
 
@@ -97,7 +111,7 @@ function Faultbreakdownlist(props) {
   const download = () => {
     dispatch({
       type: 'faultstatics/downloadFaultdownlist',
-      payload: { dictType: 'type',statTimeBegin, statTimeEnd}
+      payload: { dictType: 'type', statTimeBegin, statTimeEnd }
     }).then(res => {
       const filename = '下载.xls';
       const blob = new Blob([res]);
@@ -108,11 +122,6 @@ function Faultbreakdownlist(props) {
       a.click();
       window.URL.revokeObjectURL(url);
     })
-  }
-
-  const rowSelection = {
-    onChange: (selectedRowkeys, select) => {
-    }
   }
 
 
@@ -158,12 +167,13 @@ function Faultbreakdownlist(props) {
           </Button>
         </div>
 
-        <Table
-          columns={columns}
-          dataSource={faultArr}
-          rowKey={record => record.statCode}
-          rowSelection={rowSelection}
-        />
+        {loading === false && (
+          <MergeTable
+            column={columns}
+            tableSource={faultArr}
+            mergecell={mergeCell}
+          />
+        )}
       </Card>
 
     </PageHeaderWrapper>
@@ -171,7 +181,8 @@ function Faultbreakdownlist(props) {
 }
 
 export default Form.create({})(
-  connect(({ faultstatics }) => ({
-    faultArr: faultstatics.faultArr
+  connect(({ faultstatics,loading }) => ({
+    faultArr: faultstatics.faultArr,
+    loading: loading.models.faultstatics
   }))(Faultbreakdownlist)
 );

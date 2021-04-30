@@ -7,7 +7,8 @@ import {
   handlegrateDownload,
   timeoutList,
   timeoutDownload,
-  solvescheduleDownload
+  solvescheduleDownload,
+  problemstatusList
 } from '../services/statistics';
 
 export default {
@@ -17,7 +18,7 @@ export default {
     handlingratedata:[],
     statusArr:[],
     classArr:[],
-    handleArr:[],
+    statusdetailList:[],
     timeoutArr:[]
   },
 
@@ -66,9 +67,18 @@ export default {
 
      // 超时统计列表
      *timeoutLists({ payload }, { call, put }) {
-       const response = yield call(timeoutList,payload);
+      const response = yield call(timeoutList,payload);
+      yield put ({
+        type:'timeoutData',
+        payload: response
+      })
+    },
+
+     // 工单状态统计列表
+     *statusDetaisdata({ payload }, { call, put }) {
+       const response = yield call(problemstatusList,payload);
        yield put ({
-         type:'timeoutArr',
+         type:'statusdetailList',
          payload: response
        })
      },
@@ -81,8 +91,6 @@ export default {
     *solveschedule({ payload }, { call, put }) {
         return yield call(solvescheduleDownload,payload);
       },
-    
-
   },
 
   reducers: {
@@ -101,10 +109,17 @@ export default {
     }
   },
 
-  timeoutArr(state,action) {
+  timeoutData(state, action) {
     return {
       ...state,
       timeoutArr: action.payload.data
+    }
+  },
+
+  statusdetailList(state,action) {
+    return {
+      ...state,
+      statusdetailList: action.payload.data
     }
   },
 

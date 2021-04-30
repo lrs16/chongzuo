@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'dva';
 import {
   Card,
@@ -45,7 +45,9 @@ const columns = [
           pathname: '/ITSM/problemmanage/problemquery',
           query: {
             problem: 'class',
-            type: record.statCode
+            type: record.statCode,
+            addTimeBegin:statTimeBegin,
+            addTimeEnd:statTimeEnd,
           }
         }}
       >
@@ -102,15 +104,7 @@ function ClassifiedStatistics(props) {
       a.click();
       window.URL.revokeObjectURL(url);
     })
-
   }
-
-  const rowSelection = {
-    onChange: (selectedRowkeys, select) => {
-      console.log('select: ', select);
-    }
-  }
-
 
   return (
     <PageHeaderWrapper title={pagetitle}>
@@ -158,7 +152,6 @@ function ClassifiedStatistics(props) {
           columns={columns}
           dataSource={classArr}
           rowKey={record => record.statCode}
-          rowSelection={rowSelection}
         />
       </Card>
 

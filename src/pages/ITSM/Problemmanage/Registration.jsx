@@ -44,12 +44,6 @@ function Registration(props) {
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
   const RegistratRef = useRef();
 
-  const getUserinfo = () => {
-    dispatch({
-      type: 'problemmanage/fetchUseinfo',
-    });
-  };
-
   const getSourceapi = (dictModule, dictType) => {
     dispatch({
       type: 'problemdropdown/keyvalsource',
@@ -95,7 +89,6 @@ function Registration(props) {
   };
 
   useEffect(() => {
-    getUserinfo();
     getSource();
     gettype();
     getpriority();
@@ -103,6 +96,7 @@ function Registration(props) {
     getProject();
     queryDept();
   }, []);
+  
 //  点击保存触发事件
   const handlesubmit = jumpType => {
     RegistratRef.current.validateFields((err, values) => {
@@ -115,6 +109,7 @@ function Registration(props) {
             registerOccurTime:values.registerOccurTime.format('YYYY-MM-DD HH:mm:ss'),
             registerExpectTime:values.registerExpectTime.format('YYYY-MM-DD HH:mm:ss'),
             registerAttachments:files.ischange?JSON.stringify(files.arr):null,
+            importance:Number(values.importance)?values.importance:'001',
             jumpType,
             editState:'add' 
           },
