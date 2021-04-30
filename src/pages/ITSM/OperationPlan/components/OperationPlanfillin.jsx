@@ -468,7 +468,7 @@ const OperationPlanfillin = React.forwardRef((props, ref) => {
           <Col span={8}>
             <Form.Item label="填报单位">
               {getFieldDecorator('main_importance', {
-                initialValue:useInfo.unitName
+                initialValue: useInfo.unitName
               })
                 (
                   <Input disabled />

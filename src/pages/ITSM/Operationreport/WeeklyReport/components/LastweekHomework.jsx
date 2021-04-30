@@ -8,7 +8,6 @@ import {
 } from 'antd';
 import { connect } from 'dva';
 import SysUpload from '@/components/SysUpload';
-import { removeFileItem } from '_antd@3.26.20@antd/lib/upload/utils';
 
 const { TextArea } = Input;
 

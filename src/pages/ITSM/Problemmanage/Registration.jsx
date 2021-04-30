@@ -96,12 +96,8 @@ function Registration(props) {
     getProject();
     queryDept();
   }, []);
-<<<<<<< HEAD
 
   //  点击保存触发事件
-=======
-  //  点击保存触发事件
->>>>>>> 事件，需求切换必填清除校验
   const handlesubmit = jumpType => {
     RegistratRef.current.validateFields((err, values) => {
       if (jumpType ? !err : true) {
@@ -109,18 +105,11 @@ function Registration(props) {
           type: 'problemmanage/getAddid',
           payload: {
             ...values,
-<<<<<<< HEAD
             registerTime: values.registerTime.format('YYYY-MM-DD HH:mm:ss'),
             registerOccurTime: values.registerOccurTime.format('YYYY-MM-DD HH:mm:ss'),
             registerExpectTime: values.registerExpectTime.format('YYYY-MM-DD HH:mm:ss'),
             registerAttachments: files.ischange ? JSON.stringify(files.arr) : null,
             importance: Number(values.importance) ? values.importance : '001',
-=======
-            registerTime: values.registerTime.format('YYYY-MM-DD HH:mm:ss'),
-            registerOccurTime: values.registerOccurTime.format('YYYY-MM-DD HH:mm:ss'),
-            registerExpectTime: values.registerExpectTime.format('YYYY-MM-DD HH:mm:ss'),
-            registerAttachments: files.ischange ? JSON.stringify(files.arr) : null,
->>>>>>> 事件，需求切换必填清除校验
             jumpType,
             editState: 'add'
           },
