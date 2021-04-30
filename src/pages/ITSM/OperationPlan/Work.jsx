@@ -6,6 +6,7 @@ import {
   Collapse,
   Form
 } from 'antd';
+import router from 'umi/router';
 import TaskCheck from './components/TaskCheck';
 import OperationPlanfillin from './components/OperationPlanfillin';
 import TaskExecute from './components/TaskExecute';
@@ -93,7 +94,7 @@ function Work(props) {
   }, [])
 
   const handlePaste = () => {
-    console.log('ff')
+  
   }
 
   const saveApi = (params) => {
@@ -161,6 +162,15 @@ function Work(props) {
     }
   }
 
+  const handleClose = () => {
+    router.push({
+      pathname: `/ITSM/operationplan/myoperationplan`,
+    });
+  }
+
+  console.log(executestatus,'executestatus')
+  console.log(checkoutstatus,'executestatus')
+
   
 
 
@@ -172,10 +182,23 @@ function Work(props) {
 
           <Button type='primary' onClick={handleSave}>保存</Button>
 
-          <Button type='primary'>送审</Button>
+          {/* <Button type='primary'>送审</Button> */}
 
-          <Button type='primary' onClick={handlePaste}>粘贴</Button>
+          {
+            executestatus === '未完成' && checkoutstatus === '已审核' && (
+              <Button type='primary'>确定执行</Button>
+            )
+          }
 
+          {
+            executestatus === '已延期' && checkoutstatus === '已审核' && (
+              <Button type='primary'>确定延期</Button>
+            )
+          }
+
+         
+
+          <Button onClick={handleClose}>关闭</Button>
 
         
         </>
@@ -236,7 +259,7 @@ function Work(props) {
         {
           (executestatus === '已延期' || executestatus === '计划中') && (
             <Panel
-              header='作业计划延期'
+              header={executestatus === '已延期'?'作业计划延期':'作业计划填报'}
               key='1'
               style={{ backgroundColor: 'white' }}
             >

@@ -12,6 +12,7 @@ import {
   DatePicker,
   Select,
 } from 'antd';
+import router from 'umi/router';
 import OperationPlanfillin from './components/OperationPlanfillin';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
@@ -95,6 +96,12 @@ function OperationPlanfillintion(props) {
     });
   };
 
+  const handleClose = () => {
+    router.push({
+      pathname: `/ITSM/operationplan/myoperationplan`,
+    });
+  }
+
   
 
 
@@ -118,6 +125,8 @@ function OperationPlanfillintion(props) {
           <Button type="primary" style={{ marginRight: 8 }}>
             送审
           </Button>
+
+          <Button onClick={handleClose}>关闭</Button>
         </>
       }
     >

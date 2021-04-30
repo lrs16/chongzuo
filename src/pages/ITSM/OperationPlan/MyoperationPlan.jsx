@@ -328,15 +328,15 @@ function MyoperationPlan(props) {
         ...values,
         time1: values.addTime?.length ? moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
         time2: values.addTime?.length ? moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-        checkTime: values.addTime?moment(values.addTime).format('YYYY-MM-DD HH:mm:ss'):'',
-        operationTime: values.operationTime?moment(values.operationTime).format('YYYY-MM-DD HH:mm:ss'):'',
-        plannedStarTtime: values.plannedStarTtime?moment(values.plannedStarTtime).format('YYYY-MM-DD HH:mm:ss'):'',
-        plannedEndTime: values.plannedEndTime?moment(values.plannedEndTime).format('YYYY-MM-DD HH:mm:ss'):'',
-        startTime: values.startTime?moment(values.startTime).format('YYYY-MM-DD HH:mm:ss'):'',
-        endTime: values.endTime?moment(values.endTime).format('YYYY-MM-DD HH:mm:ss'):'',
+        checkTime: values.addTime ? moment(values.addTime).format('YYYY-MM-DD HH:mm:ss') : '',
+        operationTime: values.operationTime ? moment(values.operationTime).format('YYYY-MM-DD HH:mm:ss') : '',
+        plannedStarTtime: values.plannedStarTtime ? moment(values.plannedStarTtime).format('YYYY-MM-DD HH:mm:ss') : '',
+        plannedEndTime: values.plannedEndTime ? moment(values.plannedEndTime).format('YYYY-MM-DD HH:mm:ss') : '',
+        startTime: values.startTime ? moment(values.startTime).format('YYYY-MM-DD HH:mm:ss') : '',
+        endTime: values.endTime ? moment(values.endTime).format('YYYY-MM-DD HH:mm:ss') : '',
       }
 
-      console.log(searchParams,'searchParams');
+      console.log(searchParams, 'searchParams');
 
       searchdata(searchParams, paginations.current, paginations.pageSize);
     });
@@ -526,7 +526,7 @@ function MyoperationPlan(props) {
           return (
             <Link
               to={{
-                pathname: `/ITSM/operationplan/operationplanform/${record.operationNo}`,
+                pathname: `/ITSM/operationplan/operationplanform/${record.operationNo}/${record.timeoutStatus}/${record.checkStatus}/list`,
                 // paneKey: record.status, // 传状态
               }}
             >
@@ -648,7 +648,7 @@ function MyoperationPlan(props) {
         style={{ display: 'none' }}
       />
       <Card>
-        
+
         <Row gutter={16}>
           <Form {...formItemLayout}>
             <Col span={8}>
@@ -988,7 +988,7 @@ function MyoperationPlan(props) {
                     {getFieldDecorator('registerTime', {
                     })
                       (<Input allowClear />)
-                      }
+                    }
                   </Form.Item>
                 </Col>
 
@@ -1072,7 +1072,7 @@ function MyoperationPlan(props) {
 
         <div style={{ display: 'flex', flexDirection: 'row' }} >
           <Button type="primary" style={{ marginRight: 8 }}>
-            <Link to='/ITSM/operationplan/operationplanfillin'>填报</Link>
+            <Link to='/ITSM/operationplan/operationplanfillin/'>填报</Link>
           </Button>
 
           <Button type="primary" style={{ marginRight: 8 }}>

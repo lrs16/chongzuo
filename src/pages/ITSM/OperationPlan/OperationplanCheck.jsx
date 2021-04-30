@@ -500,7 +500,7 @@ function OperationplanCheck(props) {
           return (
             <Link
             to={{
-              pathname: `/ITSM/operationplan/operationplanform/${record.operationNo}/作业计划审核/${record.checkStatus}/list`,
+              pathname: `/ITSM/operationplan/operationplanform/${record.operationNo}/${record.timeoutStatus}/${record.checkStatus}/list`,
             }}
           >
             {text}

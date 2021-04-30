@@ -479,8 +479,7 @@ function TaskSearch(props) {
           return (
             <Link
               to={{
-                pathname: `/ITSM/operationplan/operationplanform/${record.operationNo}`,
-                // paneKey: record.status, // 传状态
+                pathname: `/ITSM/operationplan/operationplanform/${record.operationNo}/${record.timeoutStatus}/${record.checkStatus}/list`,
               }}
             >
               {text}
