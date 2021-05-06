@@ -4,7 +4,9 @@ import styles from '../index.less';
 import Downloadfile from '@/components/SysUpload/Downloadfile';
 
 function OperationPlanfillindes(props) {
-  const { info } = props;
+  const { 
+    info,
+   } = props;
   let value;
   if (info) {
     value = info.confirmResult;

@@ -1072,7 +1072,13 @@ function MyoperationPlan(props) {
 
         <div style={{ display: 'flex', flexDirection: 'row' }} >
           <Button type="primary" style={{ marginRight: 8 }}>
-            <Link to='/ITSM/operationplan/operationplanfillin/'>填报</Link>
+            <Link
+              to={{
+                pathname: `/ITSM/operationplan/operationplanfillin/${selectedRows.length?selectedRows[0].operationNo:'no'}`,
+              }}
+            >
+              填报
+        </Link>
           </Button>
 
           <Button type="primary" style={{ marginRight: 8 }}>

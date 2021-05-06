@@ -587,13 +587,13 @@ export default {
                       redirect:'/ITSM/operationplan/myoperationplan'
                     },
                     {
-                      path: '/ITSM/operationplan/myoperationplan',
+                      path: '/ITSM/operationplan/myoperationplan/',
                       name: '我的作业计划',
                       icon: 'control',
                       component: './ITSM/OperationPlan/MyoperationPlan',
                     },
                     {
-                      path: '/ITSM/operationplan/operationplanfillin',
+                      path: '/ITSM/operationplan/operationplanfillin/:id',
                       name: '作业计划填报',
                       icon: 'control',
                       component: './ITSM/OperationPlan/OperationPlanfillintion',
@@ -621,6 +621,18 @@ export default {
                       name: '作业计划查询',
                       icon: 'control',
                       component: './ITSM/OperationPlan/TaskSearch',
+                    },
+                    {
+                      path: '/ITSM/operationplan/operationplansearchdetail/:id/:status',
+                      name: '作业计划查询详情',
+                      icon: 'control',
+                      component: './ITSM/OperationPlan/OperationplansearchDetail',
+                    },
+                    {
+                      path: '/ITSM/operationplan/operationplancheckfillin/:id/:status',
+                      name: '作业计划审核填写',
+                      icon: 'control',
+                      component: './ITSM/OperationPlan/OperationplanCheckfillin',
                     },
                     {
                       path: '/ITSM/operationplan/statistics',

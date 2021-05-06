@@ -76,7 +76,7 @@ function TaskSearch(props) {
       render: (text, record) => (
         <Link
           to={{
-            pathname: `/ITSM/operationplan/operationplanform/${record.operationNo}/${record.timeoutStatus}/${record.checkStatus}/list`,
+            pathname: `/ITSM/operationplan/operationplansearchdetail/${record.operationNo}/${record.timeoutStatus}`,
           }}
         >
           {text}
@@ -479,7 +479,7 @@ function TaskSearch(props) {
           return (
             <Link
               to={{
-                pathname: `/ITSM/operationplan/operationplanform/${record.operationNo}/${record.timeoutStatus}/${record.checkStatus}/list`,
+                pathname: `/ITSM/operationplan/operationplansearchdetail/${record.operationNo}/${record.timeoutStatus}`,
               }}
             >
               {text}

@@ -161,19 +161,7 @@ function CheckModel(props) {
               <Form.Item label='审核状态' {...formItemdeLayout}>
                 {
                   getFieldDecorator('commandClass', {
-                    rules: [
-                      {
-                        required,
-                        message: '请输入审核状态'
-                      }
-                    ],
                   })(
-                    // <Select
-                    //   getPopupContainer={triggerNode => triggerNode.parentNode}
-                    //   // defaultValue='1'
-                    // >
-                    //     {classData}
-                    // </Select>
                     <Tag color='blue' >待审核</Tag>
                   )
                 }

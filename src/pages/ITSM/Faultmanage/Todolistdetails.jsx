@@ -9,7 +9,6 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import creatHistory from 'history/createHashHistory'; // 返回上一页
 import SelectUser from '@/components/SelectUser'; // 选人组件
 import User from '@/components/SelectUser/User';
-import { compose } from '_redux@4.0.5@redux';
 import styles from './index.less';
 import ModelRollback from './components/ModelRollback'; // 回退组件
 

@@ -20,9 +20,9 @@ let endTime;
 
 const TaskExecute = React.forwardRef((props, ref) => {
   const [fileslist, setFilesList] = useState([]);
-  // useEffect(() => {
-  //   ChangeFiles(fileslist);
-  // }, [fileslist]);
+  useEffect(() => {
+    ChangeFiles(fileslist);
+  }, [fileslist]);
   const attRef = useRef();
   useImperativeHandle(
     ref,
@@ -174,6 +174,21 @@ const TaskExecute = React.forwardRef((props, ref) => {
             }
           </Form.Item>
         </Col>
+
+        
+        <Col span={24}>
+            <Form.Item label="上传附件" {...forminladeLayout}>
+              {getFieldDecorator('main_fileIds', {})
+                (
+                  <div style={{ width: 400 }}>
+                    <SysUpload
+                      fileslist={files}
+                      ChangeFileslist={newvalue => setFilesList(newvalue)}
+                    />
+                  </div>
+                )}
+            </Form.Item>
+          </Col>
 
 
         <Col span={24}>

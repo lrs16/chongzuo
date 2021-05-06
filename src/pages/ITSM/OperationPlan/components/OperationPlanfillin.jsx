@@ -37,22 +37,27 @@ const OperationPlanfillin = React.forwardRef((props, ref) => {
     main,
     type,
     executestatus,
-    getRichtext
+    getRichtext,
   } = props;
-  // console.log('useInfo: ', useInfo);
+  console.log('files: ', files);
 
   // const {
   //   match: { params: { id, executestatus,checkoutstatus } }
   // } = props;
 
   const statusContent = ['计划中', '已延期', '已超时', '已完成']
-  const color = ['blue', 'yellow', 'green', 'green']
+  const color = ['blue', 'yellow', 'green', 'green'];
   const [titlerecords, setTitleRecords] = useState([]);
   const [selectdata, setSelectData] = useState('');
   const [fileslist, setFilesList] = useState([]);
   const [titleautodata, setTitleAutoData] = useState([]);
   const [objautodata, setObjautodata] = useState([]);
   const [editorState, setEditorState] = useState('');
+
+  useEffect(() => {
+    ChangeFiles(fileslist);
+  }, [fileslist]);
+
   const attRef = useRef();
   useImperativeHandle(
     ref,
@@ -430,7 +435,7 @@ const OperationPlanfillin = React.forwardRef((props, ref) => {
                   (
                     <DatePicker
                       showTime
-                      disabled={type === 'list'}
+                      // disabled={type === 'list'}
                       onChange={endtimeonChange}
                       format="YYYY-MM-DD HH:mm:ss"
                       disabledDate={enddisabledDate}
@@ -441,14 +446,14 @@ const OperationPlanfillin = React.forwardRef((props, ref) => {
           )}
 
 
-          <Col span={8}>
-            <Form.Item label="上传附件">
+          <Col span={24}>
+            <Form.Item label="上传附件" {...forminladeLayout}>
               {getFieldDecorator('main_fileIds', {})
                 (
                   <div style={{ width: 400 }}>
                     <SysUpload
-                      fileslist={[]}
-                    // ChangeFileslist={newvalue => setFilesList(newvalue)}
+                      fileslist={files}
+                      ChangeFileslist={newvalue => setFilesList(newvalue)}
                     />
                   </div>
                 )}

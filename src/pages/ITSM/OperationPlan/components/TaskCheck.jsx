@@ -86,7 +86,7 @@ const TaskCheck = React.forwardRef((props, ref) => {
               initialValue: check.checkResult
             })(
               <Radio.Group
-                disabled={type === 'list'}
+                // disabled={type === 'list'}
                 onChange={onChange}
               >
                 <Radio value='1'>通过</Radio>
@@ -109,7 +109,7 @@ const TaskCheck = React.forwardRef((props, ref) => {
               initialValue: checkTime,
             })(
               <DatePicker
-                disabled={type === 'list'}
+                // disabled={type === 'list'}
                 showTime
                 format="YYYY-MM-DD HH:mm:ss"
               />)}
@@ -148,7 +148,7 @@ const TaskCheck = React.forwardRef((props, ref) => {
                     initialValue: check.checkOpinion
                   })(
                     <TextArea
-                      disabled={type === 'list'}
+                      // disabled={type === 'list'}
                     />
                   )
                 }
@@ -166,7 +166,7 @@ const TaskCheck = React.forwardRef((props, ref) => {
                     initialValue:check.checkOpinion
                   })(
                     <TextArea
-                      disabled={type === 'list'}
+                      // disabled={type === 'list'}
                     />
                   )
                 }

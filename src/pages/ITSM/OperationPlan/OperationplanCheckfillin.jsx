@@ -45,7 +45,7 @@ const forminladeLayout = {
 let headTitle;
 
 export const FatherContext = createContext();
-function Work(props) {
+function OperationplanCheckfillin(props) {
   // const {
   //   params: { id },
   // } = props.match; // 获取taskId
@@ -53,7 +53,7 @@ function Work(props) {
   const {
     form: {validateFields},
     location: { paneKey },
-    match: { params: { id, executestatus, checkoutstatus, type } },
+    match: { params: { id, status, checkoutstatus, type } },
     userinfo,
     dispatch
   } = props;
@@ -63,18 +63,6 @@ function Work(props) {
   const [selectdata, setSelectData] = useState('');
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
   const SaveRef = useRef();
-
-  if (executestatus === '未完成' && checkoutstatus === '已审核') {
-    headTitle = '作业计划执行'
-  }
-
-  if (executestatus === '已延期') {
-    headTitle = '作业计划延期'
-  }
-
-  if (executestatus !== '已延期' && executestatus !== '未完成' && checkoutstatus !== '已审核') {
-    headTitle = executestatus
-  }
 
   const queryDept = () => {
     dispatch({
@@ -155,59 +143,44 @@ function Work(props) {
 
   
   const handleSave = () => {
-    if(executestatus === '未完成' && checkoutstatus === '已审核') {
-      console.log(1)
-      executeSave();
-    }
-
-    if (executestatus === '已延期') {
-      console.log(2)
-      delaySave();
-    }
-
-    if ((checkoutstatus === '待审核' || checkoutstatus === '已审核') && executestatus === '作业计划审核') {
-      console.log(3)
-      checkSave();
-    }
+    
   }
 
-  const handleClose = () => {
-    router.push({
-      pathname: `/ITSM/operationplan/myoperationplan`,
-    });
-  }
 
-  console.log(executestatus,'executestatus')
-  console.log(checkoutstatus,'executestatus')
 
   
 
 
   return (
     <PageHeaderWrapper
-      title={headTitle}
+      title={status}
       extra={
         <>
 
           <Button type='primary' onClick={handleSave}>保存</Button>
+ 
+          <Button type='primary'>
+            <Link
+              to='/ITSM/operationplan/operationplansearch'>
+              回退
+            </Link>
+          </Button>
 
-          {/* <Button type='primary'>送审</Button> */}
+          <Button type='primary'>
+            <Link
+              to='/ITSM/operationplan/operationplansearch'>
+              审核
+            </Link>
+          </Button>
+                   
+          <Button type='primary'>
+            <Link
+              to='/ITSM/operationplan/operationplansearch'>
+              返回
+            </Link>
+          </Button>
 
-          {
-            executestatus === '未完成' && checkoutstatus === '已审核' && (
-              <Button type='primary'>确定执行</Button>
-            )
-          }
-
-          {
-            executestatus === '已延期' && checkoutstatus === '已审核' && (
-              <Button type='primary'>确定延期</Button>
-            )
-          }
-
-          <Button onClick={handleClose}>关闭</Button>
-
-        
+          
         </>
       }
     >
@@ -223,7 +196,7 @@ function Work(props) {
         bordered={false}
       >
         {
-          (checkoutstatus === '待审核' || checkoutstatus === '已审核') && executestatus === '作业计划审核' && (
+          status === '待审核' && (
             <Panel
               header='作业计划审核'
               key='1'
@@ -233,9 +206,9 @@ function Work(props) {
                 <TaskCheck
                   formItemLayout={formItemLayout}
                   forminladeLayout={forminladeLayout}
-                  type={type}
+                  type=''
                   userinfo={userinfo}
-                  executestatus={executestatus}
+                  // executestatus={executestatus}
                   checkoutstatus={checkoutstatus}
                   ref={SaveRef}
                 />
@@ -244,51 +217,6 @@ function Work(props) {
           )
         }
 
-
-        {executestatus === '未完成' && checkoutstatus === '已审核' && (
-          <Panel
-            header='作业计划执行'
-            key='1'
-            style={{ backgroundColor: 'white' }}
-            bordered
-          >
-            <TaskExecute
-              formItemLayout={formItemLayout}
-              forminladeLayout={forminladeLayout}
-              type=''
-              userinfo={userinfo}
-              taskResult={taskResult}
-              ref={SaveRef}
-              files={files.arr}
-              ChangeFiles={newvalue => {
-                setFiles(newvalue);
-              }}
-            />
-          </Panel>
-        )}
-
-        {
-          (executestatus === '已延期' || executestatus === '计划中') && (
-            <Panel
-              header={executestatus === '已延期'?'作业计划延期':'作业计划填报'}
-              key='1'
-              style={{ backgroundColor: 'white' }}
-            >
-              <OperationPlanfillin
-                formItemLayout={formItemLayout}
-                forminladeLayout={forminladeLayout}
-                executestatus={executestatus}
-                type={executestatus === '已延期'?type:''}
-                userinfo={userinfo}
-                ref={SaveRef}
-                files={files.arr}
-                ChangeFiles={newvalue => {
-                  setFiles(newvalue);
-                }}
-              />
-            </Panel>
-          )
-        }
       </Collapse>
 
       <div className={styles.collapse}>
@@ -331,5 +259,5 @@ export default Form.create({})(
   connect(({ processmodel, itsmuser, loading }) => ({
     userinfo: itsmuser.userinfo,
     loading: loading.models.processmodel,
-  }))(Work)
+  }))(OperationplanCheckfillin)
 )
