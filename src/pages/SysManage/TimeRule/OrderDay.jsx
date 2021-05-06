@@ -201,11 +201,11 @@ function OrderDay(props) {
 
   const columns = [
     {
-      title: '生效时间',
+      title: '生效日期',
       dataIndex: 'actionDate',
       key: 'actionDate',
       render: text => {
-        return <>{text}</>;
+        return <>{moment(text).format('YYYY-MM-DD')}</>;
       },
     },
     {

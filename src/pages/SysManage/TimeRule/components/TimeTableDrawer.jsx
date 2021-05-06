@@ -77,12 +77,12 @@ function TimeTableDrawer(props) {
         <Form.Item label="生效日期">
           {getFieldDecorator('actionDate', {
             rules: [{ required, message: '请选择生效日期' }],
-            initialValue: moment(actionDate, 'YYYY-MM-DD HH:mm:ss'),
+            initialValue: moment(actionDate, 'YYYY-MM-DD'),
           })(
             <DatePicker
               showTime
               getCalendarContainer={triggerNode => triggerNode.parentNode}
-              format='YYYY-MM-DD HH:mm:ss'
+              format='YYYY-MM-DD'
             />,
           )}
         </Form.Item>
