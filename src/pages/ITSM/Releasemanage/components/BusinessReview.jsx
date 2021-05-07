@@ -1,6 +1,6 @@
 import React, { useRef, useImperativeHandle, forwardRef } from 'react';
 import moment from 'moment';
-import { Row, Col, Form, Input, DatePicker, Select, Radio } from 'antd';
+import { Row, Col, Form, Input, Button, Select, Radio } from 'antd';
 import DocumentAtt from './DocumentAtt';
 import EditeTable from './EditeTable';
 
@@ -11,23 +11,23 @@ const RadioGroup = Radio.Group;
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
-    sm: { span: 9 },
+    sm: { span: 6 },
   },
   wrapperCol: {
     xs: { span: 24 },
-    sm: { span: 15 },
+    sm: { span: 18 },
   },
 };
 const formuintLayout = {
   labelCol: {
-    sm: { span: 3 },
+    sm: { span: 24 },
   },
   wrapperCol: {
-    sm: { span: 21 },
+    sm: { span: 24 },
   },
 };
 
-function Examine(props, ref) {
+function BusinessReview(props, ref) {
   const { taskName, userinfo, register, selectdata, isEdit } = props;
   const { getFieldDecorator } = props.form;
   const required = true;
@@ -59,52 +59,45 @@ function Examine(props, ref) {
             taskName={taskName}
           />
         </Col>
-        <Col span={8} >
-          <Form.Item label="审核结果">
-            {getFieldDecorator('form1', {
-              rules: [{ required, message: `请选择审核结果` }],
-              initialValue: 1,
-            })(
-              <RadioGroup>
-                <Radio value={1}>通过</Radio>
-                <Radio value={2}>不通过</Radio>
-              </RadioGroup>
-            )}
-          </Form.Item>
+        <Col span={24} style={{ marginTop: 24 }}>
+          <h4>发布结论：</h4>
+          <p style={{ marginBottom: 0 }}>本次升级发布共计发布功能【N】个，通过【N】个，不通过【N】个。发布成功率 【N】%。</p>
+          <p>其中【A公司】共计发布功能【N】个，通过【N】个，不通过【N】个。发布成功率 【N】%，【B公司】共计发布功能【】个，通过【】个，不通过【】个。发布成功率 【100】%</p>
         </Col>
         <Col span={24}>
-          <Form.Item label="审核说明" {...formuintLayout}>
+          <Form.Item label="复核说明" {...formuintLayout} labelAlign='left'>
             {getFieldDecorator('form9', {
-              rules: [{ required, message: `请填写审核说明` }],
+              rules: [{ required, message: `请填写复核说明` }],
               initialValue: '',
             })(<TextArea autoSize={{ minRows: 4 }} disabled={!isEdit} />)}
           </Form.Item>
         </Col>
-        <Col span={8}>
-          <Form.Item label="审核时间" >
-            {getFieldDecorator('form5', {
-              rules: [{ required, message: `请选择审核时间` }],
-              initialValue: moment(),
-            })(
-              <DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" disabled={!isEdit} />
-            )}
-          </Form.Item>
-        </Col>
-        <Col span={24} style={{ marginBottom: 24 }}>
+        <Col span={24}><Button type='primary'>发起服务绩效考核</Button></Col>
+        <Col span={24} style={{ marginBottom: 24, marginTop: 12 }}>
           <DocumentAtt rowkey={null} unitmap={unitmap} isEdit={isEdit} />
         </Col>
         <Col span={8}>
-          <Form.Item label="审批人" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
+          <Form.Item label="复核人">
             {getFieldDecorator('form11', {
-              rules: [{ required, message: `请选择审批人` }],
+              rules: [{ required, message: `请选择复核人` }],
               initialValue: '',
             })(<Input disabled />)}
           </Form.Item>
         </Col>
         <Col span={8}>
-          <Form.Item label="审批单位" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
+          <Form.Item label="复核时间" >
+            {getFieldDecorator('form5', {
+              rules: [{ required, message: `请选择复核时间` }],
+              initialValue: moment().format("YYYY-MM-DD HH:mm:ss"),
+            })(
+              <Input disabled />
+            )}
+          </Form.Item>
+        </Col>
+        <Col span={8}>
+          <Form.Item label="复核单位">
             {getFieldDecorator('form13', {
-              rules: [{ required, message: `请选择审批单位` }],
+              rules: [{ required, message: `请选择复核单位` }],
               initialValue: '',
             })(<Input disabled />)}
           </Form.Item>
@@ -113,5 +106,5 @@ function Examine(props, ref) {
     </Row>
   );
 }
-const WrappedForm = Form.create({ name: 'form' })(forwardRef(Examine));
+const WrappedForm = Form.create({ name: 'form' })(forwardRef(BusinessReview));
 export default WrappedForm;

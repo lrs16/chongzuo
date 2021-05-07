@@ -59,15 +59,15 @@ function Registrat(props, ref) {
   useEffect(() => {
     if (isEdit && taskName === '发布登记' && moment(register.creationTime).format('DD') > 25) {
       setAlertVisible(true);
-      setAlertMessage({ mes: `${taskName}超时`, des: `${taskName}的登记时间为每月1日至25日之间` });
+      setAlertMessage({ mes: `${taskName}超时,${taskName}的登记时间为每月1日至25日之间`, des: `` });
     };
     if (isEdit && taskName === '平台验证' && moment(register.creationTime).format('DD') > 28) {
       setAlertVisible(true);
-      setAlertMessage({ mes: `${taskName}超时`, des: `${taskName}的登记时间为每月1日至28日之间` });
+      setAlertMessage({ mes: `${taskName}超时,${taskName}的登记时间为每月1日至28日之间`, des: `` });
     }
     if (isEdit && taskName === '业务验证' && (moment(register.creationTime).format('DD') > 29 || moment(register.creationTime).format('DD') < 7)) {
       setAlertVisible(true);
-      setAlertMessage({ mes: `${taskName}超时`, des: `${taskName}的登记时间为每月7日至28日之间` });
+      setAlertMessage({ mes: `${taskName}超时,${taskName}的登记时间为每月7日至28日之间`, des: `` });
     }
   }, [register])
 
@@ -86,7 +86,7 @@ function Registrat(props, ref) {
 
   return (
     <>
-      {alertvisible && (<Alert message={alertmessage.mes} description={alertmessage.des} type='warning' showIcon />)}
+      {alertvisible && (<Alert message={alertmessage.mes} type='warning' showIcon />)}
       <Row gutter={12} style={{ paddingTop: 24, }}>
         <Form ref={formRef} {...formItemLayout}>
           {taskName === '发布登记' && (
@@ -139,16 +139,16 @@ function Registrat(props, ref) {
             <Form.Item label="测试开始时间">
               {getFieldDecorator('form2', {
                 rules: [{ required, message: `请选择出厂测试开始时间` }],
-                initialValue: '',
-              })(<Input disabled={!isEdit} />)}
+                initialValue: moment(),
+              })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" disabled={!isEdit} />)}
             </Form.Item>
           </Col>
           <Col span={8}>
             <Form.Item label="测试结束时间">
               {getFieldDecorator('form3', {
                 rules: [{ required, message: `请选择出厂测试结束时间` }],
-                initialValue: '',
-              })(<Input disabled={!isEdit} />)}
+                initialValue: moment(),
+              })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" disabled={!isEdit} />)}
             </Form.Item>
           </Col>
           <Col span={8}>
@@ -212,7 +212,7 @@ function Registrat(props, ref) {
             <DocumentAtt rowkey={statumap.get(taskName)} unitmap={unitmap} isEdit={isEdit} />
           </Col>
           <Col span={8}>
-            <Form.Item label="登记人" {...forminladeLayout} labelAlign='left'>
+            <Form.Item label="登记人" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
               {getFieldDecorator('form11', {
                 rules: [{ required, message: `请选择登记人` }],
                 initialValue: '',
@@ -220,7 +220,7 @@ function Registrat(props, ref) {
             </Form.Item>
           </Col>
           <Col span={8}>
-            <Form.Item label="登记时间" {...forminladeLayout} labelAlign='left'>
+            <Form.Item label="登记时间" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
               {getFieldDecorator('form12', {
                 rules: [{ required, message: `请选择登记时间` }],
                 initialValue: moment(register.creationTime).format("YYYY-MM-DD HH:mm:ss"),
@@ -228,7 +228,7 @@ function Registrat(props, ref) {
             </Form.Item>
           </Col>
           <Col span={8}>
-            <Form.Item label="登记单位" {...forminladeLayout} labelAlign='left'>
+            <Form.Item label="登记单位" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
               {getFieldDecorator('form13', {
                 rules: [{ required, message: `请选择登记单位` }],
                 initialValue: '',

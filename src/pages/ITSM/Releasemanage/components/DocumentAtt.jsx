@@ -64,6 +64,7 @@ function DocumentAtt(props) {
   const [data, setData] = useState([]);
   const [fileslist, setFilesList] = useState({ arr: [], ischange: false });
   const [keyupload, setKeyUpload] = useState('');
+  const [otherfiles, setOtherFiles] = useState([]);
 
   useEffect(() => {
     if (keyupload !== '') {
@@ -78,14 +79,18 @@ function DocumentAtt(props) {
   }, [fileslist]);
 
   useEffect(() => {
-    dataSource[rowkey - 1].editable = true;
     dataSource[8].editable = true;
+    if (Number(rowkey) !== 0) {
+      dataSource[rowkey - 1].editable = true;
+    };
     if (rowkey === '3') {
       dataSource[3].editable = true;
     };
     setData(dataSource);
     return () => {
-      dataSource[rowkey - 1].editable = false;
+      if (Number(rowkey) !== 0) {
+        dataSource[rowkey - 1].editable = false;
+      };
       dataSource[3].editable = false;
     };
   }, [rowkey])
@@ -171,11 +176,33 @@ function DocumentAtt(props) {
       key: 'type',
       width: 300,
       render: (text, record) => {
-        if (isEdit && record.editable && (record.key === rowkey || record.key === '9' || rowkey === '3')) {
+        if (isEdit && record.editable && (record.key === rowkey || rowkey === '3')) {
           return (
             <div onMouseOver={() => { setKeyUpload(record.key) }} onFocus={() => 0} style={{ width: 300 }}>
-              <SysUpload fileslist={text} ChangeFileslist={newvalue => setFilesList(newvalue)} />
+              <SysUpload fileslist={text} ChangeFileslist={v => setFilesList(v)} />
             </div>
+          )
+        } if (record.key === '9') {
+          return (
+            <>
+              {text !== '' && (
+                <div className={styles.greylink}>
+                  {text.map((obj, index) => {
+                    return (
+                      <div key={index.toString()} style={{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', width: 280, overflow: 'hidden' }}>
+                        <PaperClipOutlined
+                          style={{ marginRight: 8, fontSize: 11, color: 'rgba(0, 0, 0, 0.45)', }}
+                        />
+                        <a onClick={() => handledownload(obj)}>{obj.name}</a>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+              <div onMouseOver={() => { setKeyUpload(record.key) }} onFocus={() => 0} style={{ width: 300, marginTop: 12 }}>
+                <SysUpload fileslist={otherfiles} ChangeFileslist={v => setOtherFiles(v)} />
+              </div>
+            </>
           )
         }
         return (
@@ -184,7 +211,7 @@ function DocumentAtt(props) {
               <div className={styles.greylink}>
                 {text.map((obj, index) => {
                   return (
-                    <div key={index.toString()}>
+                    <div key={index.toString()} style={{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', width: 280, overflow: 'hidden' }}>
                       <PaperClipOutlined
                         style={{ marginRight: 8, fontSize: 11, color: 'rgba(0, 0, 0, 0.45)' }}
                       />

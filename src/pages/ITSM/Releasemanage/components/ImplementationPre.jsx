@@ -254,7 +254,7 @@ function ImplementationPre(props, ref) {
           <DocumentAtt rowkey='5' unitmap={unitmap} isEdit={isEdit} />
         </Col>
         <Col span={8}>
-          <Form.Item label="登记人" {...forminladeLayout} labelAlign='left'>
+          <Form.Item label="登记人" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
             {getFieldDecorator('form11', {
               rules: [{ required, message: `请选择登记人` }],
               initialValue: '',
@@ -262,7 +262,7 @@ function ImplementationPre(props, ref) {
           </Form.Item>
         </Col>
         <Col span={8}>
-          <Form.Item label="登记时间" {...forminladeLayout} labelAlign='left'>
+          <Form.Item label="登记时间" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
             {getFieldDecorator('form12', {
               rules: [{ required, message: `请选择登记时间` }],
               initialValue: moment(register.creationTime).format("YYYY-MM-DD HH:mm:ss"),
@@ -270,7 +270,7 @@ function ImplementationPre(props, ref) {
           </Form.Item>
         </Col>
         <Col span={8}>
-          <Form.Item label="登记单位" {...forminladeLayout} labelAlign='left'>
+          <Form.Item label="登记单位" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
             {getFieldDecorator('form13', {
               rules: [{ required, message: `请选择登记单位` }],
               initialValue: '',

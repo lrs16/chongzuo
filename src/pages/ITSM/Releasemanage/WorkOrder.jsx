@@ -6,6 +6,8 @@ import Registrat from './components/Registrat';
 import ImplementationPre from './components/ImplementationPre';
 import VersionAudit from './components/VersionAudit';
 import Examine from './components/Examine';
+import Implementation from './components/Implementation';
+import BusinessReview from './components/BusinessReview';
 import styles from './index.less';
 
 const { Panel } = Collapse;
@@ -23,6 +25,7 @@ function WorkOrder(props) {
   const ImplementationPreRef = useRef();
   const VersionAuditRef = useRef();
   const ExamineRef = useRef();
+  const ImplementationRef = useRef();
   const handlesubmit = values => {
     dispatch({
       //  type: 'demandregister/start',
@@ -91,23 +94,45 @@ function WorkOrder(props) {
                 isEdit
                 taskName={taskName}
                 mainId={mainId}
-                listType='临时'
               />
             </div>
           </Panel>
         )}
         {(taskName === '科室负责人审批' || taskName === '中心领导审批') && (
           <Panel header={taskName} key="form">
+            <Examine
+              wrappedComponentRef={ExamineRef}
+              selectdata={selectdata}
+              isEdit
+              taskName={taskName}
+              mainId={mainId}
+              listType='临时'
+            />
+          </Panel>
+        )}
+        {(taskName === '发布实施') && (
+          <Panel header={taskName} key="form">
             <div style={{ marginTop: 12 }}>
-              <Examine
-                wrappedComponentRef={ExamineRef}
+              <Implementation
+                wrappedComponentRef={ImplementationRef}
                 selectdata={selectdata}
                 isEdit
                 taskName={taskName}
                 mainId={mainId}
-                listType='临时'
               />
             </div>
+          </Panel>
+        )}
+        {(taskName === '业务复核') && (
+          <Panel header={taskName} key="form">
+            <BusinessReview
+              wrappedComponentRef={ImplementationRef}
+              selectdata={selectdata}
+              isEdit
+              taskName={taskName}
+              mainId={mainId}
+              listType='临时'
+            />
           </Panel>
         )}
         <Panel header='发布登记' key="1">

@@ -21,14 +21,6 @@ const formItemLayout = {
     sm: { span: 15 },
   },
 };
-const forminladeLayout = {
-  labelCol: {
-    sm: { span: 24 },
-  },
-  wrapperCol: {
-    sm: { span: 24 },
-  },
-};
 const formuintLayout = {
   labelCol: {
     sm: { span: 3 },
@@ -44,7 +36,6 @@ function VersionAudit(props, ref) {
   const required = true;
 
   const [alertvisible, setAlertVisible] = useState(false);  // 超时告警是否显示
-  const [alertmessage, setAlertMessage] = useState('');
 
   const formRef = useRef();
   useImperativeHandle(ref, () => ({
@@ -54,7 +45,6 @@ function VersionAudit(props, ref) {
   useEffect(() => {
     if (isEdit && (moment(register.creationTime).format('DD') > 15 || moment(register.creationTime).format('DD') < 11)) {
       setAlertVisible(true);
-      setAlertMessage(`${taskName}超时`);
     };
   }, [register])
 
@@ -88,8 +78,7 @@ function VersionAudit(props, ref) {
   return (
     <>
       {alertvisible && (<Alert
-        message={alertmessage}
-        description='版本管理员审批时间在每月11日至14日之间'
+        message={`${taskName}超时,${taskName}时间在每月11日至14日之间`}
         type='warning'
         showIcon style={{ marginBottom: 12 }}
       />)}
@@ -187,25 +176,25 @@ function VersionAudit(props, ref) {
             <DocumentAtt rowkey='6' unitmap={unitmap} isEdit={isEdit} />
           </Col>
           <Col span={8}>
-            <Form.Item label="审核人" {...forminladeLayout} labelAlign='left'>
+            <Form.Item label="审批人" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
               {getFieldDecorator('form11', {
-                rules: [{ required }],
+                rules: [{ required, message: `请选择审批人` }],
                 initialValue: '',
               })(<Input disabled />)}
             </Form.Item>
           </Col>
           <Col span={8}>
-            <Form.Item label="审核时间" {...forminladeLayout} labelAlign='left'>
+            <Form.Item label="审批时间" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
               {getFieldDecorator('form12', {
-                rules: [{ required }],
+                rules: [{ required, message: `请选择审批时间` }],
                 initialValue: moment(register.creationTime).format("YYYY-MM-DD HH:mm:ss"),
               })(<Input disabled />)}
             </Form.Item>
           </Col>
           <Col span={8}>
-            <Form.Item label="审核单位" {...forminladeLayout} labelAlign='left'>
+            <Form.Item label="审批单位" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
               {getFieldDecorator('form13', {
-                rules: [{ required }],
+                rules: [{ required, message: `请选择审批单位` }],
                 initialValue: '',
               })(<Input disabled />)}
             </Form.Item>

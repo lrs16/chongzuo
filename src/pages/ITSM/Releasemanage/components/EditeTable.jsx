@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Row, Button, Col, Cascader, Input, Radio, message, Divider, Select, Tabs } from 'antd';
 import styles from '../index.less';
+import AssignmentModal from './AssignmentModal';
+import OrderContent from './OrderContent';
 
 const dataSource = [{
   key: 1,
@@ -29,6 +31,8 @@ function EditeTable(props) {
   const [data, setData] = useState([]);
   const [newbutton, setNewButton] = useState(false);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+  const [visible, setVisible] = useState(false);                    // 分派窗口是否显示
+  const [drawervisible, setDrawerVisible] = useState(false);        // 工单详情窗口是否显示
 
   useEffect(() => {
     setData([...dataSource])
@@ -131,6 +135,9 @@ function EditeTable(props) {
     setNewButton(false);
   };
 
+  const hadleAssignment = () => {
+    setVisible(true)
+  }
 
   const column = [
     {
@@ -148,7 +155,7 @@ function EditeTable(props) {
       dataIndex: 't0',
       key: 't0',
       width: 100,
-      render: (text, record) => {
+      render: (text) => {
         return text
       }
     },
@@ -387,7 +394,7 @@ function EditeTable(props) {
     width: 100,
     align: 'center',
     render: (text) => {
-      return <a>{text}</a>
+      return <a onClick={() => setDrawerVisible(true)}>{text}</a>
     }
   };
 
@@ -409,7 +416,13 @@ function EditeTable(props) {
 
   return (
     <>
-      {(taskName === '版本管理员审批' || taskName === '科室负责人审批' || taskName === '中心领导审批') && (
+      <h4>
+        {(taskName === '发布登记' || taskName === '平台验证' || taskName === '业务验证') && (
+          <span style={{ color: '#f5222d', marginRight: 4, fontWeight: 'normal' }}>*</span>
+        )}
+        {title}
+      </h4>
+      {(taskName === '版本管理员审批' || taskName === '科室负责人审批' || taskName === '中心领导审批' || taskName === '业务复核') && (
         <Tabs type='card'>
           <TabPane tab='博联' key='1' />
           <TabPane tab='南瑞' key='2' />
@@ -417,11 +430,7 @@ function EditeTable(props) {
       )}
       <Row style={{ marginBottom: 8 }} type='flex' align='bottom'>
         <Col span={18}>
-          <h4>
-            {(taskName === '发布登记' || taskName === '平台验证' || taskName === '业务验证') && (
-              <span style={{ color: '#f5222d', marginRight: 4, fontWeight: 'normal' }}>*</span>
-            )}
-            {title}</h4>
+
           <span><b>前台功能统计：</b>
           缺陷修复项<b style={{ color: '#1890ff', padding: '0 3px' }}>0</b>项，
           变更功能项<b style={{ color: '#1890ff', padding: '0 3px' }}>0</b>项，
@@ -443,6 +452,16 @@ function EditeTable(props) {
               <Button type='danger' style={{ marginRight: 8 }} ghost>移除</Button>
             </>
           )}
+          {taskName === '业务复核' && (
+            <Button
+              type='primary'
+              style={{ marginRight: 8 }}
+              onClick={() => hadleAssignment()}
+              disabled={newbutton}
+            >
+              分派
+            </Button>
+          )}
           <Button type='primary' >导出清单</Button>
         </Col>
       </Row>
@@ -456,6 +475,8 @@ function EditeTable(props) {
         rowSelection={rowSelection}
         scroll={{ x: 1500 }}
       />
+      <AssignmentModal visible={visible} handleChange={v => setVisible(v)} />
+      <OrderContent visible={drawervisible} handleChange={v => setDrawerVisible(v)} />
     </>
   );
 }

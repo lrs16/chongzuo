@@ -39,8 +39,6 @@ function Implementationsteps(props) {
   const [newbutton, setNewButton] = useState(false);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
 
-  console.log(data)
-
   // 新增一条记录
   const newMember = (value) => {
     const newData = data.map(item => ({ ...item }));

@@ -39,6 +39,12 @@ function ToDodetails(props) {
       tab: '关联工单',
     },
   ];
+  const editiontabList = [
+    {
+      key: 'workorder',
+      tab: '发布工单',
+    },
+  ];
   const operations = (
     <>
       {taskName === '发布登记' && (
@@ -65,7 +71,7 @@ function ToDodetails(props) {
     <PageHeaderWrapper
       title={taskName}
       extra={operations}
-      tabList={tabList}
+      tabList={taskName === '版本管理员审批' ? editiontabList : tabList}
       tabActiveKey={tabActivekey}
       onTabChange={handleTabChange}
     >
