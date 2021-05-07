@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState,createContext } from 'react';
 import { connect } from 'dva';
 import Link from 'umi/link';
 import {
@@ -47,6 +47,7 @@ let actualStarttime;
 let actualEndtime;
 const statusMap = ['green', 'gold', 'red'];
 const status = ['未超时', '即将超时', '已超时'];
+
 
 function OperationplanCheck(props) {
   const pagetitle = props.route.name;
@@ -330,12 +331,12 @@ function OperationplanCheck(props) {
         ...values,
         time1: values.addTime?.length ? moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
         time2: values.addTime?.length ? moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-        checkTime: values.addTime?moment(values.addTime).format('YYYY-MM-DD HH:mm:ss'):'',
-        operationTime: values.operationTime?moment(values.operationTime).format('YYYY-MM-DD HH:mm:ss'):'',
-        plannedStarTtime: values.plannedStarTtime?moment(values.plannedStarTtime).format('YYYY-MM-DD HH:mm:ss'):'',
-        plannedEndTime: values.plannedEndTime?moment(values.plannedEndTime).format('YYYY-MM-DD HH:mm:ss'):'',
-        startTime: values.startTime?moment(values.startTime).format('YYYY-MM-DD HH:mm:ss'):'',
-        endTime: values.endTime?moment(values.endTime).format('YYYY-MM-DD HH:mm:ss'):'',
+        checkTime: values.addTime ? moment(values.addTime).format('YYYY-MM-DD HH:mm:ss') : '',
+        operationTime: values.operationTime ? moment(values.operationTime).format('YYYY-MM-DD HH:mm:ss') : '',
+        plannedStarTtime: values.plannedStarTtime ? moment(values.plannedStarTtime).format('YYYY-MM-DD HH:mm:ss') : '',
+        plannedEndTime: values.plannedEndTime ? moment(values.plannedEndTime).format('YYYY-MM-DD HH:mm:ss') : '',
+        startTime: values.startTime ? moment(values.startTime).format('YYYY-MM-DD HH:mm:ss') : '',
+        endTime: values.endTime ? moment(values.endTime).format('YYYY-MM-DD HH:mm:ss') : '',
       }
 
       searchdata(searchParams, paginations.current, paginations.pageSize);
@@ -499,12 +500,12 @@ function OperationplanCheck(props) {
         obj.render = (text, record) => {
           return (
             <Link
-            to={{
-              pathname: `/ITSM/operationplan/operationplancheckfillin/${record.operationNo}/${record.checkStatus}`,
-            }}
-          >
-            {text}
-          </Link>
+              to={{
+                pathname: `/ITSM/operationplan/operationplancheckfillin/${record.operationNo}/${record.checkStatus}`,
+              }}
+            >
+              {text}
+            </Link>
           )
         }
         obj.fixed = 'left'
@@ -964,7 +965,7 @@ function OperationplanCheck(props) {
                     {getFieldDecorator('registerTime', {
                     })
                       (<Input allowClear />)
-                      }
+                    }
                   </Form.Item>
                 </Col>
 
@@ -1051,11 +1052,11 @@ function OperationplanCheck(props) {
             onClick={handleClick}
             selectedRows={selectedRows}
           >
-            <Button 
-            type="primary"
-             style={{ marginRight: 8 }}
+            <Button
+              type="primary"
+              style={{ marginRight: 8 }}
             //  onClick={handleClick}
-             >
+            >
               审核
           </Button>
           </CheckModel>
@@ -1089,7 +1090,7 @@ function OperationplanCheck(props) {
                     checked={columns.length === initialColumns.length === true}
                   >
                     列表展示
-          </Checkbox>
+                  </Checkbox>
                   <br />
                 </div>
 

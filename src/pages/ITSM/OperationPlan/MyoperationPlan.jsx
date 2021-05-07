@@ -1085,13 +1085,13 @@ function MyoperationPlan(props) {
             送审
           </Button>
 
-          <Button type="primary" style={{ marginRight: 8 }} onClick={handleExecute}>
+          {/* <Button type="primary" style={{ marginRight: 8 }} onClick={handleExecute}>
             执行
           </Button>
 
           <Button type="primary" style={{ marginRight: 8 }} onClick={handleDelay}>
             延期
-          </Button>
+          </Button> */}
 
           <Button type="primary" style={{ marginRight: 8 }} onClick={handleCopy}>
             复制

@@ -1,6 +1,7 @@
 import React, { useRef, useImperativeHandle, useEffect, useState } from 'react';
 import SysUpload from '@/components/SysUpload'; // 附件下载组件
 import moment from 'moment';
+import router from 'umi/router';
 import {
     Form,
     Row,
@@ -15,7 +16,7 @@ const { TextArea } = Input;
 const RadioGroup = Radio.Group;
 
 const ExamineChild = React.forwardRef((props, ref) => {
-    const { formItemLayout, forminladeLayout, check, curruserinfo, ChangeFiles, ChangeResult } = props;
+    const { location,formItemLayout, forminladeLayout, check, curruserinfo, ChangeFiles, ChangeResult } = props;
     const { getFieldDecorator } = props.form;
     const attRef = useRef();
     const [fileslist, setFilesList] = useState({ arr: [], ischange: false }); // 下载列表
@@ -46,6 +47,7 @@ const ExamineChild = React.forwardRef((props, ref) => {
         setAdopt(e.target.value);
         ChangeResult(e.target.value);
     }
+
 
     return (
         <Row gutter={24} style={{ paddingTop: 24 }}>
@@ -81,7 +83,7 @@ const ExamineChild = React.forwardRef((props, ref) => {
                 <Col span={24}>
                     {adopt === '1' && (
                         <Form.Item label="审核意见" {...forminladeLayout}>
-                            {getFieldDecorator('checkOpinion', {
+                            {getFieldDecorator('checkOpinion1', {
                                 rules: [{ required: false, message: '请输入', }],
                                 initialValue: check.checkOpinion
                             })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
@@ -89,7 +91,7 @@ const ExamineChild = React.forwardRef((props, ref) => {
                     )}
                     {adopt === '0' && (
                         <Form.Item label="审核意见" {...forminladeLayout}>
-                            {getFieldDecorator('checkOpinion', {
+                            {getFieldDecorator('checkOpinion2', {
                                 rules: [{ required: true, message: '请输入', }],
                                 initialValue: check.checkOpinion
                             })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}

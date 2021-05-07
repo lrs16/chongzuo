@@ -98,7 +98,7 @@ const ConfirmChild = React.forwardRef((props, ref) => {
           <Col span={24}>
             {adopt === '1' && (
               <Form.Item label="确认说明" {...forminladeLayout}>
-                {getFieldDecorator('confirmContent', {
+                {getFieldDecorator('confirmContent1', {
                   rules: [{ required: false, message: '请输入', }],
                   initialValue: confirm ? confirm.confirmContent : ''
                 })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
@@ -106,7 +106,7 @@ const ConfirmChild = React.forwardRef((props, ref) => {
             )}
             {adopt === '0' && (
               <Form.Item label="确认说明" {...forminladeLayout}>
-                {getFieldDecorator('confirmContent', {
+                {getFieldDecorator('confirmContent2', {
                   rules: [{ required: true, message: '请输入', }],
                   initialValue: confirm ? confirm.confirmContent : ''
                 })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}

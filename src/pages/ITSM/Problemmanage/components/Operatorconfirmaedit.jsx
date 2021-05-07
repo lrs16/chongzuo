@@ -122,7 +122,7 @@ const Operatorconfirmaedit = React.forwardRef((props, ref) => {
             <Col span={23}>
               <Form.Item label='确认意见' {...forminladeLayout}>
                 {
-                  getFieldDecorator('confirmContent', {
+                  getFieldDecorator('confirmContent1', {
                     initialValue: confirm.confirmContent,
                   })(
                     <AutoComplete
@@ -143,7 +143,7 @@ const Operatorconfirmaedit = React.forwardRef((props, ref) => {
             <Col span={23}>
               <Form.Item label='确认意见' {...forminladeLayout}>
                 {
-                  getFieldDecorator('confirmContent', {
+                  getFieldDecorator('confirmContent2', {
                     rules: [
                       {
                         required,

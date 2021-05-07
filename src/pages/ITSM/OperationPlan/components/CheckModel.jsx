@@ -19,6 +19,7 @@ let showAlarmDialog = false;
 let showTerminalDialog = false;
 let title = '';
 let sign = false;
+const { TextArea } = Input;
 // 克隆子元素按钮，并添加事件
 const withClick = (element, handleClick = () => { }) => {
   return <element.type {...element.props} onClick={handleClick} />;
@@ -174,7 +175,7 @@ function CheckModel(props) {
                 <Form.Item label='审核说明' {...formItemdeLayout}>
                   {
                     getFieldDecorator('commandName', {
-                    })(<Input />)
+                    })(<TextArea rows={4} />)
                   }
                 </Form.Item>
                 </Col>
@@ -192,7 +193,7 @@ function CheckModel(props) {
                           message: '请输入审核说明'
                         }
                       ],
-                    })(<Input />)
+                    })(<TextArea rows={4}/>)
                   }
                 </Form.Item>
                 </Col>

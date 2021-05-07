@@ -114,7 +114,6 @@ function Workorder(props) {
     params: { id },
   } = props.match;
 
-
   const { problemFlowLogs, problemFlowNodeRows } = todoDetail;
 
 
@@ -237,7 +236,6 @@ function Workorder(props) {
   }
 
   const saveApi = (saveData, params2) => {
-    console.log('params2: ', params2);
     return dispatch({
       type: 'problemmanage/tobeSave',
       payload: { ...saveData },
@@ -259,7 +257,7 @@ function Workorder(props) {
           gotoCirapi();
         }
 
-        if( (params2 !== '系统开发商处理' && flowtype === '0' && !files.ischange)) {
+        if( (  params2 && params2 !== '系统开发商处理' && flowtype === '0' && !files.ischange)) {
           gotoCirapi();
         }
 
@@ -323,7 +321,10 @@ function Workorder(props) {
           editState: todoDetail.editState === 'edit' ? 'edit' : 'add',
           checkId: todoDetail.editState === 'edit' ? todoDetail.check.id : todoDetail.editGuid,
           checkType: flowNodeName === '系统运维商审核' ? '1' : '2',
-          checkAttachments: files.ischange ? JSON.stringify(files.arr) : null
+          checkAttachments: files.ischange ? JSON.stringify(files.arr) : null,
+          checkOpinion: values.checkOpinion1 || values.checkOpinion2,
+          checkOpinion1:'',
+          checkOpinion2:''
         }
         saveApi(saveData, params2, uploadSive);
       }
@@ -360,6 +361,8 @@ function Workorder(props) {
     });
   };
 
+
+  //  确认保存
   const saveConfirm = (params2, uploadSive) => {
     ProblemconfirmRef.current.validateFields((err, values) => {
       if (params2 ? !err : true) {
@@ -369,7 +372,10 @@ function Workorder(props) {
           confirmTime: values.confirmTime.format('YYYY-MM-DD HH:mm:ss'),
           editState: todoDetail.editState === 'edit' ? 'edit' : 'add',
           confirmId: todoDetail.editState === 'edit' ? todoDetail.confirm.id : todoDetail.editGuid,
-          confirmAttachments: files.ischange ? JSON.stringify(files.arr) : null
+          confirmAttachments: files.ischange ? JSON.stringify(files.arr) : null,
+          confirmContent:values.confirmContent1 || values.confirmContent2,
+          confirmContent1:'',
+          confirmContent2:''
         }
         switch (todoDetail.flowNodeName) {
           case '系统运维商确认':
@@ -648,7 +654,6 @@ function Workorder(props) {
     files.ischange = false;
   }
 
-
   return (
     <PageHeaderWrapper
       title={pagetitle}
@@ -902,6 +907,7 @@ function Workorder(props) {
                           ChangeFiles={newvalue => {
                             setFiles(newvalue);
                           }}
+                          // location={location}
                         />
                       </FatherContext.Provider>
                     </Panel>

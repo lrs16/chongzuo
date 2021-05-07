@@ -96,7 +96,7 @@ const ExamineSecondChild = React.forwardRef((props, ref) => {
         <Col span={23}>
           {adopt === '1' && ( // 1 通过
             <Form.Item label="审核意见" {...forminladeLayout}>
-              {getFieldDecorator('checkOpinion', {
+              {getFieldDecorator('checkOpinion1', {
                 rules: [{ required: false, message: '请输入', }],
                 initialValue: check ? check.checkOpinion : ''
               })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
@@ -104,7 +104,7 @@ const ExamineSecondChild = React.forwardRef((props, ref) => {
           )}
           {adopt === '0' && ( // 0 不通过
             <Form.Item label="审核意见" {...forminladeLayout}>
-              {getFieldDecorator('checkOpinion', {
+              {getFieldDecorator('checkOpinion2', {
                 rules: [{ required: true, message: '请输入', }],
                 initialValue: check ? check.checkOpinion : ''
               })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}

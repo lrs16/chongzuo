@@ -106,7 +106,7 @@ const Automaticconfirmedit = React.forwardRef((props, ref) => {
             <Col span={23}>
               <Form.Item label='审核意见' {...forminladeLayout}>
                 {
-                  getFieldDecorator('checkOpinion', {
+                  getFieldDecorator('checkOpinion1', {
                     initialValue: check ? check.checkOpinion : ''
                   })(
                     <TextArea />
@@ -122,7 +122,7 @@ const Automaticconfirmedit = React.forwardRef((props, ref) => {
             <Col span={23}>
               <Form.Item label='审核意见' {...forminladeLayout}>
                 {
-                  getFieldDecorator('checkOpinion', {
+                  getFieldDecorator('checkOpinion2', {
                     rules: [
                       {
                         required,

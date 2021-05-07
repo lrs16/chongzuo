@@ -8,6 +8,7 @@ import {
   Radio,
 } from 'antd';
 import moment from 'moment';
+import router from 'umi/router';
 import { connect } from 'dva';
 import { FatherContext } from '../Workorder';
 import SysUpload from '@/components/SysUpload';
@@ -15,7 +16,13 @@ import SysUpload from '@/components/SysUpload';
 const { TextArea } = Input;
 
 const Systemoperatoredit = React.forwardRef((props, ref) => {
-  const { formItemLayout, forminladeLayout, files, ChangeFiles, flowNodeName, allInfo } = props;
+  const {
+    formItemLayout,
+    forminladeLayout,
+    files, ChangeFiles,
+    flowNodeName,
+    allInfo,
+    location } = props;
   let secondFiles = [];
   if (flowNodeName === '自动化科审核') {
     if (allInfo.editState !== undefined && (allInfo.editState === 'add')) {
@@ -47,7 +54,13 @@ const Systemoperatoredit = React.forwardRef((props, ref) => {
     defaultRadio
   } = props;
 
-  const onChange = (e) => {
+  useEffect(() => {
+    if (check) {
+      setFlowtype(check.checkResult);
+    }
+  }, [check]);
+
+  const onChange = e => {
     setFlowtype(e.target.value);
   }
 
@@ -93,28 +106,29 @@ const Systemoperatoredit = React.forwardRef((props, ref) => {
           </Form.Item>
         </Col>
 
-        {
-          flowtype === '1' && (
-            <Col span={23}>
-              <Form.Item label='审核意见' {...forminladeLayout}>
-                {
-                  getFieldDecorator('checkOpinion', {
-                    initialValue: check.checkOpinion
-                  })(
-                    <TextArea />
-                  )
-                }
-              </Form.Item>
-            </Col>
-          )
-        }
 
-        {
-          flowtype === '0' && (
-            <Col span={23}>
+        <Col span={23}>
+          {
+            flowtype === '1' && (
+              <Col span={23}>
+                <Form.Item label='审核意见' {...forminladeLayout}>
+                  {
+                    getFieldDecorator('checkOpinion1', {
+                      initialValue: check.checkOpinion
+                    })(
+                      <TextArea />
+                    )
+                  }
+                </Form.Item>
+              </Col>
+            )
+          }
+
+          {
+            flowtype === '0' && (
               <Form.Item label='审核意见' {...forminladeLayout}>
                 {
-                  getFieldDecorator('checkOpinion', {
+                  getFieldDecorator('checkOpinion2', {
                     rules: [
                       {
                         required,
@@ -127,9 +141,11 @@ const Systemoperatoredit = React.forwardRef((props, ref) => {
                   )
                 }
               </Form.Item>
-            </Col>
-          )
-        }
+            )
+          }
+        </Col>
+
+
 
         {
           flowNodeName === '系统运维商审核' && (
@@ -139,25 +155,25 @@ const Systemoperatoredit = React.forwardRef((props, ref) => {
                 {...forminladeLayout}
               >
                 {
-                  getFieldDecorator('checkAttachments',{
+                  getFieldDecorator('checkAttachments', {
                     rules: [
                       {
                         required,
-                        message:'请上传附件'
+                        message: '请上传附件'
                       }
                     ],
-                    initialValue:(check && check.checkAttachments !== '[]') ? check.checkAttachments :''
-                  })( <div style={{ width: 400 }}>
+                    initialValue: (check && check.checkAttachments !== '[]') ? check.checkAttachments : ''
+                  })(<div style={{ width: 400 }}>
                     <SysUpload fileslist={files} ChangeFileslist={newvalue => setFilesList(newvalue)} />
                   </div>)
                 }
-               
+
               </Form.Item>
             </Col>
           )
         }
 
-{
+        {
           flowNodeName === '自动化科审核' && (allInfo.editState === 'edit') && (
             <Col span={24}>
               <Form.Item
@@ -172,7 +188,7 @@ const Systemoperatoredit = React.forwardRef((props, ref) => {
           )
         }
 
-{
+        {
           allInfo.editState !== undefined && (allInfo.editState === 'add') && flowNodeName === '自动化科审核' && (
             <Col span={24}>
               <Form.Item
@@ -221,7 +237,7 @@ Systemoperatoredit.defaultProps = {
     checkOpinion: '',
     checkTime: moment().format(),
     checkResult: '1',
-    checkAttachments:''
+    checkAttachments: ''
   },
   useInfo: {
     userName: '',

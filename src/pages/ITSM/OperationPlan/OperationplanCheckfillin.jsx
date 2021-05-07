@@ -1,4 +1,4 @@
-import React, { useEffect, useState, createContext,useRef } from 'react';
+import React, { useEffect, useState, createContext, useRef } from 'react';
 import { connect } from 'dva';
 import {
   Card,
@@ -51,7 +51,7 @@ function OperationplanCheckfillin(props) {
   // } = props.match; // 获取taskId
 
   const {
-    form: {validateFields},
+    form: { validateFields },
     location: { paneKey },
     match: { params: { id, status, checkoutstatus, type } },
     userinfo,
@@ -84,21 +84,21 @@ function OperationplanCheckfillin(props) {
   }, [])
 
   const handlePaste = () => {
-  
+
   }
 
   const saveApi = (params) => {
-    return dispatch ({
+    return dispatch({
       type: 'processmodel/savesaveForm',
       payload: params
     })
 
   }
 
-  
+
   const executeSave = () => {
-    SaveRef.current.validateFields((err,value) => {
-      if(true) {
+    SaveRef.current.validateFields((err, value) => {
+      if (true) {
         const result = {
           ...value,
           start_time: value.start_time.format('YYYY-MM-DD HH:mm:ss'),
@@ -107,12 +107,12 @@ function OperationplanCheckfillin(props) {
         }
         saveApi(result)
       }
-   
+
     })
   }
 
   const delaySave = () => {
-    SaveRef.current.validateFields((err,value) => {
+    SaveRef.current.validateFields((err, value) => {
       const result = {
         ...value,
         main_addTime: value.main_addTime ? value.main_addTime.format('YYYY-MM-DD HH:mm:ss') : '',
@@ -124,31 +124,31 @@ function OperationplanCheckfillin(props) {
   }
 
   const checkSave = () => {
-    SaveRef.current.validateFields((err,value) => {
+    SaveRef.current.validateFields((err, value) => {
       const result = {
         ...value,
         check_time: value.check_time.format('YYYY-MM-DD HH:mm:ss'),
       }
-      saveApi(result) 
+      saveApi(result)
     })
   }
 
-    // 上传附件触发保存
-    useEffect(() => {
-      if (files.ischange) {
-        // handlesubmit(0);
-        // 保存接口
-      }
-    }, [files]);
+  // 上传附件触发保存
+  useEffect(() => {
+    if (files.ischange) {
+      // handlesubmit(0);
+      // 保存接口
+    }
+  }, [files]);
 
-  
+
   const handleSave = () => {
-    
+
   }
 
 
 
-  
+
 
 
   return (
@@ -156,31 +156,40 @@ function OperationplanCheckfillin(props) {
       title={status}
       extra={
         <>
-
           <Button type='primary' onClick={handleSave}>保存</Button>
- 
-          <Button type='primary'>
-            <Link
-              to='/ITSM/operationplan/operationplansearch'>
-              回退
-            </Link>
-          </Button>
 
-          <Button type='primary'>
+
+          { status === '待审核' && (
+            <>
+
+              <Button type='primary'>
+                <Link
+                  to='/ITSM/operationplan/operationplansearch'>
+                  回退
+                </Link>
+              </Button>
+
+
+              <Button type='primary'>
+                <Link
+                  to='/ITSM/operationplan/operationplansearch'>
+                  审核
+                </Link>
+              </Button>
+            </>
+          )}
+
+
+
+
+          <Button>
             <Link
-              to='/ITSM/operationplan/operationplansearch'>
-              审核
-            </Link>
-          </Button>
-                   
-          <Button type='primary'>
-            <Link
-              to='/ITSM/operationplan/operationplansearch'>
+              to='/ITSM/operationplan/operationplancheck'>
               返回
             </Link>
           </Button>
 
-          
+
         </>
       }
     >
@@ -196,7 +205,7 @@ function OperationplanCheckfillin(props) {
         bordered={false}
       >
         {
-          status === '待审核' && (
+          (status === '待审核' || status === '已审核') && (
             <Panel
               header='作业计划审核'
               key='1'
@@ -234,13 +243,13 @@ function OperationplanCheckfillin(props) {
           </Panel>
 
           <Panel
-          header='作业计划审核'
+            header='作业计划审核'
           >
             <TaskCheckdes />
           </Panel>
 
           <Panel
-             header='作业计划执行'
+            header='作业计划执行'
           >
             <TaskExecutedes />
           </Panel>

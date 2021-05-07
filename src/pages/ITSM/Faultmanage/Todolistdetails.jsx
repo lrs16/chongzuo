@@ -104,6 +104,7 @@ function Todolistdetails(props) {
   const {
     // location: { paneKey }, // 获取传入数据 // paneKey故障登记传过来的当前状态以及待办页传过来的状态（故障登记）
     loading,
+    location,
     tododetailslist, // 待办详情数据--编辑
     tododetailslist: {
       troubleFlowLogs,
@@ -123,7 +124,6 @@ function Todolistdetails(props) {
     curruserinfo: { userId }, // 当前用户登录id
   } = props;
 
-  console.log(tododetailslist)
 
   const {
     params: { id },
@@ -318,6 +318,10 @@ function Todolistdetails(props) {
     // 审核类型：1-系统运维商审核；2-自动化科业务负责人审核
     ExamineRef.current.validateFields((err, values) => {
       const formValues = values;
+      formValues.checkOpinion = values.checkOpinion1 || values.checkOpinion2;
+      formValues.checkOpinion1 = '';
+      formValues.checkOpinion2 = '';
+
       if (formValues.checkTime) {
         formValues.checkTime = values.checkTime.format('YYYY-MM-DD HH:mm:ss');
       } else {
@@ -668,6 +672,9 @@ function Todolistdetails(props) {
     ConfirmRef.current.validateFields((err, values) => {
       if (!err) {
         const formValues = values;
+        formValues.confirmContent = values.confirmContent1 || values.confirmContent2;
+        formValues.confirmContent1 = '';
+        formValues.confirmContent2 = '';
         formValues.confirmTime = values.confirmTime.format('YYYY-MM-DD HH:mm:ss');
         formValues.taskId = id;
         formValues.editState = tododetailslist.editState;
@@ -930,6 +937,7 @@ function Todolistdetails(props) {
                         ChangeResult={newvalue => {
                           setResult(newvalue);
                         }}
+                        location={location}
                       />
                     </Panel>
                   )}
