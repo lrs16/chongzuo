@@ -504,6 +504,18 @@ export default {
                       icon: 'cloud-server',
                       component: './ITSM/Releasemanage/ToDodetails',
                     },
+                    {
+                      path: '/ITSM/releasemanage/verificationtodo',
+                      name: '业务验证待办',
+                      icon: 'control',
+                      component: './ITSM/Releasemanage/VerificationTodo',
+                    },
+                    {
+                      path: '/ITSM/releasemanage/checktodo',
+                      name: '业务复核待办',
+                      icon: 'control',
+                      component: './ITSM/Releasemanage/Checktodo',
+                    },
                   ],
                 },
                 {
@@ -513,57 +525,57 @@ export default {
                   component: './ITSM/OnSitemanage',
                 },
                 {
-                  path:'/ITSM/operationreport',
-                  name:'运维周/月报',
-                  icon:'control',
-                  routes:[
+                  path: '/ITSM/operationreport',
+                  name: '运维周/月报',
+                  icon: 'control',
+                  routes: [
                     {
-                      path:'/ITSM/operationreport',
-                      redirect:'/ITSM/operationreport/weeklyreport'
+                      path: '/ITSM/operationreport',
+                      redirect: '/ITSM/operationreport/weeklyreport'
                     },
                     {
-                      path:'/ITSM/operationreport/weeklyreport',
-                      name:'运维周报',
-                      icon:'cloud-server',
+                      path: '/ITSM/operationreport/weeklyreport',
+                      name: '运维周报',
+                      icon: 'cloud-server',
                       // component:'./ITSM/Operationreport/WeeklyReport/OperationmyweeklyReport',
-                      routes:[
+                      routes: [
                         {
-                          path:'/ITSM/operationreport/weeklyreport/myweeklyreport',
-                          name:'我的周报',
-                          icon:'fork',
-                          component:'./ITSM/Operationreport/WeeklyReport/OperationmyweeklyReport'
+                          path: '/ITSM/operationreport/weeklyreport/myweeklyreport',
+                          name: '我的周报',
+                          icon: 'fork',
+                          component: './ITSM/Operationreport/WeeklyReport/OperationmyweeklyReport'
                         },
                         {
-                          path:'/ITSM/operationreport/weeklyreport/softreport/:id',
-                          name:'软件运维周报',
-                          icon:'fork',
-                          component:'./ITSM/Operationreport/WeeklyReport/SoftReport'
+                          path: '/ITSM/operationreport/weeklyreport/softreport/:id',
+                          name: '软件运维周报',
+                          icon: 'fork',
+                          component: './ITSM/Operationreport/WeeklyReport/SoftReport'
                         },
                         {
-                          path:'/ITSM/operationreport/weeklyreport/computerroomreport',
-                          name:'机房运维周报',
-                          icon:'fork',
-                          component:'./ITSM/Operationreport/WeeklyReport/ComputerroomReport'
+                          path: '/ITSM/operationreport/weeklyreport/computerroomreport',
+                          name: '机房运维周报',
+                          icon: 'fork',
+                          component: './ITSM/Operationreport/WeeklyReport/ComputerroomReport'
                         },
                         {
-                          path:'/ITSM/operationreport/weeklyreport/databasereport',
-                          name:'数据库运维周报',
-                          icon:'fork',
-                          component:'./ITSM/Operationreport/WeeklyReport/DatabaseReport'
+                          path: '/ITSM/operationreport/weeklyreport/databasereport',
+                          name: '数据库运维周报',
+                          icon: 'fork',
+                          component: './ITSM/Operationreport/WeeklyReport/DatabaseReport'
                         },
                         {
-                          path:'/ITSM/operationreport/weeklyreport/otherreport',
-                          name:'其他运维周报',
-                          icon:'fork',
-                          component:'./ITSM/Operationreport/WeeklyReport/OtherReport'
+                          path: '/ITSM/operationreport/weeklyreport/otherreport',
+                          name: '其他运维周报',
+                          icon: 'fork',
+                          component: './ITSM/Operationreport/WeeklyReport/OtherReport'
                         }
                       ]
                     },
                     {
-                      path:'/ITSM/operationreport/monthlyreport',
-                      name:'运维月报',
-                      icon:'cloud-server',
-                      component:'./ITSM/Operationreport/MonthlyReport/OperationmymonthlyReport',
+                      path: '/ITSM/operationreport/monthlyreport',
+                      name: '运维月报',
+                      icon: 'cloud-server',
+                      component: './ITSM/Operationreport/MonthlyReport/OperationmymonthlyReport',
                       // routes:[
                       //   // {
                       //   //   path:'/ITSM/operationreport/myweeklyreport',
@@ -577,14 +589,14 @@ export default {
                   ]
                 },
                 {
-                  path:'/ITSM/operationplan',
-                  name:'作业计划',
-                  icon:'control',
+                  path: '/ITSM/operationplan',
+                  name: '作业计划',
+                  icon: 'control',
 
-                  routes:[
+                  routes: [
                     {
-                      path:'/ITSM/operationplan',
-                      redirect:'/ITSM/operationplan/myoperationplan'
+                      path: '/ITSM/operationplan',
+                      redirect: '/ITSM/operationplan/myoperationplan'
                     },
                     {
                       path: '/ITSM/operationplan/myoperationplan/',
