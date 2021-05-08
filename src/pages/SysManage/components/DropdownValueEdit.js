@@ -4,139 +4,139 @@ import { Form, Input, Modal, Radio, InputNumber } from 'antd';
 const RadioGroup = Radio.Group;
 
 const formItemLayout = {
-    labelCol: {
-        xs: { span: 24 },
-        sm: { span: 4 },
-    },
-    wrapperCol: {
-        xs: { span: 24 },
-        sm: { span: 20 },
-    },
-    colon: false,
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 4 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 20 },
+  },
+  colon: false,
 };
 
 const withClick = (element, handleClick = () => { }) => {
-    return <element.type {...element.props} onClick={handleClick} />;
+  return <element.type {...element.props} onClick={handleClick} />;
 };
 class DropdownValueEdit extends Component {
-    state = {
-        visible: false,
-    };
+  state = {
+    visible: false,
+  };
 
-    handleopenClick = () => {
-        this.setState({
-            visible: true,
-        });
-    };
+  handleopenClick = () => {
+    this.setState({
+      visible: true,
+    });
+  };
 
-    handleOk = () => {
-        this.props.form.validateFields((err, values) => {
-            if (!err) {
-                this.handleCancel();
-                this.props.onSumit(values);
-                this.props.form.resetFields();
-            }
-        });
-    };
-
-    handleCancel = () => {
-        this.setState({
-            visible: false,
-        });
+  handleOk = () => {
+    this.props.form.validateFields((err, values) => {
+      if (!err) {
+        this.handleCancel();
+        this.props.onSumit(values);
         this.props.form.resetFields();
-    };
+      }
+    });
+  };
 
-    render() {
-        const { visible } = this.state;
-        const { children, title } = this.props;
-        const { getFieldDecorator } = this.props.form;
-        const required = true;
-        const {
-            dictModule,
-            dictType,
-            dictCode,
-            dictName,
-            dictState,
-            dictSort,
-            dictRemarks
-        } = this.props.record;
-        return (
-            <>
-                {withClick(children, this.handleopenClick)}
-                <Modal
-                    title={title}
-                    visible={visible}
-                    centered
-                    onCancel={this.handleCancel}
-                    onOk={this.handleOk}
-                    width={650}
-                >
-                    <Form {...formItemLayout}>
-                        <Form.Item label="字典模块">
-                            {getFieldDecorator('dictModule', {
-                                rules: [
-                                    {
-                                        required,
-                                        message: '请输入',
-                                    },
-                                ],
-                                initialValue: dictModule || '',
-                            })(<Input placeholder="请输入..." allowClear />)}
-                        </Form.Item>
+  handleCancel = () => {
+    this.setState({
+      visible: false,
+    });
+    this.props.form.resetFields();
+  };
 
-                        <Form.Item label="字典类型">
-                            {getFieldDecorator('dictType', {
-                                rules: [{
-                                    required: true,
-                                    message: '请输入正确的字典类型',
-                                    pattern: /^([A-Za-z\\.]{2,16})$/,
-                                }],
-                                initialValue: dictType || '',
-                            })(<Input allowClear />)}
-                        </Form.Item>
+  render() {
+    const { visible } = this.state;
+    const { children, title } = this.props;
+    const { getFieldDecorator } = this.props.form;
+    const required = true;
+    const {
+      dictModule,
+      dictType,
+      dictCode,
+      dictName,
+      dictState,
+      dictSort,
+      dictRemarks
+    } = this.props.record;
+    return (
+      <>
+        {withClick(children, this.handleopenClick)}
+        <Modal
+          title={title}
+          visible={visible}
+          centered
+          onCancel={this.handleCancel}
+          onOk={this.handleOk}
+          width={650}
+        >
+          <Form {...formItemLayout}>
+            <Form.Item label="字典模块">
+              {getFieldDecorator('dictModule', {
+                rules: [
+                  {
+                    required,
+                    message: '请输入',
+                  },
+                ],
+                initialValue: dictModule || '',
+              })(<Input placeholder="请输入..." allowClear />)}
+            </Form.Item>
 
-                        <Form.Item label="字典代码">
-                            {getFieldDecorator('dictCode', {
-                                rules: [
-                                    {
-                                        required,
-                                        message: '请输入',
-                                    },
-                                ],
-                                initialValue: dictCode || '',
-                            })(<Input placeholder="请输入..." allowClear />)}
-                        </Form.Item>
+            <Form.Item label="字典类型">
+              {getFieldDecorator('dictType', {
+                rules: [{
+                  required: true,
+                  message: '请输入正确的字典类型',
+                  pattern: /^([A-Za-z\\.]{2,32})$/,
+                }],
+                initialValue: dictType || '',
+              })(<Input allowClear />)}
+            </Form.Item>
 
-                        <Form.Item label="字典名称">
-                            {getFieldDecorator('dictName', {
-                                rules: [
-                                    {
-                                        required,
-                                        message: '请输入',
-                                    },
-                                ],
-                                initialValue: dictName || '',
-                            })(<Input allowClear />)}
-                        </Form.Item>
+            <Form.Item label="字典代码">
+              {getFieldDecorator('dictCode', {
+                rules: [
+                  {
+                    required,
+                    message: '请输入',
+                  },
+                ],
+                initialValue: dictCode || '',
+              })(<Input placeholder="请输入..." allowClear />)}
+            </Form.Item>
 
-                        <Form.Item label="字典状态">
-                            {getFieldDecorator('dictState', {
-                                rules: [
-                                    {
-                                        required,
-                                        message: '请输入',
-                                    },
-                                ],
-                                initialValue: dictState || '',
-                            })(
-                                <RadioGroup>
-                                    <Radio value="1">使用</Radio>
-                                    <Radio value="0">停止</Radio>
-                                </RadioGroup>,
-                            )}
-                        </Form.Item>
+            <Form.Item label="字典名称">
+              {getFieldDecorator('dictName', {
+                rules: [
+                  {
+                    required,
+                    message: '请输入',
+                  },
+                ],
+                initialValue: dictName || '',
+              })(<Input allowClear />)}
+            </Form.Item>
 
-                        {/* <Form.Item label="是否能修改">
+            <Form.Item label="字典状态">
+              {getFieldDecorator('dictState', {
+                rules: [
+                  {
+                    required,
+                    message: '请输入',
+                  },
+                ],
+                initialValue: dictState || '',
+              })(
+                <RadioGroup>
+                  <Radio value="1">使用</Radio>
+                  <Radio value="0">停止</Radio>
+                </RadioGroup>,
+              )}
+            </Form.Item>
+
+            {/* <Form.Item label="是否能修改">
                             {getFieldDecorator('isModify', {
                                 rules: [
                                     {
@@ -153,35 +153,35 @@ class DropdownValueEdit extends Component {
                             )}
                         </Form.Item> */}
 
-                        <Form.Item label="字典排序">
-                            {getFieldDecorator('dictSort', {
-                                initialValue: dictSort || 0,
-                            })(<InputNumber placeholder="请输入..." style={{ width: '100%' }} />)}
-                        </Form.Item>
+            <Form.Item label="字典排序">
+              {getFieldDecorator('dictSort', {
+                initialValue: dictSort || 0,
+              })(<InputNumber placeholder="请输入..." style={{ width: '100%' }} />)}
+            </Form.Item>
 
-                        <Form.Item label="字典备注">
-                            {getFieldDecorator('dictRemarks', {
-                                initialValue: dictRemarks || '',
-                            })(<Input placeholder="请输入..." allowClear />)}
-                        </Form.Item>
-                    </Form>
-                </Modal>
-            </>
-        );
-    }
+            <Form.Item label="字典备注">
+              {getFieldDecorator('dictRemarks', {
+                initialValue: dictRemarks || '',
+              })(<Input placeholder="请输入..." allowClear />)}
+            </Form.Item>
+          </Form>
+        </Modal>
+      </>
+    );
+  }
 }
 DropdownValueEdit.defaultProps = {
-    title: '编辑字典',
-    record: {
-        dictModule: '',
-        dictType: '',
-        dictCode: '',
-        dictName: '',
-        dictState: '',
-        isModify: '',
-        dictSort: '',
-        dictRemarks: '',
-    },
+  title: '编辑字典',
+  record: {
+    dictModule: '',
+    dictType: '',
+    dictCode: '',
+    dictName: '',
+    dictState: '',
+    isModify: '',
+    dictSort: '',
+    dictRemarks: '',
+  },
 };
 export default Form.create()(DropdownValueEdit);
 
