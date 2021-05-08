@@ -19,7 +19,6 @@ export async function relateDictList(params) {
 
 //  导出故障汇总统计
 export async function faultdownlistDownload(params) {
-  console.log('ll');
   return request(`/trouble/stat/expStatOrderRelateDict`, {
     method: 'POST',
     body: JSON.stringify(params),

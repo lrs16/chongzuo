@@ -36,7 +36,6 @@ export async function releaseModels(modelId) {
 
 export async function definitionList(page, limit, bodyParams) {
   const a = encodeURI(encodeURI('中文', 'UTF-8'));
-  console.log('a: ', a);
   return request(`/activiti/definition/listPage/${page}/${limit}`, {
     method: 'POST',
     body: JSON.stringify(bodyParams),
@@ -46,7 +45,6 @@ export async function definitionList(page, limit, bodyParams) {
 //  图片资源
 export async function imgResource(id, resourceName) {
   const name = encodeURI(encodeURI(resourceName));
-  console.log('name: ', name);
   return request(`/activiti/definition/readResource/${id}/${name}`, {
     method: 'GET',
     responseType: 'blob',

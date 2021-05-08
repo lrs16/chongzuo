@@ -119,7 +119,6 @@ class HostManage extends Component {
   };
 
   handleUpdate = values => {
-    console.log('values: ', values);
     const { dispatch } = this.props;
     return dispatch({
       type: 'hostsoft/update',

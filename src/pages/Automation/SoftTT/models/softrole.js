@@ -30,7 +30,7 @@ export default {
       });
     },
 
-// 左边
+    // 左边
     *fetchsoft({ payload }, { call, put }) {
       const response = yield call(searchSofts, payload);
       yield put({
@@ -39,12 +39,11 @@ export default {
       });
     },
 
-    //更新权限
+    // 更新权限
     *updatehostrole({ payload: { hostId, softvalue } }, { call, put }) {
-      console.log(hostId,softvalue,'ghgh');
       return yield call(updatehostrole, hostId, softvalue);
     },
-// 软件左边穿梭框
+    // 软件左边穿梭框
     *softleftShuttle({ payload }, { call, put }) {
       const response = yield call(softleftShuttle, payload);
       yield put({
@@ -52,8 +51,8 @@ export default {
         payload: response,
       });
     },
-// 软件右边穿梭框
-    *softrightShuttle({ payload : {softId} }, { call, put }) {
+    // 软件右边穿梭框
+    *softrightShuttle({ payload: { softId } }, { call, put }) {
       const response = yield call(softrightShuttle, softId);
       yield put({
         type: 'processList',
@@ -69,9 +68,8 @@ export default {
       });
     },
 
-    //更新软件权限
+    // 更新软件权限
     *updatesoftrole({ payload: { softwareId, coursevalue } }, { call }) {
-      console.log(softwareId, coursevalue,'jjjj');
       return yield call(updatesoftrole, softwareId, coursevalue);
     },
   },
@@ -100,7 +98,7 @@ export default {
       };
     },
 
-    //软件
+    // 软件
     softdata(state, action) {
       return {
         ...state,

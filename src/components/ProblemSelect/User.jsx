@@ -75,7 +75,6 @@ const User = props => {
   // 需求多选下一环节人员
   const handledemandChange = (checkedValues) => {
     setSpecialvalue(checkedValues);
-    console.log(specialvalue,'specialvalue');
     sessionStorage.setItem('AutoflowUserId', checkedValues.join(','));
   };
 
@@ -143,10 +142,7 @@ const User = props => {
   }, [visible]);
 
   const handleOk = () => {
-    console.log(specialvalue,'specialvalue');
     const params = value.length && specialvalue.length;
-    // console.log('specialvalue.length: ', specialvalue.length);
-    // console.log('value.length: ', value.length);
     if (currentPeocess !== '系统运维商审核') {
       if (value.length === 0) {
         message.error('最少选择一个处理人！');
@@ -154,10 +150,10 @@ const User = props => {
         ChangeChoice(true);
         ChangeUserVisible(false);
       }
-    } 
+    }
 
-    if(currentPeocess === '系统运维商审核') {
-      if(params < 1) {
+    if (currentPeocess === '系统运维商审核') {
+      if (params < 1) {
         message.info('每种角色必须选择一个人');
       } else {
         ChangeChoice(true);
@@ -191,11 +187,11 @@ const User = props => {
     changorder !== undefined ? changorder : sessionStorage.getItem('Nextflowmane');
   return (
     <>
-      <Modal title={sessionStorage.getItem('flowtype') === '9'?'请选择转单环节处理人':'请选择下一环节处理人'} visible={visible} onOk={handleOk} onCancel={handleCancel}>
+      <Modal title={sessionStorage.getItem('flowtype') === '9' ? '请选择转单环节处理人' : '请选择下一环节处理人'} visible={visible} onOk={handleOk} onCancel={handleCancel}>
         <Spin tip="正在加载数据..." spinning={Boolean(loading)}>
           {loading === false && type !== 'demand' && isnew && problemlist !== '' && currentPeocess !== '系统运维商审核' && (
             <>
-              <div>{sessionStorage.getItem('flowtype') === '9'?'转单':'下一环节'}人员</div>
+              <div>{sessionStorage.getItem('flowtype') === '9' ? '转单' : '下一环节'}人员</div>
               <div style={{ marginTop: 12 }} className={styles.useritem}>
                 <Checkbox.Group
                   defaultValue={defaultvalue}
@@ -207,37 +203,37 @@ const User = props => {
           )}
 
           {
-        
+
             currentPeocess === '系统运维商审核' && (
               <>
-              <div>自动化科专责人员</div>
-              <div style={{ marginTop: 12 }}>
-                <Checkbox.Group
-                  defaultValue={defaultvalue}
-                  options={dataArr(problemlist.serviceData)}
-                  onChange={handleChange}
-                />
-              </div>
+                <div>自动化科专责人员</div>
+                <div style={{ marginTop: 12 }}>
+                  <Checkbox.Group
+                    defaultValue={defaultvalue}
+                    options={dataArr(problemlist.serviceData)}
+                    onChange={handleChange}
+                  />
+                </div>
               </>
             )
-          
+
           }
 
           {
-        
+
             currentPeocess === '系统运维商审核' && (
               <>
-              <div>自动化科专责人员</div>
-              <div style={{ marginTop: 12 }}>
-                <Checkbox.Group
-                  defaultValue={defaultvalue}
-                  options={dataArr(problemlist.dutyData)}
-                  onChange={handledemandChange}
-                />
-              </div>
+                <div>自动化科专责人员</div>
+                <div style={{ marginTop: 12 }}>
+                  <Checkbox.Group
+                    defaultValue={defaultvalue}
+                    options={dataArr(problemlist.dutyData)}
+                    onChange={handledemandChange}
+                  />
+                </div>
               </>
             )
-          
+
           }
           {/* <div>{nextflowuser}人员</div>
           <div style={{ marginTop: 12 }}>
