@@ -104,16 +104,20 @@ function OrderDay(props) {
 
   // 提交
   const handleSubmit = values => {
+    const payloadvalues = {
+      type: values.type,
+      remark: values.remark,
+      actionDate: values.actionDate.format('YYYY-MM-DD 00:00:00'),
+      endH: values.endtime.format('HH'),
+      endM: values.endtime.format('mm'),
+      startH: values.starttime.format('HH'),
+      startM: values.starttime.format('mm'),
+    }
     if (savetype === 'save') {
       dispatch({
         type: 'timetable/save',
         payload: {
-          ...values,
-          actionDate: values.actionDate.format('YYYY-MM-DD HH:mm:ss'),
-          endH: values.endtime.format('HH'),
-          endM: values.endtime.format('mm'),
-          startH: values.starttime.format('HH'),
-          startM: values.starttime.format('mm'),
+          ...payloadvalues
         },
       }).then(res => {
         Message.success(res.msg);
@@ -127,13 +131,7 @@ function OrderDay(props) {
         type: 'timetable/update',
         payload: {
           id: values.id,
-          type: values.type,
-          remark: values.remark,
-          actionDate: values.actionDate.format('YYYY-MM-DD HH:mm:ss'),
-          endH: values.endtime.format('HH'),
-          endM: values.endtime.format('mm'),
-          startH: values.starttime.format('HH'),
-          startM: values.starttime.format('mm'),
+          ...payloadvalues,
         },
       }).then(res => {
         Message.success(res.msg);
