@@ -343,7 +343,7 @@ function QueryList(props) {
     validateFields((err, values) => {
       if (!err) {
         dispatch({
-          type: 'eventtodo/eventdownload',
+          type: 'eventquery/eventdownload',
           payload: {
             values: {
               ...values,

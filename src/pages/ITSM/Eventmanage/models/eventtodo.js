@@ -9,7 +9,7 @@ import {
   saveFallbackMsg,
   EventDelete,
   EventImage,
-  querydownload,
+  querytododownload,
   querydownloadbyids
 } from '../services/api';
 
@@ -189,7 +189,7 @@ export default {
     // 下载
     *eventdownload({ payload: { values, ids } }, { call }) {
       if (ids.length === 0) {
-        return yield call(querydownload, { ...values });
+        return yield call(querytododownload, { ...values });
       }
       return yield call(querydownloadbyids, ids);
     },

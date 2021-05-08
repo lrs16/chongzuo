@@ -114,7 +114,17 @@ export async function queryOpenView(mainId) {
   });
 }
 
-// 下载itsm/event/form/downloadExcel
+// 事件待办下载
+export async function querytododownload(params) {
+  return request(`/event/form/downloadTaskExcel`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+    responseType: 'blob',
+  });
+}
+
+// 事件查询下载itsm/event/form/downloadExcel
 export async function querydownload(params) {
   return request(`/event/form/downloadQueryExcel`, {
     method: 'POST',

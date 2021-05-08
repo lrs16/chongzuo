@@ -1,4 +1,4 @@
-import { queryList, queryOpenView } from '../services/api';
+import { queryList, queryOpenView, querydownload, querydownloadbyids } from '../services/api';
 
 export default {
   namespace: 'eventquery',
@@ -23,6 +23,13 @@ export default {
         type: 'saveinfo',
         payload: response.data,
       });
+    },
+    // 下载
+    *eventdownload({ payload: { values, ids } }, { call }) {
+      if (ids.length === 0) {
+        return yield call(querydownload, { ...values });
+      }
+      return yield call(querydownloadbyids, ids);
     },
   },
 

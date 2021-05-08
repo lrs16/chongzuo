@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
 import router from 'umi/router';
-import { Card, Row, Col, Form, Input, Select, Button, DatePicker, Table } from 'antd';
+import { Card, Row, Col, Form, Input, Select, Button, DatePicker, Table, Cascader } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import DictLower from '@/components/SysDict/DictLower';
@@ -217,11 +217,6 @@ function VerificationTodo(props) {
     resetFields();
   };
 
-  const handleApproval = () => {
-    const newselectds = selectedRecords.filter(item => item.t1 === '版本管理员审批' && item.t2 === '计划发布');
-    console.log(newselectds)
-  }
-
   const getTypebyId = key => {
     if (selectdata.ischange) {
       return selectdata.arr.filter(item => item.key === key)[0].children;
@@ -230,8 +225,8 @@ function VerificationTodo(props) {
   };
 
   const typemap = getTypebyId('1384055209809940482');       // 发布类型
-  const unitmap = getTypebyId('1384056290929545218');       // 责任单位
-  const statumap = getTypebyId('1385066256880635905');       // 处理环节
+  const functionmap = getTypebyId('1384052503909240833');       // 功能类型
+  const checkstatusmap = getTypebyId('1390574180168110081');       // 状态
 
   return (
     <PageHeaderWrapper title={pagetitle}>
@@ -251,12 +246,12 @@ function VerificationTodo(props) {
               </Form.Item>
             </Col>
             <Col span={8}>
-              <Form.Item label="当前处理环节">
+              <Form.Item label="状态">
                 {getFieldDecorator('eventStatus', {
                   initialValue: '',
                 })(
                   <Select placeholder="请选择" allowClear>
-                    {statumap.map(obj => (
+                    {checkstatusmap.map(obj => (
                       <Option key={obj.key} value={obj.title}>
                         {obj.title}
                       </Option>
@@ -268,17 +263,15 @@ function VerificationTodo(props) {
             {expand && (
               <>
                 <Col span={8}>
-                  <Form.Item label="责任单位">
-                    {getFieldDecorator('eventTitle', {
+                  <Form.Item label="功能类型">
+                    {getFieldDecorator('functiontype', {
                       initialValue: '',
                     })(
-                      <Select placeholder="请选择" allowClear>
-                        {unitmap.map(obj => (
-                          <Option key={obj.key} value={obj.title}>
-                            {obj.title}
-                          </Option>
-                        ))}
-                      </Select>
+                      <Cascader
+                        fieldNames={{ label: 'title', value: 'title', children: 'children' }}
+                        options={functionmap}
+
+                      />,
                     )}
                   </Form.Item>
                 </Col>
@@ -298,53 +291,20 @@ function VerificationTodo(props) {
                   </Form.Item>
                 </Col>
                 <Col span={8}>
-                  <Form.Item label="出厂测试登记人">
+                  <Form.Item label="问题类型">
                     {getFieldDecorator('registerUser', {
                       initialValue: '',
                     })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
-                <Col span={8}>
-                  <Form.Item label="发送人">
-                    {getFieldDecorator('applicationUser', {
-                      initialValue: '',
-                    })(<Input placeholder="请输入" allowClear />)}
-                  </Form.Item>
-                </Col>
-                <Col span={16}>
-                  <Form.Item label="发送时间" {...forminladeLayout}>
-                    {getFieldDecorator('createTime')(<RangePicker showTime allowClear />)}
-                  </Form.Item>
-                </Col>
               </>
             )}
-            {!expand && (
-              <Col span={8}>
-                <Form.Item>
-                  <Button type="primary" onClick={handleSearch}>
-                    查 询
-                  </Button>
-                  <Button style={{ marginLeft: 8 }} onClick={handleReset}>重 置</Button>
-                  <Button
-                    style={{ marginLeft: 8 }}
-                    type="link"
-                    onClick={() => {
-                      setExpand(!expand);
-                    }}
-                  >
-                    {expand ? (<>关 闭 <UpOutlined /></>) : (<>展 开 <DownOutlined /></>)}
-                  </Button>
-                </Form.Item>
-              </Col>
-            )}
-            {expand && (
-              <Col span={24} style={{ textAlign: 'right' }}>
+            <Col span={8}>
+              <Form.Item style={{ textAlign: 'right' }}>
                 <Button type="primary" onClick={handleSearch}>
                   查 询
-                </Button>
-                <Button style={{ marginLeft: 8 }} onClick={handleReset}>
-                  重 置
-                </Button>
+                  </Button>
+                <Button style={{ marginLeft: 8 }} onClick={handleReset}>重 置</Button>
                 <Button
                   style={{ marginLeft: 8 }}
                   type="link"
@@ -352,23 +312,14 @@ function VerificationTodo(props) {
                     setExpand(!expand);
                   }}
                 >
-                  {expand ? (
-                    <>
-                      关 闭 <UpOutlined />
-                    </>
-                  ) : (
-                    <>
-                      展 开 <DownOutlined />
-                    </>
-                  )}
+                  {expand ? (<>关 闭 <UpOutlined /></>) : (<>展 开 <DownOutlined /></>)}
                 </Button>
-              </Col>
-            )}
+              </Form.Item>
+            </Col>
           </Form>
         </Row>
         <div style={{ marginBottom: 24 }}>
           <Button type="primary" onClick={() => download()} style={{ marginRight: 8 }}>导出数据</Button >
-          <Button type="primary" onClick={() => handleApproval()} >版本管理员合并审批</Button >
         </div>
         < Table
           loading={loading}

@@ -392,18 +392,18 @@ function ToDolist(props) {
             )}
           </Form>
         </Row>
-        {/* <div style={{ marginBottom: 24 }}>
+        <div style={{ marginBottom: 24 }}>
           <Button type="primary" onClick={() => download()}>
             导出数据
           </Button>
-        </div> */}
+        </div>
         <Table
           loading={loading}
           columns={columns}
           dataSource={list.rows}
           rowKey={record => record.id}
           pagination={pagination}
-        //  rowSelection={rowSelection}
+          rowSelection={rowSelection}
         />
       </Card>
     </PageHeaderWrapper>
