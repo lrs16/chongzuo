@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
-import Link from 'umi/link';
+import router from 'umi/router';
 import {
   Form,
   Card,
@@ -12,10 +12,11 @@ import {
   DatePicker,
   Select,
 } from 'antd';
-import Problemexcel from './components/Problemexcel';
+
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import SysDict from '@/components/SysDict';
+import Problemexcel from './components/Problemexcel';
 
 const formItemLayout = {
   labelCol: {
@@ -56,16 +57,18 @@ function Besolved(props) {
       title: '问题编号',
       dataIndex: 'no',
       key: 'no',
-      render: (text, record) => (
-        <Link
-          to={{
-            pathname: `/ITSM/problemmanage/besolveddetail/workorder/${record.id}`,
-            paneKey: record.status, // 传状态
-          }}
-        >
-          {text}
-        </Link>
-      ),
+      render: (text, record) => {
+        const handleClick = () => {
+          router.push({
+            pathname: `/ITSM/problemmanage/besolveddetail/workorder`,
+            query: {
+              id: record.id,
+              taskName: record.currentNode,
+            },
+          });
+        };
+        return <a onClick={handleClick}>{text}</a>;
+      },
     },
     {
       title: '问题标题',
@@ -447,7 +450,7 @@ function Besolved(props) {
           pagination={pagination}
         />
       </Card>
-    
+
     </PageHeaderWrapper>
   );
 }

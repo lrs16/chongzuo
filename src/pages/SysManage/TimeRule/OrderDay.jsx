@@ -27,7 +27,7 @@ const fromallItem = {
 function OrderDay(props) {
   const pagetitle = props.route.name;
   const { dispatch, list, listtotal, loading } = props;
-  const { getFieldDecorator, validateFields, setFieldsValue } = props.form;
+  const { getFieldDecorator, validateFields } = props.form;
   const [visible, setVisible] = useState(false); // 抽屉是否显示
   const [title, setTitle] = useState('');
   const [savetype, setSaveType] = useState(''); // 保存类型  save:新建  update:编辑

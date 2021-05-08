@@ -275,14 +275,14 @@ export default {
                       component: './ITSM/Problemmanage/Problemquery',
                     },
                     {
-                      path: '/ITSM/problemmanage/besolveddetail/workorder/:id',
-                      name: '问题工单',
+                      path: '/ITSM/problemmanage/besolveddetail/workorder',
+                      name: '问题待办详情',
                       icon: 'cloud-server',
                       component: './ITSM/Problemmanage/Workorder',
                     },
                     {
-                      path: '/ITSM/problemmanage/querydetail/:id/queryworkdetail',
-                      name: '问题查询',
+                      path: '/ITSM/problemmanage/problemquery/detail',
+                      name: '问题查询详情',
                       icon: 'cloud-server',
                       component: './ITSM/Problemmanage/Queryworkdetail',
                     },
@@ -431,8 +431,8 @@ export default {
                       component: './ITSM/Faultmanage/ToDOlist',
                     },
                     {
-                      path: '/ITSM/faultmanage/todolist/record/:id',
-                      name: '待办详情',
+                      path: '/ITSM/faultmanage/todolist/record',
+                      name: '故障待办详情',
                       icon: 'cloud-server',
                       component: './ITSM/Faultmanage/Todolistdetails',
                     },
@@ -443,7 +443,7 @@ export default {
                       component: './ITSM/Faultmanage/QueryList',
                     },
                     {
-                      path: '/ITSM/faultmanage/querylist/record/:id',
+                      path: '/ITSM/faultmanage/querylist/record',
                       name: '查询详情',
                       icon: 'cloud-server',
                       component: './ITSM/Faultmanage/Querylistdetails',

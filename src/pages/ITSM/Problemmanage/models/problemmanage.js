@@ -12,8 +12,6 @@ import {
   getFlowlog,
   todoInformation,
   getFlowImage,
-  eventList,
-  realselist,
   getAddid,
   queryList,
   fileUpload,
@@ -52,19 +50,19 @@ export default {
     useInfo: [],
     imageSource: '',
     flowlog: '',
-    peopleList:[],
-    queryDetaildata:[],
-    data:'',
-    startid:'',
-    keyVallist:[],
-    handleList:[],
-    queryArr:[],
-    handleArr:[]
+    peopleList: [],
+    queryDetaildata: [],
+    data: '',
+    startid: '',
+    keyVallist: [],
+    handleList: [],
+    queryArr: [],
+    handleArr: []
   },
 
   effects: {
     // 列表
-    *fetchlist({ payload }, { call, put }) {
+    *fetchlist(_, { call, put }) {
       const response = yield call(problemList);
       yield put({
         type: 'getlist',
@@ -72,7 +70,7 @@ export default {
       });
     },
     //  获取新的编号
-    *getregisterNo({ payload }, { call, put }) {
+    *getregisterNo(_, { call, put }) {
       const response = yield call(getNewno);
       yield put({
         type: 'getNewno',
@@ -80,7 +78,7 @@ export default {
       });
     },
 
-    *fetchUseinfo({ payload }, { call, put }) {
+    *fetchUseinfo(_, { call, put }) {
       const response = yield call(queryCurrent);
       yield put({
         type: 'getuseInfo',
@@ -97,7 +95,7 @@ export default {
         });
 
         const responseId = yield call(getNewno);
-        if(responseId.code === 200) {
+        if (responseId.code === 200) {
           yield put({
             type: 'getNewno',
             payload: response,
@@ -105,27 +103,27 @@ export default {
           const saveiInfo = payload;
           saveiInfo.taskId = response.flowTaskId;
           saveiInfo.no = responseId.problemNo;
-  
+
           const resRegister = yield call(saveRegister, saveiInfo);
           if (resRegister.code === 200) {
             switch (payload.jumpType) {
               case 0:
                 route.push({
-                  pathname: `/ITSM/problemmanage/besolveddetail/workorder/${response.flowTaskId}`,
+                  pathname: `/ITSM/problemmanage/besolveddetail/workorder`,
+                  query: { id: response.flowTaskId }
                 });
                 break;
-  
               default:
                 break;
             }
           }
         }
-        }
+      }
     },
 
     //  启动流程
-    *startProcess({ payload }, { call,put }) {
-      const response =  yield call(getAddid);
+    *startProcess(_, { call, put }) {
+      const response = yield call(getAddid);
       yield put({
         type: 'getstartid',
         payload: response,
@@ -140,7 +138,7 @@ export default {
 
     //  待办保存
     *tobeSave({ payload }, { call }) {
-      return yield call(saveRegister,payload);
+      return yield call(saveRegister, payload);
     },
 
     *delete({ payload: { deleteid } }, { call }) {
@@ -148,22 +146,22 @@ export default {
     },
 
     //  回退
-    *tobeBack({ payload: { id, values,userIds } }, { call }) {
-      return yield call(backReason, id, values,userIds);
+    *tobeBack({ payload: { id, values, userIds } }, { call }) {
+      return yield call(backReason, id, values, userIds);
     },
 
     //  流转到下一节点前选人
-    *optionPeople({ payload: { taskId } }, { call, put }) {
+    *optionPeople({ payload: { taskId } }, { call }) {
       return yield call(tobeListpeople, taskId);
     },
 
     //  流转到下一个节点
-    *gotoCirculation({ payload: { flow } }, { call, put }) {
-      return yield call(saveTobelist,flow);
+    *gotoCirculation({ payload: { flow } }, { call }) {
+      return yield call(saveTobelist, flow);
     },
-//  待办列表
+    //  待办列表
     *besolveList({ payload }, { call, put }) {
-      const response = yield call(besolveList,payload);
+      const response = yield call(besolveList, payload);
       yield put({
         type: 'besolveListpage',
         payload: response,
@@ -179,7 +177,7 @@ export default {
     },
     //  列表查询
     *queryList({ payload }, { call, put }) {
-      const response = yield call(queryList,payload);
+      const response = yield call(queryList, payload);
       yield put({
         type: 'queryArr',
         payload: response,
@@ -187,8 +185,8 @@ export default {
     },
 
     //  处理率列表查询
-    *handlequeryList({ payload}, { call, put }) {
-      const response = yield call(handlequeryList,payload);
+    *handlequeryList({ payload }, { call, put }) {
+      const response = yield call(handlequeryList, payload);
       yield put({
         type: 'handleListpage',
         payload: response,
@@ -222,44 +220,26 @@ export default {
       });
     },
 
-    // 事件列表
-    *eventList({ payload }, { call, put }) {
-      console.log('event');
-      const response = yield call(eventList);
-      yield put({
-        type: 'eventtableList',
-        payload: response,
-      });
-    },
-
-    // 发布列表
-    *realselist({ payload }, { call, put }) {
-      const response = yield call(realselist);
-      yield put({
-        type: 'realsetableList',
-        payload: response,
-      });
-    },
 
     // 文件上传
-    *tobaUpload({ payload }, { call, put }) {
+    *tobaUpload(_, { call }) {
       return yield call(fileUpload);
     },
     // 结单
-    *problemHandleOrder({ payload: { id } }, { call, put }) {
+    *problemHandleOrder({ payload: { id } }, { call }) {
       return yield call(problemHandleOrder, id);
     },
 
-    *queryDetail({payload:{id}},{call,put}) {
-      const response = yield call(queryDetail,id);
-      yield put ({
-        type:'queryDetaildata',
+    *queryDetail({ payload: { id } }, { call, put }) {
+      const response = yield call(queryDetail, id);
+      yield put({
+        type: 'queryDetaildata',
         payload: response
       })
     },
 
-    *transferOrder({payload:{taskId,userIds}},{call,put}) {
-      return yield call(transferOrder,taskId,userIds);
+    *transferOrder({ payload: { taskId, userIds } }, { call }) {
+      return yield call(transferOrder, taskId, userIds);
     },
 
     *eventdownload({ payload }, { call }) {
@@ -270,40 +250,40 @@ export default {
       return yield call(besolveListdownload, payload);
     },
 
-    *filedownload({ payload:{id} }, { call }) {
-      return yield call(downFile,  id );
+    *filedownload({ payload: { id } }, { call }) {
+      return yield call(downFile, id);
     },
 
-      // 上传,删除附件触发保存
-    *uploadchange({ payload }, { call, put }) {
+    // 上传,删除附件触发保存
+    *uploadchange({ payload }, { call }) {
       return yield call(saveRegister, payload);
     },
     //  数据字典
-    *keyval({ payload: { dictModule, dictType } }, { call,put }) {
+    *keyval({ payload: { dictModule, dictType } }, { call, put }) {
       const response = yield call(querkeyVal, dictModule, dictType);
       yield put({
-        type:'keyVallist',
+        type: 'keyVallist',
         payload: response
       })
     },
     //  问题工单解决进度管控统计数据列表
-    *handleData({ payload }, { call,put }) {
+    *handleData({ payload }, { call, put }) {
       const response = yield call(handleGratelist, payload);
       yield put({
-        type:'handleArr',
+        type: 'handleArr',
         payload: response
       })
     },
     //  问题超时统计数据列表
-    *timeoutData({ payload }, { call,put }) {
+    *timeoutData({ payload }, { call, put }) {
       const response = yield call(timeoutlist, payload);
       yield put({
-        type:'handleArr',
+        type: 'handleArr',
         payload: response
       })
     },
     //  批量导入
-    *exportdownloadExcel({ payload }, { call, put }) {
+    *exportdownloadExcel(_, { call }) {
       return yield call(exportExcel)
     }
   },
@@ -418,35 +398,35 @@ export default {
       };
     },
 
-    peopleList(state,action) {
+    peopleList(state, action) {
       return {
         ...state,
-        peopleList:action.payload.data
+        peopleList: action.payload.data
       }
     },
 
-    queryDetaildata(state,action) {
+    queryDetaildata(state, action) {
       return {
         ...state,
         queryDetaildata: action.payload
       }
     },
-    
-    getstartid(state,action) {
+
+    getstartid(state, action) {
       return {
         ...state,
         startid: action.payload.flowTaskId
       }
     },
 
-    keyVallist(state,action) {
+    keyVallist(state, action) {
       return {
         ...state,
         keyVallist: action.payload.data
       }
     },
 
-    handleArr(state,action) {
+    handleArr(state, action) {
       return {
         ...state,
         handleArr: action.payload.data

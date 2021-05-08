@@ -9,8 +9,6 @@ import {
   Steps
 } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-
-// eslint-disable-next-line import/no-unresolved
 import creatHistory from 'history/createHashHistory'; // 返回上一页
 import styles from './index.less';
 // 各个子组件
@@ -43,7 +41,6 @@ function Querylistdetails(props) {
   const [tabActiveKey, setTabActiveKey] = useState('faultForm'); // tab切换
 
   const {
-    location: { ids }, // ids 列表传过来的id
     dispatch,
     loading,
     querydetailslist,
@@ -51,6 +48,8 @@ function Querylistdetails(props) {
     flowimageview,
     flowlog,
   } = props;
+
+  const { id } = props.location.query;
 
   // 二进制展示流程图
   const blob = new Blob([flowimageview]);
@@ -71,11 +70,10 @@ function Querylistdetails(props) {
   }
 
   const querydetailsList = () => { // 故障查询详情数据
-    if (ids)
-      dispatch({
-        type: 'fault/getfaultQueryDetailData',
-        payload: { id: ids },
-      });
+    dispatch({
+      type: 'fault/getfaultQueryDetailData',
+      payload: { id },
+    });
   }
 
   useEffect(() => {
@@ -157,7 +155,7 @@ function Querylistdetails(props) {
                       ['自动化科专责确认', <ConfirmQuery info={obj} maindata={main} />],
                     ]);
                     return (
-                      <Panel Panel header={obj.fnname} key={index}>
+                      <Panel Panel header={obj.fnname} key={index.toString()}>
                         {Paneldesmap.get(obj.fnname)}
                       </Panel>
                     );

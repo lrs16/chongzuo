@@ -32,13 +32,7 @@ function Queryworkdetail(props) {
     loading
   } = props;
 
-  const {
-    params: { id },
-  } = props.match;
-
-  const {
-    query: { taskName },
-  } = props.location;
+  const { id, taskName } = props.location.query;
 
   if (queryDetaildata.main) {
     currntStatus = Number(queryDetaildata.main.status);

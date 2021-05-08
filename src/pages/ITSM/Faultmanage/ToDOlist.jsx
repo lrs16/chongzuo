@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
 // import moment from 'moment';
-import Link from 'umi/link';
+import router from 'umi/router';
 import {
   Card,
   Input,
@@ -67,16 +67,15 @@ function ToDOlist(props) {
       key: 'no',
       width: 200,
       render: (text, record) => {
-        return (
-          <Link
-            to={{
-              pathname: `/ITSM/faultmanage/todolist/record/${record.id}`,
-              paneKey: record.currentNode,
-            }}
-          >
-            {text}
-          </Link>
-        );
+        const handleClick = () => {
+          router.push({
+            pathname: `/ITSM/faultmanage/todolist/record`,
+            query: {
+              id: record.id,
+            },
+          });
+        };
+        return <a onClick={handleClick}>{text}</a>;
       },
     },
     {

@@ -151,16 +151,15 @@ const troublecolumns = [
     key: 'no',
     width: 200,
     render: (text, record) => {
-      return (
-        <Link
-          to={{
-            pathname: `/ITSM/faultmanage/todolist/record/${record.id}`,
-            paneKey: record.currentNode,
-          }}
-        >
-          {text}
-        </Link>
-      );
+      const handleClick = () => {
+        router.push({
+          pathname: `/ITSM/faultmanage/todolist/record`,
+          query: {
+            id: record.id,
+          },
+        });
+      };
+      return <a onClick={handleClick}>{text}</a>;
     },
   },
   {
@@ -202,16 +201,18 @@ const problemcolumns = [
     dataIndex: 'no',
     key: 'no',
     width: 200,
-    render: (text, record) => (
-      <Link
-        to={{
-          pathname: `/ITSM/problemmanage/besolveddetail/workorder/${record.id}`,
-          paneKey: record.status, // 传状态
-        }}
-      >
-        {text}
-      </Link>
-    ),
+    render: (text, record) => {
+      const handleClick = () => {
+        router.push({
+          pathname: `/ITSM/problemmanage/besolveddetail/workorder`,
+          query: {
+            id: record.id,
+            taskName: record.currentNode,
+          },
+        });
+      };
+      return <a onClick={handleClick}>{text}</a>;
+    },
   },
   {
     title: '问题标题',

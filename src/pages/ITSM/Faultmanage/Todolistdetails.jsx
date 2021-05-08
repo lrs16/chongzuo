@@ -124,10 +124,9 @@ function Todolistdetails(props) {
     curruserinfo: { userId }, // 当前用户登录id
   } = props;
 
-
   const {
-    params: { id },
-  } = props.match; // 获取taskId
+    query: { id },
+  } = props.location; // 获取taskId
 
   // 二进制展示流程图
   const blob = new Blob([flowimageview]);
@@ -565,7 +564,7 @@ function Todolistdetails(props) {
       } else {
         formValues.checkTime = '';
       }
-      if (params?!err:true) {
+      if (params ? !err : true) {
         formValues.checkUserId = userId; // 当前登录人id
         formValues.taskId = id;
         formValues.checkType = flowNodeName === '系统运维商审核' ? '1' : '2';
@@ -621,7 +620,7 @@ function Todolistdetails(props) {
       } else {
         formValues.checkTime = '';
       }
-      if (params?!err:true) {
+      if (params ? !err : true) {
         formValues.checkUserId = userId; // 当前登录人id
         formValues.taskId = id;
         formValues.checkType = flowNodeName === '系统运维商审核' ? '1' : '2';
@@ -830,12 +829,12 @@ function Todolistdetails(props) {
               </Button>
             )}
           {result === '0' && (
-            <Button type="primary" onClick={() =>handleRegist('back')}>
+            <Button type="primary" onClick={() => handleRegist('back')}>
               重新登记
             </Button>
           )}
           {resultsecond === '0' && (
-            <Button type="primary" onClick={()=>toHandle('back')}>
+            <Button type="primary" onClick={() => toHandle('back')}>
               重新处理
             </Button>
           )}

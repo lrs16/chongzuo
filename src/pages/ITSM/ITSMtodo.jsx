@@ -24,12 +24,19 @@ const columns = [
             break;
           case 'trouble':
             router.push({
-              pathname: `/ITSM/faultmanage/todolist/record/${record.taskId}`,
+              pathname: `/ITSM/faultmanage/todolist/record`,
+              query: {
+                id: record.id,
+              },
             });
             break;
           case 'problem':
             router.push({
-              pathname: `/ITSM/problemmanage/besolveddetail/workorder/${record.taskId}`,
+              pathname: `/ITSM/problemmanage/besolveddetail/workorder`,
+              query: {
+                id: record.id,
+                taskName: record.currentNode,
+              },
             });
             break;
           case 'demand':

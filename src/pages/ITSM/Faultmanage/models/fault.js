@@ -157,7 +157,8 @@ export default {
             // 用户数据携带的id 跳转待办详情页
             message.success(resRegister.msg);
             router.push({
-              pathname: `/ITSM/faultmanage/todolist/record/${flowTaskId}`,
+              pathname: `/ITSM/faultmanage/todolist/record`,
+              query: { id: flowTaskId },
               paneKey: flowNodeName,
             });
           } else {

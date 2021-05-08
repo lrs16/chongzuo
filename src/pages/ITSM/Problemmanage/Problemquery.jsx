@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
-import Link from 'umi/link';
+import router from 'umi/router';
 import moment from 'moment';
 import { Form, Card, Input, Button, Row, Col, Table, Select, DatePicker } from 'antd';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
@@ -18,27 +18,24 @@ const formItemLayout = {
   },
 };
 const { Option } = Select;
-let sign = '';
-let timeoutSearch = '';
-let searchSign;
-let initialParams = '';
+
 const columns = [
   {
     title: '问题编号',
     dataIndex: 'no',
     key: 'no',
-    render: (text, record) => (
-      <Link
-        to={{
-          pathname: `/ITSM/problemmanage/querydetail/${record.id}/queryworkdetail`,
+    render: (text, record) => {
+      const handleClick = () => {
+        router.push({
+          pathname: `/ITSM/problemmanage/problemquery/detail`,
           query: {
+            id: record.id,
             taskName: record.statuscn,
-          }
-        }}
-      >
-        {text}
-      </Link>
-    ),
+          },
+        });
+      };
+      return <a onClick={handleClick}>{text}</a>;
+    },
   },
   {
     title: '问题标题',
@@ -251,7 +248,7 @@ function Besolved(props) {
             addTimeEnd,
           }
         }).then(res => {
-          const filename = `下载.xls`;
+          const filename = `问题查询_${moment().format('YYYY-MM-DD HH:mm')}.xls`;
           const blob = new Blob([res]);
           const url = window.URL.createObjectURL(blob);
           const a = document.createElement('a');

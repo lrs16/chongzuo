@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
-// import moment from 'moment';
-import Link from 'umi/link';
+import moment from 'moment';
+import router from 'umi/router';
 import {
   Card,
   Input,
@@ -36,12 +36,8 @@ const formItemLayout = {
 };
 
 const { Option } = Select;
-let searchSign = '';
+const searchSign = '';
 let typeparams;
-// const faultStatusmap = ['待登记', '已登记', '已受理', '待审核', '审核中', '已审核', '待处理', '处理中', '已处理', '待总结', '总结中', '已总结', '待关闭', '关闭中', '已关闭'];
-// const sourceMap = ['系统告警', '巡检发现'];
-// const registerModelMap = ['配网采集', '主网采集', '终端掉线', '配网档案', '实用化指标', '账号缺陷'];
-// const typeMap = ['系统应用', '网络安全', '数据库', '中间件', '环境/设备', '软件', '其他'];
 
 function QueryList(props) {
   const pagetitle = props.route.name;
@@ -61,8 +57,6 @@ function QueryList(props) {
     faultQueryList, // 查询列表数据
     dispatch,
   } = props;
-
-  console.log(props, 'props');
 
   const [expand, setExpand] = useState(false);
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 }); // 分页state
@@ -99,18 +93,15 @@ function QueryList(props) {
       key: 'no',
       width: 150,
       render: (text, record) => {
-        return (
-          <Link
-            to={{
-              pathname: `/ITSM/faultmanage/querylist/record/${record.id}`,
-              record,
-              paneKey: record.status, // 传状态
-              ids: record.id,
-            }}
-          >
-            {text}
-          </Link>
-        );
+        const handleClick = () => {
+          router.push({
+            pathname: `/ITSM/faultmanage/querylist/record`,
+            query: {
+              id: record.id,
+            },
+          });
+        };
+        return <a onClick={handleClick}>{text}</a>;
       },
     },
     {
@@ -178,7 +169,6 @@ function QueryList(props) {
 
 
   const getinitiaQuerylists = (values, page, pageSize, searchdata) => {
-    console.log(status, 'status');
     // 列表 列表接口
     dispatch({
       type: 'fault/getfaultQueryList',
@@ -307,11 +297,11 @@ function QueryList(props) {
             pageSize,
             current: page,
             dictCode,
-            type,
+            //  type,
             status
           },
         }).then(res => {
-          const filename = `下载.xlsx`;
+          const filename = `故障查询_${moment().format('YYYY-MM-DD HH:mm')}.xlsx`;
           const blob = new Blob([res]);
           const url = window.URL.createObjectURL(blob);
           const a = document.createElement('a');
