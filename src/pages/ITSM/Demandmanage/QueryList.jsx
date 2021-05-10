@@ -80,7 +80,7 @@ const columns = [
     key: 'sender',
   },
   {
-    title: '发送时间',
+    title: '创建时间',
     dataIndex: 'sendTime',
     key: 'sendTime',
     render: text => {
@@ -98,7 +98,7 @@ function QueryList(props) {
   const pagetitle = props.route.name;
   const {
     form: { getFieldDecorator, resetFields, validateFields },
-    location: { query: { module, taskName, startTime,endTime,completeStatus } },
+    location: { query: { module, taskName, startTime, endTime, completeStatus } },
     loading,
     list,
     dispatch,
@@ -118,8 +118,8 @@ function QueryList(props) {
             limit: paginations.pageSize,
             module,
             taskName,
-            startTime:startTime?moment(startTime).format('YYYY-MM-DD HH:mm:ss'):'',
-            endTime:endTime?moment(endTime).format('YYYY-MM-DD HH:mm:ss'):'',
+            startTime: startTime ? moment(startTime).format('YYYY-MM-DD HH:mm:ss') : '',
+            endTime: endTime ? moment(endTime).format('YYYY-MM-DD HH:mm:ss') : '',
             completeStatus
           },
         });
@@ -195,10 +195,10 @@ function QueryList(props) {
   };
 
   const download = () => {
-    validateFields((err,values) => {
+    validateFields((err, values) => {
       dispatch({
         type: 'demandquery/download',
-        payload:{
+        payload: {
           ...values,
           module,
           // startTime:startTime.format('YYYY-MM-DD HH:mm'),
@@ -281,7 +281,7 @@ function QueryList(props) {
                   </Form.Item>
                 </Col>
                 <Col span={8}>
-                  <Form.Item label="发送时间">
+                  <Form.Item label="创建时间">
                     {getFieldDecorator('creationTime')(<DatePicker allowClear />)}
                   </Form.Item>
                 </Col>

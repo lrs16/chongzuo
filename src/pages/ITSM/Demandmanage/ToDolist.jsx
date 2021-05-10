@@ -85,7 +85,7 @@ const columns = [
     key: 'sender',
   },
   {
-    title: '发送时间',
+    title: '创建时间',
     dataIndex: 'sendTime',
     key: 'sendTime',
     render: text => {
@@ -259,7 +259,7 @@ function ToDolist(props) {
                   </Form.Item>
                 </Col>
                 <Col span={8}>
-                  <Form.Item label="发送时间">
+                  <Form.Item label="创建时间">
                     {getFieldDecorator('creationTime')(<DatePicker allowClear />)}
                   </Form.Item>
                 </Col>
