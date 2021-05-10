@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Drawer, Button, Form, Input, AutoComplete } from 'antd';
 import { phone_reg } from '@/utils/Regexp';
 import { queryUnitList, queryDeptList } from '@/services/common';
@@ -35,6 +35,14 @@ function DisableduserDrawer(props) {
   const [deptopen, setDeptopen] = useState(false);
 
   // setFieldsValue({ unit: unitrecord.title, unitId: unitrecord.key })
+  useEffect(() => {
+    if (unitId !== '') {
+      setUnitRecord({ ...unitrecord, key: unitId })
+    }
+    return () => {
+      setUnitRecord('')
+    }
+  }, [unitId]);
 
   const hanldleCancel = () => {
     ChangeVisible(false);

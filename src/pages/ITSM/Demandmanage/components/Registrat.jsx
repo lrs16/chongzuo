@@ -73,6 +73,12 @@ const Registrat = forwardRef((props, ref) => {
 
   useEffect(() => {
     setFilesList({ ...fileslist, arr: files });
+    if (register.proposingUnitId !== '') {
+      setUnitRecord({ ...unitrecord, key: register.proposingUnitId })
+    }
+    return () => {
+      setUnitRecord('')
+    }
   }, [register]);
 
   const attRef = useRef();
@@ -286,7 +292,6 @@ const Registrat = forwardRef((props, ref) => {
   const modulemap = getTypebyTitle('1352070663392727041');
 
   const disabledDate = (current) => {
-
     return current && current < moment().add(45, 'days').endOf('day');
   }
 

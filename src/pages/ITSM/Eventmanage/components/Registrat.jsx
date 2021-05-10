@@ -73,6 +73,12 @@ const Registrat = forwardRef((props, ref) => {
   useEffect(() => {
     if (files.length > 0) {
       setFilesList(files);
+    };
+    if (register.applicationUnitId !== '') {
+      setUnitRecord({ ...unitrecord, key: register.applicationUnitId })
+    };
+    return () => {
+      setUnitRecord('')
     }
   }, [info]);
 

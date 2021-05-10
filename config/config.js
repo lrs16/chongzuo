@@ -500,7 +500,7 @@ export default {
                     },
                     {
                       path: '/ITSM/releasemanage/to-do/record',
-                      name: '发布工单办理',
+                      name: '发布工单处理',
                       icon: 'cloud-server',
                       component: './ITSM/Releasemanage/ToDodetails',
                     },
@@ -509,6 +509,12 @@ export default {
                       name: '业务验证待办',
                       icon: 'control',
                       component: './ITSM/Releasemanage/VerificationTodo',
+                    },
+                    {
+                      path: '/ITSM/releasemanage/verificationtodo/record',
+                      name: '业务验证待办处理',
+                      icon: 'control',
+                      component: './ITSM/Releasemanage/BusinessDetail',
                     },
                     {
                       path: '/ITSM/releasemanage/checktodo',

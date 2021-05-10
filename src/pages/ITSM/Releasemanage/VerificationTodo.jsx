@@ -321,7 +321,7 @@ function VerificationTodo(props) {
         <div style={{ marginBottom: 24 }}>
           <Button type="primary" onClick={() => download()} style={{ marginRight: 8 }}>导出数据</Button >
         </div>
-        < Table
+        <Table
           loading={loading}
           columns={columns}
           dataSource={list.rows}
