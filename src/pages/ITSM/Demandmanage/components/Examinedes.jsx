@@ -1,8 +1,8 @@
 import React from 'react';
 import moment from 'moment';
 import { Descriptions } from 'antd';
-import styles from '../index.less';
 import Downloadfile from '@/components/SysUpload/Downloadfile';
+import styles from '../index.less';
 
 const resultmap = new Map([
   [1, '通过'],
@@ -27,7 +27,7 @@ function Examinedes(props) {
         </Descriptions.Item>
         <Descriptions.Item />
         <Descriptions.Item label={`${text}时间`} span={3}>
-          {moment(info.reviewTime).format('YYYY-MM-DD HH:MM')}
+          {info.reviewTime}
         </Descriptions.Item>
         <Descriptions.Item label={`${text}意见`} span={3}>
           <div dangerouslySetInnerHTML={{ __html: info.opinion?.replace(/[\n]/g, '<br/>') }} />

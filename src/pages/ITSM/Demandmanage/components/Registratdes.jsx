@@ -11,13 +11,13 @@ function Registratdes(props) {
       <Descriptions style={{ marginTop: 24 }} size="middle">
         <Descriptions.Item label="需求编号">{info.demandId}</Descriptions.Item>
         <Descriptions.Item label="建单时间">
-          {moment(info.creationTime).format('YYYY-MM-DD HH:MM')}
+          {info.creationTime}
         </Descriptions.Item>
         <Descriptions.Item label="申请时间">
-          {moment(info.registerTime).format('YYYY-MM-DD HH:MM')}
+          {info.registerTime}
         </Descriptions.Item>
         <Descriptions.Item label="期待完成时间">
-          {moment(info.completeTime).format('YYYY-MM-DD HH:MM')}
+          {info.completeTime}
         </Descriptions.Item>
         <Descriptions.Item label="申请人">{info.proposer}</Descriptions.Item>
         <Descriptions.Item label="申请人单位">{info.proposingUnit}</Descriptions.Item>

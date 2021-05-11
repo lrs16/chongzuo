@@ -136,6 +136,7 @@ function QueryList(props) {
         page,
         module,
         taskName: values.taskName ? values.taskName : taskName,
+        sendTime: values.sendTime !== undefined ? moment(values.sendTime).format('YYYY-MM-DD HH:mm:ss') : '',
         // startTime,
         // endTime,
         completeStatus
@@ -282,7 +283,7 @@ function QueryList(props) {
                 </Col>
                 <Col span={8}>
                   <Form.Item label="创建时间">
-                    {getFieldDecorator('creationTime')(<DatePicker allowClear />)}
+                    {getFieldDecorator('sendTime')(<DatePicker allowClear />)}
                   </Form.Item>
                 </Col>
               </>
