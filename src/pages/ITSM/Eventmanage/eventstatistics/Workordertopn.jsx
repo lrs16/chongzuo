@@ -98,7 +98,7 @@ function Workordertopn(props) {
         num: value,
       }
     }).then(res => {
-      const filename = '下载.xls';
+      const filename = `工单TOPN${moment().format('MM-DD')}.xls`;
       const blob = new Blob([res]);
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -113,9 +113,9 @@ function Workordertopn(props) {
   const defaultTime = () => {
     // startTime = moment().subtract('days', 6).format('YYYY-MM-DD');
     // endTime = moment().format('YYYY-MM-DD');
-    startTime = moment().week(moment().week() - 1).startOf('week').format('YYYY-MM-DD HH:mm:ss');
+    startTime = moment().week(moment().week() - 1).startOf('week').format('YYYY-MM-DD');
     endTime = moment().week(moment().week() - 1).endOf('week').format('YYYY-MM-DD');
-    endTime = `${endTime} 00:00:00`;
+    //  endTime = `${endTime} 00:00:00`;
   }
 
   const selectOnchange = (selectvalue) => {
@@ -228,7 +228,7 @@ function Workordertopn(props) {
 }
 
 export default Form.create({})(
-  connect(({ eventstatistics,loading }) => ({
+  connect(({ eventstatistics, loading }) => ({
     ordertopnArr: eventstatistics.ordertopnArr,
     loading: loading.models.eventstatistics
   }))(Workordertopn),

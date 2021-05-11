@@ -23,7 +23,7 @@ function Maintenanceservice(props) {
   const { pagetitle } = props.route.name;
   const [tabActiveKey, setTabActiveKey] = useState('week');
   const {
-    form: { getFieldDecorator,setFieldsValue },
+    form: { getFieldDecorator, setFieldsValue },
     maintenanceService,
     dispatch,
     loading
@@ -59,10 +59,10 @@ function Maintenanceservice(props) {
     },
   ];
 
-  const onChange = (date,dateString) => {
+  const onChange = (date, dateString) => {
     if (tabActiveKey === 'week') {
       startTime = dateString;
-      endTime =  moment(dateString).add(+6,'day').format('YYYY-MM-DD');
+      endTime = moment(dateString).add(+6, 'day').format('YYYY-MM-DD');
       setFieldsValue({ time2: moment(endTime) });
     } else {
       startTime = date.startOf('month').format('YYYY-MM-DD');
@@ -86,7 +86,7 @@ function Maintenanceservice(props) {
         type: tabActiveKey,
       }
     }).then(res => {
-      const filename = '下载.xls';
+      const filename = `软件运维服务指标完成情况${moment().format('MM-DD')}.xls`;
       const blob = new Blob([res]);
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -101,9 +101,9 @@ function Maintenanceservice(props) {
   const defaultTime = () => {
     //  周统计
     if (tabActiveKey === 'week') {
-      startTime = moment().week(moment().week() - 1).startOf('week').format('YYYY-MM-DD HH:mm:ss');
+      startTime = moment().week(moment().week() - 1).startOf('week').format('YYYY-MM-DD');
       endTime = moment().week(moment().week() - 1).endOf('week').format('YYYY-MM-DD');
-      endTime = `${endTime} 00:00:00`;
+      // endTime = `${endTime} 00:00:00`;
     } else { // 月统计
       startTime = moment().startOf('month').format('YYYY-MM-DD');
       endTime = moment().endOf('month').format('YYYY-MM-DD');
@@ -130,7 +130,7 @@ function Maintenanceservice(props) {
     setTabActiveKey(key);
   };
 
-  
+
   const startdisabledDate = (current) => {
     return current > moment().subtract('days', 6)
   }
@@ -177,10 +177,10 @@ function Maintenanceservice(props) {
                         getFieldDecorator('time2', {
                           initialValue: moment(endTime)
                         })
-                          (<DatePicker 
+                          (<DatePicker
                             disabledDate={enddisabledDate}
                             onChange={endonChange}
-                           />)
+                          />)
                       }
                     </Form.Item>
 
@@ -204,7 +204,7 @@ function Maintenanceservice(props) {
                     <Form.Item label='起始时间'>
                       {getFieldDecorator('startTime', {
                         initialValue: moment(startTime)
-                      })( <MonthPicker 
+                      })(<MonthPicker
                         // format="YYYY-MM-DD"
                         allowClear='false'
                         onChange={onChange}
@@ -251,8 +251,8 @@ function Maintenanceservice(props) {
 }
 
 export default Form.create({})(
-  connect(({ eventstatistics,loading }) => ({
+  connect(({ eventstatistics, loading }) => ({
     maintenanceService: eventstatistics.maintenanceService,
-    loading:loading.models.eventstatistics
+    loading: loading.models.eventstatistics
   }))(Maintenanceservice),
 );

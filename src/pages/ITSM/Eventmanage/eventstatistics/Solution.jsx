@@ -25,7 +25,7 @@ const columns = [
       if (record.user !== '合计') {
         return <span>{text}</span>
       }
-      return <span style={{fontWeight:700}}>{text}</span>
+      return <span style={{ fontWeight: 700 }}>{text}</span>
     }
   },
   {
@@ -38,7 +38,7 @@ const columns = [
           to={{
             pathname: '/ITSM/eventmanage/query',
             query: {
-              sign:'solution',
+              sign: 'solution',
               time1: record.start_time,
               time2: record.end_time,
               registerUser: record.user
@@ -49,7 +49,7 @@ const columns = [
           {text}
         </Link >
       }
-      return <span style={{fontWeight:700}}>{text}</span>
+      return <span style={{ fontWeight: 700 }}>{text}</span>
     }
   },
   {
@@ -62,7 +62,7 @@ const columns = [
           to={{
             pathname: '/ITSM/eventmanage/query',
             query: {
-              sign:'solution',
+              sign: 'solution',
               time1: record.start_time,
               time2: record.end_time,
               selfhandle: '是',
@@ -74,7 +74,7 @@ const columns = [
           {text}
         </Link >
       }
-      return <span style={{fontWeight:700}}>{text}</span>
+      return <span style={{ fontWeight: 700 }}>{text}</span>
     }
   },
   {
@@ -85,7 +85,7 @@ const columns = [
       if (record.user !== '合计') {
         return <span>{text}</span>
       }
-      return <span style={{fontWeight:700}}>{text}</span>
+      return <span style={{ fontWeight: 700 }}>{text}</span>
     }
   },
 ];
@@ -93,14 +93,14 @@ const columns = [
 function Solution(props) {
   const { pagetitle } = props.route.name;
   const {
-    form: { getFieldDecorator,setFieldsValue },
+    form: { getFieldDecorator, setFieldsValue },
     soluteArr,
     dispatch
   } = props;
 
-  const onChange = (date,dateString) => {
+  const onChange = (date, dateString) => {
     startTime = dateString;
-    endTime =  moment(dateString).add(+6,'day').format('YYYY-MM-DD');
+    endTime = moment(dateString).add(+6, 'day').format('YYYY-MM-DD');
     setFieldsValue({ time2: moment(endTime) });
   }
 
@@ -121,12 +121,12 @@ function Solution(props) {
   const download = () => {
     dispatch({
       type: 'eventstatistics/downloadEventselfhandle',
-      payload:{
-        time1:startTime,
-        time2:endTime,
+      payload: {
+        time1: startTime,
+        time2: endTime,
       }
     }).then(res => {
-      const filename = '下载.xls';
+      const filename = `一线解决率${moment().format('MM-DD')}.xls`;
       const blob = new Blob([res]);
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -143,9 +143,9 @@ function Solution(props) {
     // startTime = moment().subtract('days', 6).format('YYYY-MM-DD');
     // endTime = moment().format('YYYY-MM-DD');
 
-    startTime = moment().week(moment().week() - 1).startOf('week').format('YYYY-MM-DD HH:mm:ss');
+    startTime = moment().week(moment().week() - 1).startOf('week').format('YYYY-MM-DD');
     endTime = moment().week(moment().week() - 1).endOf('week').format('YYYY-MM-DD');
-    endTime = `${endTime} 00:00:00`;
+    //  endTime = `${endTime} 00:00:00`;
   }
 
   useEffect(() => {
@@ -188,10 +188,10 @@ function Solution(props) {
                     getFieldDecorator('time2', {
                       initialValue: endTime ? moment(endTime) : ''
                     })
-                      (<DatePicker 
+                      (<DatePicker
                         disabledDate={enddisabledDate}
                         onChange={endonChange}
-                         />)
+                      />)
                   }
                 </Form.Item>
 

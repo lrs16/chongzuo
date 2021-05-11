@@ -160,8 +160,8 @@ function Maintenance(props) {
     dispatch({
       type: 'eventstatistics/downloadMaintenance',
       payload: {
-        time1: moment(starttime).format('YYYY-MM-DD'),
-        time2: moment(endTime).format('YYYY-MM-DD'),
+        time1: starttime,
+        time2: endTime,
         type: tabActiveKey,
 
       }

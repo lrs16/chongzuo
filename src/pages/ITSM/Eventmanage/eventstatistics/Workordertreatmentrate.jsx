@@ -74,19 +74,19 @@ function Workordertreatmentrate(props) {
   const { pagetitle } = props.route.name;
   const [tabActiveKey, setTabActiveKey] = useState('week');
   const {
-    form: { getFieldDecorator,setFieldsValue },
+    form: { getFieldDecorator, setFieldsValue },
     orderrateArr,
     dispatch
   } = props;
 
-  const onChange = (date,dateString) => {
+  const onChange = (date, dateString) => {
     startTime = dateString;
-    endTime =  moment(dateString).add(+6,'day').format('YYYY-MM-DD');
+    endTime = moment(dateString).add(+6, 'day').format('YYYY-MM-DD');
     setFieldsValue({ time2: moment(endTime) });
   }
 
 
-  const handleListdata = (params) => {
+  const handleListdata = () => {
     dispatch({
       type: 'eventstatistics/fetchorderrateList',
       payload: { sign, tabActiveKey, startTime, endTime }
@@ -101,7 +101,7 @@ function Workordertreatmentrate(props) {
         time2: endTime,
       }
     }).then(res => {
-      const filename = '下载.xls';
+      const filename = `工单处理率${moment().format('MM-DD')}.xls`;
       const blob = new Blob([res]);
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -117,9 +117,9 @@ function Workordertreatmentrate(props) {
     // startTime = moment().subtract('days', 6).format('YYYY-MM-DD');
     // endTime = moment().format('YYYY-MM-DD');
 
-    startTime = moment().week(moment().week() - 1).startOf('week').format('YYYY-MM-DD HH:mm:ss');
+    startTime = moment().week(moment().week() - 1).startOf('week').format('YYYY-MM-DD');
     endTime = moment().week(moment().week() - 1).endOf('week').format('YYYY-MM-DD');
-    endTime = `${endTime} 00:00:00`;
+    //  endTime = `${endTime} 00:00:00`;
   }
 
   useEffect(() => {
@@ -168,7 +168,7 @@ function Workordertreatmentrate(props) {
                     getFieldDecorator('time2', {
                       initialValue: endTime ? moment(endTime) : ''
                     })
-                      (<DatePicker 
+                      (<DatePicker
                         allowClear={false}
                         disabledDate={enddisabledDate}
                         onChange={endonChange}
