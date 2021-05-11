@@ -2,13 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
 import router from 'umi/router';
-import { Card, Row, Col, Form, Input, Select, Button, DatePicker, Table, Cascader } from 'antd';
+import { Card, Row, Col, Form, Input, Select, Button, Table, Cascader } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import DictLower from '@/components/SysDict/DictLower';
 
 const { Option } = Select;
-const { RangePicker } = DatePicker;
 
 const formItemLayout = {
   labelCol: {
@@ -20,16 +19,6 @@ const formItemLayout = {
     sm: { span: 18 },
   },
 };
-const forminladeLayout = {
-  labelCol: {
-    xs: { span: 24 },
-    sm: { span: 3 },
-  },
-  wrapperCol: {
-    xs: { span: 24 },
-    sm: { span: 21 },
-  },
-};
 
 const columns = [
   {
@@ -39,10 +28,8 @@ const columns = [
     render: (text, record) => {
       const handleClick = () => {
         router.push({
-          pathname: `/ITSM/releasemanage/to-do/record`,
+          pathname: `/ITSM/releasemanage/verificationtodo/record`,
           query: {
-            taskName: record.t1,
-            taskId: record.No,
             mainId: record.No,
           },
         });
@@ -51,35 +38,35 @@ const columns = [
     },
   },
   {
-    title: '当前处理环节',
-    dataIndex: 't1',
-    key: 't1',
+    title: '状态',
+    dataIndex: 'ret1',
+    key: 'ret1',
   },
   {
-    title: '发布类型',
-    dataIndex: 't2',
-    key: 't2',
+    title: '功能类型',
+    dataIndex: 'ret2',
+    key: 'ret2',
     width: 200,
   },
   {
-    title: '责任单位',
-    dataIndex: 't3',
-    key: 't3',
+    title: '模块',
+    dataIndex: 'ret3',
+    key: 'ret3',
   },
   {
-    title: '出厂测试登记人',
-    dataIndex: 't4',
-    key: 't4',
+    title: '功能名称',
+    dataIndex: 'ret4',
+    key: 'ret4',
   },
   {
-    title: '发送人',
-    dataIndex: 't5',
-    key: 't5',
+    title: '问题类型',
+    dataIndex: 'ret5',
+    key: 'ret5',
   },
   {
-    title: '发送时间',
-    dataIndex: 't6',
-    key: 't6',
+    title: '测试内容及预期效果',
+    dataIndex: 'ret6',
+    key: 'ret6',
   },
 ];
 
@@ -101,7 +88,7 @@ function VerificationTodo(props) {
     validateFields((err, values) => {
       if (!err) {
         dispatch({
-          type: 'releasetodo/fetchlist',
+          type: 'releaseverificat/fetchlist',
           payload: {
             ...values,
             pageIndex: paginations.current - 1,
@@ -119,7 +106,7 @@ function VerificationTodo(props) {
   // 查询
   const searchdata = (values, page, size) => {
     dispatch({
-      type: 'eventtodo/fetchlist',
+      type: 'releaseverificat/fetchlist',
       payload: {
         ...values,
         createTime: '',
@@ -335,8 +322,8 @@ function VerificationTodo(props) {
 }
 
 export default Form.create({})(
-  connect(({ releasetodo, loading }) => ({
-    list: releasetodo.list,
-    loading: loading.models.releasetodo,
+  connect(({ releaseverificat, loading }) => ({
+    list: releaseverificat.list,
+    loading: loading.models.releaseverificat,
   }))(VerificationTodo),
 );

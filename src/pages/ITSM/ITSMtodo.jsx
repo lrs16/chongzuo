@@ -26,7 +26,7 @@ const columns = [
             router.push({
               pathname: `/ITSM/faultmanage/todolist/record`,
               query: {
-                id: record.id,
+                id: record.taskId,
               },
             });
             break;
@@ -34,7 +34,7 @@ const columns = [
             router.push({
               pathname: `/ITSM/problemmanage/besolveddetail/workorder`,
               query: {
-                id: record.id,
+                id: record.taskId,
                 taskName: record.currentNode,
               },
             });

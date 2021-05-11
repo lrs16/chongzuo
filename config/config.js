@@ -512,7 +512,7 @@ export default {
                     },
                     {
                       path: '/ITSM/releasemanage/verificationtodo/record',
-                      name: '业务验证待办处理',
+                      name: '业务验证',
                       icon: 'control',
                       component: './ITSM/Releasemanage/BusinessDetail',
                     },
@@ -521,6 +521,12 @@ export default {
                       name: '业务复核待办',
                       icon: 'control',
                       component: './ITSM/Releasemanage/Checktodo',
+                    },
+                    {
+                      path: '/ITSM/releasemanage/checktodo/record',
+                      name: '业务复核',
+                      icon: 'control',
+                      component: './ITSM/Releasemanage/BusinessDetail',
                     },
                   ],
                 },

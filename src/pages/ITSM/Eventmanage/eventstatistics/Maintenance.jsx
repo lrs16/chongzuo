@@ -79,8 +79,8 @@ function Maintenance(props) {
               pathname: '/ITSM/eventmanage/query',
               query: {
                 sign: 'last',
-                time1: record.last_start_time,
-                time2: record.last_end_time,
+                time1: moment(record.last_start_time).format('YYYY-MM-DD'),
+                time2: moment(record.last_end_time).format('YYYY-MM-DD'),
                 eventObject: record.object_name
               }
             }}
@@ -103,8 +103,8 @@ function Maintenance(props) {
               pathname: '/ITSM/eventmanage/query',
               query: {
                 sign: 'last',
-                time1: record.now_start_time,
-                time2: record.now_end_time,
+                time1: moment(record.now_start_time).format('YYYY-MM-DD'),
+                time2: moment(record.now_end_time).format('YYYY-MM-DD'),
                 eventObject: record.object_name
               }
             }}
@@ -160,13 +160,13 @@ function Maintenance(props) {
     dispatch({
       type: 'eventstatistics/downloadMaintenance',
       payload: {
-        time1: starttime,
-        time2: endTime,
+        time1: moment(starttime).format('YYYY-MM-DD'),
+        time2: moment(endTime).format('YYYY-MM-DD'),
         type: tabActiveKey,
 
       }
     }).then(res => {
-      const filename = '下载.xls';
+      const filename = `运维分类情况统计${moment().format('MM-DD')}.xls`;
       const blob = new Blob([res]);
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -181,9 +181,9 @@ function Maintenance(props) {
   const defaultTime = () => {
     //  周统计
     if (tabActiveKey === 'week') {
-      starttime = moment().week(moment().week() - 1).startOf('week').format('YYYY-MM-DD HH:mm:ss');
+      starttime = moment().week(moment().week() - 1).startOf('week').format('YYYY-MM-DD');
       endTime = moment().week(moment().week() - 1).endOf('week').format('YYYY-MM-DD');
-      endTime = `${endTime} 00:00:00`;
+      //  endTime = `${endTime} 00:00:00`;
     } else { // 月统计
       starttime = moment().startOf('month').format('YYYY-MM-DD');
       endTime = moment().endOf('month').format('YYYY-MM-DD');

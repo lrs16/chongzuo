@@ -696,13 +696,19 @@ function mockreleasetodo(count) {
   const list = [];
   for (let i = 0; i < count; i += 1) {
     list.push({
-      No: Random.string('123456789', 5),
+      No: Random.string('123456789', 12),
       t1: ['发布登记', '平台验证', '业务验证', '发布实施准备', '版本管理员审批', '版本管理员审批', '版本管理员审批', '科室负责人审批', '中心领导审批', '发布实施', '业务复核'][i % 11],
       t2: ['计划发布', '临时发布'][i % 2],
       t3: ['博联', '南瑞'][i % 2],
       t4: Random.cname(),
       t5: Random.cname(),
       t6: Random.datetime(),
+      ret1: ['待验证', '已验证'][i % 2],
+      ret2: ['前台功能 / 缺陷修复项', '后台功能/变更功能项'][i % 2],
+      ret3: '系统对时',
+      ret4: '电表对时',
+      ret5: '前台界面查询慢',
+      ret6: '测试内容及预期效果',
     });
   }
   return list;
