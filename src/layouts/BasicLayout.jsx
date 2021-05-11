@@ -20,7 +20,7 @@ import RightContent from '@/components/GlobalHeader/RightContent';
 import { getAuthorityFromRouter } from '@/utils/utils';
 import logo from '../../public/menulogo.png';
 // import Layout from './BlankLayout';
-// import PageTab from './PageTab';
+import PageTab from './PageTab';
 
 const noMatch = (
   <Result
@@ -165,8 +165,8 @@ const BasicLayout = props => {
       >
         {authorized === Userauth && (
           <Authorized authority={Userauth} noMatch={noMatch}>
-            {/* <PageTab>{children}</PageTab> */}
-            {children}
+            <PageTab>{children}</PageTab>
+            {/* {children} */}
           </Authorized>
         )}
         {authorized === 'incontrol' && (

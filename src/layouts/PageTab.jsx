@@ -153,7 +153,7 @@ class PageTab extends Component {
     let target;
     (function traverse(data) {
       data.forEach(d => {
-        if (d.path === menuName && !d.routes) {
+        if (d.path === menuName) {
           target = d.name;
         }
         // eslint-disable-next-line no-unused-expressions
@@ -170,7 +170,9 @@ class PageTab extends Component {
     const { pathname } = tabs;
     const { pages } = this.state;
     let myPage = Object.assign([], pages);
-    const name = this.menuFilter(menuData, pathname);
+    const isParam = pathname.indexOf('?');
+    const path = isParam !== -1 ? pathname.substring(0, isParam) : pathname;
+    const name = this.menuFilter(menuData, path);
     // 如果是新开标签页，push到tabs标签页数组中，并设置当前激活页面
     if (!pages.some(page => page.key === pathname)) {
       myPage = myPage.filter(m => m.title !== undefined);
@@ -292,7 +294,7 @@ class PageTab extends Component {
                 closable={pages.length > 1}
                 style={{ background: 'transparent', paddingLeft: 0, paddingRight: 0 }}
               >
-                <div key={keys[pane.key]}>{pane.content}</div>
+                {activeKey === pane.key ? <div key={keys[pane.key]}>{pane.content}</div> : null}
               </TabPane>
             );
           })}

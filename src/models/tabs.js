@@ -62,8 +62,12 @@ const GlobalModel = {
         const pageName =
           menu[getName(config.routes, 'menu', pathname)[0]] || title || name || '新标签页';
 
+        const path = pathname + window.location.search;
         setTimeout(() => {
-          dispatch({ type: 'setCurrentPath', payload: { pathname, pageName: title || pageName } });
+          dispatch({
+            type: 'setCurrentPath',
+            payload: { pathname: path, pageName: title || pageName },
+          });
           // dispatch({ type: 'addPath', payload: { pathname, pageName } });
         }, 0);
       });
