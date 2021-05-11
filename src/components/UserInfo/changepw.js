@@ -15,7 +15,7 @@ const formItemLayout = {
   colon: false,
 };
 // 克隆子元素按钮，并添加事件
-const withClick = (element, showDrawer = () => {}) => {
+const withClick = (element, showDrawer = () => { }) => {
   return <element.type {...element.props} onClick={showDrawer} />;
 };
 @connect(({ userchangpw, loading }) => ({
@@ -41,13 +41,12 @@ class ChangePW extends Component {
 
   handleOk = () => {
     const { dispatch } = this.props;
-    const id = this.props.userid;
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        const { oldPasswordExt, newPasswordExt } = values;
+        const { oldPassWordExt, newPassWordExt } = values;
         dispatch({
           type: 'userchangpw/fetch',
-          payload: { id, oldPasswordExt, newPasswordExt },
+          payload: { oldPassWordExt, newPassWordExt },
         }).then(res => {
           if (res.code === 200) {
             Message.success(res.msg);
@@ -66,7 +65,7 @@ class ChangePW extends Component {
 
   // 自定义校验两次密码是否一致
   validatorPwd = (rule, value, callback) => {
-    if (value !== this.props.form.getFieldValue('newPasswordExt')) {
+    if (value !== this.props.form.getFieldValue('newPassWordExt')) {
       callback(rule.message);
       return;
     }
@@ -88,16 +87,16 @@ class ChangePW extends Component {
           onClose={this.onClose}
           visible={visible}
           bodyStyle={{ paddingBottom: 60 }}
-          // destroyOnClose
+        // destroyOnClose
         >
           <Form {...formItemLayout}>
             <Form.Item label="旧密码">
-              {getFieldDecorator('oldPasswordExt', {
+              {getFieldDecorator('oldPassWordExt', {
                 rules: [{ required, message: '请输入密码' }],
               })(<Input.Password />)}
             </Form.Item>
             <Form.Item label="新密码">
-              {getFieldDecorator('newPasswordExt', {
+              {getFieldDecorator('newPassWordExt', {
                 rules: [{ required, message: '请输入密码' }],
                 validateTrigger: 'onBlur',
               })(<Input.Password />)}
