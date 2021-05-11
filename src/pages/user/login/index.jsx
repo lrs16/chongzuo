@@ -218,10 +218,10 @@ class Login extends Component {
               ]}
             />
           </Tab>
-          <div>
-            {/* <Checkbox checked={autoLogin} onChange={this.changeAutoLogin}>
+          {/* <div>
+            <Checkbox checked={autoLogin} onChange={this.changeAutoLogin}>
               <FormattedMessage id="user-login.login.remember-me" />
-            </Checkbox> */}
+            </Checkbox>
             {status === -1 && <Alert message={msg} type="error" showIcon />}
             <a
               style={{
@@ -231,7 +231,7 @@ class Login extends Component {
             >
               <FormattedMessage id="user-login.login.forgot-password" />
             </a>
-          </div>
+          </div> */}
           <Submit loading={submitting}>
             <FormattedMessage id="user-login.login.login" />
           </Submit>

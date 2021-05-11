@@ -76,17 +76,16 @@ const User = props => {
     obj.userIds = values;
     const target = demandvalue.filter((_, index) => key === index)[0];
     if (target === undefined) {
-      demandvalue.push(obj);
+      if (key === 1 && demandvalue.length === 0) {
+        setDemandValue([{}, { ...obj }])
+      } else {
+        demandvalue.push(obj);
+      }
     } else {
       demandvalue.splice(key, 1, obj);
     }
     sessionStorage.setItem('NextflowUserId', JSON.stringify(demandvalue));
-    // setValue(values);
   };
-
-  // useEffect(() => {
-  //   sessionStorage.setItem('NextflowUserId', value);
-  // }, []);
 
   useEffect(() => {
     if (changorder !== undefined && type === 'event') {
@@ -155,7 +154,7 @@ const User = props => {
         ChangeChoice(true);
         ChangeUserVisible(false);
       }
-    }
+    };
     if (type === 'demand') {
       const newArr = [];
       const nameArr = [];
@@ -211,15 +210,6 @@ const User = props => {
                         onChange={values => handledemandChange(values, obj.nodeName, index)}
                         key={index.toString()}
                       />
-                      {/* {obj.users.map((item, i) => {
-                        return (
-                          <Checkbox
-                            key={i.toString()}
-                            onChange={() => handledemandChange(item.userId, obj.nodeName)} >
-                            {item.userName}
-                          </Checkbox>
-                        )
-                      })} */}
                     </div>
                   </div>
                 );
