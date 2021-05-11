@@ -107,7 +107,7 @@ const changehour = datas => {
     const vote = {};
     vote.value = datas[i].data;
     // vote.date = datas[i].hour;
-    vote.date = moment(datas[i].fssj).format('MM/DD HH');
+    vote.date = moment(datas[i].fssj).format('MM/DD HH:SS');
     vote.alertvalue = datas[i].alarm;
     vote.alert = false;
     newArr.push(vote);
@@ -417,7 +417,7 @@ class Collection extends Component {
                       height={350}
                       data={salesdatas}
                       cols={lin2wcols}
-                      padding={[30, 30, 30, 60]}
+                      padding={[30, 30, 80, 60]}
                     />
                   )}
                 </Spin>
@@ -441,7 +441,7 @@ class Collection extends Component {
                       height={350}
                       data={supplydatas}
                       cols={lin2wcols}
-                      padding={[30, 30, 30, 50]}
+                      padding={[30, 30, 80, 50]}
                     />
                   )}
                 </Spin>
