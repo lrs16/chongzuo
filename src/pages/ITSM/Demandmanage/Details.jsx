@@ -3,8 +3,8 @@ import moment from 'moment';
 import router from 'umi/router';
 import { connect } from 'dva';
 import { Steps, Collapse, Spin, Button } from 'antd';
-import styles from './index.less';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import styles from './index.less';
 import Process from './Process';
 import Registratdes from './components/Registratdes';
 import Examinedes from './components/Examinedes';
@@ -91,8 +91,8 @@ function Details(props) {
                 const desc = (
                   <div>
                     <div>处理人：{obj.userName}</div>
-                    <div>开始时间：{moment(obj.startTime).format('YYYY-MM-DD hh:mm:ss')}</div>
-                    <div>结束时间：{moment(obj.endTime).format('YYYY-MM-DD hh:mm:ss')}</div>
+                    <div>开始时间：{obj.startTime}</div>
+                    <div>结束时间：{obj.endTime}</div>
                   </div>
                 );
                 return <Step title={obj.taskName} description={desc} key={index.toString()} />;
