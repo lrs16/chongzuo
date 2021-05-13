@@ -64,6 +64,7 @@ function Besolved(props) {
             query: {
               id: record.id,
               taskName: record.currentNode,
+              mainId: record.mainId,
             },
           });
         };

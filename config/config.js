@@ -1318,6 +1318,11 @@ export default {
       target: ' http://172.16.10.11:9901/',
       changeOrigin: true,
     },
+    // 作业计划
+    '/operation/': {
+      target: ' http://172.16.10.139:9901/',
+      changeOrigin: true,
+    },
     '/api/': {
       target: 'http://localhost:8000/', // mock接口数据
       changeOrigin: true,

@@ -1,84 +1,73 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
-    Modal,
-    Form,
-    Input,
-    Row,
-    Col
+  Modal,
+  Form,
+  Input,
+  Row,
+  Col
 } from 'antd';
 
 const { TextArea } = Input;
 
-const withClick = (element, handleClick = () => { }) => {
-    return <element.type {...element.props} onClick={handleClick} />;
-}
 function ModelRollback(props) {
-    const [visible, setVisible] = useState(false);
-    const required = true;
-    const {
-        form: { getFieldDecorator, validateFields, resetFields },
-        title,
-        children,
-    } = props;
-
-    const handleopenClick = () => {
-        setVisible(true);
-    }
+  const required = true;
+  const {
+    form: { getFieldDecorator, validateFields, resetFields },
+    title, visible, ChangeVisible
+  } = props;
 
 
-    const handleCancel = () => {
-        setVisible(false);
-    }
+  const handleCancel = () => {
+    ChangeVisible(false);
+  }
 
-    const handleOk = () => {
-        validateFields((err, values) => {
-            if (!err) {
-                handleCancel();
-                props.rollbackSubmit(values);
-                resetFields();
-            }
-        })
-    }
+  const handleOk = () => {
+    validateFields((err, values) => {
+      if (!err) {
+        handleCancel();
+        props.rollbackSubmit(values);
+        resetFields();
+      }
+    })
+  }
 
 
 
 
-    return (
-        <>
-            {withClick(children, handleopenClick)}
-            <Modal
-                visible={visible}
-                maskClosable={false}
-                width={650}
-                title={title}
-                checkable
-                onCancel={handleCancel}
-                onOk={handleOk}
-            >
-                <Row gutter={16}>
-                    <Form>
-                        <Col span={24}>
-                            <Form.Item label='回退意见'>
-                                {
-                                    getFieldDecorator('rollbackOpinion', {
-                                        rules: [
-                                            {
-                                                required,
-                                                message: '请说明回退原因'
-                                            }
-                                        ]
-                                    })(<TextArea rows={8} />)
-                                }
+  return (
+    <>
+      <Modal
+        visible={visible}
+        maskClosable={false}
+        width={650}
+        title={title}
+        checkable
+        onCancel={handleCancel}
+        onOk={handleOk}
+      >
+        <Row gutter={16}>
+          <Form>
+            <Col span={24}>
+              <Form.Item label='回退意见'>
+                {
+                  getFieldDecorator('rollbackOpinion', {
+                    rules: [
+                      {
+                        required,
+                        message: '请说明回退原因'
+                      }
+                    ]
+                  })(<TextArea rows={8} />)
+                }
 
-                            </Form.Item>
-                        </Col>
-                    </Form>
-                </Row>
+              </Form.Item>
+            </Col>
+          </Form>
+        </Row>
+      </Modal>
 
-            </Modal>
-
-        </>
-    )
+    </>
+  )
 }
 
 export default Form.create()(ModelRollback)

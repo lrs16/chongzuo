@@ -72,6 +72,7 @@ function ToDOlist(props) {
             pathname: `/ITSM/faultmanage/todolist/record`,
             query: {
               id: record.id,
+              mainId: record.mainId,
             },
           });
         };

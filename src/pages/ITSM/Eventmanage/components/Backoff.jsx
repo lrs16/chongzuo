@@ -1,34 +1,73 @@
 import React from 'react';
-import { Form, Input, Button } from 'antd';
+import {
+  Modal,
+  Form,
+  Input,
+  Row,
+  Col
+} from 'antd';
 
 const { TextArea } = Input;
 
-const Backoff = props => {
-  const { ChangeBackvalue, ChangeVisible } = props;
-  const { getFieldDecorator, validateFields } = props.form;
+function ModelRollback(props) {
+  const required = true;
+  const {
+    form: { getFieldDecorator, validateFields, resetFields },
+    title, visible, ChangeVisible
+  } = props;
 
-  const handleChange = () => {
+
+  const handleCancel = () => {
+    ChangeVisible(false);
+  }
+
+  const handleOk = () => {
     validateFields((err, values) => {
-      if (err) {
-        return;
+      if (!err) {
+        handleCancel();
+        props.rollbackSubmit(values);
+        resetFields();
       }
-      ChangeBackvalue(values);
-      ChangeVisible(false);
-    });
-  };
+    })
+  }
+
+
+
 
   return (
-    <Form>
-      <Form.Item label="请填写回退原因">
-        {getFieldDecorator('msg', {
-          rules: [{ required: 'true', message: '请输入回退原因' }],
-        })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
-      </Form.Item>
-      <Button type="primary" onClick={handleChange} style={{ marginLeft: 40 }}>
-        确认回退
-      </Button>
-    </Form>
-  );
-};
+    <>
+      <Modal
+        visible={visible}
+        maskClosable={false}
+        width={650}
+        title={title}
+        checkable
+        onCancel={handleCancel}
+        onOk={handleOk}
+      >
+        <Row gutter={16}>
+          <Form>
+            <Col span={24}>
+              <Form.Item label='回退意见'>
+                {
+                  getFieldDecorator('msg', {
+                    rules: [
+                      {
+                        required,
+                        message: '请说明回退原因'
+                      }
+                    ]
+                  })(<TextArea rows={8} />)
+                }
 
-export default Form.create({})(Backoff);
+              </Form.Item>
+            </Col>
+          </Form>
+        </Row>
+      </Modal>
+
+    </>
+  )
+}
+
+export default Form.create()(ModelRollback)

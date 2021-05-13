@@ -25,6 +25,8 @@ import Reasonregression from './components/Reasonregression';
 import Problemflow from './components/Problemflow';
 import Systemoperatorsecond from './components/Systemoperatorsecond';
 
+import TimeoutModal from '../components/TimeoutModal';                // 超时信息填写
+import { judgeTimeoutStatus, saveTimeoutMsg } from '../services/api'; // 超时接口
 
 import styles from './index.less';
 
@@ -65,19 +67,22 @@ let changeOrder = '';
 
 export const FatherContext = createContext();
 function Workorder(props) {
-  const pagetitle = props.route.name;
   const RegistratRef = useRef();
   const PreviesRef = useRef();
   const HandleRef = useRef();
   const ProblemconfirmRef = useRef();
   const [flowtype, setFlowtype] = useState('1');
   const [uservisible, setUserVisible] = useState(false); // 是否显示选人组件
-  const [changorder, setChangeOrder] = useState(undefined);
+  //  const [changorder, setChangeOrder] = useState(undefined);
   const [problemHandle, setProblemHandle] = useState('');
   const [userchoice, setUserChoice] = useState(false); // 已经选择人员
   const [butandorder, setButandOrder] = useState('');    // 暂存按钮类型
   const [tabActiveKey, setTabActiveKey] = useState('workorder');
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
+
+  const [buttontype, setButtonType] = useState('');
+  const [modalvisible, setModalVisible] = useState(false);
+  const [modalrollback, setModalRollBack] = useState(false);   // 回退信息modle
 
   const {
     dispatch,
@@ -104,10 +109,9 @@ function Workorder(props) {
     }
   }
 
-  const { id, taskName } = props.location.query;
+  const { id, taskName, mainId } = props.location.query;
 
   const { problemFlowLogs, problemFlowNodeRows } = todoDetail;
-
 
   const selectNextflow = () => {
     switch (flowNodeName) {
@@ -386,6 +390,7 @@ function Workorder(props) {
     });
   };
 
+  // 回退
   const reasonSubmit = values => {
     dispatch({
       type: 'problemmanage/tobeBack',
@@ -597,6 +602,51 @@ function Workorder(props) {
     files.ischange = false;
   }
 
+  // 点击回退,接单,流转、结束
+  const onClickSubmit = (buttype) => {
+    const taskId = id;
+    judgeTimeoutStatus(taskId).then(res => {
+      if (res.code === 200 && res.status === 'yes' && res.timeoutMsg === '') {
+        message.info('该故障单已超时，请填写超时原因...')
+        setModalVisible(true);
+        setButtonType(buttype);
+      };
+      if (res.code === 200 && ((res.status === 'yes' && res.timeoutMsg !== '') || res.status === 'no')) {
+        setModalRollBack(true);
+      }
+    })
+  };
+
+  // 保存超时信息,成功校验表单
+  const postTimeOutMsg = (v) => {
+    saveTimeoutMsg({
+      taskId: id,
+      msgType: 'timeout',
+      orderId: mainId,
+      orderType: 'trouble',
+      ...v
+    }).then(res => {
+      if (res.code === 200) {
+        switch (buttontype) {
+          case 'accpt':
+            problemHandleOrder()
+            break;
+          case 'goback':
+            setModalRollBack(true);
+            break;
+          case 'save':
+            handleSave(tosaveStatus);
+            break;
+          default:
+            if (res.code === 200) {
+              handleSave(currenStatus)
+            }
+            break;
+        }
+      }
+    });
+  }
+
   return (
     <PageHeaderWrapper
       title={taskName}
@@ -619,11 +669,9 @@ function Workorder(props) {
               (flowNodeName === '系统运维商审核' || flowNodeName === '系统运维商确认'
                 || flowNodeName === '自动化科业务人员确认' || flowNodeName === '问题登记人员确认')
               && showback === true && (
-                <Reasonregression reasonSubmit={values => reasonSubmit(values)}>
-                  <Button type="primary" style={{ marginRight: 8 }}>
-                    回退
+                <Button type="primary" style={{ marginRight: 8 }} onClick={() => onClickSubmit('goback')}>
+                  回退
                 </Button>
-                </Reasonregression>
               )}
 
             {
@@ -659,12 +707,11 @@ function Workorder(props) {
                 >
                   转单
                 </Button>
-
               )
             }
 
             { (currntStatus === 29 || currntStatus === 40 || currntStatus === 45) && handle === undefined && (
-              <Button type="primary" style={{ marginRight: 8 }} onClick={problemHandleOrder}>
+              <Button type="primary" style={{ marginRight: 8 }} onClick={() => onClickSubmit('accpt')}>
                 接单
               </Button>
             )}
@@ -1071,10 +1118,21 @@ function Workorder(props) {
         taskId={id}
         visible={uservisible}
         ChangeUserVisible={v => setUserVisible(v)}
-        changorder={changorder}
+        changorder={undefined}
         ChangeChoice={v => setUserChoice(v)}
         currentPeocess={flowNodeName}
         ChangeType={() => 0}
+      />
+      <TimeoutModal
+        modalvisible={modalvisible}
+        ChangeModalVisible={v => setModalVisible(v)}
+        ChangeTimeOutMsg={v => postTimeOutMsg(v)}
+      />
+      <Reasonregression
+        title="填写回退意见"
+        visible={modalrollback}
+        ChangeVisible={v => setModalRollBack(v)}
+        rollbackSubmit={v => reasonSubmit(v)}
       />
     </PageHeaderWrapper>
   );

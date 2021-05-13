@@ -284,3 +284,12 @@ export async function downFileToZip(id) {
     responseType: 'blob',
   });
 }
+
+// 作业计划测试
+export async function test(params) {
+  return request(`/operation/form/downloadMyOperationExcel`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+  });
+}

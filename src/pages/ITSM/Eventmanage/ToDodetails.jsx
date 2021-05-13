@@ -27,7 +27,6 @@ function ToDodetails(props) {
   const { taskName, taskId, mainId, check, next } = location.query;
   const [tabActivekey, settabActivekey] = useState('workorder'); // 打开标签
   const [buttontype, setButtonType] = useState('');
-  const [backvalue, setBackvalue] = useState('');
   const [uservisible, setUserVisible] = useState(false); // 是否显示选人组件
   const [userchoice, setUserChoice] = useState(false); // 已经选择人员
   const [changorder, setChangeOrder] = useState(undefined);
@@ -44,14 +43,21 @@ function ToDodetails(props) {
       pathname: `/ITSM/eventmanage/to-do`,
     });
   };
-  const content = (
-    <Backoff
-      ChangeBackvalue={v => setBackvalue(v)}
-      ChangeVisible={v => setVisible(v)}
-    />
-  );
 
-  const handleVisibleChange = visible => {
+  // 回退接口
+  const postRollBackmsg = (values) => {
+    dispatch({
+      type: 'eventtodo/eventback',
+      payload: {
+        id: taskId,
+        userIds: sessionStorage.getItem('userauthorityid'),
+        type: '2',
+        ...values,
+      },
+    });
+  }
+
+  const handleGoback = () => {
     judgeTimeoutStatus(taskId).then(res => {
       if (res.code === 200 && res.status === 'yes' && res.timeoutMsg === '') {
         message.info('该事件单已超时，请填写超时原因...')
@@ -59,12 +65,9 @@ function ToDodetails(props) {
         setButtonType('goback');
         setUserVisible(false);
       };
-      if (res.code === 200 && res.status === 'yes' && res.timeoutMsg !== '') {
-        setVisible(visible);
+      if (res.code === 200 && ((res.status === 'yes' && res.timeoutMsg !== '') || res.status === 'no')) {
+        setVisible(true);
       };
-      if (res.code === 200 && res.status === 'no') {
-        setVisible(visible);
-      }
     })
   };
 
@@ -73,20 +76,6 @@ function ToDodetails(props) {
       message.info('请接单..', 1);
     }
   }, []);
-
-  useEffect(() => {
-    if (backvalue !== '') {
-      dispatch({
-        type: 'eventtodo/eventback',
-        payload: {
-          id: taskId,
-          userIds: sessionStorage.getItem('userauthorityid'),
-          type: '2',
-          ...backvalue,
-        },
-      });
-    }
-  }, [backvalue]);
 
   // 接单
   const eventaccpt = () => {
@@ -199,11 +188,9 @@ function ToDodetails(props) {
       {(taskName === '待审核' ||
         (taskName === '待处理' && check === null) ||
         (taskName === '待确认' && check === null)) && (
-          <Popover content={content} visible={Popvisible} onVisibleChange={handleVisibleChange} trigger="click">
-            <Button type="danger" ghost style={{ marginRight: 8 }}>
-              回退
+          <Button type="danger" ghost style={{ marginRight: 8 }} onClick={() => handleGoback()}>
+            回退
           </Button>
-          </Popover>
         )}
       {taskName !== '待处理' && (
         <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleHold('save')}>
@@ -332,6 +319,12 @@ function ToDodetails(props) {
         modalvisible={modalvisible}
         ChangeModalVisible={v => setModalVisible(v)}
         ChangeTimeOutMsg={v => postTimeOutMsg(v)}
+      />
+      <Backoff
+        title="填写回退意见"
+        visible={Popvisible}
+        ChangeVisible={v => setVisible(v)}
+        rollbackSubmit={v => postRollBackmsg(v)}
       />
     </PageHeaderWrapper>
   );

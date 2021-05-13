@@ -7,7 +7,6 @@ import { Card, Form, Button, Steps, Collapse, Popconfirm, message, Spin } from '
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 // eslint-disable-next-line import/no-unresolved
 import creatHistory from 'history/createHashHistory'; // 返回上一页
-import SelectUser from '@/components/SelectUser'; // 选人组件
 import User from '@/components/SelectUser/User';
 import styles from './index.less';
 import ModelRollback from './components/ModelRollback'; // 回退组件
@@ -27,6 +26,9 @@ import HandleQuery from './components/HandleQuery'; // 系统运维商处理
 import SummaryQuery from './components/SummaryQuery'; // 系统运维商总结
 import ExamineSecondQuery from './components/ExamineSecondQuery'; // 自动化科业务负责人审核
 import ConfirmQuery from './components/ConfirmQuery'; // 自动化科专责确认
+
+import TimeoutModal from '../components/TimeoutModal';                // 超时信息填写
+import { judgeTimeoutStatus, saveTimeoutMsg } from '../services/api'; // 超时接口
 
 const { Step } = Steps;
 const { Panel } = Collapse;
@@ -101,6 +103,10 @@ function Todolistdetails(props) {
   const [userchoice, setUserChoice] = useState(false); // 已经选择人员
   const [changorder, setChangeOrder] = useState(undefined);
 
+  const [modalvisible, setModalVisible] = useState(false);
+
+  const [modalrollback, setModalRollBack] = useState(false);   // 回退信息modle
+
   const RegisterRef = useRef(); // 故障登记
   const ExamineRef = useRef(); // 系统运维商审核  自动化科业务负责人审核
   const HandleRef = useRef(); // 系统运维商处理
@@ -131,7 +137,7 @@ function Todolistdetails(props) {
   } = props;
 
   const {
-    query: { id },
+    query: { id, mainId },
   } = props.location; // 获取taskId
 
   // 二进制展示流程图
@@ -154,30 +160,10 @@ function Todolistdetails(props) {
     });
   };
 
-  // useEffect(() => {
-  //   console.log(flowimageview !== '' && document.getElementsByTagName('img') !== null,'jjj');
-  //   if (flowimageview !== '' && document.getElementsByTagName('img') !== null ) {
-  //     imgsrc();
-  //   }
-  // }, [flowimageview]);
   const handleClose = () => {
     // 返回上一页
     history1.goBack();
   };
-
-  // const getFlowImage = () => { // 流程图
-  //   dispatch({
-  //     type: 'fault/fetchGetFlowImage',
-  //     payload: { id: tododetailslist.main.id }
-  //   });
-  // }
-
-  // const getFlowlog = () => { // 流程日志
-  //   dispatch({
-  //     type: 'fault/fetchGetFlowLog',
-  //     payload: { id: tododetailslist.main.id }
-  //   })
-  // }
 
   const handleTabChange = key => {
     // tab切换
@@ -317,8 +303,6 @@ function Todolistdetails(props) {
       return formerr();
     });
   };
-
-
 
   const saveExamine = cirStatus => {
     // 审核类型：1-系统运维商审核；2-自动化科业务负责人审核
@@ -529,21 +513,6 @@ function Todolistdetails(props) {
     }
   }, [files]);
 
-  const rollbackSubmit = values => {
-    // 回退操作
-    dispatch({
-      type: 'fault/rollback',
-      payload: { taskId: id, backReason: values.rollbackOpinion, result: -1 },
-    }).then(res => {
-      if (res.code === 200) {
-        message.info(res.msg);
-        router.push(`/ITSM/faultmanage/todolist`);
-      } else {
-        message.error(res.msg);
-      }
-    });
-  };
-
   const handleReceivs = () => {
     // 接单接口
     const taskId = id;
@@ -735,6 +704,66 @@ function Todolistdetails(props) {
     }
   }, [userchoice])
 
+  // 回退接口
+  const postRollBackmsg = (values) => {
+    dispatch({
+      type: 'fault/rollback',
+      payload: { taskId: id, backReason: values.rollbackmsg, result: -1 },
+    }).then(res => {
+      if (res.code === 200) {
+        message.info(res.msg);
+        router.push(`/ITSM/faultmanage/todolist`);
+      } else {
+        message.error(res.msg);
+      }
+    });
+  }
+
+  // 点击回退,接单,流转、结束
+  const handleSubmit = (buttype) => {
+    const taskId = id;
+    judgeTimeoutStatus(taskId).then(res => {
+      if (res.code === 200 && res.status === 'yes' && res.timeoutMsg === '') {
+        message.info('该故障单已超时，请填写超时原因...')
+        setModalVisible(true);
+        setButtonType(buttype);
+      };
+      if (res.code === 200 && ((res.status === 'yes' && res.timeoutMsg !== '') || res.status === 'no')) {
+        setModalRollBack(true);
+      }
+    })
+  };
+
+  // 保存超时信息,成功校验表单
+  const postTimeOutMsg = (v) => {
+    saveTimeoutMsg({
+      taskId: id,
+      msgType: 'timeout',
+      orderId: mainId,
+      orderType: 'trouble',
+      ...v
+    }).then(res => {
+      if (res.code === 200) {
+        switch (buttontype) {
+          case 'accpt':
+            handleReceivs()
+            break;
+          case 'goback':
+            setModalRollBack(true);
+            break;
+          case 'save':
+            handleSave(tosaveStatus);
+            break;
+          default:
+            if (res.code === 200) {
+              handleSave(currenStatus)
+            }
+            break;
+        }
+      }
+    });
+  }
+
   return (
     <PageHeaderWrapper
       extra={
@@ -757,44 +786,27 @@ function Todolistdetails(props) {
             check === undefined &&
             finish === undefined &&
             confirm === undefined && (
-              <ModelRollback title="填写回退意见" rollbackSubmit={values => rollbackSubmit(values)}>
-                <Button type="danger" ghost>
-                  回退
-                </Button>
-              </ModelRollback>
+              <Button type="danger" ghost onClick={() => handleSubmit('goback')}>
+                回退
+              </Button>
             )}
           {// 接单只有系统运维商处理时有
             main && (main.status === '40' || main.status === '45') && editState === 'add' && (
-              <Button type="primary" onClick={() => handleReceivs()}>
+              <Button type="primary" onClick={() => handleSubmit('accpt')}>
                 接单
               </Button>
             )}
           {main && main.status !== '40' && !(main.status === '45' && editState === 'add') && (
-            <Button type="primary" onClick={() => handleSave(tosaveStatus)}>
+            <Button type="primary" onClick={() => { handleSave(tosaveStatus); setButtonType('save') }}>
               保存
             </Button>
           )}
           {// 转单只有系统运维商处理时有
             main && (main.status === '45' || main.status === '40') && editState === 'edit' && (
-              // <SelectUser
-              //   handleSubmit={() => faultcircula('transfer')}
-              //   taskId={id}
-              //   changorder="请选择转单处理"
-              // >
-              //   <Button
-              //     type="primary"
-              //     onMouseOver={() => {
-              //       sessionStorage.setItem('flowtype', '9');
-              //     }}
-              //     onFocus={() => 0}
-              //   >
-              //     转单
-              // </Button>
-              // </SelectUser>
               <Button
                 type="primary"
                 style={{ marginRight: 8 }}
-                onClick={() => { handleSave(currenStatus); setChangeOrder('请选择处理'); setButtonType('transfer') }}
+                onClick={() => { handleSubmit('transfer'); setChangeOrder('请选择处理') }}
                 onMouseOver={() => {
                   sessionStorage.setItem('flowtype', '9');
                 }}
@@ -806,7 +818,7 @@ function Todolistdetails(props) {
           {/* 确认过程的时候不需要选人 1通过直接关闭 */}
           {flowNodeName === '自动化科专责确认'
             ? resultconfirm === '1' && (
-              <Button type="primary" onClick={() => handleSave(currenStatus)}>
+              <Button type="primary" onClick={() => { handleSubmit('over'); }}>
                 结束
               </Button>
             )
@@ -815,17 +827,6 @@ function Todolistdetails(props) {
             !(main.status === '45' && editState === 'add') &&
             result === '1' &&
             resultsecond === '1' && (
-              // <SelectUser handleSubmit={() => handleSave(currenStatus)} taskId={id}>
-              //   <Button
-              //     type="primary"
-              //     onMouseOver={() => {
-              //       sessionStorage.setItem('flowtype', '1');
-              //     }}
-              //     onFocus={() => 0}
-              //   >
-              //     流转
-              //     </Button>
-              // </SelectUser>
               <Button
                 type="primary"
                 style={{ marginRight: 8 }}
@@ -1101,6 +1102,17 @@ function Todolistdetails(props) {
         changorder={changorder}
         ChangeChoice={v => setUserChoice(v)}
         ChangeType={() => 0}
+      />
+      <TimeoutModal
+        modalvisible={modalvisible}
+        ChangeModalVisible={v => setModalVisible(v)}
+        ChangeTimeOutMsg={v => postTimeOutMsg(v)}
+      />
+      <ModelRollback
+        title="填写回退意见"
+        visible={modalrollback}
+        ChangeVisible={v => setModalRollBack(v)}
+        rollbackSubmit={v => postRollBackmsg(v)}
       />
     </PageHeaderWrapper>
   );

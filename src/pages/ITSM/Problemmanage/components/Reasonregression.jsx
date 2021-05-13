@@ -1,78 +1,73 @@
-import React, { useState } from 'react';
-import { Modal, Form, Card, Input } from 'antd';
+import React from 'react';
+import {
+  Modal,
+  Form,
+  Input,
+  Row,
+  Col
+} from 'antd';
 
 const { TextArea } = Input;
-const formItemLayout = {
-  labelCol: {
-    xs: { span: 24 },
-    sm: { span: 3 },
-  },
-  wrapperCol: {
-    xs: { span: 24 },
-    sm: { span: 21 },
-  },
-};
 
-const withClick = (element, handleClick = () => {}) => {
-  return <element.type {...element.props} onClick={handleClick} />;
-};
-function Reasonregression(props) {
-  const [visible, setVisible] = useState(false);
-  const [golist, setGolist] = useState(false);
+function ModelRollback(props) {
   const required = true;
   const {
     form: { getFieldDecorator, validateFields, resetFields },
-    children,
+    title, visible, ChangeVisible
   } = props;
 
-  const handleopenClick = () => {
-    setVisible(true);
-  };
 
   const handleCancel = () => {
-    setVisible(false);
-  };
+    ChangeVisible(false);
+  }
 
-  const handleReasonregression = () => {
+  const handleOk = () => {
     validateFields((err, values) => {
       if (!err) {
         handleCancel();
-        props.reasonSubmit(values);
+        props.rollbackSubmit(values);
         resetFields();
       }
-    });
-  };
+    })
+  }
+
+
+
 
   return (
     <>
-      {withClick(children, handleopenClick)}
       <Modal
         visible={visible}
-        // centered='true'
         maskClosable={false}
-        width={850}
+        width={650}
+        title={title}
         checkable
-        // height={1000}
         onCancel={handleCancel}
-        onOk={handleReasonregression}
+        onOk={handleOk}
       >
-        <Card>
-          <Form {...formItemLayout}>
-            <Form.Item label="退回原因">
-              {getFieldDecorator('backReason', {
-                rules: [
-                  {
-                    required,
-                    message: '请说明退回原因',
-                  },
-                ],
-              })(<TextArea style={{height:'200px'}}/>)}
-            </Form.Item>
+        <Row gutter={16}>
+          <Form>
+            <Col span={24}>
+              <Form.Item label='回退意见'>
+                {
+                  getFieldDecorator('rollbackOpinion', {
+                    rules: [
+                      {
+                        required,
+                        message: '请说明回退原因'
+                      }
+                    ]
+                  })(<TextArea rows={8} />)
+                }
+
+              </Form.Item>
+            </Col>
           </Form>
-        </Card>
+        </Row>
       </Modal>
+
     </>
-  );
+  )
 }
 
-export default Form.create()(Reasonregression);
+export default Form.create()(ModelRollback)
