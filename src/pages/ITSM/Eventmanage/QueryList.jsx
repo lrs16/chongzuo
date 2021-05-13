@@ -232,6 +232,7 @@ function QueryList(props) {
             ...values,
             pageIndex: paginations.current - 1,
             pageSize: paginations.pageSize,
+            createTime: '',
             time1: time1 === undefined ? moment().startOf('month').format('YYYY-MM-DD HH:mm:ss') : time1,
             time2: time2 === undefined ? moment().format('YYYY-MM-DD HH:mm:ss') : time2,
             eventObject,

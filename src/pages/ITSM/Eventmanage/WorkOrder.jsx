@@ -84,6 +84,7 @@ function WorkOrder2(props) {
   const [activeKey, setActiveKey] = useState([]);
   const [isnew, setIsNew] = useState(false);
   const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
+
   const { flowInstanceId, flowNodeInstanceId, flowNodeName, editState, data, edit, main } = info; // 流程基本信息
 
   // console.log(registratfiles)

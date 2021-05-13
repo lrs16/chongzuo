@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import router from 'umi/router';
 import { connect } from 'dva';
-import { Button, Popover, Collapse } from 'antd';
+import { Button, Popover, message } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import SelectUser from '@/components/SelectUser';
 import User from '@/components/SelectUser/User';
 import WorkOrder from './WorkOrder';
 import Process from './Process';
 import Backoff from './components/Backoff';
+import TimeoutModal from '../components/TimeoutModal';
+import { judgeTimeoutStatus, saveTimeoutMsg } from '../services/api';
 
 function ToDoregist(props) {
   const { location, dispatch } = props;
@@ -23,7 +24,7 @@ function ToDoregist(props) {
   const [Popvisible, setVisible] = useState(false);
   const [iscolse, setIsClose] = useState('');
   const [butandorder, setButandOrder] = useState('');    // 暂存按钮类型
-
+  const [modalvisible, setModalVisible] = useState(false);
 
   const handleHold = (type) => {
     setButtonType(type);
@@ -53,6 +54,51 @@ function ToDoregist(props) {
     });
   };
 
+  // 点击流转，审核，转回访，回退按钮
+  const handleClick = (type, order) => {
+    judgeTimeoutStatus(taskId).then(res => {
+      if (res.code === 200 && res.status === 'yes' && res.timeoutMsg === '') {
+        message.info('该需求单已超时，请填写超时原因...')
+        setModalVisible(true);
+        setButandOrder({ type, order });
+      };
+      if (res.code === 200 && res.status === 'yes' && res.timeoutMsg !== '') {
+        handleHold(type);
+        setChangeOrder(order);
+      }
+      if (res.code === 200 && res.status === 'no') {
+        handleHold(type);
+        setChangeOrder(order);
+      }
+    })
+  };
+
+  // 保存超时信息,成功校验表单
+  const postTimeOutMsg = (v) => {
+    saveTimeoutMsg({
+      taskId,
+      msgType: 'timeout',
+      orderId: mainId,
+      orderType: 'demand',
+      ...v
+    }).then(res => {
+      switch (buttontype) {
+        case 'goback':
+          setVisible(true);
+          break;
+        case 'save':
+          break;
+        default:
+          if (res.code === 200) {
+            console.log(butandorder.type)
+            handleHold(butandorder.type);
+            setChangeOrder(butandorder.order);
+          }
+          break;
+      }
+    });
+  }
+
   // 回退
   const content = (
     <Backoff
@@ -61,7 +107,20 @@ function ToDoregist(props) {
     />
   );
   const handleVisibleChange = visible => {
-    setVisible(visible);
+    judgeTimeoutStatus(taskId).then(res => {
+      if (res.code === 200 && res.status === 'yes' && res.timeoutMsg === '') {
+        message.info('该事件单已超时，请填写超时原因...')
+        setModalVisible(true);
+        setButtonType('goback');
+        setUserVisible(false);
+      };
+      if (res.code === 200 && res.status === 'yes' && res.timeoutMsg !== '') {
+        setVisible(visible);
+      };
+      if (res.code === 200 && res.status === 'no') {
+        setVisible(visible);
+      }
+    })
   };
   useEffect(() => {
     if (backvalue !== '') {
@@ -120,41 +179,31 @@ function ToDoregist(props) {
         taskName !== '自动化科负责人确认' &&
         taskName !== '需求登记人员确认') ||
         taskName === '系统开发商处理') && (
-          //   <SelectUser handleSubmit={() => handleHold('flow')} taskId={taskId}>
-          //     <Button type="primary" style={{ marginRight: 8 }}>
-          //       流转
-          //   </Button>
-          // </SelectUser>
           <Button
             type="primary"
             style={{ marginRight: 8 }}
-            onClick={() => { handleHold('flow'); setButandOrder('flow') }}>
+            onClick={() => { handleClick('flow'); setButandOrder('flow') }}>
             流转
           </Button>
         )}
       {result === '1' && taskName === '自动化科业务人员审核' && (
-        <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleHold('flow')}>
+        <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleClick('flow')}>
           流转
         </Button>
       )}
       {result === '1' && taskName === '自动化科负责人确认' && (
-        <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleHold('confirm')}>
+        <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleClick('confirm')}>
           登记人确认
         </Button>
       )}
       {result === '0' && (taskName === '自动化科负责人确认' || taskName === '需求登记人员确认') && (
-        // <SelectUser handleSubmit={() => handleHold('flow')} taskId={taskId}>
-        //   <Button type="primary" style={{ marginRight: 8 }}>
-        //     重新处理
-        //   </Button>
-        // </SelectUser>
-        <Button type="primary" style={{ marginRight: 8 }} onClick={() => { handleHold('flow'); setButandOrder('flow') }}>
+        <Button type="primary" style={{ marginRight: 8 }} onClick={() => { handleClick('flow'); setButandOrder('flow') }}>
           重新处理
         </Button>
       )}
       {((result === '2' && taskName === '自动化科负责人确认') ||
         (result === '1' && taskName === '需求登记人员确认')) && (
-          <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleHold('over')}>
+          <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleClick('over')}>
             结束
           </Button>
         )}
@@ -224,6 +273,11 @@ function ToDoregist(props) {
         changorder={changorder}
         ChangeChoice={v => selectChoice(v)}
         ChangeType={v => setButtonType(v)}
+      />
+      <TimeoutModal
+        modalvisible={modalvisible}
+        ChangeModalVisible={v => setModalVisible(v)}
+        ChangeTimeOutMsg={v => postTimeOutMsg(v)}
       />
     </PageHeaderWrapper>
   );

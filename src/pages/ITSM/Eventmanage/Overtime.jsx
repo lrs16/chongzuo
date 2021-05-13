@@ -214,8 +214,9 @@ function Overtime(props) {
           payload: {
             ...values,
             tabType: tabkey,
-            time1: values.createTime === undefined ? moment().startOf('month').format('YYYY-MM-DD HH:mm:ss') : moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss'),
-            time2: values.createTime === undefined ? moment().format('YYYY-MM-DD HH:mm:ss') : moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss'),
+            createTime: '',
+            time1: moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss'),
+            time2: moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss'),
             pageIndex: paginations.current - 1,
             pageSize: paginations.pageSize,
           },
@@ -254,15 +255,9 @@ function Overtime(props) {
       type: 'eventtimeout/query',
       payload: {
         ...values,
-        createTime: values.createTime === undefined ? '' : '',
-        time1:
-          values.createTime === undefined
-            ? moment().startOf('month').format('YYYY-MM-DD HH:mm:ss')
-            : moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss'),
-        time2:
-          values.createTime === undefined
-            ? moment().format('YYYY-MM-DD HH:mm:ss')
-            : moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss'),
+        createTime: '',
+        time1: moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss'),
+        time2: moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss'),
         tabType: tabActivekey,
         pageIndex: page - 1,
         pageSize: size,
@@ -318,18 +313,26 @@ function Overtime(props) {
   };
 
   const download = () => {
-    dispatch({
-      type: 'eventtimeout/download',
-      payload: { tabType: tabActivekey },
-    }).then(res => {
-      const filename = `事件超时查询${moment().format('YYYY-MM-DD HH:mm')}.xls`;
-      const url = window.URL.createObjectURL(res);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = filename;
-      a.click();
-      window.URL.revokeObjectURL(url);
-    });
+    validateFields((_, values) => {
+      dispatch({
+        type: 'eventtimeout/download',
+        payload: {
+          tabType: tabActivekey,
+          ...values,
+          createTime: '',
+          time1: moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss'),
+          time2: moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss'),
+        },
+      }).then(res => {
+        const filename = `事件超时查询${moment().format('YYYY-MM-DD HH:mm')}.xls`;
+        const url = window.URL.createObjectURL(res);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.click();
+        window.URL.revokeObjectURL(url);
+      });
+    })
   };
 
   return (
@@ -356,6 +359,7 @@ function Overtime(props) {
                 })(
                   <Select>
                     <Option value="事件登记">事件登记</Option>
+                    <Option value="事件审核">事件审核</Option>
                     <Option value="事件处理">事件处理</Option>
                     <Option value="事件确认">事件确认</Option>
                   </Select>,

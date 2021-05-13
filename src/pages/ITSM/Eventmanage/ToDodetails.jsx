@@ -7,8 +7,8 @@ import User from '@/components/SelectUser/User';
 import Backoff from './components/Backoff';
 import WorkOrder from './WorkOrder';
 import Process from './Process';
-import { judgeTimeoutStatus, saveTimeoutMsg } from './services/api';
-import TimeoutModal from './components/TimeoutModal';
+import TimeoutModal from '../components/TimeoutModal';
+import { judgeTimeoutStatus, saveTimeoutMsg } from '../services/api';
 
 const pagetitlemaps = new Map([
   ['已登记', '事件登记'],
@@ -35,6 +35,8 @@ function ToDodetails(props) {
   const [modalvisible, setModalVisible] = useState(false);
   const [butandorder, setButandOrder] = useState('');    // 流转，转回访，转单，审核，再处理时已经超时暂存按钮类型及选人order类型
 
+  console.log(butandorder)
+
   const handleHold = type => {
     setButtonType(type);
   };
@@ -52,7 +54,6 @@ function ToDodetails(props) {
   );
 
   const handleVisibleChange = visible => {
-
     judgeTimeoutStatus(taskId).then(res => {
       if (res.code === 200 && res.status === 'yes' && res.timeoutMsg === '') {
         message.info('该事件单已超时，请填写超时原因...')
@@ -67,7 +68,6 @@ function ToDodetails(props) {
         setVisible(visible);
       }
     })
-
   };
 
   useEffect(() => {
@@ -154,7 +154,13 @@ function ToDodetails(props) {
 
   // 保存超时信息,成功校验表单
   const postTimeOutMsg = (v) => {
-    saveTimeoutMsg({ taskId, ...v }).then(res => {
+    saveTimeoutMsg({
+      taskId,
+      msgType: 'timeout',
+      orderId: mainId,
+      orderType: 'event',
+      ...v
+    }).then(res => {
       switch (buttontype) {
         case 'accpt':
           dispatch({
