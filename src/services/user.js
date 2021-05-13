@@ -84,3 +84,10 @@ export async function ProblemFlowUserList(taskId, result) {
     method: 'GET',
   });
 }
+
+// 加载作业计划送审人列表
+export async function taskFlowUserList() {
+  return request(`/operation/flow/getCheckUserList`, {
+    method: 'GET',
+  });
+}

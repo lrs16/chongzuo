@@ -23,27 +23,28 @@ function Back(props) {
   const {
     form: { getFieldDecorator, validateFields, resetFields },
     children,
-    selectedRows
+    selectedRows,
+    detailPage
   } = props;
-
   const handleopenClick = () => {
-
-    if (selectedRows.length === 0) {
-      message.info('请至少选择一条数据')
-      return false;
-    }
-
-    const res = selectedRows.every(item => {
-      if (item.checkStatus === '待审核') {
-        return item.id;
+    if(!detailPage) {
+      console.log(1)
+      if (selectedRows.length === 0) {
+        message.info('请至少选择一条数据')
+        return false;
       }
-      
-      message.info('请选择执行状态:待审核');
-      return false
-    })
-
-    if (res === false) {
-      return false;
+      const res = selectedRows.every(item => {
+        if (item.checkStatus === '待审核') {
+          return item.id;
+        }
+        
+        message.info('请选择执行状态:待审核');
+        return false
+      })
+  
+      if (res === false) {
+        return false;
+      }
     }
 
     setVisible(true);
@@ -80,7 +81,7 @@ function Back(props) {
         <Card>
           <Form {...formItemLayout}>
             <Form.Item label="退回原因">
-              {getFieldDecorator('backReason', {
+              {getFieldDecorator('msg', {
                 rules: [
                   {
                     required,

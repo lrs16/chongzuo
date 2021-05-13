@@ -53,9 +53,9 @@ function OperationplanCheckfillin(props) {
   const {
     form: { validateFields },
     location: { paneKey },
-    match: { params: { id, status, checkoutstatus, type } },
+    match: { params: { id, status, checkoutstatus,executestatus,type } },
     userinfo,
-    dispatch
+    dispatch, 
   } = props;
 
   // const title = props.route.name;
@@ -217,7 +217,7 @@ function OperationplanCheckfillin(props) {
                   forminladeLayout={forminladeLayout}
                   type=''
                   userinfo={userinfo}
-                  // executestatus={executestatus}
+                  executestatus={executestatus}
                   checkoutstatus={checkoutstatus}
                   ref={SaveRef}
                 />

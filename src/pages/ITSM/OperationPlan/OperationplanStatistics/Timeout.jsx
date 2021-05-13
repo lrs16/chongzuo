@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
+import router from 'umi/router';
 import {
   Card,
   Row,
@@ -19,8 +20,8 @@ const sign = 'solution';
 const columns = [
   {
     title: '超时状态',
-    dataIndex: 'user',
-    key: 'user',
+    dataIndex: 'timeoutStatus',
+    key: 'timeoutStatus',
     render: (text, record) => {
       if (record.user !== '合计') {
         return <span>{text}</span>
@@ -30,26 +31,20 @@ const columns = [
   },
   {
     title: '作业计划数',
-    dataIndex: 'not_selfhandle',
-    key: 'not_selfhandle',
+    dataIndex: 'num',
+    key: 'num',
     render: (text, record) => {
-      if (record.user !== '合计') {
-        return <Link
-          to={{
-            pathname: '/ITSM/eventmanage/query',
-            query: {
-              sign:'solution',
-              time1: record.start_time,
-              time2: record.end_time,
-              registerUser: record.user
-            }
+      const gotoDetail = () => {
+        router.push({
+          pathname: `/ITSM/operationplan/operationplansearch`,
+          query: {
+            time1: record.time1,
+            time2: record.time2,
+            timeoutStatus:record.status
           }
-          }
-        >
-          {text}
-        </Link >
-      }
-      return <span style={{fontWeight:700}}>{text}</span>
+        })
+      };
+        return <a onClick={() => gotoDetail(record)}>{text}</a>
     }
   },
 ];
@@ -58,7 +53,7 @@ function Timeout(props) {
   const { pagetitle } = props.route.name;
   const {
     form: { getFieldDecorator,setFieldsValue },
-    soluteArr,
+    timeoutStatusArr,
     dispatch
   } = props;
 
@@ -77,14 +72,14 @@ function Timeout(props) {
 
   const handleListdata = () => {
     dispatch({
-      type: 'eventstatistics/fetchSelfHandleList',
+      type: 'taskstatistics/timeoutStatus',
       payload: { sign, startTime, endTime }
     })
   }
 
   const download = () => {
     dispatch({
-      type: 'eventstatistics/downloadEventselfhandle',
+      type: 'taskstatistics/downloadTimeoutStatus',
       payload:{
         time1:startTime,
         time2:endTime,
@@ -104,12 +99,12 @@ function Timeout(props) {
 
   const defaultTime = () => {
     //  周统计
-    // startTime = moment().subtract('days', 6).format('YYYY-MM-DD');
-    // endTime = moment().format('YYYY-MM-DD');
+    startTime = moment().subtract('days', 6).format('YYYY-MM-DD');
+    endTime = moment().format('YYYY-MM-DD');
 
-    startTime = moment().week(moment().week() - 1).startOf('week').format('YYYY-MM-DD HH:mm:ss');
-    endTime = moment().week(moment().week() - 1).endOf('week').format('YYYY-MM-DD');
-    endTime = `${endTime} 00:00:00`;
+    // startTime = moment().week(moment().week() - 1).startOf('week').format('YYYY-MM-DD HH:mm:ss');
+    // endTime = moment().week(moment().week() - 1).endOf('week').format('YYYY-MM-DD');
+    // endTime = `${endTime} 00:00:00`;
   }
 
   useEffect(() => {
@@ -185,7 +180,7 @@ function Timeout(props) {
 
         <Table
           columns={columns}
-          dataSource={soluteArr}
+          dataSource={timeoutStatusArr}
           rowKey={record => record.statName}
         />
       </Card>
@@ -194,7 +189,7 @@ function Timeout(props) {
 }
 
 export default Form.create({})(
-  connect(({ eventstatistics }) => ({
-    soluteArr: eventstatistics.soluteArr
+  connect(({ taskstatistics }) => ({
+    timeoutStatusArr: taskstatistics.timeoutStatusArr
   }))(Timeout),
 );

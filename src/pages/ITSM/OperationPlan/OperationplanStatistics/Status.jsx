@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import router from 'umi/router';
 import { connect } from 'dva';
 import {
   Card,
@@ -19,37 +20,26 @@ const sign = 'solution';
 const columns = [
   {
     title: '作业状态',
-    dataIndex: 'user',
-    key: 'user',
-    render: (text, record) => {
-      if (record.user !== '合计') {
-        return <span>{text}</span>
-      }
-      return <span style={{fontWeight:700}}>{text}</span>
-    }
+    dataIndex: 'status',
+    key: 'status',
   },
   {
     title: '作业计划数',
-    dataIndex: 'not_selfhandle',
-    key: 'not_selfhandle',
+    dataIndex: 'num',
+    key: 'num',
     render: (text, record) => {
-      if (record.user !== '合计') {
-        return <Link
-          to={{
-            pathname: '/ITSM/eventmanage/query',
-            query: {
-              sign:'solution',
-              time1: record.start_time,
-              time2: record.end_time,
-              registerUser: record.user
-            }
+      const gotoDetail = (record) => {
+        console.log(1)
+        router.push({
+          pathname: `/ITSM/operationplan/operationplansearch`,
+          query: {
+            time1: record.time1,
+            time2: record.time2,
+            status:record.status
           }
-          }
-        >
-          {text}
-        </Link >
-      }
-      return <span style={{fontWeight:700}}>{text}</span>
+        })
+      };
+        return <a onClick={() => gotoDetail(record)}>{text}</a>
     }
   },
 ];
@@ -57,14 +47,14 @@ const columns = [
 function Status(props) {
   const { pagetitle } = props.route.name;
   const {
-    form: { getFieldDecorator,setFieldsValue },
-    soluteArr,
+    form: { getFieldDecorator, setFieldsValue },
+    operationStatusArr,
     dispatch
   } = props;
 
-  const onChange = (date,dateString) => {
+  const onChange = (date, dateString) => {
     startTime = dateString;
-    endTime =  moment(dateString).add(+6,'day').format('YYYY-MM-DD');
+    endTime = moment(dateString).add(+6, 'day').format('YYYY-MM-DD');
     setFieldsValue({ time2: moment(endTime) });
   }
 
@@ -77,17 +67,17 @@ function Status(props) {
 
   const handleListdata = () => {
     dispatch({
-      type: 'eventstatistics/fetchSelfHandleList',
-      payload: { sign, startTime, endTime }
+      type: 'taskstatistics/operationStatus',
+      payload: { startTime, endTime }
     })
   }
 
   const download = () => {
     dispatch({
-      type: 'eventstatistics/downloadEventselfhandle',
-      payload:{
-        time1:startTime,
-        time2:endTime,
+      type: 'taskstatistics/downloadOperationStatus',
+      payload: {
+        time1: startTime,
+        time2: endTime,
       }
     }).then(res => {
       const filename = '下载.xls';
@@ -104,12 +94,11 @@ function Status(props) {
 
   const defaultTime = () => {
     //  周统计
-    // startTime = moment().subtract('days', 6).format('YYYY-MM-DD');
-    // endTime = moment().format('YYYY-MM-DD');
+    startTime = moment().subtract('days', 6).format('YYYY-MM-DD');
+    endTime = moment().format('YYYY-MM-DD');
 
-    startTime = moment().week(moment().week() - 1).startOf('week').format('YYYY-MM-DD HH:mm:ss');
-    endTime = moment().week(moment().week() - 1).endOf('week').format('YYYY-MM-DD');
-    endTime = `${endTime} 00:00:00`;
+    // startTime = moment().week(moment().week() - 1).startOf('week').format('YYYY-MM-DD HH:mm:ss');
+    // endTime = moment().week(moment().week() - 1).endOf('week').format('YYYY-MM-DD');
   }
 
   useEffect(() => {
@@ -152,10 +141,10 @@ function Status(props) {
                     getFieldDecorator('time2', {
                       initialValue: endTime ? moment(endTime) : ''
                     })
-                      (<DatePicker 
+                      (<DatePicker
                         disabledDate={enddisabledDate}
                         onChange={endonChange}
-                         />)
+                      />)
                   }
                 </Form.Item>
 
@@ -185,7 +174,7 @@ function Status(props) {
 
         <Table
           columns={columns}
-          dataSource={soluteArr}
+          dataSource={operationStatusArr}
           rowKey={record => record.statName}
         />
       </Card>
@@ -194,7 +183,7 @@ function Status(props) {
 }
 
 export default Form.create({})(
-  connect(({ eventstatistics }) => ({
-    soluteArr: eventstatistics.soluteArr
+  connect(({ taskstatistics }) => ({
+    operationStatusArr: taskstatistics.operationStatusArr
   }))(Status),
 );

@@ -617,13 +617,13 @@ export default {
                       component: './ITSM/OperationPlan/MyoperationPlan',
                     },
                     {
-                      path: '/ITSM/operationplan/operationplanfillin/:id',
+                      path: '/ITSM/operationplan/operationplanfillin',
                       name: '作业计划填报',
                       icon: 'control',
                       component: './ITSM/OperationPlan/OperationPlanfillintion',
                     },
                     {
-                      path: '/ITSM/operationplan/operationplanform/:id/:executestatus/:checkoutstatus/:type',
+                      path: '/ITSM/operationplan/operationplanform',
                       name: '作业计划',
                       icon: 'control',
                       component: './ITSM/OperationPlan/Work',
@@ -647,13 +647,13 @@ export default {
                       component: './ITSM/OperationPlan/TaskSearch',
                     },
                     {
-                      path: '/ITSM/operationplan/operationplansearchdetail/:id/:status',
+                      path: '/ITSM/operationplan/operationplansearchdetail',
                       name: '作业计划查询详情',
                       icon: 'control',
                       component: './ITSM/OperationPlan/OperationplansearchDetail',
                     },
                     {
-                      path: '/ITSM/operationplan/operationplancheckfillin/:id/:status',
+                      path: '/ITSM/operationplan/operationplancheckfillin/',
                       name: '作业计划审核填写',
                       icon: 'control',
                       component: './ITSM/OperationPlan/OperationplanCheckfillin',
@@ -1336,5 +1336,9 @@ export default {
       target: ' http://172.16.10.93:8083/', // 数据字典
       changeOrigin: true,
     },
+    '/operation/': {
+      target:' http://172.16.10.139:9901/',
+      changeOrigin: true
+    }
   },
 };

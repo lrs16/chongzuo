@@ -6,6 +6,7 @@ import {
   DemandFlowUserList,
   TroubleFlowUserList,
   ProblemFlowUserList,
+  taskFlowUserList,
 } from '@/services/user';
 
 export default {
@@ -14,7 +15,8 @@ export default {
     flowmsg: '',
     userinfo: '',
     userlist: '',
-    problemlist:''
+    problemlist:'',
+    tasklist:''
   },
 
   effects: {
@@ -58,6 +60,14 @@ export default {
         payload: response,
       });
     },
+    // 加载送审人列表
+    *taskuserlist({ payload }, { call, put }) {
+      const response = yield call(taskFlowUserList);
+      yield put({
+        type: 'savelist',
+        payload: response.data,
+      });
+    },
   },
 
   reducers: {
@@ -79,6 +89,13 @@ export default {
       return {
         ...state,
         problemlist: action.payload,
+      };
+    },
+
+    tasklist(state, action) {
+      return {
+        ...state,
+        tasklist: action.payload,
       };
     },
   },

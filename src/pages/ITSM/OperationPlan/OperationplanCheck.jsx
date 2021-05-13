@@ -55,15 +55,29 @@ function OperationplanCheck(props) {
     form: { getFieldDecorator, resetFields, validateFields, setFieldsValue },
     dispatch,
     myTaskplanlist,
+    userinfo,
     loading,
   } = props;
+
   const [expand, setExpand] = useState(false);
-  const [paginations, setPaginations] = useState({ current: 1, pageSize: 10 });
+  const [paginations, setPaginations] = useState({ current: 0, pageSize: 10 });
   const [selectdata, setSelectData] = useState('');
   const [selectedRows, setSelectedRows] = useState([]);
   const [columns, setColumns] = useState([]);
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
   let formThead;
+
+  const gotoDetail = (record) => {
+    router.push({
+      pathname: `/ITSM/operationplan/operationplanform`,
+      query: {
+        auditLink:true,
+        checkStatus:record.checkStatus,
+        mainId:record.mainId,
+      }
+    })
+  };
+
   const initialColumns = [
     // {
     //   title: '序号',
@@ -71,7 +85,7 @@ function OperationplanCheck(props) {
     //   key: 'index',
     //   width: 100,
     //   render: (text, record, index) =>
-    //     `${(paginations.current - 1) * paginations.pageSize + (index + 1)}`,
+    //     `${(paginations.current) * paginations.pageSize + (index + 1)}`,
     // },
     {
       title: '作业计划编号',
@@ -79,15 +93,9 @@ function OperationplanCheck(props) {
       key: 'operationNo',
       width: 150,
       fixed: 'left',
-      render: (text, record) => (
-        <Link
-          to={{
-            pathname: `/ITSM/operationplan/operationplancheckfillin/${record.operationNo}/${record.checkStatus}`,
-          }}
-        >
-          {text}
-        </Link>
-      ),
+      render: (text, record) => {
+        return <a onClick={() => gotoDetail(record)}>{text}</a>
+      },
     },
     {
       title: '填报时间',
@@ -98,14 +106,8 @@ function OperationplanCheck(props) {
     },
     {
       title: '作业系统名称',
-      dataIndex: 'system',
-      key: 'system',
-      width: 150,
-    },
-    {
-      title: '问题来源',
-      dataIndex: 'sourcecn',
-      key: 'sourcecn',
+      dataIndex: 'systemName',
+      key: 'systemName',
       width: 150,
     },
     {
@@ -165,8 +167,8 @@ function OperationplanCheck(props) {
     },
     {
       title: '执行状态',
-      dataIndex: 'timeoutStatus',
-      key: 'timeoutStatus',
+      dataIndex: 'executeStatus',
+      key: 'executeStatus',
       width: 150,
     },
     {
@@ -183,8 +185,8 @@ function OperationplanCheck(props) {
     },
     {
       title: '作业结果',
-      dataIndex: 'result',
-      key: 'result',
+      dataIndex: 'executeResult',
+      key: 'executeResult',
       width: 150,
     },
     {
@@ -195,14 +197,14 @@ function OperationplanCheck(props) {
     },
     {
       title: '实际结束时间',
-      dataIndex: 'endStart',
-      key: 'endStart',
+      dataIndex: 'endTime',
+      key: 'endTime',
       width: 150,
     },
     {
       title: '作业执行情况说明',
-      dataIndex: 'contenttext',
-      key: 'contenttext',
+      dataIndex: 'content',
+      key: 'content',
       width: 150,
     },
     {
@@ -231,8 +233,8 @@ function OperationplanCheck(props) {
     },
     {
       title: '审核结果',
-      dataIndex: 'result2',
-      key: 'result2',
+      dataIndex: 'checkResult',
+      key: 'checkResult',
       width: 150,
     },
     {
@@ -243,11 +245,18 @@ function OperationplanCheck(props) {
     },
     {
       title: '审核说明',
-      dataIndex: 'checkcontent',
-      key: 'checkcontent',
+      dataIndex: 'checkContent',
+      key: 'checkContent',
       width: 150,
     },
   ];
+
+  const queryDept = () => {
+    dispatch({
+      type: 'itsmuser/fetchuser',
+    });
+  };
+
 
   const defaultAllkey = columns.map(item => {
     return item.title
@@ -257,7 +266,8 @@ function OperationplanCheck(props) {
     dispatch({
       type: 'processmodel/myTasklist',
       payload: {
-        pageNum: paginations.current,
+        flowNodeName: '计划审核',
+        pageIndex: paginations.current,
         pageSize: paginations.pageSize,
       },
     });
@@ -276,11 +286,12 @@ function OperationplanCheck(props) {
 
   const searchdata = (values, page, pageSize) => {
     dispatch({
-      type: 'problemmanage/searchBesolve',
+      type: 'processmodel/myTasklist',
       payload: {
+        flowNodeName: '计划审核',
         ...values,
-        pageSize,
-        pageNum: page,
+        pageIndex: page - 1,
+        pageSize
       },
     });
   };
@@ -309,15 +320,6 @@ function OperationplanCheck(props) {
     });
   };
 
-  // const pagination = {
-  //   showSizeChanger: true,
-  //   onShowSizeChange: (page, pageSize) => onShowSizeChange(page, pageSize),
-  //   current: paginations.current,
-  //   pageSize: paginations.pageSize,
-  //   total: besolveList.total,
-  //   showTotal: total => `总共  ${total}  条记录`,
-  //   onChange: (page) => changePage(page),
-  // };
   const handleSearch = () => {
     setPaginations({
       ...paginations,
@@ -329,6 +331,7 @@ function OperationplanCheck(props) {
       }
       const searchParams = {
         ...values,
+        flowNodeName: '计划审核',
         time1: values.addTime?.length ? moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
         time2: values.addTime?.length ? moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
         checkTime: values.addTime ? moment(values.addTime).format('YYYY-MM-DD HH:mm:ss') : '',
@@ -339,42 +342,36 @@ function OperationplanCheck(props) {
         endTime: values.endTime ? moment(values.endTime).format('YYYY-MM-DD HH:mm:ss') : '',
       }
 
-      searchdata(searchParams, paginations.current, paginations.pageSize);
+      searchdata(searchParams, 1, paginations.pageSize);
     });
   };
 
-  const download = () => {
-    validateFields((err, values) => {
-      if (!err) {
-        dispatch({
-          type: 'problemmanage/besolvedownload',
-          payload: { ...values }
-        }).then(res => {
-          const filename = `下载.xls`;
-          const blob = new Blob([res]);
-          const url = window.URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = filename;
-          a.click();
-          window.URL.revokeObjectURL(url);
-        })
-      }
-    })
-  }
 
   const exportDownload = () => {
-    dispatch({
-      type: 'problemmanage/exportdownloadExcel',
-    }).then(res => {
-      const filename = '下载.xls';
-      const blob = new Blob([res]);
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = filename;
-      a.click();
-      window.URL.revokeObjectURL(url);
+    const exportColumns = columns.map(function (item) {
+      return {
+        column: item.dataIndex,
+        field: item.title
+      }
+    })
+    validateFields((err, values) => {
+      dispatch({
+        type: 'processmodel/downloadMyOperationExcel',
+        payload: {
+          flowNodeName: '计划审核',
+          columns: JSON.stringify(exportColumns),
+          ...values
+        }
+      }).then(res => {
+        const filename = '下载.xls';
+        const blob = new Blob([res]);
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.click();
+        window.URL.revokeObjectURL(url);
+      })
     })
   }
 
@@ -605,9 +602,11 @@ function OperationplanCheck(props) {
   const checkStatus = getTypebyTitle('审核状态');
   const timeoutStatus = getTypebyTitle('超时状态');
   const taskResult = getTypebyTitle('作业结果');
-  const checkResult = getTypebyTitle('审核结果')
+  const checkResult = getTypebyTitle('审核结果');
+  const taskCompany = getTypebyTitle('作业单位');
 
   useEffect(() => {
+    queryDept();
     getTobolist();
     setColumns(initialColumns)
   }, []);
@@ -615,6 +614,48 @@ function OperationplanCheck(props) {
   const handleClick = () => {
     console.log(1);
   }
+
+  const checkSubmit = (value) =>{
+    const allmainId  = selectedRows.map(obj => {
+      return obj.mainId
+    });
+    console.log(allmainId)
+
+    const allcheckId  = selectedRows.map(obj => {
+      return obj.id
+    });
+    console.log(allcheckId)
+    dispatch({
+      type: 'processmodel/batchCheck',
+      payload: {
+        ...value,
+        mainIds:allmainId.toString(),
+        flowNodeName: '计划审核',
+        check_id: allcheckId.toString(),
+        editState: 'edit',
+        check_checkUserId: userinfo.userId,
+        check_checkTime: (value.check_checkTime).format('YYYY-MM-DD HH:mm:ss'),
+      },
+    }).then(res => {
+      if (res.code === 200) {
+        message.info(res.msg);
+        getTobolist();
+      } else {
+        getTobolist();
+        message.error(res.msg);
+      }
+    });
+  }
+
+  const pagination = {
+    showSizeChanger: true,
+    onShowSizeChange: (page, pageSize) => onShowSizeChange(page, pageSize),
+    current: paginations.current,
+    pageSize: paginations.pageSize,
+    total: myTaskplanlist.total,
+    showTotal: total => `总共  ${total}  条记录`,
+    onChange: (page) => changePage(page),
+  };
 
   return (
     <PageHeaderWrapper title={pagetitle}>
@@ -638,14 +679,8 @@ function OperationplanCheck(props) {
             </Col>
 
             <Col span={8}>
-              <Form.Item label="执行状态">
-                {getFieldDecorator('status', {
-                  rules: [
-                    {
-                      message: '请输入处理环节',
-                    },
-                  ],
-                })(
+              <Form.Item label="作业系统名称">
+                {getFieldDecorator('systemName', {})(
                   <Select placeholder="请选择" allowClear>
                     {executeStatus.map(obj => [
                       <Option key={obj.key} value={obj.title}>
@@ -698,7 +733,16 @@ function OperationplanCheck(props) {
                   <Form.Item label="作业单位">
                     {getFieldDecorator('operationUnit', {})
                       (
-                        <Input />
+                        <Select
+                        placeholder="请选择"
+                        allowClear
+                      >
+                        {taskCompany.map(obj => [
+                          <Option key={obj.key} value={obj.title}>
+                            {obj.title}
+                          </Option>,
+                        ])}
+                      </Select>,
                       )}
                   </Form.Item>
                 </Col>
@@ -752,7 +796,7 @@ function OperationplanCheck(props) {
 
                 <Col span={8}>
                   <Form.Item label="计划开始时间">
-                    {getFieldDecorator('plannedStarTtime', {
+                    {getFieldDecorator('plannedStartTime', {
                       // initialValue: moment(new Date())
                     })
                       (
@@ -784,7 +828,7 @@ function OperationplanCheck(props) {
 
                 <Col span={8}>
                   <Form.Item label="执行状态">
-                    {getFieldDecorator('status', {
+                    {getFieldDecorator('executeStatus', {
                     })
                       (
                         <Select placeholder="请选择" allowClear>
@@ -804,7 +848,7 @@ function OperationplanCheck(props) {
               <>
                 <Col span={8}>
                   <Form.Item label="审核状态">
-                    {getFieldDecorator('status', {
+                    {getFieldDecorator('checkStatus', {
                     })
                       (
                         <Select placeholder="请选择" allowClear>
@@ -820,7 +864,7 @@ function OperationplanCheck(props) {
 
                 <Col span={8}>
                   <Form.Item label="超时状态">
-                    {getFieldDecorator('timeout', {})
+                    {getFieldDecorator('status', {})
                       (
                         <Select placeholder="请选择" allowClear>
                           {timeoutStatus.map(obj => [
@@ -835,7 +879,7 @@ function OperationplanCheck(props) {
 
                 <Col span={8}>
                   <Form.Item label="作业结果">
-                    {getFieldDecorator('result', {})
+                    {getFieldDecorator('executeResult', {})
                       (
                         <Select placeholder="请选择" allowClear>
                           {taskResult.map(obj => [
@@ -913,7 +957,7 @@ function OperationplanCheck(props) {
 
                 <Col span={8}>
                   <Form.Item label="填报单位">
-                    {getFieldDecorator('importance', {})
+                    {getFieldDecorator('operationUnit', {})
                       (
                         <Input />
                       )}
@@ -934,7 +978,7 @@ function OperationplanCheck(props) {
 
                 <Col span={8}>
                   <Form.Item label="审核结果">
-                    {getFieldDecorator('result', {})
+                    {getFieldDecorator('checkResult', {})
                       (
                         <Select placeholder="请选择" allowClear>
                           {checkResult.map(obj => [
@@ -962,7 +1006,7 @@ function OperationplanCheck(props) {
               <>
                 <Col span={8}>
                   <Form.Item label="审核说明">
-                    {getFieldDecorator('registerTime', {
+                    {getFieldDecorator('checkContent', {
                     })
                       (<Input allowClear />)
                     }
@@ -972,6 +1016,7 @@ function OperationplanCheck(props) {
                 <Col span={8}>
                   <Form.Item label="填报时间">
                     {getFieldDecorator('addTime', {
+                      //  initialValue: [moment(time1), moment(time2)] || [moment().startOf('month'), moment()],
                     })(
                       <RangePicker
                         showTime
@@ -981,9 +1026,6 @@ function OperationplanCheck(props) {
                     )}
                   </Form.Item>
                 </Col>
-
-
-
               </>
             )}
 
@@ -1046,11 +1088,12 @@ function OperationplanCheck(props) {
             )}
           </Form>
         </Row>
-
         <div style={{ display: 'flex', flexDirection: 'row' }} >
           <CheckModel
             onClick={handleClick}
+            userinfo={userinfo}
             selectedRows={selectedRows}
+            checkSubmit={values => checkSubmit(values)}
           >
             <Button
               type="primary"
@@ -1133,10 +1176,11 @@ function OperationplanCheck(props) {
         <Table
           loading={loading}
           columns={columns}
-          dataSource={myTaskplanlist}
+          dataSource={myTaskplanlist.rows}
           scroll={{ x: 1500 }}
           rowKey={record => record.id}
           rowSelection={rowSelection}
+          pagination={pagination}
         />
       </Card>
 
@@ -1145,8 +1189,9 @@ function OperationplanCheck(props) {
 }
 
 export default Form.create({})(
-  connect(({ processmodel, loading }) => ({
+  connect(({ processmodel,itsmuser, loading }) => ({
     myTaskplanlist: processmodel.myTaskplanlist,
+    userinfo: itsmuser.userinfo,
     loading: loading.models.processmodel,
   }))(OperationplanCheck),
 );

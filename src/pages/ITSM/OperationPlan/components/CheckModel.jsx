@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
+import moment from 'moment';
 import {
   Form,
   Input,
@@ -20,6 +21,8 @@ let showTerminalDialog = false;
 let title = '';
 let sign = false;
 const { TextArea } = Input;
+const statusContent = ['待审核', '已审核',null]
+const color = ['blue', 'green','blue']
 // 克隆子元素按钮，并添加事件
 const withClick = (element, handleClick = () => { }) => {
   return <element.type {...element.props} onClick={handleClick} />;
@@ -28,39 +31,39 @@ const withClick = (element, handleClick = () => { }) => {
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
-    sm: { span: 8 },
+    sm: { span: 6 },
   },
   wrapperCol: {
     xs: { span: 24 },
-    sm: { span: 16 },
+    sm: { span: 15 },
   },
-  colon: false,
 };
-const formItemdeLayout = {
+
+const forminladeLayout = {
   labelCol: {
     xs: { span: 24 },
-    sm: { span: 4 },
+    sm: { span: 2 },
   },
   wrapperCol: {
     xs: { span: 24 },
-    sm: { span: 20 },
+    sm: { span: 22 },
   },
-  colon: false,
 };
 
 function CheckModel(props) {
   const {
-    form: { getFieldDecorator,validateFields },
+    form: { getFieldDecorator, validateFields },
     dispatch,
     children,
-    selectedRows
+    selectedRows,
+    userinfo,
+    checkSubmit
   } = props;
   const required = true;
   const [state, setState] = useState(false);
-  const [checktype,setChecktype] = useState('1')
+  const [checktype, setChecktype] = useState('1')
   const [data, setData] = useState([]);
-
-
+  const [flowtype, setFlowtype] = useState('001');
 
   const handleopenClick = () => {
     console.log(2)
@@ -73,7 +76,7 @@ function CheckModel(props) {
       if (item.checkStatus === '待审核') {
         return item.id;
       }
-      
+
       message.info('请选择执行状态:待审核');
       return false
     })
@@ -86,8 +89,10 @@ function CheckModel(props) {
   };
 
   const handleSubmit = () => {
-    validateFields((err,values) => {
-      if(!err) {
+    console.log(1)
+    validateFields((err, values) => {
+      if (!err) {
+        props.checkSubmit(values);
         setState(false);
       }
     })
@@ -110,7 +115,7 @@ function CheckModel(props) {
       <Modal
         title={title}
         visible={state}
-        width={720}
+        width={1000}
         centered='true'
         maskClosable='true'
         onCancel={hanldleCancel}
@@ -118,105 +123,118 @@ function CheckModel(props) {
       >
         <Row gutter={16}>
           <Form {...formItemLayout}>
-            <Col span={12}>
+            <Col span={8}>
               <Form.Item label='审核结果'>
-                {
-                  getFieldDecorator('id', {
-                    rules: [
-                      {
-                        required,
-                        message: '请输入审核结果'
-                      }
-                    ],
-                  })(
-                    <Radio.Group
+                {getFieldDecorator('check_result', {
+                  rules: [
+                    {
+                      required,
+                      message: '请输入审核结果'
+                    }
+                  ],
+                })(
+                  <Radio.Group
+                    // disabled={type === 'list'}
                     onChange={onChange}
-                    >
-                      <Radio value='1'>通过</Radio>
-                      <Radio value='0'>不通过</Radio>
-                    </Radio.Group>
-                  )
+                  >
+                    <Radio value='001'>通过</Radio>
+                    <Radio value='002'>不通过</Radio>
+                  </Radio.Group>
+                )
                 }
               </Form.Item>
             </Col>
 
-            <Col span={12}>
-              <Form.Item label='审核时间'>
+            <Col span={8}>
+              <Form.Item label="审核时间">
+                {getFieldDecorator('check_checkTime', {
+                  rules: [
+                    {
+                      required,
+                      message: '请输入审核时间'
+                    }
+                  ],
+                  initialValue: moment(new Date()),
+                })(
+                  <DatePicker
+                    // disabled={type === 'list'}
+                    showTime
+                    format="YYYY-MM-DD HH:mm:ss"
+                  />)}
+              </Form.Item>
+            </Col>
+
+            {/* {
+          flowtype === '1' && ( */}
+            <Col span={8}>
+              <Form.Item label='审核状态'>
                 {
-                  getFieldDecorator('commandType', {
-                    rules: [
-                      {
-                        required,
-                        message: '请输入审核时间'
-                      }
-                    ],
+                  getFieldDecorator('check_status', {
                   })(
-                    <DatePicker />
-                  )
-                }
-              </Form.Item>
-
-            </Col>
-
-            <Col span={24}>
-              <Form.Item label='审核状态' {...formItemdeLayout}>
-                {
-                  getFieldDecorator('commandClass', {
-                  })(
-                    <Tag color='blue' >待审核</Tag>
+                    <Tag
+                      color={color[0]}>待审核</Tag>
                   )
                 }
               </Form.Item>
             </Col>
+            {/* )
+         } */}
 
             {
-              checktype === '1' && (
-                <Col span={24}>
-                <Form.Item label='审核说明' {...formItemdeLayout}>
-                  {
-                    getFieldDecorator('commandName', {
-                    })(<TextArea rows={4} />)
-                  }
-                </Form.Item>
+              flowtype === '002' && (
+                <Col span={23}>
+                  <Form.Item label='审核说明' {...forminladeLayout}>
+                    {
+                      getFieldDecorator('check_content', {
+                        rules: [
+                          {
+                            required,
+                            message: '请输入审核说明'
+                          }
+                        ],
+                      })(
+                        <TextArea
+                        // disabled={type === 'list'}
+                        />
+                      )
+                    }
+                  </Form.Item>
                 </Col>
               )
             }
+
             {
-              checktype === '0' && (
-                <Col span={24}>
-                <Form.Item label='审核说明' {...formItemdeLayout}>
-                  {
-                    getFieldDecorator('commandName', {
-                      rules: [
-                        {
-                          required,
-                          message: '请输入审核说明'
-                        }
-                      ],
-                    })(<TextArea rows={4}/>)
-                  }
-                </Form.Item>
+              flowtype === '001' && (
+                <Col span={23}>
+                  <Form.Item label='审核说明' {...forminladeLayout}>
+                    {
+                      getFieldDecorator('check_content', {
+                      })(
+                        <TextArea
+                        // disabled={type === 'list'}
+                        />
+                      )
+                    }
+                  </Form.Item>
                 </Col>
               )
             }
-    
 
-            <Col span={12}>
-            <Form.Item label='审核人'>
-              {
-                getFieldDecorator('commandSrc', {
-                })(<Input />)
-              }
-            </Form.Item>
+
+            <Col span={8}>
+              <Form.Item label="审核人">
+                {getFieldDecorator('check_checkUser', {
+                  initialValue: userinfo.userName,
+                })(<Input disabled />)}
+              </Form.Item>
             </Col>
 
-            <Col span={12}>
-            <Form.Item label='审核单位'>
-              {
-                getFieldDecorator('commandSrc', {
-                })(<Input />)
-              }
-            </Form.Item>
+            <Col span={8}>
+              <Form.Item label="审核单位">
+                {getFieldDecorator('check_checkUnit', {
+                  initialValue: userinfo.unitName,
+                })(<Input disabled />)}
+              </Form.Item>
             </Col>
 
           </Form>

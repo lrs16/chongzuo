@@ -9,31 +9,30 @@ import {
   message,
 } from 'antd';
 import router from 'umi/router';
-import User from '@/components/SelectUser/User';
 import OperationPlanfillin from './components/OperationPlanfillin';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
-
+let copyData;
 function OperationPlanfillintion(props) {
   const pagetitle = props.route.name;
   const {
-    form: { getFieldDecorator, resetFields, validateFields },
-    match: { params: { id } },
+    location: { query: { mainId } },
     dispatch,
     userinfo,
     loading,
+    openFlowList,
+    operationPersonArr
   } = props;
-  const [expand, setExpand] = useState(false);
+
+  let operationPersonSelect;
+
   const PlanfillinRef = useRef();
   const [paginations, setPaginations] = useState({ current: 1, pageSize: 10 });
   const [selectdata, setSelectData] = useState('');
   const [richtext, setRichtext] = useState('');
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
-  //  选人组件
-  const [uservisible, setUserVisible] = useState(false); // 是否显示选人组件
-  const [userchoice, setUserChoice] = useState(false); // 已经选择人员
-  const [changorder, setChangeOrder] = useState(undefined);
-  let saveData;
+  const [pasteStatu, setPasteStatu] = useState(false);
+
   const formItemLayout = {
     labelCol: {
       xs: { span: 24 },
@@ -56,72 +55,67 @@ function OperationPlanfillintion(props) {
     },
   };
 
-  // 上传删除附件触发保存
-  // useEffect(() => {
-  //   if (files.ischange) {
-  //     getTobolist();
-  //   }
-  // }, [files]);
-
   const queryDept = () => {
     dispatch({
       type: 'itsmuser/fetchuser',
     });
   };
 
-  console.log(richtext, 'richtext')
-  useEffect(() => {
-    queryDept();
-  }, [])
-
-  const saveApi = () => {
+  const getoperationPerson = () => {
     dispatch({
-      type: 'processmodel/savesaveForm',
-      payload: saveData
+      type: 'processmodel/operationPerson',
     });
   }
 
-  useEffect(() => {
-    saveApi();
-  }, [userchoice])
+  // 处理作业负责人数据
+  if (operationPersonArr.length) {
+    operationPersonSelect = operationPersonArr.map(item => {
+      return {
+        key: item.id,
+        value: item.userName
+      }
+    })
+  }
 
-    // 表单校验提示信息
-    const formerr = () => {
-      message.error('请将信息填写完整...');
-    };
+  useEffect(() => {
+    copyData = '';
+    queryDept();
+    getoperationPerson();
+  }, [])
+
+
 
   //  点击保存触发事件
-  const handlesubmit = (params) => {
+  const handlesubmit = () => {
     PlanfillinRef.current.validateFields((err, values) => {
-      if (params?!err:true) {
-        saveData = {
-          ...values,
-          main_addTime: values.main_addTime ? values.main_addTime.format('YYYY-MM-DD HH:mm:ss') : '',
-          main_plannedStarTtime: values.main_plannedStarTtime ? values.main_plannedStarTtime.format('YYYY-MM-DD HH:mm:ss') : '',
-          main_plannedEndTime: values.main_plannedEndTime ? values.main_plannedEndTime.format('YYYY-MM-DD HH:mm:ss') : '',
-          // registerAttachments:files.ischange?JSON.stringify(files.arr):null,
-          // importance:Number(values.importance)?values.importance:'001',
-          // jumpType,
-          // main_mainId: richtext,
-          main_content: richtext,
-          flowNodeName: '作业计划填报',
-          editState: 'add'
-        }
-
-        if(params === false) {
-          saveApi();
-        }
-
-        if(params) {
-          setUserVisible(true)
-        }
-      }
-
-      if(params === true && err) {
-        return formerr();
+      if (true) {
+        dispatch({
+          type: 'processmodel/saveallForm',
+          payload: {
+            ...values,
+            main_addTime: values.main_addTime ? values.main_addTime.format('YYYY-MM-DD HH:mm:ss') : '',
+            main_plannedStartTime: values.main_plannedStartTime ? values.main_plannedStartTime.format('YYYY-MM-DD HH:mm:ss') : '',
+            main_plannedEndTime: values.main_plannedEndTime ? values.main_plannedEndTime.format('YYYY-MM-DD HH:mm:ss') : '',
+            main_fileIds: files.ischange ? JSON.stringify(files.arr) : null,
+            flowNodeName: '计划登记',
+            editState: 'add',
+            main_id: '',
+            main_status: '1',
+            main_addUserId: userinfo.userId,
+            main_addUnitId: userinfo.unitId,
+            main_addUser: userinfo.userName
+          }
+        })
       }
     });
   };
+
+  // 上传删除附件触发保存
+  useEffect(() => {
+    if (files.ischange) {
+      handlesubmit();
+    }
+  }, [files]);
 
   const handleClose = () => {
     router.push({
@@ -130,19 +124,23 @@ function OperationPlanfillintion(props) {
   }
 
   const handlePaste = () => {
-    if (id === 'no') {
-      message.info('请在列表页复制')
+    if (!mainId) {
+      message.info('请在列表页复制');
+      return false
     }
+    dispatch({
+      type: 'processmodel/openFlow',
+      payload: mainId
+    })
+
+    if (mainId) {
+      copyData = openFlowList;
+      delete copyData.main.operationNo
+    }
+
   }
 
-  // 上传附件触发保存
-  useEffect(() => {
-    if (files.ischange) {
-      handlesubmit(false);
-    }
-  }, [files]);
-
-
+  console.log(copyData)
 
 
   return (
@@ -150,21 +148,15 @@ function OperationPlanfillintion(props) {
       title={pagetitle}
       extra={
         <>
-          <Button type="danger" ghost style={{ marginRight: 8 }}>
-            删除
-           </Button>
 
           <Button type="primary" style={{ marginRight: 8 }} onClick={handlePaste}>
             粘贴
           </Button>
 
-          <Button type="primary" style={{ marginRight: 8 }} onClick={()=>handlesubmit(false)}>
+          <Button type="primary" style={{ marginRight: 8 }} onClick={() => handlesubmit(false)}>
             保存
           </Button>
 
-          <Button type="primary" style={{ marginRight: 8 }} onClick={()=>handlesubmit(true)}>
-            送审
-          </Button>
 
           <Button onClick={handleClose}>关闭</Button>
         </>
@@ -172,27 +164,21 @@ function OperationPlanfillintion(props) {
     >
 
       <Card>
-        <OperationPlanfillin
-          ref={PlanfillinRef}
-          useInfo={userinfo}
-          formItemLayout={formItemLayout}
-          forminladeLayout={forminladeLayout}
-          getRichtext={(richText => setRichtext(richText))}
-          ChangeFiles={newvalue => {
-            setFiles(newvalue);
-          }}
-          files={files.arr}
-        />
+          <OperationPlanfillin
+            ref={PlanfillinRef}
+            useInfo={userinfo}
+            formItemLayout={formItemLayout}
+            forminladeLayout={forminladeLayout}
+            getRichtext={(richText => setRichtext(richText))}
+            ChangeFiles={newvalue => {
+              setFiles(newvalue);
+            }}
+            files={[]}
+            operationPersonSelect={operationPersonSelect}
+            main={mainId ? copyData.main : {}}
+          />
 
-        {/* 选人组件 */}
-        <User
-          // taskId={id}
-          visible={uservisible}
-          ChangeUserVisible={v => setUserVisible(v)}
-          changorder={changorder}
-          ChangeChoice={v => setUserChoice(v)}
-          ChangeType={() => 0}
-        />
+
       </Card>
 
     </PageHeaderWrapper>
@@ -202,6 +188,8 @@ function OperationPlanfillintion(props) {
 export default Form.create({})(
   connect(({ processmodel, itsmuser, loading }) => ({
     userinfo: itsmuser.userinfo,
+    openFlowList: processmodel.openFlowList,
+    operationPersonArr: processmodel.operationPersonArr,
     loading: loading.models.processmodel,
   }))(OperationPlanfillintion),
 );

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, createContext } from 'react';
 import { connect } from 'dva';
 import Link from 'umi/link';
 import {
@@ -15,13 +15,16 @@ import {
   Tree,
   Popover,
   Checkbox,
-  Icon
+  Icon,
+  Badge
 } from 'antd';
 import router from 'umi/router';
 import moment from 'moment';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import SysDict from '@/components/SysDict';
+import CheckModel from './components/CheckModel';
+import Back from './components/Back';
 
 const formItemLayout = {
   labelCol: {
@@ -42,22 +45,41 @@ let startTime;
 let endtime;
 let actualStarttime;
 let actualEndtime;
+const statusMap = ['green', 'gold', 'red'];
+const statusList = [0,1,2];
+const statusContent = ['未超时', '即将超时', '已超时'];
+
+
 
 function TaskSearch(props) {
   const pagetitle = props.route.name;
   const {
     form: { getFieldDecorator, resetFields, validateFields, setFieldsValue },
+    location: { query: { time1, time2,status,result,executeStatus,timeoutStatus } },
     dispatch,
-    myTaskplanlist,
+    queryList,
     loading,
   } = props;
+
   const [expand, setExpand] = useState(false);
-  const [paginations, setPaginations] = useState({ current: 1, pageSize: 10 });
+  const [paginations, setPaginations] = useState({ current: 0, pageSize: 10 });
   const [selectdata, setSelectData] = useState('');
   const [selectedRows, setSelectedRows] = useState([]);
   const [columns, setColumns] = useState([]);
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
   let formThead;
+
+  const gotoDetail = (record) => {
+    router.push({
+      pathname: `/ITSM/operationplan/operationplansearchdetail`,
+      query: {
+        // auditLink: true,
+        mainId: record.mainId,
+        // checkStatus: record.checkStatus
+      }
+    })
+  };
+
   const initialColumns = [
     // {
     //   title: '序号',
@@ -65,7 +87,7 @@ function TaskSearch(props) {
     //   key: 'index',
     //   width: 100,
     //   render: (text, record, index) =>
-    //     `${(paginations.current - 1) * paginations.pageSize + (index + 1)}`,
+    //     `${(paginations.current) * paginations.pageSize + (index + 1)}`,
     // },
     {
       title: '作业计划编号',
@@ -73,15 +95,9 @@ function TaskSearch(props) {
       key: 'operationNo',
       width: 150,
       fixed: 'left',
-      render: (text, record) => (
-        <Link
-          to={{
-            pathname: `/ITSM/operationplan/operationplansearchdetail/${record.operationNo}/${record.timeoutStatus}`,
-          }}
-        >
-          {text}
-        </Link>
-      ),
+      render: (text, record) => {
+        return <a onClick={() => gotoDetail(record)}>{text}</a>
+      },
     },
     {
       title: '填报时间',
@@ -92,14 +108,8 @@ function TaskSearch(props) {
     },
     {
       title: '作业系统名称',
-      dataIndex: 'system',
-      key: 'system',
-      width: 150,
-    },
-    {
-      title: '问题来源',
-      dataIndex: 'sourcecn',
-      key: 'sourcecn',
+      dataIndex: 'systemName',
+      key: 'systemName',
       width: 150,
     },
     {
@@ -140,9 +150,16 @@ function TaskSearch(props) {
     },
     {
       title: '超时状态',
-      dataIndex: 'status',
-      key: 'status',
+      dataIndex: 'timeoutStatus',
+      key: 'timeoutStatus',
       width: 150,
+      // render: (text, record) => (
+      //   <span>
+      //     <Badge
+      //       status={statusMap[status.indexOf(text)]}
+      //       text={statusContent[status.indexOf(text)]} />
+      //   </span>
+      // ),
     },
     {
       title: '计划结束时间',
@@ -151,9 +168,9 @@ function TaskSearch(props) {
       width: 150,
     },
     {
-      title: '执行状态',
-      dataIndex: 'timeoutStatus',
-      key: 'timeoutStatus',
+      title: '作业状态',
+      dataIndex: 'status',
+      key: 'status',
       width: 150,
     },
     {
@@ -170,8 +187,8 @@ function TaskSearch(props) {
     },
     {
       title: '作业结果',
-      dataIndex: 'result',
-      key: 'result',
+      dataIndex: 'executeResult',
+      key: 'executeResult',
       width: 150,
     },
     {
@@ -182,14 +199,14 @@ function TaskSearch(props) {
     },
     {
       title: '实际结束时间',
-      dataIndex: 'endStart',
-      key: 'endStart',
+      dataIndex: 'endTime',
+      key: 'endTime',
       width: 150,
     },
     {
       title: '作业执行情况说明',
-      dataIndex: 'contenttext',
-      key: 'contenttext',
+      dataIndex: 'content',
+      key: 'content',
       width: 150,
     },
     {
@@ -218,8 +235,8 @@ function TaskSearch(props) {
     },
     {
       title: '审核结果',
-      dataIndex: 'result2',
-      key: 'result2',
+      dataIndex: 'checkResult',
+      key: 'checkResult',
       width: 150,
     },
     {
@@ -230,21 +247,29 @@ function TaskSearch(props) {
     },
     {
       title: '审核说明',
-      dataIndex: 'checkcontent',
-      key: 'checkcontent',
+      dataIndex: 'checkContent',
+      key: 'checkContent',
       width: 150,
     },
   ];
+
 
   const defaultAllkey = columns.map(item => {
     return item.title
   });
 
   const getTobolist = () => {
+    console.log(result,'result')
     dispatch({
-      type: 'processmodel/myTasklist',
+      type: 'processmodel/getOperationQueryList',
       payload: {
-        pageNum: paginations.current,
+        time1,
+        time2,
+        status,
+        result,
+        executeStatus,
+        timeoutStatus,
+        pageIndex: paginations.current,
         pageSize: paginations.pageSize,
       },
     });
@@ -263,11 +288,15 @@ function TaskSearch(props) {
 
   const searchdata = (values, page, pageSize) => {
     dispatch({
-      type: 'problemmanage/searchBesolve',
+      type: 'processmodel/getOperationQueryList',
       payload: {
         ...values,
-        pageSize,
-        pageNum: page,
+        status,
+        result,
+        executeStatus,
+        timeoutStatus,
+        pageIndex: page - 1,
+        pageSize
       },
     });
   };
@@ -296,15 +325,6 @@ function TaskSearch(props) {
     });
   };
 
-  // const pagination = {
-  //   showSizeChanger: true,
-  //   onShowSizeChange: (page, pageSize) => onShowSizeChange(page, pageSize),
-  //   current: paginations.current,
-  //   pageSize: paginations.pageSize,
-  //   total: besolveList.total,
-  //   showTotal: total => `总共  ${total}  条记录`,
-  //   onChange: (page) => changePage(page),
-  // };
   const handleSearch = () => {
     setPaginations({
       ...paginations,
@@ -318,49 +338,43 @@ function TaskSearch(props) {
         ...values,
         time1: values.addTime?.length ? moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
         time2: values.addTime?.length ? moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-        checkTime: values.addTime?moment(values.addTime).format('YYYY-MM-DD HH:mm:ss'):'',
-        operationTime: values.operationTime?moment(values.operationTime).format('YYYY-MM-DD HH:mm:ss'):'',
-        plannedStarTtime: values.plannedStarTtime?moment(values.plannedStarTtime).format('YYYY-MM-DD HH:mm:ss'):'',
-        plannedEndTime: values.plannedEndTime?moment(values.plannedEndTime).format('YYYY-MM-DD HH:mm:ss'):'',
-        startTime: values.startTime?moment(values.startTime).format('YYYY-MM-DD HH:mm:ss'):'',
-        endTime: values.endTime?moment(values.endTime).format('YYYY-MM-DD HH:mm:ss'):'',
+        checkTime: values.addTime ? moment(values.addTime).format('YYYY-MM-DD HH:mm:ss') : '',
+        operationTime: values.operationTime ? moment(values.operationTime).format('YYYY-MM-DD HH:mm:ss') : '',
+        plannedStarTtime: values.plannedStarTtime ? moment(values.plannedStarTtime).format('YYYY-MM-DD HH:mm:ss') : '',
+        plannedEndTime: values.plannedEndTime ? moment(values.plannedEndTime).format('YYYY-MM-DD HH:mm:ss') : '',
+        startTime: values.startTime ? moment(values.startTime).format('YYYY-MM-DD HH:mm:ss') : '',
+        endTime: values.endTime ? moment(values.endTime).format('YYYY-MM-DD HH:mm:ss') : '',
       }
-      searchdata(searchParams, paginations.current, paginations.pageSize);
+
+      searchdata(searchParams, 1, paginations.pageSize);
     });
   };
 
-  const download = () => {
-    validateFields((err, values) => {
-      if (!err) {
-        dispatch({
-          type: 'problemmanage/besolvedownload',
-          payload: { ...values }
-        }).then(res => {
-          const filename = `下载.xls`;
-          const blob = new Blob([res]);
-          const url = window.URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = filename;
-          a.click();
-          window.URL.revokeObjectURL(url);
-        })
+  const exportDownload = () => {
+    const exportColumns = columns.map(function (item) {
+      return {
+        column: item.dataIndex,
+        field: item.title
       }
     })
-  }
-
-  const exportDownload = () => {
-    dispatch({
-      type: 'problemmanage/exportdownloadExcel',
-    }).then(res => {
-      const filename = '下载.xls';
-      const blob = new Blob([res]);
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = filename;
-      a.click();
-      window.URL.revokeObjectURL(url);
+    validateFields((err, values) => {
+      dispatch({
+        type: 'processmodel/downloadQueryExcel',
+        payload: {
+          flowNodeName: '计划审核',
+          columns: JSON.stringify(exportColumns),
+          ...values
+        }
+      }).then(res => {
+        const filename = '下载.xls';
+        const blob = new Blob([res]);
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.click();
+        window.URL.revokeObjectURL(url);
+      })
     })
   }
 
@@ -368,100 +382,6 @@ function TaskSearch(props) {
     onChange: (index, selectedRows) => {
       setSelectedRows([...selectedRows])
     }
-  }
-
-  const handleCheck = () => {
-
-    if (selectedRows.length < 1) {
-      message.info('请选择一条数据')
-      // event.preventDefault();
-      return false;
-    }
-    const res = selectedRows.every(item => {
-      if (item.timeoutStatus === '待审核') {
-        return item.id;
-      }
-      message.info('请选择审核状态:待审核');
-      return false
-    })
-
-    if (res === false) {
-      // event.preventDefault();
-      return false;
-    }
-
-    router.push({
-      pathname: `/ITSM/operationplan/operationplanform/${selectedRows[0].operationNo}/作业计划执行`,
-    });
-
-    //   router.push({pathname:`/ITSM/operationplan/operationplanform/${selectedRows[0].operationNo}`,
-    //   match:{ 
-    //     id:selectedRows[0].operationNo,
-    //     title:'作业计划执行'
-    //   }
-    // });
-
-    // return dispatch({
-    //   type: 'processmodel/myTasklist',
-    //   payload: ids
-    // }).then(res => {
-    //   if (res.code === 200) {
-    //     message.info(res.msg);
-    //   } else {
-    //     message.info(res.msg);
-    //   }
-    // })
-  }
-
-  const handleDelay = () => {
-    if (selectedRows.length !== 1) {
-      message.info('请选择一条数据')
-      // event.preventDefault();
-      return false;
-    }
-
-
-    const res = selectedRows.map(item => {
-      return item.id;
-    })
-
-    router.push({
-      pathname: `/ITSM/operationplan/operationplanform/${selectedRows[0].operationNo}/作业计划延期`,
-    });
-    // return dispatch({
-    //   type: 'processmodel/myTasklist',
-    //   payload: ids
-    // }).then(res => {
-    //   if (res.code === 200) {
-    //     message.info(res.msg);
-    //   } else {
-    //     message.info(res.msg);
-    //   }
-    // })
-  }
-
-  const handleDelete = () => {
-    const res = selectedRows.every(item => {
-      if (item.timeoutStatus === '已延期') {
-        return item.id;
-      }
-      message.info('请选择执行状态:已延期');
-      return false
-    })
-
-    if (res === false) {
-      return false;
-    }
-    // return dispatch({
-    //   type: 'processmodel/myTasklist',
-    //   payload: ids
-    // }).then(res => {
-    //   if (res.code === 200) {
-    //     message.info(res.msg);
-    //   } else {
-    //     message.info(res.msg);
-    //   }
-    // })
   }
 
   const creataColumns = () => {
@@ -479,7 +399,7 @@ function TaskSearch(props) {
           return (
             <Link
               to={{
-                pathname: `/ITSM/operationplan/operationplansearchdetail/${record.operationNo}/${record.timeoutStatus}`,
+                pathname: `/ITSM/operationplan/operationplancheckfillin/${record.operationNo}/${record.checkStatus}`,
               }}
             >
               {text}
@@ -558,7 +478,6 @@ function TaskSearch(props) {
     }
   }
 
-
   const customTreeNode = () => {
     return initialColumns.map(item => {
       return (
@@ -577,19 +496,54 @@ function TaskSearch(props) {
     return [];
   };
 
-  const executeStatus = getTypebyTitle('执行状态');
+  const executeStatusselect = getTypebyTitle('执行状态');
   const taskType = getTypebyTitle('作业类型');
   const taskNature = getTypebyTitle('作业性质');
   const taskBilling = getTypebyTitle('是否开票');
   const checkStatus = getTypebyTitle('审核状态');
-  const timeoutStatus = getTypebyTitle('超时状态');
+  const timeoutStatusselect = getTypebyTitle('超时状态');
   const taskResult = getTypebyTitle('作业结果');
-  const checkResult = getTypebyTitle('审核结果')
+  const checkResult = getTypebyTitle('审核结果');
+  const taskCompany = getTypebyTitle('作业单位');
 
   useEffect(() => {
     getTobolist();
     setColumns(initialColumns)
   }, []);
+
+  const handleClick = () => {
+    console.log(1);
+  }
+
+  const checkSubmit = (value) => {
+    const allmainId = selectedRows.map(obj => {
+      return obj.mainId
+    });
+    dispatch({
+      type: 'processmodel/fallback',
+      payload: {
+        mainIds: allmainId,
+        ...values,
+      },
+    }).then(res => {
+      if (res.code === 200) {
+        message.info(res.msg);
+        router.push(`/ITSM/problemmanage/besolved`)
+      } else {
+        message.error(res.msg);
+      }
+    });
+  }
+
+  const pagination = {
+    showSizeChanger: true,
+    onShowSizeChange: (page, pageSize) => onShowSizeChange(page, pageSize),
+    current: paginations.current,
+    pageSize: paginations.pageSize,
+    total: queryList.total,
+    showTotal: total => `总共  ${total}  条记录`,
+    onChange: (page) => changePage(page),
+  };
 
   return (
     <PageHeaderWrapper title={pagetitle}>
@@ -600,7 +554,6 @@ function TaskSearch(props) {
         style={{ display: 'none' }}
       />
       <Card>
-
         <Row gutter={16}>
           <Form {...formItemLayout}>
             <Col span={8}>
@@ -613,21 +566,9 @@ function TaskSearch(props) {
             </Col>
 
             <Col span={8}>
-              <Form.Item label="执行状态">
-                {getFieldDecorator('status', {
-                  rules: [
-                    {
-                      message: '请输入处理环节',
-                    },
-                  ],
-                })(
-                  <Select placeholder="请选择" allowClear>
-                    {executeStatus.map(obj => [
-                      <Option key={obj.key} value={obj.title}>
-                        {obj.title}
-                      </Option>,
-                    ])}
-                  </Select>,
+              <Form.Item label="作业系统名称">
+                {getFieldDecorator('systemName', {})(
+                 
                   <Input />
                 )}
               </Form.Item>
@@ -673,7 +614,16 @@ function TaskSearch(props) {
                   <Form.Item label="作业单位">
                     {getFieldDecorator('operationUnit', {})
                       (
-                        <Input />
+                        <Select
+                          placeholder="请选择"
+                          allowClear
+                        >
+                          {taskCompany.map(obj => [
+                            <Option key={obj.key} value={obj.title}>
+                              {obj.title}
+                            </Option>,
+                          ])}
+                        </Select>,
                       )}
                   </Form.Item>
                 </Col>
@@ -727,7 +677,7 @@ function TaskSearch(props) {
 
                 <Col span={8}>
                   <Form.Item label="计划开始时间">
-                    {getFieldDecorator('plannedStarTtime', {
+                    {getFieldDecorator('plannedStartTime', {
                       // initialValue: moment(new Date())
                     })
                       (
@@ -758,12 +708,12 @@ function TaskSearch(props) {
                 </Col>
 
                 <Col span={8}>
-                  <Form.Item label="执行状态">
+                  <Form.Item label="作业状态">
                     {getFieldDecorator('status', {
                     })
                       (
                         <Select placeholder="请选择" allowClear>
-                          {executeStatus.map(obj => [
+                          {executeStatusselect.map(obj => [
                             <Option key={obj.key} value={obj.title}>
                               {obj.title}
                             </Option>,
@@ -779,7 +729,7 @@ function TaskSearch(props) {
               <>
                 <Col span={8}>
                   <Form.Item label="审核状态">
-                    {getFieldDecorator('status', {
+                    {getFieldDecorator('checkStatus', {
                     })
                       (
                         <Select placeholder="请选择" allowClear>
@@ -795,10 +745,10 @@ function TaskSearch(props) {
 
                 <Col span={8}>
                   <Form.Item label="超时状态">
-                    {getFieldDecorator('timeout', {})
+                    {getFieldDecorator('status', {})
                       (
                         <Select placeholder="请选择" allowClear>
-                          {timeoutStatus.map(obj => [
+                          {timeoutStatusselect.map(obj => [
                             <Option key={obj.key} value={obj.title}>
                               {obj.title}
                             </Option>,
@@ -810,7 +760,7 @@ function TaskSearch(props) {
 
                 <Col span={8}>
                   <Form.Item label="作业结果">
-                    {getFieldDecorator('result', {})
+                    {getFieldDecorator('executeResult', {})
                       (
                         <Select placeholder="请选择" allowClear>
                           {taskResult.map(obj => [
@@ -888,7 +838,7 @@ function TaskSearch(props) {
 
                 <Col span={8}>
                   <Form.Item label="填报单位">
-                    {getFieldDecorator('importance', {})
+                    {getFieldDecorator('operationUnit', {})
                       (
                         <Input />
                       )}
@@ -909,7 +859,7 @@ function TaskSearch(props) {
 
                 <Col span={8}>
                   <Form.Item label="审核结果">
-                    {getFieldDecorator('result', {})
+                    {getFieldDecorator('checkResult', {})
                       (
                         <Select placeholder="请选择" allowClear>
                           {checkResult.map(obj => [
@@ -937,7 +887,7 @@ function TaskSearch(props) {
               <>
                 <Col span={8}>
                   <Form.Item label="审核说明">
-                    {getFieldDecorator('registerTime', {
+                    {getFieldDecorator('checkContent', {
                     })
                       (<Input allowClear />)
                     }
@@ -947,6 +897,7 @@ function TaskSearch(props) {
                 <Col span={8}>
                   <Form.Item label="填报时间">
                     {getFieldDecorator('addTime', {
+                      initialValue: [moment(time1), moment(time2)] || [moment().startOf('month'), moment()],
                     })(
                       <RangePicker
                         showTime
@@ -956,9 +907,6 @@ function TaskSearch(props) {
                     )}
                   </Form.Item>
                 </Col>
-
-
-
               </>
             )}
 
@@ -984,10 +932,10 @@ function TaskSearch(props) {
                       关闭 <UpOutlined />
                     </>
                   ) : (
-                    <>
-                      展开 <DownOutlined />
-                    </>
-                  )}
+                      <>
+                        展开 <DownOutlined />
+                      </>
+                    )}
                 </Button>
               </Col>
             )}
@@ -1012,17 +960,17 @@ function TaskSearch(props) {
                       关闭 <UpOutlined />
                     </>
                   ) : (
-                    <>
-                      展开 <DownOutlined />
-                    </>
-                  )}
+                      <>
+                        展开 <DownOutlined />
+                      </>
+                    )}
                 </Button>
               </Col>
             )}
           </Form>
         </Row>
 
-        <Button type="primary" onClick={exportDownload}>
+        <Button type="primary" style={{ marginRight: 8 }} onClick={exportDownload}>
           导出数据
           </Button>
 
@@ -1033,7 +981,6 @@ function TaskSearch(props) {
             // className={styles.dropdown}
             content={
               <>
-
                 <div style={{ borderBottom: '1px solid #E9E9E9' }}>
                   <Checkbox
                     // indeterminate={this.state.indeterminate}
@@ -1041,16 +988,14 @@ function TaskSearch(props) {
                     checked={columns.length === initialColumns.length === true}
                   >
                     列表展示
-          </Checkbox>
+                  </Checkbox>
                   <br />
                 </div>
 
                 <Checkbox.Group
                   onChange={onCheck}
                   value={defaultAllkey}
-                  // className={styles.selsectMenu}
                   defaultValue={columns}
-                // onChange={this.changeColumn}
                 >
                   {initialColumns.map(item => (
                     <Col key={`item_${item.key}`} style={{ marginBottom: '8px' }}>
@@ -1079,13 +1024,16 @@ function TaskSearch(props) {
 
         </div>
 
+
+        <div />
         <Table
           loading={loading}
           columns={columns}
-          dataSource={myTaskplanlist}
+          dataSource={queryList.rows}
           scroll={{ x: 1500 }}
           rowKey={record => record.id}
           rowSelection={rowSelection}
+          pagination={pagination}
         />
       </Card>
 
@@ -1095,7 +1043,7 @@ function TaskSearch(props) {
 
 export default Form.create({})(
   connect(({ processmodel, loading }) => ({
-    myTaskplanlist: processmodel.myTaskplanlist,
+    queryList: processmodel.queryList,
     loading: loading.models.processmodel,
   }))(TaskSearch),
 );

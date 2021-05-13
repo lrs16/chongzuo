@@ -132,6 +132,11 @@ const User = props => {
           },
         });
         break;
+      case 'task':
+        dispatch({
+          type: 'itsmuser/taskuserlist',
+        });
+        break;
       default:
         break;
     }
@@ -147,14 +152,24 @@ const User = props => {
   }, [visible]);
 
   const handleOk = () => {
-    if (type !== 'demand') {
+    if (type !== 'demand' && type !== 'task') {
       if (value.length === 0) {
         message.error('最少选择一个处理人！');
       } else {
         ChangeChoice(true);
         ChangeUserVisible(false);
       }
-    };
+    }
+
+    if(type === 'task') {
+      if(value.length !== 1) {
+        message.info('只能选择一个送审人')
+      } else {
+        ChangeChoice(true);
+        ChangeUserVisible(false);
+      }
+    }
+
     if (type === 'demand') {
       const newArr = [];
       const nameArr = [];
@@ -173,10 +188,12 @@ const User = props => {
 
   };
 
+
   const handleCancel = () => {
     ChangeUserVisible(false);
     ChangeType('');
   };
+
 
 
   const nextflowuser =
@@ -197,7 +214,7 @@ const User = props => {
               </div>
             </>
           )}
-          {type === 'demand' && loading === false && isnew && userlist !== '' && (
+          {(type === 'demand') && loading === false && isnew && userlist !== '' && (
             <>
               {userlist.map((obj, index) => {
                 return (

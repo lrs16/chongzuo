@@ -4,9 +4,11 @@ import {
   Card,
   Button,
   Collapse,
-  Form
+  Form,
+  message
 } from 'antd';
 import Link from 'umi/link';
+import User from '@/components/SelectUser/User';
 import router from 'umi/router';
 import TaskCheck from './components/TaskCheck';
 import OperationPlanfillin from './components/OperationPlanfillin';
@@ -14,9 +16,11 @@ import TaskExecute from './components/TaskExecute';
 import OperationPlanfillindes from './components/OperationPlanfillindes';
 import TaskCheckdes from './components/TaskCheckdes';
 import TaskExecutedes from './components/TaskExecutedes';
+import Back from './components/Back';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import SysDict from '@/components/SysDict';
 import styles from './index.less';
+import { editModels } from '@/pages/SysManage/ProcessManagement/services/api';
 
 const { Panel } = Collapse;
 
@@ -45,76 +49,113 @@ const forminladeLayout = {
 let headTitle;
 
 export const FatherContext = createContext();
-function OperationplansearchDetail(props) {
-  // const {
-  //   params: { id },
-  // } = props.match; // 获取taskId
-
-  const {
-    form: { validateFields },
-    location: { paneKey },
-    match: { params: { id, status, checkoutstatus, type } },
-    userinfo,
-    dispatch
-  } = props;
-
-  // const title = props.route.name;
-  const [flowtype, setFlowtype] = useState('1');
+function Work(props) {
+  const [flowtype, setFlowtype] = useState('001');
   const [selectdata, setSelectData] = useState('');
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
   const SaveRef = useRef();
+  const [activeKey, setActiveKey] = useState([]);
 
+  //  选人组件
+  const [uservisible, setUserVisible] = useState(false); // 是否显示选人组件
+  const [userchoice, setUserChoice] = useState(false); // 已经选择人员
+  const [changorder, setChangeOrder] = useState(undefined);
 
+  const {
+    form: { validateFields },
+    location: { query: { mainId, status, checkStatus, auditLink } },
+    userinfo,
+    openViewlist,
+    dispatch,
+    loading
+  } = props;
+  // const { data } = openViewlist;
+  // console.log('data: ', data);
 
+  // panel详情
+  const Panelheadermap = new Map([
+    ['main', '作业登记'],
+    ['check', '作业审核'],
+    ['execute', '作业执行'],
+  ]);
 
+  const getInformation = () => {
+    dispatch({
+      type: 'processmodel/openView',
+      payload: mainId
+    })
+  }
+
+  // 初始化获取用户信息
+  useEffect(() => {
+    getInformation();
+  }, [])
+
+  const handleClose = () => {
+    router.push({
+      pathname: `/ITSM/operationplan/operationplancheck`,
+    });
+  }
 
   return (
     <PageHeaderWrapper
-      title={status}
+      title={headTitle}
       extra={
         <>
-
-          <Button >
-            <Link
-              to='/ITSM/operationplan/operationplansearch'>
-              返回
-            </Link>
-          </Button>
-
+          <Button onClick={handleClose}>关闭</Button>
         </>
       }
     >
+      <SysDict
+        typeid="1385513049263181825"
+        commonid="1354288354950123522"
+        ChangeSelectdata={newvalue => setSelectData(newvalue)}
+        style={{ display: 'none' }}
+      />
 
       <div className={styles.collapse}>
-        <Collapse
-          expandIconPosition="right"
-          bordered={false}
-        // defaultActiveKey={['0']}
-        // style={{ backgroundColor: 'white' }}
-        >
-          {/* 后端返回的数据，数据太多，就不mock了 */}
-          <Panel
-            header='作业计划中'
+      {
+        loading === false && openViewlist && (
+          <Collapse
+            style={{ marginTop: 20 }}
           >
-            <OperationPlanfillindes />
-          </Panel>
+            {openViewlist.map((obj, index) => {
+              // panel详情组件
+              const Paneldesmap = new Map([
+                ['main', <OperationPlanfillindes info={Object.values(obj)[0]} main={openViewlist[0].main} />],
+                ['check', <TaskCheckdes info={Object.values(obj)[0]} main={openViewlist[0].main} />],
+                ['execute', <TaskExecutedes info={Object.values(obj)[0]} main={openViewlist[0].main} />],
+              ]);
+              if (index >= 0)
+                return (
+                  <Panel
+                    header={Panelheadermap.get(Object.keys(obj)[0])}
+                    key={index.toString()}
+                  >
+                    {Paneldesmap.get(Object.keys(obj)[0])}
+                  </Panel>
+                );
+            }
+            )}
+          </Collapse>
 
-          <Panel
-            header='作业计划审核'
-          >
-            <TaskCheckdes />
-          </Panel>
-
-          <Panel
-            header='作业计划执行'
-          >
-            <TaskExecutedes />
-          </Panel>
-        </Collapse>
+        )
+      }
       </div>
 
+    
 
-    </PageHeaderWrapper>
+      {/* 选人组件 */}
+      <User
+        // taskId={id}
+        visible={uservisible}
+        ChangeUserVisible={v => setUserVisible(v)}
+        changorder={changorder}
+        ChangeChoice={v => setUserChoice(v)}
+        ChangeType={() => 0}
+      />
+
+    </PageHeaderWrapper >
 
 
   )
@@ -124,6 +165,7 @@ function OperationplansearchDetail(props) {
 export default Form.create({})(
   connect(({ processmodel, itsmuser, loading }) => ({
     userinfo: itsmuser.userinfo,
+    openViewlist: processmodel.openViewlist,
     loading: loading.models.processmodel,
-  }))(OperationplansearchDetail)
+  }))(Work)
 )
