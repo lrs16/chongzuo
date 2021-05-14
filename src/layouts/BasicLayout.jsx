@@ -4,7 +4,7 @@
  * https://github.com/ant-design/ant-design-pro-layout
  */
 import ProLayout from '@ant-design/pro-layout'; // , { DefaultFooter }
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'umi/link';
 import { connect } from 'dva';
 import {
@@ -13,6 +13,7 @@ import {
   Button,
   // Alert,
   //  Spin,
+  Tabs,
 } from 'antd';
 import { formatMessage } from 'umi-plugin-react/locale';
 import Authorized from '@/utils/Authorized';
@@ -21,6 +22,15 @@ import { getAuthorityFromRouter } from '@/utils/utils';
 import logo from '../../public/menulogo.png';
 // import Layout from './BlankLayout';
 // import PageTab from './PageTab';
+
+const { TabPane } = Tabs;
+
+const homepane = {
+  title: '首页',
+  pathname: '/',
+  key: '1362219140546301953',
+  closable: false,
+}
 
 const noMatch = (
   <Result
@@ -34,11 +44,6 @@ const noMatch = (
     }
   />
 );
-
-/**
- * use Authorized check all menu item
- */
-
 const menuDataRender = menuList =>
   menuList.map(item => {
     const localItem = { ...item, children: item.children ? menuDataRender(item.children) : [] };
@@ -65,9 +70,13 @@ const BasicLayout = props => {
     menuData,
     menulist,
   } = props;
-  /**
-   * constructor
-   */
+
+  const [toptabs, setTopTabs] = useState([{ ...homepane }]);
+  const [activeKey, setActiveKey] = useState('1362219140546301953');
+
+  function callback(key) {
+    setActiveKey(key);
+  };
 
   useEffect(() => {
     if (dispatch) {
@@ -138,8 +147,8 @@ const BasicLayout = props => {
           if (menuItemProps.isUrl || menuItemProps.children) {
             return defaultDom;
           }
-
-          return <Link to={menuItemProps.path}>{defaultDom}</Link>;
+          // console.log(menuItemProps)
+          return <Link to={menuItemProps.path} onClick={() => console.log(menuItemProps.id)}>{defaultDom}</Link>;
         }}
         breadcrumbRender={(routers = []) => [
           {
@@ -161,13 +170,30 @@ const BasicLayout = props => {
         }}
         menuDataRender={menuDataRender}
         route={leftRoute}
-        // footerRender={footerRender}
+      // footerRender={footerRender}
       >
         {authorized === Userauth && (
-          <Authorized authority={Userauth} noMatch={noMatch}>
-            {/* <PageTab>{children}</PageTab> */}
-            {children}
-          </Authorized>
+          <>
+            <Tabs
+              hideAdd
+              activeKey={activeKey}
+              type="editable-card"
+              onChange={callback}
+              style={{ margin: '-24px -24px 8px' }}
+            >
+              {toptabs.map(obj => [
+                <TabPane
+                  tab={obj.title}
+                  key={obj.key}
+                  closable={obj.closable}
+                />,
+              ])}
+            </Tabs>
+            <Authorized authority={Userauth} noMatch={noMatch}>
+              {/* <PageTab>{children}</PageTab> */}
+              {children}
+            </Authorized>
+          </>
         )}
         {authorized === 'incontrol' && (
           <Result

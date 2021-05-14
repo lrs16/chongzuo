@@ -6,7 +6,7 @@ function HomePage(props) {
   const RadiaValue = props.route.name;
   return (
     <>
-      <div style={{ marginBottom: 16 }}>
+      <div style={{ margin: '-24px -24px 16px', padding: '24px', background: '#fff' }}>
         <Radio.Group defaultValue={RadiaValue}>
           <Radio.Button value="IT服务监控台">IT服务监控台</Radio.Button>
           <Radio.Button value="b">监测告警监控台</Radio.Button>

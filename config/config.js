@@ -1331,7 +1331,7 @@ export default {
       changeOrigin: true,
     },
     '/operation/': {
-      target:'http://172.16.10.11:9901/',
+      target: 'http://172.16.10.11:9901/',
       changeOrigin: true
     }
   },
