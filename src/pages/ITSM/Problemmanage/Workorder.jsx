@@ -607,12 +607,27 @@ function Workorder(props) {
     const taskId = id;
     judgeTimeoutStatus(taskId).then(res => {
       if (res.code === 200 && res.status === 'yes' && res.timeoutMsg === '') {
-        message.info('该故障单已超时，请填写超时原因...')
+        message.info('该故问题单已超时，请填写超时原因...')
         setModalVisible(true);
         setButtonType(buttype);
       };
       if (res.code === 200 && ((res.status === 'yes' && res.timeoutMsg !== '') || res.status === 'no')) {
-        setModalRollBack(true);
+        switch (buttype) {
+          case 'accpt':
+            problemHandleOrder()
+            break;
+          case 'goback':
+            setModalRollBack(true);
+            break;
+          case 'flowNodeName':
+            handleSubmit(flowNodeName);
+            break;
+          case 'circaSign':
+            handleSubmit(circaSign);
+            break;
+          default:
+            break;
+        }
       }
     })
   };
@@ -623,7 +638,7 @@ function Workorder(props) {
       taskId: id,
       msgType: 'timeout',
       orderId: mainId,
-      orderType: 'trouble',
+      orderType: 'problem',
       ...v
     }).then(res => {
       if (res.code === 200) {
@@ -634,13 +649,13 @@ function Workorder(props) {
           case 'goback':
             setModalRollBack(true);
             break;
-          case 'save':
-            handleSave(tosaveStatus);
+          case 'flowNodeName':
+            handleSubmit(flowNodeName);
+            break;
+          case 'circaSign':
+            handleSubmit(circaSign);
             break;
           default:
-            if (res.code === 200) {
-              handleSave(currenStatus)
-            }
             break;
         }
       }
@@ -685,7 +700,6 @@ function Workorder(props) {
                 </Button>
               )
             }
-
             {
               flowNodeName === '系统开发商处理' && (currntStatus !== 29 && currntStatus !== 40 && handle !== undefined) && tabActiveKey === 'workorder' && (
                 <Button
@@ -697,13 +711,12 @@ function Workorder(props) {
                 </Button>
               )
             }
-
             {
               (currntStatus === 45) && handle !== undefined && (
                 <Button
                   type="primary"
                   style={{ marginRight: 8 }}
-                  onClick={() => { changeorderFunction(); handleSubmit(flowNodeName); }}
+                  onClick={() => { changeorderFunction(); onClickSubmit('flowNodeName'); }}
                 >
                   转单
                 </Button>
@@ -725,7 +738,7 @@ function Workorder(props) {
                   type="primary"
                   style={{ marginRight: 8 }}
                   onFocus={() => 0}
-                  onClick={() => { handleSubmit(circaSign); setProblemHandle('handle'); setChange() }}>
+                  onClick={() => { onClickSubmit('circaSign'); setProblemHandle('handle'); setChange() }}>
                   流转
                 </Button>
               )
@@ -754,7 +767,7 @@ function Workorder(props) {
                 <Button
                   type="primary"
                   style={{ marginRight: 8 }}
-                  onClick={() => { handleSubmit(flowNodeName) }}
+                  onClick={() => { onClickSubmit('flowNodeName') }}
                 >
                   {
                     (flowNodeName === '自动化科审核' || flowNodeName === '系统运维商审核')
@@ -788,7 +801,7 @@ function Workorder(props) {
                 <Button
                   type="primary"
                   style={{ marginRight: 8 }}
-                  onClick={() => { cancelChangeorder(); handleSubmit(flowNodeName) }}
+                  onClick={() => { cancelChangeorder(); onClickSubmit('flowNodeName') }}
                 >
                   流转
                 </Button>

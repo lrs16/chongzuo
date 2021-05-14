@@ -729,7 +729,31 @@ function Todolistdetails(props) {
         setButtonType(buttype);
       };
       if (res.code === 200 && ((res.status === 'yes' && res.timeoutMsg !== '') || res.status === 'no')) {
-        setModalRollBack(true);
+        switch (buttontype) {
+          case 'accpt':
+            handleReceivs()
+            break;
+          case 'goback':
+            setModalRollBack(true);
+            break;
+          case 'save':
+            handleSave(tosaveStatus);
+            break;
+          case 'flow':
+            handleSave(currenStatus)
+            break;
+          case 'registback':
+            handleRegist('back')
+            break;
+          case 'handleback':
+            toHandle('back')
+            break;
+          case 'handle':
+            toHandle1()
+            break;
+          default:
+            break;
+        }
       }
     })
   };
@@ -754,10 +778,19 @@ function Todolistdetails(props) {
           case 'save':
             handleSave(tosaveStatus);
             break;
+          case 'flow':
+            handleSave(currenStatus)
+            break;
+          case 'registback':
+            handleRegist('back')
+            break;
+          case 'handleback':
+            toHandle('back')
+            break;
+          case 'handle':
+            toHandle1()
+            break;
           default:
-            if (res.code === 200) {
-              handleSave(currenStatus)
-            }
             break;
         }
       }
@@ -830,24 +863,24 @@ function Todolistdetails(props) {
               <Button
                 type="primary"
                 style={{ marginRight: 8 }}
-                onClick={() => { handleSave(currenStatus) }}
+                onClick={() => { handleSubmit('flow') }}
                 onMouseOver={() => { sessionStorage.setItem('flowtype', '1') }}
                 onFocus={() => 0}>
                 流转
               </Button>
             )}
           {result === '0' && (
-            <Button type="primary" onClick={() => handleRegist('back')}>
+            <Button type="primary" onClick={() => handleSubmit('registback')}>
               重新登记
             </Button>
           )}
           {resultsecond === '0' && (
-            <Button type="primary" onClick={() => toHandle('back')}>
+            <Button type="primary" onClick={() => handleSubmit('handleback')}>
               重新处理
             </Button>
           )}
           {resultconfirm === '0' && (
-            <Button type="primary" onClick={toHandle1}>
+            <Button type="primary" onClick={() => handleSubmit('handle')}>
               重新处理
             </Button>
           )}
