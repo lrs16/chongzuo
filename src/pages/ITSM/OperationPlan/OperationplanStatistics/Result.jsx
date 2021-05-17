@@ -24,12 +24,9 @@ const statusContent = ['未超时', '即将超时', '已超时'];
 const columns = [
   {
     title: '作业结果',
-    dataIndex: 'status',
-    key: 'status',
+    dataIndex: 'result',
+    key: 'result',
     render: (text, record) => {
-      if (record.user !== '合计') {
-        return <span>{text}</span>
-      }
       return <span style={{fontWeight:700}}>{text}</span>
     }
   },

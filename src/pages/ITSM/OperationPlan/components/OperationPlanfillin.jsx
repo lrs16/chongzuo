@@ -25,6 +25,7 @@ const { TextArea, Search } = Input;
 let startTime;
 let endTime;
 let htmlContent;
+let taskperson = true;
 
 const OperationPlanfillin = React.forwardRef((props, ref) => {
   const {
@@ -41,20 +42,24 @@ const OperationPlanfillin = React.forwardRef((props, ref) => {
     loading
   } = props;
 
-  const statusContent = ['计划中', '已延期', '已超时', '已完成']
+
+  const statusContent = ['计划中', '延期中', '已超时', '已完成']
   const color = ['blue', 'yellow', 'red', 'green'];
   const [titlerecords, setTitleRecords] = useState([]);
   const [selectdata, setSelectData] = useState('');
   const [fileslist, setFilesList] = useState([]);
-  const [disablelist, setDisabledList] = useState([]);
-  const [spinloading, setSpinLoading] = useState(true);
-  const [titleautodata, setTitleAutoData] = useState([]);
   const [objautodata, setObjautodata] = useState([]);
-  const [editorState, setEditorState] = useState('');
 
   useEffect(() => {
     ChangeFiles(fileslist);
   }, [fileslist]);
+
+  useEffect(() => {
+    taskperson = true;
+    if(main.operationUser) {
+      taskperson = false;
+    }
+  }, []);
 
   const attRef = useRef();
   useImperativeHandle(
@@ -145,6 +150,7 @@ const OperationPlanfillin = React.forwardRef((props, ref) => {
   };
 
   const selectOnchange = (value, option) => {
+    taskperson = false;
     setFieldsValue({
       main_operationUser: value,
       main_operationUserId: option.key
@@ -310,7 +316,7 @@ const OperationPlanfillin = React.forwardRef((props, ref) => {
                     initialValue: main.operationUser
                   })
                     (
-                      <Select onChange={selectOnchange}>
+                      <Select onChange={selectOnchange} disabled={type} >
                         {operationPersonSelect.map(obj => [
                           <Option key={obj.key} value={obj.value}>
                             {obj.value}
@@ -338,11 +344,12 @@ const OperationPlanfillin = React.forwardRef((props, ref) => {
               })
                 (
                   <Radio.Group
-                    disabled={type}
                   >
                     {
                       WorkOrder.map(obj => [
-                        <Radio key={obj.key} value={obj.dict_code}>
+                        <Radio
+                          key={obj.key}
+                          value={obj.dict_code} >
                           {obj.title}
                         </Radio>
                       ])
@@ -366,7 +373,7 @@ const OperationPlanfillin = React.forwardRef((props, ref) => {
                 initialValue: main.billing
               })
                 (
-                  <Radio.Group>
+                  <Radio.Group disabled={type}>
                     {
                       WorkOrder.map(obj => [
                         <Radio key={obj.key} value={obj.dict_code}>
@@ -514,7 +521,7 @@ const OperationPlanfillin = React.forwardRef((props, ref) => {
             </Col>
           )}
 
-          <Col span={24}>
+          <Col span={24} style={{ display: (taskperson||type) ? 'none' : 'block' }}>
             <Form.Item label="上传附件" {...forminladeLayout}>
               {getFieldDecorator('main_fileIds', {
                 initialValue: main && main.fileIds ? main.fileIds : '',
@@ -522,6 +529,7 @@ const OperationPlanfillin = React.forwardRef((props, ref) => {
                 (
                   <div style={{ width: 400 }}>
                     <SysUpload
+                      disabled={type}
                       fileslist={files}
                       ChangeFileslist={newvalue => setFilesList(newvalue)}
                     />

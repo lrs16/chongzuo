@@ -1,4 +1,4 @@
-import React, { useEffect, useState,createContext } from 'react';
+import React, { useEffect, useState, createContext } from 'react';
 import { connect } from 'dva';
 import Link from 'umi/link';
 import {
@@ -46,7 +46,8 @@ let endtime;
 let actualStarttime;
 let actualEndtime;
 const statusMap = ['green', 'gold', 'red'];
-const status = ['未超时', '即将超时', '已超时'];
+const status = ['0', '1', '2'];
+const statusContent = ['未超时', '即将超时', '已超时'];
 
 
 function OperationplanCheck(props) {
@@ -56,14 +57,17 @@ function OperationplanCheck(props) {
     dispatch,
     myTaskplanlist,
     userinfo,
+    operationPersonArr,
     loading,
   } = props;
+  let operationPersonSelect;
 
   const [expand, setExpand] = useState(false);
   const [paginations, setPaginations] = useState({ current: 0, pageSize: 10 });
   const [selectdata, setSelectData] = useState('');
   const [selectedRows, setSelectedRows] = useState([]);
   const [columns, setColumns] = useState([]);
+  const [visible, setVisible] = useState(false);
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
   let formThead;
 
@@ -71,9 +75,9 @@ function OperationplanCheck(props) {
     router.push({
       pathname: `/ITSM/operationplan/operationplanform`,
       query: {
-        auditLink:true,
-        checkStatus:record.checkStatus,
-        mainId:record.mainId,
+        auditLink: true,
+        checkStatus: record.checkStatus,
+        mainId: record.mainId,
       }
     })
   };
@@ -148,14 +152,14 @@ function OperationplanCheck(props) {
     },
     {
       title: '超时状态',
-      dataIndex: 'status',
-      key: 'status',
+      dataIndex: 'timeoutStatus',
+      key: 'timeoutStatus',
       width: 150,
       render: (text, record) => (
         <span>
           <Badge
-            status={statusMap[status.indexOf(text)]}
-            text={status[status.indexOf(text)]} />
+            status={statusMap[statusContent.indexOf(text)]}
+            text={text} />
         </span>
       ),
     },
@@ -166,9 +170,9 @@ function OperationplanCheck(props) {
       width: 150,
     },
     {
-      title: '执行状态',
-      dataIndex: 'executeStatus',
-      key: 'executeStatus',
+      title: '作业状态',
+      dataIndex: 'status',
+      key: 'status',
       width: 150,
     },
     {
@@ -203,8 +207,8 @@ function OperationplanCheck(props) {
     },
     {
       title: '作业执行情况说明',
-      dataIndex: 'content',
-      key: 'content',
+      dataIndex: 'executeContent',
+      key: 'executeContent',
       width: 150,
     },
     {
@@ -249,7 +253,30 @@ function OperationplanCheck(props) {
       key: 'checkContent',
       width: 150,
     },
+    {
+      title: '超时信息',
+      dataIndex: 'timeoutMsg',
+      key: 'timeoutMsg',
+      width: 150,
+    },
+    {
+      title: '回退信息',
+      dataIndex: 'fallbackMsg',
+      key: 'fallbackMsg',
+      width: 150,
+    },
   ];
+
+  // 处理作业负责人数据
+  if (operationPersonArr.length) {
+    operationPersonSelect = operationPersonArr.map(item => {
+      return {
+        key: item.id,
+        value: item.userName
+      }
+    })
+  }
+
 
   const queryDept = () => {
     dispatch({
@@ -290,6 +317,7 @@ function OperationplanCheck(props) {
       payload: {
         flowNodeName: '计划审核',
         ...values,
+        addTime: '',
         pageIndex: page - 1,
         pageSize
       },
@@ -334,12 +362,13 @@ function OperationplanCheck(props) {
         flowNodeName: '计划审核',
         time1: values.addTime?.length ? moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
         time2: values.addTime?.length ? moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-        checkTime: values.addTime ? moment(values.addTime).format('YYYY-MM-DD HH:mm:ss') : '',
-        operationTime: values.operationTime ? moment(values.operationTime).format('YYYY-MM-DD HH:mm:ss') : '',
-        plannedStarTtime: values.plannedStarTtime ? moment(values.plannedStarTtime).format('YYYY-MM-DD HH:mm:ss') : '',
+        checkTime: values.checkTime ? moment(values.checkTime).format('YYYY-MM-DD HH:mm:ss') : '',
+        executeOperationTime: values.executeOperationTime ? moment(values.executeOperationTime).format('YYYY-MM-DD HH:mm:ss') : '',
+        plannedStartTime: values.plannedStartTime ? moment(values.plannedStartTime).format('YYYY-MM-DD HH:mm:ss') : '',
         plannedEndTime: values.plannedEndTime ? moment(values.plannedEndTime).format('YYYY-MM-DD HH:mm:ss') : '',
         startTime: values.startTime ? moment(values.startTime).format('YYYY-MM-DD HH:mm:ss') : '',
         endTime: values.endTime ? moment(values.endTime).format('YYYY-MM-DD HH:mm:ss') : '',
+        addTime: '',
       }
 
       searchdata(searchParams, 1, paginations.pageSize);
@@ -360,7 +389,14 @@ function OperationplanCheck(props) {
         payload: {
           flowNodeName: '计划审核',
           columns: JSON.stringify(exportColumns),
-          ...values
+          ...values,
+          checkTime: values.checkTime ? moment(values.checkTime).format('YYYY-MM-DD HH:mm:ss') : '',
+          executeOperationTime: values.executeOperationTime ? moment(values.executeOperationTime).format('YYYY-MM-DD HH:mm:ss') : '',
+          plannedStartTime: values.plannedStartTime ? moment(values.plannedStartTime).format('YYYY-MM-DD HH:mm:ss') : '',
+          plannedEndTime: values.plannedEndTime ? moment(values.plannedEndTime).format('YYYY-MM-DD HH:mm:ss') : '',
+          startTime: values.startTime ? moment(values.startTime).format('YYYY-MM-DD HH:mm:ss') : '',
+          endTime: values.endTime ? moment(values.endTime).format('YYYY-MM-DD HH:mm:ss') : '',
+          addTime: '',
         }
       }).then(res => {
         const filename = '下载.xls';
@@ -381,107 +417,6 @@ function OperationplanCheck(props) {
     }
   }
 
-  const handleExecute = () => {
-
-    if (selectedRows.length !== 1) {
-      message.info('请选择一条数据')
-      // event.preventDefault();
-      return false;
-    }
-    const res = selectedRows.every(item => {
-      if (item.timeoutStatus === '未完成' && item.checkStatus === '已审核') {
-        return item.id;
-      }
-      message.info('请选择执行状态:未完成，并且审核状态:已审核');
-      return false
-    })
-
-    if (res === false) {
-      // event.preventDefault();
-      return false;
-    }
-
-    router.push({
-      pathname: `/ITSM/operationplan/operationplanform/${selectedRows[0].operationNo}/${selectedRows[0].timeoutStatus}/${selectedRows[0].checkStatus}/button`,
-    });
-
-    //   router.push({pathname:`/ITSM/operationplan/operationplanform/${selectedRows[0].operationNo}`,
-    //   match:{ 
-    //     id:selectedRows[0].operationNo,
-    //     title:'作业计划执行'
-    //   }
-    // });
-
-    // return dispatch({
-    //   type: 'processmodel/myTasklist',
-    //   payload: ids
-    // }).then(res => {
-    //   if (res.code === 200) {
-    //     message.info(res.msg);
-    //   } else {
-    //     message.info(res.msg);
-    //   }
-    // })
-  }
-
-  const handleDelay = () => {
-    if (selectedRows.length !== 1) {
-      message.info('请选择一条数据')
-      // event.preventDefault();
-      return false;
-    }
-
-
-    const res = selectedRows.every(item => {
-      if (item.timeoutStatus === '已延期') {
-        return item.id;
-      }
-      message.info('请选择执行状态:已延期');
-      return false
-    })
-
-    if (res === false) {
-      return false;
-    }
-
-    router.push({
-      pathname: `/ITSM/operationplan/operationplanform/${selectedRows[0].operationNo}/${selectedRows[0].timeoutStatus}/${selectedRows[0].checkStatus}/button`,
-    });
-    // return dispatch({
-    //   type: 'processmodel/myTasklist',
-    //   payload: ids
-    // }).then(res => {
-    //   if (res.code === 200) {
-    //     message.info(res.msg);
-    //   } else {
-    //     message.info(res.msg);
-    //   }
-    // })
-  }
-
-  const handleDelete = () => {
-    const res = selectedRows.every(item => {
-      if (item.timeoutStatus === '已延期') {
-        return item.id;
-      }
-      message.info('请选择执行状态:已延期');
-      return false
-    })
-
-    if (res === false) {
-      return false;
-    }
-    // return dispatch({
-    //   type: 'processmodel/myTasklist',
-    //   payload: ids
-    // }).then(res => {
-    //   if (res.code === 200) {
-    //     message.info(res.msg);
-    //   } else {
-    //     message.info(res.msg);
-    //   }
-    // })
-  }
 
   const creataColumns = () => {
     // columns
@@ -496,13 +431,7 @@ function OperationplanCheck(props) {
       if (key === 0) {
         obj.render = (text, record) => {
           return (
-            <Link
-              to={{
-                pathname: `/ITSM/operationplan/operationplancheckfillin/${record.operationNo}/${record.checkStatus}`,
-              }}
-            >
-              {text}
-            </Link>
+            <a onClick={() => gotoDetail(record)}>{text}</a>
           )
         }
         obj.fixed = 'left'
@@ -605,8 +534,26 @@ function OperationplanCheck(props) {
   const checkResult = getTypebyTitle('审核结果');
   const taskCompany = getTypebyTitle('作业单位');
 
+  //  获取作业负责人
+  const getoperationPerson = () => {
+    dispatch({
+      type: 'processmodel/operationPerson',
+    });
+  }
+
+  // 处理作业负责人数据
+  if (operationPersonArr.length) {
+    operationPersonSelect = operationPersonArr.map(item => {
+      return {
+        key: item.id,
+        value: item.userName
+      }
+    })
+  }
+
   useEffect(() => {
     queryDept();
+    getoperationPerson();
     getTobolist();
     setColumns(initialColumns)
   }, []);
@@ -615,13 +562,13 @@ function OperationplanCheck(props) {
     console.log(1);
   }
 
-  const checkSubmit = (value) =>{
-    const allmainId  = selectedRows.map(obj => {
+  const checkSubmit = (value) => {
+    const allmainId = selectedRows.map(obj => {
       return obj.mainId
     });
     console.log(allmainId)
 
-    const allcheckId  = selectedRows.map(obj => {
+    const allcheckId = selectedRows.map(obj => {
       return obj.id
     });
     console.log(allcheckId)
@@ -629,7 +576,7 @@ function OperationplanCheck(props) {
       type: 'processmodel/batchCheck',
       payload: {
         ...value,
-        mainIds:allmainId.toString(),
+        mainIds: allmainId.toString(),
         flowNodeName: '计划审核',
         check_id: allcheckId.toString(),
         editState: 'edit',
@@ -647,6 +594,73 @@ function OperationplanCheck(props) {
     });
   }
 
+
+  // const reasonSubmit = values => {
+  //   dispatch({
+  //     type: 'processmodel/fallback',
+  //     payload: {
+  //       mainIds: mainId,
+  //       ...values,
+  //     },
+  //   }).then(res => {
+  //     if (res.code === 200) {
+  //       message.info(res.msg);
+  //       router.push(`/ITSM/operationplan/operationplancheck`)
+  //     } else {
+  //       message.error(res.msg);
+  //     }
+  //   });
+  // };
+
+  const handleBack = () => {
+
+    if (selectedRows.length !== 1) {
+      message.info('请选择一条数据')
+      // event.preventDefault();
+      return false;
+    }
+
+    const backJudge = selectedRows.every(item => {
+      if (item.checkResult !== null) {
+        message.info('请选择未保存过的单子');
+        return false;
+      }
+
+      if (item.checkResult === null) {
+        return true
+      }
+    })
+
+
+    if (backJudge === false) {
+      return false;
+    }
+
+    if (backJudge === true) {
+      setVisible(true)
+    }
+  }
+
+  const reasonSubmit = values => {
+    const ids = selectedRows.map(item => {
+      return item.id
+    })
+    dispatch({
+      type: 'processmodel/fallback',
+      payload: {
+        mainIds: ids.toString(),
+        ...values,
+      },
+    }).then(res => {
+      if (res.code === 200) {
+        message.info(res.msg);
+        getTobolist();
+      } else {
+        message.error(res.msg);
+        getTobolist();
+      }
+    });
+  };
   const pagination = {
     showSizeChanger: true,
     onShowSizeChange: (page, pageSize) => onShowSizeChange(page, pageSize),
@@ -666,7 +680,6 @@ function OperationplanCheck(props) {
         style={{ display: 'none' }}
       />
       <Card>
-
         <Row gutter={16}>
           <Form {...formItemLayout}>
             <Col span={8}>
@@ -734,15 +747,15 @@ function OperationplanCheck(props) {
                     {getFieldDecorator('operationUnit', {})
                       (
                         <Select
-                        placeholder="请选择"
-                        allowClear
-                      >
-                        {taskCompany.map(obj => [
-                          <Option key={obj.key} value={obj.title}>
-                            {obj.title}
-                          </Option>,
-                        ])}
-                      </Select>,
+                          placeholder="请选择"
+                          allowClear
+                        >
+                          {taskCompany.map(obj => [
+                            <Option key={obj.key} value={obj.title}>
+                              {obj.title}
+                            </Option>,
+                          ])}
+                        </Select>,
                       )}
                   </Form.Item>
                 </Col>
@@ -750,7 +763,14 @@ function OperationplanCheck(props) {
                 <Col span={8}>
                   <Form.Item label="作业负责人">
                     {getFieldDecorator('operationUser', {})
-                      (<Input placeholder='请输入' allowClear />)}</Form.Item>
+                      (
+                        <Select>
+                          {operationPersonSelect.map(obj => [
+                            <Option key={obj.key} value={obj.value}>
+                              {obj.value}
+                            </Option>
+                          ])}
+                        </Select>)}</Form.Item>
                 </Col>
               </>
             )}
@@ -927,7 +947,7 @@ function OperationplanCheck(props) {
 
                 <Col span={8}>
                   <Form.Item label="作业执行情况说明">
-                    {getFieldDecorator('content', {})
+                    {getFieldDecorator('executeContent', {})
                       (
                         <Input />
                       )}
@@ -940,9 +960,11 @@ function OperationplanCheck(props) {
               <>
                 <Col span={8}>
                   <Form.Item label="执行操作时间">
-                    {getFieldDecorator('operationTime', {
+                    {getFieldDecorator('executeOperationTime', {
                     })
-                      (<DatePicker allowClear />)}
+                      (<DatePicker
+                        format="YYYY-MM-DD HH:mm:ss"
+                        allowClear />)}
                   </Form.Item>
                 </Col>
 
@@ -957,7 +979,7 @@ function OperationplanCheck(props) {
 
                 <Col span={8}>
                   <Form.Item label="填报单位">
-                    {getFieldDecorator('operationUnit', {})
+                    {getFieldDecorator('addUnit', {})
                       (
                         <Input />
                       )}
@@ -995,7 +1017,9 @@ function OperationplanCheck(props) {
                   <Form.Item label="审核时间">
                     {getFieldDecorator('checkTime', {})
                       (
-                        (<DatePicker allowClear />)
+                        (<DatePicker
+                          format="YYYY-MM-DD HH:mm:ss"
+                          allowClear />)
                       )}
                   </Form.Item>
                 </Col>
@@ -1016,7 +1040,7 @@ function OperationplanCheck(props) {
                 <Col span={8}>
                   <Form.Item label="填报时间">
                     {getFieldDecorator('addTime', {
-                      //  initialValue: [moment(time1), moment(time2)] || [moment().startOf('month'), moment()],
+                      // initialValue: [moment(time1), moment(time2)] || [moment().startOf('month'), moment()],
                     })(
                       <RangePicker
                         showTime
@@ -1106,8 +1130,9 @@ function OperationplanCheck(props) {
 
           <Back
             selectedRows={selectedRows}
+            reasonSubmit={values => reasonSubmit(values)}
           >
-            <Button type="primary" style={{ marginRight: 8 }} onClick={handleExecute}>
+            <Button type="primary" style={{ marginRight: 8 }} onClick={handleBack}>
               回退
           </Button>
           </Back>
@@ -1182,6 +1207,12 @@ function OperationplanCheck(props) {
           rowSelection={rowSelection}
           pagination={pagination}
         />
+
+        {/* <Back
+          visible={visible}
+          reasonSubmit={values => reasonSubmit(values)}
+        /> */}
+
       </Card>
 
     </PageHeaderWrapper>
@@ -1189,8 +1220,9 @@ function OperationplanCheck(props) {
 }
 
 export default Form.create({})(
-  connect(({ processmodel,itsmuser, loading }) => ({
+  connect(({ processmodel, itsmuser, loading }) => ({
     myTaskplanlist: processmodel.myTaskplanlist,
+    operationPersonArr: processmodel.operationPersonArr,
     userinfo: itsmuser.userinfo,
     loading: loading.models.processmodel,
   }))(OperationplanCheck),

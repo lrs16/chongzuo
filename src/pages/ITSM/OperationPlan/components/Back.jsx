@@ -28,7 +28,6 @@ function Back(props) {
   } = props;
   const handleopenClick = () => {
     if(!detailPage) {
-      console.log(1)
       if (selectedRows.length === 0) {
         message.info('请至少选择一条数据')
         return false;

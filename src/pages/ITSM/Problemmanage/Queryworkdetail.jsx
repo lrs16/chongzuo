@@ -161,6 +161,7 @@ function Queryworkdetail(props) {
                 </Collapse>
               )}
             </div>
+          
           </>
         )
       }

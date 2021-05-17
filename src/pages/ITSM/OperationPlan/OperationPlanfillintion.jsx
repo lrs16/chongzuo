@@ -27,11 +27,12 @@ function OperationPlanfillintion(props) {
   let operationPersonSelect;
 
   const PlanfillinRef = useRef();
-  const [paginations, setPaginations] = useState({ current: 1, pageSize: 10 });
-  const [selectdata, setSelectData] = useState('');
   const [richtext, setRichtext] = useState('');
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
-  const [pasteStatu, setPasteStatu] = useState(false);
+  const [test, setTest] = useState({ arr: [], ischange: false }); // 下载列表
+  
+  console.log(files,'files')
+
 
   const formItemLayout = {
     labelCol: {
@@ -55,11 +56,19 @@ function OperationPlanfillintion(props) {
     },
   };
 
+  const testFunction = (newvalue) => {
+    console.log(1);
+    console.log(newvalue)
+  }
+
+
   const queryDept = () => {
     dispatch({
       type: 'itsmuser/fetchuser',
     });
   };
+
+  //  获取作业负责人
 
   const getoperationPerson = () => {
     dispatch({
@@ -83,12 +92,10 @@ function OperationPlanfillintion(props) {
     getoperationPerson();
   }, [])
 
-
-
   //  点击保存触发事件
-  const handlesubmit = () => {
+  const handlesubmit = (params) => {
     PlanfillinRef.current.validateFields((err, values) => {
-      if (true) {
+      if (params?true:!err) {
         dispatch({
           type: 'processmodel/saveallForm',
           payload: {
@@ -111,11 +118,11 @@ function OperationPlanfillintion(props) {
   };
 
   // 上传删除附件触发保存
-  useEffect(() => {
-    if (files.ischange) {
-      handlesubmit();
-    }
-  }, [files]);
+  // useEffect(() => {
+  //   if (files.ischange) {
+  //     handlesubmit(true);
+  //   }
+  // }, [files]);
 
   const handleClose = () => {
     router.push({
@@ -128,19 +135,23 @@ function OperationPlanfillintion(props) {
       message.info('请在列表页复制');
       return false
     }
+    if(mainId.length >1) {
+      message.info('只能复制一条数据粘贴哦');
+      return false
+    }
+
     dispatch({
       type: 'processmodel/openFlow',
       payload: mainId
     })
 
-    if (mainId) {
+    if (mainId[0]) {
       copyData = openFlowList;
       delete copyData.main.operationNo
     }
 
-  }
 
-  console.log(copyData)
+  }
 
 
   return (
@@ -172,10 +183,11 @@ function OperationPlanfillintion(props) {
             getRichtext={(richText => setRichtext(richText))}
             ChangeFiles={newvalue => {
               setFiles(newvalue);
+              testFunction(newvalue);
             }}
             files={[]}
             operationPersonSelect={operationPersonSelect}
-            main={mainId ? copyData.main : {}}
+            main={copyData ? copyData.main : {}}
           />
 
 

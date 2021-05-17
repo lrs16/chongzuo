@@ -40,6 +40,7 @@ const columns = [
           query: {
             time1: record.time1,
             time2: record.time2,
+            operationUser:record.user === '合计' ?'':record.user,
             status:'计划中'
           }
         })
@@ -58,25 +59,8 @@ const columns = [
           query: {
             time1: record.time1,
             time2: record.time2,
+            operationUser:record.user === '合计' ?'':record.user,
             status:'延期中'
-          }
-        })
-      };
-        return <a onClick={() => gotoDetail(record)}>{text}</a>
-    }
-  },
-  {
-    title: '已超时',
-    dataIndex: 'ycs',
-    key: 'ycs',
-    render: (text, record) => {
-      const gotoDetail = (record) => {
-         router.push({
-          pathname: `/ITSM/operationplan/operationplansearch`,
-          query: {
-            time1: record.time1,
-            time2: record.time2,
-            status:'已超时'
           }
         })
       };
@@ -89,13 +73,13 @@ const columns = [
     key: 'ywc',
     render: (text, record) => {
       const gotoDetail = (record) => {
-        console.log(1)
         router.push({
           pathname: `/ITSM/operationplan/operationplansearch`,
           query: {
             time1: record.time1,
             time2: record.time2,
-            status:'已完成'
+            operationUser:record.user === '合计' ?'':record.user,
+            executeStatus:'已完成'
           }
         })
       };

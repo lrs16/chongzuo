@@ -39,7 +39,6 @@ export async function censorshipSubmit(submitParams) {
 
 //  下载我的工作计划
 export async function downloadMyOperationExcel(params) {
-  console.log('params: ', params);
   return request(`/operation/form/downloadMyOperationExcel`,{
     method:'POST',
     data:params,
@@ -131,6 +130,5 @@ export async function delay(submitParams) {
 
 //  获取作业负责人信息
 export async function operationPerson() {
-  console.log(111)
   return request(`/upms/user`);
 }

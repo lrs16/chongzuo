@@ -19,34 +19,71 @@ let endTime;
 const sign = 'solution';
 const columns = [
   {
-    title: '超时状态',
-    dataIndex: 'timeoutStatus',
-    key: 'timeoutStatus',
+    title: '作业负责人',
+    dataIndex: 'user',
+    key: 'user',
     render: (text, record) => {
-      if (record.user !== '合计') {
         return <span>{text}</span>
-      }
-      return <span style={{fontWeight:700}}>{text}</span>
     }
   },
   {
-    title: '作业计划数',
-    dataIndex: 'num',
-    key: 'num',
+    title: '未超时',
+    dataIndex: 'wcs',
+    key: 'wcs',
     render: (text, record) => {
-      const gotoDetail = () => {
+      const gotoDetail = (record) => {
         router.push({
           pathname: `/ITSM/operationplan/operationplansearch`,
           query: {
             time1: record.time1,
             time2: record.time2,
-            timeoutStatus:record.status
+            operationUser:record.user === '合计' ?'':record.user,
+            timeoutStatus:'未超时'
           }
         })
       };
         return <a onClick={() => gotoDetail(record)}>{text}</a>
     }
   },
+  {
+    title: '即将超时',
+    dataIndex: 'jjcs',
+    key: 'jjcs',
+    render: (text, record) => {
+      const gotoDetail = (record) => {
+        router.push({
+          pathname: `/ITSM/operationplan/operationplansearch`,
+          query: {
+            time1: record.time1,
+            time2: record.time2,
+            operationUser:record.user === '合计' ?'':record.user,
+            timeoutStatus:'即将超时'
+          }
+        })
+      };
+        return <a onClick={() => gotoDetail(record)}>{text}</a>
+    }
+  },
+  {
+    title: '已超时',
+    dataIndex: 'ycs',
+    key: 'ycs',
+    render: (text, record) => {
+      const gotoDetail = (record) => {
+         router.push({
+          pathname: `/ITSM/operationplan/operationplansearch`,
+          query: {
+            time1: record.time1,
+            time2: record.time2,
+            operationUser:record.user === '合计' ?'':record.user,
+            timeoutStatus:'已超时'
+          }
+        })
+      };
+        return <a onClick={() => gotoDetail(record)}>{text}</a>
+    }
+  },
+
 ];
 
 function Timeout(props) {

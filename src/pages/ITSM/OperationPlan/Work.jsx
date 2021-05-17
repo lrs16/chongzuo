@@ -20,7 +20,9 @@ import Back from './components/Back';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import SysDict from '@/components/SysDict';
 import styles from './index.less';
-import { editModels } from '@/pages/SysManage/ProcessManagement/services/api';
+import TimeoutModal from './components/TimeoutModel';
+import { judgeTimeoutStatus, saveTimeoutMsg } from '../services/api';
+
 
 const { Panel } = Collapse;
 
@@ -60,10 +62,11 @@ function Work(props) {
   const [uservisible, setUserVisible] = useState(false); // 是否显示选人组件
   const [userchoice, setUserChoice] = useState(false); // 已经选择人员
   const [changorder, setChangeOrder] = useState(undefined);
+  const [modalvisible, setModalVisible] = useState(false);
 
   const {
     form: { validateFields },
-    location: { query: { registe,mainId, status, checkStatus, auditLink, delay } },
+    location: { query: { registe, mainId, status, checkStatus, auditLink, delay } },
     userinfo,
     openFlowList,
     operationPersonArr,
@@ -84,6 +87,23 @@ function Work(props) {
     }
   }
 
+  const handleVisibleChange = visible => {
+    judgeTimeoutStatus(taskId).then(res => {
+      if (res.code === 200 && res.status === 'yes' && res.timeoutMsg === '') {
+        message.info('该事件单已超时，请填写超时原因...')
+        setModalVisible(true);
+        setButtonType('goback');
+        setUserVisible(false);
+      };
+      if (res.code === 200 && res.status === 'yes' && res.timeoutMsg !== '') {
+        setVisible(visible);
+      };
+      if (res.code === 200 && res.status === 'no') {
+        setVisible(visible);
+      }
+    })
+  };
+
 
   // panel详情
   const Panelheadermap = new Map([
@@ -101,6 +121,8 @@ function Work(props) {
       type: 'itsmuser/fetchuser',
     });
   };
+
+ 
 
   const getoperationPerson = () => {
     dispatch({
@@ -131,15 +153,15 @@ function Work(props) {
     headTitle = '';
   }, [])
 
-    // 处理作业负责人数据
-    if (operationPersonArr.length) {
-      operationPersonSelect = operationPersonArr.map(item => {
-        return {
-          key: item.id,
-          value: item.userName
-        }
-      })
-    }
+  // 处理作业负责人数据
+  if (operationPersonArr.length) {
+    operationPersonSelect = operationPersonArr.map(item => {
+      return {
+        key: item.id,
+        value: item.userName
+      }
+    })
+  }
 
   const handlePaste = () => {
 
@@ -216,7 +238,6 @@ function Work(props) {
   }
 
   const checkSave = () => {
-    console.log(1)
     SaveRef.current.validateFields((err, value) => {
       const result = {
         ...value,
@@ -283,22 +304,29 @@ function Work(props) {
   }, [userchoice])
 
   const handleClose = () => {
-    router.push({
-      pathname: `/ITSM/operationplan/operationplancheck`,
-    });
+    if (auditLink) {
+      router.push({
+        pathname: `/ITSM/operationplan/operationplancheck`,
+      });
+    } else {
+      router.push({
+        pathname: `/ITSM/operationplan/myoperationplan/`,
+      });
+    }
+
   }
 
   const reasonSubmit = values => {
     dispatch({
       type: 'processmodel/fallback',
       payload: {
-        mainId,
+        mainIds: mainId,
         ...values,
       },
     }).then(res => {
       if (res.code === 200) {
         message.info(res.msg);
-        router.push(`/ITSM/problemmanage/besolved`)
+        router.push(`/ITSM/operationplan/operationplancheck`)
       } else {
         message.error(res.msg);
       }
@@ -337,7 +365,7 @@ function Work(props) {
     })
   }
 
-  const handleExecute = () => {
+  const handleSaveexecute = () => {
     SaveRef.current.validateFields((err, value) => {
       if (!err) {
         return dispatch({
@@ -369,6 +397,29 @@ function Work(props) {
         });
       }
     })
+  }
+
+  const handleExecute = () => {
+    judgeTimeoutStatus(edit.execute.id).then(res => {
+      if (res.code === 200 && res.status === 'yes' && res.timeoutMsg === '') {
+        message.info('已超时，请填写超时原因...')
+        setModalVisible(true);
+      } else {
+        handleSaveexecute();
+      }
+    })
+  }
+
+  const postTimeOutMsg = (v) => {
+    saveTimeoutMsg({
+      taskId: edit.execute.id,
+      msgType: 'timeout',
+      orderId: mainId,
+      orderType: 'operation',
+      ...v
+    }).then(res => {
+      handleSaveexecute();
+    });
   }
 
   const handleDelay = () => {
@@ -420,9 +471,8 @@ function Work(props) {
       title={headTitle}
       extra={
         <>
-
           {
-            loading === false && !delay && (openFlowList && edit.main !== undefined &&  checkStatus !== '已审核' ||registe ) && (
+            loading === false && !delay && (openFlowList && edit.main !== undefined && data.length === 1) && (
               <Button
                 type="danger"
                 ghost
@@ -434,7 +484,13 @@ function Work(props) {
             )
           }
 
-          <Button type='primary' onClick={() => handleSave(false)}>保存</Button>
+          {
+            loading === false && !delay && (
+              <Button type='primary' onClick={() => handleSave(false)}>保存</Button>
+            )
+          }
+
+         
 
           {
             loading === false && !delay && (openFlowList && edit.main !== undefined) && (
@@ -446,25 +502,25 @@ function Work(props) {
 
 
           {
-            auditLink &&  !delay(
+            auditLink && !delay && (
               <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleExamine()}>
                 审核
               </Button>
             )
           }
 
-          {/* {
-            loading === false && auditLink && !delay && (checkStatus === ' 待审核' || checkStatus === null) && (
+          {
+            loading === false && auditLink && !delay && edit.check && edit.check.result === null && (
               <Back
                 reasonSubmit={values => reasonSubmit(values)}
-                detailPage={true}
+                detailPage='true'
               >
                 <Button type="primary" style={{ marginRight: 8 }}>
                   回退
                 </Button>
               </Back>
             )
-          } */}
+          }
 
           {
             loading === false && !delay && (openFlowList && edit.execute !== undefined) && checkStatus === '已审核' && (
@@ -484,9 +540,7 @@ function Work(props) {
             )
           }
 
-
           <Button onClick={handleClose}>关闭</Button>
-
 
         </>
       }
@@ -587,33 +641,39 @@ function Work(props) {
       }
 
       <div className={styles.collapse}>
-        {
-          loading === false && data && (
-            <Collapse
-              style={{ marginTop: 20 }}
-            >
-              {data.map((obj, index) => {
-                // panel详情组件
-                const Paneldesmap = new Map([
-                  ['main', <OperationPlanfillindes style={{marginTop:24}}info={Object.values(obj)[0]} main={data[0].main} />],
-                  ['check', <TaskCheckdes info={Object.values(obj)[0]} main={data[0].main} />],
-                  ['execute', <TaskExecutedes info={Object.values(obj)[0]} main={data[0].main} />],
-                ]);
-                if (index >= 0)
-                  return (
-                    <Panel
-                      header={Panelheadermap.get(Object.keys(obj)[0])}
-                      key={index.toString()}
-                    >
-                      {Paneldesmap.get(Object.keys(obj)[0])}
-                    </Panel>
-                  );
-              }
-              )}
-            </Collapse>
+        {loading === false && data && data.length && (
+          <Collapse
+            expandIconPosition="right"
+            defaultActiveKey={['0']}
+            bordered={false}
+          >
+            {data.map((obj, index) => {
+              // panel详情组件
+              const Paneldesmap = new Map([
+                ['main', <OperationPlanfillindes
+                  info={Object.values(obj)[0]}
+                  main={data[0].main}
+                />],
+                ['check', <TaskCheckdes
+                  info={Object.values(obj)[0]}
+                  main={data[0].main}
+                />],
+                ['execute', <TaskExecutedes
+                  info={Object.values(obj)[0]}
+                  main={data[0].main}
 
-          )
-        }
+                />],
+              ]);
+              return (
+                <Panel
+                  header={Panelheadermap.get(Object.keys(obj)[0])}
+                  key={index}>
+                  {Paneldesmap.get(Object.keys(obj)[0])}
+                </Panel>
+              );
+            })}
+          </Collapse>
+        )}
       </div>
 
 
@@ -627,6 +687,13 @@ function Work(props) {
         ChangeChoice={v => setUserChoice(v)}
         ChangeType={() => 0}
       />
+
+      <TimeoutModal
+        modalvisible={modalvisible}
+        ChangeModalVisible={v => setModalVisible(v)}
+        ChangeTimeOutMsg={v => postTimeOutMsg(v)}
+      />
+
 
     </PageHeaderWrapper >
 

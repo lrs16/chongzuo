@@ -45,7 +45,7 @@ let endttime;
 let actualStarttime;
 let actualEndtime;
 const statusMap = ['green', 'gold', 'red'];
-const status = [0, 1, 2];
+const status = ['0', '1', '2'];
 const statusContent = ['未超时', '即将超时', '已超时'];
 
 function MyoperationPlan(props) {
@@ -54,8 +54,11 @@ function MyoperationPlan(props) {
     form: { getFieldDecorator, resetFields, validateFields, setFieldsValue },
     dispatch,
     myTaskplanlist,
+    operationPersonArr,
     loading,
   } = props;
+  let operationPersonSelect;
+  // console.log(statusMap[status.indexOf(text)])
 
   //  选人组件
   const [uservisible, setUserVisible] = useState(false); // 是否显示选人组件
@@ -82,7 +85,6 @@ function MyoperationPlan(props) {
       }
     })
   };
-
 
 
   const initialColumns = [
@@ -161,8 +163,8 @@ function MyoperationPlan(props) {
       render: (text, record) => (
         <span>
           <Badge
-            status={statusMap[status.indexOf(text)]}
-            text={statusContent[status.indexOf(text)]} />
+            status={statusMap[statusContent.indexOf(text)]}
+            text={text} />
         </span>
       ),
     },
@@ -210,14 +212,14 @@ function MyoperationPlan(props) {
     },
     {
       title: '作业执行情况说明',
-      dataIndex: 'content',
-      key: 'content',
+      dataIndex: 'executeContent',
+      key: 'executeContent',
       width: 150,
     },
     {
       title: '执行操作时间',
-      dataIndex: 'operationTime',
-      key: 'operationTime',
+      dataIndex: 'executeOperationTime',
+      key: 'executeOperationTime',
       width: 150,
     },
     {
@@ -256,6 +258,18 @@ function MyoperationPlan(props) {
       key: 'checkContent',
       width: 150,
     },
+    {
+      title: '超时信息',
+      dataIndex: 'timeoutMsg',
+      key: 'timeoutMsg',
+      width: 150,
+    },
+    {
+      title: '回退信息',
+      dataIndex: 'fallbackMsg',
+      key: 'fallbackMsg',
+      width: 150,
+    },
   ];
 
   const defaultAllkey = columns.map(item => {
@@ -288,7 +302,16 @@ function MyoperationPlan(props) {
       type: 'processmodel/myTasklist',
       payload: {
         ...values,
+        time1: values.addTime?.length ? moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+        time2: values.addTime?.length ? moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+        checkTime: values.checkTime ? moment(values.checkTime).format('YYYY-MM-DD HH:mm:ss') : '',
+        executeOperationTime: values.executeOperationTime ? moment(values.executeOperationTime).format('YYYY-MM-DD HH:mm:ss') : '',
+        plannedStartTime: values.plannedStartTime ? moment(values.plannedStartTime).format('YYYY-MM-DD HH:mm:ss') : '',
+        plannedEndTime: values.plannedEndTime ? moment(values.plannedEndTime).format('YYYY-MM-DD HH:mm:ss') : '',
+        startTime: values.startTime ? moment(values.startTime).format('YYYY-MM-DD HH:mm:ss') : '',
+        endTime: values.endTime ? moment(values.endTime).format('YYYY-MM-DD HH:mm:ss') : '',
         pageIndex: page - 1,
+        addTime: '',
         pageSize
       },
     });
@@ -306,7 +329,24 @@ function MyoperationPlan(props) {
     });
   };
 
+  //  获取作业负责人
+  const getoperationPerson = () => {
+    dispatch({
+      type: 'processmodel/operationPerson',
+    });
+  }
+
+  // 处理作业负责人数据
+  if (operationPersonArr.length) {
+    operationPersonSelect = operationPersonArr.map(item => {
+      return {
+        key: item.id,
+        value: item.userName
+      }
+    })
+  }
   const changePage = page => {
+
     validateFields((err, values) => {
       if (!err) {
         searchdata(values, page, paginations.pageSize);
@@ -338,14 +378,15 @@ function MyoperationPlan(props) {
       }
       const searchParams = {
         ...values,
-        // time1: values.addTime?.length ? moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-        // time2: values.addTime?.length ? moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-        checkTime: values.addTime ? moment(values.addTime).format('YYYY-MM-DD HH:mm:ss') : '',
-        operationTime: values.operationTime ? moment(values.operationTime).format('YYYY-MM-DD HH:mm:ss') : '',
-        plannedStarTtime: values.plannedStarTtime ? moment(values.plannedStarTtime).format('YYYY-MM-DD HH:mm:ss') : '',
+        time1: values.addTime?.length ? moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+        time2: values.addTime?.length ? moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+        checkTime: values.checkTime ? moment(values.checkTime).format('YYYY-MM-DD HH:mm:ss') : '',
+        executeOperationTime: values.executeOperationTime ? moment(values.executeOperationTime).format('YYYY-MM-DD HH:mm:ss') : '',
+        plannedStartTime: values.plannedStartTime ? moment(values.plannedStartTime).format('YYYY-MM-DD HH:mm:ss') : '',
         plannedEndTime: values.plannedEndTime ? moment(values.plannedEndTime).format('YYYY-MM-DD HH:mm:ss') : '',
         startTime: values.startTime ? moment(values.startTime).format('YYYY-MM-DD HH:mm:ss') : '',
         endTime: values.endTime ? moment(values.endTime).format('YYYY-MM-DD HH:mm:ss') : '',
+        addTime: '',
       }
       searchdata(searchParams, 1, paginations.pageSize);
     });
@@ -363,7 +404,14 @@ function MyoperationPlan(props) {
         type: 'processmodel/downloadMyOperationExcel',
         payload: {
           columns: JSON.stringify(exportColumns),
-          ...values
+          ...values,
+          checkTime: values.checkTime ? moment(values.checkTime).format('YYYY-MM-DD HH:mm:ss') : '',
+          executeOperationTime: values.executeOperationTime ? moment(values.executeOperationTime).format('YYYY-MM-DD HH:mm:ss') : '',
+          plannedStartTime: values.plannedStartTime ? moment(values.plannedStartTime).format('YYYY-MM-DD HH:mm:ss') : '',
+          plannedEndTime: values.plannedEndTime ? moment(values.plannedEndTime).format('YYYY-MM-DD HH:mm:ss') : '',
+          startTime: values.startTime ? moment(values.startTime).format('YYYY-MM-DD HH:mm:ss') : '',
+          endTime: values.endTime ? moment(values.endTime).format('YYYY-MM-DD HH:mm:ss') : '',
+          addTime: '',
         }
       }).then(res => {
         const filename = '下载.xls';
@@ -392,12 +440,12 @@ function MyoperationPlan(props) {
       return false;
     }
     const res = selectedRows.every(item => {
-      if (item.checkStatus === '延期中') {
+      if (item.status === '延期中') {
         message.info('不可选执行状态:延期中');
         return false
       }
 
-      if (item.checkStatus !== '延期中') {
+      if (item.status !== '延期中') {
         return true;
       }
 
@@ -409,64 +457,29 @@ function MyoperationPlan(props) {
       return false;
     }
 
-    if (true) {
+    if (res === true) {
       gotoDetail(selectedRows[0], 'delay')
     }
 
-
-    // router.push({
-    //   pathname: `/ITSM/operationplan/operationplanform/${selectedRows[0].operationNo}/${selectedRows[0].timeoutStatus}/${selectedRows[0].checkStatus}/button`,
-    // });
-
-    //   router.push({pathname:`/ITSM/operationplan/operationplanform/${selectedRows[0].operationNo}`,
-    //   match:{ 
-    //     id:selectedRows[0].operationNo,
-    //     title:'作业计划执行'
-    //   }
-    // });
-
-    // return dispatch({
-    //   type: 'processmodel/myTasklist',
-    //   payload: ids
-    // }).then(res => {
-    //   if (res.code === 200) {
-    //     message.info(res.msg);
-    //   } else {
-    //     message.info(res.msg);
-    //   }
-    // })
   }
 
   const handleCopy = () => {
     if (selectedRows.length !== 1) {
       message.info('请选择一条数据')
-      // event.preventDefault();
       return false;
+    }
+
+    if (selectedRows.length > 1) {
+      message.info('只能选择一条数据复制哦')
+      return false;
+    }
+
+    if (selectedRows.length === 1) {
+      message.info('复制成功')
     }
 
 
 
-    // router.push({
-    //   pathname: `/ITSM/operationplan/operationplanform/${selectedRows[0].operationNo}/${selectedRows[0].timeoutStatus}/${selectedRows[0].checkStatus}/button`,
-    // });
-
-    //   router.push({pathname:`/ITSM/operationplan/operationplanform/${selectedRows[0].operationNo}`,
-    //   match:{ 
-    //     id:selectedRows[0].operationNo,
-    //     title:'作业计划执行'
-    //   }
-    // });
-
-    // return dispatch({
-    //   type: 'processmodel/myTasklist',
-    //   payload: ids
-    // }).then(res => {
-    //   if (res.code === 200) {
-    //     message.info(res.msg);
-    //   } else {
-    //     message.info(res.msg);
-    //   }
-    // })
   }
 
 
@@ -479,18 +492,15 @@ function MyoperationPlan(props) {
     }
 
     const deleteJudge = selectedRows.every(item => {
-      if (item.checkStatus !== null && item.checkStatus !== '待审核') {
-        console.log(1)
-        message.info('请选择审核状态:未审核');
+      if (item.checkStatus !== '待送审') {
+        message.info('请选择审核状态:待送审');
         return false;
       }
 
-      if (item.checkStatus === null || item.checkStatus === '待审核') {
+      if (item.checkStatus === '待送审') {
         return true
       }
     })
-
-    console.log(deleteJudge, 'deleteJudge')
 
 
     if (deleteJudge === false) {
@@ -665,7 +675,22 @@ function MyoperationPlan(props) {
       message.info('请选择要处理的数据');
       return false;
     }
-    setUserVisible(true)
+
+    const checkJudge = selectedRows.every(item => {
+      if (item.checkStatus !== '待送审') {
+        message.info('请选择审核状态:待送审');
+        return false;
+      }
+
+      if (item.checkStatus === '待送审') {
+        return true
+      }
+    })
+
+    if (checkJudge) {
+      setUserVisible(true)
+    }
+
   }
 
   const executeStatus = getTypebyTitle('执行状态');
@@ -681,14 +706,22 @@ function MyoperationPlan(props) {
   useEffect(() => {
     sessionStorage.setItem('Processtype', 'task');
     getTobolist();
+    getoperationPerson();
     setColumns(initialColumns)
   }, []);
 
   const handleFillin = () => {
+    let allmainIds;
+    if (selectedRows.length) {
+      allmainIds = selectedRows.map(res => {
+        return res.mainId
+      })
+    }
+
     router.push({
       pathname: '/ITSM/operationplan/operationplanfillin',
       query: {
-        mainId: selectedRows.length ? selectedRows[0].mainId : ''
+        mainId: selectedRows.length ? allmainIds : ''
       }
     })
   }
@@ -785,7 +818,16 @@ function MyoperationPlan(props) {
                 <Col span={8}>
                   <Form.Item label="作业负责人">
                     {getFieldDecorator('operationUser', {})
-                      (<Input placeholder='请输入' allowClear />)}</Form.Item>
+                      (
+                        <Select>
+                          {operationPersonSelect.map(obj => [
+                            <Option key={obj.key} value={obj.value}>
+                              {obj.value}
+                            </Option>
+                          ])}
+
+                        </Select>
+                      )}</Form.Item>
                 </Col>
               </>
             )}
@@ -962,7 +1004,7 @@ function MyoperationPlan(props) {
 
                 <Col span={8}>
                   <Form.Item label="作业执行情况说明">
-                    {getFieldDecorator('content', {})
+                    {getFieldDecorator('executeContent', {})
                       (
                         <Input />
                       )}
@@ -975,9 +1017,12 @@ function MyoperationPlan(props) {
               <>
                 <Col span={8}>
                   <Form.Item label="执行操作时间">
-                    {getFieldDecorator('operationTime', {
+                    {getFieldDecorator('executeOperationTime', {
                     })
-                      (<DatePicker allowClear />)}
+                      (<DatePicker
+                        showTime
+                        format="YYYY-MM-DD HH:mm:ss"
+                        allowClear />)}
                   </Form.Item>
                 </Col>
 
@@ -992,7 +1037,7 @@ function MyoperationPlan(props) {
 
                 <Col span={8}>
                   <Form.Item label="填报单位">
-                    {getFieldDecorator('operationUnit', {})
+                    {getFieldDecorator('addUnit', {})
                       (
                         <Input />
                       )}
@@ -1030,7 +1075,10 @@ function MyoperationPlan(props) {
                   <Form.Item label="审核时间">
                     {getFieldDecorator('checkTime', {})
                       (
-                        (<DatePicker allowClear />)
+                        (<DatePicker
+                          showTime
+                          format="YYYY-MM-DD HH:mm:ss"
+                          allowClear />)
                       )}
                   </Form.Item>
                 </Col>
@@ -1123,6 +1171,7 @@ function MyoperationPlan(props) {
             )}
           </Form>
         </Row>
+
         <div style={{ display: 'flex', flexDirection: 'row' }} >
           <Button type="primary" style={{ marginRight: 8 }} onClick={handleFillin}>
             填报
@@ -1145,7 +1194,12 @@ function MyoperationPlan(props) {
             复制
           </Button>
 
-          <Button type="primary" style={{ marginRight: 8 }} onClick={handleDelete}>
+          <Button
+            type="danger"
+            ghost
+            style={{ marginRight: 8 }}
+            onClick={handleDelete}
+          >
             删除
           </Button>
 
@@ -1224,6 +1278,7 @@ function MyoperationPlan(props) {
 export default Form.create({})(
   connect(({ processmodel, loading }) => ({
     myTaskplanlist: processmodel.myTaskplanlist,
+    operationPersonArr: processmodel.operationPersonArr,
     loading: loading.models.processmodel,
   }))(MyoperationPlan),
 );

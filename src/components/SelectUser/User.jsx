@@ -163,7 +163,7 @@ const User = props => {
 
     if(type === 'task') {
       if(value.length !== 1) {
-        message.info('只能选择一个送审人')
+        message.info('请选择一个送审人')
       } else {
         ChangeChoice(true);
         ChangeUserVisible(false);

@@ -46,7 +46,7 @@ let endtime;
 let actualStarttime;
 let actualEndtime;
 const statusMap = ['green', 'gold', 'red'];
-const statusList = [0,1,2];
+// const statusList = [0,1,2];
 const statusContent = ['未超时', '即将超时', '已超时'];
 
 
@@ -55,11 +55,13 @@ function TaskSearch(props) {
   const pagetitle = props.route.name;
   const {
     form: { getFieldDecorator, resetFields, validateFields, setFieldsValue },
-    location: { query: { time1, time2,status,result,executeStatus,timeoutStatus } },
+    location: { query: { time1, time2, status, result, executeStatus, timeoutStatus, operationUser } },
     dispatch,
     queryList,
+    operationPersonArr,
     loading,
   } = props;
+  let operationPersonSelect;
 
   const [expand, setExpand] = useState(false);
   const [paginations, setPaginations] = useState({ current: 0, pageSize: 10 });
@@ -68,6 +70,23 @@ function TaskSearch(props) {
   const [columns, setColumns] = useState([]);
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
   let formThead;
+
+  // //  获取作业负责人
+  const getoperationPerson = () => {
+    dispatch({
+      type: 'processmodel/operationPerson',
+    });
+  }
+
+  // // 处理作业负责人数据
+  if (operationPersonArr.length) {
+    operationPersonSelect = operationPersonArr.map(item => {
+      return {
+        key: item.id,
+        value: item.userName
+      }
+    })
+  }
 
   const gotoDetail = (record) => {
     router.push({
@@ -79,6 +98,8 @@ function TaskSearch(props) {
       }
     })
   };
+
+
 
   const initialColumns = [
     // {
@@ -153,13 +174,13 @@ function TaskSearch(props) {
       dataIndex: 'timeoutStatus',
       key: 'timeoutStatus',
       width: 150,
-      // render: (text, record) => (
-      //   <span>
-      //     <Badge
-      //       status={statusMap[status.indexOf(text)]}
-      //       text={statusContent[status.indexOf(text)]} />
-      //   </span>
-      // ),
+      render: (text, record) => (
+        <span>
+          <Badge
+            status={statusMap[statusContent.indexOf(text)]}
+            text={text} />
+        </span>
+      ),
     },
     {
       title: '计划结束时间',
@@ -205,8 +226,8 @@ function TaskSearch(props) {
     },
     {
       title: '作业执行情况说明',
-      dataIndex: 'content',
-      key: 'content',
+      dataIndex: 'executeContent',
+      key: 'executeContent',
       width: 150,
     },
     {
@@ -251,7 +272,20 @@ function TaskSearch(props) {
       key: 'checkContent',
       width: 150,
     },
+    {
+      title: '超时信息',
+      dataIndex: 'timeoutMsg',
+      key: 'timeoutMsg',
+      width: 150,
+    },
+    {
+      title: '回退信息',
+      dataIndex: 'fallbackMsg',
+      key: 'fallbackMsg',
+      width: 150,
+    },
   ];
+
 
 
   const defaultAllkey = columns.map(item => {
@@ -259,7 +293,6 @@ function TaskSearch(props) {
   });
 
   const getTobolist = () => {
-    console.log(result,'result')
     dispatch({
       type: 'processmodel/getOperationQueryList',
       payload: {
@@ -269,6 +302,7 @@ function TaskSearch(props) {
         result,
         executeStatus,
         timeoutStatus,
+        operationUser,
         pageIndex: paginations.current,
         pageSize: paginations.pageSize,
       },
@@ -291,12 +325,22 @@ function TaskSearch(props) {
       type: 'processmodel/getOperationQueryList',
       payload: {
         ...values,
-        status,
-        result,
-        executeStatus,
-        timeoutStatus,
+        status: values.status ? values.status : status,
+        result: values.result ? values.result : result,
+        executeStatus: values.executeStatus ? values.executeStatus : executeStatus,
+        timeoutStatus: values.timeoutStatus ? values.timeoutStatus : timeoutStatus,
+        operationUser: values.operationUser ? values.operationUser : operationUser,
+        time1: values.addTime?.length ? moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss') : time1,
+        time2: values.addTime?.length ? moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss') : time2,
+        checkTime: values.checkTime ? moment(values.checkTime).format('YYYY-MM-DD HH:mm:ss') : '',
+        executeOperationTime: values.executeOperationTime ? moment(values.executeOperationTime).format('YYYY-MM-DD HH:mm:ss') : '',
+        plannedStartTime: values.plannedStartTime ? moment(values.plannedStartTime).format('YYYY-MM-DD HH:mm:ss') : '',
+        plannedEndTime: values.plannedEndTime ? moment(values.plannedEndTime).format('YYYY-MM-DD HH:mm:ss') : '',
+        startTime: values.startTime ? moment(values.startTime).format('YYYY-MM-DD HH:mm:ss') : '',
+        endTime: values.endTime ? moment(values.endTime).format('YYYY-MM-DD HH:mm:ss') : '',
         pageIndex: page - 1,
-        pageSize
+        pageSize,
+        addTime: ''
       },
     });
   };
@@ -338,12 +382,13 @@ function TaskSearch(props) {
         ...values,
         time1: values.addTime?.length ? moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
         time2: values.addTime?.length ? moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-        checkTime: values.addTime ? moment(values.addTime).format('YYYY-MM-DD HH:mm:ss') : '',
+        checkTime: values.checkTime ? moment(values.checkTime).format('YYYY-MM-DD HH:mm:ss') : '',
         operationTime: values.operationTime ? moment(values.operationTime).format('YYYY-MM-DD HH:mm:ss') : '',
         plannedStarTtime: values.plannedStarTtime ? moment(values.plannedStarTtime).format('YYYY-MM-DD HH:mm:ss') : '',
         plannedEndTime: values.plannedEndTime ? moment(values.plannedEndTime).format('YYYY-MM-DD HH:mm:ss') : '',
         startTime: values.startTime ? moment(values.startTime).format('YYYY-MM-DD HH:mm:ss') : '',
         endTime: values.endTime ? moment(values.endTime).format('YYYY-MM-DD HH:mm:ss') : '',
+        addTime: '',
       }
 
       searchdata(searchParams, 1, paginations.pageSize);
@@ -363,7 +408,18 @@ function TaskSearch(props) {
         payload: {
           flowNodeName: '计划审核',
           columns: JSON.stringify(exportColumns),
-          ...values
+          ...values,
+          status: values.status ? values.status : status,
+          result: values.result ? values.result : result,
+          executeStatus: values.executeStatus ? values.executeStatus : executeStatus,
+          timeoutStatus: values.timeoutStatus ? values.timeoutStatus : timeoutStatus,
+          checkTime: values.checkTime ? moment(values.checkTime).format('YYYY-MM-DD HH:mm:ss') : '',
+          operationTime: values.operationTime ? moment(values.operationTime).format('YYYY-MM-DD HH:mm:ss') : '',
+          plannedStartTime: values.plannedStartTime ? moment(values.plannedStartTime).format('YYYY-MM-DD HH:mm:ss') : '',
+          plannedEndTime: values.plannedEndTime ? moment(values.plannedEndTime).format('YYYY-MM-DD HH:mm:ss') : '',
+          startTime: values.startTime ? moment(values.startTime).format('YYYY-MM-DD HH:mm:ss') : '',
+          endTime: values.endTime ? moment(values.endTime).format('YYYY-MM-DD HH:mm:ss') : '',
+          addTime: '',
         }
       }).then(res => {
         const filename = '下载.xls';
@@ -397,13 +453,7 @@ function TaskSearch(props) {
       if (key === 0) {
         obj.render = (text, record) => {
           return (
-            <Link
-              to={{
-                pathname: `/ITSM/operationplan/operationplancheckfillin/${record.operationNo}/${record.checkStatus}`,
-              }}
-            >
-              {text}
-            </Link>
+            <a onClick={() => gotoDetail(record)}>{text}</a>
           )
         }
         obj.fixed = 'left'
@@ -508,32 +558,14 @@ function TaskSearch(props) {
 
   useEffect(() => {
     getTobolist();
+    getoperationPerson();
     setColumns(initialColumns)
   }, []);
 
-  const handleClick = () => {
-    console.log(1);
-  }
+  // useEffect(() => {
+  //   getoperationPerson();
+  // }, []);
 
-  const checkSubmit = (value) => {
-    const allmainId = selectedRows.map(obj => {
-      return obj.mainId
-    });
-    dispatch({
-      type: 'processmodel/fallback',
-      payload: {
-        mainIds: allmainId,
-        ...values,
-      },
-    }).then(res => {
-      if (res.code === 200) {
-        message.info(res.msg);
-        router.push(`/ITSM/problemmanage/besolved`)
-      } else {
-        message.error(res.msg);
-      }
-    });
-  }
 
   const pagination = {
     showSizeChanger: true,
@@ -568,7 +600,7 @@ function TaskSearch(props) {
             <Col span={8}>
               <Form.Item label="作业系统名称">
                 {getFieldDecorator('systemName', {})(
-                 
+
                   <Input />
                 )}
               </Form.Item>
@@ -631,7 +663,16 @@ function TaskSearch(props) {
                 <Col span={8}>
                   <Form.Item label="作业负责人">
                     {getFieldDecorator('operationUser', {})
-                      (<Input placeholder='请输入' allowClear />)}</Form.Item>
+                      (
+                        <Select>
+                        {operationPersonSelect.map(obj => [
+                          <Option key={obj.key} value={obj.value}>
+                            {obj.value}
+                          </Option>
+                        ])}
+
+                      </Select>
+                      )}</Form.Item>
                 </Col>
               </>
             )}
@@ -745,7 +786,7 @@ function TaskSearch(props) {
 
                 <Col span={8}>
                   <Form.Item label="超时状态">
-                    {getFieldDecorator('status', {})
+                    {getFieldDecorator('timeoutStatus', {})
                       (
                         <Select placeholder="请选择" allowClear>
                           {timeoutStatusselect.map(obj => [
@@ -808,7 +849,7 @@ function TaskSearch(props) {
 
                 <Col span={8}>
                   <Form.Item label="作业执行情况说明">
-                    {getFieldDecorator('content', {})
+                    {getFieldDecorator('executeContent', {})
                       (
                         <Input />
                       )}
@@ -823,7 +864,9 @@ function TaskSearch(props) {
                   <Form.Item label="执行操作时间">
                     {getFieldDecorator('operationTime', {
                     })
-                      (<DatePicker allowClear />)}
+                      (<DatePicker
+                        showTime
+                        allowClear />)}
                   </Form.Item>
                 </Col>
 
@@ -876,7 +919,9 @@ function TaskSearch(props) {
                   <Form.Item label="审核时间">
                     {getFieldDecorator('checkTime', {})
                       (
-                        (<DatePicker allowClear />)
+                        (<DatePicker
+                          showTime
+                          allowClear />)
                       )}
                   </Form.Item>
                 </Col>
@@ -932,10 +977,10 @@ function TaskSearch(props) {
                       关闭 <UpOutlined />
                     </>
                   ) : (
-                      <>
-                        展开 <DownOutlined />
-                      </>
-                    )}
+                    <>
+                      展开 <DownOutlined />
+                    </>
+                  )}
                 </Button>
               </Col>
             )}
@@ -960,10 +1005,10 @@ function TaskSearch(props) {
                       关闭 <UpOutlined />
                     </>
                   ) : (
-                      <>
-                        展开 <DownOutlined />
-                      </>
-                    )}
+                    <>
+                      展开 <DownOutlined />
+                    </>
+                  )}
                 </Button>
               </Col>
             )}
@@ -1044,6 +1089,7 @@ function TaskSearch(props) {
 export default Form.create({})(
   connect(({ processmodel, loading }) => ({
     queryList: processmodel.queryList,
+    operationPersonArr: processmodel.operationPersonArr,
     loading: loading.models.processmodel,
   }))(TaskSearch),
 );

@@ -20,7 +20,6 @@ import Back from './components/Back';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import SysDict from '@/components/SysDict';
 import styles from './index.less';
-import { editModels } from '@/pages/SysManage/ProcessManagement/services/api';
 
 const { Panel } = Collapse;
 
@@ -93,7 +92,7 @@ function Work(props) {
 
   const handleClose = () => {
     router.push({
-      pathname: `/ITSM/operationplan/operationplancheck`,
+      pathname: `/ITSM/operationplan/operationplansearch`,
     });
   }
 
@@ -114,36 +113,41 @@ function Work(props) {
       />
 
       <div className={styles.collapse}>
-      {
-        loading === false && openViewlist && (
+        {openViewlist && loading === false && (
           <Collapse
-            style={{ marginTop: 20 }}
+            expandIconPosition="right"
+            defaultActiveKey={['0']}
+            bordered={false}
           >
             {openViewlist.map((obj, index) => {
               // panel详情组件
               const Paneldesmap = new Map([
-                ['main', <OperationPlanfillindes info={Object.values(obj)[0]} main={openViewlist[0].main} />],
-                ['check', <TaskCheckdes info={Object.values(obj)[0]} main={openViewlist[0].main} />],
-                ['execute', <TaskExecutedes info={Object.values(obj)[0]} main={openViewlist[0].main} />],
+                ['main', <OperationPlanfillindes
+                  info={Object.values(obj)[0]} main={openViewlist[0].main}
+                />],
+                ['check', <TaskCheckdes
+                  info={Object.values(obj)[0]} main={openViewlist[0].main}
+                // info={obj}
+                // main={main}
+
+                />],
+                ['execute', <TaskExecutedes
+                  info={Object.values(obj)[0]} main={openViewlist[0].main}
+                // info={obj}
+                // main={main}
+                />],
               ]);
-              if (index >= 0)
-                return (
-                  <Panel
-                    header={Panelheadermap.get(Object.keys(obj)[0])}
-                    key={index.toString()}
-                  >
-                    {Paneldesmap.get(Object.keys(obj)[0])}
-                  </Panel>
-                );
-            }
-            )}
+              return (
+                <Panel
+                  header={Panelheadermap.get(Object.keys(obj)[0])}
+                  key={index}>
+                  {Paneldesmap.get(Object.keys(obj)[0])}
+                </Panel>
+              );
+            })}
           </Collapse>
-
-        )
-      }
+        )}
       </div>
-
-    
 
       {/* 选人组件 */}
       <User

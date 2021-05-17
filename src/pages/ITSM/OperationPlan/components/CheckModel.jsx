@@ -89,7 +89,6 @@ function CheckModel(props) {
   };
 
   const handleSubmit = () => {
-    console.log(1)
     validateFields((err, values) => {
       if (!err) {
         props.checkSubmit(values);
