@@ -39,7 +39,6 @@ function ModelRollback(props) {
       <Modal
         visible={visible}
         maskClosable={false}
-        width={650}
         title={title}
         checkable
         onCancel={handleCancel}
@@ -57,7 +56,7 @@ function ModelRollback(props) {
                         message: '请说明回退原因'
                       }
                     ]
-                  })(<TextArea rows={8} />)
+                  })(<TextArea rows={5} />)
                 }
 
               </Form.Item>
