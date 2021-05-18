@@ -96,6 +96,7 @@ export default {
         };
         const response = yield call(EventFlow, flowpayload);
         if (response.code === 200) {
+          message.success(response.msg, 3);
           router.push({
             pathname: `/ITSM/eventmanage/to-do/record/workorder`,
             query: {
@@ -103,7 +104,6 @@ export default {
               closetab: true,
             }
           });
-          message.success(response.msg, 3);
           router.push({
             pathname: `/ITSM/eventmanage/to-do`,
           });
@@ -117,6 +117,7 @@ export default {
       if (registres.code === 200) {
         const response = yield call(EventFlow, flow);
         if (response.code === 200) {
+          message.success(response.msg, 3);
           router.push({
             pathname: `/ITSM/eventmanage/to-do/record/workorder`,
             query: {
@@ -124,7 +125,6 @@ export default {
               closetab: true,
             }
           });
-          message.success(response.msg, 3);
           router.push({
             pathname: `/ITSM/eventmanage/to-do`,
           });
@@ -140,8 +140,14 @@ export default {
       if (resmsg.code === 200) {
         const response = yield call(EventFlow, payload);
         if (response.code === 200) {
-          console.log(response)
           message.success(response.msg, 3);
+          router.push({
+            pathname: `/ITSM/eventmanage/to-do/record/workorder`,
+            query: {
+              mainId: response.flowInstanceId,
+              closetab: true,
+            }
+          });
           router.push({
             pathname: `/ITSM/eventmanage/to-do`,
           });
