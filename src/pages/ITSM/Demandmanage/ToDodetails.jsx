@@ -49,6 +49,7 @@ function ToDoregist(props) {
       payload: {
         taskId,
         userId: sessionStorage.getItem('userauthorityid'),
+        mainId,
       },
     });
   };
@@ -111,6 +112,7 @@ function ToDoregist(props) {
         userId: sessionStorage.getItem('userauthorityid'),
         attachment: '[]',
         ...values,
+        mainId,
       },
     });
   }

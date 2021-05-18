@@ -85,6 +85,13 @@ export default {
       if (response.code === 200) {
         message.success(response.msg, 2);
         router.push({
+          pathname: `/ITSM/demandmanage/to-do/record/workorder`,
+          query: {
+            mainId: payload.mainId,
+            closetab: true,
+          }
+        });
+        router.push({
           pathname: `/ITSM/demandmanage/to-do`,
         });
       }
@@ -105,7 +112,14 @@ export default {
     *demanddelete({ payload: { processId } }, { call }) {
       const response = yield call(DemandDlete, processId);
       if (response.code === 200) {
-        message.success(response.msg, 2);
+        message.success(response.msg, 3);
+        router.push({
+          pathname: `/ITSM/demandmanage/to-do/record/workorder`,
+          query: {
+            mainId: processId,
+            closetab: true,
+          }
+        });
         router.push({
           pathname: `/ITSM/demandmanage/to-do`,
         });
@@ -117,15 +131,29 @@ export default {
       if (resmsg.code === 200) {
         message.success(resmsg.msg, 3);
         router.push({
+          pathname: `/ITSM/demandmanage/to-do/record/workorder`,
+          query: {
+            mainId: payload.mainId,
+            closetab: true,
+          }
+        });
+        router.push({
           pathname: `/ITSM/demandmanage/to-do`,
         });
       }
     },
     // 登记时结束
-    *close({ payload: { taskId, userId } }, { call }) {
+    *close({ payload: { taskId, userId, mainId } }, { call }) {
       const resmsg = yield call(RegisterClose, taskId, userId);
       if (resmsg.code === 200) {
         message.success('流程已结束', 3);
+        router.push({
+          pathname: `/ITSM/demandmanage/to-do/record/workorder`,
+          query: {
+            mainId,
+            closetab: true,
+          }
+        });
         router.push({
           pathname: `/ITSM/demandmanage/to-do`,
         });

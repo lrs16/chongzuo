@@ -231,6 +231,7 @@ function WorkOrder(props) {
                 ...formvalue,
                 nextUserIds: JSON.parse(sessionStorage.getItem('NextflowUserId')),
                 taskId,
+                mainId,
               },
             });
           }
@@ -246,6 +247,7 @@ function WorkOrder(props) {
                 ...formvalue,
                 nextUserIds: [{ nodeName: '需求登记', userIds: info.demandForm.registerPersonId.split() }],
                 taskId,
+                mainId,
               },
             });
           }
@@ -262,6 +264,7 @@ function WorkOrder(props) {
                 nextUserIds: [{ nodeName: '需求登记人员确认', userIds: [info.demandForm.registerPersonId] }],
                 taskId,
                 id,
+                mainId,
               },
             });
           }
@@ -278,6 +281,7 @@ function WorkOrder(props) {
                 nextUserIds: [{ nodeName: '', userIds: [] }],
                 taskId,
                 id,
+                mainId,
               },
             });
           }
@@ -323,6 +327,7 @@ function WorkOrder(props) {
                 ...formvalue,
                 nextUserIds: [{ nodeName: '', userIds: [] }],
                 taskId,
+                mainId,
               },
             });
           } else {
@@ -337,6 +342,7 @@ function WorkOrder(props) {
                 ...formvalue,
                 nextUserIds: [{ nodeName: '需求登记', userIds: info.demandForm.registerPersonId.split() }],
                 taskId,
+                mainId,
               },
             });
           } else {
@@ -368,6 +374,7 @@ function WorkOrder(props) {
             registerId: info.demandForm.id,
             id: info.historys[info.historys.length - 1].id,
             taskName: info.taskName,
+            mainId,
           },
         });
       }

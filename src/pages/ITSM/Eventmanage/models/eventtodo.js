@@ -186,6 +186,13 @@ export default {
       if (response.code === 200) {
         message.success(response.msg, 3);
         router.push({
+          pathname: `/ITSM/eventmanage/to-do/record/workorder`,
+          query: {
+            mainId: payload.mainId,
+            closetab: true,
+          }
+        });
+        router.push({
           pathname: `/ITSM/eventmanage/to-do`,
         });
       }
