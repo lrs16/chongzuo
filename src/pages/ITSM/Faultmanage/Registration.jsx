@@ -64,7 +64,7 @@ function Registration(props) {
   const [desrecords, setDesRecords] = useState([]);
 
   const {
-    form: { getFieldDecorator, resetFields, validateFields, setFieldsValue, getFieldsValue },
+    form: { getFieldDecorator, resetFields, setFieldsValue, getFieldsValue },
     dispatch,
     newno, // 新的故障编号
     curruserinfo, // 获取登录用户信息
@@ -73,13 +73,13 @@ function Registration(props) {
   } = props;
 
 
-  const cascaderOnchange = (value, selectedOptions) => {
-    selectCascader = selectedOptions[1].dict_code;
-  }
+  // const cascaderOnchange = (value, selectedOptions) => {
+  //   selectCascader = selectedOptions[1].dict_code;
+  // }
 
-  const displayRender = label => {
-    return label[label.length - 1];
-  };
+  // const displayRender = label => {
+  //   return label[label.length - 1];
+  // };
 
   // 接口
   const getNewno = () => {

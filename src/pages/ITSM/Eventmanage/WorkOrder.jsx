@@ -403,7 +403,7 @@ function WorkOrder2(props) {
       type: 'itsmuser/fetchuser',
     });
     sessionStorage.setItem('Processtype', 'event');
-  }, []);
+  }, [mainId]);
 
   // 获取事件流程记录
   useEffect(() => {
@@ -449,7 +449,7 @@ function WorkOrder2(props) {
       ChangeChoice(false);
       ChangeUserVisible(false);
     };
-  }, [info]);
+  }, [mainId]);
 
   useEffect(() => {
     if (type !== '') {
@@ -526,7 +526,7 @@ function WorkOrder2(props) {
               onChange={callback}
               style={{ marginTop: '-25px' }}
             >
-              {taskName === '已登记' && (
+              {taskName === '已登记' && edit.register !== undefined && (
                 <Panel header="事件登记" key="registratform">
                   <Registrat
                     ChangeShow={isshow => setShow(isshow)}
@@ -586,7 +586,7 @@ function WorkOrder2(props) {
                   />
                 </Panel>
               )}
-              {taskName === '审核中' && edit.check.fileIds !== undefined && (
+              {taskName === '审核中' && edit.check !== undefined && (
                 <Panel header="事件审核" key="checkform">
                   <Check
                     formItemLayout={formItemLayout}
@@ -623,7 +623,7 @@ function WorkOrder2(props) {
                   />
                 </Panel>
               )}
-              {taskName === '处理中' && edit.handle !== null && edit.handle.fileIds !== undefined && (
+              {taskName === '处理中' && edit.handle !== null && edit.handle !== undefined && (
                 <Panel header="事件处理" key="handleform">
                   <Handle
                     formItemLayout={formItemLayout}
@@ -660,7 +660,7 @@ function WorkOrder2(props) {
                   />
                 </Panel>
               )}
-              {taskName === '确认中' && edit.finish !== null && edit.finish.fileIds !== undefined && (
+              {taskName === '确认中' && edit.finish !== null && edit.finish !== undefined && (
                 <Panel header="事件确认" key="visitform">
                   <ReturnVisit
                     formItemLayout={formItemLayout}

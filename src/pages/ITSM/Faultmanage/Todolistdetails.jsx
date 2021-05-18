@@ -232,13 +232,13 @@ function Todolistdetails(props) {
     });
   };
 
-  const faultcircula = type => {
+  const faultcircula = (circulatype) => {
     // 流转
     const taskId = id;
     let results;
-    if (type === 'close') {
+    if (circulatype === 'close') {
       results = '255'; // 关闭
-    } else if (type === 'transfer') {
+    } else if (circulatype === 'transfer') {
       results = '9'; // 转单
     } else {
       results = '1'; // 流转
@@ -247,6 +247,13 @@ function Todolistdetails(props) {
       type: 'fault/getSubmitProToNextNode',
       payload: { taskId, result: results, userIds: sessionStorage.getItem('NextflowUserId') },
     }).then(res => {
+      router.push({
+        pathname: `/ITSM/faultmanage/todolist/record`,
+        query: {
+          mainId,
+          closetab: true,
+        }
+      });
       if (res.code === 200) {
         //  getfaultTodoDetailData();  //都要流转了还要获取信息？
         message.success(res.msg);
@@ -719,6 +726,34 @@ function Todolistdetails(props) {
     });
   }
 
+  const handleHold = (buttype) => {
+    switch (buttype) {
+      case 'accpt':
+        handleReceivs()
+        break;
+      case 'goback':
+        setModalRollBack(true);
+        break;
+      case 'save':
+        handleSave(tosaveStatus);
+        break;
+      case 'flow':
+        handleSave(currenStatus)
+        break;
+      case 'registback':
+        handleRegist('back')
+        break;
+      case 'handleback':
+        toHandle('back')
+        break;
+      case 'handle':
+        toHandle1()
+        break;
+      default:
+        break;
+    }
+  }
+
   // 点击回退,接单,流转、结束
   const handleSubmit = (buttype) => {
     const taskId = id;
@@ -729,32 +764,8 @@ function Todolistdetails(props) {
         setButtonType(buttype);
       };
       if (res.code === 200 && ((res.status === 'yes' && res.timeoutMsg !== '') || res.status === 'no')) {
-        switch (buttontype) {
-          case 'accpt':
-            handleReceivs()
-            break;
-          case 'goback':
-            setModalRollBack(true);
-            break;
-          case 'save':
-            handleSave(tosaveStatus);
-            break;
-          case 'flow':
-            handleSave(currenStatus)
-            break;
-          case 'registback':
-            handleRegist('back')
-            break;
-          case 'handleback':
-            toHandle('back')
-            break;
-          case 'handle':
-            toHandle1()
-            break;
-          default:
-            break;
-        }
-      }
+        handleHold(buttype);
+      };
     })
   };
 

@@ -59,15 +59,6 @@ function WorkOrder(props) {
   const [isnew, setIsNew] = useState(false); // 组件重新加载
   const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
 
-  // 监听info是否已更新
-  useEffect(() => {
-    if (loading) {
-      setIsNew(true);
-    }
-    return () => {
-      setIsNew(false);
-    };
-  }, [info]);
 
   // 初始化用户信息，流程类型
   useEffect(() => {
@@ -75,7 +66,7 @@ function WorkOrder(props) {
       type: 'itsmuser/fetchuser',
     });
     sessionStorage.setItem('Processtype', 'demand');
-  }, []);
+  }, [mainId]);
   // 回调用户ID
   useEffect(() => {
     if (info !== '') {
@@ -104,7 +95,7 @@ function WorkOrder(props) {
         setFiles({ ...files, arr: JSON.parse(info.historys?.slice(-1)[0].attachment) });
       }
     }
-  }, [info]);
+  }, [info, taskName]);
 
   // 加载流程记录，加载编辑历史
   useEffect(() => {
@@ -122,6 +113,18 @@ function WorkOrder(props) {
       },
     });
   }, [mainId]);
+
+  // 监听info是否已更新
+  useEffect(() => {
+    if (loading) {
+      setIsNew(true);
+    }
+    return () => {
+      setIsNew(false);
+      ChangeChoice(false);
+      ChangeUserVisible(false);
+    };
+  }, [info]);
 
   const formerr = () => {
     message.error('请将信息填写完整...');
@@ -412,6 +415,7 @@ function WorkOrder(props) {
       handleflow();
     }
   }, [type]);
+
   // 请求下拉值
   useEffect(() => {
     let doCancel = false;
@@ -440,10 +444,10 @@ function WorkOrder(props) {
       setSelectData({ ...selectdata, ischange: true });
     }
     return () => {
-      setSelectData({ arr: [], ischange: true });
+      setSelectData({ arr: [], ischange: false });
       doCancel = true;
     };
-  }, []);
+  }, [mainId]);
 
   // 保存删除附件驱动表单保存
   useEffect(() => {
@@ -622,7 +626,7 @@ function WorkOrder(props) {
                     }}
                   />
                 )}
-              {taskName === '系统开发商处理' && info.taskName !== undefined && (
+              {taskName === '系统开发商处理' && info.taskName === '系统开发商处理' && info.taskName !== undefined && (
                 <Track
                   userinfo={userinfo}
                   taskName={info.taskName}

@@ -33,9 +33,10 @@ const homepane = {
   closable: false,
 }
 
+// 单条工单
 const alonepath = [
   { path: '/ITSM/eventmanage/to-do/record/workorder' },
-  { path: 'ITSM/faultmanage/todolist/record' },
+  { path: '/ITSM/faultmanage/todolist/record' },
   { path: '/ITSM/problemmanage/besolveddetail/workorder' },
   { path: '/ITSM/demandmanage/to-do/record/workorder' },
 ]
@@ -95,10 +96,14 @@ const BasicLayout = props => {
 
   // 监听列表跳转详情页的路由
   useEffect(() => {
-    const tabtargetid = toptabs.filter(item => item.id === location.query.mainId)[0];
-    const tabtargetpath = toptabs.filter(item => item.itemPath === url)[0];
-    const target = alonepath.filter(item => item.path === url)[0];
-    const menutarget = menulist.filter(item => item.menuUrl === url)[0];
+    const tabtargetid = toptabs.filter(item => item.id === location.query.mainId)[0];      //  已有标签
+    const tabtargetpath = toptabs.filter(item => item.itemPath === url)[0];                //  已有非工单处理路由
+    const target = alonepath.filter(item => item.path === url)[0];                         //  属于工单处理路由
+    const menutarget = menulist.filter(item => item.menuUrl === url)[0];                   //  系统管理菜单列表有该路由
+    // 已有标签
+    if (tabtargetpath) {
+      setActiveKey(tabtargetpath.id);
+    };
     if (tabtargetid) {
       setActiveKey(location.query.mainId);
     } else if (target && menutarget) {
@@ -112,10 +117,8 @@ const BasicLayout = props => {
       toptabs.push(panels);
       setActiveKey(location.query.mainId);
     };
-    if (tabtargetpath) {
-      setActiveKey(tabtargetpath.id);
-    }
-  }, [url])
+
+  }, [location])
 
   // 监听关闭页签
   useEffect(() => {

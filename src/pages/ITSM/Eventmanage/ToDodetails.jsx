@@ -85,7 +85,7 @@ function ToDodetails(props) {
         setModalVisible(true);
         setButtonType('accpt');
       };
-      if (res.code === 200 && res.status === 'yes' && res.timeoutMsg !== '') {
+      if (res.code === 200 && ((res.status === 'yes' && res.timeoutMsg !== '') || res.status === 'no')) {
         dispatch({
           type: 'eventtodo/eventaccept',
           payload: {
@@ -95,16 +95,6 @@ function ToDodetails(props) {
           },
         });
       };
-      if (res.code === 200 && res.status === 'no') {
-        dispatch({
-          type: 'eventtodo/eventaccept',
-          payload: {
-            id: taskId,
-            userIds: sessionStorage.getItem('userauthorityid'),
-            type: '1',
-          },
-        });
-      }
     })
   };
 
@@ -128,11 +118,7 @@ function ToDodetails(props) {
         setModalVisible(true);
         setButandOrder({ type, order });
       };
-      if (res.code === 200 && res.status === 'yes' && res.timeoutMsg !== '') {
-        handleHold(type);
-        setChangeOrder(order);
-      }
-      if (res.code === 200 && res.status === 'no') {
+      if (res.code === 200 && ((res.status === 'yes' && res.timeoutMsg !== '') || res.status === 'no')) {
         handleHold(type);
         setChangeOrder(order);
       }

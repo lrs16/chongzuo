@@ -63,11 +63,7 @@ function ToDoregist(props) {
         setButtonType('goback');
         setButandOrder({ type, order });
       };
-      if (res.code === 200 && res.status === 'yes' && res.timeoutMsg !== '') {
-        handleHold(type);
-        setChangeOrder(order);
-      }
-      if (res.code === 200 && res.status === 'no') {
+      if (res.code === 200 && ((res.status === 'yes' && res.timeoutMsg !== '') || res.status === 'no')) {
         handleHold(type);
         setChangeOrder(order);
       }

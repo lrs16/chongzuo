@@ -158,7 +158,7 @@ export default {
             message.success(resRegister.msg);
             router.push({
               pathname: `/ITSM/faultmanage/todolist/record`,
-              query: { id: flowTaskId },
+              query: { id: flowTaskId, mainId: response.flowInstId },
               paneKey: flowNodeName,
             });
           } else {

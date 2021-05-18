@@ -235,7 +235,7 @@ export default {
                     },
                     {
                       path: '/ITSM/eventmanage/query/details',
-                      name: '事件详情',
+                      name: '事件工单详情',
                       icon: 'cloud-server',
                       component: './ITSM/Eventmanage/EventDetails',
                     },
@@ -276,13 +276,13 @@ export default {
                     },
                     {
                       path: '/ITSM/problemmanage/besolveddetail/workorder',
-                      name: '问题待办详情',
+                      name: '问题工单',
                       icon: 'cloud-server',
                       component: './ITSM/Problemmanage/Workorder',
                     },
                     {
                       path: '/ITSM/problemmanage/problemquery/detail',
-                      name: '问题查询详情',
+                      name: '问题工单详情',
                       icon: 'cloud-server',
                       component: './ITSM/Problemmanage/Queryworkdetail',
                     },
@@ -370,7 +370,7 @@ export default {
                     },
                     {
                       path: '/ITSM/demandmanage/query/details',
-                      name: '需求详情',
+                      name: '需求工单详情',
                       icon: 'cloud-server',
                       component: './ITSM/Demandmanage/Details',
                     },
@@ -432,7 +432,7 @@ export default {
                     },
                     {
                       path: '/ITSM/faultmanage/todolist/record',
-                      name: '故障待办详情',
+                      name: '故障工单',
                       icon: 'cloud-server',
                       component: './ITSM/Faultmanage/Todolistdetails',
                     },
@@ -444,7 +444,7 @@ export default {
                     },
                     {
                       path: '/ITSM/faultmanage/querylist/record',
-                      name: '查询详情',
+                      name: '故障工单详情',
                       icon: 'cloud-server',
                       component: './ITSM/Faultmanage/Querylistdetails',
                     },
