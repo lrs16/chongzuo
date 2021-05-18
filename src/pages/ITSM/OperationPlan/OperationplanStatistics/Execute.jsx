@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'dva';
 import router from 'umi/router';
 import {
@@ -10,13 +10,11 @@ import {
   Button,
   Table
 } from 'antd';
-import Link from 'umi/link';
 import moment from 'moment';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
 let startTime;
 let endTime;
-const sign = 'solution';
 const columns = [
   {
     title: '作业负责人',
@@ -26,7 +24,7 @@ const columns = [
       if (record.user !== '合计') {
         return <span>{text}</span>
       }
-      return <span style={{fontWeight:700}}>{text}</span>
+      return <span style={{ fontWeight: 700 }}>{text}</span>
     }
   },
   {
@@ -40,12 +38,12 @@ const columns = [
           query: {
             time1: record.time1,
             time2: record.time2,
-            operationUser:record.user === '合计' ?'':record.user,
-            status:'计划中'
+            operationUser: record.user === '合计' ? '' : record.user,
+            status: '计划中'
           }
         })
       };
-        return <a onClick={() => gotoDetail(record)}>{text}</a>
+      return <a onClick={() => gotoDetail(record)}>{text}</a>
     }
   },
   {
@@ -59,12 +57,12 @@ const columns = [
           query: {
             time1: record.time1,
             time2: record.time2,
-            operationUser:record.user === '合计' ?'':record.user,
-            status:'延期中'
+            operationUser: record.user === '合计' ? '' : record.user,
+            status: '延期中'
           }
         })
       };
-        return <a onClick={() => gotoDetail(record)}>{text}</a>
+      return <a onClick={() => gotoDetail(record)}>{text}</a>
     }
   },
   {
@@ -78,12 +76,12 @@ const columns = [
           query: {
             time1: record.time1,
             time2: record.time2,
-            operationUser:record.user === '合计' ?'':record.user,
-            executeStatus:'已完成'
+            operationUser: record.user === '合计' ? '' : record.user,
+            executeStatus: '已完成'
           }
         })
       };
-        return <a onClick={() => gotoDetail(record)}>{text}</a>
+      return <a onClick={() => gotoDetail(record)}>{text}</a>
     }
   },
 
@@ -92,14 +90,14 @@ const columns = [
 function Execute(props) {
   const { pagetitle } = props.route.name;
   const {
-    form: { getFieldDecorator,setFieldsValue },
+    form: { getFieldDecorator, setFieldsValue },
     userExecuteStatusArr,
     dispatch
   } = props;
 
-  const onChange = (date,dateString) => {
+  const onChange = (date, dateString) => {
     startTime = dateString;
-    endTime =  moment(dateString).add(+6,'day').format('YYYY-MM-DD');
+    endTime = moment(dateString).add(+6, 'day').format('YYYY-MM-DD');
     setFieldsValue({ time2: moment(endTime) });
   }
 
@@ -120,9 +118,9 @@ function Execute(props) {
   const download = () => {
     dispatch({
       type: 'taskstatistics/downloadUserExecuteStatus',
-      payload:{
-        time1:startTime,
-        time2:endTime,
+      payload: {
+        time1: startTime,
+        time2: endTime,
       }
     }).then(res => {
       const filename = '下载.xls';
@@ -141,10 +139,6 @@ function Execute(props) {
     //  周统计
     startTime = moment().subtract('days', 6).format('YYYY-MM-DD');
     endTime = moment().format('YYYY-MM-DD');
-
-    // startTime = moment().week(moment().week() - 1).startOf('week').format('YYYY-MM-DD HH:mm:ss');
-    // endTime = moment().week(moment().week() - 1).endOf('week').format('YYYY-MM-DD');
-    // endTime = `${endTime} 00:00:00`;
   }
 
   useEffect(() => {
@@ -187,10 +181,10 @@ function Execute(props) {
                     getFieldDecorator('time2', {
                       initialValue: endTime ? moment(endTime) : ''
                     })
-                      (<DatePicker 
+                      (<DatePicker
                         disabledDate={enddisabledDate}
                         onChange={endonChange}
-                         />)
+                      />)
                   }
                 </Form.Item>
 
@@ -203,8 +197,6 @@ function Execute(props) {
                     </Button>
               </Col>
             </>
-
-
           </Form>
         </Row>
 

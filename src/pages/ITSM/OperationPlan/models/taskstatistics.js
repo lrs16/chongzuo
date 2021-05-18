@@ -3,12 +3,7 @@ import {
   operationStatus,
   timeoutStatus,
   userExecuteStatus,
-  maintenanceDownload,
-  eventserviceDownload,
-  eventselfhandleDownload,
-  eventtopnDownload,
-  eventhandlerateDownload,
-  downloadExecuteResult, //统计类
+  downloadExecuteResult, // 统计类
   downloadOperationStatus,
   downloadTimeoutStatus,
   downloadUserExecuteStatus,

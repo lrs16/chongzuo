@@ -1,7 +1,6 @@
 import React from 'react';
 import { Descriptions, Radio } from 'antd';
 import styles from '../index.less';
-import Downloadfile from '@/components/SysUpload/Downloadfile';
 
 function TaskCheckdes(props) {
   const { info } = props;
@@ -20,25 +19,15 @@ function TaskCheckdes(props) {
           </Radio.Group>
         </Descriptions.Item>
 
-        <Descriptions.Item label="审核时间" >
-          {info.checkTime}
-        </Descriptions.Item>
+        <Descriptions.Item label="审核时间" >{info.checkTime}</Descriptions.Item>
 
-        <Descriptions.Item label="审核状态">
-          {info.status}
-        </Descriptions.Item>
+        <Descriptions.Item label="审核状态">{info.status}</Descriptions.Item>
 
-        <Descriptions.Item label="审核说明" span={3}>
-          {info.content}
-        </Descriptions.Item>
+        <Descriptions.Item label="审核说明" span={3}>{info.content}</Descriptions.Item>
 
-        <Descriptions.Item label="审核人">
-          {info.checkUser}
-        </Descriptions.Item>
+        <Descriptions.Item label="审核人">{info.checkUser}</Descriptions.Item>
 
-        <Descriptions.Item label="审核单位">
-          {info.checkUnit}
-        </Descriptions.Item>
+        <Descriptions.Item label="审核单位">{info.checkUnit}</Descriptions.Item>
 
       </Descriptions>
     </div>

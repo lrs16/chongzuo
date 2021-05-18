@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'dva';
 import router from 'umi/router';
 import {
@@ -10,7 +10,6 @@ import {
   Button,
   Table
 } from 'antd';
-import Link from 'umi/link';
 import moment from 'moment';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
@@ -22,8 +21,8 @@ const columns = [
     title: '作业负责人',
     dataIndex: 'user',
     key: 'user',
-    render: (text, record) => {
-        return <span>{text}</span>
+    render: (text) => {
+      return <span>{text}</span>
     }
   },
   {
@@ -31,18 +30,18 @@ const columns = [
     dataIndex: 'wcs',
     key: 'wcs',
     render: (text, record) => {
-      const gotoDetail = (record) => {
+      const gotoDetail = () => {
         router.push({
           pathname: `/ITSM/operationplan/operationplansearch`,
           query: {
             time1: record.time1,
             time2: record.time2,
-            operationUser:record.user === '合计' ?'':record.user,
-            timeoutStatus:'未超时'
+            operationUser: record.user === '合计' ? '' : record.user,
+            timeoutStatus: '未超时'
           }
         })
       };
-        return <a onClick={() => gotoDetail(record)}>{text}</a>
+      return <a onClick={() => gotoDetail(record)}>{text}</a>
     }
   },
   {
@@ -50,18 +49,18 @@ const columns = [
     dataIndex: 'jjcs',
     key: 'jjcs',
     render: (text, record) => {
-      const gotoDetail = (record) => {
+      const gotoDetail = () => {
         router.push({
           pathname: `/ITSM/operationplan/operationplansearch`,
           query: {
             time1: record.time1,
             time2: record.time2,
-            operationUser:record.user === '合计' ?'':record.user,
-            timeoutStatus:'即将超时'
+            operationUser: record.user === '合计' ? '' : record.user,
+            timeoutStatus: '即将超时'
           }
         })
       };
-        return <a onClick={() => gotoDetail(record)}>{text}</a>
+      return <a onClick={() => gotoDetail(record)}>{text}</a>
     }
   },
   {
@@ -69,18 +68,18 @@ const columns = [
     dataIndex: 'ycs',
     key: 'ycs',
     render: (text, record) => {
-      const gotoDetail = (record) => {
-         router.push({
+      const gotoDetail = () => {
+        router.push({
           pathname: `/ITSM/operationplan/operationplansearch`,
           query: {
             time1: record.time1,
             time2: record.time2,
-            operationUser:record.user === '合计' ?'':record.user,
-            timeoutStatus:'已超时'
+            operationUser: record.user === '合计' ? '' : record.user,
+            timeoutStatus: '已超时'
           }
         })
       };
-        return <a onClick={() => gotoDetail(record)}>{text}</a>
+      return <a onClick={() => gotoDetail(record)}>{text}</a>
     }
   },
 
@@ -89,14 +88,14 @@ const columns = [
 function Timeout(props) {
   const { pagetitle } = props.route.name;
   const {
-    form: { getFieldDecorator,setFieldsValue },
+    form: { getFieldDecorator, setFieldsValue },
     timeoutStatusArr,
     dispatch
   } = props;
 
-  const onChange = (date,dateString) => {
+  const onChange = (date, dateString) => {
     startTime = dateString;
-    endTime =  moment(dateString).add(+6,'day').format('YYYY-MM-DD');
+    endTime = moment(dateString).add(+6, 'day').format('YYYY-MM-DD');
     setFieldsValue({ time2: moment(endTime) });
   }
 
@@ -117,9 +116,9 @@ function Timeout(props) {
   const download = () => {
     dispatch({
       type: 'taskstatistics/downloadTimeoutStatus',
-      payload:{
-        time1:startTime,
-        time2:endTime,
+      payload: {
+        time1: startTime,
+        time2: endTime,
       }
     }).then(res => {
       const filename = '下载.xls';
@@ -138,10 +137,6 @@ function Timeout(props) {
     //  周统计
     startTime = moment().subtract('days', 6).format('YYYY-MM-DD');
     endTime = moment().format('YYYY-MM-DD');
-
-    // startTime = moment().week(moment().week() - 1).startOf('week').format('YYYY-MM-DD HH:mm:ss');
-    // endTime = moment().week(moment().week() - 1).endOf('week').format('YYYY-MM-DD');
-    // endTime = `${endTime} 00:00:00`;
   }
 
   useEffect(() => {
@@ -184,10 +179,10 @@ function Timeout(props) {
                     getFieldDecorator('time2', {
                       initialValue: endTime ? moment(endTime) : ''
                     })
-                      (<DatePicker 
+                      (<DatePicker
                         disabledDate={enddisabledDate}
                         onChange={endonChange}
-                         />)
+                      />)
                   }
                 </Form.Item>
 
@@ -200,7 +195,6 @@ function Timeout(props) {
                     </Button>
               </Col>
             </>
-
 
           </Form>
         </Row>

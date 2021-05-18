@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useImperativeHandle, useEffect, useState } from 'react';
+import React, { useContext, useRef, useImperativeHandle } from 'react';
 import {
   Row,
   Col,
@@ -10,7 +10,6 @@ import {
 } from 'antd';
 import moment from 'moment';
 import { FatherContext } from '../Work';
-import SysUpload from '@/components/SysUpload';
 
 const { TextArea } = Input;
 
@@ -20,19 +19,10 @@ const TaskCheck = React.forwardRef((props, ref) => {
     check,
     formItemLayout,
     forminladeLayout,
-    files,
-    ChangeFiles,
     userinfo,
-    checkStatus,
-    checkoutstatus,
-    type
   } = props;
   const { flowtype, setFlowtype } = useContext(FatherContext);
-  const [fileslist, setFilesList] = useState([]);
  
-  // useEffect(() => {
-  //   ChangeFiles(fileslist);
-  // }, [fileslist]);
   const attRef = useRef();
   useImperativeHandle(
     ref,
@@ -42,33 +32,12 @@ const TaskCheck = React.forwardRef((props, ref) => {
     [],
   );
 
+  const statusContent = ['001', '002',null];
+  const color = ['green', 'green','blue'];
 
-  const statusContent = ['待审核', '已审核',null]
-  const color = ['blue', 'green','blue']
-  let checkTime;
-  if (check) {
-    if (check.checkTime) {
-      checkTime = moment(check.checkTime);
-    } else {
-      checkTime = moment(new Date())
-    }
-  } else {
-    checkTime = moment(new Date())
-  }
-
-  // if (check) {
-  //   if (check.result) {
-  //     result = check.result;
-  //   } else {
-  //     result = '1'
-  //   }
-  // } else {
-  //   result = '1'
-  // }
   const onChange = (e) => {
     setFlowtype(e.target.value);
   }
-
 
   const required = true;
 
@@ -87,7 +56,6 @@ const TaskCheck = React.forwardRef((props, ref) => {
               initialValue: check.result === null ? '001' : check.result
             })(
               <Radio.Group
-                // disabled={type === 'list'}
                 onChange={onChange}
               >
                 <Radio value='001'>通过</Radio>
@@ -107,18 +75,15 @@ const TaskCheck = React.forwardRef((props, ref) => {
                   message: '请输入审核时间'
                 }
               ],
-              initialValue: checkTime,
+              initialValue: check.checkTime ? moment(check.checkTime) :moment(new Date()),
             })(
               <DatePicker
-                // disabled={type === 'list'}
                 showTime
                 format="YYYY-MM-DD HH:mm:ss"
               />)}
           </Form.Item>
         </Col>
 
-        {/* {
-          flowtype === '1' && ( */}
         <Col span={8}>
           <Form.Item label='审核状态'>
             {
@@ -126,13 +91,11 @@ const TaskCheck = React.forwardRef((props, ref) => {
                 initialValue: check.status
               })(
                 <Tag
-                  color={color[statusContent.indexOf(checkStatus)]}>{checkStatus === null ? '待审核':checkStatus}</Tag>
+                  color={color[check.result ? statusContent.indexOf(check.result):'2']}>{check.result === null ? '待审核':'已审核'}</Tag>
               )
             }
           </Form.Item>
         </Col>
-        {/* )
-         } */}
 
         {
           flowtype === '002' && (
@@ -149,7 +112,6 @@ const TaskCheck = React.forwardRef((props, ref) => {
                     initialValue: check.content
                   })(
                     <TextArea
-                      // disabled={type === 'list'}
                     />
                   )
                 }
@@ -167,7 +129,6 @@ const TaskCheck = React.forwardRef((props, ref) => {
                     initialValue:check.content
                   })(
                     <TextArea
-                      // disabled={type === 'list'}
                     />
                   )
                 }
@@ -175,7 +136,6 @@ const TaskCheck = React.forwardRef((props, ref) => {
             </Col>
           )
         }
-
 
         <Col span={8}>
           <Form.Item label="审核人">

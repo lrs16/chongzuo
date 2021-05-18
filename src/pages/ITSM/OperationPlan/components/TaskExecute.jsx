@@ -10,7 +10,6 @@ import {
   Select
 } from 'antd';
 import moment from 'moment';
-import { FatherContext } from '../Work';
 import SysUpload from '@/components/SysUpload';
 
 const { TextArea } = Input;
@@ -20,9 +19,7 @@ let endTime;
 
 const TaskExecute = React.forwardRef((props, ref) => {
   const [fileslist, setFilesList] = useState([]);
-  useEffect(() => {
-    ChangeFiles(fileslist);
-  }, [fileslist]);
+
   const attRef = useRef();
   useImperativeHandle(
     ref,
@@ -43,17 +40,9 @@ const TaskExecute = React.forwardRef((props, ref) => {
     taskResult
   } = props;
 
-  let checkTime;
-  let checkResult;
-  // if (check) {
-  //   if (check.checkTime) {
-  //     checkTime = moment(check.checkTime);
-  //   } else {
-  //     checkTime = moment(new Date())
-  //   }
-  // } else {
-  //   checkTime = moment(new Date())
-  // }
+  useEffect(() => {
+    ChangeFiles(fileslist);
+  }, [fileslist]);
 
   const onChange = (date, dateString) => {
     setFieldsValue({ plannedStarTtime: moment(dateString) })
@@ -75,13 +64,8 @@ const TaskExecute = React.forwardRef((props, ref) => {
     if (startTime || endTime) {
       return current < moment(startTime)
     }
+    return null;
   }
-
-  // useEffect(() => {
-  //   startTime = check.startTime;
-  //   endTime = check.endTime;
-  // }, [])
-
 
   const required = true;
 

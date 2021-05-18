@@ -16,7 +16,6 @@ function TimeoutModal(props) {
       ChangeTimeOutMsg(values);
       ChangeModalVisible(false);
     });
-
   }
 
   // 超时信息

@@ -1,6 +1,5 @@
-import React, { useEffect, useState, createContext } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
-import Link from 'umi/link';
 import {
   Form,
   Card,
@@ -39,16 +38,13 @@ const formItemLayout = {
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
-const { TreeNode } = Tree;
 
 let startTime;
 let endtime;
 let actualStarttime;
 let actualEndtime;
 const statusMap = ['green', 'gold', 'red'];
-const status = ['0', '1', '2'];
 const statusContent = ['未超时', '即将超时', '已超时'];
-
 
 function OperationplanCheck(props) {
   const pagetitle = props.route.name;
@@ -83,14 +79,6 @@ function OperationplanCheck(props) {
   };
 
   const initialColumns = [
-    // {
-    //   title: '序号',
-    //   dataIndex: 'index',
-    //   key: 'index',
-    //   width: 100,
-    //   render: (text, record, index) =>
-    //     `${(paginations.current) * paginations.pageSize + (index + 1)}`,
-    // },
     {
       title: '作业计划编号',
       dataIndex: 'operationNo',
@@ -155,7 +143,7 @@ function OperationplanCheck(props) {
       dataIndex: 'timeoutStatus',
       key: 'timeoutStatus',
       width: 150,
-      render: (text, record) => (
+      render: (text) => (
         <span>
           <Badge
             status={statusMap[statusContent.indexOf(text)]}
@@ -277,13 +265,12 @@ function OperationplanCheck(props) {
     })
   }
 
-
+  //  获取当前登录人信息
   const queryDept = () => {
     dispatch({
       type: 'itsmuser/fetchuser',
     });
   };
-
 
   const defaultAllkey = columns.map(item => {
     return item.title
@@ -324,6 +311,7 @@ function OperationplanCheck(props) {
     });
   };
 
+  //  每页显示多少条
   const onShowSizeChange = (page, pageSize) => {
     validateFields((err, values) => {
       if (!err) {
@@ -336,6 +324,7 @@ function OperationplanCheck(props) {
     });
   };
 
+  //  分页
   const changePage = page => {
     validateFields((err, values) => {
       if (!err) {
@@ -348,6 +337,7 @@ function OperationplanCheck(props) {
     });
   };
 
+  //  搜索
   const handleSearch = () => {
     setPaginations({
       ...paginations,
@@ -375,7 +365,7 @@ function OperationplanCheck(props) {
     });
   };
 
-
+  //  导出
   const exportDownload = () => {
     const exportColumns = columns.map(function (item) {
       return {
@@ -411,13 +401,14 @@ function OperationplanCheck(props) {
     })
   }
 
+  //  勾选复选框
   const rowSelection = {
-    onChange: (index, selectedRows) => {
-      setSelectedRows([...selectedRows])
+    onChange: (index, handleSelect) => {
+      setSelectedRows([...handleSelect])
     }
   }
 
-
+  //  自定义列表表格头部
   const creataColumns = () => {
     // columns
     initialColumns.length = 0;
@@ -438,6 +429,7 @@ function OperationplanCheck(props) {
       }
       initialColumns.push(obj);
       setColumns(initialColumns);
+      return null
     })
   }
 
@@ -456,6 +448,7 @@ function OperationplanCheck(props) {
     creataColumns();
   };
 
+  //  计划开始时间和实际结束开始时间  
   const onChange = (dateString, params) => {
     if (params === 'plan') {
       setFieldsValue({ plannedStarTtime: moment(dateString) })
@@ -465,9 +458,9 @@ function OperationplanCheck(props) {
       startTime = dateString;
       actualStarttime = dateString
     }
-
   }
 
+  //  计划结束时间和实际结束时间 
   const endtimeonChange = (dateString, params) => {
     if (params === 'plan') {
       setFieldsValue({ plannedEndTime: moment(dateString) })
@@ -476,9 +469,9 @@ function OperationplanCheck(props) {
       setFieldsValue({ endTime: moment(dateString) })
       actualEndtime = dateString;
     }
-
   }
 
+  //  计划开始时间、实际开始时间
   const startdisabledDate = (current, params) => {
     if (params === 'plan') {
       if (startTime || endtime) {
@@ -491,8 +484,10 @@ function OperationplanCheck(props) {
       }
     }
 
+    return null;
   }
 
+  //  计划实际结束时间、实际结束时间
   const enddisabledDate = (current, params) => {
     if (params === 'plan') {
       if (startTime || endtime) {
@@ -504,17 +499,8 @@ function OperationplanCheck(props) {
         return current < moment(actualStarttime)
       }
     }
-  }
 
-  const customTreeNode = () => {
-    return initialColumns.map(item => {
-      return (
-        <TreeNode
-          title={item.title}
-          key={item.key}
-          disabled={item.title === '作业计划编号' ? true : ''} />
-      )
-    })
+    return null;
   }
 
   const getTypebyTitle = title => {
@@ -558,20 +544,15 @@ function OperationplanCheck(props) {
     setColumns(initialColumns)
   }, []);
 
-  const handleClick = () => {
-    console.log(1);
-  }
-
+  //  审核提交
   const checkSubmit = (value) => {
     const allmainId = selectedRows.map(obj => {
       return obj.mainId
     });
-    console.log(allmainId)
 
     const allcheckId = selectedRows.map(obj => {
       return obj.id
     });
-    console.log(allcheckId)
     dispatch({
       type: 'processmodel/batchCheck',
       payload: {
@@ -594,53 +575,6 @@ function OperationplanCheck(props) {
     });
   }
 
-
-  // const reasonSubmit = values => {
-  //   dispatch({
-  //     type: 'processmodel/fallback',
-  //     payload: {
-  //       mainIds: mainId,
-  //       ...values,
-  //     },
-  //   }).then(res => {
-  //     if (res.code === 200) {
-  //       message.info(res.msg);
-  //       router.push(`/ITSM/operationplan/operationplancheck`)
-  //     } else {
-  //       message.error(res.msg);
-  //     }
-  //   });
-  // };
-
-  const handleBack = () => {
-
-    if (selectedRows.length !== 1) {
-      message.info('请选择一条数据')
-      // event.preventDefault();
-      return false;
-    }
-
-    const backJudge = selectedRows.every(item => {
-      if (item.checkResult !== null) {
-        message.info('请选择未保存过的单子');
-        return false;
-      }
-
-      if (item.checkResult === null) {
-        return true
-      }
-    })
-
-
-    if (backJudge === false) {
-      return false;
-    }
-
-    if (backJudge === true) {
-      setVisible(true)
-    }
-  }
-
   const reasonSubmit = values => {
     const ids = selectedRows.map(item => {
       return item.id
@@ -661,6 +595,7 @@ function OperationplanCheck(props) {
       }
     });
   };
+
   const pagination = {
     showSizeChanger: true,
     onShowSizeChange: (page, pageSize) => onShowSizeChange(page, pageSize),
@@ -847,7 +782,7 @@ function OperationplanCheck(props) {
                 </Col>
 
                 <Col span={8}>
-                  <Form.Item label="执行状态">
+                  <Form.Item label="作业状态">
                     {getFieldDecorator('executeStatus', {
                     })
                       (
@@ -1114,7 +1049,6 @@ function OperationplanCheck(props) {
         </Row>
         <div style={{ display: 'flex', flexDirection: 'row' }} >
           <CheckModel
-            onClick={handleClick}
             userinfo={userinfo}
             selectedRows={selectedRows}
             checkSubmit={values => checkSubmit(values)}
@@ -1132,7 +1066,7 @@ function OperationplanCheck(props) {
             selectedRows={selectedRows}
             reasonSubmit={values => reasonSubmit(values)}
           >
-            <Button type="primary" style={{ marginRight: 8 }} onClick={handleBack}>
+            <Button type="primary" style={{ marginRight: 8 }}>
               回退
           </Button>
           </Back>
@@ -1153,7 +1087,6 @@ function OperationplanCheck(props) {
 
                 <div style={{ borderBottom: '1px solid #E9E9E9' }}>
                   <Checkbox
-                    // indeterminate={this.state.indeterminate}
                     onChange={onCheckAllChange}
                     checked={columns.length === initialColumns.length === true}
                   >
@@ -1165,9 +1098,7 @@ function OperationplanCheck(props) {
                 <Checkbox.Group
                   onChange={onCheck}
                   value={defaultAllkey}
-                  // className={styles.selsectMenu}
                   defaultValue={columns}
-                // onChange={this.changeColumn}
                 >
                   {initialColumns.map(item => (
                     <Col key={`item_${item.key}`} style={{ marginBottom: '8px' }}>
@@ -1175,8 +1106,6 @@ function OperationplanCheck(props) {
                         value={item.title}
                         key={item.key}
                         checked={columns}
-                      // disabled={item.disabled}
-                      // className={styles.checkboxStyle}
                       >
                         {item.title}
                       </Checkbox>
@@ -1185,17 +1114,13 @@ function OperationplanCheck(props) {
 
                 </Checkbox.Group>
               </>
-
             }
           >
             <Button>
               <Icon type="setting" theme="filled" style={{ fontSize: '14px' }} />
             </Button>
           </Popover>
-
-
         </div>
-
 
         <div />
         <Table
@@ -1207,11 +1132,6 @@ function OperationplanCheck(props) {
           rowSelection={rowSelection}
           pagination={pagination}
         />
-
-        {/* <Back
-          visible={visible}
-          reasonSubmit={values => reasonSubmit(values)}
-        /> */}
 
       </Card>
 

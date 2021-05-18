@@ -1,13 +1,11 @@
 import React, { useEffect, useState, createContext, useRef } from 'react';
 import { connect } from 'dva';
 import {
-  Card,
   Button,
   Collapse,
   Form,
   message
 } from 'antd';
-import Link from 'umi/link';
 import User from '@/components/SelectUser/User';
 import router from 'umi/router';
 import TaskCheck from './components/TaskCheck';
@@ -22,7 +20,6 @@ import SysDict from '@/components/SysDict';
 import styles from './index.less';
 import TimeoutModal from './components/TimeoutModel';
 import { judgeTimeoutStatus, saveTimeoutMsg } from '../services/api';
-
 
 const { Panel } = Collapse;
 
@@ -65,8 +62,7 @@ function Work(props) {
   const [modalvisible, setModalVisible] = useState(false);
 
   const {
-    form: { validateFields },
-    location: { query: { registe, mainId, status, checkStatus, auditLink, delay } },
+    location: { query: { mainId, status, checkStatus, auditLink, delay } },
     userinfo,
     openFlowList,
     operationPersonArr,
@@ -78,6 +74,15 @@ function Work(props) {
   const { edit } = openFlowList;
 
 
+  // 初始化获取用户信息
+  // useEffect(() => {
+  //   console.log(1)
+  //   dispatch({
+  //     type: 'processmodel/openFlow',
+  //     payload: mainId
+  //   })
+  // }, [mainId]);
+
   if (loading === false) {
     if (openFlowList.code === -1) {
       message.error(openFlowList.msg);
@@ -86,24 +91,6 @@ function Work(props) {
       });
     }
   }
-
-  const handleVisibleChange = visible => {
-    judgeTimeoutStatus(taskId).then(res => {
-      if (res.code === 200 && res.status === 'yes' && res.timeoutMsg === '') {
-        message.info('该事件单已超时，请填写超时原因...')
-        setModalVisible(true);
-        setButtonType('goback');
-        setUserVisible(false);
-      };
-      if (res.code === 200 && res.status === 'yes' && res.timeoutMsg !== '') {
-        setVisible(visible);
-      };
-      if (res.code === 200 && res.status === 'no') {
-        setVisible(visible);
-      }
-    })
-  };
-
 
   // panel详情
   const Panelheadermap = new Map([
@@ -122,14 +109,11 @@ function Work(props) {
     });
   };
 
- 
-
   const getoperationPerson = () => {
     dispatch({
       type: 'processmodel/operationPerson',
     });
   }
-
 
   const getInformation = () => {
     dispatch({
@@ -145,13 +129,22 @@ function Work(props) {
     return [];
   };
   const taskResult = getTypebyTitle('作业结果');
-
+  
   useEffect(() => {
+    console.log(1)
     queryDept();
     getoperationPerson()
     sessionStorage.setItem('Processtype', 'task');
     headTitle = '';
   }, [])
+
+  useEffect(() => {
+    console.log(2)
+    dispatch({
+      type: 'processmodel/openFlow',
+      payload: mainId
+    })
+  }, [mainId])
 
   // 处理作业负责人数据
   if (operationPersonArr.length) {
@@ -163,14 +156,12 @@ function Work(props) {
     })
   }
 
-  const handlePaste = () => {
-
-  }
 
   const formerr = () => {
     message.error('请将信息填写完整')
   }
 
+  //  保存统一接口
   const saveApi = (params) => {
     return dispatch({
       type: 'processmodel/formSave',
@@ -183,13 +174,11 @@ function Work(props) {
         message.error(res.msg);
       }
     });
-
   }
 
-
+  //  执行保存
   const executeSave = () => {
     SaveRef.current.validateFields((err, value) => {
-
       if (true) {
         const result = {
           ...value,
@@ -208,6 +197,7 @@ function Work(props) {
     })
   }
 
+  //  登记保存
   const fillinSave = (params) => {
     SaveRef.current.validateFields((err, values) => {
       if (params ? !err : true) {
@@ -237,6 +227,7 @@ function Work(props) {
     })
   }
 
+  //  审核保存
   const checkSave = () => {
     SaveRef.current.validateFields((err, value) => {
       const result = {
@@ -252,6 +243,7 @@ function Work(props) {
     })
   }
 
+  //  判断是属于那个保存状态下
   const handleSave = (params) => {
     if (openFlowList && openFlowList.edit.execute !== undefined && checkStatus === '已审核') {
       executeSave();
@@ -266,6 +258,7 @@ function Work(props) {
     }
   }
 
+  // 送审提交 
   const gotoCensorship = () => {
     return dispatch({
       type: 'processmodel/censorshipSubmit',
@@ -275,29 +268,27 @@ function Work(props) {
       }
     }).then(res => {
       if (res.code === 200) {
-        message.info(message.msg);
-        router.push(`/ITSM/operationplan/operationplancheck`)
+        message.info('送审成功');
+        router.push(`/ITSM/operationplan/myoperationplan/`)
       } else {
-        message.error(res.msg);
-        router.push(`/ITSM/operationplan/operationplancheck`)
+        message.error('送审失败 ');
+        router.push(`/ITSM/operationplan/myoperationplan/`)
       }
     })
   }
 
   // 上传附件触发保存
   useEffect(() => {
+    console.log(3)
     if (files.ischange) {
       handleSave(false);
     }
   }, [files]);
 
-  // 初始化获取用户信息
-  useEffect(() => {
-    getInformation();
-  }, [])
 
   //  送审选人
   useEffect(() => {
+    console.log(4)
     if (userchoice) {
       gotoCensorship()
     }
@@ -313,9 +304,9 @@ function Work(props) {
         pathname: `/ITSM/operationplan/myoperationplan/`,
       });
     }
-
   }
 
+  //  回退
   const reasonSubmit = values => {
     dispatch({
       type: 'processmodel/fallback',
@@ -333,6 +324,7 @@ function Work(props) {
     });
   };
 
+  // 审核
   const handleExamine = () => {
     SaveRef.current.validateFields((err, value) => {
       if (!err) {
@@ -360,11 +352,13 @@ function Work(props) {
             });
           }
         });
-
       }
-    })
+      return null;
+    }
+    )
   }
 
+  // 执行
   const handleSaveexecute = () => {
     SaveRef.current.validateFields((err, value) => {
       if (!err) {
@@ -399,6 +393,7 @@ function Work(props) {
     })
   }
 
+  // 点击执行前判断是否超时
   const handleExecute = () => {
     judgeTimeoutStatus(edit.execute.id).then(res => {
       if (res.code === 200 && res.status === 'yes' && res.timeoutMsg === '') {
@@ -410,6 +405,7 @@ function Work(props) {
     })
   }
 
+  //  保存超时信息
   const postTimeOutMsg = (v) => {
     saveTimeoutMsg({
       taskId: edit.execute.id,
@@ -422,6 +418,7 @@ function Work(props) {
     });
   }
 
+  //  延期
   const handleDelay = () => {
     SaveRef.current.validateFields((err, value) => {
       return dispatch({
@@ -446,6 +443,7 @@ function Work(props) {
     })
   }
 
+  //  删除
   const handleDelete = () => {
     return dispatch({
       type: 'processmodel/taskDelete',
@@ -466,13 +464,14 @@ function Work(props) {
       }
     })
   }
+
   return (
     <PageHeaderWrapper
       title={headTitle}
       extra={
         <>
           {
-            loading === false && !delay && (openFlowList && edit.main !== undefined && data.length === 1) && (
+            loading === false && taskResult && taskResult.length && !delay && (openFlowList && edit.main !== undefined && data.length === 1)  &&(
               <Button
                 type="danger"
                 ghost
@@ -485,24 +484,21 @@ function Work(props) {
           }
 
           {
-            loading === false && !delay && (
+            loading === false && taskResult && taskResult.length && !delay && (
               <Button type='primary' onClick={() => handleSave(false)}>保存</Button>
             )
           }
 
-         
-
           {
-            loading === false && !delay && (openFlowList && edit.main !== undefined) && (
+            loading === false && taskResult && taskResult.length && !delay && (openFlowList && edit.main !== undefined) && taskResult && taskResult.length &&(
               <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleSave(true)}>
                 送审
               </Button>
             )
           }
 
-
           {
-            auditLink && !delay && (
+            auditLink  && taskResult && taskResult.length && !delay && (
               <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleExamine()}>
                 审核
               </Button>
@@ -510,7 +506,7 @@ function Work(props) {
           }
 
           {
-            loading === false && auditLink && !delay && edit.check && edit.check.result === null && (
+            loading === false && taskResult && taskResult.length && auditLink && !delay && edit.check && edit.check.result === null && taskResult && taskResult.length &&(
               <Back
                 reasonSubmit={values => reasonSubmit(values)}
                 detailPage='true'
@@ -523,25 +519,20 @@ function Work(props) {
           }
 
           {
-            loading === false && !delay && (openFlowList && edit.execute !== undefined) && checkStatus === '已审核' && (
+            loading === false && taskResult && taskResult.length && !delay && (openFlowList && edit.execute !== undefined) && checkStatus === '已审核' && taskResult && taskResult.length &&(
               <Button
                 type="primary"
                 onClick={handleExecute}>确认执行</Button>
             )
           }
 
-
-          {/* <Button type='primary'>送审</Button> */}
-
           {
-            loading === false && delay && (
+            loading === false && taskResult && taskResult.length && delay && (
               <Button type='primary' onClick={handleDelay}>确定延期</Button>
-
             )
           }
 
           <Button onClick={handleClose}>关闭</Button>
-
         </>
       }
     >
@@ -553,10 +544,9 @@ function Work(props) {
       />
 
       {
-        loading === false && data && data.length && (
+        loading === false  && taskResult && taskResult.length && data && (
           <Collapse
             expandIconPosition="right"
-            // activeKey={activeKey}
             defaultActiveKey={['1']}
             onChange={callback}
             bordered='true'
@@ -572,7 +562,6 @@ function Work(props) {
                     <TaskCheck
                       formItemLayout={formItemLayout}
                       forminladeLayout={forminladeLayout}
-                      // type={type}
                       check={edit.check}
                       userinfo={userinfo}
                       checkStatus={checkStatus}
@@ -641,7 +630,7 @@ function Work(props) {
       }
 
       <div className={styles.collapse}>
-        {loading === false && data && data.length && (
+        {loading === false && taskResult && taskResult.length  && data &&  (
           <Collapse
             expandIconPosition="right"
             defaultActiveKey={['0']}
@@ -676,11 +665,8 @@ function Work(props) {
         )}
       </div>
 
-
-
       {/* 选人组件 */}
       <User
-        // taskId={id}
         visible={uservisible}
         ChangeUserVisible={v => setUserVisible(v)}
         changorder={changorder}
@@ -693,12 +679,8 @@ function Work(props) {
         ChangeModalVisible={v => setModalVisible(v)}
         ChangeTimeOutMsg={v => postTimeOutMsg(v)}
       />
-
-
     </PageHeaderWrapper >
-
   )
-
 }
 
 export default Form.create({})(

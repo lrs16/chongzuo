@@ -1,10 +1,10 @@
 import request from '@/utils/request';
 
-
 //  启动流程
 export async function startFlow() {
   return request(`/operation/flow/add`); 
 }
+
 //  保存所有表单
 export async function saveForm(params) {
   return request(`/operation/flow/save`,{
@@ -42,7 +42,6 @@ export async function downloadMyOperationExcel(params) {
   return request(`/operation/form/downloadMyOperationExcel`,{
     method:'POST',
     data:params,
-    // body:JSON.stringify(params),
     requestType:'form',
     responseType:'blob'
   })
@@ -57,8 +56,6 @@ export async function fallback(params) {
   })
 }
 
-
-
 //  单条或者批量审核
 export async function batchCheck(submitParams) {
   return request(`/operation/flow/batchCheck`,{
@@ -67,6 +64,7 @@ export async function batchCheck(submitParams) {
     requestType: 'form'
   })
 }
+
 //  单条或者批量送审
 export async function batchToCheck(submitParams) {
   return request(`/operation/flow/batchToCheck`,{
@@ -126,7 +124,6 @@ export async function delay(submitParams) {
     requestType: 'form'
   })
 }
-
 
 //  获取作业负责人信息
 export async function operationPerson() {

@@ -1,10 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { connect } from 'dva';
-import Link from 'umi/link';
 import {
   Form,
   Card,
-  Input,
   Button,
   message,
 } from 'antd';
@@ -19,21 +17,15 @@ function OperationPlanfillintion(props) {
     location: { query: { mainId } },
     dispatch,
     userinfo,
-    loading,
     openFlowList,
     operationPersonArr
   } = props;
-
   let operationPersonSelect;
 
   const PlanfillinRef = useRef();
   const [richtext, setRichtext] = useState('');
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
-  const [test, setTest] = useState({ arr: [], ischange: false }); // 下载列表
   
-  console.log(files,'files')
-
-
   const formItemLayout = {
     labelCol: {
       xs: { span: 24 },
@@ -56,12 +48,6 @@ function OperationPlanfillintion(props) {
     },
   };
 
-  const testFunction = (newvalue) => {
-    console.log(1);
-    console.log(newvalue)
-  }
-
-
   const queryDept = () => {
     dispatch({
       type: 'itsmuser/fetchuser',
@@ -69,7 +55,6 @@ function OperationPlanfillintion(props) {
   };
 
   //  获取作业负责人
-
   const getoperationPerson = () => {
     dispatch({
       type: 'processmodel/operationPerson',
@@ -118,11 +103,11 @@ function OperationPlanfillintion(props) {
   };
 
   // 上传删除附件触发保存
-  // useEffect(() => {
-  //   if (files.ischange) {
-  //     handlesubmit(true);
-  //   }
-  // }, [files]);
+  useEffect(() => {
+    if (files.ischange) {
+      handlesubmit(true);
+    }
+  }, [files]);
 
   const handleClose = () => {
     router.push({
@@ -142,15 +127,13 @@ function OperationPlanfillintion(props) {
 
     dispatch({
       type: 'processmodel/openFlow',
-      payload: mainId
+      payload: mainId[0]
     })
 
     if (mainId[0]) {
       copyData = openFlowList;
       delete copyData.main.operationNo
     }
-
-
   }
 
 
@@ -159,7 +142,6 @@ function OperationPlanfillintion(props) {
       title={pagetitle}
       extra={
         <>
-
           <Button type="primary" style={{ marginRight: 8 }} onClick={handlePaste}>
             粘贴
           </Button>
@@ -167,7 +149,6 @@ function OperationPlanfillintion(props) {
           <Button type="primary" style={{ marginRight: 8 }} onClick={() => handlesubmit(false)}>
             保存
           </Button>
-
 
           <Button onClick={handleClose}>关闭</Button>
         </>
@@ -183,7 +164,6 @@ function OperationPlanfillintion(props) {
             getRichtext={(richText => setRichtext(richText))}
             ChangeFiles={newvalue => {
               setFiles(newvalue);
-              testFunction(newvalue);
             }}
             files={[]}
             operationPersonSelect={operationPersonSelect}

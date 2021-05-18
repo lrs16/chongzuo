@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import router from 'umi/router';
 import { connect } from 'dva';
 import {
@@ -10,13 +10,11 @@ import {
   Button,
   Table
 } from 'antd';
-import Link from 'umi/link';
 import moment from 'moment';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
 let startTime;
 let endTime;
-const sign = 'solution';
 const columns = [
   {
     title: '作业状态',
@@ -28,18 +26,17 @@ const columns = [
     dataIndex: 'num',
     key: 'num',
     render: (text, record) => {
-      const gotoDetail = (record) => {
-        console.log(1)
+      const gotoDetail = () => {
         router.push({
           pathname: `/ITSM/operationplan/operationplansearch`,
           query: {
             time1: record.time1,
             time2: record.time2,
-            status:record.status === '合计' ?'':record.status 
+            status: record.status === '合计' ? '' : record.status
           }
         })
       };
-        return <a onClick={() => gotoDetail(record)}>{text}</a>
+      return <a onClick={() => gotoDetail(record)}>{text}</a>
     }
   },
 ];
@@ -96,9 +93,6 @@ function Status(props) {
     //  周统计
     startTime = moment().subtract('days', 6).format('YYYY-MM-DD');
     endTime = moment().format('YYYY-MM-DD');
-
-    // startTime = moment().week(moment().week() - 1).startOf('week').format('YYYY-MM-DD HH:mm:ss');
-    // endTime = moment().week(moment().week() - 1).endOf('week').format('YYYY-MM-DD');
   }
 
   useEffect(() => {

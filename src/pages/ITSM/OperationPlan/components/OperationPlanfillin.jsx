@@ -7,7 +7,6 @@ import {
   Select,
   DatePicker,
   AutoComplete,
-  Spin,
   Radio,
   Tag
 } from 'antd';
@@ -15,10 +14,8 @@ import moment from 'moment';
 import SysUpload from '@/components/SysUpload';
 import { getAndField } from '@/pages/SysManage/services/api';
 import SysDict from '@/components/SysDict';
-import { queryDisableduserByUser, queryUnitList, queryDeptList } from '@/services/common';
-import BraftEditor from 'braft-editor'
-import 'braft-editor/dist/index.css';
-import styles from '../index.less';
+// import BraftEditor from 'braft-editor'
+// import 'braft-editor/dist/index.css';
 
 const { Option } = Select;
 const { TextArea, Search } = Input;
@@ -39,9 +36,7 @@ const OperationPlanfillin = React.forwardRef((props, ref) => {
     type,
     status,
     operationPersonSelect,
-    loading
   } = props;
-
 
   const statusContent = ['计划中', '延期中', '已超时', '已完成']
   const color = ['blue', 'yellow', 'red', 'green'];
@@ -163,8 +158,6 @@ const OperationPlanfillin = React.forwardRef((props, ref) => {
   const WorkOrder = getTypebyTitle('是否开票')
 
   const required = true;
-
-
 
   return (
     <>

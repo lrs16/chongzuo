@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
-import Link from 'umi/link';
 import {
   Form,
   Card,
@@ -45,7 +44,6 @@ let endttime;
 let actualStarttime;
 let actualEndtime;
 const statusMap = ['green', 'gold', 'red'];
-const status = ['0', '1', '2'];
 const statusContent = ['未超时', '即将超时', '已超时'];
 
 function MyoperationPlan(props) {
@@ -58,7 +56,6 @@ function MyoperationPlan(props) {
     loading,
   } = props;
   let operationPersonSelect;
-  // console.log(statusMap[status.indexOf(text)])
 
   //  选人组件
   const [uservisible, setUserVisible] = useState(false); // 是否显示选人组件
@@ -73,7 +70,6 @@ function MyoperationPlan(props) {
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
   let formThead;
 
-
   const gotoDetail = (record, delay) => {
     router.push({
       pathname: `/ITSM/operationplan/operationplanform`,
@@ -86,16 +82,7 @@ function MyoperationPlan(props) {
     })
   };
 
-
   const initialColumns = [
-    // {
-    //   title: '序号',
-    //   dataIndex: 'index',
-    //   key: 'index',
-    //   width: 100,
-    //   render: (text, record, index) =>
-    //     `${(paginations.current) * paginations.pageSize + (index + 1)}`,
-    // },
     {
       title: '作业计划编号',
       dataIndex: 'operationNo',
@@ -160,7 +147,7 @@ function MyoperationPlan(props) {
       dataIndex: 'timeoutStatus',
       key: 'timeoutStatus',
       width: 150,
-      render: (text, record) => (
+      render: (text) => (
         <span>
           <Badge
             status={statusMap[statusContent.indexOf(text)]}
@@ -393,7 +380,7 @@ function MyoperationPlan(props) {
   };
 
   const exportDownload = () => {
-    const exportColumns = columns.map(function (item) {
+    const exportColumns = columns.map(item => {
       return {
         column: item.dataIndex,
         field: item.title
@@ -427,8 +414,8 @@ function MyoperationPlan(props) {
   }
 
   const rowSelection = {
-    onChange: (index, selectedRows) => {
-      setSelectedRows([...selectedRows])
+    onChange: (index, handleSelect) => {
+      setSelectedRows([...handleSelect])
     }
   }
 
@@ -436,16 +423,18 @@ function MyoperationPlan(props) {
 
     if (selectedRows.length !== 1) {
       message.info('请选择一条数据')
-      // event.preventDefault();
       return false;
     }
+
     const res = selectedRows.every(item => {
-      if (item.status === '延期中') {
-        message.info('不可选执行状态:延期中');
+      console.log('item: ', item.status,item.checkStatus);
+      
+      if (item.status !== '延期中' || item.checkStatus !== '已审核') {
+        message.info('延期的条件为:执行状态不可以是延期中,且审核状态为:已审核');
         return false
       }
 
-      if (item.status !== '延期中') {
+      if (item.status === '延期中' && item.checkStatus === '已审核') {
         return true;
       }
 
@@ -453,7 +442,6 @@ function MyoperationPlan(props) {
 
 
     if (res === false) {
-      // event.preventDefault();
       return false;
     }
 
@@ -461,6 +449,7 @@ function MyoperationPlan(props) {
       gotoDetail(selectedRows[0], 'delay')
     }
 
+    return null;
   }
 
   const handleCopy = () => {
@@ -478,8 +467,7 @@ function MyoperationPlan(props) {
       message.info('复制成功')
     }
 
-
-
+    // return null
   }
 
 
@@ -487,7 +475,6 @@ function MyoperationPlan(props) {
   const handleDelete = () => {
     if (selectedRows.length === 0) {
       message.info('至少选择一条数据')
-      // event.preventDefault();
       return false;
     }
 
@@ -500,8 +487,9 @@ function MyoperationPlan(props) {
       if (item.checkStatus === '待送审') {
         return true
       }
-    })
 
+      return null;
+    })
 
     if (deleteJudge === false) {
       return false;
@@ -528,10 +516,7 @@ function MyoperationPlan(props) {
       })
     }
 
-
-
-
-
+    return null;
   }
 
   const creataColumns = () => {
@@ -554,7 +539,9 @@ function MyoperationPlan(props) {
       }
       initialColumns.push(obj);
       setColumns(initialColumns);
-    })
+      return null;
+    }
+    )
   }
 
   const onCheckAllChange = e => {
@@ -606,6 +593,7 @@ function MyoperationPlan(props) {
         return current > moment(actualEndtime)
       }
     }
+    return null;
 
   }
 
@@ -620,18 +608,7 @@ function MyoperationPlan(props) {
         return current < moment(actualStarttime)
       }
     }
-  }
-
-
-  const customTreeNode = () => {
-    return initialColumns.map(item => {
-      return (
-        <TreeNode
-          title={item.title}
-          key={item.key}
-          disabled={item.title === '作业计划编号' ? true : ''} />
-      )
-    })
+    return null;
   }
 
   const getTypebyTitle = title => {
@@ -640,7 +617,6 @@ function MyoperationPlan(props) {
     }
     return [];
   };
-
 
   const gotoCensorship = () => {
     const allmainId = selectedRows.map(obj => {
@@ -654,10 +630,10 @@ function MyoperationPlan(props) {
       }
     }).then(res => {
       if (res.code === 200) {
-        message.info(message.msg);
+        message.info('送审成功');
         getTobolist()
       } else {
-        message.error(res.msg);
+        message.error('送审失败');
         getTobolist()
       }
     })
@@ -685,12 +661,14 @@ function MyoperationPlan(props) {
       if (item.checkStatus === '待送审') {
         return true
       }
+      return null;
     })
 
     if (checkJudge) {
       setUserVisible(true)
     }
 
+    return null;
   }
 
   const executeStatus = getTypebyTitle('执行状态');
@@ -904,7 +882,7 @@ function MyoperationPlan(props) {
                 </Col>
 
                 <Col span={8}>
-                  <Form.Item label="执行状态">
+                  <Form.Item label="作业状态">
                     {getFieldDecorator('executeStatus', {
                     })
                       (
@@ -941,7 +919,7 @@ function MyoperationPlan(props) {
 
                 <Col span={8}>
                   <Form.Item label="超时状态">
-                    {getFieldDecorator('status', {})
+                    {getFieldDecorator('timeoutStatus', {})
                       (
                         <Select placeholder="请选择" allowClear>
                           {timeoutStatus.map(obj => [
@@ -1099,7 +1077,6 @@ function MyoperationPlan(props) {
                 <Col span={8}>
                   <Form.Item label="填报时间">
                     {getFieldDecorator('addTime', {
-                      // initialValue: [moment(time1), moment(time2)] || [moment().startOf('month'), moment()],
                     })(
                       <RangePicker
                         showTime
@@ -1180,11 +1157,6 @@ function MyoperationPlan(props) {
           <Button type="primary" style={{ marginRight: 8 }} onClick={handleCheck}>
             送审
           </Button>
-
-
-          {/* <Button type="primary" style={{ marginRight: 8 }} onClick={handleExecute}>
-            执行
-          </Button> */}
 
           <Button type="primary" style={{ marginRight: 8 }} onClick={handleDelay}>
             延期

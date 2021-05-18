@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'dva';
 import router from 'umi/router';
 import {
@@ -10,24 +10,19 @@ import {
   Button,
   Table
 } from 'antd';
-import Link from 'umi/link';
 import moment from 'moment';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
 let startTime;
 let endTime;
-const sign = 'solution';
-const statusMap = ['green', 'gold', 'red'];
-const status = [0,1,2];
-const statusContent = ['未超时', '即将超时', '已超时'];
 
 const columns = [
   {
     title: '作业结果',
     dataIndex: 'result',
     key: 'result',
-    render: (text, record) => {
-      return <span style={{fontWeight:700}}>{text}</span>
+    render: (text) => {
+      return <span style={{ fontWeight: 700 }}>{text}</span>
     }
   },
   {
@@ -35,17 +30,17 @@ const columns = [
     dataIndex: 'num',
     key: 'num',
     render: (text, record) => {
-      const gotoDetail = (record) => {
+      const gotoDetail = () => {
         router.push({
           pathname: `/ITSM/operationplan/operationplansearch`,
           query: {
             time1: record.time1,
             time2: record.time2,
-            result:record.result=== '合计' ? '': record.result
+            result: record.result === '合计' ? '' : record.result
           }
         })
       };
-        return <a onClick={() => gotoDetail(record)}>{text}</a>
+      return <a onClick={() => gotoDetail(record)}>{text}</a>
     }
   },
 ];
@@ -53,14 +48,14 @@ const columns = [
 function Result(props) {
   const { pagetitle } = props.route.name;
   const {
-    form: { getFieldDecorator,setFieldsValue },
+    form: { getFieldDecorator, setFieldsValue },
     resultArr,
     dispatch
   } = props;
 
-  const onChange = (date,dateString) => {
+  const onChange = (date, dateString) => {
     startTime = dateString;
-    endTime =  moment(dateString).add(+6,'day').format('YYYY-MM-DD');
+    endTime = moment(dateString).add(+6, 'day').format('YYYY-MM-DD');
     setFieldsValue({ time2: moment(endTime) });
   }
 
@@ -74,16 +69,16 @@ function Result(props) {
   const handleListdata = () => {
     dispatch({
       type: 'taskstatistics/executeResult',
-      payload: {  startTime, endTime }
+      payload: { startTime, endTime }
     })
   }
 
   const download = () => {
     dispatch({
       type: 'taskstatistics/downloadExecuteResult',
-      payload:{
-        time1:startTime,
-        time2:endTime,
+      payload: {
+        time1: startTime,
+        time2: endTime,
       }
     }).then(res => {
       const filename = '下载.xls';
@@ -148,10 +143,10 @@ function Result(props) {
                     getFieldDecorator('time2', {
                       initialValue: endTime ? moment(endTime) : ''
                     })
-                      (<DatePicker 
+                      (<DatePicker
                         disabledDate={enddisabledDate}
                         onChange={endonChange}
-                         />)
+                      />)
                   }
                 </Form.Item>
 

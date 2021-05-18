@@ -18,7 +18,6 @@ const withClick = (element, handleClick = () => {}) => {
 };
 function Back(props) {
   const [visible, setVisible] = useState(false);
-  const [golist, setGolist] = useState(false);
   const required = true;
   const {
     form: { getFieldDecorator, validateFields, resetFields },
@@ -37,7 +36,7 @@ function Back(props) {
           return item.id;
         }
         
-        message.info('请选择执行状态:待审核');
+        message.info('请选择审核状态:待审核');
         return false
       })
   
@@ -45,9 +44,7 @@ function Back(props) {
         return false;
       }
     }
-
     setVisible(true);
- 
   };
 
   const handleCancel = () => {
@@ -69,11 +66,9 @@ function Back(props) {
       {withClick(children, handleopenClick)}
       <Modal
         visible={visible}
-        // centered='true'
         maskClosable={false}
         width={850}
         checkable
-        // height={1000}
         onCancel={handleCancel}
         onOk={handleReasonregression}
       >

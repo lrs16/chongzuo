@@ -4,7 +4,6 @@ import moment from 'moment';
 import {
   Form,
   Input,
-  Button,
   Modal,
   DatePicker,
   Tag,
@@ -13,15 +12,10 @@ import {
   Col,
   message
 } from 'antd';
-import { ConsoleSqlOutlined, DownOutlined, UpOutlined } from '@ant-design/icons';
-import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
-let showAlarmDialog = false;
-let showTerminalDialog = false;
+
 let title = '';
-let sign = false;
 const { TextArea } = Input;
-const statusContent = ['待审核', '已审核',null]
 const color = ['blue', 'green','blue']
 // 克隆子元素按钮，并添加事件
 const withClick = (element, handleClick = () => { }) => {
@@ -53,20 +47,16 @@ const forminladeLayout = {
 function CheckModel(props) {
   const {
     form: { getFieldDecorator, validateFields },
-    dispatch,
     children,
     selectedRows,
     userinfo,
-    checkSubmit
   } = props;
   const required = true;
   const [state, setState] = useState(false);
   const [checktype, setChecktype] = useState('1')
-  const [data, setData] = useState([]);
   const [flowtype, setFlowtype] = useState('001');
 
   const handleopenClick = () => {
-    console.log(2)
     if (selectedRows.length === 0) {
       message.info('请至少选择一条数据')
       return false;
@@ -84,7 +74,6 @@ function CheckModel(props) {
     if (res === false) {
       return false;
     }
-
     setState(true);
   };
 
@@ -101,12 +90,9 @@ function CheckModel(props) {
     setChecktype(e.target.value)
   }
 
-
-
   const hanldleCancel = () => {
     setState(false);
   };
-
 
   return (
     <>
