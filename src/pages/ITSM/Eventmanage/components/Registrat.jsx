@@ -276,10 +276,11 @@ const Registrat = forwardRef((props, ref) => {
   const handleDisableduser = (v, opt) => {
     const { user, phone, mobile, unit, unitId, dept, deptId } = opt.props.disableuser;
     setFieldsValue({
-      register_applicationUser: user,
-      register_applicationUserId: v,
-      register_applicationUserPhone: phone,
-      register_mobilePhone: mobile,
+      register_applicationUser: user,         // 申报人
+      register_applicationUserId: v,          // 申报人id
+      register_applicationUserPhone: phone,   // 申报人电话
+      mobilePhone1: mobile,                   // 手机号
+      mobilePhone2: mobile,                   // 手机号
       register_applicationUnit: unit,
       register_applicationUnitId: unitId,
       register_applicationDept: dept,
