@@ -6,6 +6,7 @@
 import ProLayout from '@ant-design/pro-layout'; // , { DefaultFooter }
 import React, { useEffect, useState } from 'react';
 import Link from 'umi/link';
+import router from 'umi/router';
 import { connect } from 'dva';
 import {
   // Icon,
@@ -26,11 +27,18 @@ import logo from '../../public/menulogo.png';
 const { TabPane } = Tabs;
 
 const homepane = {
-  title: '首页',
-  pathname: '/',
-  key: '1362219140546301953',
+  name: '首页',
+  itemPath: '/ITSM/home',
+  id: '1362219140546301953',
   closable: false,
 }
+
+const alonepath = [
+  { path: '/ITSM/eventmanage/to-do/record/workorder' },
+  { path: 'ITSM/faultmanage/todolist/record' },
+  { path: '/ITSM/problemmanage/besolveddetail/workorder' },
+  { path: '/ITSM/demandmanage/to-do/record/workorder' },
+]
 
 const noMatch = (
   <Result
@@ -71,11 +79,94 @@ const BasicLayout = props => {
     menulist,
   } = props;
 
+  const url = location.pathname;
+
   const [toptabs, setTopTabs] = useState([{ ...homepane }]);
   const [activeKey, setActiveKey] = useState('1362219140546301953');
 
-  function callback(key) {
+  // 初始强制跳转首页
+  useEffect(() => {
+    if (toptabs.length === 1 && url !== '/ITSM/home') {
+      router.push({
+        pathname: '/ITSM/home',
+      });
+    }
+  }, [])
+
+  // 监听列表跳转详情页的路由
+  useEffect(() => {
+    const tabtargetid = toptabs.filter(item => item.id === location.query.mainId)[0];
+    const tabtargetpath = toptabs.filter(item => item.itemPath === url)[0];
+    const target = alonepath.filter(item => item.path === url)[0];
+    const menutarget = menulist.filter(item => item.menuUrl === url)[0];
+    if (tabtargetid) {
+      setActiveKey(location.query.mainId);
+    } else if (target && menutarget) {
+      const panels = {
+        name: `${menutarget.menuDesc}${location.query.mainId}`,
+        id: location.query.mainId,
+        itemPath: url,
+        query: location.query,
+        closable: true
+      };
+      toptabs.push(panels);
+      setActiveKey(location.query.mainId);
+    };
+    if (tabtargetpath) {
+      setActiveKey(tabtargetpath.id);
+    }
+  }, [url])
+
+  // 监听关闭页签
+  useEffect(() => {
+    if (location.query.closetab) {
+      const newtabs = toptabs.filter(item => item.id !== location.query.mainId);
+      setTopTabs([...newtabs]);
+    }
+  }, [location.query])
+  //  console.log(toptabs)
+
+  const callback = (key) => {
     setActiveKey(key);
+    const target = toptabs.filter(item => item.id === key)[0];
+    if (target) {
+      router.push({
+        pathname: target.itemPath,
+        query: { ...target.query },
+      });
+    }
+  };
+
+  const remove = targetKey => {
+    const panes = toptabs.filter(pane => pane.id !== targetKey);
+    if (panes.length) {
+      setTopTabs([...panes]);
+      if (activeKey === targetKey) {
+        const end = panes.slice(-1);
+        setActiveKey(end[0].id);
+        router.push({
+          pathname: end[0].itemPath,
+          query: { ...end[0].query },
+        });
+      }
+    };
+
+  };
+  const onEdit = (targetKey, action) => {
+    if (action === 'remove') {
+      remove(targetKey)
+    }
+  };
+
+
+  const handleLink = (menuItemProps) => {
+    const { name, id, itemPath } = menuItemProps;
+    const target = toptabs.filter(item => item.id === id)[0];
+    if (!target) {
+      const panels = { name, id, itemPath, query: location.query, closable: true };
+      toptabs.push(panels);
+    };
+    setActiveKey(id);
   };
 
   useEffect(() => {
@@ -147,8 +238,7 @@ const BasicLayout = props => {
           if (menuItemProps.isUrl || menuItemProps.children) {
             return defaultDom;
           }
-          // console.log(menuItemProps)
-          return <Link to={menuItemProps.path} onClick={() => console.log(menuItemProps.id)}>{defaultDom}</Link>;
+          return <Link to={menuItemProps.path} onClick={() => handleLink(menuItemProps)}>{defaultDom}</Link>;
         }}
         breadcrumbRender={(routers = []) => [
           {
@@ -177,14 +267,15 @@ const BasicLayout = props => {
             <Tabs
               hideAdd
               activeKey={activeKey}
-              type="editable-card"
-              onChange={callback}
+              type='editable-card'
+              onChange={(key) => callback(key)}
+              onEdit={onEdit}
               style={{ margin: '-24px -24px 8px' }}
             >
               {toptabs.map(obj => [
                 <TabPane
-                  tab={obj.title}
-                  key={obj.key}
+                  tab={obj.name}
+                  key={obj.id}
                   closable={obj.closable}
                 />,
               ])}

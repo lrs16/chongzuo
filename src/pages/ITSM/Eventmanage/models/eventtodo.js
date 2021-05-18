@@ -96,6 +96,13 @@ export default {
         };
         const response = yield call(EventFlow, flowpayload);
         if (response.code === 200) {
+          router.push({
+            pathname: `/ITSM/eventmanage/to-do/record/workorder`,
+            query: {
+              mainId: response.flowInstanceId,
+              closetab: true,
+            }
+          });
           message.success(response.msg, 3);
           router.push({
             pathname: `/ITSM/eventmanage/to-do`,
@@ -104,12 +111,19 @@ export default {
       }
     },
     // 结束流程
-    *overflow({ payload: { flow, paloadvalues } }, { call }) {
+    *overflow({ payload: { flow, paloadvalues, mainId } }, { call }) {
       const values = replacerec({ ...paloadvalues });
       const registres = yield call(EventSaveFlow, values);
       if (registres.code === 200) {
         const response = yield call(EventFlow, flow);
         if (response.code === 200) {
+          router.push({
+            pathname: `/ITSM/eventmanage/to-do/record/workorder`,
+            query: {
+              mainId,
+              closetab: true,
+            }
+          });
           message.success(response.msg, 3);
           router.push({
             pathname: `/ITSM/eventmanage/to-do`,
@@ -126,6 +140,7 @@ export default {
       if (resmsg.code === 200) {
         const response = yield call(EventFlow, payload);
         if (response.code === 200) {
+          console.log(response)
           message.success(response.msg, 3);
           router.push({
             pathname: `/ITSM/eventmanage/to-do`,

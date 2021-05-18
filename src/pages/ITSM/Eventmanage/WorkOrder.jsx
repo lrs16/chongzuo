@@ -152,6 +152,7 @@ function WorkOrder2(props) {
           type: '1',
         },
         paloadvalues,
+        mainId,
       },
     });
   };
