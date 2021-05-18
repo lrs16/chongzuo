@@ -208,7 +208,7 @@ function QueryList(props) {
           completeStatus
         }
       }).then(res => {
-        const filename = `需求查询_${moment().format('YYYY-MM-DD HH:mm')}.xlsx`;
+        const filename = `需求查询_${moment().format('YYYY-MM-DD HH:mm')}.xls`;
         const blob = new Blob([res]);
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');

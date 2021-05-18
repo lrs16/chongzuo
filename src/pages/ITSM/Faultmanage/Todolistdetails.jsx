@@ -32,6 +32,12 @@ const { Step } = Steps;
 const { Panel } = Collapse;
 const history1 = creatHistory(); // 返回上一页
 
+const registerLevelmap = new Map([
+  ['一般', '001'],
+  ['重大', '002'],
+  ['紧急', '003'],
+]);
+
 let image; // 流程图
 let tosaveStatus; // 保存状态
 const currenStatus = 'circle'; // 保存状态
@@ -276,6 +282,7 @@ function Todolistdetails(props) {
         formValues.registerTime = values.registerTime.format('YYYY-MM-DD HH:mm:ss');
         formValues.taskId = id;
         formValues.editState = tododetailslist.editState;
+        formValues.registerLevelCode = registerLevelmap.get(values.registerLevel);    // 超时用：一般001，重大002，紧急003
         formValues.registerUserId = userId; // 当前登录人id
         formValues.type = values.type ? values.type[1] : type;
         if (files.ischange && typeof (files.arr) === 'object') {
@@ -1027,7 +1034,7 @@ function Todolistdetails(props) {
                       ['自动化科专责确认', <ConfirmQuery info={obj} maindata={main} />],
                     ]);
                     return (
-                      <Panel Panel header={obj.fnname} key={index}>
+                      <Panel Panel header={obj.fnname} key={index.toString()}>
                         {Paneldesmap.get(obj.fnname)}
                       </Panel>
                     );
