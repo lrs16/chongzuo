@@ -140,6 +140,7 @@ function Todolistdetails(props) {
     query: { id, mainId },
   } = props.location; // 获取taskId
 
+
   // 二进制展示流程图
   const blob = new Blob([flowimageview]);
   image = (window.URL || window.webkitURL).createObjectURL(blob);
@@ -201,11 +202,22 @@ function Todolistdetails(props) {
     getfaultTodoDetailData();
     getCurrUserInfo(); // 获取登录用户信息
     sessionStorage.setItem('Processtype', 'troub');
-  }, []);
+  }, [mainId]);
 
   useEffect(() => {
     sessionStorage.setItem('flowtype', '1');
-  }, []);
+  }, [mainId]);
+
+  const [isnew, setIsNew] = useState(false); // 组件重新加载
+  // 监听info是否已更新
+  useEffect(() => {
+    if (loading) {
+      setIsNew(true);
+    }
+    return () => {
+      setIsNew(false);
+    };
+  }, [tododetailslist]);
 
   useEffect(() => {
     if (loading === false) {
@@ -946,7 +958,7 @@ function Todolistdetails(props) {
             </Steps>
           )}
           <Spin spinning={loading}>
-            {loading === false && tododetailslist && (
+            {loading === false && isnew && tododetailslist && (
               <Collapse
                 expandIconPosition="right"
                 activeKey={activeKey}

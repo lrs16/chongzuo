@@ -74,8 +74,9 @@ function ToDodetails(props) {
   useEffect(() => {
     if (taskName === '待处理') {
       message.info('请接单..', 1);
-    }
-  }, []);
+    };
+    settabActivekey('workorder');
+  }, [mainId]);
 
   // 接单
   const eventaccpt = () => {

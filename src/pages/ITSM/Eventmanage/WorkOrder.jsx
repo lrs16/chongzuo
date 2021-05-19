@@ -449,7 +449,7 @@ function WorkOrder2(props) {
       ChangeChoice(false);
       ChangeUserVisible(false);
     };
-  }, [mainId]);
+  }, [info]);
 
   useEffect(() => {
     if (type !== '') {

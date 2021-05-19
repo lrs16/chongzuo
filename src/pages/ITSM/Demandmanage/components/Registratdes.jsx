@@ -22,7 +22,7 @@ function Registratdes(props) {
         <Descriptions.Item label="申请人">{info.proposer}</Descriptions.Item>
         <Descriptions.Item label="申请人单位">{info.proposingUnit}</Descriptions.Item>
         <Descriptions.Item label="申请人部门">{info.proposingDepartment}</Descriptions.Item>
-        <Descriptions.Item label="联系电话" span={2}>
+        <Descriptions.Item label="联系电话" span={4}>
           {info.proposerPhone}
         </Descriptions.Item>
         <Descriptions.Item label="所属项目" span={3}>

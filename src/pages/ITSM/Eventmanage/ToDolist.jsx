@@ -45,6 +45,7 @@ const columns = [
             taskId: record.taskId,
             mainId: record.mainId,
             check: record.checkResult,
+            orderNo: text,
           },
         });
       };

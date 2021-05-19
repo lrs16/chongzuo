@@ -71,6 +71,7 @@ const columns = [
             pangekey: record.eventStatus,
             id: record.taskId,
             mainId: record.id,
+            No: text,
           },
         });
       };

@@ -98,6 +98,7 @@ function QueryList(props) {
             pathname: `/ITSM/faultmanage/querylist/record`,
             query: {
               id: record.id,
+              No: text,
             },
           });
         };

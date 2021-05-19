@@ -1,7 +1,7 @@
 import React from 'react';
 import { Descriptions } from 'antd';
-import styles from '../index.less';
 import Downloadfile from '@/components/SysUpload/Downloadfile';
+import styles from '../index.less';
 
 function ReturnVisitdes(props) {
   const { info, main } = props;
@@ -15,7 +15,7 @@ function ReturnVisitdes(props) {
           <div dangerouslySetInnerHTML={{ __html: info.content?.replace(/[\n]/g, '<br/>') }} />
         </Descriptions.Item>
         <Descriptions.Item label="填单时间">{info.addTime}</Descriptions.Item>
-        <Descriptions.Item label="回访时间" span={2}>
+        <Descriptions.Item label="回访时间" span={4}>
           {info.revisitTime}
         </Descriptions.Item>
         <Descriptions.Item label="附件" span={3}>

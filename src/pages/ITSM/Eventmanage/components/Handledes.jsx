@@ -1,7 +1,7 @@
 import React from 'react';
 import { Descriptions } from 'antd';
-import styles from '../index.less';
 import Downloadfile from '@/components/SysUpload/Downloadfile';
+import styles from '../index.less';
 
 function Handledes(props) {
   const { info, main } = props;
@@ -16,7 +16,7 @@ function Handledes(props) {
         <Descriptions.Item label="事件对象">{main.eventObject}</Descriptions.Item>
         <Descriptions.Item label="处理结果">{info.handleResult}</Descriptions.Item>
         <Descriptions.Item label="接单时间">{info.addTime}</Descriptions.Item>
-        <Descriptions.Item label="处理完成时间" span={2}>
+        <Descriptions.Item label="处理完成时间" span={4}>
           {info.endTime}
         </Descriptions.Item>
         {/* <Descriptions.Item label="二线标签"span={3}>No. 18, Wantang Road, Xihu District, Hangzhou, Zhejiang, China</Descriptions.Item> */}

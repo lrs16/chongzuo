@@ -84,7 +84,8 @@ function EventDetails(props) {
         processId: mainId,
       },
     });
-  }, []);
+    settabActivekey('workorder');
+  }, [mainId]);
 
   // 初始化值panel
   useEffect(() => {

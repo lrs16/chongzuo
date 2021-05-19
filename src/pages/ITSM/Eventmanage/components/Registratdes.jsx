@@ -18,7 +18,7 @@ function Registratdes(props) {
         <Descriptions.Item label="手机号码">{info.mobilePhone}</Descriptions.Item>
         <Descriptions.Item label="回访方式">{main.revisitWay}</Descriptions.Item>
         <Descriptions.Item label="事件分类">{main.eventType}</Descriptions.Item>
-        <Descriptions.Item label="事件对象" span={2}>{main.eventObject}</Descriptions.Item>
+        <Descriptions.Item label="事件对象" span={4}>{main.eventObject}</Descriptions.Item>
         <Descriptions.Item label="影响度">{main.eventEffect}</Descriptions.Item>
         <Descriptions.Item label="紧急度">{main.eventEmergent}</Descriptions.Item>
         <Descriptions.Item label="优先级" span={3}>
@@ -33,7 +33,7 @@ function Registratdes(props) {
         <Descriptions.Item label="自行处理">
           <Checkbox defaultChecked={Boolean(Number(info.selfhandle))} disabled />
         </Descriptions.Item>
-        <Descriptions.Item label="是否补单" span={2}>
+        <Descriptions.Item label="是否补单" span={4}>
           <Checkbox defaultChecked={Boolean(Number(info.supplement))} disabled />
         </Descriptions.Item>
         <Descriptions.Item label="附件" span={3}>
