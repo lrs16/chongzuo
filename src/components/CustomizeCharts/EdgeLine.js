@@ -62,9 +62,9 @@ class EdgeLine extends Component {
     return (
       <div>
         <Chart padding={padding} height={height} forceFit>
+          <Tooltip visible={false} />
           <Axis visible={false} />
           <Coord transpose />
-
           <View
             data={dv.getAllLinks().map(link => {
               return ({
@@ -125,6 +125,7 @@ class EdgeLine extends Component {
               y: node.y,
             }))}
           >
+            <Tooltip visible={false} />
             <Point
               position="x*y"
               color={['state', (state) => {
@@ -150,7 +151,6 @@ class EdgeLine extends Component {
                   };
                 },
               ]}
-              tooltip={false}
             />
           </View>
           <Legend visible={false} />
