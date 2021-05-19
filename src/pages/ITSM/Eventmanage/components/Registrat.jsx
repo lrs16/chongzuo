@@ -100,6 +100,7 @@ const Registrat = forwardRef((props, ref) => {
         taskId,
         mainId,
         next: sessionStorage.getItem('Nextflowmane'),
+        orderNo: main.eventNo,
       },
     });
   };

@@ -26,12 +26,20 @@ import logo from '../../public/menulogo.png';
 
 const { TabPane } = Tabs;
 
-const homepane = {
+const homepane = [{
   name: '首页',
   itemPath: '/ITSM/home',
   id: '1362219140546301953',
   closable: false,
+},
+{
+  name: "接口数据核查情况",
+  id: "1273546374179000321",
+  itemPath: "/monitormanage/measurmonitor/measurface",
+  query: {},
+  closable: true
 }
+]
 
 // 单条工单
 const alonepath = [
@@ -86,17 +94,17 @@ const BasicLayout = props => {
 
   const url = location.pathname;
 
-  const [toptabs, setTopTabs] = useState([{ ...homepane }]);
-  const [activeKey, setActiveKey] = useState('1362219140546301953');
+  const [toptabs, setTopTabs] = useState([...homepane]);
+  const [activeKey, setActiveKey] = useState('1273546374179000321');
 
   // 初始强制跳转首页
-  useEffect(() => {
-    if (toptabs.length === 1 && url !== '/ITSM/home') {
-      router.push({
-        pathname: '/ITSM/home',
-      });
-    }
-  }, [])
+  // useEffect(() => {
+  //   if (toptabs.length === 1 && url !== '/ITSM/home') {
+  //     router.push({
+  //       pathname: '/ITSM/home',
+  //     });
+  //   }
+  // }, [])
 
   // 监听列表跳转详情页的路由
   //  待办跳转处理用mainId做为标签id并传编号orderNo用于标签标题显示,查询跳转详情用编号No做为标签id

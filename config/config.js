@@ -1335,9 +1335,5 @@ export default {
       target: ' http://172.16.10.11:8083/', // 数据字典
       changeOrigin: true,
     },
-    '/operation/': {
-      target: 'http://172.16.10.11:9901/',
-      changeOrigin: true
-    }
   },
 };

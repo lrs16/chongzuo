@@ -262,6 +262,7 @@ const demandcolumns = [
             taskId: record.taskId,
             mainId: record.processInstanceId,
             result: '1',
+            orderNo: text,
           },
         });
       };
