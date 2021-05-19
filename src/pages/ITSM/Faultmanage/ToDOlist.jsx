@@ -73,6 +73,7 @@ function ToDOlist(props) {
             query: {
               id: record.id,
               mainId: record.mainId,
+              orderNo: text,
             },
           });
         };

@@ -61,6 +61,8 @@ const columns = [
             pangekey: record.eventStatus,
             id: record.taskId,
             mainId: record.id,
+            orderNo: text,
+            No: text,
           },
         });
       };
@@ -109,6 +111,7 @@ const timeoutcolumns = [
             pangekey: record.eventStatus,
             id: record.taskId,
             mainId: record.id,
+            No: text,
           },
         });
       };

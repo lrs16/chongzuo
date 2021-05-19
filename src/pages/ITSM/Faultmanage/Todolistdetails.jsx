@@ -202,6 +202,7 @@ function Todolistdetails(props) {
     getfaultTodoDetailData();
     getCurrUserInfo(); // 获取登录用户信息
     sessionStorage.setItem('Processtype', 'troub');
+    setTabActiveKey('faultForm');
   }, [mainId]);
 
   useEffect(() => {

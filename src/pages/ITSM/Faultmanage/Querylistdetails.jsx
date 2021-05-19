@@ -78,7 +78,8 @@ function Querylistdetails(props) {
 
   useEffect(() => {
     querydetailsList();
-  }, []);
+    setTabActiveKey('faultForm');
+  }, [id]);
 
   const handleClose = () => { // 返回上一页
     history.goBack();

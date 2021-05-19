@@ -99,6 +99,7 @@ const BasicLayout = props => {
   }, [])
 
   // 监听列表跳转详情页的路由
+  //  待办跳转处理用mainId做为标签id并传编号orderNo用于标签标题显示,查询跳转详情用编号No做为标签id
   useEffect(() => {
     const tabtargetid = toptabs.filter(item => location.query.No ? item.id === location.query.No : item.id === location.query.mainId)[0];      //  已有mindId或No标签
     const tabtargetpath = toptabs.filter(item => item.itemPath === url)[0];                //  已有非工单处理路由
