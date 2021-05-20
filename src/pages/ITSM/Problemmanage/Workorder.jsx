@@ -549,7 +549,7 @@ function Workorder(props) {
     queryDept();
     sessionStorage.setItem('Processtype', 'problem');
     sessionStorage.setItem('Nextflowmane', '');
-  }, []);
+  }, [mainId]);
 
   useEffect(() => {
     sessionStorage.setItem('flowtype', flowtype);

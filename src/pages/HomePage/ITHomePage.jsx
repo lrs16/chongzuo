@@ -208,6 +208,8 @@ const problemcolumns = [
           query: {
             id: record.id,
             taskName: record.currentNode,
+            mainId: record.mainId,
+            orderNo: text,
           },
         });
       };
