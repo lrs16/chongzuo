@@ -21,6 +21,18 @@ import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import SysDict from '@/components/SysDict';
 
+// const formItemLayout = {
+//   labelCol: {
+//     xs: { span: 24 },
+//     sm: { span: 8 },
+//   },
+//   wrapperCol: {
+//     xs: { span: 24 },
+//     sm: { span: 16 },
+//   },
+// };
+
+
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
@@ -29,6 +41,27 @@ const formItemLayout = {
   wrapperCol: {
     xs: { span: 24 },
     sm: { span: 18 },
+  },
+};
+
+const form10ladeLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 4 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 20 },
+  },
+};
+const formItemdeLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 10 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 14 },
   },
 };
 
@@ -89,188 +122,188 @@ function TaskSearch(props) {
 
 
 
-    const initialColumns = [
-      {
-        title: '作业计划编号',
-        dataIndex: 'operationNo',
-        key: 'operationNo',
-        width: 150,
-        fixed: 'left',
-        render: (text, record) => {
-          return <a onClick={() => gotoDetail(record)}>{text}</a>
-        },
+  const initialColumns = [
+    {
+      title: '作业计划编号',
+      dataIndex: 'operationNo',
+      key: 'operationNo',
+      width: 150,
+      fixed: 'left',
+      render: (text, record) => {
+        return <a onClick={() => gotoDetail(record)}>{text}</a>
       },
-      {
-        title: '填报时间',
-        dataIndex: 'addTime',
-        key: 'addTime',
-        width: 150,
-  
-      },
-      {
-        title: '作业系统名称',
-        dataIndex: 'systemName',
-        key: 'systemName',
-        width: 150,
-      },
-      {
-        title: '作业类型',
-        dataIndex: 'type',
-        key: 'type',
-        width: 150,
-      },
-      {
-        title: '作业性质',
-        dataIndex: 'nature',
-        key: 'nature',
-        width: 150,
-      },
-      {
-        title: '作业单位',
-        dataIndex: 'operationUnit',
-        key: 'operationUnit',
-        width: 150,
-      },
-      {
-        title: '作业负责人',
-        dataIndex: 'operationUser',
-        key: 'operationUser',
-        width: 150,
-      },
-      {
-        title: '作业对象',
-        dataIndex: 'object',
-        key: 'object',
-        width: 150,
-      },
-      {
-        title: '作业内容',
-        dataIndex: 'content',
-        key: 'content',
-        width: 150,
-      },
-      {
-        title: '超时状态',
-        dataIndex: 'timeoutStatus',
-        key: 'timeoutStatus',
-        width: 150,
-        render: (text) => (
-          <span>
-            <Badge
-              status={statusMap[statusContent.indexOf(text)]}
-              text={text} />
-          </span>
-        ),
-      },
-      {
-        title: '计划开始时间',
-        dataIndex: 'plannedStartTime',
-        key: 'plannedStartTime',
-        width: 150,
-      },
-      {
-        title: '计划结束时间',
-        dataIndex: 'plannedEndTime',
-        key: 'plannedEndTime',
-        width: 150,
-      },
-      {
-        title: '作业状态',
-        dataIndex: 'status',
-        key: 'status',
-        width: 150,
-      },
-      {
-        title: '审核状态',
-        dataIndex: 'checkStatus',
-        key: 'checkStatus',
-        width: 150,
-      },
-      {
-        title: '是否开票',
-        dataIndex: 'billing',
-        key: 'billing',
-        width: 150,
-      },
-      {
-        title: '作业结果',
-        dataIndex: 'executeResult',
-        key: 'executeResult',
-        width: 150,
-      },
-      {
-        title: '实际开始时间',
-        dataIndex: 'startTime',
-        key: 'startTime',
-        width: 150,
-      },
-      {
-        title: '实际结束时间',
-        dataIndex: 'endTime',
-        key: 'endTime',
-        width: 150,
-      },
-      {
-        title: '作业执行情况说明',
-        dataIndex: 'executeContent',
-        key: 'executeContent',
-        width: 150,
-      },
-      {
-        title: '执行操作时间',
-        dataIndex: 'executeOperationTime',
-        key: 'executeOperationTime',
-        width: 150,
-      },
-      {
-        title: '填报人',
-        dataIndex: 'addUser',
-        key: 'addUser',
-        width: 150,
-      },
-      {
-        title: '填报单位',
-        dataIndex: 'addUnit',
-        key: 'addUnit',
-        width: 150,
-      },
-      {
-        title: '审核人',
-        dataIndex: 'checkUser',
-        key: 'checkUser',
-        width: 150,
-      },
-      {
-        title: '审核结果',
-        dataIndex: 'checkResult',
-        key: 'checkResult',
-        width: 150,
-      },
-      {
-        title: '审核时间',
-        dataIndex: 'checkTime',
-        key: 'checkTime',
-        width: 150,
-      },
-      {
-        title: '审核说明',
-        dataIndex: 'checkContent',
-        key: 'checkContent',
-        width: 150,
-      },
-      {
-        title: '超时信息',
-        dataIndex: 'timeoutMsg',
-        key: 'timeoutMsg',
-        width: 150,
-      },
-      {
-        title: '回退信息',
-        dataIndex: 'fallbackMsg',
-        key: 'fallbackMsg',
-        width: 150,
-      },
-    ];
+    },
+    {
+      title: '填报时间',
+      dataIndex: 'addTime',
+      key: 'addTime',
+      width: 150,
+
+    },
+    {
+      title: '作业系统名称',
+      dataIndex: 'systemName',
+      key: 'systemName',
+      width: 150,
+    },
+    {
+      title: '作业类型',
+      dataIndex: 'type',
+      key: 'type',
+      width: 150,
+    },
+    {
+      title: '作业性质',
+      dataIndex: 'nature',
+      key: 'nature',
+      width: 150,
+    },
+    {
+      title: '作业单位',
+      dataIndex: 'operationUnit',
+      key: 'operationUnit',
+      width: 150,
+    },
+    {
+      title: '作业负责人',
+      dataIndex: 'operationUser',
+      key: 'operationUser',
+      width: 150,
+    },
+    {
+      title: '作业对象',
+      dataIndex: 'object',
+      key: 'object',
+      width: 150,
+    },
+    {
+      title: '作业内容',
+      dataIndex: 'content',
+      key: 'content',
+      width: 150,
+    },
+    {
+      title: '超时状态',
+      dataIndex: 'timeoutStatus',
+      key: 'timeoutStatus',
+      width: 150,
+      render: (text) => (
+        <span>
+          <Badge
+            status={statusMap[statusContent.indexOf(text)]}
+            text={text} />
+        </span>
+      ),
+    },
+    {
+      title: '计划开始时间',
+      dataIndex: 'plannedStartTime',
+      key: 'plannedStartTime',
+      width: 150,
+    },
+    {
+      title: '计划结束时间',
+      dataIndex: 'plannedEndTime',
+      key: 'plannedEndTime',
+      width: 150,
+    },
+    {
+      title: '作业状态',
+      dataIndex: 'status',
+      key: 'status',
+      width: 150,
+    },
+    {
+      title: '审核状态',
+      dataIndex: 'checkStatus',
+      key: 'checkStatus',
+      width: 150,
+    },
+    {
+      title: '是否开票',
+      dataIndex: 'billing',
+      key: 'billing',
+      width: 150,
+    },
+    {
+      title: '作业结果',
+      dataIndex: 'executeResult',
+      key: 'executeResult',
+      width: 150,
+    },
+    {
+      title: '实际开始时间',
+      dataIndex: 'startTime',
+      key: 'startTime',
+      width: 150,
+    },
+    {
+      title: '实际结束时间',
+      dataIndex: 'endTime',
+      key: 'endTime',
+      width: 150,
+    },
+    {
+      title: '作业执行情况说明',
+      dataIndex: 'executeContent',
+      key: 'executeContent',
+      width: 150,
+    },
+    {
+      title: '执行操作时间',
+      dataIndex: 'executeOperationTime',
+      key: 'executeOperationTime',
+      width: 150,
+    },
+    {
+      title: '填报人',
+      dataIndex: 'addUser',
+      key: 'addUser',
+      width: 150,
+    },
+    {
+      title: '填报单位',
+      dataIndex: 'addUnit',
+      key: 'addUnit',
+      width: 150,
+    },
+    {
+      title: '审核人',
+      dataIndex: 'checkUser',
+      key: 'checkUser',
+      width: 150,
+    },
+    {
+      title: '审核结果',
+      dataIndex: 'checkResult',
+      key: 'checkResult',
+      width: 150,
+    },
+    {
+      title: '审核时间',
+      dataIndex: 'checkTime',
+      key: 'checkTime',
+      width: 150,
+    },
+    {
+      title: '审核说明',
+      dataIndex: 'checkContent',
+      key: 'checkContent',
+      width: 150,
+    },
+    {
+      title: '超时信息',
+      dataIndex: 'timeoutMsg',
+      key: 'timeoutMsg',
+      width: 150,
+    },
+    {
+      title: '回退信息',
+      dataIndex: 'fallbackMsg',
+      key: 'fallbackMsg',
+      width: 150,
+    },
+  ];
 
   const defaultAllkey = columns.map(item => {
     return item.title
@@ -519,22 +552,61 @@ function TaskSearch(props) {
       <Card>
       <Row gutter={16}>
           <Form {...formItemLayout}>
-            <Col span={8}>
-              <Form.Item label="作业计划编号">
-                {getFieldDecorator('operationNo', {})
-                  (
-                    <Input allowClear/>
-                  )}
-              </Form.Item>
-            </Col>
+          {expand === false && (
+              <>
+                <Col span={7}>
+                  <Form.Item label="作业计划编号">
+                    {getFieldDecorator('operationNo', {})
+                      (
+                        <Input allowClear />
+                      )}
+                  </Form.Item>
+                </Col>
 
-            <Col span={8}>
-              <Form.Item label="作业系统名称">
-                {getFieldDecorator('systemName', {})(
-                  <Input allowClear/>
-                )}
-              </Form.Item>
-            </Col>
+                <Col span={7}>
+                  <Form.Item label="作业系统名称">
+                    {getFieldDecorator('systemName', {})(
+                      <Input allowClear />
+                    )}
+                  </Form.Item>
+                </Col>
+
+                <Col span={10}>
+                  <Form.Item label="填报时间" {...form10ladeLayout}>
+                    {getFieldDecorator('addTime', {
+                      initialValue: time1 ? [moment(time1), moment(time2)] : ''
+                    })(
+                      <RangePicker
+                        showTime
+                        format='YYYY-MM-DD HH:mm:ss'
+                        allowClear
+                      />
+                    )}
+                  </Form.Item>
+                </Col>
+              </>
+            )}
+               {expand === true && (
+              <>
+                <Col span={8}>
+                  <Form.Item label="作业计划编号">
+                    {getFieldDecorator('operationNo', {})
+                      (
+                        <Input allowClear />
+                      )}
+                  </Form.Item>
+                </Col>
+
+                <Col span={8}>
+                  <Form.Item label="作业系统名称">
+                    {getFieldDecorator('systemName', {})(
+                      <Input allowClear />
+                    )}
+                  </Form.Item>
+                </Col>
+
+              </>
+            )}
 
             {expand === true && (
               <>
@@ -869,7 +941,6 @@ function TaskSearch(props) {
                 <Col span={8}>
                   <Form.Item label="填报时间">
                     {getFieldDecorator('addTime', {
-                      initialValue:time1?[moment(time1),moment(time2)]:''
                     })(
                       <RangePicker
                         showTime
@@ -883,7 +954,7 @@ function TaskSearch(props) {
             )}
 
             {expand === false && (
-              <Col span={8}>
+              <Col span={24} style={{ textAlign: 'right' }}>
                 <Button type="primary" onClick={handleSearch}>
                   查询
                 </Button>

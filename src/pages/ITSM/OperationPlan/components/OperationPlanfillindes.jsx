@@ -38,7 +38,7 @@ function OperationPlanfillindes(props) {
 
         <Descriptions.Item label="计划开始时间">{info.plannedStartTime}</Descriptions.Item>
 
-        <Descriptions.Item label="计划结束时间">{info.plannedStartTime}</Descriptions.Item>
+        <Descriptions.Item label="计划结束时间">{info.plannedEndTime}</Descriptions.Item>
 
         <Descriptions.Item label="上传附件">
         <span style={{ color: 'blue', textDecoration: 'underline' }} >

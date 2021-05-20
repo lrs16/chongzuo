@@ -543,7 +543,7 @@ function Work(props) {
             bordered='true'
           >
             <>
-              {auditLink && edit.check && (
+              {auditLink && !delay && edit.check && (
                 <Panel Panel
                   header='作业计划审核'
                   key='1'
@@ -563,7 +563,7 @@ function Work(props) {
               )}
 
               {
-                loading === false && (openFlowList && openFlowList.edit.execute !== undefined) && checkStatus === '已审核' && (
+                loading === false && !delay && (openFlowList && openFlowList.edit.execute !== undefined) && checkStatus === '已审核' && (
                   <Panel
                     header='作业计划执行'
                     key='1'

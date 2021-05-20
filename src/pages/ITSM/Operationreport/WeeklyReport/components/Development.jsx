@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useImperativeHandle, useContext, useState } from 'react';
+import React, { useEffect,useRef, useImperativeHandle, useContext, useState } from 'react';
 import {
   Row,
   Col,
@@ -68,7 +68,7 @@ const Development = React.forwardRef((props, ref) => {
       setSecondbutton(true);
     } else {
       newData.push({
-        key: data.length + 1,
+        key: seconddata.length + 1,
         id: '',
         date: '新增数据',
         date1: '',
@@ -93,7 +93,6 @@ const Development = React.forwardRef((props, ref) => {
   //  删除数据
   const remove = key => {
     const target = getRowByKey(key) || {};
-    console.log('target: ', target);
     handleDelete(target.id)
   };
 
@@ -127,10 +126,7 @@ const Development = React.forwardRef((props, ref) => {
   }
 
   const savedata = (target,id,params) => {
-    console.log('target: ', target);
     handleSavedevelopment(target,id,params)
-    
-    // console.log('target: ', target);
   }
 
   const saveRow = (e, key, params) => {
@@ -468,11 +464,8 @@ const Development = React.forwardRef((props, ref) => {
 
             </Form.Item>
           </Col>
-
         </Form>
-
       </Row>
-
     </>
   )
 })

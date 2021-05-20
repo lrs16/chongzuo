@@ -38,7 +38,7 @@ const columns = [
             time1: record.time1,
             time2: record.time2,
             executeResult: record.result === '合计' ? '' : record.result,
-            executeStatus: record.result === '合计' ? '已执行' : '',
+            status: '已完成'
           }
         })
       };

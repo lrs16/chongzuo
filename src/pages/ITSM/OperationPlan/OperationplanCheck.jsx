@@ -62,6 +62,7 @@ function OperationplanCheck(props) {
   const [paginations, setPaginations] = useState({ current: 0, pageSize: 10 });
   const [selectdata, setSelectData] = useState('');
   const [selectedRows, setSelectedRows] = useState([]);
+  const [selectedKeys,setSelectedKeys] = useState([]);
   const [columns, setColumns] = useState([]);
   const [visible, setVisible] = useState(false);
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
@@ -384,6 +385,7 @@ function OperationplanCheck(props) {
 
   //  导出
   const exportDownload = () => {
+    console.log(columns,'columns')
     const exportColumns = columns.map(function (item) {
       return {
         column: item.dataIndex,
@@ -396,6 +398,7 @@ function OperationplanCheck(props) {
         payload: {
           flowNodeName: '计划审核',
           columns: JSON.stringify(exportColumns),
+          ids:selectedKeys.toString(),
           ...values,
           time1: values.addTime?.length ? moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
           time2: values.addTime?.length ? moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
@@ -435,6 +438,7 @@ function OperationplanCheck(props) {
   //  勾选复选框
   const rowSelection = {
     onChange: (index, handleSelect) => {
+      setSelectedKeys([...index])
       setSelectedRows([...handleSelect])
     }
   }

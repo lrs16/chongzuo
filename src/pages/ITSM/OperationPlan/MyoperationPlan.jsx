@@ -39,10 +39,7 @@ const { Option } = Select;
 const { RangePicker } = DatePicker;
 const { TreeNode } = Tree;
 
-let startTime;
-let endttime;
-let actualStarttime;
-let actualEndtime;
+let searchParams;
 const statusMap = ['green', 'gold', 'red'];
 const statusContent = ['未超时', '即将超时', '已超时'];
 
@@ -509,8 +506,6 @@ function MyoperationPlan(props) {
 
       return null;
     })
-
-    console.log(deleteJudge, 'deleteJudge')
 
     if (deleteJudge === false) {
       return false;

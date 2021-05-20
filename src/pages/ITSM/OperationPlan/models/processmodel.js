@@ -94,7 +94,6 @@ export default {
 
     //  我的作业计划下载
     *downloadMyOperationExcel({ payload }, { call, put }) {
-      console.log('payload: ', payload);
       return yield call(downloadMyOperationExcel,payload)
     },
 
