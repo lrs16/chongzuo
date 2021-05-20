@@ -20,6 +20,7 @@ let endTime;
 let value = 20;
 const mergeCell = 'first_object';
 const { Option } = Select;
+const { RangePicker } = DatePicker;
 const columns = [
   {
     title: '一级对象',
@@ -70,52 +71,54 @@ const columns = [
 function Workordertopn(props) {
   const { pagetitle } = props.route.name;
   const {
-    form: { getFieldDecorator, setFieldsValue },
+    form: { getFieldDecorator, setFieldsValue, validateFields },
     ordertopnArr,
     dispatch,
     loading
   } = props;
 
-  const onChange = (date, dateString) => {
-    startTime = dateString;
-    endTime = moment(dateString).add(+6, 'day').format('YYYY-MM-DD');
-    setFieldsValue({ time2: moment(endTime) });
-  }
-
   const handleListdata = () => {
-    dispatch({
-      type: 'eventstatistics/fetchordertopnList',
-      payload: { value, startTime, endTime }
+    validateFields((err, values) => {
+      startTime = moment(values.time1[0]).format('YYYY-MM-DD');
+      endTime = moment(values.time1[1]).format('YYYY-MM-DD');
+      dispatch({
+        type: 'eventstatistics/fetchordertopnList',
+        payload: { value, startTime, endTime }
+      })
     })
   }
 
   const download = () => {
-    dispatch({
-      type: 'eventstatistics/downloadEventtopn',
-      payload: {
-        time1: startTime,
-        time2: endTime,
-        num: value,
-      }
-    }).then(res => {
-      const filename = `工单TOPN${moment().format('MM-DD')}.xls`;
-      const blob = new Blob([res]);
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = filename;
-      a.click();
-      window.URL.revokeObjectURL(url);
+    validateFields((err, values) => {
+      startTime = moment(values.time1[0]).format('YYYY-MM-DD');
+      endTime = moment(values.time1[1]).format('YYYY-MM-DD');
+      dispatch({
+        type: 'eventstatistics/downloadEventtopn',
+        payload: {
+          time1: startTime,
+          time2: endTime,
+          num: value,
+        }
+      }).then(res => {
+        const filename = `工单TOPN${moment().format('MM-DD')}.xls`;
+        const blob = new Blob([res]);
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.click();
+        window.URL.revokeObjectURL(url);
+      })
     })
+
   }
 
 
   const defaultTime = () => {
-    // startTime = moment().subtract('days', 6).format('YYYY-MM-DD');
-    // endTime = moment().format('YYYY-MM-DD');
-    startTime = moment().week(moment().week() - 1).startOf('week').format('YYYY-MM-DD');
-    endTime = moment().week(moment().week() - 1).endOf('week').format('YYYY-MM-DD');
-    //  endTime = `${endTime} 00:00:00`;
+    startTime = moment().subtract('days', 6).format('YYYY-MM-DD');
+    endTime = moment().format('YYYY-MM-DD');
+    // startTime = moment().week(moment().week() - 1).startOf('week').format('YYYY-MM-DD');
+    // endTime = moment().week(moment().week() - 1).endOf('week').format('YYYY-MM-DD');
   }
 
   const selectOnchange = (selectvalue) => {
@@ -124,23 +127,11 @@ function Workordertopn(props) {
   }
   useEffect(() => {
     defaultTime();
-    handleListdata();
+    dispatch({
+      type: 'eventstatistics/fetchordertopnList',
+      payload: { value, startTime, endTime }
+    })
   }, [])
-
-
-  const startdisabledDate = (current) => {
-    return current > moment().subtract('days', 6)
-  }
-
-  const enddisabledDate = (current) => {
-    return current > moment().endOf('day')
-  }
-
-  const endonChange = (date, dateString) => {
-    endTime = dateString;
-    startTime = moment(dateString).subtract('day', 6).format('YYYY-MM-DD');
-    setFieldsValue({ time1: moment(startTime) })
-  }
 
   return (
     <PageHeaderWrapper
@@ -153,28 +144,11 @@ function Workordertopn(props) {
               <Col span={24}>
                 <Form.Item label='起始时间'>
                   {getFieldDecorator('time1', {
-                    initialValue: startTime ? moment(startTime) : ''
-                  })(<DatePicker
-                    format="YYYY-MM-DD"
-                    allowClear={false}
-                    disabledDate={startdisabledDate}
-                    onChange={onChange}
-                  />)}
-                </Form.Item>
-
-                <p style={{ display: 'inline', marginRight: 8 }}>-</p>
-
-                <Form.Item label=''>
-                  {
-                    getFieldDecorator('time2', {
-                      initialValue: endTime ? moment(endTime) : ''
-                    })
-                      (<DatePicker
-                        allowClear={false}
-                        disabledDate={enddisabledDate}
-                        onChange={endonChange}
-                      />)
-                  }
+                    initialValue: [moment(startTime), moment(endTime)]
+                  })(
+                    <RangePicker
+                    />
+                  )}
                 </Form.Item>
 
                 <Form.Item label='N'>

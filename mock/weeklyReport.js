@@ -46,6 +46,7 @@ const maintenanceData = [
 
 const developmentData = [
   {
+    id:'1',
     date: 'date',
     date1: 'date1',
     params1: 'params1',
@@ -53,6 +54,7 @@ const developmentData = [
     params3: 'params3'
   },
   {
+    id:'1',
     date: 'date',
     date1: 'date1',
     params1: 'params1',
@@ -65,12 +67,12 @@ const submitdevelopmentData = [
   {
     num1: 'num1',
     num2: 'num2',
-    num3: 'num3',
+    num3: '否',
   },
   {
     num1: 'num1',
     num2: 'num2',
-    num3: 'num3',
+    num3: '是',
   },
 ];
 

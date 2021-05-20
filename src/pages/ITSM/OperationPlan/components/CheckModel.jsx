@@ -53,8 +53,7 @@ function CheckModel(props) {
   } = props;
   const required = true;
   const [state, setState] = useState(false);
-  const [checktype, setChecktype] = useState('1')
-  const [flowtype, setFlowtype] = useState('001');
+  const [checktype, setChecktype] = useState('001')
 
   const handleopenClick = () => {
     if (selectedRows.length === 0) {
@@ -117,6 +116,7 @@ function CheckModel(props) {
                       message: '请输入审核结果'
                     }
                   ],
+                  initialValue: '001'
                 })(
                   <Radio.Group
                     // disabled={type === 'list'}
@@ -166,7 +166,7 @@ function CheckModel(props) {
          } */}
 
             {
-              flowtype === '002' && (
+              checktype === '002' && (
                 <Col span={23}>
                   <Form.Item label='审核说明' {...forminladeLayout}>
                     {
@@ -189,7 +189,7 @@ function CheckModel(props) {
             }
 
             {
-              flowtype === '001' && (
+              checktype === '001' && (
                 <Col span={23}>
                   <Form.Item label='审核说明' {...forminladeLayout}>
                     {

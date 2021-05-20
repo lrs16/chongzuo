@@ -13,6 +13,7 @@ import {
 } from 'antd';
 import Link from 'umi/link';
 import moment from 'moment';
+import router from 'umi/router';
 import { connect } from 'dva';
 import Development from './components/Development';
 import ThisweekMaintenance from './components/ThisweekMaintenance';
@@ -75,23 +76,15 @@ function SoftReport(props) {
   const saveformRef = useRef();
   const developmentformRef = useRef();
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
-
+  const [tableIndex,setTableIndex] = useState('1')
   //  保存表单
   const softReportform = () => {
-    saveformRef.current.validateFields((err, values) => {
-      console.log('values: ', values);
+    saveformRef.current.validateFields((err,value)=> {
+      // console.log('value1: ', value);
+      developmentformRef.current.validateFields((err,value)=> {
+        // console.log('value2: ', value);
+      })
     })
-
-    developmentformRef.current.validateFields((err, values) => {
-      console.log('values: ', values);
-    })
-
-    //   developmentformRef.current.validateFields((err, values) => {
-    //     console.log('values: ', values);
-    //     if (!err) {
-
-    //     }
-    // }
   }
 
   //  本周运维情况综述表格数据
@@ -202,6 +195,19 @@ function SoftReport(props) {
       softReportform();
     }
   }, [files]);
+
+  // 上传删除附件触发特定表单保存
+  useEffect(() => {
+    switch (tableIndex) {
+      case '1':
+        console.log(1)
+        break;
+    
+      default:
+        break;
+    }
+  }, [tableIndex]);
+  
   // 上传删除附件触发保存
   useEffect(() => {
     maintenanceTable();
@@ -223,6 +229,28 @@ function SoftReport(props) {
     router.push('/ITSM/operationreport/weeklyreport/myweeklyreport');
   }
 
+  //  保存第一表格的数据
+  const handleSavethisweek = (saveParams) => {
+    console.log('saveParams: ', saveParams);
+  }
+
+  //  保存第二表格
+
+  const handleSavedevelopment = (saveParams,rowId,params) => {
+    console.log('params: ', params);
+    // console.log('saveParams: ', saveParams);
+    // console.log('rowId: ', rowId);
+    // console.log('params: ', params);
+  }
+
+  // 删除数据
+  const handleDelete = (deleteId) => {
+    console.log('deleteId: ', deleteId);
+
+  }
+
+
+
   return (
     <PageHeaderWrapper
       title={pagetitle}
@@ -242,56 +270,61 @@ function SoftReport(props) {
           loading === false && (
             <>
               <Form {...formItemLayout}>
-                <Col span={24}>
-                  <Form.Item label='周报名称'>
-                    {getFieldDecorator('params1', {
-                      rules: [
-                        {
-                          required,
-                          message: '请输入周报名称'
-                        }
-                      ]
-                    })
-                      (
-                        <Input />
-                      )}
-                  </Form.Item>
-                </Col>
+                <Row>
+                  <Col span={8}>
+                    <Form.Item label='周报名称'>
+                      {getFieldDecorator('params1', {
+                        rules: [
+                          {
+                            required,
+                            message: '请输入周报名称'
+                          }
+                        ]
+                      })
+                        (
+                          <Input />
+                        )}
+                    </Form.Item>
+                  </Col>
+                </Row>
 
-                <Col span={8}>
-                <Form.Item label='起始时间'>
-                  {getFieldDecorator('time1', {
-                    initialValue: moment(starttime)
-                  })(<DatePicker
-                    allowClear={false}
-                    disabledDate={startdisabledDate}
-                    // placeholder='请选择'
-                    onChange={onChange}
-                  />)}
-                </Form.Item>
-                </Col>
-
-                <Col>
-                <Form.Item label=''>
-                  {
-                    getFieldDecorator('time2', {
-                      initialValue: moment(endTime)
-                    })
-                      (<DatePicker
+                <Row>
+                  <Col span={8}>
+                    <Form.Item label='起始时间'>
+                      {getFieldDecorator('time1', {
+                        initialValue: moment(starttime)
+                      })(<DatePicker
                         allowClear={false}
-                        disabledDate={enddisabledDate}
-                        onChange={endonChange}
-                      />)
-                  }
-                </Form.Item>
-                </Col>
+                        disabledDate={startdisabledDate}
+                        // placeholder='请选择'
+                        onChange={onChange}
+                      />)}
+                    </Form.Item>
+                  </Col>
+
+                  <Col span={8}>
+                    <Form.Item label=''>
+                      {
+                        getFieldDecorator('time2', {
+                          initialValue: moment(endTime)
+                        })
+                          (<DatePicker
+                            allowClear={false}
+                            disabledDate={enddisabledDate}
+                            onChange={endonChange}
+                          />)
+                      }
+                    </Form.Item>
+                  </Col>
+                </Row>
+
 
                 {/* <p></p> */}
-              
+
 
                 {/* <p style={{ display: 'inline', marginRight: 8 }}>-</p> */}
 
-           
+
 
               </Form>
               < ThisweekMaintenance
@@ -299,6 +332,11 @@ function SoftReport(props) {
                 forminladeLayout={forminladeLayout}
                 ref={saveformRef}
                 maintenanceList={maintenanceList}
+                handleSavethisweek={(newValue => handleSavethisweek(newValue))}
+                files={[]}
+                ChangeFiles={(newvalue) => {
+                  setFiles(newvalue);
+                }}
               />
 
               {/* 二、常规运维工作开展情况 */}
@@ -307,6 +345,12 @@ function SoftReport(props) {
                 developmentList={developmentList}
                 submitdevelopmentlist={submitdevelopmentlist}
                 ref={developmentformRef}
+                handleSavedevelopment={(newValue,editId,params) => handleSavedevelopment(newValue,editId,params)}
+                handleDelete={(deleteId => handleDelete(deleteId))}
+                ChangeFiles={(newvalue) => {
+                  setFiles(newvalue)
+                }}
+                getTableindex={index => setTableIndex(index)}
               />
 
               {/* 三、运维服务指标完成情况 */}

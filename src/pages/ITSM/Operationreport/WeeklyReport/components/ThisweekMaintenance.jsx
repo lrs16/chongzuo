@@ -14,9 +14,6 @@ import moment from 'moment';
 import SysUpload from '@/components/SysUpload';
 
 const { TextArea } = Input;
-let starttime;
-let monthStarttime;
-let endTime;
 
 const ThisweekMaintenance = React.forwardRef((props, ref) => {
   const attRef = useRef();
@@ -33,14 +30,20 @@ const ThisweekMaintenance = React.forwardRef((props, ref) => {
     form: { getFieldDecorator, setFieldsValue },
     forminladeLayout,
     maintenanceList,
-    formItemLayout,
-    id
+    getTableindex,
+    handleSavethisweek,
+    ChangeFiles,
   } = props;
 
   const [data, setData] = useState([]);
   const [cacheOriginData, setcacheOriginData] = useState({});
   const [newbutton, setNewButton] = useState(false);
   const [fileslist, setFilesList] = useState([]);
+
+  useEffect(() => {
+    ChangeFiles(fileslist);
+    // getTableindex('1')
+  },[fileslist])
 
   //  获取行  
   const getRowByKey = (key, newData) => {
@@ -90,8 +93,7 @@ const ThisweekMaintenance = React.forwardRef((props, ref) => {
   }
 
   const savedata = (target, id) => {
-    console.log('target: ', target);
-
+    handleSavethisweek(target)
   }
 
   const saveRow = (e, key) => {
@@ -316,7 +318,7 @@ const ThisweekMaintenance = React.forwardRef((props, ref) => {
       <Row gutter={16}>
         <Form>
        
-          {/* <p style={{ fontWeight: '900', fontSize: '16px', marginTop: '20px' }}>一、本周运维情况综述</p> */}
+          <p style={{ fontWeight: '900', fontSize: '16px', marginTop: '20px' }}>一、本周运维情况综述</p>
 
           <Table
             columns={column}
@@ -336,12 +338,15 @@ const ThisweekMaintenance = React.forwardRef((props, ref) => {
               label='上传附件'
               {...forminladeLayout}
             >
-              {getFieldDecorator('params5', {})
+              {getFieldDecorator('field1', {})
                 (
                   <div style={{ width: 400 }}>
                     <SysUpload
                       fileslist={[]}
-                    // ChangeFileslist={newvalue => setFiles(newvalue)}
+                      ChangeFileslist={newvalue => {
+                        setFieldsValue({field1:JSON.stringify(newvalue.arr)})
+                        setFilesList(newvalue)
+                      }}
                     />
                   </div>
                 )}

@@ -9,7 +9,9 @@ import {
   Table,
   DatePicker,
   Select,
-  message
+  message,
+  Dropdown,
+  Menu
 } from 'antd';
 import { connect } from 'dva';
 import Link from 'umi/link';
@@ -95,22 +97,10 @@ function OperationmyweeklyReport(props) {
     },
   ];
 
-  const getmyweeklyTable = () => {
-    dispatch({
-      type: 'myweeklyreportindex/myweeklyTable',
-      payload: {
-        pageNum: paginations.current,
-        pageSize: paginations.pageSize,
-      },
-    });
-  };
-
   const selectOnchage = (data) => {
-    const addParams = 'add';
     switch (data) {
       case '软件运维周报':
-        router.push(`/ITSM/operationreport/weeklyreport/softreport/${addParams}`)
-        // router.push(`/ITSM/operationre10
+        router.push(`/ITSM/operationreport/weeklyreport/softreport/`)
         break;
       case '机房运维周报':
         router.push(`/ITSM/operationreport/weeklyreport/computerroomreport`)
@@ -124,8 +114,44 @@ function OperationmyweeklyReport(props) {
       default:
         break;
     }
-
   }
+
+  const menu = (
+    <Menu>
+      <Menu.Item>
+        <span onClick={()=> selectOnchage('软件运维周报')}>
+          软件运维周报
+        </span>
+      </Menu.Item>
+      <Menu.Item>
+      <span onClick={()=> selectOnchage('软件运维周报')}>
+      机房运维周报
+        </span>
+      </Menu.Item>
+      <Menu.Item>
+      <span onClick={()=> selectOnchage('软件运维周报')}>
+      数据库运维周报
+        </span>
+      </Menu.Item>
+      <Menu.Item>
+      <span onClick={()=> selectOnchage('软件运维周报')}>
+      其他运维周报
+        </span>
+      </Menu.Item>
+    </Menu>
+  );
+
+  const getmyweeklyTable = () => {
+    dispatch({
+      type: 'myweeklyreportindex/myweeklyTable',
+      payload: {
+        pageNum: paginations.current,
+        pageSize: paginations.pageSize,
+      },
+    });
+  };
+
+
 
   const handleReset = () => {
     resetFields();
@@ -400,20 +426,12 @@ function OperationmyweeklyReport(props) {
         </Row>
 
         <div>
-          <Select
-            style={{ marginLeft: 8, width: '200px' }}
-            defaultValue='新建'
-            onChange={selectOnchage}
-          // type="primary"
-
-          // onClick={() => download()}
+          <Dropdown
+            overlay={menu}
+            placement="bottomLeft"
           >
-            {/* <Option key='' values=''>新建</Option> */}
-            <Option key='软件运维周报' values='软件运维周报'>软件运维周报</Option>
-            <Option key='机房运维周报' values='机房运维周报'>机房运维周报</Option>
-            <Option key='数据库运维周报' values='数据库运维周报'>数据库运维周报</Option>
-            <Option key='其他运维周报' values='其他运维周报'>其他运维周报</Option>
-          </Select>
+            <Button type='primary'>新建</Button>
+          </Dropdown>
 
           <Button
             style={{ marginLeft: 8 }}
@@ -470,6 +488,8 @@ function OperationmyweeklyReport(props) {
     </PageHeaderWrapper>
   )
 }
+
+
 
 export default Form.create({})(
   connect(({ myweeklyreportindex, loading }) => ({

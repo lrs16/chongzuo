@@ -558,7 +558,7 @@ export default {
                           component: './ITSM/Operationreport/WeeklyReport/OperationmyweeklyReport'
                         },
                         {
-                          path: '/ITSM/operationreport/weeklyreport/softreport/:id',
+                          path: '/ITSM/operationreport/weeklyreport/softreport/',
                           name: '软件运维周报',
                           icon: 'fork',
                           component: './ITSM/Operationreport/WeeklyReport/SoftReport'

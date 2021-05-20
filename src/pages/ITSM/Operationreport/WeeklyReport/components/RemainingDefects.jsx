@@ -110,8 +110,8 @@ const RemainingDefects = React.forwardRef((props, ref) => {
     const id = target.id === '' ? '' : target.id;
     savedata(target, id);
     if (target.isNew) {
-      target.isNew = false
-      // setNewButton(false)
+      target.isNew = false;
+      setNewButton(false);
     }
   }
 

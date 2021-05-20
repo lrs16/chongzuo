@@ -15,6 +15,7 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
 let startTime;
 let endTime;
+const { RangePicker } = DatePicker;
 const columns = [
   {
     title: '作业状态',
@@ -44,69 +45,60 @@ const columns = [
 function Status(props) {
   const { pagetitle } = props.route.name;
   const {
-    form: { getFieldDecorator, setFieldsValue },
+    form: { getFieldDecorator, setFieldsValue, validateFields },
     operationStatusArr,
     dispatch
   } = props;
 
-  const onChange = (date, dateString) => {
-    startTime = dateString;
-    endTime = moment(dateString).add(+6, 'day').format('YYYY-MM-DD');
-    setFieldsValue({ time2: moment(endTime) });
-  }
-
-  const endonChange = (date, dateString) => {
-    endTime = dateString;
-    startTime = moment(dateString).subtract('day', 6).format('YYYY-MM-DD');
-    setFieldsValue({ time1: moment(startTime) })
-  }
-
-
   const handleListdata = () => {
-    dispatch({
-      type: 'taskstatistics/operationStatus',
-      payload: { startTime, endTime }
+    validateFields((err, value) => {
+      startTime = moment(value.time1[0]).format('YYYY-MM-DD');
+      endTime = moment(value.time1[1]).format('YYYY-MM-DD');
+      dispatch({
+        type: 'taskstatistics/operationStatus',
+        payload: { startTime, endTime }
+      })
     })
+
   }
 
   const download = () => {
-    dispatch({
-      type: 'taskstatistics/downloadOperationStatus',
-      payload: {
-        time1: startTime,
-        time2: endTime,
-      }
-    }).then(res => {
-      const filename = '下载.xls';
-      const blob = new Blob([res]);
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = filename;
-      a.click();
-      window.URL.revokeObjectURL(url);
+    validateFields((err, value) => {
+      startTime = moment(value.time1[0]).format('YYYY-MM-DD');
+      endTime = moment(value.time1[1]).format('YYYY-MM-DD');
+      dispatch({
+        type: 'taskstatistics/downloadOperationStatus',
+        payload: {
+          time1: startTime,
+          time2: endTime,
+        }
+      }).then(res => {
+        const filename = '下载.xls';
+        const blob = new Blob([res]);
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.click();
+        window.URL.revokeObjectURL(url);
+      })
     })
   }
 
-
   const defaultTime = () => {
-    //  周统计
     startTime = moment().subtract('days', 6).format('YYYY-MM-DD');
     endTime = moment().format('YYYY-MM-DD');
+    // startTime = moment().week(moment().week() - 1).startOf('week').format('YYYY-MM-DD');
+    // endTime = moment().week(moment().week() - 1).endOf('week').format('YYYY-MM-DD');
   }
 
   useEffect(() => {
     defaultTime();
-    handleListdata();
+    dispatch({
+      type: 'taskstatistics/operationStatus',
+      payload: { startTime, endTime }
+    })
   }, [])
-
-  const startdisabledDate = (current) => {
-    return current > moment().subtract('days', 6)
-  }
-
-  const enddisabledDate = (current) => {
-    return current > moment().endOf('day')
-  }
 
   return (
     <PageHeaderWrapper
@@ -119,26 +111,10 @@ function Status(props) {
               <Col span={24}>
                 <Form.Item label='起始时间'>
                   {getFieldDecorator('time1', {
-                    initialValue: startTime ? moment(startTime) : ''
-                  })(<DatePicker
-                    format="YYYY-MM-DD"
-                    allowClear='false'
-                    disabledDate={startdisabledDate}
-                    onChange={onChange}
-                  />)}
-                </Form.Item>
-
-                <p style={{ display: 'inline', marginRight: 8 }}>-</p>
-
-                <Form.Item label=''>
-                  {
-                    getFieldDecorator('time2', {
-                      initialValue: endTime ? moment(endTime) : ''
-                    })
-                      (<DatePicker
-                        disabledDate={enddisabledDate}
-                        onChange={endonChange}
-                      />)
+                    initialValue: [moment(startTime), moment(endTime)]
+                  })(
+                    <RangePicker
+                    />)
                   }
                 </Form.Item>
 

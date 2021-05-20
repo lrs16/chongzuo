@@ -145,7 +145,8 @@ export default {
 
         //  确定执行提交
      *submit({ payload }, { call, put }) {
-      return yield call(submit,payload)
+      const values= replacerec(payload);
+      return yield call(submit,values)
     },
   
       //  下载查询页

@@ -8,11 +8,13 @@ import {
   Table,
   Button,
   Divider,
+  Select,
 } from 'antd';
 import moment from 'moment';
 import SysUpload from '@/components/SysUpload';
 
 const { TextArea } = Input;
+const { Option } = Select;
 
 const Development = React.forwardRef((props, ref) => {
   const attRef = useRef();
@@ -30,7 +32,10 @@ const Development = React.forwardRef((props, ref) => {
     forminladeLayout,
     developmentList,
     submitdevelopmentlist,
-    id,
+    handleSavedevelopment,
+    handleDelete,
+    ChangeFiles,
+    files,
     loading
   } = props;
 
@@ -42,6 +47,10 @@ const Development = React.forwardRef((props, ref) => {
   const [newbutton, setNewButton] = useState(false);
   const [secondbutton, setSecondbutton] = useState(false);
 
+
+  useEffect(() => {
+    ChangeFiles(fileslist)
+  },[fileslist])
   // 新增一条记录
   const newMember = (params) => {
     setFilesList([]);
@@ -84,17 +93,8 @@ const Development = React.forwardRef((props, ref) => {
   //  删除数据
   const remove = key => {
     const target = getRowByKey(key) || {};
-    // dispatch({
-    //   type: 'chacklist/trackdelete',
-    //   payload: {
-    //     id: target.id,
-    //   },
-    // }).then(res => {
-    //   if (res.code === 200) {
-    //     message.success(res.msg, 2);
-    //     getlistdata();
-    //   }
-    // });
+    console.log('target: ', target);
+    handleDelete(target.id)
   };
 
   // 编辑记录
@@ -126,7 +126,10 @@ const Development = React.forwardRef((props, ref) => {
     }
   }
 
-  const savedata = (target, id) => {
+  const savedata = (target,id,params) => {
+    console.log('target: ', target);
+    handleSavedevelopment(target,id,params)
+    
     // console.log('target: ', target);
   }
 
@@ -135,7 +138,7 @@ const Development = React.forwardRef((props, ref) => {
     delete target.key;
     // target.editable = false;
     const id = target.id === '' ? '' : target.id;
-    savedata(target, id);
+    savedata(target, id,params);
     if (params) {
       target.secondtableisNew = false
       setSecondbutton(false)
@@ -318,10 +321,13 @@ const Development = React.forwardRef((props, ref) => {
       render: (text, record) => {
         if (record.secondtableisNew) {
           return (
-            <Input
-              defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'num3', record.key, 'secondTable')}
-            />
+            <Select
+            defaultValue={text}
+            onChange={e => handleFieldChange(e, 'num3', record.key, 'secondTable')}
+            >
+              <Option key='是' value='是'>是</Option>
+              <Option key='否' value='否'>否</Option>
+            </Select>
           )
         }
         if (record.secondtableisNew === false) {
@@ -354,7 +360,7 @@ const Development = React.forwardRef((props, ref) => {
                 toggleEditable(e, record.key, record, 'secondTable');
                 // handlefileedit(record.key, record.attachment)
               }}
-            >2222编辑</a>
+            >编辑</a>
             <Divider type='vertical' />
             <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
               <a>删除</a>
@@ -447,12 +453,15 @@ const Development = React.forwardRef((props, ref) => {
               label='上传附件'
               {...forminladeLayout}
             >
-              {getFieldDecorator('params7', {})
+              {getFieldDecorator('field2', {})
                 (
                   <div style={{ width: 400 }}>
                     <SysUpload
                       fileslist={[]}
-                    // ChangeFileslist={newvalue => setFiles(newvalue)}
+                      ChangeFileslist={newvalue => {
+                        setFieldsValue({field2:JSON.stringify(newvalue.arr)})
+                        setFilesList(newvalue)
+                      }}
                     />
                   </div>
                 )}

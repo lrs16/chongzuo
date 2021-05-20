@@ -60,6 +60,7 @@ function Work(props) {
   const [userchoice, setUserChoice] = useState(false); // 已经选择人员
   const [changorder, setChangeOrder] = useState(undefined);
   const [modalvisible, setModalVisible] = useState(false);
+  
 
   const {
     location: { query: { mainId, status, checkStatus, auditLink, delay } },
@@ -74,20 +75,11 @@ function Work(props) {
   const { edit } = openFlowList;
 
 
-  // 初始化获取用户信息
-  // useEffect(() => {
-  //   console.log(1)
-  //   dispatch({
-  //     type: 'processmodel/openFlow',
-  //     payload: mainId
-  //   })
-  // }, [mainId]);
-
   if (loading === false) {
     if (openFlowList.code === -1) {
       message.error(openFlowList.msg);
       router.push({
-        pathname: `/ITSM/operationplan/operationplancheck`,
+        pathname: `/ITSM/operationplan/myoperationplan/`,
       });
     }
   }
@@ -131,7 +123,6 @@ function Work(props) {
   const taskResult = getTypebyTitle('作业结果');
   
   useEffect(() => {
-    console.log(1)
     queryDept();
     getoperationPerson()
     sessionStorage.setItem('Processtype', 'task');
@@ -139,7 +130,6 @@ function Work(props) {
   }, [])
 
   useEffect(() => {
-    console.log(2)
     dispatch({
       type: 'processmodel/openFlow',
       payload: mainId
@@ -279,7 +269,6 @@ function Work(props) {
 
   // 上传附件触发保存
   useEffect(() => {
-    console.log(3)
     if (files.ischange) {
       handleSave(false);
     }
@@ -288,7 +277,6 @@ function Work(props) {
 
   //  送审选人
   useEffect(() => {
-    console.log(4)
     if (userchoice) {
       gotoCensorship()
     }
@@ -361,11 +349,15 @@ function Work(props) {
   // 执行
   const handleSaveexecute = () => {
     SaveRef.current.validateFields((err, value) => {
+      const params = value;
+      delete params.execute_operationUnit;
+      console.log('params: ', params);
+
       if (!err) {
         return dispatch({
           type: 'processmodel/submit',
           payload: {
-            ...value,
+            ...params,
             mainId,
             userId: edit.execute.operationUserId,
             execute_id: edit.execute.id,
@@ -374,18 +366,17 @@ function Work(props) {
             execute_startTime: value.execute_startTime.format('YYYY-MM-DD HH:mm:ss'),
             execute_endTime: value.execute_endTime.format('YYYY-MM-DD HH:mm:ss'),
             execute_operationTime: value.execute_operationTime.format('YYYY-MM-DD HH:mm:ss'),
-            execute_operationUnit: ''
           }
         }).then(res => {
           if (res.code === 200) {
             message.info(res.msg);
             router.push({
-              pathname: `/ITSM/operationplan/operationplancheck`,
+              pathname: `/ITSM/operationplan/myoperationplan/`,
             });
           } else {
             message.error(res.msg);
             router.push({
-              pathname: `/ITSM/operationplan/operationplancheck`,
+              pathname: `/ITSM/operationplan/myoperationplan/`,
             });
           }
         });
@@ -599,7 +590,7 @@ function Work(props) {
               }
 
               {
-                loading === false && (openFlowList && openFlowList.edit.main !== undefined || delay) && (
+                loading === false && (edit && edit.main !== undefined || delay) && (
                   <Panel
                     header={status}
                     key='1'
@@ -616,7 +607,7 @@ function Work(props) {
                       ref={SaveRef}
                       operationPersonSelect={operationPersonSelect}
                       files={
-                        (edit.main.fileIds) !== '' && (edit.main.fileIds) ? JSON.parse(edit.main.fileIds) : []
+                        (openFlowList.main.fileIds) !== '' && (openFlowList.main.fileIds) ? JSON.parse(openFlowList.main.fileIds) : []
                       }
                       ChangeFiles={newvalue => {
                         setFiles(newvalue);

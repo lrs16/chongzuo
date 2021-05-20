@@ -156,6 +156,12 @@ function MyoperationPlan(props) {
       ),
     },
     {
+      title: '计划开始时间',
+      dataIndex: 'plannedStartTime',
+      key: 'plannedStartTime',
+      width: 150,
+    },
+    {
       title: '计划结束时间',
       dataIndex: 'plannedEndTime',
       key: 'plannedEndTime',
@@ -291,14 +297,26 @@ function MyoperationPlan(props) {
         ...values,
         time1: values.addTime?.length ? moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
         time2: values.addTime?.length ? moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-        checkTime: values.checkTime ? moment(values.checkTime).format('YYYY-MM-DD HH:mm:ss') : '',
-        executeOperationTime: values.executeOperationTime ? moment(values.executeOperationTime).format('YYYY-MM-DD HH:mm:ss') : '',
-        plannedStartTime: values.plannedStartTime ? moment(values.plannedStartTime).format('YYYY-MM-DD HH:mm:ss') : '',
-        plannedEndTime: values.plannedEndTime ? moment(values.plannedEndTime).format('YYYY-MM-DD HH:mm:ss') : '',
-        startTime: values.startTime ? moment(values.startTime).format('YYYY-MM-DD HH:mm:ss') : '',
-        endTime: values.endTime ? moment(values.endTime).format('YYYY-MM-DD HH:mm:ss') : '',
-        pageIndex: page - 1,
+        checkTime1: values.checkTime?.length ? moment(values.checkTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+        checkTime2: values.checkTime?.length ? moment(values.checkTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+        checkTime: '',
+        executeOperationTime1: values.executeOperationTime?.length ? moment(values.executeOperationTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+        executeOperationTime2: values.executeOperationTime?.length ? moment(values.executeOperationTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+        executeOperationTime: '',
+        plannedStartTime1: values.plannedStartTime?.length ? moment(values.plannedStartTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+        plannedStartTime2: values.plannedStartTime?.length ? moment(values.plannedStartTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+        plannedStartTime: '',
+        startTime1: values.startTime?.length ? moment(values.startTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+        startTime2: values.startTime?.length ? moment(values.startTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+        startTime: '',
+        plannedEndTime1: values.plannedendTime?.length ? moment(values.plannedendTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+        plannedEndTime2: values.plannedendTime?.length ? moment(values.plannedendTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+        plannedendTime: '',
+        endTime1: values.endTime?.length ? moment(values.endTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+        endTime2: values.endTime?.length ? moment(values.endTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+        endTime: '',
         addTime: '',
+        pageIndex: page - 1,
         pageSize
       },
     });
@@ -363,19 +381,7 @@ function MyoperationPlan(props) {
       if (err) {
         return;
       }
-      const searchParams = {
-        ...values,
-        time1: values.addTime?.length ? moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-        time2: values.addTime?.length ? moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-        checkTime: values.checkTime ? moment(values.checkTime).format('YYYY-MM-DD HH:mm:ss') : '',
-        executeOperationTime: values.executeOperationTime ? moment(values.executeOperationTime).format('YYYY-MM-DD HH:mm:ss') : '',
-        plannedStartTime: values.plannedStartTime ? moment(values.plannedStartTime).format('YYYY-MM-DD HH:mm:ss') : '',
-        plannedEndTime: values.plannedEndTime ? moment(values.plannedEndTime).format('YYYY-MM-DD HH:mm:ss') : '',
-        startTime: values.startTime ? moment(values.startTime).format('YYYY-MM-DD HH:mm:ss') : '',
-        endTime: values.endTime ? moment(values.endTime).format('YYYY-MM-DD HH:mm:ss') : '',
-        addTime: '',
-      }
-      searchdata(searchParams, 1, paginations.pageSize);
+      searchdata(values, 1, paginations.pageSize);
     });
   };
 
@@ -392,12 +398,26 @@ function MyoperationPlan(props) {
         payload: {
           columns: JSON.stringify(exportColumns),
           ...values,
-          checkTime: values.checkTime ? moment(values.checkTime).format('YYYY-MM-DD HH:mm:ss') : '',
-          executeOperationTime: values.executeOperationTime ? moment(values.executeOperationTime).format('YYYY-MM-DD HH:mm:ss') : '',
-          plannedStartTime: values.plannedStartTime ? moment(values.plannedStartTime).format('YYYY-MM-DD HH:mm:ss') : '',
-          plannedEndTime: values.plannedEndTime ? moment(values.plannedEndTime).format('YYYY-MM-DD HH:mm:ss') : '',
-          startTime: values.startTime ? moment(values.startTime).format('YYYY-MM-DD HH:mm:ss') : '',
-          endTime: values.endTime ? moment(values.endTime).format('YYYY-MM-DD HH:mm:ss') : '',
+          time1: values.addTime?.length ? moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+          time2: values.addTime?.length ? moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+          checkTime1: values.checkTime?.length ? moment(values.checkTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+          checkTime2: values.checkTime?.length ? moment(values.checkTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+          checkTime: '',
+          executeOperationTime1: values.executeOperationTime?.length ? moment(values.executeOperationTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+          executeOperationTime2: values.executeOperationTime?.length ? moment(values.executeOperationTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+          executeOperationTime: '',
+          plannedStartTime1: values.plannedStartTime?.length ? moment(values.plannedStartTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+          plannedStartTime2: values.plannedStartTime?.length ? moment(values.plannedStartTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+          plannedStartTime: '',
+          startTime1: values.startTime?.length ? moment(values.startTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+          startTime2: values.startTime?.length ? moment(values.startTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+          startTime: '',
+          plannedEndTime1: values.plannedendTime?.length ? moment(values.plannedendTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+          plannedEndTime2: values.plannedendTime?.length ? moment(values.plannedendTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+          plannedendTime: '',
+          endTime1: values.endTime?.length ? moment(values.endTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+          endTime2: values.endTime?.length ? moment(values.endTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+          endTime: '',
           addTime: '',
         }
       }).then(res => {
@@ -427,19 +447,18 @@ function MyoperationPlan(props) {
     }
 
     const res = selectedRows.every(item => {
-      console.log('item: ', item.status,item.checkStatus);
-      
-      if (item.status !== '延期中' || item.checkStatus !== '已审核') {
-        message.info('延期的条件为:执行状态不可以是延期中,且审核状态为:已审核');
-        return false
+
+      if (item.status !== '延期中' &&  item.checkStatus === '已审核') {
+        return true
       }
 
-      if (item.status === '延期中' && item.checkStatus === '已审核') {
-        return true;
+      if (item.status === '延期中') {
+        message.info('延期的条件为:执行状态不可以是延期中,且审核状态为:已审核');
+        return false;
       }
+      return null;
 
     })
-
 
     if (res === false) {
       return false;
@@ -467,7 +486,7 @@ function MyoperationPlan(props) {
       message.info('复制成功')
     }
 
-    // return null
+    return null
   }
 
 
@@ -479,17 +498,19 @@ function MyoperationPlan(props) {
     }
 
     const deleteJudge = selectedRows.every(item => {
-      if (item.checkStatus !== '待送审') {
-        message.info('请选择审核状态:待送审');
+      if (item.checkResult) {
+        message.info('请选择审核状态:待送审，审核结果为空');
         return false;
       }
 
-      if (item.checkStatus === '待送审') {
+      if (!item.checkResult) {
         return true
       }
 
       return null;
     })
+
+    console.log(deleteJudge, 'deleteJudge')
 
     if (deleteJudge === false) {
       return false;
@@ -559,58 +580,6 @@ function MyoperationPlan(props) {
     creataColumns();
   };
 
-  const onChange = (dateString, params) => {
-    if (params === 'plan') {
-      setFieldsValue({ plannedStarTtime: moment(dateString) })
-      startTime = dateString;
-    } else {
-      setFieldsValue({ startTime: moment(dateString) })
-      startTime = dateString;
-      actualStarttime = dateString
-    }
-
-  }
-
-  const endtimeonChange = (dateString, params) => {
-    if (params === 'plan') {
-      setFieldsValue({ plannedEndTime: moment(dateString) })
-      endttime = dateString;
-    } else {
-      setFieldsValue({ endTime: moment(dateString) })
-      actualEndtime = dateString;
-    }
-
-  }
-
-  const startdisabledDate = (current, params) => {
-    if (params === 'plan') {
-      if (startTime || endttime) {
-        return current > moment(endttime)
-      }
-    }
-    if (params !== 'plan') {
-      if (actualStarttime || actualEndtime) {
-        return current > moment(actualEndtime)
-      }
-    }
-    return null;
-
-  }
-
-  const enddisabledDate = (current, params) => {
-    if (params === 'plan') {
-      if (startTime || endttime) {
-        return current < moment(startTime)
-      }
-    }
-    if (params !== 'plan') {
-      if (actualStarttime || actualEndtime) {
-        return current < moment(actualStarttime)
-      }
-    }
-    return null;
-  }
-
   const getTypebyTitle = title => {
     if (selectdata.ischange) {
       return selectdata.arr.filter(item => item.title === title)[0].children;
@@ -671,7 +640,7 @@ function MyoperationPlan(props) {
     return null;
   }
 
-  const executeStatus = getTypebyTitle('执行状态');
+  const executeStatus = getTypebyTitle('作业状态');
   const taskType = getTypebyTitle('作业类型');
   const taskNature = getTypebyTitle('作业性质');
   const taskBilling = getTypebyTitle('是否开票');
@@ -719,7 +688,7 @@ function MyoperationPlan(props) {
               <Form.Item label="作业计划编号">
                 {getFieldDecorator('operationNo', {})
                   (
-                    <Input />
+                    <Input allowClear/>
                   )}
               </Form.Item>
             </Col>
@@ -727,14 +696,7 @@ function MyoperationPlan(props) {
             <Col span={8}>
               <Form.Item label="作业系统名称">
                 {getFieldDecorator('systemName', {})(
-                  <Select placeholder="请选择" allowClear>
-                    {executeStatus.map(obj => [
-                      <Option key={obj.key} value={obj.title}>
-                        {obj.title}
-                      </Option>,
-                    ])}
-                  </Select>,
-                  <Input />
+                  <Input allowClear/>
                 )}
               </Form.Item>
             </Col>
@@ -797,7 +759,7 @@ function MyoperationPlan(props) {
                   <Form.Item label="作业负责人">
                     {getFieldDecorator('operationUser', {})
                       (
-                        <Select>
+                        <Select allowClear>
                           {operationPersonSelect.map(obj => [
                             <Option key={obj.key} value={obj.value}>
                               {obj.value}
@@ -831,7 +793,7 @@ function MyoperationPlan(props) {
                   <Form.Item label="作业对象">
                     {getFieldDecorator('object', {})
                       (
-                        <Input />
+                        <Input allowClear/>
                       )}
                   </Form.Item>
                 </Col>
@@ -840,7 +802,7 @@ function MyoperationPlan(props) {
                   <Form.Item label="作业内容">
                     {getFieldDecorator('content', {})
                       (
-                        <Input />
+                        <Input allowClear/>
                       )}
                   </Form.Item>
                 </Col>
@@ -852,30 +814,24 @@ function MyoperationPlan(props) {
                 <Col span={8}>
                   <Form.Item label="计划开始时间">
                     {getFieldDecorator('plannedStartTime', {
-                      // initialValue: moment(new Date())
                     })
                       (
-                        <DatePicker
+                        <RangePicker
                           showTime
-                          onOk={(value1) => onChange(value1, 'plan')}
                           format="YYYY-MM-DD HH:mm:ss"
-                          disabledDate={values => startdisabledDate(values, 'plan')}
                         />
                       )}
                   </Form.Item>
                 </Col>
 
-
-                <Col span={8}>
+                <Col span={16}>
                   <Form.Item label="计划结束时间">
-                    {getFieldDecorator('plannedEndTime', {
+                    {getFieldDecorator('plannedendTime', {
                     })
                       (
-                        <DatePicker
+                        <RangePicker
                           showTime
-                          onOk={(value1) => endtimeonChange(value1, 'plan')}
                           format="YYYY-MM-DD HH:mm:ss"
-                          disabledDate={values => enddisabledDate(values, 'plan')}
                         />
                       )}
                   </Form.Item>
@@ -883,7 +839,7 @@ function MyoperationPlan(props) {
 
                 <Col span={8}>
                   <Form.Item label="作业状态">
-                    {getFieldDecorator('executeStatus', {
+                    {getFieldDecorator('status', {
                     })
                       (
                         <Select placeholder="请选择" allowClear>
@@ -946,91 +902,13 @@ function MyoperationPlan(props) {
                       )}
                   </Form.Item>
                 </Col>
-              </>
-            )}
-
-            {expand === true && (
-              <>
-                <Col span={8}>
-                  <Form.Item label="实际开始时间">
-                    {getFieldDecorator('startTime', {
-                    })
-                      (
-                        <DatePicker
-                          showTime
-                          onOk={onChange}
-                          format="YYYY-MM-DD HH:mm:ss"
-                          disabledDate={startdisabledDate}
-                        />
-                      )}
-                  </Form.Item>
-                </Col>
-
-                <Col span={8}>
-                  <Form.Item label="实际结束时间">
-                    {getFieldDecorator('endTime', {})
-                      (
-                        <DatePicker
-                          showTime
-                          onOk={endtimeonChange}
-                          format="YYYY-MM-DD HH:mm:ss"
-                          disabledDate={enddisabledDate}
-                        />
-                      )}
-                  </Form.Item>
-                </Col>
 
                 <Col span={8}>
                   <Form.Item label="作业执行情况说明">
                     {getFieldDecorator('executeContent', {})
                       (
-                        <Input />
+                        <Input allowClear/>
                       )}
-                  </Form.Item>
-                </Col>
-              </>
-            )}
-
-            {expand === true && (
-              <>
-                <Col span={8}>
-                  <Form.Item label="执行操作时间">
-                    {getFieldDecorator('executeOperationTime', {
-                    })
-                      (<DatePicker
-                        showTime
-                        format="YYYY-MM-DD HH:mm:ss"
-                        allowClear />)}
-                  </Form.Item>
-                </Col>
-
-                <Col span={8}>
-                  <Form.Item label="填报人">
-                    {getFieldDecorator('addUser', {})
-                      (
-                        <Input />
-                      )}
-                  </Form.Item>
-                </Col>
-
-                <Col span={8}>
-                  <Form.Item label="填报单位">
-                    {getFieldDecorator('addUnit', {})
-                      (
-                        <Input />
-                      )}
-                  </Form.Item>
-                </Col>
-              </>
-            )}
-
-            {expand === true && (
-              <>
-                <Col span={8}>
-                  <Form.Item label="审核人">
-                    {getFieldDecorator('checkUser', {
-                    })
-                      (<Input allowClear />)}
                   </Form.Item>
                 </Col>
 
@@ -1048,12 +926,91 @@ function MyoperationPlan(props) {
                       )}
                   </Form.Item>
                 </Col>
+              </>
+            )}
+
+            {expand === true && (
+              <>
+                <Col span={8}>
+                  <Form.Item label="实际开始时间">
+                    {getFieldDecorator('startTime', {
+                    })
+                      (
+                        <RangePicker
+                          showTime
+                          format="YYYY-MM-DD HH:mm:ss"
+                        />
+                      )}
+                  </Form.Item>
+                </Col>
+
+                <Col span={16}>
+                  <Form.Item label="实际结束时间">
+                    {getFieldDecorator('endTime', {
+                    })
+                      (
+                        <RangePicker
+                          showTime
+                          format="YYYY-MM-DD HH:mm:ss"
+                        />
+                      )}
+                  </Form.Item>
+                </Col>
+
+              </>
+            )}
+
+            {expand === true && (
+              <>
+                <Col span={8}>
+                  <Form.Item label="执行操作时间">
+                    {getFieldDecorator('executeOperationTime', {
+                    })
+                      (<RangePicker
+                        showTime
+                        format="YYYY-MM-DD HH:mm:ss"
+                        allowClear />)}
+                  </Form.Item>
+                </Col>
+
+
+                <Col span={8}>
+                  <Form.Item label="填报人">
+                    {getFieldDecorator('addUser', {})
+                      (
+                        <Input allowClear/>
+                      )}
+                  </Form.Item>
+                </Col>
+
+                <Col span={8}>
+                  <Form.Item label="填报单位">
+                    {getFieldDecorator('addUnit', {})
+                      (
+                        <Input allowClear/>
+                      )}
+                  </Form.Item>
+                </Col>
+              </>
+            )}
+
+            {expand === true && (
+              <>
+                <Col span={8}>
+                  <Form.Item label="审核人">
+                    {getFieldDecorator('checkUser', {
+                    })
+                      (<Input allowClear />)}
+                  </Form.Item>
+                </Col>
+
+            
 
                 <Col span={8}>
                   <Form.Item label="审核时间">
                     {getFieldDecorator('checkTime', {})
                       (
-                        (<DatePicker
+                        (<RangePicker
                           showTime
                           format="YYYY-MM-DD HH:mm:ss"
                           allowClear />)

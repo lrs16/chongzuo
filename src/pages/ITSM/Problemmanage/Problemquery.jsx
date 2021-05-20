@@ -106,6 +106,7 @@ function Besolved(props) {
         addTimeBegin,
         addTimeEnd,
         status,
+        currentNode
       } },
     dispatch,
     queryArr,
@@ -128,6 +129,7 @@ function Besolved(props) {
         handleDeptId,
         addTimeBegin,
         addTimeEnd,
+        currentNode,
         pageNum: paginations.current,
         pageSize: paginations.pageSize,
       },
@@ -156,6 +158,7 @@ function Besolved(props) {
         handleDeptId,
         addTimeBegin,
         addTimeEnd,
+        currentNode,
         pageNum: page,
         pageSize: paginations.pageSize
       },
@@ -220,18 +223,6 @@ function Besolved(props) {
 
   const download = () => {
     validateFields((err, values) => {
-      // const selectList = [];
-      // if (selectedRows.length) {
-      //   selectedRows.forEach(function (item) {
-      //     selectList.push(item.id);
-      //   })
-      // }
-      // const downparams = values;
-      // (downparams.registerUserId) = selectList.toString();
-
-      // if (values.createTimeBegin) {
-      //   downparams.createTimeBegin = (values.createTimeBegin).format('YYYY-MM-DD')
-      // }
       if (!err) {
         dispatch({
           type: 'problemmanage/eventdownload',
@@ -246,6 +237,7 @@ function Besolved(props) {
             handleDeptId,
             addTimeBegin,
             addTimeEnd,
+            currentNode,
           }
         }).then(res => {
           const filename = `问题查询_${moment().format('YYYY-MM-DD HH:mm')}.xls`;
@@ -269,7 +261,7 @@ function Besolved(props) {
   };
   const problemSource = getTypebyTitle('问题来源');
   const priority = getTypebyTitle('严重程度');
-  const currentNode = getTypebyTitle('当前处理环节');
+  const currentNodeselect = getTypebyTitle('当前处理环节');
   const problemType = getTypebyTitle('问题分类');
   const scopeList = getTypebyTitle('影响范围');
 
@@ -302,7 +294,7 @@ function Besolved(props) {
                   {},
                 )(
                   <Select placeholder="请选择" allowClear>
-                    {currentNode.map(obj => [
+                    {currentNodeselect.map(obj => [
                       <Option key={obj.key} value={obj.title}>
                         {obj.title}
                       </Option>,

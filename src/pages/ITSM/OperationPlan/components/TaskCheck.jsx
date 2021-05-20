@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useImperativeHandle } from 'react';
+import React, { useContext, useRef, useImperativeHandle,useEffect } from 'react';
 import {
   Row,
   Col,
@@ -38,6 +38,10 @@ const TaskCheck = React.forwardRef((props, ref) => {
   const onChange = (e) => {
     setFlowtype(e.target.value);
   }
+
+  useEffect(() => {
+    setFlowtype(check.result === null ? '001' : check.result)
+  },[])
 
   const required = true;
 

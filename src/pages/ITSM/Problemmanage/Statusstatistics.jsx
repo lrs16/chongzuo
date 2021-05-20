@@ -65,6 +65,7 @@ const columns = [
               status: record.statCode,
               addTimeBegin: statTimeBegin,
               addTimeEnd: statTimeEnd,
+              currentNode:record.statCurrentNode
             }
           }}
         >
