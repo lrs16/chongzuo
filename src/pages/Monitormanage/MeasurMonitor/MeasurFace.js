@@ -12,32 +12,30 @@ import SelectArea from '@/components/Selects/SelectArea';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
 //抄表接口数据
-let settl ={
+let settl = {
   total: 0,
-  tjsj: ''
+  tjsj: '',
 };
 
 const changeSettData = datas => {
-  const arr =  Object.values(datas);
+  const arr = Object.values(datas);
   const newArrs = []; // 新的数组格式
   if (!Array.isArray(arr)) {
     return newArrs;
   }
   settl.total = 0;
   for (let i = 0; i < arr.length; i += 1) {
-    let vote ={};
+    let vote = {};
     vote.type = arr[i].type;
     vote.count = arr[i].total;
     settl.total += arr[i].total;
     newArrs.push(vote);
   }
-  if(arr.length>0){
+  if (arr.length > 0) {
     settl.tjsj = arr[0].date;
   }
   return newArrs;
 };
-
-
 
 const changearchdata = datas => {
   const arr = Object.values(datas);
@@ -123,8 +121,6 @@ const Donutdata = [
     count: 100,
   },
 ];
-
-
 
 let tjsj = {
   zdzc: '', // 自动召测测试
@@ -281,7 +277,12 @@ class MeasurFace extends Component {
                 <Spin spinning={loading} style={{ background: '#ffffff' }}>
                   {settldatas === undefined && <Empty style={{ height: '250px' }} />}
                   {settldatas !== undefined && (
-                    <Donut data={settldatas} height={350} total ={settl.total} padding={[10, 10,10, 10]} />
+                    <Donut
+                      data={settldatas}
+                      height={350}
+                      total={settl.total}
+                      padding={[10, 10, 10, 10]}
+                    />
                   )}
                 </Spin>
               </ChartCard>
@@ -330,12 +331,12 @@ class MeasurFace extends Component {
               </ChartCard>
             </Col>
             <Col xl={12} xs={24} style={{ marginBottom: 24 }}>
-              <ChartCard title={`自动召测测试  ${tjsj.zdzc}`} contentHeight={350}>
+              <ChartCard title={`自动召测测试`} contentHeight={350}>
                 <div style={{ margin: '0px 0 0 0' }}>
                   <Spin spinning={loading} style={{ background: '#ffffff' }}>
                     {facetree.length === 0 && <Empty style={{ height: '250px' }} />}
                     {facetree.length !== 0 && (
-                      <EdgeLine datas={facetree[0]} height={350} padding={[20, 100, 10, 50]} />
+                      <EdgeLine datas={facetree[0]} height={350} padding={[20, 50, 10, 50]} />
                     )}
                   </Spin>
                 </div>

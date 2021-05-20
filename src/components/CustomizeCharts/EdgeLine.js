@@ -26,10 +26,10 @@ const colormap = new Map([
   ['未招测', 'default'],
 ]);
 const linecolormap = new Map([
-  ['失败', '#f50'],
-  ['成功', '#87d068'],
-  ['未招测', '#666'],
-])
+  ['失败', '#F5222D'],
+  ['成功', '#2e7d32'],
+  ['未召测', '#CECECE'],
+]);
 class EdgeLine extends Component {
   render() {
     const { datas, height, padding } = this.props;
@@ -67,7 +67,7 @@ class EdgeLine extends Component {
           <Coord transpose />
           <View
             data={dv.getAllLinks().map(link => {
-              return ({
+              return {
                 x: [link.source.x, link.target.x],
                 y: [link.source.y, link.target.y],
                 source: link.source.id,
@@ -75,30 +75,39 @@ class EdgeLine extends Component {
                 area: link.target.data.area,
                 state: link.target.data.state,
                 date: link.target.data.date,
-                ip: '172.11.11.11',               // 正式环境用这个：link.target.data.ip
-              })
+                zddz: link.target.data.zddz,
+                ip: '172.11.11.11', // 正式环境用这个：link.target.data.ip
+              };
             })}
           >
             <Tooltip shared>
               {(_, items) => {
                 const { data } = items[0];
-                const { area, date, ip, state } = data;
+                const { area, date, ip, state, zddz } = data;
                 return (
                   <div style={{ padding: '15px 5px' }}>
                     <div style={{ fontWeight: 'bold' }}>{area}</div>
                     <ul className={styles.tooltipul}>
                       <li style={{ margin: '12px 0' }}>
                         <span>召测状态:</span>
-                        <span className={styles.tooltipvalue}> <Badge status={colormap.get(state)} />{state}</span>
+                        <span className={styles.tooltipvalue}>
+                          {' '}
+                          <Badge status={colormap.get(state)} />
+                          {state}
+                        </span>
                       </li>
                       <li style={{ margin: '12px 0' }}>
                         <span>召测时间:</span>
                         <span className={styles.tooltipvalue}>{date}</span>
                       </li>
                       <li style={{ margin: '12px 0' }}>
-                        <span>IP地址:</span>
-                        <span className={styles.tooltipvalue}>{ip}</span>
+                        <span>召测终端:</span>
+                        <span className={styles.tooltipvalue}>{zddz}</span>
                       </li>
+                      {/*<li style={{ margin: '12px 0' }}>*/}
+                      {/*  <span>召测IP:</span>*/}
+                      {/*  <span className={styles.tooltipvalue}>{ip}</span>*/}
+                      {/*</li>*/}
                     </ul>
                   </div>
                 );
@@ -108,9 +117,12 @@ class EdgeLine extends Component {
               type="edge"
               position="x*y"
               shape="line"
-              color={['state', (state) => {
-                return linecolormap.get(state);
-              }]}
+              color={[
+                'state',
+                state => {
+                  return linecolormap.get(state);
+                },
+              ]}
               opacity={0.8}
             />
           </View>
@@ -128,15 +140,18 @@ class EdgeLine extends Component {
             <Tooltip visible={false} />
             <Point
               position="x*y"
-              color={['state', (state) => {
-                return linecolormap.get(state);
-              }]}
+              color={[
+                'state',
+                state => {
+                  return linecolormap.get(state);
+                },
+              ]}
               label={[
                 'area*state*hasChildren',
                 (area, state, hasChildren) => {
                   if (hasChildren === false) {
                     return {
-                      content: `${area}(召测${state})`,
+                      content: `${area}(${state})`,
                       style: {
                         fill: `${linecolormap.get(state)}`,
                       },

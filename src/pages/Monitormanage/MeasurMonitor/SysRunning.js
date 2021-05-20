@@ -113,7 +113,7 @@ class SysRunning extends Component {
             </ChartCard>
           </Col>
           <Col xl={12} xs={24} style={{ marginBottom: 24 }}>
-            <ChartCard title={`数据召测-低压 ${tjsj.fkpb}`} contentHeight={350}>
+            <ChartCard title={`数据召测-低压`} contentHeight={350}>
               {/* <div
                 style={{
                   margin: '10px',
@@ -135,7 +135,7 @@ class SysRunning extends Component {
             </ChartCard>
           </Col>
           <Col xl={12} xs={24} style={{ marginBottom: 24 }}>
-            <ChartCard title={`数据召测-负控配变 ${tjsj.fkpb}`} contentHeight={350}>
+            <ChartCard title={`数据召测-负控配变`} contentHeight={350}>
               {/* <div
                 style={{
                   margin: '10px',
@@ -158,7 +158,7 @@ class SysRunning extends Component {
           </Col>
 
           <Col xl={12} xs={24} style={{ marginBottom: 24 }}>
-            <ChartCard title={`数据召测-厂站 ${tjsj.cz}`} contentHeight={350}>
+            <ChartCard title={`数据召测-厂站`} contentHeight={350}>
               <Spin spinning={loading} style={{ background: '#ffffff' }}>
                 {ZCdowns.length === 0 && <Empty style={{ height: '250px' }} />}
                 {ZCdowns.length > 0 && (

@@ -14,7 +14,7 @@ import Labelline from '@/components/CustomizeCharts/Labelline';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
 const selectoption = [
-  '广西电网公司',
+  // '广西电网公司',
   '南宁供电局',
   '柳州供电局',
   '桂林供电局',
@@ -38,6 +38,8 @@ let tjsj = {
   zdcbl: '', // 自动抄表率
   gk0dcj: '', // 关口0点采集
   gkzdcj: '', // 关口整点点采集
+  sdlfx: '', // 售电量分析
+  gdlfx: '', // 供电量分析
 };
 const dataArr = datas => {
   const newArr = [];
@@ -118,7 +120,7 @@ const changehour = datas => {
   return newArr;
 };
 
-const changesales = datas => {
+const changesales = (datas, type) => {
   if (datas) {
     datas = datas.records;
   }
@@ -126,10 +128,16 @@ const changesales = datas => {
   if (!Array.isArray(datas)) {
     return newArr;
   }
+
+  if (type === 'gdl') {
+    tjsj.gdlfx = moment(datas[0].date).format('YYYY-MM-DD');
+  } else if (type === 'sdl') {
+    tjsj.sdlfx = moment(datas[0].date).format('YYYY-MM-DD');
+  }
   for (let i = 0; i < datas.length; i += 1) {
     const vote = {};
     vote.value = datas[i].rate;
-    vote.date = moment(datas[i].date).format('MM/DD HH:mm');
+    vote.date = moment(datas[i].date).format('HH:mm');
     vote.Max警戒值 = datas[i].alarmMax;
     vote.Min警戒值 = datas[i].alarmMin;
     newArr.push(vote);
@@ -257,8 +265,8 @@ class Collection extends Component {
     const meterreads = celldata(meterread, 'cbl');
     const zeroreads = changedate(zeroread);
     const hourreads = changehour(hourread);
-    const salesdatas = changesales(salesdata);
-    const supplydatas = changesales(supplydata);
+    const salesdatas = changesales(salesdata, 'sdl');
+    const supplydatas = changesales(supplydata, 'gdl');
 
     return (
       <PageHeaderWrapper title="采集指标情况">
@@ -402,7 +410,7 @@ class Collection extends Component {
 
             <Col xl={12} lg={24} style={{ marginBottom: 24 }}>
               <ChartCard
-                title="全网区-售电量分析（昨日售电量-前日售电量)/前日售电量"
+                title={`全网区-售电量分析${tjsj.sdlfx}（昨日售电量-前日售电量)/前日售电量`}
                 action={
                   <Tooltip title="指标说明">
                     <Icon type="info-circle-o" />
@@ -426,7 +434,7 @@ class Collection extends Component {
 
             <Col xl={12} lg={24} style={{ marginBottom: 24 }}>
               <ChartCard
-                title="供电量分析（昨日供电量-前日供电量)/前日供电量"
+                title={`供电量分析${tjsj.gdlfx}（昨日供电量-前日供电量)/前日供电量`}
                 action={
                   <Tooltip title="指标说明">
                     <Icon type="info-circle-o" />
