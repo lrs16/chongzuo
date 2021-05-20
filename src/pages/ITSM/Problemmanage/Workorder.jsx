@@ -214,10 +214,22 @@ function Workorder(props) {
       },
     }).then(res => {
       if (res.code === 200) {
-        message.info(res.msg);
-        router.push(`/ITSM/problemmanage/besolved`)
+        message.success(res.msg);
+        router.push({
+          pathname: `/ITSM/problemmanage/besolveddetail/workorder`,
+          query: {
+            mainId,
+            closetab: true,
+          }
+        });
+        router.push({
+          pathname: `/ITSM/problemmanage/besolved`,
+          query: {
+            pathpush: true,
+          }
+        })
       } else {
-        message.info(res.error);
+        message.success(res.error);
       }
     })
   };
@@ -235,7 +247,7 @@ function Workorder(props) {
       if (res.code === 200) {
         showback = false;
         if (!params2) {
-          message.info('保存成功');
+          message.success('保存成功');
           getInformation();
         }
         // else {
@@ -283,7 +295,7 @@ function Workorder(props) {
           },
         }).then(res => {
           if (res.code === 200) {
-            message.info(res.msg);
+            message.success(res.msg);
             setFiles({ ...files, ischange: false });
             getInformation();
             if (params2) {
@@ -401,8 +413,20 @@ function Workorder(props) {
       },
     }).then(res => {
       if (res.code === 200) {
-        message.info(res.msg);
-        router.push(`/ITSM/problemmanage/besolved`)
+        message.success(res.msg);
+        router.push({
+          pathname: `/ITSM/problemmanage/besolveddetail/workorder`,
+          query: {
+            mainId,
+            closetab: true,
+          }
+        });
+        router.push({
+          pathname: `/ITSM/problemmanage/besolved`,
+          query: {
+            pathpush: true,
+          }
+        });
       } else {
         message.error(res.msg);
       }
@@ -416,8 +440,20 @@ function Workorder(props) {
       payload: { deleteid },
     }).then(res => {
       if (res.code === 200) {
-        message.info(res.msg);
-        router.push({ pathname: `/ITSM/problemmanage/besolved` })
+        message.success(res.msg);
+        router.push({
+          pathname: `/ITSM/problemmanage/besolveddetail/workorder`,
+          query: {
+            mainId,
+            closetab: true,
+          }
+        });
+        router.push({
+          pathname: `/ITSM/problemmanage/besolved`,
+          query: {
+            pathpush: true,
+          }
+        })
       } else {
         message.error(res.msg);
       }
@@ -430,7 +466,7 @@ function Workorder(props) {
       payload: { id },
     }).then(res => {
       if (res.code === 200) {
-        message.info(res.msg);
+        message.success(res.msg);
         showEdit = false;
         currntStatus = 45;
         getInformation();
@@ -549,6 +585,7 @@ function Workorder(props) {
     queryDept();
     sessionStorage.setItem('Processtype', 'problem');
     sessionStorage.setItem('Nextflowmane', '');
+    setTabActiveKey('workorder')
   }, [mainId]);
 
   useEffect(() => {
@@ -607,7 +644,7 @@ function Workorder(props) {
     const taskId = id;
     judgeTimeoutStatus(taskId).then(res => {
       if (res.code === 200 && res.status === 'yes' && res.timeoutMsg === '') {
-        message.info('该故问题单已超时，请填写超时原因...')
+        message.success('该故问题单已超时，请填写超时原因...')
         setModalVisible(true);
         setButtonType(buttype);
       };

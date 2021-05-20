@@ -110,7 +110,7 @@ export default {
               case 0:
                 route.push({
                   pathname: `/ITSM/problemmanage/besolveddetail/workorder`,
-                  query: { id: response.flowTaskId, orderNo: responseId.problemNo }  // 这里要加mainId
+                  query: { id: response.flowTaskId, mainId: response.flowInstId, orderNo: responseId.problemNo, }  // 这里要加mainId
                 });
                 break;
               default:

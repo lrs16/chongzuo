@@ -102,9 +102,11 @@ const BasicLayout = props => {
     if (toptabs.length === 1 && url !== '/ITSM/home') {
       router.push({
         pathname: '/ITSM/home',
+        query: {}
       });
     }
-  }, [])
+  }, []);
+
 
   // 监听列表跳转详情页的路由
   //  待办跳转处理用mainId做为标签id并传编号orderNo用于标签标题显示,查询跳转详情用编号No做为标签id
@@ -142,9 +144,13 @@ const BasicLayout = props => {
         toptabs.push(panels);
         setActiveKey(location.query.mainId);
       };
-
     };
-
+    if (location.query.pathpush && !tabtargetid && !target && !tabtargetpath && menutarget) {
+      const { menuDesc, id, itemPath } = menutarget;
+      const panels = { name: menuDesc, id, itemPath, query: location.query, closable: true };
+      toptabs.push(panels);
+      setActiveKey(id);
+    }
   }, [location])
 
   // 监听关闭页签
@@ -188,6 +194,18 @@ const BasicLayout = props => {
     }
   };
 
+  const handletopLink = (menuItemProps) => {
+    const target = props.route.routes.filter(item => item.path === menuItemProps.itemPath)[0];   // comfig配置的路由
+    const targetpath = target.routes[0].redirect;                                                // 获取此路由下redirect的路由
+    const targetmenu = menulist.filter(item => item.menuUrl === targetpath)[0];                  // 系统管理菜单列表获取redirect路由信息
+    const { id, itemPath } = targetmenu;
+    const targetlink = toptabs.filter(item => item.id === id)[0];                                // 标签中是否已含有redirect的路由
+    if (!targetlink && targetmenu) {
+      const panels = { name: targetmenu.menuDesc, id, itemPath, query: location.query, closable: true };
+      toptabs.push(panels);
+    };
+    setActiveKey(id);
+  };
 
   const handleLink = (menuItemProps) => {
     const { name, id, itemPath } = menuItemProps;
@@ -245,8 +263,7 @@ const BasicLayout = props => {
         if (menuItemProps.isUrl || menuItemProps.children) {
           return defaultDom;
         }
-
-        return <Link to={menuItemProps.path}>{defaultDom}</Link>;
+        return <Link to={menuItemProps.path} onClick={() => handletopLink(menuItemProps)}>{defaultDom}</Link>;
       }}
       menuDataRender={() => topMenuDataRender(menuData)}
       formatMessage={formatMessage}

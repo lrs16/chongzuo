@@ -138,13 +138,6 @@ export default {
           type: 'getsaveuserid',
           payload: response,
         });
-
-        // const responseno = yield call(queryTroubleGetNewno);
-        // yield put({
-        //   type: 'getNewno',
-        //   payload: response,
-        // });
-
         // 故障流程启动成功时，提交表单数据
         const { flowTaskId, flowNodeName } = response; // 用户数据携带的id
         const saveInfo = formValues;
