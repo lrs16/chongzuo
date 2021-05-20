@@ -1,4 +1,5 @@
 import React, { useEffect, useState, createContext, useRef } from 'react';
+import router from 'umi/router';
 import { Form, Button, Card } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { connect } from 'dva';
@@ -123,7 +124,10 @@ function Registration(props) {
   };
 
   const handClose = () => {
-    props.history.push('/ITSM/problemmanage/besolved');
+    router.push({
+      pathname: `/ITSM/problemmanage/registration`,
+      query: { closecurrent: true }
+    });
   };
 
   // 上传附件触发保存
@@ -146,9 +150,9 @@ function Registration(props) {
           <Button type="primary" style={{ marginRight: 8 }} onClick={handleCirculation}>
             保 存
           </Button>
-          {/* <Button type="default" onClick={handClose}>
+          <Button type="default" onClick={() => handClose()}>
             关 闭
-          </Button> */}
+          </Button>
         </>
       }
     >

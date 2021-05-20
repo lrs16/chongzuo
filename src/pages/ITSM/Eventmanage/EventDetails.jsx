@@ -41,6 +41,7 @@ function EventDetails(props) {
   const handleclose = () => {
     router.push({
       pathname: `/ITSM/eventmanage/query`,
+      query: { pathpush: true }
     });
   };
   const handleTabChange = key => {

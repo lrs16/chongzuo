@@ -21,6 +21,7 @@ function Details(props) {
   const handleclose = () => {
     router.push({
       pathname: `/ITSM/demandmanage/query`,
+      query: { pathpush: true }
     });
   };
   const handleTabChange = key => {

@@ -49,7 +49,7 @@ const Registrat = forwardRef((props, ref) => {
     selectdata,
   } = props;
   const { register } = info;
-  const { taskName, taskId, mainId } = location.query;
+  const { taskName, taskId, mainId, orderNo } = location.query;
   const { getFieldDecorator, getFieldsValue, setFieldsValue, validateFields, setFields } = props.form;
   const required = true;
   const [check, setCheck] = useState(false);
@@ -93,16 +93,29 @@ const Registrat = forwardRef((props, ref) => {
   const gethandelvalue = getFieldsValue(['main_eventType', 'main_eventObject']);
 
   const routerRefresh = () => {
-    router.push({
-      pathname: location.pathname,
-      query: {
-        taskName,
-        taskId,
-        mainId,
-        next: sessionStorage.getItem('Nextflowmane'),
-        orderNo: main.eventNo,
-      },
-    });
+    if (orderNo === undefined) {
+      router.push({
+        pathname: location.pathname,
+        query: {
+          taskName,
+          taskId,
+          mainId,
+          next: sessionStorage.getItem('Nextflowmane'),
+        },
+      });
+    } else {
+      router.push({
+        pathname: location.pathname,
+        query: {
+          taskName,
+          taskId,
+          mainId,
+          next: sessionStorage.getItem('Nextflowmane'),
+          orderNo: main.eventNo
+        },
+      });
+    }
+
   };
 
   useEffect(() => {

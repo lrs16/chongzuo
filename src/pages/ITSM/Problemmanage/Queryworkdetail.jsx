@@ -6,6 +6,7 @@ import {
   Collapse,
 } from 'antd';
 import { connect } from 'dva';
+import router from 'umi/router';
 import Link from 'umi/link';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import moment from 'moment';
@@ -65,13 +66,20 @@ function Queryworkdetail(props) {
     setTabActiveKey(key);
   };
 
+  const handleClose = () => { // 返回上一页
+    router.push({
+      pathname: `/ITSM/problemmanage/problemquery`,
+      query: { pathpush: true }
+    });
+  }
+
   return (
     <PageHeaderWrapper
       title={taskName}
       extra={
         <>
-          <Button style={{ marginRight: 8 }}>
-            <Link to="/ITSM/problemmanage/problemquery">返回</Link>
+          <Button style={{ marginRight: 8 }} onClick={() => handleClose()}>
+            返回
           </Button>
         </>
       }

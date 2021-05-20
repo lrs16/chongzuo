@@ -155,9 +155,21 @@ const BasicLayout = props => {
 
   // 监听关闭页签
   useEffect(() => {
-    if (location.query.closetab) {
+    // 工单处理后关闭页签
+    if (location.query.closetab && location.query.mainId) {
       const newtabs = toptabs.filter(item => item.id !== location.query.mainId);
       setTopTabs([...newtabs]);
+    }
+    // 登记关闭页签
+    if (location.query.closecurrent) {
+      const newtabs = toptabs.filter(item => item.itemPath !== location.pathname);
+      setTopTabs([...newtabs]);
+      const end = newtabs.slice(-1);
+      setActiveKey(end[0].id);
+      router.push({
+        pathname: end[0].itemPath,
+        query: { ...end[0].query },
+      });
     }
   }, [location.query])
   //  console.log(toptabs)

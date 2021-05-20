@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
+import router from 'umi/router';
 import moment from 'moment';
 import {
   Form,
@@ -82,7 +83,10 @@ function Querylistdetails(props) {
   }, [id]);
 
   const handleClose = () => { // 返回上一页
-    history.goBack();
+    router.push({
+      pathname: `/ITSM/demandmanage/query`,
+      query: { pathpush: true }
+    });
   }
 
   const callback = key => {

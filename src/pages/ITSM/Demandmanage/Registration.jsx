@@ -1,5 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { connect } from 'dva';
+import router from 'umi/router';
 import { Card, Button, Spin } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import SysDict from '@/components/SysDict';
@@ -107,6 +108,13 @@ function Registration(props) {
     }
   }, [files]);
 
+  const handleclose = () => {
+    router.push({
+      pathname: `/ITSM/demandmanage/registration`,
+      query: { closecurrent: true }
+    });
+  };
+
   const operations = (
     <>
       <Button type="primary" style={{ marginRight: 8 }} onClick={() => getregistrat('save')}>
@@ -117,7 +125,7 @@ function Registration(props) {
           流转
         </Button>
       </SelectUser> */}
-      {/* <Button type="default">关闭</Button> */}
+      <Button type="default" onClick={() => handleclose()}>关闭</Button>
     </>
   );
 

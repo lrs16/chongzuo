@@ -188,8 +188,8 @@ function Registration(props) {
 
   const handleclose = () => {
     router.push({
-      pathname: `/ITSM/eventmanage/to-do`,
-      query: { pathpush: true }
+      pathname: `/ITSM/eventmanage/registration`,
+      query: { closecurrent: true }
     });
   };
 
@@ -213,9 +213,9 @@ function Registration(props) {
           </Button>
         </SelectUser>
       )} */}
-      {/* <Button type="default" onClick={() => handleclose()}>
+      <Button type="default" onClick={() => handleclose()}>
         关 闭
-      </Button> */}
+      </Button>
     </>
   );
 

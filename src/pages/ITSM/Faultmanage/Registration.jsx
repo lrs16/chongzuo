@@ -104,9 +104,10 @@ function Registration(props) {
   }, []);
 
   const close = () => {
-    // 关闭
-    resetFields();
-    router.push(`/ITSM/faultmanage/todolist`);
+    router.push({
+      pathname: `/ITSM/faultmanage/registration`,
+      query: { closecurrent: true }
+    });
   };
 
   const handleSave = () => {
@@ -234,9 +235,9 @@ function Registration(props) {
       <Button type="primary" style={{ marginRight: 8 }} onClick={handleSave}>
         保存
       </Button>
-      {/* <Button type="default" onClick={close}>
+      <Button type="default" onClick={() => close()}>
         关闭
-      </Button> */}
+      </Button>
     </>
   );
 

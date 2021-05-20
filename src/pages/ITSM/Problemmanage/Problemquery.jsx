@@ -31,6 +31,7 @@ const columns = [
           query: {
             id: record.id,
             taskName: record.statuscn,
+            No: text,
           },
         });
       };
