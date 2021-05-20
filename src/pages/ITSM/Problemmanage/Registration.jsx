@@ -146,9 +146,9 @@ function Registration(props) {
           <Button type="primary" style={{ marginRight: 8 }} onClick={handleCirculation}>
             保 存
           </Button>
-          <Button type="default" onClick={handClose}>
+          {/* <Button type="default" onClick={handClose}>
             关 闭
-          </Button>
+          </Button> */}
         </>
       }
     >

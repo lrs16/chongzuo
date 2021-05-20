@@ -117,7 +117,7 @@ function Registration(props) {
           流转
         </Button>
       </SelectUser> */}
-      <Button type="default">关闭</Button>
+      {/* <Button type="default">关闭</Button> */}
     </>
   );
 

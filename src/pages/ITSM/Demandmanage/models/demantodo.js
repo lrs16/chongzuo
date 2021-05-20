@@ -93,6 +93,7 @@ export default {
         });
         router.push({
           pathname: `/ITSM/demandmanage/to-do`,
+          query: { pathpush: true }
         });
       }
     },
@@ -122,6 +123,7 @@ export default {
         });
         router.push({
           pathname: `/ITSM/demandmanage/to-do`,
+          query: { pathpush: true }
         });
       }
     },
@@ -139,6 +141,7 @@ export default {
         });
         router.push({
           pathname: `/ITSM/demandmanage/to-do`,
+          query: { pathpush: true }
         });
       }
     },
@@ -156,6 +159,7 @@ export default {
         });
         router.push({
           pathname: `/ITSM/demandmanage/to-do`,
+          query: { pathpush: true }
         });
       }
     },
