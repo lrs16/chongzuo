@@ -26,6 +26,12 @@ const { Option } = Select;
 const RadioGroup = Radio.Group;
 let selectCascader;
 
+const registerLevelmap = new Map([
+  ['一般', '001'],
+  ['重大', '002'],
+  ['紧急', '003'],
+]);
+
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
@@ -113,6 +119,7 @@ function Registration(props) {
           ...formValues,
           registerOccurTime: formValues.registerOccurTime.format('YYYY-MM-DD HH:mm:ss'),
           registerTime: formValues.registerTime.format('YYYY-MM-DD HH:mm:ss'),
+          registerLevelCode: registerLevelmap.get(formValues.registerLevel),    // 超时用：一般001，重大002，紧急003
           editState: 'add',
           registerAttachments: JSON.stringify(files.arr),
           type: selectCascader
@@ -376,7 +383,7 @@ function Registration(props) {
                       message: '请选择',
                     },
                   ],
-                  initialValue: '',
+                  initialValue: '一般',
                 })(
                   <Select placeholder="请选择">
                     {priority.map(obj => [
