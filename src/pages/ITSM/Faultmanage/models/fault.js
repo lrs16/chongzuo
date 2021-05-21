@@ -1,6 +1,7 @@
 import router from 'umi/router';
 import { message } from 'antd';
 import {
+  startandsave,
   queryfaultTodoList, // 故障待办list
   queryfaultSearchList, // 故障查询list
   queryFaultDetailList, // 故障明细list
@@ -131,33 +132,23 @@ export default {
 
     // 保存用户数据携带的id 故障流程启动
     *getSaveUserId({ payload: { formValues } }, { call, put }) {
-      const response = yield call(querySaveUserId);
-      // console.log(response, '故障流程启动！！');
+      const response = yield call(startandsave, formValues); // querySavefaultRegister登记保存
+      // 保存成功后的操作
       if (response.code === 200) {
-        yield put({
-          type: 'getsaveuserid',
-          payload: response,
+        // 用户数据携带的id 跳转待办详情页
+        message.success(response.msg);
+        router.push({
+          pathname: `/ITSM/faultmanage/registration`,
+          query: { tabid: sessionStorage.getItem('tabid'), closetab: true }
+        })
+        const { flowInstId, troubleNo, flowTaskId, flowNodeName } = response;
+        router.push({
+          pathname: `/ITSM/faultmanage/todolist/record`,
+          query: { id: flowTaskId, mainId: flowInstId, orderNo: troubleNo, },
+          paneKey: flowNodeName,
         });
-        // 故障流程启动成功时，提交表单数据
-        const { flowTaskId, flowNodeName } = response; // 用户数据携带的id
-        const saveInfo = formValues;
-        saveInfo.taskId = flowTaskId;
-        // saveInfo.no = responseno.troubleNo;
-        if (response.code === 200) {
-          const resRegister = yield call(querySavefaultRegister, saveInfo); // querySavefaultRegister登记保存
-          // 保存成功后的操作
-          if (resRegister.code === 200) {
-            // 用户数据携带的id 跳转待办详情页
-            message.success(resRegister.msg);
-            router.push({
-              pathname: `/ITSM/faultmanage/todolist/record`,
-              query: { id: flowTaskId, mainId: response.flowInstId },
-              paneKey: flowNodeName,
-            });
-          } else {
-            message.error(resRegister.msg);
-          }
-        }
+      } else {
+        message.error(response.msg);
       }
     },
 

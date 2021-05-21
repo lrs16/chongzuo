@@ -32,7 +32,11 @@ export default {
       const response = yield call(DemandStart, payload);
       if (response.code === 200) {
         message.success('操作成功', 2);
-        const { taskId, processId } = response.data;
+        const { taskId, processId, demandId } = response.data;
+        router.push({
+          pathname: `/ITSM/demandmanage/registration`,
+          query: { tabid: sessionStorage.getItem('tabid'), closetab: true }
+        })
         router.push({
           pathname: `/ITSM/demandmanage/to-do/record/workorder`,
           query: {
@@ -40,6 +44,7 @@ export default {
             mainId: processId,
             taskId,
             result: '1',
+            orderNo: demandId,
           },
         });
       }

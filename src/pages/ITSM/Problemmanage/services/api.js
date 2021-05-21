@@ -16,6 +16,14 @@ export async function problemList() {
   return request(`/api/problemList`);
 }
 
+// 问题管理保存（整合了start、getNewNo、saveFlow三个方法为一个）
+export async function startandsave(params) {
+  return request(`/problem/flow/saveProblem`, {
+    method: 'POST',
+    body: JSON.stringify(params),
+  });
+}
+
 //  保存用户数据携带的id
 export async function getAddid() {
   return request(`/problem/flow/start`);
@@ -57,8 +65,8 @@ export async function backReason(id, values, userIds) {
     data: {
       ...values,
       userIds,
-      taskId:id,
-      result:-1
+      taskId: id,
+      result: -1
     },
     requestType: 'form',
   });
@@ -120,16 +128,16 @@ export async function queryList(params) {
 
 // // 处理率查询列表查询
 export async function handlequeryList(params) {
-  switch(params.sign) {
+  switch (params.sign) {
     case 'problem':
-      return request(`/problem/stat/getOrderByHandledList`,{
-        method:'POST',
-        body:JSON.stringify(params)
+      return request(`/problem/stat/getOrderByHandledList`, {
+        method: 'POST',
+        body: JSON.stringify(params)
       })
     default:
-      return request(`/problem/stat/getOrderByTimeList`,{
-        method:'POST',
-        body:JSON.stringify(params)
+      return request(`/problem/stat/getOrderByTimeList`, {
+        method: 'POST',
+        body: JSON.stringify(params)
       })
   }
 }
@@ -192,24 +200,24 @@ export async function querkeyVal(dictModule, dictType) {
 
 //  处理率的列表
 export async function handleGratelist(params) {
-  return request(`/problem/stat/getOrderByHandleProgress`,{
-    method:'POST',
-    body:JSON.stringify(params)
+  return request(`/problem/stat/getOrderByHandleProgress`, {
+    method: 'POST',
+    body: JSON.stringify(params)
   })
 }
 
 //  问题超时统计查询页的列表
 export async function timeoutlist(params) {
-  return request(`/problem/stat/getOrderByTimeList`,{
-    method:'POST',
-    body:JSON.stringify(params)
+  return request(`/problem/stat/getOrderByTimeList`, {
+    method: 'POST',
+    body: JSON.stringify(params)
   })
 }
 
 //  导入Excel表格
 export async function exportExcel() {
-  return request(`/problem/flow/excelImportTemplateDown`,{
-    responseType:'blob'
+  return request(`/problem/flow/excelImportTemplateDown`, {
+    responseType: 'blob'
   });
 }
 

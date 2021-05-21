@@ -111,7 +111,7 @@ function Registration(props) {
   const handleclose = () => {
     router.push({
       pathname: `/ITSM/demandmanage/registration`,
-      query: { closecurrent: true }
+      query: { tabid: sessionStorage.getItem('tabid'), closecurrent: true, }
     });
   };
 

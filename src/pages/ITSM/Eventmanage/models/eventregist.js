@@ -46,6 +46,10 @@ export default {
         if (registres.code === 200) {
           message.success(registres.msg, 5);
           router.push({
+            pathname: `/ITSM/eventmanage/registration`,
+            query: { tabid: sessionStorage.getItem('tabid'), closetab: true }
+          })
+          router.push({
             pathname: `/ITSM/eventmanage/to-do/record/workorder`,
             query: {
               taskName: register_selfhandle === '1' ? '处理中' : '已登记',

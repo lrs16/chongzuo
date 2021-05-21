@@ -106,7 +106,7 @@ function Registration(props) {
   const close = () => {
     router.push({
       pathname: `/ITSM/faultmanage/registration`,
-      query: { closecurrent: true }
+      query: { tabid: sessionStorage.getItem('tabid'), closecurrent: true, }
     });
   };
 

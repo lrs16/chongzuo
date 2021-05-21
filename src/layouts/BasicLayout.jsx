@@ -51,6 +51,14 @@ const alonepath = [
   { path: '/ITSM/problemmanage/problemquery/detail' },
   { path: '/ITSM/demandmanage/to-do/record/workorder' },
   { path: '/ITSM/demandmanage/query/details' },
+];
+
+// 多条登记
+const multiplepath = [
+  { path: '/ITSM/eventmanage/registration', type: 'event' },
+  { path: '/ITSM/faultmanage/registration', type: 'fault' },
+  { path: '/ITSM/problemmanage/registration', type: 'problem' },
+  { path: '/ITSM/demandmanage/registration', type: 'demand' },
 ]
 
 const noMatch = (
@@ -93,6 +101,7 @@ const BasicLayout = props => {
   } = props;
 
   const url = location.pathname;
+  const multipleurl = multiplepath.filter(item => item.path === location.pathname)[0];
 
   const [toptabs, setTopTabs] = useState([...homepane]);
   const [activeKey, setActiveKey] = useState('1362219140546301953');
@@ -107,22 +116,35 @@ const BasicLayout = props => {
     }
   }, []);
 
+  // 打开最末的标签
+  const lasttabactive = (tabs) => {
+    const end = tabs.slice(-1);
+    setActiveKey(end[0].id);
+    router.push({
+      pathname: end[0].itemPath,
+      query: { ...end[0].query },
+    });
+  }
+
 
   // 监听列表跳转详情页的路由,处理完成路转回待办列表
   //  待办跳转处理用mainId做为标签id并传编号orderNo用于标签标题显示,查询跳转详情用编号No做为标签id
   useEffect(() => {
     const tabtargetid = toptabs.filter(item => location.query.No ? item.id === location.query.No : item.id === location.query.mainId)[0];      //  已有mindId或No标签
-    const tabtargetpath = toptabs.filter(item => item.itemPath === url)[0];                //  已有非工单处理路由
-    const target = alonepath.filter(item => item.path === url)[0];                         //  属于工单处理路由
-    const menutarget = menulist.filter(item => item.menuUrl === url)[0];                   //  系统管理菜单列表有该路由
-    // 已有标签
-    if (tabtargetpath) {
+    const tabtargetpath = toptabs.filter(item => item.itemPath === url)[0];                     //  已有非工单处理路由
+    const target = alonepath.filter(item => item.path === url)[0];                              //  属于工单处理路由
+    const menutarget = menulist.filter(item => item.menuUrl === url)[0];                        //  系统管理菜单列表有该路由
+    const targetmultiple = multiplepath.filter(item => item.path === location.pathname)[0];         //  属于登记类打开同一个链接多页签
+    // 已有标签,且不属于登记类
+    if (tabtargetpath && !targetmultiple) {
       setActiveKey(tabtargetpath.id);
     };
     if (tabtargetid) {
+      // 已有标签的工单详情或工单
       const id = location.query.No ? location.query.No : location.query.mainId;
       setActiveKey(id);
     } else if (target && menutarget) {
+      // 属于工单详情
       if (location.query.No) {
         const panels = {
           name: `${menutarget.menuDesc}${location.query.No}`,
@@ -134,6 +156,7 @@ const BasicLayout = props => {
         toptabs.push(panels);
         setActiveKey(location.query.No);
       } else if (location.query.mainId) {
+        // 属于工单
         const panels = {
           name: `${menutarget.menuDesc}${location.query.orderNo}`,
           id: location.query.mainId,
@@ -145,6 +168,7 @@ const BasicLayout = props => {
         setActiveKey(location.query.mainId);
       };
     };
+    // 处理完毕且待办列表已关闭需跳转回待办列表，添加待办列表新签标
     if (location.query.pathpush && !tabtargetid && !target && !tabtargetpath && menutarget) {
       const { menuDesc, id, itemPath } = menutarget;
       const panels = { name: menuDesc, id, itemPath, query: location.query, closable: true };
@@ -153,7 +177,7 @@ const BasicLayout = props => {
     }
   }, [location])
 
-  // 监听关闭页签
+  // 关闭页签
   useEffect(() => {
     // 工单处理后关闭页签
     if (location.query.closetab && location.query.mainId) {
@@ -161,23 +185,23 @@ const BasicLayout = props => {
       setTopTabs([...newtabs]);
     }
     // 登记关闭页签
-    if (location.query.closecurrent) {
-      const newtabs = toptabs.filter(item => item.itemPath !== location.pathname);
+    if (location.query.closecurrent && location.query.tabid) {
+      const newtabs = toptabs.filter(item => item.id !== location.query.tabid);
       setTopTabs([...newtabs]);
-      const end = newtabs.slice(-1);
-      setActiveKey(end[0].id);
-      router.push({
-        pathname: end[0].itemPath,
-        query: { ...end[0].query },
-      });
+      lasttabactive(newtabs)
+    }
+    if (location.query.closetab && location.query.tabid) {
+      const newtabs = toptabs.filter(item => item.id !== location.query.tabid);
+      setTopTabs([...newtabs]);
+      // lasttabactive(newtabs)
     }
   }, [location.query])
   //  console.log(toptabs)
 
   const callback = (key) => {
-    setActiveKey(key);
     const target = toptabs.filter(item => item.id === key)[0];
     if (target) {
+      setActiveKey(key);
       router.push({
         pathname: target.itemPath,
         query: { ...target.query },
@@ -190,12 +214,7 @@ const BasicLayout = props => {
     if (panes.length) {
       setTopTabs([...panes]);
       if (activeKey === targetKey) {
-        const end = panes.slice(-1);
-        setActiveKey(end[0].id);
-        router.push({
-          pathname: end[0].itemPath,
-          query: { ...end[0].query },
-        });
+        lasttabactive(panes);
       }
     };
 
@@ -222,11 +241,28 @@ const BasicLayout = props => {
   const handleLink = (menuItemProps) => {
     const { name, id, itemPath } = menuItemProps;
     const target = toptabs.filter(item => item.id === id)[0];
-    if (!target) {
-      const panels = { name, id, itemPath, query: location.query, closable: true };
+    const targetmultiple = multiplepath.filter(item => item.path === itemPath)[0];
+    if (!targetmultiple) {
+      // 非登记类打开单页签
+      if (!target) {
+        const panels = { name, id, itemPath, query: location.query, closable: true };
+        toptabs.push(panels);
+      } else {
+        router.push({
+          pathname: target.itemPath,
+          query: { ...target.query },
+        });
+      };
+      setActiveKey(id);
+    } else {
+      // 登记类打开相同多页签
+      const targettype = toptabs.filter(item => item.type === targetmultiple.type);
+      const num = targettype.length;
+      const endid = num === 0 ? 0 : Number(targettype.slice(-1)[0].id.replace(/[^0-9]/ig, "")) + 1;
+      const panels = { name, type: targetmultiple.type, id: `${targetmultiple.type}${endid}`, itemPath, query: location.query, closable: true };
       toptabs.push(panels);
+      lasttabactive(toptabs);
     };
-    setActiveKey(id);
   };
 
   useEffect(() => {
@@ -241,6 +277,11 @@ const BasicLayout = props => {
       });
     }
   }, []);
+
+  // 缓存tabid
+  useEffect(() => {
+    sessionStorage.setItem('tabid', activeKey);
+  }, [activeKey]);
 
   // 获取后端路由后为菜单添加用户权限,如果是"/"从config中获取rediret路由再获取该路由权限
   const authorized = getAuthorityFromRouter(menulist, props.route.routes, location.pathname);
@@ -329,21 +370,31 @@ const BasicLayout = props => {
               type='editable-card'
               onChange={(key) => callback(key)}
               onEdit={onEdit}
-              style={{ margin: '0 -24px', position: 'fixed', top: 0, zIndex: 99, width: '100%', backgroundColor: '#fff' }}
+              style={{ margin: '-24px -24px 0 ', backgroundColor: '#fff' }}
             >
               {toptabs.map(obj => [
                 <TabPane
                   tab={obj.name}
                   key={obj.id}
                   closable={obj.closable}
-                />,
+                >
+                  <Authorized authority={Userauth} noMatch={noMatch}>
+                    {multipleurl && (
+                      <div style={{ padding: '0 24px 0 24px', marginTop: 8, background: '#f1f1f1' }}>
+                        {children}
+                      </div>
+                    )}
+                  </Authorized>
+                </TabPane>,
               ])}
             </Tabs>
             <Authorized authority={Userauth} noMatch={noMatch}>
               {/* <PageTab>{children}</PageTab> */}
-              <div style={{ marginTop: 64 }}>
-                {children}
-              </div>
+              {!multipleurl && (
+                <div style={{ marginTop: 10 }}>
+                  {children}
+                </div>
+              )}
             </Authorized>
           </>
         )}
@@ -374,7 +425,7 @@ const BasicLayout = props => {
           </>
         )}
       </ProLayout>
-    </ProLayout>
+    </ProLayout >
   );
 };
 

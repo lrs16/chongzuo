@@ -61,6 +61,13 @@ export async function querySaveUserId() {
   return request(`/trouble/flow/start`);
 }
 
+// 故障管理保存(整合了start、getNewNo、saveFlow三个方法为一个)
+export async function startandsave(params) {
+  return request(`/trouble/flow/saveTrouble`, {
+    method: 'POST',
+    body: JSON.stringify(params),
+  });
+}
 // 故障登记保存
 export async function querySavefaultRegister(params) {
   return request(`/trouble/flow/saveFlow`, {

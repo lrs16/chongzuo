@@ -1,4 +1,5 @@
-import route from 'umi/router';
+import router from 'umi/router';
+import { message } from 'antd';
 import {
   queryCurrent,
   problemList,
@@ -26,7 +27,8 @@ import {
   besolveListdownload,
   handleGratelist,
   timeoutlist,
-  exportExcel
+  exportExcel,
+  startandsave
 } from '../services/api';
 
 export default {
@@ -86,38 +88,20 @@ export default {
       });
     },
     //  登记保存
-    *getAddid({ payload }, { call, put }) {
-      const response = yield call(getAddid);
+    *getAddid({ payload }, { call }) {
+      const response = yield call(startandsave, payload);
+      console.log(response)
       if (response.code === 200) {
-        yield put({
-          type: 'getid',
-          payload: response,
+        message.success(response.msg);
+        router.push({
+          pathname: `/ITSM/faultmanage/registration`,
+          query: { tabid: sessionStorage.getItem('tabid'), closetab: true }
         });
-
-        const responseId = yield call(getNewno);
-        if (responseId.code === 200) {
-          yield put({
-            type: 'getNewno',
-            payload: response,
-          });
-          const saveiInfo = payload;
-          saveiInfo.taskId = response.flowTaskId;
-          saveiInfo.no = responseId.problemNo;
-
-          const resRegister = yield call(saveRegister, saveiInfo);
-          if (resRegister.code === 200) {
-            switch (payload.jumpType) {
-              case 0:
-                route.push({
-                  pathname: `/ITSM/problemmanage/besolveddetail/workorder`,
-                  query: { id: response.flowTaskId, mainId: response.flowInstId, orderNo: responseId.problemNo, }  // 这里要加mainId
-                });
-                break;
-              default:
-                break;
-            }
-          }
-        }
+        const { flowInstId, problemNo, flowTaskId } = response;
+        router.push({
+          pathname: `/ITSM/problemmanage/besolveddetail/workorder`,
+          query: { id: flowTaskId, mainId: flowInstId, orderNo: problemNo, }  // 这里要加mainId
+        });
       }
     },
 

@@ -41,7 +41,6 @@ function Registration(props) {
     userinfo,
     antoArr,
   } = props;
-  const [show, setShow] = useState(false);
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
   const RegistratRef = useRef();
 
@@ -99,23 +98,20 @@ function Registration(props) {
   }, []);
 
   //  点击保存触发事件
-  const handlesubmit = jumpType => {
-    RegistratRef.current.validateFields((err, values) => {
-      if (jumpType ? !err : true) {
-        dispatch({
-          type: 'problemmanage/getAddid',
-          payload: {
-            ...values,
-            registerTime: values.registerTime.format('YYYY-MM-DD HH:mm:ss'),
-            registerOccurTime: values.registerOccurTime.format('YYYY-MM-DD HH:mm:ss'),
-            registerExpectTime: values.registerExpectTime.format('YYYY-MM-DD HH:mm:ss'),
-            registerAttachments: files.ischange ? JSON.stringify(files.arr) : null,
-            importance: Number(values.importance) ? values.importance : '001',
-            jumpType,
-            editState: 'add'
-          },
-        });
-      }
+  const handlesubmit = () => {
+    RegistratRef.current.validateFields((_, values) => {
+      dispatch({
+        type: 'problemmanage/getAddid',
+        payload: {
+          ...values,
+          registerTime: values.registerTime.format('YYYY-MM-DD HH:mm:ss'),
+          registerOccurTime: values.registerOccurTime.format('YYYY-MM-DD HH:mm:ss'),
+          registerExpectTime: values.registerExpectTime.format('YYYY-MM-DD HH:mm:ss'),
+          registerAttachments: files.ischange ? JSON.stringify(files.arr) : null,
+          importance: Number(values.importance) ? values.importance : '001',
+          editState: 'add'
+        },
+      });
     });
   };
 
@@ -126,7 +122,7 @@ function Registration(props) {
   const handClose = () => {
     router.push({
       pathname: `/ITSM/problemmanage/registration`,
-      query: { closecurrent: true }
+      query: { tabid: sessionStorage.getItem('tabid'), closecurrent: true, }
     });
   };
 
@@ -161,7 +157,6 @@ function Registration(props) {
           <Registrat
             formItemLayout={formItemLayout}
             forminladeLayout={forminladeLayout}
-            show={show}
             ref={RegistratRef}
             list={list}
             useInfo={userinfo}

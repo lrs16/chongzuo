@@ -179,6 +179,7 @@ function Registration(props) {
     }
   }, [registratfiles]);
 
+
   // 自行处理上传附件触发保存
   useEffect(() => {
     if (handlefiles.ischange) {
@@ -189,7 +190,7 @@ function Registration(props) {
   const handleclose = () => {
     router.push({
       pathname: `/ITSM/eventmanage/registration`,
-      query: { closecurrent: true }
+      query: { tabid: sessionStorage.getItem('tabid'), closecurrent: true, }
     });
   };
 
