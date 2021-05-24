@@ -158,7 +158,7 @@ function Besolved(props) {
         handleDeptId,
         addTimeBegin,
         addTimeEnd,
-        currentNode,
+        currentNode:values.currentNode?values.currentNode:currentNode,
         pageNum: page,
         pageSize: paginations.pageSize
       },
@@ -237,7 +237,7 @@ function Besolved(props) {
             handleDeptId,
             addTimeBegin,
             addTimeEnd,
-            currentNode,
+            currentNode:values.currentNode?values.currentNode:currentNode,
           }
         }).then(res => {
           const filename = `问题查询_${moment().format('YYYY-MM-DD HH:mm')}.xls`;

@@ -75,15 +75,25 @@ function SoftReport(props) {
   const required = true;
   const saveformRef = useRef();
   const developmentformRef = useRef();
+  const thisWeekitsmRef = useRef();
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
-  const [tableIndex,setTableIndex] = useState('1')
+  const [tableIndex, setTableIndex] = useState('1')
   //  保存表单
   const softReportform = () => {
-    saveformRef.current.validateFields((err,value)=> {
+    console.log(1)
+    saveformRef.current.validateFields((err, value) => {
+      console.log('value: ', value);
       // console.log('value1: ', value);
-      developmentformRef.current.validateFields((err,value)=> {
-        // console.log('value2: ', value);
-      })
+    })
+
+    developmentformRef.current.validateFields((err, value) => {
+      console.log('value: ', value);
+      // console.log('value2: ', value);
+    })
+
+    thisWeekitsmRef.current.validateFields((err, value) => {
+      console.log('value: ', value);
+      // console.log('value2: ', value);
     })
   }
 
@@ -189,9 +199,14 @@ function SoftReport(props) {
     return current > moment().endOf('day')
   }
 
+  const searchNumber = (value) => {
+    console.log('value: ', value);
+
+  }
   // 上传删除附件触发保存
   useEffect(() => {
     if (files.ischange) {
+      console.log(11)
       softReportform();
     }
   }, [files]);
@@ -202,12 +217,12 @@ function SoftReport(props) {
       case '1':
         console.log(1)
         break;
-    
+
       default:
         break;
     }
   }, [tableIndex]);
-  
+
   // 上传删除附件触发保存
   useEffect(() => {
     maintenanceTable();
@@ -236,7 +251,7 @@ function SoftReport(props) {
 
   //  保存第二表格
 
-  const handleSavedevelopment = (saveParams,rowId,params) => {
+  const handleSavedevelopment = (saveParams, rowId, params) => {
     console.log('params: ', params);
     // console.log('saveParams: ', saveParams);
     // console.log('rowId: ', rowId);
@@ -268,9 +283,8 @@ function SoftReport(props) {
         {/* 一本周运维情况综述 */}
         {
           loading === false && (
-            <>
-              <Form {...formItemLayout}>
-                <Row>
+              <Row>
+                <Form>
                   <Col span={8}>
                     <Form.Item label='周报名称'>
                       {getFieldDecorator('params1', {
@@ -286,10 +300,8 @@ function SoftReport(props) {
                         )}
                     </Form.Item>
                   </Col>
-                </Row>
 
-                <Row>
-                  <Col span={8}>
+                  <Col span={17} {...formItemLayout}>
                     <Form.Item label='起始时间'>
                       {getFieldDecorator('time1', {
                         initialValue: moment(starttime)
@@ -300,9 +312,9 @@ function SoftReport(props) {
                         onChange={onChange}
                       />)}
                     </Form.Item>
-                  </Col>
 
-                  <Col span={8}>
+                    {/* <p style={{ display: 'inline', marginRight: 8 }}>-</p> */}
+
                     <Form.Item label=''>
                       {
                         getFieldDecorator('time2', {
@@ -316,9 +328,10 @@ function SoftReport(props) {
                       }
                     </Form.Item>
                   </Col>
+                  </Form>
                 </Row>
-
-
+          )
+                }
                 {/* <p></p> */}
 
 
@@ -326,7 +339,6 @@ function SoftReport(props) {
 
 
 
-              </Form>
               < ThisweekMaintenance
                 formItemLayout={formItemLayout}
                 forminladeLayout={forminladeLayout}
@@ -345,7 +357,7 @@ function SoftReport(props) {
                 developmentList={developmentList}
                 submitdevelopmentlist={submitdevelopmentlist}
                 ref={developmentformRef}
-                handleSavedevelopment={(newValue,editId,params) => handleSavedevelopment(newValue,editId,params)}
+                handleSavedevelopment={(newValue, editId, params) => handleSavedevelopment(newValue, editId, params)}
                 handleDelete={(deleteId => handleDelete(deleteId))}
                 ChangeFiles={(newvalue) => {
                   setFiles(newvalue)
@@ -365,6 +377,11 @@ function SoftReport(props) {
               <ThisWeekitsm
                 forminladeLayout={forminladeLayout}
                 thisWeekitsmlist={thisWeekitsmlist}
+                ref={thisWeekitsmRef}
+                searchNumber={(searchParams) => searchNumber(searchParams)}
+                ChangeFiles={(newvalue) => {
+                  setFiles(newvalue);
+                }}
               />
 
               {/* 五、软件作业完成情况 */}
@@ -391,10 +408,7 @@ function SoftReport(props) {
                 nextweekHomeworklist={nextweekHomeworklist}
               />
 
-            </>
-          )
-        }
-
+      
 
       </Card>
     </PageHeaderWrapper>

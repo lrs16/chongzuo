@@ -105,7 +105,7 @@ const TaskExecute = React.forwardRef((props, ref) => {
               rules: [
                 {
                   required,
-                  message: '请输入审核时间'
+                  message: '请输入实际开始时间'
                 }
               ],
               initialValue: execute.startTime === null ? moment(new Date()) : moment(execute.startTime),
@@ -126,7 +126,7 @@ const TaskExecute = React.forwardRef((props, ref) => {
               rules: [
                 {
                   required,
-                  message: '请输入审核时间'
+                  message: '请输入实际结束时间'
                 }
               ],
               initialValue: execute.endTime === null ? moment(new Date()) : moment(execute.endTime),

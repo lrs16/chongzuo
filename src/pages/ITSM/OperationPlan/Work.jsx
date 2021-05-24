@@ -45,7 +45,7 @@ const forminladeLayout = {
   },
 };
 
-let headTitle;
+
 
 export const FatherContext = createContext();
 function Work(props) {
@@ -71,6 +71,8 @@ function Work(props) {
     loading
   } = props;
   let operationPersonSelect;
+  let headTitle = '作业计划填写';
+
   const { data } = openFlowList;
   const { edit } = openFlowList;
 
@@ -81,6 +83,13 @@ function Work(props) {
       router.push({
         pathname: `/ITSM/operationplan/myoperationplan/`,
       });
+    }
+  
+  }
+
+  if(loading === false && openFlowList.code !== -1) {
+    if((data && data.length && edit.main !== undefined) || delay) {
+      headTitle = '作业计划填报'
     }
   }
 
@@ -152,14 +161,17 @@ function Work(props) {
   }
 
   //  保存统一接口
-  const saveApi = (params) => {
+  const saveApi = (params,tobatch) => {
     return dispatch({
       type: 'processmodel/formSave',
       payload: params
     }).then(res => {
       if (res.code === 200) {
-        message.info(res.msg);
-        getInformation();
+        if(tobatch){
+          getInformation();
+        } else {
+          message.info(res.msg);
+        }
       } else {
         message.error(res.msg);
       }
@@ -188,7 +200,7 @@ function Work(props) {
   }
 
   //  登记保存
-  const fillinSave = (params) => {
+  const fillinSave = (params,tobatch) => {
     SaveRef.current.validateFields((err, values) => {
       if (params ? !err : true) {
         const result = {
@@ -205,7 +217,7 @@ function Work(props) {
           main_id: edit.main.id,
           mainId,
         }
-        saveApi(result);
+        saveApi(result,tobatch);
         if (params) {
           setUserVisible(true);
         }
@@ -234,13 +246,13 @@ function Work(props) {
   }
 
   //  判断是属于那个保存状态下
-  const handleSave = (params) => {
+  const handleSave = (params,tobatch) => {
     if (openFlowList && openFlowList.edit.execute !== undefined && checkStatus === '已审核') {
       executeSave();
     }
 
     if (openFlowList && openFlowList.edit.main !== undefined) {
-      fillinSave(params);
+      fillinSave(params,tobatch);
     }
 
     if (auditLink) {
@@ -351,7 +363,6 @@ function Work(props) {
     SaveRef.current.validateFields((err, value) => {
       const params = value;
       delete params.execute_operationUnit;
-      console.log('params: ', params);
 
       if (!err) {
         return dispatch({
@@ -482,7 +493,7 @@ function Work(props) {
 
           {
             loading === false && taskResult && taskResult.length && !delay && (openFlowList && edit.main !== undefined) && taskResult && taskResult.length &&(
-              <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleSave(true)}>
+              <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleSave(true,'tobatch')}>
                 送审
               </Button>
             )

@@ -53,14 +53,6 @@ const developmentData = [
     params2: 'params2',
     params3: 'params3'
   },
-  {
-    id:'1',
-    date: 'date',
-    date1: 'date1',
-    params1: 'params1',
-    params2: 'params2',
-    params3: 'params3'
-  },
 ];
 
 const submitdevelopmentData = [
@@ -68,11 +60,6 @@ const submitdevelopmentData = [
     num1: 'num1',
     num2: 'num2',
     num3: '否',
-  },
-  {
-    num1: 'num1',
-    num2: 'num2',
-    num3: '是',
   },
 ];
 
@@ -143,6 +130,7 @@ const thisWeekitsm = [
 
 const completionfirstlyTable = [
   {
+    id:1,
     ww11:'ww11',
     ww22:'ww22',
     ww33:'ww33',
@@ -152,6 +140,7 @@ const completionfirstlyTable = [
 
 const completionsecondTable = [
   {
+    id:2,
     num1: 'num1',
     num2: 'num2',
     num3: 'num3',

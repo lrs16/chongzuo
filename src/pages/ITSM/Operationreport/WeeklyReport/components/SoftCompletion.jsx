@@ -25,7 +25,7 @@ const SoftCompletion = React.forwardRef((props, ref) => {
   )
 
   const {
-    form: { getFieldDecorator },
+    form: { getFieldDecorator, setFieldsValue },
     forminladeLayout,
     softCompletionlist,
     completionsecondTablelist
@@ -38,9 +38,6 @@ const SoftCompletion = React.forwardRef((props, ref) => {
   const [newbutton, setNewButton] = useState(false);
   const [secondbutton, setSecondbutton] = useState(false);
 
-
-
-
   // 新增一条记录
   const newMember = (params) => {
     setFilesList([]);
@@ -50,28 +47,25 @@ const SoftCompletion = React.forwardRef((props, ref) => {
       newData.push({
         key: data.length + 1,
         id: '',
-        ww11: 'ww11',
-        ww22: '',
-        ww33: '',
-        ww44: '',
+        num1: 'num1',
+        num2: '',
+        num3: '',
       });
-      console.log(1)
       setSeconddata(newData);
       setSecondbutton(true);
     } else {
-      console.log(2)
       newData.push({
         key: data.length + 1,
         id: '',
-        num1: '新增数据',
-        num2: '',
+        ww11: '新增数据',
+        ww22: '',
+        ww33: '',
+        ww44: '',
       });
       setData(newData);
       setNewButton(true);
     }
   };
-
-  console.log(seconddata,'seconddata')
 
   //  获取行  
   const getRowByKey = (key, newData, params) => {
@@ -108,7 +102,6 @@ const SoftCompletion = React.forwardRef((props, ref) => {
   }
 
   const savedata = (target, id, params) => {
-    console.log('target: ', target);
     // handleSavedevelopment(target,id,params)
 
     // console.log('target: ', target);
@@ -163,7 +156,7 @@ const SoftCompletion = React.forwardRef((props, ref) => {
   }, [])
 
 
-  
+
   const column = [
     {
       title: '日期',
@@ -365,23 +358,22 @@ const SoftCompletion = React.forwardRef((props, ref) => {
 
     }
   ];
-  
+
   return (
     <>
+
       <Row gutter={16}>
         <Form>
           <Col span={24}>
             <p style={{ fontWeight: '900', fontSize: '16px' }}>五、软件作业完成情况</p>
           </Col>
 
-          <Col span={24}>
-            <Form.Item style={{ marginTop: '20px' }} label=''>
-              {
-                getFieldDecorator('params33', {})
-                  (<TextArea />)
-              }
-            </Form.Item>
-          </Col>
+          <Form.Item label=''>
+            {
+              getFieldDecorator('params33', {})
+                (<TextArea />)
+            }
+          </Form.Item>
 
           <Col span={24}>
             <p>(1)数据库本周进行了补丁升级工作次：</p>

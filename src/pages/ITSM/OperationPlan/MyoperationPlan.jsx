@@ -449,13 +449,15 @@ function MyoperationPlan(props) {
         return true
       }
 
-      if (item.status === '延期中') {
+      if ((item.status === '延期中') || item.checkStatus !== '已审核') {
         message.info('延期的条件为:执行状态不可以是延期中,且审核状态为:已审核');
         return false;
       }
       return null;
 
     })
+
+    console.log(res)
 
     if (res === false) {
       return false;
