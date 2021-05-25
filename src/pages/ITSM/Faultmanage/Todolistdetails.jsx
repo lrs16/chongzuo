@@ -762,6 +762,13 @@ function Todolistdetails(props) {
       case 'handle':
         toHandle1()
         break;
+      case 'submittransfer':
+        handleSave(currenStatus);
+        setButtonType('transfer');
+        break;
+      case 'over':
+        faultcircula('close');
+        break;
       default:
         break;
     }
@@ -792,31 +799,7 @@ function Todolistdetails(props) {
       ...v
     }).then(res => {
       if (res.code === 200) {
-        switch (buttontype) {
-          case 'accpt':
-            handleReceivs()
-            break;
-          case 'goback':
-            setModalRollBack(true);
-            break;
-          case 'save':
-            handleSave(tosaveStatus);
-            break;
-          case 'flow':
-            handleSave(currenStatus)
-            break;
-          case 'registback':
-            handleRegist('back')
-            break;
-          case 'handleback':
-            toHandle('back')
-            break;
-          case 'handle':
-            toHandle1()
-            break;
-          default:
-            break;
-        }
+        handleHold(buttontype);
       }
     });
   }
@@ -863,7 +846,7 @@ function Todolistdetails(props) {
               <Button
                 type="primary"
                 style={{ marginRight: 8 }}
-                onClick={() => { handleSubmit('transfer'); setChangeOrder('请选择处理') }}
+                onClick={() => { handleSubmit('submittransfer'); setChangeOrder('请选择处理') }}
                 onMouseOver={() => {
                   sessionStorage.setItem('flowtype', '9');
                 }}

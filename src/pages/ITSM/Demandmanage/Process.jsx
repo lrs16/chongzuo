@@ -52,12 +52,20 @@ function Process(props) {
               style={{ background: '#fff', padding: 24 }}
             >
               {processs.map((obj, index) => {
+                const backoff = obj.opinion === null ? '' : '（回退）';
                 const desc = (
                   <div>
-                    <div>{moment(obj.time).format('YYYY-MM-DD hh:mm:ss')}</div>
+                    {/* <div>处理人：{obj.user}</div> */}
+                    <div>{obj.startTime}</div>
+                    <div>{obj.endTime}</div>
+                    {obj.opinion !== null && <div>回退原因：{obj.opinion}</div>}
                   </div>
                 );
-                return <Step title={obj.taskName} description={desc} key={index.toString()} />;
+                return <Step
+                  title={`${obj.taskName}${backoff}`}
+                  description={desc}
+                  key={index.toString()}
+                />;
               })}
             </Steps>
           )}

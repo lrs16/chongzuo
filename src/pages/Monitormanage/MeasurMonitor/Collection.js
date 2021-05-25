@@ -32,7 +32,7 @@ const selectoption = [
 const { Option } = Select;
 
 // 声明变量保存统计时间
-let tjsj = {
+const tjsj = {
   cjwzl: '', // 采集完整率
   zdfgl: '', // 终端复盖率
   zdcbl: '', // 自动抄表率
@@ -46,7 +46,7 @@ const dataArr = datas => {
   if (!Array.isArray(datas.records)) {
     return newArr;
   }
-  const records = datas.records;
+  const { records } = datas;
   for (let i = 0; i < records.length; i += 1) {
     const vote = {};
     vote.rate = records[i].value;
@@ -60,7 +60,7 @@ const dataArr = datas => {
 };
 
 const celldata = (datas, type) => {
-  let records = datas.records;
+  const { records } = datas;
   const newArr = [];
   if (!Array.isArray(records)) {
     return newArr;
@@ -72,9 +72,9 @@ const celldata = (datas, type) => {
     vote.alertvalue = records[i].alarm;
     newArr.push(vote);
   }
-  if ('fgl' === type) {
+  if (type === 'fgl') {
     tjsj.zdfgl = records[0].tjsj;
-  } else if ('cbl' === type) {
+  } else if (type === 'cbl') {
     tjsj.zdcbl = records[0].tjsj;
   }
   return newArr;
@@ -183,8 +183,8 @@ const timecols = {
 };
 const lin2wcols = {
   value: {
-    min: -30,
-    max: 30,
+    min: -100,
+    max: 100,
     range: [0, 1],
     alias: '波动百分比',
   },
@@ -193,13 +193,13 @@ const lin2wcols = {
     tickInterval: 1,
   },
   Max警戒值: {
-    min: -30,
-    max: 30,
+    min: -100,
+    max: 100,
     alias: '警戒值',
   },
   Min警戒值: {
-    min: -30,
-    max: 30,
+    min: -100,
+    max: 100,
     alias: '警戒值',
   },
 };

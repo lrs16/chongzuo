@@ -105,6 +105,7 @@ const BasicLayout = props => {
 
   const [toptabs, setTopTabs] = useState([...homepane]);
   const [activeKey, setActiveKey] = useState('1362219140546301953');
+  const [prevtab, setPrevTab] = useState('');
 
   // 初始强制跳转首页
   useEffect(() => {
@@ -118,14 +119,15 @@ const BasicLayout = props => {
 
   // 打开最末的标签
   const lasttabactive = (tabs) => {
-    const end = tabs.slice(-1);
-    setActiveKey(end[0].id);
+    const target = alonepath.filter(item => item.path === url)[0];
+    const end = tabs.slice(-1)[0];
+    setActiveKey(end.id);
     router.push({
-      pathname: end[0].itemPath,
-      query: { ...end[0].query },
+      pathname: end.itemPath,
+      query: target ? end.query : {},
+      state: end.state,
     });
   }
-
 
   // 监听列表跳转详情页的路由,处理完成路转回待办列表
   //  待办跳转处理用mainId做为标签id并传编号orderNo用于标签标题显示,查询跳转详情用编号No做为标签id
@@ -170,12 +172,20 @@ const BasicLayout = props => {
     };
     // 处理完毕且待办列表已关闭需跳转回待办列表，添加待办列表新签标
     if (location.query.pathpush && !tabtargetid && !target && !tabtargetpath && menutarget) {
-      const { menuDesc, id, itemPath } = menutarget;
-      const panels = { name: menuDesc, id, itemPath, query: location.query, closable: true };
+      const { menuDesc, id, menuUrl } = menutarget;
+      const panels = { name: menuDesc, id, itemPath: menuUrl, query: {}, closable: true };
       toptabs.push(panels);
       setActiveKey(id);
     }
   }, [location])
+
+  // // 有缓存信息
+  // useEffect(() => {
+  //   if (location.state) {
+
+  //     console.log(location.state)
+  //   }
+  // }, [location.state]);
 
   // 关闭页签
   useEffect(() => {
@@ -204,7 +214,7 @@ const BasicLayout = props => {
       setActiveKey(key);
       router.push({
         pathname: target.itemPath,
-        query: { ...target.query },
+        query: target.query,
       });
     }
   };
@@ -239,31 +249,61 @@ const BasicLayout = props => {
   };
 
   const handleLink = (menuItemProps) => {
+    //  setPrevTab({ id: activeKey, path: location.pathname });
     const { name, id, itemPath } = menuItemProps;
     const target = toptabs.filter(item => item.id === id)[0];
     const targetmultiple = multiplepath.filter(item => item.path === itemPath)[0];
     if (!targetmultiple) {
       // 非登记类打开单页签
       if (!target) {
-        const panels = { name, id, itemPath, query: location.query, closable: true };
+        const panels = { name, id, itemPath, query: {}, closable: true };
         toptabs.push(panels);
+        lasttabactive(toptabs);
       } else {
+        setActiveKey(id);
         router.push({
           pathname: target.itemPath,
-          query: { ...target.query },
+          //  query: { ...target.query },
         });
       };
-      setActiveKey(id);
     } else {
       // 登记类打开相同多页签
       const targettype = toptabs.filter(item => item.type === targetmultiple.type);
       const num = targettype.length;
       const endid = num === 0 ? 0 : Number(targettype.slice(-1)[0].id.replace(/[^0-9]/ig, "")) + 1;
-      const panels = { name, type: targetmultiple.type, id: `${targetmultiple.type}${endid}`, itemPath, query: location.query, closable: true };
-      toptabs.push(panels);
-      lasttabactive(toptabs);
+      // 自动保存生成工单
+      if (targettype[0]) {
+        router.push({
+          pathname: itemPath,
+          query: { save: true },
+        });
+      } else {
+        // router.push({
+        //   pathname: itemPath,
+        //   query:{}
+        // });
+        const panels = { name, type: targetmultiple.type, id: `${targetmultiple.type}${endid}`, itemPath, closable: true };
+        toptabs.push(panels);
+        lasttabactive(toptabs);
+      };
+      // if (targettype[0]) {
+      //   router.push({
+      //     pathname: itemPath,
+      //     query: { save: true },
+      //   });
+      // } else {
+      //   router.push({
+      //     pathname: itemPath,
+      //   });
+      // };
+      // const panels = { name, type: targetmultiple.type, id: `${targetmultiple.type}${endid}`, itemPath, closable: true };
+      // toptabs.push(panels);
+      // setActiveKey(`${targetmultiple.type}${endid}`);
+      // lasttabactive(toptabs);
     };
   };
+
+  console.log(toptabs)
 
   useEffect(() => {
     if (dispatch) {
@@ -277,6 +317,7 @@ const BasicLayout = props => {
       });
     }
   }, []);
+
 
   // 缓存tabid
   useEffect(() => {
@@ -315,8 +356,12 @@ const BasicLayout = props => {
       menuItemRender={(menuItemProps, defaultDom) => {
         if (menuItemProps.isUrl || menuItemProps.children) {
           return defaultDom;
-        }
-        return <Link to={menuItemProps.path} onClick={() => handletopLink(menuItemProps)}>{defaultDom}</Link>;
+        };
+        return (
+          <>
+            <Link to={menuItemProps.path} onClick={() => handletopLink(menuItemProps)}>{defaultDom}</Link>
+          </>
+        );
       }}
       menuDataRender={() => topMenuDataRender(menuData)}
       formatMessage={formatMessage}
@@ -337,8 +382,8 @@ const BasicLayout = props => {
         menuItemRender={(menuItemProps, defaultDom) => {
           if (menuItemProps.isUrl || menuItemProps.children) {
             return defaultDom;
-          }
-          return <Link to={menuItemProps.path} onClick={() => handleLink(menuItemProps)}>{defaultDom}</Link>;
+          };
+          return <a onClick={() => handleLink(menuItemProps)}>{defaultDom}</a>;
         }}
         breadcrumbRender={(routers = []) => [
           {
@@ -378,23 +423,21 @@ const BasicLayout = props => {
                   key={obj.id}
                   closable={obj.closable}
                 >
-                  <Authorized authority={Userauth} noMatch={noMatch}>
+                  {/* <Authorized authority={Userauth} noMatch={noMatch}>
                     {multipleurl && (
                       <div style={{ padding: '0 24px 0 24px', marginTop: 8, background: '#f1f1f1' }}>
                         {children}
                       </div>
                     )}
-                  </Authorized>
+                  </Authorized> */}
                 </TabPane>,
               ])}
             </Tabs>
             <Authorized authority={Userauth} noMatch={noMatch}>
               {/* <PageTab>{children}</PageTab> */}
-              {!multipleurl && (
-                <div style={{ marginTop: 10 }}>
-                  {children}
-                </div>
-              )}
+              <div style={{ marginTop: 10 }}>
+                {children}
+              </div>
             </Authorized>
           </>
         )}

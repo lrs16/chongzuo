@@ -57,7 +57,7 @@ class GlobalHeaderRight extends Component {
   }
 
   changeReadState = clickedItem => {
-    router.push({ pathname: `/ITSM/todo` });
+    router.push({ pathname: `/ITSM/todo`, query: { pathpush: true } });
   };
 
   handleNoticeClear = (title, key) => {
@@ -172,7 +172,7 @@ class GlobalHeaderRight extends Component {
         })}
         onClear={this.handleNoticeClear}
         onPopupVisibleChange={onNoticeVisibleChange}
-        onViewMore={() => router.push({ pathname: `/ITSM/todo` })}
+        onViewMore={() => router.push({ pathname: `/ITSM/todo`, query: { pathpush: true } })}
         clearClose
       >
         {/* 待办 */}

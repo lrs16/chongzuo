@@ -11,7 +11,8 @@ const AuthorizedRoute = ({ component: Component, render, authority, redirectPath
         render={() => (
           <Redirect
             to={{
-              pathname: redirectPath,
+              //  pathname: redirectPath,
+              pathname: '/ITSM/home',
             }}
           />
         )}

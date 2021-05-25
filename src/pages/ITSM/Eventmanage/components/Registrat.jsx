@@ -50,7 +50,7 @@ const Registrat = forwardRef((props, ref) => {
   } = props;
   const { register } = info;
   const { taskName, taskId, mainId, orderNo } = location.query;
-  const { getFieldDecorator, getFieldsValue, setFieldsValue, validateFields, setFields } = props.form;
+  const { getFieldDecorator, getFieldsValue, setFieldsValue, validateFields, setFields, resetFields } = props.form;
   const required = true;
   const [check, setCheck] = useState(false);
   const [revisitway, setRevisitway] = useState(false);
@@ -82,6 +82,21 @@ const Registrat = forwardRef((props, ref) => {
     }
   }, [info]);
 
+  useEffect(() => {
+    const values = getFieldsValue();
+    // router.push({
+    //   pathname: location.pathname,
+    //   query: location.query,
+    //   state: {
+    //     ...values,
+    //     register_occurTime: values.register_occurTime.format('YYYY-MM-DD HH:mm:ss'),
+    //   },
+    // });
+    return (() => {
+      resetFields()
+    })
+  }, [location.query])
+
   const attRef = useRef();
   useImperativeHandle(
     ref,
@@ -93,17 +108,7 @@ const Registrat = forwardRef((props, ref) => {
   const gethandelvalue = getFieldsValue(['main_eventType', 'main_eventObject']);
 
   const routerRefresh = () => {
-    if (orderNo === undefined) {
-      router.push({
-        pathname: location.pathname,
-        query: {
-          taskName,
-          taskId,
-          mainId,
-          next: sessionStorage.getItem('Nextflowmane'),
-        },
-      });
-    } else {
+    if (orderNo) {
       router.push({
         pathname: location.pathname,
         query: {
@@ -115,8 +120,9 @@ const Registrat = forwardRef((props, ref) => {
         },
       });
     }
-
   };
+
+  // console.log(location.query)
 
   useEffect(() => {
     if (main.revisitWay === '002') {
@@ -197,7 +203,7 @@ const Registrat = forwardRef((props, ref) => {
   //     if (datas[x] === null) { // 如果是null 把直接内容转为 ''
   //       datas[x] = '';
   //     };
-  //   }
+  //   }  
   //   return datas;
   // };
   // changenulltostr(main);

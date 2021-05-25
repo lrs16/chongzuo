@@ -179,6 +179,11 @@ function Registration(props) {
     }
   }, [registratfiles]);
 
+  // useEffect(() => {
+  //   if (location.query.save) {
+  //     handlesubmit();
+  //   }
+  // }, [location.query]);
 
   // 自行处理上传附件触发保存
   useEffect(() => {

@@ -58,7 +58,6 @@ function WorkOrder(props) {
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
   const [isnew, setIsNew] = useState(false); // 组件重新加载
   const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
-  console.log(info)
 
 
   // 初始化用户信息，流程类型

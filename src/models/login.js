@@ -34,25 +34,25 @@ const Model = {
             response,
           },
         });
-        const urlParams = new URL(window.location.href); // 本地记录路由
-        const params = getPageQuery();
-        let { redirect } = params;
-        if (redirect) {
-          const redirectUrlParams = new URL(redirect);
+        // const urlParams = new URL(window.location.href); // 本地记录路由
+        // const params = getPageQuery();
+        // let { redirect } = params;
+        // if (redirect) {
+        //   const redirectUrlParams = new URL(redirect);
 
-          if (redirectUrlParams.origin === urlParams.origin) {
-            redirect = redirect.substr(urlParams.origin.length);
+        //   if (redirectUrlParams.origin === urlParams.origin) {
+        //     redirect = redirect.substr(urlParams.origin.length);
 
-            if (redirect.match(/^\/.*#/)) {
-              redirect = redirect.substr(redirect.indexOf('#') + 1);
-            }
-          } else {
-            window.location.href = '/';
-            return;
-          }
-        }
+        //     if (redirect.match(/^\/.*#/)) {
+        //       redirect = redirect.substr(redirect.indexOf('#') + 1);
+        //     }
+        //   } else {
+        //     window.location.href = '/';
+        //     return;
+        //   }
+        // }
 
-        yield put(routerRedux.replace(redirect || '/'));
+        yield put(routerRedux.replace('/'));
       }
     },
 
@@ -68,9 +68,9 @@ const Model = {
         yield put(
           routerRedux.replace({
             pathname: '/user/login',
-            search: stringify({
-              redirect: window.location.href,
-            }),
+            // search: stringify({
+            //   redirect: window.location.href,
+            // }),
           }),
         );
       }

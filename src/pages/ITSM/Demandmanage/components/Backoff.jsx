@@ -49,7 +49,7 @@ function ModelRollback(props) {
             <Col span={24}>
               <Form.Item label='回退意见'>
                 {
-                  getFieldDecorator('msg', {
+                  getFieldDecorator('opinion', {
                     rules: [
                       {
                         required,
