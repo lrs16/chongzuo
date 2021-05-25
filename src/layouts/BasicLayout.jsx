@@ -303,8 +303,6 @@ const BasicLayout = props => {
     };
   };
 
-  console.log(toptabs)
-
   useEffect(() => {
     if (dispatch) {
       dispatch({
