@@ -26,7 +26,12 @@ const columns = [
             router.push({
               pathname: `/ITSM/faultmanage/todolist/record`,
               query: {
+                // id: record.taskId,
+                taskName: record.taskName,
                 id: record.taskId,
+                mainId: record.instanceId,
+                result: '1',
+                orderNo: text,
               },
             });
             break;
@@ -72,6 +77,7 @@ const columns = [
         ['trouble', '故障'],
         ['problem', '问题'],
         ['demand', '需求'],
+        ['operation', '作业计划']
       ]);
       return typemap.get(text);
     },

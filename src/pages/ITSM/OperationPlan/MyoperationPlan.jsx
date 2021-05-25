@@ -75,6 +75,7 @@ function MyoperationPlan(props) {
         mainId: record.mainId,
         status: record.status,
         checkStatus: record.checkStatus,
+        orderNo: record.operationNo,
       }
     })
   };
@@ -445,7 +446,7 @@ function MyoperationPlan(props) {
 
     const res = selectedRows.every(item => {
 
-      if (item.status !== '延期中' &&  item.checkStatus === '已审核') {
+      if (item.status !== '延期中' && item.checkStatus === '已审核') {
         return true
       }
 
@@ -456,8 +457,6 @@ function MyoperationPlan(props) {
       return null;
 
     })
-
-    console.log(res)
 
     if (res === false) {
       return false;
@@ -685,7 +684,7 @@ function MyoperationPlan(props) {
               <Form.Item label="作业计划编号">
                 {getFieldDecorator('operationNo', {})
                   (
-                    <Input allowClear/>
+                    <Input allowClear />
                   )}
               </Form.Item>
             </Col>
@@ -693,7 +692,7 @@ function MyoperationPlan(props) {
             <Col span={8}>
               <Form.Item label="作业系统名称">
                 {getFieldDecorator('systemName', {})(
-                  <Input allowClear/>
+                  <Input allowClear />
                 )}
               </Form.Item>
             </Col>
@@ -790,7 +789,7 @@ function MyoperationPlan(props) {
                   <Form.Item label="作业对象">
                     {getFieldDecorator('object', {})
                       (
-                        <Input allowClear/>
+                        <Input allowClear />
                       )}
                   </Form.Item>
                 </Col>
@@ -799,7 +798,7 @@ function MyoperationPlan(props) {
                   <Form.Item label="作业内容">
                     {getFieldDecorator('content', {})
                       (
-                        <Input allowClear/>
+                        <Input allowClear />
                       )}
                   </Form.Item>
                 </Col>
@@ -904,7 +903,7 @@ function MyoperationPlan(props) {
                   <Form.Item label="作业执行情况说明">
                     {getFieldDecorator('executeContent', {})
                       (
-                        <Input allowClear/>
+                        <Input allowClear />
                       )}
                   </Form.Item>
                 </Col>
@@ -975,7 +974,7 @@ function MyoperationPlan(props) {
                   <Form.Item label="填报人">
                     {getFieldDecorator('addUser', {})
                       (
-                        <Input allowClear/>
+                        <Input allowClear />
                       )}
                   </Form.Item>
                 </Col>
@@ -984,7 +983,7 @@ function MyoperationPlan(props) {
                   <Form.Item label="填报单位">
                     {getFieldDecorator('addUnit', {})
                       (
-                        <Input allowClear/>
+                        <Input allowClear />
                       )}
                   </Form.Item>
                 </Col>
@@ -1001,7 +1000,7 @@ function MyoperationPlan(props) {
                   </Form.Item>
                 </Col>
 
-            
+
 
                 <Col span={8}>
                   <Form.Item label="审核时间">

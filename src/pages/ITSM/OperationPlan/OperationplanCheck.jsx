@@ -62,7 +62,7 @@ function OperationplanCheck(props) {
   const [paginations, setPaginations] = useState({ current: 0, pageSize: 10 });
   const [selectdata, setSelectData] = useState('');
   const [selectedRows, setSelectedRows] = useState([]);
-  const [selectedKeys,setSelectedKeys] = useState([]);
+  const [selectedKeys, setSelectedKeys] = useState([]);
   const [columns, setColumns] = useState([]);
   const [visible, setVisible] = useState(false);
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
@@ -75,6 +75,7 @@ function OperationplanCheck(props) {
         auditLink: true,
         checkStatus: record.checkStatus,
         mainId: record.mainId,
+        orderNo: record.operationNo,
       }
     })
   };
@@ -385,7 +386,6 @@ function OperationplanCheck(props) {
 
   //  导出
   const exportDownload = () => {
-    console.log(columns,'columns')
     const exportColumns = columns.map(function (item) {
       return {
         column: item.dataIndex,
@@ -398,7 +398,7 @@ function OperationplanCheck(props) {
         payload: {
           flowNodeName: '计划审核',
           columns: JSON.stringify(exportColumns),
-          ids:selectedKeys.toString(),
+          ids: selectedKeys.toString(),
           ...values,
           time1: values.addTime?.length ? moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
           time2: values.addTime?.length ? moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
@@ -650,13 +650,13 @@ function OperationplanCheck(props) {
         style={{ display: 'none' }}
       />
       <Card>
-      <Row gutter={16}>
+        <Row gutter={16}>
           <Form {...formItemLayout}>
             <Col span={8}>
               <Form.Item label="作业计划编号">
                 {getFieldDecorator('operationNo', {})
                   (
-                    <Input allowClear/>
+                    <Input allowClear />
                   )}
               </Form.Item>
             </Col>
@@ -664,7 +664,7 @@ function OperationplanCheck(props) {
             <Col span={8}>
               <Form.Item label="作业系统名称">
                 {getFieldDecorator('systemName', {})(
-                  <Input allowClear/>
+                  <Input allowClear />
                 )}
               </Form.Item>
             </Col>
@@ -761,7 +761,7 @@ function OperationplanCheck(props) {
                   <Form.Item label="作业对象">
                     {getFieldDecorator('object', {})
                       (
-                        <Input allowClear/>
+                        <Input allowClear />
                       )}
                   </Form.Item>
                 </Col>
@@ -770,7 +770,7 @@ function OperationplanCheck(props) {
                   <Form.Item label="作业内容">
                     {getFieldDecorator('content', {})
                       (
-                        <Input allowClear/>
+                        <Input allowClear />
                       )}
                   </Form.Item>
                 </Col>
@@ -875,7 +875,7 @@ function OperationplanCheck(props) {
                   <Form.Item label="作业执行情况说明">
                     {getFieldDecorator('executeContent', {})
                       (
-                        <Input allowClear/>
+                        <Input allowClear />
                       )}
                   </Form.Item>
                 </Col>
@@ -946,7 +946,7 @@ function OperationplanCheck(props) {
                   <Form.Item label="填报人">
                     {getFieldDecorator('addUser', {})
                       (
-                        <Input allowClear/>
+                        <Input allowClear />
                       )}
                   </Form.Item>
                 </Col>
@@ -955,7 +955,7 @@ function OperationplanCheck(props) {
                   <Form.Item label="填报单位">
                     {getFieldDecorator('addUnit', {})
                       (
-                        <Input allowClear/>
+                        <Input allowClear />
                       )}
                   </Form.Item>
                 </Col>
@@ -972,7 +972,7 @@ function OperationplanCheck(props) {
                   </Form.Item>
                 </Col>
 
-            
+
 
                 <Col span={8}>
                   <Form.Item label="审核时间">

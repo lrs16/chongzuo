@@ -41,6 +41,7 @@ function ToDodetails(props) {
   const handleclose = () => {
     router.push({
       pathname: `/ITSM/eventmanage/to-do`,
+      query: { pathpush: true }
     });
   };
 

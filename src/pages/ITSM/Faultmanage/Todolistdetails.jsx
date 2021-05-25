@@ -163,7 +163,10 @@ function Todolistdetails(props) {
 
   const handleClose = () => {
     // 返回上一页
-    history1.goBack();
+    router.push({
+      pathname: `/ITSM/faultmanage/todolist`,
+      query: { pathpush: true }
+    });
   };
 
   const handleTabChange = key => {

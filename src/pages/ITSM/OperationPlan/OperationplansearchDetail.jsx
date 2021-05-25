@@ -6,10 +6,10 @@ import {
   Form,
 } from 'antd';
 import router from 'umi/router';
+import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import OperationPlanfillindes from './components/OperationPlanfillindes';
 import TaskCheckdes from './components/TaskCheckdes';
 import TaskExecutedes from './components/TaskExecutedes';
-import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import styles from './index.less';
 
 const { Panel } = Collapse;
@@ -47,6 +47,7 @@ function Work(props) {
   const handleClose = () => {
     router.push({
       pathname: `/ITSM/operationplan/operationplansearch`,
+      query: { pathpush: true }
     });
   }
 
@@ -55,7 +56,7 @@ function Work(props) {
       title={headTitle}
       extra={
         <>
-          <Button onClick={handleClose}>关闭</Button>
+          <Button onClick={handleClose}>返回</Button>
         </>
       }
     >

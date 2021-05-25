@@ -846,7 +846,7 @@ function Workorder(props) {
             }
 
             <Button type="default">
-              <Link to="/ITSM/problemmanage/besolved">返回</Link>
+              <Link to="/ITSM/problemmanage/besolved?pathpush=true">返回</Link>
             </Button>
           </>
         </>

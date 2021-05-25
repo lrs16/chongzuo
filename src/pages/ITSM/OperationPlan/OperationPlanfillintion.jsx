@@ -7,8 +7,8 @@ import {
   message,
 } from 'antd';
 import router from 'umi/router';
-import OperationPlanfillin from './components/OperationPlanfillin';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import OperationPlanfillin from './components/OperationPlanfillin';
 
 function OperationPlanfillintion(props) {
   const pagetitle = props.route.name;
@@ -25,7 +25,10 @@ function OperationPlanfillintion(props) {
   const PlanfillinRef = useRef();
   const [richtext, setRichtext] = useState('');
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
+<<<<<<< HEAD
   const [copyData,setCopyData] = useState('')
+=======
+>>>>>>> 多页签：事件、故障、问题、需求处理返回列表，作业计划（还差填写打开多页签）
 
   const formItemLayout = {
     labelCol: {
@@ -114,6 +117,7 @@ function OperationPlanfillintion(props) {
   const handleClose = () => {
     router.push({
       pathname: `/ITSM/operationplan/myoperationplan`,
+      query: { pathpush: true }
     });
   }
 
@@ -155,7 +159,7 @@ function OperationPlanfillintion(props) {
             保存
           </Button>
 
-          <Button onClick={handleClose}>关闭</Button>
+          <Button onClick={handleClose}>返回</Button>
         </>
       }
     >
@@ -172,7 +176,11 @@ function OperationPlanfillintion(props) {
           }}
           files={[]}
           operationPersonSelect={operationPersonSelect}
+<<<<<<< HEAD
           main={copyData}
+=======
+          main={copyData ? copyData.main : {}}
+>>>>>>> 多页签：事件、故障、问题、需求处理返回列表，作业计划（还差填写打开多页签）
         />
 
 

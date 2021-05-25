@@ -648,7 +648,7 @@ export default {
                     },
                     {
                       path: '/ITSM/operationplan/operationplansearchdetail',
-                      name: '作业计划查询详情',
+                      name: '作业计划详情',
                       icon: 'control',
                       component: './ITSM/OperationPlan/OperationplansearchDetail',
                     },
@@ -1320,7 +1320,7 @@ export default {
     },
     // 作业计划
     '/operation/': {
-      target: ' http://172.16.10.139:9901/',
+      target: ' http://172.16.10.11:9901/',
       changeOrigin: true,
     },
     '/api/': {

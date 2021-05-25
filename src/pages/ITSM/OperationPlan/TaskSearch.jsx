@@ -119,6 +119,7 @@ function TaskSearch(props) {
       pathname: `/ITSM/operationplan/operationplansearchdetail`,
       query: {
         mainId: record.mainId,
+        No: record.operationNo,
       }
     })
   };

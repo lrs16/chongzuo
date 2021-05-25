@@ -31,6 +31,7 @@ function ToDoregist(props) {
   const handleclose = () => {
     router.push({
       pathname: `/ITSM/demandmanage/to-do`,
+      query: { pathpush: true }
     });
   };
 

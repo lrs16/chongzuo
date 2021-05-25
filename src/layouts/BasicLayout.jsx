@@ -51,6 +51,8 @@ const alonepath = [
   { path: '/ITSM/problemmanage/problemquery/detail' },
   { path: '/ITSM/demandmanage/to-do/record/workorder' },
   { path: '/ITSM/demandmanage/query/details' },
+  { path: '/ITSM/operationplan/operationplanform' },
+  { path: '/ITSM/operationplan/operationplansearchdetail' },
 ];
 
 // 多条登记
@@ -119,8 +121,8 @@ const BasicLayout = props => {
 
   // 打开最末的标签
   const lasttabactive = (tabs) => {
-    const target = alonepath.filter(item => item.path === url)[0];
     const end = tabs.slice(-1)[0];
+    const target = alonepath.filter(item => item.path === end.itemPath)[0];
     setActiveKey(end.id);
     router.push({
       pathname: end.itemPath,
