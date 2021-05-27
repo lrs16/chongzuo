@@ -5,7 +5,6 @@ import {
   Input,
   Col,
   Row,
-  Button,
   Divider,
   Popconfirm,
   message
@@ -15,16 +14,16 @@ import SysUpload from '@/components/SysUpload';
 
 const { TextArea } = Input;
 
-function LastweekHomework(props) {
+function NextWeek(props) {
   const {
     form: { getFieldDecorator },
     forminladeLayout,
     myTaskplanlist,
-    dispatch,
-    loading
+    dispatch
   } = props;
-  const [paginations, setPaginations] = useState({ current: 0, pageSize: 10 });
+
   const [data, setData] = useState([]);
+  const [paginations, setPaginations] = useState({ current: 0, pageSize: 10 });
   const [cacheOriginData, setcacheOriginData] = useState({});
 
   //  获取行  
@@ -88,25 +87,33 @@ function LastweekHomework(props) {
     }
   }
 
+  const handleTabledata = () => {
+    if (myTaskplanlist.rows && myTaskplanlist.rows.length) {
+      const newarr = (myTaskplanlist.rows).map((item, index) => {
+        return Object.assign(item, { editable: true, isNew: false, key: index })
+      })
+      setData(newarr)
+    }
+  }
 
   const getTobolist = () => {
-     return dispatch({
-      type: 'processmodel/weekmyTasklist',
-      payload: {
-        pageIndex: paginations.current,
-        pageSize: paginations.pageSize,
-      },
-    }).then(res => {
-      if(res.code === 200 && res.data) {
-        const newarr = (res.data.rows).map((item, index) => {
-          return Object.assign(item, { editable: true, isNew: false, key: index })
-        })
-        setData(newarr)
-      } else {
-        message.error('请求失败')
-      }
-    });
-  };
+    return dispatch({
+     type: 'processmodel/weekmyTasklist',
+     payload: {
+       pageIndex: paginations.current,
+       pageSize: paginations.pageSize,
+     },
+   }).then(res => {
+     if(res.code === 200 && res.data) {
+       const newarr = (res.data.rows).map((item, index) => {
+         return Object.assign(item, { editable: true, isNew: false, key: index })
+       })
+       setData(newarr)
+     } else {
+       message.error('请求失败')
+     }
+   });
+ };
 
   useEffect(() => {
     getTobolist();
@@ -323,24 +330,33 @@ function LastweekHomework(props) {
     }
   ];
 
-
-
   return (
     <>
-      { loading === false && myTaskplanlist && myTaskplanlist.rows && (
-        <Row gutter={16}>
-          <Col span={20}>
-            <p style={{ fontWeight: '900', fontSize: '16px' }}>七、上周作业完成情况</p>
-          </Col>
+      <Row gutter={16}>
 
-          <Table
-            columns={column}
-            dataSource={data}
-          />
+        <Table
+          columns={column}
+          dataSource={data}
+        />
 
-        </Row>
-      )}
+        <Col span={6}>
+          <Form.Item
+            label='上传附件'
+            {...forminladeLayout}
+          >
+            {getFieldDecorator('params66', {})
+              (
+                <div style={{ width: 400 }}>
+                  <SysUpload
+                    fileslist={[]}
+                  // ChangeFileslist={newvalue => setFiles(newvalue)}
+                  />
+                </div>
+              )}
 
+          </Form.Item>
+        </Col>
+      </Row>
     </>
   )
 }
@@ -349,5 +365,5 @@ export default Form.create({})(
   connect(({ processmodel, loading }) => ({
     myTaskplanlist: processmodel.myTaskplanlist,
     loading: loading.models.processmodel
-  }))(LastweekHomework),
+  }))(NextWeek),
 );

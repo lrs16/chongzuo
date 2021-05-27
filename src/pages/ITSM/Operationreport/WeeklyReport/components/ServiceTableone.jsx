@@ -11,7 +11,7 @@ import SysUpload from '@/components/SysUpload';
 
 const { TextArea } = Input;
 let tabActiveKey = 'week';
-function ServiceCompletion(props) {
+function ServiceTableone(props) {
 
   const {
     form: { getFieldDecorator },
@@ -141,34 +141,15 @@ function ServiceCompletion(props) {
           </Col>
 
           <Col span={24}>
-            <p>二、软件运维服务指标完成情况</p>
+            <p>（一）运维分类统计情况 </p>
           </Col>
 
           <Table
-            columns={secondlyColumn}
-            dataSource={maintenanceService}
+            columns={column}
+            dataSource={maintenanceArr.data}
           />
 
 
-
-          <Col span={24}>
-            <p style={{ fontWeight: '900', fontSize: '16px' }}>指标分析:</p>
-          </Col>
-
-
-          <Col span={24}>
-            <p>1.一线问题解决情况汇总统计</p>
-          </Col>
-
-          <Table
-            columns={threeColumn}
-            dataSource={[soluteArr[soluteArr.length -1]]}
-          />
-
-
-       
-
-     
         </Row>
 
       )}
@@ -184,5 +165,5 @@ export default Form.create({})(
     maintenanceArr: eventstatistics.maintenanceArr,
     soluteArr: eventstatistics.soluteArr,
     loading: loading.models.eventstatistics
-  }))(ServiceCompletion),
+  }))(ServiceTableone),
 );

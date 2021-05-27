@@ -15,13 +15,12 @@ import SysUpload from '@/components/SysUpload';
 
 const { TextArea } = Input;
 
-function LastweekHomework(props) {
+function ThisWeek(props) {
   const {
     form: { getFieldDecorator },
     forminladeLayout,
     myTaskplanlist,
-    dispatch,
-    loading
+    dispatch
   } = props;
   const [paginations, setPaginations] = useState({ current: 0, pageSize: 10 });
   const [data, setData] = useState([]);
@@ -88,25 +87,33 @@ function LastweekHomework(props) {
     }
   }
 
+  const handleTabledata = () => {
+    if (myTaskplanlist.rows && myTaskplanlist.rows.length) {
+      const newarr = (myTaskplanlist.rows).map((item, index) => {
+        return Object.assign(item, { editable: true, isNew: false, key: index })
+      })
+      setData(newarr)
+    }
+  }
 
   const getTobolist = () => {
-     return dispatch({
-      type: 'processmodel/weekmyTasklist',
-      payload: {
-        pageIndex: paginations.current,
-        pageSize: paginations.pageSize,
-      },
-    }).then(res => {
-      if(res.code === 200 && res.data) {
-        const newarr = (res.data.rows).map((item, index) => {
-          return Object.assign(item, { editable: true, isNew: false, key: index })
-        })
-        setData(newarr)
-      } else {
-        message.error('请求失败')
-      }
-    });
-  };
+    return dispatch({
+     type: 'processmodel/weekmyTasklist',
+     payload: {
+       pageIndex: paginations.current,
+       pageSize: paginations.pageSize,
+     },
+   }).then(res => {
+     if(res.code === 200 && res.data) {
+       const newarr = (res.data.rows).map((item, index) => {
+         return Object.assign(item, { editable: true, isNew: false, key: index })
+       })
+       setData(newarr)
+     } else {
+       message.error('请求失败')
+     }
+   });
+ };
 
   useEffect(() => {
     getTobolist();
@@ -327,20 +334,16 @@ function LastweekHomework(props) {
 
   return (
     <>
-      { loading === false && myTaskplanlist && myTaskplanlist.rows && (
-        <Row gutter={16}>
-          <Col span={20}>
-            <p style={{ fontWeight: '900', fontSize: '16px' }}>七、上周作业完成情况</p>
-          </Col>
+      {/* <Col span={24}>
+        <p style={{ fontWeight: '900', fontSize: '16px' }}> 4 作业管控情况（含预防性运维）</p>
+      </Col>
 
-          <Table
-            columns={column}
-            dataSource={data}
-          />
+      <Col span={24}>4.1本周作业完成情况</Col> */}
 
-        </Row>
-      )}
-
+      <Table
+        columns={column}
+        dataSource={data}
+      />
     </>
   )
 }
@@ -349,5 +352,5 @@ export default Form.create({})(
   connect(({ processmodel, loading }) => ({
     myTaskplanlist: processmodel.myTaskplanlist,
     loading: loading.models.processmodel
-  }))(LastweekHomework),
+  }))(ThisWeek),
 );

@@ -8,6 +8,7 @@ import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import KeyVal from '@/components/SysDict/KeyVal';
 
 const { Option } = Select;
+const { RangePicker } = DatePicker;
 
 const statemap = [
   { key: '0', value: '需求登记' },
@@ -31,6 +32,17 @@ const formItemLayout = {
   wrapperCol: {
     xs: { span: 24 },
     sm: { span: 16 },
+  },
+};
+
+const form10ladeLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 4 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 20 },
   },
 };
 
@@ -85,7 +97,7 @@ const columns = [
     dataIndex: 'sendTime',
     key: 'sendTime',
     render: text => {
-      return <>{moment(text).format('YYYY-MM-DD HH:mm')}</>;
+      return <>{moment(text).format('YYYY-MM-DD HH:mm:ss')}</>;
     },
   },
   {
@@ -95,20 +107,44 @@ const columns = [
   },
 ];
 
+let queryParams = true;
 function QueryList(props) {
-  const pagetitle = props.route.name;
+  // const pagetitle = props.route.name;
   const {
-    form: { getFieldDecorator, resetFields, validateFields },
+    form: { getFieldDecorator, resetFields, validateFields, setFieldsValue },
     location: { query: { module, taskName, startTime, endTime, completeStatus } },
     loading,
     list,
     dispatch,
   } = props;
+  let title;
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 10 });
   const [expand, setExpand] = useState(false);
   const [selectdata, setSelectData] = useState('');
 
+  if (module || taskName || completeStatus) {
+    title = '需求统计查询'
+  } else {
+    title = '需求查询'
+  }
+
   useEffect(() => {
+    setFieldsValue(
+      {
+        module,
+        taskName,
+        completeStatus
+      }
+    )
+    if (startTime) {
+      setFieldsValue({
+        createTime: [moment(startTime), moment(endTime)] || '',
+      })
+    }
+  }, [])
+
+  useEffect(() => {
+    queryParams = true;
     validateFields((err, values) => {
       if (!err) {
         dispatch({
@@ -117,11 +153,9 @@ function QueryList(props) {
             ...values,
             page: paginations.current,
             limit: paginations.pageSize,
-            module,
-            taskName,
-            startTime: startTime ? moment(startTime).format('YYYY-MM-DD HH:mm:ss') : '',
-            endTime: endTime ? moment(endTime).format('YYYY-MM-DD HH:mm:ss') : '',
-            completeStatus
+            startTime: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+            endTime: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+            sendTime: values.sendTime ? moment(values.sendTime).format('YYYY-MM-DD HH:mm:ss') : '',
           },
         });
       }
@@ -135,12 +169,9 @@ function QueryList(props) {
         ...values,
         limit: size,
         page,
-        module,
-        taskName: values.taskName ? values.taskName : taskName,
-        sendTime: values.sendTime !== undefined ? moment(values.sendTime).format('YYYY-MM-DD HH:mm:ss') : '',
-        // startTime,
-        // endTime,
-        completeStatus
+        startTime: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+        endTime: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+        sendTime: values.sendTime ? moment(values.sendTime).format('YYYY-MM-DD HH:mm:ss') : '',
       },
     });
   };
@@ -193,6 +224,7 @@ function QueryList(props) {
   };
 
   const handleReset = () => {
+    queryParams = false;
     resetFields();
   };
 
@@ -202,11 +234,9 @@ function QueryList(props) {
         type: 'demandquery/download',
         payload: {
           ...values,
-          module,
-          // startTime:startTime.format('YYYY-MM-DD HH:mm'),
-          // endTime:endTime.format('YYYY-MM-DD HH:mm'),
-          taskName: values.taskName ? values.taskName : taskName,
-          completeStatus
+          startTime: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+          endTime: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+          sendTime: values.sendTime ? values.sendTime.format('YYYY-MM-DD HH:mm:ss') : '',
         }
       }).then(res => {
         const filename = `需求查询_${moment().format('YYYY-MM-DD HH:mm')}.xls`;
@@ -218,12 +248,13 @@ function QueryList(props) {
         a.click();
         window.URL.revokeObjectURL(url);
       });
+
     })
 
   };
 
   return (
-    <PageHeaderWrapper title={pagetitle}>
+    <PageHeaderWrapper title={title}>
       <KeyVal
         style={{ display: 'none' }}
         dictModule="demand"
@@ -233,31 +264,117 @@ function QueryList(props) {
       <Card>
         <Row gutter={24}>
           <Form {...formItemLayout} onSubmit={handleSearch}>
-            <Col span={8}>
-              <Form.Item label="需求编号">
-                {getFieldDecorator('demandId', {
-                  initialValue: '',
-                })(<Input placeholder="请输入" allowClear />)}
-              </Form.Item>
-            </Col>
-            <Col span={8}>
-              <Form.Item label="当前处理环节">
-                {getFieldDecorator('taskName', { initialValue: '' })(
-                  <Select placeholder="请选择" allowClear>
-                    {statemap.map(({ key, value }) => (
-                      <Option key={key} value={value}>
-                        {value}
-                      </Option>
-                    ))}
-                  </Select>,
+            {expand === false && (
+              <>
+                {(module || taskName ||completeStatus) && (
+                  <>
+                    <Col span={8}>
+                      <Form.Item label="当前处理环节">
+                        {getFieldDecorator('taskName', { initialValue: '' })(
+                          <Select placeholder="请选择" allowClear>
+                            {statemap.map(({ key, value }) => (
+                              <Option key={key} value={value}>
+                                {value}
+                              </Option>
+                            ))}
+                          </Select>,
+                        )}
+                      </Form.Item>
+                    </Col>
+
+                    <Col span={8}>
+                      <Form.Item label="功能模块">
+                        {getFieldDecorator('module', { initialValue: '' })(
+                          <Input />,
+                        )}
+                      </Form.Item>
+                    </Col>
+
+                    <Col span={8}>
+                      <Form.Item label="超时状态">
+                        {getFieldDecorator('status', { initialValue: '' })(
+                          <Input />,
+                        )}
+                      </Form.Item>
+                    </Col>
+
+                    <Col span={10}>
+                      <Form.Item label="建单时间" {...{ ...form10ladeLayout }}>
+                        {getFieldDecorator('createTime', {
+                          initialValue: '',
+                        })(<RangePicker
+                          showTime
+                          format='YYYY-MM-DD HH:mm:ss'
+                          allowClear
+                        />)}
+                      </Form.Item>
+                    </Col>
+                  </>
                 )}
-              </Form.Item>
-            </Col>
+
+                {(!module && !taskName && !completeStatus) && (
+                  <>
+                    <Col span={8}>
+                      <Form.Item label="需求编号">
+                        {getFieldDecorator('demandId', {
+                          initialValue: '',
+                        })(<Input placeholder="请输入" allowClear />)}
+                      </Form.Item>
+                    </Col>
+
+                    <Col span={8}>
+                      <Form.Item label="当前处理环节">
+                        {getFieldDecorator('taskName', { initialValue: '' })(
+                          <Select placeholder="请选择" allowClear>
+                            {statemap.map(({ key, value }) => (
+                              <Option key={key} value={value}>
+                                {value}
+                              </Option>
+                            ))}
+                          </Select>,
+                        )}
+                      </Form.Item>
+                    </Col>
+
+                    <Col span={8}>
+                      <Form.Item label="需求标题">
+                        {getFieldDecorator('demandTitle', {
+                          initialValue: '',
+                        })(<Input placeholder="请输入" allowClear />)}
+                      </Form.Item>
+                    </Col>
+                  </>
+                )}
+              </>
+            )}
+
             {expand === true && (
               <>
                 <Col span={8}>
+                  <Form.Item label="需求编号">
+                    {getFieldDecorator('demandId', {
+                      initialValue: '',
+                    })(<Input placeholder="请输入" allowClear />)}
+                  </Form.Item>
+                </Col>
+
+                <Col span={8}>
+                  <Form.Item label="当前处理环节">
+                    {getFieldDecorator('taskName', { initialValue: '' })(
+                      <Select placeholder="请选择" allowClear>
+                        {statemap.map(({ key, value }) => (
+                          <Option key={key} value={value}>
+                            {value}
+                          </Option>
+                        ))}
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
+
+                <Col span={8}>
                   <Form.Item label="需求标题">
-                    {getFieldDecorator('title', {
+                    {getFieldDecorator('demandTitle', {
                       initialValue: '',
                     })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
@@ -290,7 +407,7 @@ function QueryList(props) {
               </>
             )}
             {expand === false && (
-              <Col span={8} style={{ paddingTop: 4 }}>
+              <Col span={24} style={{ paddingTop: 4,textAlign: 'right' }}>
                 <Button type="primary" onClick={handleSearch}>
                   查 询
                 </Button>

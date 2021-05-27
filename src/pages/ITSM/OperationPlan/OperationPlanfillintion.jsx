@@ -10,7 +10,6 @@ import router from 'umi/router';
 import OperationPlanfillin from './components/OperationPlanfillin';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
-let copyData;
 function OperationPlanfillintion(props) {
   const pagetitle = props.route.name;
   const {
@@ -18,14 +17,16 @@ function OperationPlanfillintion(props) {
     dispatch,
     userinfo,
     openFlowList,
-    operationPersonArr
+    operationPersonArr,
+    loading
   } = props;
   let operationPersonSelect;
-
+ 
   const PlanfillinRef = useRef();
   const [richtext, setRichtext] = useState('');
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
-  
+  const [copyData,setCopyData] = useState('')
+
   const formItemLayout = {
     labelCol: {
       xs: { span: 24 },
@@ -36,6 +37,7 @@ function OperationPlanfillintion(props) {
       sm: { span: 15 },
     },
   };
+
 
   const forminladeLayout = {
     labelCol: {
@@ -72,15 +74,15 @@ function OperationPlanfillintion(props) {
   }
 
   useEffect(() => {
-    copyData = '';
     queryDept();
     getoperationPerson();
   }, [])
 
+
   //  点击保存触发事件
   const handlesubmit = (params) => {
     PlanfillinRef.current.validateFields((err, values) => {
-      if (params?true:!err) {
+      if (params ? true : !err) {
         dispatch({
           type: 'processmodel/saveallForm',
           payload: {
@@ -120,22 +122,25 @@ function OperationPlanfillintion(props) {
       message.info('请在列表页复制');
       return false
     }
-    if(mainId.length >1) {
+    if (mainId.length > 1) {
       message.info('只能复制一条数据粘贴哦');
       return false
     }
 
-    dispatch({
-      type: 'processmodel/openFlow',
+    return dispatch({
+      type: 'processmodel/pasteFlow',
       payload: mainId[0]
+    }).then(res => {
+   
+      if (res.code === 200) {
+        const resData = res.main;
+        delete resData.operationNo;
+        setCopyData(resData)
+      } else {
+        message.info('您无法复制该条记录，请返回列表重新选择')
+      }
     })
-
-    if (mainId[0]) {
-      copyData = openFlowList;
-      delete copyData.main.operationNo
-    }
   }
-
 
   return (
     <PageHeaderWrapper
@@ -156,19 +161,19 @@ function OperationPlanfillintion(props) {
     >
 
       <Card>
-          <OperationPlanfillin
-            ref={PlanfillinRef}
-            useInfo={userinfo}
-            formItemLayout={formItemLayout}
-            forminladeLayout={forminladeLayout}
-            getRichtext={(richText => setRichtext(richText))}
-            ChangeFiles={newvalue => {
-              setFiles(newvalue);
-            }}
-            files={[]}
-            operationPersonSelect={operationPersonSelect}
-            main={copyData ? copyData.main : {}}
-          />
+        <OperationPlanfillin
+          ref={PlanfillinRef}
+          useInfo={userinfo}
+          formItemLayout={formItemLayout}
+          forminladeLayout={forminladeLayout}
+          getRichtext={(richText => setRichtext(richText))}
+          ChangeFiles={newvalue => {
+            setFiles(newvalue);
+          }}
+          files={[]}
+          operationPersonSelect={operationPersonSelect}
+          main={copyData}
+        />
 
 
       </Card>
@@ -180,7 +185,6 @@ function OperationPlanfillintion(props) {
 export default Form.create({})(
   connect(({ processmodel, itsmuser, loading }) => ({
     userinfo: itsmuser.userinfo,
-    openFlowList: processmodel.openFlowList,
     operationPersonArr: processmodel.operationPersonArr,
     loading: loading.models.processmodel,
   }))(OperationPlanfillintion),

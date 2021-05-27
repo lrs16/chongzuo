@@ -56,7 +56,7 @@ const columns = [
               sign: 'top',
               time1: record.start_time,
               time2: record.end_time,
-              eventObject: record.object_name
+              eventObject: [record.first_object,record.object_name]
             }
           }}
         >

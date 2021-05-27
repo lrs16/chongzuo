@@ -9,8 +9,7 @@ import {
   DatePicker,
   Table,
   Popconfirm,
-  Divider,
-  Icon
+  Divider
 } from 'antd';
 import Link from 'umi/link';
 import moment from 'moment';
@@ -66,7 +65,7 @@ const { TextArea } = Input;
 let startTime;
 let monthStarttime;
 let endTime;
-function SoftReport(props) {
+function MachineRoom(props) {
   const pagetitle = props.route.name;
   const {
     form: { getFieldDecorator, validateFields, setFieldsValue },
@@ -89,7 +88,6 @@ function SoftReport(props) {
   } = props;
   let tabActiveKey = 'week';
 
-
   const required = true;
   const saveformRef = useRef();
   const developmentformRef = useRef();
@@ -101,23 +99,12 @@ function SoftReport(props) {
   const [columns, setColumns] = useState([]);
   const [data, setData] = useState([]);
   const [fileslist, setFilesList] = useState([]);
-  const [expand, setExpand] = useState(false);
-  const [aa,setAa] = useState('')
+
+
 
   useEffect(() => {
-    const resultColumns = [...initiacColumn]
-    setColumns([...resultColumns])
+    setColumns(initiacColumn)
   }, [])
-  
-  const titleNumber = (index) => {
-    return `标题${9+index}`
-  }
-
-  
-
-
-
-
   //  保存表单
   const softReportform = () => {
     props.form.validateFields((err, value) => {
@@ -302,7 +289,6 @@ function SoftReport(props) {
 
   // 新增一条记录
   const handleAddrows = (params) => {
-    console.log(11)
     setFilesList([]);
     // setKeyUpload('');
     const newData = (data).map(item => ({ ...item }));
@@ -319,22 +305,26 @@ function SoftReport(props) {
     // setNewButton(true);
   };
 
-  const remove = (index) => {
-    addTitle.splice(index, 1);
-    const resultArr = [];
-    for (let i = 0; i < addTitle.length; i++) {
-      resultArr.push(addTitle[i])
-    }
-    setAddTitle(resultArr)
-  }
-
-
-
   //  获取行  
   const getRowByKey = (key, newData) => {
     return (newData || data).filter(item => item.key === key)[0];
   }
 
+  //  删除数据
+  const remove = key => {
+    const target = getRowByKey(key) || {};
+    // dispatch({
+    //   type: 'chacklist/trackdelete',
+    //   payload: {
+    //     id: target.id,
+    //   },
+    // }).then(res => {
+    //   if (res.code === 200) {
+    //     message.success(res.msg, 2);
+    //     getlistdata();
+    //   }
+    // });
+  };
 
   // 编辑记录
   const toggleEditable = (e, key, record) => {
@@ -374,10 +364,9 @@ function SoftReport(props) {
     savedata(target, id);
     if (target.isNew) {
       target.isNew = false;
-      // setNewButton(false);
+      setNewButton(false);
     }
   }
-
 
   const handleFieldChange = (e, fieldName, key) => {
     const newData = data.map(item => ({ ...item }));
@@ -393,11 +382,6 @@ function SoftReport(props) {
       return Object.assign(item, { editable: true, isNew: false, key: index })
     })
     setData(newarr)
-  }
-
-  const testHead = (column) => {
-    console.log('column:', column);
-
   }
 
 
@@ -514,25 +498,10 @@ function SoftReport(props) {
         )
       }
     }
-  ];
+  ]
 
-  const setHead = () => {
-    setExpand(true);
-  }
 
-  const setResultheader = () => {
-    validateFields((err, value) => {
-      if (true) {
-        const setHead = initiacColumn.map(item => {
-          return {
-            title: value.header1,
-            dataIndex: 'addTime1',
-          }
-        })
-        setColumns(setHead)
-      }
-    })
-  }
+
 
   return (
     <PageHeaderWrapper
@@ -896,17 +865,10 @@ function SoftReport(props) {
                   return (
                     <>
                       <Col span={24}>
-                        <Form.Item label={titleNumber(index)} {...formincontentLayout}>
+                        <Form.Item label='标题' {...formincontentLayout}>
                           {getFieldDecorator(`title${index}`, {
                           })(
-                            <>
-                              <Input style={{ width: '60%', marginRight: 8 }} />
-                              <Icon
-                                className="dynamic-delete-button"
-                                type="minus-circle-o"
-                                onClick={() => remove(index)}
-                              />
-                            </>
+                            <Input />
                           )}
                         </Form.Item>
                       </Col>
@@ -938,31 +900,18 @@ function SoftReport(props) {
                         </Form.Item>
                       </Col>
 
-                      <div style={{display:'block'}}>
-                      <Button
-                        type='primary'
-                        onClick={() => addTable(index)}
-                      >添加表格</Button>
-                      {/* </Col> */}
+                      <Col span={24}>
+                        <Button onClick={() => addTable(index)}>添加表格</Button>
+                      </Col>
 
-                      {/* <Col span={24} style={{ textAlign: 'right' }}> */}
-                      <Button
-                        onClick={() => handleAddrows(index)}
-                        type='primary'
-                        style={{ marginRight: 8 }}
-                      >添加行</Button>
-                      {/* <Button
-                        type='primary'
-                      >添加列</Button> */}
-
-                      </div>
-
+                      <Button onClick={() => handleAddrows(index)}>添加行</Button>
+                      <Button>添加列</Button>
 
                       {
                         (addTitle[index].tableIndex).map(items => {
                           return (
                             <Table
-                              columns={initiacColumn}
+                              columns={columns}
                               dataSource={data}
                             />
                           )
@@ -1001,5 +950,5 @@ export default Form.create({})(
     nextweekHomeworklist: thisweekly.nextweekHomeworklist,
     loading: loading.models.thisweekly,
     maintenanceArr: eventstatistics.maintenanceArr,
-  }))(SoftReport),
+  }))(MachineRoom),
 );

@@ -10,6 +10,7 @@ import {
   Table
 } from 'antd';
 import Link from 'umi/link';
+import MergeTable from '@/components/MergeTable';
 import moment from 'moment';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
@@ -19,11 +20,21 @@ let searchSign = '';
 
 let statTimeBegin = '';
 let statTimeEnd = '';
+const mergecell = 'firstLevel';
 const columns = [
   {
     title: '一级功能',
-    dataIndex: 'firstLevel',
-    key: 'firstLevel',
+    dataIndex: mergecell,
+    key: mergecell,
+    align: 'center',
+    render: (text, record) => {
+      const obj = {
+        children: text,
+        props: {},
+      };
+      obj.props.rowSpan = record.rowSpan;
+      return obj;
+    },
   },
   {
     title: '二级功能',
@@ -63,18 +74,19 @@ function DemandRequirement(props) {
   const {
     form: { getFieldDecorator,resetFields },
     requirementArr,
-    dispatch
+    dispatch,
+    loading
   } = props;
 
-  if (requirementArr && requirementArr.length) {
-    for (let i = 0; i < requirementArr.length - 1; i++) {
-      for (let j = i + 1; j < requirementArr.length; j++) {
-        if (requirementArr[i].firstLevel === requirementArr[j].firstLevel) {
-          requirementArr[j].firstLevel = '';
-        }
-      }
-    }
-  }
+  // if (requirementArr && requirementArr.length) {
+  //   for (let i = 0; i < requirementArr.length - 1; i++) {
+  //     for (let j = i + 1; j < requirementArr.length; j++) {
+  //       if (requirementArr[i].firstLevel === requirementArr[j].firstLevel) {
+  //         requirementArr[j].firstLevel = '';
+  //       }
+  //     }
+  //   }
+  // }
 
   const onChange = (date, dateString) => {
     [statTimeBegin, statTimeEnd] = dateString;
@@ -173,18 +185,27 @@ function DemandRequirement(props) {
           </Button>
         </div>
 
-        <Table
+        {/* <Table
           columns={columns}
           dataSource={requirementArr}
           rowKey={record => record.statName}
-        />
+        /> */}
+
+        {/* {loading === false && ( */}
+          <MergeTable
+          column={columns}
+          tableSource={requirementArr}
+          mergecell={mergecell}
+           />
+        {/* )} */}
       </Card>
     </PageHeaderWrapper>
   )
 }
 
 export default Form.create({})(
-  connect(({ demandstatistic }) => ({
-    requirementArr: demandstatistic.requirementArr
+  connect(({ demandstatistic,loading }) => ({
+    requirementArr: demandstatistic.requirementArr,
+    loading: loading.models.demandstatistic,
   }))(DemandRequirement),
 );

@@ -63,7 +63,8 @@ const columns = [
             status: record.statCode,
             addTimeBegin: statTimeBegin,
             addTimeEnd: statTimeEnd,
-            dictType: 'handle',
+            currentNode: record.statCurrentNode,
+            statName: record.statName,
            }
         }}
       >

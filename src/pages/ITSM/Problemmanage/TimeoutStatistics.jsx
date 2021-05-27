@@ -52,6 +52,7 @@ const columns = [
               timeStatus: record.statCode,
               addTimeBegin:statTimeBegin,
               addTimeEnd:statTimeEnd,
+              timeStatuscontent:record.statName
              }
           }}
         >

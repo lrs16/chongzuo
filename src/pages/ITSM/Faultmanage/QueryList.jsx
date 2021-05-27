@@ -21,9 +21,6 @@ import {
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import SysDict from '@/components/SysDict';
 
-// const severitystatus = ['紧急', '重大', '一般'];
-// const statusMap = ['error', 'warning', 'processing'];
-
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
@@ -35,15 +32,28 @@ const formItemLayout = {
   },
 };
 
+const form10ladeLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 4 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 20 },
+  },
+}
+
 const { Option } = Select;
+const { RangePicker } = DatePicker;
 const searchSign = '';
 let typeparams;
+let queryParams = true;
 
 function QueryList(props) {
   const pagetitle = props.route.name;
 
   const {
-    form: { getFieldDecorator, resetFields, validateFields },
+    form: { getFieldDecorator, resetFields, validateFields, setFieldsValue },
     location: { query:
       {
         dictCode,
@@ -51,12 +61,15 @@ function QueryList(props) {
         status,
         addTimeBegin,
         addTimeEnd,
+        currentNode,
+        statName
       },
     },
     loading,
     faultQueryList, // 查询列表数据
     dispatch,
   } = props;
+  let title;
 
   const [expand, setExpand] = useState(false);
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 }); // 分页state
@@ -168,17 +181,28 @@ function QueryList(props) {
     },
   ];
 
+  if (status || type) {
+    title = '故障统计查询'
+  } else {
+    title = '故障查询'
+  }
 
-  const getinitiaQuerylists = (values, page, pageSize, searchdata) => {
+  const getinitiaQuerylists = (values, page) => {
     // 列表 列表接口
     dispatch({
       type: 'fault/getfaultQueryList',
       payload: {
         ...values,
-        type,
+        registerOccurTimeBegin:values.registerOccurTimeBegin?values.registerOccurTimeBegin.format('YYYY-MM-DD'):'',
+        registerTimeBegin:values.registerTimeBegin?values.registerOccurTimeBegin.format('YYYY-MM-DD'):'',
+        handleStartTimeBegin:values.handleStartTimeBegin?values.registerOccurTimeBegin.format('YYYY-MM-DD'):'',
+        handleStartTimeEnd:values.handleStartTimeEnd?values.registerOccurTimeBegin.format('YYYY-MM-DD'):'',
+        type:values.type?(values.type).slice(-1)[0]:'',
+        addTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+        addTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+        createTime:'',
         pageNum: page,
         pageSize: paginations.pageSize,
-        status,
       },
     });
   };
@@ -189,18 +213,32 @@ function QueryList(props) {
         type: 'fault/getfaultQueryList',
         payload: {
           ...values,
-          type,
+          type:values.type?(values.type).slice(-1)[0]:'',
           pageNum: 1,
           pageSize: paginations.pageSize,
-          addTimeBegin,
-          addTimeEnd,
-          status,
+          addTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+          addTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+          createTime:'',
         },
       });
     });
   }
 
   useEffect(() => {
+    if (type) {
+      setFieldsValue({ type: [type.substr(0, 3), type] })
+    }
+
+    setFieldsValue({
+      status,
+      currentNode
+    })
+
+    if (addTimeBegin) {
+      setFieldsValue({
+        createTime: [moment(addTimeBegin), moment(addTimeEnd)] || '',
+      })
+    }
     getFaultlist();
   }, []);
 
@@ -209,7 +247,6 @@ function QueryList(props) {
   };
 
   const handleReset = () => {
-    // 重置
     typeparams = '';
     resetFields();
   };
@@ -225,28 +262,10 @@ function QueryList(props) {
       current: 1,
     });
 
-    validateFields((err, fieldsValue) => {
+    validateFields((err, values) => {
       if (err) {
         return;
       }
-      const values = fieldsValue;
-      if (fieldsValue.registerOccurTimeBegin) {
-        values.registerOccurTimeBegin = fieldsValue.registerOccurTimeBegin.format('YYYY-MM-DD');
-      }
-      if (fieldsValue.registerTimeBegin) {
-        values.registerTimeBegin = fieldsValue.registerTimeBegin.format('YYYY-MM-DD');
-      }
-      if (fieldsValue.handleStartTimeBegin) {
-        values.handleStartTimeBegin = fieldsValue.handleStartTimeBegin.format('YYYY-MM-DD');
-      }
-      if (fieldsValue.handleStartTimeEnd) {
-        values.handleStartTimeEnd = fieldsValue.handleStartTimeEnd.format('YYYY-MM-DD');
-      }
-
-      if (fieldsValue.type) {
-        values.type = fieldsValue.type.join('/');
-      }
-
       searchdata(values, 1, paginations.pageSize, search);
     });
   };
@@ -264,8 +283,25 @@ function QueryList(props) {
   };
 
   const changePage = page => {
-    validateFields((err, values) => {
+    validateFields((err, fieldsValue) => {
       if (!err) {
+        const values = fieldsValue;
+        if (fieldsValue.registerOccurTimeBegin) {
+          values.registerOccurTimeBegin = fieldsValue.registerOccurTimeBegin.format('YYYY-MM-DD');
+        }
+        if (fieldsValue.registerTimeBegin) {
+          values.registerTimeBegin = fieldsValue.registerTimeBegin.format('YYYY-MM-DD');
+        }
+        if (fieldsValue.handleStartTimeBegin) {
+          values.handleStartTimeBegin = fieldsValue.handleStartTimeBegin.format('YYYY-MM-DD');
+        }
+        if (fieldsValue.handleStartTimeEnd) {
+          values.handleStartTimeEnd = fieldsValue.handleStartTimeEnd.format('YYYY-MM-DD');
+        }
+
+        if (fieldsValue.type) {
+          values.type = fieldsValue.type.join('/');
+        }
         searchdata(values, page, paginations.pageSize);
       }
     });
@@ -294,12 +330,16 @@ function QueryList(props) {
           type: 'fault/faultQuerydownload',
           payload: {
             ...values,
-            type: typeparams,
+            registerOccurTimeBegin:values.registerOccurTimeBegin?values.registerOccurTimeBegin.format('YYYY-MM-DD'):'',
+            registerTimeBegin:values.registerTimeBegin?values.registerOccurTimeBegin.format('YYYY-MM-DD'):'',
+            handleStartTimeBegin:values.handleStartTimeBegin?values.registerOccurTimeBegin.format('YYYY-MM-DD'):'',
+            handleStartTimeEnd:values.handleStartTimeEnd?values.registerOccurTimeBegin.format('YYYY-MM-DD'):'',
+            type:values.type?(values.type).slice(-1)[0]:'',
+            addTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+            addTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+            createTime:'',
             pageSize,
             current: page,
-            dictCode,
-            //  type,
-            status
           },
         }).then(res => {
           const filename = `故障查询_${moment().format('YYYY-MM-DD HH:mm')}.xlsx`;
@@ -315,9 +355,9 @@ function QueryList(props) {
     });
   };
 
-  const getTypebyTitle = title => {
+  const getTypebyTitle = titles => {
     if (selectdata.ischange) {
-      return selectdata.arr.filter(item => item.title === title)[0].children;
+      return selectdata.arr.filter(item => item.titles === titles)[0].children;
     }
     return [];
   };
@@ -327,11 +367,12 @@ function QueryList(props) {
   const handleResult = getTypebyTitle('故障处理结果');
   const sysmodular = getTypebyTitle('故障系统模块');
   const faultType = getTypebyTitle('故障分类');
-  const currentNode = getTypebyTitle('当前处理环节');
+  const currentNodeselect = getTypebyTitle('当前处理环节');
   const effect = getTypebyTitle('影响范围');
+  const workStatues = getTypebyTitle('工单状态');
 
   return (
-    <PageHeaderWrapper title={pagetitle}>
+    <PageHeaderWrapper title={title}>
       <SysDict
         typeid="1354278126724583426"
         commonid="1354288354950123522"
@@ -341,42 +382,96 @@ function QueryList(props) {
       <Card>
         <Row gutter={24}>
           <Form {...formItemLayout} onSubmit={handleSearch}>
-            <Col span={8}>
-              <Form.Item label="故障编号">
-                {getFieldDecorator('no', {})(<Input placeholder="请输入" allowClear />)}
-              </Form.Item>
-            </Col>
+            {expand === false && (
+              <>
+                <Col span={8}>
+                  <Form.Item label="故障编号">
+                    {getFieldDecorator('no', {})(<Input placeholder="请输入" allowClear />)}
+                  </Form.Item>
+                </Col>
 
-            {expand === true && (
-              <Col xl={8} xs={12}>
-                <Form.Item label="登记时间">
-                  {getFieldDecorator(
-                    'registerTimeBegin',
-                    {},
-                  )(<DatePicker format="YYYY-MM-DD" style={{ width: '100%' }} allowClear />)}
-                </Form.Item>
-              </Col>
+                <Col span={8}>
+                  <Form.Item label="当前处理环节">
+                    {getFieldDecorator(
+                      'currentNode',
+                      {},
+                    )(
+                      <Select placeholder="请选择" allowClear>
+                        {currentNodeselect.map(obj => [
+                          <Option key={obj.key} value={obj.title}>
+                            {obj.title}
+                          </Option>,
+                        ])}
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
+
+                <Col span={8}>
+                  <Form.Item label="工单状态">
+                    {getFieldDecorator('status', {})(
+                      <Select placeholder="请选择" allowClear>
+                        {workStatues.map(obj => [
+                          <Option key={obj.key} value={obj.dict_code}>
+                            {obj.title}
+                          </Option>,
+                        ])}
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
+
+
+                <Col span={8}>
+                  <Form.Item label="故障类型">
+                    {getFieldDecorator('type')(
+                      <Cascader
+                        placeholder="请选择"
+                        options={faultType}
+                        onChange={handlobjectChange}
+                        fieldNames={{ label: 'title', value: 'dict_code', children: 'children' }}
+                        allowClear
+                      />,
+                    )}
+                  </Form.Item>
+                </Col>
+
+                {
+                  (status || type) && (
+                    <Col span={12}>
+                      <Form.Item label="建单时间" {...{ ...form10ladeLayout }}>
+                        {getFieldDecorator('createTime', {
+                          initialValue: '',
+                        })(<RangePicker
+                          showTime
+                          format='YYYY-MM-DD HH:mm:ss'
+                          allowClear
+                        />)}
+                      </Form.Item>
+                    </Col>
+                  )
+                }
+
+
+              </>
             )}
-
-            <Col xl={8} xs={12}>
-              <Form.Item label="当前处理环节">
-                {getFieldDecorator(
-                  'currentNode',
-                  {},
-                )(
-                  <Select placeholder="请选择" allowClear>
-                    {currentNode.map(obj => [
-                      <Option key={obj.key} value={obj.title}>
-                        {obj.title}
-                      </Option>,
-                    ])}
-                  </Select>,
-                )}
-              </Form.Item>
-            </Col>
 
             {expand === true && (
               <>
+                <Col span={8}>
+                  <Form.Item label="故障编号">
+                    {getFieldDecorator('no', {})(<Input placeholder="请输入" allowClear />)}
+                  </Form.Item>
+                </Col>
+
+                <Col xl={8} xs={12}>
+                  <Form.Item label="登记时间">
+                    {getFieldDecorator(
+                      'registerTimeBegin',
+                      {},
+                    )(<DatePicker format="YYYY-MM-DD" style={{ width: '100%' }} allowClear />)}
+                  </Form.Item>
+                </Col>
                 <Col xl={8} xs={12}>
                   <Form.Item label="发生时间">
                     {getFieldDecorator(
@@ -586,8 +681,26 @@ function QueryList(props) {
                     })(<Input allowClear />)}
                   </Form.Item>
                 </Col>
+
+
+                {
+                  (status || type) && (
+                    <Col span={12}>
+                      <Form.Item label="建单时间" {...{ ...form10ladeLayout }}>
+                        {getFieldDecorator('createTime', {
+                          initialValue: '',
+                        })(<RangePicker
+                          showTime
+                          format='YYYY-MM-DD HH:mm:ss'
+                          allowClear
+                        />)}
+                      </Form.Item>
+                    </Col>
+                  )
+                }
               </>
             )}
+
             {expand === false && (
               <Col span={8}>
                 <Form.Item>
@@ -617,6 +730,7 @@ function QueryList(props) {
                 </Form.Item>
               </Col>
             )}
+
             {expand === true && (
               <Col span={24} style={{ textAlign: 'right' }}>
                 <Button type="primary" onClick={() => handleSearch('search')}>

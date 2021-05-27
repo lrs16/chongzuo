@@ -1,35 +1,40 @@
-import React, { useEffect, useState, useRef, useImperativeHandle } from 'react';
+import React, { useEffect, useRef, useImperativeHandle, useContext, useState } from 'react';
 import {
-  Table,
+  Row,
+  Col,
   Form,
   Input,
-  Col,
-  Row,
+  Popconfirm,
+  Table,
   Button,
   Divider,
-  Popconfirm
+  Select,
 } from 'antd';
+import moment from 'moment';
 import { connect } from 'dva';
 import SysUpload from '@/components/SysUpload';
 
 const { TextArea } = Input;
+const { Option } = Select;
 
-const SoftCompletion = React.forwardRef((props, ref) => {
-  const attRef = useRef();
-  useImperativeHandle(
-    ref,
-    () => ({
-      attRef,
-    }),
-    []
-  )
+function RepairStatistics(props) {
+
+  const required = true;
 
   const {
     form: { getFieldDecorator, setFieldsValue },
     forminladeLayout,
-    softCompletionlist,
-    completionsecondTablelist
+    developmentList,
+    submitdevelopmentlist,
+    handleSavedevelopment,
+    faultQueryList,
+    handleDelete,
+    ChangeFiles,
+    files,
+    loading,
+    dispatch
   } = props;
+
   const [data, setData] = useState([]);
   const [seconddata, setSeconddata] = useState([]);
   const [cacheOriginData, setcacheOriginData] = useState({});
@@ -37,7 +42,11 @@ const SoftCompletion = React.forwardRef((props, ref) => {
   const [fileslist, setFilesList] = useState([]);
   const [newbutton, setNewButton] = useState(false);
   const [secondbutton, setSecondbutton] = useState(false);
+  const [paginations, setPageinations] = useState({ current: 1, pageSize: 10 }); // 分页state
 
+  useEffect(() => {
+    ChangeFiles(fileslist)
+  }, [fileslist])
   // 新增一条记录
   const newMember = (params) => {
     setFilesList([]);
@@ -49,18 +58,19 @@ const SoftCompletion = React.forwardRef((props, ref) => {
         id: '',
         num1: 'num1',
         num2: '',
-        num3: '',
+        num3: 'dd',
       });
       setSeconddata(newData);
       setSecondbutton(true);
     } else {
       newData.push({
-        key: data.length + 1,
+        key: seconddata.length + 1,
         id: '',
-        ww11: '新增数据',
-        ww22: '',
-        ww33: '',
-        ww44: '',
+        date: '新增数据',
+        date1: '',
+        params1: 'dd',
+        params2: '',
+        params3: '',
       });
       setData(newData);
       setNewButton(true);
@@ -101,10 +111,17 @@ const SoftCompletion = React.forwardRef((props, ref) => {
     }
   }
 
-  const savedata = (target, id, params) => {
-    // handleSavedevelopment(target,id,params)
+  //  点击编辑生成filelist
+  const handlefileedit = (key, values) => {
+    if (!values) {
+      setFilesList([]);
+    } else {
+      setFilesList(JSON.parse(values))
+    }
+  }
 
-    // console.log('target: ', target);
+  const savedata = (target, id, params) => {
+    handleSavedevelopment(target, id, params)
   }
 
   const saveRow = (e, key, params) => {
@@ -136,38 +153,22 @@ const SoftCompletion = React.forwardRef((props, ref) => {
     }
   }
 
-  const handleTabledata = () => {
-    const newarr = softCompletionlist.map((item, index) => {
-      return Object.assign(item, { editable: true, isNew: false, key: index })
-    })
-    setData(newarr)
-  }
-
-  const secondTabledata = () => {
-    const newarr = completionsecondTablelist.map((item, index) => {
-      return Object.assign(item, { editable: true, secondtableisNew: false, key: index })
-    })
-    setSeconddata(newarr)
-  }
-
-  useEffect(() => {
-    handleTabledata();
-    secondTabledata();
-  }, [])
-
-
-
   const column = [
     {
+      title: '序号',
+      dataIndex: 'date',
+      key: 'date'
+    },
+    {
       title: '日期',
-      dataIndex: 'ww11',
-      key: 'ww11',
+      dataIndex: 'addTime',
+      key: 'addTime',
       render: (text, record) => {
         if (record.isNew) {
           return (
             <Input
               defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'ww11', record.key)}
+              onChange={e => handleFieldChange(e.target.value, 'addTime', record.key)}
             />
           )
         }
@@ -177,15 +178,15 @@ const SoftCompletion = React.forwardRef((props, ref) => {
       }
     },
     {
-      title: '工作项',
-      dataIndex: 'ww22',
-      key: 'ww22',
+      title: '故障类型',
+      dataIndex: 'typecn',
+      key: 'typecn',
       render: (text, record) => {
         if (record.isNew) {
           return (
             <Input
               defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'ww22', record.key)}
+              onChange={e => handleFieldChange(e.target.value, 'typecn', record.key)}
             />
           )
         }
@@ -195,15 +196,15 @@ const SoftCompletion = React.forwardRef((props, ref) => {
       }
     },
     {
-      title: '工作内容',
-      dataIndex: 'ww33',
-      key: 'ww33',
+      title: '故障情况',
+      dataIndex: 'content',
+      key: 'content',
       render: (text, record) => {
         if (record.isNew) {
           return (
             <Input
               defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'ww33', record.key)}
+              onChange={e => handleFieldChange(e.target.value, 'content', record.key)}
             />
           )
         }
@@ -213,15 +214,69 @@ const SoftCompletion = React.forwardRef((props, ref) => {
       }
     },
     {
-      title: '完成情况',
-      dataIndex: 'ww44',
-      key: 'ww44',
+      title: '是否已修复',
+      dataIndex: 'params3',
+      key: 'params3',
       render: (text, record) => {
         if (record.isNew) {
           return (
             <Input
               defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'ww44', record.key)}
+              onChange={e => handleFieldChange(e.target.value, 'params3', record.key)}
+            />
+          )
+        }
+        if (record.isNew === false) {
+          return <span>{text}</span>
+        }
+      }
+    },
+    {
+      title: '是否需要报告',
+      dataIndex: 'params4',
+      key: 'params3',
+      render: (text, record) => {
+        if (record.isNew) {
+          return (
+            <Input
+              defaultValue={text}
+              onChange={e => handleFieldChange(e.target.value, 'params3', record.key)}
+            />
+          )
+        }
+        if (record.isNew === false) {
+          return <span>{text}</span>
+        }
+      }
+    },
+    {
+      title: '报告提供方',
+      dataIndex: 'params5',
+      key: 'params3',
+      render: (text, record) => {
+        if (record.isNew) {
+          return (
+            <Input
+              defaultValue={text}
+              onChange={e => handleFieldChange(e.target.value, 'params3', record.key)}
+            />
+          )
+        }
+        if (record.isNew === false) {
+          return <span>{text}</span>
+        }
+      }
+    },
+    {
+      title: '是否已提供故障处理记录（报告）',
+      dataIndex: 'params3',
+      key: 'params3',
+      render: (text, record) => {
+        if (record.isNew) {
+          return (
+            <Input
+              defaultValue={text}
+              onChange={e => handleFieldChange(e.target.value, 'params3', record.key)}
             />
           )
         }
@@ -267,7 +322,7 @@ const SoftCompletion = React.forwardRef((props, ref) => {
     }
   ];
 
-  const secondlyColumn = [
+  const submitColumn = [
     {
       title: '序号',
       dataIndex: 'num1',
@@ -277,7 +332,7 @@ const SoftCompletion = React.forwardRef((props, ref) => {
           return (
             <Input
               defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'num1', record.key)}
+              onChange={e => handleFieldChange(e.target.value, 'num1', record.key, 'secondTable')}
             />
           )
         }
@@ -287,15 +342,15 @@ const SoftCompletion = React.forwardRef((props, ref) => {
       }
     },
     {
-      title: '材料名称',
-      dataIndex: 'num2',
-      key: 'num2',
+      title: '日期',
+      dataIndex: 'addTime',
+      key: 'addTime',
       render: (text, record) => {
         if (record.secondtableisNew) {
           return (
             <Input
               defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'num2', record.key)}
+              onChange={e => handleFieldChange(e.target.value, 'addTime', record.key, 'secondTable')}
             />
           )
         }
@@ -305,15 +360,51 @@ const SoftCompletion = React.forwardRef((props, ref) => {
       }
     },
     {
-      title: '是否提交',
-      dataIndex: 'num3',
-      key: 'num3',
+      title: '故障类型',
+      dataIndex: 'typecn',
+      key: 'typecn',
       render: (text, record) => {
         if (record.secondtableisNew) {
           return (
             <Input
               defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'num3', record.key)}
+              onChange={e => handleFieldChange(e.target.value, 'typecn', record.key, 'secondTable')}
+            />
+          )
+        }
+        if (record.secondtableisNew === false) {
+          return <span>{text}</span>
+        }
+      }
+    },
+    {
+      title: '故障情况',
+      dataIndex: 'content',
+      key: 'content',
+      render: (text, record) => {
+        if (record.secondtableisNew) {
+          return (
+            <Input
+              defaultValue={text}
+              onChange={e => handleFieldChange(e.target.value, 'content', record.key, 'secondTable')}
+            />
+          )
+        }
+        if (record.secondtableisNew === false) {
+          return <span>{text}</span>
+        }
+      }
+    },
+    {
+      title: '计划修复时间',
+      dataIndex: 'num5',
+      key: 'num5',
+      render: (text, record) => {
+        if (record.secondtableisNew) {
+          return (
+            <Input
+              defaultValue={text}
+              onChange={e => handleFieldChange(e.target.value, 'num4', record.key, 'secondTable')}
             />
           )
         }
@@ -359,62 +450,102 @@ const SoftCompletion = React.forwardRef((props, ref) => {
     }
   ];
 
+  const handleTabledata = () => {
+    if(faultQueryList && faultQueryList.rows && faultQueryList.rows.length) {
+      const newarr = (faultQueryList.rows).map((item, index) => {
+        return Object.assign(item, { editable: true, isNew: false, key: index })
+      })
+      setData(newarr)
+    }
+    
+  }
+
+  const secondTabledata = () => {
+    if(faultQueryList && faultQueryList.rows && faultQueryList.rows.length) {
+      const newarr = (faultQueryList.rows).map((item, index) => {
+        return Object.assign(item, { editable: true, secondtableisNew: false, key: index })
+      })
+      setSeconddata(newarr)
+    }
+  }
+
+  const getFaultlist = () => {
+      dispatch({
+        type: 'fault/getfaultQueryList',
+        payload: {
+          pageNum: 1,
+          pageSize: paginations.pageSize,
+        },
+      });
+  }
+
+  useEffect(() => {
+    getFaultlist();
+    handleTabledata();
+    secondTabledata();
+  }, [])
+
   return (
     <>
+    { loading  === false && (
+    <Row gutter={16}>
+    <Form>
+      <Col span={24}>
+        <p style={{ fontWeight: '900', fontSize: '16px' }}>3 本周新增故障及故障修复情况统计</p>
+      </Col>
 
-      <Row gutter={16}>
-        <Form>
-          <Col span={24}>
-            <p style={{ fontWeight: '900', fontSize: '16px' }}>五、软件作业完成情况</p>
-          </Col>
+      <Col span={24}>
+        <p>3.1新增及已修复故障 </p>
+      </Col>
 
 
-          <Col span={24}>
-            <p>(1)数据库本周进行了补丁升级工作次：</p>
-          </Col>
+      <Table
+        columns={column}
+        dataSource={data}
+      />
+      <Button
+        style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
+        type="primary"
+        ghost
+        onClick={() => newMember()}
+        icon="plus"
+        disabled={newbutton}
+      >
+        新增巡检情况
+      </Button>
 
-          <Table
-            columns={column}
-            dataSource={data}
-          />
+      <Col span={24}>
+        <p>3.2未修复故障清单 </p>
+      </Col>
 
-          <Button
-            style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
-            type="primary"
-            ghost
-            onClick={() => newMember()}
-            icon="plus"
-            disabled={newbutton}
-          >
-            新增巡检情况
-          </Button>
+      <Table
+        columns={submitColumn}
+        dataSource={seconddata}
+      />
 
-          <Col span={20}>
-            <p>(2)计划2021年月日至2021年月日,计量自动化系统开展次发布变更（消缺），变更内容如下:</p>
-          </Col>
+      <Button
+        style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
+        type="primary"
+        ghost
+        onClick={() => newMember('secondTable')}
+        icon="plus"
+        disabled={secondbutton}
+      >
+        新增巡检情况
+      </Button>
 
-          <Table
-            columns={secondlyColumn}
-            dataSource={seconddata}
-          />
+    </Form>
+  </Row>
 
-          <Button
-            style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
-            type="primary"
-            ghost
-            onClick={() => newMember('secondTable')}
-            icon="plus"
-            disabled={secondbutton}
-          >
-            新增巡检情况
-          </Button>
-
-    
-        </Form>
-      </Row>
+    )}
+  
     </>
   )
-})
+}
 
-
-export default Form.create({})(SoftCompletion)
+export default Form.create({})(
+  connect(({ fault, loading }) => ({
+    faultQueryList: fault.faultQueryList,
+    loading: loading.models.fault,
+  }))(RepairStatistics),
+);

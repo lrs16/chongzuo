@@ -93,6 +93,8 @@ const columns = [
   },
 ];
 
+
+let queryParams = true;
 function Besolved(props) {
   const pagetitle = props.route.name;
   const {
@@ -107,64 +109,96 @@ function Besolved(props) {
         addTimeBegin,
         addTimeEnd,
         status,
-        currentNode
+        currentNode,
+        problem
       } },
     dispatch,
     queryArr,
     loading,
   } = props;
+  let differentTitle;
   const [expand, setExpand] = useState(false);
   const [paginations, setPaginations] = useState({ current: 1, pageSize: 10 });
   const [selectedRows, setSelectedRows] = useState([]);
   const [selectdata, setSelectData] = useState('');
 
+  if (problem) {
+    differentTitle = '问题统计查询'
+  } else {
+    differentTitle = '问题查询'
+  }
+  
   const getinitiaQuery = () => {
-    dispatch({
-      type: 'problemmanage/queryList',
-      payload: {
-        status,
-        progressStatus,
-        handlerId,
-        type,
-        timeStatus,
-        handleDeptId,
-        addTimeBegin,
-        addTimeEnd,
-        currentNode,
-        pageNum: paginations.current,
-        pageSize: paginations.pageSize,
-      },
-    });
+    queryParams = true
+    if(queryParams) {
+      dispatch({
+        type: 'problemmanage/queryList',
+        payload: {
+          status,
+          progressStatus,
+          handlerId,
+          type,
+          timeStatus,
+          handleDeptId,
+          addTimeBegin,
+          addTimeEnd,
+          currentNode,
+          pageNum: paginations.current,
+          pageSize: paginations.pageSize,
+        },
+      });
+    } else {
+      dispatch({
+        type: 'problemmanage/queryList',
+        payload: {
+          pageNum: paginations.current,
+          pageSize: paginations.pageSize,
+        },
+      });
+    }
 
   }
 
   useEffect(() => {
+    queryParams = true;
     getinitiaQuery();
   }, []);
 
   const handleReset = () => {
     resetFields();
+    queryParams = false;
   };
 
-  const searchdata = (values, page, pageSize, search) => {
-    dispatch({
-      type: 'problemmanage/queryList',
-      payload: {
-        ...values,
-        status,
-        progressStatus,
-        handlerId,
-        type,
-        timeStatus,
-        handleDeptId,
-        addTimeBegin,
-        addTimeEnd,
-        currentNode:values.currentNode?values.currentNode:currentNode,
-        pageNum: page,
-        pageSize: paginations.pageSize
-      },
-    });
 
+  const searchdata = (values, page, pageSize, search) => {
+    if(queryParams) {
+      dispatch({
+        type: 'problemmanage/queryList',
+        payload: {
+          ...values,
+          status,
+          progressStatus,
+          handlerId,
+          type,
+          timeStatus,
+          handleDeptId,
+          addTimeBegin,
+          addTimeEnd,
+          currentNode:values.currentNode?values.currentNode:currentNode,
+          pageNum: page,
+          pageSize: paginations.pageSize
+        },
+      });
+    } else {
+      dispatch({
+        type: 'problemmanage/queryList',
+        payload: {
+          ...values,
+          pageNum: page,
+          pageSize: paginations.pageSize
+        },
+      });
+    }
   };
 
 
@@ -225,31 +259,51 @@ function Besolved(props) {
   const download = () => {
     validateFields((err, values) => {
       if (!err) {
-        dispatch({
-          type: 'problemmanage/eventdownload',
-          payload: {
-            ...values,
-            createTimeBegin: values.createTimeBegin ? (values.createTimeBegin).format('YYYY-MM-DD') : '',
-            status,
-            progressStatus,
-            handlerId,
-            type,
-            timeStatus,
-            handleDeptId,
-            addTimeBegin,
-            addTimeEnd,
-            currentNode:values.currentNode?values.currentNode:currentNode,
-          }
-        }).then(res => {
-          const filename = `问题查询_${moment().format('YYYY-MM-DD HH:mm')}.xls`;
-          const blob = new Blob([res]);
-          const url = window.URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = filename;
-          a.click();
-          window.URL.revokeObjectURL(url);
-        })
+        if(queryParams) {
+          dispatch({
+            type: 'problemmanage/eventdownload',
+            payload: {
+              ...values,
+              createTimeBegin: values.createTimeBegin ? (values.createTimeBegin).format('YYYY-MM-DD') : '',
+              status,
+              progressStatus,
+              handlerId,
+              type,
+              timeStatus,
+              handleDeptId,
+              addTimeBegin,
+              addTimeEnd,
+              currentNode:values.currentNode?values.currentNode:currentNode,
+            }
+          }).then(res => {
+            const filename = `问题查询_${moment().format('YYYY-MM-DD HH:mm')}.xls`;
+            const blob = new Blob([res]);
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            window.URL.revokeObjectURL(url);
+          })
+        } else {
+          dispatch({
+            type: 'problemmanage/eventdownload',
+            payload: {
+              ...values,
+              createTimeBegin: values.createTimeBegin ? (values.createTimeBegin).format('YYYY-MM-DD') : '',
+            }
+          }).then(res => {
+            const filename = `问题查询_${moment().format('YYYY-MM-DD HH:mm')}.xls`;
+            const blob = new Blob([res]);
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            window.URL.revokeObjectURL(url);
+          })
+        }
+  
       }
     })
   }
@@ -267,7 +321,7 @@ function Besolved(props) {
   const scopeList = getTypebyTitle('影响范围');
 
   return (
-    <PageHeaderWrapper title={pagetitle}>
+    <PageHeaderWrapper title={differentTitle}>
       <SysDict
         typeid="1354287742015508481"
         commonid="1354288354950123522"

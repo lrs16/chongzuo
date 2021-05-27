@@ -10,30 +10,37 @@ import {
   Divider
 } from 'antd';
 import moment from 'moment';
+import { connect } from 'dva';
 // import TableEdit from '@/components/TableEdit';
 import SysUpload from '@/components/SysUpload';
 
 const { TextArea } = Input;
-
-const ThisweekMaintenance = React.forwardRef((props, ref) => {
-  const attRef = useRef();
-  useImperativeHandle(
-    ref,
-    () => ({
-      attRef,
-    }),
-    [],
-  );
+let tabActiveKey = 'week';
+function ThisweekMaintenance(props) {
+  // const attRef = useRef();
+  // useImperativeHandle(
+  //   ref,
+  //   () => ({
+  //     attRef,
+  //   }),
+  //   [],
+  // );
   const required = true;
 
   const {
     form: { getFieldDecorator, setFieldsValue },
     forminladeLayout,
     maintenanceList,
+    startTime,
+    endTime,
     getTableindex,
     handleSavethisweek,
     ChangeFiles,
+    maintenanceArr,
+    dispatch,
+    loading
   } = props;
+
 
   const [data, setData] = useState([]);
   const [cacheOriginData, setcacheOriginData] = useState({});
@@ -43,7 +50,7 @@ const ThisweekMaintenance = React.forwardRef((props, ref) => {
   useEffect(() => {
     ChangeFiles(fileslist);
     // getTableindex('1')
-  },[fileslist])
+  }, [fileslist])
 
   //  获取行  
   const getRowByKey = (key, newData) => {
@@ -171,7 +178,7 @@ const ThisweekMaintenance = React.forwardRef((props, ref) => {
           return (
             <Input
               defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'params4', record.key)}
+              onChange={e => handleFieldChange(e.target.value, 'dd11', record.key)}
             />
           )
         }
@@ -297,7 +304,6 @@ const ThisweekMaintenance = React.forwardRef((props, ref) => {
   ];
 
 
-
   const handleTabledata = () => {
     const newarr = maintenanceList.map((item, index) => {
       return Object.assign(item, { editable: true, isNew: false, key: index })
@@ -305,62 +311,43 @@ const ThisweekMaintenance = React.forwardRef((props, ref) => {
     setData(newarr)
   }
 
+  const handlemaintenanceArr = () => {
+    dispatch({
+      type: 'eventstatistics/fetchMaintenancelist',
+      payload: { tabActiveKey, startTime, endTime }
+    })
+  }
+
   useEffect(() => {
     handleTabledata();
-  }, [maintenanceList])
-
-
+    // if(startTime) {
+    //   handlemaintenanceArr()
+    // }
+  }, [])
 
 
 
   return (
     <>
-      <Row gutter={16}>
-        <Form>
-       
+      { loading === false && (
+        <>
           <p style={{ fontWeight: '900', fontSize: '16px', marginTop: '20px' }}>一、本周运维情况综述</p>
-
           <Table
             columns={column}
             dataSource={data}
           />
-
-         
-          <Form.Item label=''>
-            {
-              getFieldDecorator('params4', {})
-                (<TextArea />)
-            }
-          </Form.Item>
-
-          <Col span={6}>
-            <Form.Item
-              label='上传附件'
-              {...forminladeLayout}
-            >
-              {getFieldDecorator('field1', {})
-                (
-                  <div style={{ width: 400 }}>
-                    <SysUpload
-                      fileslist={[]}
-                      ChangeFileslist={newvalue => {
-                        setFieldsValue({field1:JSON.stringify(newvalue.arr)})
-                        setFilesList(newvalue)
-                      }}
-                    />
-                  </div>
-                )}
-            </Form.Item>
-          </Col>
-
-        </Form>
-
-
-      </Row>
+        </>
+      )}
 
     </>
   )
-})
+}
 
 
-export default Form.create({})(ThisweekMaintenance)
+
+export default Form.create({})(
+  connect(({ eventstatistics, loading }) => ({
+    maintenanceArr: eventstatistics.maintenanceArr,
+    loading: loading.models.eventstatistics,
+  }))(ThisweekMaintenance)
+)

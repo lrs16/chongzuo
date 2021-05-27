@@ -1,4 +1,4 @@
-import React, { useEffect,useRef, useImperativeHandle, useContext, useState } from 'react';
+import React, { useEffect, useRef, useImperativeHandle, useContext, useState } from 'react';
 import {
   Row,
   Col,
@@ -50,7 +50,7 @@ const Development = React.forwardRef((props, ref) => {
 
   useEffect(() => {
     ChangeFiles(fileslist)
-  },[fileslist])
+  }, [fileslist])
   // 新增一条记录
   const newMember = (params) => {
     setFilesList([]);
@@ -124,8 +124,8 @@ const Development = React.forwardRef((props, ref) => {
     }
   }
 
-  const savedata = (target,id,params) => {
-    handleSavedevelopment(target,id,params)
+  const savedata = (target, id, params) => {
+    handleSavedevelopment(target, id, params)
   }
 
   const saveRow = (e, key, params) => {
@@ -133,7 +133,7 @@ const Development = React.forwardRef((props, ref) => {
     delete target.key;
     // target.editable = false;
     const id = target.id === '' ? '' : target.id;
-    savedata(target, id,params);
+    savedata(target, id, params);
     if (params) {
       target.secondtableisNew = false
       setSecondbutton(false)
@@ -317,8 +317,8 @@ const Development = React.forwardRef((props, ref) => {
         if (record.secondtableisNew) {
           return (
             <Select
-            defaultValue={text}
-            onChange={e => handleFieldChange(e, 'num3', record.key, 'secondTable')}
+              defaultValue={text}
+              onChange={e => handleFieldChange(e, 'num3', record.key, 'secondTable')}
             >
               <Option key='是' value='是'>是</Option>
               <Option key='否' value='否'>否</Option>
@@ -388,83 +388,61 @@ const Development = React.forwardRef((props, ref) => {
 
   return (
     <>
-      <Row gutter={16}>
-        <Form>
-          <Col span={24}>
-            <p style={{ fontWeight: '900', fontSize: '16px' }}>二、常规运维工作开展情况</p>
-          </Col>
+      { loading && (
+        <Row gutter={16}>
+          <Form>
+            <Col span={24}>
+              <p style={{ fontWeight: '900', fontSize: '16px' }}>二、常规运维工作开展情况</p>
+            </Col>
 
-          <Col span={24}>
-            <p>（一）巡检情况 </p>
-          </Col>
+            <Col span={24}>
+              <p>（一）巡检情况 </p>
+            </Col>
 
-          <Col span={24}>
-            <p>1、软件运维巡检情况 </p>
-          </Col>
+            <Col span={24}>
+              <p>1、软件运维巡检情况 </p>
+            </Col>
 
 
-          <Table
-            columns={column}
-            dataSource={data}
-          />
-          <Button
-            style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
-            type="primary"
-            ghost
-            onClick={() => newMember()}
-            icon="plus"
-            disabled={newbutton}
-          >
-            新增巡检情况
-          </Button>
-          <p style={{ marginTop: '20px' }}>（二）重要时期业务保障</p>
-
-          <Form.Item label=''>
-            {
-              getFieldDecorator('params6', {})(<TextArea />)
-            }
-          </Form.Item>
-
-          <p style={{ marginTop: '20px' }}>（三）运维材料提交情况</p>
-
-          <Table
-            columns={submitColumn}
-            dataSource={seconddata}
-          />
-
-          <Button
-            style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
-            type="primary"
-            ghost
-            onClick={() => newMember('secondTable')}
-            icon="plus"
-            disabled={secondbutton}
-          >
-            新增巡检情况
-          </Button>
-
-          <Col span={6}>
-            <Form.Item
-              label='上传附件'
-              {...forminladeLayout}
+            <Table
+              columns={column}
+              dataSource={data}
+            />
+            <Button
+              style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
+              type="primary"
+              ghost
+              onClick={() => newMember()}
+              icon="plus"
+              disabled={newbutton}
             >
-              {getFieldDecorator('field2', {})
-                (
-                  <div style={{ width: 400 }}>
-                    <SysUpload
-                      fileslist={[]}
-                      ChangeFileslist={newvalue => {
-                        setFieldsValue({field2:JSON.stringify(newvalue.arr)})
-                        setFilesList(newvalue)
-                      }}
-                    />
-                  </div>
-                )}
+              新增巡检情况
+       </Button>
 
-            </Form.Item>
-          </Col>
-        </Form>
-      </Row>
+            <p style={{ marginTop: '20px' }}>（三）运维材料提交情况</p>
+
+            <Table
+              columns={submitColumn}
+              dataSource={seconddata}
+            />
+
+            <Button
+              style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
+              type="primary"
+              ghost
+              onClick={() => newMember('secondTable')}
+              icon="plus"
+              disabled={secondbutton}
+            >
+              新增巡检情况
+       </Button>
+
+
+          </Form>
+        </Row>
+
+      )}
+
     </>
   )
 })

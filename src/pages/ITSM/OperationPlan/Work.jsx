@@ -473,7 +473,7 @@ function Work(props) {
       extra={
         <>
           {
-            loading === false && taskResult && taskResult.length && !delay && (openFlowList && edit.main !== undefined && data.length === 1)  &&(
+            loading === false && taskResult && taskResult.length >0 && !delay && (openFlowList && edit.main !== undefined && data.length === 1)  &&(
               <Button
                 type="danger"
                 ghost
@@ -486,13 +486,13 @@ function Work(props) {
           }
 
           {
-            loading === false && taskResult && taskResult.length && !delay && (
+            loading === false && taskResult && taskResult.length >0  && !delay && (
               <Button type='primary' onClick={() => handleSave(false)}>保存</Button>
             )
           }
 
           {
-            loading === false && taskResult && taskResult.length && !delay && (openFlowList && edit.main !== undefined) && taskResult && taskResult.length &&(
+            loading === false && taskResult && taskResult.length >0 && !delay && (openFlowList && edit.main !== undefined) && taskResult && taskResult.length > 0 &&(
               <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleSave(true,'tobatch')}>
                 送审
               </Button>
@@ -500,7 +500,7 @@ function Work(props) {
           }
 
           {
-            auditLink  && taskResult && taskResult.length && !delay && (
+            auditLink  && taskResult && taskResult.length >0 && !delay && (
               <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleExamine()}>
                 审核
               </Button>
@@ -508,7 +508,7 @@ function Work(props) {
           }
 
           {
-            loading === false && taskResult && taskResult.length && auditLink && !delay && edit.check && edit.check.result === null && taskResult && taskResult.length &&(
+            loading === false && taskResult && taskResult.length >0 && auditLink && !delay && edit.check && edit.check.result === null && taskResult && taskResult.length > 0 &&(
               <Back
                 reasonSubmit={values => reasonSubmit(values)}
                 detailPage='true'
@@ -521,7 +521,7 @@ function Work(props) {
           }
 
           {
-            loading === false && taskResult && taskResult.length && !delay && (openFlowList && edit.execute !== undefined) && checkStatus === '已审核' && taskResult && taskResult.length &&(
+            loading === false && taskResult && taskResult.length >0  && !delay && (openFlowList && edit.execute !== undefined) && checkStatus === '已审核' && taskResult && taskResult.length > 0 &&(
               <Button
                 type="primary"
                 onClick={handleExecute}>确认执行</Button>
@@ -529,7 +529,7 @@ function Work(props) {
           }
 
           {
-            loading === false && taskResult && taskResult.length && delay && (
+            loading === false && taskResult && taskResult.length  >0 && delay && (
               <Button type='primary' onClick={handleDelay}>确定延期</Button>
             )
           }
@@ -546,7 +546,7 @@ function Work(props) {
       />
 
       {
-        loading === false  && taskResult && taskResult.length && data && (
+        loading === false  && taskResult && taskResult.length >0 && data && (
           <Collapse
             expandIconPosition="right"
             defaultActiveKey={['1']}
@@ -632,7 +632,7 @@ function Work(props) {
       }
 
       <div className={styles.collapse}>
-        {loading === false && taskResult && taskResult.length  && data &&  (
+        {loading === false && taskResult && taskResult.length >0  && data &&  (
           <Collapse
             expandIconPosition="right"
             defaultActiveKey={['0']}

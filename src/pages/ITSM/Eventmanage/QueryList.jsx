@@ -22,9 +22,9 @@ import SysDict from '@/components/SysDict';
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
-const paramsSearch = 'search';
-let empty;
 let noStatistic = '';
+
+let queryParams = true;
 
 const formItemLayout = {
   labelCol: {
@@ -193,12 +193,13 @@ const columns = [
 ];
 
 function QueryList(props) {
-  const pagetitle = props.route.name;
+  // const pagetitle = props.route.name;
   const {
     form: {
       getFieldDecorator,
       resetFields,
-      validateFields
+      validateFields,
+      setFieldsValue
     },
     location: { query: {
       sign,
@@ -215,33 +216,38 @@ function QueryList(props) {
     list,
     dispatch,
   } = props;
-  const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
+  let title;
+  const [paginations, setPageinations] = useState({ current: 1, pageSize: 10 });
   const [expand, setExpand] = useState(false);
   const [selectdata, setSelectData] = useState('');
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
 
-  if (sign) {
-    noStatistic = 'noStatistic';
-  }
 
+  if (time1) {
+    title = '事件统计查询'
+  } else {
+    title = '事件查询'
+  }
   useEffect(() => {
+    setFieldsValue({
+      eventObject,
+      createTime: time1 ? [moment(time1), moment(time2)] : [moment().startOf('month'), moment()],
+      registerUser,
+      applicationUnit,
+      eventStatus
+    })
     validateFields((err, values) => {
       if (!err) {
         dispatch({
           type: 'eventquery/fetchlist',
           payload: {
             ...values,
+            eventObject: values.eventObject ? (values.eventObject).slice(-1)[0] : '',
             pageIndex: paginations.current - 1,
             pageSize: paginations.pageSize,
+            time1: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+            time2: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
             createTime: '',
-            time1: time1 === undefined ? moment().startOf('month').format('YYYY-MM-DD HH:mm:ss') : time1,
-            time2: time2 === undefined ? moment().format('YYYY-MM-DD HH:mm:ss') : time2,
-            eventObject,
-            selfhandle,
-            registerUser,
-            handleUnit,
-            eventStatus,
-            applicationUnit
           },
         });
       }
@@ -251,93 +257,19 @@ function QueryList(props) {
     };
   }, []);
 
-  //  查询页查询数据把数据统计的数据清空
-  const queryFunciton = (values, page, size) => {
-    if (sign) {
-      dispatch({
-        type: 'eventquery/fetchlist',
-        payload: {
-          ...values,
-          eventObject: values.eventObject ? (values.eventObject).slice(-1)[0] : eventObject,
-          createTime: '',
-          pageSize: size,
-          pageIndex: page,
-          time1: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : time1,
-          time2: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : time2,
-          selfhandle: values.selfhandle ? values.selfhandle : selfhandle,
-          registerUser: values.registerUser ? values.registerUser : registerUser,
-          applicationUnit: values.applicationUnit ? values.applicationUnit : applicationUnit
-        },
-      });
-    } else {
-      dispatch({
-        type: 'eventquery/fetchlist',
-        payload: {
-          ...values,
-          eventObject: values.eventObject ? (values.eventObject).slice(-1)[0] : eventObject,
-          createTime: '',
-          pageSize: size,
-          pageIndex: page,
-          time1: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : moment().startOf('month').format('YYYY-MM-DD HH:mm:ss'),
-          time2: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : moment().format('YYYY-MM-DD HH:mm:ss'),
-          selfhandle: values.selfhandle ? values.selfhandle : selfhandle,
-          registerUser: values.registerUser ? values.registerUser : registerUser,
-          applicationUnit: values.applicationUnit ? values.applicationUnit : applicationUnit
-        },
-      });
-    }
-
-  }
-
-  //  查询后点击分页不带统计的参数，翻页、变更每页显示条数
-  const changePagelist = (values, page, size) => {
-    if (sign) {
-      dispatch({
-        type: 'eventquery/fetchlist',
-        payload: {
-          ...values,
-          eventObject: values.eventObject ? (values.eventObject).slice(-1)[0] : eventObject,
-          createTime: '',
-          time1: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : time1,
-          time2: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : time2,
-          pageSize: size,
-          pageIndex: page - 1,
-          selfhandle: values.selfhandle ? values.selfhandle : selfhandle,
-          registerUser: values.registerUser ? values.registerUser : registerUser,
-          applicationUnit: values.applicationUnit ? values.applicationUnit : applicationUnit
-        },
-      });
-    } else {
-      dispatch({
-        type: 'eventquery/fetchlist',
-        payload: {
-          ...values,
-          eventObject: values.eventObject ? (values.eventObject).slice(-1)[0] : eventObject,
-          createTime: '',
-          time1: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : moment().startOf('month').format('YYYY-MM-DD HH:mm:ss'),
-          time2: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : moment().format('YYYY-MM-DD HH:mm:ss'),
-          pageSize: size,
-          pageIndex: page - 1,
-          selfhandle: values.selfhandle ? values.selfhandle : selfhandle,
-          registerUser: values.registerUser ? values.registerUser : registerUser,
-          applicationUnit: values.applicationUnit ? values.applicationUnit : applicationUnit
-        },
-      });
-    }
-
-  }
-
   const searchdata = (values, page, size, params) => {
-    switch (params) {
-      case 'search':
-        queryFunciton(values, page, size, params)
-        break;
-      case undefined:
-        changePagelist(values, page, size, params);
-        break;
-      default:
-        break;
-    }
+    dispatch({
+      type: 'eventquery/fetchlist',
+      payload: {
+        ...values,
+        eventObject: values.eventObject ? (values.eventObject).slice(-1)[0] : '',
+        pageSize: size,
+        pageIndex: page,
+        time1: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+        time2: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+        createTime: '',
+      },
+    });
   };
 
   //  下载
@@ -349,13 +281,10 @@ function QueryList(props) {
           payload: {
             values: {
               ...values,
+              time1: values.createTime ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+              time2: values.createTime ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
               createTime: '',
-              time1: values.createTime ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : time1,
-              time2: values.createTime ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : time2,
-              eventObject: values.eventObject ? (values.eventObject).slice(-1)[0] : eventObject,
-              selfhandle: values.selfhandle ? values.selfhandle : selfhandle,
-              registerUser: values.registerUser ? values.registerUser : registerUser,
-              applicationUnit: values.applicationUnit ? values.applicationUnit : applicationUnit
+              eventObject: values.eventObject ? (values.eventObject).slice(-1)[0] : '',
             },
             ids: selectedRowKeys.toString(),
           },
@@ -388,7 +317,7 @@ function QueryList(props) {
   const changePage = page => {
     validateFields((err, values) => {
       if (!err) {
-        searchdata(values, page, paginations.pageSize);
+        searchdata(values, page - 1, paginations.pageSize);
       }
     });
     setPageinations({
@@ -431,11 +360,6 @@ function QueryList(props) {
 
   const handleReset = () => {
     resetFields();
-    validateFields((err, values) => {
-      if (!err) {
-        searchdata(values, 1, 15);
-      }
-    });
   };
 
   const displayRender = label => {
@@ -463,7 +387,7 @@ function QueryList(props) {
   const satisfactionmap = getTypebykey('486855005945462784'); // 满意度
 
   return (
-    <PageHeaderWrapper title={pagetitle}>
+    <PageHeaderWrapper title={title}>
       <SysDict
         typeid="1354273739344187393"
         commonid="1354288354950123522"
@@ -475,41 +399,116 @@ function QueryList(props) {
           <Form {...formItemLayout} onSubmit={handleSearch}>
             {expand === false && (
               <>
-                <Col span={7}>
-                  <Form.Item label="事件编号">
-                    {getFieldDecorator('eventNo', {
-                      initialValue: '',
-                    })(<Input placeholder="请输入" allowClear />)}
-                  </Form.Item>
-                </Col>
-                <Col span={7}>
-                  <Form.Item label="工单状态">
-                    {getFieldDecorator('eventStatus', {
-                      initialValue: '',
-                    })(
-                      <Select placeholder="请选择" allowClear>
-                        {statusmap.map(obj => (
-                          <Option key={obj.key} value={obj.title}>
-                            {obj.title}
-                          </Option>
-                        ))}
-                      </Select>,
-                    )}
-                  </Form.Item>
-                </Col>
-                <Col span={10}>
-                  <Form.Item label="建单时间" {...form10ladeLayout}>
-                    {getFieldDecorator('createTime', {
-                      initialValue: sign ? [moment(time1), moment(time2)] : [moment().startOf('month'), moment()],
-                    })(<RangePicker
-                      showTime
-                      format='YYYY-MM-DD HH:mm:ss'
-                      allowClear
-                    />)}
-                  </Form.Item>
-                </Col>
+                {time1 && (
+                  <>
+                    <Col span={8}>
+                      <Form.Item label="事件对象">
+                        {getFieldDecorator('eventObject', {
+                          initialValue: '',
+                        })(
+                          <Cascader
+                            fieldNames={{ label: 'title', value: 'title', children: 'children' }}
+                            options={objectmap}
+                            placeholder="请选择"
+                            expandTrigger="hover"
+                            displayRender={displayRender}
+                            allowClear
+                          />,
+                        )}
+                      </Form.Item>
+                    </Col>
+
+                    <Col span={8}>
+                      <Form.Item label="登记人">
+                        {getFieldDecorator('registerUser', {
+                          initialValue: '',
+                        })(<Input placeholder="请输入" allowClear />)}
+                      </Form.Item>
+                    </Col>
+
+                    <Col span={8}>
+                      <Form.Item label="工单状态">
+                        {getFieldDecorator('eventStatus', {
+                          initialValue: '',
+                        })(
+                          <Select placeholder="请选择" allowClear>
+                            {statusmap.map(obj => (
+                              <Option key={obj.key} value={obj.title}>
+                                {obj.title}
+                              </Option>
+                            ))}
+                          </Select>,
+                        )}
+                      </Form.Item>
+                    </Col>
+
+                    <Col span={8}>
+                      <Form.Item label="申报人单位">
+                        {getFieldDecorator('applicationUnit', {
+                          initialValue: '',
+                        })(<Input placeholder="请输入" allowClear />)}
+                      </Form.Item>
+                    </Col>
+
+                    
+                    <Col span={10}>
+                      <Form.Item label="建单时间" {...form10ladeLayout}>
+                        {getFieldDecorator('createTime', {
+                          initialValue: '',
+                        })(<RangePicker
+                          showTime
+                          format='YYYY-MM-DD HH:mm:ss'
+                          allowClear
+                        />)}
+                      </Form.Item>
+                    </Col>
+
+                 
+                  </>
+                )}
+
+                {!time1 && (
+                  <>
+                    <Col span={7}>
+                      <Form.Item label="事件编号">
+                        {getFieldDecorator('eventNo', {
+                          initialValue: '',
+                        })(<Input placeholder="请输入" allowClear />)}
+                      </Form.Item>
+                    </Col>
+
+                    <Col span={7}>
+                      <Form.Item label="工单状态">
+                        {getFieldDecorator('eventStatus', {
+                          initialValue: '',
+                        })(
+                          <Select placeholder="请选择" allowClear>
+                            {statusmap.map(obj => (
+                              <Option key={obj.key} value={obj.title}>
+                                {obj.title}
+                              </Option>
+                            ))}
+                          </Select>,
+                        )}
+                      </Form.Item>
+                    </Col>
+
+                    <Col span={10}>
+                      <Form.Item label="建单时间" {...form10ladeLayout}>
+                        {getFieldDecorator('createTime', {
+                          initialValue: '',
+                        })(<RangePicker
+                          showTime
+                          format='YYYY-MM-DD HH:mm:ss'
+                          allowClear
+                        />)}
+                      </Form.Item>
+                    </Col>
+                  </>
+                )}
               </>
             )}
+
             {expand === true && (
               <>
                 <Col span={8}>
@@ -746,13 +745,7 @@ function QueryList(props) {
                     })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
-                <Col span={8}>
-                  <Form.Item label="登记人">
-                    {getFieldDecorator('registerUser', {
-                      initialValue: '',
-                    })(<Input placeholder="请输入" allowClear />)}
-                  </Form.Item>
-                </Col>
+
                 <Col span={8}>
                   <Form.Item label="登记人单位">
                     {getFieldDecorator('registerUnit', {
@@ -833,7 +826,7 @@ function QueryList(props) {
                 <Col span={24}>
                   <Form.Item label="建单时间" {...forminladeLayout}>
                     {getFieldDecorator('createTime', {
-                      initialValue: sign ? [moment(time1), moment(time2)] : [moment().startOf('month'), moment()],
+                      initialValue: '',
                     })(<RangePicker
                       showTime
                       format='YYYY-MM-DD HH:mm:ss'
@@ -843,31 +836,62 @@ function QueryList(props) {
                 </Col>
               </>
             )}
-            <Col span={24} style={{ textAlign: 'right' }}>
-              <Button type="primary" onClick={() => handleSearch('search')}>
-                查 询
+
+            {expand === true && (
+              <Col span={24} style={{ textAlign: 'right' }}>
+                <Button type="primary" onClick={() => handleSearch('search')}>
+                  查 询
                 </Button>
-              <Button style={{ marginLeft: 8 }} onClick={handleReset}>
-                重 置
+                <Button style={{ marginLeft: 8 }} onClick={handleReset}>
+                  重 置
                 </Button>
-              <Button
-                style={{ marginLeft: 8 }}
-                type="link"
-                onClick={() => {
-                  setExpand(!expand);
-                }}
-              >
-                {expand ? (
-                  <>
-                    关 闭 <UpOutlined />
-                  </>
-                ) : (
-                  <>
-                    展 开 <DownOutlined />
-                  </>
-                )}
-              </Button>
-            </Col>
+                <Button
+                  style={{ marginLeft: 8 }}
+                  type="link"
+                  onClick={() => {
+                    setExpand(!expand);
+                  }}
+                >
+                  {expand ? (
+                    <>
+                      关 闭 <UpOutlined />
+                    </>
+                  ) : (
+                    <>
+                      展 开 <DownOutlined />
+                    </>
+                  )}
+                </Button>
+              </Col>
+            )}
+            {expand === false && (
+              <Col span={24} style={{ textAlign: 'right' }}>
+                <Button type="primary" onClick={() => handleSearch('search')}>
+                  查 询
+                </Button>
+                <Button style={{ marginLeft: 8 }} onClick={handleReset}>
+                  重 置
+                </Button>
+                <Button
+                  style={{ marginLeft: 8 }}
+                  type="link"
+                  onClick={() => {
+                    setExpand(!expand);
+                  }}
+                >
+                  {expand ? (
+                    <>
+                      关 闭 <UpOutlined />
+                    </>
+                  ) : (
+                    <>
+                      展 开 <DownOutlined />
+                    </>
+                  )}
+                </Button>
+              </Col>
+            )}
+
           </Form>
         </Row>
         <div style={{ marginBottom: 24 }}>

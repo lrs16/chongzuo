@@ -17,7 +17,7 @@ import MergeTable from '@/components/MergeTable';
 import iconfontUrl from '@/utils/iconfont';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
-let starttime;
+let startTime;
 let monthStarttime;
 let endTime;
 const sign = 'maintenanceservice';
@@ -81,7 +81,7 @@ function Maintenance(props) {
                 sign: 'last',
                 time1: moment(record.last_start_time).format('YYYY-MM-DD'),
                 time2: moment(record.last_end_time).format('YYYY-MM-DD'),
-                eventObject: record.object_name
+                eventObject: [record.first_object,record.object_name]
               }
             }}
           >
@@ -105,7 +105,7 @@ function Maintenance(props) {
                 sign: 'last',
                 time1: moment(record.now_start_time).format('YYYY-MM-DD'),
                 time2: moment(record.now_end_time).format('YYYY-MM-DD'),
-                eventObject: record.object_name
+                eventObject: [record.first_object,record.object_name]
               }
             }}
           >
@@ -134,25 +134,25 @@ function Maintenance(props) {
   const onChange = (date, dateString) => {
 
     if (tabActiveKey === 'week') {
-      starttime = dateString;
+      startTime = dateString;
       endTime = moment(dateString).add(+6, 'day').format('YYYY-MM-DD');
       setFieldsValue({ time2: moment(endTime) });
     } else {
-      starttime = date.startOf('month').format('YYYY-MM-DD');
+      startTime = date.startOf('month').format('YYYY-MM-DD');
       endTime = date.endOf('month').format('YYYY-MM-DD');
     }
   }
 
   const endonChange = (date, dateString) => {
     endTime = dateString;
-    starttime = moment(dateString).subtract('day', 6).format('YYYY-MM-DD');
-    setFieldsValue({ time1: moment(starttime) })
+    startTime = moment(dateString).subtract('day', 6).format('YYYY-MM-DD');
+    setFieldsValue({ time1: moment(startTime) })
   }
 
   const handleListdata = () => {
     dispatch({
       type: 'eventstatistics/fetchMaintenancelist',
-      payload: { sign, tabActiveKey, starttime, monthStarttime, endTime }
+      payload: { sign, tabActiveKey, startTime, monthStarttime, endTime }
     })
   }
 
@@ -160,7 +160,7 @@ function Maintenance(props) {
     dispatch({
       type: 'eventstatistics/downloadMaintenance',
       payload: {
-        time1: starttime,
+        time1: startTime,
         time2: endTime,
         type: tabActiveKey,
 
@@ -181,11 +181,11 @@ function Maintenance(props) {
   const defaultTime = () => {
     //  周统计
     if (tabActiveKey === 'week') {
-      starttime = moment().week(moment().week() - 1).startOf('week').format('YYYY-MM-DD');
+      startTime = moment().week(moment().week() - 1).startOf('week').format('YYYY-MM-DD');
       endTime = moment().week(moment().week() - 1).endOf('week').format('YYYY-MM-DD');
       //  endTime = `${endTime} 00:00:00`;
     } else { // 月统计
-      starttime = moment().startOf('month').format('YYYY-MM-DD');
+      startTime = moment().startOf('month').format('YYYY-MM-DD');
       endTime = moment().endOf('month').format('YYYY-MM-DD');
     }
   }
@@ -285,7 +285,7 @@ function Maintenance(props) {
                   <Col span={24}>
                     <Form.Item label='起始时间'>
                       {getFieldDecorator('time1', {
-                        initialValue: moment(starttime)
+                        initialValue: moment(startTime)
                       })(<DatePicker
                         allowClear={false}
                         disabledDate={startdisabledDate}
@@ -328,7 +328,7 @@ function Maintenance(props) {
                   <Col span={24}>
                     <Form.Item label='起始时间'>
                       {getFieldDecorator('monthStarttime', {
-                        initialValue: moment(starttime)
+                        initialValue: moment(startTime)
                       })(
                         <MonthPicker
                           // format="YYYY-MM-DD"

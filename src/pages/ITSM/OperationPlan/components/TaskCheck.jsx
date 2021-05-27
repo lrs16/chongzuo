@@ -33,7 +33,7 @@ const TaskCheck = React.forwardRef((props, ref) => {
   );
 
   const statusContent = ['001', '002',null];
-  const color = ['green', 'green','blue'];
+  const color = ['blue', 'green'];
 
   const onChange = (e) => {
     setFlowtype(e.target.value);
@@ -95,7 +95,7 @@ const TaskCheck = React.forwardRef((props, ref) => {
                 initialValue: check.status
               })(
                 <Tag
-                  color={color[check.result ? statusContent.indexOf(check.result):'2']}>{check.result === null ? '待审核':'已审核'}</Tag>
+                  color={color[0]}>待审核</Tag>
               )
             }
           </Form.Item>

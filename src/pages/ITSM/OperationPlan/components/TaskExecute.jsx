@@ -176,7 +176,6 @@ const TaskExecute = React.forwardRef((props, ref) => {
             </Form.Item>
           </Col>
 
-
         <Col span={24}>
           <Form.Item label="执行操作时间" {...forminladeLayout}>
             {getFieldDecorator('execute_operationTime', {

@@ -77,6 +77,10 @@ export default {
         payload: response
       })
     },
+//  粘贴
+    *pasteFlow({ payload }, { call, put }) {
+      return  yield call(openFlow,payload);
+    },
 
     //  我的作业计划列表
     *myTasklist({ payload }, { call, put }) {
@@ -85,6 +89,11 @@ export default {
         type:'myTaskplanlist',
         payload: response
       })
+    },
+    
+    //  周报我的作业计划列表
+    *weekmyTasklist({ payload }, { call, put }) {
+      return yield call(myTasklist,payload);
     },
 
     //  提交送审人

@@ -9,7 +9,8 @@ import {
   Popconfirm,
   Select,
   AutoComplete,
-  Spin
+  Spin,
+  Button
 } from 'antd';
 import SysUpload from '@/components/SysUpload';
 import { queryDisableduserByUser, queryUnitList, queryDeptList } from '@/services/common';
@@ -18,19 +19,20 @@ import styles from '../index.less';
 const { Search } = Input;
 const { Option } = Select;
 
-const ThisWeekitsm = React.forwardRef((props, ref) => {
-  const attRef = useRef();
-  useImperativeHandle(
-    ref,
-    () => ({
-      attRef,
-    }),
-    [],
-  )
+function ThisWeekitsm(props) {
+  // const attRef = useRef();
+  // useImperativeHandle(
+  //   ref,
+  //   () => ({
+  //     attRef,
+  //   }),
+  //   [],
+  // )
 
   const {
     form: { getFieldDecorator, setFieldsValue },
     forminladeLayout,
+    formItemLayout,
     thisWeekitsmlist,
     ChangeFiles,
     searchNumber
@@ -46,7 +48,7 @@ const ThisWeekitsm = React.forwardRef((props, ref) => {
   useEffect(() => {
     ChangeFiles(fileslist);
     // getTableindex('1')
-  },[fileslist])
+  }, [fileslist])
   // 自动完成报障用户
   const disableduser = disablelist.map(opt => (
     <Option key={opt.id} value={opt.user} disableuser={opt}>
@@ -73,9 +75,16 @@ const ThisWeekitsm = React.forwardRef((props, ref) => {
   };
 
   // 选择报障用户，信息回填
-  const handleDisableduser = (v, opt, fieldName, key) => {
-    // const newData = data.map(item => ({ ...item }));
-    // const { user } = opt.props.disableuser;
+  const handleDisableduser = (v, opt,) => {
+    const newData = data.map(item => ({ ...item }));
+    const { user } = opt.props.disableuser;
+    const searchObj = {
+      key: newData.length + 1,
+      num1:user,
+      isNew:true
+    };
+    newData.push(searchObj);
+    setData(newData)
     // // setFieldsValue({
     // //   num5: 'user',         // 申报人
     // // });
@@ -86,8 +95,6 @@ const ThisWeekitsm = React.forwardRef((props, ref) => {
     //   setData(newData)
     // }
   };
-
-  console.log(data)
 
   const thisWeekitsm = [
     {
@@ -144,7 +151,7 @@ const ThisWeekitsm = React.forwardRef((props, ref) => {
 
   const saveRow = (e, key) => {
     const target = getRowByKey(key) || {};
-    delete target.key;
+    // delete target.key;
     target.editable = false;
     const id = target.id === '' ? '' : target.id;
     savedata(target, id);
@@ -161,7 +168,7 @@ const ThisWeekitsm = React.forwardRef((props, ref) => {
       target[fieldName] = e;
       setData(newData);
     }
-    if(fieldName === 'num3') {
+    if (fieldName === 'num3') {
       searchNumber(e)
     }
 
@@ -238,23 +245,7 @@ const ThisWeekitsm = React.forwardRef((props, ref) => {
         if (record.isNew) {
           console.log(text)
           return (
-            <>
-              <AutoComplete
-                defaultValue={text}
-                onChange={e => handleFieldChange(e, 'num5', record.key)}
-                dataSource={disableduser}
-                dropdownMatchSelectWidth={false}
-                dropdownStyle={{ width: 600 }}
-                optionLabelProp="value"
-              // onSelect={(v, opt) => handleDisableduser(v, opt,'num5',record.key)}
-              >
-                <Search
-                  placeholder="可输入姓名搜索"
-                  onSearch={values => SearchDisableduser(values)}
-                  allowClear
-                />
-              </AutoComplete>,
-            </>
+            <Input />
           )
         }
         if (record.isNew === false) {
@@ -327,36 +318,72 @@ const ThisWeekitsm = React.forwardRef((props, ref) => {
         <Col span={20}>
           <p style={{ fontWeight: '900', fontSize: '16px' }}>四、本周事件、问题及故障</p>
         </Col>
+        <Form {...formItemLayout}>
+          <Row gutter={16}>
+            <Col span={8}>
+              <Form.Item label='N'>
+                <Select
+                  placeholder="请选择"
+                  style={{ width: 150 }}
+                  defaultValue='5'
+                >
+                  <Option value="5">5</Option>
+                  <Option value="10">10</Option>
+                  <Option value="15">15</Option>
+                  <Option value="20">20</Option>
+                </Select>
+              </Form.Item>
+            </Col>
+
+            <Col span={8}>
+              <Form.Item label='搜索内容'>
+                {getFieldDecorator('content', {})(
+                  <>
+                    <AutoComplete
+                      dataSource={disableduser}
+                      dropdownMatchSelectWidth={false}
+                      dropdownStyle={{ width: 600 }}
+                      optionLabelProp="value"
+                      onSelect={(v, opt) => handleDisableduser(v, opt)}
+                    >
+                      <Search
+                        placeholder="可输入姓名搜索"
+                        onSearch={values => SearchDisableduser(values)}
+                        allowClear
+                      />
+                    </AutoComplete>,
+              </>
+                )}
+              </Form.Item>
+            </Col>
+{/* 
+            <Col span={8}>
+              <>
+                <Button type="primary">
+                  查询
+                </Button>
+
+                <Button style={{ marginLeft: 8 }}>
+                  重置
+                </Button>
+              </>
+            </Col> */}
+
+
+          </Row>
+
+        </Form>
 
         <Table
           columns={column}
           dataSource={data}
         />
 
-        <Col span={6}>
-          <Form.Item
-            label='上传附件'
-            {...forminladeLayout}
-          >
-            {getFieldDecorator('params22', {})
-              (
-                <div style={{ width: 400 }}>
-                  <SysUpload
-                    fileslist={[]}
-                    ChangeFileslist={newvalue => {
-                      setFieldsValue({params22:JSON.stringify(newvalue.arr)})
-                      setFilesList(newvalue)
-                    }}
-                  />
-                </div>
-              )}
 
-          </Form.Item>
-        </Col>
       </Row>
 
     </>
   )
-})
+}
 
 export default Form.create({})(ThisWeekitsm)
