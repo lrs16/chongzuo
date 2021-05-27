@@ -34,7 +34,7 @@ const homepane = [{
   itemPath: '/ITSM/home',
   id: '1362219140546301953',
   closable: false,
-  state: { cache: false },
+  state: { cache: false, cacheinfo: {} },
 },
   // {
   //   name: "接口数据核查情况",
@@ -233,17 +233,18 @@ const BasicLayout = props => {
     }
   }, [location.query])
 
+
   // 表单信息写入页签
   const ChangetabState = () => {
     const target = toptabs.filter(item => item.id === tabid)[0];
     if (target) {
       target.data = cacheinfo;
-      target.state.cache = false;
+      target.state = { cache: false };
+      const newData = toptabs.map(item => {
+        return item.id === target.id ? target : item
+      });
+      setTopTabs(newData)
     };
-    const newData = toptabs.map(item => {
-      return item.id === target.id ? target : item
-    });
-    setTopTabs(newData)
   };
   useEffect(() => {
     if (savecache) {
@@ -251,7 +252,7 @@ const BasicLayout = props => {
       clearcache();
     }
   }, [savecache])
-  // console.log(cacheinfo, savecache, toptabs)
+
 
   const callback = (key) => {
     const target = toptabs.filter(item => item.id === key)[0];
@@ -260,7 +261,7 @@ const BasicLayout = props => {
       router.push({
         pathname: target.itemPath,
         query: target.query,
-        state: { cacheinfo: target.data.cacheinfo, cache: false }
+        state: { ...target.data, cache: false }
       });
     }
   };
@@ -427,13 +428,24 @@ const BasicLayout = props => {
               return num === 0 ? 0 : Number(targettype.slice(-1)[0].id.replace(/[^0-9]/ig, "")) + 1;
             }
             return null
-          }
+          };
           const rutersave = () => {
             router.push({
               pathname: location.pathname,
               state: { ...location.state, cache: true },
             });
-          }
+          };
+          const CleartabState = () => {
+            const target = toptabs.filter(item => item.id === tabid)[0];
+            if (target) {
+              delete target.data
+              target.state.cache = false;
+              const newData = toptabs.map(item => {
+                return item.id === target.id ? target : item
+              });
+              setTopTabs(newData)
+            };
+          };
           return (
             <>
               {targetmultiple && (
@@ -445,7 +457,7 @@ const BasicLayout = props => {
                       cache: false
                     },
                   }}
-                  onClick={() => handleLink(menuItemProps)}
+                  onClick={() => { handleLink(menuItemProps); CleartabState() }}
                   onMouseDown={() => { rutersave() }}
                 >{defaultDom}</Link>
               )}
@@ -454,7 +466,7 @@ const BasicLayout = props => {
                   pathname: menuItemProps.path,
                   state: { cache: false },
                 }}
-                  onClick={() => handleLink(menuItemProps)}
+                  onClick={() => { handleLink(menuItemProps); CleartabState() }}
                   onMouseDown={() => { rutersave() }}
                 >{defaultDom}</Link>
               )}
@@ -484,31 +496,42 @@ const BasicLayout = props => {
       // footerRender={footerRender}
       >
         {authorized === Userauth && (
-          <>
-            <Tabs
-              hideAdd
-              activeKey={activeKey}
-              type='editable-card'
-              onChange={(key) => callback(key)}
-              onEdit={onEdit}
-              style={{ margin: '-24px -24px 0 ', backgroundColor: '#fff' }}
-            >
-              {toptabs.map(obj => [
-                <TabPane
-                  tab={obj.name}
-                  key={obj.id}
-                  closable={obj.closable}
-                >
-                  {/* <Authorized authority={Userauth} noMatch={noMatch}>
+          < >
+            <div onMouseDown={() => {
+              router.push({
+                pathname: location.pathname,
+                query: location.query,
+                state: { ...location.state, cache: true },
+              });
+            }}>
+              <Tabs
+                hideAdd
+                activeKey={activeKey}
+                type='editable-card'
+                onChange={(key) => callback(key)}
+                onEdit={onEdit}
+                style={{ margin: '-24px -24px 0 ', backgroundColor: '#fff' }}
+                onTabClick={() => {
+
+                }}
+              >
+                {toptabs.map(obj => [
+                  <TabPane
+                    tab={obj.name}
+                    key={obj.id}
+                    closable={obj.closable}
+                  >
+                    {/* <Authorized authority={Userauth} noMatch={noMatch}>
                     {multipleurl && (
                       <div style={{ padding: '0 24px 0 24px', marginTop: 8, background: '#f1f1f1' }}>
                         {children}
                       </div>
                     )}
                   </Authorized> */}
-                </TabPane>,
-              ])}
-            </Tabs>
+                  </TabPane>,
+                ])}
+              </Tabs>
+            </div>
             <Authorized authority={Userauth} noMatch={noMatch}>
               {/* <PageTab>{children}</PageTab> */}
               {/* <MenuContext.Provider value={{ tabnew, cleartabdata }}>

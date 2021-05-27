@@ -19,6 +19,7 @@ const UserModel = {
       });
     },
     *gettabstate({ payload: { cacheinfo, tabid } }, { put }) {
+      console.log(cacheinfo)
       yield put({
         type: 'savecache',
         cacheinfo: { cacheinfo },

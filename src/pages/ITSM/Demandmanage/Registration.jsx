@@ -149,7 +149,7 @@ function Registration(props) {
       });
     }
   }, [location.state]);
-  console.log(location.state.cacheinfo)
+  console.log(location.state)
 
   const handleclose = () => {
     router.push({

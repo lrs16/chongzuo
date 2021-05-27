@@ -55,11 +55,13 @@ const columns = [
         to={{
           pathname: '/ITSM/demandmanage/query',
           query: {
-            module:record.fullName,
-            statisticalType:'demandRequirement',
-            startTime:searchSign?statTimeBegin:'',
-            endTime:searchSign?statTimeEnd:''
-          }
+            module: record.fullName,
+            statisticalType: 'demandRequirement',
+            startTime: searchSign ? statTimeBegin : '',
+            endTime: searchSign ? statTimeEnd : '',
+            pathpush: true
+          },
+          state: { cache: false, cacheinfo: {} }
         }}
       >
         {text}
@@ -72,7 +74,7 @@ const columns = [
 function DemandRequirement(props) {
   const { pagetitle } = props.route.name;
   const {
-    form: { getFieldDecorator,resetFields },
+    form: { getFieldDecorator, resetFields },
     requirementArr,
     dispatch,
     loading
@@ -95,7 +97,7 @@ function DemandRequirement(props) {
 
 
   const handleListdata = (params) => {
-    if(params) {
+    if (params) {
       searchSign = 'searchSign';
     }
     dispatch({
@@ -126,7 +128,7 @@ function DemandRequirement(props) {
     handleListdata();
   }, [])
 
-  
+
   const handleReset = () => {
     statTimeBegin = '';
     statTimeEnd = '';
@@ -134,7 +136,7 @@ function DemandRequirement(props) {
   }
 
 
-  
+
 
   return (
     <PageHeaderWrapper
@@ -148,7 +150,7 @@ function DemandRequirement(props) {
                 <Form.Item label='起始时间'>
                   {
                     getFieldDecorator('time1', {})
-                      (<RangePicker 
+                      (<RangePicker
                         onChange={onChange} />)
                   }
                 </Form.Item>

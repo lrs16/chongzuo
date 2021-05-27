@@ -23,7 +23,7 @@ const { RangePicker } = DatePicker;
 function DemandTimeout(props) {
   const { pagetitle } = props.route.name;
   const {
-    form: { getFieldDecorator,resetFields },
+    form: { getFieldDecorator, resetFields },
     demandtomeoutArr,
     dispatch
   } = props;
@@ -33,10 +33,10 @@ function DemandTimeout(props) {
       title: '序号',
       dataIndex: 'user',
       key: 'user',
-      render:(text,record,index) => {
-        return <span>{index +1}</span>
+      render: (text, record, index) => {
+        return <span>{index + 1}</span>
       }
- 
+
     },
     {
       title: '超时状态',
@@ -48,36 +48,38 @@ function DemandTimeout(props) {
       dataIndex: 'quantity',
       key: 'quantity',
       render: (text, record) => {
-        if(record.status !== '合计') {
-          return  <Link
-          to={{
-            pathname: '/ITSM/demandmanage/query',
-            query: { 
-              completeStatus: record.status,
-              startTime:searchSign?startTime:'',
-              endTime:searchSign?endTime:''
-             }
-          }}
-        >
-          {text}
-        </Link>
+        if (record.status !== '合计') {
+          return <Link
+            to={{
+              pathname: '/ITSM/demandmanage/query',
+              query: {
+                completeStatus: record.status,
+                startTime: searchSign ? startTime : '',
+                endTime: searchSign ? endTime : '',
+                pathpush: true,
+              },
+              state: { cache: false, cacheinfo: {} }
+            }}
+          >
+            {text}
+          </Link>
         }
 
-      if (record.status === '合计') {
-        return <span>{text}</span>
+        if (record.status === '合计') {
+          return <span>{text}</span>
+        }
+
       }
-   
-    }
     },
   ];
 
-  const onChange = (date,dateString) => {
+  const onChange = (date, dateString) => {
     [startTime, endTime] = dateString;
   }
 
 
   const handleListdata = (params) => {
-    if(params) {
+    if (params) {
       searchSign = 'searchSign';
     }
     dispatch({
@@ -125,7 +127,7 @@ function DemandTimeout(props) {
         <Row gutter={24}>
           <Form layout='inline'>
             <>
-            <Col span={24}>
+              <Col span={24}>
                 <Form.Item label='起始时间'>
                   {
                     getFieldDecorator('time1', {})

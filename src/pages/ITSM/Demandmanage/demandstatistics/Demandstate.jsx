@@ -35,9 +35,11 @@ const columns = [
           pathname: '/ITSM/demandmanage/query',
           query: {
             taskName: record.statusName,
-            startTime:searchSign?statTimeBegin:'',
-            endTime:searchSign?statTimeEnd:''
-          }
+            startTime: searchSign ? statTimeBegin : '',
+            endTime: searchSign ? statTimeEnd : '',
+            pathpush: true
+          },
+          state: { cache: false, cacheinfo: {} }
         }}
       >
         {text}
@@ -60,7 +62,7 @@ function Demandstate(props) {
 
 
   const handleListdata = (params) => {
-    if(params) {
+    if (params) {
       searchSign = 'searchSign';
     }
     dispatch({

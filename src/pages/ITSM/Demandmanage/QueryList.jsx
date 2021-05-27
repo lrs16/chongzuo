@@ -281,6 +281,9 @@ function QueryList(props) {
     }
   }, [location.state]);
 
+  console.log(location.state)
+  const cacheinfo = location.state.cacheinfo === undefined ? {} : location.state.cacheinfo;
+
   return (
     <PageHeaderWrapper title={title}>
       <KeyVal
@@ -292,6 +295,7 @@ function QueryList(props) {
       <Card>
         <Row gutter={24}>
           <Form {...formItemLayout} onSubmit={handleSearch}>
+<<<<<<< HEAD
             {expand === false && (
               <>
                 {(module || taskName ||completeStatus) && (
@@ -372,6 +376,25 @@ function QueryList(props) {
                       </Form.Item>
                     </Col>
                   </>
+=======
+            <Col span={8}>
+              <Form.Item label="需求编号">
+                {getFieldDecorator('demandId', {
+                  initialValue: cacheinfo.demandId,
+                })(<Input placeholder="请输入" allowClear />)}
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item label="当前处理环节">
+                {getFieldDecorator('taskName', { initialValue: cacheinfo.taskName })(
+                  <Select placeholder="请选择" allowClear>
+                    {statemap.map(({ key, value }) => (
+                      <Option key={key} value={value}>
+                        {value}
+                      </Option>
+                    ))}
+                  </Select>,
+>>>>>>> 框架多页签（需求完成）
                 )}
               </>
             )}
@@ -402,14 +425,19 @@ function QueryList(props) {
 
                 <Col span={8}>
                   <Form.Item label="需求标题">
+<<<<<<< HEAD
                     {getFieldDecorator('demandTitle', {
                       initialValue: '',
+=======
+                    {getFieldDecorator('title', {
+                      initialValue: cacheinfo.title,
+>>>>>>> 框架多页签（需求完成）
                     })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
                 <Col span={8}>
                   <Form.Item label="需求类型">
-                    {getFieldDecorator('demandType', { initialValue: '' })(
+                    {getFieldDecorator('demandType', { initialValue: cacheinfo.demandType })(
                       <Select placeholder="请选择" allowClear>
                         {selectdata.source.map(obj => (
                           <Option key={obj.key} value={obj.val}>
@@ -423,7 +451,7 @@ function QueryList(props) {
                 <Col span={8}>
                   <Form.Item label="登记人">
                     {getFieldDecorator('registerPerson', {
-                      initialValue: '',
+                      initialValue: cacheinfo.registerPerson,
                     })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
