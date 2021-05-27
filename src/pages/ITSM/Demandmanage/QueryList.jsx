@@ -111,11 +111,16 @@ let queryParams = true;
 function QueryList(props) {
   // const pagetitle = props.route.name;
   const {
+<<<<<<< HEAD
     form: { getFieldDecorator, resetFields, validateFields, setFieldsValue },
+=======
+    form: { getFieldDecorator, resetFields, validateFields, getFieldsValue },
+>>>>>>> 框架多页签：标签表历史（需求登记完成）
     location: { query: { module, taskName, startTime, endTime, completeStatus } },
     loading,
     list,
     dispatch,
+    location,
   } = props;
   let title;
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 10 });
@@ -252,6 +257,29 @@ function QueryList(props) {
     })
 
   };
+
+  // 打开多页签，表单信息传回tab
+  useEffect(() => {
+    if (location.state.cache) {
+      const values = getFieldsValue();
+      dispatch({
+        type: 'viewcache/gettabstate',
+        payload: {
+          cacheinfo: {
+            ...values,
+            page: paginations.current,
+            limit: paginations.pageSize,
+            module,
+            taskName,
+            startTime: startTime ? moment(startTime).format('YYYY-MM-DD HH:mm:ss') : '',
+            endTime: endTime ? moment(endTime).format('YYYY-MM-DD HH:mm:ss') : '',
+            completeStatus,
+          },
+          tabid: sessionStorage.getItem('tabid')
+        },
+      });
+    }
+  }, [location.state]);
 
   return (
     <PageHeaderWrapper title={title}>

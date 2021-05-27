@@ -770,7 +770,7 @@ function Todolistdetails(props) {
         setButtonType('transfer');
         break;
       case 'over':
-        faultcircula('close');
+        handleSave(currenStatus);
         break;
       default:
         break;

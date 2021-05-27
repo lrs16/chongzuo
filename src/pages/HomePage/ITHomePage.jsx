@@ -327,6 +327,7 @@ function ITHomePage(props) {
     problemlist,
     demandlist,
     form: { getFieldDecorator, resetFields, validateFields },
+    tabnew,
   } = props;
   const [ordertype, setOrderType] = useState('event'); // 工单类型
   const [tabskeys, setTabsKeys] = useState([]); // 节点tabs
@@ -335,6 +336,24 @@ function ITHomePage(props) {
   const [tabledata, setTableData] = useState([]);
   const [tabletotal, setTableTotal] = useState('');
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 10 });
+
+  useEffect(() => {
+    if (tabnew) {
+      RegistratRef.current.validateFields((err, values) => {
+        dispatch({
+          type: 'viewcache/gettabstate',
+          payload: {
+            ...values,
+            creationTime: values.creationTime.format('YYYY-MM-DD HH:mm:ss'),
+            registerTime: values.registerTime.format('YYYY-MM-DD HH:mm:ss'),
+            completeTime: values.completeTime.format('YYYY-MM-DD HH:mm:ss'),
+            functionalModule: values.functionalModule.join('/'),
+          },
+        });
+      });
+      RegistratRef.current.resetFields();
+    }
+  }, [tabnew]);
 
   const searchdata = (value, page, size, key, tabkey) => {
     switch (key) {
@@ -623,6 +642,21 @@ function ITHomePage(props) {
     });
   }
 
+  // 打开多页签，表单信息传回tab
+  useEffect(() => {
+    if (tabnew) {
+      validateFields((err, values) => {
+        dispatch({
+          type: 'viewcache/gettabstate',
+          payload: {
+            ...values,
+          },
+        });
+      });
+      resetFields();
+    }
+  }, [tabnew]);
+
   return (
     <>
       <h3>
@@ -713,7 +747,9 @@ function ITHomePage(props) {
 }
 
 export default Form.create({})(
-  connect(({ ithomepage, fault, problemmanage, demandtodo, loading }) => ({
+  connect(({ ithomepage, fault, problemmanage, demandtodo, viewcache, loading }) => ({
+    tabnew: viewcache.tabnew,
+    tabid: viewcache.tabid,
     eventlist: ithomepage.list,
     faultlist: fault.faultTodoList,
     problemlist: problemmanage.besolveList,

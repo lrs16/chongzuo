@@ -7,7 +7,7 @@ import SysDict from '@/components/SysDict';
 import Registrat from './components/Registrat';
 
 function Registration(props) {
-  const { dispatch, userinfo, loading } = props;
+  const { dispatch, userinfo, loading, tabnew, location } = props;
   const pagetitle = props.route.name;
   // const [flowtype, setFlowtype] = useState('1'); // 流转类型
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
@@ -108,6 +108,49 @@ function Registration(props) {
     }
   }, [files]);
 
+  // 打开多页签，表单信息传回tab
+  useEffect(() => {
+    if (tabnew) {
+      RegistratRef.current.validateFields((err, values) => {
+        dispatch({
+          type: 'viewcache/gettabstate',
+          payload: {
+            cacheinfo: {
+              ...values,
+              creationTime: values.creationTime.format('YYYY-MM-DD HH:mm:ss'),
+              registerTime: values.registerTime.format('YYYY-MM-DD HH:mm:ss'),
+              completeTime: values.completeTime.format('YYYY-MM-DD HH:mm:ss'),
+              functionalModule: values.functionalModule.join('/'),
+            },
+            tabid: sessionStorage.getItem('tabid')
+          },
+        });
+      });
+      RegistratRef.current.resetFields();
+    }
+  }, [tabnew]);
+
+  useEffect(() => {
+    if (location.state.cache) {
+      RegistratRef.current.validateFields((err, values) => {
+        dispatch({
+          type: 'viewcache/gettabstate',
+          payload: {
+            cacheinfo: {
+              ...values,
+              creationTime: values.creationTime.format('YYYY-MM-DD HH:mm:ss'),
+              registerTime: values.registerTime.format('YYYY-MM-DD HH:mm:ss'),
+              completeTime: values.completeTime.format('YYYY-MM-DD HH:mm:ss'),
+              functionalModule: values.functionalModule.join('/'),
+            },
+            tabid: sessionStorage.getItem('tabid')
+          },
+        });
+      });
+    }
+  }, [location.state]);
+  console.log(location.state.cacheinfo)
+
   const handleclose = () => {
     router.push({
       pathname: `/ITSM/demandmanage/registration`,
@@ -147,6 +190,8 @@ function Registration(props) {
               setFiles(newvalue);
             }}
             selectdata={selectdata}
+            register={location.state.cacheinfo === undefined ? undefined : location.state.cacheinfo}
+            userinfo={location.state.cacheinfo === undefined ? undefined : location.state.cacheinfo}
           />
         </Card>
       </Spin>
@@ -154,7 +199,9 @@ function Registration(props) {
   );
 }
 
-export default connect(({ itsmuser, demandregister, loading }) => ({
+export default connect(({ itsmuser, viewcache, demandregister, loading }) => ({
+  tabnew: viewcache.tabnew,
+
   userinfo: itsmuser.userinfo,
   demandregister,
   loading: loading.models.demandregister,

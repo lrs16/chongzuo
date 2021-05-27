@@ -103,10 +103,11 @@ const columns = [
 function ToDolist(props) {
   const pagetitle = props.route.name;
   const {
-    form: { getFieldDecorator, resetFields, validateFields },
+    form: { getFieldDecorator, resetFields, validateFields, getFieldsValue },
     loading,
     list,
     dispatch,
+    location,
   } = props;
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
   const [expand, setExpand] = useState(false);
@@ -198,6 +199,24 @@ function ToDolist(props) {
   const handleReset = () => {
     resetFields();
   };
+
+  // 打开多页签，表单信息传回tab
+  useEffect(() => {
+    if (location.state.cache) {
+      const values = getFieldsValue();
+      dispatch({
+        type: 'viewcache/gettabstate',
+        payload: {
+          cacheinfo: {
+            ...values,
+            page: paginations.current,
+            limit: paginations.pageSize,
+          },
+          tabid: sessionStorage.getItem('tabid')
+        },
+      });
+    }
+  }, [location.state]);
 
   return (
     <PageHeaderWrapper title={pagetitle}>

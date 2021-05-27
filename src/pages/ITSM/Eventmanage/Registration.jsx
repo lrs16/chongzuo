@@ -37,7 +37,7 @@ export const RegistratContext = createContext();
 
 function Registration(props) {
   const pagetitle = props.route.name;
-  const { dispatch, loading, userinfo, location } = props;
+  const { dispatch, loading, userinfo, location, tabnew, tabid } = props;
   const [formregistrat, setFormregistrat] = useState('');
   const [formhandle, setFormhandle] = useState('');
   const [show, setShow] = useState(false); // 自行处理
@@ -50,6 +50,33 @@ function Registration(props) {
   const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
   const RegistratRef = useRef();
   const HandleRef = useRef();
+
+  const getregistdata = () => {
+    const values = RegistratRef.current.getFieldsValue()
+    return values
+  }
+  const gethandledata = () => {
+    const values = HandleRef.current.getFieldsValue()
+    if (show) {
+      return values
+    }
+    return null
+  }
+  // useEffect(() => {
+  //   if (tabnew) {
+  //     const registdata = getregistdata();
+  //     const handledata = gethandledata();
+  //     dispatch({
+  //       type: 'viewcache/gettabstate',
+  //       payload: {
+  //         ...registdata,
+  //         ...handledata,
+  //         register_occurTime: registdata.register_occurTime.format('YYYY-MM-DD HH:mm:ss'),
+  //       },
+  //     });
+  //   }
+  // }, [tabnew])
+
   useEffect(() => {
     dispatch({
       type: 'itsmuser/fetchuser',
@@ -287,7 +314,9 @@ function Registration(props) {
   );
 }
 
-export default connect(({ itsmuser, loading }) => ({
+export default connect(({ itsmuser, viewcache, loading }) => ({
+  tabnew: viewcache.tabnew,
+  tabid: viewcache.tabid,
   userinfo: itsmuser.userinfo,
   loading: loading.models.eventregist,
 }))(Registration);

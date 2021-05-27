@@ -19,10 +19,13 @@ import {
 import { formatMessage } from 'umi-plugin-react/locale';
 import Authorized from '@/utils/Authorized';
 import RightContent from '@/components/GlobalHeader/RightContent';
+// import MenuContext from '@/layouts/MenuContext';
 import { getAuthorityFromRouter } from '@/utils/utils';
+import TobTabHoc from './TopTabHoc';
 import logo from '../../public/menulogo.png';
 // import Layout from './BlankLayout';
 // import PageTab from './PageTab';
+
 
 const { TabPane } = Tabs;
 
@@ -31,6 +34,7 @@ const homepane = [{
   itemPath: '/ITSM/home',
   id: '1362219140546301953',
   closable: false,
+  state: { cache: false },
 },
   // {
   //   name: "接口数据核查情况",
@@ -100,6 +104,9 @@ const BasicLayout = props => {
     Userauth,
     menuData,
     menulist,
+    cacheinfo,
+    tabid,
+    savecache,
   } = props;
 
   const url = location.pathname;
@@ -107,11 +114,36 @@ const BasicLayout = props => {
 
   const [toptabs, setTopTabs] = useState([...homepane]);
   const [activeKey, setActiveKey] = useState('1362219140546301953');
-  const [prevtab, setPrevTab] = useState('');
+
+  const clearcache = () => {
+    dispatch({
+      type: 'viewcache/cleardata',
+    });
+  }
+
+  const getcache = () => {
+    dispatch({
+      type: 'viewcache/fetch',
+      payload: {
+        newtab: true,
+        tabid: activeKey,
+      },
+    });
+  }
+
+  // 待研究
+  // const getChildren = (v) => {
+  //   return React.Children.map(children, child => {
+  //     return React.cloneElement(child, {
+  //       new: v,
+  //     });
+  //   })
+  // }
 
   // 初始强制跳转首页
   useEffect(() => {
     if (toptabs.length === 1 && url !== '/ITSM/home') {
+      clearcache();         // 清缓存
       router.push({
         pathname: '/ITSM/home',
         query: {}
@@ -178,16 +210,8 @@ const BasicLayout = props => {
       const panels = { name: menuDesc, id, itemPath: menuUrl, query: {}, closable: true };
       toptabs.push(panels);
       setActiveKey(id);
-    }
+    };
   }, [location])
-
-  // // 有缓存信息
-  // useEffect(() => {
-  //   if (location.state) {
-
-  //     console.log(location.state)
-  //   }
-  // }, [location.state]);
 
   // 关闭页签
   useEffect(() => {
@@ -208,7 +232,26 @@ const BasicLayout = props => {
       // lasttabactive(newtabs)
     }
   }, [location.query])
-  //  console.log(toptabs)
+
+  // 表单信息写入页签
+  const ChangetabState = () => {
+    const target = toptabs.filter(item => item.id === tabid)[0];
+    if (target) {
+      target.data = cacheinfo;
+      target.state.cache = false;
+    };
+    const newData = toptabs.map(item => {
+      return item.id === target.id ? target : item
+    });
+    setTopTabs(newData)
+  };
+  useEffect(() => {
+    if (savecache) {
+      ChangetabState();
+      clearcache();
+    }
+  }, [savecache])
+  // console.log(cacheinfo, savecache, toptabs)
 
   const callback = (key) => {
     const target = toptabs.filter(item => item.id === key)[0];
@@ -217,11 +260,13 @@ const BasicLayout = props => {
       router.push({
         pathname: target.itemPath,
         query: target.query,
+        state: { cacheinfo: target.data.cacheinfo, cache: false }
       });
     }
   };
 
   const remove = targetKey => {
+    clearcache();
     const panes = toptabs.filter(pane => pane.id !== targetKey);
     if (panes.length) {
       setTopTabs([...panes]);
@@ -229,7 +274,6 @@ const BasicLayout = props => {
         lasttabactive(panes);
       }
     };
-
   };
   const onEdit = (targetKey, action) => {
     if (action === 'remove') {
@@ -244,21 +288,20 @@ const BasicLayout = props => {
     const { id, itemPath } = targetmenu;
     const targetlink = toptabs.filter(item => item.id === id)[0];                                // 标签中是否已含有redirect的路由
     if (!targetlink && targetmenu) {
-      const panels = { name: targetmenu.menuDesc, id, itemPath, query: location.query, closable: true };
+      const panels = { name: targetmenu.menuDesc, id, itemPath, query: location.query, closable: true, state: { cache: false }, };
       toptabs.push(panels);
     };
     setActiveKey(id);
   };
 
   const handleLink = (menuItemProps) => {
-    //  setPrevTab({ id: activeKey, path: location.pathname });
     const { name, id, itemPath } = menuItemProps;
     const target = toptabs.filter(item => item.id === id)[0];
     const targetmultiple = multiplepath.filter(item => item.path === itemPath)[0];
     if (!targetmultiple) {
       // 非登记类打开单页签
       if (!target) {
-        const panels = { name, id, itemPath, query: {}, closable: true };
+        const panels = { name, id, itemPath, query: {}, closable: true, state: { cache: false }, };
         toptabs.push(panels);
         lasttabactive(toptabs);
       } else {
@@ -273,35 +316,33 @@ const BasicLayout = props => {
       const targettype = toptabs.filter(item => item.type === targetmultiple.type);
       const num = targettype.length;
       const endid = num === 0 ? 0 : Number(targettype.slice(-1)[0].id.replace(/[^0-9]/ig, "")) + 1;
-      // 自动保存生成工单
       if (targettype[0]) {
-        router.push({
-          pathname: itemPath,
-          query: { save: true },
-        });
+        getcache();    // 获取旧页签数据
+        const panels = {
+          name,
+          type: targetmultiple.type,
+          id: `${targetmultiple.type}${endid}`,
+          query: { tabid: `${targetmultiple.type}${endid}` },
+          state: { cache: false },
+          itemPath,
+          closable: true
+        };
+        toptabs.push(panels);
+        lasttabactive(toptabs);
       } else {
-        // router.push({
-        //   pathname: itemPath,
-        //   query:{}
-        // });
-        const panels = { name, type: targetmultiple.type, id: `${targetmultiple.type}${endid}`, itemPath, closable: true };
+        // 增加登记页签
+        const panels = {
+          name,
+          type: targetmultiple.type,
+          id: `${targetmultiple.type}${endid}`,
+          query: { tabid: `${targetmultiple.type}${endid}` },
+          state: { cache: false },
+          itemPath,
+          closable: true
+        };
         toptabs.push(panels);
         lasttabactive(toptabs);
       };
-      // if (targettype[0]) {
-      //   router.push({
-      //     pathname: itemPath,
-      //     query: { save: true },
-      //   });
-      // } else {
-      //   router.push({
-      //     pathname: itemPath,
-      //   });
-      // };
-      // const panels = { name, type: targetmultiple.type, id: `${targetmultiple.type}${endid}`, itemPath, closable: true };
-      // toptabs.push(panels);
-      // setActiveKey(`${targetmultiple.type}${endid}`);
-      // lasttabactive(toptabs);
     };
   };
 
@@ -347,12 +388,6 @@ const BasicLayout = props => {
       layout="topmenu"
       fixedHeader
       logo={logo}
-      // menuHeaderRender={(logoDom, titleDom) => (
-      //   <Link to="/">
-      //     {logoDom}
-      //     {titleDom}
-      //   </Link>
-      // )}
       menuItemRender={(menuItemProps, defaultDom) => {
         if (menuItemProps.isUrl || menuItemProps.children) {
           return defaultDom;
@@ -383,7 +418,48 @@ const BasicLayout = props => {
           if (menuItemProps.isUrl || menuItemProps.children) {
             return defaultDom;
           };
-          return <a onClick={() => handleLink(menuItemProps)}>{defaultDom}</a>;
+
+          const targetmultiple = multiplepath.filter(item => item.path === menuItemProps.itemPath)[0];
+          const endid = () => {
+            if (targetmultiple) {
+              const targettype = toptabs.filter(item => item.type === targetmultiple.type);
+              const num = targettype.length;
+              return num === 0 ? 0 : Number(targettype.slice(-1)[0].id.replace(/[^0-9]/ig, "")) + 1;
+            }
+            return null
+          }
+          const rutersave = () => {
+            router.push({
+              pathname: location.pathname,
+              state: { ...location.state, cache: true },
+            });
+          }
+          return (
+            <>
+              {targetmultiple && (
+                <Link
+                  to={{
+                    pathname: menuItemProps.path,
+                    query: { tabid: `${targetmultiple.type}${endid()}` },
+                    state: {
+                      cache: false
+                    },
+                  }}
+                  onClick={() => handleLink(menuItemProps)}
+                  onMouseDown={() => { rutersave() }}
+                >{defaultDom}</Link>
+              )}
+              {!targetmultiple && (
+                <Link to={{
+                  pathname: menuItemProps.path,
+                  state: { cache: false },
+                }}
+                  onClick={() => handleLink(menuItemProps)}
+                  onMouseDown={() => { rutersave() }}
+                >{defaultDom}</Link>
+              )}
+            </>
+          );
         }}
         breadcrumbRender={(routers = []) => [
           {
@@ -435,9 +511,12 @@ const BasicLayout = props => {
             </Tabs>
             <Authorized authority={Userauth} noMatch={noMatch}>
               {/* <PageTab>{children}</PageTab> */}
-              <div style={{ marginTop: 10 }}>
-                {children}
-              </div>
+              {/* <MenuContext.Provider value={{ tabnew, cleartabdata }}>
+                <div style={{ marginTop: 10 }}>
+                  {children}
+                </div>
+              </MenuContext.Provider> */}
+              {children}
             </Authorized>
           </>
         )}
@@ -472,8 +551,11 @@ const BasicLayout = props => {
   );
 };
 
-export default connect(({ global, settings, user, loading }) => ({
+export default connect(({ global, settings, user, viewcache, loading }) => ({
   collapsed: global.collapsed,
+  cacheinfo: viewcache.cacheinfo,
+  tabid: viewcache.tabid,
+  savecache: viewcache.savecache,
   settings,
   Userauth: user.Userauth,
   menuData: user.menuData,
