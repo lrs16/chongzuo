@@ -19,6 +19,7 @@ const columns = [
                 taskName: record.itemWorkStatus,
                 taskId: record.taskId,
                 mainId: record.instanceId,
+                orderNo: text,
               },
             });
             break;
@@ -57,6 +58,17 @@ const columns = [
                 orderNo: text,
               },
             });
+            break;
+          case 'operation':
+            router.push({
+              pathname: `/ITSM/operationplan/operationplanform`,
+              query: {
+                mainId: record.mainId,
+                status: record.status,
+                checkStatus: record.checkStatus,
+                orderNo: record.operationNo,
+              }
+            })
             break;
           default:
             break;

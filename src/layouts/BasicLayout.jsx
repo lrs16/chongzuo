@@ -36,13 +36,14 @@ const homepane = [{
   closable: false,
   state: { cache: false, cacheinfo: {} },
 },
-  // {
-  //   name: "接口数据核查情况",
-  //   id: "1273546374179000321",
-  //   itemPath: "/monitormanage/measurmonitor/measurface",
-  //   query: {},
-  //   closable: true
-  // }
+{
+  name: "需求查询",
+  id: "1333251061216972801",
+  itemPath: "/ITSM/demandmanage/query",
+  query: {},
+  state: { cache: false, cacheinfo: {} },
+  data: { cacheinfo: {} }
+}
 ]
 
 // 单条工单
@@ -113,7 +114,7 @@ const BasicLayout = props => {
   const multipleurl = multiplepath.filter(item => item.path === location.pathname)[0];
 
   const [toptabs, setTopTabs] = useState([...homepane]);
-  const [activeKey, setActiveKey] = useState('1362219140546301953');
+  const [activeKey, setActiveKey] = useState('1333251061216972801');
 
   const clearcache = () => {
     dispatch({
@@ -464,7 +465,7 @@ const BasicLayout = props => {
               {!targetmultiple && (
                 <Link to={{
                   pathname: menuItemProps.path,
-                  state: { cache: false },
+                  state: { cache: false, reset: true },
                 }}
                   onClick={() => { handleLink(menuItemProps); CleartabState() }}
                   onMouseDown={() => { rutersave() }}

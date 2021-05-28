@@ -123,7 +123,8 @@ export default {
         });
         router.push({
           pathname: `/ITSM/demandmanage/to-do`,
-          query: { pathpush: true }
+          query: { pathpush: true },
+          state: { cacheinfo: {}, cach: false }
         });
       }
     },

@@ -21,14 +21,11 @@ function OperationPlanfillintion(props) {
     loading
   } = props;
   let operationPersonSelect;
- 
+
   const PlanfillinRef = useRef();
   const [richtext, setRichtext] = useState('');
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
-<<<<<<< HEAD
-  const [copyData,setCopyData] = useState('')
-=======
->>>>>>> 多页签：事件、故障、问题、需求处理返回列表，作业计划（还差填写打开多页签）
+  const [copyData, setCopyData] = useState('')
 
   const formItemLayout = {
     labelCol: {
@@ -135,7 +132,7 @@ function OperationPlanfillintion(props) {
       type: 'processmodel/pasteFlow',
       payload: mainId[0]
     }).then(res => {
-   
+
       if (res.code === 200) {
         const resData = res.main;
         delete resData.operationNo;
@@ -176,14 +173,8 @@ function OperationPlanfillintion(props) {
           }}
           files={[]}
           operationPersonSelect={operationPersonSelect}
-<<<<<<< HEAD
-          main={copyData}
-=======
           main={copyData ? copyData.main : {}}
->>>>>>> 多页签：事件、故障、问题、需求处理返回列表，作业计划（还差填写打开多页签）
         />
-
-
       </Card>
 
     </PageHeaderWrapper>
