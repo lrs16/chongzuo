@@ -95,28 +95,22 @@ function SoftReport(props) {
   const developmentformRef = useRef();
   const thisWeekitsmRef = useRef();
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
-  const [tableIndex, setTableIndex] = useState('1');
+  // const [tableIndex, setTableIndex] = useState('1');
   const [secondbutton, setSecondbutton] = useState(false);
   const [addTitle, setAddTitle] = useState([]);
   const [columns, setColumns] = useState([]);
   const [data, setData] = useState([]);
   const [fileslist, setFilesList] = useState([]);
   const [expand, setExpand] = useState(false);
-  const [aa,setAa] = useState('')
 
   useEffect(() => {
     const resultColumns = [...initiacColumn]
     setColumns([...resultColumns])
   }, [])
-  
+
   const titleNumber = (index) => {
-    return `标题${9+index}`
+    return `标题${9 + index}`
   }
-
-  
-
-
-
 
   //  保存表单
   const softReportform = () => {
@@ -228,16 +222,7 @@ function SoftReport(props) {
     // handlemaintenanceArr();
   }, [])
 
-  // 上传删除附件触发特定表单保存
-  useEffect(() => {
-    switch (tableIndex) {
-      case '1':
-        break;
 
-      default:
-        break;
-    }
-  }, [tableIndex]);
 
   // 上传删除附件触发保存
   useEffect(() => {
@@ -289,20 +274,19 @@ function SoftReport(props) {
 
   const newMember = () => {
     const nowNumber = addTitle.map(item => ({ ...item }));
-    nowNumber.push({ 'add': '1', tableIndex: [] });
+    nowNumber.push({ 'add': '1', tableNumber: [] });
     setAddTitle(nowNumber)
   }
 
   const addTable = (index) => {
     const nowNumber = addTitle.map(item => ({ ...item }));
-    // nowNumber.push({ 'add': '1',tableIndexindex:[] });
-    nowNumber[index].tableIndex.push({ columns: 'aa' });
+    nowNumber[index].tableNumber.push({ columns: 'aa' });
+    console.log('nowNumber: ', nowNumber);
     setAddTitle(nowNumber);
   }
 
   // 新增一条记录
   const handleAddrows = (params) => {
-    console.log(11)
     setFilesList([]);
     // setKeyUpload('');
     const newData = (data).map(item => ({ ...item }));
@@ -319,6 +303,7 @@ function SoftReport(props) {
     // setNewButton(true);
   };
 
+
   const remove = (index) => {
     addTitle.splice(index, 1);
     const resultArr = [];
@@ -326,6 +311,17 @@ function SoftReport(props) {
       resultArr.push(addTitle[i])
     }
     setAddTitle(resultArr)
+  }
+
+
+  const removeTable = (index, tableIndexs) => {
+    addTitle.map(item => ({ ...item }));
+    (addTitle[index].tableNumber).splice(tableIndexs, 1)
+    const resultTable = [];
+    for (let i = 0; i < addTitle.length; i++) {
+      resultTable.push(addTitle[i])
+    }
+    setAddTitle(resultTable)
   }
 
 
@@ -515,6 +511,125 @@ function SoftReport(props) {
       }
     }
   ];
+
+  const editTable = (index,tableIndex) => {
+    return (
+      [
+        {
+          title: '测试表头1',
+          dataIndex: 'addTime1',
+          key: 'addTime1',
+          width: 150,
+          render: (text, record) => {
+            if (record.isNew) {
+              return (
+                <Input
+                  defaultValue={text}
+                  onChange={e => handleFieldChange(e.target.value, 'addTime1', record.key,index,tableIndex)}
+                />
+              )
+            }
+            if (record.isNew === false) {
+              return <span>{text}</span>
+            }
+          }
+        },
+        {
+          title: '测试表头2',
+          dataIndex: 'addTime2',
+          key: 'addTime2',
+          width: 150,
+          render: (text, record) => {
+            if (record.isNew) {
+              return (
+                <Input
+                  defaultValue={text}
+                  onChange={e => handleFieldChange(e.target.value, 'addTime2', record.key)}
+                />
+              )
+            }
+            if (record.isNew === false) {
+              return <span>{text}</span>
+            }
+          }
+        },
+        // {
+        //   title: '测试表头3',
+        //   dataIndex: 'addTime3',
+        //   key: 'addTime3',
+        //   width: 150,
+        //   render: (text, record) => {
+        //     if (record.isNew) {
+        //       return (
+        //         <Input
+        //           defaultValue={text}
+        //           onChange={e => handleFieldChange(e.target.value, 'addTime3', record.key)}
+        //         />
+        //       )
+        //     }
+        //     if (record.isNew === false) {
+        //       return <span>{text}</span>
+        //     }
+        //   }
+        // },
+        // {
+        //   title: '测试表头4',
+        //   dataIndex: 'addTime4',
+        //   key: 'addTime4',
+        //   width: 150,
+        //   render: (text, record) => {
+        //     if (record.isNew) {
+        //       return (
+        //         <Input
+        //           defaultValue={text}
+        //           onChange={e => handleFieldChange(e.target.value, 'addTime4', record.key)}
+        //         />
+        //       )
+        //     }
+        //     if (record.isNew === false) {
+        //       return <span>{text}</span>
+        //     }
+        //   }
+        // },
+        {
+          title: '操作',
+          key: 'action',
+          fixed: 'right',
+          width: 120,
+          render: (text, record) => {
+            // if (record.editable) {
+            if (record.isNew === true) {
+              return (
+                <span>
+                  <a onClick={e => saveRow(e, record.key)}>保存</a>
+                  <Divider type='vertical' />
+                  <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
+                    <a>删除</a>
+                  </Popconfirm>
+                </span>
+              )
+            }
+            // }
+    
+            return (
+              <span>
+                <a
+                  onClick={e => {
+                    toggleEditable(e, record.key, record);
+                    // handlefileedit(record.key, record.attachment)
+                  }}
+                >编辑</a>
+                <Divider type='vertical' />
+                <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
+                  <a>删除</a>
+                </Popconfirm>
+              </span>
+            )
+          }
+        }
+      ]
+    )
+  }
 
   const setHead = () => {
     setExpand(true);
@@ -840,12 +955,12 @@ function SoftReport(props) {
 
 
               {/* 七、上周作业完成情况 */}
-              <Col span={24}>
+              {/* <Col span={24}>
                 <LastweekHomework
                   forminladeLayout={forminladeLayout}
                   lastweekHomeworklist={lastweekHomeworklist}
                 />
-              </Col>
+              </Col> */}
 
 
 
@@ -872,12 +987,12 @@ function SoftReport(props) {
               </Col>
 
               {/* 八、 下周作业计划 */}
-              <Col span={24}>
+              {/* <Col span={24}>
                 <NextweekHomework
                   forminladeLayout={forminladeLayout}
                   nextweekHomeworklist={nextweekHomeworklist}
                 />
-              </Col>
+              </Col> */}
 
               <Button
                 style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
@@ -938,33 +1053,55 @@ function SoftReport(props) {
                         </Form.Item>
                       </Col>
 
-                      <div style={{display:'block'}}>
-                      <Button
-                        type='primary'
-                        onClick={() => addTable(index)}
-                      >添加表格</Button>
-                      {/* </Col> */}
+                      <div style={{ display: 'block' }}>
+                        <Button
+                          type='primary'
+                          onClick={() => addTable(index)}
+                        >添加表格</Button>
+                        {/* </Col> */}
 
-                      {/* <Col span={24} style={{ textAlign: 'right' }}> */}
-                      <Button
-                        onClick={() => handleAddrows(index)}
-                        type='primary'
-                        style={{ marginRight: 8 }}
-                      >添加行</Button>
-                      {/* <Button
+                        {/* <Col span={24} style={{ textAlign: 'right' }}> */}
+
+                        {/* <Button
                         type='primary'
                       >添加列</Button> */}
 
                       </div>
 
-
                       {
-                        (addTitle[index].tableIndex).map(items => {
+                        (addTitle[index].tableNumber).map((items,tableIndex) => {
+                          if(index === 0) {
+                            editTable()
+                          }
                           return (
-                            <Table
-                              columns={initiacColumn}
-                              dataSource={data}
-                            />
+                            <>
+                              <>
+                                <Button
+                                  style={{marginTop:10}}
+                                  onClick={() => handleAddrows(index)}
+                                  type='primary'
+                                >添加行</Button>
+                                <div style={{ display: 'flex' }}>
+                                  <Col span={22}>
+ 
+                                    <Table
+                                      columns={initiacColumn}
+                                      dataSource={data}
+                                    />
+                                  </Col>
+
+                                  <Col span={2}>
+                                    <Icon
+                                      className="dynamic-delete-button"
+                                      type="minus-circle-o"
+                                      onClick={() => removeTable(index, tableIndex)}
+                                    />
+                                  </Col>
+                                </div>
+
+                              </>
+
+                            </>
                           )
                         })
                       }

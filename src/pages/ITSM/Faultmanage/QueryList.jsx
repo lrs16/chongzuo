@@ -18,6 +18,7 @@ import {
   Cascader,
   // Badge
 } from 'antd';
+import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import SysDict from '@/components/SysDict';
 
@@ -69,7 +70,7 @@ function QueryList(props) {
     faultQueryList, // 查询列表数据
     dispatch,
   } = props;
-  let title;
+  let titleParams;
 
   const [expand, setExpand] = useState(false);
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 }); // 分页state
@@ -122,6 +123,12 @@ function QueryList(props) {
       title: '工单状态',
       dataIndex: 'statuscn',
       key: 'statuscn',
+      width: 120,
+    },
+    {
+      title: '当前处理环节',
+      dataIndex: 'currentNode',
+      key: 'currentNode',
       width: 120,
     },
     {
@@ -182,9 +189,9 @@ function QueryList(props) {
   ];
 
   if (status || type) {
-    title = '故障统计查询'
+    titleParams = '故障统计查询'
   } else {
-    title = '故障查询'
+    titleParams = '故障查询'
   }
 
   const getinitiaQuerylists = (values, page) => {
@@ -193,14 +200,14 @@ function QueryList(props) {
       type: 'fault/getfaultQueryList',
       payload: {
         ...values,
-        registerOccurTimeBegin:values.registerOccurTimeBegin?values.registerOccurTimeBegin.format('YYYY-MM-DD'):'',
-        registerTimeBegin:values.registerTimeBegin?values.registerOccurTimeBegin.format('YYYY-MM-DD'):'',
-        handleStartTimeBegin:values.handleStartTimeBegin?values.registerOccurTimeBegin.format('YYYY-MM-DD'):'',
-        handleStartTimeEnd:values.handleStartTimeEnd?values.registerOccurTimeBegin.format('YYYY-MM-DD'):'',
-        type:values.type?(values.type).slice(-1)[0]:'',
+        registerOccurTimeBegin: values.registerOccurTimeBegin ? values.registerOccurTimeBegin.format('YYYY-MM-DD') : '',
+        registerTimeBegin: values.registerTimeBegin ? values.registerOccurTimeBegin.format('YYYY-MM-DD') : '',
+        handleStartTimeBegin: values.handleStartTimeBegin ? values.registerOccurTimeBegin.format('YYYY-MM-DD') : '',
+        handleStartTimeEnd: values.handleStartTimeEnd ? values.registerOccurTimeBegin.format('YYYY-MM-DD') : '',
+        type: values.type ? (values.type).slice(-1)[0] : '',
         addTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
         addTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-        createTime:'',
+        createTime: '',
         pageNum: page,
         pageSize: paginations.pageSize,
       },
@@ -213,12 +220,12 @@ function QueryList(props) {
         type: 'fault/getfaultQueryList',
         payload: {
           ...values,
-          type:values.type?(values.type).slice(-1)[0]:'',
+          type: values.type ? (values.type).slice(-1)[0] : '',
           pageNum: 1,
           pageSize: paginations.pageSize,
           addTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
           addTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-          createTime:'',
+          createTime: '',
         },
       });
     });
@@ -330,14 +337,14 @@ function QueryList(props) {
           type: 'fault/faultQuerydownload',
           payload: {
             ...values,
-            registerOccurTimeBegin:values.registerOccurTimeBegin?values.registerOccurTimeBegin.format('YYYY-MM-DD'):'',
-            registerTimeBegin:values.registerTimeBegin?values.registerOccurTimeBegin.format('YYYY-MM-DD'):'',
-            handleStartTimeBegin:values.handleStartTimeBegin?values.registerOccurTimeBegin.format('YYYY-MM-DD'):'',
-            handleStartTimeEnd:values.handleStartTimeEnd?values.registerOccurTimeBegin.format('YYYY-MM-DD'):'',
-            type:values.type?(values.type).slice(-1)[0]:'',
+            registerOccurTimeBegin: values.registerOccurTimeBegin ? values.registerOccurTimeBegin.format('YYYY-MM-DD') : '',
+            registerTimeBegin: values.registerTimeBegin ? values.registerOccurTimeBegin.format('YYYY-MM-DD') : '',
+            handleStartTimeBegin: values.handleStartTimeBegin ? values.registerOccurTimeBegin.format('YYYY-MM-DD') : '',
+            handleStartTimeEnd: values.handleStartTimeEnd ? values.registerOccurTimeBegin.format('YYYY-MM-DD') : '',
+            type: values.type ? (values.type).slice(-1)[0] : '',
             addTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
             addTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-            createTime:'',
+            createTime: '',
             pageSize,
             current: page,
           },
@@ -355,9 +362,10 @@ function QueryList(props) {
     });
   };
 
-  const getTypebyTitle = titles => {
+  const getTypebyTitle = title => {
     if (selectdata.ischange) {
-      return selectdata.arr.filter(item => item.titles === titles)[0].children;
+      console.log(selectdata.arr.filter(item => item.title === title))
+      return selectdata.arr.filter(item => item.title === title)[0].children;
     }
     return [];
   };
@@ -372,7 +380,7 @@ function QueryList(props) {
   const workStatues = getTypebyTitle('工单状态');
 
   return (
-    <PageHeaderWrapper title={title}>
+    <PageHeaderWrapper title={titleParams}>
       <SysDict
         typeid="1354278126724583426"
         commonid="1354288354950123522"
@@ -487,6 +495,37 @@ function QueryList(props) {
                       <Select placeholder="请选择" allowClear>
                         {faultSource.map(obj => [
                           <Option key={obj.key} value={obj.title}>
+                            {obj.title}
+                          </Option>,
+                        ])}
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
+
+                <Col span={8}>
+                  <Form.Item label="当前处理环节">
+                    {getFieldDecorator(
+                      'currentNode',
+                      {},
+                    )(
+                      <Select placeholder="请选择" allowClear>
+                        {currentNodeselect.map(obj => [
+                          <Option key={obj.key} value={obj.title}>
+                            {obj.title}
+                          </Option>,
+                        ])}
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
+
+                <Col span={8}>
+                  <Form.Item label="工单状态">
+                    {getFieldDecorator('status', {})(
+                      <Select placeholder="请选择" allowClear>
+                        {workStatues.map(obj => [
+                          <Option key={obj.key} value={obj.dict_code}>
                             {obj.title}
                           </Option>,
                         ])}
@@ -702,32 +741,30 @@ function QueryList(props) {
             )}
 
             {expand === false && (
-              <Col span={8}>
-                <Form.Item>
-                  <Button type="primary" onClick={handleSearch}>
-                    查 询
-                  </Button>
-                  <Button style={{ marginLeft: 8 }} onClick={handleReset}>
-                    重 置
-                  </Button>
-                  <Button
-                    style={{ marginLeft: 8 }}
-                    type="link"
-                    onClick={() => {
-                      setExpand(!expand);
-                    }}
-                  >
-                    {expand ? (
-                      <>
-                        收起 <Icon type="up" />
-                      </>
-                    ) : (
-                      <>
-                        展开 <Icon type="down" />
-                      </>
-                    )}
-                  </Button>
-                </Form.Item>
+              <Col span={24} style={{ textAlign: 'right' }}>
+                <Button type="primary" onClick={handleSearch}>
+                  查 询
+                </Button>
+                <Button style={{ marginLeft: 8 }} onClick={handleReset}>
+                  重 置
+                </Button>
+                <Button
+                  style={{ marginLeft: 8 }}
+                  type="link"
+                  onClick={() => {
+                    setExpand(!expand);
+                  }}
+                >
+                  {expand ? (
+                    <>
+                      关 闭 <UpOutlined />
+                    </>
+                  ) : (
+                    <>
+                      展 开 <DownOutlined />
+                    </>
+                  )}
+                </Button>
               </Col>
             )}
 

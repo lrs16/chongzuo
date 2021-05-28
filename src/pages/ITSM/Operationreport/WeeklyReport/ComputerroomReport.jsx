@@ -310,6 +310,8 @@ function ComputerroomReport(props) {
     // setNewButton(true);
   };
 
+  
+
   //  获取行  
   const getRowByKey = (key, newData) => {
     return (newData || data).filter(item => item.key === key)[0];

@@ -98,6 +98,7 @@ function OperationmyweeklyReport(props) {
   ];
 
   const selectOnchage = (data) => {
+    console.log('data: ', data);
     switch (data) {
       case '软件运维周报':
         router.push(`/ITSM/operationreport/weeklyreport/softreport/`)
@@ -106,6 +107,7 @@ function OperationmyweeklyReport(props) {
         router.push(`/ITSM/operationreport/weeklyreport/computerroomreport`)
         break;
       case '数据库运维周报':
+        console.log('11')
         router.push(`/ITSM/operationreport/weeklyreport/databasereport`)
         break;
       case '其他运维周报':
@@ -129,12 +131,12 @@ function OperationmyweeklyReport(props) {
         </span>
       </Menu.Item>
       <Menu.Item>
-      <span onClick={()=> selectOnchage('软件运维周报')}>
+      <span onClick={()=> selectOnchage('数据库运维周报')}>
       数据库运维周报
         </span>
       </Menu.Item>
       <Menu.Item>
-      <span onClick={()=> selectOnchage('软件运维周报')}>
+      <span onClick={()=> selectOnchage('其他运维周报')}>
       其他运维周报
         </span>
       </Menu.Item>

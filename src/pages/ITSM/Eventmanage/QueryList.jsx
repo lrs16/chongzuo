@@ -229,12 +229,14 @@ function QueryList(props) {
     title = '事件查询'
   }
   useEffect(() => {
+
     setFieldsValue({
       eventObject,
       createTime: time1 ? [moment(time1), moment(time2)] : [moment().startOf('month'), moment()],
       registerUser,
       applicationUnit,
-      eventStatus
+      eventStatus,
+      selfhandle
     })
     validateFields((err, values) => {
       if (!err) {
@@ -256,6 +258,13 @@ function QueryList(props) {
       setSelectData([]);
     };
   }, []);
+
+  // useEffect(() => {
+  //   console.log(title)
+  //   if(title === '事件查询') {
+  //     resetFields()
+  //   }
+  // },[])
 
   const searchdata = (values, page, size, params) => {
     dispatch({
@@ -449,6 +458,22 @@ function QueryList(props) {
                         })(<Input placeholder="请输入" allowClear />)}
                       </Form.Item>
                     </Col>
+
+                    <Col span={8}>
+                  <Form.Item label="自行处理">
+                    {getFieldDecorator('selfhandle', {
+                      initialValue: '',
+                    })(
+                      <Select placeholder="请选择" allowClear>
+                        {yesornomap.map(obj => [
+                          <Option key={obj.key} value={obj.title}>
+                            {obj.title}
+                          </Option>,
+                        ])}
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
 
                     
                     <Col span={10}>
