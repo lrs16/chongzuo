@@ -62,6 +62,7 @@ const columns = [
     title: '需求类型',
     dataIndex: 'demandType',
     key: 'demandType',
+    with: 200,
   },
   {
     title: '申请人',
@@ -97,18 +98,17 @@ const columns = [
 function QueryList(props) {
   const pagetitle = props.route.name;
   const {
-    form: { getFieldDecorator, resetFields, validateFields, setFieldsValue, getFieldsValue },
+    form: { getFieldDecorator, resetFields, validateFields, setFieldsValue },
     location: { query: { module, taskName, startTime, endTime, completeStatus } },
     loading,
     list,
     dispatch,
     location,
   } = props;
-  let title;
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
   const [expand, setExpand] = useState(false);
   const [selectdata, setSelectData] = useState('');
-
+  const [tabrecord, setTabRecord] = useState({});
 
   const searchdata = (values, page, size) => {
     dispatch({
@@ -117,23 +117,40 @@ function QueryList(props) {
         ...values,
         limit: size,
         page,
-        // module,
         completeStatus: values.completeStatus === undefined ? '' : values.completeStatus,
-        module: values.module.slice(-1)[0],
+        module: values.module.join('/'),
+        createTime: '',
         startTime: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
         endTime: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
       },
     });
+    setTabRecord({
+      ...values,
+      completeStatus: values.completeStatus === undefined ? '' : values.completeStatus,
+      startTime: values.createTime ? moment(values.createTime[0]).format('YYYY-MM-DD 00:00:00') : '',
+      endTime: values.createTime ? moment(values.createTime[1]).format('YYYY-MM-DD 00:00:00') : '',
+      createTime: '',
+    });
   };
 
-
   useEffect(() => {
+    if (location.state.cacheinfo) {
+      const cachestartTime = location.state.cacheinfo.startTime;
+      const cacheendTime = location.state.cacheinfo.endTime;
+      setFieldsValue({
+        createTime: cachestartTime ? [moment(cachestartTime), moment(cacheendTime)] : '',
+      })
+    } else {
+      setFieldsValue({
+        createTime: startTime ? [moment(startTime), moment(endTime)] : '',
+      })
+    }
     validateFields((err, values) => {
       if (!err) {
         searchdata(values, 0, 15)
       }
     });
-  }, [location]);
+  }, [location.query]);
 
   const onShowSizeChange = (page, size) => {
     validateFields((err, values) => {
@@ -178,7 +195,7 @@ function QueryList(props) {
       if (err) {
         return;
       }
-      searchdata(values, 0, paginations.pageSize);
+      searchdata(values, paginations.page, paginations.pageSize);
     });
   };
 
@@ -197,8 +214,9 @@ function QueryList(props) {
         type: 'demandquery/download',
         payload: {
           ...values,
-          startTime: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-          endTime: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+          startTime: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD 00:00:00') : '',
+          endTime: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD 23:59:59') : '',
+          createTime: ''
         }
       }).then(res => {
         const filename = `需求查询_${moment().format('YYYY-MM-DD HH:mm')}.xls`;
@@ -214,34 +232,47 @@ function QueryList(props) {
   };
 
   const time = startTime ? [moment(startTime), moment(endTime)] : '';
-  const modulestatus = module === undefined ? [] : [module];
+  const modulestatus = module === undefined ? [] : module.split('/');
+  useEffect(() => {
+    if (location.state) {
+      if (location.state.cache) {
+        // 传表单数据到页签
+        dispatch({
+          type: 'viewcache/gettabstate',
+          payload: {
+            cacheinfo: {
+              ...tabrecord,
+              paginations,
+              expand,
+              completeStatus: tabrecord.completeStatus === undefined ? '' : tabrecord.completeStatus,
+            },
+            tabid: sessionStorage.getItem('tabid')
+          },
+        });
+      };
+      // 点击菜单刷新
+      if (location.state.reset) {
+        handleReset()
+      };
+      if (location.state.cacheinfo) {
+        if (location.state.cacheinfo.expand) {
+          setExpand(true)
+        }
+      }
+    }
+  }, [location.state]);
 
-  // 打开多页签，表单信息传回tab
-  // useEffect(() => {
-  //   if (location.state.cache) {
-  //     const values = getFieldsValue();
-  //     dispatch({
-  //       type: 'viewcache/gettabstate',
-  //       payload: {
-  //         cacheinfo: {
-  //           ...values,
-  //           page: paginations.current,
-  //           limit: paginations.pageSize,
-  //           module,
-  //           taskName,
-  //           startTime: startTime ? moment(startTime).format('YYYY-MM-DD HH:mm:ss') : '',
-  //           endTime: endTime ? moment(endTime).format('YYYY-MM-DD HH:mm:ss') : '',
-  //           completeStatus,
-  //         },
-  //         tabid: sessionStorage.getItem('tabid')
-  //       },
-  //     });
-  //   }
-  // }, [location.state]);
-
-  // const cacheinfo = location.state.cacheinfo === undefined ? {} : location.state.cacheinfo;
-
-  const cacheinfo = {}
+  const record = {
+    demandId: '',
+    taskName,
+    module: modulestatus,
+    demandTitle: '',
+    demandType: '',
+    registerPerson: '',
+    completeStatus: '',
+    createTime: time,
+  };
+  const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
 
   const getTypebyId = key => {
     if (selectdata.ischange) {
@@ -250,15 +281,13 @@ function QueryList(props) {
     return [];
   };
 
-  console.log(completeStatus)
-
   const overtimemap = getTypebyId('1398105664881954817');       // 超时状态
   const demandtype = getTypebyId('1352069854860939266');
   const statemap = getTypebyId('1398105664881954817');
   const modulemap = getTypebyId('1352070663392727041');
 
   return (
-    <PageHeaderWrapper title={title}>
+    <PageHeaderWrapper title={pagetitle}>
       <DictLower
         typeid="1354274450639425537"
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
@@ -270,18 +299,17 @@ function QueryList(props) {
             <Col span={8}>
               <Form.Item label="需求编号">
                 {getFieldDecorator('demandId', {
-                  initialValue: '',
+                  initialValue: cacheinfo.demandId,
                 })(<Input placeholder="请输入" allowClear />)}
               </Form.Item>
             </Col>
-
             <Col span={8}>
               <Form.Item label="当前处理环节">
-                {getFieldDecorator('taskName', { initialValue: taskName })(
+                {getFieldDecorator('taskName', { initialValue: cacheinfo.taskName })(
                   <Select placeholder="请选择" allowClear>
-                    {statemap.map(({ key, value }) => (
-                      <Option key={key} value={value}>
-                        {value}
+                    {statemap.map((obj) => (
+                      <Option key={obj.key} value={obj.title}>
+                        {obj.title}
                       </Option>
                     ))}
                   </Select>,
@@ -291,7 +319,7 @@ function QueryList(props) {
             <Col span={8}>
               <Form.Item label="功能模块" >
                 {getFieldDecorator('module', {
-                  initialValue: modulestatus,
+                  initialValue: cacheinfo.module,
                 })(
                   <Cascader
                     fieldNames={{ label: 'title', value: 'title', children: 'children' }}
@@ -306,7 +334,7 @@ function QueryList(props) {
                 <Col span={8}>
                   <Form.Item label="需求标题">
                     {getFieldDecorator('demandTitle', {
-                      initialValue: '',
+                      initialValue: cacheinfo.demandTitle,
                     })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
@@ -332,11 +360,11 @@ function QueryList(props) {
                 </Col>
               </>
             )}
-            {(startTime || module || completeStatus || expand) && (
+            {(module || completeStatus || taskName || expand) && (
               <>
                 <Col span={8}>
                   <Form.Item label="超时状态">
-                    {getFieldDecorator('completeStatus', { initialValue: completeStatus })(
+                    {getFieldDecorator('completeStatus', { initialValue: cacheinfo.completeStatus })(
                       <Select placeholder="请选择" allowClear>
                         {overtimemap.map((obj => [
                           <Option key={obj.key} value={obj.title}>
@@ -350,7 +378,7 @@ function QueryList(props) {
                 <Col span={16}>
                   <Form.Item label="建单时间" {...form10ladeLayout}>
                     {getFieldDecorator('createTime', {
-                      initialValue: time,
+                      initialValue: '',
                     })(<RangePicker
                       showTime
                       format='YYYY-MM-DD'

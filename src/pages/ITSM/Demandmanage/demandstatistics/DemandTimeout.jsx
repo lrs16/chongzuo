@@ -58,7 +58,7 @@ function DemandTimeout(props) {
                 endTime: searchSign ? endTime : '',
                 pathpush: true,
               },
-              state: { cache: false, cacheinfo: {} }
+              state: { cache: false }
             }}
           >
             {text}

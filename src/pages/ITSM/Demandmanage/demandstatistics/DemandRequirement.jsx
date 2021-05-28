@@ -61,7 +61,7 @@ const columns = [
             endTime: searchSign ? statTimeEnd : '',
             pathpush: true
           },
-          state: { cache: false, cacheinfo: {} }
+          state: { cache: false, }
         }}
       >
         {text}
@@ -194,11 +194,11 @@ function DemandRequirement(props) {
         /> */}
 
         {/* {loading === false && ( */}
-          <MergeTable
+        <MergeTable
           column={columns}
           tableSource={requirementArr}
           mergecell={mergecell}
-           />
+        />
         {/* )} */}
       </Card>
     </PageHeaderWrapper>
@@ -206,7 +206,7 @@ function DemandRequirement(props) {
 }
 
 export default Form.create({})(
-  connect(({ demandstatistic,loading }) => ({
+  connect(({ demandstatistic, loading }) => ({
     requirementArr: demandstatistic.requirementArr,
     loading: loading.models.demandstatistic,
   }))(DemandRequirement),

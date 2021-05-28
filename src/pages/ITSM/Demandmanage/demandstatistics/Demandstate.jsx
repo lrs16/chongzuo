@@ -39,7 +39,7 @@ const columns = [
             endTime: searchSign ? statTimeEnd : '',
             pathpush: true
           },
-          state: { cache: false, cacheinfo: {} }
+          state: { cache: false }
         }}
       >
         {text}

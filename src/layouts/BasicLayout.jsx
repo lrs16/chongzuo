@@ -34,16 +34,16 @@ const homepane = [{
   itemPath: '/ITSM/home',
   id: '1362219140546301953',
   closable: false,
-  state: { cache: false, cacheinfo: {} },
+  state: { cache: false },
 },
-{
-  name: "需求查询",
-  id: "1333251061216972801",
-  itemPath: "/ITSM/demandmanage/query",
-  query: {},
-  state: { cache: false, cacheinfo: {} },
-  data: { cacheinfo: {} }
-}
+  // {
+  //   name: "需求查询",
+  //   id: "1333251061216972801",
+  //   itemPath: "/ITSM/demandmanage/query",
+  //   query: {},
+  //   state: { cache: false, cacheinfo: {} },
+  //   data: { cacheinfo: {} }
+  // }
 ]
 
 // 单条工单
@@ -208,7 +208,7 @@ const BasicLayout = props => {
     // 处理完毕且待办列表已关闭需跳转回待办列表，添加待办列表新签标
     if (location.query.pathpush && !tabtargetid && !target && !tabtargetpath && menutarget) {
       const { menuDesc, id, menuUrl } = menutarget;
-      const panels = { name: menuDesc, id, itemPath: menuUrl, query: {}, closable: true };
+      const panels = { name: menuDesc, id, itemPath: menuUrl, query: location.query, closable: true };
       toptabs.push(panels);
       setActiveKey(id);
     };
@@ -310,7 +310,7 @@ const BasicLayout = props => {
         setActiveKey(id);
         router.push({
           pathname: target.itemPath,
-          //  query: { ...target.query },
+          query: { ...target.query },
         });
       };
     } else {
@@ -441,6 +441,7 @@ const BasicLayout = props => {
             if (target) {
               delete target.data
               target.state.cache = false;
+              target.state.refresh = true;
               const newData = toptabs.map(item => {
                 return item.id === target.id ? target : item
               });
@@ -455,7 +456,7 @@ const BasicLayout = props => {
                     pathname: menuItemProps.path,
                     query: { tabid: `${targetmultiple.type}${endid()}` },
                     state: {
-                      cache: false
+                      cache: false,
                     },
                   }}
                   onClick={() => { handleLink(menuItemProps); CleartabState() }}
