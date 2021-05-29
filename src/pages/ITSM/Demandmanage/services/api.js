@@ -18,12 +18,10 @@ export async function DemandStartAndNext(params) {
 
 // 需求待办列表
 export async function DemandtoDoList(params) {
-  const { limit, page, userId, demandId, taskName, creationStartTime, creationEndTime } = params;
+  const { limit, page, userId, demandId, taskName, creationStartTime, creationEndTime, creationTime } = params;
   const registerPerson = params.registerPerson !== undefined ? params.registerPerson : '';
   const demandType = params.demandType !== undefined ? params.demandType : '';
   const title = params.title !== undefined ? params.title : '';
-  const creationTime =
-    params.creationTime !== undefined ? params.creationTime.format('YYYY-MM-DD') : '';
   return request(
     `/demand/todo/toDoList?limit=${limit}&page=${page}&userId=${userId}&demandId=${demandId}&demandType=${demandType}&registerPerson=${registerPerson}&taskName=${taskName}&title=${title}&creationTime=${creationTime}&creationStartTime=${creationStartTime}&creationEndTime=${creationEndTime}`,
     {
@@ -144,7 +142,7 @@ export async function QueryExport(params) {
   return request(`/demand/query/export`, {
     method: 'POST',
     responseType: 'blob',
-    body:JSON.stringify(params),
+    body: JSON.stringify(params),
     // requestType:'form'
   });
 }

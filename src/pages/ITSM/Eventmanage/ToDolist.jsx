@@ -98,49 +98,31 @@ const columns = [
 function ToDolist(props) {
   const pagetitle = props.route.name;
   const {
-    form: { getFieldDecorator, resetFields, validateFields },
+    form: { getFieldDecorator, resetFields, validateFields, setFieldsValue },
     loading,
     list,
     dispatch,
+    location,
   } = props;
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
   const [expand, setExpand] = useState(false);
   const [selectdata, setSelectData] = useState('');
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
-
-  useEffect(() => {
-    validateFields((err, values) => {
-      if (!err) {
-        dispatch({
-          type: 'eventtodo/fetchlist',
-          payload: {
-            ...values,
-            pageIndex: paginations.current - 1,
-            pageSize: paginations.pageSize,
-          },
-        });
-      }
-    });
-    return () => {
-      setSelectData([]);
-      setExpand(false);
-    };
-  }, []);
+  const [tabrecord, setTabRecord] = useState({});
 
   // 查询
   const searchdata = (values, page, size) => {
+    const newvalue = {
+      ...values,
+      createTime: '',
+      time1: values.createTime === '' ? '' : moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss'),
+      time2: values.createTime === '' ? '' : moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss'),
+    }
     dispatch({
       type: 'eventtodo/fetchlist',
-      payload: {
-        ...values,
-        createTime: '',
-        time1: values.createTime === undefined ? '' : moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss'),
-        time2: values.createTime === undefined ? '' : moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss'),
-        eventObject: values.eventObject?.slice(-1)[0],
-        pageSize: size,
-        pageIndex: page - 1,
-      },
+      payload: { ...newvalue, pageSize: size, pageIndex: page - 1, },
     });
+    setTabRecord({ ...newvalue });
   };
 
   //  下载
@@ -224,8 +206,75 @@ function ToDolist(props) {
   };
 
   const handleReset = () => {
+    router.push({
+      pathname: location.pathname,
+      query: {},
+      state: {}
+    });
     resetFields();
+    validateFields((err, values) => {
+      if (!err) {
+        searchdata(values, 1, 15)
+      }
+    });
+    setPageinations({ current: 1, pageSize: 15 });
   };
+
+  // 设置表单初始值
+  const record = {
+    eventNo: '',
+    eventTitle: '',
+    eventSource: '',
+    eventStatus: '',
+    registerUser: '',
+    applicationUser: '',
+    eventPrior: '',
+    createTime: '',
+    paginations,
+  };
+  const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
+
+
+  // 获取数据
+  useEffect(() => {
+    validateFields((err, values) => {
+      if (!err) {
+        searchdata(values, cacheinfo.paginations.current, cacheinfo.paginations.pageSize)
+      }
+    });
+  }, [location]);
+
+  useEffect(() => {
+    if (location.state) {
+      if (location.state.cache) {
+        // 传表单数据到页签
+        dispatch({
+          type: 'viewcache/gettabstate',
+          payload: {
+            cacheinfo: {
+              ...tabrecord,
+              paginations,
+              expand,
+            },
+            tabid: sessionStorage.getItem('tabid')
+          },
+        });
+      };
+      // 点击菜单刷新
+      if (location.state.reset) {
+        handleReset()
+      };
+      if (location.state.cacheinfo) {
+        const { current, pageSize } = location.state.cacheinfo.paginations;
+        const { time1, time2 } = location.state.cacheinfo;
+        setFieldsValue({
+          createTime: time1 ? [moment(time1), moment(time2)] : '',
+        })
+        setExpand(location.state.cacheinfo.expand);
+        setPageinations({ ...paginations, current, pageSize });
+      };
+    }
+  }, [location.state]);
 
   const getTypebykey = key => {
     if (selectdata.ischange) {
@@ -237,6 +286,19 @@ function ToDolist(props) {
   const sourcemap = getTypebykey('486844540120989696'); // 事件来源
   const statusmap = getTypebykey('1356421038388285441'); // 工单状态
   const priormap = getTypebykey('482610561499004928'); // 优先级
+
+  const extra = (<>
+    <Button type="primary" onClick={handleSearch}>查 询</Button>
+    <Button style={{ marginLeft: 8 }} onClick={handleReset}>重 置</Button>
+    <Button
+      style={{ marginLeft: 8 }}
+      type="link"
+      onClick={() => {
+        setExpand(!expand);
+      }}
+    >
+      {expand ? (<>关 闭 <UpOutlined /></>) : (<>展 开 <DownOutlined /></>)}
+    </Button></>)
 
   return (
     <PageHeaderWrapper title={pagetitle}>
@@ -252,40 +314,38 @@ function ToDolist(props) {
             <Col span={8}>
               <Form.Item label="事件编号">
                 {getFieldDecorator('eventNo', {
-                  initialValue: '',
+                  initialValue: cacheinfo.eventNo,
                 })(<Input placeholder="请输入" allowClear />)}
               </Form.Item>
             </Col>
-            {expand === true && (
-              <>
-                <Col span={8}>
-                  <Form.Item label="事件标题">
-                    {getFieldDecorator('eventTitle', {
-                      initialValue: '',
-                    })(<Input placeholder="请输入" allowClear />)}
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item label="事件来源">
-                    {getFieldDecorator('eventSource', {
-                      initialValue: '',
-                    })(
-                      <Select placeholder="请选择" allowClear>
-                        {sourcemap.map(obj => (
-                          <Option key={obj.key} value={obj.title}>
-                            {obj.title}
-                          </Option>
-                        ))}
-                      </Select>,
-                    )}
-                  </Form.Item>
-                </Col>
-              </>
-            )}
+            <span style={{ display: expand ? 'block' : 'none' }}>
+              <Col span={8}>
+                <Form.Item label="事件标题">
+                  {getFieldDecorator('eventTitle', {
+                    initialValue: cacheinfo.eventTitle,
+                  })(<Input placeholder="请输入" allowClear />)}
+                </Form.Item>
+              </Col>
+              <Col span={8}>
+                <Form.Item label="事件来源">
+                  {getFieldDecorator('eventSource', {
+                    initialValue: cacheinfo.eventSource,
+                  })(
+                    <Select placeholder="请选择" allowClear>
+                      {sourcemap.map(obj => (
+                        <Option key={obj.key} value={obj.title}>
+                          {obj.title}
+                        </Option>
+                      ))}
+                    </Select>,
+                  )}
+                </Form.Item>
+              </Col>
+            </span>
             <Col span={8}>
               <Form.Item label="工单状态">
                 {getFieldDecorator('eventStatus', {
-                  initialValue: '',
+                  initialValue: cacheinfo.eventStatus,
                 })(
                   <Select placeholder="请选择" allowClear>
                     {statusmap.map(obj => (
@@ -297,100 +357,45 @@ function ToDolist(props) {
                 )}
               </Form.Item>
             </Col>
-            {expand === true && (
-              <>
-                <Col span={8}>
-                  <Form.Item label="登记人">
-                    {getFieldDecorator('registerUser', {
-                      initialValue: '',
-                    })(<Input placeholder="请输入" allowClear />)}
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item label="申报人">
-                    {getFieldDecorator('applicationUser', {
-                      initialValue: '',
-                    })(<Input placeholder="请输入" allowClear />)}
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item label="优先级">
-                    {getFieldDecorator('eventPrior', {
-                      initialValue: '',
-                    })(
-                      <Select placeholder="请选择">
-                        {priormap.map(obj => (
-                          <Option key={obj.key} value={obj.title} allowClear>
-                            {obj.title}
-                          </Option>
-                        ))}
-                      </Select>,
-                    )}
-                  </Form.Item>
-                </Col>
-                <Col span={16}>
-                  <Form.Item label="发送时间" {...forminladeLayout}>
-                    {getFieldDecorator('createTime')(<RangePicker showTime allowClear />)}
-                  </Form.Item>
-                </Col>
-              </>
-            )}
-            {expand === false && (
+            <span style={{ display: expand ? 'block' : 'none' }}>
               <Col span={8}>
-                <Form.Item>
-                  <Button type="primary" onClick={handleSearch}>
-                    查 询
-                  </Button>
-                  <Button style={{ marginLeft: 8 }} onClick={handleReset}>
-                    重 置
-                  </Button>
-                  <Button
-                    style={{ marginLeft: 8 }}
-                    type="link"
-                    onClick={() => {
-                      setExpand(!expand);
-                    }}
-                  >
-                    {expand ? (
-                      <>
-                        关 闭 <UpOutlined />
-                      </>
-                    ) : (
-                      <>
-                        展 开 <DownOutlined />
-                      </>
-                    )}
-                  </Button>
+                <Form.Item label="登记人">
+                  {getFieldDecorator('registerUser', {
+                    initialValue: cacheinfo.registerUser,
+                  })(<Input placeholder="请输入" allowClear />)}
                 </Form.Item>
               </Col>
-            )}
-            {expand === true && (
-              <Col span={24} style={{ textAlign: 'right' }}>
-                <Button type="primary" onClick={handleSearch}>
-                  查 询
-                </Button>
-                <Button style={{ marginLeft: 8 }} onClick={handleReset}>
-                  重 置
-                </Button>
-                <Button
-                  style={{ marginLeft: 8 }}
-                  type="link"
-                  onClick={() => {
-                    setExpand(!expand);
-                  }}
-                >
-                  {expand ? (
-                    <>
-                      关 闭 <UpOutlined />
-                    </>
-                  ) : (
-                    <>
-                      展 开 <DownOutlined />
-                    </>
-                  )}
-                </Button>
+              <Col span={8}>
+                <Form.Item label="申报人">
+                  {getFieldDecorator('applicationUser', {
+                    initialValue: cacheinfo.applicationUser,
+                  })(<Input placeholder="请输入" allowClear />)}
+                </Form.Item>
               </Col>
-            )}
+              <Col span={8}>
+                <Form.Item label="优先级">
+                  {getFieldDecorator('eventPrior', {
+                    initialValue: cacheinfo.eventPrior,
+                  })(
+                    <Select placeholder="请选择">
+                      {priormap.map(obj => (
+                        <Option key={obj.key} value={obj.title} allowClear>
+                          {obj.title}
+                        </Option>
+                      ))}
+                    </Select>,
+                  )}
+                </Form.Item>
+              </Col>
+              <Col span={16}>
+                <Form.Item label="发送时间" {...forminladeLayout}>
+                  {getFieldDecorator('createTime', {
+                    initialValue: '',
+                  })(<RangePicker showTime allowClear />)}
+                </Form.Item>
+              </Col>
+            </span>
+            {expand ? (<Col span={24} style={{ textAlign: 'right' }}>{extra}</Col>) : (<Col span={8}><Form.Item wrapperCol={24}>{extra}</Form.Item></Col>)}
           </Form>
         </Row>
         <div style={{ marginBottom: 24 }}>
@@ -402,7 +407,7 @@ function ToDolist(props) {
           loading={loading}
           columns={columns}
           dataSource={list.rows}
-          rowKey={record => record.id}
+          rowKey={r => r.id}
           pagination={pagination}
           rowSelection={rowSelection}
         />

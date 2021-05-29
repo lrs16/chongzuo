@@ -111,11 +111,9 @@ const BasicLayout = props => {
   } = props;
 
   const url = location.pathname;
-  const multipleurl = multiplepath.filter(item => item.path === location.pathname)[0];
 
   const [toptabs, setTopTabs] = useState([...homepane]);
   const [activeKey, setActiveKey] = useState('1333251061216972801');
-
   const clearcache = () => {
     dispatch({
       type: 'viewcache/cleardata',
@@ -254,10 +252,20 @@ const BasicLayout = props => {
     }
   }, [savecache])
 
-
   const callback = (key) => {
     const target = toptabs.filter(item => item.id === key)[0];
+    const multipleurl = multiplepath.filter(item => item.path === target.itemPath)[0];
     if (target) {
+      if (multipleurl) {
+        clearcache();
+        dispatch({
+          type: 'viewcache/sendcache',
+          payload: {
+            tabdata: target.data.cacheinfo,
+            tabid: key,
+          },
+        });
+      };
       setActiveKey(key);
       router.push({
         pathname: target.itemPath,

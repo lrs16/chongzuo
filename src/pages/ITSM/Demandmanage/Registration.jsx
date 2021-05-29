@@ -7,12 +7,12 @@ import SysDict from '@/components/SysDict';
 import Registrat from './components/Registrat';
 
 function Registration(props) {
-  const { dispatch, userinfo, loading, tabnew, location } = props;
+  const { dispatch, userinfo, loading, tabnew, location, tabdata } = props;
   const pagetitle = props.route.name;
   // const [flowtype, setFlowtype] = useState('1'); // 流转类型
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
   const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
-
+  console.log(tabdata)
   // 初始化用户信息，流程类型
   useEffect(() => {
     dispatch({
@@ -108,28 +108,13 @@ function Registration(props) {
     }
   }, [files]);
 
-  // 打开多页签，表单信息传回tab
+  // 重置表单信息
   useEffect(() => {
     if (tabnew) {
-      RegistratRef.current.validateFields((err, values) => {
-        dispatch({
-          type: 'viewcache/gettabstate',
-          payload: {
-            cacheinfo: {
-              ...values,
-              creationTime: values.creationTime.format('YYYY-MM-DD HH:mm:ss'),
-              registerTime: values.registerTime.format('YYYY-MM-DD HH:mm:ss'),
-              completeTime: values.completeTime.format('YYYY-MM-DD HH:mm:ss'),
-              functionalModule: values.functionalModule.join('/'),
-            },
-            tabid: sessionStorage.getItem('tabid')
-          },
-        });
-      });
       RegistratRef.current.resetFields();
     }
   }, [tabnew]);
-
+  // 获取页签信息
   useEffect(() => {
     if (location.state.cache) {
       RegistratRef.current.validateFields((err, values) => {
@@ -147,9 +132,9 @@ function Registration(props) {
           },
         });
       });
+      RegistratRef.current.resetFields();
     }
-  }, [location.state]);
-  console.log(location.state)
+  }, [location]);
 
   const handleclose = () => {
     router.push({
@@ -190,8 +175,7 @@ function Registration(props) {
               setFiles(newvalue);
             }}
             selectdata={selectdata}
-            register={location.state.cacheinfo === undefined ? undefined : location.state.cacheinfo}
-            userinfo={location.state.cacheinfo === undefined ? undefined : location.state.cacheinfo}
+            register={tabdata}
           />
         </Card>
       </Spin>
@@ -201,7 +185,7 @@ function Registration(props) {
 
 export default connect(({ itsmuser, viewcache, demandregister, loading }) => ({
   tabnew: viewcache.tabnew,
-
+  tabdata: viewcache.tabdata,
   userinfo: itsmuser.userinfo,
   demandregister,
   loading: loading.models.demandregister,

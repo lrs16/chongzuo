@@ -103,51 +103,37 @@ const columns = [
 function ToDolist(props) {
   const pagetitle = props.route.name;
   const {
-    form: { getFieldDecorator, resetFields, validateFields, getFieldsValue },
+    form: { getFieldDecorator, resetFields, validateFields, setFieldsValue },
     loading,
     list,
     dispatch,
-    location,
+    location
   } = props;
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
   const [expand, setExpand] = useState(false);
-  const [selectdata, setSelectData] = useState('');
-
-  useEffect(() => {
-    validateFields((err, values) => {
-      if (!err) {
-        dispatch({
-          type: 'demandtodo/fetchlist',
-          payload: {
-            ...values,
-            creationStartTime: '',
-            creationEndTime: '',
-            page: paginations.current,
-            limit: paginations.pageSize,
-            userId: sessionStorage.getItem('userauthorityid'),
-          },
-        });
-      }
-    });
-    return () => {
-      setExpand(false);
-      setSelectData('');
-    };
-  }, []);
+  const [selectdata, setSelectData] = useState({ source: [] });
+  const [tabrecord, setTabRecord] = useState({});
 
   const searchdata = (values, page, size) => {
+    const newvalue = {
+      creationStartTime: '',
+      creationEndTime: '',
+      creationTime: values.creationTime ? moment(values.creationTime).format('YYYY-MM-DD') : '',
+    }
     dispatch({
       type: 'demandtodo/fetchlist',
       payload: {
         ...values,
-        creationStartTime: '',
-        creationEndTime: '',
+        ...newvalue,
         limit: size,
         page,
         userId: sessionStorage.getItem('userauthorityid'),
       },
     });
+    setTabRecord({ ...newvalue, ...values });
   };
+
+
 
   const onShowSizeChange = (page, size) => {
     validateFields((err, values) => {
@@ -197,26 +183,86 @@ function ToDolist(props) {
   };
 
   const handleReset = () => {
+    router.push({
+      pathname: location.pathname,
+      query: {},
+      state: {}
+    });
     resetFields();
+    validateFields((err, values) => {
+      if (!err) {
+        searchdata(values, 1, 15)
+      }
+    });
+    setPageinations({ current: 1, pageSize: 15 });
   };
 
-  // 打开多页签，表单信息传回tab
+  // 设置初始值
+  const record = {
+    demandId: '',
+    taskName: '',
+    title: '',
+    demandType: '',
+    registerPerson: '',
+    creationTime: '',
+    paginations,
+  };
+  const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
+
+  // 获取数据
   useEffect(() => {
-    if (location.state.cache) {
-      const values = getFieldsValue();
-      dispatch({
-        type: 'viewcache/gettabstate',
-        payload: {
-          cacheinfo: {
-            ...values,
-            page: paginations.current,
-            limit: paginations.pageSize,
+    validateFields((err, values) => {
+      if (!err) {
+        searchdata(values, cacheinfo.paginations.current, cacheinfo.paginations.pageSize)
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    if (location.state) {
+      if (location.state.cache) {
+        // 传表单数据到页签
+        dispatch({
+          type: 'viewcache/gettabstate',
+          payload: {
+            cacheinfo: {
+              ...tabrecord,
+              paginations,
+              expand,
+            },
+            tabid: sessionStorage.getItem('tabid')
           },
-          tabid: sessionStorage.getItem('tabid')
-        },
-      });
+        });
+      };
+      // 点击菜单刷新
+      if (location.state.reset) {
+        handleReset()
+      };
+      if (location.state.cacheinfo) {
+        const { current, pageSize } = location.state.cacheinfo.paginations;
+        const { creationTime } = location.state.cacheinfo;
+        setExpand(location.state.cacheinfo.expand);
+        setPageinations({ ...paginations, current, pageSize });
+        setFieldsValue({
+          creationTime: creationTime ? moment(creationTime).format('YYYY-MM-DD') : '',
+        })
+      };
     }
   }, [location.state]);
+
+  const extra = (<>
+    <Button type="primary" onClick={() => handleSearch()}>查 询</Button>
+    <Button style={{ marginLeft: 8 }} onClick={() => handleReset()}>重 置</Button>
+    <Button
+      style={{ marginLeft: 8 }}
+      type="link"
+      onClick={() => {
+        setExpand(!expand);
+      }}
+    >
+      {expand ? (<>关 闭 <UpOutlined /></>) : (<>展 开 <DownOutlined /></>)}
+    </Button>
+  </>)
 
   return (
     <PageHeaderWrapper title={pagetitle}>
@@ -228,17 +274,19 @@ function ToDolist(props) {
       />
       <Card>
         <Row gutter={24}>
-          <Form {...formItemLayout} onSubmit={handleSearch}>
+          <Form {...formItemLayout} onSubmit={() => handleSearch()}>
             <Col span={8}>
               <Form.Item label="需求编号">
                 {getFieldDecorator('demandId', {
-                  initialValue: '',
+                  initialValue: cacheinfo.demandId,
                 })(<Input placeholder="请输入" allowClear />)}
               </Form.Item>
             </Col>
             <Col span={8}>
               <Form.Item label="当前处理环节">
-                {getFieldDecorator('taskName', { initialValue: '' })(
+                {getFieldDecorator('taskName', {
+                  initialValue: cacheinfo.taskName
+                })(
                   <Select placeholder="请选择" allowClear>
                     {statemap.map(({ key, value }) => (
                       <Option key={key} value={value}>
@@ -249,96 +297,45 @@ function ToDolist(props) {
                 )}
               </Form.Item>
             </Col>
-            {expand === true && (
-              <>
-                <Col span={8}>
-                  <Form.Item label="需求标题">
-                    {getFieldDecorator('title', {
-                      initialValue: '',
-                    })(<Input placeholder="请输入" allowClear />)}
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item label="需求类型">
-                    {getFieldDecorator('demandType', { initialValue: '' })(
-                      <Select placeholder="请选择" allowClear>
-                        {selectdata.source.map(obj => (
-                          <Option key={obj.key} value={obj.val}>
-                            {obj.val}
-                          </Option>
-                        ))}
-                      </Select>,
-                    )}
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item label="登记人">
-                    {getFieldDecorator('registerPerson', {
-                      initialValue: '',
-                    })(<Input placeholder="请输入" allowClear />)}
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item label="创建时间">
-                    {getFieldDecorator('creationTime')(<DatePicker allowClear />)}
-                  </Form.Item>
-                </Col>
-              </>
-            )}
-            {expand === false && (
-              <Col span={8} style={{ paddingTop: 4 }}>
-                <Button type="primary" onClick={handleSearch}>
-                  查 询
-                </Button>
-                <Button style={{ marginLeft: 8 }} onClick={handleReset}>
-                  重 置
-                </Button>
-                <Button
-                  style={{ marginLeft: 8 }}
-                  type="link"
-                  onClick={() => {
-                    setExpand(!expand);
-                  }}
-                >
-                  {expand ? (
-                    <>
-                      关 闭 <UpOutlined />
-                    </>
-                  ) : (
-                    <>
-                      展 开 <DownOutlined />
-                    </>
-                  )}
-                </Button>
+            <span style={{ display: expand ? 'block' : 'none' }}>
+              <Col span={8}>
+                <Form.Item label="需求标题">
+                  {getFieldDecorator('title', {
+                    initialValue: cacheinfo.title,
+                  })(<Input placeholder="请输入" allowClear />)}
+                </Form.Item>
               </Col>
-            )}
-            {expand === true && (
-              <Col span={24} style={{ textAlign: 'right' }}>
-                <Button type="primary" onClick={handleSearch}>
-                  查 询
-                </Button>
-                <Button style={{ marginLeft: 8 }} onClick={handleReset}>
-                  重 置
-                </Button>
-                <Button
-                  style={{ marginLeft: 8 }}
-                  type="link"
-                  onClick={() => {
-                    setExpand(!expand);
-                  }}
-                >
-                  {expand ? (
-                    <>
-                      关 闭 <UpOutlined />
-                    </>
-                  ) : (
-                    <>
-                      展 开 <DownOutlined />
-                    </>
+              <Col span={8}>
+                <Form.Item label="需求类型">
+                  {getFieldDecorator('demandType', {
+                    initialValue: cacheinfo.demandType
+                  })(
+                    <Select placeholder="请选择" allowClear>
+                      {selectdata.source.map(obj => (
+                        <Option key={obj.key} value={obj.val}>
+                          {obj.val}
+                        </Option>
+                      ))}
+                    </Select>,
                   )}
-                </Button>
+                </Form.Item>
               </Col>
-            )}
+              <Col span={8}>
+                <Form.Item label="登记人">
+                  {getFieldDecorator('registerPerson', {
+                    initialValue: cacheinfo.registerPerson,
+                  })(<Input placeholder="请输入" allowClear />)}
+                </Form.Item>
+              </Col>
+              <Col span={8}>
+                <Form.Item label="创建时间">
+                  {getFieldDecorator('creationTime', {
+                    initialValue: '',
+                  })(<DatePicker allowClear />)}
+                </Form.Item>
+              </Col>
+            </span>
+            {expand ? (<Col span={24} style={{ textAlign: 'right' }}>{extra}</Col>) : (<Col span={8}><Form.Item wrapperCol={24}>{extra}</Form.Item></Col>)}
           </Form>
         </Row>
         {/* <div style={{ marginBottom: 24 }}>

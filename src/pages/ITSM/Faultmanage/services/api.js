@@ -90,10 +90,7 @@ export async function queryfaultTodoList1(current, pageSize) {
 }
 
 // 故障待办列表 查询功能
-export async function querySearchfaultTodoList1(current, pageSize, values) {
-  const params = values;
-  params.pageNum = current; // 当前页
-  params.pageSize = pageSize; // 页码
+export async function querySearchfaultTodoList1(params) {
   return request(`/trouble/flow/getWaitDoPage`, {
     method: 'POST',
     body: JSON.stringify(params),

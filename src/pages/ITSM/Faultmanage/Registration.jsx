@@ -66,10 +66,11 @@ function Registration(props) {
   const {
     form: { getFieldDecorator, resetFields, setFieldsValue, getFieldsValue },
     dispatch,
-    newno, // 新的故障编号
+    // newno, // 新的故障编号
     curruserinfo, // 获取登录用户信息
     // history,
     // saveuserid: { flowTaskId },
+    location
   } = props;
 
 
@@ -82,12 +83,12 @@ function Registration(props) {
   // };
 
   // 接口
-  const getNewno = () => {
-    // 获取新的故障编号
-    dispatch({
-      type: 'fault/getFaultRegisterNo',
-    });
-  };
+  // const getNewno = () => {
+  //   // 获取新的故障编号
+  //   dispatch({
+  //     type: 'fault/getFaultRegisterNo',
+  //   });
+  // };
 
   const getCurrUserInfo = () => {
     // 获取登录用户信息
@@ -97,7 +98,7 @@ function Registration(props) {
   };
 
   useEffect(() => {
-    getNewno(); // 新的故障编号
+    //  getNewno(); // 新的故障编号
     getCurrUserInfo(); // 获取登录用户信息
     sessionStorage.setItem('Processtype', 'troub');
     sessionStorage.setItem('Nextflowmane', '审核');
@@ -212,6 +213,27 @@ function Registration(props) {
     }
   };
 
+  useEffect(() => {
+    if (location.state.cache) {
+      const formValues = getFieldsValue();
+      dispatch({
+        type: 'viewcache/gettabstate',
+        payload: {
+          cacheinfo: {
+            ...formValues,
+            registerOccurTime: formValues.registerOccurTime.format('YYYY-MM-DD HH:mm:ss'),
+            registerTime: formValues.registerTime.format('YYYY-MM-DD HH:mm:ss'),
+            registerLevelCode: registerLevelmap.get(formValues.registerLevel),    // 超时用：一般001，重大002，紧急003
+            editState: 'add',
+            registerAttachments: JSON.stringify(files.arr),
+            type: selectCascader
+          },
+          tabid: sessionStorage.getItem('tabid')
+        },
+      });
+    }
+  }, [location.state]);
+
   // 常用语调用
   useEffect(() => {
     handletitleSearch({ module: '故障单', field: '标题', key: '' });
@@ -255,18 +277,18 @@ function Registration(props) {
             <Col xl={8} xs={12}>
               <Form.Item label="故障编号">
                 {getFieldDecorator('no', {
-                  initialValue: newno.troubleNo || '',
+                  initialValue: '',
                 })(<Input disabled />)}
               </Form.Item>
             </Col>
-
+            {/* 
             <Col span={8}>
               <Form.Item>
                 <Button type="primary" onClick={() => getNewno()}>
                   获取最新编号
                 </Button>
               </Form.Item>
-            </Col>
+            </Col> */}
 
             <Col xl={8} xs={12}>
               <Form.Item label="登记时间">

@@ -157,7 +157,7 @@ export default {
       return yield call(querySavefaultRegister, formValues);
     },
 
-    // 获取故障待办列表数据
+    // 获取故障待办列表数据  这个没有用了
     *getfaultTodoList({ payload: { current, pageSize } }, { call, put }) {
       const response = yield call(queryfaultTodoList1, current, pageSize);
       yield put({
@@ -167,8 +167,8 @@ export default {
     },
 
     // 获取故障待办列表数据(查询)
-    *getSearchfaultTodo({ payload: { current, pageSize, values } }, { call, put }) {
-      const response = yield call(querySearchfaultTodoList1, current, pageSize, values);
+    *getSearchfaultTodo({ payload }, { call, put }) {
+      const response = yield call(querySearchfaultTodoList1, payload);
       yield put({
         type: 'faultTodoList',
         payload: response,

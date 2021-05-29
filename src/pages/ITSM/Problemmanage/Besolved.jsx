@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
+import moment from 'moment';
 import router from 'umi/router';
 import {
   Form,
@@ -34,15 +35,17 @@ const { Option } = Select;
 function Besolved(props) {
   const pagetitle = props.route.name;
   const {
-    form: { getFieldDecorator, resetFields, validateFields },
+    form: { getFieldDecorator, resetFields, validateFields, setFieldsValue },
     dispatch,
     besolveList,
     loading,
+    location,
   } = props;
   const [expand, setExpand] = useState(false);
-  const [paginations, setPaginations] = useState({ current: 1, pageSize: 10 });
+  const [paginations, setPaginations] = useState({ current: 1, pageSize: 15 });
   const [selectdata, setSelectData] = useState('');
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
+  const [tabrecord, setTabRecord] = useState({});
 
   const columns = [
     // {
@@ -121,23 +124,37 @@ function Besolved(props) {
     }
   }, [files]);
 
-  useEffect(() => {
-    getTobolist();
-  }, []);
-
-  const handleReset = () => {
-    resetFields();
-  };
+  // useEffect(() => {
+  //   getTobolist();
+  // }, []);
 
   const searchdata = (values, page, pageSize) => {
+    const Time = values.registerTime ? moment(values.registerTime).format('YYYY-MM-DD HH:mm:ss') : ''
     dispatch({
       type: 'problemmanage/searchBesolve',
       payload: {
         ...values,
+        registerTime: Time,
         pageSize,
         pageNum: page,
       },
     });
+    setTabRecord({ ...values, registerTime: Time, });
+  };
+
+  const handleReset = () => {
+    router.push({
+      pathname: location.pathname,
+      query: {},
+      state: {}
+    });
+    resetFields();
+    validateFields((err, values) => {
+      if (!err) {
+        searchdata(values, 1, 15)
+      }
+    });
+    setPaginations({ current: 1, pageSize: 15 });
   };
 
   const onShowSizeChange = (page, pageSize) => {
@@ -183,11 +200,7 @@ function Besolved(props) {
       if (err) {
         return;
       }
-      const obj = values;
-      if (values.registerTime) {
-        obj.registerTime = (values.registerTime).format('YYYY-MM-DD HH:mm:ss');
-      }
-      searchdata(obj, paginations.current, paginations.pageSize);
+      searchdata(values, paginations.current, paginations.pageSize);
     });
   };
 
@@ -226,6 +239,61 @@ function Besolved(props) {
     })
   }
 
+  const record = {
+    currentNode: '',
+    importance: '',
+    no: '',
+    registerTime: '',
+    registerUser: '',
+    source: '',
+    title: '',
+    type: '',
+    paginations,
+  };
+  const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
+
+  // 获取数据
+  useEffect(() => {
+    validateFields((err, values) => {
+      if (!err) {
+        searchdata(values, cacheinfo.paginations.current, cacheinfo.paginations.pageSize)
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    if (location.state) {
+      if (location.state.cache) {
+        // 传表单数据到页签
+        dispatch({
+          type: 'viewcache/gettabstate',
+          payload: {
+            cacheinfo: {
+              ...tabrecord,
+              paginations,
+              expand,
+            },
+            tabid: sessionStorage.getItem('tabid')
+          },
+        });
+      };
+      // 点击菜单刷新,并获取数据
+      if (location.state.reset) {
+        handleReset()
+      };
+      if (location.state.cacheinfo) {
+        const { current, pageSize } = location.state.cacheinfo.paginations;
+        const { registerTime } = location.state.cacheinfo;
+        setExpand(location.state.cacheinfo.expand);
+        setPaginations({ ...paginations, current, pageSize });
+        // setFieldsValue({
+        //   registerTime: registerTime ? moment(registerTime).format('YYYY-MM-DD HH:mm:ss') : '',
+        // })
+      };
+    }
+  }, [location.state]);
+
+  // 不要用查询标题的方式，人家改了名字就查不到了，用id
   const getTypebyTitle = title => {
     if (selectdata.ischange) {
       return selectdata.arr.filter(item => item.title === title)[0].children;
@@ -236,6 +304,20 @@ function Besolved(props) {
   const priority = getTypebyTitle('严重程度');
   const currentNode = getTypebyTitle('当前处理环节');
   const problemType = getTypebyTitle('问题分类');
+
+  const extra = (<>
+    <Button type="primary" onClick={() => handleSearch()}>查询</Button>
+    <Button style={{ marginLeft: 8 }} onClick={() => handleReset()}>重置</Button>
+    <Button
+      style={{ marginLeft: 8 }}
+      type="link"
+      onClick={() => {
+        setExpand(!expand);
+      }}
+    >
+      {expand ? (<>关闭 <UpOutlined /></>) : (<>展开 <DownOutlined /></>)}
+    </Button>
+  </>);
 
   return (
     <PageHeaderWrapper title={pagetitle}>
@@ -251,11 +333,7 @@ function Besolved(props) {
             <Col span={8}>
               <Form.Item label="问题编号">
                 {getFieldDecorator('no', {
-                  rules: [
-                    {
-                      message: '请输入问题编号',
-                    },
-                  ],
+                  initialValue: cacheinfo.no,
                 })(<Input placeholder='请输入' allowClear />)}
               </Form.Item>
             </Col>
@@ -263,11 +341,7 @@ function Besolved(props) {
             <Col span={8}>
               <Form.Item label="当前处理环节">
                 {getFieldDecorator('currentNode', {
-                  rules: [
-                    {
-                      message: '请输入处理环节',
-                    },
-                  ],
+                  initialValue: cacheinfo.currentNode,
                 })(
                   <Select placeholder="请选择" allowClear>
                     {currentNode.map(obj => [
@@ -279,145 +353,97 @@ function Besolved(props) {
                 )}
               </Form.Item>
             </Col>
-
-            {expand === true && (
+            <span style={{ display: expand ? 'block' : 'none' }}>
               <>
                 <Col span={8}>
                   <Form.Item label="问题标题" >
-                    {getFieldDecorator('title', {})(<Input placeholder='请输入' allowClear />)}
-                  </Form.Item>
-                </Col>
-              </>
-            )}
-
-            {expand === true && (
-              <>
-                <Col span={8}>
-                  <Form.Item label="问题来源">
-                    {getFieldDecorator('source', {})
-                      (
-                        <Select placeholder="请选择" allowClear>
-                          {problemSource.map(obj => [
-                            <Option key={obj.key} value={obj.dict_code}>
-                              {obj.title}
-                            </Option>,
-                          ])}
-                        </Select>,
-                      )}
-                  </Form.Item>
-                </Col>
-
-                <Col span={8}>
-                  <Form.Item label="问题分类">
-                    {getFieldDecorator('type', {})
-                      (
-                        <Select placeholder="请选择" allowClear>
-                          {problemType.map(obj => [
-                            <Option key={obj.key} value={obj.dict_code}>
-                              {obj.title}
-                            </Option>,
-                          ])}
-                        </Select>,
-                      )}
-                  </Form.Item>
-                </Col>
-
-                <Col span={8}>
-                  <Form.Item label="发送人">{getFieldDecorator('registerUser', {})(<Input placeholder='请输入' allowClear />)}</Form.Item>
-                </Col>
-              </>
-            )}
-
-            {expand === true && (
-              <>
-                <Col span={8}>
-                  <Form.Item label="发送时间">
-                    {getFieldDecorator('registerTime', {
+                    {getFieldDecorator('title', {
+                      initialValue: cacheinfo.title,
                     })
-                      (<DatePicker allowClear />)}
-                  </Form.Item>
-                </Col>
-
-                <Col span={8}>
-                  <Form.Item label="重要程度">
-                    {getFieldDecorator('importance', {})
-                      (
-                        <Select placeholder="请选择" allowClear>
-                          {priority.map(obj => [
-                            <Option key={obj.key} value={obj.dict_code}>
-                              {obj.title}
-                            </Option>,
-                          ])}
-                        </Select>,
-                      )}
+                      (<Input placeholder='请输入' allowClear />)}
                   </Form.Item>
                 </Col>
               </>
-            )}
-
-            {expand === false && (
               <Col span={8}>
-                <Button type="primary" onClick={handleSearch}>
-                  查询
-                </Button>
-
-                <Button style={{ marginLeft: 8 }} onClick={handleReset}>
-                  重置
-                </Button>
-
-                <Button
-                  style={{ marginLeft: 8 }}
-                  type="link"
-                  onClick={() => {
-                    setExpand(!expand);
-                  }}
-                >
-                  {expand ? (
-                    <>
-                      关闭 <UpOutlined />
-                    </>
-                  ) : (
-                    <>
-                      展开 <DownOutlined />
-                    </>
-                  )}
-                </Button>
+                <Form.Item label="问题来源">
+                  {getFieldDecorator('source', {
+                    initialValue: cacheinfo.source,
+                  })
+                    (
+                      <Select placeholder="请选择" allowClear>
+                        {problemSource.map(obj => [
+                          <Option key={obj.key} value={obj.dict_code}>
+                            {obj.title}
+                          </Option>,
+                        ])}
+                      </Select>,
+                    )}
+                </Form.Item>
               </Col>
-            )}
-
-            {expand === true && (
-              <Col span={24} style={{ textAlign: 'right' }}>
-                <Button type="primary" onClick={handleSearch}>
-                  查询
-                </Button>
-                <Button style={{ marginLeft: 8 }} onClick={handleReset}>
-                  重置
-                </Button>
-                <Button
-                  style={{ marginLeft: 8 }}
-                  type="link"
-                  onClick={() => {
-                    setExpand(!expand);
-                  }}
-                >
-                  {expand ? (
-                    <>
-                      关闭 <UpOutlined />
-                    </>
-                  ) : (
-                    <>
-                      展开 <DownOutlined />
-                    </>
-                  )}
-                </Button>
+              <Col span={8}>
+                <Form.Item label="问题分类">
+                  {getFieldDecorator('type', {
+                    initialValue: cacheinfo.type,
+                  })
+                    (
+                      <Select placeholder="请选择" allowClear>
+                        {problemType.map(obj => [
+                          <Option key={obj.key} value={obj.dict_code}>
+                            {obj.title}
+                          </Option>,
+                        ])}
+                      </Select>,
+                    )}
+                </Form.Item>
               </Col>
-            )}
+
+              <Col span={8}>
+                <Form.Item label="发送人">
+                  {getFieldDecorator('registerUser', {
+                    initialValue: cacheinfo.registerUser,
+                  })(
+                    <Input placeholder='请输入' allowClear />)}
+                </Form.Item>
+              </Col>
+              <Col span={8}>
+                <Form.Item label="发送时间">
+                  {getFieldDecorator('registerTime', {
+                    initialValue: ''
+                  })(
+                    <DatePicker
+                      showTime
+                      format="YYYY-MM-DD HH:mm:ss"
+                      style={{ width: '100%' }}
+                      placeholder="请选择"
+                      allowClear
+                    />,
+                  )}
+                </Form.Item>
+              </Col>
+              <Col span={8}>
+                <Form.Item label="重要程度">
+                  {getFieldDecorator('importance', {
+                    initialValue: cacheinfo.importance,
+                  })
+                    (
+                      <Select placeholder="请选择" allowClear>
+                        {priority.map(obj => [
+                          <Option key={obj.key} value={obj.dict_code}>
+                            {obj.title}
+                          </Option>,
+                        ])}
+                      </Select>,
+                    )}
+                </Form.Item>
+              </Col>
+            </span>
+            {expand ? (<Col span={24} style={{ textAlign: 'right' }}>{extra}</Col>) : (<Col span={8}><Form.Item wrapperCol={24}>{extra}</Form.Item></Col>)}
           </Form>
         </Row>
 
         <div style={{ marginBottom: 24, display: 'flex', flexDirection: 'row' }} >
           <Button type="primary" style={{ marginRight: 8 }} onClick={exportDownload}>
-            导入下载模板
+            下载导入模板
           </Button>
 
           {
@@ -431,8 +457,6 @@ function Besolved(props) {
             )
 
           }
-
-
           <Button
             style={{ marginLeft: 8 }}
             type="primary"
@@ -442,13 +466,11 @@ function Besolved(props) {
         </Button>
         </div>
 
-
-
         <Table
           loading={loading}
           columns={columns}
           dataSource={besolveList.rows}
-          rowKey={record => record.id}
+          rowKey={r => r.id}
           pagination={pagination}
         />
       </Card>

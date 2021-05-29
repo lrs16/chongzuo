@@ -111,46 +111,24 @@ function QueryList(props) {
   const [tabrecord, setTabRecord] = useState({});
 
   const searchdata = (values, page, size) => {
+    const newvalues = {
+      createTime: '',
+      startTime: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD 00:00:00') : '',
+      endTime: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD 23:59:59') : '',
+      completeStatus: values.completeStatus === undefined ? '' : values.completeStatus,
+    }
     dispatch({
       type: 'demandquery/querylist',
       payload: {
         ...values,
+        module: values.module === [] ? '' : values.module.join('/'),
+        ...newvalues,
         limit: size,
         page,
-        completeStatus: values.completeStatus === undefined ? '' : values.completeStatus,
-        module: values.module.join('/'),
-        createTime: '',
-        startTime: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-        endTime: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
       },
     });
-    setTabRecord({
-      ...values,
-      completeStatus: values.completeStatus === undefined ? '' : values.completeStatus,
-      startTime: values.createTime ? moment(values.createTime[0]).format('YYYY-MM-DD 00:00:00') : '',
-      endTime: values.createTime ? moment(values.createTime[1]).format('YYYY-MM-DD 00:00:00') : '',
-      createTime: '',
-    });
+    setTabRecord({ ...values, ...newvalues });
   };
-
-  useEffect(() => {
-    if (location.state.cacheinfo) {
-      const cachestartTime = location.state.cacheinfo.startTime;
-      const cacheendTime = location.state.cacheinfo.endTime;
-      setFieldsValue({
-        createTime: cachestartTime ? [moment(cachestartTime), moment(cacheendTime)] : '',
-      })
-    } else {
-      setFieldsValue({
-        createTime: startTime ? [moment(startTime), moment(endTime)] : '',
-      })
-    }
-    validateFields((err, values) => {
-      if (!err) {
-        searchdata(values, 0, 15)
-      }
-    });
-  }, [location.query]);
 
   const onShowSizeChange = (page, size) => {
     validateFields((err, values) => {
@@ -206,6 +184,12 @@ function QueryList(props) {
       state: {}
     });
     resetFields();
+    validateFields((err, values) => {
+      if (!err) {
+        searchdata(values, 1, 15)
+      }
+    });
+    setPageinations({ current: 1, pageSize: 15 });
   };
 
   const download = () => {
@@ -231,8 +215,37 @@ function QueryList(props) {
     })
   };
 
+
   const time = startTime ? [moment(startTime), moment(endTime)] : '';
   const modulestatus = module === undefined ? [] : module.split('/');
+  const record = {
+    demandId: '',
+    taskName,
+    module: modulestatus,
+    demandTitle: '',
+    demandType: '',
+    registerPerson: '',
+    completeStatus: '',
+    createTime: time,
+    paginations,
+  };
+  const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
+
+  // 设置时间
+  useEffect(() => {
+    if (location.state.cacheinfo) {
+      const cachestartTime = location.state.cacheinfo.startTime;
+      const cacheendTime = location.state.cacheinfo.endTime;
+      setFieldsValue({
+        createTime: cachestartTime ? [moment(cachestartTime), moment(cacheendTime)] : '',
+      })
+    } else {
+      setFieldsValue({
+        createTime: startTime ? [moment(startTime), moment(endTime)] : '',
+      })
+    }
+  }, [location.state]);
+
   useEffect(() => {
     if (location.state) {
       if (location.state.cache) {
@@ -244,7 +257,6 @@ function QueryList(props) {
               ...tabrecord,
               paginations,
               expand,
-              completeStatus: tabrecord.completeStatus === undefined ? '' : tabrecord.completeStatus,
             },
             tabid: sessionStorage.getItem('tabid')
           },
@@ -254,25 +266,14 @@ function QueryList(props) {
       if (location.state.reset) {
         handleReset()
       };
+      // 标签切回设置初始值
       if (location.state.cacheinfo) {
-        if (location.state.cacheinfo.expand) {
-          setExpand(true)
-        }
-      }
+        const { current, pageSize } = location.state.cacheinfo.paginations;
+        setExpand(location.state.cacheinfo.expand);
+        setPageinations({ ...paginations, current, pageSize })
+      };
     }
   }, [location.state]);
-
-  const record = {
-    demandId: '',
-    taskName,
-    module: modulestatus,
-    demandTitle: '',
-    demandType: '',
-    registerPerson: '',
-    completeStatus: '',
-    createTime: time,
-  };
-  const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
 
   const getTypebyId = key => {
     if (selectdata.ischange) {
@@ -328,66 +329,61 @@ function QueryList(props) {
                 )}
               </Form.Item>
             </Col>
-
-            {expand === true && (
-              <>
-                <Col span={8}>
-                  <Form.Item label="需求标题">
-                    {getFieldDecorator('demandTitle', {
-                      initialValue: cacheinfo.demandTitle,
-                    })(<Input placeholder="请输入" allowClear />)}
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item label="需求类型">
-                    {getFieldDecorator('demandType', { initialValue: cacheinfo.demandType })(
-                      <Select placeholder="请选择" allowClear>
-                        {demandtype.map(obj => [
-                          <Option key={obj.key} value={obj.title}>
-                            {obj.title}
-                          </Option>,
-                        ])}
-                      </Select>,
-                    )}
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item label="登记人">
-                    {getFieldDecorator('registerPerson', {
-                      initialValue: cacheinfo.registerPerson,
-                    })(<Input placeholder="请输入" allowClear />)}
-                  </Form.Item>
-                </Col>
-              </>
-            )}
-            {(module || completeStatus || taskName || expand) && (
-              <>
-                <Col span={8}>
-                  <Form.Item label="超时状态">
-                    {getFieldDecorator('completeStatus', { initialValue: cacheinfo.completeStatus })(
-                      <Select placeholder="请选择" allowClear>
-                        {overtimemap.map((obj => [
-                          <Option key={obj.key} value={obj.title}>
-                            {obj.title}
-                          </Option>,
-                        ]))}
-                      </Select>,
-                    )}
-                  </Form.Item>
-                </Col>
-                <Col span={16}>
-                  <Form.Item label="建单时间" {...form10ladeLayout}>
-                    {getFieldDecorator('createTime', {
-                      initialValue: '',
-                    })(<RangePicker
-                      showTime
-                      format='YYYY-MM-DD'
-                      allowClear
-                    />)}
-                  </Form.Item>
-                </Col>
-              </>
-            )}
+            <span style={{ display: expand ? 'block' : 'none' }}>
+              <Col span={8}>
+                <Form.Item label="需求标题">
+                  {getFieldDecorator('demandTitle', {
+                    initialValue: cacheinfo.demandTitle,
+                  })(<Input placeholder="请输入" allowClear />)}
+                </Form.Item>
+              </Col>
+              <Col span={8}>
+                <Form.Item label="需求类型">
+                  {getFieldDecorator('demandType', { initialValue: cacheinfo.demandType })(
+                    <Select placeholder="请选择" allowClear>
+                      {demandtype.map(obj => [
+                        <Option key={obj.key} value={obj.title}>
+                          {obj.title}
+                        </Option>,
+                      ])}
+                    </Select>,
+                  )}
+                </Form.Item>
+              </Col>
+              <Col span={8}>
+                <Form.Item label="登记人">
+                  {getFieldDecorator('registerPerson', {
+                    initialValue: cacheinfo.registerPerson,
+                  })(<Input placeholder="请输入" allowClear />)}
+                </Form.Item>
+              </Col>
+            </span>
+            <span style={{ display: (module || completeStatus || taskName || expand) ? 'block' : 'none' }}>
+              <Col span={8}>
+                <Form.Item label="超时状态">
+                  {getFieldDecorator('completeStatus', { initialValue: cacheinfo.completeStatus })(
+                    <Select placeholder="请选择" allowClear>
+                      {overtimemap.map((obj => [
+                        <Option key={obj.key} value={obj.title}>
+                          {obj.title}
+                        </Option>,
+                      ]))}
+                    </Select>,
+                  )}
+                </Form.Item>
+              </Col>
+              <Col span={16}>
+                <Form.Item label="建单时间" {...form10ladeLayout}>
+                  {getFieldDecorator('createTime', {
+                    initialValue: '',
+                  })(<RangePicker
+                    showTime
+                    format='YYYY-MM-DD'
+                    allowClear
+                  />)}
+                </Form.Item>
+              </Col>
+            </span>
             <Col span={24} style={{ textAlign: 'right' }}>
               <Button type="primary" onClick={handleSearch}>
                 查 询
