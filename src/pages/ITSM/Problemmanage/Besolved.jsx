@@ -129,17 +129,17 @@ function Besolved(props) {
   // }, []);
 
   const searchdata = (values, page, pageSize) => {
-    const Time = values.registerTime ? moment(values.registerTime).format('YYYY-MM-DD HH:mm:ss') : ''
+    const registerTime = values.registerTime ? moment(values.registerTime).format('YYYY-MM-DD HH:mm:ss') : ''
     dispatch({
       type: 'problemmanage/searchBesolve',
       payload: {
         ...values,
-        registerTime: Time,
+        registerTime,
         pageSize,
         pageNum: page,
       },
     });
-    setTabRecord({ ...values, registerTime: Time, });
+    setTabRecord({ ...values });
   };
 
   const handleReset = () => {
@@ -243,7 +243,7 @@ function Besolved(props) {
     currentNode: '',
     importance: '',
     no: '',
-    registerTime: '',
+    registerTime: null,
     registerUser: '',
     source: '',
     title: '',
@@ -265,11 +265,14 @@ function Besolved(props) {
     if (location.state) {
       if (location.state.cache) {
         // 传表单数据到页签
+        console.log(tabrecord.registerTime)
         dispatch({
           type: 'viewcache/gettabstate',
           payload: {
             cacheinfo: {
               ...tabrecord,
+              time: tabrecord.registerTime ? moment(tabrecord.registerTime).format('YYYY-MM-DD HH:mm:ss') : '',
+              registerTime: '',
               paginations,
               expand,
             },
@@ -283,11 +286,11 @@ function Besolved(props) {
       };
       if (location.state.cacheinfo) {
         const { current, pageSize } = location.state.cacheinfo.paginations;
-        const { registerTime } = location.state.cacheinfo;
+        const { registerTime } = location.state.cacheinfo.registerTime;
         setExpand(location.state.cacheinfo.expand);
         setPaginations({ ...paginations, current, pageSize });
         // setFieldsValue({
-        //   registerTime: registerTime ? moment(registerTime).format('YYYY-MM-DD HH:mm:ss') : '',
+        //   registerTime: registerTime !== '' ? moment(registerTime).format('YYYY-MM-DD HH:mm:ss') : '',
         // })
       };
     }

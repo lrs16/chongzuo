@@ -350,8 +350,8 @@ function Registration(props) {
                   show={show}
                   selectdata={selectdata}
                   files={[]}
-                  info={tabdata}
-                  main={tabdata}
+                // info={tabdata}
+                // main={tabdata}
                 />
               </Panel>
             )}

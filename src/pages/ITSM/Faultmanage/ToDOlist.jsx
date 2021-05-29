@@ -129,12 +129,11 @@ function ToDOlist(props) {
       const newvalues = {
         ...values,
         createTime: values.createTime ? values.createTime.format('YYYY-MM-DD HH:mm:ss') : '',
-        type: values.type === [] ? '' : values.type.join('/'),
       }
       if (!err) {
         dispatch({
           type: 'fault/getSearchfaultTodo',
-          payload: { pageNum: current, pageSize, ...newvalues },
+          payload: { pageNum: current, pageSize, ...newvalues, type: values.type === [] ? '' : values.type.join('/'), },
         });
         setTabRecord({ ...newvalues });
       }
