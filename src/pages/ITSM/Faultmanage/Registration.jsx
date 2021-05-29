@@ -70,7 +70,9 @@ function Registration(props) {
     curruserinfo, // 获取登录用户信息
     // history,
     // saveuserid: { flowTaskId },
-    location
+    location,
+    tabnew,
+    tabdata
   } = props;
 
 
@@ -213,6 +215,13 @@ function Registration(props) {
     }
   };
 
+  // 打开多页签，表单信息传回tab
+  useEffect(() => {
+    if (tabnew) {
+      resetFields();
+    }
+  }, [tabnew]);
+
   useEffect(() => {
     if (location.state.cache) {
       const formValues = getFieldsValue();
@@ -232,7 +241,7 @@ function Registration(props) {
         },
       });
     }
-  }, [location.state]);
+  }, [location]);
 
   // 常用语调用
   useEffect(() => {
@@ -263,6 +272,8 @@ function Registration(props) {
     </>
   );
 
+  const cacheinfo = tabdata === undefined ? { registerLevel: '一般', registerEffect: '0' } : tabdata;
+
   return (
     <PageHeaderWrapper title={pagetitle} extra={operations}>
       <SysDict
@@ -281,25 +292,10 @@ function Registration(props) {
                 })(<Input disabled />)}
               </Form.Item>
             </Col>
-            {/* 
-            <Col span={8}>
-              <Form.Item>
-                <Button type="primary" onClick={() => getNewno()}>
-                  获取最新编号
-                </Button>
-              </Form.Item>
-            </Col> */}
-
             <Col xl={8} xs={12}>
               <Form.Item label="登记时间">
                 {getFieldDecorator('registerTime', {
-                  rules: [
-                    {
-                      required,
-                      message: '请选择时间',
-                    },
-                  ],
-                  initialValue: moment(Date.now()) || '',
+                  initialValue: moment(cacheinfo.registerTime) || '',
                 })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} />)}
               </Form.Item>
             </Col>
@@ -307,13 +303,7 @@ function Registration(props) {
             <Col xl={8} xs={12}>
               <Form.Item label="发生时间">
                 {getFieldDecorator('registerOccurTime', {
-                  rules: [
-                    {
-                      required,
-                      message: '请选择时间',
-                    },
-                  ],
-                  initialValue: moment(Date.now()) || '',
+                  initialValue: moment(cacheinfo.registerOccurTime) || '',
                 })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} />)}
               </Form.Item>
             </Col>
@@ -327,7 +317,7 @@ function Registration(props) {
                       message: '请选择',
                     },
                   ],
-                  initialValue: '',
+                  initialValue: cacheinfo.source || '',
                 })(
                   <Select placeholder="请选择">
                     {faultSource.map(obj => [
@@ -349,7 +339,7 @@ function Registration(props) {
                       message: '请选择',
                     },
                   ],
-                  initialValue: '',
+                  initialValue: cacheinfo.registerModel || ''
                 })(
                   <Select placeholder="请选择">
                     {sysmodular.map(obj => [
@@ -371,7 +361,7 @@ function Registration(props) {
                       message: '请选择',
                     },
                   ],
-                  initialValue: '',
+                  initialValue: cacheinfo.type || '',
                 })(
                   <Cascader
                     placeholder="请选择"
@@ -392,7 +382,7 @@ function Registration(props) {
                       message: '请输入',
                     },
                   ],
-                  initialValue: '',
+                  initialValue: cacheinfo.registerAddress || '',
                 })(<Input placeholder="请输入" allowClear />)}
               </Form.Item>
             </Col>
@@ -406,7 +396,7 @@ function Registration(props) {
                       message: '请选择',
                     },
                   ],
-                  initialValue: '一般',
+                  initialValue: cacheinfo.registerLevel || '',
                 })(
                   <Select placeholder="请选择">
                     {priority.map(obj => [
@@ -428,7 +418,7 @@ function Registration(props) {
                       message: '请选择',
                     },
                   ],
-                  initialValue: '',
+                  initialValue: cacheinfo.registerScope || '',
                 })(
                   <Select placeholder="请选择">
                     {effect.map(obj => [
@@ -441,8 +431,8 @@ function Registration(props) {
               </Form.Item>
             </Col>
 
-            <Col span={8}>
-              <Form.Item label="故障名称">
+            <Col span={24}>
+              <Form.Item label="故障名称"{...forminladeLayout}>
                 {getFieldDecorator('title', {
                   rules: [
                     {
@@ -450,7 +440,7 @@ function Registration(props) {
                       message: '请输入',
                     },
                   ],
-                  initialValue: '',
+                  initialValue: cacheinfo.title || '',
                 })(
                   <AutoComplete
                     dataSource={titleautodata}
@@ -471,7 +461,7 @@ function Registration(props) {
                       message: '请输入',
                     },
                   ],
-                  initialValue: '',
+                  initialValue: cacheinfo.content || '',
                 })(
                   <AutoComplete
                     dataSource={desautodata}
@@ -486,7 +476,7 @@ function Registration(props) {
             <Col span={24}>
               <Form.Item label="是否影响业务" {...forminladeLayout}>
                 {getFieldDecorator('registerEffect', {
-                  initialValue: 0,
+                  initialValue: cacheinfo.registerEffect || '',
                 })(
                   <RadioGroup>
                     <Radio value={0}>是</Radio>
@@ -542,7 +532,9 @@ function Registration(props) {
 }
 
 export default Form.create({})(
-  connect(({ fault, loading }) => ({
+  connect(({ fault, viewcache, loading }) => ({
+    tabnew: viewcache.tabnew,
+    tabdata: viewcache.tabdata,
     newno: fault.newno, // 获取新的故障编号
     curruserinfo: fault.userinfo, // 获取登录用户信息
     saveuserid: fault.saveuserid, // 保存用户数据携带的id

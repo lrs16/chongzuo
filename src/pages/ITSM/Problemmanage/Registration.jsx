@@ -40,6 +40,7 @@ function Registration(props) {
     projectList,
     userinfo,
     antoArr,
+    tabnew, location, tabdata
   } = props;
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
   const RegistratRef = useRef();
@@ -138,6 +139,35 @@ function Registration(props) {
     files.arr = [];
   }, []);
 
+  // 重置表单信息
+  useEffect(() => {
+    if (tabnew) {
+      RegistratRef.current.resetFields();
+    }
+  }, [tabnew]);
+  // 获取页签信息
+  useEffect(() => {
+    if (location.state.cache) {
+      RegistratRef.current.validateFields((_, values) => {
+        dispatch({
+          type: 'viewcache/gettabstate',
+          payload: {
+            cacheinfo: {
+              ...values,
+              registerTime: values.registerTime.format('YYYY-MM-DD HH:mm:ss'),
+              registerOccurTime: values.registerOccurTime.format('YYYY-MM-DD HH:mm:ss'),
+              registerExpectTime: values.registerExpectTime.format('YYYY-MM-DD HH:mm:ss'),
+              registerAttachments: files.ischange ? JSON.stringify(files.arr) : null,
+              importance: Number(values.importance) ? values.importance : '001',
+            },
+            tabid: sessionStorage.getItem('tabid')
+          },
+        });
+      });
+      RegistratRef.current.resetFields();
+    }
+  }, [location]);
+
   return (
     <PageHeaderWrapper
       title={pagetitle}
@@ -160,6 +190,8 @@ function Registration(props) {
             ref={RegistratRef}
             list={list}
             useInfo={userinfo}
+            register={tabdata}
+            main={tabdata}
             files={files.arr}
             ChangeFiles={newvalue => {
               setFiles(newvalue);
@@ -178,7 +210,9 @@ function Registration(props) {
 }
 
 export default Form.create({})(
-  connect(({ problemmanage, demandtodo, problemdropdown, itsmuser, loading }) => ({
+  connect(({ viewcache, problemmanage, demandtodo, problemdropdown, itsmuser, loading }) => ({
+    tabnew: viewcache.tabnew,
+    tabdata: viewcache.tabdata,
     list: problemmanage.list,
     id: problemmanage.id,
     newno: problemmanage.newno,

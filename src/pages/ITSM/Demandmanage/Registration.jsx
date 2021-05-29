@@ -12,7 +12,7 @@ function Registration(props) {
   // const [flowtype, setFlowtype] = useState('1'); // 流转类型
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
   const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
-  console.log(tabdata)
+
   // 初始化用户信息，流程类型
   useEffect(() => {
     dispatch({
@@ -117,7 +117,7 @@ function Registration(props) {
   // 获取页签信息
   useEffect(() => {
     if (location.state.cache) {
-      RegistratRef.current.validateFields((err, values) => {
+      RegistratRef.current.validateFields((_, values) => {
         dispatch({
           type: 'viewcache/gettabstate',
           payload: {

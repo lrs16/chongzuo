@@ -37,7 +37,7 @@ export const RegistratContext = createContext();
 
 function Registration(props) {
   const pagetitle = props.route.name;
-  const { dispatch, loading, userinfo, location, tabnew, tabid } = props;
+  const { dispatch, loading, userinfo, tabnew, location, tabdata } = props;
   const [formregistrat, setFormregistrat] = useState('');
   const [formhandle, setFormhandle] = useState('');
   const [show, setShow] = useState(false); // 自行处理
@@ -51,17 +51,6 @@ function Registration(props) {
   const RegistratRef = useRef();
   const HandleRef = useRef();
 
-  const getregistdata = () => {
-    const values = RegistratRef.current.getFieldsValue()
-    return values
-  }
-  const gethandledata = () => {
-    const values = HandleRef.current.getFieldsValue()
-    if (show) {
-      return values
-    }
-    return null
-  }
   // useEffect(() => {
   //   if (tabnew) {
   //     const registdata = getregistdata();
@@ -226,26 +215,81 @@ function Registration(props) {
     });
   };
 
+  // 重置表单信息
+  useEffect(() => {
+    if (tabnew) {
+      RegistratRef.current.resetFields();
+    }
+  }, [tabnew]);
+  // 获取页签信息
+  useEffect(() => {
+    if (location.state.cache) {
+      const formr = RegistratRef.current.getFieldsValue();
+      if (show) {
+        const formh = HandleRef.current.getFieldsValue();
+        dispatch({
+          type: 'viewcache/gettabstate',
+          payload: {
+            cacheinfo: {
+              ...formr,
+              ...formh,
+              main_eventObject: formr.main_eventObject?.slice(-1)[0],
+              register_occurTime: formr.register_occurTime.format('YYYY-MM-DD HH:mm:ss'),
+              register_applicationUnit: formr.applicationUnit,
+              register_applicationUnitId: formr.applicationUnit === '' ? '' : formr.register_applicationUnitId,
+              register_mobilePhone: formr.main_revisitWay === '002' ? formr.mobilePhone1 : formr.mobilePhone2,
+              register_applicationDept:
+                formr.register_applicationDept !== ''
+                  ? formr.register_applicationDept
+                  : formr.register_applicationUnit,
+              register_applicationDeptId:
+                formr.register_applicationDeptId !== ''
+                  ? formr.register_applicationDeptId
+                  : formr.register_applicationUnitId,
+              register_fileIds: JSON.stringify(registratfiles.arr),
+              register_selfhandle: String(Number(formr.register_selfhandle)),
+              register_supplement: String(Number(formr.register_supplement)),
+              handle_endTime: formh.handle_endTime.format('YYYY-MM-DD HH:mm:ss'),
+            },
+            tabid: sessionStorage.getItem('tabid')
+          },
+        });
+      } else {
+        dispatch({
+          type: 'viewcache/gettabstate',
+          payload: {
+            cacheinfo: {
+              ...formr,
+              main_eventObject: formr.main_eventObject?.slice(-1)[0],
+              register_occurTime: formr.register_occurTime.format('YYYY-MM-DD HH:mm:ss'),
+              register_applicationUnit: formr.applicationUnit,
+              register_applicationUnitId: formr.applicationUnit === '' ? '' : formr.register_applicationUnitId,
+              register_mobilePhone: formr.main_revisitWay === '002' ? formr.mobilePhone1 : formr.mobilePhone2,
+              register_applicationDept:
+                formr.register_applicationDept !== ''
+                  ? formr.register_applicationDept
+                  : formr.register_applicationUnit,
+              register_applicationDeptId:
+                formr.register_applicationDeptId !== ''
+                  ? formr.register_applicationDeptId
+                  : formr.register_applicationUnitId,
+              register_fileIds: JSON.stringify(registratfiles.arr),
+              register_selfhandle: String(Number(formr.register_selfhandle)),
+              register_supplement: String(Number(formr.register_supplement)),
+            },
+            tabid: sessionStorage.getItem('tabid')
+          },
+        });
+      }
+      RegistratRef.current.resetFields();
+    }
+  }, [location]);
+
   const operations = (
     <>
       <Button type="primary" style={{ marginRight: 8 }} onClick={handlesubmit}>
         保 存
       </Button>
-      {/* 
-      {next === '审核' && (
-        <SelectUser handleSubmit={() => handleflow()} flowtype={flowtype}>
-          <Button type="primary" style={{ marginRight: 8 }}>
-            审 核
-          </Button>
-        </SelectUser>
-      )}
-      {next !== '审核' && (
-        <SelectUser handleSubmit={() => handleflow()} flowtype={flowtype}>
-          <Button type="primary" style={{ marginRight: 8 }}>
-            流 转
-          </Button>
-        </SelectUser>
-      )} */}
       <Button type="default" onClick={() => handleclose()}>
         关 闭
       </Button>
@@ -287,6 +331,8 @@ function Registration(props) {
                 location={location}
                 files={registratfiles.arr}
                 selectdata={selectdata}
+                info={tabdata}
+                main={tabdata}
               />
             </Panel>
             {show === true && check === false && (
@@ -304,6 +350,8 @@ function Registration(props) {
                   show={show}
                   selectdata={selectdata}
                   files={[]}
+                  info={tabdata}
+                  main={tabdata}
                 />
               </Panel>
             )}
@@ -316,7 +364,7 @@ function Registration(props) {
 
 export default connect(({ itsmuser, viewcache, loading }) => ({
   tabnew: viewcache.tabnew,
-  tabid: viewcache.tabid,
+  tabdata: viewcache.tabdata,
   userinfo: itsmuser.userinfo,
   loading: loading.models.eventregist,
 }))(Registration);
