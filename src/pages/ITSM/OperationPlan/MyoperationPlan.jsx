@@ -320,12 +320,6 @@ function MyoperationPlan(props) {
     });
   };
 
-  useEffect(() => {
-    validateFields((err, values) => {
-      searchdata(values, 0, paginations.pageSize)
-    })
-  }, [location])
-
   const onShowSizeChange = (page, pageSize) => {
     validateFields((err, values) => {
       if (!err) {

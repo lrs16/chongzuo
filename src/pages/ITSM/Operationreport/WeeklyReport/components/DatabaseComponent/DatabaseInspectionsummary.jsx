@@ -274,7 +274,7 @@ const DatabaseInspectionsummary = React.forwardRef((props, ref) => {
 
   const submitColumn = [
     {
-      title: '序号',
+      title: '表空间名',
       dataIndex: 'num1',
       key: 'num1',
       render: (text, record) => {
@@ -292,7 +292,7 @@ const DatabaseInspectionsummary = React.forwardRef((props, ref) => {
       }
     },
     {
-      title: '材料名称',
+      title: '11月13日占用空间/GB',
       dataIndex: 'num2',
       key: 'num2',
       render: (text, record) => {
@@ -310,15 +310,51 @@ const DatabaseInspectionsummary = React.forwardRef((props, ref) => {
       }
     },
     {
-      title: '是否提交',
+      title: '11月19日占用空间/GB',
       dataIndex: 'num3',
       key: 'num3',
       render: (text, record) => {
         if (record.secondtableisNew) {
           return (
+            <Input
+              defaultValue={text}
+              onChange={e => handleFieldChange(e.target.value, 'num3', record.key, 'secondTable')}
+            />
+          )
+        }
+        if (record.secondtableisNew === false) {
+          return <span>{text}</span>
+        }
+      }
+    },
+    {
+      title: '11月19日占用空间/GB',
+      dataIndex: 'num4',
+      key: 'num4',
+      render: (text, record) => {
+        if (record.secondtableisNew) {
+          return (
+            <Input
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'num4', record.key, 'secondTable')}
+          />
+        )
+      }
+      if (record.secondtableisNew === false) {
+        return <span>{text}</span>
+      }
+      }
+    },
+    {
+      title: '日平均增长/GB',
+      dataIndex: 'num5',
+      key: 'num5',
+      render: (text, record) => {
+        if (record.secondtableisNew) {
+          return (
             <Select
               defaultValue={text}
-              onChange={e => handleFieldChange(e, 'num3', record.key, 'secondTable')}
+              onChange={e => handleFieldChange(e, 'num4', record.key, 'secondTable')}
             >
               <Option key='是' value='是'>是</Option>
               <Option key='否' value='否'>否</Option>

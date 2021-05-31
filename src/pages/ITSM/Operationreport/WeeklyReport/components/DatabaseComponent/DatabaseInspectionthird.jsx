@@ -134,7 +134,7 @@ const DatabaseInspectionthird = React.forwardRef((props, ref) => {
 
   const column = [
     {
-      title: '日期',
+      title: '用户名',
       dataIndex: 'dd11',
       key: 'dd11',
       render: (text, record) => {
@@ -152,7 +152,7 @@ const DatabaseInspectionthird = React.forwardRef((props, ref) => {
       }
     },
     {
-      title: '工作项',
+      title: '表名',
       dataIndex: 'dd22',
       key: 'dd22',
       render: (text, record) => {
@@ -170,7 +170,7 @@ const DatabaseInspectionthird = React.forwardRef((props, ref) => {
       }
     },
     {
-      title: '工作内容',
+      title: '表总大小/GB',
       dataIndex: 'dd33',
       key: 'dd33',
       render: (text, record) => {
@@ -188,7 +188,7 @@ const DatabaseInspectionthird = React.forwardRef((props, ref) => {
       }
     },
     {
-      title: '完成情况',
+      title: '总增长量/GB',
       dataIndex: 'dd44',
       key: 'dd44',
       render: (text, record) => {
@@ -197,6 +197,24 @@ const DatabaseInspectionthird = React.forwardRef((props, ref) => {
             <Input
               defaultValue={text}
               onChange={e => handleFieldChange(e.target.value, 'dd44', record.key)}
+            />
+          )
+        }
+        if (record.isNew === false) {
+          return <span>{text}</span>
+        }
+      }
+    },
+    {
+      title: '平均增长量/GB',
+      dataIndex: 'dd55',
+      key: 'dd55',
+      render: (text, record) => {
+        if (record.isNew) {
+          return (
+            <Input
+              defaultValue={text}
+              onChange={e => handleFieldChange(e.target.value, 'dd55', record.key)}
             />
           )
         }

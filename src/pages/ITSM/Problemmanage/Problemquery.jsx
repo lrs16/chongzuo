@@ -18,6 +18,7 @@ const formItemLayout = {
   },
 };
 const { Option } = Select;
+const { RangePicker } = DatePicker;
 
 const columns = [
   {
@@ -128,26 +129,30 @@ function Besolved(props) {
   } else {
     differentTitle = '问题查询'
   }
-  
+
   const getinitiaQuery = () => {
     queryParams = true
-    if(queryParams) {
-      dispatch({
-        type: 'problemmanage/queryList',
-        payload: {
-          status,
-          progressStatus,
-          handlerId,
-          type,
-          timeStatus,
-          handleDeptId,
-          addTimeBegin,
-          addTimeEnd,
-          currentNode,
-          pageNum: paginations.current,
-          pageSize: paginations.pageSize,
-        },
-      });
+    if (queryParams) {
+      validateFields((err, values) => {
+        dispatch({
+          type: 'problemmanage/queryList',
+          payload: {
+            status,
+            progressStatus,
+            handlerId,
+            type,
+            timeStatus,
+            handleDeptId,
+            addTimeBegin,
+            addTimeEnd,
+            currentNode,
+            createTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+            createTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+            pageNum: paginations.current,
+            pageSize: paginations.pageSize,
+          },
+        });
+      })
     } else {
       dispatch({
         type: 'problemmanage/queryList',
@@ -177,24 +182,28 @@ function Besolved(props) {
 
 
   const searchdata = (values, page, pageSize, search) => {
-    if(queryParams) {
-      dispatch({
-        type: 'problemmanage/queryList',
-        payload: {
-          ...values,
-          status,
-          progressStatus,
-          handlerId,
-          type,
-          timeStatus,
-          handleDeptId,
-          addTimeBegin,
-          addTimeEnd,
-          currentNode:values.currentNode?values.currentNode:currentNode,
-          pageNum: page,
-          pageSize: paginations.pageSize
-        },
-      });
+    if (queryParams) {
+        dispatch({
+          type: 'problemmanage/queryList',
+          payload: {
+            ...values,
+            status,
+            progressStatus,
+            handlerId,
+            type,
+            timeStatus,
+            handleDeptId,
+            addTimeBegin,
+            addTimeEnd,
+            createTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+            createTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+            createTime:'',
+            currentNode: values.currentNode ? values.currentNode : currentNode,
+            pageNum: page,
+            pageSize: paginations.pageSize
+          },
+        });
+
     } else {
       dispatch({
         type: 'problemmanage/queryList',
@@ -209,7 +218,7 @@ function Besolved(props) {
 
   useEffect(() => {
     getinitiaQuery();
-  },[location])
+  }, [location])
 
 
   const onShowSizeChange = (page, pageSize) => {
@@ -269,7 +278,7 @@ function Besolved(props) {
   const download = () => {
     validateFields((err, values) => {
       if (!err) {
-        if(queryParams) {
+        if (queryParams) {
           dispatch({
             type: 'problemmanage/eventdownload',
             payload: {
@@ -283,7 +292,7 @@ function Besolved(props) {
               handleDeptId,
               addTimeBegin,
               addTimeEnd,
-              currentNode:values.currentNode?values.currentNode:currentNode,
+              currentNode: values.currentNode ? values.currentNode : currentNode,
             }
           }).then(res => {
             const filename = `问题查询_${moment().format('YYYY-MM-DD HH:mm')}.xls`;
@@ -313,7 +322,7 @@ function Besolved(props) {
             window.URL.revokeObjectURL(url);
           })
         }
-  
+
       }
     })
   }
@@ -462,11 +471,16 @@ function Besolved(props) {
 
                 <Col span={8}>
                   <Form.Item label="发送时间">
-                    {getFieldDecorator(
-                      'createTimeBegin',
-                      {},
-                    )(
-                      <DatePicker allowClear />
+                    {getFieldDecorator('createTime', {
+                      initialValue: ''
+                    })(
+                      <RangePicker
+                        showTime
+                        format="YYYY-MM-DD HH:mm:ss"
+                        style={{ width: '100%' }}
+                        placeholder="请选择"
+                        allowClear
+                      />,
                     )}
                   </Form.Item>
                 </Col>

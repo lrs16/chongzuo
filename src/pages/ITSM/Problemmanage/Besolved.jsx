@@ -31,6 +31,7 @@ const formItemLayout = {
 };
 
 const { Option } = Select;
+const { RangePicker } = DatePicker;
 
 function Besolved(props) {
   const pagetitle = props.route.name;
@@ -129,12 +130,13 @@ function Besolved(props) {
   // }, []);
 
   const searchdata = (values, page, pageSize) => {
-    const registerTime = values.registerTime ? moment(values.registerTime).format('YYYY-MM-DD HH:mm:ss') : ''
     dispatch({
       type: 'problemmanage/searchBesolve',
       payload: {
         ...values,
-        registerTime,
+        createTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+        createTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+        createTime:'',
         pageSize,
         pageNum: page,
       },
@@ -410,10 +412,10 @@ function Besolved(props) {
               </Col>
               <Col span={8}>
                 <Form.Item label="发送时间">
-                  {getFieldDecorator('registerTime', {
+                  {getFieldDecorator('createTime', {
                     initialValue: ''
                   })(
-                    <DatePicker
+                    <RangePicker
                       showTime
                       format="YYYY-MM-DD HH:mm:ss"
                       style={{ width: '100%' }}
