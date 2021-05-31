@@ -79,6 +79,7 @@ function TaskSearch(props) {
     dispatch,
     queryList,
     operationPersonArr,
+    location,
     loading,
   } = props;
   let operationPersonSelect;
@@ -123,6 +124,16 @@ function TaskSearch(props) {
       }
     })
   };
+
+  const handleReset = () => {
+    router.push({
+      pathname: location.pathname,
+      query: {},
+      state: {}
+    });
+    resetFields();
+  };
+
 
 
 
@@ -315,21 +326,19 @@ function TaskSearch(props) {
 
   const getTobolist = () => {
     validateFields((err, values) => {
+      console.log('values: ', values);
       dispatch({
         type: 'processmodel/getOperationQueryList',
         payload: {
           ...values,
           time1: values.addTime?.length ? moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
           time2: values.addTime?.length ? moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+          addTime: '',
           pageIndex: paginations.current,
           pageSize: paginations.pageSize,
         },
       });
     })
-  };
-
-  const handleReset = () => {
-    resetFields();
   };
 
   const searchdata = (values, page, pageSize) => {
@@ -525,10 +534,29 @@ function TaskSearch(props) {
       operationUser,
       timeoutStatus
     })
-    getTobolist();
+    validateFields((err, values) => {
+      dispatch({
+        type: 'processmodel/getOperationQueryList',
+        payload: {
+          ...values,
+          time1: values.addTime?.length ? moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+          time2: values.addTime?.length ? moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+          addTime: '',
+          pageIndex: paginations.current,
+          pageSize: paginations.pageSize,
+        },
+      });
+    })
     getoperationPerson();
     setColumns(initialColumns)
   }, []);
+
+  useEffect(() => {
+    validateFields((err, values) => {
+      searchdata(values,1,paginations.pageSize)
+    })
+  }, [location])
+
 
   const pagination = {
     showSizeChanger: true,
@@ -553,7 +581,7 @@ function TaskSearch(props) {
           <Form {...formItemLayout}>
             {expand === false && (
               <>
-                {time1  && operationPersonSelect && operationPersonSelect.length > 0 && (
+                {time1 && operationPersonSelect && operationPersonSelect.length > 0 && (
                   <>
                     <Col span={7}>
                       <Form.Item label="作业状态">
@@ -654,19 +682,19 @@ function TaskSearch(props) {
                     </Col>
 
                     <Col span={8}>
-                  <Form.Item label="作业类型" >
-                    {getFieldDecorator('type', {})
-                      (
-                        <Select placeholder="请选择" allowClear>
-                          {taskType.map(obj => [
-                            <Option key={obj.key} value={obj.title}>
-                              {obj.title}
-                            </Option>,
-                          ])}
-                        </Select>,
-                      )}
-                  </Form.Item>
-                </Col>
+                      <Form.Item label="作业类型" >
+                        {getFieldDecorator('type', {})
+                          (
+                            <Select placeholder="请选择" allowClear>
+                              {taskType.map(obj => [
+                                <Option key={obj.key} value={obj.title}>
+                                  {obj.title}
+                                </Option>,
+                              ])}
+                            </Select>,
+                          )}
+                      </Form.Item>
+                    </Col>
 
                   </>
                 )}

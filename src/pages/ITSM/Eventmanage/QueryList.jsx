@@ -214,6 +214,7 @@ function QueryList(props) {
     } },
     loading,
     list,
+    location,
     dispatch,
   } = props;
   let title;
@@ -229,7 +230,6 @@ function QueryList(props) {
     title = '事件查询'
   }
   useEffect(() => {
-
     setFieldsValue({
       eventObject,
       createTime: time1 ? [moment(time1), moment(time2)] : [moment().startOf('month'), moment()],
@@ -259,12 +259,13 @@ function QueryList(props) {
     };
   }, []);
 
-  // useEffect(() => {
-  //   console.log(title)
-  //   if(title === '事件查询') {
-  //     resetFields()
-  //   }
-  // },[])
+  useEffect(() => {
+    validateFields((err,values) => {
+      if(true) {
+        searchdata(values,0,paginations.pageSize)
+      }
+    })
+  },[location])
 
   const searchdata = (values, page, size, params) => {
     dispatch({
@@ -368,6 +369,11 @@ function QueryList(props) {
   };
 
   const handleReset = () => {
+    router.push({
+      pathname: location.pathname,
+      query:{},
+      state:{}
+    });
     resetFields();
   };
 
@@ -474,7 +480,6 @@ function QueryList(props) {
                     )}
                   </Form.Item>
                 </Col>
-
                     
                     <Col span={10}>
                       <Form.Item label="建单时间" {...form10ladeLayout}>
@@ -518,6 +523,22 @@ function QueryList(props) {
                       </Form.Item>
                     </Col>
 
+                    <Col span={8}>
+                  <Form.Item label="事件分类">
+                    {getFieldDecorator('eventType', {
+                      initialValue: '',
+                    })(
+                      <Select placeholder="请选择" allowClear>
+                        {typemap.map(obj => [
+                          <Option key={obj.key} value={obj.title}>
+                            {obj.title}
+                          </Option>,
+                        ])}
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
+{/* 
                     <Col span={10}>
                       <Form.Item label="建单时间" {...form10ladeLayout}>
                         {getFieldDecorator('createTime', {
@@ -528,7 +549,7 @@ function QueryList(props) {
                           allowClear
                         />)}
                       </Form.Item>
-                    </Col>
+                    </Col> */}
                   </>
                 )}
               </>

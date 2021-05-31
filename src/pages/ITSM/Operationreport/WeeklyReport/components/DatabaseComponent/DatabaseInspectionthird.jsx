@@ -254,7 +254,7 @@ const DatabaseInspectionthird = React.forwardRef((props, ref) => {
     <>
       <Row gutter={16}>
         <Col span={20}>
-          <p style={{ fontWeight: '900', fontSize: '16px' }}>六、遗留缺陷问题跟踪,遗留问题、缺陷跟踪情况（使用表格管理作为附件）</p>
+          <p>Top10表增长情况</p>
         </Col>
 
         <Table

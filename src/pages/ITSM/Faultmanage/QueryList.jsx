@@ -46,9 +46,7 @@ const form10ladeLayout = {
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
-const searchSign = '';
-let typeparams;
-let queryParams = true;
+
 
 function QueryList(props) {
   const pagetitle = props.route.name;
@@ -63,10 +61,11 @@ function QueryList(props) {
         addTimeBegin,
         addTimeEnd,
         currentNode,
-        statName
+        statName,
       },
     },
     loading,
+    location,
     faultQueryList, // 查询列表数据
     dispatch,
   } = props;
@@ -253,14 +252,22 @@ function QueryList(props) {
     getinitiaQuerylists(values, page, pageSize);
   };
 
+  useEffect(() => {
+    validateFields((err, values) => {
+      searchdata(values, 1, paginations.pageSize)
+    })
+  }, [location])
+
   const handleReset = () => {
-    typeparams = '';
+    router.push({
+      pathname: location.pathname,
+      query: {},
+      state: {}
+    });
     resetFields();
   };
 
-  const handlobjectChange = (value, selectedOptions) => {
-    typeparams = `${selectedOptions[1].dict_code}`;
-  };
+
 
 
   const handleSearch = search => {
@@ -306,9 +313,9 @@ function QueryList(props) {
           values.handleStartTimeEnd = fieldsValue.handleStartTimeEnd.format('YYYY-MM-DD');
         }
 
-        if (fieldsValue.type) {
-          values.type = fieldsValue.type.join('/');
-        }
+        // if (fieldsValue.type) {
+        //   values.type = fieldsValue.type.join('/');
+        // }
         searchdata(values, page, paginations.pageSize);
       }
     });
@@ -364,7 +371,6 @@ function QueryList(props) {
 
   const getTypebyTitle = title => {
     if (selectdata.ischange) {
-      console.log(selectdata.arr.filter(item => item.title === title))
       return selectdata.arr.filter(item => item.title === title)[0].children;
     }
     return [];
@@ -392,60 +398,52 @@ function QueryList(props) {
           <Form {...formItemLayout} onSubmit={handleSearch}>
             {expand === false && (
               <>
-                <Col span={8}>
-                  <Form.Item label="故障编号">
-                    {getFieldDecorator('no', {})(<Input placeholder="请输入" allowClear />)}
-                  </Form.Item>
-                </Col>
+                {(status || type || currentNode) && (
+                  <>
+                    <Col span={8}>
+                      <Form.Item label="当前处理环节">
+                        {getFieldDecorator(
+                          'currentNode',
+                          {},
+                        )(
+                          <Select placeholder="请选择" allowClear>
+                            {currentNodeselect.map(obj => [
+                              <Option key={obj.key} value={obj.title}>
+                                {obj.title}
+                              </Option>,
+                            ])}
+                          </Select>,
+                        )}
+                      </Form.Item>
+                    </Col>
 
-                <Col span={8}>
-                  <Form.Item label="当前处理环节">
-                    {getFieldDecorator(
-                      'currentNode',
-                      {},
-                    )(
-                      <Select placeholder="请选择" allowClear>
-                        {currentNodeselect.map(obj => [
-                          <Option key={obj.key} value={obj.title}>
-                            {obj.title}
-                          </Option>,
-                        ])}
-                      </Select>,
-                    )}
-                  </Form.Item>
-                </Col>
+                    <Col span={8}>
+                      <Form.Item label="工单状态">
+                        {getFieldDecorator('status', {})(
+                          <Select placeholder="请选择" allowClear>
+                            {workStatues.map(obj => [
+                              <Option key={obj.key} value={obj.dict_code}>
+                                {obj.title}
+                              </Option>,
+                            ])}
+                          </Select>,
+                        )}
+                      </Form.Item>
+                    </Col>
 
-                <Col span={8}>
-                  <Form.Item label="工单状态">
-                    {getFieldDecorator('status', {})(
-                      <Select placeholder="请选择" allowClear>
-                        {workStatues.map(obj => [
-                          <Option key={obj.key} value={obj.dict_code}>
-                            {obj.title}
-                          </Option>,
-                        ])}
-                      </Select>,
-                    )}
-                  </Form.Item>
-                </Col>
+                    <Col span={8}>
+                      <Form.Item label="故障类型">
+                        {getFieldDecorator('type')(
+                          <Cascader
+                            placeholder="请选择"
+                            options={faultType}
+                            fieldNames={{ label: 'title', value: 'dict_code', children: 'children' }}
+                            allowClear
+                          />,
+                        )}
+                      </Form.Item>
+                    </Col>
 
-
-                <Col span={8}>
-                  <Form.Item label="故障类型">
-                    {getFieldDecorator('type')(
-                      <Cascader
-                        placeholder="请选择"
-                        options={faultType}
-                        onChange={handlobjectChange}
-                        fieldNames={{ label: 'title', value: 'dict_code', children: 'children' }}
-                        allowClear
-                      />,
-                    )}
-                  </Form.Item>
-                </Col>
-
-                {
-                  (status || type) && (
                     <Col span={12}>
                       <Form.Item label="建单时间" {...{ ...form10ladeLayout }}>
                         {getFieldDecorator('createTime', {
@@ -457,6 +455,54 @@ function QueryList(props) {
                         />)}
                       </Form.Item>
                     </Col>
+                  </>
+                )}
+
+
+
+
+
+
+
+
+
+                {
+                  (!status && !type) && (
+                    <>
+                      <Col span={8}>
+                        <Form.Item label="故障编号">
+                          {getFieldDecorator('no', {})(<Input placeholder="请输入" allowClear />)}
+                        </Form.Item>
+                      </Col>
+
+                      <Col span={8}>
+                        <Form.Item label="系统模块">
+                          {getFieldDecorator('registerModel')(
+                            <Select placeholder="请选择" allowClear>
+                              {sysmodular.map(obj => [
+                                <Option key={obj.key} value={obj.title}>
+                                  {obj.title}
+                                </Option>,
+                              ])}
+                            </Select>,
+                          )}
+                        </Form.Item>
+                      </Col>
+
+                      <Col xl={8} xs={12}>
+                        <Form.Item label="严重程度">
+                          {getFieldDecorator('registerLevel')(
+                            <Select placeholder="请选择" allowClear>
+                              {priority.map(obj => [
+                                <Option key={obj.key} value={obj.title}>
+                                  {obj.title}
+                                </Option>,
+                              ])}
+                            </Select>,
+                          )}
+                        </Form.Item>
+                      </Col>
+                    </>
                   )
                 }
 
@@ -554,7 +600,6 @@ function QueryList(props) {
                       <Cascader
                         placeholder="请选择"
                         options={faultType}
-                        onChange={handlobjectChange}
                         fieldNames={{ label: 'title', value: 'dict_code', children: 'children' }}
                         allowClear
                       />,

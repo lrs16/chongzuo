@@ -114,6 +114,7 @@ function Besolved(props) {
       } },
     dispatch,
     queryArr,
+    location,
     loading,
   } = props;
   let differentTitle;
@@ -165,6 +166,11 @@ function Besolved(props) {
   }, []);
 
   const handleReset = () => {
+    router.push({
+      pathname: location.pathname,
+      query: {},
+      state: {}
+    });
     resetFields();
     queryParams = false;
   };
@@ -200,6 +206,10 @@ function Besolved(props) {
       });
     }
   };
+
+  useEffect(() => {
+    getinitiaQuery();
+  },[location])
 
 
   const onShowSizeChange = (page, pageSize) => {

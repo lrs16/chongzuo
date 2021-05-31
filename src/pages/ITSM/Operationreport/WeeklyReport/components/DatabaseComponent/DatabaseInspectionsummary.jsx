@@ -159,12 +159,12 @@ const DatabaseInspectionsummary = React.forwardRef((props, ref) => {
 
   const column = [
     {
-      title: '日期',
+      title: '磁盘组',
       dataIndex: 'date',
       key: 'date'
     },
     {
-      title: '四大率指标',
+      title: '总容量GB',
       dataIndex: 'date1',
       key: 'date1',
       render: (text, record) => {
@@ -182,7 +182,7 @@ const DatabaseInspectionsummary = React.forwardRef((props, ref) => {
       }
     },
     {
-      title: '基础功能运行情况',
+      title: '已使用容量GB',
       dataIndex: 'params1',
       key: 'params1',
       render: (text, record) => {
@@ -388,60 +388,52 @@ const DatabaseInspectionsummary = React.forwardRef((props, ref) => {
 
   return (
     <>
-      { loading && (
-        <Row gutter={16}>
-          <Form>
-            <Col span={24}>
-              <p style={{ fontWeight: '900', fontSize: '16px' }}>二、常规运维工作开展情况</p>
-            </Col>
+      <Row gutter={16}>
+        <Form>
 
-            <Col span={24}>
-              <p>（一）巡检情况 </p>
-            </Col>
+          <Col span={24}>
+            <p>磁盘组</p>
+          </Col>
 
-            <Col span={24}>
-              <p>1、软件运维巡检情况 </p>
-            </Col>
-
-
-            <Table
-              columns={column}
-              dataSource={data}
-            />
-            <Button
-              style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
-              type="primary"
-              ghost
-              onClick={() => newMember()}
-              icon="plus"
-              disabled={newbutton}
-            >
-              新增巡检情况
+          <Table
+            columns={column}
+            dataSource={data}
+          />
+          <Button
+            style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
+            type="primary"
+            ghost
+            onClick={() => newMember()}
+            icon="plus"
+            disabled={newbutton}
+          >
+            新增巡检情况
        </Button>
 
-            <p style={{ marginTop: '20px' }}>（三）运维材料提交情况</p>
+          <Col span={24}>
+            <p>Top10表空间(正常增长范围120GB-150GB)</p>
+          </Col>
 
-            <Table
-              columns={submitColumn}
-              dataSource={seconddata}
-            />
+          <Table
+            columns={submitColumn}
+            dataSource={seconddata}
+          />
 
-            <Button
-              style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
-              type="primary"
-              ghost
-              onClick={() => newMember('secondTable')}
-              icon="plus"
-              disabled={secondbutton}
-            >
-              新增巡检情况
+          <Button
+            style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
+            type="primary"
+            ghost
+            onClick={() => newMember('secondTable')}
+            icon="plus"
+            disabled={secondbutton}
+          >
+            新增巡检情况
        </Button>
 
 
-          </Form>
-        </Row>
+        </Form>
+      </Row>
 
-      )}
 
     </>
   )

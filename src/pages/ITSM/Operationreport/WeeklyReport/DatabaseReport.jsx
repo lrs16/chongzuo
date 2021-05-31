@@ -17,6 +17,7 @@ import moment from 'moment';
 import router from 'umi/router';
 import { connect } from 'dva';
 import DatabaseInspectionsummary from './components/DatabaseComponent/DatabaseInspectionsummary';
+import DatabaseInspectionthird from './components/DatabaseComponent/DatabaseInspectionthird';
 import ThisweekMaintenance from './components/ThisweekMaintenance';
 import ServiceCompletion from './components/ServiceCompletion';
 import ThisWeekitsm from './components/ThisWeekitsm';
@@ -512,7 +513,7 @@ function DatabaseReport(props) {
     }
   ];
 
-  const editTable = (index,tableIndex) => {
+  const editTable = (index, tableIndex) => {
     return (
       [
         {
@@ -525,7 +526,7 @@ function DatabaseReport(props) {
               return (
                 <Input
                   defaultValue={text}
-                  onChange={e => handleFieldChange(e.target.value, 'addTime1', record.key,index,tableIndex)}
+                  onChange={e => handleFieldChange(e.target.value, 'addTime1', record.key, index, tableIndex)}
                 />
               )
             }
@@ -610,7 +611,7 @@ function DatabaseReport(props) {
               )
             }
             // }
-    
+
             return (
               <span>
                 <a
@@ -697,6 +698,10 @@ function DatabaseReport(props) {
               </Col>
 
               {/* 一、本周运维情况综述 */}
+
+              <Col span={24}>
+                <p style={{ fontWeight: '900', fontSize: '16px', marginTop: '20px' }}>一、本周运维情况综述</p>
+              </Col>
               <Col span={24}>
                 <Form.Item label="本周运维情况描述" {...formincontentLayout}>
                   {
@@ -728,6 +733,18 @@ function DatabaseReport(props) {
               </Col>
 
 
+              <Col span={24}>
+                <p style={{ fontWeight: '900', fontSize: '16px' }}>二、巡检汇总</p>
+              </Col>
+
+              <Col span={24}>
+                <Form.Item label='巡检汇总描述' {...formincontentLayout}>
+                  {
+                    getFieldDecorator('content2', {})(<TextArea autoSize={{ minRows: 3 }} />)
+                  }
+                </Form.Item>
+              </Col>
+
               {/* 二、常规运维工作开展情况 */}
               <Col span={24}>
                 <DatabaseInspectionsummary
@@ -744,11 +761,10 @@ function DatabaseReport(props) {
               </Col>
 
               <Col span={24}>
-                <Form.Item label='常规运维工作描述' {...formincontentLayout}>
-                  {
-                    getFieldDecorator('content2', {})(<TextArea />)
-                  }
-                </Form.Item>
+                <DatabaseInspectionthird
+                  forminladeLayout={forminladeLayout}
+                  remainingDefectslist={remainingDefectslist}
+                />
               </Col>
 
               <Col span={24}>
@@ -774,7 +790,7 @@ function DatabaseReport(props) {
               </Col>
 
               {/* 三、运维服务指标完成情况 */}
-              <Col span={24}>
+              {/* <Col span={24}>
                 <ServiceTableone
                   forminladeLayout={forminladeLayout}
                   serviceCompletionlist={serviceCompletionlist}
@@ -784,9 +800,9 @@ function DatabaseReport(props) {
                   endTime={endTime}
                   tabActiveKey={tabActiveKey}
                 />
-              </Col>
+              </Col> */}
 
-
+              {/* 
               <Col span={24}      {...formincontentLayout}>
                 <Form.Item style={{ marginTop: '20px' }} label=''>
                   {
@@ -794,7 +810,7 @@ function DatabaseReport(props) {
                       (<TextArea />)
                   }
                 </Form.Item>
-              </Col>
+              </Col> */}
 
 
 
@@ -823,7 +839,7 @@ function DatabaseReport(props) {
                 </Form.Item>
               </Col> */}
 
-              <Col span={24}>
+              {/* <Col span={24}>
                 <Form.Item
                   label='上传附件'
                   {...formincontentLayout}
@@ -842,10 +858,10 @@ function DatabaseReport(props) {
                       </div>
                     )}
                 </Form.Item>
-              </Col>
+              </Col> */}
 
               {/* 四、本周事件、问题及故障 */}
-              <Col span={24}>
+              {/* <Col span={24}>
                 <ThisWeekitsm
                   formItemLayout={formItemLayout}
                   forminladeLayout={forminladeLayout}
@@ -856,9 +872,9 @@ function DatabaseReport(props) {
                     setFiles(newvalue);
                   }}
                 />
-              </Col>
+              </Col> */}
 
-              <Col span={24}>
+              {/* <Col span={24}>
                 <Form.Item
                   label='上传附件'
                   {...formincontentLayout}
@@ -878,19 +894,19 @@ function DatabaseReport(props) {
                     )}
 
                 </Form.Item>
-              </Col>
+              </Col> */}
 
               {/* 五、软件作业完成情况 */}
-              <Col span={24}>
+              {/* <Col span={24}>
                 <SoftCompletion
                   forminladeLayout={forminladeLayout}
                   softCompletionlist={softCompletionlist}
                   completionsecondTablelist={completionsecondTablelist}
                 />
-              </Col>
+              </Col> */}
 
 
-              <Col span={24}>
+              {/* <Col span={24}>
                 <Form.Item
                   label='软件作业情况描述'
                   {...formincontentLayout}
@@ -900,9 +916,9 @@ function DatabaseReport(props) {
                       (<TextArea />)
                   }
                 </Form.Item>
-              </Col>
+              </Col> */}
 
-              <Col span={24}>
+              {/* <Col span={24}>
                 <Form.Item
                   label='上传附件'
                   {...formincontentLayout}
@@ -922,16 +938,16 @@ function DatabaseReport(props) {
                     )}
 
                 </Form.Item>
-              </Col>
+              </Col> */}
 
 
               {/* 六、遗留缺陷问题跟踪,遗留问题、缺陷跟踪情况（使用表格管理作为附件） */}
-              <Col span={24}>
+              {/* <Col span={24}>
                 <RemainingDefects
                   forminladeLayout={forminladeLayout}
                   remainingDefectslist={remainingDefectslist}
                 />
-              </Col>
+              </Col> */}
 
 
 
@@ -945,7 +961,7 @@ function DatabaseReport(props) {
 
 
 
-              <Col span={24}>
+              {/* <Col span={24}>
                 <Form.Item
                   label='上传附件'
                   {...formincontentLayout}
@@ -965,7 +981,7 @@ function DatabaseReport(props) {
                     )}
 
                 </Form.Item>
-              </Col>
+              </Col> */}
 
               {/* 八、 下周作业计划 */}
               {/* <Col span={24}>
@@ -1050,21 +1066,21 @@ function DatabaseReport(props) {
                       </div>
 
                       {
-                        (addTitle[index].tableNumber).map((items,tableIndex) => {
-                          if(index === 0) {
+                        (addTitle[index].tableNumber).map((items, tableIndex) => {
+                          if (index === 0) {
                             editTable()
                           }
                           return (
                             <>
                               <>
                                 <Button
-                                  style={{marginTop:10}}
+                                  style={{ marginTop: 10 }}
                                   onClick={() => handleAddrows(index)}
                                   type='primary'
                                 >添加行</Button>
                                 <div style={{ display: 'flex' }}>
                                   <Col span={22}>
- 
+
                                     <Table
                                       columns={initiacColumn}
                                       dataSource={data}
