@@ -218,7 +218,7 @@ function QueryList(props) {
     dispatch,
   } = props;
   let title;
-  const [paginations, setPageinations] = useState({ current: 1, pageSize: 10 });
+  const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
   const [expand, setExpand] = useState(false);
   const [selectdata, setSelectData] = useState('');
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
@@ -230,30 +230,35 @@ function QueryList(props) {
     title = '事件查询'
   }
   useEffect(() => {
-    setFieldsValue({
-      eventObject,
-      createTime: time1 ? [moment(time1), moment(time2)] : [moment().startOf('month'), moment()],
-      registerUser,
-      applicationUnit,
-      eventStatus,
-      selfhandle
-    })
-    validateFields((err, values) => {
-      if (!err) {
-        dispatch({
-          type: 'eventquery/fetchlist',
-          payload: {
-            ...values,
-            eventObject: values.eventObject ? (values.eventObject).slice(-1)[0] : '',
-            pageIndex: paginations.current - 1,
-            pageSize: paginations.pageSize,
-            time1: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-            time2: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-            createTime: '',
-          },
-        });
-      }
-    });
+    if(time1) {
+      props.form.setFieldsValue({
+        eventObject,
+        createTime: time1 ? [moment(time1), moment(time2)] : [moment().startOf('month'), moment()],
+        registerUser,
+        applicationUnit,
+        eventStatus,
+        selfhandle
+      })
+
+      validateFields((err, values) => {
+        if (!err) {
+          dispatch({
+            type: 'eventquery/fetchlist',
+            payload: {
+              ...values,
+              eventObject: values.eventObject ? (values.eventObject).slice(-1)[0] : '',
+              pageIndex: paginations.current - 1,
+              pageSize: paginations.pageSize,
+              time1: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+              time2: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+              createTime: '',
+            },
+          });
+        }
+      });
+    } 
+   
+    
     return () => {
       setSelectData([]);
     };
@@ -953,6 +958,7 @@ function QueryList(props) {
               dataSource={list.rows}
               scroll={{ x: 1800 }}
               rowKey={record => record.id}
+              // rowKey={(_, index) => index.toString()}
               pagination={pagination}
               rowSelection={rowSelection}
             />

@@ -211,7 +211,12 @@ function Besolved(props) {
       if (!err) {
         dispatch({
           type: 'problemmanage/besolvedownload',
-          payload: { ...values }
+          payload: { 
+            ...values,
+            createTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+            createTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+            createTime:'',
+           }
         }).then(res => {
           const filename = `下载.xls`;
           const blob = new Blob([res]);

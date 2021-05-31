@@ -388,7 +388,7 @@ const Development = React.forwardRef((props, ref) => {
 
   return (
     <>
-      { loading && (
+      {/* { loading === false && ( */}
         <Row gutter={16}>
           <Form>
             <Col span={24}>
@@ -399,9 +399,9 @@ const Development = React.forwardRef((props, ref) => {
               <p>（一）巡检情况 </p>
             </Col>
 
-            <Col span={24}>
+            {/* <Col span={24}>
               <p>1、软件运维巡检情况 </p>
-            </Col>
+            </Col> */}
 
 
             <Table
@@ -419,7 +419,7 @@ const Development = React.forwardRef((props, ref) => {
               新增巡检情况
        </Button>
 
-            <p style={{ marginTop: '20px' }}>（三）运维材料提交情况</p>
+            <p style={{ marginTop: '20px' }}>（二）运维材料提交情况</p>
 
             <Table
               columns={submitColumn}
@@ -441,7 +441,7 @@ const Development = React.forwardRef((props, ref) => {
           </Form>
         </Row>
 
-      )}
+      {/* // )} */}
 
     </>
   )

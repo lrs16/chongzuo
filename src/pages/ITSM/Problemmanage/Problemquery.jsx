@@ -81,8 +81,8 @@ const columns = [
   },
   {
     title: '发送时间',
-    dataIndex: 'registerTime',
-    key: 'registerTime',
+    dataIndex: 'createTime',
+    key: 'createTime',
     render: text => {
       return <>{moment(text).format('YYYY-MM-DD HH:mm:ss')}</>;
     }
@@ -183,26 +183,26 @@ function Besolved(props) {
 
   const searchdata = (values, page, pageSize, search) => {
     if (queryParams) {
-        dispatch({
-          type: 'problemmanage/queryList',
-          payload: {
-            ...values,
-            status,
-            progressStatus,
-            handlerId,
-            type,
-            timeStatus,
-            handleDeptId,
-            addTimeBegin,
-            addTimeEnd,
-            createTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-            createTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-            createTime:'',
-            currentNode: values.currentNode ? values.currentNode : currentNode,
-            pageNum: page,
-            pageSize: paginations.pageSize
-          },
-        });
+      dispatch({
+        type: 'problemmanage/queryList',
+        payload: {
+          ...values,
+          status,
+          progressStatus,
+          handlerId,
+          type,
+          timeStatus,
+          handleDeptId,
+          addTimeBegin,
+          addTimeEnd,
+          createTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+          createTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+          createTime: '',
+          currentNode: values.currentNode ? values.currentNode : currentNode,
+          pageNum: page,
+          pageSize: paginations.pageSize
+        },
+      });
 
     } else {
       dispatch({
@@ -484,7 +484,6 @@ function Besolved(props) {
                     )}
                   </Form.Item>
                 </Col>
-
 
                 <Col span={8}>
                   <Form.Item label='重要程度'>

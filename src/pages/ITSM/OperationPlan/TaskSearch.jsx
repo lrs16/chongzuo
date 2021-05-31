@@ -527,33 +527,36 @@ function TaskSearch(props) {
   const taskCompany = getTypebyTitle('作业单位');
 
   useEffect(() => {
-    setFieldsValue({
-      status,
-      addTime: time1 ? [moment(time1), moment(time2)] : [moment().startOf('month'), moment()],
-      executeResult,
-      operationUser,
-      timeoutStatus
-    })
-    validateFields((err, values) => {
-      dispatch({
-        type: 'processmodel/getOperationQueryList',
-        payload: {
-          ...values,
-          time1: values.addTime?.length ? moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-          time2: values.addTime?.length ? moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-          addTime: '',
-          pageIndex: paginations.current,
-          pageSize: paginations.pageSize,
-        },
-      });
-    })
+    if (time1) {
+      setFieldsValue({
+        status,
+        addTime: time1 ? [moment(time1), moment(time2)] : [moment().startOf('month'), moment()],
+        executeResult,
+        operationUser,
+        timeoutStatus
+      })
+      validateFields((err, values) => {
+        dispatch({
+          type: 'processmodel/getOperationQueryList',
+          payload: {
+            ...values,
+            time1: values.addTime?.length ? moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+            time2: values.addTime?.length ? moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+            addTime: '',
+            pageIndex: paginations.current,
+            pageSize: paginations.pageSize,
+          },
+        });
+      })
+    }
+
     getoperationPerson();
     setColumns(initialColumns)
   }, []);
 
   useEffect(() => {
     validateFields((err, values) => {
-      searchdata(values,1,paginations.pageSize)
+      searchdata(values, 1, paginations.pageSize)
     })
   }, [location])
 

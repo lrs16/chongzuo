@@ -10,7 +10,9 @@ import {
   Table,
   Popconfirm,
   Divider,
-  Icon
+  Icon,
+  Popover,
+  Checkbox
 } from 'antd';
 import Link from 'umi/link';
 import moment from 'moment';
@@ -24,6 +26,7 @@ import SoftCompletion from './components/SoftCompletion';
 import RemainingDefects from './components/RemainingDefects';
 import LastweekHomework from './components/LastweekHomework';
 import NextweekHomework from './components/NextweekHomework';
+import WorkOrderTop from './components/WorkOrderTop';
 import ServiceTableone from './components/ServiceTableone';
 import styles from './index.less';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
@@ -71,6 +74,7 @@ function SoftReport(props) {
   const {
     form: { getFieldDecorator, validateFields, setFieldsValue },
     match: { params: { id } },
+    location: { query: { type } },
     dispatch,
     maintenanceList,
     developmentList,
@@ -87,8 +91,6 @@ function SoftReport(props) {
     maintenanceArr, // 事件统计
     loading,
   } = props;
-  let tabActiveKey = 'week';
-
 
   const required = true;
   const saveformRef = useRef();
@@ -102,11 +104,9 @@ function SoftReport(props) {
   const [data, setData] = useState([]);
   const [fileslist, setFilesList] = useState([]);
   const [expand, setExpand] = useState(false);
+  // const [columns, setColumns] = useState([]);
 
-  useEffect(() => {
-    const resultColumns = [...initiacColumn]
-    setColumns([...resultColumns])
-  }, [])
+
 
   const titleNumber = (index) => {
     return `标题${9 + index}`
@@ -196,8 +196,14 @@ function SoftReport(props) {
 
   const defaultTime = () => {
     //  周统计
-    startTime = moment().subtract('days', 6).format('YYYY-MM-DD');
-    endTime = moment().format('YYYY-MM-DD');
+    if (type) {
+      startTime = moment().subtract('days', 6).format('YYYY-MM-DD');
+      endTime = moment().format('YYYY-MM-DD');
+    } else {
+      startTime = (moment().startOf('days')).format('YYYY-MM-DD');
+      endTime = (moment().endOf('day')).format('YYYY-MM-DD');
+    }
+
   }
 
   const searchNumber = (value) => {
@@ -211,12 +217,6 @@ function SoftReport(props) {
     }
   }, [files]);
 
-  const handlemaintenanceArr = () => {
-    dispatch({
-      type: 'eventstatistics/fetchMaintenancelist',
-      payload: { tabActiveKey, startTime, endTime }
-    })
-  }
 
   useEffect(() => {
     // handlemaintenanceArr();
@@ -391,13 +391,7 @@ function SoftReport(props) {
     setData(newarr)
   }
 
-  const testHead = (column) => {
-    console.log('column:', column);
-
-  }
-
-
-  const initiacColumn = [
+  const initialColumns = [
     {
       title: '测试表头1',
       dataIndex: 'addTime1',
@@ -512,143 +506,6 @@ function SoftReport(props) {
     }
   ];
 
-  const editTable = (index,tableIndex) => {
-    return (
-      [
-        {
-          title: '测试表头1',
-          dataIndex: 'addTime1',
-          key: 'addTime1',
-          width: 150,
-          render: (text, record) => {
-            if (record.isNew) {
-              return (
-                <Input
-                  defaultValue={text}
-                  onChange={e => handleFieldChange(e.target.value, 'addTime1', record.key,index,tableIndex)}
-                />
-              )
-            }
-            if (record.isNew === false) {
-              return <span>{text}</span>
-            }
-          }
-        },
-        {
-          title: '测试表头2',
-          dataIndex: 'addTime2',
-          key: 'addTime2',
-          width: 150,
-          render: (text, record) => {
-            if (record.isNew) {
-              return (
-                <Input
-                  defaultValue={text}
-                  onChange={e => handleFieldChange(e.target.value, 'addTime2', record.key)}
-                />
-              )
-            }
-            if (record.isNew === false) {
-              return <span>{text}</span>
-            }
-          }
-        },
-        // {
-        //   title: '测试表头3',
-        //   dataIndex: 'addTime3',
-        //   key: 'addTime3',
-        //   width: 150,
-        //   render: (text, record) => {
-        //     if (record.isNew) {
-        //       return (
-        //         <Input
-        //           defaultValue={text}
-        //           onChange={e => handleFieldChange(e.target.value, 'addTime3', record.key)}
-        //         />
-        //       )
-        //     }
-        //     if (record.isNew === false) {
-        //       return <span>{text}</span>
-        //     }
-        //   }
-        // },
-        // {
-        //   title: '测试表头4',
-        //   dataIndex: 'addTime4',
-        //   key: 'addTime4',
-        //   width: 150,
-        //   render: (text, record) => {
-        //     if (record.isNew) {
-        //       return (
-        //         <Input
-        //           defaultValue={text}
-        //           onChange={e => handleFieldChange(e.target.value, 'addTime4', record.key)}
-        //         />
-        //       )
-        //     }
-        //     if (record.isNew === false) {
-        //       return <span>{text}</span>
-        //     }
-        //   }
-        // },
-        {
-          title: '操作',
-          key: 'action',
-          fixed: 'right',
-          width: 120,
-          render: (text, record) => {
-            // if (record.editable) {
-            if (record.isNew === true) {
-              return (
-                <span>
-                  <a onClick={e => saveRow(e, record.key)}>保存</a>
-                  <Divider type='vertical' />
-                  <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
-                    <a>删除</a>
-                  </Popconfirm>
-                </span>
-              )
-            }
-            // }
-    
-            return (
-              <span>
-                <a
-                  onClick={e => {
-                    toggleEditable(e, record.key, record);
-                    // handlefileedit(record.key, record.attachment)
-                  }}
-                >编辑</a>
-                <Divider type='vertical' />
-                <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
-                  <a>删除</a>
-                </Popconfirm>
-              </span>
-            )
-          }
-        }
-      ]
-    )
-  }
-
-  const setHead = () => {
-    setExpand(true);
-  }
-
-  const setResultheader = () => {
-    validateFields((err, value) => {
-      if (true) {
-        const setHead = initiacColumn.map(item => {
-          return {
-            title: value.header1,
-            dataIndex: 'addTime1',
-          }
-        })
-        setColumns(setHead)
-      }
-    })
-  }
-
   return (
     <PageHeaderWrapper
       title={pagetitle}
@@ -711,12 +568,12 @@ function SoftReport(props) {
                   maintenanceArr={maintenanceArr.data}
                   startTime={startTime}
                   endTime={endTime}
-                  tabActiveKey={tabActiveKey}
+                  tabActiveKey={type}
                 />
               </Col>
 
               <Col span={24}>
-                <Form.Item label="本周运维情况描述" {...formincontentLayout}>
+                <Form.Item label="本周运维描述" {...formincontentLayout}>
                   {
                     getFieldDecorator('content1', {})
                       (<TextArea autoSize={{ minRows: 3 }} />)
@@ -758,14 +615,13 @@ function SoftReport(props) {
                   ChangeFiles={(newvalue) => {
                     setFiles(newvalue)
                   }}
-                  getTableindex={index => setTableIndex(index)}
                 />
               </Col>
 
               <Col span={24}>
-                <Form.Item label='常规运维工作描述' {...formincontentLayout}>
+                <Form.Item label='常规运维描述' {...formincontentLayout}>
                   {
-                    getFieldDecorator('content2', {})(<TextArea />)
+                    getFieldDecorator('content2', {})(<TextArea autoSize={{ minRows: 3 }} />)
                   }
                 </Form.Item>
               </Col>
@@ -801,21 +657,17 @@ function SoftReport(props) {
                   serviceCompletionthreelist={serviceCompletionthreelist}
                   startTime={startTime}
                   endTime={endTime}
-                  tabActiveKey={tabActiveKey}
+                  tabActiveKey={type}
                 />
               </Col>
 
-
-              <Col span={24}      {...formincontentLayout}>
-                <Form.Item style={{ marginTop: '20px' }} label=''>
+              <Col span={24}>
+                <Form.Item label='运维统计描述' {...formincontentLayout}>
                   {
-                    getFieldDecorator('content3', {})
-                      (<TextArea />)
+                    getFieldDecorator('content3', {})(<TextArea autoSize={{ minRows: 3 }} />)
                   }
                 </Form.Item>
               </Col>
-
-
 
               <Col span={24}>
                 <ServiceCompletion
@@ -825,7 +677,7 @@ function SoftReport(props) {
                   serviceCompletionthreelist={serviceCompletionthreelist}
                   startTime={startTime}
                   endTime={endTime}
-                  tabActiveKey={tabActiveKey}
+                  tabActiveKey={type}
                 />
               </Col>
 
@@ -836,11 +688,20 @@ function SoftReport(props) {
               <Col span={24}>
                 <Form.Item label='运维服务指标完成情况' {...formincontentLayout}>
                   {
-                    getFieldDecorator('content5', {})
-                      (<TextArea />)
+                    getFieldDecorator('content4', {})
+                      (<TextArea autoSize={{ minRows: 3 }} />)
                   }
                 </Form.Item>
               </Col>
+
+              <Col span={24}>
+                <WorkOrderTop
+                  formItemLayout={formItemLayout}
+                  thisWeekitsmlist={thisWeekitsmlist}
+                />
+              </Col>
+
+
 
               <Col span={24}>
                 <Form.Item
@@ -915,8 +776,8 @@ function SoftReport(props) {
                   {...formincontentLayout}
                 >
                   {
-                    getFieldDecorator('content4', {})
-                      (<TextArea />)
+                    getFieldDecorator('content5', {})
+                      (<TextArea autoSize={{ minRows: 3 }} />)
                   }
                 </Form.Item>
               </Col>
@@ -939,7 +800,6 @@ function SoftReport(props) {
                         />
                       </div>
                     )}
-
                 </Form.Item>
               </Col>
 
@@ -955,15 +815,14 @@ function SoftReport(props) {
 
 
               {/* 七、上周作业完成情况 */}
-              {/* <Col span={24}>
+              <Col span={24}>
                 <LastweekHomework
                   forminladeLayout={forminladeLayout}
                   lastweekHomeworklist={lastweekHomeworklist}
                 />
-              </Col> */}
+              </Col>
 
-
-
+           
               <Col span={24}>
                 <Form.Item
                   label='上传附件'
@@ -982,17 +841,41 @@ function SoftReport(props) {
                         />
                       </div>
                     )}
-
                 </Form.Item>
               </Col>
 
               {/* 八、 下周作业计划 */}
-              {/* <Col span={24}>
+              <Col span={24}>
                 <NextweekHomework
                   forminladeLayout={forminladeLayout}
                   nextweekHomeworklist={nextweekHomeworklist}
                 />
-              </Col> */}
+              </Col>
+
+                  
+              <Col span={24}>
+                <Form.Item
+                  label='上传附件'
+                  {...formincontentLayout}
+                >
+                  {getFieldDecorator('field7', {})
+                    (
+                      <div style={{ width: 400 }}>
+                        <SysUpload
+                          fileslist={[]}
+                          ChangeFileslist={newvalue => {
+                            setFieldsValue({ field7: JSON.stringify(newvalue.arr) })
+                            setFilesList(newvalue);
+                            setFiles(newvalue)
+                          }}
+                        />
+                      </div>
+                    )}
+                </Form.Item>
+              </Col>
+
+                 
+    
 
               <Button
                 style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
@@ -1004,6 +887,8 @@ function SoftReport(props) {
               >
                 新增
             </Button>
+
+
 
 
               {loading === false && (
@@ -1029,10 +914,10 @@ function SoftReport(props) {
 
                       <Col span={24}>
                         <Form.Item label='内容' {...formincontentLayout}>
-                          {getFieldDecorator(`content${index}`, {
+                          {getFieldDecorator(`content${index + 6}`, {
 
                           })(
-                            <TextArea />
+                            <TextArea autoSize={{ minRows: 3 }} />
                           )}
                         </Form.Item>
                       </Col>
@@ -1045,8 +930,9 @@ function SoftReport(props) {
                             <SysUpload
                               fileslist={[]}
                               ChangeFileslist={newvalue => {
-                                setFieldsValue({ field1: JSON.stringify(newvalue.arr) })
-                                // setFilesList(newvalue)
+                                setFieldsValue({ field7: JSON.stringify(newvalue.arr) })
+                                setFilesList(newvalue);
+                                setFiles(newvalue)
                               }}
                             />
                           )}
@@ -1057,7 +943,9 @@ function SoftReport(props) {
                         <Button
                           type='primary'
                           onClick={() => addTable(index)}
-                        >添加表格</Button>
+                        >添加表格</Button><span>(注：表格的第一行作为表头)</span>
+
+
                         {/* </Col> */}
 
                         {/* <Col span={24} style={{ textAlign: 'right' }}> */}
@@ -1069,23 +957,20 @@ function SoftReport(props) {
                       </div>
 
                       {
-                        (addTitle[index].tableNumber).map((items,tableIndex) => {
-                          if(index === 0) {
-                            editTable()
-                          }
+                        (addTitle[index].tableNumber).map((items, tableIndex) => {
                           return (
                             <>
                               <>
                                 <Button
-                                  style={{marginTop:10}}
+                                  style={{ marginTop: 10 }}
                                   onClick={() => handleAddrows(index)}
                                   type='primary'
                                 >添加行</Button>
                                 <div style={{ display: 'flex' }}>
                                   <Col span={22}>
- 
+
                                     <Table
-                                      columns={initiacColumn}
+                                      columns={initialColumns}
                                       dataSource={data}
                                     />
                                   </Col>
@@ -1098,7 +983,6 @@ function SoftReport(props) {
                                     />
                                   </Col>
                                 </div>
-
                               </>
 
                             </>

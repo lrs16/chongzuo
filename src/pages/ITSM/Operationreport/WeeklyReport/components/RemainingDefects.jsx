@@ -272,24 +272,6 @@ const RemainingDefects = React.forwardRef((props, ref) => {
         >
           新增巡检情况
           </Button>
-
-        <Col span={6}>
-          <Form.Item
-            label='上传附件'
-            {...forminladeLayout}
-          >
-            {getFieldDecorator('params55', {})
-              (
-                <div style={{ width: 400 }}>
-                  <SysUpload
-                    fileslist={[]}
-                  // ChangeFileslist={newvalue => setFiles(newvalue)}
-                  />
-                </div>
-              )}
-
-          </Form.Item>
-        </Col>
       </Row>
     </>
   )

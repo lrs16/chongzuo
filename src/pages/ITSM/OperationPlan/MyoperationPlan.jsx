@@ -60,7 +60,7 @@ function MyoperationPlan(props) {
   const [changorder, setChangeOrder] = useState(undefined);
 
   const [expand, setExpand] = useState(false);
-  const [paginations, setPaginations] = useState({ current: 0, pageSize: 10 });
+  const [paginations, setPaginations] = useState({ current: 0, pageSize: 15 });
   const [selectdata, setSelectData] = useState('');
   const [selectedRows, setSelectedRows] = useState([]);
   const [columns, setColumns] = useState([]);

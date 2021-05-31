@@ -19,7 +19,7 @@ import styles from '../index.less';
 const { Search } = Input;
 const { Option } = Select;
 
-function ThisWeekitsm(props) {
+function WorkOrderTop(props) {
   // const attRef = useRef();
   // useImperativeHandle(
   //   ref,
@@ -76,8 +76,8 @@ function ThisWeekitsm(props) {
     const { user } = opt.props.disableuser;
     const searchObj = {
       key: newData.length + 1,
-      num1:user,
-      isNew:true
+      num1: user,
+      isNew: true
     };
     newData.push(searchObj);
     setData(newData)
@@ -311,9 +311,14 @@ function ThisWeekitsm(props) {
   return (
     <>
       <Row gutter={16}>
-        <Col span={20}>
-          <p style={{ fontWeight: '900', fontSize: '16px' }}>四、本周事件、问题及故障</p>
+        {/* <Col span={20}>
+          <p style={{ fontWeight: '900', fontSize: '16px' }}>（三）工单TopN 事件分析</p>
+        </Col> */}
+        <Col span={24}>
+          <p>（三）工单TopN 事件分析</p>
         </Col>
+
+
         <Form {...formItemLayout}>
           <Row gutter={16}>
             <Col span={8}>
@@ -331,7 +336,7 @@ function ThisWeekitsm(props) {
               </Form.Item>
             </Col>
 
-            <Col span={8}>
+            {/* <Col span={8}>
               <Form.Item label='搜索内容'>
                 {getFieldDecorator('content', {})(
                   <>
@@ -351,8 +356,8 @@ function ThisWeekitsm(props) {
               </>
                 )}
               </Form.Item>
-            </Col>
-{/* 
+            </Col> */}
+            {/* 
             <Col span={8}>
               <>
                 <Button type="primary">
@@ -382,4 +387,4 @@ function ThisWeekitsm(props) {
   )
 }
 
-export default Form.create({})(ThisWeekitsm)
+export default Form.create({})(WorkOrderTop)

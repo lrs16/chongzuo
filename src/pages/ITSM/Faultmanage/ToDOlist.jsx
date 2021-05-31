@@ -30,6 +30,7 @@ const formItemLayout = {
 };
 
 const { Option } = Select;
+const { RangePicker } = DatePicker;
 
 function ToDOlist(props) {
   const pagetitle = props.route.name;
@@ -128,7 +129,9 @@ function ToDOlist(props) {
     validateFields((err, values) => {
       const newvalues = {
         ...values,
-        createTime: values.createTime ? values.createTime.format('YYYY-MM-DD HH:mm:ss') : '',
+        createTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+        createTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+        createTime:'',
       }
       if (!err) {
         dispatch({
@@ -191,6 +194,9 @@ function ToDOlist(props) {
           type: 'fault/faultTododownload',
           payload: {
             values,
+            createTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+            createTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+            createTime:'',
             pageSize,
             current: page,
           },
@@ -369,13 +375,13 @@ function ToDOlist(props) {
                   {getFieldDecorator('createTime', {
                     initialValue: ''
                   })(
-                    <DatePicker
-                      showTime
-                      format="YYYY-MM-DD HH:mm:ss"
-                      style={{ width: '100%' }}
-                      placeholder="请选择"
-                      allowClear
-                    />,
+                    <RangePicker
+                    showTime
+                    format="YYYY-MM-DD HH:mm:ss"
+                    style={{ width: '100%' }}
+                    placeholder="请选择"
+                    allowClear
+                  />,
                   )}
                 </Form.Item>
               </Col>

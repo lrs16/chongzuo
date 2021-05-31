@@ -161,9 +161,9 @@ function QueryList(props) {
       width: 120,
     },
     {
-      title: '发生时间',
-      dataIndex: 'registerOccurTime',
-      key: 'registerOccurTime',
+      title: '发送时间',
+      dataIndex: 'createTime',
+      key: 'createTime',
       width: 200,
     },
     {
@@ -199,10 +199,13 @@ function QueryList(props) {
       type: 'fault/getfaultQueryList',
       payload: {
         ...values,
-        registerOccurTimeBegin: values.registerOccurTimeBegin ? values.registerOccurTimeBegin.format('YYYY-MM-DD') : '',
-        registerTimeBegin: values.registerTimeBegin ? values.registerOccurTimeBegin.format('YYYY-MM-DD') : '',
-        handleStartTimeBegin: values.handleStartTimeBegin ? values.registerOccurTimeBegin.format('YYYY-MM-DD') : '',
-        handleStartTimeEnd: values.handleStartTimeEnd ? values.registerOccurTimeBegin.format('YYYY-MM-DD') : '',
+        createTimeBegin: values.sendTime?.length ? moment(values.sendTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+        createTimeEnd: values.sendTime?.length ? moment(values.sendTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+        sendTime: '',
+        registerOccurTimeBegin: values.registerOccurTimeBegin ? values.registerOccurTimeBegin.format('YYYY-MM-DD HH:mm:ss') : '',
+        registerTimeBegin: values.registerTimeBegin ? values.registerTimeBegin.format('YYYY-MM-DD HH:mm:ss') : '',
+        handleStartTimeBegin: values.handleStartTimeBegin ? values.handleStartTimeBegin.format('YYYY-MM-DD HH:mm:ss') : '',
+        handleStartTimeEnd: values.handleStartTimeEnd ? values.handleStartTimeEnd.format('YYYY-MM-DD HH:mm:ss') : '',
         type: values.type ? (values.type).slice(-1)[0] : '',
         addTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
         addTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
@@ -297,25 +300,8 @@ function QueryList(props) {
   };
 
   const changePage = page => {
-    validateFields((err, fieldsValue) => {
+    validateFields((err, values) => {
       if (!err) {
-        const values = fieldsValue;
-        if (fieldsValue.registerOccurTimeBegin) {
-          values.registerOccurTimeBegin = fieldsValue.registerOccurTimeBegin.format('YYYY-MM-DD');
-        }
-        if (fieldsValue.registerTimeBegin) {
-          values.registerTimeBegin = fieldsValue.registerTimeBegin.format('YYYY-MM-DD');
-        }
-        if (fieldsValue.handleStartTimeBegin) {
-          values.handleStartTimeBegin = fieldsValue.handleStartTimeBegin.format('YYYY-MM-DD');
-        }
-        if (fieldsValue.handleStartTimeEnd) {
-          values.handleStartTimeEnd = fieldsValue.handleStartTimeEnd.format('YYYY-MM-DD');
-        }
-
-        // if (fieldsValue.type) {
-        //   values.type = fieldsValue.type.join('/');
-        // }
         searchdata(values, page, paginations.pageSize);
       }
     });
@@ -344,6 +330,9 @@ function QueryList(props) {
           type: 'fault/faultQuerydownload',
           payload: {
             ...values,
+            createTimeBegin: values.sendTime?.length ? moment(values.sendTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+            createTimeEnd: values.sendTime?.length ? moment(values.sendTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+            sendTime: '',
             registerOccurTimeBegin: values.registerOccurTimeBegin ? values.registerOccurTimeBegin.format('YYYY-MM-DD') : '',
             registerTimeBegin: values.registerTimeBegin ? values.registerOccurTimeBegin.format('YYYY-MM-DD') : '',
             handleStartTimeBegin: values.handleStartTimeBegin ? values.registerOccurTimeBegin.format('YYYY-MM-DD') : '',
@@ -432,7 +421,7 @@ function QueryList(props) {
                     </Col>
 
                     <Col span={8}>
-                      <Form.Item label="故障类型">
+                      <Form.Item label="故障类型11">
                         {getFieldDecorator('type')(
                           <Cascader
                             placeholder="请选择"
@@ -457,14 +446,6 @@ function QueryList(props) {
                     </Col>
                   </>
                 )}
-
-
-
-
-
-
-
-
 
                 {
                   (!status && !type) && (
@@ -526,6 +507,7 @@ function QueryList(props) {
                     )(<DatePicker format="YYYY-MM-DD" style={{ width: '100%' }} allowClear />)}
                   </Form.Item>
                 </Col>
+
                 <Col xl={8} xs={12}>
                   <Form.Item label="发生时间">
                     {getFieldDecorator(
@@ -682,6 +664,22 @@ function QueryList(props) {
                           </Option>,
                         ])}
                       </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
+
+                <Col span={8}>
+                  <Form.Item label="发送时间">
+                    {getFieldDecorator('sendTime', {
+                      initialValue: ''
+                    })(
+                      <RangePicker
+                        showTime
+                        format="YYYY-MM-DD HH:mm:ss"
+                        style={{ width: '100%' }}
+                        placeholder="请选择"
+                        allowClear
+                      />,
                     )}
                   </Form.Item>
                 </Col>

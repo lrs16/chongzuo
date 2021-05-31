@@ -13,7 +13,7 @@ import { connect } from 'dva';
 import SysUpload from '@/components/SysUpload';
 
 const { TextArea } = Input;
-const DatabaseInspectionthird = React.forwardRef((props, ref) => {
+const QuestionsComments = React.forwardRef((props, ref) => {
   const attRef = useRef();
   useImperativeHandle(
     ref,
@@ -134,7 +134,7 @@ const DatabaseInspectionthird = React.forwardRef((props, ref) => {
 
   const column = [
     {
-      title: '用户名',
+      title: '序号',
       dataIndex: 'dd11',
       key: 'dd11',
       render: (text, record) => {
@@ -152,7 +152,7 @@ const DatabaseInspectionthird = React.forwardRef((props, ref) => {
       }
     },
     {
-      title: '表名',
+      title: '发现日期',
       dataIndex: 'dd22',
       key: 'dd22',
       render: (text, record) => {
@@ -170,7 +170,7 @@ const DatabaseInspectionthird = React.forwardRef((props, ref) => {
       }
     },
     {
-      title: '表总大小/GB',
+      title: '缺陷说明',
       dataIndex: 'dd33',
       key: 'dd33',
       render: (text, record) => {
@@ -188,7 +188,7 @@ const DatabaseInspectionthird = React.forwardRef((props, ref) => {
       }
     },
     {
-      title: '总增长量/GB',
+      title: '修复计划',
       dataIndex: 'dd44',
       key: 'dd44',
       render: (text, record) => {
@@ -197,24 +197,6 @@ const DatabaseInspectionthird = React.forwardRef((props, ref) => {
             <Input
               defaultValue={text}
               onChange={e => handleFieldChange(e.target.value, 'dd44', record.key)}
-            />
-          )
-        }
-        if (record.isNew === false) {
-          return <span>{text}</span>
-        }
-      }
-    },
-    {
-      title: '平均增长量/GB',
-      dataIndex: 'dd55',
-      key: 'dd55',
-      render: (text, record) => {
-        if (record.isNew) {
-          return (
-            <Input
-              defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'dd55', record.key)}
             />
           )
         }
@@ -272,7 +254,7 @@ const DatabaseInspectionthird = React.forwardRef((props, ref) => {
     <>
       <Row gutter={16}>
         <Col span={20}>
-          <p>Top10表增长情况</p>
+          <p style={{ fontWeight: '900', fontSize: '16px' }}>三、发现问题及修改建议</p>
         </Col>
 
         <Table
@@ -288,11 +270,29 @@ const DatabaseInspectionthird = React.forwardRef((props, ref) => {
           icon="plus"
           disabled={newbutton}
         >
-          新增Top10表增长情况
+          新增巡检情况
           </Button>
+
+        <Col span={6}>
+          <Form.Item
+            label='上传附件'
+            {...forminladeLayout}
+          >
+            {getFieldDecorator('params55', {})
+              (
+                <div style={{ width: 400 }}>
+                  <SysUpload
+                    fileslist={[]}
+                  // ChangeFileslist={newvalue => setFiles(newvalue)}
+                  />
+                </div>
+              )}
+
+          </Form.Item>
+        </Col>
       </Row>
     </>
   )
 })
 
-export default Form.create({})(DatabaseInspectionthird)
+export default Form.create({})(QuestionsComments)

@@ -15,7 +15,7 @@ import SysUpload from '@/components/SysUpload';
 
 const { TextArea } = Input;
 
-function LastweekHomework(props) {
+function Lastweek(props) {
   const {
     form: { getFieldDecorator },
     forminladeLayout,
@@ -327,10 +327,10 @@ function LastweekHomework(props) {
 
   return (
     <>
-      { loading === false && data && data.length > 0 && (
-        <Row gutter={16}>
+      { loading === false && data && data.length > 0  && (
+        <Row gutter={16}><dt></dt>
           <Col span={20}>
-            <p style={{ fontWeight: '900', fontSize: '16px' }}>七、上周作业完成情况</p>
+            <p style={{ fontWeight: '900', fontSize: '16px' }}>四、上周作业完成情况</p>
           </Col>
 
           <Table
@@ -349,5 +349,5 @@ export default Form.create({})(
   connect(({ processmodel, loading }) => ({
     myTaskplanlist: processmodel.myTaskplanlist,
     loading: loading.models.processmodel
-  }))(LastweekHomework),
+  }))(Lastweek),
 );

@@ -18,14 +18,10 @@ import router from 'umi/router';
 import { connect } from 'dva';
 import DatabaseInspectionsummary from './components/DatabaseComponent/DatabaseInspectionsummary';
 import DatabaseInspectionthird from './components/DatabaseComponent/DatabaseInspectionthird';
-import ThisweekMaintenance from './components/ThisweekMaintenance';
-import ServiceCompletion from './components/ServiceCompletion';
-import ThisWeekitsm from './components/ThisWeekitsm';
-import SoftCompletion from './components/SoftCompletion';
-import RemainingDefects from './components/RemainingDefects';
-import LastweekHomework from './components/LastweekHomework';
-import NextweekHomework from './components/NextweekHomework';
-import ServiceTableone from './components/ServiceTableone';
+import QuestionsComments from './components/DatabaseComponent/QuestionsComments';
+import Lastweek from './components/DatabaseComponent/Lastweek';
+import Nextweek from './components/DatabaseComponent/Nextweek';
+
 import styles from './index.less';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import SysUpload from '@/components/SysUpload';
@@ -789,57 +785,18 @@ function DatabaseReport(props) {
                 </Form.Item>
               </Col>
 
-              {/* 三、运维服务指标完成情况 */}
-              {/* <Col span={24}>
-                <ServiceTableone
+              {/* 三、发现问题及修改建议 */}
+              <Col span={24}>
+                <QuestionsComments
+                  remainingDefectslist={remainingDefectslist}
                   forminladeLayout={forminladeLayout}
-                  serviceCompletionlist={serviceCompletionlist}
-                  serviceCompletionsecondlist={serviceCompletionsecondlist}
-                  serviceCompletionthreelist={serviceCompletionthreelist}
                   startTime={startTime}
                   endTime={endTime}
-                  tabActiveKey={tabActiveKey}
                 />
-              </Col> */}
-
-              {/* 
-              <Col span={24}      {...formincontentLayout}>
-                <Form.Item style={{ marginTop: '20px' }} label=''>
-                  {
-                    getFieldDecorator('content3', {})
-                      (<TextArea />)
-                  }
-                </Form.Item>
-              </Col> */}
+              </Col>
 
 
-
-              {/* <Col span={24}>
-                <ServiceCompletion
-                  forminladeLayout={forminladeLayout}
-                  serviceCompletionlist={serviceCompletionlist}
-                  serviceCompletionsecondlist={serviceCompletionsecondlist}
-                  serviceCompletionthreelist={serviceCompletionthreelist}
-                  startTime={startTime}
-                  endTime={endTime}
-                  tabActiveKey={tabActiveKey}
-                />
-              </Col> */}
-
-              {/* <Col span={24}>
-                <p style={{ marginTop: '20px' }}>（二）重要时期业务保障</p>
-              </Col> */}
-
-              {/* <Col span={24}>
-                <Form.Item label='运维服务指标完成情况' {...formincontentLayout}>
-                  {
-                    getFieldDecorator('content5', {})
-                      (<TextArea />)
-                  }
-                </Form.Item>
-              </Col> */}
-
-              {/* <Col span={24}>
+              <Col span={24}>
                 <Form.Item
                   label='上传附件'
                   {...formincontentLayout}
@@ -858,23 +815,19 @@ function DatabaseReport(props) {
                       </div>
                     )}
                 </Form.Item>
-              </Col> */}
+              </Col>
 
-              {/* 四、本周事件、问题及故障 */}
-              {/* <Col span={24}>
-                <ThisWeekitsm
-                  formItemLayout={formItemLayout}
+
+               {/* 上周 */}
+              <Col span={24}>
+                <Lastweek
                   forminladeLayout={forminladeLayout}
-                  thisWeekitsmlist={thisWeekitsmlist}
-                  ref={thisWeekitsmRef}
-                  searchNumber={(searchParams) => searchNumber(searchParams)}
-                  ChangeFiles={(newvalue) => {
-                    setFiles(newvalue);
-                  }}
+                  startTime={startTime}
+                  endTime={endTime}
                 />
-              </Col> */}
+              </Col>
 
-              {/* <Col span={24}>
+              <Col span={24}>
                 <Form.Item
                   label='上传附件'
                   {...formincontentLayout}
@@ -894,31 +847,18 @@ function DatabaseReport(props) {
                     )}
 
                 </Form.Item>
-              </Col> */}
+              </Col> 
 
-              {/* 五、软件作业完成情况 */}
-              {/* <Col span={24}>
-                <SoftCompletion
+              {/* 下周 */}
+              <Col span={24}>
+                <Nextweek
                   forminladeLayout={forminladeLayout}
-                  softCompletionlist={softCompletionlist}
-                  completionsecondTablelist={completionsecondTablelist}
+                  startTime={startTime}
+                  endTime={endTime}
                 />
-              </Col> */}
+              </Col>
 
-
-              {/* <Col span={24}>
-                <Form.Item
-                  label='软件作业情况描述'
-                  {...formincontentLayout}
-                >
-                  {
-                    getFieldDecorator('content4', {})
-                      (<TextArea />)
-                  }
-                </Form.Item>
-              </Col> */}
-
-              {/* <Col span={24}>
+              <Col span={24}>
                 <Form.Item
                   label='上传附件'
                   {...formincontentLayout}
@@ -938,58 +878,7 @@ function DatabaseReport(props) {
                     )}
 
                 </Form.Item>
-              </Col> */}
-
-
-              {/* 六、遗留缺陷问题跟踪,遗留问题、缺陷跟踪情况（使用表格管理作为附件） */}
-              {/* <Col span={24}>
-                <RemainingDefects
-                  forminladeLayout={forminladeLayout}
-                  remainingDefectslist={remainingDefectslist}
-                />
-              </Col> */}
-
-
-
-              {/* 七、上周作业完成情况 */}
-              {/* <Col span={24}>
-                <LastweekHomework
-                  forminladeLayout={forminladeLayout}
-                  lastweekHomeworklist={lastweekHomeworklist}
-                />
-              </Col> */}
-
-
-
-              {/* <Col span={24}>
-                <Form.Item
-                  label='上传附件'
-                  {...formincontentLayout}
-                >
-                  {getFieldDecorator('field6', {})
-                    (
-                      <div style={{ width: 400 }}>
-                        <SysUpload
-                          fileslist={[]}
-                          ChangeFileslist={newvalue => {
-                            setFieldsValue({ field6: JSON.stringify(newvalue.arr) })
-                            setFilesList(newvalue);
-                            setFiles(newvalue)
-                          }}
-                        />
-                      </div>
-                    )}
-
-                </Form.Item>
-              </Col> */}
-
-              {/* 八、 下周作业计划 */}
-              {/* <Col span={24}>
-                <NextweekHomework
-                  forminladeLayout={forminladeLayout}
-                  nextweekHomeworklist={nextweekHomeworklist}
-                />
-              </Col> */}
+              </Col>
 
               <Button
                 style={{ width: '100%', marginTop: 16, marginBottom: 8 }}

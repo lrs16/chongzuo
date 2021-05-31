@@ -334,7 +334,7 @@ function NextweekHomework(props) {
 
   return (
     <>
-      { loading === false && (
+      { loading === false && data && data.length > 0 && (
         <Row gutter={16}>
           <Col span={20}>
             <p style={{ fontWeight: '900', fontSize: '16px' }}>八、下周作业计划</p>
@@ -344,24 +344,6 @@ function NextweekHomework(props) {
             columns={column}
             dataSource={data}
           />
-
-          <Col span={6}>
-            <Form.Item
-              label='上传附件'
-              {...forminladeLayout}
-            >
-              {getFieldDecorator('params66', {})
-                (
-                  <div style={{ width: 400 }}>
-                    <SysUpload
-                      fileslist={[]}
-                    // ChangeFileslist={newvalue => setFiles(newvalue)}
-                    />
-                  </div>
-                )}
-
-            </Form.Item>
-          </Col>
         </Row>
 
       )}

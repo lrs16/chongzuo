@@ -443,7 +443,7 @@ const DatabaseInspectionsummary = React.forwardRef((props, ref) => {
             icon="plus"
             disabled={newbutton}
           >
-            新增巡检情况
+            新增磁盘组
        </Button>
 
           <Col span={24}>
@@ -463,7 +463,7 @@ const DatabaseInspectionsummary = React.forwardRef((props, ref) => {
             icon="plus"
             disabled={secondbutton}
           >
-            新增巡检情况
+            新增Top10表空间
        </Button>
 
 
