@@ -223,65 +223,67 @@ function Registration(props) {
   }, [tabnew]);
   // 获取页签信息
   useEffect(() => {
-    if (location.state.cache) {
-      const formr = RegistratRef.current.getFieldsValue();
-      if (show) {
-        const formh = HandleRef.current.getFieldsValue();
-        dispatch({
-          type: 'viewcache/gettabstate',
-          payload: {
-            cacheinfo: {
-              ...formr,
-              ...formh,
-              main_eventObject: formr.main_eventObject?.slice(-1)[0],
-              register_occurTime: formr.register_occurTime.format('YYYY-MM-DD HH:mm:ss'),
-              register_applicationUnit: formr.applicationUnit,
-              register_applicationUnitId: formr.applicationUnit === '' ? '' : formr.register_applicationUnitId,
-              register_mobilePhone: formr.main_revisitWay === '002' ? formr.mobilePhone1 : formr.mobilePhone2,
-              register_applicationDept:
-                formr.register_applicationDept !== ''
-                  ? formr.register_applicationDept
-                  : formr.register_applicationUnit,
-              register_applicationDeptId:
-                formr.register_applicationDeptId !== ''
-                  ? formr.register_applicationDeptId
-                  : formr.register_applicationUnitId,
-              register_fileIds: JSON.stringify(registratfiles.arr),
-              register_selfhandle: String(Number(formr.register_selfhandle)),
-              register_supplement: String(Number(formr.register_supplement)),
-              handle_endTime: formh.handle_endTime.format('YYYY-MM-DD HH:mm:ss'),
+    if (location.state) {
+      if (location.state.cache) {
+        const formr = RegistratRef.current.getFieldsValue();
+        if (show) {
+          const formh = HandleRef.current.getFieldsValue();
+          dispatch({
+            type: 'viewcache/gettabstate',
+            payload: {
+              cacheinfo: {
+                ...formr,
+                ...formh,
+                main_eventObject: formr.main_eventObject?.slice(-1)[0],
+                register_occurTime: formr.register_occurTime.format('YYYY-MM-DD HH:mm:ss'),
+                register_applicationUnit: formr.applicationUnit,
+                register_applicationUnitId: formr.applicationUnit === '' ? '' : formr.register_applicationUnitId,
+                register_mobilePhone: formr.main_revisitWay === '002' ? formr.mobilePhone1 : formr.mobilePhone2,
+                register_applicationDept:
+                  formr.register_applicationDept !== ''
+                    ? formr.register_applicationDept
+                    : formr.register_applicationUnit,
+                register_applicationDeptId:
+                  formr.register_applicationDeptId !== ''
+                    ? formr.register_applicationDeptId
+                    : formr.register_applicationUnitId,
+                register_fileIds: JSON.stringify(registratfiles.arr),
+                register_selfhandle: String(Number(formr.register_selfhandle)),
+                register_supplement: String(Number(formr.register_supplement)),
+                handle_endTime: formh.handle_endTime.format('YYYY-MM-DD HH:mm:ss'),
+              },
+              tabid: sessionStorage.getItem('tabid')
             },
-            tabid: sessionStorage.getItem('tabid')
-          },
-        });
-      } else {
-        dispatch({
-          type: 'viewcache/gettabstate',
-          payload: {
-            cacheinfo: {
-              ...formr,
-              main_eventObject: formr.main_eventObject?.slice(-1)[0],
-              register_occurTime: formr.register_occurTime.format('YYYY-MM-DD HH:mm:ss'),
-              register_applicationUnit: formr.applicationUnit,
-              register_applicationUnitId: formr.applicationUnit === '' ? '' : formr.register_applicationUnitId,
-              register_mobilePhone: formr.main_revisitWay === '002' ? formr.mobilePhone1 : formr.mobilePhone2,
-              register_applicationDept:
-                formr.register_applicationDept !== ''
-                  ? formr.register_applicationDept
-                  : formr.register_applicationUnit,
-              register_applicationDeptId:
-                formr.register_applicationDeptId !== ''
-                  ? formr.register_applicationDeptId
-                  : formr.register_applicationUnitId,
-              register_fileIds: JSON.stringify(registratfiles.arr),
-              register_selfhandle: String(Number(formr.register_selfhandle)),
-              register_supplement: String(Number(formr.register_supplement)),
+          });
+        } else {
+          dispatch({
+            type: 'viewcache/gettabstate',
+            payload: {
+              cacheinfo: {
+                ...formr,
+                main_eventObject: formr.main_eventObject?.slice(-1)[0],
+                register_occurTime: formr.register_occurTime.format('YYYY-MM-DD HH:mm:ss'),
+                register_applicationUnit: formr.applicationUnit,
+                register_applicationUnitId: formr.applicationUnit === '' ? '' : formr.register_applicationUnitId,
+                register_mobilePhone: formr.main_revisitWay === '002' ? formr.mobilePhone1 : formr.mobilePhone2,
+                register_applicationDept:
+                  formr.register_applicationDept !== ''
+                    ? formr.register_applicationDept
+                    : formr.register_applicationUnit,
+                register_applicationDeptId:
+                  formr.register_applicationDeptId !== ''
+                    ? formr.register_applicationDeptId
+                    : formr.register_applicationUnitId,
+                register_fileIds: JSON.stringify(registratfiles.arr),
+                register_selfhandle: String(Number(formr.register_selfhandle)),
+                register_supplement: String(Number(formr.register_supplement)),
+              },
+              tabid: sessionStorage.getItem('tabid')
             },
-            tabid: sessionStorage.getItem('tabid')
-          },
-        });
+          });
+        }
+        RegistratRef.current.resetFields();
       }
-      RegistratRef.current.resetFields();
     }
   }, [location]);
 

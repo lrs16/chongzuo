@@ -147,24 +147,26 @@ function Registration(props) {
   }, [tabnew]);
   // 获取页签信息
   useEffect(() => {
-    if (location.state.cache) {
-      RegistratRef.current.validateFields((_, values) => {
-        dispatch({
-          type: 'viewcache/gettabstate',
-          payload: {
-            cacheinfo: {
-              ...values,
-              registerTime: values.registerTime.format('YYYY-MM-DD HH:mm:ss'),
-              registerOccurTime: values.registerOccurTime.format('YYYY-MM-DD HH:mm:ss'),
-              registerExpectTime: values.registerExpectTime.format('YYYY-MM-DD HH:mm:ss'),
-              registerAttachments: files.ischange ? JSON.stringify(files.arr) : null,
-              importance: Number(values.importance) ? values.importance : '001',
+    if (location.state) {
+      if (location.state.cache) {
+        RegistratRef.current.validateFields((_, values) => {
+          dispatch({
+            type: 'viewcache/gettabstate',
+            payload: {
+              cacheinfo: {
+                ...values,
+                registerTime: values.registerTime.format('YYYY-MM-DD HH:mm:ss'),
+                registerOccurTime: values.registerOccurTime.format('YYYY-MM-DD HH:mm:ss'),
+                registerExpectTime: values.registerExpectTime.format('YYYY-MM-DD HH:mm:ss'),
+                registerAttachments: files.ischange ? JSON.stringify(files.arr) : null,
+                importance: Number(values.importance) ? values.importance : '001',
+              },
+              tabid: sessionStorage.getItem('tabid')
             },
-            tabid: sessionStorage.getItem('tabid')
-          },
+          });
         });
-      });
-      RegistratRef.current.resetFields();
+        RegistratRef.current.resetFields();
+      }
     }
   }, [location]);
 

@@ -223,23 +223,25 @@ function Registration(props) {
   }, [tabnew]);
 
   useEffect(() => {
-    if (location.state.cache) {
-      const formValues = getFieldsValue();
-      dispatch({
-        type: 'viewcache/gettabstate',
-        payload: {
-          cacheinfo: {
-            ...formValues,
-            registerOccurTime: formValues.registerOccurTime.format('YYYY-MM-DD HH:mm:ss'),
-            registerTime: formValues.registerTime.format('YYYY-MM-DD HH:mm:ss'),
-            registerLevelCode: registerLevelmap.get(formValues.registerLevel),    // 超时用：一般001，重大002，紧急003
-            editState: 'add',
-            registerAttachments: JSON.stringify(files.arr),
-            type: selectCascader
+    if (location.state) {
+      if (location.state.cache) {
+        const formValues = getFieldsValue();
+        dispatch({
+          type: 'viewcache/gettabstate',
+          payload: {
+            cacheinfo: {
+              ...formValues,
+              registerOccurTime: formValues.registerOccurTime.format('YYYY-MM-DD HH:mm:ss'),
+              registerTime: formValues.registerTime.format('YYYY-MM-DD HH:mm:ss'),
+              registerLevelCode: registerLevelmap.get(formValues.registerLevel),    // 超时用：一般001，重大002，紧急003
+              editState: 'add',
+              registerAttachments: JSON.stringify(files.arr),
+              type: selectCascader
+            },
+            tabid: sessionStorage.getItem('tabid')
           },
-          tabid: sessionStorage.getItem('tabid')
-        },
-      });
+        });
+      }
     }
   }, [location]);
 

@@ -116,23 +116,25 @@ function Registration(props) {
   }, [tabnew]);
   // 获取页签信息
   useEffect(() => {
-    if (location.state.cache) {
-      RegistratRef.current.validateFields((_, values) => {
-        dispatch({
-          type: 'viewcache/gettabstate',
-          payload: {
-            cacheinfo: {
-              ...values,
-              creationTime: values.creationTime.format('YYYY-MM-DD HH:mm:ss'),
-              registerTime: values.registerTime.format('YYYY-MM-DD HH:mm:ss'),
-              completeTime: values.completeTime.format('YYYY-MM-DD HH:mm:ss'),
-              functionalModule: values.functionalModule.join('/'),
+    if (location.state) {
+      if (location.state.cache) {
+        RegistratRef.current.validateFields((_, values) => {
+          dispatch({
+            type: 'viewcache/gettabstate',
+            payload: {
+              cacheinfo: {
+                ...values,
+                creationTime: values.creationTime.format('YYYY-MM-DD HH:mm:ss'),
+                registerTime: values.registerTime.format('YYYY-MM-DD HH:mm:ss'),
+                completeTime: values.completeTime.format('YYYY-MM-DD HH:mm:ss'),
+                functionalModule: values.functionalModule.join('/'),
+              },
+              tabid: sessionStorage.getItem('tabid')
             },
-            tabid: sessionStorage.getItem('tabid')
-          },
+          });
         });
-      });
-      RegistratRef.current.resetFields();
+        RegistratRef.current.resetFields();
+      }
     }
   }, [location]);
 

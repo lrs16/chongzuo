@@ -155,6 +155,7 @@ const BasicLayout = props => {
     const end = tabs.slice(-1)[0];
     const target = alonepath.filter(item => item.path === end.itemPath)[0];
     setActiveKey(end.id);
+    console.log(end)
     router.push({
       pathname: end.itemPath,
       query: target ? end.query : {},
@@ -261,7 +262,7 @@ const BasicLayout = props => {
         dispatch({
           type: 'viewcache/sendcache',
           payload: {
-            tabdata: target.data.cacheinfo,
+            tabdata: target.data.cacheinfo !== undefined ? target.data.cacheinfo : {},
             tabid: key,
           },
         });
@@ -311,15 +312,17 @@ const BasicLayout = props => {
     if (!targetmultiple) {
       // 非登记类打开单页签
       if (!target) {
+        // 已有页签打开页签
         const panels = { name, id, itemPath, query: {}, closable: true, state: { cache: false }, };
         toptabs.push(panels);
         lasttabactive(toptabs);
       } else {
-        setActiveKey(id);
+        // 无该页签新增页签
         router.push({
           pathname: target.itemPath,
           query: { ...target.query },
         });
+        setActiveKey(id);
       };
     } else {
       // 登记类打开相同多页签
@@ -338,7 +341,7 @@ const BasicLayout = props => {
           closable: true
         };
         toptabs.push(panels);
-        lasttabactive(toptabs);
+        //  lasttabactive(toptabs);
       } else {
         // 增加登记页签
         const panels = {
