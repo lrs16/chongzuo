@@ -126,16 +126,16 @@ function Registration(props) {
           registerLevelCode: registerLevelmap.get(formValues.registerLevel),    // 超时用：一般001，重大002，紧急003
           editState: 'add',
           registerAttachments: JSON.stringify(files.arr),
-          type: selectCascader
+          type: formValues.type?.slice(-1)[0],
         },
       },
     });
   };
 
-  const handlobjectChange = (value, selectedOptions) => {
-    setFieldsValue({ main_eventObject: value?.slice(-1)[0] }, () => { });
-    selectCascader = `${selectedOptions[1].dict_code}`;
-  };
+  // const handlobjectChange = (value, selectedOptions) => {
+  //   setFieldsValue({ main_eventObject: value?.slice(-1)[0] }, () => { });
+  //   selectCascader = `${selectedOptions[1].dict_code}`;
+  // };
 
   // 上传附件触发保存
   useEffect(() => {
@@ -236,26 +236,26 @@ function Registration(props) {
               registerLevelCode: registerLevelmap.get(formValues.registerLevel),    // 超时用：一般001，重大002，紧急003
               editState: 'add',
               registerAttachments: JSON.stringify(files.arr),
-              type: selectCascader
             },
             tabid: sessionStorage.getItem('tabid')
           },
         });
       }
-    }
+    };
+    resetFields();
   }, [location]);
 
   // 常用语调用
   useEffect(() => {
     handletitleSearch({ module: '故障单', field: '标题', key: '' });
     handledesSearch({ module: '故障单', field: '描述', key: '' });
-  }, []);
+  }, [location]);
 
   const getTypebyTitle = title => {
     if (selectdata.ischange) {
       return selectdata.arr.filter(item => item.title === title)[0].children;
     }
-    return [];
+    return [location];
   };
   const faultSource = getTypebyTitle('故障来源');
   const sysmodular = getTypebyTitle('故障系统模块');
@@ -275,6 +275,7 @@ function Registration(props) {
   );
 
   const cacheinfo = tabdata === undefined ? { registerLevel: '一般', registerEffect: '0' } : tabdata;
+  console.log(cacheinfo)
 
   return (
     <PageHeaderWrapper title={pagetitle} extra={operations}>
@@ -363,13 +364,13 @@ function Registration(props) {
                       message: '请选择',
                     },
                   ],
-                  initialValue: cacheinfo.type || '',
+                  initialValue: cacheinfo.type || [''],
                 })(
                   <Cascader
                     placeholder="请选择"
                     options={faultType}
-                    onChange={handlobjectChange}
-                    fieldNames={{ label: 'title', value: 'title', children: 'children' }}
+                    //  onChange={() => handlobjectChange()}
+                    fieldNames={{ label: 'title', value: 'dict_code', children: 'children' }}
                   />,
                 )}
               </Form.Item>

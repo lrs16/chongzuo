@@ -262,7 +262,7 @@ const BasicLayout = props => {
         dispatch({
           type: 'viewcache/sendcache',
           payload: {
-            tabdata: target.data.cacheinfo !== undefined ? target.data.cacheinfo : {},
+            tabdata: (target.data && target.data.cacheinfo !== undefined) ? target.data.cacheinfo : {},
             tabid: key,
           },
         });
@@ -341,7 +341,7 @@ const BasicLayout = props => {
           closable: true
         };
         toptabs.push(panels);
-        //  lasttabactive(toptabs);
+        lasttabactive(toptabs);
       } else {
         // 增加登记页签
         const panels = {

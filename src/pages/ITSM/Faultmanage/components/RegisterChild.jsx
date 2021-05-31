@@ -51,7 +51,6 @@ const RegisterChild = React.forwardRef((props, ref) => {
     }
   }
 
-  console.log(type,'type')
   const handlobjectChange = (_, selectedOptions) => {
     setFieldsValue({ type: selectedOptions[1].dict_code });
     //  saveType(`${selectedOptions[1].dict_code}`);

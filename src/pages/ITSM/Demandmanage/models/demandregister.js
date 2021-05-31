@@ -46,6 +46,7 @@ export default {
             result: '1',
             orderNo: demandId,
           },
+          state: {}
         });
       }
     },

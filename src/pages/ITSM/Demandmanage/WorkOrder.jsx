@@ -69,7 +69,8 @@ function WorkOrder(props) {
   }, [mainId]);
   // 回调用户ID
   useEffect(() => {
-    if (info !== '' && info.demandForm) {
+    if (info !== '' && info !== undefined) {
+      console.log(info)
       changRegisterId(info.demandForm.id); // formid
       if ((taskName === '业务科室领导审核' ||
         taskName === '系统开发商审核' ||
@@ -83,7 +84,7 @@ function WorkOrder(props) {
 
   // 初始化历史附件
   useEffect(() => {
-    if (info !== '') {
+    if (info !== '' && info !== undefined) {
       if (taskName === '需求登记' && info.demandForm.attachment !== '[]') {
         setFiles({ ...files, arr: JSON.parse(info.demandForm.attachment) });
       }

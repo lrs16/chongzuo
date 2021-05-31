@@ -1,6 +1,6 @@
 import React, { useState, createContext, useRef, useEffect } from 'react';
 import { connect } from 'dva';
-// import moment from 'moment';
+import moment from 'moment';
 import router from 'umi/router';
 import { Button, Collapse, message, Spin } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
@@ -215,77 +215,106 @@ function Registration(props) {
     });
   };
 
+
   // 重置表单信息
   useEffect(() => {
     if (tabnew) {
       RegistratRef.current.resetFields();
+      setShow(false)
     }
   }, [tabnew]);
   // 获取页签信息
   useEffect(() => {
     if (location.state) {
       if (location.state.cache) {
-        const formr = RegistratRef.current.getFieldsValue();
-        if (show) {
-          const formh = HandleRef.current.getFieldsValue();
-          dispatch({
-            type: 'viewcache/gettabstate',
-            payload: {
-              cacheinfo: {
-                ...formr,
-                ...formh,
-                main_eventObject: formr.main_eventObject?.slice(-1)[0],
-                register_occurTime: formr.register_occurTime.format('YYYY-MM-DD HH:mm:ss'),
-                register_applicationUnit: formr.applicationUnit,
-                register_applicationUnitId: formr.applicationUnit === '' ? '' : formr.register_applicationUnitId,
-                register_mobilePhone: formr.main_revisitWay === '002' ? formr.mobilePhone1 : formr.mobilePhone2,
-                register_applicationDept:
-                  formr.register_applicationDept !== ''
-                    ? formr.register_applicationDept
-                    : formr.register_applicationUnit,
-                register_applicationDeptId:
-                  formr.register_applicationDeptId !== ''
-                    ? formr.register_applicationDeptId
-                    : formr.register_applicationUnitId,
-                register_fileIds: JSON.stringify(registratfiles.arr),
-                register_selfhandle: String(Number(formr.register_selfhandle)),
-                register_supplement: String(Number(formr.register_supplement)),
-                handle_endTime: formh.handle_endTime.format('YYYY-MM-DD HH:mm:ss'),
+        RegistratRef.current.validateFields((err, values) => {
+          const main = {
+            addTime: values.main_addTime,
+            content: values.main_content,
+            eventEffect: values.main_eventEffect,
+            eventEmergent: values.main_eventEmergent,
+            eventNo: '',
+            eventObject: values.main_eventObject?.slice(-1)[0],
+            eventPrior: values.main_eventPrior,
+            eventSource: values.main_eventSource,
+            eventType: values.main_eventType,
+            revisitWay: values.main_revisitWay,
+            title: values.main_title,
+          };
+          const register = {
+            applicationDept: values.register_applicationDept,
+            applicationDeptId: values.register_applicationDeptId,
+            applicationUnit: values.register_applicationUnit,
+            rapplicationUnitId: values.registra_rapplicationUnitId,
+            applicationUser: values.register_applicationUser,
+            applicationUserId: values.register_applicationUserId,
+            applicationUserPhone: values.register_applicationUserPhone,
+            id: '',
+            occurTime: moment(values.register_occurTime).format('YYYY-MM-DD HH:mm:ss'),
+            selfhandle: values.register_selfhandle,
+            supplement: values.register_supplement,
+            mobilePhone: values.mobilePhone2 ? values.mobilePhone2 : values.mobilePhone1,
+          }
+          if (show) {
+            HandleRef.current.validateFields((e, v) => {
+              console.log(v)
+              const handle = {
+                addTime: moment(v.handle_addTime).format('YYYY-MM-DD HH:mm:ss'),
+                content: v.handle_content,
+                endTime: moment(v.handle_endTime).format('YYYY-MM-DD HH:mm:ss'),
+                handle_id: '',
+              };
+              const handlemain = {
+                eventObject: v.main_eventObject?.slice(-1)[0],
+                main_eventObject: v.main_eventObject,
+                main_eventType: v.main_eventType,
+                eventResult: v.handle_handleResult
+              }
+              dispatch({
+                type: 'viewcache/gettabstate',
+                payload: {
+                  cacheinfo: {
+                    register: { ...register },
+                    main: { ...main },
+                    handle: { ...handle },
+                    handlemain: { ...handlemain },
+                    show: true,
+                  },
+                  tabid: sessionStorage.getItem('tabid')
+                },
+              });
+            })
+          } else {
+            dispatch({
+              type: 'viewcache/gettabstate',
+              payload: {
+                cacheinfo: {
+                  register: { ...register },
+                  main: { ...main },
+                },
+                tabid: sessionStorage.getItem('tabid')
               },
-              tabid: sessionStorage.getItem('tabid')
-            },
-          });
-        } else {
-          dispatch({
-            type: 'viewcache/gettabstate',
-            payload: {
-              cacheinfo: {
-                ...formr,
-                main_eventObject: formr.main_eventObject?.slice(-1)[0],
-                register_occurTime: formr.register_occurTime.format('YYYY-MM-DD HH:mm:ss'),
-                register_applicationUnit: formr.applicationUnit,
-                register_applicationUnitId: formr.applicationUnit === '' ? '' : formr.register_applicationUnitId,
-                register_mobilePhone: formr.main_revisitWay === '002' ? formr.mobilePhone1 : formr.mobilePhone2,
-                register_applicationDept:
-                  formr.register_applicationDept !== ''
-                    ? formr.register_applicationDept
-                    : formr.register_applicationUnit,
-                register_applicationDeptId:
-                  formr.register_applicationDeptId !== ''
-                    ? formr.register_applicationDeptId
-                    : formr.register_applicationUnitId,
-                register_fileIds: JSON.stringify(registratfiles.arr),
-                register_selfhandle: String(Number(formr.register_selfhandle)),
-                register_supplement: String(Number(formr.register_supplement)),
-              },
-              tabid: sessionStorage.getItem('tabid')
-            },
-          });
-        }
+            });
+          }
+        });
         RegistratRef.current.resetFields();
+        setShow(false)
       }
     }
   }, [location]);
+
+  useEffect(() => {
+    if (tabdata !== undefined && tabdata.show) {
+      setShow(true)
+      setDefaultvalue({
+        main_eventType: tabdata.handlemain.main_eventType,
+        main_eventObject: tabdata.handlemain.main_eventObject,
+      })
+    }
+    if (tabdata !== undefined) {
+    }
+  }, [tabdata])
+
 
   const operations = (
     <>
@@ -297,7 +326,6 @@ function Registration(props) {
       </Button>
     </>
   );
-
   return (
     <PageHeaderWrapper title={pagetitle} extra={operations}>
       <SysDict
@@ -333,11 +361,11 @@ function Registration(props) {
                 location={location}
                 files={registratfiles.arr}
                 selectdata={selectdata}
-                info={tabdata}
-                main={tabdata}
+                info={tabdata !== undefined ? { register: tabdata.register } : undefined}
+                main={tabdata !== undefined ? tabdata.main : undefined}
               />
             </Panel>
-            {show === true && check === false && (
+            {show && check === false && (
               <Panel header="事件处理" key="handleform">
                 <Handle
                   formItemLayout={formItemLayout}
@@ -352,8 +380,8 @@ function Registration(props) {
                   show={show}
                   selectdata={selectdata}
                   files={[]}
-                // info={tabdata}
-                // main={tabdata}
+                  info={tabdata !== undefined ? { handle: tabdata.handle } : undefined}
+                  main={tabdata !== undefined ? tabdata.handlemain : undefined}
                 />
               </Panel>
             )}

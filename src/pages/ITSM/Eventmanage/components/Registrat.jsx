@@ -82,21 +82,6 @@ const Registrat = forwardRef((props, ref) => {
     }
   }, [info]);
 
-  useEffect(() => {
-    const values = getFieldsValue();
-    // router.push({
-    //   pathname: location.pathname,
-    //   query: location.query,
-    //   state: {
-    //     ...values,
-    //     register_occurTime: values.register_occurTime.format('YYYY-MM-DD HH:mm:ss'),
-    //   },
-    // });
-    return (() => {
-      resetFields()
-    })
-  }, [location.query])
-
   const attRef = useRef();
   useImperativeHandle(
     ref,
@@ -393,8 +378,8 @@ const Registrat = forwardRef((props, ref) => {
     }
     return [];
   };
-  const eventObject = main.eventObject.split();
-  if (main.eventObject.length === 6) {
+  const eventObject = main.eventObject ? main.eventObject.split() : [''];
+  if (eventObject[0] && main.eventObject.length === 6) {
     eventObject.unshift(main.eventObject.slice(0, 3));
   }
 
@@ -797,7 +782,7 @@ const Registrat = forwardRef((props, ref) => {
                 <Cascader
                   fieldNames={{ label: 'title', value: 'dict_code', children: 'children' }}
                   options={objectmap}
-                  onChange={handlobjectChange}
+                  onChange={() => handlobjectChange()}
                   placeholder="请选择"
                   expandTrigger="hover"
                   displayRender={displayRender}

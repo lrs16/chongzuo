@@ -58,6 +58,7 @@ export default {
               validate: false,
               orderNo: registres.eventNo,
             },
+            state: {}
           });
         }
       }
