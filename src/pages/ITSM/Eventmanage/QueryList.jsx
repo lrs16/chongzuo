@@ -22,9 +22,9 @@ import SysDict from '@/components/SysDict';
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
-let noStatistic = '';
+const noStatistic = '';
 
-let queryParams = true;
+const queryParams = true;
 
 const formItemLayout = {
   labelCol: {
@@ -265,12 +265,12 @@ function QueryList(props) {
   }, []);
 
   useEffect(() => {
-    validateFields((err,values) => {
-      if(true) {
-        searchdata(values,0,paginations.pageSize)
+    validateFields((err, values) => {
+      if (true) {
+        searchdata(values, 0, paginations.pageSize)
       }
     })
-  },[location])
+  }, [location])
 
   const searchdata = (values, page, size, params) => {
     dispatch({
@@ -376,8 +376,8 @@ function QueryList(props) {
   const handleReset = () => {
     router.push({
       pathname: location.pathname,
-      query:{},
-      state:{}
+      query: {},
+      state: {}
     });
     resetFields();
   };
@@ -471,21 +471,21 @@ function QueryList(props) {
                     </Col>
 
                     <Col span={8}>
-                  <Form.Item label="自行处理">
-                    {getFieldDecorator('selfhandle', {
-                      initialValue: '',
-                    })(
-                      <Select placeholder="请选择" allowClear>
-                        {yesornomap.map(obj => [
-                          <Option key={obj.key} value={obj.title}>
-                            {obj.title}
-                          </Option>,
-                        ])}
-                      </Select>,
-                    )}
-                  </Form.Item>
-                </Col>
-                    
+                      <Form.Item label="自行处理">
+                        {getFieldDecorator('selfhandle', {
+                          initialValue: '',
+                        })(
+                          <Select placeholder="请选择" allowClear>
+                            {yesornomap.map(obj => [
+                              <Option key={obj.key} value={obj.title}>
+                                {obj.title}
+                              </Option>,
+                            ])}
+                          </Select>,
+                        )}
+                      </Form.Item>
+                    </Col>
+
                     <Col span={10}>
                       <Form.Item label="建单时间" {...form10ladeLayout}>
                         {getFieldDecorator('createTime', {
@@ -498,7 +498,7 @@ function QueryList(props) {
                       </Form.Item>
                     </Col>
 
-                 
+
                   </>
                 )}
 
@@ -529,32 +529,20 @@ function QueryList(props) {
                     </Col>
 
                     <Col span={8}>
-                  <Form.Item label="事件分类">
-                    {getFieldDecorator('eventType', {
-                      initialValue: '',
-                    })(
-                      <Select placeholder="请选择" allowClear>
-                        {typemap.map(obj => [
-                          <Option key={obj.key} value={obj.title}>
-                            {obj.title}
-                          </Option>,
-                        ])}
-                      </Select>,
-                    )}
-                  </Form.Item>
-                </Col>
-{/* 
-                    <Col span={10}>
-                      <Form.Item label="建单时间" {...form10ladeLayout}>
-                        {getFieldDecorator('createTime', {
+                      <Form.Item label="事件分类">
+                        {getFieldDecorator('eventType', {
                           initialValue: '',
-                        })(<RangePicker
-                          showTime
-                          format='YYYY-MM-DD HH:mm:ss'
-                          allowClear
-                        />)}
+                        })(
+                          <Select placeholder="请选择" allowClear>
+                            {typemap.map(obj => [
+                              <Option key={obj.key} value={obj.title}>
+                                {obj.title}
+                              </Option>,
+                            ])}
+                          </Select>,
+                        )}
                       </Form.Item>
-                    </Col> */}
+                    </Col>
                   </>
                 )}
               </>
@@ -888,61 +876,31 @@ function QueryList(props) {
               </>
             )}
 
-            {expand === true && (
-              <Col span={24} style={{ textAlign: 'right' }}>
-                <Button type="primary" onClick={() => handleSearch('search')}>
-                  查 询
+            <Col span={24} style={{ textAlign: 'right' }}>
+              <Button type="primary" onClick={() => handleSearch('search')}>
+                查 询
                 </Button>
-                <Button style={{ marginLeft: 8 }} onClick={handleReset}>
-                  重 置
+              <Button style={{ marginLeft: 8 }} onClick={handleReset}>
+                重 置
                 </Button>
-                <Button
-                  style={{ marginLeft: 8 }}
-                  type="link"
-                  onClick={() => {
-                    setExpand(!expand);
-                  }}
-                >
-                  {expand ? (
-                    <>
-                      关 闭 <UpOutlined />
-                    </>
-                  ) : (
-                    <>
-                      展 开 <DownOutlined />
-                    </>
-                  )}
-                </Button>
-              </Col>
-            )}
-            {expand === false && (
-              <Col span={24} style={{ textAlign: 'right' }}>
-                <Button type="primary" onClick={() => handleSearch('search')}>
-                  查 询
-                </Button>
-                <Button style={{ marginLeft: 8 }} onClick={handleReset}>
-                  重 置
-                </Button>
-                <Button
-                  style={{ marginLeft: 8 }}
-                  type="link"
-                  onClick={() => {
-                    setExpand(!expand);
-                  }}
-                >
-                  {expand ? (
-                    <>
-                      关 闭 <UpOutlined />
-                    </>
-                  ) : (
-                    <>
-                      展 开 <DownOutlined />
-                    </>
-                  )}
-                </Button>
-              </Col>
-            )}
-
+              <Button
+                style={{ marginLeft: 8 }}
+                type="link"
+                onClick={() => {
+                  setExpand(!expand);
+                }}
+              >
+                {expand ? (
+                  <>
+                    关 闭 <UpOutlined />
+                  </>
+                ) : (
+                  <>
+                    展 开 <DownOutlined />
+                  </>
+                )}
+              </Button>
+            </Col>
           </Form>
         </Row>
         <div style={{ marginBottom: 24 }}>

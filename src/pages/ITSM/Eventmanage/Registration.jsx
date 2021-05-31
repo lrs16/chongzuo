@@ -311,10 +311,7 @@ function Registration(props) {
         main_eventObject: tabdata.handlemain.main_eventObject,
       })
     }
-    if (tabdata !== undefined) {
-    }
   }, [tabdata])
-
 
   const operations = (
     <>
