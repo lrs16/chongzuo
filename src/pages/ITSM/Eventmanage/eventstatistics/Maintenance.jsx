@@ -81,8 +81,10 @@ function Maintenance(props) {
                 sign: 'last',
                 time1: moment(record.last_start_time).format('YYYY-MM-DD'),
                 time2: moment(record.last_end_time).format('YYYY-MM-DD'),
-                eventObject: [record.first_object,record.object_name]
-              }
+                eventObject: [record.first_object, record.object_name],
+                pathpush: true
+              },
+              state: { cache: false, }
             }}
           >
             {text}
@@ -105,8 +107,10 @@ function Maintenance(props) {
                 sign: 'last',
                 time1: moment(record.now_start_time).format('YYYY-MM-DD'),
                 time2: moment(record.now_end_time).format('YYYY-MM-DD'),
-                eventObject: [record.first_object,record.object_name]
-              }
+                eventObject: [record.first_object, record.object_name],
+                pathpush: true
+              },
+              state: { cache: false, }
             }}
           >
             {text}

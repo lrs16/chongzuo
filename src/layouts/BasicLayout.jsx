@@ -219,6 +219,7 @@ const BasicLayout = props => {
     if (location.query.closetab && location.query.mainId) {
       const newtabs = toptabs.filter(item => item.id !== location.query.mainId);
       setTopTabs([...newtabs]);
+      lasttabactive(newtabs)
     }
     // 登记关闭页签
     if (location.query.closecurrent && location.query.tabid) {
@@ -226,11 +227,11 @@ const BasicLayout = props => {
       setTopTabs([...newtabs]);
       lasttabactive(newtabs)
     }
-    if (location.query.closetab && location.query.tabid) {
-      const newtabs = toptabs.filter(item => item.id !== location.query.tabid);
-      setTopTabs([...newtabs]);
-      // lasttabactive(newtabs)
-    }
+    // if (location.query.closetab && location.query.tabid) {
+    //   const newtabs = toptabs.filter(item => item.id !== location.query.tabid);
+    //   setTopTabs([...newtabs]);
+    //   // lasttabactive(newtabs)
+    // }
   }, [location.query])
 
 

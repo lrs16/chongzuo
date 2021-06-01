@@ -224,9 +224,8 @@ function Workorder(props) {
         });
         router.push({
           pathname: `/ITSM/problemmanage/besolved`,
-          query: {
-            pathpush: true,
-          }
+          query: { pathpush: true },
+          state: { cach: false }
         })
       } else {
         message.success(res.error);
@@ -416,16 +415,12 @@ function Workorder(props) {
         message.success(res.msg);
         router.push({
           pathname: `/ITSM/problemmanage/besolveddetail/workorder`,
-          query: {
-            mainId,
-            closetab: true,
-          }
+          query: { mainId, closetab: true, }
         });
         router.push({
           pathname: `/ITSM/problemmanage/besolved`,
-          query: {
-            pathpush: true,
-          }
+          query: { pathpush: true, },
+          state: { cach: false }
         });
       } else {
         message.error(res.msg);
@@ -450,9 +445,8 @@ function Workorder(props) {
         });
         router.push({
           pathname: `/ITSM/problemmanage/besolved`,
-          query: {
-            pathpush: true,
-          }
+          query: { pathpush: true },
+          state: { cach: false }
         })
       } else {
         message.error(res.msg);

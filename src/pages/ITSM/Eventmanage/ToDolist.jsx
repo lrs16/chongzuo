@@ -265,13 +265,17 @@ function ToDolist(props) {
         handleReset()
       };
       if (location.state.cacheinfo) {
-        const { current, pageSize } = location.state.cacheinfo.paginations;
+        if (location.state.cacheinfo.paginations) {
+          const { current, pageSize } = location.state.cacheinfo.paginations;
+          setPageinations({ ...paginations, current, pageSize });
+        }
         const { time1, time2 } = location.state.cacheinfo;
         setFieldsValue({
           createTime: time1 ? [moment(time1), moment(time2)] : '',
         })
-        setExpand(location.state.cacheinfo.expand);
-        setPageinations({ ...paginations, current, pageSize });
+        if (location.state.cacheinfo.expand !== undefined) {
+          setExpand(location.state.cacheinfo.expand);
+        }
       };
     }
   }, [location.state]);

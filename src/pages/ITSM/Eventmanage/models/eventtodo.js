@@ -106,7 +106,8 @@ export default {
           });
           router.push({
             pathname: `/ITSM/eventmanage/to-do`,
-            query: { pathpush: true }
+            query: { pathpush: true },
+            state: { cach: false }
           });
         }
       }
@@ -128,7 +129,8 @@ export default {
           });
           router.push({
             pathname: `/ITSM/eventmanage/to-do`,
-            query: { pathpush: true }
+            query: { pathpush: true },
+            state: { cach: false }
           });
         }
       }
@@ -152,7 +154,8 @@ export default {
           });
           router.push({
             pathname: `/ITSM/eventmanage/to-do`,
-            query: { pathpush: true }
+            query: { pathpush: true },
+            state: { cach: false }
           });
         }
       }
@@ -197,7 +200,8 @@ export default {
         });
         router.push({
           pathname: `/ITSM/eventmanage/to-do`,
-          query: { pathpush: true }
+          query: { pathpush: true },
+          state: { cach: false }
         });
       }
     },

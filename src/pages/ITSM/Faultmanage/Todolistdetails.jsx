@@ -241,7 +241,12 @@ function Todolistdetails(props) {
       if (res.code === 200) {
         getfaultTodoDetailData();
         message.success(res.msg);
-        router.push({ pathname: `/ITSM/faultmanage/todolist`, query: { pathpush: true } });
+        router.push(
+          {
+            pathname: `/ITSM/faultmanage/todolist`,
+            query: { pathpush: true },
+            state: { cach: false }
+          });
       } else {
         message.error(res.msg);
       }
@@ -273,10 +278,10 @@ function Todolistdetails(props) {
       if (res.code === 200) {
         //  getfaultTodoDetailData();  //都要流转了还要获取信息？
         message.success(res.msg);
-        router.push({ pathname: `/ITSM/faultmanage/todolist`, query: { pathpush: true } });
+        router.push({ pathname: `/ITSM/faultmanage/todolist`, query: { pathpush: true }, state: { cach: false } });
       } else {
         message.error(res.msg);
-        router.push({ pathname: `/ITSM/faultmanage/todolist`, query: { pathpush: true } });
+        router.push({ pathname: `/ITSM/faultmanage/todolist`, query: { pathpush: true }, state: { cach: false } });
       }
     });
   };

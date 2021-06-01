@@ -213,7 +213,11 @@ function ToDolist(props) {
   useEffect(() => {
     validateFields((err, values) => {
       if (!err) {
-        searchdata(values, cacheinfo.paginations.current, cacheinfo.paginations.pageSize)
+        if (cacheinfo === undefined) {
+          searchdata(values, 1, 15);
+        } else {
+          searchdata(values, cacheinfo.paginations.current, cacheinfo.paginations.pageSize);
+        }
       }
     });
   }, []);
@@ -239,13 +243,19 @@ function ToDolist(props) {
         handleReset()
       };
       if (location.state.cacheinfo) {
-        const { current, pageSize } = location.state.cacheinfo.paginations;
+        if (location.state.cacheinfo.paginations) {
+          const { current, pageSize } = location.state.cacheinfo.paginations;
+          setPageinations({ ...paginations, current, pageSize });
+        };
+        if (location.state.cacheinfo.expand !== undefined) {
+          setExpand(location.state.cacheinfo.expand);
+        };
         const { creationTime } = location.state.cacheinfo;
-        setExpand(location.state.cacheinfo.expand);
-        setPageinations({ ...paginations, current, pageSize });
-        setFieldsValue({
-          creationTime: creationTime ? moment(creationTime).format('YYYY-MM-DD') : '',
-        })
+        if (creationTime) {
+          setFieldsValue({
+            creationTime: creationTime ? moment(creationTime).format('YYYY-MM-DD') : '',
+          })
+        };
       };
     }
   }, [location.state]);

@@ -131,7 +131,7 @@ function ToDOlist(props) {
         ...values,
         createTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
         createTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-        createTime:'',
+        createTime: '',
       }
       if (!err) {
         dispatch({
@@ -196,7 +196,7 @@ function ToDOlist(props) {
             values,
             createTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
             createTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-            createTime:'',
+            createTime: '',
             pageSize,
             current: page,
           },
@@ -253,13 +253,19 @@ function ToDOlist(props) {
         handleReset()
       };
       if (location.state.cacheinfo) {
-        const { current, pageSize } = location.state.cacheinfo.paginations;
+        if (location.state.cacheinfo.paginations) {
+          const { current, pageSize } = location.state.cacheinfo.paginations;
+          setPageinations({ ...paginations, current, pageSize });
+        }
         const { createTime } = location.state.cacheinfo;
-        setExpand(location.state.cacheinfo.expand);
-        setPageinations({ ...paginations, current, pageSize });
-        setFieldsValue({
-          createTime: createTime ? moment(createTime).format('YYYY-MM-DD HH:mm:ss') : '',
-        })
+        if (createTime) {
+          setFieldsValue({
+            createTime: createTime ? moment(createTime).format('YYYY-MM-DD HH:mm:ss') : '',
+          })
+        }
+        if (location.state.cacheinfo.expand !== undefined) {
+          setExpand(location.state.cacheinfo.expand);
+        }
       };
     }
   }, [location.state]);
@@ -376,12 +382,12 @@ function ToDOlist(props) {
                     initialValue: ''
                   })(
                     <RangePicker
-                    showTime
-                    format="YYYY-MM-DD HH:mm:ss"
-                    style={{ width: '100%' }}
-                    placeholder="请选择"
-                    allowClear
-                  />,
+                      showTime
+                      format="YYYY-MM-DD HH:mm:ss"
+                      style={{ width: '100%' }}
+                      placeholder="请选择"
+                      allowClear
+                    />,
                   )}
                 </Form.Item>
               </Col>

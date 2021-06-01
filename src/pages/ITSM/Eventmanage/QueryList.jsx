@@ -222,7 +222,7 @@ function QueryList(props) {
   const [expand, setExpand] = useState(false);
   const [selectdata, setSelectData] = useState('');
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
-
+  const [tabrecord, setTabRecord] = useState({});
 
   if (time1) {
     title = '事件统计查询'
@@ -230,49 +230,36 @@ function QueryList(props) {
     title = '事件查询'
   }
   useEffect(() => {
-    if(time1) {
+    if (time1) {
       props.form.setFieldsValue({
         eventObject,
-        createTime: time1 ? [moment(time1), moment(time2)] : [moment().startOf('month'), moment()],
+        // createTime: time1 ? [moment(time1), moment(time2)] : [moment().startOf('month'), moment()],
         registerUser,
         applicationUnit,
         eventStatus,
         selfhandle
       })
 
-      validateFields((err, values) => {
-        if (!err) {
-          dispatch({
-            type: 'eventquery/fetchlist',
-            payload: {
-              ...values,
-              eventObject: values.eventObject ? (values.eventObject).slice(-1)[0] : '',
-              pageIndex: paginations.current - 1,
-              pageSize: paginations.pageSize,
-              time1: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-              time2: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-              createTime: '',
-            },
-          });
-        }
-      });
-    } 
-   
-    
-    return () => {
-      setSelectData([]);
-    };
+      // validateFields((err, values) => {
+      //   if (!err) {
+      //     dispatch({
+      //       type: 'eventquery/fetchlist',
+      //       payload: {
+      //         ...values,
+      //         eventObject: values.eventObject ? (values.eventObject).slice(-1)[0] : '',
+      //         pageIndex: paginations.current - 1,
+      //         pageSize: paginations.pageSize,
+      //         time1: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+      //         time2: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+      //         createTime: '',
+      //       },
+      //     });
+      //   }
+      // });
+    }
   }, []);
 
-  useEffect(() => {
-    validateFields((err, values) => {
-      if (true) {
-        searchdata(values, 0, paginations.pageSize)
-      }
-    })
-  }, [location])
-
-  const searchdata = (values, page, size, params) => {
+  const searchdata = (values, page, size) => {
     dispatch({
       type: 'eventquery/fetchlist',
       payload: {
@@ -284,6 +271,12 @@ function QueryList(props) {
         time2: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
         createTime: '',
       },
+    });
+    setTabRecord({
+      ...values,
+      time1: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+      time2: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+      createTime: '',
     });
   };
 
@@ -380,6 +373,10 @@ function QueryList(props) {
       state: {}
     });
     resetFields();
+    validateFields((err, values) => {
+      searchdata(values, 0, 15)
+    });
+    setPageinations({ current: 1, pageSize: 15 });
   };
 
   const displayRender = label => {
@@ -406,6 +403,87 @@ function QueryList(props) {
   const handleresultmap = getTypebykey('486846455059841024'); // 处理结果
   const satisfactionmap = getTypebykey('486855005945462784'); // 满意度
 
+  const record = {
+    eventObject: '',
+    revisitWay: '',
+    eventSource: '',
+    eventEffect: '',
+    eventEmergent: '',
+    eventPrior: '',
+    selfhandle: '',
+    supplement: '',
+    checkResult: '',
+    eventResult: '',
+    satisfaction: '',
+    eventTitle: '',
+    applicationUser: '',
+    applicationUnit: '',
+    applicationDept: '',
+    registerUnit: '',
+    registerDept: '',
+    checkUser: '',
+    checkUnit: '',
+    checkDept: '',
+    handler: '',
+    handleUnit: '',
+    handleDept: '',
+    revisitor: '',
+    revisitUnit: '',
+    revisitDept: '',
+    eventNo: '',
+    eventStatus: '',
+    eventType: '',
+    time1: time1 !== undefined ? moment(time1).format('YYYY-MM-DD HH:mm:ss') : moment().startOf('month').format('YYYY-MM-DD HH:mm:ss'),
+    time2: time2 !== undefined ? moment(time2).format('YYYY-MM-DD HH:mm:ss') : moment().format('YYYY-MM-DD HH:mm:ss'),
+
+  }
+  const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
+
+  // 设置时间
+  useEffect(() => {
+    if (location.state.cacheinfo) {
+      const cachestartTime = location.state.cacheinfo.time1;
+      const cacheendTime = location.state.cacheinfo.time2;
+      setFieldsValue({
+        createTime: [moment(cachestartTime), moment(cacheendTime)],
+      })
+    }
+  }, [location.state]);
+
+  useEffect(() => {
+    validateFields((err, values) => {
+      searchdata(values, cacheinfo.paginations.current - 1, cacheinfo.paginations.pageSize)
+    })
+  }, [])
+
+  useEffect(() => {
+    if (location.state) {
+      if (location.state.cache) {
+        // 传表单数据到页签
+        dispatch({
+          type: 'viewcache/gettabstate',
+          payload: {
+            cacheinfo: {
+              ...tabrecord,
+              paginations,
+              expand,
+            },
+            tabid: sessionStorage.getItem('tabid')
+          },
+        });
+      };
+      // 点击菜单刷新,并获取数据
+      if (location.state.reset) {
+        handleReset()
+      };
+      if (location.state.cacheinfo) {
+        const { current, pageSize } = location.state.cacheinfo.paginations;
+        setExpand(location.state.cacheinfo.expand);
+        setPageinations({ ...paginations, current, pageSize });
+      };
+    }
+  }, [location.state]);
+
   return (
     <PageHeaderWrapper title={title}>
       <SysDict
@@ -424,7 +502,7 @@ function QueryList(props) {
                     <Col span={8}>
                       <Form.Item label="事件对象">
                         {getFieldDecorator('eventObject', {
-                          initialValue: '',
+                          initialValue: cacheinfo.eventObject,
                         })(
                           <Cascader
                             fieldNames={{ label: 'title', value: 'title', children: 'children' }}
@@ -441,7 +519,7 @@ function QueryList(props) {
                     <Col span={8}>
                       <Form.Item label="登记人">
                         {getFieldDecorator('registerUser', {
-                          initialValue: '',
+                          iinitialValue: cacheinfo.registerUser,
                         })(<Input placeholder="请输入" allowClear />)}
                       </Form.Item>
                     </Col>
@@ -449,7 +527,7 @@ function QueryList(props) {
                     <Col span={8}>
                       <Form.Item label="工单状态">
                         {getFieldDecorator('eventStatus', {
-                          initialValue: '',
+                          iinitialValue: cacheinfo.eventStatus,
                         })(
                           <Select placeholder="请选择" allowClear>
                             {statusmap.map(obj => (
@@ -465,7 +543,7 @@ function QueryList(props) {
                     <Col span={8}>
                       <Form.Item label="申报人单位">
                         {getFieldDecorator('applicationUnit', {
-                          initialValue: '',
+                          initialValue: cacheinfo.applicationUnit,
                         })(<Input placeholder="请输入" allowClear />)}
                       </Form.Item>
                     </Col>
@@ -473,7 +551,7 @@ function QueryList(props) {
                     <Col span={8}>
                       <Form.Item label="自行处理">
                         {getFieldDecorator('selfhandle', {
-                          initialValue: '',
+                          initialValue: cacheinfo.selfhandle,
                         })(
                           <Select placeholder="请选择" allowClear>
                             {yesornomap.map(obj => [
@@ -486,17 +564,7 @@ function QueryList(props) {
                       </Form.Item>
                     </Col>
 
-                    <Col span={10}>
-                      <Form.Item label="建单时间" {...form10ladeLayout}>
-                        {getFieldDecorator('createTime', {
-                          initialValue: '',
-                        })(<RangePicker
-                          showTime
-                          format='YYYY-MM-DD HH:mm:ss'
-                          allowClear
-                        />)}
-                      </Form.Item>
-                    </Col>
+
 
 
                   </>
@@ -507,7 +575,7 @@ function QueryList(props) {
                     <Col span={7}>
                       <Form.Item label="事件编号">
                         {getFieldDecorator('eventNo', {
-                          initialValue: '',
+                          initialValue: cacheinfo.eventNo,
                         })(<Input placeholder="请输入" allowClear />)}
                       </Form.Item>
                     </Col>
@@ -515,7 +583,7 @@ function QueryList(props) {
                     <Col span={7}>
                       <Form.Item label="工单状态">
                         {getFieldDecorator('eventStatus', {
-                          initialValue: '',
+                          initialValue: cacheinfo.eventStatus,
                         })(
                           <Select placeholder="请选择" allowClear>
                             {statusmap.map(obj => (
@@ -531,7 +599,7 @@ function QueryList(props) {
                     <Col span={8}>
                       <Form.Item label="事件分类">
                         {getFieldDecorator('eventType', {
-                          initialValue: '',
+                          initialValue: cacheinfo.eventType,
                         })(
                           <Select placeholder="请选择" allowClear>
                             {typemap.map(obj => [
@@ -553,14 +621,14 @@ function QueryList(props) {
                 <Col span={8}>
                   <Form.Item label="事件编号">
                     {getFieldDecorator('eventNo', {
-                      initialValue: '',
+                      initialValue: cacheinfo.eventNo,
                     })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
                 <Col span={8}>
                   <Form.Item label="工单状态">
                     {getFieldDecorator('eventStatus', {
-                      initialValue: '',
+                      initialValue: cacheinfo.eventStatus,
                     })(
                       <Select placeholder="请选择" allowClear>
                         {statusmap.map(obj => (
@@ -575,7 +643,7 @@ function QueryList(props) {
                 <Col span={8}>
                   <Form.Item label="事件分类">
                     {getFieldDecorator('eventType', {
-                      initialValue: '',
+                      initialValue: cacheinfo.eventType,
                     })(
                       <Select placeholder="请选择" allowClear>
                         {typemap.map(obj => [
@@ -590,7 +658,7 @@ function QueryList(props) {
                 <Col span={8}>
                   <Form.Item label="事件对象">
                     {getFieldDecorator('eventObject', {
-                      initialValue: '',
+                      initialValue: cacheinfo.eventObject,
                     })(
                       <Cascader
                         fieldNames={{ label: 'title', value: 'title', children: 'children' }}
@@ -606,7 +674,7 @@ function QueryList(props) {
                 <Col span={8}>
                   <Form.Item label="回访方式">
                     {getFieldDecorator('revisitWay', {
-                      initialValue: '',
+                      initialValue: cacheinfo.revisitWay,
                     })(
                       <Select placeholder="请选择"
                         allowClear
@@ -623,7 +691,7 @@ function QueryList(props) {
                 <Col span={8}>
                   <Form.Item label="事件来源">
                     {getFieldDecorator('eventSource', {
-                      initialValue: '',
+                      initialValue: cacheinfo.eventSource,
                     })(
                       <Select placeholder="请选择" allowClear>
                         {sourcemap.map(obj => [
@@ -638,7 +706,7 @@ function QueryList(props) {
                 <Col span={8}>
                   <Form.Item label="影响度">
                     {getFieldDecorator('eventEffect', {
-                      initialValue: '',
+                      initialValue: cacheinfo.eventEffect,
                     })(
                       <Select placeholder="请选择" allowClear>
                         {effectmap.map(obj => [
@@ -653,7 +721,7 @@ function QueryList(props) {
                 <Col span={8}>
                   <Form.Item label="紧急度">
                     {getFieldDecorator('eventEmergent', {
-                      initialValue: '',
+                      initialValue: cacheinfo.eventEmergent,
                     })(
                       <Select placeholder="请选择" allowClear>
                         {emergentmap.map(obj => [
@@ -668,7 +736,7 @@ function QueryList(props) {
                 <Col span={8}>
                   <Form.Item label="优先级">
                     {getFieldDecorator('eventPrior', {
-                      initialValue: '',
+                      initialValue: cacheinfo.eventPrior,
                     })(
                       <Select placeholder="请选择" allowClear>
                         {priormap.map(obj => [
@@ -683,7 +751,7 @@ function QueryList(props) {
                 <Col span={8}>
                   <Form.Item label="自行处理">
                     {getFieldDecorator('selfhandle', {
-                      initialValue: '',
+                      initialValue: cacheinfo.selfhandle,
                     })(
                       <Select placeholder="请选择" allowClear>
                         {yesornomap.map(obj => [
@@ -698,7 +766,7 @@ function QueryList(props) {
                 <Col span={8}>
                   <Form.Item label="是否补单">
                     {getFieldDecorator('supplement', {
-                      initialValue: '',
+                      initialValue: cacheinfo.supplement,
                     })(
                       <Select placeholder="请选择" allowClear>
                         {yesornomap.map(obj => [
@@ -713,7 +781,7 @@ function QueryList(props) {
                 <Col span={8}>
                   <Form.Item label="审核结果">
                     {getFieldDecorator('checkResult', {
-                      initialValue: '',
+                      initialValue: cacheinfo.checkResult,
                     })(
                       <Select placeholder="请选择" allowClear>
                         {checkresultmap.map(obj => [
@@ -728,7 +796,7 @@ function QueryList(props) {
                 <Col span={8}>
                   <Form.Item label="处理结果">
                     {getFieldDecorator('eventResult', {
-                      initialValue: '',
+                      initialValue: cacheinfo.eventResult,
                     })(
                       <Select placeholder="请选择" allowClear>
                         {handleresultmap.map(obj => [
@@ -743,7 +811,7 @@ function QueryList(props) {
                 <Col span={8}>
                   <Form.Item label="满意度">
                     {getFieldDecorator('satisfaction', {
-                      initialValue: '',
+                      initialValue: cacheinfo.satisfaction,
                     })(
                       <Select placeholder="请选择" allowClear>
                         {satisfactionmap.map(obj => [
@@ -758,7 +826,7 @@ function QueryList(props) {
                 <Col span={8}>
                   <Form.Item label="事件标题">
                     {getFieldDecorator('eventTitle', {
-                      initialValue: '',
+                      initialValue: cacheinfo.eventTitle,
                     })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
@@ -766,21 +834,21 @@ function QueryList(props) {
                 <Col span={8} style={{ clear: 'both' }}>
                   <Form.Item label="申报人">
                     {getFieldDecorator('applicationUser', {
-                      initialValue: '',
+                      initialValue: cacheinfo.applicationUser,
                     })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
                 <Col span={8}>
                   <Form.Item label="申报人单位">
                     {getFieldDecorator('applicationUnit', {
-                      initialValue: '',
+                      initialValue: cacheinfo.applicationUnit,
                     })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
                 <Col span={8}>
                   <Form.Item label="申报人部门">
                     {getFieldDecorator('applicationDept', {
-                      initialValue: '',
+                      initialValue: cacheinfo.applicationDept,
                     })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
@@ -788,93 +856,94 @@ function QueryList(props) {
                 <Col span={8}>
                   <Form.Item label="登记人单位">
                     {getFieldDecorator('registerUnit', {
-                      initialValue: '',
+                      initialValue: cacheinfo.registerUnit,
                     })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
                 <Col span={8}>
                   <Form.Item label="登记人部门">
                     {getFieldDecorator('registerDept', {
-                      initialValue: '',
+                      iinitialValue: cacheinfo.registerDept,
                     })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
                 <Col span={8}>
                   <Form.Item label="审核人">
                     {getFieldDecorator('checkUser', {
-                      initialValue: '',
+                      initialValue: cacheinfo.checkUser,
                     })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
                 <Col span={8}>
                   <Form.Item label="审核人单位">
                     {getFieldDecorator('checkUnit', {
-                      initialValue: '',
+                      iinitialValue: cacheinfo.checkUnit,
                     })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
                 <Col span={8}>
                   <Form.Item label="审核人部门">
                     {getFieldDecorator('checkDept', {
-                      initialValue: '',
+                      initialValue: cacheinfo.checkDept,
                     })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
                 <Col span={8}>
                   <Form.Item label="处理人">
                     {getFieldDecorator('handler', {
-                      initialValue: '',
+                      initialValue: cacheinfo.handler,
                     })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
                 <Col span={8}>
                   <Form.Item label="处理人单位">
                     {getFieldDecorator('handleUnit', {
-                      initialValue: '',
+                      initialValue: cacheinfo.handleUnit,
                     })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
                 <Col span={8}>
                   <Form.Item label="处理人部门">
                     {getFieldDecorator('handleDept', {
-                      initialValue: '',
+                      iinitialValue: cacheinfo.handleDept,
                     })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
                 <Col span={8}>
                   <Form.Item label="回访人">
                     {getFieldDecorator('revisitor', {
-                      initialValue: '',
+                      initialValue: cacheinfo.revisitor,
                     })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
                 <Col span={8}>
                   <Form.Item label="回访人单位">
                     {getFieldDecorator('revisitUnit', {
-                      initialValue: '',
+                      initialValue: cacheinfo.revisitUnit,
                     })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
                 <Col span={8}>
                   <Form.Item label="回访人部门">
                     {getFieldDecorator('revisitDept', {
-                      initialValue: '',
+                      initialValue: cacheinfo.revisitDept,
                     })(<Input placeholder="请输入" allowClear />)}
-                  </Form.Item>
-                </Col>
-                <Col span={24}>
-                  <Form.Item label="建单时间" {...forminladeLayout}>
-                    {getFieldDecorator('createTime', {
-                      initialValue: '',
-                    })(<RangePicker
-                      showTime
-                      format='YYYY-MM-DD HH:mm:ss'
-                      allowClear
-                    />)}
                   </Form.Item>
                 </Col>
               </>
             )}
+            <Col span={24}>
+              <Form.Item label="建单时间" {...forminladeLayout}>
+                {getFieldDecorator('createTime', {
+                  initialValue: '',
+                })(<RangePicker
+                  showTime
+                  format='YYYY-MM-DD HH:mm:ss'
+                  allowClear
+                />)}
+              </Form.Item>
+            </Col>
+
 
             <Col span={24} style={{ textAlign: 'right' }}>
               <Button type="primary" onClick={() => handleSearch('search')}>

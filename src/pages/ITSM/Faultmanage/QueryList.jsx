@@ -215,6 +215,7 @@ function QueryList(props) {
         pageSize: paginations.pageSize,
       },
     });
+
   };
 
   const getFaultlist = () => {
@@ -238,6 +239,7 @@ function QueryList(props) {
     if (type) {
       setFieldsValue({ type: [type.substr(0, 3), type] })
     }
+
     setFieldsValue({
       status,
       currentNode
@@ -248,46 +250,46 @@ function QueryList(props) {
         createTime: [moment(addTimeBegin), moment(addTimeEnd)] || '',
       })
     }
-    // getFaultlist();
+    //  getFaultlist();
   }, []);
 
   const searchdata = (values, page, pageSize) => {
     getinitiaQuerylists(values, page, pageSize);
     setTabRecord({
       ...values,
+      createTimeBegin: values.sendTime?.length ? moment(values.sendTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+      createTimeEnd: values.sendTime?.length ? moment(values.sendTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+      sendTime: '',
+      registerOccurTimeBegin: values.registerOccurTimeBegin ? values.registerOccurTimeBegin.format('YYYY-MM-DD HH:mm:ss') : '',
+      registerTimeBegin: values.registerTimeBegin ? values.registerTimeBegin.format('YYYY-MM-DD HH:mm:ss') : '',
+      handleStartTimeBegin: values.handleStartTimeBegin ? values.handleStartTimeBegin.format('YYYY-MM-DD HH:mm:ss') : '',
+      handleStartTimeEnd: values.handleStartTimeEnd ? values.handleStartTimeEnd.format('YYYY-MM-DD HH:mm:ss') : '',
+      type: values.type ? (values.type).slice(-1)[0] : '',
       addTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
       addTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
       createTime: '',
     })
   };
 
+  // useEffect(() => {
+  //   validateFields((err, values) => {
+  //     searchdata(values, 1, paginations.pageSize)
+  //   })
+  // }, [location])
 
-  const handleReset = () => {
-    router.push({
-      pathname: location.pathname,
-      query: {},
-      state: {}
-    });
-    //  getFaultlist();
-    validateFields((err, values) => {
-      if (!err) {
-        searchdata(values, 1, 15);
-      }
-    });
-    setPageinations({ current: 1, pageSize: 15 });
-  };
+
 
   const handleSearch = search => {
     setPageinations({
       ...paginations,
       current: 1,
     });
+
     validateFields((err, values) => {
       if (err) {
         return;
       }
       searchdata(values, 1, paginations.pageSize, search);
-
     });
   };
 
@@ -362,6 +364,22 @@ function QueryList(props) {
     });
   };
 
+  const getTypebyTitle = title => {
+    if (selectdata.ischange) {
+      return selectdata.arr.filter(item => item.title === title)[0].children;
+    }
+    return [];
+  };
+
+  const faultSource = getTypebyTitle('故障来源');
+  const priority = getTypebyTitle('严重程度');
+  const handleResult = getTypebyTitle('故障处理结果');
+  const sysmodular = getTypebyTitle('故障系统模块');
+  const faultType = getTypebyTitle('故障分类');
+  const currentNodeselect = getTypebyTitle('当前处理环节');
+  const effect = getTypebyTitle('影响范围');
+  const workStatues = getTypebyTitle('工单状态');
+
   // 设置初始值
   const record = {
     checkUnit: '',
@@ -393,6 +411,19 @@ function QueryList(props) {
   };
   const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
 
+  const handleReset = () => {
+    router.push({
+      pathname: location.pathname,
+      query: {},
+      state: {}
+    });
+    resetFields();
+    validateFields((err, values) => {
+      searchdata(values, 1, 15)
+    });
+    setPageinations({ current: 1, pageSize: 15 });
+  };
+
   // 获取数据
   useEffect(() => {
     validateFields((err, values) => searchdata(values, cacheinfo.paginations.current, cacheinfo.paginations.pageSize),)
@@ -401,7 +432,6 @@ function QueryList(props) {
   useEffect(() => {
     if (location.state) {
       if (location.state.cache) {
-        console.log(tabrecord)
         // 传表单数据到页签
         dispatch({
           type: 'viewcache/gettabstate',
@@ -431,21 +461,6 @@ function QueryList(props) {
     }
   }, [location.state]);
 
-  const getTypebyTitle = title => {
-    if (selectdata.ischange) {
-      return selectdata.arr.filter(item => item.title === title)[0].children;
-    }
-    return [];
-  };
-
-  const faultSource = getTypebyTitle('故障来源');
-  const priority = getTypebyTitle('严重程度');
-  const handleResult = getTypebyTitle('故障处理结果');
-  const sysmodular = getTypebyTitle('故障系统模块');
-  const faultType = getTypebyTitle('故障分类');
-  const currentNodeselect = getTypebyTitle('当前处理环节');
-  const effect = getTypebyTitle('影响范围');
-  const workStatues = getTypebyTitle('工单状态');
 
   return (
     <PageHeaderWrapper title={titleParams}>
@@ -482,7 +497,7 @@ function QueryList(props) {
                     <Col span={8}>
                       <Form.Item label="工单状态">
                         {getFieldDecorator('status', {
-                          initialValue: cacheinfo.status,
+                          initialValue: cacheinfo.currentNode,
                         })(
                           <Select placeholder="请选择" allowClear>
                             {workStatues.map(obj => [
@@ -496,15 +511,10 @@ function QueryList(props) {
                     </Col>
 
                     <Col span={8}>
-<<<<<<< HEAD
-                      <Form.Item label="故障类型11">
-                        {getFieldDecorator('type')(
-=======
                       <Form.Item label="故障类型">
                         {getFieldDecorator('type', {
-                          initialValue: cacheinfo.type,
+                          initialValue: cacheinfo.currentNode,
                         })(
->>>>>>> 多页签（故障查询时间不可以）
                           <Cascader
                             placeholder="请选择"
                             options={faultType}
@@ -518,7 +528,7 @@ function QueryList(props) {
                     <Col span={12}>
                       <Form.Item label="建单时间" {...{ ...form10ladeLayout }}>
                         {getFieldDecorator('createTime', {
-                          initialValue: cacheinfo.createTime,
+                          initialValue: '',
                         })(<RangePicker
                           showTime
                           format='YYYY-MM-DD HH:mm:ss'
@@ -528,17 +538,14 @@ function QueryList(props) {
                     </Col>
                   </>
                 )}
-<<<<<<< HEAD
 
-=======
->>>>>>> 多页签（故障查询时间不可以）
                 {
                   (!status && !type) && (
                     <>
                       <Col span={8}>
                         <Form.Item label="故障编号">
                           {getFieldDecorator('no', {
-                            initialValue: cacheinfo.no,
+                            initialValue: cacheinfo.currentNode,
                           })(<Input placeholder="请输入" allowClear />)}
                         </Form.Item>
                       </Col>
@@ -546,7 +553,7 @@ function QueryList(props) {
                       <Col span={8}>
                         <Form.Item label="系统模块">
                           {getFieldDecorator('registerModel', {
-                            initialValue: cacheinfo.registerModel,
+                            initialValue: cacheinfo.currentNode,
                           })(
                             <Select placeholder="请选择" allowClear>
                               {sysmodular.map(obj => [
@@ -562,7 +569,7 @@ function QueryList(props) {
                       <Col xl={8} xs={12}>
                         <Form.Item label="严重程度">
                           {getFieldDecorator('registerLevel', {
-                            initialValue: cacheinfo.registerLevel,
+                            initialValue: cacheinfo.currentNode,
                           })(
                             <Select placeholder="请选择" allowClear>
                               {priority.map(obj => [
@@ -577,6 +584,8 @@ function QueryList(props) {
                     </>
                   )
                 }
+
+
               </>
             )}
 
@@ -585,7 +594,7 @@ function QueryList(props) {
                 <Col span={8}>
                   <Form.Item label="故障编号">
                     {getFieldDecorator('no', {
-                      initialValue: cacheinfo.no,
+                      initialValue: cacheinfo.currentNode,
                     })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
@@ -594,7 +603,7 @@ function QueryList(props) {
                   <Form.Item label="登记时间">
                     {getFieldDecorator(
                       'registerTimeBegin', {
-                      initialValue: cacheinfo.registerTimeBegin,
+                      initialValue: cacheinfo.currentNode,
                     },
                     )(<DatePicker format="YYYY-MM-DD" style={{ width: '100%' }} allowClear />)}
                   </Form.Item>
@@ -604,7 +613,7 @@ function QueryList(props) {
                   <Form.Item label="发生时间">
                     {getFieldDecorator(
                       'registerOccurTimeBegin', {
-                      initialValue: cacheinfo.registerOccurTimeBegin,
+                      initialValue: cacheinfo.currentNode,
                     },
                     )(<DatePicker format="YYYY-MM-DD" style={{ width: '100%' }} allowClear />)}
                   </Form.Item>
@@ -613,7 +622,7 @@ function QueryList(props) {
                 <Col xl={8} xs={12}>
                   <Form.Item label="故障来源">
                     {getFieldDecorator('source', {
-                      initialValue: cacheinfo.source,
+                      initialValue: cacheinfo.currentNode,
                     })(
                       <Select placeholder="请选择" allowClear>
                         {faultSource.map(obj => [
@@ -646,7 +655,7 @@ function QueryList(props) {
                 <Col span={8}>
                   <Form.Item label="工单状态">
                     {getFieldDecorator('status', {
-                      initialValue: cacheinfo.status,
+                      initialValue: cacheinfo.currentNode,
                     })(
                       <Select placeholder="请选择" allowClear>
                         {workStatues.map(obj => [
@@ -662,7 +671,7 @@ function QueryList(props) {
                 <Col span={8}>
                   <Form.Item label="系统模块">
                     {getFieldDecorator('registerModel', {
-                      initialValue: cacheinfo.registerModel,
+                      initialValue: cacheinfo.currentNode,
                     })(
                       <Select placeholder="请选择" allowClear>
                         {sysmodular.map(obj => [
@@ -678,7 +687,7 @@ function QueryList(props) {
                 <Col xl={8} xs={12}>
                   <Form.Item label="故障类型">
                     {getFieldDecorator('type', {
-                      initialValue: cacheinfo.type,
+                      initialValue: cacheinfo.currentNode,
                     })(
                       <Cascader
                         placeholder="请选择"
@@ -693,7 +702,7 @@ function QueryList(props) {
                 <Col span={8}>
                   <Form.Item label="故障名称">
                     {getFieldDecorator('title', {
-                      initialValue: cacheinfo.title,
+                      initialValue: cacheinfo.currentNode,
                     })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
@@ -701,7 +710,7 @@ function QueryList(props) {
                 <Col xl={8} xs={12}>
                   <Form.Item label="故障地点">
                     {getFieldDecorator('registerAddress', {
-                      initialValue: cacheinfo.registerAddress,
+                      initialValue: cacheinfo.currentNode,
                     })(
                       <Input placeholder="请输入" allowClear />,
                     )}
@@ -711,7 +720,7 @@ function QueryList(props) {
                 <Col xl={8} xs={12}>
                   <Form.Item label="严重程度">
                     {getFieldDecorator('registerLevel', {
-                      initialValue: cacheinfo.registerLevel,
+                      initialValue: cacheinfo.currentNode,
                     })(
                       <Select placeholder="请选择" allowClear>
                         {priority.map(obj => [
@@ -727,7 +736,7 @@ function QueryList(props) {
                 <Col xl={8} xs={12}>
                   <Form.Item label="影响范围">
                     {getFieldDecorator('registerScope', {
-                      initialValue: cacheinfo.registerScope,
+                      initialValue: cacheinfo.currentNode,
                     },
                     )(
                       <Select placeholder="请选择" allowClear>
@@ -744,7 +753,7 @@ function QueryList(props) {
                 <Col xl={8} xs={12}>
                   <Form.Item label="处理开始时间">
                     {getFieldDecorator('handleStartTimeBegin', {
-                      initialValue: cacheinfo.handleStartTimeBegin,
+                      initialValue: cacheinfo.currentNode,
                     },
                     )(<DatePicker format="YYYY-MM-DD" style={{ width: '100%' }} allowClear />)}
                   </Form.Item>
@@ -753,7 +762,7 @@ function QueryList(props) {
                 <Col xl={8} xs={12}>
                   <Form.Item label="处理完成时间">
                     {getFieldDecorator('handleStartTimeEnd', {
-                      initialValue: cacheinfo.handleStartTimeEnd,
+                      initialValue: cacheinfo.currentNode,
                     },
                     )(<DatePicker format="YYYY-MM-DD" style={{ width: '100%' }} allowClear />)}
                   </Form.Item>
@@ -762,7 +771,7 @@ function QueryList(props) {
                 <Col xl={8} xs={12}>
                   <Form.Item label="处理结果">
                     {getFieldDecorator('handleResult', {
-                      initialValue: cacheinfo.handleResult,
+                      initialValue: cacheinfo.currentNode,
                     })(
                       <Select placeholder="请选择" allowClear>
                         {handleResult.map(obj => [
@@ -794,7 +803,7 @@ function QueryList(props) {
                 <Col span={8}>
                   <Form.Item label="登记人">
                     {getFieldDecorator('registerUser', {
-                      initialValue: cacheinfo.registerUser,
+                      initialValue: cacheinfo.currentNode,
                     })(<Input allowClear />)}
                   </Form.Item>
                 </Col>
@@ -802,7 +811,7 @@ function QueryList(props) {
                 <Col span={8}>
                   <Form.Item label="登记人单位">
                     {getFieldDecorator('registerUnit', {
-                      initialValue: cacheinfo.registerUnit,
+                      initialValue: cacheinfo.currentNode,
                     })(<Input allowClear />)}
                   </Form.Item>
                 </Col>
@@ -810,7 +819,7 @@ function QueryList(props) {
                 <Col span={8}>
                   <Form.Item label="审核人">
                     {getFieldDecorator('checkUser', {
-                      initialValue: cacheinfo.checkUser,
+                      initialValue: cacheinfo.currentNode,
                     })(<Input allowClear />)}
                   </Form.Item>
                 </Col>
@@ -818,7 +827,7 @@ function QueryList(props) {
                 <Col span={8}>
                   <Form.Item label="审核人单位">
                     {getFieldDecorator('checkUnit', {
-                      initialValue: cacheinfo.checkUnit,
+                      initialValue: cacheinfo.currentNode,
                     })(<Input allowClear />)}
                   </Form.Item>
                 </Col>
@@ -826,7 +835,7 @@ function QueryList(props) {
                 <Col xl={8} xs={12}>
                   <Form.Item label="处理人">
                     {getFieldDecorator('handler', {
-                      initialValue: cacheinfo.handler,
+                      initialValue: cacheinfo.currentNode,
                     })(<Input allowClear />)}
                   </Form.Item>
                 </Col>
@@ -834,7 +843,7 @@ function QueryList(props) {
                 <Col span={8}>
                   <Form.Item label="处理人单位">
                     {getFieldDecorator('handleUnit', {
-                      initialValue: cacheinfo.handleUnit,
+                      initialValue: cacheinfo.currentNode,
                     })(<Input allowClear />)}
                   </Form.Item>
                 </Col>
@@ -842,7 +851,7 @@ function QueryList(props) {
                 <Col xl={8} xs={12}>
                   <Form.Item label="总结人">
                     {getFieldDecorator('finishUser', {
-                      initialValue: cacheinfo.finishUser,
+                      initialValue: cacheinfo.currentNode,
                     })(<Input allowClear />)}
                   </Form.Item>
                 </Col>
@@ -850,7 +859,7 @@ function QueryList(props) {
                 <Col span={8}>
                   <Form.Item label="总结人单位">
                     {getFieldDecorator('finishUnit', {
-                      initialValue: cacheinfo.finishUnit,
+                      initialValue: cacheinfo.currentNode,
                     })(<Input allowClear />)}
                   </Form.Item>
                 </Col>
@@ -858,7 +867,7 @@ function QueryList(props) {
                 <Col xl={8} xs={12}>
                   <Form.Item label="确认人">
                     {getFieldDecorator('confirmUser', {
-                      initialValue: cacheinfo.confirmUser,
+                      initialValue: cacheinfo.currentNode,
                     })(<Input allowClear />)}
                   </Form.Item>
                 </Col>
@@ -866,7 +875,7 @@ function QueryList(props) {
                 <Col span={8}>
                   <Form.Item label="确认人单位">
                     {getFieldDecorator('confirmUnit', {
-                      initialValue: cacheinfo.confirmUnit,
+                      initialValue: cacheinfo.currentNode,
                     })(<Input allowClear />)}
                   </Form.Item>
                 </Col>
@@ -877,7 +886,7 @@ function QueryList(props) {
                     <Col span={12}>
                       <Form.Item label="建单时间" {...{ ...form10ladeLayout }}>
                         {getFieldDecorator('createTime', {
-                          initialValue: cacheinfo.createTime,
+                          initialValue: '',
                         })(<RangePicker
                           showTime
                           format='YYYY-MM-DD HH:mm:ss'
@@ -889,19 +898,62 @@ function QueryList(props) {
                 }
               </>
             )}
-            <Col span={24} style={{ textAlign: 'right' }}>
-              <Button type="primary" onClick={() => handleSearch()}>查 询</Button>
-              <Button style={{ marginLeft: 8 }} onClick={() => handleReset()}>重 置</Button>
-              <Button
-                style={{ marginLeft: 8 }}
-                type="link"
-                onClick={() => {
-                  setExpand(!expand);
-                }}
-              >
-                {expand ? (<>关 闭 <UpOutlined /></>) : (<>展 开 <DownOutlined /></>)}
-              </Button>
-            </Col>
+
+            {expand === false && (
+              <Col span={24} style={{ textAlign: 'right' }}>
+                <Button type="primary" onClick={handleSearch}>
+                  查 询
+                </Button>
+                <Button style={{ marginLeft: 8 }} onClick={handleReset}>
+                  重 置
+                </Button>
+                <Button
+                  style={{ marginLeft: 8 }}
+                  type="link"
+                  onClick={() => {
+                    setExpand(!expand);
+                  }}
+                >
+                  {expand ? (
+                    <>
+                      关 闭 <UpOutlined />
+                    </>
+                  ) : (
+                    <>
+                      展 开 <DownOutlined />
+                    </>
+                  )}
+                </Button>
+              </Col>
+            )}
+
+            {expand === true && (
+              <Col span={24} style={{ textAlign: 'right' }}>
+                <Button type="primary" onClick={() => handleSearch('search')}>
+                  查 询
+                </Button>
+                <Button style={{ marginLeft: 8 }} onClick={handleReset}>
+                  重 置
+                </Button>
+                <Button
+                  style={{ marginLeft: 8 }}
+                  type="link"
+                  onClick={() => {
+                    setExpand(!expand);
+                  }}
+                >
+                  {expand ? (
+                    <>
+                      收起 <Icon type="up" />
+                    </>
+                  ) : (
+                    <>
+                      展开 <Icon type="down" />
+                    </>
+                  )}
+                </Button>
+              </Col>
+            )}
           </Form>
         </Row>
         <div style={{ marginBottom: 24 }}>
@@ -918,7 +970,7 @@ function QueryList(props) {
           loading={loading}
           columns={columns.filter(item => item.title !== 'id' || item.key !== 'id')}
           dataSource={faultQueryList.rows}
-          rowKey={r => r.id}
+          rowKey={record => record.id}
           pagination={pagination}
           scroll={{ x: 1400 }}
         />
