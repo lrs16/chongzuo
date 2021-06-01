@@ -37,7 +37,7 @@ const OperationPlanfillin = React.forwardRef((props, ref) => {
     status,
     operationPersonSelect,
   } = props;
-
+  console.log(main,'main')
 
   const statusContent = ['计划中', '延期中', '已超时', '已完成']
   const color = ['blue', 'yellow', 'red', 'green'];
@@ -45,7 +45,6 @@ const OperationPlanfillin = React.forwardRef((props, ref) => {
   const [selectdata, setSelectData] = useState('');
   const [fileslist, setFilesList] = useState([]);
   const [objautodata, setObjautodata] = useState([]);
-
 
   useEffect(() => {
     ChangeFiles(fileslist);

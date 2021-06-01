@@ -20,6 +20,7 @@ import router from 'umi/router';
 
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import SysDict from '@/components/SysDict';
 
 const { RangePicker } = DatePicker;
 const { Option } = Select;
@@ -34,11 +35,22 @@ const formItemLayout = {
   },
 };
 
+const form10ladeLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 4 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 20 },
+  },
+};
+
 let starttime;
 let monthStarttime;
 let endTime;
 
-function OperationmyweeklyReport(props) {
+function WeeklySearch(props) {
   const pagetitle = props.route.name;
   const {
     form: { getFieldDecorator, resetFields, validateFields, setFieldsValue },
@@ -47,8 +59,8 @@ function OperationmyweeklyReport(props) {
   } = props;
   const [expand, setExpand] = useState(false);
   const [paginations, setPaginations] = useState({ current: 1, pageSize: 10 });
-  const [selectdata, setSelectData] = useState('');
   const [selectedrows, setSelectedrows] = useState('');
+  const [selectdata, setSelectData] = useState('');
   const columns = [
     {
       title: '周报名称',
@@ -86,81 +98,21 @@ function OperationmyweeklyReport(props) {
 
     },
     {
-      title: '填报日期',
+      title: '周报分类',
       dataIndex: 'date',
       key: 'date',
     },
     {
-      title: '填报人',
+      title: '填报日期',
       dataIndex: 'person',
       key: 'person',
     },
+    {
+      title: '填报人',
+      dataIndex: 'person1',
+      key: 'person1',
+    },
   ];
-
-  const selectOnchage = (data) => {
-    console.log('data: ', data);
-    switch (data) {
-      case '软件运维周报':
-        router.push({
-          pathname:`/ITSM/operationreport/weeklyreport/softreport/`,
-          query:{
-            type:'week'
-          }
-        })
-        break;
-      case '机房运维周报':
-        router.push({
-          pathname:`/ITSM/operationreport/weeklyreport/computerroomreport`,
-          query:{
-            type:'week'
-          }
-        })
-        break;
-      case '数据库运维周报':
-        router.push({
-          pathname:`/ITSM/operationreport/weeklyreport/databasereport`,
-          query:{
-            type:'week'
-          }
-        })
-        break;
-      case '其他运维周报':
-        router.push({
-          pathname:`/ITSM/operationreport/weeklyreport/otherreport`,
-          query:{
-            type:'week'
-          }
-        })
-        break;
-      default:
-        break;
-    }
-  }
-
-  const menu = (
-    <Menu>
-      <Menu.Item>
-        <span onClick={()=> selectOnchage('软件运维周报')}>
-          软件运维周报
-        </span>
-      </Menu.Item>
-      <Menu.Item>
-      <span onClick={()=> selectOnchage('机房运维周报')}>
-      机房运维周报
-        </span>
-      </Menu.Item>
-      <Menu.Item>
-      <span onClick={()=> selectOnchage('数据库运维周报')}>
-      数据库运维周报
-        </span>
-      </Menu.Item>
-      <Menu.Item>
-      <span onClick={()=> selectOnchage('其他运维周报')}>
-      其他运维周报
-        </span>
-      </Menu.Item>
-    </Menu>
-  );
 
   const getmyweeklyTable = () => {
     dispatch({
@@ -171,8 +123,6 @@ function OperationmyweeklyReport(props) {
       },
     });
   };
-
-
 
   const handleReset = () => {
     resetFields();
@@ -244,23 +194,24 @@ function OperationmyweeklyReport(props) {
     });
   };
 
-  const download = () => {
+
+  const exportDownload = () => {
     validateFields((err, values) => {
-      if (!err) {
-        dispatch({
-          type: 'problemmanage/besolvedownload',
-          payload: { ...values }
-        }).then(res => {
-          const filename = `下载.xls`;
-          const blob = new Blob([res]);
-          const url = window.URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = filename;
-          a.click();
-          window.URL.revokeObjectURL(url);
-        })
-      }
+      dispatch({
+        type: 'processmodel/downloadMyOperationExcel',
+        payload: {
+          ...values,
+        }
+      }).then(res => {
+        const filename = '下载.xls';
+        const blob = new Blob([res]);
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.click();
+        window.URL.revokeObjectURL(url);
+      })
     })
   }
 
@@ -320,10 +271,26 @@ function OperationmyweeklyReport(props) {
     defaultTime();
   }, []);
 
+  const getTypebyTitle = title => {
+    if (selectdata.ischange) {
+      return selectdata.arr.filter(item => item.title === title)[0].children;
+    }
+    return [];
+  }
+
+  const classData = getTypebyTitle('周报分类')
+
+
 
 
   return (
     <PageHeaderWrapper title={pagetitle}>
+      <SysDict
+        typeid="1399541895977242626"
+        commonid="1354288354950123522"
+        ChangeSelectdata={newvalue => setSelectData(newvalue)}
+        style={{ display: 'none' }}
+      />
       <Card>
         <Row gutter={16}>
           <Form {...formItemLayout}>
@@ -339,52 +306,46 @@ function OperationmyweeklyReport(props) {
               </Form.Item>
             </Col>
 
-            <Col span={7}>
-              <Form.Item label='填报日期'>
-                {getFieldDecorator('time1', {
-                  initialValue: starttime ? moment(starttime) : ''
-                })(
-                  <DatePicker
-                    allowClear={false}
-                    disabledDate={startdisabledDate}
-                    onChange={onChange}
-                  />
-                )
-                }
+            <Col span={8}>
+              <Form.Item label="周报分类">
+                {getFieldDecorator('params1', {
+                })
+                  (
+                    <Select placeholder="请选择" allowClear>
+                      {classData.map(obj => [
+                        <Option key={obj.key} value={obj.title}>
+                          {obj.title}
+                        </Option>,
+                      ])}
+                    </Select>,
+                    <Input />
+                  )}
               </Form.Item>
             </Col>
 
-            <Col span={1}>
-              <p style={{ marginTop: 5 }}>-</p>
-            </Col>
-
-
-
             <Col span={8}>
-              <Form.Item label=''>
-                {
-                  getFieldDecorator('time2', {
-                    initialValue: endTime ? moment(endTime) : ''
-                  })
-                    (<DatePicker
-                      allowClear={false}
-                      disabledDate={enddisabledDate}
-                      onChange={endonChange}
-                    />)
-                }
+              <Form.Item label="填报人" >
+                {getFieldDecorator('person', {})(<Input placeholder='请输入' allowClear />)}
               </Form.Item>
             </Col>
 
             {expand === true && (
               <>
-                <Col span={8}>
-                  <Form.Item label="填报人" >
-                    {getFieldDecorator('person', {})(<Input placeholder='请输入' allowClear />)}
+                <Col span={9} {...form10ladeLayout}>
+                  <Form.Item label="计划开始时间">
+                    {getFieldDecorator('plannedStartTime', {
+                    })
+                      (
+                        <RangePicker
+                          showTime
+                          format="YYYY-MM-DD HH:mm:ss"
+                        />
+                      )}
                   </Form.Item>
                 </Col>
+
               </>
             )}
-
 
             {expand === false && (
               <Col span={24} style={{ textAlign: 'right' }}>
@@ -446,55 +407,9 @@ function OperationmyweeklyReport(props) {
           </Form>
         </Row>
 
-        <div>
-          <Dropdown
-            overlay={menu}
-            placement="bottomLeft"
-          >
-            <Button type='primary'>新建</Button>
-          </Dropdown>
-
-          <Button
-            style={{ marginLeft: 8 }}
-            type="primary"
-          // onClick={() => download()}
-          >
-            编辑
-        </Button>
-
-          <Button
-            style={{ marginLeft: 8 }}
-            type="primary"
-          // onClick={() => download()}
-          >
-            复制
-        </Button>
-
-          <Button
-            style={{ marginLeft: 8 }}
-            type="primary"
-          // onClick={() => download()}
-          >
-            粘贴
-        </Button>
-
-          <Button
-            style={{ marginLeft: 8 }}
-            type="primary"
-            onClick={handleDelete}
-          >
-            删除
-        </Button>
-
-          <Button
-            style={{ marginLeft: 8 }}
-            type="primary"
-            onClick={() => download()}
-          >
-            导出数据
-        </Button>
-
-        </div>
+        <Button type="primary" style={{ marginRight: 8 }} onClick={exportDownload}>
+          导出数据
+          </Button>
 
         <Table
           // loading={loading}
@@ -516,5 +431,5 @@ export default Form.create({})(
   connect(({ myweeklyreportindex, loading }) => ({
     myweeklyreportTable: myweeklyreportindex.myweeklyreportTable,
     loading: loading.models.myweeklyreportindex,
-  }))(OperationmyweeklyReport),
+  }))(WeeklySearch),
 );

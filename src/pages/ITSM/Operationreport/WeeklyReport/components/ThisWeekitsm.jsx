@@ -33,7 +33,7 @@ function ThisWeekitsm(props) {
     form: { getFieldDecorator, setFieldsValue },
     forminladeLayout,
     formItemLayout,
-    thisWeekitsmlist,
+    type,
     ChangeFiles,
     searchNumber
   } = props;
@@ -312,7 +312,7 @@ function ThisWeekitsm(props) {
     <>
       <Row gutter={16}>
         <Col span={20}>
-          <p style={{ fontWeight: '900', fontSize: '16px' }}>四、本周事件、问题及故障</p>
+          <p style={{ fontWeight: '900', fontSize: '16px' }}>{type === 'week' ? '四、本周事件、问题及故障':'四、本月事件、问题及故障'}</p>
         </Col>
         <Form {...formItemLayout}>
           <Row gutter={16}>

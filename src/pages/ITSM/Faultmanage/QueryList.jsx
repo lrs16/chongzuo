@@ -512,9 +512,7 @@ function QueryList(props) {
 
                     <Col span={8}>
                       <Form.Item label="故障类型">
-                        {getFieldDecorator('type', {
-                          initialValue: cacheinfo.currentNode,
-                        })(
+                        {getFieldDecorator('type')(
                           <Cascader
                             placeholder="请选择"
                             options={faultType}

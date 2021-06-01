@@ -182,6 +182,7 @@ function Handlingrate(props) {
     },
   ];
 
+
   const columnsBusiness = [
     {
       title: '业务负责人',
@@ -209,9 +210,9 @@ function Handlingrate(props) {
             pathname: '/ITSM/problemmanage/problemquery',
             query: {
               problem: 'handle',
-              handlerId: record.handlerId,
+              checkUserId: record.handlerId,
               progressStatus: record.totalCode,
-              handleDeptId: record.handleDeptId,
+              checkDeptId: record.handleDeptId,
               addTimeBegin: statTimeBegin,
               addTimeEnd: statTimeEnd,
             }
@@ -232,9 +233,9 @@ function Handlingrate(props) {
             pathname: '/ITSM/problemmanage/problemquery',
             query: {
               problem: 'handle',
-              handlerId: record.handlerId,
+              checkUserId: record.handlerId,
               progressStatus: record.handlingCode,
-              handleDeptId: record.handleDeptId,
+              checkDeptId: record.handleDeptId,
               addTimeBegin: statTimeBegin,
               addTimeEnd: statTimeEnd,
             }
@@ -256,9 +257,9 @@ function Handlingrate(props) {
             pathname: '/ITSM/problemmanage/problemquery',
             query: {
               problem: 'handle',
-              handlerId: record.handlerId,
+              checkUserId: record.handlerId,
               progressStatus: record.handledCode,
-              handleDeptId: record.handleDeptId,
+              checkDeptId: record.handleDeptId,
               addTimeBegin:statTimeBegin,
               addTimeEnd:statTimeEnd,
             }
@@ -278,9 +279,9 @@ function Handlingrate(props) {
             pathname: '/ITSM/problemmanage/problemquery',
             query: {
               problem: 'handle',
-              handlerId: record.handlerId,
+              checkUserId: record.handlerId,
               progressStatus: record.closedCode,
-              handleDeptId: record.handleDeptId,
+              checkDeptId: record.handleDeptId,
               addTimeBegin:statTimeBegin,
               addTimeEnd:statTimeEnd,
             }

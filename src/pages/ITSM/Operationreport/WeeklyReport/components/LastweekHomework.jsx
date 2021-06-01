@@ -19,7 +19,9 @@ function LastweekHomework(props) {
   const {
     form: { getFieldDecorator },
     forminladeLayout,
-    myTaskplanlist,
+    startTime,
+    endTime,
+    type,
     dispatch,
     loading
   } = props;
@@ -93,6 +95,8 @@ function LastweekHomework(props) {
      return dispatch({
       type: 'processmodel/weekmyTasklist',
       payload: {
+        time1:startTime,
+        time2:endTime,
         pageIndex: paginations.current,
         pageSize: paginations.pageSize,
       },
@@ -327,10 +331,10 @@ function LastweekHomework(props) {
 
   return (
     <>
-      { loading === false && data && data.length > 0 && (
+      { loading === false  && (
         <Row gutter={16}>
           <Col span={20}>
-            <p style={{ fontWeight: '900', fontSize: '16px' }}>七、上周作业完成情况</p>
+            <p style={{ fontWeight: '900', fontSize: '16px' }}>{type === 'week'?'七、上周作业完成情况':'七、上月作业完成情况'}</p>
           </Col>
 
           <Table

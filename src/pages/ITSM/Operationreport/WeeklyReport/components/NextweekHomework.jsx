@@ -19,6 +19,9 @@ function NextweekHomework(props) {
     form: { getFieldDecorator },
     forminladeLayout,
     myTaskplanlist,
+    startTime,
+    endTime,
+    type,
     loading,
     dispatch
   } = props;
@@ -88,19 +91,13 @@ function NextweekHomework(props) {
     }
   }
 
-  const handleTabledata = () => {
-    if (myTaskplanlist.rows && myTaskplanlist.rows.length) {
-      const newarr = (myTaskplanlist.rows).map((item, index) => {
-        return Object.assign(item, { editable: true, isNew: false, key: index })
-      })
-      setData(newarr)
-    }
-  }
 
   const getTobolist = () => {
     return dispatch({
      type: 'processmodel/weekmyTasklist',
      payload: {
+       time1:startTime,
+       time2:endTime,
        pageIndex: paginations.current,
        pageSize: paginations.pageSize,
      },
@@ -118,7 +115,6 @@ function NextweekHomework(props) {
 
   useEffect(() => {
     getTobolist();
-    handleTabledata();
   }, [])
 
   const column = [
@@ -334,10 +330,10 @@ function NextweekHomework(props) {
 
   return (
     <>
-      { loading === false && data && data.length > 0 && (
+      { loading === false && (
         <Row gutter={16}>
           <Col span={20}>
-            <p style={{ fontWeight: '900', fontSize: '16px' }}>八、下周作业计划</p>
+            <p style={{ fontWeight: '900', fontSize: '16px' }}>{type === 'week'?'八、下周作业计划':'八、下月作业计划'}</p>
           </Col>
 
           <Table

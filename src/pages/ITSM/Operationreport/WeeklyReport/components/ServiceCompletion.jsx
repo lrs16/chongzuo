@@ -16,7 +16,7 @@ function ServiceCompletion(props) {
   const {
     form: { getFieldDecorator },
     forminladeLayout,
-    serviceCompletionlist,
+    tabActiveKey,
     serviceCompletionthreelist,
     maintenanceService,
     maintenanceArr,
@@ -28,35 +28,6 @@ function ServiceCompletion(props) {
   } = props;
 
 
-  const column = [
-    {
-      title: '一级对象',
-      dataIndex: 'first_object',
-      key: 'first_object',
-
-    },
-    {
-      title: '二级对象',
-      dataIndex: 'second_object',
-      key: 'second_object',
-    },
-    {
-      title: '上周',
-      dataIndex: 'last_num',
-      key: 'last_num',
-    },
-    {
-      title: '本周',
-      dataIndex: 'now_num',
-      key: 'now_num',
-    },
-    {
-      title: '环比',
-      dataIndex: 'points_count',
-      key: 'points_count',
-    },
-  ];
-
   const secondlyColumn = [
     {
       title: '服务指标',
@@ -64,12 +35,12 @@ function ServiceCompletion(props) {
       key: 'name',
     },
     {
-      title: '上周',
+      title: tabActiveKey  === 'week' ? '上周':'上月',
       dataIndex: 'last',
       key: 'last',
     },
     {
-      title: '下周',
+      title: tabActiveKey === 'week' ? '下周':'下月',
       dataIndex: 'now',
       key: 'now',
     },
@@ -106,17 +77,12 @@ function ServiceCompletion(props) {
   const handlemaintenanserviceceArr = () => {
     dispatch({
       type: 'eventstatistics/fetcheventServiceList',
-      payload: { startTime, endTime }
-    })
-
-    dispatch({
-      type: 'eventstatistics/fetchMaintenancelist',
-      payload: { tabActiveKey, startTime, endTime }
+      payload: { tabActiveKey,startTime, endTime }
     })
 
     dispatch({
       type: 'eventstatistics/fetchSelfHandleList',
-      payload: {  startTime, endTime }
+      payload: {  tabActiveKey,startTime, endTime }
     })
   }
 

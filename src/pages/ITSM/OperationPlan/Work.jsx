@@ -456,12 +456,12 @@ function Work(props) {
       if (res.code === 200) {
         message.info(res.msg);
         router.push({
-          pathname: `/ITSM/operationplan/operationplancheck`,
+          pathname: `/ITSM/operationplan/myoperationplan/`,
         });
       } else {
         message.info(res.msg);
         router.push({
-          pathname: `/ITSM/operationplan/operationplancheck`,
+          pathname: `/ITSM/operationplan/myoperationplan/`,
         });
       }
     })

@@ -26,6 +26,7 @@ function OperationPlanfillintion(props) {
   const [richtext, setRichtext] = useState('');
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
   const [copyData, setCopyData] = useState('')
+  console.log('copyData: ', copyData);
 
   const formItemLayout = {
     labelCol: {
@@ -132,7 +133,6 @@ function OperationPlanfillintion(props) {
       type: 'processmodel/pasteFlow',
       payload: mainId[0]
     }).then(res => {
-
       if (res.code === 200) {
         const resData = res.main;
         delete resData.operationNo;
@@ -173,7 +173,7 @@ function OperationPlanfillintion(props) {
           }}
           files={[]}
           operationPersonSelect={operationPersonSelect}
-          main={copyData ? copyData.main : {}}
+          main={copyData}
         />
       </Card>
 

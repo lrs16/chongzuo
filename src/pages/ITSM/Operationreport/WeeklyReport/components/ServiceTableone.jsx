@@ -10,23 +10,17 @@ import { connect } from 'dva';
 import SysUpload from '@/components/SysUpload';
 
 const { TextArea } = Input;
-let tabActiveKey = 'week';
 function ServiceTableone(props) {
 
   const {
     form: { getFieldDecorator },
-    forminladeLayout,
-    serviceCompletionlist,
-    serviceCompletionthreelist,
-    maintenanceService,
     maintenanceArr,
-    soluteArr,
     startTime,
     endTime,
+    tabActiveKey,
     loading,
     dispatch
   } = props;
-
 
   const column = [
     {
@@ -41,12 +35,12 @@ function ServiceTableone(props) {
       key: 'second_object',
     },
     {
-      title: '上周',
+      title:  tabActiveKey === 'week' ? '上周':'上月',
       dataIndex: 'last_num',
       key: 'last_num',
     },
     {
-      title: '本周',
+      title: tabActiveKey === 'week' ? '本周':'本月',
       dataIndex: 'now_num',
       key: 'now_num',
     },
@@ -57,71 +51,15 @@ function ServiceTableone(props) {
     },
   ];
 
-  const secondlyColumn = [
-    {
-      title: '服务指标',
-      dataIndex: 'name',
-      key: 'name',
-    },
-    {
-      title: '上周',
-      dataIndex: 'last',
-      key: 'last',
-    },
-    {
-      title: '下周',
-      dataIndex: 'now',
-      key: 'now',
-    },
-    {
-      title: '环比',
-      dataIndex: 'points',
-      key: 'points',
-    },
-    {
-      title: '备注',
-      dataIndex: 'remark',
-      key: 'remark',
-    },
-  ];
-
-  const threeColumn = [
-    {
-      title: '工单受理数量',
-      dataIndex: 'not_selfhandle',
-      key: 'not_selfhandle',
-    },
-    {
-      title: '一线处理量',
-      dataIndex: 'is_selfhandle',
-      key: 'is_selfhandle',
-    },
-    {
-      title: '一线解决率',
-      dataIndex: 'points',
-      key: 'points',
-    },
-  ]
-
   const handlemaintenanserviceceArr = () => {
-    dispatch({
-      type: 'eventstatistics/fetcheventServiceList',
-      payload: { startTime, endTime }
-    })
-
     dispatch({
       type: 'eventstatistics/fetchMaintenancelist',
       payload: { tabActiveKey, startTime, endTime }
     })
-
-    dispatch({
-      type: 'eventstatistics/fetchSelfHandleList',
-      payload: {  startTime, endTime }
-    })
   }
 
   useEffect(() => {
-    if (startTime) {
+    if (startTime && tabActiveKey) {
       handlemaintenanserviceceArr()
     }
   }, [startTime])
@@ -148,8 +86,6 @@ function ServiceTableone(props) {
             columns={column}
             dataSource={maintenanceArr.data}
           />
-
-
         </Row>
 
       )}

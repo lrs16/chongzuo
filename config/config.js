@@ -558,6 +558,12 @@ export default {
                           component: './ITSM/Operationreport/WeeklyReport/OperationmyweeklyReport'
                         },
                         {
+                          path: '/ITSM/operationreport/weeklyreport/myweeklyreportsearch',
+                          name: '周报查询',
+                          icon: 'fork',
+                          component: './ITSM/Operationreport/WeeklyReport/WeeklySearch'
+                        },
+                        {
                           path: '/ITSM/operationreport/weeklyreport/softreport/',
                           name: '软件运维周报',
                           icon: 'fork',
@@ -587,15 +593,24 @@ export default {
                       path: '/ITSM/operationreport/monthlyreport',
                       name: '运维月报',
                       icon: 'cloud-server',
-                      component: './ITSM/Operationreport/MonthlyReport/OperationmymonthlyReport',
-                      // routes:[
-                      //   // {
-                      //   //   path:'/ITSM/operationreport/myweeklyreport',
-                      //   //   name:'我的周报',
-                      //   //   icon:'fork',
-                      //   //   component:'./ITSM/Operationreport/MyweeklyReport/OperationmyweeklyReport'
-                      //   // }
-                      // ]
+                      routes:[
+                        {
+                          path:'/ITSM/operationreport/monthlyreport',
+                          redirect:'/ITSM/operationreport/monthlyreport/mymonthlyreport'
+                        },
+                        {
+                          path:'/ITSM/operationreport/monthlyreport/mymonthlyreport',
+                          name:'我的月报',
+                          icon:'fork',
+                          component: './ITSM/Operationreport/MonthlyReport/MymonthlyReport',
+                        },
+                        {
+                          path: '/ITSM/operationreport/monthlyreport/mymonthlysearch',
+                          name: '月报查询',
+                          icon: 'fork',
+                          component: './ITSM/Operationreport/MonthlyReport/MymonthlySearch'
+                        },
+                      ]
                     },
 
                   ]

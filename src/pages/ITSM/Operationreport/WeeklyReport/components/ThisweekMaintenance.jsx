@@ -37,6 +37,7 @@ function ThisweekMaintenance(props) {
     handleSavethisweek,
     ChangeFiles,
     maintenanceArr,
+    type,
     dispatch,
     loading
   } = props;
@@ -304,6 +305,7 @@ function ThisweekMaintenance(props) {
   ];
 
 
+
   const handleTabledata = () => {
     const newarr = maintenanceList.map((item, index) => {
       return Object.assign(item, { editable: true, isNew: false, key: index })
@@ -331,7 +333,14 @@ function ThisweekMaintenance(props) {
     <>
       { loading === false && (
         <>
-          <p style={{ fontWeight: '900', fontSize: '16px', marginTop: '20px' }}>一、本周运维情况综述</p>
+          {type === 'week' && (
+            <p style={{ fontWeight: '900', fontSize: '16px', marginTop: '20px' }}>一、本周运维情况综述</p>
+          )}
+
+          {type === 'month' && (
+            <p style={{ fontWeight: '900', fontSize: '16px', marginTop: '20px' }}>一、本月运维情况综述</p>
+          )}
+
           <Table
             columns={column}
             dataSource={data}

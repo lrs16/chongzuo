@@ -32,24 +32,15 @@ const mergeCell = 'statCurrentNode';
 const columns = [
   {
     title: '当前环节',
-    dataIndex: mergeCell,
-    key: mergeCell,
-    align: 'center',
-    render: (text, record) => {
-      const obj = {
-        children: text,
-        props: {},
-      };
-      obj.props.rowSpan = record.rowSpan;
-      return obj;
-    },
+    dataIndex: 'statCurrentNode',
+    key: 'statCurrentNode',
   },
-  {
-    title: '工单状态',
-    dataIndex: 'statName',
-    key: 'statName',
-    align: 'center',
-  },
+  // {
+  //   title: '工单状态',
+  //   dataIndex: 'statName',
+  //   key: 'statName',
+  //   align: 'center',
+  // },
   {
     title: '工单数',
     dataIndex: 'statCount',
@@ -125,6 +116,7 @@ function Statusstatistics(props) {
     statTimeEnd = '';
   }
 
+
   return (
     <PageHeaderWrapper title={pagetitle}>
       <Card>
@@ -164,15 +156,10 @@ function Statusstatistics(props) {
           </Button>
         </div>
 
-        {loading === false && (
-          <MergeTable
-            column={columns}
-            tableSource={statusArr}
-            mergecell={mergeCell}
-          />
-        )}
-
-
+        <Table 
+          columns={columns}
+          dataSource={statusArr}
+        />
       </Card>
 
     </PageHeaderWrapper>

@@ -38,7 +38,7 @@ let starttime;
 let monthStarttime;
 let endTime;
 
-function OperationmyweeklyReport(props) {
+function MymonthlyReport(props) {
   const pagetitle = props.route.name;
   const {
     form: { getFieldDecorator, resetFields, validateFields, setFieldsValue },
@@ -98,13 +98,12 @@ function OperationmyweeklyReport(props) {
   ];
 
   const selectOnchage = (data) => {
-    console.log('data: ', data);
     switch (data) {
       case '软件运维周报':
         router.push({
           pathname:`/ITSM/operationreport/weeklyreport/softreport/`,
           query:{
-            type:'week'
+            type:'month'
           }
         })
         break;
@@ -112,23 +111,23 @@ function OperationmyweeklyReport(props) {
         router.push({
           pathname:`/ITSM/operationreport/weeklyreport/computerroomreport`,
           query:{
-            type:'week'
+            type:'month'
           }
         })
         break;
       case '数据库运维周报':
         router.push({
-          pathname:`/ITSM/operationreport/weeklyreport/databasereport`,
+          pathname:'/ITSM/operationreport/weeklyreport/databasereport',
           query:{
-            type:'week'
+            type:'month'
           }
         })
         break;
       case '其他运维周报':
         router.push({
-          pathname:`/ITSM/operationreport/weeklyreport/otherreport`,
+          pathname:'/ITSM/operationreport/weeklyreport/otherreport',
           query:{
-            type:'week'
+            type:'month'
           }
         })
         break;
@@ -516,5 +515,5 @@ export default Form.create({})(
   connect(({ myweeklyreportindex, loading }) => ({
     myweeklyreportTable: myweeklyreportindex.myweeklyreportTable,
     loading: loading.models.myweeklyreportindex,
-  }))(OperationmyweeklyReport),
+  }))(MymonthlyReport),
 );

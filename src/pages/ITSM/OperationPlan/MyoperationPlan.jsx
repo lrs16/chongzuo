@@ -286,6 +286,13 @@ function MyoperationPlan(props) {
 
   const handleReset = () => {
     resetFields();
+    dispatch({
+      type: 'processmodel/myTasklist',
+      payload: {
+        pageIndex: 0,
+        pageSize: paginations.pageSize,
+      },
+    })
   };
 
   const searchdata = (values, page, pageSize) => {
@@ -497,11 +504,11 @@ function MyoperationPlan(props) {
 
     const deleteJudge = selectedRows.every(item => {
       if (item.checkResult) {
-        message.info('请选择审核状态:待送审，审核结果为空');
+        message.info('请选择审核状态:待送审，审核结果为空，回退信息为空');
         return false;
       }
 
-      if (!item.checkResult) {
+      if (!item.checkResult && !item.fallbackMsg) {
         return true
       }
 

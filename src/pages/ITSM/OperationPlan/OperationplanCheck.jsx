@@ -304,6 +304,14 @@ function OperationplanCheck(props) {
 
   const handleReset = () => {
     resetFields();
+    dispatch({
+      type: 'processmodel/myTasklist',
+      payload: {
+        flowNodeName: '计划审核',
+        pageIndex: 0,
+        pageSize: paginations.pageSize,
+      },
+    });
   };
 
   const searchdata = (values, page, pageSize) => {
