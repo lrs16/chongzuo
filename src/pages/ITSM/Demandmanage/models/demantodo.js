@@ -94,7 +94,7 @@ export default {
         router.push({
           pathname: `/ITSM/demandmanage/to-do`,
           query: { pathpush: true },
-          state: { cacheinfo: {}, cach: false }
+          state: { cache: false }
         });
       }
     },
@@ -125,7 +125,7 @@ export default {
         router.push({
           pathname: `/ITSM/demandmanage/to-do`,
           query: { pathpush: true },
-          state: { cach: false }
+          state: { cache: false }
         });
       }
     },
@@ -144,7 +144,7 @@ export default {
         router.push({
           pathname: `/ITSM/demandmanage/to-do`,
           query: { pathpush: true },
-          state: { cach: false }
+          state: { cache: false }
         });
       }
     },
@@ -163,7 +163,7 @@ export default {
         router.push({
           pathname: `/ITSM/demandmanage/to-do`,
           query: { pathpush: true },
-          state: { cach: false }
+          state: { cache: false }
         });
       }
     },

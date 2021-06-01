@@ -52,6 +52,8 @@ export default {
         message.error(response.msg, 2);
         router.push({
           pathname: `/ITSM/eventmanage/to-do`,
+          query: { pathpush: true },
+          state: { cache: false }
         });
       }
       yield put({
@@ -107,7 +109,7 @@ export default {
           router.push({
             pathname: `/ITSM/eventmanage/to-do`,
             query: { pathpush: true },
-            state: { cach: false }
+            state: { cache: false }
           });
         }
       }
@@ -130,7 +132,7 @@ export default {
           router.push({
             pathname: `/ITSM/eventmanage/to-do`,
             query: { pathpush: true },
-            state: { cach: false }
+            state: { cache: false }
           });
         }
       }
@@ -155,7 +157,7 @@ export default {
           router.push({
             pathname: `/ITSM/eventmanage/to-do`,
             query: { pathpush: true },
-            state: { cach: false }
+            state: { cache: false }
           });
         }
       }
@@ -201,7 +203,7 @@ export default {
         router.push({
           pathname: `/ITSM/eventmanage/to-do`,
           query: { pathpush: true },
-          state: { cach: false }
+          state: { cache: false }
         });
       }
     },

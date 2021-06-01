@@ -225,7 +225,7 @@ function Workorder(props) {
         router.push({
           pathname: `/ITSM/problemmanage/besolved`,
           query: { pathpush: true },
-          state: { cach: false }
+          state: { cache: false }
         })
       } else {
         message.success(res.error);
@@ -446,7 +446,7 @@ function Workorder(props) {
         router.push({
           pathname: `/ITSM/problemmanage/besolved`,
           query: { pathpush: true },
-          state: { cach: false }
+          state: { cache: false }
         })
       } else {
         message.error(res.msg);

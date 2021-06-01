@@ -165,7 +165,8 @@ function Todolistdetails(props) {
     // 返回上一页
     router.push({
       pathname: `/ITSM/faultmanage/todolist`,
-      query: { pathpush: true }
+      query: { pathpush: true },
+      state: { cache: false }
     });
   };
 
@@ -245,7 +246,7 @@ function Todolistdetails(props) {
           {
             pathname: `/ITSM/faultmanage/todolist`,
             query: { pathpush: true },
-            state: { cach: false }
+            state: { cache: false }
           });
       } else {
         message.error(res.msg);
@@ -278,10 +279,10 @@ function Todolistdetails(props) {
       if (res.code === 200) {
         //  getfaultTodoDetailData();  //都要流转了还要获取信息？
         message.success(res.msg);
-        router.push({ pathname: `/ITSM/faultmanage/todolist`, query: { pathpush: true }, state: { cach: false } });
+        router.push({ pathname: `/ITSM/faultmanage/todolist`, query: { pathpush: true }, state: { cache: false } });
       } else {
         message.error(res.msg);
-        router.push({ pathname: `/ITSM/faultmanage/todolist`, query: { pathpush: true }, state: { cach: false } });
+        router.push({ pathname: `/ITSM/faultmanage/todolist`, query: { pathpush: true }, state: { cache: false } });
       }
     });
   };
@@ -601,7 +602,7 @@ function Todolistdetails(props) {
             }).then(res1 => {
               if (res1.code === 200) {
                 message.success(res1.msg);
-                router.push({ pathname: `/ITSM/faultmanage/todolist`, query: { pathpush: true } })
+                router.push({ pathname: `/ITSM/faultmanage/todolist`, query: { pathpush: true }, state: { cache: false } })
               } else {
                 message.error(res1.msg);
                 router.push(`/ITSM/faultmanage/registration`);
@@ -657,10 +658,10 @@ function Todolistdetails(props) {
             }).then(res1 => {
               if (res1.code === 200) {
                 message.success(res1.msg);
-                router.push({ pathname: `/ITSM/faultmanage/todolist`, query: { pathpush: true } })
+                router.push({ pathname: `/ITSM/faultmanage/todolist`, query: { pathpush: true }, state: { cache: false } })
               } else {
                 message.error(res1.msg);
-                router.push({ pathname: `/ITSM/faultmanage/todolist`, query: { pathpush: true } })
+                router.push({ pathname: `/ITSM/faultmanage/todolist`, query: { pathpush: true }, state: { cache: false } })
               }
             });
           }
@@ -709,10 +710,10 @@ function Todolistdetails(props) {
             }).then(res1 => {
               if (res1.code === 200) {
                 message.success(res1.msg);
-                router.push({ pathname: `/ITSM/faultmanage/todolist`, query: { pathpush: true } })
+                router.push({ pathname: `/ITSM/faultmanage/todolist`, query: { pathpush: true }, state: { cache: false } })
               } else {
                 message.error(res1.msg);
-                router.push({ pathname: `/ITSM/faultmanage/todolist`, query: { pathpush: true } })
+                router.push({ pathname: `/ITSM/faultmanage/todolist`, query: { pathpush: true }, state: { cache: false } })
               }
             });
           }
@@ -740,7 +741,7 @@ function Todolistdetails(props) {
     }).then(res => {
       if (res.code === 200) {
         message.info(res.msg);
-        router.push({ pathname: `/ITSM/faultmanage/todolist`, query: { pathpush: true } })
+        router.push({ pathname: `/ITSM/faultmanage/todolist`, query: { pathpush: true }, state: { cache: false } })
       } else {
         message.error(res.msg);
       }
