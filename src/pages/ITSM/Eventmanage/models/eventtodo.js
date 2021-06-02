@@ -62,7 +62,7 @@ export default {
       });
     },
     // 编辑保存
-    *eventsave({ payload: { paloadvalues, flowInstanceId } }, { call, put }) {
+    *eventsave({ payload: { paloadvalues, flowInstanceId, locationquery } }, { call, put }) {
       const values = replacerec({ ...paloadvalues, flowInstanceId });
       const registres = yield call(EventSaveFlow, values);
       if (registres.code === -1) {
@@ -76,6 +76,7 @@ export default {
         router.push({
           pathname: `/ITSM/eventmanage/to-do/record/workorder`,
           query: {
+            ...locationquery,
             taskName: eventStatus,
             taskId: registres.taskId,
             mainId: flowInstanceId,

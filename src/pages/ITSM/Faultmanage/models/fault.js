@@ -139,7 +139,7 @@ export default {
         message.success(response.msg);
         router.push({
           pathname: `/ITSM/faultmanage/registration`,
-          query: { tabid: sessionStorage.getItem('tabid'), closetab: true }
+          query: { tabid: sessionStorage.getItem('tabid'), closecurrent: true }
         })
         const { flowInstId, troubleNo, flowTaskId, flowNodeName } = response;
         router.push({

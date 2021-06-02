@@ -70,7 +70,6 @@ function WorkOrder(props) {
   // 回调用户ID
   useEffect(() => {
     if (info !== '' && info !== undefined) {
-      console.log(info)
       changRegisterId(info.demandForm.id); // formid
       if ((taskName === '业务科室领导审核' ||
         taskName === '系统开发商审核' ||

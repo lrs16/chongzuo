@@ -47,7 +47,7 @@ export default {
           message.success(registres.msg, 5);
           router.push({
             pathname: `/ITSM/eventmanage/registration`,
-            query: { tabid: sessionStorage.getItem('tabid'), closetab: true }
+            query: { tabid: sessionStorage.getItem('tabid'), closecurrent: true }
           })
           router.push({
             pathname: `/ITSM/eventmanage/to-do/record/workorder`,

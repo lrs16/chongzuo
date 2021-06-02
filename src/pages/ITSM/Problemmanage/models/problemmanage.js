@@ -90,12 +90,11 @@ export default {
     //  登记保存
     *getAddid({ payload }, { call }) {
       const response = yield call(startandsave, payload);
-      console.log(response)
       if (response.code === 200) {
         message.success(response.msg);
         router.push({
           pathname: `/ITSM/faultmanage/registration`,
-          query: { tabid: sessionStorage.getItem('tabid'), closetab: true }
+          query: { tabid: sessionStorage.getItem('tabid'), closecurrent: true }
         });
         const { flowInstId, problemNo, flowTaskId } = response;
         router.push({

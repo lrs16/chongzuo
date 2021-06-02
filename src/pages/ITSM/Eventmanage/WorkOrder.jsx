@@ -71,6 +71,7 @@ function WorkOrder2(props) {
   } = props;
 
   const { mainId, taskId, taskName } = location.query;
+  console.log(location.query)
   const [formregistrat, setFormregistrat] = useState('');
   const [formcheck, setFormcheck] = useState('');
   const [formhandle, setFormhandle] = useState('');
@@ -109,6 +110,7 @@ function WorkOrder2(props) {
         paloadvalues,
         taskName,
         flowInstanceId,
+        locationquery: location.query,
       },
     });
   };
@@ -393,16 +395,18 @@ function WorkOrder2(props) {
 
   // 初始化打开编辑,获取用户信息，流转类型
   useEffect(() => {
-    dispatch({
-      type: 'eventtodo/eventopenflow',
-      payload: {
-        taskId,
-      },
-    });
-    dispatch({
-      type: 'itsmuser/fetchuser',
-    });
-    sessionStorage.setItem('Processtype', 'event');
+    if (location.query.mainId) {
+      dispatch({
+        type: 'eventtodo/eventopenflow',
+        payload: {
+          taskId,
+        },
+      });
+      dispatch({
+        type: 'itsmuser/fetchuser',
+      });
+      sessionStorage.setItem('Processtype', 'event');
+    }
   }, [mainId]);
 
   // 获取事件流程记录

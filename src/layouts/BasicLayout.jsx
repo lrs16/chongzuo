@@ -68,6 +68,11 @@ const multiplepath = [
   { path: '/ITSM/demandmanage/registration', type: 'demand' },
 ]
 
+// 多条计划，从页面新增
+const pageopen = [
+  { path: '/ITSM/operationplan/operationplanfillin', type: 'operation' },
+]
+
 const noMatch = (
   <Result
     status="403"
@@ -155,7 +160,6 @@ const BasicLayout = props => {
     const end = tabs.slice(-1)[0];
     const target = alonepath.filter(item => item.path === end.itemPath)[0];
     setActiveKey(end.id);
-    console.log(end)
     router.push({
       pathname: end.itemPath,
       query: target ? end.query : {},
@@ -167,14 +171,20 @@ const BasicLayout = props => {
   //  待办跳转处理用mainId做为标签id并传编号orderNo用于标签标题显示,查询跳转详情用编号No做为标签id
   useEffect(() => {
     const tabtargetid = toptabs.filter(item => location.query.No ? item.id === location.query.No : item.id === location.query.mainId)[0];      //  已有mindId或No标签
-    const tabtargetpath = toptabs.filter(item => item.itemPath === url)[0];                     //  已有非工单处理路由
-    const target = alonepath.filter(item => item.path === url)[0];                              //  属于工单处理路由
-    const menutarget = menulist.filter(item => item.menuUrl === url)[0];                        //  系统管理菜单列表有该路由
-    const targetmultiple = multiplepath.filter(item => item.path === location.pathname)[0];         //  属于登记类打开同一个链接多页签
-    // 已有标签,且不属于登记类
-    if (tabtargetpath && !targetmultiple) {
+    const tabtargetpath = toptabs.filter(item => item.itemPath === url)[0];                          //  已有非工单处理路由
+    const target = alonepath.filter(item => item.path === url)[0];                                   //  属于工单处理路由
+    const menutarget = menulist.filter(item => item.menuUrl === url)[0];                             //  系统管理菜单列表有该路由
+    const targetmultiple = multiplepath.filter(item => item.path === location.pathname)[0];          //  属于登记类打开同一个链接多页签
+    const targetpageopen = pageopen.filter(item => item.path === location.pathname)[0];              //  从页面按钮打开同一个链接多多页签
+
+    // 已有标签,且不属于登记类和作业计划
+    if (tabtargetpath && !targetmultiple && !targetpageopen) {
       setActiveKey(tabtargetpath.id);
     };
+    // 作业计划
+    if (targetpageopen && !tabtargetpath && !targetmultiple) {
+      console.log('111')
+    }
     if (tabtargetid) {
       // 已有标签的工单详情或工单
       const id = location.query.No ? location.query.No : location.query.mainId;
@@ -207,7 +217,7 @@ const BasicLayout = props => {
     // 处理完毕且待办列表已关闭需跳转回待办列表，添加待办列表新签标
     if (location.query.pathpush && !tabtargetid && !target && !tabtargetpath && menutarget) {
       const { menuDesc, id, menuUrl } = menutarget;
-      const panels = { name: menuDesc, id, itemPath: menuUrl, query: location.query, closable: true };
+      const panels = { name: menuDesc, id, itemPath: menuUrl, query: {}, closable: true };
       toptabs.push(panels);
       setActiveKey(id);
     };

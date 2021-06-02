@@ -35,7 +35,7 @@ export default {
         const { taskId, processId, demandId } = response.data;
         router.push({
           pathname: `/ITSM/demandmanage/registration`,
-          query: { tabid: sessionStorage.getItem('tabid'), closetab: true }
+          query: { tabid: sessionStorage.getItem('tabid'), closecurrent: true }
         })
         router.push({
           pathname: `/ITSM/demandmanage/to-do/record/workorder`,

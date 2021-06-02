@@ -230,6 +230,14 @@ function QueryList(props) {
     paginations,
   };
   const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
+  // 获取数据
+  useEffect(() => {
+    validateFields((err, values) => {
+      if (!err) {
+        searchdata(values, cacheinfo.paginations.current, cacheinfo.paginations.pageSize)
+      }
+    });
+  }, [location]);
 
   // 设置时间
   useEffect(() => {

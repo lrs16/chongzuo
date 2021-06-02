@@ -9,7 +9,7 @@ const UserModel = {
     tabid: '',              // 写入的页签的id 
     savecache: false,       // true可以改变页签state
     tolink: false,          // true可以跳转路由
-    tabdata: undefined              //  从页签传回表单的信息
+    tabdata: undefined      //  从页签传回表单的信息
   },
   effects: {
     *fetch({ payload: { newtab, tabid } }, { put }) {
