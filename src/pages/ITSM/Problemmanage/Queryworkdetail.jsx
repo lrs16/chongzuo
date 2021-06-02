@@ -69,7 +69,8 @@ function Queryworkdetail(props) {
   const handleClose = () => { // 返回上一页
     router.push({
       pathname: `/ITSM/problemmanage/problemquery`,
-      query: { pathpush: true }
+      query: { pathpush: true },
+      state: { cache: false }
     });
   }
 
@@ -169,7 +170,7 @@ function Queryworkdetail(props) {
                 </Collapse>
               )}
             </div>
-          
+
           </>
         )
       }

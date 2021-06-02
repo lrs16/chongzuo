@@ -84,8 +84,9 @@ function Querylistdetails(props) {
 
   const handleClose = () => { // 返回上一页
     router.push({
-      pathname: `/ITSM/demandmanage/query`,
-      query: { pathpush: true }
+      pathname: `/ITSM/faultmanage/querylist`,
+      query: { pathpush: true },
+      state: { cache: false }
     });
   }
 
