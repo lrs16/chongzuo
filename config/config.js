@@ -593,15 +593,15 @@ export default {
                       path: '/ITSM/operationreport/monthlyreport',
                       name: '运维月报',
                       icon: 'cloud-server',
-                      routes:[
+                      routes: [
                         {
-                          path:'/ITSM/operationreport/monthlyreport',
-                          redirect:'/ITSM/operationreport/monthlyreport/mymonthlyreport'
+                          path: '/ITSM/operationreport/monthlyreport',
+                          redirect: '/ITSM/operationreport/monthlyreport/mymonthlyreport'
                         },
                         {
-                          path:'/ITSM/operationreport/monthlyreport/mymonthlyreport',
-                          name:'我的月报',
-                          icon:'fork',
+                          path: '/ITSM/operationreport/monthlyreport/mymonthlyreport',
+                          name: '我的月报',
+                          icon: 'fork',
                           component: './ITSM/Operationreport/MonthlyReport/MymonthlyReport',
                         },
                         {
@@ -1283,7 +1283,7 @@ export default {
       changeOrigin: true,
     },
     '/monitor/': {
-      target: ' http://172.16.10.11:9901/', // 计量业务监控
+      target: ' http://172.16.10.109:9901/', // 计量业务监控
       changeOrigin: true,
     },
     '/inspection/': {

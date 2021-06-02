@@ -76,33 +76,33 @@ class Fafak extends Component {
     dispatch({
       type: 'fafak/fetch2zone',
     });
-    dispatch({
-      type: 'fafak/fetchdoendy',
-    });
-    dispatch({
-      type: 'fafak/fetchdownother',
-    });
-    dispatch({
-      type: 'fafak/fetch102safezone',
-    });
-    dispatch({
-      type: 'fafak/fetch102down',
-    });
-    dispatch({
-      type: 'fafak/fetchupdy',
-    });
-    dispatch({
-      type: 'fafak/fetchupother',
-    });
-    dispatch({
-      type: 'fafak/fetch102up2zone',
-    });
-    dispatch({
-      type: 'fafak/fetch102safe2zone',
-    });
-    dispatch({
-      type: 'fafak/fetch102upsafezone',
-    });
+    // dispatch({
+    //   type: 'fafak/fetchdoendy',
+    // });
+    // dispatch({
+    //   type: 'fafak/fetchdownother',
+    // });
+    // dispatch({
+    //   type: 'fafak/fetch102safezone',
+    // });
+    // dispatch({
+    //   type: 'fafak/fetch102down',
+    // });
+    // dispatch({
+    //   type: 'fafak/fetchupdy',
+    // });
+    // dispatch({
+    //   type: 'fafak/fetchupother',
+    // });
+    // dispatch({
+    //   type: 'fafak/fetch102up2zone',
+    // });
+    // dispatch({
+    //   type: 'fafak/fetch102safe2zone',
+    // });
+    // dispatch({
+    //   type: 'fafak/fetch102upsafezone',
+    // });
   }
 
   render() {
@@ -110,29 +110,35 @@ class Fafak extends Component {
       loading,
       fafak: {
         zone3data,
-        safezonedata,
-        zone2data,
-        downdydata,
-        otherdata,
-        zone102_2data,
-        down102,
-        updydata,
-        upotherdata,
-        up102_2zonedata,
-        safe102_2zonedata,
-        up102safezone,
+        // safezonedata,
+        // zone2data,
+        // downdydata,
+        // otherdata,
+        // // zone102_2data,
+        // down102,
+        // updydata,
+        // upotherdata,
+        // up102_2zonedata,
+        // safe102_2zonedata,
+        // up102safezone,
       },
     } = this.props;
 
-    const downdydatas = changedata(downdydata);
-    const otherdatas = changedata(otherdata);
-    const zone102_2datas = changedata(zone102_2data);
-    const down102s = changedata(down102);
-    const updydatas = changedata(updydata);
-    const upotherdatas = changedata(upotherdata);
-    const up102_2zonedatas = changedata(up102_2zonedata);
-    const safe102_2zonedatas = changedata(safe102_2zonedata);
-    const up102safezones = changedata(up102safezone);
+    console.log(zone3data)
+    const newzone3data = {
+      name: '计量中心',
+      children: [...zone3data]
+    }
+
+    // const downdydatas = changedata(downdydata);
+    // const otherdatas = changedata(otherdata);
+    // // const zone102_2datas = changedata(zone102_2data);
+    // const down102s = changedata(down102);
+    // const updydatas = changedata(updydata);
+    // const upotherdatas = changedata(upotherdata);
+    // const up102_2zonedatas = changedata(up102_2zonedata);
+    // const safe102_2zonedatas = changedata(safe102_2zonedata);
+    // const up102safezones = changedata(up102safezone);
     return (
       <PageHeaderWrapper title="KAFKA消费">
         <Alert
@@ -143,12 +149,14 @@ class Fafak extends Component {
         />
         <h3>KAFKA节点监控（整点刷新）</h3>
         <Row gutter={24} type="flex">
-          <Col xl={8} xs={24} style={{ marginBottom: 24 }}>
-            <ChartCard title="3区KAFKA节点" contentHeight={200}>
-              <Treecompactbox datas={zone3data} height={200} padding={[15, 60, 10, 25]} />
-            </ChartCard>
+          <Col xl={24} xs={24} style={{ marginBottom: 24 }}>
+            {zone3data.length > 0 && (
+              <ChartCard title="3区KAFKA节点" contentHeight={200}>
+                <Treecompactbox datas={newzone3data} height={200} padding={[15, 80, 10, 40]} />
+              </ChartCard>
+            )}
           </Col>
-          <Col xl={8} xs={24} style={{ marginBottom: 24 }}>
+          {/* <Col xl={8} xs={24} style={{ marginBottom: 24 }}>
             <ChartCard title="安全接入区KAFKA节点" contentHeight={200}>
               <Treecompactbox datas={safezonedata} height={200} padding={[15, 60, 10, 25]} />
             </ChartCard>
@@ -157,11 +165,11 @@ class Fafak extends Component {
             <ChartCard title="2区KAFKA节点" contentHeight={200}>
               <Treecompactbox datas={zone2data} height={200} padding={[15, 60, 10, 25]} />
             </ChartCard>
-          </Col>
+          </Col> */}
         </Row>
-        <h3>KAFKA主题消费监控（整点刷新）</h3>
-        <h3>下行主题</h3>
-        <Row gutter={24} type="flex">
+        {/* <h3>KAFKA主题消费监控（整点刷新）</h3>
+        <h3>下行主题</h3> */}
+        {/* <Row gutter={24} type="flex">
           <Col xl={12} xs={24} style={{ marginBottom: 24 }}>
             <ChartCard title="低压相关" contentHeight={350}>
               <Spin spinning={loading} style={{ background: '#ffffff' }}>
@@ -222,9 +230,9 @@ class Fafak extends Component {
               </Spin>
             </ChartCard>
           </Col>
-        </Row>
-        <h3>上行主题</h3>
-        <Row gutter={24} type="flex">
+        </Row> */}
+        {/* <h3>上行主题</h3> */}
+        {/* <Row gutter={24} type="flex">
           <Col xl={12} xs={24} style={{ marginBottom: 24 }}>
             <ChartCard
               title="低压相关"
@@ -340,7 +348,7 @@ class Fafak extends Component {
               </Spin>
             </ChartCard>
           </Col>
-        </Row>
+        </Row> */}
       </PageHeaderWrapper>
     );
   }

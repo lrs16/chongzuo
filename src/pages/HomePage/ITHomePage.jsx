@@ -337,24 +337,6 @@ function ITHomePage(props) {
   const [tabletotal, setTableTotal] = useState('');
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 10 });
 
-  useEffect(() => {
-    if (tabnew) {
-      RegistratRef.current.validateFields((err, values) => {
-        dispatch({
-          type: 'viewcache/gettabstate',
-          payload: {
-            ...values,
-            creationTime: values.creationTime.format('YYYY-MM-DD HH:mm:ss'),
-            registerTime: values.registerTime.format('YYYY-MM-DD HH:mm:ss'),
-            completeTime: values.completeTime.format('YYYY-MM-DD HH:mm:ss'),
-            functionalModule: values.functionalModule.join('/'),
-          },
-        });
-      });
-      RegistratRef.current.resetFields();
-    }
-  }, [tabnew]);
-
   const searchdata = (value, page, size, key, tabkey) => {
     switch (key) {
       case 'event': {
@@ -404,8 +386,8 @@ function ITHomePage(props) {
         dispatch({
           type: 'fault/getSearchfaultTodo',
           payload: {
-            values,
-            current: page,
+            ...values,
+            pageNum: page,
             pageSize: size,
           },
         });
@@ -439,7 +421,7 @@ function ITHomePage(props) {
         dispatch({
           type: 'problemmanage/searchBesolve',
           payload: {
-            values,
+            ...values,
             pageNum: page,
             pageSize: size,
           },
@@ -466,6 +448,7 @@ function ITHomePage(props) {
           taskName: tabkey === '全部待办' ? '' : tabkey,
           demandId: value.No,
           registerPerson: value.name,
+          creationTime: '',
           creationStartTime: value.time === '' ? '' : moment(value.time[0]).format('YYYY-MM-DD'),
           creationEndTime: value.time === '' ? '' : moment(value.time[1]).format('YYYY-MM-DD'),
         };

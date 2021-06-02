@@ -515,7 +515,6 @@ function MyoperationPlan(props) {
       return null;
     })
 
-    console.log(deleteJudge,'deleteJudge')
 
     if (deleteJudge === false) {
       return false;

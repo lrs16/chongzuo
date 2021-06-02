@@ -76,7 +76,7 @@ export async function queryOrder() {
 
 // 3区KAFKA节点，接口未解决
 export async function getKafka3Zone() {
-  return request(`/api-monitoring-business/kafka/3Zone`);
+  return request(`/monitor/kafka/getKafkaNodeData`);
 }
 
 // 安全接入区KAFKA节点，接口未解决

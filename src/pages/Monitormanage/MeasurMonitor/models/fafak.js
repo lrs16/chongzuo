@@ -55,7 +55,7 @@ export default {
   namespace: 'fafak',
 
   state: {
-    zone3data: {}, // 3区KAFKA节点
+    zone3data: [], // 3区KAFKA节点
     safezonedata: {}, // 安全接入区KAFKA节点
     zone2data: {}, // 2区KAFKA节点
     downdydata: {}, // 下行主题低压相关
@@ -71,11 +71,11 @@ export default {
 
   effects: {
     *fetch3zone(_, { call, put }) {
-      // const response = yield call(getKafka3Zone);
+      const response = yield call(getKafka3Zone);
+      console.log(response)
       yield put({
         type: 'get3zone',
-        // payload: response.data,
-        payload: Zone3data,
+        payload: response.data,
       });
     },
     *fetchsafezone(_, { call, put }) {

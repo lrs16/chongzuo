@@ -3,6 +3,11 @@ import React, { Component } from 'react';
 import { Chart, Geom, Axis, Coord, Legend, View, Point } from 'bizcharts';
 import DataSet from '@antv/data-set';
 
+const statusMap = new Map([
+  ['0', '离线'],
+  ['1', '在线'],
+])
+
 class Treecompactbox extends Component {
   render() {
     const { datas, height, padding } = this.props;
@@ -51,16 +56,16 @@ class Treecompactbox extends Component {
               shape="smooth"
               color="#3399ff"
               opacity={0.8}
-              tooltip="ip*state"
+              tooltip="nodeName*nodeStatus"
             />
           </View>
           <View
             data={dv.getAllNodes().map(node => ({
               hasChildren: !!(node.children && node.children.length),
-              statetrue: !!(node.data.state === '失败'),
+              state: !!(node.data.nodeStatus === '0'),
               name: node.data.name,
-              ip: node.data.ip,
-              state: node.data.state,
+              ip: node.data.nodeName,
+              nodeStatus: node.data.nodeStatus,
               x: node.x,
               y: node.y,
             }))}
@@ -69,21 +74,21 @@ class Treecompactbox extends Component {
               position="x*y"
               color="statetrue"
               label={[
-                'name*ip*state*hasChildren',
-                (name, ip, state, hasChildren) => {
+                'name*ip*nodeStatus*hasChildren',
+                (name, ip, nodeStatus, hasChildren) => {
                   if (hasChildren === false) {
-                    if (state === '成功') {
+                    if (nodeStatus === '1') {
                       return {
-                        content: `${ip}(${state})`,
+                        content: `${ip}${statusMap.get(nodeStatus)}`,
                         style: {
-                          fill: '#444',
+                          fill: '#3399ff',
                         },
                       };
                     }
                     return {
-                      content: `${ip}(${state})`,
+                      content: `${ip}${statusMap.get(nodeStatus)}`,
                       style: {
-                        fill: 'red',
+                        fill: '#999',
                       },
                     };
                   }
