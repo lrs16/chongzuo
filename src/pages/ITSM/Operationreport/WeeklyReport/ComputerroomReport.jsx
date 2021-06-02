@@ -15,15 +15,6 @@ import Link from 'umi/link';
 import moment from 'moment';
 import router from 'umi/router';
 import { connect } from 'dva';
-import Development from './components/Development';
-import ThisweekMaintenance from './components/ThisweekMaintenance';
-import ServiceCompletion from './components/ServiceCompletion';
-import ThisWeekitsm from './components/ThisWeekitsm';
-import SoftCompletion from './components/SoftCompletion';
-import RemainingDefects from './components/RemainingDefects';
-import LastweekHomework from './components/LastweekHomework';
-import NextweekHomework from './components/NextweekHomework';
-import ServiceTableone from './components/ServiceTableone';
 import styles from './index.less';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import SysUpload from '@/components/SysUpload';
@@ -65,7 +56,7 @@ const formincontentLayout = {
   },
 };
 
-const { RangePicker } = DatePicker;
+const { RangePicker,MonthPicker } = DatePicker;
 const { TextArea } = Input;
 let startTime;
 let monthStarttime;
@@ -75,6 +66,7 @@ function ComputerroomReport(props) {
   const {
     form: { getFieldDecorator, validateFields, setFieldsValue },
     match: { params: { id } },
+    location: { query: { type } },
     dispatch,
     maintenanceList,
     developmentList,
@@ -193,9 +185,16 @@ function ComputerroomReport(props) {
   }
 
   const defaultTime = () => {
-    //  周统计
-    startTime = moment().subtract('days', 6).format('YYYY-MM-DD');
-    endTime = moment().format('YYYY-MM-DD');
+    //  周
+    if (type === 'week') {
+      startTime = moment().subtract('days', 6).format('YYYY-MM-DD');
+      endTime = moment().format('YYYY-MM-DD');
+    } else {
+      //  月
+      startTime = moment().startOf('month').format('YYYY-MM-DD');
+      endTime = moment().endOf('month').format('YYYY-MM-DD');
+    }
+
   }
 
   const searchNumber = (value) => {
@@ -215,10 +214,6 @@ function ComputerroomReport(props) {
       payload: { tabActiveKey, startTime, endTime }
     })
   }
-
-  useEffect(() => {
-    // handlemaintenanceArr();
-  }, [])
 
   // 上传删除附件触发特定表单保存
   useEffect(() => {
@@ -273,10 +268,16 @@ function ComputerroomReport(props) {
   }
 
   const onChange = () => {
-    validateFields((err, value) => {
-      startTime = moment(value.time1[0]).format('YYYY-MM-DD');
-      endTime = moment(value.time1[1]).format('YYYY-MM-DD');
-    })
+    if (type === 'week') {
+      startTime = dateString;
+      endTime = moment(dateString).add(+6, 'day').format('YYYY-MM-DD');
+      setFieldsValue({ time2: moment(endTime) });
+    } else {
+      startTime = date.startOf('month').format('YYYY-MM-DD');
+      console.log('startTime: ', startTime);
+      endTime = date.endOf('month').format('YYYY-MM-DD');
+      console.log('endTime: ', endTime);
+    }
   }
 
   const newMember = () => {
@@ -529,7 +530,7 @@ function ComputerroomReport(props) {
             <Form {...formItemLayout}>
 
               <Col span={8}>
-                <Form.Item label='周报名称'>
+                <Form.Item label={type === 'week'? '周报名称':'月报名称'}>
                   {getFieldDecorator('name', {
                     rules: [
                       {
@@ -544,21 +545,42 @@ function ComputerroomReport(props) {
                 </Form.Item>
               </Col>
 
-              <Col span={8}>
-                <Form.Item label='起始时间'>
-                  {getFieldDecorator('time1', {
-                    initialValue: [moment(startTime), moment(endTime)]
-                  })(<RangePicker
-                    allowClear={false}
-                    // disabledDate={startdisabledDate}
-                    // placeholder='请选择'
-                    onChange={onChange}
-                  />)}
-                </Form.Item>
-              </Col>
+              {
+                type === 'week' && (
+                  <Col span={8}>
+                    <Form.Item label='起始时间'>
+                      {getFieldDecorator('time1', {
+                        initialValue: [moment(startTime), moment(endTime)]
+                      })(<RangePicker
+                        allowClear={false}
+                        // disabledDate={startdisabledDate}
+                        // placeholder='请选择'
+                        onChange={onChange}
+                      />)}
+                    </Form.Item>
+                  </Col>
+                )
+              }
+
+              {
+                type === 'month' && (
+                  <Col span={8}>
+                    <Form.Item label='起始时间'>
+                      {getFieldDecorator('time1', {
+                        initialValue: moment(startTime)
+                      })(<MonthPicker
+                        allowClear={false}
+                        // disabledDate={startdisabledDate}
+                        // placeholder='请选择'
+                        onChange={onChange}
+                      />)}
+                    </Form.Item>
+                  </Col>
+                )
+              }
 
               <Col span={24}>
-                <Form.Item label="本周运维总结" {...formincontentLayout}>
+                <Form.Item label={type === 'week'? '本周运维总结':'本月运维总结'} {...formincontentLayout}>
                   {
                     getFieldDecorator('content1', {})
                       (<TextArea autoSize={{ minRows: 3 }} />)
@@ -646,7 +668,9 @@ function ComputerroomReport(props) {
                   ChangeFiles={(newvalue) => {
                     setFiles(newvalue)
                   }}
-                  getTableindex={index => setTableIndex(index)}
+                  type={type}
+                  startTime={startTime}
+                  endTime={endTime}
                 />
               </Col>
 
@@ -675,10 +699,10 @@ function ComputerroomReport(props) {
                 <p style={{ fontWeight: '900', fontSize: '16px' }}> 4 作业管控情况（含预防性运维）</p>
               </Col>
 
-              <Col span={24}><p>4.1本周作业完成情况</p></Col>
+              <Col span={24}><p>{type === 'week' ? '4.1本周作业完成情况':'4.1本月作业完成情况'}</p></Col>
 
               <Col span={24}>
-                <Form.Item label='本周作业完成情况' {...formincontentLayout}>
+                <Form.Item label={type === 'week'? '本周作业完成情况':'本月作业完成情况'} {...formincontentLayout}>
                   {
                     getFieldDecorator('content3', {})
                     (<TextArea autoSize={{ minRows: 3 }}/>)
@@ -692,14 +716,16 @@ function ComputerroomReport(props) {
                 <ThisWeek
                   forminladeLayout={forminladeLayout}
                   lastweekHomeworklist={lastweekHomeworklist}
+                  startTime={startTime}
+                  endTime={endTime}
                 />
               </Col>
 
               
-              <Col span={24}><p>4.2本周工作票开具情况及服务器查询操作票情况统计</p></Col>
+              <Col span={24}><p>{type === 'week' ?'4.2本周工作票开具情况及服务器查询操作票情况统计':'4.2本月工作票开具情况及服务器查询操作票情况统计'}</p></Col>
 
               <Col span={24}>
-                <Form.Item label='本周统计情况' {...formincontentLayout}>
+                <Form.Item label={type === 'week'? '本周统计情况':'本月统计情况'} {...formincontentLayout}>
                   {
                     getFieldDecorator('content3', {})
                     (<TextArea autoSize={{ minRows: 3 }}/>)
@@ -707,7 +733,7 @@ function ComputerroomReport(props) {
                 </Form.Item>
               </Col>
 
-              <Col span={24}>4.3下周作业完成情况</Col>
+              <Col span={24}>{type === 'week' ? '4.3下周作业完成情况':'4.3下月作业完成情况'}</Col>
 
 
               {/* 下周工作计划 */}
@@ -727,7 +753,7 @@ function ComputerroomReport(props) {
                   remainingDefectslist={remainingDefectslist}
                   startTime={startTime}
                   endTime={endTime}
-                  tabActiveKey={tabActiveKey}
+                  type={type}
                 />
               </Col>
 

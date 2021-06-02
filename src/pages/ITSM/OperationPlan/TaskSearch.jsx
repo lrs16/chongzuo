@@ -21,18 +21,6 @@ import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import SysDict from '@/components/SysDict';
 
-// const formItemLayout = {
-//   labelCol: {
-//     xs: { span: 24 },
-//     sm: { span: 8 },
-//   },
-//   wrapperCol: {
-//     xs: { span: 24 },
-//     sm: { span: 16 },
-//   },
-// };
-
-
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
@@ -86,7 +74,8 @@ function TaskSearch(props) {
   let titleParams;
 
   const [expand, setExpand] = useState(false);
-  const [paginations, setPaginations] = useState({ current: 0, pageSize: 10 });
+  const [tabrecord, setTabRecord] = useState({});
+  const [paginations, setPaginations] = useState({ current: 1, pageSize: 15 });
   const [selectdata, setSelectData] = useState('');
   const [selectedRows, setSelectedRows] = useState([]);
   const [columns, setColumns] = useState([]);
@@ -133,9 +122,6 @@ function TaskSearch(props) {
     });
     resetFields();
   };
-
-
-
 
   const initialColumns = [
     {
@@ -371,6 +357,32 @@ function TaskSearch(props) {
         pageSize
       },
     });
+    setTabRecord({
+      ...values,
+      time1: values.addTime?.length ? moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+      time2: values.addTime?.length ? moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+      addTime: '',
+      checkTime1: values.checkTime?.length ? moment(values.checkTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+      checkTime2: values.checkTime?.length ? moment(values.checkTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+      checkTime: '',
+      executeOperationTime1: values.executeOperationTime?.length ? moment(values.executeOperationTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+      executeOperationTime2: values.executeOperationTime?.length ? moment(values.executeOperationTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+      executeOperationTime: '',
+      plannedStartTime1: values.plannedStartTime?.length ? moment(values.plannedStartTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+      plannedStartTime2: values.plannedStartTime?.length ? moment(values.plannedStartTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+      plannedStartTime: '',
+      startTime1: values.startTime?.length ? moment(values.startTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+      startTime2: values.startTime?.length ? moment(values.startTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+      startTime: '',
+      plannedEndTime1: values.plannedendTime?.length ? moment(values.plannedendTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+      plannedEndTime2: values.plannedendTime?.length ? moment(values.plannedendTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+      plannedendTime: '',
+      endTime1: values.endTime?.length ? moment(values.endTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+      endTime2: values.endTime?.length ? moment(values.endTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+      endTime: '',
+      pageIndex: page - 1,
+      pageSize
+    })
   };
 
   const onShowSizeChange = (page, pageSize) => {
@@ -396,6 +408,74 @@ function TaskSearch(props) {
       current: page,
     });
   };
+
+  const time = time1 ? [moment(time1), moment(time2)] : '';
+    // 设置初始值
+    const record = {
+      status: '',
+      executeResult: '',
+      operationUser: '',
+      timeoutStatus: '',
+      addTime: time,
+      operationNo: '',
+      systemName: '',
+      type: '',
+      nature: '',
+      operationUnit: '',
+      billing: '',
+      object: '',
+      content: '',
+      plannedStartTime: '',
+      plannedendTime: '',
+      checkStatus: '',
+      executeContent: '',
+      checkResult: '',
+      startTime: '',
+      endTime: '',
+      executeOperationTime: '',
+      addUser: '',
+      addUnit: '',
+      checkUser: '',
+      checkTime: '',
+      paginations,
+      checkContent:'',
+    };
+  
+    let cacheinfo = {};
+    if (location && location.state) {
+      cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
+    }
+
+  useEffect(() => {
+    if (location.state) {
+      if (location.state.cache) {
+        console.log(tabrecord,'tabrecord')
+        // 传表单数据到页签
+        dispatch({
+          type: 'viewcache/gettabstate',
+          payload: {
+            cacheinfo: {
+              ...tabrecord,
+              paginations,
+              expand,
+            },
+            tabid: sessionStorage.getItem('tabid')
+          },
+        });
+      };
+      // 点击菜单刷新
+      if (location.state.reset) {
+        handleReset()
+      };
+      // 标签切回设置初始值
+      if (location.state.cacheinfo) {
+        const { current, pageSize } = location.state.cacheinfo.paginations;
+        setExpand(location.state.cacheinfo.expand);
+        setPaginations({ ...paginations, current, pageSize })
+      };
+    }
+  }, [location.state]);
+  
   // 查询
   const handleSearch = () => {
     setPaginations({
@@ -537,19 +617,6 @@ function TaskSearch(props) {
         operationUser,
         timeoutStatus
       })
-      validateFields((err, values) => {
-        dispatch({
-          type: 'processmodel/getOperationQueryList',
-          payload: {
-            ...values,
-            time1: values.addTime?.length ? moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-            time2: values.addTime?.length ? moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-            addTime: '',
-            pageIndex: paginations.current,
-            pageSize: paginations.pageSize,
-          },
-        });
-      })
     }
     getoperationPerson();
     setColumns(initialColumns)
@@ -559,7 +626,7 @@ function TaskSearch(props) {
     validateFields((err, values) => {
       searchdata(values, 1, paginations.pageSize)
     })
-  }, [location])
+  }, [location.state])
 
 
   const pagination = {
@@ -590,6 +657,7 @@ function TaskSearch(props) {
                     <Col span={7}>
                       <Form.Item label="作业状态">
                         {getFieldDecorator('status', {
+                            // initialValue: cacheinfo.status,
                         })
                           (
                             <Select placeholder="请选择" allowClear>
@@ -605,7 +673,9 @@ function TaskSearch(props) {
 
                     <Col span={8}>
                       <Form.Item label="作业结果">
-                        {getFieldDecorator('executeResult', {})
+                        {getFieldDecorator('executeResult', {
+                          // initialValue: cacheinfo.executeResult,
+                        })
                           (
                             <Select placeholder="请选择" allowClear>
                               {taskResult.map(obj => [

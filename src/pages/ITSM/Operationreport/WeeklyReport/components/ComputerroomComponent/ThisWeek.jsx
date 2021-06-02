@@ -20,6 +20,8 @@ function ThisWeek(props) {
     form: { getFieldDecorator },
     forminladeLayout,
     myTaskplanlist,
+    startTime,
+    endTime,
     dispatch
   } = props;
   const [paginations, setPaginations] = useState({ current: 0, pageSize: 10 });
@@ -100,6 +102,8 @@ function ThisWeek(props) {
     return dispatch({
      type: 'processmodel/weekmyTasklist',
      payload: {
+      time1:startTime,
+      time2:endTime,
        pageIndex: paginations.current,
        pageSize: paginations.pageSize,
      },

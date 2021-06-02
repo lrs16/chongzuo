@@ -29,48 +29,36 @@ const formItemLayout = {
   }
 }
 
-const mergeCell = 'statCurrentNode';
 const columns = [
   {
     title: '当前环节',
-    dataIndex: mergeCell,
-    key: mergeCell,
-    align: 'center',
-    render: (text, record) => {
-      const obj = {
-        children: text,
-        props: {},
-      };
-      obj.props.rowSpan = record.rowSpan;
-      return obj;
-    },
+    dataIndex: 'statCurrentNode',
+    key: 'statCurrentNode',
   },
-  {
-    title: '工单状态',
-    dataIndex: 'statName',
-    key: 'statName'
-  },
+
   {
     title: '工单数',
     dataIndex: 'statCount',
     key: 'statCount',
     render: (text, record) => {
-      if(record.statName !== '合计') {
+      if (record.statName !== '合计') {
         return <Link
-        to={{
-          pathname: '/ITSM/faultmanage/querylist',
-          query: { 
-            status: record.statCode,
-            addTimeBegin: statTimeBegin,
-            addTimeEnd: statTimeEnd,
-            currentNode: record.statCurrentNode,
-            statName: record.statName,
-           }
-        }}
-      >
-        {text}
-      </Link>
-      } 
+          to={{
+            pathname: '/ITSM/faultmanage/querylist',
+            query: {
+              status: record.statCode,
+              addTimeBegin: statTimeBegin,
+              addTimeEnd: statTimeEnd,
+              currentNode: record.statCurrentNode,
+              statName: record.statName,
+              pathpush: true
+            },
+            state: { cache: false, }
+          }}
+        >
+          {text}
+        </Link>
+      }
       return <span>{text}</span>
     }
   },
@@ -86,15 +74,14 @@ function Breakdownlist(props) {
     loading
   } = props;
 
-
   const onChange = (date, dateString) => {
     [statTimeBegin, statTimeEnd] = dateString;
   }
-  
+
   const handleList = () => {
     dispatch({
       type: 'faultstatics/fetchfaulthandle',
-      payload: { statTimeBegin, statTimeEnd,dictType: 'type' }
+      payload: { statTimeBegin, statTimeEnd, dictType: 'type' }
     })
   }
 
@@ -113,7 +100,7 @@ function Breakdownlist(props) {
   const download = () => {
     dispatch({
       type: 'faultstatics/downloadFaultdetail',
-      payload: { dictType: 'type',statTimeBegin, statTimeEnd}
+      payload: { dictType: 'type', statTimeBegin, statTimeEnd }
     }).then(res => {
       const filename = '下载.xls';
       const blob = new Blob([res]);
@@ -168,14 +155,10 @@ function Breakdownlist(props) {
           </Button>
         </div>
 
-
-        { loading === false && (
-            <MergeTable
-            column={columns}
-            tableSource={faultdetailArr}
-            mergecell={mergeCell}
-          />
-        )}
+        <Table
+          columns={columns}
+          dataSource={faultdetailArr}
+        />
       </Card>
 
     </PageHeaderWrapper>
@@ -183,7 +166,7 @@ function Breakdownlist(props) {
 }
 
 export default Form.create({})(
-  connect(({ faultstatics,loading }) => ({
+  connect(({ faultstatics, loading }) => ({
     faultdetailArr: faultstatics.faultdetailArr,
     loading: loading.models.faultstatics
   }))(Breakdownlist)

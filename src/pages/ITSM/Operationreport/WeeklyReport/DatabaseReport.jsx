@@ -58,7 +58,7 @@ const formincontentLayout = {
   },
 };
 
-const { RangePicker } = DatePicker;
+const { RangePicker,MonthPicker } = DatePicker;
 const { TextArea } = Input;
 let startTime;
 let monthStarttime;
@@ -68,6 +68,7 @@ function DatabaseReport(props) {
   const {
     form: { getFieldDecorator, validateFields, setFieldsValue },
     match: { params: { id } },
+    location: { query: { type } },
     dispatch,
     maintenanceList,
     developmentList,
@@ -92,7 +93,6 @@ function DatabaseReport(props) {
   const developmentformRef = useRef();
   const thisWeekitsmRef = useRef();
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
-  // const [tableIndex, setTableIndex] = useState('1');
   const [secondbutton, setSecondbutton] = useState(false);
   const [addTitle, setAddTitle] = useState([]);
   const [columns, setColumns] = useState([]);
@@ -192,14 +192,15 @@ function DatabaseReport(props) {
   }
 
   const defaultTime = () => {
-    //  周统计
-    startTime = moment().subtract('days', 6).format('YYYY-MM-DD');
-    endTime = moment().format('YYYY-MM-DD');
-  }
-
-  const searchNumber = (value) => {
-    console.log('value: ', value);
-
+    //  周
+    if (type === 'week') {
+      startTime = moment().subtract('days', 6).format('YYYY-MM-DD');
+      endTime = moment().format('YYYY-MM-DD');
+    } else {
+      //  月
+      startTime = moment().startOf('month').format('YYYY-MM-DD');
+      endTime = moment().endOf('month').format('YYYY-MM-DD');
+    }
   }
   // 上传删除附件触发保存
   useEffect(() => {
@@ -258,15 +259,20 @@ function DatabaseReport(props) {
 
   // 删除数据
   const handleDelete = (deleteId) => {
-    console.log('deleteId: ', deleteId);
 
   }
 
   const onChange = () => {
-    validateFields((err, value) => {
-      startTime = moment(value.time1[0]).format('YYYY-MM-DD');
-      endTime = moment(value.time1[1]).format('YYYY-MM-DD');
-    })
+    if (type === 'week') {
+      startTime = dateString;
+      endTime = moment(dateString).add(+6, 'day').format('YYYY-MM-DD');
+      setFieldsValue({ time2: moment(endTime) });
+    } else {
+      startTime = date.startOf('month').format('YYYY-MM-DD');
+      console.log('startTime: ', startTime);
+      endTime = date.endOf('month').format('YYYY-MM-DD');
+      console.log('endTime: ', endTime);
+    }
   }
 
   const newMember = () => {
@@ -665,7 +671,7 @@ function DatabaseReport(props) {
             <Form {...formItemLayout}>
 
               <Col span={8}>
-                <Form.Item label='周报名称'>
+                <Form.Item label={type === 'week' ? '周报名称' : '月报名称'}>
                   {getFieldDecorator('name', {
                     rules: [
                       {
@@ -680,32 +686,56 @@ function DatabaseReport(props) {
                 </Form.Item>
               </Col>
 
-              <Col span={8}>
-                <Form.Item label='起始时间'>
-                  {getFieldDecorator('time1', {
-                    initialValue: [moment(startTime), moment(endTime)]
-                  })(<RangePicker
-                    allowClear={false}
-                    // disabledDate={startdisabledDate}
-                    // placeholder='请选择'
-                    onChange={onChange}
-                  />)}
-                </Form.Item>
-              </Col>
+
+              {
+                type === 'week' && (
+                  <Col span={8}>
+                    <Form.Item label='起始时间'>
+                      {getFieldDecorator('time1', {
+                        initialValue: [moment(startTime), moment(endTime)]
+                      })(<RangePicker
+                        allowClear={false}
+                        // disabledDate={startdisabledDate}
+                        // placeholder='请选择'
+                        onChange={onChange}
+                      />)}
+                    </Form.Item>
+                  </Col>
+                )
+              }
+
+              {
+                type === 'month' && (
+                  <Col span={8}>
+                    <Form.Item label='起始时间'>
+                      {getFieldDecorator('time1', {
+                        initialValue: moment(startTime)
+                      })(<MonthPicker
+                        allowClear={false}
+                        // disabledDate={startdisabledDate}
+                        // placeholder='请选择'
+                        onChange={onChange}
+                      />)}
+                    </Form.Item>
+                  </Col>
+                )
+              }
 
               {/* 一、本周运维情况综述 */}
 
               <Col span={24}>
-                <p style={{ fontWeight: '900', fontSize: '16px', marginTop: '20px' }}>一、本周运维情况综述</p>
+                <p style={{ fontWeight: '900', fontSize: '16px', marginTop: '20px' }}>{type === 'week' ? '一、本周运维情况综述' : '一、本月运维情况综述'}</p>
               </Col>
+
               <Col span={24}>
-                <Form.Item label="本周运维情况描述" {...formincontentLayout}>
+                <Form.Item label={type === 'week' ? '本周运维总结' : '本月运维总结'} {...formincontentLayout}>
                   {
                     getFieldDecorator('content1', {})
                       (<TextArea autoSize={{ minRows: 3 }} />)
                   }
                 </Form.Item>
               </Col>
+
 
               <Col span={24}>
                 <Form.Item
@@ -818,7 +848,7 @@ function DatabaseReport(props) {
               </Col>
 
 
-               {/* 上周 */}
+              {/* 上周 */}
               <Col span={24}>
                 <Lastweek
                   forminladeLayout={forminladeLayout}
@@ -847,7 +877,7 @@ function DatabaseReport(props) {
                     )}
 
                 </Form.Item>
-              </Col> 
+              </Col>
 
               {/* 下周 */}
               <Col span={24}>

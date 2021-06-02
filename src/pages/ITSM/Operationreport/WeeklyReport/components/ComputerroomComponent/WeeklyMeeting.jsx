@@ -18,7 +18,8 @@ function WeeklyMeeting(props) {
   const {
     form: { getFieldDecorator },
     forminladeLayout,
-    remainingDefectslist
+    remainingDefectslist,
+    type
   } = props;
   const [data, setData] = useState([]);
   const [seconddata, setSeconddata] = useState([]);
@@ -228,7 +229,7 @@ function WeeklyMeeting(props) {
     <>
       <Row gutter={16}>
         <Col span={20}>
-          <p style={{ fontWeight: '900', fontSize: '16px' }}>5 周例会会议纪要完成情况</p>
+          <p style={{ fontWeight: '900', fontSize: '16px' }}>{type === 'week' ? '5 周例会会议纪要完成情况':'5 月例会会议纪要完成情况'}</p>
         </Col>
 
         <Table

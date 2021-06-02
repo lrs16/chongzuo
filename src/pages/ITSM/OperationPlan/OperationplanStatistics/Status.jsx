@@ -33,8 +33,10 @@ const columns = [
           query: {
             time1: record.time1,
             time2: record.time2,
-            status: record.status === '合计' ? '' : record.status
-          }
+            status: record.status === '合计' ? '' : record.status,
+            pathpush: true
+          },
+          state: { cache: false, }
         })
       };
       return <a onClick={() => gotoDetail(record)}>{text}</a>

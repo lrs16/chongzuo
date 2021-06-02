@@ -20,6 +20,8 @@ function Lastweek(props) {
     form: { getFieldDecorator },
     forminladeLayout,
     myTaskplanlist,
+    startTime,
+    endTime,
     dispatch,
     loading
   } = props;

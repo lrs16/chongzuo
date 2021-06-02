@@ -64,7 +64,9 @@ const columns = [
               addTimeEnd: statTimeEnd,
               type: record.statCode,
               dictType: 'type',
-            }
+              pathpush: true
+            },
+            state: { cache: false, }
           }}
         >
           {text}

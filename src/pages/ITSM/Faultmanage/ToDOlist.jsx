@@ -129,6 +129,7 @@ function ToDOlist(props) {
     validateFields((err, values) => {
       const newvalues = {
         ...values,
+        // type: values.type ? (values.type).slice(-1)[0] : '',
         addTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
         addTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
         createTime: '',
@@ -136,7 +137,7 @@ function ToDOlist(props) {
       if (!err) {
         dispatch({
           type: 'fault/getSearchfaultTodo',
-          payload: { pageNum: current, pageSize, ...newvalues, type: values.type === [] ? '' : values.type.join('/'), },
+          payload: { pageNum: current, pageSize, ...newvalues, type: values.type === [] ? '' : (values.type).slice(-1)[0], },
         });
         setTabRecord({ ...newvalues });
       }
@@ -363,7 +364,7 @@ function ToDOlist(props) {
                     <Cascader
                       placeholder="请选择"
                       options={faultType}
-                      fieldNames={{ label: 'title', value: 'title', children: 'children' }}
+                      fieldNames={{ label: 'title', value: 'dict_code', children: 'children' }}
                       allowClear
                     />,
                   )}

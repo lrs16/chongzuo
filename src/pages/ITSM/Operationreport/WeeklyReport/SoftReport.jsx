@@ -11,8 +11,6 @@ import {
   Popconfirm,
   Divider,
   Icon,
-  Popover,
-  Checkbox
 } from 'antd';
 import Link from 'umi/link';
 import moment from 'moment';
@@ -26,7 +24,6 @@ import SoftCompletion from './components/SoftCompletion';
 import RemainingDefects from './components/RemainingDefects';
 import LastweekHomework from './components/LastweekHomework';
 import NextweekHomework from './components/NextweekHomework';
-import WorkOrderTop from './components/WorkOrderTop';
 import ServiceTableone from './components/ServiceTableone';
 import styles from './index.less';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
@@ -266,10 +263,6 @@ function SoftReport(props) {
   }
 
   const onChange = (date, dateString) => {
-    // validateFields((err, value) => {
-    //   startTime = moment(value.time1[0]).format('YYYY-MM-DD');
-    //   endTime = moment(value.time1[1]).format('YYYY-MM-DD');
-    // })
     if (type === 'week') {
       startTime = dateString;
       endTime = moment(dateString).add(+6, 'day').format('YYYY-MM-DD');

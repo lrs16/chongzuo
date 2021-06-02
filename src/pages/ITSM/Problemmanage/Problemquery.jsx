@@ -122,7 +122,8 @@ function Besolved(props) {
   } = props;
   let differentTitle;
   const [expand, setExpand] = useState(false);
-  const [paginations, setPaginations] = useState({ current: 1, pageSize: 10 });
+  const [tabrecord, setTabRecord] = useState({});
+  const [paginations, setPaginations] = useState({ current: 1, pageSize: 15 });
   const [selectedRows, setSelectedRows] = useState([]);
   const [selectdata, setSelectData] = useState('');
 
@@ -136,26 +137,31 @@ function Besolved(props) {
     queryParams = true
     if (queryParams) {
       validateFields((err, values) => {
+        const newvalues = {
+          ...values,
+          status,
+          progressStatus,
+          handlerId,
+          type: values.type ? values.type : type,
+          timeStatus,
+          handleDeptId,
+          checkUserId,
+          checkDeptId,
+          // addTimeBegin,
+          // addTimeEnd,
+          currentNode,
+          addTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : addTimeBegin,
+          addTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : addTimeEnd,
+          pageNum: paginations.current,
+          pageSize: paginations.pageSize,
+        }
         dispatch({
           type: 'problemmanage/queryList',
           payload: {
-            status,
-            progressStatus,
-            handlerId,
-            type,
-            timeStatus,
-            handleDeptId,
-            checkUserId,
-            checkDeptId,
-            // addTimeBegin,
-            // addTimeEnd,
-            currentNode,
-            addTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : addTimeBegin,
-            addTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : addTimeEnd,
-            pageNum: paginations.current,
-            pageSize: paginations.pageSize,
+            ...newvalues
           },
         });
+        setTabRecord({ ...newvalues });
       })
     } else {
       dispatch({
@@ -165,14 +171,52 @@ function Besolved(props) {
           pageSize: paginations.pageSize,
         },
       });
+      setTabRecord({
+        pageNum: paginations.current,
+        pageSize: paginations.pageSize,
+      });
     }
-
   }
+
 
   useEffect(() => {
     queryParams = true;
     getinitiaQuery();
-  }, []);
+  }, [location]);
+
+
+  useEffect(() => {
+    if (location.state) {
+      if (location.state.cache) {
+        // 传表单数据到页签
+        dispatch({
+          type: 'viewcache/gettabstate',
+          payload: {
+            cacheinfo: {
+              ...tabrecord,
+              paginations,
+              expand,
+            },
+            tabid: sessionStorage.getItem('tabid')
+          },
+        });
+      };
+      // 点击菜单刷新
+      if (location.state.reset) {
+        handleReset()
+      };
+      // 标签切回设置初始值
+      if (location.state.cacheinfo) {
+        const { current, pageSize } = location.state.cacheinfo.paginations;
+        setExpand(location.state.cacheinfo.expand);
+        setPageinations({ ...paginations, current, pageSize })
+      };
+    }
+  }, [location.state]);
+
+  // const cacheinfo = location.state.cacheinfo === undefined ? record : '';
+  // console.log('cacheinfo: ', cacheinfo);
+
 
   const handleReset = () => {
     router.push({
@@ -194,7 +238,7 @@ function Besolved(props) {
           status,
           progressStatus,
           handlerId,
-          type,
+          type: values.type ? values.type : type,
           timeStatus,
           handleDeptId,
           checkUserId,
@@ -221,6 +265,9 @@ function Besolved(props) {
       });
     }
   };
+
+
+
 
   useEffect(() => {
     getinitiaQuery();
@@ -293,14 +340,12 @@ function Besolved(props) {
               status,
               progressStatus,
               handlerId,
-              type,
+              type: values.type ? values.type : type,
               timeStatus,
               handleDeptId,
               checkUserId,
               checkDeptId,
-              addTimeBegin,
-              addTimeEnd,
-              createTime:'',
+              createTime: '',
               addTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : addTimeBegin,
               addTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : addTimeEnd,
               currentNode: values.currentNode ? values.currentNode : currentNode,
@@ -321,8 +366,8 @@ function Besolved(props) {
             payload: {
               ...values,
               createTimeBegin: values.createTimeBegin ? (values.createTimeBegin).format('YYYY-MM-DD') : '',
-              addTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : addTimeBegin,
-              addTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : addTimeEnd,
+              addTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+              addTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
             }
           }).then(res => {
             const filename = `问题查询_${moment().format('YYYY-MM-DD HH:mm')}.xls`;

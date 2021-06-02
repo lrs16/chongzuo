@@ -30,6 +30,9 @@ function RepairStatistics(props) {
     faultQueryList,
     handleDelete,
     ChangeFiles,
+    type,
+    startTime,
+    endTime,
     files,
     loading,
     dispatch
@@ -451,17 +454,17 @@ function RepairStatistics(props) {
   ];
 
   const handleTabledata = () => {
-    if(faultQueryList && faultQueryList.rows && faultQueryList.rows.length) {
+    if (faultQueryList && faultQueryList.rows && faultQueryList.rows.length) {
       const newarr = (faultQueryList.rows).map((item, index) => {
         return Object.assign(item, { editable: true, isNew: false, key: index })
       })
       setData(newarr)
     }
-    
+
   }
 
   const secondTabledata = () => {
-    if(faultQueryList && faultQueryList.rows && faultQueryList.rows.length) {
+    if (faultQueryList && faultQueryList.rows && faultQueryList.rows.length) {
       const newarr = (faultQueryList.rows).map((item, index) => {
         return Object.assign(item, { editable: true, secondtableisNew: false, key: index })
       })
@@ -470,13 +473,15 @@ function RepairStatistics(props) {
   }
 
   const getFaultlist = () => {
-      dispatch({
-        type: 'fault/getfaultQueryList',
-        payload: {
-          pageNum: 1,
-          pageSize: paginations.pageSize,
-        },
-      });
+    dispatch({
+      type: 'fault/getfaultQueryList',
+      payload: {
+        addTimeBegin: startTime,
+        addTimeEnd: endTime,
+        pageNum: 1,
+        pageSize: paginations.pageSize,
+      },
+    });
   }
 
   useEffect(() => {
@@ -487,58 +492,58 @@ function RepairStatistics(props) {
 
   return (
     <>
-    { loading  === false && (
-    <Row gutter={16}>
-    <Form>
-      <Col span={24}>
-        <p style={{ fontWeight: '900', fontSize: '16px' }}>3 本周新增故障及故障修复情况统计</p>
-      </Col>
+      { loading === false && faultQueryList && faultQueryList.rows && (
+        <Row gutter={16}>
+          <Form>
+            <Col span={24}>
+              <p style={{ fontWeight: '900', fontSize: '16px' }}>{type === 'week' ? '3 本周新增故障及故障修复情况统计' : '3 本月新增故障及故障修复情况统计'}</p>
+            </Col>
 
-      <Col span={24}>
-        <p>3.1新增及已修复故障 </p>
-      </Col>
+            <Col span={24}>
+              <p>3.1新增及已修复故障 </p>
+            </Col>
 
 
-      <Table
-        columns={column}
-        dataSource={data}
-      />
-      <Button
-        style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
-        type="primary"
-        ghost
-        onClick={() => newMember()}
-        icon="plus"
-        disabled={newbutton}
-      >
-        新增巡检情况
+            <Table
+              columns={column}
+              dataSource={data}
+            />
+            <Button
+              style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
+              type="primary"
+              ghost
+              onClick={() => newMember()}
+              icon="plus"
+              disabled={newbutton}
+            >
+              新增巡检情况
       </Button>
 
-      <Col span={24}>
-        <p>3.2未修复故障清单 </p>
-      </Col>
+            <Col span={24}>
+              <p>3.2未修复故障清单 </p>
+            </Col>
 
-      <Table
-        columns={submitColumn}
-        dataSource={seconddata}
-      />
+            <Table
+              columns={submitColumn}
+              dataSource={seconddata}
+            />
 
-      <Button
-        style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
-        type="primary"
-        ghost
-        onClick={() => newMember('secondTable')}
-        icon="plus"
-        disabled={secondbutton}
-      >
-        新增巡检情况
+            <Button
+              style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
+              type="primary"
+              ghost
+              onClick={() => newMember('secondTable')}
+              icon="plus"
+              disabled={secondbutton}
+            >
+              新增巡检情况
       </Button>
 
-    </Form>
-  </Row>
+          </Form>
+        </Row>
 
-    )}
-  
+      )}
+
     </>
   )
 }
