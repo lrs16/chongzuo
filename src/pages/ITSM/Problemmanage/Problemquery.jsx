@@ -81,8 +81,8 @@ const columns = [
   },
   {
     title: '发送时间',
-    dataIndex: 'createTime',
-    key: 'createTime',
+    dataIndex: 'addTime',
+    key: 'addTime',
     render: text => {
       return <>{moment(text).format('YYYY-MM-DD HH:mm:ss')}</>;
     }
@@ -147,11 +147,11 @@ function Besolved(props) {
             handleDeptId,
             checkUserId,
             checkDeptId,
-            addTimeBegin,
-            addTimeEnd,
+            // addTimeBegin,
+            // addTimeEnd,
             currentNode,
-            createTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-            createTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+            addTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : addTimeBegin,
+            addTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : addTimeEnd,
             pageNum: paginations.current,
             pageSize: paginations.pageSize,
           },
@@ -199,10 +199,10 @@ function Besolved(props) {
           handleDeptId,
           checkUserId,
           checkDeptId,
-          addTimeBegin,
-          addTimeEnd,
-          createTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-          createTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+          // addTimeBegin,
+          // addTimeEnd,
+          addTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : addTimeBegin,
+          addTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : addTimeEnd,
           createTime: '',
           currentNode: values.currentNode ? values.currentNode : currentNode,
           pageNum: page,
@@ -289,7 +289,7 @@ function Besolved(props) {
             type: 'problemmanage/eventdownload',
             payload: {
               ...values,
-              createTimeBegin: values.createTimeBegin ? (values.createTimeBegin).format('YYYY-MM-DD') : '',
+              // createTimeBegin: values.createTimeBegin ? (values.createTimeBegin).format('YYYY-MM-DD') : '',
               status,
               progressStatus,
               handlerId,
@@ -300,6 +300,9 @@ function Besolved(props) {
               checkDeptId,
               addTimeBegin,
               addTimeEnd,
+              createTime:'',
+              addTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : addTimeBegin,
+              addTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : addTimeEnd,
               currentNode: values.currentNode ? values.currentNode : currentNode,
             }
           }).then(res => {
@@ -318,6 +321,8 @@ function Besolved(props) {
             payload: {
               ...values,
               createTimeBegin: values.createTimeBegin ? (values.createTimeBegin).format('YYYY-MM-DD') : '',
+              addTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : addTimeBegin,
+              addTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : addTimeEnd,
             }
           }).then(res => {
             const filename = `问题查询_${moment().format('YYYY-MM-DD HH:mm')}.xls`;

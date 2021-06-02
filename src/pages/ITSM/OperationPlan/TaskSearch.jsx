@@ -526,6 +526,8 @@ function TaskSearch(props) {
   const checkResult = getTypebyTitle('审核结果');
   const taskCompany = getTypebyTitle('作业单位');
 
+
+
   useEffect(() => {
     if (time1) {
       setFieldsValue({
@@ -549,7 +551,6 @@ function TaskSearch(props) {
         });
       })
     }
-
     getoperationPerson();
     setColumns(initialColumns)
   }, []);

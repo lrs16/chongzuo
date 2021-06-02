@@ -503,7 +503,7 @@ function MyoperationPlan(props) {
     }
 
     const deleteJudge = selectedRows.every(item => {
-      if (item.checkResult) {
+      if (item.checkResult || item.fallbackMsg) {
         message.info('请选择审核状态:待送审，审核结果为空，回退信息为空');
         return false;
       }
@@ -514,6 +514,8 @@ function MyoperationPlan(props) {
 
       return null;
     })
+
+    console.log(deleteJudge,'deleteJudge')
 
     if (deleteJudge === false) {
       return false;

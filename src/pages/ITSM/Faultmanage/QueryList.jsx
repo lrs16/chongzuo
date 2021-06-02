@@ -168,7 +168,7 @@ function QueryList(props) {
       width: 200,
     },
     {
-      title: '创建时间',
+      title: '发送时间',
       dataIndex: 'registerTime',
       key: 'registerTime',
       width: 200,
@@ -200,9 +200,9 @@ function QueryList(props) {
       type: 'fault/getfaultQueryList',
       payload: {
         ...values,
-        createTimeBegin: values.sendTime?.length ? moment(values.sendTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-        createTimeEnd: values.sendTime?.length ? moment(values.sendTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-        sendTime: '',
+        // createTimeBegin: values.sendTime?.length ? moment(values.sendTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+        // createTimeEnd: values.sendTime?.length ? moment(values.sendTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+        // sendTime: '',
         registerOccurTimeBegin: values.registerOccurTimeBegin ? values.registerOccurTimeBegin.format('YYYY-MM-DD HH:mm:ss') : '',
         registerTimeBegin: values.registerTimeBegin ? values.registerTimeBegin.format('YYYY-MM-DD HH:mm:ss') : '',
         handleStartTimeBegin: values.handleStartTimeBegin ? values.handleStartTimeBegin.format('YYYY-MM-DD HH:mm:ss') : '',
@@ -257,8 +257,8 @@ function QueryList(props) {
     getinitiaQuerylists(values, page, pageSize);
     setTabRecord({
       ...values,
-      createTimeBegin: values.sendTime?.length ? moment(values.sendTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-      createTimeEnd: values.sendTime?.length ? moment(values.sendTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+      // createTimeBegin: values.sendTime?.length ? moment(values.sendTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+      // createTimeEnd: values.sendTime?.length ? moment(values.sendTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
       sendTime: '',
       registerOccurTimeBegin: values.registerOccurTimeBegin ? values.registerOccurTimeBegin.format('YYYY-MM-DD HH:mm:ss') : '',
       registerTimeBegin: values.registerTimeBegin ? values.registerTimeBegin.format('YYYY-MM-DD HH:mm:ss') : '',
@@ -336,8 +336,8 @@ function QueryList(props) {
           type: 'fault/faultQuerydownload',
           payload: {
             ...values,
-            createTimeBegin: values.sendTime?.length ? moment(values.sendTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-            createTimeEnd: values.sendTime?.length ? moment(values.sendTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+            // createTimeBegin: values.sendTime?.length ? moment(values.sendTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+            // createTimeEnd: values.sendTime?.length ? moment(values.sendTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
             sendTime: '',
             registerOccurTimeBegin: values.registerOccurTimeBegin ? values.registerOccurTimeBegin.format('YYYY-MM-DD') : '',
             registerTimeBegin: values.registerTimeBegin ? values.registerOccurTimeBegin.format('YYYY-MM-DD') : '',
@@ -409,6 +409,7 @@ function QueryList(props) {
     type: '',
     paginations,
   };
+  
   const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
 
   const handleReset = () => {
@@ -782,7 +783,7 @@ function QueryList(props) {
                   </Form.Item>
                 </Col>
 
-                <Col span={8}>
+                {/* <Col span={8}>
                   <Form.Item label="发送时间">
                     {getFieldDecorator('sendTime', {
                       initialValue: ''
@@ -796,7 +797,7 @@ function QueryList(props) {
                       />,
                     )}
                   </Form.Item>
-                </Col>
+                </Col> */}
 
                 <Col span={8}>
                   <Form.Item label="登记人">
@@ -879,21 +880,25 @@ function QueryList(props) {
                 </Col>
 
 
-                {
-                  (status || type) && (
+                {/* {
+                  (status || type) && ( */}
                     <Col span={12}>
-                      <Form.Item label="建单时间" {...{ ...form10ladeLayout }}>
-                        {getFieldDecorator('createTime', {
-                          initialValue: '',
-                        })(<RangePicker
+                    <Form.Item label="发送时间">
+                      {getFieldDecorator('createTime', {
+                        initialValue: ''
+                      })(
+                        <RangePicker
                           showTime
-                          format='YYYY-MM-DD HH:mm:ss'
+                          format="YYYY-MM-DD HH:mm:ss"
+                          style={{ width: '100%' }}
+                          placeholder="请选择"
                           allowClear
-                        />)}
-                      </Form.Item>
-                    </Col>
-                  )
-                }
+                        />,
+                      )}
+                    </Form.Item>
+                  </Col>
+                {/* //   )
+                // } */}
               </>
             )}
 

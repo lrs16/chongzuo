@@ -127,12 +127,14 @@ function ToDOlist(props) {
 
   const getTodolists = (current, pageSize) => {
     validateFields((err, values) => {
+      console.log('values: ', values);
       const newvalues = {
         ...values,
-        createTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-        createTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+        addTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+        addTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
         createTime: '',
       }
+      console.log(newvalues,'newvalues')
       if (!err) {
         dispatch({
           type: 'fault/getSearchfaultTodo',
@@ -194,8 +196,8 @@ function ToDOlist(props) {
           type: 'fault/faultTododownload',
           payload: {
             values,
-            createTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-            createTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+            addTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+            addTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
             createTime: '',
             pageSize,
             current: page,
