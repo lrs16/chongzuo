@@ -71,7 +71,6 @@ function WorkOrder2(props) {
   } = props;
 
   const { mainId, taskId, taskName } = location.query;
-  console.log(location.query)
   const [formregistrat, setFormregistrat] = useState('');
   const [formcheck, setFormcheck] = useState('');
   const [formhandle, setFormhandle] = useState('');

@@ -178,10 +178,18 @@ export default {
         router.push({
           pathname: `/ITSM/eventmanage/to-do/record/workorder`,
           query: {
+            mainId: response.flowInstanceId,
+            closetab: true,
+          }
+        });
+        router.push({
+          pathname: `/ITSM/eventmanage/to-do/record/workorder`,
+          query: {
             taskName: '处理中',
             taskId,
             mainId: response.flowInstanceId,
             next: sessionStorage.getItem('Nextflowmane'),
+            orderNo: payload.orderNo,
           },
         });
       }

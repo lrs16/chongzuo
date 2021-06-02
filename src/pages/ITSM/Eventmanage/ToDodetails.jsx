@@ -24,7 +24,7 @@ const pagetitlemaps = new Map([
 
 function ToDodetails(props) {
   const { location, dispatch } = props;
-  const { taskName, taskId, mainId, check, next } = location.query;
+  const { taskName, taskId, mainId, check, next, orderNo } = location.query;
   const [tabActivekey, settabActivekey] = useState('workorder'); // 打开标签
   const [buttontype, setButtonType] = useState('');
   const [uservisible, setUserVisible] = useState(false); // 是否显示选人组件
@@ -94,6 +94,7 @@ function ToDodetails(props) {
             id: taskId,
             userIds: sessionStorage.getItem('userauthorityid'),
             type: '1',
+            orderNo,
           },
         });
       };
