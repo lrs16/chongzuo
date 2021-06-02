@@ -72,7 +72,6 @@ export default {
   effects: {
     *fetch3zone(_, { call, put }) {
       const response = yield call(getKafka3Zone);
-      console.log(response)
       yield put({
         type: 'get3zone',
         payload: response.data,

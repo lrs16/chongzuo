@@ -124,7 +124,6 @@ class Fafak extends Component {
       },
     } = this.props;
 
-    console.log(zone3data)
     const newzone3data = {
       name: '计量中心',
       children: [...zone3data]
