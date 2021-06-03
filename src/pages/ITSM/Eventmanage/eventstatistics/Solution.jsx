@@ -43,7 +43,8 @@ const columns = [
               time1: record.start_time,
               time2: record.end_time,
               registerUser: record.user
-            }
+            },
+            state: { cache: false },
           }
           }
         >
@@ -94,13 +95,13 @@ const columns = [
 function Solution(props) {
   const { pagetitle } = props.route.name;
   const {
-    form: { getFieldDecorator, setFieldsValue,validateFields },
+    form: { getFieldDecorator, setFieldsValue, validateFields },
     soluteArr,
     dispatch
   } = props;
 
   const handleListdata = () => {
-    validateFields((err,value) => {
+    validateFields((err, value) => {
       startTime = moment(value.time1[0]).format('YYYY-MM-DD');
       endTime = moment(value.time1[1]).format('YYYY-MM-DD');
       dispatch({
@@ -112,7 +113,7 @@ function Solution(props) {
   }
 
   const download = () => {
-    validateFields((err,value) => {
+    validateFields((err, value) => {
       startTime = moment(value.time1[0]).format('YYYY-MM-DD');
       endTime = moment(value.time1[1]).format('YYYY-MM-DD');
       dispatch({
@@ -132,7 +133,7 @@ function Solution(props) {
         window.URL.revokeObjectURL(url);
       })
     })
- 
+
   }
 
 
@@ -160,10 +161,10 @@ function Solution(props) {
               <Col span={24}>
                 <Form.Item label='起始时间'>
                   {getFieldDecorator('time1', {
-                    initialValue: [moment(startTime),moment(endTime)]
+                    initialValue: [moment(startTime), moment(endTime)]
                   })(
-                  <RangePicker
-                  />)
+                    <RangePicker
+                    />)
                   }
                 </Form.Item>
 

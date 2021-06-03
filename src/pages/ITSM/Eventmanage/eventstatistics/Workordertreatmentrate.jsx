@@ -36,7 +36,9 @@ const columns = [
             time1: record.start_time,
             time2: record.end_time,
             applicationUnit: record.unit,
-          }
+            pathpush: true,
+          },
+          state: { cache: false },
         }}
       >
         {text}
@@ -52,12 +54,13 @@ const columns = [
         to={{
           pathname: '/ITSM/eventmanage/query',
           query: {
-            sign: 'now',
             time1: record.start_time,
             time2: record.end_time,
             applicationUnit: record.unit,
-            eventStatus: '已关闭'
-          }
+            eventStatus: '已关闭',
+            pathpush: true
+          },
+          state: { cache: false },
         }}
       >
         {text}
@@ -75,7 +78,7 @@ function Workordertreatmentrate(props) {
   const { pagetitle } = props.route.name;
   const [tabActiveKey, setTabActiveKey] = useState('week');
   const {
-    form: { getFieldDecorator, setFieldsValue,validateFields },
+    form: { getFieldDecorator, setFieldsValue, validateFields },
     orderrateArr,
     dispatch
   } = props;
@@ -88,7 +91,7 @@ function Workordertreatmentrate(props) {
 
 
   const handleListdata = () => {
-    validateFields((err,value) => {
+    validateFields((err, value) => {
       startTime = moment(value.time1[0]).format('YYYY-MM-DD');
       endTime = moment(value.time1[1]).format('YYYY-MM-DD');
       dispatch({
@@ -100,7 +103,7 @@ function Workordertreatmentrate(props) {
   }
 
   const download = () => {
-    validateFields((err,value) => {
+    validateFields((err, value) => {
       startTime = moment(value.time1[0]).format('YYYY-MM-DD');
       endTime = moment(value.time1[1]).format('YYYY-MM-DD');
       dispatch({
@@ -120,7 +123,7 @@ function Workordertreatmentrate(props) {
         window.URL.revokeObjectURL(url);
       })
     })
-    
+
   }
 
   const defaultTime = () => {
@@ -150,10 +153,10 @@ function Workordertreatmentrate(props) {
               <Col span={24}>
                 <Form.Item label='起始时间'>
                   {getFieldDecorator('time1', {
-                    initialValue: [moment(startTime),moment(endTime)]
+                    initialValue: [moment(startTime), moment(endTime)]
                   })(
-                  <RangePicker
-                  />)}
+                    <RangePicker
+                    />)}
                 </Form.Item>
 
                 <Button

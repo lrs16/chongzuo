@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
+import moment from 'moment';
 import {
   Card,
   Row,
@@ -11,7 +12,7 @@ import {
   Select
 } from 'antd';
 import Link from 'umi/link';
-import moment from 'moment';
+
 import MergeTable from '@/components/MergeTable';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
@@ -53,11 +54,12 @@ const columns = [
           to={{
             pathname: '/ITSM/eventmanage/query',
             query: {
-              sign: 'top',
-              time1: record.start_time,
-              time2: record.end_time,
-              eventObject: [record.first_object,record.object_name]
-            }
+              time1: moment(record.start_time).format('YYYY-MM-DD'),
+              time2: moment(record.end_time).format('YYYY-MM-DD'),
+              eventObject: [record.first_object, record.object_name],
+              pathpush: true
+            },
+            state: { cache: false },
           }}
         >
           {text}
