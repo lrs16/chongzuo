@@ -37,6 +37,7 @@ const columns = [
     title: '需求编号',
     dataIndex: 'demandId',
     key: 'demandId',
+    with: 100,
     render: (text, record) => {
       const handleClick = () => {
         router.push({
@@ -56,7 +57,7 @@ const columns = [
     title: '需求标题',
     dataIndex: 'demandTitle',
     key: 'demandTitle',
-    with: 200,
+    with: 400,
   },
   {
     title: '需求类型',
@@ -68,11 +69,13 @@ const columns = [
     title: '申请人',
     dataIndex: 'proposer',
     key: 'proposer',
+    with: 100,
   },
   {
     title: '工单状态',
     dataIndex: 'taskName',
     key: 'taskName',
+    with: 200,
   },
 
   {
@@ -198,7 +201,6 @@ function QueryList(props) {
         type: 'demandquery/download',
         payload: {
           ...values,
-          module: values.module === [] ? '' : values.module.join('/'),
           startTime: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD 00:00:00') : '',
           endTime: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD 23:59:59') : '',
           createTime: ''
@@ -226,7 +228,7 @@ function QueryList(props) {
     demandTitle: '',
     demandType: '',
     registerPerson: '',
-    completeStatus: '',
+    completeStatus,
     createTime: time,
     paginations,
   };
@@ -367,32 +369,26 @@ function QueryList(props) {
                 </Form.Item>
               </Col>
             </span>
-            <span style={{ display: (module || completeStatus || taskName || expand) ? 'block' : 'none' }}>
-              <Col span={8}>
-                <Form.Item label="超时状态">
-                  {getFieldDecorator('completeStatus', { initialValue: cacheinfo.completeStatus })(
-                    <Select placeholder="请选择" allowClear>
-                      {overtimemap.map((obj => [
-                        <Option key={obj.key} value={obj.title}>
-                          {obj.title}
-                        </Option>,
-                      ]))}
-                    </Select>,
-                  )}
-                </Form.Item>
-              </Col>
-              <Col span={16}>
-                <Form.Item label="建单时间" {...form10ladeLayout}>
-                  {getFieldDecorator('createTime', {
-                    initialValue: '',
-                  })(<RangePicker
-                    showTime
-                    format='YYYY-MM-DD'
-                    allowClear
-                  />)}
-                </Form.Item>
-              </Col>
-            </span>
+            <Col span={8}>
+              <Form.Item label="超时状态">
+                {getFieldDecorator('completeStatus', {
+                  initialValue: cacheinfo.completeStatus
+                })(
+                  <Input placeholder="请输入" allowClear />,
+                )}
+              </Form.Item>
+            </Col>
+            <Col span={16}>
+              <Form.Item label="建单时间" {...form10ladeLayout}>
+                {getFieldDecorator('createTime', {
+                  initialValue: '',
+                })(<RangePicker
+                  showTime
+                  format='YYYY-MM-DD'
+                  allowClear
+                />)}
+              </Form.Item>
+            </Col>
             <Col span={24} style={{ textAlign: 'right' }}>
               <Button type="primary" onClick={handleSearch}>
                 查 询
@@ -407,15 +403,7 @@ function QueryList(props) {
                   setExpand(!expand);
                 }}
               >
-                {expand ? (
-                  <>
-                    关 闭 <UpOutlined />
-                  </>
-                ) : (
-                  <>
-                    展 开 <DownOutlined />
-                  </>
-                )}
+                {expand ? (<>关 闭 <UpOutlined /></>) : (<>展 开 <DownOutlined /></>)}
               </Button>
             </Col>
           </Form>
@@ -431,6 +419,7 @@ function QueryList(props) {
           dataSource={list.rows}
           rowKey={(_, index) => index.toString()}
           pagination={pagination}
+          scroll={{ x: 1500 }}
         />
       </Card>
     </PageHeaderWrapper>
