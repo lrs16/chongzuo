@@ -106,10 +106,12 @@ function WorkOrder2(props) {
     dispatch({
       type: 'eventtodo/eventsave',
       payload: {
-        paloadvalues,
-        taskName,
-        flowInstanceId,
-        locationquery: location.query,
+        flow: {
+          paloadvalues,
+          taskName,
+          flowInstanceId,
+        },
+        locationquery: location.query
       },
     });
   };
@@ -394,7 +396,7 @@ function WorkOrder2(props) {
 
   // 初始化打开编辑,获取用户信息，流转类型
   useEffect(() => {
-    if (location.query.mainId) {
+    if (mainId) {
       dispatch({
         type: 'eventtodo/eventopenflow',
         payload: {
@@ -406,7 +408,7 @@ function WorkOrder2(props) {
       });
       sessionStorage.setItem('Processtype', 'event');
     }
-  }, [mainId]);
+  }, [mainId, taskId]);
 
   // 获取事件流程记录
   useEffect(() => {
@@ -442,17 +444,17 @@ function WorkOrder2(props) {
     }
   }, [info]);
 
-  // 监听info是否已更新
-  useEffect(() => {
-    if (loading) {
-      setIsNew(true);
-    }
-    return () => {
-      setIsNew(false);
-      ChangeChoice(false);
-      ChangeUserVisible(false);
-    };
-  }, [info]);
+  // // 监听info是否已更新
+  // useEffect(() => {
+  //   if (loading) {
+  //     setIsNew(true);
+  //   }
+  //   return () => {
+  //     setIsNew(false);
+  //     ChangeChoice(false);
+  //     ChangeUserVisible(false);
+  //   };
+  // }, [info]);
 
   useEffect(() => {
     if (type !== '') {
@@ -518,7 +520,6 @@ function WorkOrder2(props) {
       )}
       <Spin spinning={loading}>
         {loading === false &&
-          isnew &&
           data !== undefined &&
           edit !== undefined && (
             <Collapse

@@ -257,7 +257,6 @@ function Registration(props) {
           }
           if (show) {
             HandleRef.current.validateFields((e, v) => {
-              console.log(v)
               const handle = {
                 addTime: moment(v.handle_addTime).format('YYYY-MM-DD HH:mm:ss'),
                 content: v.handle_content,

@@ -242,6 +242,8 @@ export default {
             message.success(tonext.msg);
             router.push({
               pathname: `/ITSM/faultmanage/todolist`,
+              query: { pathpush: true },
+              state: { cache: false }
             });
           }
         } else {

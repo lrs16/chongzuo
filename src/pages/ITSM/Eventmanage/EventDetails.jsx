@@ -99,8 +99,8 @@ function EventDetails(props) {
       title={pagetitlemaps.get(pangekey)}
       tabList={tabList}
       tabActiveKey={tabActivekey}
-      extra={<Button onClick={handleclose}>返回</Button>}
-      onTabChange={handleTabChange}
+      extra={<Button onClick={() => handleclose()}>返回</Button>}
+      onTabChange={() => handleTabChange()}
     >
       {tabActivekey === 'workorder' && (
         <div className={styles.collapse}>
@@ -129,12 +129,12 @@ function EventDetails(props) {
               })}
             </Steps>
           )}
-          {info !== '' && loading === false && (
+          {info !== '' && info !== undefined && loading === false && (
             <Collapse
               expandIconPosition="right"
               activeKey={activeKey}
               bordered={false}
-              onChange={callback}
+              onChange={() => callback()}
             >
               {info.map((obj, index) => {
                 // panel详情组件

@@ -41,7 +41,8 @@ function ToDodetails(props) {
   const handleclose = () => {
     router.push({
       pathname: `/ITSM/eventmanage/to-do`,
-      query: { pathpush: true }
+      query: { pathpush: true },
+      state: { cache: false }
     });
   };
 
@@ -107,6 +108,7 @@ function ToDodetails(props) {
       type: 'eventtodo/deleteflow',
       payload: {
         mainId,
+        taskId,
         userIds: sessionStorage.getItem('userauthorityid'),
         type: '2',
       },

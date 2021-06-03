@@ -202,13 +202,11 @@ function QueryList(props) {
       setFieldsValue
     },
     location: { query: {
-      sign,
       time1,
       time2,
       eventObject,
       selfhandle,
       registerUser,
-      handleUnit,
       eventStatus,
       applicationUnit
     } },
@@ -229,35 +227,6 @@ function QueryList(props) {
   } else {
     title = '事件查询'
   }
-  useEffect(() => {
-    if (time1) {
-      props.form.setFieldsValue({
-        eventObject,
-        // createTime: time1 ? [moment(time1), moment(time2)] : [moment().startOf('month'), moment()],
-        registerUser,
-        applicationUnit,
-        eventStatus,
-        selfhandle
-      })
-
-      // validateFields((err, values) => {
-      //   if (!err) {
-      //     dispatch({
-      //       type: 'eventquery/fetchlist',
-      //       payload: {
-      //         ...values,
-      //         eventObject: values.eventObject ? (values.eventObject).slice(-1)[0] : '',
-      //         pageIndex: paginations.current - 1,
-      //         pageSize: paginations.pageSize,
-      //         time1: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-      //         time2: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-      //         createTime: '',
-      //       },
-      //     });
-      //   }
-      // });
-    }
-  }, []);
 
   const searchdata = (values, page, size) => {
     dispatch({
@@ -267,8 +236,8 @@ function QueryList(props) {
         eventObject: values.eventObject ? (values.eventObject).slice(-1)[0] : '',
         pageSize: size,
         pageIndex: page,
-        time1: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-        time2: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+        time1: values.createTime ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+        time2: values.createTime ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
         createTime: '',
       },
     });
@@ -403,22 +372,25 @@ function QueryList(props) {
   const handleresultmap = getTypebykey('486846455059841024'); // 处理结果
   const satisfactionmap = getTypebykey('486855005945462784'); // 满意度
 
+  const startime = time1 ? moment(time1).format('YYYY-MM-DD 00:00:00') : moment().startOf('month').format('YYYY-MM-DD HH:mm:ss');
+  const endime = time2 ? moment(time2).format('YYYY-MM-DD 23:59:59') : moment().format('YYYY-MM-DD HH:mm:ss');
   const record = {
-    eventObject: '',
+    eventObject: eventObject || '',
     revisitWay: '',
     eventSource: '',
     eventEffect: '',
     eventEmergent: '',
     eventPrior: '',
-    selfhandle: '',
+    selfhandle: selfhandle || '',
     supplement: '',
     checkResult: '',
     eventResult: '',
     satisfaction: '',
     eventTitle: '',
     applicationUser: '',
-    applicationUnit: '',
+    applicationUnit: applicationUnit || '',
     applicationDept: '',
+    registerUser: registerUser || '',
     registerUnit: '',
     registerDept: '',
     checkUser: '',
@@ -431,30 +403,33 @@ function QueryList(props) {
     revisitUnit: '',
     revisitDept: '',
     eventNo: '',
-    eventStatus: '',
+    eventStatus: eventStatus || '',
     eventType: '',
-    time1: time1 !== undefined ? moment(time1).format('YYYY-MM-DD HH:mm:ss') : moment().startOf('month').format('YYYY-MM-DD HH:mm:ss'),
-    time2: time2 !== undefined ? moment(time2).format('YYYY-MM-DD HH:mm:ss') : moment().format('YYYY-MM-DD HH:mm:ss'),
+    createTime: [moment(startime), moment(endime)]
 
   }
   const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
 
+
   // 设置时间
   useEffect(() => {
-    if (location.state.cacheinfo) {
+    if (location.state && location.state.cacheinfo) {
       const cachestartTime = location.state.cacheinfo.time1;
       const cacheendTime = location.state.cacheinfo.time2;
       setFieldsValue({
         createTime: [moment(cachestartTime), moment(cacheendTime)],
       })
     }
-  }, [location.state]);
+  }, [cacheinfo]);
 
+  // 获取数据
   useEffect(() => {
     validateFields((err, values) => {
-      searchdata(values, cacheinfo.paginations.current - 1, cacheinfo.paginations.pageSize)
-    })
-  }, [])
+      if (!err) {
+        searchdata(values, cacheinfo.paginations.current, cacheinfo.paginations.pageSize)
+      }
+    });
+  }, [location]);
 
   useEffect(() => {
     if (location.state) {
@@ -935,7 +910,7 @@ function QueryList(props) {
             <Col span={24}>
               <Form.Item label="建单时间" {...forminladeLayout}>
                 {getFieldDecorator('createTime', {
-                  initialValue: '',
+                  initialValue: cacheinfo.createTime,
                 })(<RangePicker
                   showTime
                   format='YYYY-MM-DD HH:mm:ss'
@@ -949,7 +924,7 @@ function QueryList(props) {
               <Button type="primary" onClick={() => handleSearch('search')}>
                 查 询
                 </Button>
-              <Button style={{ marginLeft: 8 }} onClick={handleReset}>
+              <Button style={{ marginLeft: 8 }} onClick={() => handleReset()}>
                 重 置
                 </Button>
               <Button
@@ -984,8 +959,8 @@ function QueryList(props) {
               columns={columns}
               dataSource={list.rows}
               scroll={{ x: 1800 }}
-              rowKey={record => record.id}
-              // rowKey={(_, index) => index.toString()}
+              // rowKey={r => r.id}
+              rowKey={(_, index) => index.toString()}
               pagination={pagination}
               rowSelection={rowSelection}
             />

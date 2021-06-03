@@ -52,8 +52,6 @@ export default {
         message.error(response.msg, 2);
         router.push({
           pathname: `/ITSM/eventmanage/to-do`,
-          query: { pathpush: true },
-          state: { cache: false }
         });
       }
       yield put({
@@ -62,7 +60,7 @@ export default {
       });
     },
     // 编辑保存
-    *eventsave({ payload: { paloadvalues, flowInstanceId, locationquery } }, { call, put }) {
+    *eventsave({ payload: { flow: { paloadvalues, flowInstanceId }, locationquery } }, { call, put }) {
       const values = replacerec({ ...paloadvalues, flowInstanceId });
       const registres = yield call(EventSaveFlow, values);
       if (registres.code === -1) {
@@ -78,8 +76,9 @@ export default {
           query: {
             ...locationquery,
             taskName: eventStatus,
-            taskId: registres.taskId,
+            taskId,
             mainId: flowInstanceId,
+            updatetab: true,
           },
         });
         yield put({
@@ -104,13 +103,14 @@ export default {
             pathname: `/ITSM/eventmanage/to-do/record/workorder`,
             query: {
               mainId: response.flowInstanceId,
+              taskId: response.flowNodeInstanceId,
               closetab: true,
             }
           });
           router.push({
             pathname: `/ITSM/eventmanage/to-do`,
             query: { pathpush: true },
-            state: { cache: false }
+            state: { cach: false }
           });
         }
       }
@@ -127,13 +127,14 @@ export default {
             pathname: `/ITSM/eventmanage/to-do/record/workorder`,
             query: {
               mainId,
+              taskId: registres.taskId,
               closetab: true,
             }
           });
           router.push({
             pathname: `/ITSM/eventmanage/to-do`,
             query: { pathpush: true },
-            state: { cache: false }
+            state: { cach: false }
           });
         }
       }
@@ -152,13 +153,14 @@ export default {
             pathname: `/ITSM/eventmanage/to-do/record/workorder`,
             query: {
               mainId: response.flowInstanceId,
+              taskId: response.flowNodeInstanceId,
               closetab: true,
             }
           });
           router.push({
             pathname: `/ITSM/eventmanage/to-do`,
             query: { pathpush: true },
-            state: { cache: false }
+            state: { cach: false }
           });
         }
       }
@@ -178,18 +180,11 @@ export default {
         router.push({
           pathname: `/ITSM/eventmanage/to-do/record/workorder`,
           query: {
-            mainId: response.flowInstanceId,
-            closetab: true,
-          }
-        });
-        router.push({
-          pathname: `/ITSM/eventmanage/to-do/record/workorder`,
-          query: {
             taskName: '处理中',
             taskId,
             mainId: response.flowInstanceId,
             next: sessionStorage.getItem('Nextflowmane'),
-            orderNo: payload.orderNo,
+            updatetab: true,
           },
         });
       }
@@ -206,13 +201,14 @@ export default {
           pathname: `/ITSM/eventmanage/to-do/record/workorder`,
           query: {
             mainId: payload.mainId,
+            taskId: payload.taskId,
             closetab: true,
           }
         });
         router.push({
           pathname: `/ITSM/eventmanage/to-do`,
           query: { pathpush: true },
-          state: { cache: false }
+          state: { cach: false }
         });
       }
     },

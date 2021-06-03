@@ -89,6 +89,8 @@ export default {
             message.success(registres.msg, 5);
             router.push({
               pathname: `/ITSM/eventmanage/to-do`,
+              query: { pathpush: true },
+              state: { cache: false }
             });
           }
         }

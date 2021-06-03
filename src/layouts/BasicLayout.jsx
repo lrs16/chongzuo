@@ -167,6 +167,20 @@ const BasicLayout = props => {
     });
   }
 
+  // 更新页签信息
+  const ChangetabQuery = (newquery) => {
+    const target = toptabs.filter(item => item.id === newquery.mainId)[0];
+    if (target) {
+      delete target.query.updatetab;
+      target.query = newquery;
+      // target.id = newquery.mainId;
+      const newData = toptabs.map(item => {
+        return item.id === target.id ? target : item
+      });
+      setTopTabs(newData)
+    };
+  };
+
   // 监听列表跳转详情页的路由,处理完成路转回待办列表
   //  待办跳转处理用mainId做为标签id并传编号orderNo用于标签标题显示,查询跳转详情用编号No做为标签id
   useEffect(() => {
@@ -235,13 +249,12 @@ const BasicLayout = props => {
     if (location.query.closecurrent && location.query.tabid) {
       const newtabs = toptabs.filter(item => item.id !== location.query.tabid);
       setTopTabs([...newtabs]);
-      lasttabactive(newtabs)
+      //  lasttabactive(newtabs)
     }
-    // if (location.query.closetab && location.query.tabid) {
-    //   const newtabs = toptabs.filter(item => item.id !== location.query.tabid);
-    //   setTopTabs([...newtabs]);
-    //   // lasttabactive(newtabs)
-    // }
+    // 更新工单处理页签信息
+    if (location.query.updatetab && location.query.mainId) {
+      ChangetabQuery(location.query)
+    }
   }, [location.query])
 
 

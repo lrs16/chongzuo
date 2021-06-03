@@ -207,7 +207,7 @@ function ToDolist(props) {
     creationTime: '',
     paginations,
   };
-  const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
+  const cacheinfo = (location.state && location.state.cacheinfo) === undefined ? record : location.state.cacheinfo;
 
   // 获取数据
   useEffect(() => {
