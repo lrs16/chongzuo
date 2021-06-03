@@ -13,111 +13,43 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 const dataSource = [
   {
     key: '1',
-    name: '09:00-09:30',
-    age: '正常',
-    address: '正常',
+    name: '胡彦斌',
+    age: 32,
+    address: '西湖区湖底公园1号',
   },
   {
     key: '2',
-    name: '08:30-09:00',
-    age: '正常',
-    address: '正常',
-  },
-  {
-    key: '3',
-    name: '08:00-09:30',
-    age: '队列积压',
-    address: '正常',
+    name: '胡彦祖',
+    age: 42,
+    address: '西湖区湖底公园1号',
   },
 ];
-
-const columns = [
+const soncolumns = [
   {
-    title: '时间',
+    title: '姓名',
     dataIndex: 'name',
     key: 'name',
   },
   {
-    title: 'AutoDataAsk',
+    title: '年龄',
     dataIndex: 'age',
     key: 'age',
   },
   {
-    title: 'WebParamRequest',
+    title: '住址',
     dataIndex: 'address',
     key: 'address',
   },
 ];
-
-
-const changeTopicDate = data => {
-  // console.log("表格数据",data.dataSource)
-  // console.log("示例数据",dataSource)
-  // console.log("表格表头",data.columns);
-  // console.log("示例表头",columns);
-
-  data.columns.map(
-    col =>{
-      console.log('col',col)
-      if(col.title !== '时间'){
-        //  render: text => <a>{text}</a>,
-        col.render = text =>{
-          console.log('单元格内容',text)
-          return <a>{text}</a>;
-        }
-      }
-    }
-  )
- 
-}
-
-const changedata = datas => {
-  const newArr = [];
-  if (!Array.isArray(datas)) {
-    return newArr;
-  }
-  for (let i = 0; i < datas.length; i += 1) {
-    const vote = {};
-    vote.name = datas[i].topic;
-    vote.value = datas[i].lag;
-    vote.clock = moment(datas[i].date).format('HH');
-    newArr.push(vote);
-  }
-  return newArr;
-};
-// const zone3 = '*AutoDataAsk';
-const downdycols = {
-  clock: {
-    range: [0.05, 0.95],
-    alias: '时刻',
-    tickInterval: 2,
-  },
-  value: {
-    min: 0,
-    // max: 30000,
-    range: [0.05, 0.95],
-    alias: '整点KAFKA主题LAG数',
-    // tickInterval: 10000,
-  },
-};
-const othercols = {
-  clock: {
-    range: [0, 0.95],
-    alias: '时刻',
-    tickInterval: 2,
-  },
-  value: {
-    nice: true,
-    range: [0, 0.9],
-    alias: '整点KAFKA主题LAG数',
-  },
-};
-
 @connect(({ fafak, loading }) => ({
   fafak,
   loading: loading.models.fafak,
 }))
 class Fafak extends Component {
+  state = {
+    visible: false,
+  };
+
   componentDidMount() {
     this.getdatas();
     this.interval = setInterval(() => this.getdatas(), 600000);
@@ -138,33 +70,7 @@ class Fafak extends Component {
     dispatch({
       type: 'fafak/fetch2zone',
     });
-    // dispatch({
-    //   type: 'fafak/fetchdoendy',
-    // });
-    // dispatch({
-    //   type: 'fafak/fetchdownother',
-    // });
-    // dispatch({
-    //   type: 'fafak/fetch102safezone',
-    // });
-    // dispatch({
-    //   type: 'fafak/fetch102down',
-    // });
-    // dispatch({
-    //   type: 'fafak/fetchupdy',
-    // });
-    // dispatch({
-    //   type: 'fafak/fetchupother',
-    // });
-    // dispatch({
-    //   type: 'fafak/fetch102up2zone',
-    // });
-    // dispatch({
-    //   type: 'fafak/fetch102safe2zone',
-    // });
-    // dispatch({
-    //   type: 'fafak/fetch102upsafezone',
-    // });
+
   }
 
   render() {
@@ -173,35 +79,65 @@ class Fafak extends Component {
       fafak: {
         zone3data,
         safezonedata,
-        // zone2data,
-        // downdydata,
-        // otherdata,
-        // // zone102_2data,
-        // down102,
-        // updydata,
-        // upotherdata,
-        // up102_2zonedata,
-        // safe102_2zonedata,
-        // up102safezone,
       },
+
     } = this.props;
 
-    console.log(zone3data)
     const newzone3data = {
       name: '计量中心',
       children: [...zone3data]
     }
-    const topicDate = changeTopicDate(safezonedata);
 
-    // const downdydatas = changedata(downdydata);
-    // const otherdatas = changedata(otherdata);
-    // // const zone102_2datas = changedata(zone102_2data);
-    // const down102s = changedata(down102);
-    // const updydatas = changedata(updydata);
-    // const upotherdatas = changedata(upotherdata);
-    // const up102_2zonedatas = changedata(up102_2zonedata);
-    // const safe102_2zonedatas = changedata(safe102_2zonedata);
-    // const up102safezones = changedata(up102safezone);
+    const addcolumns = (title) => {
+      return ({
+        title,
+        dataIndex: title,
+        key: title,
+        render: (text) => {
+          const newtext = text.split("|")[0];
+          const value = text.split("|")[1];
+          const extatable = (
+            <Table
+              dataSource={dataSource}
+              columns={soncolumns}
+              pagination={false}
+              style={{ background: '#fff' }}
+            />)
+          const fetchlist = () => {
+            console.log('请求接口', value)
+            // this.dispatch({
+            //   type: 'fafak/fetch3zone1',
+            //   payload: value
+            // });
+          }
+          return (
+            <span
+              style={{ color: newtext === '正常' ? '' : '#f00' }}
+              onClick={() => fetchlist()}
+            >
+              <Tooltip title={extatable} trigger='click' placement="bottom" style={{ background: '#fff' }}  >
+                {newtext}
+              </Tooltip>
+            </span>
+          )
+        }
+      })
+    }
+
+    const Setcolumns = (datas) => {
+      const data = datas.slice(0);
+      data.shift();
+      const newArr = [{ title: '时间', dataIndex: 'time', key: 'time', }];
+      if (!Array.isArray(data)) {
+        return newArr;
+      }
+      for (let i = 0; i < data.length; i += 1) {
+        newArr.push(addcolumns(data[i].title))
+      }
+      return newArr
+    }
+    const newcolumns = Setcolumns(safezonedata.columns || [])
+
     return (
       <PageHeaderWrapper title="KAFKA消费">
         <Alert
@@ -222,9 +158,12 @@ class Fafak extends Component {
 
         </Row>
         <h3>KAFKA主题消费监控（整点刷新）</h3>
-        <Table dataSource={safezonedata.dataSource} columns={safezonedata.columns} bordered
-               size="middle"
-               scroll={{ x: 1500 }}/>;
+        <Table dataSource={safezonedata.dataSource}
+          columns={newcolumns}
+          bordered
+          pagination={false}
+          size="middle"
+          scroll={{ x: 1500 }} />
       </PageHeaderWrapper>
     );
   }
