@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
 // import numeral from 'numeral';
-import { Row, Col, Icon, Tooltip, Alert, Empty, Spin, Table } from 'antd';
+import { Row, Col, Icon, Popover, Alert, Empty, Spin, Table } from 'antd';
 import Treecompactbox from '@/components/CustomizeCharts/Treecompactbox';
 import SeriesLine from '@/components/CustomizeCharts/SeriesLine';
 import { ChartCard } from '@/components/Charts';
@@ -115,9 +115,9 @@ class Fafak extends Component {
               style={{ color: newtext === '正常' ? '' : '#f00' }}
               onClick={() => fetchlist()}
             >
-              <Tooltip title={extatable} trigger='click' placement="bottom" style={{ background: '#fff' }}  >
+              <Popover content={extatable} trigger='click' placement="bottom" >
                 {newtext}
-              </Tooltip>
+              </Popover>
             </span>
           )
         }
