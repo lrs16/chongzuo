@@ -78,11 +78,12 @@ export default {
       });
     },
     *fetchsafezone(_, { call, put }) {
-      // const response = yield call(getKafkaSafeZone);
+      const response = yield call(getKafkaSafeZone);
+      console.log('topic请求', response)
       yield put({
         type: 'getsafezone',
-        // payload: response.data,
-        payload: SafeZonedata,
+        payload: response.data,
+        // payload: SafeZonedata,
       });
     },
     *fetch2zone(_, { call, put }) {

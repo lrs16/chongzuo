@@ -77,11 +77,12 @@ export async function queryOrder() {
 // 3区KAFKA节点，接口未解决
 export async function getKafka3Zone() {
   return request(`/monitor/kafka/getKafkaNodeData`);
+
 }
 
-// 安全接入区KAFKA节点，接口未解决
+// 获取主题数据
 export async function getKafkaSafeZone() {
-  return request(`/api-monitoring-business/kafka/SafeZone`);
+  return request(`/monitor/kafka/getKafkaTopicData`);
 }
 
 // 2区KAFKA节点，接口未解决

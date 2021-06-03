@@ -3,11 +3,73 @@ import React, { Component } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
 // import numeral from 'numeral';
-import { Row, Col, Icon, Tooltip, Alert, Empty, Spin } from 'antd';
+import { Row, Col, Icon, Tooltip, Alert, Empty, Spin, Table } from 'antd';
 import Treecompactbox from '@/components/CustomizeCharts/Treecompactbox';
 import SeriesLine from '@/components/CustomizeCharts/SeriesLine';
 import { ChartCard } from '@/components/Charts';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
+
+
+const dataSource = [
+  {
+    key: '1',
+    name: '09:00-09:30',
+    age: '正常',
+    address: '正常',
+  },
+  {
+    key: '2',
+    name: '08:30-09:00',
+    age: '正常',
+    address: '正常',
+  },
+  {
+    key: '3',
+    name: '08:00-09:30',
+    age: '队列积压',
+    address: '正常',
+  },
+];
+
+const columns = [
+  {
+    title: '时间',
+    dataIndex: 'name',
+    key: 'name',
+  },
+  {
+    title: 'AutoDataAsk',
+    dataIndex: 'age',
+    key: 'age',
+  },
+  {
+    title: 'WebParamRequest',
+    dataIndex: 'address',
+    key: 'address',
+  },
+];
+
+
+const changeTopicDate = data => {
+  // console.log("表格数据",data.dataSource)
+  // console.log("示例数据",dataSource)
+  // console.log("表格表头",data.columns);
+  // console.log("示例表头",columns);
+
+  data.columns.map(
+    col =>{
+      console.log('col',col)
+      if(col.title !== '时间'){
+        //  render: text => <a>{text}</a>,
+        col.render = text =>{
+          console.log('单元格内容',text)
+          return <a>{text}</a>;
+        }
+      }
+    }
+  )
+ 
+}
 
 const changedata = datas => {
   const newArr = [];
@@ -110,7 +172,7 @@ class Fafak extends Component {
       loading,
       fafak: {
         zone3data,
-        // safezonedata,
+        safezonedata,
         // zone2data,
         // downdydata,
         // otherdata,
@@ -124,10 +186,12 @@ class Fafak extends Component {
       },
     } = this.props;
 
+    console.log(zone3data)
     const newzone3data = {
       name: '计量中心',
       children: [...zone3data]
     }
+    const topicDate = changeTopicDate(safezonedata);
 
     // const downdydatas = changedata(downdydata);
     // const otherdatas = changedata(otherdata);
@@ -155,199 +219,12 @@ class Fafak extends Component {
               </ChartCard>
             )}
           </Col>
-          {/* <Col xl={8} xs={24} style={{ marginBottom: 24 }}>
-            <ChartCard title="安全接入区KAFKA节点" contentHeight={200}>
-              <Treecompactbox datas={safezonedata} height={200} padding={[15, 60, 10, 25]} />
-            </ChartCard>
-          </Col>
-          <Col xl={8} xs={24} style={{ marginBottom: 24 }}>
-            <ChartCard title="2区KAFKA节点" contentHeight={200}>
-              <Treecompactbox datas={zone2data} height={200} padding={[15, 60, 10, 25]} />
-            </ChartCard>
-          </Col> */}
+
         </Row>
-        {/* <h3>KAFKA主题消费监控（整点刷新）</h3>
-        <h3>下行主题</h3> */}
-        {/* <Row gutter={24} type="flex">
-          <Col xl={12} xs={24} style={{ marginBottom: 24 }}>
-            <ChartCard title="低压相关" contentHeight={350}>
-              <Spin spinning={loading} style={{ background: '#ffffff' }}>
-                {downdydatas.length === 0 && <Empty style={{ height: '250px' }} />}
-                {downdydatas.length > 0 && (
-                  <SeriesLine
-                    cols={downdycols}
-                    data={downdydatas}
-                    height={350}
-                    padding={[30, 20, 50, 80]}
-                  />
-                )}
-              </Spin>
-            </ChartCard>
-          </Col>
-          <Col xl={12} xs={24} style={{ marginBottom: 24 }}>
-            <ChartCard title="其他回复接口（低压相关）" contentHeight={350}>
-              <Spin spinning={loading} style={{ background: '#ffffff' }}>
-                {otherdatas.length === 0 && <Empty style={{ height: '250px' }} />}
-                {otherdatas.length > 0 && (
-                  <SeriesLine
-                    cols={othercols}
-                    data={otherdatas}
-                    height={350}
-                    padding={[30, 20, 50, 60]}
-                  />
-                )}
-              </Spin>
-            </ChartCard>
-          </Col>
-          <Col xl={12} xs={24} style={{ marginBottom: 24 }}>
-            <ChartCard title="广西102关口方面二区和安全接入区" contentHeight={350}>
-              <Spin spinning={loading} style={{ background: '#ffffff' }}>
-                {zone102_2datas.length === 0 && <Empty style={{ height: '250px' }} />}
-                {zone102_2datas.length > 0 && (
-                  <SeriesLine
-                    cols={downdycols}
-                    data={zone102_2datas}
-                    height={350}
-                    padding={[30, 20, 50, 60]}
-                  />
-                )}
-              </Spin>
-            </ChartCard>
-          </Col>
-          <Col xl={12} xs={24} style={{ marginBottom: 24 }}>
-            <ChartCard title="广西102档案下发(关口相关)" contentHeight={350}>
-              <Spin spinning={loading} style={{ background: '#ffffff' }}>
-                {down102s.length === 0 && <Empty style={{ height: '250px' }} />}
-                {down102s.length > 0 && (
-                  <SeriesLine
-                    cols={downdycols}
-                    data={down102s}
-                    height={350}
-                    padding={[30, 20, 50, 75]}
-                  />
-                )}
-              </Spin>
-            </ChartCard>
-          </Col>
-        </Row> */}
-        {/* <h3>上行主题</h3> */}
-        {/* <Row gutter={24} type="flex">
-          <Col xl={12} xs={24} style={{ marginBottom: 24 }}>
-            <ChartCard
-              title="低压相关"
-              action={
-                <Tooltip title="指标说明">
-                  <Icon type="info-circle-o" />
-                </Tooltip>
-              }
-              contentHeight={350}
-            >
-              <Spin spinning={loading} style={{ background: '#ffffff' }}>
-                {updydatas.length === 0 && <Empty style={{ height: '250px' }} />}
-                {updydatas.length > 0 && (
-                  <SeriesLine
-                    cols={downdycols}
-                    data={updydatas}
-                    height={350}
-                    padding={[30, 20, 50, 60]}
-                  />
-                )}
-              </Spin>
-            </ChartCard>
-          </Col>
-          <Col xl={12} xs={24} style={{ marginBottom: 24 }}>
-            <ChartCard
-              title="低压相关-其他回复接口"
-              action={
-                <Tooltip title="指标说明">
-                  <Icon type="info-circle-o" />
-                </Tooltip>
-              }
-              contentHeight={350}
-            >
-              <Spin spinning={loading} style={{ background: '#ffffff' }}>
-                {upotherdatas.length === 0 && <Empty style={{ height: '250px' }} />}
-                {upotherdatas.length > 0 && (
-                  <SeriesLine
-                    cols={downdycols}
-                    data={upotherdatas}
-                    height={350}
-                    padding={[30, 20, 50, 60]}
-                  />
-                )}
-              </Spin>
-            </ChartCard>
-          </Col>
-          <Col xl={12} xs={24} style={{ marginBottom: 24 }}>
-            <ChartCard
-              title="广西102关口方面二区和安全接入区1"
-              action={
-                <Tooltip title="指标说明">
-                  <Icon type="info-circle-o" />
-                </Tooltip>
-              }
-              contentHeight={350}
-            >
-              <Spin spinning={loading} style={{ background: '#ffffff' }}>
-                {up102_2zonedatas.length === 0 && <Empty style={{ height: '250px' }} />}
-                {up102_2zonedatas.length > 0 && (
-                  <SeriesLine
-                    cols={downdycols}
-                    data={up102_2zonedatas}
-                    height={350}
-                    padding={[30, 20, 50, 60]}
-                  />
-                )}
-              </Spin>
-            </ChartCard>
-          </Col>
-          <Col xl={12} xs={24} style={{ marginBottom: 24 }}>
-            <ChartCard
-              title="广西102关口方面二区和安全接入区2"
-              action={
-                <Tooltip title="指标说明">
-                  <Icon type="info-circle-o" />
-                </Tooltip>
-              }
-              contentHeight={350}
-            >
-              <Spin spinning={loading} style={{ background: '#ffffff' }}>
-                {safe102_2zonedatas.length === 0 && <Empty style={{ height: '250px' }} />}
-                {safe102_2zonedatas.length > 0 && (
-                  <SeriesLine
-                    cols={downdycols}
-                    data={safe102_2zonedatas}
-                    height={350}
-                    padding={[30, 20, 50, 60]}
-                  />
-                )}
-              </Spin>
-            </ChartCard>
-          </Col>
-          <Col xl={12} xs={24} style={{ marginBottom: 24 }}>
-            <ChartCard
-              title="其他回复接口(广西102关口方面-二区和安全接区)"
-              action={
-                <Tooltip title="指标说明">
-                  <Icon type="info-circle-o" />
-                </Tooltip>
-              }
-              contentHeight={350}
-            >
-              <Spin spinning={loading} style={{ background: '#ffffff' }}>
-                {up102safezones.length === 0 && <Empty style={{ height: '250px' }} />}
-                {up102safezones.length > 0 && (
-                  <SeriesLine
-                    cols={downdycols}
-                    data={up102safezones}
-                    height={350}
-                    padding={[30, 20, 50, 60]}
-                  />
-                )}
-              </Spin>
-            </ChartCard>
-          </Col>
-        </Row> */}
+        <h3>KAFKA主题消费监控（整点刷新）</h3>
+        <Table dataSource={safezonedata.dataSource} columns={safezonedata.columns} bordered
+               size="middle"
+               scroll={{ x: 1500 }}/>;
       </PageHeaderWrapper>
     );
   }
