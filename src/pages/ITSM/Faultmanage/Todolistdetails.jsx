@@ -248,6 +248,12 @@ function Todolistdetails(props) {
             query: { pathpush: true },
             state: { cache: false }
           });
+        router.push(
+          {
+            pathname: `/ITSM/faultmanage/todolist/record`,
+            query: { mainId, closetab: true },
+            state: { cache: false }
+          });
       } else {
         message.error(res.msg);
       }
@@ -601,8 +607,18 @@ function Todolistdetails(props) {
               },
             }).then(res1 => {
               if (res1.code === 200) {
+                router.push(
+                  {
+                    pathname: `/ITSM/faultmanage/todolist/record`,
+                    query: { mainId, closetab: true },
+                    state: { cache: false }
+                  });
                 message.success(res1.msg);
-                router.push({ pathname: `/ITSM/faultmanage/todolist`, query: { pathpush: true }, state: { cache: false } })
+                router.push({
+                  pathname: `/ITSM/faultmanage/todolist`,
+                  query: { pathpush: true },
+                  state: { cache: false }
+                })
               } else {
                 message.error(res1.msg);
                 router.push(`/ITSM/faultmanage/registration`);
@@ -656,12 +672,26 @@ function Todolistdetails(props) {
                 userIds: '',
               },
             }).then(res1 => {
+              router.push(
+                {
+                  pathname: `/ITSM/faultmanage/todolist/record`,
+                  query: { mainId, closetab: true },
+                  state: { cache: false }
+                });
               if (res1.code === 200) {
                 message.success(res1.msg);
-                router.push({ pathname: `/ITSM/faultmanage/todolist`, query: { pathpush: true }, state: { cache: false } })
+                router.push({
+                  pathname: `/ITSM/faultmanage/todolist`,
+                  query: { pathpush: true },
+                  state: { cache: false }
+                })
               } else {
                 message.error(res1.msg);
-                router.push({ pathname: `/ITSM/faultmanage/todolist`, query: { pathpush: true }, state: { cache: false } })
+                router.push({
+                  pathname: `/ITSM/faultmanage/todolist`,
+                  query: { pathpush: true },
+                  state: { cache: false }
+                })
               }
             });
           }
@@ -708,12 +738,26 @@ function Todolistdetails(props) {
                 userIds: '',
               },
             }).then(res1 => {
+              router.push(
+                {
+                  pathname: `/ITSM/faultmanage/todolist/record`,
+                  query: { mainId, closetab: true },
+                  state: { cache: false }
+                });
               if (res1.code === 200) {
                 message.success(res1.msg);
-                router.push({ pathname: `/ITSM/faultmanage/todolist`, query: { pathpush: true }, state: { cache: false } })
+                router.push({
+                  pathname: `/ITSM/faultmanage/todolist`,
+                  query: { pathpush: true },
+                  state: { cache: false }
+                })
               } else {
                 message.error(res1.msg);
-                router.push({ pathname: `/ITSM/faultmanage/todolist`, query: { pathpush: true }, state: { cache: false } })
+                router.push({
+                  pathname: `/ITSM/faultmanage/todolist`,
+                  uery: { pathpush: true },
+                  state: { cache: false }
+                })
               }
             });
           }
@@ -741,7 +785,16 @@ function Todolistdetails(props) {
     }).then(res => {
       if (res.code === 200) {
         message.info(res.msg);
-        router.push({ pathname: `/ITSM/faultmanage/todolist`, query: { pathpush: true }, state: { cache: false } })
+        router.push({
+          pathname: `/ITSM/faultmanage/todolist/record`,
+          query: { mainId, closetab: true },
+          state: { cache: false }
+        });
+        router.push({
+          pathname: `/ITSM/faultmanage/todolist`,
+          query: { pathpush: true },
+          state: { cache: false }
+        });
       } else {
         message.error(res.msg);
       }

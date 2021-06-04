@@ -63,10 +63,10 @@ const columns = [
             router.push({
               pathname: `/ITSM/operationplan/operationplanform`,
               query: {
-                mainId: record.mainId,
+                mainId: record.instanceId,
                 status: record.status,
                 checkStatus: record.checkStatus,
-                orderNo: record.operationNo,
+                orderNo: record.itemWorkId,
               }
             })
             break;
