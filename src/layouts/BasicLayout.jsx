@@ -163,7 +163,7 @@ const BasicLayout = props => {
     router.push({
       pathname: end.itemPath,
       query: target ? end.query : {},
-      state: end.state,
+      state: { ...end.state, cache: false },
     });
   }
 
