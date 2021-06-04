@@ -35,6 +35,7 @@ function ToDodetails(props) {
   const [butandorder, setButandOrder] = useState('');    // 流转，转回访，转单，审核，再处理时已经超时暂存按钮类型及选人order类型
 
   const handleHold = type => {
+    setUserChoice(false)
     setButtonType(type);
   };
 
@@ -117,6 +118,7 @@ function ToDodetails(props) {
 
   // 点击流转，审核，转回访，回退按钮
   const handleClick = (type, order) => {
+    setUserChoice(false)
     judgeTimeoutStatus(taskId).then(res => {
       if (res.code === 200 && res.status === 'yes' && res.timeoutMsg === '') {
         message.info('该事件单已超时，请填写超时原因...')

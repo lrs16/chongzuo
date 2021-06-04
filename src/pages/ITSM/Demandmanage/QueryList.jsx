@@ -233,14 +233,6 @@ function QueryList(props) {
     paginations,
   };
   const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
-  // 获取数据
-  useEffect(() => {
-    validateFields((err, values) => {
-      if (!err) {
-        searchdata(values, cacheinfo.paginations.current, cacheinfo.paginations.pageSize)
-      }
-    });
-  }, [location.query]);
 
   // 设置时间
   useEffect(() => {
@@ -252,10 +244,20 @@ function QueryList(props) {
       })
     } else {
       setFieldsValue({
-        createTime: startTime ? [moment(startTime), moment(endTime)] : '',
+        createTime: time,
       })
     }
   }, [location.state]);
+  // 获取数据
+  useEffect(() => {
+    validateFields((err, values) => {
+      if (!err) {
+        searchdata(values, cacheinfo.paginations.current, cacheinfo.paginations.pageSize)
+      }
+    });
+  }, [location]);
+
+
 
   useEffect(() => {
     if (location.state) {

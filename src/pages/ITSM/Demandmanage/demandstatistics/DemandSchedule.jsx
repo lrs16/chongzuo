@@ -21,60 +21,61 @@ function DemandSchedule(props) {
   const {
     form: { getFieldDecorator, resetFields },
     demandscheduleArr,
-    dispatch
+    dispatch,
+    location
   } = props;
- 
-//  对象数组去重
-const uniqueObjArr =(arr, fieldName) => {
-  const result = [];
-  const resultArr = [];
-  arr.map(function(item,index,value){
-    if(result.indexOf(item[fieldName]) === -1) {
-      result.push(item[fieldName]);
-      resultArr.push(item);
-    }
-  })
-  return resultArr;
-}
 
-//  去重并合并到children
-const sortData = (dataArr) => {
-  const orgArrRe = dataArr.map(item => 
-    ({ month: item.month })
-    );
-  const orgArr = uniqueObjArr(orgArrRe, 'month');// 数组去重
-  orgArr.map(function(childOne,index,value){
-    childOne.children = [];
-    dataArr.map(function(childTwo){
-      if(childOne.month === childTwo.month) {
-        childOne.children.push(childTwo);
+  //  对象数组去重
+  const uniqueObjArr = (arr, fieldName) => {
+    const result = [];
+    const resultArr = [];
+    arr.map(function (item, index, value) {
+      if (result.indexOf(item[fieldName]) === -1) {
+        result.push(item[fieldName]);
+        resultArr.push(item);
       }
     })
-  })
+    return resultArr;
+  }
 
-  // for (const every of orgArr) {
-  //   every.span = every.children ? every.children.length : 0;
-  // }
+  //  去重并合并到children
+  const sortData = (dataArr) => {
+    const orgArrRe = dataArr.map(item =>
+      ({ month: item.month })
+    );
+    const orgArr = uniqueObjArr(orgArrRe, 'month');// 数组去重
+    orgArr.map(function (childOne, index, value) {
+      childOne.children = [];
+      dataArr.map(function (childTwo) {
+        if (childOne.month === childTwo.month) {
+          childOne.children.push(childTwo);
+        }
+      })
+    })
 
-  orgArr.forEach((every) => { every.span = every.children ? every.children.length : 0; });
-  return orgArr;
-}
- 
-//  遍历子元素，并赋值纵向合并数rowSpan
-const makeData = (data) => {
-  const sortResult = sortData(data);
-  const dataSource = [];
-  sortResult.forEach((item) => {
-    if (item.children) {
-      item.children.forEach((itemOne, indexOne) => {
-        const myObj = itemOne;
-        myObj.rowSpan = indexOne === 0 ? item.span : 0;
-        dataSource.push(myObj);
-      });
-    }
-  });
-  return dataSource;
-}
+    // for (const every of orgArr) {
+    //   every.span = every.children ? every.children.length : 0;
+    // }
+
+    orgArr.forEach((every) => { every.span = every.children ? every.children.length : 0; });
+    return orgArr;
+  }
+
+  //  遍历子元素，并赋值纵向合并数rowSpan
+  const makeData = (data) => {
+    const sortResult = sortData(data);
+    const dataSource = [];
+    sortResult.forEach((item) => {
+      if (item.children) {
+        item.children.forEach((itemOne, indexOne) => {
+          const myObj = itemOne;
+          myObj.rowSpan = indexOne === 0 ? item.span : 0;
+          dataSource.push(myObj);
+        });
+      }
+    });
+    return dataSource;
+  }
 
 
   const columns = [
@@ -94,7 +95,7 @@ const makeData = (data) => {
     {
       title: '需求总数',
       dataIndex: 'total',
-      className:'center',
+      className: 'center',
       align: 'center',
       render: (text, record) => {
         const obj = {
@@ -192,8 +193,17 @@ const makeData = (data) => {
     statTimeBegin = '';
     statTimeEnd = '';
     resetFields();
+    handleListdata();
   }
 
+  useEffect(() => {
+    if (location.state) {
+      // 点击菜单刷新,并获取数据
+      if (location.state.reset) {
+        handleReset()
+      };
+    }
+  }, [location.state]);
 
   return (
     <PageHeaderWrapper

@@ -7,7 +7,7 @@ import {
   Form,
   DatePicker,
   Button,
-  Table
+  Table,
 } from 'antd';
 import Link from 'umi/link';
 import MergeTable from '@/components/MergeTable';
@@ -77,7 +77,8 @@ function DemandRequirement(props) {
     form: { getFieldDecorator, resetFields },
     requirementArr,
     dispatch,
-    loading
+    loading,
+    location
   } = props;
 
   // if (requirementArr && requirementArr.length) {
@@ -128,14 +129,21 @@ function DemandRequirement(props) {
     handleListdata();
   }, [])
 
-
   const handleReset = () => {
     statTimeBegin = '';
     statTimeEnd = '';
     resetFields();
+    handleListdata();
   }
 
-
+  useEffect(() => {
+    if (location.state) {
+      // 点击菜单刷新,并获取数据
+      if (location.state.reset) {
+        handleReset()
+      };
+    }
+  }, [location.state]);
 
 
   return (

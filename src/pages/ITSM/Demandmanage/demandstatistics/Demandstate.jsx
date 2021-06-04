@@ -53,7 +53,8 @@ function Demandstate(props) {
   const {
     form: { getFieldDecorator, resetFields },
     demandstateArr,
-    dispatch
+    dispatch,
+    location
   } = props;
 
   const onChange = (date, dateString) => {
@@ -96,8 +97,16 @@ function Demandstate(props) {
     resetFields();
     statTimeBegin = '';
     statTimeEnd = '';
+    handleListdata();
   }
-
+  useEffect(() => {
+    if (location.state) {
+      // 点击菜单刷新,并获取数据
+      if (location.state.reset) {
+        handleReset()
+      };
+    }
+  }, [location.state]);
 
   return (
     <PageHeaderWrapper

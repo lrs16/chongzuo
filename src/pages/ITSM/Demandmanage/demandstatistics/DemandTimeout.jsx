@@ -25,7 +25,8 @@ function DemandTimeout(props) {
   const {
     form: { getFieldDecorator, resetFields },
     demandtomeoutArr,
-    dispatch
+    dispatch,
+    location
   } = props;
 
   const columns = [
@@ -117,7 +118,17 @@ function DemandTimeout(props) {
     startTime = '';
     endTime = '';
     resetFields();
+    handleListdata();
   }
+
+  useEffect(() => {
+    if (location.state) {
+      // 点击菜单刷新,并获取数据
+      if (location.state.reset) {
+        handleReset()
+      };
+    }
+  }, [location.state]);
 
   return (
     <PageHeaderWrapper
