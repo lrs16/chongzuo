@@ -16,6 +16,7 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 const { RangePicker } = DatePicker;
 let statTimeBegin;
 let statTimeEnd;
+let search = false;
 
 const formItemLayout = {
   labelCol: {
@@ -46,9 +47,11 @@ const columns = [
           query: {
             problem: 'class',
             type: record.statCode,
-            addTimeBegin:statTimeBegin,
-            addTimeEnd:statTimeEnd,
-          }
+            addTimeBegin: search ? statTimeBegin:'',
+            addTimeEnd:search ? statTimeEnd:'',
+            pathpush: true
+          },
+          state: { cache: false, }
         }}
       >
         {text}
@@ -58,7 +61,8 @@ const columns = [
     }
 
   },
-]
+];
+
 function ClassifiedStatistics(props) {
   const { pagetitle } = props.route.name;
   const {
@@ -72,6 +76,7 @@ function ClassifiedStatistics(props) {
   }
 
   const handleList = () => {
+    search = true;
     dispatch({
       type: 'problemstatistics/fetchClasslist',
       payload: { statTimeBegin, statTimeEnd, dictType: 'type' }
@@ -79,9 +84,13 @@ function ClassifiedStatistics(props) {
   }
 
   useEffect(() => {
+    search = false;
     statTimeBegin = '';
     statTimeEnd = '';
-    handleList();
+    dispatch({
+      type: 'problemstatistics/fetchClasslist',
+      payload: { statTimeBegin, statTimeEnd, dictType: 'type' }
+    })
   }, []);
 
   const handleReset = () => {

@@ -25,9 +25,10 @@ const formItemLayout = {
 const { RangePicker } = DatePicker;
 let statTimeBegin = '';
 let statTimeEnd = '';
+let search = false;
 
 function Handlingrate(props) {
-  const  pagetitle  = props.route.name;
+  const pagetitle = props.route.name;
   const [tabActiveKey, setTabActiveKey] = useState('1');
   const {
     form: { getFieldDecorator, resetFields },
@@ -93,8 +94,8 @@ function Handlingrate(props) {
               progressStatus: record.totalCode,
               handleDeptId: record.handleDeptId,
               handleProcessGroupType: tabActiveKey,
-              addTimeBegin: statTimeBegin,
-              addTimeEnd: statTimeEnd,
+              addTimeBegin: search ? statTimeBegin : '',
+              addTimeEnd: search ? statTimeEnd : '',
               pathpush: true
             },
             state: { cache: false, }
@@ -119,8 +120,8 @@ function Handlingrate(props) {
               progressStatus: record.handlingCode,
               handleDeptId: record.handleDeptId,
               handleProcessGroupType: tabActiveKey,
-              addTimeBegin: statTimeBegin,
-              addTimeEnd: statTimeEnd,
+              addTimeBegin: search ? statTimeBegin : '',
+              addTimeEnd: search ? statTimeEnd : '',
               pathpush: true
             },
             state: { cache: false, }
@@ -144,8 +145,8 @@ function Handlingrate(props) {
               progressStatus: record.handledCode,
               handleDeptId: record.handleDeptId,
               handleProcessGroupType: tabActiveKey,
-              addTimeBegin:statTimeBegin,
-              addTimeEnd:statTimeEnd,
+              addTimeBegin: search ? statTimeBegin : '',
+              addTimeEnd: search ? statTimeEnd : '',
             }
           }}
         >
@@ -167,8 +168,8 @@ function Handlingrate(props) {
               progressStatus: record.closedCode,
               handleDeptId: record.handleDeptId,
               handleProcessGroupType: tabActiveKey,
-              addTimeBegin:statTimeBegin,
-              addTimeEnd:statTimeEnd,
+              addTimeBegin: search ? statTimeBegin : '',
+              addTimeEnd: search ? statTimeEnd : '',
             }
           }}
         >
@@ -217,9 +218,11 @@ function Handlingrate(props) {
               checkUserId: record.handlerId,
               progressStatus: record.totalCode,
               checkDeptId: record.handleDeptId,
-              addTimeBegin: statTimeBegin,
-              addTimeEnd: statTimeEnd,
-            }
+              addTimeBegin: search ? statTimeBegin : '',
+              addTimeEnd: search ? statTimeEnd : '',
+              pathpush: true
+            },
+            state: { cache: false, }
           }}
         >
           {text}
@@ -240,9 +243,11 @@ function Handlingrate(props) {
               checkUserId: record.handlerId,
               progressStatus: record.handlingCode,
               checkDeptId: record.handleDeptId,
-              addTimeBegin: statTimeBegin,
-              addTimeEnd: statTimeEnd,
-            }
+              addTimeBegin: search ? statTimeBegin : '',
+              addTimeEnd: search ? statTimeEnd : '',
+              pathpush: true
+            },
+            state: { cache: false, }
           }}
         >
           {text}
@@ -264,9 +269,11 @@ function Handlingrate(props) {
               checkUserId: record.handlerId,
               progressStatus: record.handledCode,
               checkDeptId: record.handleDeptId,
-              addTimeBegin:statTimeBegin,
-              addTimeEnd:statTimeEnd,
-            }
+              addTimeBegin: search ? statTimeBegin : '',
+              addTimeEnd: search ? statTimeEnd : '',
+              pathpush: true
+            },
+            state: { cache: false, }
           }}
         >
           {text}
@@ -286,9 +293,11 @@ function Handlingrate(props) {
               checkUserId: record.handlerId,
               progressStatus: record.closedCode,
               checkDeptId: record.handleDeptId,
-              addTimeBegin:statTimeBegin,
-              addTimeEnd:statTimeEnd,
-            }
+              addTimeBegin: search ? statTimeBegin : '',
+              addTimeEnd: search ? statTimeEnd : '',
+              pathpush: true
+            },
+            state: { cache: false, }
           }}
         >
           {text}
@@ -302,6 +311,7 @@ function Handlingrate(props) {
   }
 
   const handleListdata = () => {
+    search = true;
     dispatch({
       type: 'problemstatistics/handleLists',
       payload: { handleProcessGroupType: tabActiveKey, statTimeBegin, statTimeEnd }
@@ -331,9 +341,13 @@ function Handlingrate(props) {
   }
 
   useEffect(() => {
+    search = false;
     statTimeBegin = '';
     statTimeEnd = '';
-    handleListdata();
+    dispatch({
+      type: 'problemstatistics/handleLists',
+      payload: { handleProcessGroupType: tabActiveKey, statTimeBegin, statTimeEnd }
+    })
     handleReset();
   }, [tabActiveKey])
 

@@ -99,13 +99,14 @@ let queryParams = true;
 function Besolved(props) {
   const pagetitle = props.route.name;
   const {
-    form: { getFieldDecorator, resetFields, validateFields },
+    form: { getFieldDecorator, resetFields, validateFields, setFieldsValue },
     location: { query:
       {
         progressStatus,
         type,
         handleDeptId,
         timeStatus,
+        // timeStatuscontent,
         handlerId,
         checkUserId,
         checkDeptId,
@@ -117,15 +118,17 @@ function Besolved(props) {
       } },
     dispatch,
     queryArr,
+    operationPersonArr,
     location,
     loading,
   } = props;
   let differentTitle;
   const [expand, setExpand] = useState(false);
   const [tabrecord, setTabRecord] = useState({});
-  const [paginations, setPaginations] = useState({ current: 1, pageSize: 15 });
+  const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
   const [selectedRows, setSelectedRows] = useState([]);
   const [selectdata, setSelectData] = useState('');
+  let operationPersonSelect;
 
   if (problem) {
     differentTitle = '问题统计查询'
@@ -134,60 +137,87 @@ function Besolved(props) {
   }
 
   const getinitiaQuery = () => {
-    queryParams = true
-    if (queryParams) {
-      validateFields((err, values) => {
-        const newvalues = {
-          ...values,
-          status,
-          progressStatus,
-          handlerId,
-          type: values.type ? values.type : type,
-          timeStatus,
-          handleDeptId,
-          checkUserId,
-          checkDeptId,
-          // addTimeBegin,
-          // addTimeEnd,
-          currentNode,
-          addTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : addTimeBegin,
-          addTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : addTimeEnd,
-          pageNum: paginations.current,
-          pageSize: paginations.pageSize,
-        }
-        dispatch({
-          type: 'problemmanage/queryList',
-          payload: {
-            ...newvalues
-          },
-        });
-        setTabRecord({ ...newvalues });
-      })
-    } else {
+    // console.log(1)
+    validateFields((err, values) => {
+      const newvalues = {
+        ...values,
+        addTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+        addTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+        createTime:  values.createTime?.length ? [moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss'),moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss')] : '',
+        pageNum: paginations.current,
+        pageSize: paginations.pageSize,
+      }
       dispatch({
         type: 'problemmanage/queryList',
         payload: {
-          pageNum: paginations.current,
-          pageSize: paginations.pageSize,
+          ...newvalues
         },
       });
-      setTabRecord({
-        pageNum: paginations.current,
-        pageSize: paginations.pageSize,
-      });
-    }
+      setTabRecord({ ...newvalues });
+    })
   }
 
 
+
+  // const aaa = 002;
+  // 设置初始值
+  const record = {
+    no: '',
+    currentNode,
+    title: '',
+    confirmUser: '',
+    source: '',
+    type,
+    registerScope: '',
+    handler: '',
+    handleUnit: '',
+    registerUser: '',
+    importance: '',
+    handlerId,
+    handleDeptId,
+    progressStatus,
+    timeStatus,
+    // timeStatuscontent,
+    checkUserId,
+    checkDeptId,
+    status,
+    createTime: addTimeBegin ? [moment(addTimeBegin), moment(addTimeEnd)] : '',
+    paginations,
+  };
+
+  let cacheinfo = {};
+  if (location && location.state) {
+    console.log(location.state.cacheinfo)
+    cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
+  }
+
+  console.log(cacheinfo)
+  // 设置时间
   useEffect(() => {
-    queryParams = true;
-    getinitiaQuery();
-  }, [location]);
+    if (location.state.cacheinfo) {
+      console.log(location.state.cacheinfo,'location.state.cacheinfo')
+      const cachestartTime = location.state.cacheinfo.addTimeBegin;
+      const cacheendTime = location.state.cacheinfo.addTimeEnd;
+      setFieldsValue({
+        createTime: cachestartTime ? [moment(cachestartTime), moment(cacheendTime)] : '',
+      })
+    } else {
+      setFieldsValue({
+        createTime: addTimeBegin ? [moment(addTimeBegin), moment(addTimeEnd)] : '',
+      })
+    }
+  }, [location.state]);
+
+  useEffect(() => {
+    validateFields((err,values) => searchdata(values,paginations.current, paginations.pageSize))
+  }, [location.state]);
+
 
 
   useEffect(() => {
     if (location.state) {
       if (location.state.cache) {
+        console.log(tabrecord,'tabrecord')
         // 传表单数据到页签
         dispatch({
           type: 'viewcache/gettabstate',
@@ -208,14 +238,15 @@ function Besolved(props) {
       // 标签切回设置初始值
       if (location.state.cacheinfo) {
         const { current, pageSize } = location.state.cacheinfo.paginations;
+        const { createTime } = location.state.cacheinfo;
         setExpand(location.state.cacheinfo.expand);
-        setPageinations({ ...paginations, current, pageSize })
+        setPageinations({ ...paginations, current, pageSize });
+        setFieldsValue({
+          createTime: createTime ? [moment(createTime[0]), moment(createTime[1])] : '',
+        })
       };
     }
   }, [location.state]);
-
-  // const cacheinfo = location.state.cacheinfo === undefined ? record : '';
-  // console.log('cacheinfo: ', cacheinfo);
 
 
   const handleReset = () => {
@@ -225,53 +256,42 @@ function Besolved(props) {
       state: {}
     });
     resetFields();
-    queryParams = false;
+    // queryParams = false;
   };
+
 
 
   const searchdata = (values, page, pageSize, search) => {
-    if (queryParams) {
-      dispatch({
-        type: 'problemmanage/queryList',
-        payload: {
-          ...values,
-          status,
-          progressStatus,
-          handlerId,
-          type: values.type ? values.type : type,
-          timeStatus,
-          handleDeptId,
-          checkUserId,
-          checkDeptId,
-          // addTimeBegin,
-          // addTimeEnd,
-          addTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : addTimeBegin,
-          addTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : addTimeEnd,
-          createTime: '',
-          currentNode: values.currentNode ? values.currentNode : currentNode,
-          pageNum: page,
-          pageSize: paginations.pageSize
-        },
-      });
-
-    } else {
-      dispatch({
-        type: 'problemmanage/queryList',
-        payload: {
-          ...values,
-          pageNum: page,
-          pageSize: paginations.pageSize
-        },
-      });
+    // if (queryParams) {
+    dispatch({
+      type: 'problemmanage/queryList',
+      payload: {
+        ...values,
+        addTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : addTimeBegin,
+        addTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : addTimeEnd,
+        createTime: '',
+        pageNum: page,
+        pageSize: paginations.pageSize
+      },
+    });
+    const newvalues = {
+      ...values,
+      addTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : addTimeBegin,
+      addTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : addTimeEnd,
+      createTime:  values.createTime?.length ? [moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss'),moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss')] : '',
+      pageNum: paginations.current,
+      pageSize: paginations.pageSize,
     }
+    console.log(newvalues,'newvalues')
+    setTabRecord({ ...newvalues });
   };
 
 
 
-
-  useEffect(() => {
-    getinitiaQuery();
-  }, [location])
+  // useEffect(() => {
+  //   // console.log(5)
+  //   getinitiaQuery();
+  // }, [location])
 
 
   const onShowSizeChange = (page, pageSize) => {
@@ -280,7 +300,7 @@ function Besolved(props) {
         searchdata(values, page, pageSize);
       }
     });
-    setPaginations({
+    setPageinations({
       ...paginations,
       pageSize,
     });
@@ -292,7 +312,7 @@ function Besolved(props) {
         searchdata(values, page, paginations.pageSize);
       }
     });
-    setPaginations({
+    setPageinations({
       ...paginations,
       current: page,
     });
@@ -311,7 +331,7 @@ function Besolved(props) {
 
 
   const handleSearch = (search) => {
-    setPaginations({
+    setPageinations({
       ...paginations,
       current: 1,
     });
@@ -331,24 +351,13 @@ function Besolved(props) {
   const download = () => {
     validateFields((err, values) => {
       if (!err) {
-        if (queryParams) {
           dispatch({
             type: 'problemmanage/eventdownload',
             payload: {
               ...values,
-              // createTimeBegin: values.createTimeBegin ? (values.createTimeBegin).format('YYYY-MM-DD') : '',
-              status,
-              progressStatus,
-              handlerId,
-              type: values.type ? values.type : type,
-              timeStatus,
-              handleDeptId,
-              checkUserId,
-              checkDeptId,
-              createTime: '',
               addTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : addTimeBegin,
               addTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : addTimeEnd,
-              currentNode: values.currentNode ? values.currentNode : currentNode,
+              createTime: '',
             }
           }).then(res => {
             const filename = `问题查询_${moment().format('YYYY-MM-DD HH:mm')}.xls`;
@@ -360,27 +369,6 @@ function Besolved(props) {
             a.click();
             window.URL.revokeObjectURL(url);
           })
-        } else {
-          dispatch({
-            type: 'problemmanage/eventdownload',
-            payload: {
-              ...values,
-              createTimeBegin: values.createTimeBegin ? (values.createTimeBegin).format('YYYY-MM-DD') : '',
-              addTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-              addTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-            }
-          }).then(res => {
-            const filename = `问题查询_${moment().format('YYYY-MM-DD HH:mm')}.xls`;
-            const blob = new Blob([res]);
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = filename;
-            a.click();
-            window.URL.revokeObjectURL(url);
-          })
-        }
-
       }
     })
   }
@@ -396,6 +384,7 @@ function Besolved(props) {
   const currentNodeselect = getTypebyTitle('当前处理环节');
   const problemType = getTypebyTitle('问题分类');
   const scopeList = getTypebyTitle('影响范围');
+  const timeoutList = getTypebyTitle('超时状态');
 
   return (
     <PageHeaderWrapper title={differentTitle}>
@@ -408,121 +397,28 @@ function Besolved(props) {
       <Card>
         <Row gutter={16}>
           <Form {...formItemLayout}>
-            <Col span={8}>
-              <Form.Item label="问题编号">
-                {getFieldDecorator('no', {
-                  rules: [
-                    {
-                      message: '请输入问题编号',
-                    },
-                  ],
-                })(<Input placeholder='请输入' allowClear />)}
-              </Form.Item>
-            </Col>
 
-            <Col span={8}>
-              <Form.Item label="当前处理环节">
-                {getFieldDecorator('currentNode',
-                  {},
-                )(
-                  <Select placeholder="请选择" allowClear>
-                    {currentNodeselect.map(obj => [
-                      <Option key={obj.key} value={obj.title}>
-                        {obj.title}
-                      </Option>,
-                    ])}
-                  </Select>,
-                )}
-              </Form.Item>
-            </Col>
-
-
-            {expand === true && (
               <>
                 <Col span={8}>
-                  <Form.Item label="问题标题">
-                    {getFieldDecorator('title', {})(<Input placeholder='请输入' allowClear />)}
-                  </Form.Item>
-                </Col>
-              </>
-            )}
-
-            {expand === true && (
-              <>
-                <Col span={8}>
-                  <Form.Item label="问题来源">
-                    {getFieldDecorator(
-                      'source',
-                      {},
-                    )(
-                      <Select placeholder="请选择" allowClear>
-                        {problemSource.map(obj => [
-                          <Option key={obj.key} value={obj.dict_code}>
-                            {obj.title}
-                          </Option>,
-                        ])}
-                      </Select>,
-                    )}
+                  <Form.Item label="问题编号">
+                    {getFieldDecorator('no', {
+                      initialValue: cacheinfo.no,
+                    })(<Input placeholder='请输入' allowClear />)}
                   </Form.Item>
                 </Col>
 
                 <Col span={8}>
                   <Form.Item label="问题分类">
-                    {getFieldDecorator('type', {})
-                      (
-                        <Select placeholder="请选择" allowClear>
-                          {problemType.map(obj => [
-                            <Option key={obj.key} value={obj.dict_code}>
-                              {obj.title}
-                            </Option>,
-                          ])}
-                        </Select>,
-                      )}
-                  </Form.Item>
-                </Col>
-
-                <Col span={8}>
-                  <Form.Item label="影响范围">{getFieldDecorator('registerScope', {})
-                    (
+                    {getFieldDecorator('type', {
+                      initialValue: cacheinfo.type,
+                    })(
                       <Select placeholder="请选择" allowClear>
-                        {scopeList.map(obj => [
+                        {problemType.map(obj => [
                           <Option key={obj.key} value={obj.dict_code}>
                             {obj.title}
                           </Option>,
                         ])}
                       </Select>,
-                    )}</Form.Item>
-                </Col>
-
-                <Col span={8}>
-                  <Form.Item label="处理人" >
-                    {getFieldDecorator(
-                      'handler',
-                      {},
-                    )(
-                      <Input placeholder='请输入' allowClear />
-                    )}
-                  </Form.Item>
-                </Col>
-
-                <Col span={8}>
-                  <Form.Item label="处理单位">
-                    {getFieldDecorator(
-                      'handleUnit',
-                      {},
-                    )(
-                      <Input placeholder='请输入' allowClear />
-                    )}
-                  </Form.Item>
-                </Col>
-
-                <Col span={8}>
-                  <Form.Item label="发送人">
-                    {getFieldDecorator(
-                      'registerUser',
-                      {},
-                    )(
-                      <Input placeholder='请输入' allowClear />
                     )}
                   </Form.Item>
                 </Col>
@@ -544,10 +440,230 @@ function Besolved(props) {
                 </Col>
 
                 <Col span={8}>
+                  <Form.Item label="当前处理环节">
+                    {getFieldDecorator('currentNode',
+                      {
+                        initialValue: cacheinfo.currentNode,
+                      }
+                    )(
+                      <Select placeholder="请选择" allowClear>
+                        {currentNodeselect.map(obj => [
+                          <Option key={obj.key} value={obj.title}>
+                            {obj.title}
+                          </Option>,
+                        ])}
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
+
+                <Col span={8}>
+                  <Form.Item label="超时处理">
+                    {getFieldDecorator('timeStatus',
+                      {
+                        initialValue: cacheinfo.timeStatus,
+                      }
+                    )(
+                      <Select placeholder="请选择" allowClear>
+                        {timeoutList.map(obj => [
+                          <Option key={obj.key} value={obj.dict_code}>
+                            {obj.title}
+                          </Option>,
+                        ])}
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
+
+
+                <Col span={8}>
+                  <Form.Item label="问题编号" style={{ display: 'none' }}>
+                    {getFieldDecorator('handleDeptId', {
+                      initialValue: cacheinfo.handleDeptId,
+                    })(<Input placeholder='请输入' allowClear />)}
+                  </Form.Item>
+                </Col>
+
+                <Col span={8} style={{ display: 'none' }}>
+                  <Form.Item label="问题编号">
+                    {getFieldDecorator('handlerId', {
+                      initialValue: cacheinfo.handlerId,
+                      rules: [
+                        {
+                          message: '请输入问题编号',
+                        },
+                      ],
+                    })(<Input placeholder='请输入' allowClear />)}
+                  </Form.Item>
+                </Col>
+
+                <Col span={8} style={{ display: 'none' }}>
+                  <Form.Item label="问题编号">
+                    {getFieldDecorator('progressStatus', {
+                      initialValue: cacheinfo.progressStatus,
+                      rules: [
+                        {
+                          message: '请输入问题编号',
+                        },
+                      ],
+                    })(<Input placeholder='请输入' allowClear />)}
+                  </Form.Item>
+                </Col>
+
+                <Col span={8} style={{ display: 'none' }}>
+                  <Form.Item label="问题编号">
+                    {getFieldDecorator('checkUserId', {
+                      initialValue: cacheinfo.checkUserId,
+                      rules: [
+                        {
+                          message: '请输入问题编号',
+                        },
+                      ],
+                    })(<Input placeholder='请输入' allowClear />)}
+                  </Form.Item>
+                </Col>
+                <Col span={8} style={{ display: 'none' }}>
+                  <Form.Item label="问题编号">
+                    {getFieldDecorator('checkDeptId', {
+                      initialValue: cacheinfo.checkDeptId,
+                      rules: [
+                        {
+                          message: '请输入问题编号',
+                        },
+                      ],
+                    })(<Input placeholder='请输入' allowClear />)}
+                  </Form.Item>
+                </Col>
+
+              </>
+
+              <>
+                <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
+                  <Form.Item label="问题标题">
+                    {getFieldDecorator('title', {
+                      initialValue: cacheinfo.title,
+                    })(<Input placeholder='请输入' allowClear />)}
+                  </Form.Item>
+                </Col>
+              </>
+
+              <>
+                <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
+                  <Form.Item label="问题来源">
+                    {getFieldDecorator(
+                      'source',
+                      {
+                        initialValue: cacheinfo.source,
+                      },
+                    )(
+                      <Select placeholder="请选择" allowClear>
+                        {problemSource.map(obj => [
+                          <Option key={obj.key} value={obj.dict_code}>
+                            {obj.title}
+                          </Option>,
+                        ])}
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
+
+                <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
+                  <Form.Item label="问题分类">
+                    {getFieldDecorator('type', {
+                      initialValue: cacheinfo.type,
+                    })
+                      (
+                        <Select placeholder="请选择" allowClear>
+                          {problemType.map(obj => [
+                            <Option key={obj.key} value={obj.dict_code}>
+                              {obj.title}
+                            </Option>,
+                          ])}
+                        </Select>,
+                      )}
+                  </Form.Item>
+                </Col>
+
+                <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
+                  <Form.Item label="影响范围">{getFieldDecorator('registerScope', {
+                    initialValue: cacheinfo.registerScope,
+                  })
+                    (
+                      <Select placeholder="请选择" allowClear>
+                        {scopeList.map(obj => [
+                          <Option key={obj.key} value={obj.dict_code}>
+                            {obj.title}
+                          </Option>,
+                        ])}
+                      </Select>,
+                    )}</Form.Item>
+                </Col>
+
+
+                <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
+                  <Form.Item label="超时处理">
+                    {getFieldDecorator('timeStatus',
+                      {
+                        initialValue: cacheinfo.timeStatus,
+                      }
+                    )(
+                      <Select placeholder="请选择" allowClear>
+                        {timeoutList.map(obj => [
+                          <Option key={obj.key} value={obj.dict_code}>
+                            {obj.title}
+                          </Option>,
+                        ])}
+                      </Select>,
+                    )}
+                  </Form.Item>
+                </Col>
+
+                <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
+                  <Form.Item label="处理人" >
+                    {getFieldDecorator(
+                      'handler',
+                      {
+                        initialValue: cacheinfo.handler,
+                      },
+                    )(
+                      <Input placeholder='请输入' allowClear />
+                    )}
+                  </Form.Item>
+                </Col>
+
+                <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
+                  <Form.Item label="处理单位">
+                    {getFieldDecorator(
+                      'handleUnit',
+                      {
+                        initialValue: cacheinfo.handleUnit,
+                      },
+                    )(
+                      <Input placeholder='请输入' allowClear />
+                    )}
+                  </Form.Item>
+                </Col>
+
+                <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
+                  <Form.Item label="发送人">
+                    {getFieldDecorator(
+                      'registerUser',
+                      {
+                        initialValue: cacheinfo.registerUser,
+                      },
+                    )(
+                      <Input placeholder='请输入' allowClear />
+                    )}
+                  </Form.Item>
+                </Col>
+
+                <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
                   <Form.Item label='重要程度'>
                     {getFieldDecorator(
                       'importance',
-                      {},
+                      {
+                        initialValue: cacheinfo.importance
+                      },
                     )(
                       <Select placeholder="请选择" allowClear>
                         {priority.map(obj => [
@@ -560,7 +676,6 @@ function Besolved(props) {
                   </Form.Item>
                 </Col>
               </>
-            )}
             {expand === false && (
               <Col span={8}>
                 <Button type="primary" onClick={() => handleSearch('search')}>
@@ -640,8 +755,9 @@ function Besolved(props) {
 }
 
 export default Form.create({})(
-  connect(({ problemmanage, problemstatistics, loading }) => ({
+  connect(({ problemmanage, problemstatistics, processmodel, loading }) => ({
     queryArr: problemmanage.queryArr,
+    operationPersonArr: processmodel.operationPersonArr,
     statusdetailList: problemstatistics.statusdetailList,
     loading: loading.models.problemmanage,
   }))(Besolved),

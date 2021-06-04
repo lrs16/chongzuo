@@ -173,18 +173,18 @@ function QueryList(props) {
       key: 'addTime',
       width: 200,
     },
-    {
-      title: '登记时间',
-      dataIndex: 'registerTime',
-      key: 'registerTime',
-      width: 200,
-    },
-    {
-      title: '处理时间',
-      dataIndex: 'handleStartTime',
-      key: 'handleStartTime',
-      width: 200,
-    },
+    // {
+    //   title: '登记时间',
+    //   dataIndex: 'registerTime',
+    //   key: 'registerTime',
+    //   width: 200,
+    // },
+    // {
+    //   title: '处理时间',
+    //   dataIndex: 'handleStartTime',
+    //   key: 'handleStartTime',
+    //   width: 200,
+    // },
     // {
     //   title: '处理结束时间',
     //   dataIndex: 'handleEndTime',
@@ -220,10 +220,10 @@ function QueryList(props) {
         ...values,
         registerTimeBegin: values.registerTime?.length ? moment(values.registerTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
         registerTimeEnd: values.registerTime?.length ? moment(values.registerTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-        registerTime:'',
+        registerTime: '',
         handleStartTimeBegin: values.handleTime?.length ? moment(values.handleTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
         handleStartTimeEnd: values.handleTime?.length ? moment(values.handleTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-        handleTime:'',
+        handleTime: '',
         registerOccurTimeBegin: values.registerOccurTimeBegin ? values.registerOccurTimeBegin.format('YYYY-MM-DD HH:mm:ss') : '',
         type: values.type ? (values.type).slice(-1)[0] : '',
         addTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
@@ -233,22 +233,16 @@ function QueryList(props) {
         pageSize: paginations.pageSize,
       },
     });
-
     setTabRecord({
       ...values,
-      // createTimeBegin: values.sendTime?.length ? moment(values.sendTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-      // createTimeEnd: values.sendTime?.length ? moment(values.sendTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
       sendTime: '',
       registerOccurTimeBegin: values.registerOccurTimeBegin ? values.registerOccurTimeBegin.format('YYYY-MM-DD HH:mm:ss') : '',
       registerTimeBegin: values.registerTimeBegin ? values.registerTimeBegin.format('YYYY-MM-DD HH:mm:ss') : '',
       handleStartTimeBegin: values.handleStartTimeBegin ? values.handleStartTimeBegin.format('YYYY-MM-DD HH:mm:ss') : '',
       handleStartTimeEnd: values.handleStartTimeEnd ? values.handleStartTimeEnd.format('YYYY-MM-DD HH:mm:ss') : '',
-      type: values.type ? (values.type).slice(-1)[0] : '',
-      addTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-      addTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-      createTime: '',
+      createTime: values.createTime?.length ? [moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss'), moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss')] : '',
+      registerTime: values.registerTime?.length ? [moment(values.registerTime[0]).format('YYYY-MM-DD HH:mm:ss'), moment(values.registerTime[1]).format('YYYY-MM-DD HH:mm:ss')] : '',
     })
-
   };
 
   const getFaultlist = () => {
@@ -262,14 +256,12 @@ function QueryList(props) {
           pageSize: paginations.pageSize,
           addTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
           addTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-          createTime: '',
         },
       });
     });
   }
 
   useEffect(() => {
-    console.log(1)
     if (type) {
       setFieldsValue({
         type: [type.substr(0, 3), type]
@@ -293,12 +285,38 @@ function QueryList(props) {
   }, []);
 
   const searchdata = (values, page, pageSize) => {
-    console.log('sea')
-    getinitiaQuerylists(values, page, pageSize);
-    
+    console.log('values: ', values);
+    dispatch({
+      type: 'fault/getfaultQueryList',
+      payload: {
+        ...values,
+        registerTimeBegin: values.registerTime?.length ? moment(values.registerTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+        registerTimeEnd: values.registerTime?.length ? moment(values.registerTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+        registerTime: '',
+        handleStartTimeBegin: values.handleTime?.length ? moment(values.handleTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+        handleStartTimeEnd: values.handleTime?.length ? moment(values.handleTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+        handleTime: '',
+        registerOccurTimeBegin: values.registerOccurTimeBegin ? values.registerOccurTimeBegin.format('YYYY-MM-DD HH:mm:ss') : '',
+        type: values.type ? (values.type).slice(-1)[0] : '',
+        addTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+        addTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+        createTime: values.createTime?.length ? [moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss'), moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss')] : '',
+        pageNum: page,
+        pageSize: paginations.pageSize,
+      },
+    });
+    setTabRecord({
+      ...values,
+      sendTime: '',
+      registerOccurTimeBegin: values.registerOccurTimeBegin ? values.registerOccurTimeBegin.format('YYYY-MM-DD HH:mm:ss') : '',
+      // registerTimeBegin: values.registerTimeBegin ? values.registerTimeBegin.format('YYYY-MM-DD HH:mm:ss') : '',
+      handleStartTimeBegin: values.handleStartTimeBegin ? values.handleStartTimeBegin.format('YYYY-MM-DD HH:mm:ss') : '',
+      handleStartTimeEnd: values.handleStartTimeEnd ? values.handleStartTimeEnd.format('YYYY-MM-DD HH:mm:ss') : '',
+      createTime: values.createTime?.length ? [moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss'), moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss')] : '',
+      registerTime: values.registerTime?.length ? [moment(values.registerTime[0]).format('YYYY-MM-DD HH:mm:ss'), moment(values.registerTime[1]).format('YYYY-MM-DD HH:mm:ss')] : '',
+      handleTime: values.handleTime?.length ? [moment(values.handleTime[0]).format('YYYY-MM-DD HH:mm:ss'), moment(values.handleTime[1]).format('YYYY-MM-DD HH:mm:ss')] : '',
+    })
   };
-
-
 
 
   const handleSearch = search => {
@@ -402,13 +420,15 @@ function QueryList(props) {
   const effect = getTypebyTitle('影响范围');
   const workStatues = getTypebyTitle('工单状态');
 
+  const faultTypes = type === undefined ? [] : [type.substr(0, 3), type];
   // 设置初始值
   const record = {
     checkUnit: '',
     checkUser: '',
     confirmUnit: '',
+    createTime: addTimeBegin ? [moment(addTimeBegin), moment(addTimeEnd)] : '',
     confirmUser: '',
-    currentNode: '',
+    currentNode,
     finishUnit: '',
     finishUser: '',
     handleResult: '',
@@ -423,19 +443,24 @@ function QueryList(props) {
     registerOccurTimeBegin: '',
     registerScope: '',
     registerTimeBegin: '',
+    registerTime: '',
+    handleResult:'',
     registerUnit: '',
     registerUser: '',
     source: '',
-    status: '',
+    status,
     title: '',
-    type: '',
+    type: faultTypes,
     paginations,
   };
 
+
   let cacheinfo = {};
   if (location && location.state) {
+    console.log(location.state.cacheinfo)
     cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
   }
+
 
   const handleReset = () => {
     router.push({
@@ -450,16 +475,41 @@ function QueryList(props) {
     setPageinations({ current: 1, pageSize: 15 });
   };
 
+
+  // 设置时间
+  useEffect(() => {
+    if (location.state.cacheinfo) {
+      console.log(location.state.cacheinfo, 'location.state.cacheinfo')
+      const cachestartTime = location.state.cacheinfo.addTimeBegin;
+      const cacheendTime = location.state.cacheinfo.addTimeEnd;
+      const { createTime } = location.state.cacheinfo;
+      const { registerTime } = location.state.cacheinfo;
+      const { handleTime } = location.state.cacheinfo;
+      // const registerStarttime = location.state.cacheinfo.registerTime[0];
+      // const registerEndtime = location.state.cacheinfo.registerTime[1];
+      setFieldsValue({
+        createTime: createTime?.length ? [moment(createTime[0]), moment(createTime[1])] : '',
+        registerTime: registerTime?.length ? [moment(registerTime[0]), moment(registerTime[1])] : '',
+        handleTime: handleTime?.length ? [moment(handleTime[0]), moment(handleTime[1])] : '',
+      })
+    } else {
+      setFieldsValue({
+        createTime: addTimeBegin ? [moment(addTimeBegin), moment(addTimeEnd)] : '',
+      })
+    }
+  }, [location.state]);
+
+
   // 获取数据
   useEffect(() => {
     validateFields((err, values) => searchdata(values, paginations.current, paginations.pageSize),)
-  }, [location])
+  }, [location.state])
 
-  console.log(cacheinfo,'www')
   useEffect(() => {
     if (location.state) {
       if (location.state.cache) {
-    console.log(3)
+        console.log(expand)
+        console.log(tabrecord, 'tabrecord')
         // 传表单数据到页签
         dispatch({
           type: 'viewcache/gettabstate',
@@ -480,14 +530,18 @@ function QueryList(props) {
       if (location.state.cacheinfo) {
         const { current, pageSize } = location.state.cacheinfo.paginations;
         const { createTime } = location.state.cacheinfo;
+        const { registerTime } = location.state.cacheinfo;
         setExpand(location.state.cacheinfo.expand);
         setPageinations({ ...paginations, current, pageSize });
         setFieldsValue({
-          createTime: createTime ? moment(createTime).format('YYYY-MM-DD HH:mm:ss') : '',
+          createTime: createTime ? [moment(createTime[0]), moment(createTime[1])] : '',
+          registerTime: registerTime?.length ? [moment(registerTime[0]), moment(registerTime[1])] : '',
         })
       };
     }
   }, [location.state]);
+
+
 
 
   return (
@@ -501,163 +555,14 @@ function QueryList(props) {
       <Card>
         <Row gutter={24}>
           <Form {...formItemLayout} onSubmit={handleSearch}>
-            {expand === false && (
-              <>
-                {(status || type || currentNode) && (
-                  <>
-                    <Col span={8}>
-                      <Form.Item label="当前处理环节">
-                        {getFieldDecorator('currentNode', {
-                          initialValue: cacheinfo.currentNode || '',
-                        },
-                        )(
-                          <Select placeholder="请选择" allowClear>
-                            {currentNodeselect.map(obj => [
-                              <Option key={obj.key} value={obj.title}>
-                                {obj.title}
-                              </Option>,
-                            ])}
-                          </Select>,
-                        )}
-                      </Form.Item>
-                    </Col>
-
-                    <Col span={8}>
-                      <Form.Item label="工单状态">
-                        {getFieldDecorator('status', {
-                          initialValue: cacheinfo.status,
-                        })(
-                          <Select placeholder="请选择" allowClear>
-                            {workStatues.map(obj => [
-                              <Option key={obj.key} value={obj.dict_code}>
-                                {obj.title}
-                              </Option>,
-                            ])}
-                          </Select>,
-                        )}
-                      </Form.Item>
-                    </Col>
-
-                    <Col span={8}>
-                      <Form.Item label="故障类型">
-                        {getFieldDecorator('type')(
-                          <Cascader
-                            placeholder="请选择"
-                            options={faultType}
-                            fieldNames={{ label: 'title', value: 'dict_code', children: 'children' }}
-                            allowClear
-                          />,
-                        )}
-                      </Form.Item>
-                    </Col>
-
-                    {/* <Col span={12}>
-                      <Form.Item label="建单时间" {...{ ...form10ladeLayout }}>
-                        {getFieldDecorator('createTime', {
-                          initialValue: '',
-                        })(<RangePicker
-                          showTime
-                          format='YYYY-MM-DD HH:mm:ss'
-                          allowClear
-                        />)}
-                      </Form.Item>
-                    </Col> */}
-                  </>
-                )}
-
-                {
-                  (!status && !type) && (
-                    <>
-                      <Col span={8}>
-                        <Form.Item label="故障编号">
-                          {getFieldDecorator('no', {
-                            initialValue: cacheinfo.no,
-                          })(<Input placeholder="请输入" allowClear />)}
-                        </Form.Item>
-                      </Col>
-
-                      <Col span={8}>
-                        <Form.Item label="系统模块">
-                          {getFieldDecorator('registerModel', {
-                            initialValue: cacheinfo.registerModel,
-                          })(
-                            <Select placeholder="请选择" allowClear>
-                              {sysmodular.map(obj => [
-                                <Option key={obj.key} value={obj.title}>
-                                  {obj.title}
-                                </Option>,
-                              ])}
-                            </Select>,
-                          )}
-                        </Form.Item>
-                      </Col>
-
-                      <Col xl={8} xs={12}>
-                        <Form.Item label="严重程度">
-                          {getFieldDecorator('registerLevel', {
-                            initialValue: cacheinfo.registerLevel,
-                          })(
-                            <Select placeholder="请选择" allowClear>
-                              {priority.map(obj => [
-                                <Option key={obj.key} value={obj.title}>
-                                  {obj.title}
-                                </Option>,
-                              ])}
-                            </Select>,
-                          )}
-                        </Form.Item>
-                      </Col>
-                    </>
-                  )
-                }
-
-
-              </>
-            )}
-
-            {expand === true && (
+            <>
+              {/* {(status || type || currentNode) && ( */}
               <>
                 <Col span={8}>
                   <Form.Item label="故障编号">
                     {getFieldDecorator('no', {
                       initialValue: cacheinfo.no,
                     })(<Input placeholder="请输入" allowClear />)}
-                  </Form.Item>
-                </Col>
-
-                <Col xl={8} xs={12}>
-                  <Form.Item label="登记时间">
-                    {getFieldDecorator(
-                      'registerTime', {
-                      initialValue: cacheinfo.registerTime,
-                    },
-                    )(<RangePicker format="YYYY-MM-DD" style={{ width: '100%' }} allowClear />)}
-                  </Form.Item>
-                </Col>
-
-                {/* <Col xl={8} xs={12}>
-                  <Form.Item label="发生时间">
-                    {getFieldDecorator(
-                      'registerOccurTimeBegin', {
-                      initialValue: cacheinfo.registerOccurTimeBegin,
-                    },
-                    )(<DatePicker format="YYYY-MM-DD" style={{ width: '100%' }} allowClear />)}
-                  </Form.Item>
-                </Col> */}
-
-                <Col xl={8} xs={12}>
-                  <Form.Item label="故障来源">
-                    {getFieldDecorator('source', {
-                      initialValue: cacheinfo.source,
-                    })(
-                      <Select placeholder="请选择" allowClear>
-                        {faultSource.map(obj => [
-                          <Option key={obj.key} value={obj.title}>
-                            {obj.title}
-                          </Option>,
-                        ])}
-                      </Select>,
-                    )}
                   </Form.Item>
                 </Col>
 
@@ -694,22 +599,6 @@ function QueryList(props) {
                   </Form.Item>
                 </Col>
 
-                <Col span={8}>
-                  <Form.Item label="系统模块">
-                    {getFieldDecorator('registerModel', {
-                      initialValue: cacheinfo.registerModel,
-                    })(
-                      <Select placeholder="请选择" allowClear>
-                        {sysmodular.map(obj => [
-                          <Option key={obj.key} value={obj.title}>
-                            {obj.title}
-                          </Option>,
-                        ])}
-                      </Select>,
-                    )}
-                  </Form.Item>
-                </Col>
-
                 <Col xl={8} xs={12}>
                   <Form.Item label="故障类型">
                     {getFieldDecorator('type', {
@@ -721,91 +610,6 @@ function QueryList(props) {
                         fieldNames={{ label: 'title', value: 'dict_code', children: 'children' }}
                         allowClear
                       />,
-                    )}
-                  </Form.Item>
-                </Col>
-
-                <Col span={8}>
-                  <Form.Item label="故障名称">
-                    {getFieldDecorator('title', {
-                      initialValue: cacheinfo.title,
-                    })(<Input placeholder="请输入" allowClear />)}
-                  </Form.Item>
-                </Col>
-
-                <Col xl={8} xs={12}>
-                  <Form.Item label="故障地点">
-                    {getFieldDecorator('registerAddress', {
-                      initialValue: cacheinfo.registerAddress,
-                    })(
-                      <Input placeholder="请输入" allowClear />,
-                    )}
-                  </Form.Item>
-                </Col>
-
-                <Col xl={8} xs={12}>
-                  <Form.Item label="严重程度">
-                    {getFieldDecorator('registerLevel', {
-                      initialValue: cacheinfo.registerLevel,
-                    })(
-                      <Select placeholder="请选择" allowClear>
-                        {priority.map(obj => [
-                          <Option key={obj.key} value={obj.title}>
-                            {obj.title}
-                          </Option>,
-                        ])}
-                      </Select>,
-                    )}
-                  </Form.Item>
-                </Col>
-
-                <Col xl={8} xs={12}>
-                  <Form.Item label="影响范围">
-                    {getFieldDecorator('registerScope', {
-                      initialValue: cacheinfo.registerScope,
-                    },
-                    )(
-                      <Select placeholder="请选择" allowClear>
-                        {effect.map(obj => [
-                          <Option key={obj.key} value={obj.title}>
-                            {obj.title}
-                          </Option>,
-                        ])}
-                      </Select>,
-                    )}
-                  </Form.Item>
-                </Col>
-
-                <Col xl={8} xs={12}>
-                  <Form.Item label="处理时间">
-                    {getFieldDecorator('handleTime', {
-                      initialValue: cacheinfo.handleStartTimeBegin,
-                    },
-                    )(<RangePicker format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} allowClear />)}
-                  </Form.Item>
-                </Col>
-{/* 
-                <Col xl={8} xs={12}>
-                  <Form.Item label="处理完成时间">
-                    {getFieldDecorator('handleStartTimeEnd', {
-                      initialValue: cacheinfo.handleStartTimeEnd,
-                    },
-                    )(<DatePicker format="YYYY-MM-DD" style={{ width: '100%' }} allowClear />)}
-                  </Form.Item>
-                </Col> */}
-
-                <Col xl={8} xs={12}>
-                  <Form.Item label="处理结果">
-                    {getFieldDecorator('handleResult', {
-                      initialValue: cacheinfo.handleResult,
-                    })(
-                      <Select placeholder="请选择" allowClear>
-                        {handleResult.map(obj => [
-                          <Option key={obj.key} value={obj.title}>
-                            {obj.title}
-                          </Option>,
-                        ])}
-                      </Select>,
                     )}
                   </Form.Item>
                 </Col>
@@ -825,109 +629,280 @@ function QueryList(props) {
                     )}
                   </Form.Item>
                 </Col>
-
-                <Col span={8}>
-                  <Form.Item label="登记人">
-                    {getFieldDecorator('registerUser', {
-                      initialValue: cacheinfo.registerUser,
-                    })(<Input allowClear />)}
-                  </Form.Item>
-                </Col>
-
-                <Col span={8}>
-                  <Form.Item label="登记人单位">
-                    {getFieldDecorator('registerUnit', {
-                      initialValue: cacheinfo.registerUnit,
-                    })(<Input allowClear />)}
-                  </Form.Item>
-                </Col>
-
-                <Col span={8}>
-                  <Form.Item label="审核人">
-                    {getFieldDecorator('checkUser', {
-                      initialValue: cacheinfo.checkUser,
-                    })(<Input allowClear />)}
-                  </Form.Item>
-                </Col>
-
-                <Col span={8}>
-                  <Form.Item label="审核人单位">
-                    {getFieldDecorator('checkUnit', {
-                      initialValue: cacheinfo.checkUnit,
-                    })(<Input allowClear />)}
-                  </Form.Item>
-                </Col>
-
-                <Col xl={8} xs={12}>
-                  <Form.Item label="处理人">
-                    {getFieldDecorator('handler', {
-                      initialValue: cacheinfo.handler,
-                    })(<Input allowClear />)}
-                  </Form.Item>
-                </Col>
-
-                <Col span={8}>
-                  <Form.Item label="处理人单位">
-                    {getFieldDecorator('handleUnit', {
-                      initialValue: cacheinfo.handleUnit,
-                    })(<Input allowClear />)}
-                  </Form.Item>
-                </Col>
-
-                <Col xl={8} xs={12}>
-                  <Form.Item label="总结人">
-                    {getFieldDecorator('finishUser', {
-                      initialValue: cacheinfo.finishUser,
-                    })(<Input allowClear />)}
-                  </Form.Item>
-                </Col>
-
-                <Col span={8}>
-                  <Form.Item label="总结人单位">
-                    {getFieldDecorator('finishUnit', {
-                      initialValue: cacheinfo.finishUnit,
-                    })(<Input allowClear />)}
-                  </Form.Item>
-                </Col>
-
-                <Col xl={8} xs={12}>
-                  <Form.Item label="确认人">
-                    {getFieldDecorator('confirmUser', {
-                      initialValue: cacheinfo.confirmUser,
-                    })(<Input allowClear />)}
-                  </Form.Item>
-                </Col>
-
-                <Col span={8}>
-                  <Form.Item label="确认人单位">
-                    {getFieldDecorator('confirmUnit', {
-                      initialValue: cacheinfo.confirmUnit,
-                    })(<Input allowClear />)}
-                  </Form.Item>
-                </Col>
-
-
-                {
-                  (status || type) && (
-                    <Col span={12}>
-                      <Form.Item label="发送时间">
-                        {getFieldDecorator('createTime', {
-                          initialValue: ''
-                        })(
-                          <RangePicker
-                            showTime
-                            format="YYYY-MM-DD HH:mm:ss"
-                            style={{ width: '100%' }}
-                            placeholder="请选择"
-                            allowClear
-                          />,
-                        )}
-                      </Form.Item>
-                    </Col>
-                  )
-                }
               </>
-            )}
+              {/* // )} */}
+            </>
+
+            <>
+
+              <Col xl={8} xs={12} style={{ display: expand ? 'block' : 'none' }}>
+                <Form.Item label="登记时间">
+                  {getFieldDecorator('registerTime', {
+                    initialValue: '',
+                  },
+                  )(
+                    <RangePicker
+                      showTime
+                      format="YYYY-MM-DD HH:mm:ss"
+                      style={{ width: '100%' }}
+                      allowClear
+                    />)}
+                </Form.Item>
+              </Col>
+
+              {/* <Col xl={8} xs={12}>
+                  <Form.Item label="发生时间">
+                    {getFieldDecorator(
+                      'registerOccurTimeBegin', {
+                      initialValue: cacheinfo.registerOccurTimeBegin,
+                    },
+                    )(<DatePicker format="YYYY-MM-DD" style={{ width: '100%' }} allowClear />)}
+                  </Form.Item>
+                </Col> */}
+
+              <Col xl={8} xs={12} style={{ display: expand ? 'block' : 'none' }}>
+                <Form.Item label="故障来源">
+                  {getFieldDecorator('source', {
+                    initialValue: cacheinfo.source,
+                  })(
+                    <Select placeholder="请选择" allowClear>
+                      {faultSource.map(obj => [
+                        <Option key={obj.key} value={obj.title}>
+                          {obj.title}
+                        </Option>,
+                      ])}
+                    </Select>,
+                  )}
+                </Form.Item>
+              </Col>
+
+              {/* <Col xl={8} xs={12}>
+                  <Form.Item label="故障类型">
+                    {getFieldDecorator('type', {
+                      initialValue: cacheinfo.type,
+                    })(
+                      <Cascader
+                        placeholder="请选择"
+                        options={faultType}
+                        fieldNames={{ label: 'title', value: 'dict_code', children: 'children' }}
+                        allowClear
+                      />,
+                    )}
+                  </Form.Item>
+                </Col> */}
+
+              <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
+                <Form.Item label="当前处理环节">
+                  {getFieldDecorator('currentNode', {
+                    initialValue: cacheinfo.currentNode,
+                  },
+                  )(
+                    <Select placeholder="请选择" allowClear>
+                      {currentNodeselect.map(obj => [
+                        <Option key={obj.key} value={obj.title}>
+                          {obj.title}
+                        </Option>,
+                      ])}
+                    </Select>,
+                  )}
+                </Form.Item>
+              </Col>
+
+              <Col span={8}>
+                <Form.Item label="工单状态" style={{ display: expand ? 'block' : 'none' }}>
+                  {getFieldDecorator('status', {
+                    initialValue: cacheinfo.status,
+                  })(
+                    <Select placeholder="请选择" allowClear>
+                      {workStatues.map(obj => [
+                        <Option key={obj.key} value={obj.dict_code}>
+                          {obj.title}
+                        </Option>,
+                      ])}
+                    </Select>,
+                  )}
+                </Form.Item>
+              </Col>
+
+              <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
+                <Form.Item label="系统模块">
+                  {getFieldDecorator('registerModel', {
+                    initialValue: cacheinfo.registerModel,
+                  })(
+                    <Select placeholder="请选择" allowClear>
+                      {sysmodular.map(obj => [
+                        <Option key={obj.key} value={obj.title}>
+                          {obj.title}
+                        </Option>,
+                      ])}
+                    </Select>,
+                  )}
+                </Form.Item>
+              </Col>
+
+              <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
+                <Form.Item label="故障名称">
+                  {getFieldDecorator('title', {
+                    initialValue: cacheinfo.title,
+                  })(<Input placeholder="请输入" allowClear />)}
+                </Form.Item>
+              </Col>
+
+              <Col xl={8} xs={12} style={{ display: expand ? 'block' : 'none' }}>
+                <Form.Item label="故障地点">
+                  {getFieldDecorator('registerAddress', {
+                    initialValue: cacheinfo.registerAddress,
+                  })(
+                    <Input placeholder="请输入" allowClear />,
+                  )}
+                </Form.Item>
+              </Col>
+
+              <Col xl={8} xs={12} style={{ display: expand ? 'block' : 'none' }}>
+                <Form.Item label="严重程度">
+                  {getFieldDecorator('registerLevel', {
+                    initialValue: cacheinfo.registerLevel,
+                  })(
+                    <Select placeholder="请选择" allowClear>
+                      {priority.map(obj => [
+                        <Option key={obj.key} value={obj.title}>
+                          {obj.title}
+                        </Option>,
+                      ])}
+                    </Select>,
+                  )}
+                </Form.Item>
+              </Col>
+
+              <Col xl={8} xs={12} style={{ display: expand ? 'block' : 'none' }}>
+                <Form.Item label="影响范围">
+                  {getFieldDecorator('registerScope', {
+                    initialValue: cacheinfo.registerScope,
+                  },
+                  )(
+                    <Select placeholder="请选择" allowClear>
+                      {effect.map(obj => [
+                        <Option key={obj.key} value={obj.title}>
+                          {obj.title}
+                        </Option>,
+                      ])}
+                    </Select>,
+                  )}
+                </Form.Item>
+              </Col>
+
+              <Col xl={8} xs={12}>
+                  <Form.Item label="处理时间">
+                    {getFieldDecorator('handleTime', {
+                      initialValue: '',
+                    },
+                    )(<RangePicker format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} allowClear />)}
+                  </Form.Item>
+                </Col>
+
+              <Col xl={8} xs={12} style={{ display: expand ? 'block' : 'none' }}>
+                <Form.Item label="处理结果">
+                  {getFieldDecorator('handleResult', {
+                    initialValue: cacheinfo.handleResult,
+                  })(
+                    <Select placeholder="请选择" allowClear>
+                      {handleResult.map(obj => [
+                        <Option key={obj.key} value={obj.title}>
+                          {obj.title}
+                        </Option>,
+                      ])}
+                    </Select>,
+                  )}
+                </Form.Item>
+              </Col>
+
+              <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
+                <Form.Item label="登记人">
+                  {getFieldDecorator('registerUser', {
+                    initialValue: cacheinfo.registerUser,
+                  })(<Input allowClear />)}
+                </Form.Item>
+              </Col>
+
+              <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
+                <Form.Item label="登记人单位">
+                  {getFieldDecorator('registerUnit', {
+                    initialValue: cacheinfo.registerUnit,
+                  })(<Input allowClear />)}
+                </Form.Item>
+              </Col>
+
+              <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
+                <Form.Item label="审核人">
+                  {getFieldDecorator('checkUser', {
+                    initialValue: cacheinfo.checkUser,
+                  })(<Input allowClear />)}
+                </Form.Item>
+              </Col>
+
+              <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
+                <Form.Item label="审核人单位">
+                  {getFieldDecorator('checkUnit', {
+                    initialValue: cacheinfo.checkUnit,
+                  })(<Input allowClear />)}
+                </Form.Item>
+              </Col>
+
+              <Col xl={8} xs={12} style={{ display: expand ? 'block' : 'none' }}>
+                <Form.Item label="处理人">
+                  {getFieldDecorator('handler', {
+                    initialValue: cacheinfo.handler,
+                  })(<Input allowClear />)}
+                </Form.Item>
+              </Col>
+
+              <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
+                <Form.Item label="处理人单位">
+                  {getFieldDecorator('handleUnit', {
+                    initialValue: cacheinfo.handleUnit,
+                  })(<Input allowClear />)}
+                </Form.Item>
+              </Col>
+
+              <Col xl={8} xs={12} style={{ display: expand ? 'block' : 'none' }}>
+                <Form.Item label="总结人">
+                  {getFieldDecorator('finishUser', {
+                    initialValue: cacheinfo.finishUser,
+                  })(<Input allowClear />)}
+                </Form.Item>
+              </Col>
+
+              <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
+                <Form.Item label="总结人单位">
+                  {getFieldDecorator('finishUnit', {
+                    initialValue: cacheinfo.finishUnit,
+                  })(<Input allowClear />)}
+                </Form.Item>
+              </Col>
+
+              <Col xl={8} xs={12} style={{ display: expand ? 'block' : 'none' }}>
+                <Form.Item label="确认人">
+                  {getFieldDecorator('confirmUser', {
+                    initialValue: cacheinfo.confirmUser,
+                  })(<Input allowClear />)}
+                </Form.Item>
+              </Col>
+
+              <Col span={8}>
+                <Form.Item label="确认人单位" style={{ display: expand ? 'block' : 'none' }}>
+                  {getFieldDecorator('confirmUnit', {
+                    initialValue: cacheinfo.confirmUnit,
+                  })(<Input allowClear />)}
+                </Form.Item>
+              </Col>
+
+
+              {/* {
+                  (status || type) && (
+                 
+                  )
+                } */}
+            </>
 
             {expand === false && (
               <Col span={24} style={{ textAlign: 'right' }}>

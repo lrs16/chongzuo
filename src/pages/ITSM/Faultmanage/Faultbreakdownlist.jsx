@@ -15,6 +15,7 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 const { RangePicker } = DatePicker;
 let statTimeBegin;
 let statTimeEnd;
+let search = false;
 const mergeCell = 'statCatalogue';
 
 const formItemLayout = {
@@ -60,8 +61,8 @@ const columns = [
           to={{
             pathname: '/ITSM/faultmanage/querylist',
             query: {
-              addTimeBegin: statTimeBegin,
-              addTimeEnd: statTimeEnd,
+              addTimeBegin: search ? statTimeBegin:'',
+              addTimeEnd:  search ? statTimeEnd:'',
               type: record.statCode,
               dictType: 'type',
               pathpush: true
@@ -92,6 +93,7 @@ function Faultbreakdownlist(props) {
   }
 
   const handleList = () => {
+    search = true;
     dispatch({
       type: 'faultstatics/fetchfaultlist',
       payload: { statTimeBegin, statTimeEnd, dictType: 'type' }
@@ -101,7 +103,10 @@ function Faultbreakdownlist(props) {
   useEffect(() => {
     statTimeBegin = '';
     statTimeEnd = '';
-    handleList();
+    dispatch({
+      type: 'faultstatics/fetchfaultlist',
+      payload: { statTimeBegin, statTimeEnd, dictType: 'type' }
+    })
   }, []);
 
   const handleReset = () => {

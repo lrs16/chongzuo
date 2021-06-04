@@ -16,6 +16,7 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 const { RangePicker } = DatePicker;
 let statTimeBegin = '';
 let statTimeEnd = '';
+let search = false;
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
@@ -27,49 +28,52 @@ const formItemLayout = {
   }
 }
 
-const columns = [
-  {
-    title: '序号',
-    dataIndex: 'index',
-    key: 'index'
-  },
-  {
-    title: '超时状态',
-    dataIndex: 'statName',
-    key: 'statName'
-  },
-  {
-    title: '工单数',
-    dataIndex: 'statCount',
-    key: 'statCount',
-    render: (text, record) => {
-      if (record.statName !== '合计') {
-        return <Link
-          to={{
-            pathname: '/ITSM/problemmanage/problemquery',
-            query: { 
-              problem: 'timeout',
-              timeStatus: record.statCode,
-              addTimeBegin:statTimeBegin,
-              addTimeEnd:statTimeEnd,
-              timeStatuscontent:record.statName
-             }
-          }}
-        >
-          {text}
-        </Link>
-      }
-      return <span>{text}</span>
-    }
-  },
-]
+
 function TimeoutStatistics(props) {
   const {
     form: { getFieldDecorator, resetFields },
     dispatch,
     timeoutArr
   } = props;
-  console.log(timeoutArr,'timeoutArr');
+
+  const columns = [
+    {
+      title: '序号',
+      dataIndex: 'index',
+      key: 'index'
+    },
+    {
+      title: '超时状态',
+      dataIndex: 'statName',
+      key: 'statName'
+    },
+    {
+      title: '工单数',
+      dataIndex: 'statCount',
+      key: 'statCount',
+      render: (text, record) => {
+        if (record.statName !== '合计') {
+          return <Link
+            to={{
+              pathname: '/ITSM/problemmanage/problemquery',
+              query: {
+                problem: 'timeout',
+                timeStatus: record.statCode,
+                addTimeBegin: search ? statTimeBegin :'',
+                addTimeEnd:  search ? statTimeEnd :'',
+                pathpush: true
+              },
+              state: { cache: false, }
+            }}
+          >
+            {text}
+          </Link>
+        }
+        return <span>{text}</span>
+      }
+    },
+  ]
+  console.log(timeoutArr, 'timeoutArr');
   if (timeoutArr.length) {
     timeoutArr.forEach((item, index) => {
       if (index !== 5) {
@@ -79,9 +83,10 @@ function TimeoutStatistics(props) {
   }
 
   const gettimeoutList = () => {
+    search = true;
     dispatch({
       type: 'problemstatistics/timeoutLists',
-      payload:{ statTimeBegin, statTimeEnd }
+      payload: { statTimeBegin, statTimeEnd }
     })
   }
 
@@ -113,9 +118,13 @@ function TimeoutStatistics(props) {
   }
 
   useEffect(() => {
+    search = false;
     statTimeBegin = '';
     statTimeEnd = '';
-    gettimeoutList();
+    dispatch({
+      type: 'problemstatistics/timeoutLists',
+      payload: { statTimeBegin, statTimeEnd }
+    })
   }, []);
 
   return (

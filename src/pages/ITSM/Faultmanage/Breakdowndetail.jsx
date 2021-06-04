@@ -15,8 +15,10 @@ import MergeTable from '@/components/MergeTable';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
 const { RangePicker } = DatePicker;
+
 let statTimeBegin;
 let statTimeEnd;
+let search = false;
 
 const formItemLayout = {
   labelCol: {
@@ -29,41 +31,6 @@ const formItemLayout = {
   }
 }
 
-const columns = [
-  {
-    title: '当前环节',
-    dataIndex: 'statCurrentNode',
-    key: 'statCurrentNode',
-  },
-
-  {
-    title: '工单数',
-    dataIndex: 'statCount',
-    key: 'statCount',
-    render: (text, record) => {
-      if (record.statName !== '合计') {
-        return <Link
-          to={{
-            pathname: '/ITSM/faultmanage/querylist',
-            query: {
-              status: record.statCode,
-              addTimeBegin: statTimeBegin,
-              addTimeEnd: statTimeEnd,
-              currentNode: record.statCurrentNode,
-              statName: record.statName,
-              pathpush: true
-            },
-            state: { cache: false, }
-          }}
-        >
-          {text}
-        </Link>
-      }
-      return <span>{text}</span>
-    }
-  },
-
-]
 
 function Breakdownlist(props) {
   const { pagetitle } = props.route.name;
@@ -73,12 +40,50 @@ function Breakdownlist(props) {
     faultdetailArr,
     loading
   } = props;
+ 
+
+  const columns = [
+    {
+      title: '当前环节',
+      dataIndex: 'statCurrentNode',
+      key: 'statCurrentNode',
+    },
+
+    {
+      title: '工单数',
+      dataIndex: 'statCount',
+      key: 'statCount',
+      render: (text, record) => {
+        if (record.statName !== '合计') {
+          return <Link
+            to={{
+              pathname: '/ITSM/faultmanage/querylist',
+              query: {
+                status: record.statCode,
+                addTimeBegin: search ? statTimeBegin : '',
+                addTimeEnd: search ? statTimeEnd : '',
+                currentNode: record.statCurrentNode,
+                statName: record.statName,
+                pathpush: true
+              },
+              state: { cache: false, }
+            }}
+          >
+            {text}
+          </Link>
+        }
+        return <span>{text}</span>
+      }
+    },
+
+  ]
 
   const onChange = (date, dateString) => {
     [statTimeBegin, statTimeEnd] = dateString;
   }
 
   const handleList = () => {
+    search = true;
     dispatch({
       type: 'faultstatics/fetchfaulthandle',
       payload: { statTimeBegin, statTimeEnd, dictType: 'type' }
@@ -86,9 +91,13 @@ function Breakdownlist(props) {
   }
 
   useEffect(() => {
+    search = false;
     statTimeBegin = '';
     statTimeEnd = '';
-    handleList();
+    dispatch({
+      type: 'faultstatics/fetchfaulthandle',
+      payload: { statTimeBegin, statTimeEnd, dictType: 'type' }
+    })
   }, []);
 
   const handleReset = () => {

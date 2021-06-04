@@ -27,47 +27,10 @@ const formItemLayout = {
 const { RangePicker } = DatePicker;
 let statTimeBegin;
 let statTimeEnd;
+let search = false;
 const mergeCell = 'statCurrentNode';
 
-const columns = [
-  {
-    title: '当前环节',
-    dataIndex: 'statCurrentNode',
-    key: 'statCurrentNode',
-  },
-  // {
-  //   title: '工单状态',
-  //   dataIndex: 'statName',
-  //   key: 'statName',
-  //   align: 'center',
-  // },
-  {
-    title: '工单数',
-    dataIndex: 'statCount',
-    key: 'statCount',
-    align: 'center',
-    render: (text, record) => {
-      if (record.statName !== '合计') {
-        return (<Link
-          to={{
-            pathname: '/ITSM/problemmanage/problemquery',
-            query: {
-              problem: 'status',
-              status: record.statCode,
-              addTimeBegin: statTimeBegin,
-              addTimeEnd: statTimeEnd,
-              currentNode:record.statCurrentNode
-            }
-          }}
-        >
-          {text}
-        </Link>
-        )
-      }
-      return <span>{text}</span>
-    }
-  },
-]
+
 function Statusstatistics(props) {
   const { pagetitle } = props.route.name;
   const {
@@ -77,7 +40,44 @@ function Statusstatistics(props) {
     loading
   } = props;
 
+  const columns = [
+    {
+      title: '当前环节',
+      dataIndex: 'statCurrentNode',
+      key: 'statCurrentNode',
+    },
+    {
+      title: '工单数',
+      dataIndex: 'statCount',
+      key: 'statCount',
+      align: 'center',
+      render: (text, record) => {
+        if (record.statName !== '合计') {
+          return (<Link
+            to={{
+              pathname: '/ITSM/problemmanage/problemquery',
+              query: {
+                problem: 'status',
+                // status: record.statCode,
+                addTimeBegin: search ? statTimeBegin:'',
+                addTimeEnd: search ? statTimeEnd:'',
+                currentNode:record.statCurrentNode,
+                pathpush: true
+              },
+              state: { cache: false, }
+            }}
+          >
+            {text}
+          </Link>
+          )
+        }
+        return <span>{text}</span>
+      }
+    },
+  ]
+
   const statusList = () => {
+    search = true;
     dispatch({
       type: 'problemstatistics/fetchstatusList',
       payload: { statTimeBegin, statTimeEnd }
@@ -85,9 +85,13 @@ function Statusstatistics(props) {
   }
 
   useEffect(() => {
+    search = false;
     statTimeBegin = '';
     statTimeEnd = '';
-    statusList();
+    dispatch({
+      type: 'problemstatistics/fetchstatusList',
+      payload: { statTimeBegin, statTimeEnd }
+    });
   }, [])
 
   const download = () => {
