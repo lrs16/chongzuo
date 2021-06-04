@@ -249,8 +249,9 @@ const BasicLayout = props => {
     if (location.query.closecurrent && location.query.tabid) {
       const newtabs = toptabs.filter(item => item.id !== location.query.tabid);
       setTopTabs([...newtabs]);
-      //  lasttabactive(newtabs)
-    }
+      lasttabactive(newtabs)
+    };
+    //
     // 更新工单处理页签信息
     if (location.query.updatetab && location.query.mainId) {
       ChangetabQuery(location.query)

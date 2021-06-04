@@ -240,7 +240,7 @@ function QueryList(props) {
         searchdata(values, cacheinfo.paginations.current, cacheinfo.paginations.pageSize)
       }
     });
-  }, [location]);
+  }, [location.query]);
 
   // 设置时间
   useEffect(() => {
@@ -293,7 +293,7 @@ function QueryList(props) {
     return [];
   };
 
-  const overtimemap = getTypebyId('1398105664881954817');       // 超时状态
+  const overtimemap = getTypebyId('1398105281983942657');       // 超时状态
   const demandtype = getTypebyId('1352069854860939266');
   const statemap = getTypebyId('1398105664881954817');
   const modulemap = getTypebyId('1352070663392727041');
@@ -374,7 +374,13 @@ function QueryList(props) {
                 {getFieldDecorator('completeStatus', {
                   initialValue: cacheinfo.completeStatus
                 })(
-                  <Input placeholder="请输入" allowClear />,
+                  <Select placeholder="请选择" allowClear>
+                    {overtimemap.map(obj => [
+                      <Option key={obj.key} value={obj.title}>
+                        {obj.title}
+                      </Option>,
+                    ])}
+                  </Select>,
                 )}
               </Form.Item>
             </Col>

@@ -533,7 +533,7 @@ function WorkOrder(props) {
         </Steps>
       )}
       <Spin spinning={loading}>
-        {loading === false && info !== '' && isnew && (
+        {loading === false && info !== '' && info !== {} && isnew && (
           <Collapse
             expandIconPosition="right"
             activeKey={activeKey}
