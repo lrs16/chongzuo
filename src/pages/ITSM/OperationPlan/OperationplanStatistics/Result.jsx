@@ -38,8 +38,10 @@ const columns = [
             time1: record.time1,
             time2: record.time2,
             executeResult: record.result === '合计' ? '' : record.result,
-            status: '已完成'
-          }
+            status: '已完成',
+            pathpush: true
+          },
+          state: { cache: false, }
         })
       };
       return <a onClick={() => gotoDetail(record)}>{text}</a>

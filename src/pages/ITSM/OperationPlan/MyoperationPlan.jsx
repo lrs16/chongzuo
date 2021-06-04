@@ -823,12 +823,13 @@ function MyoperationPlan(props) {
                         <RangePicker
                           showTime
                           format="YYYY-MM-DD HH:mm:ss"
+                          style={{ width: '100%' }}
                         />
                       )}
                   </Form.Item>
                 </Col>
 
-                <Col span={16}>
+                <Col span={8}>
                   <Form.Item label="计划结束时间">
                     {getFieldDecorator('plannedendTime', {
                     })
@@ -836,6 +837,7 @@ function MyoperationPlan(props) {
                         <RangePicker
                           showTime
                           format="YYYY-MM-DD HH:mm:ss"
+                          style={{ width: '100%' }}
                         />
                       )}
                   </Form.Item>
@@ -943,12 +945,13 @@ function MyoperationPlan(props) {
                         <RangePicker
                           showTime
                           format="YYYY-MM-DD HH:mm:ss"
+                          style={{ width: '100%' }}
                         />
                       )}
                   </Form.Item>
                 </Col>
 
-                <Col span={16}>
+                <Col span={8}>
                   <Form.Item label="实际结束时间">
                     {getFieldDecorator('endTime', {
                     })
@@ -956,6 +959,7 @@ function MyoperationPlan(props) {
                         <RangePicker
                           showTime
                           format="YYYY-MM-DD HH:mm:ss"
+                          style={{ width: '100%' }}
                         />
                       )}
                   </Form.Item>
@@ -973,6 +977,7 @@ function MyoperationPlan(props) {
                       (<RangePicker
                         showTime
                         format="YYYY-MM-DD HH:mm:ss"
+                        style={{ width: '100%' }}
                         allowClear />)}
                   </Form.Item>
                 </Col>
@@ -1017,6 +1022,7 @@ function MyoperationPlan(props) {
                         (<RangePicker
                           showTime
                           format="YYYY-MM-DD HH:mm:ss"
+                          style={{ width: '100%' }}
                           allowClear />)
                       )}
                   </Form.Item>
@@ -1042,6 +1048,7 @@ function MyoperationPlan(props) {
                       <RangePicker
                         showTime
                         format='YYYY-MM-DD HH:mm:ss'
+                        style={{ width: '100%' }}
                         allowClear
                       />
                     )}

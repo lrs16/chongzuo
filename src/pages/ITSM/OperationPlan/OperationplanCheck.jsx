@@ -658,7 +658,7 @@ function OperationplanCheck(props) {
         style={{ display: 'none' }}
       />
       <Card>
-        <Row gutter={16}>
+        <Row gutter={24}>
           <Form {...formItemLayout}>
             <Col span={8}>
               <Form.Item label="作业计划编号">
@@ -795,12 +795,13 @@ function OperationplanCheck(props) {
                         <RangePicker
                           showTime
                           format="YYYY-MM-DD HH:mm:ss"
+                          style={{ width: '100%' }}
                         />
                       )}
                   </Form.Item>
                 </Col>
 
-                <Col span={16}>
+                <Col span={8}>
                   <Form.Item label="计划结束时间">
                     {getFieldDecorator('plannedendTime', {
                     })
@@ -808,6 +809,7 @@ function OperationplanCheck(props) {
                         <RangePicker
                           showTime
                           format="YYYY-MM-DD HH:mm:ss"
+                          style={{ width: '100%' }}
                         />
                       )}
                   </Form.Item>
@@ -915,12 +917,13 @@ function OperationplanCheck(props) {
                         <RangePicker
                           showTime
                           format="YYYY-MM-DD HH:mm:ss"
+                          style={{ width: '100%' }}
                         />
                       )}
                   </Form.Item>
                 </Col>
 
-                <Col span={16}>
+                <Col span={8}>
                   <Form.Item label="实际结束时间">
                     {getFieldDecorator('endTime', {
                     })
@@ -928,6 +931,7 @@ function OperationplanCheck(props) {
                         <RangePicker
                           showTime
                           format="YYYY-MM-DD HH:mm:ss"
+                          style={{ width: '100%' }}
                         />
                       )}
                   </Form.Item>
@@ -945,6 +949,7 @@ function OperationplanCheck(props) {
                       (<RangePicker
                         showTime
                         format="YYYY-MM-DD HH:mm:ss"
+                        style={{ width: '100%' }}
                         allowClear />)}
                   </Form.Item>
                 </Col>
@@ -989,6 +994,7 @@ function OperationplanCheck(props) {
                         (<RangePicker
                           showTime
                           format="YYYY-MM-DD HH:mm:ss"
+                          style={{ width: '100%' }}
                           allowClear />)
                       )}
                   </Form.Item>
@@ -1014,6 +1020,7 @@ function OperationplanCheck(props) {
                       <RangePicker
                         showTime
                         format='YYYY-MM-DD HH:mm:ss'
+                        style={{ width: '100%' }}
                         allowClear
                       />
                     )}

@@ -40,8 +40,10 @@ const columns = [
             time1: record.time1,
             time2: record.time2,
             operationUser: record.user === '合计' ? '' : record.user,
-            status: '计划中'
-          }
+            status: '计划中',
+            pathpush: true
+          },
+          state: { cache: false, }
         })
       };
       return <a onClick={() => gotoDetail(record)}>{text}</a>
@@ -59,8 +61,10 @@ const columns = [
             time1: record.time1,
             time2: record.time2,
             operationUser: record.user === '合计' ? '' : record.user,
-            status: '延期中'
-          }
+            status: '延期中',
+            pathpush: true
+          },
+          state: { cache: false, }
         })
       };
       return <a onClick={() => gotoDetail(record)}>{text}</a>
@@ -78,8 +82,10 @@ const columns = [
             time1: record.time1,
             time2: record.time2,
             operationUser: record.user === '合计' ? '' : record.user,
-            status: '已完成'
-          }
+            status: '已完成',
+            pathpush: true
+          },
+          state: { cache: false, }
         })
       };
       return <a onClick={() => gotoDetail(record)}>{text}</a>

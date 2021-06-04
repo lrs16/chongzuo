@@ -38,8 +38,10 @@ const columns = [
             time1: record.time1,
             time2: record.time2,
             operationUser: record.user === '合计' ? '' : record.user,
-            timeoutStatus: '未超时'
-          }
+            timeoutStatus: '未超时',
+            pathpush: true
+          },
+          state: { cache: false, }
         })
       };
       return <a onClick={() => gotoDetail(record)}>{text}</a>
@@ -57,8 +59,10 @@ const columns = [
             time1: record.time1,
             time2: record.time2,
             operationUser: record.user === '合计' ? '' : record.user,
-            timeoutStatus: '即将超时'
-          }
+            timeoutStatus: '即将超时',
+            pathpush: true
+          },
+          state: { cache: false, }
         })
       };
       return <a onClick={() => gotoDetail(record)}>{text}</a>
@@ -76,8 +80,10 @@ const columns = [
             time1: record.time1,
             time2: record.time2,
             operationUser: record.user === '合计' ? '' : record.user,
-            timeoutStatus: '已超时'
-          }
+            timeoutStatus: '已超时',
+            pathpush: true
+          },
+          state: { cache: false, }
         })
       };
       return <a onClick={() => gotoDetail(record)}>{text}</a>

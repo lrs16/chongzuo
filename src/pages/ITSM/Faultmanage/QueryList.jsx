@@ -173,24 +173,18 @@ function QueryList(props) {
       key: 'addTime',
       width: 200,
     },
-    // {
-    //   title: '登记时间',
-    //   dataIndex: 'registerTime',
-    //   key: 'registerTime',
-    //   width: 200,
-    // },
-    // {
-    //   title: '处理时间',
-    //   dataIndex: 'handleStartTime',
-    //   key: 'handleStartTime',
-    //   width: 200,
-    // },
-    // {
-    //   title: '处理结束时间',
-    //   dataIndex: 'handleEndTime',
-    //   key: 'handleEndTime',
-    //   width: 200,
-    // },
+    {
+      title: '登记时间',
+      dataIndex: 'registerTime',
+      key: 'registerTime',
+      width: 200,
+    },
+    {
+      title: '处理时间',
+      dataIndex: 'handleStartTime',
+      key: 'handleStartTime',
+      width: 200,
+    },
     {
       title: '操作',
       dataIndex: 'action',
@@ -285,7 +279,6 @@ function QueryList(props) {
   }, []);
 
   const searchdata = (values, page, pageSize) => {
-    console.log('values: ', values);
     dispatch({
       type: 'fault/getfaultQueryList',
       payload: {
@@ -436,7 +429,7 @@ function QueryList(props) {
     handleStartTimeEnd: '',
     handleUnit: '',
     handler: '',
-    no: '',
+    operationNo: '',
     registerAddress: '',
     registerLevel: '',
     registerModel: '',
@@ -444,7 +437,6 @@ function QueryList(props) {
     registerScope: '',
     registerTimeBegin: '',
     registerTime: '',
-    handleResult:'',
     registerUnit: '',
     registerUser: '',
     source: '',
@@ -457,7 +449,6 @@ function QueryList(props) {
 
   let cacheinfo = {};
   if (location && location.state) {
-    console.log(location.state.cacheinfo)
     cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
   }
 
@@ -478,18 +469,15 @@ function QueryList(props) {
 
   // 设置时间
   useEffect(() => {
-    if (location.state.cacheinfo) {
-      console.log(location.state.cacheinfo, 'location.state.cacheinfo')
-      const cachestartTime = location.state.cacheinfo.addTimeBegin;
-      const cacheendTime = location.state.cacheinfo.addTimeEnd;
-      const { createTime } = location.state.cacheinfo;
-      const { registerTime } = location.state.cacheinfo;
+    if (location && location.state && location.state.cacheinfo) {
+      const { addTime } = location.state.cacheinfo;
+      const { checkTime } = location.state.cacheinfo;
       const { handleTime } = location.state.cacheinfo;
       // const registerStarttime = location.state.cacheinfo.registerTime[0];
       // const registerEndtime = location.state.cacheinfo.registerTime[1];
       setFieldsValue({
-        createTime: createTime?.length ? [moment(createTime[0]), moment(createTime[1])] : '',
-        registerTime: registerTime?.length ? [moment(registerTime[0]), moment(registerTime[1])] : '',
+        createTime: addTime?.length ? [moment(addTime[0]), moment(addTime[1])] : '',
+        checkTime: checkTime?.length ? [moment(checkTime[0]), moment(checkTime[1])] : '',
         handleTime: handleTime?.length ? [moment(handleTime[0]), moment(handleTime[1])] : '',
       })
     } else {
@@ -508,8 +496,6 @@ function QueryList(props) {
   useEffect(() => {
     if (location.state) {
       if (location.state.cache) {
-        console.log(expand)
-        console.log(tabrecord, 'tabrecord')
         // 传表单数据到页签
         dispatch({
           type: 'viewcache/gettabstate',
@@ -634,7 +620,6 @@ function QueryList(props) {
             </>
 
             <>
-
               <Col xl={8} xs={12} style={{ display: expand ? 'block' : 'none' }}>
                 <Form.Item label="登记时间">
                   {getFieldDecorator('registerTime', {
@@ -649,16 +634,6 @@ function QueryList(props) {
                     />)}
                 </Form.Item>
               </Col>
-
-              {/* <Col xl={8} xs={12}>
-                  <Form.Item label="发生时间">
-                    {getFieldDecorator(
-                      'registerOccurTimeBegin', {
-                      initialValue: cacheinfo.registerOccurTimeBegin,
-                    },
-                    )(<DatePicker format="YYYY-MM-DD" style={{ width: '100%' }} allowClear />)}
-                  </Form.Item>
-                </Col> */}
 
               <Col xl={8} xs={12} style={{ display: expand ? 'block' : 'none' }}>
                 <Form.Item label="故障来源">
@@ -895,13 +870,6 @@ function QueryList(props) {
                   })(<Input allowClear />)}
                 </Form.Item>
               </Col>
-
-
-              {/* {
-                  (status || type) && (
-                 
-                  )
-                } */}
             </>
 
             {expand === false && (

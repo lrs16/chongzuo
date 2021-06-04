@@ -187,15 +187,12 @@ function Besolved(props) {
 
   let cacheinfo = {};
   if (location && location.state) {
-    console.log(location.state.cacheinfo)
     cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
   }
 
-  console.log(cacheinfo)
   // 设置时间
   useEffect(() => {
-    if (location.state.cacheinfo) {
-      console.log(location.state.cacheinfo,'location.state.cacheinfo')
+    if (location && location.state && location.state.cacheinfo) {
       const cachestartTime = location.state.cacheinfo.addTimeBegin;
       const cacheendTime = location.state.cacheinfo.addTimeEnd;
       setFieldsValue({
@@ -217,7 +214,6 @@ function Besolved(props) {
   useEffect(() => {
     if (location.state) {
       if (location.state.cache) {
-        console.log(tabrecord,'tabrecord')
         // 传表单数据到页签
         dispatch({
           type: 'viewcache/gettabstate',
@@ -282,7 +278,6 @@ function Besolved(props) {
       pageNum: paginations.current,
       pageSize: paginations.pageSize,
     }
-    console.log(newvalues,'newvalues')
     setTabRecord({ ...newvalues });
   };
 

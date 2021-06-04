@@ -24,22 +24,22 @@ import SysDict from '@/components/SysDict';
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
-    sm: { span: 6 },
+    sm: { span: 8 },
   },
   wrapperCol: {
     xs: { span: 24 },
-    sm: { span: 18 },
+    sm: { span: 16 },
   },
 };
 
 const form10ladeLayout = {
   labelCol: {
     xs: { span: 24 },
-    sm: { span: 4 },
+    sm: { span: 6 },
   },
   wrapperCol: {
     xs: { span: 24 },
-    sm: { span: 20 },
+    sm: { span: 10 },
   },
 };
 const formItemdeLayout = {
@@ -63,7 +63,17 @@ function TaskSearch(props) {
   // const pagetitle = props.route.name;
   const {
     form: { getFieldDecorator, resetFields, validateFields, setFieldsValue },
-    location: { query: { time1, time2, status, executeResult, executeStatus, timeoutStatus, operationUser } },
+    location: {
+      query:
+      {
+        time1,
+        time2,
+        status,
+        executeResult,
+        executeStatus,
+        timeoutStatus,
+        operationUser
+      } },
     dispatch,
     queryList,
     operationPersonArr,
@@ -312,7 +322,6 @@ function TaskSearch(props) {
 
   const getTobolist = () => {
     validateFields((err, values) => {
-      console.log('values: ', values);
       dispatch({
         type: 'processmodel/getOperationQueryList',
         payload: {
@@ -359,27 +368,13 @@ function TaskSearch(props) {
     });
     setTabRecord({
       ...values,
-      time1: values.addTime?.length ? moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-      time2: values.addTime?.length ? moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-      addTime: '',
-      checkTime1: values.checkTime?.length ? moment(values.checkTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-      checkTime2: values.checkTime?.length ? moment(values.checkTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-      checkTime: '',
-      executeOperationTime1: values.executeOperationTime?.length ? moment(values.executeOperationTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-      executeOperationTime2: values.executeOperationTime?.length ? moment(values.executeOperationTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-      executeOperationTime: '',
-      plannedStartTime1: values.plannedStartTime?.length ? moment(values.plannedStartTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-      plannedStartTime2: values.plannedStartTime?.length ? moment(values.plannedStartTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-      plannedStartTime: '',
-      startTime1: values.startTime?.length ? moment(values.startTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-      startTime2: values.startTime?.length ? moment(values.startTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-      startTime: '',
-      plannedEndTime1: values.plannedendTime?.length ? moment(values.plannedendTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-      plannedEndTime2: values.plannedendTime?.length ? moment(values.plannedendTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-      plannedendTime: '',
-      endTime1: values.endTime?.length ? moment(values.endTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-      endTime2: values.endTime?.length ? moment(values.endTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-      endTime: '',
+      addTime: values.addTime?.length ? [moment(values.addTime[0]).format('YYYY-MM-DD HH:mm:ss'), moment(values.addTime[1]).format('YYYY-MM-DD HH:mm:ss')] : '',
+      checkTime: values.checkTime?.length ? [moment(values.checkTime[0]).format('YYYY-MM-DD HH:mm:ss'), moment(values.checkTime[1]).format('YYYY-MM-DD HH:mm:ss')] : '',
+      executeOperationTime: values.executeOperationTime?.length ? [moment(values.executeOperationTime[0]).format('YYYY-MM-DD HH:mm:ss'), moment(values.executeOperationTime[1]).format('YYYY-MM-DD HH:mm:ss')] : '',
+      plannedStartTime: values.plannedStartTime?.length ? [moment(values.plannedStartTime[0]).format('YYYY-MM-DD HH:mm:ss'), moment(values.plannedStartTime[1]).format('YYYY-MM-DD HH:mm:ss')] : '',
+      startTime: values.startTime?.length ? [moment(values.startTime[0]).format('YYYY-MM-DD HH:mm:ss'), moment(values.startTime[1]).format('YYYY-MM-DD HH:mm:ss')] : '',
+      plannedendTime: values.plannedendTime?.length ? [moment(values.plannedendTime[0]).format('YYYY-MM-DD HH:mm:ss'), moment(values.plannedendTime[1]).format('YYYY-MM-DD HH:mm:ss')] : '',
+      endTime: values.endTime?.length ? [moment(values.endTime[0]).format('YYYY-MM-DD HH:mm:ss'), moment(values.endTime[1]).format('YYYY-MM-DD HH:mm:ss')] : '',
       pageIndex: page - 1,
       pageSize
     })
@@ -410,46 +405,71 @@ function TaskSearch(props) {
   };
 
   const time = time1 ? [moment(time1), moment(time2)] : '';
-    // 设置初始值
-    const record = {
-      status: '',
-      executeResult: '',
-      operationUser: '',
-      timeoutStatus: '',
-      addTime: time,
-      operationNo: '',
-      systemName: '',
-      type: '',
-      nature: '',
-      operationUnit: '',
-      billing: '',
-      object: '',
-      content: '',
-      plannedStartTime: '',
-      plannedendTime: '',
-      checkStatus: '',
-      executeContent: '',
-      checkResult: '',
-      startTime: '',
-      endTime: '',
-      executeOperationTime: '',
-      addUser: '',
-      addUnit: '',
-      checkUser: '',
-      checkTime: '',
-      paginations,
-      checkContent:'',
-    };
-  
-    let cacheinfo = {};
-    if (location && location.state) {
-      cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
+  // 设置初始值
+  const record = {
+    status,
+    executeResult,
+    operationUser,
+    timeoutStatus,
+    addTime: time,
+    operationNo: '',
+    systemName: '',
+    type: '',
+    nature: '',
+    operationUnit: '',
+    billing: '',
+    object: '',
+    content: '',
+    checkStatus: '',
+    executeContent: '',
+    checkResult: '',
+    executeOperationTime: '',
+    plannedStartTime: '',
+    plannedendTime: '',
+    endTime: '',
+    startTime: '',
+    addUser: '',
+    addUnit: '',
+    checkUser: '',
+    checkTime: '',
+    paginations,
+    checkContent: '',
+  };
+
+  let cacheinfo = {};
+  if (location && location.state) {
+    cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
+  }
+
+  // 设置时间
+  useEffect(() => {
+    if (location && location.state && location.state.cacheinfo) {
+      const { addTime } = location.state.cacheinfo;
+      const { checkTime } = location.state.cacheinfo;
+      const { executeOperationTime } = location.state.cacheinfo;
+      const { plannedStartTime } = location.state.cacheinfo;
+      const { plannedendTime } = location.state.cacheinfo;
+      const { startTime } = location.state.cacheinfo;
+      const { endTime } = location.state.cacheinfo;
+      setFieldsValue({
+        addTime: addTime?.length ? [moment(addTime[0]), moment(addTime[1])] : '',
+        checkTime: checkTime?.length ? [moment(checkTime[0]), moment(checkTime[1])] : '',
+        executeOperationTime: executeOperationTime?.length ? [moment(executeOperationTime[0]), moment(executeOperationTime[1])] : '',
+        plannedStartTime: plannedStartTime?.length ? [moment(plannedStartTime[0]), moment(plannedStartTime[1])] : '',
+        plannedendTime: plannedendTime?.length ? [moment(plannedendTime[0]), moment(plannedendTime[1])] : '',
+        startTime: startTime?.length ? [moment(startTime[0]), moment(startTime[1])] : '',
+        endTime: endTime?.length ? [moment(endTime[0]), moment(endTime[1])] : '',
+      })
+    } else {
+      setFieldsValue({
+        addTime: time1 ? [moment(time1), moment(time2)] : '',
+      })
     }
+  }, [location.state]);
 
   useEffect(() => {
     if (location.state) {
       if (location.state.cache) {
-        console.log(tabrecord,'tabrecord')
         // 传表单数据到页签
         dispatch({
           type: 'viewcache/gettabstate',
@@ -475,7 +495,7 @@ function TaskSearch(props) {
       };
     }
   }, [location.state]);
-  
+
   // 查询
   const handleSearch = () => {
     setPaginations({
@@ -609,15 +629,6 @@ function TaskSearch(props) {
 
 
   useEffect(() => {
-    if (time1) {
-      setFieldsValue({
-        status,
-        addTime: time1 ? [moment(time1), moment(time2)] : [moment().startOf('month'), moment()],
-        executeResult,
-        operationUser,
-        timeoutStatus
-      })
-    }
     getoperationPerson();
     setColumns(initialColumns)
   }, []);
@@ -648,159 +659,115 @@ function TaskSearch(props) {
         style={{ display: 'none' }}
       />
       <Card>
-        <Row gutter={16}>
+        <Row gutter={24}>
           <Form {...formItemLayout}>
-            {expand === false && (
-              <>
-                {time1 && operationPersonSelect && operationPersonSelect.length > 0 && (
-                  <>
-                    <Col span={7}>
-                      <Form.Item label="作业状态">
-                        {getFieldDecorator('status', {
-                            // initialValue: cacheinfo.status,
-                        })
-                          (
-                            <Select placeholder="请选择" allowClear>
-                              {executeStatusselect.map(obj => [
-                                <Option key={obj.key} value={obj.title}>
-                                  {obj.title}
-                                </Option>,
-                              ])}
-                            </Select>,
-                          )}
-                      </Form.Item>
-                    </Col>
-
-                    <Col span={8}>
-                      <Form.Item label="作业结果">
-                        {getFieldDecorator('executeResult', {
-                          // initialValue: cacheinfo.executeResult,
-                        })
-                          (
-                            <Select placeholder="请选择" allowClear>
-                              {taskResult.map(obj => [
-                                <Option key={obj.key} value={obj.title}>
-                                  {obj.title}
-                                </Option>,
-                              ])}
-                            </Select>,
-                          )}
-                      </Form.Item>
-                    </Col>
-
-                    <Col span={8}>
-                      <Form.Item label="作业负责人">
-                        {getFieldDecorator('operationUser', {})
-                          (
-                            <Select allowClear>
-                              {operationPersonSelect.map(obj => [
-                                <Option key={obj.key} value={obj.value}>
-                                  {obj.value}
-                                </Option>
-                              ])}
-
-                            </Select>
-                          )}</Form.Item>
-                    </Col>
-
-                    <Col span={8}>
-                      <Form.Item label="超时状态">
-                        {getFieldDecorator('timeoutStatus', {})
-                          (
-                            <Select placeholder="请选择" allowClear>
-                              {timeoutStatusselect.map(obj => [
-                                <Option key={obj.key} value={obj.title}>
-                                  {obj.title}
-                                </Option>,
-                              ])}
-                            </Select>,
-                          )}
-                      </Form.Item>
-                    </Col>
-
-                    <Col span={10}>
-                      <Form.Item label="填报时间" {...form10ladeLayout}>
-                        {getFieldDecorator('addTime', {
-                          initialValue: ''
-                        })(
-                          <RangePicker
-                            showTime
-                            format='YYYY-MM-DD HH:mm:ss'
-                            allowClear
-                          />
-                        )}
-                      </Form.Item>
-                    </Col>
-
-                  </>
-                )}
-
-                {!time1 && (
-                  <>
-
-                    <Col span={8}>
-                      <Form.Item label="作业计划编号">
-                        {getFieldDecorator('operationNo', {})
-                          (
-                            <Input allowClear />
-                          )}
-                      </Form.Item>
-                    </Col>
-
-                    <Col span={7}>
-                      <Form.Item label="作业系统名称">
-                        {getFieldDecorator('systemName', {})(
+            <>
+              {operationPersonSelect && operationPersonSelect.length > 0 && (
+                <>
+                  <Col span={8}>
+                    <Form.Item label="作业计划编号">
+                      {getFieldDecorator('operationNo', {
+                        initialValue: cacheinfo.operationNo,
+                      })
+                        (
                           <Input allowClear />
                         )}
-                      </Form.Item>
-                    </Col>
+                    </Form.Item>
+                  </Col>
+                  <Col span={8}>
+                    <Form.Item label="作业状态">
+                      {getFieldDecorator('status', {
+                        initialValue: cacheinfo.status,
+                      })
+                        (
+                          <Select placeholder="请选择" allowClear>
+                            {executeStatusselect.map(obj => [
+                              <Option key={obj.key} value={obj.title}>
+                                {obj.title}
+                              </Option>,
+                            ])}
+                          </Select>,
+                        )}
+                    </Form.Item>
+                  </Col>
 
-                    <Col span={8}>
-                      <Form.Item label="作业类型" >
-                        {getFieldDecorator('type', {})
-                          (
-                            <Select placeholder="请选择" allowClear>
-                              {taskType.map(obj => [
-                                <Option key={obj.key} value={obj.title}>
-                                  {obj.title}
-                                </Option>,
-                              ])}
-                            </Select>,
-                          )}
-                      </Form.Item>
-                    </Col>
+                  <Col span={8}>
+                    <Form.Item label="作业结果">
+                      {getFieldDecorator('executeResult', {
+                        initialValue: cacheinfo.executeResult,
+                      })
+                        (
+                          <Select placeholder="请选择" allowClear>
+                            {taskResult.map(obj => [
+                              <Option key={obj.key} value={obj.title}>
+                                {obj.title}
+                              </Option>,
+                            ])}
+                          </Select>,
+                        )}
+                    </Form.Item>
+                  </Col>
 
-                  </>
-                )}
-              </>
-            )}
-            {expand === true && (
-              <>
-                <Col span={8}>
-                  <Form.Item label="作业计划编号">
-                    {getFieldDecorator('operationNo', {})
-                      (
-                        <Input allowClear />
+                  <Col span={8}>
+                    <Form.Item label="作业负责人">
+                      {getFieldDecorator('operationUser', {
+                        initialValue: cacheinfo.operationUser,
+                      })
+                        (
+                          <Select allowClear>
+                            {operationPersonSelect.map(obj => [
+                              <Option key={obj.key} value={obj.value}>
+                                {obj.value}
+                              </Option>
+                            ])}
+
+                          </Select>
+                        )}</Form.Item>
+                  </Col>
+
+                  <Col span={8}>
+                    <Form.Item label="超时状态">
+                      {getFieldDecorator('timeoutStatus', {
+                        initialValue: cacheinfo.timeoutStatus,
+                      })
+                        (
+                          <Select placeholder="请选择" allowClear>
+                            {timeoutStatusselect.map(obj => [
+                              <Option key={obj.key} value={obj.title}>
+                                {obj.title}
+                              </Option>,
+                            ])}
+                          </Select>,
+                        )}
+                    </Form.Item>
+                  </Col>
+
+                  <Col span={8}>
+                    <Form.Item label="填报时间">
+                      {getFieldDecorator('addTime', {
+                        initialValue: ''
+                      })(
+                        <RangePicker
+                          showTime
+                          format='YYYY-MM-DD HH:mm:ss'
+                          style={{ width: '100%' }}
+                          allowClear
+                        />
                       )}
-                  </Form.Item>
-                </Col>
+                    </Form.Item>
+                  </Col>
 
-                <Col span={8}>
-                  <Form.Item label="作业系统名称">
-                    {getFieldDecorator('systemName', {})(
-                      <Input allowClear />
-                    )}
-                  </Form.Item>
-                </Col>
+                </>
+              )}
 
-              </>
-            )}
-
-            {expand === true && (
+            </>
+            <div style={{ display: expand ? 'block' : 'none' }}>
               <>
                 <Col span={8}>
                   <Form.Item label="作业类型" >
-                    {getFieldDecorator('type', {})
+                    {getFieldDecorator('type', {
+                      initialValue: cacheinfo.type,
+                    })
                       (
                         <Select placeholder="请选择" allowClear>
                           {taskType.map(obj => [
@@ -812,14 +779,12 @@ function TaskSearch(props) {
                       )}
                   </Form.Item>
                 </Col>
-              </>
-            )}
 
-            {expand === true && (
-              <>
                 <Col span={8}>
                   <Form.Item label="作业性质">
-                    {getFieldDecorator('nature', {})
+                    {getFieldDecorator('nature', {
+                      initialValue: cacheinfo.nature,
+                    })
                       (
                         <Select placeholder="请选择" allowClear>
                           {taskNature.map(obj => [
@@ -834,7 +799,9 @@ function TaskSearch(props) {
 
                 <Col span={8}>
                   <Form.Item label="作业单位">
-                    {getFieldDecorator('operationUnit', {})
+                    {getFieldDecorator('operationUnit', {
+                      initialValue: cacheinfo.operationUnit,
+                    })
                       (
                         <Select
                           placeholder="请选择"
@@ -850,9 +817,11 @@ function TaskSearch(props) {
                   </Form.Item>
                 </Col>
 
-                <Col span={8}>
+                {/* <Col span={8}>
                   <Form.Item label="作业负责人">
-                    {getFieldDecorator('operationUser', {})
+                    {getFieldDecorator('operationUser', {
+                      initialValue: cacheinfo.operationUser,
+                    })
                       (
                         <Select allowClear>
                           {operationPersonSelect.map(obj => [
@@ -863,15 +832,15 @@ function TaskSearch(props) {
 
                         </Select>
                       )}</Form.Item>
-                </Col>
+                </Col> */}
               </>
-            )}
 
-            {expand === true && (
               <>
                 <Col span={8}>
                   <Form.Item label="是否开票">
-                    {getFieldDecorator('billing', {})
+                    {getFieldDecorator('billing', {
+                      initialValue: cacheinfo.billing,
+                    })
                       (
                         <Select placeholder="请选择" allowClear>
                           {taskBilling.map(obj => [
@@ -886,7 +855,9 @@ function TaskSearch(props) {
 
                 <Col span={8}>
                   <Form.Item label="作业对象">
-                    {getFieldDecorator('object', {})
+                    {getFieldDecorator('object', {
+                      initialValue: cacheinfo.object,
+                    })
                       (
                         <Input allowClear />
                       )}
@@ -895,66 +866,54 @@ function TaskSearch(props) {
 
                 <Col span={8}>
                   <Form.Item label="作业内容">
-                    {getFieldDecorator('content', {})
+                    {getFieldDecorator('content', {
+                      initialValue: cacheinfo.content,
+                    })
                       (
                         <Input allowClear />
                       )}
                   </Form.Item>
                 </Col>
               </>
-            )}
-            {expand === true && (
+
               <>
 
                 <Col span={8}>
                   <Form.Item label="计划开始时间">
                     {getFieldDecorator('plannedStartTime', {
+                      initialValue: '',
                     })
                       (
                         <RangePicker
                           showTime
                           format="YYYY-MM-DD HH:mm:ss"
-                        />
-                      )}
-                  </Form.Item>
-                </Col>
-
-                <Col span={16}>
-                  <Form.Item label="计划结束时间">
-                    {getFieldDecorator('plannedendTime', {
-                    })
-                      (
-                        <RangePicker
-                          showTime
-                          format="YYYY-MM-DD HH:mm:ss"
+                          style={{ width: '100%' }}
                         />
                       )}
                   </Form.Item>
                 </Col>
 
                 <Col span={8}>
-                  <Form.Item label="作业状态">
-                    {getFieldDecorator('status', {
+                  <Form.Item label="计划结束时间">
+                    {getFieldDecorator('plannedendTime', {
+                      initialValue: '',
                     })
                       (
-                        <Select placeholder="请选择" allowClear>
-                          {executeStatusselect.map(obj => [
-                            <Option key={obj.key} value={obj.title}>
-                              {obj.title}
-                            </Option>,
-                          ])}
-                        </Select>,
+                        <RangePicker
+                          showTime
+                          format="YYYY-MM-DD HH:mm:ss"
+                          style={{ width: '100%' }}
+                        />
                       )}
                   </Form.Item>
                 </Col>
               </>
-            )}
 
-            {expand === true && (
               <>
                 <Col span={8}>
                   <Form.Item label="审核状态">
                     {getFieldDecorator('checkStatus', {
+                      initialValue: cacheinfo.checkStatus,
                     })
                       (
                         <Select placeholder="请选择" allowClear>
@@ -970,7 +929,9 @@ function TaskSearch(props) {
 
                 <Col span={8}>
                   <Form.Item label="超时状态">
-                    {getFieldDecorator('timeoutStatus', {})
+                    {getFieldDecorator('timeoutStatus', {
+                      initialValue: cacheinfo.timeoutStatus,
+                    })
                       (
                         <Select placeholder="请选择" allowClear>
                           {timeoutStatusselect.map(obj => [
@@ -983,9 +944,11 @@ function TaskSearch(props) {
                   </Form.Item>
                 </Col>
 
-                <Col span={8}>
+                {/* <Col span={8}>
                   <Form.Item label="作业结果">
-                    {getFieldDecorator('executeResult', {})
+                    {getFieldDecorator('executeResult', {
+                      initialValue: cacheinfo.executeResult,
+                    })
                       (
                         <Select placeholder="请选择" allowClear>
                           {taskResult.map(obj => [
@@ -996,11 +959,13 @@ function TaskSearch(props) {
                         </Select>,
                       )}
                   </Form.Item>
-                </Col>
+                </Col> */}
 
                 <Col span={8}>
                   <Form.Item label="作业执行情况说明">
-                    {getFieldDecorator('executeContent', {})
+                    {getFieldDecorator('executeContent', {
+                      initialValue: cacheinfo.executeContent,
+                    })
                       (
                         <Input allowClear />
                       )}
@@ -1009,7 +974,9 @@ function TaskSearch(props) {
 
                 <Col span={8}>
                   <Form.Item label="审核结果">
-                    {getFieldDecorator('checkResult', {})
+                    {getFieldDecorator('checkResult', {
+                      initialValue: cacheinfo.checkResult,
+                    })
                       (
                         <Select placeholder="请选择" allowClear>
                           {checkResult.map(obj => [
@@ -1022,56 +989,63 @@ function TaskSearch(props) {
                   </Form.Item>
                 </Col>
               </>
-            )}
 
-            {expand === true && (
               <>
                 <Col span={8}>
                   <Form.Item label="实际开始时间">
                     {getFieldDecorator('startTime', {
+                      initialValue: '',
                     })
                       (
                         <RangePicker
                           showTime
                           format="YYYY-MM-DD HH:mm:ss"
+                          style={{ width: '100%' }}
+                          allowClear
                         />
                       )}
                   </Form.Item>
                 </Col>
 
-                <Col span={16}>
+                <Col span={8}>
                   <Form.Item label="实际结束时间">
                     {getFieldDecorator('endTime', {
+                      initialValue: '',
                     })
                       (
                         <RangePicker
                           showTime
                           format="YYYY-MM-DD HH:mm:ss"
+                          style={{ width: '100%' }}
+                          allowClear
                         />
                       )}
                   </Form.Item>
                 </Col>
 
               </>
-            )}
 
-            {expand === true && (
               <>
                 <Col span={8}>
                   <Form.Item label="执行操作时间">
                     {getFieldDecorator('executeOperationTime', {
+                      initialValue: '',
                     })
                       (<RangePicker
                         showTime
                         format="YYYY-MM-DD HH:mm:ss"
-                        allowClear />)}
+                        style={{ width: '100%' }}
+                        allowClear
+                      />)}
                   </Form.Item>
                 </Col>
 
 
                 <Col span={8}>
                   <Form.Item label="填报人">
-                    {getFieldDecorator('addUser', {})
+                    {getFieldDecorator('addUser', {
+                      initialValue: cacheinfo.addUser,
+                    })
                       (
                         <Input allowClear />
                       )}
@@ -1080,20 +1054,21 @@ function TaskSearch(props) {
 
                 <Col span={8}>
                   <Form.Item label="填报单位">
-                    {getFieldDecorator('addUnit', {})
+                    {getFieldDecorator('addUnit', {
+                      initialValue: cacheinfo.addUnit,
+                    })
                       (
                         <Input allowClear />
                       )}
                   </Form.Item>
                 </Col>
               </>
-            )}
 
-            {expand === true && (
               <>
                 <Col span={8}>
                   <Form.Item label="审核人">
                     {getFieldDecorator('checkUser', {
+                      initialValue: cacheinfo.checkUser,
                     })
                       (<Input allowClear />)}
                   </Form.Item>
@@ -1103,43 +1078,35 @@ function TaskSearch(props) {
 
                 <Col span={8}>
                   <Form.Item label="审核时间">
-                    {getFieldDecorator('checkTime', {})
+                    {getFieldDecorator('checkTime', {
+                      initialValue: '',
+                    })
                       (
                         (<RangePicker
                           showTime
                           format="YYYY-MM-DD HH:mm:ss"
-                          allowClear />)
+                          style={{ width: '100%' }}
+                          allowClear
+                        />)
                       )}
                   </Form.Item>
                 </Col>
               </>
-            )}
 
-            {expand === true && (
               <>
                 <Col span={8}>
                   <Form.Item label="审核说明">
                     {getFieldDecorator('checkContent', {
+                      initialValue: cacheinfo.checkContent,
                     })
                       (<Input allowClear />)
                     }
                   </Form.Item>
                 </Col>
-
-                <Col span={8}>
-                  <Form.Item label="填报时间">
-                    {getFieldDecorator('addTime', {
-                    })(
-                      <RangePicker
-                        showTime
-                        format='YYYY-MM-DD HH:mm:ss'
-                        allowClear
-                      />
-                    )}
-                  </Form.Item>
-                </Col>
               </>
-            )}
+
+            </div>
+
 
             {expand === false && (
               <Col span={24} style={{ textAlign: 'right' }}>
@@ -1254,15 +1221,13 @@ function TaskSearch(props) {
 
 
         </div>
-
-
         <div />
         <Table
           loading={loading}
           columns={columns}
           dataSource={queryList.rows}
           scroll={{ x: 1500 }}
-          rowKey={record => record.id}
+          rowKey={records => records.id}
           rowSelection={rowSelection}
           pagination={pagination}
         />
