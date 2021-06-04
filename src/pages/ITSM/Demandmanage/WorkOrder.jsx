@@ -99,19 +99,21 @@ function WorkOrder(props) {
 
   // 加载流程记录，加载编辑历史
   useEffect(() => {
-    dispatch({
-      type: 'demandtodo/demandrecords',
-      payload: {
-        processId: mainId,
-      },
-    });
-    dispatch({
-      type: 'demandtodo/demandopenflow',
-      payload: {
-        processInstanceId: mainId,
-        taskId,
-      },
-    });
+    if (mainId !== undefined) {
+      dispatch({
+        type: 'demandtodo/demandrecords',
+        payload: {
+          processId: mainId,
+        },
+      });
+      dispatch({
+        type: 'demandtodo/demandopenflow',
+        payload: {
+          processInstanceId: mainId,
+          taskId,
+        },
+      });
+    }
   }, [mainId]);
 
   // 监听info是否已更新

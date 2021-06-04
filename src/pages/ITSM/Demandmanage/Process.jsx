@@ -17,19 +17,22 @@ function Process(props) {
   };
 
   useEffect(() => {
-    dispatch({
-      type: 'demandtodo/demandimage',
-      payload: {
-        processId: mainId,
-      },
-    });
-    dispatch({
-      type: 'demandtodo/demandprocess',
-      payload: {
-        processId: mainId,
-      },
-    });
+    if (mainId !== undefined) {
+      dispatch({
+        type: 'demandtodo/demandimage',
+        payload: {
+          processId: mainId,
+        },
+      });
+      dispatch({
+        type: 'demandtodo/demandprocess',
+        payload: {
+          processId: mainId,
+        },
+      });
+    }
   }, [mainId]);
+  console.log(mainId)
 
   useEffect(() => {
     if (imgblob !== '' && document.getElementsByTagName('img').length < 2) {

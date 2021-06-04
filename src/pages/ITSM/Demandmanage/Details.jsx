@@ -54,7 +54,7 @@ function Details(props) {
 
   // 加载流程记录，加载编辑历史
   useEffect(() => {
-    if (mainId) {
+    if (mainId !== undefined) {
       settabActivekey('workorder');
       dispatch({
         type: 'demandtodo/demandrecords',
@@ -69,6 +69,7 @@ function Details(props) {
         },
       });
     }
+    return () => { setActiveKey('workorder') }
   }, [mainId]);
 
   return (
