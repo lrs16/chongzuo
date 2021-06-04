@@ -54,18 +54,21 @@ function Details(props) {
 
   // 加载流程记录，加载编辑历史
   useEffect(() => {
-    dispatch({
-      type: 'demandtodo/demandrecords',
-      payload: {
-        processId: mainId,
-      },
-    });
-    dispatch({
-      type: 'demandquery/detail',
-      payload: {
-        processInstanceId: mainId,
-      },
-    });
+    if (mainId) {
+      settabActivekey('workorder');
+      dispatch({
+        type: 'demandtodo/demandrecords',
+        payload: {
+          processId: mainId,
+        },
+      });
+      dispatch({
+        type: 'demandquery/detail',
+        payload: {
+          processInstanceId: mainId,
+        },
+      });
+    }
   }, [mainId]);
 
   return (

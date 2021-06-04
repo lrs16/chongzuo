@@ -96,6 +96,14 @@ class GlobalHeaderRight extends Component {
         title: `IT服务管理`,
         type: 'event',
       },
+      {
+        description: `总共有（${this.state.timeoutnum.normalTimeNum}）个工单正常`,
+        extra: '正常',
+        id: '003',
+        // status: 'doing',
+        title: `IT服务管理`,
+        type: 'event',
+      },
     ];
 
     if (notices.length === 0) {
