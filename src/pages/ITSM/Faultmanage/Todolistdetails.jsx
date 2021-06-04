@@ -870,101 +870,102 @@ function Todolistdetails(props) {
     <PageHeaderWrapper
       extra={
         <>
-          {// 删除按钮只有故障登记有并且没有流转记录
-            flowNodeName === '故障登记' && troubleFlowLogs.length === 1 && (
-              <Popconfirm title="确定删除吗？" onConfirm={() => handleDelete()}>
-                <Button type="danger" ghost>
-                  删除
+          {tabActiveKey === 'faultForm' && (
+            <>
+              {// 删除按钮只有故障登记有并且没有流转记录
+                flowNodeName === '故障登记' && troubleFlowLogs.length === 1 && (
+                  <Popconfirm title="确定删除吗？" onConfirm={() => handleDelete()}>
+                    <Button type="danger" ghost>
+                      删除
               </Button>
-              </Popconfirm>
-            )}
-          {// 回退按钮--系统运维商审核， 系统运维商确认总结，自动化科业务负责人审核, 自动化科确认有
-            flowNodeName !== '故障登记' &&
-            flowNodeName !== '故障关闭' &&
-            main &&
-            main.status !== '45' &&
-            main &&
-            main.status !== '40' &&
-            check === undefined &&
-            finish === undefined &&
-            confirm === undefined && (
-              <Button type="danger" ghost onClick={() => handleSubmit('goback')}>
-                回退
-              </Button>
-            )}
-          {// 接单只有系统运维商处理时有
-            main && (main.status === '40' || main.status === '45') && editState === 'add' && (
-              <Button type="primary" onClick={() => handleSubmit('accpt')}>
-                接单
-              </Button>
-            )}
-          {main && main.status !== '40' && !(main.status === '45' && editState === 'add') && (
-            <Button type="primary" onClick={() => { handleSave(tosaveStatus); setButtonType('save') }}>
-              保存
-            </Button>
-          )}
-          {// 转单只有系统运维商处理时有
-            main && (main.status === '45' || main.status === '40') && editState === 'edit' && (
-              <Button
-                type="primary"
-                style={{ marginRight: 8 }}
-                onClick={() => { handleSubmit('submittransfer'); setChangeOrder('请选择处理') }}
-                onMouseOver={() => {
-                  sessionStorage.setItem('flowtype', '9');
-                }}
-                onFocus={() => 0}
-              >
-                转单
-              </Button>
-            )}
-          {/* 确认过程的时候不需要选人 1通过直接关闭 */}
-          {flowNodeName === '自动化科专责确认'
-            ? resultconfirm === '1' && (
-              <Button type="primary" onClick={() => { handleSubmit('over'); }}>
-                结束
-              </Button>
-            )
-            : main &&
-            main.status !== '40' &&
-            !(main.status === '45' && editState === 'add') &&
-            result === '1' &&
-            resultsecond === '1' && (
-              <Button
-                type="primary"
-                style={{ marginRight: 8 }}
-                onClick={() => { handleSubmit('flow') }}
-                onMouseOver={() => { sessionStorage.setItem('flowtype', '1') }}
-                onFocus={() => 0}>
-                流转
-              </Button>
-            )}
-          {result === '0' && (
-            <Button type="primary" onClick={() => handleSubmit('registback')}>
-              重新登记
-            </Button>
-          )}
-          {resultsecond === '0' && (
-            <Button type="primary" onClick={() => handleSubmit('handleback')}>
-              重新处理
-            </Button>
-          )}
-          {resultconfirm === '0' && (
-            <Button type="primary" onClick={() => handleSubmit('handle')}>
-              重新处理
-            </Button>
-          )}
+                  </Popconfirm>
+                )}
+              {// 回退按钮--系统运维商审核， 系统运维商确认总结，自动化科业务负责人审核, 自动化科确认有
+                flowNodeName !== '故障登记' &&
+                flowNodeName !== '故障关闭' &&
+                main &&
+                main.status !== '45' &&
+                main &&
+                main.status !== '40' &&
+                check === undefined &&
+                finish === undefined &&
+                confirm === undefined && (
+                  <Button type="danger" ghost onClick={() => handleSubmit('goback')}>
+                    回退
+                  </Button>
+                )}
+              {// 接单只有系统运维商处理时有
+                main && (main.status === '40' || main.status === '45') && editState === 'add' && (
+                  <Button type="primary" onClick={() => handleSubmit('accpt')}>
+                    接单
+                  </Button>
+                )}
+              {main && main.status !== '40' && !(main.status === '45' && editState === 'add') && (
+                <Button type="primary" onClick={() => { handleSave(tosaveStatus); setButtonType('save') }}>
+                  保存
+                </Button>
+              )}
+              {// 转单只有系统运维商处理时有
+                main && (main.status === '45' || main.status === '40') && editState === 'edit' && (
+                  <Button
+                    type="primary"
+                    style={{ marginRight: 8 }}
+                    onClick={() => { handleSubmit('submittransfer'); setChangeOrder('请选择处理') }}
+                    onMouseOver={() => {
+                      sessionStorage.setItem('flowtype', '9');
+                    }}
+                    onFocus={() => 0}
+                  >
+                    转单
+                  </Button>
+                )}
+              {/* 确认过程的时候不需要选人 1通过直接关闭 */}
+              {flowNodeName === '自动化科专责确认'
+                ? resultconfirm === '1' && (
+                  <Button type="primary" onClick={() => { handleSubmit('over'); }}>
+                    结束
+                  </Button>
+                )
+                : main &&
+                main.status !== '40' &&
+                !(main.status === '45' && editState === 'add') &&
+                result === '1' &&
+                resultsecond === '1' && (
+                  <Button
+                    type="primary"
+                    style={{ marginRight: 8 }}
+                    onClick={() => { handleSubmit('flow') }}
+                    onMouseOver={() => { sessionStorage.setItem('flowtype', '1') }}
+                    onFocus={() => 0}>
+                    流转
+                  </Button>
+                )}
+              {result === '0' && (
+                <Button type="primary" onClick={() => handleSubmit('registback')}>
+                  重新登记
+                </Button>
+              )}
+              {resultsecond === '0' && (
+                <Button type="primary" onClick={() => handleSubmit('handleback')}>
+                  重新处理
+                </Button>
+              )}
+              {resultconfirm === '0' && (
+                <Button type="primary" onClick={() => handleSubmit('handle')}>
+                  重新处理
+                </Button>
+              )}
 
-          {troubleFlowNodeRows !== undefined &&
-            troubleFlowNodeRows.length !== 0 &&
-            flowNodeName === '故障登记' ? (
-            <Button type="primary" onClick={() => faultcircula('close')}>
-              结束
-            </Button>
-          ) : (
-            <Button type="default" onClick={handleClose}>
-              返回
-            </Button>
+              {troubleFlowNodeRows !== undefined &&
+                troubleFlowNodeRows.length !== 0 &&
+                flowNodeName === '故障登记' && (
+                  <Button type="primary" onClick={() => faultcircula('close')}>
+                    结束
+                  </Button>
+                )}
+            </>
           )}
+          <Button type="default" onClick={handleClose}>返回</Button>
         </>
       }
       title={flowNodeName}

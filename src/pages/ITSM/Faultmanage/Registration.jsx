@@ -275,7 +275,6 @@ function Registration(props) {
   );
 
   const cacheinfo = tabdata === undefined ? { registerLevel: '一般', registerEffect: '0' } : tabdata;
-  console.log(cacheinfo)
 
   return (
     <PageHeaderWrapper title={pagetitle} extra={operations}>

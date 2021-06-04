@@ -698,151 +698,160 @@ function Workorder(props) {
       title={taskName}
       extra={
         <>
-          <>
-            { (flowNodeName === '问题登记' && problemFlowLogs && problemFlowLogs.length === 1) && (
-              <Button type="danger" ghost style={{ marginRight: 8 }} onClick={handleDelete}>
-                删除
-              </Button>
-            )}
-
-            { (flowNodeName === '问题登记' && problemFlowLogs && problemFlowLogs.length >= 3 && problemFlowLogs[problemFlowLogs.length - 2].status === '退回') && (
-              <Button type="danger" ghost style={{ marginRight: 8 }} onClick={handleDelete}>
-                删除
-              </Button>
-            )}
-
-            {
-              (flowNodeName === '系统运维商审核' || flowNodeName === '系统运维商确认'
-                || flowNodeName === '自动化科业务人员确认' || flowNodeName === '问题登记人员确认')
-              && showback === true && (
-                <Button type="primary" style={{ marginRight: 8 }} onClick={() => onClickSubmit('goback')}>
-                  回退
+          {tabActiveKey === 'workorder' && (
+            <>
+              { (flowNodeName === '问题登记' && problemFlowLogs && problemFlowLogs.length === 1) && (
+                <Button type="danger" ghost style={{ marginRight: 8 }} onClick={handleDelete}>
+                  删除
                 </Button>
               )}
 
-            {
-              flowNodeName !== '系统开发商处理' && (currntStatus !== 29 && currntStatus !== 40) && tabActiveKey === 'workorder' && (
-                <Button
-                  type="primary"
-                  style={{ marginRight: 8 }}
-                  onClick={() => handleSubmit()}
-                >
-                  保存
+              { (flowNodeName === '问题登记' && problemFlowLogs && problemFlowLogs.length >= 3 && problemFlowLogs[problemFlowLogs.length - 2].status === '退回') && (
+                <Button type="danger" ghost style={{ marginRight: 8 }} onClick={handleDelete}>
+                  删除
                 </Button>
-              )
-            }
-            {
-              flowNodeName === '系统开发商处理' && (currntStatus !== 29 && currntStatus !== 40 && handle !== undefined) && tabActiveKey === 'workorder' && (
-                <Button
-                  type="primary"
-                  style={{ marginRight: 8 }}
-                  onClick={() => { handleSubmit() }}
-                >
-                  保存
-                </Button>
-              )
-            }
-            {
-              (currntStatus === 45) && handle !== undefined && (
-                <Button
-                  type="primary"
-                  style={{ marginRight: 8 }}
-                  onClick={() => { changeorderFunction(); onClickSubmit('flowNodeName'); }}
-                >
-                  转单
-                </Button>
-              )
-            }
+              )}
 
-            { (currntStatus === 29 || currntStatus === 40 || currntStatus === 45) && handle === undefined && (
-              <Button type="primary" style={{ marginRight: 8 }} onClick={() => onClickSubmit('accpt')}>
-                接单
-              </Button>
-            )}
+              {
+                (flowNodeName === '系统运维商审核' || flowNodeName === '系统运维商确认'
+                  || flowNodeName === '自动化科业务人员确认' || flowNodeName === '问题登记人员确认')
+                && showback === true && (
+                  <Button type="primary" style={{ marginRight: 8 }} onClick={() => onClickSubmit('goback')}>
+                    回退
+                  </Button>
+                )}
 
-            {
-              flowtype === '1' &&
-              (selSign === '1') &&
-              tabActiveKey === 'workorder' && loading === false &&
-              (
-                <Button
-                  type="primary"
-                  style={{ marginRight: 8 }}
-                  onFocus={() => 0}
-                  onClick={() => { onClickSubmit('circaSign'); setProblemHandle('handle'); setChange() }}>
-                  流转
-                </Button>
-              )
-            }
+              {
+                flowNodeName !== '系统开发商处理' && (currntStatus !== 29 && currntStatus !== 40) && tabActiveKey === 'workorder' && (
+                  <Button
+                    type="primary"
+                    style={{ marginRight: 8 }}
+                    onClick={() => handleSubmit()}
+                  >
+                    保存
+                  </Button>
+                )
+              }
+              {
+                flowNodeName === '系统开发商处理' && (currntStatus !== 29 && currntStatus !== 40 && handle !== undefined) && tabActiveKey === 'workorder' && (
+                  <Button
+                    type="primary"
+                    style={{ marginRight: 8 }}
+                    onClick={() => { handleSubmit() }}
+                  >
+                    保存
+                  </Button>
+                )
+              }
+              {
+                (currntStatus === 45) && handle !== undefined && (
+                  <Button
+                    type="primary"
+                    style={{ marginRight: 8 }}
+                    onClick={() => { changeorderFunction(); onClickSubmit('flowNodeName'); }}
+                  >
+                    转单
+                  </Button>
+                )
+              }
 
-            {
-              flowNodeName === '问题登记' && (problemFlowLogs && problemFlowLogs.length > 2) && (
-                <Button
-                  type='primary'
-                  onClick={closeOrder}
-                >
-                  关闭工单
+              { (currntStatus === 29 || currntStatus === 40 || currntStatus === 45) && handle === undefined && (
+                <Button type="primary" style={{ marginRight: 8 }} onClick={() => onClickSubmit('accpt')}>
+                  接单
                 </Button>
-              )
-            }
+              )}
 
-            {
-              (
-                flowtype === '0'
-              )
-              &&
-              (flowNodeName !== '系统开发商处理' && flowNodeName !== '问题登记') && loading === false &&
-              (currntStatus !== 29 && currntStatus !== 40) &&
-              tabActiveKey === 'workorder' &&
-              (
-                <Button
-                  type="primary"
-                  style={{ marginRight: 8 }}
-                  onClick={() => { onClickSubmit('flowNodeName') }}
-                >
-                  {
-                    (flowNodeName === '自动化科审核' || flowNodeName === '系统运维商审核')
-                      ? '重新登记' : '重新处理'}
-                </Button>
-              )
-            }
-            {
-              selSign === '0' && flowtype === '1' && flowNodeName !== '系统开发商处理' && loading === false && (
-                <Button
-                  type="primary"
-                  style={{ marginRight: 8 }}
-                  onClick={() => { handleSubmit(); setButandOrder('end') }}
-                >
-                  {
-                    flowNodeName === '问题登记人员确认' ? '结束' : '流转'
-                  }
-                </Button>
-              )
-            }
-            {
-              (
-                flowtype === '0' ||
-                (problemlist && selSign === '0')
-              )
-              && handle !== undefined && loading === false &&
-              flowNodeName === '系统开发商处理' &&
-              (currntStatus !== 29 && currntStatus !== 40) &&
-              tabActiveKey === 'workorder' &&
-              (
-                <Button
-                  type="primary"
-                  style={{ marginRight: 8 }}
-                  onClick={() => { cancelChangeorder(); onClickSubmit('flowNodeName') }}
-                >
-                  流转
-                </Button>
-              )
-            }
+              {
+                flowtype === '1' &&
+                (selSign === '1') &&
+                tabActiveKey === 'workorder' && loading === false &&
+                (
+                  <Button
+                    type="primary"
+                    style={{ marginRight: 8 }}
+                    onFocus={() => 0}
+                    onClick={() => { onClickSubmit('circaSign'); setProblemHandle('handle'); setChange() }}>
+                    流转
+                  </Button>
+                )
+              }
 
-            <Button type="default">
-              <Link to="/ITSM/problemmanage/besolved?pathpush=true">返回</Link>
-            </Button>
-          </>
+              {
+                flowNodeName === '问题登记' && (problemFlowLogs && problemFlowLogs.length > 2) && (
+                  <Button
+                    type='primary'
+                    onClick={closeOrder}
+                  >
+                    关闭工单
+                  </Button>
+                )
+              }
+
+              {
+                (
+                  flowtype === '0'
+                )
+                &&
+                (flowNodeName !== '系统开发商处理' && flowNodeName !== '问题登记') && loading === false &&
+                (currntStatus !== 29 && currntStatus !== 40) &&
+                tabActiveKey === 'workorder' &&
+                (
+                  <Button
+                    type="primary"
+                    style={{ marginRight: 8 }}
+                    onClick={() => { onClickSubmit('flowNodeName') }}
+                  >
+                    {
+                      (flowNodeName === '自动化科审核' || flowNodeName === '系统运维商审核')
+                        ? '重新登记' : '重新处理'}
+                  </Button>
+                )
+              }
+              {
+                selSign === '0' && flowtype === '1' && flowNodeName !== '系统开发商处理' && loading === false && (
+                  <Button
+                    type="primary"
+                    style={{ marginRight: 8 }}
+                    onClick={() => { handleSubmit(); setButandOrder('end') }}
+                  >
+                    {
+                      flowNodeName === '问题登记人员确认' ? '结束' : '流转'
+                    }
+                  </Button>
+                )
+              }
+              {
+                (
+                  flowtype === '0' ||
+                  (problemlist && selSign === '0')
+                )
+                && handle !== undefined && loading === false &&
+                flowNodeName === '系统开发商处理' &&
+                (currntStatus !== 29 && currntStatus !== 40) &&
+                tabActiveKey === 'workorder' &&
+                (
+                  <Button
+                    type="primary"
+                    style={{ marginRight: 8 }}
+                    onClick={() => { cancelChangeorder(); onClickSubmit('flowNodeName') }}
+                  >
+                    流转
+                  </Button>
+                )
+              }
+            </>
+          )}
+          <Button type="default">
+            <Link
+              to={{
+                pathname: '/ITSM/problemmanage/besolved',
+                query: { pathpush: true },
+                state: { cache: false }
+              }}
+            >
+              返回
+                </Link>
+          </Button>
         </>
       }
       tabList={tabList}

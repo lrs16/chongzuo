@@ -26,12 +26,14 @@ function ToDoregist(props) {
   const [modalvisible, setModalVisible] = useState(false);
 
   const handleHold = (type) => {
+    setUserChoice(false)
     setButtonType(type);
   };
   const handleclose = () => {
     router.push({
       pathname: `/ITSM/demandmanage/to-do`,
-      query: { pathpush: true }
+      query: { pathpush: true },
+      state: { cache: false }
     });
   };
 
@@ -57,6 +59,7 @@ function ToDoregist(props) {
 
   // 点击流转，审核，转回访，回退按钮
   const handleClick = (type, order) => {
+    setUserChoice(false)
     judgeTimeoutStatus(taskId).then(res => {
       if (res.code === 200 && res.status === 'yes' && res.timeoutMsg === '') {
         message.info('该需求单已超时，请填写超时原因...')
@@ -137,73 +140,77 @@ function ToDoregist(props) {
 
   const operations = (
     <>
-      {taskName === '需求登记' && iscolse === 0 && (
-        <Button type="danger" ghost style={{ marginRight: 8 }} onClick={() => handledelete()}>
-          删除
-        </Button>
+      {tabActivekey === 'workorder' && (
+        <>
+          {taskName === '需求登记' && iscolse === 0 && (
+            <Button type="danger" ghost style={{ marginRight: 8 }} onClick={() => handledelete()}>
+              删除
+            </Button>
+          )}
+          {taskName === '需求登记' && iscolse === 1 && (
+            <Button type="danger" ghost style={{ marginRight: 8 }} onClick={() => handleregisterclose()}>
+              结束
+            </Button>
+          )}
+          {(taskName === '业务科室领导审核' ||
+            taskName === '系统开发商审核' ||
+            taskName === '自动化科负责人确认' ||
+            taskName === '需求登记人员确认') && histroytaskid !== null && (
+              <Button type="danger" ghost style={{ marginRight: 8 }} onClick={() => handleGoback()}>
+                回退
+              </Button>
+            )}
+          {taskName !== '系统开发商处理' && (
+            <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleHold('save')}>
+              保存
+            </Button>
+          )}
+          {((result !== '0' &&
+            taskName !== '自动化科业务人员审核' &&
+            taskName !== '自动化科负责人确认' &&
+            taskName !== '需求登记人员确认') ||
+            taskName === '系统开发商处理') && (
+              <Button
+                type="primary"
+                style={{ marginRight: 8 }}
+                onClick={() => { handleClick('flow'); setButandOrder('flow') }}>
+                流转
+              </Button>
+            )}
+          {result === '1' && taskName === '自动化科业务人员审核' && (
+            <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleClick('flow')}>
+              流转
+            </Button>
+          )}
+          {result === '1' && taskName === '自动化科负责人确认' && (
+            <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleClick('confirm')}>
+              登记人确认
+            </Button>
+          )}
+          {result === '0' && (taskName === '自动化科负责人确认' || taskName === '需求登记人员确认') && (
+            <Button type="primary" style={{ marginRight: 8 }} onClick={() => { handleClick('flow'); setButandOrder('flow') }}>
+              重新处理
+            </Button>
+          )}
+          {((result === '2' && taskName === '自动化科负责人确认') ||
+            (result === '1' && taskName === '需求登记人员确认')) && (
+              <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleClick('over')}>
+                结束
+              </Button>
+            )}
+          {result === '0' &&
+            (taskName === '业务科室领导审核' ||
+              taskName === '市场部领导审核' ||
+              taskName === '科室领导审核' ||
+              taskName === '系统开发商审核' ||
+              taskName === '自动化科专责审核' ||
+              taskName === '自动化科业务人员审核') && (
+              <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleHold('regist')}>
+                重新登记
+              </Button>
+            )}
+        </>
       )}
-      {taskName === '需求登记' && iscolse === 1 && (
-        <Button type="danger" ghost style={{ marginRight: 8 }} onClick={() => handleregisterclose()}>
-          结束
-        </Button>
-      )}
-      {(taskName === '业务科室领导审核' ||
-        taskName === '系统开发商审核' ||
-        taskName === '自动化科负责人确认' ||
-        taskName === '需求登记人员确认') && histroytaskid !== null && (
-          <Button type="danger" ghost style={{ marginRight: 8 }} onClick={() => handleGoback()}>
-            回退
-          </Button>
-        )}
-      {taskName !== '系统开发商处理' && (
-        <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleHold('save')}>
-          保存
-        </Button>
-      )}
-      {((result !== '0' &&
-        taskName !== '自动化科业务人员审核' &&
-        taskName !== '自动化科负责人确认' &&
-        taskName !== '需求登记人员确认') ||
-        taskName === '系统开发商处理') && (
-          <Button
-            type="primary"
-            style={{ marginRight: 8 }}
-            onClick={() => { handleClick('flow'); setButandOrder('flow') }}>
-            流转
-          </Button>
-        )}
-      {result === '1' && taskName === '自动化科业务人员审核' && (
-        <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleClick('flow')}>
-          流转
-        </Button>
-      )}
-      {result === '1' && taskName === '自动化科负责人确认' && (
-        <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleClick('confirm')}>
-          登记人确认
-        </Button>
-      )}
-      {result === '0' && (taskName === '自动化科负责人确认' || taskName === '需求登记人员确认') && (
-        <Button type="primary" style={{ marginRight: 8 }} onClick={() => { handleClick('flow'); setButandOrder('flow') }}>
-          重新处理
-        </Button>
-      )}
-      {((result === '2' && taskName === '自动化科负责人确认') ||
-        (result === '1' && taskName === '需求登记人员确认')) && (
-          <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleClick('over')}>
-            结束
-          </Button>
-        )}
-      {result === '0' &&
-        (taskName === '业务科室领导审核' ||
-          taskName === '市场部领导审核' ||
-          taskName === '科室领导审核' ||
-          taskName === '系统开发商审核' ||
-          taskName === '自动化科专责审核' ||
-          taskName === '自动化科业务人员审核') && (
-          <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleHold('regist')}>
-            重新登记
-          </Button>
-        )}
       <Button onClick={handleclose}>返回</Button>
     </>
   );

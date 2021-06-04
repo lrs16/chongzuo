@@ -167,92 +167,95 @@ function ToDodetails(props) {
 
   const operations = (
     <>
-      {/* 测试下载功能 */}
-      {/* <Button onClick={()=>test()}>下载</Button> */}
-      {taskName === '已登记' && (
-        <Popconfirm title="确定删除此事件单吗？" onConfirm={() => deleteflow()}>
-          <Button type="danger" ghost style={{ marginRight: 8 }}>
-            删除
-          </Button>
-        </Popconfirm>
-      )}
-      {(taskName === '待审核' ||
-        (taskName === '待处理' && check === null) ||
-        (taskName === '待确认' && check === null)) && (
-          <Button type="danger" ghost style={{ marginRight: 8 }} onClick={() => handleGoback()}>
-            回退
-          </Button>
-        )}
-      {taskName !== '待处理' && (
-        <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleHold('save')}>
-          保存
-        </Button>
-      )}
-      {taskName === '已登记' && next === '审核' && (
-        <Button
-          type="primary"
-          style={{ marginRight: 8 }}
-          onClick={() => { handleClick('other') }}
-        >
-          审核
-        </Button>
-      )}
-      {taskName === '待处理' && (
-        <Button type="primary" style={{ marginRight: 8 }} onClick={eventaccpt}>
-          接单
-        </Button>
-      )}
-      {((taskName === '已登记' && next === '处理') ||
-        (next === '处理' && taskName === '待审核') ||
-        (next === '处理' && taskName === '审核中')) && (
-          <Button
-            type="primary"
-            style={{ marginRight: 8 }}
-            onClick={() => { handleClick('flow') }
-            }
-          >
-            流转
-          </Button>
-        )}
-      {next === '确认' && taskName !== '处理中' && (
-        <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleHold('check')}>
-          转回访
-        </Button>
-      )}
-      {taskName === '处理中' && (
+      {tabActivekey === 'workorder' && (
         <>
-          <Button
-            type="primary"
-            style={{ marginRight: 8 }}
-            onClick={() => { handleHold('flowcheck') }}>
-            转回访
+          {/* 测试下载功能 */}
+          {/* <Button onClick={()=>test()}>下载</Button> */}
+          {taskName === '已登记' && (
+            <Popconfirm title="确定删除此事件单吗？" onConfirm={() => deleteflow()}>
+              <Button type="danger" ghost style={{ marginRight: 8 }}>
+                删除
           </Button>
-          <Button
-            type="primary"
-            style={{ marginRight: 8 }}
-            onClick={() => { handleClick('other'); setChangeOrder('处理') }}
-          >
-            转单
+            </Popconfirm>
+          )}
+          {(taskName === '待审核' ||
+            (taskName === '待处理' && check === null) ||
+            (taskName === '待确认' && check === null)) && (
+              <Button type="danger" ghost style={{ marginRight: 8 }} onClick={() => handleGoback()}>
+                回退
+              </Button>
+            )}
+          {taskName !== '待处理' && (
+            <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleHold('save')}>
+              保存
+            </Button>
+          )}
+          {taskName === '已登记' && next === '审核' && (
+            <Button
+              type="primary"
+              style={{ marginRight: 8 }}
+              onClick={() => { handleClick('other') }}
+            >
+              审核
+            </Button>
+          )}
+          {taskName === '待处理' && (
+            <Button type="primary" style={{ marginRight: 8 }} onClick={eventaccpt}>
+              接单
+            </Button>
+          )}
+          {((taskName === '已登记' && next === '处理') ||
+            (next === '处理' && taskName === '待审核') ||
+            (next === '处理' && taskName === '审核中')) && (
+              <Button
+                type="primary"
+                style={{ marginRight: 8 }}
+                onClick={() => { handleClick('flow') }
+                }
+              >
+                流转
+              </Button>
+            )}
+          {next === '确认' && taskName !== '处理中' && (
+            <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleHold('check')}>
+              转回访
+            </Button>
+          )}
+          {taskName === '处理中' && (
+            <>
+              <Button
+                type="primary"
+                style={{ marginRight: 8 }}
+                onClick={() => { handleHold('flowcheck') }}>
+                转回访
           </Button>
-        </>
-      )}
-      {(taskName === '待确认' || taskName === '确认中') && next === '处理' && (
-        <Button
-          type="primary"
-          style={{ marginRight: 8 }}
-          onClick={() => { handleClick('other') }}
-        >
-          重分派
-        </Button>
-      )}
-      {(taskName === '待确认' || taskName === '确认中') && next === '结束' && (
-        <Button
-          type="primary"
-          style={{ marginRight: 8 }}
-          onClick={() => { handleHold('over') }}>
-          结束
-        </Button>
-      )}
+              <Button
+                type="primary"
+                style={{ marginRight: 8 }}
+                onClick={() => { handleClick('other'); setChangeOrder('处理') }}
+              >
+                转单
+          </Button>
+            </>
+          )}
+          {(taskName === '待确认' || taskName === '确认中') && next === '处理' && (
+            <Button
+              type="primary"
+              style={{ marginRight: 8 }}
+              onClick={() => { handleClick('other') }}
+            >
+              重分派
+            </Button>
+          )}
+          {(taskName === '待确认' || taskName === '确认中') && next === '结束' && (
+            <Button
+              type="primary"
+              style={{ marginRight: 8 }}
+              onClick={() => { handleHold('over') }}>
+              结束
+            </Button>
+          )}
+        </>)}
       <Button onClick={handleclose}>返回</Button>
     </>
   );

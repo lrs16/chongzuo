@@ -49,7 +49,7 @@ function Queryworkdetail(props) {
 
   useEffect(() => {
     getInformation()
-  }, []);
+  }, [id]);
 
   const tabList = [
     {
