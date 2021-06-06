@@ -81,13 +81,19 @@ export async function getKafka3Zone() {
 }
 
 // 获取主题数据
-export async function getKafkaSafeZone() {
-  return request(`/monitor/kafka/getKafkaTopicData`);
+export async function getKafkaSafeZone(param) {
+  // 表格数据请求
+  // console.log('表格数据请求', param);
+  return request(`/monitor/kafka/getKafkaTopicData?beginTime=${param.beginTime}&endTime=${param.endTime}&step=${param.step}`);
+
 }
 
 // 2区KAFKA节点，接口未解决
-export async function getKafka2Zone() {
-  return request(`/api-monitoring-business/kafka/2Zone`);
+// 根据批次号 获取主题数据
+export async function getKafka2Zone(param) {
+  // console.log('根据批次号 获取主题数据参数', param)
+  return request(`/monitor/kafka/getDataByBatchNo?batchNo=`+param);
+
 }
 
 // 下行主题 低压相关，检查完毕

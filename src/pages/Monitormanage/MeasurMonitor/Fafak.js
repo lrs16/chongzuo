@@ -3,11 +3,15 @@ import React, { Component } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
 // import numeral from 'numeral';
-import { Row, Col, Icon, Popover, Alert, Empty, Spin, Table } from 'antd';
+import { Row, Col, Icon, Popover, Alert, Empty, Spin, Table, DatePicker,  Form, Input, Select, Button } from 'antd';
 import Treecompactbox from '@/components/CustomizeCharts/Treecompactbox';
 import SeriesLine from '@/components/CustomizeCharts/SeriesLine';
 import { ChartCard } from '@/components/Charts';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
+
+const { RangePicker } = DatePicker;
+const { Option } = Select;
+
 
 
 const dataSource = [
@@ -26,19 +30,44 @@ const dataSource = [
 ];
 const soncolumns = [
   {
-    title: '姓名',
-    dataIndex: 'name',
-    key: 'name',
+    title: '区域',
+    dataIndex: 'topicZone',
+    key: 'topicZone',
   },
   {
-    title: '年龄',
-    dataIndex: 'age',
-    key: 'age',
+    title: 'Topic',
+    dataIndex: 'topicName',
+    key: 'topicName',
   },
   {
-    title: '住址',
-    dataIndex: 'address',
-    key: 'address',
+    title: 'Group',
+    dataIndex: 'topicGroup',
+    key: 'topicGroup',
+  },
+  {
+    title: 'Lag',
+    dataIndex: 'topicLag',
+    key: 'topicLag',
+  },
+  {
+    title: '检测序号',
+    dataIndex: 'topicNumber',
+    key: 'topicNumber',
+  },
+  {
+    title: '检测时间',
+    dataIndex: 'topicTime',
+    key: 'topicTime',
+  },
+  {
+    title: '检测结果',
+    dataIndex: 'topicStatus',
+    key: 'topicStatus',
+    render: text => {
+      let s = (text == 1 ? '正常' : '积压') ;
+      // style={{ color: s == '正常' ? '' : '#f00' }}
+     return <a style={{ color: text == 1 ? '' : '#f00' }}>{s}</a>
+    }
   },
 ];
 @connect(({ fafak, loading }) => ({
@@ -48,6 +77,9 @@ const soncolumns = [
 class Fafak extends Component {
   state = {
     visible: false,
+    step: 'M60',
+    beginTime: moment().startOf('day').format('YYYY-MM-DD HH:mm:ss'),
+    endTime: moment().format('YYYY-MM-DD HH:mm:ss'),
   };
 
   componentDidMount() {
@@ -66,10 +98,11 @@ class Fafak extends Component {
     });
     dispatch({
       type: 'fafak/fetchsafezone',
+      payload: this.state ,
     });
-    dispatch({
-      type: 'fafak/fetch2zone',
-    });
+    // dispatch({
+    //   type: 'fafak/fetch2zone',
+    // });
 
   }
 
@@ -79,6 +112,7 @@ class Fafak extends Component {
       fafak: {
         zone3data,
         safezonedata,
+        zone2data
       },
 
     } = this.props;
@@ -94,31 +128,36 @@ class Fafak extends Component {
         dataIndex: title,
         key: title,
         render: (text) => {
-          const newtext = text.split("|")[0];
-          const value = text.split("|")[1];
+          let newtext ='';
+          let batchNo ='';
+          if(text){
+            newtext = text.split("|")[0];
+            batchNo = text.split("|")[1];
+          }
+
           const extatable = (
             <Table
-              dataSource={dataSource}
+              dataSource={zone2data}
               columns={soncolumns}
               pagination={false}
               style={{ background: '#fff' }}
             />)
           const fetchlist = () => {
-            console.log('请求接口', value)
-            // this.dispatch({
-            //   type: 'fafak/fetch3zone1',
-            //   payload: value
-            // });
+            // console.log('请求接口', batchNo)
+            this.props.dispatch({
+              type: 'fafak/fetch2zone',
+              payload: batchNo,
+            });
           }
           return (
-            <span
+            <a
               style={{ color: newtext === '正常' ? '' : '#f00' }}
               onClick={() => fetchlist()}
             >
               <Popover content={extatable} trigger='click' placement="bottom" >
                 {newtext}
               </Popover>
-            </span>
+            </a>
           )
         }
       })
@@ -127,7 +166,7 @@ class Fafak extends Component {
     const Setcolumns = (datas) => {
       const data = datas.slice(0);
       data.shift();
-      const newArr = [{ title: '时间', dataIndex: 'time', key: 'time', }];
+      const newArr = [{ title: '时间', dataIndex: 'time', key: 'time',fixed:'left', width: 180 }];
       if (!Array.isArray(data)) {
         return newArr;
       }
@@ -138,15 +177,17 @@ class Fafak extends Component {
     }
     const newcolumns = Setcolumns(safezonedata.columns || [])
 
+    const handleSearch = ()=> {
+      this.props.dispatch({
+        type: 'fafak/fetchsafezone',
+        payload: this.state,
+      });
+    };
+
     return (
       <PageHeaderWrapper title="KAFKA消费">
-        <Alert
-          message="注意观察LAG数量趋势，只增不减的主题存在差异"
-          type="warning"
-          showIcon
-          style={{ marginBottom: 12 }}
-        />
-        <h3>KAFKA节点监控（整点刷新）</h3>
+
+        <h3>KAFKA节点监控</h3>
         <Row gutter={24} type="flex">
           <Col xl={24} xs={24} style={{ marginBottom: 24 }}>
             {zone3data.length > 0 && (
@@ -157,13 +198,50 @@ class Fafak extends Component {
           </Col>
 
         </Row>
-        <h3>KAFKA主题消费监控（整点刷新）</h3>
+        <h3>KAFKA主题消费监控</h3>
+        <Form layout="inline">
+          <Form.Item>
+            <RangePicker
+              showTime
+              format='YYYY-MM-DD HH:mm:ss'
+              allowClear = {false}
+              onChange={(v1, v2)=>{
+                          this.setState(
+                            {
+                              beginTime: v2[0],
+                              endTime: v2[1]
+                            }
+                          )
+                        }
+                      }
+              defaultValue={
+                // this.state.rangePicker
+                [
+                  moment(this.state.beginTime, 'YYYY-MM-DD HH:mm:ss'),
+                  moment(this.state.endTime, 'YYYY-MM-DD HH:mm:ss')
+                ]
+              }
+            />
+          </Form.Item>
+          <Form.Item label={'统计步长'}>
+            <Select defaultValue="M60" style={{ width: 120 }} onChange={value => {this.setState({step: value})}}>
+              <Option value="M30">30分</Option>
+              <Option value="M60">1小时</Option>
+            </Select>
+          </Form.Item>
+          <Form.Item>
+            <Button type="primary" htmlType="submit"  onClick={() => handleSearch()}>
+              查询
+            </Button>
+          </Form.Item>
+        </Form>
+
         <Table dataSource={safezonedata.dataSource}
-          columns={newcolumns}
-          bordered
-          pagination={false}
-          size="middle"
-          scroll={{ x: 1500 }} />
+               columns={newcolumns}
+               bordered
+               pagination={false}
+               size="middle"
+               scroll={{ x: 1500 }} />
       </PageHeaderWrapper>
     );
   }

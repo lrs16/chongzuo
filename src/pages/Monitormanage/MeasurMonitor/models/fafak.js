@@ -57,7 +57,7 @@ export default {
   state: {
     zone3data: [], // 3区KAFKA节点
     safezonedata: {}, // 安全接入区KAFKA节点
-    zone2data: {}, // 2区KAFKA节点
+    zone2data: [], // 2区KAFKA节点
     downdydata: {}, // 下行主题低压相关
     otherdata: {}, // 其他回复接口（低压相关）
     zone102_2data: {}, //
@@ -77,8 +77,9 @@ export default {
         payload: response.data,
       });
     },
-    *fetchsafezone(_, { call, put }) {
-      const response = yield call(getKafkaSafeZone);
+    *fetchsafezone({ payload }, { call, put }) {
+      //  表格数据请求
+      const response = yield call(getKafkaSafeZone, payload);
       console.log('topic请求', response)
       yield put({
         type: 'getsafezone',
@@ -86,12 +87,12 @@ export default {
         // payload: SafeZonedata,
       });
     },
-    *fetch2zone(_, { call, put }) {
-      // const response = yield call(getKafka2Zone);
+    *fetch2zone({ payload }, { call, put }) {
+      const response = yield call(getKafka2Zone, payload);
       yield put({
         type: 'get2zone',
-        // payload: response.data,
-        payload: SafeZonedata,
+        payload: response.data,
+        // payload: SafeZonedata,
       });
     },
     *fetchdoendy(_, { call, put }) {
