@@ -227,7 +227,7 @@ function QueryList(props) {
     module: modulestatus,
     demandTitle: '',
     demandType: '',
-    registerPerson: '',
+    sender: '',
     completeStatus,
     createTime: time,
     paginations,
@@ -365,8 +365,8 @@ function QueryList(props) {
               </Col>
               <Col span={8}>
                 <Form.Item label="登记人">
-                  {getFieldDecorator('registerPerson', {
-                    initialValue: cacheinfo.registerPerson,
+                  {getFieldDecorator('sender', {
+                    initialValue: cacheinfo.sender,
                   })(<Input placeholder="请输入" allowClear />)}
                 </Form.Item>
               </Col>

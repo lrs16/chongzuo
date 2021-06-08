@@ -100,7 +100,7 @@ function EventDetails(props) {
       tabList={tabList}
       tabActiveKey={tabActivekey}
       extra={<Button onClick={() => handleclose()}>返回</Button>}
-      onTabChange={() => handleTabChange()}
+      onTabChange={handleTabChange}
     >
       {tabActivekey === 'workorder' && (
         <div className={styles.collapse}>

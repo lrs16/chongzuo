@@ -13,12 +13,14 @@ import OperationPlanfillin from './components/OperationPlanfillin';
 function OperationPlanfillintion(props) {
   const pagetitle = props.route.name;
   const {
-    location: { query: { mainId } },
+    location,
     dispatch,
     userinfo,
     openFlowList,
     operationPersonArr,
-    loading
+    loading,
+    tabdata,
+    tabnew
   } = props;
   let operationPersonSelect;
 
@@ -26,7 +28,6 @@ function OperationPlanfillintion(props) {
   const [richtext, setRichtext] = useState('');
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
   const [copyData, setCopyData] = useState('')
-  console.log('copyData: ', copyData);
 
   const formItemLayout = {
     labelCol: {
@@ -120,18 +121,19 @@ function OperationPlanfillintion(props) {
   }
 
   const handlePaste = () => {
+    const mainId = sessionStorage.getItem('copyrecord');
     if (!mainId) {
       message.info('请在列表页复制');
       return false
     }
-    if (mainId.length > 1) {
-      message.info('只能复制一条数据粘贴哦');
-      return false
-    }
+    // if (mainId.length > 1) {
+    //   message.info('只能复制一条数据粘贴哦');
+    //   return false
+    // }
 
     return dispatch({
       type: 'processmodel/pasteFlow',
-      payload: mainId[0]
+      payload: mainId
     }).then(res => {
       if (res.code === 200) {
         const resData = res.main;
@@ -143,12 +145,48 @@ function OperationPlanfillintion(props) {
     })
   }
 
+  // 获取页签信息
+  useEffect(() => {
+    if (location.state) {
+      if (location.state.cache) {
+        PlanfillinRef.current.validateFields((_, values) => {
+          dispatch({
+            type: 'viewcache/gettabstate',
+            payload: {
+              cacheinfo: {
+                systemName: values.main_systemName,
+                type: values.main_type,
+                nature: values.main_nature,
+                operationUnit: values.main_operationUnit,
+                operationUser: values.main_operationUser,
+                billing: values.main_billing,
+                object: values.main_object,
+                content: values.main_content,
+                plannedStartTime: values.main_plannedStartTime.format('YYYY-MM-DD HH:mm:ss'),
+                plannedEndTime: values.main_plannedEndTime.format('YYYY-MM-DD HH:mm:ss'),
+                addTime: values.main_addTime.format('YYYY-MM-DD HH:mm:ss'),
+              },
+              tabid: sessionStorage.getItem('tabid')
+            },
+          });
+        });
+        PlanfillinRef.current.resetFields();
+      };
+    }
+  }, [location]);
+
+  useEffect(() => {
+    if (tabdata !== undefined) {
+      setCopyData(tabdata)
+    }
+  }, [tabdata])
+
   return (
     <PageHeaderWrapper
       title={pagetitle}
       extra={
         <>
-          <Button type="primary" style={{ marginRight: 8 }} onClick={handlePaste}>
+          <Button type="primary" style={{ marginRight: 8 }} onClick={() => handlePaste()}>
             粘贴
           </Button>
 
@@ -156,7 +194,7 @@ function OperationPlanfillintion(props) {
             保存
           </Button>
 
-          <Button onClick={handleClose}>返回</Button>
+          <Button onClick={() => handleClose()}>返回</Button>
         </>
       }
     >
@@ -182,9 +220,11 @@ function OperationPlanfillintion(props) {
 }
 
 export default Form.create({})(
-  connect(({ processmodel, itsmuser, loading }) => ({
+  connect(({ processmodel, itsmuser, viewcache, loading }) => ({
     userinfo: itsmuser.userinfo,
     operationPersonArr: processmodel.operationPersonArr,
     loading: loading.models.processmodel,
+    tabnew: viewcache.tabnew,
+    tabdata: viewcache.tabdata,
   }))(OperationPlanfillintion),
 );

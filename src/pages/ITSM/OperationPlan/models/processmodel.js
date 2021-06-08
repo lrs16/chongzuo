@@ -53,11 +53,15 @@ export default {
         const saveresponse = yield call(saveForm, values);
         if (saveresponse.code === 200) {
           route.push({
+            pathname: `/ITSM/operationplan/operationplanfillin`,
+            query: { tabid: sessionStorage.getItem('tabid'), closecurrent: true }
+          })
+          route.push({
             pathname: `/ITSM/operationplan/operationplanform`,
             query: {
               mainId: response.mainId,
               registe: '计划中',
-              orderNo: response.operationNo,
+              orderNo: saveresponse.operationNo,
             },
             state: {}
           })

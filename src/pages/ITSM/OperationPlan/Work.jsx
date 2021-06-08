@@ -8,6 +8,8 @@ import {
 } from 'antd';
 import User from '@/components/SelectUser/User';
 import router from 'umi/router';
+import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import SysDict from '@/components/SysDict';
 import TaskCheck from './components/TaskCheck';
 import OperationPlanfillin from './components/OperationPlanfillin';
 import TaskExecute from './components/TaskExecute';
@@ -15,8 +17,6 @@ import OperationPlanfillindes from './components/OperationPlanfillindes';
 import TaskCheckdes from './components/TaskCheckdes';
 import TaskExecutedes from './components/TaskExecutedes';
 import Back from './components/Back';
-import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import SysDict from '@/components/SysDict';
 import styles from './index.less';
 import TimeoutModal from './components/TimeoutModel';
 import { judgeTimeoutStatus, saveTimeoutMsg } from '../services/api';
@@ -60,7 +60,7 @@ function Work(props) {
   const [userchoice, setUserChoice] = useState(false); // 已经选择人员
   const [changorder, setChangeOrder] = useState(undefined);
   const [modalvisible, setModalVisible] = useState(false);
-  
+
 
   const {
     location: { query: { mainId, status, checkStatus, auditLink, delay } },
@@ -84,11 +84,11 @@ function Work(props) {
         pathname: `/ITSM/operationplan/myoperationplan/`,
       });
     }
-  
+
   }
 
-  if(loading === false && openFlowList.code !== -1) {
-    if((data && data.length && edit.main !== undefined) || delay) {
+  if (loading === false && openFlowList.code !== -1) {
+    if ((data && data.length && edit.main !== undefined) || delay) {
       headTitle = '作业计划填报'
     }
   }
@@ -130,7 +130,7 @@ function Work(props) {
     return [];
   };
   const taskResult = getTypebyTitle('作业结果');
-  
+
   useEffect(() => {
     queryDept();
     getoperationPerson()
@@ -139,10 +139,12 @@ function Work(props) {
   }, [])
 
   useEffect(() => {
-    dispatch({
-      type: 'processmodel/openFlow',
-      payload: mainId
-    })
+    if (mainId !== undefined) {
+      dispatch({
+        type: 'processmodel/openFlow',
+        payload: mainId
+      })
+    }
   }, [mainId])
 
   // 处理作业负责人数据
@@ -161,16 +163,17 @@ function Work(props) {
   }
 
   //  保存统一接口
-  const saveApi = (params,tobatch) => {
+  const saveApi = (params, tobatch) => {
     return dispatch({
       type: 'processmodel/formSave',
       payload: params
     }).then(res => {
       if (res.code === 200) {
-        if(tobatch){
+        if (tobatch) {
           getInformation();
         } else {
           message.info(res.msg);
+          getInformation();
         }
       } else {
         message.error(res.msg);
@@ -200,7 +203,7 @@ function Work(props) {
   }
 
   //  登记保存
-  const fillinSave = (params,tobatch) => {
+  const fillinSave = (params, tobatch) => {
     SaveRef.current.validateFields((err, values) => {
       if (params ? !err : true) {
         const result = {
@@ -217,7 +220,7 @@ function Work(props) {
           main_id: edit.main.id,
           mainId,
         }
-        saveApi(result,tobatch);
+        saveApi(result, tobatch);
         if (params) {
           setUserVisible(true);
         }
@@ -246,13 +249,13 @@ function Work(props) {
   }
 
   //  判断是属于那个保存状态下
-  const handleSave = (params,tobatch) => {
+  const handleSave = (params, tobatch) => {
     if (openFlowList && openFlowList.edit.execute !== undefined && checkStatus === '已审核') {
       executeSave();
     }
 
     if (openFlowList && openFlowList.edit.main !== undefined) {
-      fillinSave(params,tobatch);
+      fillinSave(params, tobatch);
     }
 
     if (auditLink) {
@@ -271,10 +274,20 @@ function Work(props) {
     }).then(res => {
       if (res.code === 200) {
         message.info('送审成功');
-        router.push(`/ITSM/operationplan/myoperationplan/`)
+        router.push({
+          pathname: `/ITSM/operationplan/operationplanform`,
+          query: { mainId, closetab: true },
+          state: { cache: false }
+        });
+        router.push({
+          pathname: `/ITSM/operationplan/myoperationplan/`,
+          query: { pathpush: true },
+          state: { cache: false }
+        }
+        )
       } else {
         message.error('送审失败 ');
-        router.push(`/ITSM/operationplan/myoperationplan/`)
+        // router.push(`/ITSM/operationplan/myoperationplan/`)
       }
     })
   }
@@ -295,14 +308,23 @@ function Work(props) {
   }, [userchoice])
 
   const handleClose = () => {
+    router.push({
+      pathname: `/ITSM/operationplan/operationplanform`,
+      query: { mainId, closetab: true },
+      state: { cache: false }
+    });
     if (auditLink) {
       router.push({
         pathname: `/ITSM/operationplan/operationplancheck`,
-      });
+        query: { pathpush: true },
+        state: { cache: false }
+      })
     } else {
       router.push({
         pathname: `/ITSM/operationplan/myoperationplan/`,
-      });
+        query: { pathpush: true },
+        state: { cache: false }
+      })
     }
   }
 
@@ -315,9 +337,18 @@ function Work(props) {
         ...values,
       },
     }).then(res => {
+      router.push({
+        pathname: `/ITSM/operationplan/operationplanform`,
+        query: { mainId, closetab: true },
+        state: { cache: false }
+      });
       if (res.code === 200) {
         message.info(res.msg);
-        router.push(`/ITSM/operationplan/operationplancheck`)
+        router.push({
+          pathname: `/ITSM/operationplan/operationplancheck`,
+          query: { pathpush: true },
+          state: { cache: false }
+        })
       } else {
         message.error(res.msg);
       }
@@ -340,16 +371,20 @@ function Work(props) {
             check_checkUserId: userinfo.userId,
           }
         }).then(res => {
+          router.push({
+            pathname: `/ITSM/operationplan/operationplanform`,
+            query: { mainId, closetab: true },
+            state: { cache: false }
+          });
+          router.push({
+            pathname: `/ITSM/operationplan/operationplancheck`,
+            query: { pathpush: true },
+            state: { cache: false }
+          });
           if (res.code === 200) {
             message.info(res.msg);
-            router.push({
-              pathname: `/ITSM/operationplan/operationplancheck`,
-            });
           } else {
             message.error(res.msg);
-            router.push({
-              pathname: `/ITSM/operationplan/operationplancheck`,
-            });
           }
         });
       }
@@ -379,16 +414,20 @@ function Work(props) {
             execute_operationTime: value.execute_operationTime.format('YYYY-MM-DD HH:mm:ss'),
           }
         }).then(res => {
+          router.push({
+            pathname: `/ITSM/operationplan/operationplanform`,
+            query: { mainId, closetab: true },
+            state: { cache: false }
+          });
+          router.push({
+            pathname: `/ITSM/operationplan/myoperationplan/`,
+            query: { pathpush: true },
+            state: { cache: false }
+          });
           if (res.code === 200) {
             message.info(res.msg);
-            router.push({
-              pathname: `/ITSM/operationplan/myoperationplan/`,
-            });
           } else {
             message.error(res.msg);
-            router.push({
-              pathname: `/ITSM/operationplan/myoperationplan/`,
-            });
           }
         });
       }
@@ -430,16 +469,20 @@ function Work(props) {
           plannedEndTime: value.plannedEndTime.format('YYYY-MM-DD HH:mm:ss')
         }
       }).then(res => {
+        router.push({
+          pathname: `/ITSM/operationplan/operationplanform`,
+          query: { mainId, closetab: true },
+          state: { cache: false }
+        });
+        router.push({
+          pathname: `/ITSM/operationplan/myoperationplan/`,
+          query: { pathpush: true },
+          state: { cache: false }
+        });
         if (res.code === 200) {
           message.info(res.msg);
-          router.push({
-            pathname: `/ITSM/operationplan/myoperationplan/`,
-          });
         } else {
           message.error(res.msg);
-          router.push({
-            pathname: `/ITSM/operationplan/myoperationplan/`,
-          });
         }
       });
     })
@@ -453,16 +496,20 @@ function Work(props) {
         mainIds: mainId
       }
     }).then(res => {
+      router.push({
+        pathname: `/ITSM/operationplan/operationplanform`,
+        query: { mainId, closetab: true },
+        state: { cache: false }
+      });
+      router.push({
+        pathname: `/ITSM/operationplan/myoperationplan/`,
+        query: { pathpush: true },
+        state: { cache: false }
+      });
       if (res.code === 200) {
         message.info(res.msg);
-        router.push({
-          pathname: `/ITSM/operationplan/myoperationplan/`,
-        });
       } else {
         message.info(res.msg);
-        router.push({
-          pathname: `/ITSM/operationplan/myoperationplan/`,
-        });
       }
     })
   }
@@ -473,7 +520,7 @@ function Work(props) {
       extra={
         <>
           {
-            loading === false && taskResult && taskResult.length >0 && !delay && (openFlowList && edit.main !== undefined && data.length === 1)  &&(
+            loading === false && taskResult && taskResult.length > 0 && !delay && (openFlowList && edit.main !== undefined && data.length === 1) && (
               <Button
                 type="danger"
                 ghost
@@ -486,21 +533,21 @@ function Work(props) {
           }
 
           {
-            loading === false && taskResult && taskResult.length >0  && !delay && (
+            loading === false && taskResult && taskResult.length > 0 && !delay && (
               <Button type='primary' onClick={() => handleSave(false)}>保存</Button>
             )
           }
 
           {
-            loading === false && taskResult && taskResult.length >0 && !delay && (openFlowList && edit.main !== undefined) && taskResult && taskResult.length > 0 &&(
-              <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleSave(true,'tobatch')}>
+            loading === false && taskResult && taskResult.length > 0 && !delay && (openFlowList && edit.main !== undefined) && taskResult && taskResult.length > 0 && (
+              <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleSave(true, 'tobatch')}>
                 送审
               </Button>
             )
           }
 
           {
-            auditLink  && taskResult && taskResult.length >0 && !delay && (
+            auditLink && taskResult && taskResult.length > 0 && !delay && (
               <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleExamine()}>
                 审核
               </Button>
@@ -508,7 +555,7 @@ function Work(props) {
           }
 
           {
-            loading === false && taskResult && taskResult.length >0 && auditLink && !delay && edit.check && edit.check.result === null && taskResult && taskResult.length > 0 &&(
+            loading === false && taskResult && taskResult.length > 0 && auditLink && !delay && edit.check && edit.check.result === null && taskResult && taskResult.length > 0 && (
               <Back
                 reasonSubmit={values => reasonSubmit(values)}
                 detailPage='true'
@@ -521,20 +568,20 @@ function Work(props) {
           }
 
           {
-            loading === false && taskResult && taskResult.length >0  && !delay && (openFlowList && edit.execute !== undefined) && checkStatus === '已审核' && taskResult && taskResult.length > 0 &&(
+            loading === false && taskResult && taskResult.length > 0 && !delay && (openFlowList && edit.execute !== undefined) && checkStatus === '已审核' && taskResult && taskResult.length > 0 && (
               <Button
                 type="primary"
-                onClick={handleExecute}>确认执行</Button>
+                onClick={() => handleExecute()}>确认执行</Button>
             )
           }
 
           {
-            loading === false && taskResult && taskResult.length  >0 && delay && (
+            loading === false && taskResult && taskResult.length > 0 && delay && (
               <Button type='primary' onClick={handleDelay}>确定延期</Button>
             )
           }
 
-          <Button onClick={handleClose}>关闭</Button>
+          <Button onClick={handleClose}>返回</Button>
         </>
       }
     >
@@ -546,7 +593,7 @@ function Work(props) {
       />
 
       {
-        loading === false  && taskResult && taskResult.length >0 && data && (
+        loading === false && taskResult && taskResult.length > 0 && data && (
           <Collapse
             expandIconPosition="right"
             defaultActiveKey={['1']}
@@ -632,7 +679,7 @@ function Work(props) {
       }
 
       <div className={styles.collapse}>
-        {loading === false && taskResult && taskResult.length >0  && data &&  (
+        {loading === false && taskResult && taskResult.length > 0 && data && (
           <Collapse
             expandIconPosition="right"
             defaultActiveKey={['0']}

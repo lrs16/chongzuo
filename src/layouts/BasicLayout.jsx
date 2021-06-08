@@ -66,10 +66,6 @@ const multiplepath = [
   { path: '/ITSM/faultmanage/registration', type: 'fault' },
   { path: '/ITSM/problemmanage/registration', type: 'problem' },
   { path: '/ITSM/demandmanage/registration', type: 'demand' },
-]
-
-// 多条计划，从页面新增
-const pageopen = [
   { path: '/ITSM/operationplan/operationplanfillin', type: 'operation' },
 ]
 
@@ -159,10 +155,11 @@ const BasicLayout = props => {
   const lasttabactive = (tabs) => {
     const end = tabs.slice(-1)[0];
     const target = alonepath.filter(item => item.path === end.itemPath)[0];
+    const multipletarget = multiplepath.filter(item => item.path === end.itemPath)[0];
     setActiveKey(end.id);
     router.push({
       pathname: end.itemPath,
-      query: target ? end.query : {},
+      query: (target || multipletarget) ? end.query : {},
       state: { ...end.state, cache: false },
     });
   }
@@ -189,15 +186,36 @@ const BasicLayout = props => {
     const target = alonepath.filter(item => item.path === url)[0];                                   //  属于工单处理路由
     const menutarget = menulist.filter(item => item.menuUrl === url)[0];                             //  系统管理菜单列表有该路由
     const targetmultiple = multiplepath.filter(item => item.path === location.pathname)[0];          //  属于登记类打开同一个链接多页签
-    const targetpageopen = pageopen.filter(item => item.path === location.pathname)[0];              //  从页面按钮打开同一个链接多多页签
 
     // 已有标签,且不属于登记类和作业计划
-    if (tabtargetpath && !targetmultiple && !targetpageopen) {
+    if (tabtargetpath && !targetmultiple) {
       setActiveKey(tabtargetpath.id);
     };
-    // 作业计划
-    if (targetpageopen && !tabtargetpath && !targetmultiple) {
-      console.log('111')
+    // 从页面添加多条登记类，如作业计划
+    if (location.query.addtab && targetmultiple) {
+      const { menuDesc } = menutarget;
+      const targettype = toptabs.filter(item => item.type === targetmultiple.type);
+      const num = targettype.length;
+      const endid = num === 0 ? 0 : Number(targettype.slice(-1)[0].id.replace(/[^0-9]/ig, "")) + 1;
+      const panels = {
+        name: menuDesc,
+        type: targetmultiple.type,
+        id: `${targetmultiple.type}${endid}`,
+        query: { ...location.query, tabid: `${targetmultiple.type}${endid}` },
+        state: { cache: false },
+        itemPath: targetmultiple.path,
+        closable: true
+      };
+      delete panels.query.addtab;
+      if (targettype[0]) {
+        getcache();    // 获取旧页签数据
+        toptabs.push(panels);
+        lasttabactive(toptabs);
+      } else {
+        // 增加登记页签
+        toptabs.push(panels);
+        lasttabactive(toptabs);
+      };
     }
     if (tabtargetid) {
       // 已有标签的工单详情或工单
@@ -539,7 +557,7 @@ const BasicLayout = props => {
               router.push({
                 pathname: location.pathname,
                 query: location.query,
-                state: { ...location.state, cache: true },
+                state: { ...location.state, cache: true, reset: false },
               });
             }}>
               <Tabs
@@ -549,9 +567,6 @@ const BasicLayout = props => {
                 onChange={(key) => callback(key)}
                 onEdit={onEdit}
                 style={{ margin: '-24px -24px 0 ', backgroundColor: '#fff' }}
-                onTabClick={() => {
-
-                }}
               >
                 {toptabs.map(obj => [
                   <TabPane

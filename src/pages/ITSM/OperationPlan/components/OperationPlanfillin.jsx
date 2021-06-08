@@ -37,7 +37,6 @@ const OperationPlanfillin = React.forwardRef((props, ref) => {
     status,
     operationPersonSelect,
   } = props;
-  console.log(main,'main')
 
   const statusContent = ['计划中', '延期中', '已超时', '已完成']
   const color = ['blue', 'yellow', 'red', 'green'];
@@ -52,7 +51,7 @@ const OperationPlanfillin = React.forwardRef((props, ref) => {
 
   useEffect(() => {
     taskperson = true;
-    if(main.operationUser) {
+    if (main.operationUser) {
       taskperson = false;
     }
   }, []);
@@ -515,7 +514,7 @@ const OperationPlanfillin = React.forwardRef((props, ref) => {
             </Col>
           )}
 
-          <Col span={24} style={{ display: (taskperson||type) ? 'none' : 'block' }}>
+          <Col span={24} style={{ display: (taskperson || type) ? 'none' : 'block' }}>
             <Form.Item label="上传附件" {...forminladeLayout}>
               {getFieldDecorator('main_fileIds', {
                 initialValue: main && main.fileIds ? main.fileIds : '',
