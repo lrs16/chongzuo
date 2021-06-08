@@ -145,11 +145,6 @@ function ToDOlist(props) {
   };
 
   const handleReset = () => {
-    router.push({
-      pathname: location.pathname,
-      query: {},
-      state: {}
-    });
     resetFields();
     getTodolists(1, 15);
     setPageinations({ current: 1, pageSize: 15 });
@@ -251,7 +246,8 @@ function ToDOlist(props) {
       };
       // 点击菜单刷新,并获取数据
       if (location.state.reset) {
-        handleReset()
+        handleReset();
+        setExpand(false);
       };
       if (location.state.cacheinfo) {
         if (location.state.cacheinfo.paginations) {
@@ -263,10 +259,8 @@ function ToDOlist(props) {
           setFieldsValue({
             createTime: createTime ? moment(createTime).format('YYYY-MM-DD HH:mm:ss') : '',
           })
-        }
-        if (location.state.cacheinfo.expand !== undefined) {
-          setExpand(location.state.cacheinfo.expand);
-        }
+        };
+        setExpand(location.state.cacheinfo.expand);
       };
     }
   }, [location.state]);

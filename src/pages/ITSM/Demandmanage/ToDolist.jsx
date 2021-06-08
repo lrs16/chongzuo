@@ -119,6 +119,7 @@ function ToDolist(props) {
       creationStartTime: '',
       creationEndTime: '',
       creationTime: values.creationTime ? moment(values.creationTime).format('YYYY-MM-DD') : '',
+      userId: sessionStorage.getItem('userauthorityid'),
     }
     dispatch({
       type: 'demandtodo/fetchlist',
@@ -127,14 +128,11 @@ function ToDolist(props) {
         ...newvalue,
         limit: size,
         page,
-        userId: sessionStorage.getItem('userauthorityid'),
       },
     });
-    setTabRecord({ ...newvalue, ...values });
+    setTabRecord({ ...values, ...newvalue, });
   };
-
-
-
+  console.log(tabrecord)
   const onShowSizeChange = (page, size) => {
     validateFields((err, values) => {
       if (!err) {
@@ -206,21 +204,9 @@ function ToDolist(props) {
     registerPerson: '',
     creationTime: '',
     paginations,
+    expand,
   };
-  const cacheinfo = (location.state && location.state.cacheinfo) === undefined ? record : location.state.cacheinfo;
-
-  // 获取数据
-  useEffect(() => {
-    validateFields((err, values) => {
-      if (!err) {
-        if (cacheinfo === undefined) {
-          searchdata(values, 1, 15);
-        } else {
-          searchdata(values, cacheinfo.paginations.current, cacheinfo.paginations.pageSize);
-        }
-      }
-    });
-  }, []);
+  const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
 
   useEffect(() => {
     if (location.state) {
@@ -240,25 +226,32 @@ function ToDolist(props) {
       };
       // 点击菜单刷新
       if (location.state.reset) {
-        handleReset()
+        handleReset();
+        setExpand(false);
       };
       if (location.state.cacheinfo) {
-        if (location.state.cacheinfo.paginations) {
-          const { current, pageSize } = location.state.cacheinfo.paginations;
-          setPageinations({ ...paginations, current, pageSize });
-        };
-        if (location.state.cacheinfo.expand !== undefined) {
-          setExpand(location.state.cacheinfo.expand);
-        };
+        const { current, pageSize } = location.state.cacheinfo.paginations;
         const { creationTime } = location.state.cacheinfo;
-        if (creationTime) {
-          setFieldsValue({
-            creationTime: creationTime ? moment(creationTime).format('YYYY-MM-DD') : '',
-          })
-        };
+        setPageinations({ ...paginations, current, pageSize });
+        setExpand(location.state.cacheinfo.expand);
+        setFieldsValue({
+          creationTime: creationTime ? moment(creationTime) : '',
+        })
       };
     }
   }, [location.state]);
+
+
+  // 获取数据
+  useEffect(() => {
+    if (cacheinfo !== undefined) {
+      validateFields((err, values) => {
+        if (!err) {
+          searchdata(values, cacheinfo.paginations.current, cacheinfo.paginations.pageSize)
+        }
+      });
+    }
+  }, []);
 
   const extra = (<>
     <Button type="primary" onClick={() => handleSearch()}>查 询</Button>

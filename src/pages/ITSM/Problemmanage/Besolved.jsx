@@ -130,18 +130,21 @@ function Besolved(props) {
   // }, []);
 
   const searchdata = (values, page, pageSize) => {
+    const newvalues = {
+      ...values,
+      createTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+      createTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+      createTime: '',
+    }
     dispatch({
       type: 'problemmanage/searchBesolve',
       payload: {
-        ...values,
-        createTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-        createTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-        createTime:'',
+        ...newvalues,
         pageSize,
         pageNum: page,
       },
     });
-    setTabRecord({ ...values });
+    setTabRecord({ ...newvalues });
   };
 
   const handleReset = () => {
@@ -211,12 +214,12 @@ function Besolved(props) {
       if (!err) {
         dispatch({
           type: 'problemmanage/besolvedownload',
-          payload: { 
+          payload: {
             ...values,
             createTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
             createTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-            createTime:'',
-           }
+            createTime: '',
+          }
         }).then(res => {
           const filename = `下载.xls`;
           const blob = new Blob([res]);
@@ -250,7 +253,6 @@ function Besolved(props) {
     currentNode: '',
     importance: '',
     no: '',
-    registerTime: null,
     registerUser: '',
     source: '',
     title: '',
@@ -259,26 +261,15 @@ function Besolved(props) {
   };
   const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
 
-  // 获取数据
-  useEffect(() => {
-    validateFields((err, values) => {
-      if (!err) {
-        searchdata(values, cacheinfo.paginations.current, cacheinfo.paginations.pageSize)
-      }
-    });
-  }, []);
-
   useEffect(() => {
     if (location.state) {
       if (location.state.cache) {
         // 传表单数据到页签
-        console.log(tabrecord.registerTime)
         dispatch({
           type: 'viewcache/gettabstate',
           payload: {
             cacheinfo: {
               ...tabrecord,
-              time: tabrecord.registerTime ? moment(tabrecord.registerTime).format('YYYY-MM-DD HH:mm:ss') : '',
               registerTime: '',
               paginations,
               expand,
@@ -289,19 +280,31 @@ function Besolved(props) {
       };
       // 点击菜单刷新,并获取数据
       if (location.state.reset) {
-        handleReset()
+        handleReset();
+        setExpand(false);;
       };
       if (location.state.cacheinfo) {
         const { current, pageSize } = location.state.cacheinfo.paginations;
-        const { registerTime } = location.state.cacheinfo.registerTime;
+        const { createTimeBegin, createTimeEnd } = location.state.cacheinfo;
         setExpand(location.state.cacheinfo.expand);
         setPaginations({ ...paginations, current, pageSize });
-        // setFieldsValue({
-        //   registerTime: registerTime !== '' ? moment(registerTime).format('YYYY-MM-DD HH:mm:ss') : '',
-        // })
+        setFieldsValue({
+          createTime: createTimeBegin ? [moment(createTimeBegin), moment(createTimeEnd)] : '',
+        })
       };
     }
   }, [location.state]);
+
+  // 获取数据
+  useEffect(() => {
+    if (cacheinfo !== undefined) {
+      validateFields((err, values) => {
+        if (!err) {
+          searchdata(values, cacheinfo.paginations.current, cacheinfo.paginations.pageSize)
+        }
+      });
+    }
+  }, []);
 
   // 不要用查询标题的方式，人家改了名字就查不到了，用id
   const getTypebyTitle = title => {

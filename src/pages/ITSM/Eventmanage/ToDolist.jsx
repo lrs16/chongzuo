@@ -206,11 +206,6 @@ function ToDolist(props) {
   };
 
   const handleReset = () => {
-    router.push({
-      pathname: location.pathname,
-      query: {},
-      state: {}
-    });
     resetFields();
     validateFields((err, values) => {
       if (!err) {
@@ -229,20 +224,10 @@ function ToDolist(props) {
     registerUser: '',
     applicationUser: '',
     eventPrior: '',
-    createTime: '',
     paginations,
+    expand,
   };
   const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
-
-
-  // 获取数据
-  useEffect(() => {
-    validateFields((err, values) => {
-      if (!err) {
-        searchdata(values, cacheinfo.paginations.current, cacheinfo.paginations.pageSize)
-      }
-    });
-  }, [location]);
 
   useEffect(() => {
     if (location.state) {
@@ -262,7 +247,8 @@ function ToDolist(props) {
       };
       // 点击菜单刷新
       if (location.state.reset) {
-        handleReset()
+        handleReset();
+        setExpand(false);
       };
       if (location.state.cacheinfo) {
         if (location.state.cacheinfo.paginations) {
@@ -273,12 +259,21 @@ function ToDolist(props) {
         setFieldsValue({
           createTime: time1 ? [moment(time1), moment(time2)] : '',
         })
-        if (location.state.cacheinfo.expand !== undefined) {
-          setExpand(location.state.cacheinfo.expand);
-        }
+        setExpand(location.state.cacheinfo.expand);
       };
     }
   }, [location.state]);
+
+  // 获取数据
+  useEffect(() => {
+    if (cacheinfo !== undefined) {
+      validateFields((err, values) => {
+        if (!err) {
+          searchdata(values, cacheinfo.paginations.current, cacheinfo.paginations.pageSize)
+        }
+      });
+    }
+  }, []);
 
   const getTypebykey = key => {
     if (selectdata.ischange) {
@@ -292,8 +287,8 @@ function ToDolist(props) {
   const priormap = getTypebykey('482610561499004928'); // 优先级
 
   const extra = (<>
-    <Button type="primary" onClick={handleSearch}>查 询</Button>
-    <Button style={{ marginLeft: 8 }} onClick={handleReset}>重 置</Button>
+    <Button type="primary" onClick={() => handleSearch()}>查 询</Button>
+    <Button style={{ marginLeft: 8 }} onClick={() => handleReset()}>重 置</Button>
     <Button
       style={{ marginLeft: 8 }}
       type="link"
@@ -314,7 +309,7 @@ function ToDolist(props) {
       />
       <Card>
         <Row gutter={24}>
-          <Form {...formItemLayout} onSubmit={handleSearch}>
+          <Form {...formItemLayout} onSubmit={() => handleSearch()}>
             <Col span={8}>
               <Form.Item label="事件编号">
                 {getFieldDecorator('eventNo', {

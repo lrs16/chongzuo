@@ -248,16 +248,6 @@ function QueryList(props) {
       })
     }
   }, [location.state]);
-  // 获取数据
-  useEffect(() => {
-    validateFields((err, values) => {
-      if (!err) {
-        searchdata(values, cacheinfo.paginations.current, cacheinfo.paginations.pageSize)
-      }
-    });
-  }, [location]);
-
-
 
   useEffect(() => {
     if (location.state) {
@@ -287,6 +277,17 @@ function QueryList(props) {
       };
     }
   }, [location.state]);
+
+  // 获取数据
+  useEffect(() => {
+    if (cacheinfo !== undefined) {
+      validateFields((err, values) => {
+        if (!err) {
+          searchdata(values, cacheinfo.paginations.current, cacheinfo.paginations.pageSize)
+        }
+      });
+    }
+  }, []);
 
   const getTypebyId = key => {
     if (selectdata.ischange) {

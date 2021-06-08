@@ -95,7 +95,7 @@ const columns = [
 ];
 
 
-let queryParams = true;
+const queryParams = true;
 function Besolved(props) {
   const pagetitle = props.route.name;
   const {
@@ -143,7 +143,7 @@ function Besolved(props) {
         ...values,
         addTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
         addTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-        createTime:  values.createTime?.length ? [moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss'),moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss')] : '',
+        createTime: values.createTime?.length ? [moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss'), moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss')] : '',
         pageNum: paginations.current,
         pageSize: paginations.pageSize,
       }
@@ -190,67 +190,9 @@ function Besolved(props) {
     cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
   }
 
-  // 设置时间
-  useEffect(() => {
-    if (location && location.state && location.state.cacheinfo) {
-      const cachestartTime = location.state.cacheinfo.addTimeBegin;
-      const cacheendTime = location.state.cacheinfo.addTimeEnd;
-      setFieldsValue({
-        createTime: cachestartTime ? [moment(cachestartTime), moment(cacheendTime)] : '',
-      })
-    } else {
-      setFieldsValue({
-        createTime: addTimeBegin ? [moment(addTimeBegin), moment(addTimeEnd)] : '',
-      })
-    }
-  }, [location.state]);
-
-  useEffect(() => {
-    validateFields((err,values) => searchdata(values,paginations.current, paginations.pageSize))
-  }, [location.state]);
-
-
-
-  useEffect(() => {
-    if (location.state) {
-      if (location.state.cache) {
-        // 传表单数据到页签
-        dispatch({
-          type: 'viewcache/gettabstate',
-          payload: {
-            cacheinfo: {
-              ...tabrecord,
-              paginations,
-              expand,
-            },
-            tabid: sessionStorage.getItem('tabid')
-          },
-        });
-      };
-      // 点击菜单刷新
-      if (location.state.reset) {
-        handleReset()
-      };
-      // 标签切回设置初始值
-      if (location.state.cacheinfo) {
-        const { current, pageSize } = location.state.cacheinfo.paginations;
-        const { createTime } = location.state.cacheinfo;
-        setExpand(location.state.cacheinfo.expand);
-        setPageinations({ ...paginations, current, pageSize });
-        setFieldsValue({
-          createTime: createTime ? [moment(createTime[0]), moment(createTime[1])] : '',
-        })
-      };
-    }
-  }, [location.state]);
 
 
   const handleReset = () => {
-    router.push({
-      pathname: location.pathname,
-      query: {},
-      state: {}
-    });
     resetFields();
     // queryParams = false;
   };
@@ -274,7 +216,7 @@ function Besolved(props) {
       ...values,
       addTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : addTimeBegin,
       addTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : addTimeEnd,
-      createTime:  values.createTime?.length ? [moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss'),moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss')] : '',
+      createTime: values.createTime?.length ? [moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss'), moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss')] : '',
       pageNum: paginations.current,
       pageSize: paginations.pageSize,
     }
@@ -346,24 +288,24 @@ function Besolved(props) {
   const download = () => {
     validateFields((err, values) => {
       if (!err) {
-          dispatch({
-            type: 'problemmanage/eventdownload',
-            payload: {
-              ...values,
-              addTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : addTimeBegin,
-              addTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : addTimeEnd,
-              createTime: '',
-            }
-          }).then(res => {
-            const filename = `问题查询_${moment().format('YYYY-MM-DD HH:mm')}.xls`;
-            const blob = new Blob([res]);
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = filename;
-            a.click();
-            window.URL.revokeObjectURL(url);
-          })
+        dispatch({
+          type: 'problemmanage/eventdownload',
+          payload: {
+            ...values,
+            addTimeBegin: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : addTimeBegin,
+            addTimeEnd: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : addTimeEnd,
+            createTime: '',
+          }
+        }).then(res => {
+          const filename = `问题查询_${moment().format('YYYY-MM-DD HH:mm')}.xls`;
+          const blob = new Blob([res]);
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = filename;
+          a.click();
+          window.URL.revokeObjectURL(url);
+        })
       }
     })
   }
@@ -381,6 +323,62 @@ function Besolved(props) {
   const scopeList = getTypebyTitle('影响范围');
   const timeoutList = getTypebyTitle('超时状态');
 
+
+  // 设置时间
+  useEffect(() => {
+    if (location && location.state && location.state.cacheinfo) {
+      const cachestartTime = location.state.cacheinfo.addTimeBegin;
+      const cacheendTime = location.state.cacheinfo.addTimeEnd;
+      setFieldsValue({
+        createTime: cachestartTime ? [moment(cachestartTime), moment(cacheendTime)] : '',
+      })
+    } else {
+      setFieldsValue({
+        createTime: addTimeBegin ? [moment(addTimeBegin), moment(addTimeEnd)] : '',
+      })
+    }
+  }, [location.state]);
+
+  useEffect(() => {
+    if (location.state) {
+      if (location.state.cache) {
+        // 传表单数据到页签
+        dispatch({
+          type: 'viewcache/gettabstate',
+          payload: {
+            cacheinfo: {
+              ...tabrecord,
+              paginations,
+              expand,
+            },
+            tabid: sessionStorage.getItem('tabid')
+          },
+        });
+      };
+      // 点击菜单刷新
+      if (location.state.reset) {
+        handleReset()
+      };
+      // 标签切回设置初始值
+      if (location.state.cacheinfo) {
+        const { current, pageSize } = location.state.cacheinfo.paginations;
+        const { createTime } = location.state.cacheinfo;
+        setExpand(location.state.cacheinfo.expand);
+        setPageinations({ ...paginations, current, pageSize });
+        setFieldsValue({
+          createTime: createTime ? [moment(createTime[0]), moment(createTime[1])] : '',
+        })
+      };
+    }
+  }, [location.state]);
+
+
+  useEffect(() => {
+    if (cacheinfo !== undefined) {
+      validateFields((err, values) => searchdata(values, paginations.current, paginations.pageSize))
+    }
+  }, []);
+
   return (
     <PageHeaderWrapper title={differentTitle}>
       <SysDict
@@ -393,284 +391,267 @@ function Besolved(props) {
         <Row gutter={16}>
           <Form {...formItemLayout}>
 
-              <>
-                <Col span={8}>
-                  <Form.Item label="问题编号">
-                    {getFieldDecorator('no', {
-                      initialValue: cacheinfo.no,
-                    })(<Input placeholder='请输入' allowClear />)}
-                  </Form.Item>
-                </Col>
+            <>
+              <Col span={8}>
+                <Form.Item label="问题编号">
+                  {getFieldDecorator('no', {
+                    initialValue: cacheinfo.no,
+                  })(<Input placeholder='请输入' allowClear />)}
+                </Form.Item>
+              </Col>
 
-                <Col span={8}>
-                  <Form.Item label="问题分类">
-                    {getFieldDecorator('type', {
-                      initialValue: cacheinfo.type,
-                    })(
-                      <Select placeholder="请选择" allowClear>
-                        {problemType.map(obj => [
-                          <Option key={obj.key} value={obj.dict_code}>
-                            {obj.title}
-                          </Option>,
-                        ])}
-                      </Select>,
-                    )}
-                  </Form.Item>
-                </Col>
+              <Col span={8}>
+                <Form.Item label="问题分类">
+                  {getFieldDecorator('type', {
+                    initialValue: cacheinfo.type,
+                  })(
+                    <Select placeholder="请选择" allowClear>
+                      {problemType.map(obj => [
+                        <Option key={obj.key} value={obj.dict_code}>
+                          {obj.title}
+                        </Option>,
+                      ])}
+                    </Select>,
+                  )}
+                </Form.Item>
+              </Col>
 
-                <Col span={8}>
-                  <Form.Item label="发送时间">
-                    {getFieldDecorator('createTime', {
-                      initialValue: ''
-                    })(
-                      <RangePicker
-                        showTime
-                        format="YYYY-MM-DD HH:mm:ss"
-                        style={{ width: '100%' }}
-                        placeholder="请选择"
-                        allowClear
-                      />,
-                    )}
-                  </Form.Item>
-                </Col>
+              <Col span={8}>
+                <Form.Item label="发送时间">
+                  {getFieldDecorator('createTime', {
+                    initialValue: ''
+                  })(
+                    <RangePicker
+                      showTime
+                      format="YYYY-MM-DD HH:mm:ss"
+                      style={{ width: '100%' }}
+                      placeholder="请选择"
+                      allowClear
+                    />,
+                  )}
+                </Form.Item>
+              </Col>
 
-                <Col span={8}>
-                  <Form.Item label="当前处理环节">
-                    {getFieldDecorator('currentNode',
+              <Col span={8}>
+                <Form.Item label="当前处理环节">
+                  {getFieldDecorator('currentNode',
+                    {
+                      initialValue: cacheinfo.currentNode,
+                    }
+                  )(
+                    <Select placeholder="请选择" allowClear>
+                      {currentNodeselect.map(obj => [
+                        <Option key={obj.key} value={obj.title}>
+                          {obj.title}
+                        </Option>,
+                      ])}
+                    </Select>,
+                  )}
+                </Form.Item>
+              </Col>
+
+              <Col span={8}>
+                <Form.Item label="超时处理">
+                  {getFieldDecorator('timeStatus',
+                    {
+                      initialValue: cacheinfo.timeStatus,
+                    }
+                  )(
+                    <Select placeholder="请选择" allowClear>
+                      {timeoutList.map(obj => [
+                        <Option key={obj.key} value={obj.dict_code}>
+                          {obj.title}
+                        </Option>,
+                      ])}
+                    </Select>,
+                  )}
+                </Form.Item>
+              </Col>
+
+
+              <Col span={8}>
+                <Form.Item label="问题编号" style={{ display: 'none' }}>
+                  {getFieldDecorator('handleDeptId', {
+                    initialValue: cacheinfo.handleDeptId,
+                  })(<Input placeholder='请输入' allowClear />)}
+                </Form.Item>
+              </Col>
+
+              <Col span={8} style={{ display: 'none' }}>
+                <Form.Item label="问题编号">
+                  {getFieldDecorator('handlerId', {
+                    initialValue: cacheinfo.handlerId,
+                    rules: [
                       {
-                        initialValue: cacheinfo.currentNode,
-                      }
-                    )(
-                      <Select placeholder="请选择" allowClear>
-                        {currentNodeselect.map(obj => [
-                          <Option key={obj.key} value={obj.title}>
-                            {obj.title}
-                          </Option>,
-                        ])}
-                      </Select>,
-                    )}
-                  </Form.Item>
-                </Col>
-
-                <Col span={8}>
-                  <Form.Item label="超时处理">
-                    {getFieldDecorator('timeStatus',
-                      {
-                        initialValue: cacheinfo.timeStatus,
-                      }
-                    )(
-                      <Select placeholder="请选择" allowClear>
-                        {timeoutList.map(obj => [
-                          <Option key={obj.key} value={obj.dict_code}>
-                            {obj.title}
-                          </Option>,
-                        ])}
-                      </Select>,
-                    )}
-                  </Form.Item>
-                </Col>
-
-
-                <Col span={8}>
-                  <Form.Item label="问题编号" style={{ display: 'none' }}>
-                    {getFieldDecorator('handleDeptId', {
-                      initialValue: cacheinfo.handleDeptId,
-                    })(<Input placeholder='请输入' allowClear />)}
-                  </Form.Item>
-                </Col>
-
-                <Col span={8} style={{ display: 'none' }}>
-                  <Form.Item label="问题编号">
-                    {getFieldDecorator('handlerId', {
-                      initialValue: cacheinfo.handlerId,
-                      rules: [
-                        {
-                          message: '请输入问题编号',
-                        },
-                      ],
-                    })(<Input placeholder='请输入' allowClear />)}
-                  </Form.Item>
-                </Col>
-
-                <Col span={8} style={{ display: 'none' }}>
-                  <Form.Item label="问题编号">
-                    {getFieldDecorator('progressStatus', {
-                      initialValue: cacheinfo.progressStatus,
-                      rules: [
-                        {
-                          message: '请输入问题编号',
-                        },
-                      ],
-                    })(<Input placeholder='请输入' allowClear />)}
-                  </Form.Item>
-                </Col>
-
-                <Col span={8} style={{ display: 'none' }}>
-                  <Form.Item label="问题编号">
-                    {getFieldDecorator('checkUserId', {
-                      initialValue: cacheinfo.checkUserId,
-                      rules: [
-                        {
-                          message: '请输入问题编号',
-                        },
-                      ],
-                    })(<Input placeholder='请输入' allowClear />)}
-                  </Form.Item>
-                </Col>
-                <Col span={8} style={{ display: 'none' }}>
-                  <Form.Item label="问题编号">
-                    {getFieldDecorator('checkDeptId', {
-                      initialValue: cacheinfo.checkDeptId,
-                      rules: [
-                        {
-                          message: '请输入问题编号',
-                        },
-                      ],
-                    })(<Input placeholder='请输入' allowClear />)}
-                  </Form.Item>
-                </Col>
-
-              </>
-
-              <>
-                <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
-                  <Form.Item label="问题标题">
-                    {getFieldDecorator('title', {
-                      initialValue: cacheinfo.title,
-                    })(<Input placeholder='请输入' allowClear />)}
-                  </Form.Item>
-                </Col>
-              </>
-
-              <>
-                <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
-                  <Form.Item label="问题来源">
-                    {getFieldDecorator(
-                      'source',
-                      {
-                        initialValue: cacheinfo.source,
+                        message: '请输入问题编号',
                       },
-                    )(
-                      <Select placeholder="请选择" allowClear>
-                        {problemSource.map(obj => [
-                          <Option key={obj.key} value={obj.dict_code}>
-                            {obj.title}
-                          </Option>,
-                        ])}
-                      </Select>,
-                    )}
-                  </Form.Item>
-                </Col>
+                    ],
+                  })(<Input placeholder='请输入' allowClear />)}
+                </Form.Item>
+              </Col>
 
-                <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
-                  <Form.Item label="问题分类">
-                    {getFieldDecorator('type', {
-                      initialValue: cacheinfo.type,
-                    })
-                      (
-                        <Select placeholder="请选择" allowClear>
-                          {problemType.map(obj => [
-                            <Option key={obj.key} value={obj.dict_code}>
-                              {obj.title}
-                            </Option>,
-                          ])}
-                        </Select>,
-                      )}
-                  </Form.Item>
-                </Col>
-
-                <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
-                  <Form.Item label="影响范围">{getFieldDecorator('registerScope', {
-                    initialValue: cacheinfo.registerScope,
-                  })
-                    (
-                      <Select placeholder="请选择" allowClear>
-                        {scopeList.map(obj => [
-                          <Option key={obj.key} value={obj.dict_code}>
-                            {obj.title}
-                          </Option>,
-                        ])}
-                      </Select>,
-                    )}</Form.Item>
-                </Col>
-
-
-                <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
-                  <Form.Item label="超时处理">
-                    {getFieldDecorator('timeStatus',
+              <Col span={8} style={{ display: 'none' }}>
+                <Form.Item label="问题编号">
+                  {getFieldDecorator('progressStatus', {
+                    initialValue: cacheinfo.progressStatus,
+                    rules: [
                       {
-                        initialValue: cacheinfo.timeStatus,
-                      }
-                    )(
-                      <Select placeholder="请选择" allowClear>
-                        {timeoutList.map(obj => [
-                          <Option key={obj.key} value={obj.dict_code}>
-                            {obj.title}
-                          </Option>,
-                        ])}
-                      </Select>,
-                    )}
-                  </Form.Item>
-                </Col>
-
-                <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
-                  <Form.Item label="处理人" >
-                    {getFieldDecorator(
-                      'handler',
-                      {
-                        initialValue: cacheinfo.handler,
+                        message: '请输入问题编号',
                       },
-                    )(
-                      <Input placeholder='请输入' allowClear />
-                    )}
-                  </Form.Item>
-                </Col>
+                    ],
+                  })(<Input placeholder='请输入' allowClear />)}
+                </Form.Item>
+              </Col>
 
-                <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
-                  <Form.Item label="处理单位">
-                    {getFieldDecorator(
-                      'handleUnit',
+              <Col span={8} style={{ display: 'none' }}>
+                <Form.Item label="问题编号">
+                  {getFieldDecorator('checkUserId', {
+                    initialValue: cacheinfo.checkUserId,
+                    rules: [
                       {
-                        initialValue: cacheinfo.handleUnit,
+                        message: '请输入问题编号',
                       },
-                    )(
-                      <Input placeholder='请输入' allowClear />
-                    )}
-                  </Form.Item>
-                </Col>
+                    ],
+                  })(<Input placeholder='请输入' allowClear />)}
+                </Form.Item>
+              </Col>
+              <Col span={8} style={{ display: 'none' }}>
+                <Form.Item label="问题编号">
+                  {getFieldDecorator('checkDeptId', {
+                    initialValue: cacheinfo.checkDeptId,
+                    rules: [
+                      {
+                        message: '请输入问题编号',
+                      },
+                    ],
+                  })(<Input placeholder='请输入' allowClear />)}
+                </Form.Item>
+              </Col>
 
-                <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
-                  <Form.Item label="发送人">
-                    {getFieldDecorator(
-                      'registerUser',
-                      {
-                        initialValue: cacheinfo.registerUser,
-                      },
-                    )(
-                      <Input placeholder='请输入' allowClear />
-                    )}
-                  </Form.Item>
-                </Col>
+            </>
 
-                <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
-                  <Form.Item label='重要程度'>
-                    {getFieldDecorator(
-                      'importance',
-                      {
-                        initialValue: cacheinfo.importance
-                      },
-                    )(
-                      <Select placeholder="请选择" allowClear>
-                        {priority.map(obj => [
-                          <Option key={obj.key} value={obj.dict_code}>
-                            {obj.title}
-                          </Option>,
-                        ])}
-                      </Select>,
-                    )}
-                  </Form.Item>
-                </Col>
-              </>
+            <>
+              <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
+                <Form.Item label="问题标题">
+                  {getFieldDecorator('title', {
+                    initialValue: cacheinfo.title,
+                  })(<Input placeholder='请输入' allowClear />)}
+                </Form.Item>
+              </Col>
+            </>
+
+            <>
+              <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
+                <Form.Item label="问题来源">
+                  {getFieldDecorator(
+                    'source',
+                    {
+                      initialValue: cacheinfo.source,
+                    },
+                  )(
+                    <Select placeholder="请选择" allowClear>
+                      {problemSource.map(obj => [
+                        <Option key={obj.key} value={obj.dict_code}>
+                          {obj.title}
+                        </Option>,
+                      ])}
+                    </Select>,
+                  )}
+                </Form.Item>
+              </Col>
+
+              <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
+                <Form.Item label="影响范围">{getFieldDecorator('registerScope', {
+                  initialValue: cacheinfo.registerScope,
+                })
+                  (
+                    <Select placeholder="请选择" allowClear>
+                      {scopeList.map(obj => [
+                        <Option key={obj.key} value={obj.dict_code}>
+                          {obj.title}
+                        </Option>,
+                      ])}
+                    </Select>,
+                  )}</Form.Item>
+              </Col>
+
+
+              <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
+                <Form.Item label="超时处理">
+                  {getFieldDecorator('timeStatus',
+                    {
+                      initialValue: cacheinfo.timeStatus,
+                    }
+                  )(
+                    <Select placeholder="请选择" allowClear>
+                      {timeoutList.map(obj => [
+                        <Option key={obj.key} value={obj.dict_code}>
+                          {obj.title}
+                        </Option>,
+                      ])}
+                    </Select>,
+                  )}
+                </Form.Item>
+              </Col>
+
+              <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
+                <Form.Item label="处理人" >
+                  {getFieldDecorator(
+                    'handler',
+                    {
+                      initialValue: cacheinfo.handler,
+                    },
+                  )(
+                    <Input placeholder='请输入' allowClear />
+                  )}
+                </Form.Item>
+              </Col>
+
+              <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
+                <Form.Item label="处理单位">
+                  {getFieldDecorator(
+                    'handleUnit',
+                    {
+                      initialValue: cacheinfo.handleUnit,
+                    },
+                  )(
+                    <Input placeholder='请输入' allowClear />
+                  )}
+                </Form.Item>
+              </Col>
+
+              <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
+                <Form.Item label="发送人">
+                  {getFieldDecorator(
+                    'registerUser',
+                    {
+                      initialValue: cacheinfo.registerUser,
+                    },
+                  )(
+                    <Input placeholder='请输入' allowClear />
+                  )}
+                </Form.Item>
+              </Col>
+
+              <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
+                <Form.Item label='重要程度'>
+                  {getFieldDecorator(
+                    'importance',
+                    {
+                      initialValue: cacheinfo.importance
+                    },
+                  )(
+                    <Select placeholder="请选择" allowClear>
+                      {priority.map(obj => [
+                        <Option key={obj.key} value={obj.dict_code}>
+                          {obj.title}
+                        </Option>,
+                      ])}
+                    </Select>,
+                  )}
+                </Form.Item>
+              </Col>
+            </>
             {expand === false && (
               <Col span={8}>
                 <Button type="primary" onClick={() => handleSearch('search')}>
