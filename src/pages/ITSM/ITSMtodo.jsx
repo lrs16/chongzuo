@@ -42,7 +42,7 @@ const columns = [
               query: {
                 id: record.taskId,
                 taskName: record.currentNode,
-                mainId: record.mainId,
+                mainId: record.instanceId,
                 orderNo: text,
               },
             });
