@@ -549,16 +549,21 @@ const BasicLayout = props => {
           {authorized === Userauth && (
             < >
               <div
-                onMouseEnter={() => {
-                  router.push({
-                    pathname: location.pathname,
-                    query: location.query,
-                    state: { ...location.state, cache: true, reset: false },
-                  });
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                  if (e.button === 0) {
+                    router.push({
+                      pathname: location.pathname,
+                      query: location.query,
+                      state: { ...location.state, cache: true, reset: false },
+                    });
+                  }
                 }}
                 onContextMenu={(e) => {
                   e.preventDefault();
-                  setTabMenu({ x: e.pageX - 280, y: e.pageY - 60, v: 'block' });
+                  if (e.button === 2) {
+                    setTabMenu({ x: e.pageX - 350, y: e.pageY - 50, v: 'block' });
+                  }
                 }}
               >
                 <Tabs
@@ -576,12 +581,12 @@ const BasicLayout = props => {
                       closable={obj.closable}
                     >
                       {/* <Authorized authority={Userauth} noMatch={noMatch}>
-                    {multipleurl && (
-                      <div style={{ padding: '0 24px 0 24px', marginTop: 8, background: '#f1f1f1' }}>
-                        {children}
-                      </div>
-                    )}
-                  </Authorized> */}
+                     {multipleurl && (
+                       <div style={{ padding: '0 24px 0 24px', marginTop: 8, background: '#f1f1f1' }}>
+                         {children}
+                       </div>
+                     )}
+                   </Authorized> */}
                     </TabPane>,
                   ])}
                 </Tabs>
@@ -589,10 +594,10 @@ const BasicLayout = props => {
               <Authorized authority={Userauth} noMatch={noMatch}>
                 {/* <PageTab>{children}</PageTab> */}
                 {/* <MenuContext.Provider value={{ tabnew, cleartabdata }}>
-                <div style={{ marginTop: 10 }}>
-                  {children}
-                </div>
-              </MenuContext.Provider> */}
+                 <div style={{ marginTop: 10 }}>
+                   {children}
+                 </div>
+               </MenuContext.Provider> */}
                 {children}
               </Authorized>
             </>
@@ -635,14 +640,23 @@ const BasicLayout = props => {
             }}>
             <List.Item style={{ padding: '10px 24px', cursor: 'pointer' }}
               onClick={() => {
+                // 重置列表查询条件
                 router.push({
                   pathname: location.pathname,
                   query: location.query,
                   state: { cache: false, reset: true },
                 })
+                // 登记类重置表单信息
+                dispatch({
+                  type: 'viewcache/sendcache',
+                  payload: {
+                    tabdata: undefined,
+                    tabid: activeKey,
+                  },
+                });
               }}>
-              <Icon type="reload" style={{ marginRight: 16 }} />刷新
-            </List.Item>
+              <Icon type="reload" style={{ marginRight: 16 }} />刷新当前页签
+             </List.Item>
             <List.Item style={{ padding: '10px 24px', cursor: 'pointer' }}
               onClick={() => {
                 const target = toptabs.filter(item => item.id === activeKey)[0];
@@ -650,7 +664,7 @@ const BasicLayout = props => {
               }}
             >
               <Icon type="plus-square" style={{ marginRight: 16 }} />关闭其他
-              </List.Item>
+               </List.Item>
             <List.Item style={{ padding: '10px 24px', cursor: 'pointer' }}
               onClick={() => {
                 if (toptabs.length > 1) { setTopTabs([{ ...homepane[0] }]); }
@@ -662,13 +676,13 @@ const BasicLayout = props => {
               }}
             >
               <Icon type="close" style={{ marginRight: 16 }} />关闭全部
-              </List.Item>
+               </List.Item>
             {/* <List.Item style={{ padding: '10px', cursor: 'pointer' }}>
-              <Icon type="vertical-right" style={{ marginRight: 16 }} />关闭左侧所有
-              </List.Item>
-            <List.Item style={{ padding: '10px', cursor: 'pointer' }}>
-              <Icon type="vertical-left" style={{ marginRight: 16 }} /> 关闭右侧所有
-              </List.Item> */}
+               <Icon type="vertical-right" style={{ marginRight: 16 }} />关闭左侧所有
+               </List.Item>
+             <List.Item style={{ padding: '10px', cursor: 'pointer' }}>
+               <Icon type="vertical-left" style={{ marginRight: 16 }} /> 关闭右侧所有
+               </List.Item> */}
           </List>
         </ProLayout>
       </ProLayout >

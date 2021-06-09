@@ -5,7 +5,7 @@ const UserModel = {
   namespace: 'viewcache',
   state: {
     cacheinfo: [],
-    tabnew: false,          // true获取信息
+    tabnew: false,          // true重置登记获取信息
     tabid: '',              // 写入的页签的id 
     savecache: false,       // true可以改变页签state
     tolink: false,          // true可以跳转路由
@@ -29,7 +29,7 @@ const UserModel = {
     *sendcache({ payload: { tabdata, tabid } }, { put }) {
       yield put({
         type: 'send',
-        tabdata: { ...tabdata },
+        tabdata: tabdata === undefined ? undefined : { ...tabdata },
         tabid,
       });
     },
