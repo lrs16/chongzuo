@@ -647,6 +647,7 @@ const BasicLayout = props => {
                   state: { cache: false, reset: true },
                 })
                 // 登记类重置表单信息
+                getcache();
                 dispatch({
                   type: 'viewcache/sendcache',
                   payload: {

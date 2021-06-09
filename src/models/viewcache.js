@@ -67,6 +67,7 @@ const UserModel = {
         ...state,
         tabdata: action.tabdata,
         tabid: action.tabid,
+        //      tabnew: false
       };
     },
     clearcache(state) {
