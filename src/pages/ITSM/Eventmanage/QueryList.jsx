@@ -200,7 +200,6 @@ function QueryList(props) {
       resetFields,
       validateFields,
       setFieldsValue,
-      getFieldsValue,
     },
     location: { query: {
       time1,

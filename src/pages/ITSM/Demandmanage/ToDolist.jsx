@@ -132,7 +132,7 @@ function ToDolist(props) {
     });
     setTabRecord({ ...values, ...newvalue, });
   };
-  console.log(tabrecord)
+
   const onShowSizeChange = (page, size) => {
     validateFields((err, values) => {
       if (!err) {

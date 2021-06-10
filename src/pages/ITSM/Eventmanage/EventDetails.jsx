@@ -142,7 +142,7 @@ function EventDetails(props) {
               expandIconPosition="right"
               activeKey={activeKey}
               bordered={false}
-              onChange={() => callback()}
+              onChange={callback}
             >
               {info.map((obj, index) => {
                 // panel详情组件

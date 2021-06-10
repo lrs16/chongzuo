@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
+import router from 'umi/router';
 import { Form, Card, Tabs, Input, Row, Col, Button, Table } from 'antd';
 import RelationDrawer from './components/RelationDrawer';
 
@@ -21,53 +22,90 @@ function RelevancyOrder(props) {
   const { location, list, dispatch, relation } = props;
   const [activeKey, setActiveKey] = useState('trouble');
   const [visible, setVisible] = useState(false);
-  const [title, setTitle] = useState('')
+  const [title, setTitle] = useState('');
+  const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
 
   const callback = (key) => {
     setActiveKey(key)
   }
 
-  const getlist = () => {
+  const getlist = (pageIndex, pageSize) => {
     dispatch({
       type: 'relationorder/fetcht',
       payload: {
-        orderId: relation ? location.query.orderNo : location.query.No,
+        orderId: location.query.mainId,
         orderType: 'event',
-        pageIndex: 0,
-        pageSize: 15,
+        pageIndex,
+        pageSize,
         relationType: activeKey,
       },
     })
   }
 
-  const handleReset = () => {
-    console.log('重置')
-  }
+  const onShowSizeChange = (page, size) => {
+    getlist(page - 1, size);
+    setPageinations({
+      ...paginations,
+      pageSize: size,
+    });
+  };
+
+  const changePage = page => {
+    getlist(page - 1, paginations.pageSize);
+    setPageinations({
+      ...paginations,
+      current: page,
+    });
+  };
+
+  const pagination = {
+    showSizeChanger: true,
+    onShowSizeChange: (page, size) => onShowSizeChange(page, size),
+    current: paginations.current,
+    pageSize: paginations.pageSize,
+    total: list.total,
+    showTotal: total => `总共  ${total}  条记录`,
+    onChange: page => changePage(page),
+  };
 
   useEffect(() => {
-    getlist()
+    getlist(paginations.current - 1, paginations.pageSize)
   }, [activeKey])
 
   const columns = [
     {
       title: activeKey === 'problem' ? '问题单编号' : '故障单编码',
-      dataIndex: 'name',
-      key: 'name',
+      dataIndex: 'orderNo',
+      key: 'orderNo',
+      // render: (text, record) => {
+      //   const handleClick = () => {
+      //     router.push({
+      //       pathname: `/ITSM/eventmanage/query/details`,
+      //       query: {
+      //         pangekey: record.eventStatus,
+      //         id: record.taskId,
+      //         mainId: record.id,
+      //         No: text,
+      //       },
+      //     });
+      //   };
+      //   return <a onClick={handleClick}>{text}</a>;
+      // },
     },
     {
       title: '标题',
-      dataIndex: 'age',
-      key: 'age',
+      dataIndex: 'title',
+      key: 'title',
     },
     {
       title: '状态',
-      dataIndex: 'address',
-      key: 'address',
+      dataIndex: 'status',
+      key: 'status',
     },
     {
       title: '关联类型',
-      dataIndex: 'address2',
-      key: 'address2',
+      dataIndex: 'relationType',
+      key: 'relationType',
     },
   ];
   return (
@@ -114,7 +152,13 @@ function RelevancyOrder(props) {
           </Col>
         </Row>
       )}
-      <Table style={{ marginTop: 16 }} columns={columns} dataSource={list} />
+      <Table
+        style={{ marginTop: 16 }}
+        columns={columns}
+        dataSource={list.rows}
+        rowKey={r => r.id}
+        pagination={pagination}
+      />
       {relation && visible && (
         <RelationDrawer
           title={`关联${title}单`}
@@ -123,6 +167,7 @@ function RelevancyOrder(props) {
           orderTypePre='event'
           orderTypeSuf={activeKey}
           ChangeVisible={(v) => setVisible(v)}
+          SaveRefresh={() => getlist(0, 15)}
         />
       )}
     </Card>
