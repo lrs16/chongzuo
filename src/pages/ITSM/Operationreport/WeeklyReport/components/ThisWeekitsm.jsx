@@ -13,7 +13,7 @@ import {
   Button
 } from 'antd';
 import SysUpload from '@/components/SysUpload';
-import { queryDisableduserByUser, queryUnitList, queryDeptList } from '@/services/common';
+import { queryOrder, queryUnitList, queryDeptList } from '@/services/common';
 import styles from '../index.less';
 
 const { Search } = Input;
@@ -33,7 +33,10 @@ function ThisWeekitsm(props) {
     form: { getFieldDecorator, setFieldsValue },
     forminladeLayout,
     formItemLayout,
+    thisWeekitsmlist,
     type,
+    eventList,
+    eventArr,
     ChangeFiles,
     searchNumber
   } = props;
@@ -44,26 +47,33 @@ function ThisWeekitsm(props) {
   const [fileslist, setFilesList] = useState([]);
   const [disablelist, setDisabledList] = useState([]);
   const [spinloading, setSpinLoading] = useState(true);
+  const [value, setValue] = useState('event');
 
+    // 初始化把数据传过去
+    useEffect(() => {
+      if (data && data.length) {
+        eventList(data)
+      }
+    }, [data]);
   // 自动完成报障用户
-  const disableduser = disablelist.map(opt => (
-    <Option key={opt.id} value={opt.user} disableuser={opt}>
+  const disableduser = disablelist.map(obj => (
+    <Option key={obj.type} value={obj.content} disableuser={obj}>
       <Spin spinning={spinloading}>
         <div className={styles.disableuser}>
-          <span>{opt.user}</span>
-          {/* <span>{opt.phone}</span>
-            <span>{opt.unit}</span>
-            <span>{opt.dept}</span> */}
+          <span>{obj.type}</span>
+          <span>{obj.content}</span>
         </div>
       </Spin>
     </Option>
+
   ));
 
+
   // 请求报障用户
-  const SearchDisableduser = value => {
-    queryDisableduserByUser({ user: value }).then(res => {
+  const SearchDisableduser = searchvalues => {
+    queryOrder({ key: searchvalues, type: value }).then(res => {
       if (res) {
-        const arr = [...res];
+        const arr = [...res.data];
         setSpinLoading(false);
         setDisabledList(arr);
       }
@@ -73,23 +83,20 @@ function ThisWeekitsm(props) {
   // 选择报障用户，信息回填
   const handleDisableduser = (v, opt,) => {
     const newData = data.map(item => ({ ...item }));
-    const { user } = opt.props.disableuser;
+    const { type, no, content, startTime, endTime, systemName } = opt.props.disableuser;
     const searchObj = {
       key: newData.length + 1,
-      num1:user,
-      isNew:true
+      field1: type,
+      field2: no,
+      field3: systemName,
+      field4: content,
+      field5: no,
+      field6: startTime,
+      field7: endTime,
+      isNew: true
     };
     newData.push(searchObj);
     setData(newData)
-    // // setFieldsValue({
-    // //   num5: 'user',         // 申报人
-    // // });
-    // const target = getRowByKey(key,newData);
-    // console.log('target: ', target);
-    // if(target) {
-    //   target[fieldName] = user;
-    //   setData(newData)
-    // }
   };
 
   const thisWeekitsm = [
@@ -142,7 +149,7 @@ function ThisWeekitsm(props) {
   }
 
   const savedata = (target, id) => {
-    // handleSavethisweek(target)
+    eventList(data)
   }
 
   const saveRow = (e, key) => {
@@ -170,12 +177,17 @@ function ThisWeekitsm(props) {
 
   }
 
+  // console.log(thisWeekitsmlist,'thisWeekitsmlist')
   const handleTabledata = () => {
-    const newarr = thisWeekitsm.map((item, index) => {
-      return Object.assign(item, { editable: true, isNew: false, key: index })
-    })
-    setData(newarr)
+    if (eventArr) {
+      const newarr = eventArr.map((item, index) => {
+        return Object.assign(item, { editable: true, isNew: false, key: index })
+      })
+      setData(newarr)
+    }
   }
+
+
 
   useEffect(() => {
     handleTabledata();
@@ -183,20 +195,15 @@ function ThisWeekitsm(props) {
 
   const column = [
     {
-      title: '序号',
-      dataIndex: 'num1',
-      key: 'num1',
-    },
-    {
       title: '工单类型',
-      dataIndex: 'num2',
-      key: 'num2',
+      dataIndex: 'field1',
+      key: 'field1',
       render: (text, record) => {
         if (record.isNew) {
           return (
             <Select
               defaultValue={text}
-              onChange={e => handleFieldChange(e, 'num2', record.key)}
+              onChange={e => handleFieldChange(e, 'field1', record.key)}
             >
               <Option key='事件' value='事件'>事件</Option>
               <Option key='问题' value='问题'>问题</Option>
@@ -211,14 +218,14 @@ function ThisWeekitsm(props) {
     },
     {
       title: '工单编号',
-      dataIndex: 'num3',
-      key: 'num3',
+      dataIndex: 'field2',
+      key: 'field2',
       render: (text, record) => {
         if (record.isNew) {
           return (
             <Input
               defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'num3', record.key)}
+              onChange={e => handleFieldChange(e.target.value, 'field2', record.key)}
             />
           )
         }
@@ -230,44 +237,33 @@ function ThisWeekitsm(props) {
     },
     {
       title: '应用系统名称',
-      dataIndex: 'num4',
-      key: 'num4',
+      dataIndex: 'field3',
+      key: 'field3',
     },
     {
       title: '具体内容',
-      dataIndex: 'num5',
-      key: 'num5',
-      render: (text, record) => {
-        if (record.isNew) {
-          console.log(text)
-          return (
-            <Input />
-          )
-        }
-        if (record.isNew === false) {
-          return <span>{text}</span>
-        }
-      }
+      dataIndex: 'field4',
+      key: 'field4',
     },
     {
       title: '处理情况',
-      dataIndex: 'num6',
-      key: 'num6',
+      dataIndex: 'field5',
+      key: 'field5',
     },
     {
       title: '开始发生时间',
-      dataIndex: 'num7',
-      key: 'num7',
+      dataIndex: 'field6',
+      key: 'field6',
     },
     {
       title: '处理完成时间',
-      dataIndex: 'num8',
-      key: 'num8',
+      dataIndex: 'field7',
+      key: 'field7',
     },
     {
       title: '故障报告是否提交负责人',
-      dataIndex: 'num9',
-      key: 'num9',
+      dataIndex: 'field8',
+      key: 'field8',
     },
     {
       title: '操作',
@@ -278,7 +274,7 @@ function ThisWeekitsm(props) {
         if (record.isNew === true) {
           return (
             <span>
-              <a onClick={e => saveRow(e, record.key, 'secondTable')}>保存</a>
+              <a onClick={e => saveRow(e, record.key)}>保存</a>
               <Divider type='vertical' />
               <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
                 <a>删除</a>
@@ -307,12 +303,17 @@ function ThisWeekitsm(props) {
   ];
 
 
+  const selectOnchange = (selectvalue) => {
+    setValue(selectvalue);
+  }
+
+
 
   return (
     <>
       <Row gutter={16}>
         <Col span={20}>
-          <p style={{ fontWeight: '900', fontSize: '16px' }}>{type === 'week' ? '四、本周事件、问题及故障':'四、本月事件、问题及故障'}</p>
+          <p style={{ fontWeight: '900', fontSize: '16px' }}>{type === 'week' ? '四、本周事件、问题及故障' : '四、本月事件、问题及故障'}</p>
         </Col>
         <Form {...formItemLayout}>
           <Row gutter={16}>
@@ -321,12 +322,12 @@ function ThisWeekitsm(props) {
                 <Select
                   placeholder="请选择"
                   style={{ width: 150 }}
-                  defaultValue='5'
+                  defaultValue='event'
+                  onChange={selectOnchange}
                 >
-                  <Option value="5">5</Option>
-                  <Option value="10">10</Option>
-                  <Option value="15">15</Option>
-                  <Option value="20">20</Option>
+                  <Option value="event">事件</Option>
+                  <Option value="problem">问题</Option>
+                  <Option value="trouble">故障</Option>
                 </Select>
               </Form.Item>
             </Col>
@@ -337,34 +338,22 @@ function ThisWeekitsm(props) {
                   <>
                     <AutoComplete
                       dataSource={disableduser}
+                      defaultValue='内容'
                       dropdownMatchSelectWidth={false}
-                      dropdownStyle={{ width: 600 }}
+                      dropdownStyle={{ width: 900 }}
                       optionLabelProp="value"
                       onSelect={(v, opt) => handleDisableduser(v, opt)}
                     >
                       <Search
                         placeholder="可输入姓名搜索"
                         onSearch={values => SearchDisableduser(values)}
-                        allowClear
+                      // allowClear
                       />
                     </AutoComplete>,
               </>
                 )}
               </Form.Item>
             </Col>
-{/* 
-            <Col span={8}>
-              <>
-                <Button type="primary">
-                  查询
-                </Button>
-
-                <Button style={{ marginLeft: 8 }}>
-                  重置
-                </Button>
-              </>
-            </Col> */}
-
 
           </Row>
 

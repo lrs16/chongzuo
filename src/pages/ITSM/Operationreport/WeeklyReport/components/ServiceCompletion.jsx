@@ -19,6 +19,8 @@ function ServiceCompletion(props) {
     tabActiveKey,
     serviceCompletionthreelist,
     maintenanceService,
+    statisList,
+    selfhandleRow,
     maintenanceArr,
     soluteArr,
     startTime,
@@ -26,6 +28,35 @@ function ServiceCompletion(props) {
     loading,
     dispatch
   } = props;
+
+// 初始化把软件运维服务指标完成情况数据传过去
+useEffect(() => {
+  // typeList(maintenanceArr)
+  if(maintenanceService && maintenanceService.length) {
+    const result = JSON.parse(JSON.stringify(maintenanceService)
+    .replace(/name/g, 'field1')
+    .replace(/last/g, 'field2')
+    .replace(/now/g, 'field3')
+    .replace(/points/g, 'field4')
+    .replace(/remark/g, 'field5'))
+    if(result) {
+      statisList(result)
+    }
+  }
+}, [maintenanceArr]);
+
+// 一线问题解决情况汇总统计
+useEffect(() => {
+  if(soluteArr && soluteArr.length) {
+    const result = JSON.parse(JSON.stringify([soluteArr[soluteArr.length -1]])
+    .replace(/not_selfhandle/g, 'field1')
+    .replace(/is_selfhandle/g, 'field2')
+    .replace(/points/g, 'field3'))
+    if(result) {
+      selfhandleRow(result)
+    }
+  }
+}, [soluteArr]);
 
 
   const secondlyColumn = [
@@ -129,12 +160,7 @@ function ServiceCompletion(props) {
           <Table
             columns={threeColumn}
             dataSource={[soluteArr[soluteArr.length -1]]}
-          />
-
-
-       
-
-     
+          />      
         </Row>
 
       )}

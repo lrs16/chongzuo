@@ -79,3 +79,11 @@ export async function saveRelation(params) {
     requestType: 'form',
   });
 }
+
+export async function queryOrder(params) {
+  return request(`/report/queryOrder`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+  });
+}

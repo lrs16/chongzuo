@@ -28,6 +28,10 @@ export default {
         payload: response.data,
       });
     },
+    // 周报查询页解决异步影响
+    *fetchuserids(_, { call, put }) {
+      return yield call(ITSMUser);
+    },
     // 加载事件下一环节处理人列表
     *eventuserlist({ payload: { taskId, type } }, { call, put }) {
       const response = yield call(EventFlowUserList, taskId, type);

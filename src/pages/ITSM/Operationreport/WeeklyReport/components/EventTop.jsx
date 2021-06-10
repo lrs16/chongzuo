@@ -21,7 +21,7 @@ let value = 5;
 const { Search } = Input;
 const { Option } = Select;
 
-function WorkOrderTop(props) {
+function EventTop(props) {
   const {
     form: { getFieldDecorator, setFieldsValue,validateFields },
     forminladeLayout,
@@ -30,7 +30,9 @@ function WorkOrderTop(props) {
     endTime,
     topNList,
     ordertopnArr,
-    ChangeFiles,
+    topArr,
+    mainId,
+    loading,
     dispatch
   } = props;
 
@@ -42,25 +44,19 @@ function WorkOrderTop(props) {
   const [spinloading, setSpinLoading] = useState(true);
 
       // 初始化把数据传过去
-// useEffect(() => {
-//   // typeList(maintenanceArr)
-//   if(data && data.length) {
-//     const result = JSON.parse(JSON.stringify(data)
-//     .replace(/num2/g, 'field1')
-//     .replace(/num3/g, 'field2')
-//     .replace(/object/g, 'field3')
-//     .replace(/content/g, 'field4')
-//     .replace(/plannedEndTime/g, 'field5')
-//     .replace(/status/g, 'field6')
-//     .replace(/operationUser/g, 'field7')
-//     .replace(/operationUnit/g, 'field8')
-//     .replace(/remark/g, 'field9')
-//     )
-//     if(result) {
-//       nextOperationList(result)
-//     }
-//   }
-// }, [data]);
+useEffect(() => {
+  // typeList(maintenanceArr)
+  if(data && data.length) {
+    const result = JSON.parse(JSON.stringify(data)
+    .replace(/first_object/g, 'field1')
+    .replace(/second_object/g, 'field2')
+    .replace(/num/g, 'field3')
+    )
+    if(result) {
+      topNList(result)
+    }
+  }
+}, [data]);
   // 自动完成报障用户
   const disableduser = disablelist.map(opt => (
     <Option key={opt.id} value={opt.user} disableuser={opt}>
@@ -146,6 +142,7 @@ function WorkOrderTop(props) {
   }
 
   const savedata = (target, id) => {
+    console.log(data,'data')
     topNList(data)
   }
 
@@ -175,7 +172,7 @@ function WorkOrderTop(props) {
   }
 
   const handleTabledata = () => {
-    const newarr = ordertopnArr.map((item, index) => {
+    const newarr = (topArr?.length?topArr:ordertopnArr).map((item, index) => {
       return Object.assign(item, { editable: true, isNew: false, key: index })
     })
     setData(newarr)
@@ -195,45 +192,25 @@ function WorkOrderTop(props) {
     handleListdata(value);
   }
 
-  console.log(ordertopnArr,'ordertopnArr')
   useEffect(() => {
     handleListdata();
+  }, [])
+
+  useEffect(() => {
     handleTabledata();
   }, [])
 
   const column = [
     {
-      title: '工单类型',
-      dataIndex: 'num2',
-      key: 'num2',
-      render: (text, record) => {
-        if (record.isNew) {
-          return (
-            <Select
-              defaultValue={text}
-              onChange={e => handleFieldChange(e, 'num2', record.key)}
-            >
-              <Option key='事件' value='事件'>事件</Option>
-              <Option key='问题' value='问题'>问题</Option>
-              <Option key='故障' value='故障'>故障</Option>
-            </Select>
-          )
-        }
-        if (record.isNew === false) {
-          return <span>{text}</span>
-        }
-      }
-    },
-    {
-      title: '工单编号',
-      dataIndex: 'num3',
-      key: 'num3',
+      title: '事件对象一级',
+      dataIndex: 'first_object',
+      key: 'first_object',
       render: (text, record) => {
         if (record.isNew) {
           return (
             <Input
               defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'num3', record.key)}
+              onChange={e => handleFieldChange(e.target.value, 'first_object', record.key)}
             />
           )
         }
@@ -243,19 +220,114 @@ function WorkOrderTop(props) {
       }
     },
     {
-      title: '应用系统名称',
-      dataIndex: 'num4',
-      key: 'num4',
-    },
-    {
-      title: '具体内容',
-      dataIndex: 'num5',
-      key: 'num5',
+      title: '事件对象二级',
+      dataIndex: 'second_object',
+      key: 'second_object',
       render: (text, record) => {
         if (record.isNew) {
-          console.log(text)
           return (
-            <Input />
+            <Input
+              defaultValue={text}
+              onChange={e => handleFieldChange(e.target.value, 'second_object', record.key)}
+            />
+          )
+        }
+        if (record.isNew === false) {
+          return <span>{text}</span>
+        }
+
+      }
+    },
+    {
+      title: '事件单数',
+      dataIndex: 'num',
+      key: 'num',
+      render: (text, record) => {
+        if (record.isNew) {
+          return (
+            <Input
+              defaultValue={text}
+              onChange={e => handleFieldChange(e.target.value, 'num', record.key)}
+            />
+          )
+        }
+        if (record.isNew === false) {
+          return <span>{text}</span>
+        }
+
+      }
+    },
+    {
+      title: '措施',
+      dataIndex: 'field4',
+      key: 'field4',
+      render: (text, record) => {
+        if (record.isNew) {
+          return (
+            <Input
+              defaultValue={text}
+              onChange={e => handleFieldChange(e.target.value, 'field4', record.key)}
+            />
+          )
+        }
+        if (record.isNew === false) {
+          return <span>{text}</span>
+        }
+
+      }
+    },
+    {
+      title: '操作',
+      key: 'action',
+      fixed: 'right',
+      width: 120,
+      render: (text, record) => {
+        if(text !== '合计') {
+          if (record.isNew === true) {
+            return (
+              <span>
+                <a onClick={e => saveRow(e, record.key, 'secondTable')}>保存</a>
+                <Divider type='vertical' />
+                <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
+                  <a>删除</a>
+                </Popconfirm>
+              </span>
+            )
+          }
+        }
+        
+
+        return (
+          <span>
+            <a
+              onClick={e => {
+                toggleEditable(e, record.key, record, 'secondTable');
+                // handlefileedit(record.key, record.attachment)
+              }}
+            >编辑</a>
+            <Divider type='vertical' />
+            <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
+              <a>删除</a>
+            </Popconfirm>
+          </span>
+        )
+      }
+
+    }
+  ];
+
+  const editColumns = [
+    {
+      title: '事件对象一级111',
+      dataIndex: 'field1',
+      key: 'field1',
+      render: (text, record) => {
+        if (record.isNew) {
+          return (
+            <Input
+              defaultValue={text}
+              onChange={e => handleFieldChange(e.target.value, 'field1', record.key)}
+            />
           )
         }
         if (record.isNew === false) {
@@ -264,24 +336,61 @@ function WorkOrderTop(props) {
       }
     },
     {
-      title: '处理情况',
-      dataIndex: 'num6',
-      key: 'num6',
+      title: '事件对象二级',
+      dataIndex: 'field2',
+      key: 'field2',
+      render: (text, record) => {
+        if (record.isNew) {
+          return (
+            <Input
+              defaultValue={text}
+              onChange={e => handleFieldChange(e.target.value, 'field2', record.key)}
+            />
+          )
+        }
+        if (record.isNew === false) {
+          return <span>{text}</span>
+        }
+
+      }
     },
     {
-      title: '开始发生时间',
-      dataIndex: 'num7',
-      key: 'num7',
+      title: '事件单数',
+      dataIndex: 'field3',
+      key: 'field3',
+      render: (text, record) => {
+        if (record.isNew) {
+          return (
+            <Input
+              defaultValue={text}
+              onChange={e => handleFieldChange(e.target.value, 'field3', record.key)}
+            />
+          )
+        }
+        if (record.isNew === false) {
+          return <span>{text}</span>
+        }
+
+      }
     },
     {
-      title: '处理完成时间',
-      dataIndex: 'num8',
-      key: 'num8',
-    },
-    {
-      title: '故障报告是否提交负责人',
-      dataIndex: 'num9',
-      key: 'num9',
+      title: '措施',
+      dataIndex: 'field4',
+      key: 'field4',
+      render: (text, record) => {
+        if (record.isNew) {
+          return (
+            <Input
+              defaultValue={text}
+              onChange={e => handleFieldChange(e.target.value, 'field4', record.key)}
+            />
+          )
+        }
+        if (record.isNew === false) {
+          return <span>{text}</span>
+        }
+
+      }
     },
     {
       title: '操作',
@@ -289,17 +398,20 @@ function WorkOrderTop(props) {
       fixed: 'right',
       width: 120,
       render: (text, record) => {
-        if (record.isNew === true) {
-          return (
-            <span>
-              <a onClick={e => saveRow(e, record.key, 'secondTable')}>保存</a>
-              <Divider type='vertical' />
-              <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
-                <a>删除</a>
-              </Popconfirm>
-            </span>
-          )
+        if(text !== '合计') {
+          if (record.isNew === true) {
+            return (
+              <span>
+                <a onClick={e => saveRow(e, record.key, 'secondTable')}>保存</a>
+                <Divider type='vertical' />
+                <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
+                  <a>删除</a>
+                </Popconfirm>
+              </span>
+            )
+          }
         }
+        
 
         return (
           <span>
@@ -324,13 +436,9 @@ function WorkOrderTop(props) {
   return (
     <>
       <Row gutter={16}>
-        {/* <Col span={20}>
-          <p style={{ fontWeight: '900', fontSize: '16px' }}>（三）工单TopN 事件分析</p>
-        </Col> */}
         <Col span={24}>
-          <p>（三）工单TopN 事件分析</p>
+          <p>（三）工单TopN 事件分析111</p>
         </Col>
-
 
         <Form {...formItemLayout}>
           <Row gutter={16}>
@@ -349,17 +457,13 @@ function WorkOrderTop(props) {
                 </Select>
               </Form.Item>
             </Col>
-
           </Row>
-
         </Form>
 
         <Table
-          columns={column}
+          columns={mainId?editColumns:column}
           dataSource={data}
         />
-
-
       </Row>
 
     </>
@@ -368,7 +472,8 @@ function WorkOrderTop(props) {
 
 
 export default Form.create({})(
-  connect(({eventstatistics}) => ({
+  connect(({eventstatistics,loading}) => ({
     ordertopnArr: eventstatistics.ordertopnArr,
-  }))(WorkOrderTop)
+    loading:loading.models.eventstatistics
+  }))(EventTop)
 )

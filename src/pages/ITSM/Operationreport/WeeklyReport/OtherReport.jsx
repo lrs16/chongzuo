@@ -16,29 +16,8 @@ import Link from 'umi/link';
 import moment from 'moment';
 import router from 'umi/router';
 import { connect } from 'dva';
-import Development from './components/Development';
-import ThisweekMaintenance from './components/ThisweekMaintenance';
-import ServiceCompletion from './components/ServiceCompletion';
-import ThisWeekitsm from './components/ThisWeekitsm';
-import SoftCompletion from './components/SoftCompletion';
-import RemainingDefects from './components/RemainingDefects';
-import LastweekHomework from './components/LastweekHomework';
-import NextweekHomework from './components/NextweekHomework';
-import ServiceTableone from './components/ServiceTableone';
-import styles from './index.less';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import SysUpload from '@/components/SysUpload';
-
-const forminladeLayout = {
-  labelCol: {
-    xs: { span: 24 },
-    sm: { span: 7 },
-  },
-  wrapperCol: {
-    xs: { span: 24 },
-    sm: { span: 17 },
-  },
-};
 
 const formItemLayout = {
   labelCol: {
@@ -66,15 +45,16 @@ const { TextArea } = Input;
 let startTime;
 let monthStarttime;
 let endTime;
+let isNew = false;
 function OtherReport(props) {
   const pagetitle = props.route.name;
   const {
     form: { getFieldDecorator, validateFields, setFieldsValue },
     match: { params: { id } },
+    location: { query: { type } },
     dispatch,
     loading,
   } = props;
-  let tabActiveKey = 'week';
 
 
   const required = true;
@@ -89,11 +69,13 @@ function OtherReport(props) {
   const [data, setData] = useState([]);
   const [fileslist, setFilesList] = useState([]);
   const [expand, setExpand] = useState(false);
-  
-  useEffect(() => {
-    const resultColumns = [...initiacColumn]
-    setColumns([...resultColumns])
-  }, [])
+  const [newbutton, setNewButton] = useState(false);
+  const [tableHead, setTableHead] = useState(0);
+
+  // useEffect(() => {
+  //   const resultColumns = [...initiacColumn]
+  //   setColumns([...resultColumns])
+  // }, [])
 
   const titleNumber = (index) => {
     return `标题${9 + index}`
@@ -129,9 +111,6 @@ function OtherReport(props) {
     router.push('/ITSM/operationreport/weeklyreport/myweeklyreport');
   }
 
-  console.log(loading,startTime)
-
-
 
   const onChange = () => {
     validateFields((err, value) => {
@@ -149,12 +128,13 @@ function OtherReport(props) {
   const addTable = (index) => {
     const nowNumber = addTitle.map(item => ({ ...item }));
     nowNumber[index].tableNumber.push({ columns: 'aa' });
-    console.log('nowNumber: ', nowNumber);
     setAddTitle(nowNumber);
+    setData([])
   }
 
   // 新增一条记录
-  const handleAddrows = (params) => {
+  const handleAddrows = (tableIndex) => {
+     const isNew = `isNew${tableIndex}`;
     setFilesList([]);
     // setKeyUpload('');
     const newData = (data).map(item => ({ ...item }));
@@ -168,7 +148,7 @@ function OtherReport(props) {
       isNew: true
     });
     setData(newData);
-    // setNewButton(true);
+    setNewButton(true);
   };
 
 
@@ -238,10 +218,9 @@ function OtherReport(props) {
     savedata(target, id);
     if (target.isNew) {
       target.isNew = false;
-      // setNewButton(false);
+      setNewButton(false);
     }
   }
-
 
   const handleFieldChange = (e, fieldName, key) => {
     const newData = data.map(item => ({ ...item }));
@@ -370,6 +349,121 @@ function OtherReport(props) {
     }
   ];
 
+  const initiacColumns = [
+    {
+      title: '测试表头1',
+      dataIndex: 'addTime11',
+      key: 'addTime11',
+      width: 150,
+      render: (text, record) => {
+        if (record.isNew) {
+          return (
+            <Input
+              defaultValue={text}
+              onChange={e => handleFieldChange(e.target.value, 'addTime1', record.key)}
+            />
+          )
+        }
+        if (record.isNew === false) {
+          return <span>{text}</span>
+        }
+      }
+    },
+    {
+      title: '测试表头2',
+      dataIndex: 'addTime21',
+      key: 'addTime21',
+      width: 150,
+      render: (text, record) => {
+        if (record.isNew) {
+          return (
+            <Input
+              defaultValue={text}
+              onChange={e => handleFieldChange(e.target.value, 'addTime2', record.key)}
+            />
+          )
+        }
+        if (record.isNew === false) {
+          return <span>{text}</span>
+        }
+      }
+    },
+    {
+      title: '测试表头3',
+      dataIndex: 'addTime31',
+      key: 'addTime31',
+      width: 150,
+      render: (text, record) => {
+        if (record.isNew) {
+          return (
+            <Input
+              defaultValue={text}
+              onChange={e => handleFieldChange(e.target.value, 'addTime3', record.key)}
+            />
+          )
+        }
+        if (record.isNew === false) {
+          return <span>{text}</span>
+        }
+      }
+    },
+    {
+      title: '测试表头4',
+      dataIndex: 'addTime41',
+      key: 'addTime41',
+      width: 150,
+      render: (text, record) => {
+        if (record.isNew) {
+          return (
+            <Input
+              defaultValue={text}
+              onChange={e => handleFieldChange(e.target.value, 'addTime4', record.key)}
+            />
+          )
+        }
+        if (record.isNew === false) {
+          return <span>{text}</span>
+        }
+      }
+    },
+    {
+      title: '操作',
+      key: 'action',
+      fixed: 'right',
+      width: 120,
+      render: (text, record) => {
+        // if (record.editable) {
+        if (record.isNew === true) {
+          return (
+            <span>
+              <a onClick={e => saveRow(e, record.key)}>保存</a>
+              <Divider type='vertical' />
+              <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
+                <a>删除</a>
+              </Popconfirm>
+            </span>
+          )
+        }
+        // }
+
+        return (
+          <span>
+            <a
+              onClick={e => {
+                toggleEditable(e, record.key, record);
+                // handlefileedit(record.key, record.attachment)
+              }}
+            >编辑</a>
+            <Divider type='vertical' />
+            <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
+              <a>删除</a>
+            </Popconfirm>
+          </span>
+        )
+      }
+    }
+  ];
+
   return (
     <PageHeaderWrapper
       title={pagetitle}
@@ -384,17 +478,17 @@ function OtherReport(props) {
       }
     >
       <Card>
-        { startTime && (
+        {startTime && (
           <Row gutter={16}>
             <Form {...formItemLayout}>
 
               <Col span={8}>
-                <Form.Item label='周报名称'>
+                <Form.Item label={type === 'week' ? '周报名称' : '月报名称'}>
                   {getFieldDecorator('name', {
                     rules: [
                       {
                         required,
-                        message: '请输入周报名称'
+                        message: '请输入名称'
                       }
                     ]
                   })
@@ -407,7 +501,7 @@ function OtherReport(props) {
               <Col span={8}>
                 <Form.Item label='起始时间'>
                   {getFieldDecorator('time1', {
-                    initialValue: [moment(startTime), moment(endTime)]
+                    initialValue: ''
                   })(<RangePicker
                     allowClear={false}
                     // disabledDate={startdisabledDate}
@@ -510,30 +604,19 @@ function OtherReport(props) {
                         <Button
                           type='primary'
                           onClick={() => addTable(index)}
+                          disabled={newbutton}
                         >添加表格</Button>
-                        {/* </Col> */}
-
-                        {/* <Col span={24} style={{ textAlign: 'right' }}> */}
-
-                        {/* <Button
-                        type='primary'
-                      >添加列</Button> */}
-
+                        <span>注:第一行数据将作为您的表头</span>
                       </div>
 
                       {
-                        (addTitle[index].tableNumber).map((items,tableIndex) => {
+                        (addTitle[index].tableNumber).map((items, tableIndex) => {
+                          // console.log(tableIndex === 0,'lll')
                           return (
                             <>
                               <>
-                                <Button
-                                  style={{marginTop:10}}
-                                  onClick={() => handleAddrows(index)}
-                                  type='primary'
-                                >添加行</Button>
                                 <div style={{ display: 'flex' }}>
                                   <Col span={22}>
- 
                                     <Table
                                       columns={initiacColumn}
                                       dataSource={data}
@@ -547,7 +630,16 @@ function OtherReport(props) {
                                       onClick={() => removeTable(index, tableIndex)}
                                     />
                                   </Col>
+
                                 </div>
+                                <Button
+                                  style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
+                                  onClick={() => handleAddrows(tableIndex)}
+                                  type='primary'
+                                  ghost
+                                  icon="plus"
+                                  disabled={newbutton}
+                                >添加行</Button>
 
                               </>
 

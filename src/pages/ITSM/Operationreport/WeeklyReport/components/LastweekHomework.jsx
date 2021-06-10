@@ -21,6 +21,9 @@ function LastweekHomework(props) {
     forminladeLayout,
     startTime,
     endTime,
+    operationList,
+    operationArr,
+    mainId,
     type,
     dispatch,
     loading
@@ -29,6 +32,26 @@ function LastweekHomework(props) {
   const [data, setData] = useState([]);
   const [cacheOriginData, setcacheOriginData] = useState({});
 
+  // 初始化把软件运维服务指标完成情况数据传过去
+useEffect(() => {
+  // typeList(maintenanceArr)
+  // if(data && data.length) {
+    const result = JSON.parse(JSON.stringify(data)
+    .replace(/updateTime/g, 'field1')
+    .replace(/nature/g, 'field2')
+    .replace(/object/g, 'field3')
+    .replace(/content/g, 'field4')
+    .replace(/plannedEndTime/g, 'field5')
+    .replace(/status/g, 'field6')
+    .replace(/operationUser/g, 'field7')
+    .replace(/operationUnit/g, 'field8')
+    .replace(/remark/g, 'field9')
+    )
+    if(result) {
+      operationList(result)
+    }
+  // }
+}, [data]);
   //  获取行  
   const getRowByKey = (key, newData) => {
     return (newData || data).filter(item => item.key === key)[0];
@@ -66,7 +89,18 @@ function LastweekHomework(props) {
   }
 
   const savedata = (target, id) => {
-    // handleSavethisweek(target)
+    const result = JSON.parse(JSON.stringify(data)
+    .replace(/updateTime/g, 'field1')
+    .replace(/nature/g, 'field2')
+    .replace(/object/g, 'field3')
+    .replace(/content/g, 'field4')
+    .replace(/plannedEndTime/g, 'field5')
+    .replace(/status/g, 'field6')
+    .replace(/operationUser/g, 'field7')
+    .replace(/operationUnit/g, 'field8')
+    .replace(/remark/g, 'field9')
+    )
+    operationList(result)
   }
 
   const saveRow = (e, key) => {
@@ -92,36 +126,44 @@ function LastweekHomework(props) {
 
 
   const getTobolist = () => {
-     return dispatch({
-      type: 'processmodel/weekmyTasklist',
-      payload: {
-        time1:startTime,
-        time2:endTime,
-        pageIndex: paginations.current,
-        pageSize: paginations.pageSize,
-      },
-    }).then(res => {
-      if(res.code === 200 && res.data) {
-        const newarr = (res.data.rows).map((item, index) => {
-          return Object.assign(item, { editable: true, isNew: false, key: index })
-        })
-        setData(newarr)
-      } else {
-        message.error('请求失败')
-      }
-    });
+    if(mainId) {
+      const newarr = operationArr.map((item, index) => {
+        return Object.assign(item, { editable: true, isNew: false, key: index })
+      })
+      setData(newarr)
+    } else {
+      return dispatch({
+        type: 'processmodel/weekmyTasklist',
+        payload: {
+          time1:startTime,
+          time2:endTime,
+          pageIndex: paginations.current,
+          pageSize: paginations.pageSize,
+        },
+      }).then(res => {
+        if(res.code === 200 && res.data) {
+          const newarr = (res.data.rows).map((item, index) => {
+            return Object.assign(item, { editable: true, isNew: false, key: index })
+          })
+          setData(newarr)
+        } else {
+          message.error('请求失败')
+        }
+      });
+    }
   };
+
 
   useEffect(() => {
     getTobolist();
   }, [])
 
   const column = [
-    {
-      title: '序号',
-      dataIndex: 'yy11',
-      key: 'yy11'
-    },
+    // {
+    //   title: '序号',
+    //   dataIndex: 'yy11',
+    //   key: 'yy11'
+    // },
     {
       title: '作业日期',
       dataIndex: 'updateTime',
@@ -328,22 +370,232 @@ function LastweekHomework(props) {
   ];
 
 
+  const editColumns = [
+    // {
+    //   title: '序号',
+    //   dataIndex: 'yy11',
+    //   key: 'yy11'
+    // },
+    {
+      title: '作业日期',
+      dataIndex: 'field1',
+      key: 'field1',
+      render: (text, record) => {
+        if (record.isNew) {
+          return (
+            <Input
+              defaultValue={text}
+              onChange={e => handleFieldChange(e.target.value, 'field1', record.key)}
+            />
+          )
+        }
+        if (record.isNew === false) {
+          return <span>{text}</span>
+        }
+
+      }
+    },
+    {
+      title: '作业性质',
+      dataIndex: 'field2',
+      key: 'field2',
+      render: (text, record) => {
+        if (record.isNew) {
+          return (
+            <Input
+              defaultValue={text}
+              onChange={e => handleFieldChange(e.target.value, 'field2', record.key)}
+            />
+          )
+        }
+        if (record.isNew === false) {
+          return <span>{text}</span>
+        }
+
+      }
+    },
+    {
+      title: '作业对象',
+      dataIndex: 'field3',
+      key: 'field3',
+      render: (text, record) => {
+        if (record.isNew) {
+          return (
+            <Input
+              defaultValue={text}
+              onChange={e => handleFieldChange(e.target.value, 'field3', record.key)}
+            />
+          )
+        }
+        if (record.isNew === false) {
+          return <span>{text}</span>
+        }
+
+      }
+    },
+    {
+      title: '作业内容',
+      dataIndex: 'field4',
+      key: 'field4',
+      render: (text, record) => {
+        if (record.isNew) {
+          return (
+            <Input
+              defaultValue={text}
+              onChange={e => handleFieldChange(e.target.value, 'field4', record.key)}
+            />
+          )
+        }
+        if (record.isNew === false) {
+          return <span>{text}</span>
+        }
+
+      }
+    },
+    {
+      title: '计划完成时间',
+      dataIndex: 'field5',
+      key: 'field5',
+      render: (text, record) => {
+        if (record.isNew) {
+          return (
+            <Input
+              defaultValue={text}
+              onChange={e => handleFieldChange(e.target.value, 'field5', record.key)}
+            />
+          )
+        }
+        if (record.isNew === false) {
+          return <span>{text}</span>
+        }
+
+      }
+    },
+    {
+      title: '完成进度',
+      dataIndex: 'field6',
+      key: 'field6',
+      render: (text, record) => {
+        if (record.isNew) {
+          return (
+            <Input
+              defaultValue={text}
+              onChange={e => handleFieldChange(e.target.value, 'field6', record.key)}
+            />
+          )
+        }
+        if (record.isNew === false) {
+          return <span>{text}</span>
+        }
+
+      }
+    },
+    {
+      title: '作业负责人',
+      dataIndex: 'field7',
+      key: 'field7',
+      render: (text, record) => {
+        if (record.isNew) {
+          return (
+            <Input
+              defaultValue={text}
+              onChange={e => handleFieldChange(e.target.value, 'field7', record.key)}
+            />
+          )
+        }
+        if (record.isNew === false) {
+          return <span>{text}</span>
+        }
+      }
+    },
+    {
+      title: '作业单位',
+      dataIndex: 'field8',
+      key: 'field8',
+      render: (text, record) => {
+        if (record.isNew) {
+          return (
+            <Input
+              defaultValue={text}
+              onChange={e => handleFieldChange(e.target.value, 'field8', record.key)}
+            />
+          )
+        }
+        if (record.isNew === false) {
+          return <span>{text}</span>
+        }
+      }
+    },
+    {
+      title: '备注',
+      dataIndex: 'field9',
+      key: 'field9',
+      render: (text, record) => {
+        if (record.isNew) {
+          return (
+            <Input
+              defaultValue={text}
+              onChange={e => handleFieldChange(e.target.value, 'field9', record.key)}
+            />
+          )
+        }
+        if (record.isNew === false) {
+          return <span>{text}</span>
+        }
+      }
+    },
+    {
+      title: '操作',
+      key: 'action',
+      fixed: 'right',
+      width: 120,
+      render: (text, record) => {
+        if (record.isNew === true) {
+          return (
+            <span>
+              <a onClick={e => saveRow(e, record.key)}>保存</a>
+              <Divider type='vertical' />
+              <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
+                <a>删除</a>
+              </Popconfirm>
+            </span>
+          )
+        }
+
+        return (
+          <span>
+            <a
+              onClick={e => {
+                toggleEditable(e, record.key, record);
+                // handlefileedit(record.key, record.attachment)
+              }}
+            >编辑</a>
+            <Divider type='vertical' />
+            <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
+              <a>删除</a>
+            </Popconfirm>
+          </span>
+        )
+      }
+
+    }
+  ];
+
+
 
   return (
     <>
-      { loading === false  && (
         <Row gutter={16}>
           <Col span={20}>
             <p style={{ fontWeight: '900', fontSize: '16px' }}>{type === 'week'?'七、上周作业完成情况':'七、上月作业完成情况'}</p>
           </Col>
 
           <Table
-            columns={column}
+            columns={mainId?editColumns:column}
             dataSource={data}
           />
 
         </Row>
-      )}
 
     </>
   )

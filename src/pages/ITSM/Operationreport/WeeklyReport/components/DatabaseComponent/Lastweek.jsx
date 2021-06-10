@@ -22,6 +22,7 @@ function Lastweek(props) {
     myTaskplanlist,
     startTime,
     endTime,
+    type,
     dispatch,
     loading
   } = props;
@@ -330,16 +331,15 @@ function Lastweek(props) {
   return (
     <>
       { loading === false && data && data.length > 0  && (
-        <Row gutter={16}><dt></dt>
+        <Row gutter={16}>
           <Col span={20}>
-            <p style={{ fontWeight: '900', fontSize: '16px' }}>四、上周作业完成情况</p>
+            <p style={{ fontWeight: '900', fontSize: '16px' }}>{type === 'week'?'四、上周作业完成情况':'四、上月作业完成情况'}</p>
           </Col>
 
           <Table
             columns={column}
             dataSource={data}
           />
-
         </Row>
       )}
 

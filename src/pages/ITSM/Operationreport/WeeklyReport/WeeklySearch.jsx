@@ -329,81 +329,30 @@ function WeeklySearch(props) {
               </Form.Item>
             </Col>
 
-            {expand === true && (
-              <>
-                <Col span={9} {...form10ladeLayout}>
-                  <Form.Item label="计划开始时间">
-                    {getFieldDecorator('plannedStartTime', {
-                    })
-                      (
-                        <RangePicker
-                          showTime
-                          format="YYYY-MM-DD HH:mm:ss"
-                        />
-                      )}
-                  </Form.Item>
-                </Col>
-
-              </>
-            )}
-
-            {expand === false && (
-              <Col span={24} style={{ textAlign: 'right' }}>
-                <Button type="primary" onClick={handleSearch}>
-                  查询
-                </Button>
-
-                <Button style={{ marginLeft: 8 }} onClick={handleReset}>
-                  重置
-                </Button>
-
-                <Button
-                  style={{ marginLeft: 8 }}
-                  type="link"
-                  onClick={() => {
-                    setExpand(!expand);
-                  }}
-                >
-                  {expand ? (
-                    <>
-                      关闭 <UpOutlined />
-                    </>
-                  ) : (
-                    <>
-                      展开 <DownOutlined />
-                    </>
+            <Col span={8}>
+              <Form.Item label="填报日期">
+                {getFieldDecorator('plannedStartTime', {
+                })
+                  (
+                    <RangePicker
+                      showTime
+                      format="YYYY-MM-DD HH:mm:ss"
+                      style={{width:'100%'}}
+                    />
                   )}
-                </Button>
-              </Col>
-            )}
+              </Form.Item>
+            </Col>
 
-            {expand === true && (
-              <Col span={24} style={{ textAlign: 'right' }}>
-                <Button type="primary" onClick={handleSearch}>
-                  查询
+            <Col span={16} style={{ textAlign: 'right' }}>
+              <Button type="primary" onClick={handleSearch}>
+                查询
                 </Button>
-                <Button style={{ marginLeft: 8 }} onClick={handleReset}>
-                  重置
+
+              <Button style={{ marginLeft: 8 }} onClick={handleReset}>
+                重置
                 </Button>
-                <Button
-                  style={{ marginLeft: 8 }}
-                  type="link"
-                  onClick={() => {
-                    setExpand(!expand);
-                  }}
-                >
-                  {expand ? (
-                    <>
-                      关闭 <UpOutlined />
-                    </>
-                  ) : (
-                    <>
-                      展开 <DownOutlined />
-                    </>
-                  )}
-                </Button>
-              </Col>
-            )}
+            </Col>
+
           </Form>
         </Row>
 

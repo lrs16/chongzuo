@@ -40,6 +40,7 @@ const TaskExecute = React.forwardRef((props, ref) => {
     taskResult
   } = props;
 
+
   useEffect(() => {
     ChangeFiles(fileslist);
   }, [fileslist]);

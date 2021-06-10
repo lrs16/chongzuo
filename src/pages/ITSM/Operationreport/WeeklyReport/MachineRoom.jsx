@@ -19,7 +19,7 @@ import Development from './components/Development';
 import ThisweekMaintenance from './components/ThisweekMaintenance';
 import ServiceCompletion from './components/ServiceCompletion';
 import ThisWeekitsm from './components/ThisWeekitsm';
-import SoftCompletion from './components/SoftCompletion';
+// import SoftCompletion from './components/SoftCompletion';
 import RemainingDefects from './components/RemainingDefects';
 import LastweekHomework from './components/LastweekHomework';
 import NextweekHomework from './components/NextweekHomework';
@@ -754,13 +754,13 @@ function MachineRoom(props) {
               </Col>
 
               {/* 五、软件作业完成情况 */}
-              <Col span={24}>
+              {/* <Col span={24}>
                 <SoftCompletion
                   forminladeLayout={forminladeLayout}
                   softCompletionlist={softCompletionlist}
                   completionsecondTablelist={completionsecondTablelist}
                 />
-              </Col>
+              </Col> */}
 
 
               <Col span={24}>

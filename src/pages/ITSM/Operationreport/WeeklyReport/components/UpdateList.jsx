@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useImperativeHandle, useState } from 'react';
+import React, { useEffect, useImperativeHandle, useContext, useState } from 'react';
 import {
   Table,
   Form,
@@ -13,13 +13,15 @@ import { connect } from 'dva';
 import SysUpload from '@/components/SysUpload';
 
 const { TextArea } = Input;
-function WeeklyMeeting(props) {
+function UpgradeList(props) {
 
   const {
     form: { getFieldDecorator },
-    forminladeLayout,
-    meetingSummaryList,
-    type
+    updateList,
+    updateArr,
+    startTime,
+    endTime,
+    dispatch
   } = props;
   const [data, setData] = useState([]);
   const [seconddata, setSeconddata] = useState([]);
@@ -28,6 +30,13 @@ function WeeklyMeeting(props) {
   const [fileslist, setFilesList] = useState([]);
   const [newbutton, setNewButton] = useState(false);
 
+  // 初始化把数据传过去
+  useEffect(() => {
+    if (data && data.length) {
+      updateList(data)
+    }
+  }, [data]);
+
   // 新增一条记录
   const newMember = (params) => {
     setFilesList([]);
@@ -35,11 +44,11 @@ function WeeklyMeeting(props) {
     const newData = (data).map(item => ({ ...item }));
     newData.push({
       key: data.length + 1,
-      id: '',
-      dd11: '新增数据',
-      dd22: '',
-      dd33: 'dd',
-      dd44: '',
+      field1: '新增数据',
+      field2: '',
+      field3: '',
+      field4: '',
+      field5: '',
     });
     setData(newData);
     setNewButton(true);
@@ -53,6 +62,17 @@ function WeeklyMeeting(props) {
   //  删除数据
   const remove = key => {
     const target = getRowByKey(key) || {};
+    // dispatch({
+    //   type: 'chacklist/trackdelete',
+    //   payload: {
+    //     id: target.id,
+    //   },
+    // }).then(res => {
+    //   if (res.code === 200) {
+    //     message.success(res.msg, 2);
+    //     getlistdata();
+    //   }
+    // });
   };
 
   // 编辑记录
@@ -82,7 +102,7 @@ function WeeklyMeeting(props) {
   }
 
   const savedata = (target, id) => {
-    meetingSummaryList(data)
+    updateList(data)
   }
 
   const saveRow = (e, key) => {
@@ -108,16 +128,21 @@ function WeeklyMeeting(props) {
   }
 
   const handleTabledata = () => {
-    const newarr = [].map((item, index) => {
+    const newarr = updateArr.map((item, index) => {
       return Object.assign(item, { editable: true, isNew: false, key: index })
     })
     setData(newarr)
   }
 
 
+
+  useEffect(() => {
+    handleTabledata()
+  }, [])
+
   const column = [
     {
-      title: '工作内容',
+      title: '日期',
       dataIndex: 'field1',
       key: 'field1',
       render: (text, record) => {
@@ -135,7 +160,7 @@ function WeeklyMeeting(props) {
       }
     },
     {
-      title: '完成情况',
+      title: '工作项',
       dataIndex: 'field2',
       key: 'field2',
       render: (text, record) => {
@@ -153,7 +178,7 @@ function WeeklyMeeting(props) {
       }
     },
     {
-      title: '备注',
+      title: '工作内容',
       dataIndex: 'field3',
       key: 'field3',
       render: (text, record) => {
@@ -171,12 +196,29 @@ function WeeklyMeeting(props) {
       }
     },
     {
+      title: '完成情况',
+      dataIndex: 'field4',
+      key: 'field4',
+      render: (text, record) => {
+        if (record.isNew) {
+          return (
+            <Input
+              defaultValue={text}
+              onChange={e => handleFieldChange(e.target.value, 'field4', record.key)}
+            />
+          )
+        }
+        if (record.isNew === false) {
+          return <span>{text}</span>
+        }
+      }
+    },
+    {
       title: '操作',
       key: 'action',
       fixed: 'right',
       width: 120,
       render: (text, record) => {
-        // if (record.editable) {
         if (record.isNew === true) {
           return (
             <span>
@@ -188,7 +230,6 @@ function WeeklyMeeting(props) {
             </span>
           )
         }
-        // }
 
         return (
           <span>
@@ -207,19 +248,21 @@ function WeeklyMeeting(props) {
       }
 
     }
-
   ];
 
-  useEffect(() => {
-    handleTabledata();
-  }, [])
 
+  // useEffect(() => {
+  //   if(loading === false) {
+  //     handleTabledata()
+  //   }
+  // },[loading])
 
   return (
     <>
       <Row gutter={16}>
-        <Col span={20}>
-          <p style={{ fontWeight: '900', fontSize: '16px' }}>{type === 'week' ? '5 周例会会议纪要完成情况':'5 月例会会议纪要完成情况'}</p>
+
+        <Col span={24}>
+          <p>计划{startTime}至{endTime},计量自动化系统开展 次发布变更（消缺），变更内容如下</p>
         </Col>
 
         <Table
@@ -242,4 +285,12 @@ function WeeklyMeeting(props) {
   )
 }
 
-export default Form.create({})(WeeklyMeeting)
+// export default Form.create({})(ServiceCompletion)
+export default Form.create({})(
+  connect(({ eventstatistics, loading }) => ({
+    maintenanceService: eventstatistics.maintenanceService,
+    maintenanceArr: eventstatistics.maintenanceArr,
+    soluteArr: eventstatistics.soluteArr,
+    loading: loading.models.eventstatistics
+  }))(UpgradeList),
+);

@@ -20,7 +20,7 @@ function InspectionSummary(props) {
   const {
     form: { getFieldDecorator },
     forminladeLayout,
-    remainingDefectslist
+    materialsList
   } = props;
   const [data, setData] = useState([]);
   const [seconddata, setSeconddata] = useState([]);
@@ -29,6 +29,14 @@ function InspectionSummary(props) {
   const [fileslist, setFilesList] = useState([]);
   const [newbutton, setNewButton] = useState(false);
 
+
+  // 初始化把数据传过去
+  useEffect(() => {
+    if (data && data.length) {
+      materialsList(data)
+    }
+  }, [data]);
+
   // 新增一条记录
   const newMember = (params) => {
     setFilesList([]);
@@ -36,11 +44,9 @@ function InspectionSummary(props) {
     const newData = (data).map(item => ({ ...item }));
     newData.push({
       key: data.length + 1,
-      id: '',
-      dd11: '新增数据',
-      dd22: '',
-      dd33: 'dd',
-      dd44: '',
+      field1: '',
+      field2: '',
+      field3: '',
     });
     setData(newData);
     setNewButton(true);
@@ -94,6 +100,7 @@ function InspectionSummary(props) {
   }
 
   const savedata = (target, id) => {
+    materialsList(data)
   }
 
   const saveRow = (e, key) => {
@@ -119,7 +126,7 @@ function InspectionSummary(props) {
   }
 
   const handleTabledata = () => {
-    const newarr = remainingDefectslist.map((item, index) => {
+    const newarr = [].map((item, index) => {
       return Object.assign(item, { editable: true, isNew: false, key: index })
     })
     setData(newarr)
@@ -127,34 +134,34 @@ function InspectionSummary(props) {
 
 
   const column = [
-    {
-      title: '序号',
-      dataIndex: 'dd11',
-      key: 'dd11',
-      render: (text, record) => {
-        if (record.isNew) {
-          return (
-            <Input
-              defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'dd11', record.key)}
-            />
-          )
-        }
-        if (record.isNew === false) {
-          return <span>{text}</span>
-        }
-      }
-    },
+    // {
+    //   title: '序号',
+    //   dataIndex: 'field1',
+    //   key: 'field1',
+    //   render: (text, record) => {
+    //     if (record.isNew) {
+    //       return (
+    //         <Input
+    //           defaultValue={text}
+    //           onChange={e => handleFieldChange(e.target.value, 'field1', record.key)}
+    //         />
+    //       )
+    //     }
+    //     if (record.isNew === false) {
+    //       return <span>{text}</span>
+    //     }
+    //   }
+    // },
     {
       title: '材料名称',
-      dataIndex: 'dd22',
-      key: 'dd22',
+      dataIndex: 'field1',
+      key: 'field1',
       render: (text, record) => {
         if (record.isNew) {
           return (
             <Input
               defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'dd22', record.key)}
+              onChange={e => handleFieldChange(e.target.value, 'field1', record.key)}
             />
           )
         }
@@ -165,14 +172,14 @@ function InspectionSummary(props) {
     },
     {
       title: '是否提交',
-      dataIndex: 'dd33',
-      key: 'dd33',
+      dataIndex: 'field2',
+      key: 'field2',
       render: (text, record) => {
         if (record.isNew) {
           return (
             <Select
               defaultValue={text}
-              onChange={e => handleFieldChange(e, 'dd33', record.key)}
+              onChange={e => handleFieldChange(e, 'field2', record.key)}
             >
               <Option value="是">是</Option>
               <Option value="否">否</Option>
@@ -233,7 +240,7 @@ function InspectionSummary(props) {
     <>
       <Row gutter={16}>
         <Col span={20}>
-          <p style={{ fontWeight: '900', fontSize: '16px' }}>2 巡检汇总</p>
+          <p>(2)运维材料提交情况</p>
         </Col>
 
         <Table

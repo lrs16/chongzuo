@@ -10,18 +10,21 @@ import {
   Table,
   Popconfirm,
   Divider,
-  Icon
+  Icon,
 } from 'antd';
 import Link from 'umi/link';
 import moment from 'moment';
 import router from 'umi/router';
 import { connect } from 'dva';
-import DatabaseInspectionsummary from './components/DatabaseComponent/DatabaseInspectionsummary';
-import DatabaseInspectionthird from './components/DatabaseComponent/DatabaseInspectionthird';
-import QuestionsComments from './components/DatabaseComponent/QuestionsComments';
-import Lastweek from './components/DatabaseComponent/Lastweek';
-import Nextweek from './components/DatabaseComponent/Nextweek';
-
+import Development from './components/Development';
+import ThisweekMaintenance from './components/ThisweekMaintenance';
+import ServiceCompletion from './components/ServiceCompletion';
+import ThisWeekitsm from './components/ThisWeekitsm';
+import RemainingDefects from './components/RemainingDefects';
+import LastweekHomework from './components/LastweekHomework';
+import NextweekHomework from './components/NextweekHomework';
+import ServiceTableone from './components/ServiceTableone';
+import WorkOrderTop from './components/WorkOrderTop';
 import styles from './index.less';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import SysUpload from '@/components/SysUpload';
@@ -58,18 +61,19 @@ const formincontentLayout = {
   },
 };
 
-const { RangePicker,MonthPicker } = DatePicker;
+const { RangePicker, MonthPicker } = DatePicker;
 const { TextArea } = Input;
 let startTime;
 let monthStarttime;
 let endTime;
-function DatabaseReport(props) {
+function SoftReport(props) {
   const pagetitle = props.route.name;
   const {
     form: { getFieldDecorator, validateFields, setFieldsValue },
-    match: { params: { id } },
-    location: { query: { type } },
+    match: { params: { mainId } },
+    location: { query: { type, editStatus } },
     dispatch,
+    // addMainid,
     maintenanceList,
     developmentList,
     submitdevelopmentlist,
@@ -85,7 +89,6 @@ function DatabaseReport(props) {
     maintenanceArr, // 事件统计
     loading,
   } = props;
-  let tabActiveKey = 'week';
 
 
   const required = true;
@@ -93,17 +96,28 @@ function DatabaseReport(props) {
   const developmentformRef = useRef();
   const thisWeekitsmRef = useRef();
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
+  // const [tableIndex, setTableIndex] = useState('1');
   const [secondbutton, setSecondbutton] = useState(false);
   const [addTitle, setAddTitle] = useState([]);
   const [columns, setColumns] = useState([]);
   const [data, setData] = useState([]);
   const [fileslist, setFilesList] = useState([]);
   const [expand, setExpand] = useState(false);
+  const [contentRow, setContentrow] = useState([]); // 本周运维情况综述列表 
+  const [patrolAndExamineList, setPatrolAndExamine] = useState([]) // 软件运维巡检
+  const [materialsList, setMaterialsList] = useState([]) // 运维材料提交情况
+  const [eventList, setEventList] = useState([]) // 软件运维巡检
+  const [upgradeList, setUpgradeList] = useState([]) // 补丁升级列表
+  const [updateList, setUpdateList] = useState([]) // 更新列表
+  const [legacyList, setLegacyList] = useState([]) // 更新列表
+  const [operationList, setOperationList] = useState([]) // 上周作业计划
+  const [selfhandleRow, setSelfhandleRow] = useState([]) // 运维分类统计
+  const [statisList, setStatisList] = useState([]) // 运维分类统计
+  const [topNList, setTopNList] = useState([]) // TOPN列表
+  const [typeList, setTypeList] = useState([]) // TOPN列表
+  const [nextOperationList, setNextOperationList] = useState([]) // 下周作业列表
 
-  useEffect(() => {
-    const resultColumns = [...initiacColumn]
-    setColumns([...resultColumns])
-  }, [])
+
 
   const titleNumber = (index) => {
     return `标题${9 + index}`
@@ -113,6 +127,32 @@ function DatabaseReport(props) {
   const softReportform = () => {
     props.form.validateFields((err, value) => {
       console.log('value: ', value);
+      const savedata = {
+        ...value,
+        editStatus: 'add',
+        addData: '',
+        type: '软件运维周报',
+        time1: startTime,
+        time2: endTime,
+        contentRow: JSON.stringify(contentRow),
+        patrolAndExamineList: JSON.stringify(patrolAndExamineList),
+        materialsList: JSON.stringify(materialsList),
+        eventList: JSON.stringify(eventList),
+        upgradeList: JSON.stringify(upgradeList),
+        updateList: JSON.stringify(updateList),
+        legacyList: JSON.stringify(legacyList),
+        operationList: JSON.stringify(operationList),
+        nextOperationList: JSON.stringify(nextOperationList),
+        statisList: JSON.stringify(statisList),
+        topNList: JSON.stringify(topNList),
+        typeList: JSON.stringify(typeList),
+        selfhandleRow: JSON.stringify(selfhandleRow),
+
+      }
+      dispatch({
+        type: 'softreport/saveSoft',
+        payload: savedata
+      })
     })
   }
 
@@ -192,15 +232,20 @@ function DatabaseReport(props) {
   }
 
   const defaultTime = () => {
-    //  周
+    //  周统计
     if (type === 'week') {
       startTime = moment().subtract('days', 6).format('YYYY-MM-DD');
       endTime = moment().format('YYYY-MM-DD');
     } else {
-      //  月
       startTime = moment().startOf('month').format('YYYY-MM-DD');
       endTime = moment().endOf('month').format('YYYY-MM-DD');
     }
+
+  }
+
+  const searchNumber = (value) => {
+    console.log('value: ', value);
+
   }
   // 上传删除附件触发保存
   useEffect(() => {
@@ -209,15 +254,15 @@ function DatabaseReport(props) {
     }
   }, [files]);
 
-  const handlemaintenanceArr = () => {
+  const getMainid = () => {
     dispatch({
-      type: 'eventstatistics/fetchMaintenancelist',
-      payload: { tabActiveKey, startTime, endTime }
+      type: 'softreport/fetchaddReport'
     })
   }
 
+
   useEffect(() => {
-    // handlemaintenanceArr();
+    getMainid();
   }, [])
 
 
@@ -259,19 +304,18 @@ function DatabaseReport(props) {
 
   // 删除数据
   const handleDelete = (deleteId) => {
+    console.log('deleteId: ', deleteId);
 
   }
 
-  const onChange = () => {
+  const onChange = (date, dateString) => {
     if (type === 'week') {
       startTime = dateString;
       endTime = moment(dateString).add(+6, 'day').format('YYYY-MM-DD');
       setFieldsValue({ time2: moment(endTime) });
     } else {
       startTime = date.startOf('month').format('YYYY-MM-DD');
-      console.log('startTime: ', startTime);
       endTime = date.endOf('month').format('YYYY-MM-DD');
-      console.log('endTime: ', endTime);
     }
   }
 
@@ -284,7 +328,6 @@ function DatabaseReport(props) {
   const addTable = (index) => {
     const nowNumber = addTitle.map(item => ({ ...item }));
     nowNumber[index].tableNumber.push({ columns: 'aa' });
-    console.log('nowNumber: ', nowNumber);
     setAddTitle(nowNumber);
   }
 
@@ -394,13 +437,7 @@ function DatabaseReport(props) {
     setData(newarr)
   }
 
-  const testHead = (column) => {
-    console.log('column:', column);
-
-  }
-
-
-  const initiacColumn = [
+  const initialColumns = [
     {
       title: '测试表头1',
       dataIndex: 'addTime1',
@@ -515,151 +552,16 @@ function DatabaseReport(props) {
     }
   ];
 
-  const editTable = (index, tableIndex) => {
-    return (
-      [
-        {
-          title: '测试表头1',
-          dataIndex: 'addTime1',
-          key: 'addTime1',
-          width: 150,
-          render: (text, record) => {
-            if (record.isNew) {
-              return (
-                <Input
-                  defaultValue={text}
-                  onChange={e => handleFieldChange(e.target.value, 'addTime1', record.key, index, tableIndex)}
-                />
-              )
-            }
-            if (record.isNew === false) {
-              return <span>{text}</span>
-            }
-          }
-        },
-        {
-          title: '测试表头2',
-          dataIndex: 'addTime2',
-          key: 'addTime2',
-          width: 150,
-          render: (text, record) => {
-            if (record.isNew) {
-              return (
-                <Input
-                  defaultValue={text}
-                  onChange={e => handleFieldChange(e.target.value, 'addTime2', record.key)}
-                />
-              )
-            }
-            if (record.isNew === false) {
-              return <span>{text}</span>
-            }
-          }
-        },
-        // {
-        //   title: '测试表头3',
-        //   dataIndex: 'addTime3',
-        //   key: 'addTime3',
-        //   width: 150,
-        //   render: (text, record) => {
-        //     if (record.isNew) {
-        //       return (
-        //         <Input
-        //           defaultValue={text}
-        //           onChange={e => handleFieldChange(e.target.value, 'addTime3', record.key)}
-        //         />
-        //       )
-        //     }
-        //     if (record.isNew === false) {
-        //       return <span>{text}</span>
-        //     }
-        //   }
-        // },
-        // {
-        //   title: '测试表头4',
-        //   dataIndex: 'addTime4',
-        //   key: 'addTime4',
-        //   width: 150,
-        //   render: (text, record) => {
-        //     if (record.isNew) {
-        //       return (
-        //         <Input
-        //           defaultValue={text}
-        //           onChange={e => handleFieldChange(e.target.value, 'addTime4', record.key)}
-        //         />
-        //       )
-        //     }
-        //     if (record.isNew === false) {
-        //       return <span>{text}</span>
-        //     }
-        //   }
-        // },
-        {
-          title: '操作',
-          key: 'action',
-          fixed: 'right',
-          width: 120,
-          render: (text, record) => {
-            // if (record.editable) {
-            if (record.isNew === true) {
-              return (
-                <span>
-                  <a onClick={e => saveRow(e, record.key)}>保存</a>
-                  <Divider type='vertical' />
-                  <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
-                    <a>删除</a>
-                  </Popconfirm>
-                </span>
-              )
-            }
-            // }
-
-            return (
-              <span>
-                <a
-                  onClick={e => {
-                    toggleEditable(e, record.key, record);
-                    // handlefileedit(record.key, record.attachment)
-                  }}
-                >编辑</a>
-                <Divider type='vertical' />
-                <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
-                  <a>删除</a>
-                </Popconfirm>
-              </span>
-            )
-          }
-        }
-      ]
-    )
-  }
-
-  const setHead = () => {
-    setExpand(true);
-  }
-
-  const setResultheader = () => {
-    validateFields((err, value) => {
-      if (true) {
-        const setHead = initiacColumn.map(item => {
-          return {
-            title: value.header1,
-            dataIndex: 'addTime1',
-          }
-        })
-        setColumns(setHead)
-      }
-    })
-  }
 
   return (
     <PageHeaderWrapper
-      title={pagetitle}
+      title={type === 'week' ? '软件运维周报' : '软件运维月报'}
       extra={
         <>
           <Button type='primary'>导出</Button>
           <Button type='primary' onClick={softReportform}>保存</Button>
-          <Button type='primary' onClick={handleBack}>
+          <Button type='primary'>粘贴</Button>
+          <Button onClick={handleBack}>
             返回
           </Button>
         </>
@@ -676,9 +578,10 @@ function DatabaseReport(props) {
                     rules: [
                       {
                         required,
-                        message: '请输入周报名称'
+                        message: '请输入名称'
                       }
-                    ]
+                    ],
+                    initialValue: '11'
                   })
                     (
                       <Input />
@@ -691,6 +594,12 @@ function DatabaseReport(props) {
                   <Col span={8}>
                     <Form.Item label='起始时间'>
                       {getFieldDecorator('time1', {
+                        rules: [
+                          {
+                            required,
+                            message: '请选择填报日期'
+                          }
+                        ],
                         initialValue: [moment(startTime), moment(endTime)]
                       })(<RangePicker
                         allowClear={false}
@@ -708,9 +617,15 @@ function DatabaseReport(props) {
                   <Col span={8}>
                     <Form.Item label='起始时间'>
                       {getFieldDecorator('time1', {
+                        rules: [
+                          {
+                            required,
+                            message: '请选择填报日期'
+                          }
+                        ],
                         initialValue: moment(startTime)
                       })(<MonthPicker
-                        allowClear={false}
+                        allowClear
                         // disabledDate={startdisabledDate}
                         // placeholder='请选择'
                         onChange={onChange}
@@ -721,33 +636,53 @@ function DatabaseReport(props) {
               }
 
               {/* 一、本周运维情况综述 */}
-
               <Col span={24}>
-                <p style={{ fontWeight: '900', fontSize: '16px', marginTop: '20px' }}>{type === 'week' ? '一、本周运维情况综述' : '一、本月运维情况综述'}</p>
+                <ThisweekMaintenance
+                  formItemLayout={formItemLayout}
+                  forminladeLayout={forminladeLayout}
+                  ref={saveformRef}
+                  maintenanceList={maintenanceList}
+                  handleSavethisweek={(newValue => handleSavethisweek(newValue))}
+                  files={[]}
+                  ChangeFiles={(newvalue) => {
+                    setFiles(newvalue);
+                  }}
+                  maintenanceArr={maintenanceArr.data}
+                  startTime={startTime}
+                  endTime={endTime}
+                  type={type}
+                  // mainId={addMainid}
+                  contentrow={contentrowdata => {
+                    setContentrow(contentrowdata)
+                  }}
+                />
               </Col>
 
               <Col span={24}>
-                <Form.Item label={type === 'week' ? '本周运维总结' : '本月运维总结'} {...formincontentLayout}>
+                <Form.Item label={type === 'week' ? "本周运维描述" : "本月运维描述"} {...formincontentLayout}>
                   {
-                    getFieldDecorator('content1', {})
+                    getFieldDecorator('content', {
+                      initialValue: '11'
+                    })
                       (<TextArea autoSize={{ minRows: 3 }} />)
                   }
                 </Form.Item>
               </Col>
-
 
               <Col span={24}>
                 <Form.Item
                   label='上传附件'
                   {...formincontentLayout}
                 >
-                  {getFieldDecorator('field1', {})
+                  {getFieldDecorator('contentFiles', {
+                    initialValue: '[]'
+                  })
                     (
                       <div style={{ width: 400 }}>
                         <SysUpload
                           fileslist={[]}
                           ChangeFileslist={newvalue => {
-                            setFieldsValue({ field1: JSON.stringify(newvalue.arr) })
+                            setFieldsValue({ contentFiles: JSON.stringify(newvalue.arr) })
                             setFilesList(newvalue);
                             setFiles(newvalue)
                           }}
@@ -758,21 +693,9 @@ function DatabaseReport(props) {
               </Col>
 
 
-              <Col span={24}>
-                <p style={{ fontWeight: '900', fontSize: '16px' }}>二、巡检汇总</p>
-              </Col>
-
-              <Col span={24}>
-                <Form.Item label='巡检汇总描述' {...formincontentLayout}>
-                  {
-                    getFieldDecorator('content2', {})(<TextArea autoSize={{ minRows: 3 }} />)
-                  }
-                </Form.Item>
-              </Col>
-
               {/* 二、常规运维工作开展情况 */}
               <Col span={24}>
-                <DatabaseInspectionsummary
+                <Development
                   forminladeLayout={forminladeLayout}
                   developmentList={developmentList}
                   submitdevelopmentlist={submitdevelopmentlist}
@@ -782,16 +705,23 @@ function DatabaseReport(props) {
                   ChangeFiles={(newvalue) => {
                     setFiles(newvalue)
                   }}
-                  startTime={startTime}
-                  endTime={endTime}
+                  patrolAndExamineList={contentrowdata => {
+                    patrolAndExamineList(contentrowdata)
+                  }}
+                  materialsList={contentrowdata => {
+                    setMaterialsList(contentrowdata)
+                  }}
                 />
               </Col>
 
               <Col span={24}>
-                <DatabaseInspectionthird
-                  forminladeLayout={forminladeLayout}
-                  remainingDefectslist={remainingDefectslist}
-                />
+                <Form.Item label='重要时期业务保障' {...formincontentLayout}>
+                  {
+                    getFieldDecorator('security', {
+                      initialValue: '11'
+                    })(<TextArea autoSize={{ minRows: 3 }} />)
+                  }
+                </Form.Item>
               </Col>
 
               <Col span={24}>
@@ -799,13 +729,15 @@ function DatabaseReport(props) {
                   label='上传附件'
                   {...formincontentLayout}
                 >
-                  {getFieldDecorator('field2', {})
+                  {getFieldDecorator('materialsFiles', {
+                    initialValue: '[]'
+                  })
                     (
                       <div style={{ width: 400 }}>
                         <SysUpload
                           fileslist={[]}
                           ChangeFileslist={newvalue => {
-                            setFieldsValue({ field2: JSON.stringify(newvalue.arr) })
+                            setFieldsValue({ materialsFiles: JSON.stringify(newvalue.arr) })
                             setFilesList(newvalue);
                             setFiles(newvalue)
                           }}
@@ -816,13 +748,96 @@ function DatabaseReport(props) {
                 </Form.Item>
               </Col>
 
-              {/* 三、发现问题及修改建议 */}
+              {/* 三、运维服务指标完成情况 */}
               <Col span={24}>
-                <QuestionsComments
-                  remainingDefectslist={remainingDefectslist}
+                <ServiceTableone
                   forminladeLayout={forminladeLayout}
+                  serviceCompletionlist={serviceCompletionlist}
+                  serviceCompletionsecondlist={serviceCompletionsecondlist}
+                  serviceCompletionthreelist={serviceCompletionthreelist}
                   startTime={startTime}
                   endTime={endTime}
+                  tabActiveKey={type}
+                  typeList={contentrowdata => {
+                    setTypeList(contentrowdata)
+                  }}
+                />
+              </Col>
+
+              <Col span={24}>
+                <Form.Item label='运维统计描述' {...formincontentLayout}>
+                  {
+                    getFieldDecorator('typeContent', {
+                      initialValue: '11'
+                    })(<TextArea autoSize={{ minRows: 3 }} />)
+                  }
+                </Form.Item>
+              </Col>
+
+              <Col span={24}>
+                <Form.Item
+                  label='上传附件'
+                  {...formincontentLayout}
+                >
+                  {getFieldDecorator('updateFiles', {
+                    initialValue: '[]'
+                  })
+                    (
+                      <div style={{ width: 400 }}>
+                        <SysUpload
+                          fileslist={[]}
+                          ChangeFileslist={newvalue => {
+                            setFieldsValue({ updateFiles: JSON.stringify(newvalue.arr) })
+                            setFilesList(newvalue);
+                            setFiles(newvalue)
+                          }}
+                        />
+                      </div>
+                    )}
+
+                </Form.Item>
+              </Col>
+              {/* 软件运维付服务指标完成情况 */}
+              <Col span={24}>
+                <ServiceCompletion
+                  forminladeLayout={forminladeLayout}
+                  serviceCompletionlist={serviceCompletionlist}
+                  serviceCompletionsecondlist={serviceCompletionsecondlist}
+                  serviceCompletionthreelist={serviceCompletionthreelist}
+                  startTime={startTime}
+                  endTime={endTime}
+                  tabActiveKey={type}
+                  statisList={contentrowdata => {
+                    setStatisList(contentrowdata)
+                  }}
+                  selfhandleRow={contentrowdata => {
+                    setSelfhandleRow(contentrowdata)
+                  }}
+                />
+              </Col>
+
+              <Col span={24}>
+                <p style={{ marginTop: '20px' }}>（二）重要时期业务保障</p>
+              </Col>
+
+              <Col span={24}>
+                <Form.Item label='运维服务指标完成情况' {...formincontentLayout}>
+                  {
+                    getFieldDecorator('selfhandleContent', {
+                      initialValue: '11'
+                    })
+                      (<TextArea autoSize={{ minRows: 3 }} />)
+                  }
+                </Form.Item>
+              </Col>
+
+              <Col span={24}>
+                <WorkOrderTop
+                  formItemLayout={formItemLayout}
+                  thisWeekitsmlist={thisWeekitsmlist}
+                  topNList={contentrowdata => {
+                    setTopNList(contentrowdata)
+                  }}
                 />
               </Col>
 
@@ -832,13 +847,111 @@ function DatabaseReport(props) {
                   label='上传附件'
                   {...formincontentLayout}
                 >
-                  {getFieldDecorator('field3', {})
+                  {getFieldDecorator('topNFiles', {
+                    initialValue: '[]'
+                  })
                     (
                       <div style={{ width: 400 }}>
                         <SysUpload
                           fileslist={[]}
                           ChangeFileslist={newvalue => {
-                            setFieldsValue({ field3: JSON.stringify(newvalue.arr) })
+                            setFieldsValue({ topNFiles: JSON.stringify(newvalue.arr) })
+                            setFilesList(newvalue);
+                            setFiles(newvalue)
+                          }}
+                        />
+                      </div>
+                    )}
+                </Form.Item>
+              </Col>
+
+              {/* 四、本周事件、问题及故障 */}
+              <Col span={24}>
+                <ThisWeekitsm
+                  formItemLayout={formItemLayout}
+                  forminladeLayout={forminladeLayout}
+                  thisWeekitsmlist={thisWeekitsmlist}
+                  ref={thisWeekitsmRef}
+                  searchNumber={(searchParams) => searchNumber(searchParams)}
+                  ChangeFiles={(newvalue) => {
+                    setFiles(newvalue);
+                  }}
+                  type={type}
+                  eventList={contentrowdata => {
+                    setEventList(contentrowdata)
+                  }}
+                />
+              </Col>
+
+              <Col span={24}>
+                <Form.Item
+                  label='上传附件'
+                  {...formincontentLayout}
+                >
+                  {getFieldDecorator('eventFiles', {
+                    initialValue: '[]'
+                  })
+                    (
+                      <div style={{ width: 400 }}>
+                        <SysUpload
+                          fileslist={[]}
+                          ChangeFileslist={newvalue => {
+                            setFieldsValue({ eventFiles: JSON.stringify(newvalue.arr) })
+                            setFilesList(newvalue);
+                            setFiles(newvalue)
+                          }}
+                        />
+                      </div>
+                    )}
+                </Form.Item>
+              </Col>
+
+              {/* 五、软件作业完成情况 */}
+              {/* <Col span={24}>
+                <SoftCompletion
+                  forminladeLayout={forminladeLayout}
+                  softCompletionlist={softCompletionlist}
+                  completionsecondTablelist={completionsecondTablelist}
+                  startTime={startTime}
+                  endTime={endTime}
+                  upgradeList={contentrowdata => {
+                    setUpgradeList(contentrowdata)
+                  }}
+                  updateList={contentrowdata => {
+                    setUpdateList(contentrowdata)
+                  }}
+                />
+              </Col> */}
+
+
+              <Col span={24}>
+                <Form.Item
+                  label='软件作业情况描述'
+                  {...formincontentLayout}
+                >
+                  {
+                    getFieldDecorator('completeContent', {
+                      initialValue: '11'
+                    })
+                      (<TextArea autoSize={{ minRows: 3 }} />)
+                  }
+                </Form.Item>
+              </Col>
+
+              <Col span={24}>
+                <Form.Item
+                  label='上传附件'
+                  {...formincontentLayout}
+                >
+                  {getFieldDecorator('updateFiles', {
+                    initialValue: '[]'
+                  })
+                    (
+                      <div style={{ width: 400 }}>
+                        <SysUpload
+                          fileslist={[]}
+                          ChangeFileslist={newvalue => {
+                            setFieldsValue({ updateFiles: JSON.stringify(newvalue.arr) })
                             setFilesList(newvalue);
                             setFiles(newvalue)
                           }}
@@ -849,13 +962,51 @@ function DatabaseReport(props) {
               </Col>
 
 
-              {/* 上周作业完成情况*/}
+              {/* 六、遗留缺陷问题跟踪,遗留问题、缺陷跟踪情况（使用表格管理作为附件） */}
               <Col span={24}>
-                <Lastweek
+                <RemainingDefects
                   forminladeLayout={forminladeLayout}
+                  remainingDefectslist={remainingDefectslist}
+                  legacyList={contentrowdata => {
+                    setLegacyList(contentrowdata)
+                  }}
+                />
+              </Col>
+
+              <Col span={24}>
+                <Form.Item
+                  label='上传附件'
+                  {...formincontentLayout}
+                >
+                  {getFieldDecorator('legacyFiles', {
+                    initialValue: '[]'
+                  })
+                    (
+                      <div style={{ width: 400 }}>
+                        <SysUpload
+                          fileslist={[]}
+                          ChangeFileslist={newvalue => {
+                            setFieldsValue({ legacyFiles: JSON.stringify(newvalue.arr) })
+                            setFilesList(newvalue);
+                            setFiles(newvalue)
+                          }}
+                        />
+                      </div>
+                    )}
+                </Form.Item>
+              </Col>
+
+              {/* 七、上周作业完成情况 */}
+              <Col span={24}>
+                <LastweekHomework
+                  forminladeLayout={forminladeLayout}
+                  lastweekHomeworklist={lastweekHomeworklist}
                   startTime={startTime}
                   endTime={endTime}
                   type={type}
+                  operationList={contentrowdata => {
+                    setOperationList(contentrowdata)
+                  }}
                 />
               </Col>
 
@@ -864,30 +1015,35 @@ function DatabaseReport(props) {
                   label='上传附件'
                   {...formincontentLayout}
                 >
-                  {getFieldDecorator('field4', {})
+                  {getFieldDecorator('operationFiles', {
+                    initialValue: '[]'
+                  })
                     (
                       <div style={{ width: 400 }}>
                         <SysUpload
                           fileslist={[]}
                           ChangeFileslist={newvalue => {
-                            setFieldsValue({ field4: JSON.stringify(newvalue.arr) })
+                            setFieldsValue({ operationFiles: JSON.stringify(newvalue.arr) })
                             setFilesList(newvalue);
                             setFiles(newvalue)
                           }}
                         />
                       </div>
                     )}
-
                 </Form.Item>
               </Col>
 
-              {/* 下周 */}
+              {/* 八、 下周作业计划 */}
               <Col span={24}>
-                <Nextweek
+                <NextweekHomework
                   forminladeLayout={forminladeLayout}
+                  nextweekHomeworklist={nextweekHomeworklist}
                   startTime={startTime}
                   endTime={endTime}
                   type={type}
+                  nextOperationList={contentrowdata => {
+                    setNextOperationList(contentrowdata)
+                  }}
                 />
               </Col>
 
@@ -896,20 +1052,21 @@ function DatabaseReport(props) {
                   label='上传附件'
                   {...formincontentLayout}
                 >
-                  {getFieldDecorator('field5', {})
+                  {getFieldDecorator('nextOperationFiles', {
+                    initialValue: '[]'
+                  })
                     (
                       <div style={{ width: 400 }}>
                         <SysUpload
                           fileslist={[]}
                           ChangeFileslist={newvalue => {
-                            setFieldsValue({ field5: JSON.stringify(newvalue.arr) })
+                            setFieldsValue({ nextOperationFiles: JSON.stringify(newvalue.arr) })
                             setFilesList(newvalue);
                             setFiles(newvalue)
                           }}
                         />
                       </div>
                     )}
-
                 </Form.Item>
               </Col>
 
@@ -923,7 +1080,6 @@ function DatabaseReport(props) {
               >
                 新增
             </Button>
-
 
               {loading === false && (
                 addTitle.map((item, index) => {
@@ -945,13 +1101,12 @@ function DatabaseReport(props) {
                         </Form.Item>
                       </Col>
 
-
                       <Col span={24}>
                         <Form.Item label='内容' {...formincontentLayout}>
-                          {getFieldDecorator(`content${index}`, {
+                          {getFieldDecorator(`content${index + 6}`, {
 
                           })(
-                            <TextArea />
+                            <TextArea autoSize={{ minRows: 3 }} />
                           )}
                         </Form.Item>
                       </Col>
@@ -964,8 +1119,9 @@ function DatabaseReport(props) {
                             <SysUpload
                               fileslist={[]}
                               ChangeFileslist={newvalue => {
-                                setFieldsValue({ field1: JSON.stringify(newvalue.arr) })
-                                // setFilesList(newvalue)
+                                setFieldsValue({ field7: JSON.stringify(newvalue.arr) })
+                                setFilesList(newvalue);
+                                setFiles(newvalue)
                               }}
                             />
                           )}
@@ -976,7 +1132,11 @@ function DatabaseReport(props) {
                         <Button
                           type='primary'
                           onClick={() => addTable(index)}
+                        // disabled={}
                         >添加表格</Button>
+                        <span>(注：表格的第一行作为表头)</span>
+
+
                         {/* </Col> */}
 
                         {/* <Col span={24} style={{ textAlign: 'right' }}> */}
@@ -989,9 +1149,6 @@ function DatabaseReport(props) {
 
                       {
                         (addTitle[index].tableNumber).map((items, tableIndex) => {
-                          if (index === 0) {
-                            editTable()
-                          }
                           return (
                             <>
                               <>
@@ -1004,7 +1161,7 @@ function DatabaseReport(props) {
                                   <Col span={22}>
 
                                     <Table
-                                      columns={initiacColumn}
+                                      columns={initialColumns}
                                       dataSource={data}
                                     />
                                   </Col>
@@ -1017,7 +1174,6 @@ function DatabaseReport(props) {
                                     />
                                   </Col>
                                 </div>
-
                               </>
 
                             </>
@@ -1042,7 +1198,7 @@ function DatabaseReport(props) {
 }
 
 export default Form.create({})(
-  connect(({ thisweekly, eventstatistics, loading }) => ({
+  connect(({ thisweekly, eventstatistics, softreport, loading }) => ({
     maintenanceList: thisweekly.maintenanceList,
     developmentList: thisweekly.developmentList,
     submitdevelopmentlist: thisweekly.submitdevelopmentlist,
@@ -1055,7 +1211,8 @@ export default Form.create({})(
     remainingDefectslist: thisweekly.remainingDefectslist,
     lastweekHomeworklist: thisweekly.lastweekHomeworklist,
     nextweekHomeworklist: thisweekly.nextweekHomeworklist,
+    // addMainid: softreport.addMainid,
     loading: loading.models.thisweekly,
     maintenanceArr: eventstatistics.maintenanceArr,
-  }))(DatabaseReport),
+  }))(SoftReport),
 );

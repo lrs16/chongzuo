@@ -20,6 +20,7 @@ import router from 'umi/router';
 
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import SysDict from '@/components/SysDict';
 
 const { RangePicker } = DatePicker;
 const { Option } = Select;
@@ -37,24 +38,64 @@ const formItemLayout = {
 let starttime;
 let monthStarttime;
 let endTime;
+let id;
 
-function OperationmyweeklyReport(props) {
+function AddForm(props) {
   const pagetitle = props.route.name;
   const {
     form: { getFieldDecorator, resetFields, validateFields, setFieldsValue },
     myweeklyreportTable,
+    queryOrderlist,
+    userinfo,
     dispatch,
   } = props;
   const [expand, setExpand] = useState(false);
-  const [paginations, setPaginations] = useState({ current: 1, pageSize: 10 });
+  const [paginations, setPaginations] = useState({ current: 0, pageSize: 15 });
   const [selectdata, setSelectData] = useState('');
-  const [selectedrows, setSelectedrows] = useState('');
+  const [selectedRows, setSelectedRows] = useState([]);
   const columns = [
+    {
+      title: '周报类型',
+      dataIndex: 'type',
+      key: 'type',
+      render: (text, record) => {
+        const handleClick = () => {
+          switch (text) {
+            case '软件运维周报':
+                router.push({
+                  pathname: `/ITSM/operationreport/weeklyreport/softreport/`,
+                  query: {
+                    mainId: record.id,
+                    reporttype: 'week',
+                  },
+                });
+            break;
+            // case 'bb':
+            //   <Link
+            //     to={{
+            //       pathname: `/ITSM/operationreport/weeklyreport/softreport${record.id}`,
+            //       // paneKey: record.status, // 传状态
+            //     }}
+            //   >
+            //     {text}
+            //   </Link>
+            //   break;
+  
+            default:
+              break;
+          }
+        
+        }
+        return <a onClick={handleClick}>{text}</a>
+        
+      }
+    },
     {
       title: '周报名称',
       dataIndex: 'name',
       key: 'name',
       render: (text, record) => {
+        console.log('text: ', text);
         switch (text) {
           case 'name':
             return (
@@ -83,52 +124,54 @@ function OperationmyweeklyReport(props) {
             break;
         }
       }
-
     },
     {
       title: '填报日期',
-      dataIndex: 'date',
-      key: 'date',
+      dataIndex: 'time1',
+      key: 'time1',
     },
     {
       title: '填报人',
-      dataIndex: 'person',
-      key: 'person',
+      dataIndex: 'userName',
+      key: 'userName',
     },
   ];
 
   const selectOnchage = (data) => {
-    console.log('data: ', data);
     switch (data) {
       case '软件运维周报':
         router.push({
-          pathname:`/ITSM/operationreport/weeklyreport/softreport/`,
-          query:{
-            type:'week'
+          pathname: `/ITSM/operationreport/weeklyreport/softreport/`,
+          query: {
+            reporttype: 'week',
+            status: 'add',
           }
         })
         break;
       case '机房运维周报':
         router.push({
-          pathname:`/ITSM/operationreport/weeklyreport/computerroomreport`,
-          query:{
-            type:'week'
+          pathname: `/ITSM/operationreport/weeklyreport/computerroomreport`,
+          query: {
+            reporttype: 'week',
+            status: 'add',
           }
         })
         break;
       case '数据库运维周报':
         router.push({
-          pathname:`/ITSM/operationreport/weeklyreport/databasereport`,
-          query:{
-            type:'week'
+          pathname: `/ITSM/operationreport/weeklyreport/databasereport`,
+          query: {
+            reporttype: 'week',
+            status: 'add',
           }
         })
         break;
       case '其他运维周报':
         router.push({
-          pathname:`/ITSM/operationreport/weeklyreport/otherreport`,
-          query:{
-            type:'week'
+          pathname: `/ITSM/operationreport/weeklyreport/otherreport`,
+          query: {
+            reporttype: 'week',
+            status: 'add',
           }
         })
         break;
@@ -140,53 +183,65 @@ function OperationmyweeklyReport(props) {
   const menu = (
     <Menu>
       <Menu.Item>
-        <span onClick={()=> selectOnchage('软件运维周报')}>
+        <span onClick={() => selectOnchage('软件运维周报')}>
           软件运维周报
         </span>
       </Menu.Item>
       <Menu.Item>
-      <span onClick={()=> selectOnchage('机房运维周报')}>
-      机房运维周报
+        <span onClick={() => selectOnchage('机房运维周报')}>
+          机房运维周报
         </span>
       </Menu.Item>
       <Menu.Item>
-      <span onClick={()=> selectOnchage('数据库运维周报')}>
-      数据库运维周报
+        <span onClick={() => selectOnchage('数据库运维周报')}>
+          数据库运维周报
         </span>
       </Menu.Item>
       <Menu.Item>
-      <span onClick={()=> selectOnchage('其他运维周报')}>
-      其他运维周报
+        <span onClick={() => selectOnchage('其他运维周报')}>
+          其他运维周报
         </span>
       </Menu.Item>
     </Menu>
   );
 
-  const getmyweeklyTable = () => {
+  const queryDept = () => {
     dispatch({
-      type: 'myweeklyreportindex/myweeklyTable',
-      payload: {
-        pageNum: paginations.current,
-        pageSize: paginations.pageSize,
-      },
+      type: 'itsmuser/fetchuser',
     });
+  };
+
+  const getmyweeklyTable = () => {
+    validateFields((err, value) => {
+      dispatch({
+        type: 'myweeklyreportindex/myweeklyTable',
+        payload: {
+          pageNum: paginations.current,
+          pageSize: paginations.pageSize,
+        },
+      });
+    })
   };
 
 
 
   const handleReset = () => {
-    resetFields();
     starttime = '';
     endTime = '';
+    resetFields();
   };
 
   const searchdata = (values, page, pageSize) => {
     dispatch({
-      type: 'myweeklyreportindex/myweeklyTable',
+      type: 'softreport/queryList',
       payload: {
         ...values,
+        userId:id,
+        plannedStartTime: '',
+        time1: values.plannedStartTime?.length ? moment(values.plannedStartTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+        time2: values.plannedStartTime?.length ? moment(values.plannedStartTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
         pageSize,
-        pageNum: page,
+        pageIndex: page-1,
       },
     });
   };
@@ -220,7 +275,7 @@ function OperationmyweeklyReport(props) {
     onShowSizeChange: (page, pageSize) => onShowSizeChange(page, pageSize),
     current: paginations.current,
     pageSize: paginations.pageSize,
-    // total: besolveList.total,
+    total: queryOrderlist.total,
     showTotal: total => `总共  ${total}  条记录`,
     onChange: (page) => changePage(page),
   };
@@ -265,22 +320,21 @@ function OperationmyweeklyReport(props) {
   }
 
   const rowSelection = {
-    onChange: (selectedRows) => {
-      setSelectedrows([...selectedRows])
+    onChange: (selectedRow) => {
+      setSelectedRows([...selectedRow])
     }
   }
 
   const handleDelete = () => {
-    if (selectedrows.length) {
-      const idList = selectedrows.map(item => {
-        return item
+    if (selectedRows.length) {
+      const idList = selectedRows.map(item => {
+        return item.id
       })
 
       dispatch({
-        type: 'myweeklyreportindex/myweeklyTable',
+        type: 'softreport/deleteAll',
         payload: idList
       }).then(res => {
-        // message.info()
         getmyweeklyTable();
       })
     } else {
@@ -315,138 +369,131 @@ function OperationmyweeklyReport(props) {
     return current > moment().endOf('day')
   }
 
+  const handleCopy = () => {
+    if (selectedRows.length !== 1) {
+      message.info('请选择一条数据')
+      return false;
+    }
+
+    if (selectedRows.length > 1) {
+      message.info('只能选择一条数据复制哦')
+      return false;
+    }
+
+    if (selectedRows.length === 1) {
+      message.info('复制成功')
+    }
+
+    return null
+  }
+
   useEffect(() => {
     getmyweeklyTable();
     defaultTime();
+    // queryDept();
+    dispatch({
+      type:'itsmuser/fetchuserids'
+    }).then(res => {
+      if(res.code === 200 && res.data) {
+        const { userId } = res.data;
+        id = userId;
+        validateFields((err, values) => {
+      if (!err) {
+        const obj = values;
+        obj.userId = userId
+        searchdata(obj, 1, paginations.pageSize)
+      }
+    });
+      }
+    })
   }, []);
 
+  const getTypebyTitle = title => {
+    if (selectdata.ischange) {
+      return selectdata.arr.filter(item => item.title === title)[0].children;
+    }
+    return [];
+  }
 
+  console.log(queryOrderlist)
+
+
+  const classData = getTypebyTitle('周报分类')
 
   return (
     <PageHeaderWrapper title={pagetitle}>
+      <SysDict
+        typeid="1399541895977242626"
+        commonid="1354288354950123522"
+        ChangeSelectdata={newvalue => setSelectData(newvalue)}
+        style={{ display: 'none' }}
+      />
       <Card>
-        <Row gutter={16}>
+        <Row gutter={24}>
           <Form {...formItemLayout}>
             <Col span={8}>
               <Form.Item label="周报名称">
-                {getFieldDecorator('no', {
-                  rules: [
-                    {
-                      message: '请输入问题编号',
-                    },
-                  ],
+                {getFieldDecorator('name', {
+                  initialValue: ''
                 })(<Input placeholder='请输入' allowClear />)}
               </Form.Item>
             </Col>
 
-            <Col span={7}>
-              <Form.Item label='填报日期'>
-                {getFieldDecorator('time1', {
-                  initialValue: starttime ? moment(starttime) : ''
-                })(
-                  <DatePicker
-                    allowClear={false}
-                    disabledDate={startdisabledDate}
-                    onChange={onChange}
-                  />
-                )
-                }
+            <Col span={8}>
+              <Form.Item label="周报分类">
+                {getFieldDecorator('type', {
+                  initialValue: ''
+                })
+                  (
+                    <Select placeholder="请选择" allowClear>
+                      {classData.map(obj => [
+                        <Option key={obj.key} value={obj.title}>
+                          {obj.title}
+                        </Option>,
+                      ])}
+                    </Select>,
+                    <Input />
+                  )}
               </Form.Item>
             </Col>
-
-            <Col span={1}>
-              <p style={{ marginTop: 5 }}>-</p>
-            </Col>
-
-
 
             <Col span={8}>
-              <Form.Item label=''>
-                {
-                  getFieldDecorator('time2', {
-                    initialValue: endTime ? moment(endTime) : ''
-                  })
-                    (<DatePicker
-                      allowClear={false}
-                      disabledDate={enddisabledDate}
-                      onChange={endonChange}
-                    />)
-                }
+              <Form.Item label="填报日期">
+                {getFieldDecorator('plannedStartTime', {
+                })
+                  (
+                    <RangePicker
+                      showTime
+                      format="YYYY-MM-DD HH:mm:ss"
+                      style={{ width: '100%' }}
+                    />
+                  )}
               </Form.Item>
             </Col>
 
-            {expand === true && (
-              <>
-                <Col span={8}>
-                  <Form.Item label="填报人" >
-                    {getFieldDecorator('person', {})(<Input placeholder='请输入' allowClear />)}
-                  </Form.Item>
-                </Col>
-              </>
-            )}
+            <Col span={8}>
+              <Form.Item label="填报人" >
+                {getFieldDecorator('userName', {
+                   initialValue: ''
+                })(<Input placeholder='请输入' allowClear />)}
+              </Form.Item>
+            </Col>
 
+            <Col span={16} style={{ textAlign: 'right' }}>
+              <Button type="primary" onClick={handleSearch}>
+                查询
+              </Button>
 
-            {expand === false && (
-              <Col span={24} style={{ textAlign: 'right' }}>
-                <Button type="primary" onClick={handleSearch}>
-                  查询
-                </Button>
+              <Button style={{ marginLeft: 8 }} onClick={handleReset}>
+                重置
+              </Button>
 
-                <Button style={{ marginLeft: 8 }} onClick={handleReset}>
-                  重置
-                </Button>
+            </Col>
 
-                <Button
-                  style={{ marginLeft: 8 }}
-                  type="link"
-                  onClick={() => {
-                    setExpand(!expand);
-                  }}
-                >
-                  {expand ? (
-                    <>
-                      关闭 <UpOutlined />
-                    </>
-                  ) : (
-                    <>
-                      展开 <DownOutlined />
-                    </>
-                  )}
-                </Button>
-              </Col>
-            )}
-
-            {expand === true && (
-              <Col span={24} style={{ textAlign: 'right' }}>
-                <Button type="primary" onClick={handleSearch}>
-                  查询
-                </Button>
-                <Button style={{ marginLeft: 8 }} onClick={handleReset}>
-                  重置
-                </Button>
-                <Button
-                  style={{ marginLeft: 8 }}
-                  type="link"
-                  onClick={() => {
-                    setExpand(!expand);
-                  }}
-                >
-                  {expand ? (
-                    <>
-                      关闭 <UpOutlined />
-                    </>
-                  ) : (
-                    <>
-                      展开 <DownOutlined />
-                    </>
-                  )}
-                </Button>
-              </Col>
-            )}
           </Form>
         </Row>
 
-        <div>
+        <div style={{ marginBottom: '10px' }}>
           <Dropdown
             overlay={menu}
             placement="bottomLeft"
@@ -457,30 +504,15 @@ function OperationmyweeklyReport(props) {
           <Button
             style={{ marginLeft: 8 }}
             type="primary"
-          // onClick={() => download()}
-          >
-            编辑
-        </Button>
-
-          <Button
-            style={{ marginLeft: 8 }}
-            type="primary"
-          // onClick={() => download()}
+            onClick={handleCopy}
           >
             复制
         </Button>
 
           <Button
             style={{ marginLeft: 8 }}
-            type="primary"
-          // onClick={() => download()}
-          >
-            粘贴
-        </Button>
-
-          <Button
-            style={{ marginLeft: 8 }}
-            type="primary"
+            type="danger"
+            ghost
             onClick={handleDelete}
           >
             删除
@@ -499,8 +531,7 @@ function OperationmyweeklyReport(props) {
         <Table
           // loading={loading}
           columns={columns}
-          dataSource={myweeklyreportTable}
-          // rowKey={record => record.id}
+          dataSource={queryOrderlist.rows}
           pagination={pagination}
           rowSelection={rowSelection}
         />
@@ -513,8 +544,9 @@ function OperationmyweeklyReport(props) {
 
 
 export default Form.create({})(
-  connect(({ myweeklyreportindex, loading }) => ({
-    myweeklyreportTable: myweeklyreportindex.myweeklyreportTable,
+  connect(({ myweeklyreportindex, softreport, itsmuser, loading }) => ({
+    queryOrderlist: softreport.queryOrderlist,
+    // userinfo: itsmuser.userinfo,
     loading: loading.models.myweeklyreportindex,
-  }))(OperationmyweeklyReport),
+  }))(AddForm),
 );

@@ -13,13 +13,20 @@ import { connect } from 'dva';
 import SysUpload from '@/components/SysUpload';
 
 const { TextArea } = Input;
-function WeeklyMeeting(props) {
+const PatrolAndExamine = React.forwardRef((props, ref) => {
+  const attRef = useRef();
+  useImperativeHandle(
+    ref,
+    () => ({
+      attRef,
+    }),
+    [],
+  );
 
   const {
     form: { getFieldDecorator },
-    forminladeLayout,
-    meetingSummaryList,
-    type
+    patrolAndExamineList,
+    patrolAndExamine
   } = props;
   const [data, setData] = useState([]);
   const [seconddata, setSeconddata] = useState([]);
@@ -27,6 +34,13 @@ function WeeklyMeeting(props) {
   const [uploadkey, setKeyUpload] = useState('');
   const [fileslist, setFilesList] = useState([]);
   const [newbutton, setNewButton] = useState(false);
+
+    // 初始化把数据传过去
+    useEffect(() => {
+      if(data && data.length) {
+        patrolAndExamineList(data)
+      }
+    }, [data]);
 
   // 新增一条记录
   const newMember = (params) => {
@@ -36,10 +50,11 @@ function WeeklyMeeting(props) {
     newData.push({
       key: data.length + 1,
       id: '',
-      dd11: '新增数据',
-      dd22: '',
-      dd33: 'dd',
-      dd44: '',
+      field1: '新增数据',
+      field2: '',
+      field3: '',
+      field4: '',
+      field5: ''
     });
     setData(newData);
     setNewButton(true);
@@ -82,7 +97,7 @@ function WeeklyMeeting(props) {
   }
 
   const savedata = (target, id) => {
-    meetingSummaryList(data)
+    patrolAndExamineList(data)
   }
 
   const saveRow = (e, key) => {
@@ -108,7 +123,7 @@ function WeeklyMeeting(props) {
   }
 
   const handleTabledata = () => {
-    const newarr = [].map((item, index) => {
+    const newarr = patrolAndExamine.map((item, index) => {
       return Object.assign(item, { editable: true, isNew: false, key: index })
     })
     setData(newarr)
@@ -117,7 +132,7 @@ function WeeklyMeeting(props) {
 
   const column = [
     {
-      title: '工作内容',
+      title: '日期',
       dataIndex: 'field1',
       key: 'field1',
       render: (text, record) => {
@@ -135,7 +150,7 @@ function WeeklyMeeting(props) {
       }
     },
     {
-      title: '完成情况',
+      title: '四大率指标',
       dataIndex: 'field2',
       key: 'field2',
       render: (text, record) => {
@@ -153,7 +168,7 @@ function WeeklyMeeting(props) {
       }
     },
     {
-      title: '备注',
+      title: '基础功能运行情况',
       dataIndex: 'field3',
       key: 'field3',
       render: (text, record) => {
@@ -171,12 +186,47 @@ function WeeklyMeeting(props) {
       }
     },
     {
+      title: '接口运行情况',
+      dataIndex: 'field4',
+      key: 'field4',
+      render: (text, record) => {
+        if (record.isNew) {
+          return (
+            <Input
+              defaultValue={text}
+              onChange={e => handleFieldChange(e.target.value, 'field4', record.key)}
+            />
+          )
+        }
+        if (record.isNew === false) {
+          return <span>{text}</span>
+        }
+      }
+    },
+    {
+      title: '高级功能运行情况',
+      dataIndex: 'field5',
+      key: 'field5',
+      render: (text, record) => {
+        if (record.isNew) {
+          return (
+            <Input
+              defaultValue={text}
+              onChange={e => handleFieldChange(e.target.value, 'field5', record.key)}
+            />
+          )
+        }
+        if (record.isNew === false) {
+          return <span>{text}</span>
+        }
+      }
+    },
+    {
       title: '操作',
       key: 'action',
       fixed: 'right',
       width: 120,
       render: (text, record) => {
-        // if (record.editable) {
         if (record.isNew === true) {
           return (
             <span>
@@ -188,7 +238,6 @@ function WeeklyMeeting(props) {
             </span>
           )
         }
-        // }
 
         return (
           <span>
@@ -207,19 +256,22 @@ function WeeklyMeeting(props) {
       }
 
     }
-
   ];
 
   useEffect(() => {
     handleTabledata();
-  }, [])
+  }, [patrolAndExamine])
 
 
   return (
     <>
       <Row gutter={16}>
         <Col span={20}>
-          <p style={{ fontWeight: '900', fontSize: '16px' }}>{type === 'week' ? '5 周例会会议纪要完成情况':'5 月例会会议纪要完成情况'}</p>
+          <p style={{ fontWeight: '900', fontSize: '16px' }}>二、常规运维工作开展情况</p>
+        </Col>
+
+        <Col span={24}>
+          <p style={{ marginTop: '20px' }}>（二）巡检情况</p>
         </Col>
 
         <Table
@@ -240,6 +292,6 @@ function WeeklyMeeting(props) {
       </Row>
     </>
   )
-}
+})
 
-export default Form.create({})(WeeklyMeeting)
+export default Form.create({})(PatrolAndExamine)

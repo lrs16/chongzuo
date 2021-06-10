@@ -570,10 +570,22 @@ export default {
                           component: './ITSM/Operationreport/WeeklyReport/SoftReport'
                         },
                         {
+                          path: '/ITSM/operationreport/weeklyreport/detailSoft/',
+                          name: '软件运维周报详情页',
+                          icon: 'fork',
+                          component: './ITSM/Operationreport/WeeklyReport/SoftReportdetail'
+                        },
+                        {
                           path: '/ITSM/operationreport/weeklyreport/computerroomreport',
                           name: '机房运维周报',
                           icon: 'fork',
                           component: './ITSM/Operationreport/WeeklyReport/ComputerroomReport'
+                        },
+                        {
+                          path: '/ITSM/operationreport/weeklyreport/computerroomreportdetail',
+                          name: '机房运维周报详情页',
+                          icon: 'fork',
+                          component: './ITSM/Operationreport/WeeklyReport/ComputerroomReportdetail'
                         },
                         {
                           path: '/ITSM/operationreport/weeklyreport/databasereport',
@@ -1350,5 +1362,9 @@ export default {
       target: ' http://172.16.10.11:9901/', // 数据字典
       changeOrigin: true,
     },
+    '/report/':{
+      target:'http://172.16.10.106:9901/',
+      changeOrigin: true
+    }
   },
 };

@@ -20,8 +20,9 @@ import router from 'umi/router';
 
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import SysDict from '@/components/SysDict';
 
-const { RangePicker } = DatePicker;
+const { MonthPicker } = DatePicker;
 const { Option } = Select;
 const formItemLayout = {
   labelCol: {
@@ -48,7 +49,7 @@ function MymonthlyReport(props) {
   const [expand, setExpand] = useState(false);
   const [paginations, setPaginations] = useState({ current: 1, pageSize: 10 });
   const [selectdata, setSelectData] = useState('');
-  const [selectedrows, setSelectedrows] = useState('');
+  const [selectedRows, setSelectedRows] = useState([]);
   const columns = [
     {
       title: '周报名称',
@@ -101,33 +102,33 @@ function MymonthlyReport(props) {
     switch (data) {
       case '软件运维周报':
         router.push({
-          pathname:`/ITSM/operationreport/weeklyreport/softreport/`,
-          query:{
-            type:'month'
+          pathname: `/ITSM/operationreport/weeklyreport/softreport/`,
+          query: {
+            type: 'month'
           }
         })
         break;
       case '机房运维周报':
         router.push({
-          pathname:`/ITSM/operationreport/weeklyreport/computerroomreport`,
-          query:{
-            type:'month'
+          pathname: `/ITSM/operationreport/weeklyreport/computerroomreport`,
+          query: {
+            type: 'month'
           }
         })
         break;
       case '数据库运维周报':
         router.push({
-          pathname:'/ITSM/operationreport/weeklyreport/databasereport',
-          query:{
-            type:'month'
+          pathname: '/ITSM/operationreport/weeklyreport/databasereport',
+          query: {
+            type: 'month'
           }
         })
         break;
       case '其他运维周报':
         router.push({
-          pathname:'/ITSM/operationreport/weeklyreport/otherreport',
-          query:{
-            type:'month'
+          pathname: '/ITSM/operationreport/weeklyreport/otherreport',
+          query: {
+            type: 'month'
           }
         })
         break;
@@ -139,23 +140,23 @@ function MymonthlyReport(props) {
   const menu = (
     <Menu>
       <Menu.Item>
-        <span onClick={()=> selectOnchage('软件运维周报')}>
+        <span onClick={() => selectOnchage('软件运维周报')}>
           软件运维周报
         </span>
       </Menu.Item>
       <Menu.Item>
-      <span onClick={()=> selectOnchage('机房运维周报')}>
-      机房运维周报
+        <span onClick={() => selectOnchage('机房运维周报')}>
+          机房运维周报
         </span>
       </Menu.Item>
       <Menu.Item>
-      <span onClick={()=> selectOnchage('数据库运维周报')}>
-      数据库运维周报
+        <span onClick={() => selectOnchage('数据库运维周报')}>
+          数据库运维周报
         </span>
       </Menu.Item>
       <Menu.Item>
-      <span onClick={()=> selectOnchage('其他运维周报')}>
-      其他运维周报
+        <span onClick={() => selectOnchage('其他运维周报')}>
+          其他运维周报
         </span>
       </Menu.Item>
     </Menu>
@@ -264,14 +265,14 @@ function MymonthlyReport(props) {
   }
 
   const rowSelection = {
-    onChange: (selectedRows) => {
-      setSelectedrows([...selectedRows])
+    onChange: (selectedRow) => {
+      setSelectedRows([...selectedRow])
     }
   }
 
   const handleDelete = () => {
-    if (selectedrows.length) {
-      const idList = selectedrows.map(item => {
+    if (selectedRows.length) {
+      const idList = selectedRows.map(item => {
         return item
       })
 
@@ -314,20 +315,52 @@ function MymonthlyReport(props) {
     return current > moment().endOf('day')
   }
 
+  const handleCopy = () => {
+    if (selectedRows.length !== 1) {
+      message.info('请选择一条数据')
+      return false;
+    }
+
+    if (selectedRows.length > 1) {
+      message.info('只能选择一条数据复制哦')
+      return false;
+    }
+
+    if (selectedRows.length === 1) {
+      message.info('复制成功')
+    }
+
+    return null
+  }
+
   useEffect(() => {
     getmyweeklyTable();
     defaultTime();
   }, []);
 
+  const getTypebyTitle = title => {
+    if (selectdata.ischange) {
+      return selectdata.arr.filter(item => item.title === title)[0].children;
+    }
+    return [];
+  }
+
+  const classData = getTypebyTitle('周报分类')
 
 
   return (
     <PageHeaderWrapper title={pagetitle}>
+      <SysDict
+        typeid="1399541895977242626"
+        commonid="1354288354950123522"
+        ChangeSelectdata={newvalue => setSelectData(newvalue)}
+        style={{ display: 'none' }}
+      />
       <Card>
         <Row gutter={16}>
           <Form {...formItemLayout}>
             <Col span={8}>
-              <Form.Item label="周报名称">
+              <Form.Item label="月报名称">
                 {getFieldDecorator('no', {
                   rules: [
                     {
@@ -338,110 +371,50 @@ function MymonthlyReport(props) {
               </Form.Item>
             </Col>
 
-            <Col span={7}>
+            <Col span={8}>
+              <Form.Item label="月报分类">
+                {getFieldDecorator('params1', {
+                })
+                  (
+                    <Select placeholder="请选择" allowClear>
+                      {classData.map(obj => [
+                        <Option key={obj.key} value={obj.title}>
+                          {obj.title}
+                        </Option>,
+                      ])}
+                    </Select>,
+                    <Input />
+                  )}
+              </Form.Item>
+            </Col>
+
+            <Col span={8}>
               <Form.Item label='填报日期'>
                 {getFieldDecorator('time1', {
-                  initialValue: starttime ? moment(starttime) : ''
+                  initialValue: ''
                 })(
-                  <DatePicker
-                    allowClear={false}
-                    disabledDate={startdisabledDate}
-                    onChange={onChange}
+                  <MonthPicker
+                  style={{width:'100%'}}
                   />
                 )
                 }
               </Form.Item>
             </Col>
 
-            <Col span={1}>
-              <p style={{ marginTop: 5 }}>-</p>
-            </Col>
-
-
-
             <Col span={8}>
-              <Form.Item label=''>
-                {
-                  getFieldDecorator('time2', {
-                    initialValue: endTime ? moment(endTime) : ''
-                  })
-                    (<DatePicker
-                      allowClear={false}
-                      disabledDate={enddisabledDate}
-                      onChange={endonChange}
-                    />)
-                }
+              <Form.Item label="填报人" >
+                {getFieldDecorator('person', {})(<Input placeholder='请输入' allowClear />)}
               </Form.Item>
             </Col>
 
-            {expand === true && (
-              <>
-                <Col span={8}>
-                  <Form.Item label="填报人" >
-                    {getFieldDecorator('person', {})(<Input placeholder='请输入' allowClear />)}
-                  </Form.Item>
-                </Col>
-              </>
-            )}
-
-
-            {expand === false && (
-              <Col span={24} style={{ textAlign: 'right' }}>
-                <Button type="primary" onClick={handleSearch}>
-                  查询
+            <Col span={16} style={{ textAlign: 'right' }}>
+              <Button type="primary" onClick={handleSearch}>
+                查询
                 </Button>
-
-                <Button style={{ marginLeft: 8 }} onClick={handleReset}>
-                  重置
+              <Button style={{ marginLeft: 8 }} onClick={handleReset}>
+                重置
                 </Button>
-
-                <Button
-                  style={{ marginLeft: 8 }}
-                  type="link"
-                  onClick={() => {
-                    setExpand(!expand);
-                  }}
-                >
-                  {expand ? (
-                    <>
-                      关闭 <UpOutlined />
-                    </>
-                  ) : (
-                    <>
-                      展开 <DownOutlined />
-                    </>
-                  )}
-                </Button>
-              </Col>
-            )}
-
-            {expand === true && (
-              <Col span={24} style={{ textAlign: 'right' }}>
-                <Button type="primary" onClick={handleSearch}>
-                  查询
-                </Button>
-                <Button style={{ marginLeft: 8 }} onClick={handleReset}>
-                  重置
-                </Button>
-                <Button
-                  style={{ marginLeft: 8 }}
-                  type="link"
-                  onClick={() => {
-                    setExpand(!expand);
-                  }}
-                >
-                  {expand ? (
-                    <>
-                      关闭 <UpOutlined />
-                    </>
-                  ) : (
-                    <>
-                      展开 <DownOutlined />
-                    </>
-                  )}
-                </Button>
-              </Col>
-            )}
+            </Col>
           </Form>
         </Row>
 
@@ -456,25 +429,9 @@ function MymonthlyReport(props) {
           <Button
             style={{ marginLeft: 8 }}
             type="primary"
-          // onClick={() => download()}
-          >
-            编辑
-        </Button>
-
-          <Button
-            style={{ marginLeft: 8 }}
-            type="primary"
-          // onClick={() => download()}
+          onClick={handleCopy}
           >
             复制
-        </Button>
-
-          <Button
-            style={{ marginLeft: 8 }}
-            type="primary"
-          // onClick={() => download()}
-          >
-            粘贴
         </Button>
 
           <Button

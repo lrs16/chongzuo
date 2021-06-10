@@ -7,19 +7,21 @@ import {
   Row,
   Button,
   Divider,
-  Popconfirm
+  Popconfirm,
+  Select
 } from 'antd';
 import { connect } from 'dva';
 import SysUpload from '@/components/SysUpload';
 
 const { TextArea } = Input;
-function WeeklyMeeting(props) {
+const { Option } = Select;
+function NewTroublelist(props) {
 
   const {
     form: { getFieldDecorator },
     forminladeLayout,
-    meetingSummaryList,
-    type
+    newTroubleList,
+    developmentList
   } = props;
   const [data, setData] = useState([]);
   const [seconddata, setSeconddata] = useState([]);
@@ -28,6 +30,14 @@ function WeeklyMeeting(props) {
   const [fileslist, setFilesList] = useState([]);
   const [newbutton, setNewButton] = useState(false);
 
+
+  // 初始化把数据传过去
+  useEffect(() => {
+    if (data && data.length) {
+      newTroubleList(data)
+    }
+  }, [data]);
+
   // 新增一条记录
   const newMember = (params) => {
     setFilesList([]);
@@ -35,11 +45,9 @@ function WeeklyMeeting(props) {
     const newData = (data).map(item => ({ ...item }));
     newData.push({
       key: data.length + 1,
-      id: '',
-      dd11: '新增数据',
-      dd22: '',
-      dd33: 'dd',
-      dd44: '',
+      field1: '',
+      field2: '',
+      field3: '',
     });
     setData(newData);
     setNewButton(true);
@@ -82,7 +90,7 @@ function WeeklyMeeting(props) {
   }
 
   const savedata = (target, id) => {
-    meetingSummaryList(data)
+    newTroubleList(data)
   }
 
   const saveRow = (e, key) => {
@@ -108,16 +116,24 @@ function WeeklyMeeting(props) {
   }
 
   const handleTabledata = () => {
-    const newarr = [].map((item, index) => {
-      return Object.assign(item, { editable: true, isNew: false, key: index })
-    })
-    setData(newarr)
+    if (developmentList && developmentList.length) {
+      const newarr = developmentList.map((item, index) => {
+        return Object.assign(item, { editable: true, isNew: false, key: index })
+      })
+      setData(newarr)
+    }
+
   }
 
 
   const column = [
+    // {
+    //   title: '序号',
+    //   dataIndex: 'date',
+    //   key: 'date'
+    // },
     {
-      title: '工作内容',
+      title: '日期',
       dataIndex: 'field1',
       key: 'field1',
       render: (text, record) => {
@@ -135,7 +151,7 @@ function WeeklyMeeting(props) {
       }
     },
     {
-      title: '完成情况',
+      title: '故障类型',
       dataIndex: 'field2',
       key: 'field2',
       render: (text, record) => {
@@ -153,7 +169,7 @@ function WeeklyMeeting(props) {
       }
     },
     {
-      title: '备注',
+      title: '故障情况',
       dataIndex: 'field3',
       key: 'field3',
       render: (text, record) => {
@@ -171,12 +187,83 @@ function WeeklyMeeting(props) {
       }
     },
     {
+      title: '是否已修复',
+      dataIndex: 'field4',
+      key: 'field4',
+      render: (text, record) => {
+        if (record.isNew) {
+          return (
+            <Input
+              defaultValue={text}
+              onChange={e => handleFieldChange(e.target.value, 'field4', record.key)}
+            />
+          )
+        }
+        if (record.isNew === false) {
+          return <span>{text}</span>
+        }
+      }
+    },
+    {
+      title: '是否需要报告',
+      dataIndex: 'field5',
+      key: 'field5',
+      render: (text, record) => {
+        if (record.isNew) {
+          return (
+            <Input
+              defaultValue={text}
+              onChange={e => handleFieldChange(e.target.value, 'field5', record.key)}
+            />
+          )
+        }
+        if (record.isNew === false) {
+          return <span>{text}</span>
+        }
+      }
+    },
+    {
+      title: '报告提供方',
+      dataIndex: 'field6',
+      key: 'field6',
+      render: (text, record) => {
+        if (record.isNew) {
+          return (
+            <Input
+              defaultValue={text}
+              onChange={e => handleFieldChange(e.target.value, 'field6', record.key)}
+            />
+          )
+        }
+        if (record.isNew === false) {
+          return <span>{text}</span>
+        }
+      }
+    },
+    {
+      title: '是否已提供故障处理记录（报告）',
+      dataIndex: 'field7',
+      key: 'field7',
+      render: (text, record) => {
+        if (record.isNew) {
+          return (
+            <Input
+              defaultValue={text}
+              onChange={e => handleFieldChange(e.target.value, 'field7', record.key)}
+            />
+          )
+        }
+        if (record.isNew === false) {
+          return <span>{text}</span>
+        }
+      }
+    },
+    {
       title: '操作',
       key: 'action',
       fixed: 'right',
       width: 120,
       render: (text, record) => {
-        // if (record.editable) {
         if (record.isNew === true) {
           return (
             <span>
@@ -188,7 +275,6 @@ function WeeklyMeeting(props) {
             </span>
           )
         }
-        // }
 
         return (
           <span>
@@ -207,19 +293,21 @@ function WeeklyMeeting(props) {
       }
 
     }
-
   ];
 
   useEffect(() => {
     handleTabledata();
-  }, [])
+  }, [developmentList])
 
 
   return (
     <>
       <Row gutter={16}>
         <Col span={20}>
-          <p style={{ fontWeight: '900', fontSize: '16px' }}>{type === 'week' ? '5 周例会会议纪要完成情况':'5 月例会会议纪要完成情况'}</p>
+          <p style={{ fontWeight: '900', fontSize: '16px' }}>3 本周新增故障及故障修复情况统计</p>
+        </Col>
+        <Col span={20}>
+          <p>3.1新增及已修复故障</p>
         </Col>
 
         <Table
@@ -242,4 +330,4 @@ function WeeklyMeeting(props) {
   )
 }
 
-export default Form.create({})(WeeklyMeeting)
+export default Form.create({})(NewTroublelist)

@@ -19,6 +19,7 @@ function Nextweek(props) {
     form: { getFieldDecorator },
     forminladeLayout,
     myTaskplanlist,
+    type,
     loading,
     dispatch
   } = props;
@@ -337,7 +338,7 @@ function Nextweek(props) {
       { loading === false && data && data.length > 0 && (
         <Row gutter={16}>
           <Col span={20}>
-            <p style={{ fontWeight: '900', fontSize: '16px' }}>五、下周作业计划</p>
+            <p style={{ fontWeight: '900', fontSize: '16px' }}>{type === 'week' ?'五、下周作业计划':'五、下月作业计划'}</p>
           </Col>
 
           <Table

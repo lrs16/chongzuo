@@ -26,15 +26,22 @@ const RemainingDefects = React.forwardRef((props, ref) => {
   const {
     form: { getFieldDecorator },
     forminladeLayout,
-    remainingDefectslist
+    remainingDefectslist,
+    legacyList,
+    legacyArr
   } = props;
   const [data, setData] = useState([]);
-  const [seconddata, setSeconddata] = useState([]);
   const [cacheOriginData, setcacheOriginData] = useState({});
   const [uploadkey, setKeyUpload] = useState('');
   const [fileslist, setFilesList] = useState([]);
   const [newbutton, setNewButton] = useState(false);
 
+  // 初始化把数据传过去
+  useEffect(() => {
+    if (data && data.length) {
+      legacyList(data)
+    }
+  }, [data]);
   // 新增一条记录
   const newMember = (params) => {
     setFilesList([]);
@@ -43,10 +50,10 @@ const RemainingDefects = React.forwardRef((props, ref) => {
     newData.push({
       key: data.length + 1,
       id: '',
-      dd11: '新增数据',
-      dd22: '',
-      dd33: 'dd',
-      dd44: '',
+      field1: '新增数据',
+      field2: '',
+      field3: 'dd',
+      field4: '',
     });
     setData(newData);
     setNewButton(true);
@@ -100,6 +107,7 @@ const RemainingDefects = React.forwardRef((props, ref) => {
   }
 
   const savedata = (target, id) => {
+    legacyList(data)
   }
 
   const saveRow = (e, key) => {
@@ -125,24 +133,25 @@ const RemainingDefects = React.forwardRef((props, ref) => {
   }
 
   const handleTabledata = () => {
-    const newarr = remainingDefectslist.map((item, index) => {
+    const newarr = legacyArr.map((item, index) => {
       return Object.assign(item, { editable: true, isNew: false, key: index })
     })
     setData(newarr)
   }
 
+  // console.log(legacyArr,'legacyArr')
 
   const column = [
     {
       title: '日期',
-      dataIndex: 'dd11',
-      key: 'dd11',
+      dataIndex: 'field1',
+      key: 'field1',
       render: (text, record) => {
         if (record.isNew) {
           return (
             <Input
               defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'dd11', record.key)}
+              onChange={e => handleFieldChange(e.target.value, 'field1', record.key)}
             />
           )
         }
@@ -153,14 +162,14 @@ const RemainingDefects = React.forwardRef((props, ref) => {
     },
     {
       title: '工作项',
-      dataIndex: 'dd22',
-      key: 'dd22',
+      dataIndex: 'field2',
+      key: 'field2',
       render: (text, record) => {
         if (record.isNew) {
           return (
             <Input
               defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'dd22', record.key)}
+              onChange={e => handleFieldChange(e.target.value, 'field2', record.key)}
             />
           )
         }
@@ -171,14 +180,14 @@ const RemainingDefects = React.forwardRef((props, ref) => {
     },
     {
       title: '工作内容',
-      dataIndex: 'dd33',
-      key: 'dd33',
+      dataIndex: 'field3',
+      key: 'field3',
       render: (text, record) => {
         if (record.isNew) {
           return (
             <Input
               defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'dd33', record.key)}
+              onChange={e => handleFieldChange(e.target.value, 'field3', record.key)}
             />
           )
         }
@@ -189,14 +198,14 @@ const RemainingDefects = React.forwardRef((props, ref) => {
     },
     {
       title: '完成情况',
-      dataIndex: 'dd44',
-      key: 'dd44',
+      dataIndex: 'field4',
+      key: 'field4',
       render: (text, record) => {
         if (record.isNew) {
           return (
             <Input
               defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'dd44', record.key)}
+              onChange={e => handleFieldChange(e.target.value, 'field4', record.key)}
             />
           )
         }
@@ -245,9 +254,11 @@ const RemainingDefects = React.forwardRef((props, ref) => {
 
   ];
 
+
   useEffect(() => {
     handleTabledata();
   }, [])
+ 
 
 
   return (

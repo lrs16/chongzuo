@@ -11,6 +11,7 @@ import {
   Popconfirm,
   Divider,
   Icon,
+  message,
 } from 'antd';
 import Link from 'umi/link';
 import moment from 'moment';
@@ -97,8 +98,8 @@ function SoftReportdetail(props) {
 
   const required = true;
   const thisWeekitsmRef = useRef();
-  const [fileslist, setFilesList] = useState({ arr: [], ischange: false }); // 下载列表
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
+  const [fileslist, setFilesList] = useState({ arr: [], ischange: false }); // 下载列表
   const [secondbutton, setSecondbutton] = useState(false);
   const [addTitle, setAddTitle] = useState([]);
   const [contentRow, setContentRow] = useState([]); // 本周运维情况综述列表 
@@ -114,8 +115,8 @@ function SoftReportdetail(props) {
   const [topNList, setTopNList] = useState([]) // TOPN列表
   const [typeList, setTypeList] = useState([]) // TOPN列表
   const [nextOperationList, setNextOperationList] = useState([]) // 下周作业列表
-  const [list,setList] = useState([]);
-  const [buttonVisible,setButtonVisible] = useState(false)
+  const [list, setList] = useState([]);
+  const [buttonVisible, setButtonVisible] = useState(false)
   const [detail, setDetail] = useState({});
   const { main } = detail;
 
@@ -125,101 +126,91 @@ function SoftReportdetail(props) {
 
   //  保存表单
   const softReportform = (params) => {
-    if (mainId) {
-      props.form.validateFields((err, value) => {
-        const savedata = {
-          ...value,
-          status,
-          editStatus: mainId ? 'edit' : 'add',
-          addData: '',
-          type: '软件运维周报',
-          reporttype,
-          mainId,
-          time1: startTime,
-          time2: endTime,
-          // contentRow: contentRow.length?JSON.stringify(contentRow):detail?.contentRow?detail.contentRow:'[]',
-          contentRow: JSON.stringify(contentRow),
-          patrolAndExamineList: JSON.stringify(patrolAndExamineList),
-          materialsList: JSON.stringify(materialsList),
-          eventList: JSON.stringify(eventList),
-          upgradeList: JSON.stringify(upgradeList),
-          updateList: JSON.stringify(updateList),
-          legacyList: JSON.stringify(legacyList),
-          operationList: JSON.stringify(operationList),
-          nextOperationList: JSON.stringify(nextOperationList),
-          statisList: JSON.stringify(statisList),
-          topNList: JSON.stringify(topNList),
-          typeList: JSON.stringify(typeList),
-          selfhandleRow: JSON.stringify(selfhandleRow),
-        }
+    props.form.validateFields((err, value) => {
+      const savedata = {
+        ...value,
+        status,
+        editStatus: mainId ? 'edit' : 'add',
+        addData: JSON.stringify(list),
+        type: '软件运维周报',
+        reporttype,
+        mainId,
+        time1: startTime,
+        time2: endTime,
+        // contentRow: contentRow.length?JSON.stringify(contentRow):detail?.contentRow?detail.contentRow:'[]',
+        contentRow: JSON.stringify(contentRow),
+        patrolAndExamineList: JSON.stringify(patrolAndExamineList),
+        materialsList: JSON.stringify(materialsList),
+        eventList: JSON.stringify(eventList),
+        upgradeList: JSON.stringify(upgradeList),
+        updateList: JSON.stringify(updateList),
+        legacyList: JSON.stringify(legacyList),
+        operationList: JSON.stringify(operationList),
+        nextOperationList: JSON.stringify(nextOperationList),
+        statisList: JSON.stringify(statisList),
+        topNList: JSON.stringify(topNList),
+        typeList: JSON.stringify(typeList),
+        selfhandleRow: JSON.stringify(selfhandleRow),
+      }
+      // if (mainId) {
         return dispatch({
-          type: 'softreport/uploadSave',
+          type: 'softreport/saveSoft',
           payload: savedata
         }).then(res => {
           if (res.code === 200) {
-            router.push({
-              pathname: `/ITSM/operationreport/weeklyreport/detailSoft/`,
-              query: {
-                reporttype: 'week',
-                mainId,
-              },
-            })
+            message.info(res.msg)
+            props.history.go(0);
+           
           }
         })
-      })
-    } else {
-      props.form.validateFields((err, value) => {
-        if(!err) {
-          const savedata = {
-            ...value,
-            status,
-            editStatus: mainId ? 'edit' : 'add',
-            addData: JSON.stringify(list),
-            type: '软件运维周报',
-            reporttype,
-            mainId,
-            time1: startTime,
-            time2: endTime,
-            // contentRow: contentRow.length?JSON.stringify(contentRow):detail?.contentRow?detail.contentRow:'[]',
-            contentRow: JSON.stringify(contentRow),
-            patrolAndExamineList: JSON.stringify(patrolAndExamineList),
-            materialsList: JSON.stringify(materialsList),
-            eventList: JSON.stringify(eventList),
-            upgradeList: JSON.stringify(upgradeList),
-            updateList: JSON.stringify(updateList),
-            legacyList: JSON.stringify(legacyList),
-            operationList: JSON.stringify(operationList),
-            nextOperationList: JSON.stringify(nextOperationList),
-            statisList: JSON.stringify(statisList),
-            topNList: JSON.stringify(topNList),
-            typeList: JSON.stringify(typeList),
-            selfhandleRow: JSON.stringify(selfhandleRow),
-          }
-          dispatch({
-            type: 'softreport/saveSoft',
-            payload: savedata
-          })
-        }
-      
-        // if (mainId) {
-        //   return dispatch({
-        //     type: 'softreport/saveSoft',
-        //     payload: savedata
-        //   }).then(res => {
-        //     if (res.code === 200) {
-        //       getopenFlow()
-        //     }
-        //   })
-        // }
+      // }
 
-        // if (!mainId) {
-        // }
-      })
-    }
-
+      // if (!mainId) {
+      //   dispatch({
+      //     type: 'softreport/saveSoft',
+      //     payload: savedata
+      //   })
+      // }
+    })
   }
 
-
+  const uploadSave = () => {
+    props.form.validateFields((err, value) => {
+      const savedata = {
+        ...value,
+        status,
+        editStatus: mainId ? 'edit' : 'add',
+        addData: '',
+        type: '软件运维周报',
+        reporttype,
+        mainId,
+        time1: startTime,
+        time2: endTime,
+        // contentRow: contentRow.length?JSON.stringify(contentRow):detail?.contentRow?detail.contentRow:'[]',
+        contentRow: JSON.stringify(contentRow),
+        patrolAndExamineList: JSON.stringify(patrolAndExamineList),
+        materialsList: JSON.stringify(materialsList),
+        eventList: JSON.stringify(eventList),
+        upgradeList: JSON.stringify(upgradeList),
+        updateList: JSON.stringify(updateList),
+        legacyList: JSON.stringify(legacyList),
+        operationList: JSON.stringify(operationList),
+        nextOperationList: JSON.stringify(nextOperationList),
+        statisList: JSON.stringify(statisList),
+        topNList: JSON.stringify(topNList),
+        typeList: JSON.stringify(typeList),
+        selfhandleRow: JSON.stringify(selfhandleRow),
+      }
+      return dispatch({
+        type: 'softreport/uploadSave',
+        payload: savedata
+      }).then(res => {
+        if (res.code === 200) {
+          props.history.go(0);
+        }
+      })
+    })
+  }
 
 
 
@@ -257,7 +248,7 @@ function SoftReportdetail(props) {
 
   useEffect(() => {
     if (files.ischange) {
-      softReportform();
+      uploadSave();
     }
   }, [files]);
 
@@ -277,7 +268,8 @@ function SoftReportdetail(props) {
       }
     }).then(res => {
       if (res.code === 200) {
-        setDetail(res)
+        setAddTitle(res.addData)
+        setDetail(res);
       }
     })
   }
@@ -326,13 +318,12 @@ function SoftReportdetail(props) {
     setButtonVisible(true)
   }
 
-  console.log(addTitle,'addTitle')
 
-  const addTable = (index) => {
-    const nowNumber = addTitle.map(item => ({ ...item }));
-    nowNumber[index].tableNumber.push({ columns: 'aa' });
-    setAddTitle(nowNumber);
-  }
+  // const addTable = (index) => {
+  //   const nowNumber = addTitle.map(item => ({ ...item }));
+  //   nowNumber[index].tableNumber.push({ columns: 'aa' });
+  //   setAddTitle(nowNumber);
+  // }
 
   // 新增一条记录
   const handleaddTable = (params) => {
@@ -343,8 +334,6 @@ function SoftReportdetail(props) {
     setList(newData)
     setButtonVisible(false);
   };
-
-  console.log(list,'list')
 
 
   const remove = (index) => {
@@ -366,6 +355,8 @@ function SoftReportdetail(props) {
     }
     setAddTitle(resultTable)
   }
+
+
 
   // console.log(list)
 
@@ -393,7 +384,7 @@ function SoftReportdetail(props) {
       }
     >
       <Card>
-        { startTime  && (
+        {loading === false && startTime && (detail && detail.code === 200) && (
           <Row gutter={16}>
             <Form {...formItemLayout}>
               <Col span={8}>
@@ -516,10 +507,6 @@ function SoftReportdetail(props) {
               <Col span={24}>
                 <PatrolAndExamine
                   forminladeLayout={forminladeLayout}
-                  handleDelete={(deleteId => handleDelete(deleteId))}
-                  ChangeFiles={(newvalue) => {
-                    setFiles(newvalue)
-                  }}
                   patrolAndExamineList={contentrowdata => {
                     setPatrolAndExamine(contentrowdata)
                   }}
@@ -926,15 +913,14 @@ function SoftReportdetail(props) {
                       <Col span={24}>
                         <AddForm
                           formincontentLayout={formincontentLayout}
-                          px={index+9}
+                          px={index + 9}
                           addTable={newdata => {
                             handleaddTable(newdata)
                           }}
-                        //  list={newdata => {
-                        //     setList(newdata)
-                        //   }}
+                          dynamicData={addTitle[index]}
                         />
                       </Col>
+
                     </>
                   )
                 })
@@ -952,16 +938,6 @@ function SoftReportdetail(props) {
   )
 }
 
-// SoftReport.defaultProps = {
-//   main: {
-//     addTime:new Date(),
-//     content:'',
-//     time1:'',
-//     time2:'',
-//     timeType:'',
-//     type:'',
-//   }
-// }
 
 export default Form.create({})(
   connect(({ thisweekly, eventstatistics, softreport, loading }) => ({

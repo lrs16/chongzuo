@@ -35,6 +35,8 @@ const DatabaseInspectionsummary = React.forwardRef((props, ref) => {
     handleSavedevelopment,
     handleDelete,
     ChangeFiles,
+    startTime,
+    endTime,
     files,
     loading
   } = props;
@@ -292,7 +294,7 @@ const DatabaseInspectionsummary = React.forwardRef((props, ref) => {
       }
     },
     {
-      title: '11月13日占用空间/GB',
+      title: `${startTime}占用空间/GB`,
       dataIndex: 'num2',
       key: 'num2',
       render: (text, record) => {
@@ -310,7 +312,7 @@ const DatabaseInspectionsummary = React.forwardRef((props, ref) => {
       }
     },
     {
-      title: '11月19日占用空间/GB',
+      title: `${endTime}占用空间/GB`,
       dataIndex: 'num3',
       key: 'num3',
       render: (text, record) => {

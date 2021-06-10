@@ -602,7 +602,7 @@ function Work(props) {
           >
             <>
               {auditLink && !delay && edit.check && (
-                <Panel Panel
+                <Panel
                   header='作业计划审核'
                   key='1'
                   style={{ backgroundColor: 'white' }}
@@ -682,7 +682,7 @@ function Work(props) {
         {loading === false && taskResult && taskResult.length > 0 && data && (
           <Collapse
             expandIconPosition="right"
-            defaultActiveKey={['0']}
+            // defaultActiveKey={['0']}
             bordered={false}
           >
             {data.map((obj, index) => {
