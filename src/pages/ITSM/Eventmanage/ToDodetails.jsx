@@ -7,6 +7,7 @@ import User from '@/components/SelectUser/User';
 import Backoff from './components/Backoff';
 import WorkOrder from './WorkOrder';
 import Process from './Process';
+import RelationOrder from './RelationOrder';
 import TimeoutModal from '../components/TimeoutModal';
 import { judgeTimeoutStatus, saveTimeoutMsg } from '../services/api';
 
@@ -269,6 +270,9 @@ function ToDodetails(props) {
       case 'process':
         settabActivekey('process');
         break;
+      case 'relevancy':
+        settabActivekey('relevancy');
+        break;
       default:
         break;
     }
@@ -283,6 +287,10 @@ function ToDodetails(props) {
       key: 'process',
       tab: '事件流程',
     },
+    {
+      key: 'relevancy',
+      tab: '关联工单',
+    }
   ];
   return (
     <PageHeaderWrapper
@@ -303,6 +311,7 @@ function ToDodetails(props) {
         />
       )}
       {tabActivekey === 'process' && <Process location={location} />}
+      {tabActivekey === 'relevancy' && <RelationOrder location={location} relation />}
       <User
         taskId={taskId}
         visible={uservisible}

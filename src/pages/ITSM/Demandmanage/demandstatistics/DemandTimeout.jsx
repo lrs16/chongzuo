@@ -122,13 +122,14 @@ function DemandTimeout(props) {
   }
 
   useEffect(() => {
+    handleReset();
     if (location.state) {
       // 点击菜单刷新,并获取数据
       if (location.state.reset) {
         handleReset()
       };
     }
-  }, [location.state]);
+  }, [location]);
 
   return (
     <PageHeaderWrapper

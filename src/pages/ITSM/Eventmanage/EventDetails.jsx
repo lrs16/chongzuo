@@ -9,6 +9,7 @@ import Registratdes from './components/Registratdes';
 import Checkdes from './components/Checkdes';
 import Handledes from './components/Handledes';
 import ReturnVisitdes from './components/ReturnVisitdes';
+import RelationOrder from './RelationOrder';
 
 const { Panel } = Collapse;
 const { Step } = Steps;
@@ -53,6 +54,9 @@ function EventDetails(props) {
       case 'process':
         settabActivekey('process');
         break;
+      case 'relevancy':
+        settabActivekey('relevancy');
+        break;
       default:
         break;
     }
@@ -66,6 +70,10 @@ function EventDetails(props) {
       key: 'process',
       tab: '事件流程',
     },
+    {
+      key: 'relevancy',
+      tab: '关联工单',
+    }
   ];
 
   const callback = key => {
@@ -157,6 +165,7 @@ function EventDetails(props) {
         </div>
       )}
       {tabActivekey === 'process' && <Process location={location} />}
+      {tabActivekey === 'relevancy' && <RelationOrder location={location} relation={false} />}
     </PageHeaderWrapper>
   );
 }

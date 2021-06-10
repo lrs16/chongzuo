@@ -32,7 +32,7 @@ const ReturnVisit = React.forwardRef((props, ref) => {
     ChangeFiles,
     selectdata,
   } = props;
-  const { taskName, taskId, mainId, check } = location.query;
+  const { taskName, taskId, mainId, check, orderNo } = location.query;
   const { finish } = info;
   const { getFieldDecorator } = props.form;
   const attRef = useRef();
@@ -68,6 +68,7 @@ const ReturnVisit = React.forwardRef((props, ref) => {
         mainId,
         next: sessionStorage.getItem('Nextflowmane'),
         check,
+        orderNo
       },
     });
   };

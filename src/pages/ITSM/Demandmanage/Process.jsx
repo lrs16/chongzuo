@@ -32,7 +32,6 @@ function Process(props) {
       });
     }
   }, [mainId]);
-  console.log(mainId)
 
   useEffect(() => {
     if (imgblob !== '' && document.getElementsByTagName('img').length < 2) {

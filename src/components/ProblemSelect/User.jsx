@@ -206,7 +206,7 @@ const User = props => {
 
             currentPeocess === '系统运维商审核' && (
               <>
-                <div>自动化科专责人员</div>
+                <div>自动化业务人员</div>
                 <div style={{ marginTop: 12 }}>
                   <Checkbox.Group
                     defaultValue={defaultvalue}
