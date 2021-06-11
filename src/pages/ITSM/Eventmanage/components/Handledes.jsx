@@ -5,7 +5,6 @@ import styles from '../index.less';
 
 function Handledes(props) {
   const { info, main } = props;
-
   return (
     <div className={styles.collapse} style={{ marginLeft: 30, marginRight: 10 }}>
       <Descriptions style={{ marginTop: 24 }} size="middle">

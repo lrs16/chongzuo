@@ -46,12 +46,22 @@ export default {
       });
     },
     // 打开编辑
-    *eventopenflow({ payload: { taskId } }, { call, put }) {
+    *eventopenflow({ payload: { taskId, mainId } }, { call, put }) {
       const response = yield call(EventopenFlow, taskId);
       if (response.code === -1) {
         message.error(response.msg, 2);
         router.push({
+          pathname: `/ITSM/eventmanage/to-do/record/workorder`,
+          query: {
+            mainId,
+            taskId,
+            closetab: true,
+          }
+        });
+        router.push({
           pathname: `/ITSM/eventmanage/to-do`,
+          query: { pathpush: true },
+          state: { cach: false }
         });
       }
       yield put({

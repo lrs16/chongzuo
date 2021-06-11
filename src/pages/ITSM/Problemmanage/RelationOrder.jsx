@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
 import router from 'umi/router';
-import { Form, Card, Tabs, Input, Row, Col, Button, Table, } from 'antd';
+import { Card, Tabs, Input, Row, Col, Button, Table, } from 'antd';
 import RelationDrawer from './components/RelationDrawer';
 
 const { TabPane } = Tabs;
 
 function RelevancyOrder(props) {
-  const { location, list, dispatch, relation, statuscode } = props;
-  const [activeKey, setActiveKey] = useState('trouble');
+  const { orderId, list, dispatch, relation, statuscode } = props;
+  const [activeKey, setActiveKey] = useState('event');
   const [visible, setVisible] = useState(false);
   const [title, setTitle] = useState('');
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
@@ -23,8 +23,8 @@ function RelevancyOrder(props) {
     dispatch({
       type: 'relationorder/fetcht',
       payload: {
-        orderId: location.query.mainId,
-        orderType: 'event',
+        orderId,
+        orderType: 'problem',
         pageIndex,
         pageSize,
         relationType: activeKey,
@@ -82,11 +82,21 @@ function RelevancyOrder(props) {
 
   const columns = [
     {
-      title: activeKey === 'problem' ? '问题单编号' : '故障单编码',
+      title: activeKey === 'trouble' ? '故障单编号' : '事件单编码',
       dataIndex: 'orderNo',
       key: 'orderNo',
       render: (text, record) => {
         const handleClick = () => {
+          if (activeKey === 'event') {
+            router.push({
+              pathname: `/ITSM/eventmanage/query/details`,
+              query: {
+                pangekey: record.status,
+                mainId: record.mainId,
+                No: text,
+              },
+            });
+          };
           if (activeKey === 'trouble') {
             router.push({
               pathname: `/ITSM/faultmanage/querylist/record`,
@@ -95,17 +105,6 @@ function RelevancyOrder(props) {
                 No: text,
               },
             });
-          };
-          if (activeKey === 'problem') {
-            router.push({
-              pathname: `/ITSM/problemmanage/problemquery/detail`,
-              query: {
-                id: record.mainId,
-                taskName: record.status,
-                No: text,
-              },
-            });
-
           };
 
         };
@@ -128,17 +127,16 @@ function RelevancyOrder(props) {
       key: 'relationType',
     },
   ];
-
   return (
     <Card>
       <Tabs onChange={callback} activeKey={activeKey}>
+        <TabPane tab="事件单" key="event" />
         <TabPane tab="故障单" key="trouble" />
-        <TabPane tab="问题单" key="problem" />
       </Tabs>
-      {activeKey === 'trouble' && (
+      {activeKey === 'event' && (
         <Row>
           <Col span={8}>
-            <Input onChange={e => setSearchKey(e.target.value)} placeholder="请输入故障单号" allowClear />
+            <Input onChange={e => setSearchKey(e.target.value)} placeholder="请输入事件单号" allowClear />
           </Col>
           <Col span={8}>
             <Button type="primary" style={{ marginLeft: 16 }} onClick={() => handleSearch()} >本页查询</Button>
@@ -147,7 +145,7 @@ function RelevancyOrder(props) {
               <Button
                 type="primary"
                 style={{ marginLeft: 8 }}
-                onClick={() => { setVisible(true); setTitle('故障'); }}
+                onClick={() => { setVisible(true); setTitle('事件'); }}
               >
                 关联工单
               </Button>
@@ -155,7 +153,7 @@ function RelevancyOrder(props) {
           </Col>
         </Row>
       )}
-      {activeKey === 'problem' && (
+      {activeKey === 'trouble' && (
         <Row>
           <Col span={8}>
             <Input placeholder="请输入问题单号" allowClear />
@@ -167,7 +165,7 @@ function RelevancyOrder(props) {
               <Button
                 type="primary"
                 style={{ marginLeft: 8 }}
-                onClick={() => { setVisible(true); setTitle('问题') }}
+                onClick={() => { setVisible(true); setTitle('故障') }}
               >
                 关联工单
               </Button>
@@ -186,8 +184,8 @@ function RelevancyOrder(props) {
         <RelationDrawer
           title={title}
           visible={visible}
-          orderIdPre={location.query.mainId}
-          orderTypePre='event'
+          orderIdPre={orderId}
+          orderTypePre='problem'
           orderTypeSuf={activeKey}
           ChangeVisible={(v) => setVisible(v)}
         />

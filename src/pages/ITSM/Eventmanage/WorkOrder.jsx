@@ -401,6 +401,7 @@ function WorkOrder2(props) {
         type: 'eventtodo/eventopenflow',
         payload: {
           taskId,
+          mainId,
         },
       });
       dispatch({

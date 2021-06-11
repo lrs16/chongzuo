@@ -1195,7 +1195,7 @@ function Todolistdetails(props) {
           </Card>
         </>
       )}
-      {tabActiveKey === 'relevancy' && <RelationOrder location={location} relation />}
+      {tabActiveKey === 'relevancy' && <RelationOrder orderId={location.query.mainId} relation />}
       <User
         taskId={id}
         visible={uservisible}

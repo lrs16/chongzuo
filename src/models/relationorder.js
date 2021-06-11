@@ -61,12 +61,14 @@ export default {
       return {
         ...state,
         list: action.payload || [],
+        statuscode: '',
       };
     },
     saveorder(state, action) {
       return {
         ...state,
         order: action.payload,
+        statuscode: '',
       };
     },
     savecode(state, action) {

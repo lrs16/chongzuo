@@ -19,6 +19,7 @@ import HandleQuery from './components/HandleQuery'; // 系统运维商处理
 import SummaryQuery from './components/SummaryQuery'; // 系统运维商确认总结
 import ExamineSecondQuery from './components/ExamineSecondQuery'; // 自动化科业务负责人审核
 import ConfirmQuery from './components/ConfirmQuery'; // 自动化科专责确认
+import RelationOrder from './RelationOrder';
 
 const { Panel } = Collapse;
 const { Step } = Steps;
@@ -34,6 +35,10 @@ const tabList = [
     key: 'faultPro',
     tab: '故障流程',
   },
+  {
+    key: 'relevancy',
+    tab: '关联工单',
+  }
 ];
 
 function Querylistdetails(props) {
@@ -48,6 +53,7 @@ function Querylistdetails(props) {
     querydetailslist: { troubleFlowNodeRows, main, troubleFlowLogs },
     flowimageview,
     flowlog,
+    location,
   } = props;
 
   const { id } = props.location.query;
@@ -220,6 +226,7 @@ function Querylistdetails(props) {
           </div>
         ))
       }
+      {tabActiveKey === 'relevancy' && <RelationOrder orderId={location.query.id} relation={false} />}
     </PageHeaderWrapper >
   );
 }

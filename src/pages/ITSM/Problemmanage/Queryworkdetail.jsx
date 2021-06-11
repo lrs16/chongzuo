@@ -15,6 +15,7 @@ import Problemreview from './components/Problemreview';
 import Operatorconfirmades from './components/Operatorconfirmades';
 import Problemregistration from './components/Problemregistration';
 import Problemflow from './components/Problemflow';
+import RelationOrder from './RelationOrder';                          // 关联工单
 
 import styles from './index.less';
 
@@ -30,7 +31,8 @@ function Queryworkdetail(props) {
     dispatch,
     queryDetaildata,
     queryDetaildata: { problemFlowNodeRows, main, problemFlowLogs },
-    loading
+    loading,
+    location
   } = props;
 
   const { id, taskName } = props.location.query;
@@ -60,6 +62,10 @@ function Queryworkdetail(props) {
       key: 'process',
       tab: '问题流程',
     },
+    {
+      key: 'relevancy',
+      tab: '关联工单'
+    }
   ];
 
   const handleTabChange = (key) => { // tab切换
@@ -180,7 +186,7 @@ function Queryworkdetail(props) {
           <Problemflow id={problemFlowid} />
         ))
       }
-
+      {tabActiveKey === 'relevancy' && <RelationOrder orderId={location.query.id} relation={false} />}
     </PageHeaderWrapper>
   );
 }

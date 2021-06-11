@@ -37,7 +37,7 @@ function RelationDrawer(props) {
       resetFields,
     }, } = props;
   const [eventstatus, setEventstatus] = useState([]);
-  const [problemstatus, setproblemstatus] = useState([]);
+  const [troublestatus, settroublestatus] = useState([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
   const [collapsed, setCollapsed] = useState(false);
@@ -76,9 +76,9 @@ function RelationDrawer(props) {
         payload: { no, status, pageIndex, pageSize },
       })
     };
-    if (orderTypeSuf === 'problem') {
+    if (orderTypeSuf === 'trouble') {
       dispatch({
-        type: 'relationorder/fetchproblem',
+        type: 'relationorder/fetchtrouble',
         payload: { no, status, pageIndex, pageSize },
       })
     }
@@ -127,17 +127,17 @@ function RelationDrawer(props) {
         setEventstatus(res.data.status)
       }
     });
-    querkeyVal('problem', 'status').then(res => {
+    querkeyVal('trouble', 'status').then(res => {
       if (res.code === 200) {
-        setproblemstatus(res.data.status)
+        settroublestatus(res.data.status)
       }
     })
   }, [])
 
   const columns = [
     {
-      title: orderTypeSuf === 'problem' ? '问题单编号' : '事件单编码',
-      dataIndex: orderTypeSuf === 'problem' ? 'no' : 'eventNo',
+      title: orderTypeSuf === 'trouble' ? '问题单编号' : '事件单编码',
+      dataIndex: orderTypeSuf === 'trouble' ? 'no' : 'eventNo',
       key: 'no',
     },
     {
@@ -147,7 +147,7 @@ function RelationDrawer(props) {
     },
     {
       title: '状态',
-      dataIndex: orderTypeSuf === 'problem' ? 'status' : 'eventStatus',
+      dataIndex: orderTypeSuf === 'trouble' ? 'status' : 'eventStatus',
       key: 'status',
     },
   ];
@@ -190,13 +190,13 @@ function RelationDrawer(props) {
                       )}
                     </Form.Item>
                   )}
-                  {orderTypeSuf === 'problem' && (
+                  {orderTypeSuf === 'trouble' && (
                     <Form.Item label='状态' >
                       {getFieldDecorator('status', {
                         initialValue: '',
                       })(
                         <Select placeholder="请选择" allowClear>
-                          {problemstatus.map(obj => (
+                          {troublestatus.map(obj => (
                             <Option key={obj.key} value={obj.val}>
                               {obj.val}
                             </Option>
@@ -238,11 +238,11 @@ function RelationDrawer(props) {
             <h3 style={{ background: '#f8f8f8', padding: 20, border: '1px solid #e8e8e8', borderLeft: 0 }}>工单详情</h3>
             <div style={{ padding: '8px 0 0 24px' }}>
               <h4 style={{ padding: '8px 0' }}>{title}编号</h4>
-              <Input value={orderTypeSuf === 'problem' ? rowrecord.no : rowrecord.eventNo} />
+              <Input value={orderTypeSuf === 'trouble' ? rowrecord.no : rowrecord.eventNo} />
               <h4 style={{ padding: '8px 0' }}>{title}来源</h4>
-              <Input value={orderTypeSuf === 'problem' ? rowrecord.source : rowrecord.eventSource} />
+              <Input value={orderTypeSuf === 'trouble' ? rowrecord.source : rowrecord.eventSource} />
               <h4 style={{ padding: '8px 0' }}>{title}分类</h4>
-              <Input value={orderTypeSuf === 'problem' ? rowrecord.type : rowrecord.eventType} />
+              <Input value={orderTypeSuf === 'trouble' ? rowrecord.type : rowrecord.eventType} />
               <h4 style={{ padding: '8px 0' }}>建单时间</h4>
               <Input value={rowrecord.addTime} />
               <h4 style={{ padding: '8px 0' }}>{title}标题</h4>

@@ -28,6 +28,8 @@ import Systemoperatorsecond from './components/Systemoperatorsecond';
 import TimeoutModal from '../components/TimeoutModal';                // 超时信息填写
 import { judgeTimeoutStatus, saveTimeoutMsg } from '../services/api'; // 超时接口
 
+import RelationOrder from './RelationOrder';                          // 关联工单
+
 import styles from './index.less';
 
 const { Panel } = Collapse;
@@ -97,7 +99,8 @@ function Workorder(props) {
     scopeList,
     projectList,
     userinfo,
-    loading
+    loading,
+    location
   } = props;
 
   let showback = true;
@@ -614,6 +617,10 @@ function Workorder(props) {
       key: 'process',
       tab: '问题流程',
     },
+    {
+      key: 'relevancy',
+      tab: '关联工单',
+    }
   ];
 
   const handleTabChange = (key) => { // tab切换
@@ -1167,6 +1174,8 @@ function Workorder(props) {
           <Problemflow id={problemFlowid} />
         ))
       }
+
+      {tabActiveKey === 'relevancy' && <RelationOrder orderId={location.query.mainId} relation />}
       <User
         taskId={id}
         visible={uservisible}
