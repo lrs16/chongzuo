@@ -376,7 +376,7 @@ function Registration(props) {
                   show={show}
                   selectdata={selectdata}
                   files={[]}
-                  info={tabdata !== undefined ? { handle: tabdata.handle } : undefined}
+                  info={(tabdata === undefined || tabdata.handle === undefined) ? undefined : { handle: tabdata.handle }}
                   main={tabdata !== undefined ? tabdata.handlemain : undefined}
                 />
               </Panel>
