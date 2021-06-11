@@ -244,7 +244,7 @@ function RelationDrawer(props) {
               <h4 style={{ padding: '8px 0' }}>{title}分类</h4>
               <Input value={orderTypeSuf === 'trouble' ? rowrecord.type : rowrecord.eventType} />
               <h4 style={{ padding: '8px 0' }}>建单时间</h4>
-              <Input value={rowrecord.addTime} />
+              <Input value={orderTypeSuf === 'trouble' ? rowrecord.addTime : rowrecord.occurTime} />
               <h4 style={{ padding: '8px 0' }}>{title}标题</h4>
               <Input value={rowrecord.title} />
               <h4 style={{ padding: '8px 0' }}>{title}描述</h4>
