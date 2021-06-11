@@ -34,7 +34,7 @@ function Registratdes(props) {
           <Checkbox defaultChecked={Boolean(Number(info.selfhandle))} disabled />
         </Descriptions.Item>
         <Descriptions.Item label="是否补单" span={4}>
-          <Checkbox defaultChecked={Boolean(Number(info.supplement))} disabled />
+          <Checkbox defaultChecked={info.supplement === '' ? '' : Boolean(Number(info.supplement))} disabled />
         </Descriptions.Item>
         <Descriptions.Item label="附件" span={3}>
           {info.fileIds !== '' && <Downloadfile files={info.fileIds} />}

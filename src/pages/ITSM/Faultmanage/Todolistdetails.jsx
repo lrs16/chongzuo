@@ -30,6 +30,9 @@ import ConfirmQuery from './components/ConfirmQuery'; // 自动化科专责确�
 import TimeoutModal from '../components/TimeoutModal';                // 超时信息填写
 import { judgeTimeoutStatus, saveTimeoutMsg } from '../services/api'; // 超时接口
 
+// 关联工单
+import RelationOrder from './RelationOrder';
+
 const { Step } = Steps;
 const { Panel } = Collapse;
 const history1 = creatHistory(); // 返回上一页
@@ -74,6 +77,10 @@ const tabList = [
     key: 'faultPro',
     tab: '故障流程',
   },
+  {
+    key: 'relevancy',
+    tab: '关联工单',
+  }
 ];
 
 const Collapsekeymap = new Map([
@@ -1188,6 +1195,7 @@ function Todolistdetails(props) {
           </Card>
         </>
       )}
+      {tabActiveKey === 'relevancy' && <RelationOrder location={location} relation />}
       <User
         taskId={id}
         visible={uservisible}

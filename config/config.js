@@ -1322,7 +1322,7 @@ export default {
     },
     // ITSM通用接口
     '/common/': {
-      target: ' http://172.16.10.106:9901/',
+      target: ' http://172.16.10.11:9901/',
       changeOrigin: true,
     },
     // 事件管理,问题，故障

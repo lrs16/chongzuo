@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
-import { Drawer, Button, Table, Row, Col, Input, Form, Select } from 'antd';
+import { Drawer, Button, Table, Row, Col, Input, Form, Select, Layout } from 'antd';
 import { querkeyVal } from '@/services/api'
 
 const { Option } = Select;
+const { Content, Sider } = Layout;
+const { TextArea } = Input;
 
 const formItemLayout = {
   labelCol: {
@@ -25,7 +27,6 @@ function RelationDrawer(props) {
     orderTypePre,
     orderTypeSuf,
     ChangeVisible,
-    SaveRefresh,
     orderlist,
     loading } = props;
 
@@ -39,6 +40,8 @@ function RelationDrawer(props) {
   const [problemstatus, setproblemstatus] = useState([]);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
+  const [collapsed, setCollapsed] = useState(false);
+  const [rowrecord, setRowRecord] = useState({});
 
   const onSelectChange = RowKeys => {
     setSelectedRowKeys(RowKeys);
@@ -60,8 +63,6 @@ function RelationDrawer(props) {
         relationType: 1
       },
     });
-    // 保存成功刷新列表
-    SaveRefresh()
   }
 
   const hanldleCancel = () => {
@@ -153,72 +154,107 @@ function RelationDrawer(props) {
   return (
     <>
       <Drawer
-        title={title}
-        width={700}
+        title={`关联${title}单`}
+        width={950}
         onClose={hanldleCancel}
         visible={visible}
         bodyStyle={{ paddingBottom: 60 }}
         destroyOnClose
       >
-        <Row>
-          <Form {...formItemLayout}>
-            <Col span={10}>
-              <Form.Item label='工单编号' >
-                {getFieldDecorator('no', {
-                  initialValue: '',
-                })(
-                  <Input placeholder="请输入" allowClear />,
-                )}
-              </Form.Item>
-            </Col>
-            <Col span={8}>
-              {orderTypeSuf === 'trouble' && (
-                <Form.Item label='状态' >
-                  {getFieldDecorator('status', {
-                    initialValue: '',
-                  })(
-                    <Select placeholder="请选择" allowClear>
-                      {troublestatus.map(obj => (
-                        <Option key={obj.key} value={obj.val}>
-                          {obj.val}
-                        </Option>
-                      ))}
-                    </Select>,
+        <Layout style={{ background: '#fff' }}>
+          <Content style={{ borderRight: '1px solid #e8e8e8' }}>
+            <Row>
+              <Form {...formItemLayout}>
+                <Col span={10}>
+                  <Form.Item label={`${title}编号`} >
+                    {getFieldDecorator('no', {
+                      initialValue: '',
+                    })(
+                      <Input placeholder="请输入" allowClear />,
+                    )}
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  {orderTypeSuf === 'trouble' && (
+                    <Form.Item label='状态' >
+                      {getFieldDecorator('status', {
+                        initialValue: '',
+                      })(
+                        <Select placeholder="请选择" allowClear>
+                          {troublestatus.map(obj => (
+                            <Option key={obj.key} value={obj.val}>
+                              {obj.val}
+                            </Option>
+                          ))}
+                        </Select>,
+                      )}
+                    </Form.Item>
                   )}
-                </Form.Item>
-              )}
-              {orderTypeSuf === 'problem' && (
-                <Form.Item label='状态' >
-                  {getFieldDecorator('status', {
-                    initialValue: '',
-                  })(
-                    <Select placeholder="请选择" allowClear>
-                      {problemstatus.map(obj => (
-                        <Option key={obj.key} value={obj.val}>
-                          {obj.val}
-                        </Option>
-                      ))}
-                    </Select>,
+                  {orderTypeSuf === 'problem' && (
+                    <Form.Item label='状态' >
+                      {getFieldDecorator('status', {
+                        initialValue: '',
+                      })(
+                        <Select placeholder="请选择" allowClear>
+                          {problemstatus.map(obj => (
+                            <Option key={obj.key} value={obj.val}>
+                              {obj.val}
+                            </Option>
+                          ))}
+                        </Select>,
+                      )}
+                    </Form.Item>
                   )}
-                </Form.Item>
-              )}
-            </Col>
+                </Col>
 
-            <Col span={6} style={{ paddingTop: 4 }}>
-              <Button type='primary' style={{ marginLeft: 16 }} onClick={() => handleSumit()} >查询</Button>
-              <Button style={{ marginLeft: 8 }} onClick={() => { resetFields(); handleSearch() }}>重置</Button>
-            </Col>
-          </Form>
-        </Row>
+                <Col span={6} style={{ paddingTop: 4 }}>
+                  <Button type='primary' style={{ marginLeft: 16 }} onClick={() => handleSumit()} >查询</Button>
+                  <Button style={{ marginLeft: 8 }} onClick={() => { resetFields(); handleSearch() }}>重置</Button>
+                </Col>
+              </Form>
+            </Row>
 
-        <Table
-          loading={loading}
-          columns={columns}
-          dataSource={orderlist.rows}
-          rowKey={r => r.id}
-          rowSelection={rowSelection}
-          pagination={pagination}
-        />
+            <Table
+              loading={loading}
+              columns={columns}
+              dataSource={orderlist.rows}
+              rowKey={r => r.id}
+              rowSelection={rowSelection}
+              pagination={pagination}
+              onRow={record => {
+                return {
+                  onClick: () => { setRowRecord(record) }, // 点击行
+                }
+              }}
+            />
+          </Content>
+          <Sider
+            collapsible
+            collapsed={collapsed}
+            onCollapse={() => setCollapsed(!collapsed)}
+            theme='light'
+            width='250'
+          >
+            <h3 style={{ background: '#f8f8f8', padding: 20, border: '1px solid #e8e8e8', borderLeft: 0 }}>工单详情</h3>
+            <div style={{ padding: '8px 0 0 24px' }}>
+              <h4 style={{ padding: '8px 0' }}>{title}编号</h4>
+              <Input value={rowrecord.no} />
+              <h4 style={{ padding: '8px 0' }}>{title}来源</h4>
+              <Input value={rowrecord.source} />
+              <h4 style={{ padding: '8px 0' }}>{title}分类</h4>
+              <Input value={rowrecord.type} />
+              <h4 style={{ padding: '8px 0' }}>建单时间</h4>
+              <Input value={rowrecord.addTime} />
+              <h4 style={{ padding: '8px 0' }}>{title}标题</h4>
+              <Input value={rowrecord.title} />
+              <h4 style={{ padding: '8px 0' }}>{title}描述</h4>
+              <TextArea
+                value={rowrecord.content}
+                autoSize={{ minRows: 5, maxRows: 10 }}
+              />
+            </div>
+          </Sider>
+        </Layout>
         <div
           style={{
             position: 'absolute',

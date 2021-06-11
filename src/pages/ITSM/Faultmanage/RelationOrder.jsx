@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
 import router from 'umi/router';
-import { Form, Card, Tabs, Input, Row, Col, Button, Table, } from 'antd';
+import { Form, Card, Tabs, Input, Row, Col, Button, Table } from 'antd';
 import RelationDrawer from './components/RelationDrawer';
 
 const { TabPane } = Tabs;
@@ -19,13 +19,11 @@ const formItemLayout = {
 
 
 function RelevancyOrder(props) {
-  const { location, list, dispatch, relation, statuscode } = props;
-  const [activeKey, setActiveKey] = useState('trouble');
+  const { location, list, dispatch, relation } = props;
+  const [activeKey, setActiveKey] = useState('event');
   const [visible, setVisible] = useState(false);
   const [title, setTitle] = useState('');
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
-  const [searchkey, setSearchKey] = useState('');
-  const [searchrow, setSearchRow] = useState(undefined);
 
   const callback = (key) => {
     setActiveKey(key)
@@ -36,7 +34,7 @@ function RelevancyOrder(props) {
       type: 'relationorder/fetcht',
       payload: {
         orderId: location.query.mainId,
-        orderType: 'event',
+        orderType: 'trouble',
         pageIndex,
         pageSize,
         relationType: activeKey,
@@ -70,59 +68,29 @@ function RelevancyOrder(props) {
     onChange: page => changePage(page),
   };
 
-  const handleSearch = () => {
-    const { rows } = list;
-    const newArr = rows.filter(item => {
-      return item.orderNo.includes(searchkey);
-    });
-    if (newArr.length > 0) {
-      setSearchRow(newArr);
-    } else {
-      setSearchRow([]);
-    }
-  }
-
   useEffect(() => {
     getlist(paginations.current - 1, paginations.pageSize)
   }, [activeKey])
 
-  useEffect(() => {
-    if (statuscode === 200) {
-      getlist(paginations.current - 1, paginations.pageSize)
-    }
-  }, [statuscode])
-
   const columns = [
     {
-      title: activeKey === 'problem' ? '问题单编号' : '故障单编码',
+      title: activeKey === 'event' ? '事件单编号' : '问题单编码',
       dataIndex: 'orderNo',
       key: 'orderNo',
-      render: (text, record) => {
-        const handleClick = () => {
-          if (activeKey === 'trouble') {
-            router.push({
-              pathname: `/ITSM/faultmanage/querylist/record`,
-              query: {
-                id: record.mainId,
-                No: text,
-              },
-            });
-          };
-          if (activeKey === 'problem') {
-            router.push({
-              pathname: `/ITSM/problemmanage/problemquery/detail`,
-              query: {
-                id: record.mainId,
-                taskName: record.status,
-                No: text,
-              },
-            });
-
-          };
-
-        };
-        return <a onClick={handleClick}>{text}</a>;
-      },
+      // render: (text, record) => {
+      //   const handleClick = () => {
+      //     router.push({
+      //       pathname: `/ITSM/eventmanage/query/details`,
+      //       query: {
+      //         pangekey: record.eventStatus,
+      //         id: record.taskId,
+      //         mainId: record.id,
+      //         No: text,
+      //       },
+      //     });
+      //   };
+      //   return <a onClick={handleClick}>{text}</a>;
+      // },
     },
     {
       title: '标题',
@@ -140,21 +108,19 @@ function RelevancyOrder(props) {
       key: 'relationType',
     },
   ];
-  console.log(searchkey)
   return (
     <Card>
       <Tabs onChange={callback} activeKey={activeKey}>
-        <TabPane tab="故障单" key="trouble" />
+        <TabPane tab="事件单" key="event" />
         <TabPane tab="问题单" key="problem" />
       </Tabs>
-      {activeKey === 'trouble' && (
+      {activeKey === 'event' && (
         <Row>
           <Col span={8}>
-            <Input onChange={e => setSearchKey(e.target.value)} placeholder="请输入故障单号" allowClear />
+            <Input placeholder="请输入故障单号" allowClear />
           </Col>
           <Col span={8}>
-            <Button type="primary" style={{ marginLeft: 16 }} onClick={() => handleSearch()} >本页查询</Button>
-            <Button style={{ marginLeft: 16 }} onClick={() => setSearchRow(undefined)} >重 置</Button>
+            <Button type="primary" style={{ marginLeft: 16 }} >查 询</Button>
             {relation && (
               <Button
                 type="primary"
@@ -173,7 +139,7 @@ function RelevancyOrder(props) {
             <Input placeholder="请输入问题单号" allowClear />
           </Col>
           <Col span={8}>
-            <Button type="primary" style={{ marginLeft: 16 }} >本页查询</Button>
+            <Button type="primary" style={{ marginLeft: 16 }} >查 询</Button>
             {relation && (
               <Button
                 type="primary"
@@ -189,18 +155,19 @@ function RelevancyOrder(props) {
       <Table
         style={{ marginTop: 16 }}
         columns={columns}
-        dataSource={searchrow === undefined ? list.rows : searchrow}
+        dataSource={list.rows}
         rowKey={r => r.id}
         pagination={pagination}
       />
       {relation && visible && (
         <RelationDrawer
-          title={title}
+          title={`关联${title}单`}
           visible={visible}
           orderIdPre={location.query.mainId}
-          orderTypePre='event'
+          orderTypePre='trouble'
           orderTypeSuf={activeKey}
           ChangeVisible={(v) => setVisible(v)}
+          SaveRefresh={() => getlist(0, 15)}
         />
       )}
     </Card>
@@ -209,6 +176,5 @@ function RelevancyOrder(props) {
 
 export default connect(({ relationorder, loading }) => ({
   list: relationorder.list,
-  statuscode: relationorder.statuscode,
   loading: loading.models.relationorder,
 }))(RelevancyOrder);
