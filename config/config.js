@@ -1362,8 +1362,8 @@ export default {
       target: ' http://172.16.10.11:9901/', // 数据字典
       changeOrigin: true,
     },
-    '/report/':{
-      target:'http://172.16.10.106:9901/',
+    '/report/': {
+      target: 'http://172.16.10.106:9901/',
       changeOrigin: true
     }
   },

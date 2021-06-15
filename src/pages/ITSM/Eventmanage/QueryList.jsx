@@ -22,9 +22,6 @@ import SysDict from '@/components/SysDict';
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
-const noStatistic = '';
-
-const queryParams = true;
 
 const formItemLayout = {
   labelCol: {
@@ -46,16 +43,7 @@ const forminladeLayout = {
     sm: { span: 22 },
   },
 };
-const form10ladeLayout = {
-  labelCol: {
-    xs: { span: 24 },
-    sm: { span: 4 },
-  },
-  wrapperCol: {
-    xs: { span: 24 },
-    sm: { span: 20 },
-  },
-};
+
 const columns = [
   {
     title: '事件编号',
@@ -236,15 +224,15 @@ function QueryList(props) {
         eventObject: values.eventObject ? (values.eventObject).slice(-1)[0] : '',
         pageSize: size,
         pageIndex: page,
-        time1: values.createTime ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : moment().startOf('month').format('YYYY-MM-DD HH:mm:ss'),
-        time2: values.createTime ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : moment().format('YYYY-MM-DD HH:mm:ss'),
+        time1: values.createTime ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+        time2: values.createTime ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
         createTime: '',
       },
     });
     setTabRecord({
       ...values,
-      startTime: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : moment().startOf('month').format('YYYY-MM-DD HH:mm:ss'),
-      endTime: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : moment().format('YYYY-MM-DD HH:mm:ss'),
+      startTime: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+      endTime: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
       createTime: '',
     });
   };
@@ -258,8 +246,8 @@ function QueryList(props) {
           payload: {
             values: {
               ...values,
-              time1: values.createTime ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : moment().startOf('month').format('YYYY-MM-DD HH:mm:ss'),
-              time2: values.createTime ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : moment().format('YYYY-MM-DD HH:mm:ss'),
+              time1: values.createTime ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+              time2: values.createTime ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
               createTime: '',
               eventObject: values.eventObject ? (values.eventObject).slice(-1)[0] : '',
             },
@@ -372,8 +360,8 @@ function QueryList(props) {
   const handleresultmap = getTypebykey('486846455059841024'); // 处理结果
   const satisfactionmap = getTypebykey('486855005945462784'); // 满意度
 
-  const startTime = time1 ? moment(time1).format('YYYY-MM-DD 00:00:00') : moment().startOf('month').format('YYYY-MM-DD HH:mm:ss');
-  const endTime = time2 ? moment(time2).format('YYYY-MM-DD 23:59:59') : moment().format('YYYY-MM-DD HH:mm:ss');
+  const startTime = time1 ? moment(time1).format('YYYY-MM-DD 00:00:00') : '';
+  const endTime = time2 ? moment(time2).format('YYYY-MM-DD 23:59:59') : '';
   const record = {
     eventObject: eventObject || '',
     revisitWay: '',
@@ -388,7 +376,7 @@ function QueryList(props) {
     eventNo: '',
     eventStatus: eventStatus || '',
     eventType: '',
-    createTime: [moment(startTime), moment(endTime)],
+    createTime: time1 ? [moment(startTime), moment(endTime)] : '',
     paginations
   }
   const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
@@ -403,7 +391,7 @@ function QueryList(props) {
       })
     } else {
       setFieldsValue({
-        createTime: [moment(startTime), moment(endTime)],
+        createTime: time1 ? [moment(startTime), moment(endTime)] : '',
       })
     }
   }, [location.state]);
@@ -832,8 +820,8 @@ function QueryList(props) {
           columns={columns}
           dataSource={list.rows}
           scroll={{ x: 1800 }}
-          // rowKey={r => r.id}
-          rowKey={(_, index) => index.toString()}
+          rowKey={r => r.id}
+          // rowKey={(_, index) => index.toString()}
           pagination={pagination}
           rowSelection={rowSelection}
         />

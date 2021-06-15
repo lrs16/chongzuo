@@ -17,6 +17,7 @@ export default {
   state: {
     flowmsg: '',
     userinfo: '',
+    errstutas: '',
   },
 
   effects: {
@@ -28,6 +29,15 @@ export default {
         payload: response.data,
       });
     },
+
+    // 保存校验状态
+    *fetcherr({ payload: { errstutas } }, { put }) {
+      yield put({
+        type: 'saveuser',
+        payload: errstutas,
+      });
+    },
+
     // 启动流程,保存
     *eventstart({ payload }, { call }) {
       const { register_selfhandle } = payload;
@@ -109,6 +119,14 @@ export default {
       return {
         ...state,
         userinfo: action.payload,
+        errstutas: '',
+      };
+    },
+    saveerr(state, action) {
+      return {
+        ...state,
+        userinfo: '',
+        errstutas: action.payload,
       };
     },
   },

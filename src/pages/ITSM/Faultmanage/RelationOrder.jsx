@@ -187,7 +187,7 @@ function RelevancyOrder(props) {
           title={title}
           visible={visible}
           orderIdPre={orderId}
-          orderTypePre='event'
+          orderTypePre='trouble'
           orderTypeSuf={activeKey}
           ChangeVisible={(v) => setVisible(v)}
         />
