@@ -136,32 +136,33 @@ function WorkOrder(props) {
   // 登记表单
   const RegistratRef = useRef();
   const getregistrats = () => {
-    RegistratRef.current.validateFields((err, values) => {
-      const formvalue = {
-        ...values,
-        creationTime: values.creationTime.format('YYYY-MM-DD HH:mm:ss'),
-        registerTime: values.registerTime.format('YYYY-MM-DD HH:mm:ss'),
-        completeTime: values.completeTime.format('YYYY-MM-DD HH:mm:ss'),
-        registerId: info.demandForm.id,
-        proposingDepartment:
-          values.proposingDepartment !== '' ? values.proposingDepartment : values.proposingUnit,
-        proposingDepartmentId:
-          values.proposingDepartmentId !== '' ? values.proposingDepartmentId : values.proposingUnitID,
-        attachment: JSON.stringify(files.arr),
-        functionalModule: values.functionalModule.join('/'),
-      };
-      switch (type) {
-        case 'save':
-          dispatch({
-            type: 'demandtodo/demandregisterupdate',
-            payload: {
-              paloadvalues: { ...formvalue },
-              processInstanceId: mainId,
-              taskId,
-            },
-          });
-          break;
-        case 'flow':
+    const values = RegistratRef.current.getVal();
+    const formvalue = {
+      ...values,
+      creationTime: values.creationTime.format('YYYY-MM-DD HH:mm:ss'),
+      registerTime: values.registerTime.format('YYYY-MM-DD HH:mm:ss'),
+      completeTime: values.completeTime.format('YYYY-MM-DD HH:mm:ss'),
+      registerId: info.demandForm.id,
+      proposingDepartment:
+        values.proposingDepartment !== '' ? values.proposingDepartment : values.proposingUnit,
+      proposingDepartmentId:
+        values.proposingDepartmentId !== '' ? values.proposingDepartmentId : values.proposingUnitID,
+      attachment: JSON.stringify(files.arr),
+      functionalModule: values.functionalModule.join('/'),
+    };
+    switch (type) {
+      case 'save':
+        dispatch({
+          type: 'demandtodo/demandregisterupdate',
+          payload: {
+            paloadvalues: { ...formvalue },
+            processInstanceId: mainId,
+            taskId,
+          },
+        });
+        break;
+      case 'flow':
+        RegistratRef.current.Forms((err) => {
           if (err) {
             formerr();
             ChangeType('');
@@ -175,15 +176,15 @@ function WorkOrder(props) {
                 ...formvalue,
                 nextUserIds: JSON.parse(sessionStorage.getItem('NextflowUserId')),
                 taskId,
+                mainId,
               },
             });
           }
-          break;
-        default:
-          break;
-      }
-
-    })
+        })
+        break;
+      default:
+        break;
+    }
   };
   // 需求审核，运维审核,需求复核表单
   const setid = () => {
@@ -199,30 +200,31 @@ function WorkOrder(props) {
   const ExamineRef = useRef();
   const getdemandexamine = () => {
     const id = setid();
-    ExamineRef.current.validateFields((err, values) => {
-      const formvalue = {
-        ...values,
-        reviewTime: values.reviewTime.format('YYYY-MM-DD HH:mm:ss'),
-        opinion: values.result === 0 ? values.opinion2 : values.opinion1,
-        business: Number(values.business),
-        releases: Number(values.releases),
-        attachment: JSON.stringify(files.arr),
-        registerId: info.demandForm.id,
-        id,
-        taskName: info.taskName,
-      };
-      switch (type) {
-        case 'save':
-          dispatch({
-            type: 'demandtodo/demandsave',
-            payload: {
-              paloadvalues: { ...formvalue },
-              processInstanceId: mainId,
-              taskId,
-            },
-          });
-          break;
-        case 'flow':
+    const values = ExamineRef.current.getVal();
+    const formvalue = {
+      ...values,
+      reviewTime: values.reviewTime.format('YYYY-MM-DD HH:mm:ss'),
+      opinion: values.result === 0 ? values.opinion2 : values.opinion1,
+      business: Number(values.business),
+      releases: Number(values.releases),
+      attachment: JSON.stringify(files.arr),
+      registerId: info.demandForm.id,
+      id,
+      taskName: info.taskName,
+    };
+    switch (type) {
+      case 'save':
+        dispatch({
+          type: 'demandtodo/demandsave',
+          payload: {
+            paloadvalues: { ...formvalue },
+            processInstanceId: mainId,
+            taskId,
+          },
+        });
+        break;
+      case 'flow':
+        ExamineRef.current.Forms((err) => {
           if (err) {
             formerr();
             ChangeType('');
@@ -240,8 +242,11 @@ function WorkOrder(props) {
               },
             });
           }
-          break;
-        case 'regist':
+        })
+
+        break;
+      case 'regist':
+        ExamineRef.current.Forms((err) => {
           if (err) {
             formerr();
             ChangeType('');
@@ -256,8 +261,10 @@ function WorkOrder(props) {
               },
             });
           }
-          break;
-        case 'confirm':
+        })
+        break;
+      case 'confirm':
+        ExamineRef.current.Forms((err) => {
           if (err) {
             formerr();
             ChangeType('');
@@ -273,8 +280,10 @@ function WorkOrder(props) {
               },
             });
           }
-          break;
-        case 'over':
+        })
+        break;
+      case 'over':
+        ExamineRef.current.Forms((err) => {
           if (err) {
             formerr();
             ChangeType('');
@@ -290,41 +299,41 @@ function WorkOrder(props) {
               },
             });
           }
-          break;
-        default:
-          break;
-      }
-    })
-
+        })
+        break;
+      default:
+        break;
+    }
   };
 
   // 自动化科业务人员审核
   const nonextusrs = () => {
     const id = setid();
-    ExamineRef.current.validateFields((err, values) => {
-      const formvalue = {
-        ...values,
-        reviewTime: values.reviewTime.format('YYYY-MM-DD HH:mm:ss'),
-        opinion: values.result === 0 ? values.opinion2 : values.opinion1,
-        business: Number(values.business),
-        releases: Number(values.releases),
-        attachment: JSON.stringify(files.arr),
-        registerId: info.demandForm.id,
-        id,
-        taskName: info.taskName,
-      };
-      switch (type) {
-        case 'save':
-          dispatch({
-            type: 'demandtodo/demandsave',
-            payload: {
-              paloadvalues: { ...formvalue },
-              processInstanceId: mainId,
-              taskId,
-            },
-          });
-          break;
-        case 'flow':
+    const values = ExamineRef.current.getVal();
+    const formvalue = {
+      ...values,
+      reviewTime: values.reviewTime.format('YYYY-MM-DD HH:mm:ss'),
+      opinion: values.result === 0 ? values.opinion2 : values.opinion1,
+      business: Number(values.business),
+      releases: Number(values.releases),
+      attachment: JSON.stringify(files.arr),
+      registerId: info.demandForm.id,
+      id,
+      taskName: info.taskName,
+    };
+    switch (type) {
+      case 'save':
+        dispatch({
+          type: 'demandtodo/demandsave',
+          payload: {
+            paloadvalues: { ...formvalue },
+            processInstanceId: mainId,
+            taskId,
+          },
+        });
+        break;
+      case 'flow':
+        ExamineRef.current.Forms((err) => {
           if (!err) {
             dispatch({
               type: 'demandtodo/demandnextstep',
@@ -338,8 +347,10 @@ function WorkOrder(props) {
           } else {
             formerr();
           }
-          break;
-        case 'regist':
+        })
+        break;
+      case 'regist':
+        ExamineRef.current.Forms((err) => {
           if (!err) {
             dispatch({
               type: 'demandtodo/demandnextstep',
@@ -353,12 +364,11 @@ function WorkOrder(props) {
           } else {
             formerr();
           }
-          break;
-        default:
-          break;
-      }
-    })
-
+        })
+        break;
+      default:
+        break;
+    }
   };
 
   // 需求跟踪
@@ -547,13 +557,9 @@ function WorkOrder(props) {
                 <Registrat
                   formItemLayout={formItemLayout}
                   forminladeLayout={forminladeLayout}
-                  files={
-                    info.demandForm.attachment !== '' ? JSON.parse(info.demandForm.attachment) : []
-                  }
-                  ChangeFiles={newvalue => {
-                    setFiles(newvalue);
-                  }}
-                  ref={RegistratRef}
+                  files={info.demandForm.attachment !== '' ? JSON.parse(info.demandForm.attachment) : []}
+                  ChangeFiles={newvalue => { setFiles(newvalue) }}
+                  wrappedComponentRef={RegistratRef}
                   register={info.demandForm}
                   userinfo={userinfo}
                   location={location}
@@ -562,7 +568,7 @@ function WorkOrder(props) {
               )}
               {info.taskName === '业务科室领导审核' && info.historys.length === 0 && (
                 <Examine
-                  ref={ExamineRef}
+                  wrappedComponentRef={ExamineRef}
                   location={location}
                   formItemLayout={formItemLayout}
                   forminladeLayout={forminladeLayout}
@@ -571,14 +577,12 @@ function WorkOrder(props) {
                   taskName={info.taskName}
                   info={undefined}
                   files={[]}
-                  ChangeFiles={newvalue => {
-                    setFiles(newvalue);
-                  }}
+                  ChangeFiles={newvalue => { setFiles(newvalue) }}
                 />
               )}
               {info.taskName === '业务科室领导审核' && info.historys.length > 0 && (
                 <Examine
-                  ref={ExamineRef}
+                  wrappedComponentRef={ExamineRef}
                   location={location}
                   formItemLayout={formItemLayout}
                   forminladeLayout={forminladeLayout}
@@ -606,7 +610,7 @@ function WorkOrder(props) {
                 info.taskName === '科室领导审核' ||
                 info.taskName === '市场部领导审核') && (
                   <Examine
-                    ref={ExamineRef}
+                    wrappedComponentRef={ExamineRef}
                     location={location}
                     formItemLayout={formItemLayout}
                     forminladeLayout={forminladeLayout}
@@ -645,7 +649,7 @@ function WorkOrder(props) {
               )}
               {(info.taskName === '自动化科负责人确认' || info.taskName === '需求登记人员确认') && (
                 <Examine
-                  ref={ExamineRef}
+                  wrappedComponentRef={ExamineRef}
                   location={location}
                   formItemLayout={formItemLayout}
                   forminladeLayout={forminladeLayout}

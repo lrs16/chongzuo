@@ -48,7 +48,7 @@ const forminladeLayout = {
 
 const Registrat = forwardRef((props, ref) => {
   const { register, userinfo, files, ChangeFiles, location, selectdata } = props;
-  const { getFieldDecorator, setFieldsValue, validateFields, setFields, getFieldsValue } = props.form;
+  const { getFieldDecorator, setFieldsValue, validateFields, setFields, getFieldsValue, resetFields } = props.form;
   const required = true;
   const [fileslist, setFilesList] = useState({ arr: [], ischange: false }); // 附件上传下载
   const [titleautodata, setTitleAutoData] = useState([]); // 预加载标题常用语
@@ -81,14 +81,12 @@ const Registrat = forwardRef((props, ref) => {
     }
   }, [register]);
 
-  const attRef = useRef();
-  useImperativeHandle(
-    ref,
-    () => ({
-      attRef,
-    }),
-    [],
-  );
+  useImperativeHandle(ref, () => ({
+    getVal: () => getFieldsValue(),
+    resetVal: () => resetFields(),
+    Forms: props.form.validateFieldsAndScroll,
+  }), []);
+
   useEffect(() => {
     if (location !== undefined) {
       const { taskName, taskId, mainId } = location.query;

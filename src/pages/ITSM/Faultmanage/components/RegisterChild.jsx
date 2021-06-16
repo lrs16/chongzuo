@@ -361,7 +361,7 @@ const RegisterChild = React.forwardRef((props, ref) => {
             <div style={{ width: 400 }}>
               <SysUpload
                 fileslist={
-                  tododetailslist ? JSON.parse(tododetailslist.register.registerAttachments) : []
+                  (tododetailslist && tododetailslist.register.registerAttachments) ? JSON.parse(tododetailslist.register.registerAttachments) : []
                 }
                 ChangeFileslist={newvalue => setFilesList(newvalue)}
               />

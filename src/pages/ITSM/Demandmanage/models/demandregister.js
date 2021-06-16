@@ -53,9 +53,18 @@ export default {
     *startandnext({ payload }, { call }) {
       const response = yield call(DemandStartAndNext, payload);
       if (response.code === 200) {
-        message.success(response.msg, 5);
+        message.success(response.msg, 2);
+        router.push({
+          pathname: `/ITSM/demandmanage/to-do/record/workorder`,
+          query: {
+            mainId: payload.mainId,
+            closetab: true,
+          }
+        });
         router.push({
           pathname: `/ITSM/demandmanage/to-do`,
+          query: { pathpush: true },
+          state: { cache: false }
         });
       }
     },

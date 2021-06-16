@@ -82,11 +82,11 @@ function WorkOrder2(props) {
   const [check, setCheck] = useState(false); // 事件分类是否权限账号
   const [defaultvalue, setDefaultvalue] = useState(''); // 自行处理后处理表单回填信息
   const [activeKey, setActiveKey] = useState([]);
-  const [isnew, setIsNew] = useState(false);
   const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
 
   const { flowInstanceId, flowNodeInstanceId, flowNodeName, editState, data, edit, main } = info; // 流程基本信息
-
+  const HandleRef = useRef();
+  const ReturnVisitRef = useRef();
   // console.log(registratfiles)
 
   // 保存、流转表单信息
@@ -117,13 +117,14 @@ function WorkOrder2(props) {
   };
   // 流转
   const eventflow = newflowtype => {
+    const handleresult = HandleRef.current && HandleRef.current.getHandleResult();
     dispatch({
       type: 'eventtodo/eventflow',
       payload: {
         flow: {
           taskId,
           userIds: sessionStorage.getItem('NextflowUserId'),
-          type: newflowtype,
+          type: (show || taskName === '处理中') ? handleresult : newflowtype,
         },
         paloadvalues,
       },
@@ -253,7 +254,6 @@ function WorkOrder2(props) {
   };
 
   // 处理表单
-  const HandleRef = useRef();
   // 自行处理
   const gethandleself = () => {
     RegistratRef.current.Forms((e, v) => {
@@ -318,7 +318,7 @@ function WorkOrder2(props) {
   };
 
   // 回访
-  const ReturnVisitRef = useRef();
+
   const getreturnvisit = () => {
     const values = ReturnVisitRef.current.getVal();
     setFormvisit({

@@ -34,7 +34,7 @@ const ReturnVisit = React.forwardRef((props, ref) => {
   } = props;
   const { taskName, taskId, mainId, check, orderNo } = location.query;
   const { finish } = info;
-  const { getFieldDecorator, getFieldsValue, resetFields } = props.form;
+  const { getFieldDecorator, getFieldsValue, resetFields, getFieldValue } = props.form;
   const required = true;
   const [fileslist, setFilesList] = useState({ arr: [], ischange: false });
   const [desautodata, setDestoData] = useState([]);

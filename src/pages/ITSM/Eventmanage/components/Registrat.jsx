@@ -288,12 +288,14 @@ const Registrat = forwardRef((props, ref) => {
       register_applicationDeptId: deptId,
       applicationUnit: unit,
       applicationDept: dept,
+      mobilePhone1: mobile,
+      mobilePhone2: mobile,
     });
-    if (revisitway) {
-      setFieldsValue({ mobilePhone1: mobile, })
-    } else {
-      setFieldsValue({ mobilePhone2: mobile, })
-    }
+    // if (revisitway) {
+    //   setFieldsValue({ mobilePhone1: mobile, })
+    // } else {
+    //   setFieldsValue({ mobilePhone2: mobile, })
+    // }
   };
 
   // 关闭组织机构树抽屉
@@ -723,8 +725,8 @@ const Registrat = forwardRef((props, ref) => {
               })(<Input placeholder="请输入" />)}
             </Form.Item>
           </Col>
-          {revisitway === true && (
-            <Col span={8}>
+          {revisitway && (
+            <Col span={8} >
               <Form.Item label="手机号码">
                 {getFieldDecorator('mobilePhone1', {
                   rules: [
@@ -740,7 +742,7 @@ const Registrat = forwardRef((props, ref) => {
               </Form.Item>
             </Col>
           )}
-          {revisitway !== true && (
+          {!revisitway && (
             <Col span={8}>
               <Form.Item label="手机号码">
                 {getFieldDecorator('mobilePhone2', {

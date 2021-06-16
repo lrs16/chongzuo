@@ -28,7 +28,8 @@ function Registration(props) {
 
   // 保存，保存提交
   const RegistratRef = useRef();
-  const handlesubmit = values => {
+  const handlesubmit = () => {
+    const values = RegistratRef.current.getVal();
     dispatch({
       type: 'demandregister/start',
       payload: {
@@ -52,88 +53,70 @@ function Registration(props) {
       },
     });
   };
-  const handlenext = values => {
-    dispatch({
-      type: 'demandregister/startandnext',
-      payload: {
-        ...values,
-        creationTime: values.creationTime.format('YYYY-MM-DD HH:mm:ss'),
-        registerTime: values.registerTime.format('YYYY-MM-DD HH:mm:ss'),
-        completeTime: values.completeTime.format('YYYY-MM-DD HH:mm:ss'),
-        proposingDepartment:
-          values.proposingDepartment !== '' ? values.proposingDepartment : values.proposingUnit,
-        proposingDepartmentId:
-          values.proposingDepartmentId !== '' ? values.proposingDepartmentId : values.proposingUnitID,
-        attachment: JSON.stringify(files),
-        functionalModule: values.functionalModule.join('/'),
-        nextUserIds: [{ nodeName: '', userIds: [] }],
-        // nextUser: sessionStorage.getItem('userName'),
-      },
-    });
-  };
+  // const handlenext = () => {
+  //   const values = RegistratRef.current.getVal();
+  //   dispatch({
+  //     type: 'demandregister/startandnext',
+  //     payload: {
+  //       ...values,
+  //       creationTime: values.creationTime.format('YYYY-MM-DD HH:mm:ss'),
+  //       registerTime: values.registerTime.format('YYYY-MM-DD HH:mm:ss'),
+  //       completeTime: values.completeTime.format('YYYY-MM-DD HH:mm:ss'),
+  //       proposingDepartment:
+  //         values.proposingDepartment !== '' ? values.proposingDepartment : values.proposingUnit,
+  //       proposingDepartmentId:
+  //         values.proposingDepartmentId !== '' ? values.proposingDepartmentId : values.proposingUnitID,
+  //       attachment: JSON.stringify(files),
+  //       functionalModule: values.functionalModule.join('/'),
+  //       nextUserIds: [{ nodeName: '', userIds: [] }],
+  //       // nextUser: sessionStorage.getItem('userName'),
+  //     },
+  //   });
+  // };
 
   // 保存,流转获取表单数据
   const getregistrat = type => {
     if (type === 'save') {
-      RegistratRef.current.validateFields((err, values) => {
-        handlesubmit(values);
-      });
-    }
-    if (type === 'next') {
-      RegistratRef.current.validateFields((err, values) => {
-        if (!err) {
-          handlenext(values);
-        }
-      });
-    }
+      handlesubmit();
+    };
+    // if (type === 'next') {
+    //   handlenext()
+    // }
   };
 
   // 上传附件触发保存
   useEffect(() => {
     if (files.ischange) {
-      RegistratRef.current.validateFields((err, values) => {
-        dispatch({
-          type: 'demandregister/uploadchange',
-          payload: {
-            ...values,
-            creationTime: values.creationTime.format('YYYY-MM-DD HH:mm:ss'),
-            registerTime: values.registerTime.format('YYYY-MM-DD HH:mm:ss'),
-            completeTime: values.completeTime.format('YYYY-MM-DD HH:mm:ss'),
-            attachment: JSON.stringify(files.arr),
-            functionalModule: values.functionalModule.join('/'),
-            nextUserIds: [{ nodeName: '', userIds: [] }],
-          },
-        });
-      });
+      handlesubmit()
     }
   }, [files]);
 
   // 重置表单信息
   useEffect(() => {
     if (tabnew) {
-      RegistratRef.current.resetFields();
+      RegistratRef.current.resetVal();
     }
   }, [tabnew]);
+
   // 获取页签信息
   useEffect(() => {
     if (location.state) {
       if (location.state.cache) {
-        RegistratRef.current.validateFields((_, values) => {
-          dispatch({
-            type: 'viewcache/gettabstate',
-            payload: {
-              cacheinfo: {
-                ...values,
-                creationTime: values.creationTime.format('YYYY-MM-DD HH:mm:ss'),
-                registerTime: values.registerTime.format('YYYY-MM-DD HH:mm:ss'),
-                completeTime: values.completeTime.format('YYYY-MM-DD HH:mm:ss'),
-                functionalModule: values.functionalModule.join('/'),
-              },
-              tabid: sessionStorage.getItem('tabid')
+        const values = RegistratRef.current.getVal();
+        dispatch({
+          type: 'viewcache/gettabstate',
+          payload: {
+            cacheinfo: {
+              ...values,
+              creationTime: values.creationTime.format('YYYY-MM-DD HH:mm:ss'),
+              registerTime: values.registerTime.format('YYYY-MM-DD HH:mm:ss'),
+              completeTime: values.completeTime.format('YYYY-MM-DD HH:mm:ss'),
+              functionalModule: values.functionalModule.join('/'),
             },
-          });
+            tabid: sessionStorage.getItem('tabid')
+          },
         });
-        RegistratRef.current.resetFields();
+        RegistratRef.current.resetVal();
       }
     }
   }, [location]);
@@ -170,12 +153,10 @@ function Registration(props) {
       <Spin tip="正在提交数据..." spinning={!!loading}>
         <Card>
           <Registrat
-            ref={RegistratRef}
+            wrappedComponentRef={RegistratRef}
             userinfo={userinfo}
             files={files.arr}
-            ChangeFiles={newvalue => {
-              setFiles(newvalue);
-            }}
+            ChangeFiles={newvalue => { setFiles(newvalue) }}
             selectdata={selectdata}
             register={tabdata}
           />

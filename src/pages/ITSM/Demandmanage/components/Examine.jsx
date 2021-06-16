@@ -42,7 +42,7 @@ const Examine = forwardRef((props, ref) => {
     ChangeFiles,
     location,
   } = props;
-  const { getFieldDecorator, setFieldsValue } = props.form;
+  const { getFieldDecorator, setFieldsValue, getFieldsValue, resetFields } = props.form;
   const { taskName, taskId, result, mainId } = location.query;
   const required = true;
 
@@ -62,14 +62,11 @@ const Examine = forwardRef((props, ref) => {
     sessionStorage.setItem('flowtype', adopt);
   }, [adopt]);
 
-  const attRef = useRef();
-  useImperativeHandle(
-    ref,
-    () => ({
-      attRef,
-    }),
-    [],
-  );
+  useImperativeHandle(ref, () => ({
+    getVal: () => getFieldsValue(),
+    resetVal: () => resetFields(),
+    Forms: props.form.validateFieldsAndScroll,
+  }), []);
 
   const routerRefresh = () => {
     router.push({

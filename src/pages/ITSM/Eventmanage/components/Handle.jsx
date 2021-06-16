@@ -21,7 +21,7 @@ const Handle = React.forwardRef((props, ref) => {
     selectdata,
   } = props;
   const { handle } = info;
-  const { getFieldDecorator, setFieldsValue, getFieldsValue, resetFields } = props.form;
+  const { getFieldDecorator, setFieldsValue, getFieldsValue, resetFields, getFieldValue } = props.form;
   const required = true;
   const [fileslist, setFilesList] = useState({ arr: [], ischange: false });
 
@@ -39,6 +39,7 @@ const Handle = React.forwardRef((props, ref) => {
   useImperativeHandle(ref, () => ({
     getVal: () => getFieldsValue(),
     resetVal: () => resetFields(),
+    getHandleResult: () => getFieldValue('handle_handleResult'),
     Forms: props.form.validateFieldsAndScroll,
   }), []);
 
