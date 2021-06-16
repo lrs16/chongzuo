@@ -34,8 +34,7 @@ const ReturnVisit = React.forwardRef((props, ref) => {
   } = props;
   const { taskName, taskId, mainId, check, orderNo } = location.query;
   const { finish } = info;
-  const { getFieldDecorator } = props.form;
-  const attRef = useRef();
+  const { getFieldDecorator, getFieldsValue, resetFields } = props.form;
   const required = true;
   const [fileslist, setFilesList] = useState({ arr: [], ischange: false });
   const [desautodata, setDestoData] = useState([]);
@@ -52,13 +51,12 @@ const ReturnVisit = React.forwardRef((props, ref) => {
     setFilesList({ ...fileslist, arr: files });
   }, [info]);
 
-  useImperativeHandle(
-    ref,
-    () => ({
-      attRef,
-    }),
-    [],
-  );
+  useImperativeHandle(ref, () => ({
+    getVal: () => getFieldsValue(),
+    resetVal: () => resetFields(),
+    Forms: props.form.validateFieldsAndScroll,
+  }), []);
+
   const routerRefresh = () => {
     router.push({
       pathname: location.pathname,

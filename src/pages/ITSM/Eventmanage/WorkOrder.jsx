@@ -192,67 +192,71 @@ function WorkOrder2(props) {
   // 登记表单
   const RegistratRef = useRef();
   const getregistrats = () => {
-    RegistratRef.current.validateFields((err, values) => {
-      setFormregistrat({
-        ...values,
-        main_eventObject: values.main_eventObject.slice(-1)[0],
-        register_occurTime: values.register_occurTime.format('YYYY-MM-DD HH:mm:ss'),
-        register_applicationUserId: values.register_applicationUser === '' ? '' : values.register_applicationUser,
-        register_mobilePhone: values.main_revisitWay === '002' ? values.mobilePhone1 : values.mobilePhone2,
-        register_applicationUnit: values.applicationUnit,
-        register_applicationUnitId: values.applicationUnit === '' ? '' : values.register_applicationUnitId,
-        register_applicationDept:
-          values.applicationDept !== ''
-            ? values.register_applicationDept
-            : values.register_applicationUnit,
-        register_applicationDeptId:
-          values.applicationDept !== ''
-            ? values.register_applicationDeptId
-            : values.register_applicationUnitId,
-        register_selfhandle: String(Number(values.register_selfhandle)),
-        register_supplement: String(Number(values.register_supplement)),
-        register_fileIds: JSON.stringify(registratfiles.arr),
-      });
-      if (type === 'save') {
-        noverification();
-      } else {
-        needUser(err);
-      }
+    const values = RegistratRef.current.getVal();
+    setFormregistrat({
+      ...values,
+      main_eventObject: values.main_eventObject.slice(-1)[0],
+      register_occurTime: values.register_occurTime.format('YYYY-MM-DD HH:mm:ss'),
+      register_applicationUserId: values.register_applicationUser === '' ? '' : values.register_applicationUser,
+      register_mobilePhone: values.main_revisitWay === '002' ? values.mobilePhone1 : values.mobilePhone2,
+      register_applicationUnit: values.applicationUnit,
+      register_applicationUnitId: values.applicationUnit === '' ? '' : values.register_applicationUnitId,
+      register_applicationDept:
+        values.applicationDept !== ''
+          ? values.register_applicationDept
+          : values.register_applicationUnit,
+      register_applicationDeptId:
+        values.applicationDept !== ''
+          ? values.register_applicationDeptId
+          : values.register_applicationUnitId,
+      register_selfhandle: String(Number(values.register_selfhandle)),
+      register_supplement: String(Number(values.register_supplement)),
+      register_fileIds: JSON.stringify(registratfiles.arr),
     });
+    if (type === 'save') {
+      noverification();
+    } else {
+      RegistratRef.current.Forms(err => {
+        needUser(err);
+      })
+    }
   };
 
   // 审核表单
   const CheckRef = useRef();
   const getchecks = () => {
-    CheckRef.current.validateFields((err, values) => {
-      setFormcheck({
-        ...values,
-        check_checkTime: values.check_checkTime.format('YYYY-MM-DD HH:mm:ss'),
-        check_fileIds: JSON.stringify(files.arr),
-        check_content: values.check_checkResult === '001' ? values.content1 : values.content2,
-      });
-      switch (type) {
-        case 'save':
-          noverification();
-          break;
-        case 'check':
-        case 'goback':
-          noUser(err);
-          break;
-        case 'flow':
-          needUser(err);
-          break;
-        default:
-          break;
-      }
+    const values = CheckRef.current.getVal();
+    setFormcheck({
+      ...values,
+      check_checkTime: values.check_checkTime.format('YYYY-MM-DD HH:mm:ss'),
+      check_fileIds: JSON.stringify(files.arr),
+      check_content: values.check_checkResult === '001' ? values.content1 : values.content2,
     });
+    switch (type) {
+      case 'save':
+        noverification();
+        break;
+      case 'check':
+      case 'goback':
+        CheckRef.current.Forms(err => {
+          noUser(err);
+        });
+        break;
+      case 'flow':
+        CheckRef.current.Forms(err => {
+          needUser(err);
+        });
+        break;
+      default:
+        break;
+    }
   };
 
   // 处理表单
   const HandleRef = useRef();
   // 自行处理
   const gethandleself = () => {
-    RegistratRef.current.validateFields((e, v) => {
+    RegistratRef.current.Forms((e, v) => {
       if (!e) {
         setFormregistrat({
           ...v,
@@ -266,72 +270,79 @@ function WorkOrder2(props) {
           register_supplement: String(Number(v.register_supplement)),
           register_fileIds: JSON.stringify(registratfiles.arr),
         });
-        HandleRef.current.validateFields((err, values) => {
-          setFormhandle({
-            ...values,
-            main_eventObject: values.main_eventObject?.slice(-1)[0],
-            handle_endTime: values.handle_endTime.format('YYYY-MM-DD HH:mm:ss'),
-            handle_fileIds: JSON.stringify(files.arr),
-          });
-          if (type === 'save') {
-            noverification();
-          } else {
+        const values = HandleRef.current.getVal();
+        setFormhandle({
+          ...values,
+          main_eventObject: values.main_eventObject?.slice(-1)[0],
+          handle_endTime: values.handle_endTime.format('YYYY-MM-DD HH:mm:ss'),
+          handle_fileIds: JSON.stringify(files.arr),
+        });
+        if (type === 'save') {
+          noverification();
+        } else {
+          HandleRef.current.Forms((err) => {
             noUser(err);
-          }
-        })
+          })
+        }
       } else {
         formerr();
       }
     })
   };
   const gethandles = () => {
-    HandleRef.current.validateFields((err, values) => {
-      setFormhandle({
-        ...values,
-        main_eventObject: values.main_eventObject?.slice(-1)[0],
-        handle_endTime: values.handle_endTime.format('YYYY-MM-DD HH:mm:ss'),
-        handle_fileIds: JSON.stringify(files.arr),
-      });
-      switch (type) {
-        case 'save':
-          noverification();
-          break;
-        case 'flowcheck':
-          noUser(err);
-          break;
-        case 'other':
-        case 'flow':
-          needUser(err);
-          break;
-        default:
-          break;
-      }
+    const values = HandleRef.current.getVal();
+    setFormhandle({
+      ...values,
+      main_eventObject: values.main_eventObject?.slice(-1)[0],
+      handle_endTime: values.handle_endTime.format('YYYY-MM-DD HH:mm:ss'),
+      handle_fileIds: JSON.stringify(files.arr),
     });
+    switch (type) {
+      case 'save':
+        noverification();
+        break;
+      case 'flowcheck':
+        HandleRef.current.Forms((err) => {
+          noUser(err);
+        })
+        break;
+      case 'other':
+      case 'flow':
+        HandleRef.current.Forms((err) => {
+          needUser(err);
+        })
+        break;
+      default:
+        break;
+    }
   };
 
   // 回访
   const ReturnVisitRef = useRef();
   const getreturnvisit = () => {
-    ReturnVisitRef.current.validateFields((err, values) => {
-      setFormvisit({
-        ...values,
-        finish_revisitTime: values.finish_revisitTime.format('YYYY-MM-DD HH:mm:ss'),
-        finish_fileIds: JSON.stringify(files.arr),
-      });
-      switch (type) {
-        case 'save':
-          noverification()
-          break;
-        case 'other':
-          needUser(err);
-          break;
-        case 'over':
-          noUser(err);
-          break;
-        default:
-          break;
-      }
+    const values = ReturnVisitRef.current.getVal();
+    setFormvisit({
+      ...values,
+      finish_revisitTime: values.finish_revisitTime.format('YYYY-MM-DD HH:mm:ss'),
+      finish_fileIds: JSON.stringify(files.arr),
     });
+    switch (type) {
+      case 'save':
+        noverification()
+        break;
+      case 'other':
+        ReturnVisitRef.current.Forms((err) => {
+          needUser(err);
+        })
+        break;
+      case 'over':
+        ReturnVisitRef.current.Forms((err) => {
+          noUser(err);
+        })
+        break;
+      default:
+        break;
+    }
   };
 
   //  console.log(records);
@@ -445,18 +456,6 @@ function WorkOrder2(props) {
     }
   }, [info]);
 
-  // // 监听info是否已更新
-  // useEffect(() => {
-  //   if (loading) {
-  //     setIsNew(true);
-  //   }
-  //   return () => {
-  //     setIsNew(false);
-  //     ChangeChoice(false);
-  //     ChangeUserVisible(false);
-  //   };
-  // }, [info]);
-
   useEffect(() => {
     if (type !== '') {
       handlesubmit();
@@ -544,7 +543,7 @@ function WorkOrder2(props) {
                     formItemLayout={formItemLayout}
                     forminladeLayout={forminladeLayout}
                     show={show}
-                    ref={RegistratRef}
+                    wrappedComponentRef={RegistratRef}
                     info={edit}
                     main={main}
                     userinfo={userinfo}
@@ -560,7 +559,7 @@ function WorkOrder2(props) {
                   <Handle
                     formItemLayout={formItemLayout}
                     forminladeLayout={forminladeLayout}
-                    ref={HandleRef}
+                    wrappedComponentRef={HandleRef}
                     main={main}
                     userinfo={userinfo}
                     defaultvalue={defaultvalue}
@@ -579,7 +578,7 @@ function WorkOrder2(props) {
                   <Check
                     formItemLayout={formItemLayout}
                     forminladeLayout={forminladeLayout}
-                    ref={CheckRef}
+                    wrappedComponentRef={CheckRef}
                     main={main}
                     userinfo={userinfo}
                     location={location}
@@ -596,7 +595,7 @@ function WorkOrder2(props) {
                   <Check
                     formItemLayout={formItemLayout}
                     forminladeLayout={forminladeLayout}
-                    ref={CheckRef}
+                    wrappedComponentRef={CheckRef}
                     info={edit}
                     main={main}
                     userinfo={userinfo}
@@ -614,7 +613,7 @@ function WorkOrder2(props) {
                   <Handle
                     formItemLayout={formItemLayout}
                     forminladeLayout={forminladeLayout}
-                    ref={HandleRef}
+                    wrappedComponentRef={HandleRef}
                     main={main}
                     userinfo={userinfo}
                     defaultvalue={defaultvalue}
@@ -633,7 +632,7 @@ function WorkOrder2(props) {
                   <Handle
                     formItemLayout={formItemLayout}
                     forminladeLayout={forminladeLayout}
-                    ref={HandleRef}
+                    wrappedComponentRef={HandleRef}
                     info={edit === null ? undefined : edit}
                     main={main}
                     userinfo={userinfo}
@@ -653,7 +652,7 @@ function WorkOrder2(props) {
                   <ReturnVisit
                     formItemLayout={formItemLayout}
                     forminladeLayout={forminladeLayout}
-                    ref={ReturnVisitRef}
+                    wrappedComponentRef={ReturnVisitRef}
                     main={main}
                     userinfo={userinfo}
                     location={location}
@@ -670,7 +669,7 @@ function WorkOrder2(props) {
                   <ReturnVisit
                     formItemLayout={formItemLayout}
                     forminladeLayout={forminladeLayout}
-                    ref={ReturnVisitRef}
+                    wrappedComponentRef={ReturnVisitRef}
                     info={edit}
                     main={main}
                     userinfo={userinfo}

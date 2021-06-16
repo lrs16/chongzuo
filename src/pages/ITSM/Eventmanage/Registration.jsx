@@ -48,8 +48,8 @@ function Registration(props) {
   const [registratfiles, setRegistratFiles] = useState({ arr: [], ischange: false }); // 登记上传
   const [handlefiles, setHandleFiles] = useState({ arr: [], ischange: false }); // 处理上传
   const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
-  const RegistratRef = useRef();
-  const HandleRef = useRef();
+  const RegistratRef = useRef(null);
+  const HandleRef = useRef(null);
 
   // useEffect(() => {
   //   if (tabnew) {
@@ -91,50 +91,50 @@ function Registration(props) {
   };
 
   const getregistrat = type => {
-    RegistratRef.current.validateFields((err, values) => {
-      setFormregistrat({
-        ...values,
-        main_eventObject: values.main_eventObject?.slice(-1)[0],
-        register_occurTime: values.register_occurTime.format('YYYY-MM-DD HH:mm:ss'),
-        register_applicationUnit: values.applicationUnit,
-        register_applicationUnitId: values.applicationUnit === '' ? '' : values.register_applicationUnitId,
-        register_mobilePhone: values.main_revisitWay === '002' ? values.mobilePhone1 : values.mobilePhone2,
-        register_applicationDept:
-          values.register_applicationDept !== ''
-            ? values.register_applicationDept
-            : values.register_applicationUnit,
-        register_applicationDeptId:
-          values.register_applicationDeptId !== ''
-            ? values.register_applicationDeptId
-            : values.register_applicationUnitId,
-        register_fileIds: JSON.stringify(registratfiles.arr),
-        register_selfhandle: String(Number(values.register_selfhandle)),
-        register_supplement: String(Number(values.register_supplement)),
-      });
-      if (show) {
+    const values = RegistratRef.current.getVal();
+    setFormregistrat({
+      ...values,
+      main_eventObject: values.main_eventObject?.slice(-1)[0],
+      register_occurTime: values.register_occurTime.format('YYYY-MM-DD HH:mm:ss'),
+      register_applicationUnit: values.applicationUnit,
+      register_applicationUnitId: values.applicationUnit === '' ? '' : values.register_applicationUnitId,
+      register_mobilePhone: values.main_revisitWay === '002' ? values.mobilePhone1 : values.mobilePhone2,
+      register_applicationDept:
+        values.register_applicationDept !== ''
+          ? values.register_applicationDept
+          : values.register_applicationUnit,
+      register_applicationDeptId:
+        values.register_applicationDeptId !== ''
+          ? values.register_applicationDeptId
+          : values.register_applicationUnitId,
+      register_fileIds: JSON.stringify(registratfiles.arr),
+      register_selfhandle: String(Number(values.register_selfhandle)),
+      register_supplement: String(Number(values.register_supplement)),
+    });
+    if (show) {
+      RegistratRef.current.Forms((err) => {
         if (err) {
           setIscheck({ save: false, flow: false });
           message.error('请将登记信息填写完整...');
         }
-      } else {
-        submittype(type);
-      }
-    });
+      })
+    } else {
+      submittype(type);
+    }
   };
 
   const gethandle = type => {
-    RegistratRef.current.validateFields(err => {
+    RegistratRef.current.Forms((err) => {
       if (!err) {
-        HandleRef.current.validateFields((e, values) => {
-          setFormhandle({
-            ...values,
-            main_eventObject: values.main_eventObject?.slice(-1)[0],
-            handle_endTime: values.handle_endTime.format('YYYY-MM-DD HH:mm:ss'),
-            handle_fileIds: JSON.stringify(handlefiles.arr),
-          });
-          setIscheck({ save: false, flow: false });
-          submittype(type);
+        const values = HandleRef.current.getVal();
+        setFormhandle({
+          ...values,
+          main_eventObject: values.main_eventObject?.slice(-1)[0],
+          handle_endTime: values.handle_endTime.format('YYYY-MM-DD HH:mm:ss'),
+          handle_fileIds: JSON.stringify(handlefiles.arr),
         });
+        setIscheck({ save: false, flow: false });
+        submittype(type);
       }
     });
   };
@@ -171,13 +171,13 @@ function Registration(props) {
     }
   };
 
-  const handleflow = () => {
-    if (show) {
-      getregistrat('flow');
-      gethandle('flow');
-    }
-    getregistrat('flow');
-  };
+  // const handleflow = () => {
+  //   if (show) {
+  //     getregistrat('flow');
+  //     gethandle('flow');
+  //   }
+  //   getregistrat('flow');
+  // };
 
   useEffect(() => {
     if (ischeck.save) {
@@ -219,7 +219,7 @@ function Registration(props) {
   // 重置表单信息
   useEffect(() => {
     if (tabnew) {
-      RegistratRef.current.resetFields();
+      RegistratRef.current.resetVal();
       setShow(false)
     }
   }, [tabnew]);
@@ -227,76 +227,75 @@ function Registration(props) {
   useEffect(() => {
     if (location.state) {
       if (location.state.cache) {
-        RegistratRef.current.validateFields((err, values) => {
-          const main = {
-            addTime: values.main_addTime,
-            content: values.main_content,
-            eventEffect: values.main_eventEffect,
-            eventEmergent: values.main_eventEmergent,
-            eventNo: '',
-            eventObject: values.main_eventObject?.slice(-1)[0],
-            eventPrior: values.main_eventPrior,
-            eventSource: values.main_eventSource,
-            eventType: values.main_eventType,
-            revisitWay: values.main_revisitWay,
-            title: values.main_title,
+        const values = RegistratRef.current.getVal();
+        const main = {
+          addTime: values.main_addTime,
+          content: values.main_content,
+          eventEffect: values.main_eventEffect,
+          eventEmergent: values.main_eventEmergent,
+          eventNo: '',
+          eventObject: values.main_eventObject?.slice(-1)[0],
+          eventPrior: values.main_eventPrior,
+          eventSource: values.main_eventSource,
+          eventType: values.main_eventType,
+          revisitWay: values.main_revisitWay,
+          title: values.main_title,
+        };
+        const register = {
+          applicationDept: values.register_applicationDept,
+          applicationDeptId: values.register_applicationDeptId,
+          applicationUnit: values.register_applicationUnit,
+          rapplicationUnitId: values.registra_rapplicationUnitId,
+          applicationUser: values.register_applicationUser,
+          applicationUserId: values.register_applicationUserId,
+          applicationUserPhone: values.register_applicationUserPhone,
+          id: '',
+          occurTime: moment(values.register_occurTime).format('YYYY-MM-DD HH:mm:ss'),
+          selfhandle: values.register_selfhandle,
+          supplement: values.register_supplement,
+          mobilePhone: values.mobilePhone2 ? values.mobilePhone2 : values.mobilePhone1,
+        }
+
+        if (show) {
+          const val = HandleRef.current.getVal();
+          const handle = {
+            addTime: moment(val.handle_addTime).format('YYYY-MM-DD HH:mm:ss'),
+            content: val.handle_content,
+            endTime: moment(val.handle_endTime).format('YYYY-MM-DD HH:mm:ss'),
+            handle_id: '',
           };
-          const register = {
-            applicationDept: values.register_applicationDept,
-            applicationDeptId: values.register_applicationDeptId,
-            applicationUnit: values.register_applicationUnit,
-            rapplicationUnitId: values.registra_rapplicationUnitId,
-            applicationUser: values.register_applicationUser,
-            applicationUserId: values.register_applicationUserId,
-            applicationUserPhone: values.register_applicationUserPhone,
-            id: '',
-            occurTime: moment(values.register_occurTime).format('YYYY-MM-DD HH:mm:ss'),
-            selfhandle: values.register_selfhandle,
-            supplement: values.register_supplement,
-            mobilePhone: values.mobilePhone2 ? values.mobilePhone2 : values.mobilePhone1,
+          const handlemain = {
+            eventObject: val.main_eventObject?.slice(-1)[0],
+            main_eventObject: val.main_eventObject,
+            main_eventType: val.main_eventType,
+            eventResult: val.handle_handleResult
           }
-          if (show) {
-            HandleRef.current.validateFields((e, v) => {
-              const handle = {
-                addTime: moment(v.handle_addTime).format('YYYY-MM-DD HH:mm:ss'),
-                content: v.handle_content,
-                endTime: moment(v.handle_endTime).format('YYYY-MM-DD HH:mm:ss'),
-                handle_id: '',
-              };
-              const handlemain = {
-                eventObject: v.main_eventObject?.slice(-1)[0],
-                main_eventObject: v.main_eventObject,
-                main_eventType: v.main_eventType,
-                eventResult: v.handle_handleResult
-              }
-              dispatch({
-                type: 'viewcache/gettabstate',
-                payload: {
-                  cacheinfo: {
-                    register: { ...register },
-                    main: { ...main },
-                    handle: { ...handle },
-                    handlemain: { ...handlemain },
-                    show: true,
-                  },
-                  tabid: sessionStorage.getItem('tabid')
-                },
-              });
-            })
-          } else {
-            dispatch({
-              type: 'viewcache/gettabstate',
-              payload: {
-                cacheinfo: {
-                  register: { ...register },
-                  main: { ...main },
-                },
-                tabid: sessionStorage.getItem('tabid')
+          dispatch({
+            type: 'viewcache/gettabstate',
+            payload: {
+              cacheinfo: {
+                register: { ...register },
+                main: { ...main },
+                handle: { ...handle },
+                handlemain: { ...handlemain },
+                show: true,
               },
-            });
-          }
-        });
-        RegistratRef.current.resetFields();
+              tabid: sessionStorage.getItem('tabid')
+            },
+          });
+        } else {
+          dispatch({
+            type: 'viewcache/gettabstate',
+            payload: {
+              cacheinfo: {
+                register: { ...register },
+                main: { ...main },
+              },
+              tabid: sessionStorage.getItem('tabid')
+            },
+          });
+        };
+        RegistratRef.current.resetVal();
         setShow(false)
       }
     }
@@ -345,13 +344,11 @@ function Registration(props) {
                 ChangeCheck={checked => setCheck(checked)}
                 ChangeActiveKey={keys => setActiveKey(keys)}
                 changeDefaultvalue={values => setDefaultvalue(values)}
-                ChangeFiles={newvalue => {
-                  setRegistratFiles(newvalue);
-                }}
+                ChangeFiles={newvalue => { setRegistratFiles(newvalue) }}
                 formItemLayout={formItemLayout}
                 forminladeLayout={forminladeLayout}
                 show={show}
-                ref={RegistratRef}
+                wrappedComponentRef={RegistratRef}
                 userinfo={userinfo}
                 sethandlevalue="true"
                 location={location}
@@ -366,13 +363,11 @@ function Registration(props) {
                 <Handle
                   formItemLayout={formItemLayout}
                   forminladeLayout={forminladeLayout}
-                  ref={HandleRef}
+                  wrappedComponentRef={HandleRef}
                   userinfo={userinfo}
                   defaultvalue={defaultvalue}
                   location={location}
-                  ChangeFiles={newvalue => {
-                    setHandleFiles(newvalue);
-                  }}
+                  ChangeFiles={newvalue => { setHandleFiles(newvalue) }}
                   show={show}
                   selectdata={selectdata}
                   files={[]}

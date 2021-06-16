@@ -21,7 +21,7 @@ const Handle = React.forwardRef((props, ref) => {
     selectdata,
   } = props;
   const { handle } = info;
-  const { getFieldDecorator, setFieldsValue } = props.form;
+  const { getFieldDecorator, setFieldsValue, getFieldsValue, resetFields } = props.form;
   const required = true;
   const [fileslist, setFilesList] = useState({ arr: [], ischange: false });
 
@@ -35,14 +35,12 @@ const Handle = React.forwardRef((props, ref) => {
   useEffect(() => {
     setFilesList({ ...fileslist, arr: files });
   }, [info]);
-  const attRef = useRef();
-  useImperativeHandle(
-    ref,
-    () => ({
-      attRef,
-    }),
-    [],
-  );
+
+  useImperativeHandle(ref, () => ({
+    getVal: () => getFieldsValue(),
+    resetVal: () => resetFields(),
+    Forms: props.form.validateFieldsAndScroll,
+  }), []);
 
   useEffect(() => {
     sessionStorage.setItem('Nextflowmane', '确认');

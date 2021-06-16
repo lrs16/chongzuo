@@ -82,14 +82,12 @@ const Registrat = forwardRef((props, ref) => {
     }
   }, [info]);
 
-  const attRef = useRef();
-  useImperativeHandle(
-    ref,
-    () => ({
-      attRef,
-    }),
-    [],
-  );
+  useImperativeHandle(ref, () => ({
+    getVal: () => getFieldsValue(),
+    resetVal: () => resetFields(),
+    Forms: props.form.validateFieldsAndScroll,
+  }), []);
+
   const gethandelvalue = getFieldsValue(['main_eventType', 'main_eventObject']);
 
   const routerRefresh = () => {
@@ -290,14 +288,12 @@ const Registrat = forwardRef((props, ref) => {
       register_applicationDeptId: deptId,
       applicationUnit: unit,
       applicationDept: dept,
-      mobilePhone1: mobile,
-      mobilePhone2: mobile,
     });
-    // if (revisitway) {
-    //   setFieldsValue({ mobilePhone1: mobile, })
-    // } else {
-    //   setFieldsValue({ mobilePhone2: mobile, })
-    // }
+    if (revisitway) {
+      setFieldsValue({ mobilePhone1: mobile, })
+    } else {
+      setFieldsValue({ mobilePhone2: mobile, })
+    }
   };
 
   // 关闭组织机构树抽屉

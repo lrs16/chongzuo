@@ -394,7 +394,7 @@ function ToDolist(props) {
                 </Form.Item>
               </Col>
             </span>
-            {expand ? (<Col span={24} style={{ textAlign: 'right' }}>{extra}</Col>) : (<Col span={8}><Form.Item wrapperCol={24}>{extra}</Form.Item></Col>)}
+            {expand ? (<Col span={24} style={{ textAlign: 'right' }}>{extra}</Col>) : (<Col span={8} style={{ marginTop: 4 }}>{extra}</Col>)}
           </Form>
         </Row>
         <div style={{ marginBottom: 24 }}>
@@ -411,7 +411,7 @@ function ToDolist(props) {
           rowSelection={rowSelection}
         />
       </Card>
-    </PageHeaderWrapper>
+    </PageHeaderWrapper >
   );
 }
 

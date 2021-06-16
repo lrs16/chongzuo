@@ -20,7 +20,7 @@ const Check = forwardRef((props, ref) => {
   const { formItemLayout, forminladeLayout, info, userinfo, location, files, ChangeFiles } = props;
   const { taskName, taskId, mainId, orderNo } = location.query;
   const { check } = info;
-  const { getFieldDecorator } = props.form;
+  const { getFieldDecorator, getFieldsValue, resetFields } = props.form;
   const [adopt, setAdopt] = useState('001');
   const [fileslist, setFilesList] = useState({ arr: [], ischange: false });
   useEffect(() => {
@@ -34,14 +34,11 @@ const Check = forwardRef((props, ref) => {
     setFilesList({ ...fileslist, arr: files });
   }, [info]);
 
-  const attRef = useRef();
-  useImperativeHandle(
-    ref,
-    () => ({
-      attRef,
-    }),
-    [],
-  );
+  useImperativeHandle(ref, () => ({
+    getVal: () => getFieldsValue(),
+    resetVal: () => resetFields(),
+    Forms: props.form.validateFieldsAndScroll,
+  }), []);
 
   const routerRefresh = () => {
     router.push({
