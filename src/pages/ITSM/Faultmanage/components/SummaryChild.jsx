@@ -75,7 +75,7 @@ const SummaryChild = React.forwardRef((props, ref) => {
   });
 
   return (
-    <Row gutter={24} style={{ paddingTop: 15 }}>
+    <Row gutter={24} style={{ paddingTop: 24 }}>
       {
         (finish && finish.finishRequiredTime !== undefined && finish.finishPracticeTime !== undefined) && (new Date(Date.parse(finish.finishRequiredTime)) < new Date(Date.parse(finish.finishPracticeTime))) === true &&
         <Alert message={message} type="error" showIcon style={{ width: '94%', marginLeft: '3%', marginBottom: 15 }} />

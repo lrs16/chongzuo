@@ -51,21 +51,6 @@ function Registration(props) {
   const RegistratRef = useRef(null);
   const HandleRef = useRef(null);
 
-  // useEffect(() => {
-  //   if (tabnew) {
-  //     const registdata = getregistdata();
-  //     const handledata = gethandledata();
-  //     dispatch({
-  //       type: 'viewcache/gettabstate',
-  //       payload: {
-  //         ...registdata,
-  //         ...handledata,
-  //         register_occurTime: registdata.register_occurTime.format('YYYY-MM-DD HH:mm:ss'),
-  //       },
-  //     });
-  //   }
-  // }, [tabnew])
-
   useEffect(() => {
     dispatch({
       type: 'itsmuser/fetchuser',

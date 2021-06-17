@@ -60,6 +60,7 @@ function WorkOrder2(props) {
     dispatch,
     loading,
     recordsloading,
+    errmsg,
     info,
     records,
     userinfo,
@@ -463,7 +464,7 @@ function WorkOrder2(props) {
   }, [info]);
 
   useEffect(() => {
-    if (info && taskName === '待处理') {
+    if (errmsg === '' && taskName === '待处理') {
       message.info('请接单..', 1);
     }
   }, [])
@@ -724,6 +725,7 @@ function WorkOrder2(props) {
 
 export default connect(({ eventtodo, itsmuser, loading }) => ({
   userinfo: itsmuser.userinfo,
+  errmsg: eventtodo.errmsg,
   info: eventtodo.info,
   records: eventtodo.records,
   loading: loading.models.eventtodo,

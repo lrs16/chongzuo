@@ -20,12 +20,17 @@ export default {
   state: {
     list: [],
     imgblob: '',
-    records: '',
+    records: [],
     info: '',
     processs: '',
   },
 
   effects: {
+    *clearinfo(_, { put }) {
+      yield put({
+        type: 'clear',
+      });
+    },
     // 待办列表
     *fetchlist({ payload }, { call, put }) {
       const response = yield call(DemandtoDoList, { ...payload });
@@ -62,6 +67,9 @@ export default {
     // 打开编辑
     *demandopenflow({ payload: { processInstanceId, taskId } }, { call, put }) {
       const response = yield call(DemandOpenFlow, processInstanceId, taskId);
+      if (response.code === -1) {
+        message.error(response.msg, 5);
+      }
       yield put({
         type: 'saveinfo',
         payload: response.data,
@@ -198,6 +206,16 @@ export default {
       return {
         ...state,
         info: action.payload,
+      };
+    },
+    clear(state) {
+      return {
+        ...state,
+        list: [],
+        imgblob: '',
+        records: [],
+        info: '',
+        processs: '',
       };
     },
   },

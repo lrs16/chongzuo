@@ -71,7 +71,7 @@ const HandleChild = React.forwardRef((props, ref) => {
     }
   }, []);
 
-  const type = typeof(handle.handleRecordAttachments);
+  const type = typeof (handle.handleRecordAttachments);
   useImperativeHandle(
     ref,
     () => ({
@@ -97,7 +97,7 @@ const HandleChild = React.forwardRef((props, ref) => {
   // console.log('handleResult: ', handleResult);
 
   return (
-    <Row>
+    <Row gutter={24} style={{ paddingTop: 24, paddingRight: 24 }}>
       <Form {...formItemLayout}>
         <KeyVal
           style={{ display: 'none' }}
@@ -115,7 +115,7 @@ const HandleChild = React.forwardRef((props, ref) => {
                 },
               ],
               initialValue: handle ? handle.handleContent : '',
-            })(<TextArea rows={4} placeholder="请输入" />)}
+            })(<TextArea autoSize={{ minRows: 3 }} min placeholder="请输入" />)}
           </Form.Item>
         </Col>
 
@@ -129,7 +129,7 @@ const HandleChild = React.forwardRef((props, ref) => {
                 },
               ],
               initialValue: handle ? handle.handleReason : '',
-            })(<Input allowClear />)}
+            })(<TextArea autoSize allowClear />)}
           </Form.Item>
         </Col>
 
@@ -143,7 +143,7 @@ const HandleChild = React.forwardRef((props, ref) => {
                 },
               ],
               initialValue: handle ? handle.handleAdvise : '',
-            })(<Input allowClear />)}
+            })(<TextArea autoSize allowClear />)}
           </Form.Item>
         </Col>
 

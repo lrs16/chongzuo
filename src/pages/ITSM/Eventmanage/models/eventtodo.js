@@ -34,6 +34,7 @@ export default {
     records: [],
     imgblob: '',
     download: '',
+    errmsg: ''
   },
 
   effects: {
@@ -51,15 +52,19 @@ export default {
       });
     },
     // 打开编辑
-    *eventopenflow({ payload: { taskId, mainId } }, { call, put }) {
+    *eventopenflow({ payload: { taskId } }, { call, put }) {
       const response = yield call(EventopenFlow, taskId);
       if (response.code === -1) {
-        router.push({
-          pathname: `/ITSM/eventmanage/to-do`,
-          query: { pathpush: true },
-          state: { cach: false }
+        // router.push({
+        //   pathname: `/ITSM/eventmanage/to-do`,
+        //   query: { pathpush: true },
+        //   state: { cach: false }
+        // });
+        message.error(response.msg, 5);
+        yield put({
+          type: 'saveerrmsg',
+          payload: response.msg,
         });
-        //   message.error(response.msg, 2);
       }
       yield put({
         type: 'saveinfo',
@@ -251,6 +256,12 @@ export default {
         ...state,
         list: action.payload,
         info: '',
+      };
+    },
+    saveerrmsg(state, action) {
+      return {
+        ...state,
+        errmsg: action.payload,
       };
     },
     saveinfo(state, action) {

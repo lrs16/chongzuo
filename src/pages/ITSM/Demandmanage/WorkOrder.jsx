@@ -114,6 +114,11 @@ function WorkOrder(props) {
         },
       });
     }
+    return () => {
+      dispatch({
+        type: 'demandtodo/clearinfo',
+      });
+    }
   }, [mainId]);
 
   // 监听info是否已更新
@@ -545,7 +550,7 @@ function WorkOrder(props) {
         </Steps>
       )}
       <Spin spinning={loading}>
-        {loading === false && info !== '' && info !== {} && isnew && (
+        {loading === false && info !== '' && info !== {} && (
           <Collapse
             expandIconPosition="right"
             activeKey={activeKey}

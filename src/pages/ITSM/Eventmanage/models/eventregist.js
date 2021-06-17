@@ -53,12 +53,9 @@ export default {
           ...values,
         };
         const registres = yield call(EventSave, registratpayload);
+        const tabid = sessionStorage.getItem('tabid')
         if (registres.code === 200) {
           message.success(registres.msg, 5);
-          router.push({
-            pathname: `/ITSM/eventmanage/registration`,
-            query: { tabid: sessionStorage.getItem('tabid'), closecurrent: true }
-          })
           router.push({
             pathname: `/ITSM/eventmanage/to-do/record/workorder`,
             query: {
@@ -70,6 +67,10 @@ export default {
             },
             state: {}
           });
+          router.push({
+            pathname: `/ITSM/eventmanage/registration`,
+            query: { tabid, closecurrent: true }
+          })
         }
       }
     },
