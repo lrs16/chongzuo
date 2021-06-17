@@ -18,7 +18,7 @@ class GlobalHeaderRight extends Component {
   componentDidMount() {
     this.getcount();
     this.getovertimenum();
-    this.interval = setInterval(() => this.getcount(), 60000);
+    this.interval = setInterval(() => { this.getcount(); this.getovertimenum(); }, 30000);
   }
 
   componentDidUpdate(newProps, _) {

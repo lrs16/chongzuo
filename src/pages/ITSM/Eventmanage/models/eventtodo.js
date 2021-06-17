@@ -60,11 +60,13 @@ export default {
         //   query: { pathpush: true },
         //   state: { cach: false }
         // });
-        message.error(response.msg, 5);
-        yield put({
-          type: 'saveerrmsg',
-          payload: response.msg,
-        });
+        if (response.msg === '流程待办id可能也被他人处理，请刷新！') {
+          message.error(response.msg, 5);
+          yield put({
+            type: 'saveerrmsg',
+            payload: response.msg,
+          });
+        }
       }
       yield put({
         type: 'saveinfo',
