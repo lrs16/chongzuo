@@ -5,15 +5,17 @@ import styles from './index.less';
 
 const { Step } = Steps;
 
+let image;
+
 function Process(props) {
   const { location, dispatch, imgblob, records, loading } = props;
   const { mainId } = location.query;
 
-  const imgsrc = () => {
-    const img = document.createElement('img');
-    img.src = window.URL.createObjectURL(imgblob);
-    document.getElementById('divimg').appendChild(img);
-  };
+  // const imgsrc = () => {
+  //   const img = document.createElement('img');
+  //   img.src = window.URL.createObjectURL(imgblob);
+  //   document.getElementById('divimg').appendChild(img);
+  // };
 
   useEffect(() => {
     dispatch({
@@ -30,16 +32,16 @@ function Process(props) {
     });
   }, [mainId]);
 
-  useEffect(() => {
-    if (imgblob !== '' && document.getElementsByTagName('img').length < 2) {
-      imgsrc();
-    }
-  }, [imgblob]);
+  // 二进制展示流程图
+  const blob = new Blob([imgblob]);
+  image = (window.URL || window.webkitURL).createObjectURL(blob);
 
   return (
     <>
       <Card title="流程图">
-        <div style={{ background: '#fff' }} id="divimg" className={styles.blobimg} />
+        <div style={{ background: '#fff' }} className={styles.blobimg} >
+          <img src={image} alt="" />
+        </div>
       </Card>
       <Card title="流转日志" style={{ marginTop: '-1px' }}>
         {records !== '' && (

@@ -109,6 +109,7 @@ const BasicLayout = props => {
   const [toptabs, setTopTabs] = useState([...homepane]);
   const [activeKey, setActiveKey] = useState('1333251061216972801');
   const [tabmenu, setTabMenu] = useState({ x: 0, y: 0, v: 'none' });
+
   const clearcache = () => {
     dispatch({
       type: 'viewcache/cleardata',
@@ -333,10 +334,10 @@ const BasicLayout = props => {
     const target = props.route.routes.filter(item => item.path === menuItemProps.itemPath)[0];   // comfig配置的路由
     const targetpath = target.routes[0].redirect;                                                // 获取此路由下redirect的路由
     const targetmenu = menulist.filter(item => item.menuUrl === targetpath)[0];                  // 系统管理菜单列表获取redirect路由信息
-    const { id, itemPath } = targetmenu;
+    const { id, menuUrl } = targetmenu;
     const targetlink = toptabs.filter(item => item.id === id)[0];                                // 标签中是否已含有redirect的路由
     if (!targetlink && targetmenu) {
-      const panels = { name: targetmenu.menuDesc, id, itemPath, query: location.query, closable: true, state: { cache: false }, };
+      const panels = { name: targetmenu.menuDesc, id, itemPath: menuUrl, query: location.query, closable: true, state: { cache: false }, };
       toptabs.push(panels);
     };
     setActiveKey(id);
@@ -358,6 +359,7 @@ const BasicLayout = props => {
         router.push({
           pathname: target.itemPath,
           query: { ...target.query },
+          state: { cache: false }
         });
         setActiveKey(id);
       };
@@ -565,6 +567,7 @@ const BasicLayout = props => {
                     setTabMenu({ x: e.pageX - 350, y: e.pageY - 50, v: 'block' });
                   }
                 }}
+              // style={{ position: 'fixed', top: 0, zIndex: 999 }}
               >
                 <Tabs
                   hideAdd
@@ -598,7 +601,9 @@ const BasicLayout = props => {
                    {children}
                  </div>
                </MenuContext.Provider> */}
-                {children}
+                <div style={{ marginTop: 0 }}>
+                  {children}
+                </div>
               </Authorized>
             </>
           )}
@@ -657,7 +662,7 @@ const BasicLayout = props => {
                 });
               }}>
               <Icon type="reload" style={{ marginRight: 16 }} />刷新当前页签
-             </List.Item>
+            </List.Item>
             <List.Item style={{ padding: '10px 24px', cursor: 'pointer' }}
               onClick={() => {
                 const target = toptabs.filter(item => item.id === activeKey)[0];
@@ -665,7 +670,7 @@ const BasicLayout = props => {
               }}
             >
               <Icon type="plus-square" style={{ marginRight: 16 }} />关闭其他
-               </List.Item>
+            </List.Item>
             <List.Item style={{ padding: '10px 24px', cursor: 'pointer' }}
               onClick={() => {
                 if (toptabs.length > 1) { setTopTabs([{ ...homepane[0] }]); }
@@ -677,7 +682,7 @@ const BasicLayout = props => {
               }}
             >
               <Icon type="close" style={{ marginRight: 16 }} />关闭全部
-               </List.Item>
+            </List.Item>
             {/* <List.Item style={{ padding: '10px', cursor: 'pointer' }}>
                <Icon type="vertical-right" style={{ marginRight: 16 }} />关闭左侧所有
                </List.Item>

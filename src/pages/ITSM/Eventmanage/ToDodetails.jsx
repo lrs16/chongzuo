@@ -76,9 +76,6 @@ function ToDodetails(props) {
   };
 
   useEffect(() => {
-    if (taskName === '待处理') {
-      message.info('请接单..', 1);
-    };
     settabActivekey('workorder');
   }, [mainId]);
 
@@ -101,6 +98,9 @@ function ToDodetails(props) {
           },
         });
       };
+      if (res.code === -1) {
+        message.error(res.msg)
+      }
     })
   };
 
@@ -178,7 +178,7 @@ function ToDodetails(props) {
             <Popconfirm title="确定删除此事件单吗？" onConfirm={() => deleteflow()}>
               <Button type="danger" ghost style={{ marginRight: 8 }}>
                 删除
-          </Button>
+              </Button>
             </Popconfirm>
           )}
           {(taskName === '待审核' ||
@@ -231,14 +231,14 @@ function ToDodetails(props) {
                 style={{ marginRight: 8 }}
                 onClick={() => { handleHold('flowcheck') }}>
                 转回访
-          </Button>
+              </Button>
               <Button
                 type="primary"
                 style={{ marginRight: 8 }}
                 onClick={() => { handleClick('other'); setChangeOrder('处理') }}
               >
                 转单
-          </Button>
+              </Button>
             </>
           )}
           {(taskName === '待确认' || taskName === '确认中') && next === '处理' && (

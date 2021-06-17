@@ -206,7 +206,7 @@ function ToDolist(props) {
     paginations,
     expand,
   };
-  console.log(location)
+
   const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
 
   useEffect(() => {

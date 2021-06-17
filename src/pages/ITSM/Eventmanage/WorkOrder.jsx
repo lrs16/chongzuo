@@ -124,7 +124,7 @@ function WorkOrder2(props) {
         flow: {
           taskId,
           userIds: sessionStorage.getItem('NextflowUserId'),
-          type: (show || taskName === '处理中') ? handleresult : newflowtype,
+          type: ((show || taskName === '处理中') && type !== 'other') ? handleresult : newflowtype,
         },
         paloadvalues,
       },
@@ -132,13 +132,14 @@ function WorkOrder2(props) {
   };
   // 确认
   const eventcheck = newflowtype => {
+    const handleresult = HandleRef.current && HandleRef.current.getHandleResult();
     dispatch({
       type: 'eventtodo/eventflow',
       payload: {
         flow: {
           taskId,
           userIds: data[1].register.registerUserId,
-          type: newflowtype,
+          type: ((show || taskName === '处理中') && type === 'flowcheck') ? handleresult : newflowtype,
         },
         paloadvalues,
       },
@@ -420,6 +421,11 @@ function WorkOrder2(props) {
       });
       sessionStorage.setItem('Processtype', 'event');
     }
+    return () => {
+      dispatch({
+        type: 'eventtodo/clearinfo',
+      });
+    }
   }, [mainId, taskId]);
 
   // 获取事件流程记录
@@ -453,8 +459,14 @@ function WorkOrder2(props) {
       if (Object.values(edit)[0].fileIds !== '' && taskName !== '已登记') {
         setFiles({ ...files, arr: JSON.parse(Object.values(edit)[0].fileIds), ischange: false });
       }
-    }
+    };
   }, [info]);
+
+  useEffect(() => {
+    if (info && taskName === '待处理') {
+      message.info('请接单..', 1);
+    }
+  }, [])
 
   useEffect(() => {
     if (type !== '') {

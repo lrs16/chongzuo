@@ -31,12 +31,17 @@ export default {
   state: {
     list: [],
     info: '',
-    records: '',
+    records: [],
     imgblob: '',
     download: '',
   },
 
   effects: {
+    *clearinfo(_, { put }) {
+      yield put({
+        type: 'clear',
+      });
+    },
     // 列表
     *fetchlist({ payload }, { call, put }) {
       const response = yield call(EventgetAllTask, { ...payload });
@@ -49,20 +54,12 @@ export default {
     *eventopenflow({ payload: { taskId, mainId } }, { call, put }) {
       const response = yield call(EventopenFlow, taskId);
       if (response.code === -1) {
-        message.error(response.msg, 2);
-        router.push({
-          pathname: `/ITSM/eventmanage/to-do/record/workorder`,
-          query: {
-            mainId,
-            taskId,
-            closetab: true,
-          }
-        });
         router.push({
           pathname: `/ITSM/eventmanage/to-do`,
           query: { pathpush: true },
           state: { cach: false }
         });
+        //   message.error(response.msg, 2);
       }
       yield put({
         type: 'saveinfo',
@@ -253,6 +250,7 @@ export default {
       return {
         ...state,
         list: action.payload,
+        info: '',
       };
     },
     saveinfo(state, action) {
@@ -271,6 +269,16 @@ export default {
       return {
         ...state,
         imgblob: action.payload || '',
+      };
+    },
+    clear(state) {
+      return {
+        ...state,
+        list: [],
+        info: '',
+        records: [],
+        imgblob: '',
+        download: '',
       };
     },
   },
