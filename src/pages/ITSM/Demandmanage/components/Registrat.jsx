@@ -627,7 +627,10 @@ const Registrat = forwardRef((props, ref) => {
               })(
                 <AutoComplete
                   dataSource={desautodata}
-                  onSearch={value => handleSearch(value, 'des')}
+                  filterOption={(inputValue, option) =>
+                    option.props.children.includes(inputValue)
+                  }
+                  onSelect={value => handleSearch(value, 'des')}
                 >
                   <TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />
                 </AutoComplete>,

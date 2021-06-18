@@ -137,6 +137,9 @@ function Expressions(props) {
       type: 'expressionsmanage/query',
       payload: {
         ...values,
+        field: '',
+        content: '',
+        status: '',
         pageIndex: page - 1,
         pageSize: size,
       },
