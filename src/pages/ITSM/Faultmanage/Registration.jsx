@@ -467,7 +467,10 @@ function Registration(props) {
                 })(
                   <AutoComplete
                     dataSource={desautodata}
-                    onSearch={value => handleSearch(value, 'des')}
+                    filterOption={(inputValue, option) =>
+                      option.props.children.includes(inputValue)
+                    }
+                  //  onSearch={value => handleSearch(value, 'des')}
                   >
                     <TextArea autoSize={{ minRows: 5 }} placeholder="请输入" />
                   </AutoComplete>,

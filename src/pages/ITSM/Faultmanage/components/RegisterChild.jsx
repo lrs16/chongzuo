@@ -337,7 +337,7 @@ const RegisterChild = React.forwardRef((props, ref) => {
                 filterOption={(inputValue, option) =>
                   option.props.children.includes(inputValue)
                 }
-                onSelect={value => handleSearch(value, 'des')}
+              //  onSelect={value => handleSearch(value, 'des')}
               >
                 <TextArea autoSize={{ minRows: 5 }} placeholder="请输入" />
               </AutoComplete>,
