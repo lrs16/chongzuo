@@ -1,4 +1,4 @@
-import { queryCheckList, querydoCheck } from '../services/api';
+import { queryCheckList, querydoCheck, querywholeNet, goonwholeNet } from '../services/api';
 
 export default {
   namespace: 'checkmanage',
@@ -18,6 +18,12 @@ export default {
     },
     *docheck(_, { call }) {
       return yield call(querydoCheck);
+    },
+    *dowholeNet(_, { call }) {
+      return yield call(querywholeNet);
+    },
+    *goonwholeNet({ payload }, { call }) {
+      return yield call(goonwholeNet, payload);
     },
   },
 

@@ -154,9 +154,19 @@ const BasicLayout = props => {
     setActiveKey(end.id);
     router.push({
       pathname: end.itemPath,
-      query: (target || multipletarget) ? end.query : {},
-      state: { ...end.state, cache: false },
+      query: target ? end.query : {},
+      state: (end.data && end.data.cacheinfo) ? { cacheinfo: end.data.cacheinfo } : { ...end.state, cache: false },
     });
+    if (multipletarget && end.data && end.data.cacheinfo) {
+      clearcache();
+      dispatch({
+        type: 'viewcache/sendcache',
+        payload: {
+          tabdata: end.data.cacheinfo,
+          tabid: end.id,
+        },
+      });
+    }
   }
 
   // 更新页签信息
@@ -457,9 +467,21 @@ const BasicLayout = props => {
           if (menuItemProps.isUrl || menuItemProps.children) {
             return defaultDom;
           };
+          const rutersave = () => {
+            router.push({
+              pathname: location.pathname,
+              state: { ...location.state, cache: true },
+            });
+          };
           return (
             <>
-              <Link to={menuItemProps.path} onClick={() => handletopLink(menuItemProps)}>{defaultDom}</Link>
+              <Link
+                to={menuItemProps.path}
+                onClick={() => handletopLink(menuItemProps)}
+                onMouseDown={() => { rutersave() }}
+              >
+                {defaultDom}
+              </Link>
             </>
           );
         }}

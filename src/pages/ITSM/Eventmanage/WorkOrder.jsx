@@ -119,6 +119,7 @@ function WorkOrder2(props) {
   // 流转
   const eventflow = newflowtype => {
     const handleresult = HandleRef.current && HandleRef.current.getHandleResult();
+    console.log((show || taskName === '处理中'), type !== 'other', type)
     dispatch({
       type: 'eventtodo/eventflow',
       payload: {

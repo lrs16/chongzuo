@@ -7,9 +7,23 @@ export async function queryCheckList(currentPage, pageSize) {
   });
 }
 
-// 执行巡检
+// 计量主站巡检
 export async function querydoCheck() {
   return request(`/inspection/check/docheck`, {
+    method: 'GET',
+  });
+}
+
+// 网级平台巡检
+export async function querywholeNet() {
+  return request(`/inspection/wholeNet/check`, {
+    method: 'GET',
+  });
+}
+
+// 网级平台巡检继续巡检
+export async function goonwholeNet(checkNo) {
+  return request(`/inspection/wholeNet/check?checkNo=${checkNo}`, {
     method: 'GET',
   });
 }

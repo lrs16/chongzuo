@@ -1,72 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
-import { Card, Badge, Button, Table, Message } from 'antd';
+import { Card, Badge, Button, Table, Message, Row, Col } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
-const columns = [
-  {
-    title: '巡检编号',
-    dataIndex: 'checkNo',
-    key: 'checkNo',
-  },
-  {
-    title: '报告名称',
-    dataIndex: 'reportName',
-    key: 'reportName',
-  },
-  {
-    title: '巡检类型',
-    dataIndex: 'checkType',
-    key: 'checkType',
-  },
-  {
-    title: '巡检人',
-    dataIndex: 'checkUser',
-    key: 'checkUser',
-  },
-  {
-    title: '巡检状态',
-    dataIndex: 'checkStatus',
-    key: 'checkStatus',
-    render: (text, record) => {
-      const status = record.checkStatus;
-      const statuswaitetext = '等待巡检';
-      const statuswaitico = 'processing';
-      const statustext = status.length === 4 ? '成功' : '巡检中';
-      const statusico = status.length === 4 ? 'success' : 'error';
-      return (
-        <>
-          {status === 'W' && <Badge status={statuswaitico} text={statuswaitetext} />}
-          {status !== 'W' && <Badge status={statusico} text={statustext} />}
-        </>
-      );
-    },
-  },
-  {
-    title: '开始时间',
-    dataIndex: 'beginTime',
-    key: 'beginTime',
-  },
-  {
-    title: '结束时间',
-    dataIndex: 'endTime',
-    key: 'endTime',
-  },
-  {
-    title: '操作',
-    dataIndex: 'action',
-    key: 'action',
-    render: (text, record) => {
-      const url = `/inspection/report/download?checkNo=${record.checkNo}`;
-      const download = () => {
-        window.location.href = url;
-      };
-      const status = record.checkStatus;
-      const statustext = status.length === 4 ? '下载报告' : '';
-      return <a onClick={download}>{statustext}</a>;
-    },
-  },
-];
 function OnSitemanage(props) {
   const { dispatch, list, loading } = props;
   const pagetitle = props.route.name;
@@ -103,6 +39,19 @@ function OnSitemanage(props) {
     });
   };
 
+  const handlewholeNet = () => {
+    return dispatch({
+      type: 'checkmanage/dowholeNet',
+    }).then(res => {
+      getdata(1, 10);
+      if (res.code === 200) {
+        Message.success(res.msg);
+      } else {
+        Message.error(res.msg);
+      }
+    });
+  };
+
   const onShowSizeChange = (page, size) => {
     getdata(page, size);
     setPageinations({
@@ -128,19 +77,105 @@ function OnSitemanage(props) {
     onChange: page => changePage(page),
   };
 
+  const goon = (checkNo) => {
+    return dispatch({
+      type: 'checkmanage/goonwholeNet',
+      payload: checkNo
+    })
+  }
+
+  const columns = [
+    {
+      title: '巡检编号',
+      dataIndex: 'checkNo',
+      key: 'checkNo',
+    },
+    {
+      title: '报告名称',
+      dataIndex: 'reportName',
+      key: 'reportName',
+    },
+    {
+      title: '巡检类型',
+      dataIndex: 'checkType',
+      key: 'checkType',
+    },
+    {
+      title: '巡检人',
+      dataIndex: 'checkUser',
+      key: 'checkUser',
+    },
+    {
+      title: '巡检状态',
+      dataIndex: 'checkStatus',
+      key: 'checkStatus',
+      render: (text, record) => {
+        const status = record.checkStatus;
+        const statuswaitetext = '等待巡检';
+        const statuswaitico = 'processing';
+        const statustext = status.length === 4 ? '成功' : '巡检中';
+        const statusico = status.length === 4 ? 'success' : 'error';
+        return (
+          <>
+            {(status === 'W' && status !== 'ERRR') && <Badge status={statuswaitico} text={statuswaitetext} />}
+            {(status !== 'W' && status !== 'ERRR') && <Badge status={statusico} text={statustext} />}
+            {status === 'ERRR' && <Badge status='error' text='巡检被中断' />}
+          </>
+        );
+      },
+    },
+    {
+      title: '开始时间',
+      dataIndex: 'beginTime',
+      key: 'beginTime',
+    },
+    {
+      title: '结束时间',
+      dataIndex: 'endTime',
+      key: 'endTime',
+    },
+    {
+      title: '操作',
+      dataIndex: 'action',
+      key: 'action',
+      render: (text, record) => {
+        const url = `/inspection/report/download?checkNo=${record.checkNo}`;
+        const download = () => {
+          window.location.href = url;
+        };
+        const status = record.checkStatus;
+        // const statustext = status.length === 4 ? '下载报告' : '';
+        const { checkNo } = record;
+        return (
+          <>
+            {(status.length === 4 && status !== 'ERRR') && (<a onClick={download} > 下载报告</a>)}
+            {status === 'ERRR' && (<a onClick={() => goon(checkNo)} > 继续巡检</a>)}
+          </>
+        );
+      },
+    },
+  ];
+
   return (
     <PageHeaderWrapper title={pagetitle}>
       <Card>
-        <Button
-          onClick={() => getdata(1, 10)}
-          type="primary"
-          style={{ marginBottom: 24, float: 'right' }}
-        >
-          刷新
-        </Button>
-        <Button onClick={handleCheck} type="dashed" block style={{ marginBottom: 24 }}>
-          执行巡检
-        </Button>
+        <Row gutter={16} style={{ marginBottom: 24 }}>
+          <Col span={24}>
+            <Button
+              onClick={() => { getdata(1, 10); setPageinations({ current: 1, pageSize: 15 }) }}
+              type="primary"
+              style={{ marginBottom: 24, float: 'right' }}
+            >
+              刷新
+            </Button>
+          </Col>
+          <Col span={12}>
+            <Button onClick={handleCheck} block type="dashed">计量主站巡检</Button>
+          </Col>
+          <Col span={12}>
+            <Button onClick={handlewholeNet} block type="dashed">网级平台巡检</Button>
+          </Col>
+        </Row>
         <Table
           loading={loading}
           rowKey={record => record.checkNo}
