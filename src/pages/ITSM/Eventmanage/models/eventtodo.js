@@ -55,13 +55,9 @@ export default {
     *eventopenflow({ payload: { taskId } }, { call, put }) {
       const response = yield call(EventopenFlow, taskId);
       if (response.code === -1) {
-        // router.push({
-        //   pathname: `/ITSM/eventmanage/to-do`,
-        //   query: { pathpush: true },
-        //   state: { cach: false }
-        // });
+        message.error(response.msg, 5);
         if (response.msg === '流程待办id可能也被他人处理，请刷新！') {
-          message.error(response.msg, 5);
+          // 多人同时处理，而页签已打开并被其他人抢先处理的情况  
           yield put({
             type: 'saveerrmsg',
             payload: response.msg,
@@ -99,6 +95,8 @@ export default {
           type: 'saveinfo',
           payload: response,
         });
+      } if (registres.code === -1) {
+        message.error(registres.msg, 5);
       }
     },
     // 编辑流转,流转成功转回待办列表,转单，
@@ -113,18 +111,18 @@ export default {
         const response = yield call(EventFlow, flowpayload);
         if (response.code === 200) {
           message.success(response.msg, 3);
-          router.push({
-            pathname: `/ITSM/eventmanage/to-do/record/workorder`,
-            query: {
-              mainId: response.flowInstanceId,
-              taskId: response.flowNodeInstanceId,
-              closetab: true,
-            }
-          });
+          // router.push({
+          //   pathname: `/ITSM/eventmanage/to-do/record/workorder`,
+          //   query: {
+          //     mainId: response.flowInstanceId,
+          //     taskId: response.flowNodeInstanceId,
+          //     closetab: true,
+          //   }
+          // });
           router.push({
             pathname: `/ITSM/eventmanage/to-do`,
             query: { pathpush: true },
-            state: { cach: false }
+            state: { cach: false, closetabid: response.flowInstanceId }
           });
         }
       }
@@ -138,19 +136,14 @@ export default {
         if (response.code === 200) {
           message.success(response.msg, 3);
           router.push({
-            pathname: `/ITSM/eventmanage/to-do/record/workorder`,
-            query: {
-              mainId,
-              taskId: registres.taskId,
-              closetab: true,
-            }
-          });
-          router.push({
             pathname: `/ITSM/eventmanage/to-do`,
             query: { pathpush: true },
-            state: { cach: false }
+            state: { cach: false, closetabid: mainId }
           });
-        }
+        };
+        if (response.code === -1) {
+          message.error(response.msg, 5);
+        };
       }
     },
 
@@ -164,17 +157,9 @@ export default {
         if (response.code === 200) {
           message.success(response.msg, 3);
           router.push({
-            pathname: `/ITSM/eventmanage/to-do/record/workorder`,
-            query: {
-              mainId: response.flowInstanceId,
-              taskId: response.flowNodeInstanceId,
-              closetab: true,
-            }
-          });
-          router.push({
             pathname: `/ITSM/eventmanage/to-do`,
             query: { pathpush: true },
-            state: { cach: false }
+            state: { cach: false, closetabid: response.flowInstanceId }
           });
         }
       }
@@ -198,8 +183,10 @@ export default {
             taskId,
             mainId: response.flowInstanceId,
             next: sessionStorage.getItem('Nextflowmane'),
-            updatetab: true,
           },
+          state: {
+            updatetab: true,
+          }
         });
       }
     },

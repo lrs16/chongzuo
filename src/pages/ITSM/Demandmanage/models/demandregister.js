@@ -43,12 +43,8 @@ export default {
             result: '1',
             orderNo: demandId,
           },
-          state: {}
+          state: { closetabid: tabid }
         });
-        router.push({
-          pathname: `/ITSM/demandmanage/registration`,
-          query: { tabid, closecurrent: true }
-        })
       }
     },
     *startandnext({ payload }, { call }) {
@@ -56,16 +52,9 @@ export default {
       if (response.code === 200) {
         message.success(response.msg, 2);
         router.push({
-          pathname: `/ITSM/demandmanage/to-do/record/workorder`,
-          query: {
-            mainId: payload.mainId,
-            closetab: true,
-          }
-        });
-        router.push({
           pathname: `/ITSM/demandmanage/to-do`,
           query: { pathpush: true },
-          state: { cache: false }
+          state: { cache: false, closetabid: payload.mainId }
         });
       }
     },

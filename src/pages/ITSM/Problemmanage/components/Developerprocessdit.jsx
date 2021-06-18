@@ -121,7 +121,7 @@ const Developerprocessdit = React.forwardRef((props, ref) => {
             )}
           </Form.Item>
         </Col>
-        <Col span={22}>
+        <Col span={24}>
           <Form.Item label="解决方案" {...forminladeLayout}>
             {getFieldDecorator('handleContent', {
               rules: [
@@ -186,7 +186,7 @@ Developerprocessdit.defaultProps = {
     handleTime: moment().format(),
     handleResult: '',
     handleContent: '',
-    planEndTime:moment().format()
+    planEndTime: moment().format()
   },
   useInfo: {
     userName: '',

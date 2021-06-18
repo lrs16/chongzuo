@@ -67,9 +67,6 @@ export default {
     // 打开编辑
     *demandopenflow({ payload: { processInstanceId, taskId } }, { call, put }) {
       const response = yield call(DemandOpenFlow, processInstanceId, taskId);
-      if (response.code === -1) {
-        message.error(response.msg, 5);
-      }
       yield put({
         type: 'saveinfo',
         payload: response.data,
@@ -85,6 +82,8 @@ export default {
           type: 'saveinfo',
           payload: resopen.data,
         });
+      } if (response.code === -1) {
+        message.error(response.msg, 5);
       }
     },
     // 编辑通用流转
@@ -93,17 +92,12 @@ export default {
       if (response.code === 200) {
         message.success(response.msg, 2);
         router.push({
-          pathname: `/ITSM/demandmanage/to-do/record/workorder`,
-          query: {
-            mainId: payload.mainId,
-            closetab: true,
-          }
-        });
-        router.push({
           pathname: `/ITSM/demandmanage/to-do`,
           query: { pathpush: true },
-          state: { cache: false }
+          state: { cache: false, closetabid: payload.mainId }
         });
+      } if (response.code === -1) {
+        message.error(response.msg, 5);
       }
     },
     // 编辑通用保存
@@ -124,17 +118,12 @@ export default {
       if (response.code === 200) {
         message.success(response.msg, 3);
         router.push({
-          pathname: `/ITSM/demandmanage/to-do/record/workorder`,
-          query: {
-            mainId: processId,
-            closetab: true,
-          }
-        });
-        router.push({
           pathname: `/ITSM/demandmanage/to-do`,
           query: { pathpush: true },
-          state: { cache: false }
+          state: { cache: false, closetabid: processId }
         });
+      } if (response.code === -1) {
+        message.error(response.msg, 5);
       }
     },
     // 编辑回退
@@ -143,17 +132,12 @@ export default {
       if (resmsg.code === 200) {
         message.success(resmsg.msg, 3);
         router.push({
-          pathname: `/ITSM/demandmanage/to-do/record/workorder`,
-          query: {
-            mainId: payload.mainId,
-            closetab: true,
-          }
-        });
-        router.push({
           pathname: `/ITSM/demandmanage/to-do`,
           query: { pathpush: true },
-          state: { cache: false }
+          state: { cache: false, closetabid: payload.mainId }
         });
+      } if (resmsg.code === -1) {
+        message.error(resmsg.msg, 5);
       }
     },
     // 登记时结束
@@ -162,17 +146,12 @@ export default {
       if (resmsg.code === 200) {
         message.success('流程已结束', 3);
         router.push({
-          pathname: `/ITSM/demandmanage/to-do/record/workorder`,
-          query: {
-            mainId,
-            closetab: true,
-          }
-        });
-        router.push({
           pathname: `/ITSM/demandmanage/to-do`,
           query: { pathpush: true },
-          state: { cache: false }
+          state: { cache: false, closetabid: mainId }
         });
+      } if (resmsg.code === -1) {
+        message.error(resmsg.msg, 5);
       }
     },
   },

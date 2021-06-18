@@ -250,6 +250,21 @@ const BasicLayout = props => {
     };
   }, [location])
 
+  // 工单处理后跳转列表页关闭工单页签
+  useEffect(() => {
+    // 跳转时关闭页签
+    if (location.state) {
+      if (location.state.closetabid) {
+        const newtabs = toptabs.filter(item => item.id !== location.state.closetabid);
+        setTopTabs([...newtabs]);
+      }
+      // 更新页签信息
+      if (location.state.updatetab) {
+        ChangetabQuery(location.query)
+      }
+    }
+  }, [location.state])
+
   // 关闭页签
   useEffect(() => {
     // 工单处理后关闭页签
@@ -265,10 +280,7 @@ const BasicLayout = props => {
       lasttabactive(newtabs)
     };
     //
-    // 更新工单处理页签信息
-    if (location.query.updatetab && location.query.mainId) {
-      ChangetabQuery(location.query)
-    }
+
   }, [location.query])
 
 
