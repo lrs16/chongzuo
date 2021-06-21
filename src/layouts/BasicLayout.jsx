@@ -51,6 +51,15 @@ const alonepath = [
   { path: '/ITSM/demandmanage/query/details' },
   { path: '/ITSM/operationplan/operationplanform' },
   { path: '/ITSM/operationplan/operationplansearchdetail' },
+  { path: '/ITSM/Operationreport/WeeklyReport/SoftReport' },
+  { path: '/ITSM/Operationreport/WeeklyReport/SoftReportdetail' },
+  { path: '/ITSM/Operationreport/WeeklyReport/SoftReportdetail' },
+  { path: '/ITSM/Operationreport/WeeklyReport/ComputerroomReport' },
+  { path: '/ITSM/Operationreport/WeeklyReport/ComputerroomReportdetail' },
+  { path: '/ITSM/Operationreport/WeeklyReport/DatabaseReport' },
+  { path: '/ITSM/Operationreport/WeeklyReport/DatabaseReportdetail' },
+  { path: '/ITSM/Operationreport/WeeklyReport/OtherReport' },
+  { path: '/ITSM/Operationreport/WeeklyReport/OtherReportdetail' },
 ];
 
 // 多条登记

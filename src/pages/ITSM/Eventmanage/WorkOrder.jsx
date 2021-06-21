@@ -119,14 +119,13 @@ function WorkOrder2(props) {
   // 流转
   const eventflow = newflowtype => {
     const handleresult = HandleRef.current && HandleRef.current.getHandleResult();
-    console.log((show || taskName === '处理中'), type !== 'other', type)
     dispatch({
       type: 'eventtodo/eventflow',
       payload: {
         flow: {
           taskId,
-          userIds: sessionStorage.getItem('NextflowUserId'),
-          type: ((show || taskName === '处理中') && type !== 'other') ? handleresult : newflowtype,
+          userIds: show ? data[1].register.registerUserId : sessionStorage.getItem('NextflowUserId'),
+          type: (show && type === 'flow') ? handleresult : newflowtype,
         },
         paloadvalues,
       },
@@ -135,6 +134,7 @@ function WorkOrder2(props) {
   // 确认
   const eventcheck = newflowtype => {
     const handleresult = HandleRef.current && HandleRef.current.getHandleResult();
+    console.log(newflowtype, type)
     dispatch({
       type: 'eventtodo/eventflow',
       payload: {

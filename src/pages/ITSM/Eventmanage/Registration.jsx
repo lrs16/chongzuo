@@ -281,14 +281,14 @@ function Registration(props) {
           });
         };
         RegistratRef.current.resetVal();
-        setShow(false)
       }
     }
   }, [location]);
 
   useEffect(() => {
     if (tabdata !== undefined && tabdata.show) {
-      setShow(true)
+      setShow(true);
+      setActiveKey(["registratform", "handleform"]);
       setDefaultvalue({
         main_eventType: tabdata.handlemain.main_eventType,
         main_eventObject: tabdata.handlemain.main_eventObject,
