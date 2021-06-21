@@ -86,6 +86,7 @@ function SoftReport(props) {
         mainId,
         listreportType,
         listId,
+        detailParams,
       } },
     dispatch,
     serviceCompletionthreelist,
@@ -645,18 +646,6 @@ function SoftReport(props) {
                   }}
                 />
               </Col>
-
-              {/* <Col span={24}>
-                <WorkOrderTop
-                  formItemLayout={formItemLayout}
-                  startTime={startTime}
-                  endTime={endTime}
-                  topNList={contentrowdata => {
-                    setTopNList(contentrowdata)
-                  }}
-                />
-              </Col> */}
-
 
               <Col span={24}>
                 <Form.Item

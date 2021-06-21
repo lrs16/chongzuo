@@ -19,6 +19,7 @@ function LastweekHomework(props) {
     operationList,
     operationArr,
     mainId,
+    detailParams,
     loading
   } = props;
   const [data, setData] = useState([]);
@@ -97,6 +98,7 @@ function LastweekHomework(props) {
       render: (text, record) => {
         return (
           <DatePicker
+            disabled={detailParams}
             defaultValue={text ? moment(text) : moment(new Date())}
             onChange={e => handleFieldChange(e, 'field1', record.key)}
           />
@@ -110,6 +112,7 @@ function LastweekHomework(props) {
       render: (text, record) => {
         return (
           <Input
+            disabled={detailParams}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'nature', record.key)}
           />
@@ -123,6 +126,7 @@ function LastweekHomework(props) {
       render: (text, record) => {
         return (
           <Input
+            disabled={detailParams}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'object', record.key)}
           />
@@ -137,6 +141,7 @@ function LastweekHomework(props) {
       render: (text, record) => {
         return (
           <Input
+            disabled={detailParams}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'content', record.key)}
           />
@@ -150,6 +155,7 @@ function LastweekHomework(props) {
       render: (text, record) => {
         return (
           <Input
+            disabled={detailParams}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'plannedEndTime', record.key)}
           />
@@ -163,6 +169,7 @@ function LastweekHomework(props) {
       render: (text, record) => {
         return (
           <Input
+            disabled={detailParams}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'status', record.key)}
           />
@@ -176,6 +183,7 @@ function LastweekHomework(props) {
       render: (text, record) => {
         return (
           <Input
+            disabled={detailParams}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'operationUser', record.key)}
           />
@@ -189,6 +197,7 @@ function LastweekHomework(props) {
       render: (text, record) => {
         return (
           <Input
+            disabled={detailParams}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'operationUnit', record.key)}
           />
@@ -202,6 +211,7 @@ function LastweekHomework(props) {
       render: (text, record) => {
         return (
           <Input
+            disabled={detailParams}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'remark', record.key)}
           />
@@ -233,6 +243,7 @@ function LastweekHomework(props) {
       render: (text, record) => {
         return (
           <DatePicker
+            disabled={detailParams}
             defaultValue={text ? moment(text) : moment(new Date())}
             onChange={e => handleFieldChange(e, 'field1', record.key)}
           />
@@ -246,6 +257,7 @@ function LastweekHomework(props) {
       render: (text, record) => {
         return (
           <Input
+            disabled={detailParams}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field2', record.key)}
           />
@@ -259,6 +271,7 @@ function LastweekHomework(props) {
       render: (text, record) => {
         return (
           <Input
+            disabled={detailParams}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field3', record.key)}
           />
@@ -272,6 +285,7 @@ function LastweekHomework(props) {
       render: (text, record) => {
         return (
           <Input
+            disabled={detailParams}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field4', record.key)}
           />
@@ -285,6 +299,7 @@ function LastweekHomework(props) {
       render: (text, record) => {
         return (
           <Input
+            disabled={detailParams}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field5', record.key)}
           />
@@ -298,6 +313,7 @@ function LastweekHomework(props) {
       render: (text, record) => {
         return (
           <Input
+            disabled={detailParams}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field6', record.key)}
           />
@@ -311,6 +327,7 @@ function LastweekHomework(props) {
       render: (text, record) => {
         return (
           <Input
+            disabled={detailParams}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field7', record.key)}
           />
@@ -324,6 +341,7 @@ function LastweekHomework(props) {
       render: (text, record) => {
         return (
           <Input
+            disabled={detailParams}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field8', record.key)}
           />
@@ -337,6 +355,7 @@ function LastweekHomework(props) {
       render: (text, record) => {
         return (
           <Input
+            disabled={detailParams}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field9', record.key)}
           />
@@ -351,7 +370,11 @@ function LastweekHomework(props) {
       render: (text, record) => {
         return (
           <span>
-            <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
+            <Popconfirm
+              title="是否要删除此行？"
+              onConfirm={() => remove(record.key)}
+              disabled={detailParams}
+            >
               <a>删除</a>
             </Popconfirm>
           </span>
@@ -373,8 +396,9 @@ function LastweekHomework(props) {
     <>
       <Row gutter={16}>
 
-        <Col span={24}>
+        <Col>
           <Button
+            disabled={detailParams}
             type='primary'
             onClick={handleSave}>保存</Button>
         </Col>

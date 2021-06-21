@@ -20,6 +20,7 @@ function DefectTracking(props) {
     form: { getFieldDecorator },
     legacyArr,
     legacyList,
+    detailParams,
     dispatch
   } = props;
   const [data, setData] = useState([]);
@@ -95,7 +96,7 @@ function DefectTracking(props) {
   }
 
   const handleTabledata = () => {
-    if(newbutton === false) {
+    if (newbutton === false) {
       const newarr = legacyArr.map((item, index) => {
         return Object.assign(item, { editable: true, isNew: false, key: index })
       })
@@ -116,6 +117,7 @@ function DefectTracking(props) {
       render: (text, record) => {
         return (
           <DatePicker
+            disabled={detailParams}
             defaultValue={text ? moment(text) : moment(new Date())}
             onChange={e => handleFieldChange(e, 'field1', record.key)}
           />
@@ -127,12 +129,13 @@ function DefectTracking(props) {
       dataIndex: 'field2',
       key: 'field2',
       render: (text, record) => {
-          return (
-            <Input
-              defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'field2', record.key)}
-            />
-          )
+        return (
+          <Input
+            disabled={detailParams}
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field2', record.key)}
+          />
+        )
       }
     },
     {
@@ -140,12 +143,13 @@ function DefectTracking(props) {
       dataIndex: 'field3',
       key: 'field3',
       render: (text, record) => {
-          return (
-            <Input
-              defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'field3', record.key)}
-            />
-          )
+        return (
+          <Input
+            disabled={detailParams}
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field3', record.key)}
+          />
+        )
       }
     },
     {
@@ -155,6 +159,7 @@ function DefectTracking(props) {
       render: (text, record) => {
         return (
           <DatePicker
+            disabled={detailParams}
             defaultValue={text ? moment(text) : moment(new Date())}
             onChange={e => handleFieldChange(e, 'field4', record.key)}
           />
@@ -166,12 +171,13 @@ function DefectTracking(props) {
       dataIndex: 'field5',
       key: 'field5',
       render: (text, record) => {
-          return (
-            <Input
-              defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'field5', record.key)}
-            />
-          )
+        return (
+          <Input
+            disabled={detailParams}
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field5', record.key)}
+          />
+        )
       }
     },
     {
@@ -180,13 +186,17 @@ function DefectTracking(props) {
       fixed: 'right',
       width: 120,
       render: (text, record) => {
-          return (
-            <span>
-              <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
-                <a>删除</a>
-              </Popconfirm>
-            </span>
-          )
+        return (
+          <span>
+            <Popconfirm
+              title="是否要删除此行？"
+              onConfirm={() => remove(record.key)}
+              disabled={detailParams}
+            >
+              <a>删除</a>
+            </Popconfirm>
+          </span>
+        )
       }
 
     }
@@ -199,8 +209,9 @@ function DefectTracking(props) {
           <p style={{ fontWeight: '900', fontSize: '16px', marginTop: '20px' }}>六、遗留缺陷问题跟踪,遗留问题、缺陷跟踪情况</p>
         </Col>
 
-        <Col span={24}>
+        <Col>
           <Button
+            disabled={detailParams}
             type='primary'
             onClick={handleSave}>保存</Button>
         </Col>
@@ -217,13 +228,14 @@ function DefectTracking(props) {
           ghost
           onClick={() => newMember()}
           icon="plus"
+          disabled={detailParams}
         >
           新增
-          </Button>
+        </Button>
       </Row>
     </>
   )
 }
 
 export default Form.create({})(DefectTracking)
-;
+  ;

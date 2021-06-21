@@ -20,6 +20,7 @@ function RemainingDefects(props) {
     form: { getFieldDecorator },
     legacyArr,
     legacyList,
+    detailParams,
     dispatch
   } = props;
   const [data, setData] = useState([]);
@@ -145,12 +146,13 @@ function RemainingDefects(props) {
       dataIndex: 'field1',
       key: 'field1',
       render: (text, record) => {
-          return (
-            <Input
-              defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'field1', record.key)}
-            />
-          )
+        return (
+          <Input
+            disabled={detailParams}
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field1', record.key)}
+          />
+        )
       }
     },
     {
@@ -158,12 +160,13 @@ function RemainingDefects(props) {
       dataIndex: 'field2',
       key: 'field2',
       render: (text, record) => {
-          return (
-            <Input
-              defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'field2', record.key)}
-            />
-          )
+        return (
+          <Input
+            disabled={detailParams}
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field2', record.key)}
+          />
+        )
       }
     },
     {
@@ -171,12 +174,13 @@ function RemainingDefects(props) {
       dataIndex: 'field3',
       key: 'field3',
       render: (text, record) => {
-          return (
-            <Input
-              defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'field3', record.key)}
-            />
-          )
+        return (
+          <Input
+            disabled={detailParams}
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field3', record.key)}
+          />
+        )
       }
     },
     {
@@ -184,12 +188,13 @@ function RemainingDefects(props) {
       dataIndex: 'field4',
       key: 'field4',
       render: (text, record) => {
-          return (
-            <Input
-              defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'field4', record.key)}
-            />
-          )
+        return (
+          <Input
+            disabled={detailParams}
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field4', record.key)}
+          />
+        )
       }
     },
     {
@@ -197,12 +202,13 @@ function RemainingDefects(props) {
       dataIndex: 'field5',
       key: 'field5',
       render: (text, record) => {
-          return (
-            <Input
-              defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'field5', record.key)}
-            />
-          )
+        return (
+          <Input
+            disabled={detailParams}
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field5', record.key)}
+          />
+        )
       }
     },
     {
@@ -211,13 +217,17 @@ function RemainingDefects(props) {
       fixed: 'right',
       width: 120,
       render: (text, record) => {
-          return (
-            <span>
-              <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
-                <a>删除</a>
-              </Popconfirm>
-            </span>
-          )
+        return (
+          <span>
+            <Popconfirm
+              title="是否要删除此行？"
+              onConfirm={() => remove(record.key)}
+              disabled={detailParams}
+            >
+              <a>删除</a>
+            </Popconfirm>
+          </span>
+        )
       }
 
     }
@@ -231,6 +241,7 @@ function RemainingDefects(props) {
         </Col>
 
         <Button
+          disabled={detailParams}
           type='primary'
           onClick={savedata}
         >
@@ -248,14 +259,14 @@ function RemainingDefects(props) {
           ghost
           onClick={() => newMember()}
           icon="plus"
-          disabled={newbutton}
+          disabled={detailParams}
         >
-          新增巡检情况
-          </Button>
+          新增
+        </Button>
       </Row>
     </>
   )
 }
 
 export default Form.create({})(RemainingDefects)
-;
+  ;

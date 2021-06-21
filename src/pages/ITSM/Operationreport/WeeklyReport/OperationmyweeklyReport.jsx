@@ -67,7 +67,7 @@ function OperationmyweeklyReport(props) {
                 query: {
                   mainId: record.id,
                   reporttype: 'week',
-                  pathpush: true
+                  pathpush: true,
                 },
               });
               break;
@@ -77,7 +77,7 @@ function OperationmyweeklyReport(props) {
                 query: {
                   mainId: record.id,
                   reporttype: 'week',
-                  pathpush: true
+                  pathpush: true,
                 },
               });
               break;
@@ -87,7 +87,7 @@ function OperationmyweeklyReport(props) {
                 query: {
                   mainId: record.id,
                   reporttype: 'week',
-                  pathpush: true
+                  pathpush: true,
                 },
               });
               break;
@@ -97,7 +97,7 @@ function OperationmyweeklyReport(props) {
                 query: {
                   mainId: record.id,
                   reporttype: 'week',
-                  pathpush: true
+                  pathpush: true,
                 },
               });
               break;

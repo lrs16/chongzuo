@@ -23,6 +23,7 @@ function NewTroublelist(props) {
     forminladeLayout,
     faultlist,
     newTroubleList,
+    reportSearch,
     mainId,
   } = props;
   const [data, setData] = useState([]);
@@ -110,6 +111,7 @@ function NewTroublelist(props) {
       render: (text, record) => {
         return (
           <DatePicker
+            disabled={reportSearch}
             defaultValue={text ? moment(text) : moment(new Date())}
             onChange={e => handleFieldChange(e, 'addTime', record.key)}
           />
@@ -123,6 +125,7 @@ function NewTroublelist(props) {
       render: (text, record) => {
         return (
           <Input
+            disabled={reportSearch}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'typecn', record.key)}
           />
@@ -136,6 +139,7 @@ function NewTroublelist(props) {
       render: (text, record) => {
         return (
           <Input
+            disabled={reportSearch}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field3', record.key)}
           />
@@ -149,6 +153,7 @@ function NewTroublelist(props) {
       render: (text, record) => {
         return (
           <Input
+            disabled={reportSearch}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field4', record.key)}
           />
@@ -162,6 +167,7 @@ function NewTroublelist(props) {
       render: (text, record) => {
         return (
           <Input
+            disabled={reportSearch}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field5', record.key)}
           />
@@ -175,6 +181,7 @@ function NewTroublelist(props) {
       render: (text, record) => {
         return (
           <Input
+            disabled={reportSearch}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field6', record.key)}
           />
@@ -188,6 +195,7 @@ function NewTroublelist(props) {
       render: (text, record) => {
         return (
           <Input
+            disabled={reportSearch}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field7', record.key)}
           />
@@ -202,7 +210,11 @@ function NewTroublelist(props) {
       render: (text, record) => {
         return (
           <span>
-            <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
+            <Popconfirm
+              title="是否要删除此行？"
+              onConfirm={() => remove(record.key)}
+              disabled={reportSearch}
+            >
               <a>删除</a>
             </Popconfirm>
           </span>
@@ -219,6 +231,7 @@ function NewTroublelist(props) {
       render: (text, record) => {
         return (
           <DatePicker
+            disabled={reportSearch}
             defaultValue={text ? moment(text) : moment(new Date())}
             onChange={e => handleFieldChange(e, 'field1', record.key)}
           />
@@ -232,6 +245,7 @@ function NewTroublelist(props) {
       render: (text, record) => {
         return (
           <Input
+            disabled={reportSearch}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field2', record.key)}
           />
@@ -245,6 +259,7 @@ function NewTroublelist(props) {
       render: (text, record) => {
         return (
           <Input
+            disabled={reportSearch}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field3', record.key)}
           />
@@ -258,6 +273,7 @@ function NewTroublelist(props) {
       render: (text, record) => {
         return (
           <Input
+            disabled={reportSearch}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field4', record.key)}
           />
@@ -271,6 +287,7 @@ function NewTroublelist(props) {
       render: (text, record) => {
         return (
           <Input
+            disabled={reportSearch}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field5', record.key)}
           />
@@ -284,6 +301,7 @@ function NewTroublelist(props) {
       render: (text, record) => {
         return (
           <Input
+            disabled={reportSearch}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field6', record.key)}
           />
@@ -297,6 +315,7 @@ function NewTroublelist(props) {
       render: (text, record) => {
         return (
           <Input
+            disabled={reportSearch}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field7', record.key)}
           />
@@ -311,7 +330,11 @@ function NewTroublelist(props) {
       render: (text, record) => {
         return (
           <span>
-            <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
+            <Popconfirm
+              title="是否要删除此行？"
+              onConfirm={() => remove(record.key)}
+              disabled={reportSearch}
+            >
               <a>删除</a>
             </Popconfirm>
           </span>
@@ -341,8 +364,9 @@ function NewTroublelist(props) {
           <p>3.1新增及已修复故障</p>
         </Col>
 
-        <Col span={24}>
+        <Col>
           <Button
+            disabled={reportSearch}
             type='primary'
             onClick={handleSave}>保存</Button>
         </Col>
@@ -359,6 +383,7 @@ function NewTroublelist(props) {
           ghost
           onClick={() => newMember()}
           icon="plus"
+          disabled={reportSearch}
         >
           新增
         </Button>

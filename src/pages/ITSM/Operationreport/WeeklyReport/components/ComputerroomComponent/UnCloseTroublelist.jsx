@@ -20,7 +20,8 @@ function UnCloseTroublelist(props) {
     form: { getFieldDecorator },
     unCloseTroubleList,
     uncloseaultlist,
-    mainId
+    mainId,
+    reportSearch
   } = props;
   const [data, setData] = useState([]);
   const [seconddata, setSeconddata] = useState([]);
@@ -33,14 +34,14 @@ function UnCloseTroublelist(props) {
   // 初始化把数据传过去
   useEffect(() => {
     // typeList(maintenanceArr)
-    if(data && data.length) {
-    const result = JSON.parse(JSON.stringify(data)
-      .replace(/addTime/g, 'field1')
-      .replace(/typecn/g, 'field2')
-    )
-    if (result) {
-      unCloseTroubleList(result)
-    }
+    if (data && data.length) {
+      const result = JSON.parse(JSON.stringify(data)
+        .replace(/addTime/g, 'field1')
+        .replace(/typecn/g, 'field2')
+      )
+      if (result) {
+        unCloseTroubleList(result)
+      }
     }
   }, [data]);
 
@@ -93,7 +94,7 @@ function UnCloseTroublelist(props) {
   }
 
   const handleTabledata = () => {
-    if(uncloseaultlist && uncloseaultlist.length && newbutton === false) {
+    if (uncloseaultlist && uncloseaultlist.length && newbutton === false) {
       const newarr = uncloseaultlist.map((item, index) => {
         return Object.assign(item, { editable: true, isNew: false, key: index })
       })
@@ -109,6 +110,7 @@ function UnCloseTroublelist(props) {
       render: (text, record) => {
         return (
           <DatePicker
+            disabled={reportSearch}
             defaultValue={text ? moment(text) : moment(new Date())}
             onChange={e => handleFieldChange(e, 'addTime', record.key)}
           />
@@ -122,6 +124,7 @@ function UnCloseTroublelist(props) {
       render: (text, record) => {
         return (
           <Input
+            disabled={reportSearch}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'typecn', record.key)}
           />
@@ -135,6 +138,7 @@ function UnCloseTroublelist(props) {
       render: (text, record) => {
         return (
           <Input
+            disabled={reportSearch}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field3', record.key)}
           />
@@ -148,6 +152,7 @@ function UnCloseTroublelist(props) {
       render: (text, record) => {
         return (
           <Input
+            disabled={reportSearch}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field4', record.key)}
           />
@@ -162,7 +167,11 @@ function UnCloseTroublelist(props) {
       render: (text, record) => {
         return (
           <span>
-            <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
+            <Popconfirm
+              title="是否要删除此行？"
+              onConfirm={() => remove(record.key)}
+              disabled={reportSearch}
+            >
               <a>删除</a>
             </Popconfirm>
           </span>
@@ -180,6 +189,7 @@ function UnCloseTroublelist(props) {
       render: (text, record) => {
         return (
           <DatePicker
+            disabled={reportSearch}
             defaultValue={text ? moment(text) : moment(new Date())}
             onChange={e => handleFieldChange(e, 'field1', record.key)}
           />
@@ -193,6 +203,7 @@ function UnCloseTroublelist(props) {
       render: (text, record) => {
         return (
           <Input
+            disabled={reportSearch}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field2', record.key)}
           />
@@ -206,6 +217,7 @@ function UnCloseTroublelist(props) {
       render: (text, record) => {
         return (
           <Input
+            disabled={reportSearch}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field3', record.key)}
           />
@@ -219,6 +231,7 @@ function UnCloseTroublelist(props) {
       render: (text, record) => {
         return (
           <Input
+            disabled={reportSearch}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field4', record.key)}
           />
@@ -233,7 +246,11 @@ function UnCloseTroublelist(props) {
       render: (text, record) => {
         return (
           <span>
-            <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
+            <Popconfirm
+              title="是否要删除此行？"
+              onConfirm={() => remove(record.key)}
+              disabled={reportSearch}
+            >
               <a>删除</a>
             </Popconfirm>
           </span>
@@ -244,11 +261,11 @@ function UnCloseTroublelist(props) {
     }
   ];
 
-  const [newColumns,setNewColumns] = useState(column)
+  const [newColumns, setNewColumns] = useState(column)
 
   useEffect(() => {
     handleTabledata();
-    if(mainId) {
+    if (mainId) {
       setNewColumns(editClolumn)
     }
   }, [uncloseaultlist])
@@ -262,8 +279,9 @@ function UnCloseTroublelist(props) {
           <p>3.2未修复故障清单</p>
         </Col>
 
-        <Col span={24}>
+        <Col>
           <Button
+            disabled={reportSearch}
             type='primary'
             onClick={handleSave}>保存</Button>
         </Col>
@@ -281,6 +299,7 @@ function UnCloseTroublelist(props) {
           ghost
           onClick={() => newMember()}
           icon="plus"
+          disabled={reportSearch}
         >
           新增
         </Button>

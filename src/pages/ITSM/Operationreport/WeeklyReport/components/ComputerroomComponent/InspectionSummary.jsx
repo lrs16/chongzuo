@@ -20,7 +20,8 @@ function InspectionSummary(props) {
     form: { getFieldDecorator },
     forminladeLayout,
     materialsList,
-    materialsArr
+    materialsArr,
+    reportSearch
   } = props;
   const [data, setData] = useState([]);
   const [newbutton, setNewButton] = useState(false);
@@ -51,12 +52,12 @@ function InspectionSummary(props) {
   };
 
 
-  const deleteObj = (key,newData) => {
+  const deleteObj = (key, newData) => {
     return (newData || data).filter(item => item.key !== key);
   }
 
-   //  删除数据
-   const remove = key => {
+  //  删除数据
+  const remove = key => {
     const target = deleteObj(key) || {};
     setData(target)
   };
@@ -78,7 +79,7 @@ function InspectionSummary(props) {
   }
 
   const handleTabledata = () => {
-    if(newbutton === false) {
+    if (newbutton === false) {
       const newarr = materialsArr.map((item, index) => {
         return Object.assign(item, { editable: true, isNew: false, key: index })
       })
@@ -92,12 +93,13 @@ function InspectionSummary(props) {
       dataIndex: 'field1',
       key: 'field1',
       render: (text, record) => {
-          return (
-            <Input
-              defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'field1', record.key)}
-            />
-          )
+        return (
+          <Input
+            disabled={reportSearch}
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field1', record.key)}
+          />
+        )
       }
     },
     {
@@ -105,15 +107,16 @@ function InspectionSummary(props) {
       dataIndex: 'field2',
       key: 'field2',
       render: (text, record) => {
-          return (
-            <Select
-              defaultValue={text}
-              onChange={e => handleFieldChange(e, 'field2', record.key)}
-            >
-              <Option value="是">是</Option>
-              <Option value="否">否</Option>
-            </Select>
-          )
+        return (
+          <Select
+            disabled={reportSearch}
+            defaultValue={text}
+            onChange={e => handleFieldChange(e, 'field2', record.key)}
+          >
+            <Option value="是">是</Option>
+            <Option value="否">否</Option>
+          </Select>
+        )
       }
     },
     {
@@ -122,13 +125,17 @@ function InspectionSummary(props) {
       fixed: 'right',
       width: 120,
       render: (text, record) => {
-          return (
-            <span>
-              <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
-                <a>删除</a>
-              </Popconfirm>
-            </span>
-          )
+        return (
+          <span>
+            <Popconfirm
+              title="是否要删除此行？"
+              onConfirm={() => remove(record.key)}
+              disabled={reportSearch}
+            >
+              <a>删除</a>
+            </Popconfirm>
+          </span>
+        )
         // }
       }
 
@@ -148,8 +155,9 @@ function InspectionSummary(props) {
           <p>(2)运维材料提交情况</p>
         </Col>
 
-        <Col span={24}>
+        <Col>
           <Button
+            disabled={reportSearch}
             type='primary'
             onClick={handleSave}>保存</Button>
         </Col>
@@ -166,9 +174,10 @@ function InspectionSummary(props) {
           ghost
           onClick={() => newMember()}
           icon="plus"
+          disabled={reportSearch}
         >
           新增
-          </Button>
+        </Button>
       </Row>
     </>
   )

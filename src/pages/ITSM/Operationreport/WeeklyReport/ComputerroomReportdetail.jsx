@@ -298,7 +298,7 @@ function ComputerroomReportdetail(props) {
                     initialValue: main ? main.name : ''
                   })
                     (
-                      <Input />
+                      <Input disabled={reportSearch} />
                     )}
                 </Form.Item>
               </Col>
@@ -311,8 +311,7 @@ function ComputerroomReportdetail(props) {
                         initialValue: [moment(startTime), moment(endTime)]
                       })(<RangePicker
                         allowClear={false}
-                        // disabledDate={startdisabledDate}
-                        // placeholder='请选择'
+                        disabled={reportSearch}
                         onChange={onChange}
                       />)}
                     </Form.Item>
@@ -328,8 +327,7 @@ function ComputerroomReportdetail(props) {
                         initialValue: moment(startTime)
                       })(<MonthPicker
                         allowClear={false}
-                        // disabledDate={startdisabledDate}
-                        // placeholder='请选择'
+                        disabled={reportSearch}
                         onChange={onChange}
                       />)}
                     </Form.Item>
@@ -344,7 +342,11 @@ function ComputerroomReportdetail(props) {
                     getFieldDecorator('content', {
                       initialValue: main.content
                     })
-                      (<TextArea autoSize={{ minRows: 3 }} />)
+                      (
+                        <TextArea
+                          disabled={reportSearch}
+                          autoSize={{ minRows: 3 }}
+                        />)
                   }
                 </Form.Item>
               </Col>
@@ -381,7 +383,12 @@ function ComputerroomReportdetail(props) {
                     getFieldDecorator('patrolAndExamineContent', {
                       initialValue: openReportlist.patrolAndExamineContent
                     })
-                      (<TextArea autoSize={{ minRows: 3 }} />)
+                      (
+                        <TextArea
+                          autoSize={{ minRows: 3 }}
+                          disabled={reportSearch}
+                        />
+                      )
                   }
                 </Form.Item>
               </Col>
@@ -400,6 +407,7 @@ function ComputerroomReportdetail(props) {
                     setMaterialsList(contentrowdata)
                   }}
                   materialsArr={openReportlist.materialsList ? openReportlist.materialsList : []}
+                  reportSearch={reportSearch}
                 />
               </Col>
 
@@ -439,6 +447,7 @@ function ComputerroomReportdetail(props) {
                   }}
                   faultlist={openReportlist.newTroubleList ? openReportlist.newTroubleList : []}
                   mainId={mainId}
+                  reportSearch={reportSearch}
                 />
               </Col>
 
@@ -453,6 +462,7 @@ function ComputerroomReportdetail(props) {
                   }}
                   uncloseaultlist={openReportlist.unCloseTroubleList ? openReportlist.unCloseTroubleList : []}
                   mainId={mainId}
+                  reportSearch={reportSearch}
                 />
               </Col>
 
@@ -491,7 +501,10 @@ function ComputerroomReportdetail(props) {
                     getFieldDecorator('operationContent', {
                       initialValue: openReportlist.operationContent ? openReportlist.operationContent : ''
                     })
-                      (<TextArea autoSize={{ minRows: 3 }} />)
+                      (<TextArea
+                        autoSize={{ minRows: 3 }}
+                        disabled={reportSearch}
+                      />)
                   }
 
 
@@ -511,6 +524,7 @@ function ComputerroomReportdetail(props) {
                   }}
                   operationArr={openReportlist.operationList ? openReportlist.operationList : lastweekHomeworklist.rows}
                   mainId={mainId}
+                  detailParams={reportSearch}
                 />
               </Col>
 
@@ -523,7 +537,10 @@ function ComputerroomReportdetail(props) {
                     getFieldDecorator('billingContent', {
                       initialValue: openReportlist.billingContent ? openReportlist.billingContent : ''
                     })
-                      (<TextArea autoSize={{ minRows: 3 }} />)
+                      (<TextArea
+                        autoSize={{ minRows: 3 }}
+                        disabled={reportSearch}
+                      />)
                   }
                 </Form.Item>
               </Col>
@@ -542,6 +559,7 @@ function ComputerroomReportdetail(props) {
                   }}
                   nextOperationArr={openReportlist.nextOperationList ? openReportlist.nextOperationList : nextweekHomeworklist.rows}
                   mainId={mainId}
+                  detailParams={reportSearch}
                 />
               </Col>
 
@@ -582,6 +600,7 @@ function ComputerroomReportdetail(props) {
                     setMeetingSummaryList(contentrowdata)
                   }}
                   meetingSummaryarr={openReportlist.meetingSummaryList ? openReportlist.meetingSummaryList : []}
+                  reportSearch={reportSearch}
                 />
               </Col>
 
@@ -651,7 +670,7 @@ function ComputerroomReportdetail(props) {
                 ghost
                 onClick={() => newMember()}
                 icon="plus"
-                disabled={secondbutton}
+                disabled={reportSearch}
               >
                 新增内容
               </Button>

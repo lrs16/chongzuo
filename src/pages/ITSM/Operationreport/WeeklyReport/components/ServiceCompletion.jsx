@@ -24,11 +24,11 @@ useEffect(() => {
     .replace(/not_selfhandle/g, 'field1')
     .replace(/is_selfhandle/g, 'field2')
     .replace(/points/g, 'field3'))
-    if(result) {
+    // if(result) {
       selfhandleRow(result)
-    }
+    // }
   }
-}, [soluteArr]);
+}, []);
 
   const threeColumn = [
     {

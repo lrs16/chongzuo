@@ -82,7 +82,7 @@ function SoftReportdetail(props) {
       reporttype,
       status,
       mainId,
-      reportSearch
+      reportSearch,
     } },
     dispatch,
     serviceCompletionlist,
@@ -221,12 +221,12 @@ function SoftReportdetail(props) {
   }, []);
 
   const handleBack = () => {
-    if(reporttype === 'week') {
+    if (reporttype === 'week') {
       router.push('/ITSM/operationreport/weeklyreport/myweeklyreport');
     } else {
       router.push('/ITSM/operationreport/monthlyreport/mymonthlyreport');
     }
-    
+
   }
 
   // const handleListdata = () => {
@@ -290,7 +290,7 @@ function SoftReportdetail(props) {
     // setList(listArr)
   }
 
-  console.log(list,'list')
+  console.log(list, 'list')
 
 
   const exportWord = () => {
@@ -350,7 +350,7 @@ function SoftReportdetail(props) {
                     initialValue: main ? main.name : ''
                   })
                     (
-                      <Input />
+                      <Input disabled={reportSearch}/>
                     )}
                 </Form.Item>
               </Col>
@@ -366,8 +366,9 @@ function SoftReportdetail(props) {
                             message: '请选择填报日期'
                           }
                         ],
-                        initialValue: [moment(main.time1), moment(main.time2)]
+                        initialValue: main ? [moment(main.time1), moment(main.time2)] : [moment(startTime), moment(endTime)]
                       })(<RangePicker
+                        disabled={reportSearch}
                         allowClear={false}
                         onChange={onChange}
                       />)}
@@ -390,6 +391,7 @@ function SoftReportdetail(props) {
                         initialValue: moment(startTime)
                       })(<MonthPicker
                         allowClear
+                        disabled={reportSearch}
                         // disabledDate={startdisabledDate}
                         // placeholder='请选择'
                         onChange={onChange}
@@ -412,6 +414,7 @@ function SoftReportdetail(props) {
                     setContentRow(contentrowdata)
                   }}
                   contentArr={openReportlist.contentRow ? openReportlist.contentRow : []}
+                  detailParams={reportSearch}
                 />
               </Col>
 
@@ -458,6 +461,7 @@ function SoftReportdetail(props) {
                     setPatrolAndExamine(contentrowdata)
                   }}
                   patrolAndExamine={openReportlist.patrolAndExamineList ? openReportlist.patrolAndExamineList : []}
+                  detailParams={reportSearch}
                 />
               </Col>
 
@@ -468,6 +472,7 @@ function SoftReportdetail(props) {
                     setMaterialsList(contentrowdata)
                   }}
                   materials={openReportlist.materialsList ? openReportlist.materialsList : []}
+                  detailParams={reportSearch}
                 />
               </Col>
 
@@ -522,6 +527,7 @@ function SoftReportdetail(props) {
                   }}
                   maintenanceArr={openReportlist.typeList ? openReportlist.typeList : []}
                   mainId={mainId}
+                  detailParams={reportSearch}
 
                 />
               </Col>
@@ -553,6 +559,7 @@ function SoftReportdetail(props) {
                     setSelfhandleRow(contentrowdata)
                   }}
                   soluteArr={openReportlist.selfhandleRow ? openReportlist.selfhandleRow : []}
+                  detailParams={reportSearch}
                 />
               </Col>
 
@@ -581,6 +588,7 @@ function SoftReportdetail(props) {
                   }}
                   topArr={openReportlist.topNList ? openReportlist.topNList : []}
                   mainId={mainId}
+                  detailParams={reportSearch}
                 />
               </Col>
 
@@ -636,6 +644,7 @@ function SoftReportdetail(props) {
                   }}
                   mainId={mainId}
                   eventArr={openReportlist.eventList ? openReportlist.eventList : []}
+                  detailParams={reportSearch}
                 />
               </Col>
 
@@ -662,7 +671,7 @@ function SoftReportdetail(props) {
                 </Form.Item>
               </Col>
 
-              {/* <Col span={24}>
+              <Col span={24}>
                 <RemainingDefects
                   forminladeLayout={forminladeLayout}
                   softCompletionlist={softCompletionlist}
@@ -673,8 +682,9 @@ function SoftReportdetail(props) {
                     setLegacyList(contentrowdata)
                   }}
                   legacyArr={openReportlist.legacyList ? openReportlist.legacyList : []}
+                  detailParams={reportSearch}
                 />
-              </Col> */}
+              </Col>
 
 
 
@@ -691,6 +701,7 @@ function SoftReportdetail(props) {
                     setUpgradeList(contentrowdata)
                   }}
                   upgradeArr={openReportlist.upgradeList ? openReportlist.upgradeList : []}
+                  detailParams={reportSearch}
                 />
               </Col>
 
@@ -706,6 +717,7 @@ function SoftReportdetail(props) {
                     setUpdateList(contentrowdata)
                   }}
                   updateArr={openReportlist.updateList ? openReportlist.updateList : []}
+                  detailParams={reportSearch}
                 />
               </Col>
 
@@ -760,6 +772,7 @@ function SoftReportdetail(props) {
                     setLegacyList(contentrowdata)
                   }}
                   legacyArr={openReportlist.legacyList ? openReportlist.legacyList : []}
+                  detailParams={reportSearch}
                 />
               </Col>
 
@@ -799,6 +812,7 @@ function SoftReportdetail(props) {
                   }}
                   operationArr={openReportlist.operationList ? openReportlist.operationList : []}
                   mainId={mainId}
+                  detailParams={reportSearch}
                 />
               </Col>
 
@@ -837,6 +851,7 @@ function SoftReportdetail(props) {
                   }}
                   nextOperationArr={openReportlist.nextOperationList ? openReportlist.nextOperationList : []}
                   mainId={mainId}
+                  detailParams={reportSearch}
                 />
               </Col>
 
@@ -869,6 +884,7 @@ function SoftReportdetail(props) {
                     <>
                       <Col span={23}>
                         <AddForm
+                          detailParams={reportSearch}
                           formincontentLayout={formincontentLayout}
                           px={index + 9}
                           addTable={newdata => {
@@ -902,6 +918,7 @@ function SoftReportdetail(props) {
                 ghost
                 onClick={() => newMember()}
                 icon="plus"
+                disabled={reportSearch}
               >
                 新增
               </Button>

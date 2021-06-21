@@ -26,7 +26,7 @@ const Top10Increase = React.forwardRef((props, ref) => {
     form: { getFieldDecorator },
     tableUpArr,
     tableUpList,
-    startTime,
+    reportSearch,
     endTime,
   } = props;
 
@@ -148,6 +148,7 @@ const Top10Increase = React.forwardRef((props, ref) => {
       render: (text, record) => {
         return (
           <Input
+            disabled={reportSearch}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field1', record.key)}
           />
@@ -161,6 +162,7 @@ const Top10Increase = React.forwardRef((props, ref) => {
       render: (text, record) => {
         return (
           <Input
+            disabled={reportSearch}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field2', record.key)}
           />
@@ -174,6 +176,7 @@ const Top10Increase = React.forwardRef((props, ref) => {
       render: (text, record) => {
         return (
           <Input
+            disabled={reportSearch}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field3', record.key)}
           />
@@ -187,6 +190,7 @@ const Top10Increase = React.forwardRef((props, ref) => {
       render: (text, record) => {
         return (
           <Input
+            disabled={reportSearch}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field4', record.key)}
           />
@@ -200,6 +204,7 @@ const Top10Increase = React.forwardRef((props, ref) => {
       render: (text, record) => {
         return (
           <Input
+            disabled={reportSearch}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field5', record.key)}
           />
@@ -214,7 +219,11 @@ const Top10Increase = React.forwardRef((props, ref) => {
       render: (text, record) => {
         return (
           <span>
-            <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
+            <Popconfirm
+              title="是否要删除此行？"
+              onConfirm={() => remove(record.key)}
+              disabled={reportSearch}
+            >
               <a>删除</a>
             </Popconfirm>
           </span>
@@ -239,8 +248,9 @@ const Top10Increase = React.forwardRef((props, ref) => {
           <p>Top10表增长情况</p>
         </Col>
 
-        <Col span={24}>
+        <Col>
           <Button
+          disabled={reportSearch}
             type='primary'
             onClick={handleSave}>保存</Button>
         </Col>
@@ -256,8 +266,9 @@ const Top10Increase = React.forwardRef((props, ref) => {
           ghost
           onClick={() => newMember()}
           icon="plus"
+          disabled={reportSearch}
         >
-          新增巡检情况
+          新增
         </Button>
       </Row>
     </>

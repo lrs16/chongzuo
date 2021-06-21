@@ -36,7 +36,7 @@ const AddForm = React.forwardRef((props, ref) => {
     patrolAndExamine, //  巡检列表
     dynamicData,
     px,
-    initialDynamic,
+    detailParams,
     list,
     files,
     addTable,
@@ -259,7 +259,11 @@ const AddForm = React.forwardRef((props, ref) => {
       render: (text, record) => {
         return (
           <span>
-            <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
+            <Popconfirm
+              title="是否要删除此行？"
+              onConfirm={() => remove(record.key)}
+              disabled={detailParams}
+            >
               <a>删除</a>
             </Popconfirm>
           </span>
@@ -299,12 +303,13 @@ const AddForm = React.forwardRef((props, ref) => {
       <Row gutter={16}>
         <Form>
           {/* {index === 0 && ( */}
-            <Button
-              type='primary'
-              onClick={handleSubmit}
-            >
-              保存
-            </Button>
+          <Button
+            disabled={detailParams}
+            type='primary'
+            onClick={handleSubmit}
+          >
+            保存
+          </Button>
           {/* // )} */}
 
           <Col><p>注：第一行数据作为表头</p></Col>
@@ -351,6 +356,8 @@ const AddForm = React.forwardRef((props, ref) => {
             ghost
             onClick={() => newMember()}
             icon="plus"
+            disabled={detailParams}
+
           >
             新增行
           </Button>

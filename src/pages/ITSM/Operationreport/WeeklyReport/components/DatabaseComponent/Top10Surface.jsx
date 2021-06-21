@@ -7,7 +7,8 @@ import {
   Row,
   Button,
   Divider,
-  Popconfirm
+  Popconfirm,
+  message
 } from 'antd';
 
 const { TextArea } = Input;
@@ -27,6 +28,7 @@ const Top10Surface = React.forwardRef((props, ref) => {
     startTime,
     endTime,
     tablespaceList,
+    reportSearch
   } = props;
 
   const [data, setData] = useState([]);
@@ -43,7 +45,7 @@ const Top10Surface = React.forwardRef((props, ref) => {
   }, [data]);
 
   const handleSave = () => {
-    discList(data);
+    tablespaceList(data);
     message.info('暂存保存数据成功')
   }
   // 新增一条记录
@@ -107,6 +109,7 @@ const Top10Surface = React.forwardRef((props, ref) => {
       render: (text, record) => {
         return (
           <Input
+            disabled={reportSearch}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field1', record.key)}
           />
@@ -120,6 +123,7 @@ const Top10Surface = React.forwardRef((props, ref) => {
       render: (text, record) => {
         return (
           <Input
+            disabled={reportSearch}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field2', record.key)}
           />
@@ -133,6 +137,7 @@ const Top10Surface = React.forwardRef((props, ref) => {
       render: (text, record) => {
         return (
           <Input
+            disabled={reportSearch}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field3', record.key)}
           />
@@ -146,6 +151,7 @@ const Top10Surface = React.forwardRef((props, ref) => {
       render: (text, record) => {
         return (
           <Input
+            disabled={reportSearch}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field4', record.key)}
           />
@@ -159,6 +165,7 @@ const Top10Surface = React.forwardRef((props, ref) => {
       render: (text, record) => {
         return (
           <Input
+            disabled={reportSearch}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field5', record.key)}
           />
@@ -173,7 +180,11 @@ const Top10Surface = React.forwardRef((props, ref) => {
       render: (text, record) => {
         return (
           <span>
-            <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
+            <Popconfirm
+              title="是否要删除此行？"
+              onConfirm={() => remove(record.key)}
+              disabled={reportSearch}
+            >
               <a>删除</a>
             </Popconfirm>
           </span>
@@ -198,8 +209,9 @@ const Top10Surface = React.forwardRef((props, ref) => {
           <p>Top10表空间(正常增长范围120GB-150GB)</p>
         </Col>
 
-        <Col span={24}>
+        <Col>
           <Button
+            disabled={reportSearch}
             type='primary'
             onClick={handleSave}>保存</Button>
         </Col>
@@ -215,6 +227,7 @@ const Top10Surface = React.forwardRef((props, ref) => {
           ghost
           onClick={() => newMember()}
           icon="plus"
+          disabled={reportSearch}
         >
           新增巡检情况
         </Button>

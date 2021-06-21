@@ -22,6 +22,7 @@ function UpgradeList(props) {
     form: { getFieldDecorator },
     upgradeArr,
     upgradeList,
+    detailParams,
     dispatch
   } = props;
   const [data, setData] = useState([]);
@@ -126,7 +127,7 @@ function UpgradeList(props) {
   }
 
   const handleTabledata = () => {
-    if(newbutton === false) {
+    if (newbutton === false) {
       const newarr = upgradeArr.map((item, index) => {
         return Object.assign(item, { editable: true, isNew: false, key: index })
       })
@@ -149,6 +150,7 @@ function UpgradeList(props) {
       render: (text, record) => {
         return (
           <DatePicker
+            disabled={detailParams}
             defaultValue={text ? moment(text) : moment(new Date())}
             onChange={e => handleFieldChange(e, 'field1', record.key)}
           />
@@ -162,6 +164,7 @@ function UpgradeList(props) {
       render: (text, record) => {
         return (
           <Input
+            disabled={detailParams}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field2', record.key)}
           />
@@ -175,6 +178,7 @@ function UpgradeList(props) {
       render: (text, record) => {
         return (
           <Input
+            disabled={detailParams}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field3', record.key)}
           />
@@ -188,6 +192,7 @@ function UpgradeList(props) {
       render: (text, record) => {
         return (
           <Input
+            disabled={detailParams}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field4', record.key)}
           />
@@ -202,7 +207,11 @@ function UpgradeList(props) {
       render: (text, record) => {
         return (
           <span>
-            <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
+            <Popconfirm
+              title="是否要删除此行？"
+              onConfirm={() => remove(record.key)}
+              disabled={detailParams}
+            >
               <a>删除</a>
             </Popconfirm>
           </span>
@@ -224,9 +233,10 @@ function UpgradeList(props) {
           <p>(1)数据库本周进行了补丁升级工作次</p>
         </Col>
 
-        
-        <Col span={24}>
+
+        <Col>
           <Button
+            disabled={detailParams}
             type='primary'
             onClick={handleSave}>保存</Button>
         </Col>
@@ -243,6 +253,7 @@ function UpgradeList(props) {
           ghost
           onClick={() => newMember()}
           icon="plus"
+          disabled={detailParams}
         >
           新增
         </Button>

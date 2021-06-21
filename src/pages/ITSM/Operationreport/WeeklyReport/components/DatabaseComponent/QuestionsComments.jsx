@@ -8,7 +8,8 @@ import {
   Button,
   Divider,
   Popconfirm,
-  DatePicker
+  DatePicker,
+  message
 } from 'antd';
 import moment from 'moment';
 
@@ -26,7 +27,8 @@ const QuestionsComments = React.forwardRef((props, ref) => {
   const {
     form: { getFieldDecorator },
     defectArr,
-    defectList
+    defectList,
+    reportSearch
   } = props;
   const [data, setData] = useState([]);
 
@@ -38,7 +40,7 @@ const QuestionsComments = React.forwardRef((props, ref) => {
   }, [data]);
 
   const handleSave = () => {
-    discList(data);
+    defectList(data);
     message.info('暂存保存数据成功')
   }
 
@@ -99,6 +101,7 @@ const QuestionsComments = React.forwardRef((props, ref) => {
       render: (text, record) => {
         return (
           <DatePicker
+            disabled={reportSearch}
             defaultValue={text ? moment(text) : moment(new Date())}
             onChange={e => handleFieldChange(e, 'field1', record.key)}
           />
@@ -112,6 +115,7 @@ const QuestionsComments = React.forwardRef((props, ref) => {
       render: (text, record) => {
         return (
           <Input
+            disabled={reportSearch}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field2', record.key)}
           />
@@ -125,6 +129,7 @@ const QuestionsComments = React.forwardRef((props, ref) => {
       render: (text, record) => {
         return (
           <Input
+            disabled={reportSearch}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field3', record.key)}
           />
@@ -139,7 +144,11 @@ const QuestionsComments = React.forwardRef((props, ref) => {
       render: (text, record) => {
         return (
           <span>
-            <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
+            <Popconfirm
+              title="是否要删除此行？"
+              onConfirm={() => remove(record.key)}
+              disabled={reportSearch}
+            >
               <a>删除</a>
             </Popconfirm>
           </span>
@@ -162,8 +171,9 @@ const QuestionsComments = React.forwardRef((props, ref) => {
           <p style={{ fontWeight: '900', fontSize: '16px' }}>三、发现问题及修改建议</p>
         </Col>
 
-        <Col span={24}>
+        <Col>
           <Button
+            disabled={reportSearch}
             type='primary'
             onClick={handleSave}>保存</Button>
         </Col>
@@ -179,6 +189,7 @@ const QuestionsComments = React.forwardRef((props, ref) => {
           ghost
           onClick={() => newMember()}
           icon="plus"
+          disabled={reportSearch}
         >
           新增
         </Button>

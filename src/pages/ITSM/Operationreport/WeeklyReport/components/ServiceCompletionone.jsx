@@ -19,13 +19,6 @@ function ServiceCompletionone(props) {
     tabActiveKey,
     maintenanceService,
     statisList,
-    selfhandleRow,
-    maintenanceArr,
-    soluteArr,
-    startTime,
-    endTime,
-    loading,
-    dispatch
   } = props;
 
 // 初始化把软件运维服务指标完成情况数据传过去

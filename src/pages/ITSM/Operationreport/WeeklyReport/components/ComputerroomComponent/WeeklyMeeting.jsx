@@ -7,7 +7,8 @@ import {
   Row,
   Button,
   Divider,
-  Popconfirm
+  Popconfirm,
+  message
 } from 'antd';
 import { connect } from 'dva';
 import SysUpload from '@/components/SysUpload';
@@ -20,6 +21,7 @@ function WeeklyMeeting(props) {
     forminladeLayout,
     meetingSummaryList,
     meetingSummaryarr,
+    reportSearch,
     type
   } = props;
   const [data, setData] = useState([]);
@@ -38,7 +40,7 @@ function WeeklyMeeting(props) {
   }, [data]);
 
   const handleSave = () => {
-    materialsList(data);
+    meetingSummaryList(data);
     message.info('暂存保存数据成功')
   }
   // 新增一条记录
@@ -89,6 +91,7 @@ function WeeklyMeeting(props) {
       render: (text, record) => {
         return (
           <Input
+            disabled={reportSearch}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field1', record.key)}
           />
@@ -102,6 +105,7 @@ function WeeklyMeeting(props) {
       render: (text, record) => {
         return (
           <Input
+            disabled={reportSearch}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field2', record.key)}
           />
@@ -115,6 +119,7 @@ function WeeklyMeeting(props) {
       render: (text, record) => {
         return (
           <Input
+            disabled={reportSearch}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field3', record.key)}
           />
@@ -129,7 +134,11 @@ function WeeklyMeeting(props) {
       render: (text, record) => {
         return (
           <span>
-            <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
+            <Popconfirm
+              title="是否要删除此行？"
+              onConfirm={() => remove(record.key)}
+              disabled={reportSearch}
+            >
               <a>删除</a>
             </Popconfirm>
           </span>
@@ -152,8 +161,9 @@ function WeeklyMeeting(props) {
           <p style={{ fontWeight: '900', fontSize: '16px' }}>{type === 'week' ? '5 周例会会议纪要完成情况' : '5 月例会会议纪要完成情况'}</p>
         </Col>
 
-        <Col span={24}>
+        <Col>
           <Button
+            disabled={reportSearch}
             type='primary'
             onClick={handleSave}>保存</Button>
         </Col>
@@ -170,6 +180,7 @@ function WeeklyMeeting(props) {
           ghost
           onClick={() => newMember()}
           icon="plus"
+          disabled={reportSearch}
         >
           新增
         </Button>

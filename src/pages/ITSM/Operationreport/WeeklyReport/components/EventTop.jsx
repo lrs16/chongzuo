@@ -34,6 +34,7 @@ function EventTop(props) {
     topArr,
     mainId,
     value,
+    detailParams,
     loading,
     dispatch
   } = props;
@@ -59,6 +60,7 @@ function EventTop(props) {
       }
     }
   }, [data]);
+
   // 自动完成报障用户
   const disableduser = disablelist.map(opt => (
     <Option key={opt.id} value={opt.user} disableuser={opt}>
@@ -246,6 +248,7 @@ function EventTop(props) {
       render: (text, record) => {
         return (
           <Input
+            disabled={detailParams}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field1', record.key)}
           />
@@ -259,6 +262,7 @@ function EventTop(props) {
       render: (text, record) => {
         return (
           <Input
+            disabled={detailParams}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field2', record.key)}
           />
@@ -272,6 +276,7 @@ function EventTop(props) {
       render: (text, record) => {
         return (
           <Input
+            disabled={detailParams}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field3', record.key)}
           />
@@ -285,6 +290,7 @@ function EventTop(props) {
       render: (text, record) => {
         return (
           <Input
+            disabled={detailParams}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field4', record.key)}
           />
@@ -300,7 +306,11 @@ function EventTop(props) {
         if (text !== '合计') {
           return (
             <span>
-              <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
+              <Popconfirm
+                title="是否要删除此行？"
+                onConfirm={() => remove(record.key)}
+                disabled={detailParams}
+              >
                 <a>删除</a>
               </Popconfirm>
             </span>
@@ -311,14 +321,15 @@ function EventTop(props) {
     }
   ];
 
-  const [newColumns,setNewColumns] = useState(column)
+  const [newColumns, setNewColumns] = useState(column)
 
   useEffect(() => {
     handleTabledata();
-    if(mainId) {
+    if (mainId) {
       setNewColumns(editColumns)
     }
   }, [topArr])
+
 
 
 
@@ -349,15 +360,14 @@ function EventTop(props) {
               </Col>
             </Row>
           )}
-
         </Form>
 
-        <Col span={24}>
+        {/* <Col> 
           <Button
             type='primary'
             onClick={handleSave}>保存</Button>
-        </Col>
-        
+        </Col> */}
+
         <Table
           columns={newColumns}
           dataSource={data}

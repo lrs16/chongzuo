@@ -27,13 +27,11 @@ const ThisweekMaintenance = React.forwardRef((props, ref) => {
   );
 
   const {
-    form: { getFieldDecorator },
-    forminladeLayout,
-    mainId,
-    materials,
     contentRow,
-    contentArr
+    contentArr,
+    detailParams
   } = props;
+
   const [data, setData] = useState([]);
 
   // 初始化把数据传过去
@@ -92,6 +90,7 @@ const ThisweekMaintenance = React.forwardRef((props, ref) => {
         return (
           <Input
             defaultValue={text}
+            disabled={detailParams}
             onChange={e => handleFieldChange(e.target.value, 'field1', record.key)}
           />
         )
@@ -104,6 +103,7 @@ const ThisweekMaintenance = React.forwardRef((props, ref) => {
       render: (text, record) => {
         return (
           <Input
+            disabled={detailParams}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field2', record.key)}
           />
@@ -117,6 +117,7 @@ const ThisweekMaintenance = React.forwardRef((props, ref) => {
       render: (text, record) => {
         return (
           <Input
+            disabled={detailParams}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field3', record.key)}
           />
@@ -130,6 +131,7 @@ const ThisweekMaintenance = React.forwardRef((props, ref) => {
       render: (text, record) => {
         return (
           <Input
+            disabled={detailParams}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field4', record.key)}
           />
@@ -143,6 +145,7 @@ const ThisweekMaintenance = React.forwardRef((props, ref) => {
       render: (text, record) => {
         return (
           <Input
+            disabled={detailParams}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field5', record.key)}
           />
@@ -156,6 +159,7 @@ const ThisweekMaintenance = React.forwardRef((props, ref) => {
       render: (text, record) => {
         return (
           <Input
+            disabled={detailParams}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field6', record.key)}
           />
@@ -169,6 +173,7 @@ const ThisweekMaintenance = React.forwardRef((props, ref) => {
       render: (text, record) => {
         return (
           <Input
+            disabled={detailParams}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field7', record.key)}
           />
@@ -182,6 +187,7 @@ const ThisweekMaintenance = React.forwardRef((props, ref) => {
       render: (text, record) => {
         return (
           <Input
+            disabled={detailParams}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field8', record.key)}
           />
@@ -217,9 +223,10 @@ const ThisweekMaintenance = React.forwardRef((props, ref) => {
           <p>运维材料提交情况</p>
         </Col>
 
-        <Col span={24}>
+        <Col style={{ marginBottom: '10px' }}>
           <Button
             type='primary'
+            disabled={detailParams}
             onClick={handleSave}>保存</Button>
         </Col>
 

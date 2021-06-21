@@ -29,7 +29,8 @@ const PatrolAndExamine = React.forwardRef((props, ref) => {
   const {
     form: { getFieldDecorator },
     patrolAndExamineList,
-    patrolAndExamine
+    patrolAndExamine,
+    detailParams
   } = props;
   const [data, setData] = useState([]);
   const [seconddata, setSeconddata] = useState([]);
@@ -73,7 +74,7 @@ const PatrolAndExamine = React.forwardRef((props, ref) => {
     return (newData || data).filter(item => item.key === key)[0];
   }
 
-  const deleteObj = (key,newData) => {
+  const deleteObj = (key, newData) => {
     return (newData || data).filter(item => item.key !== key);
   }
   //  删除数据
@@ -98,7 +99,7 @@ const PatrolAndExamine = React.forwardRef((props, ref) => {
   }
 
   const handleTabledata = () => {
-    if(newbutton === false) {
+    if (newbutton === false) {
       const newarr = patrolAndExamine.map((item, index) => {
         return Object.assign(item, { editable: true, isNew: false, key: index })
       })
@@ -112,12 +113,13 @@ const PatrolAndExamine = React.forwardRef((props, ref) => {
       dataIndex: 'field1',
       key: 'field1',
       render: (text, record) => {
-          return (
-            <DatePicker
-              defaultValue={text ? moment(text) : moment(new Date())}
-              onChange={e => handleFieldChange(e, 'field1', record.key)}
-            />
-          )
+        return (
+          <DatePicker
+            disabled={detailParams}
+            defaultValue={text ? moment(text) : moment(new Date())}
+            onChange={e => handleFieldChange(e, 'field1', record.key)}
+          />
+        )
       }
     },
     {
@@ -127,6 +129,7 @@ const PatrolAndExamine = React.forwardRef((props, ref) => {
       render: (text, record) => {
         return (
           <Input
+            disabled={detailParams}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field2', record.key)}
           />
@@ -138,12 +141,13 @@ const PatrolAndExamine = React.forwardRef((props, ref) => {
       dataIndex: 'field3',
       key: 'field3',
       render: (text, record) => {
-          return (
-            <Input
-              defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'field3', record.key)}
-            />
-          )
+        return (
+          <Input
+            disabled={detailParams}
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field3', record.key)}
+          />
+        )
       }
     },
     {
@@ -151,12 +155,13 @@ const PatrolAndExamine = React.forwardRef((props, ref) => {
       dataIndex: 'field4',
       key: 'field4',
       render: (text, record) => {
-          return (
-            <Input
-              defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'field4', record.key)}
-            />
-          )
+        return (
+          <Input
+            disabled={detailParams}
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field4', record.key)}
+          />
+        )
       }
     },
     {
@@ -164,12 +169,13 @@ const PatrolAndExamine = React.forwardRef((props, ref) => {
       dataIndex: 'field5',
       key: 'field5',
       render: (text, record) => {
-          return (
-            <Input
-              defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'field5', record.key)}
-            />
-          )
+        return (
+          <Input
+            disabled={detailParams}
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field5', record.key)}
+          />
+        )
       }
     },
     {
@@ -178,13 +184,17 @@ const PatrolAndExamine = React.forwardRef((props, ref) => {
       fixed: 'right',
       width: 120,
       render: (text, record) => {
-          return (
-            <span>
-              <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
-                <a>删除</a>
-              </Popconfirm>
-            </span>
-          )
+        return (
+          <span>
+            <Popconfirm
+              disabled={detailParams}
+              title="是否要删除此行？"
+              onConfirm={() => remove(record.key)}
+            >
+              <a>删除</a>
+            </Popconfirm>
+          </span>
+        )
 
         // return (
         //   <span>
@@ -221,8 +231,9 @@ const PatrolAndExamine = React.forwardRef((props, ref) => {
           <p style={{ marginTop: '20px' }}>（二）巡检情况</p>
         </Col>
 
-        <Col span={24}>
+        <Col>
           <Button
+            disabled={detailParams}
             type='primary'
             onClick={handleSave}>保存</Button>
         </Col>
@@ -239,6 +250,7 @@ const PatrolAndExamine = React.forwardRef((props, ref) => {
           ghost
           onClick={() => newMember()}
           icon="plus"
+          disabled={detailParams}
         >
           新增
         </Button>

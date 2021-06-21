@@ -30,7 +30,8 @@ const Development = React.forwardRef((props, ref) => {
     form: { getFieldDecorator },
     forminladeLayout,
     materials,
-    materialsList
+    materialsList,
+    detailParams
   } = props;
   const [data, setData] = useState([]);
   const [seconddata, setSeconddata] = useState([]);
@@ -90,7 +91,7 @@ const Development = React.forwardRef((props, ref) => {
   }
 
   const handleTabledata = () => {
-    if(newbutton === false) {
+    if (newbutton === false) {
       const newarr = materials.map((item, index) => {
         return Object.assign(item, { editable: true, isNew: false, key: index })
       })
@@ -107,6 +108,7 @@ const Development = React.forwardRef((props, ref) => {
       render: (text, record) => {
         return (
           <Input
+            disabled={detailParams}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field1', record.key, 'secondTable')}
           />
@@ -120,6 +122,7 @@ const Development = React.forwardRef((props, ref) => {
       render: (text, record) => {
         return (
           <Select
+            disabled={detailParams}
             defaultValue={text}
             onChange={e => handleFieldChange(e, 'field2', record.key)}
           >
@@ -137,7 +140,11 @@ const Development = React.forwardRef((props, ref) => {
       render: (text, record) => {
         return (
           <span>
-            <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
+            <Popconfirm
+              title="是否要删除此行？"
+              onConfirm={() => remove(record.key)}
+              disabled={detailParams}
+            >
               <a>删除</a>
             </Popconfirm>
           </span>
@@ -159,8 +166,9 @@ const Development = React.forwardRef((props, ref) => {
           <p>运维材料提交情况</p>
         </Col>
 
-        <Col span={24}>
+        <Col>
           <Button
+            disabled={detailParams}
             type='primary'
             onClick={handleSave}>保存</Button>
         </Col>
@@ -178,6 +186,7 @@ const Development = React.forwardRef((props, ref) => {
           ghost
           onClick={() => newMember()}
           icon="plus"
+          disabled={detailParams}
         >
           新增
         </Button>

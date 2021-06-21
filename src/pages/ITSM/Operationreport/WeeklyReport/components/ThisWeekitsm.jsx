@@ -39,7 +39,7 @@ function ThisWeekitsm(props) {
     eventList,
     eventArr,
     mainId,
-    ChangeFiles,
+    detailParams,
     searchNumber
   } = props;
 
@@ -54,7 +54,7 @@ function ThisWeekitsm(props) {
   // 初始化把数据传过去
   useEffect(() => {
     if (data && data.length) {
-    eventList(data)
+      eventList(data)
     }
   }, [data]);
 
@@ -155,21 +155,17 @@ function ThisWeekitsm(props) {
       dataIndex: 'field1',
       key: 'field1',
       render: (text, record) => {
-        if (record.isNew) {
-          return (
-            <Select
-              defaultValue={text}
-              onChange={e => handleFieldChange(e, 'field1', record.key)}
-            >
-              <Option key='事件' value='事件'>事件</Option>
-              <Option key='问题' value='问题'>问题</Option>
-              <Option key='故障' value='故障'>故障</Option>
-            </Select>
-          )
-        }
-        if (record.isNew === false) {
-          return <span>{text}</span>
-        }
+        return (
+          <Select
+            disabled={detailParams}
+            defaultValue={text}
+            onChange={e => handleFieldChange(e, 'field1', record.key)}
+          >
+            <Option key='事件' value='事件'>事件</Option>
+            <Option key='问题' value='问题'>问题</Option>
+            <Option key='故障' value='故障'>故障</Option>
+          </Select>
+        )
       }
     },
     {
@@ -177,18 +173,13 @@ function ThisWeekitsm(props) {
       dataIndex: 'field2',
       key: 'field2',
       render: (text, record) => {
-        if (record.isNew) {
-          return (
-            <Input
-              defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'field2', record.key)}
-            />
-          )
-        }
-        if (record.isNew === false) {
-          return <span>{text}</span>
-        }
-
+        return (
+          <Input
+            disabled={detailParams}
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field2', record.key)}
+          />
+        )
       }
     },
     {
@@ -229,7 +220,11 @@ function ThisWeekitsm(props) {
       render: (text, record) => {
         return (
           <span>
-            <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
+            <Popconfirm
+              title="是否要删除此行？"
+              onConfirm={() => remove(record.key)}
+              disabled={detailParams}
+            >
               <a>删除</a>
             </Popconfirm>
           </span>
@@ -293,8 +288,9 @@ function ThisWeekitsm(props) {
 
         </Form>
 
-        <Col span={24}>
+        <Col>
           <Button
+            disabled={detailParams}
             type='primary'
             onClick={handleSave}>保存</Button>
         </Col>

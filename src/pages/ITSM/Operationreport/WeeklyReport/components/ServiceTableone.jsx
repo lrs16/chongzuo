@@ -24,7 +24,7 @@ function ServiceTableone(props) {
     endTime,
     tabActiveKey,
     mainId,
-    typeArr,
+    detailParams,
     loading,
     dispatch
   } = props;

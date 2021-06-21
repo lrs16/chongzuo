@@ -238,7 +238,7 @@ function DatabaseReportdetail(props) {
     nowNumber.push({ 'add': '1', tableNumber: [] });
     setAddTitle(nowNumber)
   }
-  
+
   const removeForm = (tableIndex) => {
     addTitle.splice(tableIndex, 1);
     const resultArr = [];
@@ -259,7 +259,7 @@ function DatabaseReportdetail(props) {
               <Button type='primary' onClick={softReportform}>保存</Button>
             )
           }
-         
+
           <Button type='primary' onClick={handleBack}>
             返回
           </Button>
@@ -283,7 +283,7 @@ function DatabaseReportdetail(props) {
                     initialValue: main?.name ? main.name : ''
                   })
                     (
-                      <Input />
+                      <Input disabled={reportSearch} />
                     )}
                 </Form.Item>
               </Col>
@@ -296,6 +296,7 @@ function DatabaseReportdetail(props) {
                         initialValue: [moment(main.time1), moment(main.time2)]
                       })(<RangePicker
                         allowClear={false}
+                        disabled={reportSearch}
                         // disabledDate={startdisabledDate}
                         // placeholder='请选择'
                         onChange={onChange}
@@ -313,6 +314,7 @@ function DatabaseReportdetail(props) {
                         initialValue: moment(startTime)
                       })(<MonthPicker
                         allowClear={false}
+                        disabled={reportSearch}
                         // disabledDate={startdisabledDate}
                         // placeholder='请选择'
                         onChange={onChange}
@@ -334,7 +336,10 @@ function DatabaseReportdetail(props) {
                     getFieldDecorator('content', {
                       initialValue: main.content
                     })
-                      (<TextArea autoSize={{ minRows: 3 }} />)
+                      (<TextArea
+                        autoSize={{ minRows: 3 }}
+                        disabled={reportSearch}
+                      />)
                   }
                 </Form.Item>
               </Col>
@@ -373,7 +378,10 @@ function DatabaseReportdetail(props) {
                   {
                     getFieldDecorator('patrolAndExamineContent', {
                       initialValue: openReportlist.patrolAndExamineContent
-                    })(<TextArea autoSize={{ minRows: 3 }} />)
+                    })(<TextArea 
+                      autoSize={{ minRows: 3 }}
+                      disabled={reportSearch}
+                       />)
                   }
                 </Form.Item>
               </Col>
@@ -388,6 +396,7 @@ function DatabaseReportdetail(props) {
                   discList={contentrowdata => {
                     setDiscList(contentrowdata)
                   }}
+                  reportSearch={reportSearch}
                 />
               </Col>
 
@@ -402,6 +411,7 @@ function DatabaseReportdetail(props) {
                   }}
                   startTime={startTime}
                   endTime={endTime}
+                  reportSearch={reportSearch}
                 />
               </Col>
 
@@ -416,6 +426,7 @@ function DatabaseReportdetail(props) {
                   }}
                   startTime={startTime}
                   endTime={endTime}
+                  reportSearch={reportSearch}
                 />
               </Col>
 
@@ -455,6 +466,7 @@ function DatabaseReportdetail(props) {
                   }}
                   startTime={startTime}
                   endTime={endTime}
+                  reportSearch={reportSearch}
                 />
               </Col>
 
@@ -498,6 +510,7 @@ function DatabaseReportdetail(props) {
                     setOperationList(contentrowdata)
                   }}
                   mainId={mainId}
+                  detailParams={reportSearch}
                 />
               </Col>
 
@@ -541,6 +554,7 @@ function DatabaseReportdetail(props) {
                     setNextOperationList(contentrowdata)
                   }}
                   mainId={mainId}
+                  detailParams={reportSearch}
                 />
               </Col>
 
