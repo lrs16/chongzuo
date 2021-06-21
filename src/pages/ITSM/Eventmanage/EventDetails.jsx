@@ -14,6 +14,27 @@ import RelationOrder from './RelationOrder';
 const { Panel } = Collapse;
 const { Step } = Steps;
 
+const formItemLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 6 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 18 },
+  },
+};
+const forminladeLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 2 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 22 },
+  },
+};
+
 // panel详情
 const Panelheadermap = new Map([
   ['register', '事件登记'],
@@ -134,15 +155,15 @@ function EventDetails(props) {
               {info.map((obj, index) => {
                 // panel详情组件
                 const Paneldesmap = new Map([
-                  ['register', <Registratdes info={Object.values(obj)[0]} main={info[0].main} />],
-                  ['handle', <Handledes info={Object.values(obj)[0]} main={info[0].main} />],
-                  ['check', <Checkdes info={Object.values(obj)[0]} main={info[0].main} />],
-                  ['finish', <ReturnVisitdes info={Object.values(obj)[0]} main={info[0].main} />],
+                  ['register', <Registratdes info={Object.values(obj)[0]} main={info[0].main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
+                  ['handle', <Handledes info={Object.values(obj)[0]} main={info[0].main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
+                  ['check', <Checkdes info={Object.values(obj)[0]} main={info[0].main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
+                  ['finish', <ReturnVisitdes info={Object.values(obj)[0]} main={info[0].main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
                 ]);
 
                 if (index > 0)
                   return (
-                    <Panel Panel header={Panelheadermap.get(Object.keys(obj)[0])} key={index}>
+                    <Panel Panel header={Panelheadermap.get(Object.keys(obj)[0])} key={index.toString()}>
                       {Paneldesmap.get(Object.keys(obj)[0])}
                     </Panel>
                   );

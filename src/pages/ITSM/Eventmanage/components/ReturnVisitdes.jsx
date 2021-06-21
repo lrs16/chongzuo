@@ -1,31 +1,68 @@
 import React from 'react';
-import { Descriptions } from 'antd';
+import { Descriptions, Form, Input, Row, Col } from 'antd';
 import Downloadfile from '@/components/SysUpload/Downloadfile';
 import styles from '../index.less';
 
+const { TextArea } = Input;
 function ReturnVisitdes(props) {
-  const { info, main } = props;
+  const { info, main, formItemLayout, forminladeLayout, } = props;
   return (
-    <div className={styles.collapse} style={{ marginLeft: 30, marginRight: 10 }}>
-      <Descriptions style={{ marginTop: 24 }} size="middle">
-        <Descriptions.Item label="回访方式">{info.revisitWay}</Descriptions.Item>
-        <Descriptions.Item label="处理结果">{main.eventResult}</Descriptions.Item>
-        <Descriptions.Item label="满意度">{info.satisfaction}</Descriptions.Item>
-        <Descriptions.Item label="回访内容" span={3}>
-          <div dangerouslySetInnerHTML={{ __html: info.content?.replace(/[\n]/g, '<br/>') }} />
-        </Descriptions.Item>
-        <Descriptions.Item label="填单时间">{info.addTime}</Descriptions.Item>
-        <Descriptions.Item label="回访时间" span={4}>
-          {info.revisitTime}
-        </Descriptions.Item>
-        <Descriptions.Item label="附件" span={3}>
-          {info.fileIds !== '' && <Downloadfile files={info.fileIds} />}
-        </Descriptions.Item>
-        <Descriptions.Item label="回访人">{info.revisitor}</Descriptions.Item>
-        <Descriptions.Item label="回访人单位">{info.revisitUnit}</Descriptions.Item>
-        <Descriptions.Item label="回访人部门">{info.revisitDept}</Descriptions.Item>
-      </Descriptions>
-    </div>
+    <>
+      <Row gutter={24} style={{ marginTop: 24 }}>
+        <Form {...formItemLayout}>
+          <Col span={8}>
+            <Form.Item label="回访方式">
+              <Input defaultValue={info.revisitWay} disabled />
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label="处理结果">
+              <Input defaultValue={main.eventResult} disabled />
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label="满意度">
+              <Input defaultValue={info.satisfaction} disabled />
+            </Form.Item>
+          </Col>
+          <Col span={24}>
+            <Form.Item label="回访内容"  {...forminladeLayout}>
+              <TextArea autoSize={{ minRows: 3 }} defaultValue={info.content} disabled />
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label="填单时间" >
+              <Input defaultValue={info.addTime} disabled />
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label="回访时间" >
+              <Input defaultValue={info.revisitTime} disabled />
+            </Form.Item>
+          </Col>
+          <Col span={24}>
+            <Form.Item label="附件" {...forminladeLayout}>
+              {info.fileIds !== '' && <Downloadfile files={info.fileIds} />}
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label="回访人">
+              <Input defaultValue={info.revisitor} disabled />
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label="回访人单位">
+              <Input defaultValue={info.revisitUnit} disabled />
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label="回访人部门">
+              <Input defaultValue={info.revisitDept} disabled />
+            </Form.Item>
+          </Col>
+        </Form>
+      </Row>
+    </>
   );
 }
 
