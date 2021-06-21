@@ -51,7 +51,7 @@ const alonepath = [
   { path: '/ITSM/demandmanage/query/details' },
   { path: '/ITSM/operationplan/operationplanform' },
   { path: '/ITSM/operationplan/operationplansearchdetail' },
-  { path: '/ITSM/operationreport/weeklyreport/detailSoft/' },
+  { path: '/ITSM/operationreport/weeklyreport/detailSoft' },
   { path: '/ITSM/operationreport/weeklyreport/computerroomreportdetail' },
   { path: '/ITSM/operationreport/weeklyreport/databasereportdetail' },
   { path: '/ITSM/operationreport/weeklyreport/otherreportdetail' },
@@ -156,23 +156,24 @@ const BasicLayout = props => {
   }, []);
 
   // 打开最末的标签
-  const lasttabactive = (tabs, search) => {
+  const lasttabactive = (tabs, s) => {
     const end = tabs.slice(-1)[0];
     const target = alonepath.filter(item => item.path === end.itemPath)[0];
     const multipletarget = multiplepath.filter(item => item.path === end.itemPath)[0];
     setActiveKey(end.id);
-    if (search) {
+    if (s) {
       router.push({
         pathname: end.itemPath,
-        query: search ? { ...search } : {},
+        query: { ...s },
+        state: (end.data && end.data.cacheinfo) ? { cacheinfo: end.data.cacheinfo } : { ...end.state, cache: false },
+      });
+    } else {
+      router.push({
+        pathname: end.itemPath,
+        query: target ? end.query : {},
         state: (end.data && end.data.cacheinfo) ? { cacheinfo: end.data.cacheinfo } : { ...end.state, cache: false },
       });
     }
-    router.push({
-      pathname: end.itemPath,
-      query: target ? end.query : {},
-      state: (end.data && end.data.cacheinfo) ? { cacheinfo: end.data.cacheinfo } : { ...end.state, cache: false },
-    });
     if (multipletarget && end.data && end.data.cacheinfo) {
       clearcache();
       dispatch({
@@ -218,6 +219,7 @@ const BasicLayout = props => {
       const targettype = toptabs.filter(item => item.type === targetmultiple.type);
       const num = targettype.length;
       const endid = num === 0 ? 0 : Number(targettype.slice(-1)[0].id.replace(/[^0-9]/ig, "")) + 1;
+      const search = location.query;
       const panels = {
         name: menuDesc,
         type: targetmultiple.type,
@@ -231,11 +233,11 @@ const BasicLayout = props => {
       if (targettype[0]) {
         getcache();    // 获取旧页签数据
         toptabs.push(panels);
-        lasttabactive({ toptabs, search: location.query });
+        lasttabactive(toptabs, search);
       } else {
         // 增加登记页签
         toptabs.push(panels);
-        lasttabactive({ toptabs, search: location.query });
+        lasttabactive(toptabs, search);
       };
     }
     if (tabtargetid) {
