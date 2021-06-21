@@ -36,7 +36,6 @@ const pagetitlemaps = new Map([
 function EventDetails(props) {
   const { location, dispatch, recordsloading, info, records, loading } = props;
   const { pangekey, id, mainId } = location.query;
-  const pagetitle = props.route.name;
   const [activeKey, setActiveKey] = useState([]);
   const [tabActivekey, settabActivekey] = useState('workorder'); // 打开标签
   const handleclose = () => {

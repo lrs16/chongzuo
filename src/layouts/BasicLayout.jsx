@@ -55,7 +55,6 @@ const alonepath = [
   { path: '/ITSM/operationreport/weeklyreport/computerroomreportdetail' },
   { path: '/ITSM/operationreport/weeklyreport/databasereportdetail' },
   { path: '/ITSM/operationreport/weeklyreport/otherreportdetail' },
-
 ];
 
 // 多条登记
@@ -70,6 +69,7 @@ const multiplepath = [
   { path: '/ITSM/operationreport/weeklyreport/databasereport', type: 'databasereport' },
   { path: '/ITSM/operationreport/weeklyreport/otherreport', type: 'otherreport' },
 ]
+
 
 const noMatch = (
   <Result
@@ -156,11 +156,18 @@ const BasicLayout = props => {
   }, []);
 
   // 打开最末的标签
-  const lasttabactive = (tabs) => {
+  const lasttabactive = (tabs, search) => {
     const end = tabs.slice(-1)[0];
     const target = alonepath.filter(item => item.path === end.itemPath)[0];
     const multipletarget = multiplepath.filter(item => item.path === end.itemPath)[0];
     setActiveKey(end.id);
+    if (search) {
+      router.push({
+        pathname: end.itemPath,
+        query: search ? { ...search } : {},
+        state: (end.data && end.data.cacheinfo) ? { cacheinfo: end.data.cacheinfo } : { ...end.state, cache: false },
+      });
+    }
     router.push({
       pathname: end.itemPath,
       query: target ? end.query : {},
@@ -224,11 +231,11 @@ const BasicLayout = props => {
       if (targettype[0]) {
         getcache();    // 获取旧页签数据
         toptabs.push(panels);
-        lasttabactive(toptabs);
+        lasttabactive({ toptabs, search: location.query });
       } else {
         // 增加登记页签
         toptabs.push(panels);
-        lasttabactive(toptabs);
+        lasttabactive({ toptabs, search: location.query });
       };
     }
     if (tabtargetid) {
