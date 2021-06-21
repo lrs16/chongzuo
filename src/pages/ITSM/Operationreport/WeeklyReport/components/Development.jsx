@@ -38,12 +38,12 @@ const Development = React.forwardRef((props, ref) => {
   const [fileslist, setFilesList] = useState([]);
   const [newbutton, setNewButton] = useState(false);
 
-    // 初始化把数据传过去
-    useEffect(() => {
-      if(data && data.length) {
-        materialsList(data)
-      }
-    }, [data]);
+  // 初始化把数据传过去
+  useEffect(() => {
+    if (data && data.length) {
+      materialsList(data)
+    }
+  }, [data]);
 
   // 新增一条记录
   const newMember = (params) => {
@@ -52,7 +52,7 @@ const Development = React.forwardRef((props, ref) => {
     const newData = (data).map(item => ({ ...item }));
     newData.push({
       key: data.length + 1,
-      field1: 'num1',
+      field1: '',
       field2: '',
     });
     setData(newData);
@@ -64,64 +64,15 @@ const Development = React.forwardRef((props, ref) => {
     return (newData || data).filter(item => item.key === key)[0];
   }
 
+  const deleteObj = (key, newData) => {
+    return (newData || data).filter(item => item.key !== key);
+  }
+
   //  删除数据
   const remove = key => {
-    const target = getRowByKey(key) || {};
-    // dispatch({
-    //   type: 'chacklist/trackdelete',
-    //   payload: {
-    //     id: target.id,
-    //   },
-    // }).then(res => {
-    //   if (res.code === 200) {
-    //     message.success(res.msg, 2);
-    //     getlistdata();
-    //   }
-    // });
+    const target = deleteObj(key) || {};
+    setData(target)
   };
-
-  // 编辑记录
-  const toggleEditable = (e, key, record) => {
-
-    e.preventDefault();
-    const newData = data.map(item => ({ ...item })
-    );
-    const target = getRowByKey(key, newData);
-    if (target) {
-      if (!target.editable) {
-        setcacheOriginData({ key: { ...target } });
-      }
-      // target.editable = !target.editable;
-      target.isNew = true;
-      setData(newData);
-    }
-  }
-
-  //  点击编辑生成filelist
-  const handlefileedit = (key, values) => {
-    if (!values) {
-      setFilesList([]);
-    } else {
-      setFilesList(JSON.parse(values))
-    }
-  }
-
-  const savedata = (target, id) => {
-    materialsList(data)
-  }
-
-  const saveRow = (e, key) => {
-    const target = getRowByKey(key) || {};
-
-    delete target.key;
-    target.editable = false;
-    const id = target.id === '' ? '' : target.id;
-    savedata(target, id);
-    if (target.isNew) {
-      target.isNew = false;
-      setNewButton(false);
-    }
-  }
 
   const handleFieldChange = (e, fieldName, key) => {
     const newData = data.map(item => ({ ...item }));
@@ -133,10 +84,12 @@ const Development = React.forwardRef((props, ref) => {
   }
 
   const handleTabledata = () => {
-    const newarr = materials.map((item, index) => {
-      return Object.assign(item, { editable: true, isNew: false, key: index })
-    })
-    setData(newarr)
+    if(newbutton === false) {
+      const newarr = materials.map((item, index) => {
+        return Object.assign(item, { editable: true, isNew: false, key: index })
+      })
+      setData(newarr)
+    }
   }
 
 
@@ -146,17 +99,12 @@ const Development = React.forwardRef((props, ref) => {
       dataIndex: 'field1',
       key: 'field1',
       render: (text, record) => {
-        if (record.isNew) {
-          return (
-            <Input
-              defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'field1', record.key, 'secondTable')}
-            />
-          )
-        }
-        if (record.isNew === false) {
-          return <span>{text}</span>
-        }
+        return (
+          <Input
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field1', record.key, 'secondTable')}
+          />
+        )
       }
     },
     {
@@ -164,20 +112,15 @@ const Development = React.forwardRef((props, ref) => {
       dataIndex: 'field2',
       key: 'field2',
       render: (text, record) => {
-        if (record.isNew) {
-          return (
-            <Select
-              defaultValue={text}
-              onChange={e => handleFieldChange(e, 'field2', record.key)}
-            >
-              <Option key='是' value='是'>是</Option>
-              <Option key='否' value='否'>否</Option>
-            </Select>
-          )
-        }
-        if (record.isNew === false) {
-          return <span>{text}</span>
-        }
+        return (
+          <Select
+            defaultValue={text}
+            onChange={e => handleFieldChange(e, 'field2', record.key)}
+          >
+            <Option key='是' value='是'>是</Option>
+            <Option key='否' value='否'>否</Option>
+          </Select>
+        )
       }
     },
     {
@@ -186,27 +129,8 @@ const Development = React.forwardRef((props, ref) => {
       fixed: 'right',
       width: 120,
       render: (text, record) => {
-        if (record.isNew === true) {
-          return (
-            <span>
-              <a onClick={e => saveRow(e, record.key)}>保存</a>
-              <Divider type='vertical' />
-              <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
-                <a>删除</a>
-              </Popconfirm>
-            </span>
-          )
-        }
-
         return (
           <span>
-            <a
-              onClick={e => {
-                toggleEditable(e, record.key, record, 'secondTable');
-                // handlefileedit(record.key, record.attachment)
-              }}
-            >编辑</a>
-            <Divider type='vertical' />
             <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
               <a>删除</a>
             </Popconfirm>
@@ -232,6 +156,7 @@ const Development = React.forwardRef((props, ref) => {
         <Table
           columns={column}
           dataSource={data}
+          pagination={false}
         />
 
         <Button
@@ -240,10 +165,10 @@ const Development = React.forwardRef((props, ref) => {
           ghost
           onClick={() => newMember()}
           icon="plus"
-          disabled={newbutton}
         >
-          新增运维材料
-          </Button>
+          新增
+        </Button>
+
       </Row>
     </>
   )

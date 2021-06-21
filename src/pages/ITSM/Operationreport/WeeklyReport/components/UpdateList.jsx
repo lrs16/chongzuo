@@ -7,9 +7,12 @@ import {
   Row,
   Button,
   Divider,
-  Popconfirm
+  DatePicker,
+  Popconfirm,
+  message
 } from 'antd';
 import { connect } from 'dva';
+import moment from 'moment';
 import SysUpload from '@/components/SysUpload';
 
 const { TextArea } = Input;
@@ -44,7 +47,7 @@ function UpgradeList(props) {
     const newData = (data).map(item => ({ ...item }));
     newData.push({
       key: data.length + 1,
-      field1: '新增数据',
+      field1: '',
       field2: '',
       field3: '',
       field4: '',
@@ -59,86 +62,44 @@ function UpgradeList(props) {
     return (newData || data).filter(item => item.key === key)[0];
   }
 
+  const deleteObj = (key, newData) => {
+    return (newData || data).filter(item => item.key !== key);
+  }
+
   //  删除数据
   const remove = key => {
-    const target = getRowByKey(key) || {};
-    // dispatch({
-    //   type: 'chacklist/trackdelete',
-    //   payload: {
-    //     id: target.id,
-    //   },
-    // }).then(res => {
-    //   if (res.code === 200) {
-    //     message.success(res.msg, 2);
-    //     getlistdata();
-    //   }
-    // });
+    const target = deleteObj(key) || {};
+    setData(target)
   };
-
-  // 编辑记录
-  const toggleEditable = (e, key, record) => {
-
-    e.preventDefault();
-    const newData = data.map(item => ({ ...item })
-    );
-    const target = getRowByKey(key, newData);
-    if (target) {
-      if (!target.editable) {
-        setcacheOriginData({ key: { ...target } });
-      }
-      // target.editable = !target.editable;
-      target.isNew = true;
-      setData(newData);
-    }
-  }
-
-  //  点击编辑生成filelist
-  const handlefileedit = (key, values) => {
-    if (!values) {
-      setFilesList([]);
-    } else {
-      setFilesList(JSON.parse(values))
-    }
-  }
-
-  const savedata = (target, id) => {
-    updateList(data)
-  }
-
-  const saveRow = (e, key) => {
-    const target = getRowByKey(key) || {};
-
-    delete target.key;
-    target.editable = false;
-    const id = target.id === '' ? '' : target.id;
-    savedata(target, id);
-    if (target.isNew) {
-      target.isNew = false;
-      setNewButton(false);
-    }
-  }
 
   const handleFieldChange = (e, fieldName, key) => {
     const newData = data.map(item => ({ ...item }));
     const target = getRowByKey(key, newData)
     if (target) {
-      target[fieldName] = e;
-      setData(newData);
+      if (fieldName === 'field1') {
+        target[fieldName] = moment(e).format('YYYY-MM-DD');
+        setData(newData);
+      } else {
+        target[fieldName] = e;
+        setData(newData);
+      }
     }
   }
 
   const handleTabledata = () => {
-    const newarr = updateArr.map((item, index) => {
-      return Object.assign(item, { editable: true, isNew: false, key: index })
-    })
-    setData(newarr)
+    if(newbutton === false) {
+      const newarr = updateArr.map((item, index) => {
+        return Object.assign(item, { editable: true, isNew: false, key: index })
+      })
+      setData(newarr)
+    }
   }
 
 
 
   useEffect(() => {
     handleTabledata()
-  }, [])
+  }, [updateArr])
 
   const column = [
     {
@@ -146,17 +107,12 @@ function UpgradeList(props) {
       dataIndex: 'field1',
       key: 'field1',
       render: (text, record) => {
-        if (record.isNew) {
-          return (
-            <Input
-              defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'field1', record.key)}
-            />
-          )
-        }
-        if (record.isNew === false) {
-          return <span>{text}</span>
-        }
+        return (
+          <DatePicker
+            defaultValue={text ? moment(text) : moment(new Date())}
+            onChange={e => handleFieldChange(e, 'field1', record.key)}
+          />
+        )
       }
     },
     {
@@ -164,17 +120,12 @@ function UpgradeList(props) {
       dataIndex: 'field2',
       key: 'field2',
       render: (text, record) => {
-        if (record.isNew) {
-          return (
-            <Input
-              defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'field2', record.key)}
-            />
-          )
-        }
-        if (record.isNew === false) {
-          return <span>{text}</span>
-        }
+        return (
+          <Input
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field2', record.key)}
+          />
+        )
       }
     },
     {
@@ -182,17 +133,12 @@ function UpgradeList(props) {
       dataIndex: 'field3',
       key: 'field3',
       render: (text, record) => {
-        if (record.isNew) {
-          return (
-            <Input
-              defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'field3', record.key)}
-            />
-          )
-        }
-        if (record.isNew === false) {
-          return <span>{text}</span>
-        }
+        return (
+          <Input
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field3', record.key)}
+          />
+        )
       }
     },
     {
@@ -200,17 +146,12 @@ function UpgradeList(props) {
       dataIndex: 'field4',
       key: 'field4',
       render: (text, record) => {
-        if (record.isNew) {
-          return (
-            <Input
-              defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'field4', record.key)}
-            />
-          )
-        }
-        if (record.isNew === false) {
-          return <span>{text}</span>
-        }
+        return (
+          <Input
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field4', record.key)}
+          />
+        )
       }
     },
     {
@@ -219,27 +160,8 @@ function UpgradeList(props) {
       fixed: 'right',
       width: 120,
       render: (text, record) => {
-        if (record.isNew === true) {
-          return (
-            <span>
-              <a onClick={e => saveRow(e, record.key)}>保存</a>
-              <Divider type='vertical' />
-              <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
-                <a>删除</a>
-              </Popconfirm>
-            </span>
-          )
-        }
-
         return (
           <span>
-            <a
-              onClick={e => {
-                toggleEditable(e, record.key, record);
-                // handlefileedit(record.key, record.attachment)
-              }}
-            >编辑</a>
-            <Divider type='vertical' />
             <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
               <a>删除</a>
             </Popconfirm>
@@ -251,23 +173,18 @@ function UpgradeList(props) {
   ];
 
 
-  // useEffect(() => {
-  //   if(loading === false) {
-  //     handleTabledata()
-  //   }
-  // },[loading])
-
   return (
     <>
       <Row gutter={16}>
 
         <Col span={24}>
-          <p>计划{startTime}至{endTime},计量自动化系统开展 次发布变更（消缺），变更内容如下</p>
+          <p>(2)计划{startTime}至{endTime},计量自动化系统开展 次发布变更（消缺），变更内容如下</p>
         </Col>
 
         <Table
           columns={column}
           dataSource={data}
+          pagination={false}
         />
 
         <Button
@@ -276,21 +193,13 @@ function UpgradeList(props) {
           ghost
           onClick={() => newMember()}
           icon="plus"
-          disabled={newbutton}
         >
-          新增巡检情况
-          </Button>
+          新增
+        </Button>
       </Row>
     </>
   )
 }
 
 // export default Form.create({})(ServiceCompletion)
-export default Form.create({})(
-  connect(({ eventstatistics, loading }) => ({
-    maintenanceService: eventstatistics.maintenanceService,
-    maintenanceArr: eventstatistics.maintenanceArr,
-    soluteArr: eventstatistics.soluteArr,
-    loading: loading.models.eventstatistics
-  }))(UpgradeList),
-);
+export default Form.create({})(UpgradeList)

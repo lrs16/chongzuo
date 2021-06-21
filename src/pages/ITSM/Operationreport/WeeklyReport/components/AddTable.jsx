@@ -16,7 +16,7 @@ import SysUpload from '@/components/SysUpload';
 const { TextArea } = Input;
 const { Option } = Select;
 
-const Developmentone = React.forwardRef((props, ref) => {
+const AddTable = React.forwardRef((props, ref) => {
   const attRef = useRef();
   useImperativeHandle(
     ref,
@@ -28,51 +28,46 @@ const Developmentone = React.forwardRef((props, ref) => {
   const required = true;
 
   const {
-    form: { getFieldDecorator, setFieldsValue },
+    form: { getFieldDecorator, setFieldsValue, validateFields },
     handleDelete,
-    materialsList,
-    patrolAndExamineList,
+    formincontentLayout,
     ChangeFiles,
     patrolAndExamine, //  巡检列表
-    materials, // 材料列表
+    dynamicData,
+    px,
     files,
+    addTable,
     loading
   } = props;
 
   const [data, setData] = useState([]);
   const [seconddata, setSeconddata] = useState([]);
   const [cacheOriginData, setcacheOriginData] = useState({});
-  const [uploadkey, setKeyUpload] = useState('');
-  const [fileslist, setFilesList] = useState([]);
   const [newbutton, setNewButton] = useState(false);
-  const [secondbutton, setSecondbutton] = useState(false);
+  const [addList, setAddList] = useState([]);
 
-
-  useEffect(() => {
-    ChangeFiles(fileslist)
-  }, [fileslist])
+  // useEffect(() => {
+  //   ChangeFiles(fileslist)
+  // }, [fileslist])
   // 新增一条记录
   const newMember = (params) => {
     setFilesList([]);
     setKeyUpload('');
     const newData = (params ? seconddata : data).map(item => ({ ...item }));
-      newData.push({
-        key: seconddata.length + 1,
-        field1: '新增数据',
-        field2: '',
-        field3: 'dd',
-        field4: '',
-        field5: '',
-      });
-      setData(newData);
-      setNewButton(true);
+    newData.push({
+      key: seconddata.length + 1,
+      field1: '新增数据',
+      field2: '',
+      field3: 'dd',
+      field4: '',
+      field5: '',
+    });
+    setData(newData);
+    setNewButton(true);
   };
 
   //  获取行  
-  const getRowByKey = (key, newData, params) => {
-    if (params) {
-      return (newData || seconddata).filter(item => item.key === key)[0];
-    }
+  const getRowByKey = (key, newData) => {
     return (newData || data).filter(item => item.key === key)[0];
   }
 
@@ -83,22 +78,19 @@ const Developmentone = React.forwardRef((props, ref) => {
   };
 
   // 编辑记录
-  const toggleEditable = (e, key, record, params) => {
+  const toggleEditable = (e, key, record) => {
+
     e.preventDefault();
-    const newData = (params ? seconddata : data).map(item => ({ ...item }));
-    const target = getRowByKey(key, newData, params);
+    const newData = data.map(item => ({ ...item })
+    );
+    const target = getRowByKey(key, newData);
     if (target) {
       if (!target.editable) {
         setcacheOriginData({ key: { ...target } });
       }
       // target.editable = !target.editable;
-      if (params) {
-        target.secondtableisNew = true;
-        setSeconddata(newData)
-      } else {
-        target.isNew = true;
-        setData(newData);
-      }
+      target.isNew = true;
+      setData(newData);
     }
   }
 
@@ -112,8 +104,11 @@ const Developmentone = React.forwardRef((props, ref) => {
   }
 
   const savedata = (target, id, params) => {
-      patrolAndExamineList(data)
+    setAddList(data)
   }
+
+  console.log(data, 'data')
+
 
   const saveRow = (e, key) => {
     const target = getRowByKey(key) || {};
@@ -128,7 +123,7 @@ const Developmentone = React.forwardRef((props, ref) => {
   }
 
 
-  const handleFieldChange = (e, fieldName, key ) => {
+  const handleFieldChange = (e, fieldName, key) => {
     const newData = (data).map(item => ({ ...item }));
     const target = getRowByKey(key, newData)
     if (target) {
@@ -269,30 +264,40 @@ const Developmentone = React.forwardRef((props, ref) => {
 
 
   const handleTabledata = () => {
-    const newarr = (patrolAndExamine?.length?patrolAndExamine:[]).map((item, index) => {
+    const newarr = (patrolAndExamine?.length ? patrolAndExamine : []).map((item, index) => {
       return Object.assign(item, { editable: true, isNew: false, key: index })
     })
     setData(newarr)
   }
 
+  const handleSubmit = () => {
+    props.form.validateFields((err, value) => {
+      if (!err) {
+        const editTable = {
+          ...value,
+          list: data,
+          px
+        }
+        addTable(editTable)
+      }
+    })
+  }
 
 
-  useEffect(() => {
-    handleTabledata();
-  }, [])
+
+  // useEffect(() => {
+  //   handleTabledata();
+  // }, [patrolAndExamine])
 
   return (
     <>
       {/* { loading === false && ( */}
       <Row gutter={16}>
         <Form>
-          <Col span={24}>
-            <p style={{ fontWeight: '900', fontSize: '16px' }}>二、常规运维工作开展情况</p>
-          </Col>
-
-          <Col span={24}>
-            <p>（一）巡检情况 </p>
-          </Col>
+          <Button onClick={handleSubmit}>
+            保存
+          </Button>
+      
 
           <Table
             columns={column}
@@ -306,7 +311,7 @@ const Developmentone = React.forwardRef((props, ref) => {
             icon="plus"
             disabled={newbutton}
           >
-            新增巡检情况
+            新增行
        </Button>
         </Form>
       </Row>
@@ -317,5 +322,13 @@ const Developmentone = React.forwardRef((props, ref) => {
   )
 })
 
+AddForm.defaultProps = {
+  dynamicData: {
+    title: '',
+    content: '',
+    files: [],
+  }
+}
 
-export default Form.create({})(Developmentone)
+
+export default Form.create({})(AddTable)

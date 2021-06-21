@@ -8,10 +8,11 @@ import {
   Button,
   Divider,
   Popconfirm,
-  Select
+  Select,
+  message,
+  DatePicker
 } from 'antd';
-import { connect } from 'dva';
-import SysUpload from '@/components/SysUpload';
+import moment from 'moment';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -20,28 +21,30 @@ function NewTroublelist(props) {
   const {
     form: { getFieldDecorator },
     forminladeLayout,
+    faultlist,
     newTroubleList,
-    developmentList
+    mainId,
   } = props;
   const [data, setData] = useState([]);
-  const [seconddata, setSeconddata] = useState([]);
-  const [cacheOriginData, setcacheOriginData] = useState({});
-  const [uploadkey, setKeyUpload] = useState('');
-  const [fileslist, setFilesList] = useState([]);
   const [newbutton, setNewButton] = useState(false);
 
 
   // 初始化把数据传过去
   useEffect(() => {
+    // typeList(maintenanceArr)
     if (data && data.length) {
-      newTroubleList(data)
+      const result = JSON.parse(JSON.stringify(data)
+        .replace(/addTime/g, 'field1')
+        .replace(/typecn/g, 'field2')
+      )
+      if (result) {
+        newTroubleList(result)
+      }
     }
   }, [data]);
 
   // 新增一条记录
   const newMember = (params) => {
-    setFilesList([]);
-    setKeyUpload('');
     const newData = (data).map(item => ({ ...item }));
     newData.push({
       key: data.length + 1,
@@ -58,114 +61,67 @@ function NewTroublelist(props) {
     return (newData || data).filter(item => item.key === key)[0];
   }
 
+  const deleteObj = (key, newData) => {
+    return (newData || data).filter(item => item.key !== key);
+  }
+
   //  删除数据
   const remove = key => {
-    const target = getRowByKey(key) || {};
+    const target = deleteObj(key) || {};
+    setData(target);
+    message.info('删除成功')
   };
-
-  // 编辑记录
-  const toggleEditable = (e, key, record) => {
-
-    e.preventDefault();
-    const newData = data.map(item => ({ ...item })
-    );
-    const target = getRowByKey(key, newData);
-    if (target) {
-      if (!target.editable) {
-        setcacheOriginData({ key: { ...target } });
-      }
-      // target.editable = !target.editable;
-      target.isNew = true;
-      setData(newData);
-    }
-  }
-
-  //  点击编辑生成filelist
-  const handlefileedit = (key, values) => {
-    if (!values) {
-      setFilesList([]);
-    } else {
-      setFilesList(JSON.parse(values))
-    }
-  }
-
-  const savedata = (target, id) => {
-    newTroubleList(data)
-  }
-
-  const saveRow = (e, key) => {
-    const target = getRowByKey(key) || {};
-
-    delete target.key;
-    target.editable = false;
-    const id = target.id === '' ? '' : target.id;
-    savedata(target, id);
-    if (target.isNew) {
-      target.isNew = false;
-      setNewButton(false);
-    }
-  }
 
   const handleFieldChange = (e, fieldName, key) => {
     const newData = data.map(item => ({ ...item }));
     const target = getRowByKey(key, newData)
     if (target) {
-      target[fieldName] = e;
-      setData(newData);
+      if (fieldName === 'field1' || fieldName === 'addTime') {
+        target[fieldName] = moment(e).format('YYYY-MM-DD');
+        setData(newData);
+      } else {
+        target[fieldName] = e;
+        setData(newData);
+      }
+
     }
   }
 
   const handleTabledata = () => {
-    if (developmentList && developmentList.length) {
-      const newarr = developmentList.map((item, index) => {
+    if (faultlist && faultlist.length && newbutton === false) {
+      const newarr = faultlist.map((item, index) => {
         return Object.assign(item, { editable: true, isNew: false, key: index })
       })
       setData(newarr)
     }
-
   }
 
 
   const column = [
-    // {
-    //   title: '序号',
-    //   dataIndex: 'date',
-    //   key: 'date'
-    // },
     {
       title: '日期',
-      dataIndex: 'field1',
-      key: 'field1',
+      dataIndex: 'addTime',
+      key: 'addTime',
       render: (text, record) => {
-        if (record.isNew) {
-          return (
-            <Input
-              defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'field1', record.key)}
-            />
-          )
-        }
-        if (record.isNew === false) {
-          return <span>{text}</span>
-        }
+        return (
+          <DatePicker
+            defaultValue={text ? moment(text) : moment(new Date())}
+            onChange={e => handleFieldChange(e, 'addTime', record.key)}
+          />
+        )
       }
     },
     {
       title: '故障类型',
-      dataIndex: 'field2',
-      key: 'field2',
+      dataIndex: 'typecn',
+      key: 'typecn',
       render: (text, record) => {
-        if (record.isNew) {
-          return (
-            <Input
-              defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'field2', record.key)}
-            />
-          )
-        }
-        if (record.isNew === false) {
-          return <span>{text}</span>
-        }
+        return (
+          <Input
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'typecn', record.key)}
+          />
+        )
       }
     },
     {
@@ -173,17 +129,12 @@ function NewTroublelist(props) {
       dataIndex: 'field3',
       key: 'field3',
       render: (text, record) => {
-        if (record.isNew) {
-          return (
-            <Input
-              defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'field3', record.key)}
-            />
-          )
-        }
-        if (record.isNew === false) {
-          return <span>{text}</span>
-        }
+        return (
+          <Input
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field3', record.key)}
+          />
+        )
       }
     },
     {
@@ -191,17 +142,12 @@ function NewTroublelist(props) {
       dataIndex: 'field4',
       key: 'field4',
       render: (text, record) => {
-        if (record.isNew) {
-          return (
-            <Input
-              defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'field4', record.key)}
-            />
-          )
-        }
-        if (record.isNew === false) {
-          return <span>{text}</span>
-        }
+        return (
+          <Input
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field4', record.key)}
+          />
+        )
       }
     },
     {
@@ -209,17 +155,12 @@ function NewTroublelist(props) {
       dataIndex: 'field5',
       key: 'field5',
       render: (text, record) => {
-        if (record.isNew) {
-          return (
-            <Input
-              defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'field5', record.key)}
-            />
-          )
-        }
-        if (record.isNew === false) {
-          return <span>{text}</span>
-        }
+        return (
+          <Input
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field5', record.key)}
+          />
+        )
       }
     },
     {
@@ -227,17 +168,12 @@ function NewTroublelist(props) {
       dataIndex: 'field6',
       key: 'field6',
       render: (text, record) => {
-        if (record.isNew) {
-          return (
-            <Input
-              defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'field6', record.key)}
-            />
-          )
-        }
-        if (record.isNew === false) {
-          return <span>{text}</span>
-        }
+        return (
+          <Input
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field6', record.key)}
+          />
+        )
       }
     },
     {
@@ -245,17 +181,12 @@ function NewTroublelist(props) {
       dataIndex: 'field7',
       key: 'field7',
       render: (text, record) => {
-        if (record.isNew) {
-          return (
-            <Input
-              defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'field7', record.key)}
-            />
-          )
-        }
-        if (record.isNew === false) {
-          return <span>{text}</span>
-        }
+        return (
+          <Input
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field7', record.key)}
+          />
+        )
       }
     },
     {
@@ -264,27 +195,117 @@ function NewTroublelist(props) {
       fixed: 'right',
       width: 120,
       render: (text, record) => {
-        if (record.isNew === true) {
-          return (
-            <span>
-              <a onClick={e => saveRow(e, record.key)}>保存</a>
-              <Divider type='vertical' />
-              <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
-                <a>删除</a>
-              </Popconfirm>
-            </span>
-          )
-        }
-
         return (
           <span>
-            <a
-              onClick={e => {
-                toggleEditable(e, record.key, record);
-                // handlefileedit(record.key, record.attachment)
-              }}
-            >编辑</a>
-            <Divider type='vertical' />
+            <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
+              <a>删除</a>
+            </Popconfirm>
+          </span>
+        )
+      }
+    }
+  ];
+
+  const editColumn = [
+    {
+      title: '日期',
+      dataIndex: 'field1',
+      key: 'field1',
+      render: (text, record) => {
+        return (
+          <DatePicker
+            defaultValue={text ? moment(text) : moment(new Date())}
+            onChange={e => handleFieldChange(e, 'field1', record.key)}
+          />
+        )
+      }
+    },
+    {
+      title: '故障类型',
+      dataIndex: 'field2',
+      key: 'field2',
+      render: (text, record) => {
+        return (
+          <Input
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field2', record.key)}
+          />
+        )
+      }
+    },
+    {
+      title: '故障情况',
+      dataIndex: 'field3',
+      key: 'field3',
+      render: (text, record) => {
+        return (
+          <Input
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field3', record.key)}
+          />
+        )
+      }
+    },
+    {
+      title: '是否已修复',
+      dataIndex: 'field4',
+      key: 'field4',
+      render: (text, record) => {
+        return (
+          <Input
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field4', record.key)}
+          />
+        )
+      }
+    },
+    {
+      title: '是否需要报告',
+      dataIndex: 'field5',
+      key: 'field5',
+      render: (text, record) => {
+        return (
+          <Input
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field5', record.key)}
+          />
+        )
+      }
+    },
+    {
+      title: '报告提供方',
+      dataIndex: 'field6',
+      key: 'field6',
+      render: (text, record) => {
+        return (
+          <Input
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field6', record.key)}
+          />
+        )
+      }
+    },
+    {
+      title: '是否已提供故障处理记录（报告）',
+      dataIndex: 'field7',
+      key: 'field7',
+      render: (text, record) => {
+        return (
+          <Input
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field7', record.key)}
+          />
+        )
+      }
+    },
+    {
+      title: '操作',
+      key: 'action',
+      fixed: 'right',
+      width: 120,
+      render: (text, record) => {
+        return (
+          <span>
             <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
               <a>删除</a>
             </Popconfirm>
@@ -295,9 +316,14 @@ function NewTroublelist(props) {
     }
   ];
 
+  const [newColumns, setNewColumns] = useState(column)
+
   useEffect(() => {
     handleTabledata();
-  }, [developmentList])
+    if (mainId) {
+      setNewColumns(editColumn)
+    }
+  }, [faultlist])
 
 
   return (
@@ -311,8 +337,9 @@ function NewTroublelist(props) {
         </Col>
 
         <Table
-          columns={column}
+          columns={newColumns}
           dataSource={data}
+          pagination={false}
         />
 
         <Button
@@ -321,10 +348,9 @@ function NewTroublelist(props) {
           ghost
           onClick={() => newMember()}
           icon="plus"
-          disabled={newbutton}
         >
-          新增巡检情况
-          </Button>
+          新增
+        </Button>
       </Row>
     </>
   )

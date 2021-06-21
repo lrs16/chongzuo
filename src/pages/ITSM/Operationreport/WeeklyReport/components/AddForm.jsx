@@ -9,6 +9,7 @@ import {
   Button,
   Divider,
   Select,
+  message
 } from 'antd';
 import moment from 'moment';
 import SysUpload from '@/components/SysUpload';
@@ -35,35 +36,48 @@ const AddForm = React.forwardRef((props, ref) => {
     patrolAndExamine, //  巡检列表
     dynamicData,
     px,
+    initialDynamic,
+    list,
     files,
     addTable,
+    index,
+    saveForm,
     loading
   } = props;
 
   const [data, setData] = useState([]);
-  const [seconddata, setSeconddata] = useState([]);
-  const [cacheOriginData, setcacheOriginData] = useState({});
-  const [newbutton, setNewButton] = useState(false);
-  const [addList, setAddList] = useState([]);
 
+  // 初始化把数据传过去
   // useEffect(() => {
-  //   ChangeFiles(fileslist)
-  // }, [fileslist])
-  // 新增一条记录
+  //   props.form.validateFields((err, value) => {
+  //     // if (!err) {
+  //     const editTable = {
+  //       ...value,
+  //       list: data,
+  //       px,
+  //     }
+  //     addTable(editTable)
+  //     // list([editTable])
+  //     // }
+  //   })
+  // }, [dynamicData]);
+
   const newMember = (params) => {
-    setFilesList([]);
-    setKeyUpload('');
-    const newData = (params ? seconddata : data).map(item => ({ ...item }));
+    const newData = (data).map(item => ({ ...item }));
     newData.push({
-      key: seconddata.length + 1,
-      field1: '新增数据',
+      key: data.length + 1,
+      field1: '',
       field2: '',
-      field3: 'dd',
+      field3: '',
       field4: '',
       field5: '',
+      field6: '',
+      field7: '',
+      field8: '',
+      field9: '',
+      field10: '',
     });
     setData(newData);
-    setNewButton(true);
   };
 
   //  获取行  
@@ -71,57 +85,23 @@ const AddForm = React.forwardRef((props, ref) => {
     return (newData || data).filter(item => item.key === key)[0];
   }
 
+  const deleteObj = (key, newData) => {
+    return (newData || data).filter(item => item.key !== key);
+  }
+
   //  删除数据
   const remove = key => {
-    const target = getRowByKey(key) || {};
-    handleDelete(target.id)
+    const target = deleteObj(key) || {};
+    setData(target)
   };
 
-  // 编辑记录
-  const toggleEditable = (e, key, record) => {
-
-    e.preventDefault();
-    const newData = data.map(item => ({ ...item })
-    );
-    const target = getRowByKey(key, newData);
-    if (target) {
-      if (!target.editable) {
-        setcacheOriginData({ key: { ...target } });
-      }
-      // target.editable = !target.editable;
-      target.isNew = true;
-      setData(newData);
-    }
+  const titleNumber = () => {
+    return `标题${px}`
   }
 
-  //  点击编辑生成filelist
-  const handlefileedit = (key, values) => {
-    if (!values) {
-      setFilesList([]);
-    } else {
-      setFilesList(JSON.parse(values))
-    }
+  const contentNumber = () => {
+    return `内容${px}`
   }
-
-  const savedata = (target, id, params) => {
-    setAddList(data)
-  }
-
-  console.log(data, 'data')
-
-
-  const saveRow = (e, key) => {
-    const target = getRowByKey(key) || {};
-    delete target.key;
-    target.editable = false;
-    const id = target.id === '' ? '' : target.id;
-    savedata(target, id);
-    if (target.isNew) {
-      target.isNew = false;
-      setNewButton(false);
-    }
-  }
-
 
   const handleFieldChange = (e, fieldName, key) => {
     const newData = (data).map(item => ({ ...item }));
@@ -136,93 +116,139 @@ const AddForm = React.forwardRef((props, ref) => {
 
   const column = [
     {
-      title: '日期',
+      title: '表头1',
       dataIndex: 'field1',
       key: 'field1',
       render: (text, record) => {
-        if (record.isNew) {
-          return (
-            <Input
-              defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'field1', record.key)}
-            />
-          )
-        }
-        if (record.isNew === false) {
-          return <span>{text}</span>
-        }
+        return (
+          <Input
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field1', record.key)}
+          />
+        )
       }
     },
     {
-      title: '四大率指标',
+      title: '表头2',
       dataIndex: 'field2',
       key: 'field2',
       render: (text, record) => {
-        if (record.isNew) {
-          return (
-            <Input
-              defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'field2', record.key)}
-            />
-          )
-        }
-        if (record.isNew === false) {
-          return <span>{text}</span>
-        }
+        return (
+          <Input
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field2', record.key)}
+          />
+        )
       }
     },
     {
-      title: '基础功能运行情况',
+      title: '表头3',
       dataIndex: 'field3',
       key: 'field3',
       render: (text, record) => {
-        if (record.isNew) {
-          return (
-            <Input
-              defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'field3', record.key)}
-            />
-          )
-        }
-        if (record.isNew === false) {
-          return <span>{text}</span>
-        }
+        return (
+          <Input
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field3', record.key)}
+          />
+        )
       }
     },
     {
-      title: '接口运行情况',
+      title: '表头4',
       dataIndex: 'field4',
       key: 'field4',
       render: (text, record) => {
-        if (record.isNew) {
-          return (
-            <Input
-              defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'field4', record.key)}
-            />
-          )
-        }
-        if (record.isNew === false) {
-          return <span>{text}</span>
-        }
+        return (
+          <Input
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field4', record.key)}
+          />
+        )
       }
     },
     {
-      title: '高级功能运行情况',
+      title: '表头5',
       dataIndex: 'field5',
       key: 'field5',
       render: (text, record) => {
-        if (record.isNew) {
-          return (
-            <Input
-              defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'field5', record.key)}
-            />
-          )
-        }
-        if (record.isNew === false) {
-          return <span>{text}</span>
-        }
+        // if (record.isNew) {
+        return (
+          <Input
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field5', record.key)}
+          />
+        )
+        // }
+        // if (record.isNew === false) {
+        //   return <span>{text}</span>
+        // }
+      }
+    },
+    {
+      title: '表头6',
+      dataIndex: 'field6',
+      key: 'field6',
+      render: (text, record) => {
+        // if (record.isNew) {
+        return (
+          <Input
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field6', record.key)}
+          />
+        )
+      }
+    },
+    {
+      title: '表头7',
+      dataIndex: 'field7',
+      key: 'field7',
+      render: (text, record) => {
+        return (
+          <Input
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field7', record.key)}
+          />
+        )
+      }
+    },
+    {
+      title: '表头8',
+      dataIndex: 'field8',
+      key: 'field8',
+      render: (text, record) => {
+        return (
+          <Input
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field8', record.key)}
+          />
+        )
+      }
+    },
+    {
+      title: '表头9',
+      dataIndex: 'field9',
+      key: 'field9',
+      render: (text, record) => {
+        return (
+          <Input
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field9', record.key)}
+          />
+        )
+      }
+    },
+    {
+      title: '表头10',
+      dataIndex: 'field10',
+      key: 'field10',
+      render: (text, record) => {
+        return (
+          <Input
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field10', record.key)}
+          />
+        )
       }
     },
     {
@@ -231,27 +257,8 @@ const AddForm = React.forwardRef((props, ref) => {
       fixed: 'right',
       width: 120,
       render: (text, record) => {
-        if (record.isNew === true) {
-          return (
-            <span>
-              <a onClick={e => saveRow(e, record.key)}>保存</a>
-              <Divider type='vertical' />
-              <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
-                <a>删除</a>
-              </Popconfirm>
-            </span>
-          )
-        }
-
         return (
           <span>
-            <a
-              onClick={e => {
-                toggleEditable(e, record.key, record);
-                // handlefileedit(record.key, record.attachment)
-              }}
-            >编辑</a>
-            <Divider type='vertical' />
             <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
               <a>删除</a>
             </Popconfirm>
@@ -262,9 +269,8 @@ const AddForm = React.forwardRef((props, ref) => {
     }
   ];
 
-
   const handleTabledata = () => {
-    const newarr = (patrolAndExamine?.length ? patrolAndExamine : []).map((item, index) => {
+    const newarr = (dynamicData.list?.length ? dynamicData.list : []).map((item, index) => {
       return Object.assign(item, { editable: true, isNew: false, key: index })
     })
     setData(newarr)
@@ -272,93 +278,68 @@ const AddForm = React.forwardRef((props, ref) => {
 
   const handleSubmit = () => {
     props.form.validateFields((err, value) => {
-      if (!err) {
-        const editTable = {
-          ...value,
-          list: data,
-          px
-        }
-        addTable(editTable)
+      // if (!err) {
+      const editTable = {
+        ...value,
+        list: data,
+        px,
       }
+      addTable(editTable);
+      message.info('暂存保存数据成功')
+      // }
     })
   }
 
-
-
-  // useEffect(() => {
-  //   handleTabledata();
-  // }, [patrolAndExamine])
+  useEffect(() => {
+    handleTabledata();
+  }, [dynamicData])
 
   return (
     <>
-      {/* { loading === false && ( */}
       <Row gutter={16}>
         <Form>
-          <Button onClick={handleSubmit}>
-            保存
-          </Button>
-          {/* <Col span={24}> */}
-          <Form.Item label='标题' {...formincontentLayout}>
+          {/* {index === 0 && ( */}
+            <Button
+              type='primary'
+              onClick={handleSubmit}
+            >
+              保存
+            </Button>
+          {/* // )} */}
+
+          <Col><p>注：第一行数据作为表头</p></Col>
+
+          <Form.Item label={titleNumber()} {...formincontentLayout}>
             {getFieldDecorator(`title`, {
-              rules: [
-                {
-                  required,
-                  message: '请输入标题'
-                }
-              ],
               initialValue: dynamicData.title
             })(
               <Input />
             )}
           </Form.Item>
-          {/* </Col> */}
 
-          {/* <Col span={24}> */}
-          <Form.Item label='内容' {...formincontentLayout}>
+          <Form.Item label={contentNumber()} {...formincontentLayout}>
             {getFieldDecorator(`content`, {
-              rules: [
-                {
-                  required,
-                  message: '请输入内容'
-                }
-              ],
               initialValue: dynamicData.content
             })(
               <TextArea autoSize={{ minRows: 3 }} />
             )}
           </Form.Item>
 
-          <Col span={24}>
-            <Form.Item label='上传附件'    {...formincontentLayout}>
-              {getFieldDecorator(`files`, {
-                initialValue: dynamicData.files
-              })(
-                <SysUpload
-                  fileslist={[]}
-                  ChangeFileslist={newvalue => {
-                    setFieldsValue({ files: JSON.stringify(newvalue.arr) })
-                    setFilesList(newvalue);
-                    // setFiles(newvalue)
-                  }}
-                />
-              )}
-            </Form.Item>
-          </Col>
-          {/* </Col> */}
-
-          {/* <Col span={24}>
-            <Form.Item label='内容' {...formincontentLayout}>
-              {getFieldDecorator(`addcontent${index + 6}`, {
-
-              })(
-                <TextArea autoSize={{ minRows: 3 }} />
-              )}
-            </Form.Item>
-          </Col> */}
-
-
-
-
+          <Form.Item label='上传附件'    {...formincontentLayout}>
+            {getFieldDecorator(`files`, {
+              initialValue: dynamicData.files ? dynamicData.files : ''
+            })(
+              <SysUpload
+                fileslist={dynamicData.files ? JSON.parse(dynamicData.files) : []}
+                ChangeFileslist={newvalue => {
+                  setFieldsValue({
+                    files: JSON.stringify(newvalue.arr),
+                  })
+                  handleSubmit();
+                }}
+              />
+            )}
+          </Form.Item>
 
           <Table
             columns={column}
@@ -370,15 +351,11 @@ const AddForm = React.forwardRef((props, ref) => {
             ghost
             onClick={() => newMember()}
             icon="plus"
-            disabled={newbutton}
           >
-            新增巡检情况
-       </Button>
+            新增行
+          </Button>
         </Form>
       </Row>
-
-      {/* // )} */}
-
     </>
   )
 })

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useImperativeHandle, useState } from 'react';
+import React, { useEffect, useImperativeHandle, useContext, useState } from 'react';
 import {
   Table,
   Form,
@@ -7,26 +7,24 @@ import {
   Row,
   Button,
   Divider,
-  Popconfirm
+  Popconfirm,
+  message
 } from 'antd';
 import { connect } from 'dva';
 import SysUpload from '@/components/SysUpload';
 
 const { TextArea } = Input;
-const DatabaseInspectionthird = React.forwardRef((props, ref) => {
-  const attRef = useRef();
-  useImperativeHandle(
-    ref,
-    () => ({
-      attRef,
-    }),
-    [],
-  );
+function Testdemo(props) {
 
   const {
     form: { getFieldDecorator },
-    forminladeLayout,
-    remainingDefectslist
+    legacyList,
+    legacyArr,
+    updateList,
+    updateArr,
+    startTime,
+    endTime,
+    dispatch
   } = props;
   const [data, setData] = useState([]);
   const [seconddata, setSeconddata] = useState([]);
@@ -35,6 +33,13 @@ const DatabaseInspectionthird = React.forwardRef((props, ref) => {
   const [fileslist, setFilesList] = useState([]);
   const [newbutton, setNewButton] = useState(false);
 
+  // 初始化把数据传过去
+  useEffect(() => {
+    if (data && data.length) {
+      legacyList(data)
+    }
+  }, [data]);
+
   // 新增一条记录
   const newMember = (params) => {
     setFilesList([]);
@@ -42,11 +47,11 @@ const DatabaseInspectionthird = React.forwardRef((props, ref) => {
     const newData = (data).map(item => ({ ...item }));
     newData.push({
       key: data.length + 1,
-      id: '',
-      dd11: '新增数据',
-      dd22: '',
-      dd33: 'dd',
-      dd44: '',
+      field1: '',
+      field2: '',
+      field3: '',
+      field4: '',
+      field5: '',
     });
     setData(newData);
     setNewButton(true);
@@ -100,6 +105,8 @@ const DatabaseInspectionthird = React.forwardRef((props, ref) => {
   }
 
   const savedata = (target, id) => {
+    legacyList(data);
+    message.info('暂存该表格数据成功')
   }
 
   const saveRow = (e, key) => {
@@ -125,102 +132,69 @@ const DatabaseInspectionthird = React.forwardRef((props, ref) => {
   }
 
   const handleTabledata = () => {
-    const newarr = remainingDefectslist.map((item, index) => {
+    const newarr = legacyArr.map((item, index) => {
       return Object.assign(item, { editable: true, isNew: false, key: index })
     })
     setData(newarr)
   }
 
 
+
+  useEffect(() => {
+    handleTabledata()
+  }, [])
+
   const column = [
     {
-      title: '用户名',
-      dataIndex: 'dd11',
-      key: 'dd11',
+      title: '日期',
+      dataIndex: 'field1',
+      key: 'field1',
       render: (text, record) => {
-        if (record.isNew) {
           return (
             <Input
               defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'dd11', record.key)}
+              onChange={e => handleFieldChange(e.target.value, 'field1', record.key)}
             />
           )
-        }
-        if (record.isNew === false) {
-          return <span>{text}</span>
-        }
       }
     },
     {
-      title: '表名',
-      dataIndex: 'dd22',
-      key: 'dd22',
+      title: '工作项',
+      dataIndex: 'field2',
+      key: 'field2',
       render: (text, record) => {
-        if (record.isNew) {
           return (
             <Input
               defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'dd22', record.key)}
+              onChange={e => handleFieldChange(e.target.value, 'field2', record.key)}
             />
           )
-        }
-        if (record.isNew === false) {
-          return <span>{text}</span>
-        }
       }
     },
     {
-      title: '表总大小/GB',
-      dataIndex: 'dd33',
-      key: 'dd33',
+      title: '工作内容',
+      dataIndex: 'field3',
+      key: 'field3',
       render: (text, record) => {
-        if (record.isNew) {
           return (
             <Input
               defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'dd33', record.key)}
+              onChange={e => handleFieldChange(e.target.value, 'field3', record.key)}
             />
           )
-        }
-        if (record.isNew === false) {
-          return <span>{text}</span>
-        }
       }
     },
     {
-      title: '总增长量/GB',
-      dataIndex: 'dd44',
-      key: 'dd44',
+      title: '完成情况',
+      dataIndex: 'field4',
+      key: 'field4',
       render: (text, record) => {
-        if (record.isNew) {
           return (
             <Input
               defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'dd44', record.key)}
+              onChange={e => handleFieldChange(e.target.value, 'field4', record.key)}
             />
           )
-        }
-        if (record.isNew === false) {
-          return <span>{text}</span>
-        }
-      }
-    },
-    {
-      title: '平均增长量/GB',
-      dataIndex: 'dd55',
-      key: 'dd55',
-      render: (text, record) => {
-        if (record.isNew) {
-          return (
-            <Input
-              defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'dd55', record.key)}
-            />
-          )
-        }
-        if (record.isNew === false) {
-          return <span>{text}</span>
-        }
       }
     },
     {
@@ -229,51 +203,39 @@ const DatabaseInspectionthird = React.forwardRef((props, ref) => {
       fixed: 'right',
       width: 120,
       render: (text, record) => {
-        // if (record.editable) {
-        if (record.isNew === true) {
           return (
             <span>
-              <a onClick={e => saveRow(e, record.key)}>保存</a>
-              <Divider type='vertical' />
               <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
                 <a>删除</a>
               </Popconfirm>
             </span>
           )
-        }
-        // }
-
-        return (
-          <span>
-            <a
-              onClick={e => {
-                toggleEditable(e, record.key, record);
-                // handlefileedit(record.key, record.attachment)
-              }}
-            >编辑</a>
-            <Divider type='vertical' />
-            <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
-              <a>删除</a>
-            </Popconfirm>
-          </span>
-        )
       }
 
     }
-
   ];
 
-  useEffect(() => {
-    handleTabledata();
-  }, [])
 
+  // useEffect(() => {
+  //   if(loading === false) {
+  //     handleTabledata()
+  //   }
+  // },[loading])
 
   return (
     <>
       <Row gutter={16}>
-        <Col span={20}>
-          <p>Top10表增长情况</p>
+
+        <Col span={24}>
+          <p>计划{startTime}至{endTime},计量自动化系统开展 次发布变更（消缺），变更内容如下</p>
         </Col>
+
+        <Button
+          type='primary'
+          onClick={savedata}
+        >
+          保存
+        </Button>
 
         <Table
           columns={column}
@@ -286,13 +248,13 @@ const DatabaseInspectionthird = React.forwardRef((props, ref) => {
           ghost
           onClick={() => newMember()}
           icon="plus"
-          disabled={newbutton}
         >
-          新增Top10表增长情况
+          新增巡检情况
           </Button>
       </Row>
     </>
   )
-})
+}
 
-export default Form.create({})(DatabaseInspectionthird)
+// export default Form.create({})(ServiceCompletion)
+export default Form.create({})(Testdemo);

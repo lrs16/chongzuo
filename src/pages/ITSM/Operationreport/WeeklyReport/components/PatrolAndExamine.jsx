@@ -7,10 +7,13 @@ import {
   Row,
   Button,
   Divider,
-  Popconfirm
+  Popconfirm,
+  DatePicker,
+  message
 } from 'antd';
 import { connect } from 'dva';
 import SysUpload from '@/components/SysUpload';
+import moment from 'moment';
 
 const { TextArea } = Input;
 const PatrolAndExamine = React.forwardRef((props, ref) => {
@@ -35,12 +38,12 @@ const PatrolAndExamine = React.forwardRef((props, ref) => {
   const [fileslist, setFilesList] = useState([]);
   const [newbutton, setNewButton] = useState(false);
 
-    // 初始化把数据传过去
-    useEffect(() => {
-      if(data && data.length) {
-        patrolAndExamineList(data)
-      }
-    }, [data]);
+  // 初始化把数据传过去
+  useEffect(() => {
+    if (data && data.length) {
+      patrolAndExamineList(data)
+    }
+  }, [data]);
 
   // 新增一条记录
   const newMember = (params) => {
@@ -50,7 +53,7 @@ const PatrolAndExamine = React.forwardRef((props, ref) => {
     newData.push({
       key: data.length + 1,
       id: '',
-      field1: '新增数据',
+      field1: '',
       field2: '',
       field3: '',
       field4: '',
@@ -65,70 +68,38 @@ const PatrolAndExamine = React.forwardRef((props, ref) => {
     return (newData || data).filter(item => item.key === key)[0];
   }
 
+  const deleteObj = (key,newData) => {
+    return (newData || data).filter(item => item.key !== key);
+  }
   //  删除数据
   const remove = key => {
-    const target = getRowByKey(key) || {};
+    const target = deleteObj(key) || {};
+    setData(target)
   };
-
-  // 编辑记录
-  const toggleEditable = (e, key, record) => {
-
-    e.preventDefault();
-    const newData = data.map(item => ({ ...item })
-    );
-    const target = getRowByKey(key, newData);
-    if (target) {
-      if (!target.editable) {
-        setcacheOriginData({ key: { ...target } });
-      }
-      // target.editable = !target.editable;
-      target.isNew = true;
-      setData(newData);
-    }
-  }
-
-  //  点击编辑生成filelist
-  const handlefileedit = (key, values) => {
-    if (!values) {
-      setFilesList([]);
-    } else {
-      setFilesList(JSON.parse(values))
-    }
-  }
-
-  const savedata = (target, id) => {
-    patrolAndExamineList(data)
-  }
-
-  const saveRow = (e, key) => {
-    const target = getRowByKey(key) || {};
-
-    delete target.key;
-    target.editable = false;
-    const id = target.id === '' ? '' : target.id;
-    savedata(target, id);
-    if (target.isNew) {
-      target.isNew = false;
-      setNewButton(false);
-    }
-  }
 
   const handleFieldChange = (e, fieldName, key) => {
     const newData = data.map(item => ({ ...item }));
     const target = getRowByKey(key, newData)
     if (target) {
-      target[fieldName] = e;
-      setData(newData);
+      if (fieldName === 'field1') {
+        target[fieldName] = moment(e).format('YYYY-MM-DD');
+        setData(newData);
+      } else {
+        target[fieldName] = e;
+        setData(newData);
+      }
+
     }
   }
 
   const handleTabledata = () => {
-    const newarr = patrolAndExamine.map((item, index) => {
-      return Object.assign(item, { editable: true, isNew: false, key: index })
-    })
-    setData(newarr)
+    if(newbutton === false) {
+      const newarr = patrolAndExamine.map((item, index) => {
+        return Object.assign(item, { editable: true, isNew: false, key: index })
+      })
+      setData(newarr)
+    }
   }
-
 
   const column = [
     {
@@ -136,17 +107,12 @@ const PatrolAndExamine = React.forwardRef((props, ref) => {
       dataIndex: 'field1',
       key: 'field1',
       render: (text, record) => {
-        if (record.isNew) {
           return (
-            <Input
-              defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'field1', record.key)}
+            <DatePicker
+              defaultValue={text ? moment(text) : moment(new Date())}
+              onChange={e => handleFieldChange(e, 'field1', record.key)}
             />
           )
-        }
-        if (record.isNew === false) {
-          return <span>{text}</span>
-        }
       }
     },
     {
@@ -154,17 +120,12 @@ const PatrolAndExamine = React.forwardRef((props, ref) => {
       dataIndex: 'field2',
       key: 'field2',
       render: (text, record) => {
-        if (record.isNew) {
-          return (
-            <Input
-              defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'field2', record.key)}
-            />
-          )
-        }
-        if (record.isNew === false) {
-          return <span>{text}</span>
-        }
+        return (
+          <Input
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field2', record.key)}
+          />
+        )
       }
     },
     {
@@ -172,17 +133,12 @@ const PatrolAndExamine = React.forwardRef((props, ref) => {
       dataIndex: 'field3',
       key: 'field3',
       render: (text, record) => {
-        if (record.isNew) {
           return (
             <Input
               defaultValue={text}
               onChange={e => handleFieldChange(e.target.value, 'field3', record.key)}
             />
           )
-        }
-        if (record.isNew === false) {
-          return <span>{text}</span>
-        }
       }
     },
     {
@@ -190,17 +146,12 @@ const PatrolAndExamine = React.forwardRef((props, ref) => {
       dataIndex: 'field4',
       key: 'field4',
       render: (text, record) => {
-        if (record.isNew) {
           return (
             <Input
               defaultValue={text}
               onChange={e => handleFieldChange(e.target.value, 'field4', record.key)}
             />
           )
-        }
-        if (record.isNew === false) {
-          return <span>{text}</span>
-        }
       }
     },
     {
@@ -208,17 +159,12 @@ const PatrolAndExamine = React.forwardRef((props, ref) => {
       dataIndex: 'field5',
       key: 'field5',
       render: (text, record) => {
-        if (record.isNew) {
           return (
             <Input
               defaultValue={text}
               onChange={e => handleFieldChange(e.target.value, 'field5', record.key)}
             />
           )
-        }
-        if (record.isNew === false) {
-          return <span>{text}</span>
-        }
       }
     },
     {
@@ -227,32 +173,28 @@ const PatrolAndExamine = React.forwardRef((props, ref) => {
       fixed: 'right',
       width: 120,
       render: (text, record) => {
-        if (record.isNew === true) {
           return (
             <span>
-              <a onClick={e => saveRow(e, record.key)}>保存</a>
-              <Divider type='vertical' />
               <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
                 <a>删除</a>
               </Popconfirm>
             </span>
           )
-        }
 
-        return (
-          <span>
-            <a
-              onClick={e => {
-                toggleEditable(e, record.key, record);
-                // handlefileedit(record.key, record.attachment)
-              }}
-            >编辑</a>
-            <Divider type='vertical' />
-            <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
-              <a>删除</a>
-            </Popconfirm>
-          </span>
-        )
+        // return (
+        //   <span>
+        //     <a
+        //       onClick={e => {
+        //         toggleEditable(e, record.key, record);
+        //         // handlefileedit(record.key, record.attachment)
+        //       }}
+        //     >编辑</a>
+        //     <Divider type='vertical' />
+        //     <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
+        //       <a>删除</a>
+        //     </Popconfirm>
+        //   </span>
+        // )
       }
 
     }
@@ -277,6 +219,7 @@ const PatrolAndExamine = React.forwardRef((props, ref) => {
         <Table
           columns={column}
           dataSource={data}
+          pagination={false}
         />
 
         <Button
@@ -285,10 +228,9 @@ const PatrolAndExamine = React.forwardRef((props, ref) => {
           ghost
           onClick={() => newMember()}
           icon="plus"
-          disabled={newbutton}
         >
-          新增巡检情况
-          </Button>
+          新增
+        </Button>
       </Row>
     </>
   )

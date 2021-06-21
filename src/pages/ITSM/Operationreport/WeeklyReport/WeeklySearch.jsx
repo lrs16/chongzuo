@@ -54,8 +54,9 @@ function WeeklySearch(props) {
   const pagetitle = props.route.name;
   const {
     form: { getFieldDecorator, resetFields, validateFields, setFieldsValue },
-    myweeklyreportTable,
+    queryOrderlist,
     dispatch,
+    loading
   } = props;
   const [expand, setExpand] = useState(false);
   const [paginations, setPaginations] = useState({ current: 1, pageSize: 10 });
@@ -63,80 +64,99 @@ function WeeklySearch(props) {
   const [selectdata, setSelectData] = useState('');
   const columns = [
     {
+      title: '周报类型',
+      dataIndex: 'type',
+      key: 'type',
+      render: (text, record) => {
+        const handleClick = () => {
+          switch (text) {
+            case '软件运维周报':
+              router.push({
+                pathname: `/ITSM/operationreport/weeklyreport/detailSoft/`,
+                query: {
+                  mainId: record.id,
+                  reporttype: 'week',
+                  reportSearch:true
+                },
+              });
+              break;
+            case '机房运维周报':
+              router.push({
+                pathname: `/ITSM/operationreport/weeklyreport/computerroomreportdetail`,
+                query: {
+                  mainId: record.id,
+                  reporttype: 'week',
+                  reportSearch:true
+                },
+              });
+              break;
+            case '数据库运维周报':
+              router.push({
+                pathname: `/ITSM/operationreport/weeklyreport/databasereportdetail`,
+                query: {
+                  mainId: record.id,
+                  reporttype: 'week',
+                  reportSearch:true
+                },
+              });
+              break;
+            case '其他运维周报':
+              router.push({
+                pathname: `/ITSM/operationreport/weeklyreport/otherreportdetail`,
+                query: {
+                  mainId: record.id,
+                  reporttype: 'week',
+                  reportSearch:true
+                },
+              });
+              break;
+            default:
+              break;
+          }
+
+        }
+        return <a onClick={handleClick}>{text}</a>
+
+      }
+    },
+    {
       title: '周报名称',
       dataIndex: 'name',
       key: 'name',
-      render: (text, record) => {
-        switch (text) {
-          case 'name':
-            return (
-              <Link
-                to={{
-                  pathname: `/ITSM/operationreport/weeklyreport/softreport/${record.id}`,
-                  // paneKey: record.status, // 传状态
-                }}
-              >
-                {text}
-              </Link>
-            )
-          // break;
-          case 'bb':
-            <Link
-              to={{
-                pathname: `/ITSM/operationreport/weeklyreport/softreport${record.id}`,
-                // paneKey: record.status, // 传状态
-              }}
-            >
-              {text}
-            </Link>
-            break;
-
-          default:
-            break;
-        }
-      }
-
-    },
-    {
-      title: '周报分类',
-      dataIndex: 'date',
-      key: 'date',
     },
     {
       title: '填报日期',
-      dataIndex: 'person',
-      key: 'person',
+      dataIndex: 'time1',
+      key: 'time1',
     },
     {
       title: '填报人',
-      dataIndex: 'person1',
-      key: 'person1',
+      dataIndex: 'userName',
+      key: 'userName',
     },
   ];
-
-  const getmyweeklyTable = () => {
-    dispatch({
-      type: 'myweeklyreportindex/myweeklyTable',
-      payload: {
-        pageNum: paginations.current,
-        pageSize: paginations.pageSize,
-      },
-    });
-  };
 
   const handleReset = () => {
     resetFields();
     starttime = '';
     endTime = '';
+    validateFields((err, value) => {
+      searchdata(value, 1, paginations.pageSize);
+    })
   };
 
   const searchdata = (values, page, pageSize) => {
     dispatch({
-      type: 'myweeklyreportindex/myweeklyTable',
+      type: 'softreport/queryList',
       payload: {
         ...values,
+        timeType:'周报',
+        userId: '',
+        plannedStartTime: '',
+        time1: values.plannedStartTime?.length ? moment(values.plannedStartTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+        time2: values.plannedStartTime?.length ? moment(values.plannedStartTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
         pageSize,
-        pageNum: page,
+        pageIndex: page - 1,
       },
     });
   };
@@ -170,7 +190,7 @@ function WeeklySearch(props) {
     onShowSizeChange: (page, pageSize) => onShowSizeChange(page, pageSize),
     current: paginations.current,
     pageSize: paginations.pageSize,
-    // total: besolveList.total,
+    total: queryOrderlist.total,
     showTotal: total => `总共  ${total}  条记录`,
     onChange: (page) => changePage(page),
   };
@@ -189,8 +209,7 @@ function WeeklySearch(props) {
         time1: starttime,
         time2: endTime
       };
-
-      searchdata(obj, paginations.current, paginations.pageSize);
+      searchdata(obj, 1, paginations.pageSize);
     });
   };
 
@@ -221,23 +240,6 @@ function WeeklySearch(props) {
     }
   }
 
-  const handleDelete = () => {
-    if (selectedrows.length) {
-      const idList = selectedrows.map(item => {
-        return item
-      })
-
-      dispatch({
-        type: 'myweeklyreportindex/myweeklyTable',
-        payload: idList
-      }).then(res => {
-        // message.info()
-        getmyweeklyTable();
-      })
-    } else {
-      message.info('至少选择一条数据');
-    }
-  }
 
   const defaultTime = () => {
     //  周统计
@@ -246,29 +248,11 @@ function WeeklySearch(props) {
     endTime = `${endTime} 00:00:00`;
   }
 
-  const startdisabledDate = (current) => {
-    return current > moment().subtract('days', 6)
-  }
-
-  const onChange = (date, dateString) => {
-    starttime = dateString;
-    endTime = moment(dateString).add(+6, 'day').format('YYYY-MM-DD');
-    setFieldsValue({ time2: moment(endTime) });
-  }
-
-  const endonChange = (date, dateString) => {
-    endTime = dateString;
-    starttime = moment(dateString).subtract('day', 6).format('YYYY-MM-DD');
-    setFieldsValue({ time1: moment(starttime) })
-  }
-
-  const enddisabledDate = (current) => {
-    return current > moment().endOf('day')
-  }
-
   useEffect(() => {
-    getmyweeklyTable();
     defaultTime();
+    validateFields((err, value) => {
+      searchdata(value, 1, paginations.pageSize);
+    })
   }, []);
 
   const getTypebyTitle = title => {
@@ -296,19 +280,21 @@ function WeeklySearch(props) {
           <Form {...formItemLayout}>
             <Col span={8}>
               <Form.Item label="周报名称">
-                {getFieldDecorator('no', {
+                {getFieldDecorator('name', {
                   rules: [
                     {
                       message: '请输入问题编号',
                     },
                   ],
+                  initialValue: ''
                 })(<Input placeholder='请输入' allowClear />)}
               </Form.Item>
             </Col>
 
             <Col span={8}>
               <Form.Item label="周报分类">
-                {getFieldDecorator('params1', {
+                {getFieldDecorator('type', {
+                  initialValue: ''
                 })
                   (
                     <Select placeholder="请选择" allowClear>
@@ -325,7 +311,9 @@ function WeeklySearch(props) {
 
             <Col span={8}>
               <Form.Item label="填报人" >
-                {getFieldDecorator('person', {})(<Input placeholder='请输入' allowClear />)}
+                {getFieldDecorator('userName', {
+                  initialValue: ''
+                })(<Input placeholder='请输入' allowClear />)}
               </Form.Item>
             </Col>
 
@@ -337,7 +325,7 @@ function WeeklySearch(props) {
                     <RangePicker
                       showTime
                       format="YYYY-MM-DD HH:mm:ss"
-                      style={{width:'100%'}}
+                      style={{ width: '100%' }}
                     />
                   )}
               </Form.Item>
@@ -346,11 +334,11 @@ function WeeklySearch(props) {
             <Col span={16} style={{ textAlign: 'right' }}>
               <Button type="primary" onClick={handleSearch}>
                 查询
-                </Button>
+              </Button>
 
               <Button style={{ marginLeft: 8 }} onClick={handleReset}>
                 重置
-                </Button>
+              </Button>
             </Col>
 
           </Form>
@@ -358,13 +346,13 @@ function WeeklySearch(props) {
 
         <Button type="primary" style={{ marginRight: 8 }} onClick={exportDownload}>
           导出数据
-          </Button>
+        </Button>
 
         <Table
-          // loading={loading}
+          loading={loading}
           columns={columns}
-          dataSource={myweeklyreportTable}
-          // rowKey={record => record.id}
+          dataSource={queryOrderlist.rows}
+          rowKey={record => record.id}
           pagination={pagination}
           rowSelection={rowSelection}
         />
@@ -377,8 +365,8 @@ function WeeklySearch(props) {
 
 
 export default Form.create({})(
-  connect(({ myweeklyreportindex, loading }) => ({
-    myweeklyreportTable: myweeklyreportindex.myweeklyreportTable,
-    loading: loading.models.myweeklyreportindex,
+  connect(({ softreport, loading }) => ({
+    queryOrderlist: softreport.queryOrderlist,
+    loading: loading.models.softreport,
   }))(WeeklySearch),
 );

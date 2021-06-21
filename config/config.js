@@ -594,11 +594,23 @@ export default {
                           component: './ITSM/Operationreport/WeeklyReport/DatabaseReport'
                         },
                         {
+                          path: '/ITSM/operationreport/weeklyreport/databasereportdetail',
+                          name: '数据库运维周报详情页',
+                          icon: 'fork',
+                          component: './ITSM/Operationreport/WeeklyReport/DatabaseReportdetail'
+                        },
+                        {
                           path: '/ITSM/operationreport/weeklyreport/otherreport',
                           name: '其他运维周报',
                           icon: 'fork',
                           component: './ITSM/Operationreport/WeeklyReport/OtherReport'
-                        }
+                        },
+                        {
+                          path: '/ITSM/operationreport/weeklyreport/otherreportdetail',
+                          name: '其他运维周报详情',
+                          icon: 'fork',
+                          component: './ITSM/Operationreport/WeeklyReport/OtherReportdetail'
+                        },
                       ]
                     },
                     {
@@ -1362,8 +1374,8 @@ export default {
       target: ' http://172.16.10.11:9901/', // 数据字典
       changeOrigin: true,
     },
-    '/report/': {
-      target: 'http://172.16.10.106:9901/',
+    '/report/':{
+      target:'http://172.16.10.114:9901/',
       changeOrigin: true
     }
   },

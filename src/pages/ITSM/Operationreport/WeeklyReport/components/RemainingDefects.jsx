@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useImperativeHandle, useState } from 'react';
+import React, { useEffect, useImperativeHandle, useContext, useState } from 'react';
 import {
   Table,
   Form,
@@ -7,34 +7,28 @@ import {
   Row,
   Button,
   Divider,
-  Popconfirm
+  Popconfirm,
+  message
 } from 'antd';
 import { connect } from 'dva';
 import SysUpload from '@/components/SysUpload';
 
 const { TextArea } = Input;
-const RemainingDefects = React.forwardRef((props, ref) => {
-  const attRef = useRef();
-  useImperativeHandle(
-    ref,
-    () => ({
-      attRef,
-    }),
-    [],
-  );
+function RemainingDefects(props) {
 
   const {
     form: { getFieldDecorator },
-    forminladeLayout,
-    remainingDefectslist,
+    legacyArr,
     legacyList,
-    legacyArr
+    dispatch
   } = props;
   const [data, setData] = useState([]);
+  const [seconddata, setSeconddata] = useState([]);
   const [cacheOriginData, setcacheOriginData] = useState({});
   const [uploadkey, setKeyUpload] = useState('');
   const [fileslist, setFilesList] = useState([]);
   const [newbutton, setNewButton] = useState(false);
+
 
   // 初始化把数据传过去
   useEffect(() => {
@@ -49,11 +43,11 @@ const RemainingDefects = React.forwardRef((props, ref) => {
     const newData = (data).map(item => ({ ...item }));
     newData.push({
       key: data.length + 1,
-      id: '',
-      field1: '新增数据',
+      field1: '',
       field2: '',
-      field3: 'dd',
+      field3: '',
       field4: '',
+      field5: '',
     });
     setData(newData);
     setNewButton(true);
@@ -107,7 +101,8 @@ const RemainingDefects = React.forwardRef((props, ref) => {
   }
 
   const savedata = (target, id) => {
-    legacyList(data)
+    legacyList(data);
+    message.info('暂存该表格数据成功')
   }
 
   const saveRow = (e, key) => {
@@ -139,7 +134,10 @@ const RemainingDefects = React.forwardRef((props, ref) => {
     setData(newarr)
   }
 
-  // console.log(legacyArr,'legacyArr')
+
+  useEffect(() => {
+    handleTabledata()
+  }, [])
 
   const column = [
     {
@@ -147,17 +145,12 @@ const RemainingDefects = React.forwardRef((props, ref) => {
       dataIndex: 'field1',
       key: 'field1',
       render: (text, record) => {
-        if (record.isNew) {
           return (
             <Input
               defaultValue={text}
               onChange={e => handleFieldChange(e.target.value, 'field1', record.key)}
             />
           )
-        }
-        if (record.isNew === false) {
-          return <span>{text}</span>
-        }
       }
     },
     {
@@ -165,17 +158,12 @@ const RemainingDefects = React.forwardRef((props, ref) => {
       dataIndex: 'field2',
       key: 'field2',
       render: (text, record) => {
-        if (record.isNew) {
           return (
             <Input
               defaultValue={text}
               onChange={e => handleFieldChange(e.target.value, 'field2', record.key)}
             />
           )
-        }
-        if (record.isNew === false) {
-          return <span>{text}</span>
-        }
       }
     },
     {
@@ -183,35 +171,38 @@ const RemainingDefects = React.forwardRef((props, ref) => {
       dataIndex: 'field3',
       key: 'field3',
       render: (text, record) => {
-        if (record.isNew) {
           return (
             <Input
               defaultValue={text}
               onChange={e => handleFieldChange(e.target.value, 'field3', record.key)}
             />
           )
-        }
-        if (record.isNew === false) {
-          return <span>{text}</span>
-        }
       }
     },
     {
-      title: '完成情况',
+      title: '计划完成时间',
       dataIndex: 'field4',
       key: 'field4',
       render: (text, record) => {
-        if (record.isNew) {
           return (
             <Input
               defaultValue={text}
               onChange={e => handleFieldChange(e.target.value, 'field4', record.key)}
             />
           )
-        }
-        if (record.isNew === false) {
-          return <span>{text}</span>
-        }
+      }
+    },
+    {
+      title: '备注',
+      dataIndex: 'field5',
+      key: 'field5',
+      render: (text, record) => {
+          return (
+            <Input
+              defaultValue={text}
+              onChange={e => handleFieldChange(e.target.value, 'field5', record.key)}
+            />
+          )
       }
     },
     {
@@ -220,53 +211,31 @@ const RemainingDefects = React.forwardRef((props, ref) => {
       fixed: 'right',
       width: 120,
       render: (text, record) => {
-        // if (record.editable) {
-        if (record.isNew === true) {
           return (
             <span>
-              <a onClick={e => saveRow(e, record.key)}>保存</a>
-              <Divider type='vertical' />
               <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
                 <a>删除</a>
               </Popconfirm>
             </span>
           )
-        }
-        // }
-
-        return (
-          <span>
-            <a
-              onClick={e => {
-                toggleEditable(e, record.key, record);
-                // handlefileedit(record.key, record.attachment)
-              }}
-            >编辑</a>
-            <Divider type='vertical' />
-            <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
-              <a>删除</a>
-            </Popconfirm>
-          </span>
-        )
       }
 
     }
-
   ];
-
-
-  useEffect(() => {
-    handleTabledata();
-  }, [])
- 
-
 
   return (
     <>
       <Row gutter={16}>
-        <Col span={20}>
-          <p style={{ fontWeight: '900', fontSize: '16px' }}>六、遗留缺陷问题跟踪,遗留问题、缺陷跟踪情况（使用表格管理作为附件）</p>
+        <Col span={24}>
+          <p style={{ fontWeight: '900', fontSize: '16px', marginTop: '20px' }}>六、遗留缺陷问题跟踪,遗留问题、缺陷跟踪情况</p>
         </Col>
+
+        <Button
+          type='primary'
+          onClick={savedata}
+        >
+          保存
+        </Button>
 
         <Table
           columns={column}
@@ -286,6 +255,7 @@ const RemainingDefects = React.forwardRef((props, ref) => {
       </Row>
     </>
   )
-})
+}
 
 export default Form.create({})(RemainingDefects)
+;

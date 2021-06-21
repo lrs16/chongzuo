@@ -9,22 +9,21 @@ import {
   Divider,
   Popconfirm,
   message,
-  DatePicker,
+  DatePicker
 } from 'antd';
-import { connect } from 'dva';
-import SysUpload from '@/components/SysUpload';
 import moment from 'moment';
 
 const { TextArea } = Input;
-function UpgradeList(props) {
+function DefectTracking(props) {
 
   const {
     form: { getFieldDecorator },
-    upgradeArr,
-    upgradeList,
+    legacyArr,
+    legacyList,
     dispatch
   } = props;
   const [data, setData] = useState([]);
+  const [seconddata, setSeconddata] = useState([]);
   const [cacheOriginData, setcacheOriginData] = useState({});
   const [uploadkey, setKeyUpload] = useState('');
   const [fileslist, setFilesList] = useState([]);
@@ -32,15 +31,14 @@ function UpgradeList(props) {
 
 
   // 初始化把数据传过去
+
   useEffect(() => {
     if (data && data.length) {
-      upgradeList(data)
+      legacyList(data)
     }
   }, [data]);
   // 新增一条记录
   const newMember = (params) => {
-    setFilesList([]);
-    setKeyUpload('');
     const newData = (data).map(item => ({ ...item }));
     newData.push({
       key: data.length + 1,
@@ -75,54 +73,25 @@ function UpgradeList(props) {
     // });
   };
 
-  // 编辑记录
-  const toggleEditable = (e, key, record) => {
-
-    e.preventDefault();
-    const newData = data.map(item => ({ ...item })
-    );
-    const target = getRowByKey(key, newData);
-    if (target) {
-      if (!target.editable) {
-        setcacheOriginData({ key: { ...target } });
-      }
-      // target.editable = !target.editable;
-      target.isNew = true;
-      setData(newData);
-    }
-  }
-
-
-  const savedata = (target, id) => {
-    upgradeList(data);
-    message.info('暂存该表格数据成功')
-  }
-
-  const saveRow = (e, key) => {
-    const target = getRowByKey(key) || {};
-
-    delete target.key;
-    target.editable = false;
-    const id = target.id === '' ? '' : target.id;
-    savedata(target, id);
-    if (target.isNew) {
-      target.isNew = false;
-      setNewButton(false);
-    }
-  }
 
   const handleFieldChange = (e, fieldName, key) => {
     const newData = data.map(item => ({ ...item }));
     const target = getRowByKey(key, newData)
     if (target) {
-      target[fieldName] = e;
-      setData(newData);
+      if (fieldName === 'field1' || fieldName === 'field1') {
+        target[fieldName] = moment(e).format('YYYY-MM-DD');
+        setData(newData);
+      } else {
+        target[fieldName] = e;
+        setData(newData);
+      }
+
     }
   }
 
   const handleTabledata = () => {
     if(newbutton === false) {
-      const newarr = upgradeArr.map((item, index) => {
+      const newarr = legacyArr.map((item, index) => {
         return Object.assign(item, { editable: true, isNew: false, key: index })
       })
       setData(newarr)
@@ -130,11 +99,9 @@ function UpgradeList(props) {
   }
 
 
-
-
   useEffect(() => {
     handleTabledata()
-  }, [upgradeArr])
+  }, [legacyArr])
 
   const column = [
     {
@@ -155,12 +122,12 @@ function UpgradeList(props) {
       dataIndex: 'field2',
       key: 'field2',
       render: (text, record) => {
-        return (
-          <Input
-            defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'field2', record.key)}
-          />
-        )
+          return (
+            <Input
+              defaultValue={text}
+              onChange={e => handleFieldChange(e.target.value, 'field2', record.key)}
+            />
+          )
       }
     },
     {
@@ -168,25 +135,38 @@ function UpgradeList(props) {
       dataIndex: 'field3',
       key: 'field3',
       render: (text, record) => {
+          return (
+            <Input
+              defaultValue={text}
+              onChange={e => handleFieldChange(e.target.value, 'field3', record.key)}
+            />
+          )
+      }
+    },
+    {
+      title: '计划完成时间',
+      dataIndex: 'field4',
+      key: 'field4',
+      render: (text, record) => {
         return (
-          <Input
-            defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'field3', record.key)}
+          <DatePicker
+            defaultValue={text ? moment(text) : moment(new Date())}
+            onChange={e => handleFieldChange(e, 'field4', record.key)}
           />
         )
       }
     },
     {
-      title: '完成情况',
-      dataIndex: 'field4',
-      key: 'field4',
+      title: '备注',
+      dataIndex: 'field5',
+      key: 'field5',
       render: (text, record) => {
-        return (
-          <Input
-            defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'field4', record.key)}
-          />
-        )
+          return (
+            <Input
+              defaultValue={text}
+              onChange={e => handleFieldChange(e.target.value, 'field5', record.key)}
+            />
+          )
       }
     },
     {
@@ -195,28 +175,23 @@ function UpgradeList(props) {
       fixed: 'right',
       width: 120,
       render: (text, record) => {
-        return (
-          <span>
-            <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
-              <a>删除</a>
-            </Popconfirm>
-          </span>
-        )
+          return (
+            <span>
+              <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
+                <a>删除</a>
+              </Popconfirm>
+            </span>
+          )
       }
 
     }
   ];
 
-
   return (
     <>
       <Row gutter={16}>
         <Col span={24}>
-          <p style={{ fontWeight: '900', fontSize: '16px', marginTop: '20px' }}>五、软件作业完成情况</p>
-        </Col>
-
-        <Col span={24}>
-          <p>(1)数据库本周进行了补丁升级工作次</p>
+          <p style={{ fontWeight: '900', fontSize: '16px', marginTop: '20px' }}>六、遗留缺陷问题跟踪,遗留问题、缺陷跟踪情况</p>
         </Col>
 
         <Table
@@ -233,11 +208,11 @@ function UpgradeList(props) {
           icon="plus"
         >
           新增
-        </Button>
+          </Button>
       </Row>
     </>
   )
 }
 
-// export default Form.create({})(ServiceCompletion)
-export default Form.create({})(UpgradeList)
+export default Form.create({})(DefectTracking)
+;

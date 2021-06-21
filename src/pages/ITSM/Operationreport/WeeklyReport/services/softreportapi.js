@@ -1,5 +1,27 @@
 import request from '@/utils/request';
 
+
+//  从统计获取数据
+//  运维分类情况统计列表
+export async function maintenanceList(params) {
+  return request(`/event/statis/eventObjectStatis?type=${params.tabActiveKey}&time1=${params.startTime}&time2=${params.endTime}`); 
+}
+
+// // 工单TOPN列表
+export async function eventtopnList(params) {
+  return request(`/event/statis/eventTOPN?num=${params.value}&time1=${params.startTime}&time2=${params.endTime}`); 
+}
+
+// //  运维服务指标统计列表
+export async function eventServiceList(params) {
+  return request(`/event/statis/eventServiceIndicators?time1=${params.startTime}&time2=${params.endTime}&type=${params.tabActiveKey}`); 
+}
+
+// //  一线事件解决情况列表
+export async function eventselfhandleList(params) {
+  return request(`/event/statis/eventSelfHandle?time1=${params.startTime}&time2=${params.endTime}`); 
+}
+
 //  新增周报，获取maindId
 export async function addReport() {
   return request(`/report/add`,{
@@ -8,6 +30,7 @@ export async function addReport() {
 }
 //  删除，获取maindId
 export async function deleteAll(ids) {
+  console.log('ids: ', ids);
   return request(`/report/delete`,{
     method:'POST',
     data:ids,
@@ -24,7 +47,6 @@ export async function exportdown(mainId) {
 }
 //  查询列表
 export async function queryList(params) {
-  console.log('params: ', params);
   return request(`/report/queryList`,{
     method:'POST',
     data:params,
@@ -69,6 +91,7 @@ export async function saveOther(params) {
 }
 // 保存机房周报
 export async function saveComputerRoom(params) {
+  console.log('params: ', params);
   return request(`/report/saveComputerRoom`,{
     method:'POST',
     data:params,
@@ -80,59 +103,33 @@ export async function saveComputerRoom(params) {
 export async function openReport(editStatus,id) {
   return request(`/report/openReport?editStatus=${editStatus}&id=${id}`)
 }
-//  一·本周运维情况综述表格数据
-export async function maintenanceData() {
-  return request(`/api/maintenanceData`);
+
+//  我的作业计划查询
+export async function getOperationQueryList(params) {
+  console.log('params: ', params);
+  return request(`/operation/form/getOperationQueryList`,{
+    method:'POST',
+    data:params,
+    requestType:'form'
+  })
 }
 
-//  二·常规运维工作开展情况
-export async function developmentData() {
-  return request(`/api/developmentData`);
+// /trouble/flow/getOrderPage 获取故障工单列表 故障查询列表
+export async function queryfaultSearchList1(params) {
+  return request(`/trouble/flow/getOrderPage`, {
+    method: 'POST',
+    body: JSON.stringify(params),
+  });
 }
 
-//  常规运维工作开展情况第二个表格
-export async function submitdevelopmentData() {
-  return request(`/api/submitdevelopmentData`);
+// 导出word
+export async function reportExport(mainId) {
+  console.log('mainId: ', mainId);
+  return request(`/report/export`,{
+    method:'POST',
+    data:{mainId},
+    requestType:'form',
+    responseType:'blob'
+  })
 }
 
-//  三、运维服务指标完成情况 ----第一个表格
-export async function serviceCompletion() {
-  return request(`/api/serviceCompletion`);
-}
-//  三、运维服务指标完成情况 ----第二个表格
-export async function serviceCompletiontwo() {
-  return request(`/api/serviceCompletiontwo`);
-}
-//  三、运维服务指标完成情况 ----第三个表格
-export async function serviceCompletionthree() {
-  return request(`/api/serviceCompletionthree`);
-}
-
-//  四、本周事件、问题及故障表格数据
-export async function thisWeekitsm() {
-  return request(`/api/thisWeekitsm`);
-}
-
-//  五、软件作业完成情况第一个表格
-export async function completionfirstlyTable() {
-  return request(`/api/completionfirstlyTable`);
-}
-
-//  五、软件作业完成情况第二个表格
-export async function completionsecondTable() {
-  return request(`/api/completionsecondTable`);
-}
-
-//  六、遗留缺陷问题跟踪,遗留问题、缺陷跟踪情况（使用表格管理作为附件）
-export async function remainingDefects() {
-  return request(`/api/remainingDefects`);
-}
-
-//  七、上周作业完成情况--表格
-export async function lastweekHomework() {
-  return request(`/api/lastweekHomework`);
-}
-//  七、下周作业完成情况--表格
-export async function nextweekHomework() {
-  return request(`/api/NextweekHomework`);
-}

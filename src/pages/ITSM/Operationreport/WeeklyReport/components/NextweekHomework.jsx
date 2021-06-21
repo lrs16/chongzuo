@@ -7,180 +7,96 @@ import {
   Row,
   Divider,
   Popconfirm,
-  message
+  message,
+  Button,
+  DatePicker
 } from 'antd';
 import { connect } from 'dva';
-import SysUpload from '@/components/SysUpload';
+import moment from 'moment';
 
 const { TextArea } = Input;
 
 function NextweekHomework(props) {
   const {
-    form: { getFieldDecorator },
-    forminladeLayout,
-    myTaskplanlist,
-    startTime,
-    endTime,
-    type,
     nextOperationList,
     nextOperationArr,
     mainId,
-    loading,
-    dispatch
   } = props;
 
   const [data, setData] = useState([]);
   const [paginations, setPaginations] = useState({ current: 0, pageSize: 10 });
-  const [cacheOriginData, setcacheOriginData] = useState({});
 
-    // 初始化把数据传过去
-useEffect(() => {
-  // typeList(maintenanceArr)
-  if(data && data.length) {
-    const result = JSON.parse(JSON.stringify(data)
-    .replace(/updateTime/g, 'field1')
-    .replace(/nature/g, 'field2')
-    .replace(/object/g, 'field3')
-    .replace(/content/g, 'field4')
-    .replace(/plannedEndTime/g, 'field5')
-    .replace(/status/g, 'field6')
-    .replace(/operationUser/g, 'field7')
-    .replace(/operationUnit/g, 'field8')
-    .replace(/remark/g, 'field9')
-    )
-    if(result) {
-      nextOperationList(result)
+  // 初始化把数据传过去
+  useEffect(() => {
+    // typeList(maintenanceArr)
+    if (data && data.length) {
+      const result = JSON.parse(JSON.stringify(data)
+        .replace(/updateTime/g, 'field1')
+        .replace(/nature/g, 'field2')
+        .replace(/object/g, 'field3')
+        .replace(/content/g, 'field4')
+        .replace(/plannedEndTime/g, 'field5')
+        .replace(/status/g, 'field6')
+        .replace(/operationUser/g, 'field7')
+        .replace(/operationUnit/g, 'field8')
+        .replace(/remark/g, 'field9')
+      )
+      if (result) {
+        nextOperationList(result)
+      }
     }
-  }
-}, [data]);
+  }, [data]);
   //  获取行  
   const getRowByKey = (key, newData) => {
     return (newData || data).filter(item => item.key === key)[0];
   }
 
+  const deleteObj = (key, newData) => {
+    return (newData || data).filter(item => item.key !== key);
+  }
+
   //  删除数据
   const remove = key => {
-    const target = getRowByKey(key) || {};
+    const target = deleteObj(key) || {};
+    setData(target);
+    message.info('删除成功')
   };
-
-  // 编辑记录
-  const toggleEditable = (e, key, record) => {
-
-    e.preventDefault();
-    const newData = data.map(item => ({ ...item })
-    );
-    const target = getRowByKey(key, newData);
-    if (target) {
-      if (!target.editable) {
-        setcacheOriginData({ key: { ...target } });
-      }
-      // target.editable = !target.editable;
-      target.isNew = true;
-      setData(newData);
-    }
-  }
-
-  //  点击编辑生成filelist
-  const handlefileedit = (key, values) => {
-    if (!values) {
-      setFilesList([]);
-    } else {
-      setFilesList(JSON.parse(values))
-    }
-  }
-
-  const savedata = (target, id) => {
-    const result = JSON.parse(JSON.stringify(data)
-    .replace(/updateTime/g, 'field1')
-    .replace(/nature/g, 'field2')
-    .replace(/object/g, 'field3')
-    .replace(/content/g, 'field4')
-    .replace(/plannedEndTime/g, 'field5')
-    .replace(/status/g, 'field6')
-    .replace(/operationUser/g, 'field7')
-    .replace(/operationUnit/g, 'field8')
-    .replace(/remark/g, 'field9')
-    )
-    nextOperationList(result)
-  }
-
-  const saveRow = (e, key) => {
-    const target = getRowByKey(key) || {};
-    // delete target.key;
-    target.editable = false;
-    const id = target.id === '' ? '' : target.id;
-    savedata(target, id);
-    if (target.isNew) {
-      target.isNew = false
-      // setNewButton(false)
-    }
-  }
 
   const handleFieldChange = (e, fieldName, key) => {
     const newData = data.map(item => ({ ...item }));
     const target = getRowByKey(key, newData)
     if (target) {
-      target[fieldName] = e;
-      setData(newData);
+      if (fieldName === 'field1' || fieldName === 'updateTime') {
+        target[fieldName] = moment(e).format('YYYY-MM-DD');
+        setData(newData);
+      } else {
+        target[fieldName] = e;
+        setData(newData);
+      }
     }
   }
 
-
-  const getTobolist = () => {
-    if(mainId) {
+  const handleTabledata = () => {
+    if (nextOperationArr && nextOperationArr.length) {
       const newarr = nextOperationArr.map((item, index) => {
         return Object.assign(item, { editable: true, isNew: false, key: index })
       })
       setData(newarr)
-    } else {
-      return dispatch({
-        type: 'processmodel/weekmyTasklist',
-        payload: {
-          time1:startTime,
-          time2:endTime,
-          pageIndex: paginations.current,
-          pageSize: paginations.pageSize,
-        },
-      }).then(res => {
-        if(res.code === 200 && res.data) {
-          const newarr = (res.data.rows).map((item, index) => {
-            return Object.assign(item, { editable: true, isNew: false, key: index })
-          })
-          setData(newarr)
-        } else {
-          message.error('请求失败')
-        }
-      });
     }
- };
-
-  useEffect(() => {
-    getTobolist();
-  }, [])
+  }
 
   const column = [
-    // {
-    //   title: '序号',
-    //   dataIndex: 'yy11',
-    //   key: 'yy11'
-    // },
     {
       title: '作业日期',
       dataIndex: 'updateTime',
       key: 'updateTime',
       render: (text, record) => {
-        if (record.isNew) {
-          return (
-            <Input
-              defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'updateTime', record.key)}
-            />
-          )
-        }
-        if (record.isNew === false) {
-          return <span>{text}</span>
-        }
-
+        return (
+          <DatePicker
+            defaultValue={text ? moment(text) : moment(new Date())}
+            onChange={e => handleFieldChange(e, 'updateTime', record.key)}
+          />
+        )
       }
     },
     {
@@ -188,18 +104,12 @@ useEffect(() => {
       dataIndex: 'nature',
       key: 'nature',
       render: (text, record) => {
-        if (record.isNew) {
-          return (
-            <Input
-              defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'nature', record.key)}
-            />
-          )
-        }
-        if (record.isNew === false) {
-          return <span>{text}</span>
-        }
-
+        return (
+          <Input
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'nature', record.key)}
+          />
+        )
       }
     },
     {
@@ -207,18 +117,12 @@ useEffect(() => {
       dataIndex: 'object',
       key: 'object',
       render: (text, record) => {
-        if (record.isNew) {
-          return (
-            <Input
-              defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'object', record.key)}
-            />
-          )
-        }
-        if (record.isNew === false) {
-          return <span>{text}</span>
-        }
-
+        return (
+          <Input
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'object', record.key)}
+          />
+        )
       }
     },
     {
@@ -226,18 +130,12 @@ useEffect(() => {
       dataIndex: 'content',
       key: 'content',
       render: (text, record) => {
-        if (record.isNew) {
-          return (
-            <Input
-              defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'content', record.key)}
-            />
-          )
-        }
-        if (record.isNew === false) {
-          return <span>{text}</span>
-        }
-
+        return (
+          <Input
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'content', record.key)}
+          />
+        )
       }
     },
     {
@@ -245,18 +143,12 @@ useEffect(() => {
       dataIndex: 'plannedEndTime',
       key: 'plannedEndTime',
       render: (text, record) => {
-        if (record.isNew) {
-          return (
-            <Input
-              defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'plannedEndTime', record.key)}
-            />
-          )
-        }
-        if (record.isNew === false) {
-          return <span>{text}</span>
-        }
-
+        return (
+          <Input
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'plannedEndTime', record.key)}
+          />
+        )
       }
     },
     {
@@ -264,18 +156,12 @@ useEffect(() => {
       dataIndex: 'status',
       key: 'status',
       render: (text, record) => {
-        if (record.isNew) {
-          return (
-            <Input
-              defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'status', record.key)}
-            />
-          )
-        }
-        if (record.isNew === false) {
-          return <span>{text}</span>
-        }
-
+        return (
+          <Input
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'status', record.key)}
+          />
+        )
       }
     },
     {
@@ -283,17 +169,12 @@ useEffect(() => {
       dataIndex: 'operationUser',
       key: 'operationUser',
       render: (text, record) => {
-        if (record.isNew) {
-          return (
-            <Input
-              defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'operationUser', record.key)}
-            />
-          )
-        }
-        if (record.isNew === false) {
-          return <span>{text}</span>
-        }
+        return (
+          <Input
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'operationUser', record.key)}
+          />
+        )
       }
     },
     {
@@ -301,17 +182,12 @@ useEffect(() => {
       dataIndex: 'operationUnit',
       key: 'operationUnit',
       render: (text, record) => {
-        if (record.isNew) {
-          return (
-            <Input
-              defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'operationUnit', record.key)}
-            />
-          )
-        }
-        if (record.isNew === false) {
-          return <span>{text}</span>
-        }
+        return (
+          <Input
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'operationUnit', record.key)}
+          />
+        )
       }
     },
     {
@@ -319,17 +195,12 @@ useEffect(() => {
       dataIndex: 'remark',
       key: 'remark',
       render: (text, record) => {
-        if (record.isNew) {
-          return (
-            <Input
-              defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'remark', record.key)}
-            />
-          )
-        }
-        if (record.isNew === false) {
-          return <span>{text}</span>
-        }
+        return (
+          <Input
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'remark', record.key)}
+          />
+        )
       }
     },
     {
@@ -338,60 +209,29 @@ useEffect(() => {
       fixed: 'right',
       width: 120,
       render: (text, record) => {
-        if (record.isNew === true) {
-          return (
-            <span>
-              <a onClick={e => saveRow(e, record.key)}>保存</a>
-              <Divider type='vertical' />
-              <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
-                <a>删除</a>
-              </Popconfirm>
-            </span>
-          )
-        }
-
         return (
           <span>
-            <a
-              onClick={e => {
-                toggleEditable(e, record.key, record);
-                // handlefileedit(record.key, record.attachment)
-              }}
-            >编辑</a>
-            <Divider type='vertical' />
             <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
               <a>删除</a>
             </Popconfirm>
           </span>
         )
       }
-
     }
   ];
 
   const editColumns = [
-    // {
-    //   title: '序号',
-    //   dataIndex: 'yy11',
-    //   key: 'yy11'
-    // },
     {
       title: '作业日期',
       dataIndex: 'field1',
       key: 'field1',
       render: (text, record) => {
-        if (record.isNew) {
-          return (
-            <Input
-              defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'field1', record.key)}
-            />
-          )
-        }
-        if (record.isNew === false) {
-          return <span>{text}</span>
-        }
-
+        return (
+          <DatePicker
+            defaultValue={text ? moment(text) : moment(new Date())}
+            onChange={e => handleFieldChange(e, 'field1', record.key)}
+          />
+        )
       }
     },
     {
@@ -399,18 +239,12 @@ useEffect(() => {
       dataIndex: 'field2',
       key: 'field2',
       render: (text, record) => {
-        if (record.isNew) {
-          return (
-            <Input
-              defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'field2', record.key)}
-            />
-          )
-        }
-        if (record.isNew === false) {
-          return <span>{text}</span>
-        }
-
+        return (
+          <Input
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field2', record.key)}
+          />
+        )
       }
     },
     {
@@ -418,18 +252,12 @@ useEffect(() => {
       dataIndex: 'field3',
       key: 'field3',
       render: (text, record) => {
-        if (record.isNew) {
-          return (
-            <Input
-              defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'field3', record.key)}
-            />
-          )
-        }
-        if (record.isNew === false) {
-          return <span>{text}</span>
-        }
-
+        return (
+          <Input
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field3', record.key)}
+          />
+        )
       }
     },
     {
@@ -437,18 +265,12 @@ useEffect(() => {
       dataIndex: 'field4',
       key: 'field4',
       render: (text, record) => {
-        if (record.isNew) {
-          return (
-            <Input
-              defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'field4', record.key)}
-            />
-          )
-        }
-        if (record.isNew === false) {
-          return <span>{text}</span>
-        }
-
+        return (
+          <Input
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field4', record.key)}
+          />
+        )
       }
     },
     {
@@ -456,18 +278,12 @@ useEffect(() => {
       dataIndex: 'field5',
       key: 'field5',
       render: (text, record) => {
-        if (record.isNew) {
-          return (
-            <Input
-              defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'field5', record.key)}
-            />
-          )
-        }
-        if (record.isNew === false) {
-          return <span>{text}</span>
-        }
-
+        return (
+          <Input
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field5', record.key)}
+          />
+        )
       }
     },
     {
@@ -475,18 +291,12 @@ useEffect(() => {
       dataIndex: 'field6',
       key: 'field6',
       render: (text, record) => {
-        if (record.isNew) {
-          return (
-            <Input
-              defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'field6', record.key)}
-            />
-          )
-        }
-        if (record.isNew === false) {
-          return <span>{text}</span>
-        }
-
+        return (
+          <Input
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field6', record.key)}
+          />
+        )
       }
     },
     {
@@ -494,17 +304,12 @@ useEffect(() => {
       dataIndex: 'field7',
       key: 'field7',
       render: (text, record) => {
-        if (record.isNew) {
-          return (
-            <Input
-              defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'field7', record.key)}
-            />
-          )
-        }
-        if (record.isNew === false) {
-          return <span>{text}</span>
-        }
+        return (
+          <Input
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field7', record.key)}
+          />
+        )
       }
     },
     {
@@ -512,17 +317,12 @@ useEffect(() => {
       dataIndex: 'field8',
       key: 'field8',
       render: (text, record) => {
-        if (record.isNew) {
-          return (
-            <Input
-              defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'field8', record.key)}
-            />
-          )
-        }
-        if (record.isNew === false) {
-          return <span>{text}</span>
-        }
+        return (
+          <Input
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field8', record.key)}
+          />
+        )
       }
     },
     {
@@ -530,17 +330,12 @@ useEffect(() => {
       dataIndex: 'field9',
       key: 'field9',
       render: (text, record) => {
-        if (record.isNew) {
-          return (
-            <Input
-              defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'field9', record.key)}
-            />
-          )
-        }
-        if (record.isNew === false) {
-          return <span>{text}</span>
-        }
+        return (
+          <Input
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field9', record.key)}
+          />
+        )
       }
     },
     {
@@ -549,57 +344,38 @@ useEffect(() => {
       fixed: 'right',
       width: 120,
       render: (text, record) => {
-        if (record.isNew === true) {
-          return (
-            <span>
-              <a onClick={e => saveRow(e, record.key)}>保存</a>
-              <Divider type='vertical' />
-              <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
-                <a>删除</a>
-              </Popconfirm>
-            </span>
-          )
-        }
-
         return (
           <span>
-            <a
-              onClick={e => {
-                toggleEditable(e, record.key, record);
-                // handlefileedit(record.key, record.attachment)
-              }}
-            >编辑</a>
-            <Divider type='vertical' />
             <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
               <a>删除</a>
             </Popconfirm>
           </span>
         )
       }
-
     }
   ];
 
+  const [newColumns, setNewColumns] = useState(column);
+
+  useEffect(() => {
+    handleTabledata();
+    if (mainId) {
+      setNewColumns(editColumns)
+    }
+  }, [nextOperationArr])
 
   return (
     <>
-        <Row gutter={16}>
-          <Col span={20}>
-            <p style={{ fontWeight: '900', fontSize: '16px' }}>{type === 'week'?'八、下周作业计划':'八、下月作业计划'}</p>
-          </Col>
+      <Row gutter={16}>
 
-          <Table
-            columns={mainId?editColumns:column}
-            dataSource={data}
-          />
-        </Row>
+        <Table
+          columns={newColumns}
+          dataSource={data}
+          pagination={false}
+        />
+      </Row>
     </>
   )
 }
 
-export default Form.create({})(
-  connect(({ processmodel, loading }) => ({
-    myTaskplanlist: processmodel.myTaskplanlist,
-    loading: loading.models.processmodel
-  }))(NextweekHomework),
-);
+export default Form.create({})(NextweekHomework)

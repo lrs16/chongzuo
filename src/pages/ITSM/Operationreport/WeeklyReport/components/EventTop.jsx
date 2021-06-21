@@ -17,21 +17,23 @@ import SysUpload from '@/components/SysUpload';
 import { queryDisableduserByUser, queryUnitList, queryDeptList } from '@/services/common';
 import styles from '../index.less';
 
-let value = 5;
+
 const { Search } = Input;
 const { Option } = Select;
 
 function EventTop(props) {
   const {
-    form: { getFieldDecorator, setFieldsValue,validateFields },
+    form: { getFieldDecorator, setFieldsValue, validateFields },
     forminladeLayout,
     formItemLayout,
     startTime,
     endTime,
     topNList,
     ordertopnArr,
+    defaultValue,
     topArr,
     mainId,
+    value,
     loading,
     dispatch
   } = props;
@@ -43,20 +45,20 @@ function EventTop(props) {
   const [disablelist, setDisabledList] = useState([]);
   const [spinloading, setSpinLoading] = useState(true);
 
-      // 初始化把数据传过去
-useEffect(() => {
-  // typeList(maintenanceArr)
-  if(data && data.length) {
-    const result = JSON.parse(JSON.stringify(data)
-    .replace(/first_object/g, 'field1')
-    .replace(/second_object/g, 'field2')
-    .replace(/num/g, 'field3')
-    )
-    if(result) {
-      topNList(result)
+  // 初始化把数据传过去
+  useEffect(() => {
+    // typeList(maintenanceArr)
+    if (data && data.length) {
+      const result = JSON.parse(JSON.stringify(data)
+        .replace(/first_object/g, 'field1')
+        .replace(/second_object/g, 'field2')
+        .replace(/num/g, 'field3')
+      )
+      if (result) {
+        topNList(result)
+      }
     }
-  }
-}, [data]);
+  }, [data]);
   // 自动完成报障用户
   const disableduser = disablelist.map(opt => (
     <Option key={opt.id} value={opt.user} disableuser={opt}>
@@ -110,9 +112,14 @@ useEffect(() => {
     return (newData || data).filter(item => item.key === key)[0];
   }
 
+  const deleteObj = (key, newData) => {
+    return (newData || data).filter(item => item.key !== key);
+  }
+
   //  删除数据
   const remove = key => {
-    const target = getRowByKey(key) || {};
+    const target = deleteObj(key) || {};
+    setData(target)
   };
 
   // 编辑记录
@@ -142,7 +149,7 @@ useEffect(() => {
   }
 
   const savedata = (target, id) => {
-    console.log(data,'data')
+    console.log(data, 'data')
     topNList(data)
   }
 
@@ -172,33 +179,17 @@ useEffect(() => {
   }
 
   const handleTabledata = () => {
-    const newarr = (topArr?.length?topArr:ordertopnArr).map((item, index) => {
+    const newarr = (topArr).map((item, index) => {
       return Object.assign(item, { editable: true, isNew: false, key: index })
     })
     setData(newarr)
   }
 
-  const handleListdata = () => {
-    validateFields((err, values) => {
-      dispatch({
-        type: 'eventstatistics/fetchordertopnList',
-        payload: { value, startTime, endTime }
-      })
-    })
-  }
-
   const selectOnchange = (selectvalue) => {
-    value = selectvalue;
-    handleListdata(value);
+    // value(selectvalue)
+    value(selectvalue)
   }
 
-  useEffect(() => {
-    handleListdata();
-  }, [])
-
-  useEffect(() => {
-    handleTabledata();
-  }, [])
 
   const column = [
     {
@@ -206,17 +197,12 @@ useEffect(() => {
       dataIndex: 'first_object',
       key: 'first_object',
       render: (text, record) => {
-        if (record.isNew) {
-          return (
-            <Input
-              defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'first_object', record.key)}
-            />
-          )
-        }
-        if (record.isNew === false) {
-          return <span>{text}</span>
-        }
+        return (
+          <Input
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'first_object', record.key)}
+          />
+        )
       }
     },
     {
@@ -224,18 +210,12 @@ useEffect(() => {
       dataIndex: 'second_object',
       key: 'second_object',
       render: (text, record) => {
-        if (record.isNew) {
-          return (
-            <Input
-              defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'second_object', record.key)}
-            />
-          )
-        }
-        if (record.isNew === false) {
-          return <span>{text}</span>
-        }
-
+        return (
+          <Input
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'second_object', record.key)}
+          />
+        )
       }
     },
     {
@@ -243,18 +223,12 @@ useEffect(() => {
       dataIndex: 'num',
       key: 'num',
       render: (text, record) => {
-        if (record.isNew) {
-          return (
-            <Input
-              defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'num', record.key)}
-            />
-          )
-        }
-        if (record.isNew === false) {
-          return <span>{text}</span>
-        }
-
+        return (
+          <Input
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'num', record.key)}
+          />
+        )
       }
     },
     {
@@ -262,18 +236,12 @@ useEffect(() => {
       dataIndex: 'field4',
       key: 'field4',
       render: (text, record) => {
-        if (record.isNew) {
-          return (
-            <Input
-              defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'field4', record.key)}
-            />
-          )
-        }
-        if (record.isNew === false) {
-          return <span>{text}</span>
-        }
-
+        return (
+          <Input
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field4', record.key)}
+          />
+        )
       }
     },
     {
@@ -282,35 +250,15 @@ useEffect(() => {
       fixed: 'right',
       width: 120,
       render: (text, record) => {
-        if(text !== '合计') {
-          if (record.isNew === true) {
-            return (
-              <span>
-                <a onClick={e => saveRow(e, record.key, 'secondTable')}>保存</a>
-                <Divider type='vertical' />
-                <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
-                  <a>删除</a>
-                </Popconfirm>
-              </span>
-            )
-          }
+        if (text !== '合计') {
+          return (
+            <span>
+              <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
+                <a>删除</a>
+              </Popconfirm>
+            </span>
+          )
         }
-        
-
-        return (
-          <span>
-            <a
-              onClick={e => {
-                toggleEditable(e, record.key, record, 'secondTable');
-                // handlefileedit(record.key, record.attachment)
-              }}
-            >编辑</a>
-            <Divider type='vertical' />
-            <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
-              <a>删除</a>
-            </Popconfirm>
-          </span>
-        )
       }
 
     }
@@ -318,21 +266,16 @@ useEffect(() => {
 
   const editColumns = [
     {
-      title: '事件对象一级111',
+      title: '事件对象一级',
       dataIndex: 'field1',
       key: 'field1',
       render: (text, record) => {
-        if (record.isNew) {
-          return (
-            <Input
-              defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'field1', record.key)}
-            />
-          )
-        }
-        if (record.isNew === false) {
-          return <span>{text}</span>
-        }
+        return (
+          <Input
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field1', record.key)}
+          />
+        )
       }
     },
     {
@@ -340,18 +283,12 @@ useEffect(() => {
       dataIndex: 'field2',
       key: 'field2',
       render: (text, record) => {
-        if (record.isNew) {
-          return (
-            <Input
-              defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'field2', record.key)}
-            />
-          )
-        }
-        if (record.isNew === false) {
-          return <span>{text}</span>
-        }
-
+        return (
+          <Input
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field2', record.key)}
+          />
+        )
       }
     },
     {
@@ -359,18 +296,12 @@ useEffect(() => {
       dataIndex: 'field3',
       key: 'field3',
       render: (text, record) => {
-        if (record.isNew) {
-          return (
-            <Input
-              defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'field3', record.key)}
-            />
-          )
-        }
-        if (record.isNew === false) {
-          return <span>{text}</span>
-        }
-
+        return (
+          <Input
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field3', record.key)}
+          />
+        )
       }
     },
     {
@@ -378,18 +309,12 @@ useEffect(() => {
       dataIndex: 'field4',
       key: 'field4',
       render: (text, record) => {
-        if (record.isNew) {
-          return (
-            <Input
-              defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'field4', record.key)}
-            />
-          )
-        }
-        if (record.isNew === false) {
-          return <span>{text}</span>
-        }
-
+        return (
+          <Input
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field4', record.key)}
+          />
+        )
       }
     },
     {
@@ -398,71 +323,65 @@ useEffect(() => {
       fixed: 'right',
       width: 120,
       render: (text, record) => {
-        if(text !== '合计') {
-          if (record.isNew === true) {
-            return (
-              <span>
-                <a onClick={e => saveRow(e, record.key, 'secondTable')}>保存</a>
-                <Divider type='vertical' />
-                <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
-                  <a>删除</a>
-                </Popconfirm>
-              </span>
-            )
-          }
+        if (text !== '合计') {
+          return (
+            <span>
+              <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
+                <a>删除</a>
+              </Popconfirm>
+            </span>
+          )
         }
-        
-
-        return (
-          <span>
-            <a
-              onClick={e => {
-                toggleEditable(e, record.key, record, 'secondTable');
-                // handlefileedit(record.key, record.attachment)
-              }}
-            >编辑</a>
-            <Divider type='vertical' />
-            <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
-              <a>删除</a>
-            </Popconfirm>
-          </span>
-        )
       }
 
     }
   ];
+
+  const [newColumns,setNewColumns] = useState(column)
+
+  useEffect(() => {
+    handleTabledata();
+    if(mainId) {
+      setNewColumns(editColumns)
+    }
+  }, [topArr])
+
 
 
   return (
     <>
       <Row gutter={16}>
         <Col span={24}>
-          <p>（三）工单TopN 事件分析111</p>
+          <p>（三）工单TopN 事件分析</p>
         </Col>
 
         <Form {...formItemLayout}>
-          <Row gutter={16}>
-            <Col span={8}>
-              <Form.Item label='N'>
-                <Select
-                  placeholder="请选择"
-                  style={{ width: 150 }}
-                  defaultValue='5'
-                  onChange={selectOnchange}
-                >
-                  <Option value="5">5</Option>
-                  <Option value="10">10</Option>
-                  <Option value="15">15</Option>
-                  <Option value="20">20</Option>
-                </Select>
-              </Form.Item>
-            </Col>
-          </Row>
+          {!mainId && (
+            <Row gutter={16}>
+              <Col span={8}>
+                <Form.Item label='N'>
+                  <Select
+                    placeholder="请选择"
+                    style={{ width: 150 }}
+                    defaultValue={defaultValue}
+                    onChange={selectOnchange}
+                  >
+                    <Option value="5">5</Option>
+                    <Option value="10">10</Option>
+                    <Option value="15">15</Option>
+                    <Option value="20">20</Option>
+                  </Select>
+                </Form.Item>
+              </Col>
+            </Row>
+          )}
+
         </Form>
 
         <Table
-          columns={mainId?editColumns:column}
+          columns={newColumns}
           dataSource={data}
+          pagination={false}
         />
       </Row>
 
@@ -471,9 +390,4 @@ useEffect(() => {
 }
 
 
-export default Form.create({})(
-  connect(({eventstatistics,loading}) => ({
-    ordertopnArr: eventstatistics.ordertopnArr,
-    loading:loading.models.eventstatistics
-  }))(EventTop)
-)
+export default Form.create({})(EventTop)

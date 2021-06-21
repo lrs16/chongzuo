@@ -54,63 +54,87 @@ function MymonthlySearch(props) {
   const pagetitle = props.route.name;
   const {
     form: { getFieldDecorator, resetFields, validateFields, setFieldsValue },
-    myweeklyreportTable,
+    queryOrderlist,
+    loading,
     dispatch,
   } = props;
   const [expand, setExpand] = useState(false);
   const [paginations, setPaginations] = useState({ current: 1, pageSize: 10 });
   const [selectedrows, setSelectedrows] = useState('');
   const [selectdata, setSelectData] = useState('');
+  const [selectedRows, setSelectedRows] = useState([]);
+
   const columns = [
     {
-      title: '月报名称',
-      dataIndex: 'name',
-      key: 'name',
+      title: '周报类型',
+      dataIndex: 'type',
+      key: 'type',
       render: (text, record) => {
-        switch (text) {
-          case 'name':
-            return (
-              <Link
-                to={{
-                  pathname: `/ITSM/operationreport/weeklyreport/softreport/${record.id}`,
-                  // paneKey: record.status, // 传状态
-                }}
-              >
-                {text}
-              </Link>
-            )
-          // break;
-          case 'bb':
-            <Link
-              to={{
-                pathname: `/ITSM/operationreport/weeklyreport/softreport${record.id}`,
-                // paneKey: record.status, // 传状态
-              }}
-            >
-              {text}
-            </Link>
-            break;
+        const handleClick = () => {
+          switch (text) {
+            case '软件运维月报':
+              router.push({
+                pathname: `/ITSM/operationreport/weeklyreport/detailSoft/`,
+                query: {
+                  mainId: record.id,
+                  reporttype: 'month',
+                  reportSearch:true
+                },
+              });
+              break;
+            case '机房运维月报':
+              router.push({
+                pathname: `/ITSM/operationreport/weeklyreport/computerroomreportdetail`,
+                query: {
+                  mainId: record.id,
+                  reporttype: 'month',
+                  reportSearch:true
+                },
+              });
+              break;
+            case '数据库运维月报':
+              router.push({
+                pathname: `/ITSM/operationreport/weeklyreport/databasereportdetail`,
+                query: {
+                  mainId: record.id,
+                  reporttype: 'month',
+                  reportSearch:true
+                },
+              });
+              break;
+            case '其他运维月报':
+              router.push({
+                pathname: `/ITSM/operationreport/weeklyreport/otherreportdetail`,
+                query: {
+                  mainId: record.id,
+                  reporttype: 'month',
+                  reportSearch:true
+                },
+              });
+              break;
+            default:
+              break;
+          }
 
-          default:
-            break;
         }
-      }
+        return <a onClick={handleClick}>{text}</a>
 
+      }
     },
     {
-      title: '月报分类',
-      dataIndex: 'date',
-      key: 'date',
+      title: '周报名称',
+      dataIndex: 'name',
+      key: 'name',
     },
     {
       title: '填报日期',
-      dataIndex: 'person',
-      key: 'person',
+      dataIndex: 'time1',
+      key: 'time1',
     },
     {
       title: '填报人',
-      dataIndex: 'person1',
-      key: 'person1',
+      dataIndex: 'userName',
+      key: 'userName',
     },
   ];
 
@@ -124,22 +148,31 @@ function MymonthlySearch(props) {
     });
   };
 
-  const handleReset = () => {
-    resetFields();
-    starttime = '';
-    endTime = '';
-  };
-
   const searchdata = (values, page, pageSize) => {
     dispatch({
-      type: 'myweeklyreportindex/myweeklyTable',
+      type: 'softreport/queryList',
       payload: {
         ...values,
+        timeType:'月报',
+        userId: sessionStorage.getItem('userauthorityid'),
+        plannedStartTime: '',
+        time1: values.plannedStartTime?.length ? moment(values.plannedStartTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+        time2: values.plannedStartTime?.length ? moment(values.plannedStartTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
         pageSize,
-        pageNum: page,
+        pageIndex: page - 1,
       },
     });
   };
+
+  const handleReset = () => {
+    starttime = '';
+    endTime = '';
+    resetFields();
+    validateFields((err, value) => {
+      searchdata(value, 1, paginations.pageSize);
+    })
+  };
+
 
   const onShowSizeChange = (page, pageSize) => {
     validateFields((err, values) => {
@@ -194,16 +227,16 @@ function MymonthlySearch(props) {
     });
   };
 
-
-  const exportDownload = () => {
-    validateFields((err, values) => {
+  const download = () => {
+    if (selectedRows.length !== 1) {
+      message.info('选择一条数据导出哦')
+    } else {
+      const mainId  = selectedRows[0].id;
       dispatch({
-        type: 'processmodel/downloadMyOperationExcel',
-        payload: {
-          ...values,
-        }
+        type: 'softreport/exportWord',
+        payload: { mainId }
       }).then(res => {
-        const filename = '下载.xls';
+        const filename = `下载.doc`;
         const blob = new Blob([res]);
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -212,12 +245,12 @@ function MymonthlySearch(props) {
         a.click();
         window.URL.revokeObjectURL(url);
       })
-    })
+    }
   }
 
   const rowSelection = {
-    onChange: (selectedRows) => {
-      setSelectedrows([...selectedRows])
+    onChange: (selected, selectedRow) => {
+      setSelectedRows([...selectedRow])
     }
   }
 
@@ -293,19 +326,16 @@ function MymonthlySearch(props) {
           <Form {...formItemLayout}>
             <Col span={8}>
               <Form.Item label="月报名称">
-                {getFieldDecorator('no', {
-                  rules: [
-                    {
-                      message: '请输入问题编号',
-                    },
-                  ],
+                {getFieldDecorator('name', {
+                  initialValue: ''
                 })(<Input placeholder='请输入' allowClear />)}
               </Form.Item>
             </Col>
 
             <Col span={8}>
               <Form.Item label="月报分类">
-                {getFieldDecorator('params1', {
+                {getFieldDecorator('type', {
+                  initialValue: ''
                 })
                   (
                     <Select placeholder="请选择" allowClear>
@@ -322,7 +352,9 @@ function MymonthlySearch(props) {
 
             <Col span={8}>
               <Form.Item label="填报人" >
-                {getFieldDecorator('person', {})(<Input placeholder='请输入' allowClear />)}
+                {getFieldDecorator('userName', {
+                  initialValue: ''
+                })(<Input placeholder='请输入' allowClear />)}
               </Form.Item>
             </Col>
 
@@ -334,7 +366,7 @@ function MymonthlySearch(props) {
                     <MonthPicker
                       showTime
                       format="YYYY-MM-DD HH:mm:ss"
-                      style={{width:'100%'}}
+                      style={{ width: '100%' }}
                     />
                   )}
               </Form.Item>
@@ -343,25 +375,25 @@ function MymonthlySearch(props) {
             <Col span={16} style={{ textAlign: 'right' }}>
               <Button type="primary" onClick={handleSearch}>
                 查询
-                </Button>
+              </Button>
 
               <Button style={{ marginLeft: 8 }} onClick={handleReset}>
                 重置
-                </Button>
+              </Button>
             </Col>
 
           </Form>
         </Row>
 
-        <Button type="primary" style={{ marginRight: 8 }} onClick={exportDownload}>
+        <Button type="primary" style={{ marginRight: 8 }} onClick={download}>
           导出数据
-          </Button>
+        </Button>
 
         <Table
-          // loading={loading}
+          loading={loading}
           columns={columns}
-          dataSource={myweeklyreportTable}
-          // rowKey={record => record.id}
+          dataSource={queryOrderlist.rows}
+          rowKey={record => record.id}
           pagination={pagination}
           rowSelection={rowSelection}
         />
@@ -374,8 +406,8 @@ function MymonthlySearch(props) {
 
 
 export default Form.create({})(
-  connect(({ myweeklyreportindex, loading }) => ({
-    myweeklyreportTable: myweeklyreportindex.myweeklyreportTable,
-    loading: loading.models.myweeklyreportindex,
+  connect(({ softreport, loading }) => ({
+    queryOrderlist: softreport.queryOrderlist,
+    loading: loading.models.softreport,
   }))(MymonthlySearch),
 );

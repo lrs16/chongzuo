@@ -36,11 +36,9 @@ const formItemLayout = {
 };
 
 let starttime;
-let monthStarttime;
 let endTime;
-let id;
 
-function AddForm(props) {
+function OperationmyweeklyReport(props) {
   const pagetitle = props.route.name;
   const {
     form: { getFieldDecorator, resetFields, validateFields, setFieldsValue },
@@ -48,11 +46,13 @@ function AddForm(props) {
     queryOrderlist,
     userinfo,
     dispatch,
+    loading
   } = props;
   const [expand, setExpand] = useState(false);
   const [paginations, setPaginations] = useState({ current: 0, pageSize: 15 });
   const [selectdata, setSelectData] = useState('');
   const [selectedRows, setSelectedRows] = useState([]);
+
   const columns = [
     {
       title: '周报类型',
@@ -62,68 +62,58 @@ function AddForm(props) {
         const handleClick = () => {
           switch (text) {
             case '软件运维周报':
-                router.push({
-                  pathname: `/ITSM/operationreport/weeklyreport/softreport/`,
-                  query: {
-                    mainId: record.id,
-                    reporttype: 'week',
-                  },
-                });
-            break;
-            // case 'bb':
-            //   <Link
-            //     to={{
-            //       pathname: `/ITSM/operationreport/weeklyreport/softreport${record.id}`,
-            //       // paneKey: record.status, // 传状态
-            //     }}
-            //   >
-            //     {text}
-            //   </Link>
-            //   break;
-  
+              router.push({
+                pathname: `/ITSM/operationreport/weeklyreport/detailSoft/`,
+                query: {
+                  mainId: record.id,
+                  reporttype: 'week',
+                  pathpush: true
+                },
+              });
+              break;
+            case '机房运维周报':
+              router.push({
+                pathname: `/ITSM/operationreport/weeklyreport/computerroomreportdetail`,
+                query: {
+                  mainId: record.id,
+                  reporttype: 'week',
+                  pathpush: true
+                },
+              });
+              break;
+            case '数据库运维周报':
+              router.push({
+                pathname: `/ITSM/operationreport/weeklyreport/databasereportdetail`,
+                query: {
+                  mainId: record.id,
+                  reporttype: 'week',
+                  pathpush: true
+                },
+              });
+              break;
+            case '其他运维周报':
+              router.push({
+                pathname: `/ITSM/operationreport/weeklyreport/otherreportdetail`,
+                query: {
+                  mainId: record.id,
+                  reporttype: 'week',
+                  pathpush: true
+                },
+              });
+              break;
             default:
               break;
           }
-        
+
         }
         return <a onClick={handleClick}>{text}</a>
-        
+
       }
     },
     {
       title: '周报名称',
       dataIndex: 'name',
       key: 'name',
-      render: (text, record) => {
-        console.log('text: ', text);
-        switch (text) {
-          case 'name':
-            return (
-              <Link
-                to={{
-                  pathname: `/ITSM/operationreport/weeklyreport/softreport/${record.id}`,
-                  // paneKey: record.status, // 传状态
-                }}
-              >
-                {text}
-              </Link>
-            )
-          // break;
-          case 'bb':
-            <Link
-              to={{
-                pathname: `/ITSM/operationreport/weeklyreport/softreport${record.id}`,
-                // paneKey: record.status, // 传状态
-              }}
-            >
-              {text}
-            </Link>
-            break;
-
-          default:
-            break;
-        }
-      }
     },
     {
       title: '填报日期',
@@ -145,6 +135,9 @@ function AddForm(props) {
           query: {
             reporttype: 'week',
             status: 'add',
+            listreportType:selectedRows?.length?selectedRows[0].type:'',
+            listId:selectedRows?.length?selectedRows[0].id:'',
+            pathpush: true
           }
         })
         break;
@@ -154,6 +147,9 @@ function AddForm(props) {
           query: {
             reporttype: 'week',
             status: 'add',
+            listreportType:selectedRows?.length?selectedRows[0].type:'',
+            listId:selectedRows?.length?selectedRows[0].id:'',
+            pathpush: true
           }
         })
         break;
@@ -163,6 +159,9 @@ function AddForm(props) {
           query: {
             reporttype: 'week',
             status: 'add',
+            listreportType:selectedRows?.length?selectedRows[0].type:'',
+            listId:selectedRows?.length?selectedRows[0].id:'',
+            pathpush: true
           }
         })
         break;
@@ -172,6 +171,9 @@ function AddForm(props) {
           query: {
             reporttype: 'week',
             status: 'add',
+            listreportType:selectedRows?.length?selectedRows[0].type:'',
+            listId:selectedRows?.length?selectedRows[0].id:'',
+            pathpush: true
           }
         })
         break;
@@ -205,45 +207,30 @@ function AddForm(props) {
     </Menu>
   );
 
-  const queryDept = () => {
-    dispatch({
-      type: 'itsmuser/fetchuser',
-    });
-  };
-
-  const getmyweeklyTable = () => {
-    validateFields((err, value) => {
-      dispatch({
-        type: 'myweeklyreportindex/myweeklyTable',
-        payload: {
-          pageNum: paginations.current,
-          pageSize: paginations.pageSize,
-        },
-      });
-    })
-  };
-
-
-
-  const handleReset = () => {
-    starttime = '';
-    endTime = '';
-    resetFields();
-  };
 
   const searchdata = (values, page, pageSize) => {
     dispatch({
       type: 'softreport/queryList',
       payload: {
         ...values,
-        userId:id,
+        timeType:'周报',
+        userId: sessionStorage.getItem('userauthorityid'),
         plannedStartTime: '',
         time1: values.plannedStartTime?.length ? moment(values.plannedStartTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
         time2: values.plannedStartTime?.length ? moment(values.plannedStartTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
         pageSize,
-        pageIndex: page-1,
+        pageIndex: page - 1,
       },
     });
+  };
+
+  const handleReset = () => {
+    starttime = '';
+    endTime = '';
+    resetFields();
+    validateFields((err, value) => {
+      searchdata(value, 1, paginations.pageSize);
+    })
   };
 
   const onShowSizeChange = (page, pageSize) => {
@@ -281,10 +268,6 @@ function AddForm(props) {
   };
 
   const handleSearch = () => {
-    setPaginations({
-      ...paginations,
-      current: 1,
-    });
     validateFields((err, values) => {
       if (err) {
         return;
@@ -294,50 +277,55 @@ function AddForm(props) {
         time1: starttime,
         time2: endTime
       };
-
-      searchdata(obj, paginations.current, paginations.pageSize);
+      searchdata(obj, 1, paginations.pageSize);
     });
   };
 
   const download = () => {
-    validateFields((err, values) => {
-      if (!err) {
-        dispatch({
-          type: 'problemmanage/besolvedownload',
-          payload: { ...values }
-        }).then(res => {
-          const filename = `下载.xls`;
-          const blob = new Blob([res]);
-          const url = window.URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = filename;
-          a.click();
-          window.URL.revokeObjectURL(url);
-        })
-      }
-    })
+    if (selectedRows.length !== 1) {
+      message.info('选择一条数据导出哦')
+    } else {
+      const mainId  = selectedRows[0].id;
+      dispatch({
+        type: 'softreport/exportWord',
+        payload: { mainId }
+      }).then(res => {
+        const filename = `下载.doc`;
+        const blob = new Blob([res]);
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.click();
+        window.URL.revokeObjectURL(url);
+      })
+    }
   }
 
   const rowSelection = {
-    onChange: (selectedRow) => {
+    onChange: (selected, selectedRow) => {
       setSelectedRows([...selectedRow])
     }
   }
 
   const handleDelete = () => {
     if (selectedRows.length) {
-      const idList = selectedRows.map(item => {
+      const ids = selectedRows.map(item => {
         return item.id
       })
 
-      dispatch({
+      return dispatch({
         type: 'softreport/deleteAll',
-        payload: idList
+        payload: { ids }
       }).then(res => {
-        getmyweeklyTable();
+        message.info(res.msg);
+        validateFields((err, value) => {
+          searchdata(value, 1, paginations.pageSize);
+        })
       })
-    } else {
+    }
+
+    if (!selectedRows.length) {
       message.info('至少选择一条数据');
     }
   }
@@ -347,26 +335,6 @@ function AddForm(props) {
     starttime = moment().week(moment().week() - 1).startOf('week').format('YYYY-MM-DD HH:mm:ss');
     endTime = moment().week(moment().week() - 1).endOf('week').format('YYYY-MM-DD');
     endTime = `${endTime} 00:00:00`;
-  }
-
-  const startdisabledDate = (current) => {
-    return current > moment().subtract('days', 6)
-  }
-
-  const onChange = (date, dateString) => {
-    starttime = dateString;
-    endTime = moment(dateString).add(+6, 'day').format('YYYY-MM-DD');
-    setFieldsValue({ time2: moment(endTime) });
-  }
-
-  const endonChange = (date, dateString) => {
-    endTime = dateString;
-    starttime = moment(dateString).subtract('day', 6).format('YYYY-MM-DD');
-    setFieldsValue({ time1: moment(starttime) })
-  }
-
-  const enddisabledDate = (current) => {
-    return current > moment().endOf('day')
   }
 
   const handleCopy = () => {
@@ -388,23 +356,11 @@ function AddForm(props) {
   }
 
   useEffect(() => {
-    getmyweeklyTable();
+    // getmyweeklyTable();
     defaultTime();
-    // queryDept();
-    dispatch({
-      type:'itsmuser/fetchuserids'
-    }).then(res => {
-      if(res.code === 200 && res.data) {
-        const { userId } = res.data;
-        id = userId;
-        validateFields((err, values) => {
-      if (!err) {
-        const obj = values;
-        obj.userId = userId
-        searchdata(obj, 1, paginations.pageSize)
-      }
-    });
-      }
+
+    validateFields((err, value) => {
+      searchdata(value, 1, paginations.pageSize);
     })
   }, []);
 
@@ -414,9 +370,6 @@ function AddForm(props) {
     }
     return [];
   }
-
-  console.log(queryOrderlist)
-
 
   const classData = getTypebyTitle('周报分类')
 
@@ -474,7 +427,7 @@ function AddForm(props) {
             <Col span={8}>
               <Form.Item label="填报人" >
                 {getFieldDecorator('userName', {
-                   initialValue: ''
+                  initialValue: ''
                 })(<Input placeholder='请输入' allowClear />)}
               </Form.Item>
             </Col>
@@ -507,7 +460,7 @@ function AddForm(props) {
             onClick={handleCopy}
           >
             复制
-        </Button>
+          </Button>
 
           <Button
             style={{ marginLeft: 8 }}
@@ -516,7 +469,7 @@ function AddForm(props) {
             onClick={handleDelete}
           >
             删除
-        </Button>
+          </Button>
 
           <Button
             style={{ marginLeft: 8 }}
@@ -524,12 +477,12 @@ function AddForm(props) {
             onClick={() => download()}
           >
             导出数据
-        </Button>
+          </Button>
 
         </div>
 
         <Table
-          // loading={loading}
+          loading={loading}
           columns={columns}
           dataSource={queryOrderlist.rows}
           pagination={pagination}
@@ -541,12 +494,9 @@ function AddForm(props) {
   )
 }
 
-
-
 export default Form.create({})(
-  connect(({ myweeklyreportindex, softreport, itsmuser, loading }) => ({
+  connect(({ softreport, loading }) => ({
     queryOrderlist: softreport.queryOrderlist,
-    // userinfo: itsmuser.userinfo,
-    loading: loading.models.myweeklyreportindex,
-  }))(AddForm),
+    loading: loading.models.softreport,
+  }))(OperationmyweeklyReport),
 );

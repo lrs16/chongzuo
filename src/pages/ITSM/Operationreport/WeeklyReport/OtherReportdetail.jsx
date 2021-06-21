@@ -7,6 +7,9 @@ import {
   Col,
   Input,
   DatePicker,
+  Table,
+  Popconfirm,
+  Divider,
   Icon,
   message
 } from 'antd';
@@ -14,8 +17,9 @@ import Link from 'umi/link';
 import moment from 'moment';
 import router from 'umi/router';
 import { connect } from 'dva';
-import AddForm from '../WeeklyReport/components/AddForm';
+import AddForm from './components/AddForm';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import SysUpload from '@/components/SysUpload';
 
 const formItemLayout = {
   labelCol: {
@@ -27,6 +31,7 @@ const formItemLayout = {
     sm: { span: 18 },
   },
 };
+
 const formincontentLayout = {
   labelCol: {
     xs: { span: 24 },
@@ -38,24 +43,23 @@ const formincontentLayout = {
   },
 };
 
-const { RangePicker, MonthPicker } = DatePicker;
+const { RangePicker } = DatePicker;
 const { TextArea } = Input;
 let startTime;
-let monthStarttime;
 let endTime;
-let isNew = false;
-function OtherReport(props) {
+function OtherReportdetail(props) {
   const pagetitle = props.route.name;
   const {
     form: { getFieldDecorator, validateFields, setFieldsValue },
     match: { params: { id } },
     location: { query: {
+      type,
       reporttype,
       status,
       mainId,
-      listreportType,
-      listId,
+      reportSearch
     } },
+    openReportlist,
     dispatch,
     loading,
   } = props;
@@ -65,24 +69,25 @@ function OtherReport(props) {
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
   const [secondbutton, setSecondbutton] = useState(false);
   const [addTitle, setAddTitle] = useState([]);
+  const [columns, setColumns] = useState([]);
+  const [data, setData] = useState([]);
   const [list, setList] = useState([]);
-  const [copyData, setCopyData] = useState('')
+  const { main } = openReportlist;
 
-  // 新增一条记录
+  // 动态添加表格暂存数据
   const handleaddTable = (params) => {
     const newData = (list).map(item => ({ ...item }));
     newData.push({
       ...params
     });
-    setList(newData);
+    setList(newData)
     // if(params.files) {
     //   softReportform()
     // }
   };
 
-
   //  保存表单
-  const softReportform = (params) => {
+  const softReportform = () => {
     props.form.validateFields((err, value) => {
       const savedata = {
         ...value,
@@ -95,10 +100,16 @@ function OtherReport(props) {
         time1: startTime,
         time2: endTime,
       }
-      dispatch({
+      return dispatch({
         type: 'softreport/saveOther',
         payload: savedata
+      }).then(res => {
+        if (res.code === 200) {
+          message.info(res.msg);
+          getopenFlow();
+        }
       })
+
     })
   }
 
@@ -108,32 +119,7 @@ function OtherReport(props) {
     endTime = moment().format('YYYY-MM-DD');
   }
 
-  const handlePaste = () => {
-    if (!listreportType || !listId) {
-      message.info('请在列表选择一条数据复制哦')
-      return false;
-    }
-
-    if (listreportType !== '其他运维周报') {
-      message.info('只能粘贴同种周报类型哦');
-      return false;
-    }
-
-    return dispatch({
-      type: 'softreport/pasteReport',
-      payload: {
-        editStatus: 'edit',
-        id: listId
-      }
-    }).then(res => {
-      if (res.code === 200) {
-        setCopyData(res)
-        setAddTitle(res.addData)
-      } else {
-        message.info('您无法复制该条记录，请返回列表重新选择')
-      }
-    })
-  }
+  console.log(list, 'list')
 
   // 上传删除附件触发保存
   useEffect(() => {
@@ -151,6 +137,31 @@ function OtherReport(props) {
     router.push('/ITSM/operationreport/weeklyreport/myweeklyreport');
   }
 
+  const getopenFlow = () => {
+    dispatch({
+      type: 'softreport/openReport',
+      payload: {
+        editStatus: 'edit',
+        id: mainId
+      }
+    })
+  }
+
+  useEffect(() => {
+    if (mainId) {
+      getopenFlow();
+    }
+  }, [mainId])
+
+  useEffect(() => {
+    const { addData } = openReportlist;
+    setAddTitle(addData)
+    setList(addData)
+  }, [loading])
+
+  console.log(list, 'list')
+
+
   const onChange = () => {
     validateFields((err, value) => {
       startTime = moment(value.time1[0]).format('YYYY-MM-DD');
@@ -164,22 +175,39 @@ function OtherReport(props) {
     setAddTitle(nowNumber)
   }
 
+  //  移除表格
   const removeForm = (tableIndex) => {
     addTitle.splice(tableIndex, 1);
+    list.splice(tableIndex, 1);
     const resultArr = [];
+    const listArr = [];
     for (let i = 0; i < addTitle.length; i++) {
       resultArr.push(addTitle[i])
     }
+    for (let i = 0; i < list.length; i++) {
+      listArr.push(list[i])
+    }
     setAddTitle(resultArr)
+    setList(listArr)
   }
+
+  useEffect(() => {
+    const { addData } = openReportlist;
+    setAddTitle(addData)
+  }, [loading])
+
 
   return (
     <PageHeaderWrapper
-      title={listreportType === 'week' ? '其他运维周报' : '其他运维月报'}
+      title={pagetitle}
       extra={
         <>
-          <Button type='primary' onClick={softReportform}>保存</Button>
-          <Button type='primary' onClick={handlePaste}>粘贴</Button>
+          <Button type='primary'>导出</Button>
+
+          {!reportSearch && (
+            <Button type='primary' onClick={softReportform}>保存</Button>
+          )}
+
           <Button type='primary' onClick={handleBack}>
             返回
           </Button>
@@ -187,14 +215,20 @@ function OtherReport(props) {
       }
     >
       <Card>
-        {startTime && (
+        {loading === false && startTime && (
           <Row gutter={16}>
             <Form {...formItemLayout}>
 
               <Col span={8}>
-                <Form.Item label={reporttype === 'week' ? '周报名称' : '月报名称'}>
+                <Form.Item label={type === 'week' ? '周报名称' : '月报名称'}>
                   {getFieldDecorator('name', {
-                    initialValue: copyData.main ? copyData.main.name : ''
+                    rules: [
+                      {
+                        required,
+                        message: '请输入名称'
+                      }
+                    ],
+                    initialValue: main ? main.name : ''
                   })
                     (
                       <Input />
@@ -202,53 +236,18 @@ function OtherReport(props) {
                 </Form.Item>
               </Col>
 
-              {
-                reporttype === 'week' && (
-                  <Col span={8}>
-                    <Form.Item label='起始时间'>
-                      {getFieldDecorator('time1', {
-                        rules: [
-                          {
-                            required,
-                            message: '请选择填报日期'
-                          }
-                        ],
-                        initialValue: [moment(copyData.main ? copyData.main.time1 : startTime), moment(copyData.main ? copyData.main.time2 : endTime)]
-                      })(<RangePicker
-                        allowClear={false}
-                        // disabledDate={startdisabledDate}
-                        // placeholder='请选择'
-                        onChange={onChange}
-                      />)}
-                    </Form.Item>
-                  </Col>
-                )
-              }
-
-              {
-                reporttype === 'month' && (
-                  <Col span={8}>
-                    <Form.Item label='起始时间'>
-                      {getFieldDecorator('time1', {
-                        rules: [
-                          {
-                            required,
-                            message: '请选择填报日期'
-                          }
-                        ],
-                        initialValue: moment(copyData.main ? copyData.main.time1 : startTime)
-                      })(<MonthPicker
-                        allowClear
-                        // disabledDate={startdisabledDate}
-                        // placeholder='请选择'
-                        onChange={onChange}
-                      />)}
-                    </Form.Item>
-                  </Col>
-                )
-              }
-
-
+              <Col span={8}>
+                <Form.Item label='起始时间'>
+                  {getFieldDecorator('time1', {
+                    initialValue: [moment(main.time1), moment(main.time2)]
+                  })(<RangePicker
+                    allowClear={false}
+                    // disabledDate={startdisabledDate}
+                    // placeholder='请选择'
+                    onChange={onChange}
+                  />)}
+                </Form.Item>
+              </Col>
 
               {loading === false && addTitle && addTitle.length > 0 && (
                 addTitle.map((item, index) => {
@@ -265,16 +264,22 @@ function OtherReport(props) {
                           list={addData => {
                             setList(addData)
                           }}
+                        // initialDynamic={initial => {
+                        //   initialDynamic(initial)
+                        // }}
                         />
                       </Col>
 
-                      <Col span={1}>
-                        <Icon
-                          className="dynamic-delete-button"
-                          type="minus-circle-o"
-                          onClick={() => removeForm(index)}
-                        />
-                      </Col>
+                      {!reportSearch && (
+                        <Col span={1}>
+                          <Icon
+                            className="dynamic-delete-button"
+                            type="minus-circle-o"
+                            onClick={() => removeForm(index)}
+                          />
+                        </Col>
+                      )}
+
 
                     </>
                   )
@@ -282,15 +287,15 @@ function OtherReport(props) {
               )
               }
 
-
               <Button
                 style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
                 type="primary"
                 ghost
                 onClick={() => newMember()}
                 icon="plus"
+                disabled={secondbutton}
               >
-                新增内容
+                添加内容
               </Button>
 
             </Form>
@@ -306,6 +311,7 @@ function OtherReport(props) {
 
 export default Form.create({})(
   connect(({ softreport, loading }) => ({
+    openReportlist: softreport.openReportlist,
     loading: loading.models.softreport,
-  }))(OtherReport),
+  }))(OtherReportdetail),
 );

@@ -10,19 +10,21 @@ import {
   Table,
   Popconfirm,
   Divider,
-  Icon
+  Icon,
+  message
 } from 'antd';
 import Link from 'umi/link';
 import moment from 'moment';
 import router from 'umi/router';
 import { connect } from 'dva';
-import DatabaseInspectionsummary from './components/DatabaseComponent/DatabaseInspectionsummary';
-import DatabaseInspectionthird from './components/DatabaseComponent/DatabaseInspectionthird';
+import Diskgroup from './components/DatabaseComponent/Diskgroup';
+import Top10Surface from './components/DatabaseComponent/Top10Surface';
+import Top10Increase from './components/DatabaseComponent/Top10Increase';
 import QuestionsComments from './components/DatabaseComponent/QuestionsComments';
-import Lastweek from './components/DatabaseComponent/Lastweek';
-import Nextweek from './components/DatabaseComponent/Nextweek';
+import LastweekHomework from './components/LastweekHomework';
+import NextweekHomework from './components/NextweekHomework';
+import AddForm from './components/AddForm';
 
-import styles from './index.less';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import SysUpload from '@/components/SysUpload';
 
@@ -58,7 +60,7 @@ const formincontentLayout = {
   },
 };
 
-const { RangePicker,MonthPicker } = DatePicker;
+const { RangePicker, MonthPicker } = DatePicker;
 const { TextArea } = Input;
 let startTime;
 let monthStarttime;
@@ -66,134 +68,71 @@ let endTime;
 function DatabaseReport(props) {
   const pagetitle = props.route.name;
   const {
-    form: { getFieldDecorator, validateFields, setFieldsValue },
+    form: { getFieldDecorator, setFieldsValue },
     match: { params: { id } },
-    location: { query: { type } },
+    location: { query:
+      {
+        reporttype,
+        status,
+        mainId,
+        listreportType,
+        listId,
+      } },
     dispatch,
-    maintenanceList,
-    developmentList,
-    submitdevelopmentlist,
-    serviceCompletionlist,
-    serviceCompletionsecondlist,
-    serviceCompletionthreelist,
-    thisWeekitsmlist,
-    softCompletionlist,
-    completionsecondTablelist,
-    remainingDefectslist,
     lastweekHomeworklist,
     nextweekHomeworklist,
-    maintenanceArr, // 事件统计
     loading,
   } = props;
-  let tabActiveKey = 'week';
 
 
   const required = true;
-  const saveformRef = useRef();
-  const developmentformRef = useRef();
-  const thisWeekitsmRef = useRef();
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
-  const [secondbutton, setSecondbutton] = useState(false);
   const [addTitle, setAddTitle] = useState([]);
   const [columns, setColumns] = useState([]);
-  const [data, setData] = useState([]);
   const [fileslist, setFilesList] = useState([]);
-  const [expand, setExpand] = useState(false);
-
-  useEffect(() => {
-    const resultColumns = [...initiacColumn]
-    setColumns([...resultColumns])
-  }, [])
-
-  const titleNumber = (index) => {
-    return `标题${9 + index}`
-  }
+  const [discList, setDiscList] = useState([]); // 本周运维情况综述列表 
+  const [tablespaceList, setTablespaceList] = useState([]) // 软件运维巡检
+  const [tableUpList, setTableUpList] = useState([]) // 运维材料提交情况
+  const [defectList, setDefectList] = useState([]) // 软件运维巡检
+  const [operationList, setOperationList] = useState([]) // 上周作业计划
+  const [nextOperationList, setNextOperationList] = useState([]) // 下周作业列表
+  const [list, setList] = useState([]);
+  const [copyData, setCopyData] = useState('');
 
   //  保存表单
   const softReportform = () => {
-    props.form.validateFields((err, value) => {
-      console.log('value: ', value);
-    })
-  }
+    props.form.validateFields((err, values) => {
+      if (!err) {
+        const savedata = {
+          ...values,
+          status,
+          editStatus: mainId ? 'edit' : 'add',
+          addData: list?.length ? JSON.stringify(list) : '',
+          type: reporttype === 'week' ? '数据库运维周报' : '数据库运维月报',
+          reporttype,
+          mainId,
+          time1: startTime,
+          time2: endTime,
+          discList: JSON.stringify(discList),
+          tablespaceList: JSON.stringify(tablespaceList),
+          tableUpList: JSON.stringify(tableUpList),
+          defectList: JSON.stringify(defectList),
+          operationList: JSON.stringify(operationList),
+          nextOperationList: JSON.stringify(nextOperationList),
+        }
+        dispatch({
+          type: 'softreport/saveDataBase',
+          payload: savedata
+        })
+      }
 
-  //  本周运维情况综述表格数据
-  const maintenanceTable = () => {
-    dispatch({
-      type: 'thisweekly/fetchMaintance'
     })
-  }
 
-  //  常规运维工作开展情况第一个表格
-  const developmentTable = () => {
-    dispatch({
-      type: 'thisweekly/developmentListdata'
-    })
-  }
-  //  常规运维工作开展情况第二个表格
-  const submitdevelopmentData = () => {
-    dispatch({
-      type: 'thisweekly/submitdevelopmentData'
-    })
-  }
-  //  三、运维服务指标完成情况---第一个表格
-  const serviceCompletionfirst = () => {
-    dispatch({
-      type: 'thisweekly/serviceCompletionone'
-    })
-  }
-  //  三、运维服务指标完成情况---第二个表格
-  const serviceCompletiontwo = () => {
-    dispatch({
-      type: 'thisweekly/serviceCompletiontwo'
-    })
-  }
-  //  三、运维服务指标完成情况---第三个表格
-  const serviceCompletionthree = () => {
-    dispatch({
-      type: 'thisweekly/serviceCompletionthree'
-    })
-  }
-  //  四、本周事件、问题及故障表格数据
-  const thisWeekitsm = () => {
-    dispatch({
-      type: 'thisweekly/thisWeekitsm'
-    })
-  }
-  //  五、软件作业完成情况第一个表格
-  const completionfirstlyTable = () => {
-    dispatch({
-      type: 'thisweekly/completionfirstlyTable'
-    })
-  }
-  //  五、软件作业完成情况第二个表格
-  const completionsecondTable = () => {
-    dispatch({
-      type: 'thisweekly/completionsecondTable'
-    })
-  }
-  //   六、遗留缺陷问题跟踪,遗留问题、缺陷跟踪情况（使用表格管理作为附件）
-  const remainingDefects = () => {
-    dispatch({
-      type: 'thisweekly/remainingDefects'
-    })
-  }
-
-  //   七、上周作业完成情况--表格
-  const lastweekHomework = () => {
-    dispatch({
-      type: 'thisweekly/lastweekHomework'
-    })
-  }
-  //   七、下周作业完成情况--表格
-  const nextweekHomework = () => {
-    dispatch({
-      type: 'thisweekly/nextweekHomework'
-    })
   }
 
   const defaultTime = () => {
     //  周
-    if (type === 'week') {
+    if (reporttype === 'week') {
       startTime = moment().subtract('days', 6).format('YYYY-MM-DD');
       endTime = moment().format('YYYY-MM-DD');
     } else {
@@ -209,69 +148,102 @@ function DatabaseReport(props) {
     }
   }, [files]);
 
-  const handlemaintenanceArr = () => {
+  //   七、上周作业完成情况--表格
+  const lastweekHomework = () => {
     dispatch({
-      type: 'eventstatistics/fetchMaintenancelist',
-      payload: { tabActiveKey, startTime, endTime }
+      type: 'softreport/lastweekHomework',
+      payload: {
+        time1: startTime,
+        time2: endTime,
+        pageIndex: 0,
+        pageSize: 10
+      }
+    })
+  }
+  //   七、下周作业完成情况--表格
+  const nextweekHomework = () => {
+    dispatch({
+      type: 'softreport/nextweekHomework',
+      payload: {
+        time1: startTime,
+        time2: endTime,
+        pageIndex: 0,
+        pageSize: 10
+      }
     })
   }
 
-  useEffect(() => {
-    // handlemaintenanceArr();
-  }, [])
+  // 新增一条记录
+  const handleaddTable = (params) => {
+    const newData = (list).map(item => ({ ...item }));
+    newData.push({
+      ...params
+    });
+    setList(newData);
+    // if(params.files) {
+    //   softReportform()
+    // }
+  };
 
+  
+  const removeForm = (tableIndex) => {
+    addTitle.splice(tableIndex, 1);
+    const resultArr = [];
+    for (let i = 0; i < addTitle.length; i++) {
+      resultArr.push(addTitle[i])
+    }
+    setAddTitle(resultArr)
+  }
 
+  console.log(list,'list')
 
   // 上传删除附件触发保存
   useEffect(() => {
-    maintenanceTable();
-    developmentTable();
-    submitdevelopmentData();
-    serviceCompletionfirst();
-    serviceCompletiontwo();
-    serviceCompletionthree();
-    thisWeekitsm();
-    completionfirstlyTable();
-    completionsecondTable();
-    remainingDefects();
+    defaultTime();
     lastweekHomework();
     nextweekHomework();
-    defaultTime();
   }, []);
+
+  //  粘贴
+  const handlePaste = () => {
+    if (!listreportType || !listId) {
+      message.info('请在列表选择一条数据复制哦')
+      return false;
+    }
+
+    if (listreportType !== '数据库运维周报') {
+      message.info('只能粘贴同种周报类型哦');
+      return false;
+    }
+
+    return dispatch({
+      type: 'softreport/pasteReport',
+      payload: {
+        editStatus: 'edit',
+        id: listId
+      }
+    }).then(res => {
+      if (res.code === 200) {
+        setCopyData(res)
+        setAddTitle(res.addData)
+      } else {
+        message.info('您无法复制该条记录，请返回列表重新选择')
+      }
+    })
+  }
 
   const handleBack = () => {
     router.push('/ITSM/operationreport/weeklyreport/myweeklyreport');
   }
 
-  //  保存第一表格的数据
-  const handleSavethisweek = (saveParams) => {
-    console.log('saveParams: ', saveParams);
-  }
-
-  //  保存第二表格
-
-  const handleSavedevelopment = (saveParams, rowId, params) => {
-    console.log('params: ', params);
-    // console.log('saveParams: ', saveParams);
-    // console.log('rowId: ', rowId);
-    // console.log('params: ', params);
-  }
-
-  // 删除数据
-  const handleDelete = (deleteId) => {
-
-  }
-
-  const onChange = () => {
-    if (type === 'week') {
+  const onChange = (date, dateString) => {
+    if (reporttype === 'week') {
       startTime = dateString;
       endTime = moment(dateString).add(+6, 'day').format('YYYY-MM-DD');
       setFieldsValue({ time2: moment(endTime) });
     } else {
       startTime = date.startOf('month').format('YYYY-MM-DD');
-      console.log('startTime: ', startTime);
       endTime = date.endOf('month').format('YYYY-MM-DD');
-      console.log('endTime: ', endTime);
     }
   }
 
@@ -281,377 +253,7 @@ function DatabaseReport(props) {
     setAddTitle(nowNumber)
   }
 
-  const addTable = (index) => {
-    const nowNumber = addTitle.map(item => ({ ...item }));
-    nowNumber[index].tableNumber.push({ columns: 'aa' });
-    console.log('nowNumber: ', nowNumber);
-    setAddTitle(nowNumber);
-  }
-
-  // 新增一条记录
-  const handleAddrows = (params) => {
-    setFilesList([]);
-    // setKeyUpload('');
-    const newData = (data).map(item => ({ ...item }));
-    newData.push({
-      key: data.length + 1,
-      id: '',
-      addTime1: '新增数据',
-      addTime2: '',
-      addTime3: 'dd',
-      addTime4: '',
-      isNew: true
-    });
-    setData(newData);
-    // setNewButton(true);
-  };
-
-
-  const remove = (index) => {
-    addTitle.splice(index, 1);
-    const resultArr = [];
-    for (let i = 0; i < addTitle.length; i++) {
-      resultArr.push(addTitle[i])
-    }
-    setAddTitle(resultArr)
-  }
-
-
-  const removeTable = (index, tableIndexs) => {
-    addTitle.map(item => ({ ...item }));
-    (addTitle[index].tableNumber).splice(tableIndexs, 1)
-    const resultTable = [];
-    for (let i = 0; i < addTitle.length; i++) {
-      resultTable.push(addTitle[i])
-    }
-    setAddTitle(resultTable)
-  }
-
-
-
-  //  获取行  
-  const getRowByKey = (key, newData) => {
-    return (newData || data).filter(item => item.key === key)[0];
-  }
-
-
-  // 编辑记录
-  const toggleEditable = (e, key, record) => {
-
-    e.preventDefault();
-    const newData = data.map(item => ({ ...item })
-    );
-    const target = getRowByKey(key, newData);
-    if (target) {
-      if (!target.editable) {
-        setcacheOriginData({ key: { ...target } });
-      }
-      // target.editable = !target.editable;
-      target.isNew = true;
-      setData(newData);
-    }
-  }
-
-  //  点击编辑生成filelist
-  const handlefileedit = (key, values) => {
-    if (!values) {
-      setFilesList([]);
-    } else {
-      setFilesList(JSON.parse(values))
-    }
-  }
-
-  const savedata = (target, id) => {
-  }
-
-  const saveRow = (e, key) => {
-    const target = getRowByKey(key) || {};
-
-    delete target.key;
-    target.editable = false;
-    const id = target.id === '' ? '' : target.id;
-    savedata(target, id);
-    if (target.isNew) {
-      target.isNew = false;
-      // setNewButton(false);
-    }
-  }
-
-
-  const handleFieldChange = (e, fieldName, key) => {
-    const newData = data.map(item => ({ ...item }));
-    const target = getRowByKey(key, newData)
-    if (target) {
-      target[fieldName] = e;
-      setData(newData);
-    }
-  }
-
-  const handleTabledata = () => {
-    const newarr = remainingDefectslist.map((item, index) => {
-      return Object.assign(item, { editable: true, isNew: false, key: index })
-    })
-    setData(newarr)
-  }
-
-  const testHead = (column) => {
-    console.log('column:', column);
-
-  }
-
-
-  const initiacColumn = [
-    {
-      title: '测试表头1',
-      dataIndex: 'addTime1',
-      key: 'addTime1',
-      width: 150,
-      render: (text, record) => {
-        if (record.isNew) {
-          return (
-            <Input
-              defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'addTime1', record.key)}
-            />
-          )
-        }
-        if (record.isNew === false) {
-          return <span>{text}</span>
-        }
-      }
-    },
-    {
-      title: '测试表头2',
-      dataIndex: 'addTime2',
-      key: 'addTime2',
-      width: 150,
-      render: (text, record) => {
-        if (record.isNew) {
-          return (
-            <Input
-              defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'addTime2', record.key)}
-            />
-          )
-        }
-        if (record.isNew === false) {
-          return <span>{text}</span>
-        }
-      }
-    },
-    {
-      title: '测试表头3',
-      dataIndex: 'addTime3',
-      key: 'addTime3',
-      width: 150,
-      render: (text, record) => {
-        if (record.isNew) {
-          return (
-            <Input
-              defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'addTime3', record.key)}
-            />
-          )
-        }
-        if (record.isNew === false) {
-          return <span>{text}</span>
-        }
-      }
-    },
-    {
-      title: '测试表头4',
-      dataIndex: 'addTime4',
-      key: 'addTime4',
-      width: 150,
-      render: (text, record) => {
-        if (record.isNew) {
-          return (
-            <Input
-              defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'addTime4', record.key)}
-            />
-          )
-        }
-        if (record.isNew === false) {
-          return <span>{text}</span>
-        }
-      }
-    },
-    {
-      title: '操作',
-      key: 'action',
-      fixed: 'right',
-      width: 120,
-      render: (text, record) => {
-        // if (record.editable) {
-        if (record.isNew === true) {
-          return (
-            <span>
-              <a onClick={e => saveRow(e, record.key)}>保存</a>
-              <Divider type='vertical' />
-              <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
-                <a>删除</a>
-              </Popconfirm>
-            </span>
-          )
-        }
-        // }
-
-        return (
-          <span>
-            <a
-              onClick={e => {
-                toggleEditable(e, record.key, record);
-                // handlefileedit(record.key, record.attachment)
-              }}
-            >编辑</a>
-            <Divider type='vertical' />
-            <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
-              <a>删除</a>
-            </Popconfirm>
-          </span>
-        )
-      }
-    }
-  ];
-
-  const editTable = (index, tableIndex) => {
-    return (
-      [
-        {
-          title: '测试表头1',
-          dataIndex: 'addTime1',
-          key: 'addTime1',
-          width: 150,
-          render: (text, record) => {
-            if (record.isNew) {
-              return (
-                <Input
-                  defaultValue={text}
-                  onChange={e => handleFieldChange(e.target.value, 'addTime1', record.key, index, tableIndex)}
-                />
-              )
-            }
-            if (record.isNew === false) {
-              return <span>{text}</span>
-            }
-          }
-        },
-        {
-          title: '测试表头2',
-          dataIndex: 'addTime2',
-          key: 'addTime2',
-          width: 150,
-          render: (text, record) => {
-            if (record.isNew) {
-              return (
-                <Input
-                  defaultValue={text}
-                  onChange={e => handleFieldChange(e.target.value, 'addTime2', record.key)}
-                />
-              )
-            }
-            if (record.isNew === false) {
-              return <span>{text}</span>
-            }
-          }
-        },
-        // {
-        //   title: '测试表头3',
-        //   dataIndex: 'addTime3',
-        //   key: 'addTime3',
-        //   width: 150,
-        //   render: (text, record) => {
-        //     if (record.isNew) {
-        //       return (
-        //         <Input
-        //           defaultValue={text}
-        //           onChange={e => handleFieldChange(e.target.value, 'addTime3', record.key)}
-        //         />
-        //       )
-        //     }
-        //     if (record.isNew === false) {
-        //       return <span>{text}</span>
-        //     }
-        //   }
-        // },
-        // {
-        //   title: '测试表头4',
-        //   dataIndex: 'addTime4',
-        //   key: 'addTime4',
-        //   width: 150,
-        //   render: (text, record) => {
-        //     if (record.isNew) {
-        //       return (
-        //         <Input
-        //           defaultValue={text}
-        //           onChange={e => handleFieldChange(e.target.value, 'addTime4', record.key)}
-        //         />
-        //       )
-        //     }
-        //     if (record.isNew === false) {
-        //       return <span>{text}</span>
-        //     }
-        //   }
-        // },
-        {
-          title: '操作',
-          key: 'action',
-          fixed: 'right',
-          width: 120,
-          render: (text, record) => {
-            // if (record.editable) {
-            if (record.isNew === true) {
-              return (
-                <span>
-                  <a onClick={e => saveRow(e, record.key)}>保存</a>
-                  <Divider type='vertical' />
-                  <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
-                    <a>删除</a>
-                  </Popconfirm>
-                </span>
-              )
-            }
-            // }
-
-            return (
-              <span>
-                <a
-                  onClick={e => {
-                    toggleEditable(e, record.key, record);
-                    // handlefileedit(record.key, record.attachment)
-                  }}
-                >编辑</a>
-                <Divider type='vertical' />
-                <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
-                  <a>删除</a>
-                </Popconfirm>
-              </span>
-            )
-          }
-        }
-      ]
-    )
-  }
-
-  const setHead = () => {
-    setExpand(true);
-  }
-
-  const setResultheader = () => {
-    validateFields((err, value) => {
-      if (true) {
-        const setHead = initiacColumn.map(item => {
-          return {
-            title: value.header1,
-            dataIndex: 'addTime1',
-          }
-        })
-        setColumns(setHead)
-      }
-    })
-  }
-
+  console.log(copyData.operationList ? 'a' : 'b')
   return (
     <PageHeaderWrapper
       title={pagetitle}
@@ -659,6 +261,7 @@ function DatabaseReport(props) {
         <>
           <Button type='primary'>导出</Button>
           <Button type='primary' onClick={softReportform}>保存</Button>
+          <Button type='primary' onClick={handlePaste}>粘贴</Button>
           <Button type='primary' onClick={handleBack}>
             返回
           </Button>
@@ -666,19 +269,20 @@ function DatabaseReport(props) {
       }
     >
       <Card>
-        {loading === false && startTime && (
+        {loading === false && (
           <Row gutter={16}>
             <Form {...formItemLayout}>
 
               <Col span={8}>
-                <Form.Item label={type === 'week' ? '周报名称' : '月报名称'}>
+                <Form.Item label={reporttype === 'week' ? '周报名称' : '月报名称'}>
                   {getFieldDecorator('name', {
                     rules: [
                       {
                         required,
                         message: '请输入周报名称'
                       }
-                    ]
+                    ],
+                    initialValue: copyData.main ? copyData.main.name : ''
                   })
                     (
                       <Input />
@@ -687,11 +291,11 @@ function DatabaseReport(props) {
               </Col>
 
               {
-                type === 'week' && (
+                reporttype === 'week' && (
                   <Col span={8}>
                     <Form.Item label='起始时间'>
                       {getFieldDecorator('time1', {
-                        initialValue: [moment(startTime), moment(endTime)]
+                        initialValue: [moment(copyData.main ? copyData.main.time1 : startTime), moment(copyData.main ? copyData.main.time2 : endTime)]
                       })(<RangePicker
                         allowClear={false}
                         // disabledDate={startdisabledDate}
@@ -704,11 +308,11 @@ function DatabaseReport(props) {
               }
 
               {
-                type === 'month' && (
+                reporttype === 'month' && (
                   <Col span={8}>
                     <Form.Item label='起始时间'>
                       {getFieldDecorator('time1', {
-                        initialValue: moment(startTime)
+                        initialValue: moment(copyData.main ? copyData.main.time1 : startTime)
                       })(<MonthPicker
                         allowClear={false}
                         // disabledDate={startdisabledDate}
@@ -723,31 +327,34 @@ function DatabaseReport(props) {
               {/* 一、本周运维情况综述 */}
 
               <Col span={24}>
-                <p style={{ fontWeight: '900', fontSize: '16px', marginTop: '20px' }}>{type === 'week' ? '一、本周运维情况综述' : '一、本月运维情况综述'}</p>
+                <p style={{ fontWeight: '900', fontSize: '16px', marginTop: '20px' }}>{reporttype === 'week' ? '一、本周运维情况综述' : '一、本月运维情况综述'}</p>
               </Col>
 
               <Col span={24}>
-                <Form.Item label={type === 'week' ? '本周运维总结' : '本月运维总结'} {...formincontentLayout}>
+                <Form.Item label={reporttype === 'week' ? '本周运维总结' : '本月运维总结'} {...formincontentLayout}>
                   {
-                    getFieldDecorator('content1', {})
+                    getFieldDecorator('content', {
+                      initialValue: copyData.content ? copyData.content : ''
+                    })
                       (<TextArea autoSize={{ minRows: 3 }} />)
                   }
                 </Form.Item>
               </Col>
-
 
               <Col span={24}>
                 <Form.Item
                   label='上传附件'
                   {...formincontentLayout}
                 >
-                  {getFieldDecorator('field1', {})
+                  {getFieldDecorator('contentFiles', {
+                    initialValue: ''
+                  })
                     (
                       <div style={{ width: 400 }}>
                         <SysUpload
                           fileslist={[]}
                           ChangeFileslist={newvalue => {
-                            setFieldsValue({ field1: JSON.stringify(newvalue.arr) })
+                            setFieldsValue({ contentFiles: JSON.stringify(newvalue.arr) })
                             setFilesList(newvalue);
                             setFiles(newvalue)
                           }}
@@ -757,7 +364,6 @@ function DatabaseReport(props) {
                 </Form.Item>
               </Col>
 
-
               <Col span={24}>
                 <p style={{ fontWeight: '900', fontSize: '16px' }}>二、巡检汇总</p>
               </Col>
@@ -765,22 +371,31 @@ function DatabaseReport(props) {
               <Col span={24}>
                 <Form.Item label='巡检汇总描述' {...formincontentLayout}>
                   {
-                    getFieldDecorator('content2', {})(<TextArea autoSize={{ minRows: 3 }} />)
+                    getFieldDecorator('patrolAndExamineContent', {
+                      initialValue: copyData.patrolAndExamineContent ? copyData.patrolAndExamineContent : ''
+                    })(<TextArea autoSize={{ minRows: 3 }} />)
                   }
                 </Form.Item>
               </Col>
 
               {/* 二、常规运维工作开展情况 */}
+              {/* 磁盘组 */}
               <Col span={24}>
-                <DatabaseInspectionsummary
+                <Diskgroup
                   forminladeLayout={forminladeLayout}
-                  developmentList={developmentList}
-                  submitdevelopmentlist={submitdevelopmentlist}
-                  ref={developmentformRef}
-                  handleSavedevelopment={(newValue, editId, params) => handleSavedevelopment(newValue, editId, params)}
-                  handleDelete={(deleteId => handleDelete(deleteId))}
-                  ChangeFiles={(newvalue) => {
-                    setFiles(newvalue)
+                  discArr={copyData.discList ? copyData.discList : []}
+                  discList={contentrowdata => {
+                    setDiscList(contentrowdata)
+                  }}
+                />
+              </Col>
+
+              <Col span={24}>
+                <Top10Surface
+                  forminladeLayout={forminladeLayout}
+                  tablespaceArr={copyData.tablespaceList ? copyData.tablespaceList : []}
+                  tablespaceList={contentrowdata => {
+                    setTablespaceList(contentrowdata)
                   }}
                   startTime={startTime}
                   endTime={endTime}
@@ -788,24 +403,32 @@ function DatabaseReport(props) {
               </Col>
 
               <Col span={24}>
-                <DatabaseInspectionthird
+                <Top10Increase
                   forminladeLayout={forminladeLayout}
-                  remainingDefectslist={remainingDefectslist}
+                  tableUpArr={copyData.tableUpList ? copyData.tableUpList : []}
+                  tableUpList={contentrowdata => {
+                    setTableUpList(contentrowdata)
+                  }}
+                  startTime={startTime}
+                  endTime={endTime}
                 />
               </Col>
 
+              {/* Top10表增长附件 */}
               <Col span={24}>
                 <Form.Item
                   label='上传附件'
                   {...formincontentLayout}
                 >
-                  {getFieldDecorator('field2', {})
+                  {getFieldDecorator('tableUpFiles', {
+                    initialValue: '[]'
+                  })
                     (
                       <div style={{ width: 400 }}>
                         <SysUpload
                           fileslist={[]}
                           ChangeFileslist={newvalue => {
-                            setFieldsValue({ field2: JSON.stringify(newvalue.arr) })
+                            setFieldsValue({ tableUpFiles: JSON.stringify(newvalue.arr) })
                             setFilesList(newvalue);
                             setFiles(newvalue)
                           }}
@@ -819,26 +442,30 @@ function DatabaseReport(props) {
               {/* 三、发现问题及修改建议 */}
               <Col span={24}>
                 <QuestionsComments
-                  remainingDefectslist={remainingDefectslist}
                   forminladeLayout={forminladeLayout}
+                  defectArr={copyData.defectList ? copyData.defectList : []}
+                  defectList={contentrowdata => {
+                    setDefectList(contentrowdata)
+                  }}
                   startTime={startTime}
                   endTime={endTime}
                 />
               </Col>
-
 
               <Col span={24}>
                 <Form.Item
                   label='上传附件'
                   {...formincontentLayout}
                 >
-                  {getFieldDecorator('field3', {})
+                  {getFieldDecorator('defectFiles', {
+                    initialValue: '[]'
+                  })
                     (
                       <div style={{ width: 400 }}>
                         <SysUpload
                           fileslist={[]}
                           ChangeFileslist={newvalue => {
-                            setFieldsValue({ field3: JSON.stringify(newvalue.arr) })
+                            setFieldsValue({ defectFiles: JSON.stringify(newvalue.arr) })
                             setFilesList(newvalue);
                             setFiles(newvalue)
                           }}
@@ -847,15 +474,19 @@ function DatabaseReport(props) {
                     )}
                 </Form.Item>
               </Col>
-
 
               {/* 上周作业完成情况*/}
               <Col span={24}>
-                <Lastweek
+                <LastweekHomework
                   forminladeLayout={forminladeLayout}
+                  operationArr={copyData.operationList ? copyData.operationList : lastweekHomeworklist.rows}
                   startTime={startTime}
                   endTime={endTime}
-                  type={type}
+                  type={reporttype}
+                  operationList={contentrowdata => {
+                    setOperationList(contentrowdata)
+                  }}
+                  mainId={mainId}
                 />
               </Col>
 
@@ -864,13 +495,15 @@ function DatabaseReport(props) {
                   label='上传附件'
                   {...formincontentLayout}
                 >
-                  {getFieldDecorator('field4', {})
+                  {getFieldDecorator('operationFiles', {
+                    initialValue: '[]'
+                  })
                     (
                       <div style={{ width: 400 }}>
                         <SysUpload
                           fileslist={[]}
                           ChangeFileslist={newvalue => {
-                            setFieldsValue({ field4: JSON.stringify(newvalue.arr) })
+                            setFieldsValue({ operationFiles: JSON.stringify(newvalue.arr) })
                             setFilesList(newvalue);
                             setFiles(newvalue)
                           }}
@@ -881,13 +514,18 @@ function DatabaseReport(props) {
                 </Form.Item>
               </Col>
 
-              {/* 下周 */}
+              {/* 下周工作计划 */}
               <Col span={24}>
-                <Nextweek
+                <NextweekHomework
                   forminladeLayout={forminladeLayout}
                   startTime={startTime}
                   endTime={endTime}
-                  type={type}
+                  type={reporttype}
+                  nextOperationList={contentrowdata => {
+                    setNextOperationList(contentrowdata)
+                  }}
+                  nextOperationArr={copyData.nextOperationList ? copyData.nextOperationList : nextweekHomeworklist.rows}
+                  mainId={mainId}
                 />
               </Col>
 
@@ -896,13 +534,15 @@ function DatabaseReport(props) {
                   label='上传附件'
                   {...formincontentLayout}
                 >
-                  {getFieldDecorator('field5', {})
+                  {getFieldDecorator('nextOperationFiles', {
+                    initialValue: '[]'
+                  })
                     (
                       <div style={{ width: 400 }}>
                         <SysUpload
                           fileslist={[]}
                           ChangeFileslist={newvalue => {
-                            setFieldsValue({ field5: JSON.stringify(newvalue.arr) })
+                            setFieldsValue({ nextOperationFiles: JSON.stringify(newvalue.arr) })
                             setFilesList(newvalue);
                             setFiles(newvalue)
                           }}
@@ -912,6 +552,39 @@ function DatabaseReport(props) {
 
                 </Form.Item>
               </Col>
+
+              {loading === false && addTitle && addTitle.length > 0 && (
+                addTitle.map((item, index) => {
+                  return (
+                    <>
+                      <Col span={23}>
+                        <AddForm
+                          formincontentLayout={formincontentLayout}
+                          px={index + 6}
+                          addTable={newdata => {
+                            handleaddTable(newdata)
+                          }}
+                          dynamicData={addTitle[index]}
+                          list={addData => {
+                            setList(addData)
+                          }}
+                          index={index}
+                        />
+                      </Col>
+
+                      <Col span={1}>
+                        <Icon
+                          className="dynamic-delete-button"
+                          type="minus-circle-o"
+                          onClick={() => removeForm(index)}
+                        />
+                      </Col>
+
+                    </>
+                  )
+                })
+              )
+              }
 
               <Button
                 style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
@@ -919,116 +592,10 @@ function DatabaseReport(props) {
                 ghost
                 onClick={() => newMember()}
                 icon="plus"
-                disabled={secondbutton}
               >
                 新增
-            </Button>
+              </Button>
 
-
-              {loading === false && (
-                addTitle.map((item, index) => {
-                  return (
-                    <>
-                      <Col span={24}>
-                        <Form.Item label={titleNumber(index)} {...formincontentLayout}>
-                          {getFieldDecorator(`title${index}`, {
-                          })(
-                            <>
-                              <Input style={{ width: '60%', marginRight: 8 }} />
-                              <Icon
-                                className="dynamic-delete-button"
-                                type="minus-circle-o"
-                                onClick={() => remove(index)}
-                              />
-                            </>
-                          )}
-                        </Form.Item>
-                      </Col>
-
-
-                      <Col span={24}>
-                        <Form.Item label='内容' {...formincontentLayout}>
-                          {getFieldDecorator(`content${index}`, {
-
-                          })(
-                            <TextArea />
-                          )}
-                        </Form.Item>
-                      </Col>
-
-                      <Col span={24}>
-                        <Form.Item label='上传附件'    {...formincontentLayout}>
-                          {getFieldDecorator(`field${index}`, {
-
-                          })(
-                            <SysUpload
-                              fileslist={[]}
-                              ChangeFileslist={newvalue => {
-                                setFieldsValue({ field1: JSON.stringify(newvalue.arr) })
-                                // setFilesList(newvalue)
-                              }}
-                            />
-                          )}
-                        </Form.Item>
-                      </Col>
-
-                      <div style={{ display: 'block' }}>
-                        <Button
-                          type='primary'
-                          onClick={() => addTable(index)}
-                        >添加表格</Button>
-                        {/* </Col> */}
-
-                        {/* <Col span={24} style={{ textAlign: 'right' }}> */}
-
-                        {/* <Button
-                        type='primary'
-                      >添加列</Button> */}
-
-                      </div>
-
-                      {
-                        (addTitle[index].tableNumber).map((items, tableIndex) => {
-                          if (index === 0) {
-                            editTable()
-                          }
-                          return (
-                            <>
-                              <>
-                                <Button
-                                  style={{ marginTop: 10 }}
-                                  onClick={() => handleAddrows(index)}
-                                  type='primary'
-                                >添加行</Button>
-                                <div style={{ display: 'flex' }}>
-                                  <Col span={22}>
-
-                                    <Table
-                                      columns={initiacColumn}
-                                      dataSource={data}
-                                    />
-                                  </Col>
-
-                                  <Col span={2}>
-                                    <Icon
-                                      className="dynamic-delete-button"
-                                      type="minus-circle-o"
-                                      onClick={() => removeTable(index, tableIndex)}
-                                    />
-                                  </Col>
-                                </div>
-
-                              </>
-
-                            </>
-                          )
-                        })
-                      }
-                    </>
-                  )
-                })
-              )
-              }
 
             </Form>
           </Row>
@@ -1042,20 +609,14 @@ function DatabaseReport(props) {
 }
 
 export default Form.create({})(
-  connect(({ thisweekly, eventstatistics, loading }) => ({
-    maintenanceList: thisweekly.maintenanceList,
-    developmentList: thisweekly.developmentList,
-    submitdevelopmentlist: thisweekly.submitdevelopmentlist,
-    serviceCompletionlist: thisweekly.serviceCompletionlist,
-    serviceCompletionsecondlist: thisweekly.serviceCompletionsecondlist,
-    serviceCompletionthreelist: thisweekly.serviceCompletionthreelist,
-    thisWeekitsmlist: thisweekly.thisWeekitsmlist,
-    softCompletionlist: thisweekly.softCompletionlist,
-    completionsecondTablelist: thisweekly.completionsecondTablelist,
-    remainingDefectslist: thisweekly.remainingDefectslist,
-    lastweekHomeworklist: thisweekly.lastweekHomeworklist,
-    nextweekHomeworklist: thisweekly.nextweekHomeworklist,
-    loading: loading.models.thisweekly,
-    maintenanceArr: eventstatistics.maintenanceArr,
+  connect(({ softreport, loading }) => ({
+    maintenanceArr: softreport.maintenanceArr,
+    ordertopnArr: softreport.ordertopnArr,
+    maintenanceService: softreport.maintenanceService,
+    soluteArr: softreport.soluteArr,
+    thisWeekitsmlist: softreport.thisWeekitsmlist,
+    lastweekHomeworklist: softreport.lastweekHomeworklist,
+    nextweekHomeworklist: softreport.nextweekHomeworklist,
+    loading: loading.models.softreport,
   }))(DatabaseReport),
 );

@@ -22,6 +22,8 @@ function ServiceTableone(props) {
     startTime,
     endTime,
     tabActiveKey,
+    mainId,
+    typeArr,
     loading,
     dispatch
   } = props;
@@ -35,30 +37,31 @@ function ServiceTableone(props) {
   // 初始化把数据传过去
   useEffect(() => {
     // typeList(maintenanceArr)
-    if(loading === false && maintenanceArr && maintenanceArr.data) {
-      const result = JSON.parse(JSON.stringify(maintenanceArr.data)
-      .replace(/first_object/g, 'field1')
-      .replace(/second_object/g, 'field2')
-      .replace(/last_num/g, 'field3').replace(/now_num/g, 'field4')
-      .replace(/points_count/g, 'field5'))
-      if(result) {
+    if (maintenanceArr && maintenanceArr.length) {
+      const result = JSON.parse(JSON.stringify(maintenanceArr)
+        .replace(/first_object/g, 'field1')
+        .replace(/second_object/g, 'field2')
+        .replace(/last_num/g, 'field3').replace(/now_num/g, 'field4')
+        .replace(/points_count/g, 'field5'))
+      if (result) {
         typeList(result)
       }
     }
-  }, [maintenanceArr]);
+  }, [data]);
 
 
-   // 新增一条记录
-   const newMember = (params) => {
+
+  // 新增一条记录
+  const newMember = (params) => {
     setFilesList([]);
     setKeyUpload('');
     const newData = (data).map(item => ({ ...item }));
     newData.push({
       key: data.length + 1,
       id: '',
-      dd11: '新增数据',
+      dd11: '',
       dd22: '',
-      dd33: 'dd',
+      dd33: '',
       dd44: '',
     });
     setData(newData);
@@ -113,7 +116,7 @@ function ServiceTableone(props) {
   }
 
   const savedata = (target, id) => {
-    legacyList(data)
+    typeList(data)
   }
 
   const saveRow = (e, key) => {
@@ -139,19 +142,19 @@ function ServiceTableone(props) {
   }
 
   const handleTabledata = () => {
-    const newarr = remainingDefectslist.map((item, index) => {
-      return Object.assign(item, { editable: true, isNew: false, key: index })
-    })
-    setData(newarr)
+    // console.log(mainId?typeArr:maintenanceArr)
+    if (newbutton === false) {
+      const newarr = (maintenanceArr).map((item, index) => {
+        return Object.assign(item, { editable: true, isNew: false, key: index })
+      })
+      setData(newarr)
+    }
+
   }
 
-
-  const handlemaintenanserviceceArr = () => {
-    dispatch({
-      type: 'eventstatistics/fetchMaintenancelist',
-      payload: { tabActiveKey, startTime, endTime }
-    })
-  }
+  useEffect(() => {
+    handleTabledata();
+  }, [maintenanceArr])
 
   const column = [
     {
@@ -191,7 +194,7 @@ function ServiceTableone(props) {
       // }
     },
     {
-      title:  tabActiveKey === 'week' ? '上周':'上月',
+      title: tabActiveKey === 'week' ? '上周' : '上月',
       dataIndex: 'last_num',
       key: 'last_num',
       // render: (text, record) => {
@@ -209,7 +212,7 @@ function ServiceTableone(props) {
       // }
     },
     {
-      title: tabActiveKey === 'week' ? '本周':'本月',
+      title: tabActiveKey === 'week' ? '本周' : '本月',
       dataIndex: 'now_num',
       key: 'now_num',
       // render: (text, record) => {
@@ -245,49 +248,118 @@ function ServiceTableone(props) {
       // }
     },
   ];
-
-  useEffect(() => {
-    if (startTime && tabActiveKey) {
-      handlemaintenanserviceceArr()
-    }
-  }, [startTime])
-
-  // useEffect(() => {
-  //   if(loading === false) {
-  //     handleTabledata()
-  //   }
-  // },[loading])
+  const editColumn = [
+    {
+      title: '一级对象',
+      dataIndex: 'field1',
+      key: 'field1',
+      // render: (text, record) => {
+      //   if (record.isNew) {
+      //     return (
+      //       <Input
+      //         defaultValue={text}
+      //         onChange={e => handleFieldChange(e.target.value, 'field1', record.key)}
+      //       />
+      //     )
+      //   }
+      //   if (record.isNew === false) {
+      //     return <span>{text}</span>
+      //   }
+      // }
+    },
+    {
+      title: '二级对象',
+      dataIndex: 'field2',
+      key: 'field2',
+      // render: (text, record) => {
+      //   if (record.isNew) {
+      //     return (
+      //       <Input
+      //         defaultValue={text}
+      //         onChange={e => handleFieldChange(e.target.value, 'field1', record.key)}
+      //       />
+      //     )
+      //   }
+      //   if (record.isNew === false) {
+      //     return <span>{text}</span>
+      //   }
+      // }
+    },
+    {
+      title: tabActiveKey === 'week' ? '上周' : '上月',
+      dataIndex: 'field3',
+      key: 'field3',
+      // render: (text, record) => {
+      //   if (record.isNew) {
+      //     return (
+      //       <Input
+      //         defaultValue={text}
+      //         onChange={e => handleFieldChange(e.target.value, 'field1', record.key)}
+      //       />
+      //     )
+      //   }
+      //   if (record.isNew === false) {
+      //     return <span>{text}</span>
+      //   }
+      // }
+    },
+    {
+      title: tabActiveKey === 'week' ? '本周' : '本月',
+      dataIndex: 'field4',
+      key: 'field4',
+      // render: (text, record) => {
+      //   if (record.isNew) {
+      //     return (
+      //       <Input
+      //         defaultValue={text}
+      //         onChange={e => handleFieldChange(e.target.value, 'field1', record.key)}
+      //       />
+      //     )
+      //   }
+      //   if (record.isNew === false) {
+      //     return <span>{text}</span>
+      //   }
+      // }
+    },
+    {
+      title: '环比',
+      dataIndex: 'field5',
+      key: 'field5',
+      // render: (text, record) => {
+      //   if (record.isNew) {
+      //     return (
+      //       <Input
+      //         defaultValue={text}
+      //         onChange={e => handleFieldChange(e.target.value, 'field1', record.key)}
+      //       />
+      //     )
+      //   }
+      //   if (record.isNew === false) {
+      //     return <span>{text}</span>
+      //   }
+      // }
+    },
+  ];
 
   return (
     <>
-      {loading === false && (
-        <Row gutter={16}>
-          <Col span={24}>
-            <p style={{ fontWeight: '900', fontSize: '16px', marginTop: '20px' }}>三、运维服务指标完成情况</p>
-          </Col>
+      <Row gutter={16}>
+        <Col span={24}>
+          <p style={{ fontWeight: '900', fontSize: '16px', marginTop: '20px' }}>三、运维服务指标完成情况</p>
+        </Col>
 
-          <Col span={24}>
-            <p>（一）运维分类统计情况 </p>
-          </Col>
+        <Col span={24}>
+          <p>（一）运维分类统计情况 </p>
+        </Col>
 
-          <Table
-            columns={column}
-            dataSource={maintenanceArr.data}
-          />
-        </Row>
-
-      )}
-
+        <Table
+          columns={mainId ? editColumn : column}
+          dataSource={maintenanceArr}
+          pagination={false}
+        />
+      </Row>
     </>
   )
 }
 
-// export default Form.create({})(ServiceCompletion)
-export default Form.create({})(
-  connect(({ eventstatistics, loading }) => ({
-    maintenanceService: eventstatistics.maintenanceService,
-    maintenanceArr: eventstatistics.maintenanceArr,
-    soluteArr: eventstatistics.soluteArr,
-    loading: loading.models.eventstatistics
-  }))(ServiceTableone),
-);
+export default Form.create({})(ServiceTableone)

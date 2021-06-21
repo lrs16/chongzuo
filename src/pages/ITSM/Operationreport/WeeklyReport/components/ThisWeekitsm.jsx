@@ -34,9 +34,10 @@ function ThisWeekitsm(props) {
     forminladeLayout,
     formItemLayout,
     thisWeekitsmlist,
-    type,
+    reportType,
     eventList,
     eventArr,
+    mainId,
     ChangeFiles,
     searchNumber
   } = props;
@@ -49,12 +50,12 @@ function ThisWeekitsm(props) {
   const [spinloading, setSpinLoading] = useState(true);
   const [value, setValue] = useState('event');
 
-    // 初始化把数据传过去
-    useEffect(() => {
-      if (data && data.length) {
-        eventList(data)
-      }
-    }, [data]);
+  // 初始化把数据传过去
+  useEffect(() => {
+    // if (data && data.length) {
+      eventList(data)
+    // }
+  }, [data]);
   // 自动完成报障用户
   const disableduser = disablelist.map(obj => (
     <Option key={obj.type} value={obj.content} disableuser={obj}>
@@ -99,70 +100,21 @@ function ThisWeekitsm(props) {
     setData(newData)
   };
 
-  const thisWeekitsm = [
-    {
-      num1: 'num1',
-      num2: 'num2',
-      num3: 'num3',
-      num4: 'num4',
-      num5: 'num5',
-      num6: 'num6',
-      num7: 'num7',
-      num8: 'num8',
-    }
-  ]
-
   //  获取行  
   const getRowByKey = (key, newData) => {
     return (newData || data).filter(item => item.key === key)[0];
   }
 
+  const deleteObj = (key, newData) => {
+    return (newData || data).filter(item => item.key !== key);
+  }
+
   //  删除数据
   const remove = key => {
-    const target = getRowByKey(key) || {};
+    const target = deleteObj(key) || {};
+    setData(target)
   };
 
-  // 编辑记录
-  const toggleEditable = (e, key, record) => {
-
-    e.preventDefault();
-    const newData = data.map(item => ({ ...item })
-    );
-    const target = getRowByKey(key, newData);
-    if (target) {
-      if (!target.editable) {
-        setcacheOriginData({ key: { ...target } });
-      }
-      // target.editable = !target.editable;
-      target.isNew = true;
-      setData(newData);
-    }
-  }
-
-  //  点击编辑生成filelist
-  const handlefileedit = (key, values) => {
-    if (!values) {
-      setFilesList([]);
-    } else {
-      setFilesList(JSON.parse(values))
-    }
-  }
-
-  const savedata = (target, id) => {
-    eventList(data)
-  }
-
-  const saveRow = (e, key) => {
-    const target = getRowByKey(key) || {};
-    // delete target.key;
-    target.editable = false;
-    const id = target.id === '' ? '' : target.id;
-    savedata(target, id);
-    if (target.isNew) {
-      target.isNew = false
-      // setNewButton(false)
-    }
-  }
 
   const handleFieldChange = (e, fieldName, key) => {
     const newData = data.map(item => ({ ...item }));
@@ -179,7 +131,7 @@ function ThisWeekitsm(props) {
 
   // console.log(thisWeekitsmlist,'thisWeekitsmlist')
   const handleTabledata = () => {
-    if (eventArr) {
+    if(mainId) {
       const newarr = eventArr.map((item, index) => {
         return Object.assign(item, { editable: true, isNew: false, key: index })
       })
@@ -188,10 +140,9 @@ function ThisWeekitsm(props) {
   }
 
 
-
   useEffect(() => {
     handleTabledata();
-  }, [])
+  }, [eventArr])
 
   const column = [
     {
@@ -271,27 +222,8 @@ function ThisWeekitsm(props) {
       fixed: 'right',
       width: 120,
       render: (text, record) => {
-        if (record.isNew === true) {
-          return (
-            <span>
-              <a onClick={e => saveRow(e, record.key)}>保存</a>
-              <Divider type='vertical' />
-              <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
-                <a>删除</a>
-              </Popconfirm>
-            </span>
-          )
-        }
-
         return (
           <span>
-            <a
-              onClick={e => {
-                toggleEditable(e, record.key, record, 'secondTable');
-                // handlefileedit(record.key, record.attachment)
-              }}
-            >编辑</a>
-            <Divider type='vertical' />
             <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
               <a>删除</a>
             </Popconfirm>
@@ -302,18 +234,15 @@ function ThisWeekitsm(props) {
     }
   ];
 
-
   const selectOnchange = (selectvalue) => {
     setValue(selectvalue);
   }
-
-
 
   return (
     <>
       <Row gutter={16}>
         <Col span={20}>
-          <p style={{ fontWeight: '900', fontSize: '16px' }}>{type === 'week' ? '四、本周事件、问题及故障' : '四、本月事件、问题及故障'}</p>
+          <p style={{ fontWeight: '900', fontSize: '16px' }}>{reportType === 'week' ? '四、本周事件、问题及故障' : '四、本月事件、问题及故障'}</p>
         </Col>
         <Form {...formItemLayout}>
           <Row gutter={16}>
@@ -350,7 +279,7 @@ function ThisWeekitsm(props) {
                       // allowClear
                       />
                     </AutoComplete>,
-              </>
+                  </>
                 )}
               </Form.Item>
             </Col>
@@ -362,6 +291,7 @@ function ThisWeekitsm(props) {
         <Table
           columns={column}
           dataSource={data}
+          pagination={false}
         />
 
 
