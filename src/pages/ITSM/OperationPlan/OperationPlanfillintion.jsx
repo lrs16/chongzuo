@@ -116,7 +116,8 @@ function OperationPlanfillintion(props) {
   const handleClose = () => {
     router.push({
       pathname: `/ITSM/operationplan/myoperationplan`,
-      query: { pathpush: true }
+      query: { pathpush: true },
+      state: { cach: false }
     });
   }
 
