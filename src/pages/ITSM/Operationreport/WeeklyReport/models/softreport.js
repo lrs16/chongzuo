@@ -66,6 +66,7 @@ export default {
               query: {
                 reporttype: type,
                 mainId,
+                orderNo:'',
               },
               state: {}
             })
@@ -105,7 +106,6 @@ export default {
 
       //  保存机房
     *saveComputer({payload},{call,put}) {
-        console.log('payload: ', payload);
         if(payload.status) {
           const response = yield call(addReport);
           if(response.code === 200) {
@@ -117,10 +117,20 @@ export default {
             const saveresponse = yield call(saveComputerRoom,saveData);
             if(saveresponse.code === 200) {
               route.push({
+                pathname: `/ITSM/operationreport/weeklyreport/computerroomreport`,
+                query: { 
+                  // mainId,
+                  tabid: sessionStorage.getItem('tabid'),
+                   closecurrent: true,
+                  //  addtab:true
+                   }
+              })
+              route.push({
                 pathname: `/ITSM/operationreport/weeklyreport/computerroomreportdetail`,
                 query: {
                   reporttype: type,
                   mainId,
+                  orderNo:mainId,
                 },
               })
             }
@@ -144,11 +154,20 @@ export default {
           const saveresponse = yield call(saveDataBase,saveData);
           if(saveresponse.code === 200) {
             route.push({
+              pathname: `/ITSM/operationreport/weeklyreport/databasereport`,
+              query: { 
+                tabid: sessionStorage.getItem('tabid'),
+                 closecurrent: true
+                 }
+            })
+            route.push({
               pathname: `/ITSM/operationreport/weeklyreport/databasereportdetail`,
               query: {
                 reporttype: type,
                 mainId,
+                orderNo:mainId,
               },
+              state: {}
             })
           }
         }
@@ -170,11 +189,20 @@ export default {
           const saveresponse = yield call(saveOther,saveData);
           if(saveresponse.code === 200) {
             route.push({
+              pathname: `/ITSM/operationreport/weeklyreport/otherreport`,
+              query: { 
+                tabid: sessionStorage.getItem('tabid'),
+                 closecurrent: true
+                 }
+            })
+            route.push({
               pathname: `/ITSM/operationreport/weeklyreport/otherreportdetail`,
               query: {
                 reporttype: type,
                 mainId,
+                orderNo:mainId,
               },
+              state: {}
             })
           }
         }

@@ -62,6 +62,7 @@ function WeeklySearch(props) {
   const [paginations, setPaginations] = useState({ current: 1, pageSize: 10 });
   const [selectedrows, setSelectedrows] = useState('');
   const [selectdata, setSelectData] = useState('');
+
   const columns = [
     {
       title: '周报类型',
@@ -76,6 +77,7 @@ function WeeklySearch(props) {
                 query: {
                   mainId: record.id,
                   reporttype: 'week',
+                  orderNo: text,
                   reportSearch:true
                 },
               });
@@ -86,6 +88,7 @@ function WeeklySearch(props) {
                 query: {
                   mainId: record.id,
                   reporttype: 'week',
+                  orderNo: text,
                   reportSearch:true
                 },
               });
@@ -96,6 +99,7 @@ function WeeklySearch(props) {
                 query: {
                   mainId: record.id,
                   reporttype: 'week',
+                  orderNo: text,
                   reportSearch:true
                 },
               });
@@ -106,6 +110,7 @@ function WeeklySearch(props) {
                 query: {
                   mainId: record.id,
                   reporttype: 'week',
+                  orderNo: text,
                   reportSearch:true
                 },
               });

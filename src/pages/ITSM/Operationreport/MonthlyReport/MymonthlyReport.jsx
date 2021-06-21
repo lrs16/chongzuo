@@ -124,7 +124,7 @@ function MymonthlyReport(props) {
 
   const selectOnchage = (data) => {
     switch (data) {
-      case '软件运维周报':
+      case '软件运维月报':
         router.push({
           pathname: `/ITSM/operationreport/weeklyreport/softreport/`,
           query: {
@@ -133,7 +133,7 @@ function MymonthlyReport(props) {
           }
         })
         break;
-      case '机房运维周报':
+      case '机房运维月报':
         router.push({
           pathname: `/ITSM/operationreport/weeklyreport/computerroomreport`,
           query: {
@@ -142,7 +142,7 @@ function MymonthlyReport(props) {
           }
         })
         break;
-      case '数据库运维周报':
+      case '数据库运维月报':
         router.push({
           pathname: `/ITSM/operationreport/weeklyreport/databasereport`,
           query: {
@@ -151,7 +151,7 @@ function MymonthlyReport(props) {
           }
         })
         break;
-      case '其他运维周报':
+      case '其他运维月报':
         router.push({
           pathname: `/ITSM/operationreport/weeklyreport/otherreport`,
           query: {

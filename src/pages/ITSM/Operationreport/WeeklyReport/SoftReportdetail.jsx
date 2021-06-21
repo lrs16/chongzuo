@@ -350,7 +350,7 @@ function SoftReportdetail(props) {
                     initialValue: main ? main.name : ''
                   })
                     (
-                      <Input disabled={reportSearch}/>
+                      <Input disabled={reportSearch} />
                     )}
                 </Form.Item>
               </Col>
@@ -481,7 +481,11 @@ function SoftReportdetail(props) {
                   {
                     getFieldDecorator('security', {
                       initialValue: openReportlist.security ? openReportlist.security : ''
-                    })(<TextArea autoSize={{ minRows: 3 }} />)
+                    })(
+                      <TextArea
+                        autoSize={{ minRows: 3 }}
+                        disabled={reportSearch}
+                      />)
                   }
                 </Form.Item>
               </Col>
@@ -539,7 +543,11 @@ function SoftReportdetail(props) {
                   {
                     getFieldDecorator('typeContent', {
                       initialValue: openReportlist.typeContent ? openReportlist.typeContent : ''
-                    })(<TextArea autoSize={{ minRows: 3 }} />)
+                    })(
+                      <TextArea
+                        autoSize={{ minRows: 3 }}
+                        disabled={reportSearch}
+                      />)
                   }
                 </Form.Item>
               </Col>
@@ -573,7 +581,11 @@ function SoftReportdetail(props) {
                     getFieldDecorator('selfhandleContent', {
                       initialValue: openReportlist.selfhandleContent ? openReportlist.selfhandleContent : ''
                     })
-                      (<TextArea autoSize={{ minRows: 3 }} />)
+                      (
+                        <TextArea
+                          autoSize={{ minRows: 3 }}
+                          disabled={reportSearch}
+                        />)
                   }
                 </Form.Item>
               </Col>
@@ -731,7 +743,11 @@ function SoftReportdetail(props) {
                     getFieldDecorator('completeContent', {
                       initialValue: openReportlist.completeContent ? openReportlist.completeContent : ''
                     })
-                      (<TextArea autoSize={{ minRows: 3 }} />)
+                      (
+                        <TextArea
+                          autoSize={{ minRows: 3 }}
+                          disabled={reportSearch}
+                        />)
                   }
                 </Form.Item>
               </Col>

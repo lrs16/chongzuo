@@ -67,7 +67,7 @@ function OperationmyweeklyReport(props) {
                 query: {
                   mainId: record.id,
                   reporttype: 'week',
-                  pathpush: true,
+                  orderNo: '',
                 },
               });
               break;
@@ -77,7 +77,7 @@ function OperationmyweeklyReport(props) {
                 query: {
                   mainId: record.id,
                   reporttype: 'week',
-                  pathpush: true,
+                  orderNo: '',
                 },
               });
               break;
@@ -87,7 +87,7 @@ function OperationmyweeklyReport(props) {
                 query: {
                   mainId: record.id,
                   reporttype: 'week',
-                  pathpush: true,
+                  orderNo: '',
                 },
               });
               break;
@@ -97,7 +97,7 @@ function OperationmyweeklyReport(props) {
                 query: {
                   mainId: record.id,
                   reporttype: 'week',
-                  pathpush: true,
+                  orderNo: '',
                 },
               });
               break;
@@ -137,7 +137,7 @@ function OperationmyweeklyReport(props) {
             status: 'add',
             listreportType:selectedRows?.length?selectedRows[0].type:'',
             listId:selectedRows?.length?selectedRows[0].id:'',
-            pathpush: true
+            addtab: true,
           }
         })
         break;
@@ -149,7 +149,7 @@ function OperationmyweeklyReport(props) {
             status: 'add',
             listreportType:selectedRows?.length?selectedRows[0].type:'',
             listId:selectedRows?.length?selectedRows[0].id:'',
-            pathpush: true
+            addtab: true,
           }
         })
         break;
@@ -161,7 +161,7 @@ function OperationmyweeklyReport(props) {
             status: 'add',
             listreportType:selectedRows?.length?selectedRows[0].type:'',
             listId:selectedRows?.length?selectedRows[0].id:'',
-            pathpush: true
+            addtab: true,
           }
         })
         break;
@@ -173,7 +173,7 @@ function OperationmyweeklyReport(props) {
             status: 'add',
             listreportType:selectedRows?.length?selectedRows[0].type:'',
             listId:selectedRows?.length?selectedRows[0].id:'',
-            pathpush: true
+            addtab: true,
           }
         })
         break;

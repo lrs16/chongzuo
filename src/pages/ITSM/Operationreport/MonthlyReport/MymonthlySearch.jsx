@@ -78,6 +78,7 @@ function MymonthlySearch(props) {
                 query: {
                   mainId: record.id,
                   reporttype: 'month',
+                  orderNo: text,
                   reportSearch:true
                 },
               });
@@ -88,6 +89,7 @@ function MymonthlySearch(props) {
                 query: {
                   mainId: record.id,
                   reporttype: 'month',
+                  orderNo: text,
                   reportSearch:true
                 },
               });
@@ -98,6 +100,7 @@ function MymonthlySearch(props) {
                 query: {
                   mainId: record.id,
                   reporttype: 'month',
+                  orderNo: text,
                   reportSearch:true
                 },
               });
@@ -108,6 +111,7 @@ function MymonthlySearch(props) {
                 query: {
                   mainId: record.id,
                   reporttype: 'month',
+                  orderNo: text,
                   reportSearch:true
                 },
               });
@@ -118,7 +122,6 @@ function MymonthlySearch(props) {
 
         }
         return <a onClick={handleClick}>{text}</a>
-
       }
     },
     {
