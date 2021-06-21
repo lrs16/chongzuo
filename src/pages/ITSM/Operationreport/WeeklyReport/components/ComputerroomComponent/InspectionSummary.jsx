@@ -32,6 +32,11 @@ function InspectionSummary(props) {
     }
   }, [data]);
 
+  const handleSave = () => {
+    materialsList(data);
+    message.info('暂存保存数据成功')
+  }
+
   // 新增一条记录
   const newMember = (params) => {
     const newData = (data).map(item => ({ ...item }));
@@ -141,6 +146,12 @@ function InspectionSummary(props) {
       <Row gutter={16}>
         <Col span={20}>
           <p>(2)运维材料提交情况</p>
+        </Col>
+
+        <Col span={24}>
+          <Button
+            type='primary'
+            onClick={handleSave}>保存</Button>
         </Col>
 
         <Table

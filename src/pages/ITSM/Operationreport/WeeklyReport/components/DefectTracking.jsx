@@ -37,6 +37,11 @@ function DefectTracking(props) {
       legacyList(data)
     }
   }, [data]);
+
+  const handleSave = () => {
+    legacyList(data);
+    message.info('暂存保存数据成功')
+  }
   // 新增一条记录
   const newMember = (params) => {
     const newData = (data).map(item => ({ ...item }));
@@ -192,6 +197,12 @@ function DefectTracking(props) {
       <Row gutter={16}>
         <Col span={24}>
           <p style={{ fontWeight: '900', fontSize: '16px', marginTop: '20px' }}>六、遗留缺陷问题跟踪,遗留问题、缺陷跟踪情况</p>
+        </Col>
+
+        <Col span={24}>
+          <Button
+            type='primary'
+            onClick={handleSave}>保存</Button>
         </Col>
 
         <Table

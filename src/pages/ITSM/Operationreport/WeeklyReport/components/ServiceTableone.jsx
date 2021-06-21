@@ -7,7 +7,8 @@ import {
   Row,
   Button,
   Divider,
-  Popconfirm
+  Popconfirm,
+  message
 } from 'antd';
 import { connect } from 'dva';
 import SysUpload from '@/components/SysUpload';
@@ -73,50 +74,9 @@ function ServiceTableone(props) {
     return (newData || data).filter(item => item.key === key)[0];
   }
 
-  //  删除数据
-  const remove = key => {
-    const target = getRowByKey(key) || {};
-    // dispatch({
-    //   type: 'chacklist/trackdelete',
-    //   payload: {
-    //     id: target.id,
-    //   },
-    // }).then(res => {
-    //   if (res.code === 200) {
-    //     message.success(res.msg, 2);
-    //     getlistdata();
-    //   }
-    // });
-  };
-
-  // 编辑记录
-  const toggleEditable = (e, key, record) => {
-
-    e.preventDefault();
-    const newData = data.map(item => ({ ...item })
-    );
-    const target = getRowByKey(key, newData);
-    if (target) {
-      if (!target.editable) {
-        setcacheOriginData({ key: { ...target } });
-      }
-      // target.editable = !target.editable;
-      target.isNew = true;
-      setData(newData);
-    }
-  }
-
-  //  点击编辑生成filelist
-  const handlefileedit = (key, values) => {
-    if (!values) {
-      setFilesList([]);
-    } else {
-      setFilesList(JSON.parse(values))
-    }
-  }
-
-  const savedata = (target, id) => {
-    typeList(data)
+  const handleSave = () => {
+    typeList(data);
+    message.info('暂存保存数据成功')
   }
 
   const saveRow = (e, key) => {
@@ -347,6 +307,13 @@ function ServiceTableone(props) {
         <Col span={24}>
           <p style={{ fontWeight: '900', fontSize: '16px', marginTop: '20px' }}>三、运维服务指标完成情况</p>
         </Col>
+
+        <Col span={24}>
+          <Button
+            type='primary'
+            onClick={handleSave}>保存</Button>
+        </Col>
+
 
         <Col span={24}>
           <p>（一）运维分类统计情况 </p>

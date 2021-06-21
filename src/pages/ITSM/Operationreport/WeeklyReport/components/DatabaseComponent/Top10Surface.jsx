@@ -41,6 +41,11 @@ const Top10Surface = React.forwardRef((props, ref) => {
       tablespaceList(data)
     }
   }, [data]);
+
+  const handleSave = () => {
+    discList(data);
+    message.info('暂存保存数据成功')
+  }
   // 新增一条记录
   const newMember = (params) => {
     setFilesList([]);
@@ -191,6 +196,12 @@ const Top10Surface = React.forwardRef((props, ref) => {
       <Row gutter={16}>
         <Col span={20}>
           <p>Top10表空间(正常增长范围120GB-150GB)</p>
+        </Col>
+
+        <Col span={24}>
+          <Button
+            type='primary'
+            onClick={handleSave}>保存</Button>
         </Col>
 
         <Table

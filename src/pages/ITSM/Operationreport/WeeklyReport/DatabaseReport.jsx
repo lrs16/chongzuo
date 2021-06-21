@@ -383,9 +383,10 @@ function DatabaseReport(props) {
               <Col span={24}>
                 <Diskgroup
                   forminladeLayout={forminladeLayout}
-                  discArr={copyData.discList ? copyData.discList : []}
+                  discArr={[]}
+                  // discArr={copyData.discList ? copyData.discList : []}
                   discList={contentrowdata => {
-                    setDiscList(contentrowdata)
+                    // setDiscList(contentrowdata)
                   }}
                 />
               </Col>

@@ -36,6 +36,11 @@ function WeeklyMeeting(props) {
       meetingSummaryList(data)
     }
   }, [data]);
+
+  const handleSave = () => {
+    materialsList(data);
+    message.info('暂存保存数据成功')
+  }
   // 新增一条记录
   const newMember = (params) => {
     setFilesList([]);
@@ -68,14 +73,13 @@ function WeeklyMeeting(props) {
   }
 
   const handleTabledata = () => {
-    if(newbutton === false) {
+    if (newbutton === false) {
       const newarr = meetingSummaryarr.map((item, index) => {
         return Object.assign(item, { editable: true, isNew: false, key: index })
       })
       setData(newarr)
     }
   }
-
 
   const column = [
     {
@@ -132,7 +136,6 @@ function WeeklyMeeting(props) {
         )
         // }
       }
-
     }
 
   ];
@@ -148,6 +151,13 @@ function WeeklyMeeting(props) {
         <Col span={20}>
           <p style={{ fontWeight: '900', fontSize: '16px' }}>{type === 'week' ? '5 周例会会议纪要完成情况' : '5 月例会会议纪要完成情况'}</p>
         </Col>
+
+        <Col span={24}>
+          <Button
+            type='primary'
+            onClick={handleSave}>保存</Button>
+        </Col>
+
 
         <Table
           columns={column}

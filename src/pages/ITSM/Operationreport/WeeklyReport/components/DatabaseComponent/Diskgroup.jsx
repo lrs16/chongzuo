@@ -7,7 +7,8 @@ import {
   Row,
   Button,
   Divider,
-  Popconfirm
+  Popconfirm,
+  message
 } from 'antd';
 import { connect } from 'dva';
 import SysUpload from '@/components/SysUpload';
@@ -38,10 +39,17 @@ const Diskgroup = React.forwardRef((props, ref) => {
 
   // 初始化把数据传过去
   useEffect(() => {
-    if (data) {
+    if (data && data.length) {
       discList(data);
     }
   }, [data]);
+
+  const handleSave = () => {
+    discList(data);
+    message.info('暂存保存数据成功')
+  }
+
+
   // 新增一条记录
   const newMember = (params) => {
     setFilesList([]);
@@ -178,6 +186,12 @@ const Diskgroup = React.forwardRef((props, ref) => {
       <Row gutter={16}>
         <Col span={20}>
           <p>磁盘组</p>
+        </Col>
+
+        <Col span={24}>
+          <Button
+            type='primary'
+            onClick={handleSave}>保存</Button>
         </Col>
 
         <Table

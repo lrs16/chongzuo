@@ -28,7 +28,7 @@ useEffect(() => {
       selfhandleRow(result)
     }
   }
-}, []);
+}, [soluteArr]);
 
   const threeColumn = [
     {

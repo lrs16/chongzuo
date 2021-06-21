@@ -45,6 +45,11 @@ const PatrolAndExamine = React.forwardRef((props, ref) => {
     }
   }, [data]);
 
+  const handleSave = () => {
+    patrolAndExamineList(data);
+    message.info('暂存保存数据成功')
+  }
+
   // 新增一条记录
   const newMember = (params) => {
     setFilesList([]);
@@ -214,6 +219,12 @@ const PatrolAndExamine = React.forwardRef((props, ref) => {
 
         <Col span={24}>
           <p style={{ marginTop: '20px' }}>（二）巡检情况</p>
+        </Col>
+
+        <Col span={24}>
+          <Button
+            type='primary'
+            onClick={handleSave}>保存</Button>
         </Col>
 
         <Table

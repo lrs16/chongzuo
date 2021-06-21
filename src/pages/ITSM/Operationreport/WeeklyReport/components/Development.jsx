@@ -9,6 +9,7 @@ import {
   Divider,
   Popconfirm,
   Select,
+  message
 } from 'antd';
 import { connect } from 'dva';
 import SysUpload from '@/components/SysUpload';
@@ -44,6 +45,11 @@ const Development = React.forwardRef((props, ref) => {
       materialsList(data)
     }
   }, [data]);
+
+  const handleSave = () => {
+    materialsList(data);
+    message.info('暂存保存数据成功')
+  }
 
   // 新增一条记录
   const newMember = (params) => {
@@ -152,6 +158,13 @@ const Development = React.forwardRef((props, ref) => {
         <Col span={20}>
           <p>运维材料提交情况</p>
         </Col>
+
+        <Col span={24}>
+          <Button
+            type='primary'
+            onClick={handleSave}>保存</Button>
+        </Col>
+
 
         <Table
           columns={column}

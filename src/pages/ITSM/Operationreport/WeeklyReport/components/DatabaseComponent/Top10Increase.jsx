@@ -7,7 +7,8 @@ import {
   Row,
   Button,
   Divider,
-  Popconfirm
+  Popconfirm,
+  message
 } from 'antd';
 
 const { TextArea } = Input;
@@ -41,6 +42,11 @@ const Top10Increase = React.forwardRef((props, ref) => {
       tableUpList(data)
     }
   }, [data]);
+
+  const handleSave = () => {
+    tableUpList(data);
+    message.info('暂存保存数据成功')
+  }
   // 新增一条记录
   const newMember = (params) => {
     setFilesList([]);
@@ -231,6 +237,12 @@ const Top10Increase = React.forwardRef((props, ref) => {
       <Row gutter={16}>
         <Col span={20}>
           <p>Top10表增长情况</p>
+        </Col>
+
+        <Col span={24}>
+          <Button
+            type='primary'
+            onClick={handleSave}>保存</Button>
         </Col>
 
         <Table

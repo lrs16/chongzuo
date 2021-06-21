@@ -10,7 +10,8 @@ import {
   Select,
   AutoComplete,
   Spin,
-  Button
+  Button,
+  message
 } from 'antd';
 import SysUpload from '@/components/SysUpload';
 import { queryOrder, queryUnitList, queryDeptList } from '@/services/common';
@@ -52,10 +53,15 @@ function ThisWeekitsm(props) {
 
   // 初始化把数据传过去
   useEffect(() => {
-    // if (data && data.length) {
-      eventList(data)
-    // }
+    if (data && data.length) {
+    eventList(data)
+    }
   }, [data]);
+
+  const handleSave = () => {
+    eventList(data);
+    message.info('暂存保存数据成功')
+  }
   // 自动完成报障用户
   const disableduser = disablelist.map(obj => (
     <Option key={obj.type} value={obj.content} disableuser={obj}>
@@ -68,7 +74,6 @@ function ThisWeekitsm(props) {
     </Option>
 
   ));
-
 
   // 请求报障用户
   const SearchDisableduser = searchvalues => {
@@ -131,7 +136,7 @@ function ThisWeekitsm(props) {
 
   // console.log(thisWeekitsmlist,'thisWeekitsmlist')
   const handleTabledata = () => {
-    if(mainId) {
+    if (mainId) {
       const newarr = eventArr.map((item, index) => {
         return Object.assign(item, { editable: true, isNew: false, key: index })
       })
@@ -287,6 +292,12 @@ function ThisWeekitsm(props) {
           </Row>
 
         </Form>
+
+        <Col span={24}>
+          <Button
+            type='primary'
+            onClick={handleSave}>保存</Button>
+        </Col>
 
         <Table
           columns={column}

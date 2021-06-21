@@ -266,7 +266,6 @@ function ComputerroomReport(props) {
     setAddTitle(nowNumber)
   }
 
-  console.log()
   return (
     <PageHeaderWrapper
       title={reporttype === 'week' ? '新建机房运维周报' : '新建机房运维月报'}

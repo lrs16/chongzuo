@@ -37,6 +37,11 @@ function UpgradeList(props) {
       upgradeList(data)
     }
   }, [data]);
+
+  const handleSave = () => {
+    upgradeList(data);
+    message.info('暂存保存数据成功')
+  }
   // 新增一条记录
   const newMember = (params) => {
     setFilesList([]);
@@ -217,6 +222,13 @@ function UpgradeList(props) {
 
         <Col span={24}>
           <p>(1)数据库本周进行了补丁升级工作次</p>
+        </Col>
+
+        
+        <Col span={24}>
+          <Button
+            type='primary'
+            onClick={handleSave}>保存</Button>
         </Col>
 
         <Table

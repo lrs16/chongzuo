@@ -46,6 +46,12 @@ function NextweekHomework(props) {
       }
     }
   }, [data]);
+
+  const handleSave = () => {
+    materialsList(data);
+    message.info('暂存保存数据成功')
+  }
+
   //  获取行  
   const getRowByKey = (key, newData) => {
     return (newData || data).filter(item => item.key === key)[0];
@@ -367,6 +373,12 @@ function NextweekHomework(props) {
   return (
     <>
       <Row gutter={16}>
+
+        <Col span={24}>
+          <Button
+            type='primary'
+            onClick={handleSave}>保存</Button>
+        </Col>
 
         <Table
           columns={newColumns}

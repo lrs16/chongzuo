@@ -40,6 +40,12 @@ function UpgradeList(props) {
     }
   }, [data]);
 
+  const handleSave = () => {
+    updateList(data);
+    message.info('暂存保存数据成功')
+  }
+
+
   // 新增一条记录
   const newMember = (params) => {
     setFilesList([]);
@@ -179,6 +185,12 @@ function UpgradeList(props) {
 
         <Col span={24}>
           <p>(2)计划{startTime}至{endTime},计量自动化系统开展 次发布变更（消缺），变更内容如下</p>
+        </Col>
+
+        <Col span={24}>
+          <Button
+            type='primary'
+            onClick={handleSave}>保存</Button>
         </Col>
 
         <Table

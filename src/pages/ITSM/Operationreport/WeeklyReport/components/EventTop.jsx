@@ -122,34 +122,8 @@ function EventTop(props) {
     setData(target)
   };
 
-  // 编辑记录
-  const toggleEditable = (e, key, record) => {
 
-    e.preventDefault();
-    const newData = data.map(item => ({ ...item })
-    );
-    const target = getRowByKey(key, newData);
-    if (target) {
-      if (!target.editable) {
-        setcacheOriginData({ key: { ...target } });
-      }
-      // target.editable = !target.editable;
-      target.isNew = true;
-      setData(newData);
-    }
-  }
-
-  //  点击编辑生成filelist
-  const handlefileedit = (key, values) => {
-    if (!values) {
-      setFilesList([]);
-    } else {
-      setFilesList(JSON.parse(values))
-    }
-  }
-
-  const savedata = (target, id) => {
-    console.log(data, 'data')
+  const handleSave = (target, id) => {
     topNList(data)
   }
 
@@ -378,6 +352,12 @@ function EventTop(props) {
 
         </Form>
 
+        <Col span={24}>
+          <Button
+            type='primary'
+            onClick={handleSave}>保存</Button>
+        </Col>
+        
         <Table
           columns={newColumns}
           dataSource={data}

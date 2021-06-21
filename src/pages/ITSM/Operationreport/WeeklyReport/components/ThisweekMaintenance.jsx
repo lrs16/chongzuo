@@ -9,6 +9,7 @@ import {
   Divider,
   Popconfirm,
   Select,
+  message
 } from 'antd';
 import { connect } from 'dva';
 import SysUpload from '@/components/SysUpload';
@@ -41,6 +42,11 @@ const ThisweekMaintenance = React.forwardRef((props, ref) => {
       contentRow(data)
     }
   }, [data]);
+
+  const handleSave = () => {
+    contentRow(data);
+    message.info('暂存保存数据成功')
+  }
 
   const addData = [
     {
@@ -76,7 +82,6 @@ const ThisweekMaintenance = React.forwardRef((props, ref) => {
     setData(newarr)
   }
 
-  console.log(data,'data')
 
   const column = [
     {
@@ -210,6 +215,12 @@ const ThisweekMaintenance = React.forwardRef((props, ref) => {
       <Row gutter={16}>
         <Col span={20}>
           <p>运维材料提交情况</p>
+        </Col>
+
+        <Col span={24}>
+          <Button
+            type='primary'
+            onClick={handleSave}>保存</Button>
         </Col>
 
         <Table

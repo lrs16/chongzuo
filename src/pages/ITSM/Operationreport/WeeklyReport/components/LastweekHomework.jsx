@@ -27,23 +27,28 @@ function LastweekHomework(props) {
   // 初始化把软件运维服务指标完成情况数据传过去
   useEffect(() => {
     // typeList(maintenanceArr)
-    if(data && data.length) {
-    const result = JSON.parse(JSON.stringify(data)
-      .replace(/updateTime/g, 'field1')
-      .replace(/nature/g, 'field2')
-      .replace(/object/g, 'field3')
-      .replace(/content/g, 'field4')
-      .replace(/plannedEndTime/g, 'field5')
-      .replace(/status/g, 'field6')
-      .replace(/operationUser/g, 'field7')
-      .replace(/operationUnit/g, 'field8')
-      .replace(/remark/g, 'field9')
-    )
-    if (result) {
-      operationList(result)
-    }
+    if (data && data.length) {
+      const result = JSON.parse(JSON.stringify(data)
+        .replace(/updateTime/g, 'field1')
+        .replace(/nature/g, 'field2')
+        .replace(/object/g, 'field3')
+        .replace(/content/g, 'field4')
+        .replace(/plannedEndTime/g, 'field5')
+        .replace(/status/g, 'field6')
+        .replace(/operationUser/g, 'field7')
+        .replace(/operationUnit/g, 'field8')
+        .replace(/remark/g, 'field9')
+      )
+      if (result) {
+        operationList(result)
+      }
     }
   }, [data]);
+
+  const handleSave = () => {
+    materialsList(data);
+    message.info('暂存保存数据成功')
+  }
   //  获取行  
   const getRowByKey = (key, newData) => {
     return (newData || data).filter(item => item.key === key)[0];
@@ -75,11 +80,12 @@ function LastweekHomework(props) {
 
   const handleTabledata = () => {
     // if(operationArr) {
-      console.log('operationArr: ', operationArr);
-      const newarr = operationArr.map((item, index) => {
+    if (operationArr) {
+      const newarr = (operationArr).map((item, index) => {
         return Object.assign(item, { editable: true, isNew: false, key: index })
       })
       setData(newarr)
+    }
     // }
   }
 
@@ -354,11 +360,11 @@ function LastweekHomework(props) {
     }
   ];
 
-  const [newColumns,setNewColumns] = useState(column);
+  const [newColumns, setNewColumns] = useState(column);
 
   useEffect(() => {
     handleTabledata();
-    if(mainId) {
+    if (mainId) {
       setNewColumns(editColumns)
     }
   }, [operationArr])
@@ -366,6 +372,13 @@ function LastweekHomework(props) {
   return (
     <>
       <Row gutter={16}>
+
+        <Col span={24}>
+          <Button
+            type='primary'
+            onClick={handleSave}>保存</Button>
+        </Col>
+
         <Table
           columns={newColumns}
           dataSource={data}

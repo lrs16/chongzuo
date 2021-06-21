@@ -32,10 +32,15 @@ const QuestionsComments = React.forwardRef((props, ref) => {
 
   // 初始化把数据传过去
   useEffect(() => {
-    if(data && data.length) {
+    if (data && data.length) {
       defectList(data)
     }
   }, [data]);
+
+  const handleSave = () => {
+    discList(data);
+    message.info('暂存保存数据成功')
+  }
 
   // 新增一条记录
   const newMember = (params) => {
@@ -155,6 +160,12 @@ const QuestionsComments = React.forwardRef((props, ref) => {
       <Row gutter={16}>
         <Col span={20}>
           <p style={{ fontWeight: '900', fontSize: '16px' }}>三、发现问题及修改建议</p>
+        </Col>
+
+        <Col span={24}>
+          <Button
+            type='primary'
+            onClick={handleSave}>保存</Button>
         </Col>
 
         <Table

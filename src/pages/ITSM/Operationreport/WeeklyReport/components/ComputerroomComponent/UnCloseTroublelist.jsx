@@ -33,7 +33,7 @@ function UnCloseTroublelist(props) {
   // 初始化把数据传过去
   useEffect(() => {
     // typeList(maintenanceArr)
-    // if(data && data.length) {
+    if(data && data.length) {
     const result = JSON.parse(JSON.stringify(data)
       .replace(/addTime/g, 'field1')
       .replace(/typecn/g, 'field2')
@@ -41,8 +41,13 @@ function UnCloseTroublelist(props) {
     if (result) {
       unCloseTroubleList(result)
     }
-    // }
+    }
   }, [data]);
+
+  const handleSave = () => {
+    unCloseTroubleList(data);
+    message.info('暂存保存数据成功')
+  }
 
   // 新增一条记录
   const newMember = (params) => {
@@ -256,6 +261,13 @@ function UnCloseTroublelist(props) {
         <Col span={20}>
           <p>3.2未修复故障清单</p>
         </Col>
+
+        <Col span={24}>
+          <Button
+            type='primary'
+            onClick={handleSave}>保存</Button>
+        </Col>
+
 
         <Table
           columns={newColumns}

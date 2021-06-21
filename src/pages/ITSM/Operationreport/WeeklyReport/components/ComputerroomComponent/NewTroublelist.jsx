@@ -43,6 +43,11 @@ function NewTroublelist(props) {
     }
   }, [data]);
 
+  const handleSave = () => {
+    newTroubleList(data);
+    message.info('暂存保存数据成功')
+  }
+
   // 新增一条记录
   const newMember = (params) => {
     const newData = (data).map(item => ({ ...item }));
@@ -334,6 +339,12 @@ function NewTroublelist(props) {
         </Col>
         <Col span={20}>
           <p>3.1新增及已修复故障</p>
+        </Col>
+
+        <Col span={24}>
+          <Button
+            type='primary'
+            onClick={handleSave}>保存</Button>
         </Col>
 
         <Table
