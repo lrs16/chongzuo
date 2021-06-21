@@ -69,6 +69,8 @@ const multiplepath = [
   { path: '/ITSM/problemmanage/registration', type: 'problem' },
   { path: '/ITSM/demandmanage/registration', type: 'demand' },
   { path: '/ITSM/operationplan/operationplanfillin', type: 'operation' },
+  { path: '/ITSM/operationreport/weeklyreport/myweeklyreport', type: 'weekreport' },
+  { path: '/ITSM/operationreport/monthlyreport/mymonthlyreport', type: 'monthreport' }
 ]
 
 const noMatch = (

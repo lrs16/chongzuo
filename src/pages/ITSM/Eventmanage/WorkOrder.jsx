@@ -118,6 +118,7 @@ function WorkOrder2(props) {
   };
   // 流转
   const eventflow = newflowtype => {
+    console.log('流转', type, newflowtype)
     const handleresult = HandleRef.current && HandleRef.current.getHandleResult();
     dispatch({
       type: 'eventtodo/eventflow',
@@ -133,8 +134,8 @@ function WorkOrder2(props) {
   };
   // 确认
   const eventcheck = newflowtype => {
+    console.log('确认', type, newflowtype)
     const handleresult = HandleRef.current && HandleRef.current.getHandleResult();
-    console.log(newflowtype, type)
     dispatch({
       type: 'eventtodo/eventflow',
       payload: {
@@ -150,6 +151,7 @@ function WorkOrder2(props) {
 
   // 结束
   const overflow = () => {
+    console.log('结束')
     dispatch({
       type: 'eventtodo/overflow',
       payload: {
