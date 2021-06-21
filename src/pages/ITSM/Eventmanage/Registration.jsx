@@ -230,7 +230,7 @@ function Registration(props) {
           applicationDept: values.register_applicationDept,
           applicationDeptId: values.register_applicationDeptId,
           applicationUnit: values.register_applicationUnit,
-          rapplicationUnitId: values.registra_rapplicationUnitId,
+          applicationUnitId: values.register_applicationUnitId,
           applicationUser: values.register_applicationUser,
           applicationUserId: values.register_applicationUserId,
           applicationUserPhone: values.register_applicationUserPhone,

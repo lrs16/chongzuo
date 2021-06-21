@@ -1,32 +1,69 @@
 import React from 'react';
-import { Descriptions } from 'antd';
+import { Descriptions, Form, Input, Row, Col } from 'antd';
 import Downloadfile from '@/components/SysUpload/Downloadfile';
 import styles from '../index.less';
 
+const { TextArea } = Input;
+
 function Handledes(props) {
-  const { info, main } = props;
+  const { info, main, formItemLayout, forminladeLayout, } = props;
   return (
-    <div className={styles.collapse} style={{ marginLeft: 30, marginRight: 10 }}>
-      <Descriptions style={{ marginTop: 24 }} size="middle">
-        <Descriptions.Item label="处理人">{info.handler}</Descriptions.Item>
-        <Descriptions.Item label="处理人单位">{info.handleUnit}</Descriptions.Item>
-        <Descriptions.Item label="处理人部门">{info.handleDept}</Descriptions.Item>
-        <Descriptions.Item label="事件分类">{main.eventType}</Descriptions.Item>
-        <Descriptions.Item label="事件对象">{main.eventObject}</Descriptions.Item>
-        <Descriptions.Item label="处理结果">{info.handleResult}</Descriptions.Item>
-        <Descriptions.Item label="接单时间">{info.addTime}</Descriptions.Item>
-        <Descriptions.Item label="处理完成时间" span={4}>
-          {info.endTime}
-        </Descriptions.Item>
-        {/* <Descriptions.Item label="二线标签"span={3}>No. 18, Wantang Road, Xihu District, Hangzhou, Zhejiang, China</Descriptions.Item> */}
-        <Descriptions.Item label="解决方案" span={3}>
-          <div dangerouslySetInnerHTML={{ __html: info.content?.replace(/[\n]/g, '<br/>') }} />
-        </Descriptions.Item>
-        <Descriptions.Item label="附件" span={3}>
-          {info.fileIds !== 'null' && <Downloadfile files={info.fileIds} />}
-        </Descriptions.Item>
-      </Descriptions>
-    </div>
+    <>
+      <Row gutter={24} style={{ marginTop: 24 }}>
+        <Form {...formItemLayout}>
+          <Col span={8}>
+            <Form.Item label="处理人">
+              <Input defaultValue={info.handler} disabled />
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label="处理人单位">
+              <Input defaultValue={info.handleUnit} disabled />
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label="处理人部门">
+              <Input defaultValue={info.handleDept} disabled />
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label="事件分类">
+              <Input defaultValue={main.eventType} disabled />
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label="事件对象">
+              <Input defaultValue={main.eventObject} disabled />
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label="处理结果">
+              <Input defaultValue={info.handleResult} disabled />
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label="接单时间">
+              <Input defaultValue={info.addTime} disabled />
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label="处理完成时间">
+              <Input defaultValue={info.endTime} disabled />
+            </Form.Item>
+          </Col>
+          <Col span={24}>
+            <Form.Item label="解决方案"  {...forminladeLayout}>
+              <TextArea autoSize={{ minRows: 3 }} defaultValue={info.content} disabled />
+            </Form.Item>
+          </Col>
+          <Col span={24}>
+            <Form.Item label="附件" {...forminladeLayout}>
+              {info.fileIds !== '' && <Downloadfile files={info.fileIds} />}
+            </Form.Item>
+          </Col>
+        </Form>
+      </Row>
+    </>
   );
 }
 

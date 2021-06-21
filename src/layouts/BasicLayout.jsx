@@ -51,15 +51,11 @@ const alonepath = [
   { path: '/ITSM/demandmanage/query/details' },
   { path: '/ITSM/operationplan/operationplanform' },
   { path: '/ITSM/operationplan/operationplansearchdetail' },
-  { path: '/ITSM/Operationreport/WeeklyReport/SoftReport' },
-  { path: '/ITSM/Operationreport/WeeklyReport/SoftReportdetail' },
-  { path: '/ITSM/Operationreport/WeeklyReport/SoftReportdetail' },
-  { path: '/ITSM/Operationreport/WeeklyReport/ComputerroomReport' },
-  { path: '/ITSM/Operationreport/WeeklyReport/ComputerroomReportdetail' },
-  { path: '/ITSM/Operationreport/WeeklyReport/DatabaseReport' },
-  { path: '/ITSM/Operationreport/WeeklyReport/DatabaseReportdetail' },
-  { path: '/ITSM/Operationreport/WeeklyReport/OtherReport' },
-  { path: '/ITSM/Operationreport/WeeklyReport/OtherReportdetail' },
+  { path: '/ITSM/operationreport/weeklyreport/detailSoft/' },
+  { path: '/ITSM/operationreport/weeklyreport/computerroomreportdetail' },
+  { path: '/ITSM/operationreport/weeklyreport/databasereportdetail' },
+  { path: '/ITSM/operationreport/weeklyreport/otherreportdetail' },
+
 ];
 
 // 多条登记
@@ -69,8 +65,10 @@ const multiplepath = [
   { path: '/ITSM/problemmanage/registration', type: 'problem' },
   { path: '/ITSM/demandmanage/registration', type: 'demand' },
   { path: '/ITSM/operationplan/operationplanfillin', type: 'operation' },
-  { path: '/ITSM/operationreport/weeklyreport/myweeklyreport', type: 'weekreport' },
-  { path: '/ITSM/operationreport/monthlyreport/mymonthlyreport', type: 'monthreport' }
+  { path: '/ITSM/operationreport/weeklyreport/softreport', type: 'softreport' },
+  { path: '/ITSM/operationreport/weeklyreport/computerroomreport', type: 'computerroomreport' },
+  { path: '/ITSM/operationreport/weeklyreport/databasereport', type: 'databasereport' },
+  { path: '/ITSM/operationreport/weeklyreport/otherreport', type: 'otherreport' },
 ]
 
 const noMatch = (
