@@ -564,13 +564,13 @@ export default {
                           component: './ITSM/Operationreport/WeeklyReport/WeeklySearch'
                         },
                         {
-                          path: '/ITSM/operationreport/weeklyreport/softreport/',
+                          path: '/ITSM/operationreport/weeklyreport/softreport',
                           name: '软件运维周报',
                           icon: 'fork',
                           component: './ITSM/Operationreport/WeeklyReport/SoftReport'
                         },
                         {
-                          path: '/ITSM/operationreport/weeklyreport/detailSoft/',
+                          path: '/ITSM/operationreport/weeklyreport/detailSoft',
                           name: '软件运维周报详情页',
                           icon: 'fork',
                           component: './ITSM/Operationreport/WeeklyReport/SoftReportdetail'

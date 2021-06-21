@@ -74,7 +74,7 @@ function MymonthlySearch(props) {
           switch (text) {
             case '软件运维月报':
               router.push({
-                pathname: `/ITSM/operationreport/weeklyreport/detailSoft/`,
+                pathname: `/ITSM/operationreport/weeklyreport/detailSoft`,
                 query: {
                   mainId: record.id,
                   reporttype: 'month',

@@ -123,6 +123,7 @@ function MymonthlyReport(props) {
   ];
 
   const selectOnchage = (data) => {
+    console.log('data: ', data);
     switch (data) {
       case '软件运维月报':
         router.push({
@@ -130,6 +131,9 @@ function MymonthlyReport(props) {
           query: {
             reporttype: 'month',
             status: 'add',
+            listreportType:selectedRows?.length?selectedRows[0].type:'',
+            listId:selectedRows?.length?selectedRows[0].id:'',
+            addtab: true,
           }
         })
         break;
@@ -139,6 +143,9 @@ function MymonthlyReport(props) {
           query: {
             reporttype: 'month',
             status: 'add',
+            listreportType:selectedRows?.length?selectedRows[0].type:'',
+            listId:selectedRows?.length?selectedRows[0].id:'',
+            addtab: true,
           }
         })
         break;
@@ -148,6 +155,9 @@ function MymonthlyReport(props) {
           query: {
             reporttype: 'month',
             status: 'add',
+            listreportType:selectedRows?.length?selectedRows[0].type:'',
+            listId:selectedRows?.length?selectedRows[0].id:'',
+            addtab: true,
           }
         })
         break;
@@ -157,6 +167,9 @@ function MymonthlyReport(props) {
           query: {
             reporttype: 'month',
             status: 'add',
+            listreportType:selectedRows?.length?selectedRows[0].type:'',
+            listId:selectedRows?.length?selectedRows[0].id:'',
+            addtab: true,
           }
         })
         break;
@@ -168,23 +181,23 @@ function MymonthlyReport(props) {
   const menu = (
     <Menu>
       <Menu.Item>
-        <span onClick={() => selectOnchage('软件运维周报')}>
-          软件运维周报
+        <span onClick={() => selectOnchage('软件运维月报')}>
+          软件运维月报
         </span>
       </Menu.Item>
       <Menu.Item>
-        <span onClick={() => selectOnchage('机房运维周报')}>
-          机房运维周报
+        <span onClick={() => selectOnchage('机房运维月报')}>
+          机房运维月报
         </span>
       </Menu.Item>
       <Menu.Item>
-        <span onClick={() => selectOnchage('数据库运维周报')}>
-          数据库运维周报
+        <span onClick={() => selectOnchage('数据库运维月报')}>
+          数据库运维月报
         </span>
       </Menu.Item>
       <Menu.Item>
-        <span onClick={() => selectOnchage('其他运维周报')}>
-          其他运维周报
+        <span onClick={() => selectOnchage('其他运维月报')}>
+          其他运维月报
         </span>
       </Menu.Item>
     </Menu>

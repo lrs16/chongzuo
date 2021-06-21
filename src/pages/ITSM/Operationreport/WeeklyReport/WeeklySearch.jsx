@@ -77,7 +77,7 @@ function WeeklySearch(props) {
                 query: {
                   mainId: record.id,
                   reporttype: 'week',
-                  orderNo: text,
+                  orderNo: '',
                   reportSearch:true
                 },
               });
@@ -88,7 +88,7 @@ function WeeklySearch(props) {
                 query: {
                   mainId: record.id,
                   reporttype: 'week',
-                  orderNo: text,
+                  orderNo: '',
                   reportSearch:true
                 },
               });
@@ -99,7 +99,7 @@ function WeeklySearch(props) {
                 query: {
                   mainId: record.id,
                   reporttype: 'week',
-                  orderNo: text,
+                  orderNo: '',
                   reportSearch:true
                 },
               });
@@ -110,7 +110,7 @@ function WeeklySearch(props) {
                 query: {
                   mainId: record.id,
                   reporttype: 'week',
-                  orderNo: text,
+                  orderNo: '',
                   reportSearch:true
                 },
               });

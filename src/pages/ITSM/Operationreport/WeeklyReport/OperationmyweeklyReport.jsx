@@ -63,7 +63,7 @@ function OperationmyweeklyReport(props) {
           switch (text) {
             case '软件运维周报':
               router.push({
-                pathname: `/ITSM/operationreport/weeklyreport/detailSoft/`,
+                pathname: `/ITSM/operationreport/weeklyreport/detailSoft`,
                 query: {
                   mainId: record.id,
                   reporttype: 'week',
