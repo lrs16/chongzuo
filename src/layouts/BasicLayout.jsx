@@ -162,11 +162,9 @@ const BasicLayout = props => {
     const multipletarget = multiplepath.filter(item => item.path === end.itemPath)[0];
     setActiveKey(end.id);
     if (s) {
-      const val = s;
-      delete val.addtab;
       router.push({
         pathname: end.itemPath,
-        query: { ...val },
+        query: { ...s, addtab: false },
         state: (end.data && end.data.cacheinfo) ? { cacheinfo: end.data.cacheinfo } : { ...end.state, cache: false },
       });
     } else {
