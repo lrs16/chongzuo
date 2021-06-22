@@ -30,7 +30,7 @@ const AddForm = React.forwardRef((props, ref) => {
 
   const {
     form: { getFieldDecorator, setFieldsValue, validateFields },
-    handleDelete,
+    loading,
     formincontentLayout,
     ChangeFiles,
     patrolAndExamine, //  巡检列表
@@ -42,7 +42,6 @@ const AddForm = React.forwardRef((props, ref) => {
     addTable,
     index,
     saveForm,
-    loading
   } = props;
 
   const [data, setData] = useState([]);
@@ -300,69 +299,74 @@ const AddForm = React.forwardRef((props, ref) => {
 
   return (
     <>
-      <Row gutter={16}>
-        <Form>
-          {/* {index === 0 && ( */}
-          <Button
-            disabled={detailParams}
-            type='primary'
-            onClick={handleSubmit}
-          >
-            保存
-          </Button>
-          {/* // )} */}
+      {
+        loading === false && dynamicData &&  (
+          <Row gutter={16}>
+            <Form>
+              {/* {index === 0 && ( */}
+              <Button
+                disabled={detailParams}
+                type='primary'
+                onClick={handleSubmit}
+              >
+                保存
+              </Button>
+              {/* // )} */}
 
-          <Col><p>注：第一行数据作为表头</p></Col>
+              <Col><p>注：第一行数据作为表头</p></Col>
 
-          <Form.Item label={titleNumber()} {...formincontentLayout}>
-            {getFieldDecorator(`title`, {
-              initialValue: dynamicData.title
-            })(
-              <Input />
-            )}
-          </Form.Item>
+              <Form.Item label={titleNumber()} {...formincontentLayout}>
+                {getFieldDecorator(`title`, {
+                  initialValue: dynamicData.title
+                })(
+                  <Input />
+                )}
+              </Form.Item>
 
-          <Form.Item label={contentNumber()} {...formincontentLayout}>
-            {getFieldDecorator(`content`, {
-              initialValue: dynamicData.content
-            })(
-              <TextArea autoSize={{ minRows: 3 }} />
-            )}
-          </Form.Item>
+              <Form.Item label={contentNumber()} {...formincontentLayout}>
+                {getFieldDecorator(`content`, {
+                  initialValue: dynamicData.content
+                })(
+                  <TextArea autoSize={{ minRows: 3 }} />
+                )}
+              </Form.Item>
 
-          <Form.Item label='上传附件'    {...formincontentLayout}>
-            {getFieldDecorator(`files`, {
-              initialValue: dynamicData.files ? dynamicData.files : ''
-            })(
-              <SysUpload
-                fileslist={dynamicData.files ? JSON.parse(dynamicData.files) : []}
-                ChangeFileslist={newvalue => {
-                  setFieldsValue({
-                    files: JSON.stringify(newvalue.arr),
-                  })
-                  handleSubmit();
-                }}
+              <Form.Item label='上传附件'    {...formincontentLayout}>
+                {getFieldDecorator(`files`, {
+                  initialValue: dynamicData.files ? dynamicData.files : ''
+                })(
+                  <SysUpload
+                    fileslist={dynamicData.files ? JSON.parse(dynamicData.files) : []}
+                    ChangeFileslist={newvalue => {
+                      setFieldsValue({
+                        files: JSON.stringify(newvalue.arr),
+                      })
+                      handleSubmit();
+                    }}
+                  />
+                )}
+              </Form.Item>
+
+              <Table
+                columns={column}
+                dataSource={data}
               />
-            )}
-          </Form.Item>
+              <Button
+                style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
+                type="primary"
+                ghost
+                onClick={() => newMember()}
+                icon="plus"
+                disabled={detailParams}
 
-          <Table
-            columns={column}
-            dataSource={data}
-          />
-          <Button
-            style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
-            type="primary"
-            ghost
-            onClick={() => newMember()}
-            icon="plus"
-            disabled={detailParams}
+              >
+                新增行
+              </Button>
+            </Form>
+          </Row>
+        )
+      }
 
-          >
-            新增行
-          </Button>
-        </Form>
-      </Row>
     </>
   )
 })

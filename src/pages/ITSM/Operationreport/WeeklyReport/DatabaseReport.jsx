@@ -593,7 +593,7 @@ function DatabaseReport(props) {
                 onClick={() => newMember()}
                 icon="plus"
               >
-                新增
+                新增数据库运维
               </Button>
 
 

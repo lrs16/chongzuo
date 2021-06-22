@@ -616,7 +616,7 @@ function ComputerroomReport(props) {
                 onClick={() => newMember()}
                 icon="plus"
               >
-                新增
+                新增机房
               </Button>
 
               {loading === false && addTitle && addTitle.length > 0 && (

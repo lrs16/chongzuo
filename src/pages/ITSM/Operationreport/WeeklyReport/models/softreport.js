@@ -55,14 +55,14 @@ export default {
           const saveresponse = yield call(saveSoftreport,saveData);
           if(saveresponse.code === 200) {
             route.push({
-              pathname: `/ITSM/operationreport/weeklyreport/softreport/`,
+              pathname: `/ITSM/operationreport/weeklyreport/softreport`,
               query: { 
                 tabid: sessionStorage.getItem('tabid'),
                  closecurrent: true
                  }
             })
             route.push({
-              pathname: `/ITSM/operationreport/weeklyreport/detailSoft/`,
+              pathname: `/ITSM/operationreport/weeklyreport/detailSoft`,
               query: {
                 reporttype: type,
                 mainId,

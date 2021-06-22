@@ -895,6 +895,7 @@ function SoftReport(props) {
                             handleaddTable(newdata)
                           }}
                           dynamicData={addTitle[index]}
+                          loading={loading}
                         />
                       </Col>
 
@@ -919,7 +920,7 @@ function SoftReport(props) {
                 onClick={() => newMember()}
                 icon="plus"
               >
-                新增内容
+                新增软件运维
               </Button>
 
 
