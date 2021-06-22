@@ -1,59 +1,58 @@
 import React from 'react';
-import { Descriptions, Radio } from 'antd';
+import { Radio, Form, Input, Row, Col } from 'antd';
+import Downloadfile from '@/components/SysUpload/Downloadfile';
+
+const { TextArea } = Input;
 
 function Businessaudes(props) {
-  const {
-    info,
-  } = props;
+  const { info, formItemLayout, forminladeLayout, } = props;
   let value;
   if (info) {
     value = info.checkResult;
   }
   return (
-    <div>
-      <Descriptions>
-        <Descriptions.Item label="审核结果">
-          <Radio.Group value={value} disabled>
-            <Radio value='1'>通过</Radio>
-            <Radio value='0'>不通过</Radio>
-          </Radio.Group>
-        </Descriptions.Item>
-      </Descriptions>
-
-      <Descriptions>
-        <Descriptions.Item label="审核时间">
-          {info.checkTime}
-        </Descriptions.Item>
-      </Descriptions>
-
-      <Descriptions>
-        <Descriptions.Item label="审核意见">
-          {info.checkOpinion}
-        </Descriptions.Item>
-      </Descriptions>
-
-      <Descriptions>
-        <Descriptions.Item label="上传附件">
-          <span style={{ color: 'blue', textDecoration: 'underline' }} >
-            {/* {info.checkAttachments !== null && <Downloadfile files={info.checkAttachments} />}           */}
-          </span>
-        </Descriptions.Item>
-      </Descriptions>
-
-      <Descriptions>
-        <Descriptions.Item label="审核人">
-          {info.checkUser}
-        </Descriptions.Item>
-
-        <Descriptions.Item label="审核单位">
-          {info.checkUnit}
-        </Descriptions.Item>
-
-        <Descriptions.Item label="审核部门">
-          {info.checkDept}
-        </Descriptions.Item>
-      </Descriptions>
-    </div>
+    <Row gutter={24} style={{ marginTop: 24 }}>
+      <Form {...formItemLayout}>
+        <Col span={8}>
+          <Form.Item label="审核结果">
+            <Radio.Group value={value} disabled>
+              <Radio value='1'>通过</Radio>
+              <Radio value='0'>不通过</Radio>
+            </Radio.Group>
+          </Form.Item>
+        </Col>
+        <Col span={8}>
+          <Form.Item label="审核时间">
+            <Input defaultValue={info.checkTime} disabled />
+          </Form.Item>
+        </Col>
+        <Col span={24}>
+          <Form.Item label="审核意见"  {...forminladeLayout}>
+            <TextArea autoSize={{ minRows: 3 }} defaultValue={info.checkOpinion} disabled />
+          </Form.Item>
+        </Col>
+        <Col span={24}>
+          <Form.Item label="附件" {...forminladeLayout}>
+            {info.checkAttachments !== null && <Downloadfile files={info.checkAttachments} />}
+          </Form.Item>
+        </Col>
+        <Col span={8}>
+          <Form.Item label="审核人">
+            <Input defaultValue={info.checkUser} disabled />
+          </Form.Item>
+        </Col>
+        <Col span={8}>
+          <Form.Item label="审核单位">
+            <Input defaultValue={info.checkUnit} disabled />
+          </Form.Item>
+        </Col>
+        <Col span={8}>
+          <Form.Item label="审核部门">
+            <Input defaultValue={info.checkDept} disabled />
+          </Form.Item>
+        </Col>
+      </Form>
+    </Row>
   );
 }
 export default Businessaudes;

@@ -1,54 +1,68 @@
 import React from 'react';
-import {
-    Radio
-} from 'antd';
-import DescriptionList from '@/components/DescriptionList';
+import { Radio, Form, Input, Row, Col } from 'antd';
 import Downloadfile from '@/components/SysUpload/Downloadfile'; // 下载组件调用
 
-const { Description } = DescriptionList;
 const RadioGroup = Radio.Group;
+const { TextArea } = Input;
 
 function ExamineQuery(props) {
-    const { info } = props;
+  const { info, formItemLayout, forminladeLayout } = props;
 
-    return (
-        <div style={{ paddingLeft: 45, paddingTop: 10 }}>
-            <>
-                <DescriptionList size="large">
-                    <Description term="审核结果">
-                        <RadioGroup defaultValue={info.checkResult} disabled>
-                            <Radio value='1'>通过</Radio>
-                            <Radio value='0'>不通过</Radio>
-                        </RadioGroup>
-                    </Description>
-                </DescriptionList>
-                <DescriptionList size="large">
-                    <Description term="审核时间">{info.checkTime || ''}</Description>
-                </DescriptionList>
-                <DescriptionList size="large">
-                    <Description term="审核意见">{info.checkOpinion || ''}</Description>
-                </DescriptionList>
-                <DescriptionList size="large">
-                    <Description term="上传故障报告">
-                        <RadioGroup defaultValue={Number(info.checkReportSign)} disabled>
-                            <Radio value={0}>是</Radio>
-                            <Radio value={1}>否</Radio>
-                        </RadioGroup>
-                    </Description>
-                </DescriptionList>
-                <DescriptionList size="large">
-                    <Description term="上传附件">
-                        {info.checkAttachments && <Downloadfile files={info.checkAttachments} />}
-                    </Description>
-                </DescriptionList>
-                <DescriptionList size="large">
-                    <Description term="审核人">{info.checkUser || ''}</Description>
-                    <Description term="审核人单位">{info.checkUnit || ''}</Description>
-                    <Description term="审核人部门">{info.checkDept || ''}</Description>
-                </DescriptionList>
-            </>
-        </div>
-    );
+  return (
+    <>
+      <Row gutter={24} style={{ marginTop: 24 }}>
+        <Form >
+          <Col span={8}>
+            <Form.Item label="审核结果" {...formItemLayout}>
+              <RadioGroup defaultValue={info.checkResult} disabled>
+                <Radio value='1'>通过</Radio>
+                <Radio value='0'>不通过</Radio>
+              </RadioGroup>
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label="上传故障报告" {...formItemLayout}>
+              <RadioGroup defaultValue={Number(info.checkReportSign)} disabled>
+                <Radio value={0}>是</Radio>
+                <Radio value={1}>否</Radio>
+              </RadioGroup>
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label="审核时间" {...formItemLayout}>
+              <Input defaultValue={info.checkTime || ''} disabled />
+            </Form.Item>
+          </Col>
+          <Col span={24}>
+            <Form.Item label="审核意见"  {...forminladeLayout}>
+              <TextArea autoSize={{ minRows: 3 }} defaultValue={info.checkOpinion || ''} disabled />
+            </Form.Item>
+          </Col>
+
+          <Col span={24}>
+            <Form.Item label="附件" {...forminladeLayout}>
+              {info.checkAttachments && <Downloadfile files={info.checkAttachments} />}
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label="审核人"{...formItemLayout}>
+              <Input defaultValue={info.checkUser} disabled />
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label="审核人单位" {...formItemLayout}>
+              <Input defaultValue={info.checkUnit} disabled />
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label="审核人部门" {...formItemLayout}>
+              <Input defaultValue={info.checkDept} disabled />
+            </Form.Item>
+          </Col>
+        </Form>
+      </Row>
+    </>
+  );
 };
 
 export default ExamineQuery;

@@ -19,6 +19,28 @@ import RelationOrder from './RelationOrder';                          // 关联�
 
 import styles from './index.less';
 
+const formItemLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 6 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 18 },
+  },
+};
+
+const forminladeLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 2 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 22 },
+  },
+};
+
 let currntStatus = '';
 let problemFlowid;
 
@@ -135,36 +157,48 @@ function Queryworkdetail(props) {
                   {problemFlowNodeRows.map((obj, index) => {
                     // panel详情组件
                     const Paneldesmap = new Map([
-                      ['问题登记', <Problemregistration
-                        info={obj}
+                      ['问题登记', <Problemregistration info={obj}
                         statue={currntStatus}
                         problemFlowNodeRows={problemFlowNodeRows}
                         main={main}
+                        formItemLayout={formItemLayout}
+                        forminladeLayout={forminladeLayout}
                       />],
                       ['系统运维商审核', <Problemreview
                         info={obj}
                         main={main}
-
+                        formItemLayout={formItemLayout}
+                        forminladeLayout={forminladeLayout}
                       />],
                       ['自动化科审核', <Problemreview
                         info={obj}
                         main={main}
+                        formItemLayout={formItemLayout}
+                        forminladeLayout={forminladeLayout}
                       />],
                       ['系统开发商处理', <Problemsolving
                         info={obj}
                         main={main}
+                        formItemLayout={formItemLayout}
+                        forminladeLayout={forminladeLayout}
                       />],
                       ['系统运维商确认', <Operatorconfirmades
                         info={obj}
                         main={main}
+                        formItemLayout={formItemLayout}
+                        forminladeLayout={forminladeLayout}
                       />],
                       ['自动化科业务人员确认', <Operatorconfirmades
                         info={obj}
                         main={main}
+                        formItemLayout={formItemLayout}
+                        forminladeLayout={forminladeLayout}
                       />],
                       ['问题登记人员确认', <Operatorconfirmades
                         info={obj}
                         main={main}
+                        formItemLayout={formItemLayout}
+                        forminladeLayout={forminladeLayout}
                       />],
                     ]);
                     return (

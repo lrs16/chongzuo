@@ -1,9 +1,7 @@
 import React from 'react';
 import { Radio, Form, Input, Row, Col } from 'antd';
-import DescriptionList from '@/components/DescriptionList';
 import Downloadfile from '@/components/SysUpload/Downloadfile'; // 下载组件调用
 
-const { Description } = DescriptionList;
 const RadioGroup = Radio.Group;
 const { TextArea } = Input;
 

@@ -707,13 +707,13 @@ function Workorder(props) {
         <>
           {tabActiveKey === 'workorder' && (
             <>
-              { (flowNodeName === '问题登记' && problemFlowLogs && problemFlowLogs.length === 1) && (
+              {(flowNodeName === '问题登记' && problemFlowLogs && problemFlowLogs.length === 1) && (
                 <Button type="danger" ghost style={{ marginRight: 8 }} onClick={handleDelete}>
                   删除
                 </Button>
               )}
 
-              { (flowNodeName === '问题登记' && problemFlowLogs && problemFlowLogs.length >= 3 && problemFlowLogs[problemFlowLogs.length - 2].status === '退回') && (
+              {(flowNodeName === '问题登记' && problemFlowLogs && problemFlowLogs.length >= 3 && problemFlowLogs[problemFlowLogs.length - 2].status === '退回') && (
                 <Button type="danger" ghost style={{ marginRight: 8 }} onClick={handleDelete}>
                   删除
                 </Button>
@@ -762,7 +762,7 @@ function Workorder(props) {
                 )
               }
 
-              { (currntStatus === 29 || currntStatus === 40 || currntStatus === 45) && handle === undefined && (
+              {(currntStatus === 29 || currntStatus === 40 || currntStatus === 45) && handle === undefined && (
                 <Button type="primary" style={{ marginRight: 8 }} onClick={() => onClickSubmit('accpt')}>
                   接单
                 </Button>
@@ -857,7 +857,7 @@ function Workorder(props) {
               }}
             >
               返回
-                </Link>
+            </Link>
           </Button>
         </>
       }
@@ -1129,31 +1129,44 @@ function Workorder(props) {
                         problemFlowNodeRows={problemFlowNodeRows}
                         main={main}
                         key='0'
+                        formItemLayout={formItemLayout}
+                        forminladeLayout={forminladeLayout}
                       />],
                       ['系统运维商审核', <Problemreview
                         info={obj}
                         main={main}
-
+                        formItemLayout={formItemLayout}
+                        forminladeLayout={forminladeLayout}
                       />],
                       ['自动化科审核', <Problemreview
                         info={obj}
                         main={main}
+                        formItemLayout={formItemLayout}
+                        forminladeLayout={forminladeLayout}
                       />],
                       ['系统开发商处理', <Problemsolving
                         info={obj}
                         main={main}
+                        formItemLayout={formItemLayout}
+                        forminladeLayout={forminladeLayout}
                       />],
                       ['系统运维商确认', <Operatorconfirmades
                         info={obj}
                         main={main}
+                        formItemLayout={formItemLayout}
+                        forminladeLayout={forminladeLayout}
                       />],
                       ['自动化科业务人员确认', <Operatorconfirmades
                         info={obj}
                         main={main}
+                        formItemLayout={formItemLayout}
+                        forminladeLayout={forminladeLayout}
                       />],
                       ['问题登记人员确认', <Operatorconfirmades
                         info={obj}
                         main={main}
+                        formItemLayout={formItemLayout}
+                        forminladeLayout={forminladeLayout}
                       />],
                     ]);
                     return (

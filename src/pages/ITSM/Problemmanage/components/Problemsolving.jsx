@@ -1,53 +1,61 @@
 import React from 'react';
-import { Descriptions } from 'antd';
-import styles from '../index.less';
+import { Form, Input, Row, Col } from 'antd';
 import Downloadfile from '@/components/SysUpload/Downloadfile';
 
+const { TextArea } = Input;
+
 function Problemsolving(props) {
-  const { info } = props;
+  const { info, formItemLayout, forminladeLayout } = props;
   return (
-    <div className={styles.collapse} style={{ marginLeft: 30, marginRight: 10 }}>
-      <Descriptions style={{ marginTop: 24 }} size="middle">
-        <Descriptions.Item label="接单时间">
-          {info.addTime}
-        </Descriptions.Item>
-
-        <Descriptions.Item label="处理完成时间">
-          {info.addTime}
-        </Descriptions.Item>
-
-        <Descriptions.Item label="计划完成时间">
-          {info.planEndTime}
-        </Descriptions.Item>
-
-        <Descriptions.Item label="处理结果">
-          {info.handleResult}
-        </Descriptions.Item>
-
-        <Descriptions.Item label="解决方案" span={3}>
-          <div dangerouslySetInnerHTML={{ __html: info.handleContent?.replace(/[\n]/g, '<br/>') }} />
-        </Descriptions.Item>
-
-        <Descriptions.Item label="上传附件" >
-          <span style={{ color: 'blue', textDecoration: 'underline' }} span={3}>
+    <Row gutter={24} style={{ marginTop: 24 }}>
+      <Form {...formItemLayout}>
+        <Col span={8}>
+          <Form.Item label="接单时间">
+            <Input defaultValue={info.addTime} disabled />
+          </Form.Item>
+        </Col>
+        <Col span={8}>
+          <Form.Item label="处理完成时间">
+            <Input defaultValue={info.addTime} disabled />
+          </Form.Item>
+        </Col>
+        <Col span={8}>
+          <Form.Item label="计划完成时间">
+            <Input defaultValue={info.planEndTime} disabled />
+          </Form.Item>
+        </Col>
+        <Col span={8}>
+          <Form.Item label="处理结果">
+            <Input defaultValue={info.handleResult} disabled />
+          </Form.Item>
+        </Col>
+        <Col span={24}>
+          <Form.Item label="解决方案"  {...forminladeLayout}>
+            <TextArea autoSize={{ minRows: 3 }} defaultValue={info.handleContent} disabled />
+          </Form.Item>
+        </Col>
+        <Col span={24}>
+          <Form.Item label="附件" {...forminladeLayout}>
             {info.handleAttachments !== null && <Downloadfile files={info.handleAttachments} />}
-          </span>
-        </Descriptions.Item>
-
-        <Descriptions.Item label="处理人">
-          {info.handler}
-        </Descriptions.Item>
-
-        <Descriptions.Item label="处理单位">
-          {info.handleUnit}
-        </Descriptions.Item>
-
-        <Descriptions.Item label="处理部门">
-          {info.handleDept}
-        </Descriptions.Item>
-      </Descriptions>
-    </div>
-
+          </Form.Item>
+        </Col>
+        <Col span={8}>
+          <Form.Item label="处理人">
+            <Input defaultValue={info.handler} disabled />
+          </Form.Item>
+        </Col>
+        <Col span={8}>
+          <Form.Item label="处理单位">
+            <Input defaultValue={info.handleUnit} disabled />
+          </Form.Item>
+        </Col>
+        <Col span={8}>
+          <Form.Item label="处理部门">
+            <Input defaultValue={info.handleDept} disabled />
+          </Form.Item>
+        </Col>
+      </Form>
+    </Row>
   );
 }
 export default Problemsolving;
