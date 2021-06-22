@@ -127,7 +127,7 @@ function MymonthlyReport(props) {
     switch (data) {
       case '软件运维月报':
         router.push({
-          pathname: `/ITSM/operationreport/weeklyreport/softreport/`,
+          pathname: `/ITSM/operationreport/weeklyreport/softreport`,
           query: {
             reporttype: 'month',
             status: 'add',
