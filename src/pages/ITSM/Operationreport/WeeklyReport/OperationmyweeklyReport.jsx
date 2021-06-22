@@ -134,7 +134,6 @@ function OperationmyweeklyReport(props) {
           pathname: `/ITSM/operationreport/weeklyreport/softreport`,
           query: {
             reporttype: 'week',
-            status: 'add',
             listreportType:selectedRows?.length?selectedRows[0].type:'',
             listId:selectedRows?.length?selectedRows[0].id:'',
             addtab: true,
@@ -146,7 +145,6 @@ function OperationmyweeklyReport(props) {
           pathname: `/ITSM/operationreport/weeklyreport/computerroomreport`,
           query: {
             reporttype: 'week',
-            status: 'add',
             listreportType:selectedRows?.length?selectedRows[0].type:'',
             listId:selectedRows?.length?selectedRows[0].id:'',
             addtab: true,
@@ -158,7 +156,6 @@ function OperationmyweeklyReport(props) {
           pathname: `/ITSM/operationreport/weeklyreport/databasereport`,
           query: {
             reporttype: 'week',
-            status: 'add',
             listreportType:selectedRows?.length?selectedRows[0].type:'',
             listId:selectedRows?.length?selectedRows[0].id:'',
             addtab: true,
@@ -170,7 +167,6 @@ function OperationmyweeklyReport(props) {
           pathname: `/ITSM/operationreport/weeklyreport/otherreport`,
           query: {
             reporttype: 'week',
-            status: 'add',
             listreportType:selectedRows?.length?selectedRows[0].type:'',
             listId:selectedRows?.length?selectedRows[0].id:'',
             addtab: true,

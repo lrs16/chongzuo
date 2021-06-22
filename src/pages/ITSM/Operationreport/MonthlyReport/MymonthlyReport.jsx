@@ -389,7 +389,7 @@ function MymonthlyReport(props) {
     return [];
   }
 
-  const classData = getTypebyTitle('周报分类')
+  const classData = getTypebyTitle('月报分类')
 
   return (
     <PageHeaderWrapper title={pagetitle}>

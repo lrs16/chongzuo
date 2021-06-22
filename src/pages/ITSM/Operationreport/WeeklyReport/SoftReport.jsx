@@ -82,7 +82,6 @@ function SoftReport(props) {
     location: { query:
       {
         reporttype,
-        status,
         mainId,
         listreportType,
         listId,
@@ -147,7 +146,7 @@ function SoftReport(props) {
       if (!err) {
         const savedata = {
           ...values,
-          status,
+          status:'add',
           editStatus: mainId ? 'edit' : 'add',
           addData: JSON.stringify(list),
           type: reporttype === 'week' ? '软件运维周报' : '软件运维月报',
@@ -260,7 +259,7 @@ function SoftReport(props) {
   }
 
   const onChange = (date, dateString) => {
-    if (type === 'week') {
+    if (reporttype === 'week') {
       startTime = dateString;
       endTime = moment(dateString).add(+6, 'day').format('YYYY-MM-DD');
       setFieldsValue({ time2: moment(endTime) });
@@ -277,25 +276,6 @@ function SoftReport(props) {
     setButtonVisible(true)
   }
 
-  const remove = (index) => {
-    addTitle.splice(index, 1);
-    const resultArr = [];
-    for (let i = 0; i < addTitle.length; i++) {
-      resultArr.push(addTitle[i])
-    }
-    setAddTitle(resultArr)
-  }
-
-
-  const removeTable = (index, tableIndexs) => {
-    addTitle.map(item => ({ ...item }));
-    (addTitle[index].tableNumber).splice(tableIndexs, 1)
-    const resultTable = [];
-    for (let i = 0; i < addTitle.length; i++) {
-      resultTable.push(addTitle[i])
-    }
-    setAddTitle(resultTable)
-  }
 
   const handlemaintenanserviceceArr = () => {
     const tabActiveKey = reporttype;

@@ -340,7 +340,7 @@ function ComputerroomReportdetail(props) {
                 <Form.Item label={reporttype === 'week' ? '本周运维总结' : '本月运维总结'} {...formincontentLayout}>
                   {
                     getFieldDecorator('content', {
-                      initialValue: main.content
+                      initialValue: main?main.content:''
                     })
                       (
                         <TextArea
@@ -522,7 +522,7 @@ function ComputerroomReportdetail(props) {
                   operationList={contentrowdata => {
                     setOperationList(contentrowdata)
                   }}
-                  operationArr={openReportlist.operationList ? openReportlist.operationList : lastweekHomeworklist.rows}
+                  operationArr={openReportlist.operationList ? openReportlist.operationList : []}
                   mainId={mainId}
                   detailParams={reportSearch}
                 />
@@ -557,7 +557,7 @@ function ComputerroomReportdetail(props) {
                   nextOperationList={contentrowdata => {
                     setNextOperationList(contentrowdata)
                   }}
-                  nextOperationArr={openReportlist.nextOperationList ? openReportlist.nextOperationList : nextweekHomeworklist.rows}
+                  nextOperationArr={openReportlist.nextOperationList ? openReportlist.nextOperationList : []}
                   mainId={mainId}
                   detailParams={reportSearch}
                 />

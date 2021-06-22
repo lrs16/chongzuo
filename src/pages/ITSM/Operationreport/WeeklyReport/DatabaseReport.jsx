@@ -73,7 +73,6 @@ function DatabaseReport(props) {
     location: { query:
       {
         reporttype,
-        status,
         mainId,
         listreportType,
         listId,
@@ -105,7 +104,7 @@ function DatabaseReport(props) {
       if (!err) {
         const savedata = {
           ...values,
-          status,
+          status:'add',
           editStatus: mainId ? 'edit' : 'add',
           addData: list?.length ? JSON.stringify(list) : '',
           type: reporttype === 'week' ? '数据库运维周报' : '数据库运维月报',

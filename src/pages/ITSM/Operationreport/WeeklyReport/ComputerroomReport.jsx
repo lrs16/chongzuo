@@ -69,7 +69,6 @@ function ComputerroomReport(props) {
     match: { params: { id } },
     location: { query: {
       reporttype,
-      status,
       mainId,
       listreportType,
       listId,
@@ -103,7 +102,7 @@ function ComputerroomReport(props) {
       if (!err) {
         const savedata = {
           ...value,
-          status,
+          status:'add',
           editStatus: mainId ? 'edit' : 'add',
           addData: JSON.stringify(list),
           type: reporttype === 'week' ? '机房运维周报' : '机房运维月报',

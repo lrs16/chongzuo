@@ -51,7 +51,6 @@ function OtherReport(props) {
     match: { params: { id } },
     location: { query: {
       reporttype,
-      status,
       mainId,
       listreportType,
       listId,
@@ -86,7 +85,7 @@ function OtherReport(props) {
     props.form.validateFields((err, value) => {
       const savedata = {
         ...value,
-        status,
+        status:'add',
         editStatus: mainId ? 'edit' : 'add',
         addData: JSON.stringify(list),
         type: reporttype === 'week' ? '其他运维周报' : '其他运维月报',
