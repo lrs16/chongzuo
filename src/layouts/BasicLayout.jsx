@@ -156,16 +156,24 @@ const BasicLayout = props => {
   }, []);
 
   // 打开最末的标签
-  const lasttabactive = (tabs) => {
+  const lasttabactive = (tabs, s) => {
     const end = tabs.slice(-1)[0];
     const target = alonepath.filter(item => item.path === end.itemPath)[0];
     const multipletarget = multiplepath.filter(item => item.path === end.itemPath)[0];
     setActiveKey(end.id);
-    router.push({
-      pathname: end.itemPath,
-      query: target ? end.query : {},
-      state: (end.data && end.data.cacheinfo) ? { cacheinfo: end.data.cacheinfo } : { ...end.state, cache: false },
-    });
+    if (s) {
+      router.push({
+        pathname: end.itemPath,
+        query: { s },
+        state: (end.data && end.data.cacheinfo) ? { cacheinfo: end.data.cacheinfo } : { ...end.state, cache: false },
+      });
+    } else {
+      router.push({
+        pathname: end.itemPath,
+        query: target ? end.query : {},
+        state: (end.data && end.data.cacheinfo) ? { cacheinfo: end.data.cacheinfo } : { ...end.state, cache: false },
+      });
+    };
     if (multipletarget && end.data && end.data.cacheinfo) {
       clearcache();
       dispatch({
@@ -205,12 +213,13 @@ const BasicLayout = props => {
     if (tabtargetpath && !targetmultiple) {
       setActiveKey(tabtargetpath.id);
     };
-    // 从页面添加多条登记类并保留query，如作业计划
+    // 从页面添加多条登记类，如作业计划
     if (location.query.addtab && targetmultiple) {
       const { menuDesc } = menutarget;
       const targettype = toptabs.filter(item => item.type === targetmultiple.type);
       const num = targettype.length;
       const endid = num === 0 ? 0 : Number(targettype.slice(-1)[0].id.replace(/[^0-9]/ig, "")) + 1;
+      const search = location.query;
       const panels = {
         name: menuDesc,
         type: targetmultiple.type,
@@ -224,13 +233,13 @@ const BasicLayout = props => {
       if (targettype[0]) {
         getcache();    // 获取旧页签数据
         toptabs.push(panels);
-        lasttabactive(toptabs);
+        lasttabactive(toptabs, search);
       } else {
         // 增加登记页签
         toptabs.push(panels);
-        lasttabactive(toptabs);
+        lasttabactive(toptabs, search);
       };
-    };
+    }
     if (tabtargetid) {
       // 已有标签的工单详情或工单
       const id = location.query.No ? location.query.No : location.query.mainId;
@@ -627,12 +636,12 @@ const BasicLayout = props => {
                       closable={obj.closable}
                     >
                       {/* <Authorized authority={Userauth} noMatch={noMatch}>
-                     {multipleurl && (
-                       <div style={{ padding: '0 24px 0 24px', marginTop: 8, background: '#f1f1f1' }}>
-                         {children}
-                       </div>
-                     )}
-                   </Authorized> */}
+                      {multipleurl && (
+                        <div style={{ padding: '0 24px 0 24px', marginTop: 8, background: '#f1f1f1' }}>
+                          {children}
+                        </div>
+                      )}
+                    </Authorized> */}
                     </TabPane>,
                   ])}
                 </Tabs>
@@ -640,10 +649,10 @@ const BasicLayout = props => {
               <Authorized authority={Userauth} noMatch={noMatch}>
                 {/* <PageTab>{children}</PageTab> */}
                 {/* <MenuContext.Provider value={{ tabnew, cleartabdata }}>
-                 <div style={{ marginTop: 10 }}>
-                   {children}
-                 </div>
-               </MenuContext.Provider> */}
+                  <div style={{ marginTop: 10 }}>
+                    {children}
+                  </div>
+                </MenuContext.Provider> */}
                 <div style={{ marginTop: 0 }}>
                   {children}
                 </div>
@@ -727,11 +736,11 @@ const BasicLayout = props => {
               <Icon type="close" style={{ marginRight: 16 }} />关闭全部
             </List.Item>
             {/* <List.Item style={{ padding: '10px', cursor: 'pointer' }}>
-               <Icon type="vertical-right" style={{ marginRight: 16 }} />关闭左侧所有
-               </List.Item>
-             <List.Item style={{ padding: '10px', cursor: 'pointer' }}>
-               <Icon type="vertical-left" style={{ marginRight: 16 }} /> 关闭右侧所有
-               </List.Item> */}
+                <Icon type="vertical-right" style={{ marginRight: 16 }} />关闭左侧所有
+                </List.Item>
+              <List.Item style={{ padding: '10px', cursor: 'pointer' }}>
+                <Icon type="vertical-left" style={{ marginRight: 16 }} /> 关闭右侧所有
+                </List.Item> */}
           </List>
         </ProLayout>
       </ProLayout >
