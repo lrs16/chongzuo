@@ -164,7 +164,7 @@ const BasicLayout = props => {
     if (s) {
       router.push({
         pathname: end.itemPath,
-        query: { s },
+        query: { ...s },
         state: (end.data && end.data.cacheinfo) ? { cacheinfo: end.data.cacheinfo } : { ...end.state, cache: false },
       });
     } else {
