@@ -687,13 +687,13 @@ function WorkOrder(props) {
               if (obj.taskName !== '系统开发商处理')
                 return (
                   <Panel header={obj.taskName} key={index.toString()}>
-                    <Examinedes info={obj} />
+                    <Examinedes info={obj} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />
                   </Panel>
                 );
               if (obj.taskName === '系统开发商处理')
                 return (
                   <Panel header={obj.taskName} key={index.toString()}>
-                    <Tracklist demandId={info.demandForm.demandId} />
+                    <Tracklist demandId={info.demandForm.demandId}  formItemLayout={formItemLayout} forminladeLayout={forminladeLayout}  />
                   </Panel>
                 );
             })}

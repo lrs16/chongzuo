@@ -41,6 +41,28 @@ const tabList = [
   }
 ];
 
+const formItemLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 6 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 18 },
+  },
+};
+
+const forminladeLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 2 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 22 },
+  },
+};
+
 function Querylistdetails(props) {
   // const pagetitle = props.route.name;
   const [activeKey, setActiveKey] = useState();
@@ -159,12 +181,12 @@ function Querylistdetails(props) {
                   {troubleFlowNodeRows.map((obj, index) => {
                     // panel详情组件
                     const Paneldesmap = new Map([
-                      ['故障登记', <RegisterQuery info={obj} maindata={main} />],
-                      ['系统运维商审核', <ExamineQuery info={obj} maindata={main} />],
-                      ['系统运维商处理', <HandleQuery info={obj} maindata={main} />],
-                      ['系统运维商确认总结', <SummaryQuery info={obj} maindata={main} />],
-                      ['自动化科业务负责人审核', <ExamineSecondQuery info={obj} maindata={main} />],
-                      ['自动化科专责确认', <ConfirmQuery info={obj} maindata={main} />],
+                      ['故障登记', <RegisterQuery info={obj} maindata={main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
+                      ['系统运维商审核', <ExamineQuery info={obj} maindata={main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
+                      ['系统运维商处理', <HandleQuery info={obj} maindata={main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
+                      ['系统运维商确认总结', <SummaryQuery info={obj} maindata={main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
+                      ['自动化科业务负责人审核', <ExamineSecondQuery info={obj} maindata={main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
+                      ['自动化科专责确认', <ConfirmQuery info={obj} maindata={main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
                     ]);
                     return (
                       <Panel Panel header={obj.fnname} key={index.toString()}>

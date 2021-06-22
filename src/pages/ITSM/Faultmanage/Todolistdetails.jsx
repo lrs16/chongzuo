@@ -874,7 +874,7 @@ function Todolistdetails(props) {
                   <Popconfirm title="确定删除吗？" onConfirm={() => handleDelete()}>
                     <Button type="danger" ghost>
                       删除
-              </Button>
+                    </Button>
                   </Popconfirm>
                 )}
               {// 回退按钮--系统运维商审核， 系统运维商确认总结，自动化科业务负责人审核, 自动化科确认有
@@ -1127,11 +1127,11 @@ function Todolistdetails(props) {
                   troubleFlowNodeRows.map((obj, index) => {
                     // panel详情组件
                     const Paneldesmap = new Map([
-                      ['故障登记', <RegisterQuery info={obj} maindata={main} />],
-                      ['系统运维商审核', <ExamineQuery info={obj} maindata={main} />],
-                      ['系统运维商处理', <HandleQuery info={obj} maindata={main} />],
-                      ['系统运维商确认总结', <SummaryQuery info={obj} maindata={main} />],
-                      ['自动化科业务负责人审核', <ExamineSecondQuery info={obj} maindata={main} />],
+                      ['故障登记', <RegisterQuery info={obj} maindata={main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
+                      ['系统运维商审核', <ExamineQuery info={obj} maindata={main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
+                      ['系统运维商处理', <HandleQuery info={obj} maindata={main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
+                      ['系统运维商确认总结', <SummaryQuery info={obj} maindata={main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
+                      ['自动化科业务负责人审核', <ExamineSecondQuery info={obj} maindata={main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
                       ['自动化科专责确认', <ConfirmQuery info={obj} maindata={main} />],
                     ]);
                     return (

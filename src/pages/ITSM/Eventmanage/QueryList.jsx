@@ -44,142 +44,6 @@ const forminladeLayout = {
   },
 };
 
-const columns = [
-  {
-    title: '事件编号',
-    dataIndex: 'eventNo',
-    key: 'eventNo',
-    width: 150,
-    fixed: 'left',
-    render: (text, record) => {
-      const handleClick = () => {
-        router.push({
-          pathname: `/ITSM/eventmanage/query/details`,
-          query: {
-            pangekey: record.eventStatus,
-            id: record.taskId,
-            mainId: record.id,
-            No: text,
-          },
-        });
-      };
-      return <a onClick={handleClick}>{text}</a>;
-    },
-  },
-  {
-    title: '事件标题',
-    dataIndex: 'title',
-    key: 'title',
-    fixed: 'left',
-    width: 200,
-  },
-  {
-    title: '建单时间',
-    dataIndex: 'addTime',
-    key: 'addTime',
-    fixed: 'left',
-    width: 200,
-  },
-  {
-    title: '工单状态',
-    dataIndex: 'eventStatus',
-    key: 'eventStatus',
-    fixed: 'left',
-    width: 100,
-  },
-  {
-    title: '申报人',
-    dataIndex: 'applicationUser',
-    key: 'applicationUser',
-    fixed: 'left',
-    width: 100,
-  },
-  {
-    title: '申报人单位',
-    dataIndex: 'applicationUnit',
-    key: 'applicationUnit',
-    width: 300,
-  },
-  {
-    title: '申报人部门',
-    dataIndex: 'applicationDept',
-    key: 'applicationDept',
-    width: 300,
-  },
-  {
-    title: '事件分类',
-    dataIndex: 'eventType',
-    key: 'eventType',
-    width: 120,
-  },
-  {
-    title: '事件对象',
-    dataIndex: 'eventObject',
-    key: 'eventObject',
-    width: 120,
-  },
-  // {
-  //   title: '标签',
-  //   dataIndex: 'eventobject',
-  //   key: 'eventobject',
-  //   width: 150,
-  //   render: (text, record) => {
-  //     const tags = ['标签1', '标签2', '标签3'];
-  //     return (
-  //       <>
-  //         {tags.map(obj => (
-  //           <Tag color="#108ee9" style={{ margin: 2 }}>
-  //             {obj}
-  //           </Tag>
-  //         ))}
-  //       </>
-  //     );
-  //   },
-  // },
-  {
-    title: '回访方式',
-    dataIndex: 'revisitWay',
-    key: 'revisitWay',
-    width: 120,
-  },
-  {
-    title: '事件来源',
-    dataIndex: 'eventSource',
-    key: 'eventSource',
-    width: 150,
-  },
-  {
-    title: '影响度',
-    dataIndex: 'eventEffect',
-    key: 'eventEffect',
-    width: 80,
-  },
-  {
-    title: '优先级',
-    dataIndex: 'eventPrior',
-    key: 'eventPrior',
-    width: 80,
-  },
-  {
-    title: '紧急度',
-    dataIndex: 'eventEmergent',
-    key: 'eventEmergent',
-    width: 80,
-  },
-  {
-    title: '登记人',
-    dataIndex: 'registerUser',
-    key: 'register_user',
-    width: 80,
-  },
-  {
-    title: '处理人',
-    dataIndex: 'handler',
-    key: 'handler',
-    width: 200,
-  },
-];
-
 function QueryList(props) {
   // const pagetitle = props.route.name;
   const {
@@ -434,6 +298,160 @@ function QueryList(props) {
       });
     }
   }, []);
+
+  const columns = [
+    {
+      title: '事件编号',
+      dataIndex: 'eventNo',
+      key: 'eventNo',
+      width: 150,
+      fixed: 'left',
+      render: (text, record) => {
+        const handleClick = () => {
+          validateFields((err, values) => {
+            if (!err) {
+              dispatch({
+                type: 'viewcache/gettabstate',
+                payload: {
+                  cacheinfo: {
+                    ...values,
+                    startTime: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+                    endTime: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+                    createTime: '',
+                    paginations,
+                    expand,
+                  },
+                  tabid: sessionStorage.getItem('tabid')
+                },
+              });
+            }
+          });
+          router.push({
+            pathname: `/ITSM/eventmanage/query/details`,
+            query: {
+              pangekey: record.eventStatus,
+              id: record.taskId,
+              mainId: record.id,
+              No: text,
+            },
+          });
+        };
+        return <a onClick={handleClick}>{text}</a>;
+      },
+    },
+    {
+      title: '事件标题',
+      dataIndex: 'title',
+      key: 'title',
+      fixed: 'left',
+      width: 200,
+    },
+    {
+      title: '建单时间',
+      dataIndex: 'addTime',
+      key: 'addTime',
+      fixed: 'left',
+      width: 200,
+    },
+    {
+      title: '工单状态',
+      dataIndex: 'eventStatus',
+      key: 'eventStatus',
+      fixed: 'left',
+      width: 100,
+    },
+    {
+      title: '申报人',
+      dataIndex: 'applicationUser',
+      key: 'applicationUser',
+      fixed: 'left',
+      width: 100,
+    },
+    {
+      title: '申报人单位',
+      dataIndex: 'applicationUnit',
+      key: 'applicationUnit',
+      width: 300,
+    },
+    {
+      title: '申报人部门',
+      dataIndex: 'applicationDept',
+      key: 'applicationDept',
+      width: 300,
+    },
+    {
+      title: '事件分类',
+      dataIndex: 'eventType',
+      key: 'eventType',
+      width: 120,
+    },
+    {
+      title: '事件对象',
+      dataIndex: 'eventObject',
+      key: 'eventObject',
+      width: 120,
+    },
+    // {
+    //   title: '标签',
+    //   dataIndex: 'eventobject',
+    //   key: 'eventobject',
+    //   width: 150,
+    //   render: (text, record) => {
+    //     const tags = ['标签1', '标签2', '标签3'];
+    //     return (
+    //       <>
+    //         {tags.map(obj => (
+    //           <Tag color="#108ee9" style={{ margin: 2 }}>
+    //             {obj}
+    //           </Tag>
+    //         ))}
+    //       </>
+    //     );
+    //   },
+    // },
+    {
+      title: '回访方式',
+      dataIndex: 'revisitWay',
+      key: 'revisitWay',
+      width: 120,
+    },
+    {
+      title: '事件来源',
+      dataIndex: 'eventSource',
+      key: 'eventSource',
+      width: 150,
+    },
+    {
+      title: '影响度',
+      dataIndex: 'eventEffect',
+      key: 'eventEffect',
+      width: 80,
+    },
+    {
+      title: '优先级',
+      dataIndex: 'eventPrior',
+      key: 'eventPrior',
+      width: 80,
+    },
+    {
+      title: '紧急度',
+      dataIndex: 'eventEmergent',
+      key: 'eventEmergent',
+      width: 80,
+    },
+    {
+      title: '登记人',
+      dataIndex: 'registerUser',
+      key: 'register_user',
+      width: 80,
+    },
+    {
+      title: '处理人',
+      dataIndex: 'handler',
+      key: 'handler',
+      width: 200,
+    },
+  ];
 
   return (
     <PageHeaderWrapper title={title}>
@@ -786,10 +804,10 @@ function QueryList(props) {
             <Col span={24} style={{ textAlign: 'right' }}>
               <Button type="primary" onClick={() => handleSearch('search')}>
                 查 询
-                </Button>
+              </Button>
               <Button style={{ marginLeft: 8 }} onClick={() => handleReset()}>
                 重 置
-                </Button>
+              </Button>
               <Button
                 style={{ marginLeft: 8 }}
                 type="link"

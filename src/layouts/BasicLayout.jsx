@@ -70,7 +70,6 @@ const multiplepath = [
   { path: '/ITSM/operationreport/weeklyreport/otherreport', type: 'otherreport' },
 ]
 
-
 const noMatch = (
   <Result
     status="403"
@@ -83,6 +82,8 @@ const noMatch = (
     }
   />
 );
+
+
 const menuDataRender = menuList =>
   menuList.map(item => {
     const localItem = { ...item, children: item.children ? menuDataRender(item.children) : [] };

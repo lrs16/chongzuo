@@ -1,8 +1,8 @@
 import React from 'react';
-import moment from 'moment';
-import { Descriptions } from 'antd';
+import { Form, Input, Row, Col, Checkbox } from 'antd';
 import Downloadfile from '@/components/SysUpload/Downloadfile';
-import styles from '../index.less';
+
+const { TextArea } = Input;
 
 const resultmap = new Map([
   [1, '通过'],
@@ -13,33 +13,58 @@ const resultmap = new Map([
 ]);
 
 function Examinedes(props) {
-  const { info } = props;
+  const { info, formItemLayout, forminladeLayout } = props;
   const text = info.taskName.indexOf('确认') === -1 ? '审核' : '确认';
 
   return (
-    <div className={styles.collapse} style={{ marginLeft: 30, marginRight: 10 }}>
-      <Descriptions style={{ marginTop: 24 }} size="middle">
-        <Descriptions.Item label={`${text}结果`}>{resultmap.get(info.result)}</Descriptions.Item>
-        <Descriptions.Item>
-          {info.result === 2 && <>科室领导审核，市场部领导审核</>}
-          {info.result === 4 && <>科室领导审核</>}
-          {info.result === 3 && <>市场部领导审核</>}
-        </Descriptions.Item>
-        <Descriptions.Item />
-        <Descriptions.Item label={`${text}时间`} span={3}>
-          {info.reviewTime}
-        </Descriptions.Item>
-        <Descriptions.Item label={`${text}意见`} span={3}>
-          <div dangerouslySetInnerHTML={{ __html: info.opinion?.replace(/[\n]/g, '<br/>') }} />
-        </Descriptions.Item>
-        <Descriptions.Item label="附件" span={3}>
-          {info.attachment !== '' && <Downloadfile files={info.attachment} />}
-        </Descriptions.Item>
-        <Descriptions.Item label={`${text}人`}>{info.userName}</Descriptions.Item>
-        <Descriptions.Item label={`${text}人单位`}>{info.unit}</Descriptions.Item>
-        <Descriptions.Item label={`${text}人部门`}>{info.department}</Descriptions.Item>
-      </Descriptions>
-    </div>
+    <>
+      <Row gutter={24} style={{ marginTop: 24 }}>
+        <Form {...formItemLayout}>
+          <Col span={8}>
+            <Form.Item label={`${text}结果`}>
+              <Input defaultValue={resultmap.get(info.result)} disabled />
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label={`${text}时间`}>
+              <Input defaultValue={resultmap.get(info.reviewTime)} disabled />
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label=''>
+              {info.result === 2 && <><Checkbox defaultChecked disabled />科室领导审核<Checkbox defaultChecked disabled />市场部领导审核</>}
+              {info.result === 4 && <><Checkbox defaultChecked disabled />科室领导审核</>}
+              {info.result === 3 && <><Checkbox defaultChecked disabled />市场部领导审核</>}
+            </Form.Item>
+          </Col>
+          <Col span={24}>
+            <Form.Item label={`${text}意见`}  {...forminladeLayout}>
+              <TextArea autoSize={{ minRows: 3 }} defaultValue={info.opinion} disabled />
+            </Form.Item>
+          </Col>
+          <Col span={24}>
+            <Form.Item label="附件" {...forminladeLayout}>
+              {info.fileIds !== '' && <Downloadfile files={info.attachment} />}
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label={`${text}人`}>
+              <Input defaultValue={info.userName} disabled />
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label={`${text}人单位`}>
+              <Input defaultValue={info.unit} disabled />
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label={`${text}人部门`}>
+              <Input defaultValue={info.department} disabled />
+            </Form.Item>
+          </Col>
+        </Form>
+      </Row>
+    </>
   );
 }
 

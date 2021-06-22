@@ -21,7 +21,7 @@ function Checkdes(props) {
             </Form.Item>
           </Col>
           <Col span={24}>
-            <Form.Item label="审核意见">
+            <Form.Item label="审核意见"  {...forminladeLayout}>
               <TextArea autoSize={{ minRows: 3 }} defaultValue={info.content} disabled />
             </Form.Item>
           </Col>

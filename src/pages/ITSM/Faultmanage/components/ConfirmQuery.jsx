@@ -1,45 +1,65 @@
 import React from 'react';
-import {
-  Radio
-} from 'antd';
+import { Radio, Form, Input, Row, Col } from 'antd';
 import DescriptionList from '@/components/DescriptionList';
 import Downloadfile from '@/components/SysUpload/Downloadfile'; // 下载组件调用
 
 const { Description } = DescriptionList;
 const RadioGroup = Radio.Group;
+const { TextArea } = Input;
 
 function ConfirmQuery(props) {
-  const { info } = props;
+  const { info, formItemLayout, forminladeLayout } = props;
 
   return (
-    <div style={{ paddingLeft: 45, paddingTop: 10 }}>
-      <>
-        <DescriptionList size="large">
-          <Description term="确认结果">
-            <RadioGroup defaultValue={info.confirmResult} disabled>
-              <Radio value='1'>通过</Radio>
-              <Radio value='0'>不通过</Radio>
-            </RadioGroup>
-          </Description>
-          <Description term="确认时间">{info.confirmTime || ''}</Description>
-        </DescriptionList>
-        <DescriptionList>
-          <Description term="故障责任方">{info.confirmBlame || ''}</Description>
-
-        </DescriptionList>
-        <DescriptionList size="large">
-          <Description term="确认说明">{info.confirmContent || ''}</Description>
-        </DescriptionList>
-        <DescriptionList size="large">
-          <Description term="上传附件"> {info.confirmAttachments && <Downloadfile files={info.confirmAttachments} />}</Description>
-        </DescriptionList>
-        <DescriptionList size="large">
-          <Description term="确认人">{info.confirmUser || ''}</Description>
-          <Description term="确认人单位">{info.confirmUnit || ''}</Description>
-          <Description term="确认人部门">{info.confirmDept || ''}</Description>
-        </DescriptionList>
-      </>
-    </div>
+    <>
+      <Row gutter={24} style={{ marginTop: 24 }}>
+        <Form {...formItemLayout}>
+          <Col span={8}>
+            <Form.Item label="确认结果">
+              <RadioGroup defaultValue={info.confirmResult} disabled>
+                <Radio value='1'>通过</Radio>
+                <Radio value='0'>不通过</Radio>
+              </RadioGroup>
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label="确认时间">
+              <Input defaultValue={info.confirmTime || ''} disabled />
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label="故障责任方">
+              <Input defaultValue={info.confirmBlame || ''} disabled />
+            </Form.Item>
+          </Col>
+          <Col span={24}>
+            <Form.Item label="确认说明"  {...forminladeLayout}>
+              <TextArea autoSize={{ minRows: 3 }} defaultValue={info.confirmContent || ''} disabled />
+            </Form.Item>
+          </Col>
+          <Col span={24}>
+            <Form.Item label="附件" {...forminladeLayout}>
+              {info.confirmAttachments && <Downloadfile files={info.confirmAttachments} />}
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label="确认人">
+              <Input defaultValue={info.confirmUser} disabled />
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label="确认人单位">
+              <Input defaultValue={info.confirmUnit} disabled />
+            </Form.Item>
+          </Col>
+          <Col span={8}>
+            <Form.Item label="确认人部门">
+              <Input defaultValue={info.confirmDept} disabled />
+            </Form.Item>
+          </Col>
+        </Form>
+      </Row>
+    </>
   );
 };
 

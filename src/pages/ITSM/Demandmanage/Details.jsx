@@ -13,6 +13,27 @@ import Tracklist from './components/Tracklist';
 const { Panel } = Collapse;
 const { Step } = Steps;
 
+const formItemLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 6 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 18 },
+  },
+};
+const forminladeLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 2 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 22 },
+  },
+};
+
 function Details(props) {
   const { location, dispatch, records, info, loading } = props;
   const { taskName, taskId, mainId } = location.query;
@@ -114,7 +135,7 @@ function Details(props) {
                 onChange={callback}
               >
                 <Panel header="需求登记" key="registdes">
-                  <Registratdes info={info.demandForm} />
+                  <Registratdes info={info.demandForm} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />
                 </Panel>
 
                 {info.historys.map((obj, index) => {
@@ -122,7 +143,7 @@ function Details(props) {
                   if (obj.taskName !== '系统开发商处理')
                     return (
                       <Panel header={obj.taskName} key={index.toString()}>
-                        <Examinedes info={obj} />
+                        <Examinedes info={obj} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />
                       </Panel>
                     );
                   if (obj.taskName === '系统开发商处理')

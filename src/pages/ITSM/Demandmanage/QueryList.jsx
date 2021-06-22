@@ -32,72 +32,6 @@ const form10ladeLayout = {
   },
 };
 
-const columns = [
-  {
-    title: '需求编号',
-    dataIndex: 'demandId',
-    key: 'demandId',
-    with: 100,
-    render: (text, record) => {
-      const handleClick = () => {
-        router.push({
-          pathname: `/ITSM/demandmanage/query/details`,
-          query: {
-            taskId: record.taskId,
-            mainId: record.processInstanceId,
-            taskName: record.taskName,
-            No: text,
-          },
-        });
-      };
-      return <a onClick={handleClick}>{text}</a>;
-    },
-  },
-  {
-    title: '需求标题',
-    dataIndex: 'demandTitle',
-    key: 'demandTitle',
-    with: 400,
-  },
-  {
-    title: '需求类型',
-    dataIndex: 'demandType',
-    key: 'demandType',
-    with: 200,
-  },
-  {
-    title: '申请人',
-    dataIndex: 'proposer',
-    key: 'proposer',
-    with: 100,
-  },
-  {
-    title: '工单状态',
-    dataIndex: 'taskName',
-    key: 'taskName',
-    with: 200,
-  },
-
-  {
-    title: '登记人',
-    dataIndex: 'sender',
-    key: 'sender',
-  },
-  {
-    title: '建单时间',
-    dataIndex: 'sendTime',
-    key: 'sendTime',
-    render: text => {
-      return <>{moment(text).format('YYYY-MM-DD HH:mm:ss')}</>;
-    },
-  },
-  {
-    title: '优先级',
-    dataIndex: 'priority',
-    key: 'priority',
-  },
-];
-
 function QueryList(props) {
   const pagetitle = props.route.name;
   const {
@@ -302,6 +236,94 @@ function QueryList(props) {
   const statemap = getTypebyId('1398105664881954817');
   const modulemap = getTypebyId('1352070663392727041');
 
+  const columns = [
+    {
+      title: '需求编号',
+      dataIndex: 'demandId',
+      key: 'demandId',
+      with: 100,
+      render: (text, record) => {
+        const handleClick = () => {
+          validateFields((err, values) => {
+            if (!err) {
+              const newvalues = {
+                createTime: '',
+                startTime: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD 00:00:00') : '',
+                endTime: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD 23:59:59') : '',
+                completeStatus: values.completeStatus === undefined ? '' : values.completeStatus,
+              }
+              dispatch({
+                type: 'viewcache/gettabstate',
+                payload: {
+                  cacheinfo: {
+                    ...values,
+                    ...newvalues,
+                    paginations,
+                    expand,
+                  },
+                  tabid: sessionStorage.getItem('tabid')
+                },
+              });
+            }
+          });
+          router.push({
+            pathname: `/ITSM/demandmanage/query/details`,
+            query: {
+              taskId: record.taskId,
+              mainId: record.processInstanceId,
+              taskName: record.taskName,
+              No: text,
+            },
+          });
+        };
+        return <a onClick={handleClick}>{text}</a>;
+      },
+    },
+    {
+      title: '需求标题',
+      dataIndex: 'demandTitle',
+      key: 'demandTitle',
+      with: 400,
+    },
+    {
+      title: '需求类型',
+      dataIndex: 'demandType',
+      key: 'demandType',
+      with: 200,
+    },
+    {
+      title: '申请人',
+      dataIndex: 'proposer',
+      key: 'proposer',
+      with: 100,
+    },
+    {
+      title: '工单状态',
+      dataIndex: 'taskName',
+      key: 'taskName',
+      with: 200,
+    },
+
+    {
+      title: '登记人',
+      dataIndex: 'sender',
+      key: 'sender',
+    },
+    {
+      title: '建单时间',
+      dataIndex: 'sendTime',
+      key: 'sendTime',
+      render: text => {
+        return <>{moment(text).format('YYYY-MM-DD HH:mm:ss')}</>;
+      },
+    },
+    {
+      title: '优先级',
+      dataIndex: 'priority',
+      key: 'priority',
+    },
+  ];
+
   return (
     <PageHeaderWrapper title={pagetitle}>
       <DictLower
@@ -402,10 +424,10 @@ function QueryList(props) {
             <Col span={24} style={{ textAlign: 'right' }}>
               <Button type="primary" onClick={handleSearch}>
                 查 询
-                </Button>
+              </Button>
               <Button style={{ marginLeft: 8 }} onClick={handleReset}>
                 重 置
-                </Button>
+              </Button>
               <Button
                 style={{ marginLeft: 8 }}
                 type="link"
