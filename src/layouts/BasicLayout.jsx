@@ -18,6 +18,7 @@ import { getAuthorityFromRouter } from '@/utils/utils';
 import logo from '../../public/menulogo.png';
 // import Layout from './BlankLayout';
 // import PageTab from './PageTab';
+import Tabrouters from './Tabrouters';
 
 
 const { TabPane } = Tabs;
@@ -37,45 +38,6 @@ const homepane = [{
   //   state: { cache: false, cacheinfo: {} },
   //   data: { cacheinfo: {} }
   // }
-]
-
-// 单条工单
-const alonepath = [
-  { path: '/ITSM/eventmanage/to-do/record/workorder' },
-  { path: '/ITSM/eventmanage/query/details' },
-  { path: '/ITSM/faultmanage/todolist/record' },
-  { path: '/ITSM/faultmanage/querylist/record' },
-  { path: '/ITSM/problemmanage/besolveddetail/workorder' },
-  { path: '/ITSM/problemmanage/problemquery/detail' },
-  { path: '/ITSM/demandmanage/to-do/record/workorder' },
-  { path: '/ITSM/demandmanage/query/details' },
-  { path: '/ITSM/operationplan/operationplanform' },
-  { path: '/ITSM/operationplan/operationplansearchdetail' },
-  { path: '/ITSM/operationreport/weeklyreport/detailSoft' },
-  { path: '/ITSM/operationreport/weeklyreport/computerroomreportdetail' },
-  { path: '/ITSM/operationreport/weeklyreport/databasereportdetail' },
-  { path: '/ITSM/operationreport/weeklyreport/otherreportdetail' },
-  { path: '/ITSM/operationreport/monthlyreport/monthdetailSoft' },
-  { path: '/ITSM/operationreport/monthlyreport/monthcomputerroomreportdetail' },
-  { path: '/ITSM/operationreport/monthlyreport/monthdatabasereportdetail' },
-  { path: '/ITSM/operationreport/monthlyreport/monthotherreportdetail' },
-];
-
-// 多条登记
-const multiplepath = [
-  { path: '/ITSM/eventmanage/registration', type: 'event' },
-  { path: '/ITSM/faultmanage/registration', type: 'fault' },
-  { path: '/ITSM/problemmanage/registration', type: 'problem' },
-  { path: '/ITSM/demandmanage/registration', type: 'demand' },
-  { path: '/ITSM/operationplan/operationplanfillin', type: 'weekoperation' },
-  { path: '/ITSM/operationreport/weeklyreport/softreport', type: 'softreport' },
-  { path: '/ITSM/operationreport/weeklyreport/computerroomreport', type: 'computerroomreport' },
-  { path: '/ITSM/operationreport/weeklyreport/databasereport', type: 'databasereport' },
-  { path: '/ITSM/operationreport/weeklyreport/otherreport', type: 'otherreport' },
-  { path: '/ITSM/operationreport/monthlyreport/monthotherreport', type: 'monthotherreport' },
-  { path: '/ITSM/operationreport/monthlyreport/monthdatabasereport', type: 'monthdatabasereport' },
-  { path: '/ITSM/operationreport/monthlyreport/monthcomputerroomreport', type: 'monthcomputerroomreport' },
-  { path: '/ITSM/operationreport/monthlyreport/monthsoftreport', type: 'monthsoftreport' },
 ]
 
 const noMatch = (
@@ -127,6 +89,8 @@ const BasicLayout = props => {
   const [toptabs, setTopTabs] = useState([...homepane]);
   const [activeKey, setActiveKey] = useState('1362219140546301953');
   const [tabmenu, setTabMenu] = useState({ x: 0, y: 0, v: 'none' });
+  const [alonepath, setAlonepath] = useState([]);
+  const [multiplepath, setMultiplepath] = useState([]);
 
   const clearcache = () => {
     dispatch({
@@ -165,24 +129,16 @@ const BasicLayout = props => {
   }, []);
 
   // 打开最末的标签
-  const lasttabactive = (tabs, s) => {
+  const lasttabactive = (tabs) => {
     const end = tabs.slice(-1)[0];
     const target = alonepath.filter(item => item.path === end.itemPath)[0];
     const multipletarget = multiplepath.filter(item => item.path === end.itemPath)[0];
     setActiveKey(end.id);
-    if (s) {
-      router.push({
-        pathname: end.itemPath,
-        query: { ...s, addtab: false },
-        state: (end.data && end.data.cacheinfo) ? { cacheinfo: end.data.cacheinfo } : { ...end.state, cache: false },
-      });
-    } else {
-      router.push({
-        pathname: end.itemPath,
-        query: target ? end.query : {},
-        state: (end.data && end.data.cacheinfo) ? { cacheinfo: end.data.cacheinfo } : { ...end.state, cache: false },
-      });
-    };
+    router.push({
+      pathname: end.itemPath,
+      query: (target || multipletarget) ? end.query : {},
+      state: (end.data && end.data.cacheinfo) ? { cacheinfo: end.data.cacheinfo } : { ...end.state, cache: false },
+    });
     if (multipletarget && end.data && end.data.cacheinfo) {
       clearcache();
       dispatch({
@@ -228,7 +184,6 @@ const BasicLayout = props => {
       const targettype = toptabs.filter(item => item.type === targetmultiple.type);
       const num = targettype.length;
       const endid = num === 0 ? 0 : Number(targettype.slice(-1)[0].id.replace(/[^0-9]/ig, "")) + 1;
-      const search = location.query;
       const panels = {
         name: menuDesc,
         type: targetmultiple.type,
@@ -242,11 +197,11 @@ const BasicLayout = props => {
       if (targettype[0]) {
         getcache();    // 获取旧页签数据
         toptabs.push(panels);
-        lasttabactive(toptabs, search);
+        lasttabactive(toptabs);
       } else {
         // 增加登记页签
         toptabs.push(panels);
-        lasttabactive(toptabs, search);
+        lasttabactive(toptabs);
       };
     }
     if (tabtargetid) {
@@ -484,6 +439,10 @@ const BasicLayout = props => {
 
   return (
     <div onClick={() => setTabMenu({ ...tabmenu, v: 'none' })}>
+      <Tabrouters
+        Changealonepath={v => setAlonepath(v)}
+        Changemultiple={v => setMultiplepath(v)}
+      />
       <ProLayout
         loading={loading}
         layout="topmenu"
@@ -551,8 +510,10 @@ const BasicLayout = props => {
               const target = toptabs.filter(item => item.id === tabid)[0];
               if (target) {
                 delete target.data
-                target.state.cache = false;
-                target.state.refresh = true;
+                if (target.state) {
+                  target.state.cache = false;
+                  target.state.refresh = true;
+                };
                 const newData = toptabs.map(item => {
                   return item.id === target.id ? target : item
                 });

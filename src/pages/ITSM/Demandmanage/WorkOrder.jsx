@@ -121,6 +121,25 @@ function WorkOrder(props) {
     }
   }, [mainId]);
 
+  // 点击页签右键刷新
+  useEffect(() => {
+    if (location.state && location.state.reset && mainId) {
+      dispatch({
+        type: 'demandtodo/demandrecords',
+        payload: {
+          processId: mainId,
+        },
+      });
+      dispatch({
+        type: 'demandtodo/demandopenflow',
+        payload: {
+          processInstanceId: mainId,
+          taskId,
+        },
+      });
+    }
+  }, [location.state])
+
   // 监听info是否已更新
   useEffect(() => {
     if (loading) {
@@ -693,7 +712,7 @@ function WorkOrder(props) {
               if (obj.taskName === '系统开发商处理')
                 return (
                   <Panel header={obj.taskName} key={index.toString()}>
-                    <Tracklist demandId={info.demandForm.demandId}  formItemLayout={formItemLayout} forminladeLayout={forminladeLayout}  />
+                    <Tracklist demandId={info.demandForm.demandId} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />
                   </Panel>
                 );
             })}

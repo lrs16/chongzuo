@@ -98,6 +98,15 @@ function Registration(props) {
     }
   }, [tabnew]);
 
+  // 点击页签右键刷新
+  useEffect(() => {
+    if (location.state) {
+      if (location.state.reset) {
+        RegistratRef.current.resetVal();
+      }
+    }
+  }, [location.state]);
+
   // 获取页签信息
   useEffect(() => {
     if (location.state) {

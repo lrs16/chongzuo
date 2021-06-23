@@ -863,6 +863,16 @@ function Todolistdetails(props) {
     });
   }
 
+  // 点击页签右键刷新
+  useEffect(() => {
+    if (location.state && location.state.reset && mainId) {
+      getfaultTodoDetailData();
+      getCurrUserInfo(); // 获取登录用户信息
+      sessionStorage.setItem('Processtype', 'troub');
+      setTabActiveKey('faultForm');
+    }
+  }, [location.state])
+
   return (
     <PageHeaderWrapper
       extra={

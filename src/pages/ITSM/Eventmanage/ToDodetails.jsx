@@ -79,6 +79,12 @@ function ToDodetails(props) {
     settabActivekey('workorder');
   }, [mainId]);
 
+  useEffect(() => {
+    if (location.state && location.state.reset) {
+      settabActivekey('workorder');
+    }
+  }, [location.state]);
+
   // 接单
   const eventaccpt = () => {
     judgeTimeoutStatus(taskId).then(res => {

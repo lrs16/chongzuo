@@ -119,7 +119,6 @@ function WorkOrder2(props) {
   // 流转
   const eventflow = newflowtype => {
     const handleresult = HandleRef.current && HandleRef.current.getHandleResult();
-
     dispatch({
       type: 'eventtodo/eventflow',
       payload: {
@@ -150,7 +149,6 @@ function WorkOrder2(props) {
 
   // 结束
   const overflow = () => {
-    console.log('结束')
     dispatch({
       type: 'eventtodo/overflow',
       payload: {
@@ -440,6 +438,31 @@ function WorkOrder2(props) {
       },
     });
   }, [taskId]);
+
+  // 点击页签右键刷新
+  useEffect(() => {
+    if (location.state && location.state.reset && mainId) {
+      dispatch({
+        type: 'eventtodo/eventopenflow',
+        payload: {
+          taskId,
+          mainId,
+        },
+      });
+      dispatch({
+        type: 'itsmuser/fetchuser',
+      });
+      sessionStorage.setItem('Processtype', 'event');
+    };
+    if (taskId) {
+      dispatch({
+        type: 'eventtodo/eventrecords',
+        payload: {
+          processId: mainId,
+        },
+      });
+    }
+  }, [location.state])
 
   // 初始化值panel
   useEffect(() => {

@@ -105,6 +105,24 @@ function EventDetails(props) {
     settabActivekey('workorder');
   }, [mainId]);
 
+  useEffect(() => {
+    if (location.state && location.state.reset && mainId) {
+      dispatch({
+        type: 'eventquery/fetchopenview',
+        payload: {
+          mainId,
+        },
+      });
+      dispatch({
+        type: 'eventtodo/eventrecords',
+        payload: {
+          processId: mainId,
+        },
+      });
+      settabActivekey('workorder');
+    };
+  }, [location.state])
+
   // 初始化值panel
   useEffect(() => {
     setActiveKey([1]);

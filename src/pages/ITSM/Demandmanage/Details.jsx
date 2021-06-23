@@ -93,6 +93,25 @@ function Details(props) {
     return () => { setActiveKey('workorder') }
   }, [mainId]);
 
+  // 点击页签右键刷新
+  useEffect(() => {
+    if (location.state && location.state.reset && mainId) {
+      settabActivekey('workorder');
+      dispatch({
+        type: 'demandtodo/demandrecords',
+        payload: {
+          processId: mainId,
+        },
+      });
+      dispatch({
+        type: 'demandquery/detail',
+        payload: {
+          processInstanceId: mainId,
+        },
+      });
+    }
+  }, [location.state])
+
   return (
     <PageHeaderWrapper
       title={taskName}

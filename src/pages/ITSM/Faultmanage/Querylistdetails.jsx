@@ -110,6 +110,13 @@ function Querylistdetails(props) {
     setTabActiveKey('faultForm');
   }, [id]);
 
+  useEffect(() => {
+    if (location.state && location.state.reset && id) {
+      querydetailsList();
+      setTabActiveKey('faultForm');
+    }
+  }, [location.state]);
+
   const handleClose = () => { // 返回上一页
     router.push({
       pathname: `/ITSM/faultmanage/querylist`,

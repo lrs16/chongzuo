@@ -75,6 +75,13 @@ function Queryworkdetail(props) {
     getInformation()
   }, [id]);
 
+  useEffect(() => {
+    if (location.state && location.state.reset && id) {
+      getInformation()
+    }
+  }, [location.state]);
+
+
   const tabList = [
     {
       key: 'workorder',

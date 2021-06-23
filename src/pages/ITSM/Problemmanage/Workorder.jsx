@@ -585,6 +585,26 @@ function Workorder(props) {
     setTabActiveKey('workorder')
   }, [mainId]);
 
+  // 点击页签右键刷新
+  useEffect(() => {
+    if (location.state && location.state.reset && mainId) {
+      getInformation();
+      getUserinfo();
+      getNewno();
+      gethandle();
+      getSelectperson();
+      getSource();
+      gettype();
+      getpriority();
+      getscope();
+      getProject();
+      queryDept();
+      sessionStorage.setItem('Processtype', 'problem');
+      sessionStorage.setItem('Nextflowmane', '');
+      setTabActiveKey('workorder')
+    }
+  }, [location.state]);
+
   useEffect(() => {
     sessionStorage.setItem('flowtype', flowtype);
   }, [flowtype]);

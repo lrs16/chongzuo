@@ -42,7 +42,8 @@ const columns = [
               sign: 'solution',
               time1: record.start_time,
               time2: record.end_time,
-              registerUser: record.user
+              registerUser: record.user,
+              pathpush: true
             },
             state: { cache: false },
           }
@@ -68,8 +69,10 @@ const columns = [
               time1: record.start_time,
               time2: record.end_time,
               selfhandle: '是',
-              registerUser: record.user
-            }
+              registerUser: record.user,
+              pathpush: true
+            },
+            state: { cache: false },
           }
           }
         >
@@ -174,7 +177,7 @@ function Solution(props) {
                   onClick={() => handleListdata('search')}
                 >
                   查询
-                    </Button>
+                </Button>
               </Col>
             </>
 

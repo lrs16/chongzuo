@@ -138,6 +138,12 @@ function ToDoregist(props) {
     }
   }
 
+  useEffect(() => {
+    if (location.state && location.state.reset) {
+      settabActivekey('workorder');
+    }
+  }, [location.state]);
+
   const operations = (
     <>
       {tabActivekey === 'workorder' && (

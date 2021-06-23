@@ -101,204 +101,6 @@ function QueryList(props) {
     });
   };
 
-  //  下载
-  const download = () => {
-    validateFields((err, values) => {
-      if (!err) {
-        dispatch({
-          type: 'eventquery/eventdownload',
-          payload: {
-            values: {
-              ...values,
-              time1: values.createTime ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-              time2: values.createTime ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-              createTime: '',
-              eventObject: values.eventObject ? (values.eventObject).slice(-1)[0] : '',
-            },
-            ids: selectedRowKeys.toString(),
-          },
-        }).then(res => {
-          const filename = `事件查询_${moment().format('YYYY-MM-DD HH:mm')}.xls`;
-          const blob = new Blob([res]);
-          const url = window.URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = filename;
-          a.click();
-          window.URL.revokeObjectURL(url);
-        });
-      }
-    });
-  };
-
-  const onShowSizeChange = (page, size) => {
-    validateFields((err, values) => {
-      if (!err) {
-        searchdata(values, page, size);
-      }
-    });
-    setPageinations({
-      ...paginations,
-      pageSize: size,
-    });
-  };
-
-  const changePage = page => {
-    validateFields((err, values) => {
-      if (!err) {
-        searchdata(values, page - 1, paginations.pageSize);
-      }
-    });
-    setPageinations({
-      ...paginations,
-      current: page,
-    });
-  };
-
-  const pagination = {
-    showSizeChanger: true,
-    onShowSizeChange: (page, size) => onShowSizeChange(page, size),
-    current: paginations.current,
-    pageSize: paginations.pageSize,
-    total: list.total,
-    showTotal: total => `总共  ${total}  条记录`,
-    onChange: page => changePage(page),
-  };
-
-  const onSelectChange = RowKeys => {
-    setSelectedRowKeys(RowKeys);
-  };
-
-  const rowSelection = {
-    selectedRowKeys,
-    onChange: onSelectChange,
-  };
-
-  const handleSearch = (params) => {
-    setPageinations({
-      ...paginations,
-      current: 1,
-    });
-    validateFields((err, values) => {
-      if (err) {
-        return;
-      }
-      searchdata(values, 0, paginations.pageSize, params);
-    });
-  };
-
-  const handleReset = () => {
-    router.push({
-      pathname: location.pathname,
-      query: {},
-      state: {}
-    });
-    resetFields();
-    validateFields((err, values) => {
-      searchdata(values, 0, 15)
-    });
-    setPageinations({ current: 1, pageSize: 15 });
-  };
-
-  const displayRender = label => {
-    return label[label.length - 1];
-  };
-
-  const getTypebykey = key => {
-    if (selectdata.ischange) {
-      return selectdata.arr.filter(item => item.key === key)[0].children;
-    }
-    return [];
-  };
-
-  const sourcemap = getTypebykey('486844540120989696'); // 事件来源
-  const statusmap = getTypebykey('1356421038388285441'); // 工单状态
-  const typemap = getTypebykey('486844495669755904'); // 事件分类
-  const objectmap = getTypebykey('482599461999083520'); // 事件对象
-  const returnvisit = getTypebykey('486852783895478272'); // 回访方式
-  const effectmap = getTypebykey('482610561507393536'); // 影响度
-  const emergentmap = getTypebykey('482610561503199232'); // 紧急度
-  const priormap = getTypebykey('482610561499004928'); // 优先级
-  const checkresultmap = getTypebykey('1356439651098824706'); // 审核结果
-  const yesornomap = getTypebykey('1356502855556534273'); // 是否
-  const handleresultmap = getTypebykey('486846455059841024'); // 处理结果
-  const satisfactionmap = getTypebykey('486855005945462784'); // 满意度
-
-  const startTime = time1 ? moment(time1).format('YYYY-MM-DD 00:00:00') : '';
-  const endTime = time2 ? moment(time2).format('YYYY-MM-DD 23:59:59') : '';
-  const record = {
-    eventObject: eventObject || '',
-    revisitWay: '',
-    eventSource: '',
-    eventEffect: '',
-    eventEmergent: '',
-    eventPrior: '',
-    selfhandle: selfhandle || '',
-    applicationUnit: applicationUnit || '',
-    applicationDept: '',
-    registerUser: registerUser || '',
-    eventNo: '',
-    eventStatus: eventStatus || '',
-    eventType: '',
-    createTime: time1 ? [moment(startTime), moment(endTime)] : '',
-    paginations
-  }
-  const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
-
-  // 设置时间
-  useEffect(() => {
-    if (location.state.cacheinfo) {
-      const cachestartTime = location.state.cacheinfo.startTime;
-      const cacheendTime = location.state.cacheinfo.endTime;
-      setFieldsValue({
-        createTime: cachestartTime ? [moment(cachestartTime), moment(cacheendTime)] : '',
-      })
-    } else {
-      setFieldsValue({
-        createTime: time1 ? [moment(startTime), moment(endTime)] : '',
-      })
-    }
-  }, [location.state]);
-
-  useEffect(() => {
-    if (location.state) {
-      if (location.state.cache) {
-        // 传表单数据到页签
-        dispatch({
-          type: 'viewcache/gettabstate',
-          payload: {
-            cacheinfo: {
-              ...tabrecord,
-              paginations,
-              expand,
-            },
-            tabid: sessionStorage.getItem('tabid')
-          },
-        });
-      };
-      // 点击菜单刷新,并获取数据
-      if (location.state.reset) {
-        handleReset()
-      };
-      if (location.state.cacheinfo) {
-        const { current, pageSize } = location.state.cacheinfo.paginations;
-        setExpand(location.state.cacheinfo.expand);
-        setPageinations({ ...paginations, current, pageSize });
-      };
-    }
-  }, [location.state]);
-
-  // 获取数据
-  useEffect(() => {
-    if (cacheinfo !== undefined) {
-      validateFields((err, values) => {
-        if (!err) {
-          searchdata(values, cacheinfo.paginations.current - 1, cacheinfo.paginations.pageSize)
-        }
-      });
-    }
-  }, []);
-
   const columns = [
     {
       title: '事件编号',
@@ -308,23 +110,16 @@ function QueryList(props) {
       fixed: 'left',
       render: (text, record) => {
         const handleClick = () => {
-          validateFields((err, values) => {
-            if (!err) {
-              dispatch({
-                type: 'viewcache/gettabstate',
-                payload: {
-                  cacheinfo: {
-                    ...values,
-                    startTime: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-                    endTime: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-                    createTime: '',
-                    paginations,
-                    expand,
-                  },
-                  tabid: sessionStorage.getItem('tabid')
-                },
-              });
-            }
+          dispatch({
+            type: 'viewcache/gettabstate',
+            payload: {
+              cacheinfo: {
+                ...tabrecord,
+                paginations,
+                expand,
+              },
+              tabid: sessionStorage.getItem('tabid')
+            },
           });
           router.push({
             pathname: `/ITSM/eventmanage/query/details`,
@@ -458,6 +253,216 @@ function QueryList(props) {
 
 
   ];
+
+  //  下载
+  const download = () => {
+    validateFields((err, values) => {
+      if (!err) {
+        dispatch({
+          type: 'eventquery/eventdownload',
+          payload: {
+            values: {
+              ...values,
+              time1: values.createTime ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+              time2: values.createTime ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+              createTime: '',
+              eventObject: values.eventObject ? (values.eventObject).slice(-1)[0] : '',
+            },
+            ids: selectedRowKeys.toString(),
+          },
+        }).then(res => {
+          const filename = `事件查询_${moment().format('YYYY-MM-DD HH:mm')}.xls`;
+          const blob = new Blob([res]);
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = filename;
+          a.click();
+          window.URL.revokeObjectURL(url);
+        });
+      }
+    });
+  };
+
+  const onShowSizeChange = (page, size) => {
+    validateFields((err, values) => {
+      if (!err) {
+        searchdata(values, page, size);
+      }
+    });
+    setPageinations({
+      ...paginations,
+      pageSize: size,
+    });
+  };
+
+  const changePage = page => {
+    validateFields((err, values) => {
+      if (!err) {
+        searchdata(values, page - 1, paginations.pageSize);
+      }
+    });
+    setPageinations({
+      ...paginations,
+      current: page,
+    });
+  };
+
+  const pagination = {
+    showSizeChanger: true,
+    onShowSizeChange: (page, size) => onShowSizeChange(page, size),
+    current: paginations.current,
+    pageSize: paginations.pageSize,
+    total: list.total,
+    showTotal: total => `总共  ${total}  条记录`,
+    onChange: page => changePage(page),
+  };
+
+  const onSelectChange = RowKeys => {
+    setSelectedRowKeys(RowKeys);
+  };
+
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: onSelectChange,
+  };
+
+  const handleSearch = (params) => {
+    setPageinations({
+      ...paginations,
+      current: 1,
+    });
+    validateFields((err, values) => {
+      if (err) {
+        return;
+      }
+      searchdata(values, 0, paginations.pageSize, params);
+    });
+  };
+
+  const handleReset = () => {
+    router.push({
+      pathname: location.pathname,
+      query: {},
+      state: {}
+    });
+    resetFields();
+    if (time1 || time2 || eventObject || selfhandle || registerUser || eventStatus || applicationUnit) {
+      setFieldsValue({
+        createTime: '',
+        eventObject: '',
+        selfhandle: '',
+        registerUser: '',
+        eventStatus: '',
+        applicationUnit: ''
+      })
+    }
+    validateFields((err, values) => {
+      searchdata(values, 0, 15)
+    });
+    setPageinations({ current: 1, pageSize: 15 });
+  };
+
+  const displayRender = label => {
+    return label[label.length - 1];
+  };
+
+  const getTypebykey = key => {
+    if (selectdata.ischange) {
+      return selectdata.arr.filter(item => item.key === key)[0].children;
+    }
+    return [];
+  };
+
+  const sourcemap = getTypebykey('486844540120989696'); // 事件来源
+  const statusmap = getTypebykey('1356421038388285441'); // 工单状态
+  const typemap = getTypebykey('486844495669755904'); // 事件分类
+  const objectmap = getTypebykey('482599461999083520'); // 事件对象
+  const returnvisit = getTypebykey('486852783895478272'); // 回访方式
+  const effectmap = getTypebykey('482610561507393536'); // 影响度
+  const emergentmap = getTypebykey('482610561503199232'); // 紧急度
+  const priormap = getTypebykey('482610561499004928'); // 优先级
+  const checkresultmap = getTypebykey('1356439651098824706'); // 审核结果
+  const yesornomap = getTypebykey('1356502855556534273'); // 是否
+  const handleresultmap = getTypebykey('486846455059841024'); // 处理结果
+  const satisfactionmap = getTypebykey('486855005945462784'); // 满意度
+
+  const startTime = time1 ? moment(time1).format('YYYY-MM-DD 00:00:00') : '';
+  const endTime = time2 ? moment(time2).format('YYYY-MM-DD 23:59:59') : '';
+  const record = {
+    eventObject: eventObject || '',
+    revisitWay: '',
+    eventSource: '',
+    eventEffect: '',
+    eventEmergent: '',
+    eventPrior: '',
+    selfhandle: selfhandle || '',
+    applicationUnit: applicationUnit || '',
+    applicationDept: '',
+    registerUser: registerUser || '',
+    eventNo: '',
+    eventStatus: eventStatus || '',
+    eventType: '',
+    createTime: time1 ? [moment(startTime), moment(endTime)] : '',
+    paginations
+  }
+  const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
+
+  // 设置时间
+  useEffect(() => {
+    if (location.state.cacheinfo) {
+      const cachestartTime = location.state.cacheinfo.startTime;
+      const cacheendTime = location.state.cacheinfo.endTime;
+      setFieldsValue({
+        createTime: cachestartTime ? [moment(cachestartTime), moment(cacheendTime)] : '',
+      })
+    } else {
+      setFieldsValue({
+        createTime: time1 ? [moment(startTime), moment(endTime)] : '',
+      })
+    }
+  }, [location.state]);
+
+  useEffect(() => {
+    if (location.state) {
+      if (location.state.cache) {
+        // 传表单数据到页签
+        dispatch({
+          type: 'viewcache/gettabstate',
+          payload: {
+            cacheinfo: {
+              ...tabrecord,
+              paginations,
+              expand,
+            },
+            tabid: sessionStorage.getItem('tabid')
+          },
+        });
+      };
+      // 点击菜单刷新,并获取数据
+      if (location.state.reset) {
+        handleReset()
+      };
+      if (location.state.cacheinfo) {
+        const { current, pageSize } = location.state.cacheinfo.paginations;
+        setExpand(location.state.cacheinfo.expand);
+        setPageinations({ ...paginations, current, pageSize });
+      };
+    }
+  }, [location.state]);
+
+  // 获取数据
+  useEffect(() => {
+    if (cacheinfo !== undefined) {
+      validateFields((err, values) => {
+        if (!err) {
+          searchdata(values, cacheinfo.paginations.current - 1, cacheinfo.paginations.pageSize)
+        }
+      });
+    }
+  }, []);
+
+
 
   return (
     <PageHeaderWrapper title={title}>
@@ -685,15 +690,14 @@ function QueryList(props) {
                   })(<Input placeholder="请输入" allowClear />)}
                 </Form.Item>
               </Col>
-
-              <Col span={8} style={{ clear: 'both' }}>
-                <Form.Item label="申报人">
-                  {getFieldDecorator('applicationUser', {
-                    initialValue: cacheinfo.applicationUser,
-                  })(<Input placeholder="请输入" allowClear />)}
-                </Form.Item>
-              </Col>
             </span>
+            <Col span={8}>
+              <Form.Item label="申报人">
+                {getFieldDecorator('applicationUser', {
+                  initialValue: cacheinfo.applicationUser,
+                })(<Input placeholder="请输入" allowClear />)}
+              </Form.Item>
+            </Col>
             <Col span={8}>
               <Form.Item label="申报人单位">
                 {getFieldDecorator('applicationUnit', {
