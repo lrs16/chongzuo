@@ -261,12 +261,7 @@ function OtherReportdetail(props) {
                             handleaddTable(newdata)
                           }}
                           dynamicData={addTitle[index]}
-                          list={addData => {
-                            setList(addData)
-                          }}
-                        // initialDynamic={initial => {
-                        //   initialDynamic(initial)
-                        // }}
+                          loading={loading}
                         />
                       </Col>
 
@@ -293,9 +288,9 @@ function OtherReportdetail(props) {
                 ghost
                 onClick={() => newMember()}
                 icon="plus"
-                disabled={secondbutton}
+                disabled={reportSearch}
               >
-                添加内容
+                新增其他运维
               </Button>
 
             </Form>

@@ -240,28 +240,8 @@ function ComputerroomReportdetail(props) {
     setList(listArr)
   }
 
-  const addTable = (index) => {
-    const nowNumber = addTitle.map(item => ({ ...item }));
-    // nowNumber.push({ 'add': '1',tableIndexindex:[] });
-    nowNumber[index].tableIndex.push({ columns: 'aa' });
-    setAddTitle(nowNumber);
-  }
+  console.log(operationList,'operationList')
 
-  //  删除数据
-  const remove = key => {
-    const target = getRowByKey(key) || {};
-    // dispatch({
-    //   type: 'chacklist/trackdelete',
-    //   payload: {
-    //     id: target.id,
-    //   },
-    // }).then(res => {
-    //   if (res.code === 200) {
-    //     message.success(res.msg, 2);
-    //     getlistdata();
-    //   }
-    // });
-  };
 
 
   return (
@@ -641,9 +621,7 @@ function ComputerroomReportdetail(props) {
                             // saveForm(newdata)
                           }}
                           dynamicData={addTitle[index]}
-                          list={addData => {
-                            setList(addData)
-                          }}
+                          loading={loading}
                         />
                       </Col>
 
@@ -672,7 +650,7 @@ function ComputerroomReportdetail(props) {
                 icon="plus"
                 disabled={reportSearch}
               >
-                新增内容
+                新增机房
               </Button>
 
             </Form>

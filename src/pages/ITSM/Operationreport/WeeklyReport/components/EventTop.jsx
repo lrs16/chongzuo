@@ -10,7 +10,8 @@ import {
   Select,
   AutoComplete,
   Spin,
-  Button
+  Button,
+  message
 } from 'antd';
 import { connect } from 'dva';
 import SysUpload from '@/components/SysUpload';
@@ -126,19 +127,8 @@ function EventTop(props) {
 
 
   const handleSave = (target, id) => {
-    topNList(data)
-  }
-
-  const saveRow = (e, key) => {
-    const target = getRowByKey(key) || {};
-    // delete target.key;
-    target.editable = false;
-    const id = target.id === '' ? '' : target.id;
-    savedata(target, id);
-    if (target.isNew) {
-      target.isNew = false
-      // setNewButton(false)
-    }
+    topNList(data);
+    message.info('暂存保存数据成功')
   }
 
   const handleFieldChange = (e, fieldName, key) => {
@@ -321,13 +311,9 @@ function EventTop(props) {
     }
   ];
 
-  const [newColumns, setNewColumns] = useState(column)
 
   useEffect(() => {
     handleTabledata();
-    if (mainId) {
-      setNewColumns(editColumns)
-    }
   }, [topArr])
 
 
@@ -336,10 +322,18 @@ function EventTop(props) {
   return (
     <>
       <Row gutter={16}>
-        <Col span={24}>
+        <Col span={20}>
           <p>（三）工单TopN 事件分析</p>
         </Col>
 
+
+        <Col style={{ textAlign: 'center' }}>
+          <Button
+            type='primary'
+            onClick={handleSave}>保存</Button>
+        </Col>
+
+        
         <Form {...formItemLayout}>
           {!mainId && (
             <Row gutter={16}>
@@ -362,17 +356,13 @@ function EventTop(props) {
           )}
         </Form>
 
-        {/* <Col> 
-          <Button
-            type='primary'
-            onClick={handleSave}>保存</Button>
-        </Col> */}
-
         <Table
-          columns={newColumns}
+          loading={loading}
+          columns={mainId ? editColumns : column}
           dataSource={data}
           pagination={false}
         />
+
       </Row>
 
     </>

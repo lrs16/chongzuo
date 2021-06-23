@@ -45,6 +45,7 @@ export default {
     },
     //  保存软件
     *saveSoft({payload},{call,put}) {
+      console.log('payload: ', payload);
       if(payload.status) {
         const response = yield call(addReport);
         if(response.code === 200) {
@@ -54,22 +55,41 @@ export default {
           const type = payload.reporttype;
           const saveresponse = yield call(saveSoftreport,saveData);
           if(saveresponse.code === 200) {
-            route.push({
-              pathname: `/ITSM/operationreport/weeklyreport/softreport`,
-              query: { 
-                tabid: sessionStorage.getItem('tabid'),
-                 closecurrent: true
-                 }
-            })
-            route.push({
-              pathname: `/ITSM/operationreport/weeklyreport/detailSoft`,
-              query: {
-                reporttype: type,
-                mainId,
-                orderNo:'',
-              },
-              state: {}
-            })
+            if(payload.reporttype === 'week') {
+              route.push({
+                pathname: `/ITSM/operationreport/weeklyreport/softreport`,
+                query: { 
+                  tabid: sessionStorage.getItem('tabid'),
+                   closecurrent: true
+                   }
+              })
+              route.push({
+                pathname: `/ITSM/operationreport/weeklyreport/detailSoft`,
+                query: {
+                  reporttype: type,
+                  mainId:mainId.toString(),
+                  orderNo:mainId.toString(),
+                },
+                state: {}
+              })
+            } else {
+              route.push({
+                pathname: `/ITSM/operationreport/monthlyreport/monthsoftreport`,
+                query: { 
+                  tabid: sessionStorage.getItem('tabid'),
+                   closecurrent: true
+                   }
+              })
+              route.push({
+                pathname: `/ITSM/operationreport/monthlyreport/monthdetailSoft`,
+                query: {
+                  reporttype: type,
+                  mainId:mainId.toString(),
+                  orderNo:mainId.toString(),
+                },
+                state: {}
+              })
+            }
           }
         }
       } else {
@@ -116,23 +136,42 @@ export default {
             const type = payload.reporttype;
             const saveresponse = yield call(saveComputerRoom,saveData);
             if(saveresponse.code === 200) {
-              route.push({
-                pathname: `/ITSM/operationreport/weeklyreport/computerroomreport`,
-                query: { 
-                  // mainId,
-                  tabid: sessionStorage.getItem('tabid'),
-                   closecurrent: true,
-                  //  addtab:true
-                   }
-              })
-              route.push({
-                pathname: `/ITSM/operationreport/weeklyreport/computerroomreportdetail`,
-                query: {
-                  reporttype: type,
-                  mainId,
-                  orderNo:mainId,
-                },
-              })
+              if(payload.reporttype === 'week') {
+                route.push({
+                  pathname: `/ITSM/operationreport/weeklyreport/computerroomreport`,
+                  query: { 
+                    tabid: sessionStorage.getItem('tabid'),
+                     closecurrent: true,
+                    //  addtab:true
+                     }
+                })
+                route.push({
+                  pathname: `/ITSM/operationreport/weeklyreport/computerroomreportdetail`,
+                  query: {
+                    reporttype: type,
+                    mainId:mainId.toString(),
+                    orderNo:mainId.toString(),
+                  },
+                })
+              } else {
+                route.push({
+                  pathname: `/ITSM/operationreport/monthlyreport/monthsoftreport`,
+                  query: { 
+                    tabid: sessionStorage.getItem('tabid'),
+                     closecurrent: true,
+                    //  addtab:true
+                     }
+                })
+                route.push({
+                  pathname: `/ITSM/operationreport/monthlyreport/monthdetailSoft`,
+                  query: {
+                    reporttype: type,
+                    mainId:mainId.toString(),
+                    orderNo:mainId.toString(),
+                  },
+                })
+              }
+              
             }
           }
         } else {
@@ -153,22 +192,42 @@ export default {
           const type = payload.reporttype;
           const saveresponse = yield call(saveDataBase,saveData);
           if(saveresponse.code === 200) {
-            route.push({
-              pathname: `/ITSM/operationreport/weeklyreport/databasereport`,
-              query: { 
-                tabid: sessionStorage.getItem('tabid'),
-                 closecurrent: true
-                 }
-            })
-            route.push({
-              pathname: `/ITSM/operationreport/weeklyreport/databasereportdetail`,
-              query: {
-                reporttype: type,
-                mainId,
-                orderNo:mainId,
-              },
-              state: {}
-            })
+            if(payload.reporttype === 'week') {
+              route.push({
+                pathname: `/ITSM/operationreport/weeklyreport/databasereport`,
+                query: { 
+                  tabid: sessionStorage.getItem('tabid'),
+                   closecurrent: true
+                   }
+              })
+              route.push({
+                pathname: `/ITSM/operationreport/weeklyreport/databasereportdetail`,
+                query: {
+                  reporttype: type,
+                  mainId:mainId.toString(),
+                  orderNo:mainId.toString(),
+                },
+                state: {}
+              })
+            } else {
+              route.push({
+                pathname: `/ITSM/operationreport/monthlyreport/monthdatabasereport`,
+                query: { 
+                  tabid: sessionStorage.getItem('tabid'),
+                   closecurrent: true
+                   }
+              })
+              route.push({
+                pathname: `/ITSM/operationreport/monthlyreport/monthdatabasereportdetail`,
+                query: {
+                  reporttype: type,
+                  mainId:mainId.toString(),
+                  orderNo:mainId.toString(),
+                },
+                state: {}
+              })
+            }
+           
           }
         }
       } else {
@@ -188,22 +247,42 @@ export default {
           const type = payload.reporttype;
           const saveresponse = yield call(saveOther,saveData);
           if(saveresponse.code === 200) {
-            route.push({
-              pathname: `/ITSM/operationreport/weeklyreport/otherreport`,
-              query: { 
-                tabid: sessionStorage.getItem('tabid'),
-                 closecurrent: true
-                 }
-            })
-            route.push({
-              pathname: `/ITSM/operationreport/weeklyreport/otherreportdetail`,
-              query: {
-                reporttype: type,
-                mainId,
-                orderNo:mainId,
-              },
-              state: {}
-            })
+            if(payload.reporttype === 'week') {
+              route.push({
+                pathname: `/ITSM/operationreport/weeklyreport/otherreport`,
+                query: { 
+                  tabid: sessionStorage.getItem('tabid'),
+                   closecurrent: true
+                   }
+              })
+              route.push({
+                pathname: `/ITSM/operationreport/weeklyreport/otherreportdetail`,
+                query: {
+                  reporttype: type,
+                  mainId:mainId.toString(),
+                  orderNo:mainId.toString(),
+                },
+                state: {}
+              })
+            } else {
+              route.push({
+                pathname: `/ITSM/operationreport/monthlyreport/monthotherreport`,
+                query: { 
+                  tabid: sessionStorage.getItem('tabid'),
+                   closecurrent: true
+                   }
+              })
+              route.push({
+                pathname: `/ITSM/operationreport/monthlyreport/monthotherreportdetail`,
+                query: {
+                  reporttype: type,
+                  mainId:mainId.toString(),
+                  orderNo:mainId.toString(),
+                },
+                state: {}
+              })
+            }
+           
           }
         }
       } else {

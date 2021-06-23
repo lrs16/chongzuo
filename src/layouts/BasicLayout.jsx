@@ -29,14 +29,14 @@ const homepane = [{
   closable: false,
   state: { cache: false },
 },
-  // {
-  //   name: "需求查询",
-  //   id: "1333251061216972801",
-  //   itemPath: "/ITSM/demandmanage/query",
-  //   query: {},
-  //   state: { cache: false, cacheinfo: {} },
-  //   data: { cacheinfo: {} }
-  // }
+{
+  name: "周报查询",
+  id: "1399537627945766913",
+  itemPath: "/ITSM/operationreport/weeklyreport/myweeklyreportsearch",
+  query: {},
+  state: { cache: false, cacheinfo: {} },
+  data: { cacheinfo: {} }
+}
 ]
 
 // 单条工单

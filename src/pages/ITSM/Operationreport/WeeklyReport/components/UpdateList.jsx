@@ -192,11 +192,11 @@ function UpgradeList(props) {
     <>
       <Row gutter={16}>
 
-        <Col span={24}>
+        <Col span={20}>
           <p>(2)计划{startTime}至{endTime},计量自动化系统开展 次发布变更（消缺），变更内容如下</p>
         </Col>
 
-        <Col>
+        <Col style={{textAlign:'center'}}>
           <Button
             disabled={detailParams}
             type='primary'

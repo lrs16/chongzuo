@@ -257,14 +257,16 @@ function DatabaseReport(props) {
     <PageHeaderWrapper
       title={pagetitle}
       extra={
-        <>
-          <Button type='primary'>导出</Button>
+        loading === false && (
+          <>
           <Button type='primary' onClick={softReportform}>保存</Button>
           <Button type='primary' onClick={handlePaste}>粘贴</Button>
           <Button type='primary' onClick={handleBack}>
             返回
           </Button>
         </>
+        )
+      
       }
     >
       <Card>
@@ -565,10 +567,8 @@ function DatabaseReport(props) {
                             handleaddTable(newdata)
                           }}
                           dynamicData={addTitle[index]}
-                          list={addData => {
-                            setList(addData)
-                          }}
                           index={index}
+                          loading={loading}
                         />
                       </Col>
 

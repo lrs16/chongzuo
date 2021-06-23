@@ -634,6 +634,54 @@ export default {
                           icon: 'fork',
                           component: './ITSM/Operationreport/MonthlyReport/MymonthlySearch'
                         },
+                        {
+                          path: '/ITSM/operationreport/monthlyreport/monthsoftreport',
+                          name: '软件运维月报',
+                          icon: 'fork',
+                          component: './ITSM/Operationreport/WeeklyReport/SoftReport'
+                        },
+                        {
+                          path: '/ITSM/operationreport/monthlyreport/monthdetailSoft',
+                          name: '软件运维月报详情页',
+                          icon: 'fork',
+                          component: './ITSM/Operationreport/WeeklyReport/SoftReportdetail'
+                        },
+                        {
+                          path: '/ITSM/operationreport/monthlyreport/monthcomputerroomreport',
+                          name: '机房运维月报',
+                          icon: 'fork',
+                          component: './ITSM/Operationreport/WeeklyReport/ComputerroomReport'
+                        },
+                        {
+                          path: '/ITSM/operationreport/monthlyreport/monthcomputerroomreportdetail',
+                          name: '机房运维月报详情页',
+                          icon: 'fork',
+                          component: './ITSM/Operationreport/WeeklyReport/ComputerroomReportdetail'
+                        },
+                        {
+                          path: '/ITSM/operationreport/monthlyreport/monthdatabasereport',
+                          name: '数据库运维月报',
+                          icon: 'fork',
+                          component: './ITSM/Operationreport/WeeklyReport/DatabaseReport'
+                        },
+                        {
+                          path: '/ITSM/operationreport/monthlyreport/monthdatabasereportdetail',
+                          name: '数据库运维月报详情页',
+                          icon: 'fork',
+                          component: './ITSM/Operationreport/WeeklyReport/DatabaseReportdetail'
+                        },
+                        {
+                          path: '/ITSM/operationreport/monthlyreport/monthotherreport',
+                          name: '其他运维月报',
+                          icon: 'fork',
+                          component: './ITSM/Operationreport/WeeklyReport/OtherReport'
+                        },
+                        {
+                          path: '/ITSM/operationreport/monthlyreport/monthotherreportdetail',
+                          name: '其他运维月报详情',
+                          icon: 'fork',
+                          component: './ITSM/Operationreport/WeeklyReport/OtherReportdetail'
+                        },
                       ]
                     },
 

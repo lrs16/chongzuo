@@ -102,7 +102,7 @@ function ComputerroomReport(props) {
       if (!err) {
         const savedata = {
           ...value,
-          status:'add',
+          status: 'add',
           editStatus: mainId ? 'edit' : 'add',
           addData: JSON.stringify(list),
           type: reporttype === 'week' ? '机房运维周报' : '机房运维月报',
@@ -269,13 +269,16 @@ function ComputerroomReport(props) {
     <PageHeaderWrapper
       title={reporttype === 'week' ? '新建机房运维周报' : '新建机房运维月报'}
       extra={
-        <>
-          <Button type='primary' onClick={softReportform}>保存</Button>
-          <Button type='primary' onClick={handlePaste}>粘贴</Button>
-          <Button type='primary' onClick={handleBack}>
-            返回
-          </Button>
-        </>
+        loading === false && (
+          <>
+            <Button type='primary' onClick={softReportform}>保存</Button>
+            <Button type='primary' onClick={handlePaste}>粘贴</Button>
+            <Button type='primary' onClick={handleBack}>
+              返回
+            </Button>
+          </>
+        )
+
       }
     >
       <Card>
@@ -495,23 +498,19 @@ function ComputerroomReport(props) {
 
 
               {/* 4.本周作业完成情况 */}
-              {
-                loading === false && ((copyData && copyData.operationList) || (lastweekHomeworklist && lastweekHomeworklist.rows)) && (
-                  <Col span={24}>
-                    <LastweekHomework
-                      forminladeLayout={forminladeLayout}
-                      operationArr={copyData.operationList ? copyData.operationList : lastweekHomeworklist.rows}
-                      startTime={startTime}
-                      endTime={endTime}
-                      type={reporttype}
-                      operationList={contentrowdata => {
-                        setOperationList(contentrowdata)
-                      }}
-                      mainId={copyData.operationList ? true : mainId}
-                    />
-                  </Col>
-                )
-              }
+              <Col span={24}>
+                <LastweekHomework
+                  forminladeLayout={forminladeLayout}
+                  operationArr={copyData.operationList ? copyData.operationList : lastweekHomeworklist.rows}
+                  startTime={startTime}
+                  endTime={endTime}
+                  type={reporttype}
+                  operationList={contentrowdata => {
+                    setOperationList(contentrowdata)
+                  }}
+                  mainId={copyData.operationList ? true : mainId}
+                />
+              </Col>
 
               <Col span={24}><p>{reporttype === 'week' ? '4.2本周工作票开具情况及服务器查询操作票情况统计' : '4.2本月工作票开具情况及服务器查询操作票情况统计'}</p></Col>
 
@@ -529,23 +528,20 @@ function ComputerroomReport(props) {
               <Col span={24}>{reporttype === 'week' ? '4.3下周作业完成情况' : '4.3下月作业完成情况'}</Col>
 
               {/* 下周工作计划 */}
-              {
-                loading === false && ((copyData && copyData.nextOperationList) || (lastweekHomeworklist && lastweekHomeworklist.rows)) && (
-                  <Col span={24}>
-                    <NextweekHomework
-                      forminladeLayout={forminladeLayout}
-                      nextOperationArr={copyData.nextOperationList ? copyData.nextOperationList : nextweekHomeworklist.rows}
-                      startTime={startTime}
-                      endTime={endTime}
-                      type={reporttype}
-                      nextOperationList={contentrowdata => {
-                        setNextOperationList(contentrowdata)
-                      }}
-                      mainId={copyData.nextOperationList ? true : mainId}
-                    />
-                  </Col>
-                )
-              }
+              <Col span={24}>
+                <NextweekHomework
+                  forminladeLayout={forminladeLayout}
+                  nextOperationArr={copyData.nextOperationList ? copyData.nextOperationList : nextweekHomeworklist.rows}
+                  startTime={startTime}
+                  endTime={endTime}
+                  type={reporttype}
+                  nextOperationList={contentrowdata => {
+                    setNextOperationList(contentrowdata)
+                  }}
+                  mainId={copyData.nextOperationList ? true : mainId}
+                />
+              </Col>
+              )
 
               <Col span={24}>
                 <Form.Item
@@ -632,9 +628,7 @@ function ComputerroomReport(props) {
                             // saveForm(newdata)
                           }}
                           dynamicData={addTitle[index]}
-                          list={addData => {
-                            setList(addData)
-                          }}
+                          loading={loading}
                         />
                       </Col>
 

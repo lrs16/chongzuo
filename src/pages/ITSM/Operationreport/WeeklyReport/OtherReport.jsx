@@ -261,9 +261,7 @@ function OtherReport(props) {
                             handleaddTable(newdata)
                           }}
                           dynamicData={addTitle[index]}
-                          list={addData => {
-                            setList(addData)
-                          }}
+                          loading={loading}
                         />
                       </Col>
 
@@ -289,7 +287,7 @@ function OtherReport(props) {
                 onClick={() => newMember()}
                 icon="plus"
               >
-                新增内容
+                新增其他运维
               </Button>
 
             </Form>

@@ -171,6 +171,12 @@ const QuestionsComments = React.forwardRef((props, ref) => {
           <p style={{ fontWeight: '900', fontSize: '16px' }}>三、发现问题及修改建议</p>
         </Col>
 
+        <Col span={24}>
+          <p>
+            缺陷
+          </p>
+        </Col>
+
         <Col>
           <Button
             disabled={reportSearch}

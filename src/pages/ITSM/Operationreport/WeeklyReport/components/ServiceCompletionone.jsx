@@ -6,8 +6,6 @@ import {
   Col,
   Row
 } from 'antd';
-import { connect } from 'dva';
-import SysUpload from '@/components/SysUpload';
 
 const { TextArea } = Input;
 let tabActiveKey = 'week';

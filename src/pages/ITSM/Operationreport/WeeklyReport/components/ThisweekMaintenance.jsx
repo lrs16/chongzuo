@@ -219,22 +219,25 @@ const ThisweekMaintenance = React.forwardRef((props, ref) => {
   return (
     <>
       <Row gutter={16}>
-        <Col span={20}>
-          <p>运维材料提交情况</p>
+        <Col span={24}>
+          <p style={{ fontWeight: '900', fontSize: '16px' }}>一、本周运维情况综述</p>
         </Col>
 
-        <Col style={{ marginBottom: '10px' }}>
+        <Col style={{ marginBottom: '10px',textAlign:'center' }} span={24}>
           <Button
             type='primary'
             disabled={detailParams}
             onClick={handleSave}>保存</Button>
         </Col>
 
+        <Col span={24}>
         <Table
           columns={column}
           dataSource={data}
           pagination={false}
         />
+        </Col>
+       
 
       </Row>
     </>

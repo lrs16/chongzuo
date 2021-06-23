@@ -228,7 +228,7 @@ const PatrolAndExamine = React.forwardRef((props, ref) => {
         </Col>
 
         <Col span={24}>
-          <p style={{ marginTop: '20px' }}>（二）巡检情况</p>
+          <p style={{ marginTop: '20px' }}>（一）软件运维巡检情况</p>
         </Col>
 
         <Col>

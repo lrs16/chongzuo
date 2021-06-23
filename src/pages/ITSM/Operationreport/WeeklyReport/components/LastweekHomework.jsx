@@ -24,7 +24,7 @@ function LastweekHomework(props) {
   } = props;
   const [data, setData] = useState([]);
   const [cacheOriginData, setcacheOriginData] = useState({});
-
+  const [newColumns, setNewColumns] = useState(column);
   // 初始化把软件运维服务指标完成情况数据传过去
   useEffect(() => {
     // typeList(maintenanceArr)
@@ -47,7 +47,8 @@ function LastweekHomework(props) {
   }, [data]);
 
   const handleSave = () => {
-    materialsList(data);
+    console.log(11)
+    operationList(data);
     message.info('暂存保存数据成功')
   }
   //  获取行  
@@ -78,6 +79,7 @@ function LastweekHomework(props) {
       }
     }
   }
+
 
   const handleTabledata = () => {
     // if(operationArr) {
@@ -383,20 +385,25 @@ function LastweekHomework(props) {
     }
   ];
 
-  const [newColumns, setNewColumns] = useState(column);
 
   useEffect(() => {
     handleTabledata();
-    if (mainId) {
-      setNewColumns(editColumns)
-    }
+    // if (mainId) {
+    //   console.log(11)
+    //   setNewColumns(editColumns)
+    // }
   }, [operationArr])
+
 
   return (
     <>
       <Row gutter={16}>
 
-        <Col>
+        <Col span={20}>
+          <p></p>
+        </Col>
+
+        <Col style={{textAlign:'center'}}>
           <Button
             disabled={detailParams}
             type='primary'
@@ -404,10 +411,12 @@ function LastweekHomework(props) {
         </Col>
 
         <Table
-          columns={newColumns}
+          loading={loading}
+          columns={mainId ? editColumns : column}
           dataSource={data}
           pagination={false}
         />
+
 
       </Row>
 

@@ -308,11 +308,11 @@ function ServiceTableone(props) {
           <p style={{ fontWeight: '900', fontSize: '16px', marginTop: '20px' }}>三、运维服务指标完成情况</p>
         </Col>
 
-        <Col span={24}>
+        {/* <Col span={24}>
           <Button
             type='primary'
             onClick={handleSave}>保存</Button>
-        </Col>
+        </Col> */}
 
 
         <Col span={24}>

@@ -50,7 +50,7 @@ const forminladeLayout = {
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
-    sm: { span: 6 },
+    sm: { span: 2 },
   },
   wrapperCol: {
     xs: { span: 24 },
@@ -146,7 +146,7 @@ function SoftReport(props) {
       if (!err) {
         const savedata = {
           ...values,
-          status:'add',
+          status: 'add',
           editStatus: mainId ? 'edit' : 'add',
           addData: JSON.stringify(list),
           type: reporttype === 'week' ? '软件运维周报' : '软件运维月报',
@@ -228,7 +228,12 @@ function SoftReport(props) {
 
 
   const handleBack = () => {
-    router.push('/ITSM/operationreport/weeklyreport/myweeklyreport');
+    router.push({
+      pathname:`/ITSM/operationreport/weeklyreport/myweeklyreport`,
+      query: { mainId, closetab: true },
+      state: { cache: false }
+    }
+    )
   }
 
   // 新增一条记录
@@ -287,10 +292,10 @@ function SoftReport(props) {
 
   const handleListdata = (params) => {
     // validateFields((err, values) => {
-      dispatch({
-        type: 'softreport/fetchordertopnList',
-        payload: { value, startTime, endTime }
-      })
+    dispatch({
+      type: 'softreport/fetchordertopnList',
+      payload: { value, startTime, endTime }
+    })
     // })
   }
 
@@ -325,7 +330,7 @@ function SoftReport(props) {
         id: listId
       }
     }).then(res => {
-      if(res.code === 200) {
+      if (res.code === 200) {
         setCopyData(res)
         setAddTitle(res.addData)
       } else {
@@ -348,19 +353,26 @@ function SoftReport(props) {
       title={reporttype === 'week' ? '新建软件运维周报' : '新建软件运维月报'}
       extra={
         <>
-          <Button type='primary' onClick={softReportform}>保存</Button>
-          <Button type='primary' onClick={handlePaste}>粘贴</Button>
-          <Button onClick={handleBack}>
-            返回
-          </Button>
+          {
+            loading === false && (
+              <>
+                <Button type='primary' onClick={softReportform}>保存</Button>
+                <Button type='primary' onClick={handlePaste}>粘贴</Button>
+                <Button onClick={handleBack}>
+                  返回
+                </Button>
+              </>
+            )
+          }
+
         </>
       }
     >
-      <Card>
+      <Card style={{paddingLeft:24}}>
         {loading === false && startTime && (
           <Row gutter={16}>
             <Form {...formItemLayout}>
-              <Col span={8}>
+              <Col span={24}>
                 <Form.Item label={reporttype === 'week' ? '周报名称' : '月报名称'}>
                   {getFieldDecorator('name', {
                     rules: [
@@ -379,7 +391,7 @@ function SoftReport(props) {
 
               {
                 reporttype === 'week' && (
-                  <Col span={8}>
+                  <Col span={24}>
                     <Form.Item label='起始时间'>
                       {getFieldDecorator('time1', {
                         rules: [
@@ -388,7 +400,7 @@ function SoftReport(props) {
                             message: '请选择填报日期'
                           }
                         ],
-                        initialValue: [moment(copyData.main?copyData.main.time1:startTime), moment(copyData.main?copyData.main.time2:endTime)]
+                        initialValue: [moment(copyData.main ? copyData.main.time1 : startTime), moment(copyData.main ? copyData.main.time2 : endTime)]
                       })(<RangePicker
                         allowClear={false}
                         // disabledDate={startdisabledDate}
@@ -411,7 +423,7 @@ function SoftReport(props) {
                             message: '请选择填报日期'
                           }
                         ],
-                        initialValue: moment(copyData.main?copyData.main.time1:startTime)
+                        initialValue: moment(copyData.main ? copyData.main.time1 : startTime)
                       })(<MonthPicker
                         allowClear
                         // disabledDate={startdisabledDate}
@@ -431,18 +443,18 @@ function SoftReport(props) {
                   ChangeFiles={(newvalue) => {
                     setFiles(newvalue);
                   }}
-                  mainId={copyData.contentRow?true:mainId}
+                  mainId={copyData.contentRow ? true : mainId}
                   startTime={startTime}
                   endTime={endTime}
                   type={reporttype}
                   contentRow={contentrowdata => {
                     setContentRow(contentrowdata)
                   }}
-                  contentArr={copyData.contentRow?copyData.contentRow:addData}
+                  contentArr={copyData.contentRow ? copyData.contentRow : addData}
                 />
               </Col>
 
-              <Col span={24}>
+              <Col span={24} style={{ marginTop: 10 }}>
                 <Form.Item label={reporttype === 'week' ? "本周运维描述" : "本月运维描述"} {...formincontentLayout}>
                   {
                     getFieldDecorator('content', {
@@ -484,17 +496,7 @@ function SoftReport(props) {
                   patrolAndExamineList={contentrowdata => {
                     setPatrolAndExamine(contentrowdata)
                   }}
-                  patrolAndExamine={copyData.patrolAndExamineList?copyData.patrolAndExamineList:[]}
-                />
-              </Col>
-
-              <Col span={24}>
-                <Development
-                  forminladeLayout={forminladeLayout}
-                  materialsList={contentrowdata => {
-                    setMaterialsList(contentrowdata)
-                  }}
-                  materials={copyData.materialsList?copyData.materialsList:[]}
+                  patrolAndExamine={copyData.patrolAndExamineList ? copyData.patrolAndExamineList : []}
                 />
               </Col>
 
@@ -507,6 +509,18 @@ function SoftReport(props) {
                   }
                 </Form.Item>
               </Col>
+
+              <Col span={24}>
+                <Development
+                  forminladeLayout={forminladeLayout}
+                  materialsList={contentrowdata => {
+                    setMaterialsList(contentrowdata)
+                  }}
+                  materials={copyData.materialsList ? copyData.materialsList : []}
+                />
+              </Col>
+
+
 
               <Col span={24}>
                 <Form.Item
@@ -566,7 +580,7 @@ function SoftReport(props) {
                 <ServiceCompletionone
                   forminladeLayout={forminladeLayout}
                   maintenanceService={maintenanceService}
-                  soluteArr={copyData.statisList?copyData.statisList:[soluteArr[soluteArr.length - 1]]}
+                  soluteArr={copyData.statisList ? copyData.statisList : [soluteArr[soluteArr.length - 1]]}
                   serviceCompletionthreelist={serviceCompletionthreelist}
                   startTime={startTime}
                   endTime={endTime}
@@ -598,7 +612,7 @@ function SoftReport(props) {
               </Col>
 
               <Col span={24}>
-                <Form.Item label='运维服务指标完成情况' {...formincontentLayout}>
+                <Form.Item label='服务指标描述' {...formincontentLayout}>
                   {
                     getFieldDecorator('selfhandleContent', {
                       initialValue: ''
@@ -617,13 +631,14 @@ function SoftReport(props) {
                     setTopNList(contentrowdata)
                   }}
                   // topArr={[]}
-                  topArr={copyData.topNList?copyData.topNList:ordertopnArr}
-                  mainId={copyData.topNList?true:mainId}
+                  topArr={copyData.topNList ? copyData.topNList : ordertopnArr}
+                  mainId={copyData.topNList ? true : mainId}
                   defaultValue={value}
                   value={data => {
                     value = data;
                     handleListdata(data)
                   }}
+                  loading={loading}
                 />
               </Col>
 
@@ -665,8 +680,8 @@ function SoftReport(props) {
                   eventList={contentrowdata => {
                     setEventList(contentrowdata)
                   }}
-                  mainId={copyData.eventList?true:mainId}
-                  eventArr={copyData.eventList?copyData.eventList:[]}
+                  mainId={copyData.eventList ? true : mainId}
+                  eventArr={copyData.eventList ? copyData.eventList : []}
                 />
               </Col>
 
@@ -695,6 +710,23 @@ function SoftReport(props) {
 
               {/* 五、软件作业完成情况 */}
               {/* 补丁升级 */}
+              <Col span={20}>
+                <p style={{ fontWeight: '900', fontSize: '16px', marginTop: '20px' }}>五、软件作业完成情况</p>
+              </Col>
+              
+              <Col span={24}>
+                <Form.Item
+                  label='软件作业情况描述'
+                  {...formincontentLayout}
+                >
+                  {
+                    getFieldDecorator('completeContent', {
+                      initialValue: ''
+                    })
+                      (<TextArea autoSize={{ minRows: 3 }} />)
+                  }
+                </Form.Item>
+              </Col>
               <Col span={24}>
                 <UpgradeList
                   forminladeLayout={forminladeLayout}
@@ -705,7 +737,7 @@ function SoftReport(props) {
                   upgradeList={contentrowdata => {
                     setUpgradeList(contentrowdata)
                   }}
-                  upgradeArr={copyData.upgradeList?copyData.upgradeList:[]}
+                  upgradeArr={copyData.upgradeList ? copyData.upgradeList : []}
                 />
               </Col>
 
@@ -720,23 +752,11 @@ function SoftReport(props) {
                   updateList={contentrowdata => {
                     setUpdateList(contentrowdata)
                   }}
-                  updateArr={copyData.updateList?copyData.updateList:[]}
+                  updateArr={copyData.updateList ? copyData.updateList : []}
                 />
               </Col>
 
-              <Col span={24}>
-                <Form.Item
-                  label='软件作业情况描述'
-                  {...formincontentLayout}
-                >
-                  {
-                    getFieldDecorator('completeContent', {
-                      initialValue: ''
-                    })
-                      (<TextArea autoSize={{ minRows: 3 }} />)
-                  }
-                </Form.Item>
-              </Col>
+
 
               <Col span={24}>
                 <Form.Item
@@ -772,7 +792,7 @@ function SoftReport(props) {
                   legacyList={contentrowdata => {
                     setLegacyList(contentrowdata)
                   }}
-                  legacyArr={copyData.legacyList?copyData.legacyList:[]}
+                  legacyArr={copyData.legacyList ? copyData.legacyList : []}
                 />
               </Col>
 
@@ -813,8 +833,9 @@ function SoftReport(props) {
                   operationList={contentrowdata => {
                     setOperationList(contentrowdata)
                   }}
-                  operationArr={copyData.operationList?copyData.operationList:lastweekHomeworklist.rows}
+                  operationArr={copyData.operationList ? copyData.operationList : lastweekHomeworklist.rows}
                   mainId={mainId}
+                  loading={loading}
                 />
               </Col>
 
@@ -855,8 +876,9 @@ function SoftReport(props) {
                   nextOperationList={contentrowdata => {
                     setNextOperationList(contentrowdata)
                   }}
-                  nextOperationArr={copyData.nextOperationList?copyData.nextOperationList:nextweekHomeworklist.rows}
+                  nextOperationArr={copyData.nextOperationList ? copyData.nextOperationList : nextweekHomeworklist.rows}
                   mainId={mainId}
+                  loading={loading}
                 />
               </Col>
 

@@ -102,6 +102,7 @@ function DatabaseReportdetail(props) {
   const { main } = openReportlist;
 
 
+  console.log(list,'list')
   //  保存表单
   const softReportform = () => {
     props.form.validateFields((err, values) => {
@@ -215,7 +216,8 @@ function DatabaseReportdetail(props) {
 
   useEffect(() => {
     const { addData } = openReportlist;
-    setAddTitle(addData)
+    setAddTitle(addData);
+    setList(addData)
   }, [loading])
 
   const handleBack = () => {
@@ -247,6 +249,8 @@ function DatabaseReportdetail(props) {
     }
     setAddTitle(resultArr)
   }
+
+  console.log(list,'list')
 
   return (
     <PageHeaderWrapper
@@ -594,9 +598,7 @@ function DatabaseReportdetail(props) {
                             handleaddTable(newdata)
                           }}
                           dynamicData={addTitle[index]}
-                        // initialDynamic={initial => {
-                        //   initialDynamic(initial)
-                        // }}
+                          loading={loading}
                         />
                       </Col>
 
@@ -622,9 +624,8 @@ function DatabaseReportdetail(props) {
                 ghost
                 onClick={() => newMember()}
                 icon="plus"
-                disabled={secondbutton}
               >
-                新增
+                 新增数据库运维
               </Button>
 
 

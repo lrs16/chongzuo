@@ -40,7 +40,8 @@ function ThisWeekitsm(props) {
     eventArr,
     mainId,
     detailParams,
-    searchNumber
+    searchNumber,
+    loading
   } = props;
 
   const [data, setData] = useState([]);
@@ -242,67 +243,72 @@ function ThisWeekitsm(props) {
     <>
       <Row gutter={16}>
         <Col span={20}>
-          <p style={{ fontWeight: '900', fontSize: '16px' }}>{reportType === 'week' ? '四、本周事件、问题及故障' : '四、本月事件、问题及故障'}</p>
+          <p>（三）工单TopN 事件分析</p>
         </Col>
+
         <Form {...formItemLayout}>
-          <Row gutter={16}>
-            <Col span={8}>
-              <Form.Item label='N'>
-                <Select
-                  placeholder="请选择"
-                  style={{ width: 150 }}
-                  defaultValue='event'
-                  onChange={selectOnchange}
-                >
-                  <Option value="event">事件</Option>
-                  <Option value="problem">问题</Option>
-                  <Option value="trouble">故障</Option>
-                </Select>
-              </Form.Item>
-            </Col>
+          {true && (
+            <Row gutter={16}>
+              <Col span={8}>
+                <Form.Item label='N'>
+                  <Select
+                    placeholder="请选择"
+                    style={{ width: 150 }}
+                    defaultValue='event'
+                    onChange={selectOnchange}
+                  >
+                    <Option value="event">事件</Option>
+                    <Option value="problem">问题</Option>
+                    <Option value="trouble">故障</Option>
+                  </Select>
+                </Form.Item>
+              </Col>
 
-            <Col span={8}>
-              <Form.Item label='搜索内容'>
-                {getFieldDecorator('content', {})(
-                  <>
-                    <AutoComplete
-                      dataSource={disableduser}
-                      defaultValue='内容'
-                      dropdownMatchSelectWidth={false}
-                      dropdownStyle={{ width: 900 }}
-                      optionLabelProp="value"
-                      onSelect={(v, opt) => handleDisableduser(v, opt)}
-                    >
-                      <Search
-                        placeholder="可输入姓名搜索"
-                        onSearch={values => SearchDisableduser(values)}
-                      // allowClear
-                      />
-                    </AutoComplete>,
-                  </>
-                )}
-              </Form.Item>
-            </Col>
+              <Col span={8}>
+                <Form.Item label='搜索内容'>
+                  {getFieldDecorator('content', {})(
+                    <>
+                      <AutoComplete
+                        dataSource={disableduser}
+                        defaultValue='内容'
+                        dropdownMatchSelectWidth={false}
+                        dropdownStyle={{ width: 900 }}
+                        optionLabelProp="value"
+                        onSelect={(v, opt) => handleDisableduser(v, opt)}
+                      >
+                        <Search
+                          placeholder="可输入姓名搜索"
+                          onSearch={values => SearchDisableduser(values)}
+                        // allowClear
+                        />
+                      </AutoComplete>,
+                    </>
+                  )}
+                </Form.Item>
+              </Col>
 
-          </Row>
+              <Col span={8} style={{ textAlign: 'center' }}>
+                <Button
+                  type='primary'
+                  onClick={handleSave}>保存</Button>
+              </Col>
 
+            </Row>
+          )}
         </Form>
 
-        <Col>
-          <Button
-            disabled={detailParams}
-            type='primary'
-            onClick={handleSave}>保存</Button>
-        </Col>
+
 
         <Table
           columns={column}
           dataSource={data}
           pagination={false}
+          loading={loading}
         />
-
-
       </Row>
+
+
+
 
     </>
   )

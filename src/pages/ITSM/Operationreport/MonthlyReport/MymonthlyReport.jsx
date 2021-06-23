@@ -62,7 +62,7 @@ function MymonthlyReport(props) {
           switch (text) {
             case '软件运维月报':
               router.push({
-                pathname: `/ITSM/operationreport/weeklyreport/detailSoft/`,
+                pathname: `/ITSM/operationreport/weeklyreport/monthsoftreport`,
                 query: {
                   mainId: record.id,
                   reporttype: 'month',
@@ -71,7 +71,7 @@ function MymonthlyReport(props) {
               break;
             case '机房运维月报':
               router.push({
-                pathname: `/ITSM/operationreport/weeklyreport/computerroomreportdetail`,
+                pathname: `/ITSM/operationreport/weeklyreport/monthcomputerroomreport`,
                 query: {
                   mainId: record.id,
                   reporttype: 'month',
@@ -80,7 +80,7 @@ function MymonthlyReport(props) {
               break;
             case '数据库运维月报':
               router.push({
-                pathname: `/ITSM/operationreport/weeklyreport/databasereportdetail`,
+                pathname: `/ITSM/operationreport/weeklyreport/monthdatabasereport`,
                 query: {
                   mainId: record.id,
                   reporttype: 'month',
@@ -89,7 +89,7 @@ function MymonthlyReport(props) {
               break;
             case '其他运维月报':
               router.push({
-                pathname: `/ITSM/operationreport/weeklyreport/otherreportdetail`,
+                pathname: `/ITSM/operationreport/weeklyreport/monthotherreport`,
                 query: {
                   mainId: record.id,
                   reporttype: 'month',
@@ -123,14 +123,12 @@ function MymonthlyReport(props) {
   ];
 
   const selectOnchage = (data) => {
-    console.log('data: ', data);
     switch (data) {
       case '软件运维月报':
         router.push({
-          pathname: `/ITSM/operationreport/weeklyreport/softreport`,
+          pathname: `/ITSM/operationreport/monthlyreport/monthsoftreport`,
           query: {
             reporttype: 'month',
-            status: 'add',
             listreportType:selectedRows?.length?selectedRows[0].type:'',
             listId:selectedRows?.length?selectedRows[0].id:'',
             addtab: true,
@@ -139,10 +137,9 @@ function MymonthlyReport(props) {
         break;
       case '机房运维月报':
         router.push({
-          pathname: `/ITSM/operationreport/weeklyreport/computerroomreport`,
+          pathname: `/ITSM/operationreport/monthlyreport/monthcomputerroomreport`,
           query: {
             reporttype: 'month',
-            status: 'add',
             listreportType:selectedRows?.length?selectedRows[0].type:'',
             listId:selectedRows?.length?selectedRows[0].id:'',
             addtab: true,
@@ -151,10 +148,9 @@ function MymonthlyReport(props) {
         break;
       case '数据库运维月报':
         router.push({
-          pathname: `/ITSM/operationreport/weeklyreport/databasereport`,
+          pathname: `/ITSM/operationreport/monthlyreport/monthdatabasereport`,
           query: {
             reporttype: 'month',
-            status: 'add',
             listreportType:selectedRows?.length?selectedRows[0].type:'',
             listId:selectedRows?.length?selectedRows[0].id:'',
             addtab: true,
@@ -163,10 +159,9 @@ function MymonthlyReport(props) {
         break;
       case '其他运维月报':
         router.push({
-          pathname: `/ITSM/operationreport/weeklyreport/otherreport`,
+          pathname: `/ITSM/operationreport/monthlyreport/monthotherreport`,
           query: {
             reporttype: 'month',
-            status: 'add',
             listreportType:selectedRows?.length?selectedRows[0].type:'',
             listId:selectedRows?.length?selectedRows[0].id:'',
             addtab: true,

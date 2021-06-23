@@ -17,6 +17,7 @@ import { connect } from 'dva';
 import Development from './components/Development';
 import ThisweekMaintenance from './components/ThisweekMaintenance';
 import ServiceCompletion from './components/ServiceCompletion';
+import ServiceCompletionone from './components/ServiceCompletionone';
 import ThisWeekitsm from './components/ThisWeekitsm';
 // import SoftCompletion from './components/SoftCompletion';
 import RemainingDefects from './components/RemainingDefects';
@@ -221,10 +222,25 @@ function SoftReportdetail(props) {
   }, []);
 
   const handleBack = () => {
+      router.push({
+        pathname: `/ITSM/operationreport/weeklyreport/myweeklyreport`,
+        query: { mainId, closetab: true },
+        state: { cache: false }
+      });
+
     if (reporttype === 'week') {
-      router.push('/ITSM/operationreport/weeklyreport/myweeklyreport');
+      router.push({
+        pathname:'/ITSM/operationreport/weeklyreport/myweeklyreport',
+        query: { pathpush: true },
+        state: { cache: false }
+      } 
+        );
     } else {
-      router.push('/ITSM/operationreport/monthlyreport/mymonthlyreport');
+      router.push({
+        pathname:'/ITSM/operationreport/monthlyreport/mymonthlyreport',
+        query: { pathpush: true },
+        state: { cache: false }
+      })
     }
 
   }
@@ -266,14 +282,6 @@ function SoftReportdetail(props) {
   };
 
 
-  const saveForm = (params) => {
-    if (params.files) {
-      console.log('params.files: ', params.files);
-      softReportform()
-    }
-  }
-
-
   //  移除表格
   const removeForm = (tableIndex) => {
     addTitle.splice(tableIndex, 1);
@@ -289,9 +297,6 @@ function SoftReportdetail(props) {
     setAddTitle(resultArr)
     // setList(listArr)
   }
-
-  console.log(list, 'list')
-
 
   const exportWord = () => {
     dispatch({
@@ -320,17 +325,23 @@ function SoftReportdetail(props) {
       title={reporttype === 'week' ? '软件运维周报详情页' : '软件运维月报详情页'}
       extra={
         <>
-          <Button type='primary' onClick={exportWord}>导出</Button>
+          {loading === false && (
+            <Button type='primary' onClick={exportWord}>导出</Button>
+
+          )}
 
           {
-            !reportSearch && (
+            loading === false && !reportSearch && (
               <Button type='primary' onClick={softReportform}>保存</Button>
             )
           }
 
-          <Button onClick={handleBack}>
-            返回
-          </Button>
+          {loading === false && (
+            <Button onClick={handleBack}>
+              返回
+            </Button>
+          )}
+
         </>
       }
     >
@@ -466,17 +477,6 @@ function SoftReportdetail(props) {
               </Col>
 
               <Col span={24}>
-                <Development
-                  forminladeLayout={forminladeLayout}
-                  materialsList={contentrowdata => {
-                    setMaterialsList(contentrowdata)
-                  }}
-                  materials={openReportlist.materialsList ? openReportlist.materialsList : []}
-                  detailParams={reportSearch}
-                />
-              </Col>
-
-              <Col span={24}>
                 <Form.Item label='重要时期业务保障' {...formincontentLayout}>
                   {
                     getFieldDecorator('security', {
@@ -490,7 +490,16 @@ function SoftReportdetail(props) {
                 </Form.Item>
               </Col>
 
-
+              <Col span={24}>
+                <Development
+                  forminladeLayout={forminladeLayout}
+                  materialsList={contentrowdata => {
+                    setMaterialsList(contentrowdata)
+                  }}
+                  materials={openReportlist.materialsList ? openReportlist.materialsList : []}
+                  detailParams={reportSearch}
+                />
+              </Col>
 
               <Col span={24}>
                 <Form.Item
@@ -536,8 +545,6 @@ function SoftReportdetail(props) {
                 />
               </Col>
 
-
-
               <Col span={24}>
                 <Form.Item label='运维统计描述' {...formincontentLayout}>
                   {
@@ -553,6 +560,20 @@ function SoftReportdetail(props) {
               </Col>
 
               {/* 软件运维付服务指标完成情况 */}
+
+              <Col span={24}>
+                <ServiceCompletionone
+                  forminladeLayout={forminladeLayout}
+                  soluteArr={openReportlist.statisList ? openReportlist.statisList : []}
+                  startTime={startTime}
+                  endTime={endTime}
+                  tabActiveKey={reporttype}
+                  statisList={contentrowdata => {
+                    setStatisList(contentrowdata)
+                  }}
+                />
+              </Col>
+
               <Col span={24}>
                 <ServiceCompletion
                   forminladeLayout={forminladeLayout}
@@ -572,11 +593,11 @@ function SoftReportdetail(props) {
               </Col>
 
               <Col span={24}>
-                <p style={{ marginTop: '20px' }}>（二）重要时期业务保障</p>
+                <p style={{ marginTop: '20px' }}>（二）软件运维服务指标完成情况</p>
               </Col>
 
               <Col span={24}>
-                <Form.Item label='运维服务指标完成情况' {...formincontentLayout}>
+                <Form.Item label='服务指标描述' {...formincontentLayout}>
                   {
                     getFieldDecorator('selfhandleContent', {
                       initialValue: openReportlist.selfhandleContent ? openReportlist.selfhandleContent : ''
@@ -603,18 +624,6 @@ function SoftReportdetail(props) {
                   detailParams={reportSearch}
                 />
               </Col>
-
-              {/* <Col span={24}>
-                <WorkOrderTop
-                  formItemLayout={formItemLayout}
-                  startTime={startTime}
-                  endTime={endTime}
-                  topNList={contentrowdata => {
-                    setTopNList(contentrowdata)
-                  }}
-                />
-              </Col> */}
-
 
               <Col span={24}>
                 <Form.Item
@@ -683,25 +692,30 @@ function SoftReportdetail(props) {
                 </Form.Item>
               </Col>
 
-              <Col span={24}>
-                <RemainingDefects
-                  forminladeLayout={forminladeLayout}
-                  softCompletionlist={softCompletionlist}
-                  completionsecondTablelist={completionsecondTablelist}
-                  startTime={startTime}
-                  endTime={endTime}
-                  legacyList={contentrowdata => {
-                    setLegacyList(contentrowdata)
-                  }}
-                  legacyArr={openReportlist.legacyList ? openReportlist.legacyList : []}
-                  detailParams={reportSearch}
-                />
-              </Col>
-
-
-
               {/* 五、软件作业完成情况 */}
               {/* 补丁升级 */}
+              <Col span={20}>
+                <p style={{ fontWeight: '900', fontSize: '16px', marginTop: '20px' }}>五、软件作业完成情况</p>
+              </Col>
+
+              <Col span={24}>
+                <Form.Item
+                  label='软件作业情况描述'
+                  {...formincontentLayout}
+                >
+                  {
+                    getFieldDecorator('completeContent', {
+                      initialValue: openReportlist.completeContent ? openReportlist.completeContent : ''
+                    })
+                      (
+                        <TextArea
+                          autoSize={{ minRows: 3 }}
+                          disabled={reportSearch}
+                        />)
+                  }
+                </Form.Item>
+              </Col>
+
               <Col span={24}>
                 <UpgradeList
                   forminladeLayout={forminladeLayout}
@@ -731,25 +745,6 @@ function SoftReportdetail(props) {
                   updateArr={openReportlist.updateList ? openReportlist.updateList : []}
                   detailParams={reportSearch}
                 />
-              </Col>
-
-
-              <Col span={24}>
-                <Form.Item
-                  label='软件作业情况描述'
-                  {...formincontentLayout}
-                >
-                  {
-                    getFieldDecorator('completeContent', {
-                      initialValue: openReportlist.completeContent ? openReportlist.completeContent : ''
-                    })
-                      (
-                        <TextArea
-                          autoSize={{ minRows: 3 }}
-                          disabled={reportSearch}
-                        />)
-                  }
-                </Form.Item>
               </Col>
 
               <Col span={24}>
@@ -829,6 +824,7 @@ function SoftReportdetail(props) {
                   operationArr={openReportlist.operationList ? openReportlist.operationList : []}
                   mainId={mainId}
                   detailParams={reportSearch}
+                  loading={loading}
                 />
               </Col>
 
@@ -868,6 +864,7 @@ function SoftReportdetail(props) {
                   nextOperationArr={openReportlist.nextOperationList ? openReportlist.nextOperationList : []}
                   mainId={mainId}
                   detailParams={reportSearch}
+                  loading={loading}
                 />
               </Col>
 
@@ -908,9 +905,7 @@ function SoftReportdetail(props) {
                             // saveForm(newdata)
                           }}
                           dynamicData={addTitle[index]}
-                          list={addData => {
-                            setList(addData)
-                          }}
+                          loading={loading}
                         />
                       </Col>
 
@@ -936,7 +931,7 @@ function SoftReportdetail(props) {
                 icon="plus"
                 disabled={reportSearch}
               >
-                新增
+                新增软件运维
               </Button>
 
 

@@ -225,16 +225,12 @@ function UpgradeList(props) {
   return (
     <>
       <Row gutter={16}>
-        <Col span={24}>
-          <p style={{ fontWeight: '900', fontSize: '16px', marginTop: '20px' }}>五、软件作业完成情况</p>
-        </Col>
-
-        <Col span={24}>
+        <Col span={20}>
           <p>(1)数据库本周进行了补丁升级工作次</p>
         </Col>
 
 
-        <Col>
+        <Col style={{textAlign:'center'}}>
           <Button
             disabled={detailParams}
             type='primary'

@@ -21,11 +21,11 @@ function NextweekHomework(props) {
     nextOperationList,
     nextOperationArr,
     mainId,
-    detailParams
+    detailParams,
+    loading
   } = props;
 
   const [data, setData] = useState([]);
-  const [paginations, setPaginations] = useState({ current: 0, pageSize: 10 });
 
   // 初始化把数据传过去
   useEffect(() => {
@@ -375,20 +375,20 @@ function NextweekHomework(props) {
     }
   ];
 
-  const [newColumns, setNewColumns] = useState(column);
 
   useEffect(() => {
     handleTabledata();
-    if (mainId) {
-      setNewColumns(editColumns)
-    }
   }, [nextOperationArr])
 
   return (
     <>
       <Row gutter={16}>
 
-        <Col>
+      <Col span={20}>
+          <p></p>
+        </Col>
+
+        <Col style={{textAlign:'center'}}>
           <Button
             disabled={detailParams}
             type='primary'
@@ -396,7 +396,8 @@ function NextweekHomework(props) {
         </Col>
 
         <Table
-          columns={newColumns}
+          loading={loading}
+          columns={mainId?editColumns:column}
           dataSource={data}
           pagination={false}
         />
