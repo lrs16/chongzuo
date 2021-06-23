@@ -7,7 +7,7 @@ import {
   Col,
   Input,
   DatePicker,
-  Table,
+  Descriptions,
   Popconfirm,
   Divider,
   Icon
@@ -24,6 +24,7 @@ import LastweekHomework from './components/LastweekHomework';
 import NextweekHomework from './components/NextweekHomework';
 import AddForm from './components/AddForm';
 import styles from './index.less';
+import Downloadfile from '@/components/SysUpload/Downloadfile';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import SysUpload from '@/components/SysUpload';
 
@@ -102,7 +103,7 @@ function DatabaseReportdetail(props) {
   const { main } = openReportlist;
 
 
-  console.log(list,'list')
+  console.log(list, 'list')
   //  保存表单
   const softReportform = () => {
     props.form.validateFields((err, values) => {
@@ -225,7 +226,7 @@ function DatabaseReportdetail(props) {
   }
 
   const onChange = (date, dateString) => {
-    if (type === 'week') {
+    if (reporttype === 'week') {
       startTime = dateString;
       endTime = moment(dateString).add(+6, 'day').format('YYYY-MM-DD');
       setFieldsValue({ time2: moment(endTime) });
@@ -250,8 +251,6 @@ function DatabaseReportdetail(props) {
     setAddTitle(resultArr)
   }
 
-  console.log(list,'list')
-
   return (
     <PageHeaderWrapper
       title={pagetitle}
@@ -272,10 +271,10 @@ function DatabaseReportdetail(props) {
     >
       <Card>
         {loading === false && startTime && (
-          <Row gutter={16}>
-            <Form {...formItemLayout}>
+          <Row gutter={24}>
+            <Form >
 
-              <Col span={8}>
+              <Col span={24}>
                 <Form.Item label={reporttype === 'week' ? '周报名称' : '月报名称'}>
                   {getFieldDecorator('name', {
                     rules: [
@@ -294,7 +293,7 @@ function DatabaseReportdetail(props) {
 
               {
                 reporttype === 'week' && (
-                  <Col span={8}>
+                  <Col span={24}>
                     <Form.Item label='起始时间'>
                       {getFieldDecorator('time1', {
                         initialValue: [moment(main.time1), moment(main.time2)]
@@ -312,7 +311,7 @@ function DatabaseReportdetail(props) {
 
               {
                 reporttype === 'month' && (
-                  <Col span={8}>
+                  <Col span={24}>
                     <Form.Item label='起始时间'>
                       {getFieldDecorator('time1', {
                         initialValue: moment(startTime)
@@ -335,7 +334,7 @@ function DatabaseReportdetail(props) {
               </Col>
 
               <Col span={24}>
-                <Form.Item label={reporttype === 'week' ? '本周运维总结' : '本月运维总结'} {...formincontentLayout}>
+                <Form.Item label=''>
                   {
                     getFieldDecorator('content', {
                       initialValue: main.content
@@ -348,29 +347,49 @@ function DatabaseReportdetail(props) {
                 </Form.Item>
               </Col>
 
+              {
+                !reportSearch && (
+                  <Col span={24}>
+                    <Form.Item
+                      label='上传附件'
+                      {...formincontentLayout}
+                    >
+                      {getFieldDecorator('contentFiles', {
+                        initialValue: openReportlist.contentFiles ? openReportlist.contentFiles : '[]'
+                      })
+                        (
+                          <div style={{ width: 400 }}>
+                            <SysUpload
+                              fileslist={openReportlist.contentFiles ? JSON.parse(openReportlist.contentFiles) : []}
+                              ChangeFileslist={newvalue => {
+                                setFieldsValue({ contentFiles: JSON.stringify(newvalue.arr) })
+                                setFilesList(newvalue);
+                                setFiles(newvalue)
+                              }}
+                            />
+                          </div>
+                        )}
+                    </Form.Item>
+                  </Col>
+                )
+              }
 
-              <Col span={24}>
-                <Form.Item
-                  label='上传附件'
-                  {...formincontentLayout}
-                >
-                  {getFieldDecorator('contentFiles', {
-                    initialValue: openReportlist.contentFiles ? openReportlist.contentFiles : '[]'
-                  })
-                    (
-                      <div style={{ width: 400 }}>
-                        <SysUpload
-                          fileslist={openReportlist.contentFiles ? JSON.parse(openReportlist.contentFiles) : []}
-                          ChangeFileslist={newvalue => {
-                            setFieldsValue({ contentFiles: JSON.stringify(newvalue.arr) })
-                            setFilesList(newvalue);
-                            setFiles(newvalue)
-                          }}
-                        />
-                      </div>
-                    )}
-                </Form.Item>
-              </Col>
+              {
+                reportSearch && (
+                  <div style={{ marginLeft: 30, marginRight: 10,marginTop:20}}>
+                    <Descriptions size="middle">
+                      <Descriptions.Item label='上传附件'>
+                        <span style={{ color: 'blue', textDecoration: 'underline' }} >
+                          {openReportlist && <Downloadfile files={openReportlist.contentFiles === '' ? '[]' : openReportlist.contentFiles} />}
+                        </span>
+                      </Descriptions.Item>
+
+                    </Descriptions>
+                  </div>
+
+                )
+              }
+
 
 
               <Col span={24}>
@@ -378,14 +397,14 @@ function DatabaseReportdetail(props) {
               </Col>
 
               <Col span={24}>
-                <Form.Item label='巡检汇总描述' {...formincontentLayout}>
+                <Form.Item label=''>
                   {
                     getFieldDecorator('patrolAndExamineContent', {
                       initialValue: openReportlist.patrolAndExamineContent
-                    })(<TextArea 
+                    })(<TextArea
                       autoSize={{ minRows: 3 }}
                       disabled={reportSearch}
-                       />)
+                    />)
                   }
                 </Form.Item>
               </Col>
@@ -435,29 +454,51 @@ function DatabaseReportdetail(props) {
               </Col>
 
               {/* Top10表增长附件 */}
-              <Col span={24}>
-                <Form.Item
-                  label='上传附件'
-                  {...formincontentLayout}
-                >
-                  {getFieldDecorator('tableUpFiles', {
-                    initialValue: openReportlist.tableUpFiles ? openReportlist.tableUpFiles : '[]'
-                  })
-                    (
-                      <div style={{ width: 400 }}>
-                        <SysUpload
-                          fileslist={openReportlist.tableUpFiles ? JSON.parse(openReportlist.tableUpFiles) : []}
-                          ChangeFileslist={newvalue => {
-                            setFieldsValue({ tableUpFiles: JSON.stringify(newvalue.arr) })
-                            setFilesList(newvalue);
-                            setFiles(newvalue)
-                          }}
-                        />
-                      </div>
-                    )}
+              {
+                !reportSearch && (
+                  <Col span={24} style={{ marginTop: 20 }}>
+                    <Form.Item
+                      label='上传附件'
+                      {...formincontentLayout}
+                    >
+                      {getFieldDecorator('tableUpFiles', {
+                        initialValue: openReportlist.tableUpFiles ? openReportlist.tableUpFiles : '[]'
+                      })
+                        (
+                          <div style={{ width: 400 }}>
+                            <SysUpload
+                              fileslist={openReportlist.tableUpFiles ? JSON.parse(openReportlist.tableUpFiles) : []}
+                              ChangeFileslist={newvalue => {
+                                setFieldsValue({ tableUpFiles: JSON.stringify(newvalue.arr) })
+                                setFilesList(newvalue);
+                                setFiles(newvalue)
+                              }}
+                            />
+                          </div>
+                        )}
 
-                </Form.Item>
-              </Col>
+                    </Form.Item>
+                  </Col>
+                )
+              }
+
+
+              {
+                reportSearch && (
+                  <div style={{ marginLeft: 30, marginRight: 10,marginTop:20 }}>
+                    <Descriptions size="middle">
+                      <Descriptions.Item label='上传附件'>
+                        <span style={{ color: 'blue', textDecoration: 'underline' }} >
+                          {openReportlist && <Downloadfile files={openReportlist.tableUpFiles === '' ? '[]' : openReportlist.tableUpFiles} />}
+                        </span>
+                      </Descriptions.Item>
+
+                    </Descriptions>
+                  </div>
+
+                )
+              }
+
 
               {/* 三、发现问题及修改建议 */}
               <Col span={24}>
@@ -475,28 +516,49 @@ function DatabaseReportdetail(props) {
               </Col>
 
 
-              <Col span={24}>
-                <Form.Item
-                  label='上传附件'
-                  {...formincontentLayout}
-                >
-                  {getFieldDecorator('defectFiles', {
-                    initialValue: openReportlist.defectFiles ? openReportlist.defectFiles : '[]'
-                  })
-                    (
-                      <div style={{ width: 400 }}>
-                        <SysUpload
-                          fileslist={openReportlist.defectFiles ? JSON.parse(openReportlist.defectFiles) : []}
-                          ChangeFileslist={newvalue => {
-                            setFieldsValue({ defectFiles: JSON.stringify(newvalue.arr) })
-                            setFilesList(newvalue);
-                            setFiles(newvalue)
-                          }}
-                        />
-                      </div>
-                    )}
-                </Form.Item>
-              </Col>
+              {
+                !reportSearch && (
+                  <Col span={24} style={{ marginTop: 20 }}>
+                    <Form.Item
+                      label='上传附件'
+                      {...formincontentLayout}
+                    >
+                      {getFieldDecorator('defectFiles', {
+                        initialValue: openReportlist.defectFiles ? openReportlist.defectFiles : '[]'
+                      })
+                        (
+                          <div style={{ width: 400 }}>
+                            <SysUpload
+                              fileslist={openReportlist.defectFiles ? JSON.parse(openReportlist.defectFiles) : []}
+                              ChangeFileslist={newvalue => {
+                                setFieldsValue({ defectFiles: JSON.stringify(newvalue.arr) })
+                                setFilesList(newvalue);
+                                setFiles(newvalue)
+                              }}
+                            />
+                          </div>
+                        )}
+                    </Form.Item>
+                  </Col>
+                )
+              }
+
+              {
+                reportSearch && (
+                  <div style={{ marginLeft: 30, marginRight: 10,marginTop:20}}>
+                    <Descriptions size="middle">
+                      <Descriptions.Item label='上传附件'>
+                        <span style={{ color: 'blue', textDecoration: 'underline' }} >
+                          {openReportlist && <Downloadfile files={openReportlist.defectFiles === '' ? '[]' : openReportlist.defectFiles} />}
+                        </span>
+                      </Descriptions.Item>
+
+                    </Descriptions>
+                  </div>
+
+                )
+              }
+
 
               <Col span={24}>
                 <p style={{ fontWeight: '900', fontSize: '16px' }}>四、上周作业完成情况</p>
@@ -518,29 +580,50 @@ function DatabaseReportdetail(props) {
                 />
               </Col>
 
-              <Col span={24}>
-                <Form.Item
-                  label='上传附件'
-                  {...formincontentLayout}
-                >
-                  {getFieldDecorator('operationFiles', {
-                    initialValue: openReportlist.operationFiles ? openReportlist.operationFiles : '[]'
-                  })
-                    (
-                      <div style={{ width: 400 }}>
-                        <SysUpload
-                          fileslist={openReportlist.operationFiles ? JSON.parse(openReportlist.operationFiles) : []}
-                          ChangeFileslist={newvalue => {
-                            setFieldsValue({ operationFiles: JSON.stringify(newvalue.arr) })
-                            setFilesList(newvalue);
-                            setFiles(newvalue)
-                          }}
-                        />
-                      </div>
-                    )}
+              {
+                !reportSearch && (
+                  <Col span={24} style={{ marginTop: 20 }}>
+                    <Form.Item
+                      label='上传附件'
+                      {...formincontentLayout}
+                    >
+                      {getFieldDecorator('operationFiles', {
+                        initialValue: openReportlist.operationFiles ? openReportlist.operationFiles : '[]'
+                      })
+                        (
+                          <div style={{ width: 400 }}>
+                            <SysUpload
+                              fileslist={openReportlist.operationFiles ? JSON.parse(openReportlist.operationFiles) : []}
+                              ChangeFileslist={newvalue => {
+                                setFieldsValue({ operationFiles: JSON.stringify(newvalue.arr) })
+                                setFilesList(newvalue);
+                                setFiles(newvalue)
+                              }}
+                            />
+                          </div>
+                        )}
 
-                </Form.Item>
-              </Col>
+                    </Form.Item>
+                  </Col>
+                )
+              }
+
+              {
+                reportSearch && (
+                  <div style={{ marginLeft: 30, marginRight: 10,marginTop:20 }}>
+                    <Descriptions size="middle">
+                      <Descriptions.Item label='上传附件'>
+                        <span style={{ color: 'blue', textDecoration: 'underline' }} >
+                          {openReportlist && <Downloadfile files={openReportlist.operationFiles === '' ? '[]' : openReportlist.operationFiles} />}
+                        </span>
+                      </Descriptions.Item>
+
+                    </Descriptions>
+                  </div>
+
+                )
+              }
+
 
               <Col span={24}>
                 <p style={{ fontWeight: '900', fontSize: '16px' }}>五、下周作业计划</p>
@@ -562,29 +645,50 @@ function DatabaseReportdetail(props) {
                 />
               </Col>
 
-              <Col span={24}>
-                <Form.Item
-                  label='上传附件'
-                  {...formincontentLayout}
-                >
-                  {getFieldDecorator('nextOperationFiles', {
-                    initialValue: openReportlist.nextOperationFiles ? openReportlist.nextOperationFiles : '[]'
-                  })
-                    (
-                      <div style={{ width: 400 }}>
-                        <SysUpload
-                          fileslist={openReportlist.nextOperationFiles ? JSON.parse(openReportlist.nextOperationFiles) : []}
-                          ChangeFileslist={newvalue => {
-                            setFieldsValue({ nextOperationFiles: JSON.stringify(newvalue.arr) })
-                            setFilesList(newvalue);
-                            setFiles(newvalue)
-                          }}
-                        />
-                      </div>
-                    )}
+              {
+                !reportSearch && (
+                  <Col span={24} style={{ marginTop: 20 }}>
+                    <Form.Item
+                      label='上传附件'
+                      {...formincontentLayout}
+                    >
+                      {getFieldDecorator('nextOperationFiles', {
+                        initialValue: openReportlist.nextOperationFiles ? openReportlist.nextOperationFiles : '[]'
+                      })
+                        (
+                          <div style={{ width: 400 }}>
+                            <SysUpload
+                              fileslist={openReportlist.nextOperationFiles ? JSON.parse(openReportlist.nextOperationFiles) : []}
+                              ChangeFileslist={newvalue => {
+                                setFieldsValue({ nextOperationFiles: JSON.stringify(newvalue.arr) })
+                                setFilesList(newvalue);
+                                setFiles(newvalue)
+                              }}
+                            />
+                          </div>
+                        )}
 
-                </Form.Item>
-              </Col>
+                    </Form.Item>
+                  </Col>
+                )
+              }
+
+              {
+                reportSearch && (
+                  <div style={{ marginLeft: 30, marginRight: 10, marginTop:20 }}>
+                    <Descriptions size="middle">
+                      <Descriptions.Item label='上传附件'>
+                        <span style={{ color: 'blue', textDecoration: 'underline' }} >
+                          {openReportlist && <Downloadfile files={openReportlist.nextOperationFiles === '' ? '[]' : openReportlist.nextOperationFiles} />}
+                        </span>
+                      </Descriptions.Item>
+
+                    </Descriptions>
+                  </div>
+
+                )
+              }
+
 
               {loading === false && addTitle && addTitle.length > 0 && (
                 addTitle.map((item, index) => {
@@ -624,8 +728,9 @@ function DatabaseReportdetail(props) {
                 ghost
                 onClick={() => newMember()}
                 icon="plus"
+                disabled={reportSearch}
               >
-                 新增数据库运维
+                新增其他内容
               </Button>
 
 

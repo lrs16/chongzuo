@@ -26,22 +26,15 @@ const AddForm = React.forwardRef((props, ref) => {
     }),
     [],
   );
-  const required = true;
 
   const {
     form: { getFieldDecorator, setFieldsValue, validateFields },
     loading,
     formincontentLayout,
-    ChangeFiles,
-    patrolAndExamine, //  巡检列表
+    detailParams,
     dynamicData,
     px,
-    detailParams,
-    list,
-    files,
     addTable,
-    index,
-    saveForm,
   } = props;
 
   const [data, setData] = useState([]);
@@ -300,26 +293,27 @@ const AddForm = React.forwardRef((props, ref) => {
   return (
     <>
       {
-        loading === false && dynamicData &&  (
-          <Row gutter={16}>
+        loading === false && dynamicData && (
+          <Row gutter={24}>
             <Form>
-              {/* {index === 0 && ( */}
-              <Button
-                disabled={detailParams}
-                type='primary'
-                onClick={handleSubmit}
-              >
-                保存
-              </Button>
-              {/* // )} */}
 
               <Col><p>注：第一行数据作为表头</p></Col>
+
+              <Col style={{ textAlign: 'right', marginBottom: 10 }}>
+                <Button
+                  disabled={detailParams}
+                  type='primary'
+                  onClick={handleSubmit}
+                >
+                  保存
+                </Button>
+              </Col>
 
               <Form.Item label={titleNumber()} {...formincontentLayout}>
                 {getFieldDecorator(`title`, {
                   initialValue: dynamicData.title
                 })(
-                  <Input />
+                  <Input  disabled={detailParams}/>
                 )}
               </Form.Item>
 
@@ -327,7 +321,10 @@ const AddForm = React.forwardRef((props, ref) => {
                 {getFieldDecorator(`content`, {
                   initialValue: dynamicData.content
                 })(
-                  <TextArea autoSize={{ minRows: 3 }} />
+                  <TextArea 
+                  autoSize={{ minRows: 3 }}
+                  disabled={detailParams}
+                   />
                 )}
               </Form.Item>
 
@@ -346,7 +343,7 @@ const AddForm = React.forwardRef((props, ref) => {
                   />
                 )}
               </Form.Item>
-
+ 
               <Table
                 columns={column}
                 dataSource={data}

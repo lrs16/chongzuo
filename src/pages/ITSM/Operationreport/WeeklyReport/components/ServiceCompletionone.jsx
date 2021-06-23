@@ -66,21 +66,21 @@ useEffect(() => {
 
   return (
     <>
-        <Row gutter={16}>
+        {/* <Row gutter={16}> */}
           {/* <Col span={24}>
             <p style={{ fontWeight: '900', fontSize: '16px', marginTop: '20px' }}>三、运维服务指标完成情况</p>
           </Col> */}
 
-          <Col span={24}>
+          {/* <Col span={24}> */}
             <p>(二)、软件运维服务指标完成情况</p>
-          </Col>
+          {/* </Col> */}
 
           <Table
             columns={secondlyColumn}
             dataSource={maintenanceService}
             pagination={false}
           />
-        </Row>
+        {/* </Row> */}
 
 
     </>

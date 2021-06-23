@@ -224,18 +224,18 @@ function UpgradeList(props) {
 
   return (
     <>
-      <Row gutter={16}>
-        <Col span={20}>
+      {/* <Row gutter={16}> */}
+        {/* <Col span={20}> */}
           <p>(1)数据库本周进行了补丁升级工作次</p>
-        </Col>
+        {/* </Col> */}
 
 
-        <Col style={{textAlign:'center'}}>
+        <div style={{textAlign:'right',marginBottom:10}}>
           <Button
             disabled={detailParams}
             type='primary'
             onClick={handleSave}>保存</Button>
-        </Col>
+        </div>
 
         <Table
           columns={column}
@@ -253,7 +253,7 @@ function UpgradeList(props) {
         >
           新增
         </Button>
-      </Row>
+      {/* </Row> */}
     </>
   )
 }

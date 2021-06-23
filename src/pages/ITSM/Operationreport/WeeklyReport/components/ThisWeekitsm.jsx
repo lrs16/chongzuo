@@ -16,6 +16,7 @@ import {
 import SysUpload from '@/components/SysUpload';
 import { queryOrder, queryUnitList, queryDeptList } from '@/services/common';
 import styles from '../index.less';
+import Downloadfile from '@/components/SysUpload/Downloadfile';
 
 const { Search } = Input;
 const { Option } = Select;
@@ -34,6 +35,7 @@ function ThisWeekitsm(props) {
     form: { getFieldDecorator, setFieldsValue },
     forminladeLayout,
     formItemLayout,
+    formincontentLayout,
     thisWeekitsmlist,
     reportType,
     eventList,
@@ -243,19 +245,20 @@ function ThisWeekitsm(props) {
     <>
       <Row gutter={16}>
         <Col span={20}>
-          <p>（三）工单TopN 事件分析</p>
+          <p style={{ fontWeight: '900', fontSize: '16px' }}>四、本周事件、问题及故障</p>
         </Col>
 
         <Form {...formItemLayout}>
           {true && (
             <Row gutter={16}>
-              <Col span={8}>
-                <Form.Item label='N'>
+              <Col span={24}>
+                <Form.Item label='N' {...formincontentLayout}>
                   <Select
                     placeholder="请选择"
                     style={{ width: 150 }}
                     defaultValue='event'
                     onChange={selectOnchange}
+                    disabled={detailParams}
                   >
                     <Option value="event">事件</Option>
                     <Option value="problem">问题</Option>
@@ -264,11 +267,12 @@ function ThisWeekitsm(props) {
                 </Form.Item>
               </Col>
 
-              <Col span={8}>
+              <Col span={24}>
                 <Form.Item label='搜索内容'>
                   {getFieldDecorator('content', {})(
                     <>
                       <AutoComplete
+                        disabled={detailParams}
                         dataSource={disableduser}
                         defaultValue='内容'
                         dropdownMatchSelectWidth={false}
@@ -286,18 +290,16 @@ function ThisWeekitsm(props) {
                   )}
                 </Form.Item>
               </Col>
-
-              <Col span={8} style={{ textAlign: 'center' }}>
-                <Button
-                  type='primary'
-                  onClick={handleSave}>保存</Button>
-              </Col>
-
             </Row>
           )}
         </Form>
 
-
+        <div style={{ textAlign: 'right', marginBottom: 10 }}>
+          <Button
+            type='primary'
+            disabled={detailParams}
+            onClick={handleSave}>保存</Button>
+        </div>
 
         <Table
           columns={column}

@@ -85,7 +85,7 @@ function OtherReport(props) {
     props.form.validateFields((err, value) => {
       const savedata = {
         ...value,
-        status:'add',
+        status: 'add',
         editStatus: mainId ? 'edit' : 'add',
         addData: JSON.stringify(list),
         type: reporttype === 'week' ? '其他运维周报' : '其他运维月报',
@@ -150,11 +150,14 @@ function OtherReport(props) {
     router.push('/ITSM/operationreport/weeklyreport/myweeklyreport');
   }
 
-  const onChange = () => {
-    validateFields((err, value) => {
-      startTime = moment(value.time1[0]).format('YYYY-MM-DD');
-      endTime = moment(value.time1[1]).format('YYYY-MM-DD');
-    })
+  const onChange = (date, dateString) => {
+    if(reporttype === 'week') {
+      startTime = dateString[0];
+      endTime = dateString[1];
+    } else {
+      startTime = date.startOf('month').format('YYYY-MM-DD');
+      endTime = date.endOf('month').format('YYYY-MM-DD');
+    }
   }
 
   const newMember = () => {
@@ -176,21 +179,24 @@ function OtherReport(props) {
     <PageHeaderWrapper
       title={listreportType === 'week' ? '其他运维周报' : '其他运维月报'}
       extra={
-        <>
-          <Button type='primary' onClick={softReportform}>保存</Button>
-          <Button type='primary' onClick={handlePaste}>粘贴</Button>
-          <Button type='primary' onClick={handleBack}>
-            返回
-          </Button>
-        </>
+        loading === false && (
+          <>
+            <Button type='primary' onClick={softReportform}>保存</Button>
+            <Button type='primary' onClick={handlePaste}>粘贴</Button>
+            <Button type='primary' onClick={handleBack}>
+              返回
+            </Button>
+          </>
+        )
+
       }
     >
       <Card>
         {startTime && (
-          <Row gutter={16}>
-            <Form {...formItemLayout}>
+          <Row gutter={24}>
+            <Form>
 
-              <Col span={8}>
+              <Col span={24}>
                 <Form.Item label={reporttype === 'week' ? '周报名称' : '月报名称'}>
                   {getFieldDecorator('name', {
                     initialValue: copyData.main ? copyData.main.name : ''
@@ -203,7 +209,7 @@ function OtherReport(props) {
 
               {
                 reporttype === 'week' && (
-                  <Col span={8}>
+                  <Col span={24}>
                     <Form.Item label='起始时间'>
                       {getFieldDecorator('time1', {
                         rules: [
@@ -226,7 +232,7 @@ function OtherReport(props) {
 
               {
                 reporttype === 'month' && (
-                  <Col span={8}>
+                  <Col span={24}>
                     <Form.Item label='起始时间'>
                       {getFieldDecorator('time1', {
                         rules: [
@@ -287,7 +293,7 @@ function OtherReport(props) {
                 onClick={() => newMember()}
                 icon="plus"
               >
-                新增其他运维
+                新增其他内容
               </Button>
 
             </Form>

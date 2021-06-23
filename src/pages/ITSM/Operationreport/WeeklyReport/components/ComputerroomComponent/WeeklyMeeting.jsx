@@ -156,35 +156,30 @@ function WeeklyMeeting(props) {
 
   return (
     <>
-      <Row gutter={16}>
-        <Col span={20}>
-          <p style={{ fontWeight: '900', fontSize: '16px' }}>{type === 'week' ? '5 周例会会议纪要完成情况' : '5 月例会会议纪要完成情况'}</p>
-        </Col>
+      <p style={{ fontWeight: '900', fontSize: '16px' }}>{type === 'week' ? '5 周例会会议纪要完成情况' : '5 月例会会议纪要完成情况'}</p>
 
-        <Col>
-          <Button
-            disabled={reportSearch}
-            type='primary'
-            onClick={handleSave}>保存</Button>
-        </Col>
-
-
-        <Table
-          columns={column}
-          dataSource={data}
-        />
-
+      <div style={{ textAlign: 'right', marginBottom: 10 }}>
         <Button
-          style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
-          type="primary"
-          ghost
-          onClick={() => newMember()}
-          icon="plus"
           disabled={reportSearch}
-        >
-          新增
-        </Button>
-      </Row>
+          type='primary'
+          onClick={handleSave}>保存</Button>
+      </div>
+
+      <Table
+        columns={column}
+        dataSource={data}
+      />
+
+      <Button
+        style={{ width: '100%', marginTop: 16 }}
+        type="primary"
+        ghost
+        onClick={() => newMember()}
+        icon="plus"
+        disabled={reportSearch}
+      >
+        新增
+      </Button>
     </>
   )
 }

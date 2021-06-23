@@ -104,7 +104,7 @@ function DatabaseReport(props) {
       if (!err) {
         const savedata = {
           ...values,
-          status:'add',
+          status: 'add',
           editStatus: mainId ? 'edit' : 'add',
           addData: list?.length ? JSON.stringify(list) : '',
           type: reporttype === 'week' ? '数据库运维周报' : '数据库运维月报',
@@ -184,7 +184,7 @@ function DatabaseReport(props) {
     // }
   };
 
-  
+
   const removeForm = (tableIndex) => {
     addTitle.splice(tableIndex, 1);
     const resultArr = [];
@@ -194,7 +194,7 @@ function DatabaseReport(props) {
     setAddTitle(resultArr)
   }
 
-  console.log(list,'list')
+  console.log(list, 'list')
 
   // 上传删除附件触发保存
   useEffect(() => {
@@ -237,9 +237,8 @@ function DatabaseReport(props) {
 
   const onChange = (date, dateString) => {
     if (reporttype === 'week') {
-      startTime = dateString;
-      endTime = moment(dateString).add(+6, 'day').format('YYYY-MM-DD');
-      setFieldsValue({ time2: moment(endTime) });
+      startTime = dateString[0];
+      endTime = dateString[1];
     } else {
       startTime = date.startOf('month').format('YYYY-MM-DD');
       endTime = date.endOf('month').format('YYYY-MM-DD');
@@ -259,22 +258,21 @@ function DatabaseReport(props) {
       extra={
         loading === false && (
           <>
-          <Button type='primary' onClick={softReportform}>保存</Button>
-          <Button type='primary' onClick={handlePaste}>粘贴</Button>
-          <Button type='primary' onClick={handleBack}>
-            返回
-          </Button>
-        </>
+            <Button type='primary' onClick={softReportform}>保存</Button>
+            <Button type='primary' onClick={handlePaste}>粘贴</Button>
+            <Button type='primary' onClick={handleBack}>
+              返回
+            </Button>
+          </>
         )
-      
+
       }
     >
       <Card>
         {loading === false && (
-          <Row gutter={16}>
-            <Form {...formItemLayout}>
-
-              <Col span={8}>
+          <Row gutter={24}>
+            <Form>
+              <Col span={24}>
                 <Form.Item label={reporttype === 'week' ? '周报名称' : '月报名称'}>
                   {getFieldDecorator('name', {
                     rules: [
@@ -293,7 +291,7 @@ function DatabaseReport(props) {
 
               {
                 reporttype === 'week' && (
-                  <Col span={8}>
+                  <Col span={24}>
                     <Form.Item label='起始时间'>
                       {getFieldDecorator('time1', {
                         initialValue: [moment(copyData.main ? copyData.main.time1 : startTime), moment(copyData.main ? copyData.main.time2 : endTime)]
@@ -310,7 +308,7 @@ function DatabaseReport(props) {
 
               {
                 reporttype === 'month' && (
-                  <Col span={8}>
+                  <Col span={24}>
                     <Form.Item label='起始时间'>
                       {getFieldDecorator('time1', {
                         initialValue: moment(copyData.main ? copyData.main.time1 : startTime)
@@ -332,7 +330,7 @@ function DatabaseReport(props) {
               </Col>
 
               <Col span={24}>
-                <Form.Item label={reporttype === 'week' ? '本周运维总结' : '本月运维总结'} {...formincontentLayout}>
+                <Form.Item label=''>
                   {
                     getFieldDecorator('content', {
                       initialValue: copyData.content ? copyData.content : ''
@@ -370,7 +368,7 @@ function DatabaseReport(props) {
               </Col>
 
               <Col span={24}>
-                <Form.Item label='巡检汇总描述' {...formincontentLayout}>
+                <Form.Item label=''>
                   {
                     getFieldDecorator('patrolAndExamineContent', {
                       initialValue: copyData.patrolAndExamineContent ? copyData.patrolAndExamineContent : ''
@@ -417,7 +415,7 @@ function DatabaseReport(props) {
               </Col>
 
               {/* Top10表增长附件 */}
-              <Col span={24}>
+              <Col span={24} style={{ marginTop: 20 }}>
                 <Form.Item
                   label='上传附件'
                   {...formincontentLayout}
@@ -454,7 +452,7 @@ function DatabaseReport(props) {
                 />
               </Col>
 
-              <Col span={24}>
+              <Col span={24} style={{ marginTop: 20 }}>
                 <Form.Item
                   label='上传附件'
                   {...formincontentLayout}
@@ -492,7 +490,7 @@ function DatabaseReport(props) {
                 />
               </Col>
 
-              <Col span={24}>
+              <Col span={24} style={{ marginTop: 20 }}>
                 <Form.Item
                   label='上传附件'
                   {...formincontentLayout}
@@ -531,7 +529,7 @@ function DatabaseReport(props) {
                 />
               </Col>
 
-              <Col span={24}>
+              <Col span={24} style={{ marginTop: 20 }}>
                 <Form.Item
                   label='上传附件'
                   {...formincontentLayout}
@@ -593,7 +591,7 @@ function DatabaseReport(props) {
                 onClick={() => newMember()}
                 icon="plus"
               >
-                新增数据库运维
+                新增其他内容
               </Button>
 
 

@@ -125,7 +125,7 @@ const Diskgroup = React.forwardRef((props, ref) => {
       render: (text, record) => {
         return (
           <Input
-          disabled={reportSearch}
+            disabled={reportSearch}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field2', record.key)}
           />
@@ -139,7 +139,7 @@ const Diskgroup = React.forwardRef((props, ref) => {
       render: (text, record) => {
         return (
           <Input
-          disabled={reportSearch}
+            disabled={reportSearch}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field3', record.key)}
           />
@@ -153,7 +153,7 @@ const Diskgroup = React.forwardRef((props, ref) => {
       render: (text, record) => {
         return (
           <Input
-          disabled={reportSearch}
+            disabled={reportSearch}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field4', record.key)}
           />
@@ -168,10 +168,10 @@ const Diskgroup = React.forwardRef((props, ref) => {
       render: (text, record) => {
         return (
           <span>
-            <Popconfirm 
-            title="是否要删除此行？" 
-            onConfirm={() => remove(record.key)}
-            disabled={reportSearch}
+            <Popconfirm
+              title="是否要删除此行？"
+              onConfirm={() => remove(record.key)}
+              disabled={reportSearch}
             >
               <a>删除</a>
             </Popconfirm>
@@ -192,34 +192,30 @@ const Diskgroup = React.forwardRef((props, ref) => {
 
   return (
     <>
-      <Row gutter={16}>
-        <Col span={20}>
-          <p>磁盘组</p>
-        </Col>
+      <p>磁盘组</p>
 
-        <Col>
-          <Button
-            disabled={reportSearch}
-            type='primary'
-            onClick={handleSave}>保存</Button>
-        </Col>
-
-        <Table
-          columns={column}
-          dataSource={data}
-        />
-
+      <div style={{ textAlign: 'right', marginBottom: 10 }}>
         <Button
-          style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
-          type="primary"
-          ghost
-          onClick={() => newMember()}
-          icon="plus"
           disabled={reportSearch}
-        >
-          新增
-        </Button>
-      </Row>
+          type='primary'
+          onClick={handleSave}>保存</Button>
+      </div>
+
+      <Table
+        columns={column}
+        dataSource={data}
+      />
+
+      <Button
+        style={{ width: '100%', marginTop: 16, }}
+        type="primary"
+        ghost
+        onClick={() => newMember()}
+        icon="plus"
+        disabled={reportSearch}
+      >
+        新增
+      </Button>
     </>
   )
 })

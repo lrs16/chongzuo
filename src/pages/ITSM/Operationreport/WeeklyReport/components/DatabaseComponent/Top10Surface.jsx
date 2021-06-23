@@ -204,34 +204,30 @@ const Top10Surface = React.forwardRef((props, ref) => {
 
   return (
     <>
-      <Row gutter={16}>
-        <Col span={20}>
-          <p>Top10表空间(正常增长范围120GB-150GB)</p>
-        </Col>
+      <p style={{marginTop:24}}>Top10表空间(正常增长范围120GB-150GB)</p>
 
-        <Col>
-          <Button
-            disabled={reportSearch}
-            type='primary'
-            onClick={handleSave}>保存</Button>
-        </Col>
-
-        <Table
-          columns={column}
-          dataSource={data}
-        />
-
+      <div style={{ textAlign: 'right', marginBottom: 10 }}>
         <Button
-          style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
-          type="primary"
-          ghost
-          onClick={() => newMember()}
-          icon="plus"
           disabled={reportSearch}
-        >
-          新增巡检情况
-        </Button>
-      </Row>
+          type='primary'
+          onClick={handleSave}>保存</Button>
+      </div>
+
+      <Table
+        columns={column}
+        dataSource={data}
+      />
+
+      <Button
+        style={{ width: '100%', marginTop: 16 }}
+        type="primary"
+        ghost
+        onClick={() => newMember()}
+        icon="plus"
+        disabled={reportSearch}
+      >
+        新增
+      </Button>
     </>
   )
 })

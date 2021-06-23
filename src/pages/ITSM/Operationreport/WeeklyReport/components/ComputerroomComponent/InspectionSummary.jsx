@@ -150,17 +150,17 @@ function InspectionSummary(props) {
 
   return (
     <>
-      <Row gutter={16}>
-        <Col span={20}>
+      {/* <Row gutter={16}> */}
+        {/* <Col span={20}> */}
           <p>(2)运维材料提交情况</p>
-        </Col>
+        {/* </Col> */}
 
-        <Col>
+        <div style={{textAlign:'right',marginBottom:10}}>
           <Button
             disabled={reportSearch}
             type='primary'
             onClick={handleSave}>保存</Button>
-        </Col>
+        </div>
 
         <Table
           columns={column}
@@ -169,7 +169,7 @@ function InspectionSummary(props) {
         />
 
         <Button
-          style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
+          style={{ width: '100%', marginTop: 16}}
           type="primary"
           ghost
           onClick={() => newMember()}
@@ -178,7 +178,7 @@ function InspectionSummary(props) {
         >
           新增
         </Button>
-      </Row>
+      {/* </Row> */}
     </>
   )
 }

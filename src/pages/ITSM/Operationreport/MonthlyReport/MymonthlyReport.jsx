@@ -62,37 +62,41 @@ function MymonthlyReport(props) {
           switch (text) {
             case '软件运维月报':
               router.push({
-                pathname: `/ITSM/operationreport/weeklyreport/monthsoftreport`,
+                pathname: `/ITSM/operationreport/monthlyreport/monthdetailSoft`,
                 query: {
                   mainId: record.id,
                   reporttype: 'month',
+                  orderNo: '',
                 },
               });
               break;
             case '机房运维月报':
               router.push({
-                pathname: `/ITSM/operationreport/weeklyreport/monthcomputerroomreport`,
+                pathname: `/ITSM/operationreport/monthlyreport/monthcomputerroomreportdetail`,
                 query: {
                   mainId: record.id,
                   reporttype: 'month',
+                  orderNo: '',
                 },
               });
               break;
             case '数据库运维月报':
               router.push({
-                pathname: `/ITSM/operationreport/weeklyreport/monthdatabasereport`,
+                pathname: `/ITSM/operationreport/monthlyreport/monthdatabasereportdetail`,
                 query: {
                   mainId: record.id,
                   reporttype: 'month',
+                  orderNo: '',
                 },
               });
               break;
             case '其他运维月报':
               router.push({
-                pathname: `/ITSM/operationreport/weeklyreport/monthotherreport`,
+                pathname: `/ITSM/operationreport/monthlyreport/monthotherreportdetail`,
                 query: {
                   mainId: record.id,
                   reporttype: 'month',
+                  orderNo: '',
                 },
               });
               break;
@@ -129,8 +133,8 @@ function MymonthlyReport(props) {
           pathname: `/ITSM/operationreport/monthlyreport/monthsoftreport`,
           query: {
             reporttype: 'month',
-            listreportType:selectedRows?.length?selectedRows[0].type:'',
-            listId:selectedRows?.length?selectedRows[0].id:'',
+            listreportType: selectedRows?.length ? selectedRows[0].type : '',
+            listId: selectedRows?.length ? selectedRows[0].id : '',
             addtab: true,
           }
         })
@@ -140,8 +144,8 @@ function MymonthlyReport(props) {
           pathname: `/ITSM/operationreport/monthlyreport/monthcomputerroomreport`,
           query: {
             reporttype: 'month',
-            listreportType:selectedRows?.length?selectedRows[0].type:'',
-            listId:selectedRows?.length?selectedRows[0].id:'',
+            listreportType: selectedRows?.length ? selectedRows[0].type : '',
+            listId: selectedRows?.length ? selectedRows[0].id : '',
             addtab: true,
           }
         })
@@ -151,8 +155,8 @@ function MymonthlyReport(props) {
           pathname: `/ITSM/operationreport/monthlyreport/monthdatabasereport`,
           query: {
             reporttype: 'month',
-            listreportType:selectedRows?.length?selectedRows[0].type:'',
-            listId:selectedRows?.length?selectedRows[0].id:'',
+            listreportType: selectedRows?.length ? selectedRows[0].type : '',
+            listId: selectedRows?.length ? selectedRows[0].id : '',
             addtab: true,
           }
         })
@@ -162,8 +166,8 @@ function MymonthlyReport(props) {
           pathname: `/ITSM/operationreport/monthlyreport/monthotherreport`,
           query: {
             reporttype: 'month',
-            listreportType:selectedRows?.length?selectedRows[0].type:'',
-            listId:selectedRows?.length?selectedRows[0].id:'',
+            listreportType: selectedRows?.length ? selectedRows[0].type : '',
+            listId: selectedRows?.length ? selectedRows[0].id : '',
             addtab: true,
           }
         })
@@ -216,8 +220,8 @@ function MymonthlyReport(props) {
         timeType: '月报',
         userId: sessionStorage.getItem('userauthorityid'),
         plannedStartTime: '',
-        time1: values.plannedStartTime?.length ? moment(values.plannedStartTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-        time2: values.plannedStartTime?.length ? moment(values.plannedStartTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+        time1: values.plannedStartTime?.length ? moment(values.plannedStartTime[0]).format('YYYY-MM-DD HH:mm:ss') : starttime,
+        time2: values.plannedStartTime?.length ? moment(values.plannedStartTime[1]).format('YYYY-MM-DD HH:mm:ss') : endTime,
         pageSize,
         pageIndex: page - 1,
       },
@@ -337,9 +341,8 @@ function MymonthlyReport(props) {
   }
 
   const onChange = (date, dateString) => {
-    starttime = dateString;
-    endTime = moment(dateString).add(+6, 'day').format('YYYY-MM-DD');
-    setFieldsValue({ time2: moment(endTime) });
+    starttime = date.startOf('month').format('YYYY-MM-DD');
+    endTime = date.endOf('month').format('YYYY-MM-DD');
   }
 
   const endonChange = (date, dateString) => {
@@ -435,6 +438,7 @@ function MymonthlyReport(props) {
                 })(
                   <MonthPicker
                     style={{ width: '100%' }}
+                    onChange={onChange}
                   />
                 )
                 }

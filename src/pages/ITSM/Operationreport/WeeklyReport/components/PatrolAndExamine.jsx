@@ -222,21 +222,21 @@ const PatrolAndExamine = React.forwardRef((props, ref) => {
 
   return (
     <>
-      <Row gutter={16}>
-        <Col span={20}>
+      {/* <Row gutter={16}> */}
+        {/* <Col span={20}> */}
           <p style={{ fontWeight: '900', fontSize: '16px' }}>二、常规运维工作开展情况</p>
-        </Col>
+        {/* </Col> */}
 
-        <Col span={24}>
-          <p style={{ marginTop: '20px' }}>（一）软件运维巡检情况</p>
-        </Col>
+        {/* <Col span={24}> */}
+          <p style={{ marginTop: '10px',marginBottom:20 }}>（一）软件运维巡检情况</p>
+        {/* </Col> */}
 
-        <Col>
+        <div style={{textAlign:'right',marginBottom:10}}>
           <Button
             disabled={detailParams}
             type='primary'
             onClick={handleSave}>保存</Button>
-        </Col>
+        </div>
 
         <Table
           columns={column}
@@ -245,7 +245,7 @@ const PatrolAndExamine = React.forwardRef((props, ref) => {
         />
 
         <Button
-          style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
+          style={{ width: '100%', marginTop: 16}}
           type="primary"
           ghost
           onClick={() => newMember()}
@@ -254,7 +254,7 @@ const PatrolAndExamine = React.forwardRef((props, ref) => {
         >
           新增
         </Button>
-      </Row>
+      {/* </Row> */}
     </>
   )
 })

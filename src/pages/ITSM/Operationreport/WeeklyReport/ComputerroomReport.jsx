@@ -250,9 +250,8 @@ function ComputerroomReport(props) {
 
   const onChange = (date, dateString) => {
     if (reporttype === 'week') {
-      startTime = dateString;
-      endTime = moment(dateString).add(+6, 'day').format('YYYY-MM-DD');
-      setFieldsValue({ time2: moment(endTime) });
+      startTime = dateString[0];
+      endTime = dateString[1];
     } else {
       startTime = date.startOf('month').format('YYYY-MM-DD');
       endTime = date.endOf('month').format('YYYY-MM-DD');
@@ -284,14 +283,14 @@ function ComputerroomReport(props) {
       <Card>
         {loading === false && (
           <Row gutter={16}>
-            <Form {...formItemLayout}>
-              <Col span={8}>
+            <Form>
+              <Col span={24}>
                 <Form.Item label={reporttype === 'week' ? '周报名称' : '月报名称'}>
                   {getFieldDecorator('name', {
                     rules: [
                       {
                         required,
-                        message: '请输入周报名称'
+                        message: '请输入名称'
                       }
                     ],
                     initialValue: copyData.main ? copyData.main.name : ''
@@ -304,7 +303,7 @@ function ComputerroomReport(props) {
 
               {
                 reporttype === 'week' && (
-                  <Col span={8}>
+                  <Col span={24}>
                     <Form.Item label='起始时间'>
                       {getFieldDecorator('time1', {
                         initialValue: [moment(copyData.main ? copyData.main.time1 : startTime), moment(copyData.main ? copyData.main.time2 : endTime)]
@@ -321,7 +320,7 @@ function ComputerroomReport(props) {
 
               {
                 reporttype === 'month' && (
-                  <Col span={8}>
+                  <Col span={24}>
                     <Form.Item label='起始时间'>
                       {getFieldDecorator('time1', {
                         initialValue: moment(copyData.main ? copyData.main.time1 : startTime)
@@ -336,10 +335,10 @@ function ComputerroomReport(props) {
                 )
               }
 
-              <Col span={24}><p style={{ fontWeight: '900', fontSize: '16px' }}>1 本周运维总结</p></Col>
+              <Col span={24}><p style={{ fontWeight: '900', fontSize: '16px' }}>{reporttype === 'week' ? '一、本周运维总结':'一、本月运维总结'}</p></Col>
               {/* 本周运维总结 */}
               <Col span={24}>
-                <Form.Item label={reporttype === 'week' ? '本周运维总结' : '本月运维总结'} {...formincontentLayout}>
+                <Form.Item label=''>
                   {
                     getFieldDecorator('content', {
                       initialValue: copyData.content ? copyData.content : ''
@@ -373,10 +372,10 @@ function ComputerroomReport(props) {
                 </Form.Item>
               </Col>
 
-              <Col span={24}><p style={{ fontWeight: '900', fontSize: '16px' }}>2 巡检汇总</p></Col>
+              <Col span={24}><p style={{ fontWeight: '900', fontSize: '16px' }}>二、巡检汇总</p></Col>
 
               <Col span={24}>
-                <Form.Item label={reporttype === 'week' ? '(1)本周巡检汇总' : '(2)本月巡检汇总'} {...formincontentLayout}>
+                <Form.Item label=''>
                   {
                     getFieldDecorator('patrolAndExamineContent', {
                       initialValue: copyData.patrolAndExamineContent ? copyData.patrolAndExamineContent : ''
@@ -401,7 +400,7 @@ function ComputerroomReport(props) {
                 />
               </Col>
 
-              <Col span={24}>
+              <Col span={24} style={{marginTop:20}}>
                 <Form.Item
                   label='上传附件'
                   {...formincontentLayout}
@@ -456,7 +455,7 @@ function ComputerroomReport(props) {
                 />
               </Col>
 
-              <Col span={24}>
+              <Col span={24} style={{marginTop:20}}>
                 <Form.Item
                   label='上传附件'
                   {...formincontentLayout}
@@ -486,7 +485,7 @@ function ComputerroomReport(props) {
               <Col span={24}><p>{reporttype === 'week' ? '4.1本周作业完成情况' : '4.1本月作业完成情况'}</p></Col>
 
               <Col span={24}>
-                <Form.Item label={reporttype === 'week' ? '本周作业完成情况' : '本月作业完成情况'} {...formincontentLayout}>
+                <Form.Item label=''>
                   {
                     getFieldDecorator('operationContent', {
                       initialValue: copyData.operationContent ? copyData.operationContent : ''
@@ -512,10 +511,10 @@ function ComputerroomReport(props) {
                 />
               </Col>
 
-              <Col span={24}><p>{reporttype === 'week' ? '4.2本周工作票开具情况及服务器查询操作票情况统计' : '4.2本月工作票开具情况及服务器查询操作票情况统计'}</p></Col>
+              <Col span={24}><p style={{marginTop:20}}>{reporttype === 'week' ? '4.2本周工作票开具情况及服务器查询操作票情况统计' : '4.2本月工作票开具情况及服务器查询操作票情况统计'}</p></Col>
 
               <Col span={24}>
-                <Form.Item label={reporttype === 'week' ? '本周统计情况' : '本月统计情况'} {...formincontentLayout}>
+                <Form.Item label=''>
                   {
                     getFieldDecorator('billingContent', {
                       initialValue: copyData.billingContent ? copyData.billingContent : ''
@@ -541,9 +540,8 @@ function ComputerroomReport(props) {
                   mainId={copyData.nextOperationList ? true : mainId}
                 />
               </Col>
-              )
 
-              <Col span={24}>
+              <Col span={24} style={{marginTop:20}}>
                 <Form.Item
                   label='上传附件'
                   {...formincontentLayout}
@@ -581,7 +579,7 @@ function ComputerroomReport(props) {
                 />
               </Col>
 
-              <Col span={24}>
+              <Col span={24} style={{marginTop:20}}>
                 <Form.Item
                   label='上传附件'
                   {...formincontentLayout}
@@ -612,7 +610,7 @@ function ComputerroomReport(props) {
                 onClick={() => newMember()}
                 icon="plus"
               >
-                新增机房
+                新增其他内容
               </Button>
 
               {loading === false && addTitle && addTitle.length > 0 && (

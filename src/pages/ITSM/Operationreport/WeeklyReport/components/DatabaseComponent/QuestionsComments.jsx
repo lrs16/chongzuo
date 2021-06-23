@@ -166,41 +166,35 @@ const QuestionsComments = React.forwardRef((props, ref) => {
 
   return (
     <>
-      <Row gutter={16}>
-        <Col span={20}>
-          <p style={{ fontWeight: '900', fontSize: '16px' }}>三、发现问题及修改建议</p>
-        </Col>
+      <p style={{ fontWeight: '900', fontSize: '16px' }}>三、发现问题及修改建议</p>
 
-        <Col span={24}>
-          <p>
-            缺陷
-          </p>
-        </Col>
+      <p>
+        缺陷
+      </p>
 
-        <Col>
-          <Button
-            disabled={reportSearch}
-            type='primary'
-            onClick={handleSave}>保存</Button>
-        </Col>
-
-        <Table
-          columns={column}
-          dataSource={data}
-        />
-
+      <div style={{ marginBottom: '10px', textAlign: 'right' }}>
         <Button
-          style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
-          type="primary"
-          ghost
-          onClick={() => newMember()}
-          icon="plus"
           disabled={reportSearch}
-        >
-          新增
-        </Button>
+          type='primary'
+          onClick={handleSave}>保存</Button>
+      </div>
 
-      </Row>
+      <Table
+        columns={column}
+        dataSource={data}
+      />
+
+      <Button
+        style={{ width: '100%', marginTop: 16}}
+        type="primary"
+        ghost
+        onClick={() => newMember()}
+        icon="plus"
+        disabled={reportSearch}
+      >
+        新增
+      </Button>
+
     </>
   )
 })

@@ -26,6 +26,7 @@ function EventTop(props) {
   const {
     form: { getFieldDecorator, setFieldsValue, validateFields },
     forminladeLayout,
+    formincontentLayout,
     formItemLayout,
     startTime,
     endTime,
@@ -41,9 +42,6 @@ function EventTop(props) {
   } = props;
 
   const [data, setData] = useState([]);
-  const [cacheOriginData, setcacheOriginData] = useState({});
-  const [newbutton, setNewButton] = useState(false);
-  const [fileslist, setFilesList] = useState([]);
   const [disablelist, setDisabledList] = useState([]);
   const [spinloading, setSpinLoading] = useState(true);
 
@@ -127,7 +125,14 @@ function EventTop(props) {
 
 
   const handleSave = (target, id) => {
-    topNList(data);
+      const result = JSON.parse(JSON.stringify(data)
+        .replace(/first_object/g, 'field1')
+        .replace(/second_object/g, 'field2')
+        .replace(/num/g, 'field3')
+      )
+      if (result) {
+        topNList(result)
+      }
     message.info('暂存保存数据成功')
   }
 
@@ -152,7 +157,6 @@ function EventTop(props) {
   }
 
   const selectOnchange = (selectvalue) => {
-    // value(selectvalue)
     value(selectvalue)
   }
 
@@ -316,8 +320,11 @@ function EventTop(props) {
     handleTabledata();
   }, [topArr])
 
+  let setColumns = column;
 
-
+  if(mainId) {
+    setColumns = editColumns
+  }
 
   return (
     <>
@@ -326,23 +333,16 @@ function EventTop(props) {
           <p>（三）工单TopN 事件分析</p>
         </Col>
 
-
-        <Col style={{ textAlign: 'center' }}>
-          <Button
-            type='primary'
-            onClick={handleSave}>保存</Button>
-        </Col>
-
-        
         <Form {...formItemLayout}>
           {!mainId && (
             <Row gutter={16}>
-              <Col span={8}>
-                <Form.Item label='N'>
+              <Col span={24}>
+                <Form.Item label='N' {...formincontentLayout}>
                   <Select
                     placeholder="请选择"
                     style={{ width: 150 }}
                     defaultValue={defaultValue}
+                    disabled={detailParams}
                     onChange={selectOnchange}
                   >
                     <Option value="5">5</Option>
@@ -356,9 +356,16 @@ function EventTop(props) {
           )}
         </Form>
 
+        <Col style={{ textAlign: 'right',marginBottom:10 }}>
+          <Button
+            type='primary'
+            disabled={detailParams}
+            onClick={handleSave}>保存</Button>
+        </Col>
+
         <Table
           loading={loading}
-          columns={mainId ? editColumns : column}
+          columns={setColumns}
           dataSource={data}
           pagination={false}
         />

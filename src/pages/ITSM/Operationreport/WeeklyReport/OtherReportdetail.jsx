@@ -159,14 +159,14 @@ function OtherReportdetail(props) {
     setList(addData)
   }, [loading])
 
-  console.log(list, 'list')
-
-
-  const onChange = () => {
-    validateFields((err, value) => {
-      startTime = moment(value.time1[0]).format('YYYY-MM-DD');
-      endTime = moment(value.time1[1]).format('YYYY-MM-DD');
-    })
+  const onChange = (date, dateString) => {
+    if(reporttype === 'week') {
+      startTime = dateString[0];
+      endTime = dateString[1];
+    } else {
+      startTime = date.startOf('month').format('YYYY-MM-DD');
+      endTime = date.endOf('month').format('YYYY-MM-DD');
+    }
   }
 
   const newMember = () => {
@@ -216,10 +216,10 @@ function OtherReportdetail(props) {
     >
       <Card>
         {loading === false && startTime && (
-          <Row gutter={16}>
-            <Form {...formItemLayout}>
+          <Row gutter={24}>
+            <Form>
 
-              <Col span={8}>
+              <Col span={24}>
                 <Form.Item label={type === 'week' ? '周报名称' : '月报名称'}>
                   {getFieldDecorator('name', {
                     rules: [
@@ -231,23 +231,45 @@ function OtherReportdetail(props) {
                     initialValue: main ? main.name : ''
                   })
                     (
-                      <Input />
+                      <Input   disabled={reportSearch}/>
                     )}
                 </Form.Item>
               </Col>
 
-              <Col span={8}>
-                <Form.Item label='起始时间'>
-                  {getFieldDecorator('time1', {
-                    initialValue: [moment(main.time1), moment(main.time2)]
-                  })(<RangePicker
-                    allowClear={false}
-                    // disabledDate={startdisabledDate}
-                    // placeholder='请选择'
-                    onChange={onChange}
-                  />)}
-                </Form.Item>
-              </Col>
+              {reporttype === 'week' && (
+                <Col span={24}>
+                  <Form.Item label='起始时间'>
+                    {getFieldDecorator('time1', {
+                      initialValue: [moment(main.time1), moment(main.time2)]
+                    })(<RangePicker
+                      allowClear={false}
+                      disabled={reportSearch}
+                      // disabledDate={startdisabledDate}
+                      // placeholder='请选择'
+                      onChange={onChange}
+                    />)}
+                  </Form.Item>
+                </Col>
+              )}
+
+              {reporttype === 'month' && (
+                <Col span={24}>
+                  <Form.Item label='起始时间'>
+                    {getFieldDecorator('time1', {
+                      initialValue: moment(main.time1)
+                    })(<RangePicker
+                      allowClear={false}
+                      disabled={reportSearch}
+                      // disabledDate={startdisabledDate}
+                      // placeholder='请选择'
+                      onChange={onChange}
+                    />)}
+                  </Form.Item>
+                </Col>
+              )}
+
+
+
 
               {loading === false && addTitle && addTitle.length > 0 && (
                 addTitle.map((item, index) => {

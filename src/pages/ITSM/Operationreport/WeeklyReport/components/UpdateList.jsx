@@ -190,18 +190,18 @@ function UpgradeList(props) {
 
   return (
     <>
-      <Row gutter={16}>
+      {/* <Row gutter={16}> */}
 
-        <Col span={20}>
-          <p>(2)计划{startTime}至{endTime},计量自动化系统开展 次发布变更（消缺），变更内容如下</p>
-        </Col>
+        {/* <Col span={20}> */}
+          <p style={{marginTop:20}}>(2)计划{startTime}至{endTime},计量自动化系统开展 次发布变更（消缺），变更内容如下</p>
+        {/* </Col> */}
 
-        <Col style={{textAlign:'center'}}>
+        <div style={{textAlign:'right',marginBottom:10}}>
           <Button
             disabled={detailParams}
             type='primary'
             onClick={handleSave}>保存</Button>
-        </Col>
+        </div>
 
         <Table
           columns={column}
@@ -210,7 +210,7 @@ function UpgradeList(props) {
         />
 
         <Button
-          style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
+          style={{ width: '100%', marginTop: 16}}
           type="primary"
           ghost
           onClick={() => newMember()}
@@ -220,7 +220,7 @@ function UpgradeList(props) {
         >
           新增
         </Button>
-      </Row>
+      {/* </Row> */}
     </>
   )
 }

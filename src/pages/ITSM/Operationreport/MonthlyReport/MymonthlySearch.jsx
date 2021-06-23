@@ -159,8 +159,8 @@ function MymonthlySearch(props) {
         timeType:'月报',
         userId: sessionStorage.getItem('userauthorityid'),
         plannedStartTime: '',
-        time1: values.plannedStartTime?.length ? moment(values.plannedStartTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-        time2: values.plannedStartTime?.length ? moment(values.plannedStartTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+        time1: starttime,
+        time2: endTime,
         pageSize,
         pageIndex: page - 1,
       },
@@ -287,9 +287,8 @@ function MymonthlySearch(props) {
   }
 
   const onChange = (date, dateString) => {
-    starttime = dateString;
-    endTime = moment(dateString).add(+6, 'day').format('YYYY-MM-DD');
-    setFieldsValue({ time2: moment(endTime) });
+    starttime = date.startOf('month').format('YYYY-MM-DD');
+    endTime = date.endOf('month').format('YYYY-MM-DD');
   }
 
   const endonChange = (date, dateString) => {
@@ -367,9 +366,9 @@ function MymonthlySearch(props) {
                 })
                   (
                     <MonthPicker
-                      showTime
-                      format="YYYY-MM-DD HH:mm:ss"
+                      format="YYYY-MM-DD"
                       style={{ width: '100%' }}
+                      onChange={onChange}
                     />
                   )}
               </Form.Item>

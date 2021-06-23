@@ -204,35 +204,35 @@ function DefectTracking(props) {
 
   return (
     <>
-      <Row gutter={16}>
-        <Col span={20}>
-          <p style={{ fontWeight: '900', fontSize: '16px', marginTop: '20px' }}>六、遗留缺陷问题跟踪,遗留问题、缺陷跟踪情况</p>
-        </Col>
+      {/* <Row gutter={16}> */}
+      {/* <Col span={20}> */}
+      <p style={{ fontWeight: '900', fontSize: '16px', marginTop: '20px' }}>六、遗留缺陷问题跟踪,遗留问题、缺陷跟踪情况</p>
+      {/* </Col> */}
 
-        <Col style={{textAlign:'center'}}>
-          <Button
-            disabled={detailParams}
-            type='primary'
-            onClick={handleSave}>保存</Button>
-        </Col>
-
-        <Table
-          columns={column}
-          dataSource={data}
-          pagination={false}
-        />
-
+      <div style={{ textAlign: 'right', marginBottom: 10 }}>
         <Button
-          style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
-          type="primary"
-          ghost
-          onClick={() => newMember()}
-          icon="plus"
           disabled={detailParams}
-        >
-          新增
-        </Button>
-      </Row>
+          type='primary'
+          onClick={handleSave}>保存</Button>
+      </div>
+
+      <Table
+        columns={column}
+        dataSource={data}
+        pagination={false}
+      />
+
+      <Button
+        style={{ width: '100%', marginTop: 16}}
+        type="primary"
+        ghost
+        onClick={() => newMember()}
+        icon="plus"
+        disabled={detailParams}
+      >
+        新增
+      </Button>
+      {/* </Row> */}
     </>
   )
 }

@@ -30,7 +30,6 @@ export async function addReport() {
 }
 //  删除，获取maindId
 export async function deleteAll(ids) {
-  console.log('ids: ', ids);
   return request(`/report/delete`,{
     method:'POST',
     data:ids,
@@ -91,7 +90,6 @@ export async function saveOther(params) {
 }
 // 保存机房周报
 export async function saveComputerRoom(params) {
-  console.log('params: ', params);
   return request(`/report/saveComputerRoom`,{
     method:'POST',
     data:params,
@@ -106,7 +104,6 @@ export async function openReport(editStatus,id) {
 
 //  我的作业计划查询
 export async function getOperationQueryList(params) {
-  console.log('params: ', params);
   return request(`/operation/form/getOperationQueryList`,{
     method:'POST',
     data:params,
@@ -124,7 +121,6 @@ export async function queryfaultSearchList1(params) {
 
 // 导出word
 export async function reportExport(mainId) {
-  console.log('mainId: ', mainId);
   return request(`/report/export`,{
     method:'POST',
     data:{mainId},

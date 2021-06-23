@@ -13,6 +13,8 @@ import {
 } from 'antd';
 import moment from 'moment';
 
+
+
 function LastweekHomework(props) {
   const {
     form: { getFieldDecorator },
@@ -24,7 +26,7 @@ function LastweekHomework(props) {
   } = props;
   const [data, setData] = useState([]);
   const [cacheOriginData, setcacheOriginData] = useState({});
-  const [newColumns, setNewColumns] = useState(column);
+
   // 初始化把软件运维服务指标完成情况数据传过去
   useEffect(() => {
     // typeList(maintenanceArr)
@@ -47,8 +49,18 @@ function LastweekHomework(props) {
   }, [data]);
 
   const handleSave = () => {
-    console.log(11)
-    operationList(data);
+    const result = JSON.parse(JSON.stringify(data)
+      .replace(/updateTime/g, 'field1')
+      .replace(/nature/g, 'field2')
+      .replace(/object/g, 'field3')
+      .replace(/content/g, 'field4')
+      .replace(/plannedEndTime/g, 'field5')
+      .replace(/status/g, 'field6')
+      .replace(/operationUser/g, 'field7')
+      .replace(/operationUnit/g, 'field8')
+      .replace(/remark/g, 'field9')
+    )
+    operationList(result)
     message.info('暂存保存数据成功')
   }
   //  获取行  
@@ -237,7 +249,7 @@ function LastweekHomework(props) {
     }
   ];
 
-  const editColumns = [
+  const copyColumns = [
     {
       title: '作业日期',
       dataIndex: 'field1',
@@ -388,37 +400,34 @@ function LastweekHomework(props) {
 
   useEffect(() => {
     handleTabledata();
-    // if (mainId) {
-    //   console.log(11)
-    //   setNewColumns(editColumns)
-    // }
   }, [operationArr])
+
+  let setColumns = column;
+
+  if(mainId) {
+    setColumns = copyColumns
+  }
 
 
   return (
     <>
-      <Row gutter={16}>
+      {/* <Row gutter={16}> */}
 
-        <Col span={20}>
-          <p></p>
-        </Col>
+      <div style={{ textAlign: 'right', marginBottom: 10 }}>
+        <Button
+          disabled={detailParams}
+          type='primary'
+          onClick={handleSave}>保存</Button>
+      </div>
 
-        <Col style={{textAlign:'center'}}>
-          <Button
-            disabled={detailParams}
-            type='primary'
-            onClick={handleSave}>保存</Button>
-        </Col>
+      <Table
+        loading={loading}
+        columns={setColumns}
+        dataSource={data}
+        pagination={false}
+      />
 
-        <Table
-          loading={loading}
-          columns={mainId ? editColumns : column}
-          dataSource={data}
-          pagination={false}
-        />
-
-
-      </Row>
+      {/* </Row> */}
 
     </>
   )

@@ -273,37 +273,36 @@ function UnCloseTroublelist(props) {
 
   return (
     <>
-      <Row gutter={16}>
+      {/* <Row gutter={16}> */}
 
-        <Col span={20}>
-          <p>3.2未修复故障清单</p>
-        </Col>
+      {/* <Col span={20}> */}
+      <p style={{marginTop:24}}>3.2未修复故障清单</p>
+      {/* </Col> */}
 
-        <Col>
-          <Button
-            disabled={reportSearch}
-            type='primary'
-            onClick={handleSave}>保存</Button>
-        </Col>
-
-
-        <Table
-          columns={newColumns}
-          dataSource={data}
-          pagination={false}
-        />
-
+      <div style={{ textAlign: 'right', marginBottom: 10 }}>
         <Button
-          style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
-          type="primary"
-          ghost
-          onClick={() => newMember()}
-          icon="plus"
           disabled={reportSearch}
-        >
-          新增
-        </Button>
-      </Row>
+          type='primary'
+          onClick={handleSave}>保存</Button>
+      </div>
+
+      <Table
+        columns={newColumns}
+        dataSource={data}
+        pagination={false}
+      />
+
+      <Button
+        style={{ width: '100%', marginTop: 16 }}
+        type="primary"
+        ghost
+        onClick={() => newMember()}
+        icon="plus"
+        disabled={reportSearch}
+      >
+        新增
+      </Button>
+      {/* </Row> */}
     </>
   )
 }

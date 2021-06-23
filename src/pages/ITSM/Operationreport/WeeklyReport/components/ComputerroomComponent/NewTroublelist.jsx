@@ -356,20 +356,20 @@ function NewTroublelist(props) {
 
   return (
     <>
-      <Row gutter={16}>
-        <Col span={20}>
+      {/* <Row gutter={16}> */}
+        {/* <Col span={20}> */}
           <p style={{ fontWeight: '900', fontSize: '16px' }}>3 本周新增故障及故障修复情况统计</p>
-        </Col>
-        <Col span={20}>
+        {/* </Col> */}
+        {/* <Col span={20}> */}
           <p>3.1新增及已修复故障</p>
-        </Col>
+        {/* </Col> */}
 
-        <Col>
+        <div style={{textAlign:'right',marginBottom:10}}>
           <Button
             disabled={reportSearch}
             type='primary'
             onClick={handleSave}>保存</Button>
-        </Col>
+        </div>
 
         <Table
           columns={newColumns}
@@ -378,7 +378,7 @@ function NewTroublelist(props) {
         />
 
         <Button
-          style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
+          style={{ width: '100%', marginTop: 16}}
           type="primary"
           ghost
           onClick={() => newMember()}
@@ -387,7 +387,7 @@ function NewTroublelist(props) {
         >
           新增
         </Button>
-      </Row>
+      {/* </Row> */}
     </>
   )
 }

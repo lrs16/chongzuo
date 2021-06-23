@@ -161,12 +161,12 @@ const Development = React.forwardRef((props, ref) => {
 
   return (
     <>
-      <Row gutter={16}>
-        <Col span={20}>
+      {/* <Row gutter={16}> */}
+        {/* <Col span={20}> */}
           <p>（三）运维材料提交情况</p>
-        </Col>
+        {/* </Col> */}
 
-        <Col>
+        <Col style={{textAlign:'right',marginBottom:10}}>
           <Button
             disabled={detailParams}
             type='primary'
@@ -191,7 +191,7 @@ const Development = React.forwardRef((props, ref) => {
           新增
         </Button>
 
-      </Row>
+      {/* </Row> */}
     </>
   )
 })

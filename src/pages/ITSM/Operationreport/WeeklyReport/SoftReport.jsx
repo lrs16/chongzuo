@@ -229,7 +229,7 @@ function SoftReport(props) {
 
   const handleBack = () => {
     router.push({
-      pathname:`/ITSM/operationreport/weeklyreport/myweeklyreport`,
+      pathname: `/ITSM/operationreport/weeklyreport/myweeklyreport`,
       query: { mainId, closetab: true },
       state: { cache: false }
     }
@@ -265,9 +265,8 @@ function SoftReport(props) {
 
   const onChange = (date, dateString) => {
     if (reporttype === 'week') {
-      startTime = dateString;
-      endTime = moment(dateString).add(+6, 'day').format('YYYY-MM-DD');
-      setFieldsValue({ time2: moment(endTime) });
+      startTime = dateString[0];
+      endTime = dateString[1];
     } else {
       startTime = date.startOf('month').format('YYYY-MM-DD');
       endTime = date.endOf('month').format('YYYY-MM-DD');
@@ -318,10 +317,21 @@ function SoftReport(props) {
       return false;
     }
 
-    if (listreportType !== '软件运维周报') {
-      message.info('只能粘贴同种周报类型哦');
-      return false;
+    if (reporttype === 'week') {
+      if (listreportType !== '软件运维周报') {
+        message.info('只能粘贴同种周报类型哦');
+        return false;
+      }
     }
+
+    if (reporttype === 'month') {
+      if (listreportType !== '软件运维月报') {
+        message.info('只能粘贴同种月报类型哦');
+        return false;
+      }
+    }
+
+
 
     return dispatch({
       type: 'softreport/pasteReport',
@@ -348,6 +358,8 @@ function SoftReport(props) {
     handlesoftservice()
   }, []);
 
+  console.log(copyData.operationList ? 'aa' : 'bb')
+
   return (
     <PageHeaderWrapper
       title={reporttype === 'week' ? '新建软件运维周报' : '新建软件运维月报'}
@@ -368,11 +380,11 @@ function SoftReport(props) {
         </>
       }
     >
-      <Card style={{paddingLeft:24}}>
+      <Card style={{ paddingLeft: 24 }}>
         {loading === false && startTime && (
-          <Row gutter={16}>
-            <Form {...formItemLayout}>
-              <Col span={24}>
+          <Row gutter={24}>
+            <Form>
+              <Col span={24} style={{ textAlign: 'left' }}>
                 <Form.Item label={reporttype === 'week' ? '周报名称' : '月报名称'}>
                   {getFieldDecorator('name', {
                     rules: [
@@ -437,6 +449,10 @@ function SoftReport(props) {
 
               {/* 一、本周运维情况综述 */}
               <Col span={24}>
+                <p style={{ fontWeight: '900', fontSize: '16px' }}>{reporttype === 'week' ? '一、本周运维情况综述' : '一、本月运维情况综述'}</p>
+              </Col>
+
+              <Col span={24}>
                 <ThisweekMaintenance
                   formItemLayout={formItemLayout}
                   forminladeLayout={forminladeLayout}
@@ -454,8 +470,10 @@ function SoftReport(props) {
                 />
               </Col>
 
-              <Col span={24} style={{ marginTop: 10 }}>
-                <Form.Item label={reporttype === 'week' ? "本周运维描述" : "本月运维描述"} {...formincontentLayout}>
+              {/* </Col> */}
+              {/* {reporttype === 'week' ? "本周运维" : "本月运维"} */}
+              <Col span={24} style={{ marginTop: 15 }}>
+                <Form.Item label=''>
                   {
                     getFieldDecorator('content', {
                       initialValue: ''
@@ -500,8 +518,13 @@ function SoftReport(props) {
                 />
               </Col>
 
-              <Col span={24}>
-                <Form.Item label='重要时期业务保障' {...formincontentLayout}>
+              {/* 业务保障 */}
+              <Col style={{ marginTop: 24 }} span={24}>
+                <p>（二）重要时期业务保障</p>
+              </Col>
+
+              <Col span={24} style={{ marginTop: 15 }}>
+                <Form.Item label=''>
                   {
                     getFieldDecorator('security', {
                       initialValue: ''
@@ -520,9 +543,7 @@ function SoftReport(props) {
                 />
               </Col>
 
-
-
-              <Col span={24}>
+              <Col span={24} style={{ marginTop: 20 }}>
                 <Form.Item
                   label='上传附件'
                   {...formincontentLayout}
@@ -564,8 +585,9 @@ function SoftReport(props) {
                 />
               </Col>
 
-              <Col span={24}>
-                <Form.Item label='运维统计描述' {...formincontentLayout}>
+              {/* 运维统计 */}
+              <Col span={24} style={{ marginTop: 15 }}>
+                <Form.Item label=''>
                   {
                     getFieldDecorator('typeContent', {
                       initialValue: ''
@@ -611,8 +633,9 @@ function SoftReport(props) {
                 <p style={{ marginTop: '20px' }}>（二）软件运维服务指标完成情况</p>
               </Col>
 
+              {/* 服务指标 */}
               <Col span={24}>
-                <Form.Item label='服务指标描述' {...formincontentLayout}>
+                <Form.Item label=''>
                   {
                     getFieldDecorator('selfhandleContent', {
                       initialValue: ''
@@ -625,6 +648,7 @@ function SoftReport(props) {
               <Col span={24}>
                 <EventTop
                   formItemLayout={formItemLayout}
+                  formincontentLayout={formincontentLayout}
                   startTime={startTime}
                   endTime={endTime}
                   topNList={contentrowdata => {
@@ -632,7 +656,7 @@ function SoftReport(props) {
                   }}
                   // topArr={[]}
                   topArr={copyData.topNList ? copyData.topNList : ordertopnArr}
-                  mainId={copyData.topNList ? true : mainId}
+                  mainId={copyData.topNList ? true : ''}
                   defaultValue={value}
                   value={data => {
                     value = data;
@@ -642,7 +666,7 @@ function SoftReport(props) {
                 />
               </Col>
 
-              <Col span={24}>
+              <Col span={24} style={{ marginTop: 20 }}>
                 <Form.Item
                   label='上传附件'
                   {...formincontentLayout}
@@ -670,6 +694,7 @@ function SoftReport(props) {
                 <ThisWeekitsm
                   formItemLayout={formItemLayout}
                   forminladeLayout={forminladeLayout}
+                  formincontentLayout={formincontentLayout}
                   thisWeekitsmlist={thisWeekitsmlist}
                   ref={thisWeekitsmRef}
                   searchNumber={(searchParams) => searchNumber(searchParams)}
@@ -680,12 +705,12 @@ function SoftReport(props) {
                   eventList={contentrowdata => {
                     setEventList(contentrowdata)
                   }}
-                  mainId={copyData.eventList ? true : mainId}
+                  mainId={copyData.eventList ? true : ''}
                   eventArr={copyData.eventList ? copyData.eventList : []}
                 />
               </Col>
 
-              <Col span={24}>
+              <Col span={24} style={{ marginTop: 20 }}>
                 <Form.Item
                   label='上传附件'
                   {...formincontentLayout}
@@ -713,10 +738,11 @@ function SoftReport(props) {
               <Col span={20}>
                 <p style={{ fontWeight: '900', fontSize: '16px', marginTop: '20px' }}>五、软件作业完成情况</p>
               </Col>
-              
-              <Col span={24}>
+
+              {/* 软件情况 */}
+              <Col span={24} style={{ marginTop: 15 }}>
                 <Form.Item
-                  label='软件作业情况描述'
+                  label=''
                   {...formincontentLayout}
                 >
                   {
@@ -727,6 +753,7 @@ function SoftReport(props) {
                   }
                 </Form.Item>
               </Col>
+
               <Col span={24}>
                 <UpgradeList
                   forminladeLayout={forminladeLayout}
@@ -745,8 +772,6 @@ function SoftReport(props) {
               <Col span={24}>
                 <UpdateList
                   forminladeLayout={forminladeLayout}
-                  softCompletionlist={softCompletionlist}
-                  completionsecondTablelist={completionsecondTablelist}
                   startTime={startTime}
                   endTime={endTime}
                   updateList={contentrowdata => {
@@ -756,9 +781,7 @@ function SoftReport(props) {
                 />
               </Col>
 
-
-
-              <Col span={24}>
+              <Col span={24} style={{ marginTop: 20 }}>
                 <Form.Item
                   label='上传附件'
                   {...formincontentLayout}
@@ -796,7 +819,7 @@ function SoftReport(props) {
                 />
               </Col>
 
-              <Col span={24}>
+              <Col span={24} style={{ marginTop: 20 }}>
                 <Form.Item
                   label='上传附件'
                   {...formincontentLayout}
@@ -820,7 +843,7 @@ function SoftReport(props) {
               </Col>
 
               {/* 七、上周作业完成情况 */}
-              <Col span={20}>
+              <Col span={24}>
                 <p style={{ fontWeight: '900', fontSize: '16px' }}>{reporttype === 'week' ? '七、上周作业完成情况' : '七、上月作业完成情况'}</p>
               </Col>
 
@@ -834,12 +857,12 @@ function SoftReport(props) {
                     setOperationList(contentrowdata)
                   }}
                   operationArr={copyData.operationList ? copyData.operationList : lastweekHomeworklist.rows}
-                  mainId={mainId}
+                  // mainId={copyData.operationList?true:''}
                   loading={loading}
                 />
               </Col>
 
-              <Col span={24}>
+              <Col span={24} style={{ marginTop: 20 }}>
                 <Form.Item
                   label='上传附件'
                   {...formincontentLayout}
@@ -862,11 +885,12 @@ function SoftReport(props) {
                 </Form.Item>
               </Col>
 
-              <Col span={20}>
+              <Col span={24}>
                 <p style={{ fontWeight: '900', fontSize: '16px' }}>{reporttype === 'week' ? '八、下周作业计划' : '八、下月作业计划'}</p>
               </Col>
 
               {/* 八、 下周作业计划 */}
+
               <Col span={24}>
                 <NextweekHomework
                   forminladeLayout={forminladeLayout}
@@ -877,12 +901,12 @@ function SoftReport(props) {
                     setNextOperationList(contentrowdata)
                   }}
                   nextOperationArr={copyData.nextOperationList ? copyData.nextOperationList : nextweekHomeworklist.rows}
-                  mainId={mainId}
+                  // mainId={copyData.nextOperationList?true:''}
                   loading={loading}
                 />
               </Col>
 
-              <Col span={24}>
+              <Col span={24} style={{ marginTop: 20 }}>
                 <Form.Item
                   label='上传附件'
                   {...formincontentLayout}
@@ -942,7 +966,7 @@ function SoftReport(props) {
                 onClick={() => newMember()}
                 icon="plus"
               >
-                新增软件运维
+                新增其他内容
               </Button>
 
 
