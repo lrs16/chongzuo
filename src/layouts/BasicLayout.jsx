@@ -29,14 +29,14 @@ const homepane = [{
   closable: false,
   state: { cache: false },
 },
-{
-  name: "周报查询",
-  id: "1399537627945766913",
-  itemPath: "/ITSM/operationreport/weeklyreport/myweeklyreportsearch",
-  query: {},
-  state: { cache: false, cacheinfo: {} },
-  data: { cacheinfo: {} }
-}
+  // {
+  //   name: "周报查询",
+  //   id: "1399537627945766913",
+  //   itemPath: "/ITSM/operationreport/weeklyreport/myweeklyreportsearch",
+  //   query: {},
+  //   state: { cache: false, cacheinfo: {} },
+  //   data: { cacheinfo: {} }
+  // }
 ]
 
 // 单条工单
@@ -125,7 +125,7 @@ const BasicLayout = props => {
   const url = location.pathname;
 
   const [toptabs, setTopTabs] = useState([...homepane]);
-  const [activeKey, setActiveKey] = useState('1333251061216972801');
+  const [activeKey, setActiveKey] = useState('1362219140546301953');
   const [tabmenu, setTabMenu] = useState({ x: 0, y: 0, v: 'none' });
 
   const clearcache = () => {

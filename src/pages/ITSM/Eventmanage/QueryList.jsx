@@ -304,7 +304,7 @@ function QueryList(props) {
       title: '事件编号',
       dataIndex: 'eventNo',
       key: 'eventNo',
-      width: 150,
+      width: 140,
       fixed: 'left',
       render: (text, record) => {
         const handleClick = () => {
@@ -344,26 +344,19 @@ function QueryList(props) {
       dataIndex: 'title',
       key: 'title',
       fixed: 'left',
-      width: 200,
+      width: 150,
     },
     {
-      title: '建单时间',
-      dataIndex: 'addTime',
-      key: 'addTime',
+      title: '事件来源',
+      dataIndex: 'eventSource',
+      key: 'eventSource',
       fixed: 'left',
-      width: 200,
+      width: 120,
     },
     {
-      title: '工单状态',
-      dataIndex: 'eventStatus',
-      key: 'eventStatus',
-      fixed: 'left',
-      width: 100,
-    },
-    {
-      title: '申报人',
-      dataIndex: 'applicationUser',
-      key: 'applicationUser',
+      title: '事件分类',
+      dataIndex: 'eventType',
+      key: 'eventType',
       fixed: 'left',
       width: 100,
     },
@@ -371,20 +364,54 @@ function QueryList(props) {
       title: '申报人单位',
       dataIndex: 'applicationUnit',
       key: 'applicationUnit',
-      width: 300,
+      fixed: 'left',
+      width: 180,
+    },
+    {
+      title: '申报人',
+      dataIndex: 'applicationUser',
+      key: 'applicationUser',
+      fixed: 'left',
+      width: 80,
+    },
+    {
+      title: '工单状态',
+      dataIndex: 'eventStatus',
+      key: 'eventStatus',
+      fixed: 'left',
+      width: 90,
+    },
+    {
+      title: '登记人',
+      dataIndex: 'registerUser',
+      key: 'register_user',
+      width: 80,
+    },
+    {
+      title: '建单时间',
+      dataIndex: 'addTime',
+      key: 'addTime',
+      width: 120,
+    },
+    {
+      title: '处理人',
+      dataIndex: 'handler',
+      key: 'handler',
+      width: 80,
+    },
+    {
+      title: '优先级',
+      dataIndex: 'eventPrior',
+      key: 'eventPrior',
+      width: 80,
     },
     {
       title: '申报人部门',
       dataIndex: 'applicationDept',
       key: 'applicationDept',
-      width: 300,
+      width: 250,
     },
-    {
-      title: '事件分类',
-      dataIndex: 'eventType',
-      key: 'eventType',
-      width: 120,
-    },
+
     {
       title: '事件对象',
       dataIndex: 'eventObject',
@@ -415,22 +442,11 @@ function QueryList(props) {
       key: 'revisitWay',
       width: 120,
     },
-    {
-      title: '事件来源',
-      dataIndex: 'eventSource',
-      key: 'eventSource',
-      width: 150,
-    },
+
     {
       title: '影响度',
       dataIndex: 'eventEffect',
       key: 'eventEffect',
-      width: 80,
-    },
-    {
-      title: '优先级',
-      dataIndex: 'eventPrior',
-      key: 'eventPrior',
       width: 80,
     },
     {
@@ -439,18 +455,8 @@ function QueryList(props) {
       key: 'eventEmergent',
       width: 80,
     },
-    {
-      title: '登记人',
-      dataIndex: 'registerUser',
-      key: 'register_user',
-      width: 80,
-    },
-    {
-      title: '处理人',
-      dataIndex: 'handler',
-      key: 'handler',
-      width: 200,
-    },
+
+
   ];
 
   return (
@@ -473,7 +479,7 @@ function QueryList(props) {
                 </Form.Item>
               </Col>
               <Col span={8}>
-                <Form.Item label="工单状态">
+                <Form.Item label="处理环节">
                   {getFieldDecorator('eventStatus', {
                     initialValue: cacheinfo.eventStatus,
                   })(
@@ -837,7 +843,7 @@ function QueryList(props) {
           loading={loading}
           columns={columns}
           dataSource={list.rows}
-          scroll={{ x: 1800 }}
+          scroll={{ x: 1600 }}
           rowKey={r => r.id}
           // rowKey={(_, index) => index.toString()}
           pagination={pagination}
