@@ -16,7 +16,7 @@ function Problemsolving(props) {
         </Col>
         <Col span={8}>
           <Form.Item label="处理完成时间">
-            <Input defaultValue={info.addTime} disabled />
+            <Input defaultValue={info.handleTime} disabled />
           </Form.Item>
         </Col>
         <Col span={8}>

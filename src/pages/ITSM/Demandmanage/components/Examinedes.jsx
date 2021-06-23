@@ -27,7 +27,7 @@ function Examinedes(props) {
           </Col>
           <Col span={8}>
             <Form.Item label={`${text}时间`}>
-              <Input defaultValue={resultmap.get(info.reviewTime)} disabled />
+              <Input defaultValue={info.reviewTime} disabled />
             </Form.Item>
           </Col>
           <Col span={8}>
