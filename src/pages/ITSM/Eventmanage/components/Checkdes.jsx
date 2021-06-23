@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Input, Row, Col } from 'antd';
+import { Form, Input, Row, Col, Radio } from 'antd';
 import Downloadfile from '@/components/SysUpload/Downloadfile';
 
 const { TextArea } = Input;
@@ -12,7 +12,10 @@ function Checkdes(props) {
         <Form {...formItemLayout}>
           <Col span={8}>
             <Form.Item label="审核结果">
-              <Input defaultValue={info.checkResult} disabled />
+              <Radio.Group value={info.checkResult} disabled>
+                <Radio value='通过'>通过</Radio>
+                <Radio value='不通过'>不通过</Radio>
+              </Radio.Group>
             </Form.Item>
           </Col>
           <Col span={8}>

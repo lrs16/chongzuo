@@ -1,57 +1,111 @@
 import React from 'react';
-import { Descriptions } from 'antd';
-import styles from '../index.less';
-import Downloadfile from '@/components/SysUpload/Downloadfile';
+import { Form, Input, Row, Col, } from 'antd';
+// import Downloadfile from '@/components/SysUpload/Downloadfile';
+
+const { TextArea } = Input;
+
+const formItemLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 6 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 18 },
+  },
+};
+const forminladeLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 2 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 22 },
+  },
+};
 
 function OperationPlanfillindes(props) {
-  const { 
-    info,
-   } = props;
-  let value;
-  if (info) {
-    value = info.confirmResult;
-  }
+  const { info } = props;
+
   return (
-    <div className={styles.collapse} style={{ marginLeft: 30, marginRight: 10 }}>
-      <Descriptions style={{ marginTop: 24 }} size="middle">
-        <Descriptions.Item label="作业计划编号">{info.operationNo}</Descriptions.Item>
-
-        <Descriptions.Item label="填报时间" >{info.addTime}</Descriptions.Item>
-
-        <Descriptions.Item label="作业系统名称">{info.systemName}</Descriptions.Item>
-
-        <Descriptions.Item label="作业类型">{info.type} </Descriptions.Item>
-
-        <Descriptions.Item label="作业性质">{info.nature}</Descriptions.Item>
-
-        <Descriptions.Item label="作业单位">{info.operationUnit}</Descriptions.Item>
-
-        <Descriptions.Item label="作业负责人">{info.operationUser}</Descriptions.Item>
-
-        <Descriptions.Item label="开工作票">{info.billing}</Descriptions.Item>
-
-        <Descriptions.Item label="作业状态">{info.status}</Descriptions.Item>
-        
-        <Descriptions.Item label="作业对象" span={3}>{info.object}</Descriptions.Item>
-        
-        <Descriptions.Item label="作业内容" span={3}>{info.content}</Descriptions.Item>
-
-        <Descriptions.Item label="计划开始时间">{info.plannedStartTime}</Descriptions.Item>
-
-        <Descriptions.Item label="计划结束时间">{info.plannedEndTime}</Descriptions.Item>
-
-        <Descriptions.Item label="上传附件">
-        <span style={{ color: 'blue', textDecoration: 'underline' }} >
+    <Row gutter={24} style={{ marginTop: 24 }}>
+      <Form {...formItemLayout}>
+        <Col span={8}>
+          <Form.Item label='作业计划编号'>
+            <Input defaultValue={info.operationNo} disabled />
+          </Form.Item>
+        </Col>
+        <Col span={8}>
+          <Form.Item label='填报时间'>
+            <Input defaultValue={info.addTime} disabled />
+          </Form.Item>
+        </Col>
+        <Col span={8}>
+          <Form.Item label='作业系统名称'>
+            <Input defaultValue={info.systemName} disabled />
+          </Form.Item>
+        </Col>
+        <Col span={8}>
+          <Form.Item label='作业类型'>
+            <Input defaultValue={info.type} disabled />
+          </Form.Item>
+        </Col>
+        <Col span={8}>
+          <Form.Item label="作业性质">
+            <Input defaultValue={info.nature} disabled />
+          </Form.Item>
+        </Col>
+        <Col span={8}>
+          <Form.Item label="作业单位">
+            <Input defaultValue={info.operationUnit} disabled /></Form.Item>
+        </Col>
+        <Col span={8}>
+          <Form.Item label="作业负责人">
+            <Input defaultValue={info.operationUser} disabled /></Form.Item>
+        </Col>
+        <Col span={8}>
+          <Form.Item label="开工作票">
+            <Input defaultValue={info.billing} disabled />
+          </Form.Item>
+        </Col>
+        <Col span={8}>
+          <Form.Item label="作业状态">
+            <Input defaultValue={info.status} disabled />
+          </Form.Item>
+        </Col>
+        <Col span={24}>
+          <Form.Item label="作业对象" {...forminladeLayout}>
+            <Input defaultValue={info.object} disabled />
+          </Form.Item>
+        </Col>
+        <Col span={24}>
+          <Form.Item label="作业内容" {...forminladeLayout}>
+            <TextArea autoSize={{ minRows: 3 }} defaultValue={info.content} disabled />
+          </Form.Item>
+        </Col>
+        <Col span={8}>
+          <Form.Item label="计划开始时间"><Input defaultValue=
+            {info.plannedStartTime} disabled /></Form.Item>
+        </Col>
+        <Col span={8}>
+          <Form.Item label="计划结束时间">
+            <Input defaultValue={info.plannedEndTime} disabled />
+          </Form.Item>
+        </Col>
+        {/* <Col span={8}>
+          <Form.Item label="上传附件">
             {info.fileIds && <Downloadfile files={info.fileIds} />}
-          </span>
-        </Descriptions.Item>
-
-        <Descriptions.Item label="填报人">{info.addUser}</Descriptions.Item>
-
-        <Descriptions.Item label="填报单位">{info.addUnit}</Descriptions.Item>
-
-      </Descriptions>
-    </div>
+          </Form.Item>
+        </Col> */}
+        <Col span={8} >
+          <Form.Item label="填报人"><Input defaultValue={info.addUser} disabled /></Form.Item>
+        </Col>
+        <Col span={8}>
+          <Form.Item label="填报单位"><Input defaultValue={info.addUnit} disabled /></Form.Item>
+        </Col>
+      </Form>
+    </Row>
   );
 }
 export default OperationPlanfillindes;

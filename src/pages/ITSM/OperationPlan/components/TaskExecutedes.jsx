@@ -1,33 +1,67 @@
 import React from 'react';
-import { Descriptions } from 'antd';
-import styles from '../index.less';
+import { Form, Input, Row, Col } from 'antd';
 import Downloadfile from '@/components/SysUpload/Downloadfile';
+
+const { TextArea } = Input;
+const formItemLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 6 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 18 },
+  },
+};
+const forminladeLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 2 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 22 },
+  },
+};
 
 function TaskExecutedes(props) {
   const { info } = props;
 
   return (
-    <div className={styles.collapse} style={{ marginLeft: 30, marginRight: 10 }}>
-      <Descriptions style={{ marginTop: 24 }} size="middle">
-
-        <Descriptions.Item label="作业结果">{info.result}</Descriptions.Item>
-
-        <Descriptions.Item label="实际开始时间" >{info.startTime}</Descriptions.Item>
-
-        <Descriptions.Item label="实际结束时间">{info.endTime}</Descriptions.Item>
-
-        <Descriptions.Item label="作业执行情况说明" span={3}>{info.content}</Descriptions.Item>
-
-        <Descriptions.Item label="上传附件" span={3}>
-          <span style={{ color: 'blue', textDecoration: 'underline' }} >
+    <Row gutter={24} style={{ marginTop: 24 }}>
+      <Form {...formItemLayout}>
+        <Col span={8}>
+          <Form.Item label="作业结果">
+            <Input defaultValue={info.result} disabled />
+          </Form.Item>
+        </Col>
+        <Col span={8}>
+          <Form.Item label="实际开始时间" >
+            <Input defaultValue={info.startTime} disabled />
+          </Form.Item>
+        </Col>
+        <Col span={8}>
+          <Form.Item label="实际结束时间">
+            <Input defaultValue={info.endTime} disabled />
+          </Form.Item>
+        </Col>
+        <Col span={24}>
+          <Form.Item label="作业执行情况说明" {...forminladeLayout}>
+            <TextArea autoSize={{ minRows: 3 }} defaultValue={info.content} disabled />
+          </Form.Item>
+        </Col>
+        <Col span={24}>
+          <Form.Item label="附件" {...forminladeLayout}>
             {info.fileIds && <Downloadfile files={info.fileIds} />}
-          </span>
-        </Descriptions.Item>
-
-        <Descriptions.Item label="执行操作时间">{info.operationTime}</Descriptions.Item>
-
-      </Descriptions>
-    </div>
+          </Form.Item>
+        </Col>
+        <Col span={8}>
+          <Form.Item label="执行操作时间">
+            <Input defaultValue={info.operationTime} disabled />
+          </Form.Item>
+        </Col>
+      </Form>
+    </Row >
   );
 }
 export default TaskExecutedes;

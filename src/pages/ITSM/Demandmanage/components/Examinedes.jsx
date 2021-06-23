@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Input, Row, Col, Checkbox } from 'antd';
+import { Form, Input, Row, Col, Checkbox, Radio } from 'antd';
 import Downloadfile from '@/components/SysUpload/Downloadfile';
 
 const { TextArea } = Input;
@@ -22,7 +22,10 @@ function Examinedes(props) {
         <Form {...formItemLayout}>
           <Col span={8}>
             <Form.Item label={`${text}结果`}>
-              <Input defaultValue={resultmap.get(info.result)} disabled />
+              <Radio.Group value={resultmap.get(info.result)} disabled>
+                <Radio value='通过'>通过</Radio>
+                <Radio value='不通过'>不通过</Radio>
+              </Radio.Group>
             </Form.Item>
           </Col>
           <Col span={8}>

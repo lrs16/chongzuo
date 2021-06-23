@@ -1,6 +1,28 @@
 import React from 'react';
-import { Descriptions, Radio } from 'antd';
-import styles from '../index.less';
+import { Radio, Form, Input, Row, Col, } from 'antd';
+
+const { TextArea } = Input;
+
+const formItemLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 6 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 18 },
+  },
+};
+const forminladeLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 2 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 22 },
+  },
+};
 
 function TaskCheckdes(props) {
   const { info } = props;
@@ -9,28 +31,43 @@ function TaskCheckdes(props) {
     value = info.result;
   }
   return (
-    <div className={styles.collapse} style={{ marginLeft: 30, marginRight: 10 }}>
-      <Descriptions style={{ marginTop: 24 }} size="middle">
-
-        <Descriptions.Item label="审核结果">
-          <Radio.Group value={value} disabled>
-            <Radio value='通过'>通过</Radio>
-            <Radio value='不通过'>不通过</Radio>
-          </Radio.Group>
-        </Descriptions.Item>
-
-        <Descriptions.Item label="审核时间" >{info.checkTime}</Descriptions.Item>
-
-        <Descriptions.Item label="审核状态">{info.status}</Descriptions.Item>
-
-        <Descriptions.Item label="审核说明" span={3}>{info.content}</Descriptions.Item>
-
-        <Descriptions.Item label="审核人">{info.checkUser}</Descriptions.Item>
-
-        <Descriptions.Item label="审核单位">{info.checkUnit}</Descriptions.Item>
-
-      </Descriptions>
-    </div>
+    <Row gutter={24} style={{ marginTop: 24 }}>
+      <Form {...formItemLayout}>
+        <Col span={8}>
+          <Form.Item label='审核结果'>
+            <Radio.Group value={value} disabled>
+              <Radio value='通过'>通过</Radio>
+              <Radio value='不通过'>不通过</Radio>
+            </Radio.Group>
+          </Form.Item>
+        </Col>
+        <Col span={8}>
+          <Form.Item label="审核时间" >
+            <Input defaultValue={info.checkTime} disabled />
+          </Form.Item>
+        </Col>
+        <Col span={8}>
+          <Form.Item label="审核状态">
+            <Input defaultValue={info.status} disabled />
+          </Form.Item>
+        </Col>
+        <Col span={24}>
+          <Form.Item label="审核说明" {...forminladeLayout}>
+            <TextArea autoSize={{ minRows: 3 }} defaultValue={info.content} disabled />
+          </Form.Item>
+        </Col>
+        <Col span={8}>
+          <Form.Item label="审核人">
+            <Input defaultValue={info.checkUser} disabled />
+          </Form.Item>
+        </Col>
+        <Col span={8}>
+          <Form.Item label="审核单位">
+            <Input defaultValue={info.checkUnit} disabled />
+          </Form.Item>
+        </Col>
+      </Form>
+    </Row>
   );
 }
 export default TaskCheckdes;

@@ -616,7 +616,7 @@ const Registrat = forwardRef((props, ref) => {
               {getFieldDecorator('reason', {
                 rules: [{ required, message: '请输入需求原因' }],
                 initialValue: register.reason,
-              })(<TextArea autoSize={{ minRows: 3 }} allowClear placeholder="请输入" />)}
+              })(<TextArea autoSize={{ minRows: 3 }} allowClear placeholder="请输入" style={{ marginLeft: -4 }} />)}
             </Form.Item>
           </Col>
           <Col span={24}>
