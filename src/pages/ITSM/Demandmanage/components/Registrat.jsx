@@ -320,7 +320,7 @@ const Registrat = forwardRef((props, ref) => {
               {getFieldDecorator('creationTime', {
                 rules: [{ required }],
                 initialValue: moment(register.creationTime),
-              })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" disabled />)}
+              })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" disabled style={{ width: '100%' }} />)}
             </Form.Item>
           </Col>
           <Col span={8}>
@@ -328,7 +328,7 @@ const Registrat = forwardRef((props, ref) => {
               {getFieldDecorator('registerTime', {
                 rules: [{ required, message: '请选择申请时间' }],
                 initialValue: moment(register.registerTime),
-              })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" />)}
+              })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} />)}
             </Form.Item>
           </Col>
           <Col span={8}>
@@ -341,6 +341,7 @@ const Registrat = forwardRef((props, ref) => {
                 placeholder="请选择时间"
                 format="YYYY-MM-DD HH:mm:ss"
                 disabledDate={disabledDate}
+                style={{ width: '100%' }}
               />)}
             </Form.Item>
           </Col>

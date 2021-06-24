@@ -70,14 +70,14 @@ const columns = [
   },
   {
     title: '填报人',
-    dataIndex: 'registerUser',
-    key: 'registerUser',
+    dataIndex: 'applicationUser',
+    key: 'applicationUser',
   },
-  // {
-  //   title: '处理人',
-  //   dataIndex: 'handle_user',
-  //   key: 'handle_user',
-  // },
+  {
+    title: '申报人',
+    dataIndex: 'handle_user',
+    key: 'handle_user',
+  },
   {
     title: '工单状态',
     dataIndex: 'eventStatus',

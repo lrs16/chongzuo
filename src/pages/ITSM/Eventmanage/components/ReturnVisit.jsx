@@ -225,7 +225,7 @@ const ReturnVisit = React.forwardRef((props, ref) => {
               {getFieldDecorator('finish_revisitTime', {
                 rules: [{ required, message: '请选择回访时间' }],
                 initialValue: moment(finish.revisitTime),
-              })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" />)}
+              })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} />)}
             </Form.Item>
           </Col>
           <Col span={24}>

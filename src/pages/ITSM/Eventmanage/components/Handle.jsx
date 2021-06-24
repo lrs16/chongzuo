@@ -239,7 +239,7 @@ const Handle = React.forwardRef((props, ref) => {
               {getFieldDecorator('handle_endTime', {
                 rules: [{ required }],
                 initialValue: moment(handle.endTime),
-              })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" />)}
+              })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} />)}
             </Form.Item>
           </Col>
           {/* <Col span={24}>

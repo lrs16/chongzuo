@@ -200,7 +200,7 @@ function WorkOrder2(props) {
       ...values,
       main_eventObject: values.main_eventObject.slice(-1)[0],
       register_occurTime: values.register_occurTime.format('YYYY-MM-DD HH:mm:ss'),
-      register_applicationUserId: values.register_applicationUser === '' ? '' : values.register_applicationUser,
+      // register_applicationUserId: values.register_applicationUser === '' ? '' : values.register_applicationUser,
       register_mobilePhone: values.main_revisitWay === '002' ? values.mobilePhone1 : values.mobilePhone2,
       register_applicationUnit: values.applicationUnit,
       register_applicationUnitId: values.applicationUnit === '' ? '' : values.register_applicationUnitId,

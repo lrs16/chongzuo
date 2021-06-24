@@ -579,8 +579,6 @@ function WorkOrder(props) {
             <Panel header={info.taskName} key="form">
               {info.taskName === '需求登记' && (
                 <Registrat
-                  formItemLayout={formItemLayout}
-                  forminladeLayout={forminladeLayout}
                   files={info.demandForm.attachment !== '' ? JSON.parse(info.demandForm.attachment) : []}
                   ChangeFiles={newvalue => { setFiles(newvalue) }}
                   wrappedComponentRef={RegistratRef}
@@ -698,7 +696,7 @@ function WorkOrder(props) {
             </Panel>
 
             <Panel header="需求登记" key="registdes">
-              <Registratdes info={info.demandForm} />
+              <Registratdes info={info.demandForm} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />
             </Panel>
 
             {info.historys.map((obj, index) => {

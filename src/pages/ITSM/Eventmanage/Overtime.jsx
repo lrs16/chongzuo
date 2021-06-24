@@ -376,6 +376,7 @@ function Overtime(props) {
                       hideDisabledOptions: true,
                       defaultValue: moment('00:00:00', 'HH:mm:ss'),
                     }}
+                    placeholder="开始时间"
                     format='YYYY-MM-DD HH:mm:ss' />
                 )}
                 <span style={{ padding: '0 10px' }}>-</span>
@@ -387,6 +388,7 @@ function Overtime(props) {
                       hideDisabledOptions: true,
                       defaultValue: moment('23:59:59', 'HH:mm:ss'),
                     }}
+                    placeholder="结束时间"
                     format='YYYY-MM-DD HH:mm:ss' />
                 )}
               </Form.Item>
