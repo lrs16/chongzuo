@@ -68,7 +68,8 @@ function Work(props) {
     openFlowList,
     operationPersonArr,
     dispatch,
-    loading
+    loading,
+    location
   } = props;
   let operationPersonSelect;
   let headTitle = '作业计划填写';
@@ -146,6 +147,16 @@ function Work(props) {
       })
     }
   }, [mainId])
+
+  // 点击页签右键刷新
+  useEffect(() => {
+    if (location.state && location.state.reset && mainId) {
+      dispatch({
+        type: 'processmodel/openFlow',
+        payload: mainId
+      })
+    }
+  }, [location.state]);
 
   // 处理作业负责人数据
   if (operationPersonArr.length) {

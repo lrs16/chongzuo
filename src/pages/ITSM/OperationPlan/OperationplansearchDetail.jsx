@@ -22,7 +22,8 @@ function Work(props) {
     location: { query: { mainId, } },
     openViewlist,
     dispatch,
-    loading
+    loading,
+    location
   } = props;
 
   // panel详情
@@ -43,6 +44,13 @@ function Work(props) {
   useEffect(() => {
     getInformation();
   }, [])
+
+  // 点击页签右键刷新
+  useEffect(() => {
+    if (location.state && location.state.reset && mainId) {
+      getInformation();
+    }
+  }, [location.state]);
 
   const handleClose = () => {
     router.push({

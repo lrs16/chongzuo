@@ -1,6 +1,6 @@
 import React from 'react';
 import { Form, Input, Row, Col, } from 'antd';
-// import Downloadfile from '@/components/SysUpload/Downloadfile';
+import Downloadfile from '@/components/SysUpload/Downloadfile';
 
 const { TextArea } = Input;
 
@@ -93,11 +93,11 @@ function OperationPlanfillindes(props) {
             <Input defaultValue={info.plannedEndTime} disabled />
           </Form.Item>
         </Col>
-        {/* <Col span={8}>
-          <Form.Item label="上传附件">
+        <Col span={24} >
+          <Form.Item label="附件" {...forminladeLayout}>
             {info.fileIds && <Downloadfile files={info.fileIds} />}
           </Form.Item>
-        </Col> */}
+        </Col>
         <Col span={8} >
           <Form.Item label="填报人"><Input defaultValue={info.addUser} disabled /></Form.Item>
         </Col>

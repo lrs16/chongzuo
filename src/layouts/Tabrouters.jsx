@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 
 
-// 单条工单
+// 工单处理或工单详情
 const alonepath = [
   { path: '/ITSM/eventmanage/to-do/record/workorder' },
   { path: '/ITSM/eventmanage/query/details' },
@@ -23,13 +23,13 @@ const alonepath = [
   { path: '/ITSM/operationreport/monthlyreport/monthotherreportdetail' },
 ];
 
-// 多条登记
+// 登记或新建
 const multiplepath = [
   { path: '/ITSM/eventmanage/registration', type: 'event' },
   { path: '/ITSM/faultmanage/registration', type: 'fault' },
   { path: '/ITSM/problemmanage/registration', type: 'problem' },
   { path: '/ITSM/demandmanage/registration', type: 'demand' },
-  { path: '/ITSM/operationplan/operationplanfillin', type: 'weekoperation' },
+  { path: '/ITSM/operationplan/operationplanfillin', type: 'operation' },
   { path: '/ITSM/operationreport/weeklyreport/softreport', type: 'softreport' },
   { path: '/ITSM/operationreport/weeklyreport/computerroomreport', type: 'computerroomreport' },
   { path: '/ITSM/operationreport/weeklyreport/databasereport', type: 'databasereport' },
