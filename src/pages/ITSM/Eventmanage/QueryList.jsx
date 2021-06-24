@@ -36,11 +36,11 @@ const formItemLayout = {
 const forminladeLayout = {
   labelCol: {
     xs: { span: 24 },
-    sm: { span: 2 },
+    sm: { span: 3 },
   },
   wrapperCol: {
     xs: { span: 24 },
-    sm: { span: 22 },
+    sm: { span: 21 },
   },
 };
 
@@ -462,8 +462,6 @@ function QueryList(props) {
     }
   }, []);
 
-
-
   return (
     <PageHeaderWrapper title={title}>
       <SysDict
@@ -798,12 +796,15 @@ function QueryList(props) {
                 </Form.Item>
               </Col>
             </span>
-            <Col span={24}>
+            <Col span={16}>
               <Form.Item label="建单时间" {...forminladeLayout}>
                 {getFieldDecorator('createTime', {
                   initialValue: '',
                 })(<RangePicker
-                  showTime
+                  showTime={{
+                    hideDisabledOptions: true,
+                    defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
+                  }}
                   format='YYYY-MM-DD HH:mm:ss'
                   allowClear
                 />)}

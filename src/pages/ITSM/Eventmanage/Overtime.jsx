@@ -6,7 +6,7 @@ import { Card, Row, Col, Form, Input, Select, DatePicker, Button, Table, List } 
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 
-const { RangePicker } = DatePicker;
+// const { RangePicker } = DatePicker;
 const { Option } = Select;
 
 const formItemLayout = {
@@ -217,9 +217,8 @@ function Overtime(props) {
           payload: {
             ...values,
             tabType: tabkey,
-            createTime: '',
-            time1: moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss'),
-            time2: moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss'),
+            time1: values.time1 ? moment(values.time1).format('YYYY-MM-DD HH:mm:ss') : '',
+            time2: values.time2 ? moment(values.time2).format('YYYY-MM-DD HH:mm:ss') : '',
             pageIndex: paginations.current - 1,
             pageSize: paginations.pageSize,
           },
@@ -258,9 +257,8 @@ function Overtime(props) {
       type: 'eventtimeout/query',
       payload: {
         ...values,
-        createTime: '',
-        time1: moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss'),
-        time2: moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss'),
+        time1: values.time1 ? moment(values.time1).format('YYYY-MM-DD HH:mm:ss') : '',
+        time2: values.time2 ? moment(values.time2).format('YYYY-MM-DD HH:mm:ss') : '',
         tabType: tabActivekey,
         pageIndex: page - 1,
         pageSize: size,
@@ -322,9 +320,8 @@ function Overtime(props) {
         payload: {
           tabType: tabActivekey,
           ...values,
-          createTime: '',
-          time1: moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss'),
-          time2: moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss'),
+          time1: values.time1 ? moment(values.time1).format('YYYY-MM-DD HH:mm:ss') : '',
+          time2: values.time2 ? moment(values.time2).format('YYYY-MM-DD HH:mm:ss') : '',
         },
       }).then(res => {
         const filename = `事件超时查询${moment().format('YYYY-MM-DD HH:mm')}.xls`;
@@ -348,14 +345,14 @@ function Overtime(props) {
       <Card>
         <Row gutter={24}>
           <Form {...formItemLayout}>
-            <Col span={7}>
+            <Col span={6}>
               <Form.Item label="事件编号">
                 {getFieldDecorator('eventNo', {
                   initialValue: '',
                 })(<Input placeholder="请输入" />)}
               </Form.Item>
             </Col>
-            <Col span={7}>
+            <Col span={6}>
               <Form.Item label="当前环节">
                 {getFieldDecorator('flowNodeName', {
                   initialValue: '',
@@ -369,23 +366,41 @@ function Overtime(props) {
                 )}
               </Form.Item>
             </Col>
-            <Col span={10}>
+            <Col span={12}>
               <Form.Item label="建单时间" {...forminladeLayout}>
-                {getFieldDecorator('createTime', {
-                  initialValue: [moment().startOf('month'), moment()],
-                })(<RangePicker showTime format='YYYY-MM-DD HH:mm:ss' />)}
+                {getFieldDecorator('time1', {
+                  initialValue: '',
+                })(
+                  <DatePicker
+                    showTime={{
+                      hideDisabledOptions: true,
+                      defaultValue: moment('00:00:00', 'HH:mm:ss'),
+                    }}
+                    format='YYYY-MM-DD HH:mm:ss' />
+                )}
+                <span style={{ padding: '0 10px' }}>-</span>
+                {getFieldDecorator('time2', {
+                  initialValue: '',
+                })(
+                  <DatePicker
+                    showTime={{
+                      hideDisabledOptions: true,
+                      defaultValue: moment('23:59:59', 'HH:mm:ss'),
+                    }}
+                    format='YYYY-MM-DD HH:mm:ss' />
+                )}
               </Form.Item>
             </Col>
             {expand === true && (
               <>
-                <Col span={7}>
+                <Col span={6}>
                   <Form.Item label="事件标题">
                     {getFieldDecorator('eventTitle', {
                       initialValue: '',
                     })(<Input placeholder="请输入" />)}
                   </Form.Item>
                 </Col>
-                <Col span={7}>
+                <Col span={6}>
                   <Form.Item label="当前处理人">
                     {getFieldDecorator('userName', {
                       initialValue: '',
@@ -398,10 +413,10 @@ function Overtime(props) {
             <Col span={24} style={{ textAlign: 'right', marginBottom: 8 }}>
               <Button type="primary" onClick={handleSearch}>
                 查 询
-                </Button>
+              </Button>
               <Button style={{ marginLeft: 8 }} onClick={() => resetFields()}>
                 重 置
-                </Button>
+              </Button>
               <Button
                 style={{ marginLeft: 8 }}
                 type="link"

@@ -16,14 +16,14 @@ export async function querydoCheck() {
 
 // 网级平台巡检
 export async function querywholeNet() {
-  return request(`/inspection/wholeNet/check`, {
+  return request(`/wholeNet/inspection/wholeNet/check`, {
     method: 'GET',
   });
 }
 
 // 网级平台巡检继续巡检
 export async function goonwholeNet(checkNo) {
-  return request(`/inspection/wholeNet/check?checkNo=${checkNo}`, {
+  return request(`/wholeNet/inspection/wholeNet/check?checkNo=${checkNo}`, {
     method: 'GET',
   });
 }

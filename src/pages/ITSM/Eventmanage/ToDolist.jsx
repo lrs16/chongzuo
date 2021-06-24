@@ -390,7 +390,12 @@ function ToDolist(props) {
                 <Form.Item label="发送时间" {...forminladeLayout}>
                   {getFieldDecorator('createTime', {
                     initialValue: '',
-                  })(<RangePicker showTime allowClear />)}
+                  })(<RangePicker
+                    showTime={{
+                      hideDisabledOptions: true,
+                      defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
+                    }}
+                    allowClear />)}
                 </Form.Item>
               </Col>
             </span>

@@ -609,7 +609,10 @@ function QueryList(props) {
                   initialValue: ''
                 })(
                   <RangePicker
-                    showTime
+                    showTime={{
+                      hideDisabledOptions: true,
+                      defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
+                    }}
                     format="YYYY-MM-DD HH:mm:ss"
                     style={{ width: '100%' }}
                     placeholder="请选择"
@@ -625,7 +628,10 @@ function QueryList(props) {
                 },
                 )(
                   <RangePicker
-                    showTime
+                    showTime={{
+                      hideDisabledOptions: true,
+                      defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
+                    }}
                     format="YYYY-MM-DD HH:mm:ss"
                     style={{ width: '100%' }}
                     allowClear
@@ -720,7 +726,13 @@ function QueryList(props) {
                 {getFieldDecorator('handleTime', {
                   initialValue: '',
                 },
-                )(<RangePicker format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} allowClear />)}
+                )(<RangePicker
+                  showTime={{
+                    hideDisabledOptions: true,
+                    defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
+                  }}
+                  format="YYYY-MM-DD HH:mm:ss"
+                  style={{ width: '100%' }} allowClear />)}
               </Form.Item>
             </Col>
 
@@ -891,7 +903,7 @@ function QueryList(props) {
           loading={loading}
           columns={columns.filter(item => item.title !== 'id' || item.key !== 'id')}
           dataSource={faultQueryList.rows}
-          rowKey={record => record.id}
+          rowKey={r => r.id}
           pagination={pagination}
           scroll={{ x: 1400 }}
         />

@@ -748,7 +748,10 @@ function TaskSearch(props) {
                         initialValue: ''
                       })(
                         <RangePicker
-                          showTime
+                          showTime={{
+                            hideDisabledOptions: true,
+                            defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
+                          }}
                           format='YYYY-MM-DD HH:mm:ss'
                           style={{ width: '100%' }}
                           allowClear
@@ -885,7 +888,10 @@ function TaskSearch(props) {
                     })
                       (
                         <RangePicker
-                          showTime
+                          showTime={{
+                            hideDisabledOptions: true,
+                            defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
+                          }}
                           format="YYYY-MM-DD HH:mm:ss"
                           style={{ width: '100%' }}
                         />
@@ -900,7 +906,10 @@ function TaskSearch(props) {
                     })
                       (
                         <RangePicker
-                          showTime
+                          showTime={{
+                            hideDisabledOptions: true,
+                            defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
+                          }}
                           format="YYYY-MM-DD HH:mm:ss"
                           style={{ width: '100%' }}
                         />
@@ -998,7 +1007,10 @@ function TaskSearch(props) {
                     })
                       (
                         <RangePicker
-                          showTime
+                          showTime={{
+                            hideDisabledOptions: true,
+                            defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
+                          }}
                           format="YYYY-MM-DD HH:mm:ss"
                           style={{ width: '100%' }}
                           allowClear
@@ -1014,7 +1026,10 @@ function TaskSearch(props) {
                     })
                       (
                         <RangePicker
-                          showTime
+                          showTime={{
+                            hideDisabledOptions: true,
+                            defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
+                          }}
                           format="YYYY-MM-DD HH:mm:ss"
                           style={{ width: '100%' }}
                           allowClear
@@ -1032,7 +1047,10 @@ function TaskSearch(props) {
                       initialValue: '',
                     })
                       (<RangePicker
-                        showTime
+                        showTime={{
+                          hideDisabledOptions: true,
+                          defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
+                        }}
                         format="YYYY-MM-DD HH:mm:ss"
                         style={{ width: '100%' }}
                         allowClear
@@ -1083,7 +1101,10 @@ function TaskSearch(props) {
                     })
                       (
                         (<RangePicker
-                          showTime
+                          showTime={{
+                            hideDisabledOptions: true,
+                            defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
+                          }}
                           format="YYYY-MM-DD HH:mm:ss"
                           style={{ width: '100%' }}
                           allowClear
@@ -1170,7 +1191,7 @@ function TaskSearch(props) {
 
         <Button type="primary" style={{ marginRight: 8 }} onClick={exportDownload}>
           导出数据
-          </Button>
+        </Button>
 
         <div style={{ textAlign: 'right', marginBottom: 8 }}>
           <Popover

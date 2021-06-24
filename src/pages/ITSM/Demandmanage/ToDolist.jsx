@@ -38,6 +38,7 @@ const columns = [
     title: '需求编号',
     dataIndex: 'demandId',
     key: 'demandId',
+    with: 100,
     render: (text, record) => {
       const handleClick = () => {
         router.push({
@@ -58,37 +59,44 @@ const columns = [
     title: '需求标题',
     dataIndex: 'demandTitle',
     key: 'demandTitle',
+    with: 300,
   },
   {
     title: '需求类型',
     dataIndex: 'demandType',
     key: 'demandType',
+    with: 150,
   },
   {
     title: '功能模块',
     dataIndex: 'module',
     key: 'module',
+    with: 150,
   },
 
   {
     title: '当前处理环节',
     dataIndex: 'taskName',
     key: 'taskName',
+    with: 200,
   },
   {
     title: '提出人',
     dataIndex: 'proposer',
     key: 'proposer',
+    with: 100,
   },
   {
     title: '登记人',
     dataIndex: 'sender',
     key: 'sender',
+    with: 100,
   },
   {
     title: '创建时间',
     dataIndex: 'sendTime',
     key: 'sendTime',
+    with: 150,
     render: text => {
       return <>{moment(text).format('YYYY-MM-DD HH:mm')}</>;
     },
@@ -97,6 +105,7 @@ const columns = [
     title: '优先级',
     dataIndex: 'priority',
     key: 'priority',
+    with: 80,
   },
 ];
 
@@ -351,6 +360,7 @@ function ToDolist(props) {
           dataSource={list.rows}
           rowKey={(_, index) => index.toString()}
           pagination={pagination}
+          scroll={{ x: 1500 }}
         />
       </Card>
     </PageHeaderWrapper>

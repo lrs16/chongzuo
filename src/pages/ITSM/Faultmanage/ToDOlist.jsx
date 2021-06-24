@@ -28,6 +28,16 @@ const formItemLayout = {
     sm: { span: 16 },
   },
 };
+const formminItemLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 4 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 20 },
+  },
+};
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -66,7 +76,7 @@ function ToDOlist(props) {
       title: '故障编号',
       dataIndex: 'no',
       key: 'no',
-      width: 200,
+      width: 140,
       render: (text, record) => {
         const handleClick = () => {
           router.push({
@@ -85,7 +95,7 @@ function ToDOlist(props) {
       title: '故障名称',
       dataIndex: 'title',
       key: 'title',
-      width: 200,
+      width: 150,
     },
     {
       title: '故障来源',
@@ -97,25 +107,25 @@ function ToDOlist(props) {
       title: '故障类型',
       dataIndex: 'typecn',
       key: 'typecn',
-      width: 200,
+      width: 100,
     },
     {
       title: '当前处理环节',
       dataIndex: 'currentNode',
       key: 'currentNode',
-      width: 200,
+      width: 180,
     },
     {
       title: '登记人',
       dataIndex: 'registerUser',
       key: 'registerUser',
-      width: 150,
+      width: 80,
     },
     {
       title: '发送时间',
       dataIndex: 'createTime',
       key: 'createTime',
-      width: 200,
+      width: 180,
     },
     {
       title: '严重程度',
@@ -371,21 +381,7 @@ function ToDOlist(props) {
                   })(<Input placeholder="请输入" allowClear />)}
                 </Form.Item>
               </Col>
-              <Col span={8}>
-                <Form.Item label="发送时间">
-                  {getFieldDecorator('createTime', {
-                    initialValue: ''
-                  })(
-                    <RangePicker
-                      showTime
-                      format="YYYY-MM-DD HH:mm:ss"
-                      style={{ width: '100%' }}
-                      placeholder="请选择"
-                      allowClear
-                    />,
-                  )}
-                </Form.Item>
-              </Col>
+
               <Col xl={8}>
                 <Form.Item label="严重程度">
                   {getFieldDecorator('registerLevel', {
@@ -398,6 +394,23 @@ function ToDOlist(props) {
                         </Option>,
                       ])}
                     </Select>,
+                  )}
+                </Form.Item>
+              </Col>
+              <Col span={16}>
+                <Form.Item label="发送时间" {...formminItemLayout}>
+                  {getFieldDecorator('createTime', {
+                    initialValue: ''
+                  })(
+                    <RangePicker
+                      showTime={{
+                        hideDisabledOptions: true,
+                        defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
+                      }}
+                      format="YYYY-MM-DD HH:mm:ss"
+                      placeholder="请选择"
+                      allowClear
+                    />,
                   )}
                 </Form.Item>
               </Col>

@@ -1363,6 +1363,11 @@ export default {
       changeOrigin: true,
       pathRewrite: { '^/inspection': '' },
     },
+    '/wholeNet/': {
+      target: 'http://10.172.210.132:8083', //  网级巡检
+      changeOrigin: true,
+      pathRewrite: { '^/wholeNet': '' },
+    },
     '/basicMonitor/': {
       // 检测管理，基础平台
       target: 'http://172.16.10.11:8889/',

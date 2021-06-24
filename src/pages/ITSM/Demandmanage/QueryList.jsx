@@ -103,13 +103,13 @@ function QueryList(props) {
       title: '需求标题',
       dataIndex: 'demandTitle',
       key: 'demandTitle',
-      with: 400,
+      with: 300,
     },
     {
       title: '需求类型',
       dataIndex: 'demandType',
       key: 'demandType',
-      with: 200,
+      with: 150,
     },
     {
       title: '申请人',
@@ -118,7 +118,7 @@ function QueryList(props) {
       with: 100,
     },
     {
-      title: '工单状态',
+      title: '当前处理环节',
       dataIndex: 'taskName',
       key: 'taskName',
       with: 200,
@@ -128,6 +128,7 @@ function QueryList(props) {
       title: '登记人',
       dataIndex: 'sender',
       key: 'sender',
+      with: 100,
     },
     {
       title: '建单时间',
@@ -141,6 +142,7 @@ function QueryList(props) {
       title: '优先级',
       dataIndex: 'priority',
       key: 'priority',
+      with: 80,
     },
   ];
 
@@ -404,7 +406,10 @@ function QueryList(props) {
                 {getFieldDecorator('createTime', {
                   initialValue: '',
                 })(<RangePicker
-                  showTime
+                  showTime={{
+                    hideDisabledOptions: true,
+                    defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
+                  }}
                   format='YYYY-MM-DD'
                   allowClear
                 />)}

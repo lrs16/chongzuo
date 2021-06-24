@@ -424,7 +424,10 @@ function Besolved(props) {
                     initialValue: ''
                   })(
                     <RangePicker
-                      showTime
+                      showTime={{
+                        hideDisabledOptions: true,
+                        defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
+                      }}
                       format="YYYY-MM-DD HH:mm:ss"
                       style={{ width: '100%' }}
                       placeholder="请选择"
@@ -476,7 +479,7 @@ function Besolved(props) {
             onClick={() => download()}
           >
             导出数据
-        </Button>
+          </Button>
         </div>
 
         <Table

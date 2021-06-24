@@ -29,14 +29,7 @@ function OnSitemanage(props) {
   const handleCheck = () => {
     return dispatch({
       type: 'checkmanage/docheck',
-    }).then(res => {
-      getdata(1, 10);
-      if (res.code === 200) {
-        Message.success(res.msg);
-      } else {
-        Message.error(res.msg);
-      }
-    });
+    }).then(getdata(1, 10));
   };
 
   const handlewholeNet = () => {
