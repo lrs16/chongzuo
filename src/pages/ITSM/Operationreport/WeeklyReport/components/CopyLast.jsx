@@ -5,29 +5,29 @@ import {
   Input,
   Col,
   Row,
+  Button,
   Divider,
   Popconfirm,
   message,
-  Button,
   DatePicker
 } from 'antd';
-import { connect } from 'dva';
 import moment from 'moment';
 
-const { TextArea } = Input;
 
-function NextweekHomework(props) {
+
+function CopyLast(props) {
   const {
-    nextOperationList,
-    nextOperationArr,
+    form: { getFieldDecorator },
+    operationList,
+    operationArr,
     mainId,
     detailParams,
     loading
   } = props;
-
   const [data, setData] = useState([]);
+  const [cacheOriginData, setcacheOriginData] = useState({});
 
-  // 初始化把数据传过去
+  // 初始化把软件运维服务指标完成情况数据传过去
   useEffect(() => {
     // typeList(maintenanceArr)
     if (data && data.length) {
@@ -43,7 +43,7 @@ function NextweekHomework(props) {
         .replace(/remark/g, 'field9')
       )
       if (result) {
-        nextOperationList(result)
+        operationList(result)
       }
     }
   }, [data]);
@@ -60,12 +60,9 @@ function NextweekHomework(props) {
       .replace(/operationUnit/g, 'field8')
       .replace(/remark/g, 'field9')
     )
-    if (result) {
-      nextOperationList(result)
-    }
+    operationList(result)
     message.info('暂存保存数据成功')
   }
-
   //  获取行  
   const getRowByKey = (key, newData) => {
     return (newData || data).filter(item => item.key === key)[0];
@@ -78,8 +75,7 @@ function NextweekHomework(props) {
   //  删除数据
   const remove = key => {
     const target = deleteObj(key) || {};
-    setData(target);
-    message.info('删除成功')
+    setData(target)
   };
 
   const handleFieldChange = (e, fieldName, key) => {
@@ -96,151 +92,21 @@ function NextweekHomework(props) {
     }
   }
 
+
   const handleTabledata = () => {
-    if (nextOperationArr) {
-      const newarr = nextOperationArr.map((item, index) => {
+    // if(operationArr) {
+    if (operationArr) {
+      const newarr = (operationArr).map((item, index) => {
         return Object.assign(item, { editable: true, isNew: false, key: index })
       })
       setData(newarr)
     }
+    // }
   }
 
-  const column = [
-    {
-      title: '作业日期',
-      dataIndex: 'updateTime',
-      key: 'updateTime',
-      render: (text, record) => {
-        return (
-          <DatePicker
-            defaultValue={text ? moment(text) : moment(new Date())}
-            onChange={e => handleFieldChange(e, 'updateTime', record.key)}
-          />
-        )
-      }
-    },
-    {
-      title: '作业性质',
-      dataIndex: 'nature',
-      key: 'nature',
-      render: (text, record) => {
-        return (
-          <Input
-            defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'nature', record.key)}
-          />
-        )
-      }
-    },
-    {
-      title: '作业对象',
-      dataIndex: 'object',
-      key: 'object',
-      render: (text, record) => {
-        return (
-          <Input
-            defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'object', record.key)}
-          />
-        )
-      }
-    },
-    {
-      title: '作业内容',
-      dataIndex: 'content',
-      key: 'content',
-      render: (text, record) => {
-        return (
-          <Input
-            defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'content', record.key)}
-          />
-        )
-      }
-    },
-    {
-      title: '计划完成时间',
-      dataIndex: 'plannedEndTime',
-      key: 'plannedEndTime',
-      render: (text, record) => {
-        return (
-          <Input
-            defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'plannedEndTime', record.key)}
-          />
-        )
-      }
-    },
-    {
-      title: '完成进度',
-      dataIndex: 'status',
-      key: 'status',
-      render: (text, record) => {
-        return (
-          <Input
-            defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'status', record.key)}
-          />
-        )
-      }
-    },
-    {
-      title: '作业负责人',
-      dataIndex: 'operationUser',
-      key: 'operationUser',
-      render: (text, record) => {
-        return (
-          <Input
-            defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'operationUser', record.key)}
-          />
-        )
-      }
-    },
-    {
-      title: '作业单位',
-      dataIndex: 'operationUnit',
-      key: 'operationUnit',
-      render: (text, record) => {
-        return (
-          <Input
-            defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'operationUnit', record.key)}
-          />
-        )
-      }
-    },
-    {
-      title: '备注',
-      dataIndex: 'remark',
-      key: 'remark',
-      render: (text, record) => {
-        return (
-          <Input
-            defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'remark', record.key)}
-          />
-        )
-      }
-    },
-    {
-      title: '操作',
-      key: 'action',
-      fixed: 'right',
-      width: 120,
-      render: (text, record) => {
-        return (
-          <span>
-            <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
-              <a>删除</a>
-            </Popconfirm>
-          </span>
-        )
-      }
-    }
-  ];
 
-  const editColumns = [
+
+  const copyColumns = [
     {
       title: '作业日期',
       dataIndex: 'field1',
@@ -388,18 +254,17 @@ function NextweekHomework(props) {
     }
   ];
 
+
   useEffect(() => {
     handleTabledata();
-  }, [nextOperationArr])
+  }, [operationArr])
 
-  let setColumns = column;
 
-  if(mainId) {
-    setColumns = editColumns
-  }
 
   return (
     <>
+      {/* <Row gutter={16}> */}
+
       <div style={{ textAlign: 'right', marginBottom: 10 }}>
         <Button
           disabled={detailParams}
@@ -409,12 +274,15 @@ function NextweekHomework(props) {
 
       <Table
         loading={loading}
-        columns={setColumns}
+        columns={copyColumns}
         dataSource={data}
         pagination={false}
       />
+
+      {/* </Row> */}
+
     </>
   )
 }
 
-export default Form.create({})(NextweekHomework)
+export default Form.create({})(CopyLast)

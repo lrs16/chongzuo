@@ -113,7 +113,7 @@ function DatabaseReportdetail(props) {
           status,
           editStatus: mainId ? 'edit' : 'add',
           addData: JSON.stringify(list),
-          type: '数据库运维周报',
+          type: reporttype === 'week' ? '数据库运维周报':'数据库运维月报',
           reporttype,
           mainId,
           time1: startTime,
@@ -222,7 +222,48 @@ function DatabaseReportdetail(props) {
   }, [loading])
 
   const handleBack = () => {
-    router.push('/ITSM/operationreport/weeklyreport/myweeklyreport');
+    router.push({
+      pathname: `/ITSM/operationreport/weeklyreport/myweeklyreport`,
+      query: { mainId, closetab: true },
+      state: { cache: false }
+    });
+
+    if (reporttype === 'week') {
+      if (!reportSearch) {
+        router.push({
+          pathname: '/ITSM/operationreport/weeklyreport/myweeklyreport',
+          query: { pathpush: true },
+          state: { cache: false }
+        }
+        );
+      }
+
+      if (reportSearch) {
+        router.push({
+          pathname: '/ITSM/operationreport/weeklyreport/myweeklyreportsearch',
+          query: { pathpush: true },
+          state: { cache: false }
+        }
+        );
+      }
+
+    }
+    if (reporttype === 'month') {
+      if (!reportSearch) {
+        router.push({
+          pathname: '/ITSM/operationreport/monthlyreport/mymonthlyreport',
+          query: { pathpush: true },
+          state: { cache: false }
+        })
+      }
+      if (reportSearch) {
+        router.push({
+          pathname: '/ITSM/operationreport/monthlyreport/mymonthlysearch',
+          query: { pathpush: true },
+          state: { cache: false }
+        })
+      }
+    }
   }
 
   const onChange = (date, dateString) => {
@@ -251,19 +292,38 @@ function DatabaseReportdetail(props) {
     setAddTitle(resultArr)
   }
 
+  const exportWord = () => {
+    dispatch({
+      type: 'softreport/exportWord',
+      payload: { mainId }
+    }).then(res => {
+      const fieldName = '下载.doc';
+      const blob = new Blob([res]);
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = fieldName;
+      a.click();
+      window.URL.revokeObjectURL(url);
+    })
+  }
+
   return (
     <PageHeaderWrapper
       title={pagetitle}
       extra={
         <>
-          <Button type='primary'>导出</Button>
+          {loading === false && (
+            <Button type='primary' onClick={exportWord}>导出</Button>
+
+          )}
           {
             !reportSearch && (
               <Button type='primary' onClick={softReportform}>保存</Button>
             )
           }
 
-          <Button type='primary' onClick={handleBack}>
+          <Button onClick={handleBack}>
             返回
           </Button>
         </>
@@ -294,7 +354,7 @@ function DatabaseReportdetail(props) {
               {
                 reporttype === 'week' && (
                   <Col span={24}>
-                    <Form.Item label='起始时间'>
+                    <Form.Item label='填报日期'>
                       {getFieldDecorator('time1', {
                         initialValue: [moment(main.time1), moment(main.time2)]
                       })(<RangePicker
@@ -314,7 +374,7 @@ function DatabaseReportdetail(props) {
                   <Col span={24}>
                     <Form.Item label='起始时间'>
                       {getFieldDecorator('time1', {
-                        initialValue: moment(startTime)
+                        initialValue: moment(main.time1)
                       })(<MonthPicker
                         allowClear={false}
                         disabled={reportSearch}
@@ -376,7 +436,7 @@ function DatabaseReportdetail(props) {
 
               {
                 reportSearch && (
-                  <div style={{ marginLeft: 30, marginRight: 10,marginTop:20}}>
+                  <div style={{ marginLeft: 30, marginRight: 10, marginTop: 20 }}>
                     <Descriptions size="middle">
                       <Descriptions.Item label='上传附件'>
                         <span style={{ color: 'blue', textDecoration: 'underline' }} >
@@ -485,7 +545,7 @@ function DatabaseReportdetail(props) {
 
               {
                 reportSearch && (
-                  <div style={{ marginLeft: 30, marginRight: 10,marginTop:20 }}>
+                  <div style={{ marginLeft: 30, marginRight: 10, marginTop: 20 }}>
                     <Descriptions size="middle">
                       <Descriptions.Item label='上传附件'>
                         <span style={{ color: 'blue', textDecoration: 'underline' }} >
@@ -545,7 +605,7 @@ function DatabaseReportdetail(props) {
 
               {
                 reportSearch && (
-                  <div style={{ marginLeft: 30, marginRight: 10,marginTop:20}}>
+                  <div style={{ marginLeft: 30, marginRight: 10, marginTop: 20 }}>
                     <Descriptions size="middle">
                       <Descriptions.Item label='上传附件'>
                         <span style={{ color: 'blue', textDecoration: 'underline' }} >
@@ -610,7 +670,7 @@ function DatabaseReportdetail(props) {
 
               {
                 reportSearch && (
-                  <div style={{ marginLeft: 30, marginRight: 10,marginTop:20 }}>
+                  <div style={{ marginLeft: 30, marginRight: 10, marginTop: 20 }}>
                     <Descriptions size="middle">
                       <Descriptions.Item label='上传附件'>
                         <span style={{ color: 'blue', textDecoration: 'underline' }} >
@@ -675,7 +735,7 @@ function DatabaseReportdetail(props) {
 
               {
                 reportSearch && (
-                  <div style={{ marginLeft: 30, marginRight: 10, marginTop:20 }}>
+                  <div style={{ marginLeft: 30, marginRight: 10, marginTop: 20 }}>
                     <Descriptions size="middle">
                       <Descriptions.Item label='上传附件'>
                         <span style={{ color: 'blue', textDecoration: 'underline' }} >

@@ -132,10 +132,12 @@ const Top10Increase = React.forwardRef((props, ref) => {
   }
 
   const handleTabledata = () => {
-    const newarr = tableUpArr.map((item, index) => {
-      return Object.assign(item, { editable: true, isNew: false, key: index })
-    })
-    setData(newarr)
+    if (newbutton === false) {
+      const newarr = tableUpArr.map((item, index) => {
+        return Object.assign(item, { editable: true, isNew: false, key: index })
+      })
+      setData(newarr)
+    }
   }
 
   // console.log(legacyArr,'legacyArr')
@@ -243,7 +245,7 @@ const Top10Increase = React.forwardRef((props, ref) => {
 
   return (
     <>
-      <p style={{marginTop:24}}>Top10表增长情况</p>
+      <p style={{ marginTop: 24 }}>Top10表增长情况</p>
 
       <div style={{ textAlign: 'right', marginBottom: 10 }}>
         <Button

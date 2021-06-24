@@ -31,6 +31,7 @@ const QuestionsComments = React.forwardRef((props, ref) => {
     reportSearch
   } = props;
   const [data, setData] = useState([]);
+  const [newbutton, setNewButton] = useState(false);
 
   // 初始化把数据传过去
   useEffect(() => {
@@ -55,6 +56,7 @@ const QuestionsComments = React.forwardRef((props, ref) => {
       field3: '',
     });
     setData(newData);
+    setNewButton(true);
   };
 
   //  获取行  
@@ -87,10 +89,13 @@ const QuestionsComments = React.forwardRef((props, ref) => {
   }
 
   const handleTabledata = () => {
-    const newarr = defectArr.map((item, index) => {
-      return Object.assign(item, { editable: true, isNew: false, key: index })
-    })
-    setData(newarr)
+    if (newbutton === false) {
+      const newarr = defectArr.map((item, index) => {
+        return Object.assign(item, { editable: true, isNew: false, key: index })
+      })
+      setData(newarr)
+    }
+
   }
 
   const column = [
@@ -185,7 +190,7 @@ const QuestionsComments = React.forwardRef((props, ref) => {
       />
 
       <Button
-        style={{ width: '100%', marginTop: 16}}
+        style={{ width: '100%', marginTop: 16 }}
         type="primary"
         ghost
         onClick={() => newMember()}

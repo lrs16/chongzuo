@@ -261,14 +261,16 @@ function UnCloseTroublelist(props) {
     }
   ];
 
-  const [newColumns, setNewColumns] = useState(column)
-
   useEffect(() => {
     handleTabledata();
-    if (mainId) {
-      setNewColumns(editClolumn)
-    }
+
   }, [uncloseaultlist])
+
+  let setColumns = column;
+
+  if(mainId) {
+    setColumns = editClolumn
+  }
 
 
   return (
@@ -287,7 +289,7 @@ function UnCloseTroublelist(props) {
       </div>
 
       <Table
-        columns={newColumns}
+        columns={setColumns}
         dataSource={data}
         pagination={false}
       />

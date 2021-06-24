@@ -19,9 +19,13 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import SysUpload from '@/components/SysUpload';
 import InspectionSummary from './components/ComputerroomComponent/InspectionSummary';
 import NewTroublelist from './components/ComputerroomComponent/NewTroublelist';
+import CopyNewTroublelist from './components/ComputerroomComponent/CopyNewTroublelist';
+import CopyUnCloseTroublelist from './components/ComputerroomComponent/CopyUnCloseTroublelist';
 import UnCloseTroublelist from './components/ComputerroomComponent/UnCloseTroublelist';
 import LastweekHomework from './components/LastweekHomework';
+import CopyLast from './components/CopyLast';
 import NextweekHomework from './components/NextweekHomework';
+import CopyNext from './components/CopyNext';
 import WeeklyMeeting from './components/ComputerroomComponent/WeeklyMeeting';
 import AddForm from './components/AddForm';
 
@@ -72,6 +76,7 @@ function ComputerroomReport(props) {
       mainId,
       listreportType,
       listId,
+      reportSearch
     } },
     dispatch,
     faultQueryList,
@@ -245,7 +250,51 @@ function ComputerroomReport(props) {
   }, []);
 
   const handleBack = () => {
-    router.push('/ITSM/operationreport/weeklyreport/myweeklyreport');
+    router.push({
+      pathname: `/ITSM/operationreport/weeklyreport/myweeklyreport`,
+      query: { mainId, closetab: true },
+      state: { cache: false }
+    });
+
+    if (reporttype === 'week') {
+      if (!reportSearch) {
+        router.push({
+          pathname: '/ITSM/operationreport/weeklyreport/myweeklyreport',
+          query: { pathpush: true },
+          state: { cache: false }
+        }
+        );
+      }
+
+      if (reportSearch) {
+        router.push({
+          pathname: '/ITSM/operationreport/weeklyreport/myweeklyreportsearch',
+          query: { pathpush: true },
+          state: { cache: false }
+        }
+        );
+      }
+
+    }
+
+    if (reporttype === 'month') {
+      if (!reportSearch) {
+        console.log(1)
+        router.push({
+          pathname: '/ITSM/operationreport/monthlyreport/mymonthlyreport',
+          query: { pathpush: true },
+          state: { cache: false }
+        })
+      }
+      if (reportSearch) {
+        console.log(2)
+        router.push({
+          pathname: '/ITSM/operationreport/monthlyreport/mymonthlysearch',
+          query: { pathpush: true },
+          state: { cache: false }
+        })
+      }
+    }
   }
 
   const onChange = (date, dateString) => {
@@ -272,7 +321,7 @@ function ComputerroomReport(props) {
           <>
             <Button type='primary' onClick={softReportform}>保存</Button>
             <Button type='primary' onClick={handlePaste}>粘贴</Button>
-            <Button type='primary' onClick={handleBack}>
+            <Button onClick={handleBack}>
               返回
             </Button>
           </>
@@ -304,7 +353,7 @@ function ComputerroomReport(props) {
               {
                 reporttype === 'week' && (
                   <Col span={24}>
-                    <Form.Item label='起始时间'>
+                    <Form.Item label='填报日期'>
                       {getFieldDecorator('time1', {
                         initialValue: [moment(copyData.main ? copyData.main.time1 : startTime), moment(copyData.main ? copyData.main.time2 : endTime)]
                       })(<RangePicker
@@ -321,7 +370,7 @@ function ComputerroomReport(props) {
               {
                 reporttype === 'month' && (
                   <Col span={24}>
-                    <Form.Item label='起始时间'>
+                    <Form.Item label='填报日期'>
                       {getFieldDecorator('time1', {
                         initialValue: moment(copyData.main ? copyData.main.time1 : startTime)
                       })(<MonthPicker
@@ -335,7 +384,7 @@ function ComputerroomReport(props) {
                 )
               }
 
-              <Col span={24}><p style={{ fontWeight: '900', fontSize: '16px' }}>{reporttype === 'week' ? '一、本周运维总结':'一、本月运维总结'}</p></Col>
+              <Col span={24}><p style={{ fontWeight: '900', fontSize: '16px' }}>{reporttype === 'week' ? '一、本周运维总结' : '一、本月运维总结'}</p></Col>
               {/* 本周运维总结 */}
               <Col span={24}>
                 <Form.Item label=''>
@@ -400,7 +449,7 @@ function ComputerroomReport(props) {
                 />
               </Col>
 
-              <Col span={24} style={{marginTop:20}}>
+              <Col span={24} style={{ marginTop: 20 }}>
                 <Form.Item
                   label='上传附件'
                   {...formincontentLayout}
@@ -427,35 +476,79 @@ function ComputerroomReport(props) {
 
               {/* 3 本周新增故障及故障修复情况统计 */}
 
-              <Col span={24}>
-                <NewTroublelist
-                  forminladeLayout={forminladeLayout}
-                  faultlist={copyData.newTroubleList ? copyData.newTroubleList : faultQueryList.rows}
-                  mainId={copyData.newTroubleList ? true : mainId}
-                  type={reporttype}
-                  startTime={startTime}
-                  endTime={endTime}
-                  newTroubleList={contentrowdata => {
-                    setNewTroubleList(contentrowdata)
-                  }}
-                />
-              </Col>
+              {
+                copyData.operationList !== undefined && (
+                  <Col span={24}>
+                    <CopyNewTroublelist
+                      forminladeLayout={forminladeLayout}
+                      faultlist={copyData.newTroubleList}
+                      type={reporttype}
+                      startTime={startTime}
+                      endTime={endTime}
+                      newTroubleList={contentrowdata => {
+                        setNewTroubleList(contentrowdata)
+                      }}
+                    />
+                  </Col>
+                )
+              }
 
-              <Col span={24}>
-                <UnCloseTroublelist
-                  forminladeLayout={forminladeLayout}
-                  uncloseaultlist={copyData.unCloseTroubleList ? copyData.unCloseTroubleList : faultQueryList.rows}
-                  type={reporttype}
-                  mainId={copyData.unCloseTroubleList ? true : mainId}
-                  startTime={startTime}
-                  endTime={endTime}
-                  unCloseTroubleList={contentrowdata => {
-                    setUnCloseTroubleList(contentrowdata)
-                  }}
-                />
-              </Col>
+              {
+                copyData.operationList === undefined && (
+                  <Col span={24}>
+                    <NewTroublelist
+                      forminladeLayout={forminladeLayout}
+                      faultlist={copyData.newTroubleList ? copyData.newTroubleList : faultQueryList.rows}
+                      mainId={copyData.newTroubleList ? true : mainId}
+                      type={reporttype}
+                      startTime={startTime}
+                      endTime={endTime}
+                      newTroubleList={contentrowdata => {
+                        setNewTroubleList(contentrowdata)
+                      }}
+                    />
+                  </Col>
+                )
+              }
 
-              <Col span={24} style={{marginTop:20}}>
+
+              {
+                copyData.operationList !== undefined && (
+                  <Col span={24}>
+                    <CopyUnCloseTroublelist
+                      forminladeLayout={forminladeLayout}
+                      uncloseaultlist={copyData.unCloseTroubleList}
+                      type={reporttype}
+                      startTime={startTime}
+                      endTime={endTime}
+                      unCloseTroubleList={contentrowdata => {
+                        setUnCloseTroubleList(contentrowdata)
+                      }}
+                    />
+                  </Col>
+                )
+              }
+
+              {
+                copyData.operationList === undefined && (
+                  <Col span={24}>
+                    <UnCloseTroublelist
+                      forminladeLayout={forminladeLayout}
+                      uncloseaultlist={copyData.unCloseTroubleList ? copyData.unCloseTroubleList : faultQueryList.rows}
+                      type={reporttype}
+                      mainId={copyData.unCloseTroubleList ? true : mainId}
+                      startTime={startTime}
+                      endTime={endTime}
+                      unCloseTroubleList={contentrowdata => {
+                        setUnCloseTroubleList(contentrowdata)
+                      }}
+                    />
+                  </Col>
+                )
+              }
+
+
+              <Col span={24} style={{ marginTop: 20 }}>
                 <Form.Item
                   label='上传附件'
                   {...formincontentLayout}
@@ -495,23 +588,43 @@ function ComputerroomReport(props) {
                 </Form.Item>
               </Col>
 
-
               {/* 4.本周作业完成情况 */}
-              <Col span={24}>
-                <LastweekHomework
-                  forminladeLayout={forminladeLayout}
-                  operationArr={copyData.operationList ? copyData.operationList : lastweekHomeworklist.rows}
-                  startTime={startTime}
-                  endTime={endTime}
-                  type={reporttype}
-                  operationList={contentrowdata => {
-                    setOperationList(contentrowdata)
-                  }}
-                  mainId={copyData.operationList ? true : mainId}
-                />
-              </Col>
+              {
+                copyData.operationList !== undefined && (
+                  <Col span={24}>
+                    <CopyLast
+                      forminladeLayout={forminladeLayout}
+                      operationArr={copyData.operationList}
+                      startTime={startTime}
+                      endTime={endTime}
+                      type={reporttype}
+                      operationList={contentrowdata => {
+                        setOperationList(contentrowdata)
+                      }}
+                    />
+                  </Col>
+                )
+              }
 
-              <Col span={24}><p style={{marginTop:20}}>{reporttype === 'week' ? '4.2本周工作票开具情况及服务器查询操作票情况统计' : '4.2本月工作票开具情况及服务器查询操作票情况统计'}</p></Col>
+              {
+                copyData.operationList === undefined && (
+                  <Col span={24}>
+                    <LastweekHomework
+                      forminladeLayout={forminladeLayout}
+                      operationArr={copyData.operationList ? copyData.operationList : lastweekHomeworklist.rows}
+                      startTime={startTime}
+                      endTime={endTime}
+                      type={reporttype}
+                      operationList={contentrowdata => {
+                        setOperationList(contentrowdata)
+                      }}
+                      mainId={copyData.operationList ? true : mainId}
+                    />
+                  </Col>
+                )
+              }
+
+              <Col span={24}><p style={{ marginTop: 20 }}>{reporttype === 'week' ? '4.2本周工作票开具情况及服务器查询操作票情况统计' : '4.2本月工作票开具情况及服务器查询操作票情况统计'}</p></Col>
 
               <Col span={24}>
                 <Form.Item label=''>
@@ -526,22 +639,45 @@ function ComputerroomReport(props) {
 
               <Col span={24}>{reporttype === 'week' ? '4.3下周作业完成情况' : '4.3下月作业完成情况'}</Col>
 
-              {/* 下周工作计划 */}
-              <Col span={24}>
-                <NextweekHomework
-                  forminladeLayout={forminladeLayout}
-                  nextOperationArr={copyData.nextOperationList ? copyData.nextOperationList : nextweekHomeworklist.rows}
-                  startTime={startTime}
-                  endTime={endTime}
-                  type={reporttype}
-                  nextOperationList={contentrowdata => {
-                    setNextOperationList(contentrowdata)
-                  }}
-                  mainId={copyData.nextOperationList ? true : mainId}
-                />
-              </Col>
+              {
+                copyData.operationList !== undefined && (
+                  <Col span={24}>
+                    <CopyNext
+                      forminladeLayout={forminladeLayout}
+                      nextOperationArr={copyData.nextOperationList}
+                      startTime={startTime}
+                      endTime={endTime}
+                      type={reporttype}
+                      nextOperationList={contentrowdata => {
+                        setNextOperationList(contentrowdata)
+                      }}
+                      mainId={copyData.nextOperationList ? true : mainId}
+                    />
+                  </Col>
+                )
+              }
 
-              <Col span={24} style={{marginTop:20}}>
+              {
+                copyData.operationList === undefined && (
+                  <Col span={24}>
+                    <NextweekHomework
+                      forminladeLayout={forminladeLayout}
+                      nextOperationArr={copyData.nextOperationList}
+                      startTime={startTime}
+                      endTime={endTime}
+                      type={reporttype}
+                      nextOperationList={contentrowdata => {
+                        setNextOperationList(contentrowdata)
+                      }}
+                      mainId={copyData.nextOperationList ? true : mainId}
+                    />
+                  </Col>
+                )
+              }
+              {/* 下周工作计划 */}
+
+
+              <Col span={24} style={{ marginTop: 20 }}>
                 <Form.Item
                   label='上传附件'
                   {...formincontentLayout}
@@ -579,7 +715,7 @@ function ComputerroomReport(props) {
                 />
               </Col>
 
-              <Col span={24} style={{marginTop:20}}>
+              <Col span={24} style={{ marginTop: 20 }}>
                 <Form.Item
                   label='上传附件'
                   {...formincontentLayout}
@@ -650,7 +786,6 @@ function ComputerroomReport(props) {
 
       </Card>
     </PageHeaderWrapper>
-
   )
 }
 

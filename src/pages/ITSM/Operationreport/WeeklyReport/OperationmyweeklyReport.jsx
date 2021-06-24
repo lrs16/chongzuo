@@ -67,7 +67,7 @@ function OperationmyweeklyReport(props) {
                 query: {
                   mainId: record.id,
                   reporttype: 'week',
-                  orderNo: '',
+                  orderNo: record.id,
                 },
               });
               break;
@@ -77,7 +77,7 @@ function OperationmyweeklyReport(props) {
                 query: {
                   mainId: record.id,
                   reporttype: 'week',
-                  orderNo: '',
+                  orderNo: record.id,
                 },
               });
               break;
@@ -87,7 +87,7 @@ function OperationmyweeklyReport(props) {
                 query: {
                   mainId: record.id,
                   reporttype: 'week',
-                  orderNo: '',
+                  orderNo: record.id,
                 },
               });
               break;
@@ -97,7 +97,7 @@ function OperationmyweeklyReport(props) {
                 query: {
                   mainId: record.id,
                   reporttype: 'week',
-                  orderNo: '',
+                  orderNo: record.id,
                 },
               });
               break;
@@ -117,8 +117,8 @@ function OperationmyweeklyReport(props) {
     },
     {
       title: '填报日期',
-      dataIndex: 'time1',
-      key: 'time1',
+      dataIndex: 'addTime',
+      key: 'addTime',
     },
     {
       title: '填报人',
@@ -134,8 +134,8 @@ function OperationmyweeklyReport(props) {
           pathname: `/ITSM/operationreport/weeklyreport/softreport`,
           query: {
             reporttype: 'week',
-            listreportType:selectedRows?.length?selectedRows[0].type:'',
-            listId:selectedRows?.length?selectedRows[0].id:'',
+            listreportType: selectedRows?.length ? selectedRows[0].type : '',
+            listId: selectedRows?.length ? selectedRows[0].id : '',
             addtab: true,
           }
         })
@@ -145,8 +145,8 @@ function OperationmyweeklyReport(props) {
           pathname: `/ITSM/operationreport/weeklyreport/computerroomreport`,
           query: {
             reporttype: 'week',
-            listreportType:selectedRows?.length?selectedRows[0].type:'',
-            listId:selectedRows?.length?selectedRows[0].id:'',
+            listreportType: selectedRows?.length ? selectedRows[0].type : '',
+            listId: selectedRows?.length ? selectedRows[0].id : '',
             addtab: true,
           }
         })
@@ -156,8 +156,8 @@ function OperationmyweeklyReport(props) {
           pathname: `/ITSM/operationreport/weeklyreport/databasereport`,
           query: {
             reporttype: 'week',
-            listreportType:selectedRows?.length?selectedRows[0].type:'',
-            listId:selectedRows?.length?selectedRows[0].id:'',
+            listreportType: selectedRows?.length ? selectedRows[0].type : '',
+            listId: selectedRows?.length ? selectedRows[0].id : '',
             addtab: true,
           }
         })
@@ -167,8 +167,8 @@ function OperationmyweeklyReport(props) {
           pathname: `/ITSM/operationreport/weeklyreport/otherreport`,
           query: {
             reporttype: 'week',
-            listreportType:selectedRows?.length?selectedRows[0].type:'',
-            listId:selectedRows?.length?selectedRows[0].id:'',
+            listreportType: selectedRows?.length ? selectedRows[0].type : '',
+            listId: selectedRows?.length ? selectedRows[0].id : '',
             addtab: true,
           }
         })
@@ -209,7 +209,7 @@ function OperationmyweeklyReport(props) {
       type: 'softreport/queryList',
       payload: {
         ...values,
-        timeType:'周报',
+        timeType: '周报',
         userId: sessionStorage.getItem('userauthorityid'),
         plannedStartTime: '',
         time1: values.plannedStartTime?.length ? moment(values.plannedStartTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
@@ -281,7 +281,7 @@ function OperationmyweeklyReport(props) {
     if (selectedRows.length !== 1) {
       message.info('选择一条数据导出哦')
     } else {
-      const mainId  = selectedRows[0].id;
+      const mainId = selectedRows[0].id;
       dispatch({
         type: 'softreport/exportWord',
         payload: { mainId }
@@ -477,13 +477,16 @@ function OperationmyweeklyReport(props) {
 
         </div>
 
-        <Table
-          loading={loading}
-          columns={columns}
-          dataSource={queryOrderlist.rows}
-          pagination={pagination}
-          rowSelection={rowSelection}
-        />
+        {loading === false && (
+          <Table
+            loading={loading}
+            columns={columns}
+            dataSource={queryOrderlist.rows}
+            pagination={pagination}
+            rowSelection={rowSelection}
+          />
+        )}
+
       </Card>
 
     </PageHeaderWrapper>

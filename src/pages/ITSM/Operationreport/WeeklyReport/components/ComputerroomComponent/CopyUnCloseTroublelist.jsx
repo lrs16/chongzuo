@@ -8,46 +8,48 @@ import {
   Button,
   Divider,
   Popconfirm,
-  message
+  Select,
+  message,
+  DatePicker
 } from 'antd';
+import moment from 'moment';
 
-const { TextArea } = Input;
-const Top10Surface = React.forwardRef((props, ref) => {
-  const attRef = useRef();
-  useImperativeHandle(
-    ref,
-    () => ({
-      attRef,
-    }),
-    [],
-  );
+function UnCloseTroublelist(props) {
 
   const {
     form: { getFieldDecorator },
-    tablespaceArr,
-    startTime,
-    endTime,
-    tablespaceList,
+    unCloseTroubleList,
+    uncloseaultlist,
+    mainId,
     reportSearch
   } = props;
-
   const [data, setData] = useState([]);
+  const [seconddata, setSeconddata] = useState([]);
   const [cacheOriginData, setcacheOriginData] = useState({});
   const [uploadkey, setKeyUpload] = useState('');
   const [fileslist, setFilesList] = useState([]);
   const [newbutton, setNewButton] = useState(false);
 
+
   // 初始化把数据传过去
   useEffect(() => {
+    // typeList(maintenanceArr)
     if (data && data.length) {
-      tablespaceList(data)
+      const result = JSON.parse(JSON.stringify(data)
+        .replace(/addTime/g, 'field1')
+        .replace(/typecn/g, 'field2')
+      )
+      if (result) {
+        unCloseTroubleList(result)
+      }
     }
   }, [data]);
 
   const handleSave = () => {
-    tablespaceList(data);
+    unCloseTroubleList(data);
     message.info('暂存保存数据成功')
   }
+
   // 新增一条记录
   const newMember = (params) => {
     setFilesList([]);
@@ -55,7 +57,6 @@ const Top10Surface = React.forwardRef((props, ref) => {
     const newData = (data).map(item => ({ ...item }));
     newData.push({
       key: data.length + 1,
-      id: '',
       field1: '',
       field2: '',
       field3: '',
@@ -77,13 +78,11 @@ const Top10Surface = React.forwardRef((props, ref) => {
   //  删除数据
   const remove = key => {
     const target = deleteObj(key) || {};
-    setData(target)
+    setData(target);
+    message.info('删除成功')
   };
 
 
-  const savedata = (target, id) => {
-    tablespaceList(data)
-  }
 
   const handleFieldChange = (e, fieldName, key) => {
     const newData = data.map(item => ({ ...item }));
@@ -95,46 +94,45 @@ const Top10Surface = React.forwardRef((props, ref) => {
   }
 
   const handleTabledata = () => {
-    if (newbutton === false && tablespaceArr && tablespaceArr.length) {
-      const newarr = tablespaceArr.map((item, index) => {
+    if (uncloseaultlist && uncloseaultlist.length && newbutton === false) {
+      const newarr = uncloseaultlist.map((item, index) => {
         return Object.assign(item, { editable: true, isNew: false, key: index })
       })
       setData(newarr)
     }
-
   }
 
   const column = [
     {
-      title: '表空间名',
-      dataIndex: 'field1',
-      key: 'field1',
+      title: '日期',
+      dataIndex: 'addTime',
+      key: 'addTime',
       render: (text, record) => {
         return (
-          <Input
+          <DatePicker
             disabled={reportSearch}
-            defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'field1', record.key)}
+            defaultValue={text ? moment(text) : moment(new Date())}
+            onChange={e => handleFieldChange(e, 'addTime', record.key)}
           />
         )
       }
     },
     {
-      title: `${startTime}占用空间/GB`,
-      dataIndex: 'field2',
-      key: 'field2',
+      title: '故障类型',
+      dataIndex: 'typecn',
+      key: 'typecn',
       render: (text, record) => {
         return (
           <Input
             disabled={reportSearch}
             defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'field2', record.key)}
+            onChange={e => handleFieldChange(e.target.value, 'typecn', record.key)}
           />
         )
       }
     },
     {
-      title: `${endTime}占用空间/GB`,
+      title: '故障情况',
       dataIndex: 'field3',
       key: 'field3',
       render: (text, record) => {
@@ -148,7 +146,7 @@ const Top10Surface = React.forwardRef((props, ref) => {
       }
     },
     {
-      title: `总增长空间/GB`,
+      title: '计划修复时间',
       dataIndex: 'field4',
       key: 'field4',
       render: (text, record) => {
@@ -157,20 +155,6 @@ const Top10Surface = React.forwardRef((props, ref) => {
             disabled={reportSearch}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field4', record.key)}
-          />
-        )
-      }
-    },
-    {
-      title: `日平均增长/GB`,
-      dataIndex: 'field5',
-      key: 'field5',
-      render: (text, record) => {
-        return (
-          <Input
-            disabled={reportSearch}
-            defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'field5', record.key)}
           />
         )
       }
@@ -195,19 +179,102 @@ const Top10Surface = React.forwardRef((props, ref) => {
       }
 
     }
-
   ];
 
+  const editClolumn = [
+    {
+      title: '日期',
+      dataIndex: 'field1',
+      key: 'field1',
+      render: (text, record) => {
+        return (
+          <DatePicker
+            disabled={reportSearch}
+            defaultValue={text ? moment(text) : moment(new Date())}
+            onChange={e => handleFieldChange(e, 'field1', record.key)}
+          />
+        )
+      }
+    },
+    {
+      title: '故障类型',
+      dataIndex: 'field2',
+      key: 'field2',
+      render: (text, record) => {
+        return (
+          <Input
+            disabled={reportSearch}
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field2', record.key)}
+          />
+        )
+      }
+    },
+    {
+      title: '故障情况',
+      dataIndex: 'field3',
+      key: 'field3',
+      render: (text, record) => {
+        return (
+          <Input
+            disabled={reportSearch}
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field3', record.key)}
+          />
+        )
+      }
+    },
+    {
+      title: '计划修复时间',
+      dataIndex: 'field4',
+      key: 'field4',
+      render: (text, record) => {
+        return (
+          <Input
+            disabled={reportSearch}
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field4', record.key)}
+          />
+        )
+      }
+    },
+    {
+      title: '操作',
+      key: 'action',
+      fixed: 'right',
+      width: 120,
+      render: (text, record) => {
+        return (
+          <span>
+            <Popconfirm
+              title="是否要删除此行？"
+              onConfirm={() => remove(record.key)}
+              disabled={reportSearch}
+            >
+              <a>删除</a>
+            </Popconfirm>
+          </span>
+        )
+
+      }
+
+    }
+  ];
 
   useEffect(() => {
     handleTabledata();
-  }, [tablespaceArr])
+
+  }, [uncloseaultlist])
 
 
 
   return (
     <>
-      <p style={{ marginTop: 24 }}>Top10表空间(正常增长范围120GB-150GB)</p>
+      {/* <Row gutter={16}> */}
+
+      {/* <Col span={20}> */}
+      <p style={{marginTop:24}}>3.2未修复故障清单</p>
+      {/* </Col> */}
 
       <div style={{ textAlign: 'right', marginBottom: 10 }}>
         <Button
@@ -217,8 +284,9 @@ const Top10Surface = React.forwardRef((props, ref) => {
       </div>
 
       <Table
-        columns={column}
+        columns={editClolumn}
         dataSource={data}
+        pagination={false}
       />
 
       <Button
@@ -231,8 +299,9 @@ const Top10Surface = React.forwardRef((props, ref) => {
       >
         新增
       </Button>
+      {/* </Row> */}
     </>
   )
-})
+}
 
-export default Form.create({})(Top10Surface)
+export default Form.create({})(UnCloseTroublelist)

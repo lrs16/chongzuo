@@ -45,7 +45,6 @@ export default {
     },
     //  保存软件
     *saveSoft({payload},{call,put}) {
-      console.log('payload: ', payload);
       if(payload.status) {
         const response = yield call(addReport);
         if(response.code === 200) {
@@ -155,7 +154,7 @@ export default {
                 })
               } else {
                 route.push({
-                  pathname: `/ITSM/operationreport/monthlyreport/monthsoftreport`,
+                  pathname: `/ITSM/operationreport/monthlyreport/monthcomputerroomreport`,
                   query: { 
                     tabid: sessionStorage.getItem('tabid'),
                      closecurrent: true,
@@ -163,7 +162,7 @@ export default {
                      }
                 })
                 route.push({
-                  pathname: `/ITSM/operationreport/monthlyreport/monthdetailSoft`,
+                  pathname: `/ITSM/operationreport/monthlyreport/monthcomputerroomreportdetail`,
                   query: {
                     reporttype: type,
                     mainId:mainId.toString(),
@@ -265,6 +264,7 @@ export default {
                 state: {}
               })
             } else {
+              console.log(11)
               route.push({
                 pathname: `/ITSM/operationreport/monthlyreport/monthotherreport`,
                 query: { 
@@ -272,6 +272,7 @@ export default {
                    closecurrent: true
                    }
               })
+              console.log(22)
               route.push({
                 pathname: `/ITSM/operationreport/monthlyreport/monthotherreportdetail`,
                 query: {

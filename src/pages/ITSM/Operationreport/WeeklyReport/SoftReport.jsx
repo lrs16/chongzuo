@@ -25,6 +25,9 @@ import ThisWeekitsm from './components/ThisWeekitsm';
 import RemainingDefects from './components/RemainingDefects';
 import DefectTracking from './components/DefectTracking';
 import LastweekHomework from './components/LastweekHomework';
+import CopyLast from './components/CopyLast';
+import CopyNext from './components/CopyNext';
+import CopyEventtop from './components/CopyEventtop';
 import NextweekHomework from './components/NextweekHomework';
 import ServiceTableone from './components/ServiceTableone';
 import EventTop from './components/EventTop';
@@ -86,6 +89,7 @@ function SoftReport(props) {
         listreportType,
         listId,
         detailParams,
+        reportSearch
       } },
     dispatch,
     serviceCompletionthreelist,
@@ -225,15 +229,52 @@ function SoftReport(props) {
     }
   }, [files]);
 
-
-
   const handleBack = () => {
     router.push({
       pathname: `/ITSM/operationreport/weeklyreport/myweeklyreport`,
       query: { mainId, closetab: true },
       state: { cache: false }
+    });
+
+    if (reporttype === 'week') {
+      if (!reportSearch) {
+        router.push({
+          pathname: '/ITSM/operationreport/weeklyreport/myweeklyreport',
+          query: { pathpush: true },
+          state: { cache: false }
+        }
+        );
+      }
+
+      if (reportSearch) {
+        router.push({
+          pathname: '/ITSM/operationreport/weeklyreport/myweeklyreportsearch',
+          query: { pathpush: true },
+          state: { cache: false }
+        }
+        );
+      }
+
     }
-    )
+
+    if (reporttype === 'month') {
+      if (!reportSearch) {
+        console.log(1)
+        router.push({
+          pathname: '/ITSM/operationreport/monthlyreport/mymonthlyreport',
+          query: { pathpush: true },
+          state: { cache: false }
+        })
+      }
+      if (reportSearch) {
+        console.log(2)
+        router.push({
+          pathname: '/ITSM/operationreport/monthlyreport/mymonthlysearch',
+          query: { pathpush: true },
+          state: { cache: false }
+        })
+      }
+    }
   }
 
   // 新增一条记录
@@ -243,9 +284,6 @@ function SoftReport(props) {
       ...params
     });
     setList(newData);
-    // if(params.files) {
-    //   softReportform()
-    // }
   };
 
   const removeForm = (tableIndex) => {
@@ -265,8 +303,9 @@ function SoftReport(props) {
 
   const onChange = (date, dateString) => {
     if (reporttype === 'week') {
-      startTime = dateString[0];
-      endTime = dateString[1];
+      const [start, end] = dateString;
+      startTime = start;
+      endTime = end;
     } else {
       startTime = date.startOf('month').format('YYYY-MM-DD');
       endTime = date.endOf('month').format('YYYY-MM-DD');
@@ -280,7 +319,6 @@ function SoftReport(props) {
     setButtonVisible(true)
   }
 
-
   const handlemaintenanserviceceArr = () => {
     const tabActiveKey = reporttype;
     dispatch({
@@ -289,13 +327,11 @@ function SoftReport(props) {
     })
   }
 
-  const handleListdata = (params) => {
-    // validateFields((err, values) => {
+  const handleListdata = () => {
     dispatch({
       type: 'softreport/fetchordertopnList',
       payload: { value, startTime, endTime }
     })
-    // })
   }
 
   const handlesoftservice = () => {
@@ -331,8 +367,6 @@ function SoftReport(props) {
       }
     }
 
-
-
     return dispatch({
       type: 'softreport/pasteReport',
       payload: {
@@ -358,7 +392,7 @@ function SoftReport(props) {
     handlesoftservice()
   }, []);
 
-  console.log(copyData.operationList ? 'aa' : 'bb')
+  console.log(copyData.operationList, 'llll')
 
   return (
     <PageHeaderWrapper
@@ -404,7 +438,7 @@ function SoftReport(props) {
               {
                 reporttype === 'week' && (
                   <Col span={24}>
-                    <Form.Item label='起始时间'>
+                    <Form.Item label='填报日期'>
                       {getFieldDecorator('time1', {
                         rules: [
                           {
@@ -427,7 +461,7 @@ function SoftReport(props) {
               {
                 reporttype === 'month' && (
                   <Col span={8}>
-                    <Form.Item label='起始时间'>
+                    <Form.Item label='填报日期'>
                       {getFieldDecorator('time1', {
                         rules: [
                           {
@@ -645,26 +679,80 @@ function SoftReport(props) {
                 </Form.Item>
               </Col>
 
-              <Col span={24}>
-                <EventTop
-                  formItemLayout={formItemLayout}
-                  formincontentLayout={formincontentLayout}
-                  startTime={startTime}
-                  endTime={endTime}
-                  topNList={contentrowdata => {
-                    setTopNList(contentrowdata)
-                  }}
-                  // topArr={[]}
-                  topArr={copyData.topNList ? copyData.topNList : ordertopnArr}
-                  mainId={copyData.topNList ? true : ''}
-                  defaultValue={value}
-                  value={data => {
-                    value = data;
-                    handleListdata(data)
-                  }}
-                  loading={loading}
-                />
-              </Col>
+              {
+                copyData.operationList === true && (
+                  <Col span={24}>
+                    <CopyEventtop
+                      formItemLayout={formItemLayout}
+                      formincontentLayout={formincontentLayout}
+                      startTime={startTime}
+                      endTime={endTime}
+                      topNList={contentrowdata => {
+                        setTopNList(contentrowdata)
+                      }}
+                      // topArr={[]}
+                      topArr={copyData.topNList ? copyData.topNList : ordertopnArr}
+                      mainId={copyData.topNList ? true : ''}
+                      defaultValue={value}
+                      value={data => {
+                        value = data;
+                        handleListdata(data)
+                      }}
+                      loading={loading}
+                    />
+                  </Col>
+                )
+              }
+
+              {
+                copyData.operationList !== undefined && (
+                  <Col span={24}>
+                    <CopyEventtop
+                      formItemLayout={formItemLayout}
+                      formincontentLayout={formincontentLayout}
+                      startTime={startTime}
+                      endTime={endTime}
+                      topNList={contentrowdata => {
+                        setTopNList(contentrowdata)
+                      }}
+                      // topArr={[]}
+                      topArr={copyData.topNList}
+                      defaultValue={value}
+                      value={data => {
+                        value = data;
+                        handleListdata(data)
+                      }}
+                      loading={loading}
+                    />
+                  </Col>
+                )
+              }
+
+              {
+                copyData.operationList === undefined && (
+                  <Col span={24}>
+                    <EventTop
+                      formItemLayout={formItemLayout}
+                      formincontentLayout={formincontentLayout}
+                      startTime={startTime}
+                      endTime={endTime}
+                      topNList={contentrowdata => {
+                        setTopNList(contentrowdata)
+                      }}
+                      // topArr={[]}
+                      topArr={copyData.topNList ? copyData.topNList : ordertopnArr}
+                      mainId={copyData.topNList ? true : ''}
+                      defaultValue={value}
+                      value={data => {
+                        value = data;
+                        handleListdata(data)
+                      }}
+                      loading={loading}
+                    />
+                  </Col>
+                )
+              }
+
 
               <Col span={24} style={{ marginTop: 20 }}>
                 <Form.Item
@@ -847,20 +935,40 @@ function SoftReport(props) {
                 <p style={{ fontWeight: '900', fontSize: '16px' }}>{reporttype === 'week' ? '七、上周作业完成情况' : '七、上月作业完成情况'}</p>
               </Col>
 
-              <Col span={24}>
-                <LastweekHomework
-                  forminladeLayout={forminladeLayout}
-                  startTime={startTime}
-                  endTime={endTime}
-                  type={reporttype}
-                  operationList={contentrowdata => {
-                    setOperationList(contentrowdata)
-                  }}
-                  operationArr={copyData.operationList ? copyData.operationList : lastweekHomeworklist.rows}
-                  // mainId={copyData.operationList?true:''}
-                  loading={loading}
-                />
-              </Col>
+              {copyData.operationList !== undefined && (
+                <Col span={24}>
+                  <CopyLast
+                    forminladeLayout={forminladeLayout}
+                    startTime={startTime}
+                    endTime={endTime}
+                    type={reporttype}
+                    operationList={contentrowdata => {
+                      setOperationList(contentrowdata)
+                    }}
+                    operationArr={copyData.operationList}
+                    // mainId={copyData.operationList?true:''}
+                    loading={loading}
+                  />
+                </Col>
+              )}
+
+              {copyData.operationList === undefined && (
+                <Col span={24}>
+                  <LastweekHomework
+                    forminladeLayout={forminladeLayout}
+                    startTime={startTime}
+                    endTime={endTime}
+                    type={reporttype}
+                    operationList={contentrowdata => {
+                      setOperationList(contentrowdata)
+                    }}
+                    operationArr={copyData.operationList}
+                    // mainId={copyData.operationList?true:''}
+                    loading={loading}
+                  />
+                </Col>
+              )}
+
 
               <Col span={24} style={{ marginTop: 20 }}>
                 <Form.Item
@@ -891,20 +999,41 @@ function SoftReport(props) {
 
               {/* 八、 下周作业计划 */}
 
-              <Col span={24}>
-                <NextweekHomework
-                  forminladeLayout={forminladeLayout}
-                  startTime={startTime}
-                  endTime={endTime}
-                  type={reporttype}
-                  nextOperationList={contentrowdata => {
-                    setNextOperationList(contentrowdata)
-                  }}
-                  nextOperationArr={copyData.nextOperationList ? copyData.nextOperationList : nextweekHomeworklist.rows}
-                  // mainId={copyData.nextOperationList?true:''}
-                  loading={loading}
-                />
-              </Col>
+              {copyData.operationList !== undefined && (
+                <Col span={24}>
+                  <CopyNext
+                    forminladeLayout={forminladeLayout}
+                    startTime={startTime}
+                    endTime={endTime}
+                    type={reporttype}
+                    nextOperationList={contentrowdata => {
+                      setNextOperationList(contentrowdata)
+                    }}
+                    nextOperationArr={copyData.nextOperationList ? copyData.nextOperationList : nextweekHomeworklist.rows}
+                    // mainId={copyData.nextOperationList?true:''}
+                    loading={loading}
+                  />
+                </Col>
+              )}
+
+              {
+                copyData.operationList === undefined && (
+                  <Col span={24}>
+                    <NextweekHomework
+                      forminladeLayout={forminladeLayout}
+                      startTime={startTime}
+                      endTime={endTime}
+                      type={reporttype}
+                      nextOperationList={contentrowdata => {
+                        setNextOperationList(contentrowdata)
+                      }}
+                      nextOperationArr={copyData.nextOperationList ? copyData.nextOperationList : nextweekHomeworklist.rows}
+                      // mainId={copyData.nextOperationList?true:''}
+                      loading={loading}
+                    />
+                  </Col>
+                )
+              }
 
               <Col span={24} style={{ marginTop: 20 }}>
                 <Form.Item

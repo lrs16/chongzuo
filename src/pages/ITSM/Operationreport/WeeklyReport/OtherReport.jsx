@@ -54,6 +54,7 @@ function OtherReport(props) {
       mainId,
       listreportType,
       listId,
+      reportSearch
     } },
     dispatch,
     loading,
@@ -147,7 +148,49 @@ function OtherReport(props) {
   }, [loading]);
 
   const handleBack = () => {
-    router.push('/ITSM/operationreport/weeklyreport/myweeklyreport');
+    router.push({
+      pathname: `/ITSM/operationreport/weeklyreport/myweeklyreport`,
+      query: { mainId, closetab: true },
+      state: { cache: false }
+    });
+
+    if (reporttype === 'week') {
+      if (!reportSearch) {
+        router.push({
+          pathname: '/ITSM/operationreport/weeklyreport/myweeklyreport',
+          query: { pathpush: true },
+          state: { cache: false }
+        }
+        );
+      } 
+
+      if(reportSearch) {
+        router.push({
+          pathname: '/ITSM/operationreport/weeklyreport/myweeklyreportsearch',
+          query: { pathpush: true },
+          state: { cache: false }
+        }
+        );
+      }
+
+    } 
+
+    if(reporttype === 'month') {
+      if(!reportSearch) {
+        router.push({
+          pathname: '/ITSM/operationreport/monthlyreport/mymonthlyreport',
+          query: { pathpush: true },
+          state: { cache: false }
+        })
+      }
+      if(reportSearch) {
+        router.push({
+          pathname: '/ITSM/operationreport/monthlyreport/mymonthlysearch',
+          query: { pathpush: true },
+          state: { cache: false }
+        })
+      }
+    }
   }
 
   const onChange = (date, dateString) => {
@@ -183,7 +226,7 @@ function OtherReport(props) {
           <>
             <Button type='primary' onClick={softReportform}>保存</Button>
             <Button type='primary' onClick={handlePaste}>粘贴</Button>
-            <Button type='primary' onClick={handleBack}>
+            <Button onClick={handleBack}>
               返回
             </Button>
           </>

@@ -43,7 +43,7 @@ const formincontentLayout = {
   },
 };
 
-const { RangePicker } = DatePicker;
+const { RangePicker,MonthPicker } = DatePicker;
 const { TextArea } = Input;
 let startTime;
 let endTime;
@@ -119,7 +119,6 @@ function OtherReportdetail(props) {
     endTime = moment().format('YYYY-MM-DD');
   }
 
-  console.log(list, 'list')
 
   // 上传删除附件触发保存
   useEffect(() => {
@@ -134,7 +133,50 @@ function OtherReportdetail(props) {
   }, [loading]);
 
   const handleBack = () => {
-    router.push('/ITSM/operationreport/weeklyreport/myweeklyreport');
+    router.push({
+      pathname: `/ITSM/operationreport/weeklyreport/myweeklyreport`,
+      query: { mainId, closetab: true },
+      state: { cache: false }
+    });
+
+    if (reporttype === 'week') {
+      if (!reportSearch) {
+        router.push({
+          pathname: '/ITSM/operationreport/weeklyreport/myweeklyreport',
+          query: { pathpush: true },
+          state: { cache: false }
+        }
+        );
+      } 
+
+      if(reportSearch) {
+        router.push({
+          pathname: '/ITSM/operationreport/weeklyreport/myweeklyreportsearch',
+          query: { pathpush: true },
+          state: { cache: false }
+        }
+        );
+      }
+    } 
+
+    if(reporttype === 'month') {
+      if(!reportSearch) {
+        console.log(1)
+        router.push({
+          pathname: '/ITSM/operationreport/monthlyreport/mymonthlyreport',
+          query: { pathpush: true },
+          state: { cache: false }
+        })
+      }
+      if(reportSearch) {
+        console.log(2)
+        router.push({
+          pathname: '/ITSM/operationreport/monthlyreport/mymonthlysearch',
+          query: { pathpush: true },
+          state: { cache: false }
+        })
+      }
+    }
   }
 
   const getopenFlow = () => {
@@ -160,7 +202,7 @@ function OtherReportdetail(props) {
   }, [loading])
 
   const onChange = (date, dateString) => {
-    if(reporttype === 'week') {
+    if (reporttype === 'week') {
       startTime = dateString[0];
       endTime = dateString[1];
     } else {
@@ -196,13 +238,30 @@ function OtherReportdetail(props) {
     setAddTitle(addData)
   }, [loading])
 
+  const exportWord = () => {
+    dispatch({
+      type: 'softreport/exportWord',
+      payload: { mainId }
+    }).then(res => {
+      const fieldName = '下载.doc';
+      const blob = new Blob([res]);
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = fieldName;
+      a.click();
+      window.URL.revokeObjectURL(url);
+    })
+  }
 
   return (
     <PageHeaderWrapper
       title={pagetitle}
       extra={
         <>
-          <Button type='primary'>导出</Button>
+          {loading === false && (
+            <Button type='primary' onClick={exportWord}>导出</Button>
+          )}
 
           {!reportSearch && (
             <Button type='primary' onClick={softReportform}>保存</Button>
@@ -231,7 +290,7 @@ function OtherReportdetail(props) {
                     initialValue: main ? main.name : ''
                   })
                     (
-                      <Input   disabled={reportSearch}/>
+                      <Input disabled={reportSearch} />
                     )}
                 </Form.Item>
               </Col>
@@ -257,7 +316,7 @@ function OtherReportdetail(props) {
                   <Form.Item label='起始时间'>
                     {getFieldDecorator('time1', {
                       initialValue: moment(main.time1)
-                    })(<RangePicker
+                    })(<MonthPicker
                       allowClear={false}
                       disabled={reportSearch}
                       // disabledDate={startdisabledDate}

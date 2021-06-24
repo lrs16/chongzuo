@@ -46,9 +46,9 @@ const form10ladeLayout = {
   },
 };
 
-let starttime;
-let monthStarttime;
-let endTime;
+
+let starttime = '';
+let endTime = '';
 
 function MymonthlySearch(props) {
   const pagetitle = props.route.name;
@@ -64,6 +64,7 @@ function MymonthlySearch(props) {
   const [selectdata, setSelectData] = useState('');
   const [selectedRows, setSelectedRows] = useState([]);
 
+
   const columns = [
     {
       title: '周报类型',
@@ -78,8 +79,8 @@ function MymonthlySearch(props) {
                 query: {
                   mainId: record.id,
                   reporttype: 'month',
-                  orderNo: text,
-                  reportSearch:true
+                  orderNo: record.id,
+                  reportSearch: true
                 },
               });
               break;
@@ -89,8 +90,8 @@ function MymonthlySearch(props) {
                 query: {
                   mainId: record.id,
                   reporttype: 'month',
-                  orderNo: text,
-                  reportSearch:true
+                  orderNo: record.id,
+                  reportSearch: true
                 },
               });
               break;
@@ -100,8 +101,8 @@ function MymonthlySearch(props) {
                 query: {
                   mainId: record.id,
                   reporttype: 'month',
-                  orderNo: text,
-                  reportSearch:true
+                  orderNo: record.id,
+                  reportSearch: true
                 },
               });
               break;
@@ -111,8 +112,8 @@ function MymonthlySearch(props) {
                 query: {
                   mainId: record.id,
                   reporttype: 'month',
-                  orderNo: text,
-                  reportSearch:true
+                  orderNo: record.id,
+                  reportSearch: true
                 },
               });
               break;
@@ -131,8 +132,8 @@ function MymonthlySearch(props) {
     },
     {
       title: '填报日期',
-      dataIndex: 'time1',
-      key: 'time1',
+      dataIndex: 'addTime',
+      key: 'addTime',
     },
     {
       title: '填报人',
@@ -141,23 +142,15 @@ function MymonthlySearch(props) {
     },
   ];
 
-  const getmyweeklyTable = () => {
-    dispatch({
-      type: 'myweeklyreportindex/myweeklyTable',
-      payload: {
-        pageNum: paginations.current,
-        pageSize: paginations.pageSize,
-      },
-    });
-  };
-
   const searchdata = (values, page, pageSize) => {
+    console.log(starttime,'starttime');
+    console.log(endTime,'endTime');
     dispatch({
       type: 'softreport/queryList',
       payload: {
         ...values,
-        timeType:'月报',
-        userId: sessionStorage.getItem('userauthorityid'),
+        timeType: '月报',
+        userId: '',
         plannedStartTime: '',
         time1: starttime,
         time2: endTime,
@@ -175,7 +168,6 @@ function MymonthlySearch(props) {
       searchdata(value, 1, paginations.pageSize);
     })
   };
-
 
   const onShowSizeChange = (page, pageSize) => {
     validateFields((err, values) => {
@@ -206,7 +198,7 @@ function MymonthlySearch(props) {
     onShowSizeChange: (page, pageSize) => onShowSizeChange(page, pageSize),
     current: paginations.current,
     pageSize: paginations.pageSize,
-    // total: besolveList.total,
+    total: queryOrderlist.total,
     showTotal: total => `总共  ${total}  条记录`,
     onChange: (page) => changePage(page),
   };
@@ -234,7 +226,7 @@ function MymonthlySearch(props) {
     if (selectedRows.length !== 1) {
       message.info('选择一条数据导出哦')
     } else {
-      const mainId  = selectedRows[0].id;
+      const mainId = selectedRows[0].id;
       dispatch({
         type: 'softreport/exportWord',
         payload: { mainId }
@@ -257,53 +249,17 @@ function MymonthlySearch(props) {
     }
   }
 
-  const handleDelete = () => {
-    if (selectedrows.length) {
-      const idList = selectedrows.map(item => {
-        return item
-      })
-
-      dispatch({
-        type: 'myweeklyreportindex/myweeklyTable',
-        payload: idList
-      }).then(res => {
-        // message.info()
-        getmyweeklyTable();
-      })
-    } else {
-      message.info('至少选择一条数据');
-    }
-  }
-
-  const defaultTime = () => {
-    //  周统计
-    starttime = moment().week(moment().week() - 1).startOf('week').format('YYYY-MM-DD HH:mm:ss');
-    endTime = moment().week(moment().week() - 1).endOf('week').format('YYYY-MM-DD');
-    endTime = `${endTime} 00:00:00`;
-  }
-
-  const startdisabledDate = (current) => {
-    return current > moment().subtract('days', 6)
-  }
-
   const onChange = (date, dateString) => {
     starttime = date.startOf('month').format('YYYY-MM-DD');
+    console.log('starttime: ', starttime);
     endTime = date.endOf('month').format('YYYY-MM-DD');
-  }
-
-  const endonChange = (date, dateString) => {
-    endTime = dateString;
-    starttime = moment(dateString).subtract('day', 6).format('YYYY-MM-DD');
-    setFieldsValue({ time1: moment(starttime) })
-  }
-
-  const enddisabledDate = (current) => {
-    return current > moment().endOf('day')
+    console.log('endTime: ', endTime);
   }
 
   useEffect(() => {
-    getmyweeklyTable();
-    defaultTime();
+    validateFields((err, value) => {
+      searchdata(value, 1, paginations.pageSize);
+    })
   }, []);
 
   const getTypebyTitle = title => {
@@ -366,7 +322,6 @@ function MymonthlySearch(props) {
                 })
                   (
                     <MonthPicker
-                      format="YYYY-MM-DD"
                       style={{ width: '100%' }}
                       onChange={onChange}
                     />

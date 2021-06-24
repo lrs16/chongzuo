@@ -16,7 +16,7 @@ import moment from 'moment';
 
 const { TextArea } = Input;
 
-function NextweekHomework(props) {
+function CopyNext(props) {
   const {
     nextOperationList,
     nextOperationArr,
@@ -392,12 +392,6 @@ function NextweekHomework(props) {
     handleTabledata();
   }, [nextOperationArr])
 
-  let setColumns = column;
-
-  if(mainId) {
-    setColumns = editColumns
-  }
-
   return (
     <>
       <div style={{ textAlign: 'right', marginBottom: 10 }}>
@@ -409,7 +403,7 @@ function NextweekHomework(props) {
 
       <Table
         loading={loading}
-        columns={setColumns}
+        columns={editColumns}
         dataSource={data}
         pagination={false}
       />
@@ -417,4 +411,4 @@ function NextweekHomework(props) {
   )
 }
 
-export default Form.create({})(NextweekHomework)
+export default Form.create({})(CopyNext)

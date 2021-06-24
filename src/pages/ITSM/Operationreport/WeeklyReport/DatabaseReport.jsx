@@ -23,6 +23,8 @@ import Top10Increase from './components/DatabaseComponent/Top10Increase';
 import QuestionsComments from './components/DatabaseComponent/QuestionsComments';
 import LastweekHomework from './components/LastweekHomework';
 import NextweekHomework from './components/NextweekHomework';
+import CopyLast from './components/CopyLast';
+import CopyNext from './components/CopyNext';
 import AddForm from './components/AddForm';
 
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
@@ -76,6 +78,7 @@ function DatabaseReport(props) {
         mainId,
         listreportType,
         listId,
+        reportSearch
       } },
     dispatch,
     lastweekHomeworklist,
@@ -232,7 +235,49 @@ function DatabaseReport(props) {
   }
 
   const handleBack = () => {
-    router.push('/ITSM/operationreport/weeklyreport/myweeklyreport');
+    router.push({
+      pathname: `/ITSM/operationreport/weeklyreport/myweeklyreport`,
+      query: { mainId, closetab: true },
+      state: { cache: false }
+    });
+
+    if (reporttype === 'week') {
+      if (!reportSearch) {
+        router.push({
+          pathname: '/ITSM/operationreport/weeklyreport/myweeklyreport',
+          query: { pathpush: true },
+          state: { cache: false }
+        }
+        );
+      }
+
+      if (reportSearch) {
+        router.push({
+          pathname: '/ITSM/operationreport/weeklyreport/myweeklyreportsearch',
+          query: { pathpush: true },
+          state: { cache: false }
+        }
+        );
+      }
+
+    }
+
+    if (reporttype === 'month') {
+      if (!reportSearch) {
+        router.push({
+          pathname: '/ITSM/operationreport/monthlyreport/mymonthlyreport',
+          query: { pathpush: true },
+          state: { cache: false }
+        })
+      }
+      if (reportSearch) {
+        router.push({
+          pathname: '/ITSM/operationreport/monthlyreport/mymonthlysearch',
+          query: { pathpush: true },
+          state: { cache: false }
+        })
+      }
+    }
   }
 
   const onChange = (date, dateString) => {
@@ -260,7 +305,7 @@ function DatabaseReport(props) {
           <>
             <Button type='primary' onClick={softReportform}>保存</Button>
             <Button type='primary' onClick={handlePaste}>粘贴</Button>
-            <Button type='primary' onClick={handleBack}>
+            <Button onClick={handleBack}>
               返回
             </Button>
           </>
@@ -278,7 +323,7 @@ function DatabaseReport(props) {
                     rules: [
                       {
                         required,
-                        message: '请输入周报名称'
+                        message: '请输入名称'
                       }
                     ],
                     initialValue: copyData.main ? copyData.main.name : ''
@@ -292,7 +337,7 @@ function DatabaseReport(props) {
               {
                 reporttype === 'week' && (
                   <Col span={24}>
-                    <Form.Item label='起始时间'>
+                    <Form.Item label='填报日期'>
                       {getFieldDecorator('time1', {
                         initialValue: [moment(copyData.main ? copyData.main.time1 : startTime), moment(copyData.main ? copyData.main.time2 : endTime)]
                       })(<RangePicker
@@ -309,7 +354,7 @@ function DatabaseReport(props) {
               {
                 reporttype === 'month' && (
                   <Col span={24}>
-                    <Form.Item label='起始时间'>
+                    <Form.Item label='填报日期'>
                       {getFieldDecorator('time1', {
                         initialValue: moment(copyData.main ? copyData.main.time1 : startTime)
                       })(<MonthPicker
@@ -477,18 +522,44 @@ function DatabaseReport(props) {
 
               {/* 上周作业完成情况*/}
               <Col span={24}>
-                <LastweekHomework
-                  forminladeLayout={forminladeLayout}
-                  operationArr={copyData.operationList ? copyData.operationList : lastweekHomeworklist.rows}
-                  startTime={startTime}
-                  endTime={endTime}
-                  type={reporttype}
-                  operationList={contentrowdata => {
-                    setOperationList(contentrowdata)
-                  }}
-                  mainId={mainId}
-                />
+                <p style={{ fontWeight: '900', fontSize: '16px' }}> 四、上周作业完成情况</p>
               </Col>
+
+              {
+                copyData.operationList !== undefined && (
+                  <Col span={24}>
+                    <CopyLast
+                      forminladeLayout={forminladeLayout}
+                      operationArr={copyData.operationList}
+                      startTime={startTime}
+                      endTime={endTime}
+                      type={reporttype}
+                      operationList={contentrowdata => {
+                        setOperationList(contentrowdata)
+                      }}
+                      mainId={mainId}
+                    />
+                  </Col>
+                )
+              }
+
+              {
+                copyData.operationList === undefined && (
+                  <Col span={24}>
+                    <LastweekHomework
+                      forminladeLayout={forminladeLayout}
+                      operationArr={lastweekHomeworklist.rows}
+                      startTime={startTime}
+                      endTime={endTime}
+                      type={reporttype}
+                      operationList={contentrowdata => {
+                        setOperationList(contentrowdata)
+                      }}
+                    />
+                  </Col>
+                )
+              }
+
 
               <Col span={24} style={{ marginTop: 20 }}>
                 <Form.Item
@@ -516,18 +587,45 @@ function DatabaseReport(props) {
 
               {/* 下周工作计划 */}
               <Col span={24}>
-                <NextweekHomework
-                  forminladeLayout={forminladeLayout}
-                  startTime={startTime}
-                  endTime={endTime}
-                  type={reporttype}
-                  nextOperationList={contentrowdata => {
-                    setNextOperationList(contentrowdata)
-                  }}
-                  nextOperationArr={copyData.nextOperationList ? copyData.nextOperationList : nextweekHomeworklist.rows}
-                  mainId={mainId}
-                />
+                <p style={{ fontWeight: '900', fontSize: '16px' }}>五、下周作业计划</p>
               </Col>
+
+              {
+                copyData.operationList !== undefined && (
+                  <Col span={24}>
+                    <CopyNext
+                      forminladeLayout={forminladeLayout}
+                      startTime={startTime}
+                      endTime={endTime}
+                      type={reporttype}
+                      nextOperationList={contentrowdata => {
+                        setNextOperationList(contentrowdata)
+                      }}
+                      nextOperationArr={copyData.nextOperationList}
+                      mainId={mainId}
+                    />
+                  </Col>
+                )
+              }
+
+              {
+                copyData.operationList === undefined && (
+                  <Col span={24}>
+                    <NextweekHomework
+                      forminladeLayout={forminladeLayout}
+                      startTime={startTime}
+                      endTime={endTime}
+                      type={reporttype}
+                      nextOperationList={contentrowdata => {
+                        setNextOperationList(contentrowdata)
+                      }}
+                      nextOperationArr={copyData.nextOperationList ? copyData.nextOperationList : nextweekHomeworklist.rows}
+                      mainId={mainId}
+                    />
+                  </Col>
+                )
+              }
+
 
               <Col span={24} style={{ marginTop: 20 }}>
                 <Form.Item

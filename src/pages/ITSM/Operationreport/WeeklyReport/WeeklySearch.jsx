@@ -131,8 +131,8 @@ function WeeklySearch(props) {
     },
     {
       title: '填报日期',
-      dataIndex: 'time1',
-      key: 'time1',
+      dataIndex: 'addTime',
+      key: 'addTime',
     },
     {
       title: '填报人',

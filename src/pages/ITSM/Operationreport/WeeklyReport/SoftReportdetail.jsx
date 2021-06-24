@@ -238,9 +238,9 @@ function SoftReportdetail(props) {
           state: { cache: false }
         }
         );
-      } 
+      }
 
-      if(reportSearch) {
+      if (reportSearch) {
         router.push({
           pathname: '/ITSM/operationreport/weeklyreport/myweeklyreportsearch',
           query: { pathpush: true },
@@ -249,41 +249,33 @@ function SoftReportdetail(props) {
         );
       }
 
-    } 
-    if(reporttype === 'month') {
-      if(!reportSearch) {
+    }
+
+    if (reporttype === 'month') {
+      if (!reportSearch) {
+        console.log(1)
         router.push({
           pathname: '/ITSM/operationreport/monthlyreport/mymonthlyreport',
           query: { pathpush: true },
           state: { cache: false }
         })
       }
-      if(reportSearch) {
+      if (reportSearch) {
+        console.log(2)
         router.push({
           pathname: '/ITSM/operationreport/monthlyreport/mymonthlysearch',
           query: { pathpush: true },
           state: { cache: false }
         })
       }
-
-
     }
-
   }
-
-  // const handleListdata = () => {
-  //   validateFields((err, values) => {
-  //     dispatch({
-  //       type: 'eventstatistics/fetchordertopnList',
-  //       payload: { value, startTime, endTime }
-  //     })
-  //   })
-  // }
 
   const onChange = (date, dateString) => {
     if (reporttype === 'week') {
-      startTime = dateString[0];
-      endTime = dateString[1];
+      const [start, end] = dateString;
+      startTime = start;
+      endTime = end;
     } else {
       startTime = date.startOf('month').format('YYYY-MM-DD');
       endTime = date.endOf('month').format('YYYY-MM-DD');
@@ -312,15 +304,10 @@ function SoftReportdetail(props) {
     addTitle.splice(tableIndex, 1);
     list.splice(tableIndex, 1);
     const resultArr = [];
-    const listArr = [];
     for (let i = 0; i < addTitle.length; i++) {
       resultArr.push(addTitle[i])
     }
-    // for (let i = 0; i < list.length; i++) {
-    //   listArr.push(list[i])
-    // }
     setAddTitle(resultArr)
-    // setList(listArr)
   }
 
   const exportWord = () => {
@@ -394,7 +381,7 @@ function SoftReportdetail(props) {
               {
                 reporttype === 'week' && (
                   <Col span={24}>
-                    <Form.Item label='起始时间'>
+                    <Form.Item label='填报日期'>
                       {getFieldDecorator('time1', {
                         rules: [
                           {
@@ -416,7 +403,7 @@ function SoftReportdetail(props) {
               {
                 reporttype === 'month' && (
                   <Col span={24}>
-                    <Form.Item label='起始时间'>
+                    <Form.Item label='填报日期'>
                       {getFieldDecorator('time1', {
                         rules: [
                           {
@@ -424,7 +411,7 @@ function SoftReportdetail(props) {
                             message: '请选择填报日期'
                           }
                         ],
-                        initialValue: main ? moment(main.time1) : moment(startTime)
+                        initialValue: moment(main.time1)
                       })(<MonthPicker
                         allowClear
                         disabled={reportSearch}
@@ -970,7 +957,9 @@ function SoftReportdetail(props) {
 
                 )
               }
-
+              <Col span={24}>
+                <p style={{ fontWeight: '900', fontSize: '16px' }}>{reporttype === 'week' ? '七、上周作业完成情况' : '七、上月作业完成情况'}</p>
+              </Col>
               {/* 七、上周作业完成情况 */}
               <Col span={24}>
                 <LastweekHomework
@@ -1031,6 +1020,9 @@ function SoftReportdetail(props) {
                 )
               }
 
+              <Col span={24}>
+                <p style={{ fontWeight: '900', fontSize: '16px' }}>{reporttype === 'week' ? '八、下周作业计划' : '八、下月作业计划'}</p>
+              </Col>
 
               {/* 八、 下周作业计划 */}
               <Col span={24}>

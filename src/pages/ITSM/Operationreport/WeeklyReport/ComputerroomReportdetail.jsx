@@ -193,7 +193,51 @@ function ComputerroomReportdetail(props) {
   }, [loading])
 
   const handleBack = () => {
-    router.push('/ITSM/operationreport/weeklyreport/myweeklyreport');
+    router.push({
+      pathname: `/ITSM/operationreport/weeklyreport/myweeklyreport`,
+      query: { mainId, closetab: true },
+      state: { cache: false }
+    });
+
+    if (reporttype === 'week') {
+      if (!reportSearch) {
+        router.push({
+          pathname: '/ITSM/operationreport/weeklyreport/myweeklyreport',
+          query: { pathpush: true },
+          state: { cache: false }
+        }
+        );
+      }
+
+      if (reportSearch) {
+        router.push({
+          pathname: '/ITSM/operationreport/weeklyreport/myweeklyreportsearch',
+          query: { pathpush: true },
+          state: { cache: false }
+        }
+        );
+      }
+
+    }
+    if (reporttype === 'month') {
+      console.log(1)
+      if (!reportSearch) {
+        console.log(2)
+        router.push({
+          pathname: '/ITSM/operationreport/monthlyreport/mymonthlyreport',
+          query: { pathpush: true },
+          state: { cache: false }
+        })
+      }
+      if (reportSearch) {
+        console.log(3)
+        router.push({
+          pathname: '/ITSM/operationreport/monthlyreport/mymonthlysearch',
+          query: { pathpush: true },
+          state: { cache: false }
+        })
+      }
+    }
   }
 
   const onChange = (date, dateString) => {
@@ -237,16 +281,30 @@ function ComputerroomReportdetail(props) {
     setList(listArr)
   }
 
-  console.log(operationList, 'operationList')
-
-
+  const exportWord = () => {
+    dispatch({
+      type: 'softreport/exportWord',
+      payload: { mainId }
+    }).then(res => {
+      const fieldName = '下载.doc';
+      const blob = new Blob([res]);
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = fieldName;
+      a.click();
+      window.URL.revokeObjectURL(url);
+    })
+  }
 
   return (
     <PageHeaderWrapper
-      title={reporttype === 'week' ? '机房运维周报' : '机房运维月报'}
+      title={pagetitle}
       extra={
         <>
-          <Button type='primary'>导出</Button>
+          {loading === false && (
+            <Button type='primary' onClick={exportWord}>导出</Button>
+          )}
 
           {!reportSearch && (
             <Button type='primary' onClick={softReportform}>保存</Button>
@@ -283,7 +341,7 @@ function ComputerroomReportdetail(props) {
               {
                 reporttype === 'week' && (
                   <Col span={24}>
-                    <Form.Item label='起始时间'>
+                    <Form.Item label='填报日期'>
                       {getFieldDecorator('time1', {
                         initialValue: main ? [moment(main.time1), moment(main.time2)] : [moment(startTime), moment(endTime)]
                       })(<RangePicker
@@ -299,9 +357,9 @@ function ComputerroomReportdetail(props) {
               {
                 reporttype === 'month' && (
                   <Col span={24}>
-                    <Form.Item label='起始时间'>
+                    <Form.Item label='填报日期'>
                       {getFieldDecorator('time1', {
-                        initialValue: moment(startTime)
+                        initialValue: moment(main.time1)
                       })(<MonthPicker
                         allowClear={false}
                         disabled={reportSearch}

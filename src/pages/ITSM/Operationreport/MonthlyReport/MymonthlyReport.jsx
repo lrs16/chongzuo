@@ -35,9 +35,8 @@ const formItemLayout = {
   },
 };
 
-let starttime;
-let monthStarttime;
-let endTime;
+let starttime = '';
+let endTime = '';
 
 function MymonthlyReport(props) {
   const pagetitle = props.route.name;
@@ -66,7 +65,7 @@ function MymonthlyReport(props) {
                 query: {
                   mainId: record.id,
                   reporttype: 'month',
-                  orderNo: '',
+                  orderNo: record.id,
                 },
               });
               break;
@@ -76,7 +75,7 @@ function MymonthlyReport(props) {
                 query: {
                   mainId: record.id,
                   reporttype: 'month',
-                  orderNo: '',
+                  orderNo: record.id,
                 },
               });
               break;
@@ -86,7 +85,7 @@ function MymonthlyReport(props) {
                 query: {
                   mainId: record.id,
                   reporttype: 'month',
-                  orderNo: '',
+                  orderNo: record.id,
                 },
               });
               break;
@@ -96,7 +95,7 @@ function MymonthlyReport(props) {
                 query: {
                   mainId: record.id,
                   reporttype: 'month',
-                  orderNo: '',
+                  orderNo: record.id,
                 },
               });
               break;
@@ -116,8 +115,8 @@ function MymonthlyReport(props) {
     },
     {
       title: '填报日期',
-      dataIndex: 'time1',
-      key: 'time1',
+      dataIndex: 'addTime',
+      key: 'addTime',
     },
     {
       title: '填报人',
@@ -202,16 +201,6 @@ function MymonthlyReport(props) {
     </Menu>
   );
 
-
-  const handleReset = () => {
-    resetFields();
-    starttime = '';
-    endTime = '';
-    validateFields((err, value) => {
-      searchdata(value, 1, paginations.pageSize);
-    })
-  };
-
   const searchdata = (values, page, pageSize) => {
     dispatch({
       type: 'softreport/queryList',
@@ -220,12 +209,21 @@ function MymonthlyReport(props) {
         timeType: '月报',
         userId: sessionStorage.getItem('userauthorityid'),
         plannedStartTime: '',
-        time1: values.plannedStartTime?.length ? moment(values.plannedStartTime[0]).format('YYYY-MM-DD HH:mm:ss') : starttime,
-        time2: values.plannedStartTime?.length ? moment(values.plannedStartTime[1]).format('YYYY-MM-DD HH:mm:ss') : endTime,
+        time1: starttime,
+        time2: endTime,
         pageSize,
         pageIndex: page - 1,
       },
     });
+  };
+
+  const handleReset = () => {
+    resetFields();
+    starttime = '';
+    endTime = '';
+    validateFields((err, value) => {
+      searchdata(value, 1, paginations.pageSize);
+    })
   };
 
   const onShowSizeChange = (page, pageSize) => {
@@ -257,7 +255,7 @@ function MymonthlyReport(props) {
     onShowSizeChange: (page, pageSize) => onShowSizeChange(page, pageSize),
     current: paginations.current,
     pageSize: paginations.pageSize,
-    // total: besolveList.total,
+    total: queryOrderlist.total,
     showTotal: total => `总共  ${total}  条记录`,
     onChange: (page) => changePage(page),
   };
@@ -329,30 +327,9 @@ function MymonthlyReport(props) {
     }
   }
 
-  const defaultTime = () => {
-    //  周统计
-    starttime = moment().week(moment().week() - 1).startOf('week').format('YYYY-MM-DD HH:mm:ss');
-    endTime = moment().week(moment().week() - 1).endOf('week').format('YYYY-MM-DD');
-    endTime = `${endTime} 00:00:00`;
-  }
-
-  const startdisabledDate = (current) => {
-    return current > moment().subtract('days', 6)
-  }
-
   const onChange = (date, dateString) => {
     starttime = date.startOf('month').format('YYYY-MM-DD');
     endTime = date.endOf('month').format('YYYY-MM-DD');
-  }
-
-  const endonChange = (date, dateString) => {
-    endTime = dateString;
-    starttime = moment(dateString).subtract('day', 6).format('YYYY-MM-DD');
-    setFieldsValue({ time1: moment(starttime) })
-  }
-
-  const enddisabledDate = (current) => {
-    return current > moment().endOf('day')
   }
 
   const handleCopy = () => {
@@ -374,7 +351,6 @@ function MymonthlyReport(props) {
   }
 
   useEffect(() => {
-    defaultTime();
     validateFields((err, value) => {
       searchdata(value, 1, paginations.pageSize);
     })
@@ -499,14 +475,19 @@ function MymonthlyReport(props) {
 
         </div>
 
-        <Table
-          loading={loading}
-          columns={columns}
-          dataSource={queryOrderlist.rows}
-          rowKey={record => record.id}
-          pagination={pagination}
-          rowSelection={rowSelection}
-        />
+        {
+          loading === false && (
+            <Table
+              loading={loading}
+              columns={columns}
+              dataSource={queryOrderlist.rows}
+              rowKey={record => record.id}
+              pagination={pagination}
+              rowSelection={rowSelection}
+            />
+          )
+        }
+
       </Card>
 
     </PageHeaderWrapper>

@@ -344,21 +344,21 @@ function NewTroublelist(props) {
     }
   ];
 
-  const [newColumns, setNewColumns] = useState(column)
 
   useEffect(() => {
     handleTabledata();
-    if (mainId) {
-      setNewColumns(editColumn)
-    }
   }, [faultlist])
 
+  let setColumns = column;
 
+  if(mainId) {
+    setColumns = editColumn
+  }
   return (
     <>
       {/* <Row gutter={16}> */}
         {/* <Col span={20}> */}
-          <p style={{ fontWeight: '900', fontSize: '16px' }}>3 本周新增故障及故障修复情况统计</p>
+          <p style={{ fontWeight: '900', fontSize: '16px' }}>（三） 本周新增故障及故障修复情况统计</p>
         {/* </Col> */}
         {/* <Col span={20}> */}
           <p>3.1新增及已修复故障</p>
@@ -372,7 +372,7 @@ function NewTroublelist(props) {
         </div>
 
         <Table
-          columns={newColumns}
+          columns={setColumns}
           dataSource={data}
           pagination={false}
         />
