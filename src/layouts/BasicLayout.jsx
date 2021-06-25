@@ -236,7 +236,16 @@ const BasicLayout = props => {
     // 处理完毕且待办列表已关闭需跳转回待办列表，添加待办列表新签标
     if (location.query.pathpush && !tabtargetid && !target && !tabtargetpath && menutarget) {
       const { menuDesc, id, menuUrl } = menutarget;
-      const panels = { name: menuDesc, id, itemPath: menuUrl, query: {}, state: {}, closable: true };
+      const targetid = toptabs.filter(item => item.id === id)[0];
+      console.log(targetid)
+      const panels = {
+        name: menuDesc,
+        id,
+        itemPath: menuUrl,
+        query: {},
+        state: targetid ? { ...targetid.state, cache: false } : {},
+        closable: true
+      };
       toptabs.push(panels);
       setActiveKey(id);
     };
