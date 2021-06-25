@@ -87,7 +87,7 @@ const PatrolAndExamine = React.forwardRef((props, ref) => {
     const newData = data.map(item => ({ ...item }));
     const target = getRowByKey(key, newData)
     if (target) {
-      if (fieldName === 'field1') {
+      if (fieldName === 'field1') { 
         target[fieldName] = moment(e).format('YYYY-MM-DD');
         setData(newData);
       } else {
@@ -128,7 +128,7 @@ const PatrolAndExamine = React.forwardRef((props, ref) => {
       key: 'field2',
       render: (text, record) => {
         return (
-          <Input
+          <TextArea
             disabled={detailParams}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field2', record.key)}
@@ -142,7 +142,7 @@ const PatrolAndExamine = React.forwardRef((props, ref) => {
       key: 'field3',
       render: (text, record) => {
         return (
-          <Input
+          <TextArea
             disabled={detailParams}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field3', record.key)}
@@ -156,7 +156,7 @@ const PatrolAndExamine = React.forwardRef((props, ref) => {
       key: 'field4',
       render: (text, record) => {
         return (
-          <Input
+          <TextArea
             disabled={detailParams}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field4', record.key)}
@@ -170,7 +170,7 @@ const PatrolAndExamine = React.forwardRef((props, ref) => {
       key: 'field5',
       render: (text, record) => {
         return (
-          <Input
+          <TextArea
             disabled={detailParams}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field5', record.key)}

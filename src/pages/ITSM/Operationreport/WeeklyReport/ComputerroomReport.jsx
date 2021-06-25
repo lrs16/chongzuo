@@ -297,15 +297,24 @@ function ComputerroomReport(props) {
     }
   }
 
+
   const onChange = (date, dateString) => {
     if (reporttype === 'week') {
-      startTime = dateString[0];
-      endTime = dateString[1];
+      startTime = dateString;
+      endTime = moment(dateString).add(+6, 'day').format('YYYY-MM-DD');
+      setFieldsValue({ time2: moment(endTime) });
     } else {
       startTime = date.startOf('month').format('YYYY-MM-DD');
       endTime = date.endOf('month').format('YYYY-MM-DD');
     }
   }
+
+  const endonChange = (date, dateString) => {
+    endTime = dateString;
+    startTime = moment(dateString).subtract('day', 6).format('YYYY-MM-DD');
+    setFieldsValue({ time1: moment(startTime) })
+  }
+
 
   const newMember = () => {
     const nowNumber = addTitle.map(item => ({ ...item }));
@@ -329,12 +338,15 @@ function ComputerroomReport(props) {
 
       }
     >
-      <Card>
+      <Card style={{ padding: 24 }}>
         {loading === false && (
-          <Row gutter={16}>
+          <Row gutter={24}>
             <Form>
               <Col span={24}>
-                <Form.Item label={reporttype === 'week' ? '周报名称' : '月报名称'}>
+                <Form.Item
+                  label={reporttype === 'week' ? '周报名称' : '月报名称'}
+                  style={{ display: 'inline-flex' }}
+                >
                   {getFieldDecorator('name', {
                     rules: [
                       {
@@ -345,19 +357,62 @@ function ComputerroomReport(props) {
                     initialValue: copyData.main ? copyData.main.name : ''
                   })
                     (
-                      <Input />
+                      <Input style={{ width: 700 }}/>
                     )}
                 </Form.Item>
               </Col>
 
               {
                 reporttype === 'week' && (
+                  <div>
+                    <Col span={24}>
+                      <Form.Item label='填报时间' style={{ display: 'inline-flex' }}>
+                        {getFieldDecorator('time1', {
+                          rules: [
+                            {
+                              required,
+                              message: '请输入填报时间'
+                            }
+                          ],
+                          initialValue: moment(startTime)
+                        })(
+                          <DatePicker
+                            allowClear={false}
+                            style={{ marginRight: 10 }}
+                            onChange={onChange}
+                          />)}
+                      </Form.Item>
+
+                      <Form.Item label='' style={{ display: 'inline-flex' }}>
+                        {
+                          getFieldDecorator('time2', {
+                            initialValue: moment(endTime)
+                          })
+                            (<DatePicker
+                              allowClear={false}
+                              onChange={endonChange}
+                            />)
+                        }
+                      </Form.Item>
+                    </Col>
+                  </div>
+                )
+              }
+
+              {
+                reporttype === 'month' && (
                   <Col span={24}>
                     <Form.Item label='填报日期'>
                       {getFieldDecorator('time1', {
-                        initialValue: [moment(copyData.main ? copyData.main.time1 : startTime), moment(copyData.main ? copyData.main.time2 : endTime)]
-                      })(<RangePicker
-                        allowClear={false}
+                        rules: [
+                          {
+                            required,
+                            message: '请选择填报日期'
+                          }
+                        ],
+                        initialValue: moment(copyData.main ? copyData.main.time1 : startTime)
+                      })(<MonthPicker
+                        allowClear
                         // disabledDate={startdisabledDate}
                         // placeholder='请选择'
                         onChange={onChange}
@@ -367,7 +422,7 @@ function ComputerroomReport(props) {
                 )
               }
 
-              {
+              {/* {
                 reporttype === 'month' && (
                   <Col span={24}>
                     <Form.Item label='填报日期'>
@@ -382,9 +437,9 @@ function ComputerroomReport(props) {
                     </Form.Item>
                   </Col>
                 )
-              }
+              } */}
 
-              <Col span={24}><p style={{ fontWeight: '900', fontSize: '16px' }}>{reporttype === 'week' ? '一、本周运维总结' : '一、本月运维总结'}</p></Col>
+              <Col span={24}><p style={{ fontWeight: '900', fontSize: '16px', marginTop: 24 }}>{reporttype === 'week' ? '一、本周运维总结' : '一、本月运维总结'}</p></Col>
               {/* 本周运维总结 */}
               <Col span={24}>
                 <Form.Item label=''>
@@ -611,7 +666,7 @@ function ComputerroomReport(props) {
                   <Col span={24}>
                     <LastweekHomework
                       forminladeLayout={forminladeLayout}
-                      operationArr={copyData.operationList ? copyData.operationList : lastweekHomeworklist.rows}
+                      operationArr={lastweekHomeworklist.rows}
                       startTime={startTime}
                       endTime={endTime}
                       type={reporttype}
@@ -651,7 +706,6 @@ function ComputerroomReport(props) {
                       nextOperationList={contentrowdata => {
                         setNextOperationList(contentrowdata)
                       }}
-                      mainId={copyData.nextOperationList ? true : mainId}
                     />
                   </Col>
                 )
@@ -662,14 +716,13 @@ function ComputerroomReport(props) {
                   <Col span={24}>
                     <NextweekHomework
                       forminladeLayout={forminladeLayout}
-                      nextOperationArr={copyData.nextOperationList}
+                      nextOperationArr={nextweekHomeworklist.rows}
                       startTime={startTime}
                       endTime={endTime}
                       type={reporttype}
                       nextOperationList={contentrowdata => {
                         setNextOperationList(contentrowdata)
                       }}
-                      mainId={copyData.nextOperationList ? true : mainId}
                     />
                   </Col>
                 )

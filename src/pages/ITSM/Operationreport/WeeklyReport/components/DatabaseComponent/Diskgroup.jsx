@@ -3,15 +3,11 @@ import {
   Table,
   Form,
   Input,
-  Col,
-  Row,
   Button,
-  Divider,
   Popconfirm,
   message
 } from 'antd';
 import { connect } from 'dva';
-import SysUpload from '@/components/SysUpload';
 
 const { TextArea } = Input;
 const Diskgroup = React.forwardRef((props, ref) => {
@@ -25,10 +21,8 @@ const Diskgroup = React.forwardRef((props, ref) => {
   );
 
   const {
-    form: { getFieldDecorator },
     discArr,
     discList,
-    legacyArr,
     reportSearch
   } = props;
 
@@ -138,7 +132,7 @@ const Diskgroup = React.forwardRef((props, ref) => {
       key: 'field3',
       render: (text, record) => {
         return (
-          <Input
+          <TextArea
             disabled={reportSearch}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field3', record.key)}
@@ -152,7 +146,7 @@ const Diskgroup = React.forwardRef((props, ref) => {
       key: 'field4',
       render: (text, record) => {
         return (
-          <Input
+          <TextArea
             disabled={reportSearch}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field4', record.key)}

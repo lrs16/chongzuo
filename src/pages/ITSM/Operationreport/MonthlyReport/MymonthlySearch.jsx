@@ -143,8 +143,6 @@ function MymonthlySearch(props) {
   ];
 
   const searchdata = (values, page, pageSize) => {
-    console.log(starttime,'starttime');
-    console.log(endTime,'endTime');
     dispatch({
       type: 'softreport/queryList',
       payload: {
@@ -342,7 +340,7 @@ function MymonthlySearch(props) {
           </Form>
         </Row>
 
-        <Button type="primary" style={{ marginRight: 8 }} onClick={download}>
+        <Button type="primary" style={{ marginRight: 8,marginBottom: '10px' }} onClick={download}>
           导出数据
         </Button>
 

@@ -9,10 +9,12 @@ import {
   Button,
   Divider,
   Select,
-  message
+  message,
+  Descriptions
 } from 'antd';
 import moment from 'moment';
 import SysUpload from '@/components/SysUpload';
+import Downloadfile from '@/components/SysUpload/Downloadfile';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -313,7 +315,7 @@ const AddForm = React.forwardRef((props, ref) => {
                 {getFieldDecorator(`title`, {
                   initialValue: dynamicData.title
                 })(
-                  <Input  disabled={detailParams}/>
+                  <Input disabled={detailParams} />
                 )}
               </Form.Item>
 
@@ -321,29 +323,50 @@ const AddForm = React.forwardRef((props, ref) => {
                 {getFieldDecorator(`content`, {
                   initialValue: dynamicData.content
                 })(
-                  <TextArea 
-                  autoSize={{ minRows: 3 }}
-                  disabled={detailParams}
-                   />
-                )}
-              </Form.Item>
-
-              <Form.Item label='上传附件'    {...formincontentLayout}>
-                {getFieldDecorator(`files`, {
-                  initialValue: dynamicData.files ? dynamicData.files : ''
-                })(
-                  <SysUpload
-                    fileslist={dynamicData.files ? JSON.parse(dynamicData.files) : []}
-                    ChangeFileslist={newvalue => {
-                      setFieldsValue({
-                        files: JSON.stringify(newvalue.arr),
-                      })
-                      handleSubmit();
-                    }}
+                  <TextArea
+                    autoSize={{ minRows: 3 }}
+                    disabled={detailParams}
                   />
                 )}
               </Form.Item>
- 
+
+              {
+                !detailParams && (
+                  <Form.Item label='上传附件'    {...formincontentLayout}>
+                    {getFieldDecorator(`files`, {
+                      initialValue: dynamicData.files ? dynamicData.files : ''
+                    })(
+                      <SysUpload
+                        fileslist={dynamicData.files ? JSON.parse(dynamicData.files) : []}
+                        ChangeFileslist={newvalue => {
+                          setFieldsValue({
+                            files: JSON.stringify(newvalue.arr),
+                          })
+                          handleSubmit();
+                        }}
+                      />
+                    )}
+                  </Form.Item>
+                )
+              }
+
+
+              {
+                detailParams && (
+                  <div style={{ marginLeft: 30, marginRight: 10 }}>
+                    <Descriptions size="middle">
+                      <Descriptions.Item label='上传附件'>
+                        <span style={{ color: 'blue', textDecoration: 'underline' }} >
+                          {dynamicData && <Downloadfile files={dynamicData.files === '' ? '[]' : dynamicData.files} />}
+                        </span>
+                      </Descriptions.Item>
+
+                    </Descriptions>
+                  </div>
+
+                )
+              }
+
               <Table
                 columns={column}
                 dataSource={data}

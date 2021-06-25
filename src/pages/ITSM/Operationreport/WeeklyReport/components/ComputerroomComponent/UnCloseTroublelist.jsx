@@ -14,6 +14,7 @@ import {
 } from 'antd';
 import moment from 'moment';
 
+const { TextArea } = Input;
 function UnCloseTroublelist(props) {
 
   const {
@@ -88,8 +89,13 @@ function UnCloseTroublelist(props) {
     const newData = data.map(item => ({ ...item }));
     const target = getRowByKey(key, newData)
     if (target) {
-      target[fieldName] = e;
-      setData(newData);
+      if (fieldName === 'field4') {
+        target[fieldName] = moment(e).format('YYYY-MM-DD');
+        setData(newData);
+      } else {
+        target[fieldName] = e;
+        setData(newData);
+      }
     }
   }
 
@@ -137,8 +143,7 @@ function UnCloseTroublelist(props) {
       key: 'field3',
       render: (text, record) => {
         return (
-          <Input
-            disabled={reportSearch}
+          <TextArea
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field3', record.key)}
           />
@@ -151,10 +156,10 @@ function UnCloseTroublelist(props) {
       key: 'field4',
       render: (text, record) => {
         return (
-          <Input
+          <DatePicker
             disabled={reportSearch}
-            defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'field4', record.key)}
+            defaultValue={text ? moment(text) : moment(new Date())}
+            onChange={e => handleFieldChange(e, 'field4', record.key)}
           />
         )
       }
@@ -230,10 +235,10 @@ function UnCloseTroublelist(props) {
       key: 'field4',
       render: (text, record) => {
         return (
-          <Input
+          <DatePicker
             disabled={reportSearch}
-            defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'field4', record.key)}
+            defaultValue={text ? moment(text) : moment(new Date())}
+            onChange={e => handleFieldChange(e, 'field4', record.key)}
           />
         )
       }
@@ -268,7 +273,7 @@ function UnCloseTroublelist(props) {
 
   let setColumns = column;
 
-  if(mainId) {
+  if (mainId) {
     setColumns = editClolumn
   }
 
@@ -278,7 +283,7 @@ function UnCloseTroublelist(props) {
       {/* <Row gutter={16}> */}
 
       {/* <Col span={20}> */}
-      <p style={{marginTop:24}}>3.2未修复故障清单</p>
+      <p style={{ marginTop: 24 }}>3.2未修复故障清单</p>
       {/* </Col> */}
 
       <div style={{ textAlign: 'right', marginBottom: 10 }}>

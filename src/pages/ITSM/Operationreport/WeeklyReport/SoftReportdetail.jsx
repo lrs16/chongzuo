@@ -271,16 +271,34 @@ function SoftReportdetail(props) {
     }
   }
 
+  // const onChange = (date, dateString) => {
+  //   if (reporttype === 'week') {
+  //     const [start, end] = dateString;
+  //     startTime = start;
+  //     endTime = end;
+  //   } else {
+  //     startTime = date.startOf('month').format('YYYY-MM-DD');
+  //     endTime = date.endOf('month').format('YYYY-MM-DD');
+  //   }
+  // }
+
   const onChange = (date, dateString) => {
     if (reporttype === 'week') {
-      const [start, end] = dateString;
-      startTime = start;
-      endTime = end;
+      startTime = dateString;
+      endTime = moment(dateString).add(+6, 'day').format('YYYY-MM-DD');
+      setFieldsValue({ time2: moment(endTime) });
     } else {
       startTime = date.startOf('month').format('YYYY-MM-DD');
       endTime = date.endOf('month').format('YYYY-MM-DD');
     }
   }
+
+  const endonChange = (date, dateString) => {
+    endTime = dateString;
+    startTime = moment(dateString).subtract('day', 6).format('YYYY-MM-DD');
+    setFieldsValue({ time1: moment(startTime) })
+  }
+
 
   const newMember = () => {
     const nowNumber = addTitle.map(item => ({ ...item }));
@@ -357,12 +375,15 @@ function SoftReportdetail(props) {
         </>
       }
     >
-      <Card style={{ paddingLeft: 24 }}>
+      <Card style={{ padding: 24 }}>
         {loading === false && startTime && (
           <Row gutter={24}>
             <Form>
               <Col span={24}>
-                <Form.Item label={reporttype === 'week' ? '周报名称' : '月报名称'}>
+                <Form.Item
+                  label={reporttype === 'week' ? '周报名称' : '月报名称'}
+                  style={{ display: 'flex' }}
+                >
                   {getFieldDecorator('name', {
                     rules: [
                       {
@@ -373,12 +394,12 @@ function SoftReportdetail(props) {
                     initialValue: main ? main.name : ''
                   })
                     (
-                      <Input disabled={reportSearch} />
+                      <Input disabled={reportSearch} style={{ width: 500 }} />
                     )}
                 </Form.Item>
               </Col>
 
-              {
+              {/* {
                 reporttype === 'week' && (
                   <Col span={24}>
                     <Form.Item label='填报日期'>
@@ -398,9 +419,47 @@ function SoftReportdetail(props) {
                     </Form.Item>
                   </Col>
                 )
-              }
+              } */}
 
               {
+                reporttype === 'week' && (
+                  <div>
+                    <Col span={24}>
+                      <Form.Item label='填报时间' style={{ display: 'inline-flex' }}>
+                        {getFieldDecorator('time1', {
+                          rules: [
+                            {
+                              required,
+                              message: '请输入名称'
+                            }
+                          ],
+                          initialValue: moment(main.time1)
+                        })(
+                            <DatePicker
+                              allowClear={false}
+                              style={{ marginRight: 10 }}
+                              onChange={onChange}
+                            />
+                        )}
+                      </Form.Item>
+
+                      <Form.Item label='' style={{ display: 'inline-flex' }}>
+                        {
+                          getFieldDecorator('time2', {
+                            initialValue: moment(main.time2)
+                          })
+                            (<DatePicker
+                              allowClear={false}
+                              onChange={endonChange}
+                            />)
+                        }
+                      </Form.Item>
+                    </Col>
+                  </div>
+                )
+              }
+
+              {/* {
                 reporttype === 'month' && (
                   <Col span={24}>
                     <Form.Item label='填报日期'>
@@ -415,6 +474,29 @@ function SoftReportdetail(props) {
                       })(<MonthPicker
                         allowClear
                         disabled={reportSearch}
+                        // disabledDate={startdisabledDate}
+                        // placeholder='请选择'
+                        onChange={onChange}
+                      />)}
+                    </Form.Item>
+                  </Col>
+                )
+              } */}
+
+              {
+                reporttype === 'month' && (
+                  <Col span={24}>
+                    <Form.Item label='填报日期' style={{ display: 'inline-flex' }}>
+                      {getFieldDecorator('time1', {
+                        rules: [
+                          {
+                            required,
+                            message: '请选择填报日期'
+                          }
+                        ],
+                        initialValue: moment(main.time1)
+                      })(<MonthPicker
+                        allowClear
                         // disabledDate={startdisabledDate}
                         // placeholder='请选择'
                         onChange={onChange}
@@ -1099,7 +1181,6 @@ function SoftReportdetail(props) {
                           }}
                           dynamicData={addTitle[index]}
                           loading={loading}
-                          detailParams={reportSearch}
                         />
                       </Col>
 

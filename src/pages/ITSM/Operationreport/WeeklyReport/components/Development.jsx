@@ -166,12 +166,12 @@ const Development = React.forwardRef((props, ref) => {
           <p>（三）运维材料提交情况</p>
         {/* </Col> */}
 
-        <Col style={{textAlign:'right',marginBottom:10}}>
+        <div style={{textAlign:'right',marginBottom:10}}>
           <Button
             disabled={detailParams}
             type='primary'
             onClick={handleSave}>保存</Button>
-        </Col>
+        </div>
 
 
         <Table

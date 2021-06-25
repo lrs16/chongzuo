@@ -138,8 +138,7 @@ function NewTroublelist(props) {
       key: 'field3',
       render: (text, record) => {
         return (
-          <Input
-            disabled={reportSearch}
+          <TextArea
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field3', record.key)}
           />
@@ -152,11 +151,14 @@ function NewTroublelist(props) {
       key: 'field4',
       render: (text, record) => {
         return (
-          <Input
+          <Select
             disabled={reportSearch}
             defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'field4', record.key)}
-          />
+            onChange={e => handleFieldChange(e, 'field4', record.key)}
+          >
+            <Option value="是">是</Option>
+            <Option value="否">否</Option>
+          </Select>
         )
       }
     },
@@ -166,11 +168,14 @@ function NewTroublelist(props) {
       key: 'field5',
       render: (text, record) => {
         return (
-          <Input
+          <Select
             disabled={reportSearch}
             defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'field5', record.key)}
-          />
+            onChange={e => handleFieldChange(e, 'field5', record.key)}
+          >
+            <Option value="是">是</Option>
+            <Option value="否">否</Option>
+          </Select>
         )
       }
     },
@@ -194,11 +199,14 @@ function NewTroublelist(props) {
       key: 'field7',
       render: (text, record) => {
         return (
-          <Input
+          <Select
             disabled={reportSearch}
             defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'field7', record.key)}
-          />
+            onChange={e => handleFieldChange(e, 'field7', record.key)}
+          >
+            <Option value="是">是</Option>
+            <Option value="否">否</Option>
+          </Select>
         )
       }
     },
@@ -258,8 +266,7 @@ function NewTroublelist(props) {
       key: 'field3',
       render: (text, record) => {
         return (
-          <Input
-            disabled={reportSearch}
+          <TextArea
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field3', record.key)}
           />
@@ -272,11 +279,14 @@ function NewTroublelist(props) {
       key: 'field4',
       render: (text, record) => {
         return (
-          <Input
+          <Select
             disabled={reportSearch}
             defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'field4', record.key)}
-          />
+            onChange={e => handleFieldChange(e, 'field4', record.key)}
+          >
+            <Option value="是">是</Option>
+            <Option value="否">否</Option>
+          </Select>
         )
       }
     },
@@ -286,11 +296,14 @@ function NewTroublelist(props) {
       key: 'field5',
       render: (text, record) => {
         return (
-          <Input
+          <Select
             disabled={reportSearch}
             defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'field5', record.key)}
-          />
+            onChange={e => handleFieldChange(e, 'field5', record.key)}
+          >
+            <Option value="是">是</Option>
+            <Option value="否">否</Option>
+          </Select>
         )
       }
     },
@@ -314,11 +327,14 @@ function NewTroublelist(props) {
       key: 'field7',
       render: (text, record) => {
         return (
-          <Input
+          <Select
             disabled={reportSearch}
             defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'field7', record.key)}
-          />
+            onChange={e => handleFieldChange(e, 'field7', record.key)}
+          >
+            <Option value="是">是</Option>
+            <Option value="否">否</Option>
+          </Select>
         )
       }
     },
@@ -358,7 +374,7 @@ function NewTroublelist(props) {
     <>
       {/* <Row gutter={16}> */}
         {/* <Col span={20}> */}
-          <p style={{ fontWeight: '900', fontSize: '16px' }}>（三） 本周新增故障及故障修复情况统计</p>
+          <p style={{ fontWeight: '900', fontSize: '16px' }}>三、本周新增故障及故障修复情况统计</p>
         {/* </Col> */}
         {/* <Col span={20}> */}
           <p>3.1新增及已修复故障</p>

@@ -440,7 +440,7 @@ function MymonthlyReport(props) {
           </Form>
         </Row>
 
-        <div>
+        <div style={{ marginBottom: '10px' }}>
           <Dropdown
             overlay={menu}
             placement="bottomLeft"

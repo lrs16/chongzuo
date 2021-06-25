@@ -242,12 +242,19 @@ function ComputerroomReportdetail(props) {
 
   const onChange = (date, dateString) => {
     if (reporttype === 'week') {
-      startTime = dateString[0];
-      endTime = dateString[1];
+      startTime = dateString;
+      endTime = moment(dateString).add(+6, 'day').format('YYYY-MM-DD');
+      setFieldsValue({ time2: moment(endTime) });
     } else {
       startTime = date.startOf('month').format('YYYY-MM-DD');
       endTime = date.endOf('month').format('YYYY-MM-DD');
     }
+  }
+
+  const endonChange = (date, dateString) => {
+    endTime = dateString;
+    startTime = moment(dateString).subtract('day', 6).format('YYYY-MM-DD');
+    setFieldsValue({ time1: moment(startTime) })
   }
 
   const newMember = () => {
@@ -310,19 +317,22 @@ function ComputerroomReportdetail(props) {
             <Button type='primary' onClick={softReportform}>保存</Button>
           )}
 
-          <Button type='primary' onClick={handleBack}>
+          <Button onClick={handleBack}>
             返回
           </Button>
         </>
       }
     >
-      <Card>
+      <Card style={{ padding: 24 }}>
         {loading === false && (
           <Row gutter={24}>
             <Form>
 
               <Col span={24}>
-                <Form.Item label={reporttype === 'week' ? '周报名称' : '月报名称'}>
+                <Form.Item
+                  label={reporttype === 'week' ? '周报名称' : '月报名称'}
+                  style={{ display: 'inline-flex' }}
+                >
                   {getFieldDecorator('name', {
                     rules: [
                       {
@@ -333,12 +343,12 @@ function ComputerroomReportdetail(props) {
                     initialValue: main ? main.name : ''
                   })
                     (
-                      <Input disabled={reportSearch} />
+                      <Input disabled={reportSearch} style={{ width: 700 }} />
                     )}
                 </Form.Item>
               </Col>
 
-              {
+              {/* {
                 reporttype === 'week' && (
                   <Col span={24}>
                     <Form.Item label='填报日期'>
@@ -352,9 +362,46 @@ function ComputerroomReportdetail(props) {
                     </Form.Item>
                   </Col>
                 )
-              }
+              } */}
 
               {
+                reporttype === 'week' && (
+                  <div>
+                    <Col span={24}>
+                      <Form.Item label='填报时间' style={{ display: 'inline-flex' }}>
+                        {getFieldDecorator('time1', {
+                            rules: [
+                              {
+                                required,
+                                message: '请输入填报时间'
+                              }
+                            ],
+                          initialValue: main?moment(main.time1):''
+                        })(
+                          <DatePicker
+                            allowClear={false}
+                            style={{ marginRight: 10 }}
+                            onChange={onChange}
+                          />)}
+                      </Form.Item>
+
+                      <Form.Item label='' style={{ display: 'inline-flex' }}>
+                        {
+                          getFieldDecorator('time2', {
+                            initialValue: moment(main.time2)
+                          })
+                            (<DatePicker
+                              allowClear={false}
+                              onChange={endonChange}
+                            />)
+                        }
+                      </Form.Item>
+                    </Col>
+                  </div>
+                )
+              }
+
+              {/* {
                 reporttype === 'month' && (
                   <Col span={24}>
                     <Form.Item label='填报日期'>
@@ -368,7 +415,31 @@ function ComputerroomReportdetail(props) {
                     </Form.Item>
                   </Col>
                 )
+              } */}
+
+              {
+                reporttype === 'month' && (
+                  <Col span={24}>
+                    <Form.Item label='填报日期' style={{ display: 'inline-flex' }}>
+                      {getFieldDecorator('time1', {
+                        rules: [
+                          {
+                            required,
+                            message: '请选择填报日期'
+                          }
+                        ],
+                        initialValue: moment(main.time1)
+                      })(<MonthPicker
+                        allowClear
+                        // disabledDate={startdisabledDate}
+                        // placeholder='请选择'
+                        onChange={onChange}
+                      />)}
+                    </Form.Item>
+                  </Col>
+                )
               }
+
               <Col span={24}><p style={{ fontWeight: '900', fontSize: '16px' }}>{reporttype === 'week' ? '一、本周运维总结' : '一、本月运维总结'}</p></Col>
               {/* 本周运维总结 */}
               <Col span={24}>

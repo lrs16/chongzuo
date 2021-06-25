@@ -5,7 +5,7 @@ import {
   Input,
   Col,
   Row,
-  Divider,
+  DatePicker,
   Popconfirm,
   Select,
   AutoComplete,
@@ -17,8 +17,9 @@ import SysUpload from '@/components/SysUpload';
 import { queryOrder, queryUnitList, queryDeptList } from '@/services/common';
 import styles from '../index.less';
 import Downloadfile from '@/components/SysUpload/Downloadfile';
+import moment from 'moment';
 
-const { Search } = Input;
+const { Search, TextArea } = Input;
 const { Option } = Select;
 
 function ThisWeekitsm(props) {
@@ -93,6 +94,7 @@ function ThisWeekitsm(props) {
   const handleDisableduser = (v, opt,) => {
     const newData = data.map(item => ({ ...item }));
     const { type, no, content, startTime, endTime, systemName } = opt.props.disableuser;
+    console.log('endTime: ', endTime);
     const searchObj = {
       key: newData.length + 1,
       field1: type,
@@ -128,12 +130,16 @@ function ThisWeekitsm(props) {
     const newData = data.map(item => ({ ...item }));
     const target = getRowByKey(key, newData)
     if (target) {
-      target[fieldName] = e;
-      setData(newData);
+      if (fieldName === 'field6') {
+        target[fieldName] = moment(e).format('YYYY-MM-DD');
+        setData(newData);
+      } else {
+        target[fieldName] = e;
+        setData(newData);
+      }
+
     }
-    if (fieldName === 'num3') {
-      searchNumber(e)
-    }
+
 
   }
 
@@ -189,31 +195,88 @@ function ThisWeekitsm(props) {
       title: '应用系统名称',
       dataIndex: 'field3',
       key: 'field3',
+      render: (text, record) => {
+        return (
+          <Input
+            disabled={detailParams}
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field3', record.key)}
+          />
+        )
+      }
     },
     {
       title: '具体内容',
       dataIndex: 'field4',
       key: 'field4',
+      render: (text, record) => {
+        return (
+          <TextArea
+            disabled={detailParams}
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field4', record.key)}
+          />
+        )
+      }
     },
     {
       title: '处理情况',
       dataIndex: 'field5',
       key: 'field5',
+      render: (text, record) => {
+        return (
+          <TextArea
+            disabled={detailParams}
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field5', record.key)}
+          />
+        )
+      }
     },
     {
       title: '开始发生时间',
       dataIndex: 'field6',
       key: 'field6',
+      render: (text, record) => {
+        return (
+          <DatePicker
+            disabled={detailParams}
+            defaultValue={text ? moment(text) : moment(null)}
+            onChange={e => handleFieldChange(e, 'field6', record.key)}
+          />
+        )
+      }
     },
     {
       title: '处理完成时间',
       dataIndex: 'field7',
       key: 'field7',
+      render: (text, record) => {
+        return (
+          <TextArea
+            disabled={detailParams}
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field7', record.key)}
+          />
+        )
+      }
     },
     {
       title: '故障报告是否提交负责人',
       dataIndex: 'field8',
       key: 'field8',
+      render: (text, record) => {
+        return (
+          <Select
+            disabled={detailParams}
+            defaultValue={text}
+            onChange={e => handleFieldChange(e, 'field8', record.key)}
+          >
+            <Option key='是' value='是'>是</Option>
+            <Option key='否' value='否'>否</Option>
+          </Select>
+        )
+      }
     },
     {
       title: '操作',

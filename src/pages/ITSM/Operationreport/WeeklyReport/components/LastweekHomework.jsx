@@ -14,7 +14,7 @@ import {
 import moment from 'moment';
 
 
-
+const { TextArea } = Input;
 function LastweekHomework(props) {
   const {
     form: { getFieldDecorator },
@@ -82,7 +82,7 @@ function LastweekHomework(props) {
     const newData = data.map(item => ({ ...item }));
     const target = getRowByKey(key, newData)
     if (target) {
-      if (fieldName === 'field1' || fieldName === 'updateTime') {
+      if (fieldName === 'field1' || fieldName === 'updateTime' || fieldName === 'plannedEndTime' || fieldName === 'field5') {
         target[fieldName] = moment(e).format('YYYY-MM-DD');
         setData(newData);
       } else {
@@ -168,10 +168,10 @@ function LastweekHomework(props) {
       key: 'plannedEndTime',
       render: (text, record) => {
         return (
-          <Input
+          <DatePicker
             disabled={detailParams}
-            defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'plannedEndTime', record.key)}
+            defaultValue={text ? moment(text) : moment(new Date())}
+            onChange={e => handleFieldChange(e, 'plannedEndTime', record.key)}
           />
         )
       }
@@ -224,7 +224,7 @@ function LastweekHomework(props) {
       key: 'remark',
       render: (text, record) => {
         return (
-          <Input
+          <TextArea
             disabled={detailParams}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'remark', record.key)}
@@ -312,10 +312,10 @@ function LastweekHomework(props) {
       key: 'field5',
       render: (text, record) => {
         return (
-          <Input
+          <DatePicker
             disabled={detailParams}
-            defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'field5', record.key)}
+            defaultValue={text ? moment(text) : moment(new Date())}
+            onChange={e => handleFieldChange(e, 'field5', record.key)}
           />
         )
       }
@@ -368,7 +368,7 @@ function LastweekHomework(props) {
       key: 'field9',
       render: (text, record) => {
         return (
-          <Input
+          <TextArea
             disabled={detailParams}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field9', record.key)}

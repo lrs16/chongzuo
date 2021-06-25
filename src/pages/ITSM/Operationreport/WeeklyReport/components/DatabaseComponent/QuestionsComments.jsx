@@ -119,7 +119,7 @@ const QuestionsComments = React.forwardRef((props, ref) => {
       key: 'field2',
       render: (text, record) => {
         return (
-          <Input
+          <TextArea
             disabled={reportSearch}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field2', record.key)}
@@ -133,7 +133,7 @@ const QuestionsComments = React.forwardRef((props, ref) => {
       key: 'field3',
       render: (text, record) => {
         return (
-          <Input
+          <TextArea
             disabled={reportSearch}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field3', record.key)}

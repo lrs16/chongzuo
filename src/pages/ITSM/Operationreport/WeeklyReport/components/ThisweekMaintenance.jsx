@@ -29,35 +29,18 @@ const ThisweekMaintenance = React.forwardRef((props, ref) => {
   const {
     contentRow,
     contentArr,
-    detailParams
+    detailParams,
+    addData
   } = props;
 
   const [data, setData] = useState([]);
 
   // 初始化把数据传过去
-  useEffect(() => {
-    if (data && data.length) {
-      contentRow(data)
-    }
-  }, [data]);
 
   const handleSave = () => {
     contentRow(data);
     message.info('暂存保存数据成功')
   }
-
-  const addData = [
-    {
-      field1: '',
-      field2: '',
-      field3: '',
-      field4: '',
-      field5: '',
-      field6: '',
-      field7: '',
-      field8: ''
-    }
-  ]
 
   //  获取行  
   const getRowByKey = (key, newData) => {
@@ -74,11 +57,12 @@ const ThisweekMaintenance = React.forwardRef((props, ref) => {
   }
 
   const handleTabledata = () => {
-    const newarr = (contentArr).map((item, index) => {
-      return Object.assign(item, { editable: true, isNew: false, key: index })
-    })
-    setData(newarr)
+      const newarr = (contentArr).map((item, index) => {
+        return Object.assign(item, { editable: true, isNew: false, key: index })
+      })
+      setData(newarr)
   }
+
 
 
   const column = [
@@ -214,7 +198,8 @@ const ThisweekMaintenance = React.forwardRef((props, ref) => {
 
   useEffect(() => {
     handleTabledata();
-  }, [])
+  }, [contentArr])
+
 
   return (
     <>

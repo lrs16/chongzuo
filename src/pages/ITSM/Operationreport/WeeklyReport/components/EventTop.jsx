@@ -19,7 +19,7 @@ import { queryDisableduserByUser, queryUnitList, queryDeptList } from '@/service
 import styles from '../index.less';
 
 
-const { Search } = Input;
+const { TextArea } = Input;
 const { Option } = Select;
 
 function EventTop(props) {
@@ -207,7 +207,7 @@ function EventTop(props) {
       key: 'field4',
       render: (text, record) => {
         return (
-          <Input
+          <TextArea
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field4', record.key)}
           />
@@ -283,7 +283,7 @@ function EventTop(props) {
       key: 'field4',
       render: (text, record) => {
         return (
-          <Input
+          <TextArea
             disabled={detailParams}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field4', record.key)}

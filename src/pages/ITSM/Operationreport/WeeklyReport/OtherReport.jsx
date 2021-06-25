@@ -84,21 +84,25 @@ function OtherReport(props) {
   //  保存表单
   const softReportform = (params) => {
     props.form.validateFields((err, value) => {
-      const savedata = {
-        ...value,
-        status: 'add',
-        editStatus: mainId ? 'edit' : 'add',
-        addData: JSON.stringify(list),
-        type: reporttype === 'week' ? '其他运维周报' : '其他运维月报',
-        reporttype,
-        mainId,
-        time1: startTime,
-        time2: endTime,
+      if(!err) {
+        const savedata = {
+          ...value,
+          status: 'add',
+          editStatus: mainId ? 'edit' : 'add',
+          addData: JSON.stringify(list),
+          type: reporttype === 'week' ? '其他运维周报' : '其他运维月报',
+          reporttype,
+          mainId,
+          time1: startTime,
+          time2: endTime,
+        }
+  
+        dispatch({
+          type: 'softreport/saveOther',
+          payload: savedata
+        })
       }
-      dispatch({
-        type: 'softreport/saveOther',
-        payload: savedata
-      })
+  
     })
   }
 
@@ -162,9 +166,9 @@ function OtherReport(props) {
           state: { cache: false }
         }
         );
-      } 
+      }
 
-      if(reportSearch) {
+      if (reportSearch) {
         router.push({
           pathname: '/ITSM/operationreport/weeklyreport/myweeklyreportsearch',
           query: { pathpush: true },
@@ -173,17 +177,17 @@ function OtherReport(props) {
         );
       }
 
-    } 
+    }
 
-    if(reporttype === 'month') {
-      if(!reportSearch) {
+    if (reporttype === 'month') {
+      if (!reportSearch) {
         router.push({
           pathname: '/ITSM/operationreport/monthlyreport/mymonthlyreport',
           query: { pathpush: true },
           state: { cache: false }
         })
       }
-      if(reportSearch) {
+      if (reportSearch) {
         router.push({
           pathname: '/ITSM/operationreport/monthlyreport/mymonthlysearch',
           query: { pathpush: true },
@@ -194,13 +198,20 @@ function OtherReport(props) {
   }
 
   const onChange = (date, dateString) => {
-    if(reporttype === 'week') {
-      startTime = dateString[0];
-      endTime = dateString[1];
+    if (reporttype === 'week') {
+      startTime = dateString;
+      endTime = moment(dateString).add(+6, 'day').format('YYYY-MM-DD');
+      setFieldsValue({ time2: moment(endTime) });
     } else {
       startTime = date.startOf('month').format('YYYY-MM-DD');
       endTime = date.endOf('month').format('YYYY-MM-DD');
     }
+  }
+
+  const endonChange = (date, dateString) => {
+    endTime = dateString;
+    startTime = moment(dateString).subtract('day', 6).format('YYYY-MM-DD');
+    setFieldsValue({ time1: moment(startTime) })
   }
 
   const newMember = () => {
@@ -234,23 +245,32 @@ function OtherReport(props) {
 
       }
     >
-      <Card>
+      <Card style={{ padding: 24 }}>
         {startTime && (
           <Row gutter={24}>
             <Form>
 
               <Col span={24}>
-                <Form.Item label={reporttype === 'week' ? '周报名称' : '月报名称'}>
+                <Form.Item 
+                label={reporttype === 'week' ? '周报名称' : '月报名称'}
+                style={{ display: 'inline-flex' }}
+                >
                   {getFieldDecorator('name', {
+                      rules: [
+                        {
+                          required,
+                          message: '请输入名称'
+                        }
+                      ],
                     initialValue: copyData.main ? copyData.main.name : ''
                   })
                     (
-                      <Input />
+                      <Input style={{ width: 700 }}/>
                     )}
                 </Form.Item>
               </Col>
 
-              {
+              {/* {
                 reporttype === 'week' && (
                   <Col span={24}>
                     <Form.Item label='起始时间'>
@@ -271,12 +291,71 @@ function OtherReport(props) {
                     </Form.Item>
                   </Col>
                 )
+              } */}
+
+              {
+                reporttype === 'week' && (
+                  <div style={{ display: 'inline' }}>
+                    <Col span={24}>
+                      <Form.Item label='填报时间' style={{ display: 'inline-flex' }}>
+                        {getFieldDecorator('time1', {
+                            rules: [
+                              {
+                                required,
+                                message: '请输入填报时间'
+                              }
+                            ],
+                          initialValue: moment(startTime)
+                        })(<DatePicker
+                          allowClear={false}
+                          style={{ marginRight: 10 }}
+                          onChange={onChange}
+                        />)}
+                      </Form.Item>
+
+                      <Form.Item label='' style={{ display: 'inline-flex' }}>
+                        {
+                          getFieldDecorator('time2', {
+                            initialValue: moment(endTime)
+                          })
+                            (<DatePicker
+                              allowClear={false}
+                              onChange={endonChange}
+                            />)
+                        }
+                      </Form.Item>
+                    </Col>
+                  </div>
+                )
               }
+
+              {/* {
+                reporttype === 'month' && (
+                  <Col span={24}>
+                    <Form.Item label='起始时间'>
+                      {getFieldDecorator('time1', {
+                        rules: [
+                          {
+                            required,
+                            message: '请选择填报日期'
+                          }
+                        ],
+                        initialValue: moment(copyData.main ? copyData.main.time1 : startTime)
+                      })(<MonthPicker
+                        allowClear
+                        // disabledDate={startdisabledDate}
+                        // placeholder='请选择'
+                        onChange={onChange}
+                      />)}
+                    </Form.Item>
+                  </Col>
+                )
+              } */}
 
               {
                 reporttype === 'month' && (
                   <Col span={24}>
-                    <Form.Item label='起始时间'>
+                    <Form.Item label='填报日期'>
                       {getFieldDecorator('time1', {
                         rules: [
                           {

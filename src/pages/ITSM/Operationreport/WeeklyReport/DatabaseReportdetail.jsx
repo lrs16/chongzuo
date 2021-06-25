@@ -103,7 +103,6 @@ function DatabaseReportdetail(props) {
   const { main } = openReportlist;
 
 
-  console.log(list, 'list')
   //  保存表单
   const softReportform = () => {
     props.form.validateFields((err, values) => {
@@ -113,7 +112,7 @@ function DatabaseReportdetail(props) {
           status,
           editStatus: mainId ? 'edit' : 'add',
           addData: JSON.stringify(list),
-          type: reporttype === 'week' ? '数据库运维周报':'数据库运维月报',
+          type: reporttype === 'week' ? '数据库运维周报' : '数据库运维月报',
           reporttype,
           mainId,
           time1: startTime,
@@ -201,6 +200,23 @@ function DatabaseReportdetail(props) {
     setList(newData)
   };
 
+  const onChange = (date, dateString) => {
+    if (reporttype === 'week') {
+      startTime = dateString;
+      endTime = moment(dateString).add(+6, 'day').format('YYYY-MM-DD');
+      setFieldsValue({ time2: moment(endTime) });
+    } else {
+      startTime = date.startOf('month').format('YYYY-MM-DD');
+      endTime = date.endOf('month').format('YYYY-MM-DD');
+    }
+  }
+
+  const endonChange = (date, dateString) => {
+    endTime = dateString;
+    startTime = moment(dateString).subtract('day', 6).format('YYYY-MM-DD');
+    setFieldsValue({ time1: moment(startTime) })
+  }
+
 
   // 上传删除附件触发保存
   useEffect(() => {
@@ -266,17 +282,6 @@ function DatabaseReportdetail(props) {
     }
   }
 
-  const onChange = (date, dateString) => {
-    if (reporttype === 'week') {
-      startTime = dateString;
-      endTime = moment(dateString).add(+6, 'day').format('YYYY-MM-DD');
-      setFieldsValue({ time2: moment(endTime) });
-    } else {
-      startTime = date.startOf('month').format('YYYY-MM-DD');
-      endTime = date.endOf('month').format('YYYY-MM-DD');
-    }
-  }
-
   const newMember = () => {
     const nowNumber = addTitle.map(item => ({ ...item }));
     nowNumber.push({ 'add': '1', tableNumber: [] });
@@ -329,13 +334,16 @@ function DatabaseReportdetail(props) {
         </>
       }
     >
-      <Card>
+      <Card style={{ padding: 24 }}>
         {loading === false && startTime && (
           <Row gutter={24}>
             <Form >
 
               <Col span={24}>
-                <Form.Item label={reporttype === 'week' ? '周报名称' : '月报名称'}>
+                <Form.Item
+                  label={reporttype === 'week' ? '周报名称' : '月报名称'}
+                  style={{ display: 'inline-flex' }}
+                >
                   {getFieldDecorator('name', {
                     rules: [
                       {
@@ -346,12 +354,12 @@ function DatabaseReportdetail(props) {
                     initialValue: main?.name ? main.name : ''
                   })
                     (
-                      <Input disabled={reportSearch} />
+                      <Input disabled={reportSearch} style={{ width: 700 }} />
                     )}
                 </Form.Item>
               </Col>
 
-              {
+              {/* {
                 reporttype === 'week' && (
                   <Col span={24}>
                     <Form.Item label='填报日期'>
@@ -367,12 +375,48 @@ function DatabaseReportdetail(props) {
                     </Form.Item>
                   </Col>
                 )
+              } */}
+              {
+                reporttype === 'week' && (
+                  <div>
+                    <Col span={24}>
+                      <Form.Item label='填报时间' style={{ display: 'inline-flex' }}>
+                        {getFieldDecorator('time1', {
+                          rules: [
+                            {
+                              required,
+                              message: '请输入填报时间'
+                            }
+                          ],
+                          initialValue: moment(startTime)
+                        })(
+                          <DatePicker
+                            allowClear={false}
+                            style={{ marginRight: 10 }}
+                            onChange={onChange}
+                          />)}
+                      </Form.Item>
+
+                      <Form.Item label='' style={{ display: 'inline-flex' }}>
+                        {
+                          getFieldDecorator('time2', {
+                            initialValue: moment(endTime)
+                          })
+                            (<DatePicker
+                              allowClear={false}
+                              onChange={endonChange}
+                            />)
+                        }
+                      </Form.Item>
+                    </Col>
+                  </div>
+                )
               }
 
               {
                 reporttype === 'month' && (
                   <Col span={24}>
-                    <Form.Item label='起始时间'>
+                    <Form.Item label='起始时间' style={{ display: 'inline-flex' }}>
                       {getFieldDecorator('time1', {
                         initialValue: moment(main.time1)
                       })(<MonthPicker

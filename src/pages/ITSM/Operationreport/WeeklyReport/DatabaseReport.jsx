@@ -197,8 +197,6 @@ function DatabaseReport(props) {
     setAddTitle(resultArr)
   }
 
-  console.log(list, 'list')
-
   // 上传删除附件触发保存
   useEffect(() => {
     defaultTime();
@@ -282,12 +280,19 @@ function DatabaseReport(props) {
 
   const onChange = (date, dateString) => {
     if (reporttype === 'week') {
-      startTime = dateString[0];
-      endTime = dateString[1];
+      startTime = dateString;
+      endTime = moment(dateString).add(+6, 'day').format('YYYY-MM-DD');
+      setFieldsValue({ time2: moment(endTime) });
     } else {
       startTime = date.startOf('month').format('YYYY-MM-DD');
       endTime = date.endOf('month').format('YYYY-MM-DD');
     }
+  }
+
+  const endonChange = (date, dateString) => {
+    endTime = dateString;
+    startTime = moment(dateString).subtract('day', 6).format('YYYY-MM-DD');
+    setFieldsValue({ time1: moment(startTime) })
   }
 
   const newMember = () => {
@@ -296,7 +301,6 @@ function DatabaseReport(props) {
     setAddTitle(nowNumber)
   }
 
-  console.log(copyData.operationList ? 'a' : 'b')
   return (
     <PageHeaderWrapper
       title={pagetitle}
@@ -313,12 +317,15 @@ function DatabaseReport(props) {
 
       }
     >
-      <Card>
+      <Card style={{ padding: 24 }}>
         {loading === false && (
           <Row gutter={24}>
             <Form>
               <Col span={24}>
-                <Form.Item label={reporttype === 'week' ? '周报名称' : '月报名称'}>
+                <Form.Item 
+                label={reporttype === 'week' ? '周报名称' : '月报名称'}
+                style={{ display: 'inline-flex' }}
+                >
                   {getFieldDecorator('name', {
                     rules: [
                       {
@@ -329,12 +336,12 @@ function DatabaseReport(props) {
                     initialValue: copyData.main ? copyData.main.name : ''
                   })
                     (
-                      <Input />
+                      <Input style={{ width: 700 }}/>
                     )}
                 </Form.Item>
               </Col>
 
-              {
+              {/* {
                 reporttype === 'week' && (
                   <Col span={24}>
                     <Form.Item label='填报日期'>
@@ -348,6 +355,43 @@ function DatabaseReport(props) {
                       />)}
                     </Form.Item>
                   </Col>
+                )
+              } */}
+
+              {
+                reporttype === 'week' && (
+                  <div>
+                    <Col span={24}>
+                      <Form.Item label='填报时间' style={{ display: 'inline-flex' }}>
+                        {getFieldDecorator('time1', {
+                          rules: [
+                            {
+                              required,
+                              message: '请输入填报时间'
+                            }
+                          ],
+                          initialValue: moment(startTime)
+                        })(
+                          <DatePicker
+                            allowClear={false}
+                            style={{ marginRight: 10 }}
+                            onChange={onChange}
+                          />)}
+                      </Form.Item>
+
+                      <Form.Item label='' style={{ display: 'inline-flex' }}>
+                        {
+                          getFieldDecorator('time2', {
+                            initialValue: moment(endTime)
+                          })
+                            (<DatePicker
+                              allowClear={false}
+                              onChange={endonChange}
+                            />)
+                        }
+                      </Form.Item>
+                    </Col>
+                  </div>
                 )
               }
 
@@ -619,7 +663,7 @@ function DatabaseReport(props) {
                       nextOperationList={contentrowdata => {
                         setNextOperationList(contentrowdata)
                       }}
-                      nextOperationArr={copyData.nextOperationList ? copyData.nextOperationList : nextweekHomeworklist.rows}
+                      nextOperationArr={nextweekHomeworklist.rows}
                       mainId={mainId}
                     />
                   </Col>

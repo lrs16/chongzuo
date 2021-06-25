@@ -43,7 +43,7 @@ const formincontentLayout = {
   },
 };
 
-const { RangePicker,MonthPicker } = DatePicker;
+const { RangePicker, MonthPicker } = DatePicker;
 const { TextArea } = Input;
 let startTime;
 let endTime;
@@ -89,27 +89,28 @@ function OtherReportdetail(props) {
   //  保存表单
   const softReportform = () => {
     props.form.validateFields((err, value) => {
-      const savedata = {
-        ...value,
-        status,
-        editStatus: mainId ? 'edit' : 'add',
-        addData: JSON.stringify(list),
-        type: reporttype === 'week' ? '其他运维周报' : '其他运维月报',
-        reporttype,
-        mainId,
-        time1: startTime,
-        time2: endTime,
-      }
-      return dispatch({
-        type: 'softreport/saveOther',
-        payload: savedata
-      }).then(res => {
-        if (res.code === 200) {
-          message.info(res.msg);
-          getopenFlow();
+      if(!err) {
+        const savedata = {
+          ...value,
+          status,
+          editStatus: mainId ? 'edit' : 'add',
+          addData: JSON.stringify(list),
+          type: reporttype === 'week' ? '其他运维周报' : '其他运维月报',
+          reporttype,
+          mainId,
+          time1: startTime,
+          time2: endTime,
         }
-      })
-
+        return dispatch({
+          type: 'softreport/saveOther',
+          payload: savedata
+        }).then(res => {
+          if (res.code === 200) {
+            message.info(res.msg);
+            getopenFlow();
+          }
+        })
+      }
     })
   }
 
@@ -147,9 +148,9 @@ function OtherReportdetail(props) {
           state: { cache: false }
         }
         );
-      } 
+      }
 
-      if(reportSearch) {
+      if (reportSearch) {
         router.push({
           pathname: '/ITSM/operationreport/weeklyreport/myweeklyreportsearch',
           query: { pathpush: true },
@@ -157,10 +158,10 @@ function OtherReportdetail(props) {
         }
         );
       }
-    } 
+    }
 
-    if(reporttype === 'month') {
-      if(!reportSearch) {
+    if (reporttype === 'month') {
+      if (!reportSearch) {
         console.log(1)
         router.push({
           pathname: '/ITSM/operationreport/monthlyreport/mymonthlyreport',
@@ -168,7 +169,7 @@ function OtherReportdetail(props) {
           state: { cache: false }
         })
       }
-      if(reportSearch) {
+      if (reportSearch) {
         console.log(2)
         router.push({
           pathname: '/ITSM/operationreport/monthlyreport/mymonthlysearch',
@@ -200,15 +201,22 @@ function OtherReportdetail(props) {
     setAddTitle(addData)
     setList(addData)
   }, [loading])
-
+  
   const onChange = (date, dateString) => {
     if (reporttype === 'week') {
-      startTime = dateString[0];
-      endTime = dateString[1];
+      startTime = dateString;
+      endTime = moment(dateString).add(+6, 'day').format('YYYY-MM-DD');
+      setFieldsValue({ time2: moment(endTime) });
     } else {
       startTime = date.startOf('month').format('YYYY-MM-DD');
       endTime = date.endOf('month').format('YYYY-MM-DD');
     }
+  }
+
+  const endonChange = (date, dateString) => {
+    endTime = dateString;
+    startTime = moment(dateString).subtract('day', 6).format('YYYY-MM-DD');
+    setFieldsValue({ time1: moment(startTime) })
   }
 
   const newMember = () => {
@@ -267,19 +275,22 @@ function OtherReportdetail(props) {
             <Button type='primary' onClick={softReportform}>保存</Button>
           )}
 
-          <Button type='primary' onClick={handleBack}>
+          <Button onClick={handleBack}>
             返回
           </Button>
         </>
       }
     >
-      <Card>
+      <Card style={{ padding: 24 }}>
         {loading === false && startTime && (
           <Row gutter={24}>
             <Form>
 
               <Col span={24}>
-                <Form.Item label={type === 'week' ? '周报名称' : '月报名称'}>
+                <Form.Item 
+                label={type === 'week' ? '周报名称' : '月报名称'}
+                style={{ display: 'inline-flex' }}
+                >
                   {getFieldDecorator('name', {
                     rules: [
                       {
@@ -290,12 +301,12 @@ function OtherReportdetail(props) {
                     initialValue: main ? main.name : ''
                   })
                     (
-                      <Input disabled={reportSearch} />
+                      <Input disabled={reportSearch} style={{ width: 700 }}/>
                     )}
                 </Form.Item>
               </Col>
 
-              {reporttype === 'week' && (
+              {/* {reporttype === 'week' && (
                 <Col span={24}>
                   <Form.Item label='起始时间'>
                     {getFieldDecorator('time1', {
@@ -309,9 +320,45 @@ function OtherReportdetail(props) {
                     />)}
                   </Form.Item>
                 </Col>
-              )}
+              )} */}
 
-              {reporttype === 'month' && (
+              {
+                reporttype === 'week' && (
+                  <div>
+                    <Col span={24}>
+                      <Form.Item label='填报时间'  style={{ display: 'inline-flex' }}>
+                        {getFieldDecorator('time1', {
+                             rules: [
+                              {
+                                required,
+                                message: '请输入填报时间'
+                              }
+                            ],
+                          initialValue: moment(startTime)
+                        })(<DatePicker
+                          allowClear={false}
+                          style={{ marginRight: 10 }}
+                          onChange={onChange}
+                        />)}
+                      </Form.Item>
+
+                      <Form.Item label=''  style={{ display: 'inline-flex' }}>
+                        {
+                          getFieldDecorator('time2', {
+                            initialValue: moment(endTime)
+                          })
+                            (<DatePicker
+                              allowClear={false}
+                              onChange={endonChange}
+                            />)
+                        }
+                      </Form.Item>
+                    </Col>
+                  </div>
+                )
+              }
+
+              {/* {reporttype === 'month' && (
                 <Col span={24}>
                   <Form.Item label='起始时间'>
                     {getFieldDecorator('time1', {
@@ -325,7 +372,30 @@ function OtherReportdetail(props) {
                     />)}
                   </Form.Item>
                 </Col>
-              )}
+              )} */}
+
+              {
+                reporttype === 'month' && (
+                  <Col span={24}>
+                    <Form.Item label='填报日期' style={{ display: 'inline-flex' }}>
+                      {getFieldDecorator('time1', {
+                        rules: [
+                          {
+                            required,
+                            message: '请选择填报日期'
+                          }
+                        ],
+                        initialValue: moment(main ? main.time1 : startTime)
+                      })(<MonthPicker
+                        allowClear
+                        // disabledDate={startdisabledDate}
+                        // placeholder='请选择'
+                        onChange={onChange}
+                      />)}
+                    </Form.Item>
+                  </Col>
+                )
+              }
 
 
 
