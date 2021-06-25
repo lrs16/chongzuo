@@ -54,7 +54,13 @@ function OnSitemanage(props) {
         },
       })
       .then(res => {
-        getdata(1, 10);
+        if (res.code === 200) {
+          Message.success(res.msg);
+          getdata(1, 10);
+        } else {
+          Message.error(res.msg);
+        }
+
       });
   };
 
@@ -98,7 +104,12 @@ function OnSitemanage(props) {
         },
       })
       .then(res => {
-        getdata(1, 10);
+        if (res.code === 200) {
+          Message.success(res.msg);
+          getdata(1, 10);
+        } else {
+          Message.error(res.msg);
+        }
       });
   };
 
