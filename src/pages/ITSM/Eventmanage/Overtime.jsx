@@ -202,7 +202,7 @@ const timeoutcolumns = [
 
 function Overtime(props) {
   const pagetitle = props.route.name;
-  const { dispatch, list, loading } = props;
+  const { dispatch, list, loading, location } = props;
   const { getFieldDecorator, resetFields, validateFields } = props.form;
   const [tabActivekey, settabActivekey] = useState('notHandle'); // 打开标签
   const [tablecolumn, setTableColumn] = useState(columns); // 打开标签
@@ -313,6 +313,19 @@ function Overtime(props) {
     });
   };
 
+  const handleReset = () => {
+    settabActivekey('notHandle');
+    setTableColumn(columns);
+    resetFields();
+    getdatas('notHandle');
+  }
+
+  useEffect(() => {
+    if (location.state && location.state.reset) {
+      handleReset()
+    }
+  }, [location.state]);
+
   const download = () => {
     validateFields((_, values) => {
       dispatch({
@@ -416,7 +429,7 @@ function Overtime(props) {
               <Button type="primary" onClick={handleSearch}>
                 查 询
               </Button>
-              <Button style={{ marginLeft: 8 }} onClick={() => resetFields()}>
+              <Button style={{ marginLeft: 8 }} onClick={() => handleReset()}>
                 重 置
               </Button>
               <Button
