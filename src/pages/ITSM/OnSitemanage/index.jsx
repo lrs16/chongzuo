@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
 import { Card, Badge, Button, Table, Message, Row, Col } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import axios from 'axios';
 
 function OnSitemanage(props) {
   const { dispatch, list, loading } = props;
@@ -33,16 +34,28 @@ function OnSitemanage(props) {
   };
 
   const handlewholeNet = () => {
-    return dispatch({
-      type: 'checkmanage/dowholeNet',
-    }).then(res => {
-      getdata(1, 10);
-      if (res.code === 200) {
-        Message.success(res.msg);
-      } else {
-        Message.error(res.msg);
-      }
-    });
+    // return dispatch({
+    //   type: 'checkmanage/dowholeNet',
+    // }).then(res => {
+    //   getdata(1, 10);
+    //   if (res.code === 200) {
+    //     Message.success(res.msg);
+    //   } else {
+    //     Message.error(res.msg);
+    //   }
+    // });
+
+    const url = 'http://10.172.210.132:8083/inspection/wholeNet/check';
+    axios
+      .get(url, {
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Credentials': 'true',
+        },
+      })
+      .then(res => {
+        getdata(1, 10);
+      });
   };
 
   const onShowSizeChange = (page, size) => {
@@ -70,12 +83,24 @@ function OnSitemanage(props) {
     onChange: page => changePage(page),
   };
 
-  const goon = (checkNo) => {
-    return dispatch({
-      type: 'checkmanage/goonwholeNet',
-      payload: checkNo
-    })
-  }
+  const goon = checkNo => {
+    // return dispatch({
+    //   type: 'checkmanage/goonwholeNet',
+    //   payload: checkNo
+    // })
+
+    const url = 'http://10.172.210.132:8083/inspection/wholeNet/check?checkNo=' + checkNo;
+    axios
+      .get(url, {
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Credentials': 'true',
+        },
+      })
+      .then(res => {
+        getdata(1, 10);
+      });
+  };
 
   const columns = [
     {
@@ -110,9 +135,11 @@ function OnSitemanage(props) {
         const statusico = status.length === 4 ? 'success' : 'error';
         return (
           <>
-            {(status === 'W' && status !== 'ERRR') && <Badge status={statuswaitico} text={statuswaitetext} />}
-            {(status !== 'W' && status !== 'ERRR') && <Badge status={statusico} text={statustext} />}
-            {status === 'ERRR' && <Badge status='error' text='巡检被中断' />}
+            {status === 'W' && status !== 'ERRR' && (
+              <Badge status={statuswaitico} text={statuswaitetext} />
+            )}
+            {status !== 'W' && status !== 'ERRR' && <Badge status={statusico} text={statustext} />}
+            {status === 'ERRR' && <Badge status="error" text="巡检被中断" />}
           </>
         );
       },
@@ -141,8 +168,8 @@ function OnSitemanage(props) {
         const { checkNo } = record;
         return (
           <>
-            {(status.length === 4 && status !== 'ERRR') && (<a onClick={download} > 下载报告</a>)}
-            {status === 'ERRR' && (<a onClick={() => goon(checkNo)} > 继续巡检</a>)}
+            {status.length === 4 && status !== 'ERRR' && <a onClick={download}> 下载报告</a>}
+            {status === 'ERRR' && <a onClick={() => goon(checkNo)}> 继续巡检</a>}
           </>
         );
       },
@@ -155,7 +182,10 @@ function OnSitemanage(props) {
         <Row gutter={16} style={{ marginBottom: 24 }}>
           <Col span={24}>
             <Button
-              onClick={() => { getdata(1, 10); setPageinations({ current: 1, pageSize: 15 }) }}
+              onClick={() => {
+                getdata(1, 10);
+                setPageinations({ current: 1, pageSize: 15 });
+              }}
               type="primary"
               style={{ marginBottom: 24, float: 'right' }}
             >
@@ -163,10 +193,14 @@ function OnSitemanage(props) {
             </Button>
           </Col>
           <Col span={12}>
-            <Button onClick={handleCheck} block type="dashed">计量主站巡检</Button>
+            <Button onClick={handleCheck} block type="dashed">
+              计量主站巡检
+            </Button>
           </Col>
           <Col span={12}>
-            <Button onClick={handlewholeNet} block type="dashed">网级平台巡检</Button>
+            <Button onClick={handlewholeNet} block type="dashed">
+              网级平台巡检
+            </Button>
           </Col>
         </Row>
         <Table
