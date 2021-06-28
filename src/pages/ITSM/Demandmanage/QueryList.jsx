@@ -2,10 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
 import router from 'umi/router';
-import { Card, Row, Col, Form, Input, Select, Button, DatePicker, Table, Cascader } from 'antd';
+import { Card, Row, Col, Form, Input, Select, Button, DatePicker, Table, Cascader, message } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import DictLower from '@/components/SysDict/DictLower';
+import { queryCurrent } from '@/services/user';   // 获取用户信息
+import { DemandDlete } from './services/api';
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -46,6 +48,8 @@ function QueryList(props) {
   const [expand, setExpand] = useState(false);
   const [selectdata, setSelectData] = useState('');
   const [tabrecord, setTabRecord] = useState({});
+  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+  const [username, setUserName] = useState('');
 
   const searchdata = (values, page, size) => {
     const newvalues = {
@@ -315,6 +319,44 @@ function QueryList(props) {
   const statemap = getTypebyId('1398105664881954817');
   const modulemap = getTypebyId('1352070663392727041');
 
+  // 管理员账号删除工单
+  // 行选择
+  const onSelectChange = RowKeys => {
+    setSelectedRowKeys(RowKeys);
+  };
+
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: onSelectChange,
+  };
+  // 获取用户信息
+  useEffect(() => {
+    queryCurrent().then(res => {
+      if (res.code === 200) {
+        setUserName(res.data.loginCode)
+      }
+    })
+  }, [])
+  // 列表中删除工单
+  const deleteorder = () => {
+    const len = selectedRowKeys.length;
+    if (len !== 1) {
+      message.info('仅能选择一条数据进行删除操作', 5);
+    } else {
+      DemandDlete(selectedRowKeys[0]).then(res => {
+        if (res.code === 200) {
+          message.success('删除成功！');
+        };
+        validateFields((err, values) => {
+          if (!err) {
+            searchdata(values, paginations.current, paginations.pageSize);
+          }
+        });
+      })
+    };
+    setSelectedRowKeys([]);
+  }
+
   return (
     <PageHeaderWrapper title={pagetitle}>
       <DictLower
@@ -435,16 +477,22 @@ function QueryList(props) {
           </Form>
         </Row>
         <div style={{ marginBottom: 24 }}>
-          <Button type="primary" onClick={() => download()}>
+          <Button type="primary" onClick={() => download()} style={{ marginRight: 8 }}>
             导出数据
           </Button>
+          {username === 'admin' && (
+            <Button type="danger" ghost onClick={() => deleteorder()}>
+              删 除
+            </Button>
+          )}
         </div>
         <Table
           loading={loading}
           columns={columns}
           dataSource={list.rows}
-          rowKey={(_, index) => index.toString()}
+          rowKey={r => r.processInstanceId}
           pagination={pagination}
+          rowSelection={rowSelection}
           scroll={{ x: 1500 }}
         />
       </Card>

@@ -15,10 +15,13 @@ import {
   // Badge,
   // Tag,
   Cascader,
+  message,
 } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import SysDict from '@/components/SysDict';
+import { queryCurrent } from '@/services/user';   // 获取用户信息
+import { EventDelete } from './services/api';    // 删除工单
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -52,6 +55,7 @@ function QueryList(props) {
       resetFields,
       validateFields,
       setFieldsValue,
+      getFieldsValue,
     },
     location: { query: {
       time1,
@@ -72,6 +76,7 @@ function QueryList(props) {
   const [expand, setExpand] = useState(false);
   const [selectdata, setSelectData] = useState('');
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+  const [username, setUserName] = useState('');
   const [tabrecord, setTabRecord] = useState({});
 
   if (time1) {
@@ -253,40 +258,34 @@ function QueryList(props) {
 
   //  下载
   const download = () => {
-    validateFields((err, values) => {
-      if (!err) {
-        dispatch({
-          type: 'eventquery/eventdownload',
-          payload: {
-            values: {
-              ...values,
-              time1: values.createTime ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-              time2: values.createTime ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-              createTime: '',
-              eventObject: values.eventObject ? (values.eventObject).slice(-1)[0] : '',
-            },
-            ids: selectedRowKeys.toString(),
-          },
-        }).then(res => {
-          const filename = `事件查询_${moment().format('YYYY-MM-DD HH:mm')}.xls`;
-          const blob = new Blob([res]);
-          const url = window.URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = filename;
-          a.click();
-          window.URL.revokeObjectURL(url);
-        });
-      }
+    const values = getFieldsValue();
+    dispatch({
+      type: 'eventquery/eventdownload',
+      payload: {
+        values: {
+          ...values,
+          time1: values.createTime ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+          time2: values.createTime ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
+          createTime: '',
+          eventObject: values.eventObject ? (values.eventObject).slice(-1)[0] : '',
+        },
+        ids: selectedRowKeys.toString(),
+      },
+    }).then(res => {
+      const filename = `事件查询_${moment().format('YYYY-MM-DD HH:mm')}.xls`;
+      const blob = new Blob([res]);
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      a.click();
+      window.URL.revokeObjectURL(url);
     });
   };
 
   const onShowSizeChange = (page, size) => {
-    validateFields((err, values) => {
-      if (!err) {
-        searchdata(values, page, size);
-      }
-    });
+    const values = getFieldsValue();
+    searchdata(values, page, size);
     setPageinations({
       ...paginations,
       pageSize: size,
@@ -294,11 +293,8 @@ function QueryList(props) {
   };
 
   const changePage = page => {
-    validateFields((err, values) => {
-      if (!err) {
-        searchdata(values, page - 1, paginations.pageSize);
-      }
-    });
+    const values = getFieldsValue();
+    searchdata(values, page - 1, paginations.pageSize);
     setPageinations({
       ...paginations,
       current: page,
@@ -329,12 +325,8 @@ function QueryList(props) {
       ...paginations,
       current: 1,
     });
-    validateFields((err, values) => {
-      if (err) {
-        return;
-      }
-      searchdata(values, 0, paginations.pageSize, params);
-    });
+    const values = getFieldsValue();
+    searchdata(values, 0, paginations.pageSize, params);
   };
 
   const handleReset = () => {
@@ -354,9 +346,8 @@ function QueryList(props) {
         applicationUnit: ''
       })
     }
-    validateFields((err, values) => {
-      searchdata(values, 0, 15)
-    });
+    const values = getFieldsValue();
+    searchdata(values, 0, 15);
     setPageinations({ current: 1, pageSize: 15 });
   };
 
@@ -458,6 +449,34 @@ function QueryList(props) {
       });
     }
   }, []);
+
+  // 管理员账号删除工单
+  useEffect(() => {
+    queryCurrent().then(res => {
+      if (res.code === 200) {
+        setUserName(res.data.loginCode)
+      }
+    })
+  }, [])
+
+  const deleteorder = () => {
+    const len = selectedRowKeys.length;
+    if (len !== 1) {
+      message.info('仅能选择一条数据进行删除操作', 5);
+    } else {
+      EventDelete({ mainId: selectedRowKeys[0] }).then(res => {
+        if (res.code === 200) {
+          message.success('删除成功！');
+        };
+        validateFields((err, values) => {
+          if (!err) {
+            searchdata(values, paginations.current - 1, paginations.pageSize);
+          }
+        });
+      })
+    };
+    setSelectedRowKeys([]);
+  }
 
   return (
     <PageHeaderWrapper title={title}>
@@ -837,9 +856,14 @@ function QueryList(props) {
           </Form>
         </Row>
         <div style={{ marginBottom: 24 }}>
-          <Button type="primary" onClick={() => download()}>
+          <Button type="primary" onClick={() => download()} style={{ marginRight: 8 }}>
             导出数据
           </Button>
+          {username === 'admin' && (
+            <Button type="danger" ghost onClick={() => deleteorder()}>
+              删 除
+            </Button>
+          )}
         </div>
         <Table
           loading={loading}
