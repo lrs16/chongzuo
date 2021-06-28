@@ -139,7 +139,7 @@ function QueryList(props) {
       dataIndex: 'title',
       key: 'title',
       fixed: 'left',
-      width: 150,
+      width: 250,
     },
     {
       title: '事件来源',
@@ -159,21 +159,18 @@ function QueryList(props) {
       title: '申报人单位',
       dataIndex: 'applicationUnit',
       key: 'applicationUnit',
-      fixed: 'left',
       width: 180,
     },
     {
       title: '申报人',
       dataIndex: 'applicationUser',
       key: 'applicationUser',
-      fixed: 'left',
       width: 80,
     },
     {
       title: '工单状态',
       dataIndex: 'eventStatus',
       key: 'eventStatus',
-      fixed: 'left',
       width: 90,
     },
     {
@@ -192,7 +189,7 @@ function QueryList(props) {
       title: '处理人',
       dataIndex: 'handler',
       key: 'handler',
-      width: 80,
+      width: 120,
     },
     {
       title: '优先级',
@@ -204,7 +201,7 @@ function QueryList(props) {
       title: '申报人部门',
       dataIndex: 'applicationDept',
       key: 'applicationDept',
-      width: 250,
+      width: 270,
     },
 
     {

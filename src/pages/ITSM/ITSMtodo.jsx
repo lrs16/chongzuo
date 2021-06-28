@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
 import router from 'umi/router';
-import { Card, Table } from 'antd';
+import { Card, Table, Tooltip } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
 const columns = [
@@ -9,6 +9,8 @@ const columns = [
     title: '工单号',
     dataIndex: 'itemWorkId',
     key: 'itemWorkId',
+    with: 140,
+    fixed: 'left',
     render: (text, record) => {
       const handleClick = () => {
         switch (record.itemWorkType) {
@@ -81,6 +83,8 @@ const columns = [
     title: '工单类型',
     dataIndex: 'itemWorkType',
     key: 'itemWorkType',
+    with: 100,
+    fixed: 'left',
     sorter: (a, b) => a.itemWorkType.length - b.itemWorkType.length,
     sortDirections: ['descend'],
     render: text => {
@@ -98,21 +102,38 @@ const columns = [
     title: '标题',
     dataIndex: 'itemName',
     key: 'itemName',
+    with: 250,
+    fixed: 'left',
   },
   {
     title: '描述',
     dataIndex: 'itemContent',
     key: 'itemContent',
+    with: 250,
+    onCell: () => {
+      return {
+        style: {
+          maxWidth: 250,
+          overflow: 'hidden',
+          whiteSpace: 'nowrap',
+          textOverflow: 'ellipsis',
+          cursor: 'pointer'
+        }
+      }
+    },
+    render: (text) => <Tooltip placement='topLeft' title={text}>{text}</Tooltip>
   },
   {
     title: '当前处理环节',
     dataIndex: 'taskName',
     key: 'taskName',
+    with: 150,
   },
   {
     title: '超时状态',
     dataIndex: 'timeoutTimeStatus',
     key: 'timeoutTimeStatus',
+    with: 100,
     sorter: (a, b) => a.itemWorkType.length - b.itemWorkType.length,
     sortDirections: ['descend'],
     render: text => {
@@ -128,6 +149,7 @@ const columns = [
     title: '到达时间',
     dataIndex: 'todoTime',
     key: 'todoTime',
+    with: 150,
     sorter: (a, b) => a.itemWorkType.length - b.itemWorkType.length,
     sortDirections: ['descend'],
   },
@@ -197,6 +219,7 @@ function ITSMtodo(props) {
           dataSource={eventlist.rows}
           rowKey={(_, index) => index.toString()}
           pagination={pagination}
+          scroll={{ x: 1400 }}
         />
       </Card>
     </PageHeaderWrapper>

@@ -10,22 +10,22 @@ const { Option } = Select;
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
-    sm: { span: 12 },
+    sm: { span: 6 },
   },
   wrapperCol: {
     xs: { span: 24 },
-    sm: { span: 12 },
+    sm: { span: 18 },
   },
 };
 
 const forminladeLayout = {
   labelCol: {
     xs: { span: 24 },
-    sm: { span: 4 },
+    sm: { span: 2 },
   },
   wrapperCol: {
     xs: { span: 24 },
-    sm: { span: 20 },
+    sm: { span: 22 },
   },
 };
 
@@ -97,7 +97,7 @@ const HandleChild = React.forwardRef((props, ref) => {
   // console.log('handleResult: ', handleResult);
 
   return (
-    <Row gutter={24} style={{ paddingTop: 24, paddingRight: 24 }}>
+    <Row gutter={24} style={{ paddingTop: 24 }}>
       <Form {...formItemLayout}>
         <KeyVal
           style={{ display: 'none' }}

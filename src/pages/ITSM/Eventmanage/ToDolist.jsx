@@ -36,6 +36,7 @@ const columns = [
     title: '事件编号',
     dataIndex: 'eventNo',
     key: 'eventNo',
+    width: 180,
     render: (text, record) => {
       const handleClick = () => {
         router.push({
@@ -56,42 +57,49 @@ const columns = [
     title: '事件标题',
     dataIndex: 'title',
     key: 'title',
-    width: 200,
+
   },
   {
     title: '事件来源',
     dataIndex: 'eventSource',
     key: 'eventSource',
+    width: 100,
   },
   {
     title: '事件分类',
     dataIndex: 'eventType',
     key: 'eventType',
+    width: 150,
   },
   {
     title: '填报人',
-    dataIndex: 'applicationUser',
-    key: 'applicationUser',
+    dataIndex: 'userName',
+    key: 'userName',
+    width: 100,
   },
   {
     title: '申报人',
-    dataIndex: 'handle_user',
-    key: 'handle_user',
+    dataIndex: 'applicationUser',
+    key: 'applicationUser',
+    width: 100,
   },
   {
     title: '工单状态',
     dataIndex: 'eventStatus',
     key: 'eventStatus',
+    width: 100,
   },
   {
     title: '发送时间',
     dataIndex: 'createTime',
     key: 'createTime',
+    width: 180,
   },
   {
     title: '优先级',
     dataIndex: 'eventPrior',
     key: 'eventPrior',
+    width: 100,
   },
 ];
 
@@ -414,6 +422,7 @@ function ToDolist(props) {
           rowKey={r => r.id}
           pagination={pagination}
           rowSelection={rowSelection}
+          scroll={{ x: 1400 }}
         />
       </Card>
     </PageHeaderWrapper >
