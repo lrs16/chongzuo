@@ -1,12 +1,9 @@
-import React, { useEffect, useRef, useImperativeHandle, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Table,
   Form,
   Input,
-  Col,
-  Row,
   Button,
-  Divider,
   Popconfirm,
   Select,
   message,
@@ -19,8 +16,6 @@ const { Option } = Select;
 function NewTroublelist(props) {
 
   const {
-    form: { getFieldDecorator },
-    forminladeLayout,
     faultlist,
     newTroubleList,
     reportSearch,
@@ -29,10 +24,8 @@ function NewTroublelist(props) {
   const [data, setData] = useState([]);
   const [newbutton, setNewButton] = useState(false);
 
-
   // 初始化把数据传过去
   useEffect(() => {
-    // typeList(maintenanceArr)
     if (data && data.length) {
       const result = JSON.parse(JSON.stringify(data)
         .replace(/addTime/g, 'field1')
@@ -50,7 +43,7 @@ function NewTroublelist(props) {
   }
 
   // 新增一条记录
-  const newMember = (params) => {
+  const newMember = () => {
     const newData = (data).map(item => ({ ...item }));
     newData.push({
       key: data.length + 1,
@@ -101,7 +94,6 @@ function NewTroublelist(props) {
       setData(newarr)
     }
   }
-
 
   const column = [
     {
@@ -367,43 +359,38 @@ function NewTroublelist(props) {
 
   let setColumns = column;
 
-  if(mainId) {
+  if (mainId) {
     setColumns = editColumn
   }
   return (
     <>
-      {/* <Row gutter={16}> */}
-        {/* <Col span={20}> */}
-          <p style={{ fontWeight: '900', fontSize: '16px' }}>三、本周新增故障及故障修复情况统计</p>
-        {/* </Col> */}
-        {/* <Col span={20}> */}
-          <p>3.1新增及已修复故障</p>
-        {/* </Col> */}
+      <p style={{ fontWeight: '900', fontSize: '16px' }}>三、本周新增故障及故障修复情况统计</p>
 
-        <div style={{textAlign:'right',marginBottom:10}}>
-          <Button
-            disabled={reportSearch}
-            type='primary'
-            onClick={handleSave}>保存</Button>
-        </div>
+      <p>3.1新增及已修复故障</p>
 
-        <Table
-          columns={setColumns}
-          dataSource={data}
-          pagination={false}
-        />
-
+      <div style={{ textAlign: 'right', marginBottom: 10 }}>
         <Button
-          style={{ width: '100%', marginTop: 16}}
-          type="primary"
-          ghost
-          onClick={() => newMember()}
-          icon="plus"
           disabled={reportSearch}
-        >
-          新增
-        </Button>
-      {/* </Row> */}
+          type='primary'
+          onClick={handleSave}>保存</Button>
+      </div>
+
+      <Table
+        columns={setColumns}
+        dataSource={data}
+        pagination={false}
+      />
+
+      <Button
+        style={{ width: '100%', marginTop: 16 }}
+        type="primary"
+        ghost
+        onClick={() => newMember()}
+        icon="plus"
+        disabled={reportSearch}
+      >
+        新增
+      </Button>
     </>
   )
 }

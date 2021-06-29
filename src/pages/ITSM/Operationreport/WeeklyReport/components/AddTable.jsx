@@ -1,20 +1,12 @@
-import React, { useEffect, useRef, useImperativeHandle, useContext, useState } from 'react';
+import React, { useEffect, useRef, useImperativeHandle, useState } from 'react';
 import {
   Row,
-  Col,
   Form,
   Input,
   Popconfirm,
   Table,
   Button,
-  Divider,
-  Select,
 } from 'antd';
-import moment from 'moment';
-import SysUpload from '@/components/SysUpload';
-
-const { TextArea } = Input;
-const { Option } = Select;
 
 const AddTable = React.forwardRef((props, ref) => {
   const attRef = useRef();
@@ -25,45 +17,35 @@ const AddTable = React.forwardRef((props, ref) => {
     }),
     [],
   );
-  const required = true;
 
   const {
-    form: { getFieldDecorator, setFieldsValue, validateFields },
     handleDelete,
-    formincontentLayout,
-    ChangeFiles,
     patrolAndExamine, //  巡检列表
-    dynamicData,
-    px,
-    files,
-    addTable,
-    loading
+    detailParams,
+    dynamicTablelist,
   } = props;
 
   const [data, setData] = useState([]);
-  const [seconddata, setSeconddata] = useState([]);
-  const [cacheOriginData, setcacheOriginData] = useState({});
   const [newbutton, setNewButton] = useState(false);
-  const [addList, setAddList] = useState([]);
+  // const [addList, setAddList] = useState([]);
+  // const [dynamicTabledata,setDynamicTabledata] = useState([]);
 
-  // useEffect(() => {
-  //   ChangeFiles(fileslist)
-  // }, [fileslist])
-  // 新增一条记录
-  const newMember = (params) => {
-    setFilesList([]);
-    setKeyUpload('');
-    const newData = (params ? seconddata : data).map(item => ({ ...item }));
+  const newMember = () => {
+    const newData = (data).map(item => ({ ...item }));
     newData.push({
-      key: seconddata.length + 1,
-      field1: '新增数据',
+      key: data.length + 1,
+      field1: '',
       field2: '',
-      field3: 'dd',
+      field3: '',
       field4: '',
       field5: '',
+      field6: '',
+      field7: '',
+      field8: '',
+      field9: '',
+      field10: '',
     });
     setData(newData);
-    setNewButton(true);
   };
 
   //  获取行  
@@ -76,52 +58,6 @@ const AddTable = React.forwardRef((props, ref) => {
     const target = getRowByKey(key) || {};
     handleDelete(target.id)
   };
-
-  // 编辑记录
-  const toggleEditable = (e, key, record) => {
-
-    e.preventDefault();
-    const newData = data.map(item => ({ ...item })
-    );
-    const target = getRowByKey(key, newData);
-    if (target) {
-      if (!target.editable) {
-        setcacheOriginData({ key: { ...target } });
-      }
-      // target.editable = !target.editable;
-      target.isNew = true;
-      setData(newData);
-    }
-  }
-
-  //  点击编辑生成filelist
-  const handlefileedit = (key, values) => {
-    if (!values) {
-      setFilesList([]);
-    } else {
-      setFilesList(JSON.parse(values))
-    }
-  }
-
-  const savedata = (target, id, params) => {
-    setAddList(data)
-  }
-
-  console.log(data, 'data')
-
-
-  const saveRow = (e, key) => {
-    const target = getRowByKey(key) || {};
-    delete target.key;
-    target.editable = false;
-    const id = target.id === '' ? '' : target.id;
-    savedata(target, id);
-    if (target.isNew) {
-      target.isNew = false;
-      setNewButton(false);
-    }
-  }
-
 
   const handleFieldChange = (e, fieldName, key) => {
     const newData = (data).map(item => ({ ...item }));
@@ -136,93 +72,139 @@ const AddTable = React.forwardRef((props, ref) => {
 
   const column = [
     {
-      title: '日期',
+      title: '表头1',
       dataIndex: 'field1',
       key: 'field1',
       render: (text, record) => {
-        if (record.isNew) {
-          return (
-            <Input
-              defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'field1', record.key)}
-            />
-          )
-        }
-        if (record.isNew === false) {
-          return <span>{text}</span>
-        }
+        return (
+          <Input
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field1', record.key)}
+          />
+        )
       }
     },
     {
-      title: '四大率指标',
+      title: '表头2',
       dataIndex: 'field2',
       key: 'field2',
       render: (text, record) => {
-        if (record.isNew) {
-          return (
-            <Input
-              defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'field2', record.key)}
-            />
-          )
-        }
-        if (record.isNew === false) {
-          return <span>{text}</span>
-        }
+        return (
+          <Input
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field2', record.key)}
+          />
+        )
       }
     },
     {
-      title: '基础功能运行情况',
+      title: '表头3',
       dataIndex: 'field3',
       key: 'field3',
       render: (text, record) => {
-        if (record.isNew) {
-          return (
-            <Input
-              defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'field3', record.key)}
-            />
-          )
-        }
-        if (record.isNew === false) {
-          return <span>{text}</span>
-        }
+        return (
+          <Input
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field3', record.key)}
+          />
+        )
       }
     },
     {
-      title: '接口运行情况',
+      title: '表头4',
       dataIndex: 'field4',
       key: 'field4',
       render: (text, record) => {
-        if (record.isNew) {
-          return (
-            <Input
-              defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'field4', record.key)}
-            />
-          )
-        }
-        if (record.isNew === false) {
-          return <span>{text}</span>
-        }
+        return (
+          <Input
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field4', record.key)}
+          />
+        )
       }
     },
     {
-      title: '高级功能运行情况',
+      title: '表头5',
       dataIndex: 'field5',
       key: 'field5',
       render: (text, record) => {
-        if (record.isNew) {
-          return (
-            <Input
-              defaultValue={text}
-              onChange={e => handleFieldChange(e.target.value, 'field5', record.key)}
-            />
-          )
-        }
-        if (record.isNew === false) {
-          return <span>{text}</span>
-        }
+        // if (record.isNew) {
+        return (
+          <Input
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field5', record.key)}
+          />
+        )
+        // }
+        // if (record.isNew === false) {
+        //   return <span>{text}</span>
+        // }
+      }
+    },
+    {
+      title: '表头6',
+      dataIndex: 'field6',
+      key: 'field6',
+      render: (text, record) => {
+        // if (record.isNew) {
+        return (
+          <Input
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field6', record.key)}
+          />
+        )
+      }
+    },
+    {
+      title: '表头7',
+      dataIndex: 'field7',
+      key: 'field7',
+      render: (text, record) => {
+        return (
+          <Input
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field7', record.key)}
+          />
+        )
+      }
+    },
+    {
+      title: '表头8',
+      dataIndex: 'field8',
+      key: 'field8',
+      render: (text, record) => {
+        return (
+          <Input
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field8', record.key)}
+          />
+        )
+      }
+    },
+    {
+      title: '表头9',
+      dataIndex: 'field9',
+      key: 'field9',
+      render: (text, record) => {
+        return (
+          <Input
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field9', record.key)}
+          />
+        )
+      }
+    },
+    {
+      title: '表头10',
+      dataIndex: 'field10',
+      key: 'field10',
+      render: (text, record) => {
+        return (
+          <Input
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field10', record.key)}
+          />
+        )
       }
     },
     {
@@ -231,28 +213,13 @@ const AddTable = React.forwardRef((props, ref) => {
       fixed: 'right',
       width: 120,
       render: (text, record) => {
-        if (record.isNew === true) {
-          return (
-            <span>
-              <a onClick={e => saveRow(e, record.key)}>保存</a>
-              <Divider type='vertical' />
-              <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
-                <a>删除</a>
-              </Popconfirm>
-            </span>
-          )
-        }
-
         return (
           <span>
-            <a
-              onClick={e => {
-                toggleEditable(e, record.key, record);
-                // handlefileedit(record.key, record.attachment)
-              }}
-            >编辑</a>
-            <Divider type='vertical' />
-            <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
+            <Popconfirm
+              title="是否要删除此行？"
+              onConfirm={() => remove(record.key)}
+              disabled={detailParams}
+            >
               <a>删除</a>
             </Popconfirm>
           </span>
@@ -271,48 +238,54 @@ const AddTable = React.forwardRef((props, ref) => {
   }
 
   const handleSubmit = () => {
-    props.form.validateFields((err, value) => {
-      if (!err) {
-        const editTable = {
-          ...value,
-          list: data,
-          px
-        }
-        addTable(editTable)
-      }
-    })
+    dynamicTablelist({tableindex:data});
   }
 
-
-
-  // useEffect(() => {
-  //   handleTabledata();
-  // }, [patrolAndExamine])
+  useEffect(() => {
+    handleTabledata();
+  }, [patrolAndExamine])
 
   return (
     <>
       {/* { loading === false && ( */}
       <Row gutter={16}>
         <Form>
-          <Button onClick={handleSubmit}>
-            保存
-          </Button>
-      
+          <div>
+            <div style={{ textAlign: 'right' }}>
+              <Button
+                onClick={handleSubmit}
+                type='primary'
+                
+              >
+                保存
+              </Button>
+            </div>
 
-          <Table
-            columns={column}
-            dataSource={data}
-          />
-          <Button
-            style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
-            type="primary"
-            ghost
-            onClick={() => newMember()}
-            icon="plus"
-            disabled={newbutton}
-          >
-            新增行
-       </Button>
+            <div>
+              <Table
+                columns={column}
+                dataSource={data}
+              />
+            </div>
+
+            <div>
+              <Button
+                style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
+                type="primary"
+                ghost
+                onClick={() => newMember()}
+                icon="plus"
+                disabled={newbutton}
+              >
+                新增行
+              </Button>
+            </div>
+          </div>
+
+
+
+
+
         </Form>
       </Row>
 
@@ -322,13 +295,6 @@ const AddTable = React.forwardRef((props, ref) => {
   )
 })
 
-AddForm.defaultProps = {
-  dynamicData: {
-    title: '',
-    content: '',
-    files: [],
-  }
-}
 
 
 export default Form.create({})(AddTable)

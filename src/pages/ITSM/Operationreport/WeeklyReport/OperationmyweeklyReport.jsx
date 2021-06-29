@@ -14,11 +14,8 @@ import {
   Menu
 } from 'antd';
 import { connect } from 'dva';
-import Link from 'umi/link';
 import moment from 'moment';
 import router from 'umi/router';
-
-import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import SysDict from '@/components/SysDict';
 
@@ -42,13 +39,10 @@ function OperationmyweeklyReport(props) {
   const pagetitle = props.route.name;
   const {
     form: { getFieldDecorator, resetFields, validateFields, setFieldsValue },
-    myweeklyreportTable,
     queryOrderlist,
-    userinfo,
     dispatch,
     loading
   } = props;
-  const [expand, setExpand] = useState(false);
   const [paginations, setPaginations] = useState({ current: 0, pageSize: 15 });
   const [selectdata, setSelectData] = useState('');
   const [selectedRows, setSelectedRows] = useState([]);
@@ -309,7 +303,6 @@ function OperationmyweeklyReport(props) {
       const ids = selectedRows.map(item => {
         return item.id
       })
-
       return dispatch({
         type: 'softreport/deleteAll',
         payload: { ids }
@@ -324,6 +317,8 @@ function OperationmyweeklyReport(props) {
     if (!selectedRows.length) {
       message.info('至少选择一条数据');
     }
+    
+    return null;
   }
 
   const defaultTime = () => {
@@ -347,14 +342,11 @@ function OperationmyweeklyReport(props) {
     if (selectedRows.length === 1) {
       message.info('复制成功')
     }
-
     return null
   }
 
   useEffect(() => {
-    // getmyweeklyTable();
     defaultTime();
-
     validateFields((err, value) => {
       searchdata(value, 1, paginations.pageSize);
     })
@@ -438,7 +430,6 @@ function OperationmyweeklyReport(props) {
               </Button>
 
             </Col>
-
           </Form>
         </Row>
 
@@ -486,9 +477,7 @@ function OperationmyweeklyReport(props) {
             rowSelection={rowSelection}
           />
         )}
-
       </Card>
-
     </PageHeaderWrapper>
   )
 }

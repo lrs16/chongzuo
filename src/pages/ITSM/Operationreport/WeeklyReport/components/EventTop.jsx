@@ -60,54 +60,6 @@ function EventTop(props) {
     }
   }, [data]);
 
-  // 自动完成报障用户
-  const disableduser = disablelist.map(opt => (
-    <Option key={opt.id} value={opt.user} disableuser={opt}>
-      <Spin spinning={spinloading}>
-        <div className={styles.disableuser}>
-          <span>{opt.user}</span>
-          {/* <span>{opt.phone}</span>
-            <span>{opt.unit}</span>
-            <span>{opt.dept}</span> */}
-        </div>
-      </Spin>
-    </Option>
-  ));
-
-  // 请求报障用户
-  const SearchDisableduser = value => {
-    queryDisableduserByUser({ user: value }).then(res => {
-      if (res) {
-        const arr = [...res];
-        setSpinLoading(false);
-        setDisabledList(arr);
-      }
-    });
-  };
-
-  // 选择报障用户，信息回填
-  const handleDisableduser = (v, opt,) => {
-    const newData = data.map(item => ({ ...item }));
-    const { user } = opt.props.disableuser;
-    const searchObj = {
-      key: newData.length + 1,
-      num1: user,
-      isNew: true
-    };
-    newData.push(searchObj);
-    setData(newData)
-    // // setFieldsValue({
-    // //   num5: 'user',         // 申报人
-    // // });
-    // const target = getRowByKey(key,newData);
-    // console.log('target: ', target);
-    // if(target) {
-    //   target[fieldName] = user;
-    //   setData(newData)
-    // }
-  };
-
-
   //  获取行  
   const getRowByKey = (key, newData) => {
     return (newData || data).filter(item => item.key === key)[0];
@@ -124,7 +76,7 @@ function EventTop(props) {
   };
 
 
-  const handleSave = (target, id) => {
+  const handleSave = () => {
       const result = JSON.parse(JSON.stringify(data)
         .replace(/first_object/g, 'field1')
         .replace(/second_object/g, 'field2')
@@ -142,9 +94,6 @@ function EventTop(props) {
     if (target) {
       target[fieldName] = e;
       setData(newData);
-    }
-    if (fieldName === 'num3') {
-      searchNumber(e)
     }
 
   }

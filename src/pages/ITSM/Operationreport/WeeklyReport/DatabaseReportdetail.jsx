@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Form,
   Card,
@@ -8,11 +8,8 @@ import {
   Input,
   DatePicker,
   Descriptions,
-  Popconfirm,
-  Divider,
   Icon
 } from 'antd';
-import Link from 'umi/link';
 import moment from 'moment';
 import router from 'umi/router';
 import { connect } from 'dva';
@@ -21,9 +18,7 @@ import Top10Surface from './components/DatabaseComponent/Top10Surface';
 import Top10Increase from './components/DatabaseComponent/Top10Increase';
 import QuestionsComments from './components/DatabaseComponent/QuestionsComments';
 import LastweekHomework from './components/LastweekHomework';
-import NextweekHomework from './components/NextweekHomework';
 import AddForm from './components/AddForm';
-import styles from './index.less';
 import Downloadfile from '@/components/SysUpload/Downloadfile';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import SysUpload from '@/components/SysUpload';
@@ -39,16 +34,6 @@ const forminladeLayout = {
   },
 };
 
-const formItemLayout = {
-  labelCol: {
-    xs: { span: 24 },
-    sm: { span: 6 },
-  },
-  wrapperCol: {
-    xs: { span: 24 },
-    sm: { span: 18 },
-  },
-};
 const formincontentLayout = {
   labelCol: {
     xs: { span: 24 },
@@ -60,18 +45,15 @@ const formincontentLayout = {
   },
 };
 
-const { RangePicker, MonthPicker } = DatePicker;
+const { MonthPicker } = DatePicker;
 const { TextArea } = Input;
 let startTime;
-let monthStarttime;
 let endTime;
 function DatabaseReportdetail(props) {
   const pagetitle = props.route.name;
   const {
-    form: { getFieldDecorator, validateFields, setFieldsValue },
-    match: { params: { id } },
+    form: { getFieldDecorator, setFieldsValue },
     location: { query: {
-      type,
       reporttype,
       status,
       mainId,
@@ -82,16 +64,12 @@ function DatabaseReportdetail(props) {
     developmentList,
     submitdevelopmentlist,
     remainingDefectslist,
-    lastweekHomeworklist,
-    nextweekHomeworklist,
     loading,
   } = props;
 
   const required = true;
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
-  const [secondbutton, setSecondbutton] = useState(false);
   const [addTitle, setAddTitle] = useState([]);
-  const [columns, setColumns] = useState([]);
   const [fileslist, setFilesList] = useState([]);
   const [discList, setDiscList] = useState([]); // 本周运维情况综述列表 
   const [tablespaceList, setTablespaceList] = useState([]) // 软件运维巡检
@@ -101,7 +79,6 @@ function DatabaseReportdetail(props) {
   const [nextOperationList, setNextOperationList] = useState([]) // 下周作业列表
   const [list, setList] = useState([]);
   const { main } = openReportlist;
-
 
   //  保存表单
   const softReportform = () => {
@@ -149,6 +126,7 @@ function DatabaseReportdetail(props) {
       endTime = moment().endOf('month').format('YYYY-MM-DD');
     }
   }
+
   // 上传删除附件触发保存
   useEffect(() => {
     if (files.ischange) {
@@ -168,6 +146,7 @@ function DatabaseReportdetail(props) {
       }
     })
   }
+
   //   七、下周作业完成情况--表格
   const nextweekHomework = () => {
     dispatch({
@@ -216,7 +195,6 @@ function DatabaseReportdetail(props) {
     startTime = moment(dateString).subtract('day', 6).format('YYYY-MM-DD');
     setFieldsValue({ time1: moment(startTime) })
   }
-
 
   // 上传删除附件触发保存
   useEffect(() => {
@@ -338,7 +316,6 @@ function DatabaseReportdetail(props) {
         {loading === false && startTime && (
           <Row gutter={24}>
             <Form >
-
               <Col span={24}>
                 <Form.Item
                   label={reporttype === 'week' ? '周报名称' : '月报名称'}
@@ -359,23 +336,6 @@ function DatabaseReportdetail(props) {
                 </Form.Item>
               </Col>
 
-              {/* {
-                reporttype === 'week' && (
-                  <Col span={24}>
-                    <Form.Item label='填报日期'>
-                      {getFieldDecorator('time1', {
-                        initialValue: [moment(main.time1), moment(main.time2)]
-                      })(<RangePicker
-                        allowClear={false}
-                        disabled={reportSearch}
-                        // disabledDate={startdisabledDate}
-                        // placeholder='请选择'
-                        onChange={onChange}
-                      />)}
-                    </Form.Item>
-                  </Col>
-                )
-              } */}
               {
                 reporttype === 'week' && (
                   <div>
@@ -416,14 +376,21 @@ function DatabaseReportdetail(props) {
               {
                 reporttype === 'month' && (
                   <Col span={24}>
-                    <Form.Item label='起始时间' style={{ display: 'inline-flex' }}>
+                    <Form.Item
+                      label='起始时间'
+                      style={{ display: 'inline-flex' }}
+                    >
                       {getFieldDecorator('time1', {
+                           rules: [
+                            {
+                              required,
+                              message: '请输入填报时间'
+                            }
+                          ],
                         initialValue: moment(main.time1)
                       })(<MonthPicker
                         allowClear={false}
                         disabled={reportSearch}
-                        // disabledDate={startdisabledDate}
-                        // placeholder='请选择'
                         onChange={onChange}
                       />)}
                     </Form.Item>
@@ -432,7 +399,6 @@ function DatabaseReportdetail(props) {
               }
 
               {/* 一、本周运维情况综述 */}
-
               <Col span={24}>
                 <p style={{ fontWeight: '900', fontSize: '16px', marginTop: '20px' }}>{reporttype === 'week' ? '一、本周运维情况综述' : '一、本月运维情况综述'}</p>
               </Col>
@@ -493,8 +459,6 @@ function DatabaseReportdetail(props) {
 
                 )
               }
-
-
 
               <Col span={24}>
                 <p style={{ fontWeight: '900', fontSize: '16px' }}>二、巡检汇总</p>
@@ -586,7 +550,6 @@ function DatabaseReportdetail(props) {
                 )
               }
 
-
               {
                 reportSearch && (
                   <div style={{ marginLeft: 30, marginRight: 10, marginTop: 20 }}>
@@ -596,13 +559,10 @@ function DatabaseReportdetail(props) {
                           {openReportlist && <Downloadfile files={openReportlist.tableUpFiles === '' ? '[]' : openReportlist.tableUpFiles} />}
                         </span>
                       </Descriptions.Item>
-
                     </Descriptions>
                   </div>
-
                 )
               }
-
 
               {/* 三、发现问题及修改建议 */}
               <Col span={24}>
@@ -618,7 +578,6 @@ function DatabaseReportdetail(props) {
                   reportSearch={reportSearch}
                 />
               </Col>
-
 
               {
                 !reportSearch && (
@@ -668,13 +627,11 @@ function DatabaseReportdetail(props) {
                 <p style={{ fontWeight: '900', fontSize: '16px' }}>四、上周作业完成情况</p>
               </Col>
 
-              {/* 上周作业完成情况*/}
+              {/* 上周作业完成情况 */}
               <Col span={24}>
                 <LastweekHomework
                   forminladeLayout={forminladeLayout}
                   operationArr={openReportlist.operationList}
-                  startTime={startTime}
-                  endTime={endTime}
                   type={reporttype}
                   operationList={contentrowdata => {
                     setOperationList(contentrowdata)
@@ -728,20 +685,17 @@ function DatabaseReportdetail(props) {
                 )
               }
 
-
               <Col span={24}>
                 <p style={{ fontWeight: '900', fontSize: '16px' }}>五、下周作业计划</p>
               </Col>
 
               {/* 下周工作计划 */}
               <Col span={24}>
-                <NextweekHomework
+                <LastweekHomework
                   forminladeLayout={forminladeLayout}
-                  nextOperationArr={openReportlist.nextOperationList}
-                  startTime={startTime}
-                  endTime={endTime}
+                  operationArr={openReportlist.nextOperationList}
                   type={reporttype}
-                  nextOperationList={contentrowdata => {
+                  operationList={contentrowdata => {
                     setNextOperationList(contentrowdata)
                   }}
                   mainId={mainId}
@@ -789,10 +743,8 @@ function DatabaseReportdetail(props) {
 
                     </Descriptions>
                   </div>
-
                 )
               }
-
 
               {loading === false && addTitle && addTitle.length > 0 && (
                 addTitle.map((item, index) => {
@@ -836,13 +788,9 @@ function DatabaseReportdetail(props) {
               >
                 新增其他内容
               </Button>
-
-
             </Form>
           </Row>
-
         )}
-
       </Card>
     </PageHeaderWrapper>
 

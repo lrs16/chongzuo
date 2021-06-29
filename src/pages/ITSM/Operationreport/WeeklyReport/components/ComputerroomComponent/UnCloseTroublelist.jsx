@@ -1,14 +1,10 @@
-import React, { useEffect, useRef, useImperativeHandle, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Table,
   Form,
   Input,
-  Col,
-  Row,
   Button,
-  Divider,
   Popconfirm,
-  Select,
   message,
   DatePicker
 } from 'antd';
@@ -16,25 +12,18 @@ import moment from 'moment';
 
 const { TextArea } = Input;
 function UnCloseTroublelist(props) {
-
   const {
-    form: { getFieldDecorator },
     unCloseTroubleList,
     uncloseaultlist,
     mainId,
     reportSearch
   } = props;
   const [data, setData] = useState([]);
-  const [seconddata, setSeconddata] = useState([]);
-  const [cacheOriginData, setcacheOriginData] = useState({});
-  const [uploadkey, setKeyUpload] = useState('');
-  const [fileslist, setFilesList] = useState([]);
   const [newbutton, setNewButton] = useState(false);
 
 
   // 初始化把数据传过去
   useEffect(() => {
-    // typeList(maintenanceArr)
     if (data && data.length) {
       const result = JSON.parse(JSON.stringify(data)
         .replace(/addTime/g, 'field1')
@@ -52,9 +41,7 @@ function UnCloseTroublelist(props) {
   }
 
   // 新增一条记录
-  const newMember = (params) => {
-    setFilesList([]);
-    setKeyUpload('');
+  const newMember = () => {
     const newData = (data).map(item => ({ ...item }));
     newData.push({
       key: data.length + 1,
@@ -82,8 +69,6 @@ function UnCloseTroublelist(props) {
     setData(target);
     message.info('删除成功')
   };
-
-
 
   const handleFieldChange = (e, fieldName, key) => {
     const newData = data.map(item => ({ ...item }));
@@ -280,11 +265,7 @@ function UnCloseTroublelist(props) {
 
   return (
     <>
-      {/* <Row gutter={16}> */}
-
-      {/* <Col span={20}> */}
       <p style={{ marginTop: 24 }}>3.2未修复故障清单</p>
-      {/* </Col> */}
 
       <div style={{ textAlign: 'right', marginBottom: 10 }}>
         <Button
@@ -309,7 +290,6 @@ function UnCloseTroublelist(props) {
       >
         新增
       </Button>
-      {/* </Row> */}
     </>
   )
 }

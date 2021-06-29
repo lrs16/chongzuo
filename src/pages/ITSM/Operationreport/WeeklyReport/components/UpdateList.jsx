@@ -1,25 +1,18 @@
-import React, { useEffect, useImperativeHandle, useContext, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Table,
   Form,
   Input,
-  Col,
-  Row,
   Button,
-  Divider,
   DatePicker,
   Popconfirm,
   message
 } from 'antd';
-import { connect } from 'dva';
 import moment from 'moment';
-import SysUpload from '@/components/SysUpload';
 
-const { TextArea } = Input;
 function UpgradeList(props) {
 
   const {
-    form: { getFieldDecorator },
     updateList,
     updateArr,
     startTime,
@@ -28,10 +21,6 @@ function UpgradeList(props) {
     dispatch
   } = props;
   const [data, setData] = useState([]);
-  const [seconddata, setSeconddata] = useState([]);
-  const [cacheOriginData, setcacheOriginData] = useState({});
-  const [uploadkey, setKeyUpload] = useState('');
-  const [fileslist, setFilesList] = useState([]);
   const [newbutton, setNewButton] = useState(false);
 
   // 初始化把数据传过去
@@ -46,11 +35,8 @@ function UpgradeList(props) {
     message.info('暂存保存数据成功')
   }
 
-
   // 新增一条记录
-  const newMember = (params) => {
-    setFilesList([]);
-    setKeyUpload('');
+  const newMember = () => {
     const newData = (data).map(item => ({ ...item }));
     newData.push({
       key: data.length + 1,
@@ -101,8 +87,6 @@ function UpgradeList(props) {
       setData(newarr)
     }
   }
-
-
 
   useEffect(() => {
     handleTabledata()
@@ -190,40 +174,34 @@ function UpgradeList(props) {
 
   return (
     <>
-      {/* <Row gutter={16}> */}
+      <p style={{ marginTop: 20 }}>(2)计划{startTime}至{endTime},计量自动化系统开展 次发布变更（消缺），变更内容如下</p>
 
-        {/* <Col span={20}> */}
-          <p style={{marginTop:20}}>(2)计划{startTime}至{endTime},计量自动化系统开展 次发布变更（消缺），变更内容如下</p>
-        {/* </Col> */}
-
-        <div style={{textAlign:'right',marginBottom:10}}>
-          <Button
-            disabled={detailParams}
-            type='primary'
-            onClick={handleSave}>保存</Button>
-        </div>
-
-        <Table
-          columns={column}
-          dataSource={data}
-          pagination={false}
-        />
-
+      <div style={{ textAlign: 'right', marginBottom: 10 }}>
         <Button
-          style={{ width: '100%', marginTop: 16}}
-          type="primary"
-          ghost
-          onClick={() => newMember()}
-          icon="plus"
           disabled={detailParams}
+          type='primary'
+          onClick={handleSave}>保存</Button>
+      </div>
 
-        >
-          新增
-        </Button>
-      {/* </Row> */}
+      <Table
+        columns={column}
+        dataSource={data}
+        pagination={false}
+      />
+
+      <Button
+        style={{ width: '100%', marginTop: 16 }}
+        type="primary"
+        ghost
+        onClick={() => newMember()}
+        icon="plus"
+        disabled={detailParams}
+
+      >
+        新增
+      </Button>
     </>
   )
 }
 
-// export default Form.create({})(ServiceCompletion)
 export default Form.create({})(UpgradeList)

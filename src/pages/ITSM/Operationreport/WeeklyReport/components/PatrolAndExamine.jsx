@@ -3,16 +3,11 @@ import {
   Table,
   Form,
   Input,
-  Col,
-  Row,
   Button,
-  Divider,
   Popconfirm,
   DatePicker,
   message
 } from 'antd';
-import { connect } from 'dva';
-import SysUpload from '@/components/SysUpload';
 import moment from 'moment';
 
 const { TextArea } = Input;
@@ -27,16 +22,11 @@ const PatrolAndExamine = React.forwardRef((props, ref) => {
   );
 
   const {
-    form: { getFieldDecorator },
     patrolAndExamineList,
     patrolAndExamine,
     detailParams
   } = props;
   const [data, setData] = useState([]);
-  const [seconddata, setSeconddata] = useState([]);
-  const [cacheOriginData, setcacheOriginData] = useState({});
-  const [uploadkey, setKeyUpload] = useState('');
-  const [fileslist, setFilesList] = useState([]);
   const [newbutton, setNewButton] = useState(false);
 
   // 初始化把数据传过去
@@ -52,9 +42,7 @@ const PatrolAndExamine = React.forwardRef((props, ref) => {
   }
 
   // 新增一条记录
-  const newMember = (params) => {
-    setFilesList([]);
-    setKeyUpload('');
+  const newMember = () => {
     const newData = (data).map(item => ({ ...item }));
     newData.push({
       key: data.length + 1,

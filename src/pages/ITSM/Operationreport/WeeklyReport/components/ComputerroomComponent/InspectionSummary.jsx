@@ -1,24 +1,18 @@
-import React, { useEffect, useRef, useImperativeHandle, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Table,
   Form,
   Input,
-  Col,
-  Row,
   Button,
-  Divider,
   Popconfirm,
   Select,
   message
 } from 'antd';
 
-const { TextArea } = Input;
 const { Option } = Select;
 function InspectionSummary(props) {
 
   const {
-    form: { getFieldDecorator },
-    forminladeLayout,
     materialsList,
     materialsArr,
     reportSearch
@@ -39,7 +33,7 @@ function InspectionSummary(props) {
   }
 
   // 新增一条记录
-  const newMember = (params) => {
+  const newMember = () => {
     const newData = (data).map(item => ({ ...item }));
     newData.push({
       key: data.length + 1,
@@ -150,35 +144,31 @@ function InspectionSummary(props) {
 
   return (
     <>
-      {/* <Row gutter={16}> */}
-        {/* <Col span={20}> */}
-          <p>(2)运维材料提交情况</p>
-        {/* </Col> */}
+      <p>(2)运维材料提交情况</p>
 
-        <div style={{textAlign:'right',marginBottom:10}}>
-          <Button
-            disabled={reportSearch}
-            type='primary'
-            onClick={handleSave}>保存</Button>
-        </div>
-
-        <Table
-          columns={column}
-          dataSource={data}
-          pagination={false}
-        />
-
+      <div style={{ textAlign: 'right', marginBottom: 10 }}>
         <Button
-          style={{ width: '100%', marginTop: 16}}
-          type="primary"
-          ghost
-          onClick={() => newMember()}
-          icon="plus"
           disabled={reportSearch}
-        >
-          新增
-        </Button>
-      {/* </Row> */}
+          type='primary'
+          onClick={handleSave}>保存</Button>
+      </div>
+
+      <Table
+        columns={column}
+        dataSource={data}
+        pagination={false}
+      />
+
+      <Button
+        style={{ width: '100%', marginTop: 16 }}
+        type="primary"
+        ghost
+        onClick={() => newMember()}
+        icon="plus"
+        disabled={reportSearch}
+      >
+        新增
+      </Button>
     </>
   )
 }

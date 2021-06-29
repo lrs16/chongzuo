@@ -42,7 +42,7 @@ function Maintenance(props) {
 
   const columns = [
     {
-      title: '一级对象',
+      title: '问题对象',
       dataIndex: mergeCell,
       key: mergeCell,
       align: 'center',
@@ -56,7 +56,7 @@ function Maintenance(props) {
       },
     },
     {
-      title: '二级对象',
+      title: '问题分类',
       dataIndex: 'second_object',
       key: 'second_object',
       align: 'center',

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Form,
   Card,
@@ -7,13 +7,9 @@ import {
   Col,
   Input,
   DatePicker,
-  Table,
-  Popconfirm,
-  Divider,
   Icon,
   message
 } from 'antd';
-import Link from 'umi/link';
 import moment from 'moment';
 import router from 'umi/router';
 import { connect } from 'dva';
@@ -22,9 +18,7 @@ import Top10Surface from './components/DatabaseComponent/Top10Surface';
 import Top10Increase from './components/DatabaseComponent/Top10Increase';
 import QuestionsComments from './components/DatabaseComponent/QuestionsComments';
 import LastweekHomework from './components/LastweekHomework';
-import NextweekHomework from './components/NextweekHomework';
 import CopyLast from './components/CopyLast';
-import CopyNext from './components/CopyNext';
 import AddForm from './components/AddForm';
 
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
@@ -41,16 +35,6 @@ const forminladeLayout = {
   },
 };
 
-const formItemLayout = {
-  labelCol: {
-    xs: { span: 24 },
-    sm: { span: 6 },
-  },
-  wrapperCol: {
-    xs: { span: 24 },
-    sm: { span: 18 },
-  },
-};
 const formincontentLayout = {
   labelCol: {
     xs: { span: 24 },
@@ -62,16 +46,14 @@ const formincontentLayout = {
   },
 };
 
-const { RangePicker, MonthPicker } = DatePicker;
+const { MonthPicker } = DatePicker;
 const { TextArea } = Input;
 let startTime;
-let monthStarttime;
 let endTime;
 function DatabaseReport(props) {
   const pagetitle = props.route.name;
   const {
     form: { getFieldDecorator, setFieldsValue },
-    match: { params: { id } },
     location: { query:
       {
         reporttype,
@@ -90,7 +72,6 @@ function DatabaseReport(props) {
   const required = true;
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
   const [addTitle, setAddTitle] = useState([]);
-  const [columns, setColumns] = useState([]);
   const [fileslist, setFilesList] = useState([]);
   const [discList, setDiscList] = useState([]); // 本周运维情况综述列表 
   const [tablespaceList, setTablespaceList] = useState([]) // 软件运维巡检
@@ -143,6 +124,7 @@ function DatabaseReport(props) {
       endTime = moment().endOf('month').format('YYYY-MM-DD');
     }
   }
+
   // 上传删除附件触发保存
   useEffect(() => {
     if (files.ischange) {
@@ -162,13 +144,17 @@ function DatabaseReport(props) {
       }
     })
   }
+
   //   七、下周作业完成情况--表格
   const nextweekHomework = () => {
     dispatch({
       type: 'softreport/nextweekHomework',
       payload: {
-        time1: startTime,
-        time2: endTime,
+        time1: reporttype === 'week' ? endTime :
+          moment().startOf('month').subtract('month', -1).format('YYYY-MM-DD'),
+
+        time2: reporttype === 'week' ? moment().add(6, 'd').format('YYYY-MM-DD')
+          : moment().endOf('month').subtract('month', -1).endOf('month').format('YYYY-MM-DD'),
         pageIndex: 0,
         pageSize: 10
       }
@@ -182,16 +168,12 @@ function DatabaseReport(props) {
       ...params
     });
     setList(newData);
-    // if(params.files) {
-    //   softReportform()
-    // }
   };
-
 
   const removeForm = (tableIndex) => {
     addTitle.splice(tableIndex, 1);
     const resultArr = [];
-    for (let i = 0; i < addTitle.length; i++) {
+    for (let i = 0; i < addTitle.length; i += 1) {
       resultArr.push(addTitle[i])
     }
     setAddTitle(resultArr)
@@ -203,6 +185,11 @@ function DatabaseReport(props) {
     lastweekHomework();
     nextweekHomework();
   }, []);
+
+  useEffect(() => {
+    lastweekHomework();
+    nextweekHomework();
+  }, [startTime, endTime]);
 
   //  粘贴
   const handlePaste = () => {
@@ -322,9 +309,9 @@ function DatabaseReport(props) {
           <Row gutter={24}>
             <Form>
               <Col span={24}>
-                <Form.Item 
-                label={reporttype === 'week' ? '周报名称' : '月报名称'}
-                style={{ display: 'inline-flex' }}
+                <Form.Item
+                  label={reporttype === 'week' ? '周报名称' : '月报名称'}
+                  style={{ display: 'inline-flex' }}
                 >
                   {getFieldDecorator('name', {
                     rules: [
@@ -336,27 +323,10 @@ function DatabaseReport(props) {
                     initialValue: copyData.main ? copyData.main.name : ''
                   })
                     (
-                      <Input style={{ width: 700 }}/>
+                      <Input style={{ width: 700 }} />
                     )}
                 </Form.Item>
               </Col>
-
-              {/* {
-                reporttype === 'week' && (
-                  <Col span={24}>
-                    <Form.Item label='填报日期'>
-                      {getFieldDecorator('time1', {
-                        initialValue: [moment(copyData.main ? copyData.main.time1 : startTime), moment(copyData.main ? copyData.main.time2 : endTime)]
-                      })(<RangePicker
-                        allowClear={false}
-                        // disabledDate={startdisabledDate}
-                        // placeholder='请选择'
-                        onChange={onChange}
-                      />)}
-                    </Form.Item>
-                  </Col>
-                )
-              } */}
 
               {
                 reporttype === 'week' && (
@@ -398,8 +368,17 @@ function DatabaseReport(props) {
               {
                 reporttype === 'month' && (
                   <Col span={24}>
-                    <Form.Item label='填报日期'>
+                    <Form.Item
+                      label='填报日期'
+                      style={{ display: 'inline-flex' }}
+                    >
                       {getFieldDecorator('time1', {
+                        rules: [
+                          {
+                            required,
+                            message: '请输入填报时间'
+                          }
+                        ],
                         initialValue: moment(copyData.main ? copyData.main.time1 : startTime)
                       })(<MonthPicker
                         allowClear={false}
@@ -472,9 +451,8 @@ function DatabaseReport(props) {
                 <Diskgroup
                   forminladeLayout={forminladeLayout}
                   discArr={[]}
-                  // discArr={copyData.discList ? copyData.discList : []}
                   discList={contentrowdata => {
-                    // setDiscList(contentrowdata)
+                    setDiscList(contentrowdata)
                   }}
                 />
               </Col>
@@ -564,7 +542,8 @@ function DatabaseReport(props) {
                 </Form.Item>
               </Col>
 
-              {/* 上周作业完成情况*/}
+              {/* 上周作业完成情况 */}
+
               <Col span={24}>
                 <p style={{ fontWeight: '900', fontSize: '16px' }}> 四、上周作业完成情况</p>
               </Col>
@@ -575,8 +554,6 @@ function DatabaseReport(props) {
                     <CopyLast
                       forminladeLayout={forminladeLayout}
                       operationArr={copyData.operationList}
-                      startTime={startTime}
-                      endTime={endTime}
                       type={reporttype}
                       operationList={contentrowdata => {
                         setOperationList(contentrowdata)
@@ -593,8 +570,6 @@ function DatabaseReport(props) {
                     <LastweekHomework
                       forminladeLayout={forminladeLayout}
                       operationArr={lastweekHomeworklist.rows}
-                      startTime={startTime}
-                      endTime={endTime}
                       type={reporttype}
                       operationList={contentrowdata => {
                         setOperationList(contentrowdata)
@@ -637,15 +612,13 @@ function DatabaseReport(props) {
               {
                 copyData.operationList !== undefined && (
                   <Col span={24}>
-                    <CopyNext
+                    <CopyLast
                       forminladeLayout={forminladeLayout}
-                      startTime={startTime}
-                      endTime={endTime}
                       type={reporttype}
-                      nextOperationList={contentrowdata => {
+                      operationList={contentrowdata => {
                         setNextOperationList(contentrowdata)
                       }}
-                      nextOperationArr={copyData.nextOperationList}
+                      operationArr={copyData.nextOperationList}
                       mainId={mainId}
                     />
                   </Col>
@@ -655,21 +628,18 @@ function DatabaseReport(props) {
               {
                 copyData.operationList === undefined && (
                   <Col span={24}>
-                    <NextweekHomework
+                    <LastweekHomework
                       forminladeLayout={forminladeLayout}
-                      startTime={startTime}
-                      endTime={endTime}
                       type={reporttype}
-                      nextOperationList={contentrowdata => {
+                      operationList={contentrowdata => {
                         setNextOperationList(contentrowdata)
                       }}
-                      nextOperationArr={nextweekHomeworklist.rows}
+                      operationArr={nextweekHomeworklist.rows}
                       mainId={mainId}
                     />
                   </Col>
                 )
               }
-
 
               <Col span={24} style={{ marginTop: 20 }}>
                 <Form.Item
@@ -691,7 +661,6 @@ function DatabaseReport(props) {
                         />
                       </div>
                     )}
-
                 </Form.Item>
               </Col>
 
@@ -735,16 +704,11 @@ function DatabaseReport(props) {
               >
                 新增其他内容
               </Button>
-
-
             </Form>
           </Row>
-
         )}
-
       </Card>
     </PageHeaderWrapper>
-
   )
 }
 

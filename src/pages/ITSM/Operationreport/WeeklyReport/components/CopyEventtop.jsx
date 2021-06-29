@@ -1,22 +1,16 @@
-import React, { useState, useEffect, useRef, useImperativeHandle } from 'react';
+import React, { useState, useEffect} from 'react';
 import {
   Table,
   Form,
   Input,
   Col,
   Row,
-  Divider,
   Popconfirm,
   Select,
-  AutoComplete,
   Spin,
   Button,
   message
 } from 'antd';
-import { connect } from 'dva';
-import SysUpload from '@/components/SysUpload';
-import { queryDisableduserByUser, queryUnitList, queryDeptList } from '@/services/common';
-import styles from '../index.less';
 
 
 const { TextArea } = Input;
@@ -24,26 +18,18 @@ const { Option } = Select;
 
 function CopyEventtop(props) {
   const {
-    form: { getFieldDecorator, setFieldsValue, validateFields },
-    forminladeLayout,
     formincontentLayout,
     formItemLayout,
-    startTime,
-    endTime,
     topNList,
-    ordertopnArr,
     defaultValue,
     topArr,
     mainId,
     value,
     detailParams,
     loading,
-    dispatch
   } = props;
 
   const [data, setData] = useState([]);
-  const [disablelist, setDisabledList] = useState([]);
-  const [spinloading, setSpinLoading] = useState(true);
 
   // 初始化把数据传过去
   useEffect(() => {
@@ -60,54 +46,6 @@ function CopyEventtop(props) {
     }
   }, [data]);
 
-  // 自动完成报障用户
-  const disableduser = disablelist.map(opt => (
-    <Option key={opt.id} value={opt.user} disableuser={opt}>
-      <Spin spinning={spinloading}>
-        <div className={styles.disableuser}>
-          <span>{opt.user}</span>
-          {/* <span>{opt.phone}</span>
-            <span>{opt.unit}</span>
-            <span>{opt.dept}</span> */}
-        </div>
-      </Spin>
-    </Option>
-  ));
-
-  // 请求报障用户
-  const SearchDisableduser = value => {
-    queryDisableduserByUser({ user: value }).then(res => {
-      if (res) {
-        const arr = [...res];
-        setSpinLoading(false);
-        setDisabledList(arr);
-      }
-    });
-  };
-
-  // 选择报障用户，信息回填
-  const handleDisableduser = (v, opt,) => {
-    const newData = data.map(item => ({ ...item }));
-    const { user } = opt.props.disableuser;
-    const searchObj = {
-      key: newData.length + 1,
-      num1: user,
-      isNew: true
-    };
-    newData.push(searchObj);
-    setData(newData)
-    // // setFieldsValue({
-    // //   num5: 'user',         // 申报人
-    // // });
-    // const target = getRowByKey(key,newData);
-    // console.log('target: ', target);
-    // if(target) {
-    //   target[fieldName] = user;
-    //   setData(newData)
-    // }
-  };
-
-
   //  获取行  
   const getRowByKey = (key, newData) => {
     return (newData || data).filter(item => item.key === key)[0];
@@ -123,8 +61,7 @@ function CopyEventtop(props) {
     setData(target)
   };
 
-
-  const handleSave = (target, id) => {
+  const handleSave = () => {
       const result = JSON.parse(JSON.stringify(data)
         .replace(/first_object/g, 'field1')
         .replace(/second_object/g, 'field2')
@@ -143,10 +80,6 @@ function CopyEventtop(props) {
       target[fieldName] = e;
       setData(newData);
     }
-    if (fieldName === 'num3') {
-      searchNumber(e)
-    }
-
   }
 
   const handleTabledata = () => {
@@ -159,80 +92,6 @@ function CopyEventtop(props) {
   const selectOnchange = (selectvalue) => {
     value(selectvalue)
   }
-
-
-  const column = [
-    {
-      title: '事件对象一级',
-      dataIndex: 'first_object',
-      key: 'first_object',
-      render: (text, record) => {
-        return (
-          <Input
-            defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'first_object', record.key)}
-          />
-        )
-      }
-    },
-    {
-      title: '事件对象二级',
-      dataIndex: 'second_object',
-      key: 'second_object',
-      render: (text, record) => {
-        return (
-          <Input
-            defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'second_object', record.key)}
-          />
-        )
-      }
-    },
-    {
-      title: '事件单数',
-      dataIndex: 'num',
-      key: 'num',
-      render: (text, record) => {
-        return (
-          <Input
-            defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'num', record.key)}
-          />
-        )
-      }
-    },
-    {
-      title: '措施',
-      dataIndex: 'field4',
-      key: 'field4',
-      render: (text, record) => {
-        return (
-          <TextArea
-            defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'field4', record.key)}
-          />
-        )
-      }
-    },
-    {
-      title: '操作',
-      key: 'action',
-      fixed: 'right',
-      width: 120,
-      render: (text, record) => {
-        if (text !== '合计') {
-          return (
-            <span>
-              <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
-                <a>删除</a>
-              </Popconfirm>
-            </span>
-          )
-        }
-      }
-
-    }
-  ];
 
   const editColumns = [
     {

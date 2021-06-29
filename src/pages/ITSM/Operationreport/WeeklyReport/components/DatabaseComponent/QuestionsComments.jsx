@@ -3,10 +3,7 @@ import {
   Table,
   Form,
   Input,
-  Col,
-  Row,
   Button,
-  Divider,
   Popconfirm,
   DatePicker,
   message
@@ -25,7 +22,6 @@ const QuestionsComments = React.forwardRef((props, ref) => {
   );
 
   const {
-    form: { getFieldDecorator },
     defectArr,
     defectList,
     reportSearch
@@ -46,7 +42,7 @@ const QuestionsComments = React.forwardRef((props, ref) => {
   }
 
   // 新增一条记录
-  const newMember = (params) => {
+  const newMember = () => {
     const newData = (data).map(item => ({ ...item }));
     newData.push({
       key: data.length + 1,
@@ -167,7 +163,6 @@ const QuestionsComments = React.forwardRef((props, ref) => {
   useEffect(() => {
     handleTabledata();
   }, [defectArr])
-
 
   return (
     <>

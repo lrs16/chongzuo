@@ -7,7 +7,6 @@ import {
   Popconfirm,
   message
 } from 'antd';
-import { connect } from 'dva';
 
 const { TextArea } = Input;
 const Diskgroup = React.forwardRef((props, ref) => {
@@ -27,7 +26,6 @@ const Diskgroup = React.forwardRef((props, ref) => {
   } = props;
 
   const [data, setData] = useState([]);
-  const [cacheOriginData, setcacheOriginData] = useState({});
   const [uploadkey, setKeyUpload] = useState('');
   const [fileslist, setFilesList] = useState([]);
   const [newbutton, setNewButton] = useState(false);
@@ -46,7 +44,7 @@ const Diskgroup = React.forwardRef((props, ref) => {
 
 
   // 新增一条记录
-  const newMember = (params) => {
+  const newMember = () => {
     setFilesList([]);
     setKeyUpload('');
     const newData = (data).map(item => ({ ...item }));
@@ -94,8 +92,6 @@ const Diskgroup = React.forwardRef((props, ref) => {
       setData(newarr)
     }
   }
-
-  // console.log(legacyArr,'legacyArr')
 
   const column = [
     {
@@ -181,8 +177,6 @@ const Diskgroup = React.forwardRef((props, ref) => {
   useEffect(() => {
     handleTabledata();
   }, [discArr])
-
-
 
   return (
     <>

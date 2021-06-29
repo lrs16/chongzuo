@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useImperativeHandle } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Table,
   Form,
@@ -13,44 +13,27 @@ import {
   Button,
   message
 } from 'antd';
-import SysUpload from '@/components/SysUpload';
-import { queryOrder, queryUnitList, queryDeptList } from '@/services/common';
+import { queryOrder } from '@/services/common';
 import styles from '../index.less';
-import Downloadfile from '@/components/SysUpload/Downloadfile';
 import moment from 'moment';
 
 const { Search, TextArea } = Input;
 const { Option } = Select;
 
 function ThisWeekitsm(props) {
-  // const attRef = useRef();
-  // useImperativeHandle(
-  //   ref,
-  //   () => ({
-  //     attRef,
-  //   }),
-  //   [],
-  // )
 
   const {
-    form: { getFieldDecorator, setFieldsValue },
-    forminladeLayout,
+    form: { getFieldDecorator },
     formItemLayout,
     formincontentLayout,
-    thisWeekitsmlist,
-    reportType,
     eventList,
     eventArr,
     mainId,
     detailParams,
-    searchNumber,
     loading
   } = props;
 
   const [data, setData] = useState([]);
-  const [cacheOriginData, setcacheOriginData] = useState({});
-  const [newbutton, setNewButton] = useState(false);
-  const [fileslist, setFilesList] = useState([]);
   const [disablelist, setDisabledList] = useState([]);
   const [spinloading, setSpinLoading] = useState(true);
   const [value, setValue] = useState('event');
@@ -79,22 +62,26 @@ function ThisWeekitsm(props) {
 
   ));
 
-  // 请求报障用户
+  // 请求关键字
   const SearchDisableduser = searchvalues => {
-    queryOrder({ key: searchvalues, type: value }).then(res => {
-      if (res) {
-        const arr = [...res.data];
-        setSpinLoading(false);
-        setDisabledList(arr);
-      }
-    });
+    if (searchvalues) {
+      queryOrder({ key: searchvalues, type: value }).then(res => {
+        if (res) {
+          const arr = [...res.data];
+          setSpinLoading(false);
+          setDisabledList(arr);
+        }
+      });
+    } else {
+      message.info('关键字不能为空')
+    }
+
   };
 
   // 选择报障用户，信息回填
   const handleDisableduser = (v, opt,) => {
     const newData = data.map(item => ({ ...item }));
     const { type, no, content, startTime, endTime, systemName } = opt.props.disableuser;
-    console.log('endTime: ', endTime);
     const searchObj = {
       key: newData.length + 1,
       field1: type,
@@ -137,13 +124,9 @@ function ThisWeekitsm(props) {
         target[fieldName] = e;
         setData(newData);
       }
-
     }
-
-
   }
 
-  // console.log(thisWeekitsmlist,'thisWeekitsmlist')
   const handleTabledata = () => {
     if (mainId) {
       const newarr = eventArr.map((item, index) => {
@@ -152,7 +135,6 @@ function ThisWeekitsm(props) {
       setData(newarr)
     }
   }
-
 
   useEffect(() => {
     handleTabledata();
@@ -344,9 +326,9 @@ function ThisWeekitsm(props) {
                         onSelect={(v, opt) => handleDisableduser(v, opt)}
                       >
                         <Search
+                          disabled='true'
                           placeholder="可输入姓名搜索"
                           onSearch={values => SearchDisableduser(values)}
-                        // allowClear
                         />
                       </AutoComplete>,
                     </>
@@ -371,10 +353,6 @@ function ThisWeekitsm(props) {
           loading={loading}
         />
       </Row>
-
-
-
-
     </>
   )
 }

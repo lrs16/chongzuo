@@ -1,38 +1,26 @@
-import React, { useEffect, useImperativeHandle, useContext, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Table,
   Form,
   Input,
-  Col,
-  Row,
   Button,
-  Divider,
   Popconfirm,
   message,
   DatePicker
 } from 'antd';
 import moment from 'moment';
 
-const { TextArea } = Input;
 function DefectTracking(props) {
 
   const {
-    form: { getFieldDecorator },
     legacyArr,
     legacyList,
     detailParams,
-    dispatch
   } = props;
   const [data, setData] = useState([]);
-  const [seconddata, setSeconddata] = useState([]);
-  const [cacheOriginData, setcacheOriginData] = useState({});
-  const [uploadkey, setKeyUpload] = useState('');
-  const [fileslist, setFilesList] = useState([]);
   const [newbutton, setNewButton] = useState(false);
 
-
   // 初始化把数据传过去
-
   useEffect(() => {
     if (data && data.length) {
       legacyList(data)
@@ -44,7 +32,7 @@ function DefectTracking(props) {
     message.info('暂存保存数据成功')
   }
   // 新增一条记录
-  const newMember = (params) => {
+  const newMember = () => {
     const newData = (data).map(item => ({ ...item }));
     newData.push({
       key: data.length + 1,
@@ -63,23 +51,6 @@ function DefectTracking(props) {
     return (newData || data).filter(item => item.key === key)[0];
   }
 
-  //  删除数据
-  const remove = key => {
-    const target = getRowByKey(key) || {};
-    // dispatch({
-    //   type: 'chacklist/trackdelete',
-    //   payload: {
-    //     id: target.id,
-    //   },
-    // }).then(res => {
-    //   if (res.code === 200) {
-    //     message.success(res.msg, 2);
-    //     getlistdata();
-    //   }
-    // });
-  };
-
-
   const handleFieldChange = (e, fieldName, key) => {
     const newData = data.map(item => ({ ...item }));
     const target = getRowByKey(key, newData)
@@ -91,9 +62,18 @@ function DefectTracking(props) {
         target[fieldName] = e;
         setData(newData);
       }
-
     }
   }
+
+  const deleteObj = (key, newData) => {
+    return (newData || data).filter(item => item.key !== key);
+  }
+
+  //  删除数据
+  const remove = key => {
+    const target = deleteObj(key) || {};
+    setData(target)
+  };
 
   const handleTabledata = () => {
     if (newbutton === false) {
@@ -103,7 +83,6 @@ function DefectTracking(props) {
       setData(newarr)
     }
   }
-
 
   useEffect(() => {
     handleTabledata()
@@ -204,10 +183,7 @@ function DefectTracking(props) {
 
   return (
     <>
-      {/* <Row gutter={16}> */}
-      {/* <Col span={20}> */}
       <p style={{ fontWeight: '900', fontSize: '16px', marginTop: '20px' }}>六、遗留缺陷问题跟踪,遗留问题、缺陷跟踪情况</p>
-      {/* </Col> */}
 
       <div style={{ textAlign: 'right', marginBottom: 10 }}>
         <Button
@@ -232,7 +208,6 @@ function DefectTracking(props) {
       >
         新增
       </Button>
-      {/* </Row> */}
     </>
   )
 }

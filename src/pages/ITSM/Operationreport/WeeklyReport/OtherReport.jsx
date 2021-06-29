@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Form,
   Card,
@@ -10,23 +10,12 @@ import {
   Icon,
   message
 } from 'antd';
-import Link from 'umi/link';
 import moment from 'moment';
 import router from 'umi/router';
 import { connect } from 'dva';
-import AddForm from '../WeeklyReport/components/AddForm';
+import AddForm from './components/AddForm';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
-const formItemLayout = {
-  labelCol: {
-    xs: { span: 24 },
-    sm: { span: 6 },
-  },
-  wrapperCol: {
-    xs: { span: 24 },
-    sm: { span: 18 },
-  },
-};
 const formincontentLayout = {
   labelCol: {
     xs: { span: 24 },
@@ -38,17 +27,12 @@ const formincontentLayout = {
   },
 };
 
-const { RangePicker, MonthPicker } = DatePicker;
-const { TextArea } = Input;
+const { MonthPicker } = DatePicker;
 let startTime;
-let monthStarttime;
 let endTime;
-let isNew = false;
 function OtherReport(props) {
-  const pagetitle = props.route.name;
   const {
-    form: { getFieldDecorator, validateFields, setFieldsValue },
-    match: { params: { id } },
+    form: { getFieldDecorator, setFieldsValue },
     location: { query: {
       reporttype,
       mainId,
@@ -60,10 +44,8 @@ function OtherReport(props) {
     loading,
   } = props;
 
-
   const required = true;
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
-  const [secondbutton, setSecondbutton] = useState(false);
   const [addTitle, setAddTitle] = useState([]);
   const [list, setList] = useState([]);
   const [copyData, setCopyData] = useState('')
@@ -75,16 +57,12 @@ function OtherReport(props) {
       ...params
     });
     setList(newData);
-    // if(params.files) {
-    //   softReportform()
-    // }
   };
 
-
   //  保存表单
-  const softReportform = (params) => {
+  const softReportform = () => {
     props.form.validateFields((err, value) => {
-      if(!err) {
+      if (!err) {
         const savedata = {
           ...value,
           status: 'add',
@@ -96,13 +74,13 @@ function OtherReport(props) {
           time1: startTime,
           time2: endTime,
         }
-  
+
         dispatch({
           type: 'softreport/saveOther',
           payload: savedata
         })
       }
-  
+
     })
   }
 
@@ -242,69 +220,43 @@ function OtherReport(props) {
             </Button>
           </>
         )
-
       }
     >
       <Card style={{ padding: 24 }}>
         {startTime && (
           <Row gutter={24}>
             <Form>
-
               <Col span={24}>
-                <Form.Item 
-                label={reporttype === 'week' ? '周报名称' : '月报名称'}
-                style={{ display: 'inline-flex' }}
+                <Form.Item
+                  label={reporttype === 'week' ? '周报名称' : '月报名称'}
+                  style={{ display: 'inline-flex' }}
                 >
                   {getFieldDecorator('name', {
-                      rules: [
-                        {
-                          required,
-                          message: '请输入名称'
-                        }
-                      ],
+                    rules: [
+                      {
+                        required,
+                        message: '请输入名称'
+                      }
+                    ],
                     initialValue: copyData.main ? copyData.main.name : ''
                   })
                     (
-                      <Input style={{ width: 700 }}/>
+                      <Input style={{ width: 700 }} />
                     )}
                 </Form.Item>
               </Col>
-
-              {/* {
-                reporttype === 'week' && (
-                  <Col span={24}>
-                    <Form.Item label='起始时间'>
-                      {getFieldDecorator('time1', {
-                        rules: [
-                          {
-                            required,
-                            message: '请选择填报日期'
-                          }
-                        ],
-                        initialValue: [moment(copyData.main ? copyData.main.time1 : startTime), moment(copyData.main ? copyData.main.time2 : endTime)]
-                      })(<RangePicker
-                        allowClear={false}
-                        // disabledDate={startdisabledDate}
-                        // placeholder='请选择'
-                        onChange={onChange}
-                      />)}
-                    </Form.Item>
-                  </Col>
-                )
-              } */}
-
               {
                 reporttype === 'week' && (
                   <div style={{ display: 'inline' }}>
                     <Col span={24}>
                       <Form.Item label='填报时间' style={{ display: 'inline-flex' }}>
                         {getFieldDecorator('time1', {
-                            rules: [
-                              {
-                                required,
-                                message: '请输入填报时间'
-                              }
-                            ],
+                          rules: [
+                            {
+                              required,
+                              message: '请输入填报时间'
+                            }
+                          ],
                           initialValue: moment(startTime)
                         })(<DatePicker
                           allowClear={false}
@@ -329,29 +281,6 @@ function OtherReport(props) {
                 )
               }
 
-              {/* {
-                reporttype === 'month' && (
-                  <Col span={24}>
-                    <Form.Item label='起始时间'>
-                      {getFieldDecorator('time1', {
-                        rules: [
-                          {
-                            required,
-                            message: '请选择填报日期'
-                          }
-                        ],
-                        initialValue: moment(copyData.main ? copyData.main.time1 : startTime)
-                      })(<MonthPicker
-                        allowClear
-                        // disabledDate={startdisabledDate}
-                        // placeholder='请选择'
-                        onChange={onChange}
-                      />)}
-                    </Form.Item>
-                  </Col>
-                )
-              } */}
-
               {
                 reporttype === 'month' && (
                   <Col span={24}>
@@ -366,16 +295,12 @@ function OtherReport(props) {
                         initialValue: moment(copyData.main ? copyData.main.time1 : startTime)
                       })(<MonthPicker
                         allowClear
-                        // disabledDate={startdisabledDate}
-                        // placeholder='请选择'
                         onChange={onChange}
                       />)}
                     </Form.Item>
                   </Col>
                 )
               }
-
-
 
               {loading === false && addTitle && addTitle.length > 0 && (
                 addTitle.map((item, index) => {
@@ -407,7 +332,6 @@ function OtherReport(props) {
               )
               }
 
-
               <Button
                 style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
                 type="primary"
@@ -417,12 +341,9 @@ function OtherReport(props) {
               >
                 新增其他内容
               </Button>
-
             </Form>
           </Row>
-
         )}
-
       </Card>
     </PageHeaderWrapper>
 
@@ -430,7 +351,7 @@ function OtherReport(props) {
 }
 
 export default Form.create({})(
-  connect(({ softreport, loading }) => ({
+  connect(({ loading }) => ({
     loading: loading.models.softreport,
   }))(OtherReport),
 );

@@ -3,19 +3,10 @@ import {
   Table,
   Form,
   Input,
-  Col,
-  Row,
   Button,
-  Divider,
-  Popconfirm,
-  Select,
   message
 } from 'antd';
-import { connect } from 'dva';
-import SysUpload from '@/components/SysUpload';
 
-const { TextArea } = Input;
-const { Option } = Select;
 const ThisweekMaintenance = React.forwardRef((props, ref) => {
   const attRef = useRef();
   useImperativeHandle(
@@ -30,7 +21,6 @@ const ThisweekMaintenance = React.forwardRef((props, ref) => {
     contentRow,
     contentArr,
     detailParams,
-    addData
   } = props;
 
   const [data, setData] = useState([]);
@@ -62,8 +52,6 @@ const ThisweekMaintenance = React.forwardRef((props, ref) => {
       })
       setData(newarr)
   }
-
-
 
   const column = [
     {
@@ -200,10 +188,8 @@ const ThisweekMaintenance = React.forwardRef((props, ref) => {
     handleTabledata();
   }, [contentArr])
 
-
   return (
     <>
-
       <div style={{ marginBottom: '10px', textAlign: 'right' }}>
         <Button
           type='primary'

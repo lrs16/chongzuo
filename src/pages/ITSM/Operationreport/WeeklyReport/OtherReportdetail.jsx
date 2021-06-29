@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Form,
   Card,
@@ -6,31 +6,15 @@ import {
   Row,
   Col,
   Input,
-  DatePicker,
-  Table,
-  Popconfirm,
-  Divider,
   Icon,
-  message
+  message,
+  DatePicker
 } from 'antd';
-import Link from 'umi/link';
 import moment from 'moment';
 import router from 'umi/router';
 import { connect } from 'dva';
 import AddForm from './components/AddForm';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-import SysUpload from '@/components/SysUpload';
-
-const formItemLayout = {
-  labelCol: {
-    xs: { span: 24 },
-    sm: { span: 6 },
-  },
-  wrapperCol: {
-    xs: { span: 24 },
-    sm: { span: 18 },
-  },
-};
 
 const formincontentLayout = {
   labelCol: {
@@ -43,15 +27,13 @@ const formincontentLayout = {
   },
 };
 
-const { RangePicker, MonthPicker } = DatePicker;
-const { TextArea } = Input;
+const {  MonthPicker } = DatePicker;
 let startTime;
 let endTime;
 function OtherReportdetail(props) {
   const pagetitle = props.route.name;
   const {
-    form: { getFieldDecorator, validateFields, setFieldsValue },
-    match: { params: { id } },
+    form: { getFieldDecorator, setFieldsValue },
     location: { query: {
       type,
       reporttype,
@@ -64,13 +46,9 @@ function OtherReportdetail(props) {
     loading,
   } = props;
 
-
   const required = true;
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
-  const [secondbutton, setSecondbutton] = useState(false);
   const [addTitle, setAddTitle] = useState([]);
-  const [columns, setColumns] = useState([]);
-  const [data, setData] = useState([]);
   const [list, setList] = useState([]);
   const { main } = openReportlist;
 
@@ -81,10 +59,17 @@ function OtherReportdetail(props) {
       ...params
     });
     setList(newData)
-    // if(params.files) {
-    //   softReportform()
-    // }
   };
+
+  const getopenFlow = () => {
+    dispatch({
+      type: 'softreport/openReport',
+      payload: {
+        editStatus: 'edit',
+        id: mainId
+      }
+    })
+  }
 
   //  保存表单
   const softReportform = () => {
@@ -119,7 +104,6 @@ function OtherReportdetail(props) {
     startTime = moment().subtract('days', 6).format('YYYY-MM-DD');
     endTime = moment().format('YYYY-MM-DD');
   }
-
 
   // 上传删除附件触发保存
   useEffect(() => {
@@ -180,16 +164,6 @@ function OtherReportdetail(props) {
     }
   }
 
-  const getopenFlow = () => {
-    dispatch({
-      type: 'softreport/openReport',
-      payload: {
-        editStatus: 'edit',
-        id: mainId
-      }
-    })
-  }
-
   useEffect(() => {
     if (mainId) {
       getopenFlow();
@@ -231,10 +205,10 @@ function OtherReportdetail(props) {
     list.splice(tableIndex, 1);
     const resultArr = [];
     const listArr = [];
-    for (let i = 0; i < addTitle.length; i++) {
+    for (let i = 0; i < addTitle.length; i += 1) {
       resultArr.push(addTitle[i])
     }
-    for (let i = 0; i < list.length; i++) {
+    for (let i = 0; i < list.length; i += 1) {
       listArr.push(list[i])
     }
     setAddTitle(resultArr)
@@ -306,22 +280,6 @@ function OtherReportdetail(props) {
                 </Form.Item>
               </Col>
 
-              {/* {reporttype === 'week' && (
-                <Col span={24}>
-                  <Form.Item label='起始时间'>
-                    {getFieldDecorator('time1', {
-                      initialValue: [moment(main.time1), moment(main.time2)]
-                    })(<RangePicker
-                      allowClear={false}
-                      disabled={reportSearch}
-                      // disabledDate={startdisabledDate}
-                      // placeholder='请选择'
-                      onChange={onChange}
-                    />)}
-                  </Form.Item>
-                </Col>
-              )} */}
-
               {
                 reporttype === 'week' && (
                   <div>
@@ -358,22 +316,6 @@ function OtherReportdetail(props) {
                 )
               }
 
-              {/* {reporttype === 'month' && (
-                <Col span={24}>
-                  <Form.Item label='起始时间'>
-                    {getFieldDecorator('time1', {
-                      initialValue: moment(main.time1)
-                    })(<MonthPicker
-                      allowClear={false}
-                      disabled={reportSearch}
-                      // disabledDate={startdisabledDate}
-                      // placeholder='请选择'
-                      onChange={onChange}
-                    />)}
-                  </Form.Item>
-                </Col>
-              )} */}
-
               {
                 reporttype === 'month' && (
                   <Col span={24}>
@@ -388,17 +330,12 @@ function OtherReportdetail(props) {
                         initialValue: moment(main ? main.time1 : startTime)
                       })(<MonthPicker
                         allowClear
-                        // disabledDate={startdisabledDate}
-                        // placeholder='请选择'
                         onChange={onChange}
                       />)}
                     </Form.Item>
                   </Col>
                 )
               }
-
-
-
 
               {loading === false && addTitle && addTitle.length > 0 && (
                 addTitle.map((item, index) => {
@@ -425,8 +362,6 @@ function OtherReportdetail(props) {
                           />
                         </Col>
                       )}
-
-
                     </>
                   )
                 })
@@ -443,15 +378,11 @@ function OtherReportdetail(props) {
               >
                 新增其他运维
               </Button>
-
             </Form>
           </Row>
-
         )}
-
       </Card>
     </PageHeaderWrapper>
-
   )
 }
 

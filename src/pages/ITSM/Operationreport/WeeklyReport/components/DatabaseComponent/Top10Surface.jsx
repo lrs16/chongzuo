@@ -3,15 +3,11 @@ import {
   Table,
   Form,
   Input,
-  Col,
-  Row,
   Button,
-  Divider,
   Popconfirm,
   message
 } from 'antd';
 
-const { TextArea } = Input;
 const Top10Surface = React.forwardRef((props, ref) => {
   const attRef = useRef();
   useImperativeHandle(
@@ -23,7 +19,6 @@ const Top10Surface = React.forwardRef((props, ref) => {
   );
 
   const {
-    form: { getFieldDecorator },
     tablespaceArr,
     startTime,
     endTime,
@@ -32,7 +27,6 @@ const Top10Surface = React.forwardRef((props, ref) => {
   } = props;
 
   const [data, setData] = useState([]);
-  const [cacheOriginData, setcacheOriginData] = useState({});
   const [uploadkey, setKeyUpload] = useState('');
   const [fileslist, setFilesList] = useState([]);
   const [newbutton, setNewButton] = useState(false);
@@ -49,7 +43,7 @@ const Top10Surface = React.forwardRef((props, ref) => {
     message.info('暂存保存数据成功')
   }
   // 新增一条记录
-  const newMember = (params) => {
+  const newMember = () => {
     setFilesList([]);
     setKeyUpload('');
     const newData = (data).map(item => ({ ...item }));
@@ -79,11 +73,6 @@ const Top10Surface = React.forwardRef((props, ref) => {
     const target = deleteObj(key) || {};
     setData(target)
   };
-
-
-  const savedata = (target, id) => {
-    tablespaceList(data)
-  }
 
   const handleFieldChange = (e, fieldName, key) => {
     const newData = data.map(item => ({ ...item }));
@@ -198,12 +187,9 @@ const Top10Surface = React.forwardRef((props, ref) => {
 
   ];
 
-
   useEffect(() => {
     handleTabledata();
   }, [tablespaceArr])
-
-
 
   return (
     <>

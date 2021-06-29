@@ -1,35 +1,26 @@
-import React, { useEffect, useRef, useImperativeHandle, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Table,
   Form,
   Input,
-  Col,
-  Row,
   Button,
-  Divider,
   Popconfirm,
   message,
   DatePicker
 } from 'antd';
 import moment from 'moment';
 
-
-
 function CopyLast(props) {
   const {
-    form: { getFieldDecorator },
     operationList,
     operationArr,
-    mainId,
     detailParams,
     loading
   } = props;
   const [data, setData] = useState([]);
-  const [cacheOriginData, setcacheOriginData] = useState({});
 
   // 初始化把软件运维服务指标完成情况数据传过去
   useEffect(() => {
-    // typeList(maintenanceArr)
     if (data && data.length) {
       const result = JSON.parse(JSON.stringify(data)
         .replace(/updateTime/g, 'field1')
@@ -92,19 +83,14 @@ function CopyLast(props) {
     }
   }
 
-
   const handleTabledata = () => {
-    // if(operationArr) {
     if (operationArr) {
       const newarr = (operationArr).map((item, index) => {
         return Object.assign(item, { editable: true, isNew: false, key: index })
       })
       setData(newarr)
     }
-    // }
   }
-
-
 
   const copyColumns = [
     {
@@ -254,17 +240,12 @@ function CopyLast(props) {
     }
   ];
 
-
   useEffect(() => {
     handleTabledata();
   }, [operationArr])
 
-
-
   return (
     <>
-      {/* <Row gutter={16}> */}
-
       <div style={{ textAlign: 'right', marginBottom: 10 }}>
         <Button
           disabled={detailParams}
@@ -278,9 +259,6 @@ function CopyLast(props) {
         dataSource={data}
         pagination={false}
       />
-
-      {/* </Row> */}
-
     </>
   )
 }

@@ -1,34 +1,24 @@
-import React, { useEffect, useImperativeHandle, useContext, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Table,
   Form,
   Input,
-  Col,
-  Row,
   Button,
-  Divider,
   Popconfirm,
   message,
   DatePicker,
 } from 'antd';
-import { connect } from 'dva';
-import SysUpload from '@/components/SysUpload';
 import moment from 'moment';
 
-const { TextArea } = Input;
 function UpgradeList(props) {
 
   const {
-    form: { getFieldDecorator },
     upgradeArr,
     upgradeList,
     detailParams,
-    dispatch
   } = props;
   const [data, setData] = useState([]);
   const [cacheOriginData, setcacheOriginData] = useState({});
-  const [uploadkey, setKeyUpload] = useState('');
-  const [fileslist, setFilesList] = useState([]);
   const [newbutton, setNewButton] = useState(false);
 
 
@@ -44,9 +34,7 @@ function UpgradeList(props) {
     message.info('暂存保存数据成功')
   }
   // 新增一条记录
-  const newMember = (params) => {
-    setFilesList([]);
-    setKeyUpload('');
+  const newMember = () => {
     const newData = (data).map(item => ({ ...item }));
     newData.push({
       key: data.length + 1,
@@ -63,58 +51,6 @@ function UpgradeList(props) {
   //  获取行  
   const getRowByKey = (key, newData) => {
     return (newData || data).filter(item => item.key === key)[0];
-  }
-
-  //  删除数据
-  const remove = key => {
-    const target = getRowByKey(key) || {};
-    // dispatch({
-    //   type: 'chacklist/trackdelete',
-    //   payload: {
-    //     id: target.id,
-    //   },
-    // }).then(res => {
-    //   if (res.code === 200) {
-    //     message.success(res.msg, 2);
-    //     getlistdata();
-    //   }
-    // });
-  };
-
-  // 编辑记录
-  const toggleEditable = (e, key, record) => {
-
-    e.preventDefault();
-    const newData = data.map(item => ({ ...item })
-    );
-    const target = getRowByKey(key, newData);
-    if (target) {
-      if (!target.editable) {
-        setcacheOriginData({ key: { ...target } });
-      }
-      // target.editable = !target.editable;
-      target.isNew = true;
-      setData(newData);
-    }
-  }
-
-
-  const savedata = (target, id) => {
-    upgradeList(data);
-    message.info('暂存该表格数据成功')
-  }
-
-  const saveRow = (e, key) => {
-    const target = getRowByKey(key) || {};
-
-    delete target.key;
-    target.editable = false;
-    const id = target.id === '' ? '' : target.id;
-    savedata(target, id);
-    if (target.isNew) {
-      target.isNew = false;
-      setNewButton(false);
-    }
   }
 
   const handleFieldChange = (e, fieldName, key) => {
@@ -134,9 +70,6 @@ function UpgradeList(props) {
       setData(newarr)
     }
   }
-
-
-
 
   useEffect(() => {
     handleTabledata()
@@ -224,39 +157,33 @@ function UpgradeList(props) {
 
   return (
     <>
-      {/* <Row gutter={16}> */}
-        {/* <Col span={20}> */}
-          <p>(1)数据库本周进行了补丁升级工作次</p>
-        {/* </Col> */}
 
 
-        <div style={{textAlign:'right',marginBottom:10}}>
-          <Button
-            disabled={detailParams}
-            type='primary'
-            onClick={handleSave}>保存</Button>
-        </div>
-
-        <Table
-          columns={column}
-          dataSource={data}
-          pagination={false}
-        />
-
+      <div style={{ textAlign: 'right', marginBottom: 10 }}>
         <Button
-          style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
-          type="primary"
-          ghost
-          onClick={() => newMember()}
-          icon="plus"
           disabled={detailParams}
-        >
-          新增
-        </Button>
-      {/* </Row> */}
+          type='primary'
+          onClick={handleSave}>保存</Button>
+      </div>
+
+      <Table
+        columns={column}
+        dataSource={data}
+        pagination={false}
+      />
+
+      <Button
+        style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
+        type="primary"
+        ghost
+        onClick={() => newMember()}
+        icon="plus"
+        disabled={detailParams}
+      >
+        新增
+      </Button>
     </>
   )
 }
 
-// export default Form.create({})(ServiceCompletion)
 export default Form.create({})(UpgradeList)

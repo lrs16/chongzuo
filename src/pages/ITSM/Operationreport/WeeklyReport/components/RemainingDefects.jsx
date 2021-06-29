@@ -1,4 +1,4 @@
-import React, { useEffect, useImperativeHandle, useContext, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Table,
   Form,
@@ -6,30 +6,20 @@ import {
   Col,
   Row,
   Button,
-  Divider,
   Popconfirm,
   message
 } from 'antd';
-import { connect } from 'dva';
-import SysUpload from '@/components/SysUpload';
 
-const { TextArea } = Input;
 function RemainingDefects(props) {
-
   const {
-    form: { getFieldDecorator },
     legacyArr,
     legacyList,
     detailParams,
-    dispatch
   } = props;
   const [data, setData] = useState([]);
-  const [seconddata, setSeconddata] = useState([]);
-  const [cacheOriginData, setcacheOriginData] = useState({});
   const [uploadkey, setKeyUpload] = useState('');
   const [fileslist, setFilesList] = useState([]);
   const [newbutton, setNewButton] = useState(false);
-
 
   // 初始化把数据传过去
   useEffect(() => {
@@ -38,7 +28,7 @@ function RemainingDefects(props) {
     }
   }, [data]);
   // 新增一条记录
-  const newMember = (params) => {
+  const newMember = () => {
     setFilesList([]);
     setKeyUpload('');
     const newData = (data).map(item => ({ ...item }));
@@ -59,64 +49,9 @@ function RemainingDefects(props) {
     return (newData || data).filter(item => item.key === key)[0];
   }
 
-  //  删除数据
-  const remove = key => {
-    const target = getRowByKey(key) || {};
-    // dispatch({
-    //   type: 'chacklist/trackdelete',
-    //   payload: {
-    //     id: target.id,
-    //   },
-    // }).then(res => {
-    //   if (res.code === 200) {
-    //     message.success(res.msg, 2);
-    //     getlistdata();
-    //   }
-    // });
-  };
-
-  // 编辑记录
-  const toggleEditable = (e, key, record) => {
-
-    e.preventDefault();
-    const newData = data.map(item => ({ ...item })
-    );
-    const target = getRowByKey(key, newData);
-    if (target) {
-      if (!target.editable) {
-        setcacheOriginData({ key: { ...target } });
-      }
-      // target.editable = !target.editable;
-      target.isNew = true;
-      setData(newData);
-    }
-  }
-
-  //  点击编辑生成filelist
-  const handlefileedit = (key, values) => {
-    if (!values) {
-      setFilesList([]);
-    } else {
-      setFilesList(JSON.parse(values))
-    }
-  }
-
-  const savedata = (target, id) => {
+  const savedata = () => {
     legacyList(data);
     message.info('暂存该表格数据成功')
-  }
-
-  const saveRow = (e, key) => {
-    const target = getRowByKey(key) || {};
-
-    delete target.key;
-    target.editable = false;
-    const id = target.id === '' ? '' : target.id;
-    savedata(target, id);
-    if (target.isNew) {
-      target.isNew = false;
-      setNewButton(false);
-    }
   }
 
   const handleFieldChange = (e, fieldName, key) => {
@@ -134,7 +69,6 @@ function RemainingDefects(props) {
     })
     setData(newarr)
   }
-
 
   useEffect(() => {
     handleTabledata()

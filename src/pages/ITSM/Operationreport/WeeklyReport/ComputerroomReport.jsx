@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Form,
   Card,
@@ -10,11 +10,9 @@ import {
   Icon,
   message
 } from 'antd';
-import Link from 'umi/link';
 import moment from 'moment';
 import router from 'umi/router';
 import { connect } from 'dva';
-import styles from './index.less';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import SysUpload from '@/components/SysUpload';
 import InspectionSummary from './components/ComputerroomComponent/InspectionSummary';
@@ -24,8 +22,6 @@ import CopyUnCloseTroublelist from './components/ComputerroomComponent/CopyUnClo
 import UnCloseTroublelist from './components/ComputerroomComponent/UnCloseTroublelist';
 import LastweekHomework from './components/LastweekHomework';
 import CopyLast from './components/CopyLast';
-import NextweekHomework from './components/NextweekHomework';
-import CopyNext from './components/CopyNext';
 import WeeklyMeeting from './components/ComputerroomComponent/WeeklyMeeting';
 import AddForm from './components/AddForm';
 
@@ -62,15 +58,14 @@ const formincontentLayout = {
   },
 };
 
-const { RangePicker, MonthPicker } = DatePicker;
+const { MonthPicker } = DatePicker;
 const { TextArea } = Input;
 let startTime;
 let endTime;
 function ComputerroomReport(props) {
   const pagetitle = props.route.name;
   const {
-    form: { getFieldDecorator, validateFields, setFieldsValue },
-    match: { params: { id } },
+    form: { getFieldDecorator, setFieldsValue },
     location: { query: {
       reporttype,
       mainId,
@@ -80,19 +75,16 @@ function ComputerroomReport(props) {
     } },
     dispatch,
     faultQueryList,
-    // remainingDefectslist,
     lastweekHomeworklist,
     nextweekHomeworklist,
-    maintenanceArr, // 事件统计
     loading,
   } = props;
-  let tabActiveKey = 'week';
+  const tabActiveKey = 'week';
 
   const required = true;
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
   const [addTitle, setAddTitle] = useState([]);
   const [fileslist, setFilesList] = useState([]);
-  const [billingContent, setBillingContent] = useState([]); // 工作票情况
   const [materialsList, setMaterialsList] = useState([]) // 材料列表
   const [meetingSummaryList, setMeetingSummaryList] = useState([]) // 周例会会议纪要完成情况列表
   const [newTroubleList, setNewTroubleList] = useState([]) // 新故障列表
@@ -159,7 +151,6 @@ function ComputerroomReport(props) {
     })
   }
 
-
   // 新增一条记录
   const handleaddTable = (params) => {
     const newData = (list).map(item => ({ ...item }));
@@ -175,10 +166,10 @@ function ComputerroomReport(props) {
     list.splice(tableIndex, 1);
     const resultArr = [];
     const listArr = [];
-    for (let i = 0; i < addTitle.length; i++) {
+    for (let i = 0; i < addTitle.length; i += 1) {
       resultArr.push(addTitle[i])
     }
-    for (let i = 0; i < list.length; i++) {
+    for (let i = 0; i < list.length; i += 1) {
       listArr.push(list[i])
     }
     setAddTitle(resultArr)
@@ -229,13 +220,17 @@ function ComputerroomReport(props) {
       }
     })
   }
+
   //   七、下周作业完成情况--表格
   const nextweekHomework = () => {
     dispatch({
       type: 'softreport/nextweekHomework',
       payload: {
-        time1: startTime,
-        time2: endTime,
+        time1: reporttype === 'week' ? endTime :
+          moment().startOf('month').subtract('month', -1).format('YYYY-MM-DD'),
+
+        time2: reporttype === 'week' ? moment().add(6, 'd').format('YYYY-MM-DD')
+          : moment().endOf('month').subtract('month', -1).endOf('month').format('YYYY-MM-DD'),
         pageIndex: 0,
         pageSize: 10
       }
@@ -243,11 +238,17 @@ function ComputerroomReport(props) {
   }
 
   useEffect(() => {
+    defaultTime();
     lastweekHomework();
     nextweekHomework();
-    defaultTime();
     getQuerylist();
   }, []);
+
+  useEffect(() => {
+    lastweekHomework();
+    nextweekHomework();
+    getQuerylist();
+  }, [startTime, endTime]);
 
   const handleBack = () => {
     router.push({
@@ -297,7 +298,6 @@ function ComputerroomReport(props) {
     }
   }
 
-
   const onChange = (date, dateString) => {
     if (reporttype === 'week') {
       startTime = dateString;
@@ -314,7 +314,6 @@ function ComputerroomReport(props) {
     startTime = moment(dateString).subtract('day', 6).format('YYYY-MM-DD');
     setFieldsValue({ time1: moment(startTime) })
   }
-
 
   const newMember = () => {
     const nowNumber = addTitle.map(item => ({ ...item }));
@@ -335,7 +334,6 @@ function ComputerroomReport(props) {
             </Button>
           </>
         )
-
       }
     >
       <Card style={{ padding: 24 }}>
@@ -357,7 +355,7 @@ function ComputerroomReport(props) {
                     initialValue: copyData.main ? copyData.main.name : ''
                   })
                     (
-                      <Input style={{ width: 700 }}/>
+                      <Input style={{ width: 700 }} />
                     )}
                 </Form.Item>
               </Col>
@@ -366,7 +364,10 @@ function ComputerroomReport(props) {
                 reporttype === 'week' && (
                   <div>
                     <Col span={24}>
-                      <Form.Item label='填报时间' style={{ display: 'inline-flex' }}>
+                      <Form.Item
+                        label='填报时间'
+                        style={{ display: 'inline-flex' }}
+                      >
                         {getFieldDecorator('time1', {
                           rules: [
                             {
@@ -402,7 +403,10 @@ function ComputerroomReport(props) {
               {
                 reporttype === 'month' && (
                   <Col span={24}>
-                    <Form.Item label='填报日期'>
+                    <Form.Item
+                      label='填报日期'
+                      style={{ display: 'inline-flex' }}
+                    >
                       {getFieldDecorator('time1', {
                         rules: [
                           {
@@ -413,31 +417,12 @@ function ComputerroomReport(props) {
                         initialValue: moment(copyData.main ? copyData.main.time1 : startTime)
                       })(<MonthPicker
                         allowClear
-                        // disabledDate={startdisabledDate}
-                        // placeholder='请选择'
                         onChange={onChange}
                       />)}
                     </Form.Item>
                   </Col>
                 )
               }
-
-              {/* {
-                reporttype === 'month' && (
-                  <Col span={24}>
-                    <Form.Item label='填报日期'>
-                      {getFieldDecorator('time1', {
-                        initialValue: moment(copyData.main ? copyData.main.time1 : startTime)
-                      })(<MonthPicker
-                        allowClear={false}
-                        // disabledDate={startdisabledDate}
-                        // placeholder='请选择'
-                        onChange={onChange}
-                      />)}
-                    </Form.Item>
-                  </Col>
-                )
-              } */}
 
               <Col span={24}><p style={{ fontWeight: '900', fontSize: '16px', marginTop: 24 }}>{reporttype === 'week' ? '一、本周运维总结' : '一、本月运维总结'}</p></Col>
               {/* 本周运维总结 */}
@@ -650,8 +635,6 @@ function ComputerroomReport(props) {
                     <CopyLast
                       forminladeLayout={forminladeLayout}
                       operationArr={copyData.operationList}
-                      startTime={startTime}
-                      endTime={endTime}
                       type={reporttype}
                       operationList={contentrowdata => {
                         setOperationList(contentrowdata)
@@ -697,13 +680,11 @@ function ComputerroomReport(props) {
               {
                 copyData.operationList !== undefined && (
                   <Col span={24}>
-                    <CopyNext
+                    <CopyLast
                       forminladeLayout={forminladeLayout}
-                      nextOperationArr={copyData.nextOperationList}
-                      startTime={startTime}
-                      endTime={endTime}
+                      operationArr={copyData.nextOperationList}
                       type={reporttype}
-                      nextOperationList={contentrowdata => {
+                      operationList={contentrowdata => {
                         setNextOperationList(contentrowdata)
                       }}
                     />
@@ -711,23 +692,22 @@ function ComputerroomReport(props) {
                 )
               }
 
+              {/* 下周工作计划 */}
               {
                 copyData.operationList === undefined && (
                   <Col span={24}>
-                    <NextweekHomework
+                    <LastweekHomework
                       forminladeLayout={forminladeLayout}
-                      nextOperationArr={nextweekHomeworklist.rows}
-                      startTime={startTime}
-                      endTime={endTime}
+                      operationArr={nextweekHomeworklist.rows}
                       type={reporttype}
-                      nextOperationList={contentrowdata => {
+                      operationList={contentrowdata => {
                         setNextOperationList(contentrowdata)
                       }}
                     />
                   </Col>
                 )
               }
-              {/* 下周工作计划 */}
+
 
 
               <Col span={24} style={{ marginTop: 20 }}>

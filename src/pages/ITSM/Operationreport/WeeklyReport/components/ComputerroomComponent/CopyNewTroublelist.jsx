@@ -1,38 +1,26 @@
-import React, { useEffect, useRef, useImperativeHandle, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Table,
   Form,
   Input,
-  Col,
-  Row,
   Button,
-  Divider,
   Popconfirm,
-  Select,
   message,
   DatePicker
 } from 'antd';
 import moment from 'moment';
 
-const { TextArea } = Input;
-const { Option } = Select;
 function NewTroublelist(props) {
-
   const {
-    form: { getFieldDecorator },
-    forminladeLayout,
     faultlist,
     newTroubleList,
     reportSearch,
-    mainId,
   } = props;
   const [data, setData] = useState([]);
   const [newbutton, setNewButton] = useState(false);
 
-
   // 初始化把数据传过去
   useEffect(() => {
-    // typeList(maintenanceArr)
     if (data && data.length) {
       const result = JSON.parse(JSON.stringify(data)
         .replace(/addTime/g, 'field1')
@@ -50,7 +38,7 @@ function NewTroublelist(props) {
   }
 
   // 新增一条记录
-  const newMember = (params) => {
+  const newMember = () => {
     const newData = (data).map(item => ({ ...item }));
     newData.push({
       key: data.length + 1,
@@ -101,127 +89,6 @@ function NewTroublelist(props) {
       setData(newarr)
     }
   }
-
-
-  const column = [
-    {
-      title: '日期',
-      dataIndex: 'addTime',
-      key: 'addTime',
-      render: (text, record) => {
-        return (
-          <DatePicker
-            disabled={reportSearch}
-            defaultValue={text ? moment(text) : moment(new Date())}
-            onChange={e => handleFieldChange(e, 'addTime', record.key)}
-          />
-        )
-      }
-    },
-    {
-      title: '故障类型',
-      dataIndex: 'typecn',
-      key: 'typecn',
-      render: (text, record) => {
-        return (
-          <Input
-            disabled={reportSearch}
-            defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'typecn', record.key)}
-          />
-        )
-      }
-    },
-    {
-      title: '故障情况',
-      dataIndex: 'field3',
-      key: 'field3',
-      render: (text, record) => {
-        return (
-          <Input
-            disabled={reportSearch}
-            defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'field3', record.key)}
-          />
-        )
-      }
-    },
-    {
-      title: '是否已修复',
-      dataIndex: 'field4',
-      key: 'field4',
-      render: (text, record) => {
-        return (
-          <Input
-            disabled={reportSearch}
-            defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'field4', record.key)}
-          />
-        )
-      }
-    },
-    {
-      title: '是否需要报告',
-      dataIndex: 'field5',
-      key: 'field5',
-      render: (text, record) => {
-        return (
-          <Input
-            disabled={reportSearch}
-            defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'field5', record.key)}
-          />
-        )
-      }
-    },
-    {
-      title: '报告提供方',
-      dataIndex: 'field6',
-      key: 'field6',
-      render: (text, record) => {
-        return (
-          <Input
-            disabled={reportSearch}
-            defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'field6', record.key)}
-          />
-        )
-      }
-    },
-    {
-      title: '是否已提供故障处理记录（报告）',
-      dataIndex: 'field7',
-      key: 'field7',
-      render: (text, record) => {
-        return (
-          <Input
-            disabled={reportSearch}
-            defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'field7', record.key)}
-          />
-        )
-      }
-    },
-    {
-      title: '操作',
-      key: 'action',
-      fixed: 'right',
-      width: 120,
-      render: (text, record) => {
-        return (
-          <span>
-            <Popconfirm
-              title="是否要删除此行？"
-              onConfirm={() => remove(record.key)}
-              disabled={reportSearch}
-            >
-              <a>删除</a>
-            </Popconfirm>
-          </span>
-        )
-      }
-    }
-  ];
 
   const editColumn = [
     {
@@ -351,38 +218,32 @@ function NewTroublelist(props) {
 
   return (
     <>
-      {/* <Row gutter={16}> */}
-        {/* <Col span={20}> */}
-          <p style={{ fontWeight: '900', fontSize: '16px' }}>三、本周新增故障及故障修复情况统计</p>
-        {/* </Col> */}
-        {/* <Col span={20}> */}
-          <p>3.1新增及已修复故障</p>
-        {/* </Col> */}
+      <p style={{ fontWeight: '900', fontSize: '16px' }}>三、本周新增故障及故障修复情况统计</p>
+      <p>3.1新增及已修复故障</p>
 
-        <div style={{textAlign:'right',marginBottom:10}}>
-          <Button
-            disabled={reportSearch}
-            type='primary'
-            onClick={handleSave}>保存</Button>
-        </div>
-
-        <Table
-          columns={editColumn}
-          dataSource={data}
-          pagination={false}
-        />
-
+      <div style={{ textAlign: 'right', marginBottom: 10 }}>
         <Button
-          style={{ width: '100%', marginTop: 16}}
-          type="primary"
-          ghost
-          onClick={() => newMember()}
-          icon="plus"
           disabled={reportSearch}
-        >
-          新增
-        </Button>
-      {/* </Row> */}
+          type='primary'
+          onClick={handleSave}>保存</Button>
+      </div>
+
+      <Table
+        columns={editColumn}
+        dataSource={data}
+        pagination={false}
+      />
+
+      <Button
+        style={{ width: '100%', marginTop: 16 }}
+        type="primary"
+        ghost
+        onClick={() => newMember()}
+        icon="plus"
+        disabled={reportSearch}
+      >
+        新增
+      </Button>
     </>
   )
 }

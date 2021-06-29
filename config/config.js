@@ -773,6 +773,23 @@ export default {
                   ]
                 },
                 {
+                  path:'/ITSM/servicequalityassessment',
+                  name:'服务质量考核',
+                  icon: 'control',
+                  routes:[
+                    {
+                      path:'/ITSM/servicequalityassessment',
+                      redirect:'/ITSM/servicequalityassessment/serviceprovidermaintenance'
+                    },
+                    {
+                      path:'/ITSM/servicequalityassessment/serviceprovidermaintenance',
+                      name:'服务商维护',
+                      icon:'control',
+                      component:'./ITSM/ServiceQuality/ProviderMaintenance'
+                    },
+                  ]
+                },
+                {
                   component: './500',
                 },
               ],

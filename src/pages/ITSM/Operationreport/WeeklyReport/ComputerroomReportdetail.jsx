@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Form,
   Card,
@@ -8,24 +8,18 @@ import {
   Input,
   DatePicker,
   Descriptions,
-  Popconfirm,
-  Divider,
   Icon,
 } from 'antd';
-import Link from 'umi/link';
 import moment from 'moment';
 import router from 'umi/router';
 import { connect } from 'dva';
-import styles from './index.less';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import SysUpload from '@/components/SysUpload';
 import InspectionSummary from './components/ComputerroomComponent/InspectionSummary';
 import NewTroublelist from './components/ComputerroomComponent/NewTroublelist';
 import UnCloseTroublelist from './components/ComputerroomComponent/UnCloseTroublelist';
-import ThisWeek from './components/ComputerroomComponent/ThisWeek';
 import Downloadfile from '@/components/SysUpload/Downloadfile';
-import LastweekHomework from '../WeeklyReport/components/LastweekHomework';
-import NextweekHomework from '../WeeklyReport/components/NextweekHomework';
+import LastweekHomework from './components/LastweekHomework';
 import WeeklyMeeting from './components/ComputerroomComponent/WeeklyMeeting';
 import AddForm from './components/AddForm';
 
@@ -61,16 +55,14 @@ const formincontentLayout = {
   },
 };
 
-const { RangePicker, MonthPicker } = DatePicker;
+const {  MonthPicker } = DatePicker;
 const { TextArea } = Input;
 let startTime;
-let monthStarttime;
 let endTime;
 function ComputerroomReportdetail(props) {
   const pagetitle = props.route.name;
   const {
-    form: { getFieldDecorator, validateFields, setFieldsValue },
-    match: { params: { id } },
+    form: { getFieldDecorator, setFieldsValue },
     location: { query: {
       type,
       reporttype,
@@ -79,22 +71,16 @@ function ComputerroomReportdetail(props) {
       reportSearch
     } },
     dispatch,
-    developmentList,
-    submitdevelopmentlist,// 事件统计
     openReportlist,
     loading,
   } = props;
-  let tabActiveKey = 'week';
+  const tabActiveKey = 'week';
 
   const required = true;
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
-  const [secondbutton, setSecondbutton] = useState(false);
   const [addTitle, setAddTitle] = useState([]);
-  const [columns, setColumns] = useState([]);
-  const [data, setData] = useState([]);
   const [fileslist, setFilesList] = useState([]);
 
-  const [billingContent, setBillingContent] = useState([]); // 工作票情况
   const [materialsList, setMaterialsList] = useState([]) // 材料列表
   const [meetingSummaryList, setMeetingSummaryList] = useState([]) // 周例会会议纪要完成情况列表
   const [newTroubleList, setNewTroubleList] = useState([]) // 新故障列表
@@ -103,6 +89,17 @@ function ComputerroomReportdetail(props) {
   const [unCloseTroubleList, setUnCloseTroubleList] = useState([]) // 运维分类统计
   const [list, setList] = useState([]);
   const { main } = openReportlist;
+
+  const getopenFlow = () => {
+    dispatch({
+      type: 'softreport/openReport',
+      payload: {
+        editStatus: 'edit',
+        id: mainId
+      }
+    })
+  }
+
   //  保存表单
   const softReportform = () => {
     props.form.validateFields((err, value) => {
@@ -137,7 +134,6 @@ function ComputerroomReportdetail(props) {
     })
   }
 
-
   const defaultTime = () => {
     //  周
     if (type === 'week') {
@@ -158,22 +154,6 @@ function ComputerroomReportdetail(props) {
     }
   }, [files]);
 
-  const handlemaintenanceArr = () => {
-    dispatch({
-      type: 'eventstatistics/fetchMaintenancelist',
-      payload: { tabActiveKey, startTime, endTime }
-    })
-  }
-
-  const getopenFlow = () => {
-    dispatch({
-      type: 'softreport/openReport',
-      payload: {
-        editStatus: 'edit',
-        id: mainId
-      }
-    })
-  }
 
   useEffect(() => {
     if (mainId) {
@@ -278,10 +258,10 @@ function ComputerroomReportdetail(props) {
     list.splice(tableIndex, 1);
     const resultArr = [];
     const listArr = [];
-    for (let i = 0; i < addTitle.length; i++) {
+    for (let i = 0; i < addTitle.length; i += 1) {
       resultArr.push(addTitle[i])
     }
-    for (let i = 0; i < list.length; i++) {
+    for (let i = 0; i < list.length; i += 1) {
       listArr.push(list[i])
     }
     setAddTitle(resultArr)
@@ -348,22 +328,6 @@ function ComputerroomReportdetail(props) {
                 </Form.Item>
               </Col>
 
-              {/* {
-                reporttype === 'week' && (
-                  <Col span={24}>
-                    <Form.Item label='填报日期'>
-                      {getFieldDecorator('time1', {
-                        initialValue: main ? [moment(main.time1), moment(main.time2)] : [moment(startTime), moment(endTime)]
-                      })(<RangePicker
-                        allowClear={false}
-                        disabled={reportSearch}
-                        onChange={onChange}
-                      />)}
-                    </Form.Item>
-                  </Col>
-                )
-              } */}
-
               {
                 reporttype === 'week' && (
                   <div>
@@ -401,22 +365,6 @@ function ComputerroomReportdetail(props) {
                 )
               }
 
-              {/* {
-                reporttype === 'month' && (
-                  <Col span={24}>
-                    <Form.Item label='填报日期'>
-                      {getFieldDecorator('time1', {
-                        initialValue: moment(main.time1)
-                      })(<MonthPicker
-                        allowClear={false}
-                        disabled={reportSearch}
-                        onChange={onChange}
-                      />)}
-                    </Form.Item>
-                  </Col>
-                )
-              } */}
-
               {
                 reporttype === 'month' && (
                   <Col span={24}>
@@ -431,8 +379,6 @@ function ComputerroomReportdetail(props) {
                         initialValue: moment(main.time1)
                       })(<MonthPicker
                         allowClear
-                        // disabledDate={startdisabledDate}
-                        // placeholder='请选择'
                         onChange={onChange}
                       />)}
                     </Form.Item>
@@ -718,15 +664,13 @@ function ComputerroomReportdetail(props) {
 
               {/* 下周工作计划 */}
               <Col span={24}>
-                <NextweekHomework
+                <LastweekHomework
                   forminladeLayout={forminladeLayout}
-                  startTime={startTime}
-                  endTime={endTime}
                   type={reporttype}
-                  nextOperationList={contentrowdata => {
+                  operationList={contentrowdata => {
                     setNextOperationList(contentrowdata)
                   }}
-                  nextOperationArr={openReportlist.nextOperationList ? openReportlist.nextOperationList : []}
+                  operationArr={openReportlist.nextOperationList ? openReportlist.nextOperationList : []}
                   mainId={mainId}
                   detailParams={reportSearch}
                 />

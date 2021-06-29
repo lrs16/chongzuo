@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useImperativeHandle, useContext, useState } from 'react';
+import React, { useEffect, useRef, useImperativeHandle, useState } from 'react';
 import {
   Row,
   Col,
@@ -7,17 +7,14 @@ import {
   Popconfirm,
   Table,
   Button,
-  Divider,
-  Select,
   message,
   Descriptions
 } from 'antd';
-import moment from 'moment';
+// import AddTable from './AddTable';
 import SysUpload from '@/components/SysUpload';
 import Downloadfile from '@/components/SysUpload/Downloadfile';
 
 const { TextArea } = Input;
-const { Option } = Select;
 
 const AddForm = React.forwardRef((props, ref) => {
   const attRef = useRef();
@@ -30,7 +27,7 @@ const AddForm = React.forwardRef((props, ref) => {
   );
 
   const {
-    form: { getFieldDecorator, setFieldsValue, validateFields },
+    form: { getFieldDecorator, setFieldsValue },
     loading,
     formincontentLayout,
     detailParams,
@@ -40,23 +37,10 @@ const AddForm = React.forwardRef((props, ref) => {
   } = props;
 
   const [data, setData] = useState([]);
+  // const [dynamicTable, setDynamicTable] = useState([]);
+  // const [list, setList] = useState([])
 
-  // 初始化把数据传过去
-  // useEffect(() => {
-  //   props.form.validateFields((err, value) => {
-  //     // if (!err) {
-  //     const editTable = {
-  //       ...value,
-  //       list: data,
-  //       px,
-  //     }
-  //     addTable(editTable)
-  //     // list([editTable])
-  //     // }
-  //   })
-  // }, [dynamicData]);
-
-  const newMember = (params) => {
+  const newMember = () => {
     const newData = (data).map(item => ({ ...item }));
     newData.push({
       key: data.length + 1,
@@ -73,6 +57,19 @@ const AddForm = React.forwardRef((props, ref) => {
     });
     setData(newData);
   };
+
+  // const handleDynamicTabledata = (addparams) => {
+  //   const newData = list;
+  //   newData.push(addparams);
+  //   setList(newData);
+  // }
+
+
+  // const adddynamicTable = () => {
+  //   const nowNumber = dynamicTable.map(item => ({ ...item }));
+  //   nowNumber.push({ 'add': '1', tableNumber: [] });
+  //   setDynamicTable(nowNumber);
+  // }
 
   //  获取行  
   const getRowByKey = (key, newData) => {
@@ -276,7 +273,6 @@ const AddForm = React.forwardRef((props, ref) => {
 
   const handleSubmit = () => {
     props.form.validateFields((err, value) => {
-      // if (!err) {
       const editTable = {
         ...value,
         list: data,
@@ -284,7 +280,6 @@ const AddForm = React.forwardRef((props, ref) => {
       }
       addTable(editTable);
       message.info('暂存保存数据成功')
-      // }
     })
   }
 
@@ -298,7 +293,6 @@ const AddForm = React.forwardRef((props, ref) => {
         loading === false && dynamicData && (
           <Row gutter={24}>
             <Form>
-
               <Col><p>注：第一行数据作为表头</p></Col>
 
               <Col style={{ textAlign: 'right', marginBottom: 10 }}>
@@ -382,6 +376,27 @@ const AddForm = React.forwardRef((props, ref) => {
               >
                 新增行
               </Button>
+
+              {/* {dynamicTable && dynamicTable.length > 0 && (
+                dynamicTable.map((item, index) => {
+                  return (
+                    <>
+                      <AddTable
+                        detailParams={detailParams}
+                        dynamicTablelist={newdata => {
+                          handleDynamicTabledata(newdata)
+                        }}
+                        tableIndex={index}
+                      />
+                    </>
+                  )
+                })
+              )}
+
+              <Button
+                onClick={adddynamicTable}
+                type="primary"
+              >添加表格</Button> */}
             </Form>
           </Row>
         )
@@ -398,6 +413,5 @@ AddForm.defaultProps = {
     files: [],
   }
 }
-
 
 export default Form.create({})(AddForm)

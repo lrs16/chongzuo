@@ -3,15 +3,11 @@ import {
   Table,
   Form,
   Input,
-  Col,
-  Row,
   Button,
-  Divider,
   Popconfirm,
   message
 } from 'antd';
 
-const { TextArea } = Input;
 const Top10Increase = React.forwardRef((props, ref) => {
   const attRef = useRef();
   useImperativeHandle(
@@ -23,17 +19,12 @@ const Top10Increase = React.forwardRef((props, ref) => {
   );
 
   const {
-    form: { getFieldDecorator },
     tableUpArr,
     tableUpList,
     reportSearch,
-    endTime,
   } = props;
 
   const [data, setData] = useState([]);
-  const [cacheOriginData, setcacheOriginData] = useState({});
-  const [uploadkey, setKeyUpload] = useState('');
-  const [fileslist, setFilesList] = useState([]);
   const [newbutton, setNewButton] = useState(false);
 
   // 初始化把数据传过去
@@ -48,9 +39,7 @@ const Top10Increase = React.forwardRef((props, ref) => {
     message.info('暂存保存数据成功')
   }
   // 新增一条记录
-  const newMember = (params) => {
-    setFilesList([]);
-    setKeyUpload('');
+  const newMember = () => {
     const newData = (data).map(item => ({ ...item }));
     newData.push({
       key: data.length + 1,
@@ -79,48 +68,6 @@ const Top10Increase = React.forwardRef((props, ref) => {
     setData(target)
   };
 
-  // 编辑记录
-  const toggleEditable = (e, key, record) => {
-
-    e.preventDefault();
-    const newData = data.map(item => ({ ...item })
-    );
-    const target = getRowByKey(key, newData);
-    if (target) {
-      if (!target.editable) {
-        setcacheOriginData({ key: { ...target } });
-      }
-      // target.editable = !target.editable;
-      target.isNew = true;
-      setData(newData);
-    }
-  }
-
-  //  点击编辑生成filelist
-  const handlefileedit = (key, values) => {
-    if (!values) {
-      setFilesList([]);
-    } else {
-      setFilesList(JSON.parse(values))
-    }
-  }
-
-  const savedata = (target, id) => {
-    tableUpList(data)
-  }
-
-  const saveRow = (e, key) => {
-    const target = getRowByKey(key) || {};
-
-    delete target.key;
-    target.editable = false;
-    const id = target.id === '' ? '' : target.id;
-    savedata(target, id);
-    if (target.isNew) {
-      target.isNew = false;
-      setNewButton(false);
-    }
-  }
 
   const handleFieldChange = (e, fieldName, key) => {
     const newData = data.map(item => ({ ...item }));
@@ -139,8 +86,6 @@ const Top10Increase = React.forwardRef((props, ref) => {
       setData(newarr)
     }
   }
-
-  // console.log(legacyArr,'legacyArr')
 
   const column = [
     {
@@ -236,12 +181,9 @@ const Top10Increase = React.forwardRef((props, ref) => {
 
   ];
 
-
   useEffect(() => {
     handleTabledata();
   }, [tableUpArr])
-
-
 
   return (
     <>

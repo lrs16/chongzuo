@@ -1,43 +1,26 @@
-import React, { useEffect, useImperativeHandle, useContext, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Table,
   Form,
   Input,
   Col,
   Row,
-  Button,
-  Divider,
-  Popconfirm,
   message
 } from 'antd';
-import { connect } from 'dva';
-import SysUpload from '@/components/SysUpload';
 
-const { TextArea } = Input;
 function ServiceTableone(props) {
 
   const {
-    form: { getFieldDecorator },
     maintenanceArr,
     typeList,
-    startTime,
-    endTime,
     tabActiveKey,
     mainId,
-    detailParams,
-    loading,
-    dispatch
   } = props;
   const [data, setData] = useState([]);
-  const [seconddata, setSeconddata] = useState([]);
-  const [cacheOriginData, setcacheOriginData] = useState({});
-  const [uploadkey, setKeyUpload] = useState('');
-  const [fileslist, setFilesList] = useState([]);
   const [newbutton, setNewButton] = useState(false);
 
   // 初始化把数据传过去
   useEffect(() => {
-    // typeList(maintenanceArr)
     if (maintenanceArr && maintenanceArr.length) {
       const result = JSON.parse(JSON.stringify(maintenanceArr)
         .replace(/first_object/g, 'field1')
@@ -49,57 +32,6 @@ function ServiceTableone(props) {
       }
     }
   }, [data]);
-
-
-
-  // 新增一条记录
-  const newMember = (params) => {
-    setFilesList([]);
-    setKeyUpload('');
-    const newData = (data).map(item => ({ ...item }));
-    newData.push({
-      key: data.length + 1,
-      id: '',
-      dd11: '',
-      dd22: '',
-      dd33: '',
-      dd44: '',
-    });
-    setData(newData);
-    setNewButton(true);
-  };
-
-  //  获取行  
-  const getRowByKey = (key, newData) => {
-    return (newData || data).filter(item => item.key === key)[0];
-  }
-
-  const handleSave = () => {
-    typeList(data);
-    message.info('暂存保存数据成功')
-  }
-
-  const saveRow = (e, key) => {
-    const target = getRowByKey(key) || {};
-
-    delete target.key;
-    target.editable = false;
-    const id = target.id === '' ? '' : target.id;
-    savedata(target, id);
-    if (target.isNew) {
-      target.isNew = false;
-      setNewButton(false);
-    }
-  }
-
-  const handleFieldChange = (e, fieldName, key) => {
-    const newData = data.map(item => ({ ...item }));
-    const target = getRowByKey(key, newData)
-    if (target) {
-      target[fieldName] = e;
-      setData(newData);
-    }
-  }
 
   const handleTabledata = () => {
     // console.log(mainId?typeArr:maintenanceArr)
@@ -208,6 +140,7 @@ function ServiceTableone(props) {
       // }
     },
   ];
+  
   const editColumn = [
     {
       title: '一级对象',

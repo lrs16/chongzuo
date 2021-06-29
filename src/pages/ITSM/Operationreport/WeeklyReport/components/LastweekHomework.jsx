@@ -1,12 +1,9 @@
-import React, { useEffect, useRef, useImperativeHandle, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Table,
   Form,
   Input,
-  Col,
-  Row,
   Button,
-  Divider,
   Popconfirm,
   message,
   DatePicker
@@ -17,7 +14,6 @@ import moment from 'moment';
 const { TextArea } = Input;
 function LastweekHomework(props) {
   const {
-    form: { getFieldDecorator },
     operationList,
     operationArr,
     mainId,
@@ -25,11 +21,9 @@ function LastweekHomework(props) {
     loading
   } = props;
   const [data, setData] = useState([]);
-  const [cacheOriginData, setcacheOriginData] = useState({});
 
   // 初始化把软件运维服务指标完成情况数据传过去
   useEffect(() => {
-    // typeList(maintenanceArr)
     if (data && data.length) {
       const result = JSON.parse(JSON.stringify(data)
         .replace(/updateTime/g, 'field1')
@@ -63,6 +57,7 @@ function LastweekHomework(props) {
     operationList(result)
     message.info('暂存保存数据成功')
   }
+
   //  获取行  
   const getRowByKey = (key, newData) => {
     return (newData || data).filter(item => item.key === key)[0];
@@ -92,16 +87,13 @@ function LastweekHomework(props) {
     }
   }
 
-
   const handleTabledata = () => {
-    // if(operationArr) {
     if (operationArr) {
       const newarr = (operationArr).map((item, index) => {
         return Object.assign(item, { editable: true, isNew: false, key: index })
       })
       setData(newarr)
     }
-    // }
   }
 
   const column = [
@@ -397,7 +389,6 @@ function LastweekHomework(props) {
     }
   ];
 
-
   useEffect(() => {
     handleTabledata();
   }, [operationArr])
@@ -407,7 +398,6 @@ function LastweekHomework(props) {
   if(mainId) {
     setColumns = copyColumns
   }
-
 
   return (
     <>
@@ -426,9 +416,6 @@ function LastweekHomework(props) {
         dataSource={data}
         pagination={false}
       />
-
-      {/* </Row> */}
-
     </>
   )
 }

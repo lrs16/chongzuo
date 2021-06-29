@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Form,
   Card,
@@ -7,13 +7,9 @@ import {
   Col,
   Input,
   DatePicker,
-  Table,
-  Popconfirm,
-  Divider,
   Icon,
   message
 } from 'antd';
-import Link from 'umi/link';
 import moment from 'moment';
 import router from 'umi/router';
 import { connect } from 'dva';
@@ -21,19 +17,14 @@ import Development from './components/Development';
 import ThisweekMaintenance from './components/ThisweekMaintenance';
 import ServiceCompletion from './components/ServiceCompletion';
 import ThisWeekitsm from './components/ThisWeekitsm';
-// import SoftCompletion from './components/SoftCompletion';
-import RemainingDefects from './components/RemainingDefects';
 import DefectTracking from './components/DefectTracking';
 import LastweekHomework from './components/LastweekHomework';
 import CopyLast from './components/CopyLast';
-import CopyNext from './components/CopyNext';
 import CopyEventtop from './components/CopyEventtop';
-import NextweekHomework from './components/NextweekHomework';
 import ServiceTableone from './components/ServiceTableone';
 import EventTop from './components/EventTop';
 import PatrolAndExamine from './components/PatrolAndExamine';
 import UpgradeList from './components/UpgradeList';
-import UpdateList from './components/UpdateList';
 import ServiceCompletionone from './components/ServiceCompletionone';
 import AddForm from './components/AddForm';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
@@ -72,33 +63,23 @@ const formincontentLayout = {
   },
 };
 
-const { RangePicker, MonthPicker } = DatePicker;
+const { MonthPicker } = DatePicker;
 const { TextArea } = Input;
 let startTime;
-let monthStarttime;
 let endTime;
 let value = 5;
-let testParams;
 function SoftReport(props) {
-  const pagetitle = props.route.name;
   const {
-    form: { getFieldDecorator, validateFields, setFieldsValue },
-    match: { params: { id } },
+    form: { getFieldDecorator, setFieldsValue },
     location: { query:
       {
         reporttype,
         mainId,
         listreportType,
         listId,
-        detailParams,
         reportSearch
       } },
     dispatch,
-    serviceCompletionthreelist,
-    thisWeekitsmlist,
-    softCompletionlist,
-    completionsecondTablelist,
-    remainingDefectslist,
     ordertopnArr,
     lastweekHomeworklist,
     nextweekHomeworklist,
@@ -109,10 +90,8 @@ function SoftReport(props) {
   } = props;
 
   const required = true;
-  const thisWeekitsmRef = useRef();
   const [fileslist, setFilesList] = useState({ arr: [], ischange: false }); // 下载列表
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
-  const [secondbutton, setSecondbutton] = useState(false);
   const [addTitle, setAddTitle] = useState([]);
   const [contentRow, setContentRow] = useState([]); // 本周运维情况综述列表 
   const [patrolAndExamineList, setPatrolAndExamine] = useState([]) // 软件运维巡检
@@ -129,7 +108,6 @@ function SoftReport(props) {
   const [nextOperationList, setNextOperationList] = useState([]) // 下周作业列表
   const [list, setList] = useState([]);
   const [buttonVisible, setButtonVisible] = useState(false)
-  // const [value, setValue] = useState('5')
   const [copyData, setCopyData] = useState('');
 
   const lastSolute = [soluteArr[soluteArr.length - 1]];
@@ -147,7 +125,6 @@ function SoftReport(props) {
     }
   ]
 
-  console.log(copyData.contentRow ? copyData.contentRow : addData, 'koko')
   //  保存表单
   const softReportform = () => {
     props.form.validateFields((err, values) => {
@@ -199,13 +176,17 @@ function SoftReport(props) {
       }
     })
   }
+
   //   七、下周作业完成情况--表格
   const nextweekHomework = () => {
     dispatch({
       type: 'softreport/nextweekHomework',
       payload: {
-        time1: startTime,
-        time2: endTime,
+        time1: reporttype === 'week' ? endTime :
+          moment().startOf('month').subtract('month', -1).format('YYYY-MM-DD'),
+
+        time2: reporttype === 'week' ? moment().add(6, 'd').format('YYYY-MM-DD')
+          : moment().endOf('month').subtract('month', -1).endOf('month').format('YYYY-MM-DD'),
         pageIndex: 0,
         pageSize: 10
       }
@@ -221,10 +202,6 @@ function SoftReport(props) {
       startTime = moment().startOf('month').format('YYYY-MM-DD');
       endTime = moment().endOf('month').format('YYYY-MM-DD');
     }
-  }
-
-  const searchNumber = (value) => {
-    console.log('value: ', value);
   }
 
   useEffect(() => {
@@ -263,7 +240,6 @@ function SoftReport(props) {
 
     if (reporttype === 'month') {
       if (!reportSearch) {
-        console.log(1)
         router.push({
           pathname: '/ITSM/operationreport/monthlyreport/mymonthlyreport',
           query: { pathpush: true },
@@ -271,7 +247,6 @@ function SoftReport(props) {
         })
       }
       if (reportSearch) {
-        console.log(2)
         router.push({
           pathname: '/ITSM/operationreport/monthlyreport/mymonthlysearch',
           query: { pathpush: true },
@@ -295,27 +270,15 @@ function SoftReport(props) {
     list.splice(tableIndex, 1);
     const resultArr = [];
     const listArr = [];
-    for (let i = 0; i < addTitle.length; i++) {
+    for (let i = 0; i < addTitle.length; i += 1) {
       resultArr.push(addTitle[i])
     }
-    for (let i = 0; i < list.length; i++) {
+    for (let i = 0; i < list.length; i += 1) {
       listArr.push(list[i])
     }
     setAddTitle(resultArr)
     setList(listArr)
   }
-
-  // const onChange = (date, dateString) => {
-  //   if (reporttype === 'week') {
-  //     const [start, end] = dateString;
-  //     startTime = start;
-  //     endTime = end;
-  //   } else {
-  //     startTime = date.startOf('month').format('YYYY-MM-DD');
-  //     endTime = date.endOf('month').format('YYYY-MM-DD');
-  //   }
-  // }
-
 
   const onChange = (date, dateString) => {
     if (reporttype === 'week') {
@@ -415,11 +378,16 @@ function SoftReport(props) {
   }, []);
 
   useEffect(() => {
+    lastweekHomework();
+    nextweekHomework();
+    handlemaintenanserviceceArr();
+    handleListdata();
+    handlesoftservice()
+  }, [startTime, endTime]);
+
+  useEffect(() => {
     setContentRow(addData);
   }, [loading])
-
-  console.log(copyData.contentRow !== undefined,'koko')
-
 
   return (
     <PageHeaderWrapper
@@ -437,7 +405,6 @@ function SoftReport(props) {
               </>
             )
           }
-
         </>
       }
     >
@@ -464,29 +431,6 @@ function SoftReport(props) {
                     )}
                 </Form.Item>
               </Col>
-
-              {/* {
-                reporttype === 'week' && (
-                  <Col span={24}>
-                    <Form.Item label='填报日期'>
-                      {getFieldDecorator('time1', {
-                        rules: [
-                          {
-                            required,
-                            message: '请选择填报日期'
-                          }
-                        ],
-                        initialValue: [moment(copyData.main ? copyData.main.time1 : startTime), moment(copyData.main ? copyData.main.time2 : endTime)]
-                      })(<RangePicker
-                        allowClear={false}
-                        // disabledDate={startdisabledDate}
-                        // placeholder='请选择'
-                        onChange={onChange}
-                      />)}
-                    </Form.Item>
-                  </Col>
-                )
-              } */}
 
               {
                 reporttype === 'week' && (
@@ -527,29 +471,6 @@ function SoftReport(props) {
                 )
               }
 
-              {/* {
-                reporttype === 'month' && (
-                  <Col span={8}>
-                    <Form.Item label='填报日期'>
-                      {getFieldDecorator('time1', {
-                        rules: [
-                          {
-                            required,
-                            message: '请选择填报日期'
-                          }
-                        ],
-                        initialValue: moment(copyData.main ? copyData.main.time1 : startTime)
-                      })(<MonthPicker
-                        allowClear
-                        // disabledDate={startdisabledDate}
-                        // placeholder='请选择'
-                        onChange={onChange}
-                      />)}
-                    </Form.Item>
-                  </Col>
-                )
-              } */}
-
               {
                 reporttype === 'month' && (
                   <Col span={24}>
@@ -564,8 +485,6 @@ function SoftReport(props) {
                         initialValue: moment(copyData.main ? copyData.main.time1 : startTime)
                       })(<MonthPicker
                         allowClear
-                        // disabledDate={startdisabledDate}
-                        // placeholder='请选择'
                         onChange={onChange}
                       />)}
                     </Form.Item>
@@ -620,9 +539,6 @@ function SoftReport(props) {
                 )
               }
 
-
-              {/* </Col> */}
-              {/* {reporttype === 'week' ? "本周运维" : "本月运维"} */}
               <Col span={24} style={{ marginTop: 15 }}>
                 <Form.Item label=''>
                   {
@@ -656,7 +572,6 @@ function SoftReport(props) {
                     )}
                 </Form.Item>
               </Col>
-
 
               {/* 二、常规运维工作开展情况 */}
               <Col span={24}>
@@ -723,15 +638,11 @@ function SoftReport(props) {
               <Col span={24}>
                 <ServiceTableone
                   forminladeLayout={forminladeLayout}
-                  // maintenanceArr={copyData.typeList?copyData.typeList:maintenanceArr.data}
                   maintenanceArr={maintenanceArr.data}
-                  startTime={startTime}
-                  endTime={endTime}
                   typeList={contentrowdata => {
                     setTypeList(contentrowdata)
                   }}
                   typeArr={[]}
-                  // mainId={copyData.typeList?copyData.typeList:mainId}
                   mainId={mainId}
                 />
               </Col>
@@ -753,10 +664,6 @@ function SoftReport(props) {
                 <ServiceCompletionone
                   forminladeLayout={forminladeLayout}
                   maintenanceService={maintenanceService}
-                  soluteArr={copyData.statisList ? copyData.statisList : [soluteArr[soluteArr.length - 1]]}
-                  serviceCompletionthreelist={serviceCompletionthreelist}
-                  startTime={startTime}
-                  endTime={endTime}
                   tabActiveKey={reporttype}
                   statisList={contentrowdata => {
                     setStatisList(contentrowdata)
@@ -771,9 +678,6 @@ function SoftReport(props) {
                   startTime={startTime}
                   endTime={endTime}
                   tabActiveKey={reporttype}
-                  // statisList={contentrowdata => {
-                  //   setStatisList(contentrowdata)
-                  // }}
                   selfhandleRow={contentrowdata => {
                     setSelfhandleRow(contentrowdata)
                   }}
@@ -796,7 +700,6 @@ function SoftReport(props) {
                 </Form.Item>
               </Col>
 
-
               {
                 copyData.operationList !== undefined && (
                   <Col span={24}>
@@ -808,7 +711,6 @@ function SoftReport(props) {
                       topNList={contentrowdata => {
                         setTopNList(contentrowdata)
                       }}
-                      // topArr={[]}
                       topArr={copyData.topNList}
                       defaultValue={value}
                       value={data => {
@@ -832,7 +734,6 @@ function SoftReport(props) {
                       topNList={contentrowdata => {
                         setTopNList(contentrowdata)
                       }}
-                      // topArr={[]}
                       topArr={copyData.topNList ? copyData.topNList : ordertopnArr}
                       mainId={copyData.topNList ? true : ''}
                       defaultValue={value}
@@ -845,7 +746,6 @@ function SoftReport(props) {
                   </Col>
                 )
               }
-
 
               <Col span={24} style={{ marginTop: 20 }}>
                 <Form.Item
@@ -876,12 +776,6 @@ function SoftReport(props) {
                   formItemLayout={formItemLayout}
                   forminladeLayout={forminladeLayout}
                   formincontentLayout={formincontentLayout}
-                  thisWeekitsmlist={thisWeekitsmlist}
-                  ref={thisWeekitsmRef}
-                  searchNumber={(searchParams) => searchNumber(searchParams)}
-                  ChangeFiles={(newvalue) => {
-                    setFiles(newvalue);
-                  }}
                   reportType={reporttype}
                   eventList={contentrowdata => {
                     setEventList(contentrowdata)
@@ -936,12 +830,13 @@ function SoftReport(props) {
               </Col>
 
               <Col span={24}>
+                <p>(1)数据库本周进行了补丁升级工作次</p>
+              </Col>
+
+
+              <Col span={24}>
                 <UpgradeList
                   forminladeLayout={forminladeLayout}
-                  softCompletionlist={softCompletionlist}
-                  completionsecondTablelist={completionsecondTablelist}
-                  startTime={startTime}
-                  endTime={endTime}
                   upgradeList={contentrowdata => {
                     setUpgradeList(contentrowdata)
                   }}
@@ -951,14 +846,14 @@ function SoftReport(props) {
 
               {/* 变更 */}
               <Col span={24}>
-                <UpdateList
+                <UpgradeList
                   forminladeLayout={forminladeLayout}
                   startTime={startTime}
                   endTime={endTime}
-                  updateList={contentrowdata => {
+                  upgradeList={contentrowdata => {
                     setUpdateList(contentrowdata)
                   }}
-                  updateArr={copyData.updateList ? copyData.updateList : []}
+                  upgradeArr={copyData.updateList ? copyData.updateList : []}
                 />
               </Col>
 
@@ -985,7 +880,6 @@ function SoftReport(props) {
 
                 </Form.Item>
               </Col>
-
 
               {/* 六、遗留缺陷问题跟踪,遗留问题、缺陷跟踪情况（使用表格管理作为附件） */}
               <Col span={24}>
@@ -1062,7 +956,6 @@ function SoftReport(props) {
                 </Col>
               )}
 
-
               <Col span={24} style={{ marginTop: 20 }}>
                 <Form.Item
                   label='上传附件'
@@ -1091,19 +984,15 @@ function SoftReport(props) {
               </Col>
 
               {/* 八、 下周作业计划 */}
-
               {copyData.operationList !== undefined && (
                 <Col span={24}>
-                  <CopyNext
+                  <CopyLast
                     forminladeLayout={forminladeLayout}
-                    startTime={startTime}
-                    endTime={endTime}
                     type={reporttype}
-                    nextOperationList={contentrowdata => {
+                    operationList={contentrowdata => {
                       setNextOperationList(contentrowdata)
                     }}
-                    nextOperationArr={copyData.nextOperationList}
-                    // mainId={copyData.nextOperationList?true:''}
+                    operationArr={copyData.nextOperationList}
                     loading={loading}
                   />
                 </Col>
@@ -1112,16 +1001,15 @@ function SoftReport(props) {
               {
                 copyData.operationList === undefined && (
                   <Col span={24}>
-                    <NextweekHomework
+                    <LastweekHomework
                       forminladeLayout={forminladeLayout}
                       startTime={startTime}
                       endTime={endTime}
                       type={reporttype}
-                      nextOperationList={contentrowdata => {
+                      operationList={contentrowdata => {
                         setNextOperationList(contentrowdata)
                       }}
-                      nextOperationArr={nextweekHomeworklist.rows}
-                      // mainId={copyData.nextOperationList?true:''}
+                      operationArr={nextweekHomeworklist.rows}
                       loading={loading}
                     />
                   </Col>
@@ -1190,17 +1078,11 @@ function SoftReport(props) {
               >
                 新增其他内容
               </Button>
-
-
-
             </Form>
           </Row>
-
         )}
-
       </Card>
     </PageHeaderWrapper>
-
   )
 }
 

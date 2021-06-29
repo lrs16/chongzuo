@@ -3,18 +3,12 @@ import {
   Table,
   Form,
   Input,
-  Col,
-  Row,
   Button,
-  Divider,
   Popconfirm,
   Select,
   message
 } from 'antd';
-import { connect } from 'dva';
-import SysUpload from '@/components/SysUpload';
 
-const { TextArea } = Input;
 const { Option } = Select;
 const Development = React.forwardRef((props, ref) => {
   const attRef = useRef();
@@ -27,15 +21,11 @@ const Development = React.forwardRef((props, ref) => {
   );
 
   const {
-    form: { getFieldDecorator },
-    forminladeLayout,
     materials,
     materialsList,
     detailParams
   } = props;
   const [data, setData] = useState([]);
-  const [seconddata, setSeconddata] = useState([]);
-  const [cacheOriginData, setcacheOriginData] = useState({});
   const [uploadkey, setKeyUpload] = useState('');
   const [fileslist, setFilesList] = useState([]);
   const [newbutton, setNewButton] = useState(false);
@@ -53,7 +43,7 @@ const Development = React.forwardRef((props, ref) => {
   }
 
   // 新增一条记录
-  const newMember = (params) => {
+  const newMember = () => {
     setFilesList([]);
     setKeyUpload('');
     const newData = (data).map(item => ({ ...item }));
@@ -98,7 +88,6 @@ const Development = React.forwardRef((props, ref) => {
       setData(newarr)
     }
   }
-
 
   const column = [
     {
@@ -161,37 +150,31 @@ const Development = React.forwardRef((props, ref) => {
 
   return (
     <>
-      {/* <Row gutter={16}> */}
-        {/* <Col span={20}> */}
-          <p>（三）运维材料提交情况</p>
-        {/* </Col> */}
+      <p>（三）运维材料提交情况</p>
 
-        <div style={{textAlign:'right',marginBottom:10}}>
-          <Button
-            disabled={detailParams}
-            type='primary'
-            onClick={handleSave}>保存</Button>
-        </div>
-
-
-        <Table
-          columns={column}
-          dataSource={data}
-          pagination={false}
-        />
-
+      <div style={{ textAlign: 'right', marginBottom: 10 }}>
         <Button
-          style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
-          type="primary"
-          ghost
-          onClick={() => newMember()}
-          icon="plus"
           disabled={detailParams}
-        >
-          新增
-        </Button>
+          type='primary'
+          onClick={handleSave}>保存</Button>
+      </div>
 
-      {/* </Row> */}
+      <Table
+        columns={column}
+        dataSource={data}
+        pagination={false}
+      />
+
+      <Button
+        style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
+        type="primary"
+        ghost
+        onClick={() => newMember()}
+        icon="plus"
+        disabled={detailParams}
+      >
+        新增
+      </Button>
     </>
   )
 })
