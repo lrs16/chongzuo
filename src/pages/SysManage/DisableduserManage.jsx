@@ -18,14 +18,14 @@ function DisableduserManage(props) {
   const [title, setTitle] = useState('');
   const [savetype, setSaveType] = useState(''); // 保存类型  save:新建  update:编辑
   const [data, setData] = useState('');
-  const [paginations, setPageinations] = useState({ current: 0, pageSize: 15 });
+  const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
 
   const getdatas = () => {
     dispatch({
       type: 'disabledusermanage/query',
       payload: {
         user: '',
-        pageIndex: paginations.current,
+        pageIndex: paginations.current - 1,
         pageSize: paginations.pageSize,
       },
     });
@@ -94,7 +94,7 @@ function DisableduserManage(props) {
       type: 'disabledusermanage/query',
       payload: {
         ...values,
-        pageIndex: page,
+        pageIndex: page - 1,
         pageSize: size,
       },
     });
@@ -209,8 +209,9 @@ function DisableduserManage(props) {
       <Card>
         <Form style={{ float: 'right', width: '30%' }}>
           {getFieldDecorator(
-            'user',
-            {},
+            'user', {
+            initialValue: '',
+          }
           )(<Search placeholder="请输入姓名查询" onSearch={values => handleSearch(values)} />)}
         </Form>
         <Button

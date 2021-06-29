@@ -247,7 +247,8 @@ function Overtime(props) {
         break;
       default:
         break;
-    }
+    };
+    setPageinations({ ...paginations, current: 1, pageSize: 15 });
     getdatas(key);
     resetFields();
   };
