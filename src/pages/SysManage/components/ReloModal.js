@@ -16,7 +16,7 @@ const formItemLayout = {
 };
 const RadioGroup = Radio.Group;
 // 克隆子元素按钮，并添加事件
-const withClick = (element, handleClick = () => {}) => {
+const withClick = (element, handleClick = () => { }) => {
   return <element.type {...element.props} onClick={handleClick} />;
 };
 class ReloModal extends Component {
@@ -66,7 +66,7 @@ class ReloModal extends Component {
           onClose={this.hanldleCancel}
           visible={visible}
           bodyStyle={{ paddingBottom: 60 }}
-          // destroyOnClose
+        // destroyOnClose
         >
           <Form {...formItemLayout} onSubmit={this.handleOk}>
             <Form.Item label="ID">
@@ -83,7 +83,7 @@ class ReloModal extends Component {
                   },
                 ],
                 initialValue: roleCode,
-              })(<Input placeholder="请输入" />)}
+              })(<Input placeholder="请输入" disabled={roleCode === 'admin'} />)}
             </Form.Item>
             <Form.Item label="角色名称">
               {getFieldDecorator('roleName', {
