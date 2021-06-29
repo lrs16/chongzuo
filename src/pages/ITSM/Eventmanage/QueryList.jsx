@@ -20,7 +20,7 @@ import {
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import SysDict from '@/components/SysDict';
-import { queryCurrent } from '@/services/user';   // 获取用户信息
+import AdminAuth from '@/components/AdminAuth';
 import { EventDelete } from './services/api';    // 删除工单
 
 const { Option } = Select;
@@ -151,7 +151,7 @@ function QueryList(props) {
       dataIndex: 'eventSource',
       key: 'eventSource',
       fixed: 'left',
-      width: 120,
+      width: 160,
     },
     {
       title: '事件分类',
@@ -450,20 +450,9 @@ function QueryList(props) {
     }
   }, []);
 
-  // 管理员账号删除工单
-  useEffect(() => {
-    queryCurrent().then(res => {
-      if (res.code === 200) {
-        setUserName(res.data.loginCode)
-      }
-    })
-  }, [])
-
   const deleteorder = () => {
     const len = selectedRowKeys.length;
-    if (len !== 1) {
-      message.info('仅能选择一条数据进行删除操作', 5);
-    } else {
+    if (len === 1) {
       EventDelete({ mainId: selectedRowKeys[0] }).then(res => {
         if (res.code === 200) {
           message.success('删除成功！');
@@ -474,6 +463,10 @@ function QueryList(props) {
           }
         });
       })
+    } else if (len > 1) {
+      message.info('仅能选择一条数据进行删除操作');
+    } else {
+      message.info('您还没有选择数据');
     };
     setSelectedRowKeys([]);
   }
@@ -859,10 +852,9 @@ function QueryList(props) {
           <Button type="primary" onClick={() => download()} style={{ marginRight: 8 }}>
             导出数据
           </Button>
+          <AdminAuth getAuth={v => setUserName(v)} />
           {username === 'admin' && (
-            <Button type="danger" ghost onClick={() => deleteorder()}>
-              删 除
-            </Button>
+            <Button type="danger" ghost onClick={() => deleteorder()}>删 除</Button>
           )}
         </div>
         <Table
@@ -880,7 +872,7 @@ function QueryList(props) {
   );
 }
 
-export default Form.create({})(
+export default Form.create()(
   connect(({ eventquery, loading }) => ({
     list: eventquery.list,
     loading: loading.models.eventquery,

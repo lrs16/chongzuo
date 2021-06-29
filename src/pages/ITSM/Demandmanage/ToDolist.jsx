@@ -39,6 +39,7 @@ const columns = [
     dataIndex: 'demandId',
     key: 'demandId',
     with: 100,
+    fixed: 'left',
     render: (text, record) => {
       const handleClick = () => {
         router.push({
@@ -59,7 +60,7 @@ const columns = [
     title: '需求标题',
     dataIndex: 'demandTitle',
     key: 'demandTitle',
-    with: 300,
+    with: 250,
   },
   {
     title: '需求类型',

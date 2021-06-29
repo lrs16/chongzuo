@@ -37,6 +37,7 @@ const columns = [
     dataIndex: 'eventNo',
     key: 'eventNo',
     width: 180,
+    fixed: 'left',
     render: (text, record) => {
       const handleClick = () => {
         router.push({
@@ -57,13 +58,13 @@ const columns = [
     title: '事件标题',
     dataIndex: 'title',
     key: 'title',
-
+    fixed: 'left',
   },
   {
     title: '事件来源',
     dataIndex: 'eventSource',
     key: 'eventSource',
-    width: 100,
+    width: 160,
   },
   {
     title: '事件分类',

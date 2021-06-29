@@ -237,7 +237,6 @@ const BasicLayout = props => {
     if (location.query.pathpush && !tabtargetid && !target && !tabtargetpath && menutarget) {
       const { menuDesc, id, menuUrl } = menutarget;
       const targetid = toptabs.filter(item => item.id === id)[0];
-      console.log(targetid)
       const panels = {
         name: menuDesc,
         id,
