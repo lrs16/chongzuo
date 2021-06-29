@@ -275,6 +275,7 @@ const BasicLayout = props => {
     }
     // 登记关闭页签
     if (location.query.closecurrent && location.query.tabid) {
+      clearcache();
       const newtabs = toptabs.filter(item => item.id !== location.query.tabid);
       setTopTabs([...newtabs]);
       lasttabactive(newtabs)
