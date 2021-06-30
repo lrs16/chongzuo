@@ -214,7 +214,7 @@ const Handle = React.forwardRef((props, ref) => {
             <Form.Item label="处理结果">
               {getFieldDecorator('handle_handleResult', {
                 rules: [{ required, message: '请选择处理结果' }],
-                initialValue: main.eventResult,
+                initialValue: handle.handleResult,
               })(
                 <Select placeholder="请选择">
                   {resultmap.map(obj => [

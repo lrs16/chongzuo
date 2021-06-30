@@ -528,6 +528,12 @@ export default {
                       icon: 'control',
                       component: './ITSM/Releasemanage/BusinessDetail',
                     },
+                    {
+                      path: '/ITSM/releasemanage/library',
+                      name: '发布库',
+                      icon: 'control',
+                      component: './ITSM/Releasemanage/BusinessDetail',
+                    },
                   ],
                 },
                 {
@@ -773,19 +779,19 @@ export default {
                   ]
                 },
                 {
-                  path:'/ITSM/servicequalityassessment',
-                  name:'服务质量考核',
+                  path: '/ITSM/servicequalityassessment',
+                  name: '服务质量考核',
                   icon: 'control',
-                  routes:[
+                  routes: [
                     {
-                      path:'/ITSM/servicequalityassessment',
-                      redirect:'/ITSM/servicequalityassessment/serviceprovidermaintenance'
+                      path: '/ITSM/servicequalityassessment',
+                      redirect: '/ITSM/servicequalityassessment/serviceprovidermaintenance'
                     },
                     {
-                      path:'/ITSM/servicequalityassessment/serviceprovidermaintenance',
-                      name:'服务商维护',
-                      icon:'control',
-                      component:'./ITSM/ServiceQuality/ProviderMaintenance'
+                      path: '/ITSM/servicequalityassessment/serviceprovidermaintenance',
+                      name: '服务商维护',
+                      icon: 'control',
+                      component: './ITSM/ServiceQuality/ProviderMaintenance'
                     },
                   ]
                 },

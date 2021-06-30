@@ -34,7 +34,7 @@ const ReturnVisit = React.forwardRef((props, ref) => {
   } = props;
   const { taskName, taskId, mainId, check, orderNo } = location.query;
   const { finish } = info;
-  const { getFieldDecorator, getFieldsValue, resetFields, getFieldValue } = props.form;
+  const { getFieldDecorator, getFieldsValue, resetFields } = props.form;
   const required = true;
   const [fileslist, setFilesList] = useState({ arr: [], ischange: false });
   const [desautodata, setDestoData] = useState([]);
@@ -99,24 +99,6 @@ const ReturnVisit = React.forwardRef((props, ref) => {
     });
   };
 
-  const handleSearch = (value, type) => {
-    switch (type) {
-      case 'des': {
-        const newArr = desrecords.filter(item => {
-          return item.includes(value);
-        });
-        if (newArr.length > 0) {
-          setDestoData(newArr);
-        } else {
-          setDesRecords(desrecords);
-        }
-        break;
-      }
-      default:
-        break;
-    }
-  };
-
   // 常用语调用
   useEffect(() => {
     handledesSearch({ module: '事件单', field: '回访', key: '' });
@@ -165,7 +147,7 @@ const ReturnVisit = React.forwardRef((props, ref) => {
               <Form.Item label="处理结果">
                 {getFieldDecorator('main_eventResult', {
                   rules: [{ required, message: '请选择处理结果' }],
-                  initialValue: main.eventResult,
+                  initialValue: finish.eventResult,
                 })(
                   <Select placeholder="请选择">
                     {handleresultmap.map(obj => [

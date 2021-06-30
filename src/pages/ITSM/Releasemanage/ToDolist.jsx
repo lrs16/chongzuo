@@ -233,6 +233,19 @@ function ToDolist(props) {
   const unitmap = getTypebyId('1384056290929545218');       // 责任单位
   const statumap = getTypebyId('1385066256880635905');       // 处理环节
 
+  const extra = (<>
+    <Button type="primary" onClick={() => handleSearch()}>查 询</Button>
+    <Button style={{ marginLeft: 8 }} onClick={() => handleReset()}>重 置</Button>
+    <Button
+      style={{ marginLeft: 8 }}
+      type="link"
+      onClick={() => {
+        setExpand(!expand);
+      }}
+    >
+      {expand ? (<>关 闭 <UpOutlined /></>) : (<>展 开 <DownOutlined /></>)}
+    </Button></>)
+
   return (
     <PageHeaderWrapper title={pagetitle}>
       <DictLower
@@ -318,52 +331,7 @@ function ToDolist(props) {
                 </Col>
               </>
             )}
-            {!expand && (
-              <Col span={8}>
-                <Form.Item>
-                  <Button type="primary" onClick={handleSearch}>
-                    查 询
-                  </Button>
-                  <Button style={{ marginLeft: 8 }} onClick={handleReset}>重 置</Button>
-                  <Button
-                    style={{ marginLeft: 8 }}
-                    type="link"
-                    onClick={() => {
-                      setExpand(!expand);
-                    }}
-                  >
-                    {expand ? (<>关 闭 <UpOutlined /></>) : (<>展 开 <DownOutlined /></>)}
-                  </Button>
-                </Form.Item>
-              </Col>
-            )}
-            {expand && (
-              <Col span={24} style={{ textAlign: 'right' }}>
-                <Button type="primary" onClick={handleSearch}>
-                  查 询
-                </Button>
-                <Button style={{ marginLeft: 8 }} onClick={handleReset}>
-                  重 置
-                </Button>
-                <Button
-                  style={{ marginLeft: 8 }}
-                  type="link"
-                  onClick={() => {
-                    setExpand(!expand);
-                  }}
-                >
-                  {expand ? (
-                    <>
-                      关 闭 <UpOutlined />
-                    </>
-                  ) : (
-                    <>
-                      展 开 <DownOutlined />
-                    </>
-                  )}
-                </Button>
-              </Col>
-            )}
+            {expand ? (<Col span={24} style={{ textAlign: 'right' }}>{extra}</Col>) : (<Col span={8} style={{ marginTop: 4 }}>{extra}</Col>)}
           </Form>
         </Row>
         <div style={{ marginBottom: 24 }}>

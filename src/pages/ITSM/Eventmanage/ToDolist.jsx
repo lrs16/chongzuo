@@ -58,7 +58,7 @@ const columns = [
     title: '事件标题',
     dataIndex: 'title',
     key: 'title',
-    fixed: 'left',
+    with: 250,
   },
   {
     title: '事件来源',
