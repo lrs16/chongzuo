@@ -86,6 +86,7 @@ const Registrat = forwardRef((props, ref) => {
     getVal: () => getFieldsValue(),
     resetVal: () => resetFields(),
     Forms: props.form.validateFieldsAndScroll,
+    geteventObject: props.form.validateFields,
   }), []);
 
   const gethandelvalue = getFieldsValue(['main_eventType', 'main_eventObject']);
@@ -381,7 +382,7 @@ const Registrat = forwardRef((props, ref) => {
     }
     return [];
   };
-  const eventObject = main.eventObject ? main.eventObject.split() : [''];
+  const eventObject = main.eventObject ? main.eventObject.split() : [];
   if (eventObject[0] && main.eventObject.length === 6) {
     eventObject.unshift(main.eventObject.slice(0, 3));
   }

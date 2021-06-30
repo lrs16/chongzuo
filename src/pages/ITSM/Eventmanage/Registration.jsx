@@ -104,7 +104,11 @@ function Registration(props) {
         }
       })
     } else {
-      submittype(type);
+      RegistratRef.current.geteventObject(['main_eventObject'], err => {
+        if (!err) {
+          submittype(type);
+        }
+      });
     }
   };
 
