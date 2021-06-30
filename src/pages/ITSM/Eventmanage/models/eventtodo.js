@@ -88,8 +88,10 @@ export default {
             taskName: eventStatus,
             taskId,
             mainId: flowInstanceId,
-            updatetab: true,
           },
+          state: {
+            updatetab: true,
+          }
         });
         yield put({
           type: 'saveinfo',

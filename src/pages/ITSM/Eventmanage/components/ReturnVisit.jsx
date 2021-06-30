@@ -147,7 +147,7 @@ const ReturnVisit = React.forwardRef((props, ref) => {
               <Form.Item label="处理结果">
                 {getFieldDecorator('main_eventResult', {
                   rules: [{ required, message: '请选择处理结果' }],
-                  initialValue: finish.eventResult,
+                  initialValue: taskName === '确认中' ? main.eventResult : '',
                 })(
                   <Select placeholder="请选择">
                     {handleresultmap.map(obj => [
