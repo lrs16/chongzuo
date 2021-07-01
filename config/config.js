@@ -106,1196 +106,1208 @@ export default {
           routes: [
             {
               path: '/',
-              redirect: '/ITSM/home',
-            },
-            {
-              path: '/home',
-              name: '首页',
-              dynamic: true,
-              icon: 'deployment-unit',
+              component: '../layouts/UserLayout',
               routes: [
+                {
+                  path: '/',
+                  redirect: '/ITSM/home',
+                },
                 {
                   path: '/home',
-                  redirect: '/ITSM/home',
+                  name: '首页',
+                  dynamic: true,
+                  icon: 'deployment-unit',
+                  routes: [
+                    {
+                      path: '/home',
+                      redirect: '/ITSM/home',
+                    },
+                    {
+                      path: '/ITSM/home',
+                      name: 'IT服务监控台',
+                      icon: 'control',
+                    },
+                  ],
                 },
-                {
-                  path: '/ITSM/home',
-                  name: 'IT服务监控台',
-                  icon: 'control',
-                },
-              ],
-            },
-            {
-              path: '/ITSM',
-              name: 'IT服务管理',
-              dynamic: true,
-              icon: 'deployment-unit',
-              routes: [
                 {
                   path: '/ITSM',
-                  redirect: '/ITSM/home',
-                },
-                {
-                  path: '/ITSM/home',
-                  name: 'IT服务监控台',
-                  icon: 'control',
-                  component: './HomePage',
-                },
-                {
-                  path: '/ITSM/todo',
-                  name: 'IT服务待办',
-                  icon: 'control',
-                  component: './ITSM/ITSMtodo',
-                },
-                {
-                  path: '/ITSM/eventmanage',
-                  name: '事件管理',
-                  icon: 'control',
+                  name: 'IT服务管理',
+                  dynamic: true,
+                  icon: 'deployment-unit',
                   routes: [
+                    {
+                      path: '/ITSM',
+                      redirect: '/ITSM/home',
+                    },
+                    {
+                      path: '/ITSM/home',
+                      name: 'IT服务监控台',
+                      icon: 'control',
+                      component: './HomePage',
+                    },
+                    {
+                      path: '/ITSM/todo',
+                      name: 'IT服务待办',
+                      icon: 'control',
+                      component: './ITSM/ITSMtodo',
+                    },
                     {
                       path: '/ITSM/eventmanage',
-                      redirect: '/ITSM/eventmanage/registration',
-                    },
-                    {
-                      path: '/ITSM/eventmanage/registration',
-                      name: '事件登记',
-                      icon: 'cloud-server',
-                      component: './ITSM/Eventmanage/Registration',
-                    },
-                    {
-                      path: '/ITSM/eventmanage/to-do',
-                      name: '事件待办',
-                      icon: 'cloud-server',
-                      component: './ITSM/Eventmanage/ToDolist',
-                    },
-                    {
-                      path: '/ITSM/eventmanage/to-do/record',
-                      name: '事件办理',
-                      icon: 'cloud-server',
-                      component: './ITSM/Eventmanage/ToDodetails',
+                      name: '事件管理',
+                      icon: 'control',
                       routes: [
+                        {
+                          path: '/ITSM/eventmanage',
+                          redirect: '/ITSM/eventmanage/registration',
+                        },
+                        {
+                          path: '/ITSM/eventmanage/registration',
+                          name: '事件登记',
+                          icon: 'cloud-server',
+                          component: './ITSM/Eventmanage/Registration',
+                        },
+                        {
+                          path: '/ITSM/eventmanage/to-do',
+                          name: '事件待办',
+                          icon: 'cloud-server',
+                          component: './ITSM/Eventmanage/ToDolist',
+                        },
                         {
                           path: '/ITSM/eventmanage/to-do/record',
-                          redirect: '/ITSM/eventmanage/to-do/record/workorder',
+                          name: '事件办理',
+                          icon: 'cloud-server',
+                          component: './ITSM/Eventmanage/ToDodetails',
+                          routes: [
+                            {
+                              path: '/ITSM/eventmanage/to-do/record',
+                              redirect: '/ITSM/eventmanage/to-do/record/workorder',
+                            },
+                            {
+                              path: '/ITSM/eventmanage/to-do/record/workorder',
+                              name: '事件工单',
+                              component: './ITSM/Eventmanage/WorkOrder',
+                            },
+                            {
+                              path: '/ITSM/eventmanage/to-do/record/process',
+                              name: '事件流程',
+                              component: './ITSM/Eventmanage/Process',
+                            },
+                          ],
                         },
                         {
-                          path: '/ITSM/eventmanage/to-do/record/workorder',
-                          name: '事件工单',
-                          component: './ITSM/Eventmanage/WorkOrder',
+                          path: '/ITSM/eventmanage/query',
+                          name: '事件查询',
+                          icon: 'cloud-server',
+                          component: './ITSM/Eventmanage/QueryList',
                         },
                         {
-                          path: '/ITSM/eventmanage/to-do/record/process',
-                          name: '事件流程',
-                          component: './ITSM/Eventmanage/Process',
+                          path: '/ITSM/eventmanage/eventstatistics',
+                          name: '事件统计',
+                          icon: 'cloud-server',
+                          routes: [
+                            {
+                              path: '/ITSM/eventmanage/eventstatistics/maintenance',
+                              name: '运维分类情况统计',
+                              icon: 'cloud-server',
+                              component: './ITSM/Eventmanage/eventstatistics/Maintenance',
+                            },
+                            {
+                              path: '/ITSM/eventmanage/eventstatistics/maintenanceservice',
+                              name: '软件运维服务指标完成情况',
+                              icon: 'cloud-server',
+                              component: './ITSM/Eventmanage/eventstatistics/Maintenanceservice',
+                            },
+                            {
+                              path: '/ITSM/eventmanage/eventstatistics/solution',
+                              name: '一线事件解决情况',
+                              icon: 'cloud-server',
+                              component: './ITSM/Eventmanage/eventstatistics/Solution',
+                            },
+                            {
+                              path: '/ITSM/eventmanage/eventstatistics/workordertopn',
+                              name: '工单TOPN',
+                              icon: 'cloud-server',
+                              component: './ITSM/Eventmanage/eventstatistics/Workordertopn',
+                            },
+                            {
+                              path: '/ITSM/eventmanage/eventstatistics/workordertreatmentrate',
+                              name: '工单处理率',
+                              icon: 'cloud-server',
+                              component: './ITSM/Eventmanage/eventstatistics/Workordertreatmentrate',
+                            },
+                          ],
+                        },
+                        {
+                          path: '/ITSM/eventmanage/query/details',
+                          name: '事件工单详情',
+                          icon: 'cloud-server',
+                          component: './ITSM/Eventmanage/EventDetails',
+                        },
+                        {
+                          path: '/ITSM/eventmanage/overtime',
+                          name: '超时查询',
+                          icon: 'cloud-server',
+                          component: './ITSM/Eventmanage/Overtime',
                         },
                       ],
                     },
-                    {
-                      path: '/ITSM/eventmanage/query',
-                      name: '事件查询',
-                      icon: 'cloud-server',
-                      component: './ITSM/Eventmanage/QueryList',
-                    },
-                    {
-                      path: '/ITSM/eventmanage/eventstatistics',
-                      name: '事件统计',
-                      icon: 'cloud-server',
-                      routes: [
-                        {
-                          path: '/ITSM/eventmanage/eventstatistics/maintenance',
-                          name: '运维分类情况统计',
-                          icon: 'cloud-server',
-                          component: './ITSM/Eventmanage/eventstatistics/Maintenance',
-                        },
-                        {
-                          path: '/ITSM/eventmanage/eventstatistics/maintenanceservice',
-                          name: '软件运维服务指标完成情况',
-                          icon: 'cloud-server',
-                          component: './ITSM/Eventmanage/eventstatistics/Maintenanceservice',
-                        },
-                        {
-                          path: '/ITSM/eventmanage/eventstatistics/solution',
-                          name: '一线事件解决情况',
-                          icon: 'cloud-server',
-                          component: './ITSM/Eventmanage/eventstatistics/Solution',
-                        },
-                        {
-                          path: '/ITSM/eventmanage/eventstatistics/workordertopn',
-                          name: '工单TOPN',
-                          icon: 'cloud-server',
-                          component: './ITSM/Eventmanage/eventstatistics/Workordertopn',
-                        },
-                        {
-                          path: '/ITSM/eventmanage/eventstatistics/workordertreatmentrate',
-                          name: '工单处理率',
-                          icon: 'cloud-server',
-                          component: './ITSM/Eventmanage/eventstatistics/Workordertreatmentrate',
-                        },
-                      ],
-                    },
-                    {
-                      path: '/ITSM/eventmanage/query/details',
-                      name: '事件工单详情',
-                      icon: 'cloud-server',
-                      component: './ITSM/Eventmanage/EventDetails',
-                    },
-                    {
-                      path: '/ITSM/eventmanage/overtime',
-                      name: '超时查询',
-                      icon: 'cloud-server',
-                      component: './ITSM/Eventmanage/Overtime',
-                    },
-                  ],
-                },
-                {
-                  path: '/ITSM/problemmanage',
-                  name: '问题管理',
-                  icon: 'control',
-                  routes: [
                     {
                       path: '/ITSM/problemmanage',
-                      redirect: '/ITSM/problemmanage/registration',
-                    },
-                    {
-                      path: '/ITSM/problemmanage/registration',
-                      name: '问题登记',
-                      icon: 'cloud-server',
-                      component: './ITSM/Problemmanage/Registration',
-                    },
-                    {
-                      path: '/ITSM/problemmanage/besolved',
-                      name: '问题待办',
-                      icon: 'cloud-server',
-                      component: './ITSM/Problemmanage/Besolved',
-                    },
-                    {
-                      path: '/ITSM/problemmanage/problemquery',
-                      name: '问题查询',
-                      icon: 'cloud-server',
-                      component: './ITSM/Problemmanage/Problemquery',
-                    },
-                    {
-                      path: '/ITSM/problemmanage/besolveddetail/workorder',
-                      name: '问题工单',
-                      icon: 'cloud-server',
-                      component: './ITSM/Problemmanage/Workorder',
-                    },
-                    {
-                      path: '/ITSM/problemmanage/problemquery/detail',
-                      name: '问题工单详情',
-                      icon: 'cloud-server',
-                      component: './ITSM/Problemmanage/Queryworkdetail',
-                    },
-                    {
-                      path: '/ITSM/problemmanage/statistics',
-                      name: '问题统计',
-                      icon: 'alibaba',
+                      name: '问题管理',
+                      icon: 'control',
                       routes: [
                         {
-                          path: '/ITSM/problemmanage/statistics/treatmentrate',
-                          name: '问题解决进度管控表',
-                          icon: 'fork',
-                          component: './ITSM/Problemmanage/Handlingrate',
+                          path: '/ITSM/problemmanage',
+                          redirect: '/ITSM/problemmanage/registration',
                         },
                         {
-                          path: '/ITSM/problemmanage/statistics/classifiedstatistics',
-                          name: '问题分类统计',
-                          icon: 'experiment',
-                          component: './ITSM/Problemmanage/ClassifiedStatistics',
+                          path: '/ITSM/problemmanage/registration',
+                          name: '问题登记',
+                          icon: 'cloud-server',
+                          component: './ITSM/Problemmanage/Registration',
                         },
                         {
-                          path: '/ITSM/problemmanage/statistics/statusstatistics',
-                          name: '问题状态统计',
-                          icon: 'dropbox',
-                          component: './ITSM/Problemmanage/Statusstatistics',
+                          path: '/ITSM/problemmanage/besolved',
+                          name: '问题待办',
+                          icon: 'cloud-server',
+                          component: './ITSM/Problemmanage/Besolved',
                         },
                         {
-                          path: '/ITSM/problemmanage/statistics/timeoutstatistics',
-                          name: '问题超时统计',
-                          icon: 'euro',
-                          component: './ITSM/Problemmanage/TimeoutStatistics',
+                          path: '/ITSM/problemmanage/problemquery',
+                          name: '问题查询',
+                          icon: 'cloud-server',
+                          component: './ITSM/Problemmanage/Problemquery',
+                        },
+                        {
+                          path: '/ITSM/problemmanage/besolveddetail/workorder',
+                          name: '问题工单',
+                          icon: 'cloud-server',
+                          component: './ITSM/Problemmanage/Workorder',
+                        },
+                        {
+                          path: '/ITSM/problemmanage/problemquery/detail',
+                          name: '问题工单详情',
+                          icon: 'cloud-server',
+                          component: './ITSM/Problemmanage/Queryworkdetail',
+                        },
+                        {
+                          path: '/ITSM/problemmanage/statistics',
+                          name: '问题统计',
+                          icon: 'alibaba',
+                          routes: [
+                            {
+                              path: '/ITSM/problemmanage/statistics/treatmentrate',
+                              name: '问题解决进度管控表',
+                              icon: 'fork',
+                              component: './ITSM/Problemmanage/Handlingrate',
+                            },
+                            {
+                              path: '/ITSM/problemmanage/statistics/classifiedstatistics',
+                              name: '问题分类统计',
+                              icon: 'experiment',
+                              component: './ITSM/Problemmanage/ClassifiedStatistics',
+                            },
+                            {
+                              path: '/ITSM/problemmanage/statistics/statusstatistics',
+                              name: '问题状态统计',
+                              icon: 'dropbox',
+                              component: './ITSM/Problemmanage/Statusstatistics',
+                            },
+                            {
+                              path: '/ITSM/problemmanage/statistics/timeoutstatistics',
+                              name: '问题超时统计',
+                              icon: 'euro',
+                              component: './ITSM/Problemmanage/TimeoutStatistics',
+                            },
+                          ],
                         },
                       ],
                     },
-                  ],
-                },
-                {
-                  path: '/ITSM/demandmanage',
-                  name: '需求管理',
-                  icon: 'control',
-                  routes: [
                     {
                       path: '/ITSM/demandmanage',
-                      redirect: '/ITSM/demandmanage/registration',
-                    },
-                    {
-                      path: '/ITSM/demandmanage/registration',
-                      name: '需求登记',
-                      icon: 'cloud-server',
-                      component: './ITSM/Demandmanage/Registration',
-                    },
-                    {
-                      path: '/ITSM/demandmanage/to-do',
-                      name: '需求待办',
-                      icon: 'cloud-server',
-                      component: './ITSM/Demandmanage/ToDolist',
-                    },
-                    {
-                      path: '/ITSM/demandmanage/to-do/record',
-                      name: '需求办理',
-                      icon: 'cloud-server',
-                      component: './ITSM/Demandmanage/ToDodetails',
+                      name: '需求管理',
+                      icon: 'control',
                       routes: [
+                        {
+                          path: '/ITSM/demandmanage',
+                          redirect: '/ITSM/demandmanage/registration',
+                        },
+                        {
+                          path: '/ITSM/demandmanage/registration',
+                          name: '需求登记',
+                          icon: 'cloud-server',
+                          component: './ITSM/Demandmanage/Registration',
+                        },
+                        {
+                          path: '/ITSM/demandmanage/to-do',
+                          name: '需求待办',
+                          icon: 'cloud-server',
+                          component: './ITSM/Demandmanage/ToDolist',
+                        },
                         {
                           path: '/ITSM/demandmanage/to-do/record',
-                          redirect: '/ITSM/demandmanage/to-do/record/workorder',
+                          name: '需求办理',
+                          icon: 'cloud-server',
+                          component: './ITSM/Demandmanage/ToDodetails',
+                          routes: [
+                            {
+                              path: '/ITSM/demandmanage/to-do/record',
+                              redirect: '/ITSM/demandmanage/to-do/record/workorder',
+                            },
+                            {
+                              path: '/ITSM/demandmanage/to-do/record/workorder',
+                              name: '需求工单',
+                              component: './ITSM/Demandmanage/WorkOrder',
+                            },
+                            {
+                              path: '/ITSM/demandmanage/to-do/record/process',
+                              name: '需求流程',
+                              component: './ITSM/Demandmanage/Process',
+                            },
+                          ],
                         },
                         {
-                          path: '/ITSM/demandmanage/to-do/record/workorder',
-                          name: '需求工单',
-                          component: './ITSM/Demandmanage/WorkOrder',
+                          path: '/ITSM/demandmanage/query',
+                          name: '需求查询',
+                          icon: 'cloud-server',
+                          component: './ITSM/Demandmanage/QueryList',
                         },
                         {
-                          path: '/ITSM/demandmanage/to-do/record/process',
-                          name: '需求流程',
-                          component: './ITSM/Demandmanage/Process',
+                          path: '/ITSM/demandmanage/query/details',
+                          name: '需求工单详情',
+                          icon: 'cloud-server',
+                          component: './ITSM/Demandmanage/Details',
+                        },
+                        {
+                          path: '/ITSM/demandmanage/demandstatistics',
+                          name: '需求统计',
+                          icon: 'cloud-server',
+                          routes: [
+                            {
+                              path: '/ITSM/demandmanage/demandstatistics/demandrequirement',
+                              name: '功能需求统计',
+                              icon: 'cloud-server',
+                              component: './ITSM/Demandmanage/demandstatistics/DemandRequirement',
+                            },
+                            {
+                              path: '/ITSM/demandmanage/demandstatistics/demandstate',
+                              name: '需求状态统计',
+                              icon: 'cloud-server',
+                              component: './ITSM/Demandmanage/demandstatistics/Demandstate',
+                            },
+                            {
+                              path: '/ITSM/demandmanage/demandstatistics/demandschedule',
+                              name: '需求进度统计',
+                              icon: 'cloud-server',
+                              component: './ITSM/Demandmanage/demandstatistics/DemandSchedule',
+                            },
+                            {
+                              path: '/ITSM/demandmanage/demandstatistics/demandtimeout',
+                              name: '需求超时统计',
+                              icon: 'cloud-server',
+                              component: './ITSM/Demandmanage/demandstatistics/DemandTimeout',
+                            },
+                          ],
                         },
                       ],
                     },
-                    {
-                      path: '/ITSM/demandmanage/query',
-                      name: '需求查询',
-                      icon: 'cloud-server',
-                      component: './ITSM/Demandmanage/QueryList',
-                    },
-                    {
-                      path: '/ITSM/demandmanage/query/details',
-                      name: '需求工单详情',
-                      icon: 'cloud-server',
-                      component: './ITSM/Demandmanage/Details',
-                    },
-                    {
-                      path: '/ITSM/demandmanage/demandstatistics',
-                      name: '需求统计',
-                      icon: 'cloud-server',
-                      routes: [
-                        {
-                          path: '/ITSM/demandmanage/demandstatistics/demandrequirement',
-                          name: '功能需求统计',
-                          icon: 'cloud-server',
-                          component: './ITSM/Demandmanage/demandstatistics/DemandRequirement',
-                        },
-                        {
-                          path: '/ITSM/demandmanage/demandstatistics/demandstate',
-                          name: '需求状态统计',
-                          icon: 'cloud-server',
-                          component: './ITSM/Demandmanage/demandstatistics/Demandstate',
-                        },
-                        {
-                          path: '/ITSM/demandmanage/demandstatistics/demandschedule',
-                          name: '需求进度统计',
-                          icon: 'cloud-server',
-                          component: './ITSM/Demandmanage/demandstatistics/DemandSchedule',
-                        },
-                        {
-                          path: '/ITSM/demandmanage/demandstatistics/demandtimeout',
-                          name: '需求超时统计',
-                          icon: 'cloud-server',
-                          component: './ITSM/Demandmanage/demandstatistics/DemandTimeout',
-                        },
-                      ],
-                    },
-                  ],
-                },
-                {
-                  path: '/ITSM/faultmanage',
-                  name: '故障管理',
-                  icon: 'control',
-                  // component: './ITSM/Faultmanage/Registration',
-
-                  routes: [
                     {
                       path: '/ITSM/faultmanage',
-                      redirect: '/ITSM/faultmanage/registration',
-                    },
-                    {
-                      path: '/ITSM/faultmanage/registration',
-                      name: '故障登记',
+                      name: '故障管理',
                       icon: 'control',
-                      component: './ITSM/Faultmanage/Registration',
+                      // component: './ITSM/Faultmanage/Registration',
+
+                      routes: [
+                        {
+                          path: '/ITSM/faultmanage',
+                          redirect: '/ITSM/faultmanage/registration',
+                        },
+                        {
+                          path: '/ITSM/faultmanage/registration',
+                          name: '故障登记',
+                          icon: 'control',
+                          component: './ITSM/Faultmanage/Registration',
+                        },
+                        {
+                          path: '/ITSM/faultmanage/todolist',
+                          name: '故障待办',
+                          icon: 'control',
+                          component: './ITSM/Faultmanage/ToDOlist',
+                        },
+                        {
+                          path: '/ITSM/faultmanage/todolist/record',
+                          name: '故障工单',
+                          icon: 'cloud-server',
+                          component: './ITSM/Faultmanage/Todolistdetails',
+                        },
+                        {
+                          path: '/ITSM/faultmanage/querylist',
+                          name: '故障查询',
+                          icon: 'control',
+                          component: './ITSM/Faultmanage/QueryList',
+                        },
+                        {
+                          path: '/ITSM/faultmanage/querylist/record',
+                          name: '故障工单详情',
+                          icon: 'cloud-server',
+                          component: './ITSM/Faultmanage/Querylistdetails',
+                        },
+                        {
+                          path: '/ITSM/faultmanage/overtime',
+                          name: '超时查询',
+                          icon: 'control',
+                          component: './ITSM/Faultmanage/Overtime',
+                        },
+                        {
+                          path: '/ITSM/faultmanage/faultstaticount',
+                          name: '故障统计',
+                          icon: 'control',
+                          routes: [
+                            {
+                              path: '/ITSM/faultmanage/faultstaticount/faultsumstatic',
+                              name: '故障类型统计',
+                              icon: 'control',
+                              component: './ITSM/Faultmanage/Faultbreakdownlist',
+                            },
+                            {
+                              path: '/ITSM/faultmanage/faultstaticount/breakdowndetail',
+                              name: '故障状态统计',
+                              icon: 'control',
+                              component: './ITSM/Faultmanage/Breakdowndetail',
+                            },
+                          ],
+                        },
+                      ],
                     },
                     {
-                      path: '/ITSM/faultmanage/todolist',
-                      name: '故障待办',
+                      path: '/ITSM/releasemanage',
+                      name: '故障管理',
                       icon: 'control',
-                      component: './ITSM/Faultmanage/ToDOlist',
+                      // component: './ITSM/Faultmanage/Registration',
+
+                      routes: [
+                        {
+                          path: '/ITSM/releasemanage',
+                          redirect: '/ITSM/releasemanage/registration',
+                        },
+                        {
+                          path: '/ITSM/releasemanage/registration',
+                          name: '发布登记',
+                          icon: 'control',
+                          component: './ITSM/Releasemanage/Registration',
+                        },
+                        {
+                          path: '/ITSM/releasemanage/to-do',
+                          name: '发布待办',
+                          icon: 'control',
+                          component: './ITSM/Releasemanage/ToDolist',
+                        },
+                        {
+                          path: '/ITSM/releasemanage/to-do/record',
+                          name: '发布工单处理',
+                          icon: 'cloud-server',
+                          component: './ITSM/Releasemanage/ToDodetails',
+                        },
+                        {
+                          path: '/ITSM/releasemanage/verificationtodo',
+                          name: '业务验证待办',
+                          icon: 'control',
+                          component: './ITSM/Releasemanage/VerificationTodo',
+                        },
+                        {
+                          path: '/ITSM/releasemanage/verificationtodo/record',
+                          name: '业务验证',
+                          icon: 'control',
+                          component: './ITSM/Releasemanage/BusinessDetail',
+                        },
+                        {
+                          path: '/ITSM/releasemanage/checktodo',
+                          name: '业务复核待办',
+                          icon: 'control',
+                          component: './ITSM/Releasemanage/Checktodo',
+                        },
+                        {
+                          path: '/ITSM/releasemanage/checktodo/record',
+                          name: '业务复核',
+                          icon: 'control',
+                          component: './ITSM/Releasemanage/BusinessDetail',
+                        },
+                        {
+                          path: '/ITSM/releasemanage/library',
+                          name: '发布库',
+                          icon: 'control',
+                          component: './ITSM/Releasemanage/BusinessDetail',
+                        },
+                      ],
                     },
                     {
-                      path: '/ITSM/faultmanage/todolist/record',
-                      name: '故障工单',
-                      icon: 'cloud-server',
-                      component: './ITSM/Faultmanage/Todolistdetails',
-                    },
-                    {
-                      path: '/ITSM/faultmanage/querylist',
-                      name: '故障查询',
+                      path: '/ITSM/onsitemanage',
+                      name: '巡检管理',
                       icon: 'control',
-                      component: './ITSM/Faultmanage/QueryList',
+                      component: './ITSM/OnSitemanage',
                     },
                     {
-                      path: '/ITSM/faultmanage/querylist/record',
-                      name: '故障工单详情',
-                      icon: 'cloud-server',
-                      component: './ITSM/Faultmanage/Querylistdetails',
-                    },
-                    {
-                      path: '/ITSM/faultmanage/overtime',
-                      name: '超时查询',
-                      icon: 'control',
-                      component: './ITSM/Faultmanage/Overtime',
-                    },
-                    {
-                      path: '/ITSM/faultmanage/faultstaticount',
-                      name: '故障统计',
+                      path: '/ITSM/operationreport',
+                      name: '运维周/月报',
                       icon: 'control',
                       routes: [
                         {
-                          path: '/ITSM/faultmanage/faultstaticount/faultsumstatic',
-                          name: '故障类型统计',
-                          icon: 'control',
-                          component: './ITSM/Faultmanage/Faultbreakdownlist',
+                          path: '/ITSM/operationreport',
+                          redirect: '/ITSM/operationreport/weeklyreport'
                         },
                         {
-                          path: '/ITSM/faultmanage/faultstaticount/breakdowndetail',
-                          name: '故障状态统计',
+                          path: '/ITSM/operationreport/weeklyreport',
+                          name: '运维周报',
+                          icon: 'cloud-server',
+                          // component:'./ITSM/Operationreport/WeeklyReport/OperationmyweeklyReport',
+                          routes: [
+                            {
+                              path: '/ITSM/operationreport/weeklyreport/myweeklyreport',
+                              name: '我的周报',
+                              icon: 'fork',
+                              component: './ITSM/Operationreport/WeeklyReport/OperationmyweeklyReport'
+                            },
+                            {
+                              path: '/ITSM/operationreport/weeklyreport/myweeklyreportsearch',
+                              name: '周报查询',
+                              icon: 'fork',
+                              component: './ITSM/Operationreport/WeeklyReport/WeeklySearch'
+                            },
+                            {
+                              path: '/ITSM/operationreport/weeklyreport/softreport',
+                              name: '软件运维周报',
+                              icon: 'fork',
+                              component: './ITSM/Operationreport/WeeklyReport/SoftReport'
+                            },
+                            {
+                              path: '/ITSM/operationreport/weeklyreport/detailSoft',
+                              name: '软件运维周报详情页',
+                              icon: 'fork',
+                              component: './ITSM/Operationreport/WeeklyReport/SoftReportdetail'
+                            },
+                            {
+                              path: '/ITSM/operationreport/weeklyreport/computerroomreport',
+                              name: '机房运维周报',
+                              icon: 'fork',
+                              component: './ITSM/Operationreport/WeeklyReport/ComputerroomReport'
+                            },
+                            {
+                              path: '/ITSM/operationreport/weeklyreport/computerroomreportdetail',
+                              name: '机房运维周报详情页',
+                              icon: 'fork',
+                              component: './ITSM/Operationreport/WeeklyReport/ComputerroomReportdetail'
+                            },
+                            {
+                              path: '/ITSM/operationreport/weeklyreport/databasereport',
+                              name: '数据库运维周报',
+                              icon: 'fork',
+                              component: './ITSM/Operationreport/WeeklyReport/DatabaseReport'
+                            },
+                            {
+                              path: '/ITSM/operationreport/weeklyreport/databasereportdetail',
+                              name: '数据库运维周报详情页',
+                              icon: 'fork',
+                              component: './ITSM/Operationreport/WeeklyReport/DatabaseReportdetail'
+                            },
+                            {
+                              path: '/ITSM/operationreport/weeklyreport/otherreport',
+                              name: '其他运维周报',
+                              icon: 'fork',
+                              component: './ITSM/Operationreport/WeeklyReport/OtherReport'
+                            },
+                            {
+                              path: '/ITSM/operationreport/weeklyreport/otherreportdetail',
+                              name: '其他运维周报详情',
+                              icon: 'fork',
+                              component: './ITSM/Operationreport/WeeklyReport/OtherReportdetail'
+                            },
+                          ]
+                        },
+                        {
+                          path: '/ITSM/operationreport/monthlyreport',
+                          name: '运维月报',
+                          icon: 'cloud-server',
+                          routes: [
+                            {
+                              path: '/ITSM/operationreport/monthlyreport',
+                              redirect: '/ITSM/operationreport/monthlyreport/mymonthlyreport'
+                            },
+                            {
+                              path: '/ITSM/operationreport/monthlyreport/mymonthlyreport',
+                              name: '我的月报',
+                              icon: 'fork',
+                              component: './ITSM/Operationreport/MonthlyReport/MymonthlyReport',
+                            },
+                            {
+                              path: '/ITSM/operationreport/monthlyreport/mymonthlysearch',
+                              name: '月报查询',
+                              icon: 'fork',
+                              component: './ITSM/Operationreport/MonthlyReport/MymonthlySearch'
+                            },
+                            {
+                              path: '/ITSM/operationreport/monthlyreport/monthsoftreport',
+                              name: '软件运维月报',
+                              icon: 'fork',
+                              component: './ITSM/Operationreport/WeeklyReport/SoftReport'
+                            },
+                            {
+                              path: '/ITSM/operationreport/monthlyreport/monthdetailSoft',
+                              name: '软件运维月报详情页',
+                              icon: 'fork',
+                              component: './ITSM/Operationreport/WeeklyReport/SoftReportdetail'
+                            },
+                            {
+                              path: '/ITSM/operationreport/monthlyreport/monthcomputerroomreport',
+                              name: '机房运维月报',
+                              icon: 'fork',
+                              component: './ITSM/Operationreport/WeeklyReport/ComputerroomReport'
+                            },
+                            {
+                              path: '/ITSM/operationreport/monthlyreport/monthcomputerroomreportdetail',
+                              name: '机房运维月报详情页',
+                              icon: 'fork',
+                              component: './ITSM/Operationreport/WeeklyReport/ComputerroomReportdetail'
+                            },
+                            {
+                              path: '/ITSM/operationreport/monthlyreport/monthdatabasereport',
+                              name: '数据库运维月报',
+                              icon: 'fork',
+                              component: './ITSM/Operationreport/WeeklyReport/DatabaseReport'
+                            },
+                            {
+                              path: '/ITSM/operationreport/monthlyreport/monthdatabasereportdetail',
+                              name: '数据库运维月报详情页',
+                              icon: 'fork',
+                              component: './ITSM/Operationreport/WeeklyReport/DatabaseReportdetail'
+                            },
+                            {
+                              path: '/ITSM/operationreport/monthlyreport/monthotherreport',
+                              name: '其他运维月报',
+                              icon: 'fork',
+                              component: './ITSM/Operationreport/WeeklyReport/OtherReport'
+                            },
+                            {
+                              path: '/ITSM/operationreport/monthlyreport/monthotherreportdetail',
+                              name: '其他运维月报详情',
+                              icon: 'fork',
+                              component: './ITSM/Operationreport/WeeklyReport/OtherReportdetail'
+                            },
+                          ]
+                        },
+
+                      ]
+                    },
+                    {
+                      path: '/ITSM/operationplan',
+                      name: '作业计划',
+                      icon: 'control',
+
+                      routes: [
+                        {
+                          path: '/ITSM/operationplan',
+                          redirect: '/ITSM/operationplan/myoperationplan'
+                        },
+                        {
+                          path: '/ITSM/operationplan/myoperationplan/',
+                          name: '我的作业计划',
                           icon: 'control',
-                          component: './ITSM/Faultmanage/Breakdowndetail',
+                          component: './ITSM/OperationPlan/MyoperationPlan',
+                        },
+                        {
+                          path: '/ITSM/operationplan/operationplanfillin',
+                          name: '作业计划填报',
+                          icon: 'control',
+                          component: './ITSM/OperationPlan/OperationPlanfillintion',
+                        },
+                        {
+                          path: '/ITSM/operationplan/operationplanform',
+                          name: '作业计划',
+                          icon: 'control',
+                          component: './ITSM/OperationPlan/Work',
+                        },
+                        {
+                          path: '/ITSM/operationplan/operationplancheck',
+                          name: '作业计划审核',
+                          icon: 'control',
+                          component: './ITSM/OperationPlan/OperationplanCheck',
+                        },
+                        {
+                          path: '/ITSM/operationplan/taskexecute',
+                          name: '作业计划执行',
+                          icon: 'control',
+                          component: './ITSM/OperationPlan/components/TaskExecute',
+                        },
+                        {
+                          path: '/ITSM/operationplan/operationplansearch',
+                          name: '作业计划查询',
+                          icon: 'control',
+                          component: './ITSM/OperationPlan/TaskSearch',
+                        },
+                        {
+                          path: '/ITSM/operationplan/operationplansearchdetail',
+                          name: '作业计划详情',
+                          icon: 'control',
+                          component: './ITSM/OperationPlan/OperationplansearchDetail',
+                        },
+                        {
+                          path: '/ITSM/operationplan/statistics',
+                          name: '作业计划统计',
+                          icon: 'control',
+                          routes: [
+                            {
+                              path: '/ITSM/operationplan/statistics/status',
+                              name: '作业计划状态统计',
+                              icon: 'fork',
+                              component: './ITSM/OperationPlan/OperationplanStatistics/Status',
+                            },
+                            {
+                              path: '/ITSM/operationplan/statistics/result',
+                              name: '作业计划结果统计',
+                              icon: 'fork',
+                              component: './ITSM/OperationPlan/OperationplanStatistics/Result',
+                            },
+                            {
+                              path: '/ITSM/operationplan/statistics/execute',
+                              name: '作业计划执行情况统计',
+                              icon: 'fork',
+                              component: './ITSM/OperationPlan/OperationplanStatistics/Execute',
+                            },
+                            {
+                              path: '/ITSM/operationplan/statistics/timeout',
+                              name: '作业计划超时统计',
+                              icon: 'fork',
+                              component: './ITSM/OperationPlan/OperationplanStatistics/Timeout',
+                            },
+                          ]
+                        },
+                      ]
+                    },
+                    {
+                      path: '/ITSM/servicequalityassessment',
+                      name: '服务质量考核',
+                      icon: 'control',
+                      routes: [
+                        {
+                          path: '/ITSM/servicequalityassessment',
+                          redirect: '/ITSM/servicequalityassessment/serviceprovidermaintenance'
+                        },
+                        {
+                          path: '/ITSM/servicequalityassessment/serviceprovidermaintenance',
+                          name: '服务商维护',
+                          icon: 'control',
+                          component: './ITSM/ServiceQuality/ProviderMaintenance'
+                        },
+                      ]
+                    },
+                    {
+                      component: './500',
+                    },
+                  ],
+                },
+                // 自动化运维
+                {
+                  path: '/automation',
+                  name: '自动化运维',
+                  dynamic: true,
+                  icon: 'deployment-unit',
+                  routes: [
+                    {
+                      path: '/automation',
+                      redirect: '/automation/STT/hostlist',
+                    },
+                    // {
+                    //   path: '/automation/monitor',
+                    //   name: '作业总览',
+                    //   icon: 'dashboard',
+                    //   component: './Automation/Monitor',
+                    // },
+                    {
+                      path: '/automation/opsscene',
+                      name: '运维场景',
+                      icon: 'control',
+                      component: './Automation/Scenarios/OpsScene',
+                    },
+                    {
+                      path: '/automation/opsscene/workflow',
+                      name: '脚本编排',
+                      icon: 'control',
+                      hideInMenu: true,
+                      component: './Automation/Scenarios/WorkFlow',
+                    },
+                    {
+                      path: '/automation/opsscene/jobexecut',
+                      name: '脚本执行历史',
+                      icon: 'profile',
+                      hideInMenu: true,
+                      component: './Automation/Scenarios/JobExecut',
+                    },
+                    {
+                      path: '/automation/jobexecut/viewjob/:id',
+                      name: '脚本详情',
+                      hideInMenu: true,
+                      component: './Automation/Scenarios/ViewJob',
+                    },
+                    // {
+                    //   path: '/automation/timedjob',
+                    //   name: '定时作业',
+                    //   icon: 'history',
+                    //   dynamic: true,
+                    //   component: './Automation/TimedJob',
+                    // },
+                    {
+                      path: '/automation/scriptmanage',
+                      name: '脚本管理',
+                      icon: 'database',
+                      component: './Automation/ScriptManage',
+                    },
+                    // {
+                    //   path: '/automation/resourcemanage',
+                    //   name: '资源管理',
+                    //   icon: 'cloud-server',
+                    //   component: './Automation/ResourceManage',
+                    // },
+                    {
+                      path: '/automation/STT',
+                      name: '软件启停',
+                      icon: 'cloud-server',
+                      routes: [
+                        {
+                          path: '/automation/STT',
+                          redirect: '/automation/STT/hostlist',
+                        },
+                        {
+                          path: '/automation/STT/hostlist',
+                          name: '主机管理',
+                          icon: 'cloud-server',
+                          component: './Automation/SoftTT/HostManage',
+                        },
+                        {
+                          path: '/automation/STT/soft',
+                          name: '软件管理',
+                          icon: 'cloud-server',
+                          component: './Automation/SoftTT/SoftManage',
+                        },
+                        {
+                          path: '/automation/STT/process',
+                          name: '进程管理',
+                          icon: 'cloud-server',
+                          component: './Automation/SoftTT/ProcessManage',
+                        },
+                        {
+                          path: '/automation/STT/softexetute',
+                          name: '主机操作',
+                          icon: 'cloud-server',
+                          component: './Automation/SoftTT/SoftExetute',
+                        },
+                        {
+                          path: '/automation/STT/execlog',
+                          name: '执行日志',
+                          icon: 'cloud-server',
+                          component: './Automation/SoftTT/ExeclogView',
+                        },
+                        {
+                          path: '/automation/STT/commandconfigurate',
+                          name: '命令配置',
+                          icon: 'cloud-server',
+                          component: './Automation/SoftTT/CommandConfigurate',
                         },
                       ],
                     },
                   ],
                 },
                 {
-                  path: '/ITSM/releasemanage',
-                  name: '故障管理',
-                  icon: 'control',
-                  // component: './ITSM/Faultmanage/Registration',
-
-                  routes: [
-                    {
-                      path: '/ITSM/releasemanage',
-                      redirect: '/ITSM/releasemanage/registration',
-                    },
-                    {
-                      path: '/ITSM/releasemanage/registration',
-                      name: '发布登记',
-                      icon: 'control',
-                      component: './ITSM/Releasemanage/Registration',
-                    },
-                    {
-                      path: '/ITSM/releasemanage/to-do',
-                      name: '发布待办',
-                      icon: 'control',
-                      component: './ITSM/Releasemanage/ToDolist',
-                    },
-                    {
-                      path: '/ITSM/releasemanage/to-do/record',
-                      name: '发布工单处理',
-                      icon: 'cloud-server',
-                      component: './ITSM/Releasemanage/ToDodetails',
-                    },
-                    {
-                      path: '/ITSM/releasemanage/verificationtodo',
-                      name: '业务验证待办',
-                      icon: 'control',
-                      component: './ITSM/Releasemanage/VerificationTodo',
-                    },
-                    {
-                      path: '/ITSM/releasemanage/verificationtodo/record',
-                      name: '业务验证',
-                      icon: 'control',
-                      component: './ITSM/Releasemanage/BusinessDetail',
-                    },
-                    {
-                      path: '/ITSM/releasemanage/checktodo',
-                      name: '业务复核待办',
-                      icon: 'control',
-                      component: './ITSM/Releasemanage/Checktodo',
-                    },
-                    {
-                      path: '/ITSM/releasemanage/checktodo/record',
-                      name: '业务复核',
-                      icon: 'control',
-                      component: './ITSM/Releasemanage/BusinessDetail',
-                    },
-                    {
-                      path: '/ITSM/releasemanage/library',
-                      name: '发布库',
-                      icon: 'control',
-                      component: './ITSM/Releasemanage/BusinessDetail',
-                    },
-                  ],
-                },
-                {
-                  path: '/ITSM/onsitemanage',
-                  name: '巡检管理',
-                  icon: 'control',
-                  component: './ITSM/OnSitemanage',
-                },
-                {
-                  path: '/ITSM/operationreport',
-                  name: '运维周/月报',
-                  icon: 'control',
-                  routes: [
-                    {
-                      path: '/ITSM/operationreport',
-                      redirect: '/ITSM/operationreport/weeklyreport'
-                    },
-                    {
-                      path: '/ITSM/operationreport/weeklyreport',
-                      name: '运维周报',
-                      icon: 'cloud-server',
-                      // component:'./ITSM/Operationreport/WeeklyReport/OperationmyweeklyReport',
-                      routes: [
-                        {
-                          path: '/ITSM/operationreport/weeklyreport/myweeklyreport',
-                          name: '我的周报',
-                          icon: 'fork',
-                          component: './ITSM/Operationreport/WeeklyReport/OperationmyweeklyReport'
-                        },
-                        {
-                          path: '/ITSM/operationreport/weeklyreport/myweeklyreportsearch',
-                          name: '周报查询',
-                          icon: 'fork',
-                          component: './ITSM/Operationreport/WeeklyReport/WeeklySearch'
-                        },
-                        {
-                          path: '/ITSM/operationreport/weeklyreport/softreport',
-                          name: '软件运维周报',
-                          icon: 'fork',
-                          component: './ITSM/Operationreport/WeeklyReport/SoftReport'
-                        },
-                        {
-                          path: '/ITSM/operationreport/weeklyreport/detailSoft',
-                          name: '软件运维周报详情页',
-                          icon: 'fork',
-                          component: './ITSM/Operationreport/WeeklyReport/SoftReportdetail'
-                        },
-                        {
-                          path: '/ITSM/operationreport/weeklyreport/computerroomreport',
-                          name: '机房运维周报',
-                          icon: 'fork',
-                          component: './ITSM/Operationreport/WeeklyReport/ComputerroomReport'
-                        },
-                        {
-                          path: '/ITSM/operationreport/weeklyreport/computerroomreportdetail',
-                          name: '机房运维周报详情页',
-                          icon: 'fork',
-                          component: './ITSM/Operationreport/WeeklyReport/ComputerroomReportdetail'
-                        },
-                        {
-                          path: '/ITSM/operationreport/weeklyreport/databasereport',
-                          name: '数据库运维周报',
-                          icon: 'fork',
-                          component: './ITSM/Operationreport/WeeklyReport/DatabaseReport'
-                        },
-                        {
-                          path: '/ITSM/operationreport/weeklyreport/databasereportdetail',
-                          name: '数据库运维周报详情页',
-                          icon: 'fork',
-                          component: './ITSM/Operationreport/WeeklyReport/DatabaseReportdetail'
-                        },
-                        {
-                          path: '/ITSM/operationreport/weeklyreport/otherreport',
-                          name: '其他运维周报',
-                          icon: 'fork',
-                          component: './ITSM/Operationreport/WeeklyReport/OtherReport'
-                        },
-                        {
-                          path: '/ITSM/operationreport/weeklyreport/otherreportdetail',
-                          name: '其他运维周报详情',
-                          icon: 'fork',
-                          component: './ITSM/Operationreport/WeeklyReport/OtherReportdetail'
-                        },
-                      ]
-                    },
-                    {
-                      path: '/ITSM/operationreport/monthlyreport',
-                      name: '运维月报',
-                      icon: 'cloud-server',
-                      routes: [
-                        {
-                          path: '/ITSM/operationreport/monthlyreport',
-                          redirect: '/ITSM/operationreport/monthlyreport/mymonthlyreport'
-                        },
-                        {
-                          path: '/ITSM/operationreport/monthlyreport/mymonthlyreport',
-                          name: '我的月报',
-                          icon: 'fork',
-                          component: './ITSM/Operationreport/MonthlyReport/MymonthlyReport',
-                        },
-                        {
-                          path: '/ITSM/operationreport/monthlyreport/mymonthlysearch',
-                          name: '月报查询',
-                          icon: 'fork',
-                          component: './ITSM/Operationreport/MonthlyReport/MymonthlySearch'
-                        },
-                        {
-                          path: '/ITSM/operationreport/monthlyreport/monthsoftreport',
-                          name: '软件运维月报',
-                          icon: 'fork',
-                          component: './ITSM/Operationreport/WeeklyReport/SoftReport'
-                        },
-                        {
-                          path: '/ITSM/operationreport/monthlyreport/monthdetailSoft',
-                          name: '软件运维月报详情页',
-                          icon: 'fork',
-                          component: './ITSM/Operationreport/WeeklyReport/SoftReportdetail'
-                        },
-                        {
-                          path: '/ITSM/operationreport/monthlyreport/monthcomputerroomreport',
-                          name: '机房运维月报',
-                          icon: 'fork',
-                          component: './ITSM/Operationreport/WeeklyReport/ComputerroomReport'
-                        },
-                        {
-                          path: '/ITSM/operationreport/monthlyreport/monthcomputerroomreportdetail',
-                          name: '机房运维月报详情页',
-                          icon: 'fork',
-                          component: './ITSM/Operationreport/WeeklyReport/ComputerroomReportdetail'
-                        },
-                        {
-                          path: '/ITSM/operationreport/monthlyreport/monthdatabasereport',
-                          name: '数据库运维月报',
-                          icon: 'fork',
-                          component: './ITSM/Operationreport/WeeklyReport/DatabaseReport'
-                        },
-                        {
-                          path: '/ITSM/operationreport/monthlyreport/monthdatabasereportdetail',
-                          name: '数据库运维月报详情页',
-                          icon: 'fork',
-                          component: './ITSM/Operationreport/WeeklyReport/DatabaseReportdetail'
-                        },
-                        {
-                          path: '/ITSM/operationreport/monthlyreport/monthotherreport',
-                          name: '其他运维月报',
-                          icon: 'fork',
-                          component: './ITSM/Operationreport/WeeklyReport/OtherReport'
-                        },
-                        {
-                          path: '/ITSM/operationreport/monthlyreport/monthotherreportdetail',
-                          name: '其他运维月报详情',
-                          icon: 'fork',
-                          component: './ITSM/Operationreport/WeeklyReport/OtherReportdetail'
-                        },
-                      ]
-                    },
-
-                  ]
-                },
-                {
-                  path: '/ITSM/operationplan',
-                  name: '作业计划',
-                  icon: 'control',
-
-                  routes: [
-                    {
-                      path: '/ITSM/operationplan',
-                      redirect: '/ITSM/operationplan/myoperationplan'
-                    },
-                    {
-                      path: '/ITSM/operationplan/myoperationplan/',
-                      name: '我的作业计划',
-                      icon: 'control',
-                      component: './ITSM/OperationPlan/MyoperationPlan',
-                    },
-                    {
-                      path: '/ITSM/operationplan/operationplanfillin',
-                      name: '作业计划填报',
-                      icon: 'control',
-                      component: './ITSM/OperationPlan/OperationPlanfillintion',
-                    },
-                    {
-                      path: '/ITSM/operationplan/operationplanform',
-                      name: '作业计划',
-                      icon: 'control',
-                      component: './ITSM/OperationPlan/Work',
-                    },
-                    {
-                      path: '/ITSM/operationplan/operationplancheck',
-                      name: '作业计划审核',
-                      icon: 'control',
-                      component: './ITSM/OperationPlan/OperationplanCheck',
-                    },
-                    {
-                      path: '/ITSM/operationplan/taskexecute',
-                      name: '作业计划执行',
-                      icon: 'control',
-                      component: './ITSM/OperationPlan/components/TaskExecute',
-                    },
-                    {
-                      path: '/ITSM/operationplan/operationplansearch',
-                      name: '作业计划查询',
-                      icon: 'control',
-                      component: './ITSM/OperationPlan/TaskSearch',
-                    },
-                    {
-                      path: '/ITSM/operationplan/operationplansearchdetail',
-                      name: '作业计划详情',
-                      icon: 'control',
-                      component: './ITSM/OperationPlan/OperationplansearchDetail',
-                    },
-                    {
-                      path: '/ITSM/operationplan/statistics',
-                      name: '作业计划统计',
-                      icon: 'control',
-                      routes: [
-                        {
-                          path: '/ITSM/operationplan/statistics/status',
-                          name: '作业计划状态统计',
-                          icon: 'fork',
-                          component: './ITSM/OperationPlan/OperationplanStatistics/Status',
-                        },
-                        {
-                          path: '/ITSM/operationplan/statistics/result',
-                          name: '作业计划结果统计',
-                          icon: 'fork',
-                          component: './ITSM/OperationPlan/OperationplanStatistics/Result',
-                        },
-                        {
-                          path: '/ITSM/operationplan/statistics/execute',
-                          name: '作业计划执行情况统计',
-                          icon: 'fork',
-                          component: './ITSM/OperationPlan/OperationplanStatistics/Execute',
-                        },
-                        {
-                          path: '/ITSM/operationplan/statistics/timeout',
-                          name: '作业计划超时统计',
-                          icon: 'fork',
-                          component: './ITSM/OperationPlan/OperationplanStatistics/Timeout',
-                        },
-                      ]
-                    },
-                  ]
-                },
-                {
-                  path: '/ITSM/servicequalityassessment',
-                  name: '服务质量考核',
-                  icon: 'control',
-                  routes: [
-                    {
-                      path: '/ITSM/servicequalityassessment',
-                      redirect: '/ITSM/servicequalityassessment/serviceprovidermaintenance'
-                    },
-                    {
-                      path: '/ITSM/servicequalityassessment/serviceprovidermaintenance',
-                      name: '服务商维护',
-                      icon: 'control',
-                      component: './ITSM/ServiceQuality/ProviderMaintenance'
-                    },
-                  ]
-                },
-                {
-                  component: './500',
-                },
-              ],
-            },
-            // 自动化运维
-            {
-              path: '/automation',
-              name: '自动化运维',
-              dynamic: true,
-              icon: 'deployment-unit',
-              routes: [
-                {
-                  path: '/automation',
-                  redirect: '/automation/STT/hostlist',
-                },
-                // {
-                //   path: '/automation/monitor',
-                //   name: '作业总览',
-                //   icon: 'dashboard',
-                //   component: './Automation/Monitor',
-                // },
-                {
-                  path: '/automation/opsscene',
-                  name: '运维场景',
-                  icon: 'control',
-                  component: './Automation/Scenarios/OpsScene',
-                },
-                {
-                  path: '/automation/opsscene/workflow',
-                  name: '脚本编排',
-                  icon: 'control',
-                  hideInMenu: true,
-                  component: './Automation/Scenarios/WorkFlow',
-                },
-                {
-                  path: '/automation/opsscene/jobexecut',
-                  name: '脚本执行历史',
-                  icon: 'profile',
-                  hideInMenu: true,
-                  component: './Automation/Scenarios/JobExecut',
-                },
-                {
-                  path: '/automation/jobexecut/viewjob/:id',
-                  name: '脚本详情',
-                  hideInMenu: true,
-                  component: './Automation/Scenarios/ViewJob',
-                },
-                // {
-                //   path: '/automation/timedjob',
-                //   name: '定时作业',
-                //   icon: 'history',
-                //   dynamic: true,
-                //   component: './Automation/TimedJob',
-                // },
-                {
-                  path: '/automation/scriptmanage',
-                  name: '脚本管理',
-                  icon: 'database',
-                  component: './Automation/ScriptManage',
-                },
-                // {
-                //   path: '/automation/resourcemanage',
-                //   name: '资源管理',
-                //   icon: 'cloud-server',
-                //   component: './Automation/ResourceManage',
-                // },
-                {
-                  path: '/automation/STT',
-                  name: '软件启停',
-                  icon: 'cloud-server',
-                  routes: [
-                    {
-                      path: '/automation/STT',
-                      redirect: '/automation/STT/hostlist',
-                    },
-                    {
-                      path: '/automation/STT/hostlist',
-                      name: '主机管理',
-                      icon: 'cloud-server',
-                      component: './Automation/SoftTT/HostManage',
-                    },
-                    {
-                      path: '/automation/STT/soft',
-                      name: '软件管理',
-                      icon: 'cloud-server',
-                      component: './Automation/SoftTT/SoftManage',
-                    },
-                    {
-                      path: '/automation/STT/process',
-                      name: '进程管理',
-                      icon: 'cloud-server',
-                      component: './Automation/SoftTT/ProcessManage',
-                    },
-                    {
-                      path: '/automation/STT/softexetute',
-                      name: '主机操作',
-                      icon: 'cloud-server',
-                      component: './Automation/SoftTT/SoftExetute',
-                    },
-                    {
-                      path: '/automation/STT/execlog',
-                      name: '执行日志',
-                      icon: 'cloud-server',
-                      component: './Automation/SoftTT/ExeclogView',
-                    },
-                    {
-                      path: '/automation/STT/commandconfigurate',
-                      name: '命令配置',
-                      icon: 'cloud-server',
-                      component: './Automation/SoftTT/CommandConfigurate',
-                    },
-                  ],
-                },
-              ],
-            },
-            {
-              path: '/monitormanage',
-              name: '监测管理',
-              icon: 'interaction',
-              routes: [
-                {
                   path: '/monitormanage',
-                  redirect: '/monitormanage/home',
-                },
-                {
-                  path: '/monitormanage/home',
-                  name: '监控台',
-                  icon: 'cloud-server',
-                  component: './Monitormanage/MonitorStation',
-                },
-                {
-                  path: '/monitormanage/measurmonitor',
-                  name: '计量业务监控',
-                  icon: 'cloud-server',
-                  routes: [
-                    {
-                      path: '/monitormanage/measurmonitor',
-                      redirect: '/monitormanage/measurmonitor/collection',
-                    },
-                    {
-                      path: '/monitormanage/measurmonitor/collection',
-                      name: '采集指标情况',
-                      icon: 'cloud-server',
-                      component: './Monitormanage/MeasurMonitor/Collection',
-                    },
-                    {
-                      path: '/monitormanage/measurmonitor/measurface',
-                      name: '接口数据核查情况',
-                      icon: 'cloud-server',
-                      component: './Monitormanage/MeasurMonitor/MeasurFace',
-                    },
-                    {
-                      path: '/monitormanage/measurmonitor/fafka',
-                      name: 'KAFKA消费',
-                      icon: 'cloud-server',
-                      component: './Monitormanage/MeasurMonitor/Fafak',
-                    },
-                    {
-                      path: '/monitormanage/measurmonitor/fafkamatinal',
-                      name: 'KAFKA消费（凌晨）',
-                      icon: 'cloud-server',
-                      component: './Monitormanage/MeasurMonitor/FafakMatinal',
-                    },
-                    {
-                      path: '/monitormanage/measurmonitor/sysrunning',
-                      name: '主站系统运行',
-                      icon: 'cloud-server',
-                      component: './Monitormanage/MeasurMonitor/SysRunning',
-                    },
-                    {
-                      path: '/monitormanage/measurmonitor/databaseterminal',
-                      name: '终端在线和入库',
-                      icon: 'cloud-server',
-                      component: './Monitormanage/MeasurMonitor/DatabaseTerminal',
-                    },
-                    {
-                      path: '/monitormanage/measurmonitor/monitorconfiguration',
-                      name: '计量业务监测配置',
-                      icon: 'cloud-server',
-                      component: './Monitormanage/MeasurMonitor/MonitorConfiguration',
-                    },
-                    {
-                      path: '/monitormanage/measurmonitor/monitoraddedit',
-                      name: '增加计量业务监测配置',
-                      icon: 'cloud-server',
-                      component: './Monitormanage/MeasurMonitor/MonitorAddedit',
-                    },
-                    {
-                      path: '/monitormanage/measurmonitor/monitoraddedit/:id',
-                      name: '增加计量业务监测配置',
-                      icon: 'cloud-server',
-                      component: './Monitormanage/MeasurMonitor/MonitorAddedit',
-                    },
-                    {
-                      component: './404',
-                    },
-                  ],
-                },
-                {
-                  path: '/monitormanage/basicmonitor',
-                  name: '基础平台监测',
-                  icon: 'cloud-server',
-                  routes: [
-                    {
-                      path: '/monitormanage/basicmonitor/host',
-                      name: '主机监测',
-                      component: './Monitormanage/BasicMonitor/Host',
-                    },
-                    {
-                      path: '/monitormanage/basicmonitor/database',
-                      name: '数据库监测',
-                      component: './Monitormanage/BasicMonitor/Database',
-                    },
-                    {
-                      path: '/monitormanage/basicmonitor/:type/detail/:id',
-                      name: '监测详情',
-                      hideInMenu: true,
-                      component: './Monitormanage/BasicMonitor/Detail',
-                    },
-                  ],
-                },
-                {
-                  path: '/monitormanage/indicatorchain',
-                  name: '指标环比数据',
-                  icon: 'cloud-server',
-                  component: './Monitormanage/IndicatorChain',
-                },
-              ],
-            },
-            {
-              path: '/alarmmanage',
-              name: '告警管理',
-              icon: 'interaction',
-              routes: [
-                {
-                  path: '/alarmmanage',
-                  redirect: '/alarmmanage/measuralarm',
-                },
-                {
-                  path: '/alarmmanage/measuralarm',
-                  name: '计量业务告警',
+                  name: '监测管理',
                   icon: 'interaction',
                   routes: [
                     {
-                      path: '/alarmmanage/measuralarm',
-                      redirect: '/alarmmanage/measuralarm/alarmoverview',
+                      path: '/monitormanage',
+                      redirect: '/monitormanage/home',
                     },
                     {
-                      path: '/alarmmanage/measuralarm/alarmoverview',
-                      name: '告警概览',
+                      path: '/monitormanage/home',
+                      name: '监控台',
                       icon: 'cloud-server',
-                      component: './Alarmmanage/MeasurAlarm/AlarmOverview',
+                      component: './Monitormanage/MonitorStation',
+                    },
+                    {
+                      path: '/monitormanage/measurmonitor',
+                      name: '计量业务监控',
+                      icon: 'cloud-server',
                       routes: [
+                        {
+                          path: '/monitormanage/measurmonitor',
+                          redirect: '/monitormanage/measurmonitor/collection',
+                        },
+                        {
+                          path: '/monitormanage/measurmonitor/collection',
+                          name: '采集指标情况',
+                          icon: 'cloud-server',
+                          component: './Monitormanage/MeasurMonitor/Collection',
+                        },
+                        {
+                          path: '/monitormanage/measurmonitor/measurface',
+                          name: '接口数据核查情况',
+                          icon: 'cloud-server',
+                          component: './Monitormanage/MeasurMonitor/MeasurFace',
+                        },
+                        {
+                          path: '/monitormanage/measurmonitor/fafka',
+                          name: 'KAFKA消费',
+                          icon: 'cloud-server',
+                          component: './Monitormanage/MeasurMonitor/Fafak',
+                        },
+                        {
+                          path: '/monitormanage/measurmonitor/fafkamatinal',
+                          name: 'KAFKA消费（凌晨）',
+                          icon: 'cloud-server',
+                          component: './Monitormanage/MeasurMonitor/FafakMatinal',
+                        },
+                        {
+                          path: '/monitormanage/measurmonitor/sysrunning',
+                          name: '主站系统运行',
+                          icon: 'cloud-server',
+                          component: './Monitormanage/MeasurMonitor/SysRunning',
+                        },
+                        {
+                          path: '/monitormanage/measurmonitor/databaseterminal',
+                          name: '终端在线和入库',
+                          icon: 'cloud-server',
+                          component: './Monitormanage/MeasurMonitor/DatabaseTerminal',
+                        },
+                        {
+                          path: '/monitormanage/measurmonitor/monitorconfiguration',
+                          name: '计量业务监测配置',
+                          icon: 'cloud-server',
+                          component: './Monitormanage/MeasurMonitor/MonitorConfiguration',
+                        },
+                        {
+                          path: '/monitormanage/measurmonitor/monitoraddedit',
+                          name: '增加计量业务监测配置',
+                          icon: 'cloud-server',
+                          component: './Monitormanage/MeasurMonitor/MonitorAddedit',
+                        },
+                        {
+                          path: '/monitormanage/measurmonitor/monitoraddedit/:id',
+                          name: '增加计量业务监测配置',
+                          icon: 'cloud-server',
+                          component: './Monitormanage/MeasurMonitor/MonitorAddedit',
+                        },
+                        {
+                          component: './404',
+                        },
+                      ],
+                    },
+                    {
+                      path: '/monitormanage/basicmonitor',
+                      name: '基础平台监测',
+                      icon: 'cloud-server',
+                      routes: [
+                        {
+                          path: '/monitormanage/basicmonitor/host',
+                          name: '主机监测',
+                          component: './Monitormanage/BasicMonitor/Host',
+                        },
+                        {
+                          path: '/monitormanage/basicmonitor/database',
+                          name: '数据库监测',
+                          component: './Monitormanage/BasicMonitor/Database',
+                        },
+                        {
+                          path: '/monitormanage/basicmonitor/:type/detail/:id',
+                          name: '监测详情',
+                          hideInMenu: true,
+                          component: './Monitormanage/BasicMonitor/Detail',
+                        },
+                      ],
+                    },
+                    {
+                      path: '/monitormanage/indicatorchain',
+                      name: '指标环比数据',
+                      icon: 'cloud-server',
+                      component: './Monitormanage/IndicatorChain',
+                    },
+                  ],
+                },
+                {
+                  path: '/alarmmanage',
+                  name: '告警管理',
+                  icon: 'interaction',
+                  routes: [
+                    {
+                      path: '/alarmmanage',
+                      redirect: '/alarmmanage/measuralarm',
+                    },
+                    {
+                      path: '/alarmmanage/measuralarm',
+                      name: '计量业务告警',
+                      icon: 'interaction',
+                      routes: [
+                        {
+                          path: '/alarmmanage/measuralarm',
+                          redirect: '/alarmmanage/measuralarm/alarmoverview',
+                        },
                         {
                           path: '/alarmmanage/measuralarm/alarmoverview',
-                          redirect: '/alarmmanage/measuralarm/alarmoverview/overview',
-                        },
-                        {
-                          path: '/alarmmanage/measuralarm/alarmoverview/overview',
                           name: '告警概览',
-                          component: './Alarmmanage/MeasurAlarm/AlarmOverview/OverVies',
+                          icon: 'cloud-server',
+                          component: './Alarmmanage/MeasurAlarm/AlarmOverview',
+                          routes: [
+                            {
+                              path: '/alarmmanage/measuralarm/alarmoverview',
+                              redirect: '/alarmmanage/measuralarm/alarmoverview/overview',
+                            },
+                            {
+                              path: '/alarmmanage/measuralarm/alarmoverview/overview',
+                              name: '告警概览',
+                              component: './Alarmmanage/MeasurAlarm/AlarmOverview/OverVies',
+                            },
+                            {
+                              path: '/alarmmanage/measuralarm/alarmoverview/overview/workorder',
+                              name: '派发工单',
+                              component: './Alarmmanage/MeasurAlarm/AlarmOverview/WorkOrder',
+                            },
+                            {
+                              path: '/alarmmanage/measuralarm/alarmoverview/quotas',
+                              name: '业务指标告警',
+                              component: './Alarmmanage/MeasurAlarm/AlarmOverview/OverVies',
+                            },
+                            {
+                              path: '/alarmmanage/measuralarm/alarmoverview/databaseterminal',
+                              name: '终端在线和入库告警',
+                              component: './Alarmmanage/MeasurAlarm/AlarmOverview/OverVies',
+                            },
+                            {
+                              path: '/alarmmanage/measuralarm/alarmoverview/connector',
+                              name: '接口数据核查告警',
+                              component: './Alarmmanage/MeasurAlarm/AlarmOverview/OverVies',
+                            },
+                            {
+                              path: '/alarmmanage/measuralarm/alarmoverview/KAFKA',
+                              name: 'KAFKA消费告警',
+                              component: './Alarmmanage/MeasurAlarm/AlarmOverview/OverVies',
+                            },
+                            {
+                              path: '/alarmmanage/measuralarm/alarmoverview/KAFKA0',
+                              name: 'KAFKA消费（凌晨）告警',
+                              component: './Alarmmanage/MeasurAlarm/AlarmOverview/OverVies',
+                            },
+                            {
+                              path: '/alarmmanage/measuralarm/alarmoverview/sysrun',
+                              name: '主站系统运行告警',
+                              component: './Alarmmanage/MeasurAlarm/AlarmOverview/OverVies',
+                            },
+                          ],
                         },
                         {
-                          path: '/alarmmanage/measuralarm/alarmoverview/overview/workorder',
-                          name: '派发工单',
-                          component: './Alarmmanage/MeasurAlarm/AlarmOverview/WorkOrder',
+                          path: '/alarmmanage/measuralarm/details',
+                          name: '告警明细信息',
+                          icon: 'cloud-server',
+                          component: './Alarmmanage/MeasurAlarm/Details',
                         },
                         {
-                          path: '/alarmmanage/measuralarm/alarmoverview/quotas',
-                          name: '业务指标告警',
-                          component: './Alarmmanage/MeasurAlarm/AlarmOverview/OverVies',
+                          path: '/alarmmanage/measuralarm/details/detailview/:detailsid',
+                          name: '告警详细信息',
+                          icon: 'cloud-server',
+                          hideInMenu: true,
+                          component: './Alarmmanage/MeasurAlarm/DetailView',
                         },
                         {
-                          path: '/alarmmanage/measuralarm/alarmoverview/databaseterminal',
-                          name: '终端在线和入库告警',
-                          component: './Alarmmanage/MeasurAlarm/AlarmOverview/OverVies',
+                          path: '/alarmmanage/measuralarm/syssetting',
+                          icon: 'cloud-server',
+                          name: '系统警告设定',
+                          component: './Alarmmanage/MeasurAlarm/SysSetting/index',
                         },
-                        {
-                          path: '/alarmmanage/measuralarm/alarmoverview/connector',
-                          name: '接口数据核查告警',
-                          component: './Alarmmanage/MeasurAlarm/AlarmOverview/OverVies',
-                        },
-                        {
-                          path: '/alarmmanage/measuralarm/alarmoverview/KAFKA',
-                          name: 'KAFKA消费告警',
-                          component: './Alarmmanage/MeasurAlarm/AlarmOverview/OverVies',
-                        },
-                        {
-                          path: '/alarmmanage/measuralarm/alarmoverview/KAFKA0',
-                          name: 'KAFKA消费（凌晨）告警',
-                          component: './Alarmmanage/MeasurAlarm/AlarmOverview/OverVies',
-                        },
-                        {
-                          path: '/alarmmanage/measuralarm/alarmoverview/sysrun',
-                          name: '主站系统运行告警',
-                          component: './Alarmmanage/MeasurAlarm/AlarmOverview/OverVies',
-                        },
-                      ],
-                    },
-                    {
-                      path: '/alarmmanage/measuralarm/details',
-                      name: '告警明细信息',
-                      icon: 'cloud-server',
-                      component: './Alarmmanage/MeasurAlarm/Details',
-                    },
-                    {
-                      path: '/alarmmanage/measuralarm/details/detailview/:detailsid',
-                      name: '告警详细信息',
-                      icon: 'cloud-server',
-                      hideInMenu: true,
-                      component: './Alarmmanage/MeasurAlarm/DetailView',
-                    },
-                    {
-                      path: '/alarmmanage/measuralarm/syssetting',
-                      icon: 'cloud-server',
-                      name: '系统警告设定',
-                      component: './Alarmmanage/MeasurAlarm/SysSetting/index',
-                    },
-                    {
-                      path: '/alarmmanage/measuralarm/noticesetting',
-                      icon: 'cloud-server',
-                      name: '告警通知设置',
-                      component: './Alarmmanage/MeasurAlarm/NoticeSetting',
-                      routes: [
                         {
                           path: '/alarmmanage/measuralarm/noticesetting',
-                          redirect: '/alarmmanage/measuralarm/noticesetting/notifygroup',
+                          icon: 'cloud-server',
+                          name: '告警通知设置',
+                          component: './Alarmmanage/MeasurAlarm/NoticeSetting',
+                          routes: [
+                            {
+                              path: '/alarmmanage/measuralarm/noticesetting',
+                              redirect: '/alarmmanage/measuralarm/noticesetting/notifygroup',
+                            },
+                            {
+                              path: '/alarmmanage/measuralarm/noticesetting/notifygroup',
+                              name: '告警通知组设置',
+                              component: './Alarmmanage/MeasurAlarm/NotifyGroup',
+                            },
+                            {
+                              path: '/alarmmanage/measuralarm/noticesetting/notifyperson',
+                              name: '告警联系人设置',
+                              component: './Alarmmanage/MeasurAlarm/NotifyPerson',
+                            },
+                          ],
+                        },
+                      ],
+                    },
+                    {
+                      path: '/alarmmanage/basicalarm',
+                      icon: 'cloud-server',
+                      name: '基础平台告警',
+                      routes: [
+                        {
+                          path: '/alarmmanage/basicalarm',
+                          redirect: '/alarmmanage/basicalarm/currentalarm',
                         },
                         {
-                          path: '/alarmmanage/measuralarm/noticesetting/notifygroup',
-                          name: '告警通知组设置',
-                          component: './Alarmmanage/MeasurAlarm/NotifyGroup',
+                          path: '/alarmmanage/basicalarm/currentalarm',
+                          name: '当前告警',
+                          component: './Alarmmanage/BasicAlarm/CurrentAlarm',
                         },
                         {
-                          path: '/alarmmanage/measuralarm/noticesetting/notifyperson',
-                          name: '告警联系人设置',
-                          component: './Alarmmanage/MeasurAlarm/NotifyPerson',
+                          path: '/alarmmanage/basicalarm/historicalalarm',
+                          name: '历史告警',
+                          component: './Alarmmanage/BasicAlarm/HistoricalAlarm',
+                        },
+                        {
+                          path: '/alarmmanage/basicalarm/alarmstrategy',
+                          name: '告警策略',
+                          component: './Alarmmanage/BasicAlarm/AlarmStrategy',
+                        },
+                        {
+                          path: '/alarmmanage/basicalarm/maintenanceplan',
+                          name: '维护计划',
+                          component: './Alarmmanage/BasicAlarm/MaintenancePlan',
+                        },
+                        {
+                          path: '/alarmmanage/basicalarm/alarmstrategy/strategydetail/:detailsid',
+                          name: '告警策略详细信息',
+                          icon: 'cloud-server',
+                          hideInMenu: true,
+                          component: './Alarmmanage/BasicAlarm/StrategyDetail',
+                        },
+                        {
+                          path: '/alarmmanage/basicalarm/alarmstrategy/strategyadd',
+                          name: '新增策略',
+                          hideInMenu: true,
+                          component: './Alarmmanage/BasicAlarm/StrategyAddEdit',
                         },
                       ],
                     },
                   ],
                 },
                 {
-                  path: '/alarmmanage/basicalarm',
-                  icon: 'cloud-server',
-                  name: '基础平台告警',
-                  routes: [
-                    {
-                      path: '/alarmmanage/basicalarm',
-                      redirect: '/alarmmanage/basicalarm/currentalarm',
-                    },
-                    {
-                      path: '/alarmmanage/basicalarm/currentalarm',
-                      name: '当前告警',
-                      component: './Alarmmanage/BasicAlarm/CurrentAlarm',
-                    },
-                    {
-                      path: '/alarmmanage/basicalarm/historicalalarm',
-                      name: '历史告警',
-                      component: './Alarmmanage/BasicAlarm/HistoricalAlarm',
-                    },
-                    {
-                      path: '/alarmmanage/basicalarm/alarmstrategy',
-                      name: '告警策略',
-                      component: './Alarmmanage/BasicAlarm/AlarmStrategy',
-                    },
-                    {
-                      path: '/alarmmanage/basicalarm/maintenanceplan',
-                      name: '维护计划',
-                      component: './Alarmmanage/BasicAlarm/MaintenancePlan',
-                    },
-                    {
-                      path: '/alarmmanage/basicalarm/alarmstrategy/strategydetail/:detailsid',
-                      name: '告警策略详细信息',
-                      icon: 'cloud-server',
-                      hideInMenu: true,
-                      component: './Alarmmanage/BasicAlarm/StrategyDetail',
-                    },
-                    {
-                      path: '/alarmmanage/basicalarm/alarmstrategy/strategyadd',
-                      name: '新增策略',
-                      hideInMenu: true,
-                      component: './Alarmmanage/BasicAlarm/StrategyAddEdit',
-                    },
-                  ],
-                },
-              ],
-            },
-            {
-              path: '/sysmanage',
-              name: '系统管理',
-              icon: 'team',
-              routes: [
-                {
                   path: '/sysmanage',
-                  redirect: '/sysmanage/usersmanage',
-                },
-                {
-                  path: '/sysmanage/usersmanage',
+                  name: '系统管理',
                   icon: 'team',
-                  name: '用户管理',
-                  component: './SysManage/SysuserMangage',
-                },
-                {
-                  path: '/sysmanage/rolemanage',
-                  icon: 'solution',
-                  name: '角色管理',
-                  component: './SysManage/RoleManage',
-                },
-                {
-                  path: '/sysmanage/menumanage',
-                  icon: 'ordered-list',
-                  name: '菜单管理',
-                  component: './SysManage/MenuManage',
-                },
-                {
-                  path: '/sysmanage/deptmanage',
-                  icon: 'cluster',
-                  name: '组织管理',
-                  component: './SysManage/DeptManage',
-                },
-                {
-                  path: '/sysmanage/dropdownvalueset',
-                  icon: 'cluster',
-                  name: '数据字典',
-                  component: './SysManage/DropdownValueset',
-                },
-                {
-                  // 采控管理
-                  path: '/sysmanage/agent',
-                  name: '采控管理',
-                  icon: 'smile',
                   routes: [
                     {
-                      path: '/sysmanage/agent/monitorConfig',
-                      name: '监控配置',
+                      path: '/sysmanage',
+                      redirect: '/sysmanage/usersmanage',
+                    },
+                    {
+                      path: '/sysmanage/usersmanage',
+                      icon: 'team',
+                      name: '用户管理',
+                      component: './SysManage/SysuserMangage',
+                    },
+                    {
+                      path: '/sysmanage/rolemanage',
+                      icon: 'solution',
+                      name: '角色管理',
+                      component: './SysManage/RoleManage',
+                    },
+                    {
+                      path: '/sysmanage/menumanage',
+                      icon: 'ordered-list',
+                      name: '菜单管理',
+                      component: './SysManage/MenuManage',
+                    },
+                    {
+                      path: '/sysmanage/deptmanage',
+                      icon: 'cluster',
+                      name: '组织管理',
+                      component: './SysManage/DeptManage',
+                    },
+                    {
+                      path: '/sysmanage/dropdownvalueset',
+                      icon: 'cluster',
+                      name: '数据字典',
+                      component: './SysManage/DropdownValueset',
+                    },
+                    {
+                      // 采控管理
+                      path: '/sysmanage/agent',
+                      name: '采控管理',
                       icon: 'smile',
-                      component: './collection/monitorConfig',
+                      routes: [
+                        {
+                          path: '/sysmanage/agent/monitorConfig',
+                          name: '监控配置',
+                          icon: 'smile',
+                          component: './collection/monitorConfig',
+                        },
+                      ],
+                    },
+                    {
+                      path: '/sysmanage/processmanagement',
+                      name: '流程管理',
+                      icon: 'smile',
+                      routes: [
+                        // {
+                        //   path:'/sysmanage/processmanagement',
+                        //   redirect:'/sysmanage/processmanagement/processmodel'
+                        // },
+                        {
+                          path: '/sysmanage/processmanagement/processmodel',
+                          name: '流程模型',
+                          icon: 'smile',
+                          component: './SysManage/ProcessManagement/ProcessModel',
+                        },
+                        {
+                          path: '/sysmanage/processmanagement/modeledit/:id',
+                          name: '编辑模型',
+                          icon: 'smile',
+                          component: './SysManage/ProcessManagement/ModelEdit',
+                        },
+                        {
+                          path: '/sysmanage/processmanagement/processdefinition',
+                          name: '流程定义',
+                          icon: 'smile',
+                          component: './SysManage/ProcessManagement/ProcessDefinition',
+                        },
+                      ],
+                    },
+                    {
+                      path: '/sysmanage/expressionsmanage',
+                      name: '常用语管理',
+                      icon: 'smile',
+                      component: './SysManage/Expressionsmanage',
+                    },
+                    {
+                      path: '/sysmanage/disabledusermanage',
+                      name: '报障用户管理',
+                      icon: 'smile',
+                      component: './SysManage/DisableduserManage',
+                    },
+                    {
+                      path: '/sysmanage/timerule',
+                      name: '短信维护',
+                      icon: 'smile',
+                      routes: [
+                        {
+                          path: '/sysmanage/timerule/rules',
+                          name: 'ITSM超时规则',
+                          icon: 'smile',
+                          component: './SysManage/TimeRule',
+                        },
+                        {
+                          path: '/sysmanage/timerule/orderday',
+                          name: '工作日程',
+                          icon: 'smile',
+                          component: './SysManage/TimeRule/OrderDay',
+                        },
+                      ],
                     },
                   ],
                 },
                 {
-                  path: '/sysmanage/processmanagement',
-                  name: '流程管理',
-                  icon: 'smile',
-                  routes: [
-                    // {
-                    //   path:'/sysmanage/processmanagement',
-                    //   redirect:'/sysmanage/processmanagement/processmodel'
-                    // },
-                    {
-                      path: '/sysmanage/processmanagement/processmodel',
-                      name: '流程模型',
-                      icon: 'smile',
-                      component: './SysManage/ProcessManagement/ProcessModel',
-                    },
-                    {
-                      path: '/sysmanage/processmanagement/modeledit/:id',
-                      name: '编辑模型',
-                      icon: 'smile',
-                      component: './SysManage/ProcessManagement/ModelEdit',
-                    },
-                    {
-                      path: '/sysmanage/processmanagement/processdefinition',
-                      name: '流程定义',
-                      icon: 'smile',
-                      component: './SysManage/ProcessManagement/ProcessDefinition',
-                    },
-                  ],
+                  component: './404',
                 },
                 {
-                  path: '/sysmanage/expressionsmanage',
-                  name: '常用语管理',
-                  icon: 'smile',
-                  component: './SysManage/Expressionsmanage',
-                },
-                {
-                  path: '/sysmanage/disabledusermanage',
-                  name: '报障用户管理',
-                  icon: 'smile',
-                  component: './SysManage/DisableduserManage',
-                },
-                {
-                  path: '/sysmanage/timerule',
-                  name: '短信维护',
-                  icon: 'smile',
-                  routes: [
-                    {
-                      path: '/sysmanage/timerule/rules',
-                      name: 'ITSM超时规则',
-                      icon: 'smile',
-                      component: './SysManage/TimeRule',
-                    },
-                    {
-                      path: '/sysmanage/timerule/orderday',
-                      name: '工作日程',
-                      icon: 'smile',
-                      component: './SysManage/TimeRule/OrderDay',
-                    },
-                  ],
+                  component: './500',
                 },
               ],
             },
@@ -1306,14 +1318,8 @@ export default {
               component: './500',
             },
           ],
-        },
-        {
-          component: './404',
-        },
-        {
-          component: './500',
-        },
-      ],
+        }
+      ]
     },
     {
       component: './404',

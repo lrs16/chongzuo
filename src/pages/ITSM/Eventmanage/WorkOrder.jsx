@@ -221,7 +221,8 @@ function WorkOrder2(props) {
     } else {
       RegistratRef.current.Forms(err => {
         needUser(err);
-      })
+      });
+      console.clear()
     }
   };
 
@@ -285,6 +286,7 @@ function WorkOrder2(props) {
           HandleRef.current.Forms((err) => {
             noUser(err);
           })
+          console.clear();
         }
       } else {
         formerr();
@@ -341,6 +343,7 @@ function WorkOrder2(props) {
         ReturnVisitRef.current.Forms((err) => {
           noUser(err);
         })
+        console.clear()
         break;
       default:
         break;

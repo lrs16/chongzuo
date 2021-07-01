@@ -345,7 +345,7 @@ function ToDolist(props) {
                 <Form.Item label="创建时间">
                   {getFieldDecorator('creationTime', {
                     initialValue: '',
-                  })(<DatePicker allowClear />)}
+                  })(<DatePicker allowClear style={{ width: '100%' }} />)}
                 </Form.Item>
               </Col>
             </span>

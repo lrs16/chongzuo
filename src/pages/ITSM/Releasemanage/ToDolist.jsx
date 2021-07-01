@@ -86,7 +86,7 @@ const columns = [
 function ToDolist(props) {
   const pagetitle = props.route.name;
   const {
-    form: { getFieldDecorator, resetFields, validateFields },
+    form: { getFieldDecorator, resetFields, validateFields, getFieldsValue },
     loading,
     list,
     dispatch,
@@ -98,17 +98,14 @@ function ToDolist(props) {
   const [selectedRecords, setSelectedRecords] = useState([]);
 
   useEffect(() => {
-    validateFields((err, values) => {
-      if (!err) {
-        dispatch({
-          type: 'releasetodo/fetchlist',
-          payload: {
-            ...values,
-            pageIndex: paginations.current - 1,
-            pageSize: paginations.pageSize,
-          },
-        });
-      }
+    const values = getFieldsValue();
+    dispatch({
+      type: 'releasetodo/fetchlist',
+      payload: {
+        ...values,
+        pageIndex: paginations.current - 1,
+        pageSize: paginations.pageSize,
+      },
     });
     return () => {
       setSelectData([]);
@@ -134,34 +131,28 @@ function ToDolist(props) {
 
   //  下载
   const download = () => {
-    validateFields((err, values) => {
-      if (!err) {
-        dispatch({
-          type: 'releasetodo/eventdownload',
-          payload: {
-            values,
-            ids: selectedRowKeys.toString(),
-          },
-        }).then(res => {
-          const filename = `事件待办_${moment().format('YYYY-MM-DD HH:mm')}.xls`;
-          const blob = new Blob([res]);
-          const url = window.URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = filename;
-          a.click();
-          window.URL.revokeObjectURL(url);
-        });
-      }
+    const values = getFieldsValue();
+    dispatch({
+      type: 'releasetodo/eventdownload',
+      payload: {
+        values,
+        ids: selectedRowKeys.toString(),
+      },
+    }).then(res => {
+      const filename = `事件待办_${moment().format('YYYY-MM-DD HH:mm')}.xls`;
+      const blob = new Blob([res]);
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      a.click();
+      window.URL.revokeObjectURL(url);
     });
   };
 
   const onShowSizeChange = (page, size) => {
-    validateFields((err, values) => {
-      if (!err) {
-        searchdata(values, page, size);
-      }
-    });
+    const values = getFieldsValue();
+    searchdata(values, page, size);
     setPageinations({
       ...paginations,
       pageSize: size,
@@ -169,11 +160,8 @@ function ToDolist(props) {
   };
 
   const changePage = page => {
-    validateFields((err, values) => {
-      if (!err) {
-        searchdata(values, page, paginations.pageSize);
-      }
-    });
+    const values = getFieldsValue();
+    searchdata(values, page, paginations.pageSize);
     setPageinations({
       ...paginations,
       current: page,
@@ -205,12 +193,8 @@ function ToDolist(props) {
       ...paginations,
       current: 1,
     });
-    validateFields((err, values) => {
-      if (err) {
-        return;
-      }
-      searchdata(values, paginations.current, paginations.pageSize);
-    });
+    const values = getFieldsValue();
+    searchdata(values, paginations.current, paginations.pageSize);
   };
 
   const handleReset = () => {
@@ -244,7 +228,8 @@ function ToDolist(props) {
       }}
     >
       {expand ? (<>关 闭 <UpOutlined /></>) : (<>展 开 <DownOutlined /></>)}
-    </Button></>)
+    </Button></>
+  )
 
   return (
     <PageHeaderWrapper title={pagetitle}>
