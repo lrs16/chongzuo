@@ -343,7 +343,7 @@ const BasicLayout = props => {
   };
 
   const handletopLink = (menuItemProps) => {
-    const target = props.route.routes.filter(item => item.path === menuItemProps.itemPath)[0];   // comfig配置的路由
+    const target = props.route.routes[0].routes.filter(item => item.path === menuItemProps.itemPath)[0];   // comfig配置的路由
     const targetpath = target.routes[0].redirect;                                                // 获取此路由下redirect的路由
     const targetmenu = menulist.filter(item => item.menuUrl === targetpath)[0];                  // 系统管理菜单列表获取redirect路由信息
     const { id, menuUrl } = targetmenu;
@@ -430,7 +430,7 @@ const BasicLayout = props => {
   }, [activeKey]);
 
   // 获取后端路由后为菜单添加用户权限,如果是"/"从config中获取rediret路由再获取该路由权限
-  const authorized = getAuthorityFromRouter(menulist, props.route.routes, location.pathname);
+  const authorized = getAuthorityFromRouter(menulist, props.route.routes[0].routes, location.pathname);
 
   // 根据当前url变化获取左侧菜单数据
   const pathArr = location.pathname.split('/');

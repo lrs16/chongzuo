@@ -80,8 +80,9 @@ class RoleTransfer extends Component {
           onChange={this.handleChange}
           render={this.renderItem}
           listStyle={{
-            width: 300,
-            height: 300,
+            height: 'calc(100vh - 150px)',
+            width: 315,
+            overflow: 'auto',
           }}
         />
       </Spin>
