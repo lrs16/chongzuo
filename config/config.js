@@ -536,7 +536,7 @@ export default {
                           path: '/ITSM/releasemanage/library',
                           name: '发布库',
                           icon: 'control',
-                          component: './ITSM/Releasemanage/BusinessDetail',
+                          component: './ITSM/Releasemanage/LibraryList',
                         },
                       ],
                     },

@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
 import router from 'umi/router';
-import Link from 'umi/link';
-import { Radio, Row, Col, Card, Tabs, Table, Form, Input, Button, DatePicker } from 'antd';
+import { Radio, Row, Col, Card, Tabs, Table, Form, Input, Button, DatePicker, Spin } from 'antd';
 import { ChartCard } from '@/components/Charts';
 import Donut from '@/components/CustomizeCharts/Donut';
 import styles from './index.less';
@@ -430,7 +429,7 @@ function ITHomePage(props) {
           type: 'ithomepage/getproblemtabs',
           payload: {
             pageNum: 1,
-            pageSize: 20,
+            pageSize: 10,
           },
         }).then(res => {
           if (res.code === 200) {
@@ -490,9 +489,10 @@ function ITHomePage(props) {
     handleReset();
     validateFields((err, values) => {
       if (!err) {
-        searchdata(values, '1', '10', key, '');
+        searchdata(values, 1, 10, key, '');
       }
     });
+    setTabsKeys([]);
     setOrderType(key);
     switch (key) {
       case 'event':
@@ -510,7 +510,8 @@ function ITHomePage(props) {
         break;
       default:
         break;
-    }
+    };
+    setActiveKey('全部待办')
   };
 
   const changePage = page => {
@@ -568,7 +569,7 @@ function ITHomePage(props) {
           payload: {
             //  eventNo: values.No,
             tab: 1,
-            pageIndex: paginations.current - 1,
+            pageIndex: 0,
             pageSize: paginations.pageSize,
           },
         });
@@ -620,25 +621,10 @@ function ITHomePage(props) {
     resetFields();
     validateFields((err, values) => {
       if (!err) {
-        searchdata(values, '1', '10', ordertype, key);
+        searchdata(values, 1, 10, ordertype, key);
       }
     });
   }
-
-  // 打开多页签，表单信息传回tab
-  useEffect(() => {
-    if (tabnew) {
-      validateFields((err, values) => {
-        dispatch({
-          type: 'viewcache/gettabstate',
-          payload: {
-            ...values,
-          },
-        });
-      });
-      resetFields();
-    }
-  }, [tabnew]);
 
   return (
     <>
@@ -665,6 +651,7 @@ function ITHomePage(props) {
       </Row>
       <h3 style={{ paddingTop: 12, paddingBottom: 6 }}>我的工作台</h3>
       <Card tabList={tabsmap} onTabChange={handleTabs} className={styles.home}>
+        <div style={{ width: '100%', paddingLeft: '48%' }} > <Spin spinning={tabskeys.length === 0} style={{ marginTop: 12 }} /></div>
         <Tabs activeKey={activeKey} onChange={callback}>
           {tabskeys.map(obj => [
             <TabPane
