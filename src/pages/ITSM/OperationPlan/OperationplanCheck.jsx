@@ -39,10 +39,6 @@ const formItemLayout = {
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 
-let startTime;
-let endtime;
-let actualStarttime;
-let actualEndtime;
 const statusMap = ['green', 'gold', 'red'];
 const statusContent = ['未超时', '即将超时', '已超时'];
 
@@ -75,6 +71,7 @@ function OperationplanCheck(props) {
       pathname: `/ITSM/operationplan/operationplanform`,
       query: {
         auditLink: true,
+        flowNodeName: record.flowNodeName,
         checkStatus: record.checkStatus,
         mainId: record.mainId,
         orderNo: record.operationNo,
@@ -496,61 +493,6 @@ function OperationplanCheck(props) {
     }
     creataColumns();
   };
-
-  //  计划开始时间和实际结束开始时间  
-  const onChange = (dateString, params) => {
-    if (params === 'plan') {
-      setFieldsValue({ plannedStarTtime: moment(dateString) })
-      startTime = dateString;
-    } else {
-      setFieldsValue({ startTime: moment(dateString) })
-      startTime = dateString;
-      actualStarttime = dateString
-    }
-  }
-
-  //  计划结束时间和实际结束时间 
-  const endtimeonChange = (dateString, params) => {
-    if (params === 'plan') {
-      setFieldsValue({ plannedEndTime: moment(dateString) })
-      endtime = dateString;
-    } else {
-      setFieldsValue({ endTime: moment(dateString) })
-      actualEndtime = dateString;
-    }
-  }
-
-  //  计划开始时间、实际开始时间
-  const startdisabledDate = (current, params) => {
-    if (params === 'plan') {
-      if (startTime || endtime) {
-        return current > moment(endtime)
-      }
-    }
-    if (params !== 'plan') {
-      if (actualStarttime || actualEndtime) {
-        return current > moment(actualEndtime)
-      }
-    }
-
-    return null;
-  }
-
-  //  计划实际结束时间、实际结束时间
-  const enddisabledDate = (current, params) => {
-    if (params === 'plan') {
-      if (startTime || endtime) {
-        return current < moment(startTime)
-      }
-    }
-    if (params !== 'plan') {
-      if (actualStarttime || actualEndtime) {
-        return current < moment(actualStarttime)
-      }
-    }
-
-    return null;
-  }
 
   const getTypebyTitle = title => {
     if (selectdata.ischange) {

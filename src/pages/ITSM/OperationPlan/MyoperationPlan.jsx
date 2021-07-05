@@ -75,6 +75,7 @@ function MyoperationPlan(props) {
       query: {
         delay,
         mainId: record.mainId,
+        flowNodeName: record.flowNodeName,
         status: record.status,
         checkStatus: record.checkStatus,
         orderNo: record.operationNo,

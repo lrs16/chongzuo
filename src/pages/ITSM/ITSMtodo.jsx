@@ -65,6 +65,7 @@ const columns = [
             router.push({
               pathname: `/ITSM/operationplan/operationplanform`,
               query: {
+                flowNodeName: record.nodeName,
                 mainId: record.instanceId,
                 status: record.status,
                 checkStatus: record.checkStatus,

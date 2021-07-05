@@ -49,6 +49,7 @@ const forminladeLayout = {
 
 export const FatherContext = createContext();
 function Work(props) {
+  const pagetitle = props.route.name;
   const [flowtype, setFlowtype] = useState('001');
   const [selectdata, setSelectData] = useState('');
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
@@ -63,7 +64,15 @@ function Work(props) {
 
 
   const {
-    location: { query: { mainId, status, checkStatus, auditLink, delay } },
+    location: { query: {
+      mainId,
+      status,
+      checkStatus,
+      auditLink,
+      delay,
+      taskName,
+      flowNodeName
+    } },
     userinfo,
     openFlowList,
     operationPersonArr,
@@ -91,8 +100,14 @@ function Work(props) {
   }
 
   if (loading === false && openFlowList.code !== -1) {
-    if ((data && data.length && edit.main !== undefined) || delay) {
-      headTitle = '作业计划填报'
+    const resgister = data && data.length && edit.main !== undefined;
+    if(resgister) {
+      headTitle = status || taskName;
+    }
+
+    const checkParams = data && data.length && (edit.check || taskName === '计划审核')
+    if(checkParams) {
+      headTitle = '作业计划审核';
     }
   }
 
@@ -498,7 +513,7 @@ function Work(props) {
 
   return (
     <PageHeaderWrapper
-      title={headTitle}
+      title={flowNodeName}
       extra={
         <>
           {
@@ -583,7 +598,7 @@ function Work(props) {
             bordered='true'
           >
             <>
-              {auditLink && !delay && edit.check && (
+              {!delay && (edit.check || flowNodeName === '计划审核') && (
                 <Panel
                   header='作业计划审核'
                   key='1'
@@ -603,7 +618,7 @@ function Work(props) {
               )}
 
               {
-                loading === false && !delay && (openFlowList && openFlowList.edit.execute !== undefined) && checkStatus === '已审核' && (
+                loading === false && !delay && (openFlowList && openFlowList.edit.execute !== undefined) && (checkStatus === '已审核' || flowNodeName === '计划执行') && (
                   <Panel
                     header='作业计划执行'
                     key='1'
@@ -632,7 +647,7 @@ function Work(props) {
               {
                 loading === false && (edit && edit.main !== undefined || delay) && (
                   <Panel
-                    header={status}
+                    header={status || taskName}
                     key='1'
                     bordered
                     style={{ backgroundColor: 'white' }}
