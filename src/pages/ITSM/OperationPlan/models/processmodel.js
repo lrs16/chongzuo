@@ -63,7 +63,9 @@ export default {
               status: '计划中',
               orderNo: saveresponse.operationNo,
             },
-            state: {}
+            state: {
+              updatetab: true,
+            }
           })
         }
       }

@@ -339,7 +339,8 @@ const BasicLayout = props => {
   const onEdit = (targetKey, action) => {
     if (action === 'remove') {
       remove(targetKey)
-    }
+    };
+    setTabMenu({ ...tabmenu, v: 'none' })
   };
 
   const handletopLink = (menuItemProps) => {

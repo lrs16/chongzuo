@@ -82,7 +82,9 @@ function Work(props) {
     if (openFlowList.code === -1) {
       message.error(openFlowList.msg);
       router.push({
-        pathname: `/ITSM/operationplan/myoperationplan/`,
+        pathname: `/ITSM/operationplan/myoperationplan`,
+        query: { pathpush: true },
+        state: { cache: false, closetabid: mainId }
       });
     }
 
@@ -290,15 +292,14 @@ function Work(props) {
           query: { mainId, closetab: true },
           state: { cache: false }
         });
-        router.push({
-          pathname: `/ITSM/operationplan/myoperationplan/`,
-          query: { pathpush: true },
-          state: { cache: false }
-        }
-        )
       } else {
         message.error('送审失败 ');
         // router.push(`/ITSM/operationplan/myoperationplan/`)
+        router.push({
+          pathname: `/ITSM/operationplan/myoperationplan`,
+          query: { pathpush: true },
+          state: { cache: false }
+        })
       }
     })
   }
@@ -319,22 +320,17 @@ function Work(props) {
   }, [userchoice])
 
   const handleClose = () => {
-    router.push({
-      pathname: `/ITSM/operationplan/operationplanform`,
-      query: { mainId, closetab: true },
-      state: { cache: false }
-    });
     if (auditLink) {
       router.push({
         pathname: `/ITSM/operationplan/operationplancheck`,
         query: { pathpush: true },
-        state: { cache: false }
+        state: { cache: false, closetabid: mainId }
       })
     } else {
       router.push({
-        pathname: `/ITSM/operationplan/myoperationplan/`,
+        pathname: `/ITSM/operationplan/myoperationplan`,
         query: { pathpush: true },
-        state: { cache: false }
+        state: { cache: false, closetabid: mainId }
       })
     }
   }
@@ -348,17 +344,12 @@ function Work(props) {
         ...values,
       },
     }).then(res => {
-      router.push({
-        pathname: `/ITSM/operationplan/operationplanform`,
-        query: { mainId, closetab: true },
-        state: { cache: false }
-      });
       if (res.code === 200) {
         message.info(res.msg);
         router.push({
           pathname: `/ITSM/operationplan/operationplancheck`,
           query: { pathpush: true },
-          state: { cache: false }
+          state: { cache: false, closetabid: mainId }
         })
       } else {
         message.error(res.msg);
@@ -383,14 +374,9 @@ function Work(props) {
           }
         }).then(res => {
           router.push({
-            pathname: `/ITSM/operationplan/operationplanform`,
-            query: { mainId, closetab: true },
-            state: { cache: false }
-          });
-          router.push({
             pathname: `/ITSM/operationplan/operationplancheck`,
             query: { pathpush: true },
-            state: { cache: false }
+            state: { cache: false, closetabid: mainId }
           });
           if (res.code === 200) {
             message.info(res.msg);
@@ -426,14 +412,9 @@ function Work(props) {
           }
         }).then(res => {
           router.push({
-            pathname: `/ITSM/operationplan/operationplanform`,
-            query: { mainId, closetab: true },
-            state: { cache: false }
-          });
-          router.push({
-            pathname: `/ITSM/operationplan/myoperationplan/`,
+            pathname: `/ITSM/operationplan/myoperationplan`,
             query: { pathpush: true },
-            state: { cache: false }
+            state: { cache: false, closetabid: mainId }
           });
           if (res.code === 200) {
             message.info(res.msg);
@@ -481,14 +462,9 @@ function Work(props) {
         }
       }).then(res => {
         router.push({
-          pathname: `/ITSM/operationplan/operationplanform`,
-          query: { mainId, closetab: true },
-          state: { cache: false }
-        });
-        router.push({
-          pathname: `/ITSM/operationplan/myoperationplan/`,
+          pathname: `/ITSM/operationplan/myoperationplan`,
           query: { pathpush: true },
-          state: { cache: false }
+          state: { cache: false, closetabid: mainId }
         });
         if (res.code === 200) {
           message.info(res.msg);
@@ -508,14 +484,9 @@ function Work(props) {
       }
     }).then(res => {
       router.push({
-        pathname: `/ITSM/operationplan/operationplanform`,
-        query: { mainId, closetab: true },
-        state: { cache: false }
-      });
-      router.push({
-        pathname: `/ITSM/operationplan/myoperationplan/`,
+        pathname: `/ITSM/operationplan/myoperationplan`,
         query: { pathpush: true },
-        state: { cache: false }
+        state: { cache: false, closetabid: mainId }
       });
       if (res.code === 200) {
         message.info(res.msg);

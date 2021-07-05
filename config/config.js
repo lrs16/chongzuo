@@ -708,7 +708,7 @@ export default {
                           redirect: '/ITSM/operationplan/myoperationplan'
                         },
                         {
-                          path: '/ITSM/operationplan/myoperationplan/',
+                          path: '/ITSM/operationplan/myoperationplan',
                           name: '我的作业计划',
                           icon: 'control',
                           component: './ITSM/OperationPlan/MyoperationPlan',
