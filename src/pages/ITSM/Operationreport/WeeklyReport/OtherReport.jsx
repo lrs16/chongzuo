@@ -284,10 +284,7 @@ function OtherReport(props) {
               {
                 reporttype === 'month' && (
                   <Col span={24}>
-                    <Form.Item
-                      label='填报日期'
-                      style={{ display: 'inline-flex' }}
-                    >
+                    <Form.Item label='填报日期'  style={{ display: 'inline-flex' }}>
                       {getFieldDecorator('time1', {
                         rules: [
                           {
