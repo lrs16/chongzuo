@@ -354,6 +354,10 @@ function DatabaseReportdetail(props) {
                             allowClear={false}
                             style={{ marginRight: 10 }}
                             onChange={onChange}
+<<<<<<< HEAD
+=======
+                            disabled={reportSearch}
+>>>>>>> ab3bc37... 服务绩效，未完成
                           />)}
                       </Form.Item>
 
@@ -365,6 +369,10 @@ function DatabaseReportdetail(props) {
                             (<DatePicker
                               allowClear={false}
                               onChange={endonChange}
+<<<<<<< HEAD
+=======
+                              disabled={reportSearch}
+>>>>>>> ab3bc37... 服务绩效，未完成
                             />)
                         }
                       </Form.Item>
@@ -407,7 +415,7 @@ function DatabaseReportdetail(props) {
                 <Form.Item label=''>
                   {
                     getFieldDecorator('content', {
-                      initialValue: main.content
+                      initialValue: main?main.content:''
                     })
                       (<TextArea
                         autoSize={{ minRows: 3 }}
@@ -750,8 +758,9 @@ function DatabaseReportdetail(props) {
                 addTitle.map((item, index) => {
                   return (
                     <>
-                      <Col span={23}>
+                      <Col span={reportSearch ? 24 : 23}>
                         <AddForm
+                          detailParams={reportSearch}
                           formincontentLayout={formincontentLayout}
                           px={index + 6}
                           addTable={newdata => {

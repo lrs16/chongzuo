@@ -109,7 +109,7 @@ function DefectTracking(props) {
       key: 'field2',
       render: (text, record) => {
         return (
-          <Input
+          <TextArea
             disabled={detailParams}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field2', record.key)}
@@ -123,7 +123,7 @@ function DefectTracking(props) {
       key: 'field3',
       render: (text, record) => {
         return (
-          <Input
+          <TextArea
             disabled={detailParams}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field3', record.key)}
@@ -151,7 +151,7 @@ function DefectTracking(props) {
       key: 'field5',
       render: (text, record) => {
         return (
-          <Input
+          <TextArea
             disabled={detailParams}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field5', record.key)}

@@ -259,6 +259,7 @@ export default {
                         {
                           path: '/ITSM/problemmanage',
                           redirect: '/ITSM/problemmanage/registration',
+<<<<<<< HEAD
                         },
                         {
                           path: '/ITSM/problemmanage/registration',
@@ -273,6 +274,22 @@ export default {
                           component: './ITSM/Problemmanage/Besolved',
                         },
                         {
+=======
+                        },
+                        {
+                          path: '/ITSM/problemmanage/registration',
+                          name: '问题登记',
+                          icon: 'cloud-server',
+                          component: './ITSM/Problemmanage/Registration',
+                        },
+                        {
+                          path: '/ITSM/problemmanage/besolved',
+                          name: '问题待办',
+                          icon: 'cloud-server',
+                          component: './ITSM/Problemmanage/Besolved',
+                        },
+                        {
+>>>>>>> ab3bc37... 服务绩效，未完成
                           path: '/ITSM/problemmanage/problemquery',
                           name: '问题查询',
                           icon: 'cloud-server',
@@ -431,6 +448,7 @@ export default {
                         {
                           path: '/ITSM/faultmanage/todolist',
                           name: '故障待办',
+<<<<<<< HEAD
                           icon: 'control',
                           component: './ITSM/Faultmanage/ToDOlist',
                         },
@@ -462,6 +480,39 @@ export default {
                           path: '/ITSM/faultmanage/faultstaticount',
                           name: '故障统计',
                           icon: 'control',
+=======
+                          icon: 'control',
+                          component: './ITSM/Faultmanage/ToDOlist',
+                        },
+                        {
+                          path: '/ITSM/faultmanage/todolist/record',
+                          name: '故障工单',
+                          icon: 'cloud-server',
+                          component: './ITSM/Faultmanage/Todolistdetails',
+                        },
+                        {
+                          path: '/ITSM/faultmanage/querylist',
+                          name: '故障查询',
+                          icon: 'control',
+                          component: './ITSM/Faultmanage/QueryList',
+                        },
+                        {
+                          path: '/ITSM/faultmanage/querylist/record',
+                          name: '故障工单详情',
+                          icon: 'cloud-server',
+                          component: './ITSM/Faultmanage/Querylistdetails',
+                        },
+                        {
+                          path: '/ITSM/faultmanage/overtime',
+                          name: '超时查询',
+                          icon: 'control',
+                          component: './ITSM/Faultmanage/Overtime',
+                        },
+                        {
+                          path: '/ITSM/faultmanage/faultstaticount',
+                          name: '故障统计',
+                          icon: 'control',
+>>>>>>> ab3bc37... 服务绩效，未完成
                           routes: [
                             {
                               path: '/ITSM/faultmanage/faultstaticount/faultsumstatic',
@@ -489,6 +540,7 @@ export default {
                         {
                           path: '/ITSM/releasemanage',
                           redirect: '/ITSM/releasemanage/registration',
+<<<<<<< HEAD
                         },
                         {
                           path: '/ITSM/releasemanage/registration',
@@ -529,14 +581,51 @@ export default {
                         {
                           path: '/ITSM/releasemanage/checktodo/record',
                           name: '业务复核',
+=======
+                        },
+                        {
+                          path: '/ITSM/releasemanage/registration',
+                          name: '发布登记',
+                          icon: 'control',
+                          component: './ITSM/Releasemanage/Registration',
+                        },
+                        {
+                          path: '/ITSM/releasemanage/to-do',
+                          name: '发布待办',
+                          icon: 'control',
+                          component: './ITSM/Releasemanage/ToDolist',
+                        },
+                        {
+                          path: '/ITSM/releasemanage/to-do/record',
+                          name: '发布工单处理',
+                          icon: 'cloud-server',
+                          component: './ITSM/Releasemanage/ToDodetails',
+                        },
+                        {
+                          path: '/ITSM/releasemanage/verificationtodo',
+                          name: '业务验证待办',
+                          icon: 'control',
+                          component: './ITSM/Releasemanage/VerificationTodo',
+                        },
+                        {
+                          path: '/ITSM/releasemanage/verificationtodo/record',
+                          name: '业务验证',
+>>>>>>> ab3bc37... 服务绩效，未完成
                           icon: 'control',
                           component: './ITSM/Releasemanage/BusinessDetail',
                         },
                         {
+<<<<<<< HEAD
                           path: '/ITSM/releasemanage/library',
                           name: '发布库',
                           icon: 'control',
                           component: './ITSM/Releasemanage/LibraryList',
+=======
+                          path: '/ITSM/releasemanage/checktodo',
+                          name: '业务复核待办',
+                          icon: 'control',
+                          component: './ITSM/Releasemanage/Checktodo',
+>>>>>>> ab3bc37... 服务绩效，未完成
                         },
                       ],
                     },
@@ -552,6 +641,34 @@ export default {
                       icon: 'control',
                       routes: [
                         {
+<<<<<<< HEAD
+=======
+                          path: '/ITSM/releasemanage/checktodo/record',
+                          name: '业务复核',
+                          icon: 'control',
+                          component: './ITSM/Releasemanage/BusinessDetail',
+                        },
+                        {
+                          path: '/ITSM/releasemanage/library',
+                          name: '发布库',
+                          icon: 'control',
+                          component: './ITSM/Releasemanage/BusinessDetail',
+                        },
+                      ],
+                    },
+                    {
+                      path: '/ITSM/onsitemanage',
+                      name: '巡检管理',
+                      icon: 'control',
+                      component: './ITSM/OnSitemanage',
+                    },
+                    {
+                      path: '/ITSM/operationreport',
+                      name: '运维周/月报',
+                      icon: 'control',
+                      routes: [
+                        {
+>>>>>>> ab3bc37... 服务绩效，未完成
                           path: '/ITSM/operationreport',
                           redirect: '/ITSM/operationreport/weeklyreport'
                         },
@@ -701,14 +818,35 @@ export default {
                       path: '/ITSM/operationplan',
                       name: '作业计划',
                       icon: 'control',
+<<<<<<< HEAD
 
+=======
+>>>>>>> ab3bc37... 服务绩效，未完成
                       routes: [
                         {
                           path: '/ITSM/operationplan',
                           redirect: '/ITSM/operationplan/myoperationplan'
                         },
                         {
+<<<<<<< HEAD
                           path: '/ITSM/operationplan/myoperationplan',
+                          name: '我的作业计划',
+                          icon: 'control',
+                          component: './ITSM/OperationPlan/MyoperationPlan',
+                        },
+                        {
+                          path: '/ITSM/operationplan/operationplanfillin',
+                          name: '作业计划填报',
+                          icon: 'control',
+                          component: './ITSM/OperationPlan/OperationPlanfillintion',
+                        },
+                        {
+                          path: '/ITSM/operationplan/operationplanform',
+                          name: '作业计划',
+                          icon: 'control',
+                          component: './ITSM/OperationPlan/Work',
+=======
+                          path: '/ITSM/operationplan/myoperationplan/',
                           name: '我的作业计划',
                           icon: 'control',
                           component: './ITSM/OperationPlan/MyoperationPlan',
@@ -779,6 +917,100 @@ export default {
                               component: './ITSM/OperationPlan/OperationplanStatistics/Timeout',
                             },
                           ]
+>>>>>>> ab3bc37... 服务绩效，未完成
+                        },
+                      ]
+                    },
+                    {
+                      path:'/ITSM/servicequalityassessment',
+                      name:'服务质量考核',
+                      icon: 'control',
+                      routes:[
+                        {
+<<<<<<< HEAD
+                          path: '/ITSM/operationplan/operationplancheck',
+                          name: '作业计划审核',
+                          icon: 'control',
+                          component: './ITSM/OperationPlan/OperationplanCheck',
+                        },
+                        {
+                          path: '/ITSM/operationplan/taskexecute',
+                          name: '作业计划执行',
+                          icon: 'control',
+                          component: './ITSM/OperationPlan/components/TaskExecute',
+                        },
+                        {
+                          path: '/ITSM/operationplan/operationplansearch',
+                          name: '作业计划查询',
+                          icon: 'control',
+                          component: './ITSM/OperationPlan/TaskSearch',
+=======
+                          path:'/ITSM/servicequalityassessment',
+                          redirect:'/ITSM/servicequalityassessment/serviceprovidermaintenance'
+                        },
+                        {
+                          path:'/ITSM/servicequalityassessment/serviceprovidermaintenance',
+                          name:'服务商维护',
+                          icon:'control',
+                          component:'./ITSM/ServiceQuality/ProviderMaintenance'
+                        },
+                        {
+                          path:'/ITSM/servicequalityassessment/addserviceprovidermaintenance',
+                          name:'新增服务商维护',
+                          icon:'control',
+                          component:'./ITSM/ServiceQuality/components/AddProviderMaintenance'
+>>>>>>> ab3bc37... 服务绩效，未完成
+                        },
+    
+                        {
+<<<<<<< HEAD
+                          path: '/ITSM/operationplan/operationplansearchdetail',
+                          name: '作业计划详情',
+                          icon: 'control',
+                          component: './ITSM/OperationPlan/OperationplansearchDetail',
+                        },
+                        {
+                          path: '/ITSM/operationplan/statistics',
+                          name: '作业计划统计',
+                          icon: 'control',
+                          routes: [
+                            {
+                              path: '/ITSM/operationplan/statistics/status',
+                              name: '作业计划状态统计',
+                              icon: 'fork',
+                              component: './ITSM/OperationPlan/OperationplanStatistics/Status',
+                            },
+                            {
+                              path: '/ITSM/operationplan/statistics/result',
+                              name: '作业计划结果统计',
+                              icon: 'fork',
+                              component: './ITSM/OperationPlan/OperationplanStatistics/Result',
+                            },
+                            {
+                              path: '/ITSM/operationplan/statistics/execute',
+                              name: '作业计划执行情况统计',
+                              icon: 'fork',
+                              component: './ITSM/OperationPlan/OperationplanStatistics/Execute',
+                            },
+                            {
+                              path: '/ITSM/operationplan/statistics/timeout',
+                              name: '作业计划超时统计',
+                              icon: 'fork',
+                              component: './ITSM/OperationPlan/OperationplanStatistics/Timeout',
+                            },
+                          ]
+=======
+                          path:'/ITSM/servicequalityassessment/serviceprovidersearch',
+                          name:'服务商查询',
+                          icon:'control',
+                          component:'./ITSM/ServiceQuality/ServiceProvidersearch'
+                        },
+                        {
+                          path:'/ITSM/servicequalityassessment/scoringrulesmaintenance',
+                          name:'评分细则维护',
+                          icon:'control',
+                          component:'./ITSM/ServiceQuality/ScoringRulesmaintenance'
+>>>>>>> ab3bc37... 服务绩效，未完成
                         },
                       ]
                     },
@@ -788,6 +1020,7 @@ export default {
                       icon: 'control',
                       routes: [
                         {
+<<<<<<< HEAD
                           path: '/ITSM/servicequalityassessment',
                           redirect: '/ITSM/servicequalityassessment/serviceprovidermaintenance'
                         },
@@ -796,7 +1029,56 @@ export default {
                           name: '服务商维护',
                           icon: 'control',
                           component: './ITSM/ServiceQuality/ProviderMaintenance'
+=======
+                          path:'/ITSM/servicequalityassessment/addscoringrulesmaintenance',
+                          name:'新增评分细则维护',
+                          icon:'control',
+                          component:'./ITSM/ServiceQuality/components/AddScoringRulesmaintenance'
                         },
+                        {
+                          path:'/ITSM/servicequalityassessment/scoringrulessearch',
+                          name:'评分细则查询',
+                          icon:'control',
+                          component:'./ITSM/ServiceQuality/ScoringRulesssearch'
+>>>>>>> ab3bc37... 服务绩效，未完成
+                        },
+                        {
+                          path:'/ITSM/servicequalityassessment/serviceperformanceappraisal',
+                          name:'服务绩效考核',
+                          icon:'control',
+                          routes:[
+                            {
+                              path:'/ITSM/servicequalityassessment/serviceperformanceappraisal/register',
+                              name:'服务绩效考核登记',
+                              icon:'fork',
+                              component:'./ITSM/ServiceQuality/ServicePerformanceappraisal/Registertion'
+                            },
+                            {
+                              path:'/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtform',
+                              name:'服务绩效考核待办详情',
+                              icon:'fork',
+                              component:'./ITSM/ServiceQuality/ServicePerformanceappraisal/TobedealtForm'
+                            },
+                            {
+                              path:'/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtlist',
+                              name:'服务绩效考核待办',
+                              icon:'fork',
+                              component:'./ITSM/ServiceQuality/ServicePerformanceappraisal/TobedealtList'
+                            },
+                            {
+                              path:'/ITSM/servicequalityassessment/serviceperformanceappraisal/search',
+                              name:'服务绩效考核查询',
+                              icon:'fork',
+                              component:'./ITSM/ServiceQuality/ServicePerformanceappraisal/Search'
+                            },
+                            {
+                              path:'/ITSM/servicequalityassessment/serviceperformanceappraisal/assessment',
+                              name:'我的服务绩效考核',
+                              icon:'fork',
+                              component:'./ITSM/ServiceQuality/ServicePerformanceappraisal/Assessment'
+                            }
+                          ]
+                        }
                       ]
                     },
                     {
@@ -814,6 +1096,7 @@ export default {
                     {
                       path: '/automation',
                       redirect: '/automation/STT/hostlist',
+<<<<<<< HEAD
                     },
                     // {
                     //   path: '/automation/monitor',
@@ -833,8 +1116,52 @@ export default {
                       icon: 'control',
                       hideInMenu: true,
                       component: './Automation/Scenarios/WorkFlow',
+=======
+>>>>>>> ab3bc37... 服务绩效，未完成
+                    },
+                    // {
+                    //   path: '/automation/monitor',
+                    //   name: '作业总览',
+                    //   icon: 'dashboard',
+                    //   component: './Automation/Monitor',
+                    // },
+                    {
+<<<<<<< HEAD
+                      path: '/automation/opsscene/jobexecut',
+                      name: '脚本执行历史',
+                      icon: 'profile',
+                      hideInMenu: true,
+                      component: './Automation/Scenarios/JobExecut',
                     },
                     {
+                      path: '/automation/jobexecut/viewjob/:id',
+                      name: '脚本详情',
+                      hideInMenu: true,
+                      component: './Automation/Scenarios/ViewJob',
+=======
+                      path: '/automation/opsscene',
+                      name: '运维场景',
+                      icon: 'control',
+                      component: './Automation/Scenarios/OpsScene',
+                    },
+                    {
+                      path: '/automation/opsscene/workflow',
+                      name: '脚本编排',
+                      icon: 'control',
+                      hideInMenu: true,
+                      component: './Automation/Scenarios/WorkFlow',
+>>>>>>> ab3bc37... 服务绩效，未完成
+                    },
+                    // {
+                    //   path: '/automation/timedjob',
+                    //   name: '定时作业',
+                    //   icon: 'history',
+                    //   dynamic: true,
+                    //   component: './Automation/TimedJob',
+                    // },
+                    {
+<<<<<<< HEAD
+=======
                       path: '/automation/opsscene/jobexecut',
                       name: '脚本执行历史',
                       icon: 'profile',
@@ -855,6 +1182,7 @@ export default {
                     //   component: './Automation/TimedJob',
                     // },
                     {
+>>>>>>> ab3bc37... 服务绩效，未完成
                       path: '/automation/scriptmanage',
                       name: '脚本管理',
                       icon: 'database',
@@ -874,6 +1202,7 @@ export default {
                         {
                           path: '/automation/STT',
                           redirect: '/automation/STT/hostlist',
+<<<<<<< HEAD
                         },
                         {
                           path: '/automation/STT/hostlist',
@@ -912,6 +1241,161 @@ export default {
                           component: './Automation/SoftTT/CommandConfigurate',
                         },
                       ],
+=======
+                        },
+                        {
+                          path: '/automation/STT/hostlist',
+                          name: '主机管理',
+                          icon: 'cloud-server',
+                          component: './Automation/SoftTT/HostManage',
+                        },
+                        {
+                          path: '/automation/STT/soft',
+                          name: '软件管理',
+                          icon: 'cloud-server',
+                          component: './Automation/SoftTT/SoftManage',
+                        },
+                        {
+                          path: '/automation/STT/process',
+                          name: '进程管理',
+                          icon: 'cloud-server',
+                          component: './Automation/SoftTT/ProcessManage',
+                        },
+                        {
+                          path: '/automation/STT/softexetute',
+                          name: '主机操作',
+                          icon: 'cloud-server',
+                          component: './Automation/SoftTT/SoftExetute',
+                        },
+                        {
+                          path: '/automation/STT/execlog',
+                          name: '执行日志',
+                          icon: 'cloud-server',
+                          component: './Automation/SoftTT/ExeclogView',
+                        },
+                        {
+                          path: '/automation/STT/commandconfigurate',
+                          name: '命令配置',
+                          icon: 'cloud-server',
+                          component: './Automation/SoftTT/CommandConfigurate',
+                        },
+                      ]
+                    },
+                  ]
+                },
+             
+                {
+                  component: './500',
+                },
+              ],
+            },
+            // 自动化运维
+            {
+              path: '/automation',
+              name: '自动化运维',
+              dynamic: true,
+              icon: 'deployment-unit',
+              routes: [
+                {
+                  path: '/automation',
+                  redirect: '/automation/STT/hostlist',
+                },
+                // {
+                //   path: '/automation/monitor',
+                //   name: '作业总览',
+                //   icon: 'dashboard',
+                //   component: './Automation/Monitor',
+                // },
+                {
+                  path: '/automation/opsscene',
+                  name: '运维场景',
+                  icon: 'control',
+                  component: './Automation/Scenarios/OpsScene',
+                },
+                {
+                  path: '/automation/opsscene/workflow',
+                  name: '脚本编排',
+                  icon: 'control',
+                  hideInMenu: true,
+                  component: './Automation/Scenarios/WorkFlow',
+                },
+                {
+                  path: '/automation/opsscene/jobexecut',
+                  name: '脚本执行历史',
+                  icon: 'profile',
+                  hideInMenu: true,
+                  component: './Automation/Scenarios/JobExecut',
+                },
+                {
+                  path: '/automation/jobexecut/viewjob/:id',
+                  name: '脚本详情',
+                  hideInMenu: true,
+                  component: './Automation/Scenarios/ViewJob',
+                },
+                // {
+                //   path: '/automation/timedjob',
+                //   name: '定时作业',
+                //   icon: 'history',
+                //   dynamic: true,
+                //   component: './Automation/TimedJob',
+                // },
+                {
+                  path: '/automation/scriptmanage',
+                  name: '脚本管理',
+                  icon: 'database',
+                  component: './Automation/ScriptManage',
+                },
+                // {
+                //   path: '/automation/resourcemanage',
+                //   name: '资源管理',
+                //   icon: 'cloud-server',
+                //   component: './Automation/ResourceManage',
+                // },
+                {
+                  path: '/automation/STT',
+                  name: '软件启停',
+                  icon: 'cloud-server',
+                  routes: [
+                    {
+                      path: '/automation/STT',
+                      redirect: '/automation/STT/hostlist',
+                    },
+                    {
+                      path: '/automation/STT/hostlist',
+                      name: '主机管理',
+                      icon: 'cloud-server',
+                      component: './Automation/SoftTT/HostManage',
+                    },
+                    {
+                      path: '/automation/STT/soft',
+                      name: '软件管理',
+                      icon: 'cloud-server',
+                      component: './Automation/SoftTT/SoftManage',
+                    },
+                    {
+                      path: '/automation/STT/process',
+                      name: '进程管理',
+                      icon: 'cloud-server',
+                      component: './Automation/SoftTT/ProcessManage',
+                    },
+                    {
+                      path: '/automation/STT/softexetute',
+                      name: '主机操作',
+                      icon: 'cloud-server',
+                      component: './Automation/SoftTT/SoftExetute',
+                    },
+                    {
+                      path: '/automation/STT/execlog',
+                      name: '执行日志',
+                      icon: 'cloud-server',
+                      component: './Automation/SoftTT/ExeclogView',
+                    },
+                    {
+                      path: '/automation/STT/commandconfigurate',
+                      name: '命令配置',
+                      icon: 'cloud-server',
+                      component: './Automation/SoftTT/CommandConfigurate',
+>>>>>>> ab3bc37... 服务绩效，未完成
                     },
                   ],
                 },
@@ -1098,6 +1582,7 @@ export default {
                               component: './Alarmmanage/MeasurAlarm/AlarmOverview/OverVies',
                             },
                           ],
+<<<<<<< HEAD
                         },
                         {
                           path: '/alarmmanage/measuralarm/details',
@@ -1139,6 +1624,27 @@ export default {
                               component: './Alarmmanage/MeasurAlarm/NotifyPerson',
                             },
                           ],
+=======
+                        },
+                        {
+                          path: '/alarmmanage/measuralarm/details',
+                          name: '告警明细信息',
+                          icon: 'cloud-server',
+                          component: './Alarmmanage/MeasurAlarm/Details',
+                        },
+                        {
+                          path: '/alarmmanage/measuralarm/details/detailview/:detailsid',
+                          name: '告警详细信息',
+                          icon: 'cloud-server',
+                          hideInMenu: true,
+                          component: './Alarmmanage/MeasurAlarm/DetailView',
+                        },
+                        {
+                          path: '/alarmmanage/measuralarm/syssetting',
+                          icon: 'cloud-server',
+                          name: '系统警告设定',
+                          component: './Alarmmanage/MeasurAlarm/SysSetting/index',
+>>>>>>> ab3bc37... 服务绩效，未完成
                         },
                       ],
                     },
@@ -1148,6 +1654,57 @@ export default {
                       name: '基础平台告警',
                       routes: [
                         {
+<<<<<<< HEAD
+                          path: '/alarmmanage/basicalarm',
+                          redirect: '/alarmmanage/basicalarm/currentalarm',
+=======
+                          path: '/alarmmanage/measuralarm/noticesetting',
+                          icon: 'cloud-server',
+                          name: '告警通知设置',
+                          component: './Alarmmanage/MeasurAlarm/NoticeSetting',
+                          routes: [
+                            {
+                              path: '/alarmmanage/measuralarm/noticesetting',
+                              redirect: '/alarmmanage/measuralarm/noticesetting/notifygroup',
+                            },
+                            {
+                              path: '/alarmmanage/measuralarm/noticesetting/notifygroup',
+                              name: '告警通知组设置',
+                              component: './Alarmmanage/MeasurAlarm/NotifyGroup',
+                            },
+                            {
+                              path: '/alarmmanage/measuralarm/noticesetting/notifyperson',
+                              name: '告警联系人设置',
+                              component: './Alarmmanage/MeasurAlarm/NotifyPerson',
+                            },
+                          ],
+>>>>>>> ab3bc37... 服务绩效，未完成
+                        },
+                      ],
+                    },
+                    {
+                      path: '/alarmmanage/basicalarm',
+                      icon: 'cloud-server',
+                      name: '基础平台告警',
+                      routes: [
+                        {
+<<<<<<< HEAD
+                          path: '/alarmmanage/basicalarm/currentalarm',
+                          name: '当前告警',
+                          component: './Alarmmanage/BasicAlarm/CurrentAlarm',
+                        },
+                        {
+                          path: '/alarmmanage/basicalarm/historicalalarm',
+                          name: '历史告警',
+                          component: './Alarmmanage/BasicAlarm/HistoricalAlarm',
+                        },
+                        {
+                          path: '/alarmmanage/basicalarm/alarmstrategy',
+                          name: '告警策略',
+                          component: './Alarmmanage/BasicAlarm/AlarmStrategy',
+                        },
+                        {
+=======
                           path: '/alarmmanage/basicalarm',
                           redirect: '/alarmmanage/basicalarm/currentalarm',
                         },
@@ -1167,6 +1724,7 @@ export default {
                           component: './Alarmmanage/BasicAlarm/AlarmStrategy',
                         },
                         {
+>>>>>>> ab3bc37... 服务绩效，未完成
                           path: '/alarmmanage/basicalarm/maintenanceplan',
                           name: '维护计划',
                           component: './Alarmmanage/BasicAlarm/MaintenancePlan',

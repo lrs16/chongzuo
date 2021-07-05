@@ -193,7 +193,7 @@ const Top10Surface = React.forwardRef((props, ref) => {
 
   return (
     <>
-      <p style={{ marginTop: 24 }}>Top10表空间(正常增长范围120GB-150GB)</p>
+      <p style={{ marginTop: 24 }}>（2）Top10表空间(正常增长范围120GB-150GB)</p>
 
       <div style={{ textAlign: 'right', marginBottom: 10 }}>
         <Button

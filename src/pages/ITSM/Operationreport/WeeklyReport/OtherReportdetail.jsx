@@ -27,7 +27,11 @@ const formincontentLayout = {
   },
 };
 
+<<<<<<< HEAD
 const {  MonthPicker } = DatePicker;
+=======
+const { MonthPicker } = DatePicker;
+>>>>>>> ab3bc37... 服务绩效，未完成
 let startTime;
 let endTime;
 function OtherReportdetail(props) {
@@ -72,9 +76,13 @@ function OtherReportdetail(props) {
   }
 
   //  保存表单
-  const softReportform = () => {
+  const otherReportform = () => {
     props.form.validateFields((err, value) => {
+<<<<<<< HEAD
       if(!err) {
+=======
+      if (!err) {
+>>>>>>> ab3bc37... 服务绩效，未完成
         const savedata = {
           ...value,
           status,
@@ -108,7 +116,7 @@ function OtherReportdetail(props) {
   // 上传删除附件触发保存
   useEffect(() => {
     if (files.ischange) {
-      softReportform();
+      otherReportform();
     }
   }, [files]);
 
@@ -246,7 +254,7 @@ function OtherReportdetail(props) {
           )}
 
           {!reportSearch && (
-            <Button type='primary' onClick={softReportform}>保存</Button>
+            <Button type='primary' onClick={otherReportform}>保存</Button>
           )}
 
           <Button onClick={handleBack}>
@@ -259,11 +267,16 @@ function OtherReportdetail(props) {
         {loading === false && startTime && (
           <Row gutter={24}>
             <Form>
-
               <Col span={24}>
+<<<<<<< HEAD
                 <Form.Item 
                 label={type === 'week' ? '周报名称' : '月报名称'}
                 style={{ display: 'inline-flex' }}
+=======
+                <Form.Item
+                  label={reporttype === 'week' ? '周报名称' : '月报名称'}
+                  style={{ display: 'inline-flex' }}
+>>>>>>> ab3bc37... 服务绩效，未完成
                 >
                   {getFieldDecorator('name', {
                     rules: [
@@ -275,7 +288,11 @@ function OtherReportdetail(props) {
                     initialValue: main ? main.name : ''
                   })
                     (
+<<<<<<< HEAD
                       <Input disabled={reportSearch} style={{ width: 700 }}/>
+=======
+                      <Input disabled={reportSearch} style={{ width: 700 }} />
+>>>>>>> ab3bc37... 服务绩效，未完成
                     )}
                 </Form.Item>
               </Col>
@@ -284,6 +301,7 @@ function OtherReportdetail(props) {
                 reporttype === 'week' && (
                   <div>
                     <Col span={24}>
+<<<<<<< HEAD
                       <Form.Item label='填报时间'  style={{ display: 'inline-flex' }}>
                         {getFieldDecorator('time1', {
                              rules: [
@@ -295,17 +313,39 @@ function OtherReportdetail(props) {
                           initialValue: moment(startTime)
                         })(<DatePicker
                           allowClear={false}
+=======
+                      <Form.Item label='填报时间' style={{ display: 'inline-flex' }}>
+                        {getFieldDecorator('time1', {
+                          rules: [
+                            {
+                              required,
+                              message: '请输入填报时间'
+                            }
+                          ],
+                          initialValue: moment(startTime)
+                        })(<DatePicker
+                          allowClear={false}
+                          disabled={reportSearch}
+>>>>>>> ab3bc37... 服务绩效，未完成
                           style={{ marginRight: 10 }}
                           onChange={onChange}
                         />)}
                       </Form.Item>
 
+<<<<<<< HEAD
                       <Form.Item label=''  style={{ display: 'inline-flex' }}>
+=======
+                      <Form.Item label='' style={{ display: 'inline-flex' }}>
+>>>>>>> ab3bc37... 服务绩效，未完成
                         {
                           getFieldDecorator('time2', {
                             initialValue: moment(endTime)
                           })
                             (<DatePicker
+<<<<<<< HEAD
+=======
+                              disabled={reportSearch}
+>>>>>>> ab3bc37... 服务绩效，未完成
                               allowClear={false}
                               onChange={endonChange}
                             />)
@@ -331,6 +371,10 @@ function OtherReportdetail(props) {
                       })(<MonthPicker
                         allowClear
                         onChange={onChange}
+<<<<<<< HEAD
+=======
+                        disabled={reportSearch}
+>>>>>>> ab3bc37... 服务绩效，未完成
                       />)}
                     </Form.Item>
                   </Col>
@@ -341,7 +385,7 @@ function OtherReportdetail(props) {
                 addTitle.map((item, index) => {
                   return (
                     <>
-                      <Col span={23}>
+                      <Col span={reportSearch ? 24 : 23}>
                         <AddForm
                           formincontentLayout={formincontentLayout}
                           px={index + 2}
@@ -376,7 +420,7 @@ function OtherReportdetail(props) {
                 icon="plus"
                 disabled={reportSearch}
               >
-                新增其他运维
+                新增其他内容
               </Button>
             </Form>
           </Row>

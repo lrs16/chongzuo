@@ -314,7 +314,7 @@ function SoftReport(props) {
 
   const handleListdata = () => {
     dispatch({
-      type: 'softreport/fetchordertopnList',
+      type: 'eventTop/fetchordertopnList',
       payload: { value, startTime, endTime }
     })
   }
@@ -1087,9 +1087,9 @@ function SoftReport(props) {
 }
 
 export default Form.create({})(
-  connect(({ softreport, loading }) => ({
+  connect(({ softreport,eventTop,loading }) => ({
     maintenanceArr: softreport.maintenanceArr,
-    ordertopnArr: softreport.ordertopnArr,
+    ordertopnArr: eventTop.ordertopnArr,
     maintenanceService: softreport.maintenanceService,
     soluteArr: softreport.soluteArr,
     thisWeekitsmlist: softreport.thisWeekitsmlist,

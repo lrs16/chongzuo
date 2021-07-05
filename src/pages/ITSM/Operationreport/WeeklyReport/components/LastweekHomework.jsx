@@ -146,7 +146,7 @@ function LastweekHomework(props) {
       key: 'content',
       render: (text, record) => {
         return (
-          <Input
+          <TextArea
             disabled={detailParams}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'content', record.key)}
@@ -290,7 +290,7 @@ function LastweekHomework(props) {
       key: 'field4',
       render: (text, record) => {
         return (
-          <Input
+          <TextArea
             disabled={detailParams}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field4', record.key)}

@@ -180,7 +180,7 @@ const Diskgroup = React.forwardRef((props, ref) => {
 
   return (
     <>
-      <p>磁盘组</p>
+      <p>（1）磁盘组</p>
 
       <div style={{ textAlign: 'right', marginBottom: 10 }}>
         <Button

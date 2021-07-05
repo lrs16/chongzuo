@@ -169,7 +169,7 @@ const QuestionsComments = React.forwardRef((props, ref) => {
       <p style={{ fontWeight: '900', fontSize: '16px' }}>三、发现问题及修改建议</p>
 
       <p>
-        缺陷
+        （1）缺陷
       </p>
 
       <div style={{ marginBottom: '10px', textAlign: 'right' }}>

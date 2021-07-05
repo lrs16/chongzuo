@@ -10,6 +10,11 @@ import {
 } from 'antd';
 import moment from 'moment';
 
+<<<<<<< HEAD
+=======
+const { TextArea } = Input;
+
+>>>>>>> ab3bc37... 服务绩效，未完成
 function UpgradeList(props) {
 
   const {
@@ -96,7 +101,7 @@ function UpgradeList(props) {
       key: 'field2',
       render: (text, record) => {
         return (
-          <Input
+          <TextArea
             disabled={detailParams}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field2', record.key)}
@@ -110,7 +115,7 @@ function UpgradeList(props) {
       key: 'field3',
       render: (text, record) => {
         return (
-          <Input
+          <TextArea
             disabled={detailParams}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field3', record.key)}
@@ -124,7 +129,7 @@ function UpgradeList(props) {
       key: 'field4',
       render: (text, record) => {
         return (
-          <Input
+          <TextArea
             disabled={detailParams}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field4', record.key)}

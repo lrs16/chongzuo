@@ -307,7 +307,6 @@ function ComputerroomReportdetail(props) {
         {loading === false && (
           <Row gutter={24}>
             <Form>
-
               <Col span={24}>
                 <Form.Item
                   label={reporttype === 'week' ? '周报名称' : '月报名称'}
@@ -346,6 +345,10 @@ function ComputerroomReportdetail(props) {
                             allowClear={false}
                             style={{ marginRight: 10 }}
                             onChange={onChange}
+<<<<<<< HEAD
+=======
+                            disabled={reportSearch}
+>>>>>>> ab3bc37... 服务绩效，未完成
                           />)}
                       </Form.Item>
 
@@ -357,6 +360,10 @@ function ComputerroomReportdetail(props) {
                             (<DatePicker
                               allowClear={false}
                               onChange={endonChange}
+<<<<<<< HEAD
+=======
+                              disabled={reportSearch}
+>>>>>>> ab3bc37... 服务绩效，未完成
                             />)
                         }
                       </Form.Item>
@@ -380,6 +387,7 @@ function ComputerroomReportdetail(props) {
                       })(<MonthPicker
                         allowClear
                         onChange={onChange}
+                        disabled={reportSearch}
                       />)}
                     </Form.Item>
                   </Col>
@@ -443,7 +451,6 @@ function ComputerroomReportdetail(props) {
 
                     </Descriptions>
                   </div>
-
                 )
               }
 
@@ -605,13 +612,13 @@ function ComputerroomReportdetail(props) {
 
 
               <Col span={24}>
-                <p style={{ fontWeight: '900', fontSize: '16px' }}> 4 作业管控情况（含预防性运维）</p>
+                <p style={{ fontWeight: '900', fontSize: '16px' }}> 四、作业管控情况（含预防性运维）</p>
               </Col>
 
-              <Col span={24}><p>{reporttype === 'week' ? '4.1本周作业完成情况' : '4.1本月作业完成情况'}</p></Col>
+              <Col span={24}><p>{reporttype === 'week' ? '(1)本周作业完成情况' : '(1)本月作业完成情况'}</p></Col>
 
               <Col span={24}>
-                <Form.Item label={reporttype === 'week' ? '本周作业完成情况' : '本月作业完成情况'} {...formincontentLayout}>
+                <Form.Item label=''>
                   {
                     getFieldDecorator('operationContent', {
                       initialValue: openReportlist.operationContent ? openReportlist.operationContent : ''
@@ -644,7 +651,7 @@ function ComputerroomReportdetail(props) {
               </Col>
 
 
-              <Col span={24}><p style={{ marginTop: 20 }}>{reporttype === 'week' ? '4.2本周工作票开具情况及服务器查询操作票情况统计' : '4.2本月工作票开具情况及服务器查询操作票情况统计'}</p></Col>
+              <Col span={24}><p style={{ marginTop: 20 }}>{reporttype === 'week' ? '(2)本周工作票开具情况及服务器查询操作票情况统计' : '(2)本月工作票开具情况及服务器查询操作票情况统计'}</p></Col>
 
               <Col span={24}>
                 <Form.Item label=''>
@@ -660,7 +667,7 @@ function ComputerroomReportdetail(props) {
                 </Form.Item>
               </Col>
 
-              <Col span={24}>{reporttype === 'week' ? '4.3下周作业完成情况' : '4.3下月作业完成情况'}</Col>
+              <Col span={24}>{reporttype === 'week' ? '(3)下周作业完成情况' : '(3)下月作业完成情况'}</Col>
 
               {/* 下周工作计划 */}
               <Col span={24}>
@@ -719,16 +726,13 @@ function ComputerroomReportdetail(props) {
                 )
               }
 
-
-
-
               {/* 5 周例会会议纪要完成情况 */}
               <Col span={24}>
                 <WeeklyMeeting
                   forminladeLayout={forminladeLayout}
                   startTime={startTime}
                   endTime={endTime}
-                  type={type}
+                  type={reporttype}
                   meetingSummaryList={contentrowdata => {
                     setMeetingSummaryList(contentrowdata)
                   }}

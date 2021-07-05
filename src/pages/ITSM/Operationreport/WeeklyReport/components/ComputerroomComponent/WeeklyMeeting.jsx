@@ -142,7 +142,7 @@ function WeeklyMeeting(props) {
 
   return (
     <>
-      <p style={{ fontWeight: '900', fontSize: '16px' }}>{type === 'week' ? '5 周例会会议纪要完成情况' : '5 月例会会议纪要完成情况'}</p>
+      <p style={{ fontWeight: '900', fontSize: '16px' }}>{type === 'week' ? '五、周例会会议纪要完成情况' : '五、月例会会议纪要完成情况'}</p>
 
       <div style={{ textAlign: 'right', marginBottom: 10 }}>
         <Button

@@ -112,9 +112,10 @@ const AddForm = React.forwardRef((props, ref) => {
       key: 'field1',
       render: (text, record) => {
         return (
-          <Input
+          <TextArea
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field1', record.key)}
+            disabled={detailParams}
           />
         )
       }
@@ -125,9 +126,10 @@ const AddForm = React.forwardRef((props, ref) => {
       key: 'field2',
       render: (text, record) => {
         return (
-          <Input
+          <TextArea
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field2', record.key)}
+            disabled={detailParams}
           />
         )
       }
@@ -138,9 +140,10 @@ const AddForm = React.forwardRef((props, ref) => {
       key: 'field3',
       render: (text, record) => {
         return (
-          <Input
+          <TextArea
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field3', record.key)}
+            disabled={detailParams}
           />
         )
       }
@@ -151,9 +154,10 @@ const AddForm = React.forwardRef((props, ref) => {
       key: 'field4',
       render: (text, record) => {
         return (
-          <Input
+          <TextArea
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field4', record.key)}
+            disabled={detailParams}
           />
         )
       }
@@ -165,9 +169,10 @@ const AddForm = React.forwardRef((props, ref) => {
       render: (text, record) => {
         // if (record.isNew) {
         return (
-          <Input
+          <TextArea
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field5', record.key)}
+            disabled={detailParams}
           />
         )
         // }
@@ -183,9 +188,10 @@ const AddForm = React.forwardRef((props, ref) => {
       render: (text, record) => {
         // if (record.isNew) {
         return (
-          <Input
+          <TextArea
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field6', record.key)}
+            disabled={detailParams}
           />
         )
       }
@@ -196,9 +202,10 @@ const AddForm = React.forwardRef((props, ref) => {
       key: 'field7',
       render: (text, record) => {
         return (
-          <Input
+          <TextArea
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field7', record.key)}
+            disabled={detailParams}
           />
         )
       }
@@ -209,9 +216,10 @@ const AddForm = React.forwardRef((props, ref) => {
       key: 'field8',
       render: (text, record) => {
         return (
-          <Input
+          <TextArea
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field8', record.key)}
+            disabled={detailParams}
           />
         )
       }
@@ -222,9 +230,10 @@ const AddForm = React.forwardRef((props, ref) => {
       key: 'field9',
       render: (text, record) => {
         return (
-          <Input
+          <TextArea
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field9', record.key)}
+            disabled={detailParams}
           />
         )
       }
@@ -235,9 +244,10 @@ const AddForm = React.forwardRef((props, ref) => {
       key: 'field10',
       render: (text, record) => {
         return (
-          <Input
+          <TextArea
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field10', record.key)}
+            disabled={detailParams}
           />
         )
       }
@@ -336,7 +346,11 @@ const AddForm = React.forwardRef((props, ref) => {
                           setFieldsValue({
                             files: JSON.stringify(newvalue.arr),
                           })
+<<<<<<< HEAD
                           handleSubmit();
+=======
+                          // handleSubmit();
+>>>>>>> ab3bc37... 服务绩效，未完成
                         }}
                       />
                     )}

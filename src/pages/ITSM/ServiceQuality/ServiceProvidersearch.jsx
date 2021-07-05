@@ -4,26 +4,6 @@ import {
   Form,
   Input,
   Button,
-<<<<<<< HEAD
-  Popconfirm,
-  message,
-  DatePicker
-} from 'antd';
-import moment from 'moment';
-
-
-function ProviderMaintenance(props) {
-
-  // 初始化把软件运维服务指标完成情况数据传过去
-  return (
-    <>
-      <p>dd</p>
-    </>
-  )
-}
-
-export default Form.create({})(ProviderMaintenance)
-=======
   Card,
   message,
   Row,
@@ -48,19 +28,14 @@ const formItemLayout = {
 }
 
 
-function ProviderMaintenance(props) {
+function ServiceProvidersearch(props) {
   const pagetitle = props.route.name;
   const {
-    form: {
-      getFieldDecorator,
-      validateFields,
-      resetFields
-    },
+    form: { getFieldDecorator, validateFields,resetFields },
     maintenanceData,
     dispatch
   } = props;
   const [paginations, setPaginations] = useState({ current: 0, pageSize: 15 });
-
 
   const searchdata = (values, page, pageSize) => {
     dispatch({
@@ -75,22 +50,24 @@ function ProviderMaintenance(props) {
     searchdata({}, paginations.current, paginations.pageSize)
   }, [])
 
-  const handleDelete = (id) => {
-    return dispatch({
-      type: 'qualityassessment/maintenanceList',
-      payload: { id }
-    }).then(res => {
-      // message.info(res.msg);
-      searchdata({}, paginations.current, paginations.pageSize)
-    })
-
-  }
-
   const columns = [
     {
       title: '服务商编号',
       dataIndex: 'no',
       key: 'no',
+      render: (text, record) => {
+        const gotoDetail = () => {
+          router.push({
+            pathname: '/ITSM/servicequalityassessment/addserviceprovidermaintenance',
+            query: {
+              id: 'id'
+            }
+          })
+        }
+        return (
+          <a onClick={() => gotoDetail()}>{text}</a>
+        )
+      }
     },
     {
       title: '服务商名称',
@@ -121,34 +98,6 @@ function ProviderMaintenance(props) {
       title: '状态',
       dataIndex: 'statue',
       key: 'statue'
-    },
-    {
-      title: '操作',
-      dataIndex: 'action',
-      fixed: 'right',
-      width: 120,
-      render: (text, record) => {
-        const gotoDetail = () => {
-          router.push({
-            pathname: '/ITSM/servicequalityassessment/addserviceprovidermaintenance',
-            query: {
-              id: ''
-            }
-          })
-        }
-        return (
-          <span>
-            <a onClick={() => gotoDetail()}>编辑</a>
-            <Divider type='vertical' />
-            <Popconfirm
-              title='是否要删除此行？'
-              onConfirm={() => handleDelete(record.key)}
-            >
-              <a>删除</a>
-            </Popconfirm>
-          </span>
-        )
-      }
     },
   ]
 
@@ -196,6 +145,7 @@ function ProviderMaintenance(props) {
     showTotal: total => `总共 ${total} 条记录`,
     onChange: (page) => changePage(page)
   }
+
 
   return (
     <PageHeaderWrapper title={pagetitle}>
@@ -256,16 +206,6 @@ function ProviderMaintenance(props) {
         </Row>
         <Button type='primary'>导出数据</Button>
 
-        <Button
-          style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
-          type="primary"
-          ghost
-          onClick={newProvider}
-          icon='plus'
-        >
-          新增服务商
-        </Button>
-
         <Table
           columns={columns}
           dataSource={maintenanceData}
@@ -280,6 +220,5 @@ function ProviderMaintenance(props) {
 export default Form.create({})(
   connect(({ qualityassessment, loading }) => ({
     maintenanceData: qualityassessment.maintenanceData
-  }))(ProviderMaintenance)
+  }))(ServiceProvidersearch)
 )
->>>>>>> ab3bc37... 服务绩效，未完成

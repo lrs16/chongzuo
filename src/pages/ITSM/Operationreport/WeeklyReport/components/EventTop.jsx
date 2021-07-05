@@ -1,37 +1,28 @@
-import React, { useState, useEffect, useRef, useImperativeHandle } from 'react';
+import React, { useState, useEffect} from 'react';
 import {
   Table,
   Form,
   Input,
   Col,
   Row,
-  Divider,
   Popconfirm,
   Select,
-  AutoComplete,
-  Spin,
   Button,
   message
 } from 'antd';
-import { connect } from 'dva';
-import SysUpload from '@/components/SysUpload';
-import { queryDisableduserByUser, queryUnitList, queryDeptList } from '@/services/common';
-import styles from '../index.less';
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> ab3bc37... 服务绩效，未完成
 const { TextArea } = Input;
 const { Option } = Select;
 
 function EventTop(props) {
   const {
-    form: { getFieldDecorator, setFieldsValue, validateFields },
-    forminladeLayout,
     formincontentLayout,
     formItemLayout,
-    startTime,
-    endTime,
     topNList,
-    ordertopnArr,
     defaultValue,
     topArr,
     mainId,
@@ -42,8 +33,6 @@ function EventTop(props) {
   } = props;
 
   const [data, setData] = useState([]);
-  const [disablelist, setDisabledList] = useState([]);
-  const [spinloading, setSpinLoading] = useState(true);
 
   // 初始化把数据传过去
   useEffect(() => {

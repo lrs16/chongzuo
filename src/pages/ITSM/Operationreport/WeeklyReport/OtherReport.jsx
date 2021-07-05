@@ -284,7 +284,14 @@ function OtherReport(props) {
               {
                 reporttype === 'month' && (
                   <Col span={24}>
+<<<<<<< HEAD
                     <Form.Item label='填报日期'>
+=======
+                    <Form.Item
+                      label='填报日期'
+                      style={{ display: 'inline-flex' }}
+                    >
+>>>>>>> ab3bc37... 服务绩效，未完成
                       {getFieldDecorator('time1', {
                         rules: [
                           {

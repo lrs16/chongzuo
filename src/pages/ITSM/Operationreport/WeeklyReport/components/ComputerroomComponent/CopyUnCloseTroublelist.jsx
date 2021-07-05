@@ -179,7 +179,11 @@ function UnCloseTroublelist(props) {
 
   return (
     <>
+<<<<<<< HEAD
       <p style={{ marginTop: 24 }}>3.2未修复故障清单</p>
+=======
+      <p style={{ marginTop: 24 }}>(2)未修复故障清单</p>
+>>>>>>> ab3bc37... 服务绩效，未完成
 
       <div style={{ textAlign: 'right', marginBottom: 10 }}>
         <Button
