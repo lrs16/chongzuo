@@ -526,19 +526,6 @@ export default {
                           icon: 'control',
                           component: './ITSM/Releasemanage/Checktodo',
                         },
-                      ],
-                    },
-                    {
-                      path: '/ITSM/onsitemanage',
-                      name: '巡检管理',
-                      icon: 'control',
-                      component: './ITSM/OnSitemanage',
-                    },
-                    {
-                      path: '/ITSM/operationreport',
-                      name: '运维周/月报',
-                      icon: 'control',
-                      routes: [
                         {
                           path: '/ITSM/releasemanage/checktodo/record',
                           name: '业务复核',
@@ -714,6 +701,7 @@ export default {
                       path: '/ITSM/operationplan',
                       name: '作业计划',
                       icon: 'control',
+
                       routes: [
                         {
                           path: '/ITSM/operationplan',
@@ -828,13 +816,6 @@ export default {
                           icon:'control',
                           component:'./ITSM/ServiceQuality/ScoringRulesmaintenance'
                         },
-                      ]
-                    },
-                    {
-                      path: '/ITSM/servicequalityassessment',
-                      name: '服务质量考核',
-                      icon: 'control',
-                      routes: [
                         {
                           path:'/ITSM/servicequalityassessment/addscoringrulesmaintenance',
                           name:'新增评分细则维护',
@@ -921,13 +902,6 @@ export default {
                       hideInMenu: true,
                       component: './Automation/Scenarios/WorkFlow',
                     },
-                    // {
-                    //   path: '/automation/timedjob',
-                    //   name: '定时作业',
-                    //   icon: 'history',
-                    //   dynamic: true,
-                    //   component: './Automation/TimedJob',
-                    // },
                     {
                       path: '/automation/opsscene/jobexecut',
                       name: '脚本执行历史',
@@ -1005,122 +979,7 @@ export default {
                           icon: 'cloud-server',
                           component: './Automation/SoftTT/CommandConfigurate',
                         },
-                      ]
-                    },
-                  ]
-                },
-             
-                {
-                  component: './500',
-                },
-              ],
-            },
-            // 自动化运维
-            {
-              path: '/automation',
-              name: '自动化运维',
-              dynamic: true,
-              icon: 'deployment-unit',
-              routes: [
-                {
-                  path: '/automation',
-                  redirect: '/automation/STT/hostlist',
-                },
-                // {
-                //   path: '/automation/monitor',
-                //   name: '作业总览',
-                //   icon: 'dashboard',
-                //   component: './Automation/Monitor',
-                // },
-                {
-                  path: '/automation/opsscene',
-                  name: '运维场景',
-                  icon: 'control',
-                  component: './Automation/Scenarios/OpsScene',
-                },
-                {
-                  path: '/automation/opsscene/workflow',
-                  name: '脚本编排',
-                  icon: 'control',
-                  hideInMenu: true,
-                  component: './Automation/Scenarios/WorkFlow',
-                },
-                {
-                  path: '/automation/opsscene/jobexecut',
-                  name: '脚本执行历史',
-                  icon: 'profile',
-                  hideInMenu: true,
-                  component: './Automation/Scenarios/JobExecut',
-                },
-                {
-                  path: '/automation/jobexecut/viewjob/:id',
-                  name: '脚本详情',
-                  hideInMenu: true,
-                  component: './Automation/Scenarios/ViewJob',
-                },
-                // {
-                //   path: '/automation/timedjob',
-                //   name: '定时作业',
-                //   icon: 'history',
-                //   dynamic: true,
-                //   component: './Automation/TimedJob',
-                // },
-                {
-                  path: '/automation/scriptmanage',
-                  name: '脚本管理',
-                  icon: 'database',
-                  component: './Automation/ScriptManage',
-                },
-                // {
-                //   path: '/automation/resourcemanage',
-                //   name: '资源管理',
-                //   icon: 'cloud-server',
-                //   component: './Automation/ResourceManage',
-                // },
-                {
-                  path: '/automation/STT',
-                  name: '软件启停',
-                  icon: 'cloud-server',
-                  routes: [
-                    {
-                      path: '/automation/STT',
-                      redirect: '/automation/STT/hostlist',
-                    },
-                    {
-                      path: '/automation/STT/hostlist',
-                      name: '主机管理',
-                      icon: 'cloud-server',
-                      component: './Automation/SoftTT/HostManage',
-                    },
-                    {
-                      path: '/automation/STT/soft',
-                      name: '软件管理',
-                      icon: 'cloud-server',
-                      component: './Automation/SoftTT/SoftManage',
-                    },
-                    {
-                      path: '/automation/STT/process',
-                      name: '进程管理',
-                      icon: 'cloud-server',
-                      component: './Automation/SoftTT/ProcessManage',
-                    },
-                    {
-                      path: '/automation/STT/softexetute',
-                      name: '主机操作',
-                      icon: 'cloud-server',
-                      component: './Automation/SoftTT/SoftExetute',
-                    },
-                    {
-                      path: '/automation/STT/execlog',
-                      name: '执行日志',
-                      icon: 'cloud-server',
-                      component: './Automation/SoftTT/ExeclogView',
-                    },
-                    {
-                      path: '/automation/STT/commandconfigurate',
-                      name: '命令配置',
-                      icon: 'cloud-server',
-                      component: './Automation/SoftTT/CommandConfigurate',
+                      ],
                     },
                   ],
                 },
@@ -1327,13 +1186,6 @@ export default {
                           name: '系统警告设定',
                           component: './Alarmmanage/MeasurAlarm/SysSetting/index',
                         },
-                      ],
-                    },
-                    {
-                      path: '/alarmmanage/basicalarm',
-                      icon: 'cloud-server',
-                      name: '基础平台告警',
-                      routes: [
                         {
                           path: '/alarmmanage/measuralarm/noticesetting',
                           icon: 'cloud-server',
