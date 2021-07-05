@@ -169,11 +169,7 @@ const Development = React.forwardRef((props, ref) => {
         style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
         type="primary"
         ghost
-<<<<<<< HEAD
-        onClick={() => newMember()}
-=======
         onClick={newMember}
->>>>>>> ab3bc37... 服务绩效，未完成
         icon="plus"
         disabled={detailParams}
       >

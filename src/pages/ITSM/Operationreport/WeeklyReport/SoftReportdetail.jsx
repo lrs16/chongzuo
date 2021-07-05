@@ -383,10 +383,7 @@ function SoftReportdetail(props) {
                             allowClear={false}
                             style={{ marginRight: 10 }}
                             onChange={onChange}
-<<<<<<< HEAD
-=======
                             disabled={reportSearch}
->>>>>>> ab3bc37... 服务绩效，未完成
                           />
                         )}
                       </Form.Item>
@@ -399,10 +396,7 @@ function SoftReportdetail(props) {
                             (<DatePicker
                               allowClear={false}
                               onChange={endonChange}
-<<<<<<< HEAD
-=======
                               disabled={reportSearch}
->>>>>>> ab3bc37... 服务绩效，未完成
                             />)
                         }
                       </Form.Item>

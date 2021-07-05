@@ -10,11 +10,8 @@ import {
 } from 'antd';
 import moment from 'moment';
 
-<<<<<<< HEAD
-=======
 const { TextArea } = Input;
 
->>>>>>> ab3bc37... 服务绩效，未完成
 function UpgradeList(props) {
 
   const {

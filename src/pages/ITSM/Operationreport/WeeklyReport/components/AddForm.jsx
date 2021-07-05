@@ -346,11 +346,7 @@ const AddForm = React.forwardRef((props, ref) => {
                           setFieldsValue({
                             files: JSON.stringify(newvalue.arr),
                           })
-<<<<<<< HEAD
-                          handleSubmit();
-=======
                           // handleSubmit();
->>>>>>> ab3bc37... 服务绩效，未完成
                         }}
                       />
                     )}

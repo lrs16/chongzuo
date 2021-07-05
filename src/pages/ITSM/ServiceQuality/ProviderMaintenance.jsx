@@ -4,26 +4,6 @@ import {
   Form,
   Input,
   Button,
-<<<<<<< HEAD
-  Popconfirm,
-  message,
-  DatePicker
-} from 'antd';
-import moment from 'moment';
-
-
-function ProviderMaintenance(props) {
-
-  // 初始化把软件运维服务指标完成情况数据传过去
-  return (
-    <>
-      <p>dd</p>
-    </>
-  )
-}
-
-export default Form.create({})(ProviderMaintenance)
-=======
   Card,
   message,
   Row,
@@ -282,4 +262,3 @@ export default Form.create({})(
     maintenanceData: qualityassessment.maintenanceData
   }))(ProviderMaintenance)
 )
->>>>>>> ab3bc37... 服务绩效，未完成

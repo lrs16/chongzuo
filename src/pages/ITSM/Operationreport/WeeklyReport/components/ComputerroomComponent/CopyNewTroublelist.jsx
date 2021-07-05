@@ -219,11 +219,7 @@ function NewTroublelist(props) {
   return (
     <>
       <p style={{ fontWeight: '900', fontSize: '16px' }}>三、本周新增故障及故障修复情况统计</p>
-<<<<<<< HEAD
-      <p>3.1新增及已修复故障</p>
-=======
       <p>(1)新增及已修复故障</p>
->>>>>>> ab3bc37... 服务绩效，未完成
 
       <div style={{ textAlign: 'right', marginBottom: 10 }}>
         <Button

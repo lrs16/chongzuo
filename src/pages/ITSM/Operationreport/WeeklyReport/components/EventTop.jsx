@@ -11,10 +11,6 @@ import {
   message
 } from 'antd';
 
-<<<<<<< HEAD
-
-=======
->>>>>>> ab3bc37... 服务绩效，未完成
 const { TextArea } = Input;
 const { Option } = Select;
 
