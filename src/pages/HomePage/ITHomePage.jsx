@@ -88,6 +88,8 @@ const eventcolumns = [
             taskName: record.eventStatus,
             taskId: record.taskId,
             mainId: record.mainId,
+            check: record.checkResult,
+            orderNo: text,
           },
         });
       };
@@ -155,6 +157,8 @@ const troublecolumns = [
           pathname: `/ITSM/faultmanage/todolist/record`,
           query: {
             id: record.id,
+            mainId: record.mainId,
+            orderNo: text,
           },
         });
       };
@@ -326,7 +330,6 @@ function ITHomePage(props) {
     problemlist,
     demandlist,
     form: { getFieldDecorator, resetFields, validateFields },
-    tabnew,
   } = props;
   const [ordertype, setOrderType] = useState('event'); // 工单类型
   const [tabskeys, setTabsKeys] = useState([]); // 节点tabs
@@ -717,9 +720,7 @@ function ITHomePage(props) {
 }
 
 export default Form.create({})(
-  connect(({ ithomepage, fault, problemmanage, demandtodo, viewcache, loading }) => ({
-    tabnew: viewcache.tabnew,
-    tabid: viewcache.tabid,
+  connect(({ ithomepage, fault, problemmanage, demandtodo, loading }) => ({
     eventlist: ithomepage.list,
     faultlist: fault.faultTodoList,
     problemlist: problemmanage.besolveList,

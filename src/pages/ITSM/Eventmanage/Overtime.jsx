@@ -5,6 +5,7 @@ import moment from 'moment';
 import { Card, Row, Col, Form, Input, Select, DatePicker, Button, Table, List } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
+import KeyVal from '@/components/SysDict/KeyVal';
 
 // const { RangePicker } = DatePicker;
 const { Option } = Select;
@@ -208,6 +209,7 @@ function Overtime(props) {
   const [tablecolumn, setTableColumn] = useState(columns); // 打开标签
   const [expand, setExpand] = useState(false);
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
+  const [selectdata, setSelectData] = useState({ status: [] });
 
   const getdatas = tabkey => {
     validateFields((err, values) => {
@@ -356,6 +358,12 @@ function Overtime(props) {
       tabActiveKey={tabActivekey}
       onTabChange={handleTabChange}
     >
+      <KeyVal
+        style={{ display: 'none' }}
+        dictModule="event"
+        dictType="status"
+        ChangeSelectdata={newvalue => setSelectData(newvalue)}
+      />
       <Card>
         <Row gutter={24}>
           <Form {...formItemLayout}>
@@ -371,12 +379,28 @@ function Overtime(props) {
                 {getFieldDecorator('flowNodeName', {
                   initialValue: '',
                 })(
-                  <Select>
-                    <Option value="事件登记">事件登记</Option>
-                    <Option value="事件审核">事件审核</Option>
-                    <Option value="事件处理">事件处理</Option>
-                    <Option value="事件确认">事件确认</Option>
-                  </Select>,
+                  <Select
+                    style={{ width: '100%' }}
+                    placeholder="请选择"
+                  >
+                    {selectdata.status.map(obj => {
+                      if (obj.val !== '已关闭') {
+                        return (
+                          <Option key={obj.key} value={obj.val}>
+                            {obj.val}
+                          </Option>
+                        )
+                      }
+                      return null;
+                    })}
+                  </Select>
+                  // <Select>
+                  //   <Option value="事件登记">事件登记</Option>
+                  //   <Option value="事件响应">事件响应</Option>
+                  //   <Option value="事件审核">事件审核</Option>
+                  //   <Option value="事件处理">事件处理</Option>
+                  //   <Option value="事件确认">事件确认</Option>
+                  // </Select>,
                 )}
               </Form.Item>
             </Col>
