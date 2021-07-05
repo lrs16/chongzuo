@@ -606,7 +606,7 @@ const BasicLayout = props => {
                   type='editable-card'
                   onChange={(key) => callback(key)}
                   onEdit={onEdit}
-                  style={{ margin: '-24px -24px 0 ', backgroundColor: '#fff' }}
+                  style={{ margin: '-24px -24px 0 ', backgroundColor: '#fff', position: 'fixed', width: 'calc(100% - 280px)', zIndex: 999 }}
                 >
                   {toptabs.map(obj => [
                     <TabPane
