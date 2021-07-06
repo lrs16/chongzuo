@@ -783,88 +783,140 @@ export default {
                       ]
                     },
                     {
-                      path:'/ITSM/servicequalityassessment',
-                      name:'服务质量考核',
+                      path: '/ITSM/servicequalityassessment',
+                      name: '服务质量考核',
                       icon: 'control',
-                      routes:[
+                      routes: [
                         {
-                          path:'/ITSM/servicequalityassessment',
-                          redirect:'/ITSM/servicequalityassessment/serviceprovidermaintenance'
+                          path: '/ITSM/servicequalityassessment',
+                          redirect: '/ITSM/servicequalityassessment/serviceprovidermaintenance'
                         },
                         {
-                          path:'/ITSM/servicequalityassessment/serviceprovidermaintenance',
-                          name:'服务商维护',
-                          icon:'control',
-                          component:'./ITSM/ServiceQuality/ProviderMaintenance'
+                          path: '/ITSM/servicequalityassessment/serviceprovidermaintenance',
+                          name: '服务商维护',
+                          icon: 'control',
+                          component: './ITSM/ServiceQuality/ProviderMaintenance'
                         },
                         {
-                          path:'/ITSM/servicequalityassessment/addserviceprovidermaintenance',
-                          name:'新增服务商维护',
-                          icon:'control',
-                          component:'./ITSM/ServiceQuality/components/AddProviderMaintenance'
+                          path: '/ITSM/servicequalityassessment/addserviceprovidermaintenance',
+                          name: '新增服务商维护',
+                          icon: 'control',
+                          component: './ITSM/ServiceQuality/components/AddProviderMaintenance'
                         },
-    
+
                         {
-                          path:'/ITSM/servicequalityassessment/serviceprovidersearch',
-                          name:'服务商查询',
-                          icon:'control',
-                          component:'./ITSM/ServiceQuality/ServiceProvidersearch'
-                        },
-                        {
-                          path:'/ITSM/servicequalityassessment/scoringrulesmaintenance',
-                          name:'评分细则维护',
-                          icon:'control',
-                          component:'./ITSM/ServiceQuality/ScoringRulesmaintenance'
+                          path: '/ITSM/servicequalityassessment/serviceprovidersearch',
+                          name: '服务商查询',
+                          icon: 'control',
+                          component: './ITSM/ServiceQuality/ServiceProvidersearch'
                         },
                         {
-                          path:'/ITSM/servicequalityassessment/addscoringrulesmaintenance',
-                          name:'新增评分细则维护',
-                          icon:'control',
-                          component:'./ITSM/ServiceQuality/components/AddScoringRulesmaintenance'
+                          path: '/ITSM/servicequalityassessment/scoringrulesmaintenance',
+                          name: '评分细则维护',
+                          icon: 'control',
+                          component: './ITSM/ServiceQuality/ScoringRulesmaintenance'
                         },
                         {
-                          path:'/ITSM/servicequalityassessment/scoringrulessearch',
-                          name:'评分细则查询',
-                          icon:'control',
-                          component:'./ITSM/ServiceQuality/ScoringRulesssearch'
+                          path: '/ITSM/servicequalityassessment/addscoringrulesmaintenance',
+                          name: '新增评分细则维护',
+                          icon: 'control',
+                          component: './ITSM/ServiceQuality/components/AddScoringRulesmaintenance'
                         },
                         {
-                          path:'/ITSM/servicequalityassessment/serviceperformanceappraisal',
-                          name:'服务绩效考核',
-                          icon:'control',
-                          routes:[
+                          path: '/ITSM/servicequalityassessment/scoringrulessearch',
+                          name: '评分细则查询',
+                          icon: 'control',
+                          component: './ITSM/ServiceQuality/ScoringRulesssearch'
+                        },
+                        {
+                          path: '/ITSM/servicequalityassessment/serviceperformanceappraisal',
+                          name: '服务绩效考核',
+                          icon: 'control',
+                          routes: [
                             {
-                              path:'/ITSM/servicequalityassessment/serviceperformanceappraisal/register',
-                              name:'服务绩效考核登记',
-                              icon:'fork',
-                              component:'./ITSM/ServiceQuality/ServicePerformanceappraisal/Registertion'
+                              path: '/ITSM/servicequalityassessment/serviceperformanceappraisal/register',
+                              name: '服务绩效考核登记',
+                              icon: 'fork',
+                              component: './ITSM/ServiceQuality/ServicePerformanceappraisal/Registertion'
                             },
                             {
-                              path:'/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtform',
-                              name:'服务绩效考核待办详情',
-                              icon:'fork',
-                              component:'./ITSM/ServiceQuality/ServicePerformanceappraisal/TobedealtForm'
+                              path: '/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtform',
+                              name: '服务绩效考核待办详情',
+                              icon: 'fork',
+                              component: './ITSM/ServiceQuality/ServicePerformanceappraisal/TobedealtForm'
                             },
                             {
-                              path:'/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtlist',
-                              name:'服务绩效考核待办',
-                              icon:'fork',
-                              component:'./ITSM/ServiceQuality/ServicePerformanceappraisal/TobedealtList'
+                              path: '/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtlist',
+                              name: '服务绩效考核待办',
+                              icon: 'fork',
+                              component: './ITSM/ServiceQuality/ServicePerformanceappraisal/TobedealtList'
                             },
                             {
-                              path:'/ITSM/servicequalityassessment/serviceperformanceappraisal/search',
-                              name:'服务绩效考核查询',
-                              icon:'fork',
-                              component:'./ITSM/ServiceQuality/ServicePerformanceappraisal/Search'
+                              path: '/ITSM/servicequalityassessment/serviceperformanceappraisal/search',
+                              name: '服务绩效考核查询',
+                              icon: 'fork',
+                              component: './ITSM/ServiceQuality/ServicePerformanceappraisal/Search'
                             },
                             {
-                              path:'/ITSM/servicequalityassessment/serviceperformanceappraisal/assessment',
-                              name:'我的服务绩效考核',
-                              icon:'fork',
-                              component:'./ITSM/ServiceQuality/ServicePerformanceappraisal/Assessment'
+                              path: '/ITSM/servicequalityassessment/serviceperformanceappraisal/assessment',
+                              name: '我的服务绩效考核',
+                              icon: 'fork',
+                              component: './ITSM/ServiceQuality/ServicePerformanceappraisal/Assessment'
                             }
                           ]
-                        }
+                        },
+                      ]
+                    },
+                    {
+                      path: '/ITSM/knowledgemanage',
+                      name: '知识管理',
+                      icon: 'control',
+                      routes: [
+                        {
+                          path: '/ITSM/knowledgemanage',
+                          redirect: '/ITSM/knowledgemanage/myknowledge',
+                        },
+                        {
+                          path: '/ITSM/knowledgemanage/myknowledge',
+                          name: '我的知识',
+                          icon: 'fork',
+                          component: './ITSM/Knowledgemanage/KnowledgeList'
+                        },
+                        {
+                          path: '/ITSM/knowledgemanage/maintain',
+                          name: '知识维护',
+                          icon: 'fork',
+                          component: './ITSM/Knowledgemanage/KnowledgeList'
+                        },
+                        {
+                          path: '/ITSM/knowledgemanage/toexamine',
+                          name: '知识审核',
+                          icon: 'fork',
+                          component: './ITSM/Knowledgemanage/KnowledgeList'
+                        },
+                        {
+                          path: '/ITSM/knowledgemanage/query',
+                          name: '知识查询',
+                          icon: 'fork',
+                          component: './ITSM/Knowledgemanage/KnowledgeList'
+                        },
+                        {
+                          path: '/ITSM/knowledgemanage/statistics',
+                          name: '知识统计',
+                          icon: 'fork',
+                          routes: [
+                            {
+                              path: '/ITSM/knowledgemanage/statistics',
+                              redirect: '/ITSM/knowledgemanage/statistics/type',
+                            },
+                            {
+                              path: '/ITSM/knowledgemanage/statistics/type',
+                              name: '知识分类统计',
+                              icon: 'fork',
+                              component: './ITSM/Knowledgemanage/StatisticsbyType'
+                            },
+                          ]
+                        },
                       ]
                     },
                     {

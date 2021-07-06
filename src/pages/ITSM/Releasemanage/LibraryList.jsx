@@ -171,7 +171,6 @@ function LibraryList(props) {
   )
 
   const columns = [
-
     {
       title: '发布编号',
       dataIndex: 'No',
