@@ -101,12 +101,12 @@ function Work(props) {
 
   if (loading === false && openFlowList.code !== -1) {
     const resgister = data && data.length && edit.main !== undefined;
-    if(resgister) {
+    if (resgister) {
       headTitle = status || taskName;
     }
 
     const checkParams = data && data.length && (edit.check || taskName === '计划审核')
-    if(checkParams) {
+    if (checkParams) {
       headTitle = '作业计划审核';
     }
   }
@@ -286,7 +286,7 @@ function Work(props) {
       fillinSave(params, tobatch);
     }
 
-    if (auditLink) {
+    if (flowNodeName === '计划审核') {
       checkSave();
     }
   }
@@ -544,7 +544,7 @@ function Work(props) {
           }
 
           {
-            auditLink && taskResult && taskResult.length > 0 && !delay && (
+            taskResult && taskResult.length > 0 && flowNodeName === '计划审核' && !delay && (
               <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleExamine()}>
                 审核
               </Button>
@@ -552,7 +552,7 @@ function Work(props) {
           }
 
           {
-            loading === false && taskResult && taskResult.length > 0 && auditLink && !delay && edit.check && edit.check.result === null && taskResult && taskResult.length > 0 && (
+            loading === false && taskResult && taskResult.length > 0  && !delay && edit.check && edit.check.result === null && taskResult && taskResult.length > 0 && (
               <Back
                 reasonSubmit={values => reasonSubmit(values)}
                 detailPage='true'
@@ -565,7 +565,7 @@ function Work(props) {
           }
 
           {
-            loading === false && taskResult && taskResult.length > 0 && !delay && (openFlowList && edit.execute !== undefined) && checkStatus === '已审核' && taskResult && taskResult.length > 0 && (
+            loading === false && taskResult && taskResult.length > 0 && !delay && (openFlowList && edit.execute !== undefined) && flowNodeName === '计划执行' && taskResult && taskResult.length > 0 && (
               <Button
                 type="primary"
                 onClick={() => handleExecute()}>确认执行</Button>
@@ -591,87 +591,92 @@ function Work(props) {
 
       {
         loading === false && taskResult && taskResult.length > 0 && data && (
-          <Collapse
-            expandIconPosition="right"
-            defaultActiveKey={['1']}
-            onChange={callback}
-            bordered='true'
-          >
-            <>
-              {!delay && (edit.check || flowNodeName === '计划审核') && (
-                <Panel
-                  header='作业计划审核'
-                  key='1'
-                  style={{ backgroundColor: 'white' }}
-                >
-                  <FatherContext.Provider value={{ flowtype, setFlowtype }}>
-                    <TaskCheck
-                      formItemLayout={formItemLayout}
-                      forminladeLayout={forminladeLayout}
-                      check={edit.check}
-                      userinfo={userinfo}
-                      checkStatus={checkStatus}
-                      ref={SaveRef}
-                    />
-                  </FatherContext.Provider>
-                </Panel>
-              )}
-
-              {
-                loading === false && !delay && (openFlowList && openFlowList.edit.execute !== undefined) && (checkStatus === '已审核' || flowNodeName === '计划执行') && (
+          <div className={styles.collapse}>
+            <Collapse
+              expandIconPosition="right"
+              defaultActiveKey={['1']}
+              onChange={callback}
+              bordered='true'
+            >
+              <>
+                {!delay && (edit.check || flowNodeName === '计划审核') && (
                   <Panel
-                    header='作业计划执行'
+                    header='作业计划审核'
                     key='1'
                     style={{ backgroundColor: 'white' }}
-                    bordered
                   >
-                    <TaskExecute
-                      formItemLayout={formItemLayout}
-                      forminladeLayout={forminladeLayout}
-                      type=''
-                      userinfo={userinfo}
-                      taskResult={taskResult}
-                      ref={SaveRef}
-                      execute={edit.execute}
-                      files={
-                        (edit.execute.fileIds) && (edit.execute.fileIds) ? JSON.parse(edit.execute.fileIds) : []
-                      }
-                      ChangeFiles={newvalue => {
-                        setFiles(newvalue);
-                      }}
-                    />
-                  </Panel>
-                )
-              }
-
-              {
-                loading === false && (edit && edit.main !== undefined || delay) && (
-                  <Panel
-                    header={status || taskName}
-                    key='1'
-                    bordered
-                    style={{ backgroundColor: 'white' }}
-                  >
-                    <OperationPlanfillin
-                      formItemLayout={formItemLayout}
-                      forminladeLayout={forminladeLayout}
-                      main={delay ? openFlowList.main : edit.main}
-                      type={delay}
-                      status={status}
-                      useInfo={userinfo}
-                      ref={SaveRef}
-                      operationPersonSelect={operationPersonSelect}
-                      files={
-                        (openFlowList.main.fileIds) !== '' && (openFlowList.main.fileIds) ? JSON.parse(openFlowList.main.fileIds) : []
-                      }
-                      ChangeFiles={newvalue => {
-                        setFiles(newvalue);
-                      }}
-                    />
+                    <FatherContext.Provider value={{ flowtype, setFlowtype }}>
+                      <TaskCheck
+                        formItemLayout={formItemLayout}
+                        forminladeLayout={forminladeLayout}
+                        check={edit.check}
+                        userinfo={userinfo}
+                        checkStatus={checkStatus}
+                        ref={SaveRef}
+                      />
+                    </FatherContext.Provider>
                   </Panel>
                 )}
-            </>
-          </Collapse>
+
+                {
+                  loading === false && !delay && (openFlowList && openFlowList.edit.execute !== undefined) && (checkStatus === '已审核' || flowNodeName === '计划执行') && (
+                    <Panel
+                      header='作业计划执行'
+                      key='1'
+                      style={{ backgroundColor: 'white' }}
+                      bordered
+                    >
+                      <TaskExecute
+                        formItemLayout={formItemLayout}
+                        forminladeLayout={forminladeLayout}
+                        type=''
+                        userinfo={userinfo}
+                        taskResult={taskResult}
+                        ref={SaveRef}
+                        execute={edit.execute}
+                        files={
+                          (edit.execute.fileIds) && (edit.execute.fileIds) ? JSON.parse(edit.execute.fileIds) : []
+                        }
+                        ChangeFiles={newvalue => {
+                          setFiles(newvalue);
+                        }}
+                      />
+                    </Panel>
+                  )
+                }
+
+                {
+                  loading === false && (edit && edit.main !== undefined || delay) && (
+                    <Panel
+                      header={status || taskName}
+                      key='1'
+                      bordered
+                      style={{ backgroundColor: 'white' }}
+                    >
+                      <OperationPlanfillin
+                        formItemLayout={formItemLayout}
+                        forminladeLayout={forminladeLayout}
+                        main={delay ? openFlowList.main : edit.main}
+                        type={delay}
+                        status={status}
+                        useInfo={userinfo}
+                        ref={SaveRef}
+                        operationPersonSelect={operationPersonSelect}
+                        files={
+                          (openFlowList.main.fileIds) !== '' && (openFlowList.main.fileIds) ? JSON.parse(openFlowList.main.fileIds) : []
+                        }
+                        ChangeFiles={newvalue => {
+                          setFiles(newvalue);
+                        }}
+                      />
+                    </Panel>
+                  )}
+              </>
+            </Collapse>
+
+          </div>
+
+
         )
       }
 
