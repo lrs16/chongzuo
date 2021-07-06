@@ -76,7 +76,7 @@ function Registration(props) {
   };
 
   const getregistrat = type => {
-    const values = RegistratRef.current.getVal();
+    const values = RegistratRef.current?.getVal();
     setFormregistrat({
       ...values,
       main_eventObject: values.main_eventObject?.slice(-1)[0],
@@ -115,7 +115,7 @@ function Registration(props) {
   const gethandle = type => {
     RegistratRef.current.Forms((err) => {
       if (!err) {
-        const values = HandleRef.current.getVal();
+        const values = HandleRef.current?.getVal();
         setFormhandle({
           ...values,
           main_eventObject: values.main_eventObject?.slice(-1)[0],
