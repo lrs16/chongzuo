@@ -79,7 +79,7 @@ const TaskExecute = React.forwardRef((props, ref) => {
               rules: [
                 {
                   required,
-                  message: '请输入审核结果'
+                  message: '请输入作业结果'
                 }
               ],
               initialValue: execute.result

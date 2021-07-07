@@ -42,7 +42,7 @@ const { Panel } = Collapse;
 function Registertion(props) {
   const pagetitle = props.route.name;
   const {
-    dispatch
+    dispatch,
   } = props;
   const RegistratRef = useRef();
   const [activeKey, setActiveKey] = useState(['registratform']);
@@ -62,6 +62,8 @@ function Registertion(props) {
       })
     })
   }
+
+
 
   return (
     <PageHeaderWrapper
@@ -106,7 +108,7 @@ function Registertion(props) {
 }
 
 export default Form.create({})(
-  connect(({ qualityassessment, loading }) => ({
+  connect(({ qualityassessment,loading }) => ({
     maintenanceData: qualityassessment.maintenanceData
   }))(Registertion)
 )

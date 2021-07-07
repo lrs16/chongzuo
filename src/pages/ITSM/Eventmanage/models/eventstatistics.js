@@ -9,7 +9,8 @@ import {
   eventselfhandleDownload,
   eventtopnDownload,
   eventhandlerateDownload,
-  querkeyVal
+  getEventHandleRateList,
+  downloadEventHandleRateListExcel
 } from '../services/statistics';
 
 export default {
@@ -22,7 +23,8 @@ export default {
     ordertopnArr:[],
     orderrateArr:[],
     eventServicearr:[],
-    primaryObject:[]
+    primaryObject:[],
+    eventHandleRatearr:[]
   },
 
   effects: {
@@ -69,6 +71,15 @@ export default {
       })
     },
 
+     // 工单处理率详情列表
+     *getEventHandleRateList({ payload }, { call, put }) {
+      const response = yield call(getEventHandleRateList,payload);
+      yield put ({
+        type: 'eventHandleRatearr',
+        payload: response
+      })
+    },
+
     //  下载类
     //   下载运维分类情况统计
     *downloadMaintenance({payload},{ call, put }) {
@@ -93,6 +104,11 @@ export default {
     //   下载事件处理率
     *downloadEventhandlerate({payload},{ call, put }) {
       return yield call(eventhandlerateDownload, payload)
+    },
+
+    //   下载工单处理率列表下载
+    *downloadEventHandleRateListExcel({payload},{ call, put }) {
+      return yield call(downloadEventHandleRateListExcel, payload)
     },
 
     
@@ -133,6 +149,14 @@ export default {
     return {
       ...state,
       orderrateArr: action.payload.data
+    }
+  },
+
+  // 处理率统计详情页列表
+  eventHandleRatearr(state, action) {
+    return {
+      ...state,
+      eventHandleRatearr: action.payload.data
     }
   },
 

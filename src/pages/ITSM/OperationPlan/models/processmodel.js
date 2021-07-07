@@ -60,7 +60,7 @@ export default {
             pathname: `/ITSM/operationplan/operationplanform`,
             query: {
               mainId: response.mainId,
-              status: '计划中',
+              status: '计划登记',
               orderNo: saveresponse.operationNo,
             },
             state: {

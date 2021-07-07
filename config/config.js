@@ -865,58 +865,25 @@ export default {
                             }
                           ]
                         },
-                      ]
-                    },
-                    {
-                      path: '/ITSM/knowledgemanage',
-                      name: '知识管理',
-                      icon: 'control',
-                      routes: [
                         {
-                          path: '/ITSM/knowledgemanage',
-                          redirect: '/ITSM/knowledgemanage/myknowledge',
-                        },
-                        {
-                          path: '/ITSM/knowledgemanage/myknowledge',
-                          name: '我的知识',
-                          icon: 'fork',
-                          component: './ITSM/Knowledgemanage/KnowledgeList'
-                        },
-                        {
-                          path: '/ITSM/knowledgemanage/maintain',
-                          name: '知识维护',
-                          icon: 'fork',
-                          component: './ITSM/Knowledgemanage/KnowledgeList'
-                        },
-                        {
-                          path: '/ITSM/knowledgemanage/toexamine',
-                          name: '知识审核',
-                          icon: 'fork',
-                          component: './ITSM/Knowledgemanage/KnowledgeList'
-                        },
-                        {
-                          path: '/ITSM/knowledgemanage/query',
-                          name: '知识查询',
-                          icon: 'fork',
-                          component: './ITSM/Knowledgemanage/KnowledgeList'
-                        },
-                        {
-                          path: '/ITSM/knowledgemanage/statistics',
-                          name: '知识统计',
-                          icon: 'fork',
-                          routes: [
+                          path:'/ITSM/servicequalityassessment/creditcard',
+                          name:'记分卡管理',
+                          icon:'control',
+                          routes:[
                             {
-                              path: '/ITSM/knowledgemanage/statistics',
-                              redirect: '/ITSM/knowledgemanage/statistics/type',
+                              path:'/ITSM/servicequalityassessment/creditcard/creditcardregister',
+                              name:'记分卡登记',
+                              icon:'fork',
+                              component:'./ITSM/ServiceQuality/CreditCard/CreditCardRegister'
                             },
                             {
-                              path: '/ITSM/knowledgemanage/statistics/type',
-                              name: '知识分类统计',
-                              icon: 'fork',
-                              component: './ITSM/Knowledgemanage/StatisticsbyType'
+                              path:'/ITSM/servicequalityassessment/creditcard/creditcardsearch',
+                              name:'计分卡查询',
+                              icon:'fork',
+                              component:'./ITSM/ServiceQuality/CreditCard/CreditCardSearch'
                             },
                           ]
-                        },
+                        }
                       ]
                     },
                     {

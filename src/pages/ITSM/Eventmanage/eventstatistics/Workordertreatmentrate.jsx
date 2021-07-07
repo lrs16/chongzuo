@@ -12,6 +12,7 @@ import {
 import Link from 'umi/link';
 import moment from 'moment';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import TreatmentrateDetail from './TreatmentrateDetail';
 
 let startTime;
 let endTime;
@@ -27,45 +28,41 @@ const columns = [
     title: '工单数',
     dataIndex: 'order_num',
     key: 'order_num',
-    render: (text, record) => (
-      <Link
-        to={{
-          pathname: '/ITSM/eventmanage/query',
-          query: {
-            sign: 'last',
-            time1: record.start_time,
-            time2: record.end_time,
-            applicationUnit: record.unit,
-            pathpush: true,
-          },
-          state: { cache: false },
-        }}
-      >
-        {text}
-      </Link>
-    )
+    render: (text, record) => {
+      const detailParams = {
+        time1: record.start_time,
+        time2: record.end_time,
+        unitName: record.unit,
+        status:''
+      }
+      return (
+        <TreatmentrateDetail
+          detailParams={detailParams}
+        >
+            <a type="link">{text}</a>
+        </TreatmentrateDetail>
+      )
+    }
   },
   {
     title: '完成数',
     dataIndex: 'close_num',
     key: 'close_num',
-    render: (text, record) => (
-      <Link
-        to={{
-          pathname: '/ITSM/eventmanage/query',
-          query: {
-            time1: record.start_time,
-            time2: record.end_time,
-            applicationUnit: record.unit,
-            eventStatus: '已关闭',
-            pathpush: true
-          },
-          state: { cache: false },
-        }}
-      >
-        {text}
-      </Link>
-    )
+    render: (text, record) => {
+      const detailParams = {
+        time1: record.start_time,
+        time2: record.end_time,
+        unitName: record.unit,
+        status:'已完成'
+      }
+      return (
+        <TreatmentrateDetail
+          detailParams={detailParams}
+        >
+            <a type="link">{text}</a>
+        </TreatmentrateDetail>
+      )
+    }
   },
   {
     title: '完成率',
@@ -165,7 +162,7 @@ function Workordertreatmentrate(props) {
                   onClick={() => handleListdata('search')}
                 >
                   查询
-                    </Button>
+                </Button>
               </Col>
             </>
           </Form>

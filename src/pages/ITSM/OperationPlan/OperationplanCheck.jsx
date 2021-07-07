@@ -283,24 +283,6 @@ function OperationplanCheck(props) {
     return item.title
   });
 
-  const getTobolist = () => {
-    dispatch({
-      type: 'processmodel/myTasklist',
-      payload: {
-        flowNodeName: '计划审核',
-        pageIndex: paginations.current,
-        pageSize: paginations.pageSize,
-      },
-    });
-  };
-
-  // 上传删除附件触发保存
-  useEffect(() => {
-    if (files.ischange) {
-      getTobolist();
-    }
-  }, [files]);
-
   const handleReset = () => {
     resetFields();
     dispatch({
@@ -531,7 +513,7 @@ function OperationplanCheck(props) {
   useEffect(() => {
     queryDept();
     getoperationPerson();
-    //  getTobolist();
+    searchdata({},1,paginations.pageSize);
     setColumns(initialColumns)
   }, []);
 
@@ -558,9 +540,9 @@ function OperationplanCheck(props) {
     }).then(res => {
       if (res.code === 200) {
         message.info(res.msg);
-        getTobolist();
+        searchdata({},1,paginations.pageSize);
       } else {
-        getTobolist();
+        searchdata({},1,paginations.pageSize);
         message.error(res.msg);
       }
     });

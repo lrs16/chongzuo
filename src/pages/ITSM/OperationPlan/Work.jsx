@@ -278,16 +278,18 @@ function Work(props) {
 
   //  判断是属于那个保存状态下
   const handleSave = (params, tobatch) => {
-    if (openFlowList && openFlowList.edit.execute !== undefined && checkStatus === '已审核') {
-      executeSave();
-    }
-
-    if (openFlowList && openFlowList.edit.main !== undefined) {
-      fillinSave(params, tobatch);
-    }
-
-    if (flowNodeName === '计划审核') {
-      checkSave();
+    switch(flowNodeName) {
+      case '计划登记':
+        fillinSave(params, tobatch);
+        break;
+      case '计划审核':
+        checkSave();
+        break;
+      case '计划执行':
+        executeSave();
+        break;
+      default:
+        break;
     }
   }
 
@@ -648,7 +650,7 @@ function Work(props) {
                 {
                   loading === false && (edit && edit.main !== undefined || delay) && (
                     <Panel
-                      header={status || taskName}
+                      header={status || flowNodeName}
                       key='1'
                       bordered
                       style={{ backgroundColor: 'white' }}

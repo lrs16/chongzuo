@@ -85,5 +85,24 @@ export async function querkeyVal(params) {
   });
 }
 
+// 工单处理率详情页
+export async function getEventHandleRateList(params) {
+  return request(`/event/form/getEventHandleRateList`,{
+    method:'POST',
+    data:params,
+    requestType:'form'
+  })
+}
+
+//  工单处理率下载
+export async function downloadEventHandleRateListExcel(params) {
+  return request(`/event/form/downloadEventHandleRateListExcel`,{
+    method:'POST',
+    responseType:'blob',
+    data:params,
+    requestType:'form'
+  })
+}
+
 
 
