@@ -22,6 +22,7 @@ const columns = [
                 taskId: record.taskId,
                 mainId: record.instanceId,
                 orderNo: text,
+                check: record.itemCheckStatus,
               },
             });
             break;
@@ -67,8 +68,8 @@ const columns = [
               query: {
                 flowNodeName: record.nodeName,
                 mainId: record.instanceId,
-                status: record.status,
-                checkStatus: record.checkStatus,
+                status: record.itemWorkStatus,
+                checkStatus: record.itemCheckStatus,
                 orderNo: record.itemWorkId,
               }
             })
