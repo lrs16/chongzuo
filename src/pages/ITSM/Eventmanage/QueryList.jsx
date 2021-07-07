@@ -457,6 +457,9 @@ function QueryList(props) {
         if (res.code === 200) {
           message.success('删除成功！');
         };
+        if (res.code === -1) {
+          message.error(res.msg);
+        };
         validateFields((err, values) => {
           if (!err) {
             searchdata(values, paginations.current - 1, paginations.pageSize);
