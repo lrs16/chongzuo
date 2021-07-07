@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { connect } from 'dva';
+import moment from 'moment';
 import { Collapse, Steps, Spin, message } from 'antd';
 import SysDict from '@/components/SysDict';
 import styles from './index.less';
@@ -547,12 +548,25 @@ function WorkOrder2(props) {
           }}
         >
           {records.map((obj, index) => {
+            let tempTime = '';
+            if (obj.addTime && obj.endTime) {
+              const addtime = moment(obj.addTime);
+              const endtime = moment(obj.endTime);
+              const dura = endtime.format('x') - addtime.format('x');
+              tempTime = moment.duration(dura);
+            }
             const desc = (
               <div className={styles.stepDescription}>
                 处理人：{obj.user}
                 {/* <DingdingOutlined /> */}
                 <div>开始时间：{obj.addTime}</div>
                 <div>结束时间：{obj.endTime}</div>
+                {tempTime && (<div style={{ color: 'rgba(0, 0, 0, 0.85)', fontSize: '16px' }}>用时：
+                  {tempTime.days() !== 0 && (<>{tempTime.days()}天</>)}
+                  {tempTime.hours() !== 0 && (<>{tempTime.hours()}小时</>)}
+                  {tempTime.minutes() !== 0 && (<>{tempTime.minutes()}分</>)}
+                  {((tempTime.days() === 0 && tempTime.hours() === 0 && tempTime.minutes() === 0 && tempTime.seconds() === 0) || tempTime.seconds() !== 0) && (<>{tempTime.seconds()}秒</>)}
+                </div>)}
               </div>
             );
             return <Step title={obj.nodeName} description={desc} key={index.toString()} />;
