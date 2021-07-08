@@ -25,7 +25,7 @@ function DisableduserManage(props) {
       type: 'disabledusermanage/query',
       payload: {
         user: '',
-        pageIndex: paginations.current > 0 ? paginations.current - 1 : 0,
+        pageIndex: paginations.current - 1,
         pageSize: paginations.pageSize,
       },
     });
@@ -137,7 +137,7 @@ function DisableduserManage(props) {
   const handleSearch = () => {
     setPageinations({
       ...paginations,
-      current: 0,
+      current: 1,
     });
     validateFields((err, values) => {
       if (err) {

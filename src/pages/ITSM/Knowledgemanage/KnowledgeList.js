@@ -307,13 +307,14 @@ function KnowledgeList(props) {
             <>
               <Button type="primary" style={{ marginRight: 8 }} onClick={() => newknowledge()}>新增</Button >
               <Button type="primary" style={{ marginRight: 8 }}>编辑</Button >
-              <Button type="primary" style={{ marginRight: 8 }}>发布</Button >
+              <Button type="primary" style={{ marginRight: 8 }}>提交</Button >
             </>
           )}
           {pagetitle === '知识审核' && (
             <>
               <Button type="primary" style={{ marginRight: 8 }}>审核</Button >
-              <Button type="danger" ghost style={{ marginRight: 8 }}>撤销发布</Button >
+              <Button type="danger" style={{ marginRight: 8 }}>撤销发布</Button >
+              <Button type="danger" ghost style={{ marginRight: 8 }}>废止</Button >
             </>
           )}
           <Button type="primary" onClick={() => download()} style={{ marginRight: 8 }}>导出数据</Button >

@@ -16,8 +16,6 @@ const options = {
   // includeEditors: ['id-1'], // 指定该模块对哪些BraftEditor生效，不传此属性则对所有BraftEditor有效
   // excludeEditors: ['id-2']  // 指定该模块对哪些BraftEditor无效
 };
-const filetype = 'jpg,png,gif'
-
 const Editor = () => {
   const [content, setContent] = useState(BraftEditor.createEditorState(null));
   const [outputHTML, setOutputHTML] = useState(null);
