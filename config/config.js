@@ -547,6 +547,64 @@ export default {
                       component: './ITSM/OnSitemanage',
                     },
                     {
+                      path: '/ITSM/knowledgemanage',
+                      name: '知识管理',
+                      icon: 'control',
+                      routes: [
+                        {
+                          path: '/ITSM/knowledgemanage',
+                          redirect: '/ITSM/knowledgemanage/myknowledge',
+                        },
+                        {
+                          path: '/ITSM/knowledgemanage/myknowledge',
+                          name: '我的知识',
+                          icon: 'fork',
+                          component: './ITSM/Knowledgemanage/KnowledgeList'
+                        },
+                        {
+                          path: '/ITSM/knowledgemanage/myknowledge/new',
+                          name: '新增知识',
+                          icon: 'fork',
+                          component: './ITSM/Knowledgemanage/New'
+                        },
+                        {
+                          path: '/ITSM/knowledgemanage/maintain',
+                          name: '知识维护',
+                          icon: 'fork',
+                          component: './ITSM/Knowledgemanage/KnowledgeList'
+                        },
+                        {
+                          path: '/ITSM/knowledgemanage/toexamine',
+                          name: '知识审核',
+                          icon: 'fork',
+                          component: './ITSM/Knowledgemanage/KnowledgeList'
+                        },
+                        {
+                          path: '/ITSM/knowledgemanage/query',
+                          name: '知识查询',
+                          icon: 'fork',
+                          component: './ITSM/Knowledgemanage/KnowledgeList'
+                        },
+                        {
+                          path: '/ITSM/knowledgemanage/statistics',
+                          name: '知识统计',
+                          icon: 'fork',
+                          routes: [
+                            {
+                              path: '/ITSM/knowledgemanage/statistics',
+                              redirect: '/ITSM/knowledgemanage/statistics/type',
+                            },
+                            {
+                              path: '/ITSM/knowledgemanage/statistics/type',
+                              name: '知识分类统计',
+                              icon: 'fork',
+                              component: './ITSM/Knowledgemanage/StatisticsbyType'
+                            },
+                          ]
+                        },
+                      ]
+                    },
+                    {
                       path: '/ITSM/operationreport',
                       name: '运维周/月报',
                       icon: 'control',
