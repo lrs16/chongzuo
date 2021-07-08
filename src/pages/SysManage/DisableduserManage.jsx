@@ -25,7 +25,7 @@ function DisableduserManage(props) {
       type: 'disabledusermanage/query',
       payload: {
         user: '',
-        pageIndex: paginations.current - 1,
+        pageIndex: paginations.current > 0 ? paginations.current - 1 : 0,
         pageSize: paginations.pageSize,
       },
     });

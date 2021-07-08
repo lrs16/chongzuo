@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
-import { Card, Row, Col, Form, Input, Select, Button, DatePicker, Table, Badge } from 'antd';
+import { Card, Row, Col, Form, Input, Select, Button, DatePicker, Table } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import DictLower from '@/components/SysDict/DictLower';

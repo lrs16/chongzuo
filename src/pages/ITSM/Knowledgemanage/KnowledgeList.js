@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { connect } from 'dva';
+import router from 'umi/router';
 import moment from 'moment';
 import { Card, Row, Col, Form, Input, Select, Button, DatePicker, Table, Badge } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
@@ -37,6 +38,14 @@ function KnowledgeList(props) {
   }
   const download = () => {
     console.log('导出数据')
+  }
+  const newknowledge = () => {
+    router.push({
+      pathname: '/ITSM/knowledgemanage/myknowledge/new',
+      query: {
+        addtab: true,
+      }
+    })
   }
   const onSelectChange = (RowKeys) => {
     setSelectedRowKeys(RowKeys);
@@ -296,7 +305,7 @@ function KnowledgeList(props) {
         <div style={{ marginBottom: 24 }}>
           {(pagetitle === '我的知识' || pagetitle === '知识维护') && (
             <>
-              <Button type="primary" style={{ marginRight: 8 }}>新增</Button >
+              <Button type="primary" style={{ marginRight: 8 }} onClick={() => newknowledge()}>新增</Button >
               <Button type="primary" style={{ marginRight: 8 }}>编辑</Button >
               <Button type="primary" style={{ marginRight: 8 }}>发布</Button >
             </>

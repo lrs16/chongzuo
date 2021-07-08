@@ -866,21 +866,21 @@ export default {
                           ]
                         },
                         {
-                          path:'/ITSM/servicequalityassessment/creditcard',
-                          name:'记分卡管理',
-                          icon:'control',
-                          routes:[
+                          path: '/ITSM/servicequalityassessment/creditcard',
+                          name: '记分卡管理',
+                          icon: 'control',
+                          routes: [
                             {
-                              path:'/ITSM/servicequalityassessment/creditcard/creditcardregister',
-                              name:'记分卡登记',
-                              icon:'fork',
-                              component:'./ITSM/ServiceQuality/CreditCard/CreditCardRegister'
+                              path: '/ITSM/servicequalityassessment/creditcard/creditcardregister',
+                              name: '记分卡登记',
+                              icon: 'fork',
+                              component: './ITSM/ServiceQuality/CreditCard/CreditCardRegister'
                             },
                             {
-                              path:'/ITSM/servicequalityassessment/creditcard/creditcardsearch',
-                              name:'计分卡查询',
-                              icon:'fork',
-                              component:'./ITSM/ServiceQuality/CreditCard/CreditCardSearch'
+                              path: '/ITSM/servicequalityassessment/creditcard/creditcardsearch',
+                              name: '计分卡查询',
+                              icon: 'fork',
+                              component: './ITSM/ServiceQuality/CreditCard/CreditCardSearch'
                             },
                           ]
                         }
