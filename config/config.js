@@ -1604,6 +1604,10 @@ export default {
     '/report/': {
       target: 'http://172.16.10.11:9901/',
       changeOrigin: true
+    },
+    '/image/': {
+      target: 'http://172.16.10.11:9901/',
+      changeOrigin: true
     }
   },
 };

@@ -1,44 +1,39 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, forwardRef } from 'react';
 import { message } from 'antd';
 import E from 'wangeditor';
 
-function Editor(props) {
+function Editor(props, ref) {
+  const { ChangeValue } = props;
   const [content, setContent] = useState('');
   let editor = null;
 
   useEffect(() => {
     editor = new E('#div1');
-
+    editor.config.onchange = function (html) {
+      ChangeValue(html)
+    };
+    editor.config.showLinkImg = false;           // 隐藏网络图片
     editor.config.uploadImgMaxSize = 2 * 1024 * 1024; // 上传图片大小2M
     //  editor.config.uploadImgServer = `/sys/file/upload`;  // 路径
     // 限制一次最多上传 1 张图片
     editor.config.uploadImgMaxLength = 1;
     editor.config.customUploadImg = function (files, insert) {
-      // files 是 input 中选中的文件列表
-      console.log(files);
       if (files[0]) {
-        const blob = new Blob([files[0]]);
-        const image = (window.URL || window.webkitURL).createObjectURL(blob);
-        insert(image);
-        // const formData = new window.FormData();
-        // formData.append('file', files[0], 'cover.jpg');
-        // fetch(`/sys/file/upload`, {
-        //   method: 'POST',
-        //   body: formData,
-        //   headers: {
-        //     Authorization: `Bearer ${sessionStorage.getItem('access_token')}`,
-        //   },
-        // }).then((res) => {
-        //   if (res.code === 200) {
-        //     const { data } = res;
-        //     if (data) {
-        //       // 上传代码返回结果之后，将图片插入到编辑器中
-        //       insert(data.resourceUrl);
-        //     } else {
-        //       console.log('111');
-        //     }
-        //   }
-        // });
+        const formData = new window.FormData();
+        formData.append('file', files[0], files[0].name);
+        fetch('/sys/file/upload', {
+          method: 'POST',
+          body: formData,
+        }).then(response => response.json())
+          .then((data) => {
+            if (data.code === 200) {
+              const arr = data.data[0].fileUrl?.split('/');
+              const imgsrc = `/image/${arr[arr.length - 2]}/${arr[arr.length - 1]}`;
+              insert(imgsrc)
+            } else {
+              message.error('上传失败，请重新上传')
+            }
+          });
       } else {
         message.info('请选择要上传的图片');
       }
@@ -63,7 +58,8 @@ function Editor(props) {
       // 'video', // 插入视频
       'code', // 插入代码
       'undo', // 撤销
-      'redo' // 重复
+      'redo', // 重复
+      ''
     ];
     editor.config.lang = {
       设置标题: 'Title',
@@ -91,7 +87,7 @@ function Editor(props) {
     editor.create();
 
     return () => {
-      // 组件销毁时销毁编辑器  注：class写法需要在componentWillUnmount中调用
+      // 组件销毁时销毁编辑器
       editor.destroy();
     };
   }, []);
@@ -104,8 +100,8 @@ function Editor(props) {
   }
 
   return (
-    <div id="div1" />
+    <div id="div1" ref={ref} />
   );
 }
 
-export default Editor;
+export default forwardRef(Editor);

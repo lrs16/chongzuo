@@ -9,19 +9,19 @@ import styles from './LoginLayout.less';
 import logo from '../../public/logo.png';
 
 const LoginLayout = props => {
-  const {
-    route = {
-      routes: [],
-    },
-  } = props;
-  const { routes = [] } = route;
+  // const {
+  //   route = {
+  //     routes: [],
+  //   },
+  // } = props;
+  // const { routes = [] } = route;
   const {
     children,
-    location = {
-      pathname: '',
-    },
+    // location = {
+    //   pathname: '',
+    // },
   } = props;
-  const { breadcrumb } = getMenuData(routes);
+  // const { breadcrumb } = getMenuData(routes);
   return (
     <div className={styles.container}>
       <div className={styles.content}>
