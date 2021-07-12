@@ -128,8 +128,8 @@ const eventcolumns = [
   },
   {
     title: '登记时间',
-    dataIndex: 'createTime',
-    key: 'createTime',
+    dataIndex: 'addTime',
+    key: 'addTime',
     width: 200,
   },
   {
@@ -345,8 +345,8 @@ function ITHomePage(props) {
         const values = {
           eventNo: value.No,
           applicationUser: value.name,
-          time1: value.time === '' ? '' : moment(value.time[0]).format('YYYY-MM-DD HH:mm:ss'),
-          time2: value.time === '' ? '' : moment(value.time[1]).format('YYYY-MM-DD HH:mm:ss'),
+          time1: value.tim1 ? moment(value.time1).format('YYYY-MM-DD HH:mm:ss') : '',
+          time2: value.time2 ? moment(value.time2).format('YYYY-MM-DD HH:mm:ss') : '',
         };
         // 加载列表
         dispatch({
@@ -380,10 +380,8 @@ function ITHomePage(props) {
           currentNode: tabkey === '全部待办' ? '' : tabkey,
           no: value.No,
           applicationUser: value.name,
-          createTimeBegin:
-            value.time === '' ? '' : moment(value.time[0]).format('YYYY-MM-DD HH:mm:ss'),
-          createTimeEnd:
-            value.time === '' ? '' : moment(value.time[1]).format('YYYY-MM-DD HH:mm:ss'),
+          createTimeBegin: value.tim1 ? moment(value.time1).format('YYYY-MM-DD HH:mm:ss') : '',
+          createTimeEnd: value.tim2 ? moment(value.time2).format('YYYY-MM-DD HH:mm:ss') : '',
         };
         dispatch({
           type: 'fault/getSearchfaultTodo',
@@ -415,10 +413,8 @@ function ITHomePage(props) {
           ...value,
           currentNode: tabkey === '全部待办' ? '' : tabkey,
           no: value.No,
-          createTimeBegin:
-            value.time === '' ? '' : moment(value.time[0]).format('YYYY-MM-DD HH:mm:ss'),
-          createTimeEnd:
-            value.time === '' ? '' : moment(value.time[1]).format('YYYY-MM-DD HH:mm:ss'),
+          createTimeBegin: value.tim1 ? moment(value.time1).format('YYYY-MM-DD HH:mm:ss') : '',
+          createTimeEnd: value.tim2 ? moment(value.time2).format('YYYY-MM-DD HH:mm:ss') : '',
         };
         dispatch({
           type: 'problemmanage/searchBesolve',
@@ -451,8 +447,8 @@ function ITHomePage(props) {
           demandId: value.No,
           registerPerson: value.name,
           creationTime: '',
-          creationStartTime: value.time === '' ? '' : moment(value.time[0]).format('YYYY-MM-DD'),
-          creationEndTime: value.time === '' ? '' : moment(value.time[1]).format('YYYY-MM-DD'),
+          creationStartTime: value.tim1 ? moment(value.time1).format('YYYY-MM-DD HH:mm:ss') : '',
+          creationEndTime: value.tim2 ? moment(value.time2).format('YYYY-MM-DD HH:mm:ss') : '',
         };
         dispatch({
           type: 'demandtodo/fetchlist',
@@ -688,9 +684,39 @@ function ITHomePage(props) {
             )}
             <Col span={8}>
               <Form.Item label="登记时间">
-                {getFieldDecorator('time', {
-                  initialValue: '',
-                })(<RangePicker />)}
+                <Row>
+                  <Col span={11}>
+                    {getFieldDecorator('time1', {
+                      initialValue: '',
+                    })(
+                      <DatePicker
+                        showTime={{
+                          hideDisabledOptions: true,
+                          defaultValue: moment('00:00:00', 'HH:mm:ss'),
+                        }}
+                        placeholder="开始时间"
+                        format='YYYY-MM-DD HH:mm:ss'
+                        style={{ minWidth: 120, width: '100%' }}
+                      />
+                    )}
+                  </Col>
+                  <Col span={2} style={{ textAlign: 'center' }}>-</Col>
+                  <Col span={11}>
+                    {getFieldDecorator('time2', {
+                      initialValue: '',
+                    })(
+                      <DatePicker
+                        showTime={{
+                          hideDisabledOptions: true,
+                          defaultValue: moment('23:59:59', 'HH:mm:ss'),
+                        }}
+                        placeholder="结束时间"
+                        format='YYYY-MM-DD HH:mm:ss'
+                        style={{ minWidth: 120, width: '100%' }}
+                      />
+                    )}
+                  </Col>
+                </Row>
               </Form.Item>
             </Col>
             <Col span={4} style={{ paddingTop: 4 }}>

@@ -36,16 +36,6 @@ const formItemLayout = {
     sm: { span: 18 },
   },
 };
-const forminladeLayout = {
-  labelCol: {
-    xs: { span: 24 },
-    sm: { span: 3 },
-  },
-  wrapperCol: {
-    xs: { span: 24 },
-    sm: { span: 21 },
-  },
-};
 
 function QueryList(props) {
   // const pagetitle = props.route.name;
@@ -93,16 +83,14 @@ function QueryList(props) {
         eventObject: values.eventObject ? (values.eventObject).slice(-1)[0] : '',
         pageSize: size,
         pageIndex: page,
-        time1: values.createTime ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-        time2: values.createTime ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-        createTime: '',
+        time1: values.time1 ? moment(values.time1).format('YYYY-MM-DD HH:mm:ss') : '',
+        time2: values.time2 ? moment(values.time2).format('YYYY-MM-DD HH:mm:ss') : '',
       },
     });
     setTabRecord({
       ...values,
-      startTime: values.createTime?.length ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-      endTime: values.createTime?.length ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-      createTime: '',
+      time1: values.time1 ? moment(values.time1).format('YYYY-MM-DD HH:mm:ss') : '',
+      time2: values.time2 ? moment(values.time2).format('YYYY-MM-DD HH:mm:ss') : '',
     });
   };
 
@@ -264,9 +252,8 @@ function QueryList(props) {
       payload: {
         values: {
           ...values,
-          time1: values.createTime ? moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-          time2: values.createTime ? moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
-          createTime: '',
+          tim1: values.time1 ? moment(values.time1).format('YYYY-MM-DD HH:mm:ss') : '',
+          time2: values.time2 ? moment(values.time2).format('YYYY-MM-DD HH:mm:ss') : '',
           eventObject: values.eventObject ? (values.eventObject).slice(-1)[0] : '',
         },
         ids: selectedRowKeys.toString(),
@@ -338,7 +325,8 @@ function QueryList(props) {
     resetFields();
     if (time1 || time2 || eventObject || selfhandle || registerUser || eventStatus || applicationUnit) {
       setFieldsValue({
-        createTime: '',
+        time1: '',
+        time2: '',
         eventObject: '',
         selfhandle: '',
         registerUser: '',
@@ -375,8 +363,6 @@ function QueryList(props) {
   const handleresultmap = getTypebykey('486846455059841024'); // 处理结果
   const satisfactionmap = getTypebykey('486855005945462784'); // 满意度
 
-  const startTime = time1 ? moment(time1).format('YYYY-MM-DD 00:00:00') : '';
-  const endTime = time2 ? moment(time2).format('YYYY-MM-DD 23:59:59') : '';
   const record = {
     eventObject: eventObject || '',
     revisitWay: '',
@@ -391,25 +377,11 @@ function QueryList(props) {
     eventNo: '',
     eventStatus: eventStatus || '',
     eventType: '',
-    createTime: time1 ? [moment(startTime), moment(endTime)] : '',
+    time1: time1 ? moment(time1).format('YYYY-MM-DD 00:00:00') : '',
+    time2: time2 ? moment(time2).format('YYYY-MM-DD 23:59:59') : '',
     paginations
   }
   const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
-
-  // 设置时间
-  useEffect(() => {
-    if (location.state.cacheinfo) {
-      const cachestartTime = location.state.cacheinfo.startTime;
-      const cacheendTime = location.state.cacheinfo.endTime;
-      setFieldsValue({
-        createTime: cachestartTime ? [moment(cachestartTime), moment(cacheendTime)] : '',
-      })
-    } else {
-      setFieldsValue({
-        createTime: time1 ? [moment(startTime), moment(endTime)] : '',
-      })
-    }
-  }, [location.state]);
 
   useEffect(() => {
     if (location.state) {
@@ -808,18 +780,41 @@ function QueryList(props) {
                 </Form.Item>
               </Col>
             </span>
-            <Col span={16}>
-              <Form.Item label="建单时间" {...forminladeLayout}>
-                {getFieldDecorator('createTime', {
-                  initialValue: '',
-                })(<RangePicker
-                  showTime={{
-                    hideDisabledOptions: true,
-                    defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
-                  }}
-                  format='YYYY-MM-DD HH:mm:ss'
-                  allowClear
-                />)}
+            <Col span={8}>
+              <Form.Item label="建单时间">
+                <Row>
+                  <Col span={11}>
+                    {getFieldDecorator('time1', {
+                      initialValue: cacheinfo.time1 ? moment(cacheinfo.time1) : '',
+                    })(
+                      <DatePicker
+                        showTime={{
+                          hideDisabledOptions: true,
+                          defaultValue: moment('00:00:00', 'HH:mm:ss'),
+                        }}
+                        placeholder="开始时间"
+                        format='YYYY-MM-DD HH:mm:ss'
+                        style={{ minWidth: 120, width: '100%' }}
+                      />
+                    )}
+                  </Col>
+                  <Col span={2} style={{ textAlign: 'center' }}>-</Col>
+                  <Col span={11}>
+                    {getFieldDecorator('time2', {
+                      initialValue: cacheinfo.time ? moment(cacheinfo.time2) : '',
+                    })(
+                      <DatePicker
+                        showTime={{
+                          hideDisabledOptions: true,
+                          defaultValue: moment('23:59:59', 'HH:mm:ss'),
+                        }}
+                        placeholder="结束时间"
+                        format='YYYY-MM-DD HH:mm:ss'
+                        style={{ minWidth: 120, width: '100%' }}
+                      />
+                    )}
+                  </Col>
+                </Row>
               </Form.Item>
             </Col>
 

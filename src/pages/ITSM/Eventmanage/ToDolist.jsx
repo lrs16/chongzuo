@@ -123,9 +123,8 @@ function ToDolist(props) {
   const searchdata = (values, page, size) => {
     const newvalue = {
       ...values,
-      createTime: '',
-      time1: values.createTime === '' ? '' : moment(values.createTime[0]).format('YYYY-MM-DD HH:mm:ss'),
-      time2: values.createTime === '' ? '' : moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss'),
+      time3: (values.time3 === '' || values.time3 === 'Invalid date') ? '' : moment(values.time3).format('YYYY-MM-DD HH:mm:ss'),
+      time4: (values.time4 === '' || values.time4 === 'Invalid date') ? '' : moment(values.time4).format('YYYY-MM-DD HH:mm:ss'),
     }
     dispatch({
       type: 'eventtodo/fetchlist',
@@ -232,6 +231,8 @@ function ToDolist(props) {
     eventStatus: '',
     registerUser: '',
     applicationUser: '',
+    time3: '',
+    time4: '',
     eventPrior: '',
     paginations,
     expand,
@@ -264,10 +265,6 @@ function ToDolist(props) {
           const { current, pageSize } = location.state.cacheinfo.paginations;
           setPageinations({ ...paginations, current, pageSize });
         }
-        const { time1, time2 } = location.state.cacheinfo;
-        setFieldsValue({
-          createTime: time1 ? [moment(time1), moment(time2)] : '',
-        })
         setExpand(location.state.cacheinfo.expand);
       };
     }
@@ -395,16 +392,41 @@ function ToDolist(props) {
                   )}
                 </Form.Item>
               </Col>
-              <Col span={16}>
-                <Form.Item label="发送时间" {...forminladeLayout}>
-                  {getFieldDecorator('createTime', {
-                    initialValue: '',
-                  })(<RangePicker
-                    showTime={{
-                      hideDisabledOptions: true,
-                      defaultValue: [moment('00:00:00', 'HH:mm:ss'), moment('23:59:59', 'HH:mm:ss')],
-                    }}
-                    allowClear />)}
+              <Col span={8}>
+                <Form.Item label="发送时间">
+                  <Row>
+                    <Col span={11}>
+                      {getFieldDecorator('time3', {
+                        initialValue: cacheinfo.time3 ? moment(cacheinfo.time3) : '',
+                      })(
+                        <DatePicker
+                          showTime={{
+                            hideDisabledOptions: true,
+                            defaultValue: moment('00:00:00', 'HH:mm:ss'),
+                          }}
+                          placeholder="开始时间"
+                          format='YYYY-MM-DD HH:mm:ss'
+                          style={{ minWidth: 120, width: '100%' }}
+                        />
+                      )}
+                    </Col>
+                    <Col span={2} style={{ textAlign: 'center' }}>-</Col>
+                    <Col span={11}>
+                      {getFieldDecorator('time4', {
+                        initialValue: cacheinfo.time4 ? moment(cacheinfo.time4) : '',
+                      })(
+                        <DatePicker
+                          showTime={{
+                            hideDisabledOptions: true,
+                            defaultValue: moment('23:59:59', 'HH:mm:ss'),
+                          }}
+                          placeholder="结束时间"
+                          format='YYYY-MM-DD HH:mm:ss'
+                          style={{ minWidth: 120, width: '100%' }}
+                        />
+                      )}
+                    </Col>
+                  </Row>
                 </Form.Item>
               </Col>
             </span>
