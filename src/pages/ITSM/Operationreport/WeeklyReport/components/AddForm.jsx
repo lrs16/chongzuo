@@ -36,6 +36,7 @@ const AddForm = React.forwardRef((props, ref) => {
     addTable,
   } = props;
 
+
   const [data, setData] = useState([]);
   // const [dynamicTable, setDynamicTable] = useState([]);
   // const [list, setList] = useState([])
@@ -317,7 +318,7 @@ const AddForm = React.forwardRef((props, ref) => {
 
               <Form.Item label={titleNumber()} {...formincontentLayout}>
                 {getFieldDecorator(`title`, {
-                  initialValue: dynamicData.title
+                  initialValue: dynamicData.title ? dynamicData.title :''
                 })(
                   <Input disabled={detailParams} />
                 )}
@@ -325,7 +326,7 @@ const AddForm = React.forwardRef((props, ref) => {
 
               <Form.Item label={contentNumber()} {...formincontentLayout}>
                 {getFieldDecorator(`content`, {
-                  initialValue: dynamicData.content
+                  initialValue: dynamicData.content ? dynamicData.content :''
                 })(
                   <TextArea
                     autoSize={{ minRows: 3 }}
@@ -411,17 +412,8 @@ const AddForm = React.forwardRef((props, ref) => {
           </Row>
         )
       }
-
     </>
   )
 })
-
-AddForm.defaultProps = {
-  dynamicData: {
-    title: '',
-    content: '',
-    files: [],
-  }
-}
 
 export default Form.create({})(AddForm)

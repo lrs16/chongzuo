@@ -23,7 +23,7 @@ const { Option } = Select;
 function ThisWeekitsm(props) {
 
   const {
-    form: { getFieldDecorator },
+    form: { getFieldDecorator,setFieldsValue },
     formItemLayout,
     formincontentLayout,
     eventList,
@@ -49,23 +49,28 @@ function ThisWeekitsm(props) {
     eventList(data);
     message.info('暂存保存数据成功')
   }
+
   // 自动完成报障用户
   const disableduser = disablelist.map(obj => (
     <Option key={obj.type} value={obj.content} disableuser={obj}>
       <Spin spinning={spinloading}>
         <div className={styles.disableuser}>
-          <span>{obj.type}</span>
+          <span>{obj.no}</span>
           <span>{obj.content}</span>
+          <span>{obj.handleContent}</span>
+          <span>{obj.startTime}</span>
+          <span>{obj.endTime}</span>
+          <span>{obj.submit}</span>
+          <span>{obj.systemName}</span>
         </div>
       </Spin>
     </Option>
-
   ));
 
   // 请求关键字
   const SearchDisableduser = searchvalues => {
     if (searchvalues) {
-      queryOrder({ key: searchvalues, type: value }).then(res => {
+      queryOrder({ key: value }).then(res => {
         if (res) {
           const arr = [...res.data];
           setSpinLoading(false);
@@ -81,18 +86,23 @@ function ThisWeekitsm(props) {
   // 选择报障用户，信息回填
   const handleDisableduser = (v, opt,) => {
     const newData = data.map(item => ({ ...item }));
-    const { type, no, content, startTime, endTime, systemName } = opt.props.disableuser;
+    const { type, no, content, startTime, endTime, systemName,submit,handleContent } = opt.props.disableuser;
     const searchObj = {
-      key: newData.length + 1,
-      field1: type,
+      key: newData.length + 1 ,
+      field1: newData.length + 1,
       field2: no,
       field3: systemName,
       field4: content,
-      field5: no,
+      field5: handleContent,
       field6: startTime,
       field7: endTime,
+      field8: submit,
       isNew: true
     };
+    // setFieldsValue({
+    //   content:content
+    // })
+    
     newData.push(searchObj);
     setData(newData)
   };
@@ -109,8 +119,14 @@ function ThisWeekitsm(props) {
   //  删除数据
   const remove = key => {
     const target = deleteObj(key) || {};
-    setData(target)
+    const newTarget = target.map((item,index) => {
+      const newItem = item;
+      newItem.field1 = index + 1;
+      return newItem;
+  })
+  setData(newTarget)
   };
+
 
 
   const handleFieldChange = (e, fieldName, key) => {
@@ -142,20 +158,16 @@ function ThisWeekitsm(props) {
 
   const column = [
     {
-      title: '工单类型',
+      title: '序号',
       dataIndex: 'field1',
       key: 'field1',
       render: (text, record) => {
         return (
-          <Select
+          <Input
             disabled={detailParams}
             defaultValue={text}
-            onChange={e => handleFieldChange(e, 'field1', record.key)}
-          >
-            <Option key='事件' value='事件'>事件</Option>
-            <Option key='问题' value='问题'>问题</Option>
-            <Option key='故障' value='故障'>故障</Option>
-          </Select>
+            onChange={e => handleFieldChange(e.target.value, 'field1', record.key)}
+          />
         )
       }
     },
@@ -296,7 +308,7 @@ function ThisWeekitsm(props) {
         <Form {...formItemLayout}>
           {true && (
             <Row gutter={16}>
-              <Col span={24}>
+              {/* <Col span={24}>
                 <Form.Item label='N' {...formincontentLayout}>
                   <Select
                     placeholder="请选择"
@@ -310,18 +322,18 @@ function ThisWeekitsm(props) {
                     <Option value="trouble">故障</Option>
                   </Select>
                 </Form.Item>
-              </Col>
+              </Col> */}
 
               <Col span={24}>
                 <Form.Item label='搜索内容'>
-                  {getFieldDecorator('content', {})(
+                  {getFieldDecorator('content', {
+                  })(
                     <>
                       <AutoComplete
-                        disabled={detailParams}
                         dataSource={disableduser}
-                        defaultValue='内容'
+                        // defaultValue='内容'
                         dropdownMatchSelectWidth={false}
-                        dropdownStyle={{ width: 900 }}
+                        dropdownStyle={{ width: 700 }}
                         optionLabelProp="value"
                         onSelect={(v, opt) => handleDisableduser(v, opt)}
                       >

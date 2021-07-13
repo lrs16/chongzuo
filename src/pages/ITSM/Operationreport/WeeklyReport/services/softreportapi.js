@@ -129,3 +129,12 @@ export async function reportExport(mainId) {
   })
 }
 
+//  获取运维情况综述行
+export async function getContentRow(params) {
+  return request(`/report/getContentRow`,{
+    method:'POST',
+    data:params,
+    requestType:'form',
+  })
+}
+

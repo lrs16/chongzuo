@@ -25,7 +25,11 @@ const ThisweekMaintenance = React.forwardRef((props, ref) => {
 
   const [data, setData] = useState([]);
 
-  // 初始化把数据传过去
+  // useEffect(() => {
+  //   if (data && data.length) {
+  //     contentRow(data)
+  //   }
+  // }, [data]);
 
   const handleSave = () => {
     contentRow(data);
@@ -47,10 +51,10 @@ const ThisweekMaintenance = React.forwardRef((props, ref) => {
   }
 
   const handleTabledata = () => {
-      const newarr = (contentArr).map((item, index) => {
-        return Object.assign(item, { editable: true, isNew: false, key: index })
-      })
-      setData(newarr)
+    const newarr = (contentArr).map((item, index) => {
+      return Object.assign(item, { editable: true, isNew: false, key: index })
+    })
+    setData(newarr)
   }
 
   const column = [
@@ -166,22 +170,6 @@ const ThisweekMaintenance = React.forwardRef((props, ref) => {
         )
       }
     },
-    // {
-    //   title: '操作',
-    //   key: 'action',
-    //   fixed: 'right',
-    //   width: 120,
-    //   render: (text, record) => {
-    //     return (
-    //       <span>
-    //         <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
-    //           <a>删除</a>
-    //         </Popconfirm>
-    //       </span>
-    //     )
-    //   }
-
-    // }
   ];
 
   useEffect(() => {

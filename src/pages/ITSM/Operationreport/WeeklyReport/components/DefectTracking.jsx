@@ -10,6 +10,8 @@ import {
 } from 'antd';
 import moment from 'moment';
 
+const { TextArea } = Input;
+
 function DefectTracking(props) {
 
   const {

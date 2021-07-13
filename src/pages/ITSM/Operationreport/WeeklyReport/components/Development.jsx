@@ -49,8 +49,10 @@ const Development = React.forwardRef((props, ref) => {
     const newData = (data).map(item => ({ ...item }));
     newData.push({
       key: data.length + 1,
-      field1: '',
+      field1: data.length + 1,
       field2: '',
+      field3: '',
+      field4: '',
     });
     setData(newData);
     setNewButton(true);
@@ -91,7 +93,7 @@ const Development = React.forwardRef((props, ref) => {
 
   const column = [
     {
-      title: '材料名称',
+      title: '序号',
       dataIndex: 'field1',
       key: 'field1',
       render: (text, record) => {
@@ -105,15 +107,29 @@ const Development = React.forwardRef((props, ref) => {
       }
     },
     {
-      title: '是否提交',
+      title: '材料名称',
       dataIndex: 'field2',
       key: 'field2',
+      render: (text, record) => {
+        return (
+          <Input
+            disabled={detailParams}
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field2', record.key, 'secondTable')}
+          />
+        )
+      }
+    },
+    {
+      title: '是否提交',
+      dataIndex: 'field3',
+      key: 'field3',
       render: (text, record) => {
         return (
           <Select
             disabled={detailParams}
             defaultValue={text}
-            onChange={e => handleFieldChange(e, 'field2', record.key)}
+            onChange={e => handleFieldChange(e, 'field3', record.key)}
           >
             <Option key='是' value='是'>是</Option>
             <Option key='否' value='否'>否</Option>
@@ -139,7 +155,6 @@ const Development = React.forwardRef((props, ref) => {
           </span>
         )
       }
-
     }
   ];
 

@@ -37,7 +37,7 @@ function InspectionSummary(props) {
     const newData = (data).map(item => ({ ...item }));
     newData.push({
       key: data.length + 1,
-      field1: '',
+      field1: data.length + 1,
       field2: '',
       field3: '',
     });
@@ -83,7 +83,7 @@ function InspectionSummary(props) {
 
   const column = [
     {
-      title: '材料名称',
+      title: '序号',
       dataIndex: 'field1',
       key: 'field1',
       render: (text, record) => {
@@ -97,15 +97,29 @@ function InspectionSummary(props) {
       }
     },
     {
-      title: '是否提交',
+      title: '材料名称',
       dataIndex: 'field2',
       key: 'field2',
+      render: (text, record) => {
+        return (
+          <Input
+            disabled={reportSearch}
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field2', record.key)}
+          />
+        )
+      }
+    },
+    {
+      title: '是否提交',
+      dataIndex: 'field3',
+      key: 'field3',
       render: (text, record) => {
         return (
           <Select
             disabled={reportSearch}
             defaultValue={text}
-            onChange={e => handleFieldChange(e, 'field2', record.key)}
+            onChange={e => handleFieldChange(e, 'field3', record.key)}
           >
             <Option value="是">是</Option>
             <Option value="否">否</Option>

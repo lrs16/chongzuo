@@ -77,11 +77,6 @@ function SoftReportdetail(props) {
       reportSearch,
     } },
     dispatch,
-    serviceCompletionlist,
-    serviceCompletionsecondlist,
-    serviceCompletionthreelist,
-    softCompletionlist,
-    completionsecondTablelist,
     openReportlist,
     loading,
   } = props;
@@ -132,8 +127,8 @@ function SoftReportdetail(props) {
         type: reporttype === 'week' ? '软件运维周报' : '软件运维月报',
         reporttype,
         mainId,
-        time1: startTime,
-        time2: endTime,
+        time1: reporttype === 'week' ? (value.time1).format('YYYY-MM-DD'): moment(value.time1).startOf('month').format('YYYY-MM-DD'),
+        time2: reporttype === 'week' ?(value.time2).format('YYYY-MM-DD'): moment(value.time1).endOf('month').format('YYYY-MM-DD'),
         contentRow: JSON.stringify(contentRow),
         patrolAndExamineList: JSON.stringify(patrolAndExamineList),
         materialsList: JSON.stringify(materialsList),
@@ -156,12 +151,8 @@ function SoftReportdetail(props) {
         if (res.code === 200) {
           message.info(res.msg)
           getopenFlow();
-          // props.history.go(0);
-
         }
       })
-      // }
-
     })
   }
 
@@ -204,6 +195,12 @@ function SoftReportdetail(props) {
     defaultTime();
   }, []);
 
+  // useEffect (() => {
+  //   if(list && list.length && list[list.length-1].files) {
+  //     softReportform()
+  //   }
+  // },[list])
+
   const handleBack = () => {
     router.push({
       pathname: `/ITSM/operationreport/weeklyreport/myweeklyreport`,
@@ -234,7 +231,6 @@ function SoftReportdetail(props) {
 
     if (reporttype === 'month') {
       if (!reportSearch) {
-        console.log(1)
         router.push({
           pathname: '/ITSM/operationreport/monthlyreport/mymonthlyreport',
           query: { pathpush: true },
@@ -242,7 +238,6 @@ function SoftReportdetail(props) {
         })
       }
       if (reportSearch) {
-        console.log(2)
         router.push({
           pathname: '/ITSM/operationreport/monthlyreport/mymonthlysearch',
           query: { pathpush: true },
@@ -315,7 +310,8 @@ function SoftReportdetail(props) {
   useEffect(() => {
     const { addData } = openReportlist;
     setAddTitle(addData);
-    setList(addData)
+    setList(addData);
+    // setContentRow(contentRow);
   }, [loading])
 
   return (
@@ -1110,8 +1106,6 @@ function SoftReportdetail(props) {
                           </Col>
                         )
                       }
-
-
                     </>
                   )
                 })

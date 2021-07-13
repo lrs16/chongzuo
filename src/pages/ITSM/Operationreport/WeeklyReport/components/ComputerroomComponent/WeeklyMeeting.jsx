@@ -8,6 +8,8 @@ import {
   message
 } from 'antd';
 
+const { TextArea } = Input;
+
 function WeeklyMeeting(props) {
 
   const {
@@ -76,7 +78,7 @@ function WeeklyMeeting(props) {
       key: 'field1',
       render: (text, record) => {
         return (
-          <Input
+          <TextArea
             disabled={reportSearch}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field1', record.key)}
@@ -90,7 +92,7 @@ function WeeklyMeeting(props) {
       key: 'field2',
       render: (text, record) => {
         return (
-          <Input
+          <TextArea
             disabled={reportSearch}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field2', record.key)}
@@ -104,7 +106,7 @@ function WeeklyMeeting(props) {
       key: 'field3',
       render: (text, record) => {
         return (
-          <Input
+          <TextArea
             disabled={reportSearch}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field3', record.key)}

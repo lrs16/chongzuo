@@ -23,10 +23,12 @@ function ServiceTableone(props) {
   useEffect(() => {
     if (maintenanceArr && maintenanceArr.length) {
       const result = JSON.parse(JSON.stringify(maintenanceArr)
-        .replace(/first_object/g, 'field1')
-        .replace(/second_object/g, 'field2')
-        .replace(/last_num/g, 'field3').replace(/now_num/g, 'field4')
-        .replace(/points_count/g, 'field5'))
+        .replace(/index/g, 'field1')
+        .replace(/first_object/g, 'field2')
+        .replace(/second_object/g, 'field3')
+        .replace(/last_num/g, 'field4')
+        .replace(/now_num/g, 'field5')
+        .replace(/points_count/g, 'field6'))
       if (result) {
         typeList(result)
       }
@@ -34,10 +36,9 @@ function ServiceTableone(props) {
   }, [data]);
 
   const handleTabledata = () => {
-    // console.log(mainId?typeArr:maintenanceArr)
     if (newbutton === false) {
       const newarr = (maintenanceArr).map((item, index) => {
-        return Object.assign(item, { editable: true, isNew: false, key: index })
+        return Object.assign(item, { editable: true, isNew: false, key: index,index:index+1 })
       })
       setData(newarr)
     }
@@ -49,6 +50,24 @@ function ServiceTableone(props) {
   }, [maintenanceArr])
 
   const column = [
+    {
+      title: '序号',
+      dataIndex: 'index',
+      key: 'index',
+      // render: (text, record) => {
+      //   if (record.isNew) {
+      //     return (
+      //       <Input
+      //         defaultValue={text}
+      //         onChange={e => handleFieldChange(e.target.value, 'field1', record.key)}
+      //       />
+      //     )
+      //   }
+      //   if (record.isNew === false) {
+      //     return <span>{text}</span>
+      //   }
+      // }
+    },
     {
       title: '一级对象',
       dataIndex: 'first_object',
@@ -143,7 +162,7 @@ function ServiceTableone(props) {
   
   const editColumn = [
     {
-      title: '一级对象',
+      title: '序号',
       dataIndex: 'field1',
       key: 'field1',
       // render: (text, record) => {
@@ -161,7 +180,7 @@ function ServiceTableone(props) {
       // }
     },
     {
-      title: '二级对象',
+      title: '一级对象',
       dataIndex: 'field2',
       key: 'field2',
       // render: (text, record) => {
@@ -179,7 +198,7 @@ function ServiceTableone(props) {
       // }
     },
     {
-      title: tabActiveKey === 'week' ? '上周' : '上月',
+      title: '二级对象',
       dataIndex: 'field3',
       key: 'field3',
       // render: (text, record) => {
@@ -197,7 +216,7 @@ function ServiceTableone(props) {
       // }
     },
     {
-      title: tabActiveKey === 'week' ? '本周' : '本月',
+      title: tabActiveKey === 'week' ? '上周' : '上月',
       dataIndex: 'field4',
       key: 'field4',
       // render: (text, record) => {
@@ -215,9 +234,27 @@ function ServiceTableone(props) {
       // }
     },
     {
-      title: '环比',
+      title: tabActiveKey === 'week' ? '本周' : '本月',
       dataIndex: 'field5',
       key: 'field5',
+      // render: (text, record) => {
+      //   if (record.isNew) {
+      //     return (
+      //       <Input
+      //         defaultValue={text}
+      //         onChange={e => handleFieldChange(e.target.value, 'field1', record.key)}
+      //       />
+      //     )
+      //   }
+      //   if (record.isNew === false) {
+      //     return <span>{text}</span>
+      //   }
+      // }
+    },
+    {
+      title: '环比',
+      dataIndex: 'field6',
+      key: 'field6',
       // render: (text, record) => {
       //   if (record.isNew) {
       //     return (

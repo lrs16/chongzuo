@@ -14,7 +14,8 @@ import {
   saveComputerRoom,
   saveDataBase,
   reportExport,
-  saveOther
+  saveOther,
+  getContentRow
 } from '../services/softreportapi';
 
 export default {
@@ -32,6 +33,7 @@ export default {
     openReportlist:[],
     queryOrderlist:[],
     faultQueryList: [], // 故障查询列表
+    contentRowlist:[],
   },
 
   effects: {  
@@ -120,8 +122,6 @@ export default {
     *pasteReport({payload:{editStatus,id}},{call,put}) {
       return yield call(openReport,editStatus,id);
     },
-
-
 
       //  保存机房
     *saveComputer({payload},{call,put}) {
@@ -360,6 +360,15 @@ export default {
     });
   },
 
+     //  获取运维情况综述行
+     *getContentRow({ payload }, { call, put }) {
+      const response = yield call(getContentRow,payload);
+      yield put({
+        type:'contentRowlist',
+        payload: response
+      })
+    },
+
   //  下载word
   *exportWord({payload:{mainId}},{call,put}) {
     return yield call(reportExport,mainId)
@@ -434,5 +443,13 @@ export default {
       faultQueryList: action.payload.data,
     };
   },
+
+  //  获取运维情况综述行
+  contentRowlist(state,action) {
+    return {
+      ...state,
+      contentRowlist:action.payload.data
+    }
+  }
   }
 }

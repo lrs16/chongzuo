@@ -28,8 +28,9 @@ function NewTroublelist(props) {
   useEffect(() => {
     if (data && data.length) {
       const result = JSON.parse(JSON.stringify(data)
-        .replace(/addTime/g, 'field1')
-        .replace(/typecn/g, 'field2')
+        .replace(/index/g, 'field1')
+        .replace(/addTime/g, 'field2')
+        .replace(/typecn/g, 'field3')
       )
       if (result) {
         newTroubleList(result)
@@ -47,9 +48,7 @@ function NewTroublelist(props) {
     const newData = (data).map(item => ({ ...item }));
     newData.push({
       key: data.length + 1,
-      field1: '',
-      field2: '',
-      field3: '',
+      index: data.length + 1,
     });
     setData(newData);
     setNewButton(true);
@@ -89,13 +88,27 @@ function NewTroublelist(props) {
   const handleTabledata = () => {
     if (faultlist && faultlist.length && newbutton === false) {
       const newarr = faultlist.map((item, index) => {
-        return Object.assign(item, { editable: true, isNew: false, key: index })
+        return Object.assign(item, { editable: true, isNew: false, key: index,index:index + 1 })
       })
       setData(newarr)
     }
   }
 
   const column = [
+    {
+      title: '序号',
+      dataIndex: 'index',
+      key: 'index',
+      render: (text, record) => {
+        return (
+          <Input
+            disabled={reportSearch}
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'index', record.key)}
+          />
+        )
+      }
+    },
     {
       title: '日期',
       dataIndex: 'addTime',

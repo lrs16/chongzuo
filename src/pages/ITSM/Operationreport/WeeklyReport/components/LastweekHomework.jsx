@@ -44,15 +44,16 @@ function LastweekHomework(props) {
 
   const handleSave = () => {
     const result = JSON.parse(JSON.stringify(data)
-      .replace(/updateTime/g, 'field1')
-      .replace(/nature/g, 'field2')
-      .replace(/object/g, 'field3')
-      .replace(/content/g, 'field4')
-      .replace(/plannedEndTime/g, 'field5')
-      .replace(/status/g, 'field6')
-      .replace(/operationUser/g, 'field7')
-      .replace(/operationUnit/g, 'field8')
-      .replace(/remark/g, 'field9')
+    .replace(/index/g, 'field1')
+      .replace(/updateTime/g, 'field2')
+      .replace(/nature/g, 'field3')
+      .replace(/object/g, 'field4')
+      .replace(/content/g, 'field5')
+      .replace(/plannedEndTime/g, 'field6')
+      .replace(/status/g, 'field7')
+      .replace(/operationUser/g, 'field8')
+      .replace(/operationUnit/g, 'field9')
+      .replace(/remark/g, 'field10')
     )
     operationList(result)
     message.info('暂存保存数据成功')
@@ -90,13 +91,27 @@ function LastweekHomework(props) {
   const handleTabledata = () => {
     if (operationArr) {
       const newarr = (operationArr).map((item, index) => {
-        return Object.assign(item, { editable: true, isNew: false, key: index })
+        return Object.assign(item, { editable: true, isNew: false, key: index,index: index + 1})
       })
       setData(newarr)
     }
   }
 
   const column = [
+    {
+      title: '序号',
+      dataIndex: 'index',
+      key: 'index',
+      render: (text, record) => {
+        return (
+          <Input
+            disabled={detailParams}
+            defaultValue={text}
+            onChange={e => handleFieldChange(e, 'index', record.key)}
+          />
+        )
+      }
+    },
     {
       title: '作业日期',
       dataIndex: 'updateTime',

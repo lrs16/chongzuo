@@ -83,8 +83,8 @@ function OtherReportdetail(props) {
           type: reporttype === 'week' ? '其他运维周报' : '其他运维月报',
           reporttype,
           mainId,
-          time1: startTime,
-          time2: endTime,
+          time1: (value.time1).format('YYYY-MM-DD'),
+          time2: (value.time2).format('YYYY-MM-DD'),
         }
         return dispatch({
           type: 'softreport/saveOther',
@@ -146,7 +146,6 @@ function OtherReportdetail(props) {
 
     if (reporttype === 'month') {
       if (!reportSearch) {
-        console.log(1)
         router.push({
           pathname: '/ITSM/operationreport/monthlyreport/mymonthlyreport',
           query: { pathpush: true },
@@ -154,7 +153,6 @@ function OtherReportdetail(props) {
         })
       }
       if (reportSearch) {
-        console.log(2)
         router.push({
           pathname: '/ITSM/operationreport/monthlyreport/mymonthlysearch',
           query: { pathpush: true },
@@ -291,7 +289,7 @@ function OtherReportdetail(props) {
                               message: '请输入填报时间'
                             }
                           ],
-                          initialValue: moment(startTime)
+                          initialValue: moment(main.time1)
                         })(<DatePicker
                           allowClear={false}
                           disabled={reportSearch}
@@ -303,7 +301,7 @@ function OtherReportdetail(props) {
                       <Form.Item label='' style={{ display: 'inline-flex' }}>
                         {
                           getFieldDecorator('time2', {
-                            initialValue: moment(endTime)
+                            initialValue: moment(main.time2)
                           })
                             (<DatePicker
                               disabled={reportSearch}
@@ -351,6 +349,7 @@ function OtherReportdetail(props) {
                             handleaddTable(newdata)
                           }}
                           dynamicData={addTitle[index]}
+                          detailParams={reportSearch}
                           loading={loading}
                         />
                       </Col>

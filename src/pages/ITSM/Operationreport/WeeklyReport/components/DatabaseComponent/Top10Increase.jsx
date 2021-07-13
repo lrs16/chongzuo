@@ -79,7 +79,8 @@ const Top10Increase = React.forwardRef((props, ref) => {
   }
 
   const handleTabledata = () => {
-    if (newbutton === false) {
+    // console.log(tableUpArr,'tableUpArr')
+    if (newbutton === false && tableUpArr) {
       const newarr = tableUpArr.map((item, index) => {
         return Object.assign(item, { editable: true, isNew: false, key: index })
       })

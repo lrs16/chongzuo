@@ -46,6 +46,7 @@ const formincontentLayout = {
   },
 };
 
+let initial = false;
 const { MonthPicker } = DatePicker;
 const { TextArea } = Input;
 let startTime;
@@ -83,19 +84,26 @@ function DatabaseReport(props) {
   const [copyData, setCopyData] = useState('');
 
   //  保存表单
-  const softReportform = () => {
+  const databaseReportform = () => {
     props.form.validateFields((err, values) => {
       if (!err) {
         const savedata = {
           ...values,
+          content: values.content || '',
+          contentFiles: values.contentFiles || '',
+          patrolAndExamineContent: values.patrolAndExamineContent || '',
+          tableUpFiles: values.tableUpFiles || '',
+          defectFiles: values.defectFiles || '',
+          operationFiles: values.operationFiles || '',
+          nextOperationFiles: values.nextOperationFiles || '',
           status: 'add',
           editStatus: mainId ? 'edit' : 'add',
           addData: list?.length ? JSON.stringify(list) : '',
           type: reporttype === 'week' ? '数据库运维周报' : '数据库运维月报',
           reporttype,
           mainId,
-          time1: startTime,
-          time2: endTime,
+          time1: (values.time1).format('YYYY-MM-DD'),
+          time2: (values.time2).format('YYYY-MM-DD'),
           discList: JSON.stringify(discList),
           tablespaceList: JSON.stringify(tablespaceList),
           tableUpList: JSON.stringify(tableUpList),
@@ -137,8 +145,10 @@ function DatabaseReport(props) {
     dispatch({
       type: 'softreport/lastweekHomework',
       payload: {
-        time1: startTime,
-        time2: endTime,
+        plannedEndTime1: startTime,
+        plannedEndTime2: endTime,
+        type: '数据库作业',
+        status: '已完成',
         pageIndex: 0,
         pageSize: 10
       }
@@ -150,11 +160,13 @@ function DatabaseReport(props) {
     dispatch({
       type: 'softreport/nextweekHomework',
       payload: {
-        time1: reporttype === 'week' ? endTime :
+        plannedEndTime1: reporttype === 'week' ? endTime :
           moment().startOf('month').subtract('month', -1).format('YYYY-MM-DD'),
 
-        time2: reporttype === 'week' ? moment().add(6, 'd').format('YYYY-MM-DD')
+        plannedEndTime2: reporttype === 'week' ? moment().add(6, 'd').format('YYYY-MM-DD')
           : moment().endOf('month').subtract('month', -1).endOf('month').format('YYYY-MM-DD'),
+        type: '软件作业',
+        status: '已完成',
         pageIndex: 0,
         pageSize: 10
       }
@@ -181,15 +193,17 @@ function DatabaseReport(props) {
 
   // 上传删除附件触发保存
   useEffect(() => {
+    initial = false;
     defaultTime();
     lastweekHomework();
     nextweekHomework();
   }, []);
 
-  useEffect(() => {
+  const getDatabasereportdata = () => {
     lastweekHomework();
     nextweekHomework();
-  }, [startTime, endTime]);
+    initial = true;
+  }
 
   //  粘贴
   const handlePaste = () => {
@@ -292,86 +306,47 @@ function DatabaseReport(props) {
     <PageHeaderWrapper
       title={pagetitle}
       extra={
-        loading === false && (
-          <>
-            <Button type='primary' onClick={softReportform}>保存</Button>
-            <Button type='primary' onClick={handlePaste}>粘贴</Button>
-            <Button onClick={handleBack}>
-              返回
-            </Button>
-          </>
-        )
+        // loading === false && (
+        <>
+          <Button type='primary' onClick={databaseReportform}>保存</Button>
+          <Button type='primary' onClick={handlePaste}>粘贴</Button>
+          <Button onClick={handleBack}>
+            返回
+          </Button>
+        </>
+        // )
 
       }
     >
       <Card style={{ padding: 24 }}>
-        {loading === false && (
-          <Row gutter={24}>
-            <Form>
-              <Col span={24}>
-                <Form.Item
-                  label={reporttype === 'week' ? '周报名称' : '月报名称'}
-                  style={{ display: 'inline-flex' }}
-                >
-                  {getFieldDecorator('name', {
-                    rules: [
-                      {
-                        required,
-                        message: '请输入名称'
-                      }
-                    ],
-                    initialValue: copyData.main ? copyData.main.name : ''
-                  })
-                    (
-                      <Input style={{ width: 700 }} />
-                    )}
-                </Form.Item>
-              </Col>
+        {/* {loading === false && ( */}
+        <Row gutter={24}>
+          <Form>
+            <Col span={24}>
+              <Form.Item
+                label={reporttype === 'week' ? '周报名称' : '月报名称'}
+                style={{ display: 'inline-flex' }}
+              >
+                {getFieldDecorator('name', {
+                  rules: [
+                    {
+                      required,
+                      message: '请输入名称'
+                    }
+                  ],
+                  initialValue: copyData.main ? copyData.main.name : ''
+                })
+                  (
+                    <Input style={{ width: 700 }} />
+                  )}
+              </Form.Item>
+            </Col>
 
-              {
-                reporttype === 'week' && (
-                  <div>
-                    <Col span={24}>
-                      <Form.Item label='填报时间' style={{ display: 'inline-flex' }}>
-                        {getFieldDecorator('time1', {
-                          rules: [
-                            {
-                              required,
-                              message: '请输入填报时间'
-                            }
-                          ],
-                          initialValue: moment(startTime)
-                        })(
-                          <DatePicker
-                            allowClear={false}
-                            style={{ marginRight: 10 }}
-                            onChange={onChange}
-                          />)}
-                      </Form.Item>
-
-                      <Form.Item label='' style={{ display: 'inline-flex' }}>
-                        {
-                          getFieldDecorator('time2', {
-                            initialValue: moment(endTime)
-                          })
-                            (<DatePicker
-                              allowClear={false}
-                              onChange={endonChange}
-                            />)
-                        }
-                      </Form.Item>
-                    </Col>
-                  </div>
-                )
-              }
-
-              {
-                reporttype === 'month' && (
+            {
+              reporttype === 'week' && (
+                <div>
                   <Col span={24}>
-                    <Form.Item
-                      label='填报日期'
-                      style={{ display: 'inline-flex' }}
-                    >
+                    <Form.Item label='填报时间' style={{ display: 'inline-flex' }}>
                       {getFieldDecorator('time1', {
                         rules: [
                           {
@@ -379,334 +354,394 @@ function DatabaseReport(props) {
                             message: '请输入填报时间'
                           }
                         ],
-                        initialValue: moment(copyData.main ? copyData.main.time1 : startTime)
-                      })(<MonthPicker
-                        allowClear={false}
-                        // disabledDate={startdisabledDate}
-                        // placeholder='请选择'
-                        onChange={onChange}
-                      />)}
+                        initialValue: copyData.main ? moment(copyData.main.time1) : moment(startTime)
+                      })(
+                        <DatePicker
+                          allowClear={false}
+                          style={{ marginRight: 10 }}
+                          onChange={onChange}
+                        />)}
+                    </Form.Item>
+
+                    <Form.Item label='' style={{ display: 'inline-flex' }}>
+                      {
+                        getFieldDecorator('time2', {
+                          initialValue: copyData.main ? moment(copyData.main.time2) : moment(endTime)
+                        })
+                          (<DatePicker
+                            allowClear={false}
+                            onChange={endonChange}
+                          />)
+                      }
+                    </Form.Item>
+
+                    <Button
+                      type='primary'
+                      style={{ marginLeft: 10, marginTop: 5 }}
+                      onClick={getDatabasereportdata}
+                    >
+                      获取数据
+                    </Button>
+                  </Col>
+                </div>
+              )
+            }
+
+            {
+              reporttype === 'month' && (
+                <Col span={24}>
+                  <Form.Item
+                    label='填报日期'
+                    style={{ display: 'inline-flex' }}
+                  >
+                    {getFieldDecorator('time1', {
+                      rules: [
+                        {
+                          required,
+                          message: '请输入填报时间'
+                        }
+                      ],
+                      initialValue: copyData.main ? moment(copyData.main.time1) : moment(startTime)
+                    })(<MonthPicker
+                      allowClear={false}
+                      // disabledDate={startdisabledDate}
+                      // placeholder='请选择'
+                      onChange={onChange}
+                    />)}
+                  </Form.Item>
+
+                  <Button
+                    type='primary'
+                    style={{ marginLeft: 10, marginTop: 5 }}
+                    onClick={getDatabasereportdata}
+                  >
+                    获取数据
+                  </Button>
+                </Col>
+              )
+            }
+
+            {/* 一、本周运维情况综述 */}
+            {
+              initial && lastweekHomeworklist && (
+                <>
+                  <Col span={24}>
+                    <p style={{ fontWeight: '900', fontSize: '16px', marginTop: '20px' }}>{reporttype === 'week' ? '一、本周运维情况综述' : '一、本月运维情况综述'}</p>
+                  </Col>
+
+                  <Col span={24}>
+                    <Form.Item label=''>
+                      {
+                        getFieldDecorator('content', {
+                          initialValue: copyData.main ? copyData.main.content : ''
+                        })
+                          (<TextArea autoSize={{ minRows: 3 }} />)
+                      }
                     </Form.Item>
                   </Col>
-                )
-              }
 
-              {/* 一、本周运维情况综述 */}
+                  <Col span={24}>
+                    <Form.Item
+                      label='上传附件'
+                      {...formincontentLayout}
+                    >
+                      {getFieldDecorator('contentFiles', {
+                        initialValue: ''
+                      })
+                        (
+                          <div style={{ width: 400 }}>
+                            <SysUpload
+                              fileslist={[]}
+                              ChangeFileslist={newvalue => {
+                                setFieldsValue({ contentFiles: JSON.stringify(newvalue.arr) })
+                                setFilesList(newvalue);
+                                setFiles(newvalue)
+                              }}
+                            />
+                          </div>
+                        )}
+                    </Form.Item>
+                  </Col>
 
-              <Col span={24}>
-                <p style={{ fontWeight: '900', fontSize: '16px', marginTop: '20px' }}>{reporttype === 'week' ? '一、本周运维情况综述' : '一、本月运维情况综述'}</p>
-              </Col>
+                  <Col span={24}>
+                    <p style={{ fontWeight: '900', fontSize: '16px' }}>二、巡检汇总</p>
+                  </Col>
 
-              <Col span={24}>
-                <Form.Item label=''>
+                  <Col span={24}>
+                    <Form.Item label=''>
+                      {
+                        getFieldDecorator('patrolAndExamineContent', {
+                          initialValue: copyData.patrolAndExamineContent ? copyData.patrolAndExamineContent : ''
+                        })(<TextArea autoSize={{ minRows: 3 }} />)
+                      }
+                    </Form.Item>
+                  </Col>
+
+                  {/* 二、常规运维工作开展情况 */}
+                  {/* 磁盘组 */}
+                  <Col span={24}>
+                    <Diskgroup
+                      forminladeLayout={forminladeLayout}
+                      discArr={[]}
+                      discList={contentrowdata => {
+                        setDiscList(contentrowdata)
+                      }}
+                    />
+                  </Col>
+
+                  <Col span={24}>
+                    <Top10Surface
+                      forminladeLayout={forminladeLayout}
+                      tablespaceArr={copyData.tablespaceList ? copyData.tablespaceList : []}
+                      tablespaceList={contentrowdata => {
+                        setTablespaceList(contentrowdata)
+                      }}
+                      startTime={startTime}
+                      endTime={endTime}
+                    />
+                  </Col>
+
+                  <Col span={24}>
+                    <Top10Increase
+                      forminladeLayout={forminladeLayout}
+                      tableUpArr={copyData.tableUpList ? copyData.tableUpList : []}
+                      tableUpList={contentrowdata => {
+                        setTableUpList(contentrowdata)
+                      }}
+                      startTime={startTime}
+                      endTime={endTime}
+                    />
+                  </Col>
+
+                  {/* Top10表增长附件 */}
+                  <Col span={24} style={{ marginTop: 20 }}>
+                    <Form.Item
+                      label='上传附件'
+                      {...formincontentLayout}
+                    >
+                      {getFieldDecorator('tableUpFiles', {
+                        initialValue: '[]'
+                      })
+                        (
+                          <div style={{ width: 400 }}>
+                            <SysUpload
+                              fileslist={[]}
+                              ChangeFileslist={newvalue => {
+                                setFieldsValue({ tableUpFiles: JSON.stringify(newvalue.arr) })
+                                setFilesList(newvalue);
+                                setFiles(newvalue)
+                              }}
+                            />
+                          </div>
+                        )}
+
+                    </Form.Item>
+                  </Col>
+
+                  {/* 三、发现问题及修改建议 */}
+                  <Col span={24}>
+                    <QuestionsComments
+                      forminladeLayout={forminladeLayout}
+                      defectArr={copyData.defectList ? copyData.defectList : []}
+                      defectList={contentrowdata => {
+                        setDefectList(contentrowdata)
+                      }}
+                      startTime={startTime}
+                      endTime={endTime}
+                    />
+                  </Col>
+
+                  <Col span={24} style={{ marginTop: 20 }}>
+                    <Form.Item
+                      label='上传附件'
+                      {...formincontentLayout}
+                    >
+                      {getFieldDecorator('defectFiles', {
+                        initialValue: '[]'
+                      })
+                        (
+                          <div style={{ width: 400 }}>
+                            <SysUpload
+                              fileslist={[]}
+                              ChangeFileslist={newvalue => {
+                                setFieldsValue({ defectFiles: JSON.stringify(newvalue.arr) })
+                                setFilesList(newvalue);
+                                setFiles(newvalue)
+                              }}
+                            />
+                          </div>
+                        )}
+                    </Form.Item>
+                  </Col>
+
+                  {/* 上周作业完成情况 */}
+
+                  <Col span={24}>
+                    <p style={{ fontWeight: '900', fontSize: '16px' }}> 四、上周作业完成情况</p>
+                  </Col>
+
                   {
-                    getFieldDecorator('content', {
-                      initialValue: copyData.content ? copyData.content : ''
-                    })
-                      (<TextArea autoSize={{ minRows: 3 }} />)
-                  }
-                </Form.Item>
-              </Col>
-
-              <Col span={24}>
-                <Form.Item
-                  label='上传附件'
-                  {...formincontentLayout}
-                >
-                  {getFieldDecorator('contentFiles', {
-                    initialValue: ''
-                  })
-                    (
-                      <div style={{ width: 400 }}>
-                        <SysUpload
-                          fileslist={[]}
-                          ChangeFileslist={newvalue => {
-                            setFieldsValue({ contentFiles: JSON.stringify(newvalue.arr) })
-                            setFilesList(newvalue);
-                            setFiles(newvalue)
+                    copyData.operationList !== undefined && (
+                      <Col span={24}>
+                        <CopyLast
+                          forminladeLayout={forminladeLayout}
+                          operationArr={copyData.operationList}
+                          type={reporttype}
+                          operationList={contentrowdata => {
+                            setOperationList(contentrowdata)
                           }}
-                        />
-                      </div>
-                    )}
-                </Form.Item>
-              </Col>
-
-              <Col span={24}>
-                <p style={{ fontWeight: '900', fontSize: '16px' }}>二、巡检汇总</p>
-              </Col>
-
-              <Col span={24}>
-                <Form.Item label=''>
-                  {
-                    getFieldDecorator('patrolAndExamineContent', {
-                      initialValue: copyData.patrolAndExamineContent ? copyData.patrolAndExamineContent : ''
-                    })(<TextArea autoSize={{ minRows: 3 }} />)
-                  }
-                </Form.Item>
-              </Col>
-
-              {/* 二、常规运维工作开展情况 */}
-              {/* 磁盘组 */}
-              <Col span={24}>
-                <Diskgroup
-                  forminladeLayout={forminladeLayout}
-                  discArr={[]}
-                  discList={contentrowdata => {
-                    setDiscList(contentrowdata)
-                  }}
-                />
-              </Col>
-
-              <Col span={24}>
-                <Top10Surface
-                  forminladeLayout={forminladeLayout}
-                  tablespaceArr={copyData.tablespaceList ? copyData.tablespaceList : []}
-                  tablespaceList={contentrowdata => {
-                    setTablespaceList(contentrowdata)
-                  }}
-                  startTime={startTime}
-                  endTime={endTime}
-                />
-              </Col>
-
-              <Col span={24}>
-                <Top10Increase
-                  forminladeLayout={forminladeLayout}
-                  tableUpArr={copyData.tableUpList ? copyData.tableUpList : []}
-                  tableUpList={contentrowdata => {
-                    setTableUpList(contentrowdata)
-                  }}
-                  startTime={startTime}
-                  endTime={endTime}
-                />
-              </Col>
-
-              {/* Top10表增长附件 */}
-              <Col span={24} style={{ marginTop: 20 }}>
-                <Form.Item
-                  label='上传附件'
-                  {...formincontentLayout}
-                >
-                  {getFieldDecorator('tableUpFiles', {
-                    initialValue: '[]'
-                  })
-                    (
-                      <div style={{ width: 400 }}>
-                        <SysUpload
-                          fileslist={[]}
-                          ChangeFileslist={newvalue => {
-                            setFieldsValue({ tableUpFiles: JSON.stringify(newvalue.arr) })
-                            setFilesList(newvalue);
-                            setFiles(newvalue)
-                          }}
-                        />
-                      </div>
-                    )}
-
-                </Form.Item>
-              </Col>
-
-              {/* 三、发现问题及修改建议 */}
-              <Col span={24}>
-                <QuestionsComments
-                  forminladeLayout={forminladeLayout}
-                  defectArr={copyData.defectList ? copyData.defectList : []}
-                  defectList={contentrowdata => {
-                    setDefectList(contentrowdata)
-                  }}
-                  startTime={startTime}
-                  endTime={endTime}
-                />
-              </Col>
-
-              <Col span={24} style={{ marginTop: 20 }}>
-                <Form.Item
-                  label='上传附件'
-                  {...formincontentLayout}
-                >
-                  {getFieldDecorator('defectFiles', {
-                    initialValue: '[]'
-                  })
-                    (
-                      <div style={{ width: 400 }}>
-                        <SysUpload
-                          fileslist={[]}
-                          ChangeFileslist={newvalue => {
-                            setFieldsValue({ defectFiles: JSON.stringify(newvalue.arr) })
-                            setFilesList(newvalue);
-                            setFiles(newvalue)
-                          }}
-                        />
-                      </div>
-                    )}
-                </Form.Item>
-              </Col>
-
-              {/* 上周作业完成情况 */}
-
-              <Col span={24}>
-                <p style={{ fontWeight: '900', fontSize: '16px' }}> 四、上周作业完成情况</p>
-              </Col>
-
-              {
-                copyData.operationList !== undefined && (
-                  <Col span={24}>
-                    <CopyLast
-                      forminladeLayout={forminladeLayout}
-                      operationArr={copyData.operationList}
-                      type={reporttype}
-                      operationList={contentrowdata => {
-                        setOperationList(contentrowdata)
-                      }}
-                      mainId={mainId}
-                    />
-                  </Col>
-                )
-              }
-
-              {
-                copyData.operationList === undefined && (
-                  <Col span={24}>
-                    <LastweekHomework
-                      forminladeLayout={forminladeLayout}
-                      operationArr={lastweekHomeworklist.rows}
-                      type={reporttype}
-                      operationList={contentrowdata => {
-                        setOperationList(contentrowdata)
-                      }}
-                    />
-                  </Col>
-                )
-              }
-
-
-              <Col span={24} style={{ marginTop: 20 }}>
-                <Form.Item
-                  label='上传附件'
-                  {...formincontentLayout}
-                >
-                  {getFieldDecorator('operationFiles', {
-                    initialValue: '[]'
-                  })
-                    (
-                      <div style={{ width: 400 }}>
-                        <SysUpload
-                          fileslist={[]}
-                          ChangeFileslist={newvalue => {
-                            setFieldsValue({ operationFiles: JSON.stringify(newvalue.arr) })
-                            setFilesList(newvalue);
-                            setFiles(newvalue)
-                          }}
-                        />
-                      </div>
-                    )}
-
-                </Form.Item>
-              </Col>
-
-              {/* 下周工作计划 */}
-              <Col span={24}>
-                <p style={{ fontWeight: '900', fontSize: '16px' }}>五、下周作业计划</p>
-              </Col>
-
-              {
-                copyData.operationList !== undefined && (
-                  <Col span={24}>
-                    <CopyLast
-                      forminladeLayout={forminladeLayout}
-                      type={reporttype}
-                      operationList={contentrowdata => {
-                        setNextOperationList(contentrowdata)
-                      }}
-                      operationArr={copyData.nextOperationList}
-                      mainId={mainId}
-                    />
-                  </Col>
-                )
-              }
-
-              {
-                copyData.operationList === undefined && (
-                  <Col span={24}>
-                    <LastweekHomework
-                      forminladeLayout={forminladeLayout}
-                      type={reporttype}
-                      operationList={contentrowdata => {
-                        setNextOperationList(contentrowdata)
-                      }}
-                      operationArr={nextweekHomeworklist.rows}
-                      mainId={mainId}
-                    />
-                  </Col>
-                )
-              }
-
-              <Col span={24} style={{ marginTop: 20 }}>
-                <Form.Item
-                  label='上传附件'
-                  {...formincontentLayout}
-                >
-                  {getFieldDecorator('nextOperationFiles', {
-                    initialValue: '[]'
-                  })
-                    (
-                      <div style={{ width: 400 }}>
-                        <SysUpload
-                          fileslist={[]}
-                          ChangeFileslist={newvalue => {
-                            setFieldsValue({ nextOperationFiles: JSON.stringify(newvalue.arr) })
-                            setFilesList(newvalue);
-                            setFiles(newvalue)
-                          }}
-                        />
-                      </div>
-                    )}
-                </Form.Item>
-              </Col>
-
-              {loading === false && addTitle && addTitle.length > 0 && (
-                addTitle.map((item, index) => {
-                  return (
-                    <>
-                      <Col span={23}>
-                        <AddForm
-                          formincontentLayout={formincontentLayout}
-                          px={index + 6}
-                          addTable={newdata => {
-                            handleaddTable(newdata)
-                          }}
-                          dynamicData={addTitle[index]}
-                          index={index}
-                          loading={loading}
+                          mainId={mainId}
                         />
                       </Col>
+                    )
+                  }
 
-                      <Col span={1}>
-                        <Icon
-                          className="dynamic-delete-button"
-                          type="minus-circle-o"
-                          onClick={() => removeForm(index)}
+                  {
+                    copyData.operationList === undefined && (
+                      <Col span={24}>
+                        <LastweekHomework
+                          forminladeLayout={forminladeLayout}
+                          operationArr={lastweekHomeworklist.rows}
+                          type={reporttype}
+                          operationList={contentrowdata => {
+                            setOperationList(contentrowdata)
+                          }}
                         />
                       </Col>
+                    )
+                  }
 
-                    </>
-                  )
-                })
+
+                  <Col span={24} style={{ marginTop: 20 }}>
+                    <Form.Item
+                      label='上传附件'
+                      {...formincontentLayout}
+                    >
+                      {getFieldDecorator('operationFiles', {
+                        initialValue: '[]'
+                      })
+                        (
+                          <div style={{ width: 400 }}>
+                            <SysUpload
+                              fileslist={[]}
+                              ChangeFileslist={newvalue => {
+                                setFieldsValue({ operationFiles: JSON.stringify(newvalue.arr) })
+                                setFilesList(newvalue);
+                                setFiles(newvalue)
+                              }}
+                            />
+                          </div>
+                        )}
+
+                    </Form.Item>
+                  </Col>
+
+                  {/* 下周工作计划 */}
+                  <Col span={24}>
+                    <p style={{ fontWeight: '900', fontSize: '16px' }}>五、下周作业计划</p>
+                  </Col>
+
+                  {
+                    copyData.operationList !== undefined && (
+                      <Col span={24}>
+                        <CopyLast
+                          forminladeLayout={forminladeLayout}
+                          type={reporttype}
+                          operationList={contentrowdata => {
+                            setNextOperationList(contentrowdata)
+                          }}
+                          operationArr={copyData.nextOperationList}
+                          mainId={mainId}
+                        />
+                      </Col>
+                    )
+                  }
+
+                  {
+                    copyData.operationList === undefined && (
+                      <Col span={24}>
+                        <LastweekHomework
+                          forminladeLayout={forminladeLayout}
+                          type={reporttype}
+                          operationList={contentrowdata => {
+                            setNextOperationList(contentrowdata)
+                          }}
+                          operationArr={nextweekHomeworklist.rows}
+                          mainId={mainId}
+                        />
+                      </Col>
+                    )
+                  }
+
+                  <Col span={24} style={{ marginTop: 20 }}>
+                    <Form.Item
+                      label='上传附件'
+                      {...formincontentLayout}
+                    >
+                      {getFieldDecorator('nextOperationFiles', {
+                        initialValue: '[]'
+                      })
+                        (
+                          <div style={{ width: 400 }}>
+                            <SysUpload
+                              fileslist={[]}
+                              ChangeFileslist={newvalue => {
+                                setFieldsValue({ nextOperationFiles: JSON.stringify(newvalue.arr) })
+                                setFilesList(newvalue);
+                                setFiles(newvalue)
+                              }}
+                            />
+                          </div>
+                        )}
+                    </Form.Item>
+                  </Col>
+                </>
               )
-              }
+            }
 
-              <Button
-                style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
-                type="primary"
-                ghost
-                onClick={() => newMember()}
-                icon="plus"
-              >
-                新增其他内容
-              </Button>
-            </Form>
-          </Row>
-        )}
+            {loading === false && addTitle && addTitle.length > 0 && (
+              addTitle.map((item, index) => {
+                return (
+                  <>
+                    <Col span={23}>
+                      <AddForm
+                        formincontentLayout={formincontentLayout}
+                        px={index + 6}
+                        addTable={newdata => {
+                          handleaddTable(newdata)
+                        }}
+                        dynamicData={addTitle[index]}
+                        index={index}
+                        loading={loading}
+                      />
+                    </Col>
+
+                    <Col span={1}>
+                      <Icon
+                        className="dynamic-delete-button"
+                        type="minus-circle-o"
+                        onClick={() => removeForm(index)}
+                      />
+                    </Col>
+
+                  </>
+                )
+              })
+            )
+            }
+
+            <Button
+              style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
+              type="primary"
+              ghost
+              onClick={() => newMember()}
+              icon="plus"
+            >
+              新增其他内容
+            </Button>
+          </Form>
+        </Row>
+        {/* // )} */}
       </Card>
     </PageHeaderWrapper>
   )

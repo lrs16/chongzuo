@@ -81,7 +81,7 @@ function DatabaseReportdetail(props) {
   const { main } = openReportlist;
 
   //  保存表单
-  const softReportform = () => {
+  const databaseReportform = () => {
     props.form.validateFields((err, values) => {
       if (!err) {
         const savedata = {
@@ -92,8 +92,8 @@ function DatabaseReportdetail(props) {
           type: reporttype === 'week' ? '数据库运维周报' : '数据库运维月报',
           reporttype,
           mainId,
-          time1: startTime,
-          time2: endTime,
+          time1: (values.time1).format('YYYY-MM-DD'),
+          time2: (values.time2).format('YYYY-MM-DD'),
           discList: JSON.stringify(discList),
           tablespaceList: JSON.stringify(tablespaceList),
           tableUpList: JSON.stringify(tableUpList),
@@ -296,13 +296,13 @@ function DatabaseReportdetail(props) {
       title={pagetitle}
       extra={
         <>
-          {loading === false && (
+          {loading === false && openReportlist.main !== undefined && (
             <Button type='primary' onClick={exportWord}>导出</Button>
 
           )}
           {
             !reportSearch && (
-              <Button type='primary' onClick={softReportform}>保存</Button>
+              <Button type='primary' onClick={databaseReportform}>保存</Button>
             )
           }
 
@@ -313,7 +313,7 @@ function DatabaseReportdetail(props) {
       }
     >
       <Card style={{ padding: 24 }}>
-        {loading === false && startTime && (
+        {loading === false && (
           <Row gutter={24}>
             <Form >
               <Col span={24}>
@@ -348,7 +348,7 @@ function DatabaseReportdetail(props) {
                               message: '请输入填报时间'
                             }
                           ],
-                          initialValue: moment(startTime)
+                          initialValue: moment(main.time1)
                         })(
                           <DatePicker
                             allowClear={false}
@@ -361,7 +361,7 @@ function DatabaseReportdetail(props) {
                       <Form.Item label='' style={{ display: 'inline-flex' }}>
                         {
                           getFieldDecorator('time2', {
-                            initialValue: moment(endTime)
+                            initialValue: moment(main.time2)
                           })
                             (<DatePicker
                               allowClear={false}
@@ -510,15 +510,10 @@ function DatabaseReportdetail(props) {
 
               <Col span={24}>
                 <Top10Increase
-                  forminladeLayout={forminladeLayout}
-                  developmentList={developmentList}
-                  submitdevelopmentlist={submitdevelopmentlist}
                   tableUpArr={openReportlist.tableUpList}
                   tableUpList={contentrowdata => {
                     setTableUpList(contentrowdata)
                   }}
-                  startTime={startTime}
-                  endTime={endTime}
                   reportSearch={reportSearch}
                 />
               </Col>

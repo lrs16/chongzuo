@@ -60,7 +60,7 @@ function OtherReport(props) {
   };
 
   //  保存表单
-  const softReportform = () => {
+  const otherReportform = () => {
     props.form.validateFields((err, value) => {
       if (!err) {
         const savedata = {
@@ -71,10 +71,9 @@ function OtherReport(props) {
           type: reporttype === 'week' ? '其他运维周报' : '其他运维月报',
           reporttype,
           mainId,
-          time1: startTime,
-          time2: endTime,
+          time1: reporttype === 'week' ? (value.time1).format('YYYY-MM-DD') : moment(value.time1).startOf('month').format('YYYY-MM-DD'),
+          time2: reporttype === 'week' ? (value.time2).format('YYYY-MM-DD') : moment(value.time1).endOf('month').format('YYYY-MM-DD'),
         }
-
         dispatch({
           type: 'softreport/saveOther',
           payload: savedata
@@ -201,7 +200,7 @@ function OtherReport(props) {
   const removeForm = (tableIndex) => {
     addTitle.splice(tableIndex, 1);
     const resultArr = [];
-    for (let i = 0; i < addTitle.length; i++) {
+    for (let i = 0; i < addTitle.length; i += 1) {
       resultArr.push(addTitle[i])
     }
     setAddTitle(resultArr)
@@ -213,7 +212,7 @@ function OtherReport(props) {
       extra={
         loading === false && (
           <>
-            <Button type='primary' onClick={softReportform}>保存</Button>
+            <Button type='primary' onClick={otherReportform}>保存</Button>
             <Button type='primary' onClick={handlePaste}>粘贴</Button>
             <Button onClick={handleBack}>
               返回
@@ -257,7 +256,7 @@ function OtherReport(props) {
                               message: '请输入填报时间'
                             }
                           ],
-                          initialValue: moment(startTime)
+                          initialValue: copyData.main ? moment(copyData.main.time1) : moment(startTime)
                         })(<DatePicker
                           allowClear={false}
                           style={{ marginRight: 10 }}
@@ -268,7 +267,7 @@ function OtherReport(props) {
                       <Form.Item label='' style={{ display: 'inline-flex' }}>
                         {
                           getFieldDecorator('time2', {
-                            initialValue: moment(endTime)
+                            initialValue:  copyData.main ? moment(copyData.main.time2) : moment(endTime)
                           })
                             (<DatePicker
                               allowClear={false}

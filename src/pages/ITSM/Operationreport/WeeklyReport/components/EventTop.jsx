@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Table,
   Form,
@@ -6,33 +6,24 @@ import {
   Col,
   Row,
   Popconfirm,
-  Select,
   Button,
   message
 } from 'antd';
 
 const { TextArea } = Input;
-const { Option } = Select;
 
 function EventTop(props) {
   const {
-    formincontentLayout,
-    formItemLayout,
     topNList,
-    defaultValue,
     topArr,
-    mainId,
-    value,
     detailParams,
     loading,
-    dispatch
   } = props;
 
   const [data, setData] = useState([]);
 
   // 初始化把数据传过去
   useEffect(() => {
-    // typeList(maintenanceArr)
     if (data && data.length) {
       const result = JSON.parse(JSON.stringify(data)
         .replace(/first_object/g, 'field1')
@@ -44,6 +35,20 @@ function EventTop(props) {
       }
     }
   }, [data]);
+
+  // 新增一条记录
+  const newMember = () => {
+    const newData = (data).map(item => ({ ...item }));
+    newData.push({
+      key: data.length + 1,
+      field1: data.length + 1,
+      field2: '',
+      field3: '',
+      field4: '',
+      field5: '',
+    });
+    setData(newData);
+  };
 
   //  获取行  
   const getRowByKey = (key, newData) => {
@@ -60,16 +65,15 @@ function EventTop(props) {
     setData(target)
   };
 
-
   const handleSave = () => {
-      const result = JSON.parse(JSON.stringify(data)
-        .replace(/first_object/g, 'field1')
-        .replace(/second_object/g, 'field2')
-        .replace(/num/g, 'field3')
-      )
-      if (result) {
-        topNList(result)
-      }
+    const result = JSON.parse(JSON.stringify(data)
+      .replace(/first_object/g, 'field1')
+      .replace(/second_object/g, 'field2')
+      .replace(/num/g, 'field3')
+    )
+    if (result) {
+      topNList(result)
+    }
     message.info('暂存保存数据成功')
   }
 
@@ -80,7 +84,6 @@ function EventTop(props) {
       target[fieldName] = e;
       setData(newData);
     }
-
   }
 
   const handleTabledata = () => {
@@ -90,87 +93,9 @@ function EventTop(props) {
     setData(newarr)
   }
 
-  const selectOnchange = (selectvalue) => {
-    value(selectvalue)
-  }
-
-
-  const column = [
-    {
-      title: '事件对象一级',
-      dataIndex: 'first_object',
-      key: 'first_object',
-      render: (text, record) => {
-        return (
-          <Input
-            defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'first_object', record.key)}
-          />
-        )
-      }
-    },
-    {
-      title: '事件对象二级',
-      dataIndex: 'second_object',
-      key: 'second_object',
-      render: (text, record) => {
-        return (
-          <Input
-            defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'second_object', record.key)}
-          />
-        )
-      }
-    },
-    {
-      title: '事件单数',
-      dataIndex: 'num',
-      key: 'num',
-      render: (text, record) => {
-        return (
-          <Input
-            defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'num', record.key)}
-          />
-        )
-      }
-    },
-    {
-      title: '措施',
-      dataIndex: 'field4',
-      key: 'field4',
-      render: (text, record) => {
-        return (
-          <TextArea
-            defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'field4', record.key)}
-          />
-        )
-      }
-    },
-    {
-      title: '操作',
-      key: 'action',
-      fixed: 'right',
-      width: 120,
-      render: (text, record) => {
-        if (text !== '合计') {
-          return (
-            <span>
-              <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
-                <a>删除</a>
-              </Popconfirm>
-            </span>
-          )
-        }
-      }
-
-    }
-  ];
-
   const editColumns = [
     {
-      title: '事件对象一级',
+      title: '序号',
       dataIndex: 'field1',
       key: 'field1',
       render: (text, record) => {
@@ -184,7 +109,7 @@ function EventTop(props) {
       }
     },
     {
-      title: '事件对象二级',
+      title: '分类',
       dataIndex: 'field2',
       key: 'field2',
       render: (text, record) => {
@@ -198,7 +123,7 @@ function EventTop(props) {
       }
     },
     {
-      title: '事件单数',
+      title: '问题描述',
       dataIndex: 'field3',
       key: 'field3',
       render: (text, record) => {
@@ -212,15 +137,29 @@ function EventTop(props) {
       }
     },
     {
-      title: '措施',
+      title: '工单数',
       dataIndex: 'field4',
       key: 'field4',
+      render: (text, record) => {
+        return (
+          <Input
+            disabled={detailParams}
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field4', record.key)}
+          />
+        )
+      }
+    },
+    {
+      title: '措施',
+      dataIndex: 'field5',
+      key: 'field5',
       render: (text, record) => {
         return (
           <TextArea
             disabled={detailParams}
             defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'field4', record.key)}
+            onChange={e => handleFieldChange(e.target.value, 'field5', record.key)}
           />
         )
       }
@@ -249,16 +188,9 @@ function EventTop(props) {
     }
   ];
 
-
   useEffect(() => {
     handleTabledata();
   }, [topArr])
-
-  let setColumns = column;
-
-  if(mainId) {
-    setColumns = editColumns
-  }
 
   return (
     <>
@@ -267,30 +199,7 @@ function EventTop(props) {
           <p>（三）工单TopN 事件分析</p>
         </Col>
 
-        <Form {...formItemLayout}>
-          {!mainId && (
-            <Row gutter={16}>
-              <Col span={24}>
-                <Form.Item label='N' {...formincontentLayout}>
-                  <Select
-                    placeholder="请选择"
-                    style={{ width: 150 }}
-                    defaultValue={defaultValue}
-                    disabled={detailParams}
-                    onChange={selectOnchange}
-                  >
-                    <Option value="5">5</Option>
-                    <Option value="10">10</Option>
-                    <Option value="15">15</Option>
-                    <Option value="20">20</Option>
-                  </Select>
-                </Form.Item>
-              </Col>
-            </Row>
-          )}
-        </Form>
-
-        <Col style={{ textAlign: 'right',marginBottom:10 }}>
+        <Col style={{ textAlign: 'right', marginBottom: 10 }}>
           <Button
             type='primary'
             disabled={detailParams}
@@ -298,12 +207,21 @@ function EventTop(props) {
         </Col>
 
         <Table
-          loading={loading}
-          columns={setColumns}
+          columns={editColumns}
           dataSource={data}
           pagination={false}
         />
 
+        <Button
+          style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
+          type="primary"
+          ghost
+          onClick={newMember}
+          icon="plus"
+          disabled={detailParams}
+        >
+          新增
+        </Button>
       </Row>
 
     </>

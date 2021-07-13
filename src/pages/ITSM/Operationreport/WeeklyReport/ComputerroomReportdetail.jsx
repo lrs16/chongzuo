@@ -55,7 +55,7 @@ const formincontentLayout = {
   },
 };
 
-const {  MonthPicker } = DatePicker;
+const { MonthPicker } = DatePicker;
 const { TextArea } = Input;
 let startTime;
 let endTime;
@@ -101,7 +101,7 @@ function ComputerroomReportdetail(props) {
   }
 
   //  保存表单
-  const softReportform = () => {
+  const computerReportform = () => {
     props.form.validateFields((err, value) => {
       if (!err) {
         const savedata = {
@@ -112,8 +112,8 @@ function ComputerroomReportdetail(props) {
           type: reporttype === 'week' ? '机房运维周报' : '机房运维月报',
           reporttype,
           mainId,
-          time1: startTime,
-          time2: endTime,
+          time1: (value.time1).format('YYYY-MM-DD'),
+          time2: (value.time2).format('YYYY-MM-DD'),
           materialsList: JSON.stringify(materialsList),
           meetingSummaryList: JSON.stringify(meetingSummaryList),
           newTroubleList: JSON.stringify(newTroubleList),
@@ -294,7 +294,7 @@ function ComputerroomReportdetail(props) {
           )}
 
           {!reportSearch && (
-            <Button type='primary' onClick={softReportform}>保存</Button>
+            <Button type='primary' onClick={computerReportform}>保存</Button>
           )}
 
           <Button onClick={handleBack}>
@@ -333,13 +333,13 @@ function ComputerroomReportdetail(props) {
                     <Col span={24}>
                       <Form.Item label='填报时间' style={{ display: 'inline-flex' }}>
                         {getFieldDecorator('time1', {
-                            rules: [
-                              {
-                                required,
-                                message: '请输入填报时间'
-                              }
-                            ],
-                          initialValue: main?moment(main.time1):''
+                          rules: [
+                            {
+                              required,
+                              message: '请输入填报时间'
+                            }
+                          ],
+                          initialValue: main ? moment(main.time1) : ''
                         })(
                           <DatePicker
                             allowClear={false}
@@ -352,7 +352,7 @@ function ComputerroomReportdetail(props) {
                       <Form.Item label='' style={{ display: 'inline-flex' }}>
                         {
                           getFieldDecorator('time2', {
-                            initialValue: moment(main.time2)
+                            initialValue: main ? moment(main.time2) : ''
                           })
                             (<DatePicker
                               allowClear={false}
@@ -622,8 +622,6 @@ function ComputerroomReportdetail(props) {
                         disabled={reportSearch}
                       />)
                   }
-
-
                 </Form.Item>
               </Col>
 
@@ -763,7 +761,6 @@ function ComputerroomReportdetail(props) {
                 )
               }
 
-
               {
                 reportSearch && (
                   <div style={{ marginLeft: 30, marginRight: 10, marginTop: 20 }}>
@@ -792,6 +789,7 @@ function ComputerroomReportdetail(props) {
                             handleaddTable(newdata);
                             // saveForm(newdata)
                           }}
+                          detailParams={reportSearch}
                           dynamicData={addTitle[index]}
                           loading={loading}
                         />
@@ -806,8 +804,6 @@ function ComputerroomReportdetail(props) {
                           />
                         </Col>
                       )}
-
-
                     </>
                   )
                 })

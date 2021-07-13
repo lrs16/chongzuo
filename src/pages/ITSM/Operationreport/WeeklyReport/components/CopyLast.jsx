@@ -94,35 +94,35 @@ function CopyLast(props) {
 
   const copyColumns = [
     {
-      title: '作业日期',
+      title: '序号',
       dataIndex: 'field1',
       key: 'field1',
+      render: (text, record) => {
+        return (
+          <Input
+            disabled={detailParams}
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field1', record.key)}
+          />
+        )
+      }
+    },
+    {
+      title: '作业日期',
+      dataIndex: 'field2',
+      key: 'field2',
       render: (text, record) => {
         return (
           <DatePicker
             disabled={detailParams}
             defaultValue={text ? moment(text) : moment(new Date())}
-            onChange={e => handleFieldChange(e, 'field1', record.key)}
+            onChange={e => handleFieldChange(e, 'field2', record.key)}
           />
         )
       }
     },
     {
       title: '作业性质',
-      dataIndex: 'field2',
-      key: 'field2',
-      render: (text, record) => {
-        return (
-          <Input
-            disabled={detailParams}
-            defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'field2', record.key)}
-          />
-        )
-      }
-    },
-    {
-      title: '作业对象',
       dataIndex: 'field3',
       key: 'field3',
       render: (text, record) => {
@@ -136,7 +136,7 @@ function CopyLast(props) {
       }
     },
     {
-      title: '作业内容',
+      title: '作业对象',
       dataIndex: 'field4',
       key: 'field4',
       render: (text, record) => {
@@ -150,7 +150,7 @@ function CopyLast(props) {
       }
     },
     {
-      title: '计划完成时间',
+      title: '作业内容',
       dataIndex: 'field5',
       key: 'field5',
       render: (text, record) => {
@@ -164,7 +164,7 @@ function CopyLast(props) {
       }
     },
     {
-      title: '完成进度',
+      title: '计划完成时间',
       dataIndex: 'field6',
       key: 'field6',
       render: (text, record) => {
@@ -178,7 +178,7 @@ function CopyLast(props) {
       }
     },
     {
-      title: '作业负责人',
+      title: '完成进度',
       dataIndex: 'field7',
       key: 'field7',
       render: (text, record) => {
@@ -192,7 +192,7 @@ function CopyLast(props) {
       }
     },
     {
-      title: '作业单位',
+      title: '作业负责人',
       dataIndex: 'field8',
       key: 'field8',
       render: (text, record) => {
@@ -206,7 +206,7 @@ function CopyLast(props) {
       }
     },
     {
-      title: '备注',
+      title: '作业单位',
       dataIndex: 'field9',
       key: 'field9',
       render: (text, record) => {
@@ -215,6 +215,20 @@ function CopyLast(props) {
             disabled={detailParams}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field9', record.key)}
+          />
+        )
+      }
+    },
+    {
+      title: '备注',
+      dataIndex: 'field10',
+      key: 'field10',
+      render: (text, record) => {
+        return (
+          <Input
+            disabled={detailParams}
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field10', record.key)}
           />
         )
       }

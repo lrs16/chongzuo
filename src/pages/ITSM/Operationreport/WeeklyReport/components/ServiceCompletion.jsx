@@ -71,7 +71,7 @@ useEffect(() => {
         <Row gutter={16}>
 
           <Col span={24}>
-            <p style={{ fontWeight: '900', fontSize: '16px' }}>指标分析:</p>
+            <p style={{ fontWeight: '900', fontSize: '16px',marginTop:10 }}>指标分析:</p>
           </Col>
 
           <Col span={24}>
@@ -81,6 +81,7 @@ useEffect(() => {
           <Table
             columns={mainId?editColumn:threeColumn}
             dataSource={soluteArr}
+            pagination={false}
           />      
         </Row>
     </>

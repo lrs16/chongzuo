@@ -92,35 +92,35 @@ function NewTroublelist(props) {
 
   const editColumn = [
     {
-      title: '日期',
+      title: '序号',
       dataIndex: 'field1',
       key: 'field1',
+      render: (text, record) => {
+        return (
+          <Input
+            disabled={reportSearch}
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field1', record.key)}
+          />
+        )
+      }
+    },
+    {
+      title: '日期',
+      dataIndex: 'field2',
+      key: 'field2',
       render: (text, record) => {
         return (
           <DatePicker
             disabled={reportSearch}
             defaultValue={text ? moment(text) : moment(new Date())}
-            onChange={e => handleFieldChange(e, 'field1', record.key)}
+            onChange={e => handleFieldChange(e, 'field2', record.key)}
           />
         )
       }
     },
     {
       title: '故障类型',
-      dataIndex: 'field2',
-      key: 'field2',
-      render: (text, record) => {
-        return (
-          <Input
-            disabled={reportSearch}
-            defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'field2', record.key)}
-          />
-        )
-      }
-    },
-    {
-      title: '故障情况',
       dataIndex: 'field3',
       key: 'field3',
       render: (text, record) => {
@@ -134,7 +134,7 @@ function NewTroublelist(props) {
       }
     },
     {
-      title: '是否已修复',
+      title: '故障情况',
       dataIndex: 'field4',
       key: 'field4',
       render: (text, record) => {
@@ -148,7 +148,7 @@ function NewTroublelist(props) {
       }
     },
     {
-      title: '是否需要报告',
+      title: '是否已修复',
       dataIndex: 'field5',
       key: 'field5',
       render: (text, record) => {
@@ -162,7 +162,7 @@ function NewTroublelist(props) {
       }
     },
     {
-      title: '报告提供方',
+      title: '是否需要报告',
       dataIndex: 'field6',
       key: 'field6',
       render: (text, record) => {
@@ -176,9 +176,23 @@ function NewTroublelist(props) {
       }
     },
     {
-      title: '是否已提供故障处理记录（报告）',
+      title: '报告提供方',
       dataIndex: 'field7',
       key: 'field7',
+      render: (text, record) => {
+        return (
+          <Input
+            disabled={reportSearch}
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field7', record.key)}
+          />
+        )
+      }
+    },
+    {
+      title: '是否已提供故障处理记录（报告）',
+      dataIndex: 'field8',
+      key: 'field8',
       render: (text, record) => {
         return (
           <Input

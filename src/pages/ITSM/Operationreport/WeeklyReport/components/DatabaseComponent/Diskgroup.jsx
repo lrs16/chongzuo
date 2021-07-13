@@ -85,7 +85,7 @@ const Diskgroup = React.forwardRef((props, ref) => {
   }
 
   const handleTabledata = () => {
-    if (newbutton === false) {
+    if (newbutton === false && discArr) {
       const newarr = discArr.map((item, index) => {
         return Object.assign(item, { editable: true, isNew: false, key: index })
       })

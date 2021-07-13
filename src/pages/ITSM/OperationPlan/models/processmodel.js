@@ -61,6 +61,7 @@ export default {
             query: {
               mainId: response.mainId,
               status: '计划登记',
+              flowNodeName:'计划登记',
               orderNo: saveresponse.operationNo,
             },
             state: {
