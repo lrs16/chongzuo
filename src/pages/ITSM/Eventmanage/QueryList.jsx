@@ -782,43 +782,39 @@ function QueryList(props) {
             </span>
             <Col span={8}>
               <Form.Item label="建单时间">
-                <Row>
-                  <Col span={11}>
-                    {getFieldDecorator('time1', {
-                      initialValue: cacheinfo.time1 ? moment(cacheinfo.time1) : '',
-                    })(
-                      <DatePicker
-                        showTime={{
-                          hideDisabledOptions: true,
-                          defaultValue: moment('00:00:00', 'HH:mm:ss'),
-                        }}
-                        placeholder="开始时间"
-                        format='YYYY-MM-DD HH:mm:ss'
-                        style={{ minWidth: 120, width: '100%' }}
-                      />
-                    )}
-                  </Col>
-                  <Col span={2} style={{ textAlign: 'center' }}>-</Col>
-                  <Col span={11}>
-                    {getFieldDecorator('time2', {
-                      initialValue: cacheinfo.time ? moment(cacheinfo.time2) : '',
-                    })(
-                      <DatePicker
-                        showTime={{
-                          hideDisabledOptions: true,
-                          defaultValue: moment('23:59:59', 'HH:mm:ss'),
-                        }}
-                        placeholder="结束时间"
-                        format='YYYY-MM-DD HH:mm:ss'
-                        style={{ minWidth: 120, width: '100%' }}
-                      />
-                    )}
-                  </Col>
-                </Row>
+                <Form.Item style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
+                  {getFieldDecorator('time1', {
+                    initialValue: cacheinfo.time1 ? moment(cacheinfo.time1) : undefined,
+                  })(
+                    <DatePicker
+                      showTime={{
+                        hideDisabledOptions: true,
+                        defaultValue: moment('00:00:00', 'HH:mm:ss'),
+                      }}
+                      placeholder="开始时间"
+                      format='YYYY-MM-DD HH:mm:ss'
+                      style={{ minWidth: 120, width: '100%' }}
+                    />
+                  )}
+                </Form.Item>
+                <span style={{ display: 'inline-block', width: '24px', textAlign: 'center' }}>-</span>
+                <Form.Item style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
+                  {getFieldDecorator('time2', {
+                    initialValue: cacheinfo.time ? moment(cacheinfo.time2) : undefined,
+                  })(
+                    <DatePicker
+                      showTime={{
+                        hideDisabledOptions: true,
+                        defaultValue: moment('23:59:59', 'HH:mm:ss'),
+                      }}
+                      placeholder="结束时间"
+                      format='YYYY-MM-DD HH:mm:ss'
+                      style={{ minWidth: 120, width: '100%' }}
+                    />
+                  )}
+                </Form.Item>
               </Form.Item>
             </Col>
-
-
             <Col span={24} style={{ textAlign: 'right' }}>
               <Button type="primary" onClick={() => handleSearch('search')}>
                 查 询

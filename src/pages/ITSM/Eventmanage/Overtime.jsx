@@ -407,7 +407,6 @@ function Overtime(props) {
             <Col span={12}>
               <Form.Item label="建单时间" {...forminladeLayout}>
                 {getFieldDecorator('time1', {
-                  initialValue: '',
                 })(
                   <DatePicker
                     showTime={{
@@ -419,7 +418,6 @@ function Overtime(props) {
                 )}
                 <span style={{ padding: '0 10px' }}>-</span>
                 {getFieldDecorator('time2', {
-                  initialValue: '',
                 })(
                   <DatePicker
                     showTime={{
