@@ -22,26 +22,6 @@ function LastweekHomework(props) {
   } = props;
   const [data, setData] = useState([]);
 
-  // 初始化把软件运维服务指标完成情况数据传过去
-  useEffect(() => {
-    if (data && data.length) {
-      const result = JSON.parse(JSON.stringify(data)
-        .replace(/updateTime/g, 'field1')
-        .replace(/nature/g, 'field2')
-        .replace(/object/g, 'field3')
-        .replace(/content/g, 'field4')
-        .replace(/plannedEndTime/g, 'field5')
-        .replace(/status/g, 'field6')
-        .replace(/operationUser/g, 'field7')
-        .replace(/operationUnit/g, 'field8')
-        .replace(/remark/g, 'field9')
-      )
-      if (result) {
-        operationList(result)
-      }
-    }
-  }, [data]);
-
   const handleSave = () => {
     const result = JSON.parse(JSON.stringify(data)
     .replace(/index/g, 'field1')
@@ -80,9 +60,35 @@ function LastweekHomework(props) {
     if (target) {
       if (fieldName === 'field1' || fieldName === 'updateTime' || fieldName === 'plannedEndTime' || fieldName === 'field5') {
         target[fieldName] = moment(e).format('YYYY-MM-DD');
+        const result = JSON.parse(JSON.stringify(data)
+        .replace(/index/g, 'field1')
+          .replace(/updateTime/g, 'field2')
+          .replace(/nature/g, 'field3')
+          .replace(/object/g, 'field4')
+          .replace(/content/g, 'field5')
+          .replace(/plannedEndTime/g, 'field6')
+          .replace(/status/g, 'field7')
+          .replace(/operationUser/g, 'field8')
+          .replace(/operationUnit/g, 'field9')
+          .replace(/remark/g, 'field10')
+        )
+        operationList(result)
         setData(newData);
       } else {
         target[fieldName] = e;
+        const result = JSON.parse(JSON.stringify(data)
+        .replace(/index/g, 'field1')
+          .replace(/updateTime/g, 'field2')
+          .replace(/nature/g, 'field3')
+          .replace(/object/g, 'field4')
+          .replace(/content/g, 'field5')
+          .replace(/plannedEndTime/g, 'field6')
+          .replace(/status/g, 'field7')
+          .replace(/operationUser/g, 'field8')
+          .replace(/operationUnit/g, 'field9')
+          .replace(/remark/g, 'field10')
+        )
+        operationList(result)
         setData(newData);
       }
     }
@@ -417,13 +423,6 @@ function LastweekHomework(props) {
   return (
     <>
       {/* <Row gutter={16}> */}
-
-      <div style={{ textAlign: 'right', marginBottom: 10 }}>
-        <Button
-          disabled={detailParams}
-          type='primary'
-          onClick={handleSave}>保存</Button>
-      </div>
 
       <Table
         loading={loading}

@@ -20,18 +20,6 @@ function InspectionSummary(props) {
   const [data, setData] = useState([]);
   const [newbutton, setNewButton] = useState(false);
 
-  // 初始化把数据传过去
-  useEffect(() => {
-    if (data && data.length) {
-      materialsList(data)
-    }
-  }, [data]);
-
-  const handleSave = () => {
-    materialsList(data);
-    message.info('暂存保存数据成功')
-  }
-
   // 新增一条记录
   const newMember = () => {
     const newData = (data).map(item => ({ ...item }));
@@ -42,6 +30,7 @@ function InspectionSummary(props) {
       field3: '',
     });
     setData(newData);
+    materialsList(newData)
     setNewButton(true);
   };
 
@@ -53,7 +42,8 @@ function InspectionSummary(props) {
   //  删除数据
   const remove = key => {
     const target = deleteObj(key) || {};
-    setData(target)
+    setData(target);
+    materialsList(target)
   };
 
   //  获取行  
@@ -65,10 +55,12 @@ function InspectionSummary(props) {
 
   const handleFieldChange = (e, fieldName, key) => {
     const newData = data.map(item => ({ ...item }));
-    const target = getRowByKey(key, newData)
+    const target = getRowByKey(key, newData);
+    materialsList(newData)
     if (target) {
       target[fieldName] = e;
       setData(newData);
+      // materialsList(data)
     }
   }
 
@@ -160,12 +152,12 @@ function InspectionSummary(props) {
     <>
       <p>(2)运维材料提交情况</p>
 
-      <div style={{ textAlign: 'right', marginBottom: 10 }}>
+      {/* <div style={{ textAlign: 'right', marginBottom: 10 }}>
         <Button
           disabled={reportSearch}
           type='primary'
           onClick={handleSave}>保存</Button>
-      </div>
+      </div> */}
 
       <Table
         columns={column}

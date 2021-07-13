@@ -22,19 +22,6 @@ function EventTop(props) {
 
   const [data, setData] = useState([]);
 
-  // 初始化把数据传过去
-  useEffect(() => {
-    if (data && data.length) {
-      const result = JSON.parse(JSON.stringify(data)
-        .replace(/first_object/g, 'field1')
-        .replace(/second_object/g, 'field2')
-        .replace(/num/g, 'field3')
-      )
-      if (result) {
-        topNList(result)
-      }
-    }
-  }, [data]);
 
   // 新增一条记录
   const newMember = () => {
@@ -48,6 +35,7 @@ function EventTop(props) {
       field5: '',
     });
     setData(newData);
+    topNList(newData)
   };
 
   //  获取行  
@@ -62,24 +50,15 @@ function EventTop(props) {
   //  删除数据
   const remove = key => {
     const target = deleteObj(key) || {};
-    setData(target)
+    setData(target);
+    topNList(target)
   };
 
-  const handleSave = () => {
-    const result = JSON.parse(JSON.stringify(data)
-      .replace(/first_object/g, 'field1')
-      .replace(/second_object/g, 'field2')
-      .replace(/num/g, 'field3')
-    )
-    if (result) {
-      topNList(result)
-    }
-    message.info('暂存保存数据成功')
-  }
 
   const handleFieldChange = (e, fieldName, key) => {
     const newData = data.map(item => ({ ...item }));
-    const target = getRowByKey(key, newData)
+    const target = getRowByKey(key, newData);
+    topNList(newData)
     if (target) {
       target[fieldName] = e;
       setData(newData);
@@ -197,13 +176,6 @@ function EventTop(props) {
       <Row gutter={16}>
         <Col span={20}>
           <p>（三）工单TopN 事件分析</p>
-        </Col>
-
-        <Col style={{ textAlign: 'right', marginBottom: 10 }}>
-          <Button
-            type='primary'
-            disabled={detailParams}
-            onClick={handleSave}>保存</Button>
         </Col>
 
         <Table

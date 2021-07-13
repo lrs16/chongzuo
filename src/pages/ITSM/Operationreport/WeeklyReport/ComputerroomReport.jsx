@@ -209,6 +209,7 @@ function ComputerroomReport(props) {
     }
   }, [files]);
 
+
   const getQuerylist = () => {
     dispatch({
       type: 'softreport/getfaultQueryList',
@@ -458,7 +459,7 @@ function ComputerroomReport(props) {
             }
 
             {
-              initial && faultQueryList && (faultQueryList.rows || copyData.main !== undefined) && (
+              initial && loading === false && faultQueryList && (
                 <>
                   <Col span={24}><p style={{ fontWeight: '900', fontSize: '16px', marginTop: 24 }}>{reporttype === 'week' ? '一、本周运维总结' : '一、本月运维总结'}</p></Col>
                   {/* 本周运维总结 */}

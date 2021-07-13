@@ -30,14 +30,14 @@ const homepane = [{
   closable: false,
   state: { cache: false },
 },
-  // {
-  //   name: "周报查询",
-  //   id: "1399537627945766913",
-  //   itemPath: "/ITSM/operationreport/weeklyreport/myweeklyreportsearch",
-  //   query: {},
-  //   state: { cache: false, cacheinfo: {} },
-  //   data: { cacheinfo: {} }
-  // }
+  {
+    name: "周报查询",
+    id: "1399537627945766913",
+    itemPath: "/ITSM/operationreport/weeklyreport/myweeklyreportsearch",
+    query: {},
+    state: { cache: false, cacheinfo: {} },
+    data: { cacheinfo: {} }
+  }
 ]
 
 const noMatch = (

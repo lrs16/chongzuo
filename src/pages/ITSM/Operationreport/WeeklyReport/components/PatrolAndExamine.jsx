@@ -29,18 +29,6 @@ const PatrolAndExamine = React.forwardRef((props, ref) => {
   const [data, setData] = useState([]);
   const [newbutton, setNewButton] = useState(false);
 
-  // 初始化把数据传过去
-  useEffect(() => {
-    if (data && data.length) {
-      patrolAndExamineList(data)
-    }
-  }, [data]);
-
-  const handleSave = () => {
-    patrolAndExamineList(data);
-    message.info('暂存保存数据成功')
-  }
-
   // 新增一条记录
   const newMember = () => {
     const newData = (data).map(item => ({ ...item }));
@@ -54,6 +42,7 @@ const PatrolAndExamine = React.forwardRef((props, ref) => {
       field5: ''
     });
     setData(newData);
+    patrolAndExamineList(newData)
     setNewButton(true);
   };
 
@@ -68,21 +57,22 @@ const PatrolAndExamine = React.forwardRef((props, ref) => {
   //  删除数据
   const remove = key => {
     const target = deleteObj(key) || {};
-    setData(target)
+    setData(target);
+    patrolAndExamineList(target)
   };
 
   const handleFieldChange = (e, fieldName, key) => {
     const newData = data.map(item => ({ ...item }));
-    const target = getRowByKey(key, newData)
+    const target = getRowByKey(key, newData);
+    patrolAndExamineList(newData)
     if (target) {
-      if (fieldName === 'field1') { 
+      if (fieldName === 'field1') {
         target[fieldName] = moment(e).format('YYYY-MM-DD');
         setData(newData);
       } else {
         target[fieldName] = e;
         setData(newData);
       }
-
     }
   }
 
@@ -210,38 +200,26 @@ const PatrolAndExamine = React.forwardRef((props, ref) => {
 
   return (
     <>
-      {/* <Row gutter={16}> */}
-        {/* <Col span={20}> */}
-          <p style={{ fontWeight: '900', fontSize: '16px' }}>二、常规运维工作开展情况</p>
-        {/* </Col> */}
+      <p style={{ fontWeight: '900', fontSize: '16px' }}>二、常规运维工作开展情况</p>
 
-        {/* <Col span={24}> */}
-          <p style={{ marginTop: '10px',marginBottom:20 }}>（一）软件运维巡检情况</p>
-        {/* </Col> */}
+      <p style={{ marginTop: '10px', marginBottom: 20 }}>（一）软件运维巡检情况</p>
 
-        <div style={{textAlign:'right',marginBottom:10}}>
-          <Button
-            disabled={detailParams}
-            type='primary'
-            onClick={handleSave}>保存</Button>
-        </div>
+      <Table
+        columns={column}
+        dataSource={data}
+        pagination={false}
+      />
 
-        <Table
-          columns={column}
-          dataSource={data}
-          pagination={false}
-        />
-
-        <Button
-          style={{ width: '100%', marginTop: 16}}
-          type="primary"
-          ghost
-          onClick={() => newMember()}
-          icon="plus"
-          disabled={detailParams}
-        >
-          新增
-        </Button>
+      <Button
+        style={{ width: '100%', marginTop: 16 }}
+        type="primary"
+        ghost
+        onClick={() => newMember()}
+        icon="plus"
+        disabled={detailParams}
+      >
+        新增
+      </Button>
       {/* </Row> */}
     </>
   )

@@ -38,18 +38,6 @@ function ThisWeekitsm(props) {
   const [spinloading, setSpinLoading] = useState(true);
   const [value, setValue] = useState('event');
 
-  // 初始化把数据传过去
-  useEffect(() => {
-    if (data && data.length) {
-      eventList(data)
-    }
-  }, [data]);
-
-  const handleSave = () => {
-    eventList(data);
-    message.info('暂存保存数据成功')
-  }
-
   // 自动完成报障用户
   const disableduser = disablelist.map(obj => (
     <Option key={obj.type} value={obj.content} disableuser={obj}>
@@ -70,7 +58,7 @@ function ThisWeekitsm(props) {
   // 请求关键字
   const SearchDisableduser = searchvalues => {
     if (searchvalues) {
-      queryOrder({ key: value }).then(res => {
+      queryOrder({ key: searchvalues }).then(res => {
         if (res) {
           const arr = [...res.data];
           setSpinLoading(false);
@@ -99,12 +87,9 @@ function ThisWeekitsm(props) {
       field8: submit,
       isNew: true
     };
-    // setFieldsValue({
-    //   content:content
-    // })
-    
     newData.push(searchObj);
-    setData(newData)
+    setData(newData);
+    eventList(newData)
   };
 
   //  获取行  
@@ -124,14 +109,16 @@ function ThisWeekitsm(props) {
       newItem.field1 = index + 1;
       return newItem;
   })
-  setData(newTarget)
+  setData(newTarget);
+  eventList(newTarget)
   };
 
 
 
   const handleFieldChange = (e, fieldName, key) => {
     const newData = data.map(item => ({ ...item }));
-    const target = getRowByKey(key, newData)
+    const target = getRowByKey(key, newData);
+    eventList(newData)
     if (target) {
       if (fieldName === 'field6') {
         target[fieldName] = moment(e).format('YYYY-MM-DD');
@@ -350,13 +337,6 @@ function ThisWeekitsm(props) {
             </Row>
           )}
         </Form>
-
-        <div style={{ textAlign: 'right', marginBottom: 10 }}>
-          <Button
-            type='primary'
-            disabled={detailParams}
-            onClick={handleSave}>保存</Button>
-        </div>
 
         <Table
           columns={column}

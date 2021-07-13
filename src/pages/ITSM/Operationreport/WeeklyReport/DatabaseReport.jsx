@@ -423,7 +423,7 @@ function DatabaseReport(props) {
 
             {/* 一、本周运维情况综述 */}
             {
-              initial && lastweekHomeworklist && (
+              initial && loading === false && lastweekHomeworklist && (
                 <>
                   <Col span={24}>
                     <p style={{ fontWeight: '900', fontSize: '16px', marginTop: '20px' }}>{reporttype === 'week' ? '一、本周运维情况综述' : '一、本月运维情况综述'}</p>

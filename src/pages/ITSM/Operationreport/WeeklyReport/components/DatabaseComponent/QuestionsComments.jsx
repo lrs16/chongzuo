@@ -29,29 +29,18 @@ const QuestionsComments = React.forwardRef((props, ref) => {
   const [data, setData] = useState([]);
   const [newbutton, setNewButton] = useState(false);
 
-  // 初始化把数据传过去
-  useEffect(() => {
-    if (data && data.length) {
-      defectList(data)
-    }
-  }, [data]);
-
-  const handleSave = () => {
-    defectList(data);
-    message.info('暂存保存数据成功')
-  }
-
   // 新增一条记录
   const newMember = () => {
     const newData = (data).map(item => ({ ...item }));
     newData.push({
       key: data.length + 1,
       id: '',
-      field1: '',
+      field1: data.length + 1,
       field2: '',
       field3: '',
     });
     setData(newData);
+    defectList(newData);
     setNewButton(true);
   };
 
@@ -67,12 +56,14 @@ const QuestionsComments = React.forwardRef((props, ref) => {
   //  删除数据
   const remove = key => {
     const target = deleteObj(key) || {};
-    setData(target)
+    setData(target);
+    defectList(target);
   };
 
   const handleFieldChange = (e, fieldName, key) => {
     const newData = data.map(item => ({ ...item }));
-    const target = getRowByKey(key, newData)
+    const target = getRowByKey(key, newData);
+    defectList(newData);
     if (target) {
       if (fieldName === 'field1') {
         target[fieldName] = moment(e).format('YYYY-MM-DD');
@@ -96,35 +87,35 @@ const QuestionsComments = React.forwardRef((props, ref) => {
 
   const column = [
     {
-      title: '发现日期',
+      title: '序号',
       dataIndex: 'field1',
       key: 'field1',
       render: (text, record) => {
         return (
-          <DatePicker
+          <Input
             disabled={reportSearch}
-            defaultValue={text ? moment(text) : moment(new Date())}
+            defaultValue={text}
             onChange={e => handleFieldChange(e, 'field1', record.key)}
           />
         )
       }
     },
     {
-      title: '缺陷说明',
+      title: '发现日期',
       dataIndex: 'field2',
       key: 'field2',
       render: (text, record) => {
         return (
-          <TextArea
+          <DatePicker
             disabled={reportSearch}
-            defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'field2', record.key)}
+            defaultValue={text ? moment(text) : moment(new Date())}
+            onChange={e => handleFieldChange(e, 'field2', record.key)}
           />
         )
       }
     },
     {
-      title: '修复计划',
+      title: '缺陷说明',
       dataIndex: 'field3',
       key: 'field3',
       render: (text, record) => {
@@ -133,6 +124,20 @@ const QuestionsComments = React.forwardRef((props, ref) => {
             disabled={reportSearch}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field3', record.key)}
+          />
+        )
+      }
+    },
+    {
+      title: '修复计划',
+      dataIndex: 'field4',
+      key: 'field4',
+      render: (text, record) => {
+        return (
+          <TextArea
+            disabled={reportSearch}
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field4', record.key)}
           />
         )
       }
@@ -171,13 +176,6 @@ const QuestionsComments = React.forwardRef((props, ref) => {
       <p>
         （1）缺陷
       </p>
-
-      <div style={{ marginBottom: '10px', textAlign: 'right' }}>
-        <Button
-          disabled={reportSearch}
-          type='primary'
-          onClick={handleSave}>保存</Button>
-      </div>
 
       <Table
         columns={column}

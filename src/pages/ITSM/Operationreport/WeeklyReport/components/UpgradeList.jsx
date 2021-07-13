@@ -23,18 +23,6 @@ function UpgradeList(props) {
   const [cacheOriginData, setcacheOriginData] = useState({});
   const [newbutton, setNewButton] = useState(false);
 
-
-  // 初始化把数据传过去
-  useEffect(() => {
-    if (data && data.length) {
-      upgradeList(data)
-    }
-  }, [data]);
-
-  const handleSave = () => {
-    upgradeList(data);
-    message.info('暂存保存数据成功')
-  }
   // 新增一条记录
   const newMember = () => {
     const newData = (data).map(item => ({ ...item }));
@@ -47,6 +35,7 @@ function UpgradeList(props) {
       field5: '',
     });
     setData(newData);
+    upgradeList(newData)
     setNewButton(true);
   };
 
@@ -57,12 +46,24 @@ function UpgradeList(props) {
 
   const handleFieldChange = (e, fieldName, key) => {
     const newData = data.map(item => ({ ...item }));
-    const target = getRowByKey(key, newData)
+    const target = getRowByKey(key, newData);
+    upgradeList(newData);
     if (target) {
       target[fieldName] = e;
       setData(newData);
     }
   }
+
+  const deleteObj = (key, newData) => {
+    return (newData || data).filter(item => item.key !== key);
+  }
+
+  //  删除数据
+  const remove = key => {
+    const target = deleteObj(key) || {};
+    setData(target);
+    upgradeList(target);
+  };
 
   const handleTabledata = () => {
     if (newbutton === false) {
@@ -159,15 +160,6 @@ function UpgradeList(props) {
 
   return (
     <>
-
-
-      <div style={{ textAlign: 'right', marginBottom: 10 }}>
-        <Button
-          disabled={detailParams}
-          type='primary'
-          onClick={handleSave}>保存</Button>
-      </div>
-
       <Table
         columns={column}
         dataSource={data}

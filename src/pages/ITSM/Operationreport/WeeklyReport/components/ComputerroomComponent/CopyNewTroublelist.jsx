@@ -20,17 +20,17 @@ function NewTroublelist(props) {
   const [newbutton, setNewButton] = useState(false);
 
   // 初始化把数据传过去
-  useEffect(() => {
-    if (data && data.length) {
-      const result = JSON.parse(JSON.stringify(data)
-        .replace(/addTime/g, 'field1')
-        .replace(/typecn/g, 'field2')
-      )
-      if (result) {
-        newTroubleList(result)
-      }
-    }
-  }, [data]);
+  // useEffect(() => {
+  //   if (data && data.length) {
+  //     const result = JSON.parse(JSON.stringify(data)
+  //       .replace(/addTime/g, 'field1')
+  //       .replace(/typecn/g, 'field2')
+  //     )
+  //     if (result) {
+  //       newTroubleList(result)
+  //     }
+  //   }
+  // }, [data]);
 
   const handleSave = () => {
     newTroubleList(data);
@@ -73,8 +73,22 @@ function NewTroublelist(props) {
       if (fieldName === 'field1' || fieldName === 'addTime') {
         target[fieldName] = moment(e).format('YYYY-MM-DD');
         setData(newData);
+        const result = JSON.parse(JSON.stringify(data)
+          .replace(/addTime/g, 'field1')
+          .replace(/typecn/g, 'field2')
+        )
+        if (result) {
+          newTroubleList(result)
+        }
       } else {
         target[fieldName] = e;
+        const result = JSON.parse(JSON.stringify(data)
+          .replace(/addTime/g, 'field1')
+          .replace(/typecn/g, 'field2')
+        )
+        if (result) {
+          newTroubleList(result)
+        }
         setData(newData);
       }
 

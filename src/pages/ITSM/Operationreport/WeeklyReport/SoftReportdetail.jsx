@@ -195,6 +195,7 @@ function SoftReportdetail(props) {
     defaultTime();
   }, []);
 
+
   // useEffect (() => {
   //   if(list && list.length && list[list.length-1].files) {
   //     softReportform()
@@ -309,9 +310,35 @@ function SoftReportdetail(props) {
 
   useEffect(() => {
     const { addData } = openReportlist;
+
+    const contentArr = openReportlist.contentRow;
+    const patrolAndExamineArr = openReportlist.patrolAndExamineList;
+    const materialsArr = openReportlist.materialsList;
+    const eventArr = openReportlist.eventList;
+    const upgradeArr = openReportlist.upgradeList;
+    const legacyArr = openReportlist.legacyList;
+    const operationArr = openReportlist.operationList;
+    const selfhandleArr = openReportlist.selfhandleRow;
+    const statisArr = openReportlist.statisList;
+    const topNArr = openReportlist.topNList;
+    const typeArr = openReportlist.typeList;
+    const nextOperationArr = openReportlist.nextOperationList;
+
+    setContentRow(contentArr);
+    setPatrolAndExamine(patrolAndExamineArr);
+    setMaterialsList(materialsArr);
+    setEventList(eventArr);
+    setUpgradeList(upgradeArr);
+    setLegacyList(legacyArr);
+    setOperationList(operationArr);
+    setSelfhandleRow(selfhandleArr);
+    setStatisList(statisArr);
+    setTopNList(topNArr);
+    setTypeList(typeArr);
+    setNextOperationList(nextOperationArr);
+
     setAddTitle(addData);
     setList(addData);
-    // setContentRow(contentRow);
   }, [loading])
 
   return (

@@ -154,6 +154,28 @@ function ComputerroomReportdetail(props) {
     }
   }, [files]);
 
+  useEffect(() => {
+    const { addData } = openReportlist;
+    setAddTitle(addData);
+    setList(addData)
+    const materialsArr = openReportlist.materialsList;
+    const meetingSummaryArr = openReportlist.meetingSummaryList;
+    const newTroubleArr = openReportlist.newTroubleList;
+    const nextOperationArr = openReportlist.nextOperationList;
+    const operationArr = openReportlist.operationList;
+    const unCloseTroubleArr = openReportlist.unCloseTroubleList;
+
+    setAddTitle(addData);
+    setList(addData);
+    
+    setMaterialsList(materialsArr);
+    setMeetingSummaryList(meetingSummaryArr);
+    setNewTroubleList(newTroubleArr);
+    setNextOperationList(nextOperationArr);
+    setOperationList(operationArr);
+    setUnCloseTroubleList(unCloseTroubleArr);
+  }, [loading])
+
 
   useEffect(() => {
     if (mainId) {
@@ -166,11 +188,6 @@ function ComputerroomReportdetail(props) {
     defaultTime();
   }, []);
 
-  useEffect(() => {
-    const { addData } = openReportlist;
-    setAddTitle(addData);
-    setList(addData)
-  }, [loading])
 
   const handleBack = () => {
     router.push({
@@ -524,10 +541,8 @@ function ComputerroomReportdetail(props) {
 
                     </Descriptions>
                   </div>
-
                 )
               }
-
 
               {/* 3 本周新增故障及故障修复情况统计 */}
 

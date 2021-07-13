@@ -20,40 +20,7 @@ function CopyLast(props) {
   const [data, setData] = useState([]);
 
   // 初始化把软件运维服务指标完成情况数据传过去
-  useEffect(() => {
-    if (data && data.length) {
-      const result = JSON.parse(JSON.stringify(data)
-        .replace(/updateTime/g, 'field1')
-        .replace(/nature/g, 'field2')
-        .replace(/object/g, 'field3')
-        .replace(/content/g, 'field4')
-        .replace(/plannedEndTime/g, 'field5')
-        .replace(/status/g, 'field6')
-        .replace(/operationUser/g, 'field7')
-        .replace(/operationUnit/g, 'field8')
-        .replace(/remark/g, 'field9')
-      )
-      if (result) {
-        operationList(result)
-      }
-    }
-  }, [data]);
 
-  const handleSave = () => {
-    const result = JSON.parse(JSON.stringify(data)
-      .replace(/updateTime/g, 'field1')
-      .replace(/nature/g, 'field2')
-      .replace(/object/g, 'field3')
-      .replace(/content/g, 'field4')
-      .replace(/plannedEndTime/g, 'field5')
-      .replace(/status/g, 'field6')
-      .replace(/operationUser/g, 'field7')
-      .replace(/operationUnit/g, 'field8')
-      .replace(/remark/g, 'field9')
-    )
-    operationList(result)
-    message.info('暂存保存数据成功')
-  }
   //  获取行  
   const getRowByKey = (key, newData) => {
     return (newData || data).filter(item => item.key === key)[0];
@@ -75,9 +42,35 @@ function CopyLast(props) {
     if (target) {
       if (fieldName === 'field1' || fieldName === 'updateTime') {
         target[fieldName] = moment(e).format('YYYY-MM-DD');
+        const result = JSON.parse(JSON.stringify(data)
+        .replace(/index/g, 'field1')
+          .replace(/updateTime/g, 'field2')
+          .replace(/nature/g, 'field3')
+          .replace(/object/g, 'field4')
+          .replace(/content/g, 'field5')
+          .replace(/plannedEndTime/g, 'field6')
+          .replace(/status/g, 'field7')
+          .replace(/operationUser/g, 'field8')
+          .replace(/operationUnit/g, 'field9')
+          .replace(/remark/g, 'field10')
+        )
+        operationList(result)
         setData(newData);
       } else {
         target[fieldName] = e;
+        const result = JSON.parse(JSON.stringify(data)
+        .replace(/index/g, 'field1')
+          .replace(/updateTime/g, 'field2')
+          .replace(/nature/g, 'field3')
+          .replace(/object/g, 'field4')
+          .replace(/content/g, 'field5')
+          .replace(/plannedEndTime/g, 'field6')
+          .replace(/status/g, 'field7')
+          .replace(/operationUser/g, 'field8')
+          .replace(/operationUnit/g, 'field9')
+          .replace(/remark/g, 'field10')
+        )
+        operationList(result)
         setData(newData);
       }
     }

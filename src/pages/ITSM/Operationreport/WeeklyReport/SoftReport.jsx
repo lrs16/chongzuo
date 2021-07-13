@@ -533,6 +533,7 @@ function SoftReport(props) {
     initial = true;
   }
 
+
   useEffect(() => {
     setContentRow(contentRowlist);
   }, [loading])
@@ -659,7 +660,7 @@ function SoftReport(props) {
             }
 
             {
-              initial && maintenanceArr && (maintenanceArr.data || copyData.main !== undefined) && (
+              initial && loading === false && contentRowlist && (
                 <>
                   {/* 一、本周运维情况综述 */}
                   <Col span={24}>

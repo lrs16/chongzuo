@@ -23,16 +23,16 @@ function WeeklyMeeting(props) {
 
 
   // 初始化把数据传过去
-  useEffect(() => {
-    if (data && data.length) {
-      meetingSummaryList(data)
-    }
-  }, [data]);
+  // useEffect(() => {
+  //   if (data && data.length) {
+  //     meetingSummaryList(data)
+  //   }
+  // }, [data]);
 
-  const handleSave = () => {
-    meetingSummaryList(data);
-    message.info('暂存保存数据成功')
-  }
+  // const handleSave = () => {
+  //   meetingSummaryList(data);
+  //   message.info('暂存保存数据成功')
+  // }
   // 新增一条记录
   const newMember = () => {
     const newData = (data).map(item => ({ ...item }));
@@ -47,6 +47,18 @@ function WeeklyMeeting(props) {
     setNewButton(true);
   };
 
+  const deleteObj = (key, newData) => {
+    return (newData || data).filter(item => item.key !== key);
+  }
+
+  //  删除数据
+  const remove = key => {
+    const target = deleteObj(key) || {};
+    setData(target);
+    meetingSummaryList(target);
+    message.info('删除成功')
+  };
+
   //  获取行  
   const getRowByKey = (key, newData) => {
     return (newData || data).filter(item => item.key === key)[0];
@@ -55,7 +67,8 @@ function WeeklyMeeting(props) {
 
   const handleFieldChange = (e, fieldName, key) => {
     const newData = data.map(item => ({ ...item }));
-    const target = getRowByKey(key, newData)
+    const target = getRowByKey(key, newData);
+    meetingSummaryList(newData)
     if (target) {
       target[fieldName] = e;
       setData(newData);
@@ -145,13 +158,6 @@ function WeeklyMeeting(props) {
   return (
     <>
       <p style={{ fontWeight: '900', fontSize: '16px' }}>{type === 'week' ? '五、周例会会议纪要完成情况' : '五、月例会会议纪要完成情况'}</p>
-
-      <div style={{ textAlign: 'right', marginBottom: 10 }}>
-        <Button
-          disabled={reportSearch}
-          type='primary'
-          onClick={handleSave}>保存</Button>
-      </div>
 
       <Table
         columns={column}

@@ -126,7 +126,7 @@ function OtherReport(props) {
   // 上传删除附件触发保存
   useEffect(() => {
     defaultTime();
-  }, [loading]);
+  }, []);
 
   const handleBack = () => {
     router.push({

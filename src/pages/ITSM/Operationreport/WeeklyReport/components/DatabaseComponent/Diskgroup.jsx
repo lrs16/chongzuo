@@ -30,18 +30,6 @@ const Diskgroup = React.forwardRef((props, ref) => {
   const [fileslist, setFilesList] = useState([]);
   const [newbutton, setNewButton] = useState(false);
 
-  // 初始化把数据传过去
-  useEffect(() => {
-    if (data && data.length) {
-      discList(data);
-    }
-  }, [data]);
-
-  const handleSave = () => {
-    discList(data);
-    message.info('暂存保存数据成功')
-  }
-
 
   // 新增一条记录
   const newMember = () => {
@@ -57,6 +45,7 @@ const Diskgroup = React.forwardRef((props, ref) => {
       field4: '',
     });
     setData(newData);
+    discList(newData);
     setNewButton(true);
   };
 
@@ -72,12 +61,14 @@ const Diskgroup = React.forwardRef((props, ref) => {
   //  删除数据
   const remove = key => {
     const target = deleteObj(key) || {};
+    discList(target);
     setData(target)
   };
 
   const handleFieldChange = (e, fieldName, key) => {
     const newData = data.map(item => ({ ...item }));
-    const target = getRowByKey(key, newData)
+    const target = getRowByKey(key, newData);
+    discList(newData);
     if (target) {
       target[fieldName] = e;
       setData(newData);
@@ -181,13 +172,6 @@ const Diskgroup = React.forwardRef((props, ref) => {
   return (
     <>
       <p>（1）磁盘组</p>
-
-      <div style={{ textAlign: 'right', marginBottom: 10 }}>
-        <Button
-          disabled={reportSearch}
-          type='primary'
-          onClick={handleSave}>保存</Button>
-      </div>
 
       <Table
         columns={column}

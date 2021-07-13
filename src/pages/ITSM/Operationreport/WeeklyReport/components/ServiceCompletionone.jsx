@@ -21,28 +21,6 @@ function ServiceCompletionone(props) {
   const [data, setData] = useState([]);
   const [newbutton, setNewButton] = useState(false);
 
-  // 初始化把软件运维服务指标完成情况数据传过去
-  useEffect(() => {
-    if (maintenanceService && maintenanceService.length) {
-      const result = JSON.parse(JSON.stringify(maintenanceService)
-        .replace(/index/g, 'field1')
-        .replace(/name/g, 'field2')
-        .replace(/last/g, 'field3')
-        .replace(/now/g, 'field4')
-        .replace(/points/g, 'field5')
-        .replace(/remark/g, 'field6')
-        )
-      if (result) {
-        statisList(result)
-      }
-    }
-  }, [data]);
-
-  const handleSave = () => {
-    statisList(data);
-    message.info('暂存保存数据成功')
-  }
-
   //  获取行  
   const getRowByKey = (key, newData) => {
     return (newData || data).filter(item => item.key === key)[0];
@@ -56,12 +34,24 @@ function ServiceCompletionone(props) {
   const remove = key => {
     const target = deleteObj(key) || {};
     setData(target);
+    statisList(target)
     setNewButton(true);
   };
 
   const handleFieldChange = (e, fieldName, key) => {
     const newData = data.map(item => ({ ...item }));
-    const target = getRowByKey(key, newData)
+    const target = getRowByKey(key, newData);
+    const result = JSON.parse(JSON.stringify(maintenanceService)
+        .replace(/index/g, 'field1')
+        .replace(/name/g, 'field2')
+        .replace(/last/g, 'field3')
+        .replace(/now/g, 'field4')
+        .replace(/points/g, 'field5')
+        .replace(/remark/g, 'field6')
+        )
+      if (result) {
+        statisList(result)
+      }
     if (target) {
       target[fieldName] = e;
       setData(newData);
@@ -294,13 +284,6 @@ function ServiceCompletionone(props) {
   return (
     <>
       <p>(二)、软件运维服务指标完成情况</p>
-
-      <div style={{ textAlign: 'right', marginBottom: 10 }}>
-        <Button
-          disabled={detailParams}
-          type='primary'
-          onClick={handleSave}>保存</Button>
-      </div>
 
       <Table
         columns={mainId ? editColumns : columns}

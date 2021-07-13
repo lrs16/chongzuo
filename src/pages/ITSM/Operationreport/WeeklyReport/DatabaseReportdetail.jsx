@@ -134,6 +134,7 @@ function DatabaseReportdetail(props) {
     }
   }, [files]);
 
+
   //   七、上周作业完成情况--表格
   const lastweekHomework = () => {
     dispatch({
@@ -211,6 +212,19 @@ function DatabaseReportdetail(props) {
 
   useEffect(() => {
     const { addData } = openReportlist;
+    const discArr = openReportlist.discList;
+    const tablespaceArr = openReportlist.tablespaceList;
+    const tableUpArr = openReportlist.tableUpList;
+    const defectArr = openReportlist.defectList;
+    const operationArr = openReportlist.operationList;
+    const nextOperationArr = openReportlist.nextOperationList;
+    setDiscList(discArr);
+    setTablespaceList(tablespaceArr);
+    setTableUpList(tableUpArr);
+    setDefectList(defectArr);
+    setOperationList(operationArr);
+    setNextOperationList(nextOperationArr);
+    
     setAddTitle(addData);
     setList(addData)
   }, [loading])
