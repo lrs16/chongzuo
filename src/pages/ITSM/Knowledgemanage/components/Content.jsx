@@ -1,7 +1,7 @@
 import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
-import { Card, Row, Col, Form, Input, Select } from 'antd';
+import { Row, Col, Form, Input, Select } from 'antd';
 import RichTextEditor from '@/components/RichTextEditor';
-import SysUpload from '@/components/SysUpload';
+import SysUpload from '@/components/SysUpload/Upload';
 import DictLower from '@/components/SysDict/DictLower';
 
 const { Option } = Select;
@@ -31,7 +31,6 @@ const Content = forwardRef((props, ref) => {
     form: { getFieldDecorator, getFieldsValue, resetFields, setFieldsValue }
   } = props;
   const [selectdata, setSelectData] = useState('');
-  const [fileslist, setFilesList] = useState({ arr: [], ischange: false });
   const required = true;
 
   useImperativeHandle(ref, () => ({
@@ -39,13 +38,6 @@ const Content = forwardRef((props, ref) => {
     resetVal: () => resetFields(),
     Forms: props.form.validateFieldsAndScroll,
   }), []);
-
-  useEffect(() => {
-    if (fileslist.ischange) {
-      setFilesList({ ...fileslist, ischange: false });
-    }
-  }, [fileslist]);
-
 
   const handleFormValidator = (rule, value, callback) => {
     if (value === '' || value === '<p></p>') {
@@ -124,7 +116,7 @@ const Content = forwardRef((props, ref) => {
               <Col span={2} style={{ paddingTop: 4, textAlign: 'right' }}>上传附件：</Col>
               <Col span={22} >
                 <div style={{ width: 400, paddingLeft: 12, float: 'left' }}>
-                  <SysUpload fileslist={fileslist.arr} ChangeFileslist={newvalue => setFilesList(newvalue)} />
+                  <SysUpload />
                 </div>
               </Col>
             </Row>

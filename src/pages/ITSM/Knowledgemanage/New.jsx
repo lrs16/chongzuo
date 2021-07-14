@@ -4,12 +4,17 @@ import router from 'umi/router';
 import { Button, Card } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import EditContext from '@/layouts/MenuContext';
-import Content from './components/Content'
+import Content from './components/Content';
+
+const test = "[{\"uid\":\"5d99d4ef91aa41dcaa36ab5256a944e0\",\"name\":\"QQ图片20201211113431.png\",\"fileUrl\":\"\",\"status\":\"done\"},{\"uid\":\"34839bb212964b3d8367da685b0404d3\",\"name\":\"QQ图片20210114115718.png\",\"fileUrl\":\"\",\"status\":\"done\"},{\"uid\":\"f7867554b99d4636b27dec8c1027c53f\",\"name\":\"aaaaaaaaaav1.0.pdf\",\"fileUrl\":\"\",\"status\":\"done\"},{\"uid\":\"8490ebd1c740475ba45cb0f422849508\",\"name\":\"QQ图片20210114115718.png\",\"nowtime\":\"2021-07-12 11:29:34\",\"fileUrl\":\"\",\"status\":\"done\"}]"
 
 function New(props) {
   const pagetitle = props.route.name;
   const { dispatch, location, tabnew, tabdata } = props;
+  const [files, setFiles] = useState({ arr: JSON.parse(test), ischange: false });
   const ContentRef = useRef(null);
+
+  console.log(files)
 
   const handleSave = () => {
     const values = ContentRef.current.getVal();
@@ -70,7 +75,7 @@ function New(props) {
   return (
     <PageHeaderWrapper title={pagetitle} extra={operations}>
       <Card>
-        <EditContext.Provider value={{ editable: true }}>
+        <EditContext.Provider value={{ editable: true, files: files.arr, setFiles }}>
           <Content
             wrappedComponentRef={ContentRef}
             formrecord={tabdata === undefined ? {} : tabdata}
