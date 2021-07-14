@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
 import router from 'umi/router';
 import moment from 'moment';
@@ -6,6 +6,7 @@ import { Card, Row, Col, Form, Input, Select, Button, DatePicker, Table, Badge }
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import DictLower from '@/components/SysDict/DictLower';
+
 
 const { Option } = Select;
 
@@ -23,12 +24,14 @@ const formItemLayout = {
 function KnowledgeList(props) {
   const pagetitle = props.route.name;
   const {
+    location, loading, list,
     form: { getFieldDecorator, resetFields, getFieldsValue },
     dispatch,
   } = props;
   const [selectdata, setSelectData] = useState('');
   const [expand, setExpand] = useState(false);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+  const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
 
   const handleSearch = () => {
     console.log('查询')
@@ -54,6 +57,18 @@ function KnowledgeList(props) {
     selectedRowKeys,
     onChange: (key, record) => onSelectChange(key, record),
   };
+
+  useEffect(() => {
+    const values = getFieldsValue();
+    dispatch({
+      type: 'knowledg/fetchlist',
+      payload: {
+        ...values,
+        pageIndex: paginations.current - 1,
+        pageSize: paginations.pageSize,
+      },
+    });
+  }, []);
 
   // 数据字典取下拉值
   const getTypebyId = key => {
@@ -85,6 +100,19 @@ function KnowledgeList(props) {
       title: '知识编号',
       dataIndex: 'No',
       key: 'No',
+      fixed: 'left',
+      render: (text, record) => {
+        const handleClick = () => {
+          router.push({
+            pathname: `${location.pathname}/operation`,
+            query: {
+              OperationId: record.No,
+            },
+            state: { runpath: location.pathname, title: pagetitle, addoperation: true, menuDesc: pagetitle === '知识审核' ? '知识审核' : '编辑知识' },
+          });
+        };
+        return <a onClick={handleClick}>{text}</a>;
+      },
     },
     {
       title: '知识分类',
@@ -96,11 +124,6 @@ function KnowledgeList(props) {
       dataIndex: 't2',
       key: 't2',
       width: 200,
-    },
-    {
-      title: '知识内容',
-      dataIndex: 't3',
-      key: 't3',
     },
     {
       title: '知识状态',
@@ -306,7 +329,6 @@ function KnowledgeList(props) {
           {(pagetitle === '我的知识' || pagetitle === '知识维护') && (
             <>
               <Button type="primary" style={{ marginRight: 8 }} onClick={() => newknowledge()}>新增</Button >
-              <Button type="primary" style={{ marginRight: 8 }}>编辑</Button >
               <Button type="primary" style={{ marginRight: 8 }}>提交</Button >
             </>
           )}
@@ -323,12 +345,13 @@ function KnowledgeList(props) {
           )}
         </div>
         < Table
-          //  loading={loading}
+          loading={loading}
           columns={columns}
-          //  dataSource={list.rows}
+          dataSource={list.rows}
           //  pagination={pagination}
           rowSelection={rowSelection}
           rowKey={r => r.No}
+          scroll={{ x: 1300 }}
         />
       </Card>
     </PageHeaderWrapper >
@@ -336,8 +359,8 @@ function KnowledgeList(props) {
 }
 
 export default Form.create({})(
-  connect(({ releasetodo, loading }) => ({
-    list: releasetodo.list,
-    loading: loading.models.releasetodo,
+  connect(({ knowledg, loading }) => ({
+    list: knowledg.list,
+    loading: loading.models.knowledg,
   }))(KnowledgeList),
 );

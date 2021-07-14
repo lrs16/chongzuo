@@ -36,6 +36,7 @@ const columns = [
     title: '发布编号',
     dataIndex: 'No',
     key: 'No',
+    fixed: 'left',
     render: (text, record) => {
       const handleClick = () => {
         router.push({

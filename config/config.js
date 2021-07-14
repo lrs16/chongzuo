@@ -568,6 +568,18 @@ export default {
                           component: './ITSM/Knowledgemanage/New'
                         },
                         {
+                          path: '/ITSM/knowledgemanage/myknowledge',
+                          name: '我的知识',
+                          icon: 'fork',
+                          component: './ITSM/Knowledgemanage/KnowledgeList'
+                        },
+                        {
+                          path: '/ITSM/knowledgemanage/:id/operation',
+                          name: '知识单操作',
+                          icon: 'fork',
+                          component: './ITSM/Knowledgemanage/Operation'
+                        },
+                        {
                           path: '/ITSM/knowledgemanage/maintain',
                           name: '知识维护',
                           icon: 'fork',

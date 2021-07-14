@@ -1,17 +1,19 @@
-import React, { useEffect, useState, forwardRef } from 'react';
+import React, { useEffect, useState, forwardRef, useContext } from 'react';
 import { message } from 'antd';
+import EditContext from '@/layouts/MenuContext';
 import E from 'wangeditor';
 
 function Editor(props, ref) {
-  const { ChangeValue } = props;
-  const [content, setContent] = useState('');
+  const { ChangeValue, cachevalue } = props;
+  const [content, setContent] = useState(undefined);
+  const { editable } = useContext(EditContext);
   let editor = null;
-
   useEffect(() => {
     editor = new E('#div1');
     editor.config.onchange = function (html) {
       ChangeValue(html)
     };
+
     editor.config.showLinkImg = false;           // 隐藏网络图片
     editor.config.uploadImgMaxSize = 2 * 1024 * 1024; // 上传图片大小2M
     //  editor.config.uploadImgServer = `/sys/file/upload`;  // 路径
@@ -85,7 +87,7 @@ function Editor(props, ref) {
     };
     /** 一定要创建 */
     editor.create();
-
+    editor.$textElem.attr('contenteditable', editable);
     return () => {
       // 组件销毁时销毁编辑器
       editor.destroy();

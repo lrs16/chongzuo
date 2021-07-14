@@ -257,10 +257,40 @@ const BasicLayout = props => {
       if (location.state.closetabid) {
         const newtabs = toptabs.filter(item => item.id !== location.state.closetabid);
         setTopTabs([...newtabs]);
-      }
+      };
       // 更新页签信息
       if (location.state.updatetab) {
         ChangetabQuery(location.query)
+      };
+      if (location.state.addoperation) {
+        const tabtargetid = toptabs.filter(item => location.query.OperationNo ? item.id === location.query.No : item.id === location.query.OperationId)[0];
+        if (tabtargetid) {
+          const id = location.query.OperationNo ? location.query.OperationNo : location.query.OperationId;
+          setActiveKey(id);
+        } else {
+          if (location.query.OperationNo && location.state.menuDesc) {
+            const panels = {
+              name: `${location.state.menuDesc}${location.query.OperationNo}`,
+              id: location.query.OperationNo,
+              itemPath: url,
+              query: location.query,
+              closable: true
+            };
+            toptabs.push(panels);
+            setActiveKey(location.query.OperationNo);
+          } else if (location.query.OperationId && location.state.menuDesc) {
+            // 属于工单
+            const panels = {
+              name: `${location.state.menuDesc}${location.query.OperationId}`,
+              id: location.query.OperationId,
+              itemPath: url,
+              query: location.query,
+              closable: true
+            };
+            toptabs.push(panels);
+            setActiveKey(location.query.OperationId);
+          };
+        }
       }
     }
   }, [location.state])

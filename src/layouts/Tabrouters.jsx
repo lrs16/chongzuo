@@ -21,6 +21,7 @@ const alonepath = [
   { path: '/ITSM/operationreport/monthlyreport/monthcomputerroomreportdetail' },
   { path: '/ITSM/operationreport/monthlyreport/monthdatabasereportdetail' },
   { path: '/ITSM/operationreport/monthlyreport/monthotherreportdetail' },
+  { path: '/ITSM/knowledgemanage/:id/operation' },
 ];
 
 // 登记或新建

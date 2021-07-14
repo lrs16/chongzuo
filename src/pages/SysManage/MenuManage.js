@@ -121,7 +121,6 @@ class MenuManage extends Component {
   // 渲染树结构
   renderTreeNodes = data =>
     data.map(item => {
-      console.log('data: ', data);
       if (item.children) {
         return (
           <TreeNode title={item.title} key={item.key} dataRef={item}>
