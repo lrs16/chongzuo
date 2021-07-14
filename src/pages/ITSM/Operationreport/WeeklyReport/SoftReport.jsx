@@ -71,7 +71,7 @@ let initial = false;
 
 const TopnAnalysis = [
   {
-    field1:'1',
+    field1: '1',
     field2: '档案',
     field3: '【档案数据修改】',
     field4: '',
@@ -80,7 +80,7 @@ const TopnAnalysis = [
     冗余数据、存量数据帮助用户进行后台维护。修改关键字段可以与营销运维人员协商，在营销系统后台批量修改数据的时候更新操作时间字段，计量通过接口同步；`
   },
   {
-    field1:'2',
+    field1: '2',
     field2: '档案',
     field3: '【指标核查】',
     field4: '',
@@ -92,7 +92,7 @@ const TopnAnalysis = [
     （2）与用户确认档案并后台维护；`
   },
   {
-    field1:'3',
+    field1: '3',
     field2: '档案',
     field3: '【主网数据维护】',
     field4: '',
@@ -103,7 +103,7 @@ const TopnAnalysis = [
     （2）培训解决；`
   },
   {
-    field1:'4',
+    field1: '4',
     field2: '档案',
     field3: '【营销档案质量】',
     field4: '',
@@ -114,7 +114,7 @@ const TopnAnalysis = [
     （2）培训解决；`
   },
   {
-    field1:'5',
+    field1: '5',
     field2: '采集',
     field3: '【配网采集】',
     field4: '',
@@ -127,7 +127,7 @@ const TopnAnalysis = [
     （6）档案正常，召测当前数据回FFF无效空值，终端抄不通电表，建议现场检查载波通讯、电表通讯模块等。`
   },
   {
-    field1:'6',
+    field1: '6',
     field2: '采集',
     field3: '【主网采集】',
     field4: '',
@@ -137,7 +137,7 @@ const TopnAnalysis = [
     （3）终端回的数据状态为无效状态，或终端无响应报文。`
   },
   {
-    field1:'7',
+    field1: '7',
     field2: '指标',
     field3: '【指标核查】',
     field4: '',
@@ -150,7 +150,7 @@ const TopnAnalysis = [
     （6）营销已完成建档，计量还在未覆盖，由于终端规约错误，无法同步到计量。`
   },
   {
-    field1:'8',
+    field1: '8',
     field2: '接口',
     field3: '【营销档案质量】',
     field4: '',
@@ -167,7 +167,7 @@ const TopnAnalysis = [
     （4）须用户提供申请函待审批后，删除错误的线路台区关系。`
   },
   {
-    field1:'9',
+    field1: '9',
     field2: '接口',
     field3: '【营销档案质量】',
     field4: '',
@@ -184,7 +184,7 @@ const TopnAnalysis = [
     （4）须用户提供申请函待审批后，删除错误的线路台区关系。`
   },
   {
-    field1:'10',
+    field1: '10',
     field2: '高级功能',
     field3: '【线损管理】',
     field4: '',
@@ -196,7 +196,7 @@ const TopnAnalysis = [
     （2）新装更换终端或电表，导致月电量没有需找计量中心李捷重算月电量；若是日、月电量没有需找南瑞重算电量；重算线损。`
   },
   {
-    field1:'11',
+    field1: '11',
     field2: '高级功能',
     field3: '【抄表结算】',
     field4: '',
@@ -519,6 +519,16 @@ function SoftReport(props) {
     })
   }
 
+  const handlepatrolAndExamineList = () => {
+    dispatch({
+      type:'softreport/getPatrolAndExamineList',
+      payload:{
+        time1:startTime,
+        time2:endTime
+      }
+    })
+  }
+
   useEffect(() => {
     defaultTime();
     initial = false;
@@ -530,6 +540,7 @@ function SoftReport(props) {
     handlemaintenanserviceceArr();
     getcontentRowlist();
     handlesoftservice();
+    handlepatrolAndExamineList();
     initial = true;
   }
 
@@ -736,7 +747,7 @@ function SoftReport(props) {
                       patrolAndExamineList={contentrowdata => {
                         setPatrolAndExamine(contentrowdata)
                       }}
-                      patrolAndExamine={copyData.patrolAndExamineList ? copyData.patrolAndExamineList : []}
+                      patrolAndExamine={copyData.patrolAndExamineList ? copyData.patrolAndExamineList : patrolAndExamineList}
                     />
                   </Col>
 
@@ -795,6 +806,7 @@ function SoftReport(props) {
                     <ServiceTableone
                       forminladeLayout={forminladeLayout}
                       maintenanceArr={maintenanceArr.data}
+                      tabActiveKey={reporttype}
                       typeList={contentrowdata => {
                         setTypeList(contentrowdata)
                       }}
@@ -840,12 +852,9 @@ function SoftReport(props) {
                     />
                   </Col>
 
-                  <Col span={24}>
-                    <p style={{ marginTop: '20px' }}>（二）软件运维服务指标完成情况</p>
-                  </Col>
 
                   {/* 服务指标 */}
-                  <Col span={24}>
+                  <Col span={24} style={{ marginTop: 24 }}>
                     <Form.Item label=''>
                       {
                         getFieldDecorator('selfhandleContent', {
@@ -951,7 +960,6 @@ function SoftReport(props) {
                     <p>(1)数据库本周进行了补丁升级工作次</p>
                   </Col>
 
-
                   <Col span={24}>
                     <UpgradeList
                       forminladeLayout={forminladeLayout}
@@ -962,12 +970,14 @@ function SoftReport(props) {
                     />
                   </Col>
 
+                  <Col span={24}>
+                    <p>(2)计划{startTime}至{endTime},计量自动化系统开展 次发布变更（消缺），变更内容如下</p>
+                  </Col>
+
                   {/* 变更 */}
                   <Col span={24}>
                     <UpgradeList
                       forminladeLayout={forminladeLayout}
-                      startTime={startTime}
-                      endTime={endTime}
                       upgradeList={contentrowdata => {
                         setUpdateList(contentrowdata)
                       }}
@@ -1218,6 +1228,7 @@ export default Form.create({})(
     lastweekHomeworklist: softreport.lastweekHomeworklist,
     nextweekHomeworklist: softreport.nextweekHomeworklist,
     contentRowlist: softreport.contentRowlist,
+    patrolAndExamineList: softreport.patrolAndExamineList,
     loading: loading.models.softreport,
   }))(SoftReport),
 );

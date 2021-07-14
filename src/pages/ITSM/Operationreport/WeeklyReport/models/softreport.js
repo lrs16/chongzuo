@@ -15,7 +15,8 @@ import {
   saveDataBase,
   reportExport,
   saveOther,
-  getContentRow
+  getContentRow,
+  getPatrolAndExamineList
 } from '../services/softreportapi';
 
 export default {
@@ -34,6 +35,7 @@ export default {
     queryOrderlist:[],
     faultQueryList: [], // 故障查询列表
     contentRowlist:[],
+    patrolAndExamineList:[]
   },
 
   effects: {  
@@ -369,6 +371,17 @@ export default {
       })
     },
 
+     //  获取运维情况综述行
+     *getPatrolAndExamineList({ payload }, { call, put }) {
+      const response = yield call(getPatrolAndExamineList,payload);
+      yield put({
+        type:'patrolAndExamineList',
+        payload: response
+      })
+    },
+
+
+
   //  下载word
   *exportWord({payload:{mainId}},{call,put}) {
     return yield call(reportExport,mainId)
@@ -450,6 +463,13 @@ export default {
       ...state,
       contentRowlist:action.payload.data
     }
-  }
+  },
+  //  获取巡检
+  patrolAndExamineList(state,action) {
+    return {
+      ...state,
+      patrolAndExamineList:action.payload.data
+    }
+  },
   }
 }

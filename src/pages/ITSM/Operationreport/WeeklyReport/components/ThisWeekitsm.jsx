@@ -173,7 +173,7 @@ function ThisWeekitsm(props) {
       }
     },
     {
-      title: '应用系统名称',
+      title: '故障类型',
       dataIndex: 'field3',
       key: 'field3',
       render: (text, record) => {
@@ -187,7 +187,7 @@ function ThisWeekitsm(props) {
       }
     },
     {
-      title: '具体内容',
+      title: '故障概要',
       dataIndex: 'field4',
       key: 'field4',
       render: (text, record) => {
@@ -234,10 +234,10 @@ function ThisWeekitsm(props) {
       key: 'field7',
       render: (text, record) => {
         return (
-          <TextArea
+          <DatePicker
             disabled={detailParams}
-            defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'field7', record.key)}
+            defaultValue={text ? moment(text) : moment(null)}
+            onChange={e => handleFieldChange(e, 'field7', record.key)}
           />
         )
       }
@@ -289,7 +289,7 @@ function ThisWeekitsm(props) {
     <>
       <Row gutter={16}>
         <Col span={20}>
-          <p style={{ fontWeight: '900', fontSize: '16px' }}>四、本周事件、问题及故障</p>
+          <p style={{ fontWeight: '900', fontSize: '16px' }}>四、本周故障事件</p>
         </Col>
 
         <Form {...formItemLayout}>
@@ -318,7 +318,7 @@ function ThisWeekitsm(props) {
                     <>
                       <AutoComplete
                         dataSource={disableduser}
-                        // defaultValue='内容'
+                        // defaultValue='按姓名搜索'
                         dropdownMatchSelectWidth={false}
                         dropdownStyle={{ width: 700 }}
                         optionLabelProp="value"
@@ -326,7 +326,7 @@ function ThisWeekitsm(props) {
                       >
                         <Search
                           disabled='true'
-                          placeholder="可输入姓名搜索"
+                          placeholder="按编号和描述搜索"
                           onSearch={values => SearchDisableduser(values)}
                         />
                       </AutoComplete>,

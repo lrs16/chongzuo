@@ -56,8 +56,18 @@ function OtherReport(props) {
     newData.push({
       ...params
     });
+    // const hash = {};
+    // console.log(newData,'newData')
+    // const arr = newData.reduce(function (item, next) {
+    //   hash[next.px] ? '' : hash[next.px] = true && item.push(next);
+    //   return item
+    // }, []);
+    // const result = [];
+    // result.push(arr)
     setList(newData);
   };
+  
+  console.log(list,'list')
 
   //  保存表单
   const otherReportform = () => {
@@ -193,18 +203,28 @@ function OtherReport(props) {
 
   const newMember = () => {
     const nowNumber = addTitle.map(item => ({ ...item }));
-    nowNumber.push({ 'add': '1', tableNumber: [] });
+    nowNumber.push({ 'add': '1' });
     setAddTitle(nowNumber)
   }
 
+
   const removeForm = (tableIndex) => {
     addTitle.splice(tableIndex, 1);
+    list.splice(tableIndex, 1);
     const resultArr = [];
-    for (let i = 0; i < addTitle.length; i += 1) {
-      resultArr.push(addTitle[i])
+    // const listArr = [];
+    for (let i = 0; i < list.length; i += 1) {
+      resultArr.push(list[i])
     }
+    // for (let i = 0; i < list.length; i += 1) {
+    //   listArr.push(list[i])
+    // }
     setAddTitle(resultArr)
+    setList(resultArr)
   }
+
+  console.log(list,'list');
+  
 
   return (
     <PageHeaderWrapper
@@ -267,7 +287,7 @@ function OtherReport(props) {
                       <Form.Item label='' style={{ display: 'inline-flex' }}>
                         {
                           getFieldDecorator('time2', {
-                            initialValue:  copyData.main ? moment(copyData.main.time2) : moment(endTime)
+                            initialValue: copyData.main ? moment(copyData.main.time2) : moment(endTime)
                           })
                             (<DatePicker
                               allowClear={false}
@@ -283,7 +303,7 @@ function OtherReport(props) {
               {
                 reporttype === 'month' && (
                   <Col span={24}>
-                    <Form.Item label='填报日期'  style={{ display: 'inline-flex' }}>
+                    <Form.Item label='填报日期' style={{ display: 'inline-flex' }}>
                       {getFieldDecorator('time1', {
                         rules: [
                           {
@@ -312,7 +332,7 @@ function OtherReport(props) {
                           addTable={newdata => {
                             handleaddTable(newdata)
                           }}
-                          dynamicData={addTitle[index]}
+                          dynamicData={list.length ? list[index] :[]}
                           loading={loading}
                         />
                       </Col>
@@ -320,7 +340,7 @@ function OtherReport(props) {
                       <Col span={1}>
                         <Icon
                           className="dynamic-delete-button"
-                          type="minus-circle-o"
+                          type="delete"
                           onClick={() => removeForm(index)}
                         />
                       </Col>

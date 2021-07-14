@@ -35,6 +35,8 @@ const AddForm = React.forwardRef((props, ref) => {
     px,
     addTable,
   } = props;
+  console.log(dynamicData)
+  
 
 
   const [data, setData] = useState([]);
@@ -276,32 +278,38 @@ const AddForm = React.forwardRef((props, ref) => {
   ];
 
   const handleTabledata = () => {
-    const newarr = (dynamicData.list?.length ? dynamicData.list : []).map((item, index) => {
-      return Object.assign(item, { editable: true, isNew: false, key: index })
-    })
-    setData(newarr)
+    if (dynamicData !== undefined && dynamicData.list && dynamicData.list.length) {
+      const newarr = (dynamicData.list).map((item, index) => {
+        return Object.assign(item, { editable: true, isNew: false, key: index })
+      })
+      setData(newarr)
+    }
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = (e,typeParams) => {
     props.form.validateFields((err, value) => {
       const editTable = {
         ...value,
+        // content: typeParams === 'content' ? e : value.content,
+        // title: typeParams === 'title' ? e : value.title,
         list: data,
         px,
       }
+      // console.log(editTable,'editTable')
       addTable(editTable);
       message.info('暂存保存数据成功')
     })
   }
 
+
   useEffect(() => {
     handleTabledata();
-  }, [dynamicData])
+  }, [dynamicData]);
 
   return (
     <>
-      {
-        loading === false && dynamicData && (
+      {/* {
+        loading === false && dynamicData && ( */}
           <Row gutter={24}>
             <Form>
               <Col><p>注：第一行数据作为表头</p></Col>
@@ -318,19 +326,23 @@ const AddForm = React.forwardRef((props, ref) => {
 
               <Form.Item label={titleNumber()} {...formincontentLayout}>
                 {getFieldDecorator(`title`, {
-                  initialValue: dynamicData.title ? dynamicData.title :''
+                  // initialValue: dynamicData.title ? dynamicData.title : ''
                 })(
-                  <Input disabled={detailParams} />
+                  <Input 
+                  disabled={detailParams}
+                  // onChange={(e) => handleSubmit(e.target.value,'title')}
+                   />
                 )}
               </Form.Item>
 
               <Form.Item label={contentNumber()} {...formincontentLayout}>
                 {getFieldDecorator(`content`, {
-                  initialValue: dynamicData.content ? dynamicData.content :''
+                  // initialValue: dynamicData.content ? dynamicData.content : ''
                 })(
                   <TextArea
                     autoSize={{ minRows: 3 }}
                     disabled={detailParams}
+                    // onChange={(e) => handleSubmit(e.target.value,'content')}
                   />
                 )}
               </Form.Item>
@@ -339,10 +351,11 @@ const AddForm = React.forwardRef((props, ref) => {
                 !detailParams && (
                   <Form.Item label='上传附件'    {...formincontentLayout}>
                     {getFieldDecorator(`files`, {
-                      initialValue: dynamicData.files ? dynamicData.files : ''
+                      // initialValue: dynamicData.files ? dynamicData.files : ''
                     })(
                       <SysUpload
-                        fileslist={dynamicData.files ? JSON.parse(dynamicData.files) : []}
+                        // fileslist={dynamicData.files ? JSON.parse(dynamicData.files) : []}
+                        fileslist={[]}
                         ChangeFileslist={newvalue => {
                           setFieldsValue({
                             files: JSON.stringify(newvalue.arr),
@@ -362,7 +375,7 @@ const AddForm = React.forwardRef((props, ref) => {
                     <Descriptions size="middle">
                       <Descriptions.Item label='上传附件'>
                         <span style={{ color: 'blue', textDecoration: 'underline' }} >
-                          {dynamicData && <Downloadfile files={dynamicData.files === '' ? '[]' : dynamicData.files} />}
+                          {/* {dynamicData && <Downloadfile files={dynamicData.files === '' ? '[]' : dynamicData.files} />} */}
                         </span>
                       </Descriptions.Item>
 
@@ -376,6 +389,7 @@ const AddForm = React.forwardRef((props, ref) => {
                 columns={column}
                 dataSource={data}
               />
+
               <Button
                 style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
                 type="primary"
@@ -410,8 +424,8 @@ const AddForm = React.forwardRef((props, ref) => {
               >添加表格</Button> */}
             </Form>
           </Row>
-        )
-      }
+      {/* //   )
+      // } */}
     </>
   )
 })

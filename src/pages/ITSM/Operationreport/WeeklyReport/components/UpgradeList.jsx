@@ -6,6 +6,7 @@ import {
   Button,
   Popconfirm,
   message,
+  Col,
   DatePicker,
 } from 'antd';
 import moment from 'moment';
@@ -160,6 +161,8 @@ function UpgradeList(props) {
 
   return (
     <>
+
+     
       <Table
         columns={column}
         dataSource={data}

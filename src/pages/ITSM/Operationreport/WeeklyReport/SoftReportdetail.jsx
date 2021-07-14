@@ -29,6 +29,7 @@ import AddForm from './components/AddForm';
 import Downloadfile from '@/components/SysUpload/Downloadfile';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import SysUpload from '@/components/SysUpload';
+import { submit } from '../../OperationPlan/services/processapi';
 
 const forminladeLayout = {
   labelCol: {
@@ -127,8 +128,8 @@ function SoftReportdetail(props) {
         type: reporttype === 'week' ? '软件运维周报' : '软件运维月报',
         reporttype,
         mainId,
-        time1: reporttype === 'week' ? (value.time1).format('YYYY-MM-DD'): moment(value.time1).startOf('month').format('YYYY-MM-DD'),
-        time2: reporttype === 'week' ?(value.time2).format('YYYY-MM-DD'): moment(value.time1).endOf('month').format('YYYY-MM-DD'),
+        time1: reporttype === 'week' ? (value.time1).format('YYYY-MM-DD') : moment(value.time1).startOf('month').format('YYYY-MM-DD'),
+        time2: reporttype === 'week' ? (value.time2).format('YYYY-MM-DD') : moment(value.time1).endOf('month').format('YYYY-MM-DD'),
         contentRow: JSON.stringify(contentRow),
         patrolAndExamineList: JSON.stringify(patrolAndExamineList),
         materialsList: JSON.stringify(materialsList),
@@ -154,6 +155,10 @@ function SoftReportdetail(props) {
         }
       })
     })
+  }
+
+  const submittest = () => {
+    console.log(addTitle,'addTitle')
   }
 
   const defaultTime = () => {
@@ -282,15 +287,24 @@ function SoftReportdetail(props) {
   };
 
   //  移除表格
-  const removeForm = (tableIndex) => {
+  const removeForm = (tableIndex) => {;
     addTitle.splice(tableIndex, 1);
-    list.splice(tableIndex, 1);
+    // list.splice(tableIndex, 1);
+    // console.log('list: ', list);
     const resultArr = [];
+    const listArr = [];
     for (let i = 0; i < addTitle.length; i += 1) {
       resultArr.push(addTitle[i])
     }
+    // for (let i = 0; i < list.length; i += 1) {
+    //   listArr.push(list[i])
+    // }
     setAddTitle(resultArr)
+    setList(resultArr)
   }
+
+  // console.log(list,'list')
+  // console.log(addTitle, 'addTitle')
 
   const exportWord = () => {
     dispatch({
@@ -365,7 +379,7 @@ function SoftReportdetail(props) {
       }
     >
       <Card style={{ padding: 24 }}>
-        {loading === false && startTime && (
+        {loading === false && (
           <Row gutter={24}>
             <Form>
               <Col span={24}>
@@ -400,7 +414,7 @@ function SoftReportdetail(props) {
                               message: '请输入名称'
                             }
                           ],
-                          initialValue: moment(main.time1)
+                          initialValue: main ? moment(main.time1) : ''
                         })(
                           <DatePicker
                             allowClear={false}
@@ -698,12 +712,8 @@ function SoftReportdetail(props) {
                 />
               </Col>
 
-              <Col span={24}>
-                <p style={{ marginTop: '20px' }}>（二）软件运维服务指标完成情况</p>
-              </Col>
-
               {/* 服务指标 */}
-              <Col span={24}>
+              <Col span={24} style={{ marginTop: 24 }}>
                 <Form.Item label=''>
                   {
                     getFieldDecorator('selfhandleContent', {
@@ -859,6 +869,10 @@ function SoftReportdetail(props) {
               </Col>
 
               <Col span={24}>
+                <p>(1)数据库本周进行了补丁升级工作次</p>
+              </Col>
+
+              <Col span={24}>
                 <UpgradeList
                   forminladeLayout={forminladeLayout}
                   upgradeList={contentrowdata => {
@@ -867,6 +881,10 @@ function SoftReportdetail(props) {
                   upgradeArr={openReportlist.upgradeList ? openReportlist.upgradeList : []}
                   detailParams={reportSearch}
                 />
+              </Col>
+
+              <Col span={24}>
+                <p>(2)计划{main ? main.time1 : ''}至{main ? main.time2 : ''},计量自动化系统开展 次发布变更（消缺），变更内容如下</p>
               </Col>
 
               {/* 变更 */}
@@ -1105,7 +1123,7 @@ function SoftReportdetail(props) {
                 )
               }
 
-              {loading === false && addTitle && addTitle.length > 0 && (
+              { addTitle && addTitle.length > 0 && (
                 addTitle.map((item, index) => {
                   return (
                     <>
@@ -1128,7 +1146,12 @@ function SoftReportdetail(props) {
                             <Icon
                               className="dynamic-delete-button"
                               type="minus-circle-o"
-                              onClick={() => removeForm(index)}
+                              onClick={
+                                () => {
+                                  removeForm(index);
+                                      //  submittest()
+                                      }
+                              }
                             />
                           </Col>
                         )

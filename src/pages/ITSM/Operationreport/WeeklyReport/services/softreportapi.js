@@ -138,3 +138,12 @@ export async function getContentRow(params) {
   })
 }
 
+//  获取运维巡检
+export async function getPatrolAndExamineList(params) {
+  return request(`/report/getPatrolAndExamineList`,{
+    method:'POST',
+    data:params,
+    requestType:'form',
+  })
+}
+
