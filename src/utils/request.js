@@ -38,38 +38,43 @@ const errorHandler = error => {
   if (response && response.status) {
     const errorText = codeMessage[response.status] || response.statusText;
     const { status, url } = response;
-
+    //  
     if (status === 401) {
       const resJson = response.json();
       resJson.then((res) => {
+        notification.destroy();
+        setTimeout(() => {
+          close()
+        }, 1000);
         notification.error({
-          message: res.msg,
-          description: errorText,
-          onClose: close,
-          duration: 0.5,
+          message: `${status}`,
+          description: res.msg,
+          // onClose: close,
+          duration: 1,
         });
+
       })
     }
-
-    if (status === 403) {
-      notification.error({
-        message: `${status}`,
-        description: errorText,
-        onClose: close,
-        duration: 0.5,
-      });
-    }
-    if (status >= 404 && status < 422) {
+    // if (status === 401) {
+    //   const resJson = response.json();
+    //   const arr = response.url?.split('/');
+    //   resJson.then((res) => {
+    //     if (arr[arr.length - 1] === 'getOverTimeNum') {
+    //       notification.error({
+    //         message: `${status}`,
+    //         description: res.msg,
+    //         //  onClose: close,
+    //         duration: 2,
+    //       });
+    //       close();
+    //     }
+    //   })
+    // }
+    if (status >= 403 && status < 422) {
       router.push('/404');
     }
-    // if (status >= 500 && status < 504) {
-    //   notification.error({
-    //     message: `${status}: ${url}`,
-    //     description: `${errorText},即将为您跳转到首页。`,
-    //   });
-    //   router.push('/');
-    // }
-    if (status !== 401 && status !== 403) {
+    if (status !== 401) {
+      notification.destroy();
       notification.error({
         message: `${status}: ${url}`,
         description: errorText,
@@ -130,8 +135,9 @@ request.interceptors.request.use(async (url, options) => {
 
 // // 拦截返回后的特殊处理
 // request.interceptors.response.use((response, options) => {
+//   console.log(response)
 //   if (response.status === 401) {
-//     console.log('401')
+//     console.log(options)
 //     const res = response.json();
 //     console.log(res)
 //   }
