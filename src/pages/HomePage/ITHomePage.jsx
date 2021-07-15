@@ -683,7 +683,7 @@ function ITHomePage(props) {
               </Col>
             )}
             <Col span={8}>
-              <Form.Item label="建单时间">
+              <Form.Item label="登记时间">
                 <Form.Item style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
                   {getFieldDecorator('time1', {
                   })(

@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useContext, useEffect } from 'react';
 import router from 'umi/router';
 import { Collapse, Button } from 'antd';
 import styles from '@/utils/utils.less';
@@ -7,13 +7,16 @@ import EditContext from '@/layouts/MenuContext';              // 引用上下文
 import Content from './components/Content';
 import Examine from './components/Examine';
 
+
 const { Panel } = Collapse;
 
 function Operation(props) {
-  const { location: { state: { runpath, title } } } = props;
   const [activeKey, setActiveKey] = useState(['formpanel']);
   const ContentRef = useRef(null);
   const ExmaineRef = useRef(null);
+  const { currenttab } = useContext(EditContext);
+  const { state: { menuDesc, title, runpath } } = currenttab;
+  console.log(currenttab)
   const callback = key => {
     setActiveKey(key);
   };
@@ -25,12 +28,22 @@ function Operation(props) {
     })
   }
   const handleclose = () => {
-    router.push({
-      pathname: runpath,
-      query: { pathpush: true },
-      state: { cache: false }
-    });
+    if (runpath) {
+      router.push({
+        pathname: runpath,
+        query: { pathpush: true },
+        state: { cache: false }
+      });
+    }
   };
+  useEffect(() => {
+    if (title && title === '知识审核') {
+      setActiveKey(['formpanel', '1'])
+    };
+    if (title && title === '知识查询') {
+      setActiveKey(['1', '2'])
+    };
+  }, [title])
   const operations = (
     <>
       <Button
@@ -51,7 +64,7 @@ function Operation(props) {
     </>
   )
   return (
-    <PageHeaderWrapper title={title === '知识审核' ? '知识审核' : '编辑知识'} extra={operations}>
+    <PageHeaderWrapper title={title} extra={operations} >
       <div className={styles.ordercollapse}>
         <Collapse
           expandIconPosition="right"
@@ -60,7 +73,7 @@ function Operation(props) {
           onChange={callback}
         >
 
-          {title !== '知识审核' && (
+          {(title === '我的知识' || title === '知识维护') && (
             <Panel header='知识收录' key="formpanel">
               <EditContext.Provider value={{ editable: true }}>
                 <Content
@@ -79,7 +92,7 @@ function Operation(props) {
               />
             </Panel>
           )}
-          {title === '知识审核' && (
+          {(title === '知识审核' || title === '知识查询') && (
             <Panel header='知识收录' key="1">
               <EditContext.Provider value={{ editable: false }}>
                 <Content
@@ -89,6 +102,15 @@ function Operation(props) {
                   Noediting
                 />
               </EditContext.Provider>
+            </Panel>
+          )}
+          {title === '知识查询' && (
+            <Panel header='知识收录' key="2">
+              <Examine
+                wrappedComponentRef={ExmaineRef}
+                formrecord={{}}
+                Noediting
+              />
             </Panel>
           )}
         </Collapse>

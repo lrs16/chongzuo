@@ -7,7 +7,6 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import DictLower from '@/components/SysDict/DictLower';
 
-
 const { Option } = Select;
 
 const formItemLayout = {
@@ -102,13 +101,19 @@ function KnowledgeList(props) {
       key: 'No',
       fixed: 'left',
       render: (text, record) => {
+        const desmap = new Map([
+          ['我的知识', '编辑知识'],
+          ['编辑知识', '编辑知识'],
+          ['知识审核', '知识审核'],
+          ['知识查询', '知识详情'],
+        ]);
         const handleClick = () => {
           router.push({
             pathname: `${location.pathname}/operation`,
             query: {
-              OperationId: record.No,
+              Id: record.No,
             },
-            state: { runpath: location.pathname, title: pagetitle, addoperation: true, menuDesc: pagetitle === '知识审核' ? '知识审核' : '编辑知识' },
+            state: { runpath: location.pathname, title: pagetitle, addoperation: true, menuDesc: desmap.get(pagetitle) },
           });
         };
         return <a onClick={handleClick}>{text}</a>;

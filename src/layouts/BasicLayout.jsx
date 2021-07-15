@@ -12,7 +12,7 @@ import { Result, Button, Tabs, List, Icon, Divider } from 'antd';
 import { formatMessage } from 'umi-plugin-react/locale';
 import Authorized from '@/utils/Authorized';
 import RightContent from '@/components/GlobalHeader/RightContent';
-// import MenuContext from '@/layouts/MenuContext';
+import MenuContext from '@/layouts/MenuContext';
 import { getAuthorityFromRouter } from '@/utils/utils';
 // import TobTabHoc from './TopTabHoc';
 import logo from '../../public/menulogo.png';
@@ -30,14 +30,14 @@ const homepane = [{
   closable: false,
   state: { cache: false },
 },
-  {
-    name: "周报查询",
-    id: "1399537627945766913",
-    itemPath: "/ITSM/operationreport/weeklyreport/myweeklyreportsearch",
-    query: {},
-    state: { cache: false, cacheinfo: {} },
-    data: { cacheinfo: {} }
-  }
+  // {
+  //   name: "周报查询",
+  //   id: "1399537627945766913",
+  //   itemPath: "/ITSM/operationreport/weeklyreport/myweeklyreportsearch",
+  //   query: {},
+  //   state: { cache: false, cacheinfo: {} },
+  //   data: { cacheinfo: {} }
+  // }
 ]
 
 const noMatch = (
@@ -91,6 +91,7 @@ const BasicLayout = props => {
   const [tabmenu, setTabMenu] = useState({ x: 0, y: 0, v: 'none' });
   const [alonepath, setAlonepath] = useState([]);
   const [multiplepath, setMultiplepath] = useState([]);
+  const [currenttab, setCurrentTab] = useState('');
 
   const clearcache = () => {
     dispatch({
@@ -263,34 +264,21 @@ const BasicLayout = props => {
         ChangetabQuery(location.query)
       };
       if (location.state.addoperation) {
-        const tabtargetid = toptabs.filter(item => location.query.OperationNo ? item.id === location.query.No : item.id === location.query.OperationId)[0];
+        const tabtargetid = toptabs.filter(item => item.id === location.query.Id)[0];
         if (tabtargetid) {
-          const id = location.query.OperationNo ? location.query.OperationNo : location.query.OperationId;
-          setActiveKey(id);
-        } else {
-          if (location.query.OperationNo && location.state.menuDesc) {
-            const panels = {
-              name: `${location.state.menuDesc}${location.query.OperationNo}`,
-              id: location.query.OperationNo,
-              itemPath: url,
-              query: location.query,
-              closable: true
-            };
-            toptabs.push(panels);
-            setActiveKey(location.query.OperationNo);
-          } else if (location.query.OperationId && location.state.menuDesc) {
-            // 属于工单
-            const panels = {
-              name: `${location.state.menuDesc}${location.query.OperationId}`,
-              id: location.query.OperationId,
-              itemPath: url,
-              query: location.query,
-              closable: true
-            };
-            toptabs.push(panels);
-            setActiveKey(location.query.OperationId);
+          setActiveKey(location.query.Id);
+        } else if (location.query.Id && location.state.menuDesc) {
+          const panels = {
+            name: `${location.state.menuDesc}${location.query.Id}`,
+            id: location.query.Id,
+            itemPath: url,
+            query: location.query,
+            state: { ...location.state, dynamicpath: false },
+            closable: true
           };
-        }
+          toptabs.push(panels);
+          setActiveKey(location.query.Id);
+        };
       }
     }
   }, [location.state])
@@ -458,6 +446,8 @@ const BasicLayout = props => {
   // 缓存tabid
   useEffect(() => {
     sessionStorage.setItem('tabid', activeKey);
+    const tabmsg = toptabs.filter(item => item.id === activeKey)[0];
+    setCurrentTab({ ...tabmsg })
   }, [activeKey]);
 
   // 获取后端路由后为菜单添加用户权限,如果是"/"从config中获取rediret路由再获取该路由权限
@@ -663,7 +653,9 @@ const BasicLayout = props => {
                   </div>
                 </MenuContext.Provider> */}
                 <div style={{ marginTop: 0 }}>
-                  {children}
+                  <MenuContext.Provider value={{ currenttab }}>
+                    {children}
+                  </MenuContext.Provider>
                 </div>
               </Authorized>
             </>

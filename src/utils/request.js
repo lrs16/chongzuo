@@ -40,12 +40,15 @@ const errorHandler = error => {
     const { status, url } = response;
 
     if (status === 401) {
-      notification.error({
-        message: `${status}`,
-        description: errorText,
-        onClose: close,
-        duration: 0.5,
-      });
+      const resJson = response.json();
+      resJson.then((res) => {
+        notification.error({
+          message: res.msg,
+          description: errorText,
+          onClose: close,
+          duration: 0.5,
+        });
+      })
     }
 
     if (status === 403) {
@@ -55,8 +58,6 @@ const errorHandler = error => {
         onClose: close,
         duration: 0.5,
       });
-      // sessionStorage.clear();
-      // window.location.pathname = '/user/login';
     }
     if (status >= 404 && status < 422) {
       router.push('/404');
@@ -126,6 +127,20 @@ request.interceptors.request.use(async (url, options) => {
     options: { ...options },
   };
 });
+
+// // 拦截返回后的特殊处理
+// request.interceptors.response.use((response, options) => {
+//   if (response.status === 401) {
+//     console.log('401')
+//     const res = response.json();
+//     console.log(res)
+//   }
+//   // if(response.data.code == 1000001){
+//   //   console.log(response.data.msg)
+//   //   //通过返回的code 提示 token 过期 、token校验失败，做相应跳转
+//   // }
+//   return response;
+// });
 
 /**
  * 刷新token
