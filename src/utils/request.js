@@ -45,12 +45,12 @@ const errorHandler = error => {
         notification.destroy();
         setTimeout(() => {
           close()
-        }, 1000);
+        }, 500);
         notification.error({
           message: `${status}`,
           description: res.msg,
           // onClose: close,
-          duration: 1,
+          duration: 4,
         });
 
       })
