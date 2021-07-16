@@ -114,27 +114,27 @@ function UnCloseTroublelist(props) {
     },
     {
       title: '故障类型',
-      dataIndex: 'typecn',
-      key: 'typecn',
+      dataIndex: 'type',
+      key: 'type',
       render: (text, record) => {
         return (
           <Input
             disabled={reportSearch}
             defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'typecn', record.key)}
+            onChange={e => handleFieldChange(e.target.value, 'type', record.key)}
           />
         )
       }
     },
     {
       title: '故障情况',
-      dataIndex: 'field3',
-      key: 'field3',
+      dataIndex: 'content',
+      key: 'content',
       render: (text, record) => {
         return (
           <TextArea
             defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'field3', record.key)}
+            onChange={e => handleFieldChange(e.target.value, 'content', record.key)}
           />
         )
       }

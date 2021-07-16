@@ -428,7 +428,7 @@ function SoftReportdetail(props) {
                       <Form.Item label='' style={{ display: 'inline-flex' }}>
                         {
                           getFieldDecorator('time2', {
-                            initialValue: moment(main.time2)
+                            initialValue: main ? moment(main.time2) :''
                           })
                             (<DatePicker
                               allowClear={false}
@@ -453,7 +453,7 @@ function SoftReportdetail(props) {
                             message: '请选择填报日期'
                           }
                         ],
-                        initialValue: moment(main.time1)
+                        initialValue: main ? moment(main.time1) : ''
                       })(<MonthPicker
                         allowClear
                         onChange={onChange}

@@ -8,6 +8,7 @@ import {
   Table,
   Button,
   message,
+  Icon,
   Descriptions
 } from 'antd';
 // import AddTable from './AddTable';
@@ -34,11 +35,11 @@ const AddForm = React.forwardRef((props, ref) => {
     dynamicData,
     px,
     addTable,
+    index,
+    addrow,
+    ChangeAddRow
   } = props;
-  console.log(dynamicData)
-  
-
-
+  const [addTitle, setAddTitle] = useState([]);
   const [data, setData] = useState([]);
   // const [dynamicTable, setDynamicTable] = useState([]);
   // const [list, setList] = useState([])
@@ -61,19 +62,38 @@ const AddForm = React.forwardRef((props, ref) => {
     setData(newData);
   };
 
-  // const handleDynamicTabledata = (addparams) => {
-  //   const newData = list;
-  //   newData.push(addparams);
+  const removeForm = (tableIndex) => {
+    addTitle.splice(tableIndex, 1);
+    list.splice(tableIndex, 1);
+    const resultArr = [];
+    // const listArr = [];
+    for (let i = 0; i < list.length; i += 1) {
+      resultArr.push(list[i])
+    }
+    // for (let i = 0; i < list.length; i += 1) {
+    //   listArr.push(list[i])
+    // }
+    setAddTitle(resultArr)
+    setList(resultArr)
+  }
+  //  // 新增一条记录
+  //  const handleaddTable = (params) => {
+  //    console.log(list,'list')
+  //   const newData = (list).map(item => ({ ...item }));
+  //   newData.push({
+  //     ...params
+  //   });
+  //   // const hash = {};
+  //   // console.log(newData,'newData')
+  //   // const arr = newData.reduce(function (item, next) {
+  //   //   hash[next.px] ? '' : hash[next.px] = true && item.push(next);
+  //   //   return item
+  //   // }, []);
+  //   // const result = [];
+  //   // result.push(arr)
   //   setList(newData);
-  // }
-
-
-  // const adddynamicTable = () => {
-  //   const nowNumber = dynamicTable.map(item => ({ ...item }));
-  //   nowNumber.push({ 'add': '1', tableNumber: [] });
-  //   setDynamicTable(nowNumber);
-  // }
-
+  //   setNewButton(false)
+  // };
   //  获取行  
   const getRowByKey = (key, newData) => {
     return (newData || data).filter(item => item.key === key)[0];
@@ -286,18 +306,20 @@ const AddForm = React.forwardRef((props, ref) => {
     }
   }
 
-  const handleSubmit = (e,typeParams) => {
+  const handleSubmit = (e, typeParams) => {
     props.form.validateFields((err, value) => {
       const editTable = {
-        ...value,
-        // content: typeParams === 'content' ? e : value.content,
-        // title: typeParams === 'title' ? e : value.title,
-        list: data,
+        list: {
+          // ...value,
+          content: typeParams === 'content' ? e : value.content,
+          title: typeParams === 'title' ? e : value.title,
+          list: data,
+        },
         px,
-      }
-      // console.log(editTable,'editTable')
-      addTable(editTable);
-      message.info('暂存保存数据成功')
+      };
+      addTable(editTable,editTable.px);
+      //  handleaddTable(editTable)
+      // message.info('暂存保存数据成功')
     })
   }
 
@@ -306,124 +328,115 @@ const AddForm = React.forwardRef((props, ref) => {
     handleTabledata();
   }, [dynamicData]);
 
+  useEffect(() => {
+    if (addrow) {
+      handleSubmit();
+      ChangeAddRow(false)
+    }
+  }, [addrow]);
+
+
+
+
   return (
     <>
       {/* {
         loading === false && dynamicData && ( */}
-          <Row gutter={24}>
-            <Form>
-              <Col><p>注：第一行数据作为表头</p></Col>
+      <Row gutter={24}>
+        <Form>
+          <Col><p>注：第一行数据作为表头</p></Col>
 
-              <Col style={{ textAlign: 'right', marginBottom: 10 }}>
-                <Button
-                  disabled={detailParams}
-                  type='primary'
-                  onClick={handleSubmit}
-                >
-                  保存
-                </Button>
-              </Col>
+          <Col style={{ textAlign: 'right', marginBottom: 10 }}>
+            <Button
+              disabled={detailParams}
+              type='primary'
+              onClick={handleSubmit}
+            >
+              保存
+            </Button>
+          </Col>
 
-              <Form.Item label={titleNumber()} {...formincontentLayout}>
-                {getFieldDecorator(`title`, {
-                  // initialValue: dynamicData.title ? dynamicData.title : ''
+
+          <Form.Item label={titleNumber()} {...formincontentLayout}>
+            {getFieldDecorator(`title`, {
+              // initialValue: dynamicData.title ? dynamicData.title : ''
+            })(
+              <Input
+                disabled={detailParams}
+                onBlur={(e) => { handleSubmit(e.target.value, 'title')}}
+              />
+            )}
+          </Form.Item>
+
+          <Form.Item label={contentNumber()} {...formincontentLayout}>
+            {getFieldDecorator(`content`, {
+              // initialValue: dynamicData.content ? dynamicData.content : ''
+            })(
+              <TextArea
+                autoSize={{ minRows: 3 }}
+                disabled={detailParams}
+              onChange={(e) => handleSubmit(e.target.value, 'content')}
+              />
+            )}
+          </Form.Item>
+
+          {
+            !detailParams && (
+              <Form.Item label='上传附件'    {...formincontentLayout}>
+                {getFieldDecorator(`files`, {
+                  // initialValue: dynamicData.files ? dynamicData.files : ''
                 })(
-                  <Input 
-                  disabled={detailParams}
-                  // onChange={(e) => handleSubmit(e.target.value,'title')}
-                   />
-                )}
-              </Form.Item>
-
-              <Form.Item label={contentNumber()} {...formincontentLayout}>
-                {getFieldDecorator(`content`, {
-                  // initialValue: dynamicData.content ? dynamicData.content : ''
-                })(
-                  <TextArea
-                    autoSize={{ minRows: 3 }}
-                    disabled={detailParams}
-                    // onChange={(e) => handleSubmit(e.target.value,'content')}
+                  <SysUpload
+                    // fileslist={dynamicData.files ? JSON.parse(dynamicData.files) : []}
+                    fileslist={[]}
+                    ChangeFileslist={newvalue => {
+                      setFieldsValue({
+                        files: JSON.stringify(newvalue.arr),
+                      })
+                      // handleSubmit();
+                    }}
                   />
                 )}
               </Form.Item>
-
-              {
-                !detailParams && (
-                  <Form.Item label='上传附件'    {...formincontentLayout}>
-                    {getFieldDecorator(`files`, {
-                      // initialValue: dynamicData.files ? dynamicData.files : ''
-                    })(
-                      <SysUpload
-                        // fileslist={dynamicData.files ? JSON.parse(dynamicData.files) : []}
-                        fileslist={[]}
-                        ChangeFileslist={newvalue => {
-                          setFieldsValue({
-                            files: JSON.stringify(newvalue.arr),
-                          })
-                          // handleSubmit();
-                        }}
-                      />
-                    )}
-                  </Form.Item>
-                )
-              }
+            )
+          }
 
 
-              {
-                detailParams && (
-                  <div style={{ marginLeft: 30, marginRight: 10 }}>
-                    <Descriptions size="middle">
-                      <Descriptions.Item label='上传附件'>
-                        <span style={{ color: 'blue', textDecoration: 'underline' }} >
-                          {/* {dynamicData && <Downloadfile files={dynamicData.files === '' ? '[]' : dynamicData.files} />} */}
-                        </span>
-                      </Descriptions.Item>
+          {
+            detailParams && (
+              <div style={{ marginLeft: 30, marginRight: 10 }}>
+                <Descriptions size="middle">
+                  <Descriptions.Item label='上传附件'>
+                    <span style={{ color: 'blue', textDecoration: 'underline' }} >
+                      {dynamicData && <Downloadfile files={dynamicData.files === '' ? '[]' : dynamicData.files} />}
+                    </span>
+                  </Descriptions.Item>
 
-                    </Descriptions>
-                  </div>
+                </Descriptions>
+              </div>
 
-                )
-              }
+            )
+          }
 
-              <Table
-                columns={column}
-                dataSource={data}
-              />
+          <Table
+            columns={column}
+          // dataSource={data}
+          />
 
-              <Button
-                style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
-                type="primary"
-                ghost
-                onClick={() => newMember()}
-                icon="plus"
-                disabled={detailParams}
+          <Button
+            style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
+            type="primary"
+            ghost
+            onClick={() => newMember()}
+            icon="plus"
+            disabled={detailParams}
 
-              >
-                新增行
-              </Button>
+          >
+            新增行
+          </Button>
 
-              {/* {dynamicTable && dynamicTable.length > 0 && (
-                dynamicTable.map((item, index) => {
-                  return (
-                    <>
-                      <AddTable
-                        detailParams={detailParams}
-                        dynamicTablelist={newdata => {
-                          handleDynamicTabledata(newdata)
-                        }}
-                        tableIndex={index}
-                      />
-                    </>
-                  )
-                })
-              )}
-
-              <Button
-                onClick={adddynamicTable}
-                type="primary"
-              >添加表格</Button> */}
-            </Form>
-          </Row>
+        </Form>
+      </Row>
       {/* //   )
       // } */}
     </>

@@ -77,6 +77,7 @@ function ComputerroomReport(props) {
     } },
     dispatch,
     faultQueryList,
+    nofaultQueryList,
     lastweekHomeworklist,
     nextweekHomeworklist,
     loading,
@@ -214,13 +215,23 @@ function ComputerroomReport(props) {
     dispatch({
       type: 'softreport/getfaultQueryList',
       payload: {
-        pageNum: 1,
-        pageSize: 10,
-        addTimeBegin: startTime,
-        addTimeEnd: endTime,
+        time1: startTime,
+        time2: endTime,
+        type:'001',
+        result:'根本解决'
+      }
+    });
+    dispatch({
+      type: 'softreport/getnofaultQueryList',
+      payload: {
+        time1: startTime,
+        time2: endTime,
+        type:'001',
+        result:'无法解决'
       }
     })
   }
+
 
   //   七、上周作业完成情况--表格
   const lastweekHomework = () => {
@@ -267,6 +278,7 @@ function ComputerroomReport(props) {
     lastweekHomework();
     nextweekHomework();
     getQuerylist();
+    // getnofaultArr()
     initial = true;
   }
 
@@ -575,7 +587,7 @@ function ComputerroomReport(props) {
                       <Col span={24}>
                         <NewTroublelist
                           forminladeLayout={forminladeLayout}
-                          faultlist={copyData.newTroubleList ? copyData.newTroubleList : faultQueryList.rows}
+                          faultlist={copyData.newTroubleList ? copyData.newTroubleList : faultQueryList}
                           mainId={copyData.newTroubleList ? true : mainId}
                           type={reporttype}
                           startTime={startTime}
@@ -610,7 +622,7 @@ function ComputerroomReport(props) {
                       <Col span={24}>
                         <UnCloseTroublelist
                           forminladeLayout={forminladeLayout}
-                          uncloseaultlist={copyData.unCloseTroubleList ? copyData.unCloseTroubleList : faultQueryList.rows}
+                          uncloseaultlist={copyData.unCloseTroubleList ? copyData.unCloseTroubleList : nofaultQueryList}
                           type={reporttype}
                           mainId={copyData.unCloseTroubleList ? true : mainId}
                           startTime={startTime}
@@ -862,6 +874,7 @@ export default Form.create({})(
     lastweekHomeworklist: softreport.lastweekHomeworklist,
     nextweekHomeworklist: softreport.nextweekHomeworklist,
     faultQueryList: softreport.faultQueryList,
+    nofaultQueryList: softreport.nofaultQueryList,
     loading: loading.models.softreport,
   }))(ComputerroomReport),
 );

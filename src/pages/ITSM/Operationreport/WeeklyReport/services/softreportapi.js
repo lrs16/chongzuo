@@ -113,9 +113,10 @@ export async function getOperationQueryList(params) {
 
 // /trouble/flow/getOrderPage 获取故障工单列表 故障查询列表
 export async function queryfaultSearchList1(params) {
-  return request(`/trouble/flow/getOrderPage`, {
+  return request(`/report/queryTrouble`, {
     method: 'POST',
-    body: JSON.stringify(params),
+    requestType:'form',
+    data:params
   });
 }
 

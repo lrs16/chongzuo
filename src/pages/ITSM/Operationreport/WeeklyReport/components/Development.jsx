@@ -32,8 +32,6 @@ const Development = React.forwardRef((props, ref) => {
 
   // 新增一条记录
   const newMember = () => {
-    setFilesList([]);
-    setKeyUpload('');
     const newData = (data).map(item => ({ ...item }));
     newData.push({
       key: data.length + 1,
@@ -53,12 +51,21 @@ const Development = React.forwardRef((props, ref) => {
   }
 
   const deleteObj = (key, newData) => {
-    return (newData || data).filter(item => item.key !== key);
+    const newTarget =  (newData || data).filter(item => item.key !== key);
+    const resultData = newTarget.map((item, index) => {
+      const newItem = item;
+      newItem.key = index + 1;
+      newItem.field1 = index + 1;
+      // newItem.field2 = 116666666;
+      // newItem.field3 = 11777777777;
+      return newItem;
+    })
+    return resultData;
   }
 
   //  删除数据
   const remove = key => {
-    const target = deleteObj(key) || {};
+    const target = deleteObj(key);
     setData(target);
     materialsList(target);
   };

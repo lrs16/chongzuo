@@ -23,7 +23,7 @@ const { Option } = Select;
 function ThisWeekitsm(props) {
 
   const {
-    form: { getFieldDecorator,setFieldsValue },
+    form: { getFieldDecorator, setFieldsValue },
     formItemLayout,
     formincontentLayout,
     eventList,
@@ -40,19 +40,27 @@ function ThisWeekitsm(props) {
 
   // 自动完成报障用户
   const disableduser = disablelist.map(obj => (
-    <Option key={obj.type} value={obj.content} disableuser={obj}>
+    <Option
+      key={obj.no}
+      value={obj.no}
+      disableuser={obj}
+      // getPopupContainer={triggerNode => triggerNode.parentNode}
+      style={{ 'overflow-y': 'hidden' }}
+    >
       <Spin spinning={spinloading}>
-        <div className={styles.disableuser}>
-          <span>{obj.no}</span>
-          <span>{obj.content}</span>
-          <span>{obj.handleContent}</span>
-          <span>{obj.startTime}</span>
-          <span>{obj.endTime}</span>
-          <span>{obj.submit}</span>
-          <span>{obj.systemName}</span>
+        <div
+        >
+          <span style={{paddingRight:16}}>{obj.no}</span>
+          <span  style={{paddingRight:16}}>{obj.content}</span>
+          <span  style={{paddingRight:16}}>{obj.handleContent}</span>
+          <span  style={{paddingRight:16}}>{obj.startTime}</span>
+          <span  style={{paddingRight:16}}>{obj.endTime}</span>
+          <span  style={{paddingRight:16}}>{obj.submit}</span>
+          <span  style={{paddingRight:16}}>{obj.systemName}</span>
         </div>
       </Spin>
     </Option>
+
   ));
 
   // 请求关键字
@@ -68,15 +76,14 @@ function ThisWeekitsm(props) {
     } else {
       message.info('关键字不能为空')
     }
-
   };
 
   // 选择报障用户，信息回填
   const handleDisableduser = (v, opt,) => {
     const newData = data.map(item => ({ ...item }));
-    const { type, no, content, startTime, endTime, systemName,submit,handleContent } = opt.props.disableuser;
+    const { type, no, content, startTime, endTime, systemName, submit, handleContent } = opt.props.disableuser;
     const searchObj = {
-      key: newData.length + 1 ,
+      key: newData.length + 1,
       field1: newData.length + 1,
       field2: no,
       field3: systemName,
@@ -104,13 +111,13 @@ function ThisWeekitsm(props) {
   //  删除数据
   const remove = key => {
     const target = deleteObj(key) || {};
-    const newTarget = target.map((item,index) => {
+    const newTarget = target.map((item, index) => {
       const newItem = item;
       newItem.field1 = index + 1;
       return newItem;
-  })
-  setData(newTarget);
-  eventList(newTarget)
+    })
+    setData(newTarget);
+    eventList(newTarget)
   };
 
 
@@ -317,12 +324,15 @@ function ThisWeekitsm(props) {
                   })(
                     <>
                       <AutoComplete
+
+                        defaultActiveFirstOption={false}
                         dataSource={disableduser}
                         // defaultValue='按姓名搜索'
                         dropdownMatchSelectWidth={false}
                         dropdownStyle={{ width: 700 }}
                         optionLabelProp="value"
                         onSelect={(v, opt) => handleDisableduser(v, opt)}
+                      // getPopupContainer={triggerNode => triggerNode.parentNode}
                       >
                         <Search
                           disabled='true'

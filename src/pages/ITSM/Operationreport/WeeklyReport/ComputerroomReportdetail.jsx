@@ -394,7 +394,7 @@ function ComputerroomReportdetail(props) {
                             message: '请选择填报日期'
                           }
                         ],
-                        initialValue: moment(main.time1)
+                        initialValue: main ? moment(main.time1) :''
                       })(<MonthPicker
                         allowClear
                         onChange={onChange}

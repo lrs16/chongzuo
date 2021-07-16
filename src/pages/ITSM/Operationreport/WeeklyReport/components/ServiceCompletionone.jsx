@@ -21,6 +21,21 @@ function ServiceCompletionone(props) {
   const [data, setData] = useState([]);
   const [newbutton, setNewButton] = useState(false);
 
+
+  // 新增一条记录
+  const newMember = () => {
+    const newData = (data).map(item => ({ ...item }));
+    newData.push({
+      key: data.length + 1,
+      field1: data.length + 1,
+      field2: '',
+      field3: '',
+      field4: '',
+    });
+    setData(newData);
+    statisList(newData);
+    setNewButton(true);
+  };
   //  获取行  
   const getRowByKey = (key, newData) => {
     return (newData || data).filter(item => item.key === key)[0];
@@ -42,16 +57,16 @@ function ServiceCompletionone(props) {
     const newData = data.map(item => ({ ...item }));
     const target = getRowByKey(key, newData);
     const result = JSON.parse(JSON.stringify(maintenanceService)
-        .replace(/index/g, 'field1')
-        .replace(/name/g, 'field2')
-        .replace(/last/g, 'field3')
-        .replace(/now/g, 'field4')
-        .replace(/points/g, 'field5')
-        .replace(/remark/g, 'field6')
-        )
-      if (result) {
-        statisList(result)
-      }
+      .replace(/index/g, 'field1')
+      .replace(/name/g, 'field2')
+      .replace(/last/g, 'field3')
+      .replace(/now/g, 'field4')
+      .replace(/points/g, 'field5')
+      .replace(/remark/g, 'field6')
+    )
+    if (result) {
+      statisList(result)
+    }
     if (target) {
       target[fieldName] = e;
       setData(newData);
@@ -290,6 +305,17 @@ function ServiceCompletionone(props) {
         dataSource={data}
         pagination={false}
       />
+
+      <Button
+        style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
+        type="primary"
+        ghost
+        onClick={newMember}
+        icon="plus"
+        disabled={detailParams}
+      >
+        新增
+      </Button>
     </>
   )
 }

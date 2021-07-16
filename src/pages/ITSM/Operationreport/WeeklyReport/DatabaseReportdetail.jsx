@@ -362,7 +362,7 @@ function DatabaseReportdetail(props) {
                               message: '请输入填报时间'
                             }
                           ],
-                          initialValue: moment(main.time1)
+                          initialValue: main ? moment(main.time1) : ''
                         })(
                           <DatePicker
                             allowClear={false}
@@ -375,7 +375,7 @@ function DatabaseReportdetail(props) {
                       <Form.Item label='' style={{ display: 'inline-flex' }}>
                         {
                           getFieldDecorator('time2', {
-                            initialValue: moment(main.time2)
+                            initialValue: main ? moment(main.time2) :''
                           })
                             (<DatePicker
                               allowClear={false}
@@ -403,7 +403,7 @@ function DatabaseReportdetail(props) {
                               message: '请输入填报时间'
                             }
                           ],
-                        initialValue: moment(main.time1)
+                        initialValue: main ? moment(main.time1) : ''
                       })(<MonthPicker
                         allowClear={false}
                         disabled={reportSearch}

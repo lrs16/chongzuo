@@ -8,7 +8,9 @@ import {
   Input,
   DatePicker,
   Icon,
-  message
+  message,
+  Select,
+  Spin
 } from 'antd';
 import moment from 'moment';
 import router from 'umi/router';
@@ -52,6 +54,7 @@ const formItemLayout = {
   },
 };
 
+const { Option } = Select;
 const formincontentLayout = {
   labelCol: {
     xs: { span: 24 },
@@ -227,8 +230,10 @@ function SoftReport(props) {
     soluteArr,
     maintenanceArr, // 事件统计
     contentRowlist,
+    patrolAndExamineArr,
     loading,
   } = props;
+
 
   const required = true;
   const [fileslist, setFilesList] = useState({ arr: [], ischange: false }); // 下载列表
@@ -521,10 +526,10 @@ function SoftReport(props) {
 
   const handlepatrolAndExamineList = () => {
     dispatch({
-      type:'softreport/getPatrolAndExamineList',
-      payload:{
-        time1:startTime,
-        time2:endTime
+      type: 'softreport/getPatrolAndExamineList',
+      payload: {
+        time1: startTime,
+        time2: endTime
       }
     })
   }
@@ -557,23 +562,36 @@ function SoftReport(props) {
         <>
           {/* { */}
           {/* // loading === false && ( */}
-          <>
-            <Button type='primary' onClick={softReportform}>保存</Button>
-            <Button type='primary' onClick={handlePaste}>粘贴</Button>
+          <div>
+            <Button type='primary' style={{ marginRight: 10 }} onClick={softReportform}>保存</Button>
+            <Button type='primary' style={{ marginRight: 10 }} onClick={handlePaste}>粘贴</Button>
             <Button onClick={handleBack}>
               返回
             </Button>
-          </>
+          </div>
           {/* // ) */}
           {/* // } */}
         </>
       }
     >
+
+      {
+        loading && (
+          <div style={{ textAlign: 'center' }}>
+            <Spin spinning={loading}>
+              {/* {message.info('数据正在加载中，请稍等')} */}
+            </Spin>
+          </div>
+
+        )
+      }
+
       <Card style={{ padding: 24 }}>
 
         {/* {maintenanceArr && (maintenanceArr.data || copyData.main !== undefined ) && ( */}
         <Row gutter={24}>
           <Form>
+
             <Col span={24}>
               <Form.Item
                 label={reporttype === 'week' ? '周报名称' : '月报名称'}
@@ -669,7 +687,7 @@ function SoftReport(props) {
                 </Col>
               )
             }
-
+            
             {
               initial && loading === false && contentRowlist && (
                 <>
@@ -747,7 +765,7 @@ function SoftReport(props) {
                       patrolAndExamineList={contentrowdata => {
                         setPatrolAndExamine(contentrowdata)
                       }}
-                      patrolAndExamine={copyData.patrolAndExamineList ? copyData.patrolAndExamineList : patrolAndExamineList}
+                      patrolAndExamine={copyData.patrolAndExamineList ? copyData.patrolAndExamineList : patrolAndExamineArr}
                     />
                   </Col>
 
@@ -1228,7 +1246,7 @@ export default Form.create({})(
     lastweekHomeworklist: softreport.lastweekHomeworklist,
     nextweekHomeworklist: softreport.nextweekHomeworklist,
     contentRowlist: softreport.contentRowlist,
-    patrolAndExamineList: softreport.patrolAndExamineList,
+    patrolAndExamineArr: softreport.patrolAndExamineArr,
     loading: loading.models.softreport,
   }))(SoftReport),
 );

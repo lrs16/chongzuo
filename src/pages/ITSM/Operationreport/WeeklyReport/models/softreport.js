@@ -33,9 +33,10 @@ export default {
     nextweekHomeworklist:[],
     openReportlist:[],
     queryOrderlist:[],
-    faultQueryList: [], // 故障查询列表
+    faultQueryList: [], // 已修复
+    nofaultQueryList: [], // 未修复
     contentRowlist:[],
-    patrolAndExamineList:[]
+    patrolAndExamineArr:[]
   },
 
   effects: {  
@@ -353,11 +354,20 @@ export default {
       })
     },
 
-    // 获取故障查询列表数据
+    // 新增及已修复故障
     *getfaultQueryList({ payload }, { call, put }) {
     const response = yield call(queryfaultSearchList1, payload);
     yield put({
       type: 'faultQueryList',
+      payload: response,
+    });
+  },
+
+    // 未修复故障清单
+    *getnofaultQueryList({ payload }, { call, put }) {
+    const response = yield call(queryfaultSearchList1, payload);
+    yield put({
+      type: 'nofaultQueryList',
       payload: response,
     });
   },
@@ -375,7 +385,7 @@ export default {
      *getPatrolAndExamineList({ payload }, { call, put }) {
       const response = yield call(getPatrolAndExamineList,payload);
       yield put({
-        type:'patrolAndExamineList',
+        type:'patrolAndExamineArr',
         payload: response
       })
     },
@@ -449,11 +459,19 @@ export default {
       }
     },
 
-    // 故障查询列表
+    // 已修复
     faultQueryList(state, action) {
     return {
       ...state,
       faultQueryList: action.payload.data,
+    };
+  },
+
+    // 未修复
+    nofaultQueryList(state, action) {
+    return {
+      ...state,
+      nofaultQueryList: action.payload.data,
     };
   },
 
@@ -465,10 +483,10 @@ export default {
     }
   },
   //  获取巡检
-  patrolAndExamineList(state,action) {
+  patrolAndExamineArr(state,action) {
     return {
       ...state,
-      patrolAndExamineList:action.payload.data
+      patrolAndExamineArr:action.payload.data
     }
   },
   }

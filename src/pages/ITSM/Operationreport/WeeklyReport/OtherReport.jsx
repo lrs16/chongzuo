@@ -48,14 +48,23 @@ function OtherReport(props) {
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
   const [addTitle, setAddTitle] = useState([]);
   const [list, setList] = useState([]);
-  const [copyData, setCopyData] = useState('')
+  const [newbutton, setNewButton] = useState(false);
+  const [copyData, setCopyData] = useState('');
+  const [addrow,setAddrow] = useState(false)
+  console.log(list)
+
+
 
   // 新增一条记录
-  const handleaddTable = (params) => {
+  const handleaddTable = (params,px) => {
     const newData = (list).map(item => ({ ...item }));
     newData.push({
       ...params
     });
+    console.log(newData,'newData')
+    const testData = (newData).filter(item => item.px === px)[0];
+
+    console.log('testData: ', testData);
     // const hash = {};
     // console.log(newData,'newData')
     // const arr = newData.reduce(function (item, next) {
@@ -65,9 +74,8 @@ function OtherReport(props) {
     // const result = [];
     // result.push(arr)
     setList(newData);
+    setNewButton(false)
   };
-  
-  console.log(list,'list')
 
   //  保存表单
   const otherReportform = () => {
@@ -204,7 +212,8 @@ function OtherReport(props) {
   const newMember = () => {
     const nowNumber = addTitle.map(item => ({ ...item }));
     nowNumber.push({ 'add': '1' });
-    setAddTitle(nowNumber)
+    setAddTitle(nowNumber);
+    setNewButton(true)
   }
 
 
@@ -222,9 +231,6 @@ function OtherReport(props) {
     setAddTitle(resultArr)
     setList(resultArr)
   }
-
-  console.log(list,'list');
-  
 
   return (
     <PageHeaderWrapper
@@ -332,8 +338,11 @@ function OtherReport(props) {
                           addTable={newdata => {
                             handleaddTable(newdata)
                           }}
-                          dynamicData={list.length ? list[index] :[]}
+                          index={index}
+                          dynamicData={list.length ? list[index] : []}
                           loading={loading}
+                          addrow={addrow}
+                          ChangeAddRow = {v=>setAddrow(v)}
                         />
                       </Col>
 
@@ -343,7 +352,7 @@ function OtherReport(props) {
                           type="delete"
                           onClick={() => removeForm(index)}
                         />
-                      </Col>
+                      </Col>  
 
                     </>
                   )
@@ -355,11 +364,13 @@ function OtherReport(props) {
                 style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
                 type="primary"
                 ghost
-                onClick={() => newMember()}
+                onClick={() => {newMember(); setAddrow(true)}}
+                // disabled={newbutton}
                 icon="plus"
               >
                 新增其他内容
               </Button>
+
             </Form>
           </Row>
         )}
