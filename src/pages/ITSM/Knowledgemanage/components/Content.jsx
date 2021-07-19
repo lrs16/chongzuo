@@ -1,4 +1,4 @@
-import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
+import React, { useState, forwardRef, useImperativeHandle } from 'react';
 import moment from 'moment';
 import { Row, Col, Form, Input, Select } from 'antd';
 import RichTextEditor from '@/components/RichTextEditor';
@@ -92,9 +92,9 @@ const Content = forwardRef((props, ref) => {
             </Form.Item>
           </Col>
           <Col span={8}>
-            <Form.Item label="发布时间">
+            <Form.Item label="登记时间">
               {getFieldDecorator('addTime', {
-                initialValue: formrecord.addTime,
+                initialValue: formrecord.addTime === undefined ? moment().format('YYYY-MM-DD HH:mm:ss') : formrecord.addTime,
               })(<Input disabled />)}
             </Form.Item>
           </Col>
@@ -161,9 +161,14 @@ const Content = forwardRef((props, ref) => {
 
 Content.defaultProps = {
   formrecord: {
+    id: '',
+    no: '',
+    type: '',
+    title: '',
+    content: '',
     addUser: sessionStorage.getItem('userName'),
     addUserId: sessionStorage.getItem('userauthorityid'),
-  },
+  }
 }
 
 export default Form.create()(Content);

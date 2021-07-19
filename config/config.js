@@ -1655,6 +1655,10 @@ export default {
     '/image/': {
       target: 'http://172.16.10.33:9901/',
       changeOrigin: true
-    }
+    },
+    '/knowledge/': {
+      target: 'http://172.16.10.120:9901/',
+      changeOrigin: true
+    },
   },
 };

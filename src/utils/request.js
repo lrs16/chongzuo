@@ -115,6 +115,15 @@ request.interceptors.request.use(async (url, options) => {
         url,
         options: { ...options, headers },
       };
+    } if (options.requestType === 'formjosn') {
+      const headers = {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${ctoken}`,
+      };
+      return {
+        url,
+        options: { ...options, headers },
+      };
     }
     const headers = {
       'Content-Type': 'application/json',
