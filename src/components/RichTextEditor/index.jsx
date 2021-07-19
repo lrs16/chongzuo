@@ -87,6 +87,7 @@ function Editor(props, ref) {
     };
     /** 一定要创建 */
     editor.create();
+    editor.txt.append(cachevalue === undefined ? '' : cachevalue);
     editor.$textElem.attr('contenteditable', editable);
     return () => {
       // 组件销毁时销毁编辑器

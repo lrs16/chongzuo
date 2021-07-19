@@ -1,4 +1,5 @@
 import React, { useState, useEffect, forwardRef, useImperativeHandle } from 'react';
+import moment from 'moment';
 import { Row, Col, Form, Input, Select } from 'antd';
 import RichTextEditor from '@/components/RichTextEditor';
 import SysUpload from '@/components/SysUpload/Upload';
@@ -65,17 +66,22 @@ const Content = forwardRef((props, ref) => {
       <Row gutter={24}>
         <Form {...forItemLayout} >
           <Col span={8}>
+            <Form.Item label="表单id" style={{ display: 'none' }}>
+              {getFieldDecorator('id', {
+                initialValue: formrecord.id,
+              })(<Input disabled />)}
+            </Form.Item>
             <Form.Item label="知识编号" >
-              {getFieldDecorator('form1', {
-                initialValue: formrecord.form1,
+              {getFieldDecorator('no', {
+                initialValue: formrecord.no,
               })(<Input disabled />)}
             </Form.Item>
           </Col>
           <Col span={8}>
             <Form.Item label="知识分类">
-              {getFieldDecorator('form2', {
+              {getFieldDecorator('type', {
                 rules: [{ required, message: '请选择知识分类' }],
-                initialValue: formrecord.form2,
+                initialValue: formrecord.type,
               })(<Select placeholder="请选择" allowClear disabled={Noediting}>
                 {typemap.map(obj => (
                   <Option key={obj.key} value={obj.title}>
@@ -87,27 +93,27 @@ const Content = forwardRef((props, ref) => {
           </Col>
           <Col span={8}>
             <Form.Item label="发布时间">
-              {getFieldDecorator('form3', {
-                initialValue: formrecord.form3,
+              {getFieldDecorator('addTime', {
+                initialValue: formrecord.addTime,
               })(<Input disabled />)}
             </Form.Item>
           </Col>
           <Col span={24}>
             <Form.Item label="知识标题" {...formallItemLayout}>
-              {getFieldDecorator('form4', {
+              {getFieldDecorator('title', {
                 rules: [{ required, message: '请输入知识标题' }],
-                initialValue: formrecord.form4,
+                initialValue: formrecord.title,
               })(<Input disabled={Noediting} />)}
             </Form.Item>
           </Col>
           <Col span={24}>
             <Form.Item label="知识内容" {...formallItemLayout}>
-              {getFieldDecorator('form5', {
+              {getFieldDecorator('content', {
                 rules: [{ required, message: '请输入知识内容' }, {
                   validator: handleFormValidator
                 }],
               })(
-                <RichTextEditor cachevalue={formrecord.form5} ChangeValue={v => setFieldsValue({ form5: v })} />
+                <RichTextEditor cachevalue={formrecord.content} ChangeValue={v => setFieldsValue({ content: v })} />
               )}
             </Form.Item>
           </Col>
@@ -123,8 +129,13 @@ const Content = forwardRef((props, ref) => {
           </Col>
           <Col span={8}>
             <Form.Item label="作者">
-              {getFieldDecorator('form6', {
-                initialValue: '',
+              {getFieldDecorator('addUser', {
+                initialValue: formrecord.addUser,
+              })(<Input disabled />)}
+            </Form.Item>
+            <Form.Item label="作者ID" style={{ display: 'none' }}>
+              {getFieldDecorator('addUserId', {
+                initialValue: formrecord.addUserId,
               })(<Input disabled />)}
             </Form.Item>
           </Col>
@@ -132,16 +143,12 @@ const Content = forwardRef((props, ref) => {
             <>
               <Col span={8}>
                 <Form.Item label="编辑人">
-                  {getFieldDecorator('form7', {
-                    initialValue: '',
-                  })(<Input disabled />)}
+                  <Input disabled defaultValue={sessionStorage.getItem('userName')} />
                 </Form.Item>
               </Col>
               <Col span={8}>
                 <Form.Item label="编辑时间">
-                  {getFieldDecorator('form8', {
-                    initialValue: '',
-                  })(<Input disabled />)}
+                  <Input disabled defaultValue={moment().format('YYYY-MM-DD HH:mm:ss')} />
                 </Form.Item>
               </Col>
             </>
@@ -151,5 +158,12 @@ const Content = forwardRef((props, ref) => {
     </div>
   );
 });
+
+Content.defaultProps = {
+  formrecord: {
+    addUser: sessionStorage.getItem('userName'),
+    addUserId: sessionStorage.getItem('userauthorityid'),
+  },
+}
 
 export default Form.create()(Content);

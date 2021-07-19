@@ -252,7 +252,7 @@ function QueryList(props) {
       payload: {
         values: {
           ...values,
-          tim1: values.time1 ? moment(values.time1).format('YYYY-MM-DD HH:mm:ss') : '',
+          time1: values.time1 ? moment(values.time1).format('YYYY-MM-DD HH:mm:ss') : '',
           time2: values.time2 ? moment(values.time2).format('YYYY-MM-DD HH:mm:ss') : '',
           eventObject: values.eventObject ? (values.eventObject).slice(-1)[0] : '',
         },

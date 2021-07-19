@@ -14,8 +14,6 @@ function New(props) {
   const [files, setFiles] = useState({ arr: JSON.parse(test), ischange: false });
   const ContentRef = useRef(null);
 
-  console.log(files)
-
   const handleSave = () => {
     const values = ContentRef.current.getVal();
     console.log(values);
