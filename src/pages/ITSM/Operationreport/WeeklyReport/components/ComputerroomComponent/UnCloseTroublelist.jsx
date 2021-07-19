@@ -26,7 +26,6 @@ function UnCloseTroublelist(props) {
     const newData = (data).map(item => ({ ...item }));
     newData.push({
       key: data.length + 1,
-      index: data.length + 1,
       field1: data.length + 1
     });
     setData(newData);
@@ -63,7 +62,7 @@ function UnCloseTroublelist(props) {
           unCloseTroubleList(result)
         }
     if (target) {
-      if (fieldName === 'field4') {
+      if (fieldName === 'field2') {
         target[fieldName] = moment(e).format('YYYY-MM-DD');
         
         setData(newData);
@@ -77,7 +76,7 @@ function UnCloseTroublelist(props) {
   const handleTabledata = () => {
     if (uncloseaultlist && uncloseaultlist.length && newbutton === false) {
       const newarr = uncloseaultlist.map((item, index) => {
-        return Object.assign(item, { editable: true, isNew: false, key: index, index: index + 1 })
+        return Object.assign(item, { editable: true, isNew: false, key: index, field1: index + 1 })
       })
       setData(newarr)
     }
@@ -86,69 +85,69 @@ function UnCloseTroublelist(props) {
   const column = [
     {
       title: '序号',
-      dataIndex: 'index',
-      key: 'index',
+      dataIndex: 'field1',
+      key: 'field1',
       render: (text, record) => {
         return (
           <Input
             disabled={reportSearch}
             defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'index', record.key)}
+            onChange={e => handleFieldChange(e.target.value, 'field1', record.key)}
           />
         )
       }
     },
     {
       title: '日期',
-      dataIndex: 'addTime',
-      key: 'addTime',
+      dataIndex: 'field2',
+      key: 'field2',
       render: (text, record) => {
         return (
           <DatePicker
             disabled={reportSearch}
             defaultValue={text ? moment(text) : moment(new Date())}
-            onChange={e => handleFieldChange(e, 'addTime', record.key)}
+            onChange={e => handleFieldChange(e, 'field2', record.key)}
           />
         )
       }
     },
     {
       title: '故障类型',
-      dataIndex: 'type',
-      key: 'type',
+      dataIndex: 'field3',
+      key: 'field3',
       render: (text, record) => {
         return (
           <Input
             disabled={reportSearch}
             defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'type', record.key)}
+            onChange={e => handleFieldChange(e.target.value, 'field3', record.key)}
           />
         )
       }
     },
     {
       title: '故障情况',
-      dataIndex: 'content',
-      key: 'content',
+      dataIndex: 'field4',
+      key: 'field4',
       render: (text, record) => {
         return (
           <TextArea
             defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'content', record.key)}
+            onChange={e => handleFieldChange(e.target.value, 'field4', record.key)}
           />
         )
       }
     },
     {
       title: '计划修复时间',
-      dataIndex: 'field4',
-      key: 'field4',
+      dataIndex: 'field5',
+      key: 'field5',
       render: (text, record) => {
         return (
           <DatePicker
             disabled={reportSearch}
             defaultValue={text ? moment(text) : moment(new Date())}
-            onChange={e => handleFieldChange(e, 'field4', record.key)}
+            onChange={e => handleFieldChange(e, 'field5', record.key)}
           />
         )
       }

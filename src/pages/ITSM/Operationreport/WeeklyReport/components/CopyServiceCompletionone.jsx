@@ -1,35 +1,31 @@
-import React, { useEffect, useRef, useImperativeHandle, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
+  Input,
   Table,
   Form,
-  Input,
   Button,
-  Popconfirm,
-  Select,
-  message
+  message,
+  Popconfirm
 } from 'antd';
 
-const { Option } = Select;
-const Development = React.forwardRef((props, ref) => {
-  const attRef = useRef();
-  useImperativeHandle(
-    ref,
-    () => ({
-      attRef,
-    }),
-    [],
-  );
+function CopyServiceCompletionone(props) {
 
   const {
-    materials,
-    materialsList,
+    tabActiveKey,
+    maintenanceService,
+    statisList,
+    mainId,
     detailParams
   } = props;
+
   const [data, setData] = useState([]);
-  const [uploadkey, setKeyUpload] = useState('');
-  const [fileslist, setFilesList] = useState([]);
   const [newbutton, setNewButton] = useState(false);
 
+  useEffect(() => {
+    if(data && data.length) {
+      statisList(data)
+    }
+  },[data])
   // 新增一条记录
   const newMember = () => {
     const newData = (data).map(item => ({ ...item }));
@@ -41,61 +37,37 @@ const Development = React.forwardRef((props, ref) => {
       field4: '',
     });
     setData(newData);
-    materialsList(newData);
+    statisList(newData);
     setNewButton(true);
   };
-
   //  获取行  
   const getRowByKey = (key, newData) => {
     return (newData || data).filter(item => item.key === key)[0];
   }
 
   const deleteObj = (key, newData) => {
-    // console.log('key: ', key);
     return (newData || data).filter(item => item.key !== key);
-    // const newTarget =
-    // console.log('newTarget: ', newTarget);
-    // const resultData = newTarget.map((item, index) => {
-    //   const newItem = item;
-    //   newItem.key = index + 1;
-    //   newItem.field1 = index + 1;
-    //   newItem.field2 = item.field2;
-    //   newItem.field3 = item.field3;
-    //   return newItem;
-    // })
-    // return resultData;
-      // newTarget[0].field1 = 'pppp';
-      // console.log('newTarget: ', newTarget);
-      // return newTarget;
   }
 
   //  删除数据
   const remove = key => {
-    const target = deleteObj(key);
+    const target = deleteObj(key) || {};
+    statisList(target)
     setData(target);
-    materialsList(target);
+    setNewButton(true);
   };
 
   const handleFieldChange = (e, fieldName, key) => {
     const newData = data.map(item => ({ ...item }));
     const target = getRowByKey(key, newData);
-    materialsList(newData);
+    statisList(newData)
     if (target) {
       target[fieldName] = e;
       setData(newData);
     }
   }
 
-  const handleTabledata = () => {
-    if (newbutton === false) {
-      const newarr = materials.map((item, index) => {
-        return Object.assign(item, { editable: true, isNew: false, key: index })
-      })
-      setData(newarr)
-    }
-  }
-
-  const column = [
+  const editColumns = [
     {
       title: '序号',
       dataIndex: 'field1',
@@ -105,13 +77,13 @@ const Development = React.forwardRef((props, ref) => {
           <Input
             disabled={detailParams}
             defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'field1', record.key, 'secondTable')}
+            onChange={e => handleFieldChange(e.target.value, 'field1', record.key)}
           />
         )
       }
     },
     {
-      title: '材料名称',
+      title: '服务指标',
       dataIndex: 'field2',
       key: 'field2',
       render: (text, record) => {
@@ -119,25 +91,64 @@ const Development = React.forwardRef((props, ref) => {
           <Input
             disabled={detailParams}
             defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'field2', record.key, 'secondTable')}
+            onChange={e => handleFieldChange(e.target.value, 'field1', record.key)}
           />
         )
       }
     },
     {
-      title: '是否提交',
+      title: tabActiveKey === 'week' ? '上周' : '上月',
       dataIndex: 'field3',
       key: 'field3',
       render: (text, record) => {
         return (
-          <Select
+          <Input
             disabled={detailParams}
             defaultValue={text}
-            onChange={e => handleFieldChange(e, 'field3', record.key)}
-          >
-            <Option key='是' value='是'>是</Option>
-            <Option key='否' value='否'>否</Option>
-          </Select>
+            onChange={e => handleFieldChange(e.target.value, 'field2', record.key)}
+          />
+        )
+      }
+    },
+    {
+      title: tabActiveKey === 'week' ? '下周' : '下月',
+      dataIndex: 'field4',
+      key: 'field4',
+      render: (text, record) => {
+        return (
+          <Input
+            disabled={detailParams}
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field3', record.key)}
+          />
+        )
+      }
+    },
+    {
+      title: '环比',
+      dataIndex: 'field5',
+      key: 'field5',
+      render: (text, record) => {
+        return (
+          <Input
+            disabled={detailParams}
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field4', record.key)}
+          />
+        )
+      }
+    },
+    {
+      title: '备注',
+      dataIndex: 'field6',
+      key: 'field6',
+      render: (text, record) => {
+        return (
+          <Input
+            disabled={detailParams}
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field6', record.key)}
+          />
         )
       }
     },
@@ -162,17 +173,23 @@ const Development = React.forwardRef((props, ref) => {
     }
   ];
 
+  const handleTabledata = () => {
+    const newarr = (maintenanceService).map((item, index) => {
+      return Object.assign(item, { editable: true, isNew: false, key: index, index: index + 1 })
+    })
+    setData(newarr)
+  }
+
   useEffect(() => {
     handleTabledata();
-  }, [materials])
-
+  }, [maintenanceService])
 
   return (
     <>
-      <p>（三）运维材料提交情况</p>
+      <p>(二)、软件运维服务指标完成情况</p>
 
       <Table
-        columns={column}
+        columns={editColumns}
         dataSource={data}
         pagination={false}
       />
@@ -189,6 +206,6 @@ const Development = React.forwardRef((props, ref) => {
       </Button>
     </>
   )
-})
+}
 
-export default Form.create({})(Development)
+export default Form.create({})(CopyServiceCompletionone)

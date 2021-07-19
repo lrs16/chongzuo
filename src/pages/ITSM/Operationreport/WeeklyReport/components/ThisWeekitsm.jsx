@@ -138,12 +138,10 @@ function ThisWeekitsm(props) {
   }
 
   const handleTabledata = () => {
-    if (mainId) {
       const newarr = eventArr.map((item, index) => {
         return Object.assign(item, { editable: true, isNew: false, key: index })
       })
       setData(newarr)
-    }
   }
 
   useEffect(() => {

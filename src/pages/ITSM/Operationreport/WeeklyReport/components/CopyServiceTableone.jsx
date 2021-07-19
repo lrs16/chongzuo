@@ -1,23 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Input,
   Table,
   Form,
-  Button,
+  Input,
+  Col,
+  Row,
   message,
+  Button,
   Popconfirm
 } from 'antd';
 
-function ServiceCompletionone(props) {
-
+function CopyServiceTableone(props) {
   const {
+    maintenanceArr,
+    typeList,
     tabActiveKey,
-    maintenanceService,
-    statisList,
     mainId,
     detailParams
   } = props;
-
   const [data, setData] = useState([]);
   const [newbutton, setNewButton] = useState(false);
 
@@ -32,9 +32,19 @@ function ServiceCompletionone(props) {
       field4: '',
     });
     setData(newData);
-    statisList(newData);
+    typeList(newData);
     setNewButton(true);
   };
+
+  const handleTabledata = () => {
+    if (newbutton === false) {
+      const newarr = (maintenanceArr).map((item, index) => {
+        return Object.assign(item, { editable: true, isNew: false, key: index, field1: index + 1 })
+      })
+      setData(newarr)
+    }
+  }
+
   //  获取行  
   const getRowByKey = (key, newData) => {
     return (newData || data).filter(item => item.key === key)[0];
@@ -47,22 +57,26 @@ function ServiceCompletionone(props) {
   //  删除数据
   const remove = key => {
     const target = deleteObj(key) || {};
-    statisList(result)
+    typeList(target)
     setData(target);
-    setNewButton(true);
   };
+
 
   const handleFieldChange = (e, fieldName, key) => {
     const newData = data.map(item => ({ ...item }));
     const target = getRowByKey(key, newData);
-    statisList(newData);
+    typeList(result)
     if (target) {
       target[fieldName] = e;
       setData(newData);
     }
   }
 
-  const columns = [
+  useEffect(() => {
+    handleTabledata();
+  }, [maintenanceArr])
+
+  const editColumn = [
     {
       title: '序号',
       dataIndex: 'field1',
@@ -70,7 +84,6 @@ function ServiceCompletionone(props) {
       render: (text, record) => {
         return (
           <Input
-            disabled={detailParams}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field1', record.key)}
           />
@@ -78,27 +91,12 @@ function ServiceCompletionone(props) {
       }
     },
     {
-      title: '服务指标',
+      title: '一级对象',
       dataIndex: 'field2',
       key: 'field2',
       render: (text, record) => {
         return (
           <Input
-            disabled={detailParams}
-            defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'field1', record.key)}
-          />
-        )
-      }
-    },
-    {
-      title: tabActiveKey === 'week' ? '上周' : '上月',
-      dataIndex: 'field3',
-      key: 'field3',
-      render: (text, record) => {
-        return (
-          <Input
-            disabled={detailParams}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field2', record.key)}
           />
@@ -106,13 +104,12 @@ function ServiceCompletionone(props) {
       }
     },
     {
-      title: tabActiveKey === 'week' ? '下周' : '下月',
-      dataIndex: 'field4',
-      key: 'field4',
+      title: '二级对象',
+      dataIndex: 'field3',
+      key: 'field3',
       render: (text, record) => {
         return (
           <Input
-            disabled={detailParams}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field3', record.key)}
           />
@@ -120,13 +117,12 @@ function ServiceCompletionone(props) {
       }
     },
     {
-      title: '环比',
-      dataIndex: 'field5',
-      key: 'field5',
+      title: tabActiveKey === 'week' ? '上周' : '上月',
+      dataIndex: 'field4',
+      key: 'field4',
       render: (text, record) => {
         return (
           <Input
-            disabled={detailParams}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field4', record.key)}
           />
@@ -134,13 +130,25 @@ function ServiceCompletionone(props) {
       }
     },
     {
-      title: '备注',
+      title: tabActiveKey === 'week' ? '本周' : '本月',
+      dataIndex: 'field5',
+      key: 'field5',
+      render: (text, record) => {
+        return (
+          <Input
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field5', record.key)}
+          />
+        )
+      }
+    },
+    {
+      title: '环比',
       dataIndex: 'field6',
       key: 'field6',
       render: (text, record) => {
         return (
           <Input
-            disabled={detailParams}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field6', record.key)}
           />
@@ -168,39 +176,36 @@ function ServiceCompletionone(props) {
     }
   ];
 
-  const handleTabledata = () => {
-    const newarr = (maintenanceService).map((item, index) => {
-      return Object.assign(item, { editable: true, isNew: false, key: index, field1: index + 1 })
-    })
-    setData(newarr)
-  }
-
-  useEffect(() => {
-    handleTabledata();
-  }, [maintenanceService])
-
   return (
     <>
-      <p>(二)、软件运维服务指标完成情况</p>
+      <Row gutter={16}>
+        <Col span={24}>
+          <p style={{ fontWeight: '900', fontSize: '16px', marginTop: '20px' }}>三、运维服务指标完成情况</p>
+        </Col>
 
-      <Table
-        columns={columns}
-        dataSource={data}
-        pagination={false}
-      />
+        <Col span={24}>
+          <p>（一）运维分类统计情况 </p>
+        </Col>
 
-      <Button
-        style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
-        type="primary"
-        ghost
-        onClick={newMember}
-        icon="plus"
-        disabled={detailParams}
-      >
-        新增
-      </Button>
+        <Table
+          columns={editColumn}
+          dataSource={data}
+          pagination={false}
+        />
+
+        <Button
+          style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
+          type="primary"
+          ghost
+          onClick={newMember}
+          icon="plus"
+          disabled={detailParams}
+        >
+          新增
+        </Button>
+      </Row>
     </>
   )
 }
 
-export default Form.create({})(ServiceCompletionone)
+export default Form.create({})(CopyServiceTableone)

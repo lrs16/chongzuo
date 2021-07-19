@@ -29,7 +29,6 @@ function NewTroublelist(props) {
     const newData = (data).map(item => ({ ...item }));
     newData.push({
       key: data.length + 1,
-      index: data.length + 1,
       field1: data.length + 1,
     });
     setData(newData);
@@ -57,14 +56,6 @@ function NewTroublelist(props) {
   const handleFieldChange = (e, fieldName, key) => {
     const newData = data.map(item => ({ ...item }));
     const target = getRowByKey(key, newData);
-    const result = JSON.parse(JSON.stringify(data)
-      .replace(/index/g, 'field1')
-      .replace(/addTime/g, 'field2')
-      .replace(/typecn/g, 'field3')
-    )
-    if (result) {
-      newTroubleList(result)
-    }
     newTroubleList(newData);
     if (target) {
       if (fieldName === 'field1' || fieldName === 'addTime') {
@@ -81,7 +72,7 @@ function NewTroublelist(props) {
   const handleTabledata = () => {
     if (faultlist && faultlist.length && newbutton === false) {
       const newarr = faultlist.map((item, index) => {
-        return Object.assign(item, { editable: true, isNew: false, key: index, index: index + 1 })
+        return Object.assign(item, { editable: true, isNew: false, key: index, field1: index + 1 })
       })
       setData(newarr)
     }
@@ -90,36 +81,36 @@ function NewTroublelist(props) {
   const column = [
     {
       title: '序号',
-      dataIndex: 'index',
-      key: 'index',
+      dataIndex: 'field1',
+      key: 'field1',
       render: (text, record) => {
         return (
           <Input
             disabled={reportSearch}
             defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'index', record.key)}
+            onChange={e => handleFieldChange(e.target.value, 'field1', record.key)}
           />
         )
       }
     },
     {
       title: '日期',
-      dataIndex: 'addTime',
-      key: 'addTime',
+      dataIndex: 'field2',
+      key: 'field2',
       render: (text, record) => {
         return (
           <DatePicker
             disabled={reportSearch}
             defaultValue={text ? moment(text) : moment(new Date())}
-            onChange={e => handleFieldChange(e, 'addTime', record.key)}
+            onChange={e => handleFieldChange(e, 'field2', record.key)}
           />
         )
       }
     },
     {
       title: '故障类型',
-      dataIndex: 'typecn',
-      key: 'typecn',
+      dataIndex: 'field3',
+      key: 'field3',
       render: (text, record) => {
         return (
           <Input
@@ -132,37 +123,20 @@ function NewTroublelist(props) {
     },
     {
       title: '故障情况',
-      dataIndex: 'field3',
-      key: 'field3',
+      dataIndex: 'field4',
+      key: 'field4',
       render: (text, record) => {
         return (
           <TextArea
             disabled={reportSearch}
             defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'field3', record.key)}
+            onChange={e => handleFieldChange(e.target.value, 'field4', record.key)}
           />
         )
       }
     },
     {
       title: '是否已修复',
-      dataIndex: 'field4',
-      key: 'field4',
-      render: (text, record) => {
-        return (
-          <Select
-            disabled={reportSearch}
-            defaultValue={text}
-            onChange={e => handleFieldChange(e, 'field4', record.key)}
-          >
-            <Option value="是">是</Option>
-            <Option value="否">否</Option>
-          </Select>
-        )
-      }
-    },
-    {
-      title: '是否需要报告',
       dataIndex: 'field5',
       key: 'field5',
       render: (text, record) => {
@@ -179,29 +153,46 @@ function NewTroublelist(props) {
       }
     },
     {
-      title: '报告提供方',
+      title: '是否需要报告',
       dataIndex: 'field6',
       key: 'field6',
+      render: (text, record) => {
+        return (
+          <Select
+            disabled={reportSearch}
+            defaultValue={text}
+            onChange={e => handleFieldChange(e, 'field6', record.key)}
+          >
+            <Option value="是">是</Option>
+            <Option value="否">否</Option>
+          </Select>
+        )
+      }
+    },
+    {
+      title: '报告提供方',
+      dataIndex: 'field7',
+      key: 'field7',
       render: (text, record) => {
         return (
           <Input
             disabled={reportSearch}
             defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'field6', record.key)}
+            onChange={e => handleFieldChange(e.target.value, 'field7', record.key)}
           />
         )
       }
     },
     {
       title: '是否已提供故障处理记录（报告）',
-      dataIndex: 'field7',
-      key: 'field7',
+      dataIndex: 'field8',
+      key: 'field8',
       render: (text, record) => {
         return (
           <Select
             disabled={reportSearch}
             defaultValue={text}
-            onChange={e => handleFieldChange(e, 'field7', record.key)}
+            onChange={e => handleFieldChange(e, 'field8', record.key)}
           >
             <Option value="是">是</Option>
             <Option value="否">否</Option>

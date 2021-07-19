@@ -99,6 +99,7 @@ function ComputerroomReport(props) {
 
   //  保存表单
   const computerReportform = () => {
+    console.log(newTroubleList,'newTroubleList')
     props.form.validateFields((err, value) => {
       if (!err) {
         const savedata = {
@@ -210,6 +211,16 @@ function ComputerroomReport(props) {
     }
   }, [files]);
 
+  console.log(nofaultQueryList,'nofaultQueryList')
+
+  useEffect(() => {
+    setMaterialsList(copyData.materialsList ? copyData.materialsList : []);
+    setNewTroubleList(copyData.newTroubleList ? copyData.newTroubleList : faultQueryList);
+    setUnCloseTroubleList(copyData.unCloseTroubleList ? copyData.unCloseTroubleList : []);
+    setOperationList(copyData.operationList ? copyData.operationList : lastweekHomeworklist);
+    setNextOperationList(copyData.nextOperationList ? copyData.nextOperationList : nextweekHomeworklist);
+  }, [loading])
+
 
   const getQuerylist = () => {
     dispatch({
@@ -217,8 +228,8 @@ function ComputerroomReport(props) {
       payload: {
         time1: startTime,
         time2: endTime,
-        type:'001',
-        result:'根本解决'
+        type: '001',
+        result: '根本解决'
       }
     });
     dispatch({
@@ -226,8 +237,8 @@ function ComputerroomReport(props) {
       payload: {
         time1: startTime,
         time2: endTime,
-        type:'001',
-        result:'无法解决'
+        type: '001',
+        result: '无法解决'
       }
     })
   }
@@ -256,10 +267,10 @@ function ComputerroomReport(props) {
         plannedEndTime1: reporttype === 'week' ? endTime :
           moment().startOf('month').subtract('month', -1).format('YYYY-MM-DD'),
 
-          plannedEndTime2: reporttype === 'week' ? moment().add(6, 'd').format('YYYY-MM-DD')
+        plannedEndTime2: reporttype === 'week' ? moment().add(6, 'd').format('YYYY-MM-DD')
           : moment().endOf('month').subtract('month', -1).endOf('month').format('YYYY-MM-DD'),
-          type: '机房作业',
-          status: '已完成',
+        type: '机房作业',
+        status: '已完成',
         pageIndex: 0,
         pageSize: 10
       }
@@ -565,7 +576,7 @@ function ComputerroomReport(props) {
 
                   {/* 3 本周新增故障及故障修复情况统计 */}
 
-                  {
+                  {/* {
                     copyData.operationList !== undefined && (
                       <Col span={24}>
                         <CopyNewTroublelist
@@ -580,10 +591,10 @@ function ComputerroomReport(props) {
                         />
                       </Col>
                     )
-                  }
+                  } */}
 
-                  {
-                    copyData.operationList === undefined && (
+                  {/* {
+                    copyData.operationList === undefined && ( */}
                       <Col span={24}>
                         <NewTroublelist
                           forminladeLayout={forminladeLayout}
@@ -597,8 +608,8 @@ function ComputerroomReport(props) {
                           }}
                         />
                       </Col>
-                    )
-                  }
+                  {/* //   )
+                  // } */}
 
                   {
                     copyData.operationList !== undefined && (
@@ -676,7 +687,7 @@ function ComputerroomReport(props) {
                   </Col>
 
                   {/* 4.本周作业完成情况 */}
-                  {
+                  {/* {
                     copyData.operationList !== undefined && (
                       <Col span={24}>
                         <CopyLast
@@ -689,25 +700,25 @@ function ComputerroomReport(props) {
                         />
                       </Col>
                     )
-                  }
+                  } */}
 
-                  {
-                    copyData.operationList === undefined && (
-                      <Col span={24}>
-                        <LastweekHomework
-                          forminladeLayout={forminladeLayout}
-                          operationArr={lastweekHomeworklist.rows}
-                          startTime={startTime}
-                          endTime={endTime}
-                          type={reporttype}
-                          operationList={contentrowdata => {
-                            setOperationList(contentrowdata)
-                          }}
-                          mainId={copyData.operationList ? true : mainId}
-                        />
-                      </Col>
-                    )
-                  }
+                  {/* {
+                    copyData.operationList === undefined && ( */}
+                  <Col span={24}>
+                    <LastweekHomework
+                      forminladeLayout={forminladeLayout}
+                      operationArr={copyData.operationList !== undefined ? copyData.operationList: lastweekHomeworklist}
+                      startTime={startTime}
+                      endTime={endTime}
+                      type={reporttype}
+                      operationList={contentrowdata => {
+                        setOperationList(contentrowdata)
+                      }}
+                      mainId={copyData.operationList ? true : mainId}
+                    />
+                  </Col>
+                  {/* //   )
+                  // } */}
 
                   <Col span={24}><p style={{ marginTop: 20 }}>{reporttype === 'week' ? '(2)本周工作票开具情况及服务器查询操作票情况统计' : '(2)本月工作票开具情况及服务器查询操作票情况统计'}</p></Col>
 
@@ -724,7 +735,7 @@ function ComputerroomReport(props) {
 
                   <Col span={24}>{reporttype === 'week' ? '(3)下周作业完成情况' : '(3)下月作业完成情况'}</Col>
 
-                  {
+                  {/* {
                     copyData.operationList !== undefined && (
                       <Col span={24}>
                         <CopyLast
@@ -737,23 +748,23 @@ function ComputerroomReport(props) {
                         />
                       </Col>
                     )
-                  }
+                  } */}
 
                   {/* 下周工作计划 */}
-                  {
-                    copyData.operationList === undefined && (
-                      <Col span={24}>
-                        <LastweekHomework
-                          forminladeLayout={forminladeLayout}
-                          operationArr={nextweekHomeworklist.rows}
-                          type={reporttype}
-                          operationList={contentrowdata => {
-                            setNextOperationList(contentrowdata)
-                          }}
-                        />
-                      </Col>
-                    )
-                  }
+                  {/* {
+                    copyData.operationList === undefined && ( */}
+                  <Col span={24}>
+                    <LastweekHomework
+                      forminladeLayout={forminladeLayout}
+                      operationArr={copyData.nextOperationList !== undefined ? copyData.nextOperationList: nextweekHomeworklist}
+                      type={reporttype}
+                      operationList={contentrowdata => {
+                        setNextOperationList(contentrowdata)
+                      }}
+                    />
+                  </Col>
+                  {/* //   )
+                  // } */}
 
                   <Col span={24} style={{ marginTop: 20 }}>
                     <Form.Item

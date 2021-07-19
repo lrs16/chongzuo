@@ -18,16 +18,19 @@ import { connect } from 'dva';
 import Development from './components/Development';
 import ThisweekMaintenance from './components/ThisweekMaintenance';
 import ServiceCompletion from './components/ServiceCompletion';
+import CopyServiceCompletion from './components/CopyServiceCompletion';
 import ThisWeekitsm from './components/ThisWeekitsm';
 import DefectTracking from './components/DefectTracking';
 import LastweekHomework from './components/LastweekHomework';
 import CopyLast from './components/CopyLast';
 import CopyEventtop from './components/CopyEventtop';
 import ServiceTableone from './components/ServiceTableone';
+import CopyServiceTableone from './components/CopyServiceTableone';
 import EventTop from './components/EventTop';
 import PatrolAndExamine from './components/PatrolAndExamine';
 import UpgradeList from './components/UpgradeList';
 import ServiceCompletionone from './components/ServiceCompletionone';
+import CopyServiceCompletionone from './components/CopyServiceCompletionone';
 import AddForm from './components/AddForm';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import SysUpload from '@/components/SysUpload';
@@ -234,7 +237,6 @@ function SoftReport(props) {
     loading,
   } = props;
 
-
   const required = true;
   const [fileslist, setFilesList] = useState({ arr: [], ischange: false }); // 下载列表
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
@@ -256,7 +258,11 @@ function SoftReport(props) {
   const [buttonVisible, setButtonVisible] = useState(false)
   const [copyData, setCopyData] = useState('');
 
-  const lastSolute = [soluteArr[soluteArr.length - 1]];
+  let lastSolute = [];
+  if(soluteArr && soluteArr.length > 1) {
+    lastSolute = [soluteArr[soluteArr.length - 1]];
+  }
+  
 
   //  保存表单
   const softReportform = () => {
@@ -539,6 +545,7 @@ function SoftReport(props) {
     initial = false;
   }, []);
 
+
   const getReportdata = () => {
     lastweekHomework();
     nextweekHomework();
@@ -549,11 +556,21 @@ function SoftReport(props) {
     initial = true;
   }
 
-
   useEffect(() => {
-    setContentRow(contentRowlist);
+    setContentRow(copyData.contentRow !== undefined ? copyData.contentRow : contentRowlist);
+    setPatrolAndExamine(copyData.patrolAndExamineList !== undefined ? copyData.patrolAndExamineList : patrolAndExamineArr);
+    setMaterialsList(copyData.materialsList !== undefined ? copyData.materialsList : []);
+    setTypeList(copyData.typeList !== undefined ? copyData.typeList : maintenanceArr);
+    setStatisList(copyData.statisList !== undefined ? copyData.statisList : maintenanceService);
+    setSelfhandleRow(copyData.selfhandleRow !== undefined ? copyData.selfhandleRow : lastSolute);
+    setTopNList(copyData.topNList !== undefined ? copyData.topNList : TopnAnalysis);
+    setEventList(copyData.eventList !== undefined ? copyData.eventList : []);
+    setUpgradeList(copyData.upgradeList !== undefined ? copyData.upgradeList : []);
+    setUpdateList(copyData.updateList !== undefined ? copyData.updateList : []);
+    setLegacyList(copyData.legacyList !== undefined ? copyData.legacyList : []);
+    setOperationList(copyData.operationList !== undefined ? copyData.operationList : lastweekHomeworklist);
+    setNextOperationList(copyData.nextOperationList !== undefined ? copyData.nextOperationList : nextweekHomeworklist);
   }, [loading])
-
 
   return (
     <PageHeaderWrapper
@@ -591,7 +608,6 @@ function SoftReport(props) {
         {/* {maintenanceArr && (maintenanceArr.data || copyData.main !== undefined ) && ( */}
         <Row gutter={24}>
           <Form>
-
             <Col span={24}>
               <Form.Item
                 label={reporttype === 'week' ? '周报名称' : '月报名称'}
@@ -687,7 +703,7 @@ function SoftReport(props) {
                 </Col>
               )
             }
-            
+
             {
               initial && loading === false && contentRowlist && (
                 <>
@@ -820,18 +836,38 @@ function SoftReport(props) {
 
                   {/* 三、运维服务指标完成情况 */}
                   {/* 运维分类统计情况列表 */}
-                  <Col span={24}>
-                    <ServiceTableone
-                      forminladeLayout={forminladeLayout}
-                      maintenanceArr={maintenanceArr.data}
-                      tabActiveKey={reporttype}
-                      typeList={contentrowdata => {
-                        setTypeList(contentrowdata)
-                      }}
-                      typeArr={[]}
-                      mainId={mainId}
-                    />
-                  </Col>
+                  {/* {
+                    copyData.typeList !== undefined && (
+                      <Col span={24}>
+                        <ServiceTableone
+                          forminladeLayout={forminladeLayout}
+                          maintenanceArr={copyData.typeList}
+                          tabActiveKey={reporttype}
+                          typeList={contentrowdata => {
+                            setTypeList(contentrowdata)
+                          }}
+                          mainId={mainId}
+                        />
+                      </Col>
+                    )
+                  } */}
+
+                   {/* {
+                    copyData.typeList === undefined && ( */}
+                      <Col span={24}>
+                        <ServiceTableone
+                          forminladeLayout={forminladeLayout}
+                          maintenanceArr={copyData.typeList ?copyData.typeList : maintenanceArr}
+                          tabActiveKey={reporttype}
+                          typeList={contentrowdata => {
+                            setTypeList(contentrowdata)
+                          }}
+                          typeArr={[]}
+                          mainId={mainId}
+                        />
+                      </Col>
+                  {/* //    )
+                  //  } */}
 
                   {/* 运维统计 */}
                   <Col span={24} style={{ marginTop: 15 }}>
@@ -846,29 +882,70 @@ function SoftReport(props) {
 
                   {/* 软件运维付服务指标完成情况 */}
                   {/* 一线问题解决情况汇总统计 */}
-                  <Col span={24}>
-                    <ServiceCompletionone
-                      forminladeLayout={forminladeLayout}
-                      maintenanceService={maintenanceService}
-                      tabActiveKey={reporttype}
-                      statisList={contentrowdata => {
-                        setStatisList(contentrowdata)
-                      }}
-                    />
-                  </Col>
+                  {/* {
+                    copyData.statisList === undefined && ( */}
+                      <Col span={24}>
+                        <ServiceCompletionone
+                          forminladeLayout={forminladeLayout}
+                          maintenanceService={copyData.statisList ? copyData.statisList : maintenanceService}
+                          tabActiveKey={reporttype}
+                          statisList={contentrowdata => {
+                            setStatisList(contentrowdata)
+                          }}
+                        />
+                      </Col>
+                  {/* //   )
+                  // } */}
 
-                  <Col span={24}>
-                    <ServiceCompletion
-                      forminladeLayout={forminladeLayout}
-                      soluteArr={lastSolute}
-                      startTime={startTime}
-                      endTime={endTime}
-                      tabActiveKey={reporttype}
-                      selfhandleRow={contentrowdata => {
-                        setSelfhandleRow(contentrowdata)
-                      }}
-                    />
-                  </Col>
+                  {/* {
+                    copyData.statisList !== undefined && (
+                      <Col span={24}>
+                        <CopyServiceCompletionone
+                          forminladeLayout={forminladeLayout}
+                          maintenanceService={copyData.statisList}
+                          tabActiveKey={reporttype}
+                          statisList={contentrowdata => {
+                            setStatisList(contentrowdata)
+                          }}
+                        />
+                      </Col>
+                    )
+                  } */}
+
+                  {/* {
+                    copyData.selfhandleRow === undefined && ( */}
+                      <Col span={24}>
+                        <ServiceCompletion
+                          forminladeLayout={forminladeLayout}
+                          soluteArr={copyData.selfhandleRow ? copyData.selfhandleRow : lastSolute}
+                          startTime={startTime}
+                          endTime={endTime}
+                          tabActiveKey={reporttype}
+                          selfhandleRow={contentrowdata => {
+                            setSelfhandleRow(contentrowdata)
+                          }}
+                        />
+                      </Col>
+                  {/* //   )
+                  // } */}
+
+                  {/* {
+                    copyData.selfhandleRow !== undefined && (
+                      <Col span={24}>
+                        <CopyServiceCompletion
+                          forminladeLayout={forminladeLayout}
+                          soluteArr={copyData.selfhandleRow}
+                          startTime={startTime}
+                          endTime={endTime}
+                          tabActiveKey={reporttype}
+                          selfhandleRow={contentrowdata => {
+                            setSelfhandleRow(contentrowdata)
+                          }}
+                        />
+                      </Col>
+                    )
+                  } */}
+
 
 
                   {/* 服务指标 */}
@@ -882,7 +959,7 @@ function SoftReport(props) {
                       }
                     </Form.Item>
                   </Col>
-
+                  
                   <Col span={24}>
                     <EventTop
                       topNList={contentrowdata => {
@@ -987,10 +1064,10 @@ function SoftReport(props) {
                       upgradeArr={copyData.upgradeList ? copyData.upgradeList : []}
                     />
                   </Col>
-
+                  {/* 
                   <Col span={24}>
                     <p>(2)计划{startTime}至{endTime},计量自动化系统开展 次发布变更（消缺），变更内容如下</p>
-                  </Col>
+                  </Col> */}
 
                   {/* 变更 */}
                   <Col span={24}>
@@ -1068,7 +1145,7 @@ function SoftReport(props) {
                     <p style={{ fontWeight: '900', fontSize: '16px' }}>{reporttype === 'week' ? '七、上周作业完成情况' : '七、上月作业完成情况'}</p>
                   </Col>
 
-                  {copyData.operationList !== undefined && (
+                  {/* {copyData.operationList !== undefined && (
                     <Col span={24}>
                       <CopyLast
                         forminladeLayout={forminladeLayout}
@@ -1083,9 +1160,9 @@ function SoftReport(props) {
                         loading={loading}
                       />
                     </Col>
-                  )}
+                  )} */}
 
-                  {copyData.operationList === undefined && (
+                  {/* {copyData.operationList === undefined && ( */}
                     <Col span={24}>
                       <LastweekHomework
                         forminladeLayout={forminladeLayout}
@@ -1095,12 +1172,12 @@ function SoftReport(props) {
                         operationList={contentrowdata => {
                           setOperationList(contentrowdata)
                         }}
-                        operationArr={lastweekHomeworklist.rows}
+                        operationArr={copyData.operationList ? copyData.operationList: lastweekHomeworklist}
                         // mainId={copyData.operationList?true:''}
                         loading={loading}
                       />
                     </Col>
-                  )}
+                  {/* // )} */}
 
                   <Col span={24} style={{ marginTop: 20 }}>
                     <Form.Item
@@ -1130,7 +1207,7 @@ function SoftReport(props) {
                   </Col>
 
                   {/* 八、 下周作业计划 */}
-                  {copyData.operationList !== undefined && (
+                  {/* {copyData.operationList !== undefined && (
                     <Col span={24}>
                       <CopyLast
                         forminladeLayout={forminladeLayout}
@@ -1142,10 +1219,10 @@ function SoftReport(props) {
                         loading={loading}
                       />
                     </Col>
-                  )}
+                  )} */}
 
-                  {
-                    copyData.operationList === undefined && (
+                  {/* { */}
+                    {/* // copyData.operationList === undefined && ( */}
                       <Col span={24}>
                         <LastweekHomework
                           forminladeLayout={forminladeLayout}
@@ -1155,12 +1232,12 @@ function SoftReport(props) {
                           operationList={contentrowdata => {
                             setNextOperationList(contentrowdata)
                           }}
-                          operationArr={nextweekHomeworklist.rows}
+                          operationArr={copyData.nextOperationList ? copyData.nextOperationList: nextweekHomeworklist}
                           loading={loading}
                         />
                       </Col>
-                    )
-                  }
+                  {/* //   ) */}
+                  {/* // } */}
 
                   <Col span={24} style={{ marginTop: 20 }}>
                     <Form.Item

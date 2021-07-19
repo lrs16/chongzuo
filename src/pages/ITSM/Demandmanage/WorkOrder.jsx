@@ -515,7 +515,8 @@ function WorkOrder(props) {
     }
     if (taskName !== '需求登记' && taskName !== '需求跟踪' && files.ischange === true) {
       const id = setid();
-      ExamineRef.current.validateFields((err, values) => {
+      const values = ExamineRef.current.getVal();
+      // ExamineRef.current.validateFields((err, values) => {
         dispatch({
           type: 'demandtodo/demandsave',
           payload: {
@@ -534,7 +535,7 @@ function WorkOrder(props) {
             taskId,
           },
         });
-      });
+      // });
       setFiles({ ...files, ischange: false });
     }
   }, [files]);

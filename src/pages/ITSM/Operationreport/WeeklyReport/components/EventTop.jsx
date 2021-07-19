@@ -22,7 +22,6 @@ function EventTop(props) {
 
   const [data, setData] = useState([]);
 
-
   // 新增一条记录
   const newMember = () => {
     const newData = (data).map(item => ({ ...item }));

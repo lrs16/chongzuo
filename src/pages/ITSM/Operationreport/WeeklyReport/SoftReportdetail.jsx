@@ -16,8 +16,12 @@ import router from 'umi/router';
 import { connect } from 'dva';
 import Development from './components/Development';
 import ThisweekMaintenance from './components/ThisweekMaintenance';
+import CopyLast from './components/CopyLast';
 import ServiceCompletion from './components/ServiceCompletion';
+import CopyServiceCompletion from './components/CopyServiceCompletion';
 import ServiceCompletionone from './components/ServiceCompletionone';
+import CopyServiceCompletionone from './components/CopyServiceCompletionone';
+import CopyServiceTableone from './components/CopyServiceTableone';
 import ThisWeekitsm from './components/ThisWeekitsm';
 import DefectTracking from './components/DefectTracking';
 import LastweekHomework from './components/LastweekHomework';
@@ -157,10 +161,6 @@ function SoftReportdetail(props) {
     })
   }
 
-  const submittest = () => {
-    console.log(addTitle,'addTitle')
-  }
-
   const defaultTime = () => {
     //  周统计
     if (reporttype === 'week') {
@@ -170,7 +170,6 @@ function SoftReportdetail(props) {
       startTime = moment().startOf('month').format('YYYY-MM-DD');
       endTime = moment().endOf('month').format('YYYY-MM-DD');
     }
-
   }
 
   useEffect(() => {
@@ -199,13 +198,6 @@ function SoftReportdetail(props) {
   useEffect(() => {
     defaultTime();
   }, []);
-
-
-  // useEffect (() => {
-  //   if(list && list.length && list[list.length-1].files) {
-  //     softReportform()
-  //   }
-  // },[list])
 
   const handleBack = () => {
     router.push({
@@ -287,7 +279,8 @@ function SoftReportdetail(props) {
   };
 
   //  移除表格
-  const removeForm = (tableIndex) => {;
+  const removeForm = (tableIndex) => {
+    ;
     addTitle.splice(tableIndex, 1);
     // list.splice(tableIndex, 1);
     // console.log('list: ', list);
@@ -302,9 +295,6 @@ function SoftReportdetail(props) {
     setAddTitle(resultArr)
     setList(resultArr)
   }
-
-  // console.log(list,'list')
-  // console.log(addTitle, 'addTitle')
 
   const exportWord = () => {
     dispatch({
@@ -428,7 +418,7 @@ function SoftReportdetail(props) {
                       <Form.Item label='' style={{ display: 'inline-flex' }}>
                         {
                           getFieldDecorator('time2', {
-                            initialValue: main ? moment(main.time2) :''
+                            initialValue: main ? moment(main.time2) : ''
                           })
                             (<DatePicker
                               allowClear={false}
@@ -468,45 +458,24 @@ function SoftReportdetail(props) {
                 <p style={{ fontWeight: '900', fontSize: '16px' }}>{reporttype === 'week' ? '一、本周运维情况综述' : '一、本月运维情况综述'}</p>
               </Col>
 
-              {
-                openReportlist.contentRow && openReportlist.contentRow.length > 0 && (
-                  <Col span={24}>
-                    <ThisweekMaintenance
-                      formItemLayout={formItemLayout}
-                      forminladeLayout={forminladeLayout}
-                      startTime={startTime}
-                      endTime={endTime}
-                      type={reporttype}
-                      mainId={mainId}
-                      contentRow={contentrowdata => {
-                        setContentRow(contentrowdata)
-                      }}
-                      contentArr={openReportlist.contentRow}
-                      detailParams={reportSearch}
-                    />
-                  </Col>
-                )
-              }
+              <Col span={24}>
+                <ThisweekMaintenance
+                  formItemLayout={formItemLayout}
+                  forminladeLayout={forminladeLayout}
+                  startTime={startTime}
+                  endTime={endTime}
+                  type={reporttype}
+                  mainId={mainId}
+                  contentRow={contentrowdata => {
+                    setContentRow(contentrowdata)
+                  }}
+                  contentArr={openReportlist.contentRow}
+                  detailParams={reportSearch}
+                />
+              </Col>
 
-              {
-                openReportlist.contentRow && openReportlist.contentRow.length === 0 && (
-                  <Col span={24}>
-                    <ThisweekMaintenance
-                      formItemLayout={formItemLayout}
-                      forminladeLayout={forminladeLayout}
-                      startTime={startTime}
-                      endTime={endTime}
-                      type={reporttype}
-                      mainId={mainId}
-                      contentRow={contentrowdata => {
-                        setContentRow(contentrowdata)
-                      }}
-                      contentArr={addcolumnsData}
-                      detailParams={reportSearch}
-                    />
-                  </Col>
-                )
-              }
+
+
 
               {/* {reporttype === 'week' ? "本周运维" : "本月运维"} */}
               <Col span={24} style={{ marginTop: 15 }}>
@@ -665,7 +634,6 @@ function SoftReportdetail(props) {
                   maintenanceArr={openReportlist.typeList ? openReportlist.typeList : []}
                   mainId={mainId}
                   detailParams={reportSearch}
-
                 />
               </Col>
 
@@ -1123,7 +1091,7 @@ function SoftReportdetail(props) {
                 )
               }
 
-              { addTitle && addTitle.length > 0 && (
+              {addTitle && addTitle.length > 0 && (
                 addTitle.map((item, index) => {
                   return (
                     <>
@@ -1149,8 +1117,8 @@ function SoftReportdetail(props) {
                               onClick={
                                 () => {
                                   removeForm(index);
-                                      //  submittest()
-                                      }
+                                  //  submittest()
+                                }
                               }
                             />
                           </Col>

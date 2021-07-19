@@ -41,10 +41,12 @@ const ThisweekMaintenance = React.forwardRef((props, ref) => {
   }
 
   const handleTabledata = () => {
-    const newarr = (contentArr).map((item, index) => {
-      return Object.assign(item, { editable: true, isNew: false, key: index })
-    })
-    setData(newarr)
+    if(contentArr) {
+      const newarr = (contentArr).map((item, index) => {
+        return Object.assign(item, { editable: true, isNew: false, key: index })
+      })
+      setData(newarr)
+    }
   }
 
   const column = [

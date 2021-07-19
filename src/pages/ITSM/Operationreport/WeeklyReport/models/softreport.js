@@ -267,7 +267,6 @@ export default {
                 state: {}
               })
             } else {
-              console.log(11)
               route.push({
                 pathname: `/ITSM/operationreport/monthlyreport/monthotherreport`,
                 query: { 
@@ -275,7 +274,6 @@ export default {
                    closecurrent: true
                    }
               })
-              console.log(22)
               route.push({
                 pathname: `/ITSM/operationreport/monthlyreport/monthotherreportdetail`,
                 query: {
@@ -304,9 +302,16 @@ export default {
     // 运维分类情况统计列表
     *fetchMaintenancelist({ payload }, { call, put }) {
       const response = yield call(maintenanceList,payload);
+      const result = JSON.parse(JSON.stringify(response.data)
+      .replace(/index/g, 'field1')
+      .replace(/first_object/g, 'field2')
+      .replace(/second_object/g, 'field3')
+      .replace(/last_num/g, 'field4')
+      .replace(/now_num/g, 'field5')
+      .replace(/points_count/g, 'field6'));
       yield put ({
         type: 'maintenanceArr',
-        payload: response
+        payload: result
       })
     },
 
@@ -322,53 +327,101 @@ export default {
     // 运维服务指标统计列表
     *fetcheventServiceList({ payload }, { call, put }) {
       const response = yield call(eventServiceList,payload);
+      const result = JSON.parse(JSON.stringify(response.data)
+      .replace(/name/g, 'field2')
+      .replace(/last/g, 'field3')
+      .replace(/now/g, 'field4')
+      .replace(/points/g, 'field5')
+      .replace(/remark/g, 'field6')
+    );
       yield put ({
-        type: 'eventServicearr',
-        payload: response
+        type: 'maintenanceService',
+        payload: result
       })
     },
 
     // 一线事件解决情况列表
     *fetchSelfHandleList({ payload }, { call, put }) {
       const response = yield call(eventselfhandleList,payload);
+      const result = JSON.parse(JSON.stringify(response.data)
+      .replace(/not_selfhandle/g, 'field1')
+      .replace(/is_selfhandle/g, 'field2')
+      .replace(/points/g, 'field3'));
       yield put ({
         type: 'soluteArr',
-        payload: response
+        payload: result
       })
     },
 
     //  七、上周作业完成情况--表格
     *lastweekHomework({ payload }, { call,put }) {
       const response = yield call(getOperationQueryList,payload);
+      const result = JSON.parse(JSON.stringify(response.data.rows)
+      .replace(/updateTime/g, 'field1')
+      .replace(/nature/g, 'field2')
+      .replace(/object/g, 'field3')
+      .replace(/content/g, 'field4')
+      .replace(/plannedEndTime/g, 'field5')
+      .replace(/status/g, 'field6')
+      .replace(/operationUser/g, 'field7')
+      .replace(/operationUnit/g, 'field8')
+      .replace(/remark/g, 'field9')
+    )
       yield put({
         type:'lastweekHomeworklist',
-        payload: response
+        payload: result
       })
     },
     //  七、下周作业完成情况--表格
     *nextweekHomework({ payload }, { call,put }) {
       const response = yield call(getOperationQueryList,payload);
+      const result = JSON.parse(JSON.stringify(response.data.rows)
+      .replace(/updateTime/g, 'field1')
+      .replace(/nature/g, 'field2')
+      .replace(/object/g, 'field3')
+      .replace(/content/g, 'field4')
+      .replace(/plannedEndTime/g, 'field5')
+      .replace(/status/g, 'field6')
+      .replace(/operationUser/g, 'field7')
+      .replace(/operationUnit/g, 'field8')
+      .replace(/remark/g, 'field9')
+    )
       yield put({
         type:'nextweekHomeworklist',
-        payload: response
+        payload: result
       })
     },
 
     // 新增及已修复故障
     *getfaultQueryList({ payload }, { call, put }) {
     const response = yield call(queryfaultSearchList1, payload);
+    const result = JSON.parse(JSON.stringify(response.data)
+    .replace(/time/g, 'field2')
+    .replace(/type/g, 'field3')
+    .replace(/content/g, 'field4')
+    .replace(/result/g, 'field5')
+    .replace(/file/g, 'field6')
+    .replace(/unit/g, 'field7')
+    .replace(/sign/g, 'field8')
+  )
     yield put({
       type: 'faultQueryList',
-      payload: response,
+      payload: result,
     });
   },
 
     // 未修复故障清单
     *getnofaultQueryList({ payload }, { call, put }) {
     const response = yield call(queryfaultSearchList1, payload);
+    const result = JSON.parse(JSON.stringify(response.data)
+    .replace(/time/g, 'field2')
+    .replace(/type/g, 'field3')
+    .replace(/content/g, 'field4')
+    .replace(/result/g, 'field5')
+  )
     yield put({
       type: 'nofaultQueryList',
-      payload: response,
+      payload: result,
     });
   },
 
@@ -433,29 +486,29 @@ export default {
     soluteArr(state, action) {
       return {
         ...state,
-        soluteArr: action.payload.data
+        soluteArr: action.payload
       }
     },
 
       // 维服务指标统计列表
-    eventServicearr(state, action) {
+      maintenanceService(state, action) {
       return {
         ...state,
-        maintenanceService: action.payload.data
+        maintenanceService: action.payload
       }
     },
 
     lastweekHomeworklist(state,action) {
       return {
         ...state,
-        lastweekHomeworklist: action.payload.data
+        lastweekHomeworklist: action.payload
       }
     },
 
     nextweekHomeworklist(state,action) {
       return {
         ...state,
-        nextweekHomeworklist: action.payload.data
+        nextweekHomeworklist: action.payload
       }
     },
 
@@ -463,7 +516,7 @@ export default {
     faultQueryList(state, action) {
     return {
       ...state,
-      faultQueryList: action.payload.data,
+      faultQueryList: action.payload,
     };
   },
 
@@ -471,7 +524,7 @@ export default {
     nofaultQueryList(state, action) {
     return {
       ...state,
-      nofaultQueryList: action.payload.data,
+      nofaultQueryList: action.payload,
     };
   },
 

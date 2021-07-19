@@ -10,35 +10,31 @@ import {
 } from 'antd';
 import moment from 'moment';
 
-
-const { TextArea } = Input;
 function LastweekHomework(props) {
   const {
     operationList,
     operationArr,
-    mainId,
     detailParams,
     loading
   } = props;
   const [data, setData] = useState([]);
+  const [newbutton, setNewButton] = useState(false);
 
-  const handleSave = () => {
-    const result = JSON.parse(JSON.stringify(data)
-    .replace(/index/g, 'field1')
-      .replace(/updateTime/g, 'field2')
-      .replace(/nature/g, 'field3')
-      .replace(/object/g, 'field4')
-      .replace(/content/g, 'field5')
-      .replace(/plannedEndTime/g, 'field6')
-      .replace(/status/g, 'field7')
-      .replace(/operationUser/g, 'field8')
-      .replace(/operationUnit/g, 'field9')
-      .replace(/remark/g, 'field10')
-    )
-    operationList(result)
-    message.info('暂存保存数据成功')
-  }
+  // 初始化把软件运维服务指标完成情况数据传过去
 
+  const newMember = () => {
+    const newData = (data).map(item => ({ ...item }));
+    newData.push({
+      key: data.length + 1,
+      field1: data.length + 1,
+      field2: '',
+      field3: '',
+      field4: '',
+    });
+    setData(newData);
+    operationList(newData);
+    setNewButton(true);
+  };
   //  获取行  
   const getRowByKey = (key, newData) => {
     return (newData || data).filter(item => item.key === key)[0];
@@ -56,39 +52,14 @@ function LastweekHomework(props) {
 
   const handleFieldChange = (e, fieldName, key) => {
     const newData = data.map(item => ({ ...item }));
-    const target = getRowByKey(key, newData)
+    const target = getRowByKey(key, newData);
+    operationList(newData)
     if (target) {
-      if (fieldName === 'field1' || fieldName === 'updateTime' || fieldName === 'plannedEndTime' || fieldName === 'field5') {
+      if (fieldName === 'field1' || fieldName === 'field6') {
         target[fieldName] = moment(e).format('YYYY-MM-DD');
-        const result = JSON.parse(JSON.stringify(data)
-        .replace(/index/g, 'field1')
-          .replace(/updateTime/g, 'field2')
-          .replace(/nature/g, 'field3')
-          .replace(/object/g, 'field4')
-          .replace(/content/g, 'field5')
-          .replace(/plannedEndTime/g, 'field6')
-          .replace(/status/g, 'field7')
-          .replace(/operationUser/g, 'field8')
-          .replace(/operationUnit/g, 'field9')
-          .replace(/remark/g, 'field10')
-        )
-        operationList(result)
         setData(newData);
       } else {
         target[fieldName] = e;
-        const result = JSON.parse(JSON.stringify(data)
-        .replace(/index/g, 'field1')
-          .replace(/updateTime/g, 'field2')
-          .replace(/nature/g, 'field3')
-          .replace(/object/g, 'field4')
-          .replace(/content/g, 'field5')
-          .replace(/plannedEndTime/g, 'field6')
-          .replace(/status/g, 'field7')
-          .replace(/operationUser/g, 'field8')
-          .replace(/operationUnit/g, 'field9')
-          .replace(/remark/g, 'field10')
-        )
-        operationList(result)
         setData(newData);
       }
     }
@@ -97,170 +68,11 @@ function LastweekHomework(props) {
   const handleTabledata = () => {
     if (operationArr) {
       const newarr = (operationArr).map((item, index) => {
-        return Object.assign(item, { editable: true, isNew: false, key: index,index: index + 1})
+        return Object.assign(item, { editable: true, isNew: false, key: index, field1: index + 1 })
       })
       setData(newarr)
     }
   }
-
-  const column = [
-    {
-      title: '序号',
-      dataIndex: 'index',
-      key: 'index',
-      render: (text, record) => {
-        return (
-          <Input
-            disabled={detailParams}
-            defaultValue={text}
-            onChange={e => handleFieldChange(e, 'index', record.key)}
-          />
-        )
-      }
-    },
-    {
-      title: '作业日期',
-      dataIndex: 'updateTime',
-      key: 'updateTime',
-      render: (text, record) => {
-        return (
-          <DatePicker
-            disabled={detailParams}
-            defaultValue={text ? moment(text) : moment(new Date())}
-            onChange={e => handleFieldChange(e, 'field1', record.key)}
-          />
-        )
-      }
-    },
-    {
-      title: '作业性质',
-      dataIndex: 'nature',
-      key: 'nature',
-      render: (text, record) => {
-        return (
-          <Input
-            disabled={detailParams}
-            defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'nature', record.key)}
-          />
-        )
-      }
-    },
-    {
-      title: '作业对象',
-      dataIndex: 'object',
-      key: 'object',
-      render: (text, record) => {
-        return (
-          <Input
-            disabled={detailParams}
-            defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'object', record.key)}
-          />
-        )
-
-      }
-    },
-    {
-      title: '作业内容',
-      dataIndex: 'content',
-      key: 'content',
-      render: (text, record) => {
-        return (
-          <TextArea
-            disabled={detailParams}
-            defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'content', record.key)}
-          />
-        )
-      }
-    },
-    {
-      title: '计划完成时间',
-      dataIndex: 'plannedEndTime',
-      key: 'plannedEndTime',
-      render: (text, record) => {
-        return (
-          <DatePicker
-            disabled={detailParams}
-            defaultValue={text ? moment(text) : moment(new Date())}
-            onChange={e => handleFieldChange(e, 'plannedEndTime', record.key)}
-          />
-        )
-      }
-    },
-    {
-      title: '完成进度',
-      dataIndex: 'status',
-      key: 'status',
-      render: (text, record) => {
-        return (
-          <Input
-            disabled={detailParams}
-            defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'status', record.key)}
-          />
-        )
-      }
-    },
-    {
-      title: '作业负责人',
-      dataIndex: 'operationUser',
-      key: 'operationUser',
-      render: (text, record) => {
-        return (
-          <Input
-            disabled={detailParams}
-            defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'operationUser', record.key)}
-          />
-        )
-      }
-    },
-    {
-      title: '作业单位',
-      dataIndex: 'operationUnit',
-      key: 'operationUnit',
-      render: (text, record) => {
-        return (
-          <Input
-            disabled={detailParams}
-            defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'operationUnit', record.key)}
-          />
-        )
-      }
-    },
-    {
-      title: '备注',
-      dataIndex: 'remark',
-      key: 'remark',
-      render: (text, record) => {
-        return (
-          <TextArea
-            disabled={detailParams}
-            defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'remark', record.key)}
-          />
-        )
-      }
-    },
-    {
-      title: '操作',
-      key: 'action',
-      fixed: 'right',
-      width: 120,
-      render: (text, record) => {
-        return (
-          <span>
-            <Popconfirm title="是否要删除此行？" onConfirm={() => remove(record.key)}>
-              <a>删除</a>
-            </Popconfirm>
-          </span>
-        )
-      }
-    }
-  ];
 
   const copyColumns = [
     {
@@ -272,7 +84,7 @@ function LastweekHomework(props) {
           <Input
             disabled={detailParams}
             defaultValue={text}
-            onChange={e => handleFieldChange(e, 'field1', record.key)}
+            onChange={e => handleFieldChange(e.target.value, 'field1', record.key)}
           />
         )
       }
@@ -325,7 +137,7 @@ function LastweekHomework(props) {
       key: 'field5',
       render: (text, record) => {
         return (
-          <TextArea
+          <Input
             disabled={detailParams}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field5', record.key)}
@@ -342,7 +154,7 @@ function LastweekHomework(props) {
           <DatePicker
             disabled={detailParams}
             defaultValue={text ? moment(text) : moment(new Date())}
-            onChange={e => handleFieldChange(e, 'field6', record.key)}
+            onChange={e => handleFieldChange(e.target.value, 'field6', record.key)}
           />
         )
       }
@@ -395,7 +207,7 @@ function LastweekHomework(props) {
       key: 'field10',
       render: (text, record) => {
         return (
-          <TextArea
+          <Input
             disabled={detailParams}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field10', record.key)}
@@ -428,22 +240,24 @@ function LastweekHomework(props) {
     handleTabledata();
   }, [operationArr])
 
-  let setColumns = column;
-
-  if(mainId) {
-    setColumns = copyColumns
-  }
-
   return (
     <>
-      {/* <Row gutter={16}> */}
-
       <Table
-        loading={loading}
-        columns={setColumns}
+        columns={copyColumns}
         dataSource={data}
         pagination={false}
       />
+
+      <Button
+        style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
+        type="primary"
+        ghost
+        onClick={newMember}
+        icon="plus"
+        disabled={detailParams}
+      >
+        新增
+      </Button>
     </>
   )
 }

@@ -8,7 +8,7 @@ import {
 } from 'antd';
 
 const { TextArea } = Input;
-function ServiceCompletion(props) {
+function CopyServiceCompletion(props) {
   const {
     form: { getFieldDecorator },
     selfhandleRow,
@@ -20,8 +20,6 @@ function ServiceCompletion(props) {
 
   const [data, setData] = useState([]);
 
-  // 初始化把软件运维服务指标完成情况数据传过去
-  // 一线问题解决情况汇总统计
   //  获取行  
   const getRowByKey = (key, newData) => {
     return (newData || data).filter(item => item.key === key)[0];
@@ -39,12 +37,12 @@ function ServiceCompletion(props) {
 
   const handleTabledata = () => {
     const newarr = (soluteArr).map((item, index) => {
-      return Object.assign(item, { editable: true, isNew: false, key: index, field1: index + 1 })
+      return Object.assign(item, { editable: true, isNew: false, key: index, index: index + 1 })
     })
     setData(newarr)
   }
 
-  const column = [
+  const editColumn = [
     {
       title: '工单受理数量',
       dataIndex: 'field1',
@@ -106,7 +104,7 @@ function ServiceCompletion(props) {
         </Col>
 
         <Table
-          columns={column}
+          columns={editColumn}
           dataSource={data}
           pagination={false}
         />
@@ -115,4 +113,4 @@ function ServiceCompletion(props) {
   )
 }
 
-export default Form.create({})(ServiceCompletion)
+export default Form.create({})(CopyServiceCompletion)
