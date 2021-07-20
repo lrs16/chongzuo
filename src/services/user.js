@@ -91,3 +91,10 @@ export async function taskFlowUserList() {
     method: 'GET',
   });
 }
+
+// 加载知识管理审核人员列表
+export async function knowledgeCheckUserList() {
+  return request(`/knowledge/flow/getCheckUserList`, {
+    method: 'GET',
+  });
+}

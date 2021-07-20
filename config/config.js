@@ -1657,7 +1657,7 @@ export default {
       changeOrigin: true
     },
     '/knowledge/': {
-      target: 'http://172.16.10.120:9901/',
+      target: 'http://172.16.10.33:9901/',
       changeOrigin: true
     },
   },

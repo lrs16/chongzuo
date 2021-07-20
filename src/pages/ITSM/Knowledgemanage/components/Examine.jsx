@@ -43,16 +43,16 @@ const Examine = forwardRef((props, ref) => {
     <div style={{ marginRight: 24 }}>
       <Row gutter={24}>
         <Form {...formallItemLayout}>
-          <Col span={8} style={{ display: 'none' }}>
+          {/* <Col span={8} style={{ display: 'none' }}>
             <Form.Item label="审核表单id">
               {getFieldDecorator('check_id', {
                 initialValue: check.id,
               })(<Input placeholder="请输入" disabled />)}
             </Form.Item>
-          </Col>
+          </Col> */}
           <Col span={8} >
             <Form.Item label="审核结果">
-              {getFieldDecorator('check_checkResult', {
+              {getFieldDecorator('result', {
                 rules: [{ required: true, message: '请选择审核结果' }],
                 initialValue: check.checkResult,
               })(
@@ -65,7 +65,7 @@ const Examine = forwardRef((props, ref) => {
           </Col>
           <Col span={8}>
             <Form.Item label="审核时间">
-              {getFieldDecorator('check_checkTime', {
+              {getFieldDecorator('checkTime', {
                 rules: [{ required: true }],
                 initialValue: moment(check.checkTime),
               })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" />)}
@@ -73,9 +73,7 @@ const Examine = forwardRef((props, ref) => {
           </Col>
           <Col span={8} >
             <Form.Item label="审核状态">
-              {getFieldDecorator('check_status', {
-                initialValue: check.checkResult,
-              })(<Tag color="blue">待审核</Tag>,)}
+              <Tag color="blue">待审核</Tag>
             </Form.Item>
           </Col>
           <Col span={24}>
@@ -87,23 +85,23 @@ const Examine = forwardRef((props, ref) => {
           </Col>
           <Col span={8}>
             <Form.Item label="审核人">
-              {getFieldDecorator('check_checkUser', {
+              {getFieldDecorator('checkUser', {
                 rules: [{ required: true }],
-                initialValue: userinfo.userName,
+                initialValue: userinfo.checkUser,
               })(<Input placeholder="请输入" disabled />)}
             </Form.Item>
           </Col>
           <Col span={8} style={{ display: 'none' }}>
             <Form.Item label="审核人ID">
-              {getFieldDecorator('check_checkUserId', {
+              {getFieldDecorator('checkUserId', {
                 rules: [{ required: true }],
-                initialValue: userinfo.userId,
+                initialValue: userinfo.checkUserId,
               })(<Input placeholder="请输入" disabled />)}
             </Form.Item>
           </Col>
           <Col span={8}>
             <Form.Item label="审核人单位">
-              {getFieldDecorator('check_checkUnit', {
+              {getFieldDecorator('checkUnit', {
                 rules: [{ required: true }],
                 initialValue: userinfo.unitName,
               })(<Input placeholder="请输入" disabled />)}
@@ -111,7 +109,7 @@ const Examine = forwardRef((props, ref) => {
           </Col>
           <Col span={8} style={{ display: 'none' }}>
             <Form.Item label="审核人单位ID">
-              {getFieldDecorator('check_checkUnitId', {
+              {getFieldDecorator('checkUnitId', {
                 rules: [{ required: true }],
                 initialValue: userinfo.unitId,
               })(<Input placeholder="请输入" disabled />)}
@@ -122,5 +120,6 @@ const Examine = forwardRef((props, ref) => {
     </div>
   );
 });
+
 
 export default Form.create()(Examine);

@@ -1,9 +1,11 @@
 import request from '@/utils/request';
 
 // 获取列表信息
-export async function queryTodoList() {
-  return request(`/api/release/todolist`, {
-    method: 'GET',
+export async function queryTodoList(params) {
+  return request(`/knowledge/form/getMyKnowledgeList`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
   });
 }
 
@@ -25,7 +27,7 @@ export async function savekowledge(params) {
 
 // 提交
 export async function submitkowledge(params) {
-  return request(`/knowledge/flow/save`, {
+  return request(`/knowledge/flow/submit`, {
     method: 'POST',
     data: params,
     requestType: 'form',
@@ -41,13 +43,37 @@ export async function releasekowledge(params) {
   });
 }
 
-// 打开待办
-export async function openkowledge(params) {
-  return request(`/knowledge/flow/openFlow`, {
+// 撤销发布
+export async function revokekowledge(params) {
+  return request(`/knowledge/flow/revoke`, {
     method: 'POST',
     data: params,
     requestType: 'form',
   });
 }
 
-// 获取审核人员列表
+// 废止
+export async function abolishkowledge(params) {
+  return request(`/knowledge/flow/abolish`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+  });
+}
+
+// 打开待办
+export async function openkowledge(mainId) {
+  return request(`/knowledge/flow/openFlow?mainId=${mainId}`, {
+    method: 'GET',
+    //  requestType: 'form',
+  });
+}
+
+// 获取列表信息
+export async function queryUpdateList(params) {
+  return request(`/knowledge/form/getUpdateList`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+  });
+}

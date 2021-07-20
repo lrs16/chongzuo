@@ -137,7 +137,7 @@ const BasicLayout = props => {
     setActiveKey(end.id);
     router.push({
       pathname: end.itemPath,
-      query: (target || multipletarget) ? end.query : {},
+      query: (target || multipletarget || (end.query && end.query.Id)) ? end.query : {},
       state: (end.data && end.data.cacheinfo) ? { cacheinfo: end.data.cacheinfo } : { ...end.state, cache: false },
     });
     if (multipletarget && end.data && end.data.cacheinfo) {
@@ -176,7 +176,7 @@ const BasicLayout = props => {
     const targetmultiple = multiplepath.filter(item => item.path === location.pathname)[0];          //  属于登记类打开同一个链接多页签
 
     // 已有标签,且不属于登记类和作业计划
-    if (tabtargetpath && !targetmultiple) {
+    if (tabtargetpath && !targetmultiple && tabtargetpath.Id !== undefined) {
       setActiveKey(tabtargetpath.id);
     };
     // 从页面添加多条登记类，如作业计划
@@ -263,10 +263,20 @@ const BasicLayout = props => {
       if (location.state.updatetab) {
         ChangetabQuery(location.query)
       };
-      if (location.state.addoperation) {
+      if (location.state.dynamicpath) {
         const tabtargetid = toptabs.filter(item => item.id === location.query.Id)[0];
         if (tabtargetid) {
-          setActiveKey(location.query.Id);
+          const target = toptabs.filter(item => item.id === tabtargetid.id)[0];
+          if (target) {
+            target.state = location.state;
+            target.name = `${location.state.menuDesc}${target.id}`
+            const newData = toptabs.map(item => {
+              return item.id === target.id ? target : item
+            });
+            setTopTabs(newData);
+            setCurrentTab({ ...target })
+          };
+          setActiveKey(tabtargetid.id);
         } else if (location.query.Id && location.state.menuDesc) {
           const panels = {
             name: `${location.state.menuDesc}${location.query.Id}`,
@@ -335,12 +345,12 @@ const BasicLayout = props => {
           },
         });
       };
-      setActiveKey(key);
       router.push({
         pathname: target.itemPath,
         query: target.query,
         state: { ...target.data, cache: false }
       });
+      setActiveKey(key);
     }
   };
 

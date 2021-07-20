@@ -7,13 +7,35 @@ function Editor(props, ref) {
   const { ChangeValue, cachevalue } = props;
   const [content, setContent] = useState(undefined);
   const { editable } = useContext(EditContext);
+  const menus = [
+    'head', // 标题
+    'bold', // 粗体
+    'fontSize', // 字号
+    'fontName', // 字体
+    'italic', // 斜体
+    'underline', // 下划线
+    'strikeThrough', // 删除线
+    'foreColor', // 文字颜色
+    'backColor', // 背景颜色
+    'link', // 插入链接
+    'list', // 列表
+    'justify', // 对齐方式
+    'quote', // 引用
+    'emoticon', // 表情
+    'image', // 插入图片
+    'table', // 表格
+    // 'video', // 插入视频
+    'code', // 插入代码
+    'undo', // 撤销
+    'redo', // 重复
+    ''
+  ];
   let editor = null;
   useEffect(() => {
     editor = new E('#div1');
     editor.config.onchange = function (html) {
       ChangeValue(html)
     };
-
     editor.config.showLinkImg = false;           // 隐藏网络图片
     editor.config.uploadImgMaxSize = 2 * 1024 * 1024; // 上传图片大小2M
     //  editor.config.uploadImgServer = `/sys/file/upload`;  // 路径
@@ -29,7 +51,7 @@ function Editor(props, ref) {
         }).then(response => response.json())
           .then((data) => {
             if (data.code === 200) {
-              const arr = data.data[0].fileUrl?.split('/');
+              const arr = data.data[0].fileUrl?.split('\\');
               const imgsrc = `/image/${arr[arr.length - 2]}/${arr[arr.length - 1]}`;
               insert(imgsrc)
             } else {
@@ -40,29 +62,7 @@ function Editor(props, ref) {
         message.info('请选择要上传的图片');
       }
     };
-    editor.config.menus = [
-      'head', // 标题
-      'bold', // 粗体
-      'fontSize', // 字号
-      'fontName', // 字体
-      'italic', // 斜体
-      'underline', // 下划线
-      'strikeThrough', // 删除线
-      'foreColor', // 文字颜色
-      'backColor', // 背景颜色
-      'link', // 插入链接
-      'list', // 列表
-      'justify', // 对齐方式
-      'quote', // 引用
-      'emoticon', // 表情
-      'image', // 插入图片
-      'table', // 表格
-      // 'video', // 插入视频
-      'code', // 插入代码
-      'undo', // 撤销
-      'redo', // 重复
-      ''
-    ];
+    editor.config.menus = editable ? [...menus] : [''];
     editor.config.lang = {
       设置标题: 'Title',
       字号: 'Size',
@@ -93,7 +93,7 @@ function Editor(props, ref) {
       // 组件销毁时销毁编辑器
       editor.destroy();
     };
-  }, []);
+  }, [cachevalue]);
   useEffect(() => {
     getHtml();
   }, [content]);

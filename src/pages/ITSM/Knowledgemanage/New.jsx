@@ -11,6 +11,7 @@ function New(props) {
   const { dispatch, location, tabnew, tabdata } = props;
   const [files, setFiles] = useState({ arr: [], ischange: false });
   const ContentRef = useRef(null);
+  console.log(tabdata)
 
   const handleSave = () => {
     const values = ContentRef.current.getVal();
@@ -31,9 +32,11 @@ function New(props) {
   // 重置表单信息
   useEffect(() => {
     if (tabnew) {
+      console.log('重置')
       ContentRef.current.resetVal();
     }
   }, [tabnew]);
+
   // 获取页签信息
   useEffect(() => {
     if (location.state && location.state.cache) {

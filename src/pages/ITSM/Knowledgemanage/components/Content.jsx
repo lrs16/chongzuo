@@ -5,6 +5,7 @@ import RichTextEditor from '@/components/RichTextEditor';
 import SysUpload from '@/components/SysUpload/Upload';
 import DictLower from '@/components/SysDict/DictLower';
 
+
 const { Option } = Select;
 
 const formallItemLayout = {
@@ -113,7 +114,10 @@ const Content = forwardRef((props, ref) => {
                   validator: handleFormValidator
                 }],
               })(
-                <RichTextEditor cachevalue={formrecord.content} ChangeValue={v => setFieldsValue({ content: v })} />
+                <RichTextEditor
+                  cachevalue={formrecord.content}
+                  ChangeValue={v => setFieldsValue({ content: v })}
+                />
               )}
             </Form.Item>
           </Col>
@@ -121,9 +125,11 @@ const Content = forwardRef((props, ref) => {
             <Row>
               <Col span={2} style={{ paddingTop: 4, textAlign: 'right' }}>上传附件：</Col>
               <Col span={22} >
-                <div style={{ width: 400, paddingLeft: 12, float: 'left' }}>
-                  <SysUpload />
-                </div>
+                {!Noediting && (
+                  <div style={{ width: 400, paddingLeft: 12, float: 'left' }}>
+                    <SysUpload />
+                  </div>
+                )}
               </Col>
             </Row>
           </Col>

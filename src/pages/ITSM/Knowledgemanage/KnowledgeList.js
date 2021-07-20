@@ -20,6 +20,8 @@ const formItemLayout = {
   },
 };
 
+
+
 function KnowledgeList(props) {
   const pagetitle = props.route.name;
   const {
@@ -32,8 +34,24 @@ function KnowledgeList(props) {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
 
-  const handleSearch = () => {
-    console.log('查询')
+  const handleSearch = (page, size) => {
+    const values = getFieldsValue();
+    const statusmap = new Map([
+      ['我的知识', '1'],
+      ['编辑知识', '2'],
+      ['知识审核', '3'],
+      ['知识查询', '4'],
+    ]);
+    dispatch({
+      type: 'knowledg/fetchlist',
+      payload: {
+        ...values,
+        pageIndex: page,
+        pageSize: size,
+        addUserId: pagetitle === '我的知识' ? sessionStorage.getItem('userauthorityid') : '',
+        tab: statusmap.get(pagetitle),
+      },
+    });
   }
   const handleReset = () => {
     console.log('重置')
@@ -56,17 +74,34 @@ function KnowledgeList(props) {
     selectedRowKeys,
     onChange: (key, record) => onSelectChange(key, record),
   };
+  const onShowSizeChange = (page, size) => {
+    handleSearch(page, size);
+    setPageinations({
+      ...paginations,
+      pageSize: size,
+    });
+  };
+
+  const changePage = page => {
+    handleSearch(page, paginations.pageSize);
+    setPageinations({
+      ...paginations,
+      current: page,
+    });
+  };
+
+  const pagination = {
+    showSizeChanger: true,
+    onShowSizeChange: (page, size) => onShowSizeChange(page, size),
+    current: paginations.current,
+    pageSize: paginations.pageSize,
+    total: list.total,
+    showTotal: total => `总共  ${total}  条记录`,
+    onChange: page => changePage(page),
+  };
 
   useEffect(() => {
-    const values = getFieldsValue();
-    dispatch({
-      type: 'knowledg/fetchlist',
-      payload: {
-        ...values,
-        pageIndex: paginations.current - 1,
-        pageSize: paginations.pageSize,
-      },
-    });
+    handleSearch(1, 15)
   }, []);
 
   // 数据字典取下拉值
@@ -97,13 +132,13 @@ function KnowledgeList(props) {
   const columns = [
     {
       title: '知识编号',
-      dataIndex: 'No',
-      key: 'No',
+      dataIndex: 'no',
+      key: 'no',
       fixed: 'left',
       render: (text, record) => {
         const desmap = new Map([
           ['我的知识', '编辑知识'],
-          ['编辑知识', '编辑知识'],
+          ['知识维护', '编辑知识'],
           ['知识审核', '知识审核'],
           ['知识查询', '知识详情'],
         ]);
@@ -111,9 +146,15 @@ function KnowledgeList(props) {
           router.push({
             pathname: `${location.pathname}/operation`,
             query: {
-              Id: record.No,
+              Id: record.id,
             },
-            state: { runpath: location.pathname, title: pagetitle, addoperation: true, menuDesc: desmap.get(pagetitle) },
+            state: {
+              runpath: location.pathname,
+              title: pagetitle,
+              dynamicpath: true,
+              menuDesc: (record.status === '已登记' || pagetitle === '知识审核') ? desmap.get(pagetitle) : '知识详情',
+              status: record.status
+            },
           });
         };
         return <a onClick={handleClick}>{text}</a>;
@@ -121,19 +162,20 @@ function KnowledgeList(props) {
     },
     {
       title: '知识分类',
-      dataIndex: 't1',
-      key: 't1',
+      dataIndex: 'type',
+      key: 'type',
+      width: 180,
     },
     {
       title: '知识标题',
-      dataIndex: 't2',
-      key: 't2',
+      dataIndex: 'title',
+      key: 'title',
       width: 200,
     },
     {
       title: '知识状态',
-      dataIndex: 't4',
-      key: 't4',
+      dataIndex: 'status',
+      key: 'status',
     },
     {
       title: '作者',
@@ -142,23 +184,23 @@ function KnowledgeList(props) {
     },
     {
       title: '发布时间',
-      dataIndex: 't6',
-      key: 't6',
+      dataIndex: 'addTime',
+      key: 'addTime',
     },
     {
       title: '编辑人',
-      dataIndex: 't7',
-      key: 't7',
+      dataIndex: 'updateUser',
+      key: 'updateUser',
     },
     {
       title: '编辑时间',
-      dataIndex: 't8',
-      key: 't8',
+      dataIndex: 'updateTime',
+      key: 'updateTime',
     },
     {
       title: '阅读量',
-      dataIndex: 't9',
-      key: 't9',
+      dataIndex: 'lookNum',
+      key: 'lookNum',
     },
   ];
 
@@ -174,16 +216,16 @@ function KnowledgeList(props) {
           <Form {...formItemLayout} onSubmit={handleSearch}>
             <Col span={8}>
               <Form.Item label="知识编号">
-                {getFieldDecorator('form1', {
+                {getFieldDecorator('no', {
                   initialValue: '',
                 })(<Input placeholder="请输入" allowClear />)}
               </Form.Item>
             </Col>
-            {expand && (
+            {(expand || pagetitle === '知识审核') && (
               <>
                 <Col span={8}>
                   <Form.Item label="知识分类">
-                    {getFieldDecorator('form2', {
+                    {getFieldDecorator('type', {
                       initialValue: '',
                     })(
                       <Select placeholder="请选择" allowClear>
@@ -196,10 +238,10 @@ function KnowledgeList(props) {
                   </Form.Item>
                 </Col>
                 <Col span={8}>
-                  <Form.Item label="发布时间" >
+                  <Form.Item label="登记时间" >
                     <Row>
                       <Col span={11}>
-                        {getFieldDecorator('form3', {
+                        {getFieldDecorator('time1', {
                           initialValue: '',
                         })(
                           <DatePicker
@@ -234,59 +276,60 @@ function KnowledgeList(props) {
                 </Col>
                 <Col span={8}>
                   <Form.Item label="知识标题">
-                    {getFieldDecorator('form4', {
+                    {getFieldDecorator('title', {
                       initialValue: '',
                     })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
               </>
             )}
-            <Col span={8}>
-              <Form.Item label="知识状态">
-                {getFieldDecorator('form5', {
-                  initialValue: '',
-                })(
-                  <Select placeholder="请选择" allowClear>
-                    {statusmap.map(obj => (
-                      <Option key={obj.key} value={obj.title}>
-                        {obj.title}
-                      </Option>
-                    ))}
-                  </Select>,
-                )}
-              </Form.Item>
-            </Col>
+            {pagetitle === '知识查询' && (
+              <Col span={8}>
+                <Form.Item label="知识状态">
+                  {getFieldDecorator('status', {
+                    initialValue: '',
+                  })(
+                    <Select placeholder="请选择" allowClear>
+                      {statusmap.map(obj => (
+                        <Option key={obj.key} value={obj.title}>
+                          {obj.title}
+                        </Option>
+                      ))}
+                    </Select>,
+                  )}
+                </Form.Item>
+              </Col>
+            )}
             {expand && (
               <>
                 <Col span={8}>
                   <Form.Item label="知识内容">
-                    {getFieldDecorator('form6', {
+                    {getFieldDecorator('content', {
                       initialValue: '',
                     })(<Input placeholder="请输入" allowClear />,)}
                   </Form.Item>
                 </Col>
                 <Col span={8}>
                   <Form.Item label="作者">
-                    {getFieldDecorator('form7', {
+                    {getFieldDecorator('addUser', {
                       initialValue: '',
                     })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
                 <Col span={8}>
                   <Form.Item label="编辑人">
-                    {getFieldDecorator('form8', {
+                    {getFieldDecorator('updateUser', {
                       initialValue: '',
                     })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
-                <Col span={8}>
+                {/* <Col span={8}>
                   <Form.Item label="阅读量">
-                    {getFieldDecorator('form9', {
+                    {getFieldDecorator('lookNum', {
                       initialValue: '',
                     })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
-                </Col>
-
+                </Col> */}
                 <Col span={8}>
                   <Form.Item label="编辑时间" >
                     <Row>
@@ -352,10 +395,10 @@ function KnowledgeList(props) {
         < Table
           loading={loading}
           columns={columns}
-          dataSource={list.rows}
-          //  pagination={pagination}
+          dataSource={list.data}
+          pagination={pagination}
           rowSelection={rowSelection}
-          rowKey={r => r.No}
+          rowKey={r => r.no}
           scroll={{ x: 1300 }}
         />
       </Card>
