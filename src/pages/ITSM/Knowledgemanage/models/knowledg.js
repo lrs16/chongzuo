@@ -44,13 +44,15 @@ export default {
           router.push({
             pathname: `/ITSM/knowledgemanage/myknowledge/operation`,
             query: {
-              Id: saveres.mainId,
+              Id: saveres.no,
             },
             state: {
               runpath: '/ITSM/knowledgemanage/myknowledge',
-              title: '新建知识',
-              addoperation: true,
-              menuDesc: '新建知识',
+              title: '我的知识',
+              dynamicpath: true,
+              menuDesc: '编辑知识',
+              mainId: saveres.mainId,
+              status: '已登记'
             },
           });
         }
@@ -85,15 +87,17 @@ export default {
       }
       const response = yield call(savekowledge, payvalue);
       if (response.code === 200) {
-        if (buttype === 'save') { message.success('保存成功'); }
-        const openres = yield call(openkowledge, mainId);
-        if (openres.code === 200) {
-          yield put({
-            type: 'saveinfo',
-            payload: openres,
-          });
-        } else {
-          message.error(response.msg)
+        if (buttype === 'save') {
+          message.success('保存成功');
+          const openres = yield call(openkowledge, mainId);
+          if (openres.code === 200) {
+            yield put({
+              type: 'saveinfo',
+              payload: openres,
+            });
+          } else {
+            message.error(response.msg)
+          };
         };
         if (buttype === 'submit') {
           const mainIds = [mainId];
@@ -124,29 +128,29 @@ export default {
       }
     },
 
-    *saveorcheck({ payload: { values, buttype, mainId, userId, runpath, editState } }, { call, put }) {
+    *saveorcheck({ payload: { values, buttype, mainId, mainIds, userId, runpath, editState } }, { call, put }) {
       const payvalue = {
         ...values,
         mainId,
         flowNodeName: '知识审核',
         editState
       };
-      console.log(payvalue)
       const response = yield call(savekowledge, payvalue);
       if (response.code === 200) {
-        if (buttype === 'save') { message.success('保存成功'); }
-        const openres = yield call(openkowledge, mainId);
-        if (openres.code === 200) {
-          yield put({
-            type: 'saveinfo',
-            payload: openres,
-          });
-        } else {
-          message.error(response.msg)
+        if (buttype === 'save') {
+          message.success('保存成功');
+          const openres = yield call(openkowledge, mainId);
+          if (openres.code === 200) {
+            yield put({
+              type: 'saveinfo',
+              payload: openres,
+            });
+          } else {
+            message.error(response.msg)
+          };
         };
         if (buttype === 'check') {
-          const mainIds = [mainId];
-          const subres = yield call(releasekowledge, { mainIds, userId });
+          const subres = yield call(submitkowledge, { mainIds, userId });
           if (subres.code === 200) {
             message.success('发布成功');
             router.push({

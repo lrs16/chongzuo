@@ -25,8 +25,6 @@ function Operation(props) {
   const { currenttab } = useContext(EditContext);
   const { state: { menuDesc, title, runpath, status } } = currenttab;
 
-  console.log(status)
-
   const callback = key => {
     setActiveKey(key);
   };
@@ -37,7 +35,7 @@ function Operation(props) {
       payload: {
         values: { ...values },
         buttype,
-        mainId,
+        mainId: mainId || values.id,
         userId: buttype === 'submit' ? choiceUser.users : sessionStorage.getItem('userauthorityid'),
         runpath
       },
@@ -54,8 +52,10 @@ function Operation(props) {
         },
         buttype,
         mainId,
+        mainIds: [mainId],
         runpath,
-        editState: info.edit.check === '' ? 'add' : 'edit'
+        editState: info.edit.check === '' ? 'add' : 'edit',
+        userId: sessionStorage.getItem('userauthorityid')
       },
     })
   }
@@ -75,6 +75,20 @@ function Operation(props) {
         setUserList(res.data);
         setUserVisible(true)
       }
+    })
+  };
+
+  const ChangeFiles = (v) => {
+    const values = ContentRef.current.getVal();
+    dispatch({
+      type: 'knowledg/saveorsubmit',
+      payload: {
+        values: { ...values, fileIds: v.length ? JSON.stringify(v) : '' },
+        buttype: 'save',
+        mainId: mainId || values.id,
+        userId: sessionStorage.getItem('userauthorityid'),
+        runpath
+      },
     })
   }
 
@@ -136,7 +150,7 @@ function Operation(props) {
         保存
       </Button>
       )}
-      {title === '我的知识' && (status === '已登记' || status === '待审核') && (<Button
+      {title === '我的知识' && (status !== '已发布') && (<Button
         type="primary"
         style={{ marginRight: 8 }}
         onClick={() => { handleSubmit() }}
@@ -155,7 +169,7 @@ function Operation(props) {
       {menuDesc === '知识审核' && (<Button
         type="primary"
         style={{ marginRight: 8 }}
-        onClick={() => { handleClick('release') }}
+        onClick={() => { handleCheck('check') }}
       >
         审核
       </Button>
@@ -184,7 +198,11 @@ function Operation(props) {
 
                 {(title === '我的知识' || title === '知识维护') && status === '已登记' && (
                   <Panel header='知识收录' key="formpanel">
-                    <EditContext.Provider value={{ editable: true }}>
+                    <EditContext.Provider value={{
+                      editable: true,
+                      files: (info.edit.main && info.edit.main.fileIds) ? JSON.parse(info.edit.main.fileIds) : [],
+                      ChangeFiles,
+                    }}>
                       <Content
                         wrappedComponentRef={ContentRef}
                         formrecord={info.edit.main}

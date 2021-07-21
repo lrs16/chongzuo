@@ -8,7 +8,7 @@ import UploadContext from '@/layouts/MenuContext';
 function SysUpload(props) {
   const { dispatch } = props;
   const [filetype, setFileType] = useState('');
-  const { files, setFiles } = useContext(UploadContext);
+  const { files, ChangeFiles } = useContext(UploadContext);
 
   // 不允许上传类型
   useEffect(() => {
@@ -87,7 +87,7 @@ function SysUpload(props) {
           vote.status = arr[i].status;
           newarr.push(vote);
         }
-        setFiles({ arr: newarr, ischange: true })
+        ChangeFiles(newarr)
       }
     },
     onPreview(file) {
@@ -98,8 +98,8 @@ function SysUpload(props) {
     },
     onRemove(file) {
       // 删除记录,更新父级fileslist
-      const newfilelist = files.filter(item => item.uid !== file.uid);
-      setFiles({ arr: newfilelist, ischange: true });
+      const newfilelist = files.filter(item => file.response ? item.uid !== file.response.data[0].id : item.uid !== file.uid);
+      ChangeFiles(newfilelist);
       // 删除文件
       dispatch({
         type: 'sysfile/deletefile',

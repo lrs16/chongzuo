@@ -9,9 +9,7 @@ import Content from './components/Content';
 function New(props) {
   const pagetitle = props.route.name;
   const { dispatch, location, tabnew, tabdata } = props;
-  const [files, setFiles] = useState({ arr: [], ischange: false });
   const ContentRef = useRef(null);
-  console.log(tabdata)
 
   const handleSave = () => {
     const values = ContentRef.current.getVal();
@@ -28,6 +26,14 @@ function New(props) {
       state: { cache: false }
     });
   };
+
+  const ChangeFiles = (v) => {
+    const values = ContentRef.current.getVal();
+    dispatch({
+      type: 'knowledg/add',
+      payload: { ...values, fileIds: v.length ? JSON.stringify(v) : '' },
+    });
+  }
 
   // 重置表单信息
   useEffect(() => {
@@ -74,7 +80,11 @@ function New(props) {
   return (
     <PageHeaderWrapper title={pagetitle} extra={operations}>
       <Card>
-        <EditContext.Provider value={{ editable: true, files: files.arr, setFiles }}>
+        <EditContext.Provider value={{
+          editable: true,
+          files: [],
+          ChangeFiles,
+        }}>
           <Content
             wrappedComponentRef={ContentRef}
             formrecord={tabdata}

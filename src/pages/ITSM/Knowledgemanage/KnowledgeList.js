@@ -1,11 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { connect } from 'dva';
 import router from 'umi/router';
 import moment from 'moment';
-import { Card, Row, Col, Form, Input, Select, Button, DatePicker, Table, Badge } from 'antd';
+import { Card, Row, Col, Form, Input, Select, Button, DatePicker, Table, message, Modal } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import DictLower from '@/components/SysDict/DictLower';
+import UserContext from '@/layouts/MenuContext';
+import CheckOneUser from '@/components/SelectUser/CheckOneUser';
+import { knowledgeCheckUserList } from '@/services/user';
+import { submitkowledge, releasekowledge } from './services/api';
+import Examine from './components/Examine';
 
 const { Option } = Select;
 
@@ -20,19 +25,25 @@ const formItemLayout = {
   },
 };
 
-
-
 function KnowledgeList(props) {
   const pagetitle = props.route.name;
   const {
-    location, loading, list,
+    location, loading, list, userinfo,
     form: { getFieldDecorator, resetFields, getFieldsValue },
     dispatch,
   } = props;
   const [selectdata, setSelectData] = useState('');
   const [expand, setExpand] = useState(false);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+  const [selectedRecords, setSelectedRecords] = useState([]);
+  const [choiceUser, setChoiceUser] = useState({ users: '', ischange: false });
+  const [userlist, setUserList] = useState([]);
+  const [uservisible, setUserVisible] = useState(false); // 是否显示选人组件
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
+  const [visible, setVisible] = useState(false);
+  const ExmaineRef = useRef(null);
+
+  const userId = sessionStorage.getItem('userauthorityid');
 
   const handleSearch = (page, size) => {
     const values = getFieldsValue();
@@ -48,16 +59,79 @@ function KnowledgeList(props) {
         ...values,
         pageIndex: page,
         pageSize: size,
-        addUserId: (pagetitle === '我的知识' || pagetitle === '知识审核') ? sessionStorage.getItem('userauthorityid') : '',
+        addUserId: pagetitle === '我的知识' ? sessionStorage.getItem('userauthorityid') : '',
+        checkUserId: pagetitle === '知识审核' ? sessionStorage.getItem('userauthorityid') : '',
         tab: statusmap.get(pagetitle),
       },
     });
   }
   const handleReset = () => {
     console.log('重置')
-  }
+  };
   const download = () => {
     console.log('导出数据')
+  };
+  const ClickBut = (buttype) => {
+    switch (buttype) {
+      case 'submit':
+        knowledgeCheckUserList().then(res => {
+          if (res.code === 200) {
+            setUserList(res.data);
+            setUserVisible(true)
+          }
+        })
+        break;
+      case 'check':
+        setVisible(true)
+        break;
+      case 'release': {
+        const newselectds = selectedRecords.filter(item => item.status === '已登记');
+        if (newselectds.length > 0) {
+          const mainIds = newselectds.map(item => {
+            return item.id;
+          });
+          releasekowledge({ mainIds, userId }).then(res => {
+            if (res.code === 200) {
+              message.success(res.msg)
+            };
+            handleSearch(1, 15);
+            setSelectedRecords([]);
+          })
+        } else {
+          message.error('请选择知识状态为‘已登记’的数据')
+        }
+        break;
+      }
+      case 'flowcheck':
+
+        break;
+      case 'over':
+
+        break;
+      default:
+        break;
+    }
+  };
+  const handleOk = () => {
+    const values = ExmaineRef.current.getVal();
+    const newselectds = selectedRecords.filter(item => item.status === '待审核');
+    if (newselectds.length > 0) {
+      const mainIds = newselectds.map(item => {
+        return item.id;
+      });
+      const val = {
+        ...values,
+        checkTime: moment(values.checkTime).format('YYYY-MM-DD HH:mm:ss')
+      }
+      submitkowledge({ ...val, mainIds, userId }).then(res => {
+        console.log(res)
+      })
+    }
+
+    setVisible(false)
+  };
+  const handleCancel = () => {
+    setVisible(false)
   }
   const newknowledge = () => {
     router.push({
@@ -67,8 +141,9 @@ function KnowledgeList(props) {
       }
     })
   }
-  const onSelectChange = (RowKeys) => {
+  const onSelectChange = (RowKeys, record) => {
     setSelectedRowKeys(RowKeys);
+    setSelectedRecords(record);
   };
   const rowSelection = {
     selectedRowKeys,
@@ -101,8 +176,34 @@ function KnowledgeList(props) {
   };
 
   useEffect(() => {
-    handleSearch(1, 15)
+    handleSearch(1, 15);
+    dispatch({
+      type: 'itsmuser/fetchuser',
+    });
   }, []);
+
+
+  // 选人完成提交
+  useEffect(() => {
+    if (choiceUser.ischange) {
+      const newselectds = selectedRecords.filter(item => item.status === '已登记');
+      if (newselectds.length > 0) {
+        const mainIds = newselectds.map(item => {
+          return item.id;
+        })
+        submitkowledge({ mainIds, userId: choiceUser.users }).then(res => {
+          if (res.code === 200) {
+            message.success(res.msg)
+          }
+        });
+        handleSearch(1, 15);
+        setSelectedRecords([]);
+        setChoiceUser({ users: '', ischange: false });
+      } else {
+        message.error('请选择数据')
+      }
+    }
+  }, [choiceUser.ischange])
 
   // 数据字典取下拉值
   const getTypebyId = key => {
@@ -180,8 +281,8 @@ function KnowledgeList(props) {
     },
     {
       title: '作者',
-      dataIndex: 't5',
-      key: 't5',
+      dataIndex: 'addUser',
+      key: 'addUser',
     },
     {
       title: '发布时间',
@@ -378,19 +479,24 @@ function KnowledgeList(props) {
           {(pagetitle === '我的知识' || pagetitle === '知识维护') && (
             <>
               <Button type="primary" style={{ marginRight: 8 }} onClick={() => newknowledge()}>新增</Button >
-              <Button type="primary" style={{ marginRight: 8 }}>提交</Button >
+              <Button type="primary" style={{ marginRight: 8 }} onClick={() => ClickBut('submit')}>提交</Button >
             </>
           )}
-          {pagetitle === '知识审核' && (
-            <>
-              <Button type="primary" style={{ marginRight: 8 }}>审核</Button >
-              <Button type="danger" style={{ marginRight: 8 }}>撤销发布</Button >
-              <Button type="danger" ghost style={{ marginRight: 8 }}>废止</Button >
-            </>
+          {(pagetitle === '知识审核') && (
+            <Button type="primary" style={{ marginRight: 8 }} onClick={() => ClickBut('check')}>审核</Button >
+          )}
+          {pagetitle === '知识维护' && (
+            <Button type="primary" style={{ marginRight: 8 }} onClick={() => ClickBut('release')}>发布</Button >
           )}
           <Button type="primary" onClick={() => download()} style={{ marginRight: 8 }}>导出数据</Button >
+          {(pagetitle === '知识审核' || pagetitle === '知识维护') && (
+            <Button type="danger" style={{ marginRight: 8 }}>撤销发布</Button >
+          )}
+          {(pagetitle === '知识审核') && (
+            <Button type="danger" ghost style={{ marginRight: 8 }}>废止</Button >
+          )}
           {(pagetitle === '我的知识' || pagetitle === '知识维护') && (
-            <Button type="danger" ghost style={{ marginRight: 8 }}>删除</Button >
+            <Button type="danger" ghost style={{ marginRight: 8 }} onClick={() => ClickBut('delete')}>删除</Button >
           )}
         </div>
         < Table
@@ -403,13 +509,31 @@ function KnowledgeList(props) {
           scroll={{ x: 1300 }}
         />
       </Card>
+      <UserContext.Provider value={{ setChoiceUser, uservisible, setUserVisible, title: '审核' }}>
+        <CheckOneUser userlist={userlist} />
+      </UserContext.Provider>
+      <Modal
+        title="知识审核"
+        visible={visible}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        width={1000}
+      >
+        <Examine
+          wrappedComponentRef={ExmaineRef}
+          userinfo={userinfo}
+          formrecord={{}}
+          Noediting
+        />
+      </Modal>
     </PageHeaderWrapper >
   );
 }
 
 export default Form.create({})(
-  connect(({ knowledg, loading }) => ({
+  connect(({ knowledg, itsmuser, loading }) => ({
     list: knowledg.list,
+    userinfo: itsmuser.userinfo,
     loading: loading.models.knowledg,
   }))(KnowledgeList),
 );

@@ -4,7 +4,7 @@ import { Row, Col, Form, Input, Select } from 'antd';
 import RichTextEditor from '@/components/RichTextEditor';
 import SysUpload from '@/components/SysUpload/Upload';
 import DictLower from '@/components/SysDict/DictLower';
-
+import UploadContext from '@/layouts/MenuContext';
 
 const { Option } = Select;
 

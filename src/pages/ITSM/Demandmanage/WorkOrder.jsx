@@ -488,28 +488,27 @@ function WorkOrder(props) {
   // 保存删除附件驱动表单保存
   useEffect(() => {
     if (taskName === '需求登记' && files.ischange === true) {
-      RegistratRef.current.validateFields((err, values) => {
-        dispatch({
-          type: 'demandtodo/demandregisterupdate',
-          payload: {
-            paloadvalues: {
-              ...values,
-              creationTime: values.creationTime.format('YYYY-MM-DD HH:mm:ss'),
-              registerTime: values.registerTime.format('YYYY-MM-DD HH:mm:ss'),
-              completeTime: values.completeTime.format('YYYY-MM-DD HH:mm:ss'),
-              proposingDepartment:
-                values.proposingDepartment !== ''
-                  ? values.proposingDepartment
-                  : values.proposingUnit,
-              attachment: JSON.stringify(files.arr),
-              functionalModule: values.functionalModule.join('/'),
-              nextUserIds: [{ nodeName: '', userIds: [] }],
-              id: info.demandForm.id,
-            },
-            processInstanceId: mainId,
-            taskId,
+      const values = RegistratRef.current.getVal();
+      dispatch({
+        type: 'demandtodo/demandregisterupdate',
+        payload: {
+          paloadvalues: {
+            ...values,
+            creationTime: values.creationTime.format('YYYY-MM-DD HH:mm:ss'),
+            registerTime: values.registerTime.format('YYYY-MM-DD HH:mm:ss'),
+            completeTime: values.completeTime.format('YYYY-MM-DD HH:mm:ss'),
+            proposingDepartment:
+              values.proposingDepartment !== ''
+                ? values.proposingDepartment
+                : values.proposingUnit,
+            attachment: JSON.stringify(files.arr),
+            functionalModule: values.functionalModule.join('/'),
+            nextUserIds: [{ nodeName: '', userIds: [] }],
+            id: info.demandForm.id,
           },
-        });
+          processInstanceId: mainId,
+          taskId,
+        },
       });
       setFiles({ ...files, ischange: false });
     }
@@ -517,24 +516,24 @@ function WorkOrder(props) {
       const id = setid();
       const values = ExamineRef.current.getVal();
       // ExamineRef.current.validateFields((err, values) => {
-        dispatch({
-          type: 'demandtodo/demandsave',
-          payload: {
-            paloadvalues: {
-              ...values,
-              reviewTime: values.reviewTime.format('YYYY-MM-DD HH:mm:ss'),
-              opinion: values.result === 0 ? values.opinion2 : values.opinion1,
-              business: Number(values.business),
-              releases: Number(values.releases),
-              attachment: JSON.stringify(files.arr),
-              registerId: info.demandForm.id,
-              id,
-              taskName: info.taskName,
-            },
-            processInstanceId: mainId,
-            taskId,
+      dispatch({
+        type: 'demandtodo/demandsave',
+        payload: {
+          paloadvalues: {
+            ...values,
+            reviewTime: values.reviewTime.format('YYYY-MM-DD HH:mm:ss'),
+            opinion: values.result === 0 ? values.opinion2 : values.opinion1,
+            business: Number(values.business),
+            releases: Number(values.releases),
+            attachment: JSON.stringify(files.arr),
+            registerId: info.demandForm.id,
+            id,
+            taskName: info.taskName,
           },
-        });
+          processInstanceId: mainId,
+          taskId,
+        },
+      });
       // });
       setFiles({ ...files, ischange: false });
     }
