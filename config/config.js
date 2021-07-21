@@ -850,6 +850,37 @@ export default {
                             },
                           ]
                         },
+                        {
+                          path: '/ITSM/operationplan/personaccessmanage',
+                          name: '人员进出管理',
+                          icon: 'control',
+                          routes: [
+                            {
+                              path: '/ITSM/operationplan/personaccessmanage/newcheck',
+                              name: '人员进出审核',
+                              icon: 'fork',
+                              component: './ITSM/OperationPlan/OperationplanPersonaccessmanage/Newcheck',
+                            },
+                            {
+                              path: '/ITSM/operationplan/personaccessmanage/toregister',
+                              name: '人员进出登记',
+                              icon: 'fork',
+                              component: './ITSM/OperationPlan/OperationplanPersonaccessmanage/Toregister',
+                            },
+                            {
+                              path: '/ITSM/operationplan/personaccessmanage/tocheck',
+                              name: '人员进出审核',
+                              icon: 'fork',
+                              component: './ITSM/OperationPlan/OperationplanPersonaccessmanage/ToCheck',
+                            },
+                            {
+                              path: '/ITSM/operationplan/personaccessmanage/toquery',
+                              name: '人员进出查询',
+                              icon: 'fork',
+                              component: './ITSM/OperationPlan/OperationplanPersonaccessmanage/ToQuery',
+                            },
+                          ]
+                        },
                       ]
                     },
                     {
@@ -1612,6 +1643,10 @@ export default {
     '/check/': {
       target: ' http://172.16.10.33:9901/', // 数据字典
       changeOrigin: true,
+    },
+    '/regist/': {
+      target: 'http://172.16.10.124:9901/', // 人员进出管理-人员进出登记
+      changeOrigin: true
     },
     '/report/': {
       target: 'http://172.16.10.33:9901/',

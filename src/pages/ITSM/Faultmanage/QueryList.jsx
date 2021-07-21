@@ -375,6 +375,7 @@ function QueryList(props) {
   //  下载 /导出功能
   const download = (page, pageSize) => {
     validateFields((err, values) => {
+      console.log(values, 'values')
       if (!err) {
         dispatch({
           type: 'fault/faultQuerydownload',
@@ -384,7 +385,8 @@ function QueryList(props) {
             // createTimeEnd: values.sendTime?.length ? moment(values.sendTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
             sendTime: '',
             registerOccurTimeBegin: values.registerOccurTimeBegin ? values.registerOccurTimeBegin.format('YYYY-MM-DD') : '',
-            registerTimeBegin: values.registerTimeBegin ? values.registerOccurTimeBegin.format('YYYY-MM-DD') : '',
+            registerTimeBegin: values.registerTime?.length ? moment(values.registerTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
+            registerTimeEnd: values.registerTime?.length ? moment(values.registerTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
             handleStartTimeBegin: values.handleStartTimeBegin ? values.registerOccurTimeBegin.format('YYYY-MM-DD') : '',
             handleStartTimeEnd: values.handleStartTimeEnd ? values.registerOccurTimeBegin.format('YYYY-MM-DD') : '',
             type: values.type ? (values.type).slice(-1)[0] : '',

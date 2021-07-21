@@ -7,7 +7,8 @@ import {
   definitionList,
   imgResource,
   deleteDefinition,
-  stateChange
+  stateChange,
+  definitionUpload
 } from '../services/api';
 
 export default {
@@ -60,8 +61,8 @@ export default {
       )
     },
 
-    *imgResource({ payload:{id,resourceName}}, { call }) {
-      return yield call(imgResource,id,resourceName);
+    *imgresource({ payload}, { call }) {
+      return yield call(imgResource,payload);
     },
 
     *deleteDefinition({ payload: { id }}, { call }) {
@@ -70,7 +71,11 @@ export default {
 
     *stateChange({ payload: {id,suspendState}},{call}) {
       return yield call(stateChange,id,suspendState);
-    }
+    },
+
+    *uploadfile({ payload }, { call }) {
+      return yield call(definitionUpload, payload);
+    },
   },
 
   reducers: {
@@ -84,7 +89,7 @@ export default {
     definitionlist(state, action) {
       return {
         ...state,
-        list: action.payload.data,
+        definitionList: action.payload.data,
       }
     }
     

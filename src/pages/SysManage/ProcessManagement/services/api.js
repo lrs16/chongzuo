@@ -35,6 +35,7 @@ export async function releaseModels(modelId) {
 //  流程定义的接口
 
 export async function definitionList(page, limit, bodyParams) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const a = encodeURI(encodeURI('中文', 'UTF-8'));
   return request(`/activiti/definition/listPage/${page}/${limit}`, {
     method: 'POST',
@@ -43,10 +44,11 @@ export async function definitionList(page, limit, bodyParams) {
 }
 
 //  图片资源
-export async function imgResource(id, resourceName) {
-  const name = encodeURI(encodeURI(resourceName));
-  return request(`/activiti/definition/readResource/${id}/${name}`, {
-    method: 'GET',
+export async function imgResource(params) {
+  return request(`/activiti/definition/readResource`, {
+    method: 'POST',
+    data:JSON.stringify(params),
+    requestType: 'formjosn',
     responseType: 'blob',
   });
 }
@@ -61,4 +63,13 @@ export async function deleteDefinition(id) {
 //  激活或挂起
 export async function stateChange(id, suspendState) {
   return request(`/activiti/definition/activeOrSuspend/${id}/${suspendState}`);
+}
+
+// 文件上传并部署
+export async function definitionUpload(param) {
+  return request(`/activiti/definition/upload`, {
+    method: 'POST',
+    data: param,
+    requestType: 'form',
+  });
 }

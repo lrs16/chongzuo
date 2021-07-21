@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
 import { Modal } from 'antd';
+import styles from './../style.less';
 
 const withClick = (element, handleClick = () => {}) => {
   return <element.type {...element.props} onClick={handleClick} />;
 };
-
 @connect(({ processmanagement, loading }) => ({
   processmanagement,
   loading: loading.models.processmanagement,
@@ -18,21 +18,21 @@ class DefinitionPng extends Component {
 
   handleopenClick = () => {
     const {
-      processmanagement: { editInfo },
+      // processmanagement: { editInfo },
+      id, resourceName
     } = this.props;
-    const blob = new Blob([editInfo]);
-    const imageUrl = (window.URL || window.webkitURL).createObjectURL(blob);
-    this.setState({ imgSrc: imageUrl });
-
-    const { id } = this.props;
-    const { resourceName } = this.props;
+    
     this.props.dispatch({
-      type: 'processmanagement/imgResource',
+      type: 'processmanagement/imgresource',
       payload: {
         id,
         resourceName,
       },
-    });
+    }).then(response => {
+        const blob = new Blob([response]);
+        const imageUrl = (window.URL || window.webkitURL).createObjectURL(blob);
+        this.setState({ imgSrc: imageUrl });
+    })
     this.setState({
       visible: true,
     });
@@ -59,11 +59,13 @@ class DefinitionPng extends Component {
           visible={visible}
           centered
           maskClosable={false}
-          width={750}
+          width='60%'
           onCancel={this.handleCancel}
           onOk={this.handleOk}
         >
-          <img src={this.state.imgSrc} alt="" />
+          <div className={styles.blobimg}>
+            <img src={this.state.imgSrc} alt="" style={{ background: '#fff' }} />
+          </div>
         </Modal>
       </>
     );
