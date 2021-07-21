@@ -176,7 +176,7 @@ const BasicLayout = props => {
     const targetmultiple = multiplepath.filter(item => item.path === location.pathname)[0];          //  属于登记类打开同一个链接多页签
 
     // 已有标签,且不属于登记类和作业计划
-    if (tabtargetpath && !targetmultiple && tabtargetpath.Id !== undefined) {
+    if (tabtargetpath && !targetmultiple && tabtargetpath) {
       setActiveKey(tabtargetpath.id);
     };
     // 从页面添加多条登记类，如作业计划

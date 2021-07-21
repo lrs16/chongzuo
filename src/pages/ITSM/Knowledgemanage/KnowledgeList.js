@@ -48,7 +48,7 @@ function KnowledgeList(props) {
         ...values,
         pageIndex: page,
         pageSize: size,
-        addUserId: pagetitle === '我的知识' ? sessionStorage.getItem('userauthorityid') : '',
+        addUserId: (pagetitle === '我的知识' || pagetitle === '知识审核') ? sessionStorage.getItem('userauthorityid') : '',
         tab: statusmap.get(pagetitle),
       },
     });
@@ -146,14 +146,15 @@ function KnowledgeList(props) {
           router.push({
             pathname: `${location.pathname}/operation`,
             query: {
-              Id: record.id,
+              Id: record.no,
             },
             state: {
               runpath: location.pathname,
               title: pagetitle,
               dynamicpath: true,
               menuDesc: (record.status === '已登记' || pagetitle === '知识审核') ? desmap.get(pagetitle) : '知识详情',
-              status: record.status
+              status: record.status,
+              mainId: record.id
             },
           });
         };

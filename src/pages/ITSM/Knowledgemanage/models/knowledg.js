@@ -5,6 +5,7 @@ import {
   savekowledge,
   openkowledge,
   submitkowledge,
+  releasekowledge,
   queryTodoList
 } from '../services/api';
 
@@ -74,7 +75,7 @@ export default {
       }
     },
 
-    // 编辑保存
+    // 编辑保存、提交、发布
     *saveorsubmit({ payload: { values, buttype, mainId, userId, runpath } }, { call, put }) {
       const payvalue = {
         ...values,
@@ -95,9 +96,22 @@ export default {
           message.error(response.msg)
         };
         if (buttype === 'submit') {
-          const subres = yield call(submitkowledge, { mainId, userId });
+          const mainIds = [mainId];
+          const subres = yield call(submitkowledge, { mainIds, userId });
           if (subres.code === 200) {
             message.success('提交成功');
+            router.push({
+              pathname: runpath,
+              query: { pathpush: true },
+              state: { cach: false, closetabid: mainId }
+            });
+          }
+        };
+        if (buttype === 'release') {
+          const mainIds = [mainId];
+          const subres = yield call(releasekowledge, { mainIds, userId });
+          if (subres.code === 200) {
+            message.success('发布成功');
             router.push({
               pathname: runpath,
               query: { pathpush: true },
@@ -108,7 +122,43 @@ export default {
       } else {
         message.error(response.msg)
       }
+    },
 
+    *saveorcheck({ payload: { values, buttype, mainId, userId, runpath, editState } }, { call, put }) {
+      const payvalue = {
+        ...values,
+        mainId,
+        flowNodeName: '知识审核',
+        editState
+      };
+      console.log(payvalue)
+      const response = yield call(savekowledge, payvalue);
+      if (response.code === 200) {
+        if (buttype === 'save') { message.success('保存成功'); }
+        const openres = yield call(openkowledge, mainId);
+        if (openres.code === 200) {
+          yield put({
+            type: 'saveinfo',
+            payload: openres,
+          });
+        } else {
+          message.error(response.msg)
+        };
+        if (buttype === 'check') {
+          const mainIds = [mainId];
+          const subres = yield call(releasekowledge, { mainIds, userId });
+          if (subres.code === 200) {
+            message.success('发布成功');
+            router.push({
+              pathname: runpath,
+              query: { pathpush: true },
+              state: { cach: false, closetabid: mainId }
+            });
+          }
+        }
+      } else {
+        message.error(response.msg)
+      }
     },
 
     // 列表

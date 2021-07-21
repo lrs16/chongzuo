@@ -23,12 +23,11 @@ const formItemLayout = {
 
 const Examine = forwardRef((props, ref) => {
   const {
+    userinfo, check,
     form: { getFieldDecorator, getFieldsValue, resetFields }
   } = props;
-  const [adopt, setAdopt] = useState('001');
+  const [adopt, setAdopt] = useState('通过');
   const required = true;
-  const userinfo = {};
-  const check = {};
 
   useImperativeHandle(ref, () => ({
     getVal: () => getFieldsValue(),
@@ -57,8 +56,8 @@ const Examine = forwardRef((props, ref) => {
                 initialValue: check.checkResult,
               })(
                 <Radio.Group onChange={handleAdopt}>
-                  <Radio value="001">通过</Radio>
-                  <Radio value="002">不通过</Radio>
+                  <Radio value="通过">通过</Radio>
+                  <Radio value="不通过">不通过</Radio>
                 </Radio.Group>,
               )}
             </Form.Item>
@@ -73,7 +72,7 @@ const Examine = forwardRef((props, ref) => {
           </Col>
           <Col span={8} >
             <Form.Item label="审核状态">
-              <Tag color="blue">待审核</Tag>
+              <Tag color="blue">{check.status}</Tag>
             </Form.Item>
           </Col>
           <Col span={24}>
@@ -87,7 +86,7 @@ const Examine = forwardRef((props, ref) => {
             <Form.Item label="审核人">
               {getFieldDecorator('checkUser', {
                 rules: [{ required: true }],
-                initialValue: userinfo.checkUser,
+                initialValue: userinfo.userName,
               })(<Input placeholder="请输入" disabled />)}
             </Form.Item>
           </Col>
@@ -95,7 +94,7 @@ const Examine = forwardRef((props, ref) => {
             <Form.Item label="审核人ID">
               {getFieldDecorator('checkUserId', {
                 rules: [{ required: true }],
-                initialValue: userinfo.checkUserId,
+                initialValue: userinfo.userId,
               })(<Input placeholder="请输入" disabled />)}
             </Form.Item>
           </Col>
@@ -121,5 +120,14 @@ const Examine = forwardRef((props, ref) => {
   );
 });
 
+Examine.defaultProps = {
+  check: {
+    checkResult: '通过',
+    checkTime: undefined,
+    status: '待审核',
+    content: '',
+  },
+  userinfo: {}
+}
 
 export default Form.create()(Examine);
