@@ -30,6 +30,8 @@ const formincontentLayout = {
 const { MonthPicker } = DatePicker;
 let startTime;
 let endTime;
+let saveSign = false;
+
 function OtherReportdetail(props) {
   const pagetitle = props.route.name;
   const {
@@ -48,20 +50,61 @@ function OtherReportdetail(props) {
 
   const required = true;
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
-  const [addTitle, setAddTitle] = useState([]);
   const [list, setList] = useState([]);
+  const [deleteSign, setDeleteSign] = useState(false);
+  const [addrow, setAddrow] = useState(false);
+  const [newbutton, setNewButton] = useState(false);
   const { main } = openReportlist;
 
+
   // 动态添加表格暂存数据
-  const handleaddTable = (params) => {
-    const newData = (list).map(item => ({ ...item }));
-    newData.push({
-      ...params
-    });
-    setList(newData)
+
+  const handleaddTable = (params, px, rowdelete) => {
+    console.log('params: ', params);
+    console.log('px: ', px);
+    if (deleteSign && rowdelete) {
+      console.log(1)
+      const newData = [];
+      newData.push({
+        ...params
+      });
+
+      setList(newData);
+      setNewButton(false)
+    } else {
+      let filtIndex;
+      const newData = (list).map(item => ({ ...item }));
+
+      for (let i = 0; i < newData.length; i += 1) {
+        if (newData[i].px === px) {
+          filtIndex = i;
+          break;
+        }
+      }
+
+      console.log(filtIndex,'filtIndex')
+
+      if (newData && newData.length) {
+        if (filtIndex !== undefined) {
+          newData.splice(filtIndex, 1, params);
+        }
+      }
+
+      if (newData && (newData.length === 0 || filtIndex === undefined)) {
+        newData.push({
+          ...params
+        });
+      }
+      
+      console.log(newData,'newData')
+
+      setList(newData);
+      setNewButton(false)
+    }
   };
 
   const getopenFlow = () => {
+    console.log(11)
     dispatch({
       type: 'softreport/openReport',
       payload: {
@@ -86,6 +129,7 @@ function OtherReportdetail(props) {
           time1: (value.time1).format('YYYY-MM-DD'),
           time2: (value.time2).format('YYYY-MM-DD'),
         }
+        setList([])
         return dispatch({
           type: 'softreport/saveOther',
           payload: savedata
@@ -93,6 +137,7 @@ function OtherReportdetail(props) {
           if (res.code === 200) {
             message.info(res.msg);
             getopenFlow();
+            props.history.go(0)
           }
         })
       }
@@ -170,10 +215,9 @@ function OtherReportdetail(props) {
 
   useEffect(() => {
     const { addData } = openReportlist;
-    setAddTitle(addData)
     setList(addData)
   }, [loading])
-  
+
   const onChange = (date, dateString) => {
     if (reporttype === 'week') {
       startTime = dateString;
@@ -192,31 +236,42 @@ function OtherReportdetail(props) {
   }
 
   const newMember = () => {
-    const nowNumber = addTitle.map(item => ({ ...item }));
-    nowNumber.push({ 'add': '1', tableNumber: [] });
-    setAddTitle(nowNumber)
+    const nowNumber = list.map(item => ({ ...item }));
+    const newarr = nowNumber.map((item, index) => {
+      return Object.assign(item, { px: (index+2).toString()})
+    });
+    const addObj = {
+      files:'',
+      content:'',
+      title:'',
+      list:'',
+      px: (nowNumber.length + 2).toString()
+    }
+    newarr.push(addObj);
+    setList(newarr);
+    setNewButton(true);
+    setDeleteSign(false);
   }
+
 
   //  移除表格
   const removeForm = (tableIndex) => {
-    addTitle.splice(tableIndex, 1);
     list.splice(tableIndex, 1);
-    const resultArr = [];
-    const listArr = [];
-    for (let i = 0; i < addTitle.length; i += 1) {
-      resultArr.push(addTitle[i])
-    }
-    for (let i = 0; i < list.length; i += 1) {
-      listArr.push(list[i])
-    }
-    setAddTitle(resultArr)
-    setList(listArr)
+    const resultArr = list.map((item, index) => {
+      const newItem = item;
+      newItem.px = (index + 2).toString();
+      return newItem;
+    })
+    setList(resultArr);
   }
+
+
 
   useEffect(() => {
     const { addData } = openReportlist;
-    setAddTitle(addData)
-  }, [loading])
+    setList(addData);
+  }, [loading]);
+
 
   const exportWord = () => {
     dispatch({
@@ -254,7 +309,7 @@ function OtherReportdetail(props) {
       }
     >
       <Card style={{ padding: 24 }}>
-        {loading === false && startTime && (
+        {loading === false && (
           <Row gutter={24}>
             <Form>
               <Col span={24}>
@@ -289,7 +344,7 @@ function OtherReportdetail(props) {
                               message: '请输入填报时间'
                             }
                           ],
-                          initialValue: main ? moment(main.time1) :''
+                          initialValue: main ? moment(main.time1) : ''
                         })(<DatePicker
                           allowClear={false}
                           disabled={reportSearch}
@@ -301,7 +356,7 @@ function OtherReportdetail(props) {
                       <Form.Item label='' style={{ display: 'inline-flex' }}>
                         {
                           getFieldDecorator('time2', {
-                            initialValue: main ? moment(main.time2) :''
+                            initialValue: main ? moment(main.time2) : ''
                           })
                             (<DatePicker
                               disabled={reportSearch}
@@ -337,32 +392,38 @@ function OtherReportdetail(props) {
                 )
               }
 
-              {loading === false && addTitle && addTitle.length > 0 && (
-                addTitle.map((item, index) => {
+              {(loading === false && list &&  list.length > 0) && (
+                list.map((item, index) => {
                   return (
                     <>
-                      <Col span={reportSearch ? 24 : 23}>
+                      <Col span={23}>
                         <AddForm
                           formincontentLayout={formincontentLayout}
-                          px={index + 2}
-                          addTable={newdata => {
-                            handleaddTable(newdata)
+                          px={(index + 2).toString()}
+                          addTable={(newdata, addpx, rowdelete) => {
+                            handleaddTable(newdata, addpx, rowdelete)
                           }}
-                          dynamicData={addTitle[index]}
-                          detailParams={reportSearch}
+                          index={index}
+                          dynamicData={list.length ? list[index] : {}}
+                          // dynamicData={undefined}
                           loading={loading}
+                          ChangeAddRow={v => setAddrow(v)}
+                          sign={deleteSign}
+                          detailParams={reportSearch}
                         />
                       </Col>
 
-                      {!reportSearch && (
-                        <Col span={1}>
-                          <Icon
-                            className="dynamic-delete-button"
-                            type="minus-circle-o"
-                            onClick={() => removeForm(index)}
-                          />
-                        </Col>
-                      )}
+                      {
+                       !reportSearch && (
+                          <Col span={1}>
+                            <Icon
+                              className="dynamic-delete-button"
+                              type="delete"
+                              onClick={() => { removeForm(index); setDeleteSign(true) }}
+                            />
+                          </Col>
+                        )
+                      }
                     </>
                   )
                 })
@@ -373,7 +434,7 @@ function OtherReportdetail(props) {
                 style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
                 type="primary"
                 ghost
-                onClick={() => newMember()}
+                onClick={() => { newMember() }}
                 icon="plus"
                 disabled={reportSearch}
               >

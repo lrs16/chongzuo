@@ -11,7 +11,7 @@ import {
 import moment from 'moment';
 
 const { TextArea } = Input;
-
+let deleteSign = false;
 function DefectTracking(props) {
 
   const {
@@ -65,8 +65,13 @@ function DefectTracking(props) {
   //  删除数据
   const remove = key => {
     const target = deleteObj(key) || {};
-    setData(target);
-    legacyList(target)
+    const newarr = target.map((item, index) => {
+      return Object.assign(item, { editable: true, isNew: false, key: index})
+    });
+
+    deleteSign = true;
+    setData(newarr);
+    legacyList(newarr)
   };
 
   const handleTabledata = () => {
@@ -81,6 +86,12 @@ function DefectTracking(props) {
   useEffect(() => {
     handleTabledata()
   }, [legacyArr])
+
+  useEffect(() => {
+    if (deleteSign) {
+      deleteSign = false
+    }
+  }, [data, deleteSign])
 
   const column = [
     {
@@ -179,11 +190,15 @@ function DefectTracking(props) {
     <>
       <p style={{ fontWeight: '900', fontSize: '16px', marginTop: '20px' }}>六、遗留缺陷问题跟踪,遗留问题、缺陷跟踪情况</p>
 
-      <Table
-        columns={column}
-        dataSource={data}
-        pagination={false}
-      />
+
+      {deleteSign === false && (
+        <Table
+          columns={column}
+          dataSource={data}
+          pagination={false}
+          rowKey={record => record.key}
+        />
+      )}
 
       <Button
         style={{ width: '100%', marginTop: 16}}

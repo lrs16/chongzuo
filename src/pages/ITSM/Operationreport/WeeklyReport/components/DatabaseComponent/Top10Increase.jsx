@@ -8,6 +8,7 @@ import {
   message
 } from 'antd';
 
+let deleteSign = false;
 const Top10Increase = React.forwardRef((props, ref) => {
   const attRef = useRef();
   useImperativeHandle(
@@ -31,7 +32,7 @@ const Top10Increase = React.forwardRef((props, ref) => {
   const newMember = () => {
     const newData = (data).map(item => ({ ...item }));
     newData.push({
-      key: data.length + 1,
+      key: data.length,
       id: '',
       field1: '',
       field2: '',
@@ -55,6 +56,11 @@ const Top10Increase = React.forwardRef((props, ref) => {
   //  删除数据
   const remove = key => {
     const target = deleteObj(key) || {};
+    const newarr = target.map((item, index) => {
+      return Object.assign(item, { editable: true, isNew: false, key: index })
+    });
+
+    deleteSign = true;
     setData(target);
     tableUpList(target)
   };
@@ -71,7 +77,7 @@ const Top10Increase = React.forwardRef((props, ref) => {
   }
 
   const handleTabledata = () => {
-    if (newbutton === false && tableUpArr) {
+    if (newbutton === false && tableUpArr && tableUpArr.length) {
       const newarr = tableUpArr.map((item, index) => {
         return Object.assign(item, { editable: true, isNew: false, key: index })
       })
@@ -175,16 +181,26 @@ const Top10Increase = React.forwardRef((props, ref) => {
 
   useEffect(() => {
     handleTabledata();
-  }, [tableUpArr])
+  }, [tableUpArr]);
+
+  useEffect(() => {
+    if (deleteSign) {
+      deleteSign = false
+    }
+  }, [data, deleteSign])
 
   return (
     <>
       <p style={{ marginTop: 24 }}>（3）Top10表增长情况</p>
 
-      <Table
-        columns={column}
-        dataSource={data}
-      />
+      {deleteSign === false && (
+        <Table
+          columns={column}
+          dataSource={data}
+          rowKey={record => record.key}
+        />
+      )}
+
 
       <Button
         style={{ width: '100%', marginTop: 16 }}

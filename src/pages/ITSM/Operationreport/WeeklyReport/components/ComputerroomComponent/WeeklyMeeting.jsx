@@ -7,7 +7,7 @@ import {
   Popconfirm,
   message
 } from 'antd';
-
+let deleteSign = false;
 const { TextArea } = Input;
 
 function WeeklyMeeting(props) {
@@ -22,17 +22,6 @@ function WeeklyMeeting(props) {
   const [newbutton, setNewButton] = useState(false);
 
 
-  // 初始化把数据传过去
-  // useEffect(() => {
-  //   if (data && data.length) {
-  //     meetingSummaryList(data)
-  //   }
-  // }, [data]);
-
-  // const handleSave = () => {
-  //   meetingSummaryList(data);
-  //   message.info('暂存保存数据成功')
-  // }
   // 新增一条记录
   const newMember = () => {
     const newData = (data).map(item => ({ ...item }));
@@ -54,8 +43,13 @@ function WeeklyMeeting(props) {
   //  删除数据
   const remove = key => {
     const target = deleteObj(key) || {};
-    setData(target);
-    meetingSummaryList(target);
+    const newarr = target.map((item, index) => {
+      return Object.assign(item, { editable: true, isNew: false, key: index})
+    });
+
+    deleteSign = true;
+    setData(newarr);
+    meetingSummaryList(newarr);
     message.info('删除成功')
   };
 
@@ -151,6 +145,12 @@ function WeeklyMeeting(props) {
   ];
 
   useEffect(() => {
+    if (deleteSign) {
+      deleteSign = false
+    }
+  }, [data, deleteSign])
+
+  useEffect(() => {
     handleTabledata();
   }, [meetingSummaryarr])
 
@@ -159,10 +159,15 @@ function WeeklyMeeting(props) {
     <>
       <p style={{ fontWeight: '900', fontSize: '16px' }}>{type === 'week' ? '五、周例会会议纪要完成情况' : '五、月例会会议纪要完成情况'}</p>
 
-      <Table
-        columns={column}
-        dataSource={data}
-      />
+
+      {deleteSign === false && (
+        <Table
+          columns={column}
+          dataSource={data}
+          pagination={false}
+          rowKey={record => record.key}
+        />
+      )}
 
       <Button
         style={{ width: '100%', marginTop: 16 }}

@@ -15,8 +15,8 @@ import {
 import SysUpload from '@/components/SysUpload';
 import Downloadfile from '@/components/SysUpload/Downloadfile';
 
+let deleteSign = false;
 const { TextArea } = Input;
-
 const AddForm = React.forwardRef((props, ref) => {
   const attRef = useRef();
   useImperativeHandle(
@@ -35,14 +35,58 @@ const AddForm = React.forwardRef((props, ref) => {
     dynamicData,
     px,
     addTable,
-    index,
-    addrow,
-    ChangeAddRow
+    ChangeAddRow,
+    sign,
+    changeDeletesign,
   } = props;
   const [addTitle, setAddTitle] = useState([]);
   const [data, setData] = useState([]);
-  // const [dynamicTable, setDynamicTable] = useState([]);
-  // const [list, setList] = useState([])
+  const [newbutton, setNewButton] = useState(false);
+
+  // console.log(dynamicData,'dynamicData')
+
+  const handleSubmit = (e, typeParams, tableData, rowdelete) => {
+    //  解决异步导致的空行问题
+    // const newData = (data).map(item => ({ ...item }));
+    // if (!tableData) {
+    //   newData.push({
+    //     key: data.length,
+    //     field1: '',
+    //     field2: '',
+    //     field3: '',
+    //     field4: '',
+    //     field5: '',
+    //     field6: '',
+    //     field7: '',
+    //     field8: '',
+    //     field9: '',
+    //     field10: '',
+    //   });
+    // }
+
+
+    props.form.validateFields((err, value) => {
+      const editTable = {
+        ...value,
+        files: value.files ? value.files : '',
+        content: typeParams === 'content' ? e : value.content,
+        title: typeParams === 'title' ? e : value.title,
+        list: tableData || data,
+        px: px.toString()
+      };
+      addTable(editTable, editTable.px, rowdelete);
+      ChangeAddRow(false)
+    })
+  }
+
+  const handleTabledata = () => {
+    if (dynamicData !== undefined && dynamicData.list && newbutton === false) {
+      const newarr = (dynamicData.list).map((item, index) => {
+        return Object.assign(item, { editable: true, isNew: false, key: index })
+      })
+      setData(newarr)
+    }
+  }
 
   const newMember = () => {
     const newData = (data).map(item => ({ ...item }));
@@ -59,43 +103,14 @@ const AddForm = React.forwardRef((props, ref) => {
       field9: '',
       field10: '',
     });
+    handleSubmit();
     setData(newData);
+    setNewButton(true);
   };
 
-  const removeForm = (tableIndex) => {
-    addTitle.splice(tableIndex, 1);
-    list.splice(tableIndex, 1);
-    const resultArr = [];
-    // const listArr = [];
-    for (let i = 0; i < list.length; i += 1) {
-      resultArr.push(list[i])
-    }
-    // for (let i = 0; i < list.length; i += 1) {
-    //   listArr.push(list[i])
-    // }
-    setAddTitle(resultArr)
-    setList(resultArr)
-  }
-  //  // 新增一条记录
-  //  const handleaddTable = (params) => {
-  //    console.log(list,'list')
-  //   const newData = (list).map(item => ({ ...item }));
-  //   newData.push({
-  //     ...params
-  //   });
-  //   // const hash = {};
-  //   // console.log(newData,'newData')
-  //   // const arr = newData.reduce(function (item, next) {
-  //   //   hash[next.px] ? '' : hash[next.px] = true && item.push(next);
-  //   //   return item
-  //   // }, []);
-  //   // const result = [];
-  //   // result.push(arr)
-  //   setList(newData);
-  //   setNewButton(false)
-  // };
   //  获取行  
   const getRowByKey = (key, newData) => {
+
     return (newData || data).filter(item => item.key === key)[0];
   }
 
@@ -106,7 +121,13 @@ const AddForm = React.forwardRef((props, ref) => {
   //  删除数据
   const remove = key => {
     const target = deleteObj(key) || {};
-    setData(target)
+    const newarr = target.map((item, index) => {
+      return Object.assign(item, { key: index + 1 })
+    });
+
+    deleteSign = true;
+    handleSubmit(null, null, newarr, false);
+    setData(newarr)
   };
 
   const titleNumber = () => {
@@ -119,12 +140,11 @@ const AddForm = React.forwardRef((props, ref) => {
 
   const handleFieldChange = (e, fieldName, key) => {
     const newData = (data).map(item => ({ ...item }));
-    const target = getRowByKey(key, newData)
+    const target = getRowByKey(key, newData);
+    handleSubmit(null, null, newData, true);
     if (target) {
-      if (target) {
-        target[fieldName] = e;
-        setData(newData);
-      }
+      target[fieldName] = e;
+      setData(newData);
     }
   }
 
@@ -297,110 +317,87 @@ const AddForm = React.forwardRef((props, ref) => {
     }
   ];
 
-  const handleTabledata = () => {
-    if (dynamicData !== undefined && dynamicData.list && dynamicData.list.length) {
-      const newarr = (dynamicData.list).map((item, index) => {
-        return Object.assign(item, { editable: true, isNew: false, key: index })
-      })
-      setData(newarr)
-    }
-  }
-
-  const handleSubmit = (e, typeParams) => {
-    props.form.validateFields((err, value) => {
-      const editTable = {
-        list: {
-          // ...value,
-          content: typeParams === 'content' ? e : value.content,
-          title: typeParams === 'title' ? e : value.title,
-          list: data,
-        },
-        px,
-      };
-      addTable(editTable,editTable.px);
-      //  handleaddTable(editTable)
-      // message.info('暂存保存数据成功')
-    })
-  }
-
 
   useEffect(() => {
     handleTabledata();
   }, [dynamicData]);
 
   useEffect(() => {
-    if (addrow) {
-      handleSubmit();
-      ChangeAddRow(false)
+    if (sign) {
+      setNewButton(false)
+      deleteSign = true;
+      handleTabledata();
     }
-  }, [addrow]);
+    ChangeAddRow(true);
+    setFieldsValue({
+      title: dynamicData.title,
+      content: dynamicData.content,
+      files: dynamicData.files,
+    });
+  }, [sign]);
 
+  useEffect(() => {
+    if (sign || deleteSign) {
+      deleteSign = false;
+    }
+  }, [deleteSign]);
 
-
+  useEffect(() => {
+    handleTabledata();
+  }, [newbutton])
 
   return (
     <>
-      {/* {
-        loading === false && dynamicData && ( */}
+      {/* {s
+        loading === false && dynamicData  && ( */}
       <Row gutter={24}>
         <Form>
           <Col><p>注：第一行数据作为表头</p></Col>
 
-          <Col style={{ textAlign: 'right', marginBottom: 10 }}>
-            <Button
-              disabled={detailParams}
-              type='primary'
-              onClick={handleSubmit}
-            >
-              保存
-            </Button>
-          </Col>
-
 
           <Form.Item label={titleNumber()} {...formincontentLayout}>
             {getFieldDecorator(`title`, {
-              // initialValue: dynamicData.title ? dynamicData.title : ''
+              initialValue: dynamicData.title ? dynamicData.title : ''
             })(
               <Input
                 disabled={detailParams}
-                onBlur={(e) => { handleSubmit(e.target.value, 'title')}}
+                onChange={(e) => handleSubmit(e.target.value, 'title')}
               />
             )}
           </Form.Item>
 
           <Form.Item label={contentNumber()} {...formincontentLayout}>
             {getFieldDecorator(`content`, {
-              // initialValue: dynamicData.content ? dynamicData.content : ''
+              initialValue: dynamicData.content ? dynamicData.content : ''
             })(
               <TextArea
                 autoSize={{ minRows: 3 }}
                 disabled={detailParams}
-              onChange={(e) => handleSubmit(e.target.value, 'content')}
+                onChange={(e) => handleSubmit(e.target.value, 'content')}
               />
             )}
           </Form.Item>
 
           {
-            !detailParams && (
+            !detailParams && deleteSign === false && (
               <Form.Item label='上传附件'    {...formincontentLayout}>
                 {getFieldDecorator(`files`, {
-                  // initialValue: dynamicData.files ? dynamicData.files : ''
+                  initialValue: dynamicData.files ? dynamicData.files : ''
                 })(
                   <SysUpload
-                    // fileslist={dynamicData.files ? JSON.parse(dynamicData.files) : []}
-                    fileslist={[]}
+                    fileslist={dynamicData.files ? JSON.parse(dynamicData.files) : []}
+                    // fileslist={[]}
                     ChangeFileslist={newvalue => {
                       setFieldsValue({
                         files: JSON.stringify(newvalue.arr),
                       })
-                      // handleSubmit();
+                      handleSubmit();
                     }}
                   />
                 )}
               </Form.Item>
             )
           }
-
 
           {
             detailParams && (
@@ -418,10 +415,15 @@ const AddForm = React.forwardRef((props, ref) => {
             )
           }
 
-          <Table
-            columns={column}
-          // dataSource={data}
-          />
+          {
+            deleteSign === false && (
+              <Table
+                columns={column}
+                dataSource={data}
+              />
+            )
+          }
+
 
           <Button
             style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
@@ -441,6 +443,14 @@ const AddForm = React.forwardRef((props, ref) => {
       // } */}
     </>
   )
-})
+});
+
+AddForm.defaultProps = {
+  dynamicData: {
+    title: '',
+    content: '',
+    files: ''
+  }
+}
 
 export default Form.create({})(AddForm)

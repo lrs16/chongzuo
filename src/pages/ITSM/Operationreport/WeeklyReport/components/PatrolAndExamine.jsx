@@ -10,6 +10,7 @@ import {
 } from 'antd';
 import moment from 'moment';
 
+let deleteSign = false;
 const { TextArea } = Input;
 const PatrolAndExamine = React.forwardRef((props, ref) => {
   const attRef = useRef();
@@ -57,8 +58,13 @@ const PatrolAndExamine = React.forwardRef((props, ref) => {
   //  删除数据
   const remove = key => {
     const target = deleteObj(key) || {};
-    setData(target);
-    patrolAndExamineList(target)
+    const newarr = target.map((item, index) => {
+      return Object.assign(item, { editable: true, isNew: false, key: index })
+    });
+
+    deleteSign = true;
+    setData(newarr);
+    patrolAndExamineList(newarr)
   };
 
   const handleFieldChange = (e, fieldName, key) => {
@@ -197,6 +203,12 @@ const PatrolAndExamine = React.forwardRef((props, ref) => {
     handleTabledata();
   }, [patrolAndExamine])
 
+  useEffect(() => {
+    if (deleteSign) {
+      deleteSign = false
+    }
+  }, [data, deleteSign])
+
 
   return (
     <>
@@ -204,11 +216,14 @@ const PatrolAndExamine = React.forwardRef((props, ref) => {
 
       <p style={{ marginTop: '10px', marginBottom: 20 }}>（一）软件运维巡检情况</p>
 
-      <Table
-        columns={column}
-        dataSource={data}
-        pagination={false}
-      />
+      {deleteSign === false && (
+        <Table
+          columns={column}
+          dataSource={data}
+          pagination={false}
+          rowKey={record => record.key}
+        />
+      )}
 
       <Button
         style={{ width: '100%', marginTop: 16 }}

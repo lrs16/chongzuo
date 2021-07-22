@@ -20,6 +20,7 @@ import moment from 'moment';
 const { Search, TextArea } = Input;
 const { Option } = Select;
 
+let deleteSign = false;
 function ThisWeekitsm(props) {
 
   const {
@@ -36,6 +37,7 @@ function ThisWeekitsm(props) {
   const [data, setData] = useState([]);
   const [disablelist, setDisabledList] = useState([]);
   const [spinloading, setSpinLoading] = useState(true);
+  const [newbutton, setNewButton] = useState(false);
   const [value, setValue] = useState('event');
 
   // 自动完成报障用户
@@ -49,14 +51,15 @@ function ThisWeekitsm(props) {
     >
       <Spin spinning={spinloading}>
         <div
+          className={styles.disableuser}
         >
-          <span style={{paddingRight:16}}>{obj.no}</span>
-          <span  style={{paddingRight:16}}>{obj.content}</span>
-          <span  style={{paddingRight:16}}>{obj.handleContent}</span>
-          <span  style={{paddingRight:16}}>{obj.startTime}</span>
-          <span  style={{paddingRight:16}}>{obj.endTime}</span>
-          <span  style={{paddingRight:16}}>{obj.submit}</span>
-          <span  style={{paddingRight:16}}>{obj.systemName}</span>
+          <span>{obj.no}</span>
+          <span>{obj.content}</span>
+          <span>{obj.handleContent}</span>
+          <span>{obj.startTime}</span>
+          <span>{obj.endTime}</span>
+          <span>{obj.submit}</span>
+          <span>{obj.systemName}</span>
         </div>
       </Spin>
     </Option>
@@ -95,6 +98,7 @@ function ThisWeekitsm(props) {
       isNew: true
     };
     newData.push(searchObj);
+    setNewButton(true);
     setData(newData);
     eventList(newData)
   };
@@ -111,13 +115,13 @@ function ThisWeekitsm(props) {
   //  删除数据
   const remove = key => {
     const target = deleteObj(key) || {};
-    const newTarget = target.map((item, index) => {
-      const newItem = item;
-      newItem.field1 = index + 1;
-      return newItem;
-    })
-    setData(newTarget);
-    eventList(newTarget)
+    const newarr = target.map((item, index) => {
+      return Object.assign(item, { editable: true, isNew: false, key: index, field1: index + 1 })
+    });
+
+    deleteSign = true;
+    setData(newarr);
+    eventList(newarr)
   };
 
 
@@ -138,15 +142,23 @@ function ThisWeekitsm(props) {
   }
 
   const handleTabledata = () => {
+    if (newbutton === false) {
       const newarr = eventArr.map((item, index) => {
         return Object.assign(item, { editable: true, isNew: false, key: index })
       })
       setData(newarr)
+    }
   }
 
   useEffect(() => {
     handleTabledata();
   }, [eventArr])
+
+  useEffect(() => {
+    if (deleteSign) {
+      deleteSign = false
+    }
+  }, [data, deleteSign])
 
   const column = [
     {
@@ -241,7 +253,7 @@ function ThisWeekitsm(props) {
         return (
           <DatePicker
             disabled={detailParams}
-            defaultValue={text ? moment(text) : moment(null)}
+            defaultValue={text ? moment(text) : moment(new Date())}
             onChange={e => handleFieldChange(e, 'field7', record.key)}
           />
         )
@@ -315,43 +327,48 @@ function ThisWeekitsm(props) {
                   </Select>
                 </Form.Item>
               </Col> */}
-
-              <Col span={24}>
-                <Form.Item label='搜索内容'>
-                  {getFieldDecorator('content', {
-                  })(
-                    <>
-                      <AutoComplete
-
-                        defaultActiveFirstOption={false}
-                        dataSource={disableduser}
-                        // defaultValue='按姓名搜索'
-                        dropdownMatchSelectWidth={false}
-                        dropdownStyle={{ width: 700 }}
-                        optionLabelProp="value"
-                        onSelect={(v, opt) => handleDisableduser(v, opt)}
-                      // getPopupContainer={triggerNode => triggerNode.parentNode}
-                      >
-                        <Search
+              {!detailParams && (
+                <Col span={24}>
+                  <Form.Item label='搜索内容'>
+                    {getFieldDecorator('content', {
+                    })(
+                      <>
+                        <AutoComplete
                           disabled='true'
-                          placeholder="按编号和描述搜索"
-                          onSearch={values => SearchDisableduser(values)}
-                        />
-                      </AutoComplete>,
-                    </>
-                  )}
-                </Form.Item>
-              </Col>
+                          defaultActiveFirstOption={false}
+                          dataSource={disableduser}
+                          // defaultValue='按姓名搜索'
+                          dropdownMatchSelectWidth={false}
+                          dropdownStyle={{ width: 700 }}
+                          optionLabelProp="value"
+                          onSelect={(v, opt) => handleDisableduser(v, opt)}
+                        // getPopupContainer={triggerNode => triggerNode.parentNode}
+                        >
+                          <Search
+                            disabled='true'
+                            placeholder="按编号和描述搜索"
+                            onSearch={values => SearchDisableduser(values)}
+                          />
+                        </AutoComplete>,
+                      </>
+                    )}
+                  </Form.Item>
+                </Col>
+              )}
+
             </Row>
           )}
         </Form>
 
-        <Table
-          columns={column}
-          dataSource={data}
-          pagination={false}
-          loading={loading}
-        />
+        {deleteSign === false && (
+          <Table
+            columns={column}
+            dataSource={data}
+            pagination={false}
+            loading={loading}
+            rowKey={record => record.key}
+          />
+        )}
       </Row>
     </>
   )

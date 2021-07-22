@@ -11,7 +11,7 @@ import {
 } from 'antd';
 
 const { TextArea } = Input;
-
+let deleteSign = false;
 function EventTop(props) {
   const {
     topNList,
@@ -49,8 +49,13 @@ function EventTop(props) {
   //  删除数据
   const remove = key => {
     const target = deleteObj(key) || {};
-    setData(target);
-    topNList(target)
+    const newarr = target.map((item, index) => {
+      return Object.assign(item, { editable: true, isNew: false, key: index, field1: index + 1 })
+    });
+
+    deleteSign = true;
+    setData(newarr);
+    topNList(newarr)
   };
 
 
@@ -66,12 +71,12 @@ function EventTop(props) {
 
   const handleTabledata = () => {
     const newarr = (topArr).map((item, index) => {
-      return Object.assign(item, { editable: true, isNew: false, key: index })
+      return Object.assign(item, { editable: true, isNew: false, key: index, field1: index + 1 })
     })
     setData(newarr)
   }
 
-  const editColumns = [
+  const column = [
     {
       title: '序号',
       dataIndex: 'field1',
@@ -170,6 +175,12 @@ function EventTop(props) {
     handleTabledata();
   }, [topArr])
 
+  useEffect(() => {
+    if (deleteSign) {
+      deleteSign = false
+    }
+  }, [data, deleteSign])
+
   return (
     <>
       <Row gutter={16}>
@@ -177,11 +188,14 @@ function EventTop(props) {
           <p>（三）工单TopN 事件分析</p>
         </Col>
 
-        <Table
-          columns={editColumns}
-          dataSource={data}
-          pagination={false}
-        />
+        {deleteSign === false && (
+          <Table
+            columns={column}
+            dataSource={data}
+            pagination={false}
+            rowKey={record => record.key}
+          />
+        )}
 
         <Button
           style={{ width: '100%', marginTop: 16, marginBottom: 8 }}

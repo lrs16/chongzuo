@@ -8,6 +8,7 @@ import {
   message
 } from 'antd';
 
+let deleteSign = false;
 const { TextArea } = Input;
 const Diskgroup = React.forwardRef((props, ref) => {
   const attRef = useRef();
@@ -26,26 +27,25 @@ const Diskgroup = React.forwardRef((props, ref) => {
   } = props;
 
   const [data, setData] = useState([]);
-  const [uploadkey, setKeyUpload] = useState('');
-  const [fileslist, setFilesList] = useState([]);
   const [newbutton, setNewButton] = useState(false);
 
 
   // 新增一条记录
   const newMember = () => {
-    setFilesList([]);
-    setKeyUpload('');
     const newData = (data).map(item => ({ ...item }));
+
     newData.push({
-      key: data.length + 1,
+      key: data.length,
       id: '',
       field1: '',
       field2: '',
       field3: '',
       field4: '',
     });
-    setData(newData);
-    discList(newData);
+    // console.log(newKey,'newKey')
+    setData([]);
+    setData(JSON.parse(JSON.stringify(newData)));
+    discList(JSON.parse(JSON.stringify(newData)));
     setNewButton(true);
   };
 
@@ -55,14 +55,21 @@ const Diskgroup = React.forwardRef((props, ref) => {
   }
 
   const deleteObj = (key, newData) => {
+    // const testdata = [...data];
     return (newData || data).filter(item => item.key !== key);
   }
 
   //  删除数据
   const remove = key => {
     const target = deleteObj(key) || {};
-    discList(target);
-    setData(target)
+    console.log('target: ', target);
+    const newarr = target.map((item, index) => {
+      return Object.assign(item, { editable: true, isNew: false, key: index })
+    });
+
+    deleteSign = true;
+    setData(newarr)
+    discList(newarr)
   };
 
   const handleFieldChange = (e, fieldName, key) => {
@@ -76,7 +83,7 @@ const Diskgroup = React.forwardRef((props, ref) => {
   }
 
   const handleTabledata = () => {
-    if (newbutton === false && discArr) {
+    if (newbutton === false && discArr && discArr.length) {
       const newarr = discArr.map((item, index) => {
         return Object.assign(item, { editable: true, isNew: false, key: index })
       })
@@ -100,7 +107,7 @@ const Diskgroup = React.forwardRef((props, ref) => {
       }
     },
     {
-      title: '已使用容量GB',
+      title: '总容量GB',
       dataIndex: 'field2',
       key: 'field2',
       render: (text, record) => {
@@ -114,7 +121,7 @@ const Diskgroup = React.forwardRef((props, ref) => {
       }
     },
     {
-      title: '接口运行情况',
+      title: '已使用容量GB',
       dataIndex: 'field3',
       key: 'field3',
       render: (text, record) => {
@@ -128,7 +135,7 @@ const Diskgroup = React.forwardRef((props, ref) => {
       }
     },
     {
-      title: '高级功能运行情况',
+      title: '剩余容量GB（含镜像）',
       dataIndex: 'field4',
       key: 'field4',
       render: (text, record) => {
@@ -137,6 +144,48 @@ const Diskgroup = React.forwardRef((props, ref) => {
             disabled={reportSearch}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field4', record.key)}
+          />
+        )
+      }
+    },
+    {
+      title: '实际可用',
+      dataIndex: 'field5',
+      key: 'field5',
+      render: (text, record) => {
+        return (
+          <TextArea
+            disabled={reportSearch}
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field5', record.key)}
+          />
+        )
+      }
+    },
+    {
+      title: '使用百分比',
+      dataIndex: 'field6',
+      key: 'field6',
+      render: (text, record) => {
+        return (
+          <TextArea
+            disabled={reportSearch}
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field6', record.key)}
+          />
+        )
+      }
+    },
+    {
+      title: '预计可用时长',
+      dataIndex: 'field7',
+      key: 'field7',
+      render: (text, record) => {
+        return (
+          <TextArea
+            disabled={reportSearch}
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field7', record.key)}
           />
         )
       }
@@ -164,19 +213,28 @@ const Diskgroup = React.forwardRef((props, ref) => {
 
   ];
 
-
   useEffect(() => {
     handleTabledata();
   }, [discArr])
+
+  useEffect(() => {
+    if(deleteSign) {
+      deleteSign = false
+    }
+  }, [data, deleteSign])
+
 
   return (
     <>
       <p>（1）磁盘组</p>
 
-      <Table
-        columns={column}
-        dataSource={data}
-      />
+      {deleteSign === false && (
+        <Table
+          columns={column}
+          dataSource={data}
+          rowKey={record => record.key}
+        />
+      )}
 
       <Button
         style={{ width: '100%', marginTop: 16, }}

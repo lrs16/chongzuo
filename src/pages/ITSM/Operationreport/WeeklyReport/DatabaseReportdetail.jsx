@@ -8,7 +8,8 @@ import {
   Input,
   DatePicker,
   Descriptions,
-  Icon
+  Icon,
+  message
 } from 'antd';
 import moment from 'moment';
 import router from 'umi/router';
@@ -69,7 +70,6 @@ function DatabaseReportdetail(props) {
 
   const required = true;
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
-  const [addTitle, setAddTitle] = useState([]);
   const [fileslist, setFilesList] = useState([]);
   const [discList, setDiscList] = useState([]); // 本周运维情况综述列表 
   const [tablespaceList, setTablespaceList] = useState([]) // 软件运维巡检
@@ -78,8 +78,22 @@ function DatabaseReportdetail(props) {
   const [operationList, setOperationList] = useState([]) // 上周作业计划
   const [nextOperationList, setNextOperationList] = useState([]) // 下周作业列表
   const [list, setList] = useState([]);
+
+  const [newbutton, setNewButton] = useState(false);
+  const [addrow, setAddrow] = useState(false);
+  const [deleteSign, setDeleteSign] = useState(false);
+
   const { main } = openReportlist;
 
+  const getopenFlow = () => {
+    dispatch({
+      type: 'softreport/openReport',
+      payload: {
+        editStatus: 'edit',
+        id: mainId
+      }
+    })
+  }
   //  保存表单
   const databaseReportform = () => {
     props.form.validateFields((err, values) => {
@@ -106,7 +120,11 @@ function DatabaseReportdetail(props) {
           payload: savedata
         }).then(res => {
           if (res.code === 200) {
-            getopenFlow()
+            message.info(res.msg);
+            getopenFlow();
+            props.history.go(0)
+          } else {
+            message.info('保存失败')
           }
         })
       }
@@ -115,69 +133,52 @@ function DatabaseReportdetail(props) {
 
   }
 
-  const defaultTime = () => {
-    //  周
-    if (reporttype === 'week') {
-      startTime = moment().subtract('days', 6).format('YYYY-MM-DD');
-      endTime = moment().format('YYYY-MM-DD');
-    } else {
-      //  月
-      startTime = moment().startOf('month').format('YYYY-MM-DD');
-      endTime = moment().endOf('month').format('YYYY-MM-DD');
-    }
-  }
 
   // 上传删除附件触发保存
   useEffect(() => {
     if (files.ischange) {
-      softReportform();
+      databaseReportform();
     }
   }, [files]);
 
 
-  //   七、上周作业完成情况--表格
-  const lastweekHomework = () => {
-    dispatch({
-      type: 'softreport/lastweekHomework',
-      payload: {
-        time1: startTime,
-        time2: endTime,
-        pageIndex: 0,
-        pageSize: 10
-      }
-    })
-  }
-
-  //   七、下周作业完成情况--表格
-  const nextweekHomework = () => {
-    dispatch({
-      type: 'softreport/nextweekHomework',
-      payload: {
-        time1: startTime,
-        time2: endTime,
-        pageIndex: 0,
-        pageSize: 10
-      }
-    })
-  }
-
-  const getopenFlow = () => {
-    dispatch({
-      type: 'softreport/openReport',
-      payload: {
-        editStatus: 'edit',
-        id: mainId
-      }
-    })
-  }
 
   // 新增一条记录
-  const handleaddTable = (params) => {
-    const newData = (list).map(item => ({ ...item }));
-    newData.push({
-      ...params
-    });
-    setList(newData)
+  const handleaddTable = (params, px, rowdelete) => {
+    if (deleteSign && rowdelete) {
+      const newData = [];
+      newData.push({
+        ...params
+      });
+
+      setList(newData);
+      setNewButton(false)
+    } else {
+      let filtIndex;
+      const newData = (list).map(item => ({ ...item }));
+
+      for (let i = 0; i < newData.length; i += 1) {
+        if (newData[i].px === px) {
+          filtIndex = i;
+          break;
+        }
+      }
+
+      if (newData && newData.length) {
+        if (filtIndex !== undefined) {
+          newData.splice(filtIndex, 1, params);
+        }
+      }
+
+      if (newData && (newData.length === 0 || filtIndex === undefined)) {
+        newData.push({
+          ...params
+        });
+      }
+
+      setList(newData);
+      setNewButton(false)
+    }
   };
 
   const onChange = (date, dateString) => {
@@ -197,12 +198,6 @@ function DatabaseReportdetail(props) {
     setFieldsValue({ time1: moment(startTime) })
   }
 
-  // 上传删除附件触发保存
-  useEffect(() => {
-    lastweekHomework();
-    nextweekHomework();
-    defaultTime();
-  }, []);
 
   useEffect(() => {
     if (mainId) {
@@ -224,8 +219,7 @@ function DatabaseReportdetail(props) {
     setDefectList(defectArr);
     setOperationList(operationArr);
     setNextOperationList(nextOperationArr);
-    
-    setAddTitle(addData);
+
     setList(addData)
   }, [loading])
 
@@ -275,18 +269,32 @@ function DatabaseReportdetail(props) {
   }
 
   const newMember = () => {
-    const nowNumber = addTitle.map(item => ({ ...item }));
-    nowNumber.push({ 'add': '1', tableNumber: [] });
-    setAddTitle(nowNumber)
+    const nowNumber = list.map(item => ({ ...item }));
+    const newarr = nowNumber.map((item, index) => {
+      return Object.assign(item, { px: (index + 6).toString() })
+    });
+    const addObj = {
+      files: '',
+      content: '',
+      title: '',
+      list: '',
+      px: (nowNumber.length + 6).toString()
+    }
+
+    newarr.push(addObj);
+    setList(newarr);
+    setNewButton(true);
+    setDeleteSign(false);
   }
 
   const removeForm = (tableIndex) => {
-    addTitle.splice(tableIndex, 1);
-    const resultArr = [];
-    for (let i = 0; i < addTitle.length; i++) {
-      resultArr.push(addTitle[i])
-    }
-    setAddTitle(resultArr)
+    list.splice(tableIndex, 1);
+    const resultArr = list.map((item, index) => {
+      const newItem = item;
+      newItem.px = (index + 6).toString();
+      return newItem;
+    })
+    setList(resultArr);
   }
 
   const exportWord = () => {
@@ -375,7 +383,7 @@ function DatabaseReportdetail(props) {
                       <Form.Item label='' style={{ display: 'inline-flex' }}>
                         {
                           getFieldDecorator('time2', {
-                            initialValue: main ? moment(main.time2) :''
+                            initialValue: main ? moment(main.time2) : ''
                           })
                             (<DatePicker
                               allowClear={false}
@@ -397,12 +405,12 @@ function DatabaseReportdetail(props) {
                       style={{ display: 'inline-flex' }}
                     >
                       {getFieldDecorator('time1', {
-                           rules: [
-                            {
-                              required,
-                              message: '请输入填报时间'
-                            }
-                          ],
+                        rules: [
+                          {
+                            required,
+                            message: '请输入填报时间'
+                          }
+                        ],
                         initialValue: main ? moment(main.time1) : ''
                       })(<MonthPicker
                         allowClear={false}
@@ -423,7 +431,7 @@ function DatabaseReportdetail(props) {
                 <Form.Item label=''>
                   {
                     getFieldDecorator('content', {
-                      initialValue: main?main.content:''
+                      initialValue: main ? main.content : ''
                     })
                       (<TextArea
                         autoSize={{ minRows: 3 }}
@@ -516,8 +524,7 @@ function DatabaseReportdetail(props) {
                   tablespaceList={contentrowdata => {
                     setTablespaceList(contentrowdata)
                   }}
-                  startTime={startTime}
-                  endTime={endTime}
+                  time={main}
                   reportSearch={reportSearch}
                 />
               </Col>
@@ -649,6 +656,7 @@ function DatabaseReportdetail(props) {
                   }}
                   mainId={mainId}
                   detailParams={reportSearch}
+                  databaseParams='true'
                 />
               </Col>
 
@@ -711,6 +719,7 @@ function DatabaseReportdetail(props) {
                   }}
                   mainId={mainId}
                   detailParams={reportSearch}
+                  databaseParams='true'
                 />
               </Col>
 
@@ -757,33 +766,37 @@ function DatabaseReportdetail(props) {
                 )
               }
 
-              {loading === false && addTitle && addTitle.length > 0 && (
-                addTitle.map((item, index) => {
+              {(loading === false && list && list.length > 0) && (
+                list.map((item, index) => {
                   return (
                     <>
-                      <Col span={reportSearch ? 24 : 23}>
+                      <Col span={23}>
                         <AddForm
-                          detailParams={reportSearch}
                           formincontentLayout={formincontentLayout}
-                          px={index + 6}
-                          addTable={newdata => {
-                            handleaddTable(newdata)
+                          px={(index + 6).toString()}
+                          addTable={(newdata, addpx, rowdelete) => {
+                            handleaddTable(newdata, addpx, rowdelete)
                           }}
-                          dynamicData={addTitle[index]}
+                          index={index}
+                          dynamicData={list.length ? list[index] : {}}
                           loading={loading}
+                          ChangeAddRow={v => setAddrow(v)}
+                          sign={deleteSign}
+                          detailParams={reportSearch}
                         />
                       </Col>
 
-                      {!reportSearch && (
-                        <Col span={1}>
-                          <Icon
-                            className="dynamic-delete-button"
-                            type="minus-circle-o"
-                            onClick={() => removeForm(index)}
-                          />
-                        </Col>
-                      )}
-
+                      {
+                        !reportSearch && (
+                          <Col span={1}>
+                            <Icon
+                              className="dynamic-delete-button"
+                              type="delete"
+                              onClick={() => { removeForm(index); setDeleteSign(true) }}
+                            />
+                          </Col>
+                        )
+                      }
                     </>
                   )
                 })

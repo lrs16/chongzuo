@@ -90,7 +90,6 @@ function SoftReportdetail(props) {
   const required = true;
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
   const [fileslist, setFilesList] = useState({ arr: [], ischange: false }); // 下载列表
-  const [addTitle, setAddTitle] = useState([]);
   const [contentRow, setContentRow] = useState([]); // 本周运维情况综述列表 
   const [patrolAndExamineList, setPatrolAndExamine] = useState([]) // 软件运维巡检
   const [materialsList, setMaterialsList] = useState([]) // 运维材料提交情况
@@ -105,7 +104,12 @@ function SoftReportdetail(props) {
   const [typeList, setTypeList] = useState([]) // TOPN列表
   const [nextOperationList, setNextOperationList] = useState([]) // 下周作业列表
   const [list, setList] = useState([]);
-  const [buttonVisible, setButtonVisible] = useState(false)
+  const [buttonVisible, setButtonVisible] = useState(false);
+
+  const [newbutton, setNewButton] = useState(false);
+  const [addrow, setAddrow] = useState(false);
+  const [deleteSign, setDeleteSign] = useState(false);
+
   const { main } = openReportlist;
 
   const addcolumnsData = [
@@ -121,6 +125,15 @@ function SoftReportdetail(props) {
     }
   ];
 
+  const getopenFlow = () => {
+    dispatch({
+      type: 'softreport/openReport',
+      payload: {
+        editStatus: 'edit',
+        id: mainId
+      }
+    })
+  }
   //  保存表单
   const softReportform = () => {
     props.form.validateFields((err, value) => {
@@ -154,8 +167,11 @@ function SoftReportdetail(props) {
         payload: savedata
       }).then(res => {
         if (res.code === 200) {
-          message.info(res.msg)
+          message.info(res.msg);
           getopenFlow();
+          props.history.go(0)
+        } else {
+          message.info('保存失败')
         }
       })
     })
@@ -178,15 +194,6 @@ function SoftReportdetail(props) {
     }
   }, [files]);
 
-  const getopenFlow = () => {
-    dispatch({
-      type: 'softreport/openReport',
-      payload: {
-        editStatus: 'edit',
-        id: mainId
-      }
-    })
-  }
 
   useEffect(() => {
     if (mainId) {
@@ -263,37 +270,73 @@ function SoftReportdetail(props) {
   }
 
   const newMember = () => {
-    const nowNumber = addTitle.map(item => ({ ...item }));
-    nowNumber.push({ 'add': '1', tableNumber: [] });
-    setAddTitle(nowNumber);
-    setButtonVisible(true)
+    const nowNumber = list.map(item => ({ ...item }));
+    const newarr = nowNumber.map((item, index) => {
+      return Object.assign(item, { px: (index + 9).toString() })
+    });
+    const addObj = {
+      files: '',
+      content: '',
+      title: '',
+      list: '',
+      px: (nowNumber.length + 9).toString()
+    }
+
+    newarr.push(addObj);
+    setList(newarr);
+    setNewButton(true);
+    setDeleteSign(false);
   }
 
-  // 新增一条记录
-  const handleaddTable = (params) => {
-    const newData = (list).map(item => ({ ...item }));
-    newData.push({
-      ...params
-    });
-    setList(newData)
+  // 动态保存
+  const handleaddTable = (params, px, rowdelete) => {
+    if (deleteSign && rowdelete) {
+      const newData = [];
+      newData.push({
+        ...params
+      });
+
+      setList(newData);
+      setNewButton(false)
+    } else {
+      let filtIndex;
+      const newData = (list).map(item => ({ ...item }));
+
+      for (let i = 0; i < newData.length; i += 1) {
+        if (newData[i].px === px) {
+          filtIndex = i;
+          break;
+        }
+      }
+      
+      console.log(filtIndex,'filtIndex')
+
+      if (newData && newData.length) {
+        if (filtIndex !== undefined) {
+          newData.splice(filtIndex, 1, params);
+        }
+      }
+
+      if (newData && (newData.length === 0 || filtIndex === undefined)) {
+        newData.push({
+          ...params
+        });
+      }
+
+      setList(newData);
+      setNewButton(false)
+    }
   };
 
   //  移除表格
   const removeForm = (tableIndex) => {
-    ;
-    addTitle.splice(tableIndex, 1);
-    // list.splice(tableIndex, 1);
-    // console.log('list: ', list);
-    const resultArr = [];
-    const listArr = [];
-    for (let i = 0; i < addTitle.length; i += 1) {
-      resultArr.push(addTitle[i])
-    }
-    // for (let i = 0; i < list.length; i += 1) {
-    //   listArr.push(list[i])
-    // }
-    setAddTitle(resultArr)
-    setList(resultArr)
+    list.splice(tableIndex, 1);
+    const resultArr = list.map((item, index) => {
+      const newItem = item;
+      newItem.px = (index + 9).toString();
+      return newItem;
+    })
+    setList(resultArr);
   }
 
   const exportWord = () => {
@@ -311,6 +354,8 @@ function SoftReportdetail(props) {
       window.URL.revokeObjectURL(url);
     })
   }
+
+  console.log(list,'list')
 
   useEffect(() => {
     const { addData } = openReportlist;
@@ -341,7 +386,6 @@ function SoftReportdetail(props) {
     setTypeList(typeArr);
     setNextOperationList(nextOperationArr);
 
-    setAddTitle(addData);
     setList(addData);
   }, [loading])
 
@@ -473,9 +517,6 @@ function SoftReportdetail(props) {
                   detailParams={reportSearch}
                 />
               </Col>
-
-
-
 
               {/* {reporttype === 'week' ? "本周运维" : "本月运维"} */}
               <Col span={24} style={{ marginTop: 15 }}>
@@ -664,6 +705,7 @@ function SoftReportdetail(props) {
                     setStatisList(contentrowdata)
                   }}
                   mainId={mainId}
+                  detailParams={reportSearch}
                 />
               </Col>
 
@@ -1091,20 +1133,24 @@ function SoftReportdetail(props) {
                 )
               }
 
-              {addTitle && addTitle.length > 0 && (
-                addTitle.map((item, index) => {
+              {(loading === false && list && list.length > 0) && (
+                list.map((item, index) => {
                   return (
                     <>
-                      <Col span={reportSearch ? 24 : 23}>
+                      <Col span={23}>
                         <AddForm
-                          detailParams={reportSearch}
                           formincontentLayout={formincontentLayout}
-                          px={index + 9}
-                          addTable={newdata => {
-                            handleaddTable(newdata);
+                          px={(index + 9).toString()}
+                          addTable={(newdata, addpx, rowdelete) => {
+                            handleaddTable(newdata, addpx, rowdelete)
                           }}
-                          dynamicData={addTitle[index]}
+                          index={index}
+                          dynamicData={list.length ? list[index] : {}}
+                          // dynamicData={undefined}
                           loading={loading}
+                          ChangeAddRow={v => setAddrow(v)}
+                          sign={deleteSign}
+                          detailParams={reportSearch}
                         />
                       </Col>
 
@@ -1113,13 +1159,8 @@ function SoftReportdetail(props) {
                           <Col span={1}>
                             <Icon
                               className="dynamic-delete-button"
-                              type="minus-circle-o"
-                              onClick={
-                                () => {
-                                  removeForm(index);
-                                  //  submittest()
-                                }
-                              }
+                              type="delete"
+                              onClick={() => { removeForm(index); setDeleteSign(true) }}
                             />
                           </Col>
                         )

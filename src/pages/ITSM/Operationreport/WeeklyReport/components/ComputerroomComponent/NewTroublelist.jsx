@@ -11,6 +11,7 @@ import {
 } from 'antd';
 import moment from 'moment';
 
+let deleteSign = false;
 const { TextArea } = Input;
 const { Option } = Select;
 function NewTroublelist(props) {
@@ -48,9 +49,13 @@ function NewTroublelist(props) {
   //  删除数据
   const remove = key => {
     const target = deleteObj(key) || {};
-    setData(target);
-    newTroubleList(target);
-    message.info('删除成功')
+    const newarr = target.map((item, index) => {
+      return Object.assign(item, { editable: true, isNew: false, key: index, field1:index +1 })
+    });
+
+    deleteSign = true;
+    setData(newarr);
+    newTroubleList(newarr);
   };
 
   const handleFieldChange = (e, fieldName, key) => {
@@ -79,149 +84,6 @@ function NewTroublelist(props) {
   }
 
   const column = [
-    {
-      title: '序号',
-      dataIndex: 'field1',
-      key: 'field1',
-      render: (text, record) => {
-        return (
-          <Input
-            disabled={reportSearch}
-            defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'field1', record.key)}
-          />
-        )
-      }
-    },
-    {
-      title: '日期',
-      dataIndex: 'field2',
-      key: 'field2',
-      render: (text, record) => {
-        return (
-          <DatePicker
-            disabled={reportSearch}
-            defaultValue={text ? moment(text) : moment(new Date())}
-            onChange={e => handleFieldChange(e, 'field2', record.key)}
-          />
-        )
-      }
-    },
-    {
-      title: '故障类型',
-      dataIndex: 'field3',
-      key: 'field3',
-      render: (text, record) => {
-        return (
-          <Input
-            disabled={reportSearch}
-            defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'typecn', record.key)}
-          />
-        )
-      }
-    },
-    {
-      title: '故障情况',
-      dataIndex: 'field4',
-      key: 'field4',
-      render: (text, record) => {
-        return (
-          <TextArea
-            disabled={reportSearch}
-            defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'field4', record.key)}
-          />
-        )
-      }
-    },
-    {
-      title: '是否已修复',
-      dataIndex: 'field5',
-      key: 'field5',
-      render: (text, record) => {
-        return (
-          <Select
-            disabled={reportSearch}
-            defaultValue={text}
-            onChange={e => handleFieldChange(e, 'field5', record.key)}
-          >
-            <Option value="是">是</Option>
-            <Option value="否">否</Option>
-          </Select>
-        )
-      }
-    },
-    {
-      title: '是否需要报告',
-      dataIndex: 'field6',
-      key: 'field6',
-      render: (text, record) => {
-        return (
-          <Select
-            disabled={reportSearch}
-            defaultValue={text}
-            onChange={e => handleFieldChange(e, 'field6', record.key)}
-          >
-            <Option value="是">是</Option>
-            <Option value="否">否</Option>
-          </Select>
-        )
-      }
-    },
-    {
-      title: '报告提供方',
-      dataIndex: 'field7',
-      key: 'field7',
-      render: (text, record) => {
-        return (
-          <Input
-            disabled={reportSearch}
-            defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'field7', record.key)}
-          />
-        )
-      }
-    },
-    {
-      title: '是否已提供故障处理记录（报告）',
-      dataIndex: 'field8',
-      key: 'field8',
-      render: (text, record) => {
-        return (
-          <Select
-            disabled={reportSearch}
-            defaultValue={text}
-            onChange={e => handleFieldChange(e, 'field8', record.key)}
-          >
-            <Option value="是">是</Option>
-            <Option value="否">否</Option>
-          </Select>
-        )
-      }
-    },
-    {
-      title: '操作',
-      key: 'action',
-      fixed: 'right',
-      width: 120,
-      render: (text, record) => {
-        return (
-          <span>
-            <Popconfirm
-              title="是否要删除此行？"
-              onConfirm={() => remove(record.key)}
-              disabled={reportSearch}
-            >
-              <a>删除</a>
-            </Popconfirm>
-          </span>
-        )
-      }
-    }
-  ];
-
-  const editColumn = [
     {
       title: '序号',
       dataIndex: 'field1',
@@ -361,38 +223,33 @@ function NewTroublelist(props) {
           </span>
         )
       }
-
     }
   ];
-
 
   useEffect(() => {
     handleTabledata();
   }, [faultlist])
 
-  let setColumns = column;
+  useEffect(() => {
+    if (deleteSign) {
+      deleteSign = false
+    }
+  }, [data, deleteSign])
 
-  if (mainId) {
-    setColumns = editColumn
-  }
   return (
     <>
       <p style={{ fontWeight: '900', fontSize: '16px' }}>三、本周新增故障及故障修复情况统计</p>
 
       <p>(1)新增及已修复故障</p>
 
-      {/* <div style={{ textAlign: 'right', marginBottom: 10 }}>
-        <Button
-          disabled={reportSearch}
-          type='primary'
-          onClick={handleSave}>保存</Button>
-      </div> */}
-
-      <Table
-        columns={setColumns}
-        dataSource={data}
-        pagination={false}
-      />
+      {deleteSign === false && (
+        <Table
+          columns={column}
+          dataSource={data}
+          pagination={false}
+          rowKey={record => record.key}
+        />
+      )}
 
       <Button
         style={{ width: '100%', marginTop: 16 }}

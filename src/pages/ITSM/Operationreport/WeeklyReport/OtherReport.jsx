@@ -31,6 +31,7 @@ const { MonthPicker } = DatePicker;
 let startTime;
 let endTime;
 function OtherReport(props) {
+  const pagetitle = props.route.name;
   const {
     form: { getFieldDecorator, setFieldsValue },
     location: { query: {
@@ -46,35 +47,49 @@ function OtherReport(props) {
 
   const required = true;
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
-  const [addTitle, setAddTitle] = useState([]);
   const [list, setList] = useState([]);
   const [newbutton, setNewButton] = useState(false);
   const [copyData, setCopyData] = useState('');
-  const [addrow,setAddrow] = useState(false)
-  console.log(list)
-
-
+  const [addrow, setAddrow] = useState(false);
+  const [deleteSign, setDeleteSign] = useState(false);
 
   // 新增一条记录
-  const handleaddTable = (params,px) => {
-    const newData = (list).map(item => ({ ...item }));
-    newData.push({
-      ...params
-    });
-    console.log(newData,'newData')
-    const testData = (newData).filter(item => item.px === px)[0];
 
-    console.log('testData: ', testData);
-    // const hash = {};
-    // console.log(newData,'newData')
-    // const arr = newData.reduce(function (item, next) {
-    //   hash[next.px] ? '' : hash[next.px] = true && item.push(next);
-    //   return item
-    // }, []);
-    // const result = [];
-    // result.push(arr)
-    setList(newData);
-    setNewButton(false)
+  const handleaddTable = (params, px,rowdelete) => {
+    if (deleteSign && rowdelete) {
+      const newData = [];
+      newData.push({
+        ...params
+      });
+
+      setList(newData);
+      setNewButton(false)
+    } else {
+      let filtIndex;
+      const newData = (list).map(item => ({ ...item }));
+
+      for (let i = 0; i < newData.length; i+=1) {
+        if (newData[i].px === px) {
+          filtIndex = i;
+          break;
+        }
+      }
+
+      if (newData && newData.length) {
+        if (filtIndex !== undefined) {
+          newData.splice(filtIndex, 1,params);
+        }
+      }
+
+      if (newData && (newData.length === 0 || filtIndex === undefined)) {
+        newData.push({
+          ...params
+        });
+      }
+
+      setList(newData);
+      setNewButton(false)
+    }
   };
 
   //  保存表单
@@ -127,7 +142,6 @@ function OtherReport(props) {
     }).then(res => {
       if (res.code === 200) {
         setCopyData(res)
-        setAddTitle(res.addData)
       } else {
         message.info('您无法复制该条记录，请返回列表重新选择')
       }
@@ -137,7 +151,7 @@ function OtherReport(props) {
   // 上传删除附件触发保存
   useEffect(() => {
     if (files.ischange) {
-      softReportform();
+      otherReportform();
     }
   }, [files]);
 
@@ -210,31 +224,38 @@ function OtherReport(props) {
   }
 
   const newMember = () => {
-    const nowNumber = addTitle.map(item => ({ ...item }));
-    nowNumber.push({ 'add': '1' });
-    setAddTitle(nowNumber);
-    setNewButton(true)
+    const nowNumber = list.map(item => ({ ...item }));
+    const newarr = nowNumber.map((item, index) => {
+      return Object.assign(item, { px: (index+2).toString()})
+    });
+    const addObj = {
+      files:'',
+      content:'',
+      title:'',
+      list:'',
+      px: (nowNumber.length + 2).toString()
+    }
+    newarr.push(addObj);
+    setList(newarr);
+    setNewButton(true);
+    setDeleteSign(false);
   }
 
 
   const removeForm = (tableIndex) => {
-    addTitle.splice(tableIndex, 1);
     list.splice(tableIndex, 1);
-    const resultArr = [];
-    // const listArr = [];
-    for (let i = 0; i < list.length; i += 1) {
-      resultArr.push(list[i])
-    }
-    // for (let i = 0; i < list.length; i += 1) {
-    //   listArr.push(list[i])
-    // }
-    setAddTitle(resultArr)
-    setList(resultArr)
+    const resultArr = list.map((item, index) => {
+      const newItem = item;
+      newItem.px = (index + 2).toString();
+      return newItem;
+    })
+    setList(resultArr);
   }
+
 
   return (
     <PageHeaderWrapper
-      title={listreportType === 'week' ? '其他运维周报' : '其他运维月报'}
+      title={pagetitle}
       extra={
         loading === false && (
           <>
@@ -327,33 +348,37 @@ function OtherReport(props) {
                 )
               }
 
-              {loading === false && addTitle && addTitle.length > 0 && (
-                addTitle.map((item, index) => {
+              {loading === false && list && list.length > 0 && (
+                list.map((item, index) => {
                   return (
                     <>
                       <Col span={23}>
                         <AddForm
                           formincontentLayout={formincontentLayout}
-                          px={index + 2}
-                          addTable={newdata => {
-                            handleaddTable(newdata)
+                          px={(index + 2).toString()}
+                          addTable={(newdata, addpx,rowdelete) => {
+                            handleaddTable(newdata, addpx,rowdelete)
                           }}
                           index={index}
-                          dynamicData={list.length ? list[index] : []}
+                          dynamicData={list.length ? list[index] : {}}
+                          // dynamicData={undefined}
                           loading={loading}
-                          addrow={addrow}
-                          ChangeAddRow = {v=>setAddrow(v)}
+                          ChangeAddRow={v => setAddrow(v)}
+                          sign={deleteSign}
                         />
                       </Col>
 
-                      <Col span={1}>
-                        <Icon
-                          className="dynamic-delete-button"
-                          type="delete"
-                          onClick={() => removeForm(index)}
-                        />
-                      </Col>  
-
+                      {
+                        list[index] && (
+                          <Col span={1}>
+                            <Icon
+                              className="dynamic-delete-button"
+                              type="delete"
+                              onClick={() => { removeForm(index); setDeleteSign(true) }}
+                            />
+                          </Col>
+                        )
+                      }
                     </>
                   )
                 })
@@ -364,12 +389,14 @@ function OtherReport(props) {
                 style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
                 type="primary"
                 ghost
-                onClick={() => {newMember(); setAddrow(true)}}
-                // disabled={newbutton}
+                // onClick={() => {newMember(); setAddrow(true)}}
+                onClick={() => { newMember() }}
+                // disabled={addrow}
                 icon="plus"
               >
                 新增其他内容
               </Button>
+
 
             </Form>
           </Row>

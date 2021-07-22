@@ -9,6 +9,7 @@ import {
   message
 } from 'antd';
 
+let deleteSign = false;
 const { Option } = Select;
 function InspectionSummary(props) {
 
@@ -24,7 +25,7 @@ function InspectionSummary(props) {
   const newMember = () => {
     const newData = (data).map(item => ({ ...item }));
     newData.push({
-      key: data.length + 1,
+      key: data.length,
       field1: data.length + 1,
       field2: '',
       field3: '',
@@ -42,8 +43,13 @@ function InspectionSummary(props) {
   //  删除数据
   const remove = key => {
     const target = deleteObj(key) || {};
-    setData(target);
-    materialsList(target)
+    const newarr = target.map((item, index) => {
+      return Object.assign(item, { editable: true, isNew: false, key: index, field1:index +1 })
+    });
+
+    deleteSign = true;
+    setData(newarr);
+    materialsList(newarr)
   };
 
   //  获取行  
@@ -147,23 +153,25 @@ function InspectionSummary(props) {
     handleTabledata();
   }, [materialsArr])
 
+  useEffect(() => {
+    if (deleteSign) {
+      deleteSign = false
+    }
+  }, [data, deleteSign])
+
 
   return (
     <>
       <p>(2)运维材料提交情况</p>
 
-      {/* <div style={{ textAlign: 'right', marginBottom: 10 }}>
-        <Button
-          disabled={reportSearch}
-          type='primary'
-          onClick={handleSave}>保存</Button>
-      </div> */}
-
-      <Table
-        columns={column}
-        dataSource={data}
-        pagination={false}
-      />
+      {deleteSign === false && (
+        <Table
+          columns={column}
+          dataSource={data}
+          pagination={false}
+          rowKey={record => record.key}
+        />
+      )}
 
       <Button
         style={{ width: '100%', marginTop: 16 }}

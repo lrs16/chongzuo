@@ -8,7 +8,8 @@ import {
   Input,
   DatePicker,
   Icon,
-  message
+  message,
+  Spin
 } from 'antd';
 import moment from 'moment';
 import router from 'umi/router';
@@ -72,7 +73,6 @@ function DatabaseReport(props) {
 
   const required = true;
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
-  const [addTitle, setAddTitle] = useState([]);
   const [fileslist, setFilesList] = useState([]);
   const [discList, setDiscList] = useState([]); // 本周运维情况综述列表 
   const [tablespaceList, setTablespaceList] = useState([]) // 软件运维巡检
@@ -82,6 +82,10 @@ function DatabaseReport(props) {
   const [nextOperationList, setNextOperationList] = useState([]) // 下周作业列表
   const [list, setList] = useState([]);
   const [copyData, setCopyData] = useState('');
+
+  const [newbutton, setNewButton] = useState(false);
+  const [addrow, setAddrow] = useState(false);
+  const [deleteSign, setDeleteSign] = useState(false);
 
   //  保存表单
   const databaseReportform = () => {
@@ -136,21 +140,27 @@ function DatabaseReport(props) {
   // 上传删除附件触发保存
   useEffect(() => {
     if (files.ischange) {
-      softReportform();
+      databaseReportform();
     }
   }, [files]);
+
+  useEffect(() => {
+    setOperationList(copyData.operationList ? copyData.operationList : lastweekHomeworklist);
+    setNextOperationList(copyData.nextOperationList ? copyData.nextOperationList : nextweekHomeworklist);
+  }, [loading])
+
 
   //   七、上周作业完成情况--表格
   const lastweekHomework = () => {
     dispatch({
       type: 'softreport/lastweekHomework',
       payload: {
-        plannedEndTime1: startTime,
-        plannedEndTime2: endTime,
+        plannedEndTime1: `${startTime} 00:00:00`,
+        plannedEndTime2: `${endTime} 23:59:59`,
         type: '数据库作业',
-        status: '已完成',
         pageIndex: 0,
-        pageSize: 10
+        pageSize: 10,
+        database: 'true'
       }
     })
   }
@@ -160,35 +170,66 @@ function DatabaseReport(props) {
     dispatch({
       type: 'softreport/nextweekHomework',
       payload: {
-        plannedEndTime1: reporttype === 'week' ? endTime :
-          moment().startOf('month').subtract('month', -1).format('YYYY-MM-DD'),
+        plannedEndTime1: reporttype === 'week' ? moment(startTime).add(7, 'days').format('YYYY-MM-DD 00:00:00') :
+          moment().startOf('month').subtract('month', -1).format('YYYY-MM-DD 00:00:00'),
 
-        plannedEndTime2: reporttype === 'week' ? moment().add(6, 'd').format('YYYY-MM-DD')
-          : moment().endOf('month').subtract('month', -1).endOf('month').format('YYYY-MM-DD'),
-        type: '软件作业',
-        status: '已完成',
+        plannedEndTime2: reporttype === 'week' ? moment(endTime).add(7, 'days').format('YYYY-MM-DD 23:59:59')
+          : moment().endOf('month').subtract('month', -1).endOf('month').format('YYYY-MM-DD 23:59:59'),
+        type: '数据库作业',
         pageIndex: 0,
-        pageSize: 10
+        pageSize: 10,
+        database: 'true'
       }
     })
   }
 
-  // 新增一条记录
-  const handleaddTable = (params) => {
-    const newData = (list).map(item => ({ ...item }));
-    newData.push({
-      ...params
-    });
-    setList(newData);
+  // 动态保存信息
+  const handleaddTable = (params, px,rowdelete) => {
+    if (deleteSign && rowdelete) {
+      const newData = [];
+      newData.push({
+        ...params
+      });
+
+      setList(newData);
+      setNewButton(false)
+    } else {
+      let filtIndex;
+      const newData = (list).map(item => ({ ...item }));
+
+      for (let i = 0; i < newData.length; i+=1) {
+        if (newData[i].px === px) {
+          filtIndex = i;
+          break;
+        }
+      }
+
+      if (newData && newData.length) {
+        if (filtIndex !== undefined) {
+          newData.splice(filtIndex, 1,params);
+        }
+      }
+
+      if (newData && (newData.length === 0 || filtIndex === undefined)) {
+        newData.push({
+          ...params
+        });
+      }
+
+      setList(newData);
+      setNewButton(false)
+    }
   };
 
+  //  移除表格
   const removeForm = (tableIndex) => {
-    addTitle.splice(tableIndex, 1);
-    const resultArr = [];
-    for (let i = 0; i < addTitle.length; i += 1) {
-      resultArr.push(addTitle[i])
-    }
-    setAddTitle(resultArr)
+    list.splice(tableIndex, 1);
+    const resultArr = list.map((item, index) => {
+      const newItem = item;
+      newItem.px = (index + 6).toString();
+      return newItem;
+    })
+    setList(resultArr);
   }
 
   // 上传删除附件触发保存
@@ -226,7 +267,6 @@ function DatabaseReport(props) {
     }).then(res => {
       if (res.code === 200) {
         setCopyData(res)
-        setAddTitle(res.addData)
       } else {
         message.info('您无法复制该条记录，请返回列表重新选择')
       }
@@ -297,9 +337,21 @@ function DatabaseReport(props) {
   }
 
   const newMember = () => {
-    const nowNumber = addTitle.map(item => ({ ...item }));
-    nowNumber.push({ 'add': '1', tableNumber: [] });
-    setAddTitle(nowNumber)
+    const nowNumber = list.map(item => ({ ...item }));
+    const newarr = nowNumber.map((item, index) => {
+      return Object.assign(item, { px: (index+6).toString()})
+    });
+    const addObj = {
+      files:'',
+      content:'',
+      title:'',
+      list:'',
+      px: (nowNumber.length + 6).toString()
+    }
+    newarr.push(addObj);
+    setList(newarr);
+    setNewButton(true);
+    setDeleteSign(false);
   }
 
   return (
@@ -318,6 +370,16 @@ function DatabaseReport(props) {
 
       }
     >
+      {
+        loading && (
+          <div style={{ textAlign: 'center' }}>
+            <Spin spinning={loading}>
+              {/* {message.info('数据正在加载中，请稍等')} */}
+            </Spin>
+          </div>
+
+        )
+      }
       <Card style={{ padding: 24 }}>
         {/* {loading === false && ( */}
         <Row gutter={24}>
@@ -580,7 +642,7 @@ function DatabaseReport(props) {
                     <p style={{ fontWeight: '900', fontSize: '16px' }}> 四、上周作业完成情况</p>
                   </Col>
 
-                  {
+                  {/* {
                     copyData.operationList !== undefined && (
                       <Col span={24}>
                         <CopyLast
@@ -594,22 +656,23 @@ function DatabaseReport(props) {
                         />
                       </Col>
                     )
-                  }
+                  } */}
 
-                  {
-                    copyData.operationList === undefined && (
-                      <Col span={24}>
-                        <LastweekHomework
-                          forminladeLayout={forminladeLayout}
-                          operationArr={lastweekHomeworklist.rows}
-                          type={reporttype}
-                          operationList={contentrowdata => {
-                            setOperationList(contentrowdata)
-                          }}
-                        />
-                      </Col>
-                    )
-                  }
+                  {/* {
+                    copyData.operationList === undefined && ( */}
+                  <Col span={24}>
+                    <LastweekHomework
+                      forminladeLayout={forminladeLayout}
+                      operationArr={copyData.operationList !== undefined ? copyData.operationList : lastweekHomeworklist}
+                      type={reporttype}
+                      operationList={contentrowdata => {
+                        setOperationList(contentrowdata)
+                      }}
+                      databaseParams='true'
+                    />
+                  </Col>
+                  {/* //   )
+                  // } */}
 
 
                   <Col span={24} style={{ marginTop: 20 }}>
@@ -641,7 +704,7 @@ function DatabaseReport(props) {
                     <p style={{ fontWeight: '900', fontSize: '16px' }}>五、下周作业计划</p>
                   </Col>
 
-                  {
+                  {/* {
                     copyData.operationList !== undefined && (
                       <Col span={24}>
                         <CopyLast
@@ -655,23 +718,24 @@ function DatabaseReport(props) {
                         />
                       </Col>
                     )
-                  }
+                  } */}
 
-                  {
-                    copyData.operationList === undefined && (
-                      <Col span={24}>
-                        <LastweekHomework
-                          forminladeLayout={forminladeLayout}
-                          type={reporttype}
-                          operationList={contentrowdata => {
-                            setNextOperationList(contentrowdata)
-                          }}
-                          operationArr={nextweekHomeworklist.rows}
-                          mainId={mainId}
-                        />
-                      </Col>
-                    )
-                  }
+                  {/* {
+                    copyData.operationList === undefined && ( */}
+                  <Col span={24}>
+                    <LastweekHomework
+                      forminladeLayout={forminladeLayout}
+                      type={reporttype}
+                      operationList={contentrowdata => {
+                        setNextOperationList(contentrowdata)
+                      }}
+                      operationArr={copyData.nextOperationList !== undefined ? copyData.nextOperationList : nextweekHomeworklist}
+                      mainId={mainId}
+                      databaseParams='true'
+                    />
+                  </Col>
+                  {/* //   )
+                  // } */}
 
                   <Col span={24} style={{ marginTop: 20 }}>
                     <Form.Item
@@ -699,31 +763,37 @@ function DatabaseReport(props) {
               )
             }
 
-            {loading === false && addTitle && addTitle.length > 0 && (
-              addTitle.map((item, index) => {
+            {loading === false && list && list.length > 0 && (
+              list.map((item, index) => {
                 return (
                   <>
                     <Col span={23}>
                       <AddForm
                         formincontentLayout={formincontentLayout}
-                        px={index + 6}
-                        addTable={newdata => {
-                          handleaddTable(newdata)
+                        px={(index + 6).toString()}
+                        addTable={(newdata, addpx, rowdelete) => {
+                          handleaddTable(newdata, addpx, rowdelete)
                         }}
-                        dynamicData={addTitle[index]}
                         index={index}
+                        dynamicData={list.length ? list[index] : {}}
+                        // dynamicData={undefined}
                         loading={loading}
+                        ChangeAddRow={v => setAddrow(v)}
+                        sign={deleteSign}
                       />
                     </Col>
 
-                    <Col span={1}>
-                      <Icon
-                        className="dynamic-delete-button"
-                        type="minus-circle-o"
-                        onClick={() => removeForm(index)}
-                      />
-                    </Col>
-
+                    {
+                      list[index] && (
+                        <Col span={1}>
+                          <Icon
+                            className="dynamic-delete-button"
+                            type="delete"
+                            onClick={() => { removeForm(index); setDeleteSign(true) }}
+                          />
+                        </Col>
+                      )
+                    }
                   </>
                 )
               })

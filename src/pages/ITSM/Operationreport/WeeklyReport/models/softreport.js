@@ -356,17 +356,32 @@ export default {
     //  七、上周作业完成情况--表格
     *lastweekHomework({ payload }, { call,put }) {
       const response = yield call(getOperationQueryList,payload);
-      const result = JSON.parse(JSON.stringify(response.data.rows)
-      .replace(/updateTime/g, 'field1')
-      .replace(/nature/g, 'field2')
-      .replace(/object/g, 'field3')
-      .replace(/content/g, 'field4')
-      .replace(/plannedEndTime/g, 'field5')
-      .replace(/status/g, 'field6')
-      .replace(/operationUser/g, 'field7')
-      .replace(/operationUnit/g, 'field8')
-      .replace(/remark/g, 'field9')
-    )
+      let result;
+      if(payload.database) {
+        result = JSON.parse(JSON.stringify(response.data.rows)
+        .replace(/updateTime/g, 'field1')
+        .replace(/addTime/g, 'field2')
+        .replace(/object/g, 'field3')
+        .replace(/content/g, 'field4')
+        .replace(/plannedEndTime/g, 'field5')
+        .replace(/status/g, 'field6')
+        .replace(/operationUser/g, 'field7')
+        .replace(/operationUnit/g, 'field8')
+      )
+      } else {
+        result = JSON.parse(JSON.stringify(response.data.rows)
+        .replace(/updateTime/g, 'field1')
+        .replace(/addTime/g, 'field2')
+        .replace(/nature/g, 'field3')
+        .replace(/object/g, 'field4')
+        .replace(/content/g, 'field5')
+        .replace(/plannedEndTime/g, 'field6')
+        .replace(/status/g, 'field7')
+        .replace(/operationUser/g, 'field8')
+        .replace(/operationUnit/g, 'field9')
+      )
+      }
+   
       yield put({
         type:'lastweekHomeworklist',
         payload: result
@@ -375,17 +390,31 @@ export default {
     //  七、下周作业完成情况--表格
     *nextweekHomework({ payload }, { call,put }) {
       const response = yield call(getOperationQueryList,payload);
-      const result = JSON.parse(JSON.stringify(response.data.rows)
-      .replace(/updateTime/g, 'field1')
-      .replace(/nature/g, 'field2')
-      .replace(/object/g, 'field3')
-      .replace(/content/g, 'field4')
-      .replace(/plannedEndTime/g, 'field5')
-      .replace(/status/g, 'field6')
-      .replace(/operationUser/g, 'field7')
-      .replace(/operationUnit/g, 'field8')
-      .replace(/remark/g, 'field9')
-    )
+      let result;
+      if(payload.database) {
+        result = JSON.parse(JSON.stringify(response.data.rows)
+        .replace(/updateTime/g, 'field1')
+        .replace(/addTime/g, 'field2')
+        .replace(/object/g, 'field3')
+        .replace(/content/g, 'field4')
+        .replace(/plannedEndTime/g, 'field5')
+        .replace(/status/g, 'field6')
+        .replace(/operationUser/g, 'field7')
+        .replace(/operationUnit/g, 'field8')
+      )
+      } else {
+        result = JSON.parse(JSON.stringify(response.data.rows)
+        .replace(/updateTime/g, 'field1')
+        .replace(/addTime/g, 'field2')
+        .replace(/nature/g, 'field3')
+        .replace(/object/g, 'field4')
+        .replace(/content/g, 'field5')
+        .replace(/plannedEndTime/g, 'field6')
+        .replace(/status/g, 'field7')
+        .replace(/operationUser/g, 'field8')
+        .replace(/operationUnit/g, 'field9')
+      )
+      }
       yield put({
         type:'nextweekHomeworklist',
         payload: result
@@ -417,7 +446,7 @@ export default {
     .replace(/time/g, 'field2')
     .replace(/type/g, 'field3')
     .replace(/content/g, 'field4')
-    .replace(/result/g, 'field5')
+    // .replace(/result/g, 'field5')
   )
     yield put({
       type: 'nofaultQueryList',

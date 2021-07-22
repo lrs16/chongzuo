@@ -10,6 +10,7 @@ import {
 } from 'antd';
 import moment from 'moment';
 
+let deleteSign = false;
 const { TextArea } = Input;
 const QuestionsComments = React.forwardRef((props, ref) => {
   const attRef = useRef();
@@ -33,7 +34,7 @@ const QuestionsComments = React.forwardRef((props, ref) => {
   const newMember = () => {
     const newData = (data).map(item => ({ ...item }));
     newData.push({
-      key: data.length + 1,
+      key: data.length,
       id: '',
       field1: data.length + 1,
       field2: '',
@@ -56,8 +57,13 @@ const QuestionsComments = React.forwardRef((props, ref) => {
   //  删除数据
   const remove = key => {
     const target = deleteObj(key) || {};
-    setData(target);
-    defectList(target);
+    const newarr = target.map((item, index) => {
+      return Object.assign(item, { editable: true, isNew: false, key: index,field1:index + 1})
+    });
+
+    deleteSign = true;
+    setData(newarr);
+    defectList(newarr);
   };
 
   const handleFieldChange = (e, fieldName, key) => {
@@ -82,7 +88,6 @@ const QuestionsComments = React.forwardRef((props, ref) => {
       })
       setData(newarr)
     }
-
   }
 
   const column = [
@@ -169,6 +174,12 @@ const QuestionsComments = React.forwardRef((props, ref) => {
     handleTabledata();
   }, [defectArr])
 
+  useEffect(() => {
+    if(deleteSign) {
+      deleteSign = false
+    }
+  }, [data, deleteSign])
+
   return (
     <>
       <p style={{ fontWeight: '900', fontSize: '16px' }}>三、发现问题及修改建议</p>
@@ -177,10 +188,14 @@ const QuestionsComments = React.forwardRef((props, ref) => {
         （1）缺陷
       </p>
 
-      <Table
-        columns={column}
-        dataSource={data}
-      />
+      {deleteSign === false && (
+        <Table
+          columns={column}
+          dataSource={data}
+          rowKey={record => record.key}
+        />
+      )}
+
 
       <Button
         style={{ width: '100%', marginTop: 16 }}

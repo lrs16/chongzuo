@@ -8,7 +8,8 @@ import {
   Input,
   DatePicker,
   Icon,
-  message
+  message,
+  Spin
 } from 'antd';
 import moment from 'moment';
 import router from 'umi/router';
@@ -86,7 +87,6 @@ function ComputerroomReport(props) {
 
   const required = true;
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
-  const [addTitle, setAddTitle] = useState([]);
   const [fileslist, setFilesList] = useState([]);
   const [materialsList, setMaterialsList] = useState([]) // 材料列表
   const [meetingSummaryList, setMeetingSummaryList] = useState([]) // 周例会会议纪要完成情况列表
@@ -97,9 +97,12 @@ function ComputerroomReport(props) {
   const [list, setList] = useState([]);
   const [copyData, setCopyData] = useState('');
 
+  const [newbutton, setNewButton] = useState(false);
+  const [addrow, setAddrow] = useState(false);
+  const [deleteSign, setDeleteSign] = useState(false);
+
   //  保存表单
   const computerReportform = () => {
-    console.log(newTroubleList,'newTroubleList')
     props.form.validateFields((err, value) => {
       if (!err) {
         const savedata = {
@@ -158,7 +161,6 @@ function ComputerroomReport(props) {
     }).then(res => {
       if (res.code === 200) {
         setCopyData(res)
-        setAddTitle(res.addData)
         initial = true;
       } else {
         message.info('您无法复制该条记录，请返回列表重新选择')
@@ -166,29 +168,53 @@ function ComputerroomReport(props) {
     })
   }
 
-  // 新增一条记录
-  const handleaddTable = (params) => {
-    const newData = (list).map(item => ({ ...item }));
-    newData.push({
-      ...params
-    });
-    setList(newData)
+  // 动态保存信息
+  const handleaddTable = (params, px,rowdelete) => {
+    if (deleteSign && rowdelete) {
+      const newData = [];
+      newData.push({
+        ...params
+      });
+
+      setList(newData);
+      setNewButton(false)
+    } else {
+      let filtIndex;
+      const newData = (list).map(item => ({ ...item }));
+
+      for (let i = 0; i < newData.length; i+=1) {
+        if (newData[i].px === px) {
+          filtIndex = i;
+          break;
+        }
+      }
+
+      if (newData && newData.length) {
+        if (filtIndex !== undefined) {
+          newData.splice(filtIndex, 1,params);
+        }
+      }
+
+      if (newData && (newData.length === 0 || filtIndex === undefined)) {
+        newData.push({
+          ...params
+        });
+      }
+
+      setList(newData);
+      setNewButton(false)
+    }
   };
 
   //  移除表格
   const removeForm = (tableIndex) => {
-    addTitle.splice(tableIndex, 1);
     list.splice(tableIndex, 1);
-    const resultArr = [];
-    const listArr = [];
-    for (let i = 0; i < addTitle.length; i += 1) {
-      resultArr.push(addTitle[i])
-    }
-    for (let i = 0; i < list.length; i += 1) {
-      listArr.push(list[i])
-    }
-    setAddTitle(resultArr)
-    setList(listArr)
+    const resultArr = list.map((item, index) => {
+      const newItem = item;
+      newItem.px = (index + 6).toString();
+      return newItem;
+    })
+    setList(resultArr);
   }
 
   const defaultTime = () => {
@@ -207,16 +233,14 @@ function ComputerroomReport(props) {
   // 上传删除附件触发保存
   useEffect(() => {
     if (files.ischange) {
-      softReportform();
+      computerReportform();
     }
   }, [files]);
-
-  console.log(nofaultQueryList,'nofaultQueryList')
 
   useEffect(() => {
     setMaterialsList(copyData.materialsList ? copyData.materialsList : []);
     setNewTroubleList(copyData.newTroubleList ? copyData.newTroubleList : faultQueryList);
-    setUnCloseTroubleList(copyData.unCloseTroubleList ? copyData.unCloseTroubleList : []);
+    setUnCloseTroubleList(copyData.unCloseTroubleList ? copyData.unCloseTroubleList : nofaultQueryList);
     setOperationList(copyData.operationList ? copyData.operationList : lastweekHomeworklist);
     setNextOperationList(copyData.nextOperationList ? copyData.nextOperationList : nextweekHomeworklist);
   }, [loading])
@@ -249,12 +273,12 @@ function ComputerroomReport(props) {
     dispatch({
       type: 'softreport/lastweekHomework',
       payload: {
-        plannedEndTime1: startTime,
-        plannedEndTime2: endTime,
+        plannedEndTime1: `${startTime} 00:00:00`,
+        plannedEndTime2: `${endTime} 23:59:59`,
         type: '机房作业',
-        status: '已完成',
         pageIndex: 0,
-        pageSize: 10
+        pageSize: 10,
+        database: 'true'
       }
     })
   }
@@ -264,24 +288,21 @@ function ComputerroomReport(props) {
     dispatch({
       type: 'softreport/nextweekHomework',
       payload: {
-        plannedEndTime1: reporttype === 'week' ? endTime :
-          moment().startOf('month').subtract('month', -1).format('YYYY-MM-DD'),
+        plannedEndTime1: reporttype === 'week' ? moment(startTime).add(7, 'days').format('YYYY-MM-DD 00:00:00') :
+          moment().startOf('month').subtract('month', -1).format('YYYY-MM-DD 00:00:00'),
 
-        plannedEndTime2: reporttype === 'week' ? moment().add(6, 'd').format('YYYY-MM-DD')
-          : moment().endOf('month').subtract('month', -1).endOf('month').format('YYYY-MM-DD'),
+        plannedEndTime2: reporttype === 'week' ? moment(endTime).add(7, 'days').format('YYYY-MM-DD 23:59:59')
+          : moment().endOf('month').subtract('month', -1).endOf('month').format('YYYY-MM-DD 23:59:59'),
         type: '机房作业',
-        status: '已完成',
         pageIndex: 0,
-        pageSize: 10
+        pageSize: 10,
+        database: 'true'
       }
     })
   }
 
   useEffect(() => {
     defaultTime();
-    // lastweekHomework();
-    // nextweekHomework();
-    // getQuerylist();
     initial = false;
   }, []);
 
@@ -358,9 +379,21 @@ function ComputerroomReport(props) {
   }
 
   const newMember = () => {
-    const nowNumber = addTitle.map(item => ({ ...item }));
-    nowNumber.push({ 'add': '1', tableIndex: [] });
-    setAddTitle(nowNumber)
+    const nowNumber = list.map(item => ({ ...item }));
+    const newarr = nowNumber.map((item, index) => {
+      return Object.assign(item, { px: (index+6).toString()})
+    });
+    const addObj = {
+      files:'',
+      content:'',
+      title:'',
+      list:'',
+      px: (nowNumber.length + 6).toString()
+    }
+    newarr.push(addObj);
+    setList(newarr);
+    setNewButton(true);
+    setDeleteSign(false);
   }
 
   return (
@@ -378,6 +411,18 @@ function ComputerroomReport(props) {
         // )
       }
     >
+
+      {
+        loading && (
+          <div style={{ textAlign: 'center' }}>
+            <Spin spinning={loading}>
+              {/* {message.info('数据正在加载中，请稍等')} */}
+            </Spin>
+          </div>
+
+        )
+      }
+
       <Card style={{ padding: 24 }}>
         <Row gutter={24}>
           <Form>
@@ -595,56 +640,35 @@ function ComputerroomReport(props) {
 
                   {/* {
                     copyData.operationList === undefined && ( */}
-                      <Col span={24}>
-                        <NewTroublelist
-                          forminladeLayout={forminladeLayout}
-                          faultlist={copyData.newTroubleList ? copyData.newTroubleList : faultQueryList}
-                          mainId={copyData.newTroubleList ? true : mainId}
-                          type={reporttype}
-                          startTime={startTime}
-                          endTime={endTime}
-                          newTroubleList={contentrowdata => {
-                            setNewTroubleList(contentrowdata)
-                          }}
-                        />
-                      </Col>
+                  <Col span={24}>
+                    <NewTroublelist
+                      forminladeLayout={forminladeLayout}
+                      faultlist={copyData.newTroubleList ? copyData.newTroubleList : faultQueryList}
+                      mainId={copyData.newTroubleList ? true : mainId}
+                      type={reporttype}
+                      startTime={startTime}
+                      endTime={endTime}
+                      newTroubleList={contentrowdata => {
+                        setNewTroubleList(contentrowdata)
+                      }}
+                    />
+                  </Col>
                   {/* //   )
                   // } */}
 
-                  {
-                    copyData.operationList !== undefined && (
-                      <Col span={24}>
-                        <CopyUnCloseTroublelist
-                          forminladeLayout={forminladeLayout}
-                          uncloseaultlist={copyData.unCloseTroubleList}
-                          type={reporttype}
-                          startTime={startTime}
-                          endTime={endTime}
-                          unCloseTroubleList={contentrowdata => {
-                            setUnCloseTroubleList(contentrowdata)
-                          }}
-                        />
-                      </Col>
-                    )
-                  }
-
-                  {
-                    copyData.operationList === undefined && (
-                      <Col span={24}>
-                        <UnCloseTroublelist
-                          forminladeLayout={forminladeLayout}
-                          uncloseaultlist={copyData.unCloseTroubleList ? copyData.unCloseTroubleList : nofaultQueryList}
-                          type={reporttype}
-                          mainId={copyData.unCloseTroubleList ? true : mainId}
-                          startTime={startTime}
-                          endTime={endTime}
-                          unCloseTroubleList={contentrowdata => {
-                            setUnCloseTroubleList(contentrowdata)
-                          }}
-                        />
-                      </Col>
-                    )
-                  }
+                  <Col span={24}>
+                    <UnCloseTroublelist
+                      forminladeLayout={forminladeLayout}
+                      uncloseaultlist={copyData.unCloseTroubleList ? copyData.unCloseTroubleList : nofaultQueryList}
+                      type={reporttype}
+                      mainId={copyData.unCloseTroubleList ? true : mainId}
+                      startTime={startTime}
+                      endTime={endTime}
+                      unCloseTroubleList={contentrowdata => {
+                        setUnCloseTroubleList(contentrowdata)
+                      }}
+                    />
+                  </Col>
 
                   <Col span={24} style={{ marginTop: 20 }}>
                     <Form.Item
@@ -707,7 +731,7 @@ function ComputerroomReport(props) {
                   <Col span={24}>
                     <LastweekHomework
                       forminladeLayout={forminladeLayout}
-                      operationArr={copyData.operationList !== undefined ? copyData.operationList: lastweekHomeworklist}
+                      operationArr={copyData.operationList !== undefined ? copyData.operationList : lastweekHomeworklist}
                       startTime={startTime}
                       endTime={endTime}
                       type={reporttype}
@@ -715,6 +739,7 @@ function ComputerroomReport(props) {
                         setOperationList(contentrowdata)
                       }}
                       mainId={copyData.operationList ? true : mainId}
+                      databaseParams='true'
                     />
                   </Col>
                   {/* //   )
@@ -756,11 +781,12 @@ function ComputerroomReport(props) {
                   <Col span={24}>
                     <LastweekHomework
                       forminladeLayout={forminladeLayout}
-                      operationArr={copyData.nextOperationList !== undefined ? copyData.nextOperationList: nextweekHomeworklist}
+                      operationArr={copyData.nextOperationList !== undefined ? copyData.nextOperationList : nextweekHomeworklist}
                       type={reporttype}
                       operationList={contentrowdata => {
                         setNextOperationList(contentrowdata)
                       }}
+                      databaseParams='true'
                     />
                   </Col>
                   {/* //   )
@@ -832,47 +858,55 @@ function ComputerroomReport(props) {
               )
             }
 
-
-            <Button
-              style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
-              type="primary"
-              ghost
-              onClick={() => newMember()}
-              icon="plus"
-            >
-              新增其他内容
-            </Button>
-
-            {loading === false && addTitle && addTitle.length > 0 && (
-              addTitle.map((item, index) => {
+            {loading === false && list && list.length > 0 && (
+              list.map((item, index) => {
                 return (
                   <>
                     <Col span={23}>
                       <AddForm
                         formincontentLayout={formincontentLayout}
-                        px={index + 6}
-                        addTable={newdata => {
-                          handleaddTable(newdata);
-                          // saveForm(newdata)
+                        px={(index + 6).toString()}
+                        addTable={(newdata, addpx, rowdelete) => {
+                          handleaddTable(newdata, addpx, rowdelete)
                         }}
-                        dynamicData={addTitle[index]}
+                        index={index}
+                        dynamicData={list.length ? list[index] : {}}
+                        // dynamicData={undefined}
                         loading={loading}
+                        ChangeAddRow={v => setAddrow(v)}
+                        sign={deleteSign}
                       />
                     </Col>
 
-                    <Col span={1}>
-                      <Icon
-                        className="dynamic-delete-button"
-                        type="minus-circle-o"
-                        onClick={() => removeForm(index)}
-                      />
-                    </Col>
-
+                    {
+                      list[index] && (
+                        <Col span={1}>
+                          <Icon
+                            className="dynamic-delete-button"
+                            type="delete"
+                            onClick={() => { removeForm(index); setDeleteSign(true) }}
+                          />
+                        </Col>
+                      )
+                    }
                   </>
                 )
               })
             )
             }
+
+            <Button
+              style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
+              type="primary"
+              ghost
+              // onClick={() => {newMember(); setAddrow(true)}}
+              onClick={() => { newMember() }}
+              // disabled={addrow}
+              icon="plus"
+            >
+              新增其他内容
+            </Button>
+
           </Form>
         </Row>
       </Card>

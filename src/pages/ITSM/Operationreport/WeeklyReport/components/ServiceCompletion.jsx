@@ -15,7 +15,6 @@ function ServiceCompletion(props) {
     soluteArr,
     mainId,
     detailParams,
-
   } = props;
 
   const [data, setData] = useState([]);

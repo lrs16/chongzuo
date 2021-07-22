@@ -258,11 +258,15 @@ function SoftReport(props) {
   const [buttonVisible, setButtonVisible] = useState(false)
   const [copyData, setCopyData] = useState('');
 
+  const [newbutton, setNewButton] = useState(false);
+  const [addrow, setAddrow] = useState(false);
+  const [deleteSign, setDeleteSign] = useState(false);
+
   let lastSolute = [];
-  if(soluteArr && soluteArr.length > 1) {
+  if (soluteArr && soluteArr.length > 1) {
     lastSolute = [soluteArr[soluteArr.length - 1]];
   }
-  
+
 
   //  保存表单
   const softReportform = () => {
@@ -320,30 +324,30 @@ function SoftReport(props) {
     dispatch({
       type: 'softreport/lastweekHomework',
       payload: {
-        plannedEndTime1: startTime,
-        plannedEndTime2: endTime,
+        plannedEndTime1: `${startTime} 00:00:00`,
+        plannedEndTime2: `${endTime} 23:59:59`,
         type: '软件作业',
-        status: '已完成',
         pageIndex: 0,
-        pageSize: 10
+        pageSize: 10,
       }
     })
   }
 
   //   七、下周作业完成情况--表格
   const nextweekHomework = () => {
+    // console.log(moment(startTime).subtract(7,'d').format('YYYY-MM-DD'),'kkkk')
+    // console.log(moment(new Date(startTime) + 7).format('YYYY-MM-DD'))
     dispatch({
       type: 'softreport/nextweekHomework',
       payload: {
-        plannedEndTime1: reporttype === 'week' ? endTime :
-          moment().startOf('month').subtract('month', -1).format('YYYY-MM-DD'),
+        plannedEndTime1: reporttype === 'week' ? moment(startTime).add(7, 'days').format('YYYY-MM-DD 00:00:00') :
+          moment().startOf('month').subtract('month', -1).format('YYYY-MM-DD 00:00:00' ),
 
-        plannedEndTime2: reporttype === 'week' ? moment().add(6, 'd').format('YYYY-MM-DD')
-          : moment().endOf('month').subtract('month', -1).endOf('month').format('YYYY-MM-DD'),
+        plannedEndTime2: reporttype === 'week' ? moment(endTime).add(7, 'days').format('YYYY-MM-DD 23:59:59')
+          : moment().endOf('month').subtract('month', -1).endOf('month').format('YYYY-MM-DD 23:59:59'),
         type: '软件作业',
-        status: '已完成',
         pageIndex: 0,
-        pageSize: 10
+        pageSize: 10,
       }
     })
   }
@@ -418,34 +422,53 @@ function SoftReport(props) {
     }
   }
 
-  // 新增一条记录
-  const handleaddTable = (params) => {
-    const newData = (list).map(item => ({ ...item }));
-    newData.push({
-      ...params
-    });
-    setList(newData);
+  // 动态保存信息
+  const handleaddTable = (params, px, rowdelete) => {
+    if (deleteSign && rowdelete) {
+      const newData = [];
+      newData.push({
+        ...params
+      });
+
+      setList(newData);
+      setNewButton(false)
+    } else {
+      let filtIndex;
+      const newData = (list).map(item => ({ ...item }));
+
+      for (let i = 0; i < newData.length; i += 1) {
+        if (newData[i].px === px) {
+          filtIndex = i;
+          break;
+        }
+      }
+
+      if (newData && newData.length) {
+        if (filtIndex !== undefined) {
+          newData.splice(filtIndex, 1, params);
+        }
+      }
+
+      if (newData && (newData.length === 0 || filtIndex === undefined)) {
+        newData.push({
+          ...params
+        });
+      }
+
+      setList(newData);
+      setNewButton(false)
+    }
   };
 
-  // useEffect(() => {
-  //   if (list && list.length && list[list.length - 1].files) {
-  //     softReportform()
-  //   }
-  // }, [list])
-
+  console.log(list,'list')
   const removeForm = (tableIndex) => {
-    addTitle.splice(tableIndex, 1);
     list.splice(tableIndex, 1);
-    const resultArr = [];
-    const listArr = [];
-    for (let i = 0; i < addTitle.length; i += 1) {
-      resultArr.push(addTitle[i])
-    }
-    for (let i = 0; i < list.length; i += 1) {
-      listArr.push(list[i])
-    }
-    setAddTitle(resultArr)
-    setList(listArr)
+    const resultArr = list.map((item, index) => {
+      const newItem = item;
+      newItem.px = (index + 9).toString();
+      return newItem;
+    })
+    setList(resultArr);
   }
 
   const onChange = (date, dateString) => {
@@ -466,10 +489,21 @@ function SoftReport(props) {
   }
 
   const newMember = () => {
-    const nowNumber = addTitle.map(item => ({ ...item }));
-    nowNumber.push({ 'add': '1', tableNumber: [] });
-    setAddTitle(nowNumber);
-    setButtonVisible(true)
+    const nowNumber = list.map(item => ({ ...item }));
+    const newarr = nowNumber.map((item, index) => {
+      return Object.assign(item, { px: (index + 9).toString() })
+    });
+    const addObj = {
+      files: '',
+      content: '',
+      title: '',
+      list: '',
+      px: (nowNumber.length + 9).toString()
+    }
+    newarr.push(addObj);
+    setList(newarr);
+    setNewButton(true);
+    setDeleteSign(false);
   }
 
   const handlemaintenanserviceceArr = () => {
@@ -570,7 +604,7 @@ function SoftReport(props) {
     setLegacyList(copyData.legacyList !== undefined ? copyData.legacyList : []);
     setOperationList(copyData.operationList !== undefined ? copyData.operationList : lastweekHomeworklist);
     setNextOperationList(copyData.nextOperationList !== undefined ? copyData.nextOperationList : nextweekHomeworklist);
-  }, [loading])
+  }, [loading]);
 
   return (
     <PageHeaderWrapper
@@ -852,20 +886,20 @@ function SoftReport(props) {
                     )
                   } */}
 
-                   {/* {
+                  {/* {
                     copyData.typeList === undefined && ( */}
-                      <Col span={24}>
-                        <ServiceTableone
-                          forminladeLayout={forminladeLayout}
-                          maintenanceArr={copyData.typeList ?copyData.typeList : maintenanceArr}
-                          tabActiveKey={reporttype}
-                          typeList={contentrowdata => {
-                            setTypeList(contentrowdata)
-                          }}
-                          typeArr={[]}
-                          mainId={mainId}
-                        />
-                      </Col>
+                  <Col span={24}>
+                    <ServiceTableone
+                      forminladeLayout={forminladeLayout}
+                      maintenanceArr={copyData.typeList ? copyData.typeList : maintenanceArr}
+                      tabActiveKey={reporttype}
+                      typeList={contentrowdata => {
+                        setTypeList(contentrowdata)
+                      }}
+                      typeArr={[]}
+                      mainId={mainId}
+                    />
+                  </Col>
                   {/* //    )
                   //  } */}
 
@@ -884,16 +918,16 @@ function SoftReport(props) {
                   {/* 一线问题解决情况汇总统计 */}
                   {/* {
                     copyData.statisList === undefined && ( */}
-                      <Col span={24}>
-                        <ServiceCompletionone
-                          forminladeLayout={forminladeLayout}
-                          maintenanceService={copyData.statisList ? copyData.statisList : maintenanceService}
-                          tabActiveKey={reporttype}
-                          statisList={contentrowdata => {
-                            setStatisList(contentrowdata)
-                          }}
-                        />
-                      </Col>
+                  <Col span={24}>
+                    <ServiceCompletionone
+                      forminladeLayout={forminladeLayout}
+                      maintenanceService={copyData.statisList ? copyData.statisList : maintenanceService}
+                      tabActiveKey={reporttype}
+                      statisList={contentrowdata => {
+                        setStatisList(contentrowdata)
+                      }}
+                    />
+                  </Col>
                   {/* //   )
                   // } */}
 
@@ -914,18 +948,18 @@ function SoftReport(props) {
 
                   {/* {
                     copyData.selfhandleRow === undefined && ( */}
-                      <Col span={24}>
-                        <ServiceCompletion
-                          forminladeLayout={forminladeLayout}
-                          soluteArr={copyData.selfhandleRow ? copyData.selfhandleRow : lastSolute}
-                          startTime={startTime}
-                          endTime={endTime}
-                          tabActiveKey={reporttype}
-                          selfhandleRow={contentrowdata => {
-                            setSelfhandleRow(contentrowdata)
-                          }}
-                        />
-                      </Col>
+                  <Col span={24}>
+                    <ServiceCompletion
+                      forminladeLayout={forminladeLayout}
+                      soluteArr={copyData.selfhandleRow ? copyData.selfhandleRow : lastSolute}
+                      startTime={startTime}
+                      endTime={endTime}
+                      tabActiveKey={reporttype}
+                      selfhandleRow={contentrowdata => {
+                        setSelfhandleRow(contentrowdata)
+                      }}
+                    />
+                  </Col>
                   {/* //   )
                   // } */}
 
@@ -959,7 +993,7 @@ function SoftReport(props) {
                       }
                     </Form.Item>
                   </Col>
-                  
+
                   <Col span={24}>
                     <EventTop
                       topNList={contentrowdata => {
@@ -1163,20 +1197,20 @@ function SoftReport(props) {
                   )} */}
 
                   {/* {copyData.operationList === undefined && ( */}
-                    <Col span={24}>
-                      <LastweekHomework
-                        forminladeLayout={forminladeLayout}
-                        startTime={startTime}
-                        endTime={endTime}
-                        type={reporttype}
-                        operationList={contentrowdata => {
-                          setOperationList(contentrowdata)
-                        }}
-                        operationArr={copyData.operationList ? copyData.operationList: lastweekHomeworklist}
-                        // mainId={copyData.operationList?true:''}
-                        loading={loading}
-                      />
-                    </Col>
+                  <Col span={24}>
+                    <LastweekHomework
+                      forminladeLayout={forminladeLayout}
+                      startTime={startTime}
+                      endTime={endTime}
+                      type={reporttype}
+                      operationList={contentrowdata => {
+                        setOperationList(contentrowdata)
+                      }}
+                      operationArr={copyData.operationList ? copyData.operationList : lastweekHomeworklist}
+                      // mainId={copyData.operationList?true:''}
+                      loading={loading}
+                    />
+                  </Col>
                   {/* // )} */}
 
                   <Col span={24} style={{ marginTop: 20 }}>
@@ -1222,20 +1256,20 @@ function SoftReport(props) {
                   )} */}
 
                   {/* { */}
-                    {/* // copyData.operationList === undefined && ( */}
-                      <Col span={24}>
-                        <LastweekHomework
-                          forminladeLayout={forminladeLayout}
-                          startTime={startTime}
-                          endTime={endTime}
-                          type={reporttype}
-                          operationList={contentrowdata => {
-                            setNextOperationList(contentrowdata)
-                          }}
-                          operationArr={copyData.nextOperationList ? copyData.nextOperationList: nextweekHomeworklist}
-                          loading={loading}
-                        />
-                      </Col>
+                  {/* // copyData.operationList === undefined && ( */}
+                  <Col span={24}>
+                    <LastweekHomework
+                      forminladeLayout={forminladeLayout}
+                      startTime={startTime}
+                      endTime={endTime}
+                      type={reporttype}
+                      operationList={contentrowdata => {
+                        setNextOperationList(contentrowdata)
+                      }}
+                      operationArr={copyData.nextOperationList ? copyData.nextOperationList : nextweekHomeworklist}
+                      loading={loading}
+                    />
+                  </Col>
                   {/* //   ) */}
                   {/* // } */}
 
@@ -1267,30 +1301,37 @@ function SoftReport(props) {
             }
 
 
-            {loading === false && addTitle && addTitle.length > 0 && (
-              addTitle.map((item, index) => {
+            {loading === false && list && list.length > 0 && (
+              list.map((item, index) => {
                 return (
                   <>
                     <Col span={23}>
                       <AddForm
                         formincontentLayout={formincontentLayout}
-                        px={index + 9}
-                        addTable={newdata => {
-                          handleaddTable(newdata)
+                        px={(index + 9).toString()}
+                        addTable={(newdata, addpx, rowdelete) => {
+                          handleaddTable(newdata, addpx, rowdelete)
                         }}
-                        dynamicData={addTitle[index]}
+                        index={index}
+                        dynamicData={list.length ? list[index] : {}}
+                        // dynamicData={undefined}
                         loading={loading}
+                        ChangeAddRow={v => setAddrow(v)}
+                        sign={deleteSign}
                       />
                     </Col>
 
-                    <Col span={1}>
-                      <Icon
-                        className="dynamic-delete-button"
-                        type="minus-circle-o"
-                        onClick={() => removeForm(index)}
-                      />
-                    </Col>
-
+                    {
+                      list[index] && (
+                        <Col span={1}>
+                          <Icon
+                            className="dynamic-delete-button"
+                            type="delete"
+                            onClick={() => { removeForm(index); setDeleteSign(true) }}
+                          />
+                        </Col>
+                      )
+                    }
                   </>
                 )
               })

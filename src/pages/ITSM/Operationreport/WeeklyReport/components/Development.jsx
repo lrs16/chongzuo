@@ -9,6 +9,7 @@ import {
   message
 } from 'antd';
 
+let deleteSign = false;
 const { Option } = Select;
 const Development = React.forwardRef((props, ref) => {
   const attRef = useRef();
@@ -34,7 +35,7 @@ const Development = React.forwardRef((props, ref) => {
   const newMember = () => {
     const newData = (data).map(item => ({ ...item }));
     newData.push({
-      key: data.length + 1,
+      key: data.length+1,
       field1: data.length + 1,
       field2: '',
       field3: '',
@@ -51,29 +52,20 @@ const Development = React.forwardRef((props, ref) => {
   }
 
   const deleteObj = (key, newData) => {
-    // console.log('key: ', key);
     return (newData || data).filter(item => item.key !== key);
-    // const newTarget =
-    // console.log('newTarget: ', newTarget);
-    // const resultData = newTarget.map((item, index) => {
-    //   const newItem = item;
-    //   newItem.key = index + 1;
-    //   newItem.field1 = index + 1;
-    //   newItem.field2 = item.field2;
-    //   newItem.field3 = item.field3;
-    //   return newItem;
-    // })
-    // return resultData;
-      // newTarget[0].field1 = 'pppp';
-      // console.log('newTarget: ', newTarget);
-      // return newTarget;
+
   }
 
   //  删除数据
   const remove = key => {
     const target = deleteObj(key);
-    setData(target);
-    materialsList(target);
+    const newarr = target.map((item, index) => {
+      return Object.assign(item, { editable: true, isNew: false, key: index, field1:index +1 })
+    });
+
+    deleteSign = true;
+    setData(newarr);
+    materialsList(newarr);
   };
 
   const handleFieldChange = (e, fieldName, key) => {
@@ -89,7 +81,7 @@ const Development = React.forwardRef((props, ref) => {
   const handleTabledata = () => {
     if (newbutton === false) {
       const newarr = materials.map((item, index) => {
-        return Object.assign(item, { editable: true, isNew: false, key: index })
+        return Object.assign(item, { editable: true, isNew: false, key: index,field1:index +1 })
       })
       setData(newarr)
     }
@@ -105,7 +97,7 @@ const Development = React.forwardRef((props, ref) => {
           <Input
             disabled={detailParams}
             defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'field1', record.key, 'secondTable')}
+            onChange={e => handleFieldChange(e.target.value, 'field1', record.key)}
           />
         )
       }
@@ -119,7 +111,7 @@ const Development = React.forwardRef((props, ref) => {
           <Input
             disabled={detailParams}
             defaultValue={text}
-            onChange={e => handleFieldChange(e.target.value, 'field2', record.key, 'secondTable')}
+            onChange={e => handleFieldChange(e.target.value, 'field2', record.key)}
           />
         )
       }
@@ -166,16 +158,25 @@ const Development = React.forwardRef((props, ref) => {
     handleTabledata();
   }, [materials])
 
+  useEffect(() => {
+    if (deleteSign) {
+      deleteSign = false
+    }
+  }, [data, deleteSign])
+
 
   return (
     <>
       <p>（三）运维材料提交情况</p>
 
-      <Table
-        columns={column}
-        dataSource={data}
-        pagination={false}
-      />
+      {deleteSign === false && (
+        <Table
+          columns={column}
+          dataSource={data}
+          pagination={false}
+          rowKey={record => record.key}
+        />
+      )}
 
       <Button
         style={{ width: '100%', marginTop: 16, marginBottom: 8 }}

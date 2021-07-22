@@ -10,6 +10,7 @@ import {
   Popconfirm
 } from 'antd';
 
+let deleteSign = false;
 function ServiceTableone(props) {
   const {
     maintenanceArr,
@@ -25,7 +26,7 @@ function ServiceTableone(props) {
   const newMember = () => {
     const newData = (data).map(item => ({ ...item }));
     newData.push({
-      key: data.length + 1,
+      key: data.length,
       field1: data.length + 1,
       field2: '',
       field3: '',
@@ -57,8 +58,13 @@ function ServiceTableone(props) {
   //  删除数据
   const remove = key => {
     const target = deleteObj(key) || {};
-    typeList(target)
-    setData(target);
+    const newarr = target.map((item, index) => {
+      return Object.assign(item, { editable: true, isNew: false, key: index, field1:index +1 })
+    });
+
+    deleteSign = true;
+    typeList(newarr)
+    setData(newarr);
   };
 
 
@@ -76,7 +82,13 @@ function ServiceTableone(props) {
     handleTabledata();
   }, [maintenanceArr])
 
-  const editColumn = [
+  useEffect(() => {
+    if (deleteSign) {
+      deleteSign = false
+    }
+  }, [data, deleteSign])
+
+  const column = [
     {
       title: '序号',
       dataIndex: 'field1',
@@ -86,6 +98,7 @@ function ServiceTableone(props) {
           <Input
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field1', record.key)}
+            disabled={detailParams}
           />
         )
       }
@@ -99,6 +112,7 @@ function ServiceTableone(props) {
           <Input
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field2', record.key)}
+            disabled={detailParams}
           />
         )
       }
@@ -112,6 +126,7 @@ function ServiceTableone(props) {
           <Input
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field3', record.key)}
+            disabled={detailParams}
           />
         )
       }
@@ -125,6 +140,7 @@ function ServiceTableone(props) {
           <Input
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field4', record.key)}
+            disabled={detailParams}
           />
         )
       }
@@ -138,6 +154,7 @@ function ServiceTableone(props) {
           <Input
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field5', record.key)}
+            disabled={detailParams}
           />
         )
       }
@@ -151,6 +168,7 @@ function ServiceTableone(props) {
           <Input
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field6', record.key)}
+            disabled={detailParams}
           />
         )
       }
@@ -187,11 +205,16 @@ function ServiceTableone(props) {
           <p>（一）运维分类统计情况 </p>
         </Col>
 
+        {deleteSign === false && (
         <Table
-          columns={editColumn}
+          columns={column}
           dataSource={data}
           pagination={false}
+          rowKey={record => record.key}
         />
+      )}
+
+
 
         <Button
           style={{ width: '100%', marginTop: 16, marginBottom: 8 }}

@@ -9,6 +9,7 @@ import {
   DatePicker,
   Descriptions,
   Icon,
+  message
 } from 'antd';
 import moment from 'moment';
 import router from 'umi/router';
@@ -78,7 +79,6 @@ function ComputerroomReportdetail(props) {
 
   const required = true;
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
-  const [addTitle, setAddTitle] = useState([]);
   const [fileslist, setFilesList] = useState([]);
 
   const [materialsList, setMaterialsList] = useState([]) // 材料列表
@@ -88,6 +88,10 @@ function ComputerroomReportdetail(props) {
   const [operationList, setOperationList] = useState([]) // 更新列表
   const [unCloseTroubleList, setUnCloseTroubleList] = useState([]) // 运维分类统计
   const [list, setList] = useState([]);
+
+  const [newbutton, setNewButton] = useState(false);
+  const [addrow, setAddrow] = useState(false);
+  const [deleteSign, setDeleteSign] = useState(false);
   const { main } = openReportlist;
 
   const getopenFlow = () => {
@@ -126,7 +130,11 @@ function ComputerroomReportdetail(props) {
           payload: savedata
         }).then(res => {
           if (res.code === 200) {
-            getopenFlow()
+            message.info(res.msg);
+            getopenFlow();
+            props.history.go(0)
+          } else {
+            message.info('保存失败')
           }
         })
       }
@@ -150,14 +158,12 @@ function ComputerroomReportdetail(props) {
   // 上传删除附件触发保存
   useEffect(() => {
     if (files.ischange) {
-      softReportform();
+      computerReportform();
     }
   }, [files]);
 
   useEffect(() => {
     const { addData } = openReportlist;
-    setAddTitle(addData);
-    setList(addData)
     const materialsArr = openReportlist.materialsList;
     const meetingSummaryArr = openReportlist.meetingSummaryList;
     const newTroubleArr = openReportlist.newTroubleList;
@@ -165,9 +171,8 @@ function ComputerroomReportdetail(props) {
     const operationArr = openReportlist.operationList;
     const unCloseTroubleArr = openReportlist.unCloseTroubleList;
 
-    setAddTitle(addData);
     setList(addData);
-    
+
     setMaterialsList(materialsArr);
     setMeetingSummaryList(meetingSummaryArr);
     setNewTroubleList(newTroubleArr);
@@ -217,9 +222,7 @@ function ComputerroomReportdetail(props) {
 
     }
     if (reporttype === 'month') {
-      console.log(1)
       if (!reportSearch) {
-        console.log(2)
         router.push({
           pathname: '/ITSM/operationreport/monthlyreport/mymonthlyreport',
           query: { pathpush: true },
@@ -227,7 +230,6 @@ function ComputerroomReportdetail(props) {
         })
       }
       if (reportSearch) {
-        console.log(3)
         router.push({
           pathname: '/ITSM/operationreport/monthlyreport/mymonthlysearch',
           query: { pathpush: true },
@@ -255,35 +257,73 @@ function ComputerroomReportdetail(props) {
   }
 
   const newMember = () => {
-    const nowNumber = addTitle.map(item => ({ ...item }));
-    nowNumber.push({ 'add': '1', tableIndex: [] });
-    setAddTitle(nowNumber)
+    const nowNumber = list.map(item => ({ ...item }));
+    const newarr = nowNumber.map((item, index) => {
+      return Object.assign(item, { px: (index+6).toString()})
+    });
+    const addObj = {
+      files:'',
+      content:'',
+      title:'',
+      list:'',
+      px: (nowNumber.length + 6).toString()
+    }
+    
+    newarr.push(addObj);
+    setList(newarr);
+    setNewButton(true);
+    setDeleteSign(false);
   }
 
-  // 新增一条记录
-  const handleaddTable = (params) => {
-    const newData = (list).map(item => ({ ...item }));
-    newData.push({
-      ...params
-    });
-    setList(newData)
+  // 动态保存
+  const handleaddTable = (params, px, rowdelete) => {
+    if (deleteSign && rowdelete) {
+      const newData = [];
+      newData.push({
+        ...params
+      });
+
+      setList(newData);
+      setNewButton(false)
+    } else {
+      let filtIndex;
+      const newData = (list).map(item => ({ ...item }));
+
+      for (let i = 0; i < newData.length; i += 1) {
+        if (newData[i].px === px) {
+          filtIndex = i;
+          break;
+        }
+      }
+
+      if (newData && newData.length) {
+        if (filtIndex !== undefined) {
+          newData.splice(filtIndex, 1, params);
+        }
+      }
+
+      if (newData && (newData.length === 0 || filtIndex === undefined)) {
+        newData.push({
+          ...params
+        });
+      }
+
+      setList(newData);
+      setNewButton(false)
+    }
   };
 
   //  移除表格
   const removeForm = (tableIndex) => {
-    addTitle.splice(tableIndex, 1);
     list.splice(tableIndex, 1);
-    const resultArr = [];
-    const listArr = [];
-    for (let i = 0; i < addTitle.length; i += 1) {
-      resultArr.push(addTitle[i])
-    }
-    for (let i = 0; i < list.length; i += 1) {
-      listArr.push(list[i])
-    }
-    setAddTitle(resultArr)
-    setList(listArr)
+    const resultArr = list.map((item, index) => {
+      const newItem = item;
+      newItem.px = (index + 6).toString();
+      return newItem;
+    })
+    setList(resultArr);
   }
+
 
   const exportWord = () => {
     dispatch({
@@ -394,7 +434,7 @@ function ComputerroomReportdetail(props) {
                             message: '请选择填报日期'
                           }
                         ],
-                        initialValue: main ? moment(main.time1) :''
+                        initialValue: main ? moment(main.time1) : ''
                       })(<MonthPicker
                         allowClear
                         onChange={onChange}
@@ -654,6 +694,7 @@ function ComputerroomReportdetail(props) {
                   operationArr={openReportlist.operationList ? openReportlist.operationList : []}
                   mainId={mainId}
                   detailParams={reportSearch}
+                  databaseParams='true'
                 />
               </Col>
 
@@ -687,6 +728,7 @@ function ComputerroomReportdetail(props) {
                   operationArr={openReportlist.nextOperationList ? openReportlist.nextOperationList : []}
                   mainId={mainId}
                   detailParams={reportSearch}
+                  databaseParams='true'
                 />
               </Col>
 
@@ -792,33 +834,38 @@ function ComputerroomReportdetail(props) {
                 )
               }
 
-              {loading === false && addTitle && addTitle.length > 0 && (
-                addTitle.map((item, index) => {
+              {(loading === false && list && list.length > 0) && (
+                list.map((item, index) => {
                   return (
                     <>
                       <Col span={23}>
                         <AddForm
                           formincontentLayout={formincontentLayout}
-                          px={index + 6}
-                          addTable={newdata => {
-                            handleaddTable(newdata);
-                            // saveForm(newdata)
+                          px={(index + 6).toString()}
+                          addTable={(newdata, addpx, rowdelete) => {
+                            handleaddTable(newdata, addpx, rowdelete)
                           }}
-                          detailParams={reportSearch}
-                          dynamicData={addTitle[index]}
+                          index={index}
+                          dynamicData={list.length ? list[index] : {}}
+                          // dynamicData={undefined}
                           loading={loading}
+                          ChangeAddRow={v => setAddrow(v)}
+                          sign={deleteSign}
+                          detailParams={reportSearch}
                         />
                       </Col>
 
-                      {!reportSearch && (
-                        <Col span={1}>
-                          <Icon
-                            className="dynamic-delete-button"
-                            type="minus-circle-o"
-                            onClick={() => removeForm(index)}
-                          />
-                        </Col>
-                      )}
+                      {
+                        list[index] && (
+                          <Col span={1}>
+                            <Icon
+                              className="dynamic-delete-button"
+                              type="delete"
+                              onClick={() => { removeForm(index); setDeleteSign(true) }}
+                            />
+                          </Col>
+                        )
+                      }
                     </>
                   )
                 })

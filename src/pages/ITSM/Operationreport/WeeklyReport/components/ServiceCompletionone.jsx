@@ -8,6 +8,7 @@ import {
   Popconfirm
 } from 'antd';
 
+let deleteSign = false;
 function ServiceCompletionone(props) {
 
   const {
@@ -25,7 +26,7 @@ function ServiceCompletionone(props) {
   const newMember = () => {
     const newData = (data).map(item => ({ ...item }));
     newData.push({
-      key: data.length + 1,
+      key: data.length,
       field1: data.length + 1,
       field2: '',
       field3: '',
@@ -47,8 +48,13 @@ function ServiceCompletionone(props) {
   //  删除数据
   const remove = key => {
     const target = deleteObj(key) || {};
-    statisList(result)
-    setData(target);
+    const newarr = target.map((item, index) => {
+      return Object.assign(item, { editable: true, isNew: false, key: index, field1: index + 1 })
+    });
+
+    deleteSign = true;
+    statisList(newarr)
+    setData(newarr);
     setNewButton(true);
   };
 
@@ -106,7 +112,7 @@ function ServiceCompletionone(props) {
       }
     },
     {
-      title: tabActiveKey === 'week' ? '下周' : '下月',
+      title: tabActiveKey === 'week' ? '本周' : '下月',
       dataIndex: 'field4',
       key: 'field4',
       render: (text, record) => {
@@ -179,15 +185,24 @@ function ServiceCompletionone(props) {
     handleTabledata();
   }, [maintenanceService])
 
+  useEffect(() => {
+    if (deleteSign) {
+      deleteSign = false
+    }
+  }, [data, deleteSign])
+
   return (
     <>
       <p>(二)、软件运维服务指标完成情况</p>
 
-      <Table
-        columns={columns}
-        dataSource={data}
-        pagination={false}
-      />
+      {deleteSign === false && (
+        <Table
+          columns={columns}
+          dataSource={data}
+          pagination={false}
+          rowKey={record => record.key}
+        />
+      )}
 
       <Button
         style={{ width: '100%', marginTop: 16, marginBottom: 8 }}

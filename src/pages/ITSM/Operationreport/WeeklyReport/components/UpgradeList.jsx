@@ -12,7 +12,7 @@ import {
 import moment from 'moment';
 
 const { TextArea } = Input;
-
+let deleteSign = false;
 function UpgradeList(props) {
 
   const {
@@ -62,8 +62,13 @@ function UpgradeList(props) {
   //  删除数据
   const remove = key => {
     const target = deleteObj(key) || {};
-    setData(target);
-    upgradeList(target);
+    const newarr = target.map((item, index) => {
+      return Object.assign(item, { editable: true, isNew: false, key: index, field1: index + 1 })
+    });
+
+    deleteSign = true;
+    setData(newarr);
+    upgradeList(newarr);
   };
 
   const handleTabledata = () => {
@@ -78,6 +83,12 @@ function UpgradeList(props) {
   useEffect(() => {
     handleTabledata()
   }, [upgradeArr])
+
+  useEffect(() => {
+    if (deleteSign) {
+      deleteSign = false
+    }
+  }, [data, deleteSign])
 
   const column = [
     {
@@ -158,16 +169,18 @@ function UpgradeList(props) {
     }
   ];
 
-
   return (
     <>
 
-     
-      <Table
-        columns={column}
-        dataSource={data}
-        pagination={false}
-      />
+      {deleteSign === false && (
+        <Table
+          columns={column}
+          dataSource={data}
+          pagination={false}
+          rowKey={record => record.key}
+        />
+      )}
+
 
       <Button
         style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
