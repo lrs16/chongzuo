@@ -4,20 +4,38 @@ import router from 'umi/router';
 import { Button, Card } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import EditContext from '@/layouts/MenuContext';
+import { knowledgeCheckUserList } from '@/services/user';
+import CheckOneUser from '@/components/SelectUser/CheckOneUser';
 import Content from './components/Content';
 
 function New(props) {
   const pagetitle = props.route.name;
   const { dispatch, location, tabnew, tabdata } = props;
+  const [choiceUser, setChoiceUser] = useState({ users: '', ischange: false });
+  const [userlist, setUserList] = useState([]);
+  const [uservisible, setUserVisible] = useState(false); // 是否显示选人组件
   const ContentRef = useRef(null);
 
-  const handleSave = () => {
+  const handleClick = (buttype) => {
     const values = ContentRef.current.getVal();
     dispatch({
       type: 'knowledg/add',
-      payload: { ...values },
+      payload: {
+        payvalue: { ...values },
+        buttype,
+        userId: choiceUser.users
+      },
     });
   }
+
+  const handleSubmit = () => {
+    knowledgeCheckUserList().then(res => {
+      if (res.code === 200) {
+        setUserList(res.data);
+        setUserVisible(true)
+      }
+    })
+  };
 
   const handleclose = () => {
     router.push({
@@ -38,10 +56,17 @@ function New(props) {
   // 重置表单信息
   useEffect(() => {
     if (tabnew) {
-      console.log('重置')
       ContentRef.current.resetVal();
     }
   }, [tabnew]);
+
+  // 选人完成提交
+  useEffect(() => {
+    if (choiceUser.ischange) {
+      handleClick('submit');
+      setChoiceUser({ users: '', ischange: false });
+    }
+  }, [choiceUser.ischange])
 
   // 获取页签信息
   useEffect(() => {
@@ -62,14 +87,14 @@ function New(props) {
       <Button
         type="primary"
         style={{ marginRight: 8 }}
-        onClick={() => handleSave()}
+        onClick={() => handleClick('save')}
       >
         保存
       </Button>
       <Button
         type="primary"
         style={{ marginRight: 8 }}
-        onClick={() => { handleSave() }}
+        onClick={() => { handleSubmit() }}
       >
         提交
       </Button>
@@ -91,6 +116,9 @@ function New(props) {
           />
         </EditContext.Provider>
       </Card>
+      <EditContext.Provider value={{ setChoiceUser, uservisible, setUserVisible, title: '审核' }}>
+        <CheckOneUser userlist={userlist} />
+      </EditContext.Provider>
     </PageHeaderWrapper>
   );
 }

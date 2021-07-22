@@ -6,7 +6,9 @@ import {
   openkowledge,
   submitkowledge,
   releasekowledge,
-  queryTodoList
+  queryTodoList,
+  queryUpdateList,
+  queryStatisList
 } from '../services/api';
 
 export default {
@@ -15,6 +17,8 @@ export default {
   state: {
     list: [],
     info: undefined,
+    updatas: [],
+    statislist: [],
   },
 
   effects: {
@@ -24,12 +28,12 @@ export default {
       });
     },
     // 新建保存
-    *add({ payload }, { call }) {
+    *add({ payload: { payvalue, buttype, userId } }, { call }) {
       const tabid = sessionStorage.getItem('tabid')
       const resadd = yield call(addkowledge);
       if (resadd.code === 200) {
         const value = {
-          ...payload,
+          ...payvalue,
           mainId: resadd.id,
           flowNodeName: '知识登记',
           editState: 'add',
@@ -41,20 +45,36 @@ export default {
             pathname: `/ITSM/knowledgemanage/myknowledge/new`,
             query: { tabid, closecurrent: true }
           })
-          router.push({
-            pathname: `/ITSM/knowledgemanage/myknowledge/operation`,
-            query: {
-              Id: saveres.no,
-            },
-            state: {
-              runpath: '/ITSM/knowledgemanage/myknowledge',
-              title: '我的知识',
-              dynamicpath: true,
-              menuDesc: '编辑知识',
-              mainId: saveres.mainId,
-              status: '已登记'
-            },
-          });
+          if (buttype === 'save') {
+            router.push({
+              pathname: `/ITSM/knowledgemanage/myknowledge/operation`,
+              query: {
+                Id: saveres.no,
+              },
+              state: {
+                runpath: '/ITSM/knowledgemanage/myknowledge',
+                title: '我的知识',
+                dynamicpath: true,
+                menuDesc: '编辑知识',
+                mainId: saveres.mainId,
+                status: '已登记'
+              },
+            });
+          };
+          if (buttype === 'submit') {
+            const mainIds = [saveres.mainId];
+            const subres = yield call(submitkowledge, { mainIds, userId });
+            if (subres.code === 200) {
+              message.success('提交成功');
+              router.push({
+                pathname: `/ITSM/knowledgemanage/myknowledge`,
+                query: { pathpush: true },
+                state: { cach: false, }
+              });
+            } else {
+              message.error(subres.msg)
+            }
+          };
         }
       } else {
         message.error(resadd.msg)
@@ -109,6 +129,8 @@ export default {
               query: { pathpush: true },
               state: { cach: false, closetabid: mainId }
             });
+          } else {
+            message.error(subres.msg)
           }
         };
         if (buttype === 'release') {
@@ -165,6 +187,17 @@ export default {
       }
     },
 
+    // 编辑历史
+    *updatelist({ payload }, { call, put }) {
+      const response = yield call(queryUpdateList, payload);
+      if (response.code === 200) {
+        yield put({
+          type: 'saveupload',
+          payload: response.data,
+        });
+      }
+    },
+
     // 列表
     *fetchlist({ payload }, { call, put }) {
       const response = yield call(queryTodoList, payload);
@@ -172,6 +205,18 @@ export default {
         yield put({
           type: 'save',
           payload: response,
+        });
+      } else {
+        message.error(response.msg)
+      }
+    },
+    // 统计
+    *fetchstatis({ payload: { time1, time2 } }, { call, put }) {
+      const response = yield call(queryStatisList, time1, time2);
+      if (response.code === 200) {
+        yield put({
+          type: 'savestatis',
+          payload: response.data,
         });
       } else {
         message.error(response.msg)
@@ -185,6 +230,7 @@ export default {
         ...state,
         list: [],
         info: undefined,
+        updatas: [],
       };
     },
     saveopen(state, action) {
@@ -197,6 +243,18 @@ export default {
       return {
         ...state,
         list: action.payload,
+      };
+    },
+    saveupload(state, action) {
+      return {
+        ...state,
+        updatas: action.payload,
+      };
+    },
+    savestatis(state, action) {
+      return {
+        ...state,
+        statislist: action.payload,
       };
     },
     saveinfo(state, action) {

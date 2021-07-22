@@ -61,6 +61,15 @@ export async function abolishkowledge(params) {
   });
 }
 
+// 删除
+export async function deletekowledge(params) {
+  return request(`/knowledge/flow/delete`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+  });
+}
+
 // 打开待办
 export async function openkowledge(mainId) {
   return request(`/knowledge/flow/openFlow?mainId=${mainId}`, {
@@ -75,5 +84,19 @@ export async function queryUpdateList(params) {
     method: 'POST',
     data: params,
     requestType: 'form',
+  });
+}
+
+// 知识统计列表
+export async function queryStatisList(time1, time2) {
+  return request(`/knowledge/statis/getKnowledgeStatisList?time1=${time1}&time2=${time2}`, {
+    method: 'GET',
+  });
+}
+
+// 知识统计导出
+export async function downloadStatisExcel(time1, time2) {
+  return request(`/knowledge/statis/downloadStatisExcel?time1=${time1}&time2=${time2}`, {
+    method: 'GET',
   });
 }

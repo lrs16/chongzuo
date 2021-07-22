@@ -4,7 +4,6 @@ import { Row, Col, Form, Input, Select } from 'antd';
 import RichTextEditor from '@/components/RichTextEditor';
 import SysUpload from '@/components/SysUpload/Upload';
 import DictLower from '@/components/SysDict/DictLower';
-import UploadContext from '@/layouts/MenuContext';
 
 const { Option } = Select;
 
@@ -136,12 +135,12 @@ const Content = forwardRef((props, ref) => {
           <Col span={8}>
             <Form.Item label="作者">
               {getFieldDecorator('addUser', {
-                initialValue: formrecord.addUser,
+                initialValue: formrecord.addUser ? formrecord.addUser : sessionStorage.getItem('userName'),
               })(<Input disabled />)}
             </Form.Item>
             <Form.Item label="作者ID" style={{ display: 'none' }}>
               {getFieldDecorator('addUserId', {
-                initialValue: formrecord.addUserId,
+                initialValue: formrecord.addUserId ? formrecord.addUserId : sessionStorage.getItem('userauthorityid'),
               })(<Input disabled />)}
             </Form.Item>
           </Col>
@@ -172,8 +171,6 @@ Content.defaultProps = {
     type: '',
     title: '',
     content: '',
-    addUser: sessionStorage.getItem('userName'),
-    addUserId: sessionStorage.getItem('userauthorityid'),
   }
 }
 

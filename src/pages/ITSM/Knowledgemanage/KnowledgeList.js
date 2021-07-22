@@ -9,7 +9,7 @@ import DictLower from '@/components/SysDict/DictLower';
 import UserContext from '@/layouts/MenuContext';
 import CheckOneUser from '@/components/SelectUser/CheckOneUser';
 import { knowledgeCheckUserList } from '@/services/user';
-import { submitkowledge, releasekowledge } from './services/api';
+import { submitkowledge, releasekowledge, revokekowledge, abolishkowledge, deletekowledge } from './services/api';
 import Examine from './components/Examine';
 
 const { Option } = Select;
@@ -49,7 +49,7 @@ function KnowledgeList(props) {
     const values = getFieldsValue();
     const statusmap = new Map([
       ['我的知识', '1'],
-      ['编辑知识', '2'],
+      ['知识维护', '2'],
       ['知识审核', '3'],
       ['知识查询', '4'],
     ]);
@@ -66,7 +66,8 @@ function KnowledgeList(props) {
     });
   }
   const handleReset = () => {
-    console.log('重置')
+    resetFields();
+    handleSearch(1, 15)
   };
   const download = () => {
     console.log('导出数据')
@@ -93,21 +94,113 @@ function KnowledgeList(props) {
           releasekowledge({ mainIds, userId }).then(res => {
             if (res.code === 200) {
               message.success(res.msg)
+            } else {
+              message.error(res.msg)
             };
-            handleSearch(1, 15);
             setSelectedRecords([]);
+            handleSearch(1, 15);
           })
         } else {
           message.error('请选择知识状态为‘已登记’的数据')
+          setSelectedRecords([]);
         }
         break;
       }
-      case 'flowcheck':
-
+      case 'revoke': {
+        const newselectds = selectedRecords.filter(item => item.status === '已发布');
+        if (newselectds.length > 0) {
+          const mainIds = newselectds.map(item => {
+            return item.id;
+          });
+          revokekowledge({ mainIds, userId }).then(res => {
+            if (res.code === 200) {
+              message.success(res.msg)
+            } else {
+              message.error(res.msg)
+            };
+            setSelectedRecords([]);
+            handleSearch(1, 15);
+          })
+        } else {
+          message.error('请选择知识状态为‘已发布’的数据');
+          setSelectedRecords([]);
+        }
         break;
-      case 'over':
+      }
+      case 'abolish': {
+        const newselectds = selectedRecords.filter(item => item.status === '已发布');
+        if (selectedRecords.length === 0) {
+          message.error('您还没有选择数据，请选择状态不为‘发布中’的数据进行操作')
+        }
+        if (newselectds.length > 0) {
+          const mainIds = newselectds.map(item => {
+            return item.id;
+          });
+          abolishkowledge({ mainIds, userId }).then(res => {
+            if (res.code === 200) {
+              message.success(res.msg)
+            } else {
+              message.error(res.msg)
+            };
+            setSelectedRecords([]);
+            handleSearch(1, 15);
 
+          })
+        } else {
+          message.error('仅能选择状态不为‘发布中’的数据');
+          setSelectedRecords([]);
+        }
         break;
+      }
+      case 'mydelete': {
+        const newselectds = selectedRecords.filter(item => item.status === '已登记');
+        if (selectedRecords.length === 0) {
+          message.error('您还没有选择数据，请选择状态不为‘发布中’的数据进行操作')
+        }
+        if (newselectds.length > 0) {
+          const mainIds = newselectds.map(item => {
+            return item.id;
+          });
+          deletekowledge({ mainIds, userId }).then(res => {
+            if (res.code === 200) {
+              message.success(res.msg)
+            } else {
+              message.error(res.msg)
+            };
+            setSelectedRecords([]);
+            handleSearch(1, 15);
+
+          })
+        } else {
+          message.error('仅能选择没有产生数');
+          setSelectedRecords([]);
+        }
+        break;
+      }
+      case 'delete': {
+        const newselectds = selectedRecords.filter(item => item.status !== '已发布');
+        if (selectedRecords.length === 0) {
+          message.error('您还没有选择数据，请选择状态不为‘发布中’的数据进行操作')
+        }
+        if (newselectds.length > 0) {
+          const mainIds = newselectds.map(item => {
+            return item.id;
+          });
+          deletekowledge({ mainIds, userId }).then(res => {
+            if (res.code === 200) {
+              message.success(res.msg)
+            } else {
+              message.error(res.msg)
+            };
+            setSelectedRowKeys([]);
+            handleSearch(1, 15);
+          })
+        } else {
+          message.error('仅能选择状态不为‘发布中’的数据');
+          setSelectedRecords([]);
+        }
+        break;
+      }
       default:
         break;
     }
@@ -217,7 +310,7 @@ function KnowledgeList(props) {
 
   // 查询
   const extra = (<>
-    <Button type="primary" onClick={() => handleSearch()}>查 询</Button>
+    <Button type="primary" onClick={() => handleSearch(1, 15)}>查 询</Button>
     <Button style={{ marginLeft: 8 }} onClick={() => handleReset()}>重 置</Button>
     <Button
       style={{ marginLeft: 8 }}
@@ -323,22 +416,22 @@ function KnowledgeList(props) {
                 })(<Input placeholder="请输入" allowClear />)}
               </Form.Item>
             </Col>
-            {(expand || pagetitle === '知识审核') && (
+            <Col span={8}>
+              <Form.Item label="知识分类">
+                {getFieldDecorator('type', {
+                  initialValue: '',
+                })(
+                  <Select placeholder="请选择" allowClear>
+                    {typemap.map(obj => (
+                      <Option key={obj.key} value={obj.title}>
+                        {obj.title}
+                      </Option>
+                    ))}
+                  </Select>)}
+              </Form.Item>
+            </Col>
+            {expand && (
               <>
-                <Col span={8}>
-                  <Form.Item label="知识分类">
-                    {getFieldDecorator('type', {
-                      initialValue: '',
-                    })(
-                      <Select placeholder="请选择" allowClear>
-                        {typemap.map(obj => (
-                          <Option key={obj.key} value={obj.title}>
-                            {obj.title}
-                          </Option>
-                        ))}
-                      </Select>)}
-                  </Form.Item>
-                </Col>
                 <Col span={8}>
                   <Form.Item label="登记时间" >
                     <Row>
@@ -385,39 +478,61 @@ function KnowledgeList(props) {
                 </Col>
               </>
             )}
-            {pagetitle === '知识查询' && (
-              <Col span={8}>
-                <Form.Item label="知识状态">
-                  {getFieldDecorator('status', {
-                    initialValue: '',
-                  })(
-                    <Select placeholder="请选择" allowClear>
-                      {statusmap.map(obj => (
+            {pagetitle === '我的知识' && (<Col span={8}>
+              <Form.Item label="知识状态">
+                {getFieldDecorator('status', {
+                  initialValue: '',
+                })(
+                  <Select placeholder="请选择" allowClear>
+                    {statusmap.map(obj => {
+                      if (obj.title !== '已废止') return (
                         <Option key={obj.key} value={obj.title}>
                           {obj.title}
                         </Option>
-                      ))}
-                    </Select>,
-                  )}
+                      )
+                      return null
+                    })}
+                  </Select>,
+                )}
+              </Form.Item>
+            </Col>)}
+            {(pagetitle === '知识维护' || pagetitle === '知识审核') && (<Col span={8}>
+              <Form.Item label="知识状态">
+                {getFieldDecorator('status', {
+                  initialValue: '',
+                })(
+                  <Select placeholder="请选择" allowClear>
+                    {statusmap.map(obj => {
+                      return (
+                        <Option key={obj.key} value={obj.title}>
+                          {obj.title}
+                        </Option>
+                      )
+                    })}
+                  </Select>,
+                )}
+              </Form.Item>
+            </Col>)}
+            {expand && (
+              <Col span={8}>
+                <Form.Item label="知识内容">
+                  {getFieldDecorator('content', {
+                    initialValue: '',
+                  })(<Input placeholder="请输入" allowClear />,)}
+                </Form.Item>
+              </Col>
+            )}
+            {(expand || pagetitle === '知识查询') && (
+              <Col span={8}>
+                <Form.Item label="作者">
+                  {getFieldDecorator('addUser', {
+                    initialValue: '',
+                  })(<Input placeholder="请输入" allowClear />)}
                 </Form.Item>
               </Col>
             )}
             {expand && (
               <>
-                <Col span={8}>
-                  <Form.Item label="知识内容">
-                    {getFieldDecorator('content', {
-                      initialValue: '',
-                    })(<Input placeholder="请输入" allowClear />,)}
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item label="作者">
-                    {getFieldDecorator('addUser', {
-                      initialValue: '',
-                    })(<Input placeholder="请输入" allowClear />)}
-                  </Form.Item>
-                </Col>
                 <Col span={8}>
                   <Form.Item label="编辑人">
                     {getFieldDecorator('updateUser', {
@@ -471,7 +586,7 @@ function KnowledgeList(props) {
                 </Col>
               </>
             )}
-            <Col span={8} style={{ paddingLeft: '5.55556%', textAlign: 'left', paddingTop: 4 }}>{extra}</Col>
+            <Col span={24} style={{ paddingTop: 4, textAlign: 'right' }}>{extra}</Col>
           </Form>
         </Row>
 
@@ -482,20 +597,23 @@ function KnowledgeList(props) {
               <Button type="primary" style={{ marginRight: 8 }} onClick={() => ClickBut('submit')}>提交</Button >
             </>
           )}
-          {(pagetitle === '知识审核') && (
+          {/* {(pagetitle === '知识审核') && (
             <Button type="primary" style={{ marginRight: 8 }} onClick={() => ClickBut('check')}>审核</Button >
-          )}
+          )} */}
           {pagetitle === '知识维护' && (
             <Button type="primary" style={{ marginRight: 8 }} onClick={() => ClickBut('release')}>发布</Button >
           )}
           <Button type="primary" onClick={() => download()} style={{ marginRight: 8 }}>导出数据</Button >
           {(pagetitle === '知识审核' || pagetitle === '知识维护') && (
-            <Button type="danger" style={{ marginRight: 8 }}>撤销发布</Button >
+            <Button type="danger" style={{ marginRight: 8 }} onClick={() => ClickBut('revoke')}>撤销发布</Button >
           )}
           {(pagetitle === '知识审核') && (
-            <Button type="danger" ghost style={{ marginRight: 8 }}>废止</Button >
+            <Button type="danger" ghost style={{ marginRight: 8 }} onClick={() => ClickBut('abolish')}>废止</Button >
           )}
-          {(pagetitle === '我的知识' || pagetitle === '知识维护') && (
+          {(pagetitle === '我的知识') && (
+            <Button type="danger" ghost style={{ marginRight: 8 }} onClick={() => ClickBut('mydelete')}>删除</Button >
+          )}
+          {(pagetitle === '知识维护') && (
             <Button type="danger" ghost style={{ marginRight: 8 }} onClick={() => ClickBut('delete')}>删除</Button >
           )}
         </div>
@@ -505,7 +623,7 @@ function KnowledgeList(props) {
           dataSource={list.data}
           pagination={pagination}
           rowSelection={rowSelection}
-          rowKey={r => r.no}
+          rowKey={r => r.id}
           scroll={{ x: 1300 }}
         />
       </Card>

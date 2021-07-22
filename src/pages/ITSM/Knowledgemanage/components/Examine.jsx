@@ -53,7 +53,7 @@ const Examine = forwardRef((props, ref) => {
             <Form.Item label="审核结果">
               {getFieldDecorator('result', {
                 rules: [{ required: true, message: '请选择审核结果' }],
-                initialValue: check.checkResult,
+                initialValue: check.result,
               })(
                 <Radio.Group onChange={handleAdopt}>
                   <Radio value="通过">通过</Radio>
@@ -122,7 +122,7 @@ const Examine = forwardRef((props, ref) => {
 
 Examine.defaultProps = {
   check: {
-    checkResult: '通过',
+    result: '通过',
     checkTime: undefined,
     status: '待审核',
     content: '',
