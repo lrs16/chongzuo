@@ -51,7 +51,7 @@ function NewTroublelist(props) {
   const remove = key => {
     const target = deleteObj(key) || {};
     const newarr = target.map((item, index) => {
-      return Object.assign(item, { editable: true, isNew: false, key: index, field1:index +1 })
+      return Object.assign(item, { editable: true, isNew: false, key: index, field1: index + 1 })
     });
 
     deleteSign = true;
@@ -152,8 +152,11 @@ function NewTroublelist(props) {
             defaultValue={text}
             onChange={e => handleFieldChange(e, 'field5', record.key)}
           >
-            <Option value="是">是</Option>
-            <Option value="否">否</Option>
+            <Option value="001">根本解决</Option>
+            <Option value="002">无法解决</Option>
+            <Option value="003">代替方法</Option>
+            <Option value="004">误报</Option>
+            <Option value="005">自动消失</Option>
           </Select>
         )
       }
@@ -239,7 +242,7 @@ function NewTroublelist(props) {
 
   return (
     <>
-      <p style={{ fontWeight: '900', fontSize: '16px' }}>{type === 'week' ? '三、本周新增故障及故障修复情况统计':'三、本月新增故障及故障修复情况统计'}</p>
+      <p style={{ fontWeight: '900', fontSize: '16px' }}>{type === 'week' ? '三、本周新增故障及故障修复情况统计' : '三、本月新增故障及故障修复情况统计'}</p>
 
       <p>(1)新增及已修复故障</p>
 

@@ -38,7 +38,7 @@ function ServiceCompletion(props) {
 
   const handleTabledata = () => {
     const newarr = (soluteArr).map((item, index) => {
-      return Object.assign(item, { editable: true, isNew: false, key: index, field1: index + 1 })
+      return Object.assign(item, { editable: true, isNew: false, key: index })
     })
     setData(newarr)
   }

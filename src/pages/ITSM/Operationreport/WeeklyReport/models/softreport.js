@@ -50,6 +50,10 @@ export default {
     },
     //  保存软件
     *saveSoft({payload},{call,put}) {
+      yield put ({
+        type:'clearcache',
+        payload:[]
+      })
       if(payload.status) {
         const response = yield call(addReport);
         if(response.code === 200) {
@@ -133,6 +137,10 @@ export default {
 
       //  保存机房
     *saveComputer({payload},{call,put}) {
+      yield put ({
+        type:'clearcache',
+        payload:[]
+      })
         if(payload.status) {
           const response = yield call(addReport);
           if(response.code === 200) {
@@ -189,7 +197,10 @@ export default {
     
     //  保存数据库
     *saveDataBase({payload},{call,put}) {
-      console.log('payload: ', payload);
+      yield put ({
+        type:'clearcache',
+        payload:[]
+      })
       if(payload.status) {
         const response = yield call(addReport);
         if(response.code === 200) {
@@ -245,6 +256,10 @@ export default {
   },
     //  保存其他
     *saveOther({payload},{call,put}) {
+      yield put ({
+        type:'clearcache',
+        payload:[]
+      })
       if(payload.status) {
         const response = yield call(addReport);
         if(response.code === 200) {
@@ -581,7 +596,7 @@ export default {
   clearcache(state){
     return {
       ...state,
-      openReportlist:undefined
+      openReportlist:[]
     }
   }
   }

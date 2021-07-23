@@ -58,8 +58,7 @@ const formincontentLayout = {
 
 const { MonthPicker } = DatePicker;
 const { TextArea } = Input;
-let startTime;
-let endTime;
+
 let saveSign = true;
 
 function ComputerroomReportdetail(props) {
@@ -94,6 +93,11 @@ function ComputerroomReportdetail(props) {
   const [newbutton, setNewButton] = useState(false);
   const [addrow, setAddrow] = useState(false);
   const [deleteSign, setDeleteSign] = useState(false);
+
+  const [timeshow, setTimeshow] = useState(true);
+  const [startTime, setStartTime] = useState('');
+  const [endTime, setEndTime] = useState('');
+
   const { main } = openReportlist;
 
   const getopenFlow = () => {
@@ -119,14 +123,14 @@ function ComputerroomReportdetail(props) {
           type: reporttype === 'week' ? '机房运维周报' : '机房运维月报',
           reporttype,
           mainId,
-          time1: (value.time1).format('YYYY-MM-DD'),
-          time2: (value.time2).format('YYYY-MM-DD'),
+          time1: moment(startTime).format('YYYY-MM-DD'),
+          time2: moment(endTime).format('YYYY-MM-DD'),
           materialsList: JSON.stringify(materialsList || ''),
           meetingSummaryList: JSON.stringify(meetingSummaryList || ''),
-          newTroubleList: JSON.stringify(newTroubleList || '' ),
+          newTroubleList: JSON.stringify(newTroubleList || ''),
           nextOperationList: JSON.stringify(nextOperationList || ''),
           operationList: JSON.stringify(operationList || ''),
-          unCloseTroubleList: JSON.stringify(unCloseTroubleList || '' ),
+          unCloseTroubleList: JSON.stringify(unCloseTroubleList || ''),
         }
         return dispatch({
           type: 'softreport/saveComputer',
@@ -142,19 +146,6 @@ function ComputerroomReportdetail(props) {
       }
 
     })
-  }
-
-  const defaultTime = () => {
-    //  周
-    if (type === 'week') {
-      startTime = moment().subtract('days', 6).format('YYYY-MM-DD');
-      endTime = moment().format('YYYY-MM-DD');
-    } else {
-      //  月
-      startTime = moment().startOf('month').format('YYYY-MM-DD');
-      endTime = moment().endOf('month').format('YYYY-MM-DD');
-    }
-
   }
 
   // 上传删除附件触发保存
@@ -183,24 +174,26 @@ function ComputerroomReportdetail(props) {
     setNextOperationList(nextOperationArr);
     setOperationList(operationArr);
     setUnCloseTroubleList(unCloseTroubleArr);
+
+    if (openReportlist && main) {
+      const saveInitlatime1 = openReportlist.main.time1;
+      const saveInitlatime2 = openReportlist.main.time2;
+      setStartTime(saveInitlatime1)
+      setEndTime(saveInitlatime2)
+    }
+
   }, [loading])
+
 
   useEffect(() => {
     saveSign = true;
   }, [])
-
 
   useEffect(() => {
     if (mainId) {
       getopenFlow()
     }
   }, [mainId])
-
-  // 上传删除附件触发保存
-  useEffect(() => {
-    defaultTime();
-  }, []);
-
 
   const handleBack = () => {
     router.push({
@@ -249,20 +242,28 @@ function ComputerroomReportdetail(props) {
 
   const onChange = (date, dateString) => {
     if (reporttype === 'week') {
-      startTime = dateString;
-      endTime = moment(dateString).add(+6, 'day').format('YYYY-MM-DD');
+      const currentendTime = moment(dateString).add(+6, 'day').format('YYYY-MM-DD');
+      setTimeshow(false);
+      setStartTime(dateString);
+      setEndTime(currentendTime);
       setFieldsValue({ time2: moment(endTime) });
     } else {
-      startTime = date.startOf('month').format('YYYY-MM-DD');
-      endTime = date.endOf('month').format('YYYY-MM-DD');
+      const monthstartTime = date.startOf('month').format('YYYY-MM-DD');
+      const monthendTime = date.endOf('month').format('YYYY-MM-DD');
+      setStartTime(monthstartTime);
+      setEndTime(monthendTime);
     }
   }
 
+
   const endonChange = (date, dateString) => {
-    endTime = dateString;
-    startTime = moment(dateString).subtract('day', 6).format('YYYY-MM-DD');
+    const currendstartTime = moment(dateString).subtract('day', 6).format('YYYY-MM-DD');
+    setTimeshow(false);
+    setStartTime(currendstartTime);
+    setEndTime(dateString);
     setFieldsValue({ time1: moment(startTime) })
   }
+
 
   const newMember = () => {
     const nowNumber = list.map(item => ({ ...item }));
@@ -282,6 +283,12 @@ function ComputerroomReportdetail(props) {
     setNewButton(true);
     setDeleteSign(false);
   }
+
+  useEffect(() => {
+    if (startTime) {
+      setTimeshow(true);
+    }
+  }, [timeshow])
 
   // 动态保存
   const handleaddTable = (params, px, rowdelete) => {
@@ -349,6 +356,8 @@ function ComputerroomReportdetail(props) {
     })
   }
 
+  const dateFormat = 'YYYY-MM-DD';
+
   return (
     <PageHeaderWrapper
       title={pagetitle}
@@ -358,7 +367,7 @@ function ComputerroomReportdetail(props) {
             <Button type='primary' onClick={exportWord}>导出</Button>
           )}
 
-          {loading === false && !reportSearch && main && main.time1 && unCloseTroubleList !== undefined  && (
+          {loading === false && !reportSearch && main && main.time1 && unCloseTroubleList !== undefined && (
             <Button type='primary' onClick={() => { saveSign = false; computerReportform() }}>保存</Button>
           )}
 
@@ -393,41 +402,49 @@ function ComputerroomReportdetail(props) {
               </Col>
 
               {
-                reporttype === 'week' && (
-                  <div>
-                    <Col span={24}>
-                      <Form.Item label='填报时间' style={{ display: 'inline-flex' }}>
-                        {getFieldDecorator('time1', {
-                          rules: [
-                            {
-                              required,
-                              message: '请输入填报时间'
-                            }
-                          ],
-                          initialValue: main ? moment(main.time1) : ''
-                        })(
-                          <DatePicker
-                            allowClear={false}
-                            style={{ marginRight: 10 }}
-                            onChange={onChange}
-                            disabled={reportSearch}
-                          />)}
-                      </Form.Item>
-
-                      <Form.Item label='' style={{ display: 'inline-flex' }}>
-                        {
-                          getFieldDecorator('time2', {
-                            initialValue: main ? moment(main.time2) : ''
-                          })
-                            (<DatePicker
+                reporttype === 'week' && startTime && timeshow && (
+                  <Col span={24}>
+                    <div>
+                      <span style={{ marginLeft: 10 }}>填报时间 :</span>
+                      {
+                        timeshow && (
+                          <span
+                            style={{ marginRight: 10, marginLeft: 10 }}
+                          >
+                            <DatePicker
                               allowClear={false}
+                              // defaultValue={moment(endTime, dateFormat)}
+                              format={dateFormat}
+                              defaultValue={moment(startTime)}
+                              onChange={onChange}
+                            />
+                          </span>
+                        )
+                      }
+
+                      <span
+                        style={{ marginRight: 10 }}
+                      >-</span>
+
+                      {
+                        timeshow && (
+                          <span>
+                            <DatePicker
+                              allowClear={false}
+                              // defaultValue={moment(endTime, dateFormat)}
+                              format={dateFormat}
+                              defaultValue={moment(endTime)}
                               onChange={endonChange}
-                              disabled={reportSearch}
-                            />)
-                        }
-                      </Form.Item>
-                    </Col>
-                  </div>
+
+                            />
+                          </span>
+
+                        )
+                      }
+
+                    </div>
+                  </Col>
+
                 )
               }
 
@@ -598,9 +615,9 @@ function ComputerroomReportdetail(props) {
                 <NewTroublelist
                   forminladeLayout={forminladeLayout}
                   type={type}
-                  startTime={startTime}
-                  endTime={endTime}
-                  type={reporttype}
+                  // startTime={startTime}
+                  // endTime={endTime}
+                  // type={reporttype}
                   newTroubleList={contentrowdata => {
                     setNewTroubleList(contentrowdata)
                   }}

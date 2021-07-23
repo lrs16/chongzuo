@@ -28,8 +28,6 @@ const formincontentLayout = {
 };
 
 const { MonthPicker } = DatePicker;
-let startTime;
-let endTime;
 let saveSign = true;
 
 function OtherReportdetail(props) {
@@ -54,6 +52,11 @@ function OtherReportdetail(props) {
   const [deleteSign, setDeleteSign] = useState(false);
   const [addrow, setAddrow] = useState(false);
   const [newbutton, setNewButton] = useState(false);
+
+  const [timeshow, setTimeshow] = useState(true);
+  const [startTime, setStartTime] = useState('');
+  const [endTime, setEndTime] = useState('');
+
   const { main } = openReportlist;
 
   // 动态添加表格暂存数据
@@ -117,27 +120,23 @@ function OtherReportdetail(props) {
           type: reporttype === 'week' ? '其他运维周报' : '其他运维月报',
           reporttype,
           mainId,
-          time1: (value.time1).format('YYYY-MM-DD'),
-          time2: (value.time2).format('YYYY-MM-DD'),
+          time1: moment(startTime).format('YYYY-MM-DD'),
+          time2: moment(endTime).format('YYYY-MM-DD'),
         }
         return dispatch({
           type: 'softreport/saveOther',
           payload: savedata
         }).then(res => {
           if (res.code === 200) {
-            // message.info(res.msg);
-            getopenFlow()
+            message.info(res.msg);
+            getopenFlow();
+            setTimeshow(false)
           }
         })
       }
     })
   }
 
-  const defaultTime = () => {
-    //  周统计
-    startTime = moment().subtract('days', 6).format('YYYY-MM-DD');
-    endTime = moment().format('YYYY-MM-DD');
-  }
 
   // 上传删除附件触发保存
   useEffect(() => {
@@ -145,11 +144,6 @@ function OtherReportdetail(props) {
       otherReportform();
     }
   }, [files]);
-
-  // 上传删除附件触发保存
-  useEffect(() => {
-    defaultTime();
-  }, [loading]);
 
   const handleBack = () => {
     router.push({
@@ -207,27 +201,47 @@ function OtherReportdetail(props) {
       const { addData } = openReportlist;
       setList(addData)
     }
+
+    if (openReportlist && main) {
+      const saveInitlatime1 = openReportlist.main.time1;
+      const saveInitlatime2 = openReportlist.main.time2;
+      setStartTime(saveInitlatime1)
+      setEndTime(saveInitlatime2)
+    }
+
   }, [loading])
 
   useEffect(() => {
     saveSign = true;
-  },[])
+  }, [])
+
+  useEffect(() => {
+    if (timeshow === false) {
+      setTimeshow(true);
+    }
+  }, [timeshow])
 
 
   const onChange = (date, dateString) => {
     if (reporttype === 'week') {
-      startTime = dateString;
-      endTime = moment(dateString).add(+6, 'day').format('YYYY-MM-DD');
+      const currentendTime = moment(dateString).add(+6, 'day').format('YYYY-MM-DD');
+      setTimeshow(false);
+      setStartTime(dateString);
+      setEndTime(currentendTime);
       setFieldsValue({ time2: moment(endTime) });
     } else {
-      startTime = date.startOf('month').format('YYYY-MM-DD');
-      endTime = date.endOf('month').format('YYYY-MM-DD');
+      const monthstartTime = date.startOf('month').format('YYYY-MM-DD');
+      const monthendTime = date.endOf('month').format('YYYY-MM-DD');
+      setStartTime(monthstartTime);
+      setEndTime(monthendTime);
     }
   }
 
   const endonChange = (date, dateString) => {
-    endTime = dateString;
-    startTime = moment(dateString).subtract('day', 6).format('YYYY-MM-DD');
+    const currendstartTime = moment(dateString).subtract('day', 6).format('YYYY-MM-DD');
+    setTimeshow(false);
+    setStartTime(currendstartTime);
+    setEndTime(dateString);
     setFieldsValue({ time1: moment(startTime) })
   }
 
@@ -276,6 +290,8 @@ function OtherReportdetail(props) {
     })
   }
 
+  const dateFormat = 'YYYY-MM-DD';
+
   return (
     <PageHeaderWrapper
       title={pagetitle}
@@ -286,7 +302,7 @@ function OtherReportdetail(props) {
           )}
 
           {loading === false && !reportSearch && (
-            <Button type='primary' onClick={()=>{saveSign = false ; otherReportform()}}>保存</Button>
+            <Button type='primary' onClick={() => { saveSign = false; otherReportform() }}>保存</Button>
           )}
 
           <Button onClick={handleBack}>
@@ -296,7 +312,7 @@ function OtherReportdetail(props) {
       }
     >
       <Card style={{ padding: 24 }}>
-        {loading === false && (
+        {loading === false && main && main.time1 && (
           <Row gutter={24}>
             <Form>
               <Col span={24}>
@@ -320,40 +336,40 @@ function OtherReportdetail(props) {
               </Col>
 
               {
-                reporttype === 'week' && (
-                  <div>
-                    <Col span={24}>
-                      <Form.Item label='填报时间' style={{ display: 'inline-flex' }}>
-                        {getFieldDecorator('time1', {
-                          rules: [
-                            {
-                              required,
-                              message: '请输入填报时间'
-                            }
-                          ],
-                          initialValue: main ? moment(main.time1) : ''
-                        })(<DatePicker
-                          allowClear={false}
-                          disabled={reportSearch}
-                          style={{ marginRight: 10 }}
-                          onChange={onChange}
-                        />)}
-                      </Form.Item>
+                reporttype === 'week' && startTime && timeshow && (
+                  <Col span={16}>
+                    <div>
+                      <span style={{ marginLeft: 10 }}>填报时间 :</span>
 
-                      <Form.Item label='' style={{ display: 'inline-flex' }}>
-                        {
-                          getFieldDecorator('time2', {
-                            initialValue: main ? moment(main.time2) : ''
-                          })
-                            (<DatePicker
-                              disabled={reportSearch}
-                              allowClear={false}
-                              onChange={endonChange}
-                            />)
-                        }
-                      </Form.Item>
-                    </Col>
-                  </div>
+                      <span
+                        style={{ marginRight: 10, marginLeft: 10 }}
+                      >
+                        <DatePicker
+                          allowClear={false}
+                          format={dateFormat}
+                          defaultValue={moment(startTime)}
+                          onChange={onChange}
+                        />
+                      </span>
+
+
+                      <span
+                        style={{ marginRight: 10 }}
+                      >-</span>
+
+                      <span>
+                        <DatePicker
+                          allowClear={false}
+                          format={dateFormat}
+                          defaultValue={moment(endTime)}
+                          onChange={endonChange}
+
+                        />
+                      </span>
+
+                    </div>
+                  </Col>
+
                 )
               }
 
@@ -379,7 +395,7 @@ function OtherReportdetail(props) {
                 )
               }
 
-              { (loading === false && list && list.length > 0) && (
+              {(loading === false && list && list.length > 0) && (
                 list.map((item, index) => {
                   return (
                     <>

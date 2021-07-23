@@ -70,9 +70,9 @@ const formincontentLayout = {
 
 const { MonthPicker } = DatePicker;
 const { TextArea } = Input;
-let startTime;
-let endTime;
+
 let saveSign = true;
+let showTimecomponent = false;
 function SoftReportdetail(props) {
   const {
     form: { getFieldDecorator, setFieldsValue },
@@ -111,20 +111,11 @@ function SoftReportdetail(props) {
   const [addrow, setAddrow] = useState(false);
   const [deleteSign, setDeleteSign] = useState(false);
 
-  const { main } = openReportlist;
+  const [timeshow, setTimeshow] = useState(true);
+  const [startTime, setStartTime] = useState('');
+  const [endTime, setEndTime] = useState('');
 
-  const addcolumnsData = [
-    {
-      field1: '',
-      field2: '',
-      field3: '',
-      field4: '',
-      field5: '',
-      field6: '',
-      field7: '',
-      field8: ''
-    }
-  ];
+  const { main } = openReportlist;
 
   const getopenFlow = () => {
     dispatch({
@@ -146,8 +137,8 @@ function SoftReportdetail(props) {
         type: reporttype === 'week' ? '软件运维周报' : '软件运维月报',
         reporttype,
         mainId,
-        time1: reporttype === 'week' ? (value.time1).format('YYYY-MM-DD') : moment(value.time1).startOf('month').format('YYYY-MM-DD'),
-        time2: reporttype === 'week' ? (value.time2).format('YYYY-MM-DD') : moment(value.time1).endOf('month').format('YYYY-MM-DD'),
+        time1: reporttype === 'week' ? moment(startTime).format('YYYY-MM-DD') : moment(startTime).startOf('month').format('YYYY-MM-DD'),
+        time2: reporttype === 'week' ? moment(endTime).format('YYYY-MM-DD') : moment(endTime).endOf('month').format('YYYY-MM-DD'),
         contentRow: JSON.stringify(contentRow || ''),
         patrolAndExamineList: JSON.stringify(patrolAndExamineList || ''),
         materialsList: JSON.stringify(materialsList || ''),
@@ -177,17 +168,6 @@ function SoftReportdetail(props) {
     })
   }
 
-  const defaultTime = () => {
-    //  周统计
-    if (reporttype === 'week') {
-      startTime = moment().subtract('days', 6).format('YYYY-MM-DD');
-      endTime = moment().format('YYYY-MM-DD');
-    } else {
-      startTime = moment().startOf('month').format('YYYY-MM-DD');
-      endTime = moment().endOf('month').format('YYYY-MM-DD');
-    }
-  }
-
   useEffect(() => {
     if (files.ischange) {
       softReportform();
@@ -200,11 +180,6 @@ function SoftReportdetail(props) {
       getopenFlow();
     }
   }, [mainId])
-
-  // 上传删除附件触发保存
-  useEffect(() => {
-    defaultTime();
-  }, []);
 
   const handleBack = () => {
     router.push({
@@ -254,20 +229,28 @@ function SoftReportdetail(props) {
 
   const onChange = (date, dateString) => {
     if (reporttype === 'week') {
-      startTime = dateString;
-      endTime = moment(dateString).add(+6, 'day').format('YYYY-MM-DD');
+      const currentendTime = moment(dateString).add(+6, 'day').format('YYYY-MM-DD');
+      setTimeshow(false);
+      setStartTime(dateString);
+      setEndTime(currentendTime);
       setFieldsValue({ time2: moment(endTime) });
     } else {
-      startTime = date.startOf('month').format('YYYY-MM-DD');
-      endTime = date.endOf('month').format('YYYY-MM-DD');
+      const monthstartTime = date.startOf('month').format('YYYY-MM-DD');
+      const monthendTime = date.endOf('month').format('YYYY-MM-DD');
+      setStartTime(monthstartTime);
+      setEndTime(monthendTime);
     }
   }
 
+
   const endonChange = (date, dateString) => {
-    endTime = dateString;
-    startTime = moment(dateString).subtract('day', 6).format('YYYY-MM-DD');
+    const currendstartTime = moment(dateString).subtract('day', 6).format('YYYY-MM-DD');
+    setTimeshow(false);
+    setStartTime(currendstartTime);
+    setEndTime(dateString);
     setFieldsValue({ time1: moment(startTime) })
   }
+
 
   const newMember = () => {
     const nowNumber = list.map(item => ({ ...item }));
@@ -308,8 +291,8 @@ function SoftReportdetail(props) {
           break;
         }
       }
-      
-      console.log(filtIndex,'filtIndex')
+
+      console.log(filtIndex, 'filtIndex')
 
       if (newData && newData.length) {
         if (filtIndex !== undefined) {
@@ -355,10 +338,9 @@ function SoftReportdetail(props) {
     })
   }
 
-  console.log(list,'list')
 
   useEffect(() => {
-    if(loading === false && saveSign) {
+    if (loading === false && saveSign) {
       const { addData } = openReportlist;
       setList(addData);
     }
@@ -378,22 +360,43 @@ function SoftReportdetail(props) {
 
 
     setContentRow(contentArr);
-      setPatrolAndExamine(patrolAndExamineArr);
-      setMaterialsList(materialsArr);
-      setEventList(eventArr);
-      setUpgradeList(upgradeArr);
-      setLegacyList(legacyArr);
-      setOperationList(operationArr);
-      setSelfhandleRow(selfhandleArr);
-      setStatisList(statisArr);
-      setTopNList(topNArr);
-      setTypeList(typeArr);
-      setNextOperationList(nextOperationArr);
+    setPatrolAndExamine(patrolAndExamineArr);
+    setMaterialsList(materialsArr);
+    setEventList(eventArr);
+    setUpgradeList(upgradeArr);
+    setLegacyList(legacyArr);
+    setOperationList(operationArr);
+    setSelfhandleRow(selfhandleArr);
+    setStatisList(statisArr);
+    setTopNList(topNArr);
+    setTypeList(typeArr);
+    setNextOperationList(nextOperationArr);
+
+    if (openReportlist && main) {
+      const saveInitlatime1 = openReportlist.main.time1;
+      const saveInitlatime2 = openReportlist.main.time2;
+      setStartTime(saveInitlatime1)
+      setEndTime(saveInitlatime2)
+    }
   }, [loading])
 
   useEffect(() => {
     saveSign = true;
-  },[])
+  }, [])
+
+  useEffect(() => {
+    if (showTimecomponent === false) {
+      showTimecomponent = true;
+    }
+  }, [showTimecomponent])
+
+  useEffect(() => {
+    if (startTime) {
+      setTimeshow(true);
+    }
+  }, [timeshow])
+
+  const dateFormat = 'YYYY-MM-DD';
 
   return (
     <PageHeaderWrapper
@@ -406,7 +409,7 @@ function SoftReportdetail(props) {
 
           {
             loading === false && !reportSearch && main && main.time1 && nextOperationList !== undefined && (
-              <Button type='primary' onClick={() =>{saveSign = false ;softReportform()}}>保存</Button>
+              <Button type='primary' onClick={() => { saveSign = false; softReportform() }}>保存</Button>
             )
           }
 
@@ -443,42 +446,47 @@ function SoftReportdetail(props) {
               </Col>
 
               {
-                reporttype === 'week' && (
-                  <div>
-                    <Col span={24}>
-                      <Form.Item label='填报时间' style={{ display: 'inline-flex' }}>
-                        {getFieldDecorator('time1', {
-                          rules: [
-                            {
-                              required,
-                              message: '请输入名称'
-                            }
-                          ],
-                          initialValue: main ? moment(main.time1) : ''
-                        })(
-                          <DatePicker
-                            allowClear={false}
-                            style={{ marginRight: 10 }}
-                            onChange={onChange}
-                            disabled={reportSearch}
-                          />
-                        )}
-                      </Form.Item>
-
-                      <Form.Item label='' style={{ display: 'inline-flex' }}>
-                        {
-                          getFieldDecorator('time2', {
-                            initialValue: main ? moment(main.time2) : ''
-                          })
-                            (<DatePicker
+                reporttype === 'week' && startTime && timeshow && (
+                  <Col span={24}>
+                    <div>
+                      <span style={{ marginLeft: 10 }}>填报时间 :</span>
+                      {
+                        timeshow && (
+                          <span
+                            style={{ marginRight: 10, marginLeft: 10 }}
+                          >
+                            <DatePicker
                               allowClear={false}
+                              // defaultValue={moment(endTime, dateFormat)}
+                              format={dateFormat}
+                              defaultValue={moment(startTime)}
+                              onChange={onChange}
+                            />
+                          </span>
+                        )
+                      }
+
+                      <span
+                        style={{ marginRight: 10 }}
+                      >-</span>
+
+                      {
+                        timeshow && (
+                          <span>
+                            <DatePicker
+                              allowClear={false}
+                              format={dateFormat}
+                              defaultValue={moment(endTime)}
                               onChange={endonChange}
-                              disabled={reportSearch}
-                            />)
-                        }
-                      </Form.Item>
-                    </Col>
-                  </div>
+                            />
+                          </span>
+
+                        )
+                      }
+
+                    </div>
+                  </Col>
+
                 )
               }
 
@@ -928,7 +936,7 @@ function SoftReportdetail(props) {
                         (
                           <div style={{ width: 400 }}>
                             <SysUpload
-                              fileslist={openReportlist.materialsFiles ? JSON.parse(openReportlist.materialsFiles) : []}
+                              fileslist={openReportlist.updateFiles ? JSON.parse(openReportlist.updateFiles) : []}
                               ChangeFileslist={newvalue => {
                                 setFieldsValue({ updateFiles: JSON.stringify(newvalue.arr) })
                                 setFilesList(newvalue);

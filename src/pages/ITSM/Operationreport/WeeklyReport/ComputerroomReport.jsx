@@ -124,8 +124,8 @@ function ComputerroomReport(props) {
           type: reporttype === 'week' ? '机房运维周报' : '机房运维月报',
           reporttype,
           mainId,
-          time1: reporttype === 'week' ? (value.time1).format('YYYY-MM-DD') : moment(values.time1).startOf('month').format('YYYY-MM-DD'),
-          time2: reporttype === 'week' ? (value.time2).format('YYYY-MM-DD') : moment(values.time1).endOf('month').format('YYYY-MM-DD'),
+          time1: reporttype === 'week' ? moment(startTime).format('YYYY-MM-DD') : moment(startTime).startOf('month').format('YYYY-MM-DD'),
+          time2: reporttype === 'week' ? moment(endTime).format('YYYY-MM-DD') : moment(endTime).endOf('month').format('YYYY-MM-DD'),
           materialsList: JSON.stringify(materialsList || ''),
           meetingSummaryList: JSON.stringify(meetingSummaryList || ''),
           newTroubleList: JSON.stringify(newTroubleList || ''),
@@ -249,7 +249,6 @@ function ComputerroomReport(props) {
     setNextOperationList(copyData.nextOperationList ? copyData.nextOperationList : nextweekHomeworklist);
   }, [loading])
 
-
   const getQuerylist = () => {
     dispatch({
       type: 'softreport/getfaultQueryList',
@@ -270,7 +269,6 @@ function ComputerroomReport(props) {
       }
     })
   }
-
 
   //   七、上周作业完成情况--表格
   const lastweekHomework = () => {
@@ -469,6 +467,7 @@ function ComputerroomReport(props) {
                           style={{ marginRight: 10, marginLeft: 10 }}
                         >
                           <DatePicker
+                             allowClear={false}
                             // defaultValue={moment(endTime, dateFormat)}
                             format={dateFormat}
                             defaultValue={moment(startTime)}
@@ -486,6 +485,7 @@ function ComputerroomReport(props) {
                       timeshow && (
                         <span>
                           <DatePicker
+                             allowClear={false}
                             // defaultValue={moment(endTime, dateFormat)}
                             format={dateFormat}
                             defaultValue={moment(endTime)}

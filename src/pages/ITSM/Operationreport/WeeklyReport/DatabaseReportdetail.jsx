@@ -48,9 +48,8 @@ const formincontentLayout = {
 
 const { MonthPicker } = DatePicker;
 const { TextArea } = Input;
-let startTime;
-let endTime;
 let saveSign = true;
+let showTimecomponent = false;
 
 function DatabaseReportdetail(props) {
   const pagetitle = props.route.name;
@@ -85,6 +84,10 @@ function DatabaseReportdetail(props) {
   const [addrow, setAddrow] = useState(false);
   const [deleteSign, setDeleteSign] = useState(false);
 
+  const [timeshow, setTimeshow] = useState(true);
+  const [startTime, setStartTime] = useState('');
+  const [endTime, setEndTime] = useState('');
+
   const { main } = openReportlist;
 
   const getopenFlow = () => {
@@ -108,8 +111,8 @@ function DatabaseReportdetail(props) {
           type: reporttype === 'week' ? '数据库运维周报' : '数据库运维月报',
           reporttype,
           mainId,
-          time1: (values.time1).format('YYYY-MM-DD'),
-          time2: (values.time2).format('YYYY-MM-DD'),
+          time1: moment(startTime).format('YYYY-MM-DD'),
+          time2: moment(endTime).format('YYYY-MM-DD'),
           discList: JSON.stringify(discList || ''),
           tablespaceList: JSON.stringify(tablespaceList || ''),
           tableUpList: JSON.stringify(tableUpList || ''),
@@ -184,18 +187,25 @@ function DatabaseReportdetail(props) {
 
   const onChange = (date, dateString) => {
     if (reporttype === 'week') {
-      startTime = dateString;
-      endTime = moment(dateString).add(+6, 'day').format('YYYY-MM-DD');
+      const currentendTime = moment(dateString).add(+6, 'day').format('YYYY-MM-DD');
+      setTimeshow(false);
+      setStartTime(dateString);
+      setEndTime(currentendTime);
       setFieldsValue({ time2: moment(endTime) });
     } else {
-      startTime = date.startOf('month').format('YYYY-MM-DD');
-      endTime = date.endOf('month').format('YYYY-MM-DD');
+      const monthstartTime = date.startOf('month').format('YYYY-MM-DD');
+      const monthendTime = date.endOf('month').format('YYYY-MM-DD');
+      setStartTime(monthstartTime);
+      setEndTime(monthendTime);
     }
   }
 
+
   const endonChange = (date, dateString) => {
-    endTime = dateString;
-    startTime = moment(dateString).subtract('day', 6).format('YYYY-MM-DD');
+    const currendstartTime = moment(dateString).subtract('day', 6).format('YYYY-MM-DD');
+    setTimeshow(false);
+    setStartTime(currendstartTime);
+    setEndTime(dateString);
     setFieldsValue({ time1: moment(startTime) })
   }
 
@@ -208,10 +218,22 @@ function DatabaseReportdetail(props) {
 
   useEffect(() => {
     saveSign = true;
-  },[])
+  }, [])
 
   useEffect(() => {
-    if(loading === false && saveSign) {
+    if (showTimecomponent === false) {
+      showTimecomponent = true;
+    }
+  }, [showTimecomponent])
+
+  useEffect(() => {
+    if (startTime) {
+      setTimeshow(true);
+    }
+  }, [timeshow])
+
+  useEffect(() => {
+    if (loading === false && saveSign) {
       const { addData } = openReportlist;
       setList(addData)
     }
@@ -228,6 +250,14 @@ function DatabaseReportdetail(props) {
     setDefectList(defectArr);
     setOperationList(operationArr);
     setNextOperationList(nextOperationArr);
+
+    if (openReportlist && main) {
+      const saveInitlatime1 = openReportlist.main.time1;
+      const saveInitlatime2 = openReportlist.main.time2;
+      setStartTime(saveInitlatime1)
+      setEndTime(saveInitlatime2)
+    }
+
   }, [loading])
 
   const handleBack = () => {
@@ -320,6 +350,8 @@ function DatabaseReportdetail(props) {
     })
   }
 
+  const dateFormat = 'YYYY-MM-DD';
+
   return (
     <PageHeaderWrapper
       title={pagetitle}
@@ -330,8 +362,8 @@ function DatabaseReportdetail(props) {
           )}
 
           {
-            loading === false && !reportSearch  &&  main && main.time1 && nextOperationList !== undefined && (
-              <Button type='primary' onClick={()=> {saveSign = false ; databaseReportform()}}>保存</Button>
+            loading === false && !reportSearch && main && main.time1 && nextOperationList !== undefined && (
+              <Button type='primary' onClick={() => { saveSign = false; showTimecomponent = false; databaseReportform() }}>保存</Button>
             )
           }
 
@@ -366,41 +398,49 @@ function DatabaseReportdetail(props) {
               </Col>
 
               {
-                reporttype === 'week' && (
-                  <div>
-                    <Col span={24}>
-                      <Form.Item label='填报时间' style={{ display: 'inline-flex' }}>
-                        {getFieldDecorator('time1', {
-                          rules: [
-                            {
-                              required,
-                              message: '请输入填报时间'
-                            }
-                          ],
-                          initialValue: main ? moment(main.time1) : ''
-                        })(
-                          <DatePicker
-                            allowClear={false}
-                            style={{ marginRight: 10 }}
-                            onChange={onChange}
-                            disabled={reportSearch}
-                          />)}
-                      </Form.Item>
-
-                      <Form.Item label='' style={{ display: 'inline-flex' }}>
-                        {
-                          getFieldDecorator('time2', {
-                            initialValue: main ? moment(main.time2) : ''
-                          })
-                            (<DatePicker
+                reporttype === 'week' && startTime && timeshow && showTimecomponent && (
+                  <Col span={24}>
+                    <div>
+                      <span style={{ marginLeft: 10 }}>填报时间 :</span>
+                      {
+                        timeshow && (
+                          <span
+                            style={{ marginRight: 10, marginLeft: 10 }}
+                          >
+                            <DatePicker
                               allowClear={false}
+                              // defaultValue={moment(endTime, dateFormat)}
+                              format={dateFormat}
+                              defaultValue={moment(startTime)}
+                              onChange={onChange}
+                            />
+                          </span>
+                        )
+                      }
+
+                      <span
+                        style={{ marginRight: 10 }}
+                      >-</span>
+
+                      {
+                        timeshow && (
+                          <span>
+                            <DatePicker
+                              allowClear={false}
+                              // defaultValue={moment(endTime, dateFormat)}
+                              format={dateFormat}
+                              defaultValue={moment(endTime)}
                               onChange={endonChange}
-                              disabled={reportSearch}
-                            />)
-                        }
-                      </Form.Item>
-                    </Col>
-                  </div>
+
+                            />
+                          </span>
+
+                        )
+                      }
+
+                    </div>
+                  </Col>
+
                 )
               }
 

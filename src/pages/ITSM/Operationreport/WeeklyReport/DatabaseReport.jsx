@@ -108,8 +108,8 @@ function DatabaseReport(props) {
           type: reporttype === 'week' ? '数据库运维周报' : '数据库运维月报',
           reporttype,
           mainId,
-          time1: (values.time1).format('YYYY-MM-DD'),
-          time2: (values.time2).format('YYYY-MM-DD'),
+          time1: moment(startTime).format('YYYY-MM-DD'),
+          time2: moment(endTime).format('YYYY-MM-DD'),
           discList: JSON.stringify(discList || ''),
           tablespaceList: JSON.stringify(tablespaceList || ''),
           tableUpList: JSON.stringify(tableUpList || ''),
@@ -428,6 +428,7 @@ function DatabaseReport(props) {
                           style={{ marginRight: 10, marginLeft: 10 }}
                         >
                           <DatePicker
+                            allowClear={false}
                             // defaultValue={moment(endTime, dateFormat)}
                             format={dateFormat}
                             defaultValue={moment(startTime)}
@@ -445,6 +446,8 @@ function DatabaseReport(props) {
                       timeshow && (
                         <span>
                           <DatePicker
+                            allowClear={false}
+
                             // defaultValue={moment(endTime, dateFormat)}
                             format={dateFormat}
                             defaultValue={moment(endTime)}

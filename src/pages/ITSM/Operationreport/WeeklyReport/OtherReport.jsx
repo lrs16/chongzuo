@@ -109,8 +109,8 @@ function OtherReport(props) {
           type: reporttype === 'week' ? '其他运维周报' : '其他运维月报',
           reporttype,
           mainId,
-          time1: reporttype === 'week' ? (value.time1).format('YYYY-MM-DD') : moment(value.time1).startOf('month').format('YYYY-MM-DD'),
-          time2: reporttype === 'week' ? (value.time2).format('YYYY-MM-DD') : moment(value.time1).endOf('month').format('YYYY-MM-DD'),
+          time1: reporttype === 'week' ? moment(startTime).format('YYYY-MM-DD') : moment(startTime).startOf('month').format('YYYY-MM-DD'),
+          time2: reporttype === 'week' ? moment(endTime).format('YYYY-MM-DD') : moment(endTime).endOf('month').format('YYYY-MM-DD'),
         }
         dispatch({
           type: 'softreport/saveOther',
@@ -283,7 +283,7 @@ function OtherReport(props) {
     <PageHeaderWrapper
       title={pagetitle}
       extra={
-        loading === false && (
+        // loading === false && (
           <>
             <Button type='primary' onClick={otherReportform}>保存</Button>
             <Button type='primary' onClick={handlePaste}>粘贴</Button>
@@ -291,7 +291,7 @@ function OtherReport(props) {
               返回
             </Button>
           </>
-        )
+        // )
       }
     >
       <Card style={{ padding: 24 }}>
