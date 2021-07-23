@@ -30,7 +30,7 @@ const formincontentLayout = {
 const { MonthPicker } = DatePicker;
 let startTime;
 let endTime;
-let saveSign = false;
+let saveSign = true;
 
 function OtherReportdetail(props) {
   const pagetitle = props.route.name;
@@ -56,14 +56,10 @@ function OtherReportdetail(props) {
   const [newbutton, setNewButton] = useState(false);
   const { main } = openReportlist;
 
-
   // 动态添加表格暂存数据
 
   const handleaddTable = (params, px, rowdelete) => {
-    console.log('params: ', params);
-    console.log('px: ', px);
     if (deleteSign && rowdelete) {
-      console.log(1)
       const newData = [];
       newData.push({
         ...params
@@ -82,8 +78,6 @@ function OtherReportdetail(props) {
         }
       }
 
-      console.log(filtIndex,'filtIndex')
-
       if (newData && newData.length) {
         if (filtIndex !== undefined) {
           newData.splice(filtIndex, 1, params);
@@ -95,8 +89,6 @@ function OtherReportdetail(props) {
           ...params
         });
       }
-      
-      console.log(newData,'newData')
 
       setList(newData);
       setNewButton(false)
@@ -104,7 +96,6 @@ function OtherReportdetail(props) {
   };
 
   const getopenFlow = () => {
-    console.log(11)
     dispatch({
       type: 'softreport/openReport',
       payload: {
@@ -129,15 +120,13 @@ function OtherReportdetail(props) {
           time1: (value.time1).format('YYYY-MM-DD'),
           time2: (value.time2).format('YYYY-MM-DD'),
         }
-        setList([])
         return dispatch({
           type: 'softreport/saveOther',
           payload: savedata
         }).then(res => {
           if (res.code === 200) {
-            message.info(res.msg);
-            getopenFlow();
-            props.history.go(0)
+            // message.info(res.msg);
+            getopenFlow()
           }
         })
       }
@@ -214,9 +203,16 @@ function OtherReportdetail(props) {
   }, [mainId])
 
   useEffect(() => {
-    const { addData } = openReportlist;
-    setList(addData)
+    if (loading === false && saveSign) {
+      const { addData } = openReportlist;
+      setList(addData)
+    }
   }, [loading])
+
+  useEffect(() => {
+    saveSign = true;
+  },[])
+
 
   const onChange = (date, dateString) => {
     if (reporttype === 'week') {
@@ -238,14 +234,14 @@ function OtherReportdetail(props) {
   const newMember = () => {
     const nowNumber = list.map(item => ({ ...item }));
     const newarr = nowNumber.map((item, index) => {
-      return Object.assign(item, { px: (index+2).toString()})
+      return Object.assign(item, { px: (index + 1).toString() })
     });
     const addObj = {
-      files:'',
-      content:'',
-      title:'',
-      list:'',
-      px: (nowNumber.length + 2).toString()
+      files: '',
+      content: '',
+      title: '',
+      list: '',
+      px: (nowNumber.length + 1).toString()
     }
     newarr.push(addObj);
     setList(newarr);
@@ -253,25 +249,16 @@ function OtherReportdetail(props) {
     setDeleteSign(false);
   }
 
-
   //  移除表格
   const removeForm = (tableIndex) => {
     list.splice(tableIndex, 1);
     const resultArr = list.map((item, index) => {
       const newItem = item;
-      newItem.px = (index + 2).toString();
+      newItem.px = (index + 1).toString();
       return newItem;
     })
     setList(resultArr);
   }
-
-
-
-  useEffect(() => {
-    const { addData } = openReportlist;
-    setList(addData);
-  }, [loading]);
-
 
   const exportWord = () => {
     dispatch({
@@ -298,8 +285,8 @@ function OtherReportdetail(props) {
             <Button type='primary' onClick={exportWord}>导出</Button>
           )}
 
-          {!reportSearch && (
-            <Button type='primary' onClick={otherReportform}>保存</Button>
+          {loading === false && !reportSearch && (
+            <Button type='primary' onClick={()=>{saveSign = false ; otherReportform()}}>保存</Button>
           )}
 
           <Button onClick={handleBack}>
@@ -392,20 +379,19 @@ function OtherReportdetail(props) {
                 )
               }
 
-              {(loading === false && list &&  list.length > 0) && (
+              { (loading === false && list && list.length > 0) && (
                 list.map((item, index) => {
                   return (
                     <>
                       <Col span={23}>
                         <AddForm
                           formincontentLayout={formincontentLayout}
-                          px={(index + 2).toString()}
+                          px={(index + 1).toString()}
                           addTable={(newdata, addpx, rowdelete) => {
                             handleaddTable(newdata, addpx, rowdelete)
                           }}
                           index={index}
                           dynamicData={list.length ? list[index] : {}}
-                          // dynamicData={undefined}
                           loading={loading}
                           ChangeAddRow={v => setAddrow(v)}
                           sign={deleteSign}
@@ -414,7 +400,7 @@ function OtherReportdetail(props) {
                       </Col>
 
                       {
-                       !reportSearch && (
+                        !reportSearch && (
                           <Col span={1}>
                             <Icon
                               className="dynamic-delete-button"

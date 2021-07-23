@@ -72,6 +72,7 @@ const { MonthPicker } = DatePicker;
 const { TextArea } = Input;
 let startTime;
 let endTime;
+let saveSign = true;
 function SoftReportdetail(props) {
   const {
     form: { getFieldDecorator, setFieldsValue },
@@ -147,19 +148,19 @@ function SoftReportdetail(props) {
         mainId,
         time1: reporttype === 'week' ? (value.time1).format('YYYY-MM-DD') : moment(value.time1).startOf('month').format('YYYY-MM-DD'),
         time2: reporttype === 'week' ? (value.time2).format('YYYY-MM-DD') : moment(value.time1).endOf('month').format('YYYY-MM-DD'),
-        contentRow: JSON.stringify(contentRow),
-        patrolAndExamineList: JSON.stringify(patrolAndExamineList),
-        materialsList: JSON.stringify(materialsList),
-        eventList: JSON.stringify(eventList),
-        upgradeList: JSON.stringify(upgradeList),
-        updateList: JSON.stringify(updateList),
-        legacyList: JSON.stringify(legacyList),
-        operationList: JSON.stringify(operationList),
-        nextOperationList: JSON.stringify(nextOperationList),
-        statisList: JSON.stringify(statisList),
-        topNList: JSON.stringify(topNList),
-        typeList: JSON.stringify(typeList),
-        selfhandleRow: JSON.stringify(selfhandleRow),
+        contentRow: JSON.stringify(contentRow || ''),
+        patrolAndExamineList: JSON.stringify(patrolAndExamineList || ''),
+        materialsList: JSON.stringify(materialsList || ''),
+        eventList: JSON.stringify(eventList || ''),
+        upgradeList: JSON.stringify(upgradeList || ''),
+        updateList: JSON.stringify(updateList || ''),
+        legacyList: JSON.stringify(legacyList || ''),
+        operationList: JSON.stringify(operationList || ''),
+        nextOperationList: JSON.stringify(nextOperationList || ''),
+        statisList: JSON.stringify(statisList || ''),
+        topNList: JSON.stringify(topNList || ''),
+        typeList: JSON.stringify(typeList || ''),
+        selfhandleRow: JSON.stringify(selfhandleRow || ''),
       }
       // if (mainId) {
       return dispatch({
@@ -169,7 +170,6 @@ function SoftReportdetail(props) {
         if (res.code === 200) {
           message.info(res.msg);
           getopenFlow();
-          props.history.go(0)
         } else {
           message.info('保存失败')
         }
@@ -358,7 +358,10 @@ function SoftReportdetail(props) {
   console.log(list,'list')
 
   useEffect(() => {
-    const { addData } = openReportlist;
+    if(loading === false && saveSign) {
+      const { addData } = openReportlist;
+      setList(addData);
+    }
 
     const contentArr = openReportlist.contentRow;
     const patrolAndExamineArr = openReportlist.patrolAndExamineList;
@@ -373,21 +376,24 @@ function SoftReportdetail(props) {
     const typeArr = openReportlist.typeList;
     const nextOperationArr = openReportlist.nextOperationList;
 
-    setContentRow(contentArr);
-    setPatrolAndExamine(patrolAndExamineArr);
-    setMaterialsList(materialsArr);
-    setEventList(eventArr);
-    setUpgradeList(upgradeArr);
-    setLegacyList(legacyArr);
-    setOperationList(operationArr);
-    setSelfhandleRow(selfhandleArr);
-    setStatisList(statisArr);
-    setTopNList(topNArr);
-    setTypeList(typeArr);
-    setNextOperationList(nextOperationArr);
 
-    setList(addData);
+    setContentRow(contentArr);
+      setPatrolAndExamine(patrolAndExamineArr);
+      setMaterialsList(materialsArr);
+      setEventList(eventArr);
+      setUpgradeList(upgradeArr);
+      setLegacyList(legacyArr);
+      setOperationList(operationArr);
+      setSelfhandleRow(selfhandleArr);
+      setStatisList(statisArr);
+      setTopNList(topNArr);
+      setTypeList(typeArr);
+      setNextOperationList(nextOperationArr);
   }, [loading])
+
+  useEffect(() => {
+    saveSign = true;
+  },[])
 
   return (
     <PageHeaderWrapper
@@ -399,8 +405,8 @@ function SoftReportdetail(props) {
           )}
 
           {
-            loading === false && !reportSearch && (
-              <Button type='primary' onClick={softReportform}>保存</Button>
+            loading === false && !reportSearch && main && main.time1 && nextOperationList !== undefined && (
+              <Button type='primary' onClick={() =>{saveSign = false ;softReportform()}}>保存</Button>
             )
           }
 
@@ -413,7 +419,7 @@ function SoftReportdetail(props) {
       }
     >
       <Card style={{ padding: 24 }}>
-        {loading === false && (
+        {loading === false && main && main.time1 && nextOperationList !== undefined && (
           <Row gutter={24}>
             <Form>
               <Col span={24}>

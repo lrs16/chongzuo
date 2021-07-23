@@ -50,6 +50,8 @@ const { MonthPicker } = DatePicker;
 const { TextArea } = Input;
 let startTime;
 let endTime;
+let saveSign = true;
+
 function DatabaseReportdetail(props) {
   const pagetitle = props.route.name;
   const {
@@ -108,12 +110,12 @@ function DatabaseReportdetail(props) {
           mainId,
           time1: (values.time1).format('YYYY-MM-DD'),
           time2: (values.time2).format('YYYY-MM-DD'),
-          discList: JSON.stringify(discList),
-          tablespaceList: JSON.stringify(tablespaceList),
-          tableUpList: JSON.stringify(tableUpList),
-          defectList: JSON.stringify(defectList),
-          operationList: JSON.stringify(operationList),
-          nextOperationList: JSON.stringify(nextOperationList),
+          discList: JSON.stringify(discList || ''),
+          tablespaceList: JSON.stringify(tablespaceList || ''),
+          tableUpList: JSON.stringify(tableUpList || ''),
+          defectList: JSON.stringify(defectList || ''),
+          operationList: JSON.stringify(operationList || ''),
+          nextOperationList: JSON.stringify(nextOperationList || ''),
         }
         return dispatch({
           type: 'softreport/saveDataBase',
@@ -122,7 +124,6 @@ function DatabaseReportdetail(props) {
           if (res.code === 200) {
             message.info(res.msg);
             getopenFlow();
-            props.history.go(0)
           } else {
             message.info('保存失败')
           }
@@ -206,7 +207,15 @@ function DatabaseReportdetail(props) {
   }, [mainId])
 
   useEffect(() => {
-    const { addData } = openReportlist;
+    saveSign = true;
+  },[])
+
+  useEffect(() => {
+    if(loading === false && saveSign) {
+      const { addData } = openReportlist;
+      setList(addData)
+    }
+
     const discArr = openReportlist.discList;
     const tablespaceArr = openReportlist.tablespaceList;
     const tableUpArr = openReportlist.tableUpList;
@@ -219,8 +228,6 @@ function DatabaseReportdetail(props) {
     setDefectList(defectArr);
     setOperationList(operationArr);
     setNextOperationList(nextOperationArr);
-
-    setList(addData)
   }, [loading])
 
   const handleBack = () => {
@@ -320,11 +327,11 @@ function DatabaseReportdetail(props) {
         <>
           {loading === false && openReportlist.main !== undefined && (
             <Button type='primary' onClick={exportWord}>导出</Button>
-
           )}
+
           {
-            !reportSearch && (
-              <Button type='primary' onClick={databaseReportform}>保存</Button>
+            loading === false && !reportSearch  &&  main && main.time1 && nextOperationList !== undefined && (
+              <Button type='primary' onClick={()=> {saveSign = false ; databaseReportform()}}>保存</Button>
             )
           }
 
@@ -335,7 +342,7 @@ function DatabaseReportdetail(props) {
       }
     >
       <Card style={{ padding: 24 }}>
-        {loading === false && (
+        {loading === false && main && main.time1 && nextOperationList !== undefined && (
           <Row gutter={24}>
             <Form >
               <Col span={24}>

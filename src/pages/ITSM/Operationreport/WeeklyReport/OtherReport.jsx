@@ -28,8 +28,7 @@ const formincontentLayout = {
 };
 
 const { MonthPicker } = DatePicker;
-let startTime;
-let endTime;
+
 function OtherReport(props) {
   const pagetitle = props.route.name;
   const {
@@ -45,6 +44,7 @@ function OtherReport(props) {
     loading,
   } = props;
 
+
   const required = true;
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
   const [list, setList] = useState([]);
@@ -52,10 +52,15 @@ function OtherReport(props) {
   const [copyData, setCopyData] = useState('');
   const [addrow, setAddrow] = useState(false);
   const [deleteSign, setDeleteSign] = useState(false);
+  
+  const [timeshow, setTimeshow] = useState(true);
+  const [startTime, setStartTime] = useState('');
+  const [endTime, setEndTime] = useState('');
+
 
   // 新增一条记录
 
-  const handleaddTable = (params, px,rowdelete) => {
+  const handleaddTable = (params, px, rowdelete) => {
     if (deleteSign && rowdelete) {
       const newData = [];
       newData.push({
@@ -68,7 +73,7 @@ function OtherReport(props) {
       let filtIndex;
       const newData = (list).map(item => ({ ...item }));
 
-      for (let i = 0; i < newData.length; i+=1) {
+      for (let i = 0; i < newData.length; i += 1) {
         if (newData[i].px === px) {
           filtIndex = i;
           break;
@@ -77,7 +82,7 @@ function OtherReport(props) {
 
       if (newData && newData.length) {
         if (filtIndex !== undefined) {
-          newData.splice(filtIndex, 1,params);
+          newData.splice(filtIndex, 1, params);
         }
       }
 
@@ -118,8 +123,11 @@ function OtherReport(props) {
 
   const defaultTime = () => {
     //  周统计
-    startTime = moment().subtract('days', 6).format('YYYY-MM-DD');
-    endTime = moment().format('YYYY-MM-DD');
+    const currentstartTime = moment().subtract('days', 6).format('YYYY-MM-DD');
+    const currentendTime = moment().format('YYYY-MM-DD');
+
+    setStartTime(currentstartTime);
+    setEndTime(currentendTime);
   }
 
   const handlePaste = () => {
@@ -148,6 +156,8 @@ function OtherReport(props) {
     })
   }
 
+  const dateFormat = 'YYYY/MM/DD';
+
   // 上传删除附件触发保存
   useEffect(() => {
     if (files.ischange) {
@@ -157,8 +167,17 @@ function OtherReport(props) {
 
   // 上传删除附件触发保存
   useEffect(() => {
+    // startTime = '';
+    // endTime = '';
+    setTimeshow(false);
     defaultTime();
   }, []);
+
+  useEffect(() => {
+    if(startTime) {
+      setTimeshow(true);
+    }
+  }, [timeshow])
 
   const handleBack = () => {
     router.push({
@@ -208,32 +227,38 @@ function OtherReport(props) {
 
   const onChange = (date, dateString) => {
     if (reporttype === 'week') {
-      startTime = dateString;
-      endTime = moment(dateString).add(+6, 'day').format('YYYY-MM-DD');
+      const currentendTime = moment(dateString).add(+6, 'day').format('YYYY-MM-DD');
+      setTimeshow(false);
+      setStartTime(dateString);
+      setEndTime(currentendTime);
       setFieldsValue({ time2: moment(endTime) });
     } else {
-      startTime = date.startOf('month').format('YYYY-MM-DD');
-      endTime = date.endOf('month').format('YYYY-MM-DD');
+      const monthstartTime = date.startOf('month').format('YYYY-MM-DD');
+      const monthendTime = date.endOf('month').format('YYYY-MM-DD');
+      setStartTime(monthstartTime);
+      setEndTime(monthendTime);
     }
   }
 
   const endonChange = (date, dateString) => {
-    endTime = dateString;
-    startTime = moment(dateString).subtract('day', 6).format('YYYY-MM-DD');
+    const currendstartTime = moment(dateString).subtract('day', 6).format('YYYY-MM-DD');
+    setTimeshow(false);
+    setStartTime(currendstartTime);
+    setEndTime(dateString);
     setFieldsValue({ time1: moment(startTime) })
   }
 
   const newMember = () => {
     const nowNumber = list.map(item => ({ ...item }));
     const newarr = nowNumber.map((item, index) => {
-      return Object.assign(item, { px: (index+2).toString()})
+      return Object.assign(item, { px: (index + 1).toString() })
     });
     const addObj = {
-      files:'',
-      content:'',
-      title:'',
-      list:'',
-      px: (nowNumber.length + 2).toString()
+      files: '',
+      content: '',
+      title: '',
+      list: '',
+      px: (nowNumber.length + 1).toString()
     }
     newarr.push(addObj);
     setList(newarr);
@@ -241,12 +266,13 @@ function OtherReport(props) {
     setDeleteSign(false);
   }
 
+  
 
   const removeForm = (tableIndex) => {
     list.splice(tableIndex, 1);
     const resultArr = list.map((item, index) => {
       const newItem = item;
-      newItem.px = (index + 2).toString();
+      newItem.px = (index + 1).toString();
       return newItem;
     })
     setList(resultArr);
@@ -291,39 +317,48 @@ function OtherReport(props) {
                     )}
                 </Form.Item>
               </Col>
-              {
-                reporttype === 'week' && (
-                  <div style={{ display: 'inline' }}>
-                    <Col span={24}>
-                      <Form.Item label='填报时间' style={{ display: 'inline-flex' }}>
-                        {getFieldDecorator('time1', {
-                          rules: [
-                            {
-                              required,
-                              message: '请输入填报时间'
-                            }
-                          ],
-                          initialValue: copyData.main ? moment(copyData.main.time1) : moment(startTime)
-                        })(<DatePicker
-                          allowClear={false}
-                          style={{ marginRight: 10 }}
-                          onChange={onChange}
-                        />)}
-                      </Form.Item>
 
-                      <Form.Item label='' style={{ display: 'inline-flex' }}>
-                        {
-                          getFieldDecorator('time2', {
-                            initialValue: copyData.main ? moment(copyData.main.time2) : moment(endTime)
-                          })
-                            (<DatePicker
-                              allowClear={false}
+              {
+                reporttype === 'week' &&  startTime && timeshow && (
+                  <Col span={16}>
+                    <div>
+                      <span style={{ marginLeft: 10 }}>填报时间 :</span>
+                      {
+                        timeshow && (
+                          <span
+                            style={{ marginRight: 10,marginLeft:10 }}
+                          >
+                            <DatePicker
+                              // defaultValue={moment(endTime, dateFormat)}
+                              format={dateFormat}
+                              defaultValue={moment(startTime)}
+                              onChange={onChange}
+                            />
+                          </span>
+                        )
+                      }
+
+                      <span
+                        style={{ marginRight: 10 }}
+                      >-</span>
+
+                      {
+                        timeshow && (
+                          <span>
+                            <DatePicker
+                              // defaultValue={moment(endTime, dateFormat)}
+                              format={dateFormat}
+                              defaultValue={moment(endTime)}
                               onChange={endonChange}
-                            />)
-                        }
-                      </Form.Item>
-                    </Col>
-                  </div>
+
+                            />
+                          </span>
+
+                        )
+                      }
+                    </div>
+                  </Col>
+
                 )
               }
 
@@ -355,9 +390,9 @@ function OtherReport(props) {
                       <Col span={23}>
                         <AddForm
                           formincontentLayout={formincontentLayout}
-                          px={(index + 2).toString()}
-                          addTable={(newdata, addpx,rowdelete) => {
-                            handleaddTable(newdata, addpx,rowdelete)
+                          px={(index + 1).toString()}
+                          addTable={(newdata, addpx, rowdelete) => {
+                            handleaddTable(newdata, addpx, rowdelete)
                           }}
                           index={index}
                           dynamicData={list.length ? list[index] : {}}

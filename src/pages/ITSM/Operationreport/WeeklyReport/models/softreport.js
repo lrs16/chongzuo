@@ -59,7 +59,7 @@ export default {
           const type = payload.reporttype;
           const saveresponse = yield call(saveSoftreport,saveData);
           if(saveresponse.code === 200) {
-            if(payload.reporttype === 'week') {
+            if(type === 'week') {
               route.push({
                 pathname: `/ITSM/operationreport/weeklyreport/softreport`,
                 query: { 
@@ -120,6 +120,11 @@ export default {
         payload:response
       })
     },
+    
+    //  
+    *newopenReport({payload:{editStatus,id}},{call,put}) {
+      return yield call(openReport,editStatus,id);
+    },
 
     //  粘贴
     *pasteReport({payload:{editStatus,id}},{call,put}) {
@@ -138,7 +143,7 @@ export default {
             const type = payload.reporttype;
             const saveresponse = yield call(saveComputerRoom,saveData);
             if(saveresponse.code === 200) {
-              if(payload.reporttype === 'week') {
+              if(type === 'week') {
                 route.push({
                   pathname: `/ITSM/operationreport/weeklyreport/computerroomreport`,
                   query: { 
@@ -184,6 +189,7 @@ export default {
     
     //  保存数据库
     *saveDataBase({payload},{call,put}) {
+      console.log('payload: ', payload);
       if(payload.status) {
         const response = yield call(addReport);
         if(response.code === 200) {
@@ -194,7 +200,7 @@ export default {
           const type = payload.reporttype;
           const saveresponse = yield call(saveDataBase,saveData);
           if(saveresponse.code === 200) {
-            if(payload.reporttype === 'week') {
+            if(type === 'week') {
               route.push({
                 pathname: `/ITSM/operationreport/weeklyreport/databasereport`,
                 query: { 
@@ -249,7 +255,7 @@ export default {
           const type = payload.reporttype;
           const saveresponse = yield call(saveOther,saveData);
           if(saveresponse.code === 200) {
-            if(payload.reporttype === 'week') {
+            if(type === 'week') {
               route.push({
                 pathname: `/ITSM/operationreport/weeklyreport/otherreport`,
                 query: { 
@@ -571,5 +577,12 @@ export default {
       patrolAndExamineArr:action.payload.data
     }
   },
+
+  clearcache(state){
+    return {
+      ...state,
+      openReportlist:undefined
+    }
+  }
   }
 }

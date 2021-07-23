@@ -7,7 +7,7 @@ import {
   Popconfirm,
   Select,
   message,
-  DatePicker
+  DatePicker,
 } from 'antd';
 import moment from 'moment';
 
@@ -21,6 +21,7 @@ function NewTroublelist(props) {
     newTroubleList,
     reportSearch,
     mainId,
+    type
   } = props;
   const [data, setData] = useState([]);
   const [newbutton, setNewButton] = useState(false);
@@ -238,7 +239,7 @@ function NewTroublelist(props) {
 
   return (
     <>
-      <p style={{ fontWeight: '900', fontSize: '16px' }}>三、本周新增故障及故障修复情况统计</p>
+      <p style={{ fontWeight: '900', fontSize: '16px' }}>{type === 'week' ? '三、本周新增故障及故障修复情况统计':'三、本月新增故障及故障修复情况统计'}</p>
 
       <p>(1)新增及已修复故障</p>
 

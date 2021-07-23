@@ -327,34 +327,32 @@ function ThisWeekitsm(props) {
                   </Select>
                 </Form.Item>
               </Col> */}
-              {!detailParams && (
-                <Col span={24}>
-                  <Form.Item label='搜索内容'>
-                    {getFieldDecorator('content', {
-                    })(
-                      <>
-                        <AutoComplete
+              <Col span={24}>
+                <Form.Item label='搜索内容'>
+                  {getFieldDecorator('content', {
+                  })(
+                    <>
+                      <AutoComplete
+                        disabled={detailParams}
+                        defaultActiveFirstOption={false}
+                        dataSource={disableduser}
+                        // defaultValue='按姓名搜索'
+                        dropdownMatchSelectWidth={false}
+                        dropdownStyle={{ width: 700 }}
+                        optionLabelProp="value"
+                        onSelect={(v, opt) => handleDisableduser(v, opt)}
+                      // getPopupContainer={triggerNode => triggerNode.parentNode}
+                      >
+                        <Search
                           disabled='true'
-                          defaultActiveFirstOption={false}
-                          dataSource={disableduser}
-                          // defaultValue='按姓名搜索'
-                          dropdownMatchSelectWidth={false}
-                          dropdownStyle={{ width: 700 }}
-                          optionLabelProp="value"
-                          onSelect={(v, opt) => handleDisableduser(v, opt)}
-                        // getPopupContainer={triggerNode => triggerNode.parentNode}
-                        >
-                          <Search
-                            disabled='true'
-                            placeholder="按编号和描述搜索"
-                            onSearch={values => SearchDisableduser(values)}
-                          />
-                        </AutoComplete>,
-                      </>
-                    )}
-                  </Form.Item>
-                </Col>
-              )}
+                          placeholder="按编号和描述搜索"
+                          onSearch={values => SearchDisableduser(values)}
+                        />
+                      </AutoComplete>,
+                    </>
+                  )}
+                </Form.Item>
+              </Col>
 
             </Row>
           )}

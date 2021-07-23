@@ -60,6 +60,8 @@ const { MonthPicker } = DatePicker;
 const { TextArea } = Input;
 let startTime;
 let endTime;
+let saveSign = true;
+
 function ComputerroomReportdetail(props) {
   const pagetitle = props.route.name;
   const {
@@ -110,6 +112,7 @@ function ComputerroomReportdetail(props) {
       if (!err) {
         const savedata = {
           ...value,
+          patrolAndExamineContent: value.patrolAndExamineContent || '',
           status,
           editStatus: mainId ? 'edit' : 'add',
           addData: JSON.stringify(list),
@@ -118,12 +121,12 @@ function ComputerroomReportdetail(props) {
           mainId,
           time1: (value.time1).format('YYYY-MM-DD'),
           time2: (value.time2).format('YYYY-MM-DD'),
-          materialsList: JSON.stringify(materialsList),
-          meetingSummaryList: JSON.stringify(meetingSummaryList),
-          newTroubleList: JSON.stringify(newTroubleList),
-          nextOperationList: JSON.stringify(nextOperationList),
-          operationList: JSON.stringify(operationList),
-          unCloseTroubleList: JSON.stringify(unCloseTroubleList),
+          materialsList: JSON.stringify(materialsList || ''),
+          meetingSummaryList: JSON.stringify(meetingSummaryList || ''),
+          newTroubleList: JSON.stringify(newTroubleList || '' ),
+          nextOperationList: JSON.stringify(nextOperationList || ''),
+          operationList: JSON.stringify(operationList || ''),
+          unCloseTroubleList: JSON.stringify(unCloseTroubleList || '' ),
         }
         return dispatch({
           type: 'softreport/saveComputer',
@@ -132,7 +135,6 @@ function ComputerroomReportdetail(props) {
           if (res.code === 200) {
             message.info(res.msg);
             getopenFlow();
-            props.history.go(0)
           } else {
             message.info('保存失败')
           }
@@ -163,15 +165,17 @@ function ComputerroomReportdetail(props) {
   }, [files]);
 
   useEffect(() => {
-    const { addData } = openReportlist;
+    if (loading === false && saveSign) {
+      const { addData } = openReportlist;
+      setList(addData);
+    }
+
     const materialsArr = openReportlist.materialsList;
     const meetingSummaryArr = openReportlist.meetingSummaryList;
     const newTroubleArr = openReportlist.newTroubleList;
     const nextOperationArr = openReportlist.nextOperationList;
     const operationArr = openReportlist.operationList;
     const unCloseTroubleArr = openReportlist.unCloseTroubleList;
-
-    setList(addData);
 
     setMaterialsList(materialsArr);
     setMeetingSummaryList(meetingSummaryArr);
@@ -180,6 +184,10 @@ function ComputerroomReportdetail(props) {
     setOperationList(operationArr);
     setUnCloseTroubleList(unCloseTroubleArr);
   }, [loading])
+
+  useEffect(() => {
+    saveSign = true;
+  }, [])
 
 
   useEffect(() => {
@@ -259,16 +267,16 @@ function ComputerroomReportdetail(props) {
   const newMember = () => {
     const nowNumber = list.map(item => ({ ...item }));
     const newarr = nowNumber.map((item, index) => {
-      return Object.assign(item, { px: (index+6).toString()})
+      return Object.assign(item, { px: (index + 6).toString() })
     });
     const addObj = {
-      files:'',
-      content:'',
-      title:'',
-      list:'',
+      files: '',
+      content: '',
+      title: '',
+      list: '',
       px: (nowNumber.length + 6).toString()
     }
-    
+
     newarr.push(addObj);
     setList(newarr);
     setNewButton(true);
@@ -350,8 +358,8 @@ function ComputerroomReportdetail(props) {
             <Button type='primary' onClick={exportWord}>导出</Button>
           )}
 
-          {!reportSearch && (
-            <Button type='primary' onClick={computerReportform}>保存</Button>
+          {loading === false && !reportSearch && main && main.time1 && unCloseTroubleList !== undefined  && (
+            <Button type='primary' onClick={() => { saveSign = false; computerReportform() }}>保存</Button>
           )}
 
           <Button onClick={handleBack}>
@@ -361,7 +369,7 @@ function ComputerroomReportdetail(props) {
       }
     >
       <Card style={{ padding: 24 }}>
-        {loading === false && (
+        {loading === false && main && main.time1 && unCloseTroubleList !== undefined && (
           <Row gutter={24}>
             <Form>
               <Col span={24}>
@@ -592,6 +600,7 @@ function ComputerroomReportdetail(props) {
                   type={type}
                   startTime={startTime}
                   endTime={endTime}
+                  type={reporttype}
                   newTroubleList={contentrowdata => {
                     setNewTroubleList(contentrowdata)
                   }}

@@ -43,28 +43,9 @@ const AddForm = React.forwardRef((props, ref) => {
   const [data, setData] = useState([]);
   const [newbutton, setNewButton] = useState(false);
 
-  // console.log(dynamicData,'dynamicData')
+  console.log(dynamicData,'dynamicData')
 
   const handleSubmit = (e, typeParams, tableData, rowdelete) => {
-    //  解决异步导致的空行问题
-    // const newData = (data).map(item => ({ ...item }));
-    // if (!tableData) {
-    //   newData.push({
-    //     key: data.length,
-    //     field1: '',
-    //     field2: '',
-    //     field3: '',
-    //     field4: '',
-    //     field5: '',
-    //     field6: '',
-    //     field7: '',
-    //     field8: '',
-    //     field9: '',
-    //     field10: '',
-    //   });
-    // }
-
-
     props.form.validateFields((err, value) => {
       const editTable = {
         ...value,
