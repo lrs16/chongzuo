@@ -10,7 +10,7 @@ import CheckOneUser from '@/components/SelectUser/CheckOneUser';
 import { knowledgeCheckUserList } from '@/services/user';
 import Content from './components/Content';
 import Examine from './components/Examine';
-import UploadList from './components/UploadList';
+import UpDataList from './components/UpDataList';
 
 const { Panel } = Collapse;
 
@@ -26,7 +26,6 @@ function Operation(props) {
   const ExmaineRef = useRef(null);
   const { currenttab } = useContext(EditContext);
   const { state: { menuDesc, title, runpath, status } } = currenttab;
-  console.log(updatas)
 
   const callback = key => {
     setActiveKey(key);
@@ -291,7 +290,7 @@ function Operation(props) {
           </Spin>
         )}
         {tabActivekey === 'List' && (
-          <UploadList data={updatas} loading={loading} />
+          <UpDataList data={updatas} loading={loading} />
         )}
         <EditContext.Provider value={{ setChoiceUser, uservisible, setUserVisible, title: '审核' }}>
           <CheckOneUser userlist={userlist} />

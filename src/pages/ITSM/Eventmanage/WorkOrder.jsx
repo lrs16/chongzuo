@@ -625,6 +625,7 @@ function WorkOrder2(props) {
                     files={[]}
                     show={show}
                     selectdata={selectdata}
+                    mainId={mainId}
                   />
                 </Panel>
               )}
@@ -679,6 +680,7 @@ function WorkOrder2(props) {
                     files={[]}
                     show={show}
                     selectdata={selectdata}
+                    mainId={mainId}
                   />
                 </Panel>
               )}
@@ -699,6 +701,7 @@ function WorkOrder2(props) {
                     files={edit.handle.fileIds === '[]' ? [] : JSON.parse(edit.handle.fileIds)}
                     show={show}
                     selectdata={selectdata}
+                    mainId={mainId}
                   />
                 </Panel>
               )}

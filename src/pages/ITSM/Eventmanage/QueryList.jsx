@@ -800,7 +800,7 @@ function QueryList(props) {
                 <span style={{ display: 'inline-block', width: '24px', textAlign: 'center' }}>-</span>
                 <Form.Item style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
                   {getFieldDecorator('time2', {
-                    initialValue: cacheinfo.time ? moment(cacheinfo.time2) : undefined,
+                    initialValue: cacheinfo.time2 ? moment(cacheinfo.time2) : undefined,
                   })(
                     <DatePicker
                       showTime={{

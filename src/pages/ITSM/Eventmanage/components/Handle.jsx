@@ -2,7 +2,7 @@ import React, { useRef, useImperativeHandle, useEffect, useState } from 'react';
 import moment from 'moment';
 import { Row, Col, Form, Input, Select, DatePicker, Cascader } from 'antd';
 import SysUpload from '@/components/SysUpload';
-import styles from '../index.less';
+import KnowledgCollect from '@/components/KnowledgeCollect';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -19,11 +19,20 @@ const Handle = React.forwardRef((props, ref) => {
     ChangeFiles,
     show,
     selectdata,
+    mainId,
   } = props;
   const { handle } = info;
   const { getFieldDecorator, setFieldsValue, getFieldsValue, resetFields, getFieldValue } = props.form;
   const required = true;
   const [fileslist, setFilesList] = useState({ arr: [], ischange: false });
+  const [knowledgecontent, setKonwledgeContent] = useState('');    // 知识内容
+  const [valuealready, setValuealready] = useState(false)          // 告知知识子组件可以走接口了
+  // 获取知识数据
+  const getContent = () => {
+    const values = getFieldsValue(['handle_content'])
+    setKonwledgeContent(values.handle_content);
+    setValuealready(true)
+  }
 
   useEffect(() => {
     if (fileslist.ischange) {
@@ -276,6 +285,16 @@ const Handle = React.forwardRef((props, ref) => {
                 initialValue: handle.content,
               })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
             </Form.Item>
+          </Col>
+          <Col span={24} style={{ paddingLeft: '8.33333333% ' }} >
+            <KnowledgCollect
+              valuealready={valuealready}
+              content={knowledgecontent}
+              orderType='event'
+              orderId={mainId}
+              ChangeValuealready={(v) => setValuealready(v)}
+              HandleGEtContent={() => getContent()}
+            />
           </Col>
           <Col span={24} style={{}}>
             <Form.Item

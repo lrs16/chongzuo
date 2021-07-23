@@ -1074,6 +1074,7 @@ function Todolistdetails(props) {
                           setFiles(newvalue);
                         }}
                         ChangeFileskey={newvalue => setFileskey(newvalue)}
+                        mainId={mainId}
                       />
                     </Panel>
                   )}

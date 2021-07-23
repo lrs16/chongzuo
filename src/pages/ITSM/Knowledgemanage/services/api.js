@@ -78,6 +78,14 @@ export async function openkowledge(mainId) {
   });
 }
 
+// 打开查询
+export async function openViewkowledge(mainId) {
+  return request(`/knowledge/form/openView?mainId=${mainId}`, {
+    method: 'GET',
+    //  requestType: 'form',
+  });
+}
+
 // 获取列表信息
 export async function queryUpdateList(params) {
   return request(`/knowledge/form/getUpdateList`, {
@@ -88,15 +96,30 @@ export async function queryUpdateList(params) {
 }
 
 // 知识统计列表
-export async function queryStatisList(time1, time2) {
-  return request(`/knowledge/statis/getKnowledgeStatisList?time1=${time1}&time2=${time2}`, {
-    method: 'GET',
+export async function queryStatisList(params) {
+  return request(`/knowledge/statis/getKnowledgeStatisList`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
   });
 }
 
 // 知识统计导出
-export async function downloadStatisExcel(time1, time2) {
-  return request(`/knowledge/statis/downloadStatisExcel?time1=${time1}&time2=${time2}`, {
-    method: 'GET',
+export async function downloadStatisExcel(params) {
+  return request(`/knowledge/statis/downloadStatisExcel`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+    responseType: 'blob',
+  });
+}
+
+// 查询导出
+export async function downloadKnowledgeExcel(params) {
+  return request(`/knowledge/form/downloadKnowledgeExcel`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+    responseType: 'blob',
   });
 }

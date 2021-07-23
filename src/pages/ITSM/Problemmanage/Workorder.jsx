@@ -1036,6 +1036,7 @@ function Workorder(props) {
                           setFiles(newvalue);
                         }}
                         loading={loading}
+                        mainId={mainId}
                       />
                     </Panel>
                   )

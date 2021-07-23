@@ -36,6 +36,7 @@ function Editor(props, ref) {
     editor.config.onchange = function (html) {
       ChangeValue(html)
     };
+    editor.config.zIndex = 8;
     editor.config.showLinkImg = false;           // 隐藏网络图片
     editor.config.uploadImgMaxSize = 2 * 1024 * 1024; // 上传图片大小2M
     //  editor.config.uploadImgServer = `/sys/file/upload`;  // 路径

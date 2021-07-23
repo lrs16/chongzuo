@@ -23,11 +23,10 @@ const formItemLayout = {
 
 const Examine = forwardRef((props, ref) => {
   const {
-    userinfo, check,
+    userinfo, check, Noediting,
     form: { getFieldDecorator, getFieldsValue, resetFields }
   } = props;
   const [adopt, setAdopt] = useState('通过');
-  const required = true;
 
   useImperativeHandle(ref, () => ({
     getVal: () => getFieldsValue(),
@@ -52,10 +51,10 @@ const Examine = forwardRef((props, ref) => {
           <Col span={8} >
             <Form.Item label="审核结果">
               {getFieldDecorator('result', {
-                rules: [{ required: true, message: '请选择审核结果' }],
+                rules: [{ required: adopt === '不通过', message: '请选择审核结果' }],
                 initialValue: check.result,
               })(
-                <Radio.Group onChange={handleAdopt}>
+                <Radio.Group onChange={handleAdopt} disabled={Noediting}>
                   <Radio value="通过">通过</Radio>
                   <Radio value="不通过">不通过</Radio>
                 </Radio.Group>,
@@ -67,7 +66,7 @@ const Examine = forwardRef((props, ref) => {
               {getFieldDecorator('checkTime', {
                 rules: [{ required: true }],
                 initialValue: moment(check.checkTime),
-              })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" />)}
+              })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" disabled={Noediting} />)}
             </Form.Item>
           </Col>
           <Col span={8} >
@@ -79,14 +78,14 @@ const Examine = forwardRef((props, ref) => {
             <Form.Item label="审核说明" {...formItemLayout}>
               {getFieldDecorator('content', {
                 initialValue: check.content,
-              })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
+              })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" disabled={Noediting} />)}
             </Form.Item>
           </Col>
           <Col span={8}>
             <Form.Item label="审核人">
               {getFieldDecorator('checkUser', {
                 rules: [{ required: true }],
-                initialValue: userinfo.userName,
+                initialValue: userinfo.userName ? userinfo.userName : check.checkUser,
               })(<Input placeholder="请输入" disabled />)}
             </Form.Item>
           </Col>
@@ -94,7 +93,7 @@ const Examine = forwardRef((props, ref) => {
             <Form.Item label="审核人ID">
               {getFieldDecorator('checkUserId', {
                 rules: [{ required: true }],
-                initialValue: userinfo.userId,
+                initialValue: userinfo.userId ? userinfo.userId : check.checkUserId,
               })(<Input placeholder="请输入" disabled />)}
             </Form.Item>
           </Col>
@@ -102,7 +101,7 @@ const Examine = forwardRef((props, ref) => {
             <Form.Item label="审核人单位">
               {getFieldDecorator('checkUnit', {
                 rules: [{ required: true }],
-                initialValue: userinfo.unitName,
+                initialValue: userinfo.unitName ? userinfo.unitName : check.checkUnit,
               })(<Input placeholder="请输入" disabled />)}
             </Form.Item>
           </Col>
@@ -110,7 +109,7 @@ const Examine = forwardRef((props, ref) => {
             <Form.Item label="审核人单位ID">
               {getFieldDecorator('checkUnitId', {
                 rules: [{ required: true }],
-                initialValue: userinfo.unitId,
+                initialValue: userinfo.unitId ? userinfo.unitId : check.checkUnitId,
               })(<Input placeholder="请输入" disabled />)}
             </Form.Item>
           </Col>
@@ -125,7 +124,7 @@ Examine.defaultProps = {
     result: '通过',
     checkTime: undefined,
     status: '待审核',
-    content: '',
+    content: undefined,
   },
   userinfo: {}
 }

@@ -5,7 +5,6 @@ import router from 'umi/router';
 import { Card, Table, Row, Form, Col, DatePicker, Button } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import DictLower from '@/components/SysDict/DictLower';
-import { downloadStatisExcel } from './services/api';
 
 const formItemLayout = {
   labelCol: {
@@ -26,6 +25,7 @@ function Statistics(props) {
     dispatch,
   } = props;
   const [selectdata, setSelectData] = useState('');
+  const [searchtime, setSearchtime] = useState({});
   const getTypebyId = key => {
     if (selectdata.ischange) {
       return selectdata.arr.filter(item => item.key === key)[0].children;
@@ -35,6 +35,7 @@ function Statistics(props) {
   const typemap = getTypebyId('1412301574201413634');         // 知识分类
   const handleSearch = () => {
     const values = getFieldsValue();
+
     dispatch({
       type: 'knowledg/fetchstatis',
       payload: {
@@ -42,6 +43,11 @@ function Statistics(props) {
         time2: values.time2 ? moment(values.time2).format('YYYY-MM-DD HH:mm:ss') : '',
       },
     });
+    setSearchtime({
+      ...searchtime,
+      startime: values.time1 ? moment(values.time1).format('X') : '',
+      endtime: values.time2 ? moment(values.time2).format('X') : '',
+    })
   };
   const handleReset = () => {
     resetFields();
@@ -50,10 +56,14 @@ function Statistics(props) {
 
   const download = () => {
     const values = getFieldsValue();
-    const time1 = values.time1 ? moment(values.time1).format('YYYY-MM-DD HH:mm:ss') : '';
-    const time2 = values.time2 ? moment(values.time2).format('YYYY-MM-DD HH:mm:ss') : '';
-    downloadStatisExcel({ time1, time2 }).then(res => {
-      const filename = `知识统计_${moment().format('YYYY-MM-DD HH:mm')}.xls`;
+    dispatch({
+      type: 'knowledg/downloadstatis',
+      payload: {
+        time1: values.time1 ? moment(values.time1).format('YYYY-MM-DD HH:mm:ss') : '',
+        time2: values.time2 ? moment(values.time2).format('YYYY-MM-DD HH:mm:ss') : '',
+      },
+    }).then(res => {
+      const filename = `知识统计${moment().format('YYYY-MM-DD HH:mm')}.xls`;
       const blob = new Blob([res]);
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -61,17 +71,22 @@ function Statistics(props) {
       a.download = filename;
       a.click();
       window.URL.revokeObjectURL(url);
-    })
-  }
+    });
+  };
 
   const addcolumns = (title, i) => {
-    const handleClick = () => {
+    const handleClick = (addUser) => {
       router.push({
         pathname: `/ITSM/knowledgemanage/query`,
         query: {
+          addUser,
           type: title,
+          statist: true,
+          starttime: searchtime.startime * 1000,
+          endtime: searchtime.endtime * 1000,
           pathpush: true
         },
+        state: { cache: false, }
       });
     };
     return ({
@@ -81,7 +96,7 @@ function Statistics(props) {
       render: (text, record) => {
         return (
           <>
-            {record.addUser !== '合计' ? (<a onClick={handleClick} > {text}</a>) : (<>{text}</>)}
+            {record.addUser !== '合计' ? (<a onClick={() => handleClick(record.addUser)} > {text}</a>) : (<>{text}</>)}
           </>
         )
       }
@@ -101,7 +116,12 @@ function Statistics(props) {
               pathname: `/ITSM/knowledgemanage/query`,
               query: {
                 addUser: record.addUser,
+                statist: true,
+                starttime: searchtime.startime * 1000,
+                endtime: searchtime.endtime * 1000,
+                pathpush: true
               },
+              state: { cache: false, }
             });
           };
           return (
@@ -172,7 +192,7 @@ function Statistics(props) {
                 </Form.Item>
               </Form.Item>
             </Col>
-            <Col span={4} style={{ paddingTop: 4 }}>
+            <Col span={8} style={{ paddingTop: 4 }}>
               <Button type="primary" onClick={() => handleSearch()}>
                 查 询
               </Button>
@@ -190,6 +210,7 @@ function Statistics(props) {
           columns={newcolumns}
           loading={loading}
           pagination={false}
+          rowKey={(_, index) => index.toString()}
         />
       </Card>
     </PageHeaderWrapper>

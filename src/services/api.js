@@ -174,3 +174,12 @@ export async function queryChildDictLower(params) {
     body: JSON.stringify(params),
   });
 }
+
+// 知识收录
+export async function knowledgesaveByOrder(params) {
+  return request(`/knowledge/flow/saveByOrder`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+  });
+}

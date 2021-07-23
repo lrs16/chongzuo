@@ -9,15 +9,24 @@ import {
 } from 'antd';
 import moment from 'moment';
 import SysUpload from '@/components/SysUpload';
+import KnowledgCollect from '@/components/KnowledgeCollect';
 
 const { Option } = Select;
 const { TextArea } = Input;
 let handleTime;
 let planTime;
 const Developerprocessdit = React.forwardRef((props, ref) => {
-  const { formItemLayout, forminladeLayout, files, ChangeFiles } = props;
-  const { getFieldDecorator } = props.form;
+  const { formItemLayout, forminladeLayout, files, ChangeFiles, mainId } = props;
+  const { getFieldDecorator, getFieldsValue } = props.form;
   const [fileslist, setFilesList] = useState([]);
+  const [knowledgecontent, setKonwledgeContent] = useState('');    // 知识内容
+  const [valuealready, setValuealready] = useState(false)          // 告知知识子组件可以走接口了
+  // 获取知识数据
+  const getContent = () => {
+    const values = getFieldsValue(['handleContent'])
+    setKonwledgeContent(values.handleContent);
+    setValuealready(true)
+  }
   useEffect(() => {
     ChangeFiles(fileslist);
   }, [fileslist]);
@@ -131,8 +140,19 @@ const Developerprocessdit = React.forwardRef((props, ref) => {
                 }
               ],
               initialValue: handle.handleContent,
-            })(<TextArea disabled={showEdit} />)}
+            })(<TextArea autoSize={{ minRows: 3 }} disabled={showEdit} />)}
           </Form.Item>
+        </Col>
+
+        <Col span={24} style={{ paddingLeft: '8.33333333% ' }} >
+          <KnowledgCollect
+            valuealready={valuealready}
+            content={knowledgecontent}
+            orderType='problem'
+            orderId={mainId}
+            ChangeValuealready={(v) => setValuealready(v)}
+            HandleGEtContent={() => getContent()}
+          />
         </Col>
 
         <Col span={24}>

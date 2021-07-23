@@ -28,8 +28,8 @@ const formItemLayout = {
 function KnowledgeList(props) {
   const pagetitle = props.route.name;
   const {
-    location, loading, list, userinfo,
-    form: { getFieldDecorator, resetFields, getFieldsValue },
+    location, location: { query: { addUser, type, statist, starttime, endtime } }, loading, list, userinfo,
+    form: { getFieldDecorator, resetFields, getFieldsValue, setFieldsValue },
     dispatch,
   } = props;
   const [selectdata, setSelectData] = useState('');
@@ -53,24 +53,78 @@ function KnowledgeList(props) {
       ['知识审核', '3'],
       ['知识查询', '4'],
     ]);
+    const val = {
+      ...values,
+      pageIndex: page,
+      pageSize: size,
+      addUserId: pagetitle === '我的知识' ? sessionStorage.getItem('userauthorityid') : '',
+      checkUserId: pagetitle === '知识审核' ? sessionStorage.getItem('userauthorityid') : '',
+      time1: values.time1 ? moment(values.time1).format('YYYY-MM-DD HH:mm:ss') : '',
+      time2: values.time2 ? moment(values.time2).format('YYYY-MM-DD HH:mm:ss') : '',
+      time3: values.time3 ? moment(values.time3).format('YYYY-MM-DD HH:mm:ss') : '',
+      time4: values.time4 ? moment(values.time4).format('YYYY-MM-DD HH:mm:ss') : '',
+      tab: statusmap.get(pagetitle),
+    };
     dispatch({
       type: 'knowledg/fetchlist',
       payload: {
-        ...values,
-        pageIndex: page,
-        pageSize: size,
-        addUserId: pagetitle === '我的知识' ? sessionStorage.getItem('userauthorityid') : '',
-        checkUserId: pagetitle === '知识审核' ? sessionStorage.getItem('userauthorityid') : '',
-        tab: statusmap.get(pagetitle),
+        ...val
       },
     });
   }
   const handleReset = () => {
+    router.push({
+      pathname: location.pathname,
+      query: {},
+      state: {}
+    });
     resetFields();
+    if (addUser) {
+      setFieldsValue({ addUser: '' })
+    };
+    if (type) {
+      setFieldsValue({ type: '' })
+    };
+    if (starttime) {
+      setFieldsValue({ time1: '' })
+    };
+    if (endtime) {
+      setFieldsValue({ time2: '' })
+    };
     handleSearch(1, 15)
+    setPageinations({ current: 1, pageSize: 15 });
   };
   const download = () => {
-    console.log('导出数据')
+    const values = getFieldsValue();
+    const statusmap = new Map([
+      ['我的知识', '1'],
+      ['知识维护', '2'],
+      ['知识审核', '3'],
+      ['知识查询', '4'],
+    ]);
+    dispatch({
+      type: 'knowledg/downloadquery',
+      payload: {
+        ...values,
+        addUserId: pagetitle === '我的知识' ? sessionStorage.getItem('userauthorityid') : '',
+        checkUserId: pagetitle === '知识审核' ? sessionStorage.getItem('userauthorityid') : '',
+        time1: values.time1 ? moment(values.time1).format('YYYY-MM-DD HH:mm:ss') : '',
+        time2: values.time2 ? moment(values.time2).format('YYYY-MM-DD HH:mm:ss') : '',
+        time3: values.time3 ? moment(values.time3).format('YYYY-MM-DD HH:mm:ss') : '',
+        time4: values.time4 ? moment(values.time4).format('YYYY-MM-DD HH:mm:ss') : '',
+        tab: statusmap.get(pagetitle),
+        ids: selectedRowKeys.length === 0 ? '' : selectedRowKeys.toString(),
+      },
+    }).then(res => {
+      const filename = `知识查询${moment().format('YYYY-MM-DD HH:mm')}.xls`;
+      const blob = new Blob([res]);
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      a.click();
+      window.URL.revokeObjectURL(url);
+    });
   };
   const ClickBut = (buttype) => {
     switch (buttype) {
@@ -268,14 +322,6 @@ function KnowledgeList(props) {
     onChange: page => changePage(page),
   };
 
-  useEffect(() => {
-    handleSearch(1, 15);
-    dispatch({
-      type: 'itsmuser/fetchuser',
-    });
-  }, []);
-
-
   // 选人完成提交
   useEffect(() => {
     if (choiceUser.ischange) {
@@ -338,7 +384,7 @@ function KnowledgeList(props) {
         ]);
         const handleClick = () => {
           router.push({
-            pathname: `${location.pathname}/operation`,
+            pathname: record.status !== '已发布' ? `${location.pathname}/operation` : '/ITSM/knowledgemanage/query/details',
             query: {
               Id: record.no,
             },
@@ -399,6 +445,37 @@ function KnowledgeList(props) {
     },
   ];
 
+  const time1 = starttime ? moment(starttime).format('YYYY-MM-DD HH:mm:ss') : '';
+  const time2 = endtime ? moment(endtime).format('YYYY-MM-DD HH:mm:ss') : '';
+
+  useEffect(() => {
+    if (location.state) {
+      // 点击菜单刷新,并获取数据
+      if (location.state.reset) {
+        handleReset()
+      };
+    }
+  }, [location.state]);
+
+
+  useEffect(() => {
+    handleSearch(1, 15);
+    dispatch({
+      type: 'itsmuser/fetchuser',
+    });
+  }, []);
+
+  useEffect(() => {
+    if (statist) {
+      setExpand(true);
+      setFieldsValue({ addUser });
+      if (type) {
+        setFieldsValue({ type });
+      };
+      handleSearch(1, 15)
+    }
+  }, [statist])
+
   return (
     <PageHeaderWrapper title={pagetitle}>
       <DictLower
@@ -419,7 +496,7 @@ function KnowledgeList(props) {
             <Col span={8}>
               <Form.Item label="知识分类">
                 {getFieldDecorator('type', {
-                  initialValue: '',
+                  initialValue: type || '',
                 })(
                   <Select placeholder="请选择" allowClear>
                     {typemap.map(obj => (
@@ -437,7 +514,7 @@ function KnowledgeList(props) {
                     <Row>
                       <Col span={11}>
                         {getFieldDecorator('time1', {
-                          initialValue: '',
+                          initialValue: time1 ? moment(time1) : '',
                         })(
                           <DatePicker
                             showTime={{
@@ -453,7 +530,7 @@ function KnowledgeList(props) {
                       <Col span={2} style={{ textAlign: 'center' }}>-</Col>
                       <Col span={11}>
                         {getFieldDecorator('time2', {
-                          initialValue: '',
+                          initialValue: time2 ? moment(time2) : '',
                         })(
                           <DatePicker
                             showTime={{
@@ -526,7 +603,7 @@ function KnowledgeList(props) {
               <Col span={8}>
                 <Form.Item label="作者">
                   {getFieldDecorator('addUser', {
-                    initialValue: '',
+                    initialValue: addUser || '',
                   })(<Input placeholder="请输入" allowClear />)}
                 </Form.Item>
               </Col>

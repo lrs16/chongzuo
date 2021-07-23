@@ -3,6 +3,7 @@ import moment from 'moment';
 import SysUpload from '@/components/SysUpload'; // 附件下载组件
 import { Form, Row, Col, Input, DatePicker, Select } from 'antd';
 import KeyVal from '@/components/SysDict/KeyVal';
+import KnowledgCollect from '@/components/KnowledgeCollect';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -31,11 +32,19 @@ const forminladeLayout = {
 
 
 const HandleChild = React.forwardRef((props, ref) => {
-  const { handle, curruserinfo, ChangeFiles, ChangeFileskey } = props;
-  const { getFieldDecorator, setFieldsValue } = props.form;
+  const { handle, curruserinfo, ChangeFiles, ChangeFileskey, mainId } = props;
+  const { getFieldDecorator, setFieldsValue, getFieldsValue } = props.form;
   const attRef = useRef();
   const [fileslist, setFilesList] = useState({ arr: [], ischange: false }); // 下载列表
   const [selectdata, setSelectData] = useState([]);
+  const [knowledgecontent, setKonwledgeContent] = useState('');    // 知识内容
+  const [valuealready, setValuealready] = useState(false)          // 告知知识子组件可以走接口了
+  // 获取知识数据
+  const getContent = () => {
+    const values = getFieldsValue(['handleAdvise'])
+    setKonwledgeContent(values.handleAdvise);
+    setValuealready(true)
+  }
   useEffect(() => {
     if (fileslist.ischange) {
       ChangeFiles(fileslist);
@@ -115,7 +124,7 @@ const HandleChild = React.forwardRef((props, ref) => {
                 },
               ],
               initialValue: handle ? handle.handleContent : '',
-            })(<TextArea autoSize={{ minRows: 3 }} min placeholder="请输入" />)}
+            })(<TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />)}
           </Form.Item>
         </Col>
 
@@ -129,7 +138,7 @@ const HandleChild = React.forwardRef((props, ref) => {
                 },
               ],
               initialValue: handle ? handle.handleReason : '',
-            })(<TextArea autoSize allowClear />)}
+            })(<TextArea autoSize={{ minRows: 3 }} allowClear />)}
           </Form.Item>
         </Col>
 
@@ -143,7 +152,7 @@ const HandleChild = React.forwardRef((props, ref) => {
                 },
               ],
               initialValue: handle ? handle.handleAdvise : '',
-            })(<TextArea autoSize allowClear />)}
+            })(<TextArea autoSize={{ minRows: 3 }} allowClear />)}
           </Form.Item>
         </Col>
 
@@ -203,6 +212,16 @@ const HandleChild = React.forwardRef((props, ref) => {
             </Form.Item>
           </Col>
         )}
+        <Col span={24} style={{ paddingLeft: '8.33333333% ' }} >
+          <KnowledgCollect
+            valuealready={valuealready}
+            content={knowledgecontent}
+            orderType='fault'
+            orderId={mainId}
+            ChangeValuealready={(v) => setValuealready(v)}
+            HandleGEtContent={() => getContent()}
+          />
+        </Col>
         <Col span={24}>
           <Form.Item
             label="上传故障处理记录表"
@@ -280,7 +299,6 @@ const HandleChild = React.forwardRef((props, ref) => {
             )}
           </Form.Item>
         </Col>
-
         <Col span={24}>
           <Form.Item
             label="上传附件"

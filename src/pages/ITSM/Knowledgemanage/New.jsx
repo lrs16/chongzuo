@@ -49,7 +49,10 @@ function New(props) {
     const values = ContentRef.current.getVal();
     dispatch({
       type: 'knowledg/add',
-      payload: { ...values, fileIds: v.length ? JSON.stringify(v) : '' },
+      payload: {
+        payvalue: { ...values, fileIds: v.length ? JSON.stringify(v) : null },
+        buttype: 'save',
+      },
     });
   }
 

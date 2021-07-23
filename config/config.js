@@ -598,6 +598,12 @@ export default {
                           component: './ITSM/Knowledgemanage/KnowledgeList'
                         },
                         {
+                          path: '/ITSM/knowledgemanage/query/details',
+                          name: '知识详情',
+                          icon: 'fork',
+                          component: './ITSM/Knowledgemanage/View'
+                        },
+                        {
                           path: '/ITSM/knowledgemanage/statistics',
                           name: '知识统计',
                           icon: 'fork',

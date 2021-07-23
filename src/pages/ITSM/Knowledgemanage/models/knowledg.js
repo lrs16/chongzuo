@@ -8,7 +8,10 @@ import {
   releasekowledge,
   queryTodoList,
   queryUpdateList,
-  queryStatisList
+  queryStatisList,
+  downloadStatisExcel,
+  downloadKnowledgeExcel,
+  openViewkowledge
 } from '../services/api';
 
 export default {
@@ -19,6 +22,7 @@ export default {
     info: undefined,
     updatas: [],
     statislist: [],
+    viewinfo: undefined
   },
 
   effects: {
@@ -81,7 +85,7 @@ export default {
       }
     },
 
-    // 打开
+    // 打开待办
     *knowledgopen({ payload: { mainId } }, { call, put }) {
       yield put({
         type: 'clearcache',
@@ -91,6 +95,21 @@ export default {
         yield put({
           type: 'saveinfo',
           payload: response,
+        });
+      } else {
+        message.error(response.msg)
+      }
+    },
+    // 打开查询
+    *openview({ payload: { mainId } }, { call, put }) {
+      yield put({
+        type: 'clearcache',
+      });
+      const response = yield call(openViewkowledge, mainId);
+      if (response.code === 200) {
+        yield put({
+          type: 'saveview',
+          payload: response.data,
         });
       } else {
         message.error(response.msg)
@@ -211,8 +230,8 @@ export default {
       }
     },
     // 统计
-    *fetchstatis({ payload: { time1, time2 } }, { call, put }) {
-      const response = yield call(queryStatisList, time1, time2);
+    *fetchstatis({ payload }, { call, put }) {
+      const response = yield call(queryStatisList, payload);
       if (response.code === 200) {
         yield put({
           type: 'savestatis',
@@ -222,6 +241,16 @@ export default {
         message.error(response.msg)
       }
     },
+
+    // 统计下载
+    *downloadstatis({ payload }, { call }) {
+      return yield call(downloadStatisExcel, payload);
+    },
+
+    // 查询下载
+    *downloadquery({ payload }, { call }) {
+      return yield call(downloadKnowledgeExcel, payload);
+    }
   },
 
   reducers: {
@@ -237,6 +266,12 @@ export default {
       return {
         ...state,
         info: action.payload,
+      };
+    },
+    saveview(state, action) {
+      return {
+        ...state,
+        viewinfo: action.payload,
       };
     },
     save(state, action) {
