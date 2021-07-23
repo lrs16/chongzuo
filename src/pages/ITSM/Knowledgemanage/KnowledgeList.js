@@ -280,13 +280,24 @@ function KnowledgeList(props) {
   const handleCancel = () => {
     setVisible(false)
   }
-  const newknowledge = () => {
-    router.push({
-      pathname: '/ITSM/knowledgemanage/myknowledge/new',
-      query: {
-        addtab: true,
-      }
-    })
+  const newknowledge = (edittype) => {
+    if (edittype === 'edit') {
+      router.push({
+        pathname: '/ITSM/knowledgemanage/myknowledge/new',
+        query: {
+          addtab: true,
+          menuDes: '知识维护'
+        },
+      })
+    } else {
+      router.push({
+        pathname: '/ITSM/knowledgemanage/myknowledge/new',
+        query: {
+          addtab: true,
+        }
+      })
+    }
+
   }
   const onSelectChange = (RowKeys, record) => {
     setSelectedRowKeys(RowKeys);
@@ -668,9 +679,15 @@ function KnowledgeList(props) {
         </Row>
 
         <div style={{ marginBottom: 24 }}>
-          {(pagetitle === '我的知识' || pagetitle === '知识维护') && (
+          {pagetitle === '我的知识' && (
             <>
               <Button type="primary" style={{ marginRight: 8 }} onClick={() => newknowledge()}>新增</Button >
+              <Button type="primary" style={{ marginRight: 8 }} onClick={() => ClickBut('submit')}>提交</Button >
+            </>
+          )}
+          {pagetitle === '知识维护' && (
+            <>
+              <Button type="primary" style={{ marginRight: 8 }} onClick={() => newknowledge('edit')}>新增</Button >
               <Button type="primary" style={{ marginRight: 8 }} onClick={() => ClickBut('submit')}>提交</Button >
             </>
           )}

@@ -79,6 +79,20 @@ export default {
               message.error(subres.msg)
             }
           };
+          if (buttype === 'release') {
+            const mainIds = [saveres.mainId];
+            const subres = yield call(releasekowledge, { mainIds, userId });
+            if (subres.code === 200) {
+              message.success('发布成功');
+              router.push({
+                pathname: `/ITSM/knowledgemanage/myknowledge`,
+                query: { pathpush: true },
+                state: { cach: false, }
+              });
+            } else {
+              message.error(subres.msg)
+            };
+          };
         }
       } else {
         message.error(resadd.msg)
@@ -117,7 +131,7 @@ export default {
     },
 
     // 编辑保存、提交、发布
-    *saveorsubmit({ payload: { values, buttype, mainId, userId, runpath } }, { call, put }) {
+    *saveorsubmit({ payload: { values, buttype, mainId, userId, runpath, Id } }, { call, put }) {
       const payvalue = {
         ...values,
         mainId,
@@ -146,11 +160,11 @@ export default {
             router.push({
               pathname: runpath,
               query: { pathpush: true },
-              state: { cach: false, closetabid: mainId }
+              state: { cach: false, closetabid: response.no }
             });
           } else {
             message.error(subres.msg)
-          }
+          };
         };
         if (buttype === 'release') {
           const mainIds = [mainId];
@@ -160,16 +174,18 @@ export default {
             router.push({
               pathname: runpath,
               query: { pathpush: true },
-              state: { cach: false, closetabid: mainId }
+              state: { cach: false, closetabid: response.no }
             });
-          }
-        }
+          } else {
+            message.error(subres.msg)
+          };
+        };
       } else {
         message.error(response.msg)
       }
     },
 
-    *saveorcheck({ payload: { values, buttype, mainId, mainIds, userId, runpath, editState } }, { call, put }) {
+    *saveorcheck({ payload: { values, buttype, mainId, userId, runpath, editState } }, { call, put }) {
       const payvalue = {
         ...values,
         mainId,
@@ -177,6 +193,7 @@ export default {
         editState
       };
       const response = yield call(savekowledge, payvalue);
+      const mainIds = [response.mainId];
       if (response.code === 200) {
         if (buttype === 'save') {
           message.success('保存成功');

@@ -39,7 +39,7 @@ const multiplepath = [
   { path: '/ITSM/operationreport/monthlyreport/monthdatabasereport', type: 'monthdatabasereport' },
   { path: '/ITSM/operationreport/monthlyreport/monthcomputerroomreport', type: 'monthcomputerroomreport' },
   { path: '/ITSM/operationreport/monthlyreport/monthsoftreport', type: 'monthsoftreport' },
-  { path: '/ITSM/knowledgemanage/myknowledge/new', type: 'knowledge' }
+  { path: '/ITSM/knowledgemanage/myknowledge/new', type: 'knowledge' },
 ]
 function Tabrouters(props) {
   const { Changealonepath, Changemultiple } = props;

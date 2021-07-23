@@ -42,7 +42,7 @@ const Content = forwardRef((props, ref) => {
 
   const handleFormValidator = (rule, value, callback) => {
     if (value === '' || value === '<p></p>') {
-      callback(rule)
+      callback()
     }
     callback()
   }

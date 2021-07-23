@@ -176,7 +176,7 @@ const BasicLayout = props => {
     const targetmultiple = multiplepath.filter(item => item.path === location.pathname)[0];          //  属于登记类打开同一个链接多页签
 
     // 已有标签,且不属于登记类和作业计划
-    if (tabtargetpath && !targetmultiple && tabtargetpath) {
+    if (tabtargetpath && !targetmultiple && tabtargetpath && (tabtargetpath.query && tabtargetpath.query.Id === undefined)) {
       setActiveKey(tabtargetpath.id);
     };
     // 从页面添加多条登记类，如作业计划
@@ -190,7 +190,7 @@ const BasicLayout = props => {
         type: targetmultiple.type,
         id: `${targetmultiple.type}${endid}`,
         query: { ...location.query, tabid: `${targetmultiple.type}${endid}` },
-        state: { cache: false },
+        state: { ...location.state, cache: false },
         itemPath: targetmultiple.path,
         closable: true
       };
@@ -353,6 +353,7 @@ const BasicLayout = props => {
       setActiveKey(key);
     }
   };
+
 
   const remove = targetKey => {
     clearcache();

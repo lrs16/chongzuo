@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { connect } from 'dva';
 import router from 'umi/router';
-import { Button, Card } from 'antd';
+import { Button, Card, message } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import EditContext from '@/layouts/MenuContext';
 import { knowledgeCheckUserList } from '@/services/user';
@@ -10,29 +10,53 @@ import Content from './components/Content';
 
 function New(props) {
   const pagetitle = props.route.name;
-  const { dispatch, location, tabnew, tabdata } = props;
+  const { dispatch, location, tabnew, tabdata, location: { query: { menuDes } } } = props;
   const [choiceUser, setChoiceUser] = useState({ users: '', ischange: false });
   const [userlist, setUserList] = useState([]);
   const [uservisible, setUserVisible] = useState(false); // 是否显示选人组件
   const ContentRef = useRef(null);
+  console.log(menuDes)
 
   const handleClick = (buttype) => {
     const values = ContentRef.current.getVal();
-    dispatch({
-      type: 'knowledg/add',
-      payload: {
-        payvalue: { ...values },
-        buttype,
-        userId: choiceUser.users
-      },
-    });
+    if (buttype === 'release') {
+      ContentRef.current.Forms((err) => {
+        if (err) {
+          message.error('请将信息填写完整')
+        } else {
+          dispatch({
+            type: 'knowledg/add',
+            payload: {
+              payvalue: { ...values },
+              buttype,
+              userId: choiceUser.users
+            },
+          });
+        }
+      })
+    } else {
+      dispatch({
+        type: 'knowledg/add',
+        payload: {
+          payvalue: { ...values },
+          buttype,
+          userId: choiceUser.users
+        },
+      });
+    }
   }
 
   const handleSubmit = () => {
-    knowledgeCheckUserList().then(res => {
-      if (res.code === 200) {
-        setUserList(res.data);
-        setUserVisible(true)
+    ContentRef.current.Forms((err) => {
+      if (err) {
+        message.error('请将信息填写完整')
+      } else {
+        knowledgeCheckUserList().then(res => {
+          if (res.code === 200) {
+            setUserList(res.data);
+            setUserVisible(true)
+          }
+        })
       }
     })
   };
@@ -101,6 +125,14 @@ function New(props) {
       >
         提交
       </Button>
+      {menuDes === '知识维护' && (<Button
+        type="primary"
+        style={{ marginRight: 8 }}
+        onClick={() => { handleClick('release') }}
+      >
+        发布
+      </Button>
+      )}
       <Button onClick={handleclose}>返回</Button>
     </>
   )

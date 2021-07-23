@@ -2,7 +2,7 @@ import React, { useState, useRef, useContext, useEffect } from 'react';
 import router from 'umi/router';
 import { connect } from 'dva';
 import moment from 'moment';
-import { Collapse, Button, Breadcrumb, Spin } from 'antd';
+import { Collapse, Button, Breadcrumb, Spin, message } from 'antd';
 import styles from '@/utils/utils.less';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import EditContext from '@/layouts/MenuContext';              // 引用上下文管理组件
@@ -39,27 +39,41 @@ function Operation(props) {
         buttype,
         mainId: mainId || values.id,
         userId: buttype === 'submit' ? choiceUser.users : sessionStorage.getItem('userauthorityid'),
-        runpath
+        runpath,
       },
     })
-  }
-  const handleCheck = (buttype) => {
+  };
+  const gocheck = (buttype) => {
     const values = ExmaineRef.current.getVal();
     dispatch({
       type: 'knowledg/saveorcheck',
       payload: {
         values: {
           ...values,
-          checkTime: moment(values.checkTime).format('YYYY-MM-DD HH:mm:ss')
+          checkTime: moment(values.checkTime).format('YYYY-MM-DD HH:mm:ss'),
+          content: values.result === '通过' ? values.content : values.content1,
         },
         buttype,
-        mainId,
-        mainIds: [mainId],
+        mainId: mainId || info.data[0].main.id,
         runpath,
         editState: info.edit.check === '' ? 'add' : 'edit',
         userId: sessionStorage.getItem('userauthorityid')
       },
     })
+  }
+  const handleCheck = (buttype) => {
+    if (buttype === 'save') {
+      gocheck(buttype)
+    };
+    if (buttype === 'check') {
+      ExmaineRef.current.Forms((err) => {
+        if (err) {
+          message.error('请将信息填写完整')
+        } else {
+          gocheck(buttype)
+        }
+      })
+    };
   }
   const handleclose = () => {
     if (runpath) {
@@ -72,10 +86,16 @@ function Operation(props) {
   };
 
   const handleSubmit = () => {
-    knowledgeCheckUserList().then(res => {
-      if (res.code === 200) {
-        setUserList(res.data);
-        setUserVisible(true)
+    ContentRef.current.Forms((err) => {
+      if (err) {
+        message.error('请将信息填写完整')
+      } else {
+        knowledgeCheckUserList().then(res => {
+          if (res.code === 200) {
+            setUserList(res.data);
+            setUserVisible(true)
+          }
+        })
       }
     })
   };
