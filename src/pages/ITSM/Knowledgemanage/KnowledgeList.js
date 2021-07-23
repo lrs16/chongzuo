@@ -151,11 +151,13 @@ function KnowledgeList(props) {
             } else {
               message.error(res.msg)
             };
+            setSelectedRowKeys([]);
             setSelectedRecords([]);
             handleSearch(1, 15);
           })
         } else {
           message.error('请选择知识状态为‘已登记’的数据')
+          setSelectedRowKeys([]);
           setSelectedRecords([]);
         }
         break;
@@ -172,11 +174,13 @@ function KnowledgeList(props) {
             } else {
               message.error(res.msg)
             };
+            setSelectedRowKeys([]);
             setSelectedRecords([]);
             handleSearch(1, 15);
           })
         } else {
           message.error('请选择知识状态为‘已发布’的数据');
+          setSelectedRowKeys([]);
           setSelectedRecords([]);
         }
         break;
@@ -196,12 +200,14 @@ function KnowledgeList(props) {
             } else {
               message.error(res.msg)
             };
+            setSelectedRowKeys([]);
             setSelectedRecords([]);
             handleSearch(1, 15);
-
+            setPageinations({ current: 1, pageSize: 15 })
           })
         } else {
           message.error('仅能选择状态不为‘发布中’的数据');
+          setSelectedRowKeys([]);
           setSelectedRecords([]);
         }
         break;
@@ -221,12 +227,15 @@ function KnowledgeList(props) {
             } else {
               message.error(res.msg)
             };
+            setSelectedRowKeys([]);
             setSelectedRecords([]);
             handleSearch(1, 15);
+            setPageinations({ current: 1, pageSize: 15 })
 
           })
         } else {
-          message.error('仅能选择没有产生数');
+          message.error('仅能选择状态不为‘发布中’的数据');
+          setSelectedRowKeys([]);
           setSelectedRecords([]);
         }
         break;
@@ -247,10 +256,13 @@ function KnowledgeList(props) {
               message.error(res.msg)
             };
             setSelectedRowKeys([]);
+            setSelectedRecords([]);
             handleSearch(1, 15);
+            setPageinations({ current: 1, pageSize: 15 })
           })
         } else {
           message.error('仅能选择状态不为‘发布中’的数据');
+          setSelectedRowKeys([]);
           setSelectedRecords([]);
         }
         break;

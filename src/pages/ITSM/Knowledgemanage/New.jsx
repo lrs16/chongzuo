@@ -15,35 +15,23 @@ function New(props) {
   const [userlist, setUserList] = useState([]);
   const [uservisible, setUserVisible] = useState(false); // 是否显示选人组件
   const ContentRef = useRef(null);
-  console.log(menuDes)
 
   const handleClick = (buttype) => {
     const values = ContentRef.current.getVal();
-    if (buttype === 'release') {
-      ContentRef.current.Forms((err) => {
-        if (err) {
-          message.error('请将信息填写完整')
-        } else {
-          dispatch({
-            type: 'knowledg/add',
-            payload: {
-              payvalue: { ...values },
-              buttype,
-              userId: choiceUser.users
-            },
-          });
-        }
-      })
-    } else {
-      dispatch({
-        type: 'knowledg/add',
-        payload: {
-          payvalue: { ...values },
-          buttype,
-          userId: choiceUser.users
-        },
-      });
-    }
+    ContentRef.current.Forms((err) => {
+      if (err) {
+        message.error('请将信息填写完整')
+      } else {
+        dispatch({
+          type: 'knowledg/add',
+          payload: {
+            payvalue: { ...values },
+            buttype,
+            userId: choiceUser.users
+          },
+        });
+      }
+    })
   }
 
   const handleSubmit = () => {
