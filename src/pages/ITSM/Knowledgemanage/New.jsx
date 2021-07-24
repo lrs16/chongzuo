@@ -17,8 +17,7 @@ function New(props) {
   const ContentRef = useRef(null);
 
   const handleClick = (buttype) => {
-    const values = ContentRef.current.getVal();
-    ContentRef.current.Forms((err) => {
+    ContentRef.current.Forms((err, values) => {
       if (err) {
         message.error('请将信息填写完整')
       } else {
@@ -83,18 +82,21 @@ function New(props) {
     }
   }, [choiceUser.ischange])
 
-  // 获取页签信息
   useEffect(() => {
-    if (location.state && location.state.cache) {
-      const values = ContentRef.current.getVal();
-      dispatch({
-        type: 'viewcache/gettabstate',
-        payload: {
-          cacheinfo: { ...values },
-          tabid: sessionStorage.getItem('tabid')
-        },
-      });
-    }
+    // 获取页签信息
+    if (location.state) {
+      if (location.state.cache) {
+        const values = ContentRef.current.getVal();
+        dispatch({
+          type: 'viewcache/gettabstate',
+          payload: {
+            cacheinfo: { ...values },
+            tabid: sessionStorage.getItem('tabid')
+          },
+        });
+        ContentRef.current.resetVal();   // 页签数据获取完成清空表单
+      };
+    };
   }, [location])
 
   const operations = (

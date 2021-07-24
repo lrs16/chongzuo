@@ -410,6 +410,7 @@ function KnowledgeList(props) {
             pathname: record.status !== '已发布' ? `${location.pathname}/operation` : '/ITSM/knowledgemanage/query/details',
             query: {
               Id: record.no,
+              mainId: record.id
             },
             state: {
               runpath: location.pathname,
@@ -417,7 +418,6 @@ function KnowledgeList(props) {
               dynamicpath: true,
               menuDesc: (record.status === '已登记' || pagetitle === '知识审核') ? desmap.get(pagetitle) : '知识详情',
               status: record.status,
-              mainId: record.id
             },
           });
         };

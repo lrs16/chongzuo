@@ -16,7 +16,7 @@ const { Panel } = Collapse;
 
 function Operation(props) {
   const { dispatch, location, loading, info, userinfo, updatas } = props;
-  const { mainId } = location.state;
+  const { mainId } = location.query;
   const [activeKey, setActiveKey] = useState(['formpanel']);
   const [tabActivekey, settabActivekey] = useState('workorder'); // 打开标签
   const [choiceUser, setChoiceUser] = useState({ users: '', ischange: false });
@@ -31,50 +31,49 @@ function Operation(props) {
     setActiveKey(key);
   };
   const handleClick = (buttype) => {
-    const values = ContentRef.current.getVal();
-    dispatch({
-      type: 'knowledg/saveorsubmit',
-      payload: {
-        values: { ...values },
-        buttype,
-        mainId: mainId || values.id,
-        userId: buttype === 'submit' ? choiceUser.users : sessionStorage.getItem('userauthorityid'),
-        runpath,
-      },
+    ContentRef.current.Forms((err, values) => {
+      if (err) {
+        message.error('请将信息填写完整')
+      } else {
+        dispatch({
+          type: 'knowledg/saveorsubmit',
+          payload: {
+            values: { ...values },
+            buttype,
+            mainId: mainId || values.id,
+            userId: buttype === 'submit' ? choiceUser.users : sessionStorage.getItem('userauthorityid'),
+            runpath,
+          },
+        })
+      }
     })
   };
-  const gocheck = (buttype) => {
-    const values = ExmaineRef.current.getVal();
-    dispatch({
-      type: 'knowledg/saveorcheck',
-      payload: {
-        values: {
-          ...values,
-          checkTime: moment(values.checkTime).format('YYYY-MM-DD HH:mm:ss'),
-          content: values.result === '通过' ? values.content : values.content1,
-        },
-        buttype,
-        mainId: mainId || info.data[0].main.id,
-        runpath,
-        editState: info.edit.check === '' ? 'add' : 'edit',
-        userId: sessionStorage.getItem('userauthorityid')
-      },
-    })
-  }
+
   const handleCheck = (buttype) => {
-    if (buttype === 'save') {
-      gocheck(buttype)
-    };
-    if (buttype === 'check') {
-      ExmaineRef.current.Forms((err) => {
-        if (err) {
-          message.error('请将信息填写完整')
-        } else {
-          gocheck(buttype)
-        }
-      })
-    };
-  }
+    ExmaineRef.current.Forms((err) => {
+      if (err) {
+        message.error('请将信息填写完整')
+      } else {
+        const values = ExmaineRef.current.getVal();
+        dispatch({
+          type: 'knowledg/saveorcheck',
+          payload: {
+            values: {
+              ...values,
+              checkTime: moment(values.checkTime).format('YYYY-MM-DD HH:mm:ss'),
+              content: values.result === '通过' ? values.content : values.content1,
+            },
+            buttype,
+            mainId: mainId || info.data[0].main.id,
+            runpath,
+            editState: info.edit.check === '' ? 'add' : 'edit',
+            userId: sessionStorage.getItem('userauthorityid')
+          },
+        })
+      }
+    })
+  };
+
   const handleclose = () => {
     if (runpath) {
       router.push({
@@ -142,7 +141,20 @@ function Operation(props) {
       });
       settabActivekey('workorder');
     }
-  }, [location])
+  }, [location.query])
+
+  // 点击页签右键刷新
+  useEffect(() => {
+    if (location.state && location.state.reset && mainId) {
+      dispatch({
+        type: 'knowledg/knowledgopen',
+        payload: {
+          mainId,
+        },
+      });
+      settabActivekey('workorder');
+    }
+  }, [location.state])
 
   // 选人完成提交
   useEffect(() => {

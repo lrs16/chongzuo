@@ -311,7 +311,6 @@ const BasicLayout = props => {
     //
   }, [location.query])
 
-
   // 表单信息写入页签
   const ChangetabState = () => {
     const target = toptabs.filter(item => item.id === tabid)[0];
@@ -353,7 +352,6 @@ const BasicLayout = props => {
       setActiveKey(key);
     }
   };
-
 
   const remove = targetKey => {
     clearcache();
@@ -713,7 +711,7 @@ const BasicLayout = props => {
                 router.push({
                   pathname: location.pathname,
                   query: location.query,
-                  state: { cache: false, reset: true },
+                  state: { ...location.state, cache: false, reset: true },
                 })
                 // 登记类重置表单信息
                 getcache();
