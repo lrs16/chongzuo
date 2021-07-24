@@ -17,7 +17,6 @@ function Registration(props) {
     dispatch({
       type: 'itsmuser/fetchuser',
     });
-    sessionStorage.setItem('Processtype', 'demand');
   }, []);
 
   // 保存，保存提交
@@ -43,7 +42,7 @@ function Registration(props) {
   // 上传附件触发保存
   useEffect(() => {
     if (files.ischange) {
-      RegistratRef.current.validateFields((err, values) => {
+      RegistratRef.current.Forms((err, values) => {
         dispatch({
           //  type: 'demandregister/uploadchange',
           payload: {

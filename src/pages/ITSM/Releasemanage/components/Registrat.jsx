@@ -11,11 +11,11 @@ const { Option } = Select;
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
-    sm: { span: 9 },
+    sm: { span: 6 },
   },
   wrapperCol: {
     xs: { span: 24 },
-    sm: { span: 15 },
+    sm: { span: 18 },
   },
 };
 
@@ -30,10 +30,10 @@ const forminladeLayout = {
 
 const formuintLayout = {
   labelCol: {
-    sm: { span: 3 },
+    sm: { span: 2 },
   },
   wrapperCol: {
-    sm: { span: 21 },
+    sm: { span: 22 },
   },
 };
 
@@ -45,7 +45,7 @@ const statumap = new Map([
 
 function Registrat(props, ref) {
   const { taskName, mainId, userinfo, register, selectdata, isEdit } = props;
-  const { getFieldDecorator } = props.form;
+  const { getFieldDecorator, getFieldsValue, resetFields } = props.form;
   const required = true;
 
   const [alertvisible, setAlertVisible] = useState(false);  // 超时告警是否显示
@@ -53,8 +53,10 @@ function Registrat(props, ref) {
 
   const formRef = useRef();
   useImperativeHandle(ref, () => ({
-    Forms: props.form,
-  }))
+    getVal: () => getFieldsValue(),
+    resetVal: () => resetFields(),
+    Forms: props.form.validateFieldsAndScroll,
+  }), []);
 
   useEffect(() => {
     if (isEdit && taskName === '发布登记' && moment(register.creationTime).format('DD') > 25) {
@@ -92,7 +94,7 @@ function Registrat(props, ref) {
           {taskName === '发布登记' && (
             <Col span={8}>
               <Form.Item label="发布编号">
-                {getFieldDecorator('register_id', {
+                {getFieldDecorator('id', {
                   rules: [{ required, message: `发布编号不能为空` }],
                   initialValue: '',
                 })(<Input disabled />)}
@@ -103,7 +105,7 @@ function Registrat(props, ref) {
             <>
               <Col span={8}>
                 <Form.Item label="发布类型">
-                  {getFieldDecorator('form7', {
+                  {getFieldDecorator('releaseType', {
                     rules: [{ required, message: `请选择发布类型` }],
                     initialValue: '',
                   })(
@@ -119,7 +121,7 @@ function Registrat(props, ref) {
               </Col>
               <Col span={8}>
                 <Form.Item label="责任单位">
-                  {getFieldDecorator('form8', {
+                  {getFieldDecorator('dutyUnit', {
                     rules: [{ required, message: `请选择责任单位` }],
                     initialValue: '',
                   })(
@@ -137,23 +139,23 @@ function Registrat(props, ref) {
           )}
           <Col span={8}>
             <Form.Item label="测试开始时间">
-              {getFieldDecorator('form2', {
+              {getFieldDecorator('testStart', {
                 rules: [{ required, message: `请选择出厂测试开始时间` }],
                 initialValue: moment(),
-              })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" disabled={!isEdit} />)}
+              })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" disabled={!isEdit} style={{ width: '100%' }} />)}
             </Form.Item>
           </Col>
           <Col span={8}>
             <Form.Item label="测试结束时间">
-              {getFieldDecorator('form3', {
+              {getFieldDecorator('testEnd', {
                 rules: [{ required, message: `请选择出厂测试结束时间` }],
                 initialValue: moment(),
-              })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" disabled={!isEdit} />)}
+              })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" disabled={!isEdit} style={{ width: '100%' }} />)}
             </Form.Item>
           </Col>
           <Col span={8}>
             <Form.Item label="测试地点">
-              {getFieldDecorator('form4', {
+              {getFieldDecorator('testPlace', {
                 rules: [{ required, message: `请输入出厂测试地点` }],
                 initialValue: '',
               })(<Input disabled={!isEdit} />)}
@@ -161,7 +163,7 @@ function Registrat(props, ref) {
           </Col>
           <Col span={24}>
             <Form.Item label="参与测试单位" {...formuintLayout}>
-              {getFieldDecorator('form5', {
+              {getFieldDecorator('testUnit', {
                 rules: [{ required, message: `请选择参与测试单位` }],
                 initialValue: '',
               })(<TextArea autoSize disabled={!isEdit} />)}
@@ -169,7 +171,7 @@ function Registrat(props, ref) {
           </Col>
           <Col span={24}>
             <Form.Item label="测试人员" {...formuintLayout}>
-              {getFieldDecorator('form6', {
+              {getFieldDecorator('testOperator', {
                 rules: [{ required, message: `请输入测试人员` }],
                 initialValue: '',
               })(<TextArea autoSize disabled={!isEdit} />)}
@@ -178,7 +180,7 @@ function Registrat(props, ref) {
           {taskName === '发布登记' && (
             <Col span={24}>
               <Form.Item label="受影响业务范围" {...formuintLayout}>
-                {getFieldDecorator('form9', {
+                {getFieldDecorator('influenceScope', {
                   rules: [{ required, message: `请填写受影响业务范围` }],
                   initialValue: '',
                 })(<TextArea autoSize={{ minRows: 4 }} disabled={!isEdit} />)}
@@ -201,7 +203,7 @@ function Registrat(props, ref) {
           {taskName !== '业务验证' && (
             <Col span={24}>
               <Form.Item label={`${taskName}结论`} {...forminladeLayout} labelAlign='left'>
-                {getFieldDecorator('form10', {
+                {getFieldDecorator('testResult', {
                   rules: [{ required, message: `请填写${taskName}结论` }],
                   initialValue: '',
                 })(<TextArea autoSize={{ minRows: 4 }} disabled={!isEdit} />)}
@@ -213,23 +215,36 @@ function Registrat(props, ref) {
           </Col>
           <Col span={8}>
             <Form.Item label="登记人" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
-              {getFieldDecorator('form11', {
-                rules: [{ required, message: `请选择登记人` }],
+              {getFieldDecorator('registerUser', {
+                rules: [{ required, message: `请输入登记人` }],
+                initialValue: '',
+              })(<Input disabled />)}
+            </Form.Item>
+            <Form.Item label="登记人Id" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }} style={{ display: 'none' }}>
+              {getFieldDecorator('registerUser', {
+                rules: [{ required, message: `请输入登记人` }],
                 initialValue: '',
               })(<Input disabled />)}
             </Form.Item>
           </Col>
+
           <Col span={8}>
             <Form.Item label="登记时间" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
-              {getFieldDecorator('form12', {
+              {getFieldDecorator('registerTime', {
                 rules: [{ required, message: `请选择登记时间` }],
-                initialValue: moment(register.creationTime).format("YYYY-MM-DD HH:mm:ss"),
+                initialValue: moment(register.registerTime).format("YYYY-MM-DD HH:mm:ss"),
               })(<Input disabled />)}
             </Form.Item>
           </Col>
           <Col span={8}>
             <Form.Item label="登记单位" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
-              {getFieldDecorator('form13', {
+              {getFieldDecorator('registerUnit', {
+                rules: [{ required, message: `请选择登记单位` }],
+                initialValue: '',
+              })(<Input disabled />)}
+            </Form.Item>
+            <Form.Item label="登记单位Id" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }} style={{ display: 'none' }}>
+              {getFieldDecorator('registerUnitId', {
                 rules: [{ required, message: `请选择登记单位` }],
                 initialValue: '',
               })(<Input disabled />)}
@@ -246,7 +261,7 @@ const WrappedForm = Form.create({ name: 'form' })(forwardRef(Registrat))
 WrappedForm.defaultProps = {
   mainId: '',
   register: {
-    creationTime: moment().format(),
+    registerTime: undefined,
     // completeTime: moment().format(),
     demandId: '',
     demandType: '',

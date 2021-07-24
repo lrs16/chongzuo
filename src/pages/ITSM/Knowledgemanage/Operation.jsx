@@ -305,7 +305,7 @@ function Operation(props) {
                       </EditContext.Provider>
                     </Panel>
                   )}
-                  {(menuDesc === '知识详情' || (title === '我的知识' && info.data && info.data[1].check)) && info.data[1] && (
+                  {(menuDesc === '知识详情' || (title === '我的知识' && info.data && info.data[1] && info.data[1].check)) && info.data[1] && (
                     <Panel header='知识审核' key="2">
                       <Examine
                         wrappedComponentRef={ExmaineRef}

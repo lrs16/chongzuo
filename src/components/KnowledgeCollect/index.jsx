@@ -14,13 +14,17 @@ function KnowledgCollect(props) {
       const value = {
         content, orderType, orderId
       }
-      knowledgesaveByOrder(value).then(res => {
-        if (res.code === 200) {
-          message.success('知识收入成功')
-        } else {
-          message.error(res.msg)
-        }
-      });
+      if (content && orderType && orderId) {
+        knowledgesaveByOrder(value).then(res => {
+          if (res.code === 200) {
+            message.success('知识收入成功')
+          } else {
+            message.error(res.msg)
+          }
+        });
+      } else {
+        message.msg('请选保存')
+      }
       ChangeValuealready(false)
     }
   }, [valuealready])

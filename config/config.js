@@ -1495,6 +1495,12 @@ export default {
                         },
                       ],
                     },
+                    {
+                      path: '/sysmanage/testenvironmentmanage',
+                      name: '测试环境管理',
+                      icon: 'smile',
+                      component: './SysManage/TestEnvironmentManage',
+                    },
                   ],
                 },
                 {
