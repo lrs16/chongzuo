@@ -114,12 +114,32 @@ function Registration(props) {
 
   const gethandle = type => {
     RegistratRef.current.Forms((err) => {
+      const values = RegistratRef.current?.getVal();
+      setFormregistrat({
+        ...values,
+        main_eventObject: values.main_eventObject?.slice(-1)[0],
+        register_occurTime: values.register_occurTime.format('YYYY-MM-DD HH:mm:ss'),
+        register_applicationUnit: values.applicationUnit,
+        register_applicationUnitId: values.applicationUnit === '' ? '' : values.register_applicationUnitId,
+        register_mobilePhone: values.main_revisitWay === '002' ? values.mobilePhone1 : values.mobilePhone2,
+        register_applicationDept:
+          values.register_applicationDept !== ''
+            ? values.register_applicationDept
+            : values.register_applicationUnit,
+        register_applicationDeptId:
+          values.register_applicationDeptId !== ''
+            ? values.register_applicationDeptId
+            : values.register_applicationUnitId,
+        register_fileIds: JSON.stringify(registratfiles.arr),
+        register_selfhandle: String(Number(values.register_selfhandle)),
+        register_supplement: String(Number(values.register_supplement)),
+      });
       if (!err) {
-        const values = HandleRef.current?.getVal();
+        const val = HandleRef.current?.getVal();
         setFormhandle({
-          ...values,
-          main_eventObject: values.main_eventObject?.slice(-1)[0],
-          handle_endTime: values.handle_endTime.format('YYYY-MM-DD HH:mm:ss'),
+          ...val,
+          main_eventObject: val.main_eventObject?.slice(-1)[0],
+          handle_endTime: val.handle_endTime.format('YYYY-MM-DD HH:mm:ss'),
           handle_fileIds: JSON.stringify(handlefiles.arr),
         });
         setIscheck({ save: false, flow: false });
