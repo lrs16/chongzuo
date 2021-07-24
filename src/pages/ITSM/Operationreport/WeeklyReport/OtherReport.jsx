@@ -52,7 +52,7 @@ function OtherReport(props) {
   const [copyData, setCopyData] = useState('');
   const [addrow, setAddrow] = useState(false);
   const [deleteSign, setDeleteSign] = useState(false);
-  
+
   const [timeshow, setTimeshow] = useState(true);
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
@@ -174,7 +174,7 @@ function OtherReport(props) {
   }, []);
 
   useEffect(() => {
-    if(startTime) {
+    if (startTime) {
       setTimeshow(true);
     }
   }, [timeshow])
@@ -266,7 +266,7 @@ function OtherReport(props) {
     setDeleteSign(false);
   }
 
-  
+
 
   const removeForm = (tableIndex) => {
     list.splice(tableIndex, 1);
@@ -284,13 +284,13 @@ function OtherReport(props) {
       title={pagetitle}
       extra={
         // loading === false && (
-          <>
-            <Button type='primary' onClick={otherReportform}>保存</Button>
-            <Button type='primary' onClick={handlePaste}>粘贴</Button>
-            <Button onClick={handleBack}>
-              返回
-            </Button>
-          </>
+        <>
+          <Button type='primary' onClick={otherReportform}>保存</Button>
+          <Button type='primary' onClick={handlePaste}>粘贴</Button>
+          <Button onClick={handleBack}>
+            返回
+          </Button>
+        </>
         // )
       }
     >
@@ -319,43 +319,39 @@ function OtherReport(props) {
               </Col>
 
               {
-                reporttype === 'week' &&  startTime && timeshow && (
+                reporttype === 'week' && startTime && timeshow && (
                   <Col span={16}>
                     <div>
                       <span style={{ marginLeft: 10 }}>填报时间 :</span>
-                      {
-                        timeshow && (
-                          <span
-                            style={{ marginRight: 10,marginLeft:10 }}
-                          >
-                            <DatePicker
-                              // defaultValue={moment(endTime, dateFormat)}
-                              format={dateFormat}
-                              defaultValue={moment(startTime)}
-                              onChange={onChange}
-                            />
-                          </span>
-                        )
-                      }
+
+                      <span
+                        style={{ marginRight: 10, marginLeft: 10 }}
+                      >
+                        <DatePicker
+                          allowClear={false}
+                          format={dateFormat}
+                          defaultValue={moment(startTime)}
+                          onChange={onChange}
+                        />
+                      </span>
+
 
                       <span
                         style={{ marginRight: 10 }}
                       >-</span>
 
-                      {
-                        timeshow && (
-                          <span>
-                            <DatePicker
-                              // defaultValue={moment(endTime, dateFormat)}
-                              format={dateFormat}
-                              defaultValue={moment(endTime)}
-                              onChange={endonChange}
 
-                            />
-                          </span>
+                      <span>
+                        <DatePicker
+                          allowClear={false}
+                          format={dateFormat}
+                          defaultValue={moment(endTime)}
+                          onChange={endonChange}
 
-                        )
-                      }
+                        />
+                      </span>
+
+
                     </div>
                   </Col>
 
@@ -375,7 +371,7 @@ function OtherReport(props) {
                         ],
                         initialValue: moment(copyData.main ? copyData.main.time1 : startTime)
                       })(<MonthPicker
-                        allowClear
+                        allowClear={false}
                         onChange={onChange}
                       />)}
                     </Form.Item>

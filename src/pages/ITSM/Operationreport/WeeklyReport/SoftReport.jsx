@@ -327,8 +327,8 @@ function SoftReport(props) {
     dispatch({
       type: 'softreport/lastweekHomework',
       payload: {
-        plannedEndTime1: reporttype === 'week' ? `${startTime} 00:00:00`: moment(startTime).startOf('month').format('YYYY-MM-DD 00:00:00'),
-        plannedEndTime2: reporttype === 'week' ?`${endTime} 23:59:59`: moment(endTime).endOf('month').format('YYYY-MM-DD 00:00:00'),
+        plannedEndTime1: reporttype === 'week' ? `${startTime} 00:00:00` : moment(startTime).startOf('month').format('YYYY-MM-DD 00:00:00'),
+        plannedEndTime2: reporttype === 'week' ? `${endTime} 23:59:59` : moment(endTime).endOf('month').format('YYYY-MM-DD 00:00:00'),
         type: '软件作业',
         pageIndex: 0,
         pageSize: 1000,
@@ -676,7 +676,7 @@ function SoftReport(props) {
             </Col>
 
             {
-              reporttype === 'week' && startTime && timeshow && (
+              reporttype === 'week' && startTime && timeshow &&  (
                 <Col span={24}>
                   <div>
                     <span style={{ marginLeft: 10 }}>填报时间 :</span>
@@ -685,6 +685,7 @@ function SoftReport(props) {
                       style={{ marginRight: 10, marginLeft: 10 }}
                     >
                       <DatePicker
+                        allowClear={false}
                         format={dateFormat}
                         defaultValue={moment(startTime)}
                         onChange={onChange}
@@ -697,6 +698,7 @@ function SoftReport(props) {
 
                     <span>
                       <DatePicker
+                        allowClear={false}
                         // defaultValue={moment(endTime, dateFormat)}
                         format={dateFormat}
                         defaultValue={moment(endTime)}
@@ -730,7 +732,7 @@ function SoftReport(props) {
                       ],
                       initialValue: moment(copyData.main ? copyData.main.time1 : startTime)
                     })(<MonthPicker
-                      allowClear
+                      allowClear={false}
                       onChange={onChange}
                     />)}
                   </Form.Item>
@@ -1093,9 +1095,21 @@ function SoftReport(props) {
                     </Form.Item>
                   </Col>
 
-                  <Col span={24}>
-                    <p>(1)数据库本周进行了补丁升级工作次</p>
-                  </Col>
+                  {
+                    reporttype === 'week' && (
+                      <Col span={24}>
+                      <p>(1)数据库本周进行了补丁升级工作次</p>
+                    </Col>
+                    )
+                  }
+
+                  {
+                    reporttype === 'month' && (
+                      <Col span={24}>
+                      <p>(1)数据库本月进行了补丁升级工作次</p>
+                    </Col>
+                    )
+                  }
 
                   <Col span={24}>
                     <UpgradeList
@@ -1119,6 +1133,7 @@ function SoftReport(props) {
                         setUpdateList(contentrowdata)
                       }}
                       upgradeArr={copyData.updateList ? copyData.updateList : []}
+                      reporttype={reporttype}
                     />
                   </Col>
 

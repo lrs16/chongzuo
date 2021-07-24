@@ -406,45 +406,34 @@ function ComputerroomReportdetail(props) {
                   <Col span={24}>
                     <div>
                       <span style={{ marginLeft: 10 }}>填报时间 :</span>
-                      {
-                        timeshow && (
-                          <span
-                            style={{ marginRight: 10, marginLeft: 10 }}
-                          >
-                            <DatePicker
-                              allowClear={false}
-                              // defaultValue={moment(endTime, dateFormat)}
-                              format={dateFormat}
-                              defaultValue={moment(startTime)}
-                              onChange={onChange}
-                            />
-                          </span>
-                        )
-                      }
+
+                      <span
+                        style={{ marginRight: 10, marginLeft: 10 }}
+                      >
+                        <DatePicker
+                          allowClear={false}
+                          format={dateFormat}
+                          defaultValue={moment(startTime)}
+                          onChange={onChange}
+                        />
+                      </span>
 
                       <span
                         style={{ marginRight: 10 }}
                       >-</span>
 
-                      {
-                        timeshow && (
-                          <span>
-                            <DatePicker
-                              allowClear={false}
-                              // defaultValue={moment(endTime, dateFormat)}
-                              format={dateFormat}
-                              defaultValue={moment(endTime)}
-                              onChange={endonChange}
+                      <span>
+                        <DatePicker
+                          allowClear={false}
+                          format={dateFormat}
+                          defaultValue={moment(endTime)}
+                          onChange={endonChange}
 
-                            />
-                          </span>
-
-                        )
-                      }
+                        />
+                      </span>
 
                     </div>
                   </Col>
-
                 )
               }
 
@@ -461,7 +450,7 @@ function ComputerroomReportdetail(props) {
                         ],
                         initialValue: main ? moment(main.time1) : ''
                       })(<MonthPicker
-                        allowClear
+                        allowClear={false}
                         onChange={onChange}
                         disabled={reportSearch}
                       />)}

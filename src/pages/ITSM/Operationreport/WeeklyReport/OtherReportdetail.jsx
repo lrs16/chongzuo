@@ -386,7 +386,7 @@ function OtherReportdetail(props) {
                         ],
                         initialValue: moment(main ? main.time1 : '')
                       })(<MonthPicker
-                        allowClear
+                        allowClear={false}
                         onChange={onChange}
                         disabled={reportSearch}
                       />)}

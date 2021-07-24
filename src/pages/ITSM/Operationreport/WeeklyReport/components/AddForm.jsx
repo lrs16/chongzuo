@@ -43,8 +43,6 @@ const AddForm = React.forwardRef((props, ref) => {
   const [data, setData] = useState([]);
   const [newbutton, setNewButton] = useState(false);
 
-  console.log(dynamicData,'dynamicData')
-
   const handleSubmit = (e, typeParams, tableData, rowdelete) => {
     props.form.validateFields((err, value) => {
       const editTable = {

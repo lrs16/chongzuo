@@ -446,7 +446,7 @@ function SoftReportdetail(props) {
               </Col>
 
               {
-                reporttype === 'week' && startTime && timeshow && (
+                reporttype === 'week' && startTime && (
                   <Col span={24}>
                     <div>
                       <span style={{ marginLeft: 10 }}>填报时间 :</span>
@@ -457,7 +457,6 @@ function SoftReportdetail(props) {
                           >
                             <DatePicker
                               allowClear={false}
-                              // defaultValue={moment(endTime, dateFormat)}
                               format={dateFormat}
                               defaultValue={moment(startTime)}
                               onChange={onChange}
@@ -503,7 +502,7 @@ function SoftReportdetail(props) {
                         ],
                         initialValue: main ? moment(main.time1) : ''
                       })(<MonthPicker
-                        allowClear
+                        allowClear={false}
                         onChange={onChange}
                       />)}
                     </Form.Item>
@@ -892,9 +891,21 @@ function SoftReportdetail(props) {
                 </Form.Item>
               </Col>
 
-              <Col span={24}>
-                <p>(1)数据库本周进行了补丁升级工作次</p>
-              </Col>
+              {
+                reporttype === 'week' && (
+                  <Col span={24}>
+                    <p>(1)数据库本周进行了补丁升级工作次</p>
+                  </Col>
+                )
+              }
+
+              {
+                reporttype === 'month' && (
+                  <Col span={24}>
+                    <p>(1)数据库本月进行了补丁升级工作次</p>
+                  </Col>
+                )
+              }
 
               <Col span={24}>
                 <UpgradeList

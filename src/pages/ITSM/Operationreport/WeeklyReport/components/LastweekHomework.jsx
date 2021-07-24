@@ -179,7 +179,7 @@ function LastweekHomework(props) {
           <DatePicker
             disabled={detailParams}
             defaultValue={text ? moment(text) : ''}
-            onChange={e => handleFieldChange(e.target.value, 'field6', record.key)}
+            onChange={e => handleFieldChange(e, 'field6', record.key)}
           />
         )
       }
@@ -327,7 +327,7 @@ function LastweekHomework(props) {
           <DatePicker
             disabled={detailParams}
             defaultValue={text ? moment(text) : ''}
-            onChange={e => handleFieldChange(e.target.value, 'field5', record.key)}
+            onChange={e => handleFieldChange(e, 'field5', record.key)}
           />
         )
       }

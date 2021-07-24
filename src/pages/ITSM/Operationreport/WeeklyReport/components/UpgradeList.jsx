@@ -19,6 +19,7 @@ function UpgradeList(props) {
     upgradeArr,
     upgradeList,
     detailParams,
+    reporttype
   } = props;
   const [data, setData] = useState([]);
   const [cacheOriginData, setcacheOriginData] = useState({});
@@ -50,8 +51,13 @@ function UpgradeList(props) {
     const target = getRowByKey(key, newData);
     upgradeList(newData);
     if (target) {
-      target[fieldName] = e;
-      setData(newData);
+      if (fieldName === 'field1') {
+        target[fieldName] = moment(e).format('YYYY-MM-DD');
+        setData(newData);
+      } else {
+        target[fieldName] = e;
+        setData(newData);
+      }
     }
   }
 

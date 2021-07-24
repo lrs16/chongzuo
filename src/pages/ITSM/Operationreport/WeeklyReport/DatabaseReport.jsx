@@ -158,8 +158,8 @@ function DatabaseReport(props) {
     dispatch({
       type: 'softreport/lastweekHomework',
       payload: {
-        plannedEndTime1: reporttype === 'week' ? `${startTime} 00:00:00`: moment(startTime).startOf('month').format('YYYY-MM-DD 00:00:00'),
-        plannedEndTime2: reporttype === 'week' ?`${endTime} 23:59:59`: moment(endTime).endOf('month').format('YYYY-MM-DD 00:00:00'),
+        plannedEndTime1: reporttype === 'week' ? `${startTime} 00:00:00` : moment(startTime).startOf('month').format('YYYY-MM-DD 00:00:00'),
+        plannedEndTime2: reporttype === 'week' ? `${endTime} 23:59:59` : moment(endTime).endOf('month').format('YYYY-MM-DD 00:00:00'),
         type: '数据库作业',
         pageIndex: 0,
         pageSize: 1000,
@@ -414,46 +414,36 @@ function DatabaseReport(props) {
             </Col>
 
             {
-              reporttype === 'week' && startTime && timeshow && (
+              reporttype === 'week' && startTime && (
                 <Col span={24}>
                   <div>
                     <span style={{ marginLeft: 10 }}>填报时间 :</span>
-                    {
-                      timeshow && (
-                        <span
-                          style={{ marginRight: 10, marginLeft: 10 }}
-                        >
-                          <DatePicker
-                            allowClear={false}
-                            // defaultValue={moment(endTime, dateFormat)}
-                            format={dateFormat}
-                            defaultValue={moment(startTime)}
-                            onChange={onChange}
-                          />
-                        </span>
-                      )
-                    }
+
+                    <span
+                      style={{ marginRight: 10, marginLeft: 10 }}
+                    >
+                      <DatePicker
+                        allowClear={false}
+                        format={dateFormat}
+                        defaultValue={moment(startTime)}
+                        onChange={onChange}
+                      />
+                    </span>
 
                     <span
                       style={{ marginRight: 10 }}
                     >-</span>
 
-                    {
-                      timeshow && (
-                        <span>
-                          <DatePicker
-                            allowClear={false}
+                    <span>
+                      <DatePicker
+                        allowClear={false}
+                        // defaultValue={moment(endTime, dateFormat)}
+                        format={dateFormat}
+                        defaultValue={moment(endTime)}
+                        onChange={endonChange}
 
-                            // defaultValue={moment(endTime, dateFormat)}
-                            format={dateFormat}
-                            defaultValue={moment(endTime)}
-                            onChange={endonChange}
-
-                          />
-                        </span>
-
-                      )
-                    }
+                      />
+                    </span>
 
                     <Button
                       type='primary'

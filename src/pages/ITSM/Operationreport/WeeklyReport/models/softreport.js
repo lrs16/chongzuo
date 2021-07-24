@@ -142,6 +142,7 @@ export default {
         payload:[]
       })
         if(payload.status) {
+          console.log(1)
           const response = yield call(addReport);
           if(response.code === 200) {
             const mainId = response.id;
@@ -190,9 +191,9 @@ export default {
             }
           }
         } else {
+          console.log(2)
           return yield call(saveComputerRoom,payload)
         }
-        // return []
     },
     
     //  保存数据库

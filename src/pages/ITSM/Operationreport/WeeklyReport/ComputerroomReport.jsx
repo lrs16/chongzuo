@@ -457,7 +457,7 @@ function ComputerroomReport(props) {
             </Col>
 
             {
-              reporttype === 'week' && startTime && timeshow && (
+              reporttype === 'week' && startTime && timeshow &&(
                 <Col span={24}>
                   <div>
                     <span style={{ marginLeft: 10 }}>填报时间 :</span>
@@ -468,7 +468,6 @@ function ComputerroomReport(props) {
                         >
                           <DatePicker
                              allowClear={false}
-                            // defaultValue={moment(endTime, dateFormat)}
                             format={dateFormat}
                             defaultValue={moment(startTime)}
                             onChange={onChange}
@@ -486,7 +485,6 @@ function ComputerroomReport(props) {
                         <span>
                           <DatePicker
                              allowClear={false}
-                            // defaultValue={moment(endTime, dateFormat)}
                             format={dateFormat}
                             defaultValue={moment(endTime)}
                             onChange={endonChange}
@@ -526,7 +524,7 @@ function ComputerroomReport(props) {
                       ],
                       initialValue: moment(copyData.main ? copyData.main.time1 : startTime)
                     })(<MonthPicker
-                      allowClear
+                      allowClear={false}
                       onChange={onChange}
                     />)}
                   </Form.Item>
