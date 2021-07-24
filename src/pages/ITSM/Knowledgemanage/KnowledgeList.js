@@ -358,11 +358,12 @@ function KnowledgeList(props) {
             message.success(res.msg)
           }
         });
-        handleSearch(1, 15);
+        setSelectedRowKeys([]);
         setSelectedRecords([]);
+        handleSearch(1, 15);
         setChoiceUser({ users: '', ischange: false });
       } else {
-        message.error('请选择数据')
+        message.error('仅能选择状态为‘已登记’的数据')
       }
     }
   }, [choiceUser.ischange])
