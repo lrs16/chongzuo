@@ -500,6 +500,8 @@ function SoftReport(props) {
     }
   }, [timeshow])
 
+  console.log(startTime,endTime)
+
 
   const newMember = () => {
     const nowNumber = list.map(item => ({ ...item }));
@@ -676,7 +678,7 @@ function SoftReport(props) {
             </Col>
 
             {
-              reporttype === 'week' && startTime && timeshow &&  (
+              reporttype === 'week' && startTime && timeshow && (
                 <Col span={24}>
                   <div>
                     <span style={{ marginLeft: 10 }}>填报时间 :</span>
@@ -1098,16 +1100,16 @@ function SoftReport(props) {
                   {
                     reporttype === 'week' && (
                       <Col span={24}>
-                      <p>(1)数据库本周进行了补丁升级工作次</p>
-                    </Col>
+                        <p>(1)数据库本周进行了补丁升级工作次</p>
+                      </Col>
                     )
                   }
 
                   {
                     reporttype === 'month' && (
                       <Col span={24}>
-                      <p>(1)数据库本月进行了补丁升级工作次</p>
-                    </Col>
+                        <p>(1)数据库本月进行了补丁升级工作次</p>
+                      </Col>
                     )
                   }
 
@@ -1120,8 +1122,9 @@ function SoftReport(props) {
                       upgradeArr={copyData.upgradeList ? copyData.upgradeList : []}
                     />
                   </Col>
-                  {/* 
-                  <Col span={24}>
+
+
+                  {/* <Col span={24}>
                     <p>(2)计划{startTime}至{endTime},计量自动化系统开展 次发布变更（消缺），变更内容如下</p>
                   </Col> */}
 

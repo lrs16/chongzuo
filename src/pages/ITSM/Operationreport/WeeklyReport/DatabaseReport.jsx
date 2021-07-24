@@ -343,6 +343,12 @@ function DatabaseReport(props) {
     setFieldsValue({ time1: moment(startTime) })
   }
 
+  useEffect(() => {
+    if (startTime) {
+      setTimeshow(true);
+    }
+  }, [timeshow])
+
   const newMember = () => {
     const nowNumber = list.map(item => ({ ...item }));
     const newarr = nowNumber.map((item, index) => {
@@ -414,7 +420,7 @@ function DatabaseReport(props) {
             </Col>
 
             {
-              reporttype === 'week' && startTime && (
+              reporttype === 'week' && startTime && timeshow && (
                 <Col span={24}>
                   <div>
                     <span style={{ marginLeft: 10 }}>填报时间 :</span>
