@@ -58,6 +58,7 @@ function UnCloseTroublelist(props) {
   const handleFieldChange = (e, fieldName, key) => {
     const newData = data.map(item => ({ ...item }));
     const target = getRowByKey(key, newData);
+    unCloseTroubleList(newData)
     if (target) {
       if (fieldName === 'field2' || fieldName === 'field5') {
         target[fieldName] = moment(e).format('YYYY-MM-DD');
@@ -102,7 +103,7 @@ function UnCloseTroublelist(props) {
         return (
           <DatePicker
             disabled={reportSearch}
-            defaultValue={text ? moment(text) : moment(new Date())}
+            defaultValue={text ? moment(text) : ''}
             onChange={e => handleFieldChange(e, 'field2', record.key)}
           />
         )
@@ -143,7 +144,7 @@ function UnCloseTroublelist(props) {
         return (
           <DatePicker
             disabled={reportSearch}
-            defaultValue={text ? moment(text) : moment(new Date())}
+            defaultValue={text ? moment(text) : ''}
             onChange={e => handleFieldChange(e, 'field5', record.key)}
           />
         )

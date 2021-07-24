@@ -275,8 +275,8 @@ function ComputerroomReport(props) {
     dispatch({
       type: 'softreport/lastweekHomework',
       payload: {
-        plannedEndTime1: `${startTime} 00:00:00`,
-        plannedEndTime2: `${endTime} 23:59:59`,
+        plannedEndTime1: reporttype === 'week' ? `${startTime} 00:00:00`: moment(startTime).startOf('month').format('YYYY-MM-DD 00:00:00'),
+        plannedEndTime2: reporttype === 'week' ?`${endTime} 23:59:59`: moment(endTime).endOf('month').format('YYYY-MM-DD 00:00:00'),
         type: '机房作业',
         pageIndex: 0,
         pageSize: 1000,
@@ -291,10 +291,10 @@ function ComputerroomReport(props) {
       type: 'softreport/nextweekHomework',
       payload: {
         plannedEndTime1: reporttype === 'week' ? moment(startTime).add(7, 'days').format('YYYY-MM-DD 00:00:00') :
-          moment().startOf('month').subtract('month', -1).format('YYYY-MM-DD 00:00:00'),
+          moment(startTime).startOf('month').add('month', 1).format('YYYY-MM-DD 00:00:00'),
 
         plannedEndTime2: reporttype === 'week' ? moment(endTime).add(7, 'days').format('YYYY-MM-DD 23:59:59')
-          : moment().endOf('month').subtract('month', -1).endOf('month').format('YYYY-MM-DD 23:59:59'),
+          : moment(endTime).endOf('month').add('month', 1).endOf('month').format('YYYY-MM-DD 23:59:59'),
         type: '机房作业',
         pageIndex: 0,
         pageSize: 1000,
@@ -545,7 +545,7 @@ function ComputerroomReport(props) {
 
 
             {
-              initial && loading === false && faultQueryList && (
+              initial && loading === false && faultQueryList && startTime && (
                 <>
                   <Col span={24}><p style={{ fontWeight: '900', fontSize: '16px', marginTop: 24 }}>{reporttype === 'week' ? '一、本周运维总结' : '一、本月运维总结'}</p></Col>
                   {/* 本周运维总结 */}

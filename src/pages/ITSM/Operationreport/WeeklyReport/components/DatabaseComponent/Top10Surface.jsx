@@ -160,6 +160,20 @@ const Top10Surface = React.forwardRef((props, ref) => {
       }
     },
     {
+      title: `使用率`,
+      dataIndex: 'field6',
+      key: 'field6',
+      render: (text, record) => {
+        return (
+          <Input
+            disabled={reportSearch}
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field6', record.key)}
+          />
+        )
+      }
+    },
+    {
       title: '操作',
       key: 'action',
       fixed: 'right',

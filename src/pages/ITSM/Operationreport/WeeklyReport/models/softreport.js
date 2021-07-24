@@ -380,9 +380,8 @@ export default {
       let result;
       if(payload.database) {
         result = JSON.parse(JSON.stringify(response.data.rows)
-        .replace(/updateTime/g, 'field1')
-        .replace(/addTime/g, 'field2')
-        .replace(/object/g, 'field3')
+        .replace(/updateTime/g, 'field2')
+        .replace(/nature/g, 'field3')
         .replace(/content/g, 'field4')
         .replace(/plannedEndTime/g, 'field5')
         .replace(/status/g, 'field6')
@@ -493,11 +492,46 @@ export default {
       })
     },
 
-
-
   //  下载word
   *exportWord({payload:{mainId}},{call,put}) {
     return yield call(reportExport,mainId)
+  },
+
+  //  列表复制粘贴功能
+  *handlecopypaste({payload:{editStatus,id}},{call,put}) {
+    const response = yield call(openReport,editStatus,id);
+    if(response.code === 200) {
+      // const responseAddid = yield call(addReport);
+      const copydata = {
+        ...response,
+      };
+
+      const reportType = response.main.type;
+
+          switch (reportType) {
+            case '软件运维周报':
+            case '软件运维月报':
+              break;
+            case '数据库运维周报':
+            case '数据库运维月报':
+              break;
+            case '机房运维周报':
+            case '机房运维月报':
+              break;
+            case '其他运维周报':
+            case '其他运维月报':
+             const responseAddid = yield call(addReport);
+              if(responseAddid.code === 200) {
+                const mainId = response.id;
+                const saveData = copydata;
+                saveData.mainId = mainId;
+                delete saveData.status;
+              }
+              break;
+            default:
+              break;
+          }
+    }
   }
    
   },

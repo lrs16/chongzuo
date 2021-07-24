@@ -78,7 +78,7 @@ function WeeklySearch(props) {
                   mainId: record.id,
                   reporttype: 'week',
                   orderNo: '',
-                  reportSearch:true
+                  reportSearch: true
                 },
               });
               break;
@@ -89,7 +89,7 @@ function WeeklySearch(props) {
                   mainId: record.id,
                   reporttype: 'week',
                   orderNo: '',
-                  reportSearch:true
+                  reportSearch: true
                 },
               });
               break;
@@ -100,7 +100,7 @@ function WeeklySearch(props) {
                   mainId: record.id,
                   reporttype: 'week',
                   orderNo: '',
-                  reportSearch:true
+                  reportSearch: true
                 },
               });
               break;
@@ -111,7 +111,7 @@ function WeeklySearch(props) {
                   mainId: record.id,
                   reporttype: 'week',
                   orderNo: '',
-                  reportSearch:true
+                  reportSearch: true
                 },
               });
               break;
@@ -155,7 +155,7 @@ function WeeklySearch(props) {
       type: 'softreport/queryList',
       payload: {
         ...values,
-        timeType:'周报',
+        timeType: '周报',
         userId: '',
         plannedStartTime: '',
         time1: values.plannedStartTime?.length ? moment(values.plannedStartTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
@@ -280,88 +280,94 @@ function WeeklySearch(props) {
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
       />
-      <Card>
-        <Row gutter={16}>
-          <Form {...formItemLayout}>
-            <Col span={8}>
-              <Form.Item label="周报名称">
-                {getFieldDecorator('name', {
-                  rules: [
-                    {
-                      message: '请输入问题编号',
-                    },
-                  ],
-                  initialValue: ''
-                })(<Input placeholder='请输入' allowClear />)}
-              </Form.Item>
-            </Col>
 
-            <Col span={8}>
-              <Form.Item label="周报分类">
-                {getFieldDecorator('type', {
-                  initialValue: ''
-                })
-                  (
-                    <Select placeholder="请选择" allowClear>
-                      {classData.map(obj => [
-                        <Option key={obj.key} value={obj.title}>
-                          {obj.title}
-                        </Option>,
-                      ])}
-                    </Select>,
-                    <Input />
-                  )}
-              </Form.Item>
-            </Col>
+      {
+        sessionStorage.getItem('userauthorityid') && (
+          <Card>
+            <Row gutter={16}>
+              <Form {...formItemLayout}>
+                <Col span={8}>
+                  <Form.Item label="周报名称">
+                    {getFieldDecorator('name', {
+                      rules: [
+                        {
+                          message: '请输入问题编号',
+                        },
+                      ],
+                      initialValue: ''
+                    })(<Input placeholder='请输入' allowClear />)}
+                  </Form.Item>
+                </Col>
 
-            <Col span={8}>
-              <Form.Item label="填报人" >
-                {getFieldDecorator('userName', {
-                  initialValue: ''
-                })(<Input placeholder='请输入' allowClear />)}
-              </Form.Item>
-            </Col>
+                <Col span={8}>
+                  <Form.Item label="周报分类">
+                    {getFieldDecorator('type', {
+                      initialValue: ''
+                    })
+                      (
+                        <Select placeholder="请选择" allowClear>
+                          {classData.map(obj => [
+                            <Option key={obj.key} value={obj.title}>
+                              {obj.title}
+                            </Option>,
+                          ])}
+                        </Select>,
+                        <Input />
+                      )}
+                  </Form.Item>
+                </Col>
 
-            <Col span={8}>
-              <Form.Item label="填报日期">
-                {getFieldDecorator('plannedStartTime', {
-                })
-                  (
-                    <RangePicker
-                      showTime
-                      format="YYYY-MM-DD HH:mm:ss"
-                      style={{ width: '100%' }}
-                    />
-                  )}
-              </Form.Item>
-            </Col>
+                <Col span={8}>
+                  <Form.Item label="填报人" >
+                    {getFieldDecorator('userName', {
+                      initialValue: ''
+                    })(<Input placeholder='请输入' allowClear />)}
+                  </Form.Item>
+                </Col>
 
-            <Col span={16} style={{ textAlign: 'right' }}>
-              <Button type="primary" onClick={handleSearch}>
-                查询
-              </Button>
+                <Col span={8}>
+                  <Form.Item label="填报日期">
+                    {getFieldDecorator('plannedStartTime', {
+                    })
+                      (
+                        <RangePicker
+                          showTime
+                          format="YYYY-MM-DD HH:mm:ss"
+                          style={{ width: '100%' }}
+                        />
+                      )}
+                  </Form.Item>
+                </Col>
 
-              <Button style={{ marginLeft: 8 }} onClick={handleReset}>
-                重置
-              </Button>
-            </Col>
+                <Col span={16} style={{ textAlign: 'right' }}>
+                  <Button type="primary" onClick={handleSearch}>
+                    查询
+                  </Button>
 
-          </Form>
-        </Row>
+                  <Button style={{ marginLeft: 8 }} onClick={handleReset}>
+                    重置
+                  </Button>
+                </Col>
 
-        <Button type="primary" style={{ marginRight: 8 }} onClick={exportDownload}>
-          导出数据
-        </Button>
+              </Form>
+            </Row>
 
-        <Table
-          loading={loading}
-          columns={columns}
-          dataSource={queryOrderlist.rows}
-          rowKey={record => record.id}
-          pagination={pagination}
-          rowSelection={rowSelection}
-        />
-      </Card>
+            <Button type="primary" style={{ marginRight: 8 }} onClick={exportDownload}>
+              导出数据
+            </Button>
+
+            <Table
+              loading={loading}
+              columns={columns}
+              dataSource={queryOrderlist.rows}
+              rowKey={record => record.id}
+              pagination={pagination}
+              rowSelection={rowSelection}
+            />
+          </Card>
+
+        )
+      }
 
     </PageHeaderWrapper>
   )

@@ -277,82 +277,88 @@ function MymonthlySearch(props) {
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
       />
-      <Card>
-        <Row gutter={16}>
-          <Form {...formItemLayout}>
-            <Col span={8}>
-              <Form.Item label="月报名称">
-                {getFieldDecorator('name', {
-                  initialValue: ''
-                })(<Input placeholder='请输入' allowClear />)}
-              </Form.Item>
-            </Col>
 
-            <Col span={8}>
-              <Form.Item label="月报分类">
-                {getFieldDecorator('type', {
-                  initialValue: ''
-                })
-                  (
-                    <Select placeholder="请选择" allowClear>
-                      {classData.map(obj => [
-                        <Option key={obj.key} value={obj.title}>
-                          {obj.title}
-                        </Option>,
-                      ])}
-                    </Select>,
-                    <Input />
-                  )}
-              </Form.Item>
-            </Col>
+      {
+        sessionStorage.getItem('userauthorityid') && (
+          <Card>
+            <Row gutter={16}>
+              <Form {...formItemLayout}>
+                <Col span={8}>
+                  <Form.Item label="月报名称">
+                    {getFieldDecorator('name', {
+                      initialValue: ''
+                    })(<Input placeholder='请输入' allowClear />)}
+                  </Form.Item>
+                </Col>
 
-            <Col span={8}>
-              <Form.Item label="填报人" >
-                {getFieldDecorator('userName', {
-                  initialValue: ''
-                })(<Input placeholder='请输入' allowClear />)}
-              </Form.Item>
-            </Col>
+                <Col span={8}>
+                  <Form.Item label="月报分类">
+                    {getFieldDecorator('type', {
+                      initialValue: ''
+                    })
+                      (
+                        <Select placeholder="请选择" allowClear>
+                          {classData.map(obj => [
+                            <Option key={obj.key} value={obj.title}>
+                              {obj.title}
+                            </Option>,
+                          ])}
+                        </Select>,
+                        <Input />
+                      )}
+                  </Form.Item>
+                </Col>
 
-            <Col span={8}>
-              <Form.Item label="填报日期">
-                {getFieldDecorator('plannedStartTime', {
-                })
-                  (
-                    <MonthPicker
-                      style={{ width: '100%' }}
-                      onChange={onChange}
-                    />
-                  )}
-              </Form.Item>
-            </Col>
+                <Col span={8}>
+                  <Form.Item label="填报人" >
+                    {getFieldDecorator('userName', {
+                      initialValue: ''
+                    })(<Input placeholder='请输入' allowClear />)}
+                  </Form.Item>
+                </Col>
 
-            <Col span={16} style={{ textAlign: 'right' }}>
-              <Button type="primary" onClick={handleSearch}>
-                查询
-              </Button>
+                <Col span={8}>
+                  <Form.Item label="填报日期">
+                    {getFieldDecorator('plannedStartTime', {
+                    })
+                      (
+                        <MonthPicker
+                          style={{ width: '100%' }}
+                          onChange={onChange}
+                        />
+                      )}
+                  </Form.Item>
+                </Col>
 
-              <Button style={{ marginLeft: 8 }} onClick={handleReset}>
-                重置
-              </Button>
-            </Col>
+                <Col span={16} style={{ textAlign: 'right' }}>
+                  <Button type="primary" onClick={handleSearch}>
+                    查询
+                  </Button>
 
-          </Form>
-        </Row>
+                  <Button style={{ marginLeft: 8 }} onClick={handleReset}>
+                    重置
+                  </Button>
+                </Col>
 
-        <Button type="primary" style={{ marginRight: 8,marginBottom: '10px' }} onClick={download}>
-          导出数据
-        </Button>
+              </Form>
+            </Row>
 
-        <Table
-          loading={loading}
-          columns={columns}
-          dataSource={queryOrderlist.rows}
-          rowKey={record => record.id}
-          pagination={pagination}
-          rowSelection={rowSelection}
-        />
-      </Card>
+            <Button type="primary" style={{ marginRight: 8, marginBottom: '10px' }} onClick={download}>
+              导出数据
+            </Button>
+
+            <Table
+              loading={loading}
+              columns={columns}
+              dataSource={queryOrderlist.rows}
+              rowKey={record => record.id}
+              pagination={pagination}
+              rowSelection={rowSelection}
+            />
+          </Card>
+
+        )
+      }
 
     </PageHeaderWrapper>
   )

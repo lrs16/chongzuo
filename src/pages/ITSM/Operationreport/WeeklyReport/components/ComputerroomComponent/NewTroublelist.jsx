@@ -107,7 +107,7 @@ function NewTroublelist(props) {
         return (
           <DatePicker
             disabled={reportSearch}
-            defaultValue={text ? moment(text) : moment(new Date())}
+            defaultValue={text ? moment(text) : ''}
             onChange={e => handleFieldChange(e, 'field2', record.key)}
           />
         )

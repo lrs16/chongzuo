@@ -100,7 +100,7 @@ const PatrolAndExamine = React.forwardRef((props, ref) => {
         return (
           <DatePicker
             disabled={detailParams}
-            defaultValue={text ? moment(text) : moment(new Date())}
+            defaultValue={text ? moment(text) : ''}
             onChange={e => handleFieldChange(e, 'field1', record.key)}
           />
         )

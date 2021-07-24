@@ -58,7 +58,6 @@ const formItemLayout = {
 };
 
 const { Option } = Select;
-let setgetParams = false;
 const formincontentLayout = {
   labelCol: {
     xs: { span: 24 },
@@ -72,8 +71,6 @@ const formincontentLayout = {
 
 const { MonthPicker } = DatePicker;
 const { TextArea } = Input;
-let startTime;
-let endTime;
 let initial = false;
 
 const TopnAnalysis = [
@@ -263,7 +260,7 @@ function SoftReport(props) {
   const [addrow, setAddrow] = useState(false);
   const [deleteSign, setDeleteSign] = useState(false);
 
-//  时间
+  //  时间
   const [timeshow, setTimeshow] = useState(true);
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
@@ -330,8 +327,8 @@ function SoftReport(props) {
     dispatch({
       type: 'softreport/lastweekHomework',
       payload: {
-        plannedEndTime1: `${startTime} 00:00:00`,
-        plannedEndTime2: `${endTime} 23:59:59`,
+        plannedEndTime1: reporttype === 'week' ? `${startTime} 00:00:00`: moment(startTime).startOf('month').format('YYYY-MM-DD 00:00:00'),
+        plannedEndTime2: reporttype === 'week' ?`${endTime} 23:59:59`: moment(endTime).endOf('month').format('YYYY-MM-DD 00:00:00'),
         type: '软件作业',
         pageIndex: 0,
         pageSize: 1000,
@@ -347,10 +344,10 @@ function SoftReport(props) {
       type: 'softreport/nextweekHomework',
       payload: {
         plannedEndTime1: reporttype === 'week' ? moment(startTime).add(7, 'days').format('YYYY-MM-DD 00:00:00') :
-          moment().startOf('month').subtract('month', -1).format('YYYY-MM-DD 00:00:00'),
+          moment(startTime).startOf('month').add('month', 1).format('YYYY-MM-DD 00:00:00'),
 
         plannedEndTime2: reporttype === 'week' ? moment(endTime).add(7, 'days').format('YYYY-MM-DD 23:59:59')
-          : moment().endOf('month').subtract('month', -1).endOf('month').format('YYYY-MM-DD 23:59:59'),
+          : moment(startTime).endOf('month').add('month', 1).endOf('month').format('YYYY-MM-DD 23:59:59'),
         type: '软件作业',
         pageIndex: 0,
         pageSize: 1000,
@@ -604,7 +601,6 @@ function SoftReport(props) {
     handlesoftservice();
     handlepatrolAndExamineList();
     initial = true;
-    setgetParams = true;
   }
 
   useEffect(() => {
@@ -624,7 +620,7 @@ function SoftReport(props) {
   }, [loading]);
 
   const dateFormat = 'YYYY-MM-DD';
-  console.log(loading,'loading')
+  console.log(loading, 'loading')
 
   return (
     <PageHeaderWrapper
@@ -684,39 +680,30 @@ function SoftReport(props) {
                 <Col span={24}>
                   <div>
                     <span style={{ marginLeft: 10 }}>填报时间 :</span>
-                    {
-                      timeshow && (
-                        <span
-                          style={{ marginRight: 10, marginLeft: 10 }}
-                        >
-                          <DatePicker
-                            // defaultValue={moment(endTime, dateFormat)}
-                            format={dateFormat}
-                            defaultValue={moment(startTime)}
-                            onChange={onChange}
-                          />
-                        </span>
-                      )
-                    }
+
+                    <span
+                      style={{ marginRight: 10, marginLeft: 10 }}
+                    >
+                      <DatePicker
+                        format={dateFormat}
+                        defaultValue={moment(startTime)}
+                        onChange={onChange}
+                      />
+                    </span>
 
                     <span
                       style={{ marginRight: 10 }}
                     >-</span>
 
-                    {
-                      timeshow && (
-                        <span>
-                          <DatePicker
-                            // defaultValue={moment(endTime, dateFormat)}
-                            format={dateFormat}
-                            defaultValue={moment(endTime)}
-                            onChange={endonChange}
+                    <span>
+                      <DatePicker
+                        // defaultValue={moment(endTime, dateFormat)}
+                        format={dateFormat}
+                        defaultValue={moment(endTime)}
+                        onChange={endonChange}
 
-                          />
-                        </span>
-
-                      )
-                    }
+                      />
+                    </span>
 
                     <Button
                       type='primary'
@@ -727,7 +714,6 @@ function SoftReport(props) {
                     </Button>
                   </div>
                 </Col>
-
               )
             }
 
@@ -761,7 +747,7 @@ function SoftReport(props) {
             }
 
             {
-              initial && loading === false && contentRowlist && (
+              initial && loading === false && contentRowlist && startTime && (
                 <>
                   {/* 一、本周运维情况综述 */}
                   <Col span={24}>

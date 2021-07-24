@@ -40,6 +40,7 @@ function OperationmyweeklyReport(props) {
   const {
     form: { getFieldDecorator, resetFields, validateFields, setFieldsValue },
     queryOrderlist,
+    openReportlist,
     dispatch,
     loading
   } = props;
@@ -317,7 +318,7 @@ function OperationmyweeklyReport(props) {
     if (!selectedRows.length) {
       message.info('至少选择一条数据');
     }
-    
+
     return null;
   }
 
@@ -345,6 +346,24 @@ function OperationmyweeklyReport(props) {
     return null
   }
 
+  const handlePaste = () => {
+    if (selectedRows.length !== 1) {
+      message.info('只能选择一条数据粘贴')
+      return false;
+    }
+
+    dispatch({
+      type: 'softreport/handlecopypaste',
+      payload: {
+        editStatus: 'edit',
+        id: selectedRows[0].id
+      }
+    })
+
+
+
+  }
+
   useEffect(() => {
     defaultTime();
     validateFields((err, value) => {
@@ -359,6 +378,7 @@ function OperationmyweeklyReport(props) {
     return [];
   }
 
+
   const classData = getTypebyTitle('周报分类')
 
   return (
@@ -369,115 +389,130 @@ function OperationmyweeklyReport(props) {
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
       />
-      <Card>
-        <Row gutter={24}>
-          <Form {...formItemLayout}>
-            <Col span={8}>
-              <Form.Item label="周报名称">
-                {getFieldDecorator('name', {
-                  initialValue: ''
-                })(<Input placeholder='请输入' allowClear />)}
-              </Form.Item>
-            </Col>
 
-            <Col span={8}>
-              <Form.Item label="周报分类">
-                {getFieldDecorator('type', {
-                  initialValue: ''
-                })
-                  (
-                    <Select placeholder="请选择" allowClear>
-                      {classData.map(obj => [
-                        <Option key={obj.key} value={obj.title}>
-                          {obj.title}
-                        </Option>,
-                      ])}
-                    </Select>,
-                    <Input />
-                  )}
-              </Form.Item>
-            </Col>
+      {
+        sessionStorage.getItem('userauthorityid') && (
+          <Card>
+            <Row gutter={24}>
+              <Form {...formItemLayout}>
+                <Col span={8}>
+                  <Form.Item label="周报名称">
+                    {getFieldDecorator('name', {
+                      initialValue: ''
+                    })(<Input placeholder='请输入' allowClear />)}
+                  </Form.Item>
+                </Col>
 
-            <Col span={8}>
-              <Form.Item label="填报日期">
-                {getFieldDecorator('plannedStartTime', {
-                })
-                  (
-                    <RangePicker
-                      showTime
-                      format="YYYY-MM-DD HH:mm:ss"
-                      style={{ width: '100%' }}
-                    />
-                  )}
-              </Form.Item>
-            </Col>
+                <Col span={8}>
+                  <Form.Item label="周报分类">
+                    {getFieldDecorator('type', {
+                      initialValue: ''
+                    })
+                      (
+                        <Select placeholder="请选择" allowClear>
+                          {classData.map(obj => [
+                            <Option key={obj.key} value={obj.title}>
+                              {obj.title}
+                            </Option>,
+                          ])}
+                        </Select>,
+                        <Input />
+                      )}
+                  </Form.Item>
+                </Col>
 
-            <Col span={8}>
-              <Form.Item label="填报人" >
-                {getFieldDecorator('userName', {
-                  initialValue: ''
-                })(<Input placeholder='请输入' allowClear />)}
-              </Form.Item>
-            </Col>
+                <Col span={8}>
+                  <Form.Item label="填报日期">
+                    {getFieldDecorator('plannedStartTime', {
+                    })
+                      (
+                        <RangePicker
+                          showTime
+                          format="YYYY-MM-DD HH:mm:ss"
+                          style={{ width: '100%' }}
+                        />
+                      )}
+                  </Form.Item>
+                </Col>
 
-            <Col span={16} style={{ textAlign: 'right' }}>
-              <Button type="primary" onClick={handleSearch}>
-                查询
+                <Col span={8}>
+                  <Form.Item label="填报人" >
+                    {getFieldDecorator('userName', {
+                      initialValue: ''
+                    })(<Input placeholder='请输入' allowClear />)}
+                  </Form.Item>
+                </Col>
+
+                <Col span={16} style={{ textAlign: 'right' }}>
+                  <Button type="primary" onClick={handleSearch}>
+                    查询
+                  </Button>
+
+                  <Button style={{ marginLeft: 8 }} onClick={handleReset}>
+                    重置
+                  </Button>
+
+                </Col>
+              </Form>
+            </Row>
+
+            <div style={{ marginBottom: '10px' }}>
+              <Dropdown
+                overlay={menu}
+                placement="bottomLeft"
+              >
+                <Button type='primary'>新建</Button>
+              </Dropdown>
+
+              <Button
+                style={{ marginLeft: 8 }}
+                type="primary"
+                onClick={handleCopy}
+              >
+                复制
               </Button>
 
-              <Button style={{ marginLeft: 8 }} onClick={handleReset}>
-                重置
+              {/* <Button
+              style={{ marginLeft: 8 }}
+              type="primary"
+              onClick={handlePaste}
+            >
+              粘贴
+            </Button> */}
+
+              <Button
+                style={{ marginLeft: 8 }}
+                type="danger"
+                ghost
+                onClick={handleDelete}
+              >
+                删除
               </Button>
 
-            </Col>
-          </Form>
-        </Row>
+              <Button
+                style={{ marginLeft: 8 }}
+                type="primary"
+                onClick={() => download()}
+              >
+                导出数据
+              </Button>
 
-        <div style={{ marginBottom: '10px' }}>
-          <Dropdown
-            overlay={menu}
-            placement="bottomLeft"
-          >
-            <Button type='primary'>新建</Button>
-          </Dropdown>
+            </div>
 
-          <Button
-            style={{ marginLeft: 8 }}
-            type="primary"
-            onClick={handleCopy}
-          >
-            复制
-          </Button>
+            {loading === false && (
+              <Table
+                loading={loading}
+                columns={columns}
+                dataSource={queryOrderlist.rows}
+                pagination={pagination}
+                rowSelection={rowSelection}
+              />
+            )}
+          </Card>
 
-          <Button
-            style={{ marginLeft: 8 }}
-            type="danger"
-            ghost
-            onClick={handleDelete}
-          >
-            删除
-          </Button>
+        )
+      }
 
-          <Button
-            style={{ marginLeft: 8 }}
-            type="primary"
-            onClick={() => download()}
-          >
-            导出数据
-          </Button>
-
-        </div>
-
-        {loading === false && (
-          <Table
-            loading={loading}
-            columns={columns}
-            dataSource={queryOrderlist.rows}
-            pagination={pagination}
-            rowSelection={rowSelection}
-          />
-        )}
-      </Card>
     </PageHeaderWrapper>
   )
 }
@@ -485,6 +520,7 @@ function OperationmyweeklyReport(props) {
 export default Form.create({})(
   connect(({ softreport, loading }) => ({
     queryOrderlist: softreport.queryOrderlist,
+    openReportlist: softreport.openReportlist,
     loading: loading.models.softreport,
   }))(OperationmyweeklyReport),
 );

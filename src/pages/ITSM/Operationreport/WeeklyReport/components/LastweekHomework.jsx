@@ -87,11 +87,6 @@ function LastweekHomework(props) {
           default:
             break;
       }
-
-      if (databaseParams) {
-
-      }
-
     }
   }
 
@@ -127,7 +122,7 @@ function LastweekHomework(props) {
         return (
           <DatePicker
             disabled={detailParams}
-            defaultValue={text ? moment(text) : moment(new Date())}
+            defaultValue={text ? moment(text) : ''}
             onChange={e => handleFieldChange(e, 'field2', record.key)}
           />
         )
@@ -183,7 +178,7 @@ function LastweekHomework(props) {
         return (
           <DatePicker
             disabled={detailParams}
-            defaultValue={text ? moment(text) : moment(new Date())}
+            defaultValue={text ? moment(text) : ''}
             onChange={e => handleFieldChange(e.target.value, 'field6', record.key)}
           />
         )
@@ -289,7 +284,7 @@ function LastweekHomework(props) {
         return (
           <DatePicker
             disabled={detailParams}
-            defaultValue={text ? moment(text) : moment(new Date())}
+            defaultValue={text ? moment(text) : ''}
             onChange={e => handleFieldChange(e, 'field2', record.key)}
           />
         )
@@ -324,14 +319,14 @@ function LastweekHomework(props) {
       }
     },
     {
-      title: '计划结束时间',
+      title: '计划完成时间',
       dataIndex: 'field5',
       key: 'field5',
       render: (text, record) => {
         return (
           <DatePicker
             disabled={detailParams}
-            defaultValue={text ? moment(text) : moment(new Date())}
+            defaultValue={text ? moment(text) : ''}
             onChange={e => handleFieldChange(e.target.value, 'field5', record.key)}
           />
         )

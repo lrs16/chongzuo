@@ -5,14 +5,13 @@ import {
   Input,
   Button,
   Popconfirm,
-  DatePicker,
-  message
+  message,
+  DatePicker
 } from 'antd';
 import moment from 'moment';
 
 let deleteSign = false;
-const { TextArea } = Input;
-const QuestionsComments = React.forwardRef((props, ref) => {
+const Morethan5g = React.forwardRef((props, ref) => {
   const attRef = useRef();
   useImperativeHandle(
     ref,
@@ -23,10 +22,11 @@ const QuestionsComments = React.forwardRef((props, ref) => {
   );
 
   const {
-    defectArr,
-    defectList,
-    reportSearch
+    table5Garr,
+    table5GList,
+    reportSearch,
   } = props;
+
   const [data, setData] = useState([]);
   const [newbutton, setNewButton] = useState(false);
 
@@ -36,12 +36,13 @@ const QuestionsComments = React.forwardRef((props, ref) => {
     newData.push({
       key: data.length,
       id: '',
-      field1: data.length + 1,
+      field1: '',
       field2: '',
       field3: '',
+      field4: '',
     });
     setData(newData);
-    defectList(newData);
+    table5GList(newData)
     setNewButton(true);
   };
 
@@ -58,20 +59,21 @@ const QuestionsComments = React.forwardRef((props, ref) => {
   const remove = key => {
     const target = deleteObj(key) || {};
     const newarr = target.map((item, index) => {
-      return Object.assign(item, { editable: true, isNew: false, key: index,field1:index + 1})
+      return Object.assign(item, { editable: true, isNew: false, key: index })
     });
 
     deleteSign = true;
-    setData(newarr);
-    defectList(newarr);
+    setData(target);
+    table5GList(target)
   };
+
 
   const handleFieldChange = (e, fieldName, key) => {
     const newData = data.map(item => ({ ...item }));
     const target = getRowByKey(key, newData);
-    defectList(newData);
+    table5GList(newData)
     if (target) {
-      if (fieldName === 'field1') {
+      if(fieldName === 'field5') {
         target[fieldName] = moment(e).format('YYYY-MM-DD');
         setData(newData);
       } else {
@@ -82,8 +84,8 @@ const QuestionsComments = React.forwardRef((props, ref) => {
   }
 
   const handleTabledata = () => {
-    if (newbutton === false) {
-      const newarr = defectArr.map((item, index) => {
+    if (newbutton === false && table5Garr && table5Garr.length) {
+      const newarr = table5Garr.map((item, index) => {
         return Object.assign(item, { editable: true, isNew: false, key: index })
       })
       setData(newarr)
@@ -92,7 +94,7 @@ const QuestionsComments = React.forwardRef((props, ref) => {
 
   const column = [
     {
-      title: '序号',
+      title: '用户名',
       dataIndex: 'field1',
       key: 'field1',
       render: (text, record) => {
@@ -100,32 +102,32 @@ const QuestionsComments = React.forwardRef((props, ref) => {
           <Input
             disabled={reportSearch}
             defaultValue={text}
-            onChange={e => handleFieldChange(e, 'field1', record.key)}
+            onChange={e => handleFieldChange(e.target.value, 'field1', record.key)}
           />
         )
       }
     },
     {
-      title: '发现日期',
+      title: '表名',
       dataIndex: 'field2',
       key: 'field2',
       render: (text, record) => {
         return (
-          <DatePicker
+          <Input
             disabled={reportSearch}
-            defaultValue={text ? moment(text) : ''}
-            onChange={e => handleFieldChange(e, 'field2', record.key)}
+            defaultValue={text}
+            onChange={e => handleFieldChange(e.target.value, 'field2', record.key)}
           />
         )
       }
     },
     {
-      title: '缺陷说明',
+      title: '表总大小/GB',
       dataIndex: 'field3',
       key: 'field3',
       render: (text, record) => {
         return (
-          <TextArea
+          <Input
             disabled={reportSearch}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field3', record.key)}
@@ -134,15 +136,29 @@ const QuestionsComments = React.forwardRef((props, ref) => {
       }
     },
     {
-      title: '修复计划',
+      title: `表所处空间`,
       dataIndex: 'field4',
       key: 'field4',
       render: (text, record) => {
         return (
-          <TextArea
+          <Input
             disabled={reportSearch}
             defaultValue={text}
             onChange={e => handleFieldChange(e.target.value, 'field4', record.key)}
+          />
+        )
+      }
+    },
+    {
+      title: `创建时间`,
+      dataIndex: 'field5',
+      key: 'field5',
+      render: (text, record) => {
+        return (
+          <DatePicker
+            disabled={reportSearch}
+            defaultValue={text ? moment(text) :''}
+            onChange={e => handleFieldChange(e, 'field5', record.key)}
           />
         )
       }
@@ -172,21 +188,17 @@ const QuestionsComments = React.forwardRef((props, ref) => {
 
   useEffect(() => {
     handleTabledata();
-  }, [defectArr])
+  }, [table5Garr]);
 
   useEffect(() => {
-    if(deleteSign) {
+    if (deleteSign) {
       deleteSign = false
     }
   }, [data, deleteSign])
 
   return (
     <>
-      <p style={{ fontWeight: '900', fontSize: '16px' }}>三、发现问题及修改建议</p>
-
-      <p>
-        （1）缺陷
-      </p>
+      <p style={{ marginTop: 24 }}>（4）新增容量超过5G的表</p>
 
       {deleteSign === false && (
         <Table
@@ -207,9 +219,8 @@ const QuestionsComments = React.forwardRef((props, ref) => {
       >
         新增
       </Button>
-
     </>
   )
 })
 
-export default Form.create({})(QuestionsComments)
+export default Form.create({})(Morethan5g)

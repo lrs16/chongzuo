@@ -17,6 +17,7 @@ import { connect } from 'dva';
 import Diskgroup from './components/DatabaseComponent/Diskgroup';
 import Top10Surface from './components/DatabaseComponent/Top10Surface';
 import Top10Increase from './components/DatabaseComponent/Top10Increase';
+import Morethan5g from './components/DatabaseComponent/Morethan5g';
 import QuestionsComments from './components/DatabaseComponent/QuestionsComments';
 import LastweekHomework from './components/LastweekHomework';
 import AddForm from './components/AddForm';
@@ -78,6 +79,7 @@ function DatabaseReportdetail(props) {
   const [defectList, setDefectList] = useState([]) // 软件运维巡检
   const [operationList, setOperationList] = useState([]) // 上周作业计划
   const [nextOperationList, setNextOperationList] = useState([]) // 下周作业列表
+  const [table5GList, setTable5GList] = useState([]) // 下周作业列表
   const [list, setList] = useState([]);
 
   const [newbutton, setNewButton] = useState(false);
@@ -119,6 +121,7 @@ function DatabaseReportdetail(props) {
           defectList: JSON.stringify(defectList || ''),
           operationList: JSON.stringify(operationList || ''),
           nextOperationList: JSON.stringify(nextOperationList || ''),
+          table5GList: JSON.stringify(table5GList || ''),
         }
         return dispatch({
           type: 'softreport/saveDataBase',
@@ -244,12 +247,14 @@ function DatabaseReportdetail(props) {
     const defectArr = openReportlist.defectList;
     const operationArr = openReportlist.operationList;
     const nextOperationArr = openReportlist.nextOperationList;
+    const table5GListArr = openReportlist.table5GList;
     setDiscList(discArr);
     setTablespaceList(tablespaceArr);
     setTableUpList(tableUpArr);
     setDefectList(defectArr);
     setOperationList(operationArr);
     setNextOperationList(nextOperationArr);
+    setTable5GList(table5GListArr);
 
     if (openReportlist && main) {
       const saveInitlatime1 = openReportlist.main.time1;
@@ -583,6 +588,18 @@ function DatabaseReportdetail(props) {
                     setTableUpList(contentrowdata)
                   }}
                   reportSearch={reportSearch}
+                />
+              </Col>
+
+              <Col span={24}>
+                <Morethan5g
+                  forminladeLayout={forminladeLayout}
+                  table5Garr={openReportlist.table5GList}
+                  table5GList={contentrowdata => {
+                    setTable5GList(contentrowdata)
+                  }}
+                  startTime={startTime}
+                  endTime={endTime}
                 />
               </Col>
 

@@ -17,6 +17,7 @@ import { connect } from 'dva';
 import Diskgroup from './components/DatabaseComponent/Diskgroup';
 import Top10Surface from './components/DatabaseComponent/Top10Surface';
 import Top10Increase from './components/DatabaseComponent/Top10Increase';
+import Morethan5g from './components/DatabaseComponent/Morethan5g';
 import QuestionsComments from './components/DatabaseComponent/QuestionsComments';
 import LastweekHomework from './components/LastweekHomework';
 import CopyLast from './components/CopyLast';
@@ -78,6 +79,7 @@ function DatabaseReport(props) {
   const [defectList, setDefectList] = useState([]) // 软件运维巡检
   const [operationList, setOperationList] = useState([]) // 上周作业计划
   const [nextOperationList, setNextOperationList] = useState([]) // 下周作业列表
+  const [table5GList, setTable5GList] = useState([]) // 下周作业列表
   const [list, setList] = useState([]);
   const [copyData, setCopyData] = useState('');
 
@@ -116,6 +118,7 @@ function DatabaseReport(props) {
           defectList: JSON.stringify(defectList || ''),
           operationList: JSON.stringify(operationList || ''),
           nextOperationList: JSON.stringify(nextOperationList || ''),
+          table5GList: JSON.stringify(table5GList || ''),
         }
         dispatch({
           type: 'softreport/saveDataBase',
@@ -143,11 +146,6 @@ function DatabaseReport(props) {
     }
   }, [files]);
 
-  useEffect(() => {
-    if (startTime) {
-      setTimeshow(true);
-    }
-  }, [timeshow])
 
   useEffect(() => {
     setOperationList(copyData.operationList ? copyData.operationList : lastweekHomeworklist);
@@ -160,8 +158,8 @@ function DatabaseReport(props) {
     dispatch({
       type: 'softreport/lastweekHomework',
       payload: {
-        plannedEndTime1: `${startTime} 00:00:00`,
-        plannedEndTime2: `${endTime} 23:59:59`,
+        plannedEndTime1: reporttype === 'week' ? `${startTime} 00:00:00`: moment(startTime).startOf('month').format('YYYY-MM-DD 00:00:00'),
+        plannedEndTime2: reporttype === 'week' ?`${endTime} 23:59:59`: moment(endTime).endOf('month').format('YYYY-MM-DD 00:00:00'),
         type: '数据库作业',
         pageIndex: 0,
         pageSize: 1000,
@@ -176,10 +174,10 @@ function DatabaseReport(props) {
       type: 'softreport/nextweekHomework',
       payload: {
         plannedEndTime1: reporttype === 'week' ? moment(startTime).add(7, 'days').format('YYYY-MM-DD 00:00:00') :
-          moment().startOf('month').subtract('month', -1).format('YYYY-MM-DD 00:00:00'),
+          moment(startTime).startOf('month').add('month', 1).format('YYYY-MM-DD 00:00:00'),
 
         plannedEndTime2: reporttype === 'week' ? moment(endTime).add(7, 'days').format('YYYY-MM-DD 23:59:59')
-          : moment().endOf('month').subtract('month', -1).endOf('month').format('YYYY-MM-DD 23:59:59'),
+          : moment(endTime).endOf('month').add('month', 1).endOf('month').format('YYYY-MM-DD 23:59:59'),
         type: '数据库作业',
         pageIndex: 0,
         pageSize: 1000,
@@ -241,8 +239,6 @@ function DatabaseReport(props) {
   useEffect(() => {
     initial = false;
     defaultTime();
-    lastweekHomework();
-    nextweekHomework();
   }, []);
 
   const getDatabasereportdata = () => {
@@ -508,7 +504,7 @@ function DatabaseReport(props) {
 
             {/* 一、本周运维情况综述 */}
             {
-              initial && loading === false && lastweekHomeworklist && (
+              initial && loading === false && lastweekHomeworklist && startTime && (
                 <>
                   <Col span={24}>
                     <p style={{ fontWeight: '900', fontSize: '16px', marginTop: '20px' }}>{reporttype === 'week' ? '一、本周运维情况综述' : '一、本月运维情况综述'}</p>
@@ -592,6 +588,18 @@ function DatabaseReport(props) {
                       tableUpArr={copyData.tableUpList ? copyData.tableUpList : []}
                       tableUpList={contentrowdata => {
                         setTableUpList(contentrowdata)
+                      }}
+                      startTime={startTime}
+                      endTime={endTime}
+                    />
+                  </Col>
+
+                  <Col span={24}>
+                    <Morethan5g
+                      forminladeLayout={forminladeLayout}
+                      table5Garr={copyData.table5GList ? copyData.table5GList : []}
+                      table5GList={contentrowdata => {
+                        setTable5GList(contentrowdata)
                       }}
                       startTime={startTime}
                       endTime={endTime}
