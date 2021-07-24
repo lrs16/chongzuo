@@ -127,16 +127,21 @@ function DatabaseReport(props) {
       }
 
     })
-
   }
 
   const defaultTime = () => {
     //  周统计
-    const currentstartTime = moment().subtract('days', 6).format('YYYY-MM-DD');
-    const currentendTime = moment().format('YYYY-MM-DD');
-
-    setStartTime(currentstartTime);
-    setEndTime(currentendTime);
+    if (reporttype === 'week') {
+      const currentstartTime = moment().subtract('days', 6).format('YYYY-MM-DD');
+      const currentendTime = moment().format('YYYY-MM-DD');
+      setStartTime(currentstartTime);
+      setEndTime(currentendTime);
+    } else {
+      const currentstartTime = moment().startOf('month').format('YYYY-MM-DD');
+      const currentendTime = moment().endOf('month').format('YYYY-MM-DD');
+      setStartTime(currentstartTime);
+      setEndTime(currentendTime);
+    }
   }
 
   // 上传删除附件触发保存
@@ -666,7 +671,7 @@ function DatabaseReport(props) {
                   {/* 上周作业完成情况 */}
 
                   <Col span={24}>
-                    <p style={{ fontWeight: '900', fontSize: '16px' }}> 四、上周作业完成情况</p>
+                    <p style={{ fontWeight: '900', fontSize: '16px' }}>{reporttype === 'week' ? '四、上周作业完成情况' : '四、上月作业完成情况'}</p>
                   </Col>
 
                   {/* {
@@ -728,7 +733,7 @@ function DatabaseReport(props) {
 
                   {/* 下周工作计划 */}
                   <Col span={24}>
-                    <p style={{ fontWeight: '900', fontSize: '16px' }}>五、下周作业计划</p>
+                    <p style={{ fontWeight: '900', fontSize: '16px' }}>{reporttype === 'week' ? '五、下周作业计划' : '五、下月作业计划'}</p>
                   </Col>
 
                   {/* {

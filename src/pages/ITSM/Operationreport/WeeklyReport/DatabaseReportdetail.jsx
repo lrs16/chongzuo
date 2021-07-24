@@ -694,9 +694,8 @@ function DatabaseReportdetail(props) {
                 )
               }
 
-
               <Col span={24}>
-                <p style={{ fontWeight: '900', fontSize: '16px' }}>四、上周作业完成情况</p>
+                <p style={{ fontWeight: '900', fontSize: '16px' }}>{reporttype === 'week' ? '四、上周作业完成情况' : '四、上月作业完成情况'}</p>
               </Col>
 
               {/* 上周作业完成情况 */}
@@ -759,7 +758,7 @@ function DatabaseReportdetail(props) {
               }
 
               <Col span={24}>
-                <p style={{ fontWeight: '900', fontSize: '16px' }}>五、下周作业计划</p>
+                <p style={{ fontWeight: '900', fontSize: '16px' }}>{reporttype === 'week' ? '五、下周作业计划' : '五、下月作业计划'}</p>
               </Col>
 
               {/* 下周工作计划 */}

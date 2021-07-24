@@ -71,7 +71,7 @@ const QuestionsComments = React.forwardRef((props, ref) => {
     const target = getRowByKey(key, newData);
     defectList(newData);
     if (target) {
-      if (fieldName === 'field1') {
+      if (fieldName === 'field2') {
         target[fieldName] = moment(e).format('YYYY-MM-DD');
         setData(newData);
       } else {

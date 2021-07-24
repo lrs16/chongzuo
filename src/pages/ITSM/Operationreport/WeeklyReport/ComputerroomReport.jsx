@@ -221,13 +221,18 @@ function ComputerroomReport(props) {
 
   const defaultTime = () => {
     //  周统计
-    const currentstartTime = moment().subtract('days', 6).format('YYYY-MM-DD');
-    const currentendTime = moment().format('YYYY-MM-DD');
-
-    setStartTime(currentstartTime);
-    setEndTime(currentendTime);
+    if (reporttype === 'week') {
+      const currentstartTime = moment().subtract('days', 6).format('YYYY-MM-DD');
+      const currentendTime = moment().format('YYYY-MM-DD');
+      setStartTime(currentstartTime);
+      setEndTime(currentendTime);
+    } else {
+      const currentstartTime = moment().startOf('month').format('YYYY-MM-DD');
+      const currentendTime = moment().endOf('month').format('YYYY-MM-DD');
+      setStartTime(currentstartTime);
+      setEndTime(currentendTime);
+    }
   }
-
   // 上传删除附件触发保存
   useEffect(() => {
     if (files.ischange) {

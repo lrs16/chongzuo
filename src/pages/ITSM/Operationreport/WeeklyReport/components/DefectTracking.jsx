@@ -48,7 +48,7 @@ function DefectTracking(props) {
     const target = getRowByKey(key, newData);
     legacyList(newData)
     if (target) {
-      if (fieldName === 'field1' || fieldName === 'field1') {
+      if (fieldName === 'field1' || fieldName === 'field4') {
         target[fieldName] = moment(e).format('YYYY-MM-DD');
         setData(newData);
       } else {

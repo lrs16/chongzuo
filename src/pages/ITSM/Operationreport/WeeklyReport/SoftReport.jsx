@@ -364,11 +364,17 @@ function SoftReport(props) {
 
   const defaultTime = () => {
     //  周统计
-    const currentstartTime = moment().subtract('days', 6).format('YYYY-MM-DD');
-    const currentendTime = moment().format('YYYY-MM-DD');
-
-    setStartTime(currentstartTime);
-    setEndTime(currentendTime);
+    if (reporttype === 'week') {
+      const currentstartTime = moment().subtract('days', 6).format('YYYY-MM-DD');
+      const currentendTime = moment().format('YYYY-MM-DD');
+      setStartTime(currentstartTime);
+      setEndTime(currentendTime);
+    } else {
+      const currentstartTime = moment().startOf('month').format('YYYY-MM-DD');
+      const currentendTime = moment().endOf('month').format('YYYY-MM-DD');
+      setStartTime(currentstartTime);
+      setEndTime(currentendTime);
+    }
   }
 
   useEffect(() => {
@@ -500,7 +506,7 @@ function SoftReport(props) {
     }
   }, [timeshow])
 
-  console.log(startTime,endTime)
+  console.log(startTime, endTime)
 
 
   const newMember = () => {
@@ -1124,9 +1130,9 @@ function SoftReport(props) {
                   </Col>
 
 
-                  {/* <Col span={24}>
+                  <Col span={24}>
                     <p>(2)计划{startTime}至{endTime},计量自动化系统开展 次发布变更（消缺），变更内容如下</p>
-                  </Col> */}
+                  </Col>
 
                   {/* 变更 */}
                   <Col span={24}>
