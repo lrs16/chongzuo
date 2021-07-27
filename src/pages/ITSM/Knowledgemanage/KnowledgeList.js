@@ -408,7 +408,7 @@ function KnowledgeList(props) {
         ]);
         const handleClick = () => {
           router.push({
-            pathname: record.status !== '已发布' ? `${location.pathname}/operation` : '/ITSM/knowledgemanage/query/details',
+            pathname: (record.status === '已发布' || record.status === '已废止') ? '/ITSM/knowledgemanage/query/details' : `${location.pathname}/operation`,
             query: {
               Id: record.no,
               mainId: record.id
@@ -417,7 +417,7 @@ function KnowledgeList(props) {
               runpath: location.pathname,
               title: pagetitle,
               dynamicpath: true,
-              menuDesc: (record.status === '已登记' || pagetitle === '知识审核') ? desmap.get(pagetitle) : '知识详情',
+              menuDesc: (record.status === '已登记' || record.status === '知识审核') ? desmap.get(pagetitle) : '知识详情',
               status: record.status,
             },
           });

@@ -13,7 +13,7 @@ const { Panel } = Collapse;
 
 function Operation(props) {
   const { dispatch, location, loading, viewinfo, updatas } = props;
-  const { mainId } = location.query;
+  const { mainId, Id } = location.query;
   const [activeKey, setActiveKey] = useState(['1', '2']);
   const [tabActivekey, settabActivekey] = useState('workorder'); // 打开标签
   const ContentRef = useRef(null);
@@ -46,13 +46,13 @@ function Operation(props) {
       });
       settabActivekey('workorder');
     }
-  }, [location]);
+  }, [Id]);
 
   // 点击页签右键刷新
   useEffect(() => {
     if (location.state && location.state.reset && mainId) {
       dispatch({
-        type: 'knowledg/knowledgopen',
+        type: 'knowledg/openview',
         payload: {
           mainId,
         },

@@ -608,52 +608,53 @@ const BasicLayout = props => {
           route={leftRoute}
         // footerRender={footerRender}
         >
-          {authorized === Userauth && (
-            < >
-              <div
-                onMouseDown={(e) => {
-                  e.preventDefault();
-                  if (e.button === 0) {
-                    router.push({
-                      pathname: location.pathname,
-                      query: location.query,
-                      state: { ...location.state, cache: true, reset: false },
-                    });
-                  }
-                }}
-                onContextMenu={(e) => {
-                  e.preventDefault();
-                  if (e.button === 2) {
-                    setTabMenu({ x: e.pageX - 350, y: e.pageY - 50, v: 'block' });
-                  }
-                }}
-              // style={{ position: 'fixed', top: 0, zIndex: 999 }}
-              >
-                <Tabs
-                  hideAdd
-                  activeKey={activeKey}
-                  type='editable-card'
-                  onChange={(key) => callback(key)}
-                  onEdit={onEdit}
-                  style={{ margin: '-24px -24px 0 ', backgroundColor: '#fff', position: 'fixed', width: 'calc(100% - 280px)', zIndex: 999 }}
+
+          <div
+            onMouseDown={(e) => {
+              e.preventDefault();
+              if (e.button === 0) {
+                router.push({
+                  pathname: location.pathname,
+                  query: location.query,
+                  state: { ...location.state, cache: true, reset: false },
+                });
+              }
+            }}
+            onContextMenu={(e) => {
+              e.preventDefault();
+              if (e.button === 2) {
+                setTabMenu({ x: e.pageX - 350, y: e.pageY - 50, v: 'block' });
+              }
+            }}
+          // style={{ position: 'fixed', top: 0, zIndex: 999 }}
+          >
+            <Tabs
+              hideAdd
+              activeKey={activeKey}
+              type='editable-card'
+              onChange={(key) => callback(key)}
+              onEdit={onEdit}
+              style={{ margin: '-24px -24px 0 ', backgroundColor: '#fff', position: 'fixed', width: 'calc(100% - 280px)', zIndex: 999 }}
+            >
+              {toptabs.map(obj => [
+                <TabPane
+                  tab={obj.name}
+                  key={obj.id}
+                  closable={obj.closable}
                 >
-                  {toptabs.map(obj => [
-                    <TabPane
-                      tab={obj.name}
-                      key={obj.id}
-                      closable={obj.closable}
-                    >
-                      {/* <Authorized authority={Userauth} noMatch={noMatch}>
+                  {/* <Authorized authority={Userauth} noMatch={noMatch}>
                       {multipleurl && (
                         <div style={{ padding: '0 24px 0 24px', marginTop: 8, background: '#f1f1f1' }}>
                           {children}
                         </div>
                       )}
                     </Authorized> */}
-                    </TabPane>,
-                  ])}
-                </Tabs>
-              </div>
+                </TabPane>,
+              ])}
+            </Tabs>
+          </div>
+          {authorized === Userauth && (
+            < >
               <Authorized authority={Userauth} noMatch={noMatch}>
                 {/* <PageTab>{children}</PageTab> */}
                 {/* <MenuContext.Provider value={{ tabnew, cleartabdata }}>
@@ -689,7 +690,12 @@ const BasicLayout = props => {
                 subTitle="Sorry, 您访问的页面不存在"
                 extra={
                   <Button type="primary">
-                    <Link to="/">返 回</Link>
+                    <Link
+                      to={{
+                        pathname: '/',
+                        query: { tabid: sessionStorage.getItem('tabid'), closecurrent: true }
+                      }}
+                    >返 回</Link>
                   </Button>
                 }
               />
