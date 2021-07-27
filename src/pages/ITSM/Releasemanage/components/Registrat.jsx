@@ -1,6 +1,7 @@
 import React, { useRef, useImperativeHandle, forwardRef, useState, useEffect } from 'react';
 import moment from 'moment';
 import { Row, Col, Form, Input, Alert, DatePicker, Select } from 'antd';
+import FilesContext from '@/layouts/MenuContext';              // 引用上下文管理组件
 import EditeTable from './EditeTable';
 import TestingFacility from './TestingFacility';
 import DocumentAtt from './DocumentAtt';
@@ -44,12 +45,25 @@ const statumap = new Map([
 ]);
 
 function Registrat(props, ref) {
-  const { taskName, mainId, userinfo, register, selectdata, isEdit } = props;
-  const { getFieldDecorator, getFieldsValue, resetFields } = props.form;
+  const { taskName, mainId, info, userinfo, register, selectdata, isEdit } = props;
+  const { getFieldDecorator, getFieldsValue, resetFields, setFieldsValue } = props.form;
   const required = true;
 
   const [alertvisible, setAlertVisible] = useState(false);  // 超时告警是否显示
   const [alertmessage, setAlertMessage] = useState('');
+
+  const ChangeFiles = (v) => {
+    console.log(v)
+  }
+
+  // 校验测试环境与发布清半日 
+  const handleListValidator = (rule, value, callback) => {
+    if (value === '' || value === [] || value === [{}]) {
+      callback()
+    }
+    callback()
+  }
+
 
   const formRef = useRef();
   useImperativeHandle(ref, () => ({
@@ -94,9 +108,8 @@ function Registrat(props, ref) {
           {taskName === '发布登记' && (
             <Col span={8}>
               <Form.Item label="发布编号">
-                {getFieldDecorator('id', {
-                  rules: [{ required, message: `发布编号不能为空` }],
-                  initialValue: '',
+                {getFieldDecorator('releaseNo', {
+                  initialValue: info.releaseMain.releaseNo,
                 })(<Input disabled />)}
               </Form.Item>
             </Col>
@@ -107,7 +120,7 @@ function Registrat(props, ref) {
                 <Form.Item label="发布类型">
                   {getFieldDecorator('releaseType', {
                     rules: [{ required, message: `请选择发布类型` }],
-                    initialValue: '',
+                    initialValue: info.releaseMain.releaseType,
                   })(
                     <Select placeholder="请选择" disabled={!isEdit}>
                       {typemap.map(obj => [
@@ -123,7 +136,7 @@ function Registrat(props, ref) {
                 <Form.Item label="责任单位">
                   {getFieldDecorator('dutyUnit', {
                     rules: [{ required, message: `请选择责任单位` }],
-                    initialValue: '',
+                    initialValue: info.releaseMain.dutyUnit,
                   })(
                     <Select placeholder="请选择" disabled={!isEdit}>
                       {unitmap.map(obj => [
@@ -141,7 +154,7 @@ function Registrat(props, ref) {
             <Form.Item label="测试开始时间">
               {getFieldDecorator('testStart', {
                 rules: [{ required, message: `请选择出厂测试开始时间` }],
-                initialValue: moment(),
+                initialValue: moment(info.releaseRegister.testStart),
               })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" disabled={!isEdit} style={{ width: '100%' }} />)}
             </Form.Item>
           </Col>
@@ -149,7 +162,7 @@ function Registrat(props, ref) {
             <Form.Item label="测试结束时间">
               {getFieldDecorator('testEnd', {
                 rules: [{ required, message: `请选择出厂测试结束时间` }],
-                initialValue: moment(),
+                initialValue: moment(info.releaseRegister.testEnd),
               })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" disabled={!isEdit} style={{ width: '100%' }} />)}
             </Form.Item>
           </Col>
@@ -157,7 +170,7 @@ function Registrat(props, ref) {
             <Form.Item label="测试地点">
               {getFieldDecorator('testPlace', {
                 rules: [{ required, message: `请输入出厂测试地点` }],
-                initialValue: '',
+                initialValue: info.releaseRegister.testPlace,
               })(<Input disabled={!isEdit} />)}
             </Form.Item>
           </Col>
@@ -165,7 +178,7 @@ function Registrat(props, ref) {
             <Form.Item label="参与测试单位" {...formuintLayout}>
               {getFieldDecorator('testUnit', {
                 rules: [{ required, message: `请选择参与测试单位` }],
-                initialValue: '',
+                initialValue: info.releaseRegister.testUnit,
               })(<TextArea autoSize disabled={!isEdit} />)}
             </Form.Item>
           </Col>
@@ -173,7 +186,7 @@ function Registrat(props, ref) {
             <Form.Item label="测试人员" {...formuintLayout}>
               {getFieldDecorator('testOperator', {
                 rules: [{ required, message: `请输入测试人员` }],
-                initialValue: '',
+                initialValue: info.releaseRegister.testOperator,
               })(<TextArea autoSize disabled={!isEdit} />)}
             </Form.Item>
           </Col>
@@ -182,23 +195,44 @@ function Registrat(props, ref) {
               <Form.Item label="受影响业务范围" {...formuintLayout}>
                 {getFieldDecorator('influenceScope', {
                   rules: [{ required, message: `请填写受影响业务范围` }],
-                  initialValue: '',
+                  initialValue: info.releaseRegister.influenceScope,
                 })(<TextArea autoSize={{ minRows: 4 }} disabled={!isEdit} />)}
               </Form.Item>
             </Col>
           )}
           <Col span={24} style={{ marginBottom: 24 }}>
-            <TestingFacility title='测试环境' isEdit={isEdit} />
+            {getFieldDecorator('releaseEnvs', {
+              rules: [{ required, message: '请选择测试环境' }, {
+                validator: handleListValidator
+              }],
+              initialValue: info.releaseEnvs,
+            })(
+              <TestingFacility
+                title='测试环境'
+                isEdit={isEdit}
+                dataSource={info.releaseEnvs}
+                ChangeValue={v => setFieldsValue({ releaseEnvs: v })}
+              />
+            )}
+
           </Col>
           <Col span={24} style={{ marginBottom: 12 }}>
-            <EditeTable
-              title='发布清单'
-              functionmap={functionmap}
-              modulamap={modulamap}
-              isEdit={isEdit}
-              taskName={taskName}
-              mainId={mainId}
-            />
+            {getFieldDecorator('releaseLists', {
+              rules: [{ required, message: '请填写发布清单' }, {
+                validator: handleListValidator
+              }],
+              initialValue: info.releaseLists,
+            })(
+              <EditeTable
+                title='发布清单'
+                functionmap={functionmap}
+                modulamap={modulamap}
+                isEdit={isEdit}
+                taskName={taskName}
+                mainId={mainId}
+                dataSource={info.releaseLists}
+              />
+            )}
           </Col>
           {taskName !== '业务验证' && (
             <Col span={24}>
@@ -211,7 +245,17 @@ function Registrat(props, ref) {
             </Col>
           )}
           <Col span={24} style={{ marginBottom: 24 }}>
-            <DocumentAtt rowkey={statumap.get(taskName)} unitmap={unitmap} isEdit={isEdit} />
+            <FilesContext.Provider value={{
+              files: [],
+              ChangeFiles,
+            }}>
+              <DocumentAtt
+                rowkey={statumap.get(taskName)}
+                unitmap={unitmap}
+                isEdit={isEdit}
+                dataSource={info && info.releaseAttaches ? info.releaseAttaches : []}
+              />
+            </FilesContext.Provider>
           </Col>
           <Col span={8}>
             <Form.Item label="登记人" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>

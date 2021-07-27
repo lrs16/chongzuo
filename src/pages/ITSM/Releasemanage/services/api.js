@@ -1,11 +1,16 @@
 import request from '@/utils/request';
 
-// 启动获取用户信息  /release/from/findTodoList
-export async function queryTodoList(params) {
-  return request(`/release/from/findTodoList`, {
-    method: 'POST',
-    data: params,
-    requestType: 'form',
+// 启动待办信息  /release/from/findTodoList
+// export async function queryTodoList(params) {
+//   return request(`/release/from/findTodoList`, {
+//     method: 'POST',
+//     data: params,
+//     requestType: 'form',
+//   });
+// }
+export async function queryTodoList() {
+  return request(`/api/release/todolist`, {
+    method: 'GET',
   });
 }
 
@@ -20,5 +25,23 @@ export async function startFlow() {
 export async function nextFlowUserList() {
   return request(`/release/flow/getNextFlowUserList`, {
     method: 'GET',
+  });
+}
+
+// 登记工单保存
+export async function saveRegister(params) {
+  return request(`/release/flow/saveRegister`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+  });
+}
+
+// 流程提交
+export async function flowSubmit(params) {
+  return request(`/release/flow/submit`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
   });
 }

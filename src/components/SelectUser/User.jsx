@@ -137,6 +137,15 @@ const User = props => {
           type: 'itsmuser/taskuserlist',
         });
         break;
+      case 'release':
+        dispatch({
+          type: 'itsmuser/taskuserlist',
+          payload: {
+            taskId,
+            type: sessionStorage.getItem('flowtype'),
+          },
+        });
+        break;
       default:
         break;
     }
@@ -147,7 +156,6 @@ const User = props => {
       showModal();
     }
     return () => {
-
     }
   }, [visible]);
 
@@ -161,8 +169,8 @@ const User = props => {
       }
     }
 
-    if(type === 'task') {
-      if(value.length !== 1) {
+    if (type === 'task') {
+      if (value.length !== 1) {
         message.info('请选择一个送审人')
       } else {
         ChangeChoice(true);
@@ -188,13 +196,11 @@ const User = props => {
 
   };
 
-
   const handleCancel = () => {
     ChangeUserVisible(false);
     ChangeType('');
+    sessionStorage.removeItem('NextflowUserId');
   };
-
-
 
   const nextflowuser =
     changorder !== undefined ? changorder : sessionStorage.getItem('Nextflowmane');

@@ -675,11 +675,11 @@ const BasicLayout = props => {
               status="403"
               title="403"
               subTitle="Sorry, 您没有此页面的访问权限。"
-              extra={
-                <Button type="primary">
-                  <Link to="/">返 回</Link>
-                </Button>
-              }
+            // extra={
+            //   <Button type="primary">
+            //     <Link to="/">返 回</Link>
+            //   </Button>
+            // }
             />
           )}
           {authorized === undefined && (
@@ -688,16 +688,16 @@ const BasicLayout = props => {
                 status="404"
                 title="404"
                 subTitle="Sorry, 您访问的页面不存在"
-                extra={
-                  <Button type="primary">
-                    <Link
-                      to={{
-                        pathname: '/',
-                        query: { tabid: sessionStorage.getItem('tabid'), closecurrent: true }
-                      }}
-                    >返 回</Link>
-                  </Button>
-                }
+              // extra={
+              //   <Button type="primary">
+              //     <Link
+              //       to={{
+              //         pathname: '/',
+              //         query: { tabid: sessionStorage.getItem('tabid'), closecurrent: true }
+              //       }}
+              //     >返 回</Link>
+              //   </Button>
+              // }
               />
             </>
           )}

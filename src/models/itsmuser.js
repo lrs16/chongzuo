@@ -7,6 +7,7 @@ import {
   TroubleFlowUserList,
   ProblemFlowUserList,
   taskFlowUserList,
+  releaseUserList,
 } from '@/services/user';
 
 export default {
@@ -15,8 +16,8 @@ export default {
     flowmsg: '',
     userinfo: '',
     userlist: '',
-    problemlist:'',
-    tasklist:''
+    problemlist: '',
+    tasklist: ''
   },
 
   effects: {
@@ -67,6 +68,15 @@ export default {
     // 加载送审人列表
     *taskuserlist({ payload }, { call, put }) {
       const response = yield call(taskFlowUserList);
+      yield put({
+        type: 'savelist',
+        payload: response.data,
+      });
+    },
+
+    // 加载发布下一环节处理人
+    *releaseuserlist({ payload: { taskId, type } }, { call, put }) {
+      const response = yield call(releaseUserList, taskId, type);
       yield put({
         type: 'savelist',
         payload: response.data,

@@ -4,22 +4,6 @@ import styles from '../index.less';
 import AssignmentModal from './AssignmentModal';
 import OrderContent from './OrderContent';
 
-const dataSource = [{
-  key: 1,
-  t0: '计划',
-  t1: '前台功能/变弄功能',
-  t2: 'ITSM',
-  t3: 'ITSM',
-  t4: '用于创建一个实体或收集信息。需要对输入的数据类型进行校验时。',
-  menu: '运维管理->指标统计->终端运维->采集完整率(新)->零点失败列表补招（按钮）、非零点失败列表补招（按钮）。',
-  des: '实现按供电单位进行失败列表的曲线批量召测功能。',
-  step: '运维管理->指标统计->终端运维->采集完整率->零点失败列表补招、非零点失败列表补招',
-  t6: '通过',
-  t7: '张晓晓',
-  t8: sessionStorage.getItem('userName'),
-  t9: '1132',
-}]
-
 const { TextArea } = Input;
 const InputGroup = Input.Group;
 const RadioGroup = Radio.Group;
@@ -27,7 +11,7 @@ const { Option } = Select;
 const { TabPane } = Tabs;
 
 function EditeTable(props) {
-  const { title, functionmap, modulamap, isEdit, listType, taskName, mainId } = props;
+  const { title, functionmap, modulamap, isEdit, listType, taskName, mainId, dataSource } = props;
   const [data, setData] = useState([]);
   const [newbutton, setNewButton] = useState(false);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
@@ -45,7 +29,7 @@ function EditeTable(props) {
     //  const newData = data.map(item => ({ ...item }));
     data.push({
       key: data.length + 1,
-      t0: listType,
+      t0: taskName === '发布登记' ? '计划' : '临时',
       t1: '',
       t2: '',
       t3: '',
@@ -432,13 +416,13 @@ function EditeTable(props) {
         <Col span={18}>
 
           <span><b>前台功能统计：</b>
-          缺陷修复项<b style={{ color: '#1890ff', padding: '0 3px' }}>0</b>项，
-          变更功能项<b style={{ color: '#1890ff', padding: '0 3px' }}>0</b>项，
-          完善功能项<b style={{ color: '#1890ff', padding: '0 3px' }}>0</b>项。
-          <b>后台功能统计：</b>
-          缺陷修复<b style={{ color: '#1890ff', padding: '0 3px' }}>0</b>项，
-          变更功能<b style={{ color: '#1890ff', padding: '0 3px' }}>0</b>项，
-          完善功能项<b style={{ color: '#1890ff', padding: '0 3px' }}>0</b>项。</span>
+            缺陷修复项<b style={{ color: '#1890ff', padding: '0 3px' }}>0</b>项，
+            变更功能项<b style={{ color: '#1890ff', padding: '0 3px' }}>0</b>项，
+            完善功能项<b style={{ color: '#1890ff', padding: '0 3px' }}>0</b>项。
+            <b>后台功能统计：</b>
+            缺陷修复<b style={{ color: '#1890ff', padding: '0 3px' }}>0</b>项，
+            变更功能<b style={{ color: '#1890ff', padding: '0 3px' }}>0</b>项，
+            完善功能项<b style={{ color: '#1890ff', padding: '0 3px' }}>0</b>项。</span>
         </Col>
         <Col span={6} style={{ textAlign: 'right' }}>
           {isEdit && (

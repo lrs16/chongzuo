@@ -1,82 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'dva';
 import { Table, Button, Icon, Input, message, AutoComplete, Select } from 'antd';
-import SysUpload from '@/components/SysUpload';
+import SysUpload from '@/components/SysUpload/Upload';
 import { PaperClipOutlined } from '@ant-design/icons';
 import styles from '../index.less';
 
 const { TextArea } = Input;
 const { Option } = AutoComplete;
 
-const files9 = [
-  {
-    uid: "b0d423fb46744bceb1f1aaf0a33d2081",
-    name: "bbe6edf9-2211-41c4-96e8-75c140407104.jpg",
-    fileUrl: "",
-    status: "done"
-  },
-  {
-    uid: "e8415f46ee8f431b84d716112215afa5",
-    name: "计量主站运维辅助系统建设项目-工作计划20210129--细化_(林玉娇).xlsx",
-    fileUrl: "",
-    status: "done"
-  },
-];
-const files1 = [{
-  uid: "0d31cdd63d3c474896b02869c086705d",
-  name: "nginx.conf",
-  nowtime: "2021-04-22 08:16:28",
-  fileUrl: "", status: "done"
-}];
-const files2 = [{
-  uid: "0d31cdd63d3c474896b02869c086705d",
-  name: "nginx.conf",
-  nowtime: "2021-04-22 08:16:28",
-  fileUrl: "", status: "done"
-},
-{
-  uid: "b0d423fb46744bceb1f1aaf0a33d2081",
-  name: "bbe6edf9-2211-41c4-96e8-75c140407104.jpg",
-  fileUrl: "",
-  status: "done"
-},
-{
-  uid: "e8415f46ee8f431b84d716112215afa5",
-  name: "计量主站运维辅助系统建设项目-工作计划20210129.xlsx",
-  fileUrl: "",
-  status: "done"
-},];
-
-const dataSource = [
-  { key: '1', name: '功能出厂测试报告', type: files1, unit: '', mobail: '', des: '功能出厂测试', editable: false },
-  { key: '2', name: '平台验证测试报告', type: files2, unit: '', mobail: '', des: '平台验证测试', editable: false },
-  { key: '3', name: '业务功能测试报告', type: '', unit: '', mobail: '', des: '业务功能测试', editable: false },
-  { key: '4', name: '功能清单终稿', type: '', unit: '', mobail: '', des: '功能清单', editable: false },
-  { key: '5', name: '发布实施方案', type: '', unit: '', mobail: '', des: '实施方案', editable: false },
-  { key: '6', name: '计划发布申请审批表', type: '', unit: '', mobail: '', des: '计划发布申请', editable: false },
-  { key: '7', name: '临时发布申请审批表', type: '', unit: '', mobail: '', des: '临时发布申请', editable: false },
-  { key: '8', name: '功能发布报告', type: '', unit: '', mobail: '', des: '功能发布', editable: false },
-  { key: '9', name: '其它附件', type: files9, unit: '', mobail: '', des: '', editable: false },
-];
 
 function DocumentAtt(props) {
-  const { dispatch, rowkey, unitmap, isEdit } = props;
+  const { dispatch, rowkey, unitmap, isEdit, dataSource } = props;
   const [data, setData] = useState([]);
-  const [fileslist, setFilesList] = useState({ arr: [], ischange: false });
   const [keyupload, setKeyUpload] = useState('');
-  const [otherfiles, setOtherFiles] = useState([]);
-
-  useEffect(() => {
-    if (keyupload !== '') {
-      setFilesList({ ...fileslist, arr: data[keyupload - 1].type });
-    }
-  }, [keyupload]);
-  useEffect(() => {
-    if (fileslist.ischange) {
-      // ChangeFiles(fileslist);
-      setFilesList({ ...fileslist, ischange: false });
-    }
-  }, [fileslist]);
 
   useEffect(() => {
     dataSource[8].editable = true;
@@ -160,8 +96,8 @@ function DocumentAtt(props) {
     },
     {
       title: '文档名称',
-      dataIndex: 'name',
-      key: 'name',
+      dataIndex: 'docName',
+      key: 'docName',
       width: 160,
       render: (text, record) => {
         if (isEdit && record.editable && (record.key === rowkey || record.key !== '9' || rowkey === '3')) {
@@ -172,14 +108,14 @@ function DocumentAtt(props) {
     },
     {
       title: '附件上传',
-      dataIndex: 'type',
-      key: 'type',
+      dataIndex: 'attachFile',
+      key: 'attachFile',
       width: 300,
       render: (text, record) => {
         if (isEdit && record.editable && (record.key === rowkey || rowkey === '3')) {
           return (
             <div onMouseOver={() => { setKeyUpload(record.key) }} onFocus={() => 0} style={{ width: 300 }}>
-              <SysUpload fileslist={text} ChangeFileslist={v => setFilesList(v)} />
+              <SysUpload />
             </div>
           )
         } if (record.key === '9') {
@@ -200,14 +136,14 @@ function DocumentAtt(props) {
                 </div>
               )}
               <div onMouseOver={() => { setKeyUpload(record.key) }} onFocus={() => 0} style={{ width: 300, marginTop: 12 }}>
-                <SysUpload fileslist={otherfiles} ChangeFileslist={v => setOtherFiles(v)} />
+                <SysUpload />
               </div>
             </>
           )
         }
         return (
           <>
-            {text !== '' && (
+            {text && (
               <div className={styles.greylink}>
                 {text.map((obj, index) => {
                   return (
@@ -227,8 +163,8 @@ function DocumentAtt(props) {
     },
     {
       title: '责任单位',
-      dataIndex: 'unit',
-      key: 'unit',
+      dataIndex: 'dutyUint',
+      key: 'dutyUint',
       width: 200,
       render: (text, record) => {
         if (isEdit && record.editable && (record.key === rowkey || record.key === '9' || rowkey === '3')) {
@@ -247,8 +183,8 @@ function DocumentAtt(props) {
     },
     {
       title: '文档模板',
-      dataIndex: 'mobail',
-      key: 'mobail',
+      dataIndex: 'docTemplate',
+      key: 'docTemplate',
       with: 80,
       render: (text, record) => {
         if (record.key === '9') {
@@ -259,8 +195,8 @@ function DocumentAtt(props) {
     },
     {
       title: '备注',
-      dataIndex: 'des',
-      key: 'des',
+      dataIndex: 'remarks',
+      key: 'remarks',
       render: (text, record) => {
         if (isEdit && record.editable && (record.key === rowkey || record.key === '9' || rowkey === '3')) {
           return (

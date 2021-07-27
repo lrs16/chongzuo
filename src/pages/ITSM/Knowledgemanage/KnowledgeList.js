@@ -417,7 +417,7 @@ function KnowledgeList(props) {
               runpath: location.pathname,
               title: pagetitle,
               dynamicpath: true,
-              menuDesc: (record.status === '已登记' || record.status === '知识审核') ? desmap.get(pagetitle) : '知识详情',
+              menuDesc: (record.status === '已登记' || record.status === '待审核') ? desmap.get(pagetitle) : '知识详情',
               status: record.status,
             },
           });
