@@ -54,6 +54,7 @@ export default {
               pathname: `/ITSM/knowledgemanage/myknowledge/operation`,
               query: {
                 Id: saveres.no,
+                mainId: saveres.mainId
               },
               state: {
                 runpath: '/ITSM/knowledgemanage/myknowledge',

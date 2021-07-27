@@ -4,7 +4,7 @@ export default {
   namespace: 'releasetodo',
 
   state: {
-    list: [],
+    list: {},
   },
 
   effects: {
@@ -22,7 +22,7 @@ export default {
     save(state, action) {
       return {
         ...state,
-        list: action.payload,
+        list: action.payload || {},
       };
     },
   },

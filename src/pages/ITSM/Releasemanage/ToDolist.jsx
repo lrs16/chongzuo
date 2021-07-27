@@ -34,8 +34,8 @@ const forminladeLayout = {
 const columns = [
   {
     title: '发布编号',
-    dataIndex: 'No',
-    key: 'No',
+    dataIndex: 'releaseNo',
+    key: 'releaseNo',
     fixed: 'left',
     render: (text, record) => {
       const handleClick = () => {
@@ -53,34 +53,34 @@ const columns = [
   },
   {
     title: '当前处理环节',
-    dataIndex: 't1',
-    key: 't1',
+    dataIndex: 'taskName',
+    key: 'taskName',
   },
   {
     title: '发布类型',
-    dataIndex: 't2',
-    key: 't2',
+    dataIndex: 'releaseType',
+    key: 'releaseType',
     width: 200,
   },
   {
     title: '责任单位',
-    dataIndex: 't3',
-    key: 't3',
+    dataIndex: 'dutyUnit',
+    key: 'dutyUnit',
   },
   {
     title: '出厂测试登记人',
-    dataIndex: 't4',
-    key: 't4',
+    dataIndex: 'registerUser',
+    key: 'registerUser',
   },
   {
     title: '发送人',
-    dataIndex: 't5',
-    key: 't5',
+    dataIndex: 'sender',
+    key: 'sender',
   },
   {
     title: '发送时间',
-    dataIndex: 't6',
-    key: 't6',
+    dataIndex: 'sendTime',
+    key: 'sendTime',
   },
 ];
 
@@ -104,7 +104,7 @@ function ToDolist(props) {
       type: 'releasetodo/fetchlist',
       payload: {
         ...values,
-        pageIndex: paginations.current - 1,
+        pageIndex: paginations.current,
         pageSize: paginations.pageSize,
       },
     });
@@ -125,7 +125,7 @@ function ToDolist(props) {
         time2: values.createTime === undefined ? '' : moment(values.createTime[1]).format('YYYY-MM-DD HH:mm:ss'),
         eventObject: values.eventObject?.slice(-1)[0],
         pageSize: size,
-        pageIndex: page - 1,
+        pageIndex: page,
       },
     });
   };
@@ -310,9 +310,39 @@ function ToDolist(props) {
                     })(<Input placeholder="请输入" allowClear />)}
                   </Form.Item>
                 </Col>
-                <Col span={16}>
-                  <Form.Item label="发送时间" {...forminladeLayout}>
-                    {getFieldDecorator('createTime')(<RangePicker showTime allowClear />)}
+                <Col span={8}>
+                  <Form.Item label="建单时间">
+                    <Form.Item style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
+                      {getFieldDecorator('time1', {
+                        initialValue: '',
+                      })(
+                        <DatePicker
+                          showTime={{
+                            hideDisabledOptions: true,
+                            defaultValue: moment('00:00:00', 'HH:mm:ss'),
+                          }}
+                          placeholder="开始时间"
+                          format='YYYY-MM-DD HH:mm:ss'
+                          style={{ minWidth: 120, width: '100%' }}
+                        />
+                      )}
+                    </Form.Item>
+                    <span style={{ display: 'inline-block', width: '24px', textAlign: 'center' }}>-</span>
+                    <Form.Item style={{ display: 'inline-block', width: 'calc(50% - 12px)' }}>
+                      {getFieldDecorator('time2', {
+                        initialValue: '',
+                      })(
+                        <DatePicker
+                          showTime={{
+                            hideDisabledOptions: true,
+                            defaultValue: moment('23:59:59', 'HH:mm:ss'),
+                          }}
+                          placeholder="结束时间"
+                          format='YYYY-MM-DD HH:mm:ss'
+                          style={{ minWidth: 120, width: '100%' }}
+                        />
+                      )}
+                    </Form.Item>
                   </Form.Item>
                 </Col>
               </>

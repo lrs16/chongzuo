@@ -275,7 +275,6 @@ WrappedForm.defaultProps = {
     proposingUnit: '',
     proposingUnitId: '1',
     reason: '',
-    // registerTime: moment().format(),
     title: '',
   },
   userinfo: {

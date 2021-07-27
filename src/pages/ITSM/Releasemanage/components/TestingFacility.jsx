@@ -12,9 +12,12 @@ const typedata = [
 
 function TestingFacility(props) {
   const { title, isEdit } = props;
-  const [data, setData] = useState([{}]);
+  const [data, setData] = useState([]);
   const [newbutton, setNewButton] = useState(false);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+  const [selectedRowrecord, setSelectedRowRecord] = useState([]);
+
+  console.log(selectedRowrecord)
 
   // 新增一条记录
   const newMember = () => {
@@ -45,9 +48,20 @@ function TestingFacility(props) {
     setNewButton(false);
   }
 
-  const onSelectChange = RowKeys => {
-    setSelectedRowKeys(RowKeys)
+  const onSelectChange = (rowkeys, recordkeys) => {
+    setSelectedRowKeys(rowkeys)
+    setSelectedRowRecord(recordkeys)
   };
+
+  const handelDelete = () => {
+    const newarr = []
+    data.forEach(item => {
+      if (!selectedRowrecord.includes(item)) {
+        newarr.push(item)
+      }
+    });
+    console.log(newarr)
+  }
 
   const rowSelection = {
     selectedRowKeys,
@@ -110,7 +124,7 @@ function TestingFacility(props) {
             onClick={() => newMember()}
             disabled={newbutton}
           >新增</Button>
-          <Button type='danger' style={{ marginRight: 8 }} ghost>移除</Button>
+          <Button type='danger' style={{ marginRight: 8 }} ghost onClick={() => handelDelete()}>移除</Button>
           <Button type='primary' >导出清单</Button>
         </div>
         )}
