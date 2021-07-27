@@ -106,31 +106,7 @@ export default {
           routes: [
             {
               path: '/',
-<<<<<<< HEAD
               component: '../layouts/UserLayout',
-=======
-              redirect: '/monitormanage/home',
-            },
-            {
-              path: '/ITSM',
-              name: 'ITSM',
-              icon: 'smile',
-              component: './ITSM',
-            },
-            // {
-            //   path: '/admin',
-            //   name: 'admin',
-            //   icon: 'crown',
-            //   component: './Admin',
-            //   authority: ['admin'],
-            // },
-            //自动化运维
-            {
-              path: '/automation',
-              name: '自动化运维',
-              dynamic: true,
-              icon: 'deployment-unit',
->>>>>>> 权限管理：菜单配置，ITSM空页面
               routes: [
                 {
                   path: '/',
