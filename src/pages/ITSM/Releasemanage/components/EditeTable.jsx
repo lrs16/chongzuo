@@ -29,16 +29,19 @@ function EditeTable(props) {
     //  const newData = data.map(item => ({ ...item }));
     data.push({
       key: data.length + 1,
-      t0: taskName === '发布登记' ? '计划' : '临时',
-      t1: '',
-      t2: '',
-      t3: '',
-      t4: '',
-      t5: '',
-      t6: '001',
-      t7: '',
-      t8: sessionStorage.getItem('userName'),
-      t9: mainId,
+      listType: taskName === '发布登记' ? '计划' : '临时',
+      abilityType: '',
+      module: '',
+      appName: '',
+      problemType: '',
+      testMenu: '',
+      testResult: '',
+      testStep: '',
+      passTest: '001',
+      developer: '',
+      operator: sessionStorage.getItem('userName'),
+      operatorId: sessionStorage.getItem('userauthority'),
+      mainId,
       editable: false,
       isNew: true,
     });
@@ -136,8 +139,8 @@ function EditeTable(props) {
     },
     {
       title: '清单类型',
-      dataIndex: 't0',
-      key: 't0',
+      dataIndex: 'listType',
+      key: 'listType',
       width: 100,
       render: (text) => {
         return text
@@ -145,8 +148,8 @@ function EditeTable(props) {
     },
     {
       title: '功能类型',
-      dataIndex: 't1',
-      key: 't1',
+      dataIndex: 'abilityType',
+      key: 'abilityType',
       width: 200,
       render: (text, record) => {
         if (record.isNew || record.editable) {
@@ -167,8 +170,8 @@ function EditeTable(props) {
     },
     {
       title: '模块',
-      dataIndex: 't2',
-      key: 't2',
+      dataIndex: 'module',
+      key: 'module',
       width: 100,
       render: (text, record) => {
         if (record.isNew || record.editable) {
@@ -193,8 +196,8 @@ function EditeTable(props) {
     },
     {
       title: '功能名称',
-      dataIndex: 't3',
-      key: 't3',
+      dataIndex: 'appName',
+      key: 'appName',
       width: 80,
       render: (text, record) => {
         if (record.isNew || record.editable) {
@@ -213,8 +216,8 @@ function EditeTable(props) {
     },
     {
       title: '问题类型',
-      dataIndex: 't4',
-      key: 't4',
+      dataIndex: 'problemType',
+      key: 'problemType',
       width: 150,
       render: (text, record) => {
         if (record.isNew || record.editable) {
@@ -247,7 +250,7 @@ function EditeTable(props) {
                   defaultValue={record.menu}
                   autoSize
                   style={{ width: 330 }}
-                  onChange={e => handleFieldChange(e.target.value, 'menu', record.key)}
+                  onChange={e => handleFieldChange(e.target.value, 'testMenu', record.key)}
                 />
               </InputGroup>
               <InputGroup compact style={{ marginBottom: 12 }}>
@@ -256,7 +259,7 @@ function EditeTable(props) {
                   defaultValue={record.des}
                   autoSize
                   style={{ width: 330 }}
-                  onChange={e => handleFieldChange(e.target.value, 'menu', record.key)}
+                  onChange={e => handleFieldChange(e.target.value, 'testResult', record.key)}
                 />
               </InputGroup>
               <InputGroup compact>
@@ -265,7 +268,7 @@ function EditeTable(props) {
                   defaultValue={record.step}
                   autoSize
                   style={{ width: 330 }}
-                  onChange={e => handleFieldChange(e.target.value, 'menu', record.key)}
+                  onChange={e => handleFieldChange(e.target.value, 'testStep', record.key)}
                 />
               </InputGroup>
             </div>
@@ -275,17 +278,17 @@ function EditeTable(props) {
           <>
             <InputGroup compact>
               <span style={{ width: 70, textAlign: 'right' }}>功能菜单：</span>
-              <span style={{ width: 330 }}>{record.menu}</span>
+              <span style={{ width: 330 }}>{record.testMenu}</span>
             </InputGroup>
             <Divider type='horizontal' style={{ margin: '6px 0' }} />
             <InputGroup compact>
               <span style={{ width: 70, textAlign: 'right' }}>预期效果：</span>
-              <span style={{ width: 330 }}>{record.des}</span>
+              <span style={{ width: 330 }}>{record.testResult}</span>
             </InputGroup>
             <Divider type='horizontal' style={{ margin: '6px 0' }} />
             <InputGroup compact>
               <span style={{ width: 70, textAlign: 'right' }}>验证步骤：</span>
-              <span style={{ width: 330 }}>{record.step}</span>
+              <span style={{ width: 330 }}>{record.testStep}</span>
             </InputGroup>
           </>
         );
@@ -293,16 +296,16 @@ function EditeTable(props) {
     },
     {
       title: '是否通过',
-      dataIndex: 't6',
-      key: 't6',
+      dataIndex: 'passTest',
+      key: 'passTest',
       width: 80,
       render: (text, record) => {
         if (record.isNew || record.editable) {
           return (
             <>
-              <RadioGroup value={text}>
-                <Radio value='001'>通过</Radio>
-                <Radio value='002'>不通过</Radio>
+              <RadioGroup value={text} onChange={e => handleFieldChange(e.target.value, 'passTest', record.key)}>
+                <Radio value='通过'>通过</Radio>
+                <Radio value='不通过'>不通过</Radio>
               </RadioGroup>
             </>
           )
@@ -312,8 +315,8 @@ function EditeTable(props) {
     },
     {
       title: '开发人员',
-      dataIndex: 't7',
-      key: 't7',
+      dataIndex: 'developer',
+      key: 'developer',
       width: 100,
       render: (text, record) => {
         if (record.isNew || record.editable) {
@@ -323,7 +326,7 @@ function EditeTable(props) {
                 defaultValue={text}
                 autoSize
                 placeholder="请输入"
-                onChange={e => handleFieldChange(e.target.value, 't7', record.key)}
+                onChange={e => handleFieldChange(e.target.value, 'developer', record.key)}
               />
             </div>
           )
@@ -333,8 +336,8 @@ function EditeTable(props) {
     },
     {
       title: '操作人员',
-      dataIndex: 't8',
-      key: 't8',
+      dataIndex: 'operator',
+      key: 'operator',
       align: 'center',
       width: 80,
     },

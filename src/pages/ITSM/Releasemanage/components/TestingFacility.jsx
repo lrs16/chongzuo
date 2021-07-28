@@ -1,67 +1,76 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Table, Row, Button, Select, Input } from 'antd';
+
 
 const { Option } = Select;
 
 const typedata = [
   { key: '1', name: '测试环境', type: 'dell', app: '计量运维辅助平台' },
   { key: '2', name: '开发环境', type: 'hp', app: '计量运维辅助平台' },
-  { key: '3', name: '数据库备份', type: 'hp', app: '自动化运维平台' },
+  { key: '3', name: '数据库备份', type: '华为', app: '自动化运维平台' },
 ];
 
-
 function TestingFacility(props) {
-  const { title, isEdit } = props;
+  const { title, isEdit, dataSource, ChangeValue } = props;
   const [data, setData] = useState([]);
-  const [newbutton, setNewButton] = useState(false);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [selectedRowrecord, setSelectedRowRecord] = useState([]);
 
-  console.log(selectedRowrecord)
+  useEffect(() => {
+    if (dataSource.length && dataSource.length > 0) {
+      setData(dataSource)
+    }
+  }, [dataSource])
 
   // 新增一条记录
   const newMember = () => {
-    // setFilesList([]);
-    // setKeyUpload('');
-    //  const newData = data.map(item => ({ ...item }));
-    data.push({
+    const newData = data.map(item => ({ ...item }));
+    newData.push({
       key: data.length + 1,
-      id: '',
       name: '',
       type: '',
       app: '',
-      attachmentId: '',
-      editable: true,
       isNew: true,
     });
-    //  setData(newData);
-    setNewButton(true);
+    setData(newData);
+    setSelectedRowKeys([]);
+    setSelectedRowRecord([]);
   };
 
   const handleChange = (value, key) => {
     const rowdata = JSON.parse(value);
     const newdata = [...data];
     newdata[key - 1].name = rowdata.name;
+    newdata[key - 1].name = rowdata.name;
     newdata[key - 1].type = rowdata.type;
     newdata[key - 1].app = rowdata.app;
     setData(newdata);
-    setNewButton(false);
+    ChangeValue(newdata);
   }
 
-  const onSelectChange = (rowkeys, recordkeys) => {
-    setSelectedRowKeys(rowkeys)
-    setSelectedRowRecord(recordkeys)
-  };
-
   const handelDelete = () => {
-    const newarr = []
+    const newarr = [];
+    const arr = [];
     data.forEach(item => {
       if (!selectedRowrecord.includes(item)) {
         newarr.push(item)
       }
     });
-    console.log(newarr)
+    setData([...newarr]);
+    data.forEach(item => {
+      if (!selectedRowrecord.includes(item) && item.name !== '') {
+        arr.push(item)
+      }
+    });
+    ChangeValue(arr);
+    setSelectedRowKeys([]);
+    setSelectedRowRecord([]);
   }
+
+  const onSelectChange = (rowkeys, recordkeys) => {
+    setSelectedRowKeys(rowkeys);
+    setSelectedRowRecord(recordkeys)
+  };
 
   const rowSelection = {
     selectedRowKeys,
@@ -87,7 +96,7 @@ function TestingFacility(props) {
         if (record.isNew) {
           return (
             <>
-              <Select placeholder="请选择" onChange={v => handleChange(v, record.key)}>
+              <Select placeholder="请选择" onChange={v => handleChange(v, record.key)} value={text}>
                 {typedata.map(obj => [
                   <Option key={obj.key} value={JSON.stringify(obj)}>
                     {obj.name}
@@ -122,7 +131,6 @@ function TestingFacility(props) {
             type='primary'
             style={{ marginRight: 8 }}
             onClick={() => newMember()}
-            disabled={newbutton}
           >新增</Button>
           <Button type='danger' style={{ marginRight: 8 }} ghost onClick={() => handelDelete()}>移除</Button>
           <Button type='primary' >导出清单</Button>

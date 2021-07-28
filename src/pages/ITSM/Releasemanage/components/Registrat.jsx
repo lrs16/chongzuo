@@ -56,9 +56,9 @@ function Registrat(props, ref) {
     console.log(v)
   }
 
-  // 校验测试环境与发布清半日 
+  // 校验测试环境与发布清 
   const handleListValidator = (rule, value, callback) => {
-    if (value === '' || value === [] || value === [{}]) {
+    if (value === '' || value.length === 0) {
       callback()
     }
     callback()
@@ -201,38 +201,41 @@ function Registrat(props, ref) {
             </Col>
           )}
           <Col span={24} style={{ marginBottom: 24 }}>
-            {getFieldDecorator('releaseEnvs', {
-              rules: [{ required, message: '请选择测试环境' }, {
-                validator: handleListValidator
-              }],
-              initialValue: info.releaseEnvs,
-            })(
-              <TestingFacility
-                title='测试环境'
-                isEdit={isEdit}
-                dataSource={info.releaseEnvs}
-                ChangeValue={v => setFieldsValue({ releaseEnvs: v })}
-              />
-            )}
-
+            <Form.Item wrapperCol={{ span: 24 }}>
+              {getFieldDecorator('releaseEnvs', {
+                rules: [{ required, message: '请选择测试环境' }, {
+                  validator: handleListValidator
+                }],
+                initialValue: info.releaseEnvs,
+              })(
+                <TestingFacility
+                  title='测试环境'
+                  isEdit={isEdit}
+                  dataSource={info.releaseEnvs}
+                  ChangeValue={v => setFieldsValue({ releaseEnvs: v })}
+                />
+              )}
+            </Form.Item>
           </Col>
           <Col span={24} style={{ marginBottom: 12 }}>
-            {getFieldDecorator('releaseLists', {
-              rules: [{ required, message: '请填写发布清单' }, {
-                validator: handleListValidator
-              }],
-              initialValue: info.releaseLists,
-            })(
-              <EditeTable
-                title='发布清单'
-                functionmap={functionmap}
-                modulamap={modulamap}
-                isEdit={isEdit}
-                taskName={taskName}
-                mainId={mainId}
-                dataSource={info.releaseLists}
-              />
-            )}
+            <Form.Item wrapperCol={{ span: 24 }}>
+              {getFieldDecorator('releaseLists', {
+                rules: [{ required, message: '请填写发布清单' }, {
+                  validator: handleListValidator
+                }],
+                initialValue: info.releaseLists,
+              })(
+                <EditeTable
+                  title='发布清单'
+                  functionmap={functionmap}
+                  modulamap={modulamap}
+                  isEdit={isEdit}
+                  taskName={taskName}
+                  mainId={mainId}
+                  dataSource={info.releaseLists}
+                />
+              )}
+            </Form.Item>
           </Col>
           {taskName !== '业务验证' && (
             <Col span={24}>
@@ -254,6 +257,7 @@ function Registrat(props, ref) {
                 unitmap={unitmap}
                 isEdit={isEdit}
                 dataSource={info && info.releaseAttaches ? info.releaseAttaches : []}
+                Uint={getFieldsValue(['dutyUnit'])}
               />
             </FilesContext.Provider>
           </Col>
@@ -261,13 +265,13 @@ function Registrat(props, ref) {
             <Form.Item label="登记人" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
               {getFieldDecorator('registerUser', {
                 rules: [{ required, message: `请输入登记人` }],
-                initialValue: '',
+                initialValue: taskName === '发布登记' ? userinfo.userName : info.releaseRegister.registerUser,
               })(<Input disabled />)}
             </Form.Item>
             <Form.Item label="登记人Id" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }} style={{ display: 'none' }}>
               {getFieldDecorator('registerUser', {
                 rules: [{ required, message: `请输入登记人` }],
-                initialValue: '',
+                initialValue: taskName === '发布登记' ? userinfo.userId : info.releaseRegister.userId,
               })(<Input disabled />)}
             </Form.Item>
           </Col>
@@ -284,13 +288,13 @@ function Registrat(props, ref) {
             <Form.Item label="登记单位" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
               {getFieldDecorator('registerUnit', {
                 rules: [{ required, message: `请选择登记单位` }],
-                initialValue: '',
+                initialValue: taskName === '发布登记' ? userinfo.unitName : info.releaseRegister.registerUnit,
               })(<Input disabled />)}
             </Form.Item>
             <Form.Item label="登记单位Id" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }} style={{ display: 'none' }}>
               {getFieldDecorator('registerUnitId', {
                 rules: [{ required, message: `请选择登记单位` }],
-                initialValue: '',
+                initialValue: taskName === '发布登记' ? userinfo.unitId : info.releaseRegister.registerUnitId,
               })(<Input disabled />)}
             </Form.Item>
           </Col>

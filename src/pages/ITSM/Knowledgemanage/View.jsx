@@ -61,6 +61,16 @@ function Operation(props) {
     }
   }, [location.state]);
 
+  // 操作记录
+  useEffect(() => {
+    if (tabActivekey === 'List') {
+      dispatch({
+        type: 'knowledg/updatelist',
+        payload: { mainId }
+      });
+    };
+  }, [tabActivekey]);
+
   const tabList = [
     {
       key: 'workorder',

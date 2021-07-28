@@ -10,7 +10,7 @@ const { Option } = AutoComplete;
 
 
 function DocumentAtt(props) {
-  const { dispatch, rowkey, unitmap, isEdit, dataSource } = props;
+  const { dispatch, rowkey, unitmap, isEdit, dataSource, Uint } = props;
   const [data, setData] = useState([]);
   const [keyupload, setKeyUpload] = useState('');
 
@@ -166,16 +166,11 @@ function DocumentAtt(props) {
       dataIndex: 'dutyUint',
       key: 'dutyUint',
       width: 200,
+      align: 'center',
       render: (text, record) => {
-        if (isEdit && record.editable && (record.key === rowkey || record.key === '9' || rowkey === '3')) {
+        if (isEdit && record.editable && (record.key === rowkey || record.key !== '9' || rowkey === '3')) {
           return (
-            <Select placeholder="请选择" >
-              {unitmap.map(obj => [
-                <Option key={obj.key} value={obj.title}>
-                  {obj.title}
-                </Option>,
-              ])}
-            </Select>
+            Uint.dutyUnit
           )
         }
         return text;
@@ -186,6 +181,7 @@ function DocumentAtt(props) {
       dataIndex: 'docTemplate',
       key: 'docTemplate',
       with: 80,
+      align: 'center',
       render: (text, record) => {
         if (record.key === '9') {
           return null;

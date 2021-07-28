@@ -29,7 +29,6 @@ function Registration(props) {
   const [userchoice, setUserChoice] = useState(false);          // 已经选择人员  
   const [buttontype, setButtonType] = useState('');             // 按钮类型   
   const [taskId, setTaskId] = useState('');
-  console.log(userinfo)
 
   // 初始化用户信息，流程类型
   useEffect(() => {
@@ -60,23 +59,27 @@ function Registration(props) {
 
   // 保存,流转获取表单数据
   const handleSave = () => {
-    startFlow().then(res => {
-      if (res.code === 200) {
-        setButtonType('save');
-
-        // dispatch({
-        //   type: 'releaseregistra/saveorsubmit',
-        //   payload: {
-        //     taskId,
-        //     type: 1,
-        //     userIds: sessionStorage.getItem('NextflowUserId'),
-        //     buttontype,
-        //   }
-        // });
-      } else {
-        message.error(res.msg)
-      }
+    RegistratRef.current.Forms((err, val) => {
+      console.log(err)
+      console.log(val)
     })
+    // startFlow().then(res => {
+    //   if (res.code === 200) {
+    //     setButtonType('save');
+
+    //     dispatch({
+    //       type: 'releaseregistra/saveorsubmit',
+    //       payload: {
+    //         taskId,
+    //         type: 1,
+    //         userIds: sessionStorage.getItem('NextflowUserId'),
+    //         buttontype,
+    //       }
+    //     });
+    //   } else {
+    //     message.error(res.msg)
+    //   }
+    // })
   };
 
 
