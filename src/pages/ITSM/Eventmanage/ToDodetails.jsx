@@ -226,7 +226,7 @@ function ToDodetails(props) {
               </Button>
             )}
           {next === '确认' && taskName !== '处理中' && (
-            <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleHold('check')}>
+            <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleClick('check')}>
               转回访
             </Button>
           )}
@@ -235,7 +235,7 @@ function ToDodetails(props) {
               <Button
                 type="primary"
                 style={{ marginRight: 8 }}
-                onClick={() => { handleHold('flowcheck') }}>
+                onClick={() => { handleClick('flowcheck') }}>
                 转回访
               </Button>
               <Button

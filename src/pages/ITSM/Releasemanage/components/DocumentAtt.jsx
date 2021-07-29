@@ -10,7 +10,7 @@ const { Option } = AutoComplete;
 
 
 function DocumentAtt(props) {
-  const { dispatch, rowkey, unitmap, isEdit, dataSource, Uint } = props;
+  const { dispatch, rowkey, unitmap, isEdit, dataSource, Uint, check } = props;
   const [data, setData] = useState([]);
   const [keyupload, setKeyUpload] = useState('');
 
@@ -114,9 +114,12 @@ function DocumentAtt(props) {
       render: (text, record) => {
         if (isEdit && record.editable && (record.key === rowkey || rowkey === '3')) {
           return (
-            <div onMouseOver={() => { setKeyUpload(record.key) }} onFocus={() => 0} style={{ width: 300 }}>
-              <SysUpload />
-            </div>
+            <>
+              <div onMouseOver={() => { setKeyUpload(record.key) }} onFocus={() => 0} style={{ width: 300 }}>
+                <SysUpload />
+              </div>
+              {check && (<div style={{ color: '#f5222d' }}>请上传{record.docName}</div>)}
+            </>
           )
         } if (record.key === '9') {
           return (

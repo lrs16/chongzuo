@@ -82,16 +82,16 @@ export default {
           };
           if (buttype === 'release') {
             const mainIds = [saveres.mainId];
-            const subres = yield call(releasekowledge, { mainIds, userId });
-            if (subres.code === 200) {
+            const releaseres = yield call(releasekowledge, { mainIds, userId });
+            if (releaseres.code === 200) {
               message.success('发布成功');
               router.push({
-                pathname: `/ITSM/knowledgemanage/myknowledge`,
+                runpath: `/ITSM/knowledgemanage/maintain`,
                 query: { pathpush: true },
                 state: { cach: false, }
               });
             } else {
-              message.error(subres.msg)
+              message.error(releaseres.msg)
             };
           };
         }

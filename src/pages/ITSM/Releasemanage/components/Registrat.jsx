@@ -51,8 +51,11 @@ function Registrat(props, ref) {
 
   const [alertvisible, setAlertVisible] = useState(false);  // 超时告警是否显示
   const [alertmessage, setAlertMessage] = useState('');
+  const [check, setCheck] = useState(false);
 
   const ChangeFiles = (v) => {
+    console.log(getFieldsValue(['releaseAttaches']))
+    setCheck(false)
     console.log(v)
   }
 
@@ -70,13 +73,14 @@ function Registrat(props, ref) {
       const key = statumap.get(taskName);
       const target = value.filter(item => item.key === key)[0];
       if (target && target.attachFile === '') {
+        setCheck(true);
+        callback(`请上传${target.docName}`);
+      } else {
         callback()
       }
-    };
-    if (value === '') {
+    } else {
       callback()
     }
-    callback()
   }
 
   const formRef = useRef();
@@ -232,6 +236,16 @@ function Registrat(props, ref) {
             </Form.Item>
           </Col>
           <Col span={24} style={{ marginBottom: 12 }}>
+            <EditeTable
+              title='发布清单'
+              functionmap={functionmap}
+              modulamap={modulamap}
+              isEdit={isEdit}
+              taskName={taskName}
+              mainId={mainId}
+              dataSource={info.releaseLists}
+              ChangeValue={v => setFieldsValue({ releaseLists: v })}
+            />
             <Form.Item wrapperCol={{ span: 24 }}>
               {getFieldDecorator('releaseLists', {
                 rules: [{ required, message: '请填写发布清单' }, {
@@ -239,16 +253,7 @@ function Registrat(props, ref) {
                 }],
                 initialValue: info.releaseLists,
               })(
-                <EditeTable
-                  title='发布清单'
-                  functionmap={functionmap}
-                  modulamap={modulamap}
-                  isEdit={isEdit}
-                  taskName={taskName}
-                  mainId={mainId}
-                  dataSource={info.releaseLists}
-                  ChangeValue={v => setFieldsValue({ releaseLists: v })}
-                />
+                <></>
               )}
             </Form.Item>
           </Col>
@@ -263,27 +268,27 @@ function Registrat(props, ref) {
             </Col>
           )}
           <Col span={24} style={{ marginBottom: 24 }}>
-            <Form.Item wrapperCol={{ span: 24 }}>
+            <FilesContext.Provider value={{
+              files: [],
+              ChangeFiles,
+            }}>
+              <DocumentAtt
+                rowkey={statumap.get(taskName)}
+                unitmap={unitmap}
+                isEdit={isEdit}
+                dataSource={info && info.releaseAttaches ? info.releaseAttaches : []}
+                Uint={getFieldsValue(['dutyUnit'])}
+                ChangeValue={v => setFieldsValue({ releaseAttaches: v })}
+                check={check}
+              />
+            </FilesContext.Provider>
+            <Form.Item wrapperCol={{ span: 24 }} style={{ display: 'none' }}>
               {getFieldDecorator('releaseAttaches', {
                 rules: [{ required, message: '请上传附件' }, {
                   validator: handleAttValidator
                 }],
                 initialValue: info.releaseAttaches,
-              })(
-                <FilesContext.Provider value={{
-                  files: [],
-                  ChangeFiles,
-                }}>
-                  <DocumentAtt
-                    rowkey={statumap.get(taskName)}
-                    unitmap={unitmap}
-                    isEdit={isEdit}
-                    dataSource={info && info.releaseAttaches ? info.releaseAttaches : []}
-                    Uint={getFieldsValue(['dutyUnit'])}
-                    ChangeValue={v => setFieldsValue({ releaseAttaches: v })}
-                  />
-                </FilesContext.Provider>
-              )}
+              })(<></>)}
             </Form.Item>
           </Col>
           <Col span={8}>

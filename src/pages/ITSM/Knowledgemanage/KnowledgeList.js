@@ -503,13 +503,12 @@ function KnowledgeList(props) {
     }
   }, [location.state]);
 
-
   useEffect(() => {
     handleSearch(1, 15);
     dispatch({
       type: 'itsmuser/fetchuser',
     });
-  }, []);
+  }, [location]);
 
   useEffect(() => {
     if (statist) {
