@@ -58,6 +58,7 @@ function Registrat(props, ref) {
 
   // 校验测试环境与发布清 
   const handleListValidator = (rule, value, callback) => {
+    console.log(value)
     if (value === '' || value.length === 0) {
       callback()
     }

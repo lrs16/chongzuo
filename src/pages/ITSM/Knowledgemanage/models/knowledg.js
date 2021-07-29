@@ -32,7 +32,7 @@ export default {
       });
     },
     // 新建保存
-    *add({ payload: { payvalue, buttype, userId } }, { call }) {
+    *add({ payload: { payvalue, buttype, userId, menuDes } }, { call }) {
       const tabid = sessionStorage.getItem('tabid')
       const resadd = yield call(addkowledge);
       if (resadd.code === 200) {
@@ -51,18 +51,18 @@ export default {
           })
           if (buttype === 'save') {
             router.push({
-              pathname: `/ITSM/knowledgemanage/myknowledge/operation`,
+              pathname: `/ITSM/knowledgemanage/${menuDes ? 'maintain' : 'myknowledge'}/operation`,
               query: {
                 Id: saveres.no,
                 mainId: saveres.mainId
               },
               state: {
-                runpath: '/ITSM/knowledgemanage/myknowledge',
-                title: '我的知识',
+                runpath: `/ITSM/knowledgemanage/${menuDes ? 'maintain' : 'myknowledge'}`,
+                title: menuDes || '我的知识',
                 dynamicpath: true,
                 menuDesc: '编辑知识',
                 mainId: saveres.mainId,
-                status: '已登记'
+                status: '已登记',
               },
             });
           };
@@ -238,6 +238,9 @@ export default {
     // 列表
     *fetchlist({ payload }, { call, put }) {
       const response = yield call(queryTodoList, payload);
+      yield put({
+        type: 'clearcache',
+      });
       if (response.code === 200) {
         yield put({
           type: 'save',

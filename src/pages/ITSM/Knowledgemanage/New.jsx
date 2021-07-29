@@ -26,7 +26,8 @@ function New(props) {
           payload: {
             payvalue: { ...values },
             buttype,
-            userId: choiceUser.users
+            userId: choiceUser.users,
+            menuDes,
           },
         });
       }
@@ -108,13 +109,14 @@ function New(props) {
       >
         保存
       </Button>
-      <Button
+      {menuDes !== '知识维护' && (<Button
         type="primary"
         style={{ marginRight: 8 }}
         onClick={() => { handleSubmit() }}
       >
         提交
       </Button>
+      )}
       {menuDes === '知识维护' && (<Button
         type="primary"
         style={{ marginRight: 8 }}

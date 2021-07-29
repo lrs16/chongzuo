@@ -151,9 +151,9 @@ function KnowledgeList(props) {
             } else {
               message.error(res.msg)
             };
+            handleSearch(1, 15);
             setSelectedRowKeys([]);
             setSelectedRecords([]);
-            handleSearch(1, 15);
           })
         } else {
           message.error('请选择知识状态为‘已登记’的数据')
@@ -174,9 +174,9 @@ function KnowledgeList(props) {
             } else {
               message.error(res.msg)
             };
+            handleSearch(1, 15);
             setSelectedRowKeys([]);
             setSelectedRecords([]);
-            handleSearch(1, 15);
           })
         } else {
           message.error('请选择知识状态为‘已发布’的数据');
@@ -200,9 +200,9 @@ function KnowledgeList(props) {
             } else {
               message.error(res.msg)
             };
+            handleSearch(1, 15);
             setSelectedRowKeys([]);
             setSelectedRecords([]);
-            handleSearch(1, 15);
             setPageinations({ current: 1, pageSize: 15 })
           })
         } else {
@@ -227,9 +227,9 @@ function KnowledgeList(props) {
             } else {
               message.error(res.msg)
             };
+            handleSearch(1, 15);
             setSelectedRowKeys([]);
             setSelectedRecords([]);
-            handleSearch(1, 15);
             setPageinations({ current: 1, pageSize: 15 })
 
           })
@@ -255,9 +255,9 @@ function KnowledgeList(props) {
             } else {
               message.error(res.msg)
             };
+            handleSearch(1, 15);
             setSelectedRowKeys([]);
             setSelectedRecords([]);
-            handleSearch(1, 15);
             setPageinations({ current: 1, pageSize: 15 })
           })
         } else {
@@ -358,9 +358,9 @@ function KnowledgeList(props) {
             message.success(res.msg)
           }
         });
+        handleSearch(1, 15);
         setSelectedRowKeys([]);
         setSelectedRecords([]);
-        handleSearch(1, 15);
         setChoiceUser({ users: '', ischange: false });
       } else {
         message.error('仅能选择状态为‘已登记’的数据')
@@ -408,7 +408,7 @@ function KnowledgeList(props) {
         ]);
         const handleClick = () => {
           router.push({
-            pathname: (record.status === '已发布' || record.status === '已废止') ? '/ITSM/knowledgemanage/query/details' : `${location.pathname}/operation`,
+            pathname: ((pagetitle !== '知识审核' && (record.status !== '已登记')) || (pagetitle === '知识审核' && record.status !== '待审核')) ? '/ITSM/knowledgemanage/query/details' : `${location.pathname}/operation`,
             query: {
               Id: record.no,
               mainId: record.id
@@ -417,7 +417,7 @@ function KnowledgeList(props) {
               runpath: location.pathname,
               title: pagetitle,
               dynamicpath: true,
-              menuDesc: (record.status === '已登记' || record.status === '待审核') ? desmap.get(pagetitle) : '知识详情',
+              menuDesc: (record.status === '已登记' || (pagetitle === '知识审核' && record.status === '待审核')) ? desmap.get(pagetitle) : '知识详情',
               status: record.status,
             },
           });
@@ -701,7 +701,7 @@ function KnowledgeList(props) {
           {pagetitle === '知识维护' && (
             <>
               <Button type="primary" style={{ marginRight: 8 }} onClick={() => newknowledge('edit')}>新增</Button >
-              <Button type="primary" style={{ marginRight: 8 }} onClick={() => ClickBut('submit')}>提交</Button >
+              {/* <Button type="primary" style={{ marginRight: 8 }} onClick={() => ClickBut('submit')}>提交</Button > */}
             </>
           )}
           {/* {(pagetitle === '知识审核') && (

@@ -11,7 +11,7 @@ const { Option } = Select;
 const { TabPane } = Tabs;
 
 function EditeTable(props) {
-  const { title, functionmap, modulamap, isEdit, listType, taskName, mainId, dataSource } = props;
+  const { title, functionmap, modulamap, isEdit, taskName, mainId, dataSource } = props;
   const [data, setData] = useState([]);
   const [newbutton, setNewButton] = useState(false);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
@@ -26,8 +26,8 @@ function EditeTable(props) {
   const newMember = () => {
     // setFilesList([]);
     // setKeyUpload('');
-    //  const newData = data.map(item => ({ ...item }));
-    data.push({
+    const newData = data.map(item => ({ ...item }));
+    newData.push({
       key: data.length + 1,
       listType: taskName === '发布登记' ? '计划' : '临时',
       abilityType: '',
@@ -45,9 +45,15 @@ function EditeTable(props) {
       editable: false,
       isNew: true,
     });
-    //  setData(newData);
-    setNewButton(true);
+    setData(newData);
+    //  setNewButton(true);
   };
+
+  useEffect(() => {
+    if (data.length === 0) {
+      newMember()
+    }
+  }, [data])
 
   const onSelectChange = RowKeys => {
     setSelectedRowKeys(RowKeys)
@@ -159,7 +165,7 @@ function EditeTable(props) {
                 fieldNames={{ label: 'title', value: 'title', children: 'children' }}
                 options={functionmap}
                 defaultValue={record.isNew ? [] : text.split('/')}
-                onChange={e => handleFieldChange(e, 't1', record.key)}
+                onChange={e => handleFieldChange(e, 'abilityType', record.key)}
 
               />
             </div>
@@ -180,7 +186,7 @@ function EditeTable(props) {
               <Select
                 defaultValue={record.t2}
                 placeholder="请选择"
-                onChange={e => handleFieldChange(e, 't2', record.key)}
+                onChange={e => handleFieldChange(e, 'module', record.key)}
               >
                 {modulamap.map(obj => [
                   <Option key={obj.key} value={obj.title}>
@@ -204,7 +210,7 @@ function EditeTable(props) {
           return (
             <div className={text === '' ? styles.requiredform : ''}>
               <Input
-                onChange={e => handleFieldChange(e.target.value, 't3', record.key)}
+                onChange={e => handleFieldChange(e.target.value, 'appName', record.key)}
                 defaultValue={record.t3}
                 placeholder="请输入"
               />
@@ -227,7 +233,7 @@ function EditeTable(props) {
                 defaultValue={text}
                 autoSize
                 placeholder="请输入"
-                onChange={e => handleFieldChange(e.target.value, 't4', record.key)}
+                onChange={e => handleFieldChange(e.target.value, 'problemType', record.key)}
               />
             </div>
           )
@@ -417,7 +423,6 @@ function EditeTable(props) {
       )}
       <Row style={{ marginBottom: 8 }} type='flex' align='bottom'>
         <Col span={18}>
-
           <span><b>前台功能统计：</b>
             缺陷修复项<b style={{ color: '#1890ff', padding: '0 3px' }}>0</b>项，
             变更功能项<b style={{ color: '#1890ff', padding: '0 3px' }}>0</b>项，

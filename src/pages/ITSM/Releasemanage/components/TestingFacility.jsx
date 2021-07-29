@@ -16,11 +16,7 @@ function TestingFacility(props) {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [selectedRowrecord, setSelectedRowRecord] = useState([]);
 
-  useEffect(() => {
-    if (dataSource.length && dataSource.length > 0) {
-      setData(dataSource)
-    }
-  }, [dataSource])
+
 
   // 新增一条记录
   const newMember = () => {
@@ -76,6 +72,18 @@ function TestingFacility(props) {
     selectedRowKeys,
     onChange: onSelectChange,
   };
+
+  useEffect(() => {
+    if (dataSource.length && dataSource.length > 0) {
+      setData(dataSource)
+    }
+  }, [dataSource])
+
+  useEffect(() => {
+    if (data.length === 0) {
+      newMember()
+    }
+  }, [data])
 
   const columns = [
     {
