@@ -115,6 +115,14 @@ const ReturnVisit = React.forwardRef((props, ref) => {
   const handleresultmap = getTypebykey('486846455059841024');
   const satisfactionmap = getTypebykey('486855005945462784');
 
+
+  const handleAttValidator = (rule, value, callback) => {
+    if (value === '') {
+      callback()
+    }
+    callback()
+  }
+
   return (
     <>
       <Row gutter={24} style={{ paddingTop: 24 }}>
@@ -210,15 +218,19 @@ const ReturnVisit = React.forwardRef((props, ref) => {
               })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" style={{ width: '100%' }} />)}
             </Form.Item>
           </Col>
-          <Col span={24}>
-            <Form.Item
-              label="上传附件"
-              {...forminladeLayout}
+          <Col span={24} >
+            <Form.Item label="上传附件" {...forminladeLayout}
             // extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
-            >
+            >{getFieldDecorator('finish_fileIds', {
+              rules: [{ required, message: '请上传附件' }, {
+                validator: handleAttValidator
+              }],
+              initialValue: finish && finish.fileIds && finish.fileIds !== '[]' ? finish.fileIds : '',
+            })(
               <div style={{ width: 400 }}>
                 <SysUpload fileslist={files} ChangeFileslist={newvalue => setFilesList(newvalue)} />
               </div>
+            )}
             </Form.Item>
           </Col>
           <Col span={8}>

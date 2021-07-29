@@ -200,7 +200,7 @@ function WorkOrder2(props) {
     setFormregistrat({
       ...values,
       main_eventObject: values.main_eventObject.slice(-1)[0],
-      register_occurTime: values.register_occurTime.format('YYYY-MM-DD HH:mm:ss'),
+      register_occurTime: moment(values.register_occurTime).format('YYYY-MM-DD HH:mm:ss'),
       // register_applicationUserId: values.register_applicationUser === '' ? '' : values.register_applicationUser,
       register_mobilePhone: values.main_revisitWay === '002' ? values.mobilePhone1 : values.mobilePhone2,
       register_applicationUnit: values.applicationUnit,
@@ -223,7 +223,7 @@ function WorkOrder2(props) {
       RegistratRef.current.Forms(err => {
         needUser(err);
       });
-      console.clear()
+      //  console.clear()
     }
   };
 
@@ -233,7 +233,7 @@ function WorkOrder2(props) {
     const values = CheckRef.current.getVal();
     setFormcheck({
       ...values,
-      check_checkTime: values.check_checkTime.format('YYYY-MM-DD HH:mm:ss'),
+      check_checkTime: moment(values.check_checkTime).format('YYYY-MM-DD HH:mm:ss'),
       check_fileIds: JSON.stringify(files.arr),
       check_content: values.check_checkResult === '001' ? values.content1 : values.content2,
     });
@@ -265,7 +265,7 @@ function WorkOrder2(props) {
         setFormregistrat({
           ...v,
           main_eventObject: v.main_eventObject.slice(-1)[0],
-          register_occurTime: v.register_occurTime.format('YYYY-MM-DD HH:mm:ss'),
+          register_occurTime: moment(v.register_occurTime).format('YYYY-MM-DD HH:mm:ss'),
           register_applicationUnit: v.applicationUnit,
           register_applicationUnitId: v.applicationUnit === '' ? '' : v.register_applicationUnitId,
           register_applicationDept: v.register_applicationDept !== '' ? v.register_applicationDept : v.register_applicationUnit,
@@ -278,7 +278,7 @@ function WorkOrder2(props) {
         setFormhandle({
           ...values,
           main_eventObject: values.main_eventObject?.slice(-1)[0],
-          handle_endTime: values.handle_endTime.format('YYYY-MM-DD HH:mm:ss'),
+          handle_endTime: moment(values.handle_endTime).format('YYYY-MM-DD HH:mm:ss'),
           handle_fileIds: JSON.stringify(files.arr),
         });
         if (type === 'save') {
@@ -287,7 +287,7 @@ function WorkOrder2(props) {
           HandleRef.current.Forms((err) => {
             noUser(err);
           })
-          console.clear();
+          // console.clear();
         }
       } else {
         formerr();
@@ -299,7 +299,7 @@ function WorkOrder2(props) {
     setFormhandle({
       ...values,
       main_eventObject: values.main_eventObject?.slice(-1)[0],
-      handle_endTime: values.handle_endTime.format('YYYY-MM-DD HH:mm:ss'),
+      handle_endTime: moment(values.handle_endTime).format('YYYY-MM-DD HH:mm:ss'),
       handle_fileIds: JSON.stringify(files.arr),
     });
     switch (type) {
@@ -328,7 +328,7 @@ function WorkOrder2(props) {
     const values = ReturnVisitRef.current.getVal();
     setFormvisit({
       ...values,
-      finish_revisitTime: values.finish_revisitTime.format('YYYY-MM-DD HH:mm:ss'),
+      finish_revisitTime: moment(values.finish_revisitTime).format('YYYY-MM-DD HH:mm:ss'),
       finish_fileIds: JSON.stringify(files.arr),
     });
     switch (type) {
@@ -344,7 +344,7 @@ function WorkOrder2(props) {
         ReturnVisitRef.current.Forms((err) => {
           noUser(err);
         })
-        console.clear()
+        // console.clear()
         break;
       default:
         break;

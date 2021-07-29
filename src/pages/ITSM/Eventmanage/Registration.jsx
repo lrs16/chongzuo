@@ -118,7 +118,7 @@ function Registration(props) {
       setFormregistrat({
         ...values,
         main_eventObject: values.main_eventObject?.slice(-1)[0],
-        register_occurTime: values.register_occurTime.format('YYYY-MM-DD HH:mm:ss'),
+        register_occurTime: moment(values.register_occurTime).format('YYYY-MM-DD HH:mm:ss'),
         register_applicationUnit: values.applicationUnit,
         register_applicationUnitId: values.applicationUnit === '' ? '' : values.register_applicationUnitId,
         register_mobilePhone: values.main_revisitWay === '002' ? values.mobilePhone1 : values.mobilePhone2,
@@ -139,7 +139,7 @@ function Registration(props) {
         setFormhandle({
           ...val,
           main_eventObject: val.main_eventObject?.slice(-1)[0],
-          handle_endTime: val.handle_endTime.format('YYYY-MM-DD HH:mm:ss'),
+          handle_endTime: moment(val.handle_endTime).format('YYYY-MM-DD HH:mm:ss'),
           handle_fileIds: JSON.stringify(handlefiles.arr),
         });
         setIscheck({ save: false, flow: false });

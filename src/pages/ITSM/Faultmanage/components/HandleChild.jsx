@@ -216,7 +216,7 @@ const HandleChild = React.forwardRef((props, ref) => {
           <KnowledgCollect
             valuealready={valuealready}
             content={knowledgecontent}
-            orderType='problem'
+            orderType='trouble'
             orderId={mainId}
             ChangeValuealready={(v) => setValuealready(v)}
             HandleGEtContent={() => getContent()}

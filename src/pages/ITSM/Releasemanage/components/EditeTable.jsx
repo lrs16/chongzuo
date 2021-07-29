@@ -177,7 +177,7 @@ function EditeTable(props) {
       render: (text, record) => {
         if (record.isNew || record.editable) {
           return (
-            <div className={text === '' && dataSource.length !== 0 ? styles.requiredform : ''}>
+            <div className={text === '' ? styles.requiredform : ''}>
               <Cascader
                 fieldNames={{ label: 'title', value: 'title', children: 'children' }}
                 options={functionmap}
@@ -199,7 +199,7 @@ function EditeTable(props) {
       render: (text, record) => {
         if (record.isNew || record.editable) {
           return (
-            <div className={text === '' && dataSource.length !== 0 ? styles.requiredselect : ''}>
+            <div className={text === '' ? styles.requiredselect : ''}>
               <Select
                 defaultValue={record.module}
                 placeholder="请选择"
@@ -225,7 +225,7 @@ function EditeTable(props) {
       render: (text, record) => {
         if (record.isNew || record.editable) {
           return (
-            <div className={text === '' && dataSource.length !== 0 ? styles.requiredform : ''}>
+            <div className={text === '' ? styles.requiredform : ''}>
               <Input
                 onChange={e => handleFieldChange(e.target.value, 'appName', record.key)}
                 defaultValue={text}
@@ -245,7 +245,7 @@ function EditeTable(props) {
       render: (text, record) => {
         if (record.isNew || record.editable) {
           return (
-            <div className={text === '' && dataSource.length !== 0 ? styles.requiredform : ''}>
+            <div className={text === '' ? styles.requiredform : ''}>
               <TextArea
                 defaultValue={text}
                 autoSize
@@ -267,7 +267,7 @@ function EditeTable(props) {
         if (record.isNew || record.editable) {
           return (
             <>
-              <div className={record.testMenu === '' && dataSource.length !== 0 ? styles.requiredform : ''}>
+              <div className={record.testMenu === '' ? styles.requiredform : ''}>
                 <InputGroup compact style={{ marginBottom: 12 }}>
                   <span style={{ width: 70, textAlign: 'right', paddingTop: 4 }}>功能菜单：</span>
                   <TextArea
@@ -278,7 +278,7 @@ function EditeTable(props) {
                   />
                 </InputGroup>
               </div>
-              <div className={record.testResult === '' && dataSource.length !== 0 ? styles.requiredform : ''}>
+              <div className={record.testResult === '' ? styles.requiredform : ''}>
                 <InputGroup compact style={{ marginBottom: 12 }}>
                   <span style={{ width: 70, textAlign: 'right', paddingTop: 4 }}>预期效果：</span>
                   <TextArea
@@ -289,7 +289,7 @@ function EditeTable(props) {
                   />
                 </InputGroup>
               </div>
-              <div className={record.testStep === '' && dataSource.length !== 0 ? styles.requiredform : ''}>
+              <div className={record.testStep === '' ? styles.requiredform : ''}>
                 <InputGroup compact>
                   <span style={{ width: 70, textAlign: 'right', paddingTop: 4 }}>验证步骤：</span>
                   <TextArea
@@ -351,7 +351,7 @@ function EditeTable(props) {
       render: (text, record) => {
         if (record.isNew || record.editable) {
           return (
-            <div className={text === '' && dataSource.length !== 0 ? styles.requiredform : ''}>
+            <div className={text === '' ? styles.requiredform : ''}>
               <TextArea
                 defaultValue={text}
                 autoSize
