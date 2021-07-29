@@ -21,11 +21,23 @@ function Operation(props) {
   const [tabActivekey, settabActivekey] = useState('workorder'); // 打开标签
   const [choiceUser, setChoiceUser] = useState({ users: '', ischange: false });
   const [userlist, setUserList] = useState([]);
+  const [menuDesc, setMenuDesc] = useState('');
+  const [title, setTitle] = useState('');
+  const [runpath, setRunpath] = useState('');
+  const [status, setStatus] = useState('');
   const [uservisible, setUserVisible] = useState(false); // 是否显示选人组件
   const ContentRef = useRef(null);
   const ExmaineRef = useRef(null);
   const { currenttab } = useContext(EditContext);
-  const { state: { menuDesc, title, runpath, status } } = currenttab;
+
+  useEffect(() => {
+    if (currenttab && currenttab.state) {
+      setMenuDesc(currenttab.state.menuDesc);
+      setTitle(currenttab.state.title);
+      setRunpath(currenttab.state.runpath);
+      setStatus(currenttab.state.status);
+    }
+  }, [currenttab])
 
   const callback = key => {
     setActiveKey(key);
@@ -194,7 +206,7 @@ function Operation(props) {
 
   const operations = (
     <>
-      {tabActivekey === 'workorder' && (
+      {tabActivekey === 'workorder' && menuDesc && (
         <>
           {(menuDesc === '编辑知识') && (<Button
             type="primary"
@@ -244,89 +256,93 @@ function Operation(props) {
   )
   return (
     <div style={{ marginTop: '-24px' }}>
-      <Breadcrumb style={{ padding: '12px 24px 16px 24px', background: '#fff', margin: '0 -24px' }}>
-        <Breadcrumb.Item><a href="/">首页</a></Breadcrumb.Item>
-        <Breadcrumb.Item>知识管理</Breadcrumb.Item>
-        <Breadcrumb.Item>{title}</Breadcrumb.Item>
-        <Breadcrumb.Item>{menuDesc}</Breadcrumb.Item>
-      </Breadcrumb>
-      <PageHeaderWrapper
-        title={menuDesc}
-        extra={operations}
-        breadcrumb={false}
-        tabList={tabList}
-        tabActiveKey={tabActivekey}
-        onTabChange={handleTabChange}
-      >
-        {tabActivekey === 'workorder' && (
-          <Spin spinning={loading} >
-            {info && (
-              <div className={styles.ordercollapse}>
-                <Collapse
-                  expandIconPosition="right"
-                  activeKey={activeKey}
-                  bordered={false}
-                  onChange={callback}
-                >
+      {menuDesc && title && (
+        <>
+          <Breadcrumb style={{ padding: '12px 24px 16px 24px', background: '#fff', margin: '0 -24px' }}>
+            <Breadcrumb.Item><a href="/">首页</a></Breadcrumb.Item>
+            <Breadcrumb.Item>知识管理</Breadcrumb.Item>
+            <Breadcrumb.Item>{title}</Breadcrumb.Item>
+            <Breadcrumb.Item>{menuDesc}</Breadcrumb.Item>
+          </Breadcrumb>
+          <PageHeaderWrapper
+            title={menuDesc}
+            extra={operations}
+            breadcrumb={false}
+            tabList={tabList}
+            tabActiveKey={tabActivekey}
+            onTabChange={handleTabChange}
+          >
+            {tabActivekey === 'workorder' && (
+              <Spin spinning={loading} >
+                {info && (
+                  <div className={styles.ordercollapse}>
+                    <Collapse
+                      expandIconPosition="right"
+                      activeKey={activeKey}
+                      bordered={false}
+                      onChange={callback}
+                    >
 
-                  {(title === '我的知识' || title === '知识维护') && status === '已登记' && (
-                    <Panel header='知识收录' key="formpanel">
-                      <EditContext.Provider value={{
-                        editable: true,
-                        files: (info.edit.main && info.edit.main.fileIds) ? JSON.parse(info.edit.main.fileIds) : [],
-                        ChangeFiles,
-                      }}>
-                        <Content
-                          wrappedComponentRef={ContentRef}
-                          formrecord={info.edit.main}
-                          isedit
-                        />
-                      </EditContext.Provider>
-                    </Panel>
-                  )}
-                  {title === '知识审核' && status === '待审核' && (
-                    <Panel header='知识审核' key="formpanel">
-                      <Examine
-                        wrappedComponentRef={ExmaineRef}
-                        check={info.edit.check === '' ? undefined : info.edit.check}
-                        userinfo={userinfo}
-                      />
-                    </Panel>
-                  )}
-                  {(menuDesc === '知识详情' || title === '知识审核') && (
-                    <Panel header='知识收录' key="1">
-                      <EditContext.Provider value={{ editable: false }}>
-                        <Content
-                          wrappedComponentRef={ContentRef}
-                          formrecord={info.data[0].main}
-                          isedit
-                          Noediting
-                        />
-                      </EditContext.Provider>
-                    </Panel>
-                  )}
-                  {(menuDesc === '知识详情' || (title === '我的知识' && info.data && info.data[1] && info.data[1].check)) && info.data[1] && (
-                    <Panel header='知识审核' key="2">
-                      <Examine
-                        wrappedComponentRef={ExmaineRef}
-                        check={info.data[1].check}
-                        Noediting
-                      />
-                    </Panel>
-                  )}
-                </Collapse>
-              </div >
+                      {(title === '我的知识' || title === '知识维护') && status === '已登记' && (
+                        <Panel header='知识收录' key="formpanel">
+                          <EditContext.Provider value={{
+                            editable: true,
+                            files: (info.edit.main && info.edit.main.fileIds) ? JSON.parse(info.edit.main.fileIds) : [],
+                            ChangeFiles,
+                          }}>
+                            <Content
+                              wrappedComponentRef={ContentRef}
+                              formrecord={info.edit.main}
+                              isedit
+                            />
+                          </EditContext.Provider>
+                        </Panel>
+                      )}
+                      {title === '知识审核' && status === '待审核' && (
+                        <Panel header='知识审核' key="formpanel">
+                          <Examine
+                            wrappedComponentRef={ExmaineRef}
+                            check={info.edit.check === '' ? undefined : info.edit.check}
+                            userinfo={userinfo}
+                          />
+                        </Panel>
+                      )}
+                      {(menuDesc === '知识详情' || title === '知识审核') && (
+                        <Panel header='知识收录' key="1">
+                          <EditContext.Provider value={{ editable: false }}>
+                            <Content
+                              wrappedComponentRef={ContentRef}
+                              formrecord={info.data[0].main}
+                              isedit
+                              Noediting
+                            />
+                          </EditContext.Provider>
+                        </Panel>
+                      )}
+                      {(menuDesc === '知识详情' || (title === '我的知识' && info.data && info.data[1] && info.data[1].check)) && info.data[1] && (
+                        <Panel header='知识审核' key="2">
+                          <Examine
+                            wrappedComponentRef={ExmaineRef}
+                            check={info.data[1].check}
+                            Noediting
+                          />
+                        </Panel>
+                      )}
+                    </Collapse>
+                  </div >
+                )}
+
+              </Spin>
             )}
-
-          </Spin>
-        )}
-        {tabActivekey === 'List' && (
-          <UpDataList data={updatas} loading={loading} />
-        )}
-        <EditContext.Provider value={{ setChoiceUser, uservisible, setUserVisible, title: '审核' }}>
-          <CheckOneUser userlist={userlist} />
-        </EditContext.Provider>
-      </PageHeaderWrapper>
+            {tabActivekey === 'List' && (
+              <UpDataList data={updatas} loading={loading} />
+            )}
+            <EditContext.Provider value={{ setChoiceUser, uservisible, setUserVisible, title: '审核' }}>
+              <CheckOneUser userlist={userlist} />
+            </EditContext.Provider>
+          </PageHeaderWrapper>
+        </>
+      )}
     </div>
   );
 }

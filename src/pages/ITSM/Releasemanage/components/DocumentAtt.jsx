@@ -207,21 +207,21 @@ function DocumentAtt(props) {
         return text;
       }
     },
-    {
-      title: '操作',
-      key: 'action',
-      fixed: 'right',
-      width: 100,
-      align: 'center',
-      render: (text, record) => {
-        if (record.editable) {
-          return (
-            <Button type='link' onClick={e => saveRow(e, record.key)}>保存</Button>
-          );
-        }
-        return null;
-      },
-    },
+    // {
+    //   title: '操作',
+    //   key: 'action',
+    //   fixed: 'right',
+    //   width: 100,
+    //   align: 'center',
+    //   render: (text, record) => {
+    //     if (record.editable) {
+    //       return (
+    //         <Button type='link' onClick={e => saveRow(e, record.key)}>保存</Button>
+    //       );
+    //     }
+    //     return null;
+    //   },
+    // },
   ];
   return (
     <Table

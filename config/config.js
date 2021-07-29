@@ -492,7 +492,7 @@ export default {
                         },
                         {
                           path: '/ITSM/releasemanage/registration',
-                          name: '发布登记',
+                          name: '出厂测试',
                           icon: 'control',
                           component: './ITSM/Releasemanage/Registration',
                         },

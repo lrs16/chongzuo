@@ -11,7 +11,7 @@ const { Option } = Select;
 const { TabPane } = Tabs;
 
 function EditeTable(props) {
-  const { title, functionmap, modulamap, isEdit, taskName, mainId, dataSource } = props;
+  const { title, functionmap, modulamap, isEdit, taskName, mainId, dataSource, ChangeValue } = props;
   const [data, setData] = useState([]);
   const [newbutton, setNewButton] = useState(false);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
@@ -37,21 +37,22 @@ function EditeTable(props) {
       testMenu: '',
       testResult: '',
       testStep: '',
-      passTest: '001',
+      passTest: '通过',
       developer: '',
       operator: sessionStorage.getItem('userName'),
-      operatorId: sessionStorage.getItem('userauthority'),
+      operatorId: sessionStorage.getItem('userauthorityid'),
       mainId,
       editable: false,
       isNew: true,
     });
     setData(newData);
-    //  setNewButton(true);
+    setNewButton(true);
   };
 
   useEffect(() => {
     if (data.length === 0) {
-      newMember()
+      newMember();
+      setNewButton(true);
     }
   }, [data])
 
@@ -99,20 +100,21 @@ function EditeTable(props) {
     e.preventDefault();
     const newData = data.map(item => ({ ...item }));
     const target = getRowByKey(key, newData) || {};
-    if (!target.t2 || !target.t3) {
+    if (!target.module || !target.abilityType || !target.module || !target.appName || !target.problemType || !target.testMenu || !target.testResult || !target.testStep || !target.developer) {
       message.error('请填写完整信息。');
       e.target.focus();
       return;
     }
-    // delete target.key;
     if (target && target.editable) {
       target.editable = !target.editable;
       setData(newData);
+      ChangeValue(newData);
     }
     if (target && target.isNew) {
       target.isNew = !target.isNew;
       setNewButton(false)
       setData(newData);
+      ChangeValue(newData);
     }
     // const id = target.id === '' ? '' : target.id;
     // savedata(target, id);
@@ -128,9 +130,23 @@ function EditeTable(props) {
     setNewButton(false);
   };
 
+  // 移除按钮
+  const handleDelete = () => {
+    const arr = []
+    data.forEach(item => {
+      if (!selectedRowKeys.includes(item.key)) {
+        arr.push(item)
+      }
+    });
+    setData([...arr]);
+    ChangeValue(arr);
+    setSelectedRowKeys([]);
+  }
+
   const hadleAssignment = () => {
     setVisible(true)
   }
+
 
   const column = [
     {
@@ -148,6 +164,7 @@ function EditeTable(props) {
       dataIndex: 'listType',
       key: 'listType',
       width: 100,
+      align: 'center',
       render: (text) => {
         return text
       }
@@ -160,7 +177,7 @@ function EditeTable(props) {
       render: (text, record) => {
         if (record.isNew || record.editable) {
           return (
-            <div className={text === '' ? styles.requiredform : ''}>
+            <div className={text === '' && dataSource.length !== 0 ? styles.requiredform : ''}>
               <Cascader
                 fieldNames={{ label: 'title', value: 'title', children: 'children' }}
                 options={functionmap}
@@ -182,9 +199,9 @@ function EditeTable(props) {
       render: (text, record) => {
         if (record.isNew || record.editable) {
           return (
-            <div className={text === '' ? styles.requiredselect : ''}>
+            <div className={text === '' && dataSource.length !== 0 ? styles.requiredselect : ''}>
               <Select
-                defaultValue={record.t2}
+                defaultValue={record.module}
                 placeholder="请选择"
                 onChange={e => handleFieldChange(e, 'module', record.key)}
               >
@@ -208,10 +225,10 @@ function EditeTable(props) {
       render: (text, record) => {
         if (record.isNew || record.editable) {
           return (
-            <div className={text === '' ? styles.requiredform : ''}>
+            <div className={text === '' && dataSource.length !== 0 ? styles.requiredform : ''}>
               <Input
                 onChange={e => handleFieldChange(e.target.value, 'appName', record.key)}
-                defaultValue={record.t3}
+                defaultValue={text}
                 placeholder="请输入"
               />
             </div>
@@ -228,7 +245,7 @@ function EditeTable(props) {
       render: (text, record) => {
         if (record.isNew || record.editable) {
           return (
-            <div className={text === '' ? styles.requiredform : ''}>
+            <div className={text === '' && dataSource.length !== 0 ? styles.requiredform : ''}>
               <TextArea
                 defaultValue={text}
                 autoSize
@@ -249,35 +266,41 @@ function EditeTable(props) {
       render: (text, record) => {
         if (record.isNew || record.editable) {
           return (
-            <div className={text === '' ? styles.requiredform : ''}>
-              <InputGroup compact style={{ marginBottom: 12 }}>
-                <span style={{ width: 70, textAlign: 'right', paddingTop: 4 }}>功能菜单：</span>
-                <TextArea
-                  defaultValue={record.menu}
-                  autoSize
-                  style={{ width: 330 }}
-                  onChange={e => handleFieldChange(e.target.value, 'testMenu', record.key)}
-                />
-              </InputGroup>
-              <InputGroup compact style={{ marginBottom: 12 }}>
-                <span style={{ width: 70, textAlign: 'right', paddingTop: 4 }}>预期效果：</span>
-                <TextArea
-                  defaultValue={record.des}
-                  autoSize
-                  style={{ width: 330 }}
-                  onChange={e => handleFieldChange(e.target.value, 'testResult', record.key)}
-                />
-              </InputGroup>
-              <InputGroup compact>
-                <span style={{ width: 70, textAlign: 'right', paddingTop: 4 }}>验证步骤：</span>
-                <TextArea
-                  defaultValue={record.step}
-                  autoSize
-                  style={{ width: 330 }}
-                  onChange={e => handleFieldChange(e.target.value, 'testStep', record.key)}
-                />
-              </InputGroup>
-            </div>
+            <>
+              <div className={record.testMenu === '' && dataSource.length !== 0 ? styles.requiredform : ''}>
+                <InputGroup compact style={{ marginBottom: 12 }}>
+                  <span style={{ width: 70, textAlign: 'right', paddingTop: 4 }}>功能菜单：</span>
+                  <TextArea
+                    defaultValue={record.testMenu}
+                    autoSize
+                    style={{ width: 330 }}
+                    onChange={e => handleFieldChange(e.target.value, 'testMenu', record.key)}
+                  />
+                </InputGroup>
+              </div>
+              <div className={record.testResult === '' && dataSource.length !== 0 ? styles.requiredform : ''}>
+                <InputGroup compact style={{ marginBottom: 12 }}>
+                  <span style={{ width: 70, textAlign: 'right', paddingTop: 4 }}>预期效果：</span>
+                  <TextArea
+                    defaultValue={record.testResult}
+                    autoSize
+                    style={{ width: 330 }}
+                    onChange={e => handleFieldChange(e.target.value, 'testResult', record.key)}
+                  />
+                </InputGroup>
+              </div>
+              <div className={record.testStep === '' && dataSource.length !== 0 ? styles.requiredform : ''}>
+                <InputGroup compact>
+                  <span style={{ width: 70, textAlign: 'right', paddingTop: 4 }}>验证步骤：</span>
+                  <TextArea
+                    defaultValue={record.testStep}
+                    autoSize
+                    style={{ width: 330 }}
+                    onChange={e => handleFieldChange(e.target.value, 'testStep', record.key)}
+                  />
+                </InputGroup>
+              </div>
+            </>
           )
         }
         return (
@@ -305,6 +328,7 @@ function EditeTable(props) {
       dataIndex: 'passTest',
       key: 'passTest',
       width: 80,
+      align: 'center',
       render: (text, record) => {
         if (record.isNew || record.editable) {
           return (
@@ -327,7 +351,7 @@ function EditeTable(props) {
       render: (text, record) => {
         if (record.isNew || record.editable) {
           return (
-            <div className={text === '' ? styles.requiredform : ''}>
+            <div className={text === '' && dataSource.length !== 0 ? styles.requiredform : ''}>
               <TextArea
                 defaultValue={text}
                 autoSize
@@ -345,7 +369,7 @@ function EditeTable(props) {
       dataIndex: 'operator',
       key: 'operator',
       align: 'center',
-      width: 80,
+      width: 100,
     },
     {
       title: '操作',
@@ -369,9 +393,9 @@ function EditeTable(props) {
         }
         return (
           <>
-            {taskName !== '版本管理员审批' && record.t0 === '计划' && (<Button type='link' onClick={e => editRow(e, record.key)}>编辑</Button>)}
-            {taskName === '版本管理员审批' && record.t0 === '临时' && (<Button type='link' onClick={e => editRow(e, record.key)}>编辑</Button>)}
-            {taskName === '版本管理员审批' && record.t0 === '计划' && (<Button type='link' >回退</Button>)}
+            {taskName !== '版本管理员审批' && record.listType === '计划' && (<Button type='link' onClick={e => editRow(e, record.key)}>编辑</Button>)}
+            {taskName === '版本管理员审批' && record.listType === '临时' && (<Button type='link' onClick={e => editRow(e, record.key)}>编辑</Button>)}
+            {taskName === '版本管理员审批' && record.listType === '计划' && (<Button type='link' >回退</Button>)}
           </>
         )
 
@@ -441,7 +465,7 @@ function EditeTable(props) {
                 onClick={() => newMember()}
                 disabled={newbutton}
               >新增</Button>
-              <Button type='danger' style={{ marginRight: 8 }} ghost>移除</Button>
+              <Button type='danger' style={{ marginRight: 8 }} ghost onClick={() => handleDelete()}>移除</Button>
             </>
           )}
           {taskName === '业务复核' && (

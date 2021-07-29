@@ -58,13 +58,26 @@ function Registrat(props, ref) {
 
   // 校验测试环境与发布清 
   const handleListValidator = (rule, value, callback) => {
-    console.log(value)
     if (value === '' || value.length === 0) {
       callback()
     }
     callback()
   }
 
+  // 校验文档
+  const handleAttValidator = (rule, value, callback) => {
+    if (value) {
+      const key = statumap.get(taskName);
+      const target = value.filter(item => item.key === key)[0];
+      if (target && target.attachFile === '') {
+        callback()
+      }
+    };
+    if (value === '') {
+      callback()
+    }
+    callback()
+  }
 
   const formRef = useRef();
   useImperativeHandle(ref, () => ({
@@ -234,6 +247,7 @@ function Registrat(props, ref) {
                   taskName={taskName}
                   mainId={mainId}
                   dataSource={info.releaseLists}
+                  ChangeValue={v => setFieldsValue({ releaseLists: v })}
                 />
               )}
             </Form.Item>
@@ -249,18 +263,28 @@ function Registrat(props, ref) {
             </Col>
           )}
           <Col span={24} style={{ marginBottom: 24 }}>
-            <FilesContext.Provider value={{
-              files: [],
-              ChangeFiles,
-            }}>
-              <DocumentAtt
-                rowkey={statumap.get(taskName)}
-                unitmap={unitmap}
-                isEdit={isEdit}
-                dataSource={info && info.releaseAttaches ? info.releaseAttaches : []}
-                Uint={getFieldsValue(['dutyUnit'])}
-              />
-            </FilesContext.Provider>
+            <Form.Item wrapperCol={{ span: 24 }}>
+              {getFieldDecorator('releaseAttaches', {
+                rules: [{ required, message: '请上传附件' }, {
+                  validator: handleAttValidator
+                }],
+                initialValue: info.releaseAttaches,
+              })(
+                <FilesContext.Provider value={{
+                  files: [],
+                  ChangeFiles,
+                }}>
+                  <DocumentAtt
+                    rowkey={statumap.get(taskName)}
+                    unitmap={unitmap}
+                    isEdit={isEdit}
+                    dataSource={info && info.releaseAttaches ? info.releaseAttaches : []}
+                    Uint={getFieldsValue(['dutyUnit'])}
+                    ChangeValue={v => setFieldsValue({ releaseAttaches: v })}
+                  />
+                </FilesContext.Provider>
+              )}
+            </Form.Item>
           </Col>
           <Col span={8}>
             <Form.Item label="登记人" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>

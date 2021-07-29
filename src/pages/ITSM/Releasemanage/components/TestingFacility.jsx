@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Row, Button, Select, Input } from 'antd';
-
+import styles from '../index.less';
 
 const { Option } = Select;
 
