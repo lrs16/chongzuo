@@ -130,9 +130,6 @@ function KnowledgeList(props) {
     switch (buttype) {
       case 'submit': {
         const newselectds = selectedRecords.filter(item => item.status === '已登记');
-        if (selectedRecords.length === 0) {
-          message.error('您还没有选择数据，请选择状态为‘登记中’的数据进行操作')
-        };
         if (newselectds.length > 0) {
           knowledgeCheckUserList().then(res => {
             if (res.code === 200) {
@@ -140,12 +137,15 @@ function KnowledgeList(props) {
               setUserVisible(true)
             }
           })
-        } else {
+        };
+        if (selectedRecords.length === 0) {
+          message.error('您还没有选择数据，请选择状态为‘已登记’的数据进行操作')
+        };
+        if (selectedRecords.length > 0 && newselectds.length === 0) {
           message.error('请选择知识状态为‘已登记’的数据')
           setSelectedRowKeys([]);
           setSelectedRecords([]);
         }
-
         break;
       }
       case 'check':
@@ -153,9 +153,6 @@ function KnowledgeList(props) {
         break;
       case 'release': {
         const newselectds = selectedRecords.filter(item => item.status === '已登记');
-        if (selectedRecords.length === 0) {
-          message.error('您还没有选择数据，请选择状态为‘登记中’的数据进行操作')
-        };
         if (newselectds.length > 0) {
           const mainIds = newselectds.map(item => {
             return item.id;
@@ -170,7 +167,11 @@ function KnowledgeList(props) {
             setSelectedRowKeys([]);
             setSelectedRecords([]);
           })
-        } else {
+        };
+        if (selectedRecords.length === 0) {
+          message.error('您还没有选择数据，请选择状态为‘已登记’的数据进行操作')
+        };
+        if (selectedRecords.length > 0 && newselectds.length === 0) {
           message.error('请选择知识状态为‘已登记’的数据')
           setSelectedRowKeys([]);
           setSelectedRecords([]);
@@ -179,9 +180,6 @@ function KnowledgeList(props) {
       }
       case 'revoke': {
         const newselectds = selectedRecords.filter(item => item.status === '已发布');
-        if (selectedRecords.length === 0) {
-          message.error('您还没有选择数据，请选择状态为‘已发布’的数据进行操作')
-        };
         if (newselectds.length > 0) {
           const mainIds = newselectds.map(item => {
             return item.id;
@@ -196,7 +194,11 @@ function KnowledgeList(props) {
             setSelectedRowKeys([]);
             setSelectedRecords([]);
           })
-        } else {
+        };
+        if (selectedRecords.length === 0) {
+          message.error('您还没有选择数据，请选择状态为‘已发布’的数据进行操作')
+        };
+        if (selectedRecords.length > 0 && newselectds.length === 0) {
           message.error('请选择知识状态为‘已发布’的数据');
           setSelectedRowKeys([]);
           setSelectedRecords([]);
@@ -205,9 +207,6 @@ function KnowledgeList(props) {
       }
       case 'abolish': {
         const newselectds = selectedRecords.filter(item => item.status === '已发布');
-        if (selectedRecords.length === 0) {
-          message.error('您还没有选择数据，请选择状态为‘已发布’的数据进行操作')
-        }
         if (newselectds.length > 0) {
           const mainIds = newselectds.map(item => {
             return item.id;
@@ -223,7 +222,11 @@ function KnowledgeList(props) {
             setSelectedRecords([]);
             setPageinations({ current: 1, pageSize: 15 })
           })
-        } else {
+        };
+        if (selectedRecords.length === 0) {
+          message.error('您还没有选择数据，请选择状态为‘已发布’的数据进行操作')
+        };
+        if (selectedRecords.length > 0 && newselectds.length === 0) {
           message.error('仅能选择状态为‘已发布’的数据');
           setSelectedRowKeys([]);
           setSelectedRecords([]);
@@ -232,9 +235,6 @@ function KnowledgeList(props) {
       }
       case 'mydelete': {
         const newselectds = selectedRecords.filter(item => item.status === '已登记');
-        if (selectedRecords.length === 0) {
-          message.error('您还没有选择数据，请选择状态为‘已登记’的数据进行操作')
-        }
         if (newselectds.length > 0) {
           const mainIds = newselectds.map(item => {
             return item.id;
@@ -251,7 +251,11 @@ function KnowledgeList(props) {
             setPageinations({ current: 1, pageSize: 15 })
 
           })
-        } else {
+        };
+        if (selectedRecords.length === 0) {
+          message.error('您还没有选择数据，请选择状态为‘已登记’的数据进行操作')
+        };
+        if (selectedRecords.length > 0 && newselectds.length === 0) {
           message.error('仅能选择状态为‘已登记’的数据');
           setSelectedRowKeys([]);
           setSelectedRecords([]);
@@ -260,9 +264,6 @@ function KnowledgeList(props) {
       }
       case 'delete': {
         const newselectds = selectedRecords.filter(item => item.status !== '已发布');
-        if (selectedRecords.length === 0) {
-          message.error('您还没有选择数据，请选择状态不为‘发布中’的数据进行操作')
-        }
         if (newselectds.length > 0) {
           const mainIds = newselectds.map(item => {
             return item.id;
@@ -278,8 +279,12 @@ function KnowledgeList(props) {
             setSelectedRecords([]);
             setPageinations({ current: 1, pageSize: 15 })
           })
-        } else {
-          message.error('仅能选择状态不为‘发布中’的数据');
+        };
+        if (selectedRecords.length === 0) {
+          message.error('您还没有选择数据，请选择状态不为‘已发布’的数据进行操作')
+        };
+        if (selectedRecords.length > 0 && newselectds.length === 0) {
+          message.error('仅能选择状态不为‘已发布’的数据');
           setSelectedRowKeys([]);
           setSelectedRecords([]);
         }
@@ -379,9 +384,8 @@ function KnowledgeList(props) {
         handleSearch(1, 15);
         setSelectedRowKeys([]);
         setSelectedRecords([]);
+        setPageinations({ current: 1, pageSize: 15 })
         setChoiceUser({ users: '', ischange: false });
-      } else {
-        message.error('仅能选择状态为‘已登记’的数据')
       }
     }
   }, [choiceUser.ischange])
