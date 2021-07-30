@@ -7,7 +7,7 @@ import WorkOrder from './WorkOrder';
 
 function ToDodetails(props) {
   const { location, dispatch, userinfo } = props;
-  const { taskName, mainId } = location.query;
+  const { taskName } = location.query;
   const [tabActivekey, settabActivekey] = useState('workorder'); // 打开标签
 
   const handleTabChange = key => {

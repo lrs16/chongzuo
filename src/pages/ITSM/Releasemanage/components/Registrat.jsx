@@ -1,7 +1,6 @@
 import React, { useRef, useImperativeHandle, forwardRef, useState, useEffect } from 'react';
 import moment from 'moment';
 import { Row, Col, Form, Input, Alert, DatePicker, Select } from 'antd';
-import FilesContext from '@/layouts/MenuContext';              // 引用上下文管理组件
 import EditeTable from './EditeTable';
 import TestingFacility from './TestingFacility';
 import DocumentAtt from './DocumentAtt';
@@ -45,19 +44,13 @@ const statumap = new Map([
 ]);
 
 function Registrat(props, ref) {
-  const { taskName, mainId, info, userinfo, register, selectdata, isEdit } = props;
+  const { taskName, info, userinfo, register, selectdata, isEdit } = props;
   const { getFieldDecorator, getFieldsValue, resetFields, setFieldsValue } = props.form;
   const required = true;
 
   const [alertvisible, setAlertVisible] = useState(false);  // 超时告警是否显示
   const [alertmessage, setAlertMessage] = useState('');
   const [check, setCheck] = useState(false);
-
-  const ChangeFiles = (v) => {
-    console.log(getFieldsValue(['releaseAttaches']))
-    setCheck(false)
-    console.log(v)
-  }
 
   // 校验测试环境与发布清 
   const handleListValidator = (rule, value, callback) => {
@@ -91,7 +84,7 @@ function Registrat(props, ref) {
   }), []);
 
   useEffect(() => {
-    if (isEdit && taskName === '发布登记' && moment(register.creationTime).format('DD') > 25) {
+    if (isEdit && taskName === '发布登记' && moment(info.creationTime).format('DD') > 25) {
       setAlertVisible(true);
       setAlertMessage({ mes: `${taskName}超时,${taskName}的登记时间为每月1日至25日之间`, des: `` });
     };
@@ -103,7 +96,7 @@ function Registrat(props, ref) {
       setAlertVisible(true);
       setAlertMessage({ mes: `${taskName}超时,${taskName}的登记时间为每月7日至28日之间`, des: `` });
     }
-  }, [register])
+  }, [info])
 
   const getTypebyId = key => {
     if (selectdata.ischange) {
@@ -242,9 +235,8 @@ function Registrat(props, ref) {
               modulamap={modulamap}
               isEdit={isEdit}
               taskName={taskName}
-              mainId={mainId}
               dataSource={info.releaseLists}
-              ChangeValue={v => setFieldsValue({ releaseLists: v })}
+              ChangeValue={v => { setFieldsValue({ releaseLists: v }); }}
             />
             <Form.Item wrapperCol={{ span: 24 }}>
               {getFieldDecorator('releaseLists', {
@@ -268,20 +260,16 @@ function Registrat(props, ref) {
             </Col>
           )}
           <Col span={24} style={{ marginBottom: 24 }}>
-            <FilesContext.Provider value={{
-              files: [],
-              ChangeFiles,
-            }}>
-              <DocumentAtt
-                rowkey={statumap.get(taskName)}
-                unitmap={unitmap}
-                isEdit={isEdit}
-                dataSource={info && info.releaseAttaches ? info.releaseAttaches : []}
-                Uint={getFieldsValue(['dutyUnit'])}
-                ChangeValue={v => setFieldsValue({ releaseAttaches: v })}
-                check={check}
-              />
-            </FilesContext.Provider>
+
+            <DocumentAtt
+              rowkey={statumap.get(taskName)}
+              isEdit={isEdit}
+              unitmap={unitmap}
+              dataSource={info && info.releaseAttaches ? info.releaseAttaches : []}
+              Uint={getFieldsValue(['dutyUnit'])}
+              ChangeValue={v => { setFieldsValue({ releaseAttaches: v }); }}
+              check={check}
+            />
             <Form.Item wrapperCol={{ span: 24 }} style={{ display: 'none' }}>
               {getFieldDecorator('releaseAttaches', {
                 rules: [{ required, message: '请上传附件' }, {
@@ -295,13 +283,13 @@ function Registrat(props, ref) {
             <Form.Item label="登记人" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
               {getFieldDecorator('registerUser', {
                 rules: [{ required, message: `请输入登记人` }],
-                initialValue: taskName === '发布登记' ? userinfo.userName : info.releaseRegister.registerUser,
+                initialValue: userinfo ? userinfo.userName : info.releaseRegister.registerUser,
               })(<Input disabled />)}
             </Form.Item>
             <Form.Item label="登记人Id" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }} style={{ display: 'none' }}>
-              {getFieldDecorator('registerUser', {
+              {getFieldDecorator('registerUserId', {
                 rules: [{ required, message: `请输入登记人` }],
-                initialValue: taskName === '发布登记' ? userinfo.userId : info.releaseRegister.userId,
+                initialValue: userinfo ? userinfo.userId : info.releaseRegister.userId,
               })(<Input disabled />)}
             </Form.Item>
           </Col>
@@ -310,7 +298,7 @@ function Registrat(props, ref) {
             <Form.Item label="登记时间" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
               {getFieldDecorator('registerTime', {
                 rules: [{ required, message: `请选择登记时间` }],
-                initialValue: moment(register.registerTime).format("YYYY-MM-DD HH:mm:ss"),
+                initialValue: moment(info.releaseRegister.registerTime).format('YYYY-MM-DD HH:mm:ss'),
               })(<Input disabled />)}
             </Form.Item>
           </Col>
@@ -318,13 +306,13 @@ function Registrat(props, ref) {
             <Form.Item label="登记单位" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
               {getFieldDecorator('registerUnit', {
                 rules: [{ required, message: `请选择登记单位` }],
-                initialValue: taskName === '发布登记' ? userinfo.unitName : info.releaseRegister.registerUnit,
+                initialValue: userinfo ? userinfo.unitName : info.releaseRegister.registerUnit,
               })(<Input disabled />)}
             </Form.Item>
             <Form.Item label="登记单位Id" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }} style={{ display: 'none' }}>
               {getFieldDecorator('registerUnitId', {
                 rules: [{ required, message: `请选择登记单位` }],
-                initialValue: taskName === '发布登记' ? userinfo.unitId : info.releaseRegister.registerUnitId,
+                initialValue: userinfo ? userinfo.unitId : info.releaseRegister.registerUnitId,
               })(<Input disabled />)}
             </Form.Item>
           </Col>
@@ -337,31 +325,25 @@ function Registrat(props, ref) {
 const WrappedForm = Form.create({ name: 'form' })(forwardRef(Registrat))
 
 WrappedForm.defaultProps = {
-  mainId: '',
-  register: {
-    registerTime: undefined,
-    // completeTime: moment().format(),
-    demandId: '',
-    demandType: '',
-    detail: '',
-    functionalModule: '',
-    proposer: '',
-    proposerId: '',
-    proposerPhone: '',
-    proposingDepartment: '',
-    proposingDepartmentId: '',
-    proposingUnit: '',
-    proposingUnitId: '1',
-    reason: '',
-    title: '',
-  },
-  userinfo: {
-    deptName: '',
-    deptId: '',
-    unitName: '',
-    unitId: '',
-    userName: '',
-    userId: '',
+  info: {
+    releaseMain: {
+      releaseNo: '',
+      releaseType: '',
+      dutyUnit: '',
+      releaseStatus: '',
+      timeoutTime: undefined,
+      remindTime: undefined,
+      revisitWay: ''
+    },
+    releaseRegister: {
+      testStart: undefined,
+      testEnd: undefined,
+      testPlace: '',
+      testUnit: '',
+      testOperator: '',
+      influenceScope: '',
+      testResult: ''
+    },
   },
 };
 

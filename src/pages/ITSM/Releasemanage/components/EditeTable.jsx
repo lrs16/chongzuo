@@ -11,16 +11,12 @@ const { Option } = Select;
 const { TabPane } = Tabs;
 
 function EditeTable(props) {
-  const { title, functionmap, modulamap, isEdit, taskName, mainId, dataSource, ChangeValue } = props;
+  const { title, functionmap, modulamap, isEdit, taskName, dataSource, ChangeValue } = props;
   const [data, setData] = useState([]);
   const [newbutton, setNewButton] = useState(false);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [visible, setVisible] = useState(false);                    // 分派窗口是否显示
   const [drawervisible, setDrawerVisible] = useState(false);        // 工单详情窗口是否显示
-
-  useEffect(() => {
-    setData([...dataSource])
-  }, [])
 
   // 新增一条记录
   const newMember = () => {
@@ -41,20 +37,12 @@ function EditeTable(props) {
       developer: '',
       operator: sessionStorage.getItem('userName'),
       operatorId: sessionStorage.getItem('userauthorityid'),
-      mainId,
       editable: false,
       isNew: true,
     });
     setData(newData);
     setNewButton(true);
   };
-
-  useEffect(() => {
-    if (data.length === 0) {
-      newMember();
-      setNewButton(true);
-    }
-  }, [data])
 
   const onSelectChange = RowKeys => {
     setSelectedRowKeys(RowKeys)
@@ -88,11 +76,6 @@ function EditeTable(props) {
       target.editable = !target.editable;
       setData(newData);
     }
-    // const target = getRowByKey(key);
-    // if (target) {
-    //   data[key - 1].editable = true;
-    //   data[key - 1].isNew = false;
-    // }
   }
 
   // 保存记录
@@ -101,7 +84,7 @@ function EditeTable(props) {
     const newData = data.map(item => ({ ...item }));
     const target = getRowByKey(key, newData) || {};
     if (!target.module || !target.abilityType || !target.module || !target.appName || !target.problemType || !target.testMenu || !target.testResult || !target.testStep || !target.developer) {
-      message.error('请填写完整信息。');
+      message.error('请填写完整的发布清单信息');
       e.target.focus();
       return;
     }
@@ -116,8 +99,6 @@ function EditeTable(props) {
       setData(newData);
       ChangeValue(newData);
     }
-    // const id = target.id === '' ? '' : target.id;
-    // savedata(target, id);
   };
 
   // 取消按钮
@@ -147,6 +128,23 @@ function EditeTable(props) {
     setVisible(true)
   }
 
+  useEffect(() => {
+    if (dataSource && dataSource.length > 0) {
+      const newData = dataSource.map((item, index) => ({
+        ...item,
+        editable: false,
+        key: (index + 1).toString(),
+      }));
+      setData(newData);
+      setNewButton(false);
+    }
+  }, [dataSource])
+
+  useEffect(() => {
+    if (data.length === 0) {
+      newMember()
+    }
+  }, [data])
 
   const column = [
     {
@@ -182,7 +180,7 @@ function EditeTable(props) {
                 fieldNames={{ label: 'title', value: 'title', children: 'children' }}
                 options={functionmap}
                 defaultValue={record.isNew ? [] : text.split('/')}
-                onChange={e => handleFieldChange(e, 'abilityType', record.key)}
+                onChange={e => handleFieldChange(e.join('/'), 'abilityType', record.key)}
 
               />
             </div>

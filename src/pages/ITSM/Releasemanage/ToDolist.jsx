@@ -42,9 +42,8 @@ const columns = [
         router.push({
           pathname: `/ITSM/releasemanage/to-do/record`,
           query: {
-            taskName: record.t1,
-            taskId: record.No,
-            mainId: record.No,
+            taskName: record.taskName,
+            Id: record.releaseNo,
           },
         });
       };

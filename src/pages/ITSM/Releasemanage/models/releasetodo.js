@@ -1,10 +1,11 @@
-import { queryTodoList } from '../services/api';
+import { queryTodoList, openFlow } from '../services/api';
 
 export default {
   namespace: 'releasetodo',
 
   state: {
     list: {},
+    info: {},
   },
 
   effects: {
@@ -16,6 +17,14 @@ export default {
         payload: response.data,
       });
     },
+    // 打开待办
+    *openflow({ payload: { releaseNo } }, { call, put }) {
+      const response = yield call(openFlow, releaseNo);
+      yield put({
+        type: 'saveinfo',
+        payload: response.data,
+      });
+    },
 
   },
 
@@ -24,6 +33,12 @@ export default {
       return {
         ...state,
         list: action.payload || {},
+      };
+    },
+    saveinfo(state, action) {
+      return {
+        ...state,
+        info: action.payload || {},
       };
     },
   },

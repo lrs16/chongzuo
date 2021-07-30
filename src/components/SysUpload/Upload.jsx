@@ -6,7 +6,7 @@ import { getFileSecuritySuffix } from '@/services/upload';
 import UploadContext from '@/layouts/MenuContext';
 
 function SysUpload(props) {
-  const { dispatch } = props;
+  const { dispatch, filelist } = props;
   const [filetype, setFileType] = useState('');
   const { files, ChangeFiles } = useContext(UploadContext);
 
@@ -19,9 +19,6 @@ function SysUpload(props) {
       }
     });
   }, []);
-
-  // 上传文件类型
-  // const filestype = `application/msword,application/vnd.ms-excel,application / vnd.openxmlformats - officedocument.spreadsheetml.sheet,image/png,image/jpeg, `;
 
   // 下载附件
   const handledownload = info => {
@@ -51,7 +48,7 @@ function SysUpload(props) {
       Authorization: `Bearer ${sessionStorage.getItem('access_token')}`,
     },
     showUploadList: { showDownloadIcon: true },
-    defaultFileList: files,
+    defaultFileList: filelist || files,
     multiple: true,
 
     beforeUpload(file) {
@@ -98,7 +95,7 @@ function SysUpload(props) {
     },
     onRemove(file) {
       // 删除记录,更新父级fileslist
-      const newfilelist = files.filter(item => file.response ? item.uid !== file.response.data[0].id : item.uid !== file.uid);
+      const newfilelist = (filelist || files).filter(item => file.response ? item.uid !== file.response.data[0].id : item.uid !== file.uid);
       ChangeFiles(newfilelist);
       // 删除文件
       dispatch({

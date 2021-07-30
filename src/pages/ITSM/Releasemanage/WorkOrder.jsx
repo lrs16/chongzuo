@@ -1,6 +1,6 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { connect } from 'dva';
-import { Button, Popover, Collapse, Steps } from 'antd';
+import { Collapse, Steps, Spin } from 'antd';
 import DictLower from '@/components/SysDict/DictLower';
 import Registrat from './components/Registrat';
 import ImplementationPre from './components/ImplementationPre';
@@ -14,11 +14,10 @@ const { Panel } = Collapse;
 const { Step } = Steps;
 
 function WorkOrder(props) {
-  const { location, dispatch, userinfo } = props;
-  const { taskName, mainId } = location.query;
+  const { location, dispatch, info, loading } = props;
+  const { taskName, Id } = location.query;
   const [activeKey, setActiveKey] = useState(['form']);
   const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
-  const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
 
   // 保存，保存提交
   const RegistratRef = useRef();
@@ -39,6 +38,18 @@ function WorkOrder(props) {
     setActiveKey(key);
   };
 
+  // 打开待办
+  useEffect(() => {
+    if (Id) {
+      dispatch({
+        type: 'releasetodo/openflow',
+        payload: {
+          releaseNo: Id,
+        },
+      })
+    }
+  }, [Id])
+
   return (
     <div className={styles.collapse}>
       <DictLower
@@ -46,112 +57,108 @@ function WorkOrder(props) {
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
       />
-      <Collapse
-        expandIconPosition="right"
-        activeKey={activeKey}
-        bordered={false}
-        onChange={callback}
-      >
-        {(taskName === '发布登记' || taskName === '平台验证' || taskName === '业务验证') && (
-          <Panel header={taskName} key="form">
-            <div style={{ marginTop: 12 }}>
-              <Registrat
-                wrappedComponentRef={RegistratRef}
-                userinfo={userinfo}
-                files={files.arr}
-                ChangeFiles={newvalue => {
-                  setFiles(newvalue);
-                }}
+      <Spin tip="正在加载数据..." spinning={!!loading}>
+        <Collapse
+          expandIconPosition="right"
+          activeKey={activeKey}
+          bordered={false}
+          onChange={callback}
+        >
+          {(taskName === '发布登记' || taskName === '平台验证' || taskName === '业务验证') && info && info.register && (
+            <Panel header={taskName} key="form">
+              <div style={{ marginTop: 12 }}>
+                <Registrat
+                  wrappedComponentRef={RegistratRef}
+                  selectdata={selectdata}
+                  isEdit
+                  taskName='发布登记'
+                  info={info.register}
+                />
+              </div>
+            </Panel>
+          )}
+          {taskName === '发布实施准备' && (
+            <Panel header={taskName} key="form">
+              <div style={{ marginTop: 12 }}>
+                <ImplementationPre
+                  wrappedComponentRef={ImplementationPreRef}
+                  selectdata={selectdata}
+                  isEdit
+                  taskName={taskName}
+                  mainId={Id}
+                  listType='计划'
+                />
+              </div>
+            </Panel>
+          )}
+          {taskName === '版本管理员审批' && (
+            <Panel header={taskName} key="form">
+              <div style={{ marginTop: 12 }}>
+                <VersionAudit
+                  wrappedComponentRef={VersionAuditRef}
+                  selectdata={selectdata}
+                  isEdit
+                  taskName={taskName}
+                  mainId={Id}
+                />
+              </div>
+            </Panel>
+          )}
+          {(taskName === '科室负责人审批' || taskName === '中心领导审批') && (
+            <Panel header={taskName} key="form">
+              <Examine
+                wrappedComponentRef={ExamineRef}
                 selectdata={selectdata}
                 isEdit
                 taskName={taskName}
-                mainId={mainId}
-                listType='计划'
+                mainId={Id}
+                listType='临时'
               />
-            </div>
-          </Panel>
-        )}
-        {taskName === '发布实施准备' && (
-          <Panel header={taskName} key="form">
-            <div style={{ marginTop: 12 }}>
-              <ImplementationPre
-                wrappedComponentRef={ImplementationPreRef}
-                selectdata={selectdata}
-                isEdit
-                taskName={taskName}
-                mainId={mainId}
-                listType='计划'
-              />
-            </div>
-          </Panel>
-        )}
-        {taskName === '版本管理员审批' && (
-          <Panel header={taskName} key="form">
-            <div style={{ marginTop: 12 }}>
-              <VersionAudit
-                wrappedComponentRef={VersionAuditRef}
-                selectdata={selectdata}
-                isEdit
-                taskName={taskName}
-                mainId={mainId}
-              />
-            </div>
-          </Panel>
-        )}
-        {(taskName === '科室负责人审批' || taskName === '中心领导审批') && (
-          <Panel header={taskName} key="form">
-            <Examine
-              wrappedComponentRef={ExamineRef}
-              selectdata={selectdata}
-              isEdit
-              taskName={taskName}
-              mainId={mainId}
-              listType='临时'
-            />
-          </Panel>
-        )}
-        {(taskName === '发布实施') && (
-          <Panel header={taskName} key="form">
-            <div style={{ marginTop: 12 }}>
-              <Implementation
+            </Panel>
+          )}
+          {(taskName === '发布实施') && (
+            <Panel header={taskName} key="form">
+              <div style={{ marginTop: 12 }}>
+                <Implementation
+                  wrappedComponentRef={ImplementationRef}
+                  selectdata={selectdata}
+                  isEdit
+                  taskName={taskName}
+                  mainId={Id}
+                />
+              </div>
+            </Panel>
+          )}
+          {(taskName === '业务复核') && (
+            <Panel header={taskName} key="form">
+              <BusinessReview
                 wrappedComponentRef={ImplementationRef}
                 selectdata={selectdata}
                 isEdit
                 taskName={taskName}
-                mainId={mainId}
+                mainId={Id}
+                listType='临时'
               />
-            </div>
-          </Panel>
-        )}
-        {(taskName === '业务复核') && (
-          <Panel header={taskName} key="form">
-            <BusinessReview
-              wrappedComponentRef={ImplementationRef}
-              selectdata={selectdata}
-              isEdit
-              taskName={taskName}
-              mainId={mainId}
-              listType='临时'
-            />
-          </Panel>
-        )}
-        <Panel header='发布登记' key="1">
+            </Panel>
+          )}
+          {/* <Panel header='发布登记' key="1">
           <Registrat
             wrappedComponentRef={RegistratRef}
-            userinfo={userinfo}
             files={[]}
             ChangeFiles={() => 0}
             selectdata={selectdata}
             isEdit={false}
             taskName='发布登记'
-            mainId={mainId}
+            mainId={Id}
           />
-        </Panel>
-      </Collapse>
+        </Panel> */}
+        </Collapse>
+      </Spin>
     </div>
   );
 }
 
-export default connect(({ itsmuser, loading }) => ({
-  userinfo: itsmuser.userinfo,
+export default connect(({ releasetodo, loading }) => ({
+  info: releasetodo.info,
+  loading: loading.models.releasetodo,
 }))(WorkOrder);

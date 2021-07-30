@@ -1,18 +1,18 @@
 import request from '@/utils/request';
 
 // 启动待办信息  /release/from/findTodoList
-// export async function queryTodoList(params) {
-//   return request(`/release/from/findTodoList`, {
-//     method: 'POST',
-//     data: params,
-//     requestType: 'form',
-//   });
-// }
-export async function queryTodoList() {
-  return request(`/api/release/todolist`, {
-    method: 'GET',
+export async function queryTodoList(params) {
+  return request(`/release/from/findTodoList`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
   });
 }
+// export async function queryTodoList() {
+//   return request(`/api/release/todolist`, {
+//     method: 'GET',
+//   });
+// }
 
 // 启动流程 /release/flow/start
 export async function startFlow() {
@@ -32,8 +32,8 @@ export async function nextFlowUserList() {
 export async function saveRegister(params) {
   return request(`/release/flow/saveRegister`, {
     method: 'POST',
-    data: params,
-    requestType: 'form',
+    data: JSON.stringify(params),
+    requestType: 'formjosn',
   });
 }
 
@@ -43,5 +43,12 @@ export async function flowSubmit(params) {
     method: 'POST',
     data: params,
     requestType: 'form',
+  });
+}
+
+// 打开待办
+export async function openFlow(releaseNo) {
+  return request(`/release/flow/openFlow?releaseNo=${releaseNo}`, {
+    method: 'GET',
   });
 }

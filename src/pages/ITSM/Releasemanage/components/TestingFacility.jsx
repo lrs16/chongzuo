@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Row, Button, Select, Input } from 'antd';
-import styles from '../index.less';
 
 const { Option } = Select;
 
 const typedata = [
   { key: '1', name: '测试环境', type: 'dell', app: '计量运维辅助平台' },
   { key: '2', name: '开发环境', type: 'hp', app: '计量运维辅助平台' },
-  { key: '3', name: '数据库备份', type: '华为', app: '自动化运维平台' },
+  { key: '3', name: 'Ⅲ区数据库服务器', type: '型号：曙光I620-G20 配置：CPU:2路12核 Xeon处理器；内存：256G DDR4内存；硬盘：4×240GB SSD硬盘8×1200GB HDD硬盘 操作系统：Red Hat 7.3', app: '3oracle数据库' },
 ];
 
 function TestingFacility(props) {
@@ -16,16 +15,14 @@ function TestingFacility(props) {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [selectedRowrecord, setSelectedRowRecord] = useState([]);
 
-
-
   // 新增一条记录
   const newMember = () => {
     const newData = data.map(item => ({ ...item }));
     newData.push({
       key: data.length + 1,
-      name: '',
-      type: '',
-      app: '',
+      deviceName: '',
+      deviceConfig: '',
+      deployApp: '',
       isNew: true,
     });
     setData(newData);
@@ -36,10 +33,9 @@ function TestingFacility(props) {
   const handleChange = (value, key) => {
     const rowdata = JSON.parse(value);
     const newdata = [...data];
-    newdata[key - 1].name = rowdata.name;
-    newdata[key - 1].name = rowdata.name;
-    newdata[key - 1].type = rowdata.type;
-    newdata[key - 1].app = rowdata.app;
+    newdata[key - 1].deviceName = rowdata.name;
+    newdata[key - 1].deviceConfig = rowdata.type;
+    newdata[key - 1].deployApp = rowdata.app;
     setData(newdata);
     ChangeValue(newdata);
   }
@@ -75,7 +71,12 @@ function TestingFacility(props) {
 
   useEffect(() => {
     if (dataSource.length && dataSource.length > 0) {
-      setData(dataSource)
+      const newData = dataSource.map((item, index) => ({
+        ...item,
+        isNew: true,
+        key: (index + 1).toString(),
+      }));
+      setData(newData)
     }
   }, [dataSource])
 
@@ -98,8 +99,8 @@ function TestingFacility(props) {
     },
     {
       title: '设备名称及用途',
-      dataIndex: 'name',
-      key: 'name',
+      dataIndex: 'deviceName',
+      key: 'deviceName',
       render: (text, record) => {
         if (record.isNew) {
           return (
@@ -119,13 +120,13 @@ function TestingFacility(props) {
     },
     {
       title: '设备型号配置',
-      dataIndex: 'type',
-      key: 'type',
+      dataIndex: 'deviceConfig',
+      key: 'deviceConfig',
     },
     {
       title: '部署应用',
-      dataIndex: 'app',
-      key: 'app',
+      dataIndex: 'deployApp',
+      key: 'deployApp',
     },
   ];
 
