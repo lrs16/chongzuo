@@ -45,6 +45,10 @@ const columns = [
             taskName: record.taskName,
             Id: record.releaseNo,
           },
+          state: {
+            dynamicpath: true,
+            menuDesc: '发布工单',
+          }
         });
       };
       return <a onClick={handleClick}>{text}</a>;
@@ -369,6 +373,6 @@ function ToDolist(props) {
 export default Form.create({})(
   connect(({ releasetodo, loading }) => ({
     list: releasetodo.list,
-    loading: loading.models.releasetodo,
+    loading: loading.models.releaseregistra,
   }))(ToDolist),
 );

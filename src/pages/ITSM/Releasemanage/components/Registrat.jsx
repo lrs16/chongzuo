@@ -65,7 +65,7 @@ function Registrat(props, ref) {
     if (value) {
       const key = statumap.get(taskName);
       const target = value.filter(item => item.key === key)[0];
-      if (target && target.attachFile === '') {
+      if (target && target.attachFile === '[]') {
         setCheck(true);
         callback(`请上传${target.docName}`);
       } else {
@@ -73,6 +73,15 @@ function Registrat(props, ref) {
       }
     } else {
       callback()
+    }
+  }
+
+  const changeatt = (v) => {
+    setFieldsValue({ releaseAttaches: v });
+    const key = statumap.get(taskName);
+    const target = v.filter(item => item.key === key)[0];
+    if (target && target.attachFile !== '[]') {
+      setCheck(false);
     }
   }
 
@@ -120,7 +129,7 @@ function Registrat(props, ref) {
             <Col span={8}>
               <Form.Item label="发布编号">
                 {getFieldDecorator('releaseNo', {
-                  initialValue: info.releaseMain.releaseNo,
+                  initialValue: info.releaseMain.releaseNo || '',
                 })(<Input disabled />)}
               </Form.Item>
             </Col>
@@ -260,14 +269,13 @@ function Registrat(props, ref) {
             </Col>
           )}
           <Col span={24} style={{ marginBottom: 24 }}>
-
             <DocumentAtt
               rowkey={statumap.get(taskName)}
               isEdit={isEdit}
               unitmap={unitmap}
               dataSource={info && info.releaseAttaches ? info.releaseAttaches : []}
               Uint={getFieldsValue(['dutyUnit'])}
-              ChangeValue={v => { setFieldsValue({ releaseAttaches: v }); }}
+              ChangeValue={v => changeatt(v)}
               check={check}
             />
             <Form.Item wrapperCol={{ span: 24 }} style={{ display: 'none' }}>

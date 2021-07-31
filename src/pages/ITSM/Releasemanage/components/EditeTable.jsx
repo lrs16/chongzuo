@@ -379,14 +379,13 @@ function EditeTable(props) {
         if (record.isNew) {
           return (
             <>
-              <Button type='link' onClick={e => saveRow(e, record.key)}>保存</Button>
-              <Divider type="vertical" />
+              <Button type='link' onClick={e => saveRow(e, record.key)}>暂存</Button>
               <Button type='link' onClick={e => cancel(e, record.key)}>取消</Button>
             </>
           );
         } if (record.editable) {
           return (
-            <Button type='link' onClick={e => saveRow(e, record.key)}>保存</Button>
+            <Button type='link' onClick={e => saveRow(e, record.key)}>暂存</Button>
           );
         }
         return (
@@ -431,11 +430,11 @@ function EditeTable(props) {
 
   return (
     <>
-      <h4>
+      <h4 style={{ fontSize: '1.1em' }}>
         {(taskName === '发布登记' || taskName === '平台验证' || taskName === '业务验证') && (
           <span style={{ color: '#f5222d', marginRight: 4, fontWeight: 'normal' }}>*</span>
         )}
-        {title}
+        {title}<span style={{ color: 'rgba(0, 0, 0, 0.45)', paddingLeft: 12, fontSize: 14 }}>（ 请先暂存发布清单信息，再进行工单的保存操作 ）</span>
       </h4>
       {(taskName === '版本管理员审批' || taskName === '科室负责人审批' || taskName === '中心领导审批' || taskName === '业务复核') && (
         <Tabs type='card'>

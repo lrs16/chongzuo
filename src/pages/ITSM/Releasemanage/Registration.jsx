@@ -1,12 +1,13 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { connect } from 'dva';
 import moment from 'moment';
+import router from 'umi/router';
 import { Card, Button, Spin, message } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import DictLower from '@/components/SysDict/DictLower';
 import User from '@/components/SelectUser/User';
 import Registrat from './components/Registrat';
-import { startFlow } from './services/api';
+import { saveRegister } from './services/api';
 
 
 const Attaches = [
@@ -21,14 +22,15 @@ const Attaches = [
   { docName: '其它附件', attachFile: '[]', dutyUint: '', docTemplate: '', remarks: '' },
 ];
 
+
 function Registration(props) {
-  const { dispatch, userinfo, loading } = props;
+  const { dispatch, userinfo, loading, tabnew, tabdata, location } = props;
   const pagetitle = props.route.name;
-  // const [flowtype, setFlowtype] = useState('1'); // 流转类型
   const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
   const [uservisible, setUserVisible] = useState(false);        // 是否显示选人组件
   const [userchoice, setUserChoice] = useState(false);          // 已经选择人员   
   const [taskId, setTaskId] = useState('');
+  const [indexvalue, setIndexValue] = useState({ releaseMain: {}, releaseRegister: {}, releaseEnvs: [], releaseLists: [], releaseAttaches: Attaches });
 
   // 初始化用户信息，流程类型
   useEffect(() => {
@@ -43,26 +45,7 @@ function Registration(props) {
 
   // 保存，保存提交
   const RegistratRef = useRef();
-  const handleSubmit = () => {
-    RegistratRef.current.Forms((err, val) => {
-      if (err) {
-        message.error('请将信息填写完整')
-      } else {
-        startFlow().then(res => {
-          if (res.code === 200) {
-            sessionStorage.setItem('flowtype', '1');
-            setTaskId(res.data.taskId);
-            setUserVisible(true);
-          } else {
-            message.error(res.msg)
-          }
-        })
-      }
-    })
-  };
-
-  // 保存获取表单数据
-  const handleSave = (type) => {
+  const getformvalues = () => {
     const val = RegistratRef.current.getVal();
     const {
       dutyUnit,
@@ -83,46 +66,124 @@ function Registration(props) {
       testStart,
       testUnit
     } = val;
-    startFlow().then(res => {
-      if (res.code === 200) {
-        dispatch({
-          type: 'releaseregistra/fetchsave',
-          payload: {
-            register: {
-              saveItems: 'releaseRegister,releaseEnvs,releaseLists,releaseAttaches',
-              releaseMain: { releaseType, dutyUnit },
-              releaseRegister: {
-                testStart: moment(testStart).format('YYYY-MM-DD HH:mm:ss'),
-                testEnd: moment(testEnd).format('YYYY-MM-DD HH:mm:ss'),
-                testPlace, testUnit, testOperator, influenceScope, testResult, registerTime, registerUnit, registerUnitId, registerUser, registerUserId,
-              },
-              releaseAttaches,
-              releaseEnvs,
-              releaseLists,
-            },
-            buttontype: type,
-            taskId,
-            type: '1',
-            userIds: sessionStorage.getItem('NextflowUserId'),
-          }
-        });
+    const register = {
+      saveItems: 'releaseRegister,releaseEnvs,releaseLists,releaseAttaches',
+      releaseMain: { releaseType, dutyUnit },
+      releaseRegister: {
+        testStart: moment(testStart).format('YYYY-MM-DD HH:mm:ss'),
+        testEnd: moment(testEnd).format('YYYY-MM-DD HH:mm:ss'),
+        testPlace, testUnit, testOperator, influenceScope, testResult, registerTime, registerUnit, registerUnitId, registerUser, registerUserId,
+      },
+      releaseAttaches,
+      releaseEnvs,
+      releaseLists,
+    };
+    setIndexValue(register);
+    return register
+  };
+
+  const handleSubmit = () => {
+    setUserChoice(false);
+    sessionStorage.removeItem('NextflowUserId');
+    const register = getformvalues();
+    RegistratRef.current.Forms((err) => {
+      if (err) {
+        message.error('请将信息填写完整')
       } else {
-        message.error(res.msg)
+        saveRegister(register).then(res => {
+          if (res.code === 200) {
+            sessionStorage.setItem('flowtype', '1');
+            setTaskId(res.data.saveRegister.releaseRegister.taskId);
+            setUserVisible(true);
+          } else {
+            message.error(res.msg)
+          }
+        })
       }
     })
   };
 
+  const tosubmit = () => {
+    dispatch({
+      type: 'releaseregistra/fetchsubmit',
+      payload: {
+        taskId,
+        type: 1,
+        userIds: sessionStorage.getItem('NextflowUserId'),
+      }
+    });
+  }
+
+  // 保存获取表单数据
+  const handleSave = () => {
+    const register = getformvalues();
+    const tabid = sessionStorage.getItem('tabid');
+    dispatch({
+      type: 'viewcache/gettabstate',
+      payload: {
+        cacheinfo: register,
+        tabid,
+      },
+    });
+    saveRegister(register).then(response => {
+      if (response.code === 200) {
+        message.success('保存成功');
+        router.push({
+          pathname: `/ITSM/releasemanage/registration`,
+          query: { tabid, closecurrent: true }
+        })
+        router.push({
+          pathname: `/ITSM/releasemanage/to-do/record`,
+          query: {
+            Id: response.data.saveRegister.releaseMain.releaseNo,
+            taskName: '发布登记'
+          },
+          state: {
+            runpath: `/ITSM/releasemanage/to-do`,
+            dynamicpath: true,
+            menuDesc: '出厂测试',
+          },
+        });
+      } else {
+        message.error(response.msg)
+      }
+    })
+  };
 
   // 选人完成走提交接口
   useEffect(() => {
     if (userchoice) {
-      handleSave('submit')
+      tosubmit()
     }
   }, [userchoice])
 
+  // 重置表单信息
+  useEffect(() => {
+    if (tabnew) {
+      RegistratRef.current.resetVal();
+    }
+  }, [tabnew]);
+
+  useEffect(() => {
+    // 获取页签信息
+    if (location.state) {
+      if (location.state.cache) {
+        const register = getformvalues();
+        dispatch({
+          type: 'viewcache/gettabstate',
+          payload: {
+            cacheinfo: register,
+            tabid: sessionStorage.getItem('tabid')
+          },
+        });
+        RegistratRef.current.resetVal();   // 页签数据获取完成清空表单
+      };
+    };
+  }, [location])
+
   const operations = (
     <>
-      <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleSave()}>
+      <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleSave('save')}>
         保存
       </Button>
       <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleSubmit()}>
@@ -133,13 +194,13 @@ function Registration(props) {
   );
 
   return (
-    <PageHeaderWrapper title={pagetitle} extra={operations}>
-      <DictLower
-        typeid="1379323239808897026"
-        ChangeSelectdata={newvalue => setSelectData(newvalue)}
-        style={{ display: 'none' }}
-      />
-      <Spin tip="正在提交数据..." spinning={!!loading}>
+    <Spin tip="正在提交数据..." spinning={!!loading}>
+      <PageHeaderWrapper title={pagetitle} extra={operations}>
+        <DictLower
+          typeid="1379323239808897026"
+          ChangeSelectdata={newvalue => setSelectData(newvalue)}
+          style={{ display: 'none' }}
+        />
         <Card>
           <Registrat
             wrappedComponentRef={RegistratRef}
@@ -147,22 +208,25 @@ function Registration(props) {
             selectdata={selectdata}
             isEdit
             taskName='发布登记'
-            info={{ releaseMain: {}, releaseRegister: {}, releaseEnvs: [], releaseLists: [], releaseAttaches: Attaches }}
+            info={tabdata || indexvalue}
           />
         </Card>
-      </Spin>
-      <User
-        taskId={taskId}
-        visible={uservisible}                       // 传参显示选人modle
-        ChangeUserVisible={v => setUserVisible(v)}  // 选人完成关闭选人modle
-        changorder='平台验证'                        //  下一环节名
-        ChangeChoice={v => setUserChoice(v)}         //  选人完成返回状态true，通过true判读，进行
-        ChangeType={v => (v)}           // 点击取消按钮，重置按钮类型         
-      />
-    </PageHeaderWrapper>
+        <User
+          taskId={taskId}
+          visible={uservisible}                       // 传参显示选人modle
+          ChangeUserVisible={v => setUserVisible(v)}  // 选人完成关闭选人modle
+          changorder='平台验证'                        //  下一环节名
+          ChangeChoice={v => setUserChoice(v)}         //  选人完成返回状态true，通过true判读，进行
+          ChangeType={v => (v)}                        //  取消，重置按钮类型         
+        />
+      </PageHeaderWrapper>
+    </Spin>
   );
 }
 
-export default connect(({ itsmuser, loading }) => ({
+export default connect(({ itsmuser, viewcache, loading }) => ({
+  tabnew: viewcache.tabnew,
+  tabdata: viewcache.tabdata,
   userinfo: itsmuser.userinfo,
+  loading: loading.models.releasetodo,
 }))(Registration);

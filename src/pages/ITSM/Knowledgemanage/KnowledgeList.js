@@ -332,7 +332,6 @@ function KnowledgeList(props) {
         }
       })
     }
-
   }
   const onSelectChange = (RowKeys, record) => {
     setSelectedRowKeys(RowKeys);

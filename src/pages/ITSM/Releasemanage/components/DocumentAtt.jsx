@@ -110,7 +110,7 @@ function DocumentAtt(props) {
         } if (record.key === '9') {
           return (
             <>
-              {text !== '[]' && text !== '' && (
+              {/* {text !== '[]'&& (
                 <div className={styles.greylink}>
                   {JSON.parse(text).map((obj, index) => {
                     return (
@@ -123,13 +123,13 @@ function DocumentAtt(props) {
                     );
                   })}
                 </div>
-              )}
+              )} */}
               <div style={{ width: 300, marginTop: 12 }}>
                 <FilesContext.Provider value={{
                   files: JSON.parse(text),
                   ChangeFiles: (v => handleFieldChange(JSON.stringify(v), 'attachFile', record.key)),
                 }}>
-                  <SysUpload filelist={JSON.parse(text)} />
+                  <SysUpload />
                 </FilesContext.Provider>
               </div>
             </>
@@ -166,8 +166,8 @@ function DocumentAtt(props) {
           return (
             <Select
               placeholder="请选择"
-              value={Uint && Uint.dutyUnit ? Uint.dutyUnit : ''}
-              onChange={e => handleFieldChange(e.target.value, 'dutyUint', record.key)}
+              defaultValue={Uint && Uint.dutyUnit ? Uint.dutyUnit : ''}
+              onChange={e => handleFieldChange(e, 'dutyUint', record.key)}
             >
               {unitmap.map(obj => [
                 <Option key={obj.key} value={obj.title}>
