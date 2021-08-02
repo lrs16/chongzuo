@@ -215,7 +215,7 @@ function LibraryList(props) {
       functionmap={functionmap}
       modulamap={modulamap}
       isEdit={false}
-      taskName='发布登记'
+      taskName='出厂测试'
       mainId={undefined}
     />;
   };

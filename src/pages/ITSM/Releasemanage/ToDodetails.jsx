@@ -1,14 +1,15 @@
 import React, { useState, useRef } from 'react';
 import { connect } from 'dva';
-import { Button, Popover } from 'antd';
+import { Button, Spin } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
 import WorkOrder from './WorkOrder';
 
 function ToDodetails(props) {
-  const { location, dispatch, userinfo } = props;
+  const { location, dispatch, loading } = props;
   const { taskName } = location.query;
   const [tabActivekey, settabActivekey] = useState('workorder'); // 打开标签
+  const [buttype, setButtype] = useState('');                    // 点击的按钮类型
 
   const handleTabChange = key => {
     switch (key) {
@@ -47,20 +48,20 @@ function ToDodetails(props) {
   ];
   const operations = (
     <>
-      {taskName === '发布登记' && (
+      {taskName === '出厂测试' && (
         <Button type="danger" ghost style={{ marginRight: 8 }} >
           删除
         </Button>
       )}
-      {taskName !== '发布登记' && (
-        <Button type="danger" ghost style={{ marginRight: 8 }} >
+      {taskName !== '出厂测试' && (
+        <Button type="danger" ghost style={{ marginRight: 8 }} onMouseDown={() => setButtype('')} onClick={() => setButtype('goback')} >
           回退
         </Button>
       )}
-      <Button type="primary" style={{ marginRight: 8 }} >
+      <Button type="primary" style={{ marginRight: 8 }} onMouseDown={() => setButtype('')} onClick={() => setButtype('save')}  >
         保存
       </Button>
-      <Button type="primary" style={{ marginRight: 8 }} >
+      <Button type="primary" style={{ marginRight: 8 }} onMouseDown={() => setButtype('')} onClick={() => setButtype('flow')} >
         流转
       </Button>
       <Button >返回</Button>
@@ -68,21 +69,24 @@ function ToDodetails(props) {
   )
 
   return (
-    <PageHeaderWrapper
-      title={taskName}
-      extra={operations}
-      tabList={taskName === '版本管理员审批' ? editiontabList : tabList}
-      tabActiveKey={tabActivekey}
-      onTabChange={handleTabChange}
-    >
+    <Spin tip="正在加载数据..." spinning={!!loading}>
+      <PageHeaderWrapper
+        title={taskName}
+        extra={operations}
+        tabList={taskName === '版本管理员审批' ? editiontabList : tabList}
+        tabActiveKey={tabActivekey}
+        onTabChange={handleTabChange}
+      >
 
-      {tabActivekey === 'workorder' && (
-        <WorkOrder location={location} />
-      )}
-    </PageHeaderWrapper>
+        {tabActivekey === 'workorder' && (
+          <WorkOrder location={location} buttype={buttype} />
+        )}
+      </PageHeaderWrapper>
+    </Spin>
   );
 }
 
 export default connect(({ itsmuser, loading }) => ({
   userinfo: itsmuser.userinfo,
+  loading: loading.models.releasetodo,
 }))(ToDodetails);

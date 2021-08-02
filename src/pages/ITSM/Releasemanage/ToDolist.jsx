@@ -373,6 +373,6 @@ function ToDolist(props) {
 export default Form.create({})(
   connect(({ releasetodo, loading }) => ({
     list: releasetodo.list,
-    loading: loading.models.releaseregistra,
+    loading: loading.models.releasetodo,
   }))(ToDolist),
 );

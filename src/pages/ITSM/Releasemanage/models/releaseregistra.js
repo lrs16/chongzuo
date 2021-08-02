@@ -1,6 +1,6 @@
 import { message } from 'antd';
 import router from 'umi/router';
-import { saveRegister, flowSubmit } from '../services/api';
+import { flowSubmit } from '../services/api';
 
 export default {
   namespace: 'releaseregistra',

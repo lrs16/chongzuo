@@ -12,7 +12,11 @@ class GlobalHeaderRight extends Component {
   state = {
     num: 0,
     pathname: '/',
-    timeoutnum: '',
+    timeoutnum: {
+      timeoutTimeNum: 0,
+      remindTimeNum: 0,
+      normalTimeNum: 0
+    },
   };
 
   componentDidMount() {
@@ -51,9 +55,11 @@ class GlobalHeaderRight extends Component {
     dispatch({
       type: 'global/fetchovertimenum',
     }).then(res => {
-      this.setState({
-        timeoutnum: res.data,
-      });
+      if (res.code === 200) {
+        this.setState({
+          timeoutnum: res.data,
+        });
+      }
     });
   }
 

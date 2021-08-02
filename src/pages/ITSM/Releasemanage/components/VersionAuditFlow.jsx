@@ -5,7 +5,7 @@ import styles from '../index.less';
 const { Step } = Steps;
 
 const records = [
-  { "taskName": "发布登记", "userName": "Elin", "startTime": "2021-04-02 17:19:44", "endTime": "2021-04-13 10:53:48" },
+  { "taskName": "出厂测试", "userName": "Elin", "startTime": "2021-04-02 17:19:44", "endTime": "2021-04-13 10:53:48" },
   { "taskName": "平台验证", "userName": "Elin", "startTime": "2021-04-13 10:53:48", "endTime": "2021-04-13 11:20:39" },
   { "taskName": "业务验证", "userName": "Elin", "startTime": "2021-04-13 11:20:39", "endTime": "2021-04-13 11:20:58" },
   { "taskName": "发布实施准备", "userName": "Elin", "startTime": "2021-04-13 11:20:58", "endTime": "2021-04-13 11:21:11" },

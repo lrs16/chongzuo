@@ -10,27 +10,8 @@ const { TextArea } = Input;
 const { Option } = Select;
 
 function DocumentAtt(props) {
-  const { dispatch, rowkey, unitmap, isEdit, dataSource, Uint, check, ChangeValue } = props;
+  const { dispatch, rowkey, unitmap, isEdit, dataSource, Unit, check, ChangeValue } = props;
   const [data, setData] = useState([]);
-
-  useEffect(() => {
-    if (rowkey && dataSource.length > 0) {
-      const newData = dataSource.map((item, index) => ({
-        ...item,
-        editable: false,
-        key: (index + 1).toString(),
-      }));
-      newData[8].editable = true;
-      if (Number(rowkey) !== 0) {
-        newData[rowkey - 1].editable = true;
-      };
-      if (rowkey === '3') {
-        newData[3].editable = true;
-      };
-      setData(newData);
-      ChangeValue(newData)
-    }
-  }, [rowkey])
 
   // 获取行
   const getRowByKey = (key, newData) => {
@@ -39,8 +20,10 @@ function DocumentAtt(props) {
 
   // 更新表单信息
   const handleFieldChange = (e, fieldName, key) => {
+    console.log(key)
     const newData = data.map(item => ({ ...item }));
     const target = getRowByKey(key, newData);
+    console.log(target)
     if (target) {
       target[fieldName] = e;
       setData(newData);
@@ -66,6 +49,34 @@ function DocumentAtt(props) {
       window.URL.revokeObjectURL(url);
     });
   };
+
+  useEffect(() => {
+    if (rowkey && dataSource.length > 0) {
+      const newData = dataSource.map((item, index) => ({
+        ...item,
+        editable: false,
+        key: (index + 1).toString(),
+      }));
+      newData[8].editable = true;
+      if (Number(rowkey) !== 0) {
+        newData[rowkey - 1].editable = true;
+        if (Unit && Unit.dutyUnit) {
+          newData[rowkey - 1].dutyUnit = Unit.dutyUnit;
+        };
+      };
+      if (rowkey === '3') {
+        newData[3].editable = true;
+      };
+      setData(newData);
+      ChangeValue(newData)
+    }
+  }, [rowkey])
+
+  useEffect(() => {
+    if (Unit && Unit.dutyUnit) {
+      handleFieldChange(Unit.dutyUnit, 'dutyUnit', rowkey)
+    };
+  }, [Unit.dutyUnit])
 
   const columns = [
     {
@@ -157,8 +168,8 @@ function DocumentAtt(props) {
     },
     {
       title: '责任单位',
-      dataIndex: 'dutyUint',
-      key: 'dutyUint',
+      dataIndex: 'dutyUnit',
+      key: 'dutyUnit',
       width: 200,
       align: 'center',
       render: (text, record) => {
@@ -166,8 +177,9 @@ function DocumentAtt(props) {
           return (
             <Select
               placeholder="请选择"
-              defaultValue={Uint && Uint.dutyUnit ? Uint.dutyUnit : ''}
-              onChange={e => handleFieldChange(e, 'dutyUint', record.key)}
+              defaultValue={Unit.dutyUnit}
+              key={Unit.dutyUnit}
+              onChange={e => { handleFieldChange(e, 'dutyUint', record.key) }}
             >
               {unitmap.map(obj => [
                 <Option key={obj.key} value={obj.title}>
@@ -175,7 +187,6 @@ function DocumentAtt(props) {
                 </Option>,
               ])}
             </Select>
-
           )
         }
         return text;

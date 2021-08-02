@@ -11,15 +11,15 @@ import { saveRegister } from './services/api';
 
 
 const Attaches = [
-  { docName: '功能出厂测试报告', attachFile: '[]', dutyUint: '', docTemplate: '', remarks: '' },
-  { docName: '平台验证测试报告', attachFile: '[]', dutyUint: '', docTemplate: '', remarks: '' },
-  { docName: '业务功能测试报告', attachFile: '[]', dutyUint: '', docTemplate: '', remarks: '' },
-  { docName: '功能清单终稿', attachFile: '[]', dutyUint: '', docTemplate: '', remarks: '' },
-  { docName: '发布实施方案', attachFile: '[]', dutyUint: '', docTemplate: '', remarks: '' },
-  { docName: '计划发布申请审批表', attachFile: '[]', dutyUint: '', docTemplate: '', remarks: '' },
-  { docName: '临时发布申请审批表', attachFile: '[]', dutyUint: '', docTemplate: '', remarks: '' },
-  { docName: '功能发布报告', attachFile: '[]', dutyUint: '', docTemplate: '', remarks: '' },
-  { docName: '其它附件', attachFile: '[]', dutyUint: '', docTemplate: '', remarks: '' },
+  { docName: '功能出厂测试报告', attachFile: '[]', dutyUnit: '', docTemplate: '', remarks: '' },
+  { docName: '平台验证测试报告', attachFile: '[]', dutyUnit: '', docTemplate: '', remarks: '' },
+  { docName: '业务功能测试报告', attachFile: '[]', dutyUnit: '', docTemplate: '', remarks: '' },
+  { docName: '功能清单终稿', attachFile: '[]', dutyUnit: '', docTemplate: '', remarks: '' },
+  { docName: '发布实施方案', attachFile: '[]', dutyUnit: '', docTemplate: '', remarks: '' },
+  { docName: '计划发布申请审批表', attachFile: '[]', dutyUnit: '', docTemplate: '', remarks: '' },
+  { docName: '临时发布申请审批表', attachFile: '[]', dutyUnit: '', docTemplate: '', remarks: '' },
+  { docName: '功能发布报告', attachFile: '[]', dutyUnit: '', docTemplate: '', remarks: '' },
+  { docName: '其它附件', attachFile: '[]', dutyUnit: '', docTemplate: '', remarks: '' },
 ];
 
 
@@ -136,7 +136,7 @@ function Registration(props) {
           pathname: `/ITSM/releasemanage/to-do/record`,
           query: {
             Id: response.data.saveRegister.releaseMain.releaseNo,
-            taskName: '发布登记'
+            taskName: '出厂测试'
           },
           state: {
             runpath: `/ITSM/releasemanage/to-do`,
@@ -187,7 +187,7 @@ function Registration(props) {
         保存
       </Button>
       <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleSubmit()}>
-        提交
+        流转
       </Button>
       <Button type="default">关闭</Button>
     </>
@@ -207,7 +207,7 @@ function Registration(props) {
             userinfo={userinfo}
             selectdata={selectdata}
             isEdit
-            taskName='发布登记'
+            taskName='出厂测试'
             info={tabdata || indexvalue}
           />
         </Card>

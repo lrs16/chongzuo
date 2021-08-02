@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Table, Row, Button, Select, Input } from 'antd';
 
 const { Option } = Select;
@@ -70,21 +70,18 @@ function TestingFacility(props) {
   };
 
   useEffect(() => {
-    if (dataSource.length && dataSource.length > 0) {
+    if (dataSource && dataSource.length && dataSource.length > 0) {
       const newData = dataSource.map((item, index) => ({
         ...item,
         isNew: true,
         key: (index + 1).toString(),
       }));
       setData(newData)
-    }
-  }, [dataSource])
-
-  useEffect(() => {
-    if (data.length === 0) {
+    };
+    if (!!dataSource && dataSource.length === 0) {
       newMember()
     }
-  }, [data])
+  }, [dataSource])
 
   const columns = [
     {
@@ -133,7 +130,7 @@ function TestingFacility(props) {
 
   return (
     <>
-      <Row style={{ marginBottom: 8 }}>
+      <Row>
         <h4 style={{ float: 'left' }}><span style={{ color: '#f5222d', marginRight: 4, fontWeight: 'normal' }}>*</span>{title}</h4>
         {isEdit && (<div style={{ float: 'right' }}>
           <Button

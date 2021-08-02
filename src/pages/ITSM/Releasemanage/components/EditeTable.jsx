@@ -25,7 +25,7 @@ function EditeTable(props) {
     const newData = data.map(item => ({ ...item }));
     newData.push({
       key: data.length + 1,
-      listType: taskName === '发布登记' ? '计划' : '临时',
+      listType: taskName === '出厂测试' ? '计划' : '临时',
       abilityType: '',
       module: '',
       appName: '',
@@ -137,14 +137,12 @@ function EditeTable(props) {
       }));
       setData(newData);
       setNewButton(false);
+    };
+    if (!!dataSource && dataSource.length === 0) {
+      newMember()
     }
   }, [dataSource])
 
-  useEffect(() => {
-    if (data.length === 0) {
-      newMember()
-    }
-  }, [data])
 
   const column = [
     {
@@ -431,7 +429,7 @@ function EditeTable(props) {
   return (
     <>
       <h4 style={{ fontSize: '1.1em' }}>
-        {(taskName === '发布登记' || taskName === '平台验证' || taskName === '业务验证') && (
+        {(taskName === '出厂测试' || taskName === '平台验证' || taskName === '业务验证') && (
           <span style={{ color: '#f5222d', marginRight: 4, fontWeight: 'normal' }}>*</span>
         )}
         {title}<span style={{ color: 'rgba(0, 0, 0, 0.45)', paddingLeft: 12, fontSize: 14 }}>（ 请先暂存发布清单信息，再进行工单的保存操作 ）</span>
