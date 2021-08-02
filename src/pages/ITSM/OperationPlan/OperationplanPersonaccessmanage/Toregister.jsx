@@ -21,8 +21,6 @@ import ToEditApply from './components/ToEditApply';
 import ToapplayDetail from './components/ToapplayDetail';
 // import SysDict from '@/components/SysDict';
 
-// import { exportdown } from '../../Operationreport/WeeklyReport/services/softreportapi';
-
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
@@ -38,7 +36,7 @@ const { Option } = Select;
 const { RangePicker } = DatePicker;
 
 const sexMap = ['男', '女'];
-const statusMap = ['待审核', '已审核'];
+const statusMap = ['已登记','待审核', '已审核'];
 const sexselectmap = [
   { key: '0', title: '男' },
   { key: '1', title: '女' }
@@ -47,8 +45,9 @@ const sexselectmap = [
 const checkresultMap = ['通过', '不通过'];
 
 const checkStatus1 = [
-  { key: '0', title: '待审核' },
-  { key: '1', title: '已审核' }
+  { key: '0', title: '已登记' },
+  { key: '1', title: '待审核' },
+  { key: '2', title: '已审核' }
 ];
 
 const checkResult1 = [
@@ -224,6 +223,7 @@ function Toregister(props) {
   };
 
   const hasSelected = selectedRows.length === 1;
+  const hasSelected1 = selectedRows.length > 0;
 
   // 申请人员进出添加
   const handleAdd = values => {
@@ -243,6 +243,8 @@ function Toregister(props) {
         Message.error(res.msg);
       }
     });
+    setSelectedRowKeys([]);
+    setSelectedRows([]);
   };
 
   // 申请人员进出编辑
@@ -269,23 +271,18 @@ function Toregister(props) {
 
   // 申请人员进出删除
   const handleDelete = () => {
+    const {id} = selectedRows[0];
     const len = selectedRowKeys.length;
-    const idList = [];
-    if (len) {
-      selectedRowKeys.forEach(item => {
-        const id = item;
-        idList.push(id);
-      });
-    }
+
     if (len === 1) { // 单条数据
       dispatch({
-        type: 'apply/deleteApplyForm',
+        type: 'apply/deleteApplyForms',
         payload: {
-          registId: selectedRowKeys,
+          registIds: id,
         }
       }).then(res => {
         if (res.code === 200) {
-          Message.info('删除成功');
+          Message.success('删除成功');
           getfindRegistList();
         };
         if (res.code === -1) {
@@ -293,26 +290,38 @@ function Toregister(props) {
         };
       });
     } else if (len > 1) { // 批量删除
+      const registIds = selectedRows.map(item => {
+        return item.id;
+      })
+
       dispatch({
-        type: 'apply/deleteApplyForm',
-        payload: { registId: idList },
+        type: 'apply/deleteApplyForms',
+        payload: { registIds: registIds.toString() },
       }).then(res => {
         if (res.code === 200) {
-          Message.info('多条删除删除成功');
+          Message.success('删除成功');
           getfindRegistList();
         } else {
-          Message.error('多条删除失败!');
+          Message.error(res.msg);
         }
       });
     } else {
       Message.info('请选择一条数据');
     }
     setSelectedRowKeys([]);
+    setSelectedRows([]);
   };
 
   // 重置
   const handleReset = () => {
     resetFields();
+    dispatch({
+      type: 'apply/findRegistList',
+      payload: {
+        pageIndex: 0,
+        pageSize: paginations.pageSize,
+      },
+    })
   };
 
   // 查询请求数据
@@ -648,12 +657,13 @@ function Toregister(props) {
             userinfo={userinfo}
             onSumit={values => handleAdd(values)}
           >
-            <Button type="primary" style={{ marginRight: 8 }}>
+            <Button type="primary" style={{ marginRight: 8 }} disabled={hasSelected1}>
               申请
             </Button>
           </ToApply>
           <ToEditApply
             title='编辑人员进出申请'
+            dispatch={dispatch}
             selectedRows={selectedRows}
             onSumit={values => handleEdite(values)}
           >
@@ -671,7 +681,7 @@ function Toregister(props) {
           columns={columns}
           dataSource={findRegistlist.rows}
           scroll={{ x: 1600 }}
-          rowKey={r => r.id}
+          rowKey={r => r.registNo}
           pagination={pagination}
           rowSelection={rowSelection}
         />

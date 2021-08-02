@@ -1,57 +1,90 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { connect } from 'dva';
-import { Select, Row, Col, Form, Input, Radio, Button, DatePicker, Collapse } from 'antd';
+import moment from 'moment';
+import router from 'umi/router';
+import { Message, Button, Collapse } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import EditContext from '@/layouts/MenuContext';
+import Content from './components/Content';
+import ToApplays from './components/ToApplays'; // 人员申请详情
 import styles from '../index.less';
-import Link from 'umi/link';
 
 const { Panel } = Collapse;
-const { Option } = Select;
-
-const formallItemLayout = {
-    labelCol: {
-        xs: { span: 24 },
-        sm: { span: 24 },
-    },
-    wrapperCol: {
-        xs: { span: 24 },
-        sm: { span: 24 },
-    },
-    labelAlign: 'left'
-};
 
 function Newcheck(props) {
     const pagetitle = props.route.name;
     const {
-        form: { getFieldDecorator, resetFields, getFieldsValue },
         dispatch,
+        location: { query },
     } = props;
 
-    const [adopt, setAdopt] = useState('0');
-    const [activeKey, setActiveKey] = useState([]);
+    const ContentRef = useRef(null);
 
-    const required = true;
+    const [result, setResult] = useState('0'); // 审核结果
+    const [activeKey, setActiveKey] = useState(['1']);
 
-    const operations = (
-        <>
-            <Button type="primary" style={{ marginRight: 8 }}>
-                保存
-            </Button>
-            <Button type="primary" style={{ marginRight: 8 }}>
-                {adopt === '0' ? '通过' : '不通过'}
-            </Button>
-            <Button type="default">
-                <Link
-                    to='/ITSM/operationplan/personaccessmanage/tocheck'>
-                    返回
-                </Link>
-            </Button>
-        </>
-    );
+    const handleSave = () => { // 保存按钮
+        const values = ContentRef.current.getVal();
+        ContentRef.current.Forms((err) => {
+            if (!err) {
+                dispatch({
+                    type: 'apply/saveCheck',
+                    payload: {
+                        ...values,
+                        registNo: query.selectedRows[0].registNo,
+                        checkTime: values.checkTime ? moment(values.checkTime).format('YYYY-MM-DD HH:mm:ss') : '',
+                    },
+                }).then(res => {
+                    if (res.code === 200) {
+                        Message.success(res.msg);
+                        router.push({
+                            pathname: '/ITSM/operationplan/personaccessmanage/tocheck',
+                            query: {
+                                addtab: false,
+                            }
+                        })
+                    } else {
+                        Message.error(res.msg);
+                    }
+                });
+            }
+        })
+    }
 
-    const onChange = (e) => { // 0通过 1不通过
-        // console.log(e.target.value, '111通过不同')
-        setAdopt(e.target.value);
+    const checkApproved = () => { // 审核通过按钮
+        const values = ContentRef.current.getVal();
+        ContentRef.current.Forms((err) => {
+            if (!err) {
+                dispatch({
+                    type: 'apply/checkRegist',
+                    payload: {
+                        ...values,
+                        registNo: query.selectedRows[0].registNo,
+                        checkTime: values.checkTime ? moment(values.checkTime).format('YYYY-MM-DD HH:mm:ss') : '',
+                    },
+                }).then(res => {
+                    if (res.code === 200) {
+                        Message.success(res.msg);
+                        router.push({
+                            pathname: '/ITSM/operationplan/personaccessmanage/tocheck',
+                            query: {
+                                addtab: false,
+                            }
+                        })
+                    } else {
+                        Message.error(res.msg);
+                    }
+                });
+            }
+        })
+    }
+
+    const handleclose = () => { // 关闭返回
+        router.push({
+            pathname: `/ITSM/operationplan/personaccessmanage/tocheck`,
+            query: { pathpush: true },
+            state: { cache: false }
+        });
     }
 
     const callback = key => {
@@ -59,216 +92,58 @@ function Newcheck(props) {
         setActiveKey(key);
     };
 
+    const operations = (
+        <>
+            <Button
+                type="primary"
+                style={{ marginRight: 8 }}
+                onClick={() => handleSave()}
+            >
+                保存
+            </Button>
+            {
+                result === '0' ?
+                    (
+                        <Button type="primary" style={{ marginRight: 8 }} onClick={() => checkApproved()}>
+                            通过
+                        </Button>) : (
+                        <Button type="primary" style={{ marginRight: 8 }} onClick={() => checkApproved()}>
+                            不通过
+                        </Button>
+                    )
+            }
+            <Button onClick={handleclose}>返回</Button>
+        </>
+    );
+
     return (
         <PageHeaderWrapper title={pagetitle} extra={operations}>
             <div className={styles.collapse}>
                 <Collapse
                     expandIconPosition="right"
-                    // defaultActiveKey={['1']}
                     activeKey={activeKey}
                     bordered={false}
                     onChange={callback}
                 >
-                    <Panel header="人员进出审核" key="1">
-                        <Row gutter={24} style={{ paddingTop: 24 }}>
-                            <Form {...formallItemLayout} >
-                                <Col span={8}>
-                                    <Form.Item label="审核结果">
-                                        {getFieldDecorator('checkResult', {
-                                            rules: [{ required: true, message: '请选择审核结果' }],
-                                            initialValue: '0',
-                                        })(
-                                            <Radio.Group onChange={onChange}>
-                                                <Radio value='0'>通过</Radio>
-                                                <Radio value='1'>不通过</Radio>
-                                            </Radio.Group>,
-                                        )}
-                                    </Form.Item>
-                                </Col>
-                                <Col span={8}>
-                                    <Form.Item label="审核时间">
-                                        {getFieldDecorator('checkTime', {
-                                            rules: [
-                                                {
-                                                    required,
-                                                    message: '请选择时间',
-                                                },
-                                            ],
-                                            initialValue: ''
-                                        })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" />)}
-                                    </Form.Item>
-                                </Col>
-                                <Col span={8}>
-                                    <Form.Item label="审核说明">
-                                        {getFieldDecorator('checkContent', {
-                                            initialValue: '',
-                                        })
-                                            (<Input allowClear />)
-                                        }
-                                    </Form.Item>
-                                </Col>
-                                <Col span={8}>
-                                    <Form.Item label="审核人">
-                                        {getFieldDecorator('checkUser', {
-                                            initialValue: ''
-                                        })(<Input allowClear disabled />)}
-                                    </Form.Item>
-                                </Col>
-
-                                <Col span={8}>
-                                    <Form.Item label="审核人单位">
-                                        {getFieldDecorator('checkUnit', {
-                                            initialValue: ''
-                                        })(<Input allowClear disabled />)}
-                                    </Form.Item>
-                                </Col>
-                            </Form>
-                        </Row>
+                    <Panel header='人员进出审核' key="1">
+                        <EditContext.Provider value={{ editable: true }}>
+                            <Content
+                                wrappedComponentRef={ContentRef}
+                                ChangeResult={newvalue => {
+                                    setResult(newvalue);
+                                }}
+                                userinfo={(query && query.userinfo) ? query.userinfo : ''}
+                                selectedRows={query && query.selectedRows ? query.selectedRows[0] : {}}
+                            />
+                        </EditContext.Provider>
                     </Panel>
-                    <Panel header="人员进出申请" key="2">
-                        <Row gutter={24} style={{ paddingTop: 24 }}>
-                            <Form {...formallItemLayout} >
-                                <Col span={8}>
-                                    <Form.Item label="进出申请编号">
-                                        {getFieldDecorator('registNo', {
-                                            initialValue: '',
-                                        })(<Input disabled disabled />)}
-                                    </Form.Item>
-                                </Col>
-                                <Col span={8}>
-                                    <Form.Item label="姓名">
-                                        {getFieldDecorator('name', {
-                                            initialValue: '',
-                                        })(<Input disabled />)}
-                                    </Form.Item>
-                                </Col>
-                                <Col span={8}>
-                                    <Form.Item label="性别">
-                                        {getFieldDecorator('sex', {
-                                            initialValue: '',
-                                        })(<Input disabled />)}
-                                    </Form.Item>
-                                </Col>
-                                <Col span={8}>
-                                    <Form.Item label="联系电话">
-                                        {getFieldDecorator('phone', {
-                                            initialValue: '',
-                                        })(<Input disabled />)}
-                                    </Form.Item>
-                                </Col>
-
-                                <Col span={8}>
-                                    <Form.Item label="进出事由">
-                                        {getFieldDecorator('content', {
-                                            initialValue: '',
-                                        })(<Input disabled />)}
-                                    </Form.Item>
-                                </Col>
-
-                                <Col span={8}>
-                                    <Form.Item label="计划进入时间">
-                                        {getFieldDecorator('planInTime', {
-                                            initialValue: '',
-                                        })(<Input disabled />)}
-                                    </Form.Item>
-                                </Col>
-
-                                <Col span={8}>
-                                    <Form.Item label="计划离开时间">
-                                        {getFieldDecorator('planOutTime', {
-                                            initialValue: '',
-                                        })(<Input disabled />)}
-                                    </Form.Item>
-                                </Col>
-
-                                <Col span={8}>
-                                    <Form.Item label="携带工具">
-                                        {getFieldDecorator('carryTool', {
-                                            initialValue: '',
-                                        })(<Input disabled />)}
-                                    </Form.Item>
-                                </Col>
-
-                                <Col span={8}>
-                                    <Form.Item label="申请人">
-                                        {getFieldDecorator('applyUser', {
-                                            initialValue: '',
-                                        })(<Input disabled />)}
-                                    </Form.Item>
-                                </Col>
-
-                                <Col span={8}>
-                                    <Form.Item label="申请时间">
-                                        {getFieldDecorator('applyTime', {
-                                            initialValue: '',
-                                        })(<Input disabled />)}
-                                    </Form.Item>
-                                </Col>
-                            </Form>
-                        </Row>
+                    <Panel header='人员进出申请' key="2">
+                        <ToApplays selectedRows={query && query.selectedRows ? query.selectedRows[0] : {}} />
                     </Panel>
                 </Collapse>
-            </div>
-
-            {/* <Card>
-                <Row gutter={24} style={{ paddingTop: 24 }}>
-                    <Form {...formallItemLayout} >
-                        <Col span={8}>
-                            <Form.Item label="审核结果">
-                                {getFieldDecorator('checkResult', {
-                                    rules: [{ required: true, message: '请选择审核结果' }],
-                                    initialValue: '0',
-                                })(
-                                    <Radio.Group onChange={onChange}>
-                                        <Radio value='0'>通过</Radio>
-                                        <Radio value='1'>不通过</Radio>
-                                    </Radio.Group>,
-                                )}
-                            </Form.Item>
-                        </Col>
-                        <Col span={8}>
-                            <Form.Item label="审核时间">
-                                {getFieldDecorator('checkTime', {
-                                    rules: [
-                                        {
-                                            required,
-                                            message: '请选择时间',
-                                        },
-                                    ],
-                                    initialValue: ''
-                                })(<DatePicker showTime format="YYYY-MM-DD HH:mm:ss" />)}
-                            </Form.Item>
-                        </Col>
-                        <Col span={8}>
-                            <Form.Item label="审核说明">
-                                {getFieldDecorator('checkContent', {
-                                    initialValue: '',
-                                })
-                                    (<Input allowClear />)
-                                }
-                            </Form.Item>
-                        </Col>
-                        <Col span={8}>
-                            <Form.Item label="审核人">
-                                {getFieldDecorator('checkUser', {
-                                    initialValue: ''
-                                })(<Input allowClear disabled />)}
-                            </Form.Item>
-                        </Col>
-
-                        <Col span={8}>
-                            <Form.Item label="审核人单位">
-                                {getFieldDecorator('checkUnit', {
-                                    initialValue: ''
-                                })(<Input allowClear disabled />)}
-                            </Form.Item>
-                        </Col>
-                    </Form>
-                </Row>
-            </Card>
-         */}
+            </div >
         </PageHeaderWrapper>
     );
 }
 
-export default Form.create({})(Newcheck);
+export default connect()(Newcheck);

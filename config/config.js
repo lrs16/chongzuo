@@ -885,7 +885,66 @@ export default {
                               icon: 'fork',
                               component: './ITSM/OperationPlan/OperationplanPersonaccessmanage/ToQuery',
                             },
+                            {
+                              path: '/ITSM/operationplan/personaccessmanage/record',
+                              name: '人员进出查询',
+                              icon: 'fork',
+                              component: './ITSM/OperationPlan/OperationplanPersonaccessmanage/ToQuerydetails',
+                            },
                           ]
+                        },
+                      ]
+                    },
+                    {
+                      path: '/ITSM/supervisework',
+                      name: '工作督办',
+                      icon: 'control',
+                      routes: [
+                        {
+                          path: '/ITSM/supervisework',
+                          redirect: '/ITSM/supervisework/mycreatework', 
+                        },
+                        {
+                          path: '/ITSM/supervisework/mycreatework',
+                          name: '我创建的工作',
+                          icon: 'fork',
+                          component: './ITSM/Supervisework/MycreateWork'
+                        },
+                        {
+                          path: '/ITSM/supervisework/taskworkfillin',
+                          name: '工作任务填报',
+                          icon: 'fork',
+                          component: './ITSM/Supervisework/TaskworkFillin'
+                        },
+                        {
+                          path: '/ITSM/supervisework/workplandetail',
+                          name: '工作计划',
+                          icon: 'control',
+                          component: './ITSM/Supervisework/WorkplanDetail',
+                        },
+                        {
+                          path: '/ITSM/supervisework/myresponwork',
+                          name: '我负责的工作',
+                          icon: 'fork',
+                          component: './ITSM/Supervisework/MyresponWork'
+                        },
+                        {
+                          path: '/ITSM/supervisework/executework',
+                          name: '工作计划执行',
+                          icon: 'control',
+                          component: './ITSM/Supervisework/components/ExecuteworkEditfillin',
+                        },
+                        {
+                          path: '/ITSM/supervisework/todelayexamine',
+                          name: '工作延期审核',
+                          icon: 'fork',
+                          component: './ITSM/Supervisework/TodelayExamine'
+                        },
+                        {
+                          path: '/ITSM/supervisework/querywork',
+                          name: '工作查询',
+                          icon: 'fork',
+                          component: './ITSM/Supervisework/QueryWork'
                         },
                       ]
                     },
@@ -1644,6 +1703,11 @@ export default {
       target: ' http://172.16.10.33:9901/',
       changeOrigin: true,
     },
+    // 工作督办
+    '/work/': {
+      target: ' http://172.16.10.33:9901/',
+      changeOrigin: true,
+    },
     '/api/': {
       target: 'http://localhost:8000/', // mock接口数据
       changeOrigin: true,
@@ -1657,7 +1721,7 @@ export default {
       changeOrigin: true,
     },
     '/regist/': {
-      target: 'http://172.16.10.124:9901/', // 人员进出管理-人员进出登记
+      target: 'http://172.16.10.33:9901/', // 人员进出管理-人员进出登记
       changeOrigin: true
     },
     '/report/': {

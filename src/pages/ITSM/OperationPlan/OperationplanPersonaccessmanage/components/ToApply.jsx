@@ -3,8 +3,10 @@ import {
   Form, Input, Button, Drawer,
   Select,
   DatePicker,
+  Message
 } from 'antd';
 import moment from 'moment';
+import router from 'umi/router';
 
 const { Option } = Select;
 const formItemLayout = {
@@ -51,11 +53,11 @@ function ToApply(props) {
     });
   };
 
-  const handleCheckRegist = () => {
+  const handleSendCheck = () => { // 送审
     validateFields((err, values) => {
       if(!err) {
         dispatch({
-          type: 'apply/checkRegist',
+          type: 'apply/sendCheck',
           payload: {
             ...values,
             planInTime: (values.planInTime === '' || values.planInTime === 'Invalid date') ? '' : moment(values.planInTime).format('YYYY-MM-DD HH:mm:ss'),
@@ -63,7 +65,17 @@ function ToApply(props) {
             applyTime: (values.applyTime === '' || values.applyTime === 'Invalid date') ? '' : moment(values.applyTime).format('YYYY-MM-DD HH:mm:ss'),
           },
         }).then(res => {
-          console.log(res, 'res')
+          if (res.code === 200) {
+            Message.success(res.msg);
+            router.push({
+              pathname: '/ITSM/operationplan/personaccessmanage/tocheck',
+              query: {
+                addtab: false,
+              }
+            })
+          } else {
+            Message.error(res.msg);
+          }
         });
         handleCancel();
         resetFields();
@@ -186,6 +198,12 @@ function ToApply(props) {
             })(<Input placeholder="请输入" />)}
           </Form.Item>
 
+          <Form.Item label="申请ID" style={{ display: 'none' }}>
+            {getFieldDecorator('applyId', {
+              initialValue: userinfo.userId,
+            })(<Input placeholder="请输入" disabled />)}
+          </Form.Item>
+
           <Form.Item label="申请人">
             {getFieldDecorator('applyUser', {
               initialValue: userinfo.userName,
@@ -220,7 +238,7 @@ function ToApply(props) {
           <Button style={{ marginRight: 8 }} onClick={() => handleSave()} type="primary">
             保存
           </Button>
-          <Button type="primary" onClick={() =>handleCheckRegist()}>
+          <Button type="primary" onClick={() => handleSendCheck()} >
             送审
           </Button>
         </div>
@@ -231,6 +249,7 @@ function ToApply(props) {
 
 ToApply.defaultProps = {
   userinfo: {
+    userId: '',
     userName: '',
   }
 };

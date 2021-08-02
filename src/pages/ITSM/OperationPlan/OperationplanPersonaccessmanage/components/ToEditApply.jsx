@@ -3,8 +3,10 @@ import {
   Form, Input, Button, Drawer,
   Select,
   DatePicker,
+  Message
 } from 'antd';
 import moment from 'moment';
+import router from 'umi/router';
 
 const { Option } = Select;
 const formItemLayout = {
@@ -28,7 +30,8 @@ function ToEditApply(props) {
   const {
     form: { getFieldDecorator, validateFields, resetFields },
     children, title,
-    selectedRows
+    selectedRows,
+    dispatch
     // userinfo
   } = props;
 
@@ -47,6 +50,36 @@ function ToEditApply(props) {
         handleCancel();
         props.onSumit(values);
         resetFields();
+      }
+    });
+  };
+
+  const handleSendCheck = () => { // 送审
+    validateFields((err, values) => {
+      if(!err) {
+        dispatch({
+          type: 'apply/sendCheck',
+          payload: {
+            ...values,
+            id: selectedRows[0].id,
+            planInTime: (values.planInTime === '' || values.planInTime === 'Invalid date') ? '' : moment(values.planInTime).format('YYYY-MM-DD HH:mm:ss'),
+            planOutTime: (values.planOutTime === '' || values.planOutTime === 'Invalid date') ? '' : moment(values.planOutTime).format('YYYY-MM-DD HH:mm:ss'),
+            applyTime: (values.applyTime === '' || values.applyTime === 'Invalid date') ? '' : moment(values.applyTime).format('YYYY-MM-DD HH:mm:ss'),
+          },
+        }).then(res => {
+          if (res.code === 200) {
+            Message.success(res.msg);
+            router.push({
+              pathname: '/ITSM/operationplan/personaccessmanage/tocheck',
+              query: {
+                addtab: false,
+              }
+            })
+          } else {
+            Message.error(res.msg);
+          }
+        });
+        handleCancel();
       }
     });
   };
@@ -197,9 +230,13 @@ function ToEditApply(props) {
           <Button style={{ marginRight: 8 }} onClick={() => handleSave()} type="primary">
             保存
           </Button>
-          <Button type="primary">
-            送审
-          </Button>
+          {
+            (selectedRows[0] !== undefined && selectedRows[0].checkStatus === '0') && (
+              <Button type="primary" onClick={() => handleSendCheck()}>
+                送审
+              </Button>
+            )
+          }
         </div>
       </Drawer>
     </>
