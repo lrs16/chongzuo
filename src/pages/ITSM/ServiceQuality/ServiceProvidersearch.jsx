@@ -9,7 +9,8 @@ import {
   Row,
   Col,
   Popconfirm,
-  Divider
+  Divider,
+  Radio
 } from 'antd';
 import moment from 'moment';
 import { connect } from 'dva';
@@ -31,73 +32,94 @@ const formItemLayout = {
 function ServiceProvidersearch(props) {
   const pagetitle = props.route.name;
   const {
-    form: { getFieldDecorator, validateFields,resetFields },
-    maintenanceData,
-    dispatch
+    form: {
+      getFieldDecorator,
+      validateFields,
+      resetFields
+    },
+    providerArr,
+    dispatch,
+    loading
   } = props;
+  console.log(providerArr, 'providerArr')
   const [paginations, setPaginations] = useState({ current: 0, pageSize: 15 });
+  const [data, setData] = useState([]);
 
   const searchdata = (values, page, pageSize) => {
     dispatch({
-      type: 'qualityassessment/maintenanceList',
+      type: 'qualityassessment/providerList',
       payload: {
-        ...values
+        ...values,
+        pageNum: page,
+        pageSize
       }
     })
   }
 
+  const handlesearch = () => {
+    validateFields((err, value) => {
+      searchdata(value, 1, 15)
+    })
+  }
+
   useEffect(() => {
-    searchdata({}, paginations.current, paginations.pageSize)
+    validateFields((err, value) => {
+      searchdata(value, paginations.current, paginations.pageSize)
+    })
   }, [])
+
+  const handleDelete = (id) => {
+    return dispatch({
+      type: 'qualityassessment/providerDel',
+      payload: id
+    }).then(res => {
+      if (res.code === 200) {
+        message.info(res.msg);
+        searchdata({}, 1, paginations.pageSize)
+      } else {
+        message.error(res.msg);
+      }
+    })
+  }
 
   const columns = [
     {
       title: '服务商编号',
-      dataIndex: 'no',
-      key: 'no',
+      dataIndex: 'providerNo',
+      key: 'providerNo',
       render: (text, record) => {
-        const gotoDetail = () => {
+        const togoDetail = () => {
           router.push({
             pathname: '/ITSM/servicequalityassessment/addserviceprovidermaintenance',
             query: {
-              id: 'id'
+              id: record.id,
+              providerStatus: record.isEdit,
+              providerSearch:true
             }
           })
         }
-        return (
-          <a onClick={() => gotoDetail()}>{text}</a>
-        )
+        return <a onClick={togoDetail}>{text}</a>
       }
     },
     {
       title: '服务商名称',
-      dataIndex: 'name',
-      key: 'name'
+      dataIndex: 'providerName',
+      key: 'providerName'
     },
     {
       title: '合同数量',
-      dataIndex: 'number',
-      key: 'number'
-    },
-    {
-      title: '服务商名称',
-      dataIndex: 'name2',
-      key: 'name2'
+      dataIndex: 'contractNum',
+      key: 'contractNum'
     },
     {
       title: '负责人',
-      dataIndex: 'person',
-      key: 'person'
+      dataIndex: 'creator',
+      key: 'creator'
     },
     {
       title: '负责人手机号',
-      dataIndex: 'mobile',
-      key: 'mobile'
-    },
-    {
-      title: '状态',
-      dataIndex: 'statue',
-      key: 'statue'
+      dataIndex: 'directorPhone',
+      key: 'directorPhone'
     },
   ]
 
@@ -108,7 +130,8 @@ function ServiceProvidersearch(props) {
   }
 
   const handleReset = () => {
-    resetFields()
+    resetFields();
+    searchdata({}, 1, 15)
   }
 
   const onShowSizeChange = (page, pageSize) => {
@@ -136,16 +159,26 @@ function ServiceProvidersearch(props) {
     })
   }
 
+  // const handleTabledata = () => {
+  //   const newarr = maintenanceData.map((item, index) => {
+  //     return Object.assign(item,{ isNew: false,key:index})
+  //   })
+  //   setData(newarr)
+  // }
+
+  // useEffect(() => {
+  //   handleTabledata()
+  // },maintenanceData)
+
   const pagination = {
     showSizeChanger: true,
     onShowSizeChange: (page, pagesize) => onShowSizeChange(page, pagesize),
     current: paginations.current,
     pageSize: paginations.pageSize,
-    total: 150,
+    total: providerArr.total,
     showTotal: total => `总共 ${total} 条记录`,
     onChange: (page) => changePage(page)
   }
-
 
   return (
     <PageHeaderWrapper title={pagetitle}>
@@ -153,9 +186,19 @@ function ServiceProvidersearch(props) {
         <Row>
           <Form {...formItemLayout}>
             <Col span={8}>
+              <Form.Item label='服务商编号'>
+                {
+                  getFieldDecorator('providerNo')
+                    (<Input />)
+                }
+
+              </Form.Item>
+            </Col>
+
+            <Col span={8}>
               <Form.Item label='服务商名称'>
                 {
-                  getFieldDecorator('name', {})
+                  getFieldDecorator('providerName', {})
                     (<Input />)
                 }
               </Form.Item>
@@ -164,7 +207,7 @@ function ServiceProvidersearch(props) {
             <Col span={8}>
               <Form.Item label='负责人'>
                 {
-                  getFieldDecorator('person')
+                  getFieldDecorator('creator')
                     (<Input />)
                 }
               </Form.Item>
@@ -173,19 +216,9 @@ function ServiceProvidersearch(props) {
             <Col span={8}>
               <Form.Item label='负责人手机号'>
                 {
-                  getFieldDecorator('mobile')
+                  getFieldDecorator('directorPhone')
                     (<Input />)
                 }
-              </Form.Item>
-            </Col>
-
-            <Col span={8}>
-              <Form.Item label='服务商编号'>
-                {
-                  getFieldDecorator('no')
-                    (<Input />)
-                }
-
               </Form.Item>
             </Col>
 
@@ -193,6 +226,7 @@ function ServiceProvidersearch(props) {
               <Button
                 type='primary'
                 style={{ marginRight: 8 }}
+                onClick={handlesearch}
               >
                 查询
               </Button>
@@ -201,17 +235,15 @@ function ServiceProvidersearch(props) {
             </Col>
 
           </Form>
-
-
         </Row>
+
         <Button type='primary'>导出数据</Button>
 
         <Table
           columns={columns}
-          dataSource={maintenanceData}
+          dataSource={providerArr.records}
           pagination={pagination}
         />
-
       </Card>
     </PageHeaderWrapper>
   )
@@ -219,6 +251,7 @@ function ServiceProvidersearch(props) {
 
 export default Form.create({})(
   connect(({ qualityassessment, loading }) => ({
-    maintenanceData: qualityassessment.maintenanceData
+    providerArr: qualityassessment.providerArr,
+    loading: loading.models.qualityassessment
   }))(ServiceProvidersearch)
 )

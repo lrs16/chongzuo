@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import {
-  Collapse
+  Collapse,
+  Button
 } from 'antd';
 import { connect } from 'dva';
 import Register from './components/Register';
@@ -39,8 +40,22 @@ function CreditCardRegister(props) {
     })
   }, [])
 
+  const handlePrint = () => {
+    window.document.body.innerHTML = window.document.getElementById('alldom').innerHTML;
+    // window.print();
+    document.execCommand('print')
+    window.location.reload();
+  }
+
   return (
-    <PageHeaderWrapper title={pagetitle}>
+    <PageHeaderWrapper
+      title={pagetitle}
+      extra={
+        <>
+          <Button type='primary' onClick={handlePrint}>打印</Button>
+        </>
+      }
+    >
 
       {loading === false && (
         <div className={styles.collapse}>

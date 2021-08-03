@@ -7,6 +7,7 @@ import {
   Row,
   Col,
   Button,
+  DatePicker
 } from 'antd';
 import router from 'umi/router';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
@@ -24,15 +25,17 @@ const formItemLayout = {
   },
 };
 
+const { MonthPicker, RangePicker } = DatePicker;
+
 const columns = [
   {
     title: '服务商',
     dataIndex: 'serviceprovider',
     key: 'serviceprovider',
-    render:(text,record) => {
+    render: (text, record) => {
       const todetail = () => {
         router.push({
-          pathname:'/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtform',
+          pathname: '/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtform',
           // query: {
 
           // }
@@ -104,7 +107,7 @@ function TobedealtList(props) {
   }, [])
   const extra = (
     <>
-      <Button type='primary'>查询</Button>
+      <Button type='primary' style={{ marginLeft: 8 }}>查询</Button>
       <Button style={{ marginLeft: 8 }}>重置</Button>
       <Button
         type='link'
@@ -116,10 +119,11 @@ function TobedealtList(props) {
         {expand ? (<>关闭 <UpOutlined /></>) : (<>展开 <DownOutlined /></>)}
       </Button>
     </>)
+
   return (
     <PageHeaderWrapper title={pagetitle}>
       <Card>
-        <Row>
+        <Row gutter={16}>
           <Form {...formItemLayout}>
             <Col span={8}>
               <Form.Item label='考核编号'>
@@ -139,21 +143,22 @@ function TobedealtList(props) {
               </Form.Item>
             </Col>
 
-            <Col span={8}>
-              <Form.Item label='当前处理环节'>
-                {
-                  getFieldDecorator('name', {})
-                    (<Input />)
-                }
-              </Form.Item>
-            </Col>
-
             <div style={{ display: expand ? 'block' : 'none' }}>
+              <Col span={8}>
+                <Form.Item label={`当前
+                处理环节`}
+                >
+                  {
+                    getFieldDecorator('name', {})
+                      (<Input />)
+                  }
+                </Form.Item>
+              </Col>
               <Col span={8}>
                 <Form.Item label='发生时间'>
                   {
                     getFieldDecorator('name', {})
-                      (<Input />)
+                      (<RangePicker />)
                   }
                 </Form.Item>
               </Col>
@@ -252,7 +257,12 @@ function TobedealtList(props) {
                 <Form.Item label='登记时间'>
                   {
                     getFieldDecorator('name', {})
-                      (<Input />)
+                      (
+                        <RangePicker
+                          showTime
+                          format='YYYY-MM-DD HH:mm:ss'
+                          style={{ width: '100%' }}
+                        />)
                   }
                 </Form.Item>
               </Col>
@@ -342,7 +352,12 @@ function TobedealtList(props) {
                 <Form.Item label='自动化科专责审核时间'>
                   {
                     getFieldDecorator('name', {})
-                      (<Input />)
+                      (
+                        <RangePicker
+                          showTime
+                          format='YYYY-MM-DD HH-mm-ss'
+                          style={{ width: '100%' }}
+                        />)
                   }
                 </Form.Item>
               </Col>
@@ -378,7 +393,12 @@ function TobedealtList(props) {
                 <Form.Item label='服务商确认时间'>
                   {
                     getFieldDecorator('name', {})
-                      (<Input />)
+                      (
+                      <RangePicker
+                        showTime
+                        format='YYYY-MM-DD HH-mm:ss'
+                        style={{ width: '100%'}}
+                       />)
                   }
                 </Form.Item>
               </Col>
@@ -414,7 +434,12 @@ function TobedealtList(props) {
                 <Form.Item label='业务负责人复核时间'>
                   {
                     getFieldDecorator('name', {})
-                      (<Input />)
+                      (
+                      <RangePicker
+                        showTime
+                        format='YYYY-MM-DD HH-mm:ss'
+                        style={{ width: '100%'}}
+                       />)
                   }
                 </Form.Item>
               </Col>
@@ -503,17 +528,16 @@ function TobedealtList(props) {
 
             </div>
 
-            <Col span={24} style={{ textAlign: 'right' }}>
-              {extra}
-            </Col>
+            {expand ? (<Col span={24} style={{ textAlign: 'right' }}>{extra}</Col>) : (<Col span={8} style={{ marginTop: 4 }}>{extra}</Col>)}
 
           </Form>
-
-          <Table
-            columns={columns}
-            dataSource={tobeDealtarr}
-          />
         </Row>
+
+        <Table
+          columns={columns}
+          dataSource={tobeDealtarr}
+          scroll={{ x: 1500 }}
+        />
       </Card>
     </PageHeaderWrapper>
 

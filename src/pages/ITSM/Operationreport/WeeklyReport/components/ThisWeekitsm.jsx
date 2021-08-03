@@ -29,9 +29,8 @@ function ThisWeekitsm(props) {
     formincontentLayout,
     eventList,
     eventArr,
-    mainId,
+    type,
     detailParams,
-    reportType,
     loading
   } = props;
 
@@ -307,7 +306,7 @@ function ThisWeekitsm(props) {
     <>
       <Row gutter={16}>
         <Col span={20}>
-          <p style={{ fontWeight: '900', fontSize: '16px' }}>{reportType === 'week' ? '四、本周故障事件':'四、本月故障事件'}</p>
+          <p style={{ fontWeight: '900', fontSize: '16px' }}>{type === 'week' ? '四、本周故障事件':'四、本月故障事件'}</p>
         </Col>
 
         <Form {...formItemLayout}>

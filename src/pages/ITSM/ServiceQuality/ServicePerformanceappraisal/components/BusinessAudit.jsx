@@ -1,4 +1,4 @@
-import React, { useImperativeHandle, useRef } from 'react';
+import React, { useImperativeHandle, useRef, useState } from 'react';
 import {
   Form,
   Input,
@@ -6,8 +6,10 @@ import {
   Row,
   Col,
   Card,
-  Tag
+  Tag,
+  DatePicker
 } from 'antd';
+import moment from 'moment';
 
 const { TextArea } = Input;
 
@@ -16,8 +18,13 @@ const BusinessAudit = React.forwardRef((props, ref) => {
     form: { getFieldDecorator },
     formItemLayout,
     forminladeLayout,
-    repeatAudit
+    repeatAudit,
+    businessAudit,
+    userinfo,
   } = props;
+
+  const [showContent, setShowContent] = useState('1');
+
   const required = true;
   const attRef = useRef();
   useImperativeHandle(
@@ -28,6 +35,9 @@ const BusinessAudit = React.forwardRef((props, ref) => {
     []
   )
 
+  const handleChange = (e) => {
+    setShowContent(e.target.value)
+  }
   return (
     <Row gutter={24} style={{ paddingTop: 24 }}>
       <Form {...formItemLayout}>
@@ -42,7 +52,7 @@ const BusinessAudit = React.forwardRef((props, ref) => {
               ]
             })
               (
-                <Radio.Group>
+                <Radio.Group onChange={handleChange}>
                   <Radio value='1'>
                     通过
                   </Radio>
@@ -57,28 +67,60 @@ const BusinessAudit = React.forwardRef((props, ref) => {
           </Form.Item>
         </Col>
 
-        <Col span={24}>
-          <Form.Item label='审核说明' {...forminladeLayout}>
-            {
-              getFieldDecorator('content', {})
-                (
-                  <TextArea
-                    autoSize={{ minRows: 3 }}
-                    placeholder='请输入'
-                  />
-                )
-            }
+        {
+          showContent === '1' && (
+            <Col span={24}>
+            <Form.Item label='审核说明' {...forminladeLayout}>
+              {
+                getFieldDecorator('content', {})
+                  (
+                    <TextArea
+                      autoSize={{ minRows: 3 }}
+                      placeholder='请输入'
+                    />
+                  )
+              }
+  
+            </Form.Item>
+          </Col>
+  
+          )
+        } 
 
-          </Form.Item>
-        </Col>
-
+        {
+          showContent === '0' && (
+            <Col span={24}>
+            <Form.Item label='审核说明' {...forminladeLayout}>
+              {
+                getFieldDecorator('content', {
+                  rules:[
+                    {
+                      required,
+                      message:'请输入审核说明'
+                    }
+                  ]
+                })
+                  (
+                    <TextArea
+                      autoSize={{ minRows: 3 }}
+                      placeholder='请输入'
+                    />
+                  )
+              }
+  
+            </Form.Item>
+          </Col>
+  
+          )
+        } 
+      
         {
           !repeatAudit && (
             <Col span={24} >
               <Form.Item label='考核状态' {...forminladeLayout}>
                 {
                   getFieldDecorator('statue', {})
-                    (<Tag color="blue">blue</Tag>)
+                    (<Tag color="blue">待审</Tag>)
                 }
               </Form.Item>
             </Col>
@@ -89,7 +131,9 @@ const BusinessAudit = React.forwardRef((props, ref) => {
         <Col span={8}>
           <Form.Item label='审核人'>
             {
-              getFieldDecorator('person', {})
+              getFieldDecorator('userName', {
+                initialValue: userinfo.userName
+              })
                 (<Input />)
             }
           </Form.Item>
@@ -98,15 +142,20 @@ const BusinessAudit = React.forwardRef((props, ref) => {
         <Col span={8}>
           <Form.Item label='审核时间'>
             {
-              getFieldDecorator('time', {
+              getFieldDecorator('checktime', {
                 rules: [
                   {
                     required,
                     message: '请选择审核时间'
                   }
-                ]
+                ],
+                initialValue: businessAudit.checktime
               })
-                (<Input />)
+                (
+                  <DatePicker
+                    showTime
+                    format='YYYY-MM-DD HH:MM'
+                  />)
             }
           </Form.Item>
         </Col>
@@ -116,5 +165,11 @@ const BusinessAudit = React.forwardRef((props, ref) => {
     </Row>
   )
 })
+
+BusinessAudit.defaultProps = {
+  businessAudit: {
+    checktime: moment(new Date())
+  }
+}
 
 export default Form.create({})(BusinessAudit)

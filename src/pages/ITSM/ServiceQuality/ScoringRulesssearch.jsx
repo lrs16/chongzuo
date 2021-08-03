@@ -10,11 +10,12 @@ import {
   Row,
   Col,
   Card,
-  Divider 
+  Divider
 } from 'antd';
 import moment from 'moment';
 import { connect } from 'dva';
 import router from 'umi/router';
+import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 
 const formItemLayout = {
@@ -32,11 +33,12 @@ const formItemLayout = {
 function ScoringRulesssearch(props) {
   const pagetitle = props.route.name;
   const {
-    form: { getFieldDecorator, validateFields, resetFields},
+    form: { getFieldDecorator, validateFields, resetFields },
     maintenanceData,
     dispatch
   } = props;
   const [paginations, setPaginations] = useState({ current: 0, pageSize: 15 });
+  const [expand, setExpand] = useState(false);
 
   const columns = [
     {
@@ -104,12 +106,20 @@ function ScoringRulesssearch(props) {
     onChange: (page) => changePage(page)
   }
 
-  // 初始化把软件运维服务指标完成情况数据传过去
   return (
     <PageHeaderWrapper title={pagetitle}>
       <Card>
         <Row>
-          <Form {...formItemLayout}>
+          <Form  {...formItemLayout}>
+            <Col span={8}>
+              <Form.Item label='评分细则编号'>
+                {
+                  getFieldDecorator('no', {})
+                    (<Input />)
+                }
+              </Form.Item>
+            </Col>
+
             <Col span={8}>
               <Form.Item label='评分细则名称'>
                 {
@@ -122,33 +132,21 @@ function ScoringRulesssearch(props) {
             <Col span={8}>
               <Form.Item label='考核类型'>
                 {
-                  getFieldDecorator('type', {})
+                  getFieldDecorator('name', {})
                     (<Input />)
                 }
               </Form.Item>
             </Col>
 
-            <Col span={8}>
-              <Form.Item label='评分细则编号'>
-                {
-                  getFieldDecorator('no', {})
-                    (<Input />)
-                }
-              </Form.Item>
+            <Col span={24} style={{textAlign:'right'}}>
+              <Button type='primary' style={{marginRight:8}}>查询</Button>
+              <Button>重置</Button>
             </Col>
 
-            <Col span={24} style={{ textAlign: 'right' }}>
-              <Button
-                type='primary'
-                style={{ marginRight: 8 }}
-              >
-                查询
-              </Button>
-
-              <Button onClick={handleReset}>重置</Button>
-            </Col>
+         
           </Form>
         </Row>
+
         <Button type='primary'>导出数据</Button>
 
         <Table

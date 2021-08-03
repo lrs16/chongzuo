@@ -7,6 +7,7 @@ import {
   Row,
   Col,
   Button,
+  DatePicker
 } from 'antd';
 import router from 'umi/router';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
@@ -29,10 +30,10 @@ const columns = [
     title: '服务商',
     dataIndex: 'serviceprovider',
     key: 'serviceprovider',
-    render:(text,record) => {
+    render: (text, record) => {
       const todetail = () => {
         router.push({
-          pathname:'/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtform',
+          pathname: '/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtform',
           // query: {
 
           // }
@@ -86,7 +87,9 @@ const columns = [
     dataIndex: 'currentprocessingsection',
     key: 'currentprocessingsection'
   },
-]
+];
+
+const { RangePicker } = DatePicker;
 function Search(props) {
   const pagetitle = props.route.name;
   const {
@@ -102,24 +105,26 @@ function Search(props) {
       type: 'performanceappraisal/tobeDealtdata'
     })
   }, [])
-  const extra = (
-    <>
-      <Button type='primary'>查询</Button>
-      <Button style={{ marginLeft: 8 }}>重置</Button>
-      <Button
-        type='link'
-        style={{ marginLeft: 8 }}
-        onClick={() => {
-          setExpand(!expand)
-        }}
-      >
-        {expand ? (<>关闭 <UpOutlined /></>) : (<>展开 <DownOutlined /></>)}
-      </Button>
-    </>)
+
+  const extra = (<>
+    <Button type="primary" style={{ marginLeft: 8 }}>查 询</Button>
+    <Button style={{ marginLeft: 8 }} onClick={() => handleReset()}>重 置</Button>
+    <Button
+      style={{ marginLeft: 8 }}
+      type="link"
+      onClick={() => {
+        setExpand(!expand);
+      }}
+    >
+      {expand ? (<>关 闭 <UpOutlined /></>) : (<>展 开 <DownOutlined /></>)}
+    </Button></>)
+
+
   return (
     <PageHeaderWrapper title={pagetitle}>
       <Card>
-        <Row>
+
+        <Row gutter={16}>
           <Form {...formItemLayout}>
             <Col span={8}>
               <Form.Item label='考核编号'>
@@ -139,21 +144,22 @@ function Search(props) {
               </Form.Item>
             </Col>
 
-            <Col span={8}>
-              <Form.Item label='当前处理环节'>
-                {
-                  getFieldDecorator('name', {})
-                    (<Input />)
-                }
-              </Form.Item>
-            </Col>
-
             <div style={{ display: expand ? 'block' : 'none' }}>
+              <Col span={8}>
+                <Form.Item label={`当前
+                处理环节`}
+                >
+                  {
+                    getFieldDecorator('name', {})
+                      (<Input />)
+                  }
+                </Form.Item>
+              </Col>
               <Col span={8}>
                 <Form.Item label='发生时间'>
                   {
                     getFieldDecorator('name', {})
-                      (<Input />)
+                      (<RangePicker />)
                   }
                 </Form.Item>
               </Col>
@@ -252,7 +258,12 @@ function Search(props) {
                 <Form.Item label='登记时间'>
                   {
                     getFieldDecorator('name', {})
-                      (<Input />)
+                      (
+                        <RangePicker
+                          showTime
+                          format='YYYY-MM-DD HH:mm:ss'
+                          style={{ width: '100%' }}
+                        />)
                   }
                 </Form.Item>
               </Col>
@@ -342,7 +353,12 @@ function Search(props) {
                 <Form.Item label='自动化科专责审核时间'>
                   {
                     getFieldDecorator('name', {})
-                      (<Input />)
+                      (
+                        <RangePicker
+                          showTime
+                          format='YYYY-MM-DD HH-mm-ss'
+                          style={{ width: '100%' }}
+                        />)
                   }
                 </Form.Item>
               </Col>
@@ -378,7 +394,12 @@ function Search(props) {
                 <Form.Item label='服务商确认时间'>
                   {
                     getFieldDecorator('name', {})
-                      (<Input />)
+                      (
+                      <RangePicker
+                        showTime
+                        format='YYYY-MM-DD HH-mm:ss'
+                        style={{ width: '100%'}}
+                       />)
                   }
                 </Form.Item>
               </Col>
@@ -414,7 +435,12 @@ function Search(props) {
                 <Form.Item label='业务负责人复核时间'>
                   {
                     getFieldDecorator('name', {})
-                      (<Input />)
+                      (
+                      <RangePicker
+                        showTime
+                        format='YYYY-MM-DD HH-mm:ss'
+                        style={{ width: '100%'}}
+                       />)
                   }
                 </Form.Item>
               </Col>
@@ -503,17 +529,15 @@ function Search(props) {
 
             </div>
 
-            <Col span={24} style={{ textAlign: 'right' }}>
-              {extra}
-            </Col>
+            {expand ? (<Col span={24} style={{ textAlign: 'right' }}>{extra}</Col>) : (<Col span={8} style={{ marginTop: 4 }}>{extra}</Col>)}
 
           </Form>
-
-          <Table
-            columns={columns}
-            dataSource={tobeDealtarr}
-          />
         </Row>
+
+        <Table
+          columns={columns}
+          dataSource={tobeDealtarr}
+        />
       </Card>
     </PageHeaderWrapper>
 

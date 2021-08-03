@@ -603,10 +603,7 @@ function ComputerroomReportdetail(props) {
               <Col span={24}>
                 <NewTroublelist
                   forminladeLayout={forminladeLayout}
-                  type={type}
-                  // startTime={startTime}
-                  // endTime={endTime}
-                  // type={reporttype}
+                  type={reporttype}
                   newTroubleList={contentrowdata => {
                     setNewTroubleList(contentrowdata)
                   }}

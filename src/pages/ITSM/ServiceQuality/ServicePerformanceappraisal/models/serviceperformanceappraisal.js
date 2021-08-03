@@ -1,7 +1,8 @@
 import router from 'umi/router';
 import {
   maintenanceList,
-  tobeDealtdata
+  tobeDealtdata,
+
 } from '../services/serviceperformanceappraisalapi';
 
 export default {
@@ -9,7 +10,8 @@ export default {
 
   state:{
     maintenanceData:[],
-    tobeDealtarr:[]
+    tobeDealtarr:[],
+    searchProviderobj:{}
   },
 
   effects: {
@@ -37,6 +39,8 @@ export default {
       pathname:'/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtform'
     })
   },
+
+  
   },
 
  
@@ -55,5 +59,7 @@ export default {
         tobeDealtarr: action.payload
       }
     },
+
+ 
   }
 }

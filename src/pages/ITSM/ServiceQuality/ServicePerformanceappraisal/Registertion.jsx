@@ -42,6 +42,7 @@ const { Panel } = Collapse;
 function Registertion(props) {
   const pagetitle = props.route.name;
   const {
+    userinfo,
     dispatch,
   } = props;
   const RegistratRef = useRef();
@@ -62,6 +63,16 @@ function Registertion(props) {
       })
     })
   }
+
+  const getUserinfo = () => {
+    dispatch({
+      type:'itsmuser/fetchuser'
+    })
+  }
+
+  useEffect(() => {
+    getUserinfo()
+  },[])
 
 
 
@@ -92,24 +103,28 @@ function Registertion(props) {
           defaultActiveKey={['1']}
           bordered={false}
           onChange={callback}
-        >
-          <Panel header='服务绩效考核登记' key='1'>
+        > 
+          <Panel 
+          header='服务绩效考核登记'
+           key='1'
+           >
             <Register
               formItemLayout={formItemLayout}
               forminladeLayout={forminladeLayout}
               ref={RegistratRef}
+              userinfo={userinfo}
             />
           </Panel>
         </Collapse>
       </div>
-
     </PageHeaderWrapper>
   )
 }
 
 export default Form.create({})(
-  connect(({ qualityassessment,loading }) => ({
-    maintenanceData: qualityassessment.maintenanceData
+  connect(({ qualityassessment,itsmuser,loading }) => ({
+    maintenanceData: qualityassessment.maintenanceData,
+    userinfo: itsmuser.userinfo,
   }))(Registertion)
 )
 

@@ -58,7 +58,7 @@ const Register = React.forwardRef((props, ref) => {
       align: 'center',
     },
     {
-      title:'本周',
+      title: '本周',
       dataIndex: 'now_num',
       key: 'now_num',
       align: 'center',
@@ -78,105 +78,131 @@ const Register = React.forwardRef((props, ref) => {
   ];
 
   return (
+    <>
     <Row gutter={24} style={{ paddingTop: 24 }}>
       <Form {...formItemLayout}>
+        {/* <Row> */}
+        {/* <Col span={8}> */}
         <Col span={8}>
           <Form.Item label='计分卡编号'>
             {
-              getFieldDecorator('aa',{})
-              (<Input />)
+              getFieldDecorator('name', {})
+                (<Input />)
             }
           </Form.Item>
-
         </Col>
+
+        <Col span={8}>
+          <Form.Item label="问题编号">
+            {getFieldDecorator('no', {
+              rules: [
+                {
+                  message: '请输入问题编号',
+                },
+              ],
+              initialValue: '',
+            })(<Input />)}
+          </Form.Item>
+        </Col>
+
         <Col span={8}>
           <Form.Item label='评价计分卡名称'>
             {
-              getFieldDecorator('aa',{})
-              (<Input />)
+              getFieldDecorator('aa', {})
+                (<Input />)
             }
           </Form.Item>
-
         </Col>
+
         <Col span={8}>
           <Form.Item label='评分细则名称'>
             {
-              getFieldDecorator('aa',{})
-              (<Input />)
+              getFieldDecorator('aa', {})
+                (<Input />)
             }
           </Form.Item>
 
         </Col>
+
         <Col span={8}>
           <Form.Item label='考核类型'>
             {
-              getFieldDecorator('aa',{})
-              (<Input />)
+              getFieldDecorator('aa', {})
+                (<Input />)
             }
           </Form.Item>
 
         </Col>
+
         <Col span={8}>
           <Form.Item label='版本号'>
             {
-              getFieldDecorator('aa',{})
-              (<Input />)
+              getFieldDecorator('aa', {})
+                (<Input />)
             }
           </Form.Item>
 
         </Col>
+
         <Col span={8}>
           <Form.Item label='专业部门'>
             {
-              getFieldDecorator('aa',{})
-              (<Input />)
+              getFieldDecorator('aa', {})
+                (<Input />)
             }
           </Form.Item>
 
         </Col>
+
         <Col span={8}>
           <Form.Item label='评价区间'>
             {
-              getFieldDecorator('aa',{})
-              (<Input />)
+              getFieldDecorator('aa', {})
+                (<Input />)
             }
           </Form.Item>
 
         </Col>
+
         <Col span={8}>
           <Form.Item label='服务商'>
             {
-              getFieldDecorator('aa',{})
-              (<Input />)
+              getFieldDecorator('aa', {})
+                (<Input />)
             }
           </Form.Item>
 
         </Col>
+
         <Col span={8}>
           <Form.Item label='合同名称'>
             {
-              getFieldDecorator('aa',{})
-              (<Input />)
+              getFieldDecorator('aa', {})
+                (<Input />)
             }
           </Form.Item>
-
         </Col>
+
         <Col span={8}>
           <Form.Item label='评价详情'>
             {
-              getFieldDecorator('aa',{})
-              (<Input />)
+              getFieldDecorator('aa', {})
+                (<Input />)
             }
           </Form.Item>
         </Col>
+
       </Form>
 
-      <MergeTable
+   
+    </Row>
+
+       <MergeTable
         column={columns}
         tableSource={tableSource}
         mergecell='first_object'
-       />
-    </Row>
+      />
+    </>
   )
 })
 

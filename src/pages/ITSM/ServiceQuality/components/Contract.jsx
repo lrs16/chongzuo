@@ -4,7 +4,8 @@ import {
   Form,
   Input,
   Button,
-  DatePicker
+  DatePicker,
+  Select
 } from 'antd';
 import moment from 'moment';
 
@@ -19,6 +20,8 @@ const formItemLayout = {
   }
 }
 
+const { Option } = Select;
+
 const withClick = (element, handleClick = () => { }) => {
   return <element.type {...element.props} onClick={handleClick} />
 }
@@ -27,12 +30,14 @@ const withClick = (element, handleClick = () => { }) => {
 function Contract(props) {
   const [visible, setVisible] = useState(false);
   const {
-    form: { getFieldDecorator,validateFields },
+    form: { getFieldDecorator, validateFields },
     children,
     contract,
     title,
     onSumit,
   } = props;
+
+  console.log(contract,'contract')
 
   const required = true;
 
@@ -42,8 +47,12 @@ function Contract(props) {
 
   const handleOk = () => {
     props.form.validateFields((err, values) => {
-      if(!err) {
-        onSumit(values);
+      if (!err) {
+        const submitData = {
+          ...values,
+          id:contract.id || ''
+        };
+        onSumit(submitData);
         setVisible(false)
       }
     })
@@ -66,66 +75,72 @@ function Contract(props) {
       >
         <Form {...formItemLayout}>
           <Form.Item label='合同编号'>
-            {getFieldDecorator('no', {
-              initialValue: contract.no
+            {getFieldDecorator('contractNo', {
+              initialValue: contract.contractNo
             })
-              (<Input />)
+              (<Input disabled='true'/>)
             }
           </Form.Item>
 
           <Form.Item label='合同名称'>
-            {getFieldDecorator('name', {
+            {getFieldDecorator('contractName', {
               rules: [
                 {
                   required,
                   message: '请输入合同名称'
                 }
               ],
-              initialValue: contract.name
+              initialValue: contract.contractName
             })
               (<Input />)
             }
           </Form.Item>
 
           <Form.Item label='签订日期'>
-            {getFieldDecorator('data', {
+            {getFieldDecorator('signTime', {
               rules: [
                 {
                   required,
                   message: '请输入签订日期'
                 }
               ],
-              initialValue: contract.data
+              initialValue: moment(contract.signTime)
             })
               (<DatePicker />)
             }
           </Form.Item>
 
           <Form.Item label='到期日期'>
-            {getFieldDecorator('enddata', {
+            {getFieldDecorator('dueTime', {
               rules: [
                 {
                   required,
                   message: '请输入到期日期'
                 }
               ],
-              initialValue: contract.enddata
+              initialValue: moment(contract.dueTime)
             })
               (<DatePicker />)
             }
           </Form.Item>
 
           <Form.Item label='状态'>
-            {getFieldDecorator('statu', {
+            {getFieldDecorator('status', {
               rules: [
                 {
                   required,
                   message: '请输入状态'
                 }
               ],
-              initialValue: contract.statu
+              initialValue: contract.status
             })
-              (<Input />)
+              (
+                <Select>
+                  <Option key='0' value='0'>在用</Option>
+                  <Option key='1' value='1'>停用</Option>
+                  <Option key='2' value='2'>过期</Option>
+                </Select>
+              )
             }
           </Form.Item>
         </Form>
@@ -158,11 +173,11 @@ function Contract(props) {
 
 Contract.defaultProps = {
   contract: {
-    no:'',
-    name:'',
-    data:moment(new Date()),
-    enddata:moment(new Date()),
-    statu:'',
+    no: '',
+    name: '',
+    data: new Date(),
+    enddata: new Date(),
+    status: '0',
   }
 }
 export default Form.create({})(Contract)

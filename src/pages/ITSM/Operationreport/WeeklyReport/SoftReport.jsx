@@ -338,8 +338,6 @@ function SoftReport(props) {
 
   //   七、下周作业完成情况--表格
   const nextweekHomework = () => {
-    // console.log(moment(startTime).subtract(7,'d').format('YYYY-MM-DD'),'kkkk')
-    // console.log(moment(new Date(startTime) + 7).format('YYYY-MM-DD'))
     dispatch({
       type: 'softreport/nextweekHomework',
       payload: {
@@ -506,9 +504,6 @@ function SoftReport(props) {
     }
   }, [timeshow])
 
-  console.log(startTime, endTime)
-
-
   const newMember = () => {
     const nowNumber = list.map(item => ({ ...item }));
     const newarr = nowNumber.map((item, index) => {
@@ -628,8 +623,7 @@ function SoftReport(props) {
   }, [loading]);
 
   const dateFormat = 'YYYY-MM-DD';
-  console.log(loading, 'loading')
-
+  
   return (
     <PageHeaderWrapper
       title={reporttype === 'week' ? '新建软件运维周报' : '新建软件运维月报'}

@@ -100,7 +100,7 @@ const ExamineChild = React.forwardRef((props, ref) => {
                 </Col>
 
                 <Col span={24}>
-                    <Form.Item label="上传故障报告" {...forminladeLayout}>
+                    <Form.Item label="是否需要提供故障报告" {...forminladeLayout}>
                         {getFieldDecorator('checkReportSign', {
                             initialValue: check ? Number(check.checkReportSign) : 0
                         })(

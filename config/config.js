@@ -969,7 +969,12 @@ export default {
                           icon: 'control',
                           component: './ITSM/ServiceQuality/components/AddProviderMaintenance'
                         },
-
+                        {
+                          path: '/ITSM/servicequalityassessment/detailserviceprovidermaintenance',
+                          name: '服务商维护详情',
+                          icon: 'control',
+                          component: './ITSM/ServiceQuality/components/AddProviderMaintenance'
+                        },
                         {
                           path: '/ITSM/servicequalityassessment/serviceprovidersearch',
                           name: '服务商查询',
@@ -985,6 +990,12 @@ export default {
                         {
                           path: '/ITSM/servicequalityassessment/addscoringrulesmaintenance',
                           name: '新增评分细则维护',
+                          icon: 'control',
+                          component: './ITSM/ServiceQuality/components/AddScoringRulesmaintenance'
+                        },
+                        {
+                          path: '/ITSM/servicequalityassessment/detailscoringrulesmaintenance',
+                          name: '评分细则维护详情页',
                           icon: 'control',
                           component: './ITSM/ServiceQuality/components/AddScoringRulesmaintenance'
                         },
@@ -1738,6 +1749,10 @@ export default {
     },
     '/release/': {
       target: 'http://172.16.10.132:9901/',        // 发布管理
+      changeOrigin: true
+    },
+    '/quality/': {
+      target: 'http://172.16.10.33:9901/',
       changeOrigin: true
     },
   },
