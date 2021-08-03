@@ -1,6 +1,7 @@
-import React, { useRef, useImperativeHandle, forwardRef, useState, useEffect } from 'react';
+import React, { useRef, useImperativeHandle, forwardRef, useState, useEffect, useContext } from 'react';
 import moment from 'moment';
 import { Row, Col, Form, Input, Alert, DatePicker, Select, Radio } from 'antd';
+import SubmitTypeContext from '@/layouts/MenuContext';
 import EditeTable from './EditeTable';
 import TestingFacility from './TestingFacility';
 import DocumentAtt from './DocumentAtt';
@@ -45,18 +46,20 @@ const statumap = new Map([
 ]);
 
 function Registrat(props, ref) {
-  const { taskName, info, userinfo, register, selectdata, isEdit } = props;
+  const { taskName, info, userinfo, selectdata, isEdit } = props;
   const { getFieldDecorator, getFieldsValue, resetFields, setFieldsValue } = props.form;
   const required = true;
 
   const [alertvisible, setAlertVisible] = useState(false);  // 超时告警是否显示
   const [alertmessage, setAlertMessage] = useState('');
   const [check, setCheck] = useState(false);
+  const [adopt, setAdopt] = useState('通过');
+  const { ChangeSubmitType } = useContext(SubmitTypeContext);
 
   const formmap = new Map([
     ['出厂测试', info.releaseRegister],
     ['平台验证', info.platformValid],
-    ['业务验证', '3'],
+    ['业务验证', info.releaseBizValid],
   ]);
 
   // 校验测试环境与发布清 
@@ -84,7 +87,6 @@ function Registrat(props, ref) {
   }
 
   const changeatt = (v) => {
-    console.log(v)
     setFieldsValue({ releaseAttaches: v });
     const key = statumap.get(taskName);
     const target = v.filter(item => item.key === key)[0];
@@ -92,6 +94,29 @@ function Registrat(props, ref) {
       setCheck(false);
     }
   }
+
+  const handleAdopt = e => {
+    setAdopt(e.target.value);
+    if (e.target.value === '通过') {
+      ChangeSubmitType(1)
+    };
+    if (e.target.value === '不通过') {
+      ChangeSubmitType(0)
+    }
+  };
+
+
+  useEffect(() => {
+    if (info && info.platformValid && info.platformValid.validResult) {
+      setAdopt(info.platformValid.validResult);
+      if (info.platformValid.validResult === '通过') {
+        ChangeSubmitType(1)
+      };
+      if (info.platformValid.validResult === '不通过') {
+        ChangeSubmitType(0)
+      }
+    }
+  }, [info])
 
   const formRef = useRef();
   useImperativeHandle(ref, () => ({
@@ -126,7 +151,6 @@ function Registrat(props, ref) {
   const unitmap = getTypebyId('1384056290929545218');       // 责任单位
   const functionmap = getTypebyId('1384052503909240833');   // 功能类型
   const modulamap = getTypebyId('1384430921586839554');  // 模块
-
 
   return (
     <>
@@ -180,7 +204,7 @@ function Registrat(props, ref) {
             <Form.Item label="测试开始时间">
               {getFieldDecorator('testStart', {
                 rules: [{ required, message: `请选择出厂测试开始时间` }],
-                initialValue: moment(formmap.get(taskName).testStart),
+                initialValue: moment(formmap.get(taskName).testStart || undefined),
               })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" disabled={!isEdit} style={{ width: '100%' }} />)}
             </Form.Item>
           </Col>
@@ -188,7 +212,7 @@ function Registrat(props, ref) {
             <Form.Item label="测试结束时间">
               {getFieldDecorator('testEnd', {
                 rules: [{ required, message: `请选择出厂测试结束时间` }],
-                initialValue: moment(formmap.get(taskName).testEnd),
+                initialValue: moment(formmap.get(taskName).testEnd || undefined),
               })(<DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" disabled={!isEdit} style={{ width: '100%' }} />)}
             </Form.Item>
           </Col>
@@ -264,28 +288,37 @@ function Registrat(props, ref) {
               )}
             </Form.Item>
           </Col>
-          {taskName === '平台验证' && (
+          {(taskName === '平台验证' || taskName === '业务验证') && (
             <>
               <Col span={24}>
                 <Form.Item label='验证结果' {...forminladeLayout} labelAlign='left'>
-                  {getFieldDecorator('valiResult', {
-                    rules: [{ required, message: `请填写${taskName}结论` }],
-                    initialValue: info.platformValid.valiResult,
-                  })(<RadioGroup>
+                  {getFieldDecorator('validResult', {
+                    rules: [{ required, message: '请选择验证结果' }],
+                    initialValue: formmap.get(taskName).validResult || '通过',
+                  })(<RadioGroup onChange={handleAdopt}>
                     <Radio value='通过'>通过</Radio>
                     <Radio value='不通过'>不通过</Radio>
                   </RadioGroup>
                   )}
                 </Form.Item>
               </Col>
-              <Col span={24}>
-                <Form.Item label='验证意见' {...forminladeLayout} labelAlign='left'>
-                  {getFieldDecorator('validComents', {
-                    rules: [{ required, message: `验证意见` }],
-                    initialValue: info.platformValid.validComents,
-                  })(<TextArea autoSize={{ minRows: 4 }} disabled={!isEdit} />)}
-                </Form.Item>
-              </Col>
+              {adopt === '通过' ? (
+                <Col span={24}>
+                  <Form.Item label='验证意见' {...forminladeLayout} labelAlign='left'>
+                    {getFieldDecorator('validComments', {
+                      initialValue: formmap.get(taskName).validComments,
+                    })(<TextArea autoSize={{ minRows: 4 }} disabled={!isEdit} />)}
+                  </Form.Item>
+                </Col>)
+                :
+                (<Col span={24}>
+                  <Form.Item label='验证意见' {...forminladeLayout} labelAlign='left'>
+                    {getFieldDecorator('validComments1', {
+                      rules: [{ required, message: `请输入验证意见` }],
+                      initialValue: formmap.get(taskName).validComments,
+                    })(<TextArea autoSize={{ minRows: 4 }} disabled={!isEdit} />)}
+                  </Form.Item>
+                </Col>)}
             </>
           )}
           {taskName !== '业务验证' && (
@@ -336,7 +369,7 @@ function Registrat(props, ref) {
             <Form.Item label="登记时间" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
               {getFieldDecorator('registerTime', {
                 rules: [{ required, message: `请选择登记时间` }],
-                initialValue: moment(formmap.get(taskName).registerTime).format('YYYY-MM-DD HH:mm:ss'),
+                initialValue: moment(formmap.get(taskName).registerTime || undefined).format('YYYY-MM-DD HH:mm:ss'),
               })(<Input disabled />)}
             </Form.Item>
           </Col>

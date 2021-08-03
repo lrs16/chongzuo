@@ -78,7 +78,7 @@ function TestingFacility(props) {
       }));
       setData(newData)
     };
-    if (!!dataSource && dataSource.length === 0) {
+    if (dataSource && dataSource.length === 0) {
       newMember()
     }
   }, [dataSource])

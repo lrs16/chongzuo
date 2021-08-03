@@ -28,9 +28,27 @@ export async function nextFlowUserList() {
   });
 }
 
-// 登记工单保存
+// 出厂测试保存
 export async function saveRegister(params) {
   return request(`/release/flow/saveRegister`, {
+    method: 'POST',
+    data: JSON.stringify(params),
+    requestType: 'formjosn',
+  });
+}
+
+// 平台验证保存
+export async function saveplatformValid(params) {
+  return request(`/release/flow/savePlatformValid`, {
+    method: 'POST',
+    data: JSON.stringify(params),
+    requestType: 'formjosn',
+  });
+}
+
+// 业务验证保存
+export async function savereleaseBizValid(params) {
+  return request(`/release/flow/saveBizValid`, {
     method: 'POST',
     data: JSON.stringify(params),
     requestType: 'formjosn',

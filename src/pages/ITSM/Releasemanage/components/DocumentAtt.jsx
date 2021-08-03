@@ -12,6 +12,7 @@ const { Option } = Select;
 function DocumentAtt(props) {
   const { dispatch, rowkey, unitmap, isEdit, dataSource, Unit, check, ChangeValue } = props;
   const [data, setData] = useState([]);
+  console.log(data)
 
   // 获取行
   const getRowByKey = (key, newData) => {
@@ -20,10 +21,8 @@ function DocumentAtt(props) {
 
   // 更新表单信息
   const handleFieldChange = (e, fieldName, key) => {
-    console.log(key)
     const newData = data.map(item => ({ ...item }));
     const target = getRowByKey(key, newData);
-    console.log(target)
     if (target) {
       target[fieldName] = e;
       setData(newData);

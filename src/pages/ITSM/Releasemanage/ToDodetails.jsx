@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { connect } from 'dva';
 import { Button, Spin } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import SubmitTypeContext from '@/layouts/MenuContext';              // 引用上下文管理组件
 
 import WorkOrder from './WorkOrder';
 
@@ -10,6 +11,7 @@ function ToDodetails(props) {
   const { taskName } = location.query;
   const [tabActivekey, settabActivekey] = useState('workorder'); // 打开标签
   const [buttype, setButtype] = useState('');                    // 点击的按钮类型
+  const [submittype, setSubmitType] = useState(1);
 
   const handleTabChange = key => {
     switch (key) {
@@ -61,9 +63,16 @@ function ToDodetails(props) {
       <Button type="primary" style={{ marginRight: 8 }} onMouseDown={() => setButtype('')} onClick={() => setButtype('save')}  >
         保存
       </Button>
-      <Button type="primary" style={{ marginRight: 8 }} onMouseDown={() => setButtype('')} onClick={() => setButtype('flow')} >
-        流转
-      </Button>
+      {submittype === 1 && (
+        <Button type="primary" style={{ marginRight: 8 }} onMouseDown={() => setButtype('')} onClick={() => setButtype('flow')} >
+          流转
+        </Button>
+      )}
+      {submittype === 0 && (
+        <Button type="primary" style={{ marginRight: 8 }} onMouseDown={() => setButtype('')} onClick={() => setButtype('noPass')} >
+          出厂测试
+        </Button>
+      )}
       <Button >返回</Button>
     </>
   )
@@ -79,7 +88,12 @@ function ToDodetails(props) {
       >
 
         {tabActivekey === 'workorder' && (
-          <WorkOrder location={location} buttype={buttype} />
+          <SubmitTypeContext.Provider value={{
+            submittype,
+            ChangeSubmitType: (v => setSubmitType(v)),
+          }}>
+            <WorkOrder location={location} buttype={buttype} />
+          </SubmitTypeContext.Provider>
         )}
       </PageHeaderWrapper>
     </Spin>

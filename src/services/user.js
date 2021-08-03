@@ -92,17 +92,25 @@ export async function taskFlowUserList() {
   });
 }
 
-// 加载知识管理审核人员列表
+// 加载发布下一环节处理人列表
 export async function releaseUserList(taskId, type) {
   return request(`/release/flow/getNextFlowUserList?taskId=${taskId}&type=${type}`, {
     method: 'GET',
   });
 }
 
+// 加载发布业务验证分派人列表
+export async function dispatchBizUsers() {
+  return request(`/release/from/getUserList?roleCodes=fb_responsible`, {
+    method: 'GET',
+  });
+}
 
-// 加载发布下一环节处理人列表
+// 加载知识管理审核人员列表 
 export async function knowledgeCheckUserList() {
   return request(`/knowledge/flow/getCheckUserList`, {
     method: 'GET',
   });
 }
+
+

@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Row, Button, Col, Cascader, Input, Radio, message, Divider, Select, Tabs } from 'antd';
+import UserContext from '@/layouts/MenuContext';              // 引用上下文管理组件
+import CheckOneUser from '@/components/SelectUser/CheckOneUser';
+import { dispatchBizUsers } from '@/services/user';
 import styles from '../index.less';
-import AssignmentModal from './AssignmentModal';
 import OrderContent from './OrderContent';
 
 const { TextArea } = Input;
@@ -15,8 +17,10 @@ function EditeTable(props) {
   const [data, setData] = useState([]);
   const [newbutton, setNewButton] = useState(false);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
-  const [visible, setVisible] = useState(false);                    // 分派窗口是否显示
   const [drawervisible, setDrawerVisible] = useState(false);        // 工单详情窗口是否显示
+  const [choiceUser, setChoiceUser] = useState({ users: '', ischange: false });
+  const [uservisible, setUserVisible] = useState(false); // 是否显示选人组件
+  const [userlist, setUserList] = useState([]);
 
   // 新增一条记录
   const newMember = () => {
@@ -25,7 +29,7 @@ function EditeTable(props) {
     const newData = data.map(item => ({ ...item }));
     newData.push({
       key: data.length + 1,
-      listType: taskName === '出厂测试' ? '计划' : '临时',
+      listType: taskName !== '版本管理员审批' ? '计划' : '临时',
       abilityType: '',
       module: '',
       appName: '',
@@ -125,7 +129,8 @@ function EditeTable(props) {
   }
 
   const hadleAssignment = () => {
-    setVisible(true)
+
+    setUserVisible(true)
   }
 
   useEffect(() => {
@@ -138,7 +143,7 @@ function EditeTable(props) {
       setData(newData);
       setNewButton(false);
     };
-    if (!!dataSource && dataSource.length === 0) {
+    if (dataSource && dataSource.length === 0) {
       newMember()
     }
   }, [dataSource])
@@ -179,7 +184,6 @@ function EditeTable(props) {
                 options={functionmap}
                 defaultValue={record.isNew ? [] : text.split('/')}
                 onChange={e => handleFieldChange(e.join('/'), 'abilityType', record.key)}
-
               />
             </div>
           )
@@ -441,7 +445,7 @@ function EditeTable(props) {
         </Tabs>
       )}
       <Row style={{ marginBottom: 8 }} type='flex' align='bottom'>
-        <Col span={18}>
+        <Col span={16}>
           <span><b>前台功能统计：</b>
             缺陷修复项<b style={{ color: '#1890ff', padding: '0 3px' }}>0</b>项，
             变更功能项<b style={{ color: '#1890ff', padding: '0 3px' }}>0</b>项，
@@ -451,42 +455,51 @@ function EditeTable(props) {
             变更功能<b style={{ color: '#1890ff', padding: '0 3px' }}>0</b>项，
             完善功能项<b style={{ color: '#1890ff', padding: '0 3px' }}>0</b>项。</span>
         </Col>
-        <Col span={6} style={{ textAlign: 'right' }}>
+
+        <Col span={8} style={{ textAlign: 'right' }}>
           {isEdit && (
             <>
-              <Button
-                type='primary'
-                style={{ marginRight: 8 }}
-                onClick={() => newMember()}
-                disabled={newbutton}
-              >新增</Button>
+              {taskName === '业务验证' && (
+                <Button
+                  type='primary'
+                  style={{ marginRight: 8 }}
+                  onClick={() => hadleAssignment()}
+                  disabled={newbutton}
+                >
+                  分派
+                </Button>
+              )}
+              {taskName === '业务验证' && (
+                <Button
+                  type='primary'
+                  style={{ marginRight: 8 }}
+                  onClick={() => hadleAssignment()}
+                  disabled={newbutton}
+                >
+                  重分派
+                </Button>
+              )}
+              <Button type='primary' style={{ marginRight: 8 }} onClick={() => newMember()} disabled={newbutton} >新增</Button>
               <Button type='danger' style={{ marginRight: 8 }} ghost onClick={() => handleDelete()}>移除</Button>
             </>
           )}
-          {taskName === '业务复核' && (
-            <Button
-              type='primary'
-              style={{ marginRight: 8 }}
-              onClick={() => hadleAssignment()}
-              disabled={newbutton}
-            >
-              分派
-            </Button>
-          )}
           <Button type='primary' >导出清单</Button>
         </Col>
+
       </Row>
       <Table
         columns={isEdit ? columns : viewcolumns}
         dataSource={data}
         bordered
         size='middle'
-        rowKey={(_, index) => index.toString()}
+        rowKey={(record) => record.key}
         pagination={false}
         rowSelection={rowSelection}
         scroll={{ x: 1500 }}
       />
-      <AssignmentModal visible={visible} handleChange={v => setVisible(v)} />
+      <UserContext.Provider value={{ setChoiceUser, uservisible, setUserVisible, title: '分派' }}>
+        <CheckOneUser userlist={userlist} />
+      </UserContext.Provider>
       <OrderContent visible={drawervisible} handleChange={v => setDrawerVisible(v)} />
     </>
   );
