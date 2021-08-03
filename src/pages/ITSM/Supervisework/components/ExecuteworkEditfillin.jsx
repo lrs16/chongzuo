@@ -1,4 +1,4 @@
-import React, { useRef, useImperativeHandle } from 'react';
+import React, { useRef, useImperativeHandle, useEffect, useState } from 'react';
 import {
   Row,
   Col,
@@ -8,12 +8,16 @@ import {
   Select
 } from 'antd';
 import moment from 'moment';
+import SysUpload from '@/components/SysUpload';
 
 const { TextArea } = Input;
 const { Option } = Select;
 
+// let startTime;
+// let endTime;
 
 const ExecuteworkEditfillin = React.forwardRef((props, ref) => {
+  const [fileslist, setFilesList] = useState([]);
 
   const attRef = useRef();
   useImperativeHandle(
@@ -27,9 +31,18 @@ const ExecuteworkEditfillin = React.forwardRef((props, ref) => {
     form: { getFieldDecorator },
     formItemLayout,
     forminladeLayout,
+    files,
+    ChangeFiles,
     executeResult,
-    userinfo
+    userinfo,
+    execute
   } = props;
+
+  useEffect(() => {
+    ChangeFiles(fileslist);
+  }, [fileslist]);
+
+  // console.log(execute, 'execute')
 
   // const onChange = (date, dateString) => {
   //   setFieldsValue({ plannedStarTtime: moment(dateString) })
@@ -68,8 +81,7 @@ const ExecuteworkEditfillin = React.forwardRef((props, ref) => {
                   message: '请输入工作执行结果'
                 }
               ],
-              //   initialValue: execute.result
-              initialValue: ''
+              initialValue: execute && execute.result ? execute.result : ''
             })(
               <Select
                 placeholder="请选择"
@@ -82,7 +94,6 @@ const ExecuteworkEditfillin = React.forwardRef((props, ref) => {
                   </Option>,
                 ])}
               </Select>,
-              <Input />
             )
             }
           </Form.Item>
@@ -97,8 +108,7 @@ const ExecuteworkEditfillin = React.forwardRef((props, ref) => {
                   message: '请输入实际开始时间'
                 }
               ],
-              //   initialValue: execute.startTime === null ? moment(new Date()) : moment(execute.startTime),
-              initialValue: moment(new Date())
+              initialValue: execute && execute.startTime === null ? moment(new Date()) : moment(execute.startTime),
             })(
               <DatePicker
                 // onChange={onChange}
@@ -119,8 +129,7 @@ const ExecuteworkEditfillin = React.forwardRef((props, ref) => {
                   message: '请输入实际结束时间'
                 }
               ],
-              //   initialValue: execute.endTime === null ? moment(new Date()) : moment(execute.endTime),
-              initialValue: moment(new Date())
+              initialValue: execute && execute.endTime === null ? moment(new Date()) : moment(execute.endTime),
             })(<DatePicker
               // onChange={endtimeonChange}
               //   disabledDate={enddisabledDate}
@@ -133,37 +142,34 @@ const ExecuteworkEditfillin = React.forwardRef((props, ref) => {
         <Col span={24}>
           <Form.Item label="工作执行情况说明" {...forminladeLayout}>
             {getFieldDecorator('execute_content', {
-              rules: [{ required, message: '请输入工作内容' }, {
-                // validator: handleFormValidator
-              }],
-              initialValue: ''
+              rules: [{ required, message: '请输入' }],
+              initialValue: execute && execute.content ? execute.content : ''
             })(
               <TextArea
                 // disabled={type}
                 rows={4} />
-              // <RichTextEditor cachevalue='' ChangeValue={v => setFieldsValue({ content: v })} />
             )}
           </Form.Item>
         </Col>
 
-        {/* <Col span={24}>
-            <Form.Item label="上传附件" {...forminladeLayout}>
-              {getFieldDecorator('execute_fileIds', {
-                 initialValue: execute && execute.fileIds ? execute.fileIds: '',
-              })
-                (
-                  <div style={{ width: 400 }}>
-                    <SysUpload
-                      fileslist={files}
-                      ChangeFileslist={newvalue => setFilesList(newvalue)}
-                    />
-                  </div>
-                )}
-            </Form.Item>
-          </Col> */}
-
         <Col span={24}>
-          <Form.Item label="执行操作时间" {...forminladeLayout}>
+          <Form.Item label="上传附件" {...forminladeLayout}>
+            {getFieldDecorator('execute_fileIds', {
+              initialValue: execute && execute.fileIds ? execute.fileIds : '',
+            })
+              (
+                <div style={{ width: 400 }}>
+                  <SysUpload
+                    fileslist={files}
+                    ChangeFileslist={newvalue => setFilesList(newvalue)}
+                  />
+                </div>
+              )}
+          </Form.Item>
+        </Col>
+
+        <Col span={8}>
+          <Form.Item label="执行操作时间">
             {getFieldDecorator('execute_executeTime', {
               initialValue: moment(new Date()),
             })(
@@ -182,28 +188,17 @@ const ExecuteworkEditfillin = React.forwardRef((props, ref) => {
             })(<Input disabled />)}
           </Form.Item>
         </Col>
-
-        <Col span={8}>
-          <Form.Item label="执行单位">
-            {getFieldDecorator('execute_oexecuteUnit', {
-              initialValue: userinfo.unitName,
-            })(<Input disabled />)}
-          </Form.Item>
-        </Col>
       </Form>
     </Row>
   );
 });
 
 ExecuteworkEditfillin.defaultProps = {
-  // execute: {
-  //   startTime: new Date(),
-  //   endTime: new Date(),
-  //   result:'',
-  // }
-  startTime: new Date(),
-  endTime: new Date(),
-  result: '',
+  execute: {
+    startTime: new Date(),
+    endTime: new Date(),
+    result: '',
+  }
 }
 
 export default Form.create({})(ExecuteworkEditfillin);

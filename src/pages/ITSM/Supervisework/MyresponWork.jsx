@@ -97,12 +97,11 @@ function MyresponWork(props) {
             return false;
         }
         const res = selectedRows.every(item => {
-            console.log(item, 'item')
-            if (item.status !== '延期中' && item.checkStatus === '已审核') {
+            if (item.status !== '延期中') {
               return true;
             }
       
-            if ((item.status === '延期中') || item.checkStatus !== '已审核') {
+            if (item.status === '延期中') {
               message.info('延期的条件为: 执行状态不可以是延期中,且审核状态为: 已审核');
               return false;
             }

@@ -31,7 +31,8 @@ function ToEditApply(props) {
     form: { getFieldDecorator, validateFields, resetFields },
     children, title,
     selectedRows,
-    dispatch
+    dispatch,
+    onChangeList
     // userinfo
   } = props;
 
@@ -69,12 +70,7 @@ function ToEditApply(props) {
         }).then(res => {
           if (res.code === 200) {
             Message.success(res.msg);
-            router.push({
-              pathname: '/ITSM/operationplan/personaccessmanage/tocheck',
-              query: {
-                addtab: false,
-              }
-            })
+            onChangeList();
           } else {
             Message.error(res.msg);
           }

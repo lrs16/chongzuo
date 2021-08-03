@@ -31,7 +31,8 @@ function ToApply(props) {
     form: { getFieldDecorator, validateFields, resetFields },
     children, title,
     userinfo,
-    dispatch
+    dispatch,
+    onChangeList,
   } = props;
 
   const handleopenClick = () => {
@@ -67,12 +68,7 @@ function ToApply(props) {
         }).then(res => {
           if (res.code === 200) {
             Message.success(res.msg);
-            router.push({
-              pathname: '/ITSM/operationplan/personaccessmanage/tocheck',
-              query: {
-                addtab: false,
-              }
-            })
+            onChangeList();
           } else {
             Message.error(res.msg);
           }

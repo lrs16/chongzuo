@@ -179,8 +179,8 @@ function Toregister(props) {
     },
     {
       title: '审核人',
-      dataIndex: 'checker',
-      key: 'checker',
+      dataIndex: 'checkUser',
+      key: 'checkUser',
       width: 150,
     },
     {
@@ -656,6 +656,7 @@ function Toregister(props) {
             dispatch={dispatch}
             userinfo={userinfo}
             onSumit={values => handleAdd(values)}
+            onChangeList={()=>getfindRegistList()}
           >
             <Button type="primary" style={{ marginRight: 8 }} disabled={hasSelected1}>
               申请
@@ -666,6 +667,7 @@ function Toregister(props) {
             dispatch={dispatch}
             selectedRows={selectedRows}
             onSumit={values => handleEdite(values)}
+            onChangeList={()=>getfindRegistList()}
           >
             <Button type="primary" style={{ marginRight: 8 }} disabled={!hasSelected}>
               编辑

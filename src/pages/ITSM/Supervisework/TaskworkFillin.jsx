@@ -22,12 +22,13 @@ function TaskworkFillin(props) {
         tabdata,
         tabnew
     } = props;
+
     let superviseworkPersonSelect;
 
     const TaskworkfillinRef = useRef();
     //   const [richtext, setRichtext] = useState('');
     const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
-      const [copyData, setCopyData] = useState('')
+    const [copyData, setCopyData] = useState('')
 
     const formItemLayout = {
         labelCol: {
@@ -120,7 +121,7 @@ function TaskworkFillin(props) {
                         main_addUnitId: userinfo.unitId,
                     }
                 }).then(res => {
-                    if(res.code === 200) {
+                    if (res.code === 200) {
                         message.success(res.msg);
                         router.push({
                             pathname: `/ITSM/supervisework/myresponwork`,
@@ -142,11 +143,60 @@ function TaskworkFillin(props) {
         }
     }, [files]);
 
+    // 重置表单信息
+    useEffect(() => {
+        if (tabnew) {
+            TaskworkfillinRef.current.resetVal();
+        }
+    }, [tabnew]);
+
+    // 点击页签右键刷新
+    useEffect(() => {
+        if (location.state) {
+            if (location.state.reset) {
+                TaskworkfillinRef.current.resetVal();
+            }
+        }
+    }, [location.state]);
+
+    useEffect(() => {
+        if (tabdata !== undefined) {
+            setCopyData(tabdata)
+        }
+    }, [tabdata])
+
+    // 获取页签信息
+    useEffect(() => {
+        if (location.state) {
+            if (location.state.cache) {
+                const values = TaskworkfillinRef.current.getVal();
+                dispatch({
+                    type: 'viewcache/gettabstate',
+                    payload: {
+                        cacheinfo: {
+                            ...values,
+                            addUser: values.main_addUser,
+                            status: values.main_status,
+                            workUser: values.main_workUser,
+                            fileIds: values.main_fileIds,
+                            addUnit: values.main_addUnit,
+                            content: values.main_content,
+                            plannedStartTime: values.main_plannedStartTime.format('YYYY-MM-DD HH:mm:ss'),
+                            plannedEndTime: values.main_plannedEndTime.format('YYYY-MM-DD HH:mm:ss'),
+                            addTime: values.main_addTime.format('YYYY-MM-DD HH:mm:ss'),
+                        },
+                        tabid: sessionStorage.getItem('tabid')
+                    },
+                });
+                TaskworkfillinRef.current.resetVal();
+            };
+        }
+    }, [location]);
+
     const handleclose = () => {
         router.push({
             pathname: `/ITSM/supervisework/mycreatework`,
-            query: { pathpush: true },
-            state: { cache: false }
+            query: { tabid: sessionStorage.getItem('tabid'), closecurrent: true, }
         });
     }
 
@@ -172,65 +222,30 @@ function TaskworkFillin(props) {
     // }
 
     const handlePaste = () => {
-    const mainId = sessionStorage.getItem('copyrecord');
-    if (!mainId) {
-        message.info('请在列表页复制');
-        return false
-    }
-    // if (mainId.length > 1) {
-    //   message.info('只能复制一条数据粘贴哦');
-    //   return false
-    // }
-
-    return dispatch({
-        type: 'supervisemodel/pasteFlow',
-        payload: mainId
-    }).then(res => {
-        if (res.code === 200) {
-        const resData = res.main;
-        delete resData.no;
-        setCopyData(resData)
-        } else {
-        message.info('您无法复制该条记录，请返回列表重新选择')
+        const mainId = sessionStorage.getItem('copyrecord');
+        if (!mainId) {
+            message.info('请在列表页复制');
+            return false
         }
-    })
+        // if (mainId.length > 1) {
+        //   message.info('只能复制一条数据粘贴哦');
+        //   return false
+        // }
+
+        return dispatch({
+            type: 'supervisemodel/pasteFlow',
+            payload: mainId
+        }).then(res => {
+            if (res.code === 200) {
+                const resData = res.main;
+                delete resData.no;
+                setCopyData(resData)
+            } else {
+                message.info('您无法复制该条记录，请返回列表重新选择')
+            }
+        })
     }
 
-    //   // 获取页签信息
-    //   useEffect(() => {
-    //     if (location.state) {
-    //       if (location.state.cache) {
-    //         TaskworkfillinRef.current.validateFields((_, values) => {
-    //           dispatch({
-    //             type: 'viewcache/gettabstate',
-    //             payload: {
-    //               cacheinfo: {
-    //                 systemName: values.main_systemName,
-    //                 type: values.main_type,
-    //                 nature: values.main_nature,
-    //                 operationUnit: values.main_operationUnit,
-    //                 operationUser: values.main_operationUser,
-    //                 billing: values.main_billing,
-    //                 object: values.main_object,
-    //                 content: values.main_content,
-    //                 plannedStartTime: values.main_plannedStartTime.format('YYYY-MM-DD HH:mm:ss'),
-    //                 plannedEndTime: values.main_plannedEndTime.format('YYYY-MM-DD HH:mm:ss'),
-    //                 addTime: values.main_addTime.format('YYYY-MM-DD HH:mm:ss'),
-    //               },
-    //               tabid: sessionStorage.getItem('tabid')
-    //             },
-    //           });
-    //         });
-    //         TaskworkfillinRef.current.resetFields();
-    //       };
-    //     }
-    //   }, [location]);
-
-      useEffect(() => {
-        if (tabdata !== undefined) {
-          setCopyData(tabdata)
-        }
-      }, [tabdata])
     const extrabuttons = (
         <>
             {/* <Button

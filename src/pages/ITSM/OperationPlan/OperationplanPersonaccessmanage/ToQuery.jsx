@@ -179,8 +179,8 @@ function Toregister(props) {
     },
     {
       title: '审核人',
-      dataIndex: 'checker',
-      key: 'checker',
+      dataIndex: 'checkUser',
+      key: 'checkUser',
       width: 150,
     },
     {

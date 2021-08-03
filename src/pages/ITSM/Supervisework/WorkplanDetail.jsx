@@ -1,5 +1,6 @@
 import React, { useEffect, useState, createContext, useRef } from 'react';
 import { connect } from 'dva';
+import moment from 'moment';
 import {
     Button,
     Collapse,
@@ -82,7 +83,6 @@ function WorkplanDetail(props) {
 
     const { data, edit } = openFlowList;
 
-
     if (loading === false) {
         if (openFlowList.code === -1) {
             message.error(openFlowList.msg);
@@ -113,6 +113,14 @@ function WorkplanDetail(props) {
     //     ['execute', '工作执行'],
     // ]);
 
+    const getTypebyTitle = title => {
+        if (selectdata.ischange) {
+            return selectdata.arr.filter(item => item.title === title)[0].children;
+        }
+        return [];
+    };
+    const executeResult = getTypebyTitle('执行结果');
+
     const callback = key => {
         setActiveKey(key);
     };
@@ -136,14 +144,6 @@ function WorkplanDetail(props) {
             payload: mainId
         })
     }
-
-    // const getTypebyTitle = title => {
-    //     if (selectdata.ischange) {
-    //         return selectdata.arr.filter(item => item.title === title)[0].children;
-    //     }
-    //     return [];
-    // };
-    // const taskResult = getTypebyTitle('作业结果');
 
     useEffect(() => {
         queryDept();
@@ -208,22 +208,20 @@ function WorkplanDetail(props) {
     //  执行保存
     const executeSave = () => {
         SaveRef.current.validateFields((err, value) => {
-            console.log(value, openFlowList, 'value')
-            // if (!err) {
-            //     const newvalues = {
-            //         ...value,
-            //         mainId,
-            //         execute_id: edit.execute.id,
-            //         flowNodeName: '工作执行',
-            //         execute_fileIds: files.ischange ? JSON.stringify(files.arr) : value.execute_fileIds,
-            //         editState: openFlowList.editState,
-            //         execute_startTime: value.execute_startTime.format('YYYY-MM-DD HH:mm:ss'),
-            //         execute_endTime: value.execute_endTime.format('YYYY-MM-DD HH:mm:ss'),
-            //         execute_operationTime: value.execute_operationTime.format('YYYY-MM-DD HH:mm:ss'),
-            //     }
-            //     delete newvalues.execute_operationUnit;
-            //     saveApi(newvalues);
-            // }
+            if (!err) {
+                const newvalues = {
+                    ...value,
+                    mainId,
+                    execute_id: edit.execute.id,
+                    flowNodeName: '工作执行',
+                    execute_fileIds: files.ischange ? JSON.stringify(files.arr) : value.execute_fileIds,
+                    editState: openFlowList.editState,
+                    execute_startTime: value.execute_startTime.format('YYYY-MM-DD HH:mm:ss'),
+                    execute_endTime: value.execute_endTime.format('YYYY-MM-DD HH:mm:ss'),
+                    execute_executeTime: value.execute_executeTime.format('YYYY-MM-DD HH:mm:ss'),
+                }
+                saveApi(newvalues);
+            }
         })
     }
 
@@ -315,6 +313,40 @@ function WorkplanDetail(props) {
         }
     }
 
+    const handlesubmit = () => { // 提交
+        SaveRef.current.validateFields((err, values) => {
+            // console.log(values, 'values')
+            if (!err) {
+                dispatch({
+                    type: 'supervisemodel/tosubmitForm',
+                    payload: {
+                        ...values,
+                        main_addTime: values.main_addTime ? values.main_addTime.format('YYYY-MM-DD HH:mm:ss') : '',
+                        main_plannedStartTime: values.main_plannedStartTime ? values.main_plannedStartTime.format('YYYY-MM-DD HH:mm:ss') : '',
+                        main_plannedEndTime: values.main_plannedEndTime ? values.main_plannedEndTime.format('YYYY-MM-DD HH:mm:ss') : '',
+                        main_fileIds: files.ischange ? JSON.stringify(files.arr) : null,
+                        flowNodeName: '工作登记',
+                        editState: 'edit',
+                        main_status: '1',
+                        main_addUserId: userinfo.userId,
+                        main_addUnitId: userinfo.unitId,
+                    }
+                }).then(res => {
+                    if (res.code === 200) {
+                        message.success(res.msg);
+                        router.push({
+                            pathname: `/ITSM/supervisework/myresponwork`,
+                            query: { pathpush: true },
+                            state: { cache: false }
+                        });
+                    } else {
+                        message.error(res.msg);
+                    }
+                })
+            }
+        })
+    };
+
     //  删除
     const handleDelete = () => {
         return dispatch({
@@ -335,14 +367,6 @@ function WorkplanDetail(props) {
             }
         })
     }
-
-    const getTypebyTitle = title => {
-        if (selectdata.ischange) {
-            return selectdata.arr.filter(item => item.title === title)[0].children;
-        }
-        return [];
-    };
-    const executeResult = getTypebyTitle('执行结果');
 
     return (
         <PageHeaderWrapper
@@ -376,7 +400,7 @@ function WorkplanDetail(props) {
                     {type && type === 'worktask' && flowNodeName === '工作登记' && (<Button
                         type="primary"
                         style={{ marginRight: 8 }}
-                    // onClick={() => handlesubmit()}
+                        onClick={() => handlesubmit()}
                     >
                         提交
                     </Button>)}
@@ -397,15 +421,17 @@ function WorkplanDetail(props) {
                 ChangeSelectdata={newvalue => setSelectData(newvalue)}
                 style={{ display: 'none' }}
             />
-            <div className={styles.collapse}>
-                <Collapse
-                    expandIconPosition="right"
-                    defaultActiveKey={['1']}
-                    onChange={callback}
-                    bordered='true'
-                >
-                    <>
-                        {/* {!delay && (edit.check || flowNodeName === '计划审核') && (
+            {
+                loading === false && executeResult && executeResult.length > 0 && data && (
+                    <div className={styles.collapse}>
+                        <Collapse
+                            expandIconPosition="right"
+                            defaultActiveKey={['1']}
+                            onChange={callback}
+                            bordered='true'
+                        >
+                            <>
+                                {/* {!delay && (edit.check || flowNodeName === '计划审核') && (
                                     <Panel
                                         header='作业计划审核'
                                         key='1'
@@ -424,7 +450,7 @@ function WorkplanDetail(props) {
                                     </Panel>
                                 )} */}
 
-                        {/* {
+                                {/* {
                             loading === false && (edit && edit.main !== undefined && type === 'execute') && (
                                 <Panel
                                     header='工作执行'
@@ -451,62 +477,64 @@ function WorkplanDetail(props) {
                             )
                         } */}
 
-                        {
-                            loading === false && (edit && edit.execute !== undefined) && type === 'execute' && flowNodeName === '工作执行' && (
-                                <Panel
-                                    header='工作执行'
-                                    key='1'
-                                    style={{ backgroundColor: 'white' }}
-                                    bordered
-                                >
-                                    <ExecuteworkEditfillin
-                                        formItemLayout={formItemLayout}
-                                        forminladeLayout={forminladeLayout}
-                                        // type=''
-                                        userinfo={userinfo}
-                                        executeResult={executeResult}
-                                        ref={SaveRef}
-                                    // execute={edit.execute}
-                                    // files={
-                                    //     (edit.execute.fileIds) && (edit.execute.fileIds) ? JSON.parse(edit.execute.fileIds) : []
-                                    // }
-                                    // ChangeFiles={newvalue => {
-                                    //     setFiles(newvalue);
-                                    // }}
-                                    />
-                                </Panel>
-                            )
-                        }
-                        {
-                            loading === false && (edit && edit.main !== undefined && type === 'worktask') && (
-                                <Panel
-                                    header={status || flowNodeName}
-                                    key='1'
-                                    bordered
-                                    style={{ backgroundColor: 'white' }}
-                                >
-                                    <TaskworkEditfillin
-                                        formItemLayout={formItemLayout}
-                                        forminladeLayout={forminladeLayout}
-                                        main={type ? openFlowList.main : edit.main}
-                                        // type={delay}
-                                        status={status}
-                                        useInfo={userinfo}
-                                        ref={SaveRef}
-                                        superviseworkPersonSelect={superviseworkPersonSelect}
-                                        files={
-                                            openFlowList !== [] && (openFlowList.main.fileIds) !== '' && (openFlowList.main.fileIds) ? JSON.parse(openFlowList.main.fileIds) : []
-                                        }
-                                        ChangeFiles={newvalue => {
-                                            setFiles(newvalue);
-                                        }}
-                                    />
-                                </Panel>
-                            )
-                        }
-                    </>
-                </Collapse>
-            </div>
+                                {
+                                    loading === false && (edit && edit.execute !== undefined) && type === 'execute' && flowNodeName === '工作执行' && (
+                                        <Panel
+                                            header='工作执行'
+                                            key='1'
+                                            style={{ backgroundColor: 'white' }}
+                                            bordered
+                                        >
+                                            <ExecuteworkEditfillin
+                                                formItemLayout={formItemLayout}
+                                                forminladeLayout={forminladeLayout}
+                                                // type=''
+                                                userinfo={userinfo}
+                                                executeResult={executeResult}
+                                                ref={SaveRef}
+                                                execute={edit.execute}
+                                                files={
+                                                    (edit.execute.fileIds) && edit.execute.fileIds !== null ? JSON.parse(edit.execute.fileIds) : []
+                                                }
+                                                ChangeFiles={newvalue => {
+                                                    setFiles(newvalue);
+                                                }}
+                                            />
+                                        </Panel>
+                                    )
+                                }
+                                {
+                                    loading === false && (edit && edit.main !== undefined && type === 'worktask') && (
+                                        <Panel
+                                            header={status || flowNodeName}
+                                            key='1'
+                                            bordered
+                                            style={{ backgroundColor: 'white' }}
+                                        >
+                                            <TaskworkEditfillin
+                                                formItemLayout={formItemLayout}
+                                                forminladeLayout={forminladeLayout}
+                                                main={type ? openFlowList.main : edit.main}
+                                                // type={delay}
+                                                status={status}
+                                                useInfo={userinfo}
+                                                ref={SaveRef}
+                                                superviseworkPersonSelect={superviseworkPersonSelect}
+                                                files={
+                                                    openFlowList !== [] && (openFlowList.main.fileIds) !== '' && (openFlowList.main.fileIds) ? JSON.parse(openFlowList.main.fileIds) : []
+                                                }
+                                                ChangeFiles={newvalue => {
+                                                    setFiles(newvalue);
+                                                }}
+                                            />
+                                        </Panel>
+                                    )
+                                }
+                            </>
+                        </Collapse>
+                    </div>
+                )
+            }
         </PageHeaderWrapper >
     )
 }

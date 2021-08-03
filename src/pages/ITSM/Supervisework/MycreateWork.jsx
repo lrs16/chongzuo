@@ -36,7 +36,7 @@ const statusContent1 = ['计划中', '延期中', '已完成'];
 function MycreateWork(props) {
     const pagetitle = props.route.name;
     const {
-        // location, 
+        location,
         loading,
         form: { getFieldDecorator, resetFields, validateFields },
         getMyWorkList,
@@ -59,7 +59,7 @@ function MycreateWork(props) {
         setSelectedRowKeys(RowKeys);
         setSelectedRows(Rows);
     };
-    
+
     const rowSelection = {
         selectedRowKeys,
         onChange: onSelectChange,
@@ -175,7 +175,7 @@ function MycreateWork(props) {
             }
         }).then(res => {
             if (res.code === 200) {
-                message.info(res.msg);
+                message.success(res.msg);
                 getList();
             } else {
                 message.info(res.msg);
@@ -219,15 +219,15 @@ function MycreateWork(props) {
 
     const gotoDetail = (record, type) => {
         router.push({
-          pathname: `/ITSM/supervisework/workplandetail`,
-          query: {
-            type,
-            mainId: record.mainId,
-            flowNodeName: record.flowNodeName,
-            status: record.status,
-            checkStatus: record.checkStatus,
-            orderNo: record.no,
-          }
+            pathname: `/ITSM/supervisework/workplandetail`,
+            query: {
+                type,
+                mainId: record.mainId,
+                flowNodeName: record.flowNodeName,
+                status: record.status,
+                checkStatus: record.checkStatus,
+                orderNo: record.no,
+            }
         })
     };
 
@@ -508,7 +508,7 @@ function MycreateWork(props) {
                 mainIds: mainids.toString(),
             },
         }).then(res => {
-            if(res.code === 200) {
+            if (res.code === 200) {
                 message.success(res.msg);
                 getList();
             } else {
@@ -570,7 +570,7 @@ function MycreateWork(props) {
     // 数据字典匹配
     const getTypebyTitle = title => {
         if (selectdata.ischange) {
-          return selectdata.arr.filter(item => item.title === title)[0].children;
+            return selectdata.arr.filter(item => item.title === title)[0].children;
         }
         return [];
     };
@@ -625,21 +625,21 @@ function MycreateWork(props) {
                         </Col>
                         {expand && (
                             <>
-                            <Col span={8}>
-                            <Form.Item label="执行状态">
-                                {getFieldDecorator('executeStatus', {
-                                    initialValue: '',
-                                })(
-                                    <Select placeholder="请选择" allowClear>
-                                        {executestatus.map(obj => (
-                                            <Option key={obj.key} value={obj.title}>
-                                                {obj.title}
-                                            </Option>
-                                        ))}
-                                    </Select>,
-                                )}
-                            </Form.Item>
-                        </Col>
+                                <Col span={8}>
+                                    <Form.Item label="执行状态">
+                                        {getFieldDecorator('executeStatus', {
+                                            initialValue: '',
+                                        })(
+                                            <Select placeholder="请选择" allowClear>
+                                                {executestatus.map(obj => (
+                                                    <Option key={obj.key} value={obj.title}>
+                                                        {obj.title}
+                                                    </Option>
+                                                ))}
+                                            </Select>,
+                                        )}
+                                    </Form.Item>
+                                </Col>
                                 <Col span={8}>
                                     <Form.Item label="工作内容">
                                         {getFieldDecorator('content', {

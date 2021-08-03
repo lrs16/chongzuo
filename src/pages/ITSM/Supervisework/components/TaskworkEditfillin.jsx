@@ -240,12 +240,6 @@ const TaskworkEditfillin = React.forwardRef((props, ref) => {
                                 </Form.Item>
                                 <Form.Item label="工作负责人Id" style={{display: 'none'}}>
                                     {getFieldDecorator('main_workUserId', {
-                                        rules: [
-                                            {
-                                                required,
-                                                message: '请输入'
-                                            }
-                                        ],
                                         initialValue: ''
                                     })
                                         (
@@ -358,8 +352,7 @@ const TaskworkEditfillin = React.forwardRef((props, ref) => {
 TaskworkEditfillin.defaultProps = {
     main: {
         no: '',
-        // type: '',
-        nature: '',
+        workUser: '',
         addUnit: '',
         addUser: '',
         content: '',
