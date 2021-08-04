@@ -12,7 +12,6 @@ const { Option } = Select;
 function DocumentAtt(props) {
   const { dispatch, rowkey, unitmap, isEdit, dataSource, Unit, check, ChangeValue } = props;
   const [data, setData] = useState([]);
-  console.log(data)
 
   // 获取行
   const getRowByKey = (key, newData) => {
@@ -91,7 +90,7 @@ function DocumentAtt(props) {
       key: 'docName',
       width: 160,
       render: (text, record) => {
-        if (isEdit && record.editable && (record.key === rowkey || record.key !== '9' || rowkey === '3')) {
+        if (isEdit && record.editable && record.key !== '9') {
           return (<><span style={{ color: '#f5222d', marginRight: 4, fontWeight: 'normal' }}>*</span>{text} </>)
         }
         return text;
@@ -103,7 +102,7 @@ function DocumentAtt(props) {
       key: 'attachFile',
       width: 300,
       render: (text, record) => {
-        if (isEdit && record.editable && (record.key === rowkey || rowkey === '3')) {
+        if (isEdit && record.editable && record.key !== '9') {
           return (
             <>
               <div style={{ width: 300 }}>

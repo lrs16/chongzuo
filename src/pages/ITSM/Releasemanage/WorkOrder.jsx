@@ -24,7 +24,7 @@ function WorkOrder(props) {
   const [uservisible, setUserVisible] = useState(false);        // 是否显示选人组件
   const [userchoice, setUserChoice] = useState(false);          // 已经选择人员  
   const { submittype } = useContext(SubmitTypeContext);
-  console.log(info);
+
   // 保存，保存提交
   const RegistratRef = useRef();
   const ImplementationPreRef = useRef();

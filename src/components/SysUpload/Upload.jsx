@@ -25,7 +25,7 @@ function SysUpload(props) {
     dispatch({
       type: 'sysfile/downloadfile',
       payload: {
-        id: info.uid,
+        id: info.response ? info.response.data[0].id : info.uid,
       },
     }).then(res => {
       // console.log(res);

@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { Table, Row, Button, Col, Cascader, Input, Radio, message, Divider, Select, Tabs } from 'antd';
-import UserContext from '@/layouts/MenuContext';              // 引用上下文管理组件
+import React, { useState, useEffect, useContext } from 'react';
+import { Table, Row, Button, Col, Cascader, Input, Radio, message, Divider, Select, Tabs, Alert } from 'antd';
+import UserContext from '@/layouts/MenuContext';              //  选人组件上下文
 import CheckOneUser from '@/components/SelectUser/CheckOneUser';
 import { dispatchBizUsers } from '@/services/user';
 import styles from '../index.less';
@@ -21,11 +21,10 @@ function EditeTable(props) {
   const [choiceUser, setChoiceUser] = useState({ users: '', ischange: false });
   const [uservisible, setUserVisible] = useState(false); // 是否显示选人组件
   const [userlist, setUserList] = useState([]);
+  const { ChangeButtype } = useContext(UserContext);
 
   // 新增一条记录
   const newMember = () => {
-    // setFilesList([]);
-    // setKeyUpload('');
     const newData = data.map(item => ({ ...item }));
     newData.push({
       key: data.length + 1,
@@ -34,6 +33,8 @@ function EditeTable(props) {
       module: '',
       appName: '',
       problemType: '',
+      responsible: '',
+      responsibleId: '',
       testMenu: '',
       testResult: '',
       testStep: '',
@@ -57,6 +58,17 @@ function EditeTable(props) {
     onChange: onSelectChange,
   };
 
+  // 获取用户列表
+  const getUserList = () => {
+    dispatchBizUsers().then(res => {
+      if (res.code === 200) {
+        setUserList(res.data.userList)
+      } else {
+        message.error('获取用户列表失败')
+      }
+    })
+  }
+
   // 获取行
   const getRowByKey = (key, newData) => {
     return (newData || data).filter(item => item.key === key)[0];
@@ -71,8 +83,22 @@ function EditeTable(props) {
     }
   };
 
+  // 选择业务负责人
+  const handleResponsible = (e, key) => {
+    if (e) {
+      const newData = data.map(item => ({ ...item }));
+      const target = getRowByKey(key, newData);
+      if (target) {
+        target.responsible = e.label;
+        target.responsibleId = e.key;
+        setData(newData);
+      }
+    }
+  }
+
   // 点击编辑按钮
   const editRow = (e, key) => {
+    setNewButton(true)
     e.preventDefault();
     const newData = data.map(item => ({ ...item }));
     const target = getRowByKey(key, newData);
@@ -84,10 +110,11 @@ function EditeTable(props) {
 
   // 保存记录
   const saveRow = (e, key) => {
+    setNewButton(false)
     e.preventDefault();
     const newData = data.map(item => ({ ...item }));
     const target = getRowByKey(key, newData) || {};
-    if (!target.module || !target.abilityType || !target.module || !target.appName || !target.problemType || !target.testMenu || !target.testResult || !target.testStep || !target.developer) {
+    if (!target.module || !target.abilityType || !target.module || !target.appName || !target.problemType || !target.testMenu || !target.testResult || !target.testStep || !target.developer || !target.responsible || !target.responsibleId) {
       message.error('请填写完整的发布清单信息');
       e.target.focus();
       return;
@@ -96,12 +123,18 @@ function EditeTable(props) {
       target.editable = !target.editable;
       setData(newData);
       ChangeValue(newData);
+      if (taskName !== '新建') {
+        ChangeButtype('save');
+      }
     }
     if (target && target.isNew) {
       target.isNew = !target.isNew;
       setNewButton(false)
       setData(newData);
       ChangeValue(newData);
+      if (taskName !== '新建') {
+        ChangeButtype('save');
+      }
     }
   };
 
@@ -129,7 +162,6 @@ function EditeTable(props) {
   }
 
   const hadleAssignment = () => {
-
     setUserVisible(true)
   }
 
@@ -145,9 +177,12 @@ function EditeTable(props) {
     };
     if (dataSource && dataSource.length === 0) {
       newMember()
-    }
+    };
   }, [dataSource])
 
+  useEffect(() => {
+    getUserList()
+  }, [])
 
   const column = [
     {
@@ -195,7 +230,7 @@ function EditeTable(props) {
       title: '模块',
       dataIndex: 'module',
       key: 'module',
-      width: 100,
+      width: 150,
       render: (text, record) => {
         if (record.isNew || record.editable) {
           return (
@@ -221,7 +256,7 @@ function EditeTable(props) {
       title: '功能名称',
       dataIndex: 'appName',
       key: 'appName',
-      width: 80,
+      width: 150,
       render: (text, record) => {
         if (record.isNew || record.editable) {
           return (
@@ -344,6 +379,33 @@ function EditeTable(props) {
       }
     },
     {
+      title: '业务负责人',
+      dataIndex: 'responsible',
+      key: 'responsible',
+      width: 100,
+      render: (text, record) => {
+        if (record.isNew || record.editable) {
+          return (
+            <div className={text === '' ? styles.requiredselect : ''} onMouseDown={() => getUserList()}>
+              <Select
+                defaultValue={{ key: record.responsibleId }}
+                placeholder="请选择"
+                labelInValue
+                onChange={e => handleResponsible(e, record.key)}
+              >
+                {userlist.map(obj => [
+                  <Option key={obj.userId} value={obj.userId}>
+                    {obj.userName}
+                  </Option>,
+                ])}
+              </Select>
+            </div>
+          )
+        }
+        return text;
+      }
+    },
+    {
       title: '开发人员',
       dataIndex: 'developer',
       key: 'developer',
@@ -381,18 +443,18 @@ function EditeTable(props) {
         if (record.isNew) {
           return (
             <>
-              <Button type='link' onClick={e => saveRow(e, record.key)}>暂存</Button>
+              <Button type='link' onMouseDown={() => ChangeButtype('')} onClick={e => saveRow(e, record.key)}>{taskName === '新建' ? '暂存' : '保存'}</Button>
               <Button type='link' onClick={e => cancel(e, record.key)}>取消</Button>
             </>
           );
         } if (record.editable) {
           return (
-            <Button type='link' onClick={e => saveRow(e, record.key)}>暂存</Button>
+            <Button type='link' onMouseDown={() => ChangeButtype('')} onClick={e => saveRow(e, record.key)}>保存</Button>
           );
         }
         return (
           <>
-            {taskName !== '版本管理员审批' && record.listType === '计划' && (<Button type='link' onClick={e => editRow(e, record.key)}>编辑</Button>)}
+            {(taskName === '新建' || taskName === '出厂测试' || taskName === '平台验证') && record.listType === '计划' && !newbutton && (<Button type='link' onClick={e => editRow(e, record.key)}>编辑</Button>)}
             {taskName === '版本管理员审批' && record.listType === '临时' && (<Button type='link' onClick={e => editRow(e, record.key)}>编辑</Button>)}
             {taskName === '版本管理员审批' && record.listType === '计划' && (<Button type='link' >回退</Button>)}
           </>
@@ -433,10 +495,10 @@ function EditeTable(props) {
   return (
     <>
       <h4 style={{ fontSize: '1.1em' }}>
-        {(taskName === '出厂测试' || taskName === '平台验证' || taskName === '业务验证') && (
+        {(taskName === '新建' || taskName === '出厂测试' || taskName === '平台验证' || taskName === '业务验证') && (
           <span style={{ color: '#f5222d', marginRight: 4, fontWeight: 'normal' }}>*</span>
         )}
-        {title}<span style={{ color: 'rgba(0, 0, 0, 0.45)', paddingLeft: 12, fontSize: 14 }}>（ 请先暂存发布清单信息，再进行工单的保存操作 ）</span>
+        {title}
       </h4>
       {(taskName === '版本管理员审批' || taskName === '科室负责人审批' || taskName === '中心领导审批' || taskName === '业务复核') && (
         <Tabs type='card'>
@@ -463,6 +525,7 @@ function EditeTable(props) {
                 <Button
                   type='primary'
                   style={{ marginRight: 8 }}
+                  onMouseDown={() => getUserList()}
                   onClick={() => hadleAssignment()}
                   disabled={newbutton}
                 >
@@ -473,6 +536,7 @@ function EditeTable(props) {
                 <Button
                   type='primary'
                   style={{ marginRight: 8 }}
+                  onMouseDown={() => getUserList()}
                   onClick={() => hadleAssignment()}
                   disabled={newbutton}
                 >
@@ -497,6 +561,7 @@ function EditeTable(props) {
         rowSelection={rowSelection}
         scroll={{ x: 1500 }}
       />
+      {taskName === '新建' && (<Alert message="请先暂存发布清单信息，再保存工单" type="warning" style={{ textAlign: 'center', marginTop: 6, }} />)}
       <UserContext.Provider value={{ setChoiceUser, uservisible, setUserVisible, title: '分派' }}>
         <CheckOneUser userlist={userlist} />
       </UserContext.Provider>

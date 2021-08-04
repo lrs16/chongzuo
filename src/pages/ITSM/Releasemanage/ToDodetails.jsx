@@ -91,6 +91,7 @@ function ToDodetails(props) {
           <SubmitTypeContext.Provider value={{
             submittype,
             ChangeSubmitType: (v => setSubmitType(v)),
+            ChangeButtype: (v => setButtype(v))
           }}>
             <WorkOrder location={location} buttype={buttype} />
           </SubmitTypeContext.Provider>
@@ -102,5 +103,5 @@ function ToDodetails(props) {
 
 export default connect(({ itsmuser, loading }) => ({
   userinfo: itsmuser.userinfo,
-  loading: loading.models.releasetodo,
+  loading: loading.effects['releasetodo/releaseflow'],
 }))(ToDodetails);

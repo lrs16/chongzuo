@@ -40,6 +40,7 @@ const formuintLayout = {
 };
 
 const statumap = new Map([
+  ['新建', '1'],
   ['出厂测试', '1'],
   ['平台验证', '2'],
   ['业务验证', '3'],
@@ -57,6 +58,7 @@ function Registrat(props, ref) {
   const { ChangeSubmitType } = useContext(SubmitTypeContext);
 
   const formmap = new Map([
+    ['新建', info.releaseRegister],
     ['出厂测试', info.releaseRegister],
     ['平台验证', info.platformValid],
     ['业务验证', info.releaseBizValid],
@@ -157,7 +159,7 @@ function Registrat(props, ref) {
       {alertvisible && (<Alert message={alertmessage.mes} type='warning' showIcon />)}
       <Row gutter={12} style={{ paddingTop: 24, }}>
         <Form ref={formRef} {...formItemLayout}>
-          {taskName === '出厂测试' && (
+          {(taskName === '出厂测试' || taskName === '新建') && (
             <>
               <Col span={8}>
                 <Form.Item label="发布编号">
@@ -240,7 +242,7 @@ function Registrat(props, ref) {
               })(<TextArea autoSize disabled={!isEdit} />)}
             </Form.Item>
           </Col>
-          {taskName === '出厂测试' && (
+          {(taskName === '出厂测试' || taskName === '新建') && (
             <Col span={24}>
               <Form.Item label="受影响业务范围" {...formuintLayout}>
                 {getFieldDecorator('influenceScope', {

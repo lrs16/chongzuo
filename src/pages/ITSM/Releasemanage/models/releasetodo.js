@@ -73,9 +73,9 @@ export default {
 
     // 出厂测试保存
     * factorytest({ payload: { register, buttype } }, { call, put }) {
-      yield put({
-        type: 'clearcache',
-      });
+      // yield put({
+      //   type: 'clearcache',
+      // });
       const response = yield call(saveRegister, register);
       if (response.code === 200) {
         if (buttype === 'save') {
@@ -92,9 +92,9 @@ export default {
 
     // 平台验证保存
     * platformvalid({ payload: { platform, buttype } }, { call, put }) {
-      yield put({
-        type: 'clearcache',
-      });
+      // yield put({
+      //   type: 'clearcache',
+      // });
       const response = yield call(saveplatformValid, platform);
       if (response.code === 200) {
         if (buttype === 'save') {
@@ -111,9 +111,9 @@ export default {
 
     // 业务验证保存
     * bizvalid({ payload: { bizValidate, buttype } }, { call, put }) {
-      yield put({
-        type: 'clearcache',
-      });
+      // yield put({
+      //   type: 'clearcache',
+      // });
       const response = yield call(savereleaseBizValid, bizValidate);
       if (response.code === 200) {
         if (buttype === 'save') {

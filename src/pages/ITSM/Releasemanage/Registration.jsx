@@ -4,6 +4,7 @@ import moment from 'moment';
 import router from 'umi/router';
 import { Card, Button, Spin, message } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import SubmitTypeContext from '@/layouts/MenuContext';              // 引用上下文管理组件
 import DictLower from '@/components/SysDict/DictLower';
 import User from '@/components/SelectUser/User';
 import Registrat from './components/Registrat';
@@ -202,20 +203,24 @@ function Registration(props) {
           style={{ display: 'none' }}
         />
         <Card>
-          <Registrat
-            wrappedComponentRef={RegistratRef}
-            userinfo={userinfo}
-            selectdata={selectdata}
-            isEdit
-            taskName='出厂测试'
-            info={tabdata || indexvalue}
-          />
+          <SubmitTypeContext.Provider value={{
+            ChangeButtype: (() => { })
+          }}>
+            <Registrat
+              wrappedComponentRef={RegistratRef}
+              userinfo={userinfo}
+              selectdata={selectdata}
+              isEdit
+              taskName='新建'
+              info={tabdata || indexvalue}
+            />
+          </SubmitTypeContext.Provider>
         </Card>
         <User
           taskId={taskId}
-          visible={uservisible}                       // 传参显示选人modle
-          ChangeUserVisible={v => setUserVisible(v)}  // 选人完成关闭选人modle
-          changorder='平台验证'                        //  下一环节名
+          visible={uservisible}                         // 传参显示选人modle
+          ChangeUserVisible={v => setUserVisible(v)}    // 选人完成关闭选人modle
+          changorder='平台验证'                         //  下一环节名
           ChangeChoice={v => setUserChoice(v)}         //  选人完成返回状态true，通过true判读，进行
           ChangeType={v => (v)}                        //  取消，重置按钮类型         
         />
