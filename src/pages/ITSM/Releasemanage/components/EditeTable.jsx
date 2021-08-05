@@ -40,6 +40,7 @@ function EditeTable(props) {
       testStep: '',
       passTest: '通过',
       developer: '',
+      developerId: '',
       operator: sessionStorage.getItem('userName'),
       operatorId: sessionStorage.getItem('userauthorityid'),
       editable: false,
@@ -159,6 +160,9 @@ function EditeTable(props) {
     setData([...arr]);
     ChangeValue(arr);
     setSelectedRowKeys([]);
+    if (taskName !== '新建' && !newbutton) {
+      ChangeButtype('save');
+    }
   }
 
   const hadleAssignment = () => {
@@ -261,9 +265,10 @@ function EditeTable(props) {
         if (record.isNew || record.editable) {
           return (
             <div className={text === '' ? styles.requiredform : ''}>
-              <Input
+              <TextArea
                 onChange={e => handleFieldChange(e.target.value, 'appName', record.key)}
                 defaultValue={text}
+                autoSize
                 placeholder="请输入"
               />
             </div>
@@ -544,7 +549,7 @@ function EditeTable(props) {
                 </Button>
               )}
               <Button type='primary' style={{ marginRight: 8 }} onClick={() => newMember()} disabled={newbutton} >新增</Button>
-              <Button type='danger' style={{ marginRight: 8 }} ghost onClick={() => handleDelete()}>移除</Button>
+              <Button type='danger' style={{ marginRight: 8 }} ghost onMouseDown={() => ChangeButtype('')} onClick={() => handleDelete()}>移除</Button>
             </>
           )}
           <Button type='primary' >导出清单</Button>

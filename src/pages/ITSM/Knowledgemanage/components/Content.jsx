@@ -4,6 +4,7 @@ import { Row, Col, Form, Input, Select } from 'antd';
 import RichTextEditor from '@/components/RichTextEditor';
 import SysUpload from '@/components/SysUpload/Upload';
 import DictLower from '@/components/SysDict/DictLower';
+import Downloadfile from '@/components/SysUpload/Downloadfile';
 
 const { Option } = Select;
 
@@ -39,6 +40,7 @@ const Content = forwardRef((props, ref) => {
     resetVal: () => resetFields(),
     Forms: props.form.validateFieldsAndScroll,
   }), []);
+  console.log(formrecord)
 
   const handleFormValidator = (rule, value, callback) => {
     if (value === '' || value === '<p></p>') {
@@ -129,6 +131,7 @@ const Content = forwardRef((props, ref) => {
                     <SysUpload />
                   </div>
                 )}
+                {formrecord.fileIds !== '' && <Downloadfile files={formrecord.fileIds} />}
               </Col>
             </Row>
           </Col>

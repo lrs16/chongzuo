@@ -7,7 +7,7 @@ import SubmitTypeContext from '@/layouts/MenuContext';              // 引用上
 import WorkOrder from './WorkOrder';
 
 function ToDodetails(props) {
-  const { location, dispatch, loading } = props;
+  const { location, dispatch, loading, loadingopen } = props;
   const { taskName } = location.query;
   const [tabActivekey, settabActivekey] = useState('workorder'); // 打开标签
   const [buttype, setButtype] = useState('');                    // 点击的按钮类型
@@ -78,7 +78,7 @@ function ToDodetails(props) {
   )
 
   return (
-    <Spin tip="正在加载数据..." spinning={!!loading}>
+    <Spin tip="正在加载数据..." spinning={!!loading || !!loadingopen}>
       <PageHeaderWrapper
         title={taskName}
         extra={operations}
@@ -104,4 +104,5 @@ function ToDodetails(props) {
 export default connect(({ itsmuser, loading }) => ({
   userinfo: itsmuser.userinfo,
   loading: loading.effects['releasetodo/releaseflow'],
+  loadingopen: loading.effects['releasetodo/openflow'],
 }))(ToDodetails);

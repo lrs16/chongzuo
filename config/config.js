@@ -902,7 +902,7 @@ export default {
                       routes: [
                         {
                           path: '/ITSM/supervisework',
-                          redirect: '/ITSM/supervisework/mycreatework', 
+                          redirect: '/ITSM/supervisework/mycreatework',
                         },
                         {
                           path: '/ITSM/supervisework/mycreatework',
@@ -1176,6 +1176,19 @@ export default {
                           component: './Automation/SoftTT/CommandConfigurate',
                         },
                       ],
+                    },
+                    {
+                      path: '/automation/objectmanage',
+                      name: '对象管理',
+                      icon: 'database',
+                      routes: [
+                        {
+                          path: '/automation/objectmanage/agent',
+                          name: 'agent管理',
+                          icon: 'cloud-server',
+                          component: './Automation/ObjectManage/agentManage',
+                        },
+                      ]
                     },
                   ],
                 },
@@ -1749,6 +1762,10 @@ export default {
     },
     '/release/': {
       target: 'http://172.16.10.132:9901/',        // 发布管理
+      changeOrigin: true
+    },
+    '/lasting/': {
+      target: 'http://172.16.10.33:9901/',        // 自动化运维
       changeOrigin: true
     },
     '/quality/': {

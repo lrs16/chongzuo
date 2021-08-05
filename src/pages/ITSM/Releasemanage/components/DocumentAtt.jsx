@@ -165,7 +165,7 @@ function DocumentAtt(props) {
       },
     },
     {
-      title: '责任单位',
+      title: '出具文档单位',
       dataIndex: 'dutyUnit',
       key: 'dutyUnit',
       width: 200,

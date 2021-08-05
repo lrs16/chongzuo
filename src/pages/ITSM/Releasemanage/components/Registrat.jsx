@@ -253,6 +253,12 @@ function Registrat(props, ref) {
             </Col>
           )}
           <Col span={24}>
+            <TestingFacility
+              title='测试环境'
+              isEdit={isEdit}
+              dataSource={info.releaseEnvs}
+              ChangeValue={v => setFieldsValue({ releaseEnvs: v })}
+            />
             <Form.Item wrapperCol={{ span: 24 }}>
               {getFieldDecorator('releaseEnvs', {
                 rules: [{ required, message: '请选择测试环境' }, {
@@ -260,12 +266,7 @@ function Registrat(props, ref) {
                 }],
                 initialValue: info.releaseEnvs,
               })(
-                <TestingFacility
-                  title='测试环境'
-                  isEdit={isEdit}
-                  dataSource={info.releaseEnvs}
-                  ChangeValue={v => setFieldsValue({ releaseEnvs: v })}
-                />
+                <></>
               )}
             </Form.Item>
           </Col>
