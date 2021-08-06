@@ -105,7 +105,7 @@ const SummaryChild = React.forwardRef((props, ref) => {
         </Col>
 
         {
-          ((showFilelist2 && showFilelist2.checkReportSign) ? showFilelist2.checkReportSign === '0': showFilelist1.checkReportSign === '0') && (
+          ((showFilelist2 && showFilelist2.checkReportSign) ? showFilelist2.checkReportSign === '0': showFilelist.checkReportSign === '0') && (
             <>
               <Col span={24}>
                 <Form.Item label="上传故障分析报告" {...ItemLayout}>

@@ -39,6 +39,8 @@ const Register = React.forwardRef((props, ref) => {
     getclausedetail,
     clauseList,
     taskData,
+    contractArr,
+    getContrractname,
     files,
     ChangeFiles,
     loading
@@ -58,7 +60,6 @@ const Register = React.forwardRef((props, ref) => {
 
   const required = true;
 
-  console.log(taskData,'taskData')
   useEffect(() => {
     ChangeFiles(fileslist);
   }, [fileslist]);
@@ -71,32 +72,34 @@ const Register = React.forwardRef((props, ref) => {
     [],
   )
 
-  const handleChange = (selectValue, params) => {
+  const handleChange = (values,option,params) => {
+    console.log('option: ', option);
+    const { key,props: { value }} = option;
     switch (params) {
       case 'contract':
         setFieldsValue({
-          contract: selectValue.label,
-          contractId: selectValue.key
+          contract: value,
+          contractId: key
         })
         break;
       case 'target1Name':
         setFieldsValue({
-          target1Name: selectValue.label,
-          target1Id: selectValue.key
+          target1Name: value,
+          target1Id: key
         })
-        getTarget2(selectValue.key);
-        setTarget2Type(selectValue.key)
+        getTarget2(key);
+        setTarget2Type(key)
         break;
       case 'target2Name':
-        getclausedetail(selectValue.key, scoreId);
+        getclausedetail(key, scoreId);
         setFieldsValue({
-          target2Name: selectValue.label,
-          target2Id: selectValue.key
+          target2Name: value,
+          target2Id:  key
         })
         break;
       case 'clause':
         setFieldsValue({
-          clauseId: selectValue.key
+          clauseId: key
         })
         break;
 
@@ -120,7 +123,7 @@ const Register = React.forwardRef((props, ref) => {
     // }
     switch (params) {
       case 'contract':
-        if (loading !== true && contractlist && contractlist.length === 0) {
+        if (loading !== true && contractArr && contractArr.length === 0) {
           message.error('请选择有效的服务商')
         }
         break;
@@ -249,13 +252,14 @@ const Register = React.forwardRef((props, ref) => {
           provider: providerName,         // 服务商
           providerId: id,         // 服务商id
         });
-        contractProvider(id).then(res => {
-          if (res.code === 200) {
-            const arr = [...(res.data)];
-            setSpinLoading(false);
-            setContractlist(arr);
-          }
-        });
+        // contractProvider(id).then(res => {
+        //   if (res.code === 200) {
+        //     const arr = [...(res.data)];
+        //     setSpinLoading(false);
+        //     setContractlist(arr);
+        //   }
+        // });
+        getContrractname(id)
         setProviderId(id);
 
         break;
@@ -312,6 +316,15 @@ const Register = React.forwardRef((props, ref) => {
     getPerformanceleader()
   }, [])
 
+  // useEffect(() => {
+  //   setFieldsValue({
+  //     contract:register.contractId
+  //   })
+
+  // },[register])
+
+  console.log(register.contractId, 'register.contractId')
+  console.log(contractArr, 'contractArr')
   return (
     <Row gutter={24} style={{ paddingTop: 24 }}>
       <SysDict
@@ -362,7 +375,7 @@ const Register = React.forwardRef((props, ref) => {
                     message: '请输入服务商'
                   }
                 ],
-                initialValue: register.provider
+                initialValue: register.provider.providerName || register.provider
               })
                 (
                   <AutoComplete
@@ -411,18 +424,18 @@ const Register = React.forwardRef((props, ref) => {
                     message: '请输入关联合同名称'
                   }
                 ],
-                initialValue: register.contract
+                initialValue: register.contractId
               })
                 (
                   <Select
-                    labelInValue='true'
+                    // labelInValue='true'
                     placeholder='请选择'
                     allowClear
-                    onChange={(value) => handleChange(value, 'contract')}
+                    onChange={(value,option) => handleChange(value,option,'contract')}
                     onFocus={() => handleFocus('contract')}
                   >
-                    {contractlist.map(obj => [
-                      <Option key={obj.id} value={obj.id}>
+                    {contractArr.map(obj => [
+                      <Option key={obj.id} value={obj.contractName}>
                         <div className={styles.disableuser}>
                           <span>{obj.contractNo}</span>
                           <span>{obj.contractName}</span>
@@ -430,6 +443,7 @@ const Register = React.forwardRef((props, ref) => {
                       </Option>
                     ])}
                   </Select>
+
                 )
             }
           </Form.Item>
@@ -448,7 +462,7 @@ const Register = React.forwardRef((props, ref) => {
           </Form.Item>
         </Col>
 
-        {/* {performanceLeader && performanceLeader.length && (
+        {performanceLeader && performanceLeader.length && (
           <Col span={8}>
             <Form.Item label='责任人'>
               {
@@ -458,7 +472,8 @@ const Register = React.forwardRef((props, ref) => {
                       required,
                       message: '请输入责任人'
                     }
-                  ]
+                  ],
+                  initialValue: register.directorName
                 })
                   (
                     <Select onChange={selectOnchange} >
@@ -473,13 +488,14 @@ const Register = React.forwardRef((props, ref) => {
               }
             </Form.Item>
           </Col>
-        )} */}
+        )}
 
 
         <Col span={8} style={{ display: 'none' }}>
           <Form.Item label='责任人id'>
             {
               getFieldDecorator('directorId', {
+                initialValue: register.directorId
               })
                 (<Input />)
             }
@@ -495,7 +511,8 @@ const Register = React.forwardRef((props, ref) => {
                     required,
                     message: '请输入评分细则名称'
                   }
-                ]
+                ],
+                initialValue: register.score.scoreName || register.score
               })
                 (
                   <AutoComplete
@@ -519,6 +536,7 @@ const Register = React.forwardRef((props, ref) => {
           <Form.Item label='评分细则名称'>
             {
               getFieldDecorator('scoreId', {
+                initialValue: register.scoreId
               })
                 (
                   <AutoComplete
@@ -541,7 +559,9 @@ const Register = React.forwardRef((props, ref) => {
         <Col span={8}>
           <Form.Item label='考核类型'>
             {
-              getFieldDecorator('assessType', {})
+              getFieldDecorator('assessType', {
+                initialValue: register.assessType
+              })
                 (<Input />)
             }
           </Form.Item>
@@ -556,7 +576,8 @@ const Register = React.forwardRef((props, ref) => {
                     required,
                     message: '请输入考核内容说明'
                   }
-                ]
+                ],
+                initialValue: register.assessContent
               })
                 (<TextArea
                   autoSize={{ minRows: 3 }}
@@ -577,12 +598,12 @@ const Register = React.forwardRef((props, ref) => {
                     message: '请输入一级指标'
                   }
                 ],
-                initialValue: register.target1Name
+                initialValue: register.target1Id
               })
                 (
                   <Select
                     labelInValue='true'
-                    onChange={(value) => handleChange(value, 'target1Name')}
+                    onChange={(value,option) => handleChange(value,option,'target1Name')}
                     onFocus={() => handleFocus()}
                     placeholder='请选择'
                     allowClear>
@@ -602,6 +623,7 @@ const Register = React.forwardRef((props, ref) => {
           <Form.Item label='一级指标id'>
             {
               getFieldDecorator('target1Id', {
+                initialValue: register.target1Id
               })
                 (
                   <Input />
@@ -625,7 +647,7 @@ const Register = React.forwardRef((props, ref) => {
                 (
                   <Select
                     labelInValue='true'
-                    onChange={(value) => handleChange(value, 'target2Name')}
+                    onChange={(value,option) => handleChange(value,option,'target2Name')}
                     onFo cus={() => handleFocus('two')}
                     placeholder='请选择'
                     allowClear>
@@ -644,7 +666,7 @@ const Register = React.forwardRef((props, ref) => {
           <Form.Item label=' 二级指标'>
             {
               getFieldDecorator('target2Id', {
-
+                initialValue: register.target2Id
               })
                 (
                   <Input />
@@ -663,12 +685,12 @@ const Register = React.forwardRef((props, ref) => {
                     message: '请输入详细条款'
                   }
                 ],
-                initialValue: register.clause
+                initialValue: register.clause === null ? '' : register.clause
               })
                 (
                   <Select
                     labelInValue='true'
-                    onChange={(key, value) => handleChange(key, value, 'clause')}
+                    onChange={(value,option) => handleChange(value,option,'clause')}
                     onFocus={() => handleFocus('clause')}
                   >
                     {(clauseList.records || []).map(obj => [
@@ -692,12 +714,7 @@ const Register = React.forwardRef((props, ref) => {
           <Form.Item label='详细条款' {...forminladeLayout}>
             {
               getFieldDecorator('clauseId', {
-                rules: [
-                  {
-                    required,
-                    message: '请输入详细条款'
-                  }
-                ]
+                initialValue: register.clauseId
               })
                 (<Input />)
 
@@ -714,7 +731,8 @@ const Register = React.forwardRef((props, ref) => {
                     required,
                     message: '请输入考核得分'
                   }
-                ]
+                ],
+                initialValue: register.assessValue
               })
                 (<Input />)
             }
@@ -724,7 +742,9 @@ const Register = React.forwardRef((props, ref) => {
         <Col span={8}>
           <Form.Item label='考核状态'>
             {
-              getFieldDecorator('status', {})
+              getFieldDecorator('status', {
+                initialValue: register.status
+              })
                 (<Input />)
             }
           </Form.Item>
@@ -733,7 +753,9 @@ const Register = React.forwardRef((props, ref) => {
         <Col span={24}>
           <Form.Item label='备注' {...forminladeLayout}>
             {
-              getFieldDecorator('remark', {})
+              getFieldDecorator('remark', {
+                initialValue: register.remark
+              })
                 (<TextArea autoSize={{ minRows: 3 }} placeholder='请输入' />)
             }
           </Form.Item>
@@ -790,7 +812,20 @@ Register.defaultProps = {
     target2Name: '',
     clause: '',
     contract: '',
-    contractId: ''
+    contractId: '',
+    directorName: '',
+    directorId: '',
+    score: '',
+    scoreId: '',
+    assessType: '',
+    assessContent: '',
+    target1Id: '',
+    target2Id: '',
+    clauseId: '',
+    assessValue: '',
+    status: '',
+    remark: '',
+    attachment: ''
   }
 }
 

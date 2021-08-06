@@ -10,6 +10,7 @@ import {
   Collapse
 } from 'antd';
 import moment from 'moment';
+import { contractProvider } from '../services/quality'
 import { connect } from 'dva';
 import BusinessAudit from './components/BusinessAudit';
 import Register from './components/Register';
@@ -59,11 +60,11 @@ function TobedealtForm(props) {
     dispatch,
   } = props;
   const formRef = useRef();
+  const [contractArr, setContractArr] = useState([]);
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
   const [tabActiveKey, setTabActiveKey] = useState('workorder')
 
   const { taskName } = taskData;
-  console.log('taskData: ', taskData);
   const handleSubmit = () => {
     console.log(formRef, 'formRef')
   }
@@ -109,12 +110,31 @@ function TobedealtForm(props) {
     })
   }
 
+  const getContrractname = (providerId) => {
+    contractProvider(providerId).then(res => {
+      if (res) {
+        const arr = [...(res.data)];
+        setContractArr(arr);
+      }
+    });
+  }
 
 
   useEffect(() => {
     getUserinfo();
     openFlow()
-  }, [])
+  }, []);
+
+  useEffect(() => {
+    const { providerId } = taskData;
+    if (providerId) {
+      getContrractname(providerId)
+    }
+
+  }, [taskData]);
+
+
+
 
   const tabList = [
     {
@@ -175,7 +195,9 @@ function TobedealtForm(props) {
                     target2={target2}
                     getclausedetail={getclausedetail}
                     clauseList={clauseList}
-                    taskData={taskData}
+                    register={taskData}
+                    contractArr={contractArr}
+                    getContrractname={getContrractname}
                     files={[]}
                     ChangeFiles={newvalue => {
                       setFiles(newvalue);
