@@ -43,7 +43,7 @@ const BusinessAudit = React.forwardRef((props, ref) => {
       <Form {...formItemLayout}>
         <Col span={8}>
           <Form.Item label='审核结果'>
-            {getFieldDecorator('dd', {
+            {getFieldDecorator('verifyValue', {
               rules: [
                 {
                   required,
@@ -72,7 +72,7 @@ const BusinessAudit = React.forwardRef((props, ref) => {
             <Col span={24}>
             <Form.Item label='审核说明' {...forminladeLayout}>
               {
-                getFieldDecorator('content', {})
+                getFieldDecorator('verifyContent', {})
                   (
                     <TextArea
                       autoSize={{ minRows: 3 }}
@@ -92,7 +92,7 @@ const BusinessAudit = React.forwardRef((props, ref) => {
             <Col span={24}>
             <Form.Item label='审核说明' {...forminladeLayout}>
               {
-                getFieldDecorator('content', {
+                getFieldDecorator('verifyContent', {
                   rules:[
                     {
                       required,
@@ -119,7 +119,7 @@ const BusinessAudit = React.forwardRef((props, ref) => {
             <Col span={24} >
               <Form.Item label='考核状态' {...forminladeLayout}>
                 {
-                  getFieldDecorator('statue', {})
+                  getFieldDecorator('verifyStatus', {})
                     (<Tag color="blue">待审</Tag>)
                 }
               </Form.Item>
@@ -131,7 +131,7 @@ const BusinessAudit = React.forwardRef((props, ref) => {
         <Col span={8}>
           <Form.Item label='审核人'>
             {
-              getFieldDecorator('userName', {
+              getFieldDecorator('verifier', {
                 initialValue: userinfo.userName
               })
                 (<Input />)
@@ -142,7 +142,7 @@ const BusinessAudit = React.forwardRef((props, ref) => {
         <Col span={8}>
           <Form.Item label='审核时间'>
             {
-              getFieldDecorator('checktime', {
+              getFieldDecorator('verifyTime', {
                 rules: [
                   {
                     required,
@@ -168,6 +168,11 @@ const BusinessAudit = React.forwardRef((props, ref) => {
 
 BusinessAudit.defaultProps = {
   businessAudit: {
+    verifyValue:'',
+    verifyContent:'',
+    verifyStatus:'',
+    verifier:'',
+    verifyTime:'',
     checktime: moment(new Date())
   }
 }

@@ -11,7 +11,7 @@ import {
   Col,
   Card,
   Select,
-  
+  Divider,
 } from 'antd';
 import moment from 'moment';
 import { connect } from 'dva';
@@ -32,40 +32,100 @@ const formItemLayout = {
 
 const { Option } = Select;
 
-const columns = [
-  {
-    title:'评分细则编号',
-    dataIndex:'no',
-    key:'no'
-  },
-  {
-    title:'评分细则名称',
-    dataIndex:'name',
-    key:'name'
-  },
-  {
-    title:'考核类型',
-    dataIndex:'type',
-    key:'type'
-  },
-  {
-    title:'评分细则编号',
-    dataIndex:'no',
-    key:'no'
-  },
-]
+
 
 function ScoringRulesmaintenance(props) {
   const pagetitle = props.route.name;
   const {
     form: { getFieldDecorator,validateFields,resetFields },
-    maintenanceData,
-    dispatch
+    scoreList,
+    dispatch,
+    loading
   } = props;
 
   const [paginations, setPaginations] = useState({ current: 0, pageSize: 15 })
   const [selectdata, setSelectData] = useState('');
 
+
+  const searchdata = (values, page, pageSize) => {
+    dispatch({
+      type: 'qualityassessment/scoreListpage',
+      payload: {
+        ...values,
+        pageNum:page,
+        pageSize
+      }
+    })
+  }
+
+  const handleDelete = (id) => {
+    return dispatch({
+      type: 'qualityassessment/scoreDel',
+      payload: id
+    }).then(res => {
+      if (res.code === 200) {
+        message.info(res.msg);
+        searchdata({}, 1, paginations.pageSize)
+      } else {
+        message.error(res.msg);
+      }
+    })
+  }
+
+  const columns = [
+    {
+      title:'评分细则编号',
+      dataIndex:'scoreNo',
+      key:'scoreNo'
+    },
+    {
+      title:'评分细则名称',
+      dataIndex:'scoreName',
+      key:'scoreName'
+    },
+    {
+      title:'考核类型',
+      dataIndex:'assessType',
+      key:'assessType'
+    },
+    {
+      title:'操作',
+      dataIndex:'action',
+      fixed:'right',
+      width:150,
+      render: (text, record) => {
+        const gotoDetail = () => {
+          router.push({
+            pathname: '/ITSM/servicequalityassessment/detailscoringrulesmaintenance',
+            query: {
+              id: record.id,
+            }
+          })
+        }
+        return (
+          <span>
+            <a onClick={() => gotoDetail()}>编辑</a>
+            {/* {
+              record.isEdit && ( */}
+            <>
+              <Divider type='vertical' />
+              <Popconfirm
+                title='是否要删除此行？'
+                onConfirm={() => handleDelete(record.id)}
+              >
+                <a>删除</a>
+              </Popconfirm>
+              <Divider type='vertical' />
+            </>
+            {/* //   )
+            // } */}
+  
+            {/* <a>保存</a> */}
+          </span>
+        )
+      }
+    }
+  ]
   const getTypebyTitle = title => {
     if (selectdata.ischange) {
       return selectdata.arr.filter(
@@ -74,21 +134,15 @@ function ScoringRulesmaintenance(props) {
     return []
   }
 
-  const searchdata = (values, page, pageSize) => {
-    dispatch({
-      type: 'qualityassessment/maintenanceList',
-      payload: {
-        ...values
-      }
-    })
-  }
+
 
   useEffect(() => {
     searchdata({}, paginations.current, paginations.pageSize)
   }, [])
 
   const handleReset = () => {
-    resetFields()
+    resetFields();
+    searchdata({},1,15)
   }
 
   const onShowSizeChange = (page, pageSize) => {
@@ -122,12 +176,18 @@ function ScoringRulesmaintenance(props) {
     })
   }
 
+  const handlesearch = () => {
+    validateFields((err,value) => {
+      searchdata(value,1, 15)
+    })
+  }
+
   const pagination = {
     showSizeChanger: true,
     onShowSizeChange: (page,pagesize) => onShowSizeChange(page,pagesize),
     current: paginations.current,
     pageSize: paginations.pageSize,
-    total: 150,
+    total: scoreList.total,
     showTotal: total => `总共 ${total}条记录`,
     onChange: (page) => changePage(page)
   }
@@ -145,10 +205,19 @@ function ScoringRulesmaintenance(props) {
       <Card>
         <Row>
           <Form {...formItemLayout}>
+          <Col span={8}>
+              <Form.Item label='评分细则编号'>
+                {
+                  getFieldDecorator('scoreNo', {})
+                    (<Input />)
+                }
+              </Form.Item>
+            </Col>
+
             <Col span={8}>
               <Form.Item label='评分细则名称'>
                 {
-                  getFieldDecorator('name', {})
+                  getFieldDecorator('scoreName', {})
                     (<Input />)
                 }
 
@@ -158,7 +227,7 @@ function ScoringRulesmaintenance(props) {
             <Col span={8}>
               <Form.Item label='考核类型'>
                 {
-                  getFieldDecorator('type', {})
+                  getFieldDecorator('assessType', {})
                     (
                       <Select placeholder='请选择' allowClear>
                         {assessmentType.map(obj => [
@@ -172,14 +241,7 @@ function ScoringRulesmaintenance(props) {
               </Form.Item>
             </Col>
 
-            <Col span={8}>
-              <Form.Item label='评分细则编号'>
-                {
-                  getFieldDecorator('no', {})
-                    (<Input />)
-                }
-              </Form.Item>
-            </Col>
+           
 
           </Form>
 
@@ -188,6 +250,7 @@ function ScoringRulesmaintenance(props) {
             <Button
               type='primary'
               style={{ marginRight: 8 }}
+              onClick={handlesearch}
             >
               查询
             </Button>
@@ -214,8 +277,9 @@ function ScoringRulesmaintenance(props) {
         </Button>
       
         <Table
+          loading={loading}
           columns={columns}
-          dataSource={maintenanceData}
+          dataSource={scoreList.records}
           pagination={pagination}
          />
       </Card>
@@ -225,7 +289,8 @@ function ScoringRulesmaintenance(props) {
 
 export default Form.create({})(
   connect(({ qualityassessment, loading }) => ({
-    maintenanceData: qualityassessment.maintenanceData
+    scoreList: qualityassessment.scoreList,
+    loading:loading.models.qualityassessment,
   }))(ScoringRulesmaintenance)
 )
 

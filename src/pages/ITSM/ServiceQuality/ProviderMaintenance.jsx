@@ -41,7 +41,6 @@ function ProviderMaintenance(props) {
     dispatch,
     loading
   } = props;
-  console.log(providerArr, 'providerArr')
   const [paginations, setPaginations] = useState({ current: 0, pageSize: 15 });
   const [data, setData] = useState([]);
 
@@ -57,8 +56,8 @@ function ProviderMaintenance(props) {
   }
 
   const handlesearch = () => {
-    validateFields((err,value) => {
-      searchdata(value,1, 15)
+    validateFields((err, value) => {
+      searchdata(value, 1, 15)
     })
   }
 
@@ -126,22 +125,19 @@ function ProviderMaintenance(props) {
         return (
           <span>
             <a onClick={() => gotoDetail()}>编辑</a>
-            {/* {
-              record.isEdit && ( */}
-            <>
-              <Divider type='vertical' />
-              <Popconfirm
-                title='是否要删除此行？'
-                onConfirm={() => handleDelete(record.id)}
-              >
-                <a>删除</a>
-              </Popconfirm>
-              <Divider type='vertical' />
-            </>
-            {/* //   )
-            // } */}
 
-            {/* <a>保存</a> */}
+            {record.isEdit === '1' && (
+              <>
+                <Divider type='vertical' />
+                <Popconfirm
+                  title='是否要删除此行？'
+                  onConfirm={() => handleDelete(record.id)}
+                >
+                  <a>删除</a>
+                </Popconfirm>
+                <Divider type='vertical' />
+              </>
+            )}
           </span>
         )
       }
@@ -156,7 +152,7 @@ function ProviderMaintenance(props) {
 
   const handleReset = () => {
     resetFields();
-    searchdata({},1,15)
+    searchdata({}, 1, 15)
   }
 
   const onShowSizeChange = (page, pageSize) => {
@@ -210,7 +206,7 @@ function ProviderMaintenance(props) {
       <Card>
         <Row>
           <Form {...formItemLayout}>
-          <Col span={8}>
+            <Col span={8}>
               <Form.Item label='服务商编号'>
                 {
                   getFieldDecorator('providerNo')

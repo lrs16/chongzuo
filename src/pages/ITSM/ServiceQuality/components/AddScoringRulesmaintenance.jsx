@@ -11,8 +11,10 @@ import {
   Table,
   Button,
   Select,
-  Cascader
+  Divider,
+  Popconfirm
 } from 'antd';
+import router from 'umi/router';
 import { connect } from 'dva';
 import SysDict from '@/components/SysDict';
 import Clause from './Clause';
@@ -40,88 +42,35 @@ const { Option } = Select;
 function AddScoringRulesmaintenance(props) {
   const pagetitle = props.route.name;
   const {
-    form: { getFieldDecorator },
+    form: { getFieldDecorator, validateFields },
+    location: { query: { id, scoreSearch } },
     show,
+    scoreDetail,
+    clauseDetail,
+    treeArr,
+    treeForm,
     dispatch,
+    clauseList,
+    loading
   } = props;
   const required = true;
   const [paginations, setPaginations] = useState({ current: 0, pageSize: 15 });
   const [treeInformation, setTreeInformation] = useState({ pid: '', queKey: '' })
   const [treeData, setTreeData] = useState([]);
+  const [type, setType] = useState('')
   const [selectdata, setSelectData] = useState('');
+  const [selectId, setSelectId] = useState('')
 
-  const columns = [
-    {
-      title: '序号',
-      dataIndex: 'id',
-      key: 'id',
-    },
-    {
-      title: '详细条款',
-      dataIndex: 'menuDesc',
-      key: 'menuDesc',
-    },
-    {
-      title: '评价类型',
-      dataIndex: 'menuName',
-      key: 'menuName',
-    },
-    {
-      title: '分值',
-      dataIndex: 'menuUrl',
-      key: 'menuUrl',
-    },
-    {
-      title: '数据来源',
-      dataIndex: 'menuIcon',
-      key: 'menuIcon',
-    },
-    {
-      title: '扣分说明',
-      dataIndex: 'updateTime',
-      key: 'updateTime',
-    },
-    {
-      title: '状态',
-      dataIndex: 'status',
-      key: 'status',
-    },
-    {
-      title: '操作',
-      dataIndex: 'action',
-      key: 'action',
-      fixed: 'right',
-      width: 150,
-      // render: (text, record) => (
-      //   <div>
-      //     <MenuModal
-      //       onSumit={values => handleEdite(values)}
-      //       title="编辑菜单"
-      //       record={record}
-      //       pidkey={record.pid}
-      //     >
-      //       <a type="link">编辑</a>
-      //     </MenuModal>
-      //     <Divider type="vertical" />
-      //     <Popconfirm title="确定删除此菜单吗？" onConfirm={() => handleDelete(record.id)}>
-      //       <a type="link">删除</a>
-      //     </Popconfirm>
-      //   </div>
-      // ),
-    },
-  ];
+  console.log(treeForm,'treeForm')
 
-  const getlist = () => {
-    const page = paginations.current;
-    const limit = paginations.pageSize;
-    const { queKey, pidkey } = treeInformation;
+  const getlist = (targetId) => {
     dispatch({
-      type: 'upmsmenu/search',
+      type: 'qualityassessment/clauseListpage',
       payload: {
-        page,
-        limit,
-        queKey,
-        pid: pidkey,
+        pageNum: 1,
+        pageSize: 15,
+        scoreId: id,
+        targetId: targetId ? targetId[0] : selectId,
       },
     });
   };
@@ -129,31 +78,31 @@ function AddScoringRulesmaintenance(props) {
   //  按需加载树节点
   const getalldata = () => {
     dispatch({
-      type: 'upmsmenu/fetchdatas',
-      payload: {
-        pid: '0'
-      },
+      type: 'qualityassessment/getTypeTree',
+      payload: type || scoreDetail.assessType
     }).then(res => {
       setTreeData(res.data)
     })
   }
 
   useEffect(() => {
-    getlist();
-    getalldata()
-  }, []);
+    if (id) {
+      getlist();
+      getalldata()
+    }
+  }, [id]);
 
   //  渲染树结构
   const renderTreeNodes = data =>
     data.map(item => {
       if (item.children) {
         return (
-          <TreeNode title={item.title} key={item.key} dataRef={item}>
+          <TreeNode title={item.title} key={item.id} dataRef={item}>
             {renderTreeNodes(item.children)}
           </TreeNode>
         );
       }
-      return <TreeNode key={item.key} {...item} dataRef={item} />;
+      return <TreeNode key={item.id} {...item} dataRef={item} />;
     });
 
   const getAllLeaf = (data) => {
@@ -201,25 +150,32 @@ function AddScoringRulesmaintenance(props) {
     });
 
   //  点击节点
-  const handleClick = selectedKeys => {
-    const page = paginations.current;
-    const limit = paginations.pageSize;
-    dispatch({
-      type: 'upmsmenu/search',
-      payload: {
-        page,
-        limit,
-        pid: selectedKeys[0]
-      }
-    })
+  const handleClick = (selectedKeys, event) => {
+    const { props: { title } } = event.node;
+    if (title !== ('1项目管理' || '2服务质量' || '3项目产品质量' || '4安全管理' || '5加分项')) {
+      dispatch({
+        type:'qualityassessment/getTargetValue',
+        payload:selectedKeys[0]
+      })
+      getlist(selectedKeys);
+      setSelectId(selectedKeys[0])
+    }
   }
+
+  console.log(selectId, 'selectId')
 
   const onSearch = (value) => {
   }
 
-  const handleChange = (value) => {
-
+  const handleChange = (key) => {
+    setType(key)
   }
+
+  useEffect(() => {
+    if (type) {
+      getalldata();
+    }
+  }, [type])
 
   const getTypebyTitle = title => {
     if (selectdata.ischange) {
@@ -228,17 +184,194 @@ function AddScoringRulesmaintenance(props) {
     return [];
   }
 
+  const handleSubmit = () => {
+    validateFields((err, value) => {
+      if (!err) {
+        dispatch({
+          type: 'qualityassessment/scoreAdd',
+          payload: {
+            ...value,
+            assessType:value.assessType === '1' ? '功能开发' :'系统运维'
+          }
+        })
+      }
+    })
+  }
+
+  const getclausedetail = () => {
+    dispatch({
+      type: 'qualityassessment/clauseId',
+      payload: id
+    })
+  }
+
+  const getscoredetail = () => {
+    dispatch({
+      type: 'qualityassessment/scoreId',
+      payload: id
+    });
+  }
+
   const submitClause = (clauseData) => {
-    console.log('clauseData: ', clauseData);
+    return dispatch({
+      type: 'qualityassessment/clauseAdd',
+      payload: {
+        ...clauseData,
+        scoreId: id,
+        targetId: selectId
+      }
+    }).then(res => {
+      if (res.code === 200) {
+        getlist()
+      } else {
+        message.error(res.msg);
+      }
+    })
+  }
+
+  const handleDelete = (key) => {
 
   }
 
+  const columns = [
+    {
+      title: '序号',
+      dataIndex: 'orderNo',
+      key: 'orderNo',
+    },
+    {
+      title: '详细条款',
+      dataIndex: 'detailed',
+      key: 'detailed',
+    },
+    {
+      title: '评价类型',
+      dataIndex: 'calc',
+      key: 'calc',
+    },
+    {
+      title: '分值',
+      dataIndex: 'scoreValue',
+      key: 'scoreValue',
+    },
+    {
+      title: '数据来源',
+      dataIndex: 'sources',
+      key: 'sources',
+    },
+    {
+      title: '扣分说明',
+      dataIndex: 'remark',
+      key: 'remark',
+    },
+    {
+      title: '操作',
+      dataIndex: 'action',
+      key: 'action',
+      fixed: 'right',
+      width: 150,
+      render: (text, record) => (
+        <div>
+          <Clause
+            formItemLayout={formItemLayout}
+            submitClause={newdata => submitClause(newdata)}
+            title="编辑详细条款"
+            clause={record}
+            pidkey={record.pid}
+          >
+            <a type="link">编辑</a>
+          </Clause>
+          <Divider type="vertical" />
+          <Popconfirm title="确定删除此菜单吗？" onConfirm={() => handleDelete(record.id)}>
+            <a type="link">删除</a>
+          </Popconfirm>
+        </div>
+      ),
+    },
+  ];
+
+  useEffect(() => {
+    if (id) {
+      getscoredetail();
+      // getclausedetail()
+      getlist()
+    }
+  }, [id])
+
+  const handleBack = () => {
+    if (scoreSearch) {
+      router.push({
+        pathname: `/ITSM/servicequalityassessment/scoringrulessearch`,
+      })
+    } else {
+      router.push({
+        pathname: `/ITSM/servicequalityassessment/scoringrulesmaintenance`,
+      })
+    }
+  }
+
+  const onShowSizeChange = (page, pageSize) => {
+    validateFields((err, values) => {
+      if (!err) {
+        searchdata(values, page, pageSize)
+      }
+    })
+    setPaginations({
+      ...paginations,
+      pageSize
+    })
+  }
+
+  const changePage = page => {
+    validateFields((err, values) => {
+      if (!err) {
+        searchdata(values, page, paginations.pageSize)
+      }
+    })
+
+    setPaginations({
+      ...paginations,
+      current: page
+    })
+  }
+
+  const pagination = {
+    showSizeChanger: true,
+    onShowSizeChange: (page, pagesize) => onShowSizeChange(page, pagesize),
+    current: paginations.current,
+    pageSize: paginations.pageSize,
+    total: clauseList.total,
+    showTotal: total => `总共 ${total} 条记录`,
+    onChange: (page) => changePage(page)
+  }
+
+  console.log(treeData,'treeData')
   // const functionDevelopment = getTypebyTitle('功能开发');
   const assessmentType = getTypebyTitle('考核类型');
+  console.log('assessmentType: ', assessmentType);
 
   return (
-    <PageHeaderWrapper 
-    title={pagetitle}
+    <PageHeaderWrapper
+      title={pagetitle}
+      extra={
+        <>
+          {
+            !scoreSearch && (
+              <Button
+                type='primary'
+                style={{ marginRight: 8 }}
+                onClick={handleSubmit}
+              >
+                保存
+              </Button>
+            )
+          }
+
+          <Button onClick={handleBack}>
+            返回
+          </Button>
+        </>
+      }
     >
       <SysDict
         typeid='1410413049587699713'
@@ -254,11 +387,14 @@ function AddScoringRulesmaintenance(props) {
                 <Col span={8}>
                   <Form.Item label='评分细则编号'>
                     {
-                      getFieldDecorator('scoreNo', {})
-                        (<Input disabled='true'/>)
+                      getFieldDecorator('scoreNo', {
+                        initialValue: scoreDetail.scoreNo
+                      })
+                        (<Input disabled='true' />)
                     }
                   </Form.Item>
                 </Col>
+
                 <Col span={8}>
                   <Form.Item label='评分细则名称'>
                     {
@@ -266,11 +402,12 @@ function AddScoringRulesmaintenance(props) {
                         rules: [
                           {
                             required,
-                            messages: '请输入评分细则名称'
+                            message: '请输入评分细则名称'
                           }
-                        ]
+                        ],
+                        initialValue: scoreDetail.scoreName
                       })
-                        (<Input />)
+                        (<Input disabled={scoreSearch} />)
                     }
                   </Form.Item>
                 </Col>
@@ -282,17 +419,19 @@ function AddScoringRulesmaintenance(props) {
                         rules: [
                           {
                             required,
-                            messages: '请选择考核类型'
+                            message: '请选择考核类型'
                           }
-                        ]
+                        ],
+                        initialValue: scoreDetail.assessType
                       })
                         (
                           <Select
                             placeholder="请选择"
                             onChange={handleChange}
+                            disabled={scoreSearch}
                           >
                             {assessmentType.map(obj => [
-                              <Option key={obj.key} value={obj.dict_code}>
+                              <Option key={obj.dict_code} value={obj.dict_code}>
                                 {obj.title}
                               </Option>,
                             ])}
@@ -307,10 +446,15 @@ function AddScoringRulesmaintenance(props) {
             <Layout className={styles.headcolor}>
               <Card title='指标明细' >
                 <Sider theme="light">
-                  <Search style={{ marginBottom: 8 }} placeholder="Search" onSearch={onSearch} />
+                  <Search
+                    style={{ marginBottom: 8 }}
+                    placeholder="Search"
+                    disabled={scoreSearch}
+                    onSearch={onSearch} />
                   <Tree
-                    loadData={onLoadData}
+                    // loadData={onLoadData}
                     onSelect={handleClick}
+                    disabled={scoreSearch}
                   >
                     {renderTreeNodes(treeData)}
                   </Tree>
@@ -323,7 +467,9 @@ function AddScoringRulesmaintenance(props) {
                     <Col span={13}>
                       <Form.Item label='一级指标'>
                         {
-                          getFieldDecorator('no55', {})
+                          getFieldDecorator('target1Name', {
+                            initialValue: treeForm.target1
+                          })
                             (
                               <Input disabled='true' />
                             )
@@ -334,7 +480,9 @@ function AddScoringRulesmaintenance(props) {
                     <Col span={13}>
                       <Form.Item label='一级指标满分'>
                         {
-                          getFieldDecorator('no66', {})
+                          getFieldDecorator('value1', {
+                            initialValue:treeForm.value1
+                          })
                             (<Input disabled='true' />)
                         }
                       </Form.Item>
@@ -343,7 +491,9 @@ function AddScoringRulesmaintenance(props) {
                     <Col span={13}>
                       <Form.Item label='二级指标'>
                         {
-                          getFieldDecorator('no77', {})
+                          getFieldDecorator('target2Name', {
+                            initialValue:treeForm.target2
+                          })
                             (
                               <Input disabled='true' />
                             )
@@ -354,7 +504,9 @@ function AddScoringRulesmaintenance(props) {
                     <Col span={13}>
                       <Form.Item label='二级指标满分'>
                         {
-                          getFieldDecorator('no88', {})
+                          getFieldDecorator('value2', {
+                            initialValue:treeForm.value2
+                          })
                             (<Input disabled='true' />)
                         }
                       </Form.Item>
@@ -369,30 +521,40 @@ function AddScoringRulesmaintenance(props) {
                     </Col>
 
                     <Col span={13} style={{ textAlign: 'right' }}>
-                      <Button type='primary' style={{ marginRight: 8 }}>查询</Button>
-                      <Button>重置</Button>
+                      <Button
+                        type='primary'
+                        style={{ marginRight: 8 }}
+                        disabled={scoreSearch}
+                      >
+                        查询
+                      </Button>
+                      <Button
+                        disabled={scoreSearch}
+                      >重置</Button>
                     </Col>
                   </Form>
 
-                  <Clause
-                    title='添加详细条款'
-                    formItemLayout={formItemLayout}
-                    submitClause={newdata => submitClause(newdata)}
-                  >
-                    <Button
-                      style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
-                      type="dashed"
-                      icon='plus'
+                  {id && !scoreSearch && selectId && (
+                    <Clause
+                      title='添加详细条款'
+                      formItemLayout={formItemLayout}
+                      submitClause={newdata => submitClause(newdata)}
                     >
-                      新增评分细则
-                    </Button>
-                  </Clause>
+                      <Button
+                        style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
+                        type="dashed"
+                        icon='plus'
+                      >
+                        新增详细条款
+                      </Button>
+                    </Clause>
+                  )}
 
                   <Table
-                    // dataSource={show.rows}
+                    dataSource={clauseList.records || []}
                     columns={columns}
                     rowKey={record => record.id}
-                    // pagination={pagination}
+                    pagination={pagination}
                     scroll={{ x: 1300 }}
                   />
                 </Card>
@@ -406,11 +568,28 @@ function AddScoringRulesmaintenance(props) {
   )
 }
 
+AddScoringRulesmaintenance.defaultProps = {
+  treeForm: {
+    target1: '',
+    target2:'',
+    value1:'',
+    value2:'',
+    scoreName: '',
+    assessType: ''
+  }
+}
+
 
 
 export default Form.create({})(
   connect(({ qualityassessment, upmsmenu, loading }) => ({
     maintenanceData: qualityassessment.maintenanceData,
     show: upmsmenu.show,
+    scoreDetail: qualityassessment.scoreDetail,
+    clauseDetail: qualityassessment.clauseDetail,
+    clauseList: qualityassessment.clauseList,
+    treeArr: qualityassessment.treeArr,
+    treeForm: qualityassessment.treeForm,
+    loading: loading.models.qualityassessment
   }))(AddScoringRulesmaintenance)
 )

@@ -84,3 +84,55 @@ export async function scoreAdd(params) {
   })
 }
 
+//  根据id查询评分细则
+export async function scoreId(id) {
+  return request(`/quality/score/${id}`)
+}
+
+//  评分细则条款列表
+export async function scoreListpage(params) {
+  return request(`/quality/score/listPage/${params.pageNum}/${params.pageSize}`,{
+    method:'POST',
+    body:JSON.stringify(params)
+  })
+}
+
+//  新增详细条款
+export async function clauseAdd(params) {
+  return request(`/quality/clause/add`,{
+    method:'POST',
+    body:JSON.stringify(params)
+  })
+}
+
+//  根据id查询详细条款数据
+export async function clauseId(id) {
+  return request(`/quality/clause/${id}`)
+}  
+
+//  删除评分细则
+export async function scoreDel(id) {
+  return request(`/quality/score/del/${id}`,{
+    method:'POST',
+  })
+}
+
+//  根据考核类型查询指标明细的树
+export async function getTypeTree(type) {
+  console.log('type: ', type);
+  return request(`/quality/score/getTypeTree?type=${type}`)
+}
+
+//  详细条款列表
+export async function clauseListpage(params) {
+  return request(`/quality/clause/listPage/${params.pageNum}/${params.pageSize}`,{
+    method:'POST',
+    body:JSON.stringify(params)
+  })
+}
+
+//  点击树获取右边表单信息
+export async function getTargetValue(targetId) {
+  return request(`/quality/score/getTargetValue?targetId=${targetId}`)
+}
+

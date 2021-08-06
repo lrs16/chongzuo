@@ -10,13 +10,14 @@ import {
   Row,
   Col,
   Card,
-  Divider
+  Select,
+  Divider,
 } from 'antd';
 import moment from 'moment';
 import { connect } from 'dva';
 import router from 'umi/router';
-import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import SysDict from '@/components/SysDict';
 
 const formItemLayout = {
   labelCol: {
@@ -26,54 +27,106 @@ const formItemLayout = {
   wrapperCol: {
     xs: { span: 24 },
     sm: { span: 16 }
-  },
+  }
 }
+
+const { Option } = Select;
+
 
 
 function ScoringRulesssearch(props) {
   const pagetitle = props.route.name;
   const {
     form: { getFieldDecorator, validateFields, resetFields },
-    maintenanceData,
-    dispatch
+    scoreList,
+    dispatch,
+    loading
   } = props;
-  const [paginations, setPaginations] = useState({ current: 0, pageSize: 15 });
-  const [expand, setExpand] = useState(false);
+
+  const [paginations, setPaginations] = useState({ current: 0, pageSize: 15 })
+  const [selectdata, setSelectData] = useState('');
+
+
+  const searchdata = (values, page, pageSize) => {
+    dispatch({
+      type: 'qualityassessment/scoreListpage',
+      payload: {
+        ...values,
+        pageNum: page,
+        pageSize
+      }
+    })
+  }
+
+  const handleDelete = (id) => {
+    return dispatch({
+      type: 'qualityassessment/scoreDel',
+      payload: id
+    }).then(res => {
+      if (res.code === 200) {
+        message.info(res.msg);
+        searchdata({}, 1, paginations.pageSize)
+      } else {
+        message.error(res.msg);
+      }
+    })
+  }
 
   const columns = [
     {
       title: '评分细则编号',
-      dataIndex: 'no',
-      key: 'no'
+      dataIndex: 'scoreNo',
+      key: 'scoreNo',
+      render: (text, record) => {
+        const gotoDetail = () => {
+          router.push({
+            pathname: '/ITSM/servicequalityassessment/detailscoringrulesmaintenance',
+            query: {
+              id: record.id,
+              scoreSearch:true
+            }
+          })
+        }
+        return (
+          <a onClick={() => gotoDetail()}>{text}</a>
+        )
+      }
     },
     {
       title: '评分细则名称',
-      dataIndex: 'name',
-      key: 'name'
+      dataIndex: 'scoreName',
+      key: 'scoreName'
     },
     {
       title: '考核类型',
-      dataIndex: 'type',
-      key: 'type'
+      dataIndex: 'assessType',
+      key: 'assessType'
     },
   ]
-
-  const searchdata = (values, page, pageSize) => {
-    dispatch({
-      type: 'qualityassessment/maintenanceList',
-      payload: {
-        ...values
-      }
-    })
+  const getTypebyTitle = title => {
+    if (selectdata.ischange) {
+      return selectdata.arr.filter(
+        item => item.title === title)[0].children;
+    }
+    return []
   }
+
+
 
   useEffect(() => {
     searchdata({}, paginations.current, paginations.pageSize)
   }, [])
 
+  const handleReset = () => {
+    resetFields();
+    searchdata({}, 1, 15)
+  }
+
   const onShowSizeChange = (page, pageSize) => {
     validateFields((err, values) => {
-      searchdata(values, page, pageSize);
+      if (!err) {
+        searchdata(values, page, pageSize)
+      }
     })
     setPaginations({
       ...paginations,
@@ -83,7 +136,9 @@ function ScoringRulesssearch(props) {
 
   const changePage = page => {
     validateFields((err, values) => {
-      searchdata(values, page, paginations.pageSize)
+      if (!err) {
+        searchdata(values, page, paginations.pageSize)
+      }
     })
 
     setPaginations({
@@ -92,29 +147,45 @@ function ScoringRulesssearch(props) {
     })
   }
 
-  const handleReset = () => {
-    resetFields()
+  const newScoringrules = () => {
+    router.push({
+      pathname: '/ITSM/servicequalityassessment/addscoringrulesmaintenance'
+    })
+  }
+
+  const handlesearch = () => {
+    validateFields((err, value) => {
+      searchdata(value, 1, 15)
+    })
   }
 
   const pagination = {
     showSizeChanger: true,
-    onShowSizeChange: (page, pageSize) => onShowSizeChange(page, pageSize),
+    onShowSizeChange: (page, pagesize) => onShowSizeChange(page, pagesize),
     current: paginations.current,
     pageSize: paginations.pageSize,
-    total: 150,
-    showTotal: total => `总共${total}条记录`,
+    total: scoreList.total,
+    showTotal: total => `总共 ${total}条记录`,
     onChange: (page) => changePage(page)
   }
 
+  const assessmentType = getTypebyTitle('考核类型');
+
   return (
     <PageHeaderWrapper title={pagetitle}>
+      <SysDict
+        typeid='1410413049587699713'
+        commonid="1354288354950123522"
+        ChangeSelectdata={newvalue => setSelectData(newvalue)}
+        style={{ display: 'none' }}
+      />
       <Card>
         <Row>
-          <Form  {...formItemLayout}>
+          <Form {...formItemLayout}>
             <Col span={8}>
               <Form.Item label='评分细则编号'>
                 {
-                  getFieldDecorator('no', {})
+                  getFieldDecorator('scoreNo', {})
                     (<Input />)
                 }
               </Form.Item>
@@ -123,35 +194,54 @@ function ScoringRulesssearch(props) {
             <Col span={8}>
               <Form.Item label='评分细则名称'>
                 {
-                  getFieldDecorator('name', {})
+                  getFieldDecorator('scoreName', {})
                     (<Input />)
                 }
+
               </Form.Item>
             </Col>
 
             <Col span={8}>
               <Form.Item label='考核类型'>
                 {
-                  getFieldDecorator('name', {})
-                    (<Input />)
+                  getFieldDecorator('assessType', {})
+                    (
+                      <Select placeholder='请选择' allowClear>
+                        {assessmentType.map(obj => [
+                          <Option key={obj.key} value={obj.title}>
+                            {obj.title}
+                          </Option>
+                        ])}
+                      </Select>
+                    )
                 }
               </Form.Item>
             </Col>
-
-            <Col span={24} style={{textAlign:'right'}}>
-              <Button type='primary' style={{marginRight:8}}>查询</Button>
-              <Button>重置</Button>
-            </Col>
-
-         
           </Form>
+
+          <Col span={24} style={{ textAlign: 'right' }}>
+            <Button
+              type='primary'
+              style={{ marginRight: 8 }}
+              onClick={handlesearch}
+            >
+              查询
+            </Button>
+
+            <Button onClick={handleReset}>
+              重置
+            </Button>
+          </Col>
+
+          <Col span={8}>
+            <Button type='primary'>导出数据</Button>
+          </Col>
         </Row>
 
-        <Button type='primary'>导出数据</Button>
-
         <Table
+          loading={loading}
           columns={columns}
-          dataSource={maintenanceData}
+          dataSource={scoreList.records}
           pagination={pagination}
         />
       </Card>
@@ -161,6 +251,9 @@ function ScoringRulesssearch(props) {
 
 export default Form.create({})(
   connect(({ qualityassessment, loading }) => ({
-    maintenanceData: qualityassessment.maintenanceData
+    scoreList: qualityassessment.scoreList,
+    loading:loading.models.qualityassessment,
   }))(ScoringRulesssearch)
 )
+
+

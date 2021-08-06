@@ -1,5 +1,8 @@
 import router from 'umi/router';
 import {
+  message
+} from 'antd';
+import {
   maintenanceList,
   contractAdd,  // 新增合同
   providerAdd, // 新增服务商
@@ -11,6 +14,14 @@ import {
   providerUpd, // 更新服务商
   providerDel, // 删除服务商
   scoreAdd,
+  scoreId, //  根据id查询详细条款数据
+  scoreListpage, // 评分列表
+  clauseAdd,
+  clauseId,
+  scoreDel, // 删除评分细则
+  getTypeTree,
+  clauseListpage,
+  getTargetValue
 } from '../services/quality';
 
 export default {
@@ -19,8 +30,14 @@ export default {
   state:{
     maintenanceData:[],
     searchProviderobj:{},
-    contractProviderobj:'',
+    contractProviderobj:[],
     providerArr:[],
+    scoreDetail:[],
+    scoreList:[],
+    clauseDetail:[],
+    treeArr:[],
+    clauseList:[],
+    treeForm:[]
   },
 
   effects: {
@@ -132,8 +149,69 @@ export default {
           orderNo:''
         }
       })
+    } else {
+      message.info(response.msg)
     }
-  }
+  },
+
+  //  根据ID查询评分
+  *scoreId({ payload }, { call, put }) {
+    const response = yield call(scoreId,payload);
+    yield put({
+      type:'scoreDetail',
+      payload:response
+    })
+  },
+
+  //  评分维护列表
+  *scoreListpage({ payload }, { call, put }) {
+    const response = yield call(scoreListpage,payload);
+    yield put ({
+      type:'scoreList',
+      payload: response
+    })
+  },
+
+  *clauseAdd({ payload }, { call, put }) {
+    return yield call(clauseAdd,payload);
+  },
+
+   //  评分细则维护
+   *clauseId({ payload }, { call, put }) {
+    const response = yield call(clauseId,payload);
+    yield put ({
+      type:'clauseDetail',
+      payload: response
+    })
+  },
+
+   //  删除评分
+   *scoreDel({ payload }, { call, put }) {
+    return yield call(scoreDel,payload)
+  },
+
+   //  根据考核类型查询指标明细的树
+   *getTypeTree({ payload }, { call, put }) {
+    return yield call(getTypeTree,payload);
+  },
+
+   //  详细条款列表
+   *clauseListpage({ payload }, { call, put }) {
+    const response = yield call(clauseListpage,payload);
+    yield put ({
+      type:'clauseList',
+      payload: response
+    })
+  },
+
+  //  击树获取右边表单信息
+  *getTargetValue({ payload }, { call, put }) {
+    const response = yield call(getTargetValue,payload);
+    yield put ({
+      type:'treeForm',
+      payload: response
+    })
+  },
   },
 
 
@@ -164,6 +242,39 @@ export default {
         ...state,
         providerArr:action.payload.data
       }
-    }
+    },
+
+    scoreDetail(state,action) {
+      return {
+        ...state,
+        scoreDetail:action.payload.data
+      }
+    },
+
+    scoreList(state,action) {
+      return {
+        ...state,
+        scoreList: action.payload.data
+      }
+    },
+
+    treeArr(state,action) {
+      return {
+        ...state,
+        treeArr: action.payload.data
+      }
+    },
+    clauseList(state,action) {
+      return {
+        ...state,
+        clauseList: action.payload.data
+      }
+    },
+    treeForm(state,action) {
+      return {
+        ...state,
+        treeForm: action.payload.data
+      }
+    },
   }
 }

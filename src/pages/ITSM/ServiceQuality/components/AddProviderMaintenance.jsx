@@ -76,7 +76,9 @@ function AddProviderMaintenance(props) {
         }
       }).then(res => {
         if (res.code === 200) {
-          message.info(res.msg);
+          if(!providerSearch) {
+            message.info(res.msg);
+          }
           contractProviderdata()
         } else {
           message.error(res.msg)
@@ -152,9 +154,10 @@ function AddProviderMaintenance(props) {
       dataIndex: 'action',
       render: (text, record) => {
         return (
-          <span>
+          <span disabled={providerSearch}>
             <Contract
               contract={record}
+              isEdit={providerSearch}
               title='编辑合同'
               formItemLayout={formItemLayout}
               onSumit={values => handleonSumit(values)}
@@ -167,6 +170,7 @@ function AddProviderMaintenance(props) {
             <Popconfirm
               title='是否要删除此行？'
               onConfirm={() => handleDelete(record.id)}
+              disabled={providerSearch}
             >
               <a>删除合同</a>
             </Popconfirm>
@@ -342,7 +346,7 @@ function AddProviderMaintenance(props) {
           loading === false && (
             <Table
               columns={columns}
-              dataSource={contractProviderobj || []}
+              dataSource={contractProviderobj}
             />
           )
         }

@@ -35,9 +35,8 @@ function Contract(props) {
     contract,
     title,
     onSumit,
+    isEdit
   } = props;
-
-  console.log(contract,'contract')
 
   const required = true;
 
@@ -92,7 +91,7 @@ function Contract(props) {
               ],
               initialValue: contract.contractName
             })
-              (<Input />)
+              (<Input disabled={isEdit}/>)
             }
           </Form.Item>
 
@@ -106,7 +105,7 @@ function Contract(props) {
               ],
               initialValue: moment(contract.signTime)
             })
-              (<DatePicker />)
+              (<DatePicker disabled={isEdit}/>)
             }
           </Form.Item>
 
@@ -120,7 +119,7 @@ function Contract(props) {
               ],
               initialValue: moment(contract.dueTime)
             })
-              (<DatePicker />)
+              (<DatePicker disabled={isEdit}/>)
             }
           </Form.Item>
 
@@ -135,7 +134,7 @@ function Contract(props) {
               initialValue: contract.status
             })
               (
-                <Select>
+                <Select disabled={isEdit}>
                   <Option key='0' value='0'>在用</Option>
                   <Option key='1' value='1'>停用</Option>
                   <Option key='2' value='2'>过期</Option>

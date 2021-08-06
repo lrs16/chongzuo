@@ -1,4 +1,4 @@
-import React, { useImperativeHandle, useRef, useState } from 'react';
+import React, { useImperativeHandle, useRef, useState, useEffect } from 'react';
 import {
   Table,
   Form,
@@ -10,29 +10,58 @@ import {
   Row,
   Col,
   Select,
+  AutoComplete,
+  Spin
 } from 'antd';
+import SysUpload from '@/components/SysUpload';
 import moment from 'moment';
+import { operationPerson } from '@/services/common';
+import { providerList, scoreListpage, contractProvider, clauseListpage } from '../../services/quality';
 import SysDict from '@/components/SysDict';
+import styles from '../index.less';
 
-const { TextArea } = Input;
+const { TextArea, Search } = Input;
 const { Option } = Select;
 
 
 
 const Register = React.forwardRef((props, ref) => {
   const {
-    form: { getFieldDecorator },
+    form: { getFieldDecorator, setFieldsValue, validateFields },
     formItemLayout,
     forminladeLayout,
     userinfo,
-    register
+    register,
+    getTarget1,
+    getTarget2,
+    target1,
+    target2,
+    getclausedetail,
+    clauseList,
+    taskData,
+    files,
+    ChangeFiles,
+    loading
   } = props;
-
+  const [performanceLeader, setPerformanceLeader] = useState('')
+  const [fileslist, setFilesList] = useState([]);
   const [selectdata, setSelectData] = useState('');
+  const [disablelist, setDisabledList] = useState([]); // 服务商
+  const [contractlist, setContractlist] = useState([]); // 合同
+  const [scorelist, setScorelist] = useState([]); // 评分细则
+  const [clauselist, setClauselist] = useState([]); // 详细条款
+  const [providerId, setProviderId] = useState(''); //  设置服务商的id
+  const [scoreId, setScoreId] = useState(''); //  设置服务商的id
+  const [target1Type, setTarget1Type] = useState('功能开发'); //  设置指标类型
+  const [target2Type, setTarget2Type] = useState('');
+  const [spinloading, setSpinLoading] = useState(true);
 
   const required = true;
 
-
+  console.log(taskData,'taskData')
+  useEffect(() => {
+    ChangeFiles(fileslist);
+  }, [fileslist]);
   const attRef = useRef();
   useImperativeHandle(
     ref,
@@ -42,13 +71,247 @@ const Register = React.forwardRef((props, ref) => {
     [],
   )
 
+  const handleChange = (selectValue, params) => {
+    switch (params) {
+      case 'contract':
+        setFieldsValue({
+          contract: selectValue.label,
+          contractId: selectValue.key
+        })
+        break;
+      case 'target1Name':
+        setFieldsValue({
+          target1Name: selectValue.label,
+          target1Id: selectValue.key
+        })
+        getTarget2(selectValue.key);
+        setTarget2Type(selectValue.key)
+        break;
+      case 'target2Name':
+        getclausedetail(selectValue.key, scoreId);
+        setFieldsValue({
+          target2Name: selectValue.label,
+          target2Id: selectValue.key
+        })
+        break;
+      case 'clause':
+        setFieldsValue({
+          clauseId: selectValue.key
+        })
+        break;
+
+      default:
+        break;
+    }
+  }
+
+
+  const handleFocus = (params) => {
+    // if (!params) {
+    //   if (loading !== true && target1 && target1.length === 0) {
+    //     message.info('请选择评分细则名称哦！')
+    //   }
+    // }
+
+    // if (params) {
+    //   if (loading !== true && target2 && target2.length === 0) {
+    //     message.info('请选择有效的一级指标哦！')
+    //   }
+    // }
+    switch (params) {
+      case 'contract':
+        if (loading !== true && contractlist && contractlist.length === 0) {
+          message.error('请选择有效的服务商')
+        }
+        break;
+      case 'clause':
+        if (loading !== true && clauseList && clauseList.length === 0) {
+          message.error('请选择有效的二级指标')
+        }
+        break;
+
+      default:
+        break;
+    }
+  }
+
+  // 自动完成服务商
+  const disableduser = disablelist.map(opt => (
+    <Option key={opt.id} value={opt.id} disableuser={opt}>
+      <Spin spinning={spinloading}>
+        <div className={styles.disableuser}>
+          <span>{opt.providerNo}</span>
+          <span>{opt.providerName}</span>
+          <span>{opt.director}</span>
+        </div>
+      </Spin>
+    </Option>
+  ));
+
+  // 自动完成关联合同名称
+  const contractNamedata = contractlist.map((opt, index) => (
+    <Option key={opt.id} value={opt.id} disableuser={opt}>
+      <Spin spinning={spinloading}>
+        <div className={styles.disableuser}>
+          <span>{opt.contractNo}</span>
+          <span>{opt.contractName}</span>
+          <span>{opt.signTime}</span>
+          <span>{opt.dueTime}</span>
+        </div>
+      </Spin>
+    </Option>
+  ));
+
+  // 自动完成评分细则
+  const scorenameList = scorelist.map(opt => (
+    <Option key={opt.id} value={opt.id} disableuser={opt}>
+      <Spin spinning={spinloading}>
+        <div className={styles.disableuser}>
+          <span>{opt.scoreNo}</span>
+          <span>{opt.scoreName}</span>
+        </div>
+      </Spin>
+    </Option>
+  ));
+
+  // 自动详细条款
+  const clauseNamelist = clauselist.map(opt => (
+    <Option key={opt.id} value={opt.id} disableuser={opt}>
+      <Spin spinning={spinloading}>
+        <div className={styles.disableuser}>
+          <span>{opt.scoreNo}</span>
+          <span>{opt.scoreName}</span>
+        </div>
+      </Spin>
+    </Option>
+  ));
+
+  // 请求服务商
+  const SearchDisableduser = (value, type) => {
+    const requestData = {
+      ...value,
+      pageNum: 1,
+      pageSize: 1000
+    }
+    switch (type) {
+      case 'provider':
+        providerList({ ...requestData }).then(res => {
+          if (res) {
+            const arr = [...(res.data.records)];
+            setSpinLoading(false);
+            setDisabledList(arr);
+          }
+        });
+        break;
+      case 'contract':
+        if (!providerId) {
+          message.error('请先选择服务商哦')
+        } else {
+          contractProvider(providerId).then(res => {
+            if (res) {
+              const arr = [...(res.data)];
+              setSpinLoading(false);
+              setContractlist(arr);
+            }
+          });
+        }
+
+        break;
+      case 'score':
+        scoreListpage({ ...requestData }).then(res => {
+          if (res) {
+            const arr = [...(res.data.records)];
+            setSpinLoading(false);
+            setScorelist(arr);
+          }
+        });
+        break;
+      case 'clause':
+        clauseListpage({ ...requestData, scoreId, targetId: target2Type, }).then(res => {
+          if (res) {
+            const arr = [...(res.data.records)];
+            setSpinLoading(false);
+            setScorelist(arr);
+          }
+        });
+        break;
+      default:
+        break;
+    }
+  };
+
+  // 选择服务商，信息回填
+  const handleDisableduser = (v, opt, type) => {
+    const { id, providerName, scoreName, contractName, assessType, clauseName } = opt.props.disableuser;
+    switch (type) {
+      case 'provider':
+        setFieldsValue({
+          provider: providerName,         // 服务商
+          providerId: id,         // 服务商id
+        });
+        contractProvider(id).then(res => {
+          if (res.code === 200) {
+            const arr = [...(res.data)];
+            setSpinLoading(false);
+            setContractlist(arr);
+          }
+        });
+        setProviderId(id);
+
+        break;
+
+      // case 'contract':
+      //   setFieldsValue({
+      //     contract: contractName,         // 合同名字
+      //     contractId: id,         // 服务商id
+      //   });
+      //   break;
+
+      case 'score':
+        setFieldsValue({
+          score: scoreName,      // 评分细则名称
+          scoreId: id,         // 评分细则id
+          assessType
+        });
+        setScoreId(id)
+        getTarget1(assessType === '功能开发' ? '1' : '2')
+        break;
+
+      default:
+        break;
+    }
+  };
+
+
   const getTypebyTitle = title => {
     if (selectdata.ischange) {
       return selectdata.arr.filter(item => item.title === title)[0].children;
     }
   }
 
-  const primaryIndex = getTypebyTitle('一级指标');
+  const selectOnchange = (value, option) => {
+    setFieldsValue({
+      directorName: value,
+      directorId: option.key
+    });
+  }
+
+  const getPerformanceleader = () => {
+    operationPerson().then(res => {
+      const result = (res.data).map(item => {
+        return {
+          key: item.id,
+          value: item.userName
+        }
+      })
+      setPerformanceLeader(result)
+    })
+  }
+
+  useEffect(() => {
+    getPerformanceleader()
+  }, [])
+
   return (
     <Row gutter={24} style={{ paddingTop: 24 }}>
       <SysDict
@@ -57,269 +320,477 @@ const Register = React.forwardRef((props, ref) => {
         ChangeSelectdata={newvalue => setSelectData(newvalue)}
         style={{ display: 'none' }}
       />
-      {
-        primaryIndex && (
-          <Form {...formItemLayout}>
-            <Col span={8}>
-              <Form.Item label='服务绩效编号'>
-                {
-                  getFieldDecorator('no', {})
-                    (<Input />)
-                }
-              </Form.Item>
-            </Col>
+      <Form {...formItemLayout}>
+        <Col span={8}>
+          <Form.Item label='服务绩效编号'>
+            {
+              getFieldDecorator('assessNo', {
+                initialValue: register.assessNo
+              })
+                (<Input disabled='true' />)
+            }
+          </Form.Item>
+        </Col>
 
-            <Col span={8}>
-              <Form.Item label='发生时间'>
-                {
-                  getFieldDecorator('params1', {
-                    rules: [
-                      {
-                        required,
-                        message: '请选择发生时间'
-                      }
-                    ]
-                  })
-                    (<Input />)
-                }
-              </Form.Item>
-            </Col>
+        <Col span={8}>
+          <Form.Item label='发生时间'>
+            {
+              getFieldDecorator('assessTime', {
+                rules: [
+                  {
+                    required,
+                    message: '请选择发生时间'
+                  }
+                ],
+                initialValue: moment(register.assessTime)
+              })
+                (<DatePicker
+                  showTime
+                  format="YYYY-MM-DD HH:mm:ss"
+                />)
+            }
+          </Form.Item>
+        </Col>
 
-            <Col span={8}>
-              <Form.Item label='服务商'>
-                {
-                  getFieldDecorator('params2', {
-                    rules: [
-                      {
-                        required,
-                        message: '请输入服务商'
-                      }
-                    ]
-                  })
-                    (<Input />)
-                }
-              </Form.Item>
-            </Col>
+        <Col span={8}>
+          <Form.Item label='服务商'>
+            {
+              getFieldDecorator('provider', {
+                rules: [
+                  {
+                    required,
+                    message: '请输入服务商'
+                  }
+                ],
+                initialValue: register.provider
+              })
+                (
+                  <AutoComplete
+                    dataSource={disableduser}
+                    dropdownMatchSelectWidth={false}
+                    dropdownStyle={{ width: 600 }}
+                    onSelect={(v, opt) => handleDisableduser(v, opt, 'provider')}
+                  >
+                    <Search
+                      placeholder="可输入姓名搜索"
+                      onSearch={values => SearchDisableduser(values, 'provider')}
+                      allowClear
+                    />
+                  </AutoComplete>,
+                )
+            }
+          </Form.Item>
+        </Col>
 
-            <Col span={8}>
-              <Form.Item label='关联合同名称'>
-                {
-                  getFieldDecorator('params3', {
-                    rules: [
-                      {
-                        required,
-                        message: '请输入关联合同名称'
-                      }
-                    ]
-                  })
-                    (<Input />)
-                }
-              </Form.Item>
-            </Col>
+        <Col span={8} style={{ display: 'none' }}>
+          <Form.Item label='服务商'>
+            {
+              getFieldDecorator('providerId', {
+                rules: [
+                  {
+                    required,
+                    message: '请输入服务商'
+                  }
+                ],
+                initialValue: register.providerId
+              })
+                (
+                  <Input />
+                )
+            }
+          </Form.Item>
+        </Col>
 
-            <Col span={8}>
-              <Form.Item label='责任人'>
-                {
-                  getFieldDecorator('params4', {
-                    rules: [
-                      {
-                        required,
-                        message: '请输入责任人'
-                      }
-                    ]
-                  })
-                    (<Input />)
-                }
-              </Form.Item>
-            </Col>
+        <Col span={8}>
+          <Form.Item label='关联合同名称'>
+            {
+              getFieldDecorator('contract', {
+                rules: [
+                  {
+                    required,
+                    message: '请输入关联合同名称'
+                  }
+                ],
+                initialValue: register.contract
+              })
+                (
+                  <Select
+                    labelInValue='true'
+                    placeholder='请选择'
+                    allowClear
+                    onChange={(value) => handleChange(value, 'contract')}
+                    onFocus={() => handleFocus('contract')}
+                  >
+                    {contractlist.map(obj => [
+                      <Option key={obj.id} value={obj.id}>
+                        <div className={styles.disableuser}>
+                          <span>{obj.contractNo}</span>
+                          <span>{obj.contractName}</span>
+                        </div>
+                      </Option>
+                    ])}
+                  </Select>
+                )
+            }
+          </Form.Item>
+        </Col>
 
-            <Col span={8}>
-              <Form.Item label='评分细则名称'>
-                {
-                  getFieldDecorator('params5', {
-                    rules: [
-                      {
-                        required,
-                        message: '请输入评分细则名称'
-                      }
-                    ]
-                  })
-                    (<Input />)
-                }
-              </Form.Item>
-            </Col>
+        <Col span={8} style={{ display: 'none' }}>
+          <Form.Item label='关联合同名称'>
+            {
+              getFieldDecorator('contractId', {
+                initialValue: register.contractId
+              })
+                (
+                  <Input />
+                )
+            }
+          </Form.Item>
+        </Col>
 
-            <Col span={8}>
-              <Form.Item label='考核类型'>
-                {
-                  getFieldDecorator('params6', {})
-                    (<Input />)
-                }
-              </Form.Item>
-            </Col>
+        {/* {performanceLeader && performanceLeader.length && (
+          <Col span={8}>
+            <Form.Item label='责任人'>
+              {
+                getFieldDecorator('directorName', {
+                  rules: [
+                    {
+                      required,
+                      message: '请输入责任人'
+                    }
+                  ]
+                })
+                  (
+                    <Select onChange={selectOnchange} >
+                      {performanceLeader.map(obj => [
+                        <Option key={obj.key} value={obj.value}>
+                          {obj.value}
+                        </Option>
+                      ])}
 
-            <Col span={24}>
-              <Form.Item label='考核内容说明' {...forminladeLayout}>
-                {
-                  getFieldDecorator('params7', {
-                    rules: [
-                      {
-                        required,
-                        message: '请输入考核内容说明'
-                      }
-                    ]
-                  })
-                    (<TextArea
-                      autoSize={{ minRows: 3 }}
-                      placeholder='请控制字数在500字以内'
-                      maxLength='500'
-                    />)
-                }
-              </Form.Item>
-            </Col>
+                    </Select>
+                  )
+              }
+            </Form.Item>
+          </Col>
+        )} */}
 
-            <Col span={8}>
-              <Form.Item label='一级指标'>
-                {
-                  getFieldDecorator('params8', {
-                    rules: [
-                      {
-                        required,
-                        message: '请输入一级指标'
-                      }
-                    ]
-                  })
-                    (
-                      <Select placeholder='请选择' allowClear>
-                        {primaryIndex.map(obj => [
-                          <Option key={obj.key} value={obj.dict_code}>
-                            {obj.title}
-                          </Option>
-                        ])}
-                      </Select>
-                    )
-                }
-              </Form.Item>
-            </Col>
 
-            <Col span={8}>
-              <Form.Item label=' 二级指标'>
-                {
-                  getFieldDecorator('params9', {
-                    rules: [
-                      {
-                        required,
-                        message: '请输入二级指标'
-                      }
-                    ]
+        <Col span={8} style={{ display: 'none' }}>
+          <Form.Item label='责任人id'>
+            {
+              getFieldDecorator('directorId', {
+              })
+                (<Input />)
+            }
+          </Form.Item>
+        </Col>
 
-                  })
-                    (
-                      <Select placeholder='请选择' allowClear>
-                        {primaryIndex.map(obj => [
-                          <Option key={obj.key} value={obj.dict_code}>
-                            {obj.title}
-                          </Option>
-                        ])}
-                      </Select>
-                    )
-                }
-              </Form.Item>
-            </Col>
+        <Col span={8}>
+          <Form.Item label='评分细则名称'>
+            {
+              getFieldDecorator('score', {
+                rules: [
+                  {
+                    required,
+                    message: '请输入评分细则名称'
+                  }
+                ]
+              })
+                (
+                  <AutoComplete
+                    dataSource={scorenameList}
+                    dropdownMatchSelectWidth={false}
+                    dropdownStyle={{ width: 600 }}
+                    onSelect={(v, opt) => handleDisableduser(v, opt, 'score')}
+                  >
+                    <Search
+                      placeholder="可输入姓名搜索"
+                      onSearch={values => SearchDisableduser(values, 'score')}
+                      allowClear
+                    />
+                  </AutoComplete>,
+                )
+            }
+          </Form.Item>
+        </Col>
 
-            <Col span={24}>
-              <Form.Item label='详细条款' {...forminladeLayout}>
-                {
-                  getFieldDecorator('params11', {
-                    rules: [
-                      {
-                        required,
-                        message: '请输入详细条款'
-                      }
-                    ]
-                  })
-                    (<Input />)
-                }
-              </Form.Item>
-            </Col>
+        <Col span={8} style={{ display: 'none' }}>
+          <Form.Item label='评分细则名称'>
+            {
+              getFieldDecorator('scoreId', {
+              })
+                (
+                  <AutoComplete
+                    dataSource={scorenameList}
+                    dropdownMatchSelectWidth={false}
+                    dropdownStyle={{ width: 600 }}
+                    onSelect={(v, opt) => handleDisableduser(v, opt, 'score')}
+                  >
+                    <Search
+                      placeholder="可输入姓名搜索"
+                      onSearch={values => SearchDisableduser(values, 'score')}
+                      allowClear
+                    />
+                  </AutoComplete>,
+                )
+            }
+          </Form.Item>
+        </Col>
 
-            <Col span={8}>
-              <Form.Item label='考核得分'>
-                {
-                  getFieldDecorator('params22', {
-                    rules: [
-                      {
-                        required,
-                        message: '请输入考核得分'
-                      }
-                    ]
-                  })
-                    (<Input />)
-                }
-              </Form.Item>
-            </Col>
+        <Col span={8}>
+          <Form.Item label='考核类型'>
+            {
+              getFieldDecorator('assessType', {})
+                (<Input />)
+            }
+          </Form.Item>
+        </Col>
 
-            <Col span={8}>
-              <Form.Item label='考核状态'>
-                {
-                  getFieldDecorator('params33', {})
-                    (<Input />)
-                }
-              </Form.Item>
-            </Col>
+        <Col span={24}>
+          <Form.Item label='考核内容说明' {...forminladeLayout}>
+            {
+              getFieldDecorator('assessContent', {
+                rules: [
+                  {
+                    required,
+                    message: '请输入考核内容说明'
+                  }
+                ]
+              })
+                (<TextArea
+                  autoSize={{ minRows: 3 }}
+                  placeholder='请控制字数在500字以内'
+                  maxLength='500'
+                />)
+            }
+          </Form.Item>
+        </Col>
 
-            <Col span={24}>
-              <Form.Item label='备注' {...forminladeLayout}>
-                {
-                  getFieldDecorator('params44', {})
-                    (<TextArea autoSize={{ minRows: 3 }} placeholder='请输入' />)
-                }
-              </Form.Item>
-            </Col>
+        <Col span={8}>
+          <Form.Item label='一级指标'>
+            {
+              getFieldDecorator('target1Name', {
+                rules: [
+                  {
+                    required,
+                    message: '请输入一级指标'
+                  }
+                ],
+                initialValue: register.target1Name
+              })
+                (
+                  <Select
+                    labelInValue='true'
+                    onChange={(value) => handleChange(value, 'target1Name')}
+                    onFocus={() => handleFocus()}
+                    placeholder='请选择'
+                    allowClear>
+                    {(target1).map(obj => [
+                      <Option key={obj.id} value={obj.id}>
+                        {obj.title}
+                      </Option>
+                    ])}
+                  </Select>
+                )
+            }
+          </Form.Item>
+        </Col>
 
-            <Col span={8}>
-              <Form.Item label='上传附件'>
-                {
-                  getFieldDecorator('params55', {})
-                    (<Input />)
-                }
-              </Form.Item>
-            </Col>
 
-            <Col span={8}>
-              <Form.Item label='登记人'>
-                {
-                  getFieldDecorator('params66', {
-                    initialValue: userinfo.userName
-                  })
-                    (<Input />)
-                }
-              </Form.Item>
-            </Col>
+        <Col span={8} style={{ display: 'none' }}>
+          <Form.Item label='一级指标id'>
+            {
+              getFieldDecorator('target1Id', {
+              })
+                (
+                  <Input />
+                )
+            }
+          </Form.Item>
+        </Col>
 
-            <Col span={8}>
-              <Form.Item label='登记时间'>
-                {
-                  getFieldDecorator('params77', {
-                    initialValue:register.registerTime
-                  })
-                    (<DatePicker />)
-                }
-              </Form.Item>
-            </Col>
+        <Col span={8}>
+          <Form.Item label='二级指标'>
+            {
+              getFieldDecorator('target2Name', {
+                rules: [
+                  {
+                    required,
+                    message: '请输入二级指标'
+                  }
+                ],
+                initialValue: register.target2Name
+              })
+                (
+                  <Select
+                    labelInValue='true'
+                    onChange={(value) => handleChange(value, 'target2Name')}
+                    onFo cus={() => handleFocus('two')}
+                    placeholder='请选择'
+                    allowClear>
+                    {(target2).map(obj => [
+                      <Option key={obj.id} value={obj.id}>
+                        {obj.title}
+                      </Option>
+                    ])}
+                  </Select>
+                )
+            }
+          </Form.Item>
+        </Col>
 
-          </Form>
+        <Col span={8} style={{ display: 'none' }}>
+          <Form.Item label=' 二级指标'>
+            {
+              getFieldDecorator('target2Id', {
 
-        )
-      }
+              })
+                (
+                  <Input />
+                )
+            }
+          </Form.Item>
+        </Col>
 
+        <Col span={24}>
+          <Form.Item label='详细条款' {...forminladeLayout}>
+            {
+              getFieldDecorator('clause', {
+                rules: [
+                  {
+                    required,
+                    message: '请输入详细条款'
+                  }
+                ],
+                initialValue: register.clause
+              })
+                (
+                  <Select
+                    labelInValue='true'
+                    onChange={(key, value) => handleChange(key, value, 'clause')}
+                    onFocus={() => handleFocus('clause')}
+                  >
+                    {(clauseList.records || []).map(obj => [
+                      <Option key={obj.id} value={obj.id}>
+                        <div className={styles.disableuser}>
+                          <span>{obj.orderNo}</span>
+                          <span>{obj.detailed}</span>
+                          <span>{obj.calc}</span>
+                          <span>{obj.scoreValue}</span>
+                          <span>{obj.sources}</span>
+                        </div>
+                      </Option>
+                    ])}
+                  </Select>
+                )
+            }
+          </Form.Item>
+        </Col>
+
+        <Col span={24} style={{ display: 'none' }}>
+          <Form.Item label='详细条款' {...forminladeLayout}>
+            {
+              getFieldDecorator('clauseId', {
+                rules: [
+                  {
+                    required,
+                    message: '请输入详细条款'
+                  }
+                ]
+              })
+                (<Input />)
+
+            }
+          </Form.Item>
+        </Col>
+
+        <Col span={8}>
+          <Form.Item label='考核得分'>
+            {
+              getFieldDecorator('assessValue', {
+                rules: [
+                  {
+                    required,
+                    message: '请输入考核得分'
+                  }
+                ]
+              })
+                (<Input />)
+            }
+          </Form.Item>
+        </Col>
+
+        <Col span={8}>
+          <Form.Item label='考核状态'>
+            {
+              getFieldDecorator('status', {})
+                (<Input />)
+            }
+          </Form.Item>
+        </Col>
+
+        <Col span={24}>
+          <Form.Item label='备注' {...forminladeLayout}>
+            {
+              getFieldDecorator('remark', {})
+                (<TextArea autoSize={{ minRows: 3 }} placeholder='请输入' />)
+            }
+          </Form.Item>
+        </Col>
+
+        <Col span={24}>
+          <Form.Item label='上传附件' {...forminladeLayout}>
+            {
+              getFieldDecorator('attachment', {})
+                (<div style={{ width: 400 }}>
+                  <SysUpload
+                    fileslist={files}
+                    ChangeFileslist={newvalue => setFilesList(newvalue)}
+                  />
+                </div>)
+            }
+          </Form.Item>
+        </Col>
+
+        <Col span={8}>
+          <Form.Item label='登记人'>
+            {
+              getFieldDecorator('register', {
+                initialValue: userinfo.userName
+              })
+                (<Input />)
+            }
+          </Form.Item>
+        </Col>
+
+        <Col span={8}>
+          <Form.Item label='登记时间'>
+            {
+              getFieldDecorator('applyTime', {
+                initialValue: moment(register.applyTime)
+              })
+                (<DatePicker />)
+            }
+          </Form.Item>
+        </Col>
+      </Form>
     </Row>
   )
 })
 
 Register.defaultProps = {
   register: {
-    registerTime:moment(new Date())
+    assessNo: '',
+    assessTime: new Date(),
+    applyTime: new Date(),
+    provider: '',
+    providerId: '',
+    target1Name: '',
+    target2Name: '',
+    clause: '',
+    contract: '',
+    contractId: ''
   }
 }
 

@@ -10,6 +10,7 @@ import {
   Collapse
 } from 'antd';
 import moment from 'moment';
+import { operationPerson } from '@/services/common';
 import { connect } from 'dva';
 import Register from './components/Register';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
@@ -44,12 +45,19 @@ function Registertion(props) {
   const {
     userinfo,
     dispatch,
+    target1,
+    target2,
+    clauseList,
+    loading
   } = props;
   const RegistratRef = useRef();
+  const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
   const [activeKey, setActiveKey] = useState(['registratform']);
   const handleClose = () => {
 
   }
+
+  console.log(loading, 'loading')
 
   const callback = key => {
     console.log('key: ', key);
@@ -57,22 +65,63 @@ function Registertion(props) {
   };
 
   const handleSubmit = () => {
-    RegistratRef.current.validateFields((_, values) => {
+    RegistratRef.current.validateFields((err, values) => {
+      const submitIfnfo = values;
+      delete submitIfnfo.provider;
+      delete submitIfnfo.clause;
+      delete submitIfnfo.score;
+      delete submitIfnfo.contract;
       dispatch({
-        type:'qualityassessment/gotoNextprocess'
+        type: 'performanceappraisal/assessRegister',
+        payload:{
+          ...submitIfnfo,
+          target1Name:values.target1Name.label,
+          target2Name:values.target2Name.label,
+          // contract:values.contract.label,
+          assessTime:moment(values.assessTime).format('YYYY-MM-DD HH:mm:ss'),
+          applyTime:moment(values.applyTime).format('YYYY-MM-DD HH:mm:ss'),
+        }
       })
     })
   }
 
   const getUserinfo = () => {
     dispatch({
-      type:'itsmuser/fetchuser'
+      type: 'itsmuser/fetchuser'
+    })
+  }
+
+  //  根据考核类型查询一级指标
+  const getTarget1 = (type) => {
+    dispatch({
+      type: 'performanceappraisal/scoreGetTarget1',
+      payload: type
+    })
+  }
+  //  根据考核类型查询二级指标
+  const getTarget2 = (id) => {
+    dispatch({
+      type: 'performanceappraisal/scoreGetTarget2',
+      payload: id
+    })
+  }
+
+  //  获取详细条款数据
+  const getclausedetail = (targetId,scoreId) => {
+    dispatch({
+      type:'qualityassessment/clauseListpage',
+      payload:{
+        targetId,
+        scoreId,
+        pageNum:1,
+        pageSize:1000
+      }
     })
   }
 
   useEffect(() => {
-    getUserinfo()
-  },[])
+    getUserinfo();
+  }, [])
 
 
 
@@ -97,34 +146,53 @@ function Registertion(props) {
         </>
       }
     >
-      <div className={styles.collapse}>
-        <Collapse
-          expandIconPosition='right'
-          defaultActiveKey={['1']}
-          bordered={false}
-          onChange={callback}
-        > 
-          <Panel 
-          header='服务绩效考核登记'
-           key='1'
-           >
-            <Register
-              formItemLayout={formItemLayout}
-              forminladeLayout={forminladeLayout}
-              ref={RegistratRef}
-              userinfo={userinfo}
-            />
-          </Panel>
-        </Collapse>
-      </div>
+      {/* {
+        loading !== true && ( */}
+          <div className={styles.collapse}>
+            <Collapse
+              expandIconPosition='right'
+              defaultActiveKey={['1']}
+              bordered={false}
+              onChange={callback}
+            >
+              <Panel
+                header='服务绩效考核登记'
+                key='1'
+              >
+                <Register
+                  formItemLayout={formItemLayout}
+                  forminladeLayout={forminladeLayout}
+                  ref={RegistratRef}
+                  userinfo={userinfo}
+                  getTarget1={getTarget1}
+                  getTarget2={getTarget2}
+                  target1={target1}
+                  target2={target2}
+                  getclausedetail={getclausedetail}
+                  clauseList={clauseList}
+                  files={[]}
+                  ChangeFiles={newvalue => {
+                    setFiles(newvalue);
+                  }}
+                  loading={loading}
+                />
+              </Panel>
+            </Collapse>
+          </div>
+      {/* //   )
+      // } */}
+
     </PageHeaderWrapper>
   )
 }
 
 export default Form.create({})(
-  connect(({ qualityassessment,itsmuser,loading }) => ({
-    maintenanceData: qualityassessment.maintenanceData,
+  connect(({ performanceappraisal,processmodel, qualityassessment,itsmuser, loading }) => ({
+    target2: performanceappraisal.target2,
+    target1: performanceappraisal.target1,
+    clauseList: qualityassessment.clauseList,
     userinfo: itsmuser.userinfo,
+    loading: loading.models.performanceappraisal
   }))(Registertion)
 )
 

@@ -8,6 +8,7 @@ import {
   message
 } from 'antd';
 
+const { TextArea } = Input;
 const { Option } = Select;
 
 
@@ -27,6 +28,8 @@ function Clause(props) {
     submitClause
   } = props;
   const required = true;
+
+  console.log(clause,'clause')
 
   const handleopenClick = () => {
     setVisible(true);
@@ -56,9 +59,8 @@ function Clause(props) {
           score: scoreVisible ? values.score : `-${values.score}`
         }
 
-        submitClause(submitData)
-
-
+        submitClause(submitData);
+        setVisible(false)
       }
     })
   }
@@ -86,32 +88,33 @@ function Clause(props) {
       >
         <Form {...formItemLayout}>
           <Form.Item label='评价类型'>
-            {getFieldDecorator('type', {
+            {getFieldDecorator('calc', {
               rules: [
                 {
                   required,
                   message: '请选择评价类型'
                 }
-              ]
+              ],
+              initialValue:clause.calc
             })
               (
                 <Select onChange={selectChange}>
-                  <Option value='加分项'>加分项</Option>
-                  <Option value='扣分项'>扣分项</Option>
+                  <Option value='ADD'>加分项</Option>
+                  <Option value='SUB'>扣分项</Option>
                 </Select>
               )
             }
           </Form.Item>
 
           <Form.Item label='详细条款'>
-            {getFieldDecorator('detail', {
+            {getFieldDecorator('detailed', {
               rules: [
                 {
                   required,
                   message: '请输入详细条款'
                 }
-              ]
-
+              ],
+              initialValue:clause.detailed
             })
               (<Input />)
             }
@@ -120,20 +123,14 @@ function Clause(props) {
           {
             scoreVisible === true && ( */}
           <Form.Item label='分值'>
-            {getFieldDecorator('score', {
+            {getFieldDecorator('scoreValue', {
               rules: [
                 {
                   required,
                   message: '请输入分值',
                 },
-
-                // {
-                //   pattern: positivenumberCheck,
-                //   validator: validatorNegative,
-                //   message: '请输入正数'
-                // }
               ],
-              initialValue: clause.score
+              initialValue: clause.scoreValue
             })
               (<Input />)
             }
@@ -167,15 +164,18 @@ function Clause(props) {
           */}
 
           <Form.Item label='数据来源'>
-            {getFieldDecorator('source', {
+            {getFieldDecorator('sources', {
+               initialValue: clause.sources
             })
-              (<Input />)
+              (<TextArea rows={4}/>)
             }
           </Form.Item>
+
           <Form.Item label='扣分说明'>
-            {getFieldDecorator('content', {
+            {getFieldDecorator('remark', {
+              initialValue: clause.remark
             })
-              (<Input />)
+              (<TextArea rows={4}/>)
             }
           </Form.Item>
         </Form>
@@ -203,11 +203,11 @@ function Clause(props) {
 
 Clause.defaultProps = {
   clause: {
-    type: '',
-    detail: '',
-    score: '',
-    source: '',
-    content: '',
+    calc: '',
+    detailed: '',
+    scoreValue: '',
+    sources: '',
+    remark: '',
   }
 }
 

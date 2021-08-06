@@ -191,7 +191,7 @@ function Querylistdetails(props) {
                       ['故障登记', <RegisterQuery info={obj} maindata={main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
                       ['系统运维商审核', <ExamineQuery info={obj} maindata={main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
                       ['系统运维商处理', <HandleQuery info={obj} maindata={main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
-                      ['系统运维商确认总结', <SummaryQuery info={obj} maindata={main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
+                      ['系统运维商确认总结', <SummaryQuery info={obj} maindata={main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} showFilelist={troubleFlowNodeRows[1]} showFilelist2={troubleFlowNodeRows[2]}/>],
                       ['自动化科业务负责人审核', <ExamineSecondQuery info={obj} maindata={main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
                       ['自动化科专责确认', <ConfirmQuery info={obj} maindata={main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
                     ]);

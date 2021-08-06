@@ -46,12 +46,13 @@ const forminladeLayout = {
 };
 
 const SummaryChild = React.forwardRef((props, ref) => {
-  const { finish, curruserinfo, ChangeFiles, tododetailslist, ChangeFileskey } = props;
+  const { finish, curruserinfo, ChangeFiles, tododetailslist, ChangeFileskey, showFilelist,showFilelist2 } = props;
   const message = '上传故障分析报告已超时， 实际上传时间已超过要求上传时间。'
   const { getFieldDecorator, setFieldsValue } = props.form;
   const attRef = useRef();
   const [fileslist, setFilesList] = useState({ arr: [], ischange: false }); // 下载列表
 
+  
   useEffect(() => {
     ChangeFiles(fileslist);
   }, [fileslist]);
@@ -103,51 +104,60 @@ const SummaryChild = React.forwardRef((props, ref) => {
           </Form.Item>
         </Col>
 
-        <Col span={24}>
-          <Form.Item label="上传故障分析报告" {...ItemLayout}>
-            {getFieldDecorator('finishAnalysisAttachments', {
-              rules: [
-                {
-                  required,
-                  message: '请上传故障分析报告！'
-                },
-              ],
-            })(
-              <div
-                style={{ width: 400 }}
-                onMouseOver={() => {
-                  ChangeFileskey('1');
-                }}
-                onFocus={() => 0}
-              >
-                <SysUpload
-                  fileslist={(finish && finish.finishAnalysisAttachments) ? JSON.parse(finish.finishAnalysisAttachments) : []}
-                  ChangeFileslist={
-                    newvalue => {
-                      setFieldsValue({ finishAnalysisAttachments: JSON.stringify(newvalue.arr) });
-                      setFilesList(newvalue)
-                    }
-                  }
-                />
-              </div>
-            )}
-          </Form.Item>
-        </Col>
-        <Col span={8}>
-          <Form.Item label="要求上传时间" >
-            {getFieldDecorator('finishRequiredTime', {
-              initialValue: (tododetailslist && tododetailslist.requiredUploadTime) ? moment(tododetailslist.requiredUploadTime) : moment(finish.finishRequiredTime)
-            })(<DatePicker showTime disabled format="YYYY-MM-DD HH:mm:ss" />)}
-          </Form.Item>
-        </Col>
+        {
+          ((showFilelist2 && showFilelist2.checkReportSign) ? showFilelist2.checkReportSign === '0': showFilelist1.checkReportSign === '0') && (
+            <>
+              <Col span={24}>
+                <Form.Item label="上传故障分析报告" {...ItemLayout}>
+                  {getFieldDecorator('finishAnalysisAttachments', {
+                    rules: [
+                      {
+                        required,
+                        message: '请上传故障分析报告！'
+                      },
+                    ],
+                  })(
+                    <div
+                      style={{ width: 400 }}
+                      onMouseOver={() => {
+                        ChangeFileskey('1');
+                      }}
+                      onFocus={() => 0}
+                    >
+                      <SysUpload
+                        fileslist={(finish && finish.finishAnalysisAttachments) ? JSON.parse(finish.finishAnalysisAttachments) : []}
+                        ChangeFileslist={
+                          newvalue => {
+                            setFieldsValue({ finishAnalysisAttachments: JSON.stringify(newvalue.arr) });
+                            setFilesList(newvalue)
+                          }
+                        }
+                      />
+                    </div>
+                  )}
+                </Form.Item>
+              </Col>
 
-        <Col span={8}>
-          <Form.Item label="实际上传时间">
-            {getFieldDecorator('finishPracticeTime', {
-              initialValue: (finish.finishAnalysisAttachments !== undefined && finish.finishAnalysisAttachments !== null && finish.finishAnalysisAttachments !== '[]') ? (moment((JSON.parse(finish.finishAnalysisAttachments))[0].nowtime) || '[]') : ''
-            })(<DatePicker showTime disabled format="YYYY-MM-DD HH:mm:ss" />)}
-          </Form.Item>
-        </Col>
+              <Col span={8}>
+                <Form.Item label="要求上传时间" >
+                  {getFieldDecorator('finishRequiredTime', {
+                    initialValue: (tododetailslist && tododetailslist.requiredUploadTime) ? moment(tododetailslist.requiredUploadTime) : moment(finish.finishRequiredTime)
+                  })(<DatePicker showTime disabled format="YYYY-MM-DD HH:mm:ss" />)}
+                </Form.Item>
+              </Col>
+
+              <Col span={8}>
+                <Form.Item label="实际上传时间">
+                  {getFieldDecorator('finishPracticeTime', {
+                    initialValue: (finish.finishAnalysisAttachments !== undefined && finish.finishAnalysisAttachments !== null && finish.finishAnalysisAttachments !== '[]') ? (moment((JSON.parse(finish.finishAnalysisAttachments))[0].nowtime) || '[]') : ''
+                  })(<DatePicker showTime disabled format="YYYY-MM-DD HH:mm:ss" />)}
+                </Form.Item>
+              </Col>
+
+            </>
+          )
+        }
+
 
         <Col span={24}>
           <Form.Item

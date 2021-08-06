@@ -12,6 +12,7 @@ import {
 import moment from 'moment';
 import { connect } from 'dva';
 import BusinessAudit from './components/BusinessAudit';
+import Register from './components/Register';
 import ProviderConfirmation from './components/ProviderConfirmation';
 import AssessmentConfirmation from './components/AssessmentConfirmation';
 import Achievementsflow from './Achievementsflow';
@@ -48,12 +49,21 @@ const { Panel } = Collapse;
 function TobedealtForm(props) {
   const pagetitle = props.route.name;
   const {
+    location: { query: { taskId } },
+    target1,
+    target2,
+    clauseList,
     userinfo,
+    taskData,
+    loading,
     dispatch,
   } = props;
   const formRef = useRef();
+  const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
   const [tabActiveKey, setTabActiveKey] = useState('workorder')
 
+  const { taskName } = taskData;
+  console.log('taskData: ', taskData);
   const handleSubmit = () => {
     console.log(formRef, 'formRef')
   }
@@ -64,8 +74,46 @@ function TobedealtForm(props) {
     })
   }
 
+  const openFlow = () => {
+    dispatch({
+      type: 'performanceappraisal/getTaskData',
+      payload: taskId
+    })
+  }
+
+  //  根据考核类型查询一级指标
+  const getTarget1 = (type) => {
+    dispatch({
+      type: 'performanceappraisal/scoreGetTarget1',
+      payload: type
+    })
+  }
+  //  根据考核类型查询二级指标
+  const getTarget2 = (id) => {
+    dispatch({
+      type: 'performanceappraisal/scoreGetTarget2',
+      payload: id
+    })
+  }
+
+  //  获取详细条款数据
+  const getclausedetail = (targetId, scoreId) => {
+    dispatch({
+      type: 'qualityassessment/clauseListpage',
+      payload: {
+        targetId,
+        scoreId,
+        pageNum: 1,
+        pageSize: 1000
+      }
+    })
+  }
+
+
+
   useEffect(() => {
-    getUserinfo()
+    getUserinfo();
+    openFlow()
   }, [])
 
   const tabList = [
@@ -87,9 +135,10 @@ function TobedealtForm(props) {
     setTabActiveKey(key)
   }
 
+
   return (
     <PageHeaderWrapper
-      title={pagetitle}
+      title={taskName}
       extra={
         <>
           <Button type='primary' onClick={handleSubmit}>保存</Button>
@@ -102,7 +151,7 @@ function TobedealtForm(props) {
       tabActiveKey={tabActiveKey}
     >
       {
-        tabActiveKey === 'workorder' && (
+        loading === false && tabActiveKey === 'workorder' && (
           <div className={styles.collapse}>
             <Collapse
               expandIconPosition='right'
@@ -110,6 +159,33 @@ function TobedealtForm(props) {
               bordered={false}
             >
               <Panel
+                header='服务绩效考核登记'
+                key='1'
+                style={{ backgroundColor: 'white' }}
+              >
+                {taskName === '服务绩效考核登记' && (
+                  <Register
+                    formItemLayout={formItemLayout}
+                    forminladeLayout={forminladeLayout}
+                    ref={formRef}
+                    userinfo={userinfo}
+                    getTarget1={getTarget1}
+                    getTarget2={getTarget2}
+                    target1={target1}
+                    target2={target2}
+                    getclausedetail={getclausedetail}
+                    clauseList={clauseList}
+                    taskData={taskData}
+                    files={[]}
+                    ChangeFiles={newvalue => {
+                      setFiles(newvalue);
+                    }}
+                    loading={loading}
+                  />
+                )}
+              </Panel>
+
+              {/* <Panel
                 header='业务负责人审核'
                 key='1'
                 style={{ backgroundColor: 'white' }}
@@ -120,9 +196,9 @@ function TobedealtForm(props) {
                   forminladeLayout={forminladeLayout}
                   userinfo={userinfo}
                 />
-              </Panel>
+              </Panel> */}
 
-              <Panel
+              {/* <Panel
                 header='自动化科专责审核'
                 key='1'
                 style={{ backgroundColor: 'white' }}
@@ -132,9 +208,9 @@ function TobedealtForm(props) {
                   forminladeLayout={forminladeLayout}
                   userinfo={userinfo}
                 />
-              </Panel>
+              </Panel> */}
 
-              <Panel
+              {/* <Panel
                 header='服务商确认'
                 key='1'
                 style={{ backgroundColor: 'white' }}
@@ -144,9 +220,9 @@ function TobedealtForm(props) {
                   forminladeLayout={forminladeLayout}
                   userinfo={userinfo}
                 />
-              </Panel>
+              </Panel> */}
 
-              <Panel
+              {/* <Panel
                 header='业务负责人复核'
                 key='1'
                 style={{ backgroundColor: 'white' }}
@@ -157,9 +233,9 @@ function TobedealtForm(props) {
                   forminladeLayout={forminladeLayout}
                   userinfo={userinfo}
                 />
-              </Panel>
+              </Panel> */}
 
-              <Panel
+              {/* <Panel
                 header='服务绩效考核确认'
                 key='1'
                 style={{ backgroundColor: 'white' }}
@@ -169,7 +245,7 @@ function TobedealtForm(props) {
                   forminladeLayout={forminladeLayout}
                   userinfo={userinfo}
                 />
-              </Panel>
+              </Panel> */}
             </Collapse>
 
           </div>
@@ -193,8 +269,13 @@ function TobedealtForm(props) {
 }
 
 export default Form.create({})(
-  connect(({ itsmuser }) => ({
+  connect(({ performanceappraisal, itsmuser, qualityassessment, loading }) => ({
+    taskData: performanceappraisal.taskData,
+    clauseList: qualityassessment.clauseList,
     userinfo: itsmuser.userinfo,
+    target2: performanceappraisal.target2,
+    target1: performanceappraisal.target1,
+    loading: loading.models.performanceappraisal
   }))(TobedealtForm)
 )
 

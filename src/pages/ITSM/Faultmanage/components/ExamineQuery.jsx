@@ -21,7 +21,7 @@ function ExamineQuery(props) {
             </Form.Item>
           </Col>
           <Col span={8}>
-            <Form.Item label="上传故障报告" {...formItemLayout}>
+            <Form.Item label="是否需要提供故障报告" {...formItemLayout}>
               <RadioGroup defaultValue={Number(info.checkReportSign)} disabled>
                 <Radio value={0}>是</Radio>
                 <Radio value={1}>否</Radio>

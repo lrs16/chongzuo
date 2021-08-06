@@ -5,6 +5,7 @@ import {
   Radio,
   Row,
   Col,
+  DatePicker
 } from 'antd';
 import SysUpload from '@/components/SysUpload';
 const { TextArea } = Input;
@@ -42,14 +43,14 @@ const ProviderConfirmation = React.forwardRef((props, ref) => {
         <Col span={8}>
           <Form.Item label='是否申诉'>
             {
-              getFieldDecorator('ff', {
+              getFieldDecorator('isAppeal', {
                 rules: [
                   {
                     required,
                     message: '请选择是否申诉'
                   }
                 ],
-                initialValue:providerConfirmation.appealOrnot
+                initialValue:providerConfirmation.isAppeal
               })
                 (
                   <Radio.Group onChange={handleChange}>
@@ -72,13 +73,14 @@ const ProviderConfirmation = React.forwardRef((props, ref) => {
             <Col span={24}>
             <Form.Item label='申诉内容' {...forminladeLayout}>
               {
-                getFieldDecorator('ff', {
+                getFieldDecorator('appealContent', {
                   rules: [
                     {
                       required,
                       message: '请选择是否申诉'
                     }
-                  ]
+                  ],
+                  initialValue:providerConfirmation.appealContent
                 })
                 (<TextArea 
                     autoSize={{ minRows: 3 }}
@@ -96,7 +98,8 @@ const ProviderConfirmation = React.forwardRef((props, ref) => {
             <Col span={24}>
             <Form.Item label='申诉内容' {...forminladeLayout}>
               {
-                getFieldDecorator('ff', {
+                getFieldDecorator('appealContent', {
+                  initialValue:providerConfirmation.appealContent
                 })
                 (<TextArea 
                     autoSize={{ minRows: 3 }}
@@ -108,18 +111,18 @@ const ProviderConfirmation = React.forwardRef((props, ref) => {
           </Col>
           )
         }
-       
 
         <Col span={24}>
           <Form.Item label='上传附件'  {...forminladeLayout}>
             {
-              getFieldDecorator('ff', {
+              getFieldDecorator('annex', {
                 rules: [
                   {
                     required,
-                    message: '请选择是否申诉'
+                    message: '请上传附件'
                   }
-                ]
+                ],
+                initialValue: providerConfirmation.annex
               })
               (
                 <div>
@@ -136,11 +139,11 @@ const ProviderConfirmation = React.forwardRef((props, ref) => {
         <Col span={8}>
           <Form.Item label='确认人'>
             {
-              getFieldDecorator('userName', {
+              getFieldDecorator('confirmer', {
                 rules: [
                   {
                     required,
-                    message: '请选择是否申诉'
+                    message: '请输入确认人'
                   }
                 ],
                 initialValue:userinfo.userName
@@ -153,15 +156,16 @@ const ProviderConfirmation = React.forwardRef((props, ref) => {
         <Col span={8}>
           <Form.Item label='确认时间'>
             {
-              getFieldDecorator('ff', {
+              getFieldDecorator('confirmTime', {
                 rules: [
                   {
                     required,
-                    message: '请选择是否申诉'
+                    message: '请选择确认时间'
                   }
-                ]
+                ],
+                intialValue:providerConfirmation.confirmTime
               })
-              (<Input />)
+              (<DatePicker />)
             }
 
           </Form.Item>
@@ -173,7 +177,11 @@ const ProviderConfirmation = React.forwardRef((props, ref) => {
 
 ProviderConfirmation.defaultProps = {
   providerConfirmation:{
-    appealOrnot:'0'
+    isAppeal:'0',
+    appealContent:'',
+    annex:[],
+    confirmer:'',
+    confirmTime:'',
   }
 }
 

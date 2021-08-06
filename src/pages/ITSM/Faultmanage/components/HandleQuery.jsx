@@ -27,7 +27,7 @@ const forminladeLayout = {
 };
 
 function HandleQuery(props) {
-  const { info } = props;
+  const { info, showFilelist } = props;
 
   return (
     <>
@@ -63,11 +63,14 @@ function HandleQuery(props) {
               <Input defaultValue={info.handleResult || ''} disabled />
             </Form.Item>
           </Col>
+
           <Col span={24}>
             <Form.Item label="故障处理记录表" {...forminladeLayout}>
               {info.handleRecordAttachments && <Downloadfile files={info.handleRecordAttachments} />}
             </Form.Item>
           </Col>
+
+
           <Col span={24}>
             <Form.Item label="故障系统截图" {...forminladeLayout}>
               {info.handlePictureAttachments && <Downloadfile files={info.handlePictureAttachments} />}

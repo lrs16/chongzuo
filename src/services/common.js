@@ -87,3 +87,8 @@ export async function queryOrder(params) {
     requestType: 'form',
   });
 }
+
+//  获取系统用户信息
+export async function operationPerson() {
+  return request(`/upms/user`);
+}

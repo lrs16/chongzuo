@@ -430,6 +430,7 @@ function Todolistdetails(props) {
     // 系统运维商确认总结
     // eslint-disable-next-line consistent-return
     SummaryRef.current.validateFields((err, values) => {
+      console.log('values: ', values);
       if (cirStatus ? !err : true) {
         const formValues = values;
         formValues.taskId = id;
@@ -445,11 +446,11 @@ function Todolistdetails(props) {
         }
 
         formValues.finishTime = values.finishTime.format('YYYY-MM-DD HH:mm:ss');
-        formValues.finishRequiredTime = values.finishRequiredTime.format('YYYY-MM-DD HH:mm:ss'); // 要求上传时间
+        formValues.finishRequiredTime = values.finishRequiredTime ? values.finishRequiredTime.format('YYYY-MM-DD HH:mm:ss'):''; // 要求上传时间
         if (files.arr.length !== 0) {
           formValues.finishPracticeTime = files.arr[0].nowtime;
         } else if (values.finishPracticeTime !== '') {
-          formValues.finishPracticeTime = values.finishPracticeTime.format('YYYY-MM-DD HH:mm:ss');
+          formValues.finishPracticeTime = values.finishPracticeTime ? values.finishPracticeTime.format('YYYY-MM-DD HH:mm:ss'):'';
         } else {
           formValues.finishPracticeTime = '';
         }
@@ -1091,6 +1092,8 @@ function Todolistdetails(props) {
                         ChangeFiles={newvalue => {
                           setFiles(newvalue);
                         }}
+                        showFilelist={troubleFlowNodeRows[1]}
+                        showFilelist2={troubleFlowNodeRows[2]}
                         ChangeFileskey={newvalue => setFileskey(newvalue)}
                       />
                     </Panel>
@@ -1141,7 +1144,7 @@ function Todolistdetails(props) {
                       ['故障登记', <RegisterQuery info={obj} maindata={main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
                       ['系统运维商审核', <ExamineQuery info={obj} maindata={main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
                       ['系统运维商处理', <HandleQuery info={obj} maindata={main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
-                      ['系统运维商确认总结', <SummaryQuery info={obj} maindata={main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
+                      ['系统运维商确认总结', <SummaryQuery info={obj} maindata={main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} showFilelist={troubleFlowNodeRows[1]} showFilelist2={troubleFlowNodeRows[2]}/>],
                       ['自动化科业务负责人审核', <ExamineSecondQuery info={obj} maindata={main} formItemLayout={formItemLayout} forminladeLayout={forminladeLayout} />],
                       ['自动化科专责确认', <ConfirmQuery info={obj} maindata={main} />],
                     ]);
