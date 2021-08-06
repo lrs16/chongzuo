@@ -155,9 +155,7 @@ function New(props) {
   );
 }
 
-export default connect(({ releasetodo, viewcache, loading }) => ({
+export default connect(({ viewcache }) => ({
   tabnew: viewcache.tabnew,
   tabdata: viewcache.tabdata,
-  list: releasetodo.list,
-  loading: loading.models.releasetodo,
 }))(New);

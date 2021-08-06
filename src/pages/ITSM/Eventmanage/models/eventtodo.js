@@ -102,7 +102,7 @@ export default {
       }
     },
     // 编辑流转,流转成功转回待办列表,转单，
-    *eventflow({ payload: { flow, paloadvalues } }, { call }) {
+    *eventflow({ payload: { flow, paloadvalues } }, { call, put }) {
       const values = replacerec({ ...paloadvalues });
       const registres = yield call(EventSaveFlow, values);
       if (registres.code === 200) {
@@ -113,14 +113,6 @@ export default {
         const response = yield call(EventFlow, flowpayload);
         if (response.code === 200) {
           message.success(response.msg, 3);
-          // router.push({
-          //   pathname: `/ITSM/eventmanage/to-do/record/workorder`,
-          //   query: {
-          //     mainId: response.flowInstanceId,
-          //     taskId: response.flowNodeInstanceId,
-          //     closetab: true,
-          //   }
-          // });
           router.push({
             pathname: `/ITSM/eventmanage/to-do`,
             query: { pathpush: true },
@@ -128,6 +120,11 @@ export default {
           });
         } else {
           message.error(response.msg, 3);
+          const ressave = yield call(EventopenFlow, registres.taskId);
+          yield put({
+            type: 'saveinfo',
+            payload: ressave,
+          });
         }
       }
     },

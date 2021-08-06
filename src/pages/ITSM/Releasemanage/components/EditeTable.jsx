@@ -460,7 +460,7 @@ function EditeTable(props) {
         }
         return (
           <>
-            {(taskName === '新建' || taskName === '出厂测试' || taskName === '平台验证') && userid === record.operatorId && !newbutton && (<Button type='link' onClick={e => editRow(e, record.key)}>编辑</Button>)}
+            {(taskName === '新建' || taskName === '出厂测试' || taskName === '平台验证' || taskName === '业务验证') && userid === record.operatorId && !newbutton && (<Button type='link' onClick={e => editRow(e, record.key)}>编辑</Button>)}
             {taskName === '版本管理员审批' && record.listType === '临时' && (<Button type='link' onClick={e => editRow(e, record.key)}>编辑</Button>)}
             {taskName === '版本管理员审批' && record.listType === '计划' && (<Button type='link' >回退</Button>)}
           </>
@@ -469,6 +469,14 @@ function EditeTable(props) {
       },
     },
   ];
+
+  const verifyStatus = {
+    title: '状态',
+    dataIndex: 'verifyStatus',
+    key: 'verifyStatus',
+    width: 100,
+    align: 'center',
+  };
 
   const orderid = {
     title: '所属工单',
@@ -484,6 +492,9 @@ function EditeTable(props) {
 
   const addorderid = (arr) => {
     const newarr = arr.slice(0);
+    if (taskName === '业务验证') {
+      newarr.splice(-1, 0, verifyStatus);
+    };
     if (taskName === '版本管理员审批') {
       newarr.splice(-1, 0, orderid);
     };

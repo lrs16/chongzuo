@@ -298,12 +298,13 @@ const Handle = React.forwardRef((props, ref) => {
           </Col>
           <Col span={24} style={{}}>
             <Form.Item
-              label="上传附件"
+              label='上传附件'
               {...forminladeLayout}
             // extra="只能上传jpg/png/doc/xls格式文件，单个文件不能超过500kb"
             >
               <div style={{ width: 400 }}>
                 <SysUpload fileslist={files} ChangeFileslist={newvalue => setFilesList(newvalue)} />
+                <span style={{ color: '#ff0000' }}> 转回访请上传附件 </span>
               </div>
             </Form.Item>
           </Col>

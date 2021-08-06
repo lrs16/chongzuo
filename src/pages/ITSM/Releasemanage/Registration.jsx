@@ -241,5 +241,5 @@ export default connect(({ itsmuser, viewcache, loading }) => ({
   tabnew: viewcache.tabnew,
   tabdata: viewcache.tabdata,
   userinfo: itsmuser.userinfo,
-  loading: loading.models.releasetodo,
+  loading: loading.effects['releasetodo/releaseflow'],
 }))(Registration);
