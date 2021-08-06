@@ -153,7 +153,7 @@ function Operation(props) {
       });
       settabActivekey('workorder');
     }
-  }, [location.query])
+  }, [mainId])
 
   // 点击页签右键刷新
   useEffect(() => {

@@ -40,7 +40,6 @@ const Content = forwardRef((props, ref) => {
     resetVal: () => resetFields(),
     Forms: props.form.validateFieldsAndScroll,
   }), []);
-  console.log(formrecord)
 
   const handleFormValidator = (rule, value, callback) => {
     if (value === '' || value === '<p></p>') {
@@ -131,7 +130,7 @@ const Content = forwardRef((props, ref) => {
                     <SysUpload />
                   </div>
                 )}
-                {formrecord.fileIds !== '' && <Downloadfile files={formrecord.fileIds} />}
+                {formrecord.fileIds !== '' && Noediting && <Downloadfile files={formrecord.fileIds} />}
               </Col>
             </Row>
           </Col>

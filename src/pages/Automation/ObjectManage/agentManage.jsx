@@ -4,6 +4,7 @@ import moment from 'moment';
 import { Table, Card, Divider, Button, Message, Popconfirm, Form, Input, Select, Row, Col, DatePicker } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
+import DictLower from '@/components/SysDict/DictLower';
 import AgentDrawer from './components/AgentDrawer';
 
 const { Option } = Select;
@@ -26,6 +27,7 @@ function TestEnvironmentManage(props) {
     form: { getFieldDecorator, validateFields, getFieldsValue, resetFields },
   } = props;
   const [expand, setExpand] = useState(false);
+  const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
   const [visible, setVisible] = useState(false); // 抽屉是否显示
   const [title, setTitle] = useState('');
   const [savetype, setSaveType] = useState(''); // 保存类型  save:新建  update:编辑
@@ -216,10 +218,26 @@ function TestEnvironmentManage(props) {
     </Button></>
   )
 
-  const typemap = []
+  const typemap = [];
+  const statusmap = [];
+  // 数据字典取下拉值
+  const getTypebyId = key => {
+    if (selectdata.ischange) {
+      return selectdata.arr.filter(item => item.key === key)[0].children;
+    }
+    return [];
+  };
+  // const typemap = getTypebyId('100000000000001002');         // 类型
+  // const statusmap = getTypebyId('100000000000001003');       // 状态
+  // const zonemap = getTypebyId('100000000000001004');         // 区域
 
   return (
     <PageHeaderWrapper title={pagetitle}>
+      <DictLower
+        typeid="100000000000001001"
+        ChangeSelectdata={newvalue => setSelectData(newvalue)}
+        style={{ display: 'none' }}
+      />
       <Card>
         <Row gutter={8}>
           <Form {...formItemLayout} onSubmit={handleSearch}>
@@ -264,7 +282,7 @@ function TestEnvironmentManage(props) {
                   initialValue: '',
                 })(
                   <Select placeholder="请选择" allowClear>
-                    {typemap.map(obj => (
+                    {statusmap.map(obj => (
                       <Option key={obj.key} value={obj.title}>
                         {obj.title}
                       </Option>
@@ -304,14 +322,7 @@ function TestEnvironmentManage(props) {
               <Form.Item label="agent备注" style={{ display: expand ? 'block' : 'none' }}>
                 {getFieldDecorator('agentRemarks', {
                   initialValue: '',
-                })(
-                  <Select placeholder="请选择" allowClear>
-                    {typemap.map(obj => (
-                      <Option key={obj.key} value={obj.title}>
-                        {obj.title}
-                      </Option>
-                    ))}
-                  </Select>)}
+                })(<Input placeholder="请输入" allowClear />)}
               </Form.Item>
             </Col>
             <Col span={8}>

@@ -10,6 +10,7 @@ function SysUpload(props) {
   const [filetype, setFileType] = useState('');
   const { files, ChangeFiles } = useContext(UploadContext);
 
+
   // 不允许上传类型
   useEffect(() => {
     getFileSecuritySuffix().then(res => {
@@ -49,6 +50,7 @@ function SysUpload(props) {
     },
     showUploadList: { showDownloadIcon: true },
     defaultFileList: filelist || files,
+    // fileList: filelist || files,
     multiple: true,
 
     beforeUpload(file) {

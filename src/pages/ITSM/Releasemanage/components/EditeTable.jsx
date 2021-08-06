@@ -28,7 +28,7 @@ function EditeTable(props) {
     const newData = data.map(item => ({ ...item }));
     newData.push({
       key: data.length + 1,
-      listType: taskName !== '版本管理员审批' ? '计划' : '临时',
+      listType: (taskName === '新建' || taskName === '出厂测试') ? '计划' : '临时添加',
       abilityType: '',
       module: '',
       appName: '',
@@ -445,6 +445,7 @@ function EditeTable(props) {
       width: 60,
       align: 'center',
       render: (text, record) => {
+        const userid = sessionStorage.getItem('userauthorityid');
         if (record.isNew) {
           return (
             <>
@@ -459,7 +460,7 @@ function EditeTable(props) {
         }
         return (
           <>
-            {(taskName === '新建' || taskName === '出厂测试' || taskName === '平台验证') && record.listType === '计划' && !newbutton && (<Button type='link' onClick={e => editRow(e, record.key)}>编辑</Button>)}
+            {(taskName === '新建' || taskName === '出厂测试' || taskName === '平台验证') && userid === record.operatorId && !newbutton && (<Button type='link' onClick={e => editRow(e, record.key)}>编辑</Button>)}
             {taskName === '版本管理员审批' && record.listType === '临时' && (<Button type='link' onClick={e => editRow(e, record.key)}>编辑</Button>)}
             {taskName === '版本管理员审批' && record.listType === '计划' && (<Button type='link' >回退</Button>)}
           </>
@@ -471,8 +472,8 @@ function EditeTable(props) {
 
   const orderid = {
     title: '所属工单',
-    dataIndex: 't9',
-    key: 't9',
+    dataIndex: 'procInstId',
+    key: 'procInstId',
     fixed: 'right',
     width: 100,
     align: 'center',

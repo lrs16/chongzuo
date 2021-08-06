@@ -45,10 +45,7 @@ export default {
         }
         const saveres = yield call(savekowledge, value);
         if (saveres.code === 200) {
-          router.push({
-            pathname: `/ITSM/knowledgemanage/myknowledge/new`,
-            query: { tabid, closecurrent: true }
-          })
+
           if (buttype === 'save') {
             router.push({
               pathname: `/ITSM/knowledgemanage/${menuDes ? 'maintain' : 'myknowledge'}/operation`,
@@ -65,6 +62,10 @@ export default {
                 status: '已登记',
               },
             });
+            router.push({
+              pathname: `/ITSM/knowledgemanage/myknowledge/new`,
+              query: { tabid, closecurrent: true }
+            })
           };
           if (buttype === 'submit') {
             const mainIds = [saveres.mainId];
@@ -76,6 +77,10 @@ export default {
                 query: { pathpush: true },
                 state: { cach: false, }
               });
+              router.push({
+                pathname: `/ITSM/knowledgemanage/myknowledge/new`,
+                query: { tabid, closecurrent: true }
+              })
             } else {
               message.error(subres.msg)
             }
@@ -85,6 +90,10 @@ export default {
             const releaseres = yield call(releasekowledge, { mainIds, userId });
             if (releaseres.code === 200) {
               message.success('发布成功');
+              router.push({
+                pathname: `/ITSM/knowledgemanage/myknowledge/new`,
+                query: { tabid, closecurrent: true }
+              })
               router.push({
                 runpath: `/ITSM/knowledgemanage/maintain`,
                 query: { pathpush: true },
