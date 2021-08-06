@@ -126,6 +126,8 @@ export default {
             query: { pathpush: true },
             state: { cach: false, closetabid: response.flowInstanceId }
           });
+        } else {
+          message.error(response.msg, 3);
         }
       }
     },

@@ -25,7 +25,12 @@ function DocumentAtt(props) {
     if (target) {
       target[fieldName] = e;
       setData(newData);
-      ChangeValue(newData)
+      if (fieldName === 'attachFile') {
+        ChangeValue(newData, 'files')
+      } else {
+        ChangeValue(newData, '')
+      }
+
     }
   };
 

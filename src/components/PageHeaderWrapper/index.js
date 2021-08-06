@@ -4,9 +4,10 @@ import Link from 'umi/link';
 import { PageHeader, Tabs, Typography } from 'antd';
 import { connect } from 'dva';
 import classNames from 'classnames';
+import MenuContext from '@/layouts/MenuContext';
 import GridContent from './GridContent';
 import styles from './index.less';
-import MenuContext from '@/layouts/MenuContext';
+
 import { conversionBreadcrumbList } from './breadcrumb';
 
 const { Title } = Typography;

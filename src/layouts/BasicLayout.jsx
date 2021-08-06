@@ -8,7 +8,7 @@ import React, { useEffect, useState } from 'react';
 import Link from 'umi/link';
 import router from 'umi/router';
 import { connect } from 'dva';
-import { Result, Button, Tabs, List, Icon, Divider } from 'antd';
+import { Result, Button, Tabs, List, Icon } from 'antd';
 import { formatMessage } from 'umi-plugin-react/locale';
 import Authorized from '@/utils/Authorized';
 import RightContent from '@/components/GlobalHeader/RightContent';
@@ -608,8 +608,9 @@ const BasicLayout = props => {
           route={leftRoute}
         // footerRender={footerRender}
         >
-
+          <Button href="#toTop" size="large" type="danger" icon="arrow-up" style={{ zIndex: 9999, position: 'fixed', right: 20, bottom: 0 }} />
           <div
+            id='toTop'
             onMouseDown={(e) => {
               e.preventDefault();
               if (e.button === 0) {

@@ -55,7 +55,7 @@ function Registrat(props, ref) {
   const [alertmessage, setAlertMessage] = useState('');
   const [check, setCheck] = useState(false);
   const [adopt, setAdopt] = useState('通过');
-  const { ChangeSubmitType } = useContext(SubmitTypeContext);
+  const { ChangeSubmitType, ChangeButtype } = useContext(SubmitTypeContext);
 
   const formmap = new Map([
     ['新建', info.releaseRegister],
@@ -88,13 +88,16 @@ function Registrat(props, ref) {
     }
   }
 
-  const changeatt = (v) => {
+  const changeatt = (v, files) => {
     setFieldsValue({ releaseAttaches: v });
     const key = statumap.get(taskName);
     const target = v.filter(item => item.key === key)[0];
     if (target && target.attachFile !== '[]') {
       setCheck(false);
-    }
+    };
+    if (files === 'files') {
+      ChangeButtype('save')
+    };
   }
 
   const handleAdopt = e => {
@@ -106,7 +109,6 @@ function Registrat(props, ref) {
       ChangeSubmitType(0)
     }
   };
-
 
   useEffect(() => {
     if (info && info.platformValid && info.platformValid.validResult) {
@@ -341,7 +343,7 @@ function Registrat(props, ref) {
               unitmap={unitmap}
               dataSource={info && info.releaseAttaches ? info.releaseAttaches : []}
               Unit={getFieldsValue(['dutyUnit'])}
-              ChangeValue={v => changeatt(v)}
+              ChangeValue={(v, files) => changeatt(v, files)}
               check={check}
             />
             <Form.Item wrapperCol={{ span: 24 }} style={{ display: 'none' }}>

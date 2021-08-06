@@ -58,14 +58,19 @@ function New(props) {
   };
 
   const ChangeFiles = (v) => {
-    const values = ContentRef.current.getVal();
-    dispatch({
-      type: 'knowledg/add',
-      payload: {
-        payvalue: { ...values, fileIds: v.length ? JSON.stringify(v) : null },
-        buttype: 'save',
-      },
-    });
+    ContentRef.current.Forms((err, values) => {
+      if (err) {
+        message.error('请将信息填写完整')
+      } else {
+        dispatch({
+          type: 'knowledg/add',
+          payload: {
+            payvalue: { ...values, fileIds: v.length ? JSON.stringify(v) : null },
+            buttype: 'save',
+          },
+        });
+      }
+    })
   }
 
   // 重置表单信息

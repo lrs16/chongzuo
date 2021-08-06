@@ -91,14 +91,14 @@ export default {
             if (releaseres.code === 200) {
               message.success('发布成功');
               router.push({
-                pathname: `/ITSM/knowledgemanage/myknowledge/new`,
-                query: { tabid, closecurrent: true }
-              })
-              router.push({
                 runpath: `/ITSM/knowledgemanage/maintain`,
                 query: { pathpush: true },
                 state: { cach: false, }
               });
+              router.push({
+                pathname: `/ITSM/knowledgemanage/myknowledge/new`,
+                query: { tabid, closecurrent: true }
+              })
             } else {
               message.error(releaseres.msg)
             };

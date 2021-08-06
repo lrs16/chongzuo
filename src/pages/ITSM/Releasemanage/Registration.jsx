@@ -32,7 +32,6 @@ function Registration(props) {
   const [userchoice, setUserChoice] = useState(false);          // 已经选择人员   
   const [taskId, setTaskId] = useState('');
   const [indexvalue, setIndexValue] = useState({ releaseMain: {}, releaseRegister: {}, releaseEnvs: [], releaseLists: [], releaseAttaches: Attaches });
-
   // 初始化用户信息，流程类型
   useEffect(() => {
     dispatch({
@@ -166,6 +165,15 @@ function Registration(props) {
   }, [tabnew]);
 
   useEffect(() => {
+    if (location.state) {
+      // 点击菜单刷新,并获取数据
+      if (location.state.reset) {
+        RegistratRef.current.resetVal();
+      };
+    }
+  }, [location.state]);
+
+  useEffect(() => {
     // 获取页签信息
     if (location.state) {
       if (location.state.cache) {
@@ -204,7 +212,7 @@ function Registration(props) {
         />
         <Card>
           <SubmitTypeContext.Provider value={{
-            ChangeButtype: (() => { })
+            ChangeButtype: (() => { }),
           }}>
             <Registrat
               wrappedComponentRef={RegistratRef}

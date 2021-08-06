@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
 import { Button, Spin } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
@@ -76,6 +76,15 @@ function ToDodetails(props) {
       <Button >返回</Button>
     </>
   )
+
+  useEffect(() => {
+    if (location.state) {
+      // 点击菜单刷新,并获取数据
+      if (location.state.reset) {
+        settabActivekey('workorder');
+      };
+    }
+  }, [location.state]);
 
   return (
     <Spin tip="正在加载数据..." spinning={!!loading || !!loadingopen}>
