@@ -70,3 +70,12 @@ export async function openFlow(releaseNo) {
     method: 'GET',
   });
 }
+
+// 删除发布清单/release/from/releaseListDel
+export async function releaseListDel(params) {
+  return request(`release/from/releaseListDel`, {
+    method: 'POST',
+    data: JSON.stringify(params),
+    requestType: 'formjosn',
+  });
+}

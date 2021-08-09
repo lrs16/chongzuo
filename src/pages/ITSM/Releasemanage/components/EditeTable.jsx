@@ -17,11 +17,12 @@ function EditeTable(props) {
   const [data, setData] = useState([]);
   const [newbutton, setNewButton] = useState(false);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+  const [selectedRecords, setSelectedRecords] = useState([]);
   const [drawervisible, setDrawerVisible] = useState(false);        // 工单详情窗口是否显示
   const [choiceUser, setChoiceUser] = useState({ users: '', ischange: false });
   const [uservisible, setUserVisible] = useState(false); // 是否显示选人组件
   const [userlist, setUserList] = useState([]);
-  const { ChangeButtype } = useContext(UserContext);
+  const { ChangeButtype, taskId, ChangeaddAttaches } = useContext(UserContext);
 
   // 新增一条记录
   const newMember = () => {
@@ -41,6 +42,7 @@ function EditeTable(props) {
       passTest: '通过',
       developer: '',
       developerId: '',
+      addStatus: taskId,
       operator: sessionStorage.getItem('userName'),
       operatorId: sessionStorage.getItem('userauthorityid'),
       editable: false,
@@ -50,8 +52,9 @@ function EditeTable(props) {
     setNewButton(true);
   };
 
-  const onSelectChange = RowKeys => {
-    setSelectedRowKeys(RowKeys)
+  const onSelectChange = (RowKeys, record) => {
+    setSelectedRowKeys(RowKeys);
+    setSelectedRecords(record);
   };
 
   const rowSelection = {
@@ -111,8 +114,12 @@ function EditeTable(props) {
 
   // 保存记录
   const saveRow = (e, key) => {
-    setNewButton(false)
     e.preventDefault();
+    const newlist = data.filter(item => item.addStatus === taskId);
+    if (newlist.length > 0) {
+      ChangeaddAttaches('add');
+    }
+    setNewButton(false)
     const newData = data.map(item => ({ ...item }));
     const target = getRowByKey(key, newData) || {};
     if (!target.module || !target.abilityType || !target.module || !target.appName || !target.problemType || !target.testMenu || !target.testResult || !target.testStep || !target.developer || !target.responsible || !target.responsibleId) {
@@ -120,8 +127,9 @@ function EditeTable(props) {
       e.target.focus();
       return;
     }
-    if (target && target.editable) {
+    if (target && (target.editable || target.verification)) {
       target.editable = !target.editable;
+      target.verification = false;
       setData(newData);
       ChangeValue(newData);
       if (taskName !== '新建') {
@@ -139,8 +147,8 @@ function EditeTable(props) {
     }
   };
 
-  // 取消按钮
-  const cancel = (e, key) => {
+  // 新建取消按钮
+  const newcancel = (e, key) => {
     e.preventDefault();
     const newData = data.map(item => ({ ...item }));
     const target = getRowByKey(key, newData);
@@ -148,9 +156,38 @@ function EditeTable(props) {
     setData(newArr);
     setNewButton(false);
   };
+  // 编辑、验证取消
+  const cancel = (e, key) => {
+    e.preventDefault();
+    const newData = data.map(item => ({ ...item }));
+    const target = getRowByKey(key, newData);
+    if (target) {
+      target.verification = false;
+      target.editable = false;
+      target.options = sessionStorage.getItem('userName');
+      target.optionsId = sessionStorage.getItem('userauthorityid');
+      setData(newData);
+      setNewButton(false);
+    };
+  };
 
-  // 移除按钮
+  // 验证按钮
+  const verificationRow = (e, key) => {
+    setNewButton(true)
+    e.preventDefault();
+    const newData = data.map(item => ({ ...item }));
+    const target = getRowByKey(key, newData);
+    if (target) {
+      target.verification = true;
+      target.options = sessionStorage.getItem('userName');
+      target.optionsId = sessionStorage.getItem('userauthorityid');
+      setData(newData);
+    }
+  }
+
+  // 移除按钮,新建的时候
   const handleDelete = () => {
+    setNewButton(false);
     const arr = []
     data.forEach(item => {
       if (!selectedRowKeys.includes(item.key)) {
@@ -163,6 +200,29 @@ function EditeTable(props) {
     if (taskName !== '新建' && !newbutton) {
       ChangeButtype('save');
     }
+  };
+  // 有流程ID后的移除按钮
+  const ortherDelete = () => {
+    if (selectedRecords.length === 0) {
+      message.error('您还没有选择数据')
+    };
+    const newSelectds = selectedRecords.filter(item => item.taskId === item.addStatus);
+    if (newSelectds.length === 0) {
+      message.error('不能移除非节点临时添加的数据')
+    } else {
+      const newArr = data.filter((x) => !selectedRecords.some((item) => item.taskId === item.addStatus && x.id === item.id));
+      setData(newArr);
+      // 清单中是否还包含本节点添加的数据，如果已不含，附件列表清除补充的文档行
+      const deleteAtt = newArr.filter(item => item.taskId === item.addStatus);
+      if (deleteAtt.length === 0) {
+        ChangeaddAttaches('delete');
+      }
+      ChangeValue(newArr);
+      ChangeButtype('save');
+    }
+    setSelectedRowKeys([]);
+    setSelectedRecords([]);
+    setNewButton(false);
   }
 
   const hadleAssignment = () => {
@@ -364,53 +424,6 @@ function EditeTable(props) {
       }
     },
     {
-      title: '是否通过',
-      dataIndex: 'passTest',
-      key: 'passTest',
-      width: 80,
-      align: 'center',
-      render: (text, record) => {
-        if (record.isNew || record.editable) {
-          return (
-            <>
-              <RadioGroup value={text} onChange={e => handleFieldChange(e.target.value, 'passTest', record.key)}>
-                <Radio value='通过'>通过</Radio>
-                <Radio value='不通过'>不通过</Radio>
-              </RadioGroup>
-            </>
-          )
-        }
-        return text;
-      }
-    },
-    {
-      title: '业务负责人',
-      dataIndex: 'responsible',
-      key: 'responsible',
-      width: 100,
-      render: (text, record) => {
-        if (record.isNew || record.editable) {
-          return (
-            <div className={text === '' ? styles.requiredselect : ''} onMouseDown={() => getUserList()}>
-              <Select
-                defaultValue={{ key: record.responsibleId }}
-                placeholder="请选择"
-                labelInValue
-                onChange={e => handleResponsible(e, record.key)}
-              >
-                {userlist.map(obj => [
-                  <Option key={obj.userId} value={obj.userId}>
-                    {obj.userName}
-                  </Option>,
-                ])}
-              </Select>
-            </div>
-          )
-        }
-        return text;
-      }
-    },
-    {
       title: '开发人员',
       dataIndex: 'developer',
       key: 'developer',
@@ -439,6 +452,54 @@ function EditeTable(props) {
       width: 100,
     },
     {
+      title: '是否通过',
+      dataIndex: 'passTest',
+      key: 'passTest',
+      fixed: 'right',
+      width: 80,
+      render: (text, record) => {
+        if (record.isNew || record.editable || record.verification) {
+          return (
+            <>
+              <RadioGroup value={text || '通过'} onChange={e => handleFieldChange(e.target.value, 'passTest', record.key)}>
+                <Radio value='通过'>通过</Radio>
+                <Radio value='不通过'>不通过</Radio>
+              </RadioGroup>
+            </>
+          )
+        }
+        return text;
+      }
+    },
+    {
+      title: '业务负责人',
+      dataIndex: 'responsible',
+      key: 'responsible',
+      fixed: 'right',
+      width: 100,
+      render: (text, record) => {
+        if (record.isNew || record.editable || record.verification) {
+          return (
+            <div className={text === '' ? styles.requiredselect : ''} onMouseDown={() => getUserList()}>
+              <Select
+                defaultValue={{ key: record.responsibleId }}
+                placeholder="请选择"
+                labelInValue
+                onChange={e => handleResponsible(e, record.key)}
+              >
+                {userlist.map(obj => [
+                  <Option key={obj.userId} value={obj.userId}>
+                    {obj.userName}
+                  </Option>,
+                ])}
+              </Select>
+            </div>
+          )
+        }
+        return text;
+      }
+    },
+    {
       title: '操作',
       key: 'action',
       fixed: 'right',
@@ -449,18 +510,23 @@ function EditeTable(props) {
         if (record.isNew) {
           return (
             <>
-              <Button type='link' onMouseDown={() => ChangeButtype('')} onClick={e => saveRow(e, record.key)}>{taskName === '新建' ? '暂存' : '保存'}</Button>
-              <Button type='link' onClick={e => cancel(e, record.key)}>取消</Button>
+              {taskName !== '业务验证' && (<Button type='link' onMouseDown={() => ChangeButtype('')} onClick={e => saveRow(e, record.key)}>{taskName === '新建' ? '暂存' : '保存'}</Button>)}
+              {taskName === '业务验证' && (<Button type='link' onMouseDown={() => ChangeButtype('')} onClick={e => saveRow(e, record.key)}>保存</Button>)}
+              <Button type='link' onClick={e => newcancel(e, record.key)}>取消</Button>
             </>
           );
-        } if (record.editable) {
+        } if (record.editable || record.verification) {
           return (
-            <Button type='link' onMouseDown={() => ChangeButtype('')} onClick={e => saveRow(e, record.key)}>保存</Button>
+            <>
+              <Button type='link' onMouseDown={() => ChangeButtype('')} onClick={e => saveRow(e, record.key)}>保存</Button>
+              <Button type='link' onClick={e => cancel(e, record.key)}>取消</Button>
+            </>
           );
         }
         return (
           <>
             {(taskName === '新建' || taskName === '出厂测试' || taskName === '平台验证' || taskName === '业务验证') && userid === record.operatorId && !newbutton && (<Button type='link' onClick={e => editRow(e, record.key)}>编辑</Button>)}
+            {taskName === '平台验证' && userid !== record.operatorId && !newbutton && (<Button type='link' onClick={e => verificationRow(e, record.key)}>验证</Button>)}
             {taskName === '版本管理员审批' && record.listType === '临时' && (<Button type='link' onClick={e => editRow(e, record.key)}>编辑</Button>)}
             {taskName === '版本管理员审批' && record.listType === '计划' && (<Button type='link' >回退</Button>)}
           </>
@@ -546,22 +612,30 @@ function EditeTable(props) {
                   onClick={() => hadleAssignment()}
                   disabled={newbutton}
                 >
-                  分派
-                </Button>
-              )}
-              {taskName === '业务验证' && (
-                <Button
-                  type='primary'
-                  style={{ marginRight: 8 }}
-                  onMouseDown={() => getUserList()}
-                  onClick={() => hadleAssignment()}
-                  disabled={newbutton}
-                >
                   重分派
                 </Button>
               )}
               <Button type='primary' style={{ marginRight: 8 }} onClick={() => newMember()} disabled={newbutton} >新增</Button>
-              <Button type='danger' style={{ marginRight: 8 }} ghost onMouseDown={() => ChangeButtype('')} onClick={() => handleDelete()}>移除</Button>
+              {taskName === '新建' && (
+                <Button
+                  type='danger'
+                  style={{ marginRight: 8 }}
+                  ghost
+                  onMouseDown={() => ChangeButtype('')} onClick={() => handleDelete()}
+                >
+                  移除
+                </Button>
+              )}
+              {taskName !== '新建' && (
+                <Button
+                  type='danger'
+                  style={{ marginRight: 8 }}
+                  ghost
+                  onMouseDown={() => ChangeButtype('')} onClick={() => ortherDelete()}
+                >
+                  移除
+                </Button>
+              )}
             </>
           )}
           <Button type='primary' >导出清单</Button>

@@ -213,6 +213,9 @@ function Registration(props) {
         <Card>
           <SubmitTypeContext.Provider value={{
             ChangeButtype: (() => { }),
+            taskId: '',
+            addAttaches: false,
+            ChangeaddAttaches: (() => { })
           }}>
             <Registrat
               wrappedComponentRef={RegistratRef}

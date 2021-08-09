@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { connect } from 'dva';
 import { Table, Button, Icon, Input, Select } from 'antd';
 import SysUpload from '@/components/SysUpload/Upload';
@@ -6,12 +6,31 @@ import { PaperClipOutlined } from '@ant-design/icons';
 import FilesContext from '@/layouts/MenuContext';              // 引用上下文管理组件
 import styles from '../index.less';
 
+// rowkey：1  出厂测试必填
+// rowkey: 2  平台验证必填
+// rowkey: 3  业务功能测试报告，功能清单终稿必填
+// rowkey: 4  发布实施方案必填
+
+const Attaches = [
+  { docName: '功能出厂测试报告', attachFile: '[]', dutyUnit: '', docTemplate: '', remarks: '', editable: true, },
+  { docName: '平台验证测试报告', attachFile: '[]', dutyUnit: '', docTemplate: '', remarks: '', editable: true, },
+  { docName: '业务功能测试报告', attachFile: '[]', dutyUnit: '', docTemplate: '', remarks: '', editable: true, },
+  { docName: '功能清单终稿', attachFile: '[]', dutyUnit: '', docTemplate: '', remarks: '', editable: true, },
+  { docName: '发布实施方案', attachFile: '[]', dutyUnit: '', docTemplate: '', remarks: '', editable: true, },
+  { docName: '计划发布申请审批表', attachFile: '[]', dutyUnit: '', docTemplate: '', remarks: '', editable: true, },
+  { docName: '临时发布申请审批表', attachFile: '[]', dutyUnit: '', docTemplate: '', remarks: '', editable: true, },
+  { docName: '功能发布报告', attachFile: '[]', dutyUnit: '', docTemplate: '', remarks: '', editable: true, },
+  { docName: '其它附件', attachFile: '[]', dutyUnit: '', docTemplate: '', remarks: '', editable: true, },
+];
+
 const { TextArea } = Input;
 const { Option } = Select;
 
 function DocumentAtt(props) {
   const { dispatch, rowkey, unitmap, isEdit, dataSource, Unit, check, ChangeValue } = props;
   const [data, setData] = useState([]);
+  const { addAttaches, ChangeaddAttaches } = useContext(FilesContext);                     // 是否要添加行
+
 
   // 获取行
   const getRowByKey = (key, newData) => {
@@ -57,10 +76,10 @@ function DocumentAtt(props) {
     if (rowkey && dataSource.length > 0) {
       const newData = dataSource.map((item, index) => ({
         ...item,
-        editable: false,
+        editable: false,                  // 可上传附件
         key: (index + 1).toString(),
       }));
-      newData[8].editable = true;
+      newData[8].editable = true;         // 其它附件都可以上传附件
       if (Number(rowkey) !== 0) {
         newData[rowkey - 1].editable = true;
         if (Unit && Unit.dutyUnit) {
@@ -69,6 +88,10 @@ function DocumentAtt(props) {
       };
       if (rowkey === '3') {
         newData[3].editable = true;
+      };
+      // 平台验证环节临时添加了清单，补充的出厂测试报告必填
+      if (rowkey === '2' && dataSource.length === 10) {
+        newData[9].editable = true;
       };
       setData(newData);
       ChangeValue(newData)
@@ -81,6 +104,27 @@ function DocumentAtt(props) {
     };
   }, [Unit.dutyUnit])
 
+  useEffect(() => {
+    if (addAttaches === 'add') {
+      const lastattname = dataSource.slice(-1)[0].docName;
+      if (rowkey === '2' && lastattname !== '功能出厂测试报告') {
+        const newarr = Attaches.slice(0, 1);
+        const newdata = data.concat(newarr);
+        setData(newdata);
+        ChangeValue(newdata)
+      }
+    };
+    if (addAttaches === 'delete') {
+      const lastattname = dataSource.slice(-1)[0].docName;
+      if (rowkey === '2' && lastattname === '功能出厂测试报告') {
+        const newdata = data.map(item => ({ ...item }));
+        newdata.pop();
+        setData(newdata);
+        ChangeValue(newdata)
+      }
+    }
+  }, [addAttaches])
+
   const columns = [
     {
       title: '序号',
@@ -88,6 +132,12 @@ function DocumentAtt(props) {
       key: 'key',
       width: 60,
       align: 'center',
+      render: (text, record, index) => {
+        if (text) {
+          return text;
+        }
+        return (index + 1).toString()
+      }
     },
     {
       title: '文档名称',
@@ -118,7 +168,7 @@ function DocumentAtt(props) {
                   <SysUpload />
                 </FilesContext.Provider>
               </div>
-              {check && (<div style={{ color: '#f5222d' }}>请上传{record.docName}</div>)}
+              {check && text === '[]' && (<div style={{ color: '#f5222d' }}>请上传{record.docName}</div>)}
             </>
           )
         } if (record.key === '9') {

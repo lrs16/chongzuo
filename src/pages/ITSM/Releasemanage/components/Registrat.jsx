@@ -75,11 +75,10 @@ function Registrat(props, ref) {
   // 校验文档
   const handleAttValidator = (rule, value, callback) => {
     if (value) {
-      const key = statumap.get(taskName);
-      const target = value.filter(item => item.key === key)[0];
-      if (target && target.attachFile === '[]') {
+      const target = value.filter(item => item.editable && item.attachFile === '[]' && item.docName !== '其它附件');
+      if (target.length > 0) {
         setCheck(true);
-        callback(`请上传${target.docName}`);
+        callback(`请上传附件`);
       } else {
         callback()
       }

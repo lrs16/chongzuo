@@ -44,6 +44,7 @@ const columns = [
           query: {
             taskName: record.taskName,
             Id: record.releaseNo,
+            taskId: record.taskId,
           },
           state: {
             dynamicpath: true,

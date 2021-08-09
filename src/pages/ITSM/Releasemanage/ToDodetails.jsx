@@ -8,10 +8,11 @@ import WorkOrder from './WorkOrder';
 
 function ToDodetails(props) {
   const { location, dispatch, loading, loadingopen } = props;
-  const { taskName } = location.query;
+  const { taskName, taskId } = location.query;
   const [tabActivekey, settabActivekey] = useState('workorder'); // 打开标签
   const [buttype, setButtype] = useState('');                    // 点击的按钮类型
   const [submittype, setSubmitType] = useState(1);
+  const [addAttaches, setAddAttaches] = useState('');
 
   const handleTabChange = key => {
     switch (key) {
@@ -99,8 +100,11 @@ function ToDodetails(props) {
         {tabActivekey === 'workorder' && (
           <SubmitTypeContext.Provider value={{
             submittype,
+            taskId,
             ChangeSubmitType: (v => setSubmitType(v)),
-            ChangeButtype: (v => setButtype(v))
+            ChangeButtype: (v => setButtype(v)),
+            addAttaches,                                   // 清单临时添加，fasle文档列表不需要加列，true文档列表需要加列
+            ChangeaddAttaches: (v => setAddAttaches(v))
           }}>
             <WorkOrder location={location} buttype={buttype} />
           </SubmitTypeContext.Provider>
