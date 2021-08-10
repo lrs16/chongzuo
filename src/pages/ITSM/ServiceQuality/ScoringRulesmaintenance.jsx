@@ -268,8 +268,6 @@ function ScoringRulesmaintenance(props) {
 
         <Button
           style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
-          type="primary"
-          ghost
           onClick={newScoringrules}
           icon='plus'
         >

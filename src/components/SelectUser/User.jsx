@@ -146,6 +146,15 @@ const User = props => {
           },
         });
         break;
+      case 'achievements':
+        dispatch({
+          type: 'itsmuser/achievementsNextTaskUser',
+          payload: {
+            taskId,
+            type: sessionStorage.getItem('flowtype'),
+          },
+        });
+        break;
       default:
         break;
     }

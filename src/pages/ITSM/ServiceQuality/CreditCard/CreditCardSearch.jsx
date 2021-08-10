@@ -1,17 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Row,
-  Col,
   Table,
   Form,
-  Card,
   Input,
-  Button
+  Button,
+  Card,
+  message,
+  Row,
+  Col,
+  Popconfirm,
+  Divider,
+  Radio,
+  AutoComplete,
+  Select,
+  Spin
 } from 'antd';
+import { contractProvider, providerList, scoreListpage } from '../services/quality';
+import moment from 'moment';
 import { connect } from 'dva';
 import router from 'umi/router';
-import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
+
+import styles from '../index.less';
 
 const formItemLayout = {
   labelCol: {
@@ -24,90 +34,216 @@ const formItemLayout = {
   },
 }
 
-const columns = [
-  {
-    title: '服务商',
-    dataIndex: 'serviceprovider',
-    key: 'serviceprovider',
-    render: (text, record) => {
-      const todetail = () => {
-        router.push({
-          pathname: '/ITSM/servicequalityassessment/creditcard/creditcardregister',
-        })
-      };
-      return <a onClick={todetail}>{text}</a>
-    }
-  },
-  {
-    title: '合同名称',
-    dataIndex: 'personliable',
-    key: 'personliable'
-  },
-  {
-    title: '考核类型',
-    dataIndex: 'contentdescription',
-    key: 'contentdescription'
-  },
-  {
-    title: '评价计分卡名称',
-    dataIndex: 'assessmentType',
-    key: 'assessmentType'
-  },
-  {
-    title: '评分细则名称',
-    dataIndex: 'firstlevelindicators',
-    key: 'firstlevelindicators'
-  },
-  {
-    title: '版本号',
-    dataIndex: 'secondaryindicators',
-    key: 'secondaryindicators'
-  },
-  {
-    title: '专业部门',
-    dataIndex: 'detailedterms',
-    key: 'detailedterms'
-  },
-  {
-    title: '评价区间',
-    dataIndex: 'assessmentscore',
-    key: 'assessmentscore'
-  },
-]
+const { Search } = Input;
+const { Option } = Select;
 
-function CreditCardSearch(props) {
+
+function ServiceProvidersearch(props) {
   const pagetitle = props.route.name;
   const {
-    form: { getFieldDecorator, resetFields },
-    tobeDealtarr,
-    dispatch
+    form: {
+      getFieldDecorator,
+      validateFields,
+      resetFields,
+      setFieldsValue
+    },
+    providerArr,
+    scorecardArr,
+    dispatch,
+    loading
   } = props;
-  const [expand, setExpand] = useState(false);
+  const [paginations, setPaginations] = useState({ current: 1, pageSize: 15 });
+  const [data, setData] = useState([]);
+  const [providerId, setProviderId] = useState(''); //  设置服务商的id
+  const [scoreId, setScoreId] = useState(''); //  设置服务商的id
+  const [disablelist, setDisabledList] = useState([]); // 服务商
+  const [contractlist, setContractlist] = useState([]); // 合同
+  const [scorelist, setScorelist] = useState([]); // 评分细则
+  const [spinloading, setSpinLoading] = useState(true);
+  const [contractArr, setContractArr] = useState([]);
 
-  const handleReset = () => {
-    resetFields()
+  const searchdata = (values, page, pageSize) => {
+    dispatch({
+      type: 'performanceappraisal/getscorecardlistPage',
+      payload: {
+        ...values,
+        pageNum: page,
+        pageSize
+      }
+    })
+  }
+
+  const handlesearch = () => {
+    validateFields((err, value) => {
+      searchdata(value, 1, 15)
+    })
   }
 
   useEffect(() => {
-    dispatch({
-      type: 'performanceappraisal/tobeDealtdata'
+    validateFields((err, value) => {
+      searchdata(value, paginations.current, paginations.pageSize)
     })
   }, [])
 
-  const extra = (<>
-    <Button type="primary">查 询</Button>
-    <Button style={{ marginLeft: 8 }} onClick={() => handleReset()}>重 置</Button>
-    <Button
-      style={{ marginLeft: 8 }}
-      type="link"
-      onClick={() => {
-        setExpand(!expand);
-      }}
-    >
-      {expand ? (<>关 闭 <UpOutlined /></>) : (<>展 开 <DownOutlined /></>)}
-    </Button></>)
+  const handleDelete = (id) => {
+    return dispatch({
+      type: 'performanceappraisal/scorecardDel',
+      payload: id
+    }).then(res => {
+      if (res.code === 200) {
+        message.info(res.msg);
+        searchdata({}, 1, paginations.pageSize)
+      } else {
+        message.error(res.msg);
+      }
+    })
+  }
 
-  console.log(expand, 'expand')
+  const columns = [
+    {
+      title:'记分卡编号',
+      dataIndex:'cardNo',
+      key:'cardNo'
+    },
+    {
+      title: '服务商',
+      dataIndex: 'providerName',
+      key: 'providerName',
+    },
+    {
+      title: '合同名称',
+      dataIndex: 'contractName',
+      key: 'contractName'
+    },
+    {
+      title: '考核类型',
+      dataIndex: 'assessType',
+      key: 'assessType'
+    },
+    {
+      title: '评价计分卡名称',
+      dataIndex: 'cardName',
+      key: 'cardName'
+    },
+    {
+      title: '评分细则名称',
+      dataIndex: 'scoreName',
+      key: 'scoreName'
+    },
+    {
+      title: '版本号',
+      dataIndex: 'version',
+      key: 'version'
+    },
+    {
+      title: '专业部门',
+      dataIndex: 'deptName',
+      key: 'deptName'
+    },
+    {
+      title: '评价区间',
+      dataIndex: 'cardSeason',
+      key: 'cardSeason'
+    },
+    {
+      title: '操作',
+      dataIndex: 'action',
+      fixed: 'right',
+      width: 150,
+      render: (text, record) => {
+        const gotoDetail = () => {
+          router.push({
+            pathname: '/ITSM/servicequalityassessment/creditcard/creditcardregisterdetail',
+            query: {
+              id: record.id,
+              scorecardStatus: record.isEdit,
+              search:true
+            }
+          })
+        }
+        return (
+          <span>
+            <a onClick={() => gotoDetail()}>编辑</a>
+            <>
+              <Divider type='vertical' />
+              <Popconfirm
+                title='是否要删除此行？'
+                onConfirm={() => handleDelete(record.id)}
+              >
+                <a>删除</a>
+              </Popconfirm>
+              <Divider type='vertical' />
+            </>
+          </span>
+        )
+      }
+    },
+  ]
+
+
+  const handleReset = () => {
+    resetFields();
+    searchdata({}, 1, 15)
+  }
+
+  const onShowSizeChange = (page, pageSize) => {
+    validateFields((err, values) => {
+      if (!err) {
+        searchdata(values, page, pageSize)
+      }
+    })
+    setPaginations({
+      ...paginations,
+      pageSize
+    })
+  }
+
+  const changePage = page => {
+    validateFields((err, values) => {
+      if (!err) {
+        searchdata(values, page, paginations.pageSize)
+      }
+    })
+
+    setPaginations({
+      ...paginations,
+      current: page
+    })
+  }
+
+  const exportDownload = () => {
+    validateFields((err, values) => {
+      dispatch({
+        type: 'performanceappraisal/scorecardExport',
+        payload:{
+          ...values,
+          pageNum:paginations.current,
+          pageSize:paginations.pageSize
+        }
+      }).then(res => {
+        const filename = '下载.xls';
+        const blob = new Blob([res]);
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.click();
+        window.URL.revokeObjectURL(url)
+      })
+    })
+
+  }
+
+  const pagination = {
+    showSizeChanger: true,
+    onShowSizeChange: (page, pagesize) => onShowSizeChange(page, pagesize),
+    current: paginations.current,
+    pageSize: paginations.pageSize,
+    total: scorecardArr.total,
+    showTotal: total => `总共 ${total} 条记录`,
+    onChange: (page) => changePage(page)
+  }
+
 
   return (
     <PageHeaderWrapper title={pagetitle}>
@@ -117,7 +253,61 @@ function CreditCardSearch(props) {
             <Col span={8}>
               <Form.Item label='计分卡编号'>
                 {
-                  getFieldDecorator('dd', {})
+                  getFieldDecorator('cardNo')
+                    (<Input />)
+                }
+              </Form.Item>
+            </Col>
+
+            <Col span={8}>
+              <Form.Item label='评价计分卡名称'>
+                {
+                  getFieldDecorator('cardName')
+                    (<Input />)
+                }
+
+              </Form.Item>
+            </Col>
+
+            <Col span={8}>
+              <Form.Item label='评分细则名称'>
+                {
+                  getFieldDecorator('scoreName', {})
+                    (
+                      <Input />
+                    )
+                }
+              </Form.Item>
+            </Col>
+
+            <Col span={8}>
+              <Form.Item label='考核类型'>
+                {
+                  getFieldDecorator('assessType')
+                    (<Input />)
+                }
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item label='版本号'>
+                {
+                  getFieldDecorator('version')
+                    (<Input />)
+                }
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item label='专业部门'>
+                {
+                  getFieldDecorator('deptName')
+                    (<Input />)
+                }
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item label='评价区间'>
+                {
+                  getFieldDecorator('cardSeason')
                     (<Input />)
                 }
               </Form.Item>
@@ -126,99 +316,60 @@ function CreditCardSearch(props) {
             <Col span={8}>
               <Form.Item label='服务商'>
                 {
-                  getFieldDecorator('dd11', {})
-                    (<Input />)
+                  getFieldDecorator('providerName', {
+                  })
+                    (
+                      <Input />
+                    )
                 }
               </Form.Item>
             </Col>
 
-            <span style={{ display: expand ? 'block' : 'none' }}>
-              <Col span={8}>
-                <Form.Item label='考核类型'>
-                  {
-                    getFieldDecorator('dd22', {})
-                      (<Input />)
-                  }
-                </Form.Item>
-              </Col>
-
-              <Col span={8}>
-                <Form.Item label='评价计分卡名称'>
-                  {
-                    getFieldDecorator('dd33', {})
-                      (<Input />)
-                  }
-                </Form.Item>
-              </Col>
-
-              <Col span={8}>
-                <Form.Item label='评分细则名称'>
-                  {
-                    getFieldDecorator('dd4', {})
-                      (<Input />)
-                  }
-                </Form.Item>
-              </Col>
-
-              <Col span={8}>
-                <Form.Item label='版本号'>
-                  {
-                    getFieldDecorator('dd55', {})
-                      (<Input />)
-                  }
-                </Form.Item>
-              </Col>
-
-              <Col span={8}>
-                <Form.Item label='专业部门'>
-                  {
-                    getFieldDecorator('dd6', {})
-                      (<Input />)
-                  }
-                </Form.Item>
-              </Col>
-
-              <Col span={8}>
-                <Form.Item label='评价区间'>
-                  {
-                    getFieldDecorator('dd7', {})
-                      (<Input />)
-                  }
-                </Form.Item>
-              </Col>
-
-              <Col span={8}>
-                <Form.Item label='合同名称'>
-                  {
-                    getFieldDecorator('dd8', {})
-                      (<Input />)
-                  }
-                </Form.Item>
-              </Col>
-            </span>
-
-            {expand ? (<Col span={24} style={{ textAlign: 'right' }}>{extra}</Col>) : (<Col span={8} style={{ marginTop: 4 }}>{extra}</Col>)}
-
-            <Col span={24}>
-              <Button type='primary'>导出数据</Button>
+            <Col span={8}>
+              <Form.Item label='合同名称'>
+                {
+                  getFieldDecorator('contractName', {
+                  })
+                    (
+                      <Input />
+                    )
+                }
+              </Form.Item>
             </Col>
 
-            <Table
-              columns={columns}
-              dataSource={tobeDealtarr}
-            />
+
+            <Col span={24} style={{ textAlign: 'right' }}>
+              <Button
+                type='primary'
+                style={{ marginRight: 8 }}
+                onClick={handlesearch}
+              >
+                查询
+              </Button>
+
+              <Button onClick={handleReset}>重置</Button>
+            </Col>
 
           </Form>
         </Row>
-      </Card>
 
+        <Button type='primary' onClick={exportDownload}>导出数据</Button>
+
+
+        <Table
+          loading={loading}
+          columns={columns}
+          dataSource={scorecardArr.records}
+          pagination={pagination}
+        />
+      </Card>
     </PageHeaderWrapper>
   )
 }
 
 export default Form.create({})(
-  connect(({ qualityassessment, performanceappraisal, loading }) => ({
-    maintenanceData: qualityassessment.maintenanceData,
-    tobeDealtarr: performanceappraisal.tobeDealtarr
-  }))(CreditCardSearch)
+  connect(({ performanceappraisal, loading }) => ({
+    scorecardArr: performanceappraisal.scorecardArr,
+    loading: loading.models.performanceappraisal
+  }))(ServiceProvidersearch)
 )

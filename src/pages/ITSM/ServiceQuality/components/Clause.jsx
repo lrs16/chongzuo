@@ -25,14 +25,27 @@ function Clause(props) {
     formItemLayout,
     clause,
     children,
-    submitClause
+    submitClause,
+    selectId,
+    id,
+    add
   } = props;
   const required = true;
-
-  console.log(clause,'clause')
-
+  
   const handleopenClick = () => {
-    setVisible(true);
+    if(selectId && id ) {
+      setVisible(true);
+    } 
+
+    if( selectId && !id) {
+      message.error('请先保存评分细则才能新增详细条款哦！')
+    }
+
+    if( !selectId && id ) {
+      message.error('请选中二级指标才能新增详细条款哦！')
+    }
+  
+  
   }
 
   const handleCancel = () => {
@@ -84,6 +97,7 @@ function Clause(props) {
         width={720}
         centered='true'
         maskClosable='true'
+        destroyOnClose='true'
         onClose={handleCancel}
       >
         <Form {...formItemLayout}>

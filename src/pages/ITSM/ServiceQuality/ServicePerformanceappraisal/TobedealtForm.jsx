@@ -10,6 +10,8 @@ import {
   Collapse
 } from 'antd';
 import moment from 'moment';
+import router from 'umi/router';
+import User from '@/components/SelectUser/User';
 import { contractProvider } from '../services/quality'
 import { connect } from 'dva';
 import BusinessAudit from './components/BusinessAudit';
@@ -50,7 +52,7 @@ const { Panel } = Collapse;
 function TobedealtForm(props) {
   const pagetitle = props.route.name;
   const {
-    location: { query: { taskId } },
+    location: { query: { taskId,mainId } },
     target1,
     target2,
     clauseList,
@@ -60,11 +62,16 @@ function TobedealtForm(props) {
     dispatch,
   } = props;
   const formRef = useRef();
+  const [uservisible, setUserVisible] = useState(false);
   const [contractArr, setContractArr] = useState([]);
+  const [userchoice, setUserChoice] = useState(false); // 已经选择人员
+  const [butandorder, setButandOrder] = useState('');
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
   const [tabActiveKey, setTabActiveKey] = useState('workorder')
+  sessionStorage.setItem('Processtype', 'achievements');
 
   const { taskName } = taskData;
+
   const handleSubmit = () => {
     console.log(formRef, 'formRef')
   }
@@ -119,22 +126,46 @@ function TobedealtForm(props) {
     });
   }
 
+  const selectNextflow = () => {
+    switch (taskName) {
+      case '服务绩效考核登记':
+        sessionStorage.setItem('Nextflowmane', '系统运维商审核');
+        break;
+      // case '系统运维商审核':
+      //   sessionStorage.setItem('Nextflowmane', '自动化科审核');
+      //   break;
+      // case '自动化科审核':
+      //   sessionStorage.setItem('Nextflowmane', '系统开发商处理');
+      //   break;
+      // case '系统开发商处理':
+      //   sessionStorage.setItem('Nextflowmane', '系统运维商确认');
+      //   break;
+      // case '系统运维商确认':
+      //   sessionStorage.setItem('Nextflowmane', '自动化科业务负责人确认');
+      //   break;
+      // case '自动化科业务负责人确认':
+      //   sessionStorage.setItem('Nextflowmane', '问题登记人员确认');
+      //   break;
+      default:
+        break;
+    }
+  }
+
+
 
   useEffect(() => {
     getUserinfo();
-    openFlow()
+    openFlow();
+    // selectNextflow();
   }, []);
 
   useEffect(() => {
-    const { providerId } = taskData;
-    if (providerId) {
-      getContrractname(providerId)
-    }
-
+    const { providerId, scoreId, target1Id, target2Id } = taskData;
+    getContrractname(providerId);
+    getTarget1(scoreId);
+    getTarget2(target1Id);
+    getclausedetail(target2Id, scoreId)
   }, [taskData]);
-
-
-
 
   const tabList = [
     {
@@ -155,6 +186,80 @@ function TobedealtForm(props) {
     setTabActiveKey(key)
   }
 
+  //  登记保存流转
+  const registerSubmit = (circulation) => {
+    formRef.current.validateFields((err, values) => {
+      console.log('values: ', values);
+      if(!err) {
+        const submitIfnfo = values;
+        delete submitIfnfo.provider;
+        delete submitIfnfo.clause;
+        delete submitIfnfo.score;
+        delete submitIfnfo.contract;
+        return dispatch({
+          type: 'performanceappraisal/tobeassessRegister',
+          payload:{
+            ...submitIfnfo,
+            assessTime:moment(values.assessTime).format('YYYY-MM-DD HH:mm:ss'),
+            applyTime:moment(values.applyTime).format('YYYY-MM-DD HH:mm:ss'),
+          }
+        }).then(res => {
+          if(res.code === 200) {
+            if(circulation) {
+              setUserVisible(true);
+            }
+          }
+        })
+      }
+    })
+  }
+
+  const gotoCirapi = () => {
+    return dispatch({
+      type:'performanceappraisal/assessComplete',
+      payload:{
+        taskId,
+        users:sessionStorage.getItem('NextflowUserId')
+      }
+    }).then(res => {
+      if(res.code === 200) {
+        router.push({
+          pathname: `/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtform`,
+          query: {
+            mainId,
+            closetab: true,
+          }
+        });
+        openFlow();
+
+        // router.push({
+        //   pathname: `/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtlist`,
+        //   query: { pathpush: true },
+        //   state: { cache: false }
+        // })
+      }
+    })
+
+  }
+
+  useEffect(() => {
+    if (userchoice || butandorder) {
+      gotoCirapi();
+    }
+  }, [userchoice, butandorder])
+
+  const onClickSubmit = (flowType) => {
+    switch (flowType) {
+      case '服务绩效考核登记':
+        registerSubmit(flowType)
+        break;
+    
+      default:
+        break;
+    }
+  }
+
+
 
   return (
     <PageHeaderWrapper
@@ -162,7 +267,7 @@ function TobedealtForm(props) {
       extra={
         <>
           <Button type='primary' onClick={handleSubmit}>保存</Button>
-          <Button type='primary'>流转</Button>
+          <Button type='primary' onClick={() => onClickSubmit(taskName)}>流转</Button>
           <Button type='primary'>关闭</Button>
         </>
       }
@@ -285,6 +390,16 @@ function TobedealtForm(props) {
           <Relatedorder />
         )
       }
+
+      <User
+        taskId={taskId}
+        visible={uservisible}
+        ChangeUserVisible={v => setUserVisible(v)}
+        changorder={undefined}
+        ChangeChoice={v => setUserChoice(v)}
+        currentPeocess={taskName}
+        ChangeType={() => 0}
+      />
 
     </PageHeaderWrapper>
   )

@@ -72,9 +72,8 @@ const Register = React.forwardRef((props, ref) => {
     [],
   )
 
-  const handleChange = (values,option,params) => {
-    console.log('option: ', option);
-    const { key,props: { value }} = option;
+  const handleChange = (values, option, params) => {
+    const { key, props: { value } } = option;
     switch (params) {
       case 'contract':
         setFieldsValue({
@@ -94,7 +93,7 @@ const Register = React.forwardRef((props, ref) => {
         getclausedetail(key, scoreId);
         setFieldsValue({
           target2Name: value,
-          target2Id:  key
+          target2Id: key
         })
         break;
       case 'clause':
@@ -122,6 +121,16 @@ const Register = React.forwardRef((props, ref) => {
     //   }
     // }
     switch (params) {
+      case 'one':
+        if (loading !== true && target1 && target1.length === 0) {
+          message.error('请选择有效的评分细则名称')
+        }
+        break;
+      case 'two':
+        if (loading !== true && target2 && target2.length === 0) {
+          message.error('请选择有效的一级指标')
+        }
+        break;
       case 'contract':
         if (loading !== true && contractArr && contractArr.length === 0) {
           message.error('请选择有效的服务商')
@@ -323,8 +332,6 @@ const Register = React.forwardRef((props, ref) => {
 
   // },[register])
 
-  console.log(register.contractId, 'register.contractId')
-  console.log(contractArr, 'contractArr')
   return (
     <Row gutter={24} style={{ paddingTop: 24 }}>
       <SysDict
@@ -424,14 +431,13 @@ const Register = React.forwardRef((props, ref) => {
                     message: '请输入关联合同名称'
                   }
                 ],
-                initialValue: register.contractId
+                initialValue: register.contract.contractName || register.contract
               })
                 (
                   <Select
-                    // labelInValue='true'
                     placeholder='请选择'
                     allowClear
-                    onChange={(value,option) => handleChange(value,option,'contract')}
+                    onChange={(value, option) => handleChange(value, option, 'contract')}
                     onFocus={() => handleFocus('contract')}
                   >
                     {contractArr.map(obj => [
@@ -598,17 +604,16 @@ const Register = React.forwardRef((props, ref) => {
                     message: '请输入一级指标'
                   }
                 ],
-                initialValue: register.target1Id
+                initialValue: register.target1Name
               })
                 (
                   <Select
-                    labelInValue='true'
-                    onChange={(value,option) => handleChange(value,option,'target1Name')}
-                    onFocus={() => handleFocus()}
+                    onChange={(value, option) => handleChange(value, option, 'target1Name')}
+                    onFocus={() => handleFocus('one')}
                     placeholder='请选择'
                     allowClear>
                     {(target1).map(obj => [
-                      <Option key={obj.id} value={obj.id}>
+                      <Option key={obj.id} value={obj.title}>
                         {obj.title}
                       </Option>
                     ])}
@@ -646,13 +651,12 @@ const Register = React.forwardRef((props, ref) => {
               })
                 (
                   <Select
-                    labelInValue='true'
-                    onChange={(value,option) => handleChange(value,option,'target2Name')}
+                    onChange={(value, option) => handleChange(value, option, 'target2Name')}
                     onFo cus={() => handleFocus('two')}
                     placeholder='请选择'
                     allowClear>
                     {(target2).map(obj => [
-                      <Option key={obj.id} value={obj.id}>
+                      <Option key={obj.id} value={obj.title}>
                         {obj.title}
                       </Option>
                     ])}
@@ -685,16 +689,15 @@ const Register = React.forwardRef((props, ref) => {
                     message: '请输入详细条款'
                   }
                 ],
-                initialValue: register.clause === null ? '' : register.clause
+                initialValue: register.clause.detailed || register.clause
               })
                 (
                   <Select
-                    labelInValue='true'
-                    onChange={(value,option) => handleChange(value,option,'clause')}
+                    onChange={(value, option) => handleChange(value, option, 'clause')}
                     onFocus={() => handleFocus('clause')}
                   >
                     {(clauseList.records || []).map(obj => [
-                      <Option key={obj.id} value={obj.id}>
+                      <Option key={obj.id} value={obj.detailed}>
                         <div className={styles.disableuser}>
                           <span>{obj.orderNo}</span>
                           <span>{obj.detailed}</span>

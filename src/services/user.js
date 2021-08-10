@@ -113,4 +113,9 @@ export async function knowledgeCheckUserList() {
   });
 }
 
-
+//  加载绩效人员列表 
+export async function achievementsNextTaskUser(taskId) {
+  return request(`/quality/assess/nextTaskUser?taskId=${taskId}`, {
+    method: 'GET',
+  });
+}

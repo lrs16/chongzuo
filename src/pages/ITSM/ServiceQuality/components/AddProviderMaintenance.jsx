@@ -10,8 +10,10 @@ import {
   Popconfirm,
   Divider,
   message,
-  Radio
+  Radio,
+  Select
 } from 'antd';
+import { operationPerson } from '@/services/common';
 import { phone_reg } from '@/utils/Regexp';
 import moment from 'moment';
 import { connect } from 'dva';
@@ -31,20 +33,28 @@ const formItemLayout = {
   }
 }
 
+const { Option } = Select;
+
 
 function AddProviderMaintenance(props) {
   const pagetitle = props.route.name;
   const {
-    form: { getFieldDecorator, validateFields },
+    form: { getFieldDecorator, validateFields, setFieldsValue },
     maintenanceData,
-    location: { query: { id, providerStatus,providerSearch } },
+    location: { query: { id, providerStatus, providerSearch } },
     addProviderMaintenance,
+    userinfo,
     searchProviderobj,
     contractProviderobj,
     dispatch,
     loading
   } = props;
+  const [performanceLeader, setPerformanceLeader] = useState('')
   const required = true;
+
+  const statueContent = ['在用','停用','过期'];
+
+  console.log(providerStatus,'providerStatus')
 
   //  服务商详情页
   const providerDetail = () => {
@@ -76,7 +86,7 @@ function AddProviderMaintenance(props) {
         }
       }).then(res => {
         if (res.code === 200) {
-          if(!providerSearch) {
+          if (!providerSearch) {
             message.info(res.msg);
           }
           contractProviderdata()
@@ -114,13 +124,19 @@ function AddProviderMaintenance(props) {
       if (res.code === 200) {
         message.info(res.msg);
         contractProviderdata()
-
       } else {
         message.error(res.msg)
       }
 
     })
 
+  }
+
+  const selectOnchange = (value, option) => {
+    setFieldsValue({
+      directorName: value,
+      directorId: option.key
+    });
   }
 
   const columns = [
@@ -147,7 +163,10 @@ function AddProviderMaintenance(props) {
     {
       title: '状态',
       dataIndex: 'status',
-      key: 'status'
+      key: 'status',
+      render:(text,record) => {
+        return <p>{statueContent[text]}</p>
+      }
     },
     {
       title: '操作',
@@ -180,15 +199,34 @@ function AddProviderMaintenance(props) {
     },
   ]
 
+  const getPerformanceleader = () => {
+    operationPerson().then(res => {
+      const result = (res.data).map(item => {
+        return {
+          key: item.id,
+          value: item.userName
+        }
+      })
+      setPerformanceLeader(result)
+    })
+  }
+
   useEffect(() => {
     if (id) {
       providerDetail();
       contractProviderdata();
+    } else {
+      dispatch({
+        type: 'qualityassessment/clearProviderdata'
+      });
     }
+    getPerformanceleader();
   }, [id])
 
+  console.log(searchProviderobj, 'searchProviderobj')
+
   const handleBack = () => {
-    if(providerSearch) {
+    if (providerSearch) {
       router.push({
         pathname: `/ITSM/servicequalityassessment/serviceprovidersearch`,
       })
@@ -197,7 +235,7 @@ function AddProviderMaintenance(props) {
         pathname: `/ITSM/servicequalityassessment/serviceprovidermaintenance`,
       })
     }
-   
+
   }
 
   const handleSaveForm = () => {
@@ -210,7 +248,7 @@ function AddProviderMaintenance(props) {
             id
           },
         }).then(res => {
-          if(res.code === 200) {
+          if (res.code === 200) {
             message.info(res.msg);
             providerDetail()
           } else {
@@ -254,6 +292,7 @@ function AddProviderMaintenance(props) {
                 }
               </Form.Item>
             </Col>
+
             <Col span={8}>
               <Form.Item label='服务商名称'>
                 {getFieldDecorator('providerName', {
@@ -265,10 +304,39 @@ function AddProviderMaintenance(props) {
                   ],
                   initialValue: searchProviderobj.providerName
                 })
-                  (<Input disabled={providerSearch}/>)
+                  (<Input disabled={providerSearch} />)
                 }
               </Form.Item>
             </Col>
+
+            {/* {performanceLeader && performanceLeader.length && (
+              <Col span={8}>
+                <Form.Item label='负责人'>
+                  {
+                    getFieldDecorator('directorName', {
+                      rules: [
+                        {
+                          required,
+                          message: '请输入责任人'
+                        }
+                      ],
+                      initialValue: searchProviderobj.director
+                    })
+                      (
+                        <Select onChange={selectOnchange} >
+                          {performanceLeader.map(obj => [
+                            <Option key={obj.key} value={obj.value}>
+                              {obj.value}
+                            </Option>
+                          ])}
+
+                        </Select>
+                      )
+                  }
+                </Form.Item>
+              </Col>
+            )} */}
+            
             <Col span={8}>
               <Form.Item label='负责人'>
                 {getFieldDecorator('director', {
@@ -280,10 +348,11 @@ function AddProviderMaintenance(props) {
                   ],
                   initialValue: searchProviderobj.director
                 })
-                  (<Input disabled={providerSearch}/>)
+                  (<Input disabled={providerSearch} />)
                 }
               </Form.Item>
             </Col>
+
             <Col span={8}>
               <Form.Item label='负责人手机号'>
                 {getFieldDecorator('directorPhone', {
@@ -297,13 +366,13 @@ function AddProviderMaintenance(props) {
                   ],
                   initialValue: searchProviderobj.directorPhone
                 })
-                  (<Input disabled={providerSearch}/>)
+                  (<Input disabled={providerSearch} />)
                 }
               </Form.Item>
             </Col>
 
             {
-              providerStatus && (
+              providerStatus === '1' && (
                 <Col span={8}>
                   <Form.Item label='状态'>
                     {
@@ -345,6 +414,7 @@ function AddProviderMaintenance(props) {
         {
           loading === false && (
             <Table
+              loading={loading}
               columns={columns}
               dataSource={contractProviderobj}
             />

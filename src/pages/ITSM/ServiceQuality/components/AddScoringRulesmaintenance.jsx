@@ -42,7 +42,7 @@ const { Option } = Select;
 function AddScoringRulesmaintenance(props) {
   const pagetitle = props.route.name;
   const {
-    form: { getFieldDecorator, validateFields },
+    form: { getFieldDecorator, validateFields,resetFields },
     location: { query: { id, scoreSearch } },
     show,
     scoreDetail,
@@ -61,25 +61,27 @@ function AddScoringRulesmaintenance(props) {
   const [selectdata, setSelectData] = useState('');
   const [selectId, setSelectId] = useState('')
 
-  console.log(treeForm,'treeForm')
-
-  const getlist = (targetId) => {
-    dispatch({
-      type: 'qualityassessment/clauseListpage',
-      payload: {
-        pageNum: 1,
-        pageSize: 15,
-        scoreId: id,
-        targetId: targetId ? targetId[0] : selectId,
-      },
-    });
+  const getlist = () => {
+    validateFields((err, value) => {
+      const { detailed } = value;
+      dispatch({
+        type: 'qualityassessment/clauseListpage',
+        payload: {
+          detailed,
+          pageNum: 1,
+          pageSize: 15,
+          scoreId: id,
+          targetId: selectId,
+        },
+      });
+    })
   };
 
   //  按需加载树节点
   const getalldata = () => {
     dispatch({
       type: 'qualityassessment/getTypeTree',
-      payload: type || scoreDetail.assessType
+      payload: type || (scoreDetail && scoreDetail.assessType === '功能开发' ? '1' : '2')
     }).then(res => {
       setTreeData(res.data)
     })
@@ -89,6 +91,8 @@ function AddScoringRulesmaintenance(props) {
     if (id) {
       getlist();
       getalldata()
+    } else {
+
     }
   }, [id]);
 
@@ -118,47 +122,19 @@ function AddScoringRulesmaintenance(props) {
     return result[0];
   }
 
-  //  异步加载数据
-  const onLoadData = treeNode =>
-    new Promise(resolve => {
-      if (treeNode.props.children) {
-        resolve();
-        return;
-      }
-      dispatch({
-        type: 'upmsmenu/fetchdatas',
-        payload: {
-          pid: treeNode.props.dataRef.key,
-        },
-      })
-        .then(res => {
-          if (res.data !== undefined) {
-            const sontreedata = getAllLeaf(res.data);
-            treeNode.props.dataRef.children = sontreedata;
-          } else {
-            message.info('已经到最后一层！');
-          }
-        });
-      setTimeout(() => {
-        // this.setState({
-        //   treeData: [...this.state.treeData],
-        // });
-        setTreeData([...treeData])
-        resolve();
-      }, 600);
-
-    });
-
   //  点击节点
   const handleClick = (selectedKeys, event) => {
+    console.log('selectedKeys: ', selectedKeys);
     const { props: { title } } = event.node;
-    if (title !== ('1项目管理' || '2服务质量' || '3项目产品质量' || '4安全管理' || '5加分项')) {
-      dispatch({
-        type:'qualityassessment/getTargetValue',
-        payload:selectedKeys[0]
-      })
-      getlist(selectedKeys);
-      setSelectId(selectedKeys[0])
+    if (selectedKeys && selectedKeys.length > 0) {
+      if (title !== ('1项目管理' && '2服务质量' && '3项目产品质量' && '4安全管理' && '5加分项')) {
+        dispatch({
+          type: 'qualityassessment/getTargetValue',
+          payload: selectedKeys[0]
+        })
+        getlist(selectedKeys);
+        setSelectId(selectedKeys[0])
+      }
     }
   }
 
@@ -191,7 +167,7 @@ function AddScoringRulesmaintenance(props) {
           type: 'qualityassessment/scoreAdd',
           payload: {
             ...value,
-            assessType:value.assessType === '1' ? '功能开发' :'系统运维'
+            assessType: value.assessType === '1' ? '功能开发' : '系统运维'
           }
         })
       }
@@ -273,6 +249,8 @@ function AddScoringRulesmaintenance(props) {
       render: (text, record) => (
         <div>
           <Clause
+            id={id}
+            selectId={selectId}
             formItemLayout={formItemLayout}
             submitClause={newdata => submitClause(newdata)}
             title="编辑详细条款"
@@ -295,8 +273,16 @@ function AddScoringRulesmaintenance(props) {
       getscoredetail();
       // getclausedetail()
       getlist()
+    } else {
+      dispatch({
+        type:'qualityassessment/cleardata'
+      })
     }
   }, [id])
+
+  const handleReset = () => {
+    resetFields('detailed','')
+  }
 
   const handleBack = () => {
     if (scoreSearch) {
@@ -345,10 +331,8 @@ function AddScoringRulesmaintenance(props) {
     onChange: (page) => changePage(page)
   }
 
-  console.log(treeData,'treeData')
   // const functionDevelopment = getTypebyTitle('功能开发');
   const assessmentType = getTypebyTitle('考核类型');
-  console.log('assessmentType: ', assessmentType);
 
   return (
     <PageHeaderWrapper
@@ -481,7 +465,7 @@ function AddScoringRulesmaintenance(props) {
                       <Form.Item label='一级指标满分'>
                         {
                           getFieldDecorator('value1', {
-                            initialValue:treeForm.value1
+                            initialValue: treeForm.value1
                           })
                             (<Input disabled='true' />)
                         }
@@ -492,7 +476,7 @@ function AddScoringRulesmaintenance(props) {
                       <Form.Item label='二级指标'>
                         {
                           getFieldDecorator('target2Name', {
-                            initialValue:treeForm.target2
+                            initialValue: treeForm.target2
                           })
                             (
                               <Input disabled='true' />
@@ -505,7 +489,7 @@ function AddScoringRulesmaintenance(props) {
                       <Form.Item label='二级指标满分'>
                         {
                           getFieldDecorator('value2', {
-                            initialValue:treeForm.value2
+                            initialValue: treeForm.value2
                           })
                             (<Input disabled='true' />)
                         }
@@ -514,8 +498,10 @@ function AddScoringRulesmaintenance(props) {
                     <Col span={13}>
                       <Form.Item label='详细条款'>
                         {
-                          getFieldDecorator('no99', {})
-                            (<Input disabled='true' />)
+                          getFieldDecorator('detailed', {
+
+                          })
+                            (<Input disabled={scoreSearch} />)
                         }
                       </Form.Item>
                     </Col>
@@ -525,17 +511,23 @@ function AddScoringRulesmaintenance(props) {
                         type='primary'
                         style={{ marginRight: 8 }}
                         disabled={scoreSearch}
+                        onClick={() => getlist(selectId)}
                       >
                         查询
                       </Button>
                       <Button
                         disabled={scoreSearch}
-                      >重置</Button>
+                        onClick={handleReset}
+                      >
+                        重置
+                        </Button>
                     </Col>
                   </Form>
 
-                  {id && !scoreSearch && selectId && (
+                  {!scoreSearch && (
                     <Clause
+                      id={id}
+                      selectId={selectId}
                       title='添加详细条款'
                       formItemLayout={formItemLayout}
                       submitClause={newdata => submitClause(newdata)}
@@ -571,9 +563,9 @@ function AddScoringRulesmaintenance(props) {
 AddScoringRulesmaintenance.defaultProps = {
   treeForm: {
     target1: '',
-    target2:'',
-    value1:'',
-    value2:'',
+    target2: '',
+    value1: '',
+    value2: '',
     scoreName: '',
     assessType: ''
   }
@@ -582,14 +574,14 @@ AddScoringRulesmaintenance.defaultProps = {
 
 
 export default Form.create({})(
-  connect(({ qualityassessment, upmsmenu, loading }) => ({
-    maintenanceData: qualityassessment.maintenanceData,
+  connect(({ qualityassessment, upmsmenu,itsmuser, loading }) => ({
     show: upmsmenu.show,
     scoreDetail: qualityassessment.scoreDetail,
     clauseDetail: qualityassessment.clauseDetail,
     clauseList: qualityassessment.clauseList,
     treeArr: qualityassessment.treeArr,
     treeForm: qualityassessment.treeForm,
+    userinfo: itsmuser.userinfo,
     loading: loading.models.qualityassessment
   }))(AddScoringRulesmaintenance)
 )

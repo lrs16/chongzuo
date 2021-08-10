@@ -8,6 +8,7 @@ import {
   ProblemFlowUserList,
   taskFlowUserList,
   releaseUserList,
+  achievementsNextTaskUser
 } from '@/services/user';
 
 export default {
@@ -17,7 +18,8 @@ export default {
     userinfo: '',
     userlist: '',
     problemlist: '',
-    tasklist: ''
+    tasklist: '',
+    achievementlist:''
   },
 
   effects: {
@@ -82,6 +84,14 @@ export default {
         payload: response.data,
       });
     },
+    // 加载绩效下一环节处理人
+    *achievementsNextTaskUser({ payload: { taskId, type } }, { call, put }) {
+      const response = yield call(achievementsNextTaskUser, taskId, type);
+      yield put({
+        type: 'achievementlist',
+        payload: response.data,
+      });
+    },
   },
 
   reducers: {
@@ -110,6 +120,13 @@ export default {
       return {
         ...state,
         tasklist: action.payload,
+      };
+    },
+
+    achievementlist(state, action) {
+      return {
+        ...state,
+        userlist: action.payload,
       };
     },
   },

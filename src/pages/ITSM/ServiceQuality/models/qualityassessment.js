@@ -21,7 +21,9 @@ import {
   scoreDel, // 删除评分细则
   getTypeTree,
   clauseListpage,
-  getTargetValue
+  getTargetValue,
+  scorecardlistPage,
+  updateRemark
 } from '../services/quality';
 
 export default {
@@ -37,7 +39,8 @@ export default {
     clauseDetail:[],
     treeArr:[],
     clauseList:[],
-    treeForm:[]
+    treeForm:[],
+    scorecardArr:[]
   },
 
   effects: {
@@ -212,6 +215,19 @@ export default {
       payload: response
     })
   },
+
+  //  清除服务商、评分细则维护数据
+  *cleardata({ payload }, { call, put }) {
+    yield put ({
+      type:'clearProviderdata',
+      payload: []
+    })
+  },
+
+   //  更新扣分说明
+   *updateRemark({ payload: { id, remark }},{ call, put }) {
+    return yield call(updateRemark,id, remark)
+  }
   },
 
 
@@ -274,6 +290,16 @@ export default {
       return {
         ...state,
         treeForm: action.payload.data
+      }
+    },
+
+    //  清除服务商数据
+    clearProviderdata(state,action) {
+      return {
+        ...state,
+        searchProviderobj: [],
+        contractProviderobj:[],
+        scoreDetail:[]
       }
     },
   }

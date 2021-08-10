@@ -9,7 +9,15 @@ import {
   saveProviderConfirm,
   scoreGetTarget1,
   scoreGetTarget2,
-  getTaskData
+  getTaskData,
+  assessComplete,
+  scorecardSave,
+  scorecardId,
+  scorecardlistPage,
+  scorecardDel,
+  updateRemark,
+  scorecardSubmit,
+  scorecardExport
 } from '../services/serviceperformanceappraisalapi';
 
 export default {
@@ -21,7 +29,9 @@ export default {
     searchProviderobj:{},
     target1:[],
     target2:[],
-    taskData:[]
+    taskData:[],
+    scorecardetail:[],
+    scorecardArr:[]
   },
 
   effects: {
@@ -52,7 +62,6 @@ export default {
 
   //  登记
   *assessRegister({ payload }, { call, put }) {
-    console.log('payload: ', payload);
     const response = yield call(assessRegister,payload);
     if(response.code === 200) {
       router.push({
@@ -67,9 +76,12 @@ export default {
         pathname: `/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtform`,
         query: { taskId, mainId: instanceId, orderNo: assessNo, }  // 这里要加mainId
       });
-      
-
     }
+  },
+
+  //  待办登记
+  *tobeassessRegister({ payload }, { call, put }) {
+    return yield call(assessRegister,payload)
   },
 
   //  保存服务商确认环节信息
@@ -113,10 +125,75 @@ export default {
       type:'taskData',
       payload:response
     })
-  }
   },
 
+  //  流转
+  *assessComplete({ payload }, { call, put }) {
+    return yield call(assessComplete,payload)
+  },
+
+  *scorecardSave({ payload }, { call, put }) {
+    const response = yield call(scorecardSave,payload);
+    if(response.code === 200) {
+      router.push({
+        pathname:'/ITSM/servicequalityassessment/creditcard/creditcardregister',
+        query:{
+          tabid: sessionStorage.getItem('tabid'),
+          closecurrent: true,
+        }
+      });
+      const { id } = response.data;
+      router.push({
+        pathname:'/ITSM/servicequalityassessment/creditcard/creditcardregisterdetail',
+        query:{
+          id,
+          mainId:id,
+          orderNo:id,
+        }
+      })
+    }
+  },
+
+  *getScorecardetail({ payload }, { call, put }) {
+    const response = yield call(scorecardId,payload);
+    yield put ({
+      type:'scorecardetail',
+      payload:response
+    })
+  },
+
+  *getscorecardlistPage({ payload }, { call, put }) {
+    const response = yield call(scorecardlistPage,payload);
+    yield put ({
+      type:'scorecardArr',
+      payload: response
+    })
+  },
+
+  *scorecardDel({ payload }, { call, put }) {
+    return yield call(scorecardDel,payload)
+  },
+
+  //  清空积分卡登记数据
+  *clear({ payload }, { call, put }) {
+    yield put({
+      type:'clearparams',
+      payload:[]
+    })
+  },
+
+  //  提交记分卡
+  *scorecardSubmit({ payload }, { call, put }) {
+    return yield call(scorecardSubmit,payload)
+  },
+
+  *scorecardExport({ payload }, { call, put }) {
+    return yield call(scorecardExport,payload)
+  }
+
  
+
+  },
 
   reducers: {
     maintenanceData(state,action) {
@@ -153,6 +230,27 @@ export default {
         taskData: action.payload.data
       }
     },
+
+    scorecardetail(state,action) {
+      return {
+        ...state,
+        scorecardetail: action.payload.data
+      }
+    },
+
+    scorecardArr(state,action) {
+      return {
+        ...state,
+        scorecardArr: action.payload.data
+      }
+    },
+
+    clearparams(state,action) {
+      return {
+        ...state,
+        scorecardetail:[]
+      }
+    }
 
  
   }

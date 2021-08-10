@@ -136,3 +136,12 @@ export async function getTargetValue(targetId) {
   return request(`/quality/score/getTargetValue?targetId=${targetId}`)
 }
 
+
+//  更新扣分说明
+export async function updateRemark(id,remark) {
+  
+  return request(`/quality/scorecard/updateRemark?id=${id}&remark=${remark}`,{
+    method:'POST',
+    // body:JSON.stringify({id,remark})
+  })
+}

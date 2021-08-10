@@ -105,6 +105,8 @@ function TobedealtList(props) {
       type: 'performanceappraisal/tobeDealtdata'
     })
   }, [])
+
+  console.log(tobeDealtarr,'tobeDealtarr')
   const extra = (
     <>
       <Button type='primary' style={{ marginLeft: 8 }}>查询</Button>

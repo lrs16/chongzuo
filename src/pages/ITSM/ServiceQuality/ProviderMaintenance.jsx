@@ -12,6 +12,7 @@ import {
   Divider,
   Radio
 } from 'antd';
+import { operationPerson } from '@/services/common';
 import moment from 'moment';
 import { connect } from 'dva';
 import router from 'umi/router';
@@ -43,6 +44,7 @@ function ProviderMaintenance(props) {
   } = props;
   const [paginations, setPaginations] = useState({ current: 0, pageSize: 15 });
   const [data, setData] = useState([]);
+  const [performanceLeader, setPerformanceLeader] = useState('')
 
   const searchdata = (values, page, pageSize) => {
     dispatch({
@@ -61,10 +63,23 @@ function ProviderMaintenance(props) {
     })
   }
 
+  const getPerformanceleader = () => {
+    operationPerson().then(res => {
+      const result = (res.data).map(item => {
+        return {
+          key: item.id,
+          value: item.userName
+        }
+      })
+      setPerformanceLeader(result)
+    })
+  }
+
   useEffect(() => {
     validateFields((err, value) => {
       searchdata(value, paginations.current, paginations.pageSize)
     })
+    getPerformanceleader();
   }, [])
 
   const handleDelete = (id) => {
@@ -146,7 +161,11 @@ function ProviderMaintenance(props) {
 
   const newProvider = () => {
     router.push({
-      pathname: '/ITSM/servicequalityassessment/addserviceprovidermaintenance'
+      pathname: '/ITSM/servicequalityassessment/addserviceprovidermaintenance',
+      query: {
+        //  mainId: selectedRows.length ? allmainIds : '',
+        addtab: true,
+      },
     })
   }
 
@@ -228,7 +247,7 @@ function ProviderMaintenance(props) {
             <Col span={8}>
               <Form.Item label='负责人'>
                 {
-                  getFieldDecorator('creator')
+                  getFieldDecorator('director')
                     (<Input />)
                 }
               </Form.Item>
@@ -269,10 +288,13 @@ function ProviderMaintenance(props) {
         </Button>
 
         <Table
+          loading={loading}
           columns={columns}
           dataSource={providerArr.records}
           pagination={pagination}
         />
+
+        
       </Card>
     </PageHeaderWrapper>
   )

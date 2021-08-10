@@ -240,6 +240,7 @@ function ServiceProvidersearch(props) {
         <Button type='primary'>导出数据</Button>
 
         <Table
+          loading={loading}
           columns={columns}
           dataSource={providerArr.records}
           pagination={pagination}

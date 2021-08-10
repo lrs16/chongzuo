@@ -1054,6 +1054,12 @@ export default {
                               component: './ITSM/ServiceQuality/CreditCard/CreditCardRegister'
                             },
                             {
+                              path: '/ITSM/servicequalityassessment/creditcard/creditcardregisterdetail',
+                              name: '记分卡登记详情页',
+                              icon: 'fork',
+                              component: './ITSM/ServiceQuality/CreditCard/CreditCardRegister'
+                            },
+                            {
                               path: '/ITSM/servicequalityassessment/creditcard/creditcardsearch',
                               name: '计分卡查询',
                               icon: 'fork',

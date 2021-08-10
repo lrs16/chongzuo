@@ -49,7 +49,7 @@ function Contract(props) {
       if (!err) {
         const submitData = {
           ...values,
-          id:contract.id || ''
+          id: contract.id || ''
         };
         onSumit(submitData);
         setVisible(false)
@@ -70,6 +70,7 @@ function Contract(props) {
         width={720}
         centered='true'
         maskClosable='true'
+        destroyOnClose={true}
         onClose={handleCancel}
       >
         <Form {...formItemLayout}>
@@ -77,7 +78,7 @@ function Contract(props) {
             {getFieldDecorator('contractNo', {
               initialValue: contract.contractNo
             })
-              (<Input disabled='true'/>)
+              (<Input disabled='true' />)
             }
           </Form.Item>
 
@@ -91,7 +92,7 @@ function Contract(props) {
               ],
               initialValue: contract.contractName
             })
-              (<Input disabled={isEdit}/>)
+              (<Input disabled={isEdit} />)
             }
           </Form.Item>
 
@@ -105,7 +106,10 @@ function Contract(props) {
               ],
               initialValue: moment(contract.signTime)
             })
-              (<DatePicker disabled={isEdit}/>)
+              (<DatePicker
+                disabled={isEdit}
+                format='YYYY-MM-DD HH:mm:ss'
+              />)
             }
           </Form.Item>
 
@@ -119,7 +123,10 @@ function Contract(props) {
               ],
               initialValue: moment(contract.dueTime)
             })
-              (<DatePicker disabled={isEdit}/>)
+              (<DatePicker
+                disabled={isEdit}
+                format='YYYY-MM-DD HH:mm:ss'
+              />)
             }
           </Form.Item>
 
