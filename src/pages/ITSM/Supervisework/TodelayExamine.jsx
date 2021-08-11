@@ -5,6 +5,8 @@ import moment from 'moment';
 import { Card, Row, Col, Form, Input, Select, Button, DatePicker, Table, message, Badge, Popover, Checkbox, Icon, } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
+import SysDict from '@/components/SysDict';
+import Back from './components/Back';
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -20,77 +22,111 @@ const formItemLayout = {
     },
 };
 
-const executestatusmap = [
-    { key: '0', title: '工作中' },
-    { key: '1', title: '延期中' },
-    { key: '2', title: '已超时' },
-    { key: '3', title: '已完成' },
-];
-
-const delayexaminestatusmap = [
-    { key: '0', title: '待审核' },
-    { key: '1', title: '已审核' },
-];
-
 const overtimestatusmap = [
     { key: '0', title: '未超时' },
     { key: '1', title: '即将超时' },
     { key: '2', title: '已超时' },
 ];
 
-const executeresultsmap = [
-    { key: '0', title: '完成' },
-    { key: '1', title: '取消' },
-    { key: '2', title: '失败' },
-];
-
-const delayexamineresultsmap = [
-    { key: '0', title: '通过' },
-    { key: '1', title: '不通过' },
-];
-
 const statusMap = ['green', 'gold', 'red'];
 const statusContent = ['未超时', '即将超时', '已超时'];
+
+const statusMap1 = ['blue', 'orange', 'green'];
+const statusContent1 = ['计划中', '延期中', '已完成'];
 
 function TodelayExamine(props) {
     const pagetitle = props.route.name;
     const {
         loading,
         form: { getFieldDecorator, resetFields, validateFields },
-        getMyWorkList,
+        getWorkQueryLists,
         dispatch,
-        userinfo,
     } = props;
 
     let formThead;
 
+    const [selectdata, setSelectData] = useState('');
     const [expand, setExpand] = useState(false);
     const [selectedRows, setSelectedRows] = useState([]);
+    const [selectedRowKeys, setSelectedRowKeys] = useState([]);
     const [paginations, setPaginations] = useState({ current: 1, pageSize: 15 });
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [tabrecord, setTabRecord] = useState({});
     const [columns, setColumns] = useState([]);
 
-    const rowSelection = {
-        onChange: (index, handleSelect) => {
-            setSelectedRows([...handleSelect])
-        }
-    }
+    const onSelectChange = (RowKeys, Rows) => {
+        setSelectedRowKeys(RowKeys);
+        setSelectedRows(Rows);
+    };
 
-    const queryDept = () => {
+    const rowSelection = {
+        selectedRowKeys,
+        onChange: onSelectChange,
+    };
+
+    const gotoDetail = (record, type) => { // 跳转详情页
+        router.push({
+            pathname: `/ITSM/supervisework/workplandetail`,
+            query: {
+                type,
+                mainId: record.mainId,
+                flowNodeName: record.flowNodeName,
+                status: record.status,
+                checkStatus: record.checkStatus,
+                orderNo: record.no,
+            }
+        })
+    };
+
+    const queryDept = () => { // 登录信息
         dispatch({
             type: 'itsmuser/fetchuser',
         });
     };
 
-    const getList = () => {
+    const getList = () => { // 列表
         dispatch({
-            type: 'supervisemodel/getMyWork',
+            type: 'supervisemodel/getWorkQueryLists',
             payload: {
+                flowNodeName: '工作审核',
+                tab: '3',
                 pageIndex: paginations.current,
                 pageSize: paginations.pageSize,
-                userId: userinfo.userId
             },
+        });
+    };
+
+    const handleCheck = () => { // 审核操作
+        const len = selectedRowKeys.length;
+        if (len === 1) { // 单条数据
+            gotoDetail(selectedRows[0], 'check');
+            // console.log(selectedRows[0], 'check')
+        } else if (len > 1) { // 多条数据
+            message.info('仅支持选择一条数据');
+        } else {
+            message.info('请选择一条数据');
+        }
+        setSelectedRowKeys([]);
+    }
+
+    const reasonSubmit = values => { // 回退
+        const ids = selectedRows.map(item => {
+            return item.id;
+        })
+        dispatch({
+            type: 'supervisemodel/fallback',
+            payload: {
+                mainIds: ids.toString(),
+                ...values,
+            },
+        }).then(res => {
+            if (res.code === 200) {
+                message.info(res.msg);
+                getList();
+            } else {
+                message.error(res.msg);
+                getList();
+            }
         });
     };
 
@@ -121,8 +157,10 @@ function TodelayExamine(props) {
         };
         setTabRecord({ ...newvalues });
         dispatch({
-            type: 'supervisemodel/getMyWork',
+            type: 'supervisemodel/getWorkQueryLists',
             payload: {
+                flowNodeName: '工作审核',
+                tab: '3',
                 ...newvalues,
                 pageIndex: page,
                 pageSize
@@ -141,19 +179,21 @@ function TodelayExamine(props) {
             }
             searchdata(values, 1, paginations.pageSize);
         });
-    }
+    };
+
     const handleReset = () => {
         resetFields();
         dispatch({
-            type: 'supervisemodel/getMyWork',
+            type: 'supervisemodel/getWorkQueryLists',
             payload: {
+                flowNodeName: '工作审核',
+                tab: '3',
                 pageIndex: 1,
                 pageSize: paginations.pageSize,
             },
         })
-    }
+    };
 
-    // 查询
     const extra = (<>
         <Button type="primary" onClick={() => handleSearch()}>查 询</Button>
         <Button style={{ marginLeft: 8 }} onClick={() => handleReset()}>重 置</Button>
@@ -166,14 +206,17 @@ function TodelayExamine(props) {
         >
             {expand ? (<>关 闭 <UpOutlined /></>) : (<>展 开 <DownOutlined /></>)}
         </Button></>
-    )
+    );
 
-    const initialColumns = [
+    const initialColumns = [ // 列表
         {
             title: '工作任务编号',
             dataIndex: 'no',
             key: 'no',
             width: 250,
+            render: (text, record) => {
+                return <a onClick={() => gotoDetail(record)}>{text}</a>
+            },
         },
         {
             title: '填报时间',
@@ -191,7 +234,7 @@ function TodelayExamine(props) {
             title: '工作负责人',
             dataIndex: 'workUser',
             key: 'workUser',
-            width: 150,
+            width: 250,
         },
         {
             title: '督办内容',
@@ -220,6 +263,19 @@ function TodelayExamine(props) {
                 <span>
                     <Badge
                         status={statusMap[statusContent.indexOf(text)]}
+                        text={text} />
+                </span>
+            ),
+        },
+        {
+            title: '工作状态',
+            dataIndex: 'status',
+            key: 'status',
+            width: 100,
+            render: (text) => (
+                <span>
+                    <Badge
+                        status={statusMap1[statusContent1.indexOf(text)]}
                         text={text} />
                 </span>
             ),
@@ -316,8 +372,8 @@ function TodelayExamine(props) {
         },
         {
             title: '延期审核意见',
-            dataIndex: 'b5',
-            key: 'b5',
+            dataIndex: 'checkContent',
+            key: 'checkContent',
             width: 250,
         },
     ];
@@ -355,7 +411,7 @@ function TodelayExamine(props) {
         onShowSizeChange: (page, pageSize) => onShowSizeChange(page, pageSize),
         current: paginations.current,
         pageSize: paginations.pageSize,
-        total: getMyWorkList.total,
+        total: getWorkQueryLists.total,
         showTotal: total => `总共  ${total}  条记录`,
         onChange: (page) => changePage(page),
     };
@@ -380,6 +436,8 @@ function TodelayExamine(props) {
             dispatch({
                 type: 'supervisemodel/downloadMyWorkExcel',
                 payload: {
+                    flowNodeName: '工作审核',
+                    tab: '3',
                     columns: JSON.stringify(exportColumns),
                     ...values,
                     addTime: '',
@@ -415,7 +473,7 @@ function TodelayExamine(props) {
                 window.URL.revokeObjectURL(url);
             })
         })
-    }
+    };
 
     const creataColumns = () => { // 创建列表
         // columns
@@ -428,10 +486,9 @@ function TodelayExamine(props) {
                 width: 150
             };
             if (key === 0) {
-                obj.render = (text) => {
+                obj.render = (text, record) => {
                     return (
-                        // <a onClick={() => gotoDetail(record)}>{text}</a>
-                        <a>{text}</a>
+                        <a onClick={() => gotoDetail(record)}>{text}</a>
                     )
                 }
                 obj.fixed = 'left'
@@ -441,7 +498,7 @@ function TodelayExamine(props) {
             return null;
         }
         )
-    }
+    };
 
     const onCheckAllChange = e => {
         setColumns(e.target.checked ? initialColumns : [])
@@ -464,13 +521,28 @@ function TodelayExamine(props) {
         setColumns(initialColumns);
     }, []);
 
+    // 数据字典匹配
+    const getTypebyTitle = title => {
+        if (selectdata.ischange) {
+            return selectdata.arr.filter(item => item.title === title)[0].children;
+        }
+        return [];
+    };
+    
+    const status = getTypebyTitle('工作状态');
+    const checkresult = getTypebyTitle('审核结果');
+    const checkstatus = getTypebyTitle('审核状态');
+    const result = getTypebyTitle('执行结果');
+    const executestatus = getTypebyTitle('执行状态');
+
     return (
         <PageHeaderWrapper title={pagetitle}>
-            {/* <DictLower
-        typeid="1412301036722327553"
-        ChangeSelectdata={newvalue => setSelectData(newvalue)}
-        style={{ display: 'none' }}
-      /> */}
+            <SysDict
+                typeid="1418501809457528833"
+                commonid="1354288354950123522"
+                ChangeSelectdata={newvalue => setSelectData(newvalue)}
+                style={{ display: 'none' }}
+            />
             <Card>
                 <Row gutter={16}>
                     <Form {...formItemLayout} onSubmit={handleSearch}>
@@ -492,12 +564,12 @@ function TodelayExamine(props) {
                             </Form.Item>
                         </Col>
                         <Col span={8}>
-                            <Form.Item label="执行状态">
-                                {getFieldDecorator('executeStatus', {
+                            <Form.Item label="工作状态">
+                                {getFieldDecorator('status', {
                                     initialValue: '',
                                 })(
                                     <Select placeholder="请选择" allowClear>
-                                        {executestatusmap.map(obj => (
+                                        {status.map(obj => (
                                             <Option key={obj.key} value={obj.title}>
                                                 {obj.title}
                                             </Option>
@@ -508,6 +580,21 @@ function TodelayExamine(props) {
                         </Col>
                         {expand && (
                             <>
+                                <Col span={8}>
+                                    <Form.Item label="执行状态">
+                                        {getFieldDecorator('executeStatus', {
+                                            initialValue: '',
+                                        })(
+                                            <Select placeholder="请选择" allowClear>
+                                                {executestatus.map(obj => (
+                                                    <Option key={obj.key} value={obj.title}>
+                                                        {obj.title}
+                                                    </Option>
+                                                ))}
+                                            </Select>,
+                                        )}
+                                    </Form.Item>
+                                </Col>
                                 <Col span={8}>
                                     <Form.Item label="工作内容">
                                         {getFieldDecorator('content', {
@@ -562,7 +649,7 @@ function TodelayExamine(props) {
                                             initialValue: '',
                                         })(
                                             <Select placeholder="请选择" allowClear>
-                                                {delayexaminestatusmap.map(obj => (
+                                                {checkstatus.map(obj => (
                                                     <Option key={obj.key} value={obj.title}>
                                                         {obj.title}
                                                     </Option>
@@ -592,7 +679,7 @@ function TodelayExamine(props) {
                                             initialValue: '',
                                         })(
                                             <Select placeholder="请选择" allowClear>
-                                                {executeresultsmap.map(obj => (
+                                                {result.map(obj => (
                                                     <Option key={obj.key} value={obj.title}>
                                                         {obj.title}
                                                     </Option>
@@ -706,7 +793,7 @@ function TodelayExamine(props) {
                                             initialValue: '',
                                         })(
                                             <Select placeholder="请选择" allowClear>
-                                                {delayexamineresultsmap.map(obj => (
+                                                {checkresult.map(obj => (
                                                     <Option key={obj.key} value={obj.title}>
                                                         {obj.title}
                                                     </Option>
@@ -751,9 +838,15 @@ function TodelayExamine(props) {
                     </Form>
                 </Row>
 
-                <div style={{ marginBottom: 24 }}>
-                    <Button type="primary" style={{ marginRight: 8 }}>审核</Button>
-                    <Button type="danger" ghost style={{ marginRight: 8 }}>回退</Button>
+                <div>
+                    <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleCheck()}>审核</Button>
+                    <Back
+                        title="填写回退意见"
+                        selectedRows={selectedRows}
+                        reasonSubmit={values => reasonSubmit(values)}
+                    >
+                        <Button type="danger" ghost style={{ marginRight: 8 }} >回退</Button>
+                    </Back>
                     <Button type="primary" onClick={() => download()} style={{ marginRight: 8 }}>导出数据</Button>
                 </div>
                 <div style={{ textAlign: 'right', marginBottom: 8 }}>
@@ -801,7 +894,7 @@ function TodelayExamine(props) {
                     loading={loading}
                     columns={columns}
                     scroll={{ x: 1600 }}
-                    dataSource={getMyWorkList.rows}
+                    dataSource={getWorkQueryLists.rows}
                     pagination={pagination}
                     rowSelection={rowSelection}
                     rowKey={r => r.id}
@@ -812,9 +905,8 @@ function TodelayExamine(props) {
 }
 
 export default Form.create({})(
-    connect(({ supervisemodel, itsmuser, loading }) => ({
-        getMyWorkList: supervisemodel.getMyWorkList,
-        userinfo: itsmuser.userinfo,
+    connect(({ supervisemodel, loading }) => ({
+        getWorkQueryLists: supervisemodel.getworkqueryList,
         loading: loading.models.supervisemodel,
     }))(TodelayExamine),
 );

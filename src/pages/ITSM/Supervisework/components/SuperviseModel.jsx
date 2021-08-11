@@ -45,7 +45,6 @@ function SuperviseModel(props) {
   const {
     form: { getFieldDecorator, validateFields, resetFields },
     children,
-    title,
     userinfo,
     selectedRows
   } = props;
@@ -68,7 +67,8 @@ function SuperviseModel(props) {
   }
 
   const handleopenClick = () => {
-    if (selectedRows.length === 0) {
+    const len = selectedRows.length;
+    if (len === 0) {
       message.info('请至少选择一条数据')
       return false;
     }
@@ -79,11 +79,11 @@ function SuperviseModel(props) {
     <>
       {withClick(children, handleopenClick)}
       <Modal
-        title={title}
+        title='工作督办'
         visible={visible}
         width={1000}
-        centered='true'
-        maskClosable='true'
+        centered
+        maskClosable
         onCancel={handleCancel}
         onOk={handleSubmit}
       >
@@ -99,7 +99,8 @@ function SuperviseModel(props) {
                         message: '请输入'
                       }
                     ],
-                  })(<TextArea rows={4} />)
+                    initialValue: ''
+                  })(<TextArea rows={4}  />)
                 }
               </Form.Item>
             </Col>
@@ -121,6 +122,7 @@ function SuperviseModel(props) {
                   initialValue: moment(new Date()),
                 })(
                   <DatePicker
+                    disabled
                     showTime
                     format="YYYY-MM-DD HH:mm:ss"
                   />)}

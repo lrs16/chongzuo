@@ -13,11 +13,7 @@ import SysUpload from '@/components/SysUpload';
 const { TextArea } = Input;
 const { Option } = Select;
 
-// let startTime;
-// let endTime;
-
 const ExecuteworkEditfillin = React.forwardRef((props, ref) => {
-  const [fileslist, setFilesList] = useState([]);
 
   const attRef = useRef();
   useImperativeHandle(
@@ -38,36 +34,19 @@ const ExecuteworkEditfillin = React.forwardRef((props, ref) => {
     execute
   } = props;
 
+  const [fileslist, setFilesList] = useState([]);
+
   useEffect(() => {
     ChangeFiles(fileslist);
   }, [fileslist]);
 
-  // console.log(execute, 'execute')
-
-  // const onChange = (date, dateString) => {
-  //   setFieldsValue({ plannedStarTtime: moment(dateString) })
-  //   startTime = dateString;
-  // }
-
-  // const endtimeonChange = (date, dateString) => {
-  //   setFieldsValue({ plannedEndTime: moment(dateString) })
-  //   endTime = dateString;
-  // }
-
-  //   const startdisabledDate = (current) => {
-  //     if (startTime || endTime) {
-  //       return current > moment(endTime)
-  //     }
-  //   }
-
-  //   const enddisabledDate = (current) => {
-  //     if (startTime || endTime) {
-  //       return current < moment(startTime)
-  //     }
-  //     return null;
-  //   }
-
   const required = true;
+
+  const disabledDate = (current) => {
+    return current && current < moment(execute.startTime);
+  }
+
+  const newendTime = execute && execute.endTime !== null ? moment(new Date()) : moment(execute.startTime);
 
   return (
     <Row gutter={16}>
@@ -108,14 +87,11 @@ const ExecuteworkEditfillin = React.forwardRef((props, ref) => {
                   message: '请输入实际开始时间'
                 }
               ],
-              initialValue: execute && execute.startTime === null ? moment(new Date()) : moment(execute.startTime),
+              initialValue: execute.startTime === null ? moment(new Date()) : moment(execute.startTime)
             })(
               <DatePicker
-                // onChange={onChange}
-                // disabledDate={startdisabledDate}
                 showTime
                 format="YYYY-MM-DD HH:mm:ss"
-              // disabled={type === 'list'}
               />)}
           </Form.Item>
         </Col>
@@ -129,11 +105,10 @@ const ExecuteworkEditfillin = React.forwardRef((props, ref) => {
                   message: '请输入实际结束时间'
                 }
               ],
-              initialValue: execute && execute.endTime === null ? moment(new Date()) : moment(execute.endTime),
+              initialValue: execute.endTime === null ? moment(new Date()) : moment(newendTime),
             })(<DatePicker
-              // onChange={endtimeonChange}
-              //   disabledDate={enddisabledDate}
               showTime
+              sabledDate={disabledDate}
               format="YYYY-MM-DD HH:mm:ss"
             />)}
           </Form.Item>

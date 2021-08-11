@@ -38,9 +38,8 @@ function MyresponWork(props) {
     const {
         loading,
         form: { getFieldDecorator, resetFields, validateFields },
-        getMyWorkList,
+        getWorkQueryLists,
         dispatch,
-        userinfo,
     } = props;
 
     let formThead;
@@ -64,16 +63,17 @@ function MyresponWork(props) {
         onChange: onSelectChange,
     };
 
-    const gotoDetail = (record, type) => { // 跳转详情页
+    const gotoDetail = (record, delay) => { // 跳转详情页
         router.push({
             pathname: `/ITSM/supervisework/workplandetail`,
             query: {
-                type,
+                delay,
                 mainId: record.mainId,
                 flowNodeName: record.flowNodeName,
                 status: record.status,
                 checkStatus: record.checkStatus,
                 orderNo: record.no,
+                workUser: record.workUser
             }
         })
     };
@@ -81,38 +81,36 @@ function MyresponWork(props) {
     const handleExecute = () => { // 执行操作
         const len = selectedRowKeys.length;
         if (len === 1) { // 单条数据
-            gotoDetail(selectedRows[0], 'execute');
+            if (selectedRows[0].flowNodeName === '工作执行' && selectedRows[0].status !== '已完成') {
+                gotoDetail(selectedRows[0]);
+            } else {
+                message.info('执行的条件: 工作状态不可以是已完成');
+                return false;
+            }
         } else if (len > 1) { // 多条数据
             message.info('仅支持选择一条数据');
         } else {
             message.info('请选择一条数据');
         }
         setSelectedRowKeys([]);
+        return null;
     }
 
     const handleDelay = () => { // 延期操作
-        const len = selectedRows.length;
-        if (len === 0) {
+        const len = selectedRowKeys.length;
+        if (len === 1) { // 单条数据
+            if (selectedRows[0].status === '计划中' && selectedRows[0].timeoutStatus !== '已超时') {
+                gotoDetail(selectedRows[0], 'delay');
+            } else {
+                message.info('延期的条件: 超时状态不可以是已超时');
+                return false;
+            }
+        } else if (len > 1) { // 多条数据
+            message.info('仅支持选择一条数据');
+        } else {
             message.info('请选择一条数据');
-            return false;
         }
-        const res = selectedRows.every(item => {
-            if (item.status !== '延期中') {
-              return true;
-            }
-      
-            if (item.status === '延期中') {
-              message.info('延期的条件为: 执行状态不可以是延期中,且审核状态为: 已审核');
-              return false;
-            }
-            return null;
-        })
-        if (res === false) {
-           return false;
-        }
-        if (res === true) {
-           gotoDetail(selectedRows[0], 'delay')
-        }
+        setSelectedRowKeys([]);
         return null;
     };
 
@@ -124,12 +122,12 @@ function MyresponWork(props) {
 
     const getList = () => { // 列表
         dispatch({
-            type: 'supervisemodel/getMyWork',
+            type: 'supervisemodel/getWorkQueryLists',
             payload: {
                 flowNodeName: '工作执行',
+                tab: '2',
                 pageIndex: paginations.current,
                 pageSize: paginations.pageSize,
-                userId: userinfo.userId
             },
         });
     };
@@ -161,9 +159,10 @@ function MyresponWork(props) {
         };
         setTabRecord({ ...newvalues });
         dispatch({
-            type: 'supervisemodel/getMyWork',
+            type: 'supervisemodel/getWorkQueryLists',
             payload: {
                 flowNodeName: '工作执行',
+                tab: '2',
                 ...newvalues,
                 pageIndex: page,
                 pageSize
@@ -187,9 +186,10 @@ function MyresponWork(props) {
     const handleReset = () => {
         resetFields();
         dispatch({
-            type: 'supervisemodel/getMyWork',
+            type: 'supervisemodel/getWorkQueryLists',
             payload: {
                 flowNodeName: '工作执行',
+                tab: '2',
                 pageIndex: 1,
                 pageSize: paginations.pageSize,
             },
@@ -216,6 +216,9 @@ function MyresponWork(props) {
             dataIndex: 'no',
             key: 'no',
             width: 250,
+            render: (text, record) => {
+                return <a onClick={() => gotoDetail(record)}>{text}</a>
+            },
         },
         {
             title: '填报时间',
@@ -233,7 +236,7 @@ function MyresponWork(props) {
             title: '工作负责人',
             dataIndex: 'workUser',
             key: 'workUser',
-            width: 150,
+            width: 250,
         },
         {
             title: '督办内容',
@@ -371,8 +374,8 @@ function MyresponWork(props) {
         },
         {
             title: '延期审核意见',
-            dataIndex: 'b5',
-            key: 'b5',
+            dataIndex: 'checkContent',
+            key: 'checkContent',
             width: 250,
         },
     ];
@@ -410,7 +413,7 @@ function MyresponWork(props) {
         onShowSizeChange: (page, pageSize) => onShowSizeChange(page, pageSize),
         current: paginations.current,
         pageSize: paginations.pageSize,
-        total: getMyWorkList.total,
+        total: getWorkQueryLists.total,
         showTotal: total => `总共  ${total}  条记录`,
         onChange: (page) => changePage(page),
     };
@@ -436,6 +439,7 @@ function MyresponWork(props) {
                 type: 'supervisemodel/downloadMyWorkExcel',
                 payload: {
                     flowNodeName: '工作执行',
+                    tab: '2',
                     columns: JSON.stringify(exportColumns),
                     ...values,
                     addTime: '',
@@ -484,10 +488,9 @@ function MyresponWork(props) {
                 width: 150
             };
             if (key === 0) {
-                obj.render = (text) => {
+                obj.render = (text, record) => {
                     return (
-                        // <a onClick={() => gotoDetail(record)}>{text}</a>
-                        <a>{text}</a>
+                        <a onClick={() => gotoDetail(record)}>{text}</a>
                     )
                 }
                 obj.fixed = 'left'
@@ -527,6 +530,7 @@ function MyresponWork(props) {
         }
         return [];
     };
+
     const status = getTypebyTitle('工作状态');
     const checkresult = getTypebyTitle('审核结果');
     const checkstatus = getTypebyTitle('审核状态');
@@ -836,7 +840,7 @@ function MyresponWork(props) {
                     </Form>
                 </Row>
 
-                <div style={{ marginBottom: 24 }}>
+                <div>
                     <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleExecute()}>执行</Button>
                     <Button type="danger" ghost style={{ marginRight: 8 }} onClick={() => handleDelay()}>延期</Button>
                     <Button type="primary" onClick={() => download()} style={{ marginRight: 8 }}>导出数据</Button>
@@ -886,7 +890,7 @@ function MyresponWork(props) {
                     loading={loading}
                     columns={columns}
                     scroll={{ x: 1600 }}
-                    dataSource={getMyWorkList.rows}
+                    dataSource={getWorkQueryLists.rows}
                     pagination={pagination}
                     rowSelection={rowSelection}
                     rowKey={r => r.id}
@@ -897,9 +901,8 @@ function MyresponWork(props) {
 }
 
 export default Form.create({})(
-    connect(({ supervisemodel, itsmuser, loading }) => ({
-        getMyWorkList: supervisemodel.getMyWorkList,
-        userinfo: itsmuser.userinfo,
+    connect(({ supervisemodel, loading }) => ({
+        getWorkQueryLists: supervisemodel.getworkqueryList,
         loading: loading.models.supervisemodel,
     }))(MyresponWork),
 );

@@ -946,6 +946,12 @@ export default {
                           icon: 'fork',
                           component: './ITSM/Supervisework/QueryWork'
                         },
+                        {
+                          path: '/ITSM/supervisework/queryworkdetails',
+                          name: '工作查询详情',
+                          icon: 'control',
+                          component: './ITSM/Supervisework/QueryWorkDetails',
+                        },
                       ]
                     },
                     {
@@ -1067,6 +1073,84 @@ export default {
                             },
                           ]
                         }
+                      ]
+                    },
+                    {
+                      path: '/ITSM/dutymanage',
+                      name: '值班工作管理',
+                      icon: 'control',
+                      routes: [
+                        {
+                          path: '/ITSM/dutymanage',
+                          redirect: '/ITSM/dutymanage/dutyconfiguration'
+                        },
+                        {
+                          path: '/ITSM/dutymanage/dutyconfiguration',
+                          name: '值班配置',
+                          icon: 'cloud-server',
+                          routes: [
+                            {
+                              path: '/ITSM/dutymanage/dutyconfiguration/dutyclassessetting',
+                              name: '班次设置',
+                              icon: 'fork',
+                              component: './ITSM/Dutymanage/DutyConfiguration/DutyclassesSetting'
+                            },
+                            {
+                              path: '/ITSM/dutymanage/dutyconfiguration/dutyclassessetting/newclasses',
+                              name: '新增班次',
+                              icon: 'fork',
+                              component: './ITSM/Dutymanage/DutyConfiguration/NewClasses'
+                            },
+                            {
+                              path: '/ITSM/dutymanage/dutyconfiguration/dutypersonnelsetting',
+                              name: '值班人员设置',
+                              icon: 'fork',
+                              component: './ITSM/Dutymanage/DutyConfiguration/DutypersonnelSetting'
+                            },
+                            {
+                              path: '/ITSM/dutymanage/dutyconfiguration/dutyaccordingsetting',
+                              name: '排班设置',
+                              icon: 'fork',
+                              component: './ITSM/Dutymanage/DutyConfiguration/DutyaccordingSetting'
+                            },
+                            {
+                              path: '/ITSM/dutymanage/dutyconfiguration/dutyaccordingsearch',
+                              name: '排班查询',
+                              icon: 'fork',
+                              component: './ITSM/Dutymanage/DutyConfiguration/DutyaccordingSearch'
+                            },
+                          ]
+                        },
+                        {
+                          path: '/ITSM/dutymanage/dutyhandovermanage',
+                          name: '值班交接管理',
+                          icon: 'cloud-server',
+                          routes: [
+                            {
+                              path: '/ITSM/dutymanage/dutyhandovermanage',
+                              redirect: '/ITSM/dutymanage/dutyhandovermanage/mydutyhandover'
+                            },
+                            {
+                              path: '/ITSM/dutymanage/dutyhandovermanage/mydutyhandover',
+                              name: '我的值班交接',
+                              icon: 'fork',
+                              component: './ITSM/Dutymanage/DutyHandovermanage/MydutyHandover',
+                            },
+                            {
+                              path: '/ITSM/dutymanage/dutyhandovermanage/mydutyhandover/newhandover',
+                              name: '新增值班交接',
+                              icon: 'fork',
+                              component: './ITSM/Dutymanage/DutyHandovermanage/NewHandover'
+                            },
+                            {
+                              path: '/ITSM/dutymanage/dutyhandovermanage/mydutyhandoversearch',
+                              name: '值班交接查询',
+                              icon: 'fork',
+                              component: './ITSM/Dutymanage/DutyHandovermanage/MydutyHandoverSearch'
+                            },
+                          ]
+                        },
+
                       ]
                     },
                     {

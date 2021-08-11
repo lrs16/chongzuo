@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
 import router from 'umi/router';
 import moment from 'moment';
-import { Card, Row, Col, Form, Input, Select, Button, DatePicker, Table, message, Badge, Popover, Checkbox, Icon, } from 'antd';
+import { Card, Row, Col, Form, Input, Select, Button, DatePicker, Table, Badge, Popover, Checkbox, Icon, message } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import SysDict from '@/components/SysDict';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 
 const { Option } = Select;
@@ -20,33 +21,10 @@ const formItemLayout = {
     },
 };
 
-const executestatusmap = [
-    { key: '0', title: '工作中' },
-    { key: '1', title: '延期中' },
-    { key: '2', title: '已超时' },
-    { key: '3', title: '已完成' },
-];
-
-const delayexaminestatusmap = [
-    { key: '0', title: '待审核' },
-    { key: '1', title: '已审核' },
-];
-
 const overtimestatusmap = [
     { key: '0', title: '未超时' },
     { key: '1', title: '即将超时' },
     { key: '2', title: '已超时' },
-];
-
-const executeresultsmap = [
-    { key: '0', title: '完成' },
-    { key: '1', title: '取消' },
-    { key: '2', title: '失败' },
-];
-
-const delayexamineresultsmap = [
-    { key: '0', title: '通过' },
-    { key: '1', title: '不通过' },
 ];
 
 const statusMap = ['green', 'gold', 'red'];
@@ -59,13 +37,15 @@ function TodelayExamine(props) {
         form: { getFieldDecorator, resetFields, validateFields },
         getWorkQueryLists,
         dispatch,
-        userinfo,
+        // userinfo,
     } = props;
 
     let formThead;
 
     const [expand, setExpand] = useState(false);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [selectedRows, setSelectedRows] = useState([]);
+    const [selectdata, setSelectData] = useState('');
     const [paginations, setPaginations] = useState({ current: 1, pageSize: 15 });
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [tabrecord, setTabRecord] = useState({});
@@ -75,7 +55,7 @@ function TodelayExamine(props) {
         onChange: (index, handleSelect) => {
             setSelectedRows([...handleSelect])
         }
-    }
+    };
 
     const queryDept = () => {
         dispatch({
@@ -87,11 +67,22 @@ function TodelayExamine(props) {
         dispatch({
             type: 'supervisemodel/getWorkQueryLists',
             payload: {
+                tab: '4',
                 pageIndex: paginations.current,
                 pageSize: paginations.pageSize,
-                userId: userinfo.userId
             },
         });
+    };
+
+    //  打开查询详情页
+    const gotoDetail = (record) => {
+        router.push({
+            pathname: `/ITSM/supervisework/queryworkdetails`,
+            query: {
+                mainId: record.mainId,
+                No: record.no,
+            }
+        })
     };
 
     const searchdata = (values, page, pageSize) => {
@@ -124,6 +115,7 @@ function TodelayExamine(props) {
             type: 'supervisemodel/getWorkQueryLists',
             payload: {
                 ...newvalues,
+                tab: '4',
                 pageIndex: page,
                 pageSize
             },
@@ -141,17 +133,19 @@ function TodelayExamine(props) {
             }
             searchdata(values, 1, paginations.pageSize);
         });
-    }
+    };
+
     const handleReset = () => {
         resetFields();
         dispatch({
             type: 'supervisemodel/getWorkQueryLists',
             payload: {
+                tab: '4',
                 pageIndex: 1,
                 pageSize: paginations.pageSize,
             },
         })
-    }
+    };
 
     // 查询
     const extra = (<>
@@ -166,7 +160,7 @@ function TodelayExamine(props) {
         >
             {expand ? (<>关 闭 <UpOutlined /></>) : (<>展 开 <DownOutlined /></>)}
         </Button></>
-    )
+    );
 
     const initialColumns = [
         {
@@ -174,6 +168,9 @@ function TodelayExamine(props) {
             dataIndex: 'no',
             key: 'no',
             width: 250,
+            render: (text, record) => {
+                return <a onClick={() => gotoDetail(record)}>{text}</a>
+            },
         },
         {
             title: '填报时间',
@@ -191,7 +188,7 @@ function TodelayExamine(props) {
             title: '工作负责人',
             dataIndex: 'workUser',
             key: 'workUser',
-            width: 150,
+            width: 250,
         },
         {
             title: '督办内容',
@@ -316,8 +313,8 @@ function TodelayExamine(props) {
         },
         {
             title: '延期审核意见',
-            dataIndex: 'b5',
-            key: 'b5',
+            dataIndex: 'checkContent',
+            key: 'checkContent',
             width: 250,
         },
     ];
@@ -380,6 +377,7 @@ function TodelayExamine(props) {
             dispatch({
                 type: 'supervisemodel/downloadWorkQueryExcels',
                 payload: {
+                    tab: '4',
                     columns: JSON.stringify(exportColumns),
                     ...values,
                     addTime: '',
@@ -415,7 +413,32 @@ function TodelayExamine(props) {
                 window.URL.revokeObjectURL(url);
             })
         })
-    }
+    };
+
+    const handleDelete = () => { // 删除
+        const len = selectedRows.length;
+        const deleteIds = selectedRows.map(res => {
+            return res.mainId
+        })
+        if (len === 0) {
+            message.info('至少选择一条数据');
+            return false;
+        }
+        return dispatch({
+            type: 'supervisemodel/taskDelete',
+            payload: {
+                mainIds: deleteIds.toString()
+            }
+        }).then(res => {
+            if (res.code === 200) {
+                message.success(res.msg);
+                getList();
+            } else {
+                message.info(res.msg);
+                getList();
+            }
+        })
+    };
 
     const creataColumns = () => { // 创建列表
         // columns
@@ -428,10 +451,9 @@ function TodelayExamine(props) {
                 width: 150
             };
             if (key === 0) {
-                obj.render = (text) => {
+                obj.render = (text, record) => {
                     return (
-                        // <a onClick={() => gotoDetail(record)}>{text}</a>
-                        <a>{text}</a>
+                        <a onClick={() => gotoDetail(record)}>{text}</a>
                     )
                 }
                 obj.fixed = 'left'
@@ -441,7 +463,7 @@ function TodelayExamine(props) {
             return null;
         }
         )
-    }
+    };
 
     const onCheckAllChange = e => {
         setColumns(e.target.checked ? initialColumns : [])
@@ -464,13 +486,28 @@ function TodelayExamine(props) {
         setColumns(initialColumns);
     }, []);
 
+    // 数据字典匹配
+    const getTypebyTitle = title => {
+        if (selectdata.ischange) {
+            return selectdata.arr.filter(item => item.title === title)[0].children;
+        }
+        return [];
+    };
+
+    const status = getTypebyTitle('工作状态');
+    const checkresult = getTypebyTitle('审核结果');
+    const checkstatus = getTypebyTitle('审核状态');
+    const result = getTypebyTitle('执行结果');
+    const executestatus = getTypebyTitle('执行状态');
+
     return (
         <PageHeaderWrapper title={pagetitle}>
-            {/* <DictLower
-        typeid="1412301036722327553"
-        ChangeSelectdata={newvalue => setSelectData(newvalue)}
-        style={{ display: 'none' }}
-      /> */}
+            <SysDict
+                typeid="1418501809457528833"
+                commonid="1354288354950123522"
+                ChangeSelectdata={newvalue => setSelectData(newvalue)}
+                style={{ display: 'none' }}
+            />
             <Card>
                 <Row gutter={16}>
                     <Form {...formItemLayout} onSubmit={handleSearch}>
@@ -492,12 +529,12 @@ function TodelayExamine(props) {
                             </Form.Item>
                         </Col>
                         <Col span={8}>
-                            <Form.Item label="执行状态">
-                                {getFieldDecorator('executeStatus', {
+                            <Form.Item label="工作状态">
+                                {getFieldDecorator('status', {
                                     initialValue: '',
                                 })(
                                     <Select placeholder="请选择" allowClear>
-                                        {executestatusmap.map(obj => (
+                                        {status.map(obj => (
                                             <Option key={obj.key} value={obj.title}>
                                                 {obj.title}
                                             </Option>
@@ -508,6 +545,21 @@ function TodelayExamine(props) {
                         </Col>
                         {expand && (
                             <>
+                                <Col span={8}>
+                                    <Form.Item label="执行状态">
+                                        {getFieldDecorator('executeStatus', {
+                                            initialValue: '',
+                                        })(
+                                            <Select placeholder="请选择" allowClear>
+                                                {executestatus.map(obj => (
+                                                    <Option key={obj.key} value={obj.title}>
+                                                        {obj.title}
+                                                    </Option>
+                                                ))}
+                                            </Select>,
+                                        )}
+                                    </Form.Item>
+                                </Col>
                                 <Col span={8}>
                                     <Form.Item label="工作内容">
                                         {getFieldDecorator('content', {
@@ -562,7 +614,7 @@ function TodelayExamine(props) {
                                             initialValue: '',
                                         })(
                                             <Select placeholder="请选择" allowClear>
-                                                {delayexaminestatusmap.map(obj => (
+                                                {checkstatus.map(obj => (
                                                     <Option key={obj.key} value={obj.title}>
                                                         {obj.title}
                                                     </Option>
@@ -592,7 +644,7 @@ function TodelayExamine(props) {
                                             initialValue: '',
                                         })(
                                             <Select placeholder="请选择" allowClear>
-                                                {executeresultsmap.map(obj => (
+                                                {result.map(obj => (
                                                     <Option key={obj.key} value={obj.title}>
                                                         {obj.title}
                                                     </Option>
@@ -706,7 +758,7 @@ function TodelayExamine(props) {
                                             initialValue: '',
                                         })(
                                             <Select placeholder="请选择" allowClear>
-                                                {delayexamineresultsmap.map(obj => (
+                                                {checkresult.map(obj => (
                                                     <Option key={obj.key} value={obj.title}>
                                                         {obj.title}
                                                     </Option>
@@ -751,8 +803,9 @@ function TodelayExamine(props) {
                     </Form>
                 </Row>
 
-                <div style={{ marginBottom: 24 }}>
+                <div>
                     <Button type="primary" onClick={() => download()} style={{ marginRight: 8 }}>导出数据</Button>
+                    <Button type="danger" ghost style={{ marginRight: 8 }} onClick={() => handleDelete()}>删除</Button>
                 </div>
                 <div style={{ textAlign: 'right', marginBottom: 8 }}>
                     <Popover

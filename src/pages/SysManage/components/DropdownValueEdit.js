@@ -89,7 +89,7 @@ class DropdownValueEdit extends Component {
                 rules: [{
                   required: true,
                   message: '请输入正确的字典类型',
-                  pattern: /^([A-Za-z\\.]{2,32})$/,
+                  pattern: /^([A-Za-z\\._]{2,32})$/,
                 }],
                 initialValue: dictType || '',
               })(<Input allowClear />)}

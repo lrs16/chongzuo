@@ -3,27 +3,24 @@ import {
   message,
 } from 'antd';
 import {
-  saveForm,
-  submitForm, // 填报表单提交到工作负责人
   startFlow,
+  saveForm,
+  delaySave, // 延期保存
+  submitForm, // 提交 填报表单提交到工作负责人
   openFlow,
   getMyWorkList,
   downloadMyWorkExcel,
   saveSupervise,
   getWorkQueryList,
   downloadWorkQueryExcel,
-  
-//   censorshipSubmit,
-//   fallback,
-//   batchCheck,
-//   batchToCheck,
-//   getOperationQueryList,
-//   openView,
+  delayToCheck, // 延期送审
+  fallback,
+  openView,
+  getSuperviseList, // 获取督办列表
   taskDelete,
-//   submit,
-//   downloadQueryExcel,
-//   delay,
   getWorkUserList, // 工作负责人
+  responseAccpt, // 接单
+  toCheck, // 审核
 } from '../services/superviseapi';
 
 const replacerec = values => {
@@ -40,13 +37,11 @@ export default {
   namespace: 'supervisemodel',
 
   state: {
-    // checkList: [],
     getMyWorkList: [],  // 工作列表
     getworkqueryList: [], // 工作督办查询列表
     openFlowList: [],
-    // getsuperviseList: [],
-    // queryList: [],
-    // openViewlist: [],
+    openViewlist: [],
+    getSuperviseLists: [], // 获取督办列表
     superviseworkPersonArr: [] // 工作负责人列表
   },
 
@@ -77,10 +72,10 @@ export default {
     //  除登记其他的表单保存
     *formSave({ payload }, { call }) {
       const values = replacerec(payload);
-      return yield call(saveForm, values)
+      return yield call(saveForm, values);
     },
-    
-    //  填报表单提交到工作负责人
+
+    //  提交 --填报表单提交到工作负责人 （提交前添加、保存）
     *tosubmitForm({ payload }, { call }) {
       const response = yield call(startFlow);
       if (response.code === 200) {
@@ -92,6 +87,16 @@ export default {
         if (saveresponse.code === 200) {
           return yield call(submitForm, values);
         }
+      }
+      return false;
+    },
+
+    //  提交 --填报表单提交到工作负责人 （提交前只进行保存）
+    *tosubmitForm1({ payload }, { call }) {
+      const values = replacerec(payload);
+      const saveresponse = yield call(saveForm, values);
+      if (saveresponse.code === 200) {
+        return yield call(submitForm, values);
       }
       return false;
     },
@@ -131,61 +136,61 @@ export default {
       return yield call(saveSupervise, payload);
     },
 
+    *todelaySave({ payload }, { call }) {
+      return yield call(delaySave, payload);
+    },
 
-    // //  周报我的作业计划列表
-    // *weekmyTasklist({ payload }, { call, put }) {
-    //   return yield call(myTasklist, payload);
-    // },
-
-    // //  提交送审人
-    // *censorshipSubmit({ payload }, { call, put }) {
-    //   return yield call(censorshipSubmit, payload)
-    // },
-
-    //  我的创建作业-下载
-    *downloadMyWorkExcel({ payload }, { call}) {
+    //  工作列表-下载
+    *downloadMyWorkExcel({ payload }, { call }) {
       return yield call(downloadMyWorkExcel, payload);
     },
 
-    //  我的创建作业-下载
-    *downloadWorkQueryExcels({ payload }, { call}) {
+    //  工作查询列表-下载
+    *downloadWorkQueryExcels({ payload }, { call }) {
       return yield call(downloadWorkQueryExcel, payload);
     },
 
-    // //  回退
-    // *fallback({ payload }, { call, put }) {
-    //   return yield call(fallback, payload)
-    // },
+    //  回退
+    *fallback({ payload }, { call }) {
+      return yield call(fallback, payload);
+    },
 
-    // //  送审
-    // *batchToCheck({ payload }, { call, put }) {
-    //   return yield call(batchToCheck, payload)
-    // },
-    // //  审核
-    // *batchCheck({ payload }, { call, put }) {
-    //   const values = replacerec(payload);
-    //   return yield call(batchCheck, values)
-    // },
+    // 审核前保存
+    *toChecks({ payload }, { call }) {
+      const values = replacerec(payload);
+      const saveresponse = yield call(saveForm, values);
+      if (saveresponse.code === 200) {
+        return yield call(toCheck, values);
+      }
+      return false;
+    },
 
-    // //  我的作业计划查询列表
-    // *getOperationQueryList({ payload }, { call, put }) {
-    //   const response = yield call(getOperationQueryList, payload);
-    //   yield put({
-    //     type: 'queryList',
-    //     payload: response
-    //   })
-    // },
-    // //  我的作业计划查询详情
-    // *openView({ payload }, { call, put }) {
-    //   const response = yield call(openView, payload);
-    //   yield put({
-    //     type: 'openViewlist',
-    //     payload: response
-    //   })
-    // },
+    // 接单
+    *responseAccpts({ payload }, { call }) {
+      return yield call(responseAccpt, payload);
+    },
+
+    // 工作督办查询详情
+    *openViews({ payload }, { call, put }) {
+      const response = yield call(openView, payload);
+      yield put({
+        type: 'openViewlist',
+        payload: response
+      })
+    },
+
+    // 获取督办列表
+    *togetSuperviseList({ payload }, { call, put }) {
+      const response = yield call(getSuperviseList, payload);
+      yield put({
+        type: 'getSuperviseLists',
+        payload: response
+      })
+    },
+
     //  删除
     *taskDelete({ payload }, { call }) {
-      return yield call(taskDelete, payload)
+      return yield call(taskDelete, payload);
     },
 
     //  粘贴
@@ -197,21 +202,15 @@ export default {
       })
     },
 
-    // //  确定执行提交
-    // *submit({ payload }, { call, put }) {
-    //   const values = replacerec(payload);
-    //   return yield call(submit, values)
-    // },
-
-    // //  下载查询页
-    // *downloadQueryExcel({ payload }, { call, put }) {
-    //   return yield call(downloadQueryExcel, payload)
-    // },
-
-    // //  确定延期
-    // *delay({ payload }, { call, put }) {
-    //   return yield call(delay, payload)
-    // },
+    //  延期送审
+    *delayToChecks({ payload }, { call }) {
+      const values = replacerec(payload);
+      const saveresponse = yield call(delaySave, values);
+      if (saveresponse.code === 200) {
+        return yield call(delayToCheck, values);
+      }
+      return false;
+    },
 
     *getWorkUserList({ payload }, { call, put }) {
       const response = yield call(getWorkUserList, payload);
@@ -244,26 +243,19 @@ export default {
       }
     },
 
-    // getsuperviseList(state, action) {
-    //   return {
-    //     ...state,
-    //     getsuperviseList: action.payload
-    //   }
-    // },
+    openViewlist(state, action) {
+      return {
+        ...state,
+        openViewlist: action.payload.data
+      }
+    },
 
-    // queryList(state, action) {
-    //   return {
-    //     ...state,
-    //     queryList: action.payload.data
-    //   }
-    // },
-
-    // openViewlist(state, action) {
-    //   return {
-    //     ...state,
-    //     openViewlist: action.payload.data
-    //   }
-    // },
+    getSuperviseLists(state, action) {
+      return {
+        ...state,
+        getSuperviseLists: action.payload.data
+      }
+    },
 
     superviseworkPersonArr(state, action) {
       return {

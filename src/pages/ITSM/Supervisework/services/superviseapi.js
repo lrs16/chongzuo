@@ -1,132 +1,36 @@
 import request from '@/utils/request';
 
-//  启动流程
-export async function startFlow() {
+// *****工作督办流程管理
+
+export async function startFlow() { // 新建单
   return request(`/work/flow/add`); 
 }
 
-//  保存所有表单
-export async function saveForm(params) {
-  return request(`/work/flow/save`,{
-    method:'POST',
-    data:params,
-    requestType:'form'
-  })
-}
-
-//  填报表单提交到工作负责人
-export async function submitForm(params) {
-  return request(`/work/flow/submit`,{
-    method:'POST',
-    data:params,
-    requestType:'form'
-  })
-}
-
-//  打开待办
-export async function openFlow(mainId) {
-  return request(`/work/flow/openFlow?mainId=${mainId}`)
-}
-
-//  工作列表
-export async function getMyWorkList(params) {
-  return request(`/work/form/getMyWork`,{
-    method:'POST',
-    data:params,
-    requestType:'form'
-  })
-}
-
-//  工作督办查询列表
-export async function getWorkQueryList(params) {
-  return request(`/work/form/getWorkQueryList`,{
-    method:'POST',
-    data:params,
-    requestType:'form'
-  })
-}
-
-// //  送审提交
-// export async function censorshipSubmit(submitParams) {
-//   return request(`/operation/flow/batchToCheck`,{
-//     method:'POST',
-//     data: submitParams,
-//     requestType: 'form'
-//   })
-// }
-
-//  保存督办
-export async function saveSupervise(params) {
-  return request(`/work/flow/saveSupervise`,{
-    method:'POST',
+export async function toCheck(params) { // 审核 /work/flow/check
+  return request(`/work/flow/check`, {
+    method: 'POST',
     data: params,
     requestType:'form'
-  })
+  });
 }
 
-//  导出-我的创建工作
-export async function downloadMyWorkExcel(params) {
-  return request(`/work/form/downloadMyWorkExcel`,{
+export async function delaySave(params) { // 延期保存
+  return request(`/work/flow/delaySave`,{
     method:'POST',
-    data:params,
-    requestType:'form',
-    responseType:'blob'
+    data: params,
+    requestType: 'form'
   })
 }
 
-//  导出-工作查询列表
-export async function downloadWorkQueryExcel(params) {
-  return request(`/work/form/downloadWorkQueryExcel`,{
+export async function delayToCheck(params) { // 延期送审
+  return request(`/work/flow/delayToCheck`,{
     method:'POST',
-    data:params,
-    requestType:'form',
-    responseType:'blob'
+    data: params,
+    requestType: 'form'
   })
 }
 
-// //  回退
-// export async function fallback(params) {
-//   return request(`/operation/flow/fallback`,{
-//     method:'POST',
-//     data: params,
-//     requestType: 'form'
-//   })
-// }
-
-// //  单条或者批量审核
-// export async function batchCheck(submitParams) {
-//   return request(`/operation/flow/batchCheck`,{
-//     method:'POST',
-//     data: submitParams,
-//     requestType: 'form'
-//   })
-// }
-
-// //  单条或者批量送审
-// export async function batchToCheck(submitParams) {
-//   return request(`/operation/flow/batchToCheck`,{
-//     method:'POST',
-//     data: submitParams,
-//     requestType: 'form'
-//   })
-// }
-
-// //  我的作业计划查询
-// export async function getOperationQueryList(params) {
-//   return request(`/operation/form/getOperationQueryList`,{
-//     method:'POST',
-//     data:params,
-//     requestType:'form'
-//   })
-// }
-
-// //  我的作业计划查询详情
-// export async function openView(params) {
-//   return request(`/operation/form/openView?mainId=${params}`)
-// }
-
-//  单条或者批量删除
-export async function taskDelete(submitParams) {
+export async function taskDelete(submitParams) { // 删除工单
   return request(`/work/flow/delete`,{
     method:'POST',
     data: submitParams,
@@ -134,37 +38,97 @@ export async function taskDelete(submitParams) {
   })
 }
 
-// //  确定执行
-// export async function submit(submitParams) {
-//   return request(`/operation/flow/submit`,{
-//     method:'POST',
-//     data: submitParams,
-//     requestType: 'form'
-//   })
-// }
+export async function fallback(params) {  // 回退
+  return request(`/work/flow/fallback`,{
+    method:'POST',
+    data: params,
+    requestType: 'form'
+  })
+}
 
-// //  下载工作计划查询
-// export async function downloadQueryExcel(params) {
-//   return request(`/operation/form/downloadQueryExcel`,{
-//     method:'POST',
-//     responseType:'blob',
-//     data:params,
-//     requestType: 'form'
-//   })
-// }
-
-// //  确定延期
-// export async function delay(submitParams) {
-//   return request(`/operation/flow/delay`,{
-//     method:'POST',
-//     data: submitParams,
-//     requestType: 'form'
-//   })
-// }
-
-//  获取工作负责人信息
-export async function getWorkUserList() {
+export async function getWorkUserList() { // 获取工作人员列表
   return request(`/work/flow/getWorkUserList`, {
     method: 'GET',
   });
 }
+
+export async function openFlow(mainId) {  // 打开待办
+  return request(`/work/flow/openFlow?mainId=${mainId}`)
+}
+
+export async function responseAccpt(params) { // 响应接单 
+  return request(`/work/flow/response`, {
+    method: 'POST',
+    data: params,
+    requestType:'form'
+  });
+}
+
+export async function saveForm(params) { // 保存 ---保存所有表单
+  return request(`/work/flow/save`,{
+    method:'POST',
+    data: params,
+    requestType:'form'
+  })
+}
+
+export async function saveSupervise(params) { // 保存督办
+  return request(`/work/flow/saveSupervise`,{
+    method:'POST',
+    data: params,
+    requestType:'form'
+  })
+}
+
+export async function submitForm(params) { // 提交 ---填报表单提交到工作负责人
+  return request(`/work/flow/submit`,{
+    method:'POST',
+    data:params,
+    requestType:'form'
+  })
+}
+
+// *****工作督办表单查询管理
+
+export async function getMyWorkList(params) { // 获取工作列表
+  return request(`/work/form/getMyWork`,{
+    method:'POST',
+    data:params,
+    requestType:'form'
+  })
+}
+
+export async function getWorkQueryList(params) { // 获取工作督办查询列表
+  return request(`/work/form/getWorkQueryList`,{
+    method:'POST',
+    data :params,
+    requestType:'form'
+  })
+}
+
+export async function downloadMyWorkExcel(params) { // 下载-工作列表
+  return request(`/work/form/downloadMyWorkExcel`,{
+    method:'POST',
+    data: params,
+    requestType:'form',
+    responseType:'blob'
+  })
+}
+
+export async function downloadWorkQueryExcel(params) { // 下载-工作督办查询列表
+  return request(`/work/form/downloadWorkQueryExcel`,{
+    method:'POST',
+    data: params,
+    requestType:'form',
+    responseType:'blob'
+  })
+}
+
+export async function openView(params) { // 查询表单内容（查询页详情）
+  return request(`/work/form/openView?mainId=${params}`)
+}
+
+export async function getSuperviseList(params) { // 获取督办列表
+  return request(`/work/form/getSuperviseList?mainId=${params}`)
+}
+

@@ -107,7 +107,7 @@ class DropdownValueAdd extends Component {
                 rules: [{
                   required: true,
                   message: '请输入正确的字典类型',
-                  pattern: /^([A-Za-z\\.]{2,32})$/,
+                  pattern: /^([A-Za-z\\._]{2,32})$/,
                 }],
               })(<Input placeholder="请输入字母类型" allowClear />)}
             </Form.Item>

@@ -6,173 +6,79 @@ import {
     Input,
     Select,
     DatePicker,
-    // AutoComplete,
-    // Radio,
     Tag
 } from 'antd';
 import moment from 'moment';
 import SysUpload from '@/components/SysUpload';
 // import RichTextEditor from '@/components/RichTextEditor';
-// import { getAndField } from '@/pages/SysManage/services/api';
-// import SysDict from '@/components/SysDict';
-// import BraftEditor from 'braft-editor'
-// import 'braft-editor/dist/index.css';
 
 const { Option } = Select;
-const { TextArea, Search } = Input;
-// let startTime;
-// let endTime;
-// let htmlContent;
-let taskperson = true;
+const { TextArea } = Input;
 
 const TaskworkEditfillin = React.forwardRef((props, ref) => {
     const {
-        form: { getFieldDecorator, getFieldsValue, resetFields,  setFieldsValue },
+        form: { getFieldDecorator, getFieldsValue, resetFields, setFieldsValue },
         formItemLayout,
         forminladeLayout,
         useInfo,
         files,
         ChangeFiles,
         main,
-        // type,
+        type,
         status,
         superviseworkPersonSelect,
     } = props;
 
-      const statusContent = ['计划中', '延期中', '已超时', '已完成']
-      const color = ['blue', 'orange', 'red', 'green'];
-    //   const [titlerecords, setTitleRecords] = useState([]);
-    //   const [selectdata, setSelectData] = useState('');
+    const statusContent = ['计划中', '延期中', '已超时', '已完成']
+    const color = ['blue', 'orange', 'red', 'green'];
     const [fileslist, setFilesList] = useState([]);
-    //   const [objautodata, setObjautodata] = useState([]);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const [taskperson, setTaskperson] = useState(true);
 
     useEffect(() => {
         ChangeFiles(fileslist);
     }, [fileslist]);
 
-      useEffect(() => {
-        taskperson = true;
+    useEffect(() => {
         if (main.workUser) {
-          taskperson = false;
+            setTaskperson(false);
         }
-      }, []);
+    }, []);
 
     const attRef = useRef();
-    // useImperativeHandle(
-    //     ref,
-    //     () => ({
-    //         attRef,
-    //     }),
-    //     [],
-    // );
-
     useImperativeHandle(ref, () => ({
         getVal: () => getFieldsValue(),
         resetVal: () => resetFields(),
         Forms: props.form.validateFieldsAndScroll,
         attRef
-      }), []);
+    }), []);
 
-    // const handleFormValidator = (rule, value, callback) => {
-    //     if (value === '' || value === '<p></p>') {
-    //       callback(rule)
-    //     }
-    //     callback()
-    // }
-
-    //   const onChange = (date, dateString) => {
-    //     setFieldsValue({ plannedStarTtime: moment(dateString) })
-    //     startTime = dateString;
-    //   }
-
-    //   const endtimeonChange = (date, dateString) => {
-    //     setFieldsValue({ plannedEndTime: moment(dateString) })
-    //     endTime = dateString;
-    //   }
-
-    //   const handletitleSearch = values => {
-    //     getAndField(values).then(res => {
-    //       if (res.code === 200 && res.data.length > 0) {
-    //         const newdata = res.data.map(item => {
-    //           return item.content;
-    //         });
-    //         setObjautodata(newdata);
-    //       }
-    //     });
-    //   };
-
-
-    //   const handleSearch = (value, selectType) => {
-    //     switch (selectType) {
-    //       case 'obj': {
-    //         const newArr = titlerecords.filter(item => {
-    //           return item.includes(value);
-    //         })
-    //         if (newArr.length > 0) {
-    //           setObjautodata(newArr);
-    //         } else {
-    //           setObjautodata([])
-    //         }
-    //       }
-    //         break;
-    //       default:
-    //         break;
-    //     }
-    //   }
-
-    //   const startdisabledDate = (current) => {
-    //     if (startTime || endTime) {
-    //       return current > moment(endTime)
-    //     }
-    //   }
-
-    //   const enddisabledDate = (current) => {
-    //     if (startTime || endTime) {
-    //       return current < moment(startTime)
-    //     }
-    //   }
-
-
-    //   useEffect(() => {
-    //     startTime = new Date()
-    //     endTime = new Date()
-    //     handletitleSearch({ module: '作业单', field: '对象', key: '' })
-    //     // 此处从服务端获取html格式的编辑器内容
-    //     // const editContent = main.content;
-    //     // 使用BraftEditor.createEditorState将html字符串转换为编辑器需要的editorStat
-    //     // setEditorState(BraftEditor.createEditorState(editContent))
-    //   }, [])
-
-    // const handleEditorChange = (params) => {
-    //   htmlContent = editorState.toHTML();
-    //   setEditorState(params);
-    // }
-
-    // useEffect(() => {
-    //   setFieldsValue({main_content:htmlContent});
-    // }, [editorState])
-
-    //   const getTypebyTitle = title => {
-    //     if (selectdata.ischange) {
-    //       return selectdata.arr.filter(item => item.title === title)[0].children;
-    //     }
-    //     return [];
-    //   };
-
-      const selectOnchange = (value, option) => {
-        taskperson = false;
-        setFieldsValue({
-          main_workUser: value,
-          main_workUserId: option.key
+    const selectOnchange = (value, option) => {
+        setTaskperson(false);
+        const optionkey = option.map(item => {
+            return item.key;
         });
-      }
-
-    //   const taskType = getTypebyTitle('作业类型');
-    //   const taskNature = getTypebyTitle('作业性质');
-    //   const taskCompany = getTypebyTitle('作业单位');
-    //   const WorkOrder = getTypebyTitle('是否开票')
+        setFieldsValue({
+            main_workUser: value,
+            main_workUserId: optionkey,
+        });
+    }
 
     const required = true;
+
+    const disabledDate = (current) => { // 结束时间大于开始时间
+        // return current && current < moment().add(1, 'days').endOf('day');
+        // const newplannedEndTime = main.plannedEndTime !== undefined ? main.plannedEndTime : moment().add(1, 'days');
+        return current && current < moment(main.plannedStartTime);
+    }
+
+    const disabledendDate = (current) => { // 延期审核时间大于结束时间
+        return current && current < moment(main.plannedEndTime);
+    }
+
+    const newplannedEndTime = main.plannedEndTime !== undefined ? main.plannedEndTime : moment(main.plannedStartTime);
+
+    const newplannedEndTime1 = main.plannedEndTime !== undefined ? main.plannedEndTime : moment().add(1, 'days'); // 延期审核时间
 
     return (
         <div style={{ paddingRight: 24 }}>
@@ -196,6 +102,7 @@ const TaskworkEditfillin = React.forwardRef((props, ref) => {
                                 initialValue: moment(new Date()),
                             })(
                                 <DatePicker
+                                    disabled
                                     showTime
                                     format="YYYY-MM-DD hh:mm:ss"
                                     style={{ width: '100%' }}
@@ -206,13 +113,12 @@ const TaskworkEditfillin = React.forwardRef((props, ref) => {
                     <Col span={8}>
                         <Form.Item label="工作状态">
                             {getFieldDecorator('main_status', {})
-                            (
-                            //   <Tag color="blue">计划中</Tag>
-                              <Tag
-                                    color={status ? color[statusContent.indexOf(status)] : "blue"}>
-                                    {status || '计划中'}
-                              </Tag>
-                            )}
+                                (
+                                    <Tag
+                                        color={status ? color[statusContent.indexOf(status)] : "blue"}>
+                                        {status || '计划中'}
+                                    </Tag>
+                                )}
                         </Form.Item>
                     </Col>
                     {
@@ -226,10 +132,17 @@ const TaskworkEditfillin = React.forwardRef((props, ref) => {
                                                 message: '请输入'
                                             }
                                         ],
-                                        initialValue: main.workUser
+                                        initialValue: main && main.workUser ? main.workUser.split(",") : []
                                     })
                                         (
-                                            <Select onChange={selectOnchange}>
+                                            <Select
+                                                mode="multiple"
+                                                showArrow
+                                                getPopupContainer={triggerNode => triggerNode.parentNode}
+                                                placeholder="请选择工作负责人"
+                                                onChange={selectOnchange}
+                                                disabled={type === 'delay'}
+                                            >
                                                 {superviseworkPersonSelect.map(obj => [
                                                     <Option key={obj.key} value={obj.value}>
                                                         {obj.value}
@@ -238,12 +151,18 @@ const TaskworkEditfillin = React.forwardRef((props, ref) => {
                                             </Select>
                                         )}
                                 </Form.Item>
-                                <Form.Item label="工作负责人Id" style={{display: 'none'}}>
+                                <Form.Item label="工作负责人Id" style={{ display: 'none' }}>
                                     {getFieldDecorator('main_workUserId', {
-                                        initialValue: ''
+                                        initialValue: main.workUserId
                                     })
                                         (
-                                            <Select onChange={selectOnchange}>
+                                            <Select
+                                                onChange={selectOnchange}
+                                                getPopupContainer={triggerNode => triggerNode.parentNode}
+                                                mode="multiple"
+                                                showArrow
+                                                placeholder="请选择工作负责人id"
+                                            >
                                                 {superviseworkPersonSelect.map(obj => [
                                                     <Option key={obj.key} value={obj.value}>
                                                         {obj.value}
@@ -259,14 +178,12 @@ const TaskworkEditfillin = React.forwardRef((props, ref) => {
                         <Form.Item label="工作内容" {...forminladeLayout}>
                             {getFieldDecorator('main_content', {
                                 rules: [{ required, message: '请输入工作内容' }, {
-                                    // validator: handleFormValidator
                                 }],
                                 initialValue: main.content
                             })(
                                 <TextArea
-                                    // disabled={type}
+                                    disabled={type === 'delay'}
                                     rows={4} />
-                                // <RichTextEditor cachevalue='' ChangeValue={v => setFieldsValue({ content: v })} />
                             )}
                         </Form.Item>
                     </Col>
@@ -283,6 +200,7 @@ const TaskworkEditfillin = React.forwardRef((props, ref) => {
                             })
                                 (
                                     <DatePicker
+                                        disabled={type}
                                         showTime
                                         format="YYYY-MM-DD HH:mm:ss"
                                     />
@@ -298,24 +216,49 @@ const TaskworkEditfillin = React.forwardRef((props, ref) => {
                                         message: '请输入计划结束时间'
                                     }
                                 ],
-                                initialValue: moment(main.plannedEndTime),
+                                initialValue: moment(newplannedEndTime),
                             })
                                 (
                                     <DatePicker
+                                        disabled={type}
                                         showTime
                                         format="YYYY-MM-DD HH:mm:ss"
+                                        disabledDate={disabledDate}
                                     />
                                 )}
                         </Form.Item>
                     </Col>
+                    {(type !== '计划中' && type) && (
+                        <Col span={8}>
+                            <Form.Item label="延期结束时间">
+                                {getFieldDecorator('plannedEndTime', {
+                                    rules: [
+                                        {
+                                            required,
+                                            message: '请输入延期结束时间'
+                                        }
+                                    ],
+                                    initialValue: moment(newplannedEndTime1)
+                                })
+                                    (
+                                        <DatePicker
+                                            showTime
+                                            format="YYYY-MM-DD HH:mm:ss"
+                                            disabledDate={disabledendDate}
+                                        />
+                                    )}
+                            </Form.Item>
+                        </Col>
+                    )}
                     <Col span={24}>
-                        <Form.Item label="上传附件" {...forminladeLayout}>
+                        <Form.Item label="上传附件" {...forminladeLayout} >
                             {getFieldDecorator('main_fileIds', {
                                 initialValue: main && main.fileIds ? main.fileIds : '',
                             })
                                 (
                                     <div style={{ width: 400 }}>
                                         <SysUpload
+                                            disabled={type === 'delay'}
                                             fileslist={files}
                                             ChangeFileslist={newvalue => setFilesList(newvalue)}
                                         />
@@ -359,6 +302,7 @@ TaskworkEditfillin.defaultProps = {
         plannedStartTime: new Date(),
         plannedEndTime: new Date(),
         status: '',
+        type: ''
     },
     useInfo: {
         userName: '',

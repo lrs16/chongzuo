@@ -5,8 +5,8 @@ import moment from 'moment';
 import { Card, Row, Col, Form, Input, Select, Button, DatePicker, Table, message, Badge, Popover, Checkbox, Icon, } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
-import SuperviseModel from './components/SuperviseModel';
 import SysDict from '@/components/SysDict';
+import SuperviseModel from './components/SuperviseModel';
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -36,10 +36,11 @@ const statusContent1 = ['计划中', '延期中', '已完成'];
 function MycreateWork(props) {
     const pagetitle = props.route.name;
     const {
-        location,
+        // location,
         loading,
-        form: { getFieldDecorator, resetFields, validateFields },
-        getMyWorkList,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        form: { getFieldDecorator, resetFields, validateFields, setFieldsValue },
+        getWorkQueryLists,
         dispatch,
         userinfo,
     } = props;
@@ -73,11 +74,12 @@ function MycreateWork(props) {
 
     const getList = () => {
         dispatch({
-            type: 'supervisemodel/getMyWork',
+            type: 'supervisemodel/getWorkQueryLists',
             payload: {
+                flowNodeName: '工作登记',
+                tab: '1',
                 pageIndex: paginations.current,
                 pageSize: paginations.pageSize,
-                userId: userinfo.userId
             },
         });
     };
@@ -109,8 +111,10 @@ function MycreateWork(props) {
         };
         setTabRecord({ ...newvalues });
         dispatch({
-            type: 'supervisemodel/getMyWork',
+            type: 'supervisemodel/getWorkQueryLists',
             payload: {
+                flowNodeName: '工作登记',
+                tab: '1',
                 ...newvalues,
                 pageIndex: page,
                 pageSize
@@ -134,8 +138,10 @@ function MycreateWork(props) {
     const handleReset = () => {
         resetFields();
         dispatch({
-            type: 'supervisemodel/getMyWork',
+            type: 'supervisemodel/getWorkQueryLists',
             payload: {
+                flowNodeName: '工作登记',
+                tab: '1',
                 pageIndex: 1,
                 pageSize: paginations.pageSize,
             },
@@ -193,15 +199,6 @@ function MycreateWork(props) {
         })
     };
 
-    // 设置初始值
-    // const record = {
-    //     no: '',
-    //     paginations,
-    //     expand,
-    // };
-
-    // const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
-
     // 查询
     const extra = (<>
         <Button type="primary" onClick={() => handleSearch()}>查 询</Button>
@@ -217,11 +214,10 @@ function MycreateWork(props) {
         </Button></>
     );
 
-    const gotoDetail = (record, type) => {
+    const gotoDetail = (record) => {  // 跳转详情页
         router.push({
             pathname: `/ITSM/supervisework/workplandetail`,
             query: {
-                type,
                 mainId: record.mainId,
                 flowNodeName: record.flowNodeName,
                 status: record.status,
@@ -238,7 +234,7 @@ function MycreateWork(props) {
             key: 'no',
             width: 250,
             render: (text, record) => {
-                return <a onClick={() => gotoDetail(record, 'worktask')}>{text}</a>
+                return <a onClick={() => gotoDetail(record)}>{text}</a>
             },
         },
         {
@@ -257,7 +253,7 @@ function MycreateWork(props) {
             title: '工作负责人',
             dataIndex: 'workUser',
             key: 'workUser',
-            width: 150,
+            width: 250,
         },
         {
             title: '督办内容',
@@ -395,8 +391,8 @@ function MycreateWork(props) {
         },
         {
             title: '延期审核意见',
-            dataIndex: 'b5',
-            key: 'b5',
+            dataIndex: 'checkContent',
+            key: 'checkContent',
             width: 250,
         },
     ];
@@ -434,19 +430,10 @@ function MycreateWork(props) {
         onShowSizeChange: (page, pageSize) => onShowSizeChange(page, pageSize),
         current: paginations.current,
         pageSize: paginations.pageSize,
-        total: getMyWorkList.total,
+        total: getWorkQueryLists.total,
         showTotal: total => `总共  ${total}  条记录`,
         onChange: (page) => changePage(page),
     };
-
-    // 获取数据
-    // useEffect(() => {
-    //     if (cacheinfo !== undefined) {
-    //     validateFields((err, values) => {
-    //         searchdata(values, cacheinfo.paginations.current, cacheinfo.paginations.pageSize);
-    //     })
-    //     }
-    // }, []);
 
     const download = () => { // 导出
         const exportColumns = columns.map(item => {
@@ -459,6 +446,8 @@ function MycreateWork(props) {
             dispatch({
                 type: 'supervisemodel/downloadMyWorkExcel',
                 payload: {
+                    flowNodeName: '工作登记',
+                    tab: '1',
                     columns: JSON.stringify(exportColumns),
                     ...values,
                     addTime: '',
@@ -530,10 +519,9 @@ function MycreateWork(props) {
                 width: 150
             };
             if (key === 0) {
-                obj.render = (text) => {
+                obj.render = (text, record) => {
                     return (
-                        // <a onClick={() => gotoDetail(record)}>{text}</a>
-                        <a>{text}</a>
+                        <a onClick={() => gotoDetail(record)}>{text}</a>
                     )
                 }
                 obj.fixed = 'left'
@@ -579,6 +567,99 @@ function MycreateWork(props) {
     const checkstatus = getTypebyTitle('审核状态');
     const result = getTypebyTitle('执行结果');
     const executestatus = getTypebyTitle('执行状态');
+
+    // // 设置初始值
+    // const record = {
+    //     executeStatus: '',
+    //     status: '',
+    //     content: '',
+    //     workUser: '',
+    //     checkStatus: '',
+    //     timeoutStatus: '',
+    //     executeResult: '',
+    //     executeContent: '',
+    //     executeUser: '',
+    //     addUser: '',
+    //     addUnit: '',
+    //     checkUser: '',
+    //     checkResult: '',
+    //     checkContent: '',
+    //     no: '',
+    //     paginations,
+    //     expand,
+    // };
+    // const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
+
+    // useEffect(() => {
+    //     if (location.state) {
+    //         if (location.state.cache) {
+    //             // 传表单数据到页签
+    //             dispatch({
+    //                 type: 'viewcache/gettabstate',
+    //                 payload: {
+    //                     cacheinfo: {
+    //                         ...tabrecord,
+    //                         paginations,
+    //                         expand,
+    //                     },
+    //                     tabid: sessionStorage.getItem('tabid')
+    //                 },
+    //             });
+    //         };
+    //         // 点击菜单刷新
+    //         if (location.state.reset) {
+    //             handleReset();
+    //             setExpand(false);
+    //         };
+    //         if (location.state.cacheinfo) {
+    //             if (location.state.cacheinfo.paginations) {
+    //                 const { current, pageSize } = location.state.cacheinfo.paginations;
+    //                 setPaginations({ ...paginations, current, pageSize });
+    //             };
+    //             setExpand(location.state.cacheinfo.expand);
+    //         };
+    //     }
+    // }, [location.state]);
+
+    // // 设置时间
+    // useEffect(() => {
+    //     if (location.state.cacheinfo) {
+    //         const {
+    //             checkTime1,
+    //             checkTime2,
+    //             endTime1,
+    //             endTime2,
+    //             executeTime1,
+    //             executeTime2,
+    //             plannedEndTime1,
+    //             plannedEndTime2,
+    //             plannedStartTime1,
+    //             plannedStartTime2,
+    //             startTime1,
+    //             startTime2,
+    //             time1,
+    //             time2,
+    //         } = location.state.cacheinfo;
+    //         setFieldsValue({
+    //             addTime: time1 ? [moment(time1), moment(time2)] : '',
+    //             checkTime: checkTime1 ? [moment(checkTime1), moment(checkTime2)] : '',
+    //             endTime: endTime1 ? [moment(endTime1), moment(endTime2)] : '',
+    //             executeTime: executeTime1 ? [moment(executeTime1), moment(executeTime2)] : '',
+    //             plannedendTime: plannedEndTime1 ? [moment(plannedEndTime1), moment(plannedEndTime2)] : '',
+    //             startTime: startTime1 ? [moment(startTime1), moment(startTime2)] : '',
+    //             plannedStartTime: plannedStartTime1 ? [moment(plannedStartTime1), moment(plannedStartTime2)] : '',
+    //         })
+    //     };
+    // }, [location.state]);
+
+    // // 获取数据
+    // useEffect(() => {
+    //     if (cacheinfo !== undefined) {
+    //         validateFields((err, values) => {
+    //             searchdata(values, cacheinfo.paginations.current, cacheinfo.paginations.pageSize);
+    //         })
+    //     }
+    // }, []);
 
     return (
         <PageHeaderWrapper title={pagetitle}>
@@ -883,13 +964,12 @@ function MycreateWork(props) {
                     </Form>
                 </Row>
 
-                <div style={{ marginBottom: 24 }}>
+                <div>
                     <Button type="primary" style={{ marginRight: 8 }} onClick={() => handleFillin()}>填报</Button>
                     <SuperviseModel
                         userinfo={userinfo}
                         selectedRows={selectedRows}
                         onSumit={values => superSubmit(values)}
-                        title='工作督办'
                     >
                         <Button type="primary" style={{ marginRight: 8 }}>督办</Button>
                     </SuperviseModel>
@@ -942,7 +1022,7 @@ function MycreateWork(props) {
                     loading={loading}
                     columns={columns}
                     scroll={{ x: 1600 }}
-                    dataSource={getMyWorkList.rows}
+                    dataSource={getWorkQueryLists.rows}
                     pagination={pagination}
                     rowSelection={rowSelection}
                     rowKey={r => r.id}
@@ -954,7 +1034,7 @@ function MycreateWork(props) {
 
 export default Form.create({})(
     connect(({ supervisemodel, itsmuser, loading }) => ({
-        getMyWorkList: supervisemodel.getMyWorkList,
+        getWorkQueryLists: supervisemodel.getworkqueryList,
         superviseworkPersonArr: supervisemodel.superviseworkPersonArr,
         userinfo: itsmuser.userinfo,
         loading: loading.models.supervisemodel,

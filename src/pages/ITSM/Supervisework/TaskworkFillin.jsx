@@ -13,14 +13,14 @@ import TaskworkEditfillin from './components/TaskworkEditfillin';
 function TaskworkFillin(props) {
     const pagetitle = props.route.name;
     const {
-        location,
+        // location,
         dispatch,
         userinfo,
         // openFlowList,
         superviseworkPersonArr,
-        loading,
-        tabdata,
-        tabnew
+        // loading,
+        // tabdata,
+        // tabnew
     } = props;
 
     let superviseworkPersonSelect;
@@ -88,6 +88,8 @@ function TaskworkFillin(props) {
                     type: 'supervisemodel/saveallForm',
                     payload: {
                         ...values,
+                        main_workUser: JSON.stringify(values.main_workUser),
+                        main_workUserId: JSON.stringify(values.main_workUserId),
                         main_addTime: values.main_addTime ? values.main_addTime.format('YYYY-MM-DD HH:mm:ss') : '',
                         main_plannedStartTime: values.main_plannedStartTime ? values.main_plannedStartTime.format('YYYY-MM-DD HH:mm:ss') : '',
                         main_plannedEndTime: values.main_plannedEndTime ? values.main_plannedEndTime.format('YYYY-MM-DD HH:mm:ss') : '',
@@ -119,6 +121,8 @@ function TaskworkFillin(props) {
                         main_status: '1',
                         main_addUserId: userinfo.userId,
                         main_addUnitId: userinfo.unitId,
+                        main_workUser: JSON.stringify(values.main_workUser),
+                        main_workUserId: JSON.stringify(values.main_workUserId),
                     }
                 }).then(res => {
                     if (res.code === 200) {
@@ -143,60 +147,11 @@ function TaskworkFillin(props) {
         }
     }, [files]);
 
-    // 重置表单信息
-    useEffect(() => {
-        if (tabnew) {
-            TaskworkfillinRef.current.resetVal();
-        }
-    }, [tabnew]);
-
-    // 点击页签右键刷新
-    useEffect(() => {
-        if (location.state) {
-            if (location.state.reset) {
-                TaskworkfillinRef.current.resetVal();
-            }
-        }
-    }, [location.state]);
-
-    useEffect(() => {
-        if (tabdata !== undefined) {
-            setCopyData(tabdata)
-        }
-    }, [tabdata])
-
-    // 获取页签信息
-    useEffect(() => {
-        if (location.state) {
-            if (location.state.cache) {
-                const values = TaskworkfillinRef.current.getVal();
-                dispatch({
-                    type: 'viewcache/gettabstate',
-                    payload: {
-                        cacheinfo: {
-                            ...values,
-                            addUser: values.main_addUser,
-                            status: values.main_status,
-                            workUser: values.main_workUser,
-                            fileIds: values.main_fileIds,
-                            addUnit: values.main_addUnit,
-                            content: values.main_content,
-                            plannedStartTime: values.main_plannedStartTime.format('YYYY-MM-DD HH:mm:ss'),
-                            plannedEndTime: values.main_plannedEndTime.format('YYYY-MM-DD HH:mm:ss'),
-                            addTime: values.main_addTime.format('YYYY-MM-DD HH:mm:ss'),
-                        },
-                        tabid: sessionStorage.getItem('tabid')
-                    },
-                });
-                TaskworkfillinRef.current.resetVal();
-            };
-        }
-    }, [location]);
-
     const handleclose = () => {
         router.push({
             pathname: `/ITSM/supervisework/mycreatework`,
-            query: { tabid: sessionStorage.getItem('tabid'), closecurrent: true, }
+            query: { pathpush: true },
+            state: { cach: false }
         });
     }
 
@@ -227,11 +182,6 @@ function TaskworkFillin(props) {
             message.info('请在列表页复制');
             return false
         }
-        // if (mainId.length > 1) {
-        //   message.info('只能复制一条数据粘贴哦');
-        //   return false
-        // }
-
         return dispatch({
             type: 'supervisemodel/pasteFlow',
             payload: mainId
@@ -245,6 +195,47 @@ function TaskworkFillin(props) {
             }
         })
     }
+
+    // 获取页签信息
+    // useEffect(() => {
+    //     if (location.state) {
+    //         if (location.state.cache) {
+    //             const values = TaskworkfillinRef.current.getVal();
+    //             dispatch({
+    //                 type: 'viewcache/gettabstate',
+    //                 payload: {
+    //                     cacheinfo: {
+    //                         ...values,
+    //                         addUser: values.main_addUser,
+    //                         status: values.main_status,
+    //                         workUser: values.main_workUser,
+    //                         fileIds: values.main_fileIds,
+    //                         addUnit: values.main_addUnit,
+    //                         content: values.main_content,
+    //                         plannedStartTime: values.main_plannedStartTime.format('YYYY-MM-DD HH:mm:ss'),
+    //                         plannedEndTime: values.main_plannedEndTime.format('YYYY-MM-DD HH:mm:ss'),
+    //                         addTime: values.main_addTime.format('YYYY-MM-DD HH:mm:ss'),
+    //                     },
+    //                     tabid: sessionStorage.getItem('tabid')
+    //                 },
+    //             });
+    //             TaskworkfillinRef.current.resetVal();
+    //         };
+    //     }
+    // }, [location]);
+
+    // // 重置表单信息
+    // useEffect(() => {
+    //     if (tabnew) {
+    //         TaskworkfillinRef.current.resetVal();
+    //     }
+    // }, [tabnew]);
+
+    // useEffect(() => {
+    //     if (tabdata !== undefined) {
+    //         setCopyData(tabdata)
+    //     }
+    // }, [tabdata])
 
     const extrabuttons = (
         <>
@@ -303,7 +294,7 @@ function TaskworkFillin(props) {
                     main={copyData}
                 />
             </Card>
-
+            
         </PageHeaderWrapper>
     );
 }
