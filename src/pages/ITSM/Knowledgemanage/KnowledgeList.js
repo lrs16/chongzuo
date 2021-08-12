@@ -469,7 +469,7 @@ function KnowledgeList(props) {
       key: 'addUser',
     },
     {
-      title: '发布时间',
+      title: '登记时间',
       dataIndex: 'addTime',
       key: 'addTime',
     },

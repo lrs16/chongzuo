@@ -59,6 +59,7 @@ export async function xmldataResource(params) {
     method: 'POST',
     data:JSON.stringify(params),
     requestType: 'formjosn',
+    // responseType: 'blob',
   });
 }
 

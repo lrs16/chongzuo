@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
 import { Modal } from 'antd';
-// import styles from './../style.less';
+import styles from './../style.less';
 
 const withClick = (element, handleClick = () => { }) => {
     return <element.type {...element.props} onClick={handleClick} />;
@@ -28,10 +28,7 @@ class DefinitionxmlData extends Component {
                 resourceName,
             },
         }).then(res => {
-            const blob = new Blob([res]);
-            const url = (window.URL || window.webkitURL).createObjectURL(blob);
-            this.setState({ xmlData: url });
-            console.log(url, 'url')
+            this.setState({ xmlData: res });
         })
         this.setState({
             visible: true,
@@ -49,7 +46,7 @@ class DefinitionxmlData extends Component {
     };
 
     render() {
-        const { visible } = this.state;
+        const { visible, xmlData } = this.state;
         const { children, title } = this.props;
         return (
             <>
@@ -58,12 +55,17 @@ class DefinitionxmlData extends Component {
                     title={title}
                     visible={visible}
                     centered
+                    closable
+                    footer={null}
                     maskClosable={false}
                     width='60%'
                     onCancel={this.handleCancel}
                     onOk={this.handleOk}
+                    footer={null}
                 >
-                    {this.state.xmlData}
+                    <div className={styles.blobimg}>
+                        {xmlData}
+                    </div>
                 </Modal>
             </>
         );

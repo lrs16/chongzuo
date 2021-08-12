@@ -36,6 +36,8 @@ function TestEnvironmentManage(props) {
 
   const searchdata = (page, size) => {
     const values = getFieldsValue();
+    values.startTime = values.time1 ? moment(values.time1).format('YYYY-MM-DD HH:mm:ss') : ''
+    values.endTime = values.time2 ? moment(values.time2).format('YYYY-MM-DD HH:mm:ss') : ''
     dispatch({
       type: 'agentmanage/query',
       payload: {
@@ -186,6 +188,18 @@ function TestEnvironmentManage(props) {
       width: 120,
     },
     {
+      title: '创建时间',
+      dataIndex: 'createTime',
+      key: 'createTime',
+      width: 250,
+    },
+    {
+      title: '更新时间',
+      dataIndex: 'updateTime',
+      key: 'updateTime',
+      width: 250,
+    },
+    {
       title: '操作',
       dataIndex: 'action',
       key: 'action',
@@ -218,18 +232,16 @@ function TestEnvironmentManage(props) {
     </Button></>
   )
 
-  const typemap = [];
-  const statusmap = [];
   // 数据字典取下拉值
   const getTypebyId = key => {
     if (selectdata.ischange) {
-      return selectdata.arr.filter(item => item.key === key)[0].children;
+      return selectdata.arr[0].children.filter(item => item.key === key)[0].children;
     }
     return [];
   };
-  // const typemap = getTypebyId('100000000000001002');         // 类型
-  // const statusmap = getTypebyId('100000000000001003');       // 状态
-  // const zonemap = getTypebyId('100000000000001004');         // 区域
+  const typemap = getTypebyId('100000000000001002');         // 类型
+  const statusmap = getTypebyId('100000000000001003');       // 状态
+  const zonemap = getTypebyId('100000000000001004');         // 区域
 
   return (
     <PageHeaderWrapper title={pagetitle}>
@@ -254,7 +266,7 @@ function TestEnvironmentManage(props) {
                   initialValue: '',
                 })(
                   <Select placeholder="请选择" allowClear>
-                    {typemap.map(obj => (
+                    {zonemap.map(obj => (
                       <Option key={obj.key} value={obj.title}>
                         {obj.title}
                       </Option>
@@ -295,13 +307,15 @@ function TestEnvironmentManage(props) {
                 {getFieldDecorator('agentHost', {
                   initialValue: '',
                 })(
-                  <Select placeholder="请选择" allowClear>
-                    {typemap.map(obj => (
-                      <Option key={obj.key} value={obj.title}>
-                        {obj.title}
-                      </Option>
-                    ))}
-                  </Select>)}
+                  // <Select placeholder="请选择" allowClear>
+                  //   {typemap.map(obj => (
+                  //     <Option key={obj.key} value={obj.title}>
+                  //       {obj.title}
+                  //     </Option>
+                  //   ))}
+                  // </Select>
+                  <Input placeholder="请输入" allowClear />
+                )}
               </Form.Item>
             </Col>
             <Col span={8}>
@@ -309,13 +323,15 @@ function TestEnvironmentManage(props) {
                 {getFieldDecorator('nodeHost', {
                   initialValue: '',
                 })(
-                  <Select placeholder="请选择" allowClear>
-                    {typemap.map(obj => (
-                      <Option key={obj.key} value={obj.title}>
-                        {obj.title}
-                      </Option>
-                    ))}
-                  </Select>)}
+                  // <Select placeholder="请选择" allowClear>
+                  //   {typemap.map(obj => (
+                  //     <Option key={obj.key} value={obj.title}>
+                  //       {obj.title}
+                  //     </Option>
+                  //   ))}
+                  // </Select>
+                  <Input placeholder="请输入" allowClear />
+                )}
               </Form.Item>
             </Col>
             <Col span={8}>
@@ -330,7 +346,7 @@ function TestEnvironmentManage(props) {
                 <Row>
                   <Col span={11}>
                     {getFieldDecorator('time1', {
-                      initialValue: '',
+                      // initialValue: '',
                     })(
                       <DatePicker
                         showTime={{
@@ -346,7 +362,7 @@ function TestEnvironmentManage(props) {
                   <Col span={2} style={{ textAlign: 'center' }}>-</Col>
                   <Col span={11}>
                     {getFieldDecorator('time2', {
-                      initialValue: '',
+                      // initialValue: '',
                     })(
                       <DatePicker
                         showTime={{
