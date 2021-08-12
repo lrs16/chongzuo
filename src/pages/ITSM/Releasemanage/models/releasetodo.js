@@ -6,7 +6,9 @@ import {
   saveRegister,
   flowSubmit,
   saveplatformValid,
-  savereleaseBizValid
+  savereleaseBizValid,
+  releaseListAssign,
+  savePracticePre
 } from '../services/api';
 
 export default {
@@ -46,6 +48,7 @@ export default {
         ['出厂测试', response.data.register],
         ['平台验证', response.data.platformValidate],
         ['业务验证', response.data.bizValidateParam],
+        ['发布实施准备', response.data.practicePreParam],
       ]);
       yield put({
         type: 'saveinfo',
@@ -117,14 +120,44 @@ export default {
       const response = yield call(savereleaseBizValid, bizValidate);
       if (response.code === 200) {
         if (buttype === 'save') {
-          message.success('保存成功')
+          message.success('保存成功');
+          const assignList = response.data.saveBizValid.releaseLists.slice(-1)[0];
+          const values = { listIds: assignList.id, handlerId: assignList.responsibleId }
+          const assignres = yield call(releaseListAssign, values);                      // 保存成功分派清单
+          if (assignres.code === 200) {
+            const openres = yield call(openFlow, bizValidate.releaseNo);
+            yield put({
+              type: 'saveinfo',
+              payload: { info: openres.data.bizValidateParam, currentTaskStatus: openres.data.currentTaskStatus },
+            });
+          }
+        } else {
+          yield put({
+            type: 'saveinfo',
+            payload: { info: response.data.saveBizValid, currentTaskStatus: response.data.currentTaskStatus },
+          });
+        }
+      } else {
+        message.error(response.msg)
+      }
+    },
+
+    // 发布实施准备保存
+    * implementationpre({ payload: { formValue, buttype } }, { call, put }) {
+      // yield put({
+      //   type: 'clearcache',
+      // });
+      const response = yield call(savePracticePre, formValue);
+      if (response.code === 200) {
+        if (buttype === 'save') {
+          message.success('保存成功');
         };
         yield put({
           type: 'saveinfo',
-          payload: { info: response.data.saveBizValid, currentTaskStatus: response.data.currentTaskStatus },
+          payload: { info: response.data.practicePreParam, currentTaskStatus: response.data.currentTaskStatus },
         });
       } else {
-        message.error(response.msg)
+        message.error('操作失败');
       }
     },
 

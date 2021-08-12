@@ -1,6 +1,7 @@
-import React, { useRef, useImperativeHandle, forwardRef, useEffect, useState } from 'react';
+import React, { useRef, useImperativeHandle, forwardRef, useEffect, useState, useContext } from 'react';
 import moment from 'moment';
 import { Row, Col, Form, Input, DatePicker, Select, Radio, Alert } from 'antd';
+import SubmitTypeContext from '@/layouts/MenuContext';
 import DocumentAtt from './DocumentAtt';
 
 const { TextArea } = Input;
@@ -28,13 +29,42 @@ const formuintLayout = {
 
 function Implementation(props, ref) {
   const { taskName, userinfo, register, selectdata, isEdit } = props;
-  const { getFieldDecorator } = props.form;
+  const { getFieldDecorator, setFieldsValue } = props.form;
   const required = true;
   const [alertvisible, setAlertVisible] = useState(false);  // 超时告警是否显示
+  const [check, setCheck] = useState(false);
+  const { ChangeSubmitType, ChangeButtype } = useContext(SubmitTypeContext);
+
   const formRef = useRef();
   useImperativeHandle(ref, () => ({
     Forms: props.form,
   }))
+
+  const changeatt = (v, files) => {
+    setFieldsValue({ releaseAttaches: v });
+    const target = v.filter(item => item.key === '8')[0];
+    if (target && target.attachFile !== '[]') {
+      setCheck(false);
+    };
+    if (files === 'files') {
+      ChangeButtype('save')
+    };
+  }
+
+  // 校验文档
+  const handleAttValidator = (rule, value, callback) => {
+    if (value) {
+      const target = value.filter(item => item.editable && item.attachFile === '[]' && item.docName !== '其它附件');
+      if (target.length > 0) {
+        setCheck(true);
+        callback(`请上传附件`);
+      } else {
+        callback()
+      }
+    } else {
+      callback()
+    }
+  }
 
   useEffect(() => {
     if (isEdit && (moment(register.creationTime).format('DD') > 20 || moment(register.creationTime).format('DD') < 15)) {
@@ -108,7 +138,23 @@ function Implementation(props, ref) {
             </Form.Item>
           </Col>
           <Col span={24} style={{ marginBottom: 24 }}>
-            <DocumentAtt rowkey='8' unitmap={unitmap} isEdit={isEdit} />
+            <DocumentAtt
+              rowkey='8'
+              isEdit={isEdit}
+              unitmap={unitmap}
+              dataSource={[]}
+              Unit={{ dutyUnit: undefined }}
+              ChangeValue={(v, files) => changeatt(v, files)}
+              check={check}
+            />
+            <Form.Item wrapperCol={{ span: 24 }} style={{ display: 'none' }}>
+              {getFieldDecorator('releaseAttaches', {
+                rules: [{ required, message: '请上传附件' }, {
+                  validator: handleAttValidator
+                }],
+                initialValue: '',
+              })(<></>)}
+            </Form.Item>
           </Col>
         </Form>
       </Row>

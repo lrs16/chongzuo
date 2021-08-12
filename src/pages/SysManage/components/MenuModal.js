@@ -16,7 +16,7 @@ const formItemLayout = {
 };
 
 // 克隆子元素按钮，并添加事件
-const withClick = (element, handleClick = () => {}) => {
+const withClick = (element, handleClick = () => { }) => {
   return <element.type {...element.props} onClick={handleClick} />;
 };
 class MenuModal extends Component {
@@ -56,7 +56,7 @@ class MenuModal extends Component {
     const { getFieldDecorator } = this.props.form;
     const required = true;
     // console.log(this.props.record);
-    const { id, menuSort, menuIcon, menuUrl, menuName, menuDesc, menuHide } = this.props.record;
+    const { id, menuSort, menuIcon, menuUrl, menuName, menuDesc, menuHide, menuRemark } = this.props.record;
     return (
       <>
         {withClick(children, this.handleopenClick)}
@@ -149,6 +149,13 @@ class MenuModal extends Component {
                 </Radio.Group>,
               )}
             </Form.Item>
+            <Form.Item label="备注">
+              {getFieldDecorator('menuRemark', {
+                initialValue: menuRemark,
+              })(
+                <Input placeholder="请输入" />
+              )}
+            </Form.Item>
           </Form>
           <div
             style={{
@@ -186,6 +193,7 @@ MenuModal.defaultProps = {
     menuDesc: '',
     subDescription: '',
     menuHide: '0',
+    menuRemark: '',
   },
 };
 export default Form.create()(MenuModal);

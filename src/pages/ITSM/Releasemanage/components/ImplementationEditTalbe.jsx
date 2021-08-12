@@ -3,33 +3,45 @@ import { Row, Button, Input, Table, Divider, message } from 'antd';
 import styles from '../index.less';
 
 function ImplementationEditTalbe(props) {
-  const { title, isEdit, tablecolumns, dataSoure } = props;
+  const { title, isEdit, tablecolumns, dataSource, newkeys, ChangeValue } = props;
   const [data, setData] = useState([]);
   const [newbutton, setNewButton] = useState(false);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
 
-  useEffect(() => {
-    const newData = dataSoure.map(item => ({ ...item }));
-    setData(newData)
-  }, [])
+  // useEffect(() => {
+  //   const newData = dataSoure.map(item => ({ ...item }));
+  //   setData(newData)
+  // }, [])
+
+
 
   // 新增一条记录
   const newMember = () => {
     const newData = data.map(item => ({ ...item }));
     newData.push({
       key: data.length + 1,
-      t1: '',
-      t2: '',
-      t3: '',
-      t4: '',
-      t5: '',
-      t6: '',
+      ...newkeys,
       editable: false,
       isNew: true,
     });
     setData(newData);
     setNewButton(true);
   };
+
+  useEffect(() => {
+    if (dataSource && dataSource.length > 0) {
+      const newData = dataSource.map((item, index) => ({
+        ...item,
+        editable: false,
+        key: (index + 1).toString(),
+      }));
+      setData(newData);
+      setNewButton(false);
+    };
+    // if (dataSource && dataSource.length === 0) {
+    //   newMember()
+    // };
+  }, [dataSource])
 
   // 获取行
   const getRowByKey = (key, newData) => {
@@ -56,26 +68,28 @@ function ImplementationEditTalbe(props) {
     }
   }
 
-
   // 保存记录
   const saveRow = (e, key) => {
     e.preventDefault();
     const newData = data.map(item => ({ ...item }));
     const target = getRowByKey(key, newData) || {};
-    if (!target.t2 || !target.t3) {
+    const targetval = Object.values(target);
+    const Nullvalue = targetval.indexOf(null);
+    if (Nullvalue !== -1) {
       message.error('请填写完整信息。');
       e.target.focus();
       return;
     }
-    // delete target.key;
     if (target && target.editable) {
       target.editable = !target.editable;
       setData(newData);
+      ChangeValue(newData);
     }
     if (target && target.isNew) {
       target.isNew = !target.isNew;
       setNewButton(false)
       setData(newData);
+      ChangeValue(newData);
     }
     // const id = target.id === '' ? '' : target.id;
     // savedata(target, id);
@@ -133,9 +147,6 @@ function ImplementationEditTalbe(props) {
       key: 'key',
       width: 60,
       align: 'center',
-      render: (text, record, index) => {
-        return <>{`${index + 1}`}</>;
-      },
     });
     if (isEdit) {
       newArr.push(

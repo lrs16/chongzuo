@@ -11,17 +11,7 @@ import styles from '../index.less';
 // rowkey: 3  业务功能测试报告，功能清单终稿必填
 // rowkey: 4  发布实施方案必填
 
-const Attaches = [
-  { docName: '功能出厂测试报告', attachFile: '[]', dutyUnit: '', docTemplate: '', remarks: '', editable: true, },
-  { docName: '平台验证测试报告', attachFile: '[]', dutyUnit: '', docTemplate: '', remarks: '', editable: true, },
-  { docName: '业务功能测试报告', attachFile: '[]', dutyUnit: '', docTemplate: '', remarks: '', editable: true, },
-  { docName: '功能清单终稿', attachFile: '[]', dutyUnit: '', docTemplate: '', remarks: '', editable: true, },
-  { docName: '发布实施方案', attachFile: '[]', dutyUnit: '', docTemplate: '', remarks: '', editable: true, },
-  { docName: '计划发布申请审批表', attachFile: '[]', dutyUnit: '', docTemplate: '', remarks: '', editable: true, },
-  { docName: '临时发布申请审批表', attachFile: '[]', dutyUnit: '', docTemplate: '', remarks: '', editable: true, },
-  { docName: '功能发布报告', attachFile: '[]', dutyUnit: '', docTemplate: '', remarks: '', editable: true, },
-  { docName: '其它附件', attachFile: '[]', dutyUnit: '', docTemplate: '', remarks: '', editable: true, },
-];
+
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -29,9 +19,19 @@ const { Option } = Select;
 function DocumentAtt(props) {
   const { dispatch, rowkey, unitmap, isEdit, dataSource, Unit, check, ChangeValue } = props;
   const [data, setData] = useState([]);
-  const { addAttaches, ChangeaddAttaches } = useContext(FilesContext);                     // 是否要添加行
-
-
+  const { ChangeButtype, addAttaches, ChangeaddAttaches } = useContext(FilesContext);                     // 是否要添加行
+  const dutyUnit = dataSource && dataSource.length > 0 ? dataSource[0].dutyUnit : ''
+  const Attaches = [
+    { docName: '功能出厂测试报告', attachFile: '[]', dutyUnit, docTemplate: '', remarks: '', editable: true, },
+    { docName: '平台验证测试报告', attachFile: '[]', dutyUnit, docTemplate: '', remarks: '', editable: true, },
+    { docName: '业务功能测试报告', attachFile: '[]', dutyUnit, docTemplate: '', remarks: '', editable: true, },
+    { docName: '功能清单终稿', attachFile: '[]', dutyUnit, docTemplate: '', remarks: '', editable: true, },
+    { docName: '发布实施方案', attachFile: '[]', dutyUnit, docTemplate: '', remarks: '', editable: true, },
+    { docName: '计划发布申请审批表', attachFile: '[]', dutyUnit, docTemplate: '', remarks: '', editable: true, },
+    { docName: '临时发布申请审批表', attachFile: '[]', dutyUnit, docTemplate: '', remarks: '', editable: true, },
+    { docName: '功能发布报告', attachFile: '[]', dutyUnit, docTemplate: '', remarks: '', editable: true, },
+    { docName: '其它附件', attachFile: '[]', dutyUnit, docTemplate: '', remarks: '', editable: true, },
+  ];
   // 获取行
   const getRowByKey = (key, newData) => {
     return (newData || dataSource).filter(item => item.key === key)[0];
@@ -89,9 +89,14 @@ function DocumentAtt(props) {
       if (rowkey === '3') {
         newData[3].editable = true;
       };
-      // 平台验证环节临时添加了清单，补充的出厂测试报告必填
-      if (rowkey === '2' && dataSource.length === 10) {
+      // 补充的材料必填
+      const endAtt = dataSource[dataSource.length - 1];
+      if (rowkey === '2' && endAtt.docName === '功能出厂测试报告') {
         newData[9].editable = true;
+      };
+      if (rowkey === '3' && endAtt.docName === '平台验证测试报告') {
+        newData[10].editable = true;
+        newData[11].editable = true;
       };
       setData(newData);
       ChangeValue(newData)
@@ -112,7 +117,14 @@ function DocumentAtt(props) {
         const newdata = data.concat(newarr);
         setData(newdata);
         ChangeValue(newdata)
-      }
+      };
+      if (rowkey === '3' && lastattname !== '平台验证测试报告') {
+        const newarr = Attaches.slice(0, 2);
+        const newdata = data.concat(newarr);
+        setData(newdata);
+        ChangeValue(newdata)
+      };
+      ChangeaddAttaches('')
     };
     if (addAttaches === 'delete') {
       const lastattname = dataSource.slice(-1)[0].docName;
@@ -121,7 +133,14 @@ function DocumentAtt(props) {
         newdata.pop();
         setData(newdata);
         ChangeValue(newdata)
-      }
+      };
+      if (rowkey === '3' && lastattname === '平台验证测试报告') {
+        const newdata = data.map(item => ({ ...item }));
+        newdata.pop();
+        newdata.pop();
+        setData(newdata);
+        ChangeValue(newdata)
+      };
     }
   }, [addAttaches])
 
@@ -160,7 +179,7 @@ function DocumentAtt(props) {
         if (isEdit && record.editable && record.key !== '9') {
           return (
             <>
-              <div style={{ width: 300 }}>
+              <div style={{ width: 300 }} onMouseDown={() => ChangeButtype('')}>
                 <FilesContext.Provider value={{
                   files: JSON.parse(text),
                   ChangeFiles: (v => handleFieldChange(JSON.stringify(v), 'attachFile', record.key)),
@@ -230,7 +249,7 @@ function DocumentAtt(props) {
           return (
             <Select
               placeholder="请选择"
-              defaultValue={Unit.dutyUnit}
+              defaultValue={Unit.dutyUnit || data[0].dutyUnit}
               key={Unit.dutyUnit}
               onChange={e => { handleFieldChange(e, 'dutyUint', record.key) }}
             >

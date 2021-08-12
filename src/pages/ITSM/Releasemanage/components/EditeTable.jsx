@@ -27,7 +27,7 @@ function EditeTable(props) {
   // 新增一条记录
   const newMember = () => {
     const newData = data.map(item => ({ ...item }));
-    newData.push({
+    newData.unshift({
       key: data.length + 1,
       listType: (taskName === '新建' || taskName === '出厂测试') ? '计划' : '临时添加',
       abilityType: '',
@@ -126,25 +126,27 @@ function EditeTable(props) {
       message.error('请填写完整的发布清单信息');
       e.target.focus();
       return;
-    }
+    };
     if (target && (target.editable || target.verification)) {
       target.editable = !target.editable;
       target.verification = false;
+      newData.sort((a, b) => a.key - b.key);
       setData(newData);
       ChangeValue(newData);
       if (taskName !== '新建') {
         ChangeButtype('save');
       }
-    }
+    };
     if (target && target.isNew) {
       target.isNew = !target.isNew;
       setNewButton(false)
+      newData.sort((a, b) => a.key - b.key);
       setData(newData);
       ChangeValue(newData);
       if (taskName !== '新建') {
         ChangeButtype('save');
       }
-    }
+    };
   };
 
   // 新建取消按钮
@@ -207,8 +209,11 @@ function EditeTable(props) {
       message.error('您还没有选择数据')
     };
     const newSelectds = selectedRecords.filter(item => item.taskId === item.addStatus);
+    const statusSelectds = selectedRecords.filter(item => (item.verifyStatus === '已转出' || item.verifyStatus === '已验证'));
     if (newSelectds.length === 0) {
-      message.error('不能移除非节点临时添加的数据')
+      message.error('不能移除非本节点临时添加的数据')
+    } else if (statusSelectds.length > 0) {
+      message.error('不能移除已转出或已验证的数据')
     } else {
       const newArr = data.filter((x) => !selectedRecords.some((item) => item.taskId === item.addStatus && x.id === item.id));
       setData(newArr);
@@ -253,11 +258,11 @@ function EditeTable(props) {
       title: '序号',
       dataIndex: 'key',
       key: 'key',
-      width: 60,
+      width: 50,
       align: 'center',
-      render: (text, record, index) => {
-        return <>{`${index + 1}`}</>;
-      },
+      // render: (text, record, index) => {
+      //   return <>{`${index + 1}`}</>;
+      // },
     },
     {
       title: '清单类型',
@@ -273,7 +278,7 @@ function EditeTable(props) {
       title: '功能类型',
       dataIndex: 'abilityType',
       key: 'abilityType',
-      width: 200,
+      width: 150,
       render: (text, record) => {
         if (record.isNew || record.editable) {
           return (
@@ -294,7 +299,7 @@ function EditeTable(props) {
       title: '模块',
       dataIndex: 'module',
       key: 'module',
-      width: 150,
+      width: 120,
       render: (text, record) => {
         if (record.isNew || record.editable) {
           return (
@@ -456,7 +461,7 @@ function EditeTable(props) {
       dataIndex: 'passTest',
       key: 'passTest',
       fixed: 'right',
-      width: 80,
+      width: 100,
       render: (text, record) => {
         if (record.isNew || record.editable || record.verification) {
           return (
@@ -468,7 +473,7 @@ function EditeTable(props) {
             </>
           )
         }
-        return text;
+        return <div style={{ textAlign: 'center' }}>{text}</div>;
       }
     },
     {
@@ -476,7 +481,8 @@ function EditeTable(props) {
       dataIndex: 'responsible',
       key: 'responsible',
       fixed: 'right',
-      width: 100,
+      align: 'center',
+      width: 120,
       render: (text, record) => {
         if (record.isNew || record.editable || record.verification) {
           return (
@@ -525,7 +531,7 @@ function EditeTable(props) {
         }
         return (
           <>
-            {(taskName === '新建' || taskName === '出厂测试' || taskName === '平台验证' || taskName === '业务验证') && userid === record.operatorId && !newbutton && (<Button type='link' onClick={e => editRow(e, record.key)}>编辑</Button>)}
+            {(taskName === '新建' || taskName === '出厂测试' || taskName === '平台验证') && userid === record.operatorId && !newbutton && (<Button type='link' onClick={e => editRow(e, record.key)}>编辑</Button>)}
             {taskName === '平台验证' && userid !== record.operatorId && !newbutton && (<Button type='link' onClick={e => verificationRow(e, record.key)}>验证</Button>)}
             {taskName === '版本管理员审批' && record.listType === '临时' && (<Button type='link' onClick={e => editRow(e, record.key)}>编辑</Button>)}
             {taskName === '版本管理员审批' && record.listType === '计划' && (<Button type='link' >回退</Button>)}
@@ -540,6 +546,7 @@ function EditeTable(props) {
     title: '状态',
     dataIndex: 'verifyStatus',
     key: 'verifyStatus',
+    fixed: 'right',
     width: 100,
     align: 'center',
   };
@@ -557,14 +564,16 @@ function EditeTable(props) {
   };
 
   const addorderid = (arr) => {
-    const newarr = arr.slice(0);
     if (taskName === '业务验证') {
-      newarr.splice(-1, 0, verifyStatus);
-    };
-    if (taskName === '版本管理员审批') {
+      const newarr = arr;
+      newarr.splice(-3, 0, verifyStatus)
+      return newarr
+    } if (taskName === '版本管理员审批') {
+      const newarr = arr;
       newarr.splice(-1, 0, orderid);
-    };
-    return newarr
+      return newarr
+    }
+    return arr
   };
   const columns = addorderid(column);
 
@@ -650,7 +659,7 @@ function EditeTable(props) {
         rowKey={(record) => record.key}
         pagination={false}
         rowSelection={rowSelection}
-        scroll={{ x: 1500 }}
+        scroll={{ x: 1740, y: 400 }}
       />
       {taskName === '新建' && (<Alert message="请先暂存发布清单信息，再保存工单" type="warning" style={{ textAlign: 'center', marginTop: 6, }} />)}
       <UserContext.Provider value={{ setChoiceUser, uservisible, setUserVisible, title: '分派' }}>

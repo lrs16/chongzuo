@@ -183,3 +183,13 @@ export async function knowledgesaveByOrder(params) {
     requestType: 'form',
   });
 }
+
+
+// 菜单点击接口/common/function/setTabClickNum
+export async function setTabClickNum(params) {
+  return request(`/common/function/setTabClickNum`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+  });
+}

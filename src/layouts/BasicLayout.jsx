@@ -14,11 +14,13 @@ import Authorized from '@/utils/Authorized';
 import RightContent from '@/components/GlobalHeader/RightContent';
 import MenuContext from '@/layouts/MenuContext';
 import { getAuthorityFromRouter } from '@/utils/utils';
+import { setTabClickNum } from '@/services/api';
 // import TobTabHoc from './TopTabHoc';
 import logo from '../../public/menulogo.png';
 // import Layout from './BlankLayout';
 // import PageTab from './PageTab';
 import Tabrouters from './Tabrouters';
+
 
 
 const { TabPane } = Tabs;
@@ -436,6 +438,7 @@ const BasicLayout = props => {
         lasttabactive(toptabs);
       };
     };
+    setTabClickNum({ menuId: id });
   };
 
   useEffect(() => {
@@ -529,7 +532,6 @@ const BasicLayout = props => {
             if (menuItemProps.isUrl || menuItemProps.children) {
               return defaultDom;
             };
-
             const targetmultiple = multiplepath.filter(item => item.path === menuItemProps.itemPath)[0];
             const endid = () => {
               if (targetmultiple) {

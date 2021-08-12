@@ -55,6 +55,15 @@ export async function savereleaseBizValid(params) {
   });
 }
 
+// 发布实施准备保存
+export async function savePracticePre(params) {
+  return request(`/release/flow/savePracticePre`, {
+    method: 'POST',
+    data: JSON.stringify(params),
+    requestType: 'formjosn',
+  });
+}
+
 // 流程提交
 export async function flowSubmit(params) {
   return request(`/release/flow/submit`, {
@@ -73,9 +82,63 @@ export async function openFlow(releaseNo) {
 
 // 删除发布清单/release/from/releaseListDel
 export async function releaseListDel(params) {
-  return request(`release/from/releaseListDel`, {
+  return request(`/release/from/releaseListDel`, {
     method: 'POST',
     data: JSON.stringify(params),
     requestType: 'formjosn',
+  });
+}
+
+// 编辑发布清单，清单id为空时为添加/release/from/releaseListSingleEdit,业务验证待办用到
+export async function releaseListEdit(params) {
+  return request(`/release/from/releaseListSingleEdit`, {
+    method: 'POST',
+    data: JSON.stringify(params),
+    requestType: 'formjosn',
+  });
+}
+
+// 分派清单
+export async function releaseListAssign(params) {
+  return request(`/release/from/dispatchBizTodo`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+  });
+}
+
+// 业务验证待办列表
+export async function bizTodoList(params) {
+  return request(`/release/from/bizTodoList`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+  });
+}
+
+// 打开业务验证 /release/from/openBizTodoList
+export async function openBizTodoList(params) {
+  return request(`/release/from/openBizTodoList`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+  });
+}
+
+// 业务验证查看清单/release/from/openBizTodoView
+export async function openBizTodoView(params) {
+  return request(`/release/from/openBizTodoView`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+  });
+}
+
+// 业务验证完成 /release/from/completeVerify
+export async function completeVerify(params) {
+  return request(`/release/from/completeVerify`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
   });
 }

@@ -1,46 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Table, Button, Row, Checkbox, Input, Divider, message } from 'antd';
 import styles from '../index.less';
 
+
+const startData = [
+  { key: 1, rowtitle: '一、实施前准备', stepType: '实施前准备' },
+  { key: 2, rowtitle: '二、实施过程', stepType: '实施过程' },
+  { key: 3, rowtitle: '三、实施后', stepType: '实施后' },
+]
+
 function Implementationsteps(props) {
-  const { title, isEdit } = props;
+  const { title, isEdit, dataSource, ChangeValue } = props;
   const [data, setData] = useState([
-    { key: 1, rowtitle: '一、实施前准备' },
-    {
-      key: 2,
-      rowkey: 1,
-      type: '实施前准备',
-      steps: '实施方案编制',
-      risk: '风险大了去',
-      charge: '王重阳',
-      confirm: '确认已完成',
-    },
-    {
-      key: 3,
-      rowkey: 2,
-      type: '实施前准备',
-      steps: '实施方案编制',
-      risk: '风险大到不能再大',
-      charge: '王重阳',
-      confirm: '确认已完成',
-    },
-    { key: 4, rowtitle: '二、实施过程' },
-    {
-      key: 5,
-      rowkey: 1,
-      type: '实施过程',
-      steps: '这表格太BT',
-      risk: '风险大了去',
-      charge: '王重阳',
-      confirm: '确认已完成',
-    },
-    { key: 6, rowtitle: '三、实施后' },
+
   ]);
   const [newbutton, setNewButton] = useState(false);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
 
   // 新增一条记录
-  const newMember = (value) => {
+  const newMember = (value, stepType) => {
     const newData = data.map(item => ({ ...item }));
     const num2 = newData.findIndex((ele) => {
       return ele.rowtitle === '二、实施过程'
@@ -50,11 +28,11 @@ function Implementationsteps(props) {
     });
     const vote = {
       key: newData.length + 1,
-      type: '',
-      steps: '',
-      risk: '',
-      charge: '',
-      confirm: '',
+      stepType,
+      step: '',
+      riskNotice: '',
+      director: '',
+      chaperone: '',
       editable: false,
       isNew: true,
     };
@@ -115,20 +93,21 @@ function Implementationsteps(props) {
     e.preventDefault();
     const newData = data.map(item => ({ ...item }));
     const target = getRowByKey(key, newData) || {};
-    if (!target.steps || !target.risk || !target.risk) {
+    if (!target.step || !target.riskNotice || !target.director || !target.chaperone) {
       message.error('请填写完整信息。');
       e.target.focus();
       return;
     }
-    // delete target.key;
     if (target && target.editable) {
       target.editable = !target.editable;
       setData(newData);
+      ChangeValue(newData);
     }
     if (target && target.isNew) {
       target.isNew = !target.isNew;
       setNewButton(false)
       setData(newData);
+      ChangeValue(newData);
     }
     // const id = target.id === '' ? '' : target.id;
     // savedata(target, id);
@@ -143,6 +122,14 @@ function Implementationsteps(props) {
     setData(newArr);
     setNewButton(false);
   };
+
+  useEffect(() => {
+    if (dataSource && dataSource.length === 0) {
+      setData(startData)
+    } else {
+      setData(dataSource)
+    }
+  }, [dataSource])
 
   const columns = [
     {
@@ -159,7 +146,7 @@ function Implementationsteps(props) {
                 <Button
                   type='primary'
                   style={{ marginRight: 8 }}
-                  onClick={() => newMember(record.rowtitle)}
+                  onClick={() => newMember(record.rowtitle, record.stepType)}
                   disabled={newbutton}
                 >
                   新增
@@ -201,8 +188,8 @@ function Implementationsteps(props) {
     },
     {
       title: '操作步骤',
-      dataIndex: 'steps',
-      key: 'steps',
+      dataIndex: 'step',
+      key: 'step',
       render: (text, record) => {
         if (record.rowtitle) {
           return {
@@ -214,7 +201,7 @@ function Implementationsteps(props) {
           return (
             <div className={text === '' ? styles.requiredform : ''}>
               <Input
-                onChange={e => handleFieldChange(e.target.value, 'steps', record.key)}
+                onChange={e => handleFieldChange(e.target.value, 'step', record.key)}
                 defaultValue={text}
                 placeholder="请输入"
               />
@@ -226,8 +213,8 @@ function Implementationsteps(props) {
     },
     {
       title: '风险及注意事项',
-      dataIndex: 'risk',
-      key: 'risk',
+      dataIndex: 'riskNotice',
+      key: 'riskNotice',
       render: (text, record) => {
         if (record.rowtitle) {
           return {
@@ -239,7 +226,7 @@ function Implementationsteps(props) {
           return (
             <div className={text === '' ? styles.requiredform : ''}>
               <Input
-                onChange={e => handleFieldChange(e.target.value, 'risk', record.key)}
+                onChange={e => handleFieldChange(e.target.value, 'riskNotice', record.key)}
                 defaultValue={text}
                 placeholder="请输入"
               />
@@ -251,8 +238,8 @@ function Implementationsteps(props) {
     },
     {
       title: '负责人',
-      dataIndex: 'charge',
-      key: 'charge',
+      dataIndex: 'director',
+      key: 'director',
       render: (text, record) => {
         if (record.rowtitle) {
           return {
@@ -264,7 +251,7 @@ function Implementationsteps(props) {
           return (
             <div className={text === '' ? styles.requiredform : ''}>
               <Input
-                onChange={e => handleFieldChange(e.target.value, 'charge', record.key)}
+                onChange={e => handleFieldChange(e.target.value, 'director', record.key)}
                 defaultValue={text}
                 placeholder="请输入"
               />
@@ -276,8 +263,8 @@ function Implementationsteps(props) {
     },
     {
       title: '安全监护人确认完成情况',
-      dataIndex: 'confirm',
-      key: 'confirm',
+      dataIndex: 'chaperone',
+      key: 'chaperone',
       render: (text, record) => {
         if (record.rowtitle) {
           return {
@@ -289,7 +276,7 @@ function Implementationsteps(props) {
           return (
             <div className={text === '' ? styles.requiredform : ''}>
               <Input
-                onChange={e => handleFieldChange(e.target.value, 'confirm', record.key)}
+                onChange={e => handleFieldChange(e.target.value, 'chaperone', record.key)}
                 defaultValue={text}
                 placeholder="请输入"
               />

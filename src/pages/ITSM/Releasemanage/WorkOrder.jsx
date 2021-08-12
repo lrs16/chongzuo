@@ -190,25 +190,98 @@ function WorkOrder(props) {
       case 'flow':
         setUserChoice(false);
         sessionStorage.removeItem('NextflowUserId');
-        RegistratRef.current.Forms((err) => {
+        RegistratRef.current.Forms((err, values) => {
           if (err) {
             message.error('请将信息填写完整')
           } else {
-            savebizValidate();
-            sessionStorage.setItem('flowtype', '1');
-            setUserVisible(true);
+            const releaseStatus = values.releaseLists.map(item => {
+              return item.verifyStatus;
+            });
+            if (releaseStatus.includes('已转出')) {
+              message.error('发布清单还未全部验证，无法流转')
+            } else {
+              savebizValidate();
+              sessionStorage.setItem('flowtype', '1');
+              setUserVisible(true);
+            }
           }
         })
         break;
       case 'noPass':
         setUserChoice(false);
         sessionStorage.removeItem('NextflowUserId');
-        RegistratRef.current.Forms((err) => {
+        RegistratRef.current.Forms((err, values) => {
           if (err) {
             message.error('请将信息填写完整')
           } else {
-            savelatformValid();
-            tosubmit();
+            const releaseStatus = values.releaseLists.map(item => {
+              return item.verifyStatus;
+            });
+            if (releaseStatus.includes('已转出')) {
+              message.error('发布清单还未全部验证')
+            } else {
+              savelatformValid();
+              tosubmit();
+            }
+          }
+        })
+        break;
+      default:
+        break;
+    }
+  }
+
+  // 发布实施准备保存流转
+  const savepracticePre = () => {
+    const val = ImplementationPreRef.current.getVal();
+    dispatch({
+      type: 'releasetodo/implementationpre',
+      payload: {
+        formValue: {
+          saveItems: 'practicePre, practiceDevices, practicePersonList, practiceSteps, practiceRisks, releaseLists, releaseAttaches',
+          releaseNo: Id,
+          practicePre: {
+            summary: val.summary,
+            adjustRunMode: val.adjustRunMode,
+            appModule: val.appModule,
+            beginPlanTime: moment(val.beginPlanTime).format('YYYY-MM-DD HH:mm:ss'),
+            endPlanTime: moment(val.endPlanTime).format('YYYY-MM-DD HH:mm:ss'),
+            bizStopBegin: moment(val.bizStopBegin).format('YYYY-MM-DD HH:mm:ss'),
+            bizStopEnd: moment(val.bizStopEnd).format('YYYY-MM-DD HH:mm:ss'),
+            bizStopVisit: val.bizStopVisit,
+            syncData: val.syncData,
+            affectBiz: val.syncData,
+            affectUser: val.affectUser,
+            specialRequest: val.specialRequest,
+            rollbackPaln: val.rollbackPaln,
+            platformCheck: val.platformCheck,
+          },
+          practiceDevices: val.practiceDevices,
+          practicePersonList: val.practicePersonList,
+          practiceRisks: val.practiceRisks,
+          practiceSteps: val.practiceSteps,
+          releaseAttaches: val.releaseAttaches,
+          releaseLists: val.releaseLists,
+        },
+        buttype,
+      },
+    });
+  }
+  const practicePreSubmit = () => {
+    switch (buttype) {
+      case 'save':
+        savepracticePre();
+        break;
+      case 'flow':
+        setUserChoice(false);
+        sessionStorage.removeItem('NextflowUserId');
+        ImplementationPreRef.current.Forms((err, values) => {
+          if (err) {
+            message.error('请将信息填写完整')
+          } else {
+            savebizValidate();
+            sessionStorage.setItem('flowtype', '1');
+            setUserVisible(true);
           }
         })
         break;
@@ -283,6 +356,9 @@ function WorkOrder(props) {
           case '业务验证':
             bizValidateParamSubmit();
             break;
+          case '发布实施准备':
+            practicePreSubmit();
+            break;
           default:
             break;
         }
@@ -353,7 +429,7 @@ function WorkOrder(props) {
             </div>
           </Panel>
         )}
-        {taskName === '发布实施准备' && (
+        {taskName === '发布实施准备' && info && info.releaseAttaches && (
           <Panel header={taskName} key="form">
             <div style={{ marginTop: 12 }}>
               <ImplementationPre
@@ -361,8 +437,8 @@ function WorkOrder(props) {
                 selectdata={selectdata}
                 isEdit
                 taskName={taskName}
-                mainId={Id}
-                listType='计划'
+                info={info}
+                userinfo={userinfo}
               />
             </div>
           </Panel>
