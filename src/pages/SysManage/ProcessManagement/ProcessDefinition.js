@@ -6,19 +6,20 @@ import {
   Table,
   Form,
   Input,
-  Button,
+  // Button,
   Message,
   Popconfirm,
   Row,
   Divider,
   message,
-  Upload
+  // Upload
 } from 'antd';
 // import Link from 'umi/link';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 // import ModelAdd from './components/ModelAdd';
 import DefinitionPng from './components/DefinitionPng';
 import SysUpload from './components/SysUpload'; // 附件下载组件
+import DefinitionxmlData from './components/DefinitionxmlData';
 
 const { Search } = Input;
 @connect(({ processmanagement, loading }) => ({
@@ -63,13 +64,18 @@ class ProcessDefinition extends Component {
   handleSearch = values => {
     const page = this.state.current;
     const limit = this.state.pageSize;
+    const datas = Object.assign({}, this.state.bodyParams, { name: '', key: values, category: ''});
     this.setState({
-      queKey: values,
-    });
+      bodyParams: datas
+    })
+    // this.setState({
+    //   queKey: values,
+    // });
     this.props.dispatch({
       type: 'processmanagement/definitionList',
       payload: {
-        queKey: values,
+        // queKey: values,
+        bodyParams: datas,
         page,
         limit,
       },
@@ -238,6 +244,16 @@ class ProcessDefinition extends Component {
         key: 'resourceName',
         width: 200,
         ellipsis: true,
+        render: (text, record) => (
+          <>
+            <DefinitionxmlData
+              id={record.id}
+              resourceName={record.resourceName}
+            >
+              <a type="link">{text}</a>
+            </DefinitionxmlData>
+          </>
+        )
       },
       {
         title: '流程图',

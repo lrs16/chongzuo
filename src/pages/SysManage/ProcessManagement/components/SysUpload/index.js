@@ -6,7 +6,7 @@ import { getFileSecuritySuffix } from '@/services/upload';
 function SysUpload(props) {
   // const { fileslist, ChangeFileslist } = props;
   const [filetype, setFileType] = useState('');
-
+  const [show, setShow] = useState(true);
   // 不允许上传类型
   useEffect(() => {
     getFileSecuritySuffix().then(res => {
@@ -45,6 +45,7 @@ function SysUpload(props) {
       if (info.file.status === 'done') {
         if (info.file.response.code === 200) {
           message.success(`${info.file.name} 上传成功`);
+          setShow(false);
         }
         if (info.file.response.code === -1) {
           message.error(`${info.file.name} 上传失败`);
@@ -62,9 +63,13 @@ function SysUpload(props) {
         <Button type="primary">
           部署流程图
         </Button>
-        <p className="ant-upload-hint" style={{ color: 'red' }}>
-          查看流程图模糊时,可选择.bpmn和.png一同打成zip包部署
-        </p>
+        {
+          show === true && (
+            <p className="ant-upload-hint" style={{ color: 'red' }}>
+              查看流程图模糊时,可选择.bpmn和.png一同打成zip包部署
+            </p>
+          )
+        }
       </Upload>
     </>
   );

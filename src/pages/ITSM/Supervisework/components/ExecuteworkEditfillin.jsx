@@ -31,7 +31,8 @@ const ExecuteworkEditfillin = React.forwardRef((props, ref) => {
     ChangeFiles,
     executeResult,
     userinfo,
-    execute
+    execute,
+    showEdit
   } = props;
 
   const [fileslist, setFilesList] = useState([]);
@@ -65,7 +66,7 @@ const ExecuteworkEditfillin = React.forwardRef((props, ref) => {
               <Select
                 placeholder="请选择"
                 allowClear
-              //   disabled={type === 'list'}
+                disabled={!showEdit}
               >
                 {executeResult.map(obj => [
                   <Option key={obj.key} value={obj.dict_code}>
@@ -90,6 +91,7 @@ const ExecuteworkEditfillin = React.forwardRef((props, ref) => {
               initialValue: execute.startTime === null ? moment(new Date()) : moment(execute.startTime)
             })(
               <DatePicker
+                disabled={!showEdit}
                 showTime
                 format="YYYY-MM-DD HH:mm:ss"
               />)}
@@ -108,6 +110,7 @@ const ExecuteworkEditfillin = React.forwardRef((props, ref) => {
               initialValue: execute.endTime === null ? moment(new Date()) : moment(newendTime),
             })(<DatePicker
               showTime
+              disabled={!showEdit}
               sabledDate={disabledDate}
               format="YYYY-MM-DD HH:mm:ss"
             />)}
@@ -121,7 +124,7 @@ const ExecuteworkEditfillin = React.forwardRef((props, ref) => {
               initialValue: execute && execute.content ? execute.content : ''
             })(
               <TextArea
-                // disabled={type}
+                disabled={!showEdit}
                 rows={4} />
             )}
           </Form.Item>
@@ -136,6 +139,7 @@ const ExecuteworkEditfillin = React.forwardRef((props, ref) => {
                 <div style={{ width: 400 }}>
                   <SysUpload
                     fileslist={files}
+                    disabled={!showEdit}
                     ChangeFileslist={newvalue => setFilesList(newvalue)}
                   />
                 </div>

@@ -57,6 +57,7 @@ function WorkplanDetail(props) {
     // const pagetitle = props.route.name;
     const [selectdata, setSelectData] = useState('');
     const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
+    const [show, setShow] = useState(false);
     const SaveRef = useRef();
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [result, setResult] = useState('001'); // 审核结果
@@ -435,7 +436,7 @@ function WorkplanDetail(props) {
         }).then(res => {
             if (res.code === 200) {
                 message.success(res.msg);
-                // showEdit = false;
+                setShow(true);
             } else {
                 message.error(res.msg);
             }
@@ -542,6 +543,12 @@ function WorkplanDetail(props) {
         }
     }, [files]);
 
+    useEffect(() => {
+        if (!delay && flowNodeName === '工作执行') {
+          message.info('请接单..', 1);
+        }
+      }, [])
+
     return (
         <PageHeaderWrapper
             title={flowNodeName}
@@ -567,7 +574,7 @@ function WorkplanDetail(props) {
                             <Button type="danger" ghost style={{ marginRight: 8 }} >回退</Button>
                         </Back>)} */}
                     {
-                        loading === false && !delay && (
+                        show && loading === false && !delay && (
                             <Button
                                 type="primary"
                                 style={{ marginRight: 8 }}
@@ -595,7 +602,7 @@ function WorkplanDetail(props) {
                     >
                         提交
                     </Button>)}
-                    {flowNodeName === '工作执行' && !delay && (<Button
+                    {show && flowNodeName === '工作执行' && !delay && (<Button
                         type="primary"
                         style={{ marginRight: 8 }}
                         onClick={() => handlebeforeconfirm()}
@@ -682,7 +689,7 @@ function WorkplanDetail(props) {
                                                 userinfo={userinfo}
                                                 executeResult={executeResult}
                                                 ref={SaveRef}
-                                                // showEdit={showEdit}
+                                                showEdit={show}
                                                 execute={edit.execute}
                                                 files={
                                                     (edit.execute.fileIds) && edit.execute.fileIds !== null ? JSON.parse(edit.execute.fileIds) : []

@@ -53,6 +53,15 @@ export async function imgResource(params) {
   });
 }
 
+//  流程定义
+export async function xmldataResource(params) {
+  return request(`/activiti/definition/readResource`, {
+    method: 'POST',
+    data:JSON.stringify(params),
+    requestType: 'formjosn',
+  });
+}
+
 //  删除资源
 export async function deleteDefinition(id) {
   return request(`/activiti/definition/remove/${id}`, {

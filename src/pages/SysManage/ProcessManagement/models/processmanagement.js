@@ -6,6 +6,7 @@ import {
   releaseModels,
   definitionList,
   imgResource,
+  xmldataResource,
   deleteDefinition,
   stateChange,
   definitionUpload
@@ -63,6 +64,10 @@ export default {
 
     *imgresource({ payload}, { call }) {
       return yield call(imgResource,payload);
+    },
+
+    *xmldataResources({ payload}, { call }) {
+      return yield call(xmldataResource,payload);
     },
 
     *deleteDefinition({ payload: { id }}, { call }) {

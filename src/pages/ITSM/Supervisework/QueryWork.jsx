@@ -415,30 +415,30 @@ function TodelayExamine(props) {
         })
     };
 
-    const handleDelete = () => { // 删除
-        const len = selectedRows.length;
-        const deleteIds = selectedRows.map(res => {
-            return res.mainId
-        })
-        if (len === 0) {
-            message.info('至少选择一条数据');
-            return false;
-        }
-        return dispatch({
-            type: 'supervisemodel/taskDelete',
-            payload: {
-                mainIds: deleteIds.toString()
-            }
-        }).then(res => {
-            if (res.code === 200) {
-                message.success(res.msg);
-                getList();
-            } else {
-                message.info(res.msg);
-                getList();
-            }
-        })
-    };
+    // const handleDelete = () => { // 删除
+    //     const len = selectedRows.length;
+    //     const deleteIds = selectedRows.map(res => {
+    //         return res.mainId
+    //     })
+    //     if (len === 0) {
+    //         message.info('至少选择一条数据');
+    //         return false;
+    //     }
+    //     return dispatch({
+    //         type: 'supervisemodel/taskDelete',
+    //         payload: {
+    //             mainIds: deleteIds.toString()
+    //         }
+    //     }).then(res => {
+    //         if (res.code === 200) {
+    //             message.success(res.msg);
+    //             getList();
+    //         } else {
+    //             message.info(res.msg);
+    //             getList();
+    //         }
+    //     })
+    // };
 
     const creataColumns = () => { // 创建列表
         // columns
@@ -805,7 +805,7 @@ function TodelayExamine(props) {
 
                 <div>
                     <Button type="primary" onClick={() => download()} style={{ marginRight: 8 }}>导出数据</Button>
-                    <Button type="danger" ghost style={{ marginRight: 8 }} onClick={() => handleDelete()}>删除</Button>
+                    {/* <Button type="danger" ghost style={{ marginRight: 8 }} onClick={() => handleDelete()}>删除</Button> */}
                 </div>
                 <div style={{ textAlign: 'right', marginBottom: 8 }}>
                     <Popover
