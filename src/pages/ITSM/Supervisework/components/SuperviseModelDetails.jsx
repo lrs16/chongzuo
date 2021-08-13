@@ -25,27 +25,23 @@ const forminladeLayout = {
 };
 
 function SuperviseModelDetails(props) {
-    //   const { info } = props;
-
+      const { info, userinfo } = props;
     return (
         <Row gutter={24} style={{ marginTop: 24 }}>
             <Form {...formItemLayout}>
                 <Col span={24}>
                     <Form.Item label="督办内容" {...forminladeLayout}>
-                        {/* <TextArea autoSize={{ minRows: 3 }} defaultValue={info.content} disabled /> */}
-                        <TextArea autoSize={{ minRows: 3 }} defaultValue='' disabled />
+                        <TextArea autoSize={{ minRows: 3 }} defaultValue={info.content} disabled />
                     </Form.Item>
                 </Col>
                 <Col span={8}>
                     <Form.Item label="督办人">
-                        {/* <Input defaultValue={info.checkUser} disabled /> */}
-                        <Input defaultValue='' disabled />
+                        <Input defaultValue={info.superviseUser} disabled />
                     </Form.Item>
                 </Col>
                 <Col span={8}>
                     <Form.Item label="督办人单位">
-                        {/* <Input defaultValue={info.checkUnit} disabled /> */}
-                        <Input defaultValue='' disabled />
+                        <Input defaultValue={userinfo.unitName} disabled />
                     </Form.Item>
                 </Col>
             </Form>

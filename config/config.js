@@ -1273,6 +1273,22 @@ export default {
                       icon: 'database',
                       routes: [
                         {
+                          path: '/automation/objectmanage',
+                          redirect: '/automation/objectmanage/host',
+                        },
+                        {
+                          path: '/automation/objectmanage/host',
+                          name: '主机管理',
+                          icon: 'cloud-server',
+                          component: './Automation/ObjectManage/HostManege',
+                        },
+                        {
+                          path: '/automation/objectmanage/cabinet',
+                          name: '机柜管理',
+                          icon: 'cloud-server',
+                          component: './Automation/ObjectManage/CabinetManege',
+                        },
+                        {
                           path: '/automation/objectmanage/agent',
                           name: 'agent管理',
                           icon: 'cloud-server',
@@ -1638,6 +1654,12 @@ export default {
                       ],
                     },
                     {
+                      path: '/sysmanage/timedtask',
+                      icon: 'cluster',
+                      name: '定时任务',
+                      component: './SysManage/TimedTask',
+                    },
+                    {
                       path: '/sysmanage/expressionsmanage',
                       name: '常用语管理',
                       icon: 'smile',
@@ -1856,6 +1878,10 @@ export default {
     },
     '/lasting/': {
       target: 'http://172.16.10.33:9901/',        // 自动化运维
+      changeOrigin: true
+    },
+    '/assets/': {
+      target: 'http://172.16.10.33:9901/',        // 自动化运维-主机管理、机柜管理
       changeOrigin: true
     },
     '/quality/': {

@@ -16,3 +16,32 @@ export async function updataAgent(params) {
     requestType: 'formjosn',
   });
 }
+
+
+// ****机柜管理 
+// 获取机柜列表
+export async function CabinetList(params, pageNum, pageSize) {
+  return request(`/assets/cabinet/findCabinetList/${pageNum}/${pageSize}`, {
+    method: 'POST',
+    data: JSON.stringify(params),
+    requestType: 'formjosn',
+  });
+}
+
+// 机柜-新增/编辑
+export async function updateCabinet(params) {
+  return request(`/assets/cabinet/addOrEdit`, {
+    method: 'POST',
+    data: JSON.stringify(params),
+    requestType: 'formjosn',
+  });
+}
+
+// 机柜-删除
+export async function deleteCabinet(cabinetIds) {
+  return request(`/assets/cabinet/deleteCabinet`, {
+    method: 'DELETE',
+    data: cabinetIds,
+    requestType: 'form',
+  })
+}

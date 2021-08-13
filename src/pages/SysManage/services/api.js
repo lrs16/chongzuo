@@ -383,3 +383,6 @@ export async function updateWorkTime(params) {
     requestType: 'form',
   });
 }
+
+// 定时任务接口 mxj
+// /job/qrtzjob 新增定时任务调度
