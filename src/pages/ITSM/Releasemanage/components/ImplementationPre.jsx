@@ -39,7 +39,7 @@ const implementequipment = [
   { key: 'director', title: '负责人' },
   { key: 'remarks', title: '备注' },
 ];
-const implementequipmentnew = { deviceName: null, ipAddr: null, useFor: null, director: null, remarks: '无' };
+const implementequipmentnew = { deviceName: '', ipAddr: '', useFor: '', director: '', remarks: '无' };
 
 const inplementers = [
   { key: 'roles', title: '角色' },
@@ -47,31 +47,46 @@ const inplementers = [
   { key: 'contacts', title: '联系人' },
   { key: 'tel', title: '联系方式' },
 ];
-const inplementersnew = { roles: null, duty: null, contacts: null, tel: null }
+const inplementersnew = { roles: '', duty: '', contacts: '', tel: '' }
 
 const inplementrisk = [
   { key: 'riskAnaly', title: '主要风险分析' },
   { key: 'resolve', title: '应对措施' },
   { key: 'remarks', title: '备注' },
 ];
-const inplementrisknew = { riskAnaly: null, resolve: null, remarks: '无' };
+const inplementrisknew = { riskAnaly: '', resolve: '', remarks: '无' };
 
 function ImplementationPre(props, ref) {
   const { taskName, userinfo, selectdata, isEdit, info } = props;
   const { getFieldDecorator, setFieldsValue, getFieldsValue, resetFields } = props.form;
   const [check, setCheck] = useState(false);
   const [stopVisit, setStopVisit] = useState('否');
-  const { ChangeSubmitType, ChangeButtype } = useContext(SubmitTypeContext);
+  const { ChangeButtype } = useContext(SubmitTypeContext);
   const required = true;
 
   const handleStopVisit = (e) => {
     setStopVisit(e.target.value)
   }
 
-  // 发布清 
+  // 发布清单，实施涉及系统（设备），实施人员，主要风险分析与应对措施
   const handleListValidator = (rule, value, callback) => {
     if (value === '' || value.length === 0) {
       callback()
+    }
+    callback()
+  }
+
+  // 实施步骤验证
+  const practiceStepsValidator = (rule, value, callback) => {
+    if (value) {
+      const target1 = value.filter(item => item.stepType === '实施前准备');
+      const target2 = value.filter(item => item.stepType === '实施过程');
+      const target3 = value.filter(item => item.stepType === '实施后');
+      if (target1.length === 0 || target2.length === 0 || target3.length === 0) {
+        callback('请填写实施步骤')
+      } else {
+        callback()
+      }
     }
     callback()
   }
@@ -81,7 +96,7 @@ function ImplementationPre(props, ref) {
     getVal: () => getFieldsValue(),
     resetVal: () => resetFields(),
     Forms: props.form.validateFieldsAndScroll,
-  }))
+  }), []);
 
   const getTypebyId = key => {
     if (selectdata.ischange) {
@@ -148,10 +163,10 @@ function ImplementationPre(props, ref) {
             dataSource={info && info.practiceDevices ? info.practiceDevices : []}
             ChangeValue={v => { setFieldsValue({ practiceDevices: v }); }}
           />
-          <Form.Item wrapperCol={{ span: 24 }}>
+          <Form.Item wrapperCol={{ span: 24 }} extra="点击行编辑表格信息，整行信息填写完整鼠标移开保存信息">
             {getFieldDecorator('practiceDevices', {
               rules: [{ required, message: '请填写实施涉及系统（设备）' }, {
-                validator: handleAttValidator
+                validator: handleListValidator
               }],
               initialValue: info.practiceDevices,
             })(<></>)}
@@ -182,10 +197,10 @@ function ImplementationPre(props, ref) {
             dataSource={info.practicePersonList ? info.practicePersonList : []}
             ChangeValue={v => { setFieldsValue({ practicePersonList: v }); }}
           />
-          <Form.Item wrapperCol={{ span: 24 }}>
+          <Form.Item wrapperCol={{ span: 24 }} extra="点击行编辑表格信息，整行信息填写完整鼠标移开保存信息">
             {getFieldDecorator('practicePersonList', {
               rules: [{ required, message: '请填写实施人员信息' }, {
-                validator: handleAttValidator
+                validator: handleListValidator
               }],
               initialValue: info.practicePersonList,
             })(<></>)}
@@ -276,7 +291,7 @@ function ImplementationPre(props, ref) {
           <Form.Item wrapperCol={{ span: 24 }}>
             {getFieldDecorator('practiceSteps', {
               rules: [{ required, message: '请填写实施步骤' }, {
-                validator: handleListValidator
+                validator: practiceStepsValidator
               }],
               initialValue: info.practiceSteps,
             })(<></>)}
@@ -291,7 +306,7 @@ function ImplementationPre(props, ref) {
             dataSource={info.practiceRisks ? info.practiceRisks : []}
             ChangeValue={v => { setFieldsValue({ practiceRisks: v }); }}
           />
-          <Form.Item wrapperCol={{ span: 24 }}>
+          <Form.Item wrapperCol={{ span: 24 }} extra="点击行编辑表格信息，整行信息填写完整鼠标移开保存信息">
             {getFieldDecorator('practiceRisks', {
               rules: [{ required, message: '请填写主要风险分析与应对措施' }, {
                 validator: handleListValidator
@@ -325,7 +340,7 @@ function ImplementationPre(props, ref) {
             dataSource={info.releaseLists}
             ChangeValue={v => { setFieldsValue({ releaseLists: v }); }}
           />
-          <Form.Item wrapperCol={{ span: 24 }}>
+          <Form.Item wrapperCol={{ span: 24 }} >
             {getFieldDecorator('releaseLists', {
               rules: [{ required, message: '请填写发布清单' }, {
                 validator: handleListValidator
@@ -382,7 +397,7 @@ function ImplementationPre(props, ref) {
           <Form.Item label="登记时间" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
             {getFieldDecorator('registerTime', {
               rules: [{ required, message: `请选择登记时间` }],
-              initialValue: moment(info.practicePre ? info.practicePre.platformCheck : undefined).format('YYYY-MM-DD HH:mm:ss'),
+              initialValue: moment(info.practicePre ? info.practicePre.registerTime : undefined).format('YYYY-MM-DD HH:mm:ss'),
             })(<Input disabled />)}
           </Form.Item>
         </Col>

@@ -1,24 +1,27 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Button, Row, Checkbox, Input, Divider, message } from 'antd';
+import { Table, Button, Row, Checkbox, Input, Divider, message, Col, Dropdown, Menu, Icon } from 'antd';
 import styles from '../index.less';
 
-
 const startData = [
-  { key: 1, rowtitle: '一、实施前准备', stepType: '实施前准备' },
-  { key: 2, rowtitle: '二、实施过程', stepType: '实施过程' },
-  { key: 3, rowtitle: '三、实施后', stepType: '实施后' },
+  { key: 1, rowtitle: '一、实施前准备' },
+  { key: 2, rowtitle: '二、实施过程' },
+  { key: 3, rowtitle: '三、实施后' },
 ]
 
 function Implementationsteps(props) {
   const { title, isEdit, dataSource, ChangeValue } = props;
-  const [data, setData] = useState([
-
-  ]);
+  const [data, setData] = useState([]);
   const [newbutton, setNewButton] = useState(false);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
 
+  // 复选
+  const handleCheck = (checkedValues) => {
+    setSelectedRowKeys(checkedValues)
+  }
+
   // 新增一条记录
-  const newMember = (value, stepType) => {
+  const newMember = (value) => {
+    setSelectedRowKeys([]);
     const newData = data.map(item => ({ ...item }));
     const num2 = newData.findIndex((ele) => {
       return ele.rowtitle === '二、实施过程'
@@ -28,7 +31,7 @@ function Implementationsteps(props) {
     });
     const vote = {
       key: newData.length + 1,
-      stepType,
+      stepType: value,
       step: '',
       riskNotice: '',
       director: '',
@@ -37,19 +40,19 @@ function Implementationsteps(props) {
       isNew: true,
     };
     switch (value) {
-      case '一、实施前准备':
+      case '实施前准备':
         newData.splice(num2, 0, {
           rowkey: newData[num2 - 1].rowkey !== undefined ? num2 : 1,
           ...vote,
         });
         break;
-      case '二、实施过程':
+      case '实施过程':
         newData.splice(num3, 0, {
           rowkey: newData[num3 - 1].rowkey !== undefined ? newData[num3 - 1].rowkey + 1 : 1,
           ...vote,
         });
         break;
-      case '三、实施后':
+      case '实施后':
         newData.push({
           rowkey: newData.slice(-1)[0].rowkey !== undefined ? newData.slice(-1)[0].rowkey + 1 : 1,
           ...vote,
@@ -58,7 +61,12 @@ function Implementationsteps(props) {
       default:
         break;
     };
-    setData(newData);
+    const Arr = newData.map((item, index) => ({
+      ...item,
+      editable: false,
+      key: index + 1,
+    }));
+    setData(Arr);
     setNewButton(true);
   };
 
@@ -80,13 +88,13 @@ function Implementationsteps(props) {
   const editRow = (e, key) => {
     e.preventDefault();
     const newData = data.map(item => ({ ...item }));
+    const indexNew = newData.filter(item => item.isNew);
     const target = getRowByKey(key, newData);
-    if (target) {
+    if (target && indexNew.length === 0) {
       target.editable = true;
       setData(newData);
     }
   }
-
 
   // 保存记录
   const saveRow = (e, key) => {
@@ -94,7 +102,7 @@ function Implementationsteps(props) {
     const newData = data.map(item => ({ ...item }));
     const target = getRowByKey(key, newData) || {};
     if (!target.step || !target.riskNotice || !target.director || !target.chaperone) {
-      message.error('请填写完整信息。');
+      // message.error('请填写完整信息。');
       e.target.focus();
       return;
     }
@@ -109,25 +117,84 @@ function Implementationsteps(props) {
       setData(newData);
       ChangeValue(newData);
     }
-    // const id = target.id === '' ? '' : target.id;
-    // savedata(target, id);
   };
 
-  // 取消按钮
-  const cancel = (e, key) => {
-    e.preventDefault();
-    const newData = data.map(item => ({ ...item }));
-    const target = getRowByKey(key, newData);
-    const newArr = newData.filter(item => item.key !== target.key);
+  // 移除
+  const handleDelete = () => {
+    if (selectedRowKeys.length === 0) {
+      message.error('您还没有选择数据')
+    };
+    const arr = [];
+    data.forEach(item => {
+      if (!selectedRowKeys.includes(item.key)) {
+        arr.push(item)
+      }
+    });
+    const indexNew = arr.filter(item => item.isNew);
+    if (indexNew.length > 0) {
+      setNewButton(true)
+    } else {
+      setNewButton(false)
+    };
+    const newArr = arr.map((item, index) => ({
+      ...item,
+      editable: false,
+      key: index + 1,
+    }));
     setData(newArr);
-    setNewButton(false);
+    ChangeValue(newArr);
+    setSelectedRowKeys([]);
   };
 
   useEffect(() => {
     if (dataSource && dataSource.length === 0) {
-      setData(startData)
+      setData(startData);
+      ChangeValue(startData);
     } else {
-      setData(dataSource)
+      let i = 1;  // 实施前准备序号
+      let j = 1;  // 实施过程序号
+      let k = 1;  // 实施后序号
+      const newArr = dataSource.map((item, index) => {
+        let vote = {};
+        if (item.rowtitle) {
+          vote = {
+            ...item,
+            editable: false,
+            key: index + 1,
+          };
+        } else {
+          if (item.stepType === '实施前准备') {
+            vote = {
+              ...item,
+              editable: false,
+              key: index + 1,
+              rowkey: i,
+            };
+            i += 1;
+          };
+          if (item.stepType === '实施过程') {
+            vote = {
+              ...item,
+              editable: false,
+              key: index + 1,
+              rowkey: j,
+            };
+            j += 1;
+          };
+          if (item.stepType === '实施后') {
+            vote = {
+              ...item,
+              editable: false,
+              key: index + 1,
+              rowkey: k,
+            };
+            k += 1;
+          };
+        };
+        return vote
+      })
+      setData(newArr)
+
     }
   }, [dataSource])
 
@@ -139,34 +206,19 @@ function Implementationsteps(props) {
       width: 40,
       render: (_, record) => {
         const rowtitles = (
-          <>
-            <div style={{ marginTop: 6, float: 'left' }}>{record.rowtitle}</div>
-            {isEdit && (
-              <div style={{ float: 'right' }}>
-                <Button
-                  type='primary'
-                  style={{ marginRight: 8 }}
-                  onClick={() => newMember(record.rowtitle, record.stepType)}
-                  disabled={newbutton}
-                >
-                  新增
-                </Button>
-                <Button type='danger' style={{ marginRight: 8 }} ghost>移除</Button>
-              </div>
-            )}
-          </>
+          <div>
+            <div style={{ float: 'left', padding: '12px 8px' }}>{record.rowtitle}</div>
+          </div>
         )
         if (record.rowtitle) {
           return {
             children: rowtitles,
             props: {
-              colSpan: 7,
+              colSpan: 6,
             }
           }
-        } if (!record.isNew) {
-          return <Checkbox />
         }
-        return null;
+        return <div style={{ padding: '12px 8px' }}><Checkbox key={record.key} value={record.key} /></div>
       }
     },
     {
@@ -199,7 +251,7 @@ function Implementationsteps(props) {
           }
         } if (record.isNew || record.editable) {
           return (
-            <div className={text === '' ? styles.requiredform : ''}>
+            <div className={text === '' ? styles.requiredform : ''} style={{ padding: '0 8px' }}>
               <Input
                 onChange={e => handleFieldChange(e.target.value, 'step', record.key)}
                 defaultValue={text}
@@ -208,7 +260,7 @@ function Implementationsteps(props) {
             </div>
           )
         }
-        return <>{text}</>
+        return <div style={{ padding: '12px 8px' }} onClick={(e) => { if (isEdit && !record.rowtitle) { editRow(e, record.key) } }}>{text}</div>
       }
     },
     {
@@ -224,7 +276,7 @@ function Implementationsteps(props) {
           }
         } if (record.isNew || record.editable) {
           return (
-            <div className={text === '' ? styles.requiredform : ''}>
+            <div className={text === '' ? styles.requiredform : ''} style={{ padding: '0 8px' }} >
               <Input
                 onChange={e => handleFieldChange(e.target.value, 'riskNotice', record.key)}
                 defaultValue={text}
@@ -233,7 +285,7 @@ function Implementationsteps(props) {
             </div>
           )
         }
-        return <>{text}</>
+        return <div style={{ padding: '12px 8px' }} onClick={(e) => { if (isEdit && !record.rowtitle) { editRow(e, record.key) } }}>{text}</div>
       }
     },
     {
@@ -249,7 +301,7 @@ function Implementationsteps(props) {
           }
         } if (record.isNew || record.editable) {
           return (
-            <div className={text === '' ? styles.requiredform : ''}>
+            <div className={text === '' ? styles.requiredform : ''} style={{ padding: '0 8px' }}>
               <Input
                 onChange={e => handleFieldChange(e.target.value, 'director', record.key)}
                 defaultValue={text}
@@ -258,7 +310,7 @@ function Implementationsteps(props) {
             </div>
           )
         }
-        return <>{text}</>
+        return <div style={{ padding: '12px 8px' }} onClick={(e) => { if (isEdit && !record.rowtitle) { editRow(e, record.key) } }}>{text}</div>
       }
     },
     {
@@ -274,7 +326,7 @@ function Implementationsteps(props) {
           }
         } if (record.isNew || record.editable) {
           return (
-            <div className={text === '' ? styles.requiredform : ''}>
+            <div className={text === '' ? styles.requiredform : ''} style={{ padding: '0 8px' }}>
               <Input
                 onChange={e => handleFieldChange(e.target.value, 'chaperone', record.key)}
                 defaultValue={text}
@@ -283,37 +335,7 @@ function Implementationsteps(props) {
             </div>
           )
         }
-        return <>{text}</>
-      }
-    },
-    {
-      title: '操作',
-      dataIndex: 'action',
-      key: 'action',
-      align: 'center',
-      render: (text, record) => {
-        if (record.rowtitle) {
-          return {
-            props: {
-              colSpan: 0,
-            }
-          }
-        } if (record.isNew) {
-          return (
-            <>
-              <Button type='link' onClick={e => saveRow(e, record.key)} style={{ padding: '0 4px' }}>保存</Button>
-              <Divider type="vertical" />
-              <Button type='link' onClick={e => cancel(e, record.key)} style={{ padding: '0 4px' }}>取消</Button>
-            </>
-          );
-        } if (record.editable) {
-          return (
-            <Button type='link' onClick={e => saveRow(e, record.key)} style={{ padding: '0 4px' }}>保存</Button>
-          );
-        }
-        return (
-          <Button type='link' onClick={e => editRow(e, record.key)} style={{ padding: '0 4px' }}>编辑</Button>
-        );
+        return <div style={{ padding: '12px 8px' }} onClick={(e) => { if (isEdit && !record.rowtitle) { editRow(e, record.key) } }}>{text}</div>
       }
     },
   ];
@@ -325,21 +347,55 @@ function Implementationsteps(props) {
   }
   const viewcolumns = sclicecolumns(columns);
 
+  const handleMenuClick = (e) => {
+    newMember(e.key)
+  }
+
+  const menu = (
+    <Menu onClick={handleMenuClick}>
+      <Menu.Item key="实施前准备">
+        实施前准备
+      </Menu.Item>
+      <Menu.Item key="实施过程">
+        实施过程
+      </Menu.Item>
+      <Menu.Item key="实施后">
+        实施后
+      </Menu.Item>
+    </Menu>
+  );
+
   return (
-    <>
+    <div className={styles.pretable}>
       <Row style={{ marginBottom: 8 }}>
-        <h4 style={{ float: 'left' }}><span style={{ color: '#f5222d', marginRight: 4, fontWeight: 'normal' }}>*</span>{title}</h4>
+        <Col span={8}><h4 style={{ float: 'left' }}><span style={{ color: '#f5222d', marginRight: 4, fontWeight: 'normal' }}>*</span>{title}</h4></Col>
+        <Col span={16} style={{ textAlign: 'right' }}>
+          <Dropdown overlay={menu} disabled={newbutton}>
+            <Button type='primary'>
+              新增 <Icon type="down" />
+            </Button>
+          </Dropdown>
+          <Button type='danger' style={{ marginLeft: 8 }} ghost onClick={() => handleDelete()}>移除</Button>
+        </Col>
       </Row>
-      <Table
-        columns={isEdit ? columns : viewcolumns}
-        dataSource={data}
-        bordered
-        size='middle'
-        pagination={false}
-        defaultExpandAllRows
-        rowKey={(_, index) => index.toString()}
-      />
-    </>
+      <Checkbox.Group style={{ width: '100%' }} onChange={handleCheck} value={selectedRowKeys} >
+        <Table
+          columns={isEdit ? columns : viewcolumns}
+          dataSource={data}
+          bordered
+          size='middle'
+          pagination={false}
+          defaultExpandAllRows
+          rowKey={(_, index) => index.toString()}
+          onRow={record => {
+            return {
+              // onMouseEnter: e => { if (isEdit && !record.rowtitle) { editRow(e, record.key) } },          // 点击行编辑
+              onMouseLeave: e => { if (isEdit && !record.rowtitle) { saveRow(e, record.key) } },    // 鼠标移出行
+            };
+          }}
+        />
+      </Checkbox.Group>
+    </div>
   );
 }
 

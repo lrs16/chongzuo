@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useContext } from 'react';
+import { connect } from 'dva';
 import { Table, Row, Button, Col, Cascader, Input, Radio, message, Divider, Select, Tabs, Alert } from 'antd';
-import UserContext from '@/layouts/MenuContext';              //  选人组件上下文
+import UserContext from '@/layouts/MenuContext';
 import CheckOneUser from '@/components/SelectUser/CheckOneUser';
 import { dispatchBizUsers } from '@/services/user';
 import styles from '../index.less';
 import OrderContent from './OrderContent';
+import { releaseListAssign } from '../services/api';
 
 const { TextArea } = Input;
 const InputGroup = Input.Group;
@@ -12,8 +14,18 @@ const RadioGroup = Radio.Group;
 const { Option } = Select;
 const { TabPane } = Tabs;
 
+function getQueryVariable(variable) {
+  const query = window.location.search.substring(1);
+  const vars = query.split("&");
+  for (let i = 0; i < vars.length; i += 1) {
+    const pair = vars[i].split("=");
+    if (pair[0] === variable) { return pair[1]; }
+  }
+  return (false);
+}
+
 function EditeTable(props) {
-  const { title, functionmap, modulamap, isEdit, taskName, dataSource, ChangeValue } = props;
+  const { title, functionmap, modulamap, isEdit, taskName, dataSource, ChangeValue, dispatch } = props;
   const [data, setData] = useState([]);
   const [newbutton, setNewButton] = useState(false);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
@@ -22,6 +34,7 @@ function EditeTable(props) {
   const [choiceUser, setChoiceUser] = useState({ users: '', ischange: false });
   const [uservisible, setUserVisible] = useState(false); // 是否显示选人组件
   const [userlist, setUserList] = useState([]);
+  const [assign, setAssign] = useState('');              // 分派工单
   const { ChangeButtype, taskId, ChangeaddAttaches } = useContext(UserContext);
 
   // 新增一条记录
@@ -122,11 +135,20 @@ function EditeTable(props) {
     setNewButton(false)
     const newData = data.map(item => ({ ...item }));
     const target = getRowByKey(key, newData) || {};
-    if (!target.module || !target.abilityType || !target.module || !target.appName || !target.problemType || !target.testMenu || !target.testResult || !target.testStep || !target.developer || !target.responsible || !target.responsibleId) {
-      message.error('请填写完整的发布清单信息');
-      e.target.focus();
-      return;
-    };
+    if (taskName === '业务验证') {
+      if (!target.module || !target.abilityType || !target.module || !target.appName || !target.problemType || !target.testMenu || !target.testResult || !target.testStep || !target.developer) {
+        message.error('请填写完整的发布清单信息');
+        e.target.focus();
+        return;
+      };
+    } else {
+      if (!target.module || !target.abilityType || !target.module || !target.appName || !target.problemType || !target.testMenu || !target.testResult || !target.testStep || !target.developer || !target.responsible || !target.responsibleId) {
+        message.error('请填写完整的发布清单信息');
+        e.target.focus();
+        return;
+      };
+    }
+
     if (target && (target.editable || target.verification)) {
       target.editable = !target.editable;
       target.verification = false;
@@ -230,8 +252,32 @@ function EditeTable(props) {
     setNewButton(false);
   }
 
-  const hadleAssignment = () => {
-    setUserVisible(true)
+  const hadleAssignment = (type) => {
+    setAssign('');
+    if (type === 'assign') {
+      const target = selectedRecords.filter(item => item.verifyStatus !== '已转出' && item.verifyStatus !== '已验证');
+      if (target.length > 0) {
+        const assignIds = target.map(item => {
+          return item.id;
+        });
+        setAssign(assignIds.toString());
+        setUserVisible(true)
+      } else {
+        message.error('请选择状态为空的数据')
+      }
+    };
+    if (type === 'reassignment') {
+      const target = selectedRecords.filter(item => item.verifyStatus === '已转出');
+      if (target.length > 0) {
+        const assignIds = target.map(item => {
+          return item.id;
+        });
+        setAssign(assignIds.toString());
+        setUserVisible(true)
+      } else {
+        message.error('请选择状态为已转出的数据')
+      }
+    };
   }
 
   useEffect(() => {
@@ -248,6 +294,20 @@ function EditeTable(props) {
       newMember()
     };
   }, [dataSource])
+
+  useEffect(() => {
+    if (choiceUser.ischange) {
+      const releaseNo = getQueryVariable("Id");
+      const values = { listIds: assign, handlerId: choiceUser.users };
+      dispatch({
+        type: 'releasetodo/listassign',
+        payload: {
+          values,
+          releaseNo,
+        },
+      });
+    }
+  }, [choiceUser.ischange])
 
   useEffect(() => {
     getUserList()
@@ -487,18 +547,20 @@ function EditeTable(props) {
         if (record.isNew || record.editable || record.verification) {
           return (
             <div className={text === '' ? styles.requiredselect : ''} onMouseDown={() => getUserList()}>
-              <Select
-                defaultValue={{ key: record.responsibleId }}
-                placeholder="请选择"
-                labelInValue
-                onChange={e => handleResponsible(e, record.key)}
-              >
-                {userlist.map(obj => [
-                  <Option key={obj.userId} value={obj.userId}>
-                    {obj.userName}
-                  </Option>,
-                ])}
-              </Select>
+              {taskName !== '业务验证' && (
+                <Select
+                  defaultValue={{ key: record.responsibleId }}
+                  placeholder="请选择"
+                  labelInValue
+                  onChange={e => handleResponsible(e, record.key)}
+                >
+                  {userlist.map(obj => [
+                    <Option key={obj.userId} value={obj.userId}>
+                      {obj.userName}
+                    </Option>,
+                  ])}
+                </Select>
+              )}
             </div>
           )
         }
@@ -516,8 +578,12 @@ function EditeTable(props) {
         if (record.isNew) {
           return (
             <>
-              {taskName !== '业务验证' && (<Button type='link' onMouseDown={() => ChangeButtype('')} onClick={e => saveRow(e, record.key)}>{taskName === '新建' ? '暂存' : '保存'}</Button>)}
-              {taskName === '业务验证' && (<Button type='link' onMouseDown={() => ChangeButtype('')} onClick={e => saveRow(e, record.key)}>保存</Button>)}
+              {taskName !== '业务验证' && (
+                <Button type='link' onMouseDown={() => ChangeButtype('')} onClick={e => saveRow(e, record.key)}>{taskName === '新建' ? '暂存' : '保存'}</Button>
+              )}
+              {taskName === '业务验证' && (
+                <Button type='link' onMouseDown={() => ChangeButtype('')} onClick={e => saveRow(e, record.key, 'save')}>保存</Button>
+              )}
               <Button type='link' onClick={e => newcancel(e, record.key)}>取消</Button>
             </>
           );
@@ -532,6 +598,7 @@ function EditeTable(props) {
         return (
           <>
             {(taskName === '新建' || taskName === '出厂测试' || taskName === '平台验证') && userid === record.operatorId && !newbutton && (<Button type='link' onClick={e => editRow(e, record.key)}>编辑</Button>)}
+            {taskName === '业务验证' && userid === record.operatorId && !newbutton && !record.verifyStatus && (<Button type='link' onClick={e => editRow(e, record.key)}>编辑</Button>)}
             {taskName === '平台验证' && userid !== record.operatorId && !newbutton && (<Button type='link' onClick={e => verificationRow(e, record.key)}>验证</Button>)}
             {taskName === '版本管理员审批' && record.listType === '临时' && (<Button type='link' onClick={e => editRow(e, record.key)}>编辑</Button>)}
             {taskName === '版本管理员审批' && record.listType === '计划' && (<Button type='link' >回退</Button>)}
@@ -618,7 +685,18 @@ function EditeTable(props) {
                   type='primary'
                   style={{ marginRight: 8 }}
                   onMouseDown={() => getUserList()}
-                  onClick={() => hadleAssignment()}
+                  onClick={() => hadleAssignment('assign')}
+                  disabled={newbutton}
+                >
+                  分派
+                </Button>
+              )}
+              {taskName === '业务验证' && (
+                <Button
+                  type='primary'
+                  style={{ marginRight: 8 }}
+                  onMouseDown={() => getUserList()}
+                  onClick={() => hadleAssignment('reassignment')}
                   disabled={newbutton}
                 >
                   重分派
@@ -670,4 +748,4 @@ function EditeTable(props) {
   );
 }
 
-export default EditeTable;
+export default connect()(EditeTable);

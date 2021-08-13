@@ -142,3 +142,11 @@ export async function completeVerify(params) {
     requestType: 'form',
   });
 }
+
+// 发布实施准备导出/release/fileProc/expPracticePre?taskId=982521
+export async function expPracticePre(taskId) {
+  return request(`/release/fileProc/expPracticePre?taskId=${taskId}`, {
+    method: 'GET',
+    responseType: 'blob',
+  });
+}

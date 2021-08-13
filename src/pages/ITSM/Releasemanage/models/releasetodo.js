@@ -121,22 +121,11 @@ export default {
       if (response.code === 200) {
         if (buttype === 'save') {
           message.success('保存成功');
-          const assignList = response.data.saveBizValid.releaseLists.slice(-1)[0];
-          const values = { listIds: assignList.id, handlerId: assignList.responsibleId }
-          const assignres = yield call(releaseListAssign, values);                      // 保存成功分派清单
-          if (assignres.code === 200) {
-            const openres = yield call(openFlow, bizValidate.releaseNo);
-            yield put({
-              type: 'saveinfo',
-              payload: { info: openres.data.bizValidateParam, currentTaskStatus: openres.data.currentTaskStatus },
-            });
-          }
-        } else {
-          yield put({
-            type: 'saveinfo',
-            payload: { info: response.data.saveBizValid, currentTaskStatus: response.data.currentTaskStatus },
-          });
-        }
+        };
+        yield put({
+          type: 'saveinfo',
+          payload: { info: response.data.saveBizValid, currentTaskStatus: response.data.currentTaskStatus },
+        });
       } else {
         message.error(response.msg)
       }
@@ -156,6 +145,25 @@ export default {
           type: 'saveinfo',
           payload: { info: response.data.practicePreParam, currentTaskStatus: response.data.currentTaskStatus },
         });
+      } else {
+        message.error('操作失败');
+      }
+    },
+
+    // 分派，重分派
+    * listassign({ payload: { values, releaseNo } }, { call, put }) {
+      const response = yield call(releaseListAssign, values);
+      if (response.code === 200) {
+        message.success('分派成功')
+        const openres = yield call(openFlow, releaseNo);
+        if (openres.code === 200) {
+          yield put({
+            type: 'saveinfo',
+            payload: { info: openres.data.bizValidateParam, currentTaskStatus: openres.data.currentTaskStatus },
+          });
+        } else {
+          message.error(openres.msg)
+        }
       } else {
         message.error('操作失败');
       }

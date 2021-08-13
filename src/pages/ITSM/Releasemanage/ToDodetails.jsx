@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'dva';
+import moment from 'moment';
 import { Button, Spin } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import SubmitTypeContext from '@/layouts/MenuContext';              // 引用上下文管理组件
+import { expPracticePre } from './services/api';
 
 import WorkOrder from './WorkOrder';
 
@@ -13,6 +15,19 @@ function ToDodetails(props) {
   const [buttype, setButtype] = useState('');                    // 点击的按钮类型
   const [submittype, setSubmitType] = useState(1);
   const [addAttaches, setAddAttaches] = useState('');
+
+  const dowloadPre = () => {
+    expPracticePre(taskId).then(res => {
+      const filename = `发布实施准备${moment().format('YYYY-MM-DD HH:mm')}.docx`;
+      const blob = new Blob([res], { type: 'application/octet-stream' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      a.click();
+      window.URL.revokeObjectURL(url);
+    })
+  }
 
   const handleTabChange = key => {
     switch (key) {
@@ -59,6 +74,11 @@ function ToDodetails(props) {
       {taskName !== '出厂测试' && taskName !== '发布实施准备' && (
         <Button type="danger" ghost style={{ marginRight: 8 }} onMouseDown={() => setButtype('')} onClick={() => setButtype('goback')} >
           回退
+        </Button>
+      )}
+      {taskName === '发布实施准备' && (
+        <Button type="primary" style={{ marginRight: 8 }} onMouseDown={() => setButtype('')} onClick={() => dowloadPre()} >
+          导出
         </Button>
       )}
       <Button type="primary" style={{ marginRight: 8 }} onMouseDown={() => setButtype('')} onClick={() => setButtype('save')}  >

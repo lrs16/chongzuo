@@ -85,18 +85,22 @@ function DocumentAtt(props) {
         if (Unit && Unit.dutyUnit) {
           newData[rowkey - 1].dutyUnit = Unit.dutyUnit;
         };
+        if (rowkey > 1) {
+          newData[rowkey - 1].dutyUnit = dutyUnit;
+        }
       };
       if (rowkey === '3') {
         newData[3].editable = true;
+        newData[3].dutyUnit = dutyUnit;
       };
       // 补充的材料必填
       const endAtt = dataSource[dataSource.length - 1];
       if (rowkey === '2' && endAtt.docName === '功能出厂测试报告') {
-        newData[9].editable = true;
+        newData[dataSource.length - 1].editable = true;
       };
       if (rowkey === '3' && endAtt.docName === '平台验证测试报告') {
-        newData[10].editable = true;
-        newData[11].editable = true;
+        newData[dataSource.length - 1].editable = true;
+        newData[dataSource.length - 2].editable = true;
       };
       setData(newData);
       ChangeValue(newData)

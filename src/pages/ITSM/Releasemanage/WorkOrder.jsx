@@ -197,7 +197,7 @@ function WorkOrder(props) {
             const releaseStatus = values.releaseLists.map(item => {
               return item.verifyStatus;
             });
-            if (releaseStatus.includes('已转出')) {
+            if (releaseStatus.includes('已转出') || releaseStatus.includes(null)) {
               message.error('发布清单还未全部验证，无法流转')
             } else {
               savebizValidate();
@@ -275,11 +275,11 @@ function WorkOrder(props) {
       case 'flow':
         setUserChoice(false);
         sessionStorage.removeItem('NextflowUserId');
-        ImplementationPreRef.current.Forms((err, values) => {
+        ImplementationPreRef.current.Forms((err) => {
           if (err) {
             message.error('请将信息填写完整')
           } else {
-            savebizValidate();
+            savepracticePre();
             sessionStorage.setItem('flowtype', '1');
             setUserVisible(true);
           }
@@ -332,6 +332,19 @@ function WorkOrder(props) {
       };
     }
   }, [location.state]);
+
+  // 业务验证分派重分派成功重新获取数据
+  useEffect(() => {
+    if (buttype === 'open') {
+      dispatch({
+        type: 'releasetodo/openflow',
+        payload: {
+          releaseNo: Id,
+          taskName
+        },
+      });
+    };
+  }, [buttype]);
 
   // 点击按钮
   useEffect(() => {
