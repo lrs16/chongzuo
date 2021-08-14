@@ -30,19 +30,7 @@ function ToDodetails(props) {
   }
 
   const handleTabChange = key => {
-    switch (key) {
-      case 'workorder':
-        settabActivekey('workorder');
-        break;
-      case 'process':
-        settabActivekey('process');
-        break;
-      case 'correlation':
-        settabActivekey('correlation');
-        break;
-      default:
-        break;
-    }
+    settabActivekey(key)
   };
   const tabList = [
     {

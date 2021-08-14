@@ -8,7 +8,9 @@ import {
   saveplatformValid,
   savereleaseBizValid,
   releaseListAssign,
-  savePracticePre
+  savePracticePre,
+  splitOrders,
+  releaseListEdit
 } from '../services/api';
 
 export default {
@@ -49,6 +51,7 @@ export default {
         ['平台验证', response.data.platformValidate],
         ['业务验证', response.data.bizValidateParam],
         ['发布实施准备', response.data.practicePreParam],
+        ['版本管理员审核', response.data.checkVersionParam],
       ]);
       yield put({
         type: 'saveinfo',
@@ -160,6 +163,43 @@ export default {
           yield put({
             type: 'saveinfo',
             payload: { info: openres.data.bizValidateParam, currentTaskStatus: openres.data.currentTaskStatus },
+          });
+        } else {
+          message.error(openres.msg)
+        }
+      } else {
+        message.error('操作失败');
+      }
+    },
+    // 取消工单合并
+    * cancelmerge({ payload: { values, flowId } }, { call, put }) {
+      const response = yield call(splitOrders, values);
+      if (response.code === 200) {
+        message.success('操作成功')
+        const openres = yield call(openFlow, flowId);
+        if (openres.code === 200) {
+          yield put({
+            type: 'saveinfo',
+            payload: { info: openres.data.checkVersionParam, currentTaskStatus: openres.data.currentTaskStatus },
+          });
+        } else {
+          message.error(openres.msg)
+        }
+      } else {
+        message.error('操作失败');
+      }
+    },
+
+    // 版本管理员审核临时增加发布清单，会影响附件列表
+    * checkaddlist({ payload: { values, releaseNo } }, { call, put }) {
+      const response = yield call(releaseListEdit, values);
+      if (response.code === 200) {
+        message.success('操作成功')
+        const openres = yield call(openFlow, releaseNo);
+        if (openres.code === 200) {
+          yield put({
+            type: 'saveinfo',
+            payload: { info: openres.data.checkVersionParam, currentTaskStatus: openres.data.currentTaskStatus },
           });
         } else {
           message.error(openres.msg)

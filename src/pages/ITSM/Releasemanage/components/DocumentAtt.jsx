@@ -32,6 +32,7 @@ function DocumentAtt(props) {
     { docName: '功能发布报告', attachFile: '[]', dutyUnit, docTemplate: '', remarks: '', editable: true, },
     { docName: '其它附件', attachFile: '[]', dutyUnit, docTemplate: '', remarks: '', editable: true, },
   ];
+
   // 获取行
   const getRowByKey = (key, newData) => {
     return (newData || dataSource).filter(item => item.key === key)[0];
@@ -71,41 +72,54 @@ function DocumentAtt(props) {
       window.URL.revokeObjectURL(url);
     });
   };
+  // 初始化表格数据
+  const attList = () => {
+    const newData = dataSource.map((item, index) => ({
+      ...item,
+      editable: false,                  // 可上传附件
+      key: (index + 1).toString(),
+    }));
+    newData[8].editable = true;         // 其它附件都可以上传附件
+    if (Number(rowkey) !== 0) {
+      newData[rowkey - 1].editable = true;
+      if (Unit && Unit.dutyUnit) {
+        newData[rowkey - 1].dutyUnit = Unit.dutyUnit;
+      };
+      if (rowkey > 1) {
+        newData[rowkey - 1].dutyUnit = dutyUnit;
+      }
+    };
+    if (rowkey === '3') {
+      newData[3].editable = true;
+      newData[3].dutyUnit = dutyUnit;
+    };
+    // 补充的材料必填
+    const endAtt = dataSource[dataSource.length - 1];
+    if (rowkey === '2' && endAtt.docName === '功能出厂测试报告') {
+      newData[dataSource.length - 1].editable = true;
+    };
+    if (rowkey === '3' && endAtt.docName === '平台验证测试报告') {
+      newData[dataSource.length - 1].editable = true;
+      newData[dataSource.length - 2].editable = true;
+    };
+    if (rowkey === '6' && endAtt.docName === '发布实施方案') {
+      newData[dataSource.length - 1].editable = true;
+      newData[dataSource.length - 2].editable = true;
+      newData[dataSource.length - 3].editable = true;
+      newData[dataSource.length - 4].editable = true;
+      newData[dataSource.length - 5].editable = true;
+
+    };
+    setData(newData);
+    ChangeValue(newData)
+  }
 
   useEffect(() => {
-    if (rowkey && dataSource.length > 0) {
-      const newData = dataSource.map((item, index) => ({
-        ...item,
-        editable: false,                  // 可上传附件
-        key: (index + 1).toString(),
-      }));
-      newData[8].editable = true;         // 其它附件都可以上传附件
-      if (Number(rowkey) !== 0) {
-        newData[rowkey - 1].editable = true;
-        if (Unit && Unit.dutyUnit) {
-          newData[rowkey - 1].dutyUnit = Unit.dutyUnit;
-        };
-        if (rowkey > 1) {
-          newData[rowkey - 1].dutyUnit = dutyUnit;
-        }
-      };
-      if (rowkey === '3') {
-        newData[3].editable = true;
-        newData[3].dutyUnit = dutyUnit;
-      };
-      // 补充的材料必填
-      const endAtt = dataSource[dataSource.length - 1];
-      if (rowkey === '2' && endAtt.docName === '功能出厂测试报告') {
-        newData[dataSource.length - 1].editable = true;
-      };
-      if (rowkey === '3' && endAtt.docName === '平台验证测试报告') {
-        newData[dataSource.length - 1].editable = true;
-        newData[dataSource.length - 2].editable = true;
-      };
-      setData(newData);
-      ChangeValue(newData)
-    }
+    if (rowkey && dataSource.length > 0) { attList() }
   }, [rowkey])
+  useEffect(() => {
+    if (rowkey && dataSource.length > 0) { attList() }
+  }, [dataSource])
 
   useEffect(() => {
     if (Unit && Unit.dutyUnit) {
@@ -128,6 +142,12 @@ function DocumentAtt(props) {
         setData(newdata);
         ChangeValue(newdata)
       };
+      if (rowkey === '6' && lastattname !== '发布实施方案') {
+        const newarr = Attaches.slice(0, 5);
+        const newdata = data.concat(newarr);
+        setData(newdata);
+        ChangeValue(newdata)
+      };
       ChangeaddAttaches('')
     };
     if (addAttaches === 'delete') {
@@ -140,6 +160,16 @@ function DocumentAtt(props) {
       };
       if (rowkey === '3' && lastattname === '平台验证测试报告') {
         const newdata = data.map(item => ({ ...item }));
+        newdata.pop();
+        newdata.pop();
+        setData(newdata);
+        ChangeValue(newdata)
+      };
+      if (rowkey === '3' && lastattname === '发布实施方案') {
+        const newdata = data.map(item => ({ ...item }));
+        newdata.pop();
+        newdata.pop();
+        newdata.pop();
         newdata.pop();
         newdata.pop();
         setData(newdata);

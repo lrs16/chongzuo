@@ -64,6 +64,13 @@ function ImplementationPre(props, ref) {
   const { ChangeButtype } = useContext(SubmitTypeContext);
   const required = true;
 
+  const formRef = useRef();
+  useImperativeHandle(ref, () => ({
+    getVal: () => getFieldsValue(),
+    resetVal: () => resetFields(),
+    Forms: props.form.validateFieldsAndScroll,
+  }), []);
+
   const handleStopVisit = (e) => {
     setStopVisit(e.target.value)
   }
@@ -90,13 +97,6 @@ function ImplementationPre(props, ref) {
     }
     callback()
   }
-
-  const formRef = useRef();
-  useImperativeHandle(ref, () => ({
-    getVal: () => getFieldsValue(),
-    resetVal: () => resetFields(),
-    Forms: props.form.validateFieldsAndScroll,
-  }), []);
 
   const getTypebyId = key => {
     if (selectdata.ischange) {

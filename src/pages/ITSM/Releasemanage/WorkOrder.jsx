@@ -456,7 +456,7 @@ function WorkOrder(props) {
             </div>
           </Panel>
         )}
-        {taskName === '版本管理员审批' && (
+        {taskName === '版本管理员审核' && info && info.releaseMains && (
           <Panel header={taskName} key="form">
             <div style={{ marginTop: 12 }}>
               <VersionAudit
@@ -464,7 +464,8 @@ function WorkOrder(props) {
                 selectdata={selectdata}
                 isEdit
                 taskName={taskName}
-                mainId={Id}
+                info={info}
+                userinfo={userinfo}
               />
             </div>
           </Panel>

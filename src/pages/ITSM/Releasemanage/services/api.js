@@ -89,7 +89,7 @@ export async function releaseListDel(params) {
   });
 }
 
-// 编辑发布清单，清单id为空时为添加/release/from/releaseListSingleEdit,业务验证待办用到
+// 编辑发布清单，清单id为空时为添加/release/from/releaseListSingleEdit,业务验证待办、版本管理员审核用到
 export async function releaseListEdit(params) {
   return request(`/release/from/releaseListSingleEdit`, {
     method: 'POST',
@@ -148,5 +148,23 @@ export async function expPracticePre(taskId) {
   return request(`/release/fileProc/expPracticePre?taskId=${taskId}`, {
     method: 'GET',
     responseType: 'blob',
+  });
+}
+
+// 版本管理员合并工单/release/flow/mergeOrders
+export async function mergeOrders(params) {
+  return request(`/release/flow/mergeOrders`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+  });
+}
+
+// 版体管理员拆分工单/release/flow/splitOrders
+export async function splitOrders(params) {
+  return request(`/release/flow/splitOrders`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
   });
 }

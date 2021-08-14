@@ -88,7 +88,6 @@ const columns = [
     with: 100,
     fixed: 'left',
     sorter: (a, b) => a.itemWorkType.length - b.itemWorkType.length,
-    sortDirections: ['descend'],
     render: text => {
       const typemap = new Map([
         ['event', '事件'],
@@ -137,7 +136,6 @@ const columns = [
     key: 'timeoutTimeStatus',
     with: 100,
     sorter: (a, b) => a.itemWorkType.length - b.itemWorkType.length,
-    sortDirections: ['descend'],
     render: text => {
       const statusmap = new Map([
         ['0', '正常'],
@@ -152,8 +150,6 @@ const columns = [
     dataIndex: 'todoTime',
     key: 'todoTime',
     with: 150,
-    sorter: (a, b) => a.itemWorkType.length - b.itemWorkType.length,
-    sortDirections: ['descend'],
   },
 ];
 
