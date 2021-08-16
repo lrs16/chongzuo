@@ -98,7 +98,7 @@ function RelevancyOrder(props) {
           };
           if (activeKey === 'problem') {
             router.push({
-              pathname: `/ITSM/problemmanage/problemquery/detail`,
+              pathname: `/ITSM/releasemanage/to-do/record`,
               query: {
                 id: record.mainId,
                 taskName: record.status,

@@ -7,8 +7,10 @@ import {
   Popconfirm,
   message,
   DatePicker,
-  Collapse
+  Collapse,
+  Steps
 } from 'antd';
+import Link from 'umi/link';
 import moment from 'moment';
 import router from 'umi/router';
 import User from '@/components/SelectUser/User';
@@ -21,8 +23,9 @@ import AssessmentConfirmation from './components/AssessmentConfirmation';
 import Achievementsflow from './Achievementsflow';
 import Relatedorder from './Relatedorder';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
-
-
+import { judgeTimeoutStatus, saveTimeoutMsg } from '../../services/api'
+import TimeoutModal from '../../components/TimeoutModal';
+import Reasonregression from '../../Problemmanage/components/Reasonregression'
 import styles from './index.less';
 
 const formItemLayout = {
@@ -48,33 +51,37 @@ const forminladeLayout = {
 }
 
 const { Panel } = Collapse;
+const { Step } = Steps;
 
 function TobedealtForm(props) {
   const pagetitle = props.route.name;
   const {
-    location: { query: { taskId,mainId } },
+    location: { query: { taskId, assessNo, mainId } },
+    location,
     target1,
     target2,
     clauseList,
     userinfo,
+    // taskData: { currentTask: { taskName, id, instanceId }, currentTask, hisTasks },
+    taskData: { currentTask, hisTasks },
     taskData,
+    hisTaskArr,
     loading,
     dispatch,
   } = props;
   const formRef = useRef();
+  const [noselect, setNoselect] = useState('1');
   const [uservisible, setUserVisible] = useState(false);
   const [contractArr, setContractArr] = useState([]);
   const [userchoice, setUserChoice] = useState(false); // 已经选择人员
   const [butandorder, setButandOrder] = useState('');
   const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
-  const [tabActiveKey, setTabActiveKey] = useState('workorder')
+  const [tabActiveKey, setTabActiveKey] = useState('workorder');
+  const [buttontype, setButtonType] = useState('');
+  const [modalvisible, setModalVisible] = useState(false);
+  const [modalrollback, setModalRollBack] = useState(false);   // 回退信息modle
+
   sessionStorage.setItem('Processtype', 'achievements');
-
-  const { taskName } = taskData;
-
-  const handleSubmit = () => {
-    console.log(formRef, 'formRef')
-  }
 
   const getUserinfo = () => {
     dispatch({
@@ -82,24 +89,27 @@ function TobedealtForm(props) {
     })
   }
 
+  const { taskName, id, instanceId } = currentTask || {};
+
   const openFlow = () => {
     dispatch({
       type: 'performanceappraisal/getTaskData',
-      payload: taskId
+      payload: assessNo
     })
   }
 
   //  根据考核类型查询一级指标
   const getTarget1 = (type) => {
     dispatch({
-      type: 'performanceappraisal/scoreGetTarget1',
+      type: 'qualityassessment/scoreGetTarget1',
       payload: type
     })
   }
+
   //  根据考核类型查询二级指标
   const getTarget2 = (id) => {
     dispatch({
-      type: 'performanceappraisal/scoreGetTarget2',
+      type: 'qualityassessment/scoreGetTarget2',
       payload: id
     })
   }
@@ -126,45 +136,76 @@ function TobedealtForm(props) {
     });
   }
 
+  const gethisTask = () => {
+    dispatch({
+      type: 'performanceappraisal/hisTask',
+      payload: {
+        instanceId: mainId
+      }
+    })
+  }
+
   const selectNextflow = () => {
     switch (taskName) {
       case '服务绩效考核登记':
-        sessionStorage.setItem('Nextflowmane', '系统运维商审核');
+        sessionStorage.setItem('Nextflowmane', '业务负责人审核人');
         break;
-      // case '系统运维商审核':
-      //   sessionStorage.setItem('Nextflowmane', '自动化科审核');
-      //   break;
-      // case '自动化科审核':
-      //   sessionStorage.setItem('Nextflowmane', '系统开发商处理');
-      //   break;
-      // case '系统开发商处理':
-      //   sessionStorage.setItem('Nextflowmane', '系统运维商确认');
-      //   break;
-      // case '系统运维商确认':
-      //   sessionStorage.setItem('Nextflowmane', '自动化科业务负责人确认');
-      //   break;
-      // case '自动化科业务负责人确认':
-      //   sessionStorage.setItem('Nextflowmane', '问题登记人员确认');
-      //   break;
+      case '业务负责人审核':
+        sessionStorage.setItem('Nextflowmane', '自动化科专责审核');
+        break;
+      case '自动化科专责审核':
+        sessionStorage.setItem('Nextflowmane', '系统开发商处理');
+        break;
+      case '服务商确认':
+        sessionStorage.setItem('Nextflowmane', `${noselect === '1' ? '服务绩效考核确认人' : '业务负责人复核人'}`);
+        break;
+      case '业务负责人复核':
+        sessionStorage.setItem('Nextflowmane', '服务绩效考核确认人');
+        break;
+      case '自动化科业务负责人确认':
+        sessionStorage.setItem('Nextflowmane', '问题登记人员确认');
+        break;
       default:
         break;
     }
   }
 
-
+  useEffect(() => {
+    selectNextflow()
+  }, [mainId])
 
   useEffect(() => {
     getUserinfo();
     openFlow();
-    // selectNextflow();
+    gethisTask();
+    // selectNextflow()
   }, []);
 
   useEffect(() => {
-    const { providerId, scoreId, target1Id, target2Id } = taskData;
-    getContrractname(providerId);
-    getTarget1(scoreId);
-    getTarget2(target1Id);
-    getclausedetail(target2Id, scoreId)
+    if (taskData && currentTask) {
+      const { providerId, scoreId, target1Id, target2Id, assessType } = currentTask;
+      let comfirmScoreid;
+      if (taskData && taskData.clause && taskData.clause.scoreId) {
+        comfirmScoreid = taskData.clause.scoreId;
+      }
+
+      if (providerId) {
+        getContrractname(providerId);
+      }
+
+      if (scoreId || assessType) {
+        getTarget1(scoreId);
+      }
+
+      if (target1Id) {
+        getTarget2(target1Id);
+      }
+
+      if (target2Id && (scoreId || comfirmScoreid)) {
+        getclausedetail(target2Id, (scoreId || comfirmScoreid))
+      }
+    }
+
   }, [taskData]);
 
   const tabList = [
@@ -189,8 +230,7 @@ function TobedealtForm(props) {
   //  登记保存流转
   const registerSubmit = (circulation) => {
     formRef.current.validateFields((err, values) => {
-      console.log('values: ', values);
-      if(!err) {
+      if (!err) {
         const submitIfnfo = values;
         delete submitIfnfo.provider;
         delete submitIfnfo.clause;
@@ -198,16 +238,139 @@ function TobedealtForm(props) {
         delete submitIfnfo.contract;
         return dispatch({
           type: 'performanceappraisal/tobeassessRegister',
-          payload:{
+          payload: {
             ...submitIfnfo,
-            assessTime:moment(values.assessTime).format('YYYY-MM-DD HH:mm:ss'),
-            applyTime:moment(values.applyTime).format('YYYY-MM-DD HH:mm:ss'),
+            assessNo,
+            id: currentTask.id,
+            instanceId,
+            taskId,
+            assessTime: moment(values.assessTime).format('YYYY-MM-DD HH:mm:ss'),
+            applyTime: moment(values.applyTime).format('YYYY-MM-DD HH:mm:ss'),
+            attachment: files.ischange ? JSON.stringify(files.arr) : ''
           }
         }).then(res => {
-          if(res.code === 200) {
-            if(circulation) {
+          if (res.code === 200) {
+            message.info(res.msg);
+            if (circulation) {
               setUserVisible(true);
             }
+            openFlow();
+          } else {
+            message.error(res.msg);
+          }
+        })
+      }
+    })
+  }
+
+  //  审核保存流转
+  const auditSave = (flowType, circulation) => {
+    let requestUrl;
+    if (flowType === '业务负责人审核') {
+      requestUrl = 'performanceappraisal/saveDirectorVerify';
+    } else if (flowType === '自动化科专责审核') {
+      requestUrl = 'performanceappraisal/saveExpertVerify';
+    } else {
+      requestUrl = 'performanceappraisal/saveDirectorReview';
+    }
+    const obj = {};
+    formRef.current.validateFields((err, values) => {
+      if (taskName === '业务负责人复核') {
+        obj["reviewContent"] = values.verifyContent || values.verifyContent2 || '';
+        obj["reviewer"] = values.verifier;
+        obj["reviewTime"] = moment(values.verifyTime).format('YYYY-MM-DD HH:mm:ss');
+      } else {
+        obj["verifyContent"] = values.verifyContent || values.verifyContent2;
+        obj["verifier"] = values.verifier;
+        obj["verifyTime"] = moment(values.verifyTime).format('YYYY-MM-DD HH:mm:ss');
+      }
+      if (!err) {
+        return dispatch({
+          type: requestUrl,
+          payload: {
+            ...values,
+            assessNo,
+            id,
+            instanceId,
+            taskId,
+            ...obj
+          }
+        }).then(res => {
+          if (res.code === 200) {
+            switch (circulation) {
+              case undefined:
+                message.info(res.msg);
+                openFlow();
+                break;
+              case 'circula':
+                setUserVisible(true);
+                break;
+              case '流转不选人':
+                gotoCirapi();
+                break;
+              default:
+                break;
+            }
+          }
+        })
+      }
+    })
+  }
+
+  //  服务商确认
+  const providerConfirmsave = (circulation) => {
+    formRef.current.validateFields((err, values) => {
+      if (!err) {
+        return dispatch({
+          type: 'performanceappraisal/saveProviderConfirm',
+          payload: {
+            assessNo,
+            id,
+            instanceId,
+            taskId,
+            ...values,
+            confirmTime: moment(values.confirmTime).format('YYYY-MM-DD HH:mm:ss')
+          }
+        }).then(res => {
+          if (res.code === 200) {
+            if (circulation) {
+              setUserVisible(true);
+            } else {
+              message.info(res.msg);
+              openFlow()
+            }
+          }
+        })
+      }
+    })
+  }
+
+  //  服务绩效考核确认
+  const performanceConfirmation = (circulation) => {
+    formRef.current.validateFields((err, values) => {
+      const saveParams = values;
+      delete saveParams.clause;
+      if (!err) {
+        return dispatch({
+          type: 'performanceappraisal/saveFinallyConfirm',
+          payload: {
+            ...saveParams,
+            assessNo,
+            id,
+            instanceId,
+            taskId,
+            confirmTime: moment(values.confirmTime).format('YYYY-MM-DD HH:mm:ss')
+          }
+        }).then(res => {
+          if (res.code === 200) {
+            if (circulation) {
+              gotoCirapi()
+            } else {
+              openFlow();
+              message.info(res.msg);
+            }
+          } else {
+            message.error('保存失败')
           }
         })
       }
@@ -216,13 +379,13 @@ function TobedealtForm(props) {
 
   const gotoCirapi = () => {
     return dispatch({
-      type:'performanceappraisal/assessComplete',
-      payload:{
+      type: 'performanceappraisal/assessComplete',
+      payload: {
         taskId,
-        users:sessionStorage.getItem('NextflowUserId')
+        users: sessionStorage.getItem('NextflowUserId')
       }
     }).then(res => {
-      if(res.code === 200) {
+      if (res.code === 200) {
         router.push({
           pathname: `/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtform`,
           query: {
@@ -230,17 +393,39 @@ function TobedealtForm(props) {
             closetab: true,
           }
         });
-        openFlow();
 
-        // router.push({
-        //   pathname: `/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtlist`,
-        //   query: { pathpush: true },
-        //   state: { cache: false }
-        // })
+        router.push({
+          pathname: `/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtlist`,
+          query: { pathpush: true },
+          state: { cache: false }
+        })
       }
     })
-
   }
+
+  const reasonSubmit = () => {
+    return dispatch({
+      type: 'performanceappraisal/rollback',
+      payload: taskId
+    }).then(res => {
+      if (res.code === 200) {
+        message.info(res.msg);
+        router.push({
+          pathname: `/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtform`,
+          query: { mainId, closetab: true, }
+        });
+        router.push({
+          pathname: `/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtlist`,
+          query: { pathpush: true },
+          state: { cache: false }
+        })
+      } else {
+        message.error(res.msg)
+      }
+    })
+  }
+
+
 
   useEffect(() => {
     if (userchoice || butandorder) {
@@ -248,146 +433,456 @@ function TobedealtForm(props) {
     }
   }, [userchoice, butandorder])
 
-  const onClickSubmit = (flowType) => {
+  const onClickSubmit = (flowType, requestType) => {
     switch (flowType) {
       case '服务绩效考核登记':
-        registerSubmit(flowType)
+        registerSubmit(requestType)
         break;
-    
+      case '业务负责人审核':
+      case '自动化科专责审核':
+      case '业务负责人复核':
+        auditSave(flowType, requestType)
+        break;
+      case '服务商确认':
+        providerConfirmsave(requestType)
+        break;
+      case '服务绩效考核确认':
+        performanceConfirmation(requestType)
+        break;
       default:
         break;
     }
   }
 
+  //  上传附件
+  useEffect(() => {
+    if (files.ischange) {
+      onClickSubmit(taskName, '')
+    }
+  }, [files])
 
+  let buttonContent;
+  if (taskName) {
+    switch (taskName) {
+      case '服务绩效考核确认':
+        buttonContent = '确认考核';
+        break;
+      case '自动化科专责审核':
+      case '业务负责人审核':
+        buttonContent = '流转';
+        break;
+      default:
+        break;
+    }
+  }
+
+  const handleDelete = () => {
+    return dispatch({
+      type: '',
+      payload: mainId
+    }).then(res => {
+      if (res.code === 200) {
+        message.info(res.msg);
+      } else {
+        message.error(res.msg)
+      }
+    })
+  }
+
+  const backProcess = () => {
+    return dispatch({
+      type: 'performanceappraisal/rollback'
+    }).then(res => {
+      if (res.code === 200) {
+        message.info(res.msg);
+      } else {
+        message.error('回退失败')
+      }
+    })
+  }
+
+  const handleBacksubmit = () => {
+    judgeTimeoutStatus(taskId).then(res => {
+      if (res.code === 200 && res.status === 'yes' && res.timeoutMsg === '') {
+        message.success('该绩效单已超时，请填写超时原因...')
+        setModalVisible(true);
+      } else {
+        setModalRollBack(true);
+      }
+    })
+  }
+
+  const postTimeOutMsg = (v) => {
+    saveTimeoutMsg({
+      taskId: id,
+      msgType: 'timeout',
+      orderId: mainId,
+      orderType: 'problem',
+      ...v
+    }).then(res => {
+      if (res.code === 200) {
+        setModalRollBack(true);
+      }
+    })
+  }
+
+  console.log(noselect, 'noselect')
 
   return (
     <PageHeaderWrapper
-      title={taskName}
+      title={taskName || ''}
       extra={
         <>
-          <Button type='primary' onClick={handleSubmit}>保存</Button>
-          <Button type='primary' onClick={() => onClickSubmit(taskName)}>流转</Button>
-          <Button type='primary'>关闭</Button>
+          {
+            taskName === '服务绩效考核登记' && hisTasks && hisTasks.length <= 3 && (
+              <Button
+                type="danger"
+                ghost
+                style={{ marginRight: 8 }}
+                onClick={handleDelete}
+              >删除</Button>
+            )
+          }
+
+          {
+            taskName === '业务负责人审核' && currentTask && !currentTask.verifyValue && (
+              <Button
+                type="danger"
+                ghost
+                onClick={handleBacksubmit}>回退</Button>
+            )
+          }
+
+          <Button type='primary' onClick={() => onClickSubmit(taskName)}>保存</Button>
+
+          {
+            (noselect === '1' || noselect === null) && taskName !== '自动化科专责审核' && taskName !== '服务绩效考核确认' && taskName !== '业务负责人复核' && (
+              <Button type='primary' onClick={() => onClickSubmit(taskName, 'circula')}>
+                {taskName === '业务负责人复核' ? '确认复核' : '流转'}
+              </Button>
+            )
+          }
+
+          {
+            ((noselect === '0' && taskName !== '业务负责人复核') || taskName === '自动化科专责审核' || taskName === '服务绩效考核确认') && (
+              <Button type='primary' onClick={() => onClickSubmit(taskName, '流转不选人')}>
+                {buttonContent}
+              </Button>
+            )
+          }
+
+          {
+            taskName === '业务负责人复核' && (
+              <Button type='primary' onClick={() => onClickSubmit(taskName, 'circula')}>
+                确认复核
+              </Button>
+            )
+          }
+
+
+
+          <Button type='default'>
+            <Link
+              to={{
+                pathname: '/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtlist',
+                query: { pathpush: true },
+                state: { cache: false }
+              }}
+            >
+              返回
+            </Link>
+          </Button>
+
         </>
       }
       tabList={tabList}
       onTabChange={handleTabChange}
       tabActiveKey={tabActiveKey}
     >
+
       {
-        loading === false && tabActiveKey === 'workorder' && (
+        loading === false && hisTaskArr && hisTaskArr.length > 0 && (
           <div className={styles.collapse}>
-            <Collapse
-              expandIconPosition='right'
-              defaultActiveKey={['1']}
-              bordered={false}
-            >
-              <Panel
-                header='服务绩效考核登记'
-                key='1'
-                style={{ backgroundColor: 'white' }}
-              >
-                {taskName === '服务绩效考核登记' && (
-                  <Register
-                    formItemLayout={formItemLayout}
-                    forminladeLayout={forminladeLayout}
-                    ref={formRef}
-                    userinfo={userinfo}
-                    getTarget1={getTarget1}
-                    getTarget2={getTarget2}
-                    target1={target1}
-                    target2={target2}
-                    getclausedetail={getclausedetail}
-                    clauseList={clauseList}
-                    register={taskData}
-                    contractArr={contractArr}
-                    getContrractname={getContrractname}
-                    files={[]}
-                    ChangeFiles={newvalue => {
-                      setFiles(newvalue);
-                    }}
-                    loading={loading}
-                  />
-                )}
-              </Panel>
-
-              {/* <Panel
-                header='业务负责人审核'
-                key='1'
-                style={{ backgroundColor: 'white' }}
-              >
-                <BusinessAudit
-                  ref={formRef}
-                  formItemLayout={formItemLayout}
-                  forminladeLayout={forminladeLayout}
-                  userinfo={userinfo}
-                />
-              </Panel> */}
-
-              {/* <Panel
-                header='自动化科专责审核'
-                key='1'
-                style={{ backgroundColor: 'white' }}
-              >
-                <BusinessAudit
-                  formItemLayout={formItemLayout}
-                  forminladeLayout={forminladeLayout}
-                  userinfo={userinfo}
-                />
-              </Panel> */}
-
-              {/* <Panel
-                header='服务商确认'
-                key='1'
-                style={{ backgroundColor: 'white' }}
-              >
-                <ProviderConfirmation
-                  formItemLayout={formItemLayout}
-                  forminladeLayout={forminladeLayout}
-                  userinfo={userinfo}
-                />
-              </Panel> */}
-
-              {/* <Panel
-                header='业务负责人复核'
-                key='1'
-                style={{ backgroundColor: 'white' }}
-              >
-                <BusinessAudit
-                  repeatAudit='true'
-                  formItemLayout={formItemLayout}
-                  forminladeLayout={forminladeLayout}
-                  userinfo={userinfo}
-                />
-              </Panel> */}
-
-              {/* <Panel
-                header='服务绩效考核确认'
-                key='1'
-                style={{ backgroundColor: 'white' }}
-              >
-                <AssessmentConfirmation
-                  formItemLayout={formItemLayout}
-                  forminladeLayout={forminladeLayout}
-                  userinfo={userinfo}
-                />
-              </Panel> */}
-            </Collapse>
-
+            {
+              hisTaskArr && (
+                <Steps
+                  current={hisTaskArr.length - 1}
+                  size="small"
+                  style={{
+                    background: '#fff',
+                    padding: 24,
+                    border: '1px solid #e8e8e8',
+                    overflowX: 'auto',
+                    marginBottom: 24
+                  }}
+                >
+                  {
+                    hisTaskArr && hisTaskArr.map(({ key, name, status, totalTime, formHandler, startTime, endTime }) => [
+                      name !== '开始节点' && name !== '结束节点' && <Step key={key} title={`${name}${'\xa0'}${'\xa0'}(${status})${'\xa0'}${'\xa0'}${totalTime || ''}`} description={
+                        <div className={styles.stepDescription}>
+                          处理人：{formHandler}
+                          <div>开始时间：{moment(startTime).format('YYYY-MM-DD HH:mm:ss')}</div>
+                          <div>结束时间：{endTime ? moment(endTime).format('YYYY-MM-DD HH:mm:ss') : ''}</div>
+                        </div>
+                      } />
+                    ])}
+                </Steps>
+              )
+            }
           </div>
         )
       }
 
       {
+        loading === false && taskData && tabActiveKey === 'workorder' && (
+          <>
+            {
+              taskData && currentTask && (
+                <div className={styles.collapse}>
+                  <Collapse
+                    expandIconPosition='right'
+                    defaultActiveKey={['1']}
+                    bordered={false}
+                  >
+                    {
+                      taskName === '服务绩效考核登记' && (
+                        <Panel
+                          header='服务绩效考核登记'
+                          key='1'
+                          style={{ backgroundColor: 'white' }}
+                        >
+                          <Register
+                            formItemLayout={formItemLayout}
+                            forminladeLayout={forminladeLayout}
+                            ref={formRef}
+                            userinfo={userinfo}
+                            getTarget1={getTarget1}
+                            getTarget2={getTarget2}
+                            target1={target1}
+                            target2={target2}
+                            getclausedetail={getclausedetail}
+                            clauseList={clauseList}
+                            register={currentTask}
+                            contractArr={contractArr}
+                            getContrractname={getContrractname}
+                            files={currentTask.attachment ? JSON.parse(currentTask.attachment) : []}
+                            ChangeFiles={newvalue => {
+                              setFiles(newvalue);
+                            }}
+                            loading={loading}
+                          />
+                        </Panel>
+
+                      )
+                    }
+
+                    {
+                      taskName === '业务负责人审核' && (
+                        <Panel
+                          header='业务负责人审核'
+                          key='1'
+                          style={{ backgroundColor: 'white' }}
+                        >
+                          <BusinessAudit
+                            ref={formRef}
+                            businessAudit={currentTask}
+                            formItemLayout={formItemLayout}
+                            forminladeLayout={forminladeLayout}
+                            userinfo={userinfo}
+                            selectPersonstate={newvalue => setNoselect(newvalue)}
+                          />
+                        </Panel>
+                      )
+                    }
+
+                    {
+                      taskName === '自动化科专责审核' && (
+                        <Panel
+                          header='自动化科专责审核'
+                          key='1'
+                          style={{ backgroundColor: 'white' }}
+                        >
+                          <BusinessAudit
+                            ref={formRef}
+                            businessAudit={currentTask}
+                            formItemLayout={formItemLayout}
+                            forminladeLayout={forminladeLayout}
+                            userinfo={userinfo}
+                            selectPersonstate={newvalue => setNoselect(newvalue)}
+                          />
+                        </Panel>
+                      )
+                    }
+
+                    {
+                      taskName === '服务商确认' && (
+                        <Panel
+                          header='服务商确认'
+                          key='1'
+                          style={{ backgroundColor: 'white' }}
+                        >
+                          <ProviderConfirmation
+                            ref={formRef}
+                            providerConfirmation={currentTask}
+                            formItemLayout={formItemLayout}
+                            forminladeLayout={forminladeLayout}
+                            userinfo={userinfo}
+                            selectPersonstate={newvalue => setNoselect(newvalue)}
+                          />
+                        </Panel>
+                      )
+                    }
+
+
+                    {
+                      taskName === '业务负责人复核' && (
+                        <Panel
+                          header='业务负责人复核'
+                          key='1'
+                          style={{ backgroundColor: 'white' }}
+                        >
+                          <BusinessAudit
+                            repeatAudit='true'
+                            ref={formRef}
+                            businessAudit={currentTask}
+                            formItemLayout={formItemLayout}
+                            forminladeLayout={forminladeLayout}
+                            userinfo={userinfo}
+                            selectPersonstate={newvalue => setNoselect(newvalue)}
+                          />
+                        </Panel>
+                      )
+                    }
+
+                    {
+                      taskName === '服务绩效考核确认' && (
+                        <Panel
+                          header='服务绩效考核确认'
+                          key='1'
+                          style={{ backgroundColor: 'white' }}
+                        >
+                          <AssessmentConfirmation
+                            ref={formRef}
+                            assessmentConfirmation={currentTask}
+                            formItemLayout={formItemLayout}
+                            forminladeLayout={forminladeLayout}
+                            userinfo={userinfo}
+                            getTarget1={getTarget1}
+                            getTarget2={getTarget2}
+                            getclausedetail={getclausedetail}
+                            target1={target1}
+                            target2={target2}
+                            clauseList={clauseList}
+                            editSign={Number(currentTask.isEdit)}
+                          />
+                        </Panel>
+                      )
+                    }
+                  </Collapse>
+                </div>
+
+              )
+            }
+
+            {
+              hisTasks && hisTasks.length > 0 && (
+                <div className={styles.collapse}>
+                  <Collapse
+                    expandIconPosition="right"
+                    bordered={false}
+                    defaultActiveKey={['0']}
+                  >
+                    {
+                      hisTasks.map((obj, index) => {
+                        const Paneldesmap = new Map([
+                          ['服务绩效考核登记', <Register
+                            formItemLayout={formItemLayout}
+                            forminladeLayout={forminladeLayout}
+                            userinfo={userinfo}
+                            getTarget1={getTarget1}
+                            getTarget2={getTarget2}
+                            target1={target1}
+                            target2={target2}
+                            getclausedetail={getclausedetail}
+                            clauseList={clauseList}
+                            register={Object.values(obj)[0]}
+                            contractArr={contractArr}
+                            getContrractname={getContrractname}
+                            files={currentTask.attachment ? JSON.parse(currentTask.attachment) : []}
+                            ChangeFiles={newvalue => {
+                              setFiles(newvalue);
+                            }}
+                            loading={loading}
+                            key='0'
+                            noEdit='true'
+                          />],
+                          [`业务负责人审核`, <BusinessAudit
+                            businessAudit={Object.values(obj)[0]}
+                            formItemLayout={formItemLayout}
+                            forminladeLayout={forminladeLayout}
+                            userinfo={userinfo}
+                            selectPersonstate={newvalue => setNoselect(newvalue)}
+                            noEdit='true'
+                          />],
+                          [`自动化科专责审核`, <BusinessAudit
+                            businessAudit={Object.values(obj)[0]}
+                            formItemLayout={formItemLayout}
+                            forminladeLayout={forminladeLayout}
+                            userinfo={userinfo}
+                            selectPersonstate={newvalue => setNoselect(newvalue)}
+                            noEdit='true'
+                          />],
+                          [`业务负责人复核`, <BusinessAudit
+                            businessAudit={Object.values(obj)[0]}
+                            formItemLayout={formItemLayout}
+                            forminladeLayout={forminladeLayout}
+                            userinfo={userinfo}
+                            selectPersonstate={newvalue => setNoselect(newvalue)}
+                            noEdit='true'
+                          />],
+                          [`服务商确认`, <ProviderConfirmation
+                            businessAudit={Object.values(obj)[0]}
+                            providerConfirmation={currentTask}
+                            formItemLayout={formItemLayout}
+                            forminladeLayout={forminladeLayout}
+                            userinfo={userinfo}
+                            noEdit='true'
+                          />],
+                        ]);
+                        return (
+                          <Panel Panel header={Object.keys(obj)[0]} key={index}>
+                            {Paneldesmap.get(Object.keys(obj)[0])}
+                          </Panel>
+                        )
+                      })
+                    }
+                  </Collapse>
+                </div>
+
+              )
+            }
+
+
+          </>
+        )
+      }
+
+      {
         tabActiveKey === 'process' && (
-          <Achievementsflow />
+          <Achievementsflow
+            taskId={mainId}
+            flowhisTaskArr={hisTaskArr}
+          />
         )
       }
 
       {
         tabActiveKey === 'associatedWorkorder' && (
-          <Relatedorder />
+          <Relatedorder
+            orderId={mainId}
+            location={location}
+            relation
+          />
         )
       }
 
@@ -401,6 +896,18 @@ function TobedealtForm(props) {
         ChangeType={() => 0}
       />
 
+      <TimeoutModal
+        modalvisible={modalvisible}
+        ChangeModalVisible={v => setModalVisible(v)}
+        ChangeTimeOutMsg={v => postTimeOutMsg(v)}
+      />
+
+      <Reasonregression
+        title="填写回退意见"
+        visible={modalrollback}
+        ChangeVisible={v => setModalRollBack(v)}
+        rollbackSubmit={v => reasonSubmit(v)}
+      />
     </PageHeaderWrapper>
   )
 }
@@ -408,10 +915,11 @@ function TobedealtForm(props) {
 export default Form.create({})(
   connect(({ performanceappraisal, itsmuser, qualityassessment, loading }) => ({
     taskData: performanceappraisal.taskData,
+    hisTaskArr: performanceappraisal.hisTaskArr,
     clauseList: qualityassessment.clauseList,
     userinfo: itsmuser.userinfo,
-    target2: performanceappraisal.target2,
-    target1: performanceappraisal.target1,
+    target2: qualityassessment.target2,
+    target1: qualityassessment.target1,
     loading: loading.models.performanceappraisal
   }))(TobedealtForm)
 )

@@ -43,6 +43,7 @@ const Register = React.forwardRef((props, ref) => {
     getContrractname,
     files,
     ChangeFiles,
+    noEdit,
     loading
   } = props;
   const [performanceLeader, setPerformanceLeader] = useState('')
@@ -77,14 +78,18 @@ const Register = React.forwardRef((props, ref) => {
     switch (params) {
       case 'contract':
         setFieldsValue({
-          contract: value,
-          contractId: key
+          contract: key,
+          contractId: value,
+          target1Name: '',
+          target1Id: ''
         })
         break;
       case 'target1Name':
         setFieldsValue({
           target1Name: value,
-          target1Id: key
+          target1Id: key,
+          target2Name: '',
+          target2Id: ''
         })
         getTarget2(key);
         setTarget2Type(key)
@@ -109,17 +114,6 @@ const Register = React.forwardRef((props, ref) => {
 
 
   const handleFocus = (params) => {
-    // if (!params) {
-    //   if (loading !== true && target1 && target1.length === 0) {
-    //     message.info('请选择评分细则名称哦！')
-    //   }
-    // }
-
-    // if (params) {
-    //   if (loading !== true && target2 && target2.length === 0) {
-    //     message.info('请选择有效的一级指标哦！')
-    //   }
-    // }
     switch (params) {
       case 'one':
         if (loading !== true && target1 && target1.length === 0) {
@@ -201,7 +195,7 @@ const Register = React.forwardRef((props, ref) => {
   // 请求服务商
   const SearchDisableduser = (value, type) => {
     const requestData = {
-      ...value,
+      value,
       pageNum: 1,
       pageSize: 1000
     }
@@ -260,6 +254,8 @@ const Register = React.forwardRef((props, ref) => {
         setFieldsValue({
           provider: providerName,         // 服务商
           providerId: id,         // 服务商id
+          contract: '',
+          contractId: ''
         });
         // contractProvider(id).then(res => {
         //   if (res.code === 200) {
@@ -284,7 +280,11 @@ const Register = React.forwardRef((props, ref) => {
         setFieldsValue({
           score: scoreName,      // 评分细则名称
           scoreId: id,         // 评分细则id
-          assessType
+          assessType,
+          target1Name: '',
+          target1Id: '',
+          target2Name: '',
+          target2Id: ''
         });
         setScoreId(id)
         getTarget1(assessType === '功能开发' ? '1' : '2')
@@ -303,9 +303,11 @@ const Register = React.forwardRef((props, ref) => {
   }
 
   const selectOnchange = (value, option) => {
+    console.log('value: ', value);
+    const { props:{children }} = option;
     setFieldsValue({
-      directorName: value,
-      directorId: option.key
+      directorName: children,
+      directorId: value
     });
   }
 
@@ -365,6 +367,7 @@ const Register = React.forwardRef((props, ref) => {
                 initialValue: moment(register.assessTime)
               })
                 (<DatePicker
+                  disabled={noEdit}
                   showTime
                   format="YYYY-MM-DD HH:mm:ss"
                 />)
@@ -382,10 +385,11 @@ const Register = React.forwardRef((props, ref) => {
                     message: '请输入服务商'
                   }
                 ],
-                initialValue: register.provider.providerName || register.provider
+                initialValue: register.provider?.providerName ? register.provider.providerName : register.provider
               })
                 (
                   <AutoComplete
+                    disabled={noEdit}
                     dataSource={disableduser}
                     dropdownMatchSelectWidth={false}
                     dropdownStyle={{ width: 600 }}
@@ -431,17 +435,18 @@ const Register = React.forwardRef((props, ref) => {
                     message: '请输入关联合同名称'
                   }
                 ],
-                initialValue: register.contract.contractName || register.contract
+                initialValue: register.contractId
               })
                 (
                   <Select
+                    disabled={noEdit}
                     placeholder='请选择'
                     allowClear
                     onChange={(value, option) => handleChange(value, option, 'contract')}
                     onFocus={() => handleFocus('contract')}
                   >
                     {contractArr.map(obj => [
-                      <Option key={obj.id} value={obj.contractName}>
+                      <Option key={obj.contractName} value={obj.id}>
                         <div className={styles.disableuser}>
                           <span>{obj.contractNo}</span>
                           <span>{obj.contractName}</span>
@@ -449,7 +454,6 @@ const Register = React.forwardRef((props, ref) => {
                       </Option>
                     ])}
                   </Select>
-
                 )
             }
           </Form.Item>
@@ -472,19 +476,19 @@ const Register = React.forwardRef((props, ref) => {
           <Col span={8}>
             <Form.Item label='责任人'>
               {
-                getFieldDecorator('directorName', {
+                getFieldDecorator('directorId', {
                   rules: [
                     {
                       required,
-                      message: '请输入责任人'
+                      message: '请选择责任人'
                     }
                   ],
-                  initialValue: register.directorName
+                  initialValue: register.directorId
                 })
                   (
-                    <Select onChange={selectOnchange} >
+                    <Select onSelect={selectOnchange} disabled={noEdit}>
                       {performanceLeader.map(obj => [
-                        <Option key={obj.key} value={obj.value}>
+                        <Option key={obj.key} value={obj.key}>
                           {obj.value}
                         </Option>
                       ])}
@@ -500,8 +504,8 @@ const Register = React.forwardRef((props, ref) => {
         <Col span={8} style={{ display: 'none' }}>
           <Form.Item label='责任人id'>
             {
-              getFieldDecorator('directorId', {
-                initialValue: register.directorId
+              getFieldDecorator('directorName', {
+                initialValue: register.directorName
               })
                 (<Input />)
             }
@@ -518,10 +522,11 @@ const Register = React.forwardRef((props, ref) => {
                     message: '请输入评分细则名称'
                   }
                 ],
-                initialValue: register.score.scoreName || register.score
+                initialValue: register.score?.scoreName ? register.score.scoreName : register.score
               })
                 (
                   <AutoComplete
+                    disabled={noEdit}
                     dataSource={scorenameList}
                     dropdownMatchSelectWidth={false}
                     dropdownStyle={{ width: 600 }}
@@ -545,18 +550,7 @@ const Register = React.forwardRef((props, ref) => {
                 initialValue: register.scoreId
               })
                 (
-                  <AutoComplete
-                    dataSource={scorenameList}
-                    dropdownMatchSelectWidth={false}
-                    dropdownStyle={{ width: 600 }}
-                    onSelect={(v, opt) => handleDisableduser(v, opt, 'score')}
-                  >
-                    <Search
-                      placeholder="可输入姓名搜索"
-                      onSearch={values => SearchDisableduser(values, 'score')}
-                      allowClear
-                    />
-                  </AutoComplete>,
+                  <Input />
                 )
             }
           </Form.Item>
@@ -568,7 +562,7 @@ const Register = React.forwardRef((props, ref) => {
               getFieldDecorator('assessType', {
                 initialValue: register.assessType
               })
-                (<Input />)
+                (<Input disabled='true' />)
             }
           </Form.Item>
         </Col>
@@ -608,6 +602,7 @@ const Register = React.forwardRef((props, ref) => {
               })
                 (
                   <Select
+                    disabled={noEdit}
                     onChange={(value, option) => handleChange(value, option, 'target1Name')}
                     onFocus={() => handleFocus('one')}
                     placeholder='请选择'
@@ -651,6 +646,7 @@ const Register = React.forwardRef((props, ref) => {
               })
                 (
                   <Select
+                    disabled={noEdit}
                     onChange={(value, option) => handleChange(value, option, 'target2Name')}
                     onFo cus={() => handleFocus('two')}
                     placeholder='请选择'
@@ -689,7 +685,7 @@ const Register = React.forwardRef((props, ref) => {
                     message: '请输入详细条款'
                   }
                 ],
-                initialValue: register.clause.detailed || register.clause
+                initialValue: register.clause?.detailed ? register.clause.detailed : register.clause
               })
                 (
                   <Select
@@ -737,7 +733,7 @@ const Register = React.forwardRef((props, ref) => {
                 ],
                 initialValue: register.assessValue
               })
-                (<Input />)
+                (<Input disabled={noEdit} />)
             }
           </Form.Item>
         </Col>
@@ -748,7 +744,7 @@ const Register = React.forwardRef((props, ref) => {
               getFieldDecorator('status', {
                 initialValue: register.status
               })
-                (<Input />)
+                (<Input disabled={noEdit} />)
             }
           </Form.Item>
         </Col>
@@ -759,7 +755,7 @@ const Register = React.forwardRef((props, ref) => {
               getFieldDecorator('remark', {
                 initialValue: register.remark
               })
-                (<TextArea autoSize={{ minRows: 3 }} placeholder='请输入' />)
+                (<TextArea disabled={noEdit} autoSize={{ minRows: 3 }} placeholder='请输入' />)
             }
           </Form.Item>
         </Col>
@@ -767,7 +763,9 @@ const Register = React.forwardRef((props, ref) => {
         <Col span={24}>
           <Form.Item label='上传附件' {...forminladeLayout}>
             {
-              getFieldDecorator('attachment', {})
+              getFieldDecorator('attachment', {
+                initialValue: register.attachment
+              })
                 (<div style={{ width: 400 }}>
                   <SysUpload
                     fileslist={files}
@@ -784,7 +782,7 @@ const Register = React.forwardRef((props, ref) => {
               getFieldDecorator('register', {
                 initialValue: userinfo.userName
               })
-                (<Input />)
+                (<Input disabled={noEdit} />)
             }
           </Form.Item>
         </Col>
@@ -795,7 +793,7 @@ const Register = React.forwardRef((props, ref) => {
               getFieldDecorator('applyTime', {
                 initialValue: moment(register.applyTime)
               })
-                (<DatePicker />)
+                (<DatePicker disabled={noEdit} />)
             }
           </Form.Item>
         </Col>

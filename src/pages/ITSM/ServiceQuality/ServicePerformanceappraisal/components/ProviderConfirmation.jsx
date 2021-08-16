@@ -1,4 +1,4 @@
-import React, { useImperativeHandle, useRef, useState } from 'react';
+import React, { useImperativeHandle, useRef, useState,useEffect } from 'react';
 import {
   Form,
   Input,
@@ -7,7 +7,9 @@ import {
   Col,
   DatePicker
 } from 'antd';
+import moment from 'moment';
 import SysUpload from '@/components/SysUpload';
+
 const { TextArea } = Input;
 
 const ProviderConfirmation = React.forwardRef((props, ref) => {
@@ -16,13 +18,15 @@ const ProviderConfirmation = React.forwardRef((props, ref) => {
     formItemLayout,
     forminladeLayout,
     userinfo,
-    providerConfirmation
+    providerConfirmation,
+    noEdit,
+    selectPersonstate
   } = props;
 
   const [showContent, setShowContent] = useState('1');
   const [fileslist, setFilesList] = useState([]);
   const [selectdata, setSelectData] = useState('');
-  
+
   const required = true;
   const attRef = useRef();
   useImperativeHandle(
@@ -33,8 +37,14 @@ const ProviderConfirmation = React.forwardRef((props, ref) => {
     []
   )
 
+  useEffect(() => {
+    selectPersonstate(providerConfirmation.isAppeal)
+  },[])
+  
+
   const handleChange = (e) => {
-    setShowContent(e.target.value)
+    setShowContent(e.target.value);
+    selectPersonstate(e.target.value)
   }
 
   return (
@@ -50,10 +60,10 @@ const ProviderConfirmation = React.forwardRef((props, ref) => {
                     message: '请选择是否申诉'
                   }
                 ],
-                initialValue:providerConfirmation.isAppeal
+                initialValue: providerConfirmation.isAppeal || '1'
               })
                 (
-                  <Radio.Group onChange={handleChange}>
+                  <Radio.Group disabled={noEdit} onChange={handleChange}>
                     <Radio value='1'>
                       是
                     </Radio>
@@ -71,48 +81,50 @@ const ProviderConfirmation = React.forwardRef((props, ref) => {
         {
           showContent === '1' && (
             <Col span={24}>
-            <Form.Item label='申诉内容' {...forminladeLayout}>
-              {
-                getFieldDecorator('appealContent', {
-                  rules: [
-                    {
-                      required,
-                      message: '请选择是否申诉'
-                    }
-                  ],
-                  initialValue:providerConfirmation.appealContent
-                })
-                (<TextArea 
-                    autoSize={{ minRows: 3 }}
-                    placeholder='请输入申诉内容'
-                />)
-              }
-  
-            </Form.Item>
-          </Col>
+              <Form.Item label='申诉内容' {...forminladeLayout}>
+                {
+                  getFieldDecorator('appealContent', {
+                    rules: [
+                      {
+                        required,
+                        message: '请选择是否申诉'
+                      }
+                    ],
+                    initialValue: providerConfirmation.appealContent
+                  })
+                    (<TextArea
+                      disabled={noEdit}
+                      autoSize={{ minRows: 3 }}
+                      placeholder='请输入申诉内容'
+                    />)
+                }
+
+              </Form.Item>
+            </Col>
           )
         }
 
         {
           showContent === '0' && (
             <Col span={24}>
-            <Form.Item label='申诉内容' {...forminladeLayout}>
-              {
-                getFieldDecorator('appealContent', {
-                  initialValue:providerConfirmation.appealContent
-                })
-                (<TextArea 
-                    autoSize={{ minRows: 3 }}
-                    placeholder='请输入申诉内容'
-                />)
-              }
-  
-            </Form.Item>
-          </Col>
+              <Form.Item label='申诉内容' {...forminladeLayout}>
+                {
+                  getFieldDecorator('appealContent', {
+                    initialValue: providerConfirmation.appealContent
+                  })
+                    (<TextArea
+                      disabled={noEdit}
+                      autoSize={{ minRows: 3 }}
+                      placeholder='请输入申诉内容'
+                    />)
+                }
+
+              </Form.Item>
+            </Col>
           )
         }
 
-        <Col span={24}>
+        {/* <Col span={24}>
           <Form.Item label='上传附件'  {...forminladeLayout}>
             {
               getFieldDecorator('annex', {
@@ -135,7 +147,8 @@ const ProviderConfirmation = React.forwardRef((props, ref) => {
             }
 
           </Form.Item>
-        </Col>
+        </Col> */}
+
         <Col span={8}>
           <Form.Item label='确认人'>
             {
@@ -146,9 +159,9 @@ const ProviderConfirmation = React.forwardRef((props, ref) => {
                     message: '请输入确认人'
                   }
                 ],
-                initialValue:userinfo.userName
+                initialValue: userinfo.userName
               })
-              (<Input />)
+                (<Input  disabled={noEdit}/>)
             }
 
           </Form.Item>
@@ -163,9 +176,9 @@ const ProviderConfirmation = React.forwardRef((props, ref) => {
                     message: '请选择确认时间'
                   }
                 ],
-                intialValue:providerConfirmation.confirmTime
+                initialValue: providerConfirmation.confirmTime ? moment(providerConfirmation.confirmTime) : moment(new Date())
               })
-              (<DatePicker />)
+                (<DatePicker disabled={noEdit}/>)
             }
 
           </Form.Item>
@@ -176,12 +189,12 @@ const ProviderConfirmation = React.forwardRef((props, ref) => {
 })
 
 ProviderConfirmation.defaultProps = {
-  providerConfirmation:{
-    isAppeal:'0',
-    appealContent:'',
-    annex:[],
-    confirmer:'',
-    confirmTime:'',
+  providerConfirmation: {
+    isAppeal: '0',
+    appealContent: '',
+    annex: [],
+    confirmer: '',
+    confirmTime: new Date(),
   }
 }
 

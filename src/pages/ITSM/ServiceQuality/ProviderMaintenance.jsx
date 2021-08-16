@@ -38,6 +38,7 @@ function ProviderMaintenance(props) {
       validateFields,
       resetFields
     },
+    location,
     providerArr,
     dispatch,
     loading
@@ -45,6 +46,7 @@ function ProviderMaintenance(props) {
   const [paginations, setPaginations] = useState({ current: 0, pageSize: 15 });
   const [data, setData] = useState([]);
   const [performanceLeader, setPerformanceLeader] = useState('')
+  const [tabrecord, setTabRecord] = useState({});
 
   const searchdata = (values, page, pageSize) => {
     dispatch({
@@ -54,7 +56,8 @@ function ProviderMaintenance(props) {
         pageNum: page,
         pageSize
       }
-    })
+    });
+    setTabRecord({...values})
   }
 
   const handlesearch = () => {
@@ -159,17 +162,41 @@ function ProviderMaintenance(props) {
     },
   ]
 
+  const download = () => {
+    validateFields((err,value) => {
+      dispatch({
+        type:'qualityassessment/providerExport',
+        payload:{
+          ...value
+        }
+      }).then(res => {
+        const filename = '下载.xls';
+        const blob = new Blob([res]);
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.click();
+        window.URL.revokeObjectURL(url)
+      })
+    })
+  }
+
   const newProvider = () => {
     router.push({
       pathname: '/ITSM/servicequalityassessment/addserviceprovidermaintenance',
       query: {
-        //  mainId: selectedRows.length ? allmainIds : '',
         addtab: true,
       },
     })
   }
 
   const handleReset = () => {
+    router.push({
+      pathname: location.pathname,
+      query:{},
+      state:{}
+    });
     resetFields();
     searchdata({}, 1, 15)
   }
@@ -199,17 +226,6 @@ function ProviderMaintenance(props) {
     })
   }
 
-  // const handleTabledata = () => {
-  //   const newarr = maintenanceData.map((item, index) => {
-  //     return Object.assign(item,{ isNew: false,key:index})
-  //   })
-  //   setData(newarr)
-  // }
-
-  // useEffect(() => {
-  //   handleTabledata()
-  // },maintenanceData)
-
   const pagination = {
     showSizeChanger: true,
     onShowSizeChange: (page, pagesize) => onShowSizeChange(page, pagesize),
@@ -220,6 +236,49 @@ function ProviderMaintenance(props) {
     onChange: (page) => changePage(page)
   }
 
+  //  传给多标签的数据
+  const record = {
+    providerNo: '',
+    providerName: '',
+    director: '',
+    directorPhone: '',
+  }
+
+  const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
+
+  useEffect(() => {
+    if (location.state) {
+      if (location.state.cache) {
+        // 传表单数据到页签
+        dispatch({
+          type: 'viewcache/gettabstate',
+          payload: {
+            cacheinfo: {
+              ...tabrecord,
+              registerTime: '',
+              paginations,
+            },
+            tabid: sessionStorage.getItem('tabid')
+          },
+        });
+      };
+      // 点击菜单刷新,并获取数据
+      if (location.state.reset) {
+        handleReset();
+        // setExpand(false);
+      };
+      if (location.state.cacheinfo) {
+        const { current, pageSize } = location.state.cacheinfo.paginations;
+        const { createTimeBegin, createTimeEnd } = location.state.cacheinfo;
+        // setExpand(location.state.cacheinfo.expand);
+        // setPaginations({ ...paginations, current, pageSize });
+        // setFieldsValue({
+        //   createTime: createTimeBegin ? [moment(createTimeBegin), moment(createTimeEnd)] : '',
+        // })
+      };
+    }
+  }, [location.state]);
+
   return (
     <PageHeaderWrapper title={pagetitle}>
       <Card>
@@ -228,7 +287,9 @@ function ProviderMaintenance(props) {
             <Col span={8}>
               <Form.Item label='服务商编号'>
                 {
-                  getFieldDecorator('providerNo')
+                  getFieldDecorator('providerNo', {
+                    initialValue: cacheinfo.providerNo
+                  })
                     (<Input />)
                 }
 
@@ -238,7 +299,9 @@ function ProviderMaintenance(props) {
             <Col span={8}>
               <Form.Item label='服务商名称'>
                 {
-                  getFieldDecorator('providerName', {})
+                  getFieldDecorator('providerName', {
+                    initialValue: cacheinfo.providerName
+                  })
                     (<Input />)
                 }
               </Form.Item>
@@ -247,7 +310,9 @@ function ProviderMaintenance(props) {
             <Col span={8}>
               <Form.Item label='负责人'>
                 {
-                  getFieldDecorator('director')
+                  getFieldDecorator('director', {
+                    initialValue: cacheinfo.director
+                  })
                     (<Input />)
                 }
               </Form.Item>
@@ -256,7 +321,9 @@ function ProviderMaintenance(props) {
             <Col span={8}>
               <Form.Item label='负责人手机号'>
                 {
-                  getFieldDecorator('directorPhone')
+                  getFieldDecorator('directorPhone', {
+                    initialValue: cacheinfo.directorPhone
+                  })
                     (<Input />)
                 }
               </Form.Item>
@@ -277,7 +344,7 @@ function ProviderMaintenance(props) {
           </Form>
         </Row>
 
-        <Button type='primary'>导出数据</Button>
+        <Button type='primary' onClick={() => download()}>导出数据</Button>
 
         <Button
           style={{ width: '100%', marginTop: 16, marginBottom: 8 }}
@@ -294,7 +361,7 @@ function ProviderMaintenance(props) {
           pagination={pagination}
         />
 
-        
+
       </Card>
     </PageHeaderWrapper>
   )

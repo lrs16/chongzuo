@@ -7,17 +7,18 @@ import {
   saveDirectorVerify,
   saveExpertVerify,
   saveProviderConfirm,
-  scoreGetTarget1,
-  scoreGetTarget2,
   getTaskData,
   assessComplete,
   scorecardSave,
   scorecardId,
   scorecardlistPage,
   scorecardDel,
-  updateRemark,
   scorecardSubmit,
-  scorecardExport
+  scorecardExport,
+  saveFinallyConfirm,
+  hisTask,
+  rollback,
+  readResource
 } from '../services/serviceperformanceappraisalapi';
 
 export default {
@@ -31,7 +32,9 @@ export default {
     target2:[],
     taskData:[],
     scorecardetail:[],
-    scorecardArr:[]
+    scorecardArr:[],
+    hisTaskArr:[],
+    readResourceImg:[]
   },
 
   effects: {
@@ -71,10 +74,10 @@ export default {
           closecurrent: true,
         }
       });
-      const { data: { taskId,assessNo,instanceId } } = response;
+      const { data: { taskId,assessNo,instanceId,taskName } } = response;
       router.push({
         pathname: `/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtform`,
-        query: { taskId, mainId: instanceId, orderNo: assessNo, }  // 这里要加mainId
+        query: { assessNo, mainId: instanceId, taskId:instanceId, orderNo: '', }  // 这里要加mainId
       });
     }
   },
@@ -99,23 +102,6 @@ export default {
   //  保存服务商确认环节信息
   *saveProviderConfirm({ payload }, { call, put }) {
     return yield call(saveProviderConfirm,payload)
-  },
-
-   //  根据考核类型查询一级指标
-   *scoreGetTarget1({ payload }, { call,put }) {
-    const response = yield call(scoreGetTarget1,payload);
-    yield put ({
-      type:'target1',
-      payload: response
-    })
-  },
-   //  根据考核类型查询二级指标
-   *scoreGetTarget2({ payload }, { call,put }) {
-    const response = yield call(scoreGetTarget2,payload);
-    yield put ({
-      type:'target2',
-      payload: response
-    })
   },
 
   //  获取环节数据
@@ -189,9 +175,32 @@ export default {
 
   *scorecardExport({ payload }, { call, put }) {
     return yield call(scorecardExport,payload)
-  }
+  },
 
- 
+  //  保存绩效确认
+  *saveFinallyConfirm({ payload }, { call, put }) {
+    return yield call(saveFinallyConfirm,payload)
+  },
+  //  获取工单流程历史数据
+  *hisTask({ payload:{instanceId} }, { call, put }) {
+    const response = yield call(hisTask,instanceId);
+    yield put({
+      type:'hisTaskArr',
+      payload:response
+    })
+  },
+
+  *rollback({ payload }, { call, put }) {
+    return yield call(rollback,payload)
+  },
+
+  *readResource({ payload }, { call, put }) {
+    const response =  yield call(readResource,payload);
+    yield put ({
+      type:'readResourceImg',
+      payload: response
+    })
+  }
 
   },
 
@@ -206,21 +215,7 @@ export default {
     tobeDealtarr(state,action) {
       return {
         ...state,
-        tobeDealtarr: action.payload
-      }
-    },
-
-    target1(state,action) {
-      return {
-        ...state,
-        target1: action.payload.data
-      }
-    },
-
-    target2(state,action) {
-      return {
-        ...state,
-        target2: action.payload.data
+        tobeDealtarr: action.payload.data
       }
     },
 
@@ -250,7 +245,25 @@ export default {
         ...state,
         scorecardetail:[]
       }
-    }
+    },
+
+    hisTaskArr(state,action) {
+      return {
+        ...state,
+        hisTaskArr:action.payload.data
+      }
+    },
+
+    readResourceImg(state,action) {
+      return {
+        ...state,
+        readResourceImg:action.payload
+      }
+    },
+
+
+
+
 
  
   }

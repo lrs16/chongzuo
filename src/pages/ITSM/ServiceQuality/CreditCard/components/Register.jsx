@@ -172,25 +172,12 @@ const Register = React.forwardRef((props, ref) => {
         setFieldsValue({
           providerName,         // 服务商
           providerId: id,         // 服务商id
+          contractName,
+          contractId: '',
         });
-        // contractProvider(id).then(res => {
-        //   if (res.code === 200) {
-        //     const arr = [...(res.data)];
-        //     setSpinLoading(false);
-        //     setContractlist(arr);
-        //   }
-        // });
         getContrractname(id)
         setProviderId(id);
-
         break;
-
-      // case 'contract':
-      //   setFieldsValue({
-      //     contract: contractName,         // 合同名字
-      //     contractId: id,         // 服务商id
-      //   });
-      //   break;
 
       case 'score':
         setFieldsValue({
@@ -198,8 +185,6 @@ const Register = React.forwardRef((props, ref) => {
           scoreId: id,         // 评分细则id
           assessType
         });
-        // setScoreId(id)
-        // getTarget1(assessType === '功能开发' ? '1' : '2')
         break;
 
       default:
@@ -274,14 +259,13 @@ const Register = React.forwardRef((props, ref) => {
 
   const handleChange = (values, option, params) => {
     const { key, props: { value } } = option;
-    // console.log('value: ', value);
     setFieldsValue({
       contractName: key,
       contractId: value
     })
   }
 
-  const handleFocus = (params) => {
+  const handleFocus = () => {
     if (loading !== true && contractArr && contractArr.length === 0) {
       message.error('请选择有效的服务商')
     }
@@ -360,7 +344,7 @@ const Register = React.forwardRef((props, ref) => {
               </Col>
 
               {
-                ( id ? (contractArr && contractArr.length > 0) : true ) && (
+                (id ? (contractArr) : true) && (
                   <Col span={8}>
                     <Form.Item label='关联合同名称'>
                       {
@@ -448,8 +432,8 @@ const Register = React.forwardRef((props, ref) => {
                 </Form.Item>
               </Col>
 
-              <Col span={8}>
-                <Form.Item label='评分细则名称' style={{ display: 'none' }}>
+              <Col span={8} style={{ display: 'none' }}>
+                <Form.Item label='评分细则名称'>
                   {
                     getFieldDecorator('scoreId', {
                       rules: [
@@ -476,8 +460,8 @@ const Register = React.forwardRef((props, ref) => {
                       (<Input disabled='true' />)
                   }
                 </Form.Item>
-
               </Col>
+
 
 
               <Col span={8}>
@@ -610,6 +594,7 @@ Register.defaultProps = {
     providerName: '',
     providerId: '',
     contract: '',
+    contractName: '',
     contractId: '',
     scoreName: '',
     scoreId: '',

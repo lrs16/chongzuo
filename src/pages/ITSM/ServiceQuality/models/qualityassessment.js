@@ -23,8 +23,14 @@ import {
   clauseListpage,
   getTargetValue,
   scorecardlistPage,
-  updateRemark
+  updateRemark,
+  providerExport
 } from '../services/quality';
+
+import {
+  scoreGetTarget1,
+  scoreGetTarget2,
+} from '../ServicePerformanceappraisal/services/serviceperformanceappraisalapi';
 
 export default {
   namespace:'qualityassessment',
@@ -40,7 +46,9 @@ export default {
     treeArr:[],
     clauseList:[],
     treeForm:[],
-    scorecardArr:[]
+    scorecardArr:[],
+    target1:[],
+    target2:[],
   },
 
   effects: {
@@ -227,7 +235,30 @@ export default {
    //  更新扣分说明
    *updateRemark({ payload: { id, remark }},{ call, put }) {
     return yield call(updateRemark,id, remark)
-  }
+  },
+  //  根据考核类型查询一级指标
+  *scoreGetTarget1({ payload }, { call,put }) {
+    const response = yield call(scoreGetTarget1,payload);
+    yield put ({
+      type:'target1',
+      payload: response
+    })
+  },
+
+    //  根据考核类型查询二级指标
+  *scoreGetTarget2({ payload }, { call,put }) {
+  const response = yield call(scoreGetTarget2,payload);
+  yield put ({
+    type:'target2',
+    payload: response
+  })
+},
+
+  //  导出服务商
+  *providerExport({ payload }, { call, put }) {
+    return yield call(providerExport,payload)
+  },
+  
   },
 
 
@@ -290,6 +321,20 @@ export default {
       return {
         ...state,
         treeForm: action.payload.data
+      }
+    },
+
+    target1(state,action) {
+      return {
+        ...state,
+        target1: action.payload.data
+      }
+    },
+
+    target2(state,action) {
+      return {
+        ...state,
+        target2: action.payload.data
       }
     },
 

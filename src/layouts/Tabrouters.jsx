@@ -22,6 +22,8 @@ const alonepath = [
   { path: '/ITSM/operationreport/monthlyreport/monthdatabasereportdetail' },
   { path: '/ITSM/operationreport/monthlyreport/monthotherreportdetail' },
   { path: '/ITSM/knowledgemanage/:id/operation' },
+  { path: '/ITSM/servicequalityassessment/detailserviceprovidermaintenance' },
+  { path: '/ITSM/servicequalityassessment/serviceperformanceappraisal/tobedealtform' },
 ];
 
 // 登记或新建
@@ -41,6 +43,8 @@ const multiplepath = [
   { path: '/ITSM/operationreport/monthlyreport/monthsoftreport', type: 'monthsoftreport' },
   { path: '/ITSM/knowledgemanage/myknowledge/new', type: 'knowledge' },
   { path: '/ITSM/releasemanage/registration', type: 'release' },
+  { path: '/ITSM/servicequalityassessment/addserviceprovidermaintenance', type: 'addscoringrulesmaintenance' },
+  { path: '/ITSM/servicequalityassessment/creditcard/creditcardregister', type: 'creditcardregister' },
 ]
 function Tabrouters(props) {
   const { Changealonepath, Changemultiple } = props;

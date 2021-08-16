@@ -40,8 +40,10 @@ function CreditCardRegister(props) {
     dispatch,
     clauseList,
     location: { query: { id,search } },
+    location,
     scorecardetail,
     maintenanceArr,
+    tabnew,tabdata
   } = props;
   const RegistratRef = useRef();
   const [contractArr, setContractArr] = useState([]);
@@ -80,6 +82,7 @@ function CreditCardRegister(props) {
 
   const handleSave = () => {
     RegistratRef.current.validateFields((err, values) => {
+      console.log('values: ', values);
       if (!err) {
         dispatch({
           type: 'performanceappraisal/scorecardSave',
@@ -103,7 +106,6 @@ function CreditCardRegister(props) {
     }).then(res => {
       if(res.code === 200) {
         message.info(res.msg);
-        
       } else {
         message.error(res.msg);
       }
@@ -143,7 +145,37 @@ function CreditCardRegister(props) {
         type: 'performanceappraisal/clear'
       })
     }
-  }, [id])
+  }, [id]);
+
+
+  //  重置表单信息
+  useEffect(() => {
+    if(tabnew) {
+      RegistratRef.current.resetFields()
+    }
+  },[tabnew])
+
+  console.log(tabdata,'tabdata')
+
+  //  获取页签信信息
+  useEffect(() => {
+    if (location.state) {
+      if (location.state.cache) {
+        RegistratRef.current.validateFields((_, values) => {
+          dispatch({
+            type: 'viewcache/gettabstate',
+            payload: {
+              cacheinfo: {
+                ...values,
+              },
+              tabid: sessionStorage.getItem('tabid')
+            },
+          });
+        });
+        RegistratRef.current.resetFields();
+      }
+    }
+  }, [location]);
 
   return (
     <PageHeaderWrapper
@@ -181,7 +213,7 @@ function CreditCardRegister(props) {
                 formItemLayout={formItemLayout}
                 formItemdeLayout={formItemdeLayout}
                 ref={RegistratRef}
-                register={scorecardetail}
+                register={id?scorecardetail:tabdata}
                 clauseList={clauseList}
                 contractArr={contractArr}
                 getContrractname={getContrractname}
@@ -197,7 +229,9 @@ function CreditCardRegister(props) {
 }
 
 export default (
-  connect(({ eventstatistics, performanceappraisal, qualityassessment, loading }) => ({
+  connect(({ eventstatistics, performanceappraisal, qualityassessment,viewcache,loading }) => ({
+    tabnew: viewcache.tabnew,
+    tabdata: viewcache.tabdata,
     maintenanceArr: eventstatistics.maintenanceArr,
     target2: performanceappraisal.target2,
     target1: performanceappraisal.target1,

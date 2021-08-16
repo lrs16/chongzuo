@@ -119,7 +119,6 @@ export async function scoreDel(id) {
 
 //  根据考核类型查询指标明细的树
 export async function getTypeTree(type) {
-  console.log('type: ', type);
   return request(`/quality/score/getTypeTree?type=${type}`)
 }
 
@@ -139,9 +138,17 @@ export async function getTargetValue(targetId) {
 
 //  更新扣分说明
 export async function updateRemark(id,remark) {
-  
   return request(`/quality/scorecard/updateRemark?id=${id}&remark=${remark}`,{
     method:'POST',
     // body:JSON.stringify({id,remark})
+  })
+}
+
+//  导出服务商
+export async function providerExport(params) {
+  return request(`/quality/provider/export`,{
+    method:'POST',
+    responseType:'blob',
+    body:JSON.stringify(params)
   })
 }

@@ -39,11 +39,12 @@ function ServiceProvidersearch(props) {
     },
     providerArr,
     dispatch,
+    location,
     loading
   } = props;
-  console.log(providerArr, 'providerArr')
   const [paginations, setPaginations] = useState({ current: 0, pageSize: 15 });
   const [data, setData] = useState([]);
+  const [tabrecord, setTabRecord] = useState({});
 
   const searchdata = (values, page, pageSize) => {
     dispatch({
@@ -53,7 +54,8 @@ function ServiceProvidersearch(props) {
         pageNum: page,
         pageSize
       }
-    })
+    });
+    setTabRecord({...values})
   }
 
   const handlesearch = () => {
@@ -130,6 +132,11 @@ function ServiceProvidersearch(props) {
   }
 
   const handleReset = () => {
+    router.push({
+      pathname:location.pathname,
+      query:{},
+      state:{}
+    });
     resetFields();
     searchdata({}, 1, 15)
   }
@@ -159,17 +166,6 @@ function ServiceProvidersearch(props) {
     })
   }
 
-  // const handleTabledata = () => {
-  //   const newarr = maintenanceData.map((item, index) => {
-  //     return Object.assign(item,{ isNew: false,key:index})
-  //   })
-  //   setData(newarr)
-  // }
-
-  // useEffect(() => {
-  //   handleTabledata()
-  // },maintenanceData)
-
   const pagination = {
     showSizeChanger: true,
     onShowSizeChange: (page, pagesize) => onShowSizeChange(page, pagesize),
@@ -180,6 +176,38 @@ function ServiceProvidersearch(props) {
     onChange: (page) => changePage(page)
   }
 
+  const record = {
+    providerNo:'',
+    providerName:'',
+    creator:'',
+    directorPhone:'',
+  }
+
+  const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
+
+  useEffect(() => {
+    if (location.state) {
+      if (location.state.cache) {
+        // 传表单数据到页签
+        dispatch({
+          type: 'viewcache/gettabstate',
+          payload: {
+            cacheinfo: {
+              ...tabrecord,
+              paginations,
+            },
+            tabid: sessionStorage.getItem('tabid')
+          },
+        });
+      };
+      // 点击菜单刷新,并获取数据
+      if (location.state.reset) {
+        handleReset();
+        // setExpand(false);
+      };
+    }
+  }, [location.state]);
+
   return (
     <PageHeaderWrapper title={pagetitle}>
       <Card>
@@ -188,7 +216,9 @@ function ServiceProvidersearch(props) {
             <Col span={8}>
               <Form.Item label='服务商编号'>
                 {
-                  getFieldDecorator('providerNo')
+                  getFieldDecorator('providerNo',{
+                    initialValue: cacheinfo.providerNo
+                  })
                     (<Input />)
                 }
 
@@ -198,7 +228,9 @@ function ServiceProvidersearch(props) {
             <Col span={8}>
               <Form.Item label='服务商名称'>
                 {
-                  getFieldDecorator('providerName', {})
+                  getFieldDecorator('providerName', {
+                    initialValue: cacheinfo.providerName
+                  })
                     (<Input />)
                 }
               </Form.Item>
@@ -207,7 +239,9 @@ function ServiceProvidersearch(props) {
             <Col span={8}>
               <Form.Item label='负责人'>
                 {
-                  getFieldDecorator('creator')
+                  getFieldDecorator('creator',{
+                    initialValue: cacheinfo.creator
+                  })
                     (<Input />)
                 }
               </Form.Item>
@@ -216,7 +250,9 @@ function ServiceProvidersearch(props) {
             <Col span={8}>
               <Form.Item label='负责人手机号'>
                 {
-                  getFieldDecorator('directorPhone')
+                  getFieldDecorator('directorPhone',{
+                    initialValue: cacheinfo.directorPhone
+                  })
                     (<Input />)
                 }
               </Form.Item>

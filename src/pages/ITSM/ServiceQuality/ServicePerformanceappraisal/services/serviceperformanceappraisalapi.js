@@ -4,8 +4,13 @@ export async function maintenanceList () {
   return request(`/api/quality/maintenanceList`)
 }
 
-export async function tobeDealtdata () {
-  return request(`/api/quality/tobeDealtdata`)
+//  待办列表
+export async function tobeDealtdata (params) {
+  console.log('params: ', params);
+  return request(`/quality/assess/todolist/${params.pageNum}/${params.pageSize}`,{
+    method:'POST',
+    body:JSON.stringify(params)
+  })
 }
 
 // 保存登记环节信息
@@ -56,15 +61,15 @@ export async function scoreGetTarget2(id) {
 }
 
 //  获取环节数据
-export async function getTaskData(taskId) {
-  return request(`/quality/assess/getTaskData/?taskId=${taskId}`)
+export async function getTaskData(assessNo) {
+  return request(`/quality/assess/openFlow/?assessNo=${assessNo}`)
 }
 
 //  流程传递
 export async function assessComplete(params) {
-  return request(`/quality/assess/complete`,{
+  return request(`/quality/assess/complete?taskId=${params.taskId}&users=${params.users}`,{
     method:'POST',
-    body:JSON.stringify(params)
+    // body:JSON.stringify(params)
   })
 }
 
@@ -110,5 +115,38 @@ export async function scorecardSubmit(cardId) {
 export async function scorecardExport(params) {
   return request(`/quality/scorecard/export?pageNum=${params.pageNum}&pageSize=${params.pageSize}`,{
     method:'POST'
+  })
+}
+
+//  保存服务绩效考核确认环节信息
+export async function saveFinallyConfirm(params) {
+  return request(`/quality/assess/saveFinallyConfirm`,{
+    method:'POST',
+    body:JSON.stringify(params)
+  })
+}
+
+//  获取工单流程历史数据
+export async function hisTask(instanceId) {
+  return request(`/quality/assess/hisTask?instanceId=${instanceId}`,{
+    method:'POST'
+  })
+}
+
+//  删除工单
+// export async function 
+
+//  回退
+export async function rollback(taskId) {
+  return request(`/quality/assess/rollback?taskId=${taskId}`,{
+    method:'POST',
+  })
+}
+
+//  流程图
+export async function readResource(processInstanceId) {
+  return request(`/activiti/process/readResource/${processInstanceId}`,{
+    method:'GET',
+    responseType:'blob'
   })
 }

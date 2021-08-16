@@ -50,17 +50,11 @@ function ServiceProvidersearch(props) {
     providerArr,
     scorecardArr,
     dispatch,
+    location,
     loading
   } = props;
   const [paginations, setPaginations] = useState({ current: 1, pageSize: 15 });
-  const [data, setData] = useState([]);
-  const [providerId, setProviderId] = useState(''); //  设置服务商的id
-  const [scoreId, setScoreId] = useState(''); //  设置服务商的id
-  const [disablelist, setDisabledList] = useState([]); // 服务商
-  const [contractlist, setContractlist] = useState([]); // 合同
-  const [scorelist, setScorelist] = useState([]); // 评分细则
-  const [spinloading, setSpinLoading] = useState(true);
-  const [contractArr, setContractArr] = useState([]);
+  const [tabrecord, setTabRecord] = useState({});
 
   const searchdata = (values, page, pageSize) => {
     dispatch({
@@ -70,7 +64,8 @@ function ServiceProvidersearch(props) {
         pageNum: page,
         pageSize
       }
-    })
+    });
+    setTabRecord({...values})
   }
 
   const handlesearch = () => {
@@ -182,6 +177,11 @@ function ServiceProvidersearch(props) {
 
 
   const handleReset = () => {
+    router.push({
+      pathname: location.pathname,
+      query:{},
+      state:{}
+    });
     resetFields();
     searchdata({}, 1, 15)
   }
@@ -244,6 +244,43 @@ function ServiceProvidersearch(props) {
     onChange: (page) => changePage(page)
   }
 
+  const record = {
+    cardNo:'',
+    cardName:'',
+    scoreName:'',
+    assessType:'',
+    version:'',
+    deptName:'',
+    cardSeason:'',
+    providerName:'',
+    contractName:'',
+  }
+
+  const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
+
+  useEffect(() => {
+    if (location.state) {
+      if (location.state.cache) {
+        // 传表单数据到页签
+        dispatch({
+          type: 'viewcache/gettabstate',
+          payload: {
+            cacheinfo: {
+              ...tabrecord,
+              paginations,
+            },
+            tabid: sessionStorage.getItem('tabid')
+          },
+        });
+      };
+      // 点击菜单刷新,并获取数据
+      if (location.state.reset) {
+        handleReset();
+        // setExpand(false);
+      };
+    }
+  }, [location.state]);
+
 
   return (
     <PageHeaderWrapper title={pagetitle}>
@@ -253,7 +290,9 @@ function ServiceProvidersearch(props) {
             <Col span={8}>
               <Form.Item label='计分卡编号'>
                 {
-                  getFieldDecorator('cardNo')
+                  getFieldDecorator('cardNo',{
+                    initialValue: cacheinfo.cardNo
+                  })
                     (<Input />)
                 }
               </Form.Item>
@@ -262,7 +301,9 @@ function ServiceProvidersearch(props) {
             <Col span={8}>
               <Form.Item label='评价计分卡名称'>
                 {
-                  getFieldDecorator('cardName')
+                  getFieldDecorator('cardName',{
+                    initialValue: cacheinfo.cardName
+                  })
                     (<Input />)
                 }
 
@@ -272,7 +313,9 @@ function ServiceProvidersearch(props) {
             <Col span={8}>
               <Form.Item label='评分细则名称'>
                 {
-                  getFieldDecorator('scoreName', {})
+                  getFieldDecorator('scoreName', {
+                    initialValue: cacheinfo.scoreName
+                  })
                     (
                       <Input />
                     )
@@ -283,7 +326,9 @@ function ServiceProvidersearch(props) {
             <Col span={8}>
               <Form.Item label='考核类型'>
                 {
-                  getFieldDecorator('assessType')
+                  getFieldDecorator('assessType',{
+                    initialValue: cacheinfo.assessType
+                  })
                     (<Input />)
                 }
               </Form.Item>
@@ -291,7 +336,9 @@ function ServiceProvidersearch(props) {
             <Col span={8}>
               <Form.Item label='版本号'>
                 {
-                  getFieldDecorator('version')
+                  getFieldDecorator('version',{
+                    initialValue: cacheinfo.version
+                  })
                     (<Input />)
                 }
               </Form.Item>
@@ -299,7 +346,9 @@ function ServiceProvidersearch(props) {
             <Col span={8}>
               <Form.Item label='专业部门'>
                 {
-                  getFieldDecorator('deptName')
+                  getFieldDecorator('deptName',{
+                    initialValue: cacheinfo.deptName
+                  })
                     (<Input />)
                 }
               </Form.Item>
@@ -307,7 +356,9 @@ function ServiceProvidersearch(props) {
             <Col span={8}>
               <Form.Item label='评价区间'>
                 {
-                  getFieldDecorator('cardSeason')
+                  getFieldDecorator('cardSeason',{
+                    initialValue: cacheinfo.cardSeason
+                  })
                     (<Input />)
                 }
               </Form.Item>
@@ -317,6 +368,7 @@ function ServiceProvidersearch(props) {
               <Form.Item label='服务商'>
                 {
                   getFieldDecorator('providerName', {
+                    initialValue: cacheinfo.providerName
                   })
                     (
                       <Input />
@@ -329,6 +381,7 @@ function ServiceProvidersearch(props) {
               <Form.Item label='合同名称'>
                 {
                   getFieldDecorator('contractName', {
+                    initialValue: cacheinfo.contractName
                   })
                     (
                       <Input />

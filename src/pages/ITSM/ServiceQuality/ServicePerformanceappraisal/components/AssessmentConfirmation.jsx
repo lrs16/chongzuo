@@ -12,18 +12,29 @@ import {
 import moment from 'moment';
 import SysDict from '@/components/SysDict';
 
+import styles from '../index.less';
+
 const { TextArea } = Input;
 const { Option } = Select;
 
 const AssessmentConfirmation = React.forwardRef((props, ref) => {
   const {
-    form: { getFieldDecorator },
+    form: { getFieldDecorator, setFieldsValue },
     formItemLayout,
     forminladeLayout,
     userinfo,
-    assessmentConfirmation
+    assessmentConfirmation,
+    getTarget1,
+    getTarget2,
+    getclausedetail,
+    clauseList,
+    target1,
+    target2,
+    editSign,
+    noEdit
   } = props;
   const [selectdata, setSelectData] = useState('');
+  const [clauselist, setClauselist] = useState([]); // 详细条款
 
   const required = true;
   const attRef = useRef();
@@ -42,9 +53,39 @@ const AssessmentConfirmation = React.forwardRef((props, ref) => {
     return [];
   }
 
+  const handleChange = (values, option, params) => {
+    const { key, props: { value } } = option;
+    switch (params) {
+      case 'assessType':
+        setFieldsValue({
+          target1Name: '',
+          target1Id: '',
+          target2Name: '',
+          target2Id: ''
+        })
+        getTarget1(value);
+        break;
+      case 'target1Name':
+        setFieldsValue({
+          target1Name: key,
+          target1Id: value,
+          target2Name: '',
+          target2Id: ''
+        })
+        getTarget2(key)
+        break;
+      case 'clause':
+        setFieldsValue({
+          clauseId: key
+        })
+        break;
+      default:
+        break;
+    }
+  }
+
 
   const appraisalStatus = getTypebyTitle('考核状态');
-  console.log('appraisalStatus: ', appraisalStatus);
 
   return (
     <Row gutter={24} style={{ paddingTop: 24 }}>
@@ -60,7 +101,9 @@ const AssessmentConfirmation = React.forwardRef((props, ref) => {
             <Col span={8}>
               <Form.Item label='是否申诉'>
                 {
-                  getFieldDecorator('aa', {})
+                  getFieldDecorator('isAppeal', {
+                    initialValue: assessmentConfirmation.isAppeal
+                  })
                     (
                       <Radio.Group disabled='true'>
                         <Radio value='1'>是</Radio>
@@ -74,7 +117,9 @@ const AssessmentConfirmation = React.forwardRef((props, ref) => {
             <Col span={24}>
               <Form.Item label='申诉内容' {...forminladeLayout}>
                 {
-                  getFieldDecorator('aa', {})
+                  getFieldDecorator('appealContent', {
+                    initialValue: assessmentConfirmation.appealContent
+                  })
                     (
                       <TextArea
                         autosize={{ minRows: 3 }}
@@ -85,10 +130,13 @@ const AssessmentConfirmation = React.forwardRef((props, ref) => {
                 }
               </Form.Item>
             </Col>
-            <Col span={8}>
-              <Form.Item label='确认结果'>
+
+            <Col span={24}>
+              <Form.Item label='确认结果' {...forminladeLayout}>
                 {
-                  getFieldDecorator('aa', {})
+                  getFieldDecorator('confirmValue', {
+                    initialValue: assessmentConfirmation.confirmValue || '1'
+                  })
                     (
                       <Radio.Group>
                         <Radio value='1'>确认考核</Radio>
@@ -98,10 +146,13 @@ const AssessmentConfirmation = React.forwardRef((props, ref) => {
                 }
               </Form.Item>
             </Col>
+
             <Col span={24}>
               <Form.Item label='确认说明' {...forminladeLayout}>
                 {
-                  getFieldDecorator('aa', {})
+                  getFieldDecorator('confirmContent', {
+                    initialValue: assessmentConfirmation.confirmContent
+                  })
                     (
                       <TextArea
                         autosize={{ minRows: 3 }}
@@ -110,64 +161,146 @@ const AssessmentConfirmation = React.forwardRef((props, ref) => {
                 }
               </Form.Item>
             </Col>
+
             <Col span={8}>
               <Form.Item label='考核类型'>
                 {
-                  getFieldDecorator('aa', {})
-                    (<Input />)
+                  getFieldDecorator('assessType', {
+                    initialValue: assessmentConfirmation.assessType
+                  })
+                    (
+                      <Select
+                        disabled={noEdit || editSign}
+                        onChange={(value, option) => handleChange(value, option, 'assessType')}>
+                        <Option key='功能开发' value='1'>功能开发</Option>
+                        <Option key='系统运维' value='2'>系统运维</Option>
+                      </Select>
+                    )
                 }
               </Form.Item>
             </Col>
+
             <Col span={24}>
               <Form.Item label='考核内容说明' {...forminladeLayout}>
                 {
-                  getFieldDecorator('aa', {})
+                  getFieldDecorator('assessContent', {
+                    initialValue: assessmentConfirmation.assessContent
+                  })
                     (
                       <TextArea
+                      disabled={noEdit || editSign}
                         autosize={{ minRows: 3 }}
                         placeholder='请输入考核内容说明'
                       />)
                 }
               </Form.Item>
             </Col>
+
             <Col span={8}>
               <Form.Item label='一级指标'>
                 {
-                  getFieldDecorator('aa', {})
-                    (<Input />)
+                  getFieldDecorator('target1Name', {
+                    rules: [
+                      {
+                        required,
+                        message: '请输入一级指标'
+                      }
+                    ],
+                    initialValue: assessmentConfirmation.target1Name
+                  })
+                    (
+                      <Select
+                      disabled={noEdit || editSign}
+                        onChange={(value, option) => handleChange(value, option, 'target1Name')}
+                        // onFocus={() => handleFocus('one')}
+                        placeholder='请选择'
+                        allowClear>
+                        {(target1).map(obj => [
+                          <Option key={obj.id} value={obj.title}>
+                            {obj.title}
+                          </Option>
+                        ])}
+                      </Select>
+                    )
                 }
               </Form.Item>
             </Col>
+
+            <Col span={8} style={{ display: 'none' }}>
+              <Form.Item label='一级指标id'>
+                {
+                  getFieldDecorator('target1Id', {
+                    initialValue: assessmentConfirmation.target1Id
+                  })
+                    (
+                      <Input />
+                    )
+                }
+              </Form.Item>
+            </Col>
+
             <Col span={8}>
               <Form.Item label='二级指标'>
                 {
-                  getFieldDecorator('aa', {})
-                    (<Input />)
+                  getFieldDecorator('target2Name', {
+                    rules: [
+                      {
+                        required,
+                        message: '请输入二级指标'
+                      }
+                    ],
+                    initialValue: assessmentConfirmation.target2Name
+                  })
+                    (
+                      <Select
+                      disabled={noEdit || editSign}
+                        onChange={(value, option) => handleChange(value, option, 'target2Name')}
+                        // onFocus={() => handleFocus('two')}
+                        placeholder='请选择'
+                        allowClear>
+                        {(target2).map(obj => [
+                          <Option key={obj.id} value={obj.title}>
+                            {obj.title}
+                          </Option>
+                        ])}
+                      </Select>
+                    )
                 }
               </Form.Item>
             </Col>
-            <Col span={8}>
-              <Form.Item label='评价指标'>
+
+            <Col span={8} style={{ display: 'none' }}>
+              <Form.Item label=' 二级指标'>
                 {
-                  getFieldDecorator('aa', {})
-                    (<Input />)
+                  getFieldDecorator('target2Id', {
+                    initialValue: assessmentConfirmation.target2Id
+                  })
+                    (
+                      <Input />
+                    )
                 }
               </Form.Item>
             </Col>
+
             <Col span={8}>
               <Form.Item label='考核得分'>
                 {
-                  getFieldDecorator('aa', {})
-                    (<Input />)
+                  getFieldDecorator('assessValue', {
+                    initialValue: assessmentConfirmation.assessValue
+                  })
+                    (<Input disabled={noEdit || editSign}/>)
                 }
               </Form.Item>
             </Col>
+
             <Col span={8}>
               <Form.Item label='考核状态'>
                 {
-                  getFieldDecorator('aa', {})
+                  getFieldDecorator('taskName', {
+                    initialValue: assessmentConfirmation.taskName
+                  })
                     (
-                      <Select>
+                      <Select disabled={noEdit || editSign}>
                         {appraisalStatus.map(obj => [
                           <Option key={obj.key} value={obj.title}>
                             {obj.title}
@@ -179,49 +312,92 @@ const AssessmentConfirmation = React.forwardRef((props, ref) => {
                 }
               </Form.Item>
             </Col>
+
             <Col span={24}>
               <Form.Item label='详细条款' {...forminladeLayout}>
                 {
-                  getFieldDecorator('aa', {})
+                  getFieldDecorator('clause', {
+                    rules: [
+                      {
+                        required,
+                        message: '请输入详细条款'
+                      }
+                    ],
+                    initialValue: assessmentConfirmation.clause?.detailed ? assessmentConfirmation.clause.detailed : assessmentConfirmation.clause
+                  })
                     (
-                      <Input
+                      <Select
+                      disabled={noEdit || editSign}
+                        onChange={(value, option) => handleChange(value, option, 'clause')}
+                      // onFocus={() => handleFocus('clause')}
+                      >
+                        {(clauseList.records || []).map(obj => [
+                          <Option key={obj.id} value={obj.detailed}>
+                            <div className={styles.disableuser}>
+                              <span>{obj.orderNo}</span>
+                              <span>{obj.detailed}</span>
+                              <span>{obj.calc}</span>
+                              <span>{obj.scoreValue}</span>
+                              <span>{obj.sources}</span>
+                            </div>
+                          </Option>
+                        ])}
+                      </Select>
+                    )
+                }
+              </Form.Item>
+            </Col>
+
+            <Col span={24} style={{ display: 'none' }}>
+              <Form.Item label='详细条款' {...forminladeLayout}>
+                {
+                  getFieldDecorator('clauseId', {
+                    initialValue: assessmentConfirmation.clauseId
+                  })
+                    (
+                      <Input disabled={noEdit || editSign}
                       />)
                 }
               </Form.Item>
             </Col>
+
             <Col span={8}>
               <Form.Item label='考核得分'>
                 {
-                  getFieldDecorator('aa', {})
-                    (<Input />)
+                  getFieldDecorator('assessValue', {
+                    initialValue: assessmentConfirmation.assessValue
+                  })
+                    (<Input disabled={noEdit || editSign}/>)
                 }
               </Form.Item>
             </Col>
+
             <Col span={8}>
               <Form.Item label='确认人'>
                 {
-                  getFieldDecorator('aa', {
+                  getFieldDecorator('confirmer', {
                     initialValue: userinfo.userName
                   })
-                    (<Input />)
+                    (<Input disabled={noEdit || editSign}/>)
                 }
               </Form.Item>
             </Col>
+
             <Col span={8}>
               <Form.Item label='确认时间'>
                 {
-                  getFieldDecorator('confirmationtime', {
-                    initialValue: assessmentConfirmation.confirmationtime
+                  getFieldDecorator('confirmTime', {
+                    initialValue: moment(assessmentConfirmation.confirmationtime)
                   })
                     (
                       <DatePicker
+                      disabled={noEdit || editSign}
                         format='YYYY-MM-DD HH-MM'
                       />)
                 }
               </Form.Item>
             </Col>
           </Form>
-
         )
       }
 
@@ -231,7 +407,22 @@ const AssessmentConfirmation = React.forwardRef((props, ref) => {
 
 AssessmentConfirmation.defaultProps = {
   assessmentConfirmation: {
-    confirmationtime: moment(new Date())
+    isAppeal: '1',
+    appealContent: '',
+    confirmValue: '1',
+    confirmContent: '',
+    assessType: '',
+    assessContent: '',
+    target1Name: '',
+    target1Id: '',
+    target2Name: '',
+    target2Id: '',
+    assessValue: '',
+    taskName: '',
+    clause: '',
+    clauseId: '',
+    confirmer: '',
+    confirmTime: new Date(),
   }
 }
 

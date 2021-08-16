@@ -40,12 +40,13 @@ function ScoringRulesssearch(props) {
     form: { getFieldDecorator, validateFields, resetFields },
     scoreList,
     dispatch,
+    location,
     loading
   } = props;
 
   const [paginations, setPaginations] = useState({ current: 0, pageSize: 15 })
   const [selectdata, setSelectData] = useState('');
-
+  const [tabrecord, setTabRecord] = useState({});
 
   const searchdata = (values, page, pageSize) => {
     dispatch({
@@ -55,7 +56,8 @@ function ScoringRulesssearch(props) {
         pageNum: page,
         pageSize
       }
-    })
+    });
+    setTabRecord({ ...values })
   }
 
   const handleDelete = (id) => {
@@ -114,10 +116,17 @@ function ScoringRulesssearch(props) {
 
 
   useEffect(() => {
-    searchdata({}, paginations.current, paginations.pageSize)
+    validateFields((err,value) => {
+      searchdata(value, paginations.current, paginations.pageSize)
+    })
   }, [])
 
   const handleReset = () => {
+    router.push({
+      pathname:location.pathname,
+      query:{},
+      state:{}
+    });
     resetFields();
     searchdata({}, 1, 15)
   }
@@ -169,6 +178,37 @@ function ScoringRulesssearch(props) {
     onChange: (page) => changePage(page)
   }
 
+  const record = {
+    scoreNo:'',
+    scoreName:'',
+    assessType:'',
+  }
+
+  const cacheinfo = location.state.cacheinfo === undefined ? record : location.state.cacheinfo;
+
+  useEffect(() => {
+    if (location.state) {
+      if (location.state.cache) {
+        // 传表单数据到页签
+        dispatch({
+          type: 'viewcache/gettabstate',
+          payload: {
+            cacheinfo: {
+              ...tabrecord,
+              paginations,
+            },
+            tabid: sessionStorage.getItem('tabid')
+          },
+        });
+      };
+      // 点击菜单刷新,并获取数据
+      if (location.state.reset) {
+        handleReset();
+        // setExpand(false);
+      };
+    }
+  }, [location.state]);
+
   const assessmentType = getTypebyTitle('考核类型');
 
   return (
@@ -185,7 +225,9 @@ function ScoringRulesssearch(props) {
             <Col span={8}>
               <Form.Item label='评分细则编号'>
                 {
-                  getFieldDecorator('scoreNo', {})
+                  getFieldDecorator('scoreNo', {
+                    initialValue: cacheinfo.scoreNo
+                  })
                     (<Input />)
                 }
               </Form.Item>
@@ -194,7 +236,9 @@ function ScoringRulesssearch(props) {
             <Col span={8}>
               <Form.Item label='评分细则名称'>
                 {
-                  getFieldDecorator('scoreName', {})
+                  getFieldDecorator('scoreName', {
+                    initialValue: cacheinfo.scoreName
+                  })
                     (<Input />)
                 }
 
@@ -204,7 +248,9 @@ function ScoringRulesssearch(props) {
             <Col span={8}>
               <Form.Item label='考核类型'>
                 {
-                  getFieldDecorator('assessType', {})
+                  getFieldDecorator('assessType', {
+                    initialValue: cacheinfo.assessType
+                  })
                     (
                       <Select placeholder='请选择' allowClear>
                         {assessmentType.map(obj => [
