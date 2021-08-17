@@ -6,12 +6,20 @@ export async function startFlow() { // 新建单
   return request(`/work/flow/add`); 
 }
 
-export async function toCheck(params) { // 审核 /work/flow/check
+export async function toCheck(params) { // 审核
   return request(`/work/flow/check`, {
     method: 'POST',
     data: params,
     requestType:'form'
   });
+}
+
+export async function batchCheck(params) { // 批量审核
+  return request(`/work/flow/batchCheck`,{
+    method:'POST',
+    data: params,
+    requestType: 'form'
+  })
 }
 
 export async function delaySave(params) { // 延期保存
@@ -107,7 +115,7 @@ export async function getWorkQueryList(params) { // 获取工作督办查询列�
 }
 
 export async function downloadMyWorkExcel(params) { // 下载-工作列表
-  return request(`/work/form/downloadMyWorkExcel`,{
+  return request(`/work/form/downloadWorkExcel`,{
     method:'POST',
     data: params,
     requestType:'form',

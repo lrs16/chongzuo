@@ -20,6 +20,8 @@ const formItemLayout = {
     },
 };
 
+const cabinetZoneMap = ['一区', '二区',  '三区', '安全接入区'];
+
 function CabinetManege(props) {
     const pagetitle = props.route.name;
     const {
@@ -32,7 +34,6 @@ function CabinetManege(props) {
         },
     } = props;
 
-    console.log(cabinetList, 'cabinetList')
     const [expand, setExpand] = useState(false);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
@@ -45,14 +46,23 @@ function CabinetManege(props) {
 
     const searchdata = (page, size) => {
         const values = getFieldsValue();
-        // values.startTime = values.time1 ? moment(values.time1).format('YYYY-MM-DD HH:mm:ss') : ''
-        // values.endTime = values.time2 ? moment(values.time2).format('YYYY-MM-DD HH:mm:ss') : ''
+        const newvalues = {
+            ...values,
+            pageIndex: page,
+            pageSize: size,
+            createTime1: values.time1 ? moment(values.time1).format('YYYY-MM-DD HH:mm:ss') : '',
+            createTime2: values.time2 ? moment(values.time2).format('YYYY-MM-DD HH:mm:ss') : '',
+            updateTime1: values.time3 ? moment(values.time3).format('YYYY-MM-DD HH:mm:ss') : '',
+            updateTime2: values.time4 ? moment(values.time4).format('YYYY-MM-DD HH:mm:ss') : ''
+        }
+        // values.createTime1 = values.time1 ? moment(values.time1).format('YYYY-MM-DD HH:mm:ss') : '';
+        // values.createTime2 = values.time2 ? moment(values.time2).format('YYYY-MM-DD HH:mm:ss') : '';
+        // values.updateTime1 = values.time3 ? moment(values.time3).format('YYYY-MM-DD HH:mm:ss') : '';
+        // values.updateTime2 = values.time4 ? moment(values.time4).format('YYYY-MM-DD HH:mm:ss') : '';
         dispatch({
             type: 'cabinetmanage/findCabinetList',
             payload: {
-                values,
-                pageNum: page,
-                pageSize: size,
+                ...newvalues,
             },
         });
     };
@@ -79,6 +89,8 @@ function CabinetManege(props) {
             if (res.code === 200) {
                 Message.success(res.msg);
                 searchdata(1, 15);
+            } else {
+                Message.error(res.msg);
             }
         });
     };
@@ -110,8 +122,8 @@ function CabinetManege(props) {
         onShowSizeChange: (page, size) => onShowSizeChange(page, size),
         current: paginations.current,
         pageSize: paginations.pageSize,
-        // total: cabinetList.total,
-        // showTotal: total => `总共  ${total}  条记录`,
+        total: cabinetList.total,
+        showTotal: total => `总共  ${total}  条记录`,
         onChange: page => changePage(page),
     };
 
@@ -123,18 +135,35 @@ function CabinetManege(props) {
         searchdata(1, paginations.pageSize);
     };
 
+    const handleDelete = (id) => { // 删除
+        dispatch({
+            type: 'cabinetmanage/toDeleteCabinet',
+            payload: { Ids: id },
+        }).then(res => {
+            if (res.code === 200) {
+                Message.success('删除成功');
+                searchdata(1, 15);
+            } else {
+                Message.error(res.msg);
+            }
+        });
+    };
+
     const columns = [
         {
             title: '区域',
             dataIndex: 'cabinetZoneId',
             key: 'cabinetZoneId',
             width: 120,
+            render: (record) => {
+               return <span>{cabinetZoneMap[record.cabinetZoneId]}</span>;
+            },
         },
         {
             title: '机柜名称',
             dataIndex: 'cabinetName',
             key: 'cabinetName',
-            width: 180,
+            width: 250,
         },
         {
             title: '机柜编码',
@@ -215,7 +244,7 @@ function CabinetManege(props) {
                             编辑
                         </a>
                         <Divider type="vertical" />
-                        <a type="link" style={{ color: 'red' }}>
+                        <a type="link" style={{ color: 'red' }} onClick={() => handleDelete(record.id)}>
                             删除
                         </a>
                     </div>
@@ -240,10 +269,10 @@ function CabinetManege(props) {
     )
 
     const zonemap = [
-        { key: '0', title: '一区' },
-        { key: '1', title: '二区' },
-        { key: '2', title: '三区' },
-        { key: '3', title: '安全接入区' },
+        { key: '1', title: '一区' },
+        { key: '2', title: '二区' },
+        { key: '3', title: '三区' },
+        { key: '4', title: '安全接入区' },
     ];
 
     // 数据字典取下拉值
@@ -268,12 +297,12 @@ function CabinetManege(props) {
                     <Form {...formItemLayout} onSubmit={handleSearch}>
                         <Col span={8}>
                             <Form.Item label="区域">
-                                {getFieldDecorator('hostZoneId', {
+                                {getFieldDecorator('cabinetZoneId', {
                                     initialValue: '',
                                 })(
                                     <Select placeholder="请选择" allowClear>
                                         {zonemap.map(obj => (
-                                            <Option key={obj.key} value={obj.title}>
+                                            <Option key={obj.key} value={obj.key}>
                                                 {obj.title}
                                             </Option>
                                         ))}
@@ -287,126 +316,126 @@ function CabinetManege(props) {
                                 })(<Input placeholder="请输入" allowClear />)}
                             </Form.Item>
                         </Col>
-                        {expand && (
-                            <>
-                                <Col span={8}>
-                                    <Form.Item label="机柜名称">
-                                        {getFieldDecorator('cabinetName', {
-                                            initialValue: '',
-                                        })(<Input placeholder="请输入" allowClear />)}
-                                    </Form.Item>
-                                </Col>
-                                <Col span={8}>
-                                    <Form.Item label="机柜位置">
-                                        {getFieldDecorator('cabinetSeat', {
-                                            initialValue: '',
-                                        })(<Input placeholder="请输入" allowClear />)}
-                                    </Form.Item>
-                                </Col>
-                                <Col span={8}>
-                                    <Form.Item label="机柜容量">
-                                        {getFieldDecorator('cabinetU', {
-                                            initialValue: '',
-                                        })(<Input placeholder="请输入" allowClear />)}
-                                    </Form.Item>
-                                </Col>
-                                <Col span={8}>
-                                    <Form.Item label="负责人">
-                                        {getFieldDecorator('director', {
-                                            initialValue: '',
-                                        })(<Input placeholder="请输入" allowClear />)}
-                                    </Form.Item>
-                                </Col>
-                                <Col span={8}>
-                                    <Form.Item label="创建人">
-                                        {getFieldDecorator('createByNameExt', {
-                                            initialValue: '',
-                                        })(<Input placeholder="请输入" allowClear />)}
-                                    </Form.Item>
-                                </Col>
-                                <Col span={8}>
-                                    <Form.Item label="创建时间">
-                                        <Row>
-                                            <Col span={11}>
-                                                {getFieldDecorator('time1', {
-                                                    // initialValue: '',
-                                                })(
-                                                    <DatePicker
-                                                        showTime={{
-                                                            hideDisabledOptions: true,
-                                                            defaultValue: moment('00:00:00', 'HH:mm:ss'),
-                                                        }}
-                                                        placeholder="开始时间"
-                                                        format='YYYY-MM-DD HH:mm:ss'
-                                                        style={{ minWidth: 120, width: '100%' }}
-                                                    />
-                                                )}
-                                            </Col>
-                                            <Col span={2} style={{ textAlign: 'center' }}>-</Col>
-                                            <Col span={11}>
-                                                {getFieldDecorator('time2', {
-                                                    // initialValue: '',
-                                                })(
-                                                    <DatePicker
-                                                        showTime={{
-                                                            hideDisabledOptions: true,
-                                                            defaultValue: moment('23:59:59', 'HH:mm:ss'),
-                                                        }}
-                                                        placeholder="结束时间"
-                                                        format='YYYY-MM-DD HH:mm:ss'
-                                                        style={{ minWidth: 120, width: '100%' }}
-                                                    />
-                                                )}
-                                            </Col>
-                                        </Row>
-                                    </Form.Item>
-                                </Col>
-                                <Col span={8}>
-                                    <Form.Item label="更新人">
-                                        {getFieldDecorator('updateByNameExt', {
-                                            initialValue: '',
-                                        })(<Input placeholder="请输入" allowClear />)}
-                                    </Form.Item>
-                                </Col>
-                                <Col span={8}>
-                                    <Form.Item label="更新时间">
-                                        <Row>
-                                            <Col span={11}>
-                                                {getFieldDecorator('time3', {
-                                                    // initialValue: '',
-                                                })(
-                                                    <DatePicker
-                                                        showTime={{
-                                                            hideDisabledOptions: true,
-                                                            defaultValue: moment('00:00:00', 'HH:mm:ss'),
-                                                        }}
-                                                        placeholder="开始时间"
-                                                        format='YYYY-MM-DD HH:mm:ss'
-                                                        style={{ minWidth: 120, width: '100%' }}
-                                                    />
-                                                )}
-                                            </Col>
-                                            <Col span={2} style={{ textAlign: 'center' }}>-</Col>
-                                            <Col span={11}>
-                                                {getFieldDecorator('time4', {
-                                                    // initialValue: '',
-                                                })(
-                                                    <DatePicker
-                                                        showTime={{
-                                                            hideDisabledOptions: true,
-                                                            defaultValue: moment('23:59:59', 'HH:mm:ss'),
-                                                        }}
-                                                        placeholder="结束时间"
-                                                        format='YYYY-MM-DD HH:mm:ss'
-                                                        style={{ minWidth: 120, width: '100%' }}
-                                                    />
-                                                )}
-                                            </Col>
-                                        </Row>
-                                    </Form.Item>
-                                </Col>
-                            </>
-                        )}
+                        {/* {expand && (
+                            <> */}
+                        <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
+                            <Form.Item label="机柜名称">
+                                {getFieldDecorator('cabinetName', {
+                                    initialValue: '',
+                                })(<Input placeholder="请输入" allowClear />)}
+                            </Form.Item>
+                        </Col>
+                        <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
+                            <Form.Item label="机柜位置">
+                                {getFieldDecorator('cabinetSeat', {
+                                    initialValue: '',
+                                })(<Input placeholder="请输入" allowClear />)}
+                            </Form.Item>
+                        </Col>
+                        <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
+                            <Form.Item label="机柜容量">
+                                {getFieldDecorator('cabinetU', {
+                                    initialValue: '',
+                                })(<Input placeholder="请输入" allowClear />)}
+                            </Form.Item>
+                        </Col>
+                        <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
+                            <Form.Item label="负责人">
+                                {getFieldDecorator('director', {
+                                    initialValue: '',
+                                })(<Input placeholder="请输入" allowClear />)}
+                            </Form.Item>
+                        </Col>
+                        <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
+                            <Form.Item label="创建人">
+                                {getFieldDecorator('createByNameExt', {
+                                    initialValue: '',
+                                })(<Input placeholder="请输入" allowClear />)}
+                            </Form.Item>
+                        </Col>
+                        <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
+                            <Form.Item label="创建时间">
+                                <Row>
+                                    <Col span={11}>
+                                        {getFieldDecorator('time1', {
+                                            // initialValue: '',
+                                        })(
+                                            <DatePicker
+                                                showTime={{
+                                                    hideDisabledOptions: true,
+                                                    defaultValue: moment('00:00:00', 'HH:mm:ss'),
+                                                }}
+                                                placeholder="开始时间"
+                                                format='YYYY-MM-DD HH:mm:ss'
+                                                style={{ minWidth: 120, width: '100%' }}
+                                            />
+                                        )}
+                                    </Col>
+                                    <Col span={2} style={{ textAlign: 'center' }}>-</Col>
+                                    <Col span={11}>
+                                        {getFieldDecorator('time2', {
+                                            // initialValue: '',
+                                        })(
+                                            <DatePicker
+                                                showTime={{
+                                                    hideDisabledOptions: true,
+                                                    defaultValue: moment('23:59:59', 'HH:mm:ss'),
+                                                }}
+                                                placeholder="结束时间"
+                                                format='YYYY-MM-DD HH:mm:ss'
+                                                style={{ minWidth: 120, width: '100%' }}
+                                            />
+                                        )}
+                                    </Col>
+                                </Row>
+                            </Form.Item>
+                        </Col>
+                        <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
+                            <Form.Item label="更新人">
+                                {getFieldDecorator('updateByNameExt', {
+                                    initialValue: '',
+                                })(<Input placeholder="请输入" allowClear />)}
+                            </Form.Item>
+                        </Col>
+                        <Col span={8} style={{ display: expand ? 'block' : 'none' }}>
+                            <Form.Item label="更新时间">
+                                <Row>
+                                    <Col span={11}>
+                                        {getFieldDecorator('time3', {
+                                            // initialValue: '',
+                                        })(
+                                            <DatePicker
+                                                showTime={{
+                                                    hideDisabledOptions: true,
+                                                    defaultValue: moment('00:00:00', 'HH:mm:ss'),
+                                                }}
+                                                placeholder="开始时间"
+                                                format='YYYY-MM-DD HH:mm:ss'
+                                                style={{ minWidth: 120, width: '100%' }}
+                                            />
+                                        )}
+                                    </Col>
+                                    <Col span={2} style={{ textAlign: 'center' }}>-</Col>
+                                    <Col span={11}>
+                                        {getFieldDecorator('time4', {
+                                            // initialValue: '',
+                                        })(
+                                            <DatePicker
+                                                showTime={{
+                                                    hideDisabledOptions: true,
+                                                    defaultValue: moment('23:59:59', 'HH:mm:ss'),
+                                                }}
+                                                placeholder="结束时间"
+                                                format='YYYY-MM-DD HH:mm:ss'
+                                                style={{ minWidth: 120, width: '100%' }}
+                                            />
+                                        )}
+                                    </Col>
+                                </Row>
+                            </Form.Item>
+                        </Col>
+                        {/* </>
+                        )} */}
                         {expand ? (<Col span={8} style={{ marginTop: 4, paddingLeft: '5.666667%' }}>{extra}</Col>) : (<Col span={8} style={{ marginTop: 4, paddingLeft: '24px' }}>{extra}</Col>)}
                     </Form>
                 </Row>
@@ -418,7 +447,7 @@ function CabinetManege(props) {
                 </div>
                 <Table
                     columns={columns}
-                    // dataSource={cabinetList.rows}
+                    dataSource={cabinetList.rows}
                     loading={loading}
                     rowKey={(_, index) => index.toString()}
                     pagination={pagination}

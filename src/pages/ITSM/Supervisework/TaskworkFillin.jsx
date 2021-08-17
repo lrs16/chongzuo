@@ -128,7 +128,7 @@ function TaskworkFillin(props) {
                     if (res.code === 200) {
                         message.success(res.msg);
                         router.push({
-                            pathname: `/ITSM/supervisework/myresponwork`,
+                            pathname: `/ITSM/supervisework/mycreatework`,
                             query: { pathpush: true },
                             state: { cache: false }
                         });
@@ -178,22 +178,30 @@ function TaskworkFillin(props) {
 
     const handlePaste = () => {
         const mainId = sessionStorage.getItem('copyrecord');
-        if (!mainId) {
+        console.log(mainId, 'mainId')
+        // if (!mainId) {
+        //     message.info('请在列表页复制');
+        //     return false
+        // }
+        if(mainId !== '' && mainId !== undefined) {
+            dispatch({
+                type: 'supervisemodel/pasteFlow',
+                payload: mainId
+            }).then(res => {
+                if (res.code === 200) {
+                    const resData = res.main;
+                    delete resData.no;
+                    setCopyData(resData)
+                } else {
+                    message.info('您无法复制该条记录，请返回列表重新选择')
+                }
+            })
+
+        }else {
             message.info('请在列表页复制');
             return false
         }
-        return dispatch({
-            type: 'supervisemodel/pasteFlow',
-            payload: mainId
-        }).then(res => {
-            if (res.code === 200) {
-                const resData = res.main;
-                delete resData.no;
-                setCopyData(resData)
-            } else {
-                message.info('您无法复制该条记录，请返回列表重新选择')
-            }
-        })
+        return null;
     }
 
     // 获取页签信息

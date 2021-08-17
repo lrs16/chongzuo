@@ -1,5 +1,5 @@
 import React from 'react';
-import { Drawer, Button, Form, Input, Select } from 'antd';
+import { Drawer, Button, Form, Input, Select, InputNumber } from 'antd';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -83,7 +83,7 @@ function CabinetDrawer(props) {
             initialValue: cabinetZoneId,
           })(<Select placeholder="请选择" allowClear>
             {zonemap.map(obj => (
-              <Option key={obj.key} value={obj.title}>
+              <Option key={obj.key} value={obj.key}>
                 {obj.title}
               </Option>
             ))}
@@ -158,7 +158,7 @@ function CabinetDrawer(props) {
         <Form.Item label="机柜排序">
           {getFieldDecorator('cabinetSorts', {
             initialValue: cabinetSorts,
-          })(<Input placeholder="请输入" />)}
+          })(<InputNumber style={{ width: '100%' }} placeholder="请输入数字..." />)}
         </Form.Item>
         <Form.Item label="机柜备注">
           {getFieldDecorator('cabinetRemarks', {

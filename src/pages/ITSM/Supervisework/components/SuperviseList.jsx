@@ -30,7 +30,7 @@ function SuperviseList(props) {
   ];
   return (
     <Card style={{ height: 'calc(100vh - 300px)' }}>
-      <Table dataSource={data} columns={columns} loading={loading} />
+      <Table dataSource={data} columns={columns} loading={loading} rowKey={(_, index) => index.toString()}/>
     </Card>
   );
 }

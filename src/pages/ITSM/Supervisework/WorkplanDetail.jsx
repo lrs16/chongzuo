@@ -26,7 +26,6 @@ import CheckdelayworkEditfillin from './components/CheckdelayworkEditfillin';  /
 import TaskworkEditfillins from './components/TaskworkEditfillins'; // 工作任务
 import ExecuteworkEditfillins from './components/ExecuteworkEditfillins'; // 工作执行
 import CheckdelayworkEditfillins from './components/CheckdelayworkEditfillins'; // 工作审核
-// import SuperviseModelDetails from './components/SuperviseModelDetails'; // 工作督办内容
 
 const { Panel } = Collapse;
 
@@ -52,15 +51,13 @@ const forminladeLayout = {
     },
 };
 
-// let showEdit = false;
-
 export const FatherContext = createContext();
 function WorkplanDetail(props) {
     // const pagetitle = props.route.name;
     const [selectdata, setSelectData] = useState('');
     const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
     const [show, setShow] = useState(false);
-    const [editshow, seteditShow] = useState(true);
+    // const [editshow, seteditShow] = useState(true);
     const SaveRef = useRef();
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [result, setResult] = useState('001'); // 审核结果
@@ -87,10 +84,10 @@ function WorkplanDetail(props) {
         loading,
         location
     } = props;
-    
+
     let superviseworkPersonSelect;
 
-    const { data, edit } = openFlowList;
+    const { data, edit, main } = openFlowList;
 
     if (loading === false) {
         if (openFlowList.code === -1) {
@@ -183,7 +180,7 @@ function WorkplanDetail(props) {
     };
 
     //  保存统一接口
-    const saveApi = (params) => {
+    const tosave = (params) => {
         dispatch({
             type: 'supervisemodel/formSave',
             payload: params
@@ -217,7 +214,7 @@ function WorkplanDetail(props) {
                     main_id: edit.main.id,
                     mainId,
                 }
-                saveApi(newvalues);
+                tosave(newvalues);
             }
             if (params && err) {
                 formerr();
@@ -242,7 +239,7 @@ function WorkplanDetail(props) {
                     execute_id: edit.execute.id,
                     mainId,
                 }
-                saveApi(newvalues);
+                tosave(newvalues);
             }
         })
     };
@@ -261,7 +258,7 @@ function WorkplanDetail(props) {
                     check_checkUserId: userinfo.userId,
                     check_checkUnitId: userinfo.unitId,
                 }
-                saveApi(newvalues)
+                tosave(newvalues);
             }
         })
     }
@@ -357,7 +354,7 @@ function WorkplanDetail(props) {
                     if (res.code === 200) {
                         message.success(res.msg);
                         router.push({
-                            pathname: `/ITSM/supervisework/myresponwork`,
+                            pathname: `/ITSM/supervisework/mycreatework`,
                             query: { pathpush: true },
                             state: { cache: false }
                         });
@@ -392,7 +389,7 @@ function WorkplanDetail(props) {
                     if (res.code === 200) {
                         message.success(res.msg);
                         router.push({
-                            pathname: `/ITSM/supervisework/querywork`,
+                            pathname: `/ITSM/supervisework/myresponwork`,
                             query: { pathpush: true },
                             state: { cache: false }
                         });
@@ -430,6 +427,16 @@ function WorkplanDetail(props) {
         });
     };
 
+    useEffect(() => {
+        if (!delay && flowNodeName === '工作执行' && (workUser && workUser.split(",").length > 1&&main&&main.responseStatus==='0') ) {
+            message.info('请接单..', 1);
+            setShow(false);
+        }
+        if(!delay && flowNodeName === '工作执行' && (main&&main.responseStatus==='1' || workUser && workUser.split(",").length === 1)) {
+            setShow(true);
+        }
+    }, [location])
+
     const responseaccpt = () => { // 接单
         return dispatch({
             type: 'supervisemodel/responseAccpts',
@@ -438,9 +445,9 @@ function WorkplanDetail(props) {
             }
         }).then(res => {
             if (res.code === 200) {
-                message.success(res.msg);
                 setShow(true);
-                seteditShow(false);
+                getInformation();
+                message.success(res.msg);
             } else {
                 message.error(res.msg);
             }
@@ -457,7 +464,7 @@ function WorkplanDetail(props) {
                 }
             }).then(res => {
                 router.push({
-                    pathname: `/ITSM/supervisework/todelayexamine`,
+                    pathname: `/ITSM/supervisework/myresponwork`,
                     query: { pathpush: true },
                     state: { cache: false }
                 });
@@ -547,15 +554,6 @@ function WorkplanDetail(props) {
         }
     }, [files]);
 
-    useEffect(() => {
-        if (!delay && flowNodeName === '工作执行' && workUser && workUser.split(",").length > 1) {
-            message.info('请接单..', 1);
-        }
-        if (!delay && flowNodeName === '工作执行' && workUser && workUser.split(",").length === 1) {
-            setShow(true);
-        }
-    }, [location])
-
     const handleTabChange = key => {
         settabActivekey(key)
     };
@@ -609,7 +607,7 @@ function WorkplanDetail(props) {
                             <Button type="danger" ghost style={{ marginRight: 8 }} >回退</Button>
                         </Back>)} */}
                     {
-                        show && loading === false && !delay && (
+                        loading === false && !delay &&flowNodeName !=='工作执行' && (
                             <Button
                                 type="primary"
                                 style={{ marginRight: 8 }}
@@ -619,6 +617,21 @@ function WorkplanDetail(props) {
                             </Button>
                         )
                     }
+
+                    {
+                        loading === false && !delay &&flowNodeName ==='工作执行' &&
+                        ((workUser && workUser.split(",").length > 1&&main&&main.responseStatus==='1')||(workUser && workUser.split(",").length === 1&&main&&main.responseStatus==='0')) 
+                        && (
+                            <Button
+                                type="primary"
+                                style={{ marginRight: 8 }}
+                                onClick={() => handleSave()}
+                            >
+                                保存
+                            </Button>
+                        )
+                    }
+
                     {   // 延期送审保存按钮
                         loading === false && delay && flowNodeName === '工作执行' && (
                             <Button
@@ -630,6 +643,7 @@ function WorkplanDetail(props) {
                             </Button>
                         )
                     }
+
                     {loading === false && !delay && flowNodeName === '工作登记' && (<Button
                         type="primary"
                         style={{ marginRight: 8 }}
@@ -637,14 +651,18 @@ function WorkplanDetail(props) {
                     >
                         提交
                     </Button>)}
-                    {show && flowNodeName === '工作执行' && !delay && (<Button
+
+                    {flowNodeName === '工作执行' && !delay && 
+                    ((workUser && workUser.split(",").length > 1&&main&&main.responseStatus==='1')||(workUser && workUser.split(",").length === 1&&main&&main.responseStatus==='0'))  
+                    && (<Button
                         type="primary"
                         style={{ marginRight: 8 }}
                         onClick={() => handlebeforeconfirm()}
                     >
                         确认
                     </Button>)}
-                    {loading === false && editshow && workUser && workUser.split(",").length > 1 && flowNodeName === '工作执行' && !delay && (<Button
+
+                    {(main && main.responseStatus === '0') && loading === false && workUser && workUser.split(",").length > 1 && flowNodeName === '工作执行' && !delay && (<Button
                         type="primary"
                         style={{ marginRight: 8 }}
                         onClick={() => responseaccpt()}
@@ -792,18 +810,6 @@ function WorkplanDetail(props) {
                                                 </Panel>
                                             );
                                         })}
-                                        {/* {
-                                getSuperviseLists && getSuperviseLists.length > 0 && (
-                                    <Panel
-                                        header="督办内容"
-                                        key='5'>
-                                        <SuperviseModelDetails
-                                            info={getSuperviseLists[0]}
-                                            userinfo={userinfo}
-                                        />
-                                    </Panel>
-                                )
-                            } */}
                                     </>
                                 </Collapse>
                             )}

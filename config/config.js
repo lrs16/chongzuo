@@ -1274,13 +1274,13 @@ export default {
                       routes: [
                         {
                           path: '/automation/objectmanage',
-                          redirect: '/automation/objectmanage/host',
+                          redirect: '/automation/objectmanage/equip',
                         },
                         {
-                          path: '/automation/objectmanage/host',
-                          name: '主机管理',
+                          path: '/automation/objectmanage/equip',
+                          name: '设备管理',
                           icon: 'cloud-server',
-                          component: './Automation/ObjectManage/HostManege',
+                          component: './Automation/ObjectManage/EquipmentManege',
                         },
                         {
                           path: '/automation/objectmanage/cabinet',
@@ -1881,7 +1881,11 @@ export default {
       changeOrigin: true
     },
     '/assets/': {
-      target: 'http://172.16.10.33:9901/',        // 自动化运维-主机管理、机柜管理
+      target: 'http://172.16.10.33:9901/',        // 自动化运维-设备管理、机柜管理
+      changeOrigin: true
+    },
+    '/asset/': {
+      target: 'http://172.16.10.33:9901/',        // 自动化运维-机柜管理
       changeOrigin: true
     },
     '/quality/': {

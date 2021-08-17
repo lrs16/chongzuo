@@ -21,6 +21,7 @@ import {
   getWorkUserList, // 工作负责人
   responseAccpt, // 接单
   toCheck, // 审核
+  batchCheck, // 批量审核
 } from '../services/superviseapi';
 
 const replacerec = values => {
@@ -163,6 +164,11 @@ export default {
         return yield call(toCheck, values);
       }
       return false;
+    },
+
+    *tobatchCheck({ payload }, { call }) {
+      const values = replacerec(payload);
+      return yield call(batchCheck, values)
     },
 
     // 接单
