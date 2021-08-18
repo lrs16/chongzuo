@@ -17,7 +17,7 @@ const { Panel } = Collapse;
 const { Step } = Steps;
 
 function WorkOrder(props) {
-  const { location, dispatch, userinfo, info, currentTaskStatus, buttype } = props;
+  const { location, dispatch, userinfo, info, currentTaskStatus, buttype, ChangeSaved } = props;
   const { taskName, Id } = location.query;
   const [activeKey, setActiveKey] = useState(['form']);
   const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
@@ -288,6 +288,42 @@ function WorkOrder(props) {
       default:
         break;
     }
+  };
+
+  // 版本管理员审核保存流转
+  const saveVersionAudit = () => {
+    const values = VersionAuditRef.current.getVal();
+    dispatch({
+      type: 'releasetodo/checkversion',
+      payload: {
+        values: { ...values, releaseNo: Id },
+        releaseAttaches: { mainId: values.releaseAttaches[0].mainId, taskId: values.releaseAttaches[0].taskId, releaseAttaches: values.releaseAttaches },
+        releaseNo: Id,
+        buttype,
+      },
+    });
+  }
+  const VersionAuditSubmit = () => {
+    switch (buttype) {
+      case 'save':
+        saveVersionAudit()
+        break;
+      case 'flow':
+        setUserChoice(false);
+        sessionStorage.removeItem('NextflowUserId');
+        VersionAuditRef.current.Forms((err) => {
+          if (err) {
+            message.error('请将信息填写完整')
+          } else {
+            saveVersionAudit();
+            sessionStorage.setItem('flowtype', '1');
+            setUserVisible(true);
+          }
+        })
+        break;
+      default:
+        break;
+    }
   }
 
   const callback = key => {
@@ -333,18 +369,12 @@ function WorkOrder(props) {
     }
   }, [location.state]);
 
-  // 业务验证分派重分派成功重新获取数据
+  // 将保存状态返回到父级
   useEffect(() => {
-    if (buttype === 'open') {
-      dispatch({
-        type: 'releasetodo/openflow',
-        payload: {
-          releaseNo: Id,
-          taskName
-        },
-      });
-    };
-  }, [buttype]);
+    if (currentTaskStatus) {
+      ChangeSaved(currentTaskStatus.saved)
+    }
+  }, [currentTaskStatus])
 
   // 点击按钮
   useEffect(() => {
@@ -356,6 +386,15 @@ function WorkOrder(props) {
             taskId: currentTaskStatus.taskId,
             type: 2,
             userIds: '',
+          },
+        });
+      } if (buttype === 'open') {
+        // 业务验证分派重分派成功重新获取数据
+        dispatch({
+          type: 'releasetodo/openflow',
+          payload: {
+            releaseNo: Id,
+            taskName
           },
         });
       } else {
@@ -371,6 +410,9 @@ function WorkOrder(props) {
             break;
           case '发布实施准备':
             practicePreSubmit();
+            break;
+          case '版本管理员审核':
+            VersionAuditSubmit();
             break;
           default:
             break;

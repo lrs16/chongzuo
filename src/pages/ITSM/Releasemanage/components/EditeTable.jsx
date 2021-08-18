@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useContext } from 'react';
+import ReactDOM from 'react-dom';
 import { connect } from 'dva';
-import { Table, Row, Button, Col, Cascader, Input, Radio, message, Divider, Select, Tabs, Alert } from 'antd';
+import { Table, Row, Button, Col, Cascader, Input, Radio, message, Divider, Select, Tabs, Alert, Tooltip } from 'antd';
 import UserContext from '@/layouts/MenuContext';
 import CheckOneUser from '@/components/SelectUser/CheckOneUser';
 import { dispatchBizUsers } from '@/services/user';
 import styles from '../index.less';
 import OrderContent from './OrderContent';
+import { releaseListEdit, releaseListDel } from '../services/api';                   // 版本管理员审批清单添加编辑
 
 const { TextArea } = Input;
 const InputGroup = Input.Group;
@@ -24,7 +26,8 @@ function getQueryVariable(variable) {
 }
 
 function EditeTable(props) {
-  const { title, functionmap, modulamap, isEdit, taskName, dataSource, ChangeValue, dispatch, dutyUnits, dutyUnitListMsg, dutyUnitTotalMsg, dutyUnitList, orderkeys } = props;
+  const { title, functionmap, modulamap, isEdit, taskName, dataSource, ChangeValue,
+    dispatch, dutyUnits, dutyUnitListMsg, dutyUnitTotalMsg, dutyUnitList, ChangeAttActiveKey } = props;
   const [data, setData] = useState([]);
   const [newbutton, setNewButton] = useState(false);
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
@@ -35,12 +38,17 @@ function EditeTable(props) {
   const [userlist, setUserList] = useState([]);
   const [assign, setAssign] = useState('');              // 分派工单
   const [tabActivekey, settabActivekey] = useState(''); // 公司页签
+  const [deletebut, setDeletBut] = useState(false);
+  const [orderFilters, setOrderFilters] = useState([]);    // 所属工单筛选项
+  const [filteredInfo, setFilteredInfo] = useState({})     // 已选择的筛选项
+  const [paginations, setPageinations] = useState({ current: 1, pageSize: 2 });
   const { ChangeButtype, taskId, ChangeaddAttaches } = useContext(UserContext);
 
-  console.log(orderkeys)
+  const listTypeFilter = [{ text: '计划', value: '计划' }, { text: '临时添加', value: '临时添加' }]
 
   // 新增一条记录
   const newMember = () => {
+    setPageinations({ current: 1, pageSize: 2 });
     const newData = data.map(item => ({ ...item }));
     newData.unshift({
       key: data.length + 1,
@@ -51,13 +59,14 @@ function EditeTable(props) {
       problemType: '',
       responsible: '',
       responsibleId: '',
+      releaseNo: '',
       testMenu: '',
       testResult: '',
       testStep: '',
       passTest: '通过',
       developer: '',
       developerId: '',
-      addStatus: taskId,
+      addStatus: taskName !== '版本管理员审核' ? taskId : '',
       verifyStatus: taskName === '版本管理员审核' ? '已验证' : '',
       operator: sessionStorage.getItem('userName'),
       operatorId: sessionStorage.getItem('userauthorityid'),
@@ -68,9 +77,28 @@ function EditeTable(props) {
     setNewButton(true);
   };
 
+  // 数组去重
+  const uniqueNo = (arr) => {
+    const res = new Map();
+    return arr.filter((item) => !res.has(item.releaseNo) && res.set(item.releaseNo, 1))
+  }
   const onSelectChange = (RowKeys, record) => {
+    setDeletBut(false)
     setSelectedRowKeys(RowKeys);
     setSelectedRecords(record);
+    if (RowKeys.length > 0) {
+      const releaseNoList = uniqueNo(record);                                // 工单号数组去重   
+      const target = releaseNoList.filter(item => item.releaseNo !== '');    // 数组中不含空值的
+      const releaseNos = target.map((item) => {                              // 取出发布工单号组成新的数组
+        return item.releaseNo
+      });
+      if (releaseNos.length > 1) {
+        setDeletBut(true)
+      };
+      if (releaseNos.length === 1) {
+        ChangeAttActiveKey(releaseNos[0])
+      }
+    }
   };
 
   const rowSelection = {
@@ -131,6 +159,7 @@ function EditeTable(props) {
   // 保存记录
   const saveRow = (e, key) => {
     e.preventDefault();
+    ChangeaddAttaches('');
     const newlist = data.filter(item => item.addStatus === taskId);
     if (newlist.length > 0) {
       ChangeaddAttaches('add');
@@ -151,7 +180,6 @@ function EditeTable(props) {
         return;
       };
     }
-
     if (target && (target.editable || target.verification)) {
       target.editable = !target.editable;
       target.verification = false;
@@ -177,26 +205,40 @@ function EditeTable(props) {
   // 版本管理员审核保存
   const checsaveRow = (e, key) => {
     e.preventDefault();
-    const newlist = data.filter(item => item.addStatus === taskId);
-    if (newlist.length > 0) {
-      ChangeaddAttaches('add');
-    }
     setNewButton(false)
     const newData = data.map(item => ({ ...item }));
     const target = getRowByKey(key, newData) || {};
+    const taskIdtarget = data.filter(item => item.releaseNo === target.releaseNo);
     if (target) {
-      target.mainId = newData[newData.length - 1].mainId;
-      target.taskId = newData[newData.length - 1].taskId;
-      const releaseNo = getQueryVariable("Id");
-      dispatch({
-        type: 'releasetodo/checkaddlist',
-        payload: {
-          values: target,
-          releaseNo,
-        },
+      if (target.releaseNo) {
+        target.mainId = taskIdtarget[taskIdtarget.length - 1].mainId;
+        target.taskId = taskIdtarget[taskIdtarget.length - 1].taskId;
+        target.addStatus = taskIdtarget[taskIdtarget.length - 1].taskId;
+      } else {
+        target.mainId = newData[newData.length - 1].mainId;
+        target.taskId = newData[newData.length - 1].taskId;
+        target.addStatus = newData[newData.length - 1].taskId;
+      };
+      setData(newData);
+      const newlist = newData.filter(item => item.addStatus === item.taskId);
+      if (newlist.length > 0) {
+        ChangeaddAttaches('add');
+      }
+      releaseListEdit(target).then(res => {
+        if (res.code === 200) {
+          ChangeButtype('save');
+        } else {
+          message.error(res.msg)
+        }
       });
+      // dispatch({
+      //   type: 'releasetodo/checkaddlist',
+      //   payload: {
+      //     values: target,
+      //     releaseNo,
+      //   },
+      // });
     }
-
   }
 
   // 新建取消按钮
@@ -255,17 +297,50 @@ function EditeTable(props) {
   };
   // 有流程ID后的移除按钮
   const ortherDelete = () => {
+    const haveNew = selectedRecords.filter(item => item.developerId === '');
     if (selectedRecords.length === 0) {
       message.error('您还没有选择数据')
-    };
-    const newSelectds = selectedRecords.filter(item => item.taskId === item.addStatus);
-
-    if (newSelectds.length === 0) {
-      message.error('不能移除非本节点临时添加的数据')
+    } if (haveNew.length === 1 && selectedRecords.length === 1) {
+      const newArr = data.filter((x) => !selectedRecords.some((item) => x.key === item.key));
+      setData(newArr);
     } else {
-      const statusSelectds = selectedRecords.filter(item => (item.verifyStatus === '已转出' || item.verifyStatus === '已验证'));
-      if (statusSelectds.length > 0) {
-        message.error('不能移除已转出或已验证的数据')
+      const newSelectds = selectedRecords.filter(item => item.taskId === item.addStatus);
+      if (newSelectds.length === 0) {
+        message.error('请选择本节点临时添加的数据')
+      } else {
+        const statusSelectds = selectedRecords.filter(item => (item.verifyStatus === '已转出' || item.verifyStatus === '已验证'));
+        if (statusSelectds.length > 0) {
+          message.error('不能移除已转出或已验证的数据')
+        } else {
+          const newArr = data.filter((x) => !selectedRecords.some((item) => item.taskId === item.addStatus && x.id === item.id));
+          setData(newArr);
+          // 清单中是否还包含本节点添加的数据，如果已不含，附件列表清除补充的文档行
+          const deleteAtt = newArr.filter(item => item.taskId === item.addStatus);
+          if (deleteAtt.length === 0) {
+            ChangeaddAttaches('delete');
+          };
+          ChangeValue(newArr);
+          ChangeButtype('save');
+        }
+      };
+    }
+    setSelectedRowKeys([]);
+    setSelectedRecords([]);
+    setNewButton(false);
+  }
+
+  // 版本管理员移除
+  const checkDelete = () => {
+    const haveNew = selectedRecords.filter(item => item.developerId === '');
+    if (selectedRecords.length === 0) {
+      message.error('您还没有选择数据')
+    } if (haveNew.length === 1 && selectedRecords.length === 1) {
+      const newArr = data.filter((x) => !selectedRecords.some((item) => x.key === item.key));
+      setData(newArr);
+    } else {
+      const newSelectds = selectedRecords.filter(item => item.taskId === item.addStatus);
+      if (newSelectds.length === 0) {
+        message.error('请选择本节点临时添加的数据')
       } else {
         const newArr = data.filter((x) => !selectedRecords.some((item) => item.taskId === item.addStatus && x.id === item.id));
         setData(newArr);
@@ -273,10 +348,23 @@ function EditeTable(props) {
         const deleteAtt = newArr.filter(item => item.taskId === item.addStatus);
         if (deleteAtt.length === 0) {
           ChangeaddAttaches('delete');
+        };
+        const listIds = newSelectds.map((item) => {                              // 取出发布工单号组成新的数组
+          return item.id
+        });
+        if (listIds.length > 0) {
+          releaseListDel({ listIds }).then(res => {
+            if (res.code === 200) {
+              ChangeButtype('save');
+            } else {
+              message.error(res.msg)
+            }
+          })
+        } else {
+          message.error('请选择本节点临时添加的数据')
         }
-        ChangeValue(newArr);
-        ChangeButtype('save');
-      }
+
+      };
     }
     setSelectedRowKeys([]);
     setSelectedRecords([]);
@@ -346,6 +434,32 @@ function EditeTable(props) {
     getUserList()
   }, [])
 
+  // 分页
+  const onShowSizeChange = (page, size) => {
+    setPageinations({
+      ...paginations,
+      pageSize: size,
+    });
+  };
+
+  const changePage = page => {
+    setPageinations({
+      ...paginations,
+      current: page,
+    });
+  };
+
+  const pagination = {
+    showSizeChanger: true,
+    onShowSizeChange: (page, size) => onShowSizeChange(page, size),
+    current: paginations.current,
+    pageSize: paginations.pageSize,
+    pageSizeOptions: ['2', '5', '10', '20', '30', '40', '50'],
+    total: data.length,
+    showTotal: total => `总共  ${total}  条记录`,
+    onChange: page => changePage(page),
+  };
+
   const column = [
     {
       title: '序号',
@@ -361,11 +475,12 @@ function EditeTable(props) {
       title: '清单类型',
       dataIndex: 'listType',
       key: 'listType',
-      width: 100,
+      width: 120,
       align: 'center',
       render: (text) => {
         return text
-      }
+      },
+      sorter: (a, b) => a.listType.localeCompare(b.listType),
     },
     {
       title: '功能类型',
@@ -618,7 +733,7 @@ function EditeTable(props) {
                 <Button type='link' onMouseDown={() => ChangeButtype('')} onClick={e => saveRow(e, record.key, 'save')}>保存</Button>
               )}
               {taskName === '版本管理员审核' && (
-                <Button type='link' onMouseDown={() => ChangeButtype('')} onClick={e => checsaveRow(e, record.key)}>保存</Button>
+                <Button type='link' onMouseDown={() => { ChangeButtype('') }} onClick={e => checsaveRow(e, record.key)}>保存</Button>
               )}
               <Button type='link' onClick={e => newcancel(e, record.key)}>取消</Button>
             </>
@@ -634,7 +749,7 @@ function EditeTable(props) {
               )}
               {taskName === '版本管理员审核' && (
                 <>
-                  <Button type='link' onMouseDown={() => ChangeButtype('')} onClick={e => checsaveRow(e, record.key)}>保存</Button>
+                  <Button type='link' onMouseDown={() => { ChangeButtype('') }} onClick={e => checsaveRow(e, record.key)}>保存</Button>
                   <Button type='link' onClick={e => cancel(e, record.key)}>取消</Button>
                 </>
               )}
@@ -646,8 +761,8 @@ function EditeTable(props) {
             {(taskName === '新建' || taskName === '出厂测试' || taskName === '平台验证') && userid === record.operatorId && !newbutton && (<Button type='link' onClick={e => editRow(e, record.key)}>编辑</Button>)}
             {taskName === '业务验证' && userid === record.operatorId && !newbutton && !record.verifyStatus && (<Button type='link' onClick={e => editRow(e, record.key)}>编辑</Button>)}
             {taskName === '平台验证' && userid !== record.operatorId && !newbutton && (<Button type='link' onClick={e => verificationRow(e, record.key)}>验证</Button>)}
-            {taskName === '版本管理员审批' && record.listType === '临时' && (<Button type='link' onClick={e => editRow(e, record.key)}>编辑</Button>)}
-            {taskName === '版本管理员审批' && record.listType === '计划' && (<Button type='link' >回退</Button>)}
+            {taskName === '版本管理员审核' && record.listType === '临时添加' && userid === record.operatorId && record.taskId === record.addStatus && !newbutton && (<Button type='link' onClick={e => editRow(e, record.key)}>编辑</Button>)}
+            {taskName === '版本管理员审核' && !newbutton && (<Button type='link' >回退</Button>)}
           </>
         )
 
@@ -669,16 +784,22 @@ function EditeTable(props) {
     dataIndex: 'releaseNo',
     key: 'releaseNo',
     fixed: 'right',
-    width: 100,
+    width: 150,
     align: 'center',
     render: (text, record) => {
       if (record.isNew || record.editable) {
+        const newData = data.map(item => ({ ...item }));
+        newData.shift()
+        const releaseNoList = uniqueNo(newData);
+        const orderkeys = releaseNoList.map((item) => {
+          return item.releaseNo
+        })
         return (
           <div className={text === '' ? styles.requiredform : ''}>
             {orderkeys.length > 1 ? (<Select
               defaultValue={record.releaseNo}
               placeholder="请选择"
-              onChange={e => handleFieldChange(e, 'releaseNo', record.key)}
+              onChange={e => { handleFieldChange(e, 'releaseNo', record.key); ChangeAttActiveKey(e) }}
             >
               {orderkeys.map(obj => [
                 <Option key={obj} value={obj}>
@@ -690,7 +811,11 @@ function EditeTable(props) {
         )
       }
       return <a onClick={() => setDrawerVisible(true)}>{text}</a>
-    }
+    },
+    sorter: (a, b) => a.releaseNo.localeCompare(b.releaseNo),
+    filters: orderFilters,
+    filteredValue: filteredInfo.releaseNo || null,
+    onFilter: (value, record) => record.releaseNo.indexOf(value) === 0,
   };
 
   const addorderid = (arr) => {
@@ -714,10 +839,17 @@ function EditeTable(props) {
   }
   const viewcolumns = sclicecolumns(columns);
 
+  // 表格操作：清除筛选
+  const TableChange = (page, filters, sorter) => {
+    setFilteredInfo(filters)
+  };
+
   // 点击公司页签
   const handleTabChange = key => {
     settabActivekey(key);
-    if (dutyUnitList) {
+    setPageinations({ current: 1, pageSize: 2 });
+    setFilteredInfo({});
+    if (dutyUnitList && dutyUnitList[key]) {
       const newData = dutyUnitList[key].map((item, index) => ({
         ...item,
         editable: false,
@@ -725,15 +857,25 @@ function EditeTable(props) {
       }));
       setData(newData);
       setNewButton(false);
+      const releaseNoList = uniqueNo(newData);                               // 工单号数组去重   
+      const target = releaseNoList.filter(item => item.releaseNo !== '');    // 数组中不含空值的
+      const releaseNos = target.map((item) => {                              // 取出发布工单号组成新的数组
+        return { text: item.releaseNo, value: item.releaseNo }
+      });
+      setOrderFilters(releaseNos);
     };
   };
 
   // 初始化公司页签
   useEffect(() => {
     if (dutyUnitListMsg && dutyUnits) {
-      handleTabChange(dutyUnits[0]);
+      if (tabActivekey && dutyUnits.length > 1) {
+        handleTabChange(tabActivekey);
+      } else {
+        handleTabChange(dutyUnits[0]);
+      }
     }
-  }, [dutyUnitListMsg])
+  }, [dutyUnitList]);
 
   return (
     <>
@@ -747,7 +889,7 @@ function EditeTable(props) {
         <div style={{ paddingBottom: 12 }}>{dutyUnitTotalMsg}</div>
       )}
       {(taskName === '版本管理员审核' || taskName === '科室负责人审批' || taskName === '中心领导审批' || taskName === '业务复核') && dutyUnits && dutyUnits.length > 1 && (
-        <Tabs type='card' onChange={handleTabChange}>
+        <Tabs type='card' onChange={handleTabChange} activeKey={tabActivekey}>
           {dutyUnits.map((obj) => {
             return [
               <TabPane key={obj} tab={obj} />,
@@ -755,7 +897,7 @@ function EditeTable(props) {
           })}
         </Tabs>
       )}
-      <Row style={{ marginBottom: 8 }} type='flex' align='bottom'>
+      <Row style={{ marginBottom: 8 }} type='flex' align='bottom' >
         <Col span={16}>
           {dutyUnitTotalMsg && (
             <span key={tabActivekey} style={{ paddingBottom: 12 }}>{tabActivekey}：{dutyUnitListMsg[tabActivekey]}</span>
@@ -787,7 +929,7 @@ function EditeTable(props) {
                   重分派
                 </Button>
               )}
-              <Button type='primary' style={{ marginRight: 8 }} onClick={() => newMember()} disabled={newbutton} >新增</Button>
+              <Button type='primary' style={{ marginRight: 8 }} onClick={() => { newMember() }} disabled={newbutton} >新增</Button>
               {taskName === '新建' && (
                 <Button
                   type='danger'
@@ -798,32 +940,53 @@ function EditeTable(props) {
                   移除
                 </Button>
               )}
-              {taskName !== '新建' && (
+              {taskName !== '新建' && taskName !== '版本管理员审核' && (
                 <Button
                   type='danger'
                   style={{ marginRight: 8 }}
                   ghost
-                  onMouseDown={() => ChangeButtype('')} onClick={() => ortherDelete()}
+                  onMouseDown={() => { ChangeButtype('') }} onClick={() => ortherDelete()}
                 >
                   移除
                 </Button>
+              )}
+              {taskName === '版本管理员审核' && (
+                <Tooltip placement="topLeft" title="仅能移除同一个发布工单的数据">
+                  <Button
+                    type='danger'
+                    style={{ marginRight: 8 }}
+                    ghost
+                    onMouseDown={() => { ChangeButtype('') }} onClick={() => checkDelete()}
+                    disabled={deletebut}
+                  >
+                    移除
+                  </Button>
+                </Tooltip>
               )}
             </>
           )}
           <Button type='primary' >导出清单</Button>
         </Col>
-
       </Row>
-      <Table
-        columns={isEdit ? columns : viewcolumns}
-        dataSource={data}
-        bordered
-        size='middle'
-        rowKey={(record) => record.key}
-        pagination={false}
-        rowSelection={rowSelection}
-        scroll={{ x: 1740, y: 400 }}
-      />
+      <div id='list'>
+        <Table
+          columns={isEdit ? columns : viewcolumns}
+          dataSource={data}
+          bordered
+          size='middle'
+          rowKey={(record) => record.key}
+          pagination={pagination}
+          rowSelection={rowSelection}
+          scroll={{ x: 1740, }}
+          rowClassName={(record, index) => {
+            let className = 'light-row';
+            if (index % 2 === 1) className = styles.darkRow;
+            return className;
+          }}
+          scrollToFirstRowOnChange
+          onChange={TableChange}
+        />
+      </div>
       {taskName === '新建' && (<Alert message="请先暂存发布清单信息，再保存工单" type="warning" style={{ textAlign: 'center', marginTop: 6, }} />)}
       <UserContext.Provider value={{ setChoiceUser, uservisible, setUserVisible, title: '分派' }}>
         <CheckOneUser userlist={userlist} />

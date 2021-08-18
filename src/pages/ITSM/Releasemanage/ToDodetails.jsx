@@ -9,12 +9,13 @@ import { expPracticePre } from './services/api';
 import WorkOrder from './WorkOrder';
 
 function ToDodetails(props) {
-  const { location, dispatch, loading, loadingopen } = props;
+  const { location, dispatch, loading, loadingopen, allloading, loadingcheckrelese } = props;
   const { taskName, taskId } = location.query;
   const [tabActivekey, settabActivekey] = useState('workorder'); // 打开标签
   const [buttype, setButtype] = useState('');                    // 点击的按钮类型
   const [submittype, setSubmitType] = useState(1);
   const [addAttaches, setAddAttaches] = useState('');
+  const [saved, setSaved] = useState(false);                    // 工单保存状态
 
   const dowloadPre = () => {
     expPracticePre(taskId).then(res => {
@@ -59,7 +60,7 @@ function ToDodetails(props) {
           删除
         </Button>
       )}
-      {taskName !== '出厂测试' && taskName !== '发布实施准备' && (
+      {!saved && taskName !== '出厂测试' && taskName !== '发布实施准备' && (
         <Button type="danger" ghost style={{ marginRight: 8 }} onMouseDown={() => setButtype('')} onClick={() => setButtype('goback')} >
           回退
         </Button>
@@ -91,12 +92,19 @@ function ToDodetails(props) {
       // 点击菜单刷新,并获取数据
       if (location.state.reset) {
         settabActivekey('workorder');
+        setButtype('');
+        setSubmitType(1)
       };
     }
   }, [location.state]);
 
+  useEffect(() => {
+    setButtype('');
+    setSubmitType(1);
+  }, [allloading])
+
   return (
-    <Spin tip="正在加载数据..." spinning={!!loading || !!loadingopen}>
+    <Spin tip="正在加载数据..." spinning={!!loading || !!loadingopen || !!loadingcheckrelese}>
       <PageHeaderWrapper
         title={taskName}
         extra={operations}
@@ -114,7 +122,7 @@ function ToDodetails(props) {
             addAttaches,                                   // 清单临时添加，fasle文档列表不需要加列，true文档列表需要加列
             ChangeaddAttaches: (v => setAddAttaches(v))
           }}>
-            <WorkOrder location={location} buttype={buttype} />
+            <WorkOrder location={location} buttype={buttype} ChangeSaved={(v) => setSaved(v)} />
           </SubmitTypeContext.Provider>
         )}
       </PageHeaderWrapper>
@@ -126,4 +134,6 @@ export default connect(({ itsmuser, loading }) => ({
   userinfo: itsmuser.userinfo,
   loading: loading.effects['releasetodo/releaseflow'],
   loadingopen: loading.effects['releasetodo/openflow'],
+  loadingcheckrelese: loading.effects['releasetodo/checkversion'],
+  allloading: loading.models.releasetodo,
 }))(ToDodetails);

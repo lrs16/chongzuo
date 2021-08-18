@@ -84,8 +84,8 @@ export async function openFlow(releaseNo) {
 export async function releaseListDel(params) {
   return request(`/release/from/releaseListDel`, {
     method: 'POST',
-    data: JSON.stringify(params),
-    requestType: 'formjosn',
+    data: params,
+    requestType: 'form',
   });
 }
 
@@ -166,5 +166,23 @@ export async function splitOrders(params) {
     method: 'POST',
     data: params,
     requestType: 'form',
+  });
+}
+
+// 版本管理员附件清单更新/release/from/releaseAttachBatchEdit
+export async function attachBatchEdit(params) {
+  return request(`/release/from/releaseAttachBatchEdit`, {
+    method: 'POST',
+    data: JSON.stringify(params),
+    requestType: 'formjosn',
+  });
+}
+
+// 版本管理员审核表单保存/release/flow/saveCheckVersion
+export async function saveCheckVersion(params) {
+  return request(`/release/flow/saveCheckVersion`, {
+    method: 'POST',
+    data: JSON.stringify(params),
+    requestType: 'formjosn',
   });
 }

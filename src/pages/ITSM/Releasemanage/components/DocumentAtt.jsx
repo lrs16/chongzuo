@@ -148,10 +148,9 @@ function DocumentAtt(props) {
         setData(newdata);
         ChangeValue(newdata)
       };
-      ChangeaddAttaches('')
     };
     if (addAttaches === 'delete') {
-      const lastattname = dataSource.slice(-1)[0].docName;
+      const lastattname = dataSource && dataSource.length > 0 && dataSource.slice(-1)[0].docName;
       if (rowkey === '2' && lastattname === '功能出厂测试报告') {
         const newdata = data.map(item => ({ ...item }));
         newdata.pop();
@@ -163,9 +162,9 @@ function DocumentAtt(props) {
         newdata.pop();
         newdata.pop();
         setData(newdata);
-        ChangeValue(newdata)
+        ChangeValue(newdata);
       };
-      if (rowkey === '3' && lastattname === '发布实施方案') {
+      if (rowkey === '6' && lastattname === '发布实施方案') {
         const newdata = data.map(item => ({ ...item }));
         newdata.pop();
         newdata.pop();
@@ -190,7 +189,7 @@ function DocumentAtt(props) {
           return text;
         }
         return (index + 1).toString()
-      }
+      },
     },
     {
       title: '文档名称',

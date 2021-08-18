@@ -10,7 +10,10 @@ import {
   releaseListAssign,
   savePracticePre,
   splitOrders,
-  releaseListEdit
+  releaseListEdit,
+  releaseListDel,
+  saveCheckVersion,
+  attachBatchEdit
 } from '../services/api';
 
 export default {
@@ -191,24 +194,66 @@ export default {
     },
 
     // 版本管理员审核临时增加发布清单，会影响附件列表
-    * checkaddlist({ payload: { values, releaseNo } }, { call, put }) {
-      const response = yield call(releaseListEdit, values);
-      if (response.code === 200) {
-        message.success('操作成功')
-        const openres = yield call(openFlow, releaseNo);
-        if (openres.code === 200) {
-          yield put({
-            type: 'saveinfo',
-            payload: { info: openres.data.checkVersionParam, currentTaskStatus: openres.data.currentTaskStatus },
-          });
+    // * checkaddlist({ payload: { values, releaseNo } }, { call, put }) {
+    //   const response = yield call(releaseListEdit, values);
+    //   if (response.code === 200) {
+    //     message.success('操作成功')
+    //     const openres = yield call(openFlow, releaseNo);
+    //     if (openres.code === 200) {
+    //       yield put({
+    //         type: 'saveinfo',
+    //         payload: { info: openres.data.checkVersionParam, currentTaskStatus: openres.data.currentTaskStatus },
+    //       });
+    //     } else {
+    //       message.error(openres.msg)
+    //     }
+    //   } else {
+    //     message.error('操作失败');
+    //   }
+    // },
+
+    // 版本管理员审核时删除发布清单，会影响附件列表
+    // * checkdeletlist({ payload: { values, releaseNo } }, { call, put }) {
+    //   const response = yield call(releaseListDel, values);
+    //   if (response.code === 200) {
+    //     message.success('操作成功')
+    //     const openres = yield call(openFlow, releaseNo);
+    //     if (openres.code === 200) {
+    //       yield put({
+    //         type: 'saveinfo',
+    //         payload: { info: openres.data.checkVersionParam, currentTaskStatus: openres.data.currentTaskStatus },
+    //       });
+    //     } else {
+    //       message.error(openres.msg)
+    //     }
+    //   } else {
+    //     message.error('操作失败');
+    //   }
+    // },
+
+    // saveCheckVersion
+    * checkversion({ payload: { values, releaseAttaches, buttype, releaseNo } }, { call, put }) {
+      const attres = yield call(attachBatchEdit, releaseAttaches);    // 先保存附件
+      if (attres) {
+        const response = yield call(saveCheckVersion, values);        // 再保存表单
+        if (response.code === 200) {
+          if (buttype === 'save') {
+            message.success('操作成功')
+          };
+          const openres = yield call(openFlow, releaseNo);           // 最后打开待办
+          if (openres.code === 200) {
+            yield put({
+              type: 'saveinfo',
+              payload: { info: openres.data.checkVersionParam, currentTaskStatus: openres.data.currentTaskStatus },
+            });
+          } else {
+            message.error(openres.msg)
+          }
         } else {
-          message.error(openres.msg)
+          message.error(response.msg)
         }
-      } else {
-        message.error('操作失败');
       }
     },
-
   },
 
   reducers: {

@@ -11,6 +11,7 @@ const { Option } = Select;
 const RadioGroup = Radio.Group;
 const { TabPane } = Tabs;
 
+
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
@@ -38,11 +39,16 @@ function VersionAudit(props, ref) {
   const [check, setCheck] = useState(false);
   const [mergeNo, setMergeNo] = useState('');
   const [attaches, setAttaches] = useState([]);
+  const [activeKey, setActiveKey] = useState('');
   const { ChangeButtype } = useContext(SubmitTypeContext);
   const required = true;
 
   const [alertvisible, setAlertVisible] = useState(false);  // 超时告警是否显示
 
+  // 已合并工单
+  const orderkeys = info.releaseMains && info.releaseMains.map((item) => {
+    return item.releaseNo
+  })
   const formRef = useRef();
   useImperativeHandle(ref, () => ({
     getVal: () => getFieldsValue(),
@@ -56,6 +62,24 @@ function VersionAudit(props, ref) {
     };
   }, [register])
 
+
+  // 切换附件
+  const handleTabChange = (key) => {
+    setActiveKey(key);
+    setAttaches(info.releaseAttaches[key]);
+  }
+  // 初始化附件页签
+  useEffect(() => {
+    if (info.releaseAttaches && orderkeys) {
+      if (activeKey) {
+        handleTabChange(activeKey);
+      } else {
+        const flowId = getQueryVariable("Id");
+        handleTabChange(flowId)
+      }
+    }
+  }, [info.releaseAttaches])
+
   const changeatt = (v, files) => {
     setFieldsValue({ releaseAttaches: v });
     const key = '5';
@@ -67,13 +91,64 @@ function VersionAudit(props, ref) {
       ChangeButtype('save')
     };
   };
+  // const test = info && info.releaseAttaches && info.releaseAttaches.filter(obj => {
+  //   const values = Object.values(obj);
+  //   return values
+  // })
+
+  // 数组扁平
+  const toAllCheck = (arr) => {
+    let newArr = [];
+    if (!Array.isArray(arr)) {
+      return newArr;
+    }
+    for (let i = 0; i < arr.length; i += 1) {
+      if (Array.isArray(arr[i])) {
+        const sunarr = newArr.concat(arr[i]);
+        newArr = sunarr;
+      } else {
+        newArr.push(arr[i])
+      };
+    }
+    return newArr
+  };
+  // 数组去重
+  const uniqueNo = (arr) => {
+    const res = new Map();
+    return arr.filter((item) => !res.has(item.releaseNo) && res.set(item.releaseNo, 1))
+  }
   // 校验文档
   const handleAttValidator = (rule, value, callback) => {
-    if (value) {
-      const target = value.filter(item => item.editable && item.attachFile === '[]' && item.docName !== '其它附件');
+    if (info && info.releaseAttaches) {
+      const releaseNos = Object.keys(info.releaseAttaches);
+      const checkList = releaseNos.map(key => {
+        const releaseNo = key;
+        const values = info.releaseAttaches[key];
+        const endatt = values[values.length - 1].docName;
+        const checkAtt = values[5];
+        if (endatt === '发布实施方案') {
+          const replenishAtt = values.slice(-5);
+          replenishAtt.unshift(checkAtt);
+          const arr = replenishAtt.map(obj => ({ ...obj, releaseNo }));
+          return arr;
+        }
+        return { ...checkAtt, releaseNo }
+      });
+      const values = toAllCheck(checkList);
+      const target = values.filter(item => item.attachFile === '[]' && item.docName !== '其它附件');
+      const tabKeyObject = uniqueNo(target)
+      const TabKeys = tabKeyObject.map((item) => {                              // 提醒哪个页签未添加附件
+        return item.releaseNo
+      });
+      const flowId = getQueryVariable("Id");
+      if (TabKeys.indexOf(flowId) !== -1 && tabKeyObject.length > 0) {
+        handleTabChange(TabKeys[0]);
+      } else {
+        handleTabChange(flowId);
+      };
       if (target.length > 0) {
         setCheck(true);
-        callback(`请上传附件`);
+        callback(`页签${JSON.stringify(TabKeys)}有附件未上传`);
       } else {
         callback()
       }
@@ -88,6 +163,7 @@ function VersionAudit(props, ref) {
     }
     callback()
   }
+
 
   const getTypebyId = key => {
     if (selectdata.ischange) {
@@ -119,33 +195,22 @@ function VersionAudit(props, ref) {
     });
   }
 
-  // 已合并工单
-  const orderkeys = info.releaseMains && info.releaseMains.map((item) => {
-    return item.releaseNo
-  })
-
   const descriptionopion = (
     <>
       {info.releaseMains && (
-        <Checkbox.Group
-          options={orderkeys}
-          onChange={onCheckboxChange}
-        />
+        <Checkbox.Group onChange={onCheckboxChange}>
+          {orderkeys.map((obj) => {
+            const flowId = getQueryVariable("Id");
+            return [
+              <Checkbox value={obj} disabled={obj === flowId}>{obj}</Checkbox>,
+            ]
+          })}
+        </Checkbox.Group>
       )}
       <Button style={{ marginLeft: 30 }} type='link' onClick={() => cancelMerge()}>取消合并</Button>
     </>
   )
 
-  // 切换附件
-  const handleTabChange = (key) => {
-    setAttaches(info.releaseAttaches[key]);
-  }
-  // 初始化附件页签
-  useEffect(() => {
-    if (info.releaseAttaches && orderkeys) {
-      handleTabChange(orderkeys[0])
-    }
-  }, [info.releaseAttaches])
 
   return (
     <>
@@ -154,36 +219,11 @@ function VersionAudit(props, ref) {
         type='warning'
         showIcon style={{ marginBottom: 12 }}
       />)}
-      {info.releaseMains && info.releaseMains.length > 1 && (<Alert message='已合并工单' description={descriptionopion} type='info' style={{ marginBottom: 24, }} />)}
+      {info.releaseMains && info.releaseMains.length > 1 && (
+        <Alert message='已合并工单' description={descriptionopion} type='info' style={{ marginBottom: 24, }} />
+      )}
       <Row gutter={12}>
         <Form ref={formRef} {...formItemLayout}>
-          <Col span={24}>
-            <EditeTable
-              title='功能验证表'
-              functionmap={functionmap}
-              modulamap={modulamap}
-              isEdit={isEdit}
-              taskName={taskName}
-              dataSource={undefined}
-              ChangeValue={v => { setFieldsValue({ releaseLists: v }); }}
-              dutyUnits={info.releaseListClassify.dutyUnits}
-              dutyUnitTotalMsg={info.releaseListClassify.dutyUnitTotalMsg}        // 公司总统计，页签上
-              dutyUnitListMsg={info.releaseListClassify.dutyUnitListMsg}          // 公司清单统计，页签下
-              releaseMains={info.releaseListClassify.releaseMains}                // 已合并工单
-              dutyUnitList={info.releaseListClassify.dutyUnitList}                // 公司清单
-              orderkeys={orderkeys || []}
-            />
-            <Form.Item wrapperCol={{ span: 24 }} >
-              {getFieldDecorator('releaseLists', {
-                rules: [{ required, message: '请填写发布清单' }, {
-                  validator: handleListValidator
-                }],
-                initialValue: info.releaseLists,
-              })(
-                <></>
-              )}
-            </Form.Item>
-          </Col>
           <Col span={8} >
             <Form.Item label="申请发布等级">
               {getFieldDecorator('releaseLevel', {
@@ -229,8 +269,35 @@ function VersionAudit(props, ref) {
               )}
             </Form.Item>
           </Col>
+          <Col span={24}>
+            <EditeTable
+              title='功能验证表'
+              functionmap={functionmap}
+              modulamap={modulamap}
+              isEdit={isEdit}
+              taskName={taskName}
+              dataSource={undefined}
+              ChangeValue={v => { setFieldsValue({ releaseLists: v }); }}
+              dutyUnits={info.releaseListClassify.dutyUnits}
+              dutyUnitTotalMsg={info.releaseListClassify.dutyUnitTotalMsg}        // 公司总统计，页签上
+              dutyUnitListMsg={info.releaseListClassify.dutyUnitListMsg}          // 公司清单统计，页签下
+              releaseMains={info.releaseListClassify.releaseMains}                // 已合并工单
+              dutyUnitList={info.releaseListClassify.dutyUnitList}                // 公司清单
+              ChangeAttActiveKey={(v) => handleTabChange(v)}                      // 选择所属工单对应的附件页签切换
+            />
+            {/* <Form.Item wrapperCol={{ span: 24 }} >
+              {getFieldDecorator('releaseLists', {
+                rules: [{ required, message: '请填写发布清单' }, {
+                  validator: handleListValidator
+                }],
+                initialValue: info.releaseLists,
+              })(
+                <></>
+              )}
+            </Form.Item> */}
+          </Col>
           <Col span={24} style={{ marginBottom: 24 }}>
-            {info.releaseMains && info.releaseMains.length > 1 && (<Tabs type='card' onChange={handleTabChange}>
+            {info.releaseMains && info.releaseMains.length > 1 && (<Tabs type='card' onChange={handleTabChange} activeKey={activeKey}>
               {orderkeys.length > 1 && orderkeys.map((obj) => {
                 return [
                   <TabPane key={obj} tab={obj} />,
@@ -246,7 +313,7 @@ function VersionAudit(props, ref) {
               ChangeValue={(v, files) => changeatt(v, files)}
               check={check}
             />
-            <Form.Item wrapperCol={{ span: 24 }} style={{ display: 'none' }}>
+            <Form.Item wrapperCol={{ span: 24 }}>
               {getFieldDecorator('releaseAttaches', {
                 rules: [{ required, message: '请上传附件' }, {
                   validator: handleAttValidator

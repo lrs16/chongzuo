@@ -147,8 +147,20 @@ function ToDolist(props) {
           mergeOrders({ releaseNo: releaseNos.toString() }).then(res => {
             if (res.code === 200) {
               message.success('工单合并审核成功');
-              const values = getFieldsValue();
-              searchdata(values, paginations.current, paginations.pageSize);
+              // const values = getFieldsValue();
+              // searchdata(values, paginations.current, paginations.pageSize);
+              router.push({
+                pathname: `/ITSM/releasemanage/to-do/record`,
+                query: {
+                  taskName: '版本管理员审核',
+                  Id: target[0].releaseNo,
+                  taskId: target[0].taskId,
+                },
+                state: {
+                  dynamicpath: true,
+                  menuDesc: '发布工单',
+                }
+              });
             }
           })
         } else {
@@ -194,47 +206,51 @@ function ToDolist(props) {
             }
           });
         };
-        return <a onClick={handleClick}>{text}</a>;
+        return (<a onClick={handleClick}>{text}</a>);
       },
+      sorter: (a, b) => a.releaseNo.localeCompare(b.releaseNo),
     },
     {
       title: '合并单号',
       dataIndex: 'mergeNo',
       key: 'mergeNo',
-
     },
     {
       title: '当前处理环节',
       dataIndex: 'taskName',
       key: 'taskName',
-      sorter: (a, b) => a.taskName.length - b.taskName.length,
+      sorter: (a, b) => a.taskName.localeCompare(b.taskName),
     },
     {
       title: '发布类型',
       dataIndex: 'releaseType',
       key: 'releaseType',
       width: 200,
+      sorter: (a, b) => a.releaseType.localeCompare(b.releaseType),
     },
     {
       title: '责任单位',
       dataIndex: 'dutyUnit',
       key: 'dutyUnit',
+      sorter: (a, b) => a.dutyUnit.localeCompare(b.dutyUnit),
     },
     {
       title: '出厂测试登记人',
       dataIndex: 'registerUser',
       key: 'registerUser',
+      sorter: (a, b) => a.registerUser.localeCompare(b.registerUser),
     },
     {
       title: '发送人',
       dataIndex: 'sender',
       key: 'sender',
+      sorter: (a, b) => a.sender.localeCompare(b.sender),
     },
     {
       title: '发送时间',
       dataIndex: 'sendTime',
       key: 'sendTime',
-      sorter: (a, b) => a.mergeNo - b.mergeNo,
+      sorter: (a, b) => a.sendTime.localeCompare(b.sendTime),
     },
   ];
 
