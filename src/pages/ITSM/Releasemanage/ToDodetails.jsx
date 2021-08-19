@@ -71,7 +71,7 @@ function ToDodetails(props) {
           删除
         </Button>
       )}
-      {!saved && taskName !== '出厂测试' && taskName !== '发布实施准备' && (
+      {!saved && taskName !== '出厂测试' && taskName !== '发布实施准备' && taskName !== '发布实施' && (
         <Button type="danger" ghost style={{ marginRight: 8 }} onMouseDown={() => setButtype('')} onClick={() => { flowGoback() }} >
           回退
         </Button>

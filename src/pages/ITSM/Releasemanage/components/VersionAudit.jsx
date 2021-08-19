@@ -291,7 +291,7 @@ function VersionAudit(props, ref) {
               <Form.Item label="停止业务访问" >
                 {getFieldDecorator('bizStopVisit', {
                   rules: [{ required, message: `请选择停止业务访问` }],
-                  initialValue: info.mergeOrder ? info.mergeOrder.releaseLevel : '是',
+                  initialValue: info.mergeOrder ? info.mergeOrder.bizStopVisit : '是',
                 })(
                   <RadioGroup disabled={!isEdit}>
                     <Radio value='是'>是</Radio>

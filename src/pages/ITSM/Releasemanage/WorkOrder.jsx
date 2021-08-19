@@ -8,7 +8,6 @@ import User from '@/components/SelectUser/User';
 import Registrat from './components/Registrat';
 import ImplementationPre from './components/ImplementationPre';
 import VersionAudit from './components/VersionAudit';
-import Examine from './components/Examine';
 import Implementation from './components/Implementation';
 import BusinessReview from './components/BusinessReview';
 import styles from './index.less';
@@ -29,7 +28,6 @@ function WorkOrder(props) {
   const RegistratRef = useRef();
   const ImplementationPreRef = useRef();
   const VersionAuditRef = useRef();
-  const ExamineRef = useRef();
   const ImplementationRef = useRef();
 
   // 流程提交
@@ -290,7 +288,7 @@ function WorkOrder(props) {
     }
   };
 
-  // 版本管理员审核,科室负责人审核保存流转
+  // 版本管理员审核,科室负责人审核，中心领导审核保存流转
   const saveVersionAudit = () => {
     const values = VersionAuditRef.current.getVal();
     dispatch({
@@ -317,6 +315,47 @@ function WorkOrder(props) {
             message.error('请将信息填写完整')
           } else {
             saveVersionAudit();
+            sessionStorage.setItem('flowtype', '1');
+            setUserVisible(true);
+          }
+        })
+        break;
+      default:
+        break;
+    }
+  };
+
+  // 发布实施准备
+  const saveracticeDone = () => {
+    const values = ImplementationRef.current.getVal();
+    const { releaseAttaches, releaseLists, practiceTime, practicer, doneDesc, legacyDesc } = values;
+    dispatch({
+      type: 'releasetodo/racticedone',
+      payload: {
+        practicedoneparam: {
+          releaseNo: Id,
+          saveItems: 'practiceDone, releaseLists, releaseAttaches',
+          releaseAttaches,
+          releaseLists,
+          practiceDone: { practiceTime: moment(practiceTime).format('YYYY-MM-DD HH:mm:ss'), practicer, doneDesc, legacyDesc },
+        },
+        buttype,
+      },
+    });
+  }
+  const racticeDoneSubmit = () => {
+    switch (buttype) {
+      case 'save':
+        saveracticeDone()
+        break;
+      case 'flow':
+        setUserChoice(false);
+        sessionStorage.removeItem('NextflowUserId');
+        ImplementationRef.current.Forms((err) => {
+          if (err) {
+            message.error('请将信息填写完整')
+          } else {
+            saveracticeDone();
             sessionStorage.setItem('flowtype', '1');
             setUserVisible(true);
           }
@@ -417,6 +456,9 @@ function WorkOrder(props) {
           case '中心领导审核':
             VersionAuditSubmit();
             break;
+          case '发布实施':
+            racticeDoneSubmit();
+            break;
           default:
             break;
         }
@@ -515,7 +557,7 @@ function WorkOrder(props) {
             </div>
           </Panel>
         )}
-        {(taskName === '科室负责人审核' || taskName === '中心领导审核') && info && info.releaseMains && (
+        {(taskName === '科室负责人审核' || taskName === '中心领导审核') && info && info.checkMerge && (
           <Panel header={taskName} key="form">
             <div style={{ marginTop: 12 }}>
               <VersionAudit
@@ -529,7 +571,7 @@ function WorkOrder(props) {
             </div>
           </Panel>
         )}
-        {(taskName === '发布实施') && (
+        {taskName === '发布实施' && info && info.practiceDone && (
           <Panel header={taskName} key="form">
             <div style={{ marginTop: 12 }}>
               <Implementation
@@ -537,7 +579,8 @@ function WorkOrder(props) {
                 selectdata={selectdata}
                 isEdit
                 taskName={taskName}
-                mainId={Id}
+                info={info}
+                userinfo={userinfo}
               />
             </div>
           </Panel>

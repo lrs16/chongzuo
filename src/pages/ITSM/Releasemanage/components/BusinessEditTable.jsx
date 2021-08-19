@@ -8,7 +8,7 @@ const InputGroup = Input.Group;
 const RadioGroup = Radio.Group;
 
 function BusinessEditTable(props) {
-  const { title, titletype, dataSource } = props;
+  const { title, dataSource, type, ChangeValue } = props;
   const [data, setData] = useState([]);
 
   useEffect(() => {
@@ -33,7 +33,12 @@ function BusinessEditTable(props) {
     if (target) {
       target[fieldName] = e;
       setData(newData);
-      releaseListEdit(target)
+      if (type === '发布实施') {
+        ChangeValue(newData);
+      } else {
+        releaseListEdit(target);
+      }
+
     }
   };
 
@@ -82,17 +87,17 @@ function BusinessEditTable(props) {
           <>
             <InputGroup compact>
               <span style={{ width: 70, textAlign: 'right' }}>功能菜单：</span>
-              <span style={{ width: 330 }}>{record.testMenu}</span>
+              <span style={{ width: 310 }}>{record.testMenu}</span>
             </InputGroup>
             <Divider type='horizontal' style={{ margin: '6px 0' }} />
             <InputGroup compact>
               <span style={{ width: 70, textAlign: 'right' }}>预期效果：</span>
-              <span style={{ width: 330 }}>{record.testResult}</span>
+              <span style={{ width: 310 }}>{record.testResult}</span>
             </InputGroup>
             <Divider type='horizontal' style={{ margin: '6px 0' }} />
             <InputGroup compact>
               <span style={{ width: 70, textAlign: 'right' }}>验证步骤：</span>
-              <span style={{ width: 330 }}>{record.testStep}</span>
+              <span style={{ width: 310 }}>{record.testStep}</span>
             </InputGroup>
           </>
         );
@@ -160,45 +165,17 @@ function BusinessEditTable(props) {
         )
       }
     },
-    // {
-    //   title: '操作',
-    //   key: 'action',
-    //   fixed: 'right',
-    //   width: 100,
-    //   align: 'center',
-    //   render: (text, record) => {
-    //     if (record.editable) {
-    //       return (
-    //         <>
-    //           <Button type='link' onClick={e => saveRow(e, record.key)}>保存</Button>
-    //           <Button type='link' onClick={e => cancel(e, record.key)}>取消</Button>
-    //         </>
-    //       );
-    //     }
-    //     return (
-    //       <>
-    //         <Button type='link' onClick={e => editRow(e, record.key)}>验证</Button>
-    //       </>
-    //     )
-
-    //   },
-    // },
   ];
+  const practicedone = columns.filter(item => item.key !== 'verifyStatus');
 
-  const sclicecolumns = (arr) => {
-    const newarr = arr.slice(0);
-    newarr.pop();
-    return newarr;
-  }
-  const checkcolumns = sclicecolumns(columns);
   return (
-    <Card>
+    <>
       <h4>
         <span style={{ color: '#f5222d', marginRight: 4, fontWeight: 'normal' }}>*</span>
         {title}
       </h4>
       <Table
-        columns={titletype ? columns : checkcolumns}
+        columns={type === '发布实施' ? practicedone : columns}
         dataSource={data}
         bordered
         size='middle'
@@ -206,7 +183,7 @@ function BusinessEditTable(props) {
         pagination={false}
         scroll={{ x: 1700 }}
       />
-    </Card>
+    </>
   );
 }
 

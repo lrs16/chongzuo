@@ -15,6 +15,7 @@ import {
   saveCheckVersion,
   saveCheckDirector,
   saveCheckLeader,
+  savePracticeDone,
   attachBatchEdit
 } from '../services/api';
 
@@ -59,6 +60,7 @@ export default {
         ['版本管理员审核', response.data.checkVersionParam],
         ['科室负责人审核', response.data.checkDirectorParam],
         ['中心领导审核', response.data.checkLeaderParam],
+        ['发布实施', response.data.practiceDoneParam],
       ]);
       yield put({
         type: 'saveinfo',
@@ -267,6 +269,22 @@ export default {
         } else {
           message.error(response.msg)
         }
+      }
+    },
+
+    // 发布实施
+    * racticedone({ payload: { practicedoneparam, buttype } }, { call, put }) {
+      const response = yield call(savePracticeDone, practicedoneparam);
+      if (response.code === 200) {
+        if (buttype === 'save') {
+          message.success('保存成功');
+        };
+        yield put({
+          type: 'saveinfo',
+          payload: { info: response.data.saveRegister, currentTaskStatus: response.data.currentTaskStatus },
+        });
+      } else {
+        message.error(response.msg)
       }
     },
   },

@@ -1,14 +1,14 @@
 import React, { useEffect } from 'react';
 import { connect } from 'dva';
 import router from 'umi/router';
-import { Button, message } from 'antd';
+import { Button, message, Card } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import BusinessEditTable from './components/BusinessEditTable';
 import { completeVerify } from './services/api';
 
 function BusinessDetail(props) {
   const { dispatch, info } = props;
-  const { Id, todoCode, titletype } = props.location.query;
+  const { Id, todoCode } = props.location.query;
   const pagetitle = props.route.name;
 
   const handleclose = () => {
@@ -59,13 +59,15 @@ function BusinessDetail(props) {
 
   return (
     <PageHeaderWrapper title={pagetitle} extra={operations}>
-      <BusinessEditTable
-        title='发布清单'
-        type={pagetitle}
-        dataSource={info}
-        titletype={titletype}
-        scroll={{ x: 1740 }}
-      />
+      <Card>
+        <BusinessEditTable
+          title='发布清单'
+          type={pagetitle}
+          dataSource={info}
+          ChangeValue={() => { }}
+          scroll={{ x: 1740 }}
+        />
+      </Card>
     </PageHeaderWrapper>
   );
 }

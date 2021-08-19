@@ -204,3 +204,12 @@ export async function saveCheckLeader(params) {
     requestType: 'formjosn',
   });
 }
+
+// 发布实施表单保存 /release/flow/savePracticeDone
+export async function savePracticeDone(params) {
+  return request(`/release/flow/savePracticeDone`, {
+    method: 'POST',
+    data: JSON.stringify(params),
+    requestType: 'formjosn',
+  });
+}

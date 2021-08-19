@@ -3,6 +3,7 @@ import moment from 'moment';
 import { Row, Col, Form, Input, DatePicker, Select, Radio, Alert } from 'antd';
 import SubmitTypeContext from '@/layouts/MenuContext';
 import DocumentAtt from './DocumentAtt';
+import BusinessEditTable from './BusinessEditTable';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -11,25 +12,25 @@ const RadioGroup = Radio.Group;
 const formItemLayout = {
   labelCol: {
     xs: { span: 24 },
-    sm: { span: 9 },
+    sm: { span: 6 },
   },
   wrapperCol: {
     xs: { span: 24 },
-    sm: { span: 15 },
+    sm: { span: 18 },
   },
 };
 const formuintLayout = {
   labelCol: {
-    sm: { span: 3 },
+    sm: { span: 2 },
   },
   wrapperCol: {
-    sm: { span: 21 },
+    sm: { span: 22 },
   },
 };
 
 function Implementation(props, ref) {
-  const { taskName, userinfo, register, selectdata, isEdit } = props;
-  const { getFieldDecorator, setFieldsValue } = props.form;
+  const { taskName, userinfo, register, selectdata, isEdit, info } = props;
+  const { getFieldDecorator, setFieldsValue, getFieldsValue, resetFields } = props.form;
   const required = true;
   const [alertvisible, setAlertVisible] = useState(false);  // 超时告警是否显示
   const [check, setCheck] = useState(false);
@@ -37,8 +38,10 @@ function Implementation(props, ref) {
 
   const formRef = useRef();
   useImperativeHandle(ref, () => ({
-    Forms: props.form,
-  }))
+    getVal: () => getFieldsValue(),
+    resetVal: () => resetFields(),
+    Forms: props.form.validateFieldsAndScroll,
+  }), []);
 
   const changeatt = (v, files) => {
     setFieldsValue({ releaseAttaches: v });
@@ -78,7 +81,6 @@ function Implementation(props, ref) {
     }
     return [];
   };
-  const resultmap = getTypebyId('1390197195424141314');   // 发布结果
   const unitmap = getTypebyId('1384056290929545218');       // 责任单位
   return (
     <>
@@ -91,15 +93,15 @@ function Implementation(props, ref) {
         <Form ref={formRef} {...formItemLayout}>
           <Col span={8}>
             <Form.Item label="发布实施时间" >
-              {getFieldDecorator('form1', {
+              {getFieldDecorator('practiceTime', {
                 rules: [{ required, message: `请选择发布实施时间` }],
-                initialValue: moment(),
+                initialValue: moment(info.practiceDone.practiceTime || undefined),
               })(
                 <DatePicker showTime placeholder="请选择时间" format="YYYY-MM-DD HH:mm:ss" disabled={!isEdit} />
               )}
             </Form.Item>
           </Col>
-          <Col span={8} >
+          {/* <Col span={8} >
             <Form.Item label="发布结果">
               {getFieldDecorator('form2', {
                 rules: [{ required, message: `请选择发布结果` }],
@@ -114,27 +116,41 @@ function Implementation(props, ref) {
                 </Select>
               )}
             </Form.Item>
-          </Col>
+          </Col> */}
           <Col span={24}>
             <Form.Item label="发布实施人" {...formuintLayout}>
-              {getFieldDecorator('form3', {
+              {getFieldDecorator('practicer', {
                 rules: [{ required, message: `请输入发布实施人员名` }],
-                initialValue: '',
+                initialValue: info.practiceDone.practicer || '',
               })(<TextArea autoSize disabled={!isEdit} />)}
             </Form.Item>
           </Col>
           <Col span={24}>
             <Form.Item label="实施情况说明" {...formuintLayout}>
-              {getFieldDecorator('form4', {
-                initialValue: '',
+              {getFieldDecorator('doneDesc', {
+                initialValue: info.practiceDone.doneDesc || '',
               })(<TextArea autoSize={{ minRows: 4 }} disabled={!isEdit} />)}
             </Form.Item>
           </Col>
           <Col span={24}>
             <Form.Item label="遗留问题说明" {...formuintLayout}>
-              {getFieldDecorator('form5', {
-                initialValue: '',
+              {getFieldDecorator('legacyDesc', {
+                initialValue: info.practiceDone.legacyDesc || '',
               })(<TextArea autoSize={{ minRows: 4 }} disabled={!isEdit} />)}
+            </Form.Item>
+          </Col>
+          <Col span={24}>
+            <BusinessEditTable
+              title='发布清单'
+              type='发布实施'
+              dataSource={info.releaseLists || []}
+              ChangeValue={v => { setFieldsValue({ releaseLists: v }); }}
+              scroll={{ x: 1740 }}
+            />
+            <Form.Item wrapperCol={{ span: 24 }}>
+              {getFieldDecorator('releaseLists', {
+                initialValue: info.releaseLists,
+              })(<></>)}
             </Form.Item>
           </Col>
           <Col span={24} style={{ marginBottom: 24 }}>
@@ -142,7 +158,7 @@ function Implementation(props, ref) {
               rowkey='8'
               isEdit={isEdit}
               unitmap={unitmap}
-              dataSource={[]}
+              dataSource={info && info.releaseAttaches ? info.releaseAttaches : []}
               Unit={{ dutyUnit: undefined }}
               ChangeValue={(v, files) => changeatt(v, files)}
               check={check}
@@ -152,7 +168,7 @@ function Implementation(props, ref) {
                 rules: [{ required, message: '请上传附件' }, {
                   validator: handleAttValidator
                 }],
-                initialValue: '',
+                initialValue: info.releaseAttaches,
               })(<></>)}
             </Form.Item>
           </Col>
