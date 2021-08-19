@@ -13,6 +13,8 @@ import {
   releaseListEdit,
   releaseListDel,
   saveCheckVersion,
+  saveCheckDirector,
+  saveCheckLeader,
   attachBatchEdit
 } from '../services/api';
 
@@ -55,6 +57,8 @@ export default {
         ['业务验证', response.data.bizValidateParam],
         ['发布实施准备', response.data.practicePreParam],
         ['版本管理员审核', response.data.checkVersionParam],
+        ['科室负责人审核', response.data.checkDirectorParam],
+        ['中心领导审核', response.data.checkLeaderParam],
       ]);
       yield put({
         type: 'saveinfo',
@@ -139,9 +143,6 @@ export default {
 
     // 发布实施准备保存
     * implementationpre({ payload: { formValue, buttype } }, { call, put }) {
-      // yield put({
-      //   type: 'clearcache',
-      // });
       const response = yield call(savePracticePre, formValue);
       if (response.code === 200) {
         if (buttype === 'save') {
@@ -231,20 +232,34 @@ export default {
     //   }
     // },
 
-    // saveCheckVersion
-    * checkversion({ payload: { values, releaseAttaches, buttype, releaseNo } }, { call, put }) {
+    // 版本管理员审核，科室负责人审核
+    * checkversion({ payload: { values, releaseAttaches, buttype, releaseNo, taskName } }, { call, put }) {
+      let response = {}
       const attres = yield call(attachBatchEdit, releaseAttaches);    // 先保存附件
       if (attres) {
-        const response = yield call(saveCheckVersion, values);        // 再保存表单
+        if (taskName === '版本管理员审核') {
+          response = yield call(saveCheckVersion, values);        // 再保存表单
+        };
+        if (taskName === '科室负责人审核') {
+          response = yield call(saveCheckDirector, values);        // 再保存表单
+        };
+        if (taskName === '中心领导审核') {
+          response = yield call(saveCheckLeader, values);        // 再保存表单
+        };
         if (response.code === 200) {
           if (buttype === 'save') {
             message.success('操作成功')
           };
           const openres = yield call(openFlow, releaseNo);           // 最后打开待办
           if (openres.code === 200) {
+            const infomap = new Map([
+              ['版本管理员审核', openres.data.checkVersionParam],
+              ['科室负责人审核', openres.data.checkDirectorParam],
+              ['中心领导审核', openres.data.checkLeaderParam],
+            ]);
             yield put({
               type: 'saveinfo',
-              payload: { info: openres.data.checkVersionParam, currentTaskStatus: openres.data.currentTaskStatus },
+              payload: { info: infomap.get(openres.data.currentTaskStatus.taskName), currentTaskStatus: openres.data.currentTaskStatus },
             });
           } else {
             message.error(openres.msg)

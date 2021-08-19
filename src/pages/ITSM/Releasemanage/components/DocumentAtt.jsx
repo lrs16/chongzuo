@@ -240,7 +240,7 @@ function DocumentAtt(props) {
                   })}
                 </div>
               )} */}
-              <div style={{ width: 300, marginTop: 12 }}>
+              <div style={{ width: 300, marginTop: 12 }} onMouseDown={() => ChangeButtype('')}>
                 <FilesContext.Provider value={{
                   files: JSON.parse(text),
                   ChangeFiles: (v => handleFieldChange(JSON.stringify(v), 'attachFile', record.key)),

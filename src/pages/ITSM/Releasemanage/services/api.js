@@ -186,3 +186,21 @@ export async function saveCheckVersion(params) {
     requestType: 'formjosn',
   });
 }
+
+// 科室负责人审核表单保存/release/flow/saveCheckVersion
+export async function saveCheckDirector(params) {
+  return request(`/release/flow/saveCheckDirector`, {
+    method: 'POST',
+    data: JSON.stringify(params),
+    requestType: 'formjosn',
+  });
+}
+
+// 中心领导审核表单保存/release/flow/saveCheckLeader
+export async function saveCheckLeader(params) {
+  return request(`/release/flow/saveCheckLeader`, {
+    method: 'POST',
+    data: JSON.stringify(params),
+    requestType: 'formjosn',
+  });
+}

@@ -11,6 +11,14 @@ const { Option } = Select;
 const RadioGroup = Radio.Group;
 const { TabPane } = Tabs;
 
+const formuintLayout = {
+  labelCol: {
+    sm: { span: 24 },
+  },
+  wrapperCol: {
+    sm: { span: 24 },
+  },
+};
 
 const formItemLayout = {
   labelCol: {
@@ -40,10 +48,17 @@ function VersionAudit(props, ref) {
   const [mergeNo, setMergeNo] = useState('');
   const [attaches, setAttaches] = useState([]);
   const [activeKey, setActiveKey] = useState('');
-  const { ChangeButtype } = useContext(SubmitTypeContext);
+  const [adopt, setAdopt] = useState('通过');
+  const { ChangeSubmitType, ChangeButtype } = useContext(SubmitTypeContext);
   const required = true;
 
   const [alertvisible, setAlertVisible] = useState(false);  // 超时告警是否显示
+
+  const formmap = new Map([
+    ['版本管理员审核', info.mergeOrder || {}],
+    ['科室负责人审核', info.checkMerge || {}],
+    ['中心领导审核', info.checkMerge || {}],
+  ]);
 
   // 已合并工单
   const orderkeys = info.releaseMains && info.releaseMains.map((item) => {
@@ -91,10 +106,6 @@ function VersionAudit(props, ref) {
       ChangeButtype('save')
     };
   };
-  // const test = info && info.releaseAttaches && info.releaseAttaches.filter(obj => {
-  //   const values = Object.values(obj);
-  //   return values
-  // })
 
   // 数组扁平
   const toAllCheck = (arr) => {
@@ -202,16 +213,35 @@ function VersionAudit(props, ref) {
           {orderkeys.map((obj) => {
             const flowId = getQueryVariable("Id");
             return [
-              <Checkbox value={obj} disabled={obj === flowId}>{obj}</Checkbox>,
+              <Checkbox value={obj} disabled={taskName === '版本管理员审核' && obj === flowId}>{obj}</Checkbox>,
             ]
           })}
         </Checkbox.Group>
       )}
-      <Button style={{ marginLeft: 30 }} type='link' onClick={() => cancelMerge()}>取消合并</Button>
+      {taskName === '版本管理员审核' && (<Button style={{ marginLeft: 30 }} type='link' onClick={() => cancelMerge()}>取消合并</Button>)}
     </>
   )
-
-
+  // 选择通过不通过改变流转类型
+  const handleAdopt = e => {
+    setAdopt(e.target.value);
+    if (e.target.value === '通过') {
+      ChangeSubmitType(1)
+    };
+    if (e.target.value === '不通过') {
+      ChangeSubmitType(0)
+    }
+  };
+  useEffect(() => {
+    if (info && info.platformValid && info.platformValid.validResult) {
+      setAdopt(info.platformValid.validResult);
+      if (info.platformValid.validResult === '通过') {
+        ChangeSubmitType(1)
+      };
+      if (info.platformValid.validResult === '不通过') {
+        ChangeSubmitType(0)
+      }
+    }
+  }, [info])
   return (
     <>
       {alertvisible && (<Alert
@@ -224,57 +254,91 @@ function VersionAudit(props, ref) {
       )}
       <Row gutter={12}>
         <Form ref={formRef} {...formItemLayout}>
-          <Col span={8} >
-            <Form.Item label="申请发布等级">
-              {getFieldDecorator('releaseLevel', {
-                rules: [{ required, message: `请选择发布等级` }],
-                initialValue: info.mergeOrder ? info.mergeOrder.releaseLevel : '',
-              })(
-                <Select placeholder="请选择" disabled={!isEdit}>
-                  {grademap.map(obj => [
-                    <Option key={obj.key} value={obj.title}>
-                      {obj.title}
-                    </Option>,
-                  ])}
-                </Select>
-              )}
-            </Form.Item>
-          </Col>
-          <Col span={8}>
-            <Form.Item label="发布开始时间">
-              {getFieldDecorator('releaseBeginTime', {
-                rules: [{ required, message: `请选择发布开始时间` }],
-                initialValue: moment(info.mergeOrder && info.mergeOrder.releaseBeginTime ? info.mergeOrder.releaseBeginTime : undefined).format('YYYY-MM-DD HH:mm:ss'),
-              })(<Input disabled={!isEdit} />)}
-            </Form.Item>
-          </Col>
-          <Col span={8}>
-            <Form.Item label="发布结束时间">
-              {getFieldDecorator('releaseEndTime', {
-                rules: [{ required, message: `请选择发布结束时间` }],
-                initialValue: moment(info.mergeOrder && info.mergeOrder.releaseEndTime ? info.mergeOrder.releaseEndTime : undefined).format('YYYY-MM-DD HH:mm:ss'),
-              })(<Input disabled={!isEdit} />)}
-            </Form.Item>
-          </Col>
-          <Col span={8}>
-            <Form.Item label="停止业务访问" >
-              {getFieldDecorator('bizStopVisit', {
-                rules: [{ required, message: `请选择停止业务访问` }],
-                initialValue: info.mergeOrder ? info.mergeOrder.releaseLevel : '是',
-              })(
-                <RadioGroup disabled={!isEdit}>
-                  <Radio value='是'>是</Radio>
-                  <Radio value='否'>否</Radio>
-                </RadioGroup>
-              )}
-            </Form.Item>
-          </Col>
+          {taskName === '版本管理员审核' && (<>
+            <Col span={8} >
+              <Form.Item label="申请发布等级">
+                {getFieldDecorator('releaseLevel', {
+                  rules: [{ required, message: `请选择发布等级` }],
+                  initialValue: info.mergeOrder ? info.mergeOrder.releaseLevel : '',
+                })(
+                  <Select placeholder="请选择" disabled={!isEdit}>
+                    {grademap.map(obj => [
+                      <Option key={obj.key} value={obj.title}>
+                        {obj.title}
+                      </Option>,
+                    ])}
+                  </Select>
+                )}
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item label="发布开始时间">
+                {getFieldDecorator('releaseBeginTime', {
+                  rules: [{ required, message: `请选择发布开始时间` }],
+                  initialValue: moment(info.mergeOrder && info.mergeOrder.releaseBeginTime ? info.mergeOrder.releaseBeginTime : undefined).format('YYYY-MM-DD HH:mm:ss'),
+                })(<Input disabled={!isEdit} />)}
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item label="发布结束时间">
+                {getFieldDecorator('releaseEndTime', {
+                  rules: [{ required, message: `请选择发布结束时间` }],
+                  initialValue: moment(info.mergeOrder && info.mergeOrder.releaseEndTime ? info.mergeOrder.releaseEndTime : undefined).format('YYYY-MM-DD HH:mm:ss'),
+                })(<Input disabled={!isEdit} />)}
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item label="停止业务访问" >
+                {getFieldDecorator('bizStopVisit', {
+                  rules: [{ required, message: `请选择停止业务访问` }],
+                  initialValue: info.mergeOrder ? info.mergeOrder.releaseLevel : '是',
+                })(
+                  <RadioGroup disabled={!isEdit}>
+                    <Radio value='是'>是</Radio>
+                    <Radio value='否'>否</Radio>
+                  </RadioGroup>
+                )}
+              </Form.Item>
+            </Col>
+          </>)}
+          {(taskName === '科室负责人审核' || taskName === '中心领导审核') && (
+            <>
+              <Col span={24}>
+                <Form.Item label='审核结果' {...formuintLayout} labelAlign='left'>
+                  {getFieldDecorator('checkResult', {
+                    rules: [{ required, message: '请选择验证结果' }],
+                    initialValue: formmap.get(taskName).checkResult || '通过',
+                  })(<RadioGroup onChange={handleAdopt}>
+                    <Radio value='通过'>通过</Radio>
+                    <Radio value='不通过'>不通过</Radio>
+                  </RadioGroup>
+                  )}
+                </Form.Item>
+              </Col>
+              {adopt === '通过' ? (
+                <Col span={24}>
+                  <Form.Item label='审核说明' {...formuintLayout} labelAlign='left'>
+                    {getFieldDecorator('checkComment', {
+                      initialValue: formmap.get(taskName).checkComment,
+                    })(<TextArea autoSize={{ minRows: 4 }} disabled={!isEdit} />)}
+                  </Form.Item>
+                </Col>)
+                :
+                (<Col span={24}>
+                  <Form.Item label='审核说明' {...formuintLayout} labelAlign='left'>
+                    {getFieldDecorator('checkComment', {
+                      rules: [{ required, message: `请输入审核说明` }],
+                      initialValue: formmap.get(taskName).checkComment,
+                    })(<TextArea autoSize={{ minRows: 4 }} disabled={!isEdit} />)}
+                  </Form.Item>
+                </Col>)}
+            </>)}
           <Col span={24}>
             <EditeTable
               title='功能验证表'
               functionmap={functionmap}
               modulamap={modulamap}
-              isEdit={isEdit}
+              isEdit={taskName === '版本管理员审核'}
               taskName={taskName}
               dataSource={undefined}
               ChangeValue={v => { setFieldsValue({ releaseLists: v }); }}
@@ -285,16 +349,6 @@ function VersionAudit(props, ref) {
               dutyUnitList={info.releaseListClassify.dutyUnitList}                // 公司清单
               ChangeAttActiveKey={(v) => handleTabChange(v)}                      // 选择所属工单对应的附件页签切换
             />
-            {/* <Form.Item wrapperCol={{ span: 24 }} >
-              {getFieldDecorator('releaseLists', {
-                rules: [{ required, message: '请填写发布清单' }, {
-                  validator: handleListValidator
-                }],
-                initialValue: info.releaseLists,
-              })(
-                <></>
-              )}
-            </Form.Item> */}
           </Col>
           <Col span={24} style={{ marginBottom: 24 }}>
             {info.releaseMains && info.releaseMains.length > 1 && (<Tabs type='card' onChange={handleTabChange} activeKey={activeKey}>
@@ -305,7 +359,7 @@ function VersionAudit(props, ref) {
               })}
             </Tabs>)}
             <DocumentAtt
-              rowkey='6'
+              rowkey={taskName === '版本管理员审核' ? '6' : '0'}
               isEdit={isEdit}
               unitmap={unitmap}
               dataSource={attaches}
@@ -326,7 +380,7 @@ function VersionAudit(props, ref) {
             <Form.Item label="审核人" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
               {getFieldDecorator('checkUser', {
                 rules: [{ required, message: `请选择审批人` }],
-                initialValue: userinfo ? userinfo.userName : '',
+                initialValue: userinfo ? userinfo.userName : formmap.get(taskName).userName,
               })(<Input disabled />)}
             </Form.Item>
           </Col>
@@ -334,7 +388,7 @@ function VersionAudit(props, ref) {
             <Form.Item label="审核时间" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
               {getFieldDecorator('checkTime', {
                 rules: [{ required, message: `请选择审批时间` }],
-                initialValue: moment(info.mergeOrder ? info.mergeOrder.checkTime : undefined).format('YYYY-MM-DD HH:mm:ss'),
+                initialValue: moment(formmap.get(taskName).checkTime || undefined).format('YYYY-MM-DD HH:mm:ss'),
               })(<Input disabled />)}
             </Form.Item>
           </Col>
@@ -342,7 +396,7 @@ function VersionAudit(props, ref) {
             <Form.Item label="审核单位" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
               {getFieldDecorator('checkUnit', {
                 rules: [{ required, message: `请选择审批单位` }],
-                initialValue: userinfo ? userinfo.unitName : '',
+                initialValue: userinfo ? userinfo.unitName : formmap.get(taskName).unitName,
               })(<Input disabled />)}
             </Form.Item>
           </Col>

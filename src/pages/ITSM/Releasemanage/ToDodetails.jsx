@@ -30,6 +30,17 @@ function ToDodetails(props) {
     })
   }
 
+  const flowGoback = () => {
+    dispatch({
+      type: 'releasetodo/releaseflow',
+      payload: {
+        taskId,
+        type: 2,
+        userIds: '',
+      },
+    });
+  }
+
   const handleTabChange = key => {
     settabActivekey(key)
   };
@@ -61,7 +72,7 @@ function ToDodetails(props) {
         </Button>
       )}
       {!saved && taskName !== '出厂测试' && taskName !== '发布实施准备' && (
-        <Button type="danger" ghost style={{ marginRight: 8 }} onMouseDown={() => setButtype('')} onClick={() => setButtype('goback')} >
+        <Button type="danger" ghost style={{ marginRight: 8 }} onMouseDown={() => setButtype('')} onClick={() => { flowGoback() }} >
           回退
         </Button>
       )}

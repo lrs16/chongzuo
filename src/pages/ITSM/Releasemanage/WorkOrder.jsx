@@ -290,7 +290,7 @@ function WorkOrder(props) {
     }
   };
 
-  // 版本管理员审核保存流转
+  // 版本管理员审核,科室负责人审核保存流转
   const saveVersionAudit = () => {
     const values = VersionAuditRef.current.getVal();
     dispatch({
@@ -300,6 +300,7 @@ function WorkOrder(props) {
         releaseAttaches: { mainId: values.releaseAttaches[0].mainId, taskId: values.releaseAttaches[0].taskId, releaseAttaches: values.releaseAttaches },
         releaseNo: Id,
         buttype,
+        taskName,
       },
     });
   }
@@ -412,6 +413,8 @@ function WorkOrder(props) {
             practicePreSubmit();
             break;
           case '版本管理员审核':
+          case '科室负责人审核':
+          case '中心领导审核':
             VersionAuditSubmit();
             break;
           default:
@@ -498,7 +501,7 @@ function WorkOrder(props) {
             </div>
           </Panel>
         )}
-        {taskName === '版本管理员审核' && info && info.releaseMains && (
+        {taskName === '版本管理员审核' && info && info.mergeOrder && (
           <Panel header={taskName} key="form">
             <div style={{ marginTop: 12 }}>
               <VersionAudit
@@ -512,16 +515,18 @@ function WorkOrder(props) {
             </div>
           </Panel>
         )}
-        {(taskName === '科室负责人审批' || taskName === '中心领导审批') && (
+        {(taskName === '科室负责人审核' || taskName === '中心领导审核') && info && info.releaseMains && (
           <Panel header={taskName} key="form">
-            <Examine
-              wrappedComponentRef={ExamineRef}
-              selectdata={selectdata}
-              isEdit
-              taskName={taskName}
-              mainId={Id}
-              listType='临时'
-            />
+            <div style={{ marginTop: 12 }}>
+              <VersionAudit
+                wrappedComponentRef={VersionAuditRef}
+                selectdata={selectdata}
+                isEdit
+                taskName={taskName}
+                info={info}
+                userinfo={userinfo}
+              />
+            </div>
           </Panel>
         )}
         {(taskName === '发布实施') && (

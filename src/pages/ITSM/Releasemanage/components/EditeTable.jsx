@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useContext } from 'react';
-import ReactDOM from 'react-dom';
 import { connect } from 'dva';
 import { Table, Row, Button, Col, Cascader, Input, Radio, message, Divider, Select, Tabs, Alert, Tooltip } from 'antd';
 import UserContext from '@/layouts/MenuContext';
@@ -586,7 +585,7 @@ function EditeTable(props) {
                   <TextArea
                     defaultValue={record.testMenu}
                     autoSize
-                    style={{ width: 330 }}
+                    style={{ width: 320 }}
                     onChange={e => handleFieldChange(e.target.value, 'testMenu', record.key)}
                   />
                 </InputGroup>
@@ -597,7 +596,7 @@ function EditeTable(props) {
                   <TextArea
                     defaultValue={record.testResult}
                     autoSize
-                    style={{ width: 330 }}
+                    style={{ width: 320 }}
                     onChange={e => handleFieldChange(e.target.value, 'testResult', record.key)}
                   />
                 </InputGroup>
@@ -608,7 +607,7 @@ function EditeTable(props) {
                   <TextArea
                     defaultValue={record.testStep}
                     autoSize
-                    style={{ width: 330 }}
+                    style={{ width: 320 }}
                     onChange={e => handleFieldChange(e.target.value, 'testStep', record.key)}
                   />
                 </InputGroup>
@@ -620,17 +619,17 @@ function EditeTable(props) {
           <>
             <InputGroup compact>
               <span style={{ width: 70, textAlign: 'right' }}>功能菜单：</span>
-              <span style={{ width: 330 }}>{record.testMenu}</span>
+              <span style={{ width: 320 }} dangerouslySetInnerHTML={{ __html: record.testMenu?.replace(/[\n]/g, '<br/>') }} />
             </InputGroup>
             <Divider type='horizontal' style={{ margin: '6px 0' }} />
             <InputGroup compact>
               <span style={{ width: 70, textAlign: 'right' }}>预期效果：</span>
-              <span style={{ width: 330 }}>{record.testResult}</span>
+              <span style={{ width: 320 }} dangerouslySetInnerHTML={{ __html: record.testResult?.replace(/[\n]/g, '<br/>') }} />
             </InputGroup>
             <Divider type='horizontal' style={{ margin: '6px 0' }} />
             <InputGroup compact>
               <span style={{ width: 70, textAlign: 'right' }}>验证步骤：</span>
-              <span style={{ width: 330 }}>{record.testStep}</span>
+              <span style={{ width: 320 }} dangerouslySetInnerHTML={{ __html: record.testStep?.replace(/[\n]/g, '<br/>') }} />
             </InputGroup>
           </>
         );
@@ -787,7 +786,7 @@ function EditeTable(props) {
     width: 150,
     align: 'center',
     render: (text, record) => {
-      if (record.isNew || record.editable) {
+      if ((record.isNew || record.editable) && taskName === '版本管理员审核') {
         const newData = data.map(item => ({ ...item }));
         newData.shift()
         const releaseNoList = uniqueNo(newData);
@@ -823,7 +822,7 @@ function EditeTable(props) {
       const newarr = arr;
       newarr.splice(-3, 0, verifyStatus)
       return newarr
-    } if (taskName === '版本管理员审核') {
+    } if (taskName === '版本管理员审核' || taskName === '科室负责人审核') {
       const newarr = arr;
       newarr.splice(-1, 0, orderid);
       return newarr
@@ -885,10 +884,10 @@ function EditeTable(props) {
         )}
         {title}
       </h4>
-      {(taskName === '版本管理员审核' || taskName === '科室负责人审批' || taskName === '中心领导审批' || taskName === '业务复核') && dutyUnitListMsg && dutyUnits && dutyUnits.length > 1 && (
+      {(taskName === '版本管理员审核' || taskName === '科室负责人审核' || taskName === '中心领导审核' || taskName === '业务复核') && dutyUnitListMsg && dutyUnits && dutyUnits.length > 1 && (
         <div style={{ paddingBottom: 12 }}>{dutyUnitTotalMsg}</div>
       )}
-      {(taskName === '版本管理员审核' || taskName === '科室负责人审批' || taskName === '中心领导审批' || taskName === '业务复核') && dutyUnits && dutyUnits.length > 1 && (
+      {(taskName === '版本管理员审核' || taskName === '科室负责人审核' || taskName === '中心领导审核' || taskName === '业务复核') && dutyUnits && dutyUnits.length > 1 && (
         <Tabs type='card' onChange={handleTabChange} activeKey={tabActivekey}>
           {dutyUnits.map((obj) => {
             return [
