@@ -1,8 +1,9 @@
-import React, { useRef, useImperativeHandle, forwardRef } from 'react';
+import React, { useRef, useImperativeHandle, forwardRef, useState, useContext } from 'react';
 import moment from 'moment';
 import { Row, Col, Form, Input, Button, Select, Radio } from 'antd';
+import SubmitTypeContext from '@/layouts/MenuContext';
 import DocumentAtt from './DocumentAtt';
-import EditeTable from './EditeTable';
+import ReleseList from './ReleseList';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -28,13 +29,30 @@ const formuintLayout = {
 };
 
 function BusinessReview(props, ref) {
-  const { taskName, userinfo, register, selectdata, isEdit } = props;
-  const { getFieldDecorator } = props.form;
+  const { userinfo, selectdata, isEdit, info } = props;
+  const { getFieldDecorator, getFieldsValue, resetFields, setFieldsValue } = props.form;
   const required = true;
+
+  const [check, setCheck] = useState(false);
+  const { ChangeSubmitType, ChangeButtype } = useContext(SubmitTypeContext);
+
   const formRef = useRef();
   useImperativeHandle(ref, () => ({
-    Forms: props.form,
-  }))
+    getVal: () => getFieldsValue(),
+    resetVal: () => resetFields(),
+    Forms: props.form.validateFieldsAndScroll,
+  }), []);
+
+  const changeatt = (v, files) => {
+    setFieldsValue({ releaseAttaches: v });
+    const target = v.filter(item => item.key === '8')[0];
+    if (target && target.attachFile !== '[]') {
+      setCheck(false);
+    };
+    if (files === 'files') {
+      ChangeButtype('save')
+    };
+  }
 
   const getTypebyId = key => {
     if (selectdata.ischange) {
@@ -42,53 +60,67 @@ function BusinessReview(props, ref) {
     }
     return [];
   };
-  const functionmap = getTypebyId('1384052503909240833');   // 功能类型
-  const modulamap = getTypebyId('1384430921586839554');     // 模块
+
   const unitmap = getTypebyId('1384056290929545218');       // 责任单位
 
   return (
     <Row gutter={12} style={{ paddingTop: 24, }}>
       <Form ref={formRef} {...formItemLayout}>
-        <Col span={24} style={{ marginBottom: 12 }}>
-          <EditeTable
-            title='发布清单'
-            functionmap={functionmap}
-            modulamap={modulamap}
-            isEdit={false}
-            listType='临时'
-            taskName={taskName}
-          />
-        </Col>
-        <Col span={24} style={{ marginTop: 24 }}>
+        <Col span={24}>
           <h4>发布结论：</h4>
           <p style={{ marginBottom: 0 }}>本次升级发布共计发布功能【N】个，通过【N】个，不通过【N】个。发布成功率 【N】%。</p>
           <p>其中【A公司】共计发布功能【N】个，通过【N】个，不通过【N】个。发布成功率 【N】%，【B公司】共计发布功能【】个，通过【】个，不通过【】个。发布成功率 【100】%</p>
         </Col>
         <Col span={24}>
           <Form.Item label="复核说明" {...formuintLayout} labelAlign='left'>
-            {getFieldDecorator('form9', {
+            {getFieldDecorator('checkComments', {
               rules: [{ required, message: `请填写复核说明` }],
-              initialValue: '',
+              initialValue: info.releaseBizCheck && info.releaseBizCheck.checkComments || '',
             })(<TextArea autoSize={{ minRows: 4 }} disabled={!isEdit} />)}
           </Form.Item>
         </Col>
+        <Col span={24} style={{ marginBottom: 12 }}>
+          <h4>发布清单</h4>
+          <ReleseList
+            title='发布清单'
+            dataSource={info.releaseLists}
+          />
+          <Form.Item wrapperCol={{ span: 24 }} style={{ display: 'none' }}>
+            {getFieldDecorator('releaseLists', {
+              initialValue: info.releaseLists,
+            })(<></>)}
+          </Form.Item>
+        </Col>
         <Col span={24}><Button type='primary'>发起服务绩效考核</Button></Col>
-        <Col span={24} style={{ marginBottom: 24, marginTop: 12 }}>
-          <DocumentAtt rowkey={null} unitmap={unitmap} isEdit={isEdit} />
+        <Col span={24} style={{ marginBottom: 24, marginTop: 24 }}>
+          <DocumentAtt
+            rowkey='0'
+            isEdit={isEdit}
+            unitmap={unitmap}
+            dataSource={info && info.releaseAttaches ? info.releaseAttaches : []}
+            Unit={{ dutyUnit: undefined }}
+            ChangeValue={(v, files) => changeatt(v, files)}
+            check={check}
+          />
+          <Form.Item wrapperCol={{ span: 24 }} style={{ display: 'none' }}>
+            {getFieldDecorator('releaseAttaches', {
+              initialValue: info.releaseAttaches,
+            })(<></>)}
+          </Form.Item>
         </Col>
         <Col span={8}>
           <Form.Item label="复核人">
-            {getFieldDecorator('form11', {
+            {getFieldDecorator('userName', {
               rules: [{ required, message: `请选择复核人` }],
-              initialValue: '',
+              initialValue: userinfo ? userinfo.userName : info.releaseBizCheck && info.releaseBizCheck.userName,
             })(<Input disabled />)}
           </Form.Item>
         </Col>
         <Col span={8}>
           <Form.Item label="复核时间" >
-            {getFieldDecorator('form5', {
+            {getFieldDecorator('registerTime', {
               rules: [{ required, message: `请选择复核时间` }],
-              initialValue: moment().format("YYYY-MM-DD HH:mm:ss"),
+              initialValue: moment(info.releaseBizCheck && info.releaseBizCheck.registerTime || undefined).format("YYYY-MM-DD HH:mm:ss"),
             })(
               <Input disabled />
             )}
@@ -98,7 +130,7 @@ function BusinessReview(props, ref) {
           <Form.Item label="复核单位">
             {getFieldDecorator('form13', {
               rules: [{ required, message: `请选择复核单位` }],
-              initialValue: '',
+              initialValue: userinfo ? userinfo.unitName : info.releaseBizCheck && info.releaseBizCheck.unitName,
             })(<Input disabled />)}
           </Form.Item>
         </Col>

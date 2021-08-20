@@ -199,6 +199,7 @@ function ToDolist(props) {
               taskName: record.taskName,
               Id: record.releaseNo,
               taskId: record.taskId,
+              type: record.releaseType,
             },
             state: {
               dynamicpath: true,
@@ -214,6 +215,9 @@ function ToDolist(props) {
       title: '合并单号',
       dataIndex: 'mergeNo',
       key: 'mergeNo',
+      render: (text, record) => {
+        return (<>{record.taskName === '版本管理员审核' ? text : ''}</>)
+      }
     },
     {
       title: '当前处理环节',

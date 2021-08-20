@@ -1,19 +1,28 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext, useState } from 'react';
 import { connect } from 'dva';
 import router from 'umi/router';
 import { Button, message, Card } from 'antd';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
+import EditContext from '@/layouts/MenuContext';
 import BusinessEditTable from './components/BusinessEditTable';
 import { completeVerify } from './services/api';
 
 function BusinessDetail(props) {
   const { dispatch, info } = props;
-  const { Id, todoCode } = props.location.query;
+  const { Id, releaseNo } = props.location.query;
   const pagetitle = props.route.name;
+  const [runpath, setRunpath] = useState('');
+  const { currenttab } = useContext(EditContext);
+
+  useEffect(() => {
+    if (currenttab && currenttab.state) {
+      setRunpath(currenttab.state.runpath);
+    }
+  }, [currenttab])
 
   const handleclose = () => {
     router.push({
-      pathname: `/ITSM/releasemanage/verificationtodo`,
+      pathname: runpath,
       query: { pathpush: true },
       state: { cache: false }
     });
@@ -38,15 +47,15 @@ function BusinessDetail(props) {
   }
 
   useEffect(() => {
-    if (todoCode) {
+    if (Id) {
       dispatch({
         type: 'releaseverificat/openflow',
         payload: {
-          todoCode,
+          todoCode: Id,
         },
       });
     }
-  }, [todoCode])
+  }, [Id])
 
   const operations = (
     <>
@@ -59,7 +68,7 @@ function BusinessDetail(props) {
 
   return (
     <PageHeaderWrapper title={pagetitle} extra={operations}>
-      <Card>
+      <Card title={`所属发布工单:${releaseNo}`} >
         <BusinessEditTable
           title='发布清单'
           type={pagetitle}

@@ -116,6 +116,16 @@ export async function bizTodoList(params) {
   });
 }
 
+// 业务复核待办列表
+export async function bizCheckTodo(params) {
+  return request(`/release/from/bizCheckTodo`, {
+    method: 'POST',
+    data: params,
+    requestType: 'form',
+  });
+}
+
+
 // 打开业务验证 /release/from/openBizTodoList
 export async function openBizTodoList(params) {
   return request(`/release/from/openBizTodoList`, {
@@ -211,5 +221,21 @@ export async function savePracticeDone(params) {
     method: 'POST',
     data: JSON.stringify(params),
     requestType: 'formjosn',
+  });
+}
+
+// 业务复核 /release/flow/saveBizCheck
+export async function saveBizCheck(params) {
+  return request(`/release/flow/saveBizCheck`, {
+    method: 'POST',
+    data: JSON.stringify(params),
+    requestType: 'formjosn',
+  });
+}
+
+// 清单统计 /release/flow/classifyList
+export async function classifyList(taskIds) {
+  return request(`/release/from/classifyList?taskIds=${taskIds}`, {
+    method: 'GET',
   });
 }

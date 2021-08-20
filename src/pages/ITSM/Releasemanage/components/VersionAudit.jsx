@@ -49,6 +49,7 @@ function VersionAudit(props, ref) {
   const [attaches, setAttaches] = useState([]);
   const [activeKey, setActiveKey] = useState('');
   const [adopt, setAdopt] = useState('通过');
+  const [rowkey, setRowKey] = useState('0');
   const { ChangeSubmitType, ChangeButtype } = useContext(SubmitTypeContext);
   const required = true;
 
@@ -58,7 +59,22 @@ function VersionAudit(props, ref) {
     ['版本管理员审核', info.mergeOrder || {}],
     ['科室负责人审核', info.checkMerge || {}],
     ['中心领导审核', info.checkMerge || {}],
-  ]);
+  ])
+
+  useEffect(() => {
+    if (taskName === '版本管理员审核') {
+      const type = getQueryVariable('type');
+      if (type === '计划发布') {
+        setRowKey('6')
+      };
+      if (type === '临时发布') {
+        setRowKey('7')
+      }
+    } else {
+      setRowKey('0')
+    }
+  }, [info])
+  console.log(rowkey)
 
   // 已合并工单
   const orderkeys = info.releaseMains && info.releaseMains.map((item) => {
@@ -359,7 +375,7 @@ function VersionAudit(props, ref) {
               })}
             </Tabs>)}
             <DocumentAtt
-              rowkey={taskName === '版本管理员审核' ? '6' : '0'}
+              rowkey={rowkey}
               isEdit={isEdit}
               unitmap={unitmap}
               dataSource={attaches}

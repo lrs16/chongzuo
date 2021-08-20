@@ -358,7 +358,7 @@ function Registrat(props, ref) {
             <Form.Item label="登记人" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
               {getFieldDecorator('registerUser', {
                 rules: [{ required, message: `请输入登记人` }],
-                initialValue: userinfo ? userinfo.userName : '',
+                initialValue: userinfo ? userinfo.userName : formmap.get(taskName).userName,
               })(<Input disabled />)}
             </Form.Item>
             {/* <Form.Item label="登记人Id" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }} style={{ display: 'none' }}>
@@ -381,7 +381,7 @@ function Registrat(props, ref) {
             <Form.Item label="登记单位" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
               {getFieldDecorator('registerUnit', {
                 rules: [{ required, message: `请选择登记单位` }],
-                initialValue: userinfo ? userinfo.unitName : '',
+                initialValue: userinfo ? userinfo.unitName : formmap.get(taskName).unitName,
               })(<Input disabled />)}
             </Form.Item>
             {/* <Form.Item label="登记单位Id" labelCol={{ span: 6 }} wrapperCol={{ span: 18 }} style={{ display: 'none' }}>

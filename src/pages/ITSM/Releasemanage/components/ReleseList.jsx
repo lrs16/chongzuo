@@ -1,12 +1,32 @@
-import React from 'react';
-import { Row, Col, Form, Input, Alert, DatePicker, Select, Radio, Divider } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Input, Divider, Table } from 'antd';
+import { classifyList } from '../services/api';
 
-const { TextArea } = Input;
-const { Option } = Select;
 const InputGroup = Input.Group;
-const RadioGroup = Radio.Group;
+
+function getQueryVariable(variable) {
+  const query = window.location.search.substring(1);
+  const vars = query.split("&");
+  for (let i = 0; i < vars.length; i += 1) {
+    const pair = vars[i].split("=");
+    if (pair[0] === variable) { return pair[1]; }
+  }
+  return (false);
+}
 
 function ReleseList(props) {
+  const { dataSource } = props;
+  const [classify, setClassify] = useState('');
+  useEffect(() => {
+    if (dataSource) {
+      classifyList(getQueryVariable("taskId")).then(res => {
+        if (res.code === 200) {
+          setClassify(res.data.classifyList.dutyUnitTotalMsg)
+        }
+      })
+    }
+  }, [dataSource])
+
   const columns = [
     {
       title: '序号',
@@ -52,21 +72,28 @@ function ReleseList(props) {
           <>
             <InputGroup compact>
               <span style={{ width: 70, textAlign: 'right' }}>功能菜单：</span>
-              <span style={{ width: 200 }}>{record.testMenu}</span>
+              <span style={{ width: 210 }}>{record.testMenu}</span>
             </InputGroup>
             <Divider type='horizontal' style={{ margin: '6px 0' }} />
             <InputGroup compact>
               <span style={{ width: 70, textAlign: 'right' }}>预期效果：</span>
-              <span style={{ width: 200 }}>{record.testResult}</span>
+              <span style={{ width: 210 }}>{record.testResult}</span>
             </InputGroup>
             <Divider type='horizontal' style={{ margin: '6px 0' }} />
             <InputGroup compact>
               <span style={{ width: 70, textAlign: 'right' }}>验证步骤：</span>
-              <span style={{ width: 200 }}>{record.testStep}</span>
+              <span style={{ width: 210 }}>{record.testStep}</span>
             </InputGroup>
           </>
         );
       }
+    },
+    {
+      title: '状态',
+      dataIndex: 'verifyStatus',
+      key: 'verifyStatus',
+      align: 'center',
+      width: 100,
     },
     {
       title: '是否通过',
@@ -76,23 +103,37 @@ function ReleseList(props) {
       width: 100,
     },
     {
+      title: '业务负责人',
+      dataIndex: 'responsible',
+      key: 'responsible',
+      width: 100,
+    },
+    {
       title: '开发人员',
       dataIndex: 'developer',
       key: 'developer',
       width: 100,
     },
-    {
-      title: '操作人员',
-      dataIndex: 'operator',
-      key: 'operator',
-      align: 'center',
-      width: 100,
-    },
+    // {
+    //   title: '操作人员',
+    //   dataIndex: 'operator',
+    //   key: 'operator',
+    //   align: 'center',
+    //   width: 100,
+    // },
   ];
   return (
-    <div>
-      111
-    </div>
+    <>
+      <span style={{ paddingBottom: 12 }}>{classify}</span>
+      <Table
+        columns={columns}
+        bordered
+        size='middle'
+        dataSource={dataSource}
+        pagination={false}
+        rowKey={(_, index) => index.toString()}
+      />
+    </>
   );
 }
 

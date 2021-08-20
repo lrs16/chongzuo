@@ -47,7 +47,7 @@ function EditeTable(props) {
 
   // 新增一条记录
   const newMember = () => {
-    setPageinations({ current: 1, pageSize: 2 });
+    setPageinations({ current: 1, pageSize: 1 });
     const newData = data.map(item => ({ ...item }));
     newData.unshift({
       key: data.length + 1,
@@ -85,17 +85,19 @@ function EditeTable(props) {
     setDeletBut(false)
     setSelectedRowKeys(RowKeys);
     setSelectedRecords(record);
-    if (RowKeys.length > 0) {
-      const releaseNoList = uniqueNo(record);                                // 工单号数组去重   
-      const target = releaseNoList.filter(item => item.releaseNo !== '');    // 数组中不含空值的
-      const releaseNos = target.map((item) => {                              // 取出发布工单号组成新的数组
-        return item.releaseNo
-      });
-      if (releaseNos.length > 1) {
-        setDeletBut(true)
-      };
-      if (releaseNos.length === 1) {
-        ChangeAttActiveKey(releaseNos[0])
+    if (taskName === '版本管理员审核') {
+      if (RowKeys.length > 0) {
+        const releaseNoList = uniqueNo(record);                                // 工单号数组去重   
+        const target = releaseNoList.filter(item => item.releaseNo !== '');    // 数组中不含空值的
+        const releaseNos = target.map((item) => {                              // 取出发布工单号组成新的数组
+          return item.releaseNo
+        });
+        if (releaseNos.length > 1) {
+          setDeletBut(true)
+        };
+        if (releaseNos.length === 1) {
+          ChangeAttActiveKey(releaseNos[0])
+        }
       }
     }
   };
@@ -729,7 +731,9 @@ function EditeTable(props) {
                 <Button type='link' onMouseDown={() => ChangeButtype('')} onClick={e => saveRow(e, record.key)}>{taskName === '新建' ? '暂存' : '保存'}</Button>
               )}
               {taskName === '业务验证' && (
-                <Button type='link' onMouseDown={() => ChangeButtype('')} onClick={e => saveRow(e, record.key, 'save')}>保存</Button>
+                <Tooltip placement="topLeft" title="保存后请将清单分派给指定业务负责人">
+                  <Button type='link' onMouseDown={() => ChangeButtype('')} onClick={e => saveRow(e, record.key, 'save')}>保存</Button>
+                </Tooltip>
               )}
               {taskName === '版本管理员审核' && (
                 <Button type='link' onMouseDown={() => { ChangeButtype('') }} onClick={e => checsaveRow(e, record.key)}>保存</Button>
@@ -910,7 +914,7 @@ function EditeTable(props) {
                 <Button
                   type='primary'
                   style={{ marginRight: 8 }}
-                  onMouseDown={() => getUserList()}
+                  onMouseDown={() => { setChoiceUser({ users: '', ischange: false }); getUserList() }}
                   onClick={() => hadleAssignment('assign')}
                   disabled={newbutton}
                 >
@@ -921,7 +925,7 @@ function EditeTable(props) {
                 <Button
                   type='primary'
                   style={{ marginRight: 8 }}
-                  onMouseDown={() => getUserList()}
+                  onMouseDown={() => { setChoiceUser({ users: '', ischange: false }); getUserList() }}
                   onClick={() => hadleAssignment('reassignment')}
                   disabled={newbutton}
                 >

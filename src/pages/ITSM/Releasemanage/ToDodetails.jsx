@@ -86,7 +86,7 @@ function ToDodetails(props) {
       </Button>
       {submittype === 1 && (
         <Button type="primary" style={{ marginRight: 8 }} onMouseDown={() => setButtype('')} onClick={() => setButtype('flow')} >
-          流转
+          {taskName === '业务复核' ? '结束' : '流转'}
         </Button>
       )}
       {submittype === 0 && (

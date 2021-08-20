@@ -32,13 +32,16 @@ function VerificationTodo(props) {
     dispatch,
     viewlist,
     viewmsg,
-    viewloading
+    viewloading,
+    location
   } = props;
   const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
   const [expand, setExpand] = useState(false);
   const [selectdata, setSelectData] = useState('');
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [selectedRecords, setSelectedRecords] = useState([]);
+
+  console.log(viewlist)
 
   useEffect(() => {
     validateFields((err, values) => {
@@ -206,11 +209,12 @@ function VerificationTodo(props) {
           router.push({
             pathname: `/ITSM/releasemanage/verificationtodo/record`,
             query: {
-              Id: record.releaseNo,
-              todoCode: record.todoCode,
+              Id: record.todoCode,
+              releaseNo: record.releaseNo,
               titletype: '业务验证'
             },
             state: {
+              runpath: location.pathname,
               dynamicpath: true,
               menuDesc: '业务验证',
             }
@@ -230,11 +234,11 @@ function VerificationTodo(props) {
       key: 'verifyStatus',
     },
     {
-      title: '发布清单',
+      title: '发布编号',
       dataIndex: 'releaseNo',
       key: 'releaseNo',
-      render: (text, record) => {
-        return <Tooltip title="点击行查看清单">查看清单</Tooltip>;
+      render: (text) => {
+        return <Tooltip title="点击行查看清单">{text}</Tooltip>;
       },
     },
     {
@@ -448,13 +452,13 @@ function VerificationTodo(props) {
           expandRowByClick
           onRow={record => {
             return {
-              onClick: event => { getViewList(record.todoCode) },
+              onClick: (e) => { e.preventDefault(); getViewList(record.todoCode) },
             };
           }}
           dataSource={list}
           pagination={pagination}
           rowSelection={rowSelection}
-          rowKey={(_, index) => index.toString()}
+          rowKey={(record) => record.todoCode}
         />
       </Card>
     </PageHeaderWrapper>

@@ -16,6 +16,7 @@ import {
   saveCheckDirector,
   saveCheckLeader,
   savePracticeDone,
+  saveBizCheck,
   attachBatchEdit
 } from '../services/api';
 
@@ -26,6 +27,7 @@ export default {
     list: {},
     info: undefined,
     currentTaskStatus: undefined,
+    statuse: -1,
   },
 
   effects: {
@@ -52,20 +54,26 @@ export default {
         type: 'clearcache',
       });
       const response = yield call(openFlow, releaseNo);
-      const infomap = new Map([
-        ['出厂测试', response.data.register],
-        ['平台验证', response.data.platformValidate],
-        ['业务验证', response.data.bizValidateParam],
-        ['发布实施准备', response.data.practicePreParam],
-        ['版本管理员审核', response.data.checkVersionParam],
-        ['科室负责人审核', response.data.checkDirectorParam],
-        ['中心领导审核', response.data.checkLeaderParam],
-        ['发布实施', response.data.practiceDoneParam],
-      ]);
-      yield put({
-        type: 'saveinfo',
-        payload: { info: infomap.get(taskName), currentTaskStatus: response.data.currentTaskStatus },
-      });
+      if (response.code === 200) {
+        const infomap = new Map([
+          ['出厂测试', response.data.register],
+          ['平台验证', response.data.platformValidate],
+          ['业务验证', response.data.bizValidateParam],
+          ['发布实施准备', response.data.practicePreParam],
+          ['版本管理员审核', response.data.checkVersionParam],
+          ['科室负责人审核', response.data.checkDirectorParam],
+          ['中心领导审核', response.data.checkLeaderParam],
+          ['发布实施', response.data.practiceDoneParam],
+          ['业务复核', response.data.bizCheckParam],
+        ]);
+        yield put({
+          type: 'saveinfo',
+          payload: { info: infomap.get(taskName), currentTaskStatus: response.data.currentTaskStatus },
+        });
+      } else {
+        message.error(response.msg)
+      }
+
     },
     // 通用流转
     *releaseflow({ payload }, { call }) {
@@ -88,10 +96,15 @@ export default {
 
     // 出厂测试保存
     * factorytest({ payload: { register, buttype } }, { call, put }) {
-      // yield put({
-      //   type: 'clearcache',
-      // });
+      yield put({
+        type: 'savestatuse',
+        payload: { statuse: -1 },
+      });
       const response = yield call(saveRegister, register);
+      yield put({
+        type: 'savestatuse',
+        payload: { statuse: response.code },
+      });
       if (response.code === 200) {
         if (buttype === 'save') {
           message.success('保存成功')
@@ -107,10 +120,15 @@ export default {
 
     // 平台验证保存
     * platformvalid({ payload: { platform, buttype } }, { call, put }) {
-      // yield put({
-      //   type: 'clearcache',
-      // });
+      yield put({
+        type: 'savestatuse',
+        payload: { statuse: -1 },
+      });
       const response = yield call(saveplatformValid, platform);
+      yield put({
+        type: 'savestatuse',
+        payload: { statuse: response.code },
+      });
       if (response.code === 200) {
         if (buttype === 'save') {
           message.success('保存成功');
@@ -126,10 +144,15 @@ export default {
 
     // 业务验证保存
     * bizvalid({ payload: { bizValidate, buttype } }, { call, put }) {
-      // yield put({
-      //   type: 'clearcache',
-      // });
+      yield put({
+        type: 'savestatuse',
+        payload: { statuse: -1 },
+      });
       const response = yield call(savereleaseBizValid, bizValidate);
+      yield put({
+        type: 'savestatuse',
+        payload: { statuse: response.code },
+      });
       if (response.code === 200) {
         if (buttype === 'save') {
           message.success('保存成功');
@@ -145,7 +168,15 @@ export default {
 
     // 发布实施准备保存
     * implementationpre({ payload: { formValue, buttype } }, { call, put }) {
+      yield put({
+        type: 'savestatuse',
+        payload: { statuse: -1 },
+      });
       const response = yield call(savePracticePre, formValue);
+      yield put({
+        type: 'savestatuse',
+        payload: { statuse: response.code },
+      });
       if (response.code === 200) {
         if (buttype === 'save') {
           message.success('保存成功');
@@ -156,11 +187,13 @@ export default {
         });
       } else {
         message.error('操作失败');
-      }
+      };
+      return response.code
     },
 
     // 分派，重分派
     * listassign({ payload: { values, releaseNo } }, { call, put }) {
+      console.log(values)
       const response = yield call(releaseListAssign, values);
       if (response.code === 200) {
         message.success('分派成功')
@@ -236,7 +269,11 @@ export default {
 
     // 版本管理员审核，科室负责人审核
     * checkversion({ payload: { values, releaseAttaches, buttype, releaseNo, taskName } }, { call, put }) {
-      let response = {}
+      yield put({
+        type: 'savestatuse',
+        payload: { statuse: -1 },
+      });
+      let response = {};
       const attres = yield call(attachBatchEdit, releaseAttaches);    // 先保存附件
       if (attres) {
         if (taskName === '版本管理员审核') {
@@ -248,6 +285,10 @@ export default {
         if (taskName === '中心领导审核') {
           response = yield call(saveCheckLeader, values);        // 再保存表单
         };
+        yield put({
+          type: 'savestatuse',
+          payload: { statuse: response.code },
+        });
         if (response.code === 200) {
           if (buttype === 'save') {
             message.success('操作成功')
@@ -274,7 +315,15 @@ export default {
 
     // 发布实施
     * racticedone({ payload: { practicedoneparam, buttype } }, { call, put }) {
+      yield put({
+        type: 'savestatuse',
+        payload: { statuse: -1 },
+      });
       const response = yield call(savePracticeDone, practicedoneparam);
+      yield put({
+        type: 'savestatuse',
+        payload: { statuse: response.code },
+      });
       if (response.code === 200) {
         if (buttype === 'save') {
           message.success('保存成功');
@@ -282,6 +331,30 @@ export default {
         yield put({
           type: 'saveinfo',
           payload: { info: response.data.saveRegister, currentTaskStatus: response.data.currentTaskStatus },
+        });
+      } else {
+        message.error(response.msg)
+      };
+    },
+
+    // 业务复核
+    * bizcheck({ payload: { bizcheckparam, buttype } }, { call, put }) {
+      yield put({
+        type: 'savestatuse',
+        payload: { statuse: -1 },
+      });
+      const response = yield call(saveBizCheck, bizcheckparam);
+      yield put({
+        type: 'savestatuse',
+        payload: { statuse: response.code },
+      });
+      if (response.code === 200) {
+        if (buttype === 'save') {
+          message.success('保存成功');
+        };
+        yield put({
+          type: 'saveinfo',
+          payload: { info: response.data.bizCheckParam, currentTaskStatus: response.data.currentTaskStatus },
         });
       } else {
         message.error(response.msg)
@@ -295,6 +368,8 @@ export default {
         ...state,
         list: {},
         info: undefined,
+        currentTaskStatus: undefined,
+        statuse: -1,
       };
     },
     save(state, action) {
@@ -308,6 +383,12 @@ export default {
         ...state,
         info: action.payload.info || {},
         currentTaskStatus: action.payload.currentTaskStatus || {},
+      };
+    },
+    savestatuse(state, action) {
+      return {
+        ...state,
+        statuse: action.payload.statuse,
       };
     },
   },

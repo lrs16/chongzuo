@@ -16,30 +16,34 @@ const { Panel } = Collapse;
 const { Step } = Steps;
 
 function WorkOrder(props) {
-  const { location, dispatch, userinfo, info, currentTaskStatus, buttype, ChangeSaved } = props;
+  const { location, dispatch, userinfo, info, currentTaskStatus, buttype, ChangeSaved, statuse } = props;
   const { taskName, Id } = location.query;
   const [activeKey, setActiveKey] = useState(['form']);
   const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
   const [uservisible, setUserVisible] = useState(false);        // 是否显示选人组件
   const [userchoice, setUserChoice] = useState(false);          // 已经选择人员  
   const { submittype } = useContext(SubmitTypeContext);
+  // console.log(statuse)
 
   // 保存，保存提交
   const RegistratRef = useRef();
   const ImplementationPreRef = useRef();
   const VersionAuditRef = useRef();
   const ImplementationRef = useRef();
+  const BusinessReviewRef = useRef();
 
   // 流程提交
   const tosubmit = () => {
-    dispatch({
-      type: 'releasetodo/releaseflow',
-      payload: {
-        taskId: currentTaskStatus.taskId,
-        type: submittype,
-        userIds: sessionStorage.getItem('NextflowUserId'),
-      },
-    });
+    if (statuse === 200) {
+      dispatch({
+        type: 'releasetodo/releaseflow',
+        payload: {
+          taskId: currentTaskStatus.taskId,
+          type: submittype,
+          userIds: sessionStorage.getItem('NextflowUserId'),
+        },
+      });
+    }
   }
   // 获取出厂测试、平台验证表单信息
   const getregistratformvalues = () => {
@@ -325,7 +329,7 @@ function WorkOrder(props) {
     }
   };
 
-  // 发布实施准备
+  // 发布实施
   const saveracticeDone = () => {
     const values = ImplementationRef.current.getVal();
     const { releaseAttaches, releaseLists, practiceTime, practicer, doneDesc, legacyDesc } = values;
@@ -358,6 +362,53 @@ function WorkOrder(props) {
             saveracticeDone();
             sessionStorage.setItem('flowtype', '1');
             setUserVisible(true);
+          }
+        })
+        break;
+      default:
+        break;
+    }
+  };
+
+  // 业务复核
+  const savebusinessReview = () => {
+    const values = BusinessReviewRef.current.getVal();
+    const { releaseAttaches, releaseLists, practiceTime, practicer, doneDesc, legacyDesc } = values;
+    dispatch({
+      type: 'releasetodo/bizcheck',
+      payload: {
+        bizcheckparam: {
+          releaseNo: Id,
+          saveItems: 'releaseBizCheck, releaseLists, releaseAttaches',
+          releaseAttaches,
+          releaseLists,
+          releaseBizCheck: { practiceTime: moment(practiceTime).format('YYYY-MM-DD HH:mm:ss'), practicer, doneDesc, legacyDesc },
+        },
+        buttype,
+      },
+    });
+  }
+  const businessReviewSubmit = () => {
+    switch (buttype) {
+      case 'save':
+        savebusinessReview()
+        break;
+      case 'flow':
+        setUserChoice(false);
+        sessionStorage.removeItem('NextflowUserId');
+        BusinessReviewRef.current.Forms((err, values) => {
+          if (err) {
+            message.error('请将信息填写完整')
+          } else {
+            const releaseStatus = values.releaseLists.map(item => {
+              return item.verifyStatus;
+            });
+            if (releaseStatus.includes('已转出') || releaseStatus.includes(null)) {
+              message.error('发布清单还未全部复核，无法流转')
+            } else {
+              savebusinessReview();
+              tosubmit();
+            }
           }
         })
         break;
@@ -458,6 +509,9 @@ function WorkOrder(props) {
             break;
           case '发布实施':
             racticeDoneSubmit();
+            break;
+          case '业务复核':
+            businessReviewSubmit();
             break;
           default:
             break;
@@ -585,15 +639,15 @@ function WorkOrder(props) {
             </div>
           </Panel>
         )}
-        {(taskName === '业务复核') && (
+        {taskName === '业务复核' && info && info.releaseAttaches && (
           <Panel header={taskName} key="form">
             <BusinessReview
-              wrappedComponentRef={ImplementationRef}
+              wrappedComponentRef={BusinessReviewRef}
               selectdata={selectdata}
               isEdit
               taskName={taskName}
-              mainId={Id}
-              listType='临时'
+              info={info}
+              userinfo={userinfo}
             />
           </Panel>
         )}
@@ -626,6 +680,7 @@ function WorkOrder(props) {
 export default connect(({ releasetodo, itsmuser, loading }) => ({
   info: releasetodo.info,
   currentTaskStatus: releasetodo.currentTaskStatus,
+  statuse: releasetodo.statuse,
   userinfo: itsmuser.userinfo,
   loading: loading.models.releasetodo,
 }))(WorkOrder);
