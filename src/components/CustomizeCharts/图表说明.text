@@ -17,3 +17,5 @@ BasicBarchart       磁盘使用率               条形图
 Donut               抄表结算接口              饼图（百分比，数值） 
 DonutPCT            告警概览                  饼图（百分比）     
 SmoothLine          月度告警数量              多曲线
+OrdinaryLine        统计类折线图              多条折线图
+Barchart            统计类基础条形图                基础条形图

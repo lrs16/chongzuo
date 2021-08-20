@@ -52,9 +52,9 @@ function AddProviderMaintenance(props) {
   const [performanceLeader, setPerformanceLeader] = useState('')
   const required = true;
 
-  const statueContent = ['在用','停用','过期'];
+  const statueContent = ['在用', '停用', '过期'];
 
-  console.log(providerStatus,'providerStatus')
+  console.log(providerStatus, 'providerStatus')
 
   //  服务商详情页
   const providerDetail = () => {
@@ -164,7 +164,7 @@ function AddProviderMaintenance(props) {
       title: '状态',
       dataIndex: 'status',
       key: 'status',
-      render:(text,record) => {
+      render: (text, record) => {
         return <p>{statueContent[text]}</p>
       }
     },
@@ -229,10 +229,14 @@ function AddProviderMaintenance(props) {
     if (providerSearch) {
       router.push({
         pathname: `/ITSM/servicequalityassessment/serviceprovidersearch`,
+        query: { pathpush: true },
+        state: { cache: false }
       })
     } else {
       router.push({
         pathname: `/ITSM/servicequalityassessment/serviceprovidermaintenance`,
+        query: { pathpush: true },
+        state: { cache: false }
       })
     }
 
@@ -336,7 +340,7 @@ function AddProviderMaintenance(props) {
                 </Form.Item>
               </Col>
             )} */}
-            
+
             <Col span={8}>
               <Form.Item label='负责人'>
                 {getFieldDecorator('director', {

@@ -1,5 +1,5 @@
 import React, { useState, useRef, useImperativeHandle, useEffect } from 'react';
-import { Row, Col, Form, Input, Select, DatePicker, AutoComplete, Spin } from 'antd';
+import { Row, Col, Form, Input, Select, DatePicker, AutoComplete, Spin, Cascader, } from 'antd';
 import moment from 'moment';
 import SysUpload from '@/components/SysUpload';
 import { getAndField } from '@/pages/SysManage/services/api';
@@ -12,7 +12,7 @@ const { TextArea, Search } = Input;
 let occurtime;
 
 const Registrat = React.forwardRef((props, ref) => {
-  const { formItemLayout, forminladeLayout, files, ChangeFiles,location } = props;
+  const { formItemLayout, forminladeLayout, files, ChangeFiles, location } = props;
   const { getFieldDecorator, setFieldsValue } = props.form;
   const [fileslist, setFilesList] = useState([]);
   const [titleautodata, setTitleAutoData] = useState([]);
@@ -21,6 +21,7 @@ const Registrat = React.forwardRef((props, ref) => {
   const [desautodata, setDestoData] = useState([]);
   const [disablelist, setDisabledList] = useState([]); // 自动完成下拉列表
   const [spinloading, setSpinLoading] = useState(true); // 自动完成加载
+  const [selectdata, setSelectData] = useState('');
 
   useEffect(() => {
     ChangeFiles(fileslist);
@@ -136,8 +137,30 @@ const Registrat = React.forwardRef((props, ref) => {
     }
   };
 
+  const handlobjectChange = value => {
+    console.log('value: ', value);
+    // console.log(value.slice(-1)[0],'lplp')
+    setFieldsValue({ type: value?.slice(-1)[0] }, () => { })
+  }
+
+  const getTypebyTitle = title => {
+    if (selectdata.ischange) {
+      return selectdata.arr.filter(item => item.title === title)[0].children;
+    }
+    return [];
+  };
+
+  const problemType = getTypebyTitle('问题分类');
+  console.log('problemType: ', problemType);
+
   return (
     <>
+      <SysDict
+        typeid="1354287742015508481"
+        commonid="1354288354950123522"
+        ChangeSelectdata={newvalue => setSelectData(newvalue)}
+        style={{ display: 'none' }}
+      />
       <Row gutter={24} style={{ paddingTop: 24 }}>
         <Form {...formItemLayout}>
           <Col span={8}>
@@ -241,17 +264,16 @@ const Registrat = React.forwardRef((props, ref) => {
                     message: '请输入问题分类',
                   },
                 ],
-                initialValue: main.type,
+                initialValue: (main.type).split(',') || [''],
+                // initialValue:['001','001004']
               })(
-                <Select placeholder="请选择">
-                  {type &&
-                    type.length &&
-                    type.map(({ key, val }) => (
-                      <Option key={key} value={key}>
-                        {val}
-                      </Option>
-                    ))}
-                </Select>,
+                <Cascader
+                  fieldNames={{ label: 'title', value: 'dict_code', children: 'children' }}
+                  options={problemType}
+                  placeholder="请选择"
+                  onChange={() => handlobjectChange()}
+                />,
+                <Input />
               )}
             </Form.Item>
           </Col>
@@ -265,7 +287,7 @@ const Registrat = React.forwardRef((props, ref) => {
                     message: '请选择重要程度',
                   },
                 ],
-                initialValue: main.importance?main.importance:'一般',
+                initialValue: main.importance ? main.importance : '一般',
               })(
                 <Select placeholder="请选择">
                   {priority &&
@@ -369,7 +391,7 @@ const Registrat = React.forwardRef((props, ref) => {
               })(
                 <AutoComplete
                   dataSource={titleautodata}
-                  onSearch={value => handleSearch(value,'title')}
+                  onSearch={value => handleSearch(value, 'title')}
                 >
                   <Input placeholder="请输入" />
                 </AutoComplete>,
@@ -390,7 +412,7 @@ const Registrat = React.forwardRef((props, ref) => {
               })(
                 <AutoComplete
                   dataSource={desautodata}
-                  onSearch={value => handleSearch(value,'des')}
+                  onSearch={value => handleSearch(value, 'des')}
                 >
                   <TextArea autoSize={{ minRows: 3 }} placeholder="请输入" />
                 </AutoComplete>,

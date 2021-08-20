@@ -89,6 +89,8 @@ function TobedealtForm(props) {
     })
   }
 
+  console.log(props,'props')
+
   const { taskName, id, instanceId } = currentTask || {};
 
   const openFlow = () => {

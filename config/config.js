@@ -475,6 +475,12 @@ export default {
                               icon: 'control',
                               component: './ITSM/Faultmanage/Breakdowndetail',
                             },
+                            {
+                              path: '/ITSM/faultmanage/faultstaticount/statisticalanalysis',
+                              name: '故障统计分析',
+                              icon: 'control',
+                              component: './ITSM/Faultmanage/StatisticalAnalysis',
+                            },
                           ],
                         },
                       ],

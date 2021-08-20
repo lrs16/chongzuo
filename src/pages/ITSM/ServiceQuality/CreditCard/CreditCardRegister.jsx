@@ -82,9 +82,8 @@ function CreditCardRegister(props) {
 
   const handleSave = () => {
     RegistratRef.current.validateFields((err, values) => {
-      console.log('values: ', values);
       if (!err) {
-        dispatch({
+         dispatch({
           type: 'performanceappraisal/scorecardSave',
           payload: {
             ...values,

@@ -291,6 +291,7 @@ function Workorder(props) {
             registerOccurTime: (values.registerOccurTime).format('YYYY-MM-DD HH:mm:ss'),
             registerExpectTime: (values.registerExpectTime).format('YYYY-MM-DD HH:mm:ss'),
             taskId: id,
+            type: (values.type).toString(),
             editState: todoDetail.editState === 'edit' ? 'edit' : 'add',
             registerId: todoDetail.editState === 'edit' ? todoDetail.register.id : todoDetail.editGuid,
             registerAttachments: files.ischange ? JSON.stringify(files.arr) : null

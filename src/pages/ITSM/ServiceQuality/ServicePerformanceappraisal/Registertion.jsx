@@ -72,13 +72,19 @@ function Registertion(props) {
         delete submitIfnfo.clause;
         delete submitIfnfo.score;
         delete submitIfnfo.contract;
-        dispatch({
+        return dispatch({
           type: 'performanceappraisal/assessRegister',
           payload: {
             ...submitIfnfo,
             assessTime: moment(values.assessTime).format('YYYY-MM-DD HH:mm:ss'),
             applyTime: moment(values.applyTime).format('YYYY-MM-DD HH:mm:ss'),
-            attachment: files.ischange ? JSON.stringify(files.arr) :''
+            attachment: files.ischange ? JSON.stringify(files.arr) : ''
+          }
+        }).then(res => {
+          if (res.code === 200) {
+            message.info(res.msg);
+          } else {
+            message.info(res.msg);
           }
         })
       }

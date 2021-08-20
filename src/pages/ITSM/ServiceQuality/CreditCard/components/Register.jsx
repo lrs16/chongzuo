@@ -294,6 +294,12 @@ const Register = React.forwardRef((props, ref) => {
                 <Form.Item label='评价计分卡名称'>
                   {
                     getFieldDecorator('cardName', {
+                      rules: [
+                        {
+                          required,
+                          message: '请输入评价计分卡名称'
+                        }
+                      ],
                       initialValue: register.cardName
                     })
                       (<Input disabled={search} />)
@@ -468,6 +474,12 @@ const Register = React.forwardRef((props, ref) => {
                 <Form.Item label='版本号'>
                   {
                     getFieldDecorator('version', {
+                      rules: [
+                        {
+                          required,
+                          message: '请输入版本号'
+                        }
+                      ],
                       initialValue: register.version
                     })
                       (<Input disabled={search} />)
@@ -480,6 +492,12 @@ const Register = React.forwardRef((props, ref) => {
                 <Form.Item label='专业部门'>
                   {
                     getFieldDecorator('deptName', {
+                      rules: [
+                        {
+                          required,
+                          message: '请输入专业部门'
+                        }
+                      ],
                       initialValue: register.deptName
                     })
                       (<Input disabled={search} />)
@@ -488,7 +506,7 @@ const Register = React.forwardRef((props, ref) => {
 
               </Col>
 
-              <Col span={8}>
+              {/* <Col span={8}>
                 <Form.Item label='评价区间'>
                   {
                     getFieldDecorator('cardSeason', {
@@ -512,8 +530,7 @@ const Register = React.forwardRef((props, ref) => {
                       )
                   }
                 </Form.Item>
-
-              </Col>
+              </Col> */}
 
               {
                 id && (

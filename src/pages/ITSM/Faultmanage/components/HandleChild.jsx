@@ -156,6 +156,20 @@ const HandleChild = React.forwardRef((props, ref) => {
           </Form.Item>
         </Col>
 
+        <Col span={24}>
+          <Form.Item label="处理过程" {...forminladeLayout}>
+            {getFieldDecorator('handleProcess', {
+              rules: [
+                {
+                  required,
+                  message: '请输入',
+                },
+              ],
+              initialValue: handle ? handle.handleProcess : '',
+            })(<TextArea autoSize={{ minRows: 3 }} allowClear />)}
+          </Form.Item>
+        </Col>
+
         <Col span={8}>
           <Form.Item label="处理开始时间">
             {getFieldDecorator('handleStartTime', {
@@ -368,6 +382,7 @@ HandleChild.defaultProps = {
     handleReason: '',
     handleAdvise: '',
     handleResult: '',
+    handleProcess:''
   },
   curruserinfo: {
     deptName: '',

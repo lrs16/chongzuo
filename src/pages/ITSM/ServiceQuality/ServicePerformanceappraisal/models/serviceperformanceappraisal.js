@@ -1,5 +1,8 @@
 import router from 'umi/router';
 import {
+  message
+} from 'antd';
+import {
   maintenanceList,
   tobeDealtdata,
   assessRegister,
@@ -137,6 +140,8 @@ export default {
           orderNo:id,
         }
       })
+    } else {
+      message.error(response.msg)
     }
   },
 

@@ -42,7 +42,7 @@ const { Option } = Select;
 function AddScoringRulesmaintenance(props) {
   const pagetitle = props.route.name;
   const {
-    form: { getFieldDecorator, validateFields,resetFields },
+    form: { getFieldDecorator, validateFields, resetFields },
     location: { query: { id, scoreSearch } },
     show,
     scoreDetail,
@@ -275,23 +275,27 @@ function AddScoringRulesmaintenance(props) {
       getlist()
     } else {
       dispatch({
-        type:'qualityassessment/cleardata'
+        type: 'qualityassessment/cleardata'
       })
     }
   }, [id])
 
   const handleReset = () => {
-    resetFields('detailed','')
+    resetFields('detailed', '')
   }
 
   const handleBack = () => {
     if (scoreSearch) {
       router.push({
         pathname: `/ITSM/servicequalityassessment/scoringrulessearch`,
+        query: { pathpush: true },
+        state: { cache: false }
       })
     } else {
       router.push({
         pathname: `/ITSM/servicequalityassessment/scoringrulesmaintenance`,
+        query: { pathpush: true },
+        state: { cache: false }
       })
     }
   }
@@ -520,7 +524,7 @@ function AddScoringRulesmaintenance(props) {
                         onClick={handleReset}
                       >
                         重置
-                        </Button>
+                      </Button>
                     </Col>
                   </Form>
 
@@ -574,7 +578,7 @@ AddScoringRulesmaintenance.defaultProps = {
 
 
 export default Form.create({})(
-  connect(({ qualityassessment, upmsmenu,itsmuser, loading }) => ({
+  connect(({ qualityassessment, upmsmenu, itsmuser, loading }) => ({
     show: upmsmenu.show,
     scoreDetail: qualityassessment.scoreDetail,
     clauseDetail: qualityassessment.clauseDetail,
