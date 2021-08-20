@@ -138,8 +138,6 @@ const Registrat = React.forwardRef((props, ref) => {
   };
 
   const handlobjectChange = value => {
-    console.log('value: ', value);
-    // console.log(value.slice(-1)[0],'lplp')
     setFieldsValue({ type: value?.slice(-1)[0] }, () => { })
   }
 
@@ -151,7 +149,6 @@ const Registrat = React.forwardRef((props, ref) => {
   };
 
   const problemType = getTypebyTitle('问题分类');
-  console.log('problemType: ', problemType);
 
   return (
     <>
@@ -264,7 +261,7 @@ const Registrat = React.forwardRef((props, ref) => {
                     message: '请输入问题分类',
                   },
                 ],
-                initialValue: (main.type).split(',') || [''],
+                initialValue: main.type?((main.type).split(',')) : [''],
                 // initialValue:['001','001004']
               })(
                 <Cascader
