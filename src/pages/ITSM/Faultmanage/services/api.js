@@ -128,6 +128,7 @@ export async function querydownload1(params) {
       pageNum: params.current,
       pageSize: params.pageSize
     }),
+    responseType:'blob'
   });
 }
 

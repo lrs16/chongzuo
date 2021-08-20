@@ -16,7 +16,9 @@ import {
   Popconfirm,
   // message,
   Cascader,
-  // Badge
+  Popover,
+  Checkbox,
+  Badge
 } from 'antd';
 import { DownOutlined, UpOutlined } from '@ant-design/icons';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
@@ -50,6 +52,7 @@ const { RangePicker } = DatePicker;
 
 function QueryList(props) {
   const pagetitle = props.route.name;
+  const [columns, setColumns] = useState([]);
 
   const {
     form: { getFieldDecorator, resetFields, validateFields, setFieldsValue, getFieldsValue },
@@ -77,6 +80,8 @@ function QueryList(props) {
   const [selectdata, setSelectData] = useState([]);
   const [tabrecord, setTabRecord] = useState({});
 
+  let formThead;
+
   const handledownFileToZip = (id, no) => {
     dispatch({
       type: 'fault/downloadzip',
@@ -95,12 +100,7 @@ function QueryList(props) {
     })
   }
 
-  const columns = [
-    {
-      title: 'id',
-      dataIndex: 'id',
-      key: 'id',
-    },
+  const initialColumns = [
     {
       title: '故障编号',
       dataIndex: 'no',
@@ -134,13 +134,13 @@ function QueryList(props) {
       title: '日期',
       dataIndex: 'registerOccurTime',
       key: 'registerOccurTime',
-      width: 120,
+      width: 200,
     },
     {
       title: '故障问题及现象',
       dataIndex: 'content',
       key: 'content',
-      width: 120,
+      width: 150,
     },
     {
       title: '事件详细经过',
@@ -158,61 +158,523 @@ function QueryList(props) {
       title: '处理过程',
       dataIndex: 'handleProcess',
       key: 'handleProcess',
-      width: 200,
+      width: 150,
     },
     {
       title: '故障分类',
       dataIndex: 'type',
       key: 'type',
-      width: 250,
+      width: 150,
     },
     {
       title: '改进措施及建议',
       dataIndex: 'handleAdvise',
       key: 'handleAdvise',
-      width: 120,
+      width: 150,
     },
     {
       title: '是否提交故障报告/时间',
       dataIndex: 'checkOneReportSign',
       key: 'checkOneReportSign',
-      width: 120,
+      width: 200,
     },
     {
       title: '故障报告提交人',
       dataIndex: 'confirmUser',
       key: 'confirmUser',
-      width: 200,
+      width: 150,
     },
     {
       title: '故障处理记录表（2天内提交）',
       dataIndex: 'checkTwoReportSign',
       key: 'checkTwoReportSign',
-      width: 200,
+      width: 250,
     },
     {
       title: '故障记录表提交人',
       dataIndex: 'handler',
       key: 'handler',
-      width: 200,
+      width: 150,
     },
     {
       title: '故障责任单位',
       dataIndex: 'checkTwoBlame',
       key: 'checkTwoBlame',
-      width: 200,
+      width: 150,
     },
     {
       title: '是否已发布处理结果',
       dataIndex: 'confirmResult',
       key: 'confirmResult',
-      width: 200,
+      width: 180,
     },
     {
       title: '提交故障报告截止时间',
       dataIndex: 'finishRequiredTime',
       key: 'finishRequiredTime',
       width: 200,
+    },
+    {
+      title: '故障名称',
+      dataIndex: 'title',
+      key: 'title',
+      width: 120,
+    },
+    {
+      title: '故障来源',
+      dataIndex: 'source',
+      key: 'source',
+      width: 120,
+    },
+    {
+      title: '结果',
+      dataIndex: 'result',
+      key: 'result',
+      width: 120,
+    },
+    {
+      title: '状态',
+      dataIndex: 'status',
+      key: 'status',
+      width: 120,
+    },
+    {
+      title: '建单时间',
+      dataIndex: 'addTime',
+      key: 'addTime',
+      width: 200,
+    },
+    {
+      title: '故障责任方',
+      dataIndex: 'blame',
+      key: 'blame',
+      width: 120,
+    },
+    {
+      title: '登记ID',
+      dataIndex: 'registerId',
+      key: 'registerId',
+      width: 200,
+    },
+    {
+      title: '系统模块',
+      dataIndex: 'registerModel',
+      key: 'registerModel',
+      width: 120,
+    },
+    {
+      title: '严重程度',
+      dataIndex: 'registerLevel',
+      key: 'registerLevel',
+      width: 120,
+    },
+    {
+      title: '故障地点',
+      dataIndex: 'registerAddress',
+      key: 'registerAddress',
+      width: 120,
+    },
+    {
+      title: '系统模块',
+      dataIndex: 'registerModel',
+      key: 'registerModel',
+      width: 120,
+    },
+    {
+      title: '是否影响业务',
+      dataIndex: 'registerEffect',
+      key: 'registerEffect',
+      width: 120,
+    },
+    {
+      title: '登记人单位名称',
+      dataIndex: 'registerUnit',
+      key: 'registerUnit',
+      width: 150,
+    },
+    {
+      title: '登记人部门名称',
+      dataIndex: 'registerDept',
+      key: 'registerDept',
+      width: 150,
+    },
+    {
+      title: '登记人名称',
+      dataIndex: 'registerUser',
+      key: 'registerUser',
+      width: 120,
+    },
+    {
+      title: '登记时间',
+      dataIndex: 'registerTime',
+      key: 'registerTime',
+      width: 200,
+    },
+    {
+      title: '登记状态',
+      dataIndex: 'registerStatus',
+      key: 'registerStatus',
+      width: 120,
+    },
+    {
+      title: '登记流程节点实例ids',
+      dataIndex: 'registerFlowNodeInstanceIds',
+      key: 'registerFlowNodeInstanceIds',
+      width: 200,
+    },
+    {
+      title: '系统运维商审核ID',
+      dataIndex: 'checkOneId',
+      key: 'checkOneId',
+      width: 150,
+    },
+    {
+      title: '系统运维商审核结果',
+      dataIndex: 'checkOneResult',
+      key: 'checkOneResult',
+      width: 170,
+    },
+    {
+      title: '系统运维商审核意见',
+      dataIndex: 'checkOneOpinion',
+      key: 'checkOneOpinion',
+      width: 170,
+    },
+    {
+      title: '系统运维商审核人单位',
+      dataIndex: 'checkOneUnit',
+      key: 'checkOneUnit',
+      width: 190,
+    },
+    {
+      title: '系统运维商审核人部门',
+      dataIndex: 'checkOneDept',
+      key: 'checkOneDept',
+      width: 190,
+    },
+    {
+      title: '系统运维商审核人',
+      dataIndex: 'checkOneUser',
+      key: 'checkOneUser',
+      width: 170,
+    },
+    {
+      title: '系统运维商审核时间',
+      dataIndex: 'checkOneTime',
+      key: 'checkOneTime',
+      width: 190,
+    },
+    {
+      title: '系统运维商审核状态',
+      dataIndex: 'checkOneStatus',
+      key: 'checkOneStatus',
+      width: 190,
+    },
+    {
+      title: '系统运维商流程节点实例ids',
+      dataIndex: 'checkOneFlowNodeInstanceIds',
+      key: 'checkOneFlowNodeInstanceIds',
+      width: 220,
+    },
+    {
+      title: '系统运维商故障责任方',
+      dataIndex: 'checkOneBlame',
+      key: 'checkOneBlame',
+      width: 200,
+    },
+    {
+      title: '处理ID',
+      dataIndex: 'handleId',
+      key: 'handleId',
+      width: 150,
+    },
+    {
+      title: '处理结果',
+      dataIndex: 'handleResult',
+      key: 'handleResult',
+      width: 150,
+    },
+    {
+      title: '故障分析及原因',
+      dataIndex: 'handleReason',
+      key: 'handleReason',
+      width: 150,
+    },
+    {
+      title: '处理开始时间',
+      dataIndex: 'handleStartTime',
+      key: 'handleStartTime',
+      width: 150,
+    },
+    {
+      title: '处理完成时间',
+      dataIndex: 'handleEndTime',
+      key: 'handleEndTime',
+      width: 150,
+    },
+    {
+      title: '处理人单位',
+      dataIndex: 'handleUnit',
+      key: 'handleUnit',
+      width: 150,
+    },
+    {
+      title: '处理人部门',
+      dataIndex: 'handleDept',
+      key: 'handleDept',
+      width: 150,
+    },
+    {
+      title: '处理时间',
+      dataIndex: 'handleTime',
+      key: 'handleTime',
+      width: 150,
+    },
+    {
+      title: '处理状态',
+      dataIndex: 'handleStatus',
+      key: 'handleStatus',
+      width: 150,
+    },
+    {
+      title: '接单时间',
+      dataIndex: 'handleAddTime',
+      key: 'handleAddTime',
+      width: 150,
+    },
+    {
+      title: '处理流程节点实例ids',
+      dataIndex: 'handleFlowNodeInstanceIds',
+      key: 'handleFlowNodeInstanceIds',
+      width: 200,
+    },
+    {
+      title: '确认ID',
+      dataIndex: 'confirmId',
+      key: 'confirmId',
+      width: 150,
+    },
+    {
+      title: '确认结果',
+      dataIndex: 'confirmResult',
+      key: 'confirmResult',
+      width: 150,
+    },
+    {
+      title: '确认说明',
+      dataIndex: 'confirmContent',
+      key: 'confirmContent',
+      width: 150,
+    },
+    {
+      title: '确认结果',
+      dataIndex: 'confirmResult',
+      key: 'confirmResult',
+      width: 150,
+    },
+    {
+      title: '确认人单位',
+      dataIndex: 'confirmUnit',
+      key: 'confirmUnit',
+      width: 150,
+    },
+    {
+      title: '确认人部门',
+      dataIndex: 'confirmDept',
+      key: 'confirmDept',
+      width: 150,
+    },
+    {
+      title: '确认人',
+      dataIndex: 'confirmUser',
+      key: 'confirmUser',
+      width: 150,
+    },
+    {
+      title: '确认时间',
+      dataIndex: 'confirmTime',
+      key: 'confirmTime',
+      width: 150,
+    },
+    {
+      title: '确认状态',
+      dataIndex: 'confirmStatus',
+      key: 'confirmStatus',
+      width: 150,
+    },
+    {
+      title: '确认流程节点实例ids',
+      dataIndex: 'confirmFlowNodeInstanceIds',
+      key: 'confirmFlowNodeInstanceIds',
+      width: 200,
+    },
+    {
+      title: '故障责任方',
+      dataIndex: 'confirmBlame',
+      key: 'confirmBlame',
+      width: 120,
+    },
+    {
+      title: '自动化科业务负责人审核ID',
+      dataIndex: 'checkTwoId',
+      key: 'checkTwoId',
+      width: 220,
+    },
+    {
+      title: '自动化科业务负责人审核结果',
+      dataIndex: 'checkTwoResult',
+      key: 'checkTwoResult',
+      width: 230,
+    },
+    {
+      title: '自动化科业务负责人审核意见',
+      dataIndex: 'checkTwoOpinion',
+      key: 'checkTwoOpinion',
+      width: 230,
+    },
+    {
+      title: '自动化科业务负责人是否上传故障报告',
+      dataIndex: 'checkTwoReportSign',
+      key: 'checkTwoReportSign',
+      width: 270,
+    },
+    {
+      title: '自动化科业务负责人审核人单位',
+      dataIndex: 'checkTwoUnit',
+      key: 'checkTwoUnit',
+      width: 250,
+    },
+    {
+      title: '自动化科业务负责人审核人部门',
+      dataIndex: 'checkTwoDept',
+      key: 'checkTwoDept',
+      width: 250,
+    },
+    {
+      title: '自动化科业务负责人审核人',
+      dataIndex: 'checkTwoUser',
+      key: 'checkTwoUser',
+      width: 200,
+    },
+    {
+      title: '自动化科业务负责人审核时间',
+      dataIndex: 'checkTwoTime',
+      key: 'checkTwoTime',
+      width: 220,
+    },
+    {
+      title: '自动化科业务负责人审核状态',
+      dataIndex: 'checkTwoStatus',
+      key: 'checkTwoStatus',
+      width: 220,
+    },
+    {
+      title: '自动化科业务负责人流程节点实例ids',
+      dataIndex: 'checkTwoFlowNodeInstanceIds',
+      key: 'checkTwoFlowNodeInstanceIds',
+      width: 300,
+    },
+    {
+      title: '自动化科业务负责人故障责任方',
+      dataIndex: 'checkTwoBlame',
+      key: 'checkTwoBlame',
+      width: 270,
+    },
+    {
+      title: '总结ID',
+      dataIndex: 'finishId',
+      key: 'finishId',
+      width: 150,
+    },
+    {
+      title: '总结说明',
+      dataIndex: 'finishContent',
+      key: 'finishContent',
+      width: 150,
+    },
+    {
+      title: '要求上传时间',
+      dataIndex: 'finishRequiredTime',
+      key: 'finishRequiredTime',
+      width: 150,
+    },
+    {
+      title: '实际上传时间',
+      dataIndex: 'finishPracticeTime',
+      key: 'finishPracticeTime',
+      width: 150,
+    },
+    {
+      title: '总结人单位',
+      dataIndex: 'finishUnit',
+      key: 'finishUnit',
+      width: 150,
+    },
+    {
+      title: '总结人部门',
+      dataIndex: 'finishDept',
+      key: 'finishDept',
+      width: 150,
+    },
+    {
+      title: '总结人',
+      dataIndex: 'finishUser',
+      key: 'finishUser',
+      width: 120,
+    },
+    {
+      title: '总结时间',
+      dataIndex: 'finishTime',
+      key: 'finishTime',
+      width: 150,
+    },
+    {
+      title: '总结状态',
+      dataIndex: 'finishStatus',
+      key: 'finishStatus',
+      width: 150,
+    },
+    {
+      title: '总结流程节点实例ids',
+      dataIndex: 'finishFlowNodeInstanceIds',
+      key: 'finishFlowNodeInstanceIds',
+      width: 200,
+    },
+    {
+      title: '待办ID',
+      dataIndex: 'taskId',
+      key: 'taskId',
+      width: 150,
+    },
+    {
+      title: '待办用户',
+      dataIndex: 'taskUser',
+      key: 'taskUser',
+      width: 150,
+    },
+    {
+      title: '待办用户ID',
+      dataIndex: 'taskUserId',
+      key: 'taskUserId',
+      width: 150,
+    },
+    {
+      title: '当前流程环境',
+      dataIndex: 'flowNodeName',
+      key: 'flowNodeName',
+      width: 150,
+    },
+    {
+      title: '流程代办创建时间',
+      dataIndex: 'createTime',
+      key: 'createTime',
+      width: 150,
+    },
+    {
+      title: '数据来源',
+      dataIndex: 'dataSource',
+      key: 'dataSource',
+      width: 150,
     },
     {
       title: '操作',
@@ -392,15 +854,20 @@ function QueryList(props) {
 
   //  下载 /导出功能
   const download = (page, pageSize) => {
+    const exportColumns = columns.map(item => {
+      return {
+        column: item.dataIndex,
+        field: item.title
+      }
+    })
     validateFields((err, values) => {
       console.log(values, 'values')
       if (!err) {
         dispatch({
           type: 'fault/faultQuerydownload',
           payload: {
+            columns: JSON.stringify(exportColumns),
             ...values,
-            // createTimeBegin: values.sendTime?.length ? moment(values.sendTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
-            // createTimeEnd: values.sendTime?.length ? moment(values.sendTime[1]).format('YYYY-MM-DD HH:mm:ss') : '',
             sendTime: '',
             registerOccurTimeBegin: values.registerOccurTimeBegin ? values.registerOccurTimeBegin.format('YYYY-MM-DD') : '',
             registerTimeBegin: values.registerTime?.length ? moment(values.registerTime[0]).format('YYYY-MM-DD HH:mm:ss') : '',
@@ -553,8 +1020,143 @@ function QueryList(props) {
   // 获取数据
   useEffect(() => {
     validateFields((err, values) => searchdata(values, paginations.current, paginations.pageSize),)
+     const controlTable = [
+      {
+        title: '故障编号',
+        dataIndex: 'no',
+        key: 'no',
+        width: 150,
+      },
+      {
+        title: '日期',
+        dataIndex: 'registerOccurTime',
+        key: 'registerOccurTime',
+        width: 200,
+      },
+      {
+        title: '故障问题及现象',
+        dataIndex: 'content',
+        key: 'content',
+        width: 150,
+      },
+      {
+        title: '事件详细经过',
+        dataIndex: 'handleContent',
+        key: 'handleContent',
+        width: 150,
+      },
+      {
+        title: '影响范围',
+        dataIndex: 'registerScope',
+        key: 'registerScope',
+        width: 150,
+      },
+      {
+        title: '处理过程',
+        dataIndex: 'handleProcess',
+        key: 'handleProcess',
+        width: 150,
+      },
+      {
+        title: '故障分类',
+        dataIndex: 'type',
+        key: 'type',
+        width: 150,
+      },
+      {
+        title: '改进措施及建议',
+        dataIndex: 'handleAdvise',
+        key: 'handleAdvise',
+        width: 150,
+      },
+      {
+        title: '是否提交故障报告/时间',
+        dataIndex: 'checkOneReportSign',
+        key: 'checkOneReportSign',
+        width: 200,
+      },
+      {
+        title: '故障报告提交人',
+        dataIndex: 'confirmUser',
+        key: 'confirmUser',
+        width: 150,
+      },
+      {
+        title: '故障处理记录表（2天内提交）',
+        dataIndex: 'checkTwoReportSign',
+        key: 'checkTwoReportSign',
+        width: 250,
+      },
+      {
+        title: '故障记录表提交人',
+        dataIndex: 'handler',
+        key: 'handler',
+        width: 150,
+      },
+      {
+        title: '故障责任单位',
+        dataIndex: 'checkTwoBlame',
+        key: 'checkTwoBlame',
+        width: 150,
+      },
+      {
+        title: '是否已发布处理结果',
+        dataIndex: 'confirmResult',
+        key: 'confirmResult',
+        width: 180,
+      },
+      {
+        title: '提交故障报告截止时间',
+        dataIndex: 'finishRequiredTime',
+        key: 'finishRequiredTime',
+        width: 200,
+      },
+     ]
+    setColumns(controlTable)
   }, [])
 
+  const creataColumns = () => {
+    // columns
+    initialColumns.length = 0;
+    formThead.map((val, key) => {
+      const obj = {
+        key: val.key,
+        title: val.title,
+        dataIndex: val.key,
+        width: 150
+      };
+      if (key === 0) {
+        obj.render = (text, record) => {
+          return (
+            <a onClick={() => gotoDetail(record)}>{text}</a>
+          )
+        }
+        obj.fixed = 'left'
+      }
+      initialColumns.push(obj);
+      setColumns(initialColumns);
+      return null;
+    })
+  }
+
+  const onCheckAllChange = e => {
+    setColumns(e.target.checked ? initialColumns : [])
+  };
+
+  const onCheck = (checkedValues) => {
+    formThead = initialColumns.filter(i =>
+      checkedValues.indexOf(i.title) >= 0
+    );
+
+    if (formThead.length === 0) {
+      setColumns([])
+    }
+    creataColumns();
+  };
+
+  const defaultAllkey = columns.map(item => {
+    return item.title
+  });
 
   return (
     <PageHeaderWrapper title={titleParams}>
@@ -919,13 +1521,64 @@ function QueryList(props) {
           </Popconfirm> */}
         </div>
 
+        <div style={{ textAlign: 'right', marginBottom: 8 }}>
+          <Popover
+            placement="bottomRight"
+            trigger="click"
+            content={
+              <>
+                <div style={{ borderBottom: '1px solid #E9E9E9' }}>
+                  <Checkbox
+                    // indeterminate={this.state.indeterminate}
+                    onChange={onCheckAllChange}
+                    checked={columns.length === initialColumns.length === true}
+                  >
+                    列表展示
+                  </Checkbox>
+                  <br />
+                </div>
+
+                <Checkbox.Group
+                  onChange={onCheck}
+                  value={defaultAllkey}
+                  defaultValue={columns}
+                  style={{overflowY:'auto',height:800}}
+                >
+                  {initialColumns.map(item => (
+                    <Col key={`item_${item.key}`} style={{ marginBottom: '8px' }}>
+                      <Checkbox
+                        value={item.title}
+                        key={item.key}
+                        checked={columns}
+                      // disabled={item.disabled}
+                      // className={styles.checkboxStyle}
+                      >
+                        {item.title}
+                      </Checkbox>
+                    </Col>
+                  ))}
+
+                </Checkbox.Group>
+              </>
+
+            }
+          >
+            <Button>
+              <Icon type="setting" theme="filled" style={{ fontSize: '14px' }} />
+            </Button>
+          </Popover>
+
+
+        </div>
+        <div />
+
         <Table
           loading={loading}
-          columns={columns.filter(item => item.title !== 'id' || item.key !== 'id')}
+          columns={columns}
           dataSource={faultQueryList.rows}
           rowKey={r => r.id}
           pagination={pagination}
-          scroll={{ x: 1400 }}
+          scroll={{ x: 800,y: 700 }}
         />
       </Card>
     </PageHeaderWrapper>
