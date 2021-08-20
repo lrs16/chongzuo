@@ -140,10 +140,13 @@ function WorkplanDetail(props) {
     };
 
     useEffect(() => {
-        queryDept();
-        getsuperviseworkPerson()
-        sessionStorage.setItem('Processtype', 'task');
-    }, []);
+        if (mainId) {
+            queryDept();
+            getsuperviseworkPerson();
+            getInformation();
+            sessionStorage.setItem('Processtype', 'task');
+        }
+    }, [mainId]);
 
     useEffect(() => {
         if (mainId !== undefined) {
@@ -428,13 +431,14 @@ function WorkplanDetail(props) {
     };
 
     useEffect(() => {
-        if (!delay && flowNodeName === '工作执行' && (workUser && workUser.split(",").length > 1&&main&&main.responseStatus==='0') ) {
+        if (!delay && flowNodeName === '工作执行' && (workUser && workUser.split(",").length > 1 && main && main.responseStatus === '0')) {
             message.info('请接单..', 1);
             setShow(false);
         }
-        if(!delay && flowNodeName === '工作执行' && (main&&main.responseStatus==='1' || workUser && workUser.split(",").length === 1)) {
+        if (!delay && flowNodeName === '工作执行' && (main && main.responseStatus === '1' || workUser && workUser.split(",").length === 1)) {
             setShow(true);
         }
+
     }, [location])
 
     const responseaccpt = () => { // 接单
@@ -607,7 +611,7 @@ function WorkplanDetail(props) {
                             <Button type="danger" ghost style={{ marginRight: 8 }} >回退</Button>
                         </Back>)} */}
                     {
-                        loading === false && !delay &&flowNodeName !=='工作执行' && (
+                        loading === false && !delay && flowNodeName !== '工作执行' && (
                             <Button
                                 type="primary"
                                 style={{ marginRight: 8 }}
@@ -619,8 +623,8 @@ function WorkplanDetail(props) {
                     }
 
                     {
-                        loading === false && !delay &&flowNodeName ==='工作执行' &&
-                        ((workUser && workUser.split(",").length > 1&&main&&main.responseStatus==='1')||(workUser && workUser.split(",").length === 1&&main&&main.responseStatus==='0')) 
+                        loading === false && !delay && flowNodeName === '工作执行' &&
+                        ((workUser && workUser.split(",").length > 1 && main && main.responseStatus === '1') || (workUser && workUser.split(",").length === 1 && main && main.responseStatus === '0'))
                         && (
                             <Button
                                 type="primary"
@@ -652,15 +656,15 @@ function WorkplanDetail(props) {
                         提交
                     </Button>)}
 
-                    {flowNodeName === '工作执行' && !delay && 
-                    ((workUser && workUser.split(",").length > 1&&main&&main.responseStatus==='1')||(workUser && workUser.split(",").length === 1&&main&&main.responseStatus==='0'))  
-                    && (<Button
-                        type="primary"
-                        style={{ marginRight: 8 }}
-                        onClick={() => handlebeforeconfirm()}
-                    >
-                        确认
-                    </Button>)}
+                    {flowNodeName === '工作执行' && !delay &&
+                        ((workUser && workUser.split(",").length > 1 && main && main.responseStatus === '1') || (workUser && workUser.split(",").length === 1 && main && main.responseStatus === '0'))
+                        && (<Button
+                            type="primary"
+                            style={{ marginRight: 8 }}
+                            onClick={() => handlebeforeconfirm()}
+                        >
+                            确认
+                        </Button>)}
 
                     {(main && main.responseStatus === '0') && loading === false && workUser && workUser.split(",").length > 1 && flowNodeName === '工作执行' && !delay && (<Button
                         type="primary"

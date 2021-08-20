@@ -72,8 +72,12 @@ function MyresponWork(props) {
                 flowNodeName: record.flowNodeName,
                 status: record.status,
                 checkStatus: record.checkStatus,
-                orderNo: record.no,
+                Id: record.no,
                 workUser: record.workUser
+            },
+            state: {
+                dynamicpath: true,
+                menuDesc: '工作执行',
             }
         })
     };

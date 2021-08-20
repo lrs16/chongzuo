@@ -28,7 +28,7 @@ function TaskworkFillin(props) {
     const TaskworkfillinRef = useRef();
     //   const [richtext, setRichtext] = useState('');
     const [files, setFiles] = useState({ arr: [], ischange: false }); // 下载列表
-    const [copyData, setCopyData] = useState('')
+    const [copyData, setCopyData] = useState('');
 
     const formItemLayout = {
         labelCol: {
@@ -176,30 +176,15 @@ function TaskworkFillin(props) {
     //     })
     // }
 
-    const handlePaste = () => {
-        const mainId = sessionStorage.getItem('copyrecord');
-        console.log(mainId, 'mainId')
-        // if (!mainId) {
-        //     message.info('请在列表页复制');
-        //     return false
-        // }
-        if(mainId !== '' && mainId !== undefined) {
-            dispatch({
-                type: 'supervisemodel/pasteFlow',
-                payload: mainId
-            }).then(res => {
-                if (res.code === 200) {
-                    const resData = res.main;
-                    delete resData.no;
-                    setCopyData(resData)
-                } else {
-                    message.info('您无法复制该条记录，请返回列表重新选择')
-                }
-            })
-
+    const handlePaste = () => { // 粘贴
+        const strObj = sessionStorage.getItem('copyrecord');
+        const result = JSON.parse(strObj);
+        const deleteno = delete result.no;
+        if(strObj !== '' && strObj !== undefined && deleteno === true) {
+            setCopyData(result);
         }else {
             message.info('请在列表页复制');
-            return false
+            return false;
         }
         return null;
     }

@@ -37,13 +37,12 @@ export async function updateEquip(params) {
 
 // 设备-删除
 export async function deleteEquip(id) {
-  return request(`/assets/cabinet/deleteCabinet`, {
+  return request(`/asset/host/deleteHost`, {
     method: 'DELETE',
     data: id,
     requestType: 'form',
   })
 }
-
 
 // ****机柜管理 
 // 获取机柜列表
@@ -71,4 +70,12 @@ export async function deleteCabinet(cabinetIds) {
     data: cabinetIds,
     requestType: 'form',
   })
+}
+
+// /assets/cabinet/getCabinetMsg 根据区域编号获取机柜信息
+export async function getCabinetMsg(params) {
+  return request(`/assets/cabinet/getCabinetMsg`, {
+    method: 'POST',
+    data: JSON.stringify(params),
+  });
 }

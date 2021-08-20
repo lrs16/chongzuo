@@ -385,4 +385,42 @@ export async function updateWorkTime(params) {
 }
 
 // 定时任务接口 mxj
-// /job/qrtzjob 新增定时任务调度
+// 定时任务列表
+export async function qrtzjobList(pageNum, pageSize, bodyParams) {
+  return request(`/job/qrtzjob/listPage/${pageNum}/${pageSize}`, {
+    method: 'POST',
+    body: JSON.stringify(bodyParams),
+  });
+}
+
+// 新增定时任务调度
+export async function addqrtzJob(params) {
+  return request(`/job/qrtzjob`, {
+    method: 'POST',
+    data: JSON.stringify(params),
+  });
+}
+
+// 编辑定时任务调度
+export async function updateqrtzJob(params) {
+  return request(`/job/qrtzjob`, {
+    method: 'PUT',
+    data: JSON.stringify(params),
+  });
+}
+
+// 删除定时任务调度
+export async function qrtzjobDelete(jobId) {
+  return request(`/job/qrtzjob/${jobId}`, {
+    method: 'DELETE',
+    requestType: 'form',
+  });
+}
+
+// 任务调度状态修改
+export async function changeStatus(params) {
+  return request(`/job/qrtzjob/changeStatus`, {
+    method: 'POST',
+    data: JSON.stringify(params),
+  });
+}

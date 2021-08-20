@@ -1,5 +1,5 @@
 import React, {
-    // useEffect, 
+    useEffect, 
     useState
 } from 'react';
 import { connect } from 'dva';
@@ -26,17 +26,18 @@ const formItemLayout = {
 function EquipmentManege(props) {
     const pagetitle = props.route.name;
     const {
-        dispatch, list, loading,
-        // location,
+        dispatch, equipList, loading,
+        location,
         form: {
             getFieldDecorator,
             // validateFields, 
-            // getFieldsValue,
+            getFieldsValue,
             resetFields
         },
     } = props;
 
-    console.log(list, 'aa')
+    // console.log(equipList, 'equipList')
+
     const [expand, setExpand] = useState(false);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
@@ -47,21 +48,21 @@ function EquipmentManege(props) {
     const [data, setData] = useState('');
     const [paginations, setPageinations] = useState({ current: 1, pageSize: 15 });
 
-    // const searchdata = (page, size) => {
-    //     const values = getFieldsValue();
-    //     dispatch({
-    //         type: 'equipmanage/findEquipList',
-    //         payload: {
-    //             values,
-    //             pageNum: page,
-    //             pageSize: size,
-    //         },
-    //     });
-    // };
+    const searchdata = (page, size) => {
+        const values = getFieldsValue();
+        dispatch({
+            type: 'equipmanage/findEquipList',
+            payload: {
+                ...values,
+                pageIndex: page,
+                pageSize: size,
+            },
+        });
+    };
 
-    // useEffect(() => {
-    //     // searchdata(1, 15);
-    // }, [location]);
+    useEffect(() => {
+        searchdata(1, 15);
+    }, [location]);
 
     const handleShowDrawer = (drwertitle, type, record) => {
         setVisible(!visible);
@@ -72,7 +73,6 @@ function EquipmentManege(props) {
 
     // 提交
     const handleSubmit = values => {
-        console.log(values, "values")
         dispatch({
             type: 'equipmanage/toupdateEquip',
             payload: {
@@ -81,7 +81,7 @@ function EquipmentManege(props) {
         }).then(res => {
             if (res.code === 200) {
                 Message.success(res.msg);
-                // searchdata(1, 15);
+                searchdata(1, 15);
             } else {
                 Message.error(res.msg);
             }
@@ -90,12 +90,12 @@ function EquipmentManege(props) {
 
     const handleReset = () => {
         resetFields();
-        // searchdata(1, 15)
+        searchdata(1, 15)
         setPageinations({ current: 1, pageSize: 15 });
     }
 
     const onShowSizeChange = (page, size) => {
-        // searchdata(page, size);
+        searchdata(page, size);
         setPageinations({
             ...paginations,
             pageSize: size,
@@ -103,7 +103,7 @@ function EquipmentManege(props) {
     };
 
     const changePage = page => {
-        // searchdata(page, paginations.pageSize);
+        searchdata(page, paginations.pageSize);
         setPageinations({
             ...paginations,
             current: page,
@@ -115,8 +115,8 @@ function EquipmentManege(props) {
         onShowSizeChange: (page, size) => onShowSizeChange(page, size),
         current: paginations.current,
         pageSize: paginations.pageSize,
-        // total: list.total,
-        // showTotal: total => `总共  ${total}  条记录`,
+        total: equipList.total,
+        showTotal: total => `总共  ${total}  条记录`,
         onChange: page => changePage(page),
     };
 
@@ -125,17 +125,17 @@ function EquipmentManege(props) {
             ...paginations,
             current: 1,
         });
-        // searchdata(1, paginations.pageSize);
+        searchdata(1, paginations.pageSize);
     };
 
-    const handleDelete = (id) => { // 删除
+    const handleDelete = id => { // 删除
         dispatch({
             type: 'equipmanage/toDeleteEquip',
             payload: { Ids: id },
         }).then(res => {
             if (res.code === 200) {
                 Message.success('删除成功');
-                // searchdata(1, 15);
+                searchdata(1, 15);
             } else {
                 Message.error(res.msg);
             }
@@ -148,6 +148,9 @@ function EquipmentManege(props) {
             dataIndex: 'hostZoneId',
             key: 'hostZoneId',
             width: 120,
+            // render: (record) => {
+            //     return <span>{hostZoneMap[record.hostZoneId]}</span>;
+            // },
         },
         {
             title: '设备名称',
@@ -306,26 +309,6 @@ function EquipmentManege(props) {
         </Button></>
     )
 
-    const zonemap = [
-        { key: '1', title: '一区' },
-        { key: '2', title: '二区' },
-        { key: '3', title: '三区' },
-        { key: '4', title: '安全接入区' },
-    ];
-
-    const hostosmap = [
-        { key: '1', title: 'linux' },
-        { key: '2', title: 'windows' },
-        { key: '3', title: 'mac' },
-        { key: '4', title: '其他' },
-    ];
-
-    const hosttype = [
-        { key: '1', title: '服务器' },
-        { key: '2', title: '网络设备' },
-        { key: '3', title: '安防设备' },
-    ];
-
     const directormap = [
         { key: '1', title: '张三' },
         { key: '2', title: '李四' },
@@ -333,37 +316,25 @@ function EquipmentManege(props) {
         { key: '3', title: '赵六' },
     ];
 
-    const electrictype = [
-        { key: '1', title: '单电源' },
-        { key: '2', title: '双电源' },
-    ];
-
-    const hoststatusmap = [
-        { key: '0', title: '停用' },
-        { key: '1', title: '在用' },
-    ];
-
-    const hostphysicmsp = [
-        { key: '1', title: '是' },
-        { key: '2', title: '否' },
-    ];
-
     // 数据字典取下拉值
-    // const getTypebyId = key => {
-    //     if (selectdata.ischange) {
-    //         return selectdata.arr[0].children.filter(item => item.key === key)[0].children;
-    //     }
-    //     return [];
-    // };
+    const getTypebyId = key => {
+        if (selectdata.ischange) {
+            return selectdata.arr[0].children.filter(item => item.key === key)[0].children;
+        }
+        return [];
+    };
 
-    // const zonemap = getTypebyId('');         // 区域
-    // const statusmap = getTypebyId('');       // 状态
-    // const typemap = getTypebyId('');         // 是否物理机
-
+    const zonemap = getTypebyId('1428182995477942274'); // 主机区域
+    const hoststatusmap = getTypebyId('1428184619231432705'); // 设备状态
+    const hostosmap = getTypebyId('1428185083276644354'); // 操作系统
+    const electrictype = getTypebyId('1428185267658248193'); // 供电类型
+    const hosttype = getTypebyId('1428185403339788289'); // 设备类型
+    const hostphysicmap = getTypebyId('1428185541785374722'); // 物理机
+    
     return (
         <PageHeaderWrapper title={pagetitle}>
             <DictLower
-                typeid="100000000000001001"
+                typeid="1428178684907835393"
                 ChangeSelectdata={newvalue => setSelectData(newvalue)}
                 style={{ display: 'none' }}
             />
@@ -433,7 +404,7 @@ function EquipmentManege(props) {
                                             initialValue: '',
                                         })(
                                             <Select placeholder="请选择" allowClear>
-                                                {hostphysicmsp.map(obj => (
+                                                {hostphysicmap.map(obj => (
                                                     <Option key={obj.key} value={obj.title}>
                                                         {obj.title}
                                                     </Option>
@@ -639,7 +610,7 @@ function EquipmentManege(props) {
                 </div>
                 <Table
                     columns={columns}
-                    // dataSource={list.rows}
+                    dataSource={equipList.rows}
                     loading={loading}
                     rowKey={(_, index) => index.toString()}
                     pagination={pagination}
@@ -649,6 +620,7 @@ function EquipmentManege(props) {
             {/* 抽屉 */}
             <EquipDrawer
                 visible={visible}
+                dispatch={dispatch}
                 ChangeVisible={newvalue => setVisible(newvalue)}
                 title={title}
                 handleSubmit={newvalue => handleSubmit(newvalue)}
@@ -661,7 +633,7 @@ function EquipmentManege(props) {
 
 export default Form.create({})(
     connect(({ equipmanage, loading }) => ({
-        list: equipmanage.hostList,
+        equipList: equipmanage.equipList,
         loading: loading.models.equipmanage,
     }))(EquipmentManege),
 );

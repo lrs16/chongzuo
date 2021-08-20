@@ -57,7 +57,6 @@ function MycreateWork(props) {
     const [columns, setColumns] = useState([]);
 
     const onSelectChange = (RowKeys, Rows) => {
-        console.log(Rows, 'Rows')
         setSelectedRowKeys(RowKeys);
         setSelectedRows(Rows);
     };
@@ -151,10 +150,11 @@ function MycreateWork(props) {
 
     const handleCopy = () => { // 复制
         const len = selectedRows.length;
-        console.log(selectedRows[0])
         if (len === 1) {
             message.success('复制成功');
-            sessionStorage.setItem('copyrecord', selectedRows[0].mainId);
+            const obj = selectedRows[0];
+            const strObj = JSON.stringify(obj);
+            sessionStorage.setItem('copyrecord', strObj);
         } else if (len > 1) {
             message.info('仅能选择一条数据进行复制操作')
             return false;
@@ -224,7 +224,21 @@ function MycreateWork(props) {
                 flowNodeName: record.flowNodeName,
                 status: record.status,
                 checkStatus: record.checkStatus,
-                orderNo: record.no,
+                Id: record.no,
+            },
+            state: {
+                dynamicpath: true,
+                menuDesc: '工作任务',
+            }
+        })
+    };
+
+    const gotoView = (record) => {  // openViews
+        router.push({
+            pathname: `/ITSM/supervisework/queryworkdetails`,
+            query: {
+                mainId: record.mainId,
+                No: record.no,
             }
         })
     };
@@ -236,7 +250,11 @@ function MycreateWork(props) {
             key: 'no',
             width: 250,
             render: (text, record) => {
-                return <a onClick={() => gotoDetail(record)}>{text}</a>
+                if(record.taskUserId.indexOf(userinfo.userId) !== -1) {
+                    return <a onClick={() => gotoDetail(record)}>{text}</a>
+                } 
+                return <a onClick={() => gotoView(record)}>{text}</a>
+                    
             },
         },
         {
@@ -554,7 +572,6 @@ function MycreateWork(props) {
         getList();
         queryDept();
         setColumns(initialColumns);
-        sessionStorage.removeItem('copyrecord');
     }, []);
 
     // 数据字典匹配

@@ -104,6 +104,9 @@ export default {
 
     //  打开待办
     *openFlow({ payload }, { call, put }) {
+      yield put({
+        type: 'clearcache',
+      })
       const response = yield call(openFlow, payload);
       yield put({
         type: 'openFlowList',
@@ -267,6 +270,18 @@ export default {
       return {
         ...state,
         superviseworkPersonArr: action.payload.data
+      }
+    },
+
+    clearcache(state) {
+      return {
+        ...state,
+        getMyWorkList: [],  // 工作列表
+        getworkqueryList: [], // 工作督办查询列表
+        openFlowList: [],
+        openViewlist: [],
+        getSuperviseLists: [], // 获取督办列表
+        superviseworkPersonArr: [] // 工作负责人列表
       }
     },
 

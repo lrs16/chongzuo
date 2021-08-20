@@ -1,5 +1,9 @@
-import React from 'react';
-import { Drawer, Button, Form, Input, Radio, Select } from 'antd';
+import React, {
+  useState
+} from 'react';
+// import { connect } from 'dva';
+import DictLower from '@/components/SysDict/DictLower';
+import { Drawer, Button, Form, Input, Select, InputNumber } from 'antd';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -16,44 +20,18 @@ const formItemLayout = {
   colon: false,
 };
 
-const zonemap = [
-  { key: '0', title: '一区' },
-  { key: '1', title: '二区' },
-  { key: '2', title: '三区' },
-  { key: '3', title: '安全接入区' },
-];
-
-const hostosmap = [
-  { key: '1', title: 'linux' },
-  { key: '2', title: 'windows' },
-  { key: '3', title: 'mac' },
-  { key: '4', title: '其他' },
-];
-
 const directormap = [
   { key: '1', title: '张三' },
   { key: '2', title: '李四' },
   { key: '3', title: '王五' },
   { key: '3', title: '赵六' },
 ];
-
-const hosttype = [
-  { key: '1', title: '服务器' },
-  { key: '2', title: '网络设备' },
-  { key: '3', title: '安防设备' },
-];
-
-const electrictype = [
-  { key: '1', title: '单电源' },
-  { key: '2', title: '双电源' },
-];
-
 function EquipDrawer(props) {
-  const { visible, ChangeVisible, title, handleSubmit } = props;
+  const { visible, ChangeVisible, title, handleSubmit, dispatch } = props;
   const { getFieldDecorator, validateFields } = props.form;
   const required = true;
   const {
-    id,
+    // id,
     hostZoneId,
     hostName,
     hostIp,
@@ -71,6 +49,9 @@ function EquipDrawer(props) {
     deployChange,
   } = props.record;
 
+  const [equipCabinet, setEquipCabinet] = useState([]);
+  const [selectdata, setSelectData] = useState({ arr: [], ischange: false }); // 下拉值
+
   const hanldleCancel = () => {
     ChangeVisible(false);
   };
@@ -87,6 +68,29 @@ function EquipDrawer(props) {
     });
   };
 
+  const handleChange = v => {
+    dispatch({
+      type: 'equipmanage/getCabinetMsgs',
+      payload: { cabinetZoneId: v },
+    }).then(res => {
+      setEquipCabinet(res.data);
+    });
+  };
+
+  // 数据字典取下拉值
+  const getTypebyId = key => {
+    if (selectdata.ischange) {
+      return selectdata.arr[0].children.filter(item => item.key === key)[0].children;
+    }
+    return [];
+  };
+
+  const zonemap = getTypebyId('1428182995477942274'); // 主机区域
+  const hoststatusmap = getTypebyId('1428184619231432705'); // 设备状态
+  const hostosmap = getTypebyId('1428185083276644354'); // 操作系统
+  const electrictype = getTypebyId('1428185267658248193'); // 供电类型
+  const hosttype = getTypebyId('1428185403339788289'); // 设备类型
+  const hostphysicmap = getTypebyId('1428185541785374722'); // 物理机
 
   return (
     <Drawer
@@ -97,12 +101,17 @@ function EquipDrawer(props) {
       bodyStyle={{ paddingBottom: 60 }}
       destroyOnClose
     >
+      <DictLower
+        typeid="1428178684907835393"
+        ChangeSelectdata={newvalue => setSelectData(newvalue)}
+        style={{ display: 'none' }}
+      />
       <Form {...formItemLayout} onSubmit={handleOk}>
-        <Form.Item label="Id">
+        {/* <Form.Item label="Id">
           {getFieldDecorator('id', {
             initialValue: id,
           })(<Input disabled />)}
-        </Form.Item>
+        </Form.Item> */}
         <Form.Item label="区域">
           {getFieldDecorator('hostZoneId', {
             rules: [
@@ -112,9 +121,11 @@ function EquipDrawer(props) {
               },
             ],
             initialValue: hostZoneId,
-          })(<Select placeholder="请选择" allowClear>
+          })(<Select placeholder="请选择" allowClear
+            onChange={v => handleChange(v)}
+          >
             {zonemap.map(obj => (
-              <Option key={obj.key} value={obj.key}>
+              <Option key={obj.key} value={obj.title}>
                 {obj.title}
               </Option>
             ))}
@@ -150,11 +161,20 @@ function EquipDrawer(props) {
                 message: '请选择',
               },
             ],
-            initialValue: hostStatus || '1',
-          })(<Radio.Group>
-            <Radio value="1">在用</Radio>
-            <Radio value="0">停用</Radio>
-          </Radio.Group>)}
+            initialValue: hostStatus,
+          })(
+            // <Radio.Group>
+            //   <Radio value="1">在用</Radio>
+            //   <Radio value="0">停用</Radio>
+            // </Radio.Group>
+            <Select placeholder="请选择" allowClear>
+              {hoststatusmap.map(obj => (
+                <Option key={obj.key} value={obj.title}>
+                  {obj.title}
+                </Option>
+              ))}
+            </Select>
+          )}
         </Form.Item>
         <Form.Item label="操作系统">
           {getFieldDecorator('hostOsId', {
@@ -167,7 +187,7 @@ function EquipDrawer(props) {
             initialValue: hostOsId,
           })(<Select placeholder="请选择" allowClear>
             {hostosmap.map(obj => (
-              <Option key={obj.key} value={obj.key}>
+              <Option key={obj.key} value={obj.title}>
                 {obj.title}
               </Option>
             ))}
@@ -184,7 +204,7 @@ function EquipDrawer(props) {
             initialValue: hostType,
           })(<Select placeholder="请选择" allowClear>
             {hosttype.map(obj => (
-              <Option key={obj.key} value={obj.key}>
+              <Option key={obj.key} value={obj.title}>
                 {obj.title}
               </Option>
             ))}
@@ -201,7 +221,7 @@ function EquipDrawer(props) {
             initialValue: electricType,
           })(<Select placeholder="请选择" allowClear>
             {electrictype.map(obj => (
-              <Option key={obj.key} value={obj.key}>
+              <Option key={obj.key} value={obj.title}>
                 {obj.title}
               </Option>
             ))}
@@ -209,21 +229,45 @@ function EquipDrawer(props) {
         </Form.Item>
         <Form.Item label="是否物理机">
           {getFieldDecorator('hostPhysicId', {
-            initialValue: hostPhysicId || '1',
-          })(<Radio.Group>
-            <Radio value="1">是</Radio>
-            <Radio value="2">否</Radio>
-          </Radio.Group>)}
+            rules: [{ required }],
+            initialValue: hostPhysicId,
+          })(<Select placeholder="请选择" allowClear>
+            {hostphysicmap.map(obj => (
+              <Option key={obj.key} value={obj.title}>
+                {obj.title}
+              </Option>
+            ))}
+          </Select>)}
         </Form.Item>
         <Form.Item label="设备机柜">
           {getFieldDecorator('hostCabinetId', {
-            //  rules: [
-            //   {
-            //     required,
-            //     message: '请选择',
-            //   },
-            // ],
+            rules: [
+              {
+                required,
+                message: '请选择',
+              },
+            ],
             initialValue: hostCabinetId,
+            // initialValue: (equipCabinet && equipCabinet[0]) ? equipCabinet[0].tital : hostCabinetId,
+          })(
+            <Select placeholder="请选择" allowClear>
+              {equipCabinet.map(obj => (
+                <Option key={obj.key} value={obj.key}>
+                  {obj.tital}
+                </Option>
+              ))}
+            </Select>
+          )}
+        </Form.Item>
+        <Form.Item label="占用U位">
+          {getFieldDecorator('enployU', {
+            rules: [
+              {
+                required,
+                message: '请输入',
+              },
+            ],
+            initialValue: enployU,
           })(<Input placeholder="请输入" />)}
         </Form.Item>
         <Form.Item label="负责人">
@@ -247,15 +291,10 @@ function EquipDrawer(props) {
             initialValue: deployChange,
           })(<Input placeholder="请输入" />)}
         </Form.Item>
-        <Form.Item label="占用U位">
-          {getFieldDecorator('enployU', {
-            initialValue: enployU,
-          })(<Input placeholder="请输入" />)}
-        </Form.Item>
         <Form.Item label="设备排序">
           {getFieldDecorator('hostSorts', {
             initialValue: hostSorts,
-          })(<Input placeholder="请输入" />)}
+          })(<InputNumber style={{ width: '100%' }} placeholder="请输入数字..." />)}
         </Form.Item>
         <Form.Item label="设备备注">
           {getFieldDecorator('hostRemarks', {
@@ -289,7 +328,7 @@ function EquipDrawer(props) {
 
 EquipDrawer.defaultProps = {
   record: {
-    id: '',
+    // id: '',
     hostZoneId: '',
     hostName: '',
     hostIp: '',
@@ -309,3 +348,9 @@ EquipDrawer.defaultProps = {
 };
 
 export default Form.create()(EquipDrawer);
+// export default Form.create({})(
+//   connect(({ equipmanage, loading }) => ({
+//       list: equipmanage.hostList,
+//       loading: loading.models.equipmanage,
+//   }))(EquipDrawer),
+// );

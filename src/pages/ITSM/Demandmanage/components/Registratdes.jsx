@@ -84,7 +84,7 @@ function Registratdes(props) {
         </Col>
         <Col span={24}>
           <Form.Item label='需求描述'  {...forminladeLayout}>
-            <TextArea autoSize={{ minRows: 3 }} defaultValue={info.reason} disabled />
+            <TextArea autoSize={{ minRows: 3 }} defaultValue={info.detail} disabled />
           </Form.Item>
         </Col>
         <Col span={24}>

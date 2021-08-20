@@ -75,7 +75,11 @@ function TodelayExamine(props) {
                 flowNodeName: record.flowNodeName,
                 status: record.status,
                 checkStatus: record.checkStatus,
-                orderNo: record.no,
+                Id: record.no,
+            },
+            state: {
+                dynamicpath: true,
+                menuDesc: '工作审核',
             }
         })
     };
