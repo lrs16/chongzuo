@@ -8,7 +8,7 @@ import BusinessEditTable from './components/BusinessEditTable';
 import { completeVerify } from './services/api';
 
 function BusinessDetail(props) {
-  const { dispatch, info } = props;
+  const { dispatch, info, loading } = props;
   const { Id, releaseNo } = props.location.query;
   const pagetitle = props.route.name;
   const [runpath, setRunpath] = useState('');
@@ -75,6 +75,7 @@ function BusinessDetail(props) {
           dataSource={info}
           ChangeValue={() => { }}
           scroll={{ x: 1740 }}
+          loading={loading}
         />
       </Card>
     </PageHeaderWrapper>

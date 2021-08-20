@@ -8,7 +8,7 @@ const InputGroup = Input.Group;
 const RadioGroup = Radio.Group;
 
 function BusinessEditTable(props) {
-  const { title, dataSource, type, ChangeValue } = props;
+  const { title, dataSource, type, ChangeValue, loading } = props;
   const [data, setData] = useState([]);
 
   useEffect(() => {
@@ -19,6 +19,9 @@ function BusinessEditTable(props) {
         key: (index + 1).toString(),
       }));
       setData(newData);
+    };
+    if (dataSource && dataSource.length === 0) {
+      setData(dataSource);
     };
   }, [dataSource])
 
@@ -182,6 +185,7 @@ function BusinessEditTable(props) {
         rowKey={(_, index) => index.toString()}
         pagination={false}
         scroll={{ x: 1700 }}
+        loading={loading}
       />
     </>
   );

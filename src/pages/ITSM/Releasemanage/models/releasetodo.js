@@ -193,7 +193,6 @@ export default {
 
     // 分派，重分派
     * listassign({ payload: { values, releaseNo } }, { call, put }) {
-      console.log(values)
       const response = yield call(releaseListAssign, values);
       if (response.code === 200) {
         message.success('分派成功')

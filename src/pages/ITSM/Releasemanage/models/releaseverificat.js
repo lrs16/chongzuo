@@ -39,11 +39,6 @@ export default {
         type: 'clearcache',
       });
       const response = yield call(openBizTodoList, payload);
-      // const infomap = new Map([
-      //   ['出厂测试', response.data.register],
-      //   ['平台验证', response.data.platformValidate],
-      //   ['业务验证', response.data.bizValidateParam],
-      // ]);
       if (response.code === 200) {
         yield put({
           type: 'saveinfo',
@@ -91,14 +86,14 @@ export default {
     saveinfo(state, action) {
       return {
         ...state,
-        info: action.payload,
+        info: action.payload || [],
       };
     },
     saveview(state, action) {
       return {
         ...state,
-        viewlist: action.payload.dutyUnitList,
-        viewmsg: action.payload.dutyUnitListMsg,
+        viewlist: action.payload.dutyUnitList || {},
+        viewmsg: action.payload.dutyUnitListMsg || '',
       };
     },
     savecheck(state, action) {

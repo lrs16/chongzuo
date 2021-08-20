@@ -40,8 +40,7 @@ function VerificationTodo(props) {
   const [selectdata, setSelectData] = useState('');
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [selectedRecords, setSelectedRecords] = useState([]);
-
-  console.log(viewlist)
+  const [expandedRowKeys, setExpandedRowKeys] = useState([]);
 
   useEffect(() => {
     validateFields((err, values) => {
@@ -337,19 +336,30 @@ function VerificationTodo(props) {
       },
     ];
     const key = Object.keys(viewlist)[0];
+
     return (
       <div style={{ margin: '0 48px 24px 0', }}>
         <div style={{ marginBottom: 12 }}>{viewmsg[key]}</div>
         <Table
           columns={columnSun}
-          dataSource={viewlist[key]}
+          dataSource={viewlist && viewlist[key] || []}
           size='small'
           pagination={false}
           loading={viewloading}
+          rowKey={r => r.id}
           bordered />
       </div>
     );
   };
+
+  const changeRowsKey = (expanded, record) => {
+    if (expanded) {
+      const arr = [record.todoCode];
+      setExpandedRowKeys(arr);
+    } else {
+      setExpandedRowKeys([]);
+    }
+  }
 
   return (
     <PageHeaderWrapper title={pagetitle}>
@@ -448,13 +458,16 @@ function VerificationTodo(props) {
         <Table
           loading={loading}
           columns={columns}
-          expandedRowRender={expandedRowRender}
+          expandedRowKeys={expandedRowKeys}            // 默认展开的行
+          expandedRowRender={expandedRowRender}        // 展开的内容
           expandRowByClick
-          onRow={record => {
+          onRow={(record) => {
             return {
-              onClick: (e) => { e.preventDefault(); getViewList(record.todoCode) },
+              onClick: () => { getViewList(record.todoCode) },
             };
           }}
+          onExpand={(expanded, record) => changeRowsKey(expanded, record)}
+          expandIconColumnIndex={3}
           dataSource={list}
           pagination={pagination}
           rowSelection={rowSelection}
